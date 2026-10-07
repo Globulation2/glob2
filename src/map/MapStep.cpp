@@ -332,11 +332,11 @@ void Map::syncStep(Uint32 stepCounter, bool preparePeriodic)
 				const Uint32 teamMask = Team::teamNumberToMask(escapeTeam);
 				for (size_t i = 0; i < size; ++i)
 				{
-					const Tile& tile = tiles[i];
-					const bool blocked = tile.resource.type != NO_RES_TYPE
-						|| tile.building != NOGBID || (!terrainPropertiesAt(i).walkable && !(escapeSwim > 0 && terrainPropertiesAt(i).swimmable))
-						|| immobileUnits[i] != IMMOBILE_UNIT_NONE;
-					const bool goal = !blocked && !(tile.forbidden & teamMask);
+
+					const bool blocked = resourceCells[i].resource.type != NO_RES_TYPE
+						|| occupancyCells[i].building != NOGBID || (!terrainPropertiesAt(i).walkable && !(escapeSwim > 0 && terrainPropertiesAt(i).swimmable))
+						|| occupancyCells[i].immobileUnit != IMMOBILE_UNIT_NONE;
+					const bool goal = !blocked && !(areaCells[i].forbidden & teamMask);
 					if ((field[i] == GRADIENT_FORBIDDEN) != blocked
 						|| (field[i] == GRADIENT_AT_GOAL) != goal)
 					{
@@ -466,7 +466,7 @@ void Map::setMapDiscovered(int x, int y, int w, int h,  Uint32 sharedVision)
 
 void Map::setMapBuildingsDiscovered(int x, int y, Uint32 sharedVision, Team *teams[Team::MAX_COUNT])
 {
-	Uint16 bgid = tiles[coordToIndex(x, y)].building;
+	Uint16 bgid = occupancyCells[coordToIndex(x, y)].building;
 	if (bgid != NOGBID)
 	{
 		int id = Building::GIDtoID(bgid);
@@ -531,28 +531,28 @@ void Map::computeDisplayedForbidden(int teamNumber)
 {
 	Uint32 teamMask = Team::teamNumberToMask(teamNumber);
 	for (size_t i=0; i<size; i++)
-		displayedForbiddenView.set(i, (tiles[i].forbidden & teamMask) != 0);
+		displayedForbiddenView.set(i, (areaCells[i].forbidden & teamMask) != 0);
 }
 
 void Map::computeDisplayedGuardArea(int teamNumber)
 {
 	Uint32 teamMask = Team::teamNumberToMask(teamNumber);
 	for (size_t i=0; i<size; i++)
-		displayedGuardAreaView.set(i, (tiles[i].guardArea & teamMask) != 0);
+		displayedGuardAreaView.set(i, (areaCells[i].guard & teamMask) != 0);
 }
 
 void Map::computeDisplayedClearArea(int teamNumber)
 {
 	Uint32 teamMask = Team::teamNumberToMask(teamNumber);
 	for (size_t i=0; i<size; i++)
-		displayedClearAreaView.set(i, (tiles[i].clearArea & teamMask) != 0);
+		displayedClearAreaView.set(i, (areaCells[i].clear & teamMask) != 0);
 }
 
 void Map::computeDisplayedFarmArea(int teamNumber)
 {
 	Uint32 teamMask = Team::teamNumberToMask(teamNumber);
 	for (size_t i=0; i<size; i++)
-		displayedFarmAreaView.set(i, (tiles[i].farmArea & teamMask) != 0);
+		displayedFarmAreaView.set(i, (areaCells[i].farm & teamMask) != 0);
 }
 
 

@@ -20,6 +20,7 @@
 
 #include "Building.h"
 #include "Ressource.h"
+#include "MapState.h"
 #include "Sector.h"
 #include "Team.h"
 #include "TerrainType.h"
@@ -354,7 +355,7 @@ public:
 	//! Returns true if the position(x, y) is a forbidden area for the given team
 	bool isForbidden(int x, int y, Uint32 teamMask) const
 	{
-		return tiles[coordToIndex(x, y)].forbidden&teamMask;
+		return areaCells[coordToIndex(x, y)].forbidden&teamMask;
 	}
 
 	//! Return true if (x,y) is a guard area in the locally-displayed team's overlay cache
@@ -367,7 +368,7 @@ public:
 	//! Returns true if the position(x, y) is a guard area for the given team
 	bool isGuardArea(int x, int y, Uint32 teamMask) const
 	{
-		return tiles[coordToIndex(x, y)].guardArea&teamMask;
+		return areaCells[coordToIndex(x, y)].guard&teamMask;
 	}
 
 	//! Return true if (x,y) is a clear area in the locally-displayed team's overlay cache
@@ -380,7 +381,7 @@ public:
 	//! Returns true if the position(x, y) is a clear area for the given team
 	bool isClearArea(int x, int y, Uint32 teamMask) const
 	{
-		return tiles[coordToIndex(x, y)].clearArea&teamMask;
+		return areaCells[coordToIndex(x, y)].clear&teamMask;
 	}
 
 	//! Return true if (x,y) is a farm area in the locally-displayed team's overlay cache
@@ -393,19 +394,19 @@ public:
 	//! Returns true if the position(x, y) is a farm area for the given team
 	bool isFarmArea(int x, int y, Uint32 teamMask) const
 	{
-		return tiles[coordToIndex(x, y)].farmArea&teamMask;
+		return areaCells[coordToIndex(x, y)].farm&teamMask;
 	}
 	
 	// These rebuild the render-only displayed*View caches from the authoritative
-	// tiles[] bits, and are only meaningful for the locally-displayed team (the one
+	// areaCells[] bits, and are only meaningful for the locally-displayed team (the one
 	// whose areas are drawn on screen). They do not touch checkSum() state.
-	//! Rebuild displayedForbiddenView from tiles[].forbidden for the given team.
+	//! Rebuild displayedForbiddenView from areaCells[].forbidden for the given team.
 	void computeDisplayedForbidden(int teamNumber);
-	//! Rebuild displayedGuardAreaView from tiles[].guardArea for the given team.
+	//! Rebuild displayedGuardAreaView from areaCells[].guard for the given team.
 	void computeDisplayedGuardArea(int teamNumber);
-	//! Rebuild displayedClearAreaView from tiles[].clearArea for the given team.
+	//! Rebuild displayedClearAreaView from areaCells[].clear for the given team.
 	void computeDisplayedClearArea(int teamNumber);
-	//! Rebuild displayedFarmAreaView from tiles[].farmArea for the given team.
+	//! Rebuild displayedFarmAreaView from areaCells[].farm for the given team.
 	void computeDisplayedFarmArea(int teamNumber);
 
 	//! Sentinel for "no displayed team yet" — used before GameGUI::adjustLocalTeam has run.
@@ -418,21 +419,21 @@ public:
 	Sint32 getDisplayedTeam() const { return displayedTeam; }
 	
 	//! Return the const tile at a given position
-	inline const Tile &getTile(int x, int y) const
+	inline const Tile getTile(int x, int y) const
 	{
-		return tiles[coordToIndex(x, y)];
+		return getTile(size_t(coordToIndex(x, y)));
 	}
 
 	//! Return the terrain for a given coordinate
 	inline Uint16 getTerrain(int x, int y) const
 	{
-		return tiles[coordToIndex(x, y)].terrain;
+		return legacyTerrain[coordToIndex(x, y)];
 	}
 	
 	//! Return the terrain for a given position in tile array
 	inline Uint16 getTerrain(size_t pos) const
 	{
-		return tiles[pos].terrain;
+		return legacyTerrain[pos];
 	}
 
 	//! Canonical gameplay identity; never inferred from art in a simulation query.
@@ -498,18 +499,38 @@ public:
 
 	const Resource& getResource(int x, int y) const
 	{
-		return tiles[coordToIndex(x, y)].resource;
+		return resourceCells[coordToIndex(x, y)].resource;
 	}
 
 	const Resource& getResource(size_t pos) const
 	{
-		return tiles[pos].resource;
+		return resourceCells[pos].resource;
 	}
 
 	// Explicit cell writes preserve existing topology/refresh timing while keeping
 	// derived seed data coherent. Reads never invalidate preparation caches.
-	const std::vector<Tile> &getTiles() const { return tiles; }
-	const Tile &getTile(size_t index) const { return tiles[index]; }
+	size_t cellCount() const { return resourceCells.size(); }
+	std::span<const MapState::ResourceCell> resourceState() const { return resourceCells; }
+	std::span<const MapState::OccupancyCell> occupancyState() const { return occupancyCells; }
+	std::span<const MapState::AreaCell> areaState() const { return areaCells; }
+	std::span<const Uint16> legacyTerrainState() const { return legacyTerrain; }
+	const Tile getTile(size_t index) const
+	{
+		Tile tile;
+		tile.terrain = legacyTerrain[index];
+		tile.resource = resourceCells[index].resource;
+		tile.fertility = resourceCells[index].fertility;
+		tile.canResourcesGrow = resourceCells[index].mayGrow;
+		tile.building = occupancyCells[index].building;
+		tile.groundUnit = occupancyCells[index].groundUnit;
+		tile.airUnit = occupancyCells[index].airUnit;
+		tile.forbidden = areaCells[index].forbidden;
+		tile.guardArea = areaCells[index].guard;
+		tile.clearArea = areaCells[index].clear;
+		tile.farmArea = areaCells[index].farm;
+		tile.scriptAreas = scriptAreaCells[index];
+		return tile;
+	}
 	// Restores stored cell data (including its sprite), not canonical terrain
 	// identity. Terrain changes still use setCellTerrain/importLegacyTerrain.
 	void replaceTile(size_t index, const Tile &tile);
@@ -518,23 +539,23 @@ public:
 	void replaceResource(int x, int y, const Resource &resource) { replaceResource(coordToIndex(x, y), resource); }
 	void setResourceAmount(size_t index, Uint8 amount)
 	{
-		auto &stored = tiles[index].resource.amount;
+		auto &stored = resourceCells[index].resource.amount;
 		const bool changed = stored != amount;
 		stored = amount;
 		if (changed) ++snapshotResources;
 	}
 	void setFertility(int x, int y, Uint16 value)
 	{
-		auto &stored = tiles[coordToIndex(x, y)].fertility;
+		auto &stored = resourceCells[coordToIndex(x, y)].fertility;
 		const bool changed = stored != value;
 		stored = value;
 		if (changed) ++snapshotResources;
 	}
 	void setResourcesGrow(int x, int y, Uint8 value)
 	{
-		auto &stored = tiles[coordToIndex(x, y)].canResourcesGrow;
-		// The immutable resource component exposes this byte as a boolean.
-		const bool changed = (stored != 0) != (value != 0);
+		auto &stored = resourceCells[coordToIndex(x, y)].mayGrow;
+		// Preserve the stored legacy byte in shared live/snapshot records.
+		const bool changed = stored != value;
 		stored = value;
 		if (changed) ++snapshotResources;
 	}
@@ -544,7 +565,7 @@ public:
 
 	Uint32 getForbidden(int x, int y) const
 	{
-		return tiles[coordToIndex(x, y)].forbidden;
+		return areaCells[coordToIndex(x, y)].forbidden;
 	}
 	
 	Uint8 getExplored(int x, int y, int team) const
@@ -562,17 +583,17 @@ public:
 
 	void addClearArea(int x, int y, Uint32 teamNum)
 	{
-		setAreaMask(coordToIndex(x,y), &Tile::clearArea, tiles[coordToIndex(x,y)].clearArea | Team::teamNumberToMask(teamNum));
+		setAreaMask(coordToIndex(x,y), &Tile::clearArea, areaCells[coordToIndex(x,y)].clear | Team::teamNumberToMask(teamNum));
 	}
 	
 	void addGuardArea(int x, int y, Uint32 teamNum)
 	{
-		setAreaMask(coordToIndex(x,y), &Tile::guardArea, tiles[coordToIndex(x,y)].guardArea | Team::teamNumberToMask(teamNum));
+		setAreaMask(coordToIndex(x,y), &Tile::guardArea, areaCells[coordToIndex(x,y)].guard | Team::teamNumberToMask(teamNum));
 	}
 
 	void addFarmArea(int x, int y, Uint32 teamNum)
 	{
-		setAreaMask(coordToIndex(x,y), &Tile::farmArea, tiles[coordToIndex(x,y)].farmArea | Team::teamNumberToMask(teamNum));
+		setAreaMask(coordToIndex(x,y), &Tile::farmArea, areaCells[coordToIndex(x,y)].farm | Team::teamNumberToMask(teamNum));
 	}
 
 	
@@ -590,18 +611,18 @@ public:
 
 	bool isResource(int x, int y) const
 	{
-		return getTile(x, y).resource.type != NO_RES_TYPE;
+		return getResource(x, y).type != NO_RES_TYPE;
 	}
 
 	bool isResourceTakeable(int x, int y, int resourceType) const
 	{
-		const Resource &resource = getTile(x, y).resource;
+		const Resource &resource = getResource(x, y);
 		return (resource.type == resourceType && resource.amount > 0);
 	}
 
 	bool isResourceTakeable(int x, int y, bool resourceTypes[BASIC_COUNT]) const
 	{
-		const Resource &resource = getTile(x, y).resource;
+		const Resource &resource = getResource(x, y);
 		return (resource.type != NO_RES_TYPE
 			&& resource.amount > 0
 			&& resource.type < BASIC_COUNT
@@ -610,7 +631,7 @@ public:
 
 	bool isResource(int x, int y, int *resourceType) const
 	{
-		const Resource &resource = getTile(x, y).resource;
+		const Resource &resource = getResource(x, y);
 		if (resource.type == NO_RES_TYPE)
 			return false;
 		*resourceType = resource.type;
@@ -619,7 +640,7 @@ public:
 
 	bool canResourcesGrow(int x, int y) const
 	{
-		return getTile(x, y).canResourcesGrow && terrainPropertiesAt(x,y).resourcesGrow;
+		return resourceCells[coordToIndex(x, y)].mayGrow && terrainPropertiesAt(x,y).resourcesGrow;
 	}
 
 	//! Decrement resource at position (x,y). Return true on success, false otherwise.
@@ -755,23 +776,22 @@ public:
 	bool isImmobileUnit(int x, int y) const;
 	//! Returns the team number of the immobile unit on the given square, 255 for none
 	Uint8 getImmobileUnit(int x, int y) const;
-	std::span<const Uint8> immobileState() const { return {immobileUnits,tiles.size()}; }
 
 	//! Return GID
-	Uint16 getGroundUnit(int x, int y) const { return tiles[coordToIndex(x, y)].groundUnit; }
-	Uint16 getAirUnit(int x, int y) const { return tiles[coordToIndex(x, y)].airUnit; }
-	Uint16 getBuilding(int x, int y) const { return tiles[coordToIndex(x, y)].building; }
+	Uint16 getGroundUnit(int x, int y) const { return occupancyCells[coordToIndex(x, y)].groundUnit; }
+	Uint16 getAirUnit(int x, int y) const { return occupancyCells[coordToIndex(x, y)].airUnit; }
+	Uint16 getBuilding(int x, int y) const { return occupancyCells[coordToIndex(x, y)].building; }
 	
 	void setGroundUnit(int x, int y, Uint16 guid)
 	{
-		auto &stored = tiles[coordToIndex(x, y)].groundUnit;
+		auto &stored = occupancyCells[coordToIndex(x, y)].groundUnit;
 		const bool changed = stored != guid;
 		stored = guid;
 		if (changed) ++snapshotOccupancy;
 	}
 	void setAirUnit(int x, int y, Uint16 guid)
 	{
-		auto &stored = tiles[coordToIndex(x, y)].airUnit;
+		auto &stored = occupancyCells[coordToIndex(x, y)].airUnit;
 		const bool changed = stored != guid;
 		stored = guid;
 		if (changed) ++snapshotOccupancy;
@@ -1018,7 +1038,11 @@ public:
 	Uint32 growthCoverageGeneration[Team::MAX_COUNT]{};
 	bool growthCoverageValid = false;
 private:
-	std::vector<Tile> tiles;
+	std::vector<MapState::ResourceCell> resourceCells;
+	std::vector<MapState::OccupancyCell> occupancyCells;
+	std::vector<MapState::AreaCell> areaCells;
+	std::vector<Uint16> legacyTerrain;
+	std::vector<Uint16> scriptAreaCells;
 public:
 	Uint64 identityValue = 0;
 	Uint32 terrainSeedValue = 0;
@@ -1044,8 +1068,8 @@ public:
 	std::vector<Uint32> fogOfWarB;
 	Uint32* fogOfWar = nullptr; // if valid, either points to &fogOfWarA[0] or &fogOfWarB[0]
 	//! Render-only overlay caches for the locally-displayed team's areas (forbidden /
-	//! guard / clear / farm). These mirror the per-team bits in tiles[].{forbidden,guardArea,
-	//! clearArea,farmArea} but only for displayedTeam, so the renderer can query one tile cheaply.
+	//! guard / clear / farm). These mirror the per-team bits in areaCells[].{forbidden,guard,
+	//! clear,farm} but only for displayedTeam, so the renderer can query one tile cheaply.
 	//! They are NOT in checkSum() and must never be read from a sim path — doing so would
 	//! desync, because displayedTeam differs per client. true = bit set.
 	Utilities::BitArray displayedForbiddenView;
@@ -1128,7 +1152,7 @@ public:
 	/// square, and if so, what team number it is. In terms of the engine, these
 	/// are treated like forbidden areas
 private:
-	Uint8 *immobileUnits;
+
 public:
 	
 protected:

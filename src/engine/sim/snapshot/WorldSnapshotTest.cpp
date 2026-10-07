@@ -10,10 +10,57 @@
 #include <span>
 #include <atomic>
 #include <thread>
+#include <cstring>
 #include <ThreadSupport.h>
 
 TEST_SUITE("WorldSnapshot")
 {
+    TEST_CASE("unit snapshots share authoritative scalar state and remain frozen")
+    {
+        glob2test::HeadlessGlobals globals;
+        glob2test::HeadlessGame fixture{glob2test::GameOptions{.wDec=5, .hDec=5, .teams=1, .discovered=true, .clearImmobile=true, .loadDefaultRace=true}};
+        auto* unit=fixture.addUnit(WORKER,12,12,0); REQUIRE(unit);
+        unit->jobTimer=17; unit->terrainHealthRemainder=9;
+        auto captured=SimulationSnapshot::capture(fixture.game,SimulationSnapshot::captureCatalog(fixture.game));
+        REQUIRE(captured.entities->units.size()==1);
+        const auto& observed=captured.entities->units.front();
+        static_assert(std::is_base_of_v<UnitState,Unit>);
+        static_assert(std::is_base_of_v<UnitState,SimulationSnapshot::UnitView>);
+        CHECK(observed.typeNum==unit->typeNum); CHECK(observed.posX==unit->posX); CHECK(observed.posY==unit->posY);
+        CHECK(observed.action==unit->action); CHECK(observed.needToRecheckMedical==unit->needToRecheckMedical);
+        CHECK(observed.serviceResourcesReserved==unit->serviceResourcesReserved);
+        CHECK(observed.trigHP==unit->trigHP); CHECK(observed.trigHungryCarrying==unit->trigHungryCarrying);
+        CHECK(observed.delta==unit->delta); CHECK(observed.jobTimer==17); CHECK(observed.terrainHealthRemainder==9);
+        for(int i=0;i<NB_ABILITY;++i) {
+            CHECK(observed.performance[i]==unit->performance[i]); CHECK(observed.level[i]==unit->level[i]);
+            CHECK(observed.canLearn[i]==unit->canLearn[i]);
+        }
+        const int oldLevel=observed.level[WALK]; unit->level[WALK]=oldLevel+1; unit->jobTimer=31;
+        CHECK(observed.level[WALK]==oldLevel); CHECK(observed.jobTimer==17);
+    }
+    TEST_CASE("map snapshots bulk copy authoritative records without translation")
+    {
+        glob2test::HeadlessGlobals globals;
+        glob2test::HeadlessGame fixture{glob2test::GameOptions{.wDec=5, .hDec=5, .teams=1, .discovered=true, .clearImmobile=true, .loadDefaultRace=true}};
+        auto& map=fixture.game.map;
+        SimulationSnapshot::Store store;
+        for(Uint8 flag : {Uint8(0),Uint8(1),Uint8(2),Uint8(255)}) {
+            map.setResourcesGrow(5,5,flag);
+            ++fixture.game.stepCounter;
+            const auto observed=store.captureBoundary(fixture.game,SimulationSnapshot::All);
+            const auto index=map.coordToIndex(5,5);
+            CHECK(observed.resources->cells[index].mayGrow==flag);
+            CHECK(std::memcmp(observed.resources->cells.data(),map.resourceState().data(),map.resourceState().size_bytes())==0);
+            CHECK(std::memcmp(observed.occupancy->cells.data(),map.occupancyState().data(),map.occupancyState().size_bytes())==0);
+            CHECK(std::memcmp(observed.areas->cells.data(),map.areaState().data(),map.areaState().size_bytes())==0);
+            CHECK(std::memcmp(observed.terrain->legacy.data(),map.legacyTerrainState().data(),map.legacyTerrainState().size_bytes())==0);
+            for(std::size_t i=0;i<map.cellCount();++i) {
+                CHECK(observed.visibility->discovered[i]==map.mapDiscovered[i]);
+                CHECK(observed.visibility->visible[i]==(map.fogOfWar?map.fogOfWar[i]:0));
+            }
+        }
+    }
+
 	TEST_CASE("narrow component queries preserve combined tile values and projection defaults")
 	{
 		glob2test::HeadlessGlobals globals;
@@ -91,7 +138,12 @@ TEST_SUITE("WorldSnapshot")
 		checkCells(Component::Resources,&Handle::resources);
 		checkCells(Component::Occupancy,&Handle::occupancy);
 		checkCells(Component::Areas,&Handle::areas);
-		checkCells(Component::Visibility,&Handle::visibility);
+		for (std::size_t count : {1023u,1024u,1025u}) for (bool discovered : {false,true}) {
+            auto h=geometry(); h.requirements=bit(Component::Visibility);
+            auto layer=std::make_shared<Visibility>(); layer->discovered.resize(discovered?count:1024); layer->visible.resize(discovered?1024:count); h.visibility=layer;
+            if (count==1024) CHECK_NOTHROW(AIEngine::AIWorldView(std::move(h)));
+            else CHECK_THROWS_AS(AIEngine::AIWorldView(std::move(h)),std::logic_error);
+        }
 		for (std::size_t count : {1023u,1024u,1025u}) for (bool malformedIdentity : {false,true})
 		{
 			auto h=geometry(); h.requirements=bit(Component::Terrain);
@@ -387,6 +439,57 @@ TEST_SUITE("WorldSnapshot")
 			CHECK(held.resources->cells[index].resource.getUint32() == oldResource);
 		}
 		CHECK_FALSE(held.terrain); CHECK_FALSE(held.teams); CHECK_FALSE(held.visibility);
+	}
+	TEST_CASE("building snapshots copy shared scalar records and freeze selected stock")
+	{
+		glob2test::HeadlessGlobals globals;
+		glob2test::HeadlessGame fixture{glob2test::GameOptions{.wDec=5, .hDec=5, .teams=1, .discovered=true, .clearImmobile=true, .loadDefaultRace=true}};
+		auto* local = fixture.addBuilding("inn", 4, 4, 0, 0);
+		auto* shared = fixture.addBuilding("inn", 12, 12, 0, 0);
+		REQUIRE(local); REQUIRE(shared);
+		local->localResource[WOOD] = 17;
+		shared->localResource[WOOD] = 19;
+		// Exercise the actual runtime binding independently of the catalog flag.
+		shared->resources = fixture.game.teams[0]->teamResources;
+		fixture.game.teams[0]->teamResources[WOOD] = 23;
+		local->priority = -1; local->maxUnitWorking = 3;
+		shared->minWorkerLevelToFlag = 2;
+		shared->explorersRequireBombing = true;
+		local->locked[4] = true;
+		const auto catalog = SimulationSnapshot::captureCatalog(fixture.game);
+		auto captured = SimulationSnapshot::capture(fixture.game, catalog);
+		AIEngine::AIWorldView held(captured);
+		const auto* frozenLocal = held.building(Game::refOf(local));
+		const auto* frozenShared = held.building(Game::refOf(shared));
+		REQUIRE(frozenLocal); REQUIRE(frozenShared);
+		for (const auto& building : held.buildings) {
+			const auto* live = fixture.game.resolveBuilding(building.identity);
+			REQUIRE(live);
+			CHECK(static_cast<const BuildingStateRecord&>(building)
+				== static_cast<const BuildingStateRecord&>(*live));
+		}
+		CHECK_FALSE(frozenLocal->usesTeamResources);
+		CHECK(frozenShared->usesTeamResources);
+		CHECK(held.buildingResources(*frozenLocal).data() == frozenLocal->localResource);
+		CHECK(held.buildingResources(*frozenShared).data() == held.teams[0].resources.data());
+		CHECK(held.buildingResources(*frozenLocal)[WOOD] == 17);
+		CHECK(held.buildingResources(*frozenShared)[WOOD] == 23);
+		local->localResource[WOOD] = 31;
+		fixture.game.teams[0]->teamResources[WOOD] = 37;
+		local->priority = 1;
+		AIEngine::AIWorldView later(SimulationSnapshot::capture(fixture.game, catalog));
+		CHECK(later.buildingResources(*later.building(Game::refOf(local)))[WOOD] == 31);
+		CHECK(later.buildingResources(*later.building(Game::refOf(shared)))[WOOD] == 37);
+		CHECK(frozenLocal->priority == -1);
+		CHECK(held.buildingResources(*frozenLocal)[WOOD] == 17);
+		CHECK(held.buildingResources(*frozenShared)[WOOD] == 23);
+		// Entities-only projections retain local stock without capturing Teams.
+		auto partial = SimulationSnapshot::capture(fixture.game, catalog,
+			SimulationSnapshot::bit(SimulationSnapshot::Component::Entities));
+		CHECK_FALSE(partial.teams);
+		AIEngine::AIWorldView entitiesOnly(std::move(partial));
+		CHECK(entitiesOnly.buildingResources(*entitiesOnly.building(Game::refOf(local)))[WOOD] == 31);
+		CHECK(entitiesOnly.building(Game::refOf(shared))->usesTeamResources);
 	}
 	TEST_CASE("flat relationship ranges preserve every building list in order")
 	{

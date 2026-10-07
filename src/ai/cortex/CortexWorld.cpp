@@ -29,22 +29,26 @@ World::World(const AIEngine::AIWorldView& view, QueryScratch* scratch)
     unitStorage.reserve(view.units.size());
     for(const auto& unit:view.units)
     {
-        unitStorage.push_back({unit.type,unit.x,unit.y,unit.hp,unit.hungry,
-            unit.activity,unit.medical,unit.constructionLevel,unit.underAttack,unit.levels,unit.performance});
+        WorldUnit local{unit.typeNum,unit.posX,unit.posY,unit.hp,unit.hungry,
+            unit.activity,unit.medical,unit.constructionLevel,unit.underAttackTimer,{},{}};
+        std::copy_n(unit.level, NB_ABILITY, local.level.begin());
+        std::copy_n(unit.performance, NB_ABILITY, local.performance.begin());
+        unitStorage.push_back(local);
         teams[unit.team]->myUnits[::Unit::GIDtoID(unit.identity.gid)]=&unitStorage.back();
     }
     buildingStorage.reserve(view.buildings.size());
     for(const auto& building:view.buildings)
     {
         WorldBuilding local;
-        local.source=&building;local.owner=teams[building.team];local.type=buildingsTypes.get(building.type);
-        local.gid=building.identity.gid;local.typeNum=building.type;
-        local.posX=building.x;local.posY=building.y;local.buildingState=building.state;
-        local.constructionResultState=building.construction;local.hp=building.hp;
-        local.maxUnitInside=building.maxInside;local.maxUnitWorking=building.workers;
-        local.priority=building.priority;local.unitStayRange=building.range;local.minLevelToFlag=building.minimumLevel;
-        local.seenByMask=building.seenBy;local.underAttackTimer=building.underAttack;
-        local.resources=building.resources;local.ratio=building.ratios;
+        local.source=&building;local.owner=teams[building.team];local.type=buildingsTypes.get(building.typeNum);
+        local.gid=building.identity.gid;local.typeNum=building.typeNum;
+        local.posX=building.posX;local.posY=building.posY;local.buildingState=building.buildingState;
+        local.constructionResultState=building.constructionResultState;local.hp=building.hp;
+        local.maxUnitInside=building.maxUnitInside;local.maxUnitWorking=building.maxUnitWorking;
+        local.priority=building.priority;local.unitStayRange=building.unitStayRange;local.minLevelToFlag=building.minLevelToFlag;
+        local.seenByMask=building.seenByMask;local.underAttackTimer=building.underAttackTimer;
+        std::copy_n(view.buildingResources(building).data(),MAX_NB_RESOURCES,local.resources.begin());
+        std::copy_n(building.ratio,NB_UNIT_TYPE,local.ratio.begin());
         auto resolve=[&](UnitRef ref)->WorldUnit* {
             const auto* unit=view.unit(ref);
             return unit ? teams[unit->team]->myUnits[::Unit::GIDtoID(ref.gid)] : nullptr;
@@ -88,8 +92,8 @@ bool permittedQueuedOrder(const World& world, Order& order)
     if(world.source.rules.upgradesDisabled && order.getOrderType()==ORDER_CONSTRUCTION)
     {
         const auto* building=world.source.buildingAtSlot(static_cast<const OrderConstruction&>(order).gid);
-        return building && (world.source.catalog->at(building->type).site ||
-            (world.source.catalog->at(building->type).semantics.repairable && building->hp<building->maxHp));
+        return building && (world.source.catalog->at(building->typeNum).site ||
+            (world.source.catalog->at(building->typeNum).semantics.repairable && building->hp<building->maxHp));
     }
     if(world.source.rules.peaceful && order.getOrderType()==ORDER_MODIFY_SWARM)
         return static_cast<const OrderModifySwarm&>(order).ratio[WARRIOR]==0;
@@ -97,7 +101,7 @@ bool permittedQueuedOrder(const World& world, Order& order)
     {
         const auto* building=world.source.buildingAtSlot(static_cast<const OrderMoveFlag&>(order).gid);
         if(!building)return true;
-        const auto& kind=world.source.catalog->at(building->type);
+        const auto& kind=world.source.catalog->at(building->typeNum);
         return !kind.zonable[WARRIOR] || kind.zonable[WORKER] || kind.zonable[EXPLORER];
     }
     return true;

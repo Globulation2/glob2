@@ -21,7 +21,7 @@
 void Map::decResource(int x, int y)
 {
 	const size_t index = coordToIndex(x, y);
-	Resource &r = tiles[index].resource;
+	Resource &r = resourceCells[index].resource;
 	
 	if (r.type == NO_RES_TYPE || r.amount == 0)
 		return;
@@ -96,17 +96,17 @@ int Map::farmCropAt(int x, int y) const
 
 bool Map::isClearingTarget(size_t index, Uint32 teamMask, bool farmAreas) const
 {
-	const Tile &tile = tiles[index];
-	if (tile.resource.type == NO_RES_TYPE)
+
+	if (resourceCells[index].resource.type == NO_RES_TYPE)
 		return false;
-	if (!globalContainer->resourcesTypes.get(tile.resource.type)->clearable)
+	if (!globalContainer->resourcesTypes.get(resourceCells[index].resource.type)->clearable)
 		return false;
-	if (tile.clearArea & teamMask)
+	if (areaCells[index].clear & teamMask)
 		return true;
-	if (!farmAreas || (tile.farmArea & teamMask) == 0)
+	if (!farmAreas || (areaCells[index].farm & teamMask) == 0)
 		return false;
 	// Inside a farm, everything clearable except the crop the terrain grows.
-	return tile.resource.type != farmCropAt(static_cast<int>(index & wMask),
+	return resourceCells[index].resource.type != farmCropAt(static_cast<int>(index & wMask),
 	                                        static_cast<int>(index >> wDec));
 }
 
@@ -115,7 +115,7 @@ bool Map::canPaintFarmArea(int x, int y) const
 	if (!canResourcesGrow(x, y))
 		return false;
 
-	const Resource &resource = getTile(x, y).resource;
+	const Resource &resource = getResource(x, y);
 	// Wood shares wheat's terrain, so a forest inside a wheat farm is paintable:
 	// the farm clears it and grows into it. Stone, papyrus and the fruits are
 	// never farmed, and stone and the fruits cannot even be removed.
@@ -144,10 +144,10 @@ std::optional<size_t> Map::pickFarmHarvestTile(int x, int y, int resourceType, U
 	// and still holds the resource; an emptied tile drops out and can split the
 	// field in two. That is the whole of "no teleportation across empty fields".
 	auto inField = [&](size_t index) {
-		const Tile &tile = tiles[index];
-		return (tile.farmArea & teamMask) != 0
-			&& tile.resource.type == resourceType
-			&& tile.resource.amount > 0;
+
+		return (areaCells[index].farm & teamMask) != 0
+			&& resourceCells[index].resource.type == resourceType
+			&& resourceCells[index].resource.amount > 0;
 	};
 
 	// One stamp buffer per map, bumped instead of cleared. Wrapping the counter
@@ -198,7 +198,7 @@ std::optional<size_t> Map::pickFarmHarvestTile(int x, int y, int resourceType, U
 		// a worker harvesting it meanwhile gets nothing and harvests again until
 		// a tile is back above its seed (Unit::handleDisplacement). Seed tiles
 		// still carry the flood, so the field does not split as it is worked down.
-		const Sint32 amount = tiles[index].resource.amount;
+		const Sint32 amount = resourceCells[index].resource.amount;
 		const Sint32 distance = warpDistSquare(x, y, tx, ty);
 		// No regrowth makes every grain finite supply, including the last seed.
 		const int seedAmount=game && game->gameHeader.isResourceGrowthDisabled() ? 0 : FARM_SEED_AMOUNT;
@@ -253,7 +253,7 @@ bool Map::incResource(int x, int y, int resourceType, int variety)
 {
 	if (!terrainSupportsResource(terrainPropertiesAt(x,y),resourceType)) return false;
 	const size_t index = coordToIndex(x, y);
-	Resource &r = tiles[index].resource;
+	Resource &r = resourceCells[index].resource;
 	const ResourceType *fulltype;
 	if (r.type == NO_RES_TYPE)
 	{
@@ -317,7 +317,7 @@ void Map::removeUnallowedResources(int x, int y, int w, int h)
 	for (int dx=x; dx<x+w; dx++)
 		for (int dy=y; dy<y+h; dy++)
 		{
-			Resource& r=tiles[coordToIndex(dx, dy)].resource;
+			Resource& r=resourceCells[coordToIndex(dx, dy)].resource;
 			if (r.type!=NO_RES_TYPE && !terrainSupportsResource(terrainPropertiesAt(dx, dy), r.type))
 				replaceResource(dx, dy, Resource{});
 		}
@@ -332,7 +332,7 @@ void Map::setResource(int x, int y, int type, int l)
 		for (int dy=y-(l>>1); dy<y+(l>>1)+1; dy++)
 			if (isResourceAllowed(dx, dy, type))
 			{
-				Resource& rp=tiles[coordToIndex(dx, dy)].resource;
+				Resource& rp=resourceCells[coordToIndex(dx, dy)].resource;
 				const bool changedType = rp.type != type;
 				rp.type=type;
 				const ResourceType *rt=globalContainer->resourcesTypes.get(type);
@@ -352,17 +352,17 @@ bool Map::isResourceAllowed(int x, int y, int type)
 
 bool Map::isPointSet(int n, int x, int y) const
 {
-	return tiles[coordToIndex(x, y)].scriptAreas & 1<<n;
+	return scriptAreaCells[coordToIndex(x, y)] & 1<<n;
 }
 
 void Map::setPoint(int n, int x, int y)
 {
-	tiles[coordToIndex(x, y)].scriptAreas |= 1<<n;
+	scriptAreaCells[coordToIndex(x, y)] |= 1<<n;
 }
 
 void Map::unsetPoint(int n, int x, int y)
 {
-	tiles[coordToIndex(x, y)].scriptAreas ^= tiles[coordToIndex(x, y)].scriptAreas & (1<<n);
+	scriptAreaCells[coordToIndex(x, y)] ^= scriptAreaCells[coordToIndex(x, y)] & (1<<n);
 }
 
 std::string Map::getAreaName(int n) const

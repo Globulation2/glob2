@@ -89,7 +89,6 @@ Map::Map() : gradientRuntime(std::make_unique<GradientRuntime>())
 	hSector=0;
 	sizeSector=0;
 	
-	immobileUnits=NULL;
 
 	areaNames.resize(9);
 	
@@ -289,7 +288,7 @@ void Map::importTerrainDefinitions(std::string_view json)
 	{
 		const auto &p = terrainRegistry().compatibility(terrainIds[i]);
 		if (!p.legacyCorners)
-			tiles[i].terrain =
+			legacyTerrain[i] =
 				p.firstFrame + terrainVisualHash(int(i & wMask), int(i >> wDec)) % p.variants;
 	}
 	{
@@ -349,16 +348,16 @@ void Map::importLegacyTerrain()
 {
 	// This adapter may also be used by imports on an existing map. Validate
 	// first, then pass every semantic change through the normal invalidation.
-	for (const auto& tile : tiles)
-		if (tile.terrain >= 272) throw std::invalid_argument("Invalid legacy terrain sprite");
-	if (terrainIds.size()!=tiles.size())
+	for (const auto sprite : legacyTerrain)
+		if (sprite >= 272) throw std::invalid_argument("Invalid legacy terrain sprite");
+	if (terrainIds.size()!=cellCount())
 	{
-		terrainIds.assign(tiles.size(),GRASS);
+		terrainIds.assign(cellCount(),GRASS);
 		rebuildTerrainCounts();
 	}
 	auto batch = editTerrain();
-	for (size_t i = 0; i < tiles.size(); ++i)
-		changeTerrainIdentity(i, legacyTerrainType(tiles[i].terrain));
+	for (size_t i = 0; i < cellCount(); ++i)
+		changeTerrainIdentity(i, legacyTerrainType(legacyTerrain[i]));
 }
 
 void Map::changeTerrainIdentity(size_t index, TerrainType type)
@@ -437,7 +436,7 @@ void Map::setTerrain(int x, int y, Uint16 sprite)
 	if (sprite >= 272) throw std::invalid_argument("Legacy terrain setter requires a legacy frame");
 	const auto index = coordToIndex(x,y);
 	changeTerrainIdentity(index, legacyTerrainType(sprite));
-	tiles[index].terrain = sprite;
+	legacyTerrain[index] = sprite;
 	++snapshotTerrain;
 }
 
@@ -447,7 +446,7 @@ void Map::setCellTerrain(size_t index, TerrainType type)
 	if (index >= size) throw std::out_of_range("Terrain cell index");
 	changeTerrainIdentity(index, type);
 	const auto &p = terrainRegistry().compatibility(type);
-	tiles[index].terrain =
+	legacyTerrain[index] =
 		p.firstFrame + terrainVisualHash(int(index & wMask), int(index >> wDec)) % p.variants;
 }
 
@@ -574,8 +573,7 @@ void Map::clear()
 	listedAddr = NULL;
 	delete[] aStarPoints;
 	aStarPoints = NULL;
-	delete[] immobileUnits;
-	immobileUnits = NULL;
+
 	arraysBuilt = false;
 
 	w=h=0;
@@ -618,7 +616,12 @@ void Map::setSize(int wDec, int hDec, TerrainType terrainType)
 	displayedClearAreaView.resize(size, false);
 	displayedFarmAreaView.resize(size, false);
 	
-	tiles.assign(size, Tile());
+	resourceCells.assign(size, {});
+	for (auto &cell : resourceCells) cell.mayGrow = 1;
+	occupancyCells.assign(size, {});
+	areaCells.assign(size, {});
+	legacyTerrain.assign(size, 0);
+	scriptAreaCells.assign(size, 0);
 	terrainIds.assign(size, GRASS);
 	terrainPropertyIndices.assign(size, terrainRegistry().propertyIndex(GRASS));
 	terrainPropertyTable = terrainRegistry().propertyProfiles().data();
@@ -650,8 +653,7 @@ void Map::setSize(int wDec, int hDec, TerrainType terrainType)
 	aStarPoints=new AStarAlgorithmPoint[w*h];
 
 
-	immobileUnits = new Uint8[w*h];
-	memset(immobileUnits, IMMOBILE_UNIT_NONE, w*h);
+
 
 	arraysBuilt=true;
 }

@@ -2,10 +2,12 @@
 #pragma once
 
 #include "BuildingCatalog.h"
+#include "BuildingState.h"
 #include "BuildingType.h"
 #include "Ressource.h"
 #include "TerrainRegistry.h"
 #include "TeamStat.h"
+#include "UnitState.h"
 #include "sim/EntityRef.h"
 #include <array>
 #include <memory>
@@ -20,39 +22,21 @@ namespace SimulationSnapshot
 // Observation records contain values only. They deliberately do not inherit
 // simulation objects: a const Game would still expose mutable pointees/caches.
 struct UnitRange { Uint32 offset = 0, count = 0; };
-struct BuildingView
+struct BuildingView : BuildingStateRecord
 {
 	BuildingRef identity;
-	int team = 0, type = 0, x = 0, y = 0;
-	int state = 0, construction = 0, originType = -1;
-	int hp = 0, maxHp = 0, workers = 0, futureWorkers = 0, desiredWorkers = 0;
-	int shortType = 0, productionTimeout = 0, receiveMask = 0, sendMask = 0, bullets = 0;
-	bool requireBombing = false;
+	int team = 0;
+	int maxHp = 0;
+	bool usesTeamResources = false;
 	bool upgradeAvailable = false, hardSpaceUpgrade = false, hardSpaceRepair = false;
-	std::array<bool, 6> locked{};
-	std::array<bool, BASIC_COUNT> clearingResources{};
-	int maxInside = 0, priority = 0, range = 0, minimumLevel = 0, minimumWorkerLevel = 0;
-	Uint32 seenBy = 0;
-	Uint8 underAttack = 0;
-	std::array<Sint32, MAX_NB_RESOURCES> resources{}, wishedResources{};
-	std::array<Sint32, NB_UNIT_TYPE> ratios{};
 	UnitRange working, inside;
 };
 
-struct UnitView
+struct UnitView : UnitState
 {
 	UnitRef identity;
-	int team = 0, type = 0, x = 0, y = 0;
-	int medical = 0, activity = 0, displacement = 0;
-	int hp = 0, hungry = 0, hungryTrigger = 0, constructionLevel = 0, hungriness = 0;
-	bool dead = false;
-	Uint8 underAttack = 0;
+	int team = 0;
 	BuildingRef attached, target;
-	int dx = 0, dy = 0, insideTimeout = 0, experience = 0, experienceLevel = 0, fruitCount = 0;
-	int movement = 0, action = 0, carriedResource = 0, speed = 0, direction = 0;
-	int fruitMask = 0, destinationPurpose = 0, targetX = 0, targetY = 0;
-	std::array<Sint32, NB_ABILITY> performance{}, levels{};
-	std::array<bool, NB_ABILITY> canLearn{};
 };
 
 struct TeamView

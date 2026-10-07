@@ -15,7 +15,9 @@ void Map::tile(int rx, int ry)
 	assert((1 << addWDec) == rx && (1 << addHDec) == ry);
 
 	const int oldW = w, oldH = h, oldWDec = wDec;
-	const std::vector<Tile> oldTiles = tiles;
+	const auto oldResources = resourceCells;
+	const auto oldLegacyTerrain = legacyTerrain;
+	const auto oldScriptAreas = scriptAreaCells;
 	const auto oldTerrain = terrainIds;
 	const std::vector<Uint32> oldDiscovered = mapDiscovered;
 	const std::vector<Uint8> oldUndermap(undermap, undermap + size);
@@ -32,15 +34,17 @@ void Map::tile(int rx, int ry)
 			const size_t dst = coordToIndex(x, y);
 			// units and buildings are placed again per colony, and the
 			// per-team zones belong to teams that are rebuilt
-			tiles[dst] = oldTiles[src];
+			resourceCells[dst] = oldResources[src];
+			legacyTerrain[dst] = oldLegacyTerrain[src];
+			scriptAreaCells[dst] = oldScriptAreas[src];
 			terrainIds[dst] = oldTerrain[src];
-			tiles[dst].building = NOGBID;
-			tiles[dst].groundUnit = NOGUID;
-			tiles[dst].airUnit = NOGUID;
-			tiles[dst].forbidden = 0;
-			tiles[dst].guardArea = 0;
-			tiles[dst].clearArea = 0;
-			tiles[dst].farmArea = 0;
+			occupancyCells[dst].building = NOGBID;
+			occupancyCells[dst].groundUnit = NOGUID;
+			occupancyCells[dst].airUnit = NOGUID;
+			areaCells[dst].forbidden = 0;
+			areaCells[dst].guard = 0;
+			areaCells[dst].clear = 0;
+			areaCells[dst].farm = 0;
 			mapDiscovered[dst] = oldDiscovered[src];
 			undermap[dst] = oldUndermap[src];
 		}

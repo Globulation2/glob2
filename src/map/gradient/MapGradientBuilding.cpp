@@ -54,11 +54,11 @@ void Map::updateGlobalGradient(Building *building, int swimClass, BuildingRoute 
 		initializeGradientCells([&](size_t begin, size_t end) {
 		for (size_t i=begin; i<end; ++i)
 		{
-			const Tile& tile=tiles[i];
-			if (tile.building!=NOGBID)
-				gradient[i]=tile.building==bgid ? GRADIENT_AT_GOAL : GRADIENT_FORBIDDEN;
-			else if ((tile.forbidden&teamMask) || tile.resource.type!=NO_RES_TYPE ||
-			         immobileUnits[i]!=IMMOBILE_UNIT_NONE || (!terrainPropertiesAt(i).walkable && !(canSwim && terrainPropertiesAt(i).swimmable)))
+
+			if (occupancyCells[i].building!=NOGBID)
+				gradient[i]=occupancyCells[i].building==bgid ? GRADIENT_AT_GOAL : GRADIENT_FORBIDDEN;
+			else if ((areaCells[i].forbidden&teamMask) || resourceCells[i].resource.type!=NO_RES_TYPE ||
+			         occupancyCells[i].immobileUnit!=IMMOBILE_UNIT_NONE || (!terrainPropertiesAt(i).walkable && !(canSwim && terrainPropertiesAt(i).swimmable)))
 				gradient[i]=GRADIENT_FORBIDDEN;
 			else
 				gradient[i]=GRADIENT_UNREACHABLE;
@@ -102,7 +102,7 @@ void Map::updateGlobalGradient(Building *building, int swimClass, BuildingRoute 
 					if (yi2+(xi*xi)<=r2)
 					{
 						size_t addr = coordToIndex(posX+w+xi, posY+h+yi);
-						if(tiles[addr].resource.type < BASIC_COUNT && building->clearingResources[tiles[addr].resource.type])
+						if(resourceCells[addr].resource.type < BASIC_COUNT && building->clearingResources[resourceCells[addr].resource.type])
 						{
 							if(gradient[addr] == GRADIENT_UNREACHABLE)
 								gradient[addr] = GRADIENT_AT_GOAL;
@@ -116,14 +116,14 @@ void Map::updateGlobalGradient(Building *building, int swimClass, BuildingRoute 
 		initializeGradientCells([&](size_t begin, size_t end) {
 			for (size_t wyx=begin; wyx<end; ++wyx)
 			{
-				const Tile& c=tiles[wyx];
-				if (c.building==NOGBID)
+
+				if (occupancyCells[wyx].building==NOGBID)
 				{
-					if (c.forbidden&teamMask)
+					if (areaCells[wyx].forbidden&teamMask)
 						gradient[wyx] = GRADIENT_FORBIDDEN;
-					else if (c.resource.type!=NO_RES_TYPE && !(isClearingFlag && gradient[wyx]==GRADIENT_AT_GOAL))
+					else if (resourceCells[wyx].resource.type!=NO_RES_TYPE && !(isClearingFlag && gradient[wyx]==GRADIENT_AT_GOAL))
 						gradient[wyx] = GRADIENT_FORBIDDEN;
-					else if(immobileUnits[wyx] != IMMOBILE_UNIT_NONE)
+					else if(occupancyCells[wyx].immobileUnit != IMMOBILE_UNIT_NONE)
 						gradient[wyx] = GRADIENT_FORBIDDEN;
 					//Clearing flags don't consider water an obstacle so long as that piece of
 					//water is under the flag, like algae
@@ -134,7 +134,7 @@ void Map::updateGlobalGradient(Building *building, int swimClass, BuildingRoute 
 				{
 					// Attraction never uses its own occupied footprint as a goal.
 					// Combat may route through enemy buildings, clearing may not.
-					if(!isWarFlag || (1<<Building::GIDtoTeam(c.building)) & (building->owner->allies))
+					if(!isWarFlag || (1<<Building::GIDtoTeam(occupancyCells[wyx].building)) & (building->owner->allies))
 						gradient[wyx] = GRADIENT_FORBIDDEN;
 					else if(gradient[wyx]!=GRADIENT_AT_GOAL)
 						gradient[wyx] = GRADIENT_UNREACHABLE;
@@ -206,7 +206,7 @@ void Map::updateRoundTripGradient(Building *building, int resourceType, int swim
 	Uint16 bestSeed=GRADIENT_UNREACHABLE;
 	for (size_t i=0; i<size; i++)
 	{
-		const bool marketGoal=withMarkets && tiles[i].building!=NOGBID && toResource[i]>GRADIENT_UNREACHABLE;
+		const bool marketGoal=withMarkets && occupancyCells[i].building!=NOGBID && toResource[i]>GRADIENT_UNREACHABLE;
 		if (toResource[i]!=GRADIENT_AT_GOAL && !marketGoal)
 		{
 			gradient[i]=toResource[i]==GRADIENT_FORBIDDEN ? GRADIENT_FORBIDDEN : GRADIENT_UNREACHABLE;
@@ -222,7 +222,7 @@ void Map::updateRoundTripGradient(Building *building, int resourceType, int swim
 				best=toBuilding[n];
 		}
 		if (marketGoal && best>GRADIENT_UNREACHABLE)
-			best=std::max<int>(GRADIENT_UNREACHABLE+1, best-supplierPenalties[Building::GIDtoID(tiles[i].building)]);
+			best=std::max<int>(GRADIENT_UNREACHABLE+1, best-supplierPenalties[Building::GIDtoID(occupancyCells[i].building)]);
 		gradient[i]=best;
 		if (best>bestSeed)
 			bestSeed=best;

@@ -54,7 +54,7 @@ TileView Handle::tileAt(std::size_t index) const
 	result.canPaintFarm = canPaintFarmAt(index);
 	if (occupancy) { const auto& c = occupancy->cells.at(index); result.building = c.building; result.groundUnit = c.groundUnit; result.airUnit = c.airUnit; result.immobileUnit = c.immobileUnit; }
 	if (areas) { const auto& c = areas->cells.at(index); result.forbidden = c.forbidden; result.guard = c.guard; result.clear = c.clear; result.farm = c.farm; }
-	if (visibility) { const auto& c = visibility->cells.at(index); result.discovered = c.discovered; result.visible = c.visible; }
+	if (visibility) { result.discovered = visibility->discovered.at(index); result.visible = visibility->visible.at(index); }
 	return result;
 }
 } // namespace SimulationSnapshot

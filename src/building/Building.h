@@ -9,6 +9,7 @@
 #include <vector>
 
 #include "BuildingUtils.h"
+#include "BuildingState.h"
 #include "MapInternal.h"
 #include "Ressource.h"
 #include "ResourcePacket.h"
@@ -58,8 +59,9 @@ enum class BuildingRoute : unsigned char { Footprint, Clearing, Combat, Automati
 inline constexpr int BUILDING_ROUTE_COUNT = 3;
 inline constexpr int BUILDING_GRADIENT_COUNT = BUILDING_ROUTE_COUNT * SWIM_CLASS_COUNT;
 inline constexpr int BUILDING_ACCESS_COUNT = BUILDING_ROUTE_COUNT * SWIM_VARIANT_COUNT;
+static_assert(BUILDING_ACCESS_COUNT == std::extent_v<decltype(BuildingStateRecord::locked)>);
 
-class Building : public BuildingUtils
+class Building : public BuildingUtils, public BuildingStateRecord
 {
 	friend struct TeamStatsMeasurementFixture;
 
@@ -101,26 +103,6 @@ class Building : public BuildingUtils
 
 	/// Original square footprint, retained by legacy geometry test helpers.
 	static constexpr int TURRET_SIZE = 2;
-
-	///This is the buildings basic state of existence.
-	enum BuildingState
-	{
-		DEAD=0,
-		ALIVE=1,
-		WAITING_FOR_DESTRUCTION=2,
-		WAITING_FOR_CONSTRUCTION=3,
-		WAITING_FOR_CONSTRUCTION_ROOM=4
-	};
-
-	///If the building is undergoing any construction,
-	///this state designates what
-	enum ConstructionResultState
-	{
-		NO_CONSTRUCTION=0,
-		NEW_BUILDING=1,
-		UPGRADE=2,
-		REPAIR=3
-	};
 
 	///The state of a unit in certain lists.
 	enum InListState
@@ -309,7 +291,6 @@ class Building : public BuildingUtils
 	bool canTransferResourcesTo(const BuildingType* destination) const;
 	void transferResourcesPointer(bool wasShared);
 	BuildingResourceCost constructionBudget{}, constructionReserved{};
-	Sint32 constructionOriginTypeNum = -1;
 	std::array<Sint32,NB_UNIT_TYPE> constructionOriginRatios{};
 	void transitionProductionPreferences(const BuildingType* previous, const BuildingType* origin = nullptr, bool restoring = false);
 	Sint32 repairInitialDeficit = 0, repairHealthGranted = 0;
@@ -579,82 +560,15 @@ public:
 
 	int verbose;
 
-	// type
-	Sint32 typeNum; // number in BuildingTypes
-	///This is the typenum from IntBuildingType
-	int shortTypeNum;
+	// Pointer-free authoritative values are inherited from BuildingStateRecord.
 	BuildingType *type;
-
-	// construction state
-	BuildingState buildingState;
-	ConstructionResultState constructionResultState;
-
-	// units
-	Sint32 maxUnitWorking;  // (Uint16)
-	Sint32 maxUnitWorkingPreferred;
-	///This is a constantly updated number that indicates the buildings desired number of units,
-	///say for example that the building is full, it needs no units, so this is 0
-	Sint32 desiredMaxUnitWorking;
-	///This is the list of units actively working on the building.
-	std::list<Unit *> unitsWorking;
-	Sint32 maxUnitInside;
-	///This counts the number of units that failed the requirements for the building, but where free
-	std::list<Unit *> unitsInside;
-	///This stores the priority of the building, 0 is normal, -1 is low, +1 is high.
-	///Authoritative simulation value — written only by OrderChangePriority via
-	///Game::executeChangePriority. The per-viewer pending value used by the
-	///right-panel radio while the order is in flight lives in
-	///BuildingGuiState::pendingPriority, not on this struct.
-	Sint32 priority;
-
-	// identity
-	Uint32 scriptIdentity = 0; // Stable scripting identity; excluded from legacy simulation checksums.
-	Uint16 gid; // for reservation see GIDtoID() and GIDtoTeam().
 	Team *owner;
-
-	// position
-	Sint32 posX, posY; // (Uint16)
-
-	// Counts down 240 frames from when a unit was attacked
-	Uint8 underAttackTimer;
-
-
-	// Flag useful :
-	Sint32 unitStayRange; // (Uint8)
-	bool clearingResources[BASIC_COUNT]; // true if the resource has to be cleared.
-	Sint32 minLevelToFlag;
-	Sint32 minWorkerLevelToFlag = 0;
-	bool explorersRequireBombing = false;
-
-	// Building specific :
-	/// Amount stocked, or used for building building. Local resources stores the resources this particular building contains
-	/// in the event that the building type designates using global resources instead of local resources, the resources pointer
-	/// will be changed to point to the global resources Team::teamResources instead of localResources.
+	/// Runtime alias selecting localResource or owner->teamResources. Snapshot
+	/// records retain the local stock and a selector for the frozen team stock.
 	Sint32* resources;
-	Sint32 wishedResources[MAX_NB_RESOURCES];
-
-	// quality parameters
-	Sint32 hp; // (Uint16)
-
-	// swarm building parameters
-	Sint32 productionTimeout;
-	bool siteCompletionPending = false;
-	Sint32 productionUnit = -1; // committed recipe; -1 is idle/late-choice
-	/// Authoritative per-unit-type swarm ratios — written only by
-	/// OrderModifySwarm via Game::executeModifySwarm. The per-viewer pending
-	/// value used while a slider drag is in flight lives in
-	/// BuildingGuiState::pendingRatio, not on this struct.
-	Sint32 ratio[NB_UNIT_TYPE];
-
-	// exchange building parameters
-	Uint32 receiveResourceMask;
-	Uint32 sendResourceMask;
-
-	// turrets building parameters
-	Sint32 bullets;
-
-	// A true bit meant that the corresponding team can see this building, under FOW or not.
-	Uint32 seenByMask;
+	/// Units actively working for and occupying the building, respectively.
+	std::list<Unit *> unitsWorking;
+	std::list<Unit *> unitsInside;
 
 	//! Full-map pathfinding gradient toward this building (a flag's zone, or a clearing
 	//! flag's resources), one per swim class, NULL until a unit of that class asks for it.
@@ -692,7 +606,6 @@ public:
 	{ return int(route == BuildingRoute::Automatic ? resolveRoute(route) : route) * SWIM_VARIANT_COUNT + (swimClass > 0); }
 	int workRoleTarget(int role) const; // -1 delivery, otherwise attracted unit class
 	bool subscribeWorkStep();
-	bool locked[BUILDING_ACCESS_COUNT]; //True if the building is not reachable.
 
 	// Per-swim-variant tri-state cache of whether a clearing flag has any
 	// resource in range (set when its gradient is built). Stored value at each
@@ -738,7 +651,6 @@ private:
 	std::list<Order *> orderQueue;
 
 	// units: scratch counters for subscription / priority diff
-	Sint32 maxUnitWorkingFuture;
 	Sint32 maxUnitWorkingPrevious;
 	///The subscribeToBringResourcesStep and subscribeForFlagingStep operate every 32 ticks
 	Sint32 subscriptionWorkingTimer;
@@ -758,8 +670,6 @@ private:
 	/// that it is not.
 	Uint8 callListState;
 
-	// Building specific (private):
-	Sint32 localResource[MAX_NB_RESOURCES];
 
 	// swarm building parameters (private):
 	Sint32 totalRatio;

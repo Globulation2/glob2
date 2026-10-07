@@ -84,24 +84,24 @@ std::shared_ptr<Order> order(const AIEngine::AIWorldView &world, int team, const
 	// Fail at the script API boundary instead of silently consuming a callback
 	// on an unavailable upgrade. The same command still repairs damaged buildings.
 	if (type == "construction" && world.rules.upgradesDisabled
-		&& !world.catalog->at(b->type).site && b->hp >= b->maxHp)
+		&& !world.catalog->at(b->typeNum).site && b->hp >= b->maxHp)
 		throw std::runtime_error("Building upgrades are disabled by game rules");
 	if (type == "construction")
 		{
-        const auto& kind = world.catalog->at(b->type);
-        const bool repair = kind.site ? b->construction == Building::REPAIR : b->hp < b->maxHp;
-        const int target = kind.site ? b->type : repair ? kind.previous : kind.next;
+        const auto& kind = world.catalog->at(b->typeNum);
+        const bool repair = kind.site ? b->constructionResultState == Building::REPAIR : b->hp < b->maxHp;
+        const int target = kind.site ? b->typeNum : repair ? kind.previous : kind.next;
         const auto& placement = target >= 0 ? world.catalog->at(target) : kind;
-        const int origin = kind.site ? b->originType : b->type;
+        const int origin = kind.site ? b->constructionOriginTypeNum : b->typeNum;
         const auto& completed = repair && origin >= 0 ? world.catalog->at(origin)
             : placement.site ? world.catalog->at(placement.next) : placement;
         return std::make_shared<OrderConstruction>(gid,
             std::clamp(number("workers", 0, MAX_BUILDING_WORKER_REQUEST), 0, placement.semantics.assignmentLimit),
             std::clamp(number("futureWorkers", 0, MAX_BUILDING_WORKER_REQUEST), 0, completed.semantics.assignmentLimit));
     }
-	if (type == "cancelConstruction" && world.catalog->at(b->type).site &&
-		(b->state != Building::ALIVE || (b->construction != Building::UPGRADE &&
-												 b->construction != Building::REPAIR)))
+	if (type == "cancelConstruction" && world.catalog->at(b->typeNum).site &&
+		(b->buildingState != Building::ALIVE || (b->constructionResultState != Building::UPGRADE &&
+												 b->constructionResultState != Building::REPAIR)))
 		throw std::runtime_error("Cannot cancel initial building construction; use delete");
 	if (type == "cancelConstruction")
 		return std::make_shared<OrderCancelConstruction>(
@@ -110,7 +110,7 @@ std::shared_ptr<Order> order(const AIEngine::AIWorldView &world, int team, const
 		return std::make_shared<OrderChangePriority>(gid, number("priority", -1, 1));
 	if (type == "production")
 	{
-		if (!world.catalog->at(b->type).semantics.production.enabledUnitMask)
+		if (!world.catalog->at(b->typeNum).semantics.production.enabledUnitMask)
 			throw std::runtime_error("Building does not produce units");
 		const auto &a = d.get("ratios");
 		if (a.kind != Value::Array || a.items.size() != NB_UNIT_TYPE)
@@ -119,47 +119,47 @@ std::shared_ptr<Order> order(const AIEngine::AIWorldView &world, int team, const
 		for (int i = 0; i < NB_UNIT_TYPE; ++i)
 			ratios[i] = Value::object().set("value", a.items[i]).integer("value", 0, 16);
 		for (int i = 0; i < NB_UNIT_TYPE; ++i)
-			if (ratios[i] && !world.catalog->at(b->type).semantics.production.recipes[i].enabled)
+			if (ratios[i] && !world.catalog->at(b->typeNum).semantics.production.recipes[i].enabled)
 				throw std::runtime_error("Requested unit recipe is unavailable");
 		return std::make_shared<OrderModifySwarm>(gid, ratios);
 	}
 	if (type == "exchange")
 	{
-		if (!world.catalog->at(b->type).semantics.market.interTeamFruitExchange)
+		if (!world.catalog->at(b->typeNum).semantics.market.interTeamFruitExchange)
 			throw std::runtime_error("Building does not support resource exchange");
 		return std::make_shared<OrderModifyExchange>(
 			gid, number("receiveMask", 0, (1 << MAX_NB_RESOURCES) - 1),
 			number("sendMask", 0, (1 << MAX_NB_RESOURCES) - 1));
 	}
-	if (!(world.catalog->at(b->type).zonable[WORKER] || world.catalog->at(b->type).zonable[EXPLORER] || world.catalog->at(b->type).zonable[WARRIOR]))
+	if (!(world.catalog->at(b->typeNum).zonable[WORKER] || world.catalog->at(b->typeNum).zonable[EXPLORER] || world.catalog->at(b->typeNum).zonable[WARRIOR]))
 		throw std::runtime_error("Flag order requires a flag");
 	if (type == "range")
-		return std::make_shared<OrderModifyFlag>(gid, number("range", 0, world.catalog->at(b->type).maximumRange));
+		return std::make_shared<OrderModifyFlag>(gid, number("range", 0, world.catalog->at(b->typeNum).maximumRange));
 	if (type == "minimumLevel")
 	{
-		if (!world.catalog->at(b->type).zonable[WARRIOR])
+		if (!world.catalog->at(b->typeNum).zonable[WARRIOR])
 			throw std::runtime_error("Minimum combat level requires warrior attraction");
 		return std::make_shared<OrderModifyMinLevelToFlag>(gid, number("level", 0, 3));
 	}
 	if (type == "workerMinimumLevel")
 	{
-		if (!world.catalog->at(b->type).zonable[WORKER])throw std::runtime_error("Minimum construction level requires worker attraction");
+		if (!world.catalog->at(b->typeNum).zonable[WORKER])throw std::runtime_error("Minimum construction level requires worker attraction");
 		return std::make_shared<OrderModifyMinLevelToFlag>(gid, number("workerMinimumLevel",0,3), 2);
 	}
 	if (type == "requireBombing")
 	{
-		if (!world.catalog->at(b->type).zonable[EXPLORER] || d.get("requireBombing").kind != Value::Boolean)
+		if (!world.catalog->at(b->typeNum).zonable[EXPLORER] || d.get("requireBombing").kind != Value::Boolean)
 			throw std::runtime_error("Bombing requirement needs explorer attraction and a boolean");
 		return std::make_shared<OrderModifyMinLevelToFlag>(gid, d.get("requireBombing").number != 0, 1);
 	}
-	if (type == "moveFlag" && !world.catalog->at(b->type).semantics.relocatable)
+	if (type == "moveFlag" && !world.catalog->at(b->typeNum).semantics.relocatable)
 		throw std::runtime_error("Building cannot relocate");
 	if (type == "moveFlag")
 		return std::make_shared<OrderMoveFlag>(gid, number("x", 0, world.width - 1),
 											   number("y", 0, world.height - 1), false);
 	if (type == "clearingResources")
 	{
-		if (!world.catalog->at(b->type).zonable[WORKER])
+		if (!world.catalog->at(b->typeNum).zonable[WORKER])
 			throw std::runtime_error("Building does not attract resource-clearing workers");
 		const auto &a = d.get("resources");
 		if (a.kind != Value::Array || a.items.size() != BASIC_COUNT)

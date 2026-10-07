@@ -53,7 +53,7 @@ void Map::pathfindRandom(Unit *unit)
 {
 	int x=unit->posX;
 	int y=unit->posY;
-	if ((tiles[x+(y<<wDec)].forbidden)&unit->owner->me)
+	if ((areaCells[x+(y<<wDec)].forbidden)&unit->owner->me)
 	{
 		if (pathfindForbidden(NULL, unit->owner->teamNumber, unit->swimClass(), x, y, &unit->dx, &unit->dy))
 		{
@@ -73,7 +73,7 @@ void Map::pathfindRandom(Unit *unit)
 		// the ordinary step when none is free rather than standing still.
 		const bool keepInGuardArea = unit->typeNum == WARRIOR
 			&& unit->owner->game->gameHeader.hasExperiment(ExperimentId::GuardAreaBalancing)
-			&& (tiles[coordToIndex(x, y)].guardArea & unit->owner->me);
+			&& (areaCells[coordToIndex(x, y)].guard & unit->owner->me);
 		bool da[8];
 		int count=0;
 		for (int pass = keepInGuardArea ? 0 : 1; pass < 2 && count == 0; pass++)
@@ -82,7 +82,7 @@ void Map::pathfindRandom(Unit *unit)
 			{
 				int tx=(x+tabClose[di][0])&wMask;
 				int ty=(y+tabClose[di][1])&hMask;
-				if (pass == 0 && !(tiles[coordToIndex(tx, ty)].guardArea & unit->owner->me))
+				if (pass == 0 && !(areaCells[coordToIndex(tx, ty)].guard & unit->owner->me))
 					da[di]=false;
 				else if (isFreeForGroundUnit(tx, ty, (unit->performance[SWIM]>0), unit->owner->me))
 				{

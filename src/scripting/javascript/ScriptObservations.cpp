@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "ScriptObservations.h"
+#include <bit>
 #include "ScriptBuildingCapabilities.h"
 #include "FileFormatVersions.h"
 #include "TerrainProperties.h"
@@ -48,13 +49,13 @@ bool visible(const AIEngine::AIWorldView &world, int team, const AIEngine::UnitV
 {
 	return team < 0 || u.team == team ||
 		   (u.insideTimeout >= 0 &&
-			((world.visibilityAt(world.tileIndex(u.x, u.y)).visible & world.teams[team].mask) ||
-			 (world.visibilityAt(world.tileIndex(u.x - u.dx, u.y - u.dy)).visible & world.teams[team].mask)));
+			((world.visibilityAt(world.tileIndex(u.posX, u.posY)).visible & world.teams[team].mask) ||
+			 (world.visibilityAt(world.tileIndex(u.posX - u.dx, u.posY - u.dy)).visible & world.teams[team].mask)));
 }
 bool visible(const AIEngine::AIWorldView &world, int team, const AIEngine::BuildingView &b)
 {
 	return team < 0 || b.team == team ||
-		   (!world.catalog->at(b.type).isCloaked && (world.visibilityAt(world.tileIndex(b.x, b.y)).visible & world.teams[team].mask));
+		   (!world.catalog->at(b.typeNum).isCloaked && (world.visibilityAt(world.tileIndex(b.posX, b.posY)).visible & world.teams[team].mask));
 }
 int arg(const std::vector<Value> &a, size_t i, int lo, int hi)
 {
@@ -77,23 +78,23 @@ Value Observations::ref(const AIEngine::BuildingView *b) const
 }
 Value Observations::unit(const AIEngine::UnitView &u) const
 {
-	if (!visible(world(), team, u) || u.dead)
+	if (!visible(world(), team, u) || u.isDead)
 		return {};
 	Value v = ref(&u);
 	v.set("team", u.team)
-		.set("type", u.type)
-		.set("x", u.x)
-		.set("y", u.y)
+		.set("type", u.typeNum)
+		.set("x", u.posX)
+		.set("y", u.posY)
 		.set("hp", u.hp)
 		.set("maxHp", u.performance[HP])
-		.set("levels", numbers(u.levels.data(), NB_ABILITY))
-		.set("performance", numbers(u.performance.data(), NB_ABILITY));
+		.set("levels", numbers(u.level, NB_ABILITY))
+		.set("performance", numbers(u.performance, NB_ABILITY));
 	if (team < 0 || u.team == team)
 	{
 		v.set("experience", u.experience)
 			.set("experienceLevel", u.experienceLevel)
 			.set("hunger", u.hungry)
-			.set("fruitCount", u.fruitCount);
+			.set("fruitCount", std::bit_cast<Sint32>(u.fruitCount));
 		v.set("activity", int(u.activity))
 			.set("movement", int(u.movement))
 			.set("action", int(u.action))
@@ -102,7 +103,7 @@ Value Observations::unit(const AIEngine::UnitView &u) const
 			.set("carriedResource", u.carriedResource)
 			.set("speed", u.speed)
 			.set("direction", u.direction)
-			.set("fruitMask", u.fruitMask)
+			.set("fruitMask", std::bit_cast<Sint32>(u.fruitMask))
 			.set("destinationPurpose", u.destinationPurpose)
 			.set("targetX", u.targetX)
 			.set("targetY", u.targetY);
@@ -117,38 +118,38 @@ Value Observations::unit(const AIEngine::UnitView &u) const
 }
 Value Observations::building(const AIEngine::BuildingView &b) const
 {
-	if (!visible(world(), team, b) || b.state == Building::DEAD)
+	if (!visible(world(), team, b) || b.buildingState == Building::DEAD)
 		return {};
 	Value v = ref(&b);
 	v.set("team", b.team)
-		.set("type", b.type)
-		.set("shortType", b.shortType)
-		.set("key", world().catalog->at(b.type).key)
-		.set("capabilities", buildingCapabilities(world(), b.type))
-		.set("relocatable", world().catalog->at(b.type).semantics.relocatable)
-		.set("interTeamExchange", world().catalog->at(b.type).semantics.market.interTeamFruitExchange)
-		.set("x", b.x)
-		.set("y", b.y)
+		.set("type", b.typeNum)
+		.set("shortType", b.shortTypeNum)
+		.set("key", world().catalog->at(b.typeNum).key)
+		.set("capabilities", buildingCapabilities(world(), b.typeNum))
+		.set("relocatable", world().catalog->at(b.typeNum).semantics.relocatable)
+		.set("interTeamExchange", world().catalog->at(b.typeNum).semantics.market.interTeamFruitExchange)
+		.set("x", b.posX)
+		.set("y", b.posY)
 		.set("hp", b.hp)
 		.set("maxHp", b.maxHp)
-		.set("level", world().catalog->at(b.type).level)
-		.set("virtual", bool(world().catalog->at(b.type).isVirtual))
-		.set("construction", int(b.construction));
+		.set("level", world().catalog->at(b.typeNum).level)
+		.set("virtual", bool(world().catalog->at(b.typeNum).isVirtual))
+		.set("construction", int(b.constructionResultState));
 	if (team < 0 || b.team == team)
 	{
-		v.set("workers", b.workers)
-			.set("futureWorkers", b.futureWorkers)
+		v.set("workers", b.maxUnitWorking)
+			.set("futureWorkers", b.maxUnitWorkingFuture)
 			.set("priority", b.priority)
-			.set("range", b.range)
-			.set("minimumLevel", b.minimumLevel)
-			.set("requireBombing", b.requireBombing)
-			.set("workerMinimumLevel", b.minimumWorkerLevel)
-			.set("resources", numbers(b.resources.data(), MAX_NB_RESOURCES))
-			.set("wishedResources", numbers(b.wishedResources.data(), MAX_NB_RESOURCES))
-			.set("production", numbers(b.ratios.data(), NB_UNIT_TYPE))
+			.set("range", b.unitStayRange)
+			.set("minimumLevel", b.minLevelToFlag)
+			.set("requireBombing", b.explorersRequireBombing)
+			.set("workerMinimumLevel", b.minWorkerLevelToFlag)
+			.set("resources", numbers(world().buildingResources(b).data(), MAX_NB_RESOURCES))
+			.set("wishedResources", numbers(b.wishedResources, MAX_NB_RESOURCES))
+			.set("production", numbers(b.ratio, NB_UNIT_TYPE))
 			.set("productionTimeout", b.productionTimeout)
-			.set("receiveMask", b.receiveMask)
-			.set("sendMask", b.sendMask)
+			.set("receiveMask", std::bit_cast<Sint32>(b.receiveResourceMask))
+			.set("sendMask", std::bit_cast<Sint32>(b.sendResourceMask))
 			.set("bullets", b.bullets);
 		Value a = Value::array();
 		for (int i = 0; i < BASIC_COUNT; ++i)
@@ -237,7 +238,7 @@ Value Observations::tile(int x, int y) const
 			if (owner >= int(world().teams.size()))
 				return 65535u;
 			auto *u = world().unitAtSlot(id);
-			return u && !u->dead && visible(world(), team, *u) ? id : 65535u;
+			return u && !u->isDead && visible(world(), team, *u) ? id : 65535u;
 		};
 		unsigned buildingId = c.building;
 		int owner = buildingId < Building::MAX_COUNT * Team::MAX_COUNT
@@ -454,7 +455,7 @@ Value Observations::query(const std::string &name, const std::vector<Value> &arg
 					if (name == "units")
 					{
 						auto *u = world().unitAtSlot(Unit::GIDfrom(i, t));
-						if (!u || u->dead || !visible(world(), team, *u))
+						if (!u || u->isDead || !visible(world(), team, *u))
 							continue;
 						if (offset)
 						{
@@ -467,7 +468,7 @@ Value Observations::query(const std::string &name, const std::vector<Value> &arg
 					else
 					{
 						auto *b = world().buildingAtSlot(Building::GIDfrom(i, t));
-						if (!b || b->state == Building::DEAD || !visible(world(), team, *b))
+						if (!b || b->buildingState == Building::DEAD || !visible(world(), team, *b))
 							continue;
 						if (offset)
 						{
@@ -499,7 +500,7 @@ Value Observations::query(const std::string &name, const std::vector<Value> &arg
 		if (name == "unit")
 		{
 			auto *u = world().unitAtSlot(id);
-			if (u && !u->dead && visible(world(), team, *u) &&
+			if (u && !u->isDead && visible(world(), team, *u) &&
 				generation.number == ref(u).get("generation").number)
 			{
 				charge(160);
@@ -509,7 +510,7 @@ Value Observations::query(const std::string &name, const std::vector<Value> &arg
 		else
 		{
 			auto *b = world().buildingAtSlot(id);
-			if (b && b->state != Building::DEAD && visible(world(), team, *b) &&
+			if (b && b->buildingState != Building::DEAD && visible(world(), team, *b) &&
 				generation.number == ref(b).get("generation").number)
 			{
 				charge(160);
@@ -674,16 +675,16 @@ void Script::Observations::visitSpatialEntities(
 				if (units)
 				{
 					const auto *u = world().unitAtSlot(Unit::GIDfrom(i, t));
-					if (u && !u->dead && visible(world(), team, *u))
-						visit({t, u->type, u->x, u->y, u->hp,
+					if (u && !u->isDead && visible(world(), team, *u))
+						visit({t, u->typeNum, u->posX, u->posY, u->hp,
 							   u->performance[ATTACK_STRENGTH], false});
 				}
 				else
 				{
 					const auto *b = world().buildingAtSlot(Building::GIDfrom(i, t));
-					if (b && b->state != Building::DEAD && visible(world(), team, *b))
-						visit({t, b->shortType, b->x, b->y, b->hp, 0,
-							   bool(world().catalog->at(b->type).isVirtual), b->type});
+					if (b && b->buildingState != Building::DEAD && visible(world(), team, *b))
+						visit({t, b->shortTypeNum, b->posX, b->posY, b->hp, 0,
+							   bool(world().catalog->at(b->typeNum).isVirtual), b->typeNum});
 				}
 		}
 }

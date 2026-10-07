@@ -78,7 +78,7 @@ std::shared_ptr<Order>AINumbi::mayAttack(int criticalMass, int criticalTimeout, 
 			if (rally && provides(*rally, Intent::AttractWarriors))
 			{
 				const AIEngine::BuildingView *b=rally;
-				int gbid=observation->occupancyAt(observation->tileIndex(b->x,b->y)).building;
+				int gbid=observation->occupancyAt(observation->tileIndex(b->posX,b->posY)).building;
 				if (disposableRally(*b,*queries) && (gbid==NOGBID || Building::GIDtoTeam(gbid)==teamNumber))
 					return telemetry.returnedOrder(
 						AITrace::AI1::AINumbi_mayAttack_result,
@@ -113,8 +113,8 @@ std::shared_ptr<Order>AINumbi::mayAttack(int criticalMass, int criticalTimeout, 
 			const AIEngine::BuildingView *b=observation->buildingAtSlot(e*::Building::MAX_COUNT+i);
 			if (b)
 			{
-				ex=b->x;
-				ey=b->y;
+				ex=b->posX;
+				ey=b->posY;
 
 				if ((random()&AI_NUMBI_ENEMY_FLAG_CHANCE_MASK)==0)
 				{
@@ -126,7 +126,7 @@ std::shared_ptr<Order>AINumbi::mayAttack(int criticalMass, int criticalTimeout, 
 						if (rally && provides(*rally, Intent::AttractWarriors))
 						{
 							count++;
-							if (rally->x==ex &&rally->y==ey)
+							if (rally->posX==ex &&rally->posY==ey)
 							{
 								already=true;
 								break;
@@ -204,7 +204,7 @@ std::shared_ptr<Order> AINumbi::mayUpgrade(const int ptrigger, const int ntrigge
 	std::array<int, NB_UNIT_LEVELS> workers{}, idle{}, training{};
 	std::array<std::array<int, NB_UNIT_LEVELS>, std::size(priorities)> ready{}, underway{};
 	for (const AIEngine::UnitView* u : observedUnits)
-		if (u && u->type == WORKER)
+		if (u && u->typeNum == WORKER)
 			for (int level = 0; level <= u->constructionLevel && level < NB_UNIT_LEVELS; ++level)
 			{ ++workers[level]; if (u->activity == Unit::ACT_RANDOM) ++idle[level]; }
 	for (const AIEngine::BuildingView* b : observedBuildings)
@@ -222,7 +222,7 @@ std::shared_ptr<Order> AINumbi::mayUpgrade(const int ptrigger, const int ntrigge
 		for (unsigned demand = 0; demand < std::size(priorities); ++demand)
 			if (provides(*b, priorities[demand]))
 			{
-				const int completed = queries->kind(*b).site ? queries->kind(*b).next : b->type;
+				const int completed = queries->kind(*b).site ? queries->kind(*b).next : b->typeNum;
 				const int level = stage(completed);
 				if (level >= 0 && level < NB_UNIT_LEVELS)
 					++(queries->kind(*b).site ? underway[demand][level] : ready[demand][level]);
@@ -245,7 +245,7 @@ std::shared_ptr<Order> AINumbi::mayUpgrade(const int ptrigger, const int ntrigge
 			const int tolerance = intent == Intent::TrainConstruction ? AI_NUMBI_SCIENCE_UPGRADE_TOLERANCE : 0;
 			if (required >= 0 && required < NB_UNIT_LEVELS
 				&& workers[required] + AI_NUMBI_SCHOOL_POTENTIAL_WEIGHT*training[required] > ptrigger && idle[required] > ntrigger
-				&& ready[demand][stage(b->type)] > underway[demand][stage(targetId)]+tolerance && b->hardSpaceUpgrade)
+				&& ready[demand][stage(b->typeNum)] > underway[demand][stage(targetId)]+tolerance && b->hardSpaceUpgrade)
 				choices.push_back(b);
 		}
 		if (!choices.empty())

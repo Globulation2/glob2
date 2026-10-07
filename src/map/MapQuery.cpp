@@ -350,8 +350,8 @@ int Map::isClearingAreaClaimed(int x, int y, int teamNumber) const
 void Map::markImmobileUnit(int x, int y, int teamNumber)
 {
 	const auto index = coordToIndex(x, y);
-	if (immobileUnits[index] == teamNumber) return;
-	immobileUnits[index] = teamNumber;
+	if (occupancyCells[index].immobileUnit == teamNumber) return;
+	occupancyCells[index].immobileUnit = teamNumber;
 	++snapshotOccupancy;
 	resourceSeedChanged(index, ResourceSeedCache::Immobile);
 }
@@ -360,8 +360,8 @@ void Map::markImmobileUnit(int x, int y, int teamNumber)
 void Map::clearImmobileUnit(int x, int y)
 {
 	const auto index = coordToIndex(x, y);
-	if (immobileUnits[index] == IMMOBILE_UNIT_NONE) return;
-	immobileUnits[index] = IMMOBILE_UNIT_NONE;
+	if (occupancyCells[index].immobileUnit == IMMOBILE_UNIT_NONE) return;
+	occupancyCells[index].immobileUnit = IMMOBILE_UNIT_NONE;
 	++snapshotOccupancy;
 	resourceSeedChanged(index, ResourceSeedCache::Immobile);
 }
@@ -369,14 +369,14 @@ void Map::clearImmobileUnit(int x, int y)
 
 bool Map::isImmobileUnit(int x, int y) const
 {
-	return immobileUnits[coordToIndex(x, y)] != IMMOBILE_UNIT_NONE;
+	return occupancyCells[coordToIndex(x, y)].immobileUnit != IMMOBILE_UNIT_NONE;
 }
 
 
 
 Uint8 Map::getImmobileUnit(int x, int y) const
 {
-	return immobileUnits[coordToIndex(x, y)];
+	return occupancyCells[coordToIndex(x, y)].immobileUnit;
 }
 
 

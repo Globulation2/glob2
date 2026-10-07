@@ -3,7 +3,7 @@
 
 #pragma once
 
-#include "ResourcePacket.h"
+#include "UnitState.h"
 #include <vector>
 #include <string>
 #include <optional>
@@ -31,7 +31,7 @@ namespace GAGCore
 }
 
 // a unit
-class Unit : public UnitUtils
+class Unit : public UnitUtils, public UnitState
 {
 	friend struct TeamStatsMeasurementFixture;
 	void init(int x, int y, Uint16 gid, Sint32 typeNum, Team *team, int level);
@@ -87,71 +87,6 @@ public:
 	
 public:
 
-	enum Medical
-	{
-		MED_FREE=0,
-		MED_HUNGRY=1,
-		MED_DAMAGED=2
-	};
-
-	enum Activity
-	{
-		ACT_RANDOM=0,
-		ACT_FILLING=1,
-		ACT_FLAG=2,
-		ACT_UPGRADING=3
-	};
-	
-	enum Displacement
-	{
-		DIS_RANDOM=0,
-		
-		DIS_HARVESTING=2,
-		
-		DIS_FILLING_BUILDING=4,
-//NOT USED:
-//		//!Markets can get emptied
-//		DIS_EMPTYING_BUILDING=6,
-		
-		DIS_GOING_TO_FLAG=8,
-		DIS_ATTACKING_AROUND=10,
-		DIS_REMOVING_BLACK_AROUND=12,
-		DIS_CLEARING_RESOURCES=14,
-		
-		DIS_GOING_TO_RESOURCE=16,
-		
-		DIS_GOING_TO_BUILDING=18,
-		DIS_ENTERING_BUILDING=20,
-		DIS_INSIDE=22,
-		DIS_EXITING_BUILDING=24
-	};
-	
-	enum Movement
-	{
-		MOV_RANDOM_GROUND=0,
-		MOV_RANDOM_FLY=1,
-		MOV_GOING_TARGET=2,
-		MOV_FLYING_TARGET=3,
-		MOV_GOING_DX_DY=4,
-		MOV_HARVESTING=5,
-		MOV_FILLING=6,
-		MOV_ENTERING_BUILDING=7,
-		MOV_INSIDE=8,
-		MOV_EXITING_BUILDING=9,
-		MOV_ATTACKING_TARGET=11
-	};
-
-	enum BypassDirection
-	{
-		DIR_UNSET=0,
-		DIR_LEFT=1,
-		DIR_RIGHT=2
-	};
-
-	enum 
-	{
-		HUNGRY_MAX=150000
-	};
 	
 protected:
 	void stopAttachedForBuilding(bool goingInside);
@@ -219,62 +154,16 @@ protected:
 public:
 	
 	// unit specification
-	Sint32 typeNum; // Uint8, WORKER, EXPLORER, WARRIOR
 	Race *race;
 
 	// identity
-	Uint32 scriptIdentity = 0; // Stable scripting identity; excluded from legacy simulation checksums.
-	Uint16 gid; // for reservation see GIDtoID() and GIDtoTeam().
 	Team *owner;
 	int diagnosticDeathCause = 4; // GameplayMeasurements::UNKNOWN; never checksum this field.
 	void recordLethalDamage(int damage, int cause);
-	Sint32 isDead; // (bool) if true is dead, will be garbage collected next turn
 
-	// position
-	Sint32 posX, posY; // (Uint16)
-	Sint32 delta; // (Sint8)
-	Sint32 dx, dy; // (Sint8)
-	Sint32 direction; // (Sint8). direction=8 is no direction.
-	Sint32 terrainHealthRemainder = 0; // signed Q8 HP, serialized for exact continuation
-	Sint32 insideTimeout; // (Sint16) (if < 0, is in a building, otherwise is out)
-	bool serviceResourcesReserved = false;
-	Sint32 speed;
-
-	// states
-	bool needToRecheckMedical;
-	Medical medical;
-	Activity activity;
-	Displacement displacement;
-	Movement movement;
-	Abilities action;
-	/// These coordinates are used for target-lines only (Hotkey T in game)
-	Sint32 targetX, targetY;
-	/// Maybe this is also only for GUI to tag if a line may be drawn or not
-	bool validTarget;
-	Sint32 magicActionTimeout;
-
-	// Timer counts down 240 frames after being attacked
-	Uint8 underAttackTimer;
-
-	// trigger parameters
-	Sint32 hp; // (Uint8)
-	Sint32 trigHP; // (Uint8)
-
-	// hungry
-	Sint32 hungry; // (Uint16)
-	Sint32 hungriness;
-	Sint32 trigHungry; // (Uint16)
-	Sint32 trigHungryCarrying;
-	Uint32 fruitMask;
-	Uint32 fruitCount;
-
-	// quality parameters
-	Sint32 performance[NB_ABILITY];
 	//! Pathfinding swim class from the unit's walk and swim speeds (see Map::swimClass).
 	int swimClass() const;
-	Sint32 level[NB_ABILITY];
 	//! Construction eligibility is independent of work/harvest speed.
-	Sint32 constructionLevel = 0;
 	Sint32 workerLevel() const { return constructionLevel; }
 	bool needsTraining(const BuildingTrainingSpec& training, int ability) const;
 	void applyTraining(const BuildingTrainingSpec& training, int ability);
@@ -282,9 +171,6 @@ public:
 	//! identity and team (the lobby's Veteran/Fast start rule, before the map is saved).
 	void resetAtLevel(Sint32 newLevel);
 	void setWorkerLevel(Sint32 newLevel);
-	bool canLearn[NB_ABILITY];
-	Sint32 experience;
-	Sint32 experienceLevel;
 	
 	//! building the Unit is working for
 	Building *attachedBuilding;
@@ -292,13 +178,7 @@ public:
 	Building *targetBuilding;
 	//! no idea what this is. TODO: Explain
 	Building *ownExchangeBuilding;
-	Sint32 destinationPurpose;
-	int carriedResource;
-	ResourcePacket carriedPacket{};
 	void receiveCarriedResource(int resource, ResourcePacket packet);
-	/// This counts 32 ticks to wait for a job before a unit goes off
-	/// to upgrade or heal when it is otherwise doing nothing.
-	Sint32 jobTimer;
 	
 	// gui
 	int levelUpAnimation;

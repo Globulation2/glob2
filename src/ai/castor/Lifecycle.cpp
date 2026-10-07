@@ -26,7 +26,7 @@ AIPlanning::BuildingIntent AICastor::intentForDemand(int demand)
 }
 bool AICastor::provides(const AIEngine::BuildingView& b, int demand) const
 {
- return queries->matches(queries->kind(b).site ? queries->kind(b).next : b.type, intentForDemand(demand));
+ return queries->matches(queries->kind(b).site ? queries->kind(b).next : b.typeNum, intentForDemand(demand));
 }
 bool AICastor::demandAvailable(int demand) const
 {
@@ -38,7 +38,7 @@ bool AICastor::demandAvailable(int demand) const
 }
 int AICastor::desiredWorkers(const AIEngine::BuildingView& building, int request) const
 {
- const int completed=queries->kind(building).site ? queries->kind(building).next : building.type;
+ const int completed=queries->kind(building).site ? queries->kind(building).next : building.typeNum;
  const auto mask=queries->rawIntentMask(completed);
  const int demands=std::popcount(mask & demandIntentMask);
  if (demands > 1) request = std::max(request,requestedWorkers(building));
@@ -59,13 +59,13 @@ int AICastor::requestedWorkers(const AIEngine::BuildingView& building) const
 {
  const auto it=pendingWorkers.find(building.identity.gid);
  return it!=pendingWorkers.end() && it->second.generation==building.identity.generation
-  ? it->second.workers : building.workers;
+  ? it->second.workers : building.maxUnitWorking;
 }
 Sint32 AICastor::requestedRatio(const AIEngine::BuildingView& building, int unit) const
 {
  const auto it=pendingRatios.find(building.identity.gid);
  return it!=pendingRatios.end() && it->second.generation==building.identity.generation
-  ? it->second.ratios[unit] : building.ratios[unit];
+  ? it->second.ratios[unit] : building.ratio[unit];
 }
 std::shared_ptr<Order> AICastor::requestWorkers(const AIEngine::BuildingView& building, Sint32 workers)
 {
@@ -108,14 +108,14 @@ void AICastor::reconcilePendingAssignments()
  for (auto it=pendingWorkers.begin();it!=pendingWorkers.end();)
  {
   const AIEngine::BuildingView* b=observation->buildingAtSlot(it->first);
-  if (!b || b->identity.generation!=it->second.generation || b->workers==it->second.workers)
+  if (!b || b->identity.generation!=it->second.generation || b->maxUnitWorking==it->second.workers)
    it=pendingWorkers.erase(it);
   else ++it;
  }
  for (auto it=pendingRatios.begin();it!=pendingRatios.end();)
  {
   const AIEngine::BuildingView* b=observation->buildingAtSlot(it->first);
-  if (!b || b->identity.generation!=it->second.generation || std::equal(it->second.ratios.begin(),it->second.ratios.end(),b->ratios.begin()))
+  if (!b || b->identity.generation!=it->second.generation || std::equal(it->second.ratios.begin(),it->second.ratios.end(),std::begin(b->ratio)))
    it=pendingRatios.erase(it);
   else ++it;
  }

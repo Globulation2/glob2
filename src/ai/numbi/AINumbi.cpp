@@ -201,13 +201,13 @@ int AINumbi::requestedWorkers(const AIEngine::BuildingView& building) const
 {
  for(const auto& request:pendingRequests) if(request.target==building.identity)
   if(const auto* workers=dynamic_cast<const OrderModifyBuilding*>(request.order.get())) return workers->numberRequested;
- return building.workers;
+ return building.maxUnitWorking;
 }
 Sint32 AINumbi::requestedRatio(const AIEngine::BuildingView& building,int unit) const
 {
  for(const auto& request:pendingRequests) if(request.target==building.identity)
   if(const auto* ratios=dynamic_cast<const OrderModifySwarm*>(request.order.get())) return ratios->ratio[unit];
- return building.ratios[unit];
+ return building.ratio[unit];
 }
 bool AINumbi::hasPending(const AIEngine::BuildingView& building) const
 {
@@ -275,11 +275,11 @@ std::shared_ptr<Order> AINumbi::getOrder(const AIEngine::DecisionContext& contex
  std::erase_if(pendingRequests,[&](const auto& request){
   const auto* b=request.target.empty()?nullptr:context.world.building(request.target);
   if(!request.target.empty() && !b) return true;
-  if(const auto* workers=dynamic_cast<const OrderModifyBuilding*>(request.order.get())) return b && b->workers==workers->numberRequested;
+  if(const auto* workers=dynamic_cast<const OrderModifyBuilding*>(request.order.get())) return b && b->maxUnitWorking==workers->numberRequested;
   if(const auto* ratios=dynamic_cast<const OrderModifySwarm*>(request.order.get()))
-   return b && std::equal(b->ratios.begin(),b->ratios.end(),ratios->ratio);
+   return b && std::equal(std::begin(b->ratio),std::end(b->ratio),ratios->ratio);
   if(dynamic_cast<const OrderConstruction*>(request.order.get()))
-   return b && (b->construction!=Building::NO_CONSTRUCTION || context.world.catalog->at(b->type).site);
+   return b && (b->constructionResultState!=Building::NO_CONSTRUCTION || context.world.catalog->at(b->typeNum).site);
   if(const auto* create=dynamic_cast<const OrderCreate*>(request.order.get())) {
    for(const auto& project:context.world.buildProjects)
     if(project.teamNumber==teamNumber && project.typeNum==create->typeNum
@@ -287,8 +287,8 @@ std::shared_ptr<Order> AINumbi::getOrder(const AIEngine::DecisionContext& contex
      && context.world.normalizeY(project.posY)==context.world.normalizeY(create->posY)) return true;
    const auto& k=context.world.catalog->at(create->typeNum);
    for(const auto& building:context.world.buildings)
-    if(building.team==teamNumber && (building.type==create->typeNum || (k.site && building.type==k.next))
-     && building.x==context.world.normalizeX(create->posX) && building.y==context.world.normalizeY(create->posY)) return true;
+    if(building.team==teamNumber && (building.typeNum==create->typeNum || (k.site && building.typeNum==k.next))
+     && building.posX==context.world.normalizeX(create->posX) && building.posY==context.world.normalizeY(create->posY)) return true;
   }
   return false;
  });

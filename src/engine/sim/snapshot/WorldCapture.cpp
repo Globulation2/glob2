@@ -12,6 +12,7 @@
 #include <iterator>
 #include <stdexcept>
 #include <chrono>
+#include <cstring>
 
 namespace SimulationSnapshot
 {
@@ -158,29 +159,23 @@ Handle capture(const Game& game,
 		rules->values.resourceGrowthDisabled = header.isResourceGrowthDisabled();
 	}
 	if (needs(requirements, Component::Areas)) areas->farmEnabled = game.map.farmAreasEnabled();
-	const auto& sourceTiles = game.map.getTiles();
-	const auto immobile = game.map.immobileState();
-	const bool copyTerrain=needs(requirements,Component::Terrain), copyResources=needs(requirements,Component::Resources);
-	const bool copyOccupancy=needs(requirements,Component::Occupancy), copyAreas=needs(requirements,Component::Areas);
-	const bool copyVisibility=needs(requirements,Component::Visibility);
-	const auto sizeMapArray=[&](auto& array) { reserve(array,sourceTiles.size()); array.resize(sourceTiles.size()); };
-	if (copyTerrain) sizeMapArray(terrain->legacy);
-	if (copyResources) sizeMapArray(resources->cells);
-	if (copyOccupancy) sizeMapArray(occupancy->cells);
-	if (copyAreas) sizeMapArray(areas->cells);
-	if (copyVisibility) sizeMapArray(visibility->cells);
-	const auto terrainData=terrain->legacy.data(); const auto resourceData=resources->cells.data();
-	const auto occupancyData=occupancy->cells.data(); const auto areaData=areas->cells.data();
-	const auto visibilityData=visibility->cells.data();
-	for (std::size_t i = 0; (copyTerrain || copyResources || copyOccupancy || copyAreas || copyVisibility) && i < sourceTiles.size(); ++i)
-	{
-		const auto& tile = sourceTiles[i];
-		if (copyTerrain) terrainData[i]=tile.terrain;
-		if (copyResources) resourceData[i]={tile.resource,tile.fertility,tile.canResourcesGrow != 0};
-		if (copyOccupancy) occupancyData[i]={tile.building,tile.groundUnit,tile.airUnit,immobile[i]};
-		if (copyAreas) areaData[i]={tile.forbidden,tile.guardArea,tile.clearArea,tile.farmArea};
-		if (copyVisibility) visibilityData[i]={game.map.mapDiscovered[i],game.map.fogOfWar ? game.map.fogOfWar[i] : 0};
-	}
+	const auto copyArray = [&](auto& destination, const auto source) {
+        using Element = typename std::remove_reference_t<decltype(destination)>::value_type;
+        static_assert(std::is_trivially_copyable_v<Element>);
+        static_assert(std::is_same_v<Element, std::remove_const_t<typename decltype(source)::element_type>>);
+        reserve(destination, source.size()); destination.resize(source.size());
+        if (!source.empty()) std::memcpy(destination.data(), source.data(), source.size_bytes());
+    };
+    if (needs(requirements,Component::Terrain)) copyArray(terrain->legacy, game.map.legacyTerrainState());
+    if (needs(requirements,Component::Resources)) copyArray(resources->cells, game.map.resourceState());
+    if (needs(requirements,Component::Occupancy)) copyArray(occupancy->cells, game.map.occupancyState());
+    if (needs(requirements,Component::Areas)) copyArray(areas->cells, game.map.areaState());
+    if (needs(requirements,Component::Visibility)) {
+        copyArray(visibility->discovered, std::span<const Uint32>(game.map.mapDiscovered));
+        if (game.map.fogOfWar) copyArray(visibility->visible, std::span<const Uint32>(game.map.fogOfWar,game.map.cellCount()));
+        else { reserve(visibility->visible,game.map.cellCount()); visibility->visible.resize(game.map.cellCount());
+            std::fill(visibility->visible.begin(),visibility->visible.end(),0); }
+    }
 	for (int t = 0; (needs(requirements, Component::Teams) || needs(requirements, Component::Entities)) && t < game.mapHeader.getNumberOfTeams(); ++t)
 	{
 		const auto* team = game.teams[t];
@@ -211,25 +206,11 @@ Handle capture(const Game& game,
 			if (auto* b = team->myBuildings[i])
 			{
 				BuildingView v;
-				v.shortType = b->shortTypeNum; v.requireBombing = b->explorersRequireBombing;
-				v.productionTimeout = b->productionTimeout; v.receiveMask = b->receiveResourceMask;
-				v.sendMask = b->sendResourceMask; v.bullets = b->bullets;
-				std::copy_n(b->clearingResources, BASIC_COUNT, v.clearingResources.begin());
-				v.identity = Game::refOf(b); v.team = t; v.type = b->typeNum;
-				v.x = b->posX; v.y = b->posY;
-				v.state = b->buildingState; v.construction = b->constructionResultState;
-				v.originType = b->getConstructionOriginTypeNum();
+				std::memcpy(static_cast<BuildingStateRecord*>(&v), static_cast<const BuildingStateRecord*>(b), sizeof(BuildingStateRecord));
+				v.identity = Game::refOf(b); v.team = t;
+				v.maxHp = b->getEffectiveMaxHp();
+				v.usesTeamResources = b->resources == team->teamResources;
 				// Feasibility is prepared below from captured values, not live queries.
-				std::copy_n(b->locked, BUILDING_ACCESS_COUNT, v.locked.begin());
-				v.hp = b->hp; v.maxHp = b->getEffectiveMaxHp();
-				v.workers = b->maxUnitWorking; v.futureWorkers = b->getMaxUnitWorkingFuture();
-				v.desiredWorkers = b->desiredMaxUnitWorking; v.maxInside = b->maxUnitInside;
-				v.priority = b->priority; v.range = b->unitStayRange;
-				v.minimumLevel = b->minLevelToFlag; v.minimumWorkerLevel = b->minWorkerLevelToFlag;
-				v.seenBy = b->seenByMask; v.underAttack = b->underAttackTimer;
-				std::copy_n(b->resources, MAX_NB_RESOURCES, v.resources.begin());
-				std::copy_n(b->wishedResources, MAX_NB_RESOURCES, v.wishedResources.begin());
-				std::copy_n(b->ratio, NB_UNIT_TYPE, v.ratios.begin());
 				v.working = {Uint32(entities->relationships.size()), Uint32(b->unitsWorking.size())};
 				for (const auto* u : b->unitsWorking) append(entities->relationships, Game::refOf(u));
 				v.inside = {Uint32(entities->relationships.size()), Uint32(b->unitsInside.size())};
@@ -240,21 +221,10 @@ Handle capture(const Game& game,
 			if (const auto* u = team->myUnits[i])
 			{
 				UnitView v;
-				v.dx = u->dx; v.dy = u->dy; v.insideTimeout = u->insideTimeout;
-				v.experience = u->experience; v.experienceLevel = u->experienceLevel; v.fruitCount = u->fruitCount;
-				v.movement = u->movement; v.action = u->action; v.carriedResource = u->carriedResource;
-				v.speed = u->speed; v.direction = u->direction; v.fruitMask = u->fruitMask;
-				v.destinationPurpose = u->destinationPurpose; v.targetX = u->targetX; v.targetY = u->targetY;
+				std::memcpy(static_cast<UnitState*>(&v), static_cast<const UnitState*>(u), sizeof(UnitState));
+				v.identity = Game::refOf(u); v.team = t;
+				v.attached = Game::refOf(u->attachedBuilding);
 				v.target = Game::refOf(u->targetBuilding);
-				v.identity = Game::refOf(u); v.team = t; v.type = u->typeNum;
-				v.x = u->posX; v.y = u->posY; v.hp = u->hp;
-				v.medical = u->medical; v.activity = u->activity; v.displacement = u->displacement;
-				v.hungriness = u->hungriness; v.hungry = u->hungry; v.hungryTrigger = u->trigHungry;
-				v.constructionLevel = u->workerLevel(); v.dead = u->isDead;
-				v.underAttack = u->underAttackTimer; v.attached = Game::refOf(u->attachedBuilding);
-				std::copy_n(u->canLearn, NB_ABILITY, v.canLearn.begin());
-				std::copy_n(u->performance, NB_ABILITY, v.performance.begin());
-				std::copy_n(u->level, NB_ABILITY, v.levels.begin());
 				append(entities->units, std::move(v));
 			}
 	}
@@ -274,7 +244,7 @@ Handle capture(const Game& game,
 	if (needs(requirements, Component::Entities) && result->catalogs && result->terrain && result->resources && result->occupancy && result->rules) {
 		const auto start = std::chrono::steady_clock::now();
 		for (auto& building : entities->buildings) {
-			const auto& kind = result->catalogs->buildings->at(building.type);
+			const auto& kind = result->catalogs->buildings->at(building.typeNum);
 			building.upgradeAvailable = kind.next >= 0 && std::size_t(kind.next) < result->catalogs->buildings->size()
 				&& result->catalogs->buildings->at(kind.next).available;
 			auto space = [&](bool upgrade) {
@@ -284,7 +254,7 @@ Handle capture(const Game& game,
 				if (next == BUILDING_LEVEL_NONE) return true;
 				const auto& target = result->catalogs->buildings->at(next);
 				if (target.isVirtual) return true;
-				const int x = building.x + target.decLeft - kind.decLeft, y = building.y + target.decTop - kind.decTop;
+				const int x = building.posX + target.decLeft - kind.decLeft, y = building.posY + target.decTop - kind.decTop;
 				for (int dy=0;dy<target.height;++dy) for (int dx=0;dx<target.width;++dx) {
 					const auto index=std::size_t((y+dy)&(result->height-1))*result->width+((x+dx)&(result->width-1));
 					if (result->resources->cells[index].resource.type != NO_RES_TYPE) return false;

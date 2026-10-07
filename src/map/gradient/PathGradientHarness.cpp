@@ -39,7 +39,12 @@ struct PathMap : Map
 		wMask = w - 1; hMask = h - 1;
 		size = static_cast<size_t>(w) * h;
 		// Test-only private access bootstraps this partial map.
-		tiles.assign(size, Tile());
+		resourceCells.assign(size, {});
+			for (auto &cell : resourceCells) cell.mayGrow = 1;
+			occupancyCells.assign(size, {});
+			areaCells.assign(size, {});
+			legacyTerrain.assign(size, 0);
+			scriptAreaCells.assign(size, 0);
 		for (size_t i = 0; i < size; ++i)
 		{
 			auto cell = getTile(i);

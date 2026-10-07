@@ -166,17 +166,17 @@ void Entities::AnyBuilding::save(GAGCore::OutputStream *stream)
 bool Entities::Building::is_entity(const AIEngine::AIWorldView& world,int x,int y)
 {
     const auto* building=world.buildingAtSlot(world.occupancyAt(world.tileIndex(x,y)).building);
-    return building && building->team==team && building->type==building_type
-        && (building->construction==::Building::NO_CONSTRUCTION || under_construction);
+    return building && building->team==team && building->typeNum==building_type
+        && (building->constructionResultState==::Building::NO_CONSTRUCTION || under_construction);
 }
 bool Entities::AnyTeamBuilding::is_entity(const AIEngine::AIWorldView& world,int x,int y)
 {
     const auto* building=world.buildingAtSlot(world.occupancyAt(world.tileIndex(x,y)).building);
     return building && building->team==team
-        && (building->construction==::Building::NO_CONSTRUCTION || under_construction);
+        && (building->constructionResultState==::Building::NO_CONSTRUCTION || under_construction);
 }
 bool Entities::AnyBuilding::is_entity(const AIEngine::AIWorldView& world,int x,int y)
 {
     const auto* building=world.buildingAtSlot(world.occupancyAt(world.tileIndex(x,y)).building);
-    return building && (building->construction==::Building::NO_CONSTRUCTION || under_construction);
+    return building && (building->constructionResultState==::Building::NO_CONSTRUCTION || under_construction);
 }

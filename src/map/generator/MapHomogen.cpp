@@ -73,7 +73,7 @@ void Map::smoothResources(int times)
 		for (int y=0; y<h; y++)
 			for (int x=0; x<w; x++)
 			{
-				Resource &r=tiles[coordToIndex(x, y)].resource;
+				Resource &r=resourceCells[coordToIndex(x, y)].resource;
 				if (r.type!=WOOD && r.type!=WHEAT && r.type!=STONE && r.type!=ALGA)
 					continue;
 				if (!(syncRand()&4))
@@ -91,7 +91,7 @@ void Map::smoothResources(int times)
 					const int nx=normalizeX(x+dx), ny=normalizeY(y+dy);
 					if (getResource(nx, ny).type==NO_RES_TYPE && isResourceAllowed(nx, ny, r.type))
 					{
-						Resource &sprout=tiles[coordToIndex(nx, ny)].resource;
+						Resource &sprout=resourceCells[coordToIndex(nx, ny)].resource;
 						sprout.type=r.type;
 						sprout.variety=syncRand()%rt->varietiesCount;
 						sprout.amount=RESOURCE_INITIAL_AMOUNT;

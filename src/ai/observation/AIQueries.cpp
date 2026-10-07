@@ -55,7 +55,7 @@ TileView AIWorldView::composeTile(std::size_t index) const
 		const auto& cell = areaCells[index];
 		result.forbidden = cell.forbidden; result.guard = cell.guard; result.clear = cell.clear; result.farm = cell.farm;
 	}
-	if (visibilityCells) { result.discovered = visibilityCells[index].discovered; result.visible = visibilityCells[index].visible; }
+	if (discoveredCells) { result.discovered = discoveredCells[index]; result.visible = visibleCells[index]; }
 	return result;
 }
 

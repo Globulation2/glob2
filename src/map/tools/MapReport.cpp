@@ -344,8 +344,8 @@ StartQualityReport canonicalQuality(Game &game)
 		std::vector<Uint16> values;
 		explicit RestoreFertility(Map &m) : map(m), maximum(m.fertilityMaximum)
 		{
-			values.reserve(m.getTiles().size());
-			for (const auto &tile : m.getTiles())
+			values.reserve(m.cellCount());
+			for (const auto &tile : m.resourceState())
 				values.push_back(tile.fertility);
 		}
 		~RestoreFertility()
@@ -670,7 +670,7 @@ std::string describeMap(Game &game, const GenerationRequest *request,
 		else if (r.type != NO_RES_TYPE)
 			++unknownResources;
 		buildingTiles += map.getBuilding(p % t.w, p / t.w) != NOGBID;
-		noGrowth += !map.getTiles()[p].canResourcesGrow;
+		noGrowth += !map.resourceState()[p].mayGrow;
 		fertilityAll.push_back(fertility.values()[p]);
 		if (map.isGrass(p))
 		{

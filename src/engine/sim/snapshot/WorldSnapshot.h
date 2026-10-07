@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #pragma once
 #include "WorldRecords.h"
+#include "MapState.h"
 #include "Requirements.h"
 #include "GameHeader.h"
 #include "FertilityField.h"
@@ -29,14 +30,14 @@ struct Terrain
 	Uint64 revision = 0;
 	bool movementModifiers = false, airConstraints = false;
 };
-struct ResourceCell { Resource resource; Uint16 fertility = 0; bool mayGrow = false; };
+using ResourceCell = MapState::ResourceCell;
 struct Resources { std::vector<ResourceCell> cells; };
-struct OccupancyCell { Uint16 building = 0xffff, groundUnit = 0xffff, airUnit = 0xffff; Uint8 immobileUnit = 255; };
+using OccupancyCell = MapState::OccupancyCell;
 struct Occupancy { std::vector<OccupancyCell> cells; };
-struct AreaCell { Uint32 forbidden = 0, guard = 0, clear = 0, farm = 0; };
+using AreaCell = MapState::AreaCell;
 struct Areas { std::vector<AreaCell> cells; bool farmEnabled = false; };
 struct VisibilityCell { Uint32 discovered = 0, visible = 0; };
-struct Visibility { std::vector<VisibilityCell> cells; };
+struct Visibility { std::vector<Uint32> discovered, visible; };
 static_assert(std::is_trivially_copyable_v<ResourceCell>);
 static_assert(std::is_trivially_copyable_v<OccupancyCell>);
 static_assert(std::is_trivially_copyable_v<AreaCell>);
@@ -101,7 +102,7 @@ struct Handle
 	AreaCell areasAt(std::size_t index) const
 	{ checkTileIndex(index); return areas ? areas->cells.at(index) : AreaCell{}; }
 	VisibilityCell visibilityAt(std::size_t index) const
-	{ checkTileIndex(index); return visibility ? visibility->cells.at(index) : VisibilityCell{}; }
+	{ checkTileIndex(index); return visibility ? VisibilityCell{visibility->discovered.at(index), visibility->visible.at(index)} : VisibilityCell{}; }
 	bool canPaintFarmAt(std::size_t index) const;
 	TileView tileAt(std::size_t index) const;
 private:

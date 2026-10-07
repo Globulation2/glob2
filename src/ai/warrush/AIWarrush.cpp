@@ -170,8 +170,8 @@ void AIWarrush::settleObservedRequests(const AIEngine::DecisionContext& context)
  std::erase_if(pendingRequests,[&](const auto& request){
   const auto* b=request.target.empty()?nullptr:context.world.building(request.target);
   if(!request.target.empty() && !b) return true;
-  if(const auto* staffing=dynamic_cast<const OrderModifyBuilding*>(request.order.get())) return b && b->workers==staffing->numberRequested;
-  if(const auto* ratios=dynamic_cast<const OrderModifySwarm*>(request.order.get())) return b && std::equal(b->ratios.begin(),b->ratios.end(),ratios->ratio);
+  if(const auto* staffing=dynamic_cast<const OrderModifyBuilding*>(request.order.get())) return b && b->maxUnitWorking==staffing->numberRequested;
+  if(const auto* ratios=dynamic_cast<const OrderModifySwarm*>(request.order.get())) return b && std::equal(std::begin(b->ratio),std::end(b->ratio),ratios->ratio);
   if(const auto* create=dynamic_cast<const OrderCreate*>(request.order.get())) {
    for(const auto& project:context.world.buildProjects)
     if(project.teamNumber==teamNumber && project.typeNum==create->typeNum
@@ -179,8 +179,8 @@ void AIWarrush::settleObservedRequests(const AIEngine::DecisionContext& context)
      && context.world.normalizeY(project.posY)==context.world.normalizeY(create->posY)) return true;
    const auto& kind=context.world.catalog->at(create->typeNum);
    for(const auto& building:context.world.buildings)
-    if(building.team==teamNumber && (building.type==create->typeNum || (kind.site && building.type==kind.next))
-     && building.x==context.world.normalizeX(create->posX) && building.y==context.world.normalizeY(create->posY)) return true;
+    if(building.team==teamNumber && (building.typeNum==create->typeNum || (kind.site && building.typeNum==kind.next))
+     && building.posX==context.world.normalizeX(create->posX) && building.posY==context.world.normalizeY(create->posY)) return true;
   }
   return false;
  });
@@ -269,7 +269,7 @@ bool AIWarrush::isAnyUnitWithLessThanOneThirdFood()const
 
 bool AIWarrush::provides(const AIEngine::BuildingView& building, Intent intent) const
 {
- const int completed = queries->kind(building).site ? queries->kind(building).next : building.type;
+ const int completed = queries->kind(building).site ? queries->kind(building).next : building.typeNum;
  return queries->matches(completed,intent);
 }
 
@@ -287,12 +287,12 @@ const AIEngine::BuildingView *AIWarrush::getSwarmWithoutSettings(const int worke
 {
  const int ratios[] = {workerRatio, explorerRatio, warriorRatio};
  return findBuildingIf(observedTeam, [&](const AIEngine::BuildingView *b) {
-  if (hasPending(*b) || b->construction != Building::NO_CONSTRUCTION) return false;
+  if (hasPending(*b) || b->constructionResultState != Building::NO_CONSTRUCTION) return false;
   bool produces = false, differs = false;
   for (int unit = 0; unit < NB_UNIT_TYPE; ++unit) {
    produces |= queries->kind(*b).resolvedType.semantics.production.recipes[unit].enabled;
    const int desired = queries->kind(*b).resolvedType.semantics.production.recipes[unit].enabled ? ratios[unit] : 0;
-   differs |= b->ratios[unit] != desired;
+   differs |= b->ratio[unit] != desired;
   }
   return produces && differs;
  });
@@ -312,15 +312,15 @@ std::shared_ptr<Order> AIWarrush::staffingOrder() const
 	for (int slot = 0; slot < Building::MAX_COUNT; ++slot)
 	{
 		const AIEngine::BuildingView* building = observedTeam->myBuildings[slot];
-		if (!building || hasPending(*building) || building->workers >= queries->kind(*building).resolvedType.semantics.assignmentLimit)
+		if (!building || hasPending(*building) || building->maxUnitWorking >= queries->kind(*building).resolvedType.semantics.assignmentLimit)
 			continue;
-		const int completed = queries->kind(*building).site ? queries->kind(*building).next : building->type;
+		const int completed = queries->kind(*building).site ? queries->kind(*building).next : building->typeNum;
 		auto mask = queries->kind(completed).rawCapabilityMask;
-		if (building->construction == Building::NO_CONSTRUCTION)
+		if (building->constructionResultState == Building::NO_CONSTRUCTION)
 			mask &= completedIntents;
 		for (std::size_t intent = 0; intent < intents.size(); ++intent)
 			if (!candidates[intent] && (mask & (std::uint64_t{1} << unsigned(intents[intent])))
-				&& building->workers < requests[intent])
+				&& building->maxUnitWorking < requests[intent])
 				candidates[intent] = building;
 		// Intent priority precedes slot order: a later worker producer wins over
 		// an earlier explorer producer. Only the first worker candidate ends the scan.
@@ -364,9 +364,9 @@ bool AIWarrush::allOfBuildingTypeAreCompleted(Intent intent)const
 												 [this, intent](const AIEngine::BuildingView *b)
 												 {
 													 return provides(*b, intent) &&
-															(b->construction !=
+															(b->constructionResultState !=
 																 Building::NO_CONSTRUCTION ||
-															 b->state == Building::DEAD);
+															 b->buildingState == Building::DEAD);
 												 }) == nullptr);
 }
 
@@ -382,7 +382,7 @@ bool AIWarrush::allOfBuildingTypeAreFull(Intent intent)const
 												 {
 													 return provides(*b, intent) &&
 															b->inside.count <
-																(size_t)b->maxInside;
+																(size_t)b->maxUnitInside;
 												 }) == nullptr);
 }
 
@@ -424,7 +424,7 @@ bool AIWarrush::allOfBuildingTypeAreFullyWorked(Intent intent)const
 												 {
 													 return provides(*b, intent) &&
 															b->working.count !=
-																(size_t)b->workers;
+																(size_t)b->maxUnitWorking;
 												 }) == nullptr);
 }
 
@@ -442,12 +442,12 @@ bool AIWarrush::percentageOfBuildingsAreFullyWorked(int percentage)const
 		if (b && queries->kind(*b).resolvedType.semantics.occupiesGround && queries->kind(*b).resolvedType.maxUnitWorking > 0)
 		{
 			++num_buildings;
-			if(b->working.count == (size_t)b->workers)
+			if(b->working.count == (size_t)b->maxUnitWorking)
 			{
 				++num_worked_buildings;
 				if(verbose)bufferedDiagnostics.push_back({"", "", [&] { std::ostringstream text; text << "A"; return text.str(); }()});
 			}
-			else if (b->construction == Building::NO_CONSTRUCTION
+			else if (b->constructionResultState == Building::NO_CONSTRUCTION
     && [&]() {
      bool consumes = false;
      for (int resource = 0; resource < MAX_NB_RESOURCES; ++resource) {
@@ -456,7 +456,7 @@ bool AIWarrush::percentageOfBuildingsAreFullyWorked(int percentage)const
        required |= recipe.enabled && recipe.cost[resource] > 0;
       if (!required) continue;
       consumes = true;
-      if (b->resources[resource] <= b->wishedResources[resource] * AI_WARRUSH_HEAVILY_WORKED_RATIO_NUM / AI_WARRUSH_HEAVILY_WORKED_RATIO_DEN) return false;
+      if (observation->buildingResources(*b)[resource] <= b->wishedResources[resource] * AI_WARRUSH_HEAVILY_WORKED_RATIO_NUM / AI_WARRUSH_HEAVILY_WORKED_RATIO_DEN) return false;
      }
      return consumes;
     }())
@@ -649,32 +649,32 @@ std::shared_ptr<Order> AIWarrush::placeGuardAreas()
 			for(int j=0;j<Building::MAX_COUNT;j++)
 			{
 				const AIEngine::BuildingView *b = t->myBuildings[j];
-				if ((b)&&(b->state != Building::DEAD)&&(b->hp != 1 || b->construction == Building::NO_CONSTRUCTION)&&queries->kind(*b).resolvedType.semantics.occupiesGround)
+				if ((b)&&(b->buildingState != Building::DEAD)&&(b->hp != 1 || b->constructionResultState == Building::NO_CONSTRUCTION)&&queries->kind(*b).resolvedType.semantics.occupiesGround)
 				{
 					const BuildingType *bt = &queries->kind(*b).resolvedType;
 					if(
 							//the area must be discovered to prevent AI cheating.
 							(
-									queries->isFOWDiscovered(b->x,               b->y,              observedTeam->view->mask)
-								||	queries->isFOWDiscovered(b->x+bt->width - 1, b->y,              observedTeam->view->mask)
-								||	queries->isFOWDiscovered(b->x+bt->width - 1, b->y+bt->height-1, observedTeam->view->mask)
-								||	queries->isFOWDiscovered(b->x,               b->y+bt->height-1, observedTeam->view->mask)
+									queries->isFOWDiscovered(b->posX,               b->posY,              observedTeam->view->mask)
+								||	queries->isFOWDiscovered(b->posX+bt->width - 1, b->posY,              observedTeam->view->mask)
+								||	queries->isFOWDiscovered(b->posX+bt->width - 1, b->posY+bt->height-1, observedTeam->view->mask)
+								||	queries->isFOWDiscovered(b->posX,               b->posY+bt->height-1, observedTeam->view->mask)
 									)
 							&&
 							//do not order a building attacked if the order is already in place.
 							(
-								!queries->isGuardArea(b->x,b->y,observedTeam->view->mask)
+								!queries->isGuardArea(b->posX,b->posY,observedTeam->view->mask)
 									)			
 										)
 					{
-						if((queries->getBuilding(b->x, b->y)!=NOGBID)&&(observedTeam->view->enemies & teamAt(Building::GIDtoTeam(queries->getBuilding(b->x, b->y)))->view->mask)) //paranoia
+						if((queries->getBuilding(b->posX, b->posY)!=NOGBID)&&(observedTeam->view->enemies & teamAt(Building::GIDtoTeam(queries->getBuilding(b->posX, b->posY)))->view->mask)) //paranoia
 						{
 							telemetry.set(AITrace::AI3::AIWarrush_placeGuardAreas_last_team, i);
 							for(int x = 0; x < bt->width; x++)
 							{
 								for(int y = 0; y < bt->height; y++)
 								{
-									guard_add_acc.applyBrush(BrushApplication((b->x+x) % queries->getW(), (b->y+y) % queries->getH(),AI_WARRUSH_GUARD_BRUSH_SIZE),observation->width,observation->height);
+									guard_add_acc.applyBrush(BrushApplication((b->posX+x) % queries->getW(), (b->posY+y) % queries->getH(),AI_WARRUSH_GUARD_BRUSH_SIZE),observation->width,observation->height);
 								}
 							}
 						}
@@ -883,10 +883,10 @@ std::shared_ptr<Order> AIWarrush::setupExploreFlagForTeam(TeamObservation *enemy
 	for(int j=0;j<Building::MAX_COUNT;j++)
 	{
 		const AIEngine::BuildingView *b = enemy_team->myBuildings[j];
-		if((b)&&(provides(*b, Intent::ProduceWorker))&&(b->construction == Building::NO_CONSTRUCTION))
+		if((b)&&(provides(*b, Intent::ProduceWorker))&&(b->constructionResultState == Building::NO_CONSTRUCTION))
 		{
 			return telemetry.returnedOrder(AITrace::AI3::AIWarrush_setupExploreFlagForTeam_result,
-										   placeNear(b->x, b->y));
+										   placeNear(b->posX, b->posY));
 		}
 	}
 	if(verbose)bufferedDiagnostics.push_back({"", "", [&] { std::ostringstream text; text << "No swarms found\n"; return text.str(); }()});
@@ -897,7 +897,7 @@ std::shared_ptr<Order> AIWarrush::setupExploreFlagForTeam(TeamObservation *enemy
 		if(b)
 		{
 			return telemetry.returnedOrder(AITrace::AI3::AIWarrush_setupExploreFlagForTeam_result,
-										   placeNear(b->x, b->y));
+										   placeNear(b->posX, b->posY));
 		}
 	}
 	if(verbose)bufferedDiagnostics.push_back({"", "", [&] { std::ostringstream text; text << "No buildings found\n"; return text.str(); }()});
@@ -908,7 +908,7 @@ std::shared_ptr<Order> AIWarrush::setupExploreFlagForTeam(TeamObservation *enemy
 		if(u)
 		{
 			return telemetry.returnedOrder(AITrace::AI3::AIWarrush_setupExploreFlagForTeam_result,
-										   placeNear(u->x, u->y));
+										   placeNear(u->posX, u->posY));
 		}
 	}
 	//what, enemy has no buildings or units at the beginning of the game? o_O O_o o_O
@@ -1052,13 +1052,13 @@ std::shared_ptr<Order> AIWarrush::buildBuildingOfType(Intent intent)
 		Sint32 x,y;
 		Sint32 x_temp,y_temp;
 		
-		x = swarm->x; y = swarm->y;
+		x = swarm->posX; y = swarm->posY;
 		
   if(needsResource && queries->getGlobalGradientDestination(resource_gradient.c_array(), x, y, &x_temp, &y_temp))
   { x = x_temp; y = y_temp; }
 		bool result = queries->getGlobalGradientDestination(availability_gradient.c_array(), x, y, &destination_x, &destination_y);
 		
-		if(verbose)bufferedDiagnostics.push_back({"", "", [&] { std::ostringstream text; text << "Trying to build " << static_cast<unsigned>(intent) << "(" << bt->width << " x " << bt->height << ")" << " at " << destination_x << "," << destination_y << " from " << x << "," << y << " swarm is " << swarm->x << "," << swarm->y << ", found = " << result << std::endl; return text.str(); }()});
+		if(verbose)bufferedDiagnostics.push_back({"", "", [&] { std::ostringstream text; text << "Trying to build " << static_cast<unsigned>(intent) << "(" << bt->width << " x " << bt->height << ")" << " at " << destination_x << "," << destination_y << " from " << x << "," << y << " swarm is " << swarm->posX << "," << swarm->posY << ", found = " << result << std::endl; return text.str(); }()});
 		if(verbose)if((int)availability_gradient(destination_x, destination_y) != AI_WARRUSH_GRADIENT_MAX)bufferedDiagnostics.push_back({"", "", [&] { std::ostringstream text; text << "Could not find valid location for building! Best spot: " << destination_x << "," << destination_y << " (" << (int)availability_gradient(destination_x, destination_y) << ")\n"; return text.str(); }()});
 	}
 		

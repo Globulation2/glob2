@@ -188,8 +188,8 @@ AIEngine::Command AI::decide(const AIEngine::DecisionContext& context)
 	if (implementationID != JAVASCRIPT && context.world.rules.upgradesDisabled)
 		for (const auto& b : context.world.buildings)
 		{
-			if (b.team != int(context.team) || b.workers <= 0) continue;
-			const auto& kind = context.world.catalog->at(b.type);
+			if (b.team != int(context.team) || b.maxUnitWorking <= 0) continue;
+			const auto& kind = context.world.catalog->at(b.typeNum);
 			if (kind.site || !AIRules::trainingBuilding(kind.resolvedType)) continue;
 			bool useful = false;
 			for (unsigned i = 0; i < unsigned(AIPlanning::BuildingIntent::Count); ++i) {

@@ -66,7 +66,7 @@ bool Map::directionByGradient(Uint32 teamMask, int swimClass, int x, int y, cons
 		Uint16 g = gradient[n];
 		if (g <= GRADIENT_UNREACHABLE || !isFreeForGroundUnit(x + ddx, y + ddy, canSwim, teamMask))
 			continue;
-		if (guardAreaMask && !(tiles[n].guardArea & guardAreaMask))
+		if (guardAreaMask && !(areaCells[n].guard & guardAreaMask))
 			continue;
 		if (g > here)
 		{

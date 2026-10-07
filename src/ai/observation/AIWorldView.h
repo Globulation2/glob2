@@ -23,7 +23,8 @@ class AIWorldView
 	const SimulationSnapshot::ResourceCell* resourceCells = nullptr;
 	const SimulationSnapshot::OccupancyCell* occupancyCells = nullptr;
 	const SimulationSnapshot::AreaCell* areaCells = nullptr;
-	const SimulationSnapshot::VisibilityCell* visibilityCells = nullptr;
+	const Uint32* discoveredCells = nullptr;
+	const Uint32* visibleCells = nullptr;
 	int xMask = -1, yMask = -1;
 	unsigned widthShift = 0;
 	bool maskedGeometry = false, farmInputs = false;
@@ -75,6 +76,13 @@ public:
 		TileView at(std::size_t index) const
 		{ if (index >= size()) throw std::out_of_range("snapshot tile index"); return world->composeTile(index); }
 	} tiles;
+	// Shared stock queries require a captured Teams component. Local stock is
+	// part of the building's authoritative scalar record.
+	std::span<const Sint32, MAX_NB_RESOURCES> buildingResources(const BuildingView& building) const
+	{
+		if (building.usesTeamResources) return teams[building.team].resources;
+		return building.localResource;
+	}
 	std::span<const UnitRef> workers(const BuildingView& building) const
 	{ return std::span<const UnitRef>(lease.entities->relationships).subspan(building.working.offset, building.working.count); }
 	std::span<const UnitRef> occupants(const BuildingView& building) const
@@ -97,7 +105,7 @@ public:
 	const SimulationSnapshot::ResourceCell& resourceAt(std::size_t index) const { return resourceCells[index]; }
 	const SimulationSnapshot::OccupancyCell& occupancyAt(std::size_t index) const { return occupancyCells[index]; }
 	const SimulationSnapshot::AreaCell& areasAt(std::size_t index) const { return areaCells[index]; }
-	const SimulationSnapshot::VisibilityCell& visibilityAt(std::size_t index) const { return visibilityCells[index]; }
+	SimulationSnapshot::VisibilityCell visibilityAt(std::size_t index) const { return {discoveredCells[index], visibleCells[index]}; }
 	bool canPaintFarmAt(std::size_t index) const;
 	int normalizeX(int x) const { return xMask >= 0 ? unsigned(x) & unsigned(xMask) : wrapGeneral(x, width); }
 	int normalizeY(int y) const { return yMask >= 0 ? unsigned(y) & unsigned(yMask) : wrapGeneral(y, height); }

@@ -83,7 +83,7 @@ public:
  }
  void reserve(int type,int x,int y) { reservations.push_back({type,x,y}); }
  const Kind& kind(int type) const { return world.catalog->at(type); }
- const Kind& kind(const Building& b) const { return kind(b.type); }
+ const Kind& kind(const Building& b) const { return kind(b.typeNum); }
  Uint64 rawIntentMask(int type) const { return kind(type).rawCapabilityMask; }
  int lineagePosition(int type) const { return kind(type).lineagePosition; }
  bool matches(int type,Intent intent) const { return kind(type).rawCapabilityMask & (Uint64(1)<<unsigned(intent)); }
@@ -101,7 +101,7 @@ public:
   return true;
  }
  bool provides(const Building& b,Intent intent) const
- { const auto& type=kind(b); return matches(type.site?type.next:b.type,intent); }
+ { const auto& type=kind(b); return matches(type.site?type.next:b.typeNum,intent); }
  std::vector<int> placements(Intent intent,bool costOrder=false) const
  {
   std::vector<int> result;
@@ -136,7 +136,7 @@ public:
   }
   if(k.isVirtual) {
    for(const auto identity:world.teams[owner].virtualBuildings)
-    if(const auto* b=world.building(identity);b && b->x==world.normalizeX(x) && b->y==world.normalizeY(y)) return false;
+    if(const auto* b=world.building(identity);b && b->posX==world.normalizeX(x) && b->posY==world.normalizeY(y)) return false;
    return true;
   }
   if(!isFreeForBuilding(x,y,k.width,k.height)) return false;
@@ -149,7 +149,7 @@ public:
   const auto& current=kind(b);
   if(world.rules.upgradesDisabled || current.next<0) return false;
   const auto& next=kind(current.next);
-  return next.isVirtual || isFreeForBuilding(b.x+next.decLeft-current.decLeft,b.y+next.decTop-current.decTop,
+  return next.isVirtual || isFreeForBuilding(b.posX+next.decLeft-current.decLeft,b.posY+next.decTop-current.decTop,
    next.width,next.height,true,b.identity.gid);
  }
  std::shared_ptr<Order> createOrder(int owner,int x,int y,int type,int workers,int futureWorkers) const
@@ -161,10 +161,10 @@ public:
  std::shared_ptr<Order> constructionOrder(const Building& b,int workers,int futureWorkers) const
  {
   const auto& k=kind(b);
-  const bool repair=k.site?b.construction==::Building::REPAIR:b.hp<b.maxHp;
-  const int target=k.site?b.type:repair?k.previous:k.next;
+  const bool repair=k.site?b.constructionResultState==::Building::REPAIR:b.hp<b.maxHp;
+  const int target=k.site?b.typeNum:repair?k.previous:k.next;
   const auto& placement=target>=0?kind(target):k;
-  const int origin=k.site?b.originType:b.type;
+  const int origin=k.site?b.constructionOriginTypeNum:b.typeNum;
   const auto& completed=repair && origin>=0?kind(origin):placement.site?kind(placement.next):placement;
   return std::make_shared<OrderConstruction>(b.identity.gid,std::clamp(workers,0,placement.semantics.assignmentLimit),
    std::clamp(futureWorkers,0,completed.semantics.assignmentLimit));
@@ -231,8 +231,8 @@ public:
  {
   unsigned required=0,provided=0;const Building* anchor=nullptr;
   for(unsigned unit=0;unit<NB_UNIT_TYPE;++unit) if(desired[unit]>0 && allowed(Intent(unit))) required |= 1u<<unit;
-  for(const auto& b:world.buildings) if(b.team==team && b.state==::Building::ALIVE) {
-   const auto& k=kind(b); const int completed=k.site?(b.construction==::Building::REPAIR && b.originType>=0?b.originType:k.next):b.type;
+  for(const auto& b:world.buildings) if(b.team==team && b.buildingState==::Building::ALIVE) {
+   const auto& k=kind(b); const int completed=k.site?(b.constructionResultState==::Building::REPAIR && b.constructionOriginTypeNum>=0?b.constructionOriginTypeNum:k.next):b.typeNum;
    provided |= unsigned(kind(completed).rawCapabilityMask)&7u;
    if(!anchor || (!k.site && (k.rawCapabilityMask & 7u))) anchor=&b;
    if((provided & required)==required) return {};
@@ -249,7 +249,7 @@ public:
     if(!eligible) continue;
     for(int radius=1;radius<=32;++radius) for(int dx=-radius;dx<=radius;++dx) for(int dy=-radius;dy<=radius;++dy) {
      if(std::abs(dx)!=radius && std::abs(dy)!=radius) continue;
-     const int x=world.normalizeX(anchor->x+dx),y=world.normalizeY(anchor->y+dy);
+     const int x=world.normalizeX(anchor->posX+dx),y=world.normalizeY(anchor->posY+dy);
      if(!(world.visibilityAt(world.tileIndex(x,y)).discovered & world.teams[team].allies) || !checkRoomForBuilding(x,y,type,team)) continue;
      return createOrder(team,x,y,type,workers,futureWorkers);
     }

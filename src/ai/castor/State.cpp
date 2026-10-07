@@ -53,7 +53,7 @@ void AICastor::computeCanSwim()
 	for (int i=0; i<Unit::MAX_COUNT; i++)
 	{
 		const AIEngine::UnitView *u=myUnits[i];
-		if (u && u->type==WORKER && u->medical==0)
+		if (u && u->typeNum==WORKER && u->medical==0)
 		{
 			if (u->performance[SWIM]>0)
 				sumCanSwim++;
@@ -111,8 +111,8 @@ void AICastor::computeBuildingSum()
 		const AIEngine::BuildingView *b=myBuildings[i];
 		if (b)
 		{
-   const bool upgrading = b->state==Building::WAITING_FOR_CONSTRUCTION && b->construction==Building::UPGRADE;
-   int completed = queries->kind(*b).resolvedType.isBuildingSite ? queries->kind(*b).resolvedType.nextLevel : b->type;
+   const bool upgrading = b->buildingState==Building::WAITING_FOR_CONSTRUCTION && b->constructionResultState==Building::UPGRADE;
+   int completed = queries->kind(*b).resolvedType.isBuildingSite ? queries->kind(*b).resolvedType.nextLevel : b->typeNum;
    if (upgrading && queries->kind(*b).resolvedType.nextLevel >= 0) {
     const auto* next = (&queries->kind(queries->kind(*b).resolvedType.nextLevel).resolvedType);
     completed = next->isBuildingSite ? next->nextLevel : queries->kind(*b).resolvedType.nextLevel;
@@ -197,7 +197,7 @@ void AICastor::computeWarLevel()
 	for (int i=0; i<Unit::MAX_COUNT; i++)
 	{
 		const AIEngine::UnitView *u=myUnits[i];
-		if (u && u->medical==Unit::MED_FREE && u->type==WARRIOR)
+		if (u && u->medical==Unit::MED_FREE && u->typeNum==WARRIOR)
 			warPowerSum+=u->performance[ATTACK_SPEED]*u->performance[ATTACK_STRENGTH]*glassCannonScale;
 	}
 	if (warPowerSum<strategy.strikeWarPowerTriggerDown)

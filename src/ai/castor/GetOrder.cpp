@@ -53,7 +53,7 @@ std::shared_ptr<Order> AICastor::getOrder(const AIEngine::DecisionContext& conte
  std::erase_if(pendingCreates,[&](const auto& intent){
   for(const auto& project:context.world.buildProjects) if(project.teamNumber==teamNumber && project.typeNum==intent.type && context.world.normalizeX(project.posX)==context.world.normalizeX(intent.x) && context.world.normalizeY(project.posY)==context.world.normalizeY(intent.y)) return true;
   const auto& kind=context.world.catalog->at(intent.type);
-  for(const auto& b:context.world.buildings) if(b.team==teamNumber && (b.type==intent.type || (kind.site && b.type==kind.next)) && b.x==context.world.normalizeX(intent.x) && b.y==context.world.normalizeY(intent.y)) return true;
+  for(const auto& b:context.world.buildings) if(b.team==teamNumber && (b.typeNum==intent.type || (kind.site && b.typeNum==kind.next)) && b.posX==context.world.normalizeX(intent.x) && b.posY==context.world.normalizeY(intent.y)) return true;
   return false;
  });
  AIEngine::WorldQueries captured(context.world,teamNumber,resourceInitializations,context.resourceEnrollments);

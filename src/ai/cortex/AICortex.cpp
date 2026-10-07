@@ -1123,7 +1123,7 @@ void AICortex::rememberIssued(Order& order,const AIEngine::DecisionContext& cont
     const BuildingType* type=nullptr;
     if(dynamic_cast<const OrderConstruction*>(&order)) {
         const auto* building=context.world.building(pending.target);
-        if(building) type=world.buildingsTypes.get(building->type);
+        if(building) type=world.buildingsTypes.get(building->typeNum);
         if(pending.upgradeType<0 && type && pendingUpgradeType>=0 && Cortex::servesRole(world,*type,pendingUpgradeType)) {
             pending.upgradeType=pendingUpgradeType;pending.upgradeUntil=pendingUpgradeUntil;
         }

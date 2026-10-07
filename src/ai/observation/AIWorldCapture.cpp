@@ -26,7 +26,12 @@ AIWorldView::AIWorldView(SimulationSnapshot::Handle captured) : lease(std::move(
 	bind(lease.resources, SimulationSnapshot::Component::Resources, resourceCells);
 	bind(lease.occupancy, SimulationSnapshot::Component::Occupancy, occupancyCells);
 	bind(lease.areas, SimulationSnapshot::Component::Areas, areaCells);
-	bind(lease.visibility, SimulationSnapshot::Component::Visibility, visibilityCells);
+	if (lease.visibility) {
+        if (lease.visibility->discovered.size()!=cells || lease.visibility->visible.size()!=cells)
+            throw std::logic_error("AI observation visibility size mismatch");
+        discoveredCells=lease.visibility->discovered.data(); visibleCells=lease.visibility->visible.data();
+    } else if (SimulationSnapshot::needs(lease.requirements, SimulationSnapshot::Component::Visibility))
+        throw std::logic_error("AI observation is missing requested visibility");
 	if (lease.terrain) {
 		if (!lease.terrain->identity || lease.terrain->identity->size() != cells || lease.terrain->legacy.size() != cells)
 			throw std::logic_error("AI observation terrain component size mismatch");

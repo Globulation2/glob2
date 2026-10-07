@@ -75,7 +75,12 @@ namespace
 			size = static_cast<size_t>(w * h);
 			// Test-only private access initializes the deliberately partial map;
 			// subsequent mutations use the same cache notifications as gameplay.
-			tiles.assign(size, Tile());   // Tile() defaults: terrain=0 (grass), no building, no unit
+			resourceCells.assign(size, {});
+			for (auto &cell : resourceCells) cell.mayGrow = 1;
+			occupancyCells.assign(size, {});
+			areaCells.assign(size, {});
+			legacyTerrain.assign(size, 0);
+			scriptAreaCells.assign(size, 0);   // Tile() defaults: terrain=0 (grass), no building, no unit
             importLegacyTerrain();
 		}
 		void enableRouting() { aStarPoints = new AStarAlgorithmPoint[size]; }

@@ -90,8 +90,9 @@ void Map::seedResourcesGradientWithSuppliers(int teamNumber, Uint8 resourceType,
 	if ((modes&2) || game->buildingsTypes.usesOverlaySuppliers())
 	{
 		const Uint32 teamMask=Team::teamNumberToMask(teamNumber);
-		const Tile *tile = tiles.data();
-		const Uint8 *immobile = immobileUnits;
+		const auto *occupancy = occupancyCells.data();
+		const auto *areas = areaCells.data();
+
 		visitSuppliers([&](const Building* supplier) {
 			const Uint16 seed = supplierSeeds[Building::GIDtoID(supplier->gid)];
 			if (supplier->runtime->has(BuildingRuntimeTraits::OccupiesGround) || seed <= GRADIENT_UNREACHABLE) return;
@@ -99,7 +100,7 @@ void Map::seedResourcesGradientWithSuppliers(int teamNumber, Uint8 resourceType,
 				for (int x=0; x<supplier->type->width; ++x)
 				{
 					const size_t i = coordToIndex(supplier->posX+x, supplier->posY+y);
-					if (!(tile[i].forbidden & teamMask) && immobile[i] == IMMOBILE_UNIT_NONE)
+					if (!(areas[i].forbidden & teamMask) && occupancy[i].immobileUnit == IMMOBILE_UNIT_NONE)
 						gradient[i] = std::max(gradient[i], seed);
 				}
 		});
@@ -117,8 +118,10 @@ void Map::seedResourcesGradientDirect(int teamNumber, Uint8 resourceType, int sw
 	assert(globalContainer);
 	// Only fogged resources of a type that must be seen to be collected are hidden.
 	const bool hideFogged = globalContainer->resourcesTypes.get(resourceType)->visibleToBeCollected;
-	const Tile *tile = tiles.data();
-	const Uint8 *immobile = immobileUnits;
+	const auto *resources = resourceCells.data();
+	const auto *occupancy = occupancyCells.data();
+	const auto *areas = areaCells.data();
+
 	const Uint32 *fog = fogOfWar;
 	gradient_preparation::withTerrain(*this, canSwim, [&](auto terrainAt) {
 		// Compile-time tags select four kernels, removing market and visibility
@@ -127,23 +130,23 @@ void Map::seedResourcesGradientDirect(int teamNumber, Uint8 resourceType, int sw
 			initializeGradientCells([&](size_t begin, size_t end) {
 				for (size_t i = begin; i < end; ++i)
 				{
-					const Tile &c = tile[i];
+
 					Uint16 value = GRADIENT_FORBIDDEN;
-					if (!(c.forbidden & teamMask) && immobile[i] == IMMOBILE_UNIT_NONE)
+					if (!(areas[i].forbidden & teamMask) && occupancy[i].immobileUnit == IMMOBILE_UNIT_NONE)
 					{
-						if (c.resource.type == NO_RES_TYPE)
+						if (resources[i].resource.type == NO_RES_TYPE)
 						{
-							if (c.building == NOGBID)
+							if (occupancy[i].building == NOGBID)
 								value = terrainAt(i).open;
 							else if constexpr (decltype(marketsTag)::value)
 							{
 								// GIDs are contiguous per team. Unsigned subtraction
 								// rejects foreign and invalid IDs before indexing.
-								const unsigned localId=unsigned(c.building)-teamBuildingBase;
+								const unsigned localId=unsigned(occupancy[i].building)-teamBuildingBase;
 								if (localId<Building::MAX_COUNT) value=supplierSeeds[localId];
 							}
 						}
-						else if (c.resource.type == resourceType)
+						else if (resources[i].resource.type == resourceType)
 						{
 							// Resource goals override terrain/buildings, but not
 							// the forbidden/immobile blockers checked above.

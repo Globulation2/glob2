@@ -66,16 +66,16 @@ void Map::updateForbiddenGradient(int teamNumber, int swimClass)
 	initializeGradientCells([&](size_t begin, size_t end) {
 	for (size_t i=begin; i<end; i++)
 	{
-		const Tile& c=tiles[i];
-		if (c.resource.type!=NO_RES_TYPE)
+
+		if (resourceCells[i].resource.type!=NO_RES_TYPE)
 			gradient[i] = GRADIENT_FORBIDDEN;
-		else if (c.building!=NOGBID)
+		else if (occupancyCells[i].building!=NOGBID)
 			gradient[i] = GRADIENT_FORBIDDEN;
 		else if (!terrainPropertiesAt(i).walkable && !(canSwim && terrainPropertiesAt(i).swimmable))
 			gradient[i] = GRADIENT_FORBIDDEN;
-		else if(immobileUnits[i] != IMMOBILE_UNIT_NONE)
+		else if(occupancyCells[i].immobileUnit != IMMOBILE_UNIT_NONE)
 			gradient[i] = GRADIENT_FORBIDDEN;
-		else if (c.forbidden&teamMask)
+		else if (areaCells[i].forbidden&teamMask)
 			gradient[i] = GRADIENT_UNREACHABLE;
 		else
 			gradient[i] = GRADIENT_AT_GOAL;
@@ -259,18 +259,18 @@ void Map::seedGuardAreasGradient(int teamNumber, int swimClass, Uint16 *gradient
 	size_t paintedHere = 0;
 	for (size_t i=begin; i<end; i++)
 	{
-		const Tile& c=tiles[i];
-		if (c.forbidden & teamMask)
+
+		if (areaCells[i].forbidden & teamMask)
 			gradient[i] = GRADIENT_FORBIDDEN;
-		else if(immobileUnits[i] != IMMOBILE_UNIT_NONE)
+		else if(occupancyCells[i].immobileUnit != IMMOBILE_UNIT_NONE)
 			gradient[i] = GRADIENT_FORBIDDEN;
-		else if (c.resource.type != NO_RES_TYPE)
+		else if (resourceCells[i].resource.type != NO_RES_TYPE)
 			gradient[i] = GRADIENT_FORBIDDEN;
-		else if (c.building != NOGBID && (1<<Building::GIDtoTeam(c.building)) & (game->teams[teamNumber]->allies))
+		else if (occupancyCells[i].building != NOGBID && (1<<Building::GIDtoTeam(occupancyCells[i].building)) & (game->teams[teamNumber]->allies))
 			gradient[i] = GRADIENT_FORBIDDEN;
 		else if (!terrainPropertiesAt(i).walkable && !(canSwim && terrainPropertiesAt(i).swimmable))
 			gradient[i] = GRADIENT_FORBIDDEN;
-		else if (c.guardArea & teamMask)
+		else if (areaCells[i].guard & teamMask)
 		{
 			gradient[i] = GRADIENT_AT_GOAL;
 			++paintedHere;
@@ -327,19 +327,19 @@ void Map::seedClearAreasGradient(int teamNumber, int swimClass, Uint16 *gradient
 		initializeGradientCells([&](size_t begin, size_t end) {
 			for (size_t i = begin; i < end; ++i)
 			{
-				const Tile &c = tiles[i];
+
 				Uint16 value = GRADIENT_FORBIDDEN;
-				if (!(c.forbidden & teamMask))
+				if (!(areaCells[i].forbidden & teamMask))
 				{
-					if (c.resource.type != NO_RES_TYPE)
+					if (resourceCells[i].resource.type != NO_RES_TYPE)
 					{
-						if (clearable[c.resource.type] &&
-							((c.clearArea & teamMask) ||
-							 (farmAreas && (c.farmArea & teamMask) &&
-							  c.resource.type != terrainAt(i).farmCrop)))
+						if (clearable[resourceCells[i].resource.type] &&
+							((areaCells[i].clear & teamMask) ||
+							 (farmAreas && (areaCells[i].farm & teamMask) &&
+							  resourceCells[i].resource.type != terrainAt(i).farmCrop)))
 							value = GRADIENT_AT_GOAL;
 					}
-					else if (immobileUnits[i] == IMMOBILE_UNIT_NONE && c.building == NOGBID)
+					else if (occupancyCells[i].immobileUnit == IMMOBILE_UNIT_NONE && occupancyCells[i].building == NOGBID)
 						value = terrainAt(i).open;
 				}
 				gradient[i] = value;

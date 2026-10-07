@@ -21,8 +21,8 @@ void scalarResource(Map &m, int team, int resource, int swim, Uint16 *out, bool 
 	const bool hide = globalContainer->resourcesTypes.get(resource)->visibleToBeCollected;
 	for (size_t i = 0; i < m.size; ++i)
 	{
-		const auto &c = m.tiles[i];
-		if ((c.forbidden & mask) || m.immobileUnits[i] != IMMOBILE_UNIT_NONE)
+		const auto c = m.getTile(size_t(i));
+		if ((c.forbidden & mask) || m.occupancyCells[i].immobileUnit != IMMOBILE_UNIT_NONE)
 			out[i] = GRADIENT_FORBIDDEN;
 		else if (c.resource.type == NO_RES_TYPE)
 		{
@@ -46,12 +46,12 @@ void scalarClear(Map &m, int team, int swim, Uint16 *out)
 	const Uint32 mask = Team::teamNumberToMask(team);
 	for (size_t i = 0; i < m.size; ++i)
 	{
-		const auto &c = m.tiles[i];
+		const auto c = m.getTile(size_t(i));
 		if (c.forbidden & mask)
 			out[i] = GRADIENT_FORBIDDEN;
 		else if (m.isClearingTarget(i, mask, m.farmAreasEnabled()))
 			out[i] = GRADIENT_AT_GOAL;
-		else if (m.immobileUnits[i] != IMMOBILE_UNIT_NONE)
+		else if (m.occupancyCells[i].immobileUnit != IMMOBILE_UNIT_NONE)
 			out[i] = GRADIENT_FORBIDDEN;
 		else if (c.resource.type != NO_RES_TYPE)
 			out[i] = GRADIENT_FORBIDDEN;
@@ -70,10 +70,10 @@ void scalarGuard(Map &m, int team, int swim, Uint16 *out)
 	bool painted = false;
 	for (size_t i = 0; i < m.size; ++i)
 	{
-		const auto &c = m.tiles[i];
+		const auto c = m.getTile(size_t(i));
 		if (c.forbidden & mask)
 			out[i] = GRADIENT_FORBIDDEN;
-		else if (m.immobileUnits[i] != IMMOBILE_UNIT_NONE)
+		else if (m.occupancyCells[i].immobileUnit != IMMOBILE_UNIT_NONE)
 			out[i] = GRADIENT_FORBIDDEN;
 		else if (c.resource.type != NO_RES_TYPE)
 			out[i] = GRADIENT_FORBIDDEN;
@@ -117,7 +117,7 @@ void requireSameField(const Map &map, const char *field,
 
 static_assert(std::is_const_v<std::remove_reference_t<decltype(std::declval<Map &>().getTile(0, 0))>>);
 static_assert(std::is_const_v<std::remove_reference_t<decltype(std::declval<Map &>().getResource(0, 0))>>);
-static_assert(std::is_const_v<std::remove_reference_t<decltype(std::declval<Map &>().getTiles())>>);
+static_assert(std::is_const_v<std::remove_reference_t<decltype(std::declval<Map &>().resourceState()[0])>>);
 
 TEST_SUITE("GradientPreparation")
 {
@@ -314,7 +314,7 @@ TEST_SUITE("GradientPreparation")
 		// Reads and amount-only changes are irrelevant to seed contents.
 		(void)m.getTile(0);
 		(void)m.getResource(0);
-		(void)m.getTiles();
+		(void)m.resourceState();
 		m.setResourceAmount(0, 2);
 		m.setResourcesGrow(0, 0, 255);
 		CHECK(m.getTile(0).canResourcesGrow == 255);
@@ -583,15 +583,15 @@ TEST_SUITE("GradientPreparation")
 		for (unsigned fog=0; fog<4; ++fog, ++i)
 		{
 			REQUIRE(i < m.size);
-			auto &c = m.tiles[i];
+
 			m.setCellTerrain(i, static_cast<TerrainType>(terrain));
-			c.resource.type = resource == MAX_RESOURCES ? NO_RES_TYPE : resource;
-			c.forbidden = forbidden;
-			m.immobileUnits[i] = immobile ? 0 : IMMOBILE_UNIT_NONE;
-			c.building = building == 0 ? NOGBID : building == 1 ? market0->gid : market1->gid;
-			c.clearArea = area;
-			c.farmArea = area ^ 3;
-			c.guardArea = area;
+			m.resourceCells[i].resource.type = resource == MAX_RESOURCES ? NO_RES_TYPE : resource;
+			m.areaCells[i].forbidden = forbidden;
+			m.occupancyCells[i].immobileUnit = immobile ? 0 : IMMOBILE_UNIT_NONE;
+			m.occupancyCells[i].building = building == 0 ? NOGBID : building == 1 ? market0->gid : market1->gid;
+			m.areaCells[i].clear = area;
+			m.areaCells[i].farm = area ^ 3;
+			m.areaCells[i].guard = area;
 			m.fogOfWarA[i] = fog;
 			m.fogOfWarB[i] = fog ^ 3;
 		}
@@ -655,13 +655,13 @@ TEST_SUITE("GradientPreparation")
 		world.game.gameHeader.getExperiments().set(ExperimentId::FarmAreas, true);
 		for (size_t i=0; i<m.size; ++i)
 		{
-			auto &c = m.tiles[i];
+
 			const Uint32 mask = Team::teamNumberToMask(i % Team::MAX_COUNT);
 			m.setCellTerrain(i, static_cast<TerrainType>(i % TERRAIN_COUNT));
-			c.resource.type = i % (MAX_RESOURCES + 1) == MAX_RESOURCES ? NO_RES_TYPE : i % (MAX_RESOURCES + 1);
-			c.forbidden = i & 1 ? mask : ~mask;
-			c.clearArea = i & 2 ? mask : 0;
-			c.farmArea = i & 4 ? mask : 0;
+			m.resourceCells[i].resource.type = i % (MAX_RESOURCES + 1) == MAX_RESOURCES ? NO_RES_TYPE : i % (MAX_RESOURCES + 1);
+			m.areaCells[i].forbidden = i & 1 ? mask : ~mask;
+			m.areaCells[i].clear = i & 2 ? mask : 0;
+			m.areaCells[i].farm = i & 4 ? mask : 0;
 			m.fogOfWar[i] = i & 8 ? mask : ~mask;
 		}
 		std::vector<Uint16> expected(m.size), actual(m.size);
@@ -694,27 +694,27 @@ TEST_SUITE("GradientPreparation")
 		{
 			CAPTURE(terrain);
 			m.setCellTerrain(0, terrain);
-			auto &cell = m.tiles[0];
-			cell.resource.type = terrainProperties(terrain).farmCrop;
-			REQUIRE(globalContainer->resourcesTypes.get(cell.resource.type)->clearable);
-			cell.farmArea = teamMask;
-			cell.building = 42;
-			m.immobileUnits[0] = 0;
+
+			m.resourceCells[0].resource.type = terrainProperties(terrain).farmCrop;
+			REQUIRE(globalContainer->resourcesTypes.get(m.resourceCells[0].resource.type)->clearable);
+			m.areaCells[0].farm = teamMask;
+			m.occupancyCells[0].building = 42;
+			m.occupancyCells[0].immobileUnit = 0;
 			for (bool farming : {false, true})
 			{
 				CAPTURE(farming);
 				world.game.gameHeader.getExperiments().set(ExperimentId::FarmAreas, farming);
-				cell.forbidden = 0;
-				cell.clearArea = 0;
+				m.areaCells[0].forbidden = 0;
+				m.areaCells[0].clear = 0;
 				m.seedClearAreasGradient(0, 0, actual.data());
 				REQUIRE(actual[0] == GRADIENT_FORBIDDEN);
 
 				// Explicit clearing wins even on water and an occupied cell.
-				cell.clearArea = teamMask;
+				m.areaCells[0].clear = teamMask;
 				m.seedClearAreasGradient(0, 0, actual.data());
 				REQUIRE(actual[0] == GRADIENT_AT_GOAL);
 
-				cell.forbidden = teamMask;
+				m.areaCells[0].forbidden = teamMask;
 				m.seedClearAreasGradient(0, 0, actual.data());
 				REQUIRE(actual[0] == GRADIENT_FORBIDDEN);
 			}

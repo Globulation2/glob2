@@ -217,11 +217,11 @@ bool AINumbi::findNewEmplacement(Intent intent, int typeNum, int *posX, int *pos
 		for (const auto& recipe : p.production.recipes)
 			needs[resource] = needs[resource] || (recipe.enabled && recipe.cost[resource] > 0);
 	}
-	const int initial = nbFreeAround(origin->x, origin->y, width, height);
+	const int initial = nbFreeAround(origin->posX, origin->posY, width, height);
 	if (initial <= AI_NUMBI_PLACEMENT_SCORE_MIN && placement->semantics.occupiesGround)
 	{ nextMainBuilding(intent); return result(false); }
 	const int margin = provides(*origin, Intent::ProduceWorker) ? AI_NUMBI_SWARM_MARGIN : 0;
-	const int bx = origin->x + observation->width, by = origin->y + observation->height;
+	const int bx = origin->posX + observation->width, by = origin->posY + observation->height;
 	int sx = bx-width-margin, sy = by-height-margin;
 	int px = sx+1, py = sy, mx = bx+queries->kind(*origin).width+margin;
 	int my = by+queries->kind(*origin).height+margin, dx = 1, dy = 0;

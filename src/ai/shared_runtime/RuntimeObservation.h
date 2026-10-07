@@ -185,14 +185,15 @@ struct World
         buildingValues.reserve(world.buildings.size());
         for(const auto& value:world.buildings) {
             Building building;building.gid=value.identity.gid;building.scriptIdentity=value.identity.generation;
-            building.typeNum=value.type;building.type=buildingsTypes.get(value.type);building.team=teams[value.team];
-            building.posX=value.x;building.posY=value.y;building.buildingState=value.state;building.constructionResultState=value.construction;
-            building.hp=value.hp;building.maxHp=value.maxHp;building.maxUnitWorking=value.workers;building.maxUnitWorkingFuture=value.futureWorkers;
-            building.desiredMaxUnitWorking=value.desiredWorkers;building.bullets=value.bullets;
-            building.maxUnitInside=value.maxInside;building.unitStayRange=value.range;building.priority=value.priority;
-            building.minLevelToFlag=value.minimumLevel;building.minLevelToWorker=value.minimumWorkerLevel;
-            building.seenByMask=value.seenBy;building.underAttackTimer=value.underAttack;building.resources=value.resources;building.ratio=value.ratios;
-            building.locked=value.locked;building.originType=value.originType;building.upgradeAvailable=value.upgradeAvailable;
+            building.typeNum=value.typeNum;building.type=buildingsTypes.get(value.typeNum);building.team=teams[value.team];
+            building.posX=value.posX;building.posY=value.posY;building.buildingState=value.buildingState;building.constructionResultState=value.constructionResultState;
+            building.hp=value.hp;building.maxHp=value.maxHp;building.maxUnitWorking=value.maxUnitWorking;building.maxUnitWorkingFuture=value.maxUnitWorkingFuture;
+            building.desiredMaxUnitWorking=value.desiredMaxUnitWorking;building.bullets=value.bullets;
+            building.maxUnitInside=value.maxUnitInside;building.unitStayRange=value.unitStayRange;building.priority=value.priority;
+            building.minLevelToFlag=value.minLevelToFlag;building.minLevelToWorker=value.minWorkerLevelToFlag;
+            building.seenByMask=value.seenByMask;building.underAttackTimer=value.underAttackTimer;std::copy_n(world.buildingResources(value).data(),MAX_NB_RESOURCES,building.resources.begin());
+            std::copy_n(value.ratio,NB_UNIT_TYPE,building.ratio.begin());
+            std::copy_n(value.locked,BUILDING_ACCESS_COUNT,building.locked.begin());building.originType=value.constructionOriginTypeNum;building.upgradeAvailable=value.upgradeAvailable;
             building.hardSpaceUpgrade=value.hardSpaceUpgrade;building.hardSpaceRepair=value.hardSpaceRepair;
             buildingValues.push_back(std::move(building));
         }
@@ -201,11 +202,11 @@ struct World
             if(auto* building=teams[value.number]->myBuildings[::Building::GIDtoID(ref.gid)]) teams[value.number]->swarms.push_back(building);
         unitValues.reserve(world.units.size());
         for(const auto& value:world.units) {
-            Unit unit;unit.team=teams[value.team];unit.gid=value.identity.gid;unit.scriptIdentity=value.identity.generation;unit.typeNum=value.type;unit.posX=value.x;unit.posY=value.y;
-            unit.trigHungry=value.hungryTrigger;unit.hungriness=value.hungriness;unit.medical=value.medical;unit.displacement=value.displacement;unit.hp=value.hp;unit.isDead=value.dead;
+            Unit unit;unit.team=teams[value.team];unit.gid=value.identity.gid;unit.scriptIdentity=value.identity.generation;unit.typeNum=value.typeNum;unit.posX=value.posX;unit.posY=value.posY;
+            unit.trigHungry=value.trigHungry;unit.hungriness=value.hungriness;unit.medical=value.medical;unit.displacement=value.displacement;unit.hp=value.hp;unit.isDead=value.isDead;
             unit.carriedResource=value.carriedResource;unit.destinationPurpose=value.destinationPurpose;unit.constructionLevel=value.constructionLevel;
-            unit.experienceLevel=value.experienceLevel;unit.attackScale=gameHeader.getGlassCannonScale();unit.performance=value.performance;unit.level=value.levels;unit.canLearn=value.canLearn;
-            unit.activity=value.activity;unit.movement=value.movement;unit.underAttackTimer=value.underAttack;
+            unit.experienceLevel=value.experienceLevel;unit.attackScale=gameHeader.getGlassCannonScale();std::copy_n(value.performance, NB_ABILITY, unit.performance.begin());std::copy_n(value.level, NB_ABILITY, unit.level.begin());std::copy_n(value.canLearn, NB_ABILITY, unit.canLearn.begin());
+            unit.activity=value.activity;unit.movement=value.movement;unit.underAttackTimer=value.underAttackTimer;
             unitValues.push_back(unit);
         }
         for(auto& unit:unitValues) teams[::Unit::GIDtoTeam(unit.gid)]->myUnits[::Unit::GIDtoID(unit.gid)]=&unit;

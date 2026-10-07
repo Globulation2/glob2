@@ -23,7 +23,7 @@ namespace {
 // following the catalog's actual transition lineage, independent of labels.
 int strategicStage(const AIEngine::AIWorldView& world,const AIEngine::BuildingView& building)
 {
-    return std::clamp(world.catalog->at(building.type).lineagePosition-1,0,NB_UNIT_LEVELS-1);
+    return std::clamp(world.catalog->at(building.typeNum).lineagePosition-1,0,NB_UNIT_LEVELS-1);
 }
 }
 
@@ -40,7 +40,7 @@ std::shared_ptr<Order>AICastor::controlSwarms()
 	{
 		const AIEngine::UnitView *u=myUnits[i];
 		if (u)
-			unitSum[u->type]++;
+			unitSum[u->typeNum]++;
 	}
 	int foodSum=0;
 	const auto& myBuildings=observedTeam->myBuildings;
@@ -207,7 +207,7 @@ std::shared_ptr<Order>AICastor::controlFood()
 	if (b==NULL)
 		return telemetry.returnedOrder(AITrace::AI2::AICastor_controlFood_result,
 									   shared_ptr<Order>());
-	if (!provides(*b, AICastor::FeedUnits) && !(queries->rawIntentMask(queries->kind(*b).resolvedType.isBuildingSite ? queries->kind(*b).resolvedType.nextLevel : b->type)&7u))
+	if (!provides(*b, AICastor::FeedUnits) && !(queries->rawIntentMask(queries->kind(*b).resolvedType.isBuildingSite ? queries->kind(*b).resolvedType.nextLevel : b->typeNum)&7u))
 		return telemetry.returnedOrder(AITrace::AI2::AICastor_controlFood_result,
 									   shared_ptr<Order>());
 
@@ -224,8 +224,8 @@ std::shared_ptr<Order>AICastor::controlFood()
  }
  if (!usesWheat || otherService) return {};
 
-	int bx=b->x;
-	int by=b->y;
+	int bx=b->posX;
+	int by=b->posY;
 	int bw=queries->kind(*b).resolvedType.width;
 	int bh=queries->kind(*b).resolvedType.height;
 	
@@ -287,7 +287,7 @@ std::shared_ptr<Order>AICastor::controlFood()
 				AITrace::AI2::AICastor_controlFood_result,
 				requestWorkers(*b, workers));
 		}
-		else if (queries->rawIntentMask(queries->kind(*b).resolvedType.isBuildingSite ? queries->kind(*b).resolvedType.nextLevel : b->type)&7u)
+		else if (queries->rawIntentMask(queries->kind(*b).resolvedType.isBuildingSite ? queries->kind(*b).resolvedType.nextLevel : b->typeNum)&7u)
 		{
 			Sint32 workers;
 			if (foodWarning)
@@ -451,7 +451,7 @@ std::shared_ptr<Order>AICastor::controlStrikes()
 			for (int bi=0; bi<Building::MAX_COUNT; bi++)
 			{
 				const AIEngine::BuildingView *b=enemyBuildings[bi];
-				if (b==NULL || ((b->seenBy&me)==0) || b->locked[canSwim])
+				if (b==NULL || ((b->seenByMask&me)==0) || b->locked[canSwim])
 					continue;
 				int level=strategicStage(*observation,*b);
 				if (bestLevel<level)
@@ -471,7 +471,7 @@ std::shared_ptr<Order>AICastor::controlStrikes()
 			for (int bi=0; bi<Building::MAX_COUNT; bi++)
 			{
 				const AIEngine::BuildingView *b=enemyBuildings[bi];
-				if (b==NULL || ((b->seenBy&me)==0) || b->locked[canSwim] || strategicStage(*observation,*b)<bestLevel)
+				if (b==NULL || ((b->seenByMask&me)==0) || b->locked[canSwim] || strategicStage(*observation,*b)<bestLevel)
 					continue;
 				if (provides(*b, TrainAttack) || provides(*b, TrainConstruction))
 					score+=AI_CASTOR_STRIKE_TEAM_SCORE_HIGH;
@@ -502,10 +502,10 @@ std::shared_ptr<Order>AICastor::controlStrikes()
 	for (int bi=0; bi<Building::MAX_COUNT; bi++)
 	{
 		const AIEngine::BuildingView *b=enemyBuildings[bi];
-		if (b==NULL || ((b->seenBy&me)==0) || b->locked[canSwim])
+		if (b==NULL || ((b->seenByMask&me)==0) || b->locked[canSwim])
 			continue;
-		int x=b->x;
-		int y=b->y;
+		int x=b->posX;
+		int y=b->posY;
 		size_t index=(x&wMask)+((y&hMask)<<wDec);
 		Uint8 workRange=workRangeMap[index];
 		Sint32 level=strategicStage(*observation,*b);
@@ -527,8 +527,8 @@ std::shared_ptr<Order>AICastor::controlStrikes()
  auto* virtualBuildings=&rallyBuildings;
 	if (bestBuilding!=NULL)
 	{
-		Sint32 x=bestBuilding->x+1;
-		Sint32 y=bestBuilding->y+1;
+		Sint32 x=bestBuilding->posX+1;
+		Sint32 y=bestBuilding->posY+1;
 
 		if (warFlagsReal<warFlagsGoal)
 		{
@@ -552,8 +552,8 @@ std::shared_ptr<Order>AICastor::controlStrikes()
 			for (std::list<const AIEngine::BuildingView *>::iterator it=virtualBuildings->begin(); it!=virtualBuildings->end(); ++it)
 				if (provides(**it, AICastor::AttractWarriors))
 				{
-					Sint32 dx=x-(*it)->x;
-					Sint32 dy=y-(*it)->y;
+					Sint32 dx=x-(*it)->posX;
+					Sint32 dy=y-(*it)->posY;
 					Sint32 sqDist=dx*dx+dy*dy;
 					if (maxSqDist<sqDist)
 					{

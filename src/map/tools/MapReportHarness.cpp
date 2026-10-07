@@ -38,7 +38,7 @@ void emit(Game &game, const std::filesystem::path &path)
 {
 	game.mapHeader.setMapName("A \"quoted\" map\n\xc3\xa9");
 	// Deliberately non-derived cache values must survive analysis unchanged.
-	for (size_t p = 0; p < game.map.getTiles().size(); ++p)
+	for (size_t p = 0; p < game.map.cellCount(); ++p)
 		game.map.setFertility(p % game.map.getW(), p / game.map.getW(), p % 50000);
 	game.map.fertilityMaximum = 54321;
 	// First save establishes the map offset used by the serializer's content hash.
@@ -48,7 +48,7 @@ void emit(Game &game, const std::filesystem::path &path)
 	const auto json = describeMap(game);
 	require(syncRandEngine() == rng, "Report consumed simulation RNG");
 	require(game.map.fertilityMaximum == 54321, "Report changed fertility maximum");
-	for (size_t p = 0; p < game.map.getTiles().size(); ++p)
+	for (size_t p = 0; p < game.map.cellCount(); ++p)
 		require(game.map.getTile(p).fertility == p % 50000, "Report changed stored fertility");
 	require(serialize(game) == before, "Report changed serialized game state");
 	std::ofstream out(path);

@@ -1,0 +1,67 @@
+// SPDX-License-Identifier: GPL-3.0-or-later
+#pragma once
+
+#include "Ressource.h"
+#include "UnitConsts.h"
+#include <type_traits>
+
+// Authoritative pointer-free building state. Live buildings and snapshots use
+// this exact record; owner/type bindings, lists and query scratch live outside it.
+struct BuildingStateRecord
+{
+	enum BuildingState
+	{
+		DEAD=0,
+		ALIVE=1,
+		WAITING_FOR_DESTRUCTION=2,
+		WAITING_FOR_CONSTRUCTION=3,
+		WAITING_FOR_CONSTRUCTION_ROOM=4
+	};
+	enum ConstructionResultState
+	{
+		NO_CONSTRUCTION=0,
+		NEW_BUILDING=1,
+		UPGRADE=2,
+		REPAIR=3
+	};
+
+	Sint32 typeNum;
+	int shortTypeNum;
+	BuildingState buildingState;
+	ConstructionResultState constructionResultState;
+	Sint32 constructionOriginTypeNum = -1;
+	Sint32 maxUnitWorking, maxUnitWorkingPreferred, maxUnitWorkingFuture;
+	// Maintained desired staffing; zero when the building needs no work.
+	Sint32 desiredMaxUnitWorking, maxUnitInside;
+	// Authoritative order-applied priority (-1/0/+1). Pending GUI values live
+	// in BuildingGuiState, outside simulation state.
+	Sint32 priority;
+	Uint32 scriptIdentity = 0; // Excluded from legacy simulation checksums.
+	Uint16 gid;
+	Sint32 posX, posY;
+	Uint8 underAttackTimer;
+	Sint32 unitStayRange;
+	bool clearingResources[BASIC_COUNT];
+	Sint32 minLevelToFlag;
+	Sint32 minWorkerLevelToFlag = 0;
+	bool explorersRequireBombing = false;
+	// Canonical private stock. Shared stock is owned by Team; a runtime binding
+	// selects that pool instead, and snapshot queries select the frozen Team pool.
+	Sint32 localResource[MAX_NB_RESOURCES];
+	Sint32 wishedResources[MAX_NB_RESOURCES];
+	Sint32 hp;
+	Sint32 productionTimeout;
+	bool siteCompletionPending = false;
+	Sint32 productionUnit = -1;
+	// Authoritative order-applied production ratios; pending slider values
+	// live in BuildingGuiState.
+	Sint32 ratio[NB_UNIT_TYPE];
+	Uint32 receiveResourceMask, sendResourceMask;
+	Sint32 bullets;
+	Uint32 seenByMask;
+	// Footprint, clearing and combat access, each without/with swimming.
+	bool locked[6];
+	bool operator==(const BuildingStateRecord&) const = default;
+};
+static_assert(std::is_trivially_copyable_v<BuildingStateRecord>);
+static_assert(std::is_standard_layout_v<BuildingStateRecord>);

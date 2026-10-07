@@ -85,8 +85,8 @@ inline bool permittedQueuedOrder(const AIEngine::AIWorldView& world, Order& orde
         const auto gid=static_cast<const OrderConstruction&>(order).gid;
         if(gid>=Building::MAX_COUNT*Team::MAX_COUNT) return false;
         const auto* building=world.buildingAtSlot(gid);
-        return building && (world.catalog->at(building->type).site ||
-            (world.catalog->at(building->type).semantics.repairable && building->hp<building->maxHp));
+        return building && (world.catalog->at(building->typeNum).site ||
+            (world.catalog->at(building->typeNum).semantics.repairable && building->hp<building->maxHp));
     }
     if(world.rules.peaceful && order.getOrderType()==ORDER_MODIFY_SWARM)
         return static_cast<const OrderModifySwarm&>(order).ratio[WARRIOR]==0;
@@ -95,7 +95,7 @@ inline bool permittedQueuedOrder(const AIEngine::AIWorldView& world, Order& orde
         if(gid>=Building::MAX_COUNT*Team::MAX_COUNT) return false;
         const auto* building=world.buildingAtSlot(gid);
         if(!building) return true;
-        const auto& kind=world.catalog->at(building->type);
+        const auto& kind=world.catalog->at(building->typeNum);
         return !kind.zonable[WARRIOR] || kind.zonable[WORKER] || kind.zonable[EXPLORER];
     }
     return true;

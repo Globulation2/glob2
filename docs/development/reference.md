@@ -25,14 +25,31 @@ inputs when necessary, rather than retaining the whole world. New snapshot field
 belong to the engine component that owns their source data; add capture and query
 coverage when extending them.
 
-Capture sizes selected map arrays once and overwrites their contiguous records in
-one traversal. Warm buffers retain constructed ranges and capacity; the extraction
-loop does not grow a vector per cell. Mutation generations advance when exposed
-values change, including active visibility, rather than on repeated identical writes.
-Use narrow component queries for scalar map reads. Combined tile queries preserve
-all fields, including farm eligibility, which remains an explicit derived query
-when only that value is needed. Keep capture and derived-query costs separate in
-profiles before adding more elaborate copying mechanisms.
+Map storage and snapshots use the same trivially copyable records from
+`src/map/MapState.h`. Resource, occupancy and area arrays are authoritative;
+there is no maintained `Tile` mirror. Legacy terrain sprites and visibility
+remain contiguous scalar arrays. Capture compares mutation generations and bulk
+copies each requested changed array into pooled storage, without per-cell
+translation. Warm buffers retain their constructed ranges and capacity. The old
+`Tile` value is assembled only for compatibility consumers such as editor undo.
+Growth flags retain their original byte values; growth predicates test nonzero.
+
+Unit and building scalar state uses the authoritative `UnitState` and
+`BuildingStateRecord` definitions beside those domains. Capture copies one record
+per live entity; heap entities are not a contiguous slot pool. Runtime pointers,
+query scratch and GUI state remain outside the records. Building observations
+select private stock or the captured team's stock through an immutable resource
+pool selector; team stock is not duplicated into every building. Ordered
+relationship IDs and derived feasibility remain explicit capture/preparation work.
+Script adapters preserve existing numeric observation types while records retain
+live simulation types. Save formats continue to serialize fields explicitly,
+not object representations or padding.
+
+Mutation generations advance when exposed values change, including active
+visibility, rather than on repeated identical writes. Use narrow component
+queries for scalar map reads. Combined tile queries preserve all fields,
+including farm eligibility, which remains an explicit derived query when only
+that value is needed. Keep capture and derived-query costs separate in profiles.
 
 `AIWorldView` validates dimensions and leased map-array sizes when it binds an
 observation. Its scalar readers borrow the retained arrays directly: callers must

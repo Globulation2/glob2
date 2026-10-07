@@ -263,8 +263,8 @@ void AICastor::computeBuildingNeighbourMap(int dw, int dh)
 			const AIEngine::BuildingView *b=myBuildings[i];
 			if (b && !queries->kind(*b).resolvedType.isVirtual)
 			{
-				int bx=b->x;
-				int by=b->y;
+				int bx=b->posX;
+				int by=b->posY;
 				int bw=queries->kind(*b).resolvedType.width;
 				int bh=queries->kind(*b).resolvedType.height;
 				computeBuildingNeighbourMapOfBuilding(bx, by, bw, bh, dw, dh);
@@ -306,15 +306,15 @@ void AICastor::computeWorkPowerMap()
 	for (int i=0; i<Unit::MAX_COUNT; i++)
 	{
 		const AIEngine::UnitView *u=myUnits[i];
-		if (u && u->type==WORKER && u->medical==0 && u->activity!=Unit::ACT_UPGRADING)
+		if (u && u->typeNum==WORKER && u->medical==0 && u->activity!=Unit::ACT_UPGRADING)
 		{
-			int range=((u->hungry-u->hungryTrigger)>>AI_CASTOR_HUNGER_RANGE_SHIFT)/u->hungriness;
+			int range=((u->hungry-u->trigHungry)>>AI_CASTOR_HUNGER_RANGE_SHIFT)/u->hungriness;
 			if (range<0)
 				continue;
 			if (range>maxRange)
 				range=maxRange;
-			int ux=u->x;
-			int uy=u->y;
+			int ux=u->posX;
+			int uy=u->posY;
 			static const int reducer=AI_CASTOR_POWER_STAMP_REDUCER;
 			{
 				Uint8 *gp=&gradient[(ux&wMask)+((uy&hMask)<<wDec)];
@@ -380,14 +380,14 @@ void AICastor::computeWorkRangeMap()
 	for (int i=0; i<Unit::MAX_COUNT; i++)
 	{
 		const AIEngine::UnitView *u=myUnits[i];
-		if (u && u->type==WORKER && u->medical==0 && u->activity!=Unit::ACT_UPGRADING)
+		if (u && u->typeNum==WORKER && u->medical==0 && u->activity!=Unit::ACT_UPGRADING)
 		{
-			int range=((u->hungry-u->hungryTrigger)>>AI_CASTOR_HUNGER_RANGE_SHIFT)/u->hungriness;
+			int range=((u->hungry-u->trigHungry)>>AI_CASTOR_HUNGER_RANGE_SHIFT)/u->hungriness;
 			if (range<0)
 				continue;
 			if (range>AI_CASTOR_GRADIENT_WALL)
 				range=AI_CASTOR_GRADIENT_WALL;
-			int index=(u->x&wMask)+((u->y&hMask)<<wDec);
+			int index=(u->posX&wMask)+((u->posY&hMask)<<wDec);
 			gradient[index]=(Uint8)range;
 		}
 	}
@@ -603,10 +603,10 @@ void AICastor::computeEnemyPowerMap()
 		for (int bi=0; bi<Building::MAX_COUNT; bi++)
 		{
 			const AIEngine::BuildingView *b=enemyBuildings[bi];
-			if (b==NULL || ((b->seenBy&me)==0))
+			if (b==NULL || ((b->seenByMask&me)==0))
 				continue;
-			int bx=b->x;
-			int by=b->y;
+			int bx=b->posX;
+			int by=b->posY;
 			static const int reducer=AI_CASTOR_POWER_STAMP_REDUCER;
 			static const int range=AI_CASTOR_ENEMY_POWER_RANGE; // max 32
 			{
@@ -683,10 +683,10 @@ void AICastor::computeEnemyRangeMap()
 		for (int bi=0; bi<Building::MAX_COUNT; bi++)
 		{
 			const AIEngine::BuildingView *b=enemyBuildings[bi];
-			if (b==NULL || ((b->seenBy&me)==0) || queries->kind(*b).resolvedType.isBuildingSite)
+			if (b==NULL || ((b->seenByMask&me)==0) || queries->kind(*b).resolvedType.isBuildingSite)
 				continue;
-			int bx=b->x;
-			int by=b->y;
+			int bx=b->posX;
+			int by=b->posY;
 			int bw=queries->kind(*b).resolvedType.width;
 			int bh=queries->kind(*b).resolvedType.height;
 			for (int dy=by; dy<by+bh; dy++)

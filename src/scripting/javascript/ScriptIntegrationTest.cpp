@@ -1514,6 +1514,8 @@ TEST_CASE("JavaScript bound observations and order encoding remain isolated from
     auto* building = game.addBuilding(5, 5, swarm, 0, 2, 2);
     REQUIRE(unit);
     REQUIRE(building);
+    unit->fruitCount=0xffffffffu; unit->fruitMask=0x80000000u;
+    building->receiveResourceMask=0xffffffffu; building->sendResourceMask=0x80000000u;
     const auto captured = AIEngine::AIWorldView::capture(game, AIEngine::AIWorldView::captureCatalog(game));
     Observations observations(game, 0);
     {
@@ -1523,6 +1525,10 @@ TEST_CASE("JavaScript bound observations and order encoding remain isolated from
     const auto buildings = observations.query("buildings", {});
     REQUIRE(units.items.size() == 1);
     REQUIRE(buildings.items.size() == 1);
+    CHECK(units.items[0].get("fruitCount").number==-1);
+    CHECK(units.items[0].get("fruitMask").number==-2147483648.0);
+    CHECK(buildings.items[0].get("receiveMask").number==-1);
+    CHECK(buildings.items[0].get("sendMask").number==-2147483648.0);
     const auto reference = Value::object().set("id", unsigned(building->gid))
         .set("generation", building->scriptIdentity);
     const auto command = Value::object().set("type", "workers").set("building", reference).set("workers", 3);

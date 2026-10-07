@@ -20,19 +20,19 @@ Uint32 Map::checkSum(bool heavy)
 	Uint32 cs = size ^ terrainRegistry().checksum();
 	if (heavy)
 	{
-		for (size_t index = 0; index < tiles.size(); ++index)
+		for (size_t index = 0; index < cellCount(); ++index)
 		{
-			const auto& c = tiles[index];
+
 			cs+=
 				static_cast<Uint32>(terrainIds[index]) +
-				c.terrain +
-				c.building +
-				c.resource.getUint32() +
-				c.groundUnit +
-				c.airUnit +
-				c.forbidden +
-				c.farmArea + // zero everywhere unless a farm area was painted
-				c.scriptAreas;
+				legacyTerrain[index] +
+				occupancyCells[index].building +
+				resourceCells[index].resource.getUint32() +
+				occupancyCells[index].groundUnit +
+				occupancyCells[index].airUnit +
+				areaCells[index].forbidden +
+				areaCells[index].farm + // zero everywhere unless a farm area was painted
+				scriptAreaCells[index];
 			cs=rotl1(cs);
 		}
 	};
