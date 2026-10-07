@@ -4,7 +4,7 @@ import { readdirSync, readFileSync, statSync } from 'node:fs';
 import { dirname, join, relative } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { sql } from 'kysely';
-import { afterAll, beforeAll, describe, expect, it } from 'vitest';
+import { afterAll, beforeAll, describe, expect, it, vi } from 'vitest';
 import {
   LeaderElection,
   LeaderLostError,
@@ -160,6 +160,32 @@ describe('leader fencing', () => {
     } finally {
       await a.stop();
       await b.stop();
+    }
+  });
+
+  it('verify(0) observes a changed lease within the same millisecond', async () => {
+    const leader = new LeaderElection({
+      connectionString: database.url,
+      name: 'uncached-verify-test',
+      retryMs: 5_000,
+      checkMs: 60_000,
+      fencing: true,
+      lead: (signal) =>
+        new Promise<void>((resolve) => signal.addEventListener('abort', () => resolve())),
+    });
+    let clock: ReturnType<typeof vi.spyOn> | undefined;
+    try {
+      leader.start();
+      await until(() => leader.isLeader);
+      clock = vi.spyOn(Date, 'now').mockReturnValue(Date.now() + 1_000);
+      await leader.verify(0);
+      await sql`UPDATE leader_leases SET epoch = epoch + 1 WHERE name = 'uncached-verify-test'`.execute(
+        database.db,
+      );
+      await expect(leader.verify(0)).rejects.toBeInstanceOf(LeaderLostError);
+    } finally {
+      clock?.mockRestore();
+      await leader.stop();
     }
   });
 
