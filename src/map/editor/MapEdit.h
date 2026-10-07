@@ -20,6 +20,7 @@
 #include "MapEditDialog.h"
 #include "WidgetRectangle.h"
 #include <optional>
+#include <set>
 #include "render/Minimap.h"
 #include "OverlayAreas.h"
 #include "ScriptEditorScreen.h"
@@ -41,6 +42,8 @@ constexpr int mapEditZoneButtonX(int index, int count)
 
 class MapEdit;
 class PhoneEditor;
+class EditorDock;
+struct InspectorModel;
 
 ///This is a map editor widget, which is a widget that works within the map editor. Now to answer the crucial question, why not
 ///use libgag? Indeed, I had pondered on the use of libgag for quite some time, considering all of the odds and ends that would
@@ -456,7 +459,6 @@ class MapEdit
     friend class GameGUITouchHarness;
 	friend class MobileGalleryGameplay;
 	std::unique_ptr<PhoneEditor> phone;
-    int menuWidth() const { return phone ? 0 : RIGHT_MENU_WIDTH; }
     bool editing = false, quitDecision = false;
     int editingResult = 0;
     GAGCore::InputState inputState;
@@ -547,6 +549,35 @@ private:
 	std::unique_ptr<BrushSwatches> swatches;
 public:
 	// --- end WS-A brush catalogue ---
+
+	// --- WS-C dock ---
+	// The desktop/tablet brush browser (EditorDock.h). Presentations without a
+	// dock (the phone editor) report width 0. createDock() replaces any existing
+	// dock; destroyDock() drops it and returns the map to the full width.
+	bool hasDock() const { return bool(dock); }
+	void createDock();
+	void destroyDock();
+	// Logical width the dock takes from the right of the editor surface; the
+	// legacy sidebar width when neither dock nor phone presentation exists.
+	int dockWidth() const;
+	EditorDock *editorDock() const { return dock.get(); }
+	// Map status strip (bottom-left of the map): pointer coordinates plus the
+	// transient status from showStatus().
+	const std::string &coordinatesText() const { return coordinates; }
+private:
+	friend class EditorDock;
+	friend InspectorModel buildInspectorModel(MapEdit &editor);
+	std::unique_ptr<EditorDock> dock;
+	// Dock sections the author collapsed ("<section>/<group>"), kept across
+	// dock rebuilds and presentation switches.
+	std::set<std::string> dockCollapsed;
+	std::string coordinates;
+	// Dock navigation for "open terrain palette [group]" and "open resource palette".
+	void revealBrushGroup(BrushSection section, const std::string &group);
+	// Whether the pointer is over the dock or a dialog (no map brush preview).
+	bool pointerOverInterface() const;
+public:
+	// --- end WS-C dock ---
 
 	friend class MapEditorWidget;
 	friend class BuildingSelectorWidget;

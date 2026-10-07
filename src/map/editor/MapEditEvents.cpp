@@ -75,12 +75,12 @@ void MapEdit::processEvent(SDL_Event& event)
 		}
 		else if(isDraggingZone)
 		{
-			if(widgetRectangle(0, 16, globalContainer->gfx->getW()-menuWidth(), globalContainer->gfx->getH()-16).is_in(mouseX, mouseY))
+			if(widgetRectangle(0, 16, globalContainer->gfx->getW()-dockWidth(), globalContainer->gfx->getH()-16).is_in(mouseX, mouseY))
 				performAction("zone drag motion", relMouseX, relMouseY);
 		}
 		else if(isDraggingTerrain)
 		{
-			if(widgetRectangle(0, 16, globalContainer->gfx->getW()-menuWidth(), globalContainer->gfx->getH()-16).is_in(mouseX, mouseY))
+			if(widgetRectangle(0, 16, globalContainer->gfx->getW()-dockWidth(), globalContainer->gfx->getH()-16).is_in(mouseX, mouseY))
 				performAction("terrain drag motion", relMouseX, relMouseY);
 		}
 		else if(isScrollDragging)
@@ -130,7 +130,7 @@ void MapEdit::handleMouseButtonEvent(SDL_Event& event)
 {
 	if(event.type==SDL_EVENT_MOUSE_BUTTON_DOWN && event.button.button==SDL_BUTTON_LEFT)
 	{
-		if((phone || !findAction(event.button.x, event.button.y)) && camera.contains(mouseX,mouseY) && widgetRectangle(0, 16, globalContainer->gfx->getW()-menuWidth(), globalContainer->gfx->getH()).is_in(mouseX, mouseY))
+		if((phone || !findAction(event.button.x, event.button.y)) && camera.contains(mouseX,mouseY) && widgetRectangle(0, 16, globalContainer->gfx->getW()-dockWidth(), globalContainer->gfx->getH()).is_in(mouseX, mouseY))
 		{
 			//The button wasn't clicked in any registered area
 			if(selectionMode==PlaceBuilding)
@@ -158,7 +158,7 @@ void MapEdit::handleMouseButtonEvent(SDL_Event& event)
 				}
 			}
 		}
-		else if(widgetRectangle(globalContainer->gfx->getW()-menuWidth()+RIGHT_MENU_OFFSET+14, 14, 100, 100).is_in(mouseX, mouseY))
+		else if(widgetRectangle(globalContainer->gfx->getW()-dockWidth()+RIGHT_MENU_OFFSET+14, 14, 100, 100).is_in(mouseX, mouseY))
 			performAction("minimap drag start");
 	}
 	else if(event.type==SDL_EVENT_MOUSE_BUTTON_DOWN && event.button.button==SDL_BUTTON_RIGHT)
