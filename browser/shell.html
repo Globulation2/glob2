@@ -3,52 +3,64 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,interactive-widget=resizes-visual">
-<link rel="icon" href="data:,">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
 <title>Globulation 2</title>
+<script src="/theme.js"></script>
 <style>
-:root{color-scheme:dark;font-family:system-ui,-apple-system,"Segoe UI",sans-serif}
-html,body{width:100%;height:100%;margin:0;overflow:hidden;background:#07110f}
-body{display:flex;align-items:center;justify-content:center;background:
-  radial-gradient(circle at 50% 42%,rgba(83,142,92,.3),transparent 34%),
-  radial-gradient(circle at 18% 16%,rgba(178,143,65,.14),transparent 26%),
-  linear-gradient(145deg,#12251f 0%,#07110f 58%,#020605 100%)}
-body::before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.22;background-image:
-  linear-gradient(30deg,transparent 48%,rgba(255,255,255,.045) 49%,rgba(255,255,255,.045) 51%,transparent 52%);
-  background-size:28px 28px}
+/* Match the website's Meadow / Night colony tokens and shared brand assets. */
+@font-face{font-family:'Nunito Variable';src:url('/signin/assets/nunito.woff2') format('woff2-variations');font-weight:200 1000;font-display:swap}
+:root{color-scheme:light;--bg:#f1f1e1;--surface:#fbfbf3;--surface-2:#eaedda;--ink:#1d4530;--ink-2:#4b604c;--line:#ccd5bf;--accent:#e3c077;--accent-hover:#ecce8f;--accent-edge:#c69e4c;--accent-ink:#142a1f;--focus:#9a5a0c;
+  font-family:'Nunito Variable',ui-rounded,system-ui,-apple-system,"Segoe UI",sans-serif}
+@media (prefers-color-scheme:dark){:root:not([data-theme='light']){color-scheme:dark;--bg:#1b1229;--surface:#2b1c42;--surface-2:#34234f;--ink:#f9e8bb;--ink-2:#cfc1a0;--line:#4f3c6b;--accent-hover:#ecd08f;--accent-edge:#c7a557;--accent-ink:#1e1228;--focus:#ffd678}}
+:root[data-theme='dark']{color-scheme:dark;--bg:#1b1229;--surface:#2b1c42;--surface-2:#34234f;--ink:#f9e8bb;--ink-2:#cfc1a0;--line:#4f3c6b;--accent-hover:#ecd08f;--accent-edge:#c7a557;--accent-ink:#1e1228;--focus:#ffd678}
+html,body{width:100%;height:100%;margin:0;overflow:hidden;background:var(--bg)}
+body{display:flex;align-items:center;justify-content:center;color:var(--ink);
+  background:radial-gradient(ellipse at 50% 40%,var(--surface),var(--bg) 70%)}
 canvas{display:block;outline:none;touch-action:none;opacity:0;transition:opacity .2s ease}
 body.ready canvas{opacity:1}
-#loading{position:fixed;z-index:1;display:grid;justify-items:center;gap:14px;color:#e8edcf;
-  text-align:center;text-shadow:0 2px 8px #000;transition:opacity .2s ease}
+#loading{position:fixed;z-index:1;box-sizing:border-box;width:min(440px,calc(100% - 32px));max-height:calc(100% - 32px);overflow:auto;
+  display:grid;justify-items:center;gap:20px;padding:32px 24px;border:1px solid var(--line);border-radius:24px;
+  background:var(--surface);text-align:center;transition:opacity .2s ease}
 body.ready #loading{opacity:0;pointer-events:none}
-#loading strong{font:700 clamp(24px,5vw,46px)/1 Georgia,serif;letter-spacing:.04em;color:#f2df94}
-#loading-status{min-height:1.4em;font-size:14px;letter-spacing:.08em;text-transform:uppercase;color:#c2cba9}
-.loader{width:42px;height:42px;border:4px solid rgba(232,237,207,.2);border-top-color:#e4c969;
-  border-radius:50%;animation:spin .85s linear infinite;box-shadow:0 0 24px rgba(228,201,105,.18)}
-#loading-progress{display:grid;justify-items:center;gap:8px;width:min(320px,calc(100vw - 32px))}
+.loading-brand{display:flex;align-items:center;justify-content:center;gap:8px;max-width:100%;margin-bottom:4px}
+.loading-brand img{width:36px;height:36px;flex:none}
+.wordmark{position:relative;display:block;width:260px;max-width:calc(100vw - 132px);aspect-ratio:900/131}
+.wordmark::before,.wordmark::after{content:'';position:absolute;inset:0;
+  -webkit-mask:url('/signin/assets/wordmark-letters.webp') 0 0/100% 100% no-repeat;
+  mask:url('/signin/assets/wordmark-letters.webp') 0 0/100% 100% no-repeat;background:var(--ink)}
+.wordmark::after{-webkit-mask-image:url('/signin/assets/wordmark-two.webp');mask-image:url('/signin/assets/wordmark-two.webp');background:#e2b85f}
+#loading-status{min-height:1.4em;font-size:16px;font-weight:700;color:var(--ink)}
+.loader{width:32px;height:32px;border:3px solid var(--line);border-top-color:var(--accent-edge);border-radius:50%;animation:spin .85s linear infinite}
+#loading-progress{display:grid;justify-items:center;gap:12px;width:100%}
 #loading-progress[hidden]{display:none}
-#loading-bar{width:100%;height:8px;border-radius:4px;background:rgba(232,237,207,.16);overflow:hidden;
-  box-shadow:inset 0 0 0 1px rgba(232,237,207,.12)}
-#loading-bar>span{display:block;height:100%;width:0;background:linear-gradient(90deg,#b28f41,#e4c969);transition:width .25s linear}
-#loading-detail{font-size:14px;font-variant-numeric:tabular-nums;color:#e8edcf}
-#loading-note{max-width:min(360px,calc(100vw - 32px));margin:0;font-size:13px;line-height:1.45;color:#aeb79a}
-#loading-retry{font:600 15px system-ui,sans-serif;padding:10px 22px;min-height:44px;border:0;border-radius:6px;
-  background:#e4c969;color:#173226;cursor:pointer}
+#loading-bar{width:100%;height:8px;border-radius:999px;background:var(--surface-2);overflow:hidden}
+#loading-bar>span{display:block;height:100%;width:0;background:var(--accent);transition:width .25s linear}
+#loading-detail{max-width:100%;overflow-wrap:anywhere;font-size:14px;font-variant-numeric:tabular-nums;color:var(--ink-2)}
+#loading-note{margin:0;font-size:14px;line-height:1.55;color:var(--ink-2)}
+#loading-retry{font-size:15px;font-weight:800;font-family:inherit;padding:10px 22px;min-height:44px;border:1px solid var(--accent-edge);border-radius:10px;
+  background:var(--accent);color:var(--accent-ink);cursor:pointer}
+#loading-retry:hover{background:var(--accent-hover)}
+#loading-retry:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
 #open-link{position:fixed;z-index:3;left:50%;bottom:calc(16px + env(safe-area-inset-bottom));transform:translateX(-50%);
   box-sizing:border-box;width:max-content;max-width:calc(100vw - 32px);display:flex;align-items:center;gap:12px;padding:10px 10px 10px 16px;
-  border:1px solid #657363;border-radius:8px;background:#e8edcf;color:#173226;font:15px/1.35 system-ui,sans-serif;
-  box-shadow:0 6px 24px rgba(0,0,0,.45)}
+  border:1px solid var(--line);border-radius:16px;background:var(--surface);color:var(--ink);font-size:15px;line-height:1.35;
+  box-shadow:0 6px 24px rgba(0,0,0,.25)}
 #open-link[hidden]{display:none}
-#open-link a{display:inline-flex;align-items:center;min-height:44px;padding:0 16px;border-radius:6px;background:#173226;color:#f2df94;
-  font-weight:600;text-decoration:none;white-space:nowrap}
-#open-link a:focus-visible,#open-link button:focus-visible{outline:3px solid #b28f41;outline-offset:2px}
-#open-link button{min-width:44px;min-height:44px;border:0;border-radius:6px;background:transparent;color:#173226;font:600 20px system-ui;cursor:pointer}
+#open-link a{display:inline-flex;align-items:center;min-height:44px;padding:0 16px;border-radius:10px;background:var(--accent);color:var(--accent-ink);
+  font-weight:800;text-decoration:none;white-space:nowrap}
+#open-link a:focus-visible,#open-link button:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
+#open-link button{min-width:44px;min-height:44px;border:0;border-radius:10px;background:transparent;color:var(--ink);font:600 20px system-ui;cursor:pointer}
 @keyframes spin{to{transform:rotate(360deg)}}
-@media (prefers-reduced-motion:reduce){.loader{animation:none;border-color:#e4c969}canvas,#loading,#loading-bar>span{transition:none}}
+@media (forced-colors:active){.wordmark::before,.wordmark::after{background:CanvasText}}
+@media (prefers-reduced-motion:reduce){.loader{animation:none;border-color:var(--accent-edge)}canvas,#loading,#loading-bar>span{transition:none}}
 </style>
 </head>
 <body data-wasm-bytes="0" data-wire-sizes="{}">
 <div id="loading">
-  <strong>Globulation 2</strong>
+  <div class="loading-brand" role="img" aria-label="Globulation 2">
+    <img src="/signin/assets/glob-64.png" width="36" height="36" alt="">
+    <span class="wordmark" aria-hidden="true"></span>
+  </div>
   <span class="loader" aria-hidden="true"></span>
   <span id="loading-status" role="status" aria-live="polite">Loading game…</span>
   <div id="loading-progress" hidden>
