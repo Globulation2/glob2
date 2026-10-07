@@ -74,6 +74,40 @@ GAGCore::CooperativeSlice fixedSlice()
 
 TEST_SUITE("EngineSession")
 {
+    TEST_CASE("new client requests replace completed pending frames without recapture")
+    {
+        glob2test::HeadlessGlobals globals;
+        Engine engine;
+        auto& game=engine.gui.game;
+        game.map.setSize(4,4,GRASS);
+        game.map.setGame(&game);
+        game.addTeam();
+        game.teams[0]->race.loadDefault();
+        auto& executor=game.map.computeExecutor();
+        executor.configure(1);
+        SimulationRunner runner(engine);
+        SceneRequest request;
+        request.view.displayW=128; request.view.displayH=128;
+        runner.requestScene(request);
+        const auto world=game.captureReadBoundary({},true,SceneExtractor::requirements(request));
+        const auto captures=game.snapshots().metrics.captures;
+        REQUIRE(runner.admitPresentation());
+        runner.publishPresentation(world,request);
+        while(executor.pumpPresentation()) {}
+        CHECK_FALSE(runner.admitPresentation()); // One preparation per client request.
+        request.view.displayW=256;
+        runner.requestScene(request);
+        REQUIRE(runner.admitPresentation()); // The first completed frame is still pending.
+        runner.publishPresentation(world,request);
+        while(executor.pumpPresentation()) {}
+        const auto* latest=runner.acquireScene();
+        REQUIRE(latest);
+        CHECK(latest->map.viewportWidth()==256);
+        CHECK(latest->world.entities==world.entities);
+        CHECK(game.snapshots().metrics.captures==captures);
+        CHECK_FALSE(runner.admitPresentation());
+    }
+
     TEST_CASE("menu colony rendering consumes its shared boundary without recapture [display]")
     {
         glob2test::HeadlessGlobals globals({.display=true, .width=800, .height=600});

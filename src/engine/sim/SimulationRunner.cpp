@@ -103,12 +103,18 @@ void SimulationRunner::run()
 std::optional<SceneRequest> SimulationRunner::admitPresentation()
 {
     if (presentation && presentation->finished()) presentation->rethrowFailure();
-    if (scenes.pending() || (presentation && !presentation->finished())) return {};
+    if (presentation && !presentation->finished()) return {};
     std::lock_guard lock(mutex);
+    // A completed pending frame occupies the middle slot, not the writable
+    // back slot. Allow a newer request to replace it, bounded to one submission
+    // per client request so an uncapped simulation cannot flood preparation.
+    if (requestedSceneGeneration == publishedSceneGeneration) return {};
+    admittedSceneGeneration = requestedSceneGeneration;
     return requestedScene;
 }
 void SimulationRunner::publishPresentation(const SimulationSnapshot::Handle& world,SceneRequest request)
 {
+    publishedSceneGeneration = admittedSceneGeneration;
     auto input=std::make_shared<const SceneInputs>(SceneInputs{world,std::move(request)});
     const auto chunks=SceneExtractor::preparationChunks(*input);
     presentation=engine.gui.game.map.computeExecutor().submitResumablePresentation(chunks,[this,input,chunks](size_t chunk) {
@@ -202,7 +208,7 @@ void SimulationRunner::rethrowFailure()
 
 void SimulationRunner::requestScene(SceneRequest request)
 {
-    { std::lock_guard lock(mutex); requestedScene = std::move(request); }
+    { std::lock_guard lock(mutex); requestedScene = std::move(request); ++requestedSceneGeneration; }
     wake.notify_all();
 }
 

@@ -76,6 +76,8 @@ private:
 	Engine &engine;
 	SceneBuffer<PresentationFrame> scenes;
 	SceneRequest requestedScene;
+    Uint64 requestedSceneGeneration = 1;
+    Uint64 admittedSceneGeneration = 0, publishedSceneGeneration = 0;
 	SceneExtractor presentationExtractor;
 	ComputeExecutor::PresentationTicket presentation;
 	std::thread thread;
