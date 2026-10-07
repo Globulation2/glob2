@@ -5,6 +5,7 @@
 #include "TerrainHazardCost.h"
 #include "map/TerrainProperties.h"
 #include <array>
+#include <cstdint>
 
 namespace gradient_kernel
 {
@@ -22,10 +23,19 @@ inline constexpr int SOLE_SWIMMING_TERRAIN = [] {
     { if(found>=0)return -1; found=t; }
     return found;
 }();
+// With water, deep water and dark water all swimmable, the classic per-cell
+// predicate stays a shift and mask rather than a table load.
+inline constexpr std::uint64_t SWIMMING_TERRAIN_MASK = [] {
+    std::uint64_t mask=0;
+    for(unsigned t=0;t<TERRAIN_COUNT && t<64;++t) if(SWIMMING_TERRAINS[t]) mask|=std::uint64_t(1)<<t;
+    return mask;
+}();
 constexpr bool terrainUsesSwimming(TerrainType type)
 {
     if constexpr (SOLE_SWIMMING_TERRAIN>=0) return unsigned(type)==unsigned(SOLE_SWIMMING_TERRAIN);
-    return SWIMMING_TERRAINS[type];
+    // Only built-in IDs reach this classic path; anything else is land here.
+    else if constexpr (TERRAIN_COUNT<=64) return unsigned(type)<TERRAIN_COUNT && ((SWIMMING_TERRAIN_MASK>>unsigned(type))&1u);
+    else return unsigned(type)<TERRAIN_COUNT && SWIMMING_TERRAINS[type];
 }
 
 // The same destination-entry costs drive eager/lazy fields, A* and direction

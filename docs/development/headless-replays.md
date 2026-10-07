@@ -17,7 +17,7 @@ bytes, with no dependency on local authoring JSON. The existing map-content hash
 binds distributed matches to the definitions.
 Building format 137 adds configurable services and capability-driven AI; replays
 recorded before version 137 became incompatible and network protocol 57 separated
-clients using those rules. The current replay floor is 141 for damage-weighted routing and idle safety.
+clients using those rules. The current replay floor is 142 for damage-weighted routing and idle safety.
 Supported saved games still load and adopt the current simulation;
 the save floor remains 58.
 
@@ -405,7 +405,7 @@ cadence and saved pending deadlines are unchanged; saves drain deferred preparat
 before serializing, and old saves still load. Moving the observation point can
 change routes/AI trajectories and introduced replay floor 139. Runtime resource
 catalogs extend the simulation in format 140, with replay
-floor 140 and network protocol 59. Hazard routing raises the floor to 141 and
+floor 140 and network protocol 59. Hazard routing raises the floor to 142 and
 network protocol to 60; supported saves still load back to format 58. LAN and
 online sim-version gates reject clients using the older boundary. See the
 [phase contract](reference.md) before adding new parallel work.

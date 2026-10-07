@@ -15,6 +15,8 @@
 #include <memory>
 #include <climits>
 #include <nlohmann/json.hpp>
+#include <fstream>
+#include <iterator>
 
 TEST_SUITE("TerrainProperties")
 {
@@ -339,7 +341,7 @@ TEST_SUITE("TerrainRuntime")
 		first.setSize(5, 5, GRASS);
 		second.setSize(5, 5, GRASS);
 		first.importTerrainDefinitions(runtimeDefinitions);
-		CHECK(second.terrainRegistry().size() == 7);
+		CHECK(second.terrainRegistry().size() == TERRAIN_COUNT);
 		const auto previous = first.frozenTerrainRegistry();
 		const auto generation = first.terrainGeneration();
 		CHECK_THROWS(
@@ -675,6 +677,191 @@ TEST_SUITE("TerrainRuntime")
 			CHECK(world.game.checkSum() == resumed.game.checkSum());
 		}
 	}
+	TEST_CASE("format-137 saves with custom terrain load with remapped IDs and resave at the current format")
+	{
+		glob2test::HeadlessGlobals globals;
+		// Written by an origin/master build (TERRAIN_COUNT 7) with two runtime
+		// definitions painted at IDs 7 and 8 beside classic ice, trail, sand and water.
+		auto open = []
+		{
+			return globalContainer->fileManager->openInflatingInputStreamBackend(
+				"test/fixtures/terrain-catalogue/custom-registry-137.game.gz");
+		};
+		auto verify = [](const Game &game)
+		{
+			const auto &map = game.map;
+			REQUIRE(map.terrainRegistry().size() == TERRAIN_COUNT + 2);
+			const auto bog = map.terrainRegistry().find("fixture:bog");
+			const auto mud = map.terrainRegistry().find("fixture:mud");
+			REQUIRE(bog);
+			REQUIRE(mud);
+			CHECK(*bog == TerrainType(TERRAIN_COUNT));
+			CHECK(*mud == TerrainType(TERRAIN_COUNT + 1));
+			CHECK(map.terrainRegistry().appearance(*bog) == WATER);
+			CHECK(map.terrainRegistry().appearance(*mud) == SAND);
+			CHECK(map.terrainProperties(*bog).swimmable);
+			CHECK(map.terrainProperties(*bog).groundSpeedQ8 == 128);
+			CHECK(map.terrainProperties(*mud).groundSpeedQ8 == 192);
+			CHECK_FALSE(map.terrainProperties(*mud).buildable);
+			CHECK(map.terrainTypeAt(4, 4) == *bog);
+			CHECK(map.terrainTypeAt(5, 4) == *bog);
+			CHECK(map.terrainTypeAt(6, 6) == *mud);
+			CHECK(map.terrainTypeAt(10, 10) == ICE);
+			CHECK(map.terrainTypeAt(12, 10) == TRAIL);
+			CHECK(map.terrainTypeAt(14, 14) == SAND);
+			CHECK(map.terrainTypeAt(16, 14) == WATER);
+			CHECK(map.terrainTypeAt(0, 0) == GRASS);
+			// Saved frames kept their appearance ranges, so the load-time frame check held.
+			CHECK(map.getTerrain(4, 4) >= 256);
+			CHECK(map.getTerrain(4, 4) < 272);
+			CHECK(map.getTerrain(6, 6) >= 128);
+			CHECK(map.getTerrain(6, 6) < 144);
+		};
+		GameGUI loaded;
+		{
+			auto *backend = open();
+			REQUIRE(backend);
+			GAGCore::BinaryInputStream input(backend);
+			REQUIRE(loaded.game.load(&input));
+		}
+		verify(loaded.game);
+		const auto digest = loaded.game.map.terrainRegistry().digest();
+		CHECK_FALSE(digest.empty());
+
+		auto *resaved = new GAGCore::MemoryStreamBackend;
+		GAGCore::BinaryOutputStream output(resaved);
+		loaded.game.save(&output, false, "custom-registry-138");
+		output.flush();
+		GameGUI reloaded;
+		{
+			GAGCore::BinaryInputStream input(new GAGCore::MemoryStreamBackend(
+				std::string(resaved->getBuffer(), resaved->getPosition())));
+			REQUIRE(reloaded.game.load(&input));
+		}
+		verify(reloaded.game);
+		CHECK(reloaded.game.map.terrainRegistry().digest() == digest);
+		CHECK(reloaded.game.map.checkSum(true) == loaded.game.map.checkSum(true));
+		// Current files number their custom definitions from the current built-ins.
+		CHECK(nlohmann::json::parse(reloaded.game.map.terrainRegistry().serialize())["terrains"][0]["id"] == TERRAIN_COUNT);
+	}
+	TEST_CASE("painted catalogue terrain survives save and reload with its frames and checksum")
+	{
+		glob2test::HeadlessGlobals globals;
+		glob2test::HeadlessGame world({.loadDefaultRace = true, .header = true});
+		auto &map = world.game.map;
+		std::vector<TerrainType> painted;
+		for (unsigned i = TERRAIN_COUNT_BEFORE_CATALOGUE; i < TERRAIN_COUNT; ++i)
+			if (terrainPaintable(TerrainType(i)))
+				painted.push_back(TerrainType(i));
+		REQUIRE(painted.size() == 24);
+		for (std::size_t n = 0; n < painted.size(); ++n)
+		{
+			map.setCellTerrain(int(n % 8) * 2 + 2, int(n / 8) * 3 + 2, painted[n]);
+			// Saved frames come from the type's own contract, never a neighbour's.
+			const auto &frames = terrainCompatibility(painted[n]);
+			CHECK(map.getTerrain(int(n % 8) * 2 + 2, int(n / 8) * 3 + 2) >= frames.firstFrame);
+			CHECK(map.getTerrain(int(n % 8) * 2 + 2, int(n / 8) * 3 + 2) < frames.firstFrame + frames.variants);
+		}
+		map.setCellTerrain(20, 20, ICE);
+		map.setCellTerrain(21, 20, TRAIL);
+		const auto required = map.requiredTerrainExperiments();
+		CHECK(required.size() == 11); // nine catalogue groups plus ice and trail
+		for (auto text : {false, true})
+		{
+			CAPTURE(text);
+			auto *bytes = new GAGCore::MemoryStreamBackend;
+			std::unique_ptr<GAGCore::OutputStream> output(text
+				? static_cast<GAGCore::OutputStream *>(new GAGCore::TextOutputStream(bytes))
+				: static_cast<GAGCore::OutputStream *>(new GAGCore::BinaryOutputStream(bytes)));
+			world.game.save(output.get(), false, "catalogue");
+			output->flush();
+			auto *storage = new GAGCore::MemoryStreamBackend(std::string(bytes->getBuffer(), bytes->getPosition()));
+			std::unique_ptr<GAGCore::InputStream> input(text
+				? static_cast<GAGCore::InputStream *>(new GAGCore::TextInputStream(storage))
+				: static_cast<GAGCore::InputStream *>(new GAGCore::BinaryInputStream(storage)));
+			GameGUI loaded;
+			REQUIRE(loaded.game.load(input.get()));
+			for (std::size_t n = 0; n < painted.size(); ++n)
+				CHECK(loaded.game.map.terrainTypeAt(int(n % 8) * 2 + 2, int(n / 8) * 3 + 2) == painted[n]);
+			CHECK(loaded.game.map.terrainTypeAt(20, 20) == ICE);
+			CHECK(loaded.game.map.terrainTypeAt(21, 20) == TRAIL);
+			CHECK(loaded.game.map.checkSum(true) == map.checkSum(true));
+			CHECK(loaded.game.map.requiredTerrainExperiments() == required);
+			CHECK(loaded.game.mapHeader.requiredTerrainExperiments == required);
+		}
+	}
+	TEST_CASE("each catalogue type requires exactly its group's experiment and shares the group profile")
+	{
+		glob2test::HeadlessGlobals globals;
+		for (unsigned i = 0; i < TERRAIN_COUNT; ++i)
+		{
+			const auto type = TerrainType(i);
+			CAPTURE(TerrainPresentations[i].name);
+			if (!terrainPaintable(type))
+				continue;
+			Map map;
+			map.setSize(5, 5, GRASS);
+			map.setCellTerrain(2, 2, type);
+			const auto required = map.requiredTerrainExperiments();
+			const auto expected = terrainExperiment(type);
+			CHECK(required.size() == (expected ? 1u : 0u));
+			if (expected)
+				CHECK(required.has(*expected));
+			// Trail keeps its historical switch; every other member takes the group's.
+			if (type == TRAIL)
+				CHECK(expected == ExperimentId::TrailTerrain);
+			else
+				CHECK(expected == terrainGroupExperiment(terrainGroup(type)));
+			CHECK(sameTerrainProperties(map.terrainProperties(type),
+										terrainGroupDefinition(terrainGroup(type)).properties));
+		}
+		// Runtime definitions: a gated group's exact profile declares the group's
+		// experiment, a profile of its own declares nothing.
+		{
+			Map custom;
+			custom.setSize(5, 5, GRASS);
+			custom.importTerrainDefinitions(R"({"schemaVersion":1,"terrains":[
+				{"key":"mod:pit","name":"Pit","base":"void_hole","properties":{},"appearance":"void_hole"},
+				{"key":"mod:bog","name":"Bog","base":"water","properties":{"groundSpeedQ8":128},"appearance":"water"}]})");
+			const auto pit = *custom.terrainRegistry().find("mod:pit");
+			const auto bog = *custom.terrainRegistry().find("mod:bog");
+			custom.setCellTerrain(1, 1, pit);
+			CHECK(custom.requiredTerrainExperiments().has(ExperimentId::VoidTerrain));
+			CHECK(custom.requiredTerrainExperiments().size() == 1);
+			custom.setCellTerrain(1, 1, GRASS);
+			custom.setCellTerrain(2, 2, bog);
+			CHECK(custom.requiredTerrainExperiments().empty());
+		}
+		// Classic ground never acquires a requirement.
+		Map plain;
+		plain.setSize(5, 5, GRASS);
+		plain.setCellTerrain(1, 1, SAND);
+		plain.setUMTerrain(3, 3, WATER);
+		plain.regenerateMap(0, 0, 5, 5);
+		CHECK(plain.requiredTerrainExperiments().empty());
+		// Group mechanics the catalogue promises.
+		CHECK_FALSE(terrainProperties(BOULDERS).walkable);
+		CHECK(terrainProperties(BOULDERS).projectileBlocks);
+		CHECK(terrainProperties(BOULDERS).flyable);
+		CHECK_FALSE(terrainProperties(RIDGE_ROCK).projectileBlocks);
+		CHECK(terrainProperties(DIRT).buildable);
+		CHECK(terrainProperties(DIRT).inhibitionQ8 == 256);
+		CHECK(terrainProperties(DIRT).shoreSupportQ8 == 0);
+		CHECK_FALSE(terrainProperties(DIRT).shoreline);
+		CHECK(terrainProperties(MUD).groundSpeedQ8 == 160);
+		CHECK_FALSE(terrainProperties(MUD).buildable);
+		CHECK(terrainProperties(DIRT_TRACK).groundSpeedQ8 == 512);
+		CHECK(terrainProperties(LAVA).airHealthQ8 == -64);
+		CHECK_FALSE(terrainProperties(LAVA).walkable);
+		CHECK(terrainProvidesFertility(terrainProperties(LOAM)));
+		CHECK(terrainProperties(LOAM).fertilityQ8 == 768);
+		CHECK(terrainProperties(LOAM).buildable);
+		CHECK(terrainProperties(DEEP_WATER).swimmable);
+		CHECK(terrainProperties(DEEP_WATER).groundSpeedQ8 == 192);
+		CHECK(terrainProperties(DEEP_WATER).allowedResources == 0);
+		CHECK_FALSE(terrainProperties(VOID_HOLE).flyable);
+		CHECK(terrainProperties(VOID_HOLE).projectileBlocks);
+	}
 	TEST_CASE("write equivalent custom maps for paired performance runs [benchmark][artifacts]")
 	{
 		glob2test::HeadlessGlobals globals;
@@ -863,7 +1050,7 @@ TEST_CASE("old hazard route caches rebuild while current saves retain routing st
     }
     {
         GAGCore::BinaryInputStream input(new GAGCore::MemoryStreamBackend(std::string(saved)));
-        map.loadRuntimeState(&input,140); // identical stream layout, pre-penalty field semantics
+        map.loadRuntimeState(&input,141); // identical stream layout, pre-penalty field semantics
         CHECK(map.materialGradients[0][WHEAT][0]==nullptr);
         CHECK(map.gradientRuntime->pipeline.delayTicks()==2);
         const auto* rebuilt=map.getMaterialGradientSlot(0,WHEAT,0);

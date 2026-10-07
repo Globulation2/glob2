@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #pragma once
 #include "TerrainType.h"
+#include "TerrainTypeTable.h"
 #include <array>
 #include <cstdint>
 // Frozen saved-frame contracts. These values and hash are also used when maps
@@ -10,14 +11,13 @@ struct TerrainCompatibility
 	int firstFrame, variants;
 	bool legacyCorners;
 };
-inline constexpr std::array<TerrainCompatibility, TERRAIN_COUNT> TerrainCompatibilityTable{
-	{{256, 16, true},
-	 {128, 16, true},
-	 {0, 16, true},
-	 {272, 16, false},
-	 {288, 16, false},
-	 {16, 112, true},
-	 {144, 112, true}}};
+inline constexpr auto TerrainCompatibilityTable = []
+{
+	std::array<TerrainCompatibility, TERRAIN_COUNT> table{};
+	for (unsigned i = 0; i < TERRAIN_COUNT; ++i)
+		table[i] = {TERRAIN_TYPES[i].firstFrame, TERRAIN_TYPES[i].variants, TERRAIN_TYPES[i].legacyCorners};
+	return table;
+}();
 inline constexpr const TerrainCompatibility &terrainCompatibility(TerrainType type)
 {
 	return TerrainCompatibilityTable[unsigned(type)];

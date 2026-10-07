@@ -99,7 +99,7 @@ for(const mode of ['serial','threaded']) {
 test(`imports a complete replay and rejects a truncated command stream (${mode})`, async ({page}) => {
   const bytes=await fs.readFile(path.resolve(__dirname,'fixtures/cross-replay.replay'));
   expect(bytes.subarray(4,16).toString()).toBe('replayHeader');
-  expect(bytes.readUInt32BE(20)).toBe(141);
+  expect(bytes.readUInt32BE(20)).toBe(142);
   await clickMainMenu(page,'load'); await screen(page,'ChooseMapScreen'); await clickControl(page,'switch');
   await select(page,'Broken.replay',bytes.subarray(0,bytes.length-1));
   await expect.poll(async () => (await state(page)).import).toBe('invalid');

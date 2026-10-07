@@ -1,0 +1,175 @@
+{
+  "generator": "tools/artwork/terrain_synth.py",
+  "method": "procedural",
+  "generator_sha256": {
+    "tools/artwork/terrain_synth.py": "a8eda69c7b7212d9f9573766da37f1002a984d62327c108fb581e9a9c23830dc",
+    "tools/artwork/material_tiles.py": "224e159e0974023797710aa959994f11658c82da8fb80f9701e4abc13c74ed83"
+  },
+  "material": "dark_water",
+  "group": "deep_water",
+  "label": "Dark water",
+  "recipe": {
+    "name": "dark_water",
+    "group": "deep_water",
+    "label": "Dark water",
+    "profile": "soft",
+    "seam": {
+      "height": 7,
+      "cast_q8": 80,
+      "cast_width_q8": 704
+    },
+    "palette": {
+      "tint": [
+        38,
+        31,
+        87
+      ],
+      "murk": [
+        30,
+        24,
+        70
+      ],
+      "speck": [
+        18,
+        14,
+        44
+      ],
+      "alpha": [
+        202,
+        218
+      ]
+    },
+    "style": {
+      "luma": 40,
+      "std": 4,
+      "grain_max": 5,
+      "match": 0.5
+    },
+    "phases": 1,
+    "animation_ticks": 8,
+    "alpha_range": [
+      192,
+      228
+    ],
+    "preview": [
+      32,
+      26,
+      76
+    ],
+    "minimap": [
+      16,
+      12,
+      52
+    ],
+    "placeholder_only": false,
+    "note": ""
+  },
+  "seed": "fnv1a32(\"dark_water:<variant>:<phase>\")",
+  "render_size": 128,
+  "tile_size": 32,
+  "variants": 16,
+  "phases": 1,
+  "frame_layout": "variant + 16 * phase",
+  "sprite": "data/gfx/terrain-dark_water",
+  "preview": [
+    32,
+    26,
+    76
+  ],
+  "minimap": [
+    16,
+    12,
+    52
+  ],
+  "mean_color": [
+    37,
+    30,
+    83
+  ],
+  "style_stats": {
+    "0": {
+      "luma": 38.3,
+      "std": 2.0,
+      "grain": 0.5,
+      "sat": 0.63,
+      "alpha": 210.0
+    }
+  },
+  "style_references": {
+    "data/gfx/terrain0..15.png": {
+      "use": "statistics only",
+      "stats": {
+        "luma": 79.3,
+        "std": 5.0,
+        "grain": 3.0,
+        "sat": 0.73,
+        "alpha": 255.0
+      }
+    },
+    "data/gfx/terrain128..143.png": {
+      "use": "statistics only",
+      "stats": {
+        "luma": 160.1,
+        "std": 27.0,
+        "grain": 27.9,
+        "sat": 0.74,
+        "alpha": 255.0
+      }
+    },
+    "data/gfx/terrain256..271.png": {
+      "use": "statistics only",
+      "stats": {
+        "luma": 95.2,
+        "std": 8.4,
+        "grain": 5.5,
+        "sat": 0.92,
+        "alpha": 255.0
+      }
+    },
+    "data/gfx/terrain272..287.png": {
+      "use": "statistics only",
+      "stats": {
+        "luma": 215.4,
+        "std": 6.2,
+        "grain": 4.3,
+        "sat": 0.17,
+        "alpha": 255.0
+      }
+    },
+    "data/gfx/terrain288..303.png": {
+      "use": "statistics only",
+      "stats": {
+        "luma": 102.9,
+        "std": 10.3,
+        "grain": 7.9,
+        "sat": 0.37,
+        "alpha": 255.0
+      }
+    }
+  },
+  "python": "3.14.4",
+  "pillow": "12.2.0",
+  "platform": {
+    "system": "linux",
+    "machine": "x86_64",
+    "libc": "glibc 2.43"
+  },
+  "runtime_sha256": {
+    "data/gfx/terrain-dark_water0.png": "a828f804facc0bc2d6487f45378164e123f9303944bb42d057d766f69f3bf9d0",
+    "data/gfx/terrain-dark_water1.png": "6c1e5397b56f35876b63b2c4fcfade41184f5e1e23ef78434c9d10253d135d2b",
+    "data/gfx/terrain-dark_water2.png": "637669f7092b9333e2ec4a8ace729f96fd3766853fc9a22119cbac8fb55ef701",
+    "data/gfx/terrain-dark_water3.png": "524a385a7112a689da234401a584a9e55b2333e27ece145fb2ebb22b9eb002ca",
+    "data/gfx/terrain-dark_water4.png": "72875178cc5e9016a2e3332c2e8944acdc843a36b8f7ea90542db8cbf22c2c30",
+    "data/gfx/terrain-dark_water5.png": "d0d3946c1f747aed6de0facd17e348d835e69ede683752133f32537b508167b1",
+    "data/gfx/terrain-dark_water6.png": "edd9b464db0cd08eba5881dd7dabc110ed3ef30c4da20414f5c35dcc09637dcd",
+    "data/gfx/terrain-dark_water7.png": "d61df3de5a63dd706c330e0d0d5f7056669095c0e6518c5fc252aa624eaf66ba",
+    "data/gfx/terrain-dark_water8.png": "ff9bfa3803040cb8164916a276f6c175714713c71d4c740711ad968756f937b7",
+    "data/gfx/terrain-dark_water9.png": "a5bcd7598add82436e25938fa60d29e565eda6c7b5d3632b1df532e321637a40",
+    "data/gfx/terrain-dark_water10.png": "b05602747216707202e36e6b8fd0a854cfe1741693a827e625238d474960e0a1",
+    "data/gfx/terrain-dark_water11.png": "33a25a4b8b50f1db53a6dc5fcb4d5cf22799a8ae5002fffeab5766199c86cb8b",
+    "data/gfx/terrain-dark_water12.png": "087669de76a07a835579342588ca2abadce7d4dac125ffc79b0bd571664830c5",
+    "data/gfx/terrain-dark_water13.png": "cbc1ef471d363b76c903aaa27b92a45828586b29dd02759bf4e5f01efd86cd66",
+    "data/gfx/terrain-dark_water14.png": "d22579da7315cde3d44b740ca1864bdc5aa985ff892c7374a712f3d25b08e433",
+    "data/gfx/terrain-dark_water15.png": "040e02138371360448f05f7a3ca103b4a5af9b4f011f2ebcd7c48e75ac6fe2c3"
+  }
+}

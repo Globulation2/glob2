@@ -1,0 +1,190 @@
+{
+  "generator": "tools/artwork/terrain_synth.py",
+  "method": "procedural",
+  "generator_sha256": {
+    "tools/artwork/terrain_synth.py": "a8eda69c7b7212d9f9573766da37f1002a984d62327c108fb581e9a9c23830dc",
+    "tools/artwork/material_tiles.py": "224e159e0974023797710aa959994f11658c82da8fb80f9701e4abc13c74ed83"
+  },
+  "material": "flower_meadow",
+  "group": "barren",
+  "label": "Flower meadow",
+  "recipe": {
+    "name": "flower_meadow",
+    "group": "barren",
+    "label": "Flower meadow",
+    "profile": "brush",
+    "seam": {
+      "height": 2,
+      "cast_q8": 56,
+      "cast_width_q8": 512
+    },
+    "palette": {
+      "dark": [
+        52,
+        122,
+        46
+      ],
+      "mid": [
+        70,
+        140,
+        56
+      ],
+      "light": [
+        88,
+        154,
+        68
+      ],
+      "flowers": [
+        [
+          236,
+          196,
+          214
+        ],
+        [
+          244,
+          230,
+          158
+        ],
+        [
+          206,
+          168,
+          226
+        ],
+        [
+          240,
+          170,
+          160
+        ]
+      ],
+      "centre": [
+        120,
+        90,
+        60
+      ]
+    },
+    "style": {
+      "luma": 94,
+      "std": 9,
+      "grain_max": 9,
+      "match": 0.7
+    },
+    "phases": 1,
+    "animation_ticks": 8,
+    "alpha_range": [
+      255,
+      255
+    ],
+    "preview": null,
+    "minimap": null,
+    "placeholder_only": false,
+    "note": "placeholder until the image-generated flower meadow lands"
+  },
+  "seed": "fnv1a32(\"flower_meadow:<variant>:<phase>\")",
+  "render_size": 128,
+  "tile_size": 32,
+  "variants": 16,
+  "phases": 1,
+  "frame_layout": "variant + 16 * phase",
+  "sprite": "data/gfx/terrain-flower_meadow",
+  "preview": [
+    62,
+    128,
+    48
+  ],
+  "minimap": [
+    62,
+    128,
+    48
+  ],
+  "mean_color": [
+    62,
+    128,
+    48
+  ],
+  "style_stats": {
+    "0": {
+      "luma": 99.1,
+      "std": 10.1,
+      "grain": 5.3,
+      "sat": 0.63,
+      "alpha": 255.0
+    }
+  },
+  "style_references": {
+    "data/gfx/terrain0..15.png": {
+      "use": "statistics only",
+      "stats": {
+        "luma": 79.3,
+        "std": 5.0,
+        "grain": 3.0,
+        "sat": 0.73,
+        "alpha": 255.0
+      }
+    },
+    "data/gfx/terrain128..143.png": {
+      "use": "statistics only",
+      "stats": {
+        "luma": 160.1,
+        "std": 27.0,
+        "grain": 27.9,
+        "sat": 0.74,
+        "alpha": 255.0
+      }
+    },
+    "data/gfx/terrain256..271.png": {
+      "use": "statistics only",
+      "stats": {
+        "luma": 95.2,
+        "std": 8.4,
+        "grain": 5.5,
+        "sat": 0.92,
+        "alpha": 255.0
+      }
+    },
+    "data/gfx/terrain272..287.png": {
+      "use": "statistics only",
+      "stats": {
+        "luma": 215.4,
+        "std": 6.2,
+        "grain": 4.3,
+        "sat": 0.17,
+        "alpha": 255.0
+      }
+    },
+    "data/gfx/terrain288..303.png": {
+      "use": "statistics only",
+      "stats": {
+        "luma": 102.9,
+        "std": 10.3,
+        "grain": 7.9,
+        "sat": 0.37,
+        "alpha": 255.0
+      }
+    }
+  },
+  "python": "3.14.4",
+  "pillow": "12.2.0",
+  "platform": {
+    "system": "linux",
+    "machine": "x86_64",
+    "libc": "glibc 2.43"
+  },
+  "runtime_sha256": {
+    "data/gfx/terrain-flower_meadow0.png": "0ed426ece5287143e33438ed3cc2674990386b28b179c83bb5766800a50418f8",
+    "data/gfx/terrain-flower_meadow1.png": "564c31036dd423704f95670b919f5974d9ad2a250902ad594e36a5d2347fa6f9",
+    "data/gfx/terrain-flower_meadow2.png": "ec0755316972bdb49928100c77c260ff0a0525c644d884fe40c65ec0ca19e7f6",
+    "data/gfx/terrain-flower_meadow3.png": "3434838d633ffa4e3c4d65fbdcad4739ff5ff9a5a07891dd1f2f9aeefeb07881",
+    "data/gfx/terrain-flower_meadow4.png": "0cf4cffaeaac504dc25e28bd03eacb8b7d0e7dd3a9f5bb78121a57bb67130eca",
+    "data/gfx/terrain-flower_meadow5.png": "12f723ed5c1603887e4f55c2817b8f9da0470130d75365704844371faee56fb7",
+    "data/gfx/terrain-flower_meadow6.png": "3eb48d8843c63b4b84db9df6b2c96c70b361a4b96d645d6895232ddecbd110df",
+    "data/gfx/terrain-flower_meadow7.png": "f33396c9a2fdb5c79647a69ab290e5c775f636a348740bc292213921c1483978",
+    "data/gfx/terrain-flower_meadow8.png": "27a7dcc06dcf6116995104d600e4145aefa84049db3c4d2f4f1e83418fb22153",
+    "data/gfx/terrain-flower_meadow9.png": "276c214e7703c3c526fcfdd10a84234d07a80ee8522f6adf9b4036db19933df2",
+    "data/gfx/terrain-flower_meadow10.png": "9478df4023e7e923e59a94ab1ea1b8813859c682f9686def8188a9e102b4cf53",
+    "data/gfx/terrain-flower_meadow11.png": "d674f197049e631e4122da7900b9640b395c650319226018f95f53ca0547243b",
+    "data/gfx/terrain-flower_meadow12.png": "cb1dc5dac8d23ae0adff295fa4c9ccbae923c8e8621861a4942521aa1a641500",
+    "data/gfx/terrain-flower_meadow13.png": "e6f2bb37c5c5caa4030e27b81c4ecbeac642e204ad80dcfad68135c8bd3de2ca",
+    "data/gfx/terrain-flower_meadow14.png": "eabccf114b122eba5d3cceb8f6fc2eba361b7cfdbce8217f61637f5782374857",
+    "data/gfx/terrain-flower_meadow15.png": "d20565f57f446ac6bde200083cd5f7387dced51f27d15aab7e56e8303f608310"
+  }
+}

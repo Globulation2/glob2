@@ -30,7 +30,13 @@ Add `--lossless-images` for pixel-exact runtime comparison. `--output` alone
 selects a source-pack destination and does not produce a playable client tree.
 Source manifests and provenance README files are excluded from runtime bundles.
 Experimental terrain beyond the 272 legacy connected tiles uses the shared
-terrain compiler and native fallback rather than this HD pack.
+terrain compiler and native fallback rather than this HD pack. The catalogue
+materials (`data/gfx/terrain-<name>N.png`) are produced by
+`tools/artwork/terrain_synth.py` (procedural originals) and
+`tools/artwork/export_material.py` (image-generated materials with stored
+prompts), both validated by `tools/artwork/validate_material.py`; see
+[terrain materials](../../../docs/assets/terrain-materials.md#material-production).
+They need only Pillow, not this pipeline's model tooling.
 
 ## Generate a future sprite candidate
 

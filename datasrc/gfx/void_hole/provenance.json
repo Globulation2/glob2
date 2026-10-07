@@ -1,0 +1,171 @@
+{
+  "generator": "tools/artwork/terrain_synth.py",
+  "method": "procedural",
+  "generator_sha256": {
+    "tools/artwork/terrain_synth.py": "a8eda69c7b7212d9f9573766da37f1002a984d62327c108fb581e9a9c23830dc",
+    "tools/artwork/material_tiles.py": "224e159e0974023797710aa959994f11658c82da8fb80f9701e4abc13c74ed83"
+  },
+  "material": "void_hole",
+  "group": "void",
+  "label": "Hole",
+  "recipe": {
+    "name": "void_hole",
+    "group": "void",
+    "label": "Hole",
+    "profile": "crisp",
+    "seam": {
+      "height": 8,
+      "cast_q8": 96,
+      "cast_width_q8": 512
+    },
+    "palette": {
+      "dark": [
+        6,
+        6,
+        10
+      ],
+      "mid": [
+        10,
+        10,
+        14
+      ],
+      "light": [
+        14,
+        14,
+        20
+      ]
+    },
+    "style": {
+      "luma": 10,
+      "std": 2,
+      "grain_max": 3,
+      "match": 1.0
+    },
+    "phases": 1,
+    "animation_ticks": 8,
+    "alpha_range": [
+      255,
+      255
+    ],
+    "preview": [
+      28,
+      24,
+      36
+    ],
+    "minimap": [
+      16,
+      14,
+      22
+    ],
+    "placeholder_only": false,
+    "note": ""
+  },
+  "seed": "fnv1a32(\"void_hole:<variant>:<phase>\")",
+  "render_size": 128,
+  "tile_size": 32,
+  "variants": 16,
+  "phases": 1,
+  "frame_layout": "variant + 16 * phase",
+  "sprite": "data/gfx/terrain-void_hole",
+  "preview": [
+    28,
+    24,
+    36
+  ],
+  "minimap": [
+    16,
+    14,
+    22
+  ],
+  "mean_color": [
+    10,
+    10,
+    14
+  ],
+  "style_stats": {
+    "0": {
+      "luma": 10.0,
+      "std": 2.0,
+      "grain": 0.4,
+      "sat": 0.32,
+      "alpha": 255.0
+    }
+  },
+  "style_references": {
+    "data/gfx/terrain0..15.png": {
+      "use": "statistics only",
+      "stats": {
+        "luma": 79.3,
+        "std": 5.0,
+        "grain": 3.0,
+        "sat": 0.73,
+        "alpha": 255.0
+      }
+    },
+    "data/gfx/terrain128..143.png": {
+      "use": "statistics only",
+      "stats": {
+        "luma": 160.1,
+        "std": 27.0,
+        "grain": 27.9,
+        "sat": 0.74,
+        "alpha": 255.0
+      }
+    },
+    "data/gfx/terrain256..271.png": {
+      "use": "statistics only",
+      "stats": {
+        "luma": 95.2,
+        "std": 8.4,
+        "grain": 5.5,
+        "sat": 0.92,
+        "alpha": 255.0
+      }
+    },
+    "data/gfx/terrain272..287.png": {
+      "use": "statistics only",
+      "stats": {
+        "luma": 215.4,
+        "std": 6.2,
+        "grain": 4.3,
+        "sat": 0.17,
+        "alpha": 255.0
+      }
+    },
+    "data/gfx/terrain288..303.png": {
+      "use": "statistics only",
+      "stats": {
+        "luma": 102.9,
+        "std": 10.3,
+        "grain": 7.9,
+        "sat": 0.37,
+        "alpha": 255.0
+      }
+    }
+  },
+  "python": "3.14.4",
+  "pillow": "12.2.0",
+  "platform": {
+    "system": "linux",
+    "machine": "x86_64",
+    "libc": "glibc 2.43"
+  },
+  "runtime_sha256": {
+    "data/gfx/terrain-void_hole0.png": "e248ecf1683ac3647a2d4e67fdba7883cae039cc27011deb5e3de23fe4803dc9",
+    "data/gfx/terrain-void_hole1.png": "37cd243d311a0fe27212522e4a41aff13bd096535b9d8b75d1308dee241c1c32",
+    "data/gfx/terrain-void_hole2.png": "f4538f8f8d83e4ef12c103906c2f4e32aa4c01608fdd7a4968e261a1cef75d6c",
+    "data/gfx/terrain-void_hole3.png": "24893a374d3909ec56ba124c03e1b0cac84e846ce6c717f37451b7cbaf51a981",
+    "data/gfx/terrain-void_hole4.png": "b7007536f218fad45ffe2363aebcf18686e5ba058d8b150230146cb507848602",
+    "data/gfx/terrain-void_hole5.png": "fa0f8394019e4222f2a43332859e8ffbf3be5a0c61b1e68d092e9097d66da526",
+    "data/gfx/terrain-void_hole6.png": "f017682d5bf87b306fed0a1d22a1574c1232ae7c4ac64b4c7616d12bcf750282",
+    "data/gfx/terrain-void_hole7.png": "9288995e3bcfec0688307a79c13a6d3728929d21b5a6b996ee201772979ddff4",
+    "data/gfx/terrain-void_hole8.png": "578ebc6e7852f3deaf8c969feb417c6b99b7b17adbd0e2ebe2d4670c8a83b624",
+    "data/gfx/terrain-void_hole9.png": "a8ddc6ad56f2c21d7a9b0758bbd5c062c686ca7e558ef35703d2c61dc6e0accf",
+    "data/gfx/terrain-void_hole10.png": "9aef1f47e894209efbeaca3b6c8e026a36a1ad9a04b1a2df5940d8195f194e5f",
+    "data/gfx/terrain-void_hole11.png": "22a72f340b90ff2aef8520e5f3ef0f9d8370b30bab267311e12cb1216f057f5b",
+    "data/gfx/terrain-void_hole12.png": "da17f23aee7ed75672d54a3b2b22c19ebda743408340c16af10a41e194dc4cb2",
+    "data/gfx/terrain-void_hole13.png": "6dde3b2790443ef0eea2f4144f002e422b06129ea3209be75f8aba19c943a557",
+    "data/gfx/terrain-void_hole14.png": "e41e11e74501aacb3fa1ced0f7a1b8d5e3f729f80893c1c7761e308e46607167",
+    "data/gfx/terrain-void_hole15.png": "7f092e9c75303831ecf6658ae510cc1e3bdb0e83f0828358f40f2079e3aed3cf"
+  }
+}

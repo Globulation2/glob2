@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "TerrainRegistry.h"
+#include "FileFormatVersions.h"
 #include "online/Sha256.h"
 #include <nlohmann/json.hpp>
 #include <algorithm>
@@ -34,8 +35,9 @@ std::string text(const Json &j, const char *key,
 }
 TerrainType preset(const std::string &name)
 {
-	for (unsigned i = 0; i < GRASS_SAND_SHORE; ++i)
-		if (name == TerrainPresentations[i].name)
+	// Every paintable built-in is a preset; legacy corner shores are not.
+	for (unsigned i = 0; i < TERRAIN_COUNT; ++i)
+		if (terrainPaintable(TerrainType(i)) && name == TerrainPresentations[i].name)
 			return TerrainType(i);
 	throw std::invalid_argument("Unknown built-in terrain preset: " + name);
 }
@@ -363,8 +365,16 @@ std::string TerrainRegistry::serialize() const
 	result += "]}";
 	return result;
 }
-std::shared_ptr<const TerrainRegistry> TerrainRegistry::deserialize(std::string_view source)
+unsigned TerrainRegistry::savedBuiltinCount(int versionMinor)
 {
+	return versionMinor < FILE_FORMAT_VERSION_TERRAIN_CATALOGUE ? TERRAIN_COUNT_BEFORE_CATALOGUE
+																		: unsigned(TERRAIN_COUNT);
+}
+std::shared_ptr<const TerrainRegistry> TerrainRegistry::deserialize(std::string_view source,
+																			  unsigned savedBuiltinCount)
+{
+	if (savedBuiltinCount < TERRAIN_COUNT_BEFORE_CATALOGUE || savedBuiltinCount > TERRAIN_COUNT)
+		throw std::invalid_argument("Unsupported saved terrain built-in count");
 	auto j = parse(source);
 	if (j.at("terrains").empty())
 		return builtins();
@@ -373,7 +383,11 @@ std::shared_ptr<const TerrainRegistry> TerrainRegistry::deserialize(std::string_
 	for (const auto &item : j.at("terrains"))
 	{
 		fields(item, {"id", "key", "name", "properties", "appearance", "presentation", "allowedResourceKeys"});
-		if (!item.at("id").is_number_integer() || item.at("id") != result->size())
+		// Saved IDs are sequential from the writer's built-in count; canonical IDs
+		// follow the current built-ins so older files keep loading after the
+		// catalogue grew.
+		const auto savedId = savedBuiltinCount + (result->size() - TERRAIN_COUNT);
+		if (!item.at("id").is_number_integer() || item.at("id") != savedId)
 			throw std::invalid_argument("Invalid saved terrain ID");
 		const auto key = text(item, "key");
 		validKey(key);

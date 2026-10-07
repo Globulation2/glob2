@@ -211,5 +211,9 @@ static constexpr int FILE_FORMAT_VERSION_TERRAIN_SEED = 138;
 //! Runtime map resources, fixed material inventory, and independent material stocks.
 static constexpr int FILE_FORMAT_VERSION_RUNTIME_RESOURCES = 140;
 
+//! Built-in terrain catalogue: TERRAIN_COUNT grew from 7 to 31, so earlier files
+//! carry custom terrain IDs starting at 7 that the loader renumbers.
+static constexpr int FILE_FORMAT_VERSION_TERRAIN_CATALOGUE = 141;
+
 //! Hazard-weighted routing fields; older cached fields must be rebuilt.
-static constexpr int FILE_FORMAT_VERSION_HAZARD_ROUTING = 141;
+static constexpr int FILE_FORMAT_VERSION_HAZARD_ROUTING = 142;

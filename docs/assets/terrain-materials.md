@@ -14,8 +14,12 @@ world-space bends; version 3 adds per-profile displacement amplitude, pebble
 speckle, diagonal bridging and up to sixty-four curves per profile. Version-2
 packs parse unchanged and render through the current resolver, which rounds
 corners and reads each curve mirrored and negated. Material keys are unique strings. Bindings map semantic terrain
-names to material keys; the five shipped bindings are water, sand, grass, ice and
-road. Adding a visual material does not add gameplay rules. Runtime terrain definitions
+names to material keys. Every paintable built-in terrain in `src/map/TerrainTypeTable.h`
+requires a binding: the five legacy names (water, sand, grass, ice and road) plus the
+terrain-catalogue names, which `tools/terrain_builtin_names.json` mirrors for the Python
+validator. Several names may bind the same material. The catalogue materials behind those
+names are produced as described in [Material production](#material-production). Adding
+a visual material does not add gameplay rules. Runtime terrain definitions
 reuse a shipped appearance binding with independently resolved simulation properties;
 see [map authoring](../map-generators/GAME_RULES_FOR_MAP_DESIGN.md#authoring-additional-terrain-types) for the JSON import workflow. Runtime
 definitions cannot introduce artwork or modify this catalog. Their canonical IDs
@@ -95,6 +99,183 @@ have their own consecutive `first_frame`, `frames` and `ticks` fields and are
 composited beneath the material before border preparation. The water binding must
 use `ocean: true`; ocean materials reveal the shared scrolling ocean instead of
 using a per-material backdrop.
+
+## Material production
+
+The twenty-four catalogue materials (`boulders`, `hedge`, `thicket`, `ridge_rock`,
+`outcrop`, `dirt`, `clay`, `gravel`, `flower_meadow`, `mud`, `marsh`, `deep_snow`,
+`scree`, `dirt_track`, `boardwalk`, `lava`, `ember_field`, `loam`, `moss`,
+`spring_meadow`, `deep_water`, `dark_water`, `void_hole`, `chasm`) ship as
+`data/gfx/terrain-<name>0..15.png`, sixteen 32×32 RGBA variants per material, with
+a provenance record in `datasrc/gfx/<name>/provenance.json`. Two production
+methods share the tile code in `tools/artwork/material_tiles.py` (sheet cutting,
+perimeter sharing on premultiplied RGBA, pixel hashing, style statistics), so a
+material can move from one method to the other without changing its contract.
+Run the tools with the pinned asset encoder interpreter, since Pillow's
+resampling kernels are a determinism input:
+
+```sh
+ENC="$(python3 tools/package_assets.py --encoder-python)"
+"$ENC" tools/artwork/terrain_synth.py                       # write all procedural frames
+"$ENC" tools/artwork/terrain_synth.py --material mud --contact-sheet artifacts/terrain/mud.png
+"$ENC" tools/artwork/terrain_synth.py --check               # reproduce and compare
+"$ENC" tools/artwork/terrain_synth.py --emit-catalog        # material blocks and colour initialisers
+"$ENC" tools/artwork/terrain_synth.py --write-catalog       # merge them into tileset.json
+"$ENC" tools/artwork/export_material.py --name boulders     # image-generated material
+"$ENC" tools/artwork/validate_material.py --all
+"$ENC" -m unittest discover -s tools/artwork -p 'test_*material*.py'
+"$ENC" -m unittest discover -s tools/artwork -p test_terrain_synth.py
+```
+
+### Procedural originals
+
+`tools/artwork/terrain_synth.py` synthesises ground-like materials from scratch:
+periodic value noise (a random lattice tiled 3×3 and resized bicubically, so the
+field wraps by construction), fractal sums, domain warps, Worley cells (F1 and
+F2−F1, Euclidean and Chebyshev), scattered stamps and palette ramps. Every random
+value comes from `random.Random(seed).random()` with
+`seed = fnv1a32("<material>:<variant>:<phase>")`, so the sixteen variants are
+independent syntheses and the output is byte-identical across runs. Existing tiles
+are never read into an output; the native grass, sand, trail, ice and water tiles
+are only measured (luma mean and spread, wrapped neighbour grain, saturation) for
+the style targets that keep the new art low-contrast and painterly beside them:
+ground materials aim at a luma spread of 6–14 and a grain of 3–10 at 32 px.
+
+Each recipe renders at 128×128, is area-averaged to 32×32 and pulled toward its
+luma targets by one affine transform computed from variant 0, so all variants of
+a material share one tone. Joins work with the runtime's border preparation
+rather than against it: `seamless_sources` (and `TerrainCompositor::prepare`)
+blend the outer four native pixels of every variant toward variant 0's
+*reflected* pixel (`min(x, 31 - x)`, `min(y, 31 - y)`) with weights 1, 3/4, 1/2
+and 1/4, so whatever variant 0 carries on its perimeter is repeated on every
+tile. The synthesiser therefore makes that perimeter ordinary rather than
+special: the render with the quietest perimeter (lowest luma spread in the
+outer four native pixels) takes frame 0, stamped features (stones, twigs,
+blooms, embers) stay at least three native pixels from every edge, and
+`neutral_band` pulls only the very low frequencies (a radius-10 box blur at
+render scale) of the outer two to three native pixels toward the tile mean,
+tapering to zero inward, so no light or dark blotch sits on an edge while grain,
+chips and colour variation remain for the runtime blend to land on. Replacing
+the edge texture with a flat tone was tried and rejected: it reads as a frame
+around every tile. `share_perimeter` then copies ring 0 from tile 0 (opposite
+edges read the same coordinates, so a tile also joins itself across the torus
+seam) and blends ring 1. The contact sheet shows a 3x3 field of random variants
+at 1x and 2x after the runtime blend for every material; materials with hard
+structure (hedge, scree, chasm, lava's placeholder) still show a faint seam at
+2x, which is the cost of the runtime contract. Group readability is part of the
+recipes: obstacles are lit from the top left and cast onto grass, hazards warm
+and saturated, fertile ground warm and saturated (umber loam, moss, meadow),
+barren ground muted warm neutrals, rough ground cool and desaturated, paths warm
+and light, void near black with a cast onto every neighbour.
+
+Lava and ember field are animated: four phases per variant, frame
+`variant + 16 * phase` (frames 0–63), catalogued with `animation_frames 4`,
+`animation_stride 16` and `animation_ticks 8`. The crust layout is shared by the
+phases; only the glow ramp moves.
+
+Deep water and dark water are translucent RGBA tints (`ocean: false`, alpha
+about 160 and 210) derived from the ocean backdrop's mean colour
+(`data/gfx/water0.png`, about (69, 52, 200): same hue, lower value, slightly
+lower saturation), so they read as the same liquid, deeper. Ocean materials have
+no texture of their own and every non-ocean material composites with straight
+alpha over the shared scrolling ocean, so a tint darkens that ocean and is
+animated for free; a per-material `backdrop` would need its own 32×32 frames and
+was rejected for that reason. Marsh pools use the same mechanism at alpha 215.
+
+`--check` re-synthesises every material and compares the pixel hashes with the
+committed PNGs and with `provenance.json`; it also requires the recorded
+generator hashes and Pillow 12.2.0, so any edit to `terrain_synth.py` or
+`material_tiles.py` is followed by a default run that refreshes the provenance
+(pixels that did not change produce byte-identical PNGs). Pixel-exact
+reproduction is pinned to the encoder interpreter on Linux x86-64: besides
+Pillow's kernels the renders depend on the C library's `sin`/`atan2`/`hypot` and
+on `round()` boundaries, so the provenance records the platform and a mismatch
+on another platform is reported with that note. Recipes swapped to
+image-generated art are marked `placeholder_only=True` and skipped by `--check`.
+`--hd` writes the 128×128 renders under `artifacts/terrain/hd/` for review only
+and writes no frames.
+Preview and minimap colours derive from the rendered mean unless a recipe
+overrides them for legibility (void, hazards, deep water).
+
+### Image-generated materials
+
+Silhouette-heavy materials (boulders, hedge, thicket, lava, ember field, flower
+meadow, outcrop) are produced with an external image generator from the prompts
+in `MATERIAL_PROMPTS` in `tools/artwork/export_material.py`
+(`--name <name> --prompt` prints one). The prompts share a header (seamless
+top-down material for sixteen 32×32 tiles, painterly pastel-earthy low contrast,
+flat lighting, no borders or directional shapes, readable after downscaling, the
+four reference images grass, sand, trail and inn) and a body per material. Save
+the selected image as `datasrc/gfx/<name>/material.png` (square, at least 512 px)
+and run `export_material.py --name <name>`: it area-averages the image to the
+128×128 sheet, cuts sixteen tiles, shares the perimeter and writes the frames
+with `method: "image-generator"` provenance (prompt, reference and source hashes,
+runtime pixel hashes, and a `replaces` record naming the procedural provenance it
+supersedes). Lava and ember field must be exported with `--animate-glow`: it
+keeps the generated crust and channel layout and applies the recipe's glow ramp
+to the warm pixels for four phases (`method: "hybrid"`); exporting an animated
+recipe without it, or a static one with it, is refused so the catalog's
+`animation_frames` never points at stale frames. Then mark the recipe
+`placeholder_only=True` in `terrain_synth.py` and run
+`validate_material.py --name <name>`, which also checks that the recorded phase
+count matches the recipe for every method.
+
+### Provenance layout
+
+```
+datasrc/gfx/<name>/
+  provenance.json   generator, method (procedural | image-generator | hybrid),
+                    generator or exporter sha256, recipe or prompt, Python and
+                    Pillow versions, style references ("statistics only"),
+                    frame layout, runtime pixel sha256 per frame, `replaces`
+  material.png      image-generated source only
+```
+
+`tools/terrain_tileset.py` copies a summary of each record into the compiled
+pack's `provenance.materials`; legacy materials without a record are listed as
+existing artwork.
+
+### Boundary profiles for the catalogue
+
+| Profile | roughness / amplitude / feather / speckle / bridge (Q8) | Curves | Materials |
+| --- | --- | --- | --- |
+| `rock` | 384 / 896 / 192 / 448 / 192 | 16 × 9, angular | boulders, ridge_rock, outcrop, scree, gravel, chasm |
+| `soft` | 160 / 512 / 448 / 128 / 640 | 12 × 17, gentle | mud, marsh, loam, moss, deep_snow, deep_water, dark_water, clay, dirt |
+| `crisp` | 96 / 256 / 128 / 0 / 256 | 8 × 9 | void_hole, boardwalk |
+| `brush` | 320 / 768 / 320 / 384 / 512 | 16 × 17 | hedge, thicket, flower_meadow, spring_meadow |
+| `sand` (existing) | | | dirt_track |
+| `fractured` (existing) | | | lava, ember_field |
+
+`tools/terrain_profile_curves.py --write` generates the curves with seeded random
+walks and appends a missing profile with these parameters; never author curves by
+hand. Pair treatments: boulders, ridge_rock and outcrop against grass use `rock`;
+hedge and thicket against grass use `brush`; water/deep_water and
+deep_water/dark_water use `soft`; lava and ember_field against grass, sand, dirt
+and gravel use `fractured`; void_hole and chasm against every other material use
+`crisp` (the default rule would otherwise let the rougher neighbour win).
+
+### Seam ranks
+
+| Rank | Materials | Cast (`cast_q8` / `cast_width_q8`) and fringe |
+| --- | --- | --- |
+| 8 | void_hole, chasm | 96 / 512: the hole darkens every neighbour, the only depth cue a near-black texture can carry |
+| 7 | dark_water | 80 / 704 |
+| 6 | deep_water | 72 / 640, a drop-off lip on shallow water and shores |
+| 5 | water (existing) | 72 / 640 |
+| 4 | boulders, hedge, thicket | 88 / 832, a sense of height on the grass side |
+| 4 | ridge_rock, outcrop | 72 / 768 |
+| 4 | lava, ember_field | no cast; scorch fringe `[214,110,40]` 128/640 and `[160,80,40]` 96/512 |
+| 4 | ice (existing) | 64 / 640 with frost fringe |
+| 3 | road (existing), dirt_track, boardwalk | 48 / 512 |
+| 3 | deep_snow | 48 / 512 with cool fringe `[196,210,232]` 64/384, a rim on grass and sand |
+| 2 | grass (existing), loam, moss, spring_meadow, flower_meadow | 56 / 512 |
+| 2 | dirt, clay, gravel | 40 / 448 |
+| 1 | sand (existing), mud, marsh, scree | no cast |
+
+Casts stay within two to three pixels and near or under a third strength, as
+[Seams](#seams) requires. Equal ranks cast nothing, so barren ground beside grass
+takes no lip. A lighter inner lip inside a hole cannot be expressed by the seam
+model, which only tones neighbours; it would need an engine-side self-lip.
 
 ## Boundaries and masks
 
@@ -227,6 +408,8 @@ python3 tools/terrain_tileset.py --check
 python3 tools/terrain_tileset.py --output artifacts/terrain/compiled --page-size 256
 python3 tools/terrain_profile_curves.py --write
 python3 -m unittest discover -s tools -p test_terrain_tileset.py
+"$(python3 tools/package_assets.py --encoder-python)" tools/artwork/terrain_synth.py --check
+"$(python3 tools/package_assets.py --encoder-python)" tools/artwork/validate_material.py --all
 python3 test/run_tests.py --filter 'TerrainMaterials/*'
 python3 test/run_tests.py --filter 'TerrainPresentation/*'
 python3 test/run_tests.py --filter 'TerrainValidation/*'

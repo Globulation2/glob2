@@ -448,6 +448,19 @@ TEST_SUITE("EditorActionCoverage")
         CHECK(editor.game.map.topologyGeneration==generation+1);
         CHECK(editor.game.map.terrainTypeAt(8,8)==TRAIL);
         CHECK(editor.game.map.terrainTypeAt(7,8)==TRAIL);
+        // Catalogue brushes are gated by their group's experiment, not listed in the side panel.
+        editor.performAction("select boulders");
+        CHECK(editor.terrainType==TerrainSelector::Trail);
+        globals->settings.experiments.set(ExperimentId::ObstacleTerrain,true);
+        editor.performAction("select boulders");
+        CHECK(editor.terrainType==TerrainSelector::selectorFor(BOULDERS));
+        editor.performAction("select hedge");
+        CHECK(editor.terrainType==TerrainSelector::selectorFor(HEDGE));
+        cursor(editor,20,20);editor.performAction("terrain drag start");editor.performAction("terrain drag end");
+        CHECK(editor.game.map.terrainTypeAt(20,20)==HEDGE);
+        CHECK(editor.game.map.requiredTerrainExperiments().has(ExperimentId::ObstacleTerrain));
+        globals->settings.experiments.set(ExperimentId::ObstacleTerrain,false);
+        editor.performAction("select road");
         for (auto invalid : {static_cast<TerrainSelector::TerrainType>(-1),
                 static_cast<TerrainSelector::TerrainType>(TerrainSelector::RegisteredBegin+TERRAIN_COUNT),
                 TerrainSelector::selectorFor(GRASS_SAND_SHORE),TerrainSelector::NoTerrain}) {
@@ -537,7 +550,7 @@ TEST_SUITE("EditorActionCoverage")
 			editor.loadSaveScreen->confirmPresentedFile();
 			editor.delegateMenu(poll);
 			CHECK_FALSE(editor.loadSaveScreen);
-			CHECK(editor.game.map.terrainRegistry().size() == 47);
+			CHECK(editor.game.map.terrainRegistry().size() == 40 + TERRAIN_COUNT);
 			CHECK(editor.hasMapBeenModified);
 			REQUIRE(editor.terrainPalette);
 			editor.draw(SDL_GetTicks());

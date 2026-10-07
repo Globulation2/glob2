@@ -1,0 +1,168 @@
+{
+  "generator": "tools/artwork/terrain_synth.py",
+  "method": "procedural",
+  "generator_sha256": {
+    "tools/artwork/terrain_synth.py": "a8eda69c7b7212d9f9573766da37f1002a984d62327c108fb581e9a9c23830dc",
+    "tools/artwork/material_tiles.py": "224e159e0974023797710aa959994f11658c82da8fb80f9701e4abc13c74ed83"
+  },
+  "material": "loam",
+  "group": "fertile",
+  "label": "Loam",
+  "recipe": {
+    "name": "loam",
+    "group": "fertile",
+    "label": "Loam",
+    "profile": "soft",
+    "seam": {
+      "height": 2,
+      "cast_q8": 56,
+      "cast_width_q8": 512
+    },
+    "palette": {
+      "dark": [
+        52,
+        38,
+        24
+      ],
+      "mid": [
+        74,
+        58,
+        36
+      ],
+      "light": [
+        98,
+        80,
+        52
+      ],
+      "fleck": [
+        96,
+        108,
+        56
+      ]
+    },
+    "style": {
+      "luma": 66,
+      "std": 8,
+      "grain_max": 8,
+      "match": 1.0
+    },
+    "phases": 1,
+    "animation_ticks": 8,
+    "alpha_range": [
+      255,
+      255
+    ],
+    "preview": null,
+    "minimap": null,
+    "placeholder_only": false,
+    "note": ""
+  },
+  "seed": "fnv1a32(\"loam:<variant>:<phase>\")",
+  "render_size": 128,
+  "tile_size": 32,
+  "variants": 16,
+  "phases": 1,
+  "frame_layout": "variant + 16 * phase",
+  "sprite": "data/gfx/terrain-loam",
+  "preview": [
+    78,
+    63,
+    41
+  ],
+  "minimap": [
+    78,
+    63,
+    41
+  ],
+  "mean_color": [
+    78,
+    63,
+    41
+  ],
+  "style_stats": {
+    "0": {
+      "luma": 65.2,
+      "std": 8.0,
+      "grain": 3.6,
+      "sat": 0.47,
+      "alpha": 255.0
+    }
+  },
+  "style_references": {
+    "data/gfx/terrain0..15.png": {
+      "use": "statistics only",
+      "stats": {
+        "luma": 79.3,
+        "std": 5.0,
+        "grain": 3.0,
+        "sat": 0.73,
+        "alpha": 255.0
+      }
+    },
+    "data/gfx/terrain128..143.png": {
+      "use": "statistics only",
+      "stats": {
+        "luma": 160.1,
+        "std": 27.0,
+        "grain": 27.9,
+        "sat": 0.74,
+        "alpha": 255.0
+      }
+    },
+    "data/gfx/terrain256..271.png": {
+      "use": "statistics only",
+      "stats": {
+        "luma": 95.2,
+        "std": 8.4,
+        "grain": 5.5,
+        "sat": 0.92,
+        "alpha": 255.0
+      }
+    },
+    "data/gfx/terrain272..287.png": {
+      "use": "statistics only",
+      "stats": {
+        "luma": 215.4,
+        "std": 6.2,
+        "grain": 4.3,
+        "sat": 0.17,
+        "alpha": 255.0
+      }
+    },
+    "data/gfx/terrain288..303.png": {
+      "use": "statistics only",
+      "stats": {
+        "luma": 102.9,
+        "std": 10.3,
+        "grain": 7.9,
+        "sat": 0.37,
+        "alpha": 255.0
+      }
+    }
+  },
+  "python": "3.14.4",
+  "pillow": "12.2.0",
+  "platform": {
+    "system": "linux",
+    "machine": "x86_64",
+    "libc": "glibc 2.43"
+  },
+  "runtime_sha256": {
+    "data/gfx/terrain-loam0.png": "58fdf5684d8deb8885d77b47bc558b18ca10523fc00d55396ac8579ce22f305f",
+    "data/gfx/terrain-loam1.png": "b665fb777cb917f7ff857fbb5e137c70dfb99df4465ea2f2e5f0f9a8e1295725",
+    "data/gfx/terrain-loam2.png": "dd7b23aa045a66605cb5949ff28d0a8822c9a2ead5fc6648df37b76a1f86fc20",
+    "data/gfx/terrain-loam3.png": "2a59604a5134373e7880006270c64d51e139466279bc031e6fb7cbc1dd6e72dd",
+    "data/gfx/terrain-loam4.png": "52d2e2ec721034a30779b9de753ea88f800757ca22f089190df1b6c9962d24be",
+    "data/gfx/terrain-loam5.png": "64f29be21fdec8aa0fcfd79a38cc90aff50e8c6a6e23c4b86f0fdc4a55ca90b3",
+    "data/gfx/terrain-loam6.png": "9e9f7cb90641961ecb9e89c9fdf172aaf33e0c15714f5cf7a50fd074867b52a8",
+    "data/gfx/terrain-loam7.png": "b8c9141ab70cb8f8b4ed3ae242d793fd3240446df9c1f4849a970079afd0ff0d",
+    "data/gfx/terrain-loam8.png": "62d548143e0f7582b72b465e3127fe94c782ed51efa28d0e27fd747abc095d49",
+    "data/gfx/terrain-loam9.png": "084da7c85a6d2615d11ea1750c0bc73b1a9db14db4c3e147647cb226c1e5aa31",
+    "data/gfx/terrain-loam10.png": "442b261b91f78b4e1589b66bf5f3da1ae6006493b06681554dc05a922f32529c",
+    "data/gfx/terrain-loam11.png": "decaad71752c98eaf360ab309a840749505d472cbef01529b06917289e92ce53",
+    "data/gfx/terrain-loam12.png": "dd984c916b33daf3a415e4bb822c3e3852e73af8e443c2a558e00fa8e1fed693",
+    "data/gfx/terrain-loam13.png": "97618c090a91cb04cf67f13236bd309641244dcb4618e2e8b06c7f690c135994",
+    "data/gfx/terrain-loam14.png": "79d16cb410f35dd70fb981d09c463a1d3148feae9894338eec4258ab603ad678",
+    "data/gfx/terrain-loam15.png": "1b744935aa9cffe1dcaf5af16a41e5a557dee2bf27e294146496eced43edad23"
+  }
+}

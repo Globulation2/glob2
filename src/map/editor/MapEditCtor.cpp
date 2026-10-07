@@ -127,19 +127,30 @@ MapEdit::MapEdit()
 	orange = new TerrainSelector(*this, widgetRectangle(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+decX, 248, 32, 32), "terrain view", "orange selector", "select orange tree", TerrainSelector::OrangeTree);
 	cherry = new TerrainSelector(*this, widgetRectangle(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+32+decX, 248, 32, 32), "terrain view", "cherry selector", "select cherry tree", TerrainSelector::CherryTree);
 	prune = new TerrainSelector(*this, widgetRectangle(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+64+decX, 248, 32, 32), "terrain view", "prune selector", "select prune tree", TerrainSelector::PruneTree);
-    for (unsigned id=0; id<TERRAIN_COUNT; ++id)
+    // One side-panel brush per enabled catalogue group that has exactly one member
+    // (ice, or trail while path-terrain is off). Groups with several members are
+    // chosen in the Terrain palette dialog, which lists every enabled type.
+    for (unsigned g = 0; g < TERRAIN_GROUP_COUNT; ++g)
     {
-        const auto type = static_cast<::TerrainType>(id);
-		const auto &presentation = game.map.terrainPresentation(type);
-		if (!presentation.editorSelectable || type==GRASS || type==SAND || type==WATER) continue;
-        const auto requirement = terrainExperiment(type);
-        if (requirement && !globalContainer->settings.experiments.has(*requirement)) continue;
+        const auto group = TerrainGroup(g);
+        if (!terrainGroupDefinition(group).paletteVisible || group == TerrainGroup::Water || group == TerrainGroup::Sand || group == TerrainGroup::Grass) continue;
+        std::vector<::TerrainType> enabled;
+        for (unsigned id = 0; id < TERRAIN_COUNT; ++id)
+        {
+            const auto type = static_cast<::TerrainType>(id);
+            if (terrainGroup(type) != group || !game.map.terrainPresentation(type).editorSelectable) continue;
+            const auto requirement = terrainExperiment(type);
+            if (requirement && !globalContainer->settings.experiments.has(*requirement)) continue;
+            enabled.push_back(type);
+        }
+        if (enabled.size() != 1) continue;
+        const auto &presentation = game.map.terrainPresentation(enabled.front());
         const int slot = int(additionalTerrainSelectors.size());
         auto* selector = new TerrainSelector(*this,
             widgetRectangle(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+32*(slot%4)+decX,
                 286+38*(slot/4),32,32), "terrain view",
             std::string(presentation.name)+" selector", std::string("select ")+presentation.name,
-            TerrainSelector::selectorFor(type));
+            TerrainSelector::selectorFor(enabled.front()));
         additionalTerrainSelectors.push_back(selector);
         addWidget(selector);
     }
