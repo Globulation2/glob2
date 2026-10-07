@@ -1,0 +1,21 @@
+{
+  "path": "/home/bradley/.codex/worktrees/eded/glob2/artifacts/resource-followup/publication/gradient-reuse-v3-final-correctness.zip",
+  "sha256": "8aa41a3f42e4fea30df7d05b91b2dfac7a305e0d48bfc9bd9cf5e06948b7de13",
+  "bytes": 116403888,
+  "entries": 682,
+  "excluded": "Frozen engine/TSAN binaries and duplicate data tree; hashes/provenance retained.",
+  "parts": [
+    {
+      "name": "gradient-reuse-v3-final-correctness.zip.part01",
+      "bytes": 67108864,
+      "sha256": "b5b0d75a28db1234193acdfded94c342053f5e9dd8f400f62c896024009ce6f7"
+    },
+    {
+      "name": "gradient-reuse-v3-final-correctness.zip.part02",
+      "bytes": 49295024,
+      "sha256": "ed2b0e076a02e9a7e80fdedb33e3a4db18d5ec30324e700d2f5cb1e1f8e3d9f1"
+    }
+  ],
+  "reconstruction": "Concatenate parts in listed order to gradient-reuse-v3-final-correctness.zip; verify whole SHA256, then unzip normally.",
+  "concatenated_parts_sha256_verified": true
+}

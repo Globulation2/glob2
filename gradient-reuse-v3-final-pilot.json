@@ -1,0 +1,7 @@
+{
+  "path": "/home/bradley/.codex/worktrees/eded/glob2/artifacts/resource-followup/publication/gradient-reuse-v3-final-pilot.zip",
+  "sha256": "796fa08f7361831a77de33e0059381f827bca60bd5868a5a277205a31d52f6b8",
+  "bytes": 4610893,
+  "entries": 1231,
+  "excluded": "Frozen engine/TSAN binaries and duplicate data tree; hashes/provenance retained."
+}
