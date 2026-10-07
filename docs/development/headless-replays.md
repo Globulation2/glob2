@@ -41,6 +41,11 @@ disappeared. These fixes can change trajectories. Replay/network acceptance rema
 replay and simulation version gates. See the
 [AI engine contract](reference.md#ai-observations-and-delayed-orders).
 
+Structured results include per-team `routing_comparison` counters for wheat
+harvested and delivered, completed construction and starvation deaths. They are
+cumulative simulation measurements, exported after execution; they do not
+represent only the `--benchmark-warmup` timing window.
+
 Headless runs and scripted `-test-games` runs default autosaving off for that
 process. Normal-play preferences are preserved. Use explicit initial saves or
 the structured `--run-game --save initial/final/every:N` options when snapshots
