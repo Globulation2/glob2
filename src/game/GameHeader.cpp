@@ -61,7 +61,7 @@ GameHeader::GameHeader()
 
 void GameHeader::reset()
 {
-	++observationRevisionValue; aiOrderDelay = 0;
+	++observationRevisionValue; aiOrderDelay = 8;
 	buildingCatalogSnapshot.clear();
 	buildingCatalogExperimentKeys.clear();
 	resourceCatalogExperiments.clear();
