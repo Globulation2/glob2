@@ -54,6 +54,7 @@ enum class ExperimentId : Uint8
 	FertileTerrain = 11,
 	DeepWaterTerrain = 12,
 	VoidTerrain = 13,
+	GreedyResourceFetching = 14,
 	Count
 };
 

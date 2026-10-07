@@ -111,6 +111,7 @@ bool Map::buildingAvailable(Building *building, int swimClass, int x, int y, int
 
 const Uint16 *Map::roundTripGradientSlot(Building *building, int resourceType, int swimClass)
 {
+	if (game->gameHeader.hasExperiment(ExperimentId::GreedyResourceFetching)) return NULL;
 	if (!prepareBuildingGradient(building, swimClass, BuildingRoute::Footprint))
 		return NULL;
 	Uint32 now=game->stepCounter;
@@ -126,6 +127,7 @@ const Uint16 *Map::roundTripGradientSlot(Building *building, int resourceType, i
 
 bool Map::roundTripDistanceSlot(Building *building, int resourceType, int swimClass, int x, int y, int *dist)
 {
+	if (game->gameHeader.hasExperiment(ExperimentId::GreedyResourceFetching)) return false;
 	PERF_SCOPE_TIME(PathBuilding);
 	// Only gradients a fetcher keeps alive: hiring looks at every needed
 	// resource of every building, far more than ever get fetched.

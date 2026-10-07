@@ -232,6 +232,15 @@ void Headless::playersAndTeamsJson(std::ostream &result, Game &game, const std::
 			<< ",\"units\":" << units << ",\"workers\":" << workers << ",\"explorers\":" << explorers
 			<< ",\"warriors\":" << warriors << ",\"warrior_hp\":" << warriorHP << ",\"warrior_attack\":" << warriorAttack
 			<< ",\"buildings\":" << buildings << ",\"sites\":" << sites;
+
+        // Export existing cumulative counters only after simulation finishes.
+        const auto &m=team->stats.measurements;
+        Uint64 starvation=0,completed=0;
+        for(int u=0;u<NB_UNIT_TYPE;++u) starvation+=m.deaths[u][GameplayMeasurements::STARVATION];
+        for(const auto &v:m.variants) completed+=v.completed[GameplayMeasurements::NEW_BUILDING];
+        result << ",\"routing_comparison\":{\"wheat_delivered\":" << m.delivered[materialIndex(MaterialId::Food)]
+            << ",\"wheat_harvested\":" << m.harvested[materialIndex(MaterialId::Food)]
+            << ",\"starvation_deaths\":" << starvation << ",\"construction_completed\":" << completed << '}';
 		const TeamStat &stats=*team->stats.getLatestStat();
 		result << ",\"standard_statistics\":"; standardStatistics(result,stats);
 		result << ",\"statistics\":{\"total_units\":" << stats.totalUnit << ",\"total_buildings\":" << stats.totalBuilding

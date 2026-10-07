@@ -174,3 +174,7 @@ For a built-in engine experiment:
    golden match record as required by the simulation-version policy.
 6. In the pull request, describe the feel changes with the experiment on; a
    maintainer playing it is part of review.
+
+### Greedy resource fetching
+
+The saved `greedy-resource-fetching` experiment sends fetchers toward the nearest available material source, then back to their building. It bypasses round-trip field construction and cached round-trip scores; hiring and job swaps retain their existing distance estimates and hunger checks. Shared market eligibility and live movement checks remain in force. The experiment is off by default. Compare multiple seeds and both delivery throughput and starvation before deciding whether to retain it.
