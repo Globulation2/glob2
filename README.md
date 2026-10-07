@@ -45,3 +45,13 @@ Tested source `0a19ac804`, base `4b7fa7a37`; Linux x86-64/Python3.14.4. `python3
 ## Introduced Maxima source-contract failure
 
 Merged master job [112574794900](https://github.com/Globulation2/glob2/actions/runs/37551820848/job/112574794900) failed a stale source-string assertion after the indexed material query refactor. Focused repair `3b3d7a8d5036906e9c4b64c80bb9e7a8ff44619b`, base `9084ea907`: update that assertion only. Local before failure reproduced, after61tests passed with1expected unavailable-binary skip; independent focused17tests pass. Exact failed hosted log and before/after outputs are in `maxima-repair/`. No production code, simulation/save/network behavior or gameplay changes. The unavailable local dynamic test is covered by the requested hosted follow-up, not claimed passed locally.
+
+## Clean final native execution
+
+Source `7bafc3f15298a1649e807e42909c3fa2fe3bc609`, clean embedded test provenance; integrated production remains `9084ea907` (only test/tooling/docs changed). Linux x86-64/GCC15.2 release/O3 optimized_assets=0 with the recorded SDL/recording prefixes. `native-7baf-validation.zip` retains exact commands/environment/build logs, all per-file SHA256 values (independently re-read after compression), stock/match/composition traces, generator JSON and results.
+
+- Maxima policy suite:75passed, zero skips, closing the earlier unavailable-dump omission. The focused repair is separately committed at `3b3d7a8d5036906e9c4b64c80bb9e7a8ff44619b`; its source assertion is identical in this tested stack.
+- Five-design resource-epoch case:passed; all five observed full/topology outputs match existing Linux references. This does not verify macOS rows.
+- Updated native collector:passed, stock + official match traces unchanged; all150resource composition rows match the committed fixture with clean source provenance.
+
+Commands: same prefix environment as prior native build, `scons -j8 release=1 optimized_assets=0 engine-tests maxima-strategy-dump`; `GLOB2_BUILD_DIR=build/linux/client/release python3 -m unittest discover -s src/ai/maxima -p '*Test.py'`; `test/run_tests.py` exact design filter and updated `test/run-browser-determinism.py` invocation retained in summary/logs. Omitted: fresh complete native suite, display/gameplay review, physical ARM/iOS and final hosted platform execution. These test-only changes do not change simulation/save/network behavior.
