@@ -16,6 +16,19 @@ This is the engineering follow-up to [PR #846](https://github.com/Globulation2/g
 | Generator [#864](https://github.com/Globulation2/glob2/pull/864) | Audited c3fc observations support acceptance commit `d34edf513`; the integrated `914a1e5088b817a5993b5ffc8f2601aa58e0c642` gate passed. Historical rows and strict missing-row rejection remain preserved. |
 | Cache [#873](https://github.com/Globulation2/glob2/pull/873) | Frozen SIM24 candidate SHA256 `4a068846b4adf1aeeebdecbac94fca423f588398319aa0a25f7e5382cee5610b`; separate current644 and producing `4c829` compatibility evidence. Rejected after the complete v2 corpus/stress and v3 pilot; raw source-specific evidence remains valid. |
 
+## Latest-master restack and focused integration
+
+At the user's request, all five delivery branches were rebased onto master `64406b0826289c94b9a8eadb590ef551cf39efa9`. Heads are #861`838290ec480162d620bb0b5bab9eddbb8c2df562`, #863`4fabeac4955d52eafb53b8b70a048ffb1448b49d`, #868`9ff278414fa7fd74e22a60dae4627cfa035fc10f`, #864`83f3d35ef20c0a0b755a2ac585647f3c6e204fac`, and #872`8a6898bfb393f8408f50cd3dc1b5dcb1264e9147`. Independent review confirms unchanged retained patches/seven benchmark Python files and preservation of new master documentation. The obsolete Maxima assertion patch was skipped; the final test matches current master exactly. Rejected cache changes are excluded.
+
+| Rebase check | Exact source and result |
+| --- | --- |
+| Benchmark/cpuset contracts |872`8a6898`:42 passed (14 cpuset,21 report,7 governor). |
+| Platform/collection contracts |864`83f3d3`:97 passed (89 CI,3 resource,5 generator). |
+| Native build and focused integration |Clean864`83f3d3`, source-tree`cbd34c504f21eec9e04e84b78553ba8feb195aa971b6d61957039706eb68223e`: full engine-test harness built; five-design epoch and custom CLI save-tail cases both passed, zero failures/skips. Linux x86-64/GCC15.2 release/O3 with recorded prefixes; not a full engine-suite execution. |
+| Fresh strict macOS gate |Same clean83f/source-treecbd34 on macOS26.6.2 arm64, AppleClang21/Xcode26.6/SDK26.5:564 strict rows, zero failures; two matching observation prints; one case covering five designs passed. Source and post-build dependencies stable; rows equal prior914. [Run37618765397](https://github.com/Globulation2/glob2/actions/runs/37618765397), [artifact11483178529](https://github.com/Globulation2/glob2/actions/runs/37618765397/artifacts/11483178529). |
+
+[Complete rebase evidence](latest-master-rebase.zip) retains all five old/new SHAs, patch/conflict reviews, exact commands,42/97 test records, native build/test provenance and raw Mac artifact/local audit. These are source-specific integration checks. **Historical CPU measurements, rejected-candidate traces and older platform campaigns remain pinned to their original revisions; none was rerun or relabeled as latest-master performance.** No additional check remains pending for this focused restack.
+
 ## Correctness and platform verification
 
 | Boundary and tested source | Result | Evidence and remaining limits |
