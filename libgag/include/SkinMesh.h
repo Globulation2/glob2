@@ -10,11 +10,13 @@
 namespace GAGCore
 {
 class SkinModel;
+class SkinShapeModel;
 class StreamBackend;
 class DrawableSurface;
-// Renderer adapter for GSK1 baked geometry and immutable GSR1 clips. Baked
-// positions and evaluated rig positions are in orthographic clip space, with
-// camera-space normals. Loading is transactional and bounded, including failure.
+// Renderer adapter for GSK1 baked geometry, immutable GSR1 rig clips and GSB1
+// blend-shape clips. Baked positions and evaluated positions are in
+// orthographic clip space, with camera-space normals. Loading is transactional
+// and bounded, including failure.
 struct SkinMesh
 {
     std::uint64_t identity = 0; // fresh on every successful load
@@ -25,9 +27,12 @@ struct SkinMesh
 	// Migration adapter: a single immutable rig shared by all clip views.
 	// Rig-backed meshes have no baked poses. Identity includes the chosen clip.
 	std::shared_ptr<const SkinModel> model;
+	// Blend-shape clips are evaluated on the CPU per frame, like baked poses.
+	std::shared_ptr<const SkinShapeModel> shapes;
 	unsigned clip = 0;
 	// Adapts all discrete frames of one clip; frame selection stays in the draw request.
 	static SkinMesh fromModel(std::shared_ptr<const SkinModel> model, unsigned clip);
+	static SkinMesh fromShapes(std::shared_ptr<const SkinShapeModel> shapes, unsigned clip);
 	bool evaluate(unsigned frame, std::vector<float> &output) const;
     // Cosmetic camera rotation; returns a separately identified static mesh.
     SkinMesh rotatedView(unsigned angle, const std::array<float, 16> &inverse,

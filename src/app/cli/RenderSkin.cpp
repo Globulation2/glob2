@@ -40,7 +40,7 @@ bool rigPreview()
 std::string renderRevision()
 {
 	// Never publish different pixels under the baked recipe, even in tooling.
-	return rigPreview() ? Online::Sha256::hex(std::string(SKIN_RENDER_REVISION) + ":unit-rigs-v1")
+	return rigPreview() ? Online::Sha256::hex(std::string(SKIN_RENDER_REVISION) + ":unit-rigs-v2")
 						: SKIN_RENDER_REVISION;
 }
 std::string read(const std::string &path, std::size_t limit)
@@ -305,7 +305,7 @@ int runRenderSkin(int argc, char **argv)
 			std::string error;
 			std::string file;
 			if (clip < 7 && rigPreview())
-				file = std::string(Online::SkinSpriteClips[clip]) + ".gsr";
+				file = std::string(Online::SkinSpriteClips[clip]) + (clip < 6 ? ".gsb" : ".gsr");
 			else if (clip < 7)
 				file = std::string(Online::SkinSpriteClips[clip]) + ".gsk";
 			else

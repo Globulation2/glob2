@@ -415,12 +415,13 @@ quadrant cut out of a colony-v2 atlas.
 
 ### GSR1 rig migration (opt-in unit previews)
 
-GSR1 is a presentation-only alternative to animated GSK1. All seven unit clips
-(worker walk/swim/harvest, warrior walk/swim/fight, explorer flight) have opt-in
-candidates: `GLOB2_SKIN_RIGS=1` selects them in gameplay, `skin-preview` and
+GSR1 bone rigs and GSB1 blend-shape clips are presentation-only alternatives
+to animated GSK1. All seven unit clips have opt-in candidates: blend shapes for
+worker walk/swim/harvest and warrior walk/swim/fight, a bone rig for explorer
+flight. `GLOB2_SKIN_RIGS=1` selects them in gameplay, `skin-preview` and
 `--render-skin`; `VITE_SKIN_RIGS=1` selects them in Colony Studio. Native
-gameplay and Studio fall back to the corresponding baked clip if its rig is
-missing or invalid. Offline sprite generation fails on an invalid rig rather
+gameplay and Studio fall back to the corresponding baked clip if the candidate
+is missing or invalid. Offline sprite generation fails on an invalid rig rather
 than publishing a silently different recipe. `GLOB2_SKIN_DEFORMATION=cpu`
 forces the native CPU deformation fallback for comparison. Software clients
 continue consuming published sprite bundles.
@@ -436,13 +437,76 @@ sprite bundles remain immutable; the offline rig preview uses a distinct
 render-recipe digest, including GSR bytes, camera metadata, evaluator and
 shader inputs.
 
-#### Fitting the worker and warrior rigs to the baked clips
+#### Blend-shape clips for the worker and warrior (GSB1)
 
 The baked GSK1 worker and warrior clips are per-frame fits of the published
 paint topology to the original metaball field, so they already carry the
 original look: a lumpy torso of merged balls, thin necks, round fists and
-bending limbs. The rig keeps that look by fitting to those frames instead of
-authoring a new surface. Generate both models with their editable scenes:
+bending limbs. Bone skinning cannot follow them where limbs meet the torso:
+each baked frame re-solves its surface so a limb's first rings swell into the
+shoulder or hip lobe while the torso sheet retreats to a belly band, and a
+fixed-weight skin leaves a seam where the two cross (every weighting scheme
+tried in `fit_unit_rigs.py` moved that seam rather than removing it). A
+blend-shape basis has no such limit. Generate both models:
+
+```sh
+blender-3.6.23 --background --python tools/skins/fit_unit_shapes.py -- \
+  --model worker --output artifacts/shapes/worker
+blender-3.6.23 --background --python tools/skins/fit_unit_shapes.py -- \
+  --model warrior --output artifacts/shapes/warrior
+```
+
+`fit_unit_shapes.py` needs only NumPy. Per model it stacks every baked frame of
+every clip with its heading undone, decomposes the positions by principal
+component analysis into a mean mesh plus `--shapes` vectors (default 32) and
+the baked normals into their own mean plus `--normal-shapes` vectors (default
+24, so shading follows the baked clips' analytic field normals rather than the
+geometry's), quantises each vector to int16 with one float scale, and stores
+each frame as its coefficients. Every clip is written as `<model>-<clip>.gsb`
+with a `-shapes.json` provenance record and a `-fit.json` report (RMS, 95th
+percentile and maximum distance to the baked frames, median and 99th-percentile
+normal angle). With the defaults a clip is about 1 MB against 15–18 MB baked,
+and reproduces the baked frames within 0.07 (worker) and 0.11 (warrior) model
+units RMS. The basis is repeated in each clip's file so the loaders keep their
+one-file-per-clip contract; the fit is deterministic.
+
+The runtime evaluates `mean + sum(c_k * shape_k)` for positions and normals,
+turns the result about model Z by the frame's heading, applies the clip's
+orthographic camera and normal rotation, and normalises the normal (a
+cancelled normal becomes `(0, 0, 1)`), producing the per-pose layout the
+baked clips use. Native rendering takes the baked per-pose upload path with
+the pose evaluated on the CPU and cached per atlas tile; Studio evaluates the
+displayed pose the same way. Run `tools/skins/test_fit_shapes.py` under
+Blender's Python for paint-topology, threshold, reference-evaluation and
+byte-identical regeneration checks.
+
+##### GSB1 binary contract
+
+All words are little-endian uint32, floats IEEE binary32, shape deltas int16.
+
+| Record | Fields in order |
+| --- | --- |
+| Header (32 bytes) | `GSB1`, vertices, indices, shapes, normal shapes, clips, logical canvas size, payload byte count excluding header |
+| UVs | vertices × 2 floats, top-left origin |
+| Triangles | uint32 indices, divisible by three |
+| Mean | vertices × xyz floats (model space), then vertices × normal xyz floats |
+| Shapes | per shape: float scale, vertices × xyz int16; position shapes then normal shapes |
+| Clip | id, 256, row-major model-to-clip mat4, model-to-camera normal mat3, 256 headings, 256 × shapes coefficients, 256 × normal shapes coefficients |
+
+The decoder checks 3–8,192 vertices, 3–49,152 indices, 1–128 shapes of each
+kind, 1–8 clips, canvas 1–128, the exact payload and total length, finite
+scalars under 10,000, UVs in [0,1], indices in range, positive scales, unique
+clip ids, exactly 256 frames, camera invertibility and normal-matrix
+orthogonality, and headings within ±2π. `test/fixtures/skins/shapes.json`
+(regenerate with `tools/skins/shape_fixture.py`) is the analytic fixture shared
+by `SkinShapeModel` and the Studio decoder.
+
+#### Fitting bone rigs to the baked clips (kept for comparison)
+
+The bone-rig fitter below is kept, with its torso experiments as options, for
+comparison with the blend-shape clips; its worker and warrior candidates stay
+installed as `.gsr` files but are no longer selected. Generate both models
+with their editable scenes:
 
 ```sh
 blender-3.6.23 --background --factory-startup -t 1 --python-exit-code 1 \
@@ -542,12 +606,13 @@ one smoothing pass and normal calculation, with `body`, `head`, `wing.R` and
 already a four-influence skin over those ellipsoids. Its action import works
 the same way with `--action-blend` and `--action`.
 
-Install validated candidates, which copies identical bytes for native rendering
-and the web designer and records them in the manifest (keeping any existing
-acceptance flag):
+Install validated candidates of either format, which copies identical bytes
+for native rendering and the web designer and records them in the manifest
+under `rigs` or `shapes` (keeping any existing acceptance flag):
 
 ```sh
-python3 tools/skins/install_rigs.py artifacts/rig/worker artifacts/rig/warrior artifacts/rig/explorer
+python3 tools/skins/install_rigs.py artifacts/shapes/worker artifacts/shapes/warrior \
+  artifacts/rig/worker artifacts/rig/warrior artifacts/rig/explorer
 python3 test/build_system/test_skin_assets.py
 ```
 

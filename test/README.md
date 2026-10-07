@@ -48,10 +48,13 @@ fallback. The focused browser conformance suite tests the shared deformation
 shader in Chromium, Firefox and WebKit; see the
 [rig verification commands](../tools/unit-animation/README.md#repeatable-verification).
 These correctness checks do not replace visual or hardware-performance acceptance.
-`tools/skins/test_fit_rigs.py` (pinned Blender) regenerates the fitted worker and
-warrior rigs and the explorer rig and checks their fit to the baked clips, symmetry,
-provenance and agreement with the installed assets; see
-[fitting the rigs](../tools/unit-animation/README.md#fitting-the-worker-and-warrior-rigs-to-the-baked-clips).
+`SkinShapeModel` checks the GSB1 blend-shape contract against the analytic fixture
+shared with the Studio decoder (`test/fixtures/skins/shapes.json`).
+`tools/skins/test_fit_shapes.py` (NumPy, run under Blender's Python) regenerates the
+worker and warrior blend-shape clips and checks their fit to the baked clips and
+agreement with the installed assets; `tools/skins/test_fit_rigs.py` (pinned Blender)
+does the same for the bone rigs kept for comparison and the explorer rig; see
+[blend-shape clips](../tools/unit-animation/README.md#blend-shape-clips-for-the-worker-and-warrior-gsb1).
 
 Asset pipeline checks live in `AssetLoader` and `SpriteLoad`, including independent
 continuation cancellation, cache metadata cleanup and variable atlas admission.

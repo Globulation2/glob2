@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include <SkinMesh.h>
 #include <SkinModel.h>
+#include <SkinShapeModel.h>
 #include <array>
 #include <atomic>
 #include <bit>
@@ -30,12 +31,29 @@ SkinMesh SkinMesh::fromModel(std::shared_ptr<const SkinModel> model, unsigned cl
 	mesh.indices = mesh.model->indices();
 	return mesh;
 }
+SkinMesh SkinMesh::fromShapes(std::shared_ptr<const SkinShapeModel> shapes, unsigned clip)
+{
+	if (!shapes || clip >= shapes->clips().size())
+		return {};
+	SkinMesh mesh;
+	mesh.identity = nextIdentity.fetch_add(1, std::memory_order_relaxed);
+	mesh.shapes = std::move(shapes);
+	mesh.clip = clip;
+	mesh.vertices = mesh.shapes->vertices();
+	mesh.frames = 256;
+	mesh.logicalSize = mesh.shapes->logicalSize();
+	mesh.uv = mesh.shapes->uv();
+	mesh.indices = mesh.shapes->indices();
+	return mesh;
+}
 bool SkinMesh::evaluate(unsigned frame, std::vector<float> &output) const
 {
 	if (!identity || frame >= frames)
 		return false;
 	if (model)
 		return model->evaluate(clip, frame, output);
+	if (shapes)
+		return shapes->evaluate(clip, frame, output);
 	// SkinMesh is a public migration adapter, so reject incomplete manually
 	// constructed baked data as well as invalid frame requests. Keep output on failure.
 	const auto count = std::size_t(vertices) * 6;
@@ -90,6 +108,20 @@ bool SkinMesh::load(StreamBackend &input, std::string &error)
 		if (!model)
 			return false;
 		*this = fromModel(std::move(model), 0);
+		return true;
+	}
+	if (magic == std::array<char, 4>{'G', 'S', 'B', '1'})
+	{
+		if (length > 16 * 1024 * 1024)
+			return fail("invalid shape size");
+		input.seekFromStart(0);
+		std::vector<std::uint8_t> bytes(static_cast<std::size_t>(length));
+		if (!input.readExact(bytes.data(), bytes.size()))
+			return fail("truncated shape asset");
+		auto decoded = SkinShapeModel::decode(bytes, error);
+		if (!decoded)
+			return false;
+		*this = fromShapes(std::move(decoded), 0);
 		return true;
 	}
     if (magic != std::array<char, 4>{'G','S','K','1'}) return fail("unsupported skin mesh format");

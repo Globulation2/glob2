@@ -82,7 +82,9 @@ int main(int argc, char **argv)
         const bool useRig = mode && std::string(mode) == "1";
 		auto meshPath = [&](const std::string &name)
 		{
-			const auto extension = useRig && name != "swarm" ? ".gsr" : ".gsk";
+			const auto extension = !useRig || name == "swarm" ? ".gsk"
+								   : name.rfind("explorer", 0) == 0		? ".gsr"
+																		: ".gsb";
 			return std::string(argv[1]) + "/" + name + extension;
 		};
 		// colony-v2: a 512x512 colour atlas and an optional 512x512 material-id

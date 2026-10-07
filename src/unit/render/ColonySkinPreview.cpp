@@ -88,9 +88,12 @@ bool ColonySkinPreview::loadMeshes(const std::string &root, bool installed)
 	{ return installed ? file : std::filesystem::absolute(file).string(); };
 	const char *mode = std::getenv("GLOB2_SKIN_RIGS");
 	const bool rigRequested = mode && std::string(mode) == "1";
+	// Workers and warriors use blend-shape clips, the explorer a bone rig.
+	auto candidate = [&](const std::string &name)
+	{ return name.rfind("explorer", 0) == 0 ? ".gsr" : ".gsb"; };
 	for (const auto *name : names)
 	{
-		const auto extension = rigRequested ? ".gsr" : ".gsk";
+		const auto extension = rigRequested ? candidate(name) : ".gsk";
 		requests.push_back(GAGCore::requestSkinMesh(loader, path(root + "/" + name + extension)));
 	}
 	for (const auto &swarm : Online::SWARM_MESHES)
@@ -101,7 +104,7 @@ bool ColonySkinPreview::loadMeshes(const std::string &root, bool installed)
 	{
 		auto mesh = loader.wait(requests[i]);
 		if (rigRequested &&
-			(!mesh || !mesh->model || mesh->frames != 256 ||
+			(!mesh || !(mesh->model || mesh->shapes) || mesh->frames != 256 ||
 			 mesh->logicalSize != Online::SkinSpriteLogicalSizes[i]))
 		{
 			requests[i] = GAGCore::requestSkinMesh(loader, path(root + "/" + names[i] + ".gsk"));

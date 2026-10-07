@@ -2,6 +2,7 @@
 #include "GraphicContextPrivate.h"
 #include <SkinMesh.h>
 #include <SkinModel.h>
+#include <SkinShapeModel.h>
 #include <SkinDeformation.h>
 #include <glob2/SkinMaterials.h>
 #include <PerformanceTelemetry.h>
@@ -226,8 +227,9 @@ bool valid(const SkinMeshRequest &request)
 	if (!request.mesh || !request.texture || !request.material || request.region > SkinRegionSwarm)
 		return false;
 	const auto &mesh = *request.mesh;
-	const bool hasGeometry =
-		mesh.model ? mesh.clip < mesh.model->clips().size() : !mesh.poses.empty();
+	const bool hasGeometry = mesh.model	 ? mesh.clip < mesh.model->clips().size()
+							 : mesh.shapes ? mesh.clip < mesh.shapes->clips().size()
+										   : !mesh.poses.empty();
 	return mesh.identity && request.frame < mesh.frames && hasGeometry &&
 		   request.texture->getSDLSurface() && request.material->getSDLSurface();
 }
@@ -418,7 +420,7 @@ void GraphicContext::SkinResources::bindCpuGeometry(const SkinMesh &mesh, unsign
 	if (frame != sample)
 	{
 		const float *pose;
-		if (mesh.model)
+		if (mesh.model || mesh.shapes)
 		{
 			mesh.evaluate(sample, cpuPose);
 			pose = cpuPose.data();

@@ -959,7 +959,8 @@ checksums or `SIM_REVISION`.
 
 The rig migration provides opt-in candidates for all seven unit clips alongside
 those baked meshes, fitted to the baked frames so they keep the original metaball
-look. `GLOB2_SKIN_RIGS=1` enables them in native gameplay and offline
+look: blend-shape clips (GSB1) for workers and warriors, a bone rig (GSR1) for
+the explorer. `GLOB2_SKIN_RIGS=1` enables them in native gameplay and offline
 sprite generation; `VITE_SKIN_RIGS=1` enables Studio inspection and painting.
 Studio evaluates the displayed rig pose on the CPU for rendering and brush
 visibility; pattern and fill coordinates remain tied to the fixed rest chart.

@@ -1,8 +1,10 @@
 /* Indexed geometry and camera metadata are validated before use. */
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 import { decodeRig, evaluateRig, type SkinModel } from './rig.ts';
+import { decodeShapes, evaluateShapes, type ShapeModel } from './shapes.ts';
 export type Mesh = {
   rig?: SkinModel;
+  shapes?: ShapeModel;
   clip?: number;
   count: number;
   frames: number;
@@ -99,6 +101,113 @@ export async function loadRigMesh(asset: string, clip = 0) {
   ).join('');
   return rigGeometry(decodeRig(bytes), clip, hash);
 }
+// Workers and warriors use blend-shape clips; the explorer keeps its bone rig.
+export function candidateFormat(asset: string): 'shapes' | 'rig' {
+  return asset.startsWith('explorer') ? 'rig' : 'shapes';
+}
+export async function loadShapeMesh(asset: string, clip = 0) {
+  const response = await fetch(`/skins/models/${asset}.gsb`);
+  if (!response.ok) throw new Error('Could not load shapes');
+  const bytes = await response.arrayBuffer();
+  const hash = Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256', bytes)), (v) =>
+    v.toString(16).padStart(2, '0'),
+  ).join('');
+  return shapeGeometry(decodeShapes(bytes), clip, hash);
+}
+function cameraView(
+  m: readonly number[],
+  normals: readonly number[],
+  meshSha256: string,
+  pivot: number[],
+  radius: number,
+): ViewTransform {
+  const determinant =
+    m[0]! * (m[5]! * m[10]! - m[6]! * m[9]!) -
+    m[1]! * (m[4]! * m[10]! - m[6]! * m[8]!) +
+    m[2]! * (m[4]! * m[9]! - m[5]! * m[8]!);
+  const inverse = [
+    m[5]! * m[10]! - m[6]! * m[9]!,
+    m[2]! * m[9]! - m[1]! * m[10]!,
+    m[1]! * m[6]! - m[2]! * m[5]!,
+    0,
+    m[6]! * m[8]! - m[4]! * m[10]!,
+    m[0]! * m[10]! - m[2]! * m[8]!,
+    m[2]! * m[4]! - m[0]! * m[6]!,
+    0,
+    m[4]! * m[9]! - m[5]! * m[8]!,
+    m[1]! * m[8]! - m[0]! * m[9]!,
+    m[0]! * m[5]! - m[1]! * m[4]!,
+    0,
+    0,
+    0,
+    0,
+    determinant,
+  ].map((v) => v / determinant);
+  for (let row = 0; row < 3; row++)
+    inverse[row * 4 + 3] = -(
+      inverse[row * 4]! * m[3]! +
+      inverse[row * 4 + 1]! * m[7]! +
+      inverse[row * 4 + 2]! * m[11]!
+    );
+  return {
+    version: 1,
+    meshSha256,
+    clipToModel: inverse,
+    modelToClip: [...m],
+    normalToModel: Array.from({ length: 9 }, (_, k) => normals[(k % 3) * 3 + Math.floor(k / 3)]!),
+    pivot,
+    radius,
+  };
+}
+export function shapeGeometry(
+  shapes: ShapeModel,
+  clip: number,
+  meshSha256: string,
+): { mesh: Mesh; view: ViewTransform } {
+  const camera = shapes.clips[clip];
+  if (!camera || !Number.isInteger(clip)) throw new Error('Invalid shape clip');
+  // The framing radius is the mean mesh's extent about the model origin.
+  let radius = 0;
+  for (let v = 0; v < shapes.count; v++)
+    radius = Math.max(
+      radius,
+      Math.hypot(shapes.mean[v * 3]!, shapes.mean[v * 3 + 1]!, shapes.mean[v * 3 + 2]!),
+    );
+  const view = cameraView(camera.modelToClip, camera.normalToCamera, meshSha256, [0, 0, 0], radius);
+  // The fixed chart for fill/pattern tools is the mean mesh at heading zero.
+  const rest = new Float32Array(shapes.count * 6);
+  const m = camera.modelToClip,
+    normals = camera.normalToCamera;
+  for (let v = 0; v < shapes.count; v++) {
+    rest.set(
+      point(m, shapes.mean[v * 3]!, shapes.mean[v * 3 + 1]!, shapes.mean[v * 3 + 2]!),
+      v * 6,
+    );
+    let length = 0;
+    for (let k = 0; k < 3; k++) {
+      rest[v * 6 + 3 + k] =
+        normals[k * 3]! * shapes.normalMean[v * 3]! +
+        normals[k * 3 + 1]! * shapes.normalMean[v * 3 + 1]! +
+        normals[k * 3 + 2]! * shapes.normalMean[v * 3 + 2]!;
+      length += rest[v * 6 + 3 + k]! ** 2;
+    }
+    length = Math.sqrt(length);
+    for (let k = 0; k < 3; k++)
+      rest[v * 6 + 3 + k] = length < 1e-8 ? (k === 2 ? 1 : 0) : rest[v * 6 + 3 + k]! / length;
+  }
+  return {
+    mesh: {
+      count: shapes.count,
+      frames: 256,
+      uv: new Float32Array(shapes.uv),
+      indices: new Uint32Array(shapes.indices),
+      poses: rest,
+      shapes,
+      clip,
+    },
+    view,
+  };
+}
 export function rigGeometry(
   rig: SkinModel,
   clip: number,
@@ -191,7 +300,9 @@ export function loadMesh(asset: string) {
           cache.delete(asset);
           throw e;
         });
-    pending = rigPreview && rigCandidates.has(asset) ? loadRigMesh(asset).catch(baked) : baked();
+    const candidate = () =>
+      candidateFormat(asset) === 'shapes' ? loadShapeMesh(asset) : loadRigMesh(asset);
+    pending = rigPreview && rigCandidates.has(asset) ? candidate().catch(baked) : baked();
     cache.set(asset, pending);
   }
   return pending;
@@ -259,7 +370,9 @@ export function projectPose(
   // can share the output buffer instead of allocating a second deformed mesh.
   const pose = mesh.rig
     ? evaluateRig({ model: mesh.rig, clip: mesh.clip ?? 0, sample }, true, result)
-    : mesh.poses.subarray(sample * mesh.count * 6);
+    : mesh.shapes
+      ? evaluateShapes(mesh.shapes, mesh.clip ?? 0, sample, true, result)
+      : mesh.poses.subarray(sample * mesh.count * 6);
   const inv = view.clipToModel,
     n = view.normalToModel;
   // Framing is fixed from the rest pose, cached across camera and animation updates.

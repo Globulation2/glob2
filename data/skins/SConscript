@@ -2,7 +2,7 @@ Import('env')
 Import('PackTar')
 
 if 'dist' in COMMAND_LINE_TARGETS or 'install' in COMMAND_LINE_TARGETS:
-    meshes = Glob('colony-v1/*.gsk') + Glob('colony-v1/*.gsr') + Glob('colony-v1/*.json')
+    meshes = Glob('colony-v1/*.gsk') + Glob('colony-v1/*.gsr') + Glob('colony-v1/*.gsb') + Glob('colony-v1/*.json')
     PackTar(env['TARFILE'], meshes)
     PackTar(env['TARFILE'], 'SConscript')
     installed = env.Install(env['INSTALLDIR'] + '/glob2/data/skins/colony-v1', meshes)

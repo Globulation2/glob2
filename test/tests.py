@@ -255,6 +255,7 @@ UNIT_TESTS = [
     '#src/hud/draw/SpriteCenteringTest.cpp',
     '#libgag/src/SkinMeshTest.cpp',
     '#libgag/src/SkinModelTest.cpp',
+    '#libgag/src/SkinShapeModelTest.cpp',
     ('#libgag/src/SkinModelRenderTest.cpp', dict(cxxflags=['-fno-access-control'])),
     '#src/building/TurretScanTileTest.cpp',
     '#src/unit/render/UnitAnimationTest.cpp',
