@@ -327,6 +327,33 @@ TEST_CASE("presentation cannot delay simulation barriers or run on the simulatio
         CHECK(work->status() == ComputeExecutor::Presentation::Status::Canceled);
     }
 }
+TEST_CASE("presentation progresses before a continuous simulation backlog drains")
+{
+    if constexpr (!GAGCore::ThreadSupport::available) return;
+    ComputeExecutor executor;
+    executor.configure(2);
+    struct State { std::atomic<bool> entered{false}, release{false}; std::atomic<size_t> completed{0}; } state;
+    ComputeExecutor::Group group{10000, {[](void* p, size_t index) {
+        auto& state = *static_cast<State*>(p);
+        if (!index) {
+            state.entered = true;
+            while (!state.release) std::this_thread::yield();
+        }
+        ++state.completed;
+    }, &state}};
+    auto batch = executor.submit(std::span(&group, 1));
+    const auto deadline = std::chrono::steady_clock::now() + std::chrono::seconds(5);
+    while (!state.entered && std::chrono::steady_clock::now() < deadline) std::this_thread::yield();
+    std::atomic<size_t> observed{10000};
+    auto work = executor.submitPresentation(1, [&](size_t) { observed = state.completed.load(); });
+    state.release = true;
+    while (!work->finished() && std::chrono::steady_clock::now() < deadline) std::this_thread::yield();
+    CHECK(work->finished());
+    CHECK(observed.load() < 10000);
+    executor.join(batch);
+    executor.cancelPresentationAndWait();
+    CHECK(state.completed.load() == 10000);
+}
 TEST_CASE("presentation replacement, chunk pumping, cancellation and errors retain no captures")
 {
     ComputeExecutor executor;

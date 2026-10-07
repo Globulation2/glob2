@@ -1557,6 +1557,8 @@ bounded software target. Asset loading is shared with normal game startup.
   prepares entity records, connections, panels and overlays, then publishes the
   complete Scene through a triple buffer. Simulation barriers never join that task.
   One preparation is in flight; a slow consumer retains its previous complete Scene.
+  After eight simulation claims, the designated worker gives a pending presentation
+  chunk a turn, preventing starvation under a continuous compute backlog.
   Without a compute worker, the graphics owner explicitly pumps preparation.
 - `SceneExtractor::extract(game, request, scene)` remains the synchronous path for
   serial sessions, the editor and standalone rendering. `Game::ViewState::drawnScene()`
