@@ -40,6 +40,11 @@ jobs:
           python3 test/collect_generator_evidence.py collect \
             build/darwin/client/release/src/MapGeneratorGoldenTest \
             artifacts/generator-evidence --platform macos-arm64
+          python3 test/run_tests.py --binary engine --build-dir build/darwin/client/release \
+            --in-process --no-display \
+            --filter 'MapGeneratorDefaults/Explicit designs preserve topology*' \
+            --artifacts artifacts/generator-evidence/designs \
+            --junit artifacts/generator-evidence/designs-junit.xml
       - uses: actions/upload-artifact@v4
         if: always()
         with:
