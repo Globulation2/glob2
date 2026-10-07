@@ -29,7 +29,15 @@ const assets = [
     // inside the ordinary mesh agreement budget.
     positionTolerance: 0.00001,
   },
-  ...['worker-walk', 'warrior-walk', 'warrior-swim', 'warrior-fight', 'explorer-fly'].map(
+  ...[
+    'worker-walk',
+    'worker-swim',
+    'worker-harvest',
+    'warrior-walk',
+    'warrior-swim',
+    'warrior-fight',
+    'explorer-fly',
+  ].map(
     (name) => ({ name: `installed ${name}`, bytes: read(`data/skins/colony-v1/${name}.gsr`) }),
   ),
 ];

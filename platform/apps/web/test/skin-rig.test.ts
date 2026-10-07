@@ -102,6 +102,8 @@ it('uses the same displayed rig pose for Studio projection and a fixed rest char
 });
 it.each([
   ['worker-walk', 2834],
+  ['worker-swim', 2834],
+  ['worker-harvest', 2834],
   ['warrior-walk', 2450],
   ['warrior-swim', 2450],
   ['warrior-fight', 2450],

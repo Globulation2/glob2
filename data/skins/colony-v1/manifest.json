@@ -223,7 +223,7 @@
       "version": 1,
       "experimental": true,
       "file": "worker-walk.gsr",
-      "sha256": "329c4813e410c20ccf895953447ae1df7206ebffa5d419c4ab7b5c9055a046ec",
+      "sha256": "aefce0faa9fcc973bbd57c4b5bfda0a544acbf3904a375857837ecea7eaa9322",
       "clips": [
         {
           "id": 0,
@@ -234,16 +234,22 @@
         }
       ],
       "sources": {
-        "data/skins/colony-v1/worker-walk.gsk": "eeec5b14febea9f134652135af122d113656405aed7faa10b671e3764606555b",
-        "data/skins/colony-v1/worker-walk.view.json": "2a7d9b183cef9b53e5e4f56298669e5088c07511fc91b0ef0f59ac4d524e69fe",
-        "data/skins/colony-v1/worker-surface.json": "93724036aefc90e5a64719a1840227a4e5531c778371124667c691f1231cf81f",
-        "datasrc/gfx/authored/skins/limb-surfaces.json": "a1ea321dfe7462c6af4bd70cccd76c9b1a94337ef18754a89c53f9834d52fd38",
-        "tools/skins/author_worker_rig.py": "f4aadd23a920128a19dfa24a06effe4f5f205510d6bd1d980a312fa000b9c2cc",
+        "tools/skins/fit_unit_rigs.py": "7106a7c61734e86240eccdfd0716cabd9cd376fb77d578bde1406d4ac2137ee0",
+        "tools/skins/rig_scene.py": "63ab0b31fb853235941702de0eddefc19ba8dce21a0aa3704c0cbba72f627641",
         "tools/skins/export_rig.py": "41aecaed307114817279b056f615a174f4a58cb83ea6ce735aaeec211201c372",
         "tools/skins/export_units.py": "d9eeab2165559c625b6f7cba4d2d8616690bc37c86ba1cbc36923b206f21b9bb",
-        "tools/skins/worker_surface.py": "91d5021cccc7b98e7c5ad985aebdc2b9156ed7d68a4f618c0270cd426aa971d8",
         "tools/skins/limb_surface.py": "c98143edba1cdcde9d3e91ed1f93eb29626d4c2b026af4d7d08e662d84354d1e",
-        "datasrc/gfx/originals/units/glob-worker-walk.blend": "c63b1a4ae627147f20911f7c7abe2b61ff8a2b0d6719ade4ee6c3434b3e6d344"
+        "datasrc/gfx/authored/skins/limb-surfaces.json": "a1ea321dfe7462c6af4bd70cccd76c9b1a94337ef18754a89c53f9834d52fd38",
+        "data/skins/colony-v1/worker-surface.json": "93724036aefc90e5a64719a1840227a4e5531c778371124667c691f1231cf81f",
+        "datasrc/gfx/originals/units/glob-worker-walk.blend": "c63b1a4ae627147f20911f7c7abe2b61ff8a2b0d6719ade4ee6c3434b3e6d344",
+        "datasrc/gfx/originals/units/glob-worker-swim.blend": "47d23824ec18dce121a39e60a2d584ddfffb2ce63e375fe22cfdaddaaf40b92a",
+        "datasrc/gfx/originals/units/glob-worker-harvest.blend": "d518ff2528f2043a24548342a1632c510059deab1e7d237177666e0023ee8233",
+        "data/skins/colony-v1/worker-walk.gsk": "eeec5b14febea9f134652135af122d113656405aed7faa10b671e3764606555b",
+        "data/skins/colony-v1/worker-walk.view.json": "2a7d9b183cef9b53e5e4f56298669e5088c07511fc91b0ef0f59ac4d524e69fe",
+        "data/skins/colony-v1/worker-swim.gsk": "9069fdb7dc94c2ef334f65d8fcf876d567d713561a190d4659bcb8111f041f96",
+        "data/skins/colony-v1/worker-swim.view.json": "50188f513e89fb684100d41683a2e76df94e802067187f2aff625a8861a2da7b",
+        "data/skins/colony-v1/worker-harvest.gsk": "90d0fb8799c14ba7756092b3893e08db69f4b5a9433cd4b6720f49331e83e4a5",
+        "data/skins/colony-v1/worker-harvest.view.json": "37f35707fe15bf1d3f2afa38a5aebdcf6af60aeffb7b0d095f516df6c533a488"
       },
       "accepted": false
     },
@@ -252,7 +258,7 @@
       "version": 1,
       "experimental": true,
       "file": "warrior-walk.gsr",
-      "sha256": "205e9e7a34d40f382fa1aa58bc3936c21ce375a3a09747418c2b4b04cd992214",
+      "sha256": "34b6dc414f4637a9ba3bec2f99ba1e45d83f0c3711f6c3489671b8da7565ccc6",
       "clips": [
         {
           "id": 0,
@@ -263,18 +269,22 @@
         }
       ],
       "sources": {
-        "tools/skins/author_unit_rigs.py": "55a10185dec77a6e5092f07b8dc5d8156685507224294a166e1d7759cb16d37e",
-        "tools/skins/worker_surface.py": "91d5021cccc7b98e7c5ad985aebdc2b9156ed7d68a4f618c0270cd426aa971d8",
-        "tools/skins/limb_surface.py": "c98143edba1cdcde9d3e91ed1f93eb29626d4c2b026af4d7d08e662d84354d1e",
+        "tools/skins/fit_unit_rigs.py": "7106a7c61734e86240eccdfd0716cabd9cd376fb77d578bde1406d4ac2137ee0",
+        "tools/skins/rig_scene.py": "63ab0b31fb853235941702de0eddefc19ba8dce21a0aa3704c0cbba72f627641",
         "tools/skins/export_rig.py": "41aecaed307114817279b056f615a174f4a58cb83ea6ce735aaeec211201c372",
         "tools/skins/export_units.py": "d9eeab2165559c625b6f7cba4d2d8616690bc37c86ba1cbc36923b206f21b9bb",
+        "tools/skins/limb_surface.py": "c98143edba1cdcde9d3e91ed1f93eb29626d4c2b026af4d7d08e662d84354d1e",
         "datasrc/gfx/authored/skins/limb-surfaces.json": "a1ea321dfe7462c6af4bd70cccd76c9b1a94337ef18754a89c53f9834d52fd38",
         "data/skins/colony-v1/warrior-surface.json": "b84e4ed34500a17fd314c1265ea567c2acfd6df8e4a971706b255044d866e052",
         "datasrc/gfx/originals/units/glob-warrior-walk.blend": "f7c9d2f9d2693c4f73c5e5ccea2063fd256509740fe6f755e658511fff744943",
+        "datasrc/gfx/originals/units/glob-warrior-swim.blend": "f83fab5f221099a35cb12385d3235356d2c43f292cc7a7943ba6f7eb4b29a727",
+        "datasrc/gfx/originals/units/glob-warrior-fight.blend": "f7997e783103c989539d71b2e94f1f5eb99c124692b2c7f3d63ec1798d1c02ca",
         "data/skins/colony-v1/warrior-walk.gsk": "9162c46c1a6ab662aa00985f2886e472d1a4d0bc940d89b72088f8d4e8d5373c",
         "data/skins/colony-v1/warrior-walk.view.json": "6c11e912c3bde88ff4f62983fa0cd6b57dbc0afb1bd68c03d4c7a7fee6b6f033",
-        "datasrc/gfx/originals/units/glob-warrior-swim.blend": "f83fab5f221099a35cb12385d3235356d2c43f292cc7a7943ba6f7eb4b29a727",
-        "datasrc/gfx/originals/units/glob-warrior-fight.blend": "f7997e783103c989539d71b2e94f1f5eb99c124692b2c7f3d63ec1798d1c02ca"
+        "data/skins/colony-v1/warrior-swim.gsk": "027c4f5ff3a364e8335927ef09e8e32984225a83a1dfa86c4f1a549a534f5d4a",
+        "data/skins/colony-v1/warrior-swim.view.json": "044da3d17ba89d714aa78975ab1930b2b4dab9b4206609b99f499ae4c30b8ca1",
+        "data/skins/colony-v1/warrior-fight.gsk": "68ec86d000cdccc09279239742ec9a478e984e62cde68318c911574882f8792f",
+        "data/skins/colony-v1/warrior-fight.view.json": "102798f33b7775ff170c11eaeef7042a64b893ade58da02868411ebdfc613d9d"
       },
       "accepted": false
     },
@@ -283,31 +293,33 @@
       "version": 1,
       "experimental": true,
       "file": "warrior-swim.gsr",
-      "sha256": "401f355445d05f0637946277f37ab980a17a7251a18f3d462a76ea7d6ea13292",
+      "sha256": "35a34fee6874df8a32b9814d2c16734b6a9c7831c3f5e5352cc0ce576b297d61",
       "clips": [
         {
           "id": 1,
           "name": "swim",
-          "samples": 64,
-          "mapping": "alternating-gait-halves-v1",
+          "samples": 256,
+          "mapping": "direction-major-v1",
           "direction8": "existing-unitAnimationFrame"
         }
       ],
       "sources": {
-        "tools/skins/author_unit_rigs.py": "55a10185dec77a6e5092f07b8dc5d8156685507224294a166e1d7759cb16d37e",
-        "tools/skins/worker_surface.py": "91d5021cccc7b98e7c5ad985aebdc2b9156ed7d68a4f618c0270cd426aa971d8",
-        "tools/skins/limb_surface.py": "c98143edba1cdcde9d3e91ed1f93eb29626d4c2b026af4d7d08e662d84354d1e",
+        "tools/skins/fit_unit_rigs.py": "7106a7c61734e86240eccdfd0716cabd9cd376fb77d578bde1406d4ac2137ee0",
+        "tools/skins/rig_scene.py": "63ab0b31fb853235941702de0eddefc19ba8dce21a0aa3704c0cbba72f627641",
         "tools/skins/export_rig.py": "41aecaed307114817279b056f615a174f4a58cb83ea6ce735aaeec211201c372",
         "tools/skins/export_units.py": "d9eeab2165559c625b6f7cba4d2d8616690bc37c86ba1cbc36923b206f21b9bb",
+        "tools/skins/limb_surface.py": "c98143edba1cdcde9d3e91ed1f93eb29626d4c2b026af4d7d08e662d84354d1e",
         "datasrc/gfx/authored/skins/limb-surfaces.json": "a1ea321dfe7462c6af4bd70cccd76c9b1a94337ef18754a89c53f9834d52fd38",
         "data/skins/colony-v1/warrior-surface.json": "b84e4ed34500a17fd314c1265ea567c2acfd6df8e4a971706b255044d866e052",
         "datasrc/gfx/originals/units/glob-warrior-walk.blend": "f7c9d2f9d2693c4f73c5e5ccea2063fd256509740fe6f755e658511fff744943",
-        "data/skins/colony-v1/warrior-walk.gsk": "9162c46c1a6ab662aa00985f2886e472d1a4d0bc940d89b72088f8d4e8d5373c",
-        "data/skins/colony-v1/warrior-walk.view.json": "6c11e912c3bde88ff4f62983fa0cd6b57dbc0afb1bd68c03d4c7a7fee6b6f033",
         "datasrc/gfx/originals/units/glob-warrior-swim.blend": "f83fab5f221099a35cb12385d3235356d2c43f292cc7a7943ba6f7eb4b29a727",
         "datasrc/gfx/originals/units/glob-warrior-fight.blend": "f7997e783103c989539d71b2e94f1f5eb99c124692b2c7f3d63ec1798d1c02ca",
+        "data/skins/colony-v1/warrior-walk.gsk": "9162c46c1a6ab662aa00985f2886e472d1a4d0bc940d89b72088f8d4e8d5373c",
+        "data/skins/colony-v1/warrior-walk.view.json": "6c11e912c3bde88ff4f62983fa0cd6b57dbc0afb1bd68c03d4c7a7fee6b6f033",
         "data/skins/colony-v1/warrior-swim.gsk": "027c4f5ff3a364e8335927ef09e8e32984225a83a1dfa86c4f1a549a534f5d4a",
-        "data/skins/colony-v1/warrior-swim.view.json": "044da3d17ba89d714aa78975ab1930b2b4dab9b4206609b99f499ae4c30b8ca1"
+        "data/skins/colony-v1/warrior-swim.view.json": "044da3d17ba89d714aa78975ab1930b2b4dab9b4206609b99f499ae4c30b8ca1",
+        "data/skins/colony-v1/warrior-fight.gsk": "68ec86d000cdccc09279239742ec9a478e984e62cde68318c911574882f8792f",
+        "data/skins/colony-v1/warrior-fight.view.json": "102798f33b7775ff170c11eaeef7042a64b893ade58da02868411ebdfc613d9d"
       },
       "accepted": false
     },
@@ -316,7 +328,7 @@
       "version": 1,
       "experimental": true,
       "file": "warrior-fight.gsr",
-      "sha256": "33e383f85685c697ed2c49ded7ae8b6f6db799cbea255e225ff1109651c22091",
+      "sha256": "47adbd608922d51ac57cc2dcf85f3895f5583f011c3c5b391727d564c8dc5e87",
       "clips": [
         {
           "id": 2,
@@ -327,18 +339,20 @@
         }
       ],
       "sources": {
-        "tools/skins/author_unit_rigs.py": "55a10185dec77a6e5092f07b8dc5d8156685507224294a166e1d7759cb16d37e",
-        "tools/skins/worker_surface.py": "91d5021cccc7b98e7c5ad985aebdc2b9156ed7d68a4f618c0270cd426aa971d8",
-        "tools/skins/limb_surface.py": "c98143edba1cdcde9d3e91ed1f93eb29626d4c2b026af4d7d08e662d84354d1e",
+        "tools/skins/fit_unit_rigs.py": "7106a7c61734e86240eccdfd0716cabd9cd376fb77d578bde1406d4ac2137ee0",
+        "tools/skins/rig_scene.py": "63ab0b31fb853235941702de0eddefc19ba8dce21a0aa3704c0cbba72f627641",
         "tools/skins/export_rig.py": "41aecaed307114817279b056f615a174f4a58cb83ea6ce735aaeec211201c372",
         "tools/skins/export_units.py": "d9eeab2165559c625b6f7cba4d2d8616690bc37c86ba1cbc36923b206f21b9bb",
+        "tools/skins/limb_surface.py": "c98143edba1cdcde9d3e91ed1f93eb29626d4c2b026af4d7d08e662d84354d1e",
         "datasrc/gfx/authored/skins/limb-surfaces.json": "a1ea321dfe7462c6af4bd70cccd76c9b1a94337ef18754a89c53f9834d52fd38",
         "data/skins/colony-v1/warrior-surface.json": "b84e4ed34500a17fd314c1265ea567c2acfd6df8e4a971706b255044d866e052",
         "datasrc/gfx/originals/units/glob-warrior-walk.blend": "f7c9d2f9d2693c4f73c5e5ccea2063fd256509740fe6f755e658511fff744943",
-        "data/skins/colony-v1/warrior-walk.gsk": "9162c46c1a6ab662aa00985f2886e472d1a4d0bc940d89b72088f8d4e8d5373c",
-        "data/skins/colony-v1/warrior-walk.view.json": "6c11e912c3bde88ff4f62983fa0cd6b57dbc0afb1bd68c03d4c7a7fee6b6f033",
         "datasrc/gfx/originals/units/glob-warrior-swim.blend": "f83fab5f221099a35cb12385d3235356d2c43f292cc7a7943ba6f7eb4b29a727",
         "datasrc/gfx/originals/units/glob-warrior-fight.blend": "f7997e783103c989539d71b2e94f1f5eb99c124692b2c7f3d63ec1798d1c02ca",
+        "data/skins/colony-v1/warrior-walk.gsk": "9162c46c1a6ab662aa00985f2886e472d1a4d0bc940d89b72088f8d4e8d5373c",
+        "data/skins/colony-v1/warrior-walk.view.json": "6c11e912c3bde88ff4f62983fa0cd6b57dbc0afb1bd68c03d4c7a7fee6b6f033",
+        "data/skins/colony-v1/warrior-swim.gsk": "027c4f5ff3a364e8335927ef09e8e32984225a83a1dfa86c4f1a549a534f5d4a",
+        "data/skins/colony-v1/warrior-swim.view.json": "044da3d17ba89d714aa78975ab1930b2b4dab9b4206609b99f499ae4c30b8ca1",
         "data/skins/colony-v1/warrior-fight.gsk": "68ec86d000cdccc09279239742ec9a478e984e62cde68318c911574882f8792f",
         "data/skins/colony-v1/warrior-fight.view.json": "102798f33b7775ff170c11eaeef7042a64b893ade58da02868411ebdfc613d9d"
       },
@@ -360,14 +374,83 @@
         }
       ],
       "sources": {
-        "tools/skins/author_unit_rigs.py": "55a10185dec77a6e5092f07b8dc5d8156685507224294a166e1d7759cb16d37e",
-        "tools/skins/worker_surface.py": "91d5021cccc7b98e7c5ad985aebdc2b9156ed7d68a4f618c0270cd426aa971d8",
-        "tools/skins/limb_surface.py": "c98143edba1cdcde9d3e91ed1f93eb29626d4c2b026af4d7d08e662d84354d1e",
+        "tools/skins/author_explorer_rig.py": "1f4d8c395ab8a95e7a3eb893f81ed1a645f94647085db783f5ec506792b4dace",
+        "tools/skins/rig_scene.py": "63ab0b31fb853235941702de0eddefc19ba8dce21a0aa3704c0cbba72f627641",
         "tools/skins/export_rig.py": "41aecaed307114817279b056f615a174f4a58cb83ea6ce735aaeec211201c372",
         "tools/skins/export_units.py": "d9eeab2165559c625b6f7cba4d2d8616690bc37c86ba1cbc36923b206f21b9bb",
         "data/skins/colony-v1/explorer-fly.gsk": "1b46c97e0303b5317083d218414fa5c3c86654037f5a502c84b57a55ac3a5a49",
         "data/skins/colony-v1/explorer-fly.view.json": "3774a18f1c409b826cac93b9bd7c7407a6add2d580854ef8c9190477f0013220",
         "datasrc/gfx/originals/units/explorer.blend": "4d6913061c1e25861a12d45cea72f14d5c8bd8ab603158a2e1077cff70cd959d"
+      },
+      "accepted": false
+    },
+    "worker-harvest.gsr": {
+      "format": "GSR1",
+      "version": 1,
+      "experimental": true,
+      "file": "worker-harvest.gsr",
+      "sha256": "e98064b506c588d58fa25ff475114741e76443b7e089881793c10215c09c8879",
+      "clips": [
+        {
+          "id": 2,
+          "name": "harvest",
+          "samples": 64,
+          "mapping": "alternating-gait-halves-v1",
+          "direction8": "existing-unitAnimationFrame"
+        }
+      ],
+      "sources": {
+        "tools/skins/fit_unit_rigs.py": "7106a7c61734e86240eccdfd0716cabd9cd376fb77d578bde1406d4ac2137ee0",
+        "tools/skins/rig_scene.py": "63ab0b31fb853235941702de0eddefc19ba8dce21a0aa3704c0cbba72f627641",
+        "tools/skins/export_rig.py": "41aecaed307114817279b056f615a174f4a58cb83ea6ce735aaeec211201c372",
+        "tools/skins/export_units.py": "d9eeab2165559c625b6f7cba4d2d8616690bc37c86ba1cbc36923b206f21b9bb",
+        "tools/skins/limb_surface.py": "c98143edba1cdcde9d3e91ed1f93eb29626d4c2b026af4d7d08e662d84354d1e",
+        "datasrc/gfx/authored/skins/limb-surfaces.json": "a1ea321dfe7462c6af4bd70cccd76c9b1a94337ef18754a89c53f9834d52fd38",
+        "data/skins/colony-v1/worker-surface.json": "93724036aefc90e5a64719a1840227a4e5531c778371124667c691f1231cf81f",
+        "datasrc/gfx/originals/units/glob-worker-walk.blend": "c63b1a4ae627147f20911f7c7abe2b61ff8a2b0d6719ade4ee6c3434b3e6d344",
+        "datasrc/gfx/originals/units/glob-worker-swim.blend": "47d23824ec18dce121a39e60a2d584ddfffb2ce63e375fe22cfdaddaaf40b92a",
+        "datasrc/gfx/originals/units/glob-worker-harvest.blend": "d518ff2528f2043a24548342a1632c510059deab1e7d237177666e0023ee8233",
+        "data/skins/colony-v1/worker-walk.gsk": "eeec5b14febea9f134652135af122d113656405aed7faa10b671e3764606555b",
+        "data/skins/colony-v1/worker-walk.view.json": "2a7d9b183cef9b53e5e4f56298669e5088c07511fc91b0ef0f59ac4d524e69fe",
+        "data/skins/colony-v1/worker-swim.gsk": "9069fdb7dc94c2ef334f65d8fcf876d567d713561a190d4659bcb8111f041f96",
+        "data/skins/colony-v1/worker-swim.view.json": "50188f513e89fb684100d41683a2e76df94e802067187f2aff625a8861a2da7b",
+        "data/skins/colony-v1/worker-harvest.gsk": "90d0fb8799c14ba7756092b3893e08db69f4b5a9433cd4b6720f49331e83e4a5",
+        "data/skins/colony-v1/worker-harvest.view.json": "37f35707fe15bf1d3f2afa38a5aebdcf6af60aeffb7b0d095f516df6c533a488"
+      },
+      "accepted": false
+    },
+    "worker-swim.gsr": {
+      "format": "GSR1",
+      "version": 1,
+      "experimental": true,
+      "file": "worker-swim.gsr",
+      "sha256": "8d6ba44793627c7d996cdae0d0e010db1e34d091fc85943383d12976243e67a5",
+      "clips": [
+        {
+          "id": 1,
+          "name": "swim",
+          "samples": 64,
+          "mapping": "alternating-gait-halves-v1",
+          "direction8": "existing-unitAnimationFrame"
+        }
+      ],
+      "sources": {
+        "tools/skins/fit_unit_rigs.py": "7106a7c61734e86240eccdfd0716cabd9cd376fb77d578bde1406d4ac2137ee0",
+        "tools/skins/rig_scene.py": "63ab0b31fb853235941702de0eddefc19ba8dce21a0aa3704c0cbba72f627641",
+        "tools/skins/export_rig.py": "41aecaed307114817279b056f615a174f4a58cb83ea6ce735aaeec211201c372",
+        "tools/skins/export_units.py": "d9eeab2165559c625b6f7cba4d2d8616690bc37c86ba1cbc36923b206f21b9bb",
+        "tools/skins/limb_surface.py": "c98143edba1cdcde9d3e91ed1f93eb29626d4c2b026af4d7d08e662d84354d1e",
+        "datasrc/gfx/authored/skins/limb-surfaces.json": "a1ea321dfe7462c6af4bd70cccd76c9b1a94337ef18754a89c53f9834d52fd38",
+        "data/skins/colony-v1/worker-surface.json": "93724036aefc90e5a64719a1840227a4e5531c778371124667c691f1231cf81f",
+        "datasrc/gfx/originals/units/glob-worker-walk.blend": "c63b1a4ae627147f20911f7c7abe2b61ff8a2b0d6719ade4ee6c3434b3e6d344",
+        "datasrc/gfx/originals/units/glob-worker-swim.blend": "47d23824ec18dce121a39e60a2d584ddfffb2ce63e375fe22cfdaddaaf40b92a",
+        "datasrc/gfx/originals/units/glob-worker-harvest.blend": "d518ff2528f2043a24548342a1632c510059deab1e7d237177666e0023ee8233",
+        "data/skins/colony-v1/worker-walk.gsk": "eeec5b14febea9f134652135af122d113656405aed7faa10b671e3764606555b",
+        "data/skins/colony-v1/worker-walk.view.json": "2a7d9b183cef9b53e5e4f56298669e5088c07511fc91b0ef0f59ac4d524e69fe",
+        "data/skins/colony-v1/worker-swim.gsk": "9069fdb7dc94c2ef334f65d8fcf876d567d713561a190d4659bcb8111f041f96",
+        "data/skins/colony-v1/worker-swim.view.json": "50188f513e89fb684100d41683a2e76df94e802067187f2aff625a8861a2da7b",
+        "data/skins/colony-v1/worker-harvest.gsk": "90d0fb8799c14ba7756092b3893e08db69f4b5a9433cd4b6720f49331e83e4a5",
+        "data/skins/colony-v1/worker-harvest.view.json": "37f35707fe15bf1d3f2afa38a5aebdcf6af60aeffb7b0d095f516df6c533a488"
       },
       "accepted": false
     }

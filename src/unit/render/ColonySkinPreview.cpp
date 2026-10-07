@@ -90,8 +90,7 @@ bool ColonySkinPreview::loadMeshes(const std::string &root, bool installed)
 	const bool rigRequested = mode && std::string(mode) == "1";
 	for (const auto *name : names)
 	{
-		const auto extension = rigRequested && (std::string(name) == "worker-walk" ||
-			std::string(name).rfind("warrior-", 0) == 0 || std::string(name) == "explorer-fly") ? ".gsr" : ".gsk";
+		const auto extension = rigRequested ? ".gsr" : ".gsk";
 		requests.push_back(GAGCore::requestSkinMesh(loader, path(root + "/" + name + extension)));
 	}
 	for (const auto &swarm : Online::SWARM_MESHES)
@@ -101,7 +100,7 @@ bool ColonySkinPreview::loadMeshes(const std::string &root, bool installed)
 	for (unsigned i = 0; i < replacement.size(); ++i)
 	{
 		auto mesh = loader.wait(requests[i]);
-		if ((i == 0 || i >= 3) && rigRequested &&
+		if (rigRequested &&
 			(!mesh || !mesh->model || mesh->frames != 256 ||
 			 mesh->logicalSize != Online::SkinSpriteLogicalSizes[i]))
 		{

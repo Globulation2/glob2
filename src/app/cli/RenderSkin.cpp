@@ -304,7 +304,7 @@ int runRenderSkin(int argc, char **argv)
 			GAGCore::SkinMesh mesh;
 			std::string error;
 			std::string file;
-			if ((clip == 0 || (clip >= 3 && clip < 7)) && rigPreview())
+			if (clip < 7 && rigPreview())
 				file = std::string(Online::SkinSpriteClips[clip]) + ".gsr";
 			else if (clip < 7)
 				file = std::string(Online::SkinSpriteClips[clip]) + ".gsk";

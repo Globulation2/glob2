@@ -415,169 +415,159 @@ quadrant cut out of a colony-v2 atlas.
 
 ### GSR1 rig migration (opt-in unit previews)
 
-GSR1 is a presentation-only alternative to animated GSK1. Worker walk, warrior
-walk/swim/fight, and explorer flight are opt-in candidates: `GLOB2_SKIN_RIGS=1`
-selects them in gameplay,
-`skin-preview`, and `--render-skin`; `VITE_SKIN_RIGS=1` selects it in Colony
-Studio. Native gameplay and Studio fall back to the corresponding baked clip if its rig is
+GSR1 is a presentation-only alternative to animated GSK1. All seven unit clips
+(worker walk/swim/harvest, warrior walk/swim/fight, explorer flight) have opt-in
+candidates: `GLOB2_SKIN_RIGS=1` selects them in gameplay, `skin-preview` and
+`--render-skin`; `VITE_SKIN_RIGS=1` selects them in Colony Studio. Native
+gameplay and Studio fall back to the corresponding baked clip if its rig is
 missing or invalid. Offline sprite generation fails on an invalid rig rather
 than publishing a silently different recipe. `GLOB2_SKIN_DEFORMATION=cpu`
 forces the native CPU deformation fallback for comparison. Software clients
 continue consuming published sprite bundles.
 
-The installed manifest's `rigs` entries record format, SHA-256, explicit clip
-mapping, exporter/reference hashes, and acceptance status. `accepted: false`
-means a development candidate, not permission to change the default. The
-remaining worker swim and harvest clips still use GSK1. Do not remove the baked
-assets or enable rigs by default until the complete catalog passes visual,
-publication, performance and platform acceptance. In particular, baseline M3
-and lower-power hardware measurements cannot be inferred from a Linux software
-renderer. Existing sprite bundles remain immutable; the offline rig preview
-uses a distinct render-recipe digest, including GSR bytes, camera metadata,
-evaluator and shader inputs.
+The installed manifest's `rigs` entries record format, SHA-256, the stored
+clip's sample count and frame mapping, every authoring input's hash, and the
+acceptance status. `accepted: false` means a development candidate, not
+permission to change the default. Do not remove the baked assets or enable rigs
+by default until the catalog passes visual, publication, performance and
+platform acceptance. In particular, baseline M3 and lower-power hardware
+measurements cannot be inferred from a Linux software renderer. Existing
+sprite bundles remain immutable; the offline rig preview uses a distinct
+render-recipe digest, including GSR bytes, camera metadata, evaluator and
+shader inputs.
 
-Generate the worker candidate and its editable Blender scene in ignored staging:
+#### Fitting the worker and warrior rigs to the baked clips
 
-```sh
-blender-3.6.23 --background --factory-startup -t 1 --python-exit-code 1 \
-  --python tools/skins/author_worker_rig.py -- --output artifacts/rig/worker
-```
-
-The authoring script creates a symmetric, rounded rest surface with welded
-socket transitions and geometry-derived normals. It preserves the installed
-worker's vertex order, indices and reflected paint UVs, but deliberately replaces
-the old metaball-derived shape. `worker_surface.py` owns the proportions and
-weights; all nonzero contributions fit four influences. A 2.3-unit capsule
-midsection gives the worker its tall torso, separating the upper and lower
-attachment regions without scaling the limbs. Socket weights are evaluated in
-the unextended torso coordinates, and complete lobe controls translate with the
-body during the gait. Short connectors balance the taller torso, with 1.7-unit
-shaft radii and 2.05-unit terminal radii. A waist narrowed in depth shapes the smooth torso
-while preserving both reflection symmetries. This shaping does not alter limb
-geometry or attachment weights. The original
-hands' forward sweep drives a smooth torso curl bounded to 0.14 radians per end:
-chest and hips bow forward through the waist using their existing attachment
-controls. Whole lobes rotate together, so this adds body flex without bending the
-shafts or squashing terminal caps. Each lobe uses a
-straight shaft with equal weights around each cross-section and a rigid terminal
-cap. Its three controls share one orientation and slide axially to change reach;
-the surrounding torso partially follows the attachment. Walk retargeting keeps
-the terminal paths from the previous gait while bounding swing to 0.7875 radians
-and enforcing 60-degree clearance between lobes. These are deformation controls for a continuous blob, not elbow or knee
-joints. The broader sockets and cylindrical shafts avoid pinched, detached-looking
-hands and feet, with some changes to the silhouette and terminal paths.
-The source animation remains an offline motion reference only.
-
-The generated `.blend` contains `WorkerRestSurface`, its `PublishedPaint` UV
-layer, and `WorkerRig`: `body` plus arm and leg chains on both sides, each with `attach`, `upper`,
-and `lower` bones (for example `arm.upper.R`). The final `.R`/`.L` suffixes
-support Blender's mirrored-pose naming convention. The `Walk` action uses quaternion
-channels at 32 fps, frames 1–64, with a closing key at 65. Disable the action or
-select the armature's rest display to inspect the neutral shape. Rotate and translate `attach` to steer a whole lobe. The `upper` and `lower`
-controls have rotation locked and move only along local Y to set reach; keep them
-in radial order. Scale stays locked. Imported actions are checked for shared
-orientation, axial offsets and control order, as well as valid sampled transforms. Blender's between-key quaternion interpolation is not the runtime's
-exact slerp; check exported motion in the production preview.
-
-To prototype another animation, save an edited copy under ignored `artifacts/`,
-create a named quaternion action on the same bones, and author its two-second
-cycle over frames 1–65 (65 repeats 1). Import it into a fresh output directory:
+The baked GSK1 worker and warrior clips are per-frame fits of the published
+paint topology to the original metaball field, so they already carry the
+original look: a lumpy torso of merged balls, thin necks, round fists and
+bending limbs. The rig keeps that look by fitting to those frames instead of
+authoring a new surface. Generate both models with their editable scenes:
 
 ```sh
 blender-3.6.23 --background --factory-startup -t 1 --python-exit-code 1 \
-  --python tools/skins/author_worker_rig.py -- --output artifacts/rig/reach \
-  --action-blend artifacts/rig/edited-worker.blend --action Reach
+  --python tools/skins/fit_unit_rigs.py -- --model worker --output artifacts/rig/worker
+blender-3.6.23 --background --factory-startup -t 1 --python-exit-code 1 \
+  --python tools/skins/fit_unit_rigs.py -- --model warrior --output artifacts/rig/warrior
 ```
 
-This samples frames 1–64 onto the reproducible base mesh and skeleton. It exports
-a **worker-walk preview**, not a new gameplay animation identity; adding another
-gameplay clip still requires its frame/clip mapping and catalog integration.
-The action import deliberately ignores mesh, rest-bone, constraint and object
-edits; bake desired motion to quaternion bone TRS channels first. Keep edited
-sources separate: the generator replaces its output `.blend` on every run and
-refuses to overwrite the action source itself. Changes to the authoring scripts
-require regenerating the rig and manifest provenance. The candidate remains
-opt-in pending visual approval, including representative published paints.
+`fit_unit_rigs.py` works per model, over all of its clips at once:
 
-Generate warrior and explorer candidates with their editable scenes:
+- **Rest surface.** The walk source's armature is put in its rest position and
+  the same `limb_surface.py` fit used by `export_units.py` is evaluated on the
+  resulting metaball transforms. This keeps the published topology and paint
+  UVs; the surface is symmetrised exactly under the chart's front/back and
+  top/bottom reflections (the measured asymmetry is recorded in the report).
+- **Bones.** One `body` bone, and per limb a `socket` bone at the body centre
+  plus, for each metaball along the limb, a bone halfway along the segment
+  (`arm.1.mid.R`) and one on the ball (`arm.1.R`): 29 bones for the worker, 21
+  for the warrior. Bind matrices have unit scale. Each clip's bones start on
+  the original metaball chain: the body follows the clip's body basis from
+  `limb-surfaces.json` (so swim clips line up with the walk rest mesh), limb
+  bones sit on their ball or segment midpoint with the minimal rotation from
+  the rest segment direction to the posed one and the ball's scale change.
+- **Targets.** Every baked frame of every clip, with its heading undone. A clip
+  stores the fewest samples whose repeats across directions stay within 0.25
+  model units: 64 when a gait repeats every two directions (`alternating-gait-
+  halves-v1`), 128 (`gait-quarters-v1`) or 256 when every direction differs
+  (`direction-major-v1`, currently the warrior's swim stroke). Frame `f` maps
+  direction `floor(f/32)` and phase `f%32` to sample `(direction % groups)*32 +
+  phase` of a `samples/32` second cycle. Sample targets average the frames
+  sharing them.
+- **Weights.** Per vertex, non-negative least squares over all clips with a
+  sum-to-one penalty. Torso vertices may use the body and socket bones, limb
+  vertices the body, their socket and their own limb's bones. The four
+  influences are chosen from neighbour-averaged weights (`--support-passes`,
+  default 5) so adjacent vertices pick the same bones, solved again under that
+  support, then mirrored across both reflections so symmetric vertices carry
+  mirrored weights and influence sets.
+- **Refinement.** Up to `--iterations` passes (default 20) alternate a bone
+  update with a fresh weight solve, stopping when the mean error improves by
+  less than half a percent. Per bone and sample the update fits a translation
+  and uniform scale (0.5–2 of bind) to the residual the other bones leave; the
+  rotation stays on the metaball chain and the displacement from the chain is
+  capped at `--translation-bound` model units (default 1). Both limits exist
+  for shading, not positions: the runtime rotates rest normals with the
+  blended bones, and freely refined rotations or far-moved socket bones gave
+  positions that fit slightly better but normals that shaded dark crescents and
+  specks where limbs meet the torso. `--no-midpoint-bones` fits the bare
+  metaball chain for comparison; the midpoint bones lower the error by roughly
+  a fifth. `--smoothness` adds a neighbour-mean weight prior and is off by
+  default (it did not reduce the folds it was meant to).
+
+Each clip is written as `<model>-<clip>.gsr` with its `-rig.json` provenance
+record and a `<model>-<clip>-fit.json` report: RMS, 95th percentile and maximum
+distance to the baked frames over all 256 poses, the worst frame, the error by
+vertex kind (torso, limb rings, end caps), faces whose normal flips against the
+baked surface, vertices whose rig-rotated normal strays from the posed surface
+(what shading sees), the sample count and the per-pass error history. The fit
+is deterministic: a rerun reproduces the installed bytes. The remaining error
+concentrates in the socket and neck rings where balls merge and separate,
+which linear skinning cannot follow exactly; if that reads wrong in play, the
+next step is small corrective shapes in a later format, not hand-authored
+geometry. Judge candidates on the review sheets as well as the numbers: the
+earlier free-rotation fit scored better on distance and worse on screen.
+
+The generated `<model>.blend` contains `<Model>RestSurface` with its
+`PublishedPaint` UV layer and bone vertex groups, `<Model>Rig`, and one
+quaternion action per clip (`Walk`, `Swim`, ...) keyed at 32 fps over its
+samples, with a closing key repeating the first. Bones are free: rotate,
+translate and scale them as the fit left them. To prototype another animation,
+save an edited copy under ignored `artifacts/`, author a cyclic action over
+frames 1 to the clip's sample count plus one, and import it:
 
 ```sh
 blender-3.6.23 --background --factory-startup -t 1 --python-exit-code 1 \
-  --python tools/skins/author_unit_rigs.py -- --model warrior --output artifacts/rig/warrior
-blender-3.6.23 --background --factory-startup -t 1 --python-exit-code 1 \
-  --python tools/skins/author_unit_rigs.py -- --model explorer --output artifacts/rig/explorer
+  --python tools/skins/fit_unit_rigs.py -- --model worker --output artifacts/rig/reach \
+  --action-blend artifacts/rig/edited-worker.blend --action Reach --clip walk
 ```
 
-The warrior has nine bones: `body` and two controls for each arm/leg on both
-sides (`arm.upper.R`, `arm.lower.R`, etc.). Walk, Swim and Fight share identical
-rest geometry, weights, skeleton and paint coordinates. These are deformation
-controls for a continuous blob, rather than anatomical joints. The rest surface
-uses a round torso and four identical spherical terminal lobes. Left/right and
-top/bottom reflection symmetry is a base-mesh constraint: all four lobes use the
-same reference control lengths, socket profile and mirrored weights. All four
-socket openings expand together on the torso sphere, with a 2.1-unit minimum
-connector radius and 2.78-unit terminal radius. Partial control influence on the
-surrounding body lets each attachment region move with its lobe. The shafts have
-no torso-bone influence: their two controls share an orientation and blend only
-axial translation, with weights distributed along the full connector so inward
-motion cannot fold the middle rings backwards. Cross-sections retain their shape and the centerline stays
-straight as reach and angle change. Diagonal rest directions accommodate the rolling walk
-and its exchange of upper/lower lobes. Terminal caps follow one control rigidly
-to retain their volume. Animation poses can differ between lobes; their underlying
-shape and deformation rules must not depend on an arm/leg label.
+This samples the action's quaternion bone channels on the reproducible base
+mesh and skeleton and exports it as a preview for the chosen gameplay clip,
+not a new gameplay animation identity. Mesh, rest-bone and constraint edits in
+the source are ignored; bake desired motion to bone TRS channels first. The
+generator replaces its output `.blend` on every run and refuses to overwrite
+the action source itself.
 
-Motion transfer retains the legacy body rotation, translation and timing. Walk
-and fight bound limb direction changes to 0.5 radians at the body and 0.65 at the
-next control. Swim transfers the source lobe centers directly for its outward
-stroke. An initial contact pass keeps terminal centers at least 6.3 model units
-from the torso center for walk/fight, 6.0 for extended swim poses, and 5.7 apart.
-A second pass separates converging shaft directions to at least 60 degrees.
+The explorer keeps its own generator: `tools/skins/author_explorer_rig.py`
+(`-- --output artifacts/rig/explorer`) reuses the baked first pose, welded for
+one smoothing pass and normal calculation, with `body`, `head`, `wing.R` and
+`wing.L` bones following the source transforms directly; the baked clip is
+already a four-influence skin over those ellipsoids. Its action import works
+the same way with `--action-blend` and `--action`.
 
-Swim recovery then gathers the lobes toward a compact pose with centers 3.5 units
-from the torso. Retraction follows the source's mean lobe reach, smoothly entering
-below 6.5 units and reaching full tuck at 2.7. The lobe directions return toward
-the symmetric rest arrangement as the shafts shorten, giving the full-sized caps
-room to gather without crossing. Both controls share one orientation; neither the
-body nor the terminal caps scale down. The short connections keep their transverse
-profiles while the attachment regions move with them. This produces a deep inward
-stroke without reproducing the original metaball unions. Quarter-frame intersection
-checks cover the transitions as well as the authored samples.
-Swing and contact limits apply
-to motion transfer; imported actions are not clamped. The upper handle sets each
-lobe's angle and placement; the distal handle changes reach along local Y and
-locks independent rotation and sideways movement in Blender. Action import
-rejects mismatched shaft orientations or a sideways distal offset, preventing
-accidental bending. Scale stays locked in the editor. Recheck new actions for
-intersections and silhouette quality.
+Install validated candidates, which copies identical bytes for native rendering
+and the web designer and records them in the manifest (keeping any existing
+acceptance flag):
 
-The explorer has four bones: `body`, `head`, `wing.R` and `wing.L`, with a Fly
-action. Its ellipsoid proportions live in the rest mesh rather than nonuniform
-bone scales. UV-split vertices are welded for one smoothing iteration and normal
-calculation, then mapped back to their published paint layout. Most of each wing
-follows its bone rigidly; the blend is confined to the root. Both scenes use
-quaternion actions, frames 1–65, and the same alternating gait-half frame mapping
-as the worker.
+```sh
+python3 tools/skins/install_rigs.py artifacts/rig/worker artifacts/rig/warrior artifacts/rig/explorer
+python3 test/build_system/test_skin_assets.py
+```
 
-To sample a new action on either base, use the same action-only import workflow;
-`--clip` selects an existing gameplay slot to preview:
+The installer rejects a record whose bytes, sources or baked-clip topology do
+not match. Changing any authoring script or input requires regenerating every
+rig that lists it.
+
+Run the authoring checks in pinned Blender:
 
 ```sh
 blender-3.6.23 --background --factory-startup -t 1 --python-exit-code 1 \
-  --python tools/skins/author_unit_rigs.py -- --model warrior \
-  --output artifacts/rig/warrior-gesture --action-blend artifacts/rig/edited-warrior.blend \
-  --action Gesture --clip fight
+  --python tools/skins/test_fit_rigs.py
 ```
 
-Run `tools/skins/test_unit_rigs.py` in pinned Blender for rest-surface, left/right
-and top/bottom geometry/normal/weight/control symmetry, sampled intersections,
-cycle closure, shared-base, rigid terminal shape, reference terminal girth and
-minimum connector girth across all actions, straight centerlines and unchanged
-cross-sections, independent joint posing, action round trips and invalid shaft
-action rejection. The installed asset test also verifies provenance, native/web
-byte identity, and unchanged paint UVs and triangle order for all five candidates.
+They regenerate every candidate and check paint topology and UVs, both
+reflections of the rest surface, valid mirrored four-bone weights, per-clip fit
+thresholds against the baked frames, sample counts and durations, finite
+bounded tracks, byte-identical regeneration, agreement with the installed
+assets, action round trips with the overwrite guard, and installer rejection of
+stale sources or altered bytes. The installed asset test additionally verifies
+provenance, native/web byte identity, bone counts and unchanged paint UVs and
+triangle order for all seven candidates.
 
-Capture all 256 gameplay poses through the production 128px atlas, using neutral
-paint under all four materials, checker paint, and a mixed-material checker:
+Capture all 256 gameplay poses through the production 128px atlas, using
+neutral paint under all four materials, checker paint, and a mixed-material
+checker:
 
 ```sh
 scons release=1 server=0 skin-preview
@@ -585,22 +575,14 @@ build/linux/client/release/src/skin-preview \
   artifacts/rig/worker/worker-walk.gsr artifacts/rig/worker/review --rig-review
 ```
 
-This writes six 2048×2048 BMP sheets (`review-0.bmp` through `review-5.bmp`),
-16 frames per row. It also accepts a baked `.gsk`. Set
-`GLOB2_SKIN_DEFORMATION=cpu` for the fallback comparison. Readback is offscreen,
-so a desktop window resize does not alter the captured resolution.
+This writes six 2048x2048 BMP sheets (`review-0.bmp` through `review-5.bmp`),
+16 frames per row. It also accepts a baked `.gsk`, so the same command on
+`data/skins/colony-v1/worker-walk.gsk` gives the reference sheets for a
+per-frame silhouette comparison. Set `GLOB2_SKIN_DEFORMATION=cpu` for the
+fallback comparison. Readback is offscreen, so a desktop window resize does not
+alter the captured resolution. `GLOB2_SKIN_RIGS=1 skin-preview DIR PREFIX
+--all-phases` draws every rig clip under the classic sprites for review.
 
-Run the authored-surface checks in pinned Blender:
-
-```sh
-blender-3.6.23 --background --factory-startup -t 1 --python-exit-code 1 \
-  --python tools/skins/test_worker_rig.py
-```
-
-They cover watertight rest topology, reflected shape/weights, paint coordinates,
-non-adjacent triangle intersections through the walk and independent joint bends,
-loop closure, and action-export round trips. These are bounded deformation checks,
-not proof that arbitrary future poses cannot self-intersect.
 
 For production-rendered rig thumbnails, first export a neutral-paint bundle with
 `GLOB2_SKIN_RIGS=1 glob2 --render-skin` using its normal manifest, texture,
@@ -660,13 +642,13 @@ uses `(0,0,1)`. The orthographic camera transforms positions independently of
 normal rotation, and normals normalize again after camera rotation. The
 renderer alone applies the existing 1.25 atlas padding.
 
-Gameplay still calls `unitAnimationFrame`. In the worker mapping, frame `f`
-has heading `-floor(f/32)*pi/4` and time
-`(32*(floor(f/32)%2) + f%32)/32` in a two-second, 64-sample cycle. This retains
-both gait halves. Direction 8 still maps to phase zero of successive headings
-through the existing function; it is not a ninth heading. Continuous evaluation
-exists for tooling, but gameplay timing and discrete heading selection do not
-change.
+Gameplay still calls `unitAnimationFrame`. Frame `f` has heading
+`-floor(f/32)*pi/4` and time `((floor(f/32) % groups)*32 + f%32)/32` in a
+`samples/32` second cycle, where `groups` is `samples/32`: a 64-sample walk
+retains both gait halves, a 256-sample clip keeps every direction's own poses.
+Direction 8 still maps to phase zero of successive headings through the
+existing function; it is not a ninth heading. Continuous evaluation exists for
+tooling, but gameplay timing and discrete heading selection do not change.
 
 `SkinModel` owns immutable geometry, bones and `SkinClip` tracks.
 `SkinMesh::fromModel(model, clip)` is a

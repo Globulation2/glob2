@@ -957,18 +957,19 @@ shadows, fog, zoom, clipping and the Show colony skins preference apply to both
 rendering paths. This is presentation state and does not alter saves, simulation
 checksums or `SIM_REVISION`.
 
-The rig migration currently provides an opt-in worker-walk candidate alongside
-those baked meshes. `GLOB2_SKIN_RIGS=1` enables it in native gameplay and offline
+The rig migration provides opt-in candidates for all seven unit clips alongside
+those baked meshes, fitted to the baked frames so they keep the original metaball
+look. `GLOB2_SKIN_RIGS=1` enables them in native gameplay and offline
 sprite generation; `VITE_SKIN_RIGS=1` enables Studio inspection and painting.
 Studio evaluates the displayed rig pose on the CPU for rendering and brush
 visibility; pattern and fill coordinates remain tied to the fixed rest chart.
 The native atlas renderer uploads rest geometry once per model/context, then
 shares palette uniforms across paints. Shader capability failures use the same
-CPU evaluator. The remaining clips and all default paths stay baked pending acceptance.
+CPU evaluator. All default paths stay baked pending acceptance.
 Rig sprite generation has a separate recipe digest, so previews cannot replace
 immutable bundles published by the baked generator. Software clients continue
 using their authorized published sprites. See the
-[GSR1 contract and migration gates](../../tools/unit-animation/README.md#gsr1-rig-migration-worker-walk-preview).
+[GSR1 contract and migration gates](../../tools/unit-animation/README.md#gsr1-rig-migration-opt-in-unit-previews).
 
 Skin meshes are installed under `data/skins/colony-v1`; they share the web
 designer's UV layout, each model sampling its own `colony-v2` quadrant. The browser ships them in an on-demand `skins` package

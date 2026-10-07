@@ -34,8 +34,9 @@ class ColonySkinAssetsTest(unittest.TestCase):
         import struct
         folder = ROOT / 'data/skins/colony-v1'
         manifest = json.loads((folder / 'manifest.json').read_text())
-        for name, expected_bones, expected_size in [('worker-walk', 13, 38), ('warrior-walk', 9, 40),
-                                                    ('warrior-swim', 9, 40), ('warrior-fight', 9, 40),
+        for name, expected_bones, expected_size in [('worker-walk', 29, 38), ('worker-swim', 29, 38),
+                                                    ('worker-harvest', 29, 38), ('warrior-walk', 21, 40),
+                                                    ('warrior-swim', 21, 40), ('warrior-fight', 21, 40),
                                                     ('explorer-fly', 4, 32)]:
             record = manifest['rigs'][name + '.gsr']
             self.assertEqual(record['format'], 'GSR1')

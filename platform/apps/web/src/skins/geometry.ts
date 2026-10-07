@@ -83,6 +83,8 @@ const cache = new Map<string, Promise<{ mesh: Mesh; view: ViewTransform }>>();
 const rigPreview = import.meta.env.VITE_SKIN_RIGS === '1';
 const rigCandidates = new Set([
   'worker-walk',
+  'worker-swim',
+  'worker-harvest',
   'warrior-walk',
   'warrior-swim',
   'warrior-fight',
