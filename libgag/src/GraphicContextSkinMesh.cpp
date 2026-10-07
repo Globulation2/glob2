@@ -303,11 +303,18 @@ GraphicContext::SkinResources::restBuffers(const SkinMesh &mesh)
 	if (rigs.size() >= MaxModels)
 	{
 		const auto oldest = rigs.begin();
+#ifdef GLOB2_WEBGL2
+		glDeleteVertexArrays(1, &oldest->second.vao);
+#endif
 		glDeleteBuffers(1, &oldest->second.vertices);
 		glDeleteBuffers(1, &oldest->second.indices);
 		rigs.erase(oldest);
 	}
 	RigBuffers buffers;
+#ifdef GLOB2_WEBGL2
+	glGenVertexArrays(1, &buffers.vao);
+	glBindVertexArray(buffers.vao);
+#endif
 	glGenBuffers(1, &buffers.vertices);
 	glGenBuffers(1, &buffers.indices);
 	uploadScratch.resize(model.vertices() * RigVertexFloats);
@@ -333,6 +340,9 @@ GraphicContext::SkinResources::restBuffers(const SkinMesh &mesh)
 
 void GraphicContext::SkinResources::bindRigGeometry(const RigBuffers &buffers)
 {
+#ifdef GLOB2_WEBGL2
+	glBindVertexArray(buffers.vao);
+#endif
 	glBindBuffer(GL_ARRAY_BUFFER, buffers.vertices);
 	constexpr unsigned stride = RigVertexFloats * sizeof(float);
 #ifdef GLOB2_WEBGL2
@@ -404,6 +414,9 @@ void GraphicContext::SkinResources::uploadRigPalette(const SkinMesh &mesh, unsig
 
 void GraphicContext::SkinResources::bindCpuGeometry(const SkinMesh &mesh, unsigned sample)
 {
+#ifdef GLOB2_WEBGL2
+	glBindVertexArray(vao);
+#endif
 	if (meshIdentity != mesh.identity)
 	{
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indices);
@@ -475,6 +488,9 @@ void GraphicContext::destroySkinRenderer()
 		glDeleteShader(r.fragment);
 	for (const auto &[identity, buffers] : r.rigs)
 	{
+#ifdef GLOB2_WEBGL2
+		glDeleteVertexArrays(1, &buffers.vao);
+#endif
 		glDeleteBuffers(1, &buffers.vertices);
 		glDeleteBuffers(1, &buffers.indices);
 	}
