@@ -1,0 +1,209 @@
+{
+  "chromium": {
+    "complete_matches": true,
+    "counts": {
+      "stock": 4,
+      "official-match": 2,
+      "composition": 2
+    },
+    "command": [
+      "npx",
+      "playwright",
+      "test",
+      "determinism.spec.js",
+      "--project=chromium",
+      "--grep",
+      "WebAssembly produces|WebAssembly verifies|runtime resource composition",
+      "--reporter=line"
+    ],
+    "returncode": 0,
+    "source": {
+      "dirty": false,
+      "revision": "7bafc3f15298a1649e807e42909c3fa2fe3bc609",
+      "sourceStatus": [],
+      "sourceTreeSha256": "3801f46c84a1a69d9f591ec8b1db27d12e966362bf5a3a42d61e2665eb318e21"
+    },
+    "checks": [
+      {
+        "file": "evidence/wasm/serial-1/wasm.replay.checksums",
+        "kind": "stock",
+        "matches_native": true
+      },
+      {
+        "file": "evidence/wasm/threaded-1/wasm.replay.checksums",
+        "kind": "stock",
+        "matches_native": true
+      },
+      {
+        "file": "evidence/wasm/threaded-2/wasm.replay.checksums",
+        "kind": "stock",
+        "matches_native": true
+      },
+      {
+        "file": "evidence/wasm/threaded-4/wasm.replay.checksums",
+        "kind": "stock",
+        "matches_native": true
+      },
+      {
+        "file": "evidence/wasm/verify-match.checksums.txt",
+        "kind": "official-match",
+        "matches_native": true
+      },
+      {
+        "file": "evidence/wasm/verify-threaded/verify-match.checksums.txt",
+        "kind": "official-match",
+        "matches_native": true
+      },
+      {
+        "file": "evidence/resources/threaded/chromium/composition/cases/RuntimeResources/frozen_seeded_resource_compositions_preserve_invariants_and_exact_simulation_continuation__golden/seeded-compositions.trace",
+        "kind": "composition",
+        "rows": 150,
+        "matches_native": true
+      },
+      {
+        "file": "evidence/resources/serial/chromium/composition/cases/RuntimeResources/frozen_seeded_resource_compositions_preserve_invariants_and_exact_simulation_continuation__golden/seeded-compositions.trace",
+        "kind": "composition",
+        "rows": 150,
+        "matches_native": true
+      }
+    ]
+  },
+  "firefox": {
+    "complete_matches": true,
+    "counts": {
+      "stock": 4,
+      "official-match": 2,
+      "composition": 2
+    },
+    "command": [
+      "npx",
+      "playwright",
+      "test",
+      "determinism.spec.js",
+      "--project=firefox",
+      "--grep",
+      "WebAssembly produces|WebAssembly verifies|runtime resource composition",
+      "--reporter=line"
+    ],
+    "returncode": 0,
+    "source": {
+      "dirty": false,
+      "revision": "7bafc3f15298a1649e807e42909c3fa2fe3bc609",
+      "sourceStatus": [],
+      "sourceTreeSha256": "3801f46c84a1a69d9f591ec8b1db27d12e966362bf5a3a42d61e2665eb318e21"
+    },
+    "checks": [
+      {
+        "file": "evidence/wasm/serial-1/wasm.replay.checksums",
+        "kind": "stock",
+        "matches_native": true
+      },
+      {
+        "file": "evidence/wasm/threaded-1/wasm.replay.checksums",
+        "kind": "stock",
+        "matches_native": true
+      },
+      {
+        "file": "evidence/wasm/threaded-2/wasm.replay.checksums",
+        "kind": "stock",
+        "matches_native": true
+      },
+      {
+        "file": "evidence/wasm/threaded-4/wasm.replay.checksums",
+        "kind": "stock",
+        "matches_native": true
+      },
+      {
+        "file": "evidence/wasm/verify-match.checksums.txt",
+        "kind": "official-match",
+        "matches_native": true
+      },
+      {
+        "file": "evidence/wasm/verify-threaded/verify-match.checksums.txt",
+        "kind": "official-match",
+        "matches_native": true
+      },
+      {
+        "file": "evidence/resources/threaded/firefox/composition/cases/RuntimeResources/frozen_seeded_resource_compositions_preserve_invariants_and_exact_simulation_continuation__golden/seeded-compositions.trace",
+        "kind": "composition",
+        "rows": 150,
+        "matches_native": true
+      },
+      {
+        "file": "evidence/resources/serial/firefox/composition/cases/RuntimeResources/frozen_seeded_resource_compositions_preserve_invariants_and_exact_simulation_continuation__golden/seeded-compositions.trace",
+        "kind": "composition",
+        "rows": 150,
+        "matches_native": true
+      }
+    ]
+  },
+  "webkit": {
+    "complete_matches": true,
+    "counts": {
+      "stock": 4,
+      "official-match": 2,
+      "composition": 2
+    },
+    "command": [
+      "npx",
+      "playwright",
+      "test",
+      "determinism.spec.js",
+      "--project=webkit",
+      "--grep",
+      "WebAssembly produces|WebAssembly verifies|runtime resource composition",
+      "--reporter=line"
+    ],
+    "returncode": 0,
+    "source": {
+      "dirty": false,
+      "revision": "7bafc3f15298a1649e807e42909c3fa2fe3bc609",
+      "sourceStatus": [],
+      "sourceTreeSha256": "3801f46c84a1a69d9f591ec8b1db27d12e966362bf5a3a42d61e2665eb318e21"
+    },
+    "checks": [
+      {
+        "file": "evidence/wasm/serial-1/wasm.replay.checksums",
+        "kind": "stock",
+        "matches_native": true
+      },
+      {
+        "file": "evidence/wasm/threaded-1/wasm.replay.checksums",
+        "kind": "stock",
+        "matches_native": true
+      },
+      {
+        "file": "evidence/wasm/threaded-2/wasm.replay.checksums",
+        "kind": "stock",
+        "matches_native": true
+      },
+      {
+        "file": "evidence/wasm/threaded-4/wasm.replay.checksums",
+        "kind": "stock",
+        "matches_native": true
+      },
+      {
+        "file": "evidence/wasm/verify-match.checksums.txt",
+        "kind": "official-match",
+        "matches_native": true
+      },
+      {
+        "file": "evidence/wasm/verify-threaded/verify-match.checksums.txt",
+        "kind": "official-match",
+        "matches_native": true
+      },
+      {
+        "file": "evidence/resources/threaded/webkit/composition/cases/RuntimeResources/frozen_seeded_resource_compositions_preserve_invariants_and_exact_simulation_continuation__golden/seeded-compositions.trace",
+        "kind": "composition",
+        "rows": 150,
+        "matches_native": true
+      },
+      {
+        "file": "evidence/resources/serial/webkit/composition/cases/RuntimeResources/frozen_seeded_resource_compositions_preserve_invariants_and_exact_simulation_continuation__golden/seeded-compositions.trace",
+        "kind": "composition",
+        "rows": 150,
+        "matches_native": true
+      }
+    ]
+  }
+}
