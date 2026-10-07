@@ -175,6 +175,25 @@ For a built-in engine experiment:
 6. In the pull request, describe the feel changes with the experiment on; a
    maintainer playing it is part of review.
 
-### Greedy resource fetching
+### Round-trip resource fetching
 
-The saved `greedy-resource-fetching` experiment sends fetchers toward the nearest available material source, then back to their building. It bypasses round-trip field construction and cached round-trip scores; hiring and job swaps retain their existing distance estimates and hunger checks. Shared market eligibility and live movement checks remain in force. The experiment is off by default. Saves retain the experiment key through the existing experiment registry, with the legacy save floor unchanged. Replay format 144 and simulation revision 28 distinguish this behavior from earlier clients. Compare multiple seeds and both delivery throughput and starvation before deciding whether to retain it.
+Greedy fetching is the default: workers walk to the nearest available resource,
+then return to their building. Hiring and job swaps use existing trip-distance
+estimates and hunger checks; market eligibility and live movement checks still
+apply.
+
+Enable the saved `round-trip-resource-fetching` experiment to restore routing
+and candidate scoring using building-specific round-trip fields. These account
+for the return journey when choosing a resource patch. Across 24 paired seeded
+matches, greedy fetching used about 12% less late-game simulation CPU; enabling
+round-trip fetching therefore costs about 14% relative to greedy in that sample.
+Food delivery and starvation effects vary by layout. Compare both settings in
+real play before choosing a long-term policy.
+
+The experiment is off by default and persists in game saves, replay headers and
+network setup. Replay format 145 and simulation revision 29 distinguish the new
+default from earlier clients. Existing saves remain readable (minimum format
+58); saves without this flag now use greedy fetching. The former experimental
+`greedy-resource-fetching` key is obsolete and is ignored when loading, leaving
+the same greedy behavior. This can change the pacing and economy of older games
+that previously used round-trip routing.

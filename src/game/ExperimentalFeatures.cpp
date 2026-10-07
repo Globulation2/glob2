@@ -44,8 +44,8 @@ const std::vector<ExperimentDefinition> &experimentDefinitions()
 		 "Adds deep and dark water to the map editor. Swimmers cross them more slowly, no algae grows in them, and they still irrigate nearby fields."},
 		{ExperimentId::VoidTerrain, "void-terrain", "Void terrain",
 		 "Adds holes and chasms to the map editor. Nothing can cross them, not even flying units, and projectiles stop at their edge."},
-		{ExperimentId::GreedyResourceFetching, "greedy-resource-fetching", "Greedy resource fetching",
-		 "Fetch from the nearest available resource, then return to the building. Hiring and job swaps use estimated trip distances."},
+		{ExperimentId::RoundTripResourceFetching, "round-trip-resource-fetching", "Round-trip resource fetching",
+		 "Choose resources by the whole journey back to the building instead of the nearest source. Used about 14% more late-game simulation CPU in paired tests; food-delivery benefits depend on the map."},
 	};
 	return definitions;
 }

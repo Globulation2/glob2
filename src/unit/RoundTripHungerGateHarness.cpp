@@ -44,6 +44,9 @@ static void aUnitIsJudgedOnTheWalkToTheResource()
 {
 	GameGUI gui;
 	Game& game = gui.game;
+	auto experiments = game.gameHeader.getExperiments();
+	experiments.set(ExperimentId::RoundTripResourceFetching);
+	game.gameHeader.setExperiments(experiments);
 	game.map.setSize(5, 5, GRASS); // 32x32
 	game.map.setGame(&game);
 	game.addTeam(0);
@@ -104,8 +107,7 @@ static void aUnitIsJudgedOnTheWalkToTheResource()
 	require(RoundTripHungerGateHarness::consider(site, unit, WOOD, &dist),
 		"a unit that can reach the wood is hireable for it");
 
-    auto experiments=game.gameHeader.getExperiments();
-    experiments.set(ExperimentId::GreedyResourceFetching);
+    experiments.set(ExperimentId::RoundTripResourceFetching, false);
     game.gameHeader.setExperiments(experiments);
     const auto *cached=site->roundTripGradient[WOOD][swimClass];
     require(game.map.roundTripGradientSlot(site,WOOD,swimClass)==NULL,"greedy routing ignores a previously cached round-trip field");
@@ -158,9 +160,7 @@ static void theFallbackScoresAWholeRoundTrip()
 		"the site is reachable");
 	require(game.map.materialAvailableSlot(0, WOOD, swimClass, unit->posX, unit->posY, &distResource),
 		"the wood is reachable");
-    auto experiments=game.gameHeader.getExperiments();
-    experiments.set(ExperimentId::GreedyResourceFetching);
-    game.gameHeader.setExperiments(experiments);
+
     require(game.map.roundTripGradientSlot(site,WOOD,swimClass)==NULL,"greedy fetching does not construct a round-trip field");
 	require(!game.map.roundTripDistanceSlot(site, WOOD, swimClass, unit->posX, unit->posY, &unused),
 		"no round-trip field exists for a building nothing has fetched for");

@@ -19,10 +19,10 @@ class Order;
 //! Malformed or truncated replay bodies are rejected, including partial recordings.
 
 //! Oldest replay format (the VERSION_MINOR the replay was written with) that
-//! the reader still accepts. Version 142 introduces damage-weighted routing and
-//! safe idle movement; older replays have different trajectories.
+//! the reader still accepts. Version 145 makes greedy resource fetching the
+//! default and round-trip fetching opt-in; older replays use different rules.
 //! Save compatibility has a separate floor in Version.h.
-static constexpr Uint16 REPLAY_MINIMUM_VERSION_MINOR = 144;
+static constexpr Uint16 REPLAY_MINIMUM_VERSION_MINOR = 145;
 
 /// This class is used for reading replays.
 /// The replay stream is kept open and read every time you do retrieveOrder.

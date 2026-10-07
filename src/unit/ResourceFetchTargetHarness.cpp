@@ -121,9 +121,9 @@ static void targetTracksTheGradientTheUnitActuallyFollows(bool greedy=false)
 			game.map.clearImmobileUnit(x, y);
 	game.addTeam(0);
 	Team* team = game.teams[0];
-    if(greedy) {
+    if(!greedy) {
         auto experiments=game.gameHeader.getExperiments();
-        experiments.set(ExperimentId::GreedyResourceFetching);
+        experiments.set(ExperimentId::RoundTripResourceFetching);
         game.gameHeader.setExperiments(experiments);
     }
 	const int teamNumber = team->teamNumber;
