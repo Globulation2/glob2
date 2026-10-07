@@ -1,0 +1,14 @@
+
+Running 3 tests using 1 worker
+
+(node:3947959) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  1 [chromium] › browser/tests/session-reload.spec.js:62:1 › a damaged in-game load returns through a scheduled error notice and permits another match @webgl2-reload-b (27.2s)
+(node:3948557) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  2 [chromium] › browser/tests/session-reload.spec.js:62:1 › a damaged in-game load returns through a scheduled error notice and permits another match @webgl2-reload-b (27.6s)
+(node:3949164) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  3 [chromium] › browser/tests/session-reload.spec.js:62:1 › a damaged in-game load returns through a scheduled error notice and permits another match @webgl2-reload-b (27.2s)
+
+  3 passed (1.4m)
