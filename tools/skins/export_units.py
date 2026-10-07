@@ -18,7 +18,8 @@ import struct
 import sys
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from limb_surface import LimbSurface
+from chart import chart
+from limb_surface import LimbSurface, Tracker
 
 import bpy
 import numpy as np
@@ -124,6 +125,20 @@ def normals(positions, triangles):
     return result / lengths[:, None]
 
 
+def rest_components(scene, parts):
+    """Component transforms with every bone of the source armature at rest."""
+    armature = next(o for o in scene.objects if o.type == "ARMATURE")
+    armature.data.pose_position = "REST"
+    bpy.context.view_layer.update()
+    heading = scene.objects.get("RotEmpty")
+    origin = float(heading.rotation_euler.z) if heading else 0
+    sample_pose(scene, 0, 0, origin)
+    rest = influence_matrices(parts)
+    armature.data.pose_position = "POSE"
+    bpy.context.view_layer.update()
+    return rest
+
+
 def canonical_surface(scene):
     parts = components(scene)
     graph = bpy.context.evaluated_depsgraph_get()
@@ -223,7 +238,7 @@ def export_model(output, model):
     manifest = {
         "format": "GSK1",
         "experimental": True,
-        "uvLayout": model + "-v1",
+        "uvLayout": model + ("-v2" if surface else "-v1"),
         "blender": bpy.app.version_string,
         "framesPerDirection": 32,
         "directions": 8,
@@ -238,6 +253,9 @@ def export_model(output, model):
         manifest["surfaceBuilderSha256"] = hashlib.sha256(
             (Path(__file__).parent / "limb_surface.py").read_bytes()
         ).hexdigest()
+        manifest["surfaceChartSha256"] = hashlib.sha256(
+            (Path(__file__).parent / "chart.py").read_bytes()
+        ).hexdigest()
         manifest["surfaceDefinitionSha256"] = hashlib.sha256(
             definition_path.read_bytes()
         ).hexdigest()
@@ -249,11 +267,25 @@ def export_model(output, model):
         manifest["surfaceContractSha256"] = hashlib.sha256(
             contract_path.read_bytes()
         ).hexdigest()
+    tracker = None
     for clip in clips:
         source, scene = open_source(model, clip)
         parts = components(scene)
         if [o.name for o in parts] != names:
             raise ValueError("Unit component identity differs across clips")
+        if surface and tracker is None:
+            # The first clip's source rest pose defines the shared rest surface
+            # and the conformal paint chart unwrapped from it.
+            tracker = Tracker(
+                surface,
+                rest_components(scene, parts),
+                np.array([p.data.elements[0].radius for p in parts]),
+                np.array([p.data.elements[0].stiffness for p in parts]),
+                parts[0].data.threshold,
+                clip,
+            )
+            surface.uv = chart(surface, tracker.positions)
+            uvs = surface.uv
         camera = np.linalg.inv(np.array(scene.camera.matrix_world))
         # Blender 2.34 orthographic size depended on camera depth and lens.
         # Modern import sets a different ortho_scale (and prints a warning).
@@ -270,13 +302,7 @@ def export_model(output, model):
                 sample_pose(scene, direction, phase, heading_origin)
                 matrices = influence_matrices(parts)
                 if surface:
-                    positions = surface.evaluate(
-                        matrices,
-                        np.array([p.data.elements[0].radius for p in parts]),
-                        np.array([p.data.elements[0].stiffness for p in parts]),
-                        parts[0].data.threshold,
-                        clip,
-                    )
+                    positions = tracker.evaluate(matrices, clip)
                 else:
                     positions = np.einsum(
                         "pvi,pv->vi",

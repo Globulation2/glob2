@@ -157,6 +157,9 @@ local.Alias('skin-preview', skin_preview)
 # Diagnostic harness inspects view-owned appearance, as engine render tests do.
 skin_game_env = local.Clone()
 skin_game_env.Append(CXXFLAGS=['-fno-access-control'])
+local.Alias('skin-rig-benchmark', local.Program('skin-rig-benchmark',
+    skin_game_env.Object('SkinRigBenchmark.o', '#tools/skins/rig_benchmark.cpp')
+    + ['../libgag/src/libgag.a', '../libusl/src/libusl.a']))
 local.Alias('skin-game-preview', local.Program('skin-game-preview',
     [skin_game_env.Object('SkinGamePreview.o', '#tools/skins/game_preview.cpp')]
     + client_objects + client_libs))

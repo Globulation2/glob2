@@ -10,6 +10,9 @@ def validate_surface(data, contract):
     _, count, index_count, frames, _ = struct.unpack_from("<4sIIII", data)
     regions = contract["regions"]
     assert len(regions) == count and set(regions) == {-1, 0, 1, 2, 3}
+    # Paint seams duplicate vertices; the weld map names each copy's original.
+    welds = contract.get("welds", list(range(count)))
+    assert len(welds) == count and all(welds[welds[i]] == welds[i] for i in range(count))
     uv = list(struct.iter_unpack("<2f", data[20 : 20 + count * 8]))
     start = 20 + count * 8
     triangles = list(struct.iter_unpack("<3I", data[start : start + index_count * 4]))
@@ -18,7 +21,9 @@ def validate_surface(data, contract):
         assert len(set(triangle)) == 3
         limb_regions = {regions[i] for i in triangle} - {-1}
         assert len(limb_regions) <= 1, "triangle bridges different limbs"
-        for a, b in zip(triangle, (*triangle[1:], triangle[0])):
+        welded = tuple(welds[i] for i in triangle)
+        assert len(set(welded)) == 3, "collapsed seam triangle"
+        for a, b in zip(welded, (*welded[1:], welded[0])):
             edges[tuple(sorted((a, b)))] += 1
     assert set(edges.values()) == {2}, "open or non-manifold socket/limb surface"
     # A single welded surface, rather than detached limbs or coincident shells.
@@ -32,7 +37,7 @@ def validate_surface(data, contract):
             if neighbour not in seen:
                 seen.add(neighbour)
                 pending.append(neighbour)
-    assert len(seen) == count, "disconnected limb"
+    assert len(seen) == len(set(welds)), "disconnected limb"
     triangle_set = {tuple(sorted(t)) for t in triangles}
     reflections = contract["reflections"]
     for name in ("frontBack", "topBottom"):
@@ -52,6 +57,12 @@ def validate_surface(data, contract):
     ), "flip does not exchange matching limbs"
     stride = count * 24
     start += index_count * 4
+    # Welded copies must coincide in every pose, or the seam opens.
+    for pose_index in range(0, 256, 15):
+        pose = list(struct.iter_unpack("<6f", data[start + pose_index * stride : start + (pose_index + 1) * stride]))
+        for i, j in enumerate(welds):
+            if i != j:
+                assert math.dist(pose[i][:3], pose[j][:3]) < 1e-5, "open paint seam"
     for direction in range(8):
         poses = [
             list(

@@ -41,6 +41,15 @@ python3 test/run_tests.py --update-fixtures --filter 'WinningConditions/*'
 `ColonySkinPreview` checks shared image preparation with independent appearance
 authorization, refresh, expiry and cancellation across preview owners.
 
+`SkinShapeModel` and `SkinModel` check the GSB1 blend-shape and GSR1 bone-rig
+contracts against the analytic fixtures shared with the Studio decoders
+(`test/fixtures/skins/`). `SkinModelRender` checks native GPU/CPU agreement for
+the rig shader, mixed baked/rig rendering, GL state restoration and CPU fallback,
+and the browser conformance suite checks the same shader in Chromium, Firefox and
+WebKit; `tools/skins/test_fit_shapes.py` and `test_explorer_rig.py` regenerate
+the installed assets and check their fit to the baked clips. See
+[unit rigs](../tools/unit-animation/README.md#contract-and-conformance-tests).
+
 Asset pipeline checks live in `AssetLoader` and `SpriteLoad`, including independent
 continuation cancellation, cache metadata cleanup and variable atlas admission.
 `SpriteSheets` also checks renderer readiness and atomic HD reload publication. Build the

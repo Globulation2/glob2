@@ -9,6 +9,7 @@
 #include "BuildingType.h"
 #include "IntBuildingType.h"
 #include <GraphicContext.h>
+#include <SkinMesh.h>
 #include <ApplicationHost.h>
 #include <algorithm>
 #include <cstdlib>
@@ -84,19 +85,44 @@ bool ColonySkinPreview::loadMeshes(const std::string &root, bool installed)
                            "warrior-walk", "warrior-swim", "warrior-fight", "explorer-fly"};
     auto &loader = GAGCore::Toolkit::assets();
     std::vector<GAGCore::AssetLoader::Handle<GAGCore::SkinMesh>> requests;
-    auto path = [&](std::string file) { return installed ? file : std::filesystem::absolute(file).string(); };
-    for (const auto *name : names) requests.push_back(GAGCore::requestSkinMesh(loader, path(root + "/" + name + ".gsk")));
-    for (const auto &swarm : Online::SWARM_MESHES) requests.push_back(GAGCore::requestSkinMesh(loader, path(root + "/" + std::string(swarm.file))));
-    std::array<GAGCore::SkinMesh, 7> replacement;
-    for (unsigned i = 0; i < replacement.size(); ++i) {
-        auto mesh = loader.wait(requests[i]);
-        if (!mesh) { std::cerr << "Colony skin preview: " << names[i] << ": " << requests[i].error() << '\n'; return false; }
-        replacement[i] = *mesh;
-    }
-    clips = std::move(replacement);
-    for (unsigned i = 0; i < swarms.size(); ++i)
-        if (auto mesh = loader.wait(requests[clips.size() + i])) swarms[i] = *mesh;
-    return true;
+	auto path = [&](std::string file)
+	{ return installed ? file : std::filesystem::absolute(file).string(); };
+	const bool baked = GAGCore::skinRigsDisabled();
+	for (const auto *name : names)
+		requests.push_back(GAGCore::requestSkinMesh(
+			loader, path(root + "/" + GAGCore::skinClipFile(name, baked))));
+	for (const auto &swarm : Online::SWARM_MESHES)
+		requests.push_back(
+			GAGCore::requestSkinMesh(loader, path(root + "/" + std::string(swarm.file))));
+	std::array<GAGCore::SkinMesh, 7> replacement;
+	for (unsigned i = 0; i < replacement.size(); ++i)
+	{
+		auto mesh = loader.wait(requests[i]);
+		// A rig that is missing or does not match the clip's frame count or
+		// logical size falls back to the baked clip, so the unit still draws.
+		if (!baked && (!mesh || !(mesh->model || mesh->shapes) ||
+					   mesh->frames != GAGCore::SkinClipFrames ||
+					   mesh->logicalSize != Online::SkinSpriteLogicalSizes[i]))
+		{
+			std::cerr << "Colony skin preview: " << GAGCore::skinClipFile(names[i]) << ": "
+					  << (mesh ? "unexpected clip layout" : requests[i].error())
+					  << "; using the baked clip\n";
+			requests[i] = GAGCore::requestSkinMesh(
+				loader, path(root + "/" + GAGCore::skinClipFile(names[i], true)));
+			mesh = loader.wait(requests[i]);
+		}
+		if (!mesh)
+		{
+			std::cerr << "Colony skin preview: " << names[i] << ": " << requests[i].error() << '\n';
+			return false;
+		}
+		replacement[i] = *mesh;
+	}
+	clips = std::move(replacement);
+	for (unsigned i = 0; i < swarms.size(); ++i)
+		if (auto mesh = loader.wait(requests[clips.size() + i]))
+			swarms[i] = *mesh;
+	return true;
 }
 bool ColonySkinPreview::loadInstalledMeshes()
 {

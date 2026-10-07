@@ -21,6 +21,11 @@ class LimbSurface:
         self.divisions = definition["socketDivisions"]
         self.vertices, self.triangles, self.uv, self.regions = [], [], [], []
         self.virtual = []
+        # Which components a vertex's field may see (-1: the shared core). The
+        # socket rims belong to their limb's paint island but stay on the torso
+        # field, so the seam's two copies land on the same surface.
+        self.field_regions = []
+        self.welds = []
         self.cube = {}
         self.branches = []
         n = self.divisions
@@ -89,15 +94,18 @@ class LimbSurface:
                 + [(-n, n - 2 * j) for j in range(n)]
                 + [(-n + 2 * j, -n) for j in range(n)]
             )
-            rim = [
-                vertex(
-                    tuple(
-                        normal * body_grid
-                        + (np.array([x, 0, 0]) + side * t) * opening / n
-                    )
+            # The limb's own copy of the socket rim: identical geometry to the
+            # torso's rim vertices, welded to them, but with the limb island's
+            # paint coordinates so the limb unwraps on its own.
+            rim = []
+            for x, t in perimeter:
+                q = tuple(normal * body_grid + (np.array([x, 0, 0]) + side * t) * opening / n)
+                torso_vertex = vertex(q)
+                v = unit(np.array(q, dtype=float)) * 1.8
+                y, z = (v[1] - v[2]) / math.sqrt(2), (v[1] + v[2]) / math.sqrt(2)
+                rim.append(
+                    self.add_vertex(("rim", branch, v), (v[0], y, z), branch, -1, torso_vertex)
                 )
-                for x, t in perimeter
-            ]
             angles = np.array([math.atan2(t, x) for x, t in perimeter])
             # These rays lie exactly on the reflection folds, not across them.
             count = (len(path) + 1) * self.rings
@@ -154,13 +162,19 @@ class LimbSurface:
         self.triangles = np.array(self.triangles, dtype=np.uint32)
         self.uv = np.array(self.uv, dtype=np.float64)
         self.regions = np.array(self.regions)
+        self.field_regions = np.array(self.field_regions)
+        self.welds = np.array(self.welds)
 
-    def add_vertex(self, descriptor, virtual, region):
+    def add_vertex(self, descriptor, virtual, region, field_region=None, weld=None):
         i = len(self.vertices)
         self.vertices.append(descriptor)
         self.virtual.append(virtual)
+        # Provisional planar coordinates; the exporter replaces them with the
+        # conformal chart (see chart.py).
         self.uv.append((0.5 + 0.48 * virtual[1] / 9, 0.04 + 0.92 * abs(virtual[2]) / 9))
         self.regions.append(region)
+        self.field_regions.append(region if field_region is None else field_region)
+        self.welds.append(i if weld is None else weld)
         return i
 
     def quad(self, q):
@@ -168,7 +182,8 @@ class LimbSurface:
         # would choose opposite interpolation on the mirrored quad.
         virtual = np.mean([self.virtual[i] for i in q], axis=0)
         region = next((self.regions[i] for i in q if self.regions[i] >= 0), -1)
-        center = self.add_vertex(("average", tuple(q)), virtual, region)
+        field_region = next((self.field_regions[i] for i in q if self.field_regions[i] >= 0), -1)
+        center = self.add_vertex(("average", tuple(q)), virtual, region, field_region)
         self.triangles.extend(
             (q[k], q[(k + 1) % len(q)], center) for k in range(len(q))
         )
@@ -179,16 +194,26 @@ class LimbSurface:
             self.quad((a[k], a[j], b[j], b[k]))
 
     def contract(self):
-        lookup = {tuple(np.round(v, 8)): i for i, v in enumerate(self.virtual)}
+        lookup = {
+            (tuple(np.round(v, 8)), int(self.regions[i])): i for i, v in enumerate(self.virtual)
+        }
+        exchange = {0: 2, 1: 3, 2: 0, 3: 1}
         reflections = {}
         for name, axis in (("frontBack", 0), ("topBottom", 2)):
             pairs = []
-            for v in self.virtual:
+            for i, v in enumerate(self.virtual):
                 other = np.array(v, dtype=float)
                 other[axis] *= -1
-                pairs.append(lookup[tuple(np.round(other, 8))])
+                region = int(self.regions[i])
+                if name == "topBottom":
+                    region = exchange.get(region, -1)
+                pairs.append(lookup[(tuple(np.round(other, 8)), region)])
             reflections[name] = pairs
-        return {"reflections": reflections, "regions": self.regions.tolist()}
+        return {
+            "reflections": reflections,
+            "regions": self.regions.tolist(),
+            "welds": self.welds.tolist(),
+        }
 
     def evaluate(self, matrices, radii, stiffness, threshold, clip="walk"):
         root = matrices[0]
@@ -318,6 +343,11 @@ class LimbSurface:
                     root[:3, 3] + cube_basis @ descriptor[1] * (body_radius / 1.8)
                 )
                 continue
+            if kind == "rim":
+                results.append(
+                    root[:3, 3] + cube_basis @ descriptor[2] * (body_radius / 1.8)
+                )
+                continue
             b = descriptor[1]
             ids, section, tip_radius, rim, socket_center = cache[b]
             if kind == "ring":
@@ -389,15 +419,7 @@ class LimbSurface:
         # Fit the shared core and each explicit limb to their local implicit
         # surface. This removes the faceted/intersecting collar left by a radial
         # sweep when joints fold against the torso, without welding two feet.
-        allowed = np.zeros((len(positions), len(matrices)), dtype=bool)
-        core = [0] + [path[0] for path, *_ in self.branches]
-        allowed[:, core] = True
-        for branch, (path, *_) in enumerate(self.branches):
-            allowed[np.ix_(self.regions == branch, path)] = True
-        self.field_centers = matrices[:, :3, 3]
-        self.field_support = support
-        self.field_stiffness = stiffness
-        self.field_allowed = allowed
+        self.prepare_field(matrices, radii, stiffness)
         for _ in range(10):
             field, gradient = self.field(positions)
             divisor = np.sum(gradient * gradient, axis=1)
@@ -410,6 +432,55 @@ class LimbSurface:
             ]
             positions -= delta
         return positions
+
+    def body_basis(self, matrices, clip="walk"):
+        """Body front/lateral/vertical axes for a clip, as evaluate uses them."""
+        root = matrices[0]
+        rotation = root[:3, :3] / np.linalg.norm(root[:3, :3], axis=0)
+        axes = self.definition.get("clipBodyAxes", {}).get(clip, self.definition["bodyAxes"])
+        return np.column_stack([rotation[:, abs(i) - 1] * (1 if i > 0 else -1) for i in axes])
+
+    def prepare_field(self, matrices, radii, stiffness):
+        """Set the implicit field of one pose: every vertex sees the shared core
+        (body and proximal components) and its own limb's components only."""
+        scales = np.linalg.norm(matrices[:, :3, :3], axis=1).mean(axis=1)
+        allowed = np.zeros((len(self.vertices), len(matrices)), dtype=bool)
+        core = [0] + [path[0] for path, *_ in self.branches]
+        allowed[:, core] = True
+        for branch, (path, *_) in enumerate(self.branches):
+            allowed[np.ix_(self.field_regions == branch, path)] = True
+        self.field_centers = matrices[:, :3, 3]
+        self.field_support = radii * scales
+        self.field_stiffness = stiffness
+        self.field_allowed = allowed
+
+    def snap(self, positions, threshold, limit, iterations=12):
+        """Move positions onto the prepared field's isosurface along its gradient."""
+        positions = np.array(positions, dtype=float, copy=True)
+        for _ in range(iterations):
+            field, gradient = self.field(positions)
+            divisor = np.maximum(np.sum(gradient * gradient, axis=1), 1e-12)
+            delta = gradient * ((field - threshold) / divisor)[:, None]
+            length = np.linalg.norm(delta, axis=1)
+            delta *= np.minimum(1.0, limit / np.maximum(length, 1e-12))[:, None]
+            positions -= delta
+        return positions
+
+    def symmetrised(self, positions, matrices, clip="walk"):
+        """Average a surface with its chart reflections in the body frame."""
+        basis = self.body_basis(matrices, clip)
+        centre = matrices[0, :3, 3]
+        local = (positions - centre) @ basis
+        reflections = self.contract()["reflections"]
+        images = [local]
+        for axis, name in ((0, "frontBack"), (2, "topBottom")):
+            mirrored = local[reflections[name]].copy()
+            mirrored[:, axis] *= -1
+            images.append(mirrored)
+        both = local[np.array(reflections["frontBack"])[reflections["topBottom"]]].copy()
+        both[:, [0, 2]] *= -1
+        images.append(both)
+        return centre + np.mean(images, axis=0) @ basis.T
 
     def field(self, positions):
         delta = positions[:, None, :] - self.field_centers
@@ -429,3 +500,91 @@ class LimbSurface:
         if np.any(lengths < 1e-10):
             raise ValueError("Invalid implicit surface normal")
         return -gradient / lengths[:, None]
+
+
+class Tracker:
+    """Per-frame surfaces with a stable vertex correspondence.
+
+    ``LimbSurface.evaluate`` re-solves the chart every frame, so a vertex is
+    tied to the chart's parameters rather than to a point on the body: paint
+    swims as limbs move, and collars grow over the torso in overlapping
+    layers. The tracker instead carries the rest surface with one similarity
+    transform per component (the body's orientation for the body, the
+    segment's swing for limb components), blended by each vertex's share of
+    the components' field at rest, and then snaps every vertex onto the posed
+    implicit surface along its gradient. Vertices stay on the same part of the
+    body, the surface is still the metaball union, and no layers overlap.
+    """
+
+    def __init__(self, surface, rest, radii, stiffness, threshold, clip="walk"):
+        self.surface = surface
+        self.radii, self.stiffness, self.threshold = radii, stiffness, threshold
+        self.rest = rest
+        self.rest_basis = surface.body_basis(rest, clip)
+        positions = surface.evaluate(rest, radii, stiffness, threshold, clip)
+        self.positions = surface.symmetrised(positions, rest, clip)
+        surface.prepare_field(rest, radii, stiffness)
+        delta = self.positions[:, None, :] - surface.field_centers
+        distance = np.sum(delta * delta, axis=2) / surface.field_support**2
+        contribution = surface.field_stiffness * np.maximum(0, 1 - distance) ** 3
+        contribution = contribution * surface.field_allowed
+        self.weights = contribution / np.maximum(contribution.sum(axis=1, keepdims=True), 1e-12)
+        for v, descriptor in enumerate(surface.vertices):
+            if descriptor[0] == "average":
+                self.weights[v] = self.weights[list(descriptor[1])].mean(axis=0)
+        self.previous = {}
+        for path, *_ in surface.branches:
+            for k, part in enumerate(path):
+                self.previous[part] = 0 if k == 0 else path[k - 1]
+        scales = np.linalg.norm(rest[:, :3, :3], axis=1).mean(axis=1)
+        body_radius = radii[0] * scales[0] * math.sqrt(1 - (threshold / stiffness[0]) ** (1 / 3))
+        self.limit = body_radius * 0.12
+        self.bind = self.components(rest, self.rest_basis)
+        self.inverse_bind = np.linalg.inv(self.bind)
+        self.homogeneous = np.concatenate((self.positions, np.ones((len(self.positions), 1))), axis=1)
+
+    def components(self, matrices, basis):
+        """One similarity transform per component for a pose."""
+        scales = np.linalg.norm(matrices[:, :3, :3], axis=1).mean(axis=1)
+        rest_scales = np.linalg.norm(self.rest[:, :3, :3], axis=1).mean(axis=1)
+        result = np.zeros((len(matrices), 4, 4))
+        for part in range(len(matrices)):
+            rotation = basis
+            if part in self.previous:
+                before = self.previous[part]
+                at_rest = self.rest_basis.T @ (self.rest[part, :3, 3] - self.rest[before, :3, 3])
+                posed = basis.T @ (matrices[part, :3, 3] - matrices[before, :3, 3])
+                rotation = basis @ minimal_rotation(at_rest, posed)
+            result[part, :3, :3] = rotation * (scales[part] / rest_scales[part])
+            result[part, :3, 3] = matrices[part, :3, 3]
+            result[part, 3, 3] = 1
+        return result
+
+    def evaluate(self, matrices, clip="walk"):
+        basis = self.surface.body_basis(matrices, clip)
+        relative = self.components(matrices, basis) @ self.inverse_bind
+        guess = np.einsum("bij,vj,vb->vi", relative[:, :3, :], self.homogeneous, self.weights)
+        self.surface.prepare_field(matrices, self.radii, self.stiffness)
+        return self.surface.snap(guess, self.threshold, self.limit)
+
+
+def minimal_rotation(source, target):
+    """Rotation matrix taking direction ``source`` to ``target`` by the shortest arc."""
+    a = source / max(np.linalg.norm(source), 1e-12)
+    b = target / max(np.linalg.norm(target), 1e-12)
+    axis = np.cross(a, b)
+    sine = np.linalg.norm(axis)
+    cosine = float(np.clip(a @ b, -1, 1))
+    if sine < 1e-12:
+        if cosine > 0:
+            return np.eye(3)
+        # Opposite directions: turn half a circle about any perpendicular axis.
+        perpendicular = np.cross(a, [1.0, 0.0, 0.0])
+        if np.linalg.norm(perpendicular) < 1e-6:
+            perpendicular = np.cross(a, [0.0, 1.0, 0.0])
+        axis = perpendicular / np.linalg.norm(perpendicular)
+        sine, cosine = 0.0, -1.0
+    else:
+        axis = axis / sine
+    k = np.array([[0, -axis[2], axis[1]], [axis[2], 0, -axis[0]], [-axis[1], axis[0], 0]])
+    return np.eye(3) + sine * k + (1 - cosine) * (k @ k)
