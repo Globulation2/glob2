@@ -4,6 +4,7 @@
 #include <GraphicContext.h>
 #include <SkinMesh.h>
 #include <SkinModel.h>
+#include <glob2/SkinMaterials.h>
 #include <PerformanceTelemetry.h>
 #include <SDL3/SDL.h>
 #include <nlohmann/json.hpp>
@@ -142,6 +143,9 @@ int main(int argc, char **argv)
 		auto material = loadSkinMaterialMap(assets + "/material.webp");
 		if (!material || material->getW() != 512 || material->getH() != 512)
 			throw std::runtime_error("Missing material fixture");
+		const unsigned rasterPasses = 1 +
+			(skinShellRegions(*material)[SkinRegionWorker] ? SKIN_MATERIAL_SHELLS : 0);
+		result["rasterPassesPerPose"] = rasterPasses;
 		for (const auto &paint : paints)
 			if (paint->getW() != 512 || paint->getH() != 512)
 				throw std::runtime_error("Missing paint fixture");
@@ -207,9 +211,9 @@ int main(int argc, char **argv)
 			gfx->prepareSkinMeshes(requests);
 			const double p1 = milliseconds();
 			const auto rasters = gfx->getDrawCallCount();
-			const unsigned expected = cache == "warm" ? 0 : std::min(units, phases * 4);
+			const unsigned expected = cache == "warm" ? 0 : std::min(units, phases * 4) * rasterPasses;
 			if (rasters != expected)
-				throw std::runtime_error("Unexpected atlas miss count: " + std::to_string(rasters));
+				throw std::runtime_error("Unexpected atlas raster draw count: " + std::to_string(rasters));
 			for (unsigned i = 0; i < units; ++i)
 			{
 				const auto &r = requests[i];

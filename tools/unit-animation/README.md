@@ -765,7 +765,9 @@ shrinks each sprite to fit, so compare baked and rig within each population,
 not pixel cost between populations. The warmed case preloads all 1,024
 pose/paint combinations. The forced-miss case clears only atlas lookup entries
 before each frame, retaining shaders, palette state, rest buffers and paint
-textures. An assertion verifies the exact number of rasterizations. These
+textures. An assertion verifies the exact raster draw count, including fur shell
+passes when the worker's material region needs them; the result records
+`rasterPassesPerPose`. These
 cases bound cache reuse and miss costs; neither estimates a played match's
 actual miss frequency.
 
