@@ -1022,6 +1022,12 @@ TEST_SUITE("MapGeneratorDefaults")
 			const auto result = GenerationService().generate(game, request);
 			REQUIRE_MESSAGE(bool(result), result.diagnostic());
             const auto full=mapFingerprint(game),shape=topologyHash(game);
+            // Retain observations even on platforms whose epoch-1 hashes have
+            // not been independently accepted. The checks below still apply.
+            recorded[original.id]={{"historical_full_reference",original.hash},
+                {"topology",shape},{"full",full},
+                {"accepted_platform_reference",golden.at("platforms").contains(platform)},
+                {"portable_topology_reference",golden.at("portable_topology").contains(original.id)}};
             if(baselineDirectory) {
                 const auto path=std::filesystem::path(baselineDirectory)/(std::string(original.id)+".map.gz");
                 GAGCore::BinaryInputStream input(GAGCore::openInflatingFileStreamBackend(path.string()));
@@ -1051,6 +1057,9 @@ TEST_SUITE("MapGeneratorDefaults")
                 }
             }
         }
+        glob2test::writeFile(glob2test::artifactDir()/"resource-design-observations.json",
+            nlohmann::json{{"resource_epoch",1},{"platform",platform},{"designs",recorded},
+                {"acceptance","observations only; historical comparison required before accepting new hashes"}}.dump(2)+'\n');
         if(baselineDirectory) {
             std::ofstream output(std::filesystem::path(baselineDirectory)/("epoch1-"+platform+".json"));
             output<<nlohmann::json{{"resource_epoch",1},{"platform",platform},{"designs",recorded}}.dump(2)<<'\n';

@@ -27,12 +27,13 @@ jobs:
           cc: clang
           cxx: clang++
       - name: Compile unsigned game and tests
+        id: build
         run: |
           openssl="$(brew --prefix openssl@3)"
           python3 scons/sdl3_dependencies.py --prefix build/sdl3-ci/prefix --work build/sdl3-ci/sources --jobs 2
           export PATH="$PWD/build/sdl3-ci/prefix/bin:$PATH"
           GLOB2_SDL3_PREFIX=build/sdl3-ci/prefix scons release=1 server=0 -j2 \
-            build/darwin/client/release/src/glob2 unit-tests engine-tests \
+            build/darwin/client/release/src/glob2 unit-tests engine-tests map-generator-golden-test \
             CXXFLAGS="-I$openssl/include" LINKFLAGS="-L$openssl/lib"
       - name: Execute selected regression cases and continuation
         run: |
@@ -42,11 +43,25 @@ jobs:
             --check 'unit tests' 'python3 test/run_tests.py --binary unit --build-dir build/darwin/client/release --no-display --junit artifacts/tests/unit-junit.xml' \
             --check 'CLI continuation' 'python3 test/test_cli_smoke.py --binary build/darwin/client/release/src/glob2 --artifacts artifacts/cli-smoke'
       - name: Retain native simulation and scripting evidence
+        if: ${{ !cancelled() && steps.build.outcome == 'success' }}
         run: |
           export DYLD_LIBRARY_PATH="$PWD/build/sdl3-ci/prefix/lib"
           python3 test/run-browser-determinism.py build/darwin/client/release/src/glob2 artifacts/browser-determinism --engine-binary build/darwin/client/release/test/glob2-engine-tests
           python3 test/check_javascript.py build/darwin/client/release/src/glob2 --output artifacts/javascript-profile
           python3 test/check_javascript_corpus.py --build-dir build/darwin/client/release --output artifacts/javascript-corpus
+      - name: Collect unapproved generator fingerprints
+        if: ${{ !cancelled() && steps.build.outcome == 'success' }}
+        run: |
+          export DYLD_LIBRARY_PATH="$PWD/build/sdl3-ci/prefix/lib"
+          python3 test/ci_run_commands.py \
+            --check 'generator fingerprints' 'python3 test/collect_generator_evidence.py collect build/darwin/client/release/src/MapGeneratorGoldenTest artifacts/generator-evidence --platform macos-arm64' \
+            --check 'resource design fingerprints' "python3 test/run_tests.py --binary engine --build-dir build/darwin/client/release --in-process --no-display --filter 'MapGeneratorDefaults/Explicit designs preserve topology*' --artifacts artifacts/generator-evidence/designs --junit artifacts/generator-evidence/designs-junit.xml"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: generator-observations-macos
+          path: artifacts/generator-evidence/
+          if-no-files-found: error
       - uses: actions/upload-artifact@v4
         if: always()
         with:
