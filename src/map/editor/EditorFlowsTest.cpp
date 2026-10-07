@@ -3,6 +3,7 @@
 // sharing and rerolling the map, overwrite confirmation, fertility progress
 // and dialogs that must not mark an unchanged map modified.
 #include "EngineFixtures.h"
+#include "GlobalContainer.h"
 #include "MapEdit.h"
 #include "MapEditorScreen.h"
 #include "LoadSaveDialog.h"
@@ -76,6 +77,20 @@ void finishSave(MapEdit &editor, Uint32 &tick)
 	REQUIRE_FALSE(editor.showingSave);
 }
 
+// Paint the editor and its open card without advancing the card.
+void capture(MapEdit &editor, const char *name)
+{
+	auto *gfx = globalContainer->gfx;
+	editor.drawMap(0, 0, gfx->getW(), gfx->getH());
+	editor.drawMenu();
+	editor.drawMiniMap();
+	editor.drawWidgets();
+	editor.drawFlowOverlays();
+	editor.drawDialog();
+	gfx->printScreen(glob2test::artifactDirFromWorkingDirectory() + "/" + name);
+	gfx->nextFrame();
+}
+
 void removeMap(const std::string &file)
 {
 	auto *manager = GAGCore::Toolkit::getFileManager();
@@ -89,7 +104,7 @@ void removeMap(const std::string &file)
 
 TEST_SUITE("EditorFlows")
 {
-	TEST_CASE("window close quits a clean editor and asks in the editor when it is dirty [display]")
+	TEST_CASE("window close quits a clean editor and asks in the editor when it is dirty [display][artifacts]")
 	{
 		glob2test::HeadlessGlobals globals(displayOptions());
 		{
@@ -115,6 +130,7 @@ TEST_SUITE("EditorFlows")
 			REQUIRE(editor.confirmation());
 			CHECK(editor.pendingConfirm() == MapEdit::ConfirmPurpose::QuitApplication);
 			CHECK(editor.confirmation()->choiceCount() == 3);
+			capture(editor, "editor-quit-card.bmp");
 			// The decision card publishes the keys of the former quit prompt.
 			editor.confirmation()->draw(0);
 			for (const char *key : {"choice/0", "choice/1", "choice/2"})
@@ -136,13 +152,16 @@ TEST_SUITE("EditorFlows")
 		}
 	}
 
-	TEST_CASE("menu quit with unsaved changes uses the in-editor card and save continues to quit [display]")
+	TEST_CASE("menu quit with unsaved changes uses the in-editor card and save continues to quit [display][artifacts]")
 	{
 		glob2test::HeadlessGlobals globals(displayOptions());
 		MapEdit editor;
 		blank(editor);
 		editor.beginEditing();
 		editor.mapHasBeenModified();
+		editor.performAction("open menu screen");
+		capture(editor, "editor-menu.bmp");
+		editor.performAction("close menu screen");
 		editor.performAction("quit editor");
 		Uint32 tick = 1000;
 		REQUIRE(editor.advanceEditing({}, tick += 33));
@@ -159,6 +178,7 @@ TEST_SUITE("EditorFlows")
 		// Fertility runs in a progress card over the map, then the save completes.
 		editor.advanceEditing({}, tick += 33);
 		CHECK(editor.fertilityProgress());
+		capture(editor, "editor-fertility-progress.bmp");
 		bool running = true;
 		for (int frame = 0; frame < 5000 && running; ++frame)
 		{
@@ -347,7 +367,7 @@ TEST_SUITE("EditorFlows")
 		CHECK(editor.hasUnsavedChanges());
 	}
 
-	TEST_CASE("terrain strokes mark the fertility overlay stale until it is refreshed [display]")
+	TEST_CASE("terrain strokes mark the fertility overlay stale until it is refreshed [display][artifacts]")
 	{
 		glob2test::HeadlessGlobals globals(displayOptions());
 		MapEdit editor;
@@ -365,6 +385,7 @@ TEST_SUITE("EditorFlows")
 		editor.performAction("terrain drag start");
 		editor.performAction("terrain drag end");
 		CHECK(editor.fertilityOverlayStale());
+		capture(editor, "editor-fertility-stale.bmp");
 		// The chip over the map refreshes it.
 		const auto chip = editor.fertilityChipRect();
 		SDL_Event down{};
