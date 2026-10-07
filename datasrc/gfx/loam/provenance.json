@@ -2,7 +2,7 @@
   "generator": "tools/artwork/terrain_synth.py",
   "method": "procedural",
   "generator_sha256": {
-    "tools/artwork/terrain_synth.py": "1bb28e32f1cf0ba3bba0976009220db8b2b8b0be9122698f18508995fa1bc5a8",
+    "tools/artwork/terrain_synth.py": "a8eda69c7b7212d9f9573766da37f1002a984d62327c108fb581e9a9c23830dc",
     "tools/artwork/material_tiles.py": "224e159e0974023797710aa959994f11658c82da8fb80f9701e4abc13c74ed83"
   },
   "material": "loam",
@@ -81,10 +81,10 @@
   ],
   "style_stats": {
     "0": {
-      "luma": 65.1,
-      "std": 8.4,
-      "grain": 4.0,
-      "sat": 0.48,
+      "luma": 65.2,
+      "std": 8.0,
+      "grain": 3.6,
+      "sat": 0.47,
       "alpha": 255.0
     }
   },
@@ -148,21 +148,21 @@
     "libc": "glibc 2.43"
   },
   "runtime_sha256": {
-    "data/gfx/terrain-loam0.png": "96fd200ba806bd9108983f1bc3fbc0e34f6982ad4ab1e42d5e7129105b8e709b",
-    "data/gfx/terrain-loam1.png": "463fc7fb17d560111dec43cc0554d2caebac91d76ad99520a59d900c006c2f1f",
-    "data/gfx/terrain-loam2.png": "00c313f781f6daac1400f5a69469776dc3d4e4262e94e2818736f4a4872738ac",
-    "data/gfx/terrain-loam3.png": "c58e2e4c9b39d6a7643e3ffb9c16dab1799f5a9260a65f1750107a519864b7fd",
-    "data/gfx/terrain-loam4.png": "6f9e6b76378d53ee5fcaad0254282adf8ebf49491b657cf39e2261938f8cf48e",
-    "data/gfx/terrain-loam5.png": "5e37d85fba9387911a50672e544f032db40e3687e1a8e6fd2eaf544e12579153",
-    "data/gfx/terrain-loam6.png": "c6f73e0aec34bc350c999c750da3e273944be13ac022959d152ce31bf7f16ba2",
-    "data/gfx/terrain-loam7.png": "f369c358da9fbf2e9c04b22353126e10d5ab3415dcf2ab233fef31a976311963",
-    "data/gfx/terrain-loam8.png": "b6b358dc277736c34e57d8414cfbbc5d16cbd4eb5534bdb1d39cfcf0687756d6",
-    "data/gfx/terrain-loam9.png": "9cb66befaf5947d4e6be9166f0588b226ca87598f5d54b81b5157cca5c803dea",
-    "data/gfx/terrain-loam10.png": "b63d4ce9618507ec9d639ccf984a54b7525bfa4416aa4d0c1be3767e1ce2f05d",
-    "data/gfx/terrain-loam11.png": "5305127fff2a200c54db0aefe748ab0842b3d56d893a038a323fdddb28e4111b",
-    "data/gfx/terrain-loam12.png": "952983774623183f4fb3aff00b46b33099549e1691f0eb0e0fb905d1750d7ce9",
-    "data/gfx/terrain-loam13.png": "bc7568a5b3b7aa967accafdb55db8e1ae6fe64085fa70234091e24358579d2ce",
-    "data/gfx/terrain-loam14.png": "146522265f4c853fa43256ab7acf1c2ccf02243a509c2a3e81a6a1a28f2fb5a5",
-    "data/gfx/terrain-loam15.png": "9ea7310587eb12a1f106efa5697ba7d0c46a57dc98cc8f6e9ae51fcf1aef488f"
+    "data/gfx/terrain-loam0.png": "58fdf5684d8deb8885d77b47bc558b18ca10523fc00d55396ac8579ce22f305f",
+    "data/gfx/terrain-loam1.png": "b665fb777cb917f7ff857fbb5e137c70dfb99df4465ea2f2e5f0f9a8e1295725",
+    "data/gfx/terrain-loam2.png": "dd7b23aa045a66605cb5949ff28d0a8822c9a2ead5fc6648df37b76a1f86fc20",
+    "data/gfx/terrain-loam3.png": "2a59604a5134373e7880006270c64d51e139466279bc031e6fb7cbc1dd6e72dd",
+    "data/gfx/terrain-loam4.png": "52d2e2ec721034a30779b9de753ea88f800757ca22f089190df1b6c9962d24be",
+    "data/gfx/terrain-loam5.png": "64f29be21fdec8aa0fcfd79a38cc90aff50e8c6a6e23c4b86f0fdc4a55ca90b3",
+    "data/gfx/terrain-loam6.png": "9e9f7cb90641961ecb9e89c9fdf172aaf33e0c15714f5cf7a50fd074867b52a8",
+    "data/gfx/terrain-loam7.png": "b8c9141ab70cb8f8b4ed3ae242d793fd3240446df9c1f4849a970079afd0ff0d",
+    "data/gfx/terrain-loam8.png": "62d548143e0f7582b72b465e3127fe94c782ed51efa28d0e27fd747abc095d49",
+    "data/gfx/terrain-loam9.png": "084da7c85a6d2615d11ea1750c0bc73b1a9db14db4c3e147647cb226c1e5aa31",
+    "data/gfx/terrain-loam10.png": "442b261b91f78b4e1589b66bf5f3da1ae6006493b06681554dc05a922f32529c",
+    "data/gfx/terrain-loam11.png": "decaad71752c98eaf360ab309a840749505d472cbef01529b06917289e92ce53",
+    "data/gfx/terrain-loam12.png": "dd984c916b33daf3a415e4bb822c3e3852e73af8e443c2a558e00fa8e1fed693",
+    "data/gfx/terrain-loam13.png": "97618c090a91cb04cf67f13236bd309641244dcb4618e2e8b06c7f690c135994",
+    "data/gfx/terrain-loam14.png": "79d16cb410f35dd70fb981d09c463a1d3148feae9894338eec4258ab603ad678",
+    "data/gfx/terrain-loam15.png": "1b744935aa9cffe1dcaf5af16a41e5a557dee2bf27e294146496eced43edad23"
   }
 }

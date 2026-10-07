@@ -2,7 +2,7 @@
   "generator": "tools/artwork/terrain_synth.py",
   "method": "procedural",
   "generator_sha256": {
-    "tools/artwork/terrain_synth.py": "1bb28e32f1cf0ba3bba0976009220db8b2b8b0be9122698f18508995fa1bc5a8",
+    "tools/artwork/terrain_synth.py": "a8eda69c7b7212d9f9573766da37f1002a984d62327c108fb581e9a9c23830dc",
     "tools/artwork/material_tiles.py": "224e159e0974023797710aa959994f11658c82da8fb80f9701e4abc13c74ed83"
   },
   "material": "dirt_track",
@@ -76,9 +76,9 @@
   ],
   "style_stats": {
     "0": {
-      "luma": 146.1,
-      "std": 7.9,
-      "grain": 4.3,
+      "luma": 145.8,
+      "std": 6.8,
+      "grain": 3.5,
       "sat": 0.38,
       "alpha": 255.0
     }
@@ -143,21 +143,21 @@
     "libc": "glibc 2.43"
   },
   "runtime_sha256": {
-    "data/gfx/terrain-dirt_track0.png": "0ee7b56ad44fd83af0888b10c7b62c58232ffbc18f726d3152b9439e4c23b770",
-    "data/gfx/terrain-dirt_track1.png": "aecacede34a94c51387cf7ea166688563c559f2261af43e54b851c590379c3df",
-    "data/gfx/terrain-dirt_track2.png": "434770d7f462f099b4d8079b934a935f6e472ddf7bc15d7609a697b029668649",
-    "data/gfx/terrain-dirt_track3.png": "c09783e6dda746763cb8fbd34156540c0ff9894acf7ac07ecfa17ebf8378d70b",
-    "data/gfx/terrain-dirt_track4.png": "92952fab97a9eea8c28fa7fdb4a275a1dcd4e6aba7dac70c4d0384a5806572d4",
-    "data/gfx/terrain-dirt_track5.png": "288716b9f2595c08953890b0d637500c49438ad663b6ad8d27f6368684927281",
-    "data/gfx/terrain-dirt_track6.png": "42f08017cf49118ab2d4cc4ebf9129c1a003f8cc5fd78ec9bcda65fdaffedd53",
-    "data/gfx/terrain-dirt_track7.png": "c392a795b654a3d1a06cc1e9c94bf3756b7c9df8a53d4da876d4ad73c3676d01",
-    "data/gfx/terrain-dirt_track8.png": "208c784031fe999c16c67dd09d06f44775e8947be9ddf212edfacaf7be6230b7",
-    "data/gfx/terrain-dirt_track9.png": "2925763ae2f36a495c3bbbf8cbfdf594cda7a724e3d5db5b465d93c22b2486e5",
-    "data/gfx/terrain-dirt_track10.png": "f2efef341bd80f7aacb952f702a08e89541a7335b3670626a9668d87da214db8",
-    "data/gfx/terrain-dirt_track11.png": "16ad577ff9f6b09472d6b9e1bd0e0e208fbcb9576adc09239845bf9dca127791",
-    "data/gfx/terrain-dirt_track12.png": "b90db5857b8641ce400e11976d954680efc904b8c143fae003b8ea4de43e0111",
-    "data/gfx/terrain-dirt_track13.png": "1777f4970264bd04464b0d27add6ba61a71b80d9a9838faae6ee7cae5fdfb998",
-    "data/gfx/terrain-dirt_track14.png": "80a5da7ef3b69949219e3c54b9c337ddd2f66297188e3ee8efc0615f02e52352",
-    "data/gfx/terrain-dirt_track15.png": "d5b716eaea8bb6adb10cf0e62e35abdbf7a6e394b387e2a6b2a4e38239cd619e"
+    "data/gfx/terrain-dirt_track0.png": "9d0c9db58c06127570489983447c3f0efe3bf847cef0be0dd56dda67222d63ba",
+    "data/gfx/terrain-dirt_track1.png": "9fd22d89a0e2186079ef774a783170e03bed6762c228f7cdc39d89fbb4d058f2",
+    "data/gfx/terrain-dirt_track2.png": "b513bbbbc1add56b5d94eeda48f3fcc1b7414b3c7963fc55c9251031391e5015",
+    "data/gfx/terrain-dirt_track3.png": "d5184569e7cd5562b5816c0d0f1b8c4293f6c414c009a54511ac2ff18b363f0e",
+    "data/gfx/terrain-dirt_track4.png": "00f78b35983df164680b4c05c7a1ad3e4bbc3cd569530bd17317b9d10fc9abe6",
+    "data/gfx/terrain-dirt_track5.png": "8561ea73d2abb103b3761c48d66e472a80973e0c8b558212c44c3666c7bd8341",
+    "data/gfx/terrain-dirt_track6.png": "5f43521acd0a74994b3065b3be0b1efb7ddb59186b5f4bdba9fba7b9fc203239",
+    "data/gfx/terrain-dirt_track7.png": "fa002dd0bac4981ff6180fca0feebad4bdac4ef843d9fd3d23c15192957d1bed",
+    "data/gfx/terrain-dirt_track8.png": "81262ca33f7b65e2e41b3ece24f694229faa4e34345c5fd9049805f6798f04ea",
+    "data/gfx/terrain-dirt_track9.png": "4b8c6fc0cf3c2c0063dd1b60b71f012eb692d67263f1e729ddf315e236208f79",
+    "data/gfx/terrain-dirt_track10.png": "661547fd4c3dc079e08ad41cf6e27162207c28a310d74f26c1d17d08b8006fa3",
+    "data/gfx/terrain-dirt_track11.png": "ed1fe9867b57903acc92944a39b7822f332490dc4380294fc47d990a8cfb3ef3",
+    "data/gfx/terrain-dirt_track12.png": "af477d68c3d3f8787f81a280b529bb7e17dfdc913d781a9d5f34155552a33777",
+    "data/gfx/terrain-dirt_track13.png": "383d208c4a9a1437048e3eae532a5e7fba91257e49fc48acf4eb7629f62ede74",
+    "data/gfx/terrain-dirt_track14.png": "86fef27456f2b30f83e9f0ab8cd1e3314d9745fed8daacf0c26de8c5a7d11af2",
+    "data/gfx/terrain-dirt_track15.png": "a17b1f00a84ea7399056c67f937e5d793959af063dff8e6ffbfe700700033f33"
   }
 }

@@ -2,7 +2,7 @@
   "generator": "tools/artwork/terrain_synth.py",
   "method": "procedural",
   "generator_sha256": {
-    "tools/artwork/terrain_synth.py": "1bb28e32f1cf0ba3bba0976009220db8b2b8b0be9122698f18508995fa1bc5a8",
+    "tools/artwork/terrain_synth.py": "a8eda69c7b7212d9f9573766da37f1002a984d62327c108fb581e9a9c23830dc",
     "tools/artwork/material_tiles.py": "224e159e0974023797710aa959994f11658c82da8fb80f9701e4abc13c74ed83"
   },
   "material": "boulders",
@@ -75,25 +75,25 @@
   "frame_layout": "variant + 16 * phase",
   "sprite": "data/gfx/terrain-boulders",
   "preview": [
-    122,
-    111,
-    95
+    123,
+    110,
+    94
   ],
   "minimap": [
-    122,
-    111,
-    95
+    123,
+    110,
+    94
   ],
   "mean_color": [
-    122,
-    111,
-    95
+    123,
+    110,
+    94
   ],
   "style_stats": {
     "0": {
-      "luma": 112.3,
+      "luma": 112.2,
       "std": 15.4,
-      "grain": 7.5,
+      "grain": 7.8,
       "sat": 0.23,
       "alpha": 255.0
     }
@@ -158,21 +158,21 @@
     "libc": "glibc 2.43"
   },
   "runtime_sha256": {
-    "data/gfx/terrain-boulders0.png": "1e25007718e6a8b227f8a2cac264ff368ea74e84cb9167e3627f46c1806830f5",
-    "data/gfx/terrain-boulders1.png": "bc4584103058bfee8ec0be14ec9f3b7acdc7436b8d994426f0c53dfb3172cdc4",
-    "data/gfx/terrain-boulders2.png": "ec9d67761ba64b5a6d022ca3768af7722254359c0230c132a6a93ff334f6eef0",
-    "data/gfx/terrain-boulders3.png": "5b232e97e4d70ab8116a047d2df068619c64ef92ffef8228173fef234ac175d6",
-    "data/gfx/terrain-boulders4.png": "1c334a484deec786c12924d6e3367146663ada5ae655ccb4ab429831ae3b69e1",
-    "data/gfx/terrain-boulders5.png": "116dd3bd631d9f595c31498369aca55370a46ff6c4d7edab53e7f67ee5feeb49",
-    "data/gfx/terrain-boulders6.png": "1e8529d6a4631902398d0b31876b835f38273cc63d72787f1a46dfad300fc5e2",
-    "data/gfx/terrain-boulders7.png": "57272c401d32151cf7f60a7adcfe4f38791a183d1264f7f2b11b656d20bec6ed",
-    "data/gfx/terrain-boulders8.png": "eae92771b6f49caade25c1eaa313821041c95ffc9e3925033405dda5a600a421",
-    "data/gfx/terrain-boulders9.png": "30d29db23ab4c5790991047abfeacc3f5b1c8258ebf4df25aa8f26b768e945c3",
-    "data/gfx/terrain-boulders10.png": "e221d5ddb664c5298d416c1b2cdc7220511bbfe9f7fb3065464aa24922251e2f",
-    "data/gfx/terrain-boulders11.png": "8536131a8a8fdce1a6b8a5667c21f1e9da5e52adb563f57a1f765f89d36358cc",
-    "data/gfx/terrain-boulders12.png": "3ec2e29acd4795f633c1e25ce90270ada681cfc3c3570eed72952a159604eb33",
-    "data/gfx/terrain-boulders13.png": "4541bc228481b7ddbad61c5535c71fec7ca8e29da41262b18d07b79f232021a6",
-    "data/gfx/terrain-boulders14.png": "fd67955592e2122ede6f116923060bc25ec12c7230f71fb93285793532af2fc3",
-    "data/gfx/terrain-boulders15.png": "d5c316cd5442a26b7277119d0a8d292ad9adda95a949551711ccfdc31b85c7c6"
+    "data/gfx/terrain-boulders0.png": "64dd3f72729ea55cf7b399258a6a5da8b775fe4a2237a3ad7a2aa0e485ee6047",
+    "data/gfx/terrain-boulders1.png": "3a214e9733701c9bdcda2a9ff5f542467165440c4a8202387913150508d60ee1",
+    "data/gfx/terrain-boulders2.png": "0db5cc5fd4e4627874231e5351a5df8b044881593bf0f1afb201527ddd7bdee8",
+    "data/gfx/terrain-boulders3.png": "0a7d9f5f054164411481fd8496a541e9ba9d0cafed2c2ffd0327a12462b91a5b",
+    "data/gfx/terrain-boulders4.png": "6befac991ff793c316737eff5625a810385b51d7eaa1585bb6fd46e77330f02e",
+    "data/gfx/terrain-boulders5.png": "c5094d7618dd449f96d93bdfac42afd9d7b18d37ec0e89052c73bcb67beb94ac",
+    "data/gfx/terrain-boulders6.png": "74166485a0188baef42ba63f0f2a6b4a1703849c717f1beb1d3176bdb36e13af",
+    "data/gfx/terrain-boulders7.png": "1d14388d1c6706a7862eeb3db3373c45403c0769f66463ef7915a2e47aa7dcc4",
+    "data/gfx/terrain-boulders8.png": "cc27673a680dbc4a713f270a5b2aff43f1141a5562f7e2563acdf6cf127b7f2e",
+    "data/gfx/terrain-boulders9.png": "e8e073c3797647532eb93893c3972ab5f760d80ded81cffae615471f5131b454",
+    "data/gfx/terrain-boulders10.png": "039e7f0c2709ada169fe960514ac93c370ef9eccef5a78a2488335f6a496cabc",
+    "data/gfx/terrain-boulders11.png": "14150946401fefe05db7eb7580c4ae708f0ad3684dc8b99876a39106c7db4860",
+    "data/gfx/terrain-boulders12.png": "d71e77e47582f810113ab429d9d78bc653353053b58ef81e0b7cdaf8310fa5d6",
+    "data/gfx/terrain-boulders13.png": "e64426ee1c6474620f4a53301a8595aee14db70e69ff240dbe50d861fc81a448",
+    "data/gfx/terrain-boulders14.png": "3420305d0c3d43bae4520a9ccd19764a9248f892042177a4eef76aa692939a5a",
+    "data/gfx/terrain-boulders15.png": "bb75f35bb76270c41ef33b4e94403484f698e28280c063f93531a0b94c4468e2"
   }
 }

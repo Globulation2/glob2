@@ -148,16 +148,21 @@ rather than against it: `seamless_sources` (and `TerrainCompositor::prepare`)
 blend the outer four native pixels of every variant toward variant 0's
 *reflected* pixel (`min(x, 31 - x)`, `min(y, 31 - y)`) with weights 1, 3/4, 1/2
 and 1/4, so whatever variant 0 carries on its perimeter is repeated on every
-tile. The synthesiser therefore keeps that perimeter neutral (`neutral_band`):
-over the outer six native pixels the low-frequency luma is flattened to the tile
-mean, and over the outer two the texture is replaced by the mean colour with fine
-grain, so the shared frame is featureless instead of a visible quilt. Stamped
-features (stones, twigs, blooms, embers) stay at least three native pixels from
-the edge so nothing is cut or ghosted. `share_perimeter` then copies ring 0 from
-tile 0 (opposite edges read the same coordinates, so a tile also joins itself
-across the torus seam) and blends ring 1. Materials with hard structure (hedge,
-scree, chasm) show this as a faint one-to-two pixel neutral seam at 4x zoom; that
-is the accepted cost of the runtime contract. Group readability is part of the
+tile. The synthesiser therefore makes that perimeter ordinary rather than
+special: the render with the quietest perimeter (lowest luma spread in the
+outer four native pixels) takes frame 0, stamped features (stones, twigs,
+blooms, embers) stay at least three native pixels from every edge, and
+`neutral_band` pulls only the very low frequencies (a radius-10 box blur at
+render scale) of the outer two to three native pixels toward the tile mean,
+tapering to zero inward, so no light or dark blotch sits on an edge while grain,
+chips and colour variation remain for the runtime blend to land on. Replacing
+the edge texture with a flat tone was tried and rejected: it reads as a frame
+around every tile. `share_perimeter` then copies ring 0 from tile 0 (opposite
+edges read the same coordinates, so a tile also joins itself across the torus
+seam) and blends ring 1. The contact sheet shows a 3x3 field of random variants
+at 1x and 2x after the runtime blend for every material; materials with hard
+structure (hedge, scree, chasm, lava's placeholder) still show a faint seam at
+2x, which is the cost of the runtime contract. Group readability is part of the
 recipes: obstacles are lit from the top left and cast onto grass, hazards warm
 and saturated, fertile ground warm and saturated (umber loam, moss, meadow),
 barren ground muted warm neutrals, rough ground cool and desaturated, paths warm

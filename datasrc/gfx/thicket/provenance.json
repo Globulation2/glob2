@@ -2,7 +2,7 @@
   "generator": "tools/artwork/terrain_synth.py",
   "method": "procedural",
   "generator_sha256": {
-    "tools/artwork/terrain_synth.py": "1bb28e32f1cf0ba3bba0976009220db8b2b8b0be9122698f18508995fa1bc5a8",
+    "tools/artwork/terrain_synth.py": "a8eda69c7b7212d9f9573766da37f1002a984d62327c108fb581e9a9c23830dc",
     "tools/artwork/material_tiles.py": "224e159e0974023797710aa959994f11658c82da8fb80f9701e4abc13c74ed83"
   },
   "material": "thicket",
@@ -70,25 +70,25 @@
   "frame_layout": "variant + 16 * phase",
   "sprite": "data/gfx/terrain-thicket",
   "preview": [
-    61,
-    73,
-    36
+    62,
+    74,
+    37
   ],
   "minimap": [
-    61,
-    73,
-    36
+    62,
+    74,
+    37
   ],
   "mean_color": [
-    61,
-    73,
-    36
+    62,
+    74,
+    37
   ],
   "style_stats": {
     "0": {
-      "luma": 65.3,
-      "std": 10.6,
-      "grain": 5.7,
+      "luma": 66.2,
+      "std": 11.1,
+      "grain": 5.6,
       "sat": 0.51,
       "alpha": 255.0
     }
@@ -153,21 +153,21 @@
     "libc": "glibc 2.43"
   },
   "runtime_sha256": {
-    "data/gfx/terrain-thicket0.png": "a48bdec62f77a240e2b53b35f6f954385e89ec0053ba7ca5ae90c2365361e8b4",
-    "data/gfx/terrain-thicket1.png": "9b82ceffd6c5b247452e099c04a3dcbe6ea437141068895236fa333b8a29f1ba",
-    "data/gfx/terrain-thicket2.png": "68a90d808821f1ab668c6bf5f2519c0624f8abc5a6ea227f0bc670187c83aa48",
-    "data/gfx/terrain-thicket3.png": "211773e6b1af16e95baacdf2d80549d67926f312c80b29af5fec712672592ccc",
-    "data/gfx/terrain-thicket4.png": "5f49d7b7b7998920f16841be314ef82ef3555c3a2153a9310875409479ca9bbc",
-    "data/gfx/terrain-thicket5.png": "ed62a15a0082cea29788c094cd3ec179e57ab3bac76333fb10c4465d3ae72ae0",
-    "data/gfx/terrain-thicket6.png": "6665a9e2965da6e1078a33112cac49f9c57e24f7d6973138703da3d7fb8a71a8",
-    "data/gfx/terrain-thicket7.png": "16513834197f787d3ace3c9f4765808514fccf9188c96b8712363203599f6179",
-    "data/gfx/terrain-thicket8.png": "1c00d7fc3fc8e40a83bcfbb9998f4e33dc59913230ee00d673fda7c553821440",
-    "data/gfx/terrain-thicket9.png": "9034e5c6a1da07abde6b04a44ac16552f09e251ae2d7d3031ab9fab3adb1125f",
-    "data/gfx/terrain-thicket10.png": "aa7eb9e33bae2eb7f2105e1c52f16f01fabc0c8017d8622458fcb0cffa7a4b19",
-    "data/gfx/terrain-thicket11.png": "532954c81eb565db41314efbf08c425ec84b04dd741972cde5953c092e5f682c",
-    "data/gfx/terrain-thicket12.png": "1e5f0f6d25e5b8f612572191b0b68b7948956d9d45c6198a594a37af4664aa40",
-    "data/gfx/terrain-thicket13.png": "21b7dae8b2d60598a40453f50a63195cc9b631b61dc81f7fc3aca615dcea2d95",
-    "data/gfx/terrain-thicket14.png": "40e3a101524362ed8e464fd067d96c43df310096aba3339a15372fbd863441df",
-    "data/gfx/terrain-thicket15.png": "370265c52bb3df11e313354a57b428200c7b8652cc5390c8573bb33be38ab127"
+    "data/gfx/terrain-thicket0.png": "77b5b9962eab881de9ac52d9516a9ee7d92fe36908359794c1e286b5ba0c9e42",
+    "data/gfx/terrain-thicket1.png": "68b0fd607de668c7ceb3f7a60519f9e9f6443807a080a80228f295e5884a677b",
+    "data/gfx/terrain-thicket2.png": "96f83e4e67fa15acae9f373ae022b9d297fa37d2bd702a1a4a33123e0d36c760",
+    "data/gfx/terrain-thicket3.png": "38e22649b5df69df5ca2b92f8c62ba67898e0566c01896e75b440cef66914b2f",
+    "data/gfx/terrain-thicket4.png": "8fd92303ab929a4a0821f0f2c9fd445e9e0104acea65563b9f490067173c8f41",
+    "data/gfx/terrain-thicket5.png": "f21bd93f86b90af78f8ec84f9654e35ee417937de65ff24310cfc32d160f9f78",
+    "data/gfx/terrain-thicket6.png": "ff9a97e9f292c352668a1794c91435a1d28c12271e164c5e3d21ffb5be047a81",
+    "data/gfx/terrain-thicket7.png": "7da20f8b13745e110a14ec7ccbd91626ec8492731d14daf5ea7575649ca21bc1",
+    "data/gfx/terrain-thicket8.png": "721e322690d2a9124463b7e4e0fbf6c3639fdf72ea941094f4614c9bedbb7be3",
+    "data/gfx/terrain-thicket9.png": "78330faa9043a7ac303d7835c0d1c05838fbd78b9f647813124a093f4b8a86ec",
+    "data/gfx/terrain-thicket10.png": "dd9c571d04eaabc40339d3cfa95e28c04a08da6193efe57b940101aa8e8e4ce3",
+    "data/gfx/terrain-thicket11.png": "bdda899f5845b38d7f3299281056d0e8a291e9686c0e49b288ac823bc464aca4",
+    "data/gfx/terrain-thicket12.png": "bef683416cbcbf143354055bea07b5fdb0046187adddfdaef5d034ee109550f2",
+    "data/gfx/terrain-thicket13.png": "27eba1cb022695c97221daa8cfc821cf7b378a6c7fcbafd163efe0fc01e56164",
+    "data/gfx/terrain-thicket14.png": "aee802f69931bf56ecbd87217460e8e75e9759cba66e63309f6390c7f7c10bd3",
+    "data/gfx/terrain-thicket15.png": "b9d211bdb0c28188139ba5faccd7079ac31ba81f0072cb54ca2923207cd1647a"
   }
 }

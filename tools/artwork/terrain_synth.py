@@ -79,12 +79,12 @@ FRAME_PREFIX = "data/gfx/terrain-"
 XS = [i % N for i in range(N * N)]
 YS = [i // N for i in range(N * N)]
 TAU = 2 * math.pi
-# Render pixels from an edge over which the perimeter treatment flattens the
-# low-frequency tone (BAND) and removes structure (EDGE); stamped features keep
-# at least STAMP_MARGIN from the edge so the structure-free zone never cuts
-# them. See `neutral_band`.
-BAND = 24
-EDGE = 9
+# Render pixels from an edge over which the perimeter treatment pulls the very
+# low frequencies toward the tile mean (BAND, about 2.5 native px); stamped
+# features keep at least STAMP_MARGIN from the edge so variant 0's perimeter,
+# which the runtime repeats on every tile, carries only ordinary texture. See
+# `neutral_band`.
+BAND = 10
 STAMP_MARGIN = 12
 
 LEGACY_NAMES = list(LEGACY_BINDINGS)
@@ -489,40 +489,30 @@ def band_weight(inner, outer):
     return BAND_WEIGHTS[key]
 
 
-def neutral_band(rgb, alpha, rng, radius=12):
-    """Make the perimeter band mean-toned and structure-free.
+def neutral_band(rgb, alpha, radius=10, strength=0.8):
+    """Keep the perimeter's broad tone near the tile mean, texture untouched.
 
     The runtime blends the outer four native pixels of every variant toward
     variant 0's reflected pixels with weights 1, 3/4, 1/2, 1/4
     (TerrainCompositor / `seamless_sources`), so whatever variant 0 carries
-    there is repeated on every tile. Two treatments keep that shared frame
-    invisible: over BAND render pixels the low-frequency luma (a box blur) is
-    pulled to the tile mean, so no light or dark blotch sits on an edge; over
-    the inner EDGE pixels the texture itself is replaced by the tile's mean
-    colour with fine grain, so no chip, gap or crack ends up as a repeated
-    motif. Alpha gets the same treatment so translucent materials stay even.
+    there is repeated on every tile. Only the very low frequencies (a box
+    blur of radius `radius` render pixels) are pulled toward the tile mean,
+    over BAND render pixels with the strength tapering to zero inward, so no
+    light or dark blotch sits on an edge while grain, chips and colour
+    variation stay: the runtime then converges every edge onto ordinary
+    texture rather than onto a flat frame. Alpha gets the same treatment.
     """
-    wide = band_weight(6, BAND)
-    tight = band_weight(2, EDGE)
+    weight = [t * strength for t in band_weight(0, BAND)]
     count = len(rgb[0])
     lum = [luma(r, g, b) for r, g, b in zip(*rgb)]
     mean = sum(lum) / count
     low = box_blur(lum, radius)
-    shift = [(mean - lo) * t for lo, t in zip(low, wide)]
+    shift = [(mean - lo) * t for lo, t in zip(low, weight)]
     rgb = [[c + s for c, s in zip(channel, shift)] for channel in rgb]
-    fine = lattice_noise(rng, 48)
-    out = []
-    for channel in rgb:
-        channel_mean = sum(channel) / count
-        out.append([
-            c + (channel_mean * (1 + 0.16 * (g - 0.5)) - c) * t for c, g, t in zip(channel, fine, tight)
-        ])
-    rgb = out
     if alpha is not None:
         mean_a = sum(alpha) / count
         low_a = box_blur(alpha, radius)
-        alpha = [a + (mean_a - lo) * t for a, lo, t in zip(alpha, low_a, wide)]
-        alpha = [a + (mean_a - a) * t for a, t in zip(alpha, tight)]
+        alpha = [a + (mean_a - lo) * t for a, lo, t in zip(alpha, low_a, weight)]
     return rgb, alpha
 
 
@@ -791,8 +781,8 @@ def render_marsh(ctx):
 @recipe(name="deep_snow", group="rough", label="Deep snow", profile="soft",
         seam={"height": 3, "cast_q8": 48, "cast_width_q8": 512, "fringe": [196, 210, 232], "fringe_q8": 64,
               "fringe_width_q8": 384},
-        palette={"dark": (144, 160, 206), "mid": (202, 206, 234), "light": (236, 236, 250), "sparkle": (252, 252, 255)},
-        style=Style(luma=202, std=7, grain_max=6))
+        palette={"dark": (156, 170, 210), "mid": (204, 208, 234), "light": (236, 236, 250), "sparkle": (252, 252, 255)},
+        style=Style(luma=203, std=9, grain_max=6))
 def render_deep_snow(ctx):
     p = RECIPES["deep_snow"].palette
     rgb, f = ground(ctx, 3, 3, (p["dark"], p["mid"], p["light"]), grit=0.05)
@@ -1250,29 +1240,48 @@ def render_fields(name, variant, phase):
     rec = RECIPES[name]
     ctx = Ctx(name, variant, phase, rec.phases)
     rgb, alpha = rec.render(ctx)
-    return neutral_band(rgb, alpha, random.Random(fnv1a32(f"{name}:{variant}:{phase}:band")))
+    return neutral_band(rgb, alpha)
+
+
+def perimeter_structure(rgb, depth=16):
+    """Luma spread of the outer `depth` render pixels: how much a perimeter
+    carries that the runtime would repeat on every tile."""
+    values = [
+        luma(r, g, b)
+        for r, g, b, x, y in zip(*rgb, XS, YS)
+        if min(x, y, N - 1 - x, N - 1 - y) < depth
+    ]
+    mean = sum(values) / len(values)
+    return math.sqrt(sum((v - mean) ** 2 for v in values) / len(values))
 
 
 def render_phase(name, phase, hd=False):
     """Render the sixteen variants of one phase, before perimeter sharing.
 
-    Variant 0's 32-pixel statistics define the material's style transform,
-    which is applied to every variant.
+    Frame 0 is the master the runtime blends every other variant's border
+    toward, so the render with the quietest perimeter takes that slot (the
+    sixteen seeds are unchanged; only their order is). The pooled 32-pixel
+    statistics of all variants define the material's style transform, which
+    is applied to every variant.
     """
     rec = RECIPES[name]
+    renders = [render_fields(name, variant, phase) for variant in range(VARIANTS)]
+    if rec.phases == 1:
+        order = sorted(range(VARIANTS), key=lambda v: (perimeter_structure(renders[v][0]), v))
+    else:
+        # Animated phases must keep one variant order; phase 0 decides it.
+        order = sorted(range(VARIANTS), key=lambda v: (perimeter_structure(render_fields(name, v, 0)[0]), v))
+    renders = [renders[v] for v in order]
+    small = [box_down_fields(rgb, alpha) for rgb, alpha in renders]
+    pooled = [sum((rgb[k] for rgb, _ in small), []) for k in range(3)]
+    transform = style_transform(pooled, rec.style.luma, rec.style.std, rec.style.match)
     tiles = []
-    transform = None
-    for variant in range(VARIANTS):
-        rgb, alpha = render_fields(name, variant, phase)
-        if transform is None:
-            small_rgb, _ = box_down_fields(rgb, alpha)
-            transform = style_transform(small_rgb, rec.style.luma, rec.style.std, rec.style.match)
+    for (rgb, alpha), (small_rgb, small_alpha) in zip(renders, small):
         if hd:
             tiles.append(fields_to_image(apply_style(rgb, transform), alpha, N))
             continue
-        rgb, alpha_small = box_down_fields(rgb, alpha)
-        rgb = apply_style(rgb, transform)
-        tiles.append(fields_to_image(rgb, alpha_small if alpha is not None else None, TILE))
+        tiles.append(fields_to_image(apply_style(small_rgb, transform),
+                                     small_alpha if alpha is not None else None, TILE))
     return tiles
 
 
@@ -1514,7 +1523,9 @@ def contact_sheet(results, root, columns=2):
     """Every material: name and stats, 16 variants at 1x and 4x, a 2x2 random join.
 
     Tiles are shown after the runtime's own four-pixel border blend
-    (`runtime_blend`), so joins look as they do in the game.
+    (`runtime_blend`, the same arithmetic as `seamless_sources` in
+    tools/terrain_tileset.py), so joins and the 3x3 fields look as they do in
+    the game. Translucent materials sit over the ocean backdrop's mean colour.
     """
     scale = 4
     blocks = []
@@ -1525,8 +1536,9 @@ def contact_sheet(results, root, columns=2):
     small = _font(11)
     grid_w = 8 * TILE * scale
     join_w = 2 * TILE * scale
-    block_w = grid_w + 16 + join_w + 16
-    block_h = 20 + 16 + TILE + 8 + 2 * TILE * scale + 8
+    field_w = 3 * TILE * 2
+    block_w = grid_w + 16 + join_w + 16 + field_w + 16
+    block_h = 20 + 16 + TILE + 8 + max(2 * TILE * scale, 3 * TILE + 8 + 6 * TILE) + 8
     for name, tiles, group, generated in entries:
         tiles = runtime_blend(tiles)
         block = Image.new("RGBA", (block_w, block_h), (40, 40, 44, 255))
@@ -1546,6 +1558,11 @@ def contact_sheet(results, root, columns=2):
         rng = random.Random(fnv1a32(name + ":join"))
         picks = [tiles[rng.randrange(len(tiles))] for _ in range(4)]
         block.alpha_composite(tiles_to_sheet(picks, columns=2, scale=scale), (4 + grid_w + 16, y))
+        # A 3x3 field of random variants at 1x and 2x: the grid rhythm check.
+        field = [tiles[rng.randrange(len(tiles))] for _ in range(9)]
+        fx = 4 + grid_w + 16 + join_w + 16
+        block.alpha_composite(tiles_to_sheet(field, columns=3), (fx, y))
+        block.alpha_composite(tiles_to_sheet(field, columns=3, scale=2), (fx, y + 3 * TILE + 8))
         if stats["alpha"] < 250:
             # Translucent materials are shown over the ocean backdrop's mean colour.
             ocean = Image.new("RGBA", block.size, (69, 52, 200, 255))

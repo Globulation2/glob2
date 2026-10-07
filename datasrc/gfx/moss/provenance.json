@@ -2,7 +2,7 @@
   "generator": "tools/artwork/terrain_synth.py",
   "method": "procedural",
   "generator_sha256": {
-    "tools/artwork/terrain_synth.py": "1bb28e32f1cf0ba3bba0976009220db8b2b8b0be9122698f18508995fa1bc5a8",
+    "tools/artwork/terrain_synth.py": "a8eda69c7b7212d9f9573766da37f1002a984d62327c108fb581e9a9c23830dc",
     "tools/artwork/material_tiles.py": "224e159e0974023797710aa959994f11658c82da8fb80f9701e4abc13c74ed83"
   },
   "material": "moss",
@@ -60,25 +60,25 @@
   "frame_layout": "variant + 16 * phase",
   "sprite": "data/gfx/terrain-moss",
   "preview": [
-    42,
-    86,
-    52
+    41,
+    85,
+    51
   ],
   "minimap": [
-    42,
-    86,
-    52
+    41,
+    85,
+    51
   ],
   "mean_color": [
-    42,
-    86,
-    52
+    41,
+    85,
+    51
   ],
   "style_stats": {
     "0": {
-      "luma": 69.0,
-      "std": 7.2,
-      "grain": 3.0,
+      "luma": 68.2,
+      "std": 6.8,
+      "grain": 2.8,
       "sat": 0.52,
       "alpha": 255.0
     }
@@ -143,21 +143,21 @@
     "libc": "glibc 2.43"
   },
   "runtime_sha256": {
-    "data/gfx/terrain-moss0.png": "ccd38955e5ce4ce724b34b797f82164c510ca155878d7a4aa45f6941ab7eb109",
-    "data/gfx/terrain-moss1.png": "8a6666c8a810f747a2a080b8c878554fe25a35532c842bdfa64ca8574d55dccd",
-    "data/gfx/terrain-moss2.png": "23769ab4386be3d156e7c77119f7400263208fb01b6718e090445f9c667166d3",
-    "data/gfx/terrain-moss3.png": "91ce230c578d30c114a157e509409413ec4d6dad8520873a37bd55456ca7a25e",
-    "data/gfx/terrain-moss4.png": "806cf407bac33b0c1f8df6fb78e19e741a31eb83227d9104104088575ce75b81",
-    "data/gfx/terrain-moss5.png": "a3edea222ba0659122b11b0c16b8cf713ab57cf94fd52c5dcde44758443a2f39",
-    "data/gfx/terrain-moss6.png": "651d07cbd19fd35663997d1cc34e02becacb9201ea1af78a1d878c44c839b528",
-    "data/gfx/terrain-moss7.png": "2ea1a9ea708cb8bb94b2b3325fbe832c41a4de167b6b7826589f559585395d9f",
-    "data/gfx/terrain-moss8.png": "9e358b8795aab838f0856c983b5d9615e1e8401fa278b18befc7c5563fdcea44",
-    "data/gfx/terrain-moss9.png": "6ae3d8273ae17b5336d6efc18af464d03d442e561393affaafeb8be9b6399b08",
-    "data/gfx/terrain-moss10.png": "e690efec6f80088629d68a7671cf53d74d1dcd0fcdde98b70ff5116f3746384a",
-    "data/gfx/terrain-moss11.png": "8442a004780957ce6b224721e0bcbe117fda89825c718883aa4702c78cb5ecfb",
-    "data/gfx/terrain-moss12.png": "8632d7b49e4bf8ba33c53d196d9734134cf94f53a2045d91f36543241e42cdcf",
-    "data/gfx/terrain-moss13.png": "b22e09aedbf1e070d6bf4353d72f17083cfb7c63ef74d6980f4b6be862d99d92",
-    "data/gfx/terrain-moss14.png": "c4cc979919d1d453437925e9b1d015d75be983be9e6209d37f35ff627c696337",
-    "data/gfx/terrain-moss15.png": "cab66fd0562c95a84cc94a2d8321d063b644e1925eca7dd53d111ee5f66f5ac1"
+    "data/gfx/terrain-moss0.png": "542648b41eb10695a3e979c4bd6bf11d22baa0f17f76f5b179b07d2eded3dc01",
+    "data/gfx/terrain-moss1.png": "ba63d569ff5c07b6d4c9188a62ece6b80d6b2b06dbd379ca38edea7d592bf9d6",
+    "data/gfx/terrain-moss2.png": "47a1278c1369d9f21cb4d58f7f0b5ec94191dc85d05fb386ba2597d3cbdd7d85",
+    "data/gfx/terrain-moss3.png": "0fb4bf8defeb81ce87f2dfc028aa8d75c20d786205d26df467c41f64580a82cb",
+    "data/gfx/terrain-moss4.png": "0377c09a1eca6f4e60c0b14af932dbb7680c089c7827139d136b26d98c3ae094",
+    "data/gfx/terrain-moss5.png": "8b71a6fb0f4f9e019fba514cfbe5fe236d3977713d3861dd6686ce1bb54e680b",
+    "data/gfx/terrain-moss6.png": "de871c29bf29c85a25419fbaeb8caadc983a41993521a9e70c248c3f035b7a79",
+    "data/gfx/terrain-moss7.png": "40a01910f138721b55a7f9f8190d141b09052db6340495a12d914a290f2ba420",
+    "data/gfx/terrain-moss8.png": "d2bbce9b11378c5107c2bfa0612007147b3a96de2ab5a45a93a8acafbf3cf284",
+    "data/gfx/terrain-moss9.png": "bc952111aabda7a13ec715267717f3879e5a6fb5fe639fbc396ed86c6d8ae419",
+    "data/gfx/terrain-moss10.png": "9d1960f9d0d3fb4c46d5ad3f78a0c777fe7229359413187aa47064ff097503a8",
+    "data/gfx/terrain-moss11.png": "cacc95b88ad8c112e9ed39df9e0ee4cb76b7f7b6039c3642ab21d1b324f1dbfc",
+    "data/gfx/terrain-moss12.png": "6ce231594546116a1ba246e2d4bb424319291d375cdd82f8562b719aa166e054",
+    "data/gfx/terrain-moss13.png": "3c66e9133a92ed6404582ee3956c9372e89aed1095c1d5f54477fc5948e932bf",
+    "data/gfx/terrain-moss14.png": "be2d856ca8b5cc378ef0ccfb8dadd3cefd8ab846117ffef8aca34c94731383b1",
+    "data/gfx/terrain-moss15.png": "dc2b2138b425866387037fd5abb956860201cf6e811bf6a4cfe5c51e6dd50790"
   }
 }

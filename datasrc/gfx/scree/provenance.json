@@ -2,7 +2,7 @@
   "generator": "tools/artwork/terrain_synth.py",
   "method": "procedural",
   "generator_sha256": {
-    "tools/artwork/terrain_synth.py": "1bb28e32f1cf0ba3bba0976009220db8b2b8b0be9122698f18508995fa1bc5a8",
+    "tools/artwork/terrain_synth.py": "a8eda69c7b7212d9f9573766da37f1002a984d62327c108fb581e9a9c23830dc",
     "tools/artwork/material_tiles.py": "224e159e0974023797710aa959994f11658c82da8fb80f9701e4abc13c74ed83"
   },
   "material": "scree",
@@ -63,25 +63,25 @@
   "frame_layout": "variant + 16 * phase",
   "sprite": "data/gfx/terrain-scree",
   "preview": [
-    115,
-    116,
-    118
+    117,
+    117,
+    119
   ],
   "minimap": [
-    115,
-    116,
-    118
+    117,
+    117,
+    119
   ],
   "mean_color": [
-    115,
-    116,
-    118
+    117,
+    117,
+    119
   ],
   "style_stats": {
     "0": {
-      "luma": 115.7,
-      "std": 13.3,
-      "grain": 8.5,
+      "luma": 117.4,
+      "std": 14.3,
+      "grain": 9.0,
       "sat": 0.03,
       "alpha": 255.0
     }
@@ -146,21 +146,21 @@
     "libc": "glibc 2.43"
   },
   "runtime_sha256": {
-    "data/gfx/terrain-scree0.png": "8297d2d25175cfae8dc45781ad2d8d23c1f229b45e0da5767dc3b773d36cb6e6",
-    "data/gfx/terrain-scree1.png": "52f284653742e856c592ed9a7d08701d33a4526a11a0b31465b22706b024aced",
-    "data/gfx/terrain-scree2.png": "1b617f3ca34a0036f08f81b9a67c497583b25077e3f8be9a5cd2184ab546d888",
-    "data/gfx/terrain-scree3.png": "5e981d2dca8d4404e6be11ad4d57c1825e98aafeb6ac7005848bbfa5134b00a8",
-    "data/gfx/terrain-scree4.png": "7dc5c1aa900af3e78374b8dd0d05501964e98264b58374eb27d622f0b2493884",
-    "data/gfx/terrain-scree5.png": "05c240ded85bc3456590bf4df9b5ea00ce338e2d171848088685ae8769bca0b5",
-    "data/gfx/terrain-scree6.png": "c53207467d1a6275143769ee1dc5a2b4cb6aaad0c5e54ac465d26fd309dcdcc0",
-    "data/gfx/terrain-scree7.png": "2da85df50f23102e9eb0ebc2499012a14213ae8fc1ae2684da3ba82e17d27b2f",
-    "data/gfx/terrain-scree8.png": "2e0671d2e8ad733e349009cd9af5fe096df5fcffee699dab20abdb1f90cbe327",
-    "data/gfx/terrain-scree9.png": "efe8082dfe823a5da49c534492137d1bce41e08f89228f938991b2b718b18485",
-    "data/gfx/terrain-scree10.png": "62d49d22e9389d87aae8e7e304f1278e670ea1d1f21a62097a3b0707d98845e4",
-    "data/gfx/terrain-scree11.png": "28f9d9ac5bd3ff149221b14937917027c8a810729405895ba87314a655325d7b",
-    "data/gfx/terrain-scree12.png": "a55575a0317880bd577efa4a1a84e1fd24806dc6afd61e713f23c2e7a9329a46",
-    "data/gfx/terrain-scree13.png": "92bfab415a3685aaed119473a8cac314a22857e3e0b8408cd4942ddb6fa2d0a5",
-    "data/gfx/terrain-scree14.png": "f5a19aec059a2454830567cc3f95225509e2b7d3549b9bfff3f149f1d0c69918",
-    "data/gfx/terrain-scree15.png": "ad66209d999547399a92950258a9b0aa7bd82976a2c330389b35fa957c63bd67"
+    "data/gfx/terrain-scree0.png": "474661ee8379ae7a2abe4f0c0394cfee2fbc5c0276e924923fc5049b09b217be",
+    "data/gfx/terrain-scree1.png": "929b1f791872ee3807b28c19329268dbab86e0c220c3edb7c357d28b6b14f89b",
+    "data/gfx/terrain-scree2.png": "4672dacf0a2a3cf2bb5742c3231a012c2b934520fb030c619761e7f4a783f66e",
+    "data/gfx/terrain-scree3.png": "8167d1a521bf36e18199afcd1e94bc37d38a802447bc4c0a170e59a867404f60",
+    "data/gfx/terrain-scree4.png": "7cfe8d00f832ddf6223551489104088eac0712e20865abdd303a837c7457085f",
+    "data/gfx/terrain-scree5.png": "f5e7df2ed37f3e6bc6b25c0e868a923dd36ec224c49c5162de939a66df37339d",
+    "data/gfx/terrain-scree6.png": "3e8fc0d2483c55d1f1acd27419e6d16cebb7c122af0551da25e3a2358965a722",
+    "data/gfx/terrain-scree7.png": "3a0f50cd86bf1f4534afa0b68c642ade2bc0304e8c230203abede578946b8ad8",
+    "data/gfx/terrain-scree8.png": "835a7dea456c5c5e76c5222915ab36f5c3e76883f073a0c6d16ddf64f800723b",
+    "data/gfx/terrain-scree9.png": "d0fcba0eb7a7177be6ecfa84d73c326700daa92236d31bb6ef7d594093f669f9",
+    "data/gfx/terrain-scree10.png": "9602af0c89548dd15fccff4a18fd9a188655ac9e6c3690e1a21fafde42c94d38",
+    "data/gfx/terrain-scree11.png": "684b873eba865db6ca8eabe05d1cdac00ac3cb4f2bc128ff6a70cd0447558f33",
+    "data/gfx/terrain-scree12.png": "89ac37dcdbecc53e18b8841df6480b2049cdd27eda7b0419da60a05885e65c99",
+    "data/gfx/terrain-scree13.png": "f0b209cd3f1638e92003b118ec4bad4be91cc2e90fd0a2413d7be63196d8b376",
+    "data/gfx/terrain-scree14.png": "602c1e3bd8cb0f93606f696813618463e7d13ae4378f5ec0b16ab07aafb00134",
+    "data/gfx/terrain-scree15.png": "d248a8c0de8c3bce84845ac7c7cee788f2a5a38e4ac81e37cd0840a401120163"
   }
 }

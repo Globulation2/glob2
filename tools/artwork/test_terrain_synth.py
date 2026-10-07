@@ -177,6 +177,19 @@ class TerrainSynth(unittest.TestCase):
                         self.assertLess(statistics.fmean(diffs), 12)
                         self.assertLess(sum(1 for d in diffs if d > 40) / len(diffs), 0.2)
 
+    def test_runtime_blend_matches_the_compiler_border_preparation(self):
+        sys.path.insert(0, str(ROOT / "tools"))
+        from terrain_tileset import seamless_sources
+        from material_tiles import runtime_blend
+
+        for name in ("gravel", "deep_water"):
+            document = {"materials": [{"sprite": f"data/gfx/terrain-{name}",
+                                       "variants": [{"frame": i} for i in range(synth.VARIANTS)]}]}
+            prepared = seamless_sources(document, ROOT)
+            tiles = [Image.open(ROOT / f"data/gfx/terrain-{name}{i}.png").convert("RGBA") for i in range(synth.VARIANTS)]
+            for i, blended in enumerate(runtime_blend(tiles)):
+                self.assertEqual(blended.tobytes(), prepared[f"data/gfx/terrain-{name}{i}.png"].tobytes(), (name, i))
+
     def test_catalog_fragment_is_well_formed(self):
         fragment = synth.catalog_fragment(self.results)
         self.assertEqual([m["key"] for m in fragment["materials"]], synth.BUILTIN_ORDER)
