@@ -119,7 +119,7 @@ class MaximaFarmingPolicyTest(unittest.TestCase):
         maintenance = maintenance[:maintenance.index("void Maxima::initialize_farming_cache")]
         self.assertIn("Farming::fertilityWithinPercentBand", maintenance)
         self.assertIn("plan.firebreak[index]=wants_firebreak", maintenance)
-        self.assertIn("&& (map->materialAmountAt(size_t(&cell-map->getTiles().data()),MaterialId::Wood)>0)", maintenance)
+        self.assertIn("&& map->materialAmountAt(size_t(index),MaterialId::Wood)>0", maintenance)
         self.assertIn("if(contract_desired && map->isForbidden", maintenance)
         self.assertIn("farming.wood_firebreak_fertility_min_percent = 5", self.base_strategy)
         self.assertIn("farming.wood_firebreak_fertility_max_percent = 14", self.base_strategy)
