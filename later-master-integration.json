@@ -1,0 +1,17 @@
+{
+  "tested_master": "64406b0826289c94b9a8eadb590ef551cf39efa9",
+  "master_after_validation": "6831dcfefeaac6255c9a93222d0c567fb9359385",
+  "new_change": "#880: only test/check_javascript.py and test/test_javascript_evidence.py; unrelated save-evidence parser repair. No engine/build/generator/cpuset/reporting changes. Retain tested base rather than repeat unrelated rebase.",
+  "merge_tree": {
+    "codex/benchmark-exclusive-cpuset": {
+      "returncode": 0,
+      "output": "bb6cc2b77b399e50f0adbadf98f5b04763944a36\n",
+      "stderr": ""
+    },
+    "codex/runtime-resource-macos-fingerprints": {
+      "returncode": 0,
+      "output": "df0d31ff1f4a1693cf8ff255075e3b0ca2594c10\n",
+      "stderr": ""
+    }
+  }
+}

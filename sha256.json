@@ -1,5 +1,5 @@
 {
-  "README.md": "1681bd767287c2a30434bfaed805b60110b2d8c94105ddc848d122ef60a6fcd8",
+  "README.md": "0cec6a712a6efc803c74355800962bac16f2e385b21dae1be7864f321d828839",
   "accepted-macos-fingerprints-final-integration.zip": "19d7fa99db2e77c3db639fc272b730e187137afefa91da62bbf8185b63a1f644",
   "benchmark/benchmark-contracts-final.log": "af213ba9f02876b35a1f21f60689d517bbd18b12292fd0ef0aa4b50903c1cbf5",
   "benchmark/benchmark-host-activity-contracts.log": "40a568dea068d2461f26dcd5212f6a1976ed0707cff961a3c239597abfe85de8",
@@ -40,6 +40,7 @@
   "gradient-reuse-v3-final-pilot.zip": "796fa08f7361831a77de33e0059381f827bca60bd5868a5a277205a31d52f6b8",
   "gradient-reuse-v3-preparation.zip": "2088e7efa3343feffa7052bee3003739b54c81ef562f97beadc616340c76b910",
   "isolated-reference-attribution.zip": "7b861c1b930b00c6b0ac42ea1a2eeecf74c0ce80c8ee71518a06b3dfce2243e2",
+  "later-master-integration.json": "bd3752bd1c16e11f25975e3b85b4d285dc25d531a74476f5b14dda8838192774",
   "latest-master-rebase.json": "b9d731606d201523fbafda61045df7626d7231a7ca5b28c084f8b4cb64f35754",
   "latest-master-rebase.zip": "0a794ac6b95796b06dea11fcf73962ae201a8390420104a884edd1774f413ce7",
   "mac-audited-design-epochs.zip": "08a360e310811f6ea23d9cf7465446c417163da3c492ce0b54bef8b8d230081b",
