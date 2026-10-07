@@ -78,6 +78,12 @@ Frozen candidate `7dba5174851dc70775e4c2b865d0b6cd14ef01077860498d567242140e2498
 
 [Raw v1 timing and correctness evidence](gradient-reuse-v1-exploratory.zip) includes commands, measurements, governor/input audits, exact patch/provenance and full correctness traces. The frozen binary and duplicated data tree are omitted, with hashes retained.
 
+## Worker-owned reuse v2: incomplete timing, correctness retained
+
+Frozen candidate `4a068846b4adf1aeeebdecbac94fca423f588398319aa0a25f7e5382cee5610b` moves exact comparisons and seed/result copies into a worker-owned lease held until the original fixed publication deadline. Busy entries bypass reuse; the 32-entry/16 MiB storage limits remain. Independent review and recorded correctness checks cover ten focused pipeline cases, 57 engine cases, eight full 8192-tick comparisons, 16 pending-gradient tails, native traces and a clean 10,800-job ThreadSanitizer harness.
+
+The first v2 paired campaign began after a quiet preflight but was interrupted when 27 unrelated compiler processes appeared in `/home/bradley/glob2-pr857`. All eight governors were restored and the input audit found no changes. **The campaign is incomplete and contaminated, with no summary and no retention decision.** Partial observations are not an accepted performance result; a fresh, complete quiet campaign is required. [v2 correctness and aborted timing evidence](gradient-reuse-v2-incomplete.zip) preserves raw observations, interruption/process evidence, restoration/input audits, exact patch/provenance and full correctness traces. Binary and duplicate data trees are omitted, with hashes retained.
+
 ## Ranked remaining investigations and evidence rejections
 
 1. **Indexed-ring candidate rejected with controlled CPU evidence.** Original production code is restored. Preserve the diagnostic reduction in instructions alongside the null aggregate CPU result and Maxima slowdown; do not resurrect this patch from instruction counts alone.

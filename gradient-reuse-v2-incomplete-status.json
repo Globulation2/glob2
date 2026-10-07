@@ -1,0 +1,153 @@
+{
+  "campaign": "gradient-reuse-v2-paired-01",
+  "complete": false,
+  "contaminated": true,
+  "usable_for_retention": false,
+  "summary_exists": false,
+  "recorded_child_rows": 39,
+  "governors_restored": true,
+  "inputs_unchanged": true,
+  "interruption": {
+    "reason": "New external compiler build saturated host during Cortex pair0; retain partial evidence, do not use for acceptance.",
+    "interrupted_wrapper_pid": 3716342,
+    "compiler_processes": [
+      {
+        "pid": 3720722,
+        "name": "cc1plus",
+        "cwd": "/home/bradley/glob2-pr857"
+      },
+      {
+        "pid": 3720728,
+        "name": "cc1plus",
+        "cwd": "/home/bradley/glob2-pr857"
+      },
+      {
+        "pid": 3720731,
+        "name": "cc1plus",
+        "cwd": "/home/bradley/glob2-pr857"
+      },
+      {
+        "pid": 3720735,
+        "name": "cc1plus",
+        "cwd": "/home/bradley/glob2-pr857"
+      },
+      {
+        "pid": 3720738,
+        "name": "cc1plus",
+        "cwd": "/home/bradley/glob2-pr857"
+      },
+      {
+        "pid": 3720742,
+        "name": "cc1plus",
+        "cwd": "/home/bradley/glob2-pr857"
+      },
+      {
+        "pid": 3720745,
+        "name": "cc1plus",
+        "cwd": "/home/bradley/glob2-pr857"
+      },
+      {
+        "pid": 3720751,
+        "name": "cc1plus",
+        "cwd": "/home/bradley/glob2-pr857"
+      },
+      {
+        "pid": 3720755,
+        "name": "cc1plus",
+        "cwd": "/home/bradley/glob2-pr857"
+      },
+      {
+        "pid": 3720759,
+        "name": "cc1plus",
+        "cwd": "/home/bradley/glob2-pr857"
+      },
+      {
+        "pid": 3720764,
+        "name": "cc1plus",
+        "cwd": "/home/bradley/glob2-pr857"
+      },
+      {
+        "pid": 3720783,
+        "name": "cc1plus",
+        "cwd": "/home/bradley/glob2-pr857"
+      },
+      {
+        "pid": 3720786,
+        "name": "cc1plus",
+        "cwd": "/home/bradley/glob2-pr857"
+      },
+      {
+        "pid": 3720789,
+        "name": "cc1plus",
+        "cwd": "/home/bradley/glob2-pr857"
+      },
+      {
+        "pid": 3720792,
+        "name": "cc1plus",
+        "cwd": "/home/bradley/glob2-pr857"
+      },
+      {
+        "pid": 3720795,
+        "name": "cc1plus",
+        "cwd": "/home/bradley/glob2-pr857"
+      },
+      {
+        "pid": 3720801,
+        "name": "cc1plus",
+        "cwd": "/home/bradley/glob2-pr857"
+      },
+      {
+        "pid": 3720807,
+        "name": "cc1plus",
+        "cwd": "/home/bradley/glob2-pr857"
+      },
+      {
+        "pid": 3720811,
+        "name": "cc1plus",
+        "cwd": "/home/bradley/glob2-pr857"
+      },
+      {
+        "pid": 3720828,
+        "name": "cc1plus",
+        "cwd": "/home/bradley/glob2-pr857"
+      },
+      {
+        "pid": 3720831,
+        "name": "cc1plus",
+        "cwd": "/home/bradley/glob2-pr857"
+      },
+      {
+        "pid": 3720834,
+        "name": "cc1plus",
+        "cwd": "/home/bradley/glob2-pr857"
+      },
+      {
+        "pid": 3720837,
+        "name": "cc1plus",
+        "cwd": "/home/bradley/glob2-pr857"
+      },
+      {
+        "pid": 3720842,
+        "name": "cc1plus",
+        "cwd": "/home/bradley/glob2-pr857"
+      },
+      {
+        "pid": 3720845,
+        "name": "cc1plus",
+        "cwd": "/home/bradley/glob2-pr857"
+      },
+      {
+        "pid": 3720848,
+        "name": "cc1plus",
+        "cwd": "/home/bradley/glob2-pr857"
+      },
+      {
+        "pid": 3720853,
+        "name": "cc1plus",
+        "cwd": "/home/bradley/glob2-pr857"
+      }
+    ],
+    "observed_unowned_busy_cores_during_last_complete_run": 25.283717684826115
+  },
+  "note": "Interrupted after unrelated compilation began. Partial rows must not be converted into an acceptance summary. A fresh complete quiet campaign is required."
+}
