@@ -1,5 +1,15 @@
 # Greedy fetching versus round-trip gradients
 
+## Current draft configuration
+
+PR #883 now makes **greedy fetching the default**, with saved **Round-trip resource fetching** as an opt-in experiment under Settings → Experiments. The description mentions about 14% more late-game simulation CPU relative to greedy in the original paired sample. This default change was requested for real-play comparison; the PR remains draft and unmerged.
+
+The measurements and previous promotion recommendation below describe the original opt-in greedy experiment. The algorithms are retained, with their default and saved switch inverted; this is not a new timing campaign. At source **ab143f583b16c4cfdab32c9fc4abaa6200867a07**, base **27b2b1ae3**, both modes reproduce their previous algorithm's team/entity state for 1,024 ticks on macOS and Linux. Each mode also matches across worker budgets 0/1/2/4/8 and saves/resumes for 512 ticks. All 92 selected native cases and 12 Python parser cases pass on each platform. Save writer/replay floor 145, SIM revision 29, minimum save version 58. Older saves without the new round-trip flag adopt greedy behavior; an old greedy-key save preserves greedy behavior.
+
+[Current cross-platform verification](verification/greedy-default/cross-platform.json) · [Mac native cases](verification/greedy-default/macos-native.xml) · [Linux native cases](verification/greedy-default/linux-native.xml) · [Validation commands](scripts/validate-default.py) · [Selected native commands](scripts/default-native.sh). Matching traces and checkpoint saves for both modes are in `verification/greedy-default/{macos,linux}/{greedy,round-trip}/`. Manifests retain exact execution commands and binary hashes. Snapshot verification was enabled. Native browser replay fixture generation was repeated, but Windows, Android and browser/WASM execution remain unverified. Food-scarce human play, trip tails and causal hiring-delay audits remain unmeasured.
+
+## Original paired experiment
+
 Opt-in prototype on master after the engine snapshot/executor revamp. Greedy mode bypasses round-trip field construction and cached round-trip scores. Hiring, resource selection and swaps use their existing fallbacks; swaps remain enabled. Default gameplay is unchanged.
 
 ## Results

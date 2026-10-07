@@ -1,0 +1,29 @@
+{
+  "fixture": "games/cross-replay.game.gz",
+  "seed": 42,
+  "ticks": 1500,
+  "fixture_sha256": "28e1b5b701b877d13e02547c4d874712e1973c2457210915c83c5f4cf376e09f",
+  "trace_sha256": "f700c213b6f4e83f41e60a318301cdb55a10a7f53bf87140aa66cd77b42f1488",
+  "command": [
+    "/Users/bradley/.codex/worktrees/greedy-fetch-comparison/glob2/build/darwin/client/release/src/glob2",
+    "--nox",
+    "/Users/bradley/.codex/worktrees/greedy-fetch-comparison/glob2/games/cross-replay.game.gz",
+    "1500",
+    "1"
+  ],
+  "verify_match": {
+    "record": "test/fixtures/multiplayer/FourSquares1.g2mr",
+    "record_sha256": "3804398006da418e3b53392099166591c7991751794c5a39dbabeaaf757ea31f",
+    "trace_sha256": "a45364241604146dbb859d02b44725f2e307c4b802151fd8d7f4b8466893494a",
+    "verdict": "verified",
+    "command": [
+      "/Users/bradley/.codex/worktrees/greedy-fetch-comparison/glob2/build/darwin/client/release/src/glob2",
+      "--verify-match",
+      "/Users/bradley/.codex/worktrees/greedy-fetch-comparison/glob2/test/fixtures/multiplayer/FourSquares1.g2mr",
+      "--map",
+      "/Users/bradley/.codex/worktrees/greedy-fetch-comparison/glob2/maps/FourSquares1.map.gz",
+      "--out",
+      "/Users/bradley/.codex/worktrees/greedy-fetch-comparison/glob2/artifacts/greedy-fetch/default-browser-native/verify-match"
+    ]
+  }
+}

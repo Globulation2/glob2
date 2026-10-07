@@ -1,0 +1,42 @@
+{
+  "source": "ab143f583b16c4cfdab32c9fc4abaa6200867a07",
+  "base": "27b2b1ae3",
+  "save_writer_version": 145,
+  "minimum_save_version": 58,
+  "simulation_revision": 29,
+  "macos_binary_sha256": "0f237a7bdf0362e2e2f0c6d87058c2bfebd586a946835ff20d13be363de9fbb7",
+  "linux_binary_sha256": "d39c3db50aae6905e2e46f226277e61437dddb6cf733cf654359f0d99580785f",
+  "modes": {
+    "greedy": {
+      "checksum_sha256": "5146f335b758dfaa353c7a108bf76a322fe0be7667ac0e5efe1d430658b9add3",
+      "cross_platform_ticks": 1024,
+      "gradient_workers": [
+        0,
+        1,
+        2,
+        4,
+        8
+      ],
+      "save_continuation_ticks": 512,
+      "previous_algorithm_matching_ticks": 1024
+    },
+    "round-trip": {
+      "checksum_sha256": "be26dcd7e9271c03ddf7f6ff294cdf5311f9ed36e78bc112d1e6f149c5f38ce1",
+      "cross_platform_ticks": 1024,
+      "gradient_workers": [
+        0,
+        1,
+        2,
+        4,
+        8
+      ],
+      "save_continuation_ticks": 512,
+      "previous_algorithm_matching_ticks": 1024
+    }
+  },
+  "native_cases_per_platform": 92,
+  "python_cases_per_platform": 12,
+  "browser_execution_verified": false,
+  "windows_execution_verified": false,
+  "android_execution_verified": false
+}
