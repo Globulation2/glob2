@@ -1,0 +1,19 @@
+{
+  "catalog_keys": 564,
+  "unique_keys": 564,
+  "statuses": {
+    "ok": 540,
+    "invalid": 24
+  },
+  "exact_inventory_match": true,
+  "source_tables_identical_audited_run": {
+    "test/map-generator-golden.txt": "d28103f1b1c6c0a8787c36ad7cf1203e1daec0a4e10e3500873cd6cc84aecf45",
+    "test/fixtures/map-generators/pre-resource-epoch-golden.txt": "9005a7fed9df999c04a5f2f232f9585da4b92eeff8bb055b2886186a65db9f61",
+    "test/map-generator-resource-epoch.json": "a575617f2e509511475da855a974f6d11ae97897c9b484274894702b6370ffc9"
+  },
+  "draft_sha256": {
+    "map-generator-golden.txt": "8c4e4dc121a5ca72edf993c64e94fd43fa1cea35aa54d458db0f55a3c31aa017",
+    "map-generator-resource-epoch.json": "1ae669feed432e8598eedb4d4a23bcac115c1a24e70685d58ba46b194d156ac8"
+  },
+  "execution_omitted": "No new C++ execution after data-only acceptance draft. Exact new expected rows are verified against independently executed macOS inventory and both current print processes; source and dependency audit evidence retained."
+}

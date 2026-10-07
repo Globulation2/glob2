@@ -1,0 +1,316 @@
+{
+  "run": "37566765323",
+  "artifact": 11460744618,
+  "artifact_sha256": "08a360e310811f6ea23d9cf7465446c417163da3c492ce0b54bef8b8d230081b",
+  "current_revision": "c3fc51e3cc090bdbf49376a6756270b9ff4e91f8",
+  "historical_revision": "7e54a3fc581d22d32e7b97a6aee76dbfeae58e9f",
+  "catalog_rows": 564,
+  "catalog_identical_first_c3fc": true,
+  "designs": {
+    "canals": {
+      "historical_full": 16622643961647829752,
+      "full": 11099226097251723814,
+      "historical_topology": 1342704325069643704,
+      "topology": 1342704325069643704,
+      "unchanged_components": [
+        "undermap",
+        "terrain",
+        "sources",
+        "starts"
+      ],
+      "changed_cell_counts": {
+        "undermap": 0,
+        "terrain": 0,
+        "sources": 0,
+        "amounts": 7745,
+        "starts": 0
+      },
+      "current_platform_differences": {
+        "undermap": 0,
+        "terrain": 0,
+        "sources": 0,
+        "amounts": 0,
+        "starts": 0
+      },
+      "historical_platform_differences": {
+        "undermap": 0,
+        "terrain": 0,
+        "sources": 0,
+        "amounts": 0,
+        "starts": 0
+      }
+    },
+    "caravanserai": {
+      "historical_full": 6244602504248136250,
+      "full": 7881860256827117520,
+      "historical_topology": 16571860465599968285,
+      "topology": 16571860465599968285,
+      "unchanged_components": [
+        "undermap",
+        "terrain",
+        "sources",
+        "starts"
+      ],
+      "changed_cell_counts": {
+        "undermap": 0,
+        "terrain": 0,
+        "sources": 0,
+        "amounts": 3153,
+        "starts": 0
+      },
+      "current_platform_differences": {
+        "undermap": 0,
+        "terrain": 0,
+        "sources": 0,
+        "amounts": 0,
+        "starts": 0
+      },
+      "historical_platform_differences": {
+        "undermap": 0,
+        "terrain": 0,
+        "sources": 0,
+        "amounts": 0,
+        "starts": 0
+      }
+    },
+    "fingerprint": {
+      "historical_full": 15850274609968439542,
+      "full": 16881829834589485263,
+      "historical_topology": 11062457841233645806,
+      "topology": 11062457841233645806,
+      "unchanged_components": [
+        "undermap",
+        "terrain",
+        "sources",
+        "starts"
+      ],
+      "changed_cell_counts": {
+        "undermap": 0,
+        "terrain": 0,
+        "sources": 0,
+        "amounts": 7105,
+        "starts": 0
+      },
+      "current_platform_differences": {
+        "undermap": 6532,
+        "terrain": 7776,
+        "sources": 6768,
+        "amounts": 11138,
+        "starts": 4
+      },
+      "historical_platform_differences": {
+        "undermap": 6532,
+        "terrain": 7776,
+        "sources": 6768,
+        "amounts": 11190,
+        "starts": 4
+      }
+    },
+    "honeycomb-isle": {
+      "historical_full": 5908701397362810997,
+      "full": 9145829052127692952,
+      "historical_topology": 10559024323253052986,
+      "topology": 10559024323253052986,
+      "unchanged_components": [
+        "undermap",
+        "terrain",
+        "sources",
+        "starts"
+      ],
+      "changed_cell_counts": {
+        "undermap": 0,
+        "terrain": 0,
+        "sources": 0,
+        "amounts": 11565,
+        "starts": 0
+      },
+      "current_platform_differences": {
+        "undermap": 0,
+        "terrain": 0,
+        "sources": 0,
+        "amounts": 0,
+        "starts": 0
+      },
+      "historical_platform_differences": {
+        "undermap": 0,
+        "terrain": 0,
+        "sources": 0,
+        "amounts": 0,
+        "starts": 0
+      }
+    },
+    "maze": {
+      "historical_full": 6132248727033081699,
+      "full": 5504856400217732380,
+      "historical_topology": 401563344924014212,
+      "topology": 401563344924014212,
+      "unchanged_components": [
+        "undermap",
+        "terrain",
+        "sources",
+        "starts"
+      ],
+      "changed_cell_counts": {
+        "undermap": 0,
+        "terrain": 0,
+        "sources": 0,
+        "amounts": 5092,
+        "starts": 0
+      },
+      "current_platform_differences": {
+        "undermap": 0,
+        "terrain": 0,
+        "sources": 0,
+        "amounts": 0,
+        "starts": 0
+      },
+      "historical_platform_differences": {
+        "undermap": 0,
+        "terrain": 0,
+        "sources": 0,
+        "amounts": 0,
+        "starts": 0
+      }
+    },
+    "portage-8-8-2": {
+      "historical_full": 790618175143118060,
+      "full": 16118877485436928657,
+      "historical_topology": 6775626421330287467,
+      "topology": 8968813228529483169,
+      "unchanged_components": [],
+      "changed_cell_counts": {
+        "undermap": 7390,
+        "terrain": 11589,
+        "sources": 11055,
+        "amounts": 22320,
+        "starts": 4
+      },
+      "current_platform_differences": {
+        "undermap": 0,
+        "terrain": 0,
+        "sources": 0,
+        "amounts": 0,
+        "starts": 0
+      },
+      "historical_platform_differences": {
+        "undermap": 4,
+        "terrain": 14,
+        "sources": 0,
+        "amounts": 0,
+        "starts": 0
+      }
+    },
+    "portage-9-8-1": {
+      "historical_full": 3271284103966557892,
+      "full": 15517041212468541340,
+      "historical_topology": 14199917942255856918,
+      "topology": 7253432815182511661,
+      "unchanged_components": [],
+      "changed_cell_counts": {
+        "undermap": 8253,
+        "terrain": 13797,
+        "sources": 13836,
+        "amounts": 40947,
+        "starts": 4
+      },
+      "current_platform_differences": {
+        "undermap": 4,
+        "terrain": 14,
+        "sources": 0,
+        "amounts": 0,
+        "starts": 0
+      },
+      "historical_platform_differences": {
+        "undermap": 0,
+        "terrain": 0,
+        "sources": 0,
+        "amounts": 0,
+        "starts": 0
+      }
+    }
+  },
+  "dependencies": {
+    "dependencies-after-all-observations.json": {
+      "prefix_delta": {
+        "added": [],
+        "removed": [],
+        "changed": []
+      },
+      "brew_delta": {
+        "added": [],
+        "removed": [],
+        "changed": []
+      },
+      "recording_cc": "gcc"
+    },
+    "dependencies-after-current-build.json": {
+      "prefix_delta": {
+        "added": [],
+        "removed": [],
+        "changed": [
+          "recording/lib/libavcodec.a",
+          "recording/lib/libavformat.a",
+          "recording/lib/libavutil.a",
+          "recording/lib/libswresample.a",
+          "recording/lib/libswscale.a",
+          "recording/lib/libx264.a",
+          "recording/recording-manifest.json"
+        ]
+      },
+      "brew_delta": {
+        "added": [],
+        "removed": [],
+        "changed": []
+      },
+      "recording_cc": "gcc"
+    },
+    "dependencies-after-current-catalog.json": {
+      "prefix_delta": {
+        "added": [],
+        "removed": [],
+        "changed": []
+      },
+      "brew_delta": {
+        "added": [],
+        "removed": [],
+        "changed": []
+      },
+      "recording_cc": "gcc"
+    },
+    "dependencies-after-current-maps.json": {
+      "prefix_delta": {
+        "added": [],
+        "removed": [],
+        "changed": []
+      },
+      "brew_delta": {
+        "added": [],
+        "removed": [],
+        "changed": []
+      },
+      "recording_cc": "gcc"
+    },
+    "dependencies-before-observations.json": {
+      "prefix_delta": {
+        "added": [],
+        "removed": [],
+        "changed": []
+      },
+      "brew_delta": {
+        "added": [],
+        "removed": [],
+        "changed": []
+      },
+      "recording_cc": "gcc"
+    },
+    "dependencies-initial.json": {
+      "seal_delta": {
+        "added": [],
+        "removed": [],
+        "changed": []
+      },
+      "recording_cc": "clang"
+    }
+  },
+  "source_clean_unchanged": true
+}

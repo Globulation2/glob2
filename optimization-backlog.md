@@ -110,6 +110,30 @@ Engines used CPUs 0–7, with SMT siblings 16–23 reserved and excluded from en
 
 [Full isolated priority evidence](gradient-reuse-v2-isolated-priority.zip) retains all raw results/logs, commands, timing inputs and audits, independent summary/activity analysis, exact runner sources and binary hashes. The candidate remains provisional pending full 98-window, separate eight-team/custom-resource performance, candidate platform checks and final integration review. Three-reference attribution is scheduled separately; no old percentage gate determines completion.
 
+## Three-reference priority attribution under exclusive cpuset
+
+Both reference campaigns completed one warmup pair plus 16 measured alternating pairs per 8192-tick Maxima/Cortex window: 136 total children, 128 measured. Independent reread verifies complete windows, alternating order, exact recomputation of all geometric ratios/95% bootstrap intervals and medians, unchanged source/binary/data/library/fixture snapshots, repeat-stable outputs, and full governor/cpuset/affinity restoration with no forced kill. These are reference-cost comparisons, **not the gradient optimization result or a gameplay-equivalence claim**. Final checksums differ between all three engines; intended behavior fixes and resource representation changes prevent interpreting raw cross-reference checksum differences as an equivalent-execution test.
+
+| Comparison | Window | Simulation CPU ratio [95% CI] | Simulation wall ratio [95% CI] | Whole-child CPU ratio [95% CI] | Peak RSS ratio [95% CI] |
+| --- | --- | --- | --- | --- | --- |
+| Pure pre-refactor → approved fixes | Maxima | 1.051974 [1.043717, 1.062165] | 1.083044 [1.072399, 1.096615] | 1.049464 [1.041128, 1.059598] | 1.001179 [0.989596, 1.010980] |
+| Pure pre-refactor → approved fixes | Cortex | 1.011841 [1.008038, 1.016235] | 1.012435 [1.008364, 1.016771] | 1.012032 [1.008430, 1.016179] | 1.000000 [1.000000, 1.000000] |
+
+Pure pre-refactor → approved fixes equal-scenario aggregate simulation CPU ratio: **1.031712 [1.027188, 1.036959]**. Reserved busy minus whole-child CPU averages 0.176988 cores, maximum per run 0.362797; complementary CPUs average 2.344543 busy cores, maximum 13.464398. Reserved SMT siblings total 0.05 CPU-seconds.
+
+| Comparison | Window | Simulation CPU ratio [95% CI] | Simulation wall ratio [95% CI] | Whole-child CPU ratio [95% CI] | Peak RSS ratio [95% CI] |
+| --- | --- | --- | --- | --- | --- |
+| Approved fixes → merged9084 | Maxima | 1.016682 [1.006697, 1.027823] | 1.022085 [1.013494, 1.030273] | 1.016934 [1.006928, 1.027997] | 1.053157 [1.041109, 1.064832] |
+| Approved fixes → merged9084 | Cortex | 0.904629 [0.901049, 0.908133] | 0.886511 [0.882846, 0.890295] | 0.906932 [0.903280, 0.910417] | 1.000000 [1.000000, 1.000000] |
+
+Approved fixes → merged9084 equal-scenario aggregate simulation CPU ratio: **0.959020 [0.953669, 0.964435]**. Reserved busy minus whole-child CPU averages 0.177586 cores, maximum per run 0.365592; complementary CPUs average 3.000289 busy cores, maximum 12.801209. Reserved SMT siblings total 0.06 CPU-seconds.
+
+The approved fixes add 3.17% aggregate CPU [2.72%, 3.70%]; the subsequent merged engine uses 4.10% less aggregate CPU [3.56%, 4.63%] than that approved control across these two fixed windows. Maxima and Cortex differ substantially, so aggregate values do not replace individual results. Do not multiply separately measured ratios to manufacture a direct pure→merged confidence interval. The historical `regression` label in the first report is retained as a threshold diagnostic; report-only exited successfully and the former gates do not define acceptance.
+
+Simulation CPU covers all threads through finishSession/final gradient drain and excludes setup/requested save; whole-child wait4 CPU includes setup and exit. Busy residuals include wrapper/kernel activity and coarse-jiffy/boundary skew, not attribution to unrelated processes. Outside work is expected under the verified partition; shared power, thermal, memory-bandwidth and interrupt effects remain possible. Bootstrap intervals quantify sampling uncertainty, not systematic bias. Flat reported Cortex RSS reflects the raw OS measurement; no finer memory-cost claim is inferred. Timing outputs do not replace per-tick compatibility evidence.
+
+[Raw attribution evidence](isolated-reference-attribution.zip) contains every measurement/result/log, commands, input and restoration audits, independent analysis and exact runner sources. No optimization-retention conclusion follows from these reference campaigns.
+
 ## Ranked remaining investigations and evidence rejections
 
 1. **Indexed-ring candidate rejected with controlled CPU evidence.** Original production code is restored. Preserve the diagnostic reduction in instructions alongside the null aggregate CPU result and Maxima slowdown; do not resurrect this patch from instruction counts alone.
