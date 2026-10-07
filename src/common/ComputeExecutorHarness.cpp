@@ -9,6 +9,7 @@
 #include <array>
 #include <stdexcept>
 #include <chrono>
+#include <span>
 
 TEST_SUITE("ComputeExecutor")
 {
@@ -72,6 +73,105 @@ TEST_CASE("exclusive slots; nested batches; reuse; errors; barriers and reconfig
 	executor.run(7, [&](size_t) { ++completed; });
 	REQUIRE(completed == 7);
 	MESSAGE("PASS executor: exclusive slots, nested batches, reuse, errors, barriers, reconfiguration");
+}
+}
+
+TEST_SUITE("ComputeExecutor")
+{
+namespace
+{
+struct Counter { std::atomic<int> value{0}; };
+void bump(void* context, std::size_t index) { static_cast<Counter*>(context)->value.fetch_add(int(index) + 1); }
+struct Slow { std::atomic<int> running{0}, overlaps{0}, done{0}; };
+void slowJob(void* context, std::size_t)
+{
+	auto* slow = static_cast<Slow*>(context);
+	if (slow->running.fetch_add(1) != 0) slow->overlaps.fetch_add(1);
+	std::this_thread::sleep_for(std::chrono::microseconds(200));
+	slow->running.fetch_sub(1); slow->done.fetch_add(1);
+}
+void failing(void*, std::size_t) { throw std::runtime_error("deferred job failed"); }
+}
+TEST_CASE("deferred batches drain FIFO with owner participation, lanes, isolated errors and placements")
+{
+	for (unsigned threads : {1u, 2u, 4u})
+	{
+		CAPTURE(threads);
+		ComputeExecutor executor;
+		executor.configure(threads);
+		// Joining the newest batch first still completes the older ones.
+		Counter a, b, c;
+		ComputeExecutor::Group ga{5, {bump, &a}}, gb{7, {bump, &b}}, gc{3, {bump, &c}};
+		auto A = executor.submit(std::span(&ga, 1)), B = executor.submit(std::span(&gb, 1)), C = executor.submit(std::span(&gc, 1));
+		CHECK_FALSE(C.empty());
+		executor.join(C);
+		// C's jobs are done; A's and B's were all claimed before them but a
+		// worker may still be finishing one, so their values are checked after
+		// their own joins.
+		CHECK(c.value.load() == 6); CHECK(C.empty());
+		executor.join(A); executor.join(B);
+		CHECK(a.value.load() == 15); CHECK(b.value.load() == 28);
+		CHECK(executor.liveBatches() == 0);
+		// One lane's jobs across batches never overlap.
+		Slow slow; std::vector<ComputeExecutor::Batch> batches;
+		for (int tick = 0; tick < 6; ++tick) { ComputeExecutor::Group g{1, {slowJob, &slow}, 3}; batches.push_back(executor.submit(std::span(&g, 1))); }
+		for (auto& batch : batches) executor.join(batch);
+		CHECK(slow.overlaps.load() == 0); CHECK(slow.done.load() == 6);
+		// A failing batch rethrows at its join and leaves other batches intact.
+		ComputeExecutor::Group bad{2, {failing, nullptr}}, good{4, {bump, &a}};
+		auto Bad = executor.submit(std::span(&bad, 1)); auto Good = executor.submit(std::span(&good, 1));
+		CHECK_THROWS_WITH_AS(executor.join(Bad), "deferred job failed", std::runtime_error);
+		executor.join(Good);
+		CHECK(a.value.load() == 25);
+		// Blocking batches run while deferred work is live; owner-only batches
+		// run at their join, never on workers.
+		Counter d; ComputeExecutor::Group gd{3, {bump, &d}};
+		auto D = executor.submit(std::span(&gd, 1), ComputeExecutor::Placement::OwnerOnly);
+		std::atomic<int> ran{0};
+		executor.run(8, [&](std::size_t) { ran.fetch_add(1); });
+		CHECK(ran.load() == 8);
+		CHECK(d.value.load() == 0);
+		executor.join(D);
+		CHECK(d.value.load() == 6);
+		// Submitting or joining from inside a job is a logic error; nested run() stays inline.
+		executor.run(1, [&](std::size_t) {
+			ComputeExecutor::Group g{1, {bump, &d}};
+			CHECK_THROWS_AS(executor.submit(std::span(&g, 1)), std::logic_error);
+			int nested = 0; executor.run(3, [&](std::size_t) { ++nested; }); CHECK(nested == 3);
+		});
+		// Blocking batches of changing sizes interleave with deferred work; a
+		// worker arriving late for a finished batch must never touch the next one.
+		{
+			Slow interleaved;
+			std::vector<ComputeExecutor::Batch> live;
+			for (int round = 0; round < 120; ++round)
+			{
+				ComputeExecutor::Group g{1, {slowJob, &interleaved}, 3u};
+				live.push_back(executor.submit(std::span(&g, 1)));
+				std::atomic<int> ran{0};
+				const std::size_t n = 1 + (round * 7) % 11;
+				executor.run(n, [&](std::size_t) { ran.fetch_add(1); });
+				executor.run(13, [&](std::size_t) { ran.fetch_add(1); });
+				REQUIRE(ran.load() == int(n) + 13);
+				if (round % 5 == 4) { for (auto& batch : live) executor.join(batch); live.clear(); }
+			}
+			for (auto& batch : live) executor.join(batch);
+			CHECK(interleaved.done.load() == 120); CHECK(interleaved.overlaps.load() == 0);
+			a.value.store(25); // keep the metric expectations below independent of this block
+		}
+		// Every deferred job so far has been joined and counted once.
+		CHECK(executor.metrics().deferredBatches == 12 + 120); CHECK(executor.metrics().deferredJobs == 30 + 120);
+		CHECK(executor.metrics().ownerJobs + executor.metrics().workerJobs == 30 + 120);
+		// Empty submissions are empty batches; reconfiguration joins live work
+		// and starts the metrics over.
+		CHECK(executor.submit({}).empty());
+		ComputeExecutor::Group tail{2, {bump, &d}};
+		executor.submit(std::span(&tail, 1));
+		executor.configure(1);
+		CHECK(d.value.load() == 6 + 3);
+		CHECK(executor.liveBatches() == 0);
+		CHECK(executor.metrics().deferredBatches == 0); CHECK(executor.metrics().ownerJobs + executor.metrics().workerJobs == 0);
+	}
 }
 }
 

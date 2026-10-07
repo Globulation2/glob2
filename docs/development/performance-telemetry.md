@@ -176,12 +176,21 @@ resource fields preserve the map's existing refresh age. An absent field is init
 from frozen inputs and enrolled by the simulation owner, without refreshing an existing
 published field.
 
-The engine polls each eligible controller at most once per logical tick. Each controller's
-jobs run in FIFO order without overlap; different controllers may run concurrently. One
-match-wide delay of 0–8 ticks sets the order's deadline. At the deadline the owner waits
-for unfinished work, then publishes the complete batch in player order. A slow worker
-cannot postpone an order's logical execution tick. Paused games submit no decisions and
-advance no deadline clock. Delay zero still uses captured inputs and the same scheduler.
+The engine polls each eligible controller at most once per logical tick. A tick's
+decisions form one deferred batch on the map's compute executor, one job per controller
+on that controller's lane: a controller's jobs run in FIFO order without overlap, while
+different controllers may run concurrently with each other and with map computation.
+One match-wide delay of 0–8 ticks sets the order's deadline. At the deadline the owner
+joins the batch, executing remaining jobs itself from the oldest live batch forward, then
+publishes the complete batch in player order. A slow worker cannot postpone an order's
+logical execution tick. Paused games submit no decisions and advance no deadline clock.
+Delay zero still uses captured inputs and the same scheduler: its batch is submitted and
+joined inside the tick, so the owner works alongside the compute threads rather than
+waiting on a separate pool. Waking a worker costs more than a few microseconds of
+decision work, so a delay-zero batch is shared with the workers only when it has more
+than one decision and the smoothed decision work of recent batches is at least 100 µs;
+otherwise the owner runs it alone. The placement changes which thread runs a decision,
+never its result.
 
 Orders carry observed target incarnations. The execution boundary rejects a missing or
 replaced target and queues immutable accepted/rejected feedback for a later decision.
@@ -196,10 +205,10 @@ Structured `--run-game` accepts `--ai-order-delay D` for a new match, and
 `areas`, `initialize`, `hiring`, `ai`, and `all`; `ai` is the default. The default
 count is the smaller of four, available hardware threads, and AI controllers, with a
 minimum of one. Ordinary GUI and legacy `--nox` runs accept `--ai-threads N`.
-With `ai` enabled, this count configures the AI executor's background workers;
-the simulation owner is additional. One means one background AI worker.
-`--compute-experiments none` uses inline AI computation with the same delay schedule.
-Thread creation failure and platforms without threads also use that inline schedule.
+The count is the compute executor's thread count including the simulation owner; with
+`ai` enabled, AI decisions share those threads. `--compute-experiments none` keeps the
+decisions on the owner at the same deadlines (an owner-only batch), as do thread creation
+failure and platforms without threads.
 A loaded match's configured delay cannot be overridden.
 
 Map computation has a separate executor whose thread count includes the submitting
@@ -214,6 +223,8 @@ modes use inline scheduled AI decisions. Measure the additional work separately.
 
 `result.json` retains the map executor's `compute_threads`, `compute_experiments`,
 `compute_batches`, `compute_jobs`, `compute_parallel_batches`, `compute_batch_ns`,
+`compute_deferred_batches`, `compute_deferred_jobs`, `compute_owner_jobs`,
+`compute_worker_jobs`, `compute_lane_wait_ns`, `compute_join_wait_ns`,
 `compute_wait_ns`, and `compute_active_elapsed_ns`. They do not describe the separate
 AI worker queue. `hiring_prepasses` counts candidate-scan hooks and
 `hiring_popped_entries` counts advanced entries, including stale entries.
@@ -231,9 +242,10 @@ The nested `ai_pipeline` object reports session counters:
 | `allocations` | Instrumented component/payload pool-object, vector-growth and resource-plane allocation events. |
 | `computation_ns` | Summed elapsed time executing decision callbacks, across inline or worker execution. |
 | `submitted`, `delivered` | Admitted polls and deadline publications, including null outputs. |
-| `deadline_misses` | Outputs whose futures were unfinished when their deadlines were checked. |
-| `deadline_wait_ns` | Elapsed waiting/completion time for those missed deadlines. |
+| `deadline_misses` | Due batches that were not finished when the owner reached their deadline; the owner then executes or waits for the remainder. |
+| `deadline_wait_ns` | Elapsed time the owner spent completing those missed batches, including jobs it ran itself. |
 | `maximum_pending` | Largest number of queued decision outputs across all controllers. |
+| `shared_batches` | Decision batches handed to the compute workers rather than run by the owner alone. |
 | `snapshot_allocated_buffers`, `snapshot_reusable_buffers`, `snapshot_leased_buffers` | Allocated pool buffers, buffers with only their pool reference, and buffers with other references. These count component/plane epochs, not whole-world generations. |
 | `snapshot_retained_bytes`, `snapshot_capacity_bytes`, `snapshot_leased_bytes` | Accounted pooled objects plus payload capacity, payload capacity alone, and the subset referenced outside its pool. |
 | `snapshot_peak_*` | Session high-water values for the corresponding snapshot buffer/byte counters. |
@@ -306,7 +318,7 @@ The runner retains commands, executable/input hashes, logs, results, per-process
 peak resident memory, wall time, and user-plus-system CPU time from `wait4`.
 It runs one warm-up and five measured repetitions by default, with rotated/reversed
 ordering; use `--repeats 10` for ten paired measurement rounds.
-Compare inline scheduled AI (`none`), one background AI worker, multiple workers,
+Compare owner-only scheduled AI (`none`), one and several compute threads,
 and the baseline at the same delay. Aggregate ratios do not replace per-scenario CPU and small-map
 regression checks. Timing thresholds are deliberately not CI assertions.
 

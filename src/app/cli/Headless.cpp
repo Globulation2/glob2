@@ -538,6 +538,12 @@ struct HeadlessRunner
 			<< ",\"compute_parallel_batches\":" << game.map.computeExecutor().metrics().parallelBatches
 			<< ",\"compute_batch_ns\":" << game.map.computeExecutor().metrics().batchNs
 			<< ",\"compute_wait_ns\":" << game.map.computeExecutor().metrics().waitNs
+			<< ",\"compute_deferred_batches\":" << game.map.computeExecutor().metrics().deferredBatches
+			<< ",\"compute_deferred_jobs\":" << game.map.computeExecutor().metrics().deferredJobs
+			<< ",\"compute_owner_jobs\":" << game.map.computeExecutor().metrics().ownerJobs
+			<< ",\"compute_worker_jobs\":" << game.map.computeExecutor().metrics().workerJobs
+			<< ",\"compute_lane_wait_ns\":" << game.map.computeExecutor().metrics().laneWaitNs
+			<< ",\"compute_join_wait_ns\":" << game.map.computeExecutor().metrics().joinWaitNs
 			<< ",\"ai_pipeline\":{";
 		bool metricComma=false;
 		for(const auto& [name,value]:game.aiMetrics()) {if(metricComma)result<<',';metricComma=true;result<<quote(name)<<':'<<value;}

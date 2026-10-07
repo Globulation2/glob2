@@ -18,6 +18,18 @@ std::shared_ptr<const AIEngine::AIWorldView> observation(Uint32 tick)
 	return std::make_shared<AIEngine::AIWorldView>(std::move(handle));
 }
 AIEngine::Command nullCommand() { return {{ORDER_NULL}, {}, {}}; }
+// A scheduler with its own executor: `workers` threads share the decisions
+// (zero means the submitter runs them serially at the deadline).
+struct TestScheduler : AIEngine::OrderScheduler
+{
+	ComputeExecutor executor;
+	~TestScheduler() { clear(); }
+	void configure(unsigned delay, unsigned workers)
+	{
+		executor.configure(workers ? workers : 1);
+		AIEngine::OrderScheduler::configure(delay, executor, workers > 0);
+	}
+};
 }
 
 TEST_SUITE("AIOrderScheduler")
@@ -28,7 +40,7 @@ TEST_SUITE("AIOrderScheduler")
 			for (unsigned workers : {0u, 1u, 4u})
 			{
 				CAPTURE(delay); CAPTURE(workers);
-				AIEngine::OrderScheduler scheduler;
+				TestScheduler scheduler;
 				scheduler.configure(delay, workers);
 				std::array<Uint32, 2> next{};
 				for (Uint32 tick = 0; tick < 20 + delay; ++tick)
@@ -55,7 +67,7 @@ TEST_SUITE("AIOrderScheduler")
 	}
 	TEST_CASE("save drains computation and retains future outputs without recomputing")
 	{
-		AIEngine::OrderScheduler scheduler;
+		TestScheduler scheduler;
 		scheduler.configure(8, 2);
 		std::atomic<unsigned> calls{0};
 		scheduler.submit({0, 4, 0, Uint64(1) << 40, 0}, observation(0), [&](const auto&) {
@@ -91,7 +103,7 @@ TEST_SUITE("AIOrderScheduler")
     TEST_CASE("saved repeated enrollments retain the first initialization tick")
     {
         for(unsigned delay:{1u,8u}) {
-            AIEngine::OrderScheduler scheduler;scheduler.configure(delay,0);
+            TestScheduler scheduler;scheduler.configure(delay,0);
             const auto plane=std::make_shared<const std::vector<Uint16>>(4,42);
             for(Uint32 tick=0;tick<delay;++tick) {
                 scheduler.submit({0,1,tick,tick,0},observation(tick),[plane](const auto&) {
@@ -116,7 +128,7 @@ TEST_SUITE("AIOrderScheduler")
             }
         }
         for(bool duplicate:{false,true}) {
-            AIEngine::OrderScheduler malformed;malformed.configure(8,0);
+            TestScheduler malformed;malformed.configure(8,0);
             malformed.submit({0,1,0,0,0},observation(0),[duplicate](const auto&) {
                 auto command=nullCommand();
                 command.resourceEnrollments.push_back({0,1,0,duplicate?0u:1u,std::make_shared<const std::vector<Uint16>>(4,42)});
@@ -131,7 +143,7 @@ TEST_SUITE("AIOrderScheduler")
         }
     }
     TEST_CASE("same initialization identity cannot restore contradictory planes") {
-        AIEngine::OrderScheduler scheduler;scheduler.configure(8,0);
+        TestScheduler scheduler;scheduler.configure(8,0);
         for(Uint32 tick=0;tick<2;++tick) {
             scheduler.submit({0,1,tick,tick,0},observation(tick),[tick](const auto&) {
                 auto command=nullCommand();
@@ -148,7 +160,7 @@ TEST_SUITE("AIOrderScheduler")
 
 	TEST_CASE("failure joins work and cannot partially publish or lose the original error")
 	{
-		AIEngine::OrderScheduler scheduler;
+		TestScheduler scheduler;
 		scheduler.configure(0, 2);
 		std::atomic<bool> completed{false};
 		scheduler.submit({0, 1, 0}, observation(0), [](const auto&) -> AIEngine::Command { throw std::runtime_error("decision failed"); });
@@ -159,7 +171,7 @@ TEST_SUITE("AIOrderScheduler")
 	}
 	TEST_CASE("cancellation joins the old controller generation before replacement")
 	{
-		AIEngine::OrderScheduler scheduler;
+		TestScheduler scheduler;
 		scheduler.configure(4, 2);
 		std::atomic<unsigned> calls{0};
 		scheduler.submit({0, 1, 0}, observation(0), [&](const auto&) { ++calls; return nullCommand(); });
@@ -171,7 +183,7 @@ TEST_SUITE("AIOrderScheduler")
 	}
 	TEST_CASE("restore refuses truncated duplicate and out of window pending requests")
 	{
-		AIEngine::OrderScheduler scheduler;
+		TestScheduler scheduler;
 		scheduler.configure(8, 0);
 		scheduler.submit({0, 1, 0, 0, 0}, observation(0), [](const auto&) { return nullCommand(); });
 		scheduler.takeDue(0);

@@ -55,10 +55,12 @@ std::vector<std::pair<unsigned,std::shared_ptr<Order>>> Pipeline::prepare(Game& 
   if(requested[p])throw std::invalid_argument("Duplicate AI poll player");
   requested[p]=true;
  }
- const unsigned workers=game.map.computeEnabled(Map::ComputeAI)?game.map.computeExecutor().threadCount():0;
- if(!configured) {scheduler.configure(game.gameHeader.getAIOrderDelay(),workers);configured=true;}
+ // Decisions run on the map's compute executor; with the AI experiment on,
+ // its workers share them and the owner joins at the deadline.
+ const bool shared=game.map.computeEnabled(Map::ComputeAI);
+ if(!configured) {scheduler.configure(game.gameHeader.getAIOrderDelay(),game.map.computeExecutor(),shared);configured=true;}
  else if(scheduler.delayTicks()!=game.gameHeader.getAIOrderDelay()) throw std::logic_error("AI delay cannot change during a match");
- else if(scheduler.workerCount()!=workers) scheduler.configureWorkers(workers);
+ else if(!scheduler.hasExecutor()||scheduler.sharedExecution()!=shared) scheduler.configureExecution(game.map.computeExecutor(),shared);
  if(paused) {
   const auto gradientRequirements=game.map.pendingGradientRequirements();
   if(gradientRequirements) game.map.preparePendingGradient(snapshots.captureBoundary(game,gradientRequirements));
@@ -114,6 +116,7 @@ std::vector<std::pair<unsigned,std::shared_ptr<Order>>> Pipeline::prepare(Game& 
     auto output=ai->decide(context); output.resourceEnrollments=std::move(enrollments); return output;
    });
   }
+  scheduler.dispatch();
   for(auto& delivery:scheduler.takeDue(game.stepCounter)) {
    newlyDelivered[delivery.request.player]=true;
    auto& actor=actors[delivery.request.player];
