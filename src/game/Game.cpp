@@ -136,6 +136,7 @@ void Game::init(GameGUI *gui, MapEdit* edit)
 /** Reset player and team lists, game end stuff and selection stuff. */
 void Game::clearGame()
 {
+	map.resetGradientPipeline(); // Discard reservations and drain callbacks before team destruction.
 	clearAI(); // Join all controller work before deleting teams or players.
 	scriptGenerations.fill(0);
 	recordingFailingUnits=BuildingRef();

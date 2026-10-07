@@ -161,7 +161,7 @@ export function MeshPreview(props: ViewportProps) {
         gl.bufferData(kind, values, gl.DYNAMIC_DRAW);
         return b;
       };
-      const positions = buffer(gl.ARRAY_BUFFER, mesh.poses.subarray(0, mesh.count * 6));
+      const positions = buffer(gl.ARRAY_BUFFER, mesh.rest);
       for (const [name, offset] of [
         ['position', 0],
         ['normal', 12],

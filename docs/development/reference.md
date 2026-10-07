@@ -47,7 +47,9 @@ Unit and building scalar state uses the authoritative `UnitState` and
 per live entity; heap entities are not a contiguous slot pool. Runtime pointers,
 query scratch and GUI state remain outside the records. Building observations
 select private stock or the captured team's stock through an immutable resource
-pool selector; team stock is not duplicated into every building. Ordered
+pool selector; team stock is not duplicated into every building. Supplier records
+also capture a material-availability mask after reservations, used by periodic
+market gradients without consulting live stock. Ordered
 relationship IDs remain explicit capture work. Upgrade and repair feasibility
 queries read the frozen map arrays when requested; capture does not scan every
 building footprint to precompute unused decisions.
@@ -85,7 +87,8 @@ computed on telemetry query, never on the capture path.
 
 All parallel simulation work shares the map's `ComputeExecutor`
 (`src/common/ComputeExecutor.h`): blocking `run()` batches for map computation and
-deferred lane batches for AI decisions. `AIEngine::Pipeline` submits one batch per
+deferred batches for AI decisions and periodic gradients. AI controller lanes
+preserve decision order; gradient jobs need no lane. `AIEngine::Pipeline` submits one batch per
 tick with one job per controller on that controller's lane, and joins it at the
 deadline, executing remaining jobs itself from the oldest live batch forward. The
 match-wide `GameHeader::aiOrderDelay` is an integer from 0 through 8, defaulting
@@ -1167,32 +1170,33 @@ For timing and scheduling, start with `src/game/Game_sync.cpp` and `src/engine/E
   are rebuilt from the registry and cells, never serialized. Registry factories
   publish `shared_ptr<const TerrainRegistry>`; copying a registry is private because
   authoring presentation strings borrow its owned key/name storage.
-- The engine has a completed-tick observation phase. `Game::syncStep` first runs
-  all world mutations, including fog, projects and scripts, then selects/reserves
-  one periodic gradient job. Engine defers private seeding into its next
-  preparation barrier before capturing AI decision inputs. This is the default architecture; the
-  compute mask and thread count select execution only, never observation timing.
-  Direct `Game::syncStep` callers complete preparation before returning unless
-  they explicitly request `PreparationCompletion::Deferred` and own its barrier.
-  Standalone `Map::syncStep` retains synchronous map-level preparation.
-- `ReadOnlyPhase` remains the barrier for private gradient preparation that
-  borrows stable owner inputs. AI decisions use the separate immutable snapshot
-  pipeline described [above](#ai-observations-and-delayed-orders), and can outlive
-  the polling boundary. Add worker work only after auditing scratch ownership,
-  RNG, input lifetime and shared caches; workers never publish shared telemetry
-  or mutate live simulation objects.
-- Gradient selection, round-robin flags and queue membership stay on the simulation
-  owner. A typed reservation is visible to AI lazy invalidation before dispatch;
-  preparation writes only its private seeds and immutable terrain snapshots.
-  Propagation may then outlive the observation barrier, but publication remains
-  after its configured delay (eight ticks by default), before team stepping.
-  Worker count and completion time never
-  select publication time. Saves, compute/terrain reconfiguration and subsequent
-  mutations drain preparation; teardown discards its descriptor before resetting
-  the queue. Seed/dispatch failures mark the job completed with an error, preventing
-  a save or publication from waiting indefinitely. Inspect these contracts before
-  adding parallel work; sharing the executor alone does not establish safety.
-- Gradient field seeding lives in the area, building and resource source files.
+- The engine has a completed-tick observation phase. After fog, projects and
+  scripts, `Game::syncStep` selects/reserves one periodic gradient job. The next
+  observation captures AI and gradient requirements together in a game-owned
+  snapshot store. AI and gradient batches share the compute executor; gradient
+  seeding and propagation both read immutable projections and may outlive the
+  observation boundary. Direct stepping captures and submits before returning;
+  explicit deferred stepping leaves that capture to its caller. Direct map
+  stepping invalidates the cached boundary because its caller need not advance
+  the game's tick counter.
+- Gradient selection, round-robin flags, invalidation and publication stay on the
+  simulation owner. Jobs own their output and use worker-private scratch; they never read live map
+  arrays or mutable seed caches. Publication remains after the configured delay
+  (eight ticks by default), before team stepping. Completion time never changes
+  publication time. Saving joins private work without publishing it, then writes
+  the existing field/deadline representation. Reconfiguration drains work before
+  resizing scratch; teardown drains callbacks and discards reservations. Job-owned
+  errors survive executor batch retirement and surface at save/publication.
+- The executor ring holds 36 batches for the combined AI/gradient horizon.
+  Gradient jobs use no AI controller lane and submit no nested deferred work.
+  Thread counts change execution only. Review scratch ownership, input lifetimes,
+  RNG and shared caches before adding another producer.
+- Periodic snapshot seeding uses `SnapshotGradient` and shared `SeedCells`
+  predicates. Each executor slot owns derived seed templates, maintained using
+  exact immutable chunk versions, with direct-kernel fallbacks. Material caches
+  retain compact base fields and goal bitsets. No cached template retains snapshot
+  buffers or reads the live mutable material cache. Immediate building seeding
+  remains in its domain source files.
   `MapGradientPropagation.cpp` starts eager fields through the private
   `src/field/GradientPropagation.h` core; `BuildingGradientSearch.cpp` resumes
   building fields. Both use `src/field/GradientRelaxation.h`. Keep their cell-cost

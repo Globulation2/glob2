@@ -130,11 +130,8 @@ TEST_CASE("terrain edits refresh escape costs and supersede queued route snapsho
     map.configureGradientPipeline(0,2);
     map.advanceGradientPipeline();
     auto& pipeline = map.gradientRuntime->pipeline;
-    pipeline.submit(&map.materialGradients[0][WHEAT][0],0,[&](auto& job) {
-        map.seedMaterialGradient(0,WHEAT,0,job.data.get());
-        job.modifiedCosts = true;
-        job.terrain = map.frozenTerrainSnapshot();
-    });
+    map.stagePeriodicGradientPreparation();
+    map.preparePendingGradient();
     map.setCellTerrain(9,8,ICE);
     map.advanceGradientPipeline();
     map.advanceGradientPipeline();
@@ -449,8 +446,9 @@ TEST_SUITE("TerrainRuntime")
 			}
 			search.finish();
 			CHECK(lazy == eager);
+			ComputeExecutor executor; executor.configure(2);
 			GradientPipeline pipeline;
-			pipeline.configure(1, 2, 1024,
+			pipeline.configure(executor, true, 2, 1024,
 							   [](auto &job, auto &scratch)
 							   {
 								   gradient_kernel::propagateTerrainField(
@@ -637,16 +635,8 @@ TEST_SUITE("TerrainRuntime")
 		map.getMaterialGradientSlot(0, WHEAT, 6);
 		map.configureGradientPipeline(1, 2);
 		map.advanceGradientPipeline();
-		map.gradientRuntime->pipeline.submit(&map.materialGradients[0][WHEAT][6], 6,
-											 [&](auto &job)
-											 {
-												 map.seedMaterialGradient(0, WHEAT, 6,
-																		   job.data.get());
-												 job.modifiedCosts = true;
-												 job.registry = map.frozenTerrainRegistry();
-												 job.terrain = map.frozenTerrainSnapshot();
-												 job.terrainBuckets = map.terrainQueueBuckets();
-											 });
+		map.stagePeriodicGradientPreparation();
+		map.preparePendingGradient();
 		auto *bytes = new GAGCore::MemoryStreamBackend;
 		GAGCore::BinaryOutputStream output(bytes);
 		world.game.save(&output, false, "custom-continuation");

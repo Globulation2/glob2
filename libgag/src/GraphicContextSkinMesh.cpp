@@ -1,6 +1,9 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "GraphicContextPrivate.h"
 #include <SkinMesh.h>
+#include <SkinModel.h>
+#include <SkinShapeModel.h>
+#include <SkinDeformation.h>
 #include <glob2/SkinMaterials.h>
 #include <PerformanceTelemetry.h>
 #include <Toolkit.h>
@@ -105,6 +108,39 @@ GLuint compileShader(GLenum type, const std::string &text)
     if (!ok) { glDeleteShader(shader); return 0; }
     return shader;
 }
+// Packed rest vertex: position, normal, UV, four joint indices, four weights.
+constexpr unsigned RigVertexFloats = 16;
+template <std::size_t N>
+std::array<float, N * N> transpose(const std::array<float, N * N> &rowMajor)
+{
+	std::array<float, N * N> columnMajor;
+	for (unsigned y = 0; y < N; ++y)
+		for (unsigned x = 0; x < N; ++x)
+			columnMajor[x * N + y] = rowMajor[y * N + x];
+	return columnMajor;
+}
+GLuint linkSkinProgram(GLuint vertex, GLuint fragment, bool rig = false)
+{
+	const auto program = glCreateProgram();
+	glAttachShader(program, vertex);
+	glAttachShader(program, fragment);
+	if (rig)
+	{
+		const char *attributes[] = {"position", "surfaceNormal", "texcoord", "joints", "weights"};
+		for (unsigned i = 0; i < 5; ++i)
+			glBindAttribLocation(program, i, attributes[i]);
+	}
+	glLinkProgram(program);
+	GLint ok = 0;
+	glGetProgramiv(program, GL_LINK_STATUS, &ok);
+	if (ok)
+		return program;
+	char log[2048]{};
+	glGetProgramInfoLog(program, sizeof(log), nullptr, log);
+	std::cerr << "Skin " << (rig ? "rig" : "mesh") << " shader link failed: " << log << '\n';
+	glDeleteProgram(program);
+	return 0;
+}
 struct SkinGLState
 {
     // Texture unit 1 holds the material map during rasterization. Its binding
@@ -188,39 +224,287 @@ auto keyFor(const SkinMeshRequest &request)
 }
 bool valid(const SkinMeshRequest &request)
 {
-    return request.mesh && request.texture && request.material && request.region <= SkinRegionSwarm &&
-        request.mesh->identity && request.frame < request.mesh->frames && !request.mesh->poses.empty() &&
-        request.texture->getSDLSurface() && request.material->getSDLSurface();
+	if (!request.mesh || !request.texture || !request.material || request.region > SkinRegionSwarm)
+		return false;
+	const auto &mesh = *request.mesh;
+	const bool hasGeometry = mesh.model	 ? mesh.clip < mesh.model->clips().size()
+							 : mesh.shapes ? mesh.clip < mesh.shapes->clips().size()
+										   : !mesh.poses.empty();
+	return mesh.identity && request.frame < mesh.frames && hasGeometry &&
+		   request.texture->getSDLSurface() && request.material->getSDLSurface();
 }
 // colony-v2 quadrant offsets: worker, warrior / explorer, swarm.
 void regionOffset(std::uint8_t region, float &u, float &v)
 {
-    u = (region & 1) ? 0.5f : 0.f;
+	u = (region & 1) ? 0.5f : 0.f;
     v = (region & 2) ? 0.5f : 0.f;
 }
 }
+void GraphicContext::SkinResources::Uniforms::initialize(unsigned program)
+{
+	// Sampler units are invariant for the lifetime of this linked program.
+	glUseProgram(program);
+	glUniform1i(glGetUniformLocation(program, "paint"), 0);
+	glUniform1i(glGetUniformLocation(program, "material"), 1);
+	region = glGetUniformLocation(program, "region");
+	bones = glGetUniformLocation(program, "bones[0]");
+	view = glGetUniformLocation(program, "view");
+	normalView = glGetUniformLocation(program, "normalView");
+	shell = glGetUniformLocation(program, "shell");
+	glUniform1f(glGetUniformLocation(program, "furLength"), SKIN_FUR_LENGTH);
+	glUniform1f(glGetUniformLocation(program, "shellDepth"), SKIN_SHELL_DEPTH);
+}
+
+void GraphicContext::SkinResources::prepareRigShader()
+{
+	rigAttempted = true;
+	// 32 mat4 bones, mat4 camera, mat3 normal camera, plus driver headroom.
+	GLint available = 0;
+#ifdef GLOB2_WEBGL2
+	glGetIntegerv(GL_MAX_VERTEX_UNIFORM_VECTORS, &available);
+#else
+	glGetIntegerv(GL_MAX_VERTEX_UNIFORM_COMPONENTS, &available);
+	available /= 4;
+#endif
+	const char *mode = std::getenv("GLOB2_SKIN_DEFORMATION");
+	if (!fragment || available < 144 || (mode && std::strcmp(mode, "cpu") == 0))
+		return;
+#ifdef GLOB2_WEBGL2
+	const std::string header =
+		"#version 300 es\nprecision highp float;\n"
+		"in vec3 position;in vec3 surfaceNormal;in vec2 texcoord;in vec4 joints;in vec4 weights;"
+		"out vec2 uv;out vec3 normal;\n";
+#else
+	const std::string header =
+		"#version 120\nvarying vec2 uv;varying vec3 normal;\n"
+		"#define position gl_Vertex.xyz\n#define surfaceNormal gl_Normal\n"
+		"#define texcoord gl_MultiTexCoord0.xy\n#define joints gl_MultiTexCoord1\n"
+		"#define weights gl_MultiTexCoord2\n";
+#endif
+	const auto vertex = compileShader(GL_VERTEX_SHADER, header + SkinDeformationGLSL);
+	if (!vertex)
+		return;
+	rigProgram = linkSkinProgram(vertex, fragment, true);
+	glDeleteShader(vertex);
+	if (rigProgram)
+		rigUniforms.initialize(rigProgram);
+}
+
+const GraphicContext::SkinResources::RigBuffers &
+GraphicContext::SkinResources::restBuffers(const SkinMesh &mesh)
+{
+	const auto &model = *mesh.model;
+	if (const auto found = rigs.find(model.identity()); found != rigs.end())
+		return found->second;
+
+	// Allow room for the three animated models and static catalog. Bound independently
+	// of pose/paint atlas entries, evicting the oldest model generation first.
+	constexpr unsigned MaxModels = 16;
+	if (rigs.size() >= MaxModels)
+	{
+		const auto oldest = rigs.begin();
+		glDeleteBuffers(1, &oldest->second.vertices);
+		glDeleteBuffers(1, &oldest->second.indices);
+		rigs.erase(oldest);
+	}
+	RigBuffers buffers;
+	glGenBuffers(1, &buffers.vertices);
+	glGenBuffers(1, &buffers.indices);
+	uploadScratch.resize(model.vertices() * RigVertexFloats);
+	for (unsigned v = 0; v < model.vertices(); ++v)
+	{
+		auto *dest = uploadScratch.data() + v * RigVertexFloats;
+		std::copy_n(model.rest().data() + v * 6, 6, dest);
+		std::copy_n(model.uv().data() + v * 2, 2, dest + 6);
+		for (unsigned j = 0; j < 4; ++j)
+		{
+			dest[8 + j] = model.influences()[v].bones[j];
+			dest[12 + j] = model.influences()[v].weights[j];
+		}
+	}
+	glBindBuffer(GL_ARRAY_BUFFER, buffers.vertices);
+	glBufferData(GL_ARRAY_BUFFER, uploadScratch.size() * sizeof(float), uploadScratch.data(),
+				 GL_STATIC_DRAW);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, buffers.indices);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, model.indices().size() * sizeof(std::uint32_t),
+				 model.indices().data(), GL_STATIC_DRAW);
+	return rigs.emplace(model.identity(), buffers).first->second;
+}
+
+void GraphicContext::SkinResources::bindRigGeometry(const RigBuffers &buffers)
+{
+	glBindBuffer(GL_ARRAY_BUFFER, buffers.vertices);
+	constexpr unsigned stride = RigVertexFloats * sizeof(float);
+#ifdef GLOB2_WEBGL2
+	constexpr unsigned sizes[] = {3, 3, 2, 4, 4};
+	constexpr unsigned offsets[] = {0, 3, 6, 8, 12};
+	for (unsigned i = 0; i < 5; ++i)
+	{
+		glEnableVertexAttribArray(i);
+		glVertexAttribPointer(i, sizes[i], GL_FLOAT, GL_FALSE, stride,
+							  reinterpret_cast<void *>(offsets[i] * sizeof(float)));
+	}
+#else
+	glEnableClientState(GL_VERTEX_ARRAY);
+	glEnableClientState(GL_NORMAL_ARRAY);
+	glVertexPointer(3, GL_FLOAT, stride, nullptr);
+	glNormalPointer(GL_FLOAT, stride, reinterpret_cast<void *>(3 * sizeof(float)));
+	// Compatibility GL consumes UV, joints and weights as texture coordinates.
+	constexpr unsigned offsets[] = {6, 8, 12};
+	for (unsigned i = 0; i < 3; ++i)
+	{
+		glClientActiveTexture(GL_TEXTURE0 + i);
+		glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+		glTexCoordPointer(i ? 4 : 2, GL_FLOAT, stride,
+						  reinterpret_cast<void *>(offsets[i] * sizeof(float)));
+	}
+	glClientActiveTexture(GL_TEXTURE0);
+#endif
+}
+
+void GraphicContext::SkinResources::finishRigGeometry()
+{
+	// The following baked draw uses fewer arrays. SkinGLState restores the
+	// caller's complete state when the atlas batch ends.
+#ifdef GLOB2_WEBGL2
+	for (unsigned i = 0; i < 5; ++i)
+		glDisableVertexAttribArray(i);
+#else
+	for (unsigned i = 1; i < 3; ++i)
+	{
+		glClientActiveTexture(GL_TEXTURE0 + i);
+		glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+	}
+	glClientActiveTexture(GL_TEXTURE0);
+#endif
+}
+
+void GraphicContext::SkinResources::uploadRigPalette(const SkinMesh &mesh, unsigned sample)
+{
+	if (paletteIdentity == mesh.identity && paletteFrame == sample)
+		return;
+	SkinPalette palette;
+	if (!mesh.model->paletteForFrame(mesh.clip, sample, palette))
+		return; // valid() admitted the request, so the frame and clip exist
+	std::array<float, 32 * 16> positions{};
+	for (unsigned b = 0; b < palette.count; ++b)
+	{
+		const auto columnMajor = transpose<4>(palette.positions[b]);
+		std::copy(columnMajor.begin(), columnMajor.end(), positions.begin() + b * 16);
+	}
+	glUniformMatrix4fv(rigUniforms.bones, palette.count, GL_FALSE, positions.data());
+	const auto &clip = mesh.model->clips()[mesh.clip];
+	const auto camera = transpose<4>(clip.modelToClip);
+	const auto normals = transpose<3>(clip.normalToCamera);
+	glUniformMatrix4fv(rigUniforms.view, 1, GL_FALSE, camera.data());
+	glUniformMatrix3fv(rigUniforms.normalView, 1, GL_FALSE, normals.data());
+	paletteIdentity = mesh.identity;
+	paletteFrame = sample;
+}
+
+void GraphicContext::SkinResources::bindCpuGeometry(const SkinMesh &mesh, unsigned sample)
+{
+	if (meshIdentity != mesh.identity)
+	{
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indices);
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, mesh.indices.size() * sizeof(std::uint32_t),
+					 mesh.indices.data(), GL_STATIC_DRAW);
+#ifndef GLOB2_WEBGL2
+		glBindBuffer(GL_ARRAY_BUFFER, uv);
+		glBufferData(GL_ARRAY_BUFFER, mesh.uv.size() * sizeof(float), mesh.uv.data(),
+					 GL_STATIC_DRAW);
+#endif
+		meshIdentity = mesh.identity;
+		frame = ~0u;
+	}
+	glBindBuffer(GL_ARRAY_BUFFER, poses);
+	if (frame != sample)
+	{
+		const float *pose;
+		if (mesh.model || mesh.shapes)
+		{
+			mesh.evaluate(sample, cpuPose);
+			pose = cpuPose.data();
+		}
+		else
+			pose = mesh.poses.data() + std::size_t(sample) * mesh.vertices * 6;
+#ifdef GLOB2_WEBGL2
+		// Emscripten's legacy VAO implementation supports a single vertex buffer.
+		uploadScratch.resize(std::size_t(mesh.vertices) * 8);
+		auto &vertices = uploadScratch;
+		for (std::size_t v = 0; v < mesh.vertices; ++v)
+		{
+			std::copy_n(pose + v * 6, 6, vertices.data() + v * 8);
+			std::copy_n(mesh.uv.data() + v * 2, 2, vertices.data() + v * 8 + 6);
+		}
+		glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(float), vertices.data(),
+					 GL_STREAM_DRAW);
+#else
+		glBufferData(GL_ARRAY_BUFFER, mesh.vertices * 6 * sizeof(float), pose, GL_STREAM_DRAW);
+#endif
+		frame = sample;
+	}
+#ifdef GLOB2_WEBGL2
+	glEnableVertexAttribArray(0);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), nullptr);
+	glEnableVertexAttribArray(1);
+	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float),
+						  reinterpret_cast<void *>(3 * sizeof(float)));
+	glEnableVertexAttribArray(2);
+	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float),
+						  reinterpret_cast<void *>(6 * sizeof(float)));
+#else
+	glEnableClientState(GL_VERTEX_ARRAY);
+	glEnableClientState(GL_NORMAL_ARRAY);
+	glVertexPointer(3, GL_FLOAT, 6 * sizeof(float), nullptr);
+	glNormalPointer(GL_FLOAT, 6 * sizeof(float), reinterpret_cast<void *>(3 * sizeof(float)));
+	glBindBuffer(GL_ARRAY_BUFFER, uv);
+	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+	glTexCoordPointer(2, GL_FLOAT, 0, nullptr);
+#endif
+}
+
 void GraphicContext::destroySkinRenderer()
 {
-    auto &r = skinResources;
-    if (r.program) glDeleteProgram(r.program);
-    if (r.framebuffer) glDeleteFramebuffers(1, &r.framebuffer);
-    if (r.depth) glDeleteRenderbuffers(1, &r.depth);
-    for (auto color : r.colors) glDeleteTextures(1, &color);
+	auto &r = skinResources;
+	if (r.program)
+		glDeleteProgram(r.program);
+	if (r.rigProgram)
+		glDeleteProgram(r.rigProgram);
+	if (r.fragment)
+		glDeleteShader(r.fragment);
+	for (const auto &[identity, buffers] : r.rigs)
+	{
+		glDeleteBuffers(1, &buffers.vertices);
+		glDeleteBuffers(1, &buffers.indices);
+	}
+	if (r.framebuffer)
+		glDeleteFramebuffers(1, &r.framebuffer);
+	if (r.depth)
+		glDeleteRenderbuffers(1, &r.depth);
+	for (auto color : r.colors)
+		glDeleteTextures(1, &color);
 #ifdef GLOB2_WEBGL2
-    if (r.vao) glDeleteVertexArrays(1, &r.vao);
+	if (r.vao)
+		glDeleteVertexArrays(1, &r.vao);
 #endif
-    for (auto buffer : {r.poses, r.uv, r.indices}) if (buffer) glDeleteBuffers(1, &buffer);
-    r = {};
+	for (auto buffer : {r.poses, r.uv, r.indices})
+		if (buffer)
+			glDeleteBuffers(1, &buffer);
+	r = {};
 }
 void GraphicContext::prepareSkinMeshes(const std::vector<SkinMeshRequest> &requests)
 {
-    PERF_SCOPE_TIME(SkinPrepare);
-    auto &r = skinResources;
-    if (!context || renderer || requests.empty() || (r.attempted && !r.program)) return;
+	PERF_SCOPE_TIME(SkinPrepare);
+	auto &r = skinResources;
+	if (!context || renderer || requests.empty() || (r.attempted && !r.program))
+		return;
 #ifndef GLOB2_WEBGL2
-    if (glState.isTextureSRectangle) return;
-    const auto *extensions = reinterpret_cast<const char*>(glGetString(GL_EXTENSIONS));
-    if (!extensions || !std::strstr(extensions, "GL_EXT_framebuffer_object")) return;
+	if (glState.isTextureSRectangle)
+		return;
+	const auto *extensions = reinterpret_cast<const char *>(glGetString(GL_EXTENSIONS));
+	if (!extensions || !std::strstr(extensions, "GL_EXT_framebuffer_object"))
+		return;
 #endif
     // Sort by mesh and pose so team variants reuse geometry uploads. Wrapped map
     // copies and identical units share one live rasterization for this frame.
@@ -273,143 +557,134 @@ void GraphicContext::prepareSkinMeshes(const std::vector<SkinMeshRequest> &reque
             + std::string(SkinMaterialGLSL) +
             "void main(){" + shade + "gl_FragColor=vec4(shaded.rgb,1.0);}\n");
 #endif
-        if (vertex && fragment)
-        {
-            r.program = glCreateProgram();
-            glAttachShader(r.program, vertex); glAttachShader(r.program, fragment);
-            glLinkProgram(r.program);
-            GLint ok = 0; glGetProgramiv(r.program, GL_LINK_STATUS, &ok);
-            if (!ok) { glDeleteProgram(r.program); r.program = 0; }
-        }
-        if (vertex) glDeleteShader(vertex);
-        if (fragment) glDeleteShader(fragment);
-        if (!r.program) return;
-        glGenFramebuffers(1, &r.framebuffer); glGenRenderbuffers(1, &r.depth);
-        glBindRenderbuffer(GL_RENDERBUFFER, r.depth);
-        glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT24, AtlasSize, AtlasSize);
-        glGenBuffers(1, &r.poses); glGenBuffers(1, &r.indices);
+		if (vertex && fragment)
+			r.program = linkSkinProgram(vertex, fragment);
+		if (vertex)
+			glDeleteShader(vertex);
+		r.fragment = fragment;
+		if (!r.program)
+			return;
+		r.uniforms.initialize(r.program);
+		glGenFramebuffers(1, &r.framebuffer);
+		glGenRenderbuffers(1, &r.depth);
+		glBindRenderbuffer(GL_RENDERBUFFER, r.depth);
+		glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT24, AtlasSize, AtlasSize);
+		glGenBuffers(1, &r.poses);
+		glGenBuffers(1, &r.indices);
 #ifdef GLOB2_WEBGL2
-        glGenVertexArrays(1, &r.vao);
+		glGenVertexArrays(1, &r.vao);
 #else
-        glGenBuffers(1, &r.uv);
+		glGenBuffers(1, &r.uv);
 #endif
-    }
-    const unsigned pages = std::min(MaxPages, static_cast<unsigned>((r.slots.size()+unique.size()+SlotsPerPage-1)/SlotsPerPage));
-    while (r.colors.size() < pages)
-    {
-        GLuint color = 0; glGenTextures(1, &color); glBindTexture(GL_TEXTURE_2D, color);
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, AtlasSize, AtlasSize, 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-        r.colors.push_back(color);
-    }
-    glBindFramebuffer(GL_FRAMEBUFFER, r.framebuffer);
-    glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, r.depth);
-    glDisable(GL_SCISSOR_TEST); glDisable(GL_BLEND); glDisable(GL_CULL_FACE);
-    glEnable(GL_DEPTH_TEST); glDepthFunc(GL_LESS); glDepthMask(GL_TRUE);
-    glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE); glClearColor(0,0,0,0);
+	}
+	// Baked-only clients never compile or allocate rig resources.
+	if (!r.rigAttempted && std::any_of(unique.begin(), unique.end(), [](const auto &entry)
+									   { return bool(entry.second.mesh->model); }))
+		r.prepareRigShader();
+	const unsigned pages = std::min(
+		MaxPages,
+		static_cast<unsigned>((r.slots.size() + unique.size() + SlotsPerPage - 1) / SlotsPerPage));
+	while (r.colors.size() < pages)
+	{
+		GLuint color = 0;
+		glGenTextures(1, &color);
+		glBindTexture(GL_TEXTURE_2D, color);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, AtlasSize, AtlasSize, 0, GL_RGBA, GL_UNSIGNED_BYTE,
+					 nullptr);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+		r.colors.push_back(color);
+	}
+	glBindFramebuffer(GL_FRAMEBUFFER, r.framebuffer);
+	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, r.depth);
+	glDisable(GL_SCISSOR_TEST);
+	glDisable(GL_BLEND);
+	glDisable(GL_CULL_FACE);
+	glEnable(GL_DEPTH_TEST);
+	glDepthFunc(GL_LESS);
+	glDepthMask(GL_TRUE);
+	glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
+	glClearColor(0, 0, 0, 0);
 #ifdef GLOB2_WEBGL2
-    glClearDepthf(1); glBindVertexArray(r.vao);
+	glClearDepthf(1);
+	glBindVertexArray(r.vao);
 #else
-    glClearDepth(1);
+	glClearDepth(1);
 #endif
-    glUseProgram(r.program);
-    glUniform1i(glGetUniformLocation(r.program, "paint"), 0);
-    glUniform1i(glGetUniformLocation(r.program, "material"), 1);
-    const GLint regionLocation = glGetUniformLocation(r.program, "region");
-    const GLint shellLocation = glGetUniformLocation(r.program, "shell");
-    glUniform1f(glGetUniformLocation(r.program, "furLength"), SKIN_FUR_LENGTH);
-    glUniform1f(glGetUniformLocation(r.program, "shellDepth"), SKIN_SHELL_DEPTH);
-    unsigned boundPage = ~0u;
-    for (const auto &[key, request] : unique)
-    {
-        if (!request.texture->texture || !request.material->texture) continue;
-        const unsigned slot = r.slots.reserve(key);
-        const unsigned page = slot / SlotsPerPage;
-        if (page != boundPage)
-        {
-            glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, r.colors[page], 0);
-            if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
-            { destroySkinRenderer(); skinResources.attempted = true; return; }
-            boundPage = page;
-        }
-        // Preserve other cached poses, including the transparent tile border.
-        const unsigned tile = slot % SlotsPerPage;
-        glEnable(GL_SCISSOR_TEST);
-        glScissor((tile%Columns)*TileSize, (tile/Columns)*TileSize, TileSize, TileSize);
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        const auto &mesh = *request.mesh;
-        PerformanceTelemetry::Scope geometryTime(PerformanceTelemetry::Id::SkinGeometry);
-        if (r.meshIdentity != mesh.identity)
-        {
-            glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, r.indices);
-            glBufferData(GL_ELEMENT_ARRAY_BUFFER, mesh.indices.size()*sizeof(std::uint32_t), mesh.indices.data(), GL_STATIC_DRAW);
-#ifndef GLOB2_WEBGL2
-            glBindBuffer(GL_ARRAY_BUFFER, r.uv);
-            glBufferData(GL_ARRAY_BUFFER, mesh.uv.size()*sizeof(float), mesh.uv.data(), GL_STATIC_DRAW);
-#endif
-            r.meshIdentity = mesh.identity; r.frame = ~0u;
-        }
-        glBindBuffer(GL_ARRAY_BUFFER, r.poses);
-        if (r.frame != request.frame)
-        {
-            const float *pose = mesh.poses.data()+std::size_t(request.frame)*mesh.vertices*6;
-#ifdef GLOB2_WEBGL2
-            // Emscripten's legacy VAO implementation supports a single vertex buffer.
-            std::vector<float> vertices(std::size_t(mesh.vertices)*8);
-            for (std::size_t v=0; v<mesh.vertices; ++v)
-            {
-                std::copy_n(pose+v*6, 6, vertices.data()+v*8);
-                std::copy_n(mesh.uv.data()+v*2, 2, vertices.data()+v*8+6);
-            }
-            glBufferData(GL_ARRAY_BUFFER, vertices.size()*sizeof(float), vertices.data(), GL_STREAM_DRAW);
-#else
-            glBufferData(GL_ARRAY_BUFFER, mesh.vertices*6*sizeof(float), pose, GL_STREAM_DRAW);
-#endif
-            r.frame = request.frame;
-        }
-#ifdef GLOB2_WEBGL2
-        glEnableVertexAttribArray(0); glVertexAttribPointer(0,3,GL_FLOAT,GL_FALSE,8*sizeof(float),nullptr);
-        glEnableVertexAttribArray(1); glVertexAttribPointer(1,3,GL_FLOAT,GL_FALSE,8*sizeof(float),reinterpret_cast<void*>(3*sizeof(float)));
-        glEnableVertexAttribArray(2); glVertexAttribPointer(2,2,GL_FLOAT,GL_FALSE,8*sizeof(float),reinterpret_cast<void*>(6*sizeof(float)));
-#else
-        glEnableClientState(GL_VERTEX_ARRAY); glEnableClientState(GL_NORMAL_ARRAY);
-        glVertexPointer(3,GL_FLOAT,6*sizeof(float),nullptr);
-        glNormalPointer(GL_FLOAT,6*sizeof(float),reinterpret_cast<void*>(3*sizeof(float)));
-        glBindBuffer(GL_ARRAY_BUFFER,r.uv); glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-        glTexCoordPointer(2,GL_FLOAT,0,nullptr);
-#endif
-        // Fur materials add shell passes; the scan result is cached per map revision.
-        const auto shellKey = std::make_pair(request.material->lifetimeIdentity(), request.material->contentRevision());
-        auto shells = r.shellRegions.find(shellKey);
-        if (shells == r.shellRegions.end())
-        {
-            if (r.shellRegions.size() >= 64) r.shellRegions.clear();
-            shells = r.shellRegions.emplace(shellKey, skinShellRegions(*request.material)).first;
-        }
-        const unsigned passes = shells->second[request.region] ? SKIN_MATERIAL_SHELLS : 0;
-        geometryTime.stop();
-        PERF_SCOPE_TIME(SkinRaster);
-        glViewport((tile%Columns)*TileSize, (tile/Columns)*TileSize, TileSize, TileSize);
-        // Material ids must never blend: sample them unfiltered on unit 1.
-        glActiveTexture(GL_TEXTURE1);
-        glBindTexture(GL_TEXTURE_2D, request.material->texture);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-        glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, request.texture->texture);
-        float regionU, regionV; regionOffset(request.region, regionU, regionV);
-        glUniform2f(regionLocation, regionU, regionV);
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, r.indices);
-        for (unsigned shell = 0; shell <= passes; ++shell)
-        {
-            glUniform1f(shellLocation, static_cast<float>(shell) / SKIN_MATERIAL_SHELLS);
-            glDrawElements(GL_TRIANGLES, mesh.indices.size(), GL_UNSIGNED_INT, nullptr);
-            ++drawCalls;
-        }
-    }
+	unsigned boundPage = ~0u;
+	for (const auto &[key, request] : unique)
+	{
+		if (!request.texture->texture || !request.material->texture)
+			continue;
+		const unsigned slot = r.slots.reserve(key);
+		const unsigned page = slot / SlotsPerPage;
+		if (page != boundPage)
+		{
+			glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D,
+								   r.colors[page], 0);
+			if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+			{
+				destroySkinRenderer();
+				skinResources.attempted = true;
+				return;
+			}
+			boundPage = page;
+		}
+		// Preserve other cached poses, including the transparent tile border.
+		const unsigned tile = slot % SlotsPerPage;
+		glEnable(GL_SCISSOR_TEST);
+		glScissor((tile % Columns) * TileSize, (tile / Columns) * TileSize, TileSize, TileSize);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		const auto &mesh = *request.mesh;
+		PerformanceTelemetry::Scope geometryTime(PerformanceTelemetry::Id::SkinGeometry);
+		const bool gpuRig = mesh.model && r.rigProgram;
+		const auto program = gpuRig ? r.rigProgram : r.program;
+		glUseProgram(program);
+		unsigned indexBuffer = r.indices;
+		if (gpuRig)
+		{
+			const auto &buffers = r.restBuffers(mesh);
+			r.bindRigGeometry(buffers);
+			r.uploadRigPalette(mesh, request.frame);
+			indexBuffer = buffers.indices;
+		}
+		else
+			r.bindCpuGeometry(mesh, request.frame);
+		// Fur uses the same material-region cache for baked and rig geometry.
+		const auto shellKey = std::make_pair(request.material->lifetimeIdentity(), request.material->contentRevision());
+		auto shells = r.shellRegions.find(shellKey);
+		if (shells == r.shellRegions.end())
+		{
+			if (r.shellRegions.size() >= 64) r.shellRegions.clear();
+			shells = r.shellRegions.emplace(shellKey, skinShellRegions(*request.material)).first;
+		}
+		const unsigned passes = shells->second[request.region] ? SKIN_MATERIAL_SHELLS : 0;
+		geometryTime.stop();
+		PERF_SCOPE_TIME(SkinRaster);
+		glViewport((tile % Columns) * TileSize, (tile / Columns) * TileSize, TileSize, TileSize);
+		// Material ids must never blend: sample them unfiltered on unit 1.
+		glActiveTexture(GL_TEXTURE1);
+		glBindTexture(GL_TEXTURE_2D, request.material->texture);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, request.texture->texture);
+		float regionU, regionV;
+		regionOffset(request.region, regionU, regionV);
+		const auto &uniforms = gpuRig ? r.rigUniforms : r.uniforms;
+		glUniform2f(uniforms.region, regionU, regionV);
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexBuffer);
+		for (unsigned shell = 0; shell <= passes; ++shell)
+		{
+			glUniform1f(uniforms.shell, static_cast<float>(shell) / SKIN_MATERIAL_SHELLS);
+			glDrawElements(GL_TRIANGLES, mesh.indices.size(), GL_UNSIGNED_INT, nullptr);
+			++drawCalls;
+		}
+		if (gpuRig)
+			r.finishRigGeometry();
+	}
 }
 bool GraphicContext::readSkinMesh(const SkinMeshRequest &request, std::vector<std::uint8_t> &rgba)
 {

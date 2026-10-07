@@ -41,6 +41,15 @@ python3 test/run_tests.py --update-fixtures --filter 'WinningConditions/*'
 `ColonySkinPreview` checks shared image preparation with independent appearance
 authorization, refresh, expiry and cancellation across preview owners.
 
+`SkinShapeModel` and `SkinModel` check the GSB1 blend-shape and GSR1 bone-rig
+contracts against the analytic fixtures shared with the Studio decoders
+(`test/fixtures/skins/`). `SkinModelRender` checks native GPU/CPU agreement for
+the rig shader, mixed baked/rig rendering, GL state restoration and CPU fallback,
+and the browser conformance suite checks the same shader in Chromium, Firefox and
+WebKit; `tools/skins/test_fit_shapes.py` and `test_explorer_rig.py` regenerate
+the installed assets and check their fit to the baked clips. See
+[unit rigs](../tools/unit-animation/README.md#contract-and-conformance-tests).
+
 Asset pipeline checks live in `AssetLoader` and `SpriteLoad`, including independent
 continuation cancellation, cache metadata cleanup and variable atlas admission.
 `SpriteSheets` also checks renderer readiness and atomic HD reload publication. Build the
@@ -1375,6 +1384,14 @@ compares their numeric/data results, complete traces and decoded saves against
 the Linux and Windows corpus runs. The separate released replay comparison
 selects only its baseline traces, so scripting fixture traces cannot be mistaken
 for the released replay.
+The same evidence comparison requires the frozen 150-row custom-resource
+composition trace from every selected native platform and both serial and
+threaded runtimes in Chromium, Firefox and WebKit. Native collection uses
+`test/run-browser-determinism.py BINARY OUTPUT --engine-binary ENGINE_TEST_BINARY`;
+its fresh `resources/native` directory retains the command, embedded build
+provenance, JUnit result and complete trace. The comparison rejects missing or
+repeated browser identities, dirty or mismatched source producers, failed runs,
+and truncated or changed traces against the preserved committed fixture.
 
 `python3 test/check_javascript_evidence.py REFERENCE CANDIDATE --output artifacts/js-comparison.json`
 compares shared numeric/data values, complete traces and decoded save payloads,
@@ -1873,3 +1890,36 @@ into the fixture. Record other platform/compiler variants on those actual builds
 unavailable full hashes produce an explicit unverified warning. The four designs
 whose historical full hashes matched across platforms retain portable topology
 checks; Fingerprint's known platform variant requires its own recorded topology.
+
+### Generator fingerprint verification and observations
+
+`python3 test/collect_generator_evidence.py collect BINARY OUTPUT --platform macos-arm64`
+reads `MapGeneratorGoldenTest --inventory` and runs `--print` twice in fresh profiles.
+The request enumeration is shared with generation, including extended team counts
+without accepted fingerprints. Collection requires every committed Linux reference
+key to remain in that inventory and every requested row to be observed exactly once;
+it rejects missing or extra rows and changed revisions. It retains
+raw logs, normalized rows, checkout provenance, host compiler, stable binary hash, and unchanged
+current/historical fixture hashes. Collection does not update expected output or
+replace the strict `--require-rows` gate. The macOS validation job runs that gate
+against its accepted platform rows before collecting observations; both checks
+and the five explicit-design checks are attempted even if another fails. Missing
+rows and full fingerprint changes fail verification. It uploads these
+observations as `generator-observations-macos`. The collector cannot infer the
+binary's build inputs from the checkout; its manifest marks that association
+unverified. Retain the producing build job and compiler/flags/dependencies when
+reviewing the observation.
+
+Two processes on one host establish repeatability only. Compare artifacts from
+independent jobs at the same source with
+`python3 test/collect_generator_evidence.py compare FIRST SECOND`; differences
+require investigation before acceptance. Agreement still does not establish
+historical topology preservation: independently verify against archived pre-epoch
+maps before adding new expected rows or the resource-epoch design hashes.
+
+The macOS job also runs the five explicit-design resource-epoch checks separately
+and retains `resource-design-observations.json` with every actual full and topology
+hash. Existing accepted-platform and portable-topology assertions still run;
+unverified full hashes are marked as observations, and the record distinguishes
+which references exist. The existing `GLOB2_RECORD_RESOURCE_DESIGN_GOLDENS`
+archived-map comparison remains available for independent historical validation.

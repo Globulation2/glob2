@@ -7,28 +7,26 @@
 #include <atomic>
 #include <algorithm>
 #include <chrono>
-#include <condition_variable>
 #include <cstdint>
 #include <deque>
 #include <exception>
 #include <functional>
 #include <memory>
 #include <optional>
-#include <mutex>
-#include <thread>
-#include <ThreadSupport.h>
+#include "ComputeExecutor.h"
+#include "SnapshotGradient.h"
 #include <stdexcept>
 #include <vector>
 #include <utility>
 
 // Fixed-tick publication. The simulation thread owns pending/free
-// and all slot pointers; workers own only job data/water until done is signalled.
+// and all slot pointers; workers own private output and immutable inputs until joined.
 // Exactly one submit per advance. Completion time never selects publication time.
 class GradientPipeline
 {
 public:
 	struct Job {
-		std::optional<SimulationSnapshot::Handle> terrainLease;
+		std::optional<SimulationSnapshot::Handle> snapshotLease;
 		std::uint16_t **slot = nullptr;
 		std::unique_ptr<std::uint16_t[]> data;
 		std::shared_ptr<const std::vector<std::uint8_t>> water; // Test callback compatibility.
@@ -41,6 +39,12 @@ public:
 		std::uint64_t due = 0;
 		bool superseded = false, done = false;
 		std::exception_ptr error;
+		gradient_preparation::Request request;
+		gradient_preparation::CrowdingScratch* crowding = nullptr;
+		ComputeExecutor::Batch batch;
+		GradientPipeline* owner = nullptr;
+		std::function<void(Job&)> seed;
+		std::uint64_t preparationNs = 0;
 	};
 	// Stable save boundary. A view is valid only during visitPendingSnapshots;
 	// the owning queue and worker state remain private to the pipeline.
@@ -58,33 +62,35 @@ public:
 		std::unique_ptr<std::uint16_t[]> data;
 	};
 	using Work = std::function<void(Job &, GradientWorkspace &)>;
-	using Factory = std::function<std::thread(std::function<void()>)>;
 	// Simulation-owner callback observes publication, never computation.
 	std::function<void(std::uint16_t**)> onPublished;
 	struct Metrics { std::uint64_t jobs=0, published=0, discarded=0, waitNs=0, maxPending=0, preparationNs=0; } metrics;
 private:
 	std::deque<std::unique_ptr<Job>> pending;
 	std::vector<std::unique_ptr<Job>> spare;
-	std::deque<Job *> ready;
-	std::vector<std::thread> workers;
-	std::mutex mutex;
-	std::condition_variable wake, completed;
-	bool quit = false;
+	ComputeExecutor* executor = nullptr;
+	bool shared = true;
+	struct Workspace { GradientWorkspace propagation; gradient_preparation::CrowdingScratch crowding; };
+	std::vector<Workspace> workspaces;
 	unsigned delay = 0;
 	std::uint64_t tick = 0, lastSubmission = 0;
 	std::size_t cells = 0;
 	Work work;
-	GradientWorkspace serialWorkspace;
 	std::atomic<std::uint64_t> activeNs{0};
 	using Clock = std::chrono::steady_clock;
 	static std::uint64_t ns(Clock::time_point start) {
 		return std::chrono::duration_cast<std::chrono::nanoseconds>(Clock::now()-start).count();
 	}
-	void execute(Job &job, GradientWorkspace &scratch) noexcept {
+	void execute(Job &job, Workspace &scratch) noexcept {
 		const auto start = Clock::now();
+		job.crowding = &scratch.crowding;
 		try
 		{
-			work(job, scratch);
+			const auto preparationStart = Clock::now();
+			try { if (job.seed) job.seed(job); }
+			catch (...) { job.preparationNs = ns(preparationStart); throw; }
+			job.preparationNs = ns(preparationStart);
+			work(job, scratch.propagation);
 		}
 		catch (...)
 		{
@@ -92,55 +98,52 @@ private:
 		}
 		// Completion releases all borrowed immutable inputs, including failures.
 		job.water.reset(); job.terrain.reset(); job.registry.reset(); job.profiles.reset();
-		job.terrainLease.reset();
+		job.snapshotLease.reset(); job.seed = {}; job.crowding = nullptr;
 		activeNs.fetch_add(ns(start), std::memory_order_relaxed);
-		{ std::lock_guard<std::mutex> lock(mutex); job.done = true; }
-		completed.notify_one();
+		job.done = true;
+	}
+	static void run(void* context, std::size_t) {
+		auto& job = *static_cast<Job*>(context);
+		auto& pipeline = *job.owner;
+		pipeline.execute(job, pipeline.workspaces[pipeline.executor->slot()]);
 	}
 	void wait(Job &job) {
 		const auto start = Clock::now();
-		std::unique_lock<std::mutex> lock(mutex);
-		completed.wait(lock, [&] { return job.done; });
+		if (executor) executor->join(job.batch);
+		metrics.preparationNs += std::exchange(job.preparationNs, 0);
 		metrics.waitNs += ns(start);
+		if (!job.done) throw std::logic_error("Unprepared gradient reservation");
 	}
 public:
 	~GradientPipeline() { reset(); }
 	bool enabled() const { return delay != 0; }
-	unsigned workerCount() const { return workers.size(); }
+	unsigned workerCount() const { return shared && executor ? executor->threadCount()-1 : 0; }
 	unsigned delayTicks() const { return delay; }
 	std::uint64_t activeElapsedNs() const { return activeNs.load(std::memory_order_relaxed); }
 	void finish() { for (auto &job : pending) { wait(*job); if(job->error) std::rethrow_exception(job->error); } }
 	void reset() noexcept {
-		{ std::lock_guard<std::mutex> lock(mutex); quit = true; }
-		wake.notify_all();
-		for (auto &thread : workers) thread.join();
-		workers.clear(); ready.clear(); pending.clear(); spare.clear();
-		delay = 0; tick = 0; lastSubmission = 0; quit = false;
-	}
-	void configure(unsigned count, unsigned ticks, std::size_t size, Work callback,
-		Factory factory = [](std::function<void()> f) { return GAGCore::ThreadSupport::launch(std::move(f)); }) {
-		reset(); metrics = {}; activeNs = 0; cells = size; work = std::move(callback);
-		if constexpr (GAGCore::ThreadSupport::available)
-		{
-			try {
-				workers.reserve(count);
-				for (unsigned n=0; n<count; ++n) workers.push_back(factory([this] {
-					GradientWorkspace scratch;
-					for (;;) {
-						Job *job;
-						{
-							std::unique_lock<std::mutex> lock(mutex);
-							wake.wait(lock, [&] { return quit || !ready.empty(); });
-							if (ready.empty()) return;
-							job = ready.front(); ready.pop_front();
-						}
-						execute(*job, scratch);
-					}
-				}));
-			} catch (...) { reset(); } // Same publication schedule with serial execution.
+		// Unsubmitted reservations can be discarded; submitted callbacks must end
+		// before their contexts, destination slots or scratch storage are destroyed.
+		for (auto& job : pending) if (!job->batch.empty()) {
+			try { executor->join(job->batch); } catch (...) {}
 		}
-		delay = ticks;
+		pending.clear(); spare.clear(); workspaces.clear();
+		delay = 0; tick = 0; lastSubmission = 0;
 	}
+	void configure(ComputeExecutor& target, bool sharedExecution, unsigned ticks, std::size_t size, Work callback) {
+		reset(); metrics = {}; activeNs = 0; cells = size; work = std::move(callback);
+		executor = &target; shared = sharedExecution;
+		resizeWorkspaces(); delay = ticks;
+	}
+	// Call after the executor is resized, with all previous work drained.
+	void resizeWorkspaces() {
+        workspaces.resize(executor ? executor->threadCount() : 1);
+        // Bound optional seed caches across the entire pool, not per thread.
+        for (auto& workspace : workspaces) {
+            workspace.crowding.materials = {};
+            workspace.crowding.materials.budget = 64 * 1024 * 1024 / workspaces.size();
+        }
+    }
 	// Saving completes private work without changing publication deadlines.
 	template<class Visitor> void visitPendingSnapshots(Visitor visitor) {
 		finish();
@@ -160,16 +163,7 @@ public:
 		pending.push_back(std::move(job));
 	}
 	// Execution is local configuration, never part of saved simulation state.
-	void setWorkerCount(unsigned count) {
-		finish();
-		auto savedPending=std::move(pending);
-		auto savedSpare=std::move(spare);
-		const auto savedTick=tick, savedSubmission=lastSubmission, savedActive=activeElapsedNs();
-		const auto savedMetrics=metrics;
-		configure(count, delay, cells, work);
-		pending=std::move(savedPending); spare=std::move(savedSpare);
-		tick=savedTick; lastSubmission=savedSubmission; metrics=savedMetrics; activeNs=savedActive;
-	}
+	void setWorkerCount(unsigned count) { finish(); shared = count != 0; }
 	// Publish before the teams step; preparation observes the completed previous tick.
 	void advance() {
 		++tick;
@@ -195,29 +189,23 @@ public:
 		if (spare.empty()) { job = std::make_unique<Job>(); job->data.reset(new std::uint16_t[cells]); }
 		else { job = std::move(spare.back()); spare.pop_back(); }
 		job->slot=slot; job->swim=swim; job->due=tick+delay;
-		job->done=false; job->superseded=false; job->error=nullptr;
+		job->done=false; job->superseded=false; job->error=nullptr; job->owner=this; job->preparationNs=0;
 		auto *ptr=job.get(); pending.push_back(std::move(job));
 		lastSubmission = tick;
 		++metrics.jobs;
 		metrics.maxPending = std::max<std::uint64_t>(metrics.maxPending, pending.size());
 		return ptr;
 	}
-	// The owner reserves before the read-only batch; only this job's private
-	// inputs are written during preparation. Queue membership stays unchanged.
+	// The closure must own immutable inputs. No live world reads after dispatch.
 	template<class Seed> void prepare(Job *ptr, Seed &&seed) {
-        const auto preparationStart=Clock::now();
-        bool inputsPrepared=false;
 		try {
-			seed(*ptr);
-            metrics.preparationNs += ns(preparationStart); inputsPrepared=true;
-			if (workers.empty()) execute(*ptr, serialWorkspace);
-			else { { std::lock_guard<std::mutex> lock(mutex); ready.push_back(ptr); } wake.notify_one(); }
-		}
-		catch (...) {
-            if (!inputsPrepared) metrics.preparationNs += ns(preparationStart);
-			ptr->water.reset(); ptr->terrain.reset(); ptr->registry.reset(); ptr->profiles.reset(); ptr->terrainLease.reset();
-			{ std::lock_guard<std::mutex> lock(mutex); ptr->error=std::current_exception(); ptr->done=true; }
-			completed.notify_one();
+			ptr->seed = std::forward<Seed>(seed);
+			const ComputeExecutor::Group group{1, {&run, ptr}, ComputeExecutor::NoLane};
+			ptr->batch = executor->submit(std::span(&group, 1), shared ? ComputeExecutor::Placement::Shared : ComputeExecutor::Placement::OwnerOnly);
+		} catch (...) {
+			ptr->seed = {}; ptr->snapshotLease.reset(); ptr->water.reset();
+			ptr->terrain.reset(); ptr->registry.reset(); ptr->profiles.reset();
+			ptr->error = std::current_exception(); ptr->done = true;
 			throw;
 		}
 	}

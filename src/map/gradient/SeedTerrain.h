@@ -1,36 +1,22 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #pragma once
-
-#include "Map.h"
-#include "MapInternal.h"
+#include "MapStateView.h"
+#include "field/GradientConstants.h"
 #include <array>
 
 namespace gradient_preparation
 {
-struct SeedTerrain
+// Preserve the compact built-in terrain lookup for live and frozen cells.
+template<class Function>
+void withOpenTerrain(const MapState::View& view, int swim, Function fn)
 {
-	Uint16 open;
-	Uint8 farmMaterial;
-};
-
-// The common built-in registry fits a stack table. Runtime-defined terrain uses
-// its compiled cell properties without allocating an unbounded per-call table.
-// Dispatch outside the grid loop lets both resource and clearing kernels retain
-// their simple built-in lookup without rejecting custom terrain identities.
-template<class Function> void withTerrain(const Map &map, bool canSwim, Function seed)
-{
-	auto policy = [canSwim](const TerrainProperties &terrain) {
-		return SeedTerrain{Uint16(terrain.walkable || (canSwim && terrain.swimmable)
-			? GRADIENT_UNREACHABLE : GRADIENT_FORBIDDEN), terrain.farmMaterial};
-	};
-	if (map.terrainRegistry().size() == TERRAIN_COUNT)
-	{
-		std::array<SeedTerrain, TERRAIN_COUNT> table;
-		for (unsigned type = 0; type < table.size(); ++type)
-			table[type] = policy(map.terrainProperties(static_cast<TerrainType>(type)));
-		seed([&](size_t index) { return table[map.terrainTypeAt(index)]; });
-	}
-	else
-		seed([&](size_t index) { return policy(map.terrainPropertiesAt(index)); });
+    const auto value=[swim](const TerrainProperties& p) {
+        return Uint16(p.walkable || (swim>0 && p.swimmable) ? GRADIENT_UNREACHABLE : GRADIENT_FORBIDDEN);
+    };
+    if (view.terrainRegistry->size()==TERRAIN_COUNT) {
+        std::array<Uint16,TERRAIN_COUNT> table;
+        for (unsigned i=0;i<TERRAIN_COUNT;++i) table[i]=value(view.terrainRegistry->properties(static_cast<TerrainType>(i)));
+        fn([&](size_t i) { return table[view.terrainIds[i]]; });
+    } else fn([&](size_t i) { return value(view.terrainProperties(i)); });
 }
 }

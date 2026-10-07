@@ -424,7 +424,8 @@ struct HeadlessRunner
 		}
 		if (!fields.empty()) engine.diagnostics = std::make_shared<GameDiagnostics::Session>(engine.gui.game,(output/"diagnostics").string(),diagnosticInterval,diagnosticPng=="true");
 		const unsigned computeThreads = integer(one(options, "--compute-threads",
-			std::to_string(defaultAIThreadCount(engine.gui.game))), 1, 64);
+			std::to_string(options.count("--gradient-workers") && gradientWorkers
+                ? gradientWorkers+1 : defaultAIThreadCount(engine.gui.game))), 1, 64);
 		const std::string computeExperiments = one(options, "--compute-experiments", "ai");
 		unsigned experimentMask = 0;
 		if (computeExperiments == "all") experimentMask = 15;

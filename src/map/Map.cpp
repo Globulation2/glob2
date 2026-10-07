@@ -511,8 +511,9 @@ void Map::clearGradientBufferPool()
 
 void Map::configureCompute(unsigned threads, unsigned experiments)
 {
-	preparePendingGradient();
+	finishGradientPipeline();
 	compute.configure(threads);
+	gradientRuntime->pipeline.resizeWorkspaces();
 	gradientRuntime->workspaces.resize(compute.threadCount());
 	computeExperiments = experiments;
 }

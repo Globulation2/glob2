@@ -203,10 +203,12 @@ changing only worker count must preserve execution at the same delay.
 Structured `--run-game` accepts `--ai-order-delay D` for a new match, and
 `--compute-threads N` (1–64) with `--compute-experiments MODE`. Modes are `none`,
 `areas`, `initialize`, `hiring`, `ai`, and `all`; `ai` is the default. The default
-count is the smaller of four, available hardware threads, and AI controllers, with a
-minimum of one. Ordinary GUI and legacy `--nox` runs accept `--ai-threads N`.
-The count is the compute executor's thread count including the simulation owner; with
-`ai` enabled, AI decisions share those threads. `--compute-experiments none` keeps the
+count is the smaller of four, available hardware threads, and the larger of three
+and the AI controller count, with a minimum of one. This leaves background capacity
+for periodic gradients even in games without AI. Ordinary GUI and legacy `--nox` runs accept `--ai-threads N`.
+The count is the compute executor's thread count including the simulation owner; periodic gradients share this executor, and with
+`ai` enabled, AI decisions share those threads too. The legacy name `--ai-threads`
+therefore sizes all shared compute work. `--compute-experiments none` keeps the
 decisions on the owner at the same deadlines (an owner-only batch), as do thread creation
 failure and platforms without threads.
 A loaded match's configured delay cannot be overridden.
@@ -328,17 +330,42 @@ regression checks. Timing thresholds are deliberately not CI assertions.
 
 ### Delayed periodic gradients
 
-All games use two background workers and an eight-tick publication delay by
-default. Structured headless runs accept `--gradient-workers N --gradient-delay D`.
-`N` counts **background workers** (0–16); the simulation thread is additional.
-`D` is the fixed publication delay (1–16 ticks, default 8). Zero workers computes
-synchronously but retains exactly the same publication schedule, providing the
+All games use the shared compute executor and an eight-tick publication delay by
+default. Structured headless runs accept `--gradient-delay D` (1–16 ticks, default
+8) and the deprecated `--gradient-workers N` (0–16), described below. Owner-only
+execution retains exactly the same publication schedule, providing the
 determinism and timing control for each delay. Different delays may produce
 different games. A loaded game's delay cannot change while jobs are pending.
 
-The pipeline seeds one allocated resource, guard or clear field at the original
-end-of-tick round-robin boundary. It snapshots weighted terrain inputs, propagates
-in private storage, and publishes before the teams step at the fixed deadline.
+The owner reserves one allocated material, market, guard or clear field at the
+completed-tick round-robin boundary. AI and gradients capture the union of their
+required immutable components once; each job leases only its own projection. A
+shared-executor job seeds and propagates the field in private storage. It never
+reads live map arrays, supplier stock or mutable seed caches. Market observations
+include material availability after reservations, and guard jobs capture alliances
+and, when crowd balancing is enabled, units. Publication stays before the teams
+step at the existing fixed deadline. Immediate on-demand and forbidden/building
+fields keep their synchronous paths.
+
+The mutable material seed cache remains on synchronous paths. Periodic material
+jobs use caches private to each executor thread, updated from immutable snapshot
+chunk versions. Templates reuse base fields and material/forbidden bitsets. Fog
+and supplier availability are applied from each request's snapshot. Out-of-order
+snapshot ticks are supported by comparing exact chunk versions. Cached templates
+hold no snapshot leases, and changing worlds or registries invalidates them.
+Small maps, over-budget inputs and allocation failures use the direct kernels.
+Optional seed cache payloads share a 64 MiB budget across executor slots;
+reconfiguration discards them. Guard seeding uses compact terrain lookups.
+Include warmed-cache baselines, snapshot capture/copying, peak memory and total CPU
+in performance comparisons; moving work off the owner does not itself establish a speedup.
+
+`--compute-threads` sizes the shared executor, including the owner. The deprecated
+`--gradient-workers 0` selects owner-only gradient jobs. A positive value selects
+shared jobs and, unless `--compute-threads` is explicit, requests that value plus
+one total threads. It no longer creates a separate pool or imposes a per-gradient
+concurrency cap. `gradient_workers` reports available shared background threads
+(or zero for owner-only placement); `compute_threads` reports total executor size.
+Gradient placement is independent of the AI compute-experiment flag.
 A synchronous refresh supersedes older pending results for that field. Increasing
 worker count does not increase the number of scheduled fields. Buffers are bounded
 by the delay; workers block on condition variables when idle.
@@ -354,8 +381,9 @@ fields eight ticks older than before; synchronous refreshes still take effect
 immediately.
 
 `result.json` includes actual worker count, delay, jobs, published/discarded jobs,
-maximum pending buffers, deadline wait nanoseconds, and summed propagation elapsed
-nanoseconds. The latter is **not CPU time**. Whole-process user+system CPU must be
+maximum pending buffers, deadline wait nanoseconds, and summed seeding-plus-propagation elapsed
+nanoseconds. `gradient_preparation_ns` records worker seed time collected at joins;
+snapshot capture remains part of the snapshot metrics. The latter is **not CPU time**. Whole-process user+system CPU must be
 measured externally. Timed runs drain outstanding work before stopping the timer;
 finishing work does not publish it early.
 
@@ -445,3 +473,122 @@ correctness exports out of timing runs, alternate baseline/candidate order, and
 retain commands, source and executable hashes, fixture hashes and raw samples
 under `artifacts/`. Saturated-host latency results cannot establish a production
 speedup even when the seed kernel uses less thread CPU time.
+
+## Resource optimization campaigns
+
+Keep the archived pre-refactor engine, the approved-behavior-fixes control and the
+merged runtime-resource engine as distinct references. Compare optimizations to
+the merged engine; older controls help attribute overhead and intended behavior
+changes. Retain source revision, compiler, flags and dependency provenance with
+each executable rather than inferring them from its filename.
+
+Freeze a manifest of the priority late-game windows and use 16 measured alternating
+pairs plus the runner's automatic discarded warmup pair:
+
+```sh
+python3 test/benchmark_resource_refactor.py MERGED_ENGINE CANDIDATE_ENGINE PRIORITY_WINDOWS.json \
+  --before-root MERGED_CHECKOUT --after-root CANDIDATE_CHECKOUT \
+  --repeats 16 --report-only --output artifacts/resource-priority
+```
+
+Run the full frozen legacy corpus with eight measured pairs, and include large-map,
+eight-team and custom-resource stress windows in separately identified manifests.
+The runner requires distinct frozen data roots and refuses to overwrite an output
+directory. `--report-only` retains historical threshold diagnostics while removing
+their effect on the exit status; execution, integrity and incomplete-window errors
+still fail. See [resource campaign metrics and integrity checks](../features/resource-catalogs.md#regression-testing).
+
+Schedule timing exclusively: keep builds, compression, profilers and other owned
+game runs outside the campaign. Record CPU affinity and frequency/governor evidence
+alongside raw samples. If temporarily stabilizing a governor, record its original
+settings first and verify restoration even after interruption. The runner records
+per-CPU frequency/governor boundary snapshots outside each timed child run, and
+probes `perf` cycles/task-clock permission once outside timing. It retains denied
+counter diagnostics and labels interval effective frequency unavailable: neither a
+successful permission probe nor a scaling/hardware-average boundary sample measures
+the engine's effective frequency over its run. Collect that measurement separately
+when supported. Preserve contaminated runs and repeat into new output directories.
+Instrumented scopes and instruction counts explain costs but do not replace
+end-to-end paired CPU measurements. Report confidence intervals, CPU, wall time and
+peak RSS separately; the runner's memory metric includes the entire process.
+
+On Linux, each raw measurement also retains `/proc/stat` snapshots immediately
+before and after its child run, outside the timed interval. `host_cpu_activity`
+reports total and per-CPU busy seconds, excluding idle/iowait without counting guest
+time twice. It subtracts whole-child `wait4` CPU to estimate other busy CPU seconds
+and average cores over the snapshot interval. This can reveal activity starting
+mid-campaign that load averages hide. It covers all host CPUs, includes kernel,
+runner and steal time, and does not identify other processes or prove interference
+with the benchmark's CPU affinity. Coarse jiffies and different accounting boundaries
+can yield small negative estimates; these remain visible. Missing counters, topology
+changes or decreasing busy counters mark the estimate unavailable. These diagnostics
+do not change threshold classification or automatically accept/reject a campaign.
+
+After authorization to change the selected CPU policies, use the maintained wrapper
+to record original governors, stabilize them, run an unprivileged command and verify
+restoration (CPUs 0–7 by default):
+
+```sh
+python3 test/run_with_benchmark_governor.py --audit artifacts/governor-priority.json \
+  --cpus 0 1 2 3 4 5 6 7 -- taskset -c 0-7 python3 test/benchmark_resource_refactor.py \
+  MERGED_ENGINE CANDIDATE_ENGINE PRIORITY_WINDOWS.json \
+  --before-root MERGED_CHECKOUT --after-root CANDIDATE_CHECKOUT \
+  --repeats 16 --report-only --output artifacts/resource-priority
+```
+
+Only individual sysfs writes use noninteractive `sudo tee`; the wrapper refuses to
+run as root. Shared policies extending beyond selected CPUs are rejected before any
+write. `--dry-run` records the proposed command and original settings without writing
+governors or starting the command. Timeout, failure and catchable signals stop the
+owned process group and restore every touched policy, including a policy whose write
+succeeded but readback failed. Cleanup/restoration failures remain errors even if
+the command succeeded. Keep the audit beside the results; SIGKILL, power loss or a
+host crash cannot guarantee restoration, so inspect saved originals after an abrupt
+termination. The wrapper does not itself pin CPU affinity.
+
+CPU affinity alone does not keep other processes off the selected cores. On Linux
+with cgroup v2 and an already-enabled cpuset controller, an authorized temporary
+partition can reserve complete physical cores while ordinary work keeps the other
+CPUs. Verify the host's SMT topology first; these defaults describe a host whose
+CPUs 0–7 have siblings 16–23:
+
+```sh
+python3 test/run_with_benchmark_cpuset.py --audit artifacts/cpuset-priority.json \
+  --cpus 0-7 --reserve-cpus 0-7,16-23 -- \
+  python3 test/run_with_benchmark_governor.py --audit artifacts/governor-priority.json \
+  --cpus 0 1 2 3 4 5 6 7 -- \
+  python3 test/benchmark_resource_refactor.py MERGED_ENGINE CANDIDATE_ENGINE PRIORITY_WINDOWS.json \
+  --before-root MERGED_CHECKOUT --after-root CANDIDATE_CHECKOUT \
+  --repeats 16 --report-only --output artifacts/resource-priority
+```
+
+The wrapper runs unprivileged, creates one fresh root-level cgroup, and uses
+noninteractive `sudo` only for individual operations on that group (and reading
+init's namespace identity if permissions require it). It does not write existing
+cgroup controls or individual process affinity masks; the kernel temporarily
+restricts their effective CPU allocation to the complementary cores. A gate
+preserves the caller's UID, GID, groups and environment, confirms placement, and
+sets command affinity before execution. `--dry-run` records preflight information
+without creating a cgroup or launching the command. Every reserved core must
+include all its SMT siblings, and CPUs must remain available outside the partition.
+
+The partition uses `root`, which preserves scheduler load balancing. It verifies
+exclusive/effective CPU masks and the complementary ordinary-work mask before
+launch and throughout execution, and stops on invalidation or command-affinity
+changes. See the kernel's [cpuset partition documentation](https://docs.kernel.org/admin-guide/cgroup-v2.html#cpuset).
+Timeout and catchable signals allow graceful shutdown before removing the group;
+nested governor wrappers get time to restore their original settings. Last-resort
+`cgroup.kill` is restricted to the owned group and makes the run fail with an
+explicit warning to inspect the governor audit. Group removal, original parent
+state and the wrapper's original affinity are audited separately from governor
+restoration. SIGKILL, host failure or power loss can prevent cleanup: retain the
+audit containing the exact group path and inspect outstanding processes and nested
+governor originals before recovery.
+
+Exclusive CPU allocation does not isolate shared memory bandwidth, package power,
+interrupts, kernel activity or shared caches. Other-host CPU activity is expected
+outside the reserved set; use the runner's per-CPU busy counters to distinguish
+that from residual activity on reserved CPUs, including deliberately idle SMT
+siblings. Whole-host busy counts alone do not establish contamination of the
+reserved cores. Continue recording CPU, wall time, RSS and frequency evidence and
+retain anomalous runs for separate investigation.

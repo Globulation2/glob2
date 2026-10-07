@@ -98,10 +98,9 @@ public:
 	public:
 		bool empty() const { return serial == 0; }
 	};
-	// Deferred horizon. AI decisions are the only deferred producer today and
-	// keep at most nine batches live (delay 0..8 plus the one being joined); the
-	// ring is sized for a sixteen-tick producer such as delayed map gradients.
-	static constexpr std::size_t Slots = 18;
+	// Two deferred producers (AI and gradients), up to sixteen ticks each,
+	// plus current submissions and retirement boundary headroom.
+	static constexpr std::size_t Slots = 36;
 private:
 	using Clock = std::chrono::steady_clock;
 	inline static thread_local ComputeExecutor *active = nullptr;
@@ -500,7 +499,7 @@ public:
 				for (std::size_t n = 0; n < live; ++n)
 				{
 					const auto& other = slots[(oldest + n) % Slots];
-					if (other.placement == placement) continue;
+					if (other.placement == placement || other.completed == other.total) continue;
 					for (const auto& candidate : other.groups)
 						if (candidate.lane == group.lane) throw std::logic_error("Compute lane mixes placements across live batches");
 				}

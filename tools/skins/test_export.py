@@ -128,6 +128,7 @@ def validate_installed(root, repository):
                 ("definition", "definitionSha256"),
                 ("exporter", "exporterSha256"),
                 ("builder", "builderSha256"),
+                ("chart", "chartSha256"),
             ):
                 assert (
                     hashlib.sha256(

@@ -957,6 +957,17 @@ expiry or moderation removes installed appearance. Existing animation mapping,
 shadows, fog, zoom, clipping and the Show colony skins preference apply to both
 rendering paths. This is presentation state and does not alter saves, simulation
 checksums or `SIM_REVISION`.
+
+Units animate from fitted rigs rather than the baked per-frame meshes: GSB1
+blend-shape clips for workers and warriors and a GSR1 bone rig for the
+explorer, all fitted to the baked clips so they keep the original metaball
+look and paint layout. The baked GSK1 clips remain the fallback when a fitted
+asset is missing or invalid, and `GLOB2_SKIN_RIGS=0` selects them in gameplay
+for comparison. Sprite publishing always renders the rigs; its recipe digest
+covers their bytes and decoders, so a changed rig never overwrites a published
+bundle. Software clients continue using their authorized published sprites.
+See [unit rigs](../../tools/unit-animation/README.md#unit-rigs-gsb1-blend-shapes-and-gsr1-bone-rigs).
+
 Skin meshes are installed under `data/skins/colony-v1`; they share the web
 designer's UV layout, each model sampling its own `colony-v2` quadrant. The browser ships them in an on-demand `skins` package
 requested when visible paint is available. Classic rendering continues during

@@ -13,14 +13,60 @@
 #include <memory>
 #include <vector>
 #include <array>
+#include <cstring>
 #include <new>
 using namespace GAGCore;
 int main(int argc, char **argv)
 {
-    if (argc != 3 && argc != 4) { std::cerr << "skin-preview ASSET_DIRECTORY OUTPUT_PREFIX\n"; return 2; }
+    if (argc != 3 && argc != 4) { std::cerr << "skin-preview ASSET_DIRECTORY OUTPUT_PREFIX [MODE]\n"
+            << "skin-preview MESH.gsr|MESH.gsk OUTPUT_PREFIX --rig-review\n"; return 2; }
     Toolkit::init("glob2-skin-preview");
     struct CloseToolkit { ~CloseToolkit() { Toolkit::close(); } } closeToolkit;
-    auto *gfx = Toolkit::initGraphic(1024, 960, GraphicContext::USEGPU, "Colony skin feasibility");
+    const bool rigReview = argc == 4 && std::string(argv[3]) == "--rig-review";
+    auto *gfx = Toolkit::initGraphic(rigReview ? 320 : 1024, rigReview ? 240 : 960,
+        GraphicContext::USEGPU | GraphicContext::NOAUDIO, "Colony skin feasibility");
+    if (rigReview)
+    {
+#ifdef HAVE_OPENGL
+        std::cout << "renderer=" << glGetString(GL_RENDERER)
+                  << " version=" << glGetString(GL_VERSION) << '\n';
+#endif
+        // Offscreen production readback avoids desktop resizing and captures
+        // every mapped pose at the actual atlas resolution, without resampling.
+        SkinMesh mesh; std::string error;
+        if (!mesh.load(argv[1], error)) { std::cerr << error << '\n'; return 4; }
+        DrawableSurface paint(512,512), material(512,512);
+        for (unsigned style = 0; style < 6; ++style)
+        {
+            paint.drawFilledRect(0,0,512,512,Color(160,195,125));
+            const unsigned id = style < 4 ? style : 1;
+            material.drawFilledRect(0,0,512,512,Color(id,id,id));
+            if (style >= 4)
+                for (int y=0; y<512; y+=16)
+                    for (int x=0; x<512; x+=16)
+                        if ((x/16+y/16)%2)
+                            paint.drawFilledRect(x,y,16,16,Color(45,85,140));
+            if (style == 5)
+                for (int x=0; x<512; x+=64)
+                    material.drawFilledRect(x,0,64,512,Color((x/64)%4,(x/64)%4,(x/64)%4));
+            std::vector<std::uint8_t> sheet(2048*2048*4), rgba;
+            for (unsigned frame=0; frame<256; ++frame)
+            {
+                if (!gfx->readSkinMesh({&mesh,frame,&paint,&material,SkinRegionWorker},rgba)
+                    || rgba.size()!=128*128*4) return 5;
+                for (unsigned y=0; y<128; ++y)
+                    std::memcpy(sheet.data()+((frame/16*128+y)*2048+frame%16*128)*4,
+                        rgba.data()+y*128*4,128*4);
+            }
+            auto *surface=SDL_CreateSurfaceFrom(2048,2048,SDL_PIXELFORMAT_RGBA32,sheet.data(),2048*4);
+            if (!surface) return 6;
+            const bool saved=SDL_SaveBMP(surface,(std::string(argv[2])+"-"+std::to_string(style)+".bmp").c_str());
+            SDL_DestroySurface(surface);
+            if (!saved) return 7;
+        }
+        std::cout << "Captured 256 frames with four materials, checker paint and mixed materials\n";
+        return 0;
+    }
     // Let the desktop map and present the window before recording captures.
     // Hardware readback can otherwise capture the compositor's opening animation.
     for (int frame = 0; frame < 25; ++frame)
@@ -32,18 +78,22 @@ int main(int argc, char **argv)
         SDL_Delay(20);
     }
     {
-        // colony-v2: a 512x512 colour atlas and an optional 512x512 material-id
-        // map (absent means all glossy), one 256x256 quadrant per model.
-        DrawableSurface paint(std::string(argv[1])+"/paint.webp");
-        if (paint.getW() != 512 || paint.getH() != 512) return 3;
-        auto loadedMaterial = loadSkinMaterialMap(std::string(argv[1])+"/material.webp");
-        DrawableSurface glossy(512,512);
+		const bool baked = skinRigsDisabled();
+		auto meshPath = [&](const std::string &name)
+		{ return std::string(argv[1]) + "/" + skinClipFile(name, baked); };
+		// colony-v2: a 512x512 colour atlas and an optional 512x512 material-id
+		// map (absent means all glossy), one 256x256 quadrant per model.
+		DrawableSurface paint(std::string(argv[1]) + "/paint.webp");
+		if (paint.getW() != 512 || paint.getH() != 512)
+			return 3;
+		auto loadedMaterial = loadSkinMaterialMap(std::string(argv[1]) + "/material.webp");
+		DrawableSurface glossy(512,512);
         if (loadedMaterial && (loadedMaterial->getW() != 512 || loadedMaterial->getH() != 512)) return 3;
         DrawableSurface &material = loadedMaterial ? *loadedMaterial : glossy;
         if (argc == 4 && std::string(argv[3]) == "--validate-opacity")
         {
             SkinMesh mesh; std::string error;
-            if (!mesh.load(std::string(argv[1])+"/worker-walk.gsk",error)) return 4;
+            if (!mesh.load(meshPath("worker-walk"),error)) return 4;
             gfx->prepareSkinMeshes({{&mesh,0,&paint,&material,SkinRegionWorker}});
             DrawableSurface shadow(256,256);
             shadow.drawFilledRect(0,0,256,256,Color(90,70,50));
@@ -68,7 +118,7 @@ int main(int argc, char **argv)
         if (argc == 4 && std::string(argv[3]) == "--validate-cache")
         {
             SkinMesh mesh; std::string error;
-            if (!mesh.load(std::string(argv[1])+"/worker-walk.gsk",error)) return 4;
+            if (!mesh.load(meshPath("worker-walk"),error)) return 4;
             alignas(DrawableSurface) unsigned char storage[sizeof(DrawableSurface)];
             auto *reused = new(storage) DrawableSurface(512,512);
             DrawableSurface materials(512,512);
@@ -126,7 +176,7 @@ int main(int argc, char **argv)
 #endif
             const unsigned phases = std::string(argv[3]) == "--benchmark-pages" ? 128 : 32;
             SkinMesh mesh; std::string error;
-            if (!mesh.load(std::string(argv[1])+"/worker-walk.gsk",error)) return 4;
+            if (!mesh.load(meshPath("worker-walk"),error)) return 4;
             struct MissingPaint : DrawableSurface { MissingPaint() : DrawableSurface() {} } missingPaint;
             gfx->resetDrawCallCount();
             gfx->prepareSkinMeshes({{&mesh,0,&missingPaint,&material,SkinRegionWorker},{&mesh,0,&paint,&missingPaint,SkinRegionWorker}});
@@ -180,7 +230,7 @@ int main(int argc, char **argv)
         for (int clip = 0; clip < 8; ++clip)
         {
             SkinMesh mesh; std::string error;
-            if (!mesh.load(std::string(argv[1])+"/"+names[clip]+".gsk",error))
+            if (!mesh.load(meshPath(names[clip]),error))
             { std::cerr << error << '\n'; return 4; }
             const bool allPhases = argc == 4 && std::string(argv[3]) == "--all-phases";
             const int pages = allPhases && clip != 7 ? 8 : 1;

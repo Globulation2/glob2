@@ -11,6 +11,7 @@
 #include <span>
 
 #include "Map.h"
+#include "sim/snapshot/SnapshotStore.h"
 #include "Utilities.h"
 #include "SGSL.h"
 #include <string>
@@ -235,8 +236,10 @@ public:
 	void saveAI(GAGCore::OutputStream* stream);
 	bool loadAI(GAGCore::InputStream* stream);
 	void observeUnpolledAI();
+	SimulationSnapshot::Store& snapshotStore() { return snapshots; }
 	std::vector<std::pair<std::string, Uint64>> aiMetrics() const;
 private:
+	SimulationSnapshot::Store snapshots;
 	std::unique_ptr<AIEngine::Pipeline> aiPipeline;
 public:
 
