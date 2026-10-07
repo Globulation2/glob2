@@ -182,19 +182,20 @@ void PhoneEditor::drawInteractionPreview()
 	{
 		// Preview brush coverage without mutating terrain. The same brush mask
 		// drives the committed editor operation; screen/world conversion wraps.
-		const double corner = editor.selectionMode == MapEdit::PlaceTerrain &&
-									  editor.terrainType <= TerrainSelector::Water
-								  ? 16
-								  : 0;
+		// Terrain brushes are cell-centred like every other brush.
 		std::vector<BrushCoverage::Cell> centres;
 		for (auto p : pending)
 		{
 			auto [wx, wy] = editor.camera.screenToWorld(p.x, p.y);
-			centres.push_back(BrushCoverage::cellAt(wx, wy, corner));
+			centres.push_back(BrushCoverage::cellAt(wx, wy));
 		}
-		const auto cells = BrushCoverage::cells(editor.brush.getFigure(), centres);
 		const bool erase = editor.brush.getType() == BrushTool::MODE_DEL ||
 						   editor.selectionMode == MapEdit::RemoveObject;
+		auto cells = BrushCoverage::cells(editor.brush.getFigure(), centres);
+		// A corner terrain also fills the cells whose corners it all writes.
+		if (!erase && editor.selectionMode == MapEdit::PlaceTerrain &&
+			editor.terrainType >= TerrainSelector::Grass && editor.terrainType <= TerrainSelector::Water)
+			cells = BrushCoverage::cornerClosure(cells);
 		Color fill = erase ? Color(220, 80, 65, 115) : Color(240, 208, 110, 110);
 		if (!erase && editor.selectionMode == MapEdit::PlaceTerrain)
 		{
@@ -208,13 +209,20 @@ void PhoneEditor::drawInteractionPreview()
             }
 		}
 		const Color edge = erase ? Color(255, 128, 110) : Color(255, 235, 156);
+		const int size = std::max(2, int(32 * editor.camera.zoom));
 		for (auto [x, y] : cells)
 		{
 			auto [sx, sy] = editor.camera.worldToScreen(x * 32, y * 32);
-			const int size = std::max(2, int(32 * editor.camera.zoom));
 			gfx->drawFilledRect(int(sx), int(sy), size, size, fill);
 			gfx->drawRect(int(sx), int(sy), size, size, edge);
 		}
+		// Resources cannot go where their terrain forbids them: show those in red.
+		if (!erase && editor.selectionMode == MapEdit::PlaceTerrain)
+			for (auto [x, y] : editor.invalidResourceCells({cells.begin(), cells.end()}))
+			{
+				auto [sx, sy] = editor.camera.worldToScreen(x * 32, y * 32);
+				gfx->drawFilledRect(int(sx), int(sy), size, size, Color(220, 40, 40, 140));
+			}
 	}
 	if (drag && drag->moving)
 	{

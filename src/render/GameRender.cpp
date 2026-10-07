@@ -179,44 +179,6 @@ bool Game::isOnScreen(int left, int top, int right, int bot, int viewportX, int 
 	return false;
 }
 
-namespace
-{
-bool drawPreparedWater(const GameRenderFrame &frame, const SoftwareTerrainCache &cache, int time)
-{
-	if (frame.left != 0 || frame.top != 0)
-		return false;
-
-	const auto &p=TerrainOceanBackdrop;
-    auto *water=frame.water.nativeFrame(terrainAnimatedFrame(p.firstFrame,p.frames,p.ticksPerFrame,time));
-	if (water)
-	{
-		PERF_SCOPE_TIME(Water);
-        const int width=water->getW(),height=water->getH();
-        const int startX=-(((frame.viewportX<<5)+terrainScrollOffset(time,p.scrollDivisorX))%width);
-        const int startY=-(((frame.viewportY<<5)+terrainScrollOffset(time,p.scrollDivisorY))%height);
-        // Include the original pass's overshoot outside the logical viewport.
-        // Fractional transforms can bring those pixels back inside the target.
-        const SDL_Rect bounds{startX, startY,
-            ((frame.width - startX + width-1) / width) * width,
-            ((frame.height - startY + height-1) / height) * height};
-        const auto regions = cache.waterRegions(bounds);
-        for (int y = startY; y < frame.height; y += height)
-            for (int x = startX; x < frame.width; x += width)
-            {
-                const SDL_Rect tile{x, y, width, height};
-                // Keep the complete source mapping: cropping before scaling
-                // would restart nearest-neighbor sampling at coverage edges.
-                if (std::any_of(regions.begin(), regions.end(), [&](const SDL_Rect &region) {
-                    return SDL_HasRectIntersection(&tile, &region);
-                })) frame.target.drawSurface(x, y, water);
-            }
-		return true;
-	}
-
-	return false;
-}
-} // namespace
-
 void Game::prepareSceneMapFrame(const PresentationFrame &scene, int localTeam, ViewState &view, Uint32 drawOptions, bool paused)
 {
     view.render.skinPreview().setVisible(globalContainer->settings.showColonySkins);
@@ -286,7 +248,6 @@ void Game::drawSceneMap(const PresentationFrame& scene, int sx, int sy, int sw, 
 	} overlayPass{view.render};
 	GameRenderFrame frame{*globalContainer->gfx,
 						  *globalContainer->terrain,
-						  *globalContainer->terrainWater,
 						  left,
 						  top,
 						  right,
@@ -298,13 +259,11 @@ void Game::drawSceneMap(const PresentationFrame& scene, int sx, int sy, int sw, 
 						  localTeam,
 						  drawOptions,
 						  globalContainer->isViewingGame() ? globalContainer->replayVisibleTeams
-														   : scene.entities.teams[localTeam].mask,
-						  !(globalContainer->gfx->getOptionFlags() &
-							(GraphicContext::USEGPU | GraphicContext::PORTABLEGPU))};
+														   : scene.entities.teams[localTeam].mask};
     view.render.skinPreview().prepare(frame.target, scene, left, top, right, bot,
         viewportX, viewportY, localTeam, frame.visibleTeams, drawOptions & DRAW_WHOLE_MAP,
         view.render.unitMotion, view.render.detail.unitSprite > 0, view.render.detail.buildingSprite > 0, &view.render.fogFade);
-	// Prepare coverage before water, keeping scene ordering independent of the
+	// Prepare terrain pages first, keeping scene ordering independent of the
 	// cache's storage policy. Discovery uses exactly the uncached terrain rule.
 	// Software keeps opaque runs; GPU views draw the same composed pages.
 	const bool cacheEligible = true;
@@ -328,20 +287,6 @@ void Game::drawSceneMap(const PresentationFrame& scene, int sx, int sy, int sw, 
 									  frame.bottom, frame.viewportX, frame.viewportY,
 									  frame.visibleTeams, frame.options & DRAW_WHOLE_MAP, time,
 									  frame.options & DRAW_TILED_CAPTURE);
-	bool coveredWater = false;
-	try
-	{
-		if (cached && frame.software)
-			coveredWater = drawPreparedWater(frame, *softwareTerrainCache, time);
-	}
-	catch (const std::bad_alloc &)
-	{
-		cached = false;
-	}
-	if (overviewOnly)
-		;
-	else if (!coveredWater)
-		drawMapWater(sw, sh, viewportX, viewportY, time);
 	if (overviewOnly)
 		;
 	else if (cached)

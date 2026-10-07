@@ -31,7 +31,8 @@ PUBLIC = REPO / "platform/apps/web/public"
 WORKER_WALK = 64 * 4
 EXPLORER_FLY = 0
 WARRIOR_WALK = 256 * 4
-EAST, WEST = 3, 7
+WARRIOR_ATTACK = 384 * 4
+EAST, SOUTH_EAST, WEST = 3, 4, 7
 
 
 def sprite(name: str) -> Image.Image:
@@ -68,6 +69,16 @@ def strip(base: int, direction: int, size: int, step: int = 2) -> Image.Image:
         frame = unit_frame(base + direction * 32 + pose).resize((size, size), Image.LANCZOS)
         out.alpha_composite(frame, (i * size, 0))
     return out
+
+
+def portrait(frame: int, size: int) -> Image.Image:
+    """One unit pose cropped to its sprite and centred in a square, for page art."""
+    image = unit_frame(frame)
+    image = image.crop(image.getbbox())
+    side = max(image.size)
+    out = Image.new("RGBA", (side, side))
+    out.alpha_composite(image, ((side - image.width) // 2, (side - image.height) // 2))
+    return out.resize((size, size), Image.LANCZOS)
 
 
 def wordmark_masks() -> tuple[Image.Image, Image.Image]:
@@ -157,6 +168,9 @@ def main() -> None:
     save_webp(strip(WORKER_WALK, WEST, 64), "worker-west.webp", quality=82)
     save_webp(strip(WARRIOR_WALK, EAST, 64), "warrior-east.webp", quality=82)
     save_webp(strip(EXPLORER_FLY, WEST, 64), "explorer-west.webp", quality=82)
+    # Still poses for page art: a warrior lunging (attack, south-east) and a worker mid-stride.
+    save_webp(portrait(WARRIOR_ATTACK + SOUTH_EAST * 32, 96), "warrior.webp", quality=82)
+    save_webp(portrait(WORKER_WALK + EAST * 32 + 8, 96), "worker.webp", quality=82)
 
     # Buildings, flags and resources used as page icons and decoration.
     for name, label, size in (

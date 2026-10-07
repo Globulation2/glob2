@@ -52,6 +52,24 @@ void Minimap::setMapSize(int width,int height)
 	mapH = height;
 }
 
+void Minimap::setPlacement(int x, int y, int size)
+{
+	placed = true;
+	placeX = x;
+	placeY = y;
+	size = std::max(1, size);
+	if (size != width || size != height)
+	{
+		width = height = size;
+		if (!noX)
+		{
+			delete surface;
+			surface = new DrawableSurface(width, height);
+		}
+		update_row = -1;
+	}
+}
+
 void Minimap::resizeViewport(int width)
 {
 	gameWidth = width;
@@ -92,12 +110,15 @@ void Minimap::draw(const PresentationFrame &drawn, int localteam, int viewportX,
 	}
 	
 	// Fill the 4 sides of the menu around the minimap with the color above
+	if (!placed)
+	{
 	// left side
 	globalContainer->gfx->drawFilledRect(gameWidth-menuWidth, 0, xOffset, height+yOffset, borderR, borderG, borderB, borderA);
 	// right side
 	globalContainer->gfx->drawFilledRect(gameWidth-menuWidth+xOffset+width, 0, menuWidth-xOffset-width, height+yOffset, borderR, borderG, borderB, borderA);
 	// top side
 	globalContainer->gfx->drawFilledRect(gameWidth-menuWidth+xOffset, 0, width, yOffset, borderR, borderG, borderB, borderA);
+	}
 	// bottom side not needed, because the menu draws up to it
   
   // calculate the offset for the viewport square
@@ -122,7 +143,7 @@ void Minimap::draw(const PresentationFrame &drawn, int localteam, int viewportX,
 		update_row %= (mini_h);
 	}
 	//Draw the surface
-	globalContainer->gfx->drawSurface(gameWidth-menuWidth+xOffset, yOffset, surface);
+	globalContainer->gfx->drawSurface(originX(), originY(), surface);
 
 	//Draw the viewport square, taking into account that it may
 	//wrap around the sides of the minimap
@@ -154,8 +175,8 @@ void Minimap::draw(const PresentationFrame &drawn, int localteam, int viewportX,
 	globalContainer->gfx->drawPixel(endx, endy, 255, 255, 255);
 
 	///Draw a 1 pixel border around the minimap
-	globalContainer->gfx->drawRect(gameWidth-menuWidth+xOffset-1,
-	                               yOffset-1, 
+	globalContainer->gfx->drawRect(originX()-1,
+	                               originY()-1,
 	                               width+2, 
 	                               height+2, 
 	                               200, 200, 200);
@@ -231,8 +252,8 @@ void Minimap::computeMinimapPositioning()
 		mini_offset_x = 0;
 		mini_offset_y = (height-mini_h)/2;
 		// Now set the position of it on the whole screen
-		mini_x = gameWidth-menuWidth+xOffset+mini_offset_x;
-		mini_y = yOffset + mini_offset_y;
+		mini_x = originX()+mini_offset_x;
+		mini_y = originY() + mini_offset_y;
 	}
 	else
 	{
@@ -243,8 +264,8 @@ void Minimap::computeMinimapPositioning()
 		mini_offset_x = (width - mini_w)/2;
 		mini_offset_y = 0;
 		// And set the position for the screen!
-		mini_x = gameWidth-menuWidth+xOffset+mini_offset_x;
-		mini_y = yOffset + mini_offset_y;
+		mini_x = originX()+mini_offset_x;
+		mini_y = originY() + mini_offset_y;
 	}
 }
 

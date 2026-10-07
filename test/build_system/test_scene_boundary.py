@@ -30,7 +30,9 @@ SCENE_INCLUDES = {
 
 DRAWING = ('src/render/GameRender*.cpp', 'src/render/Minimap.cpp', 'src/render/torus/TorusViewRender.cpp', 'src/hud/draw/GameGUIDraw*.cpp',
            'src/hud/touch/GameGUITouchView.cpp', 'src/hud/touch/GameGUITouchPalette.cpp',
-           'src/hud/touch/GameGUITouchLens.cpp', 'src/hud/touch/GameGUITouchPlacement.cpp')
+           'src/hud/touch/GameGUITouchLens.cpp', 'src/hud/touch/GameGUITouchPlacement.cpp',
+           'src/map/editor/MapEditInspector.cpp', 'src/map/editor/EditorDockObjects.cpp',
+           'src/map/editor/EditorDock.cpp')
 
 # Live entity tables and queues the simulation mutates.
 LIVE_READS = re.compile(

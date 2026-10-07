@@ -12,8 +12,8 @@
 #include "Unit.h"
 #include <SDL3/SDL.h>
 
-BuildingInfoTitle::BuildingInfoTitle(MapEdit& me, const widgetRectangle& area, const std::string& group, const std::string& name, const std::string& action, Building* building)
-	: MapEditorWidget(me, area, group, name, action), building(building)
+BuildingInfoTitle::BuildingInfoTitle(MapEdit& me, const widgetRectangle& area, const std::string& group, const std::string& name, const std::string& action)
+	: MapEditorWidget(me, area, group, name, action)
 {
 
 }
@@ -50,15 +50,12 @@ void BuildingInfoTitle::draw()
 
 
 
-void BuildingInfoTitle::setBuilding(Building* aBuilding)
-{
-	building=aBuilding;
-}
 
 
 
-BuildingPicture::BuildingPicture(MapEdit& me, const widgetRectangle& area, const std::string& group, const std::string& name, const std::string& action, Building* building)
-	: MapEditorWidget(me, area, group, name, action), building(building)
+
+BuildingPicture::BuildingPicture(MapEdit& me, const widgetRectangle& area, const std::string& group, const std::string& name, const std::string& action)
+	: MapEditorWidget(me, area, group, name, action)
 {
 
 }
@@ -96,10 +93,7 @@ void BuildingPicture::draw()
 
 
 
-void BuildingPicture::setBuilding(Building* aBuilding)
-{
-	building=aBuilding;
-}
+
 
 
 

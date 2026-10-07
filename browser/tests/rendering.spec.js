@@ -1,6 +1,6 @@
 const {clickCreateMap}=require('./editor-controls');
 const {test, expect} = require('@playwright/test');
-const {clickMainMenu,clickSettingsDone,clickCustomGameStart,clickControl}=require('./main-menu');
+const {clickMainMenu,clickSettingsDone,clickCustomGameStart,clickControl,control}=require('./main-menu');
 const state = page => page.evaluate(() => glob2Diagnostics.snapshot());
 const screen = (page, name) => expect.poll(async () => (await state(page)).screen).toContain(name);
 
@@ -155,12 +155,11 @@ test('WebGL context restoration retains settings, editor and confirmation contro
   await clickControl(page,'new-map'); await screen(page,'NewMapScreen');
   await clickCreateMap(page); await recover('MapEditorScreen');
   await page.locator('#canvas').press('Escape',{delay:80});
-  await clickControl(page,'quit'); await recover('MessageScreen');
+  await clickControl(page,'quit'); await control(page,'choice/2'); await recover('MapEditorScreen');
   await page.screenshot({path:info.outputPath('webgl2-restored-editor-dialog.png')});
   await page.locator('#canvas').press('Escape',{delay:80});
   await screen(page,'MapEditorScreen');
   await page.locator('#canvas').press('Escape',{delay:80});
-  await clickControl(page,'quit'); await screen(page,'MessageScreen');
-  await clickControl(page,'choice/1'); await screen(page,'EditorMainMenu');
+  await clickControl(page,'quit'); await clickControl(page,'choice/1'); await screen(page,'EditorMainMenu');
   expect(errors).toEqual([]);
 });

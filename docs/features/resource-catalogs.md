@@ -18,16 +18,20 @@ validated compact loops or legacy input adapters; a deposit ID is never a materi
 
 The installed definitions are `data/resources/registry.json`. Existing deposits
 are trees, wheat, papyrus, rocks, algae and cherry, orange and prune trees. Gold
-ore, iron ore, sand and cotton are supplied as an optional editor experiment;
-stock generators, building costs and service recipes do not use them. New material
-inventory rows appear only when a material is present in map sources, carried
-packets or inventory and the building uses that material.
+ore, iron ore, silica (a glass-yielding deposit, distinct from sand terrain) and
+cotton are supplied as an optional editor experiment; stock generators, building
+costs and service recipes do not use them. New material inventory rows appear
+only when a material is present in map sources, carried packets or inventory and
+the building uses that material.
 
 ## Importing resources
 
-Use **Map editor → Menu → Import Resource Definitions** to import a JSON file,
-then **Resource palette** to select its deposits. The palette also offers switches
-for experiments declared by the map's catalog. Installed catalog experiments are
+Use **Map editor → Menu → Import Resource Definitions** to import a JSON file;
+its deposits appear in the **Resources** tab of the editor dock, which opens at
+the imported section. Each resource card names the terrains it may be placed on.
+Resources gated by an experiment the map does not carry are shown locked, and
+their section offers **Enable for this map**, which adds the experiment to the
+map's header. Installed catalog experiments are
 available in **Settings → Experiments**. Imports validate a complete replacement
 before changing the map. Existing keys retain IDs; new keys append in sorted
 order. Definitions remain immutable while a match runs.

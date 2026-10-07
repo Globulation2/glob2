@@ -14,8 +14,8 @@
 #include "UnitType.h"
 #include <SDL3/SDL.h>
 
-UnitInfoTitle::UnitInfoTitle(MapEdit& me, const widgetRectangle& area, const std::string& group, const std::string& name, const std::string& action, Unit* unit)
-	: MapEditorWidget(me, area, group, name, action), unit(unit)
+UnitInfoTitle::UnitInfoTitle(MapEdit& me, const widgetRectangle& area, const std::string& group, const std::string& name, const std::string& action)
+	: MapEditorWidget(me, area, group, name, action)
 {
 
 }
@@ -52,15 +52,12 @@ void UnitInfoTitle::draw()
 
 
 
-void UnitInfoTitle::setUnit(Unit* aUnit)
-{
-	unit=aUnit;
-}
 
 
 
-UnitPicture::UnitPicture(MapEdit& me, const widgetRectangle& area, const std::string& group, const std::string& name, const std::string& action, Unit* unit)
-	: MapEditorWidget(me, area, group, name, action), unit(unit)
+
+UnitPicture::UnitPicture(MapEdit& me, const widgetRectangle& area, const std::string& group, const std::string& name, const std::string& action)
+	: MapEditorWidget(me, area, group, name, action)
 {
 
 }
@@ -100,10 +97,7 @@ void UnitPicture::draw()
 
 
 
-void UnitPicture::setUnit(Unit* aUnit)
-{
-	unit=aUnit;
-}
+
 
 
 
@@ -221,6 +215,7 @@ void ValueScrollBox::setValue(int requested)
     const auto before=*value;
     *value = std::clamp(requested, 0, std::max(0, int(*max)));
     if (*value!=before) me.game.snapshots().invalidateBoundary();
+    me.mapHasBeenModified();
     activate();
 }
 

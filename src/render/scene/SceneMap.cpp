@@ -176,3 +176,9 @@ bool SceneMap::isFreeForBuilding(int x,int y,int width,int height) const
         if (getGroundUnit(x+dx,y+dy)!=0xffff) return false;
     return true;
 }
+
+std::string SceneMap::getAreaName(int index) const
+{
+    return snapshot && snapshot->annotations && index >= 0 && size_t(index) < snapshot->annotations->areaNames.size()
+        ? snapshot->annotations->areaNames[index] : std::string{};
+}

@@ -93,8 +93,6 @@ bool MapEdit::performBuildingAction(const std::string& action, float relMouseX, 
 			selectedBuildingGID=gid;
             view.selectedBuilding=b;
 			enableOnlyGroup("building editor");
-			buildingInfoTitle->setBuilding(b);
-			buildingPicture->setBuilding(b);
 			buildingEditRows.clear(); buildingEditFirstRow=0;
 			const auto& spec=b->type->semantics;
 			buildingHPLabel->setValues(&b->hp,&b->type->hpMax, [](const PresentationFrame& frame) { const auto* value=frame.entities.building(frame.entities.selectedBuilding.ref); return value ? Sint32(value->hp) : 0; }, [](const PresentationFrame& frame) { const auto* value=frame.entities.building(frame.entities.selectedBuilding.ref); return value ? Sint32(frame.entities.type(*value)->hpMax) : 0; });

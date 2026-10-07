@@ -20,9 +20,11 @@ class MapEditorScreen : public GAGGUI::Screen
 	void drawExecution() override;
 	Uint32 executionDelay(Uint32 now, Uint32) override;
 
-    bool usesResponsiveViewport() const override { return GAGCore::phonePresentationRequested(); }
+    // Follows the editor's live presentation; ScreenStack re-reads it each frame.
+    bool usesResponsiveViewport() const override;
     std::pair<int,int> minimumViewportSize() const override { return {800,600}; }
     void cancelExecutionInput() override { suspendExecution(); }
+	bool interceptsQuit() const override;
 
   private:
 	FrontendScope theme{false};

@@ -59,7 +59,9 @@ MemoryMetrics Storage::memoryMetrics() const
         }
         return bytes;
     });
-    account(annotations, [&](const Annotations& value, bool) { return vectorBytes(value.scriptAreas); });
+    account(annotations, [&](const Annotations& value, bool) { auto bytes = vectorBytes(value.scriptAreas) + vectorBytes(value.areaNames);
+        for (const auto& name : value.areaNames) bytes += name.capacity();
+        return bytes; });
 	account(terrain, [&](const Terrain& value, bool leased) { remember(value.identity, leased); return vectorBytes(value.legacy) + vectorBytes(value.undermap); });
 	const auto cells = [&](const auto& value, bool) { return vectorBytes(value.cells); };
 	account(resources, cells); account(occupancy, cells); account(areas, cells); account(visibility, [&](const Visibility& value, bool) { return vectorBytes(value.discovered) + vectorBytes(value.visible); });

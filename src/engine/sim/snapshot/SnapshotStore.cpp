@@ -90,6 +90,10 @@ Handle Store::captureBoundary(const Game& game, Requirements required)
         metrics.bytesCopied+=sizeof(building)+building.gradient.size()*sizeof(Uint16);
         for (const auto& failed:building.failingUnits) metrics.bytesCopied+=failed.size()*sizeof(Uint16);
     }
+    if (next.annotations && next.annotations != previous.annotations) {
+        metrics.bytesCopied += next.annotations->areaNames.size() * sizeof(std::string);
+        for (const auto& name : next.annotations->areaNames) metrics.bytesCopied += name.size();
+    }
     account(next.annotations,previous.annotations,0); // Stamped array copies counted by storage.
 	metrics.allocations = storage.allocations;
 	const auto preparation = storage.preparationNs-preparedBefore;

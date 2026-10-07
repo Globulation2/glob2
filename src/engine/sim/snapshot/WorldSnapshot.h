@@ -39,7 +39,7 @@ struct ChunkStamps
 	Uint32 filledTick = 0;
 	std::vector<Uint64> chunks;
 };
-struct Annotations { std::vector<Uint16> scriptAreas; ChunkStamps stamps; };
+struct Annotations { std::vector<Uint16> scriptAreas; std::vector<std::string> areaNames; ChunkStamps stamps; };
 struct TerrainCell { TerrainType type = GRASS; Uint16 legacy = 0; };
 struct Terrain
 {

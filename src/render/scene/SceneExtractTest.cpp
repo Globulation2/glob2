@@ -85,12 +85,18 @@ TEST_SUITE("SceneExtract")
 		glob2test::HeadlessGlobals globals;
 		glob2test::HeadlessGame world;
 		world.game.map.setPoint(8, 3, 4);
+        world.game.map.setAreaName(8, "Original area");
 		PresentationFrame scene; SceneRequest request;
 		SceneExtractor().prepare((world.game).captureReadBoundary({},true,SceneExtractor::requirements(request)), request, scene);
 		CHECK_FALSE(scene.map.isPointSet(8,3,4));
 		request.includeScriptAreas=true;
 		SceneExtractor().prepare((world.game).captureReadBoundary({},true,SceneExtractor::requirements(request)), request, scene);
 		world.game.map.unsetPoint(8,3,4);
+        world.game.map.setAreaName(8, "Renamed area");
+        CHECK(scene.map.getAreaName(8) == "Original area");
+        PresentationFrame renamed;
+        SceneExtractor().prepare(world.game.captureReadBoundary({},true,SceneExtractor::requirements(request)), request, renamed);
+        CHECK(renamed.map.getAreaName(8) == "Renamed area");
 		CHECK(scene.map.isPointSet(8,3,4));
 		CHECK_FALSE(scene.map.isPointSet(7,3,4));
 		request.includeScriptAreas=false;

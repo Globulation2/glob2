@@ -4,6 +4,7 @@ import type { MatchSummary, PublicAccount } from '@glob2/protocol';
 import { ApiError } from '../api.ts';
 import { GameArt, type ArtName } from '../art.tsx';
 import { avatarColor } from '../colors.ts';
+import { Icon } from '../icons.tsx';
 import {
   ago,
   duration,
@@ -121,6 +122,17 @@ export function Avatar({
     >
       {initial(account.displayName)}
       {failed !== src && <img src={src} alt="" onError={() => setFailed(src)} loading="lazy" />}
+    </span>
+  );
+}
+
+const AI_ICON_SIZES = { small: 18, medium: 30, large: 50 };
+
+/** An AI player's stand-in for an avatar. */
+export function AiMark({ size }: { size?: 'small' | 'large' }) {
+  return (
+    <span className={`avatar ai-avatar${size ? ` ${size}` : ''}`} aria-hidden="true">
+      <Icon name="robot" size={AI_ICON_SIZES[size ?? 'medium']} />
     </span>
   );
 }

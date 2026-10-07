@@ -101,8 +101,6 @@ bool MapEdit::performUnitAction(const std::string& action, float relMouseX, floa
 			view.selectedUnit=game.teams[Unit::GIDtoTeam(selectedUnitGID)]->myUnits[Unit::GIDtoID(selectedUnitGID)];
 			selectionMode=EditingUnit;
 			panelMode=UnitEditor;
-			unitInfoTitle->setUnit(view.selectedUnit);
-			unitPicture->setUnit(view.selectedUnit);
 			unitHPLabel->setValues(&view.selectedUnit->hp, &view.selectedUnit->performance[HP], [](const PresentationFrame& frame) { const auto* value=frame.entities.unit(frame.entities.selectedUnit); return value ? Sint32(value->hp) : 0; }, [](const PresentationFrame& frame) { const auto* value=frame.entities.unit(frame.entities.selectedUnit); return value ? Sint32(value->performance[HP]) : 0; });
 			unitHPScrollBox ->setValues(&view.selectedUnit->hp, &view.selectedUnit->performance[HP], [](const PresentationFrame& frame) { const auto* value=frame.entities.unit(frame.entities.selectedUnit); return value ? Sint32(value->hp) : 0; }, [](const PresentationFrame& frame) { const auto* value=frame.entities.unit(frame.entities.selectedUnit); return value ? Sint32(value->performance[HP]) : 0; });
 			unitWalkLevelLabel->setValues(&view.selectedUnit->level[WALK], [](const PresentationFrame& frame) { const auto* value=frame.entities.unit(frame.entities.selectedUnit); return value ? Sint32(value->level[WALK]) : 0; });

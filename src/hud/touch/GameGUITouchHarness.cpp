@@ -203,7 +203,11 @@ class GameGUITouchHarness
 		touch.chooseMode(2);
 		touch.prepare();
 		editor.updateCamera();
-		const auto icon = touch.rows[1].rect; // inn, using the real palette hit area
+		// The inn's placeable variant ("building/inn.0.site"), the real tray hit area.
+		const auto inn = std::find_if(touch.rows.begin(), touch.rows.end(),
+									  [](const auto &row) { return row.id.starts_with("building/inn."); });
+		require(inn != touch.rows.end(), "The building tray offers the inn card");
+		const auto icon = inn->rect;
 		const GAGCore::ViewPoint source{icon.x + icon.w / 2, icon.y + icon.h / 2};
 		const int type =
 			editor.game.buildingsTypes.getTypeNum("inn", editor.buildingLevel, false);
@@ -295,10 +299,11 @@ class GameGUITouchHarness
 		editor.performAction("select sand");
 		touch.prepare();
 		{
-			// The brush rail on the thumb edge: sizes, Pan; sand has no Erase.
+			// The brush rail on the thumb edge: sizes, Pan, and Erase, which
+			// reverts sand to grass.
 			const auto rail = touch.rail();
-			require(rail.detents.size() == BrushTool::BRUSH_COUNT && rail.mode.w == 0 && rail.pan.w > 0,
-					"Editor rail offers sizes and Pan; sand has no Erase");
+			require(rail.detents.size() == BrushTool::BRUSH_COUNT && rail.mode.w > 0 && rail.pan.w > 0,
+					"Editor rail offers sizes, Pan and Erase for sand");
 			tap(centre(rail.detents[2]));
 			require(editor.brush.getFigure() == 2, "Editor rail tap selects a size");
 			finger(SDL_EVENT_FINGER_DOWN, 1, centre(rail.detents[0]));
@@ -414,9 +419,115 @@ class GameGUITouchHarness
 			finger(SDL_EVENT_FINGER_UP, 1, {a.x + 32 * u, a.y});
 			require(!touch.undo && touch.rail().undo.w == 0, "Terrain strokes offer no Undo");
 		}
+		{
+			// Tray cards come from the brush catalogue: registry resources (silica,
+			// locked behind foundation resources on this legacy map), imported
+			// terrain, catalogue group variants, the fertility overlay and Teams.
+			auto showRow = [&](const std::string &id)
+			{
+				touch.prepare();
+				int i = touch.rowOf(id);
+				if (i < 0)
+					return GAGCore::ViewPoint{-1, -1};
+				touch.offset = std::clamp(touch.rows[i].x - 4 * u, 0., touch.maximum);
+				touch.prepare();
+				i = touch.rowOf(id);
+				return centre(touch.rows[i].rect);
+			};
+			// The bundled map carries the legacy resources; give it the current
+			// registry, as importing definitions in the editor does.
+			editor.importResourceFile("data/resources/registry.json");
+			editor.fertilityRequested = false;
+			touch.chooseMode(1);
+			const auto silica = showRow("resource/silica");
+			require(silica.x >= 0, "The resource tray lists the registry's silica");
+			require(touch.chips.size() > 1, "Resource groups have header chips");
+			const auto *silicaEntry = editor.findBrush("resource/silica");
+			const bool wasLocked = silicaEntry && silicaEntry->locked;
+			const auto revision = editor.catalogRevision();
+			tap(silica);
+			require(editor.currentBrushId() == "resource/silica",
+					"Tapping a locked registry resource enables it and selects it");
+			require(editor.experimentEnabled("foundation-resources"), "Silica's experiment is carried by the map");
+			if (wasLocked)
+				require(editor.catalogRevision() != revision &&
+							editor.lastStatus().find("for this map") != std::string::npos,
+						"Enabling an experiment rebuilds the tray and says so");
+			touch.draw();
+			gfx->printScreen("touch-editor-tray-resources.bmp");
+			gfx->nextFrame();
+			// A catalogue group variant and imported terrain.
+			touch.chooseMode(0);
+			touch.prepare();
+			require(touch.chips.size() > 1, "Terrain groups have header chips");
+			std::string variant;
+			for (const auto &group : editor.brushCatalog())
+				if (group.section == BrushSection::Terrain && group.key != "classic" && group.key != "custom")
+					for (const auto &entry : group.entries)
+						if (variant.empty() && (group.entries.size() > 1 || entry.locked))
+							variant = entry.id;
+			require(!variant.empty(), "The catalogue offers a terrain group variant");
+			tap(showRow(variant));
+			require(editor.currentBrushId() == variant,
+					"A group variant card selects that variant, enabling its experiment when locked");
+			editor.game.map.importTerrainDefinitions(
+				R"({"schemaVersion":1,"terrains":[{"key":"example:tray","name":"Tray terrain with a long imported name","base":"grass","properties":{"groundSpeedQ8":192},"appearance":"sand"}]})");
+			const auto custom = showRow("terrain/example:tray");
+			require(custom.x >= 0, "Imported terrain appears in the tray at once");
+			{
+				const auto &row = touch.rows[touch.rowOf("terrain/example:tray")];
+				require(row.lines.size() == 2 && row.lines[0].find("Tray") == 0,
+						"Long names wrap onto two lines instead of truncating");
+			}
+			tap(custom);
+			require(editor.currentBrushId() == "terrain/example:tray", "The imported terrain card selects it");
+			// Group chips jump along the strip.
+			const int last = int(touch.chips.size()) - 1;
+			tap(centre(touch.chips[0].rect));
+			touch.prepare();
+			const double before = touch.offset;
+			for (int i = 0; i < 2 * last && touch.activeChip() != last; ++i)
+			{
+				const int target = std::min(last, touch.activeChip() + 1);
+				tap(centre(touch.chips[target].rect));
+				touch.prepare();
+			}
+			if (touch.activeChip() != last || touch.offset <= before)
+				std::printf("Chip jump: active=%d last=%d offset=%g before=%g maximum=%g\n", touch.activeChip(), last,
+							touch.offset, before, touch.maximum);
+			require(touch.activeChip() == last && touch.offset > before, "Tapping chips jumps to their groups");
+			// The fertility overlay toggles from the tray.
+			editor.isFertilityOn = false;
+			tap(showRow("tool/fertility"));
+			require(editor.isFertilityOn && editor.needsFertility(), "The fertility card turns the overlay on");
+			editor.fertilityRequested = false;
+			// Painting since the overlay was computed makes the card offer a refresh.
+			editor.fertilityStale = true;
+			{
+				const auto stale = showRow("tool/fertility");
+				require(touch.rows[touch.rowOf("tool/fertility")].lines.front() != "Fertility Map" &&
+							editor.fertilityOverlayStale(),
+						"A stale fertility overlay relabels its card");
+				tap(stale);
+				require(editor.isFertilityOn && editor.needsFertility(), "Tapping a stale fertility card refreshes it");
+				editor.fertilityRequested = false;
+				editor.fertilityStale = false;
+			}
+			touch.draw();
+			gfx->printScreen("touch-editor-tray-terrain.bmp");
+			gfx->nextFrame();
+			tap(showRow("tool/fertility"));
+			require(!editor.isFertilityOn && !editor.needsFertility(), "The fertility card turns the overlay off");
+			// Teams are a mode of the bar.
+			touch.prepare();
+			tap({touch.modeBar.x + touch.modeBar.w * 9 / 10, touch.modeBar.y + touch.modeBar.h / 2});
+			require(editor.panelMode == MapEdit::Teams && touch.paletteMode == 4, "The mode bar reaches Teams");
+			touch.chooseMode(0);
+			editor.performAction("unselect");
+		}
 		std::puts(
 			"PASS: editor buffered paint, focus/second-finger cancellation, one-building drag "
-			"and invalid/UI drops");
+			"and invalid/UI drops, catalogue tray cards");
 	}
 
 	static void editorAreaNameInteractions()
@@ -2728,6 +2839,8 @@ class GameGUITouchHarness
 			auto repairPoint = actionPoint(3, 0);
 			finger(SDL_EVENT_FINGER_DOWN, 1, repairPoint.x, repairPoint.y);
 			building->hp = building->type->hpMax;
+            gui.game.snapshots().invalidateBoundary();
+            gui.prepareLocalPresentation();
 			finger(SDL_EVENT_FINGER_UP, 1, repairPoint.x, repairPoint.y);
 			require(gui.orderQueue.empty(), "Healing must not turn a held Repair into Upgrade");
 			for (auto state : {Building::REPAIR, Building::UPGRADE})
@@ -4243,13 +4356,16 @@ class GameGUITouchHarness
 		touch.cancel();
 		// The tool tray: pulling past its end stretches it and releasing springs
 		// back; a flick overshoots the end and settles there; a mouse drag does
-		// neither. (The fixture's palettes fit the tray, so the end is at zero.)
+		// neither. The catalogue's terrain cards overflow the tray, so the
+		// fixture starts scrolled to the end and pulls on the last card.
 		touch.chooseMode(0);
 		touch.prepare();
 		const double trayEnd = touch.maximum;
+		touch.offset = trayEnd;
+		touch.prepare();
 		GAGCore::GestureScrollEvent native;
 		native.sequence = 201; native.logical = true;
-		native.x = touch.tray.x + 20 * unit; native.y = touch.tray.y + 20 * unit;
+		native.x = touch.cardBar.x + 20 * unit; native.y = touch.cardBar.y + 20 * unit;
 		native.phase = GAGCore::ScrollGesturePhase::Began; native.timestamp = SDL_MS_TO_NS(tick);
 		touch.event(GAGCore::gestureScrollEvent(native));
 		native.phase = GAGCore::ScrollGesturePhase::Changed;
@@ -4271,9 +4387,9 @@ class GameGUITouchHarness
 		require(touch.event(GAGCore::gestureScrollEvent(native)), "A cancelled tray consumes its momentum tail");
 		require(touch.offset == trayEnd, "Cancelled native input cannot restart tray movement");
 
-		const auto row = touch.rows.front().rect;
+		const auto row = touch.rows.back().rect;
 		const GAGCore::ViewPoint at{row.x + row.w / 2, row.y + row.h / 2};
-		require(touch.hit(at) == 0, "The gesture starts on the first tray item");
+		require(touch.hit(at) == int(touch.rows.size()) - 1, "The gesture starts on the last tray item");
 		finger(SDL_EVENT_FINGER_DOWN, 1, at);
 		frame(16);
 		finger(SDL_EVENT_FINGER_MOTION, 1, {at.x - 40 * unit, at.y});

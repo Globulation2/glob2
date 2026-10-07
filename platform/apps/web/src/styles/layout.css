@@ -110,7 +110,64 @@
 .nav a img {
   width: 26px;
   height: 26px;
+  margin: 0 2px;
   flex: none;
+}
+/* Each section's icon sits on a glob chip in its own team colour, bevelled like
+   the avatars. Colours keep at least 3.6:1 against the icon's ink. */
+.nav-chip {
+  --chip: #3c89d6;
+  --chip-ink: #fff;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  flex: none;
+  border-radius: var(--r-blob);
+  background: var(--chip);
+  color: var(--chip-ink);
+  box-shadow:
+    inset 0 -3px 0 rgba(0, 0, 0, 0.18),
+    inset 0 2px 0 rgba(255, 255, 255, 0.3),
+    0 1px 2px rgba(0, 0, 0, 0.2);
+  transition: transform var(--dur) var(--ease);
+}
+.nav-chip .icon {
+  margin-top: -1px;
+}
+.nav a:hover .nav-chip {
+  transform: rotate(-8deg) scale(1.08);
+}
+.nav-chip-leaderboard {
+  --chip: #f0c24a;
+  --chip-ink: #4a3305;
+}
+.nav-chip-players {
+  --chip: #3c89d6;
+}
+.nav-chip-matches {
+  --chip: #e64040;
+}
+.nav-chip-maps {
+  --chip: #2b9934;
+}
+.nav-chip-ais {
+  --chip: #8540e6;
+}
+.nav-chip-music {
+  --chip: #e640ae;
+}
+.nav-chip-skins {
+  --chip: #c47037;
+}
+.nav-chip-admin {
+  --chip: #299494;
+}
+@media (prefers-reduced-motion: reduce) {
+  .nav a:hover .nav-chip {
+    transform: none;
+  }
 }
 .nav a:hover {
   background: var(--surface-3);

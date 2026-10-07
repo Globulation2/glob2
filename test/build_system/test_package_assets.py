@@ -62,7 +62,7 @@ class TerrainEncoderHandoffTests(unittest.TestCase):
                 "version": 1, "compiled_pack": "data/terrain/compiled/atlas.json",
                 "profiles": [{"key": "flat", "roughness_q8": 0,
                               "contours_q12": [[0] * 5 for _ in range(4)]}],
-                "materials": [{"key": "water", "profile": "flat", "ocean": True,
+                "materials": [{"key": "water", "profile": "flat",
                                "sprite": "data/gfx/tile", "preview": [20, 80, 130],
                                "variants": [{"frame": 0, "weight": 1}]}],
                 "bindings": {key: "water" for key in terrain_tileset.BINDINGS},

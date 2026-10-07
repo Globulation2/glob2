@@ -5600,8 +5600,8 @@ Ciruelo
 Mineral de oro
 [Iron ore]
 Mineral de hierro
-[Sand]
-Arena
+[Silica]
+Sílice
 [Cotton]
 Algodón
 [Reroll terrain look]
@@ -5749,4 +5749,134 @@ Volver a sortear el aspecto del terreno
 [terrain rule algae grow]
 
 [terrain palette experiments hint]
+
+[brush valid on %0]
+
+[brush valid nowhere]
+
+[brush requires experiment %0]
+
+[brush resources custom]
+
+[brush section zones]
+
+[brush section areas]
+
+[brush section tools]
+
+[brush clearing area]
+
+[editor unsaved title]
+
+[editor quit unsaved]
+
+[editor load unsaved]
+
+[editor save]
+
+[editor discard]
+
+[editor share never saved]
+
+[editor share unsaved]
+
+[editor save and share]
+
+[editor share saved version]
+
+[editor reroll confirm]
+
+[editor reroll]
+
+[editor map saved]
+
+[editor map shared]
+
+[editor save needs fertility]
+
+[editor fertility stale]
+
+[No definition files found in %0]
+
+[From device…]
+
+[replace existing file %0?]
+
+[Replace]
+
+[Keep existing file]
+
+[editor menu save]
+
+[editor menu load]
+
+[editor menu import terrain]
+
+[editor menu import resources]
+
+[editor menu teams]
+
+[editor menu scenario]
+
+[editor menu reroll]
+
+[editor menu file]
+
+[editor menu map]
+
+[no resource growth areas]
+
+[dock flags and units]
+
+[dock minimap]
+
+[dock search brushes]
+
+[dock brush shape %0]
+
+[dock brush]
+
+[dock brush paint]
+
+[dock brush erase]
+
+[dock enable for map]
+
+[dock enable experiment %0]
+
+[dock enable experiment hint %0]
+
+[dock area number]
+
+[dock building level]
+
+[dock unit level]
+
+[dock no brushes match]
+
+[dock active team]
+
+[dock team count %0]
+
+[dock add team]
+
+[dock remove team]
+
+[dock nothing selected]
+
+[dock no properties]
+
+[focus brush search]
+
+[switch to resources view]
+
+[dock resources base]
+
+[dock fertility stale]
+
+[dock fertility refresh]
+
+[Enabled %0 for this map]
+
+[editor fertility tap refresh]
 

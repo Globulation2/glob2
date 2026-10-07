@@ -128,6 +128,15 @@ storage restoration prevents the editor from overwriting stored maps.
 The implementation reuses LoadSaveScreen's owned persistence operation and the
 shared FileManager writer. It does not introduce browser APIs into the editor.
 
+Decisions about unsaved work stay on cards over the live map
+(`EditorConfirmDialog`, keys `choice/<n>`): Quit, a window close
+(`MapEditorScreen::interceptsQuit()` while the map is modified), Load and Share
+(maps are shared from their saved file, so an unsaved or never-saved map is
+saved first). Save over an existing name asks inline unless it is the file the
+map was loaded from or last saved to. Fertility, which saving needs, runs in an
+in-editor progress card; cancelling it keeps the save dialog open. Closing a
+browser tab is still abrupt: there is no `beforeunload` prompt for editor work.
+
 ## Preferences and keyboard bindings
 
 Settings now checks atomic replacement of `preferences.txt` and both keyboard

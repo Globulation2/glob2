@@ -306,14 +306,6 @@ void GlobalContainer::loadGameGraphics(bool showProgress)
 	if (!terrain)
 		terrain = sprite("data/gfx/terrain");
 	terrainCompositor(); // Validate all registered material sources before drawing.
-	terrainWater = sprite(TerrainOceanBackdrop.sprite);
-	if(terrainWater->getFrameCount()<TerrainOceanBackdrop.firstFrame+TerrainOceanBackdrop.frames) {
-        throw std::runtime_error("Terrain ocean backdrop has missing frames");
-    }
-    for(int f=TerrainOceanBackdrop.firstFrame;f<TerrainOceanBackdrop.firstFrame+TerrainOceanBackdrop.frames;++f) {
-        if(terrainWater->getW(f)<=0 || terrainWater->getH(f)<=0)
-            throw std::runtime_error("Terrain ocean backdrop has invalid frame dimensions");
-    }
 	terrainCloud = sprite("data/gfx/cloud");
 
 	// black for unexplored terrain
@@ -360,17 +352,16 @@ void GlobalContainer::loadGameGraphics(bool showProgress)
 void GlobalContainer::requestGameGraphics()
 {
     if (gameGraphicsRequested) return;
-    for (const char *name : {"terrain", "water", "cloud", "black", "shade", "ressource", "ressourcemini",
+    for (const char *name : {"terrain", "cloud", "black", "shade", "ressource", "ressourcemini",
         "mapicon", "area-clearing", "area-forbidden", "area-guard", "area-farm", "bullet", "explosion", "death",
         "unit", "unitmini", "gamegui", "brush", "magiceffect", "particle", "guitheme"})
         Toolkit::requestSprite(std::string("data/gfx/") + name, std::string(name) == "ressource");
 	for (const auto &material : TerrainVisual::loadCatalog().materials)
 	{
 		Toolkit::requestSprite(material.sprite);
-		if (!material.backdrop.sprite.empty())
-			Toolkit::requestSprite(material.backdrop.sprite);
+		if (!material.decor.sprite.empty())
+			Toolkit::requestSprite(material.decor.sprite);
 	}
-	Toolkit::requestSprite(TerrainOceanBackdrop.sprite);
 	for (size_t i = 0; i < buildingsTypes.size(); ++i) {
         const auto *type = buildingsTypes.get(i);
         if (type->type == "null") continue;

@@ -24,7 +24,7 @@ from material_tiles import ROOT, pixel_sha256  # noqa: E402
 
 def synthetic_material(name, size=512):
     """A square stand-in for generated art: a procedural render, upscaled."""
-    image = terrain_synth.render_phase(name, 0, hd=True)[3]
+    image = terrain_synth.render_phase(name, 0)[1][3]
     return image.resize((size, size), Image.Resampling.BICUBIC)
 
 

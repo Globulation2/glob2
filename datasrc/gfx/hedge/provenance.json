@@ -2,7 +2,7 @@
   "generator": "tools/artwork/terrain_synth.py",
   "method": "procedural",
   "generator_sha256": {
-    "tools/artwork/terrain_synth.py": "a8eda69c7b7212d9f9573766da37f1002a984d62327c108fb581e9a9c23830dc",
+    "tools/artwork/terrain_synth.py": "7bcde1353e6c5ded00fb349e5091d326ac7a45777978f0337c2a40a728883aae",
     "tools/artwork/material_tiles.py": "224e159e0974023797710aa959994f11658c82da8fb80f9701e4abc13c74ed83"
   },
   "material": "hedge",
@@ -55,7 +55,8 @@
     "preview": null,
     "minimap": null,
     "placeholder_only": false,
-    "note": "placeholder until the image-generated hedge lands"
+    "periodic": false,
+    "note": "ground under the raised decor sprites (tools/artwork/terrain_decor.py)"
   },
   "seed": "fnv1a32(\"hedge:<variant>:<phase>\")",
   "render_size": 128,
@@ -65,26 +66,26 @@
   "frame_layout": "variant + 16 * phase",
   "sprite": "data/gfx/terrain-hedge",
   "preview": [
-    37,
-    70,
-    36
+    39,
+    67,
+    41
   ],
   "minimap": [
-    37,
-    70,
-    36
+    39,
+    67,
+    41
   ],
   "mean_color": [
-    37,
-    70,
-    36
+    39,
+    67,
+    41
   ],
   "style_stats": {
     "0": {
-      "luma": 55.8,
+      "luma": 55.5,
       "std": 9.7,
-      "grain": 4.9,
-      "sat": 0.49,
+      "grain": 4.8,
+      "sat": 0.41,
       "alpha": 255.0
     }
   },
@@ -148,21 +149,39 @@
     "libc": "glibc 2.43"
   },
   "runtime_sha256": {
-    "data/gfx/terrain-hedge0.png": "230c38927313a3f1ce2b0e61d5f68c737204fd20998b7ff6640c3f280da7878c",
-    "data/gfx/terrain-hedge1.png": "16a80fde025b5cb50759a4dba4f9ba5ca4beaabda330c23c75874cb7bdc01952",
-    "data/gfx/terrain-hedge2.png": "3f0839a54cb4babde4b15a62639e5fa5aa4dadd4b165b03df44fb178884af6f9",
-    "data/gfx/terrain-hedge3.png": "e86956f5a34230f5048eed48eea31da6bb6a215181ceea68e39c1943027705cc",
-    "data/gfx/terrain-hedge4.png": "7a9ca3e4f6e74eeddb90229d583822ed14360ea4f7d03d4da5310618fb26ad8b",
-    "data/gfx/terrain-hedge5.png": "0e5fb900338967ebdb2bf5e2769a26be839903337991c81515ace926a4e2974b",
-    "data/gfx/terrain-hedge6.png": "fdc7f6cd4c311be045947cccb582c27f780c005cbbc844449d17e72a7ccd66bb",
-    "data/gfx/terrain-hedge7.png": "4653d977b099629e8fa0cfdf9375ae4d31f128efdb8b31feb6eb12a6e206ca9d",
-    "data/gfx/terrain-hedge8.png": "802451c239c3e8031aac3b50f02fa6ccfdc96cb4f3f0db9ee01b55586f34b59d",
-    "data/gfx/terrain-hedge9.png": "6adb5e67bdd6e340de83054f94a7fea8ae5036607a775dd8c8cd1913b470d853",
-    "data/gfx/terrain-hedge10.png": "a49df8f6c7b846f085b32a820f7e068d26f5d14a8dace28c58a186b441b54494",
-    "data/gfx/terrain-hedge11.png": "031a05879ccf7b660ae23d7197a5e9440d779f64ed33719c51009e92faac63d6",
-    "data/gfx/terrain-hedge12.png": "f685bd3bff15c803f9cdd92c2472d4efffb2906fb8fea1d9f7810664d7c4f880",
-    "data/gfx/terrain-hedge13.png": "0b4c5d0ffda9f28b27f1bbf492e05218b5da67d02ace356b8fcc48ff441ad62e",
-    "data/gfx/terrain-hedge14.png": "2a4229905f143cb0655010d3f37dd499caf31398419a6f18d494d0759eba3350",
-    "data/gfx/terrain-hedge15.png": "c65201b30e8fe112df3be5e5b63452b8c6fd068f432f8e47eae4adbf192c122e"
+    "data/gfx/terrain-hedge0.png": "4a04431d29c0579f67a70fc67e701d70e39460f655c7b9b57c3ce29efed362df",
+    "data/gfx/terrain-hedge1.png": "2391342119c6b5ce7ff07ceeac92287ee7be2d3c8bbdee9da4688671a3f1f07d",
+    "data/gfx/terrain-hedge2.png": "a5d422fbcd5abe6cba73c8c8b57da84125eac7522fc04ca7ba881a9f402fdf9e",
+    "data/gfx/terrain-hedge3.png": "156bc5a077aa25f4b0224442a3b6302c6de4bd2497f7091ea02e606b4fea286c",
+    "data/gfx/terrain-hedge4.png": "d6cb165fd1eab48480a787a6c11f6a6f79d0f13cf34cea3b9a02a40f37593289",
+    "data/gfx/terrain-hedge5.png": "efb60f7064586c1d92d084e15a4240c29cfb374da191651b5f562313ab7dbbe7",
+    "data/gfx/terrain-hedge6.png": "38194987c392e1df22496f9d8df4a11811133b900c70f488e7dba366f5a19a34",
+    "data/gfx/terrain-hedge7.png": "a7cee9608ea1298ca0efa0c5c5ed1c507041dc85d556af5794071c65ff60b4e3",
+    "data/gfx/terrain-hedge8.png": "d82f6accb082fd23b7f4135657b751fe2ee56ff805834cca9454b7c00d7a409f",
+    "data/gfx/terrain-hedge9.png": "80f76ce384d706d2b739aae8d8cdedcad635d964960d2343ec88cfd069fe76db",
+    "data/gfx/terrain-hedge10.png": "eefb14f5f817c02b7b0732a8315de0dd7adc2f5b61cb1cf62c409c3f53863f8e",
+    "data/gfx/terrain-hedge11.png": "47f5838500bddda38cc43a50dea710c2ed15c521c4dae135c2f77d7c7bf24953",
+    "data/gfx/terrain-hedge12.png": "311f47ecd51e29e3af04e804cf5763ac4e72a791d4ecd0f359d262cf37262723",
+    "data/gfx/terrain-hedge13.png": "c0b6e00b4a2e1ebc556d864780b872fe671f9c7587509a3b412b4c781a181c16",
+    "data/gfx/terrain-hedge14.png": "66eba4eb48e081eb78011a2ee2c5b6f14df4fcda71042392ffbec720c534bc41",
+    "data/gfx/terrain-hedge15.png": "cdc4fc983bf8a9da48253b4384e92bae0d8d362f01b5f4cf5798d5b384ccab5a"
+  },
+  "highres_sha256": {
+    "data/highres/v1/terrain-hedge0.png": "6a68bc257d320aa9a488166ad2468f354e3fe2351d02b49d1679defe261ac0e1",
+    "data/highres/v1/terrain-hedge1.png": "b9d25d5174e0826507936b95ec463cf507ac87d54e4768610594bf3cf2930411",
+    "data/highres/v1/terrain-hedge2.png": "130eccc510f8bb174997c6fa0caab8e313ffc5f0a2a62f0bbe721e2d56d4fa60",
+    "data/highres/v1/terrain-hedge3.png": "fe4891a3cf2a65150a7bb075e736792290d0002c7e2714340c38b49c88535ce3",
+    "data/highres/v1/terrain-hedge4.png": "8888f48054b0ef0fecfbefbaae97dc46456a6bbc53ecb6c0096409eb2375c052",
+    "data/highres/v1/terrain-hedge5.png": "f2de00c871b93f3c30ded62b9f9003629aefab6a0c9ba5a6e394134c502c0e43",
+    "data/highres/v1/terrain-hedge6.png": "844e494fc0d0404d1aceaabf2c9c5282382557e3072bd90108164bd66467cc4e",
+    "data/highres/v1/terrain-hedge7.png": "94065069c18111fcfa4e30c1e8ce6adaa452786d6e3a2fe1b785243093a9f068",
+    "data/highres/v1/terrain-hedge8.png": "3760e93c433b906b9ed2f1e27632460bb7a6f004a467745b6b6dded772234d94",
+    "data/highres/v1/terrain-hedge9.png": "71e68c9701dda4db3706da0cc4653d2e731f502c89edded85f0109336f6772a3",
+    "data/highres/v1/terrain-hedge10.png": "550745619f7c0803904bc422e29f4d12fdfd12c62c2981a82c084afe2aa4d520",
+    "data/highres/v1/terrain-hedge11.png": "7a483777eead2f69b5cea54f56435cf1488d3412779979b789d156528d2cc0c9",
+    "data/highres/v1/terrain-hedge12.png": "bac9fccc2cc99a85b06801265cee8400bcab623b6524a32fc0a74238db66ba4f",
+    "data/highres/v1/terrain-hedge13.png": "c1d949b70ca16efbbdbdd0f4521d230f071e170e6bcd7ccdfe51475ae97b053d",
+    "data/highres/v1/terrain-hedge14.png": "43b598bfbb84f0265577b81fa0f8e2ea3a81d38d50f4c2555c900b932360bd9f",
+    "data/highres/v1/terrain-hedge15.png": "f562c42ffcb1ab5c427018d35f66064edcc18159e5700e68c6b8c19931d353dd"
   }
 }

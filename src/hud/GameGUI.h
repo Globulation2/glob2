@@ -264,7 +264,7 @@ public:
 	/// Where the top bar draws the speed control and the tick rate.
 	int topBarSpeedX() const;
 	/// The scene this frame draws: the simulation's published scene when the
-	/// simulation runs on its own thread, else the one drawAll extracted.
+	/// simulation runs on its own thread, else the explicitly prepared local frame.
 	Game *replayTelemetryGame();
 	const PresentationFrame& drawnScene() const { return publishedScene ? *publishedScene : frameScene; }
 	/// Draw scenes published by the simulation thread (null: use the explicitly prepared local frame).
@@ -278,7 +278,7 @@ public:
 	/// game may be read. The main thread publishes it through the runner mailbox.
 	SceneRequest sceneRequest(bool includeTiming = true);
     void stampPresentationRequest(SceneRequest& request) const { request.tickTime=lastTickTime;request.tickInterval=tickInterval; }
-	/// Extract the next scene from the game (the simulation thread calls this).
+	/// Standalone owner-side observation through the shared read boundary.
 	void extractScene(PresentationFrame& scene) { const auto request=sceneRequest(); sceneExtractor.prepare(game.captureReadBoundary({},true,SceneExtractor::requirements(request)),request,scene); }
     // Explicit observation for standalone clients and owner-side tools.
     void prepareLocalPresentation()
@@ -787,6 +787,8 @@ private:
 	///Denotes the name of the game save for saving,
 	///set on loading the map	
 	std::string defaultGameSaveName;
+	///The save this session last wrote; saving to it again needs no overwrite confirmation
+	std::string ownGameSaveName;
 
 	bool hasEndOfGameDialogBeenShown;
 
@@ -884,7 +886,7 @@ private:
 	PresentationFrame frameScene;
 	Uint64 lastTickTime = 0;
 	Uint32 tickInterval = 0;
-	///PresentationFrame published by the simulation thread, or null when drawAll extracts
+	///PresentationFrame published by the simulation thread, or null when an owner-side tool prepares a local frame
 	///frameScene itself (serial execution).
 	const PresentationFrame* publishedScene = nullptr;
 	const SceneBuildingPanel* inputBuildingPanel();

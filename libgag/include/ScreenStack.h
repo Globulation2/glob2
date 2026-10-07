@@ -28,6 +28,8 @@ class ScreenStack
 	// Transitional SDL host. Browser scheduling will call frame directly.
 	int execute(unsigned stepLength = 40);
 	void stop();
+	// True when the running top screen will receive SDL_EVENT_QUIT instead of the stack stopping.
+	bool quitIntercepted() const;
 	void suspendExecution();
 	void viewportResized(int oldWidth, int oldHeight, int width, int height);
 

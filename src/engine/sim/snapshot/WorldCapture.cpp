@@ -224,6 +224,7 @@ Handle capture(const Game& game,
 	};
     if (needs(requirements, Component::Annotations)) {
         auto annotations=storage ? storage->annotations.acquire(storage->allocations, [](const Annotations& a) { return a.stamps.filledTick; }) : std::make_shared<Annotations>();
+        annotations->areaNames = game.map.areaNames;
         const auto source=game.map.scriptAreaState();
         const bool resized=prepare(annotations->scriptAreas,source.size());
         refresh(annotations->stamps,game.map.changes(MapState::TrackedArray::Areas),resized,

@@ -696,7 +696,7 @@ native rendering in the same process, at the same camera and simulation state.
 It reports paired process CPU timings and checks pixel differences after timing
 ends. Set `GLOB2_BENCH_COMPARE_AI=1` to advance one AI tick before each pair;
 combine this with the camera sweep to exercise resource changes and wrap seams.
-The comparison uses the no-cloud pass, a fixed water phase, eight warmup pairs,
+The comparison uses the no-cloud pass, a fixed animation phase, eight warmup pairs,
 and a sparse tolerance of at most 100 changed channels with a maximum delta of
 1/255. That tolerance does not establish bit-exact moving-scene output. The
 immediate reference retains the ordinary resource sprite batch; it disables the
@@ -817,7 +817,7 @@ existing paths; cache-backed team-color surfaces cannot be deferred safely.
 
 
 For comparisons with another revision, set `GLOB2_BENCH_PAUSE_PRESENTATION=1`
-to freeze the water phase and `GLOB2_BENCH_WARMUP_FRAMES` to the same number of
+to freeze terrain animation and `GLOB2_BENCH_WARMUP_FRAMES` to the same number of
 frames on both executables. Record cold-frame samples as well as steady-state
 medians, and confirm `STEADY_CACHE pending=0` before describing results as fully
 warmed. Compare complete builds from both revisions; the diagnostic immediate
@@ -1845,7 +1845,7 @@ opaque rectangle fills directly on its borrowed framebuffer. Translucent draws a
 mixed pixel formats retain SDL geometry rasterization so platform-specific blending
 rounding and source modulation match the reference. General triangles use that same
 lazy SDL renderer; its queue flushes before direct writes or target replacement.
-Large existing images expanded past 512 pixels, including water, retain SDL geometry
+Large existing images expanded past 512 pixels retain SDL geometry
 rasterization because its fixed-point overflow behavior is visible at some transformed
 sizes. Borrowed terrain run views use direct rasterization: they replace small tiles and must not acquire that
 large-triangle behavior. Correcting the legacy large-image appearance needs separate
@@ -1894,16 +1894,12 @@ coastlines retain individual source blits, avoiding repeated alpha scans over
 transparent holes. Views are destroyed before their backing page.
 Each page validates the canonical terrain neighborhood, discovery decisions and
 revisions of the materials its recipes use. Animation or source changes in unrelated
-materials do not invalidate it. Pages store raw color/alpha, so coastlines blend over
-animated water once. Map replacement (a new `Map::identity()`) clears the cache;
+materials do not invalidate it; a phase change of an animated material (water,
+deep water, lava, ember field) recomposes only the pages that use it. Pages store
+raw color/alpha. Map replacement (a new `Map::identity()`) clears the cache;
 editor terrain changes, wrapped neighbors and visible-team changes are detected
 during preparation. Resources, actors, fog and overlays keep their existing
-passes. Water coverage subtracts only verified opaque terrain rectangles, including discovery
-boundaries. A complete animated water tile is omitted only when all of it is covered;
-partially covered tiles retain their original source mapping and animation phase.
-Coverage includes the original water pass's overshoot outside the viewport, which a
-transform can bring onscreen. Fragmented coverage falls back to the full pass after
-64 rectangles. Oversized working sets stream one temporary canonical page at a time
+passes. Oversized working sets stream one temporary canonical page at a time
 at the same sampling density as the full view. If a page cannot fit the device or
 allocation fails, an emergency composed-tile path preserves coverage but can differ
 in fractional resampling and HD mip filtering. None of these caches enter saves,

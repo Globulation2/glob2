@@ -31,6 +31,8 @@ class SceneMap
 	const Uint32* snapshotFog = nullptr; // owned by snapshot; copying SceneMap retains it
 
   public:
+    std::string getAreaName(int index) const;
+
 	Uint32 tick = 0;
 	SceneMap();
 	MaterialMask materialPresence() const { return presentMaterials; }

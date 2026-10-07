@@ -589,6 +589,11 @@ table.data th.num {
     inset 0 -4px 0 rgba(0, 0, 0, 0.15),
     inset 0 3px 0 rgba(255, 255, 255, 0.25);
 }
+.avatar.ai-avatar {
+  --av: var(--accent);
+  color: var(--accent-ink);
+  text-shadow: none;
+}
 .avatar.small {
   width: 30px;
   height: 30px;
@@ -655,6 +660,12 @@ table.data th.num {
   border-color: var(--warn-line);
   background: var(--warn-bg);
   color: var(--warn);
+}
+
+/* Tabler interface icons (src/icons.tsx); colour follows the text. */
+.icon {
+  flex: none;
+  vertical-align: middle;
 }
 
 .empty {

@@ -285,7 +285,7 @@ std::string Map::getAreaName(int n) const
 
 void Map::setAreaName(int n, std::string name)
 {
-	areaNames[n]=name;
+	if (areaNames[n] != name) { areaNames[n] = std::move(name); areaChanges.markAll(); }
 }
 
 

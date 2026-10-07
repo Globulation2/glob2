@@ -2,7 +2,7 @@ import { useEffect, useId, useRef, useState } from 'react';
 import type { PlayerDirectory } from '@glob2/protocol';
 import { api } from '../api.ts';
 import { GameArt } from '../art.tsx';
-import { Avatar, ErrorNotice } from '../components/common.tsx';
+import { AiMark, Avatar, ErrorNotice } from '../components/common.tsx';
 import { Link, useRouter } from '../router.tsx';
 import { playerHref } from '../playerLinks.ts';
 
@@ -75,7 +75,7 @@ export function Players() {
   return (
     <>
       <div className="page-head">
-        <GameArt name="swarm" size={72} className="head-art" />
+        <GameArt name="worker" size={72} className="head-art" />
         <div>
           <h1>Players</h1>
           <p className="sub">
@@ -200,7 +200,7 @@ export function Players() {
               {player.kind === 'account' ? (
                 <Avatar account={player.account} size="large" />
               ) : (
-                <GameArt name="school" size={56} />
+                <AiMark />
               )}
               <div className="grow">
                 <strong>

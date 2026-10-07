@@ -38,19 +38,19 @@ Compositor::Compositor(Catalog catalog) : definitions(std::move(catalog))
 				auto *native = sprite->nativeFrame(frame);
 				cleanSources[native->lifetimeIdentity()] = native->contentRevision();
 			}
-		GAGCore::Sprite *backdrop = nullptr;
-		if (!m.backdrop.sprite.empty())
+		if (!m.decor.sprite.empty())
 		{
-			backdrop = GAGCore::Toolkit::getSprite(m.backdrop.sprite);
-			if (!backdrop || m.backdrop.firstFrame + m.backdrop.frames > backdrop->getFrameCount())
-				throw std::runtime_error("Missing terrain backdrop");
-			for (int frame = m.backdrop.firstFrame;
-				 frame < m.backdrop.firstFrame + m.backdrop.frames; ++frame)
-				if (backdrop->getW(frame) != 32 || backdrop->getH(frame) != 32)
-					throw std::runtime_error("Backdrop must use 32x32 logical tiles");
+			auto *decor = GAGCore::Toolkit::getSprite(m.decor.sprite);
+			if (!decor || (decorSprite_ && decor != decorSprite_))
+				throw std::runtime_error("Terrain decor must share one loadable sprite: " + m.key);
+			for (const auto &frames : {m.decor.full, m.decor.edge})
+				for (int frame : frames)
+					if (frame >= decor->getFrameCount() || decor->getW(frame) > 64 ||
+						decor->getH(frame) > 64)
+						throw std::runtime_error("Terrain decor frame missing or larger than 64x64: " +
+												 m.key);
+			decorSprite_ = decor;
 		}
-		backdropSprites.push_back(backdrop);
-		backgrounds.emplace_back();
 		sprites.push_back(sprite);
 		textures.emplace_back(m.variants.size());
 		materialRevisions.push_back(0);
@@ -87,8 +87,6 @@ std::size_t Compositor::sourceBytes() const
 	for (const auto &set : textures)
 		for (const auto &t : set)
 			bytes += t.pixels.capacity() * 4;
-	for (const auto &t : backgrounds)
-		bytes += t.pixels.capacity() * 4;
 	return bytes;
 }
 void Compositor::prepare(bool hd, int time)
@@ -97,8 +95,6 @@ void Compositor::prepare(bool hd, int time)
 	for (unsigned id = 0; id < definitions.materials.size(); ++id)
 	{
 		const auto &m = definitions.materials[id];
-		if (m.ocean)
-			continue;
 		const int phase = unsigned(time) / m.animationTicks % m.animationFrames;
 		bool refresh = false;
 		for (unsigned i = 0; i < m.variants.size(); ++i)
@@ -113,28 +109,10 @@ void Compositor::prepare(bool hd, int time)
 			if (source->getW() > 32)
 				nextResolution = 4;
 		}
-		if (backdropSprites[id])
-		{
-			const int frame =
-				m.backdrop.firstFrame + unsigned(time) / m.backdrop.ticks % m.backdrop.frames;
-			auto *source = hd ? backdropSprites[id]->baseFrame(frame)
-							  : backdropSprites[id]->nativeFrame(frame);
-			if (!source)
-				throw std::runtime_error("Missing terrain backdrop frame");
-			auto &t = backgrounds[id];
-			if (t.source != source || t.identity != source->lifetimeIdentity() ||
-				t.revision != source->contentRevision())
-			{
-				readTexture(t, source);
-				refresh = true;
-			}
-			if (t.size > 32)
-				nextResolution = 4;
-		}
 		if (!refresh)
 			continue;
 		++materialRevisions[id];
-		bool packaged = pack && !backdropSprites[id];
+		bool packaged = pack != nullptr;
 		if (packaged)
 			for (const auto &variant : m.variants)
 			{
@@ -165,23 +143,8 @@ void Compositor::prepare(bool hd, int time)
 		}
 		if (packaged)
 			continue; // Compiler already prepared the shared variant borders.
-		if (backdropSprites[id])
-			for (auto &t : textures[id])
-				for (int y = 0; y < t.size; ++y)
-					for (int x = 0; x < t.size; ++x)
-					{
-						auto &p = t.pixels[y * t.size + x];
-						const auto &bg = backgrounds[id];
-						const auto &b =
-							bg.pixels[(y * bg.size / t.size) * bg.size + x * bg.size / t.size];
-						const unsigned a = unsigned(p[3]) * 255 + unsigned(b[3]) * (255 - p[3]);
-						for (int k = 0; k < 3; ++k)
-							p[k] = a ? (unsigned(p[k]) * p[3] * 255 +
-										unsigned(b[k]) * b[3] * (255 - p[3])) /
-										   a
-									 : 0;
-						p[3] = (a + 127) / 255;
-					}
+		if (m.periodicEdges)
+			continue; // Variants already share one periodic edge band.
 		// One periodic master boundary per material, not a different edge for
 		// each variant. Blend premultiplied color and alpha together so
 		// translucent variants cannot reintroduce rectangular seams.
@@ -210,6 +173,21 @@ void Compositor::prepare(bool hd, int time)
 				}
 	}
 	resolution = nextResolution;
+}
+int Compositor::decorFrame(const SceneMap &map, int x, int y) const
+{
+	x &= map.getMaskW();
+	y &= map.getMaskH();
+	const auto type = map.appearanceAt(x, y);
+	if (unsigned(type) >= TERRAIN_COUNT || terrainUsesLegacyCorners(type))
+		return -1;
+	const auto id = terrainBindings[unsigned(type)];
+	if (definitions.materials[id].decor.full.empty())
+		return -1;
+	bool edge = false;
+	for (const auto [dx, dy] : {std::pair{-1, 0}, {1, 0}, {0, -1}, {0, 1}})
+		edge |= map.appearanceAt((x + dx) & map.getMaskW(), (y + dy) & map.getMaskH()) != type;
+	return definitions.decorFrame(id, x, y, edge, map.terrainSeed());
 }
 Recipe Compositor::describe(const SceneMap &map, int x, int y) const
 {
@@ -248,7 +226,7 @@ void Compositor::compose(const Recipe &r, SDL_Surface *target, int ox, int oy, i
 	std::vector<Source> selected(definitions.materials.size());
 	auto *sources = selected.data();
 	for (auto id : r.samples)
-		if (!sources[id].pixels && !definitions.materials[id].ocean)
+		if (!sources[id].pixels)
 		{
 			const auto &texture = textures[id][definitions.variantIndex(id, r.x, r.y, r.seed)];
 			sources[id] = {texture.pixels.data(), texture.size};
