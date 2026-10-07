@@ -5565,44 +5565,44 @@ Importi terendifinojn
 [Terrain palette]
 Terenpaletro
 [Food]
-Food
+Manĝaĵo
 [Paper]
-Paper
+Papero
 [Cherries]
-Cherries
+Ĉerizoj
 [Oranges]
-Oranges
+Oranĝoj
 [Prunes]
-Prunes
+Prunoj
 [Gold]
-Gold
+Oro
 [Metal]
-Metal
+Metalo
 [Glass]
-Glass
+Vitro
 [Fabric]
-Fabric
+Ŝtofo
 [Import Resource Definitions]
-Import Resource Definitions
+Importi rimedajn difinojn
 [Resource palette]
-Resource palette
+Rimeda paletro
 [Trees]
-Trees
+Arboj
 [Rocks]
-Rocks
+Rokoj
 [Cherry tree]
-Cherry tree
+Ĉerizarbo
 [Orange tree]
-Orange tree
+Oranĝarbo
 [Prune tree]
-Prune tree
+Prunarbo
 [Gold ore]
-Gold ore
+Ora erco
 [Iron ore]
-Iron ore
+Fera erco
 [Sand]
-Sand
+Sablo
 [Cotton]
-Cotton
+Kotono
 [Reroll terrain look]
 Denove hazardigi la aspekton de la tereno

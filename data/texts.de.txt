@@ -5565,44 +5565,44 @@ Geländedefinitionen importieren
 [Terrain palette]
 Geländepalette
 [Food]
-Food
+Nahrung
 [Paper]
-Paper
+Papier
 [Cherries]
-Cherries
+Kirschen
 [Oranges]
-Oranges
+Orangen
 [Prunes]
-Prunes
+Pflaumen
 [Gold]
 Gold
 [Metal]
-Metal
+Metall
 [Glass]
-Glass
+Glas
 [Fabric]
-Fabric
+Stoff
 [Import Resource Definitions]
-Import Resource Definitions
+Ressourcendefinitionen importieren
 [Resource palette]
-Resource palette
+Ressourcenpalette
 [Trees]
-Trees
+Bäume
 [Rocks]
-Rocks
+Felsen
 [Cherry tree]
-Cherry tree
+Kirschbaum
 [Orange tree]
-Orange tree
+Orangenbaum
 [Prune tree]
-Prune tree
+Pflaumenbaum
 [Gold ore]
-Gold ore
+Golderz
 [Iron ore]
-Iron ore
+Eisenerz
 [Sand]
 Sand
 [Cotton]
-Cotton
+Baumwolle
 [Reroll terrain look]
 Geländeaussehen neu auswürfeln

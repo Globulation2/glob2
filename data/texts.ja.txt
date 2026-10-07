@@ -5565,44 +5565,44 @@ JavaScriptのAIは「設定」→「カスタムAI」で追加します。追加
 [Terrain palette]
 地形パレット
 [Food]
-Food
+食料
 [Paper]
-Paper
+紙
 [Cherries]
-Cherries
+サクランボ
 [Oranges]
-Oranges
+オレンジ
 [Prunes]
-Prunes
+プラム
 [Gold]
-Gold
+金
 [Metal]
-Metal
+金属
 [Glass]
-Glass
+ガラス
 [Fabric]
-Fabric
+布
 [Import Resource Definitions]
-Import Resource Definitions
+資源定義をインポート
 [Resource palette]
-Resource palette
+資源パレット
 [Trees]
-Trees
+樹木
 [Rocks]
-Rocks
+岩石
 [Cherry tree]
-Cherry tree
+サクランボの木
 [Orange tree]
-Orange tree
+オレンジの木
 [Prune tree]
-Prune tree
+プラムの木
 [Gold ore]
-Gold ore
+金鉱石
 [Iron ore]
-Iron ore
+鉄鉱石
 [Sand]
-Sand
+砂
 [Cotton]
-Cotton
+綿花
 [Reroll terrain look]
 地形の外観を再抽選

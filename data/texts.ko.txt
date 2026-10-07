@@ -5565,44 +5565,44 @@ AI 원격 측정
 [Terrain palette]
 지형 팔레트
 [Food]
-Food
+식량
 [Paper]
-Paper
+종이
 [Cherries]
-Cherries
+체리
 [Oranges]
-Oranges
+오렌지
 [Prunes]
-Prunes
+자두
 [Gold]
-Gold
+금
 [Metal]
-Metal
+금속
 [Glass]
-Glass
+유리
 [Fabric]
-Fabric
+직물
 [Import Resource Definitions]
-Import Resource Definitions
+자원 정의 가져오기
 [Resource palette]
-Resource palette
+자원 팔레트
 [Trees]
-Trees
+나무
 [Rocks]
-Rocks
+바위
 [Cherry tree]
-Cherry tree
+체리나무
 [Orange tree]
-Orange tree
+오렌지나무
 [Prune tree]
-Prune tree
+자두나무
 [Gold ore]
-Gold ore
+금광석
 [Iron ore]
-Iron ore
+철광석
 [Sand]
-Sand
+모래
 [Cotton]
-Cotton
+목화
 [Reroll terrain look]
 지형 외관 다시 무작위 선택

@@ -5565,44 +5565,44 @@ Importér terrændefinitioner
 [Terrain palette]
 Terrænpalet
 [Food]
-Food
+Mad
 [Paper]
-Paper
+Papir
 [Cherries]
-Cherries
+Kirsebær
 [Oranges]
-Oranges
+Appelsiner
 [Prunes]
-Prunes
+Blommer
 [Gold]
-Gold
+Guld
 [Metal]
 Metal
 [Glass]
-Glass
+Glas
 [Fabric]
-Fabric
+Stof
 [Import Resource Definitions]
-Import Resource Definitions
+Importér ressourcedefinitioner
 [Resource palette]
-Resource palette
+Ressourcepalet
 [Trees]
-Trees
+Træer
 [Rocks]
-Rocks
+Klipper
 [Cherry tree]
-Cherry tree
+Kirsebærtræ
 [Orange tree]
-Orange tree
+Appelsintræ
 [Prune tree]
-Prune tree
+Blommetræ
 [Gold ore]
-Gold ore
+Guldmalm
 [Iron ore]
-Iron ore
+Jernmalm
 [Sand]
 Sand
 [Cotton]
-Cotton
+Bomuld
 [Reroll terrain look]
 Vælg terrænets udseende tilfældigt igen

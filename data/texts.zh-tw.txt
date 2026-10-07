@@ -5565,44 +5565,44 @@ AI 遙測
 [Terrain palette]
 地形選擇面板
 [Food]
-Food
+食物
 [Paper]
-Paper
+紙張
 [Cherries]
-Cherries
+櫻桃
 [Oranges]
-Oranges
+橘子
 [Prunes]
-Prunes
+李子
 [Gold]
-Gold
+黃金
 [Metal]
-Metal
+金屬
 [Glass]
-Glass
+玻璃
 [Fabric]
-Fabric
+布料
 [Import Resource Definitions]
-Import Resource Definitions
+匯入資源定義
 [Resource palette]
-Resource palette
+資源面板
 [Trees]
-Trees
+樹木
 [Rocks]
-Rocks
+岩石
 [Cherry tree]
-Cherry tree
+櫻桃樹
 [Orange tree]
-Orange tree
+橘子樹
 [Prune tree]
-Prune tree
+李子樹
 [Gold ore]
-Gold ore
+金礦石
 [Iron ore]
-Iron ore
+鐵礦石
 [Sand]
-Sand
+沙子
 [Cotton]
-Cotton
+棉花
 [Reroll terrain look]
 重新隨機產生地形外觀

@@ -5565,44 +5565,44 @@ Importovat definice terénu
 [Terrain palette]
 Paleta terénů
 [Food]
-Food
+Potraviny
 [Paper]
-Paper
+Papír
 [Cherries]
-Cherries
+Třešně
 [Oranges]
-Oranges
+Pomeranče
 [Prunes]
-Prunes
+Švestky
 [Gold]
-Gold
+Zlato
 [Metal]
-Metal
+Kov
 [Glass]
-Glass
+Sklo
 [Fabric]
-Fabric
+Látka
 [Import Resource Definitions]
-Import Resource Definitions
+Importovat definice zdrojů
 [Resource palette]
-Resource palette
+Paleta zdrojů
 [Trees]
-Trees
+Stromy
 [Rocks]
-Rocks
+Skály
 [Cherry tree]
-Cherry tree
+Třešeň
 [Orange tree]
-Orange tree
+Pomerančovník
 [Prune tree]
-Prune tree
+Švestka
 [Gold ore]
-Gold ore
+Zlatá ruda
 [Iron ore]
-Iron ore
+Železná ruda
 [Sand]
-Sand
+Písek
 [Cotton]
-Cotton
+Bavlna
 [Reroll terrain look]
 Znovu náhodně zvolit vzhled terénu

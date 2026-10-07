@@ -5565,44 +5565,44 @@ FFmpeg недоступний, тому запис вимкнено. Устан�
 [Terrain palette]
 Палітра місцевості
 [Food]
-Food
+Їжа
 [Paper]
-Paper
+Папір
 [Cherries]
-Cherries
+Вишні
 [Oranges]
-Oranges
+Апельсини
 [Prunes]
-Prunes
+Сливи
 [Gold]
-Gold
+Золото
 [Metal]
-Metal
+Метал
 [Glass]
-Glass
+Скло
 [Fabric]
-Fabric
+Тканина
 [Import Resource Definitions]
-Import Resource Definitions
+Імпорт визначень ресурсів
 [Resource palette]
-Resource palette
+Палітра ресурсів
 [Trees]
-Trees
+Дерева
 [Rocks]
-Rocks
+Скелі
 [Cherry tree]
-Cherry tree
+Вишневе дерево
 [Orange tree]
-Orange tree
+Апельсинове дерево
 [Prune tree]
-Prune tree
+Сливове дерево
 [Gold ore]
-Gold ore
+Золота руда
 [Iron ore]
-Iron ore
+Залізна руда
 [Sand]
-Sand
+Пісок
 [Cotton]
-Cotton
+Бавовна
 [Reroll terrain look]
 Заново вибрати випадковий вигляд ландшафту

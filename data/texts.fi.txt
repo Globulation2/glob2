@@ -5565,44 +5565,44 @@ Tuo maastomäärittelyt
 [Terrain palette]
 Maastopaletti
 [Food]
-Food
+Ruoka
 [Paper]
-Paper
+Paperi
 [Cherries]
-Cherries
+Kirsikat
 [Oranges]
-Oranges
+Appelsiinit
 [Prunes]
-Prunes
+Luumut
 [Gold]
-Gold
+Kulta
 [Metal]
-Metal
+Metalli
 [Glass]
-Glass
+Lasi
 [Fabric]
-Fabric
+Kangas
 [Import Resource Definitions]
-Import Resource Definitions
+Tuo resurssimääritykset
 [Resource palette]
-Resource palette
+Resurssipaletti
 [Trees]
-Trees
+Puut
 [Rocks]
-Rocks
+Kalliot
 [Cherry tree]
-Cherry tree
+Kirsikkapuu
 [Orange tree]
-Orange tree
+Appelsiinipuu
 [Prune tree]
-Prune tree
+Luumupuu
 [Gold ore]
-Gold ore
+Kultamalmi
 [Iron ore]
-Iron ore
+Rautamalmi
 [Sand]
-Sand
+Hiekka
 [Cotton]
-Cotton
+Puuvilla
 [Reroll terrain look]
 Arvo maaston ulkoasu uudelleen

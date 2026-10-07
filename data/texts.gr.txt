@@ -5565,44 +5565,44 @@ CPU %0%
 [Terrain palette]
 Παλέτα εδαφών
 [Food]
-Food
+Τροφή
 [Paper]
-Paper
+Χαρτί
 [Cherries]
-Cherries
+Κεράσια
 [Oranges]
-Oranges
+Πορτοκάλια
 [Prunes]
-Prunes
+Δαμάσκηνα
 [Gold]
-Gold
+Χρυσός
 [Metal]
-Metal
+Μέταλλο
 [Glass]
-Glass
+Γυαλί
 [Fabric]
-Fabric
+Ύφασμα
 [Import Resource Definitions]
-Import Resource Definitions
+Εισαγωγή ορισμών πόρων
 [Resource palette]
-Resource palette
+Παλέτα πόρων
 [Trees]
-Trees
+Δέντρα
 [Rocks]
-Rocks
+Βράχοι
 [Cherry tree]
-Cherry tree
+Κερασιά
 [Orange tree]
-Orange tree
+Πορτοκαλιά
 [Prune tree]
-Prune tree
+Δαμασκηνιά
 [Gold ore]
-Gold ore
+Χρυσομετάλλευμα
 [Iron ore]
-Iron ore
+Σιδηρομετάλλευμα
 [Sand]
-Sand
+Άμμος
 [Cotton]
-Cotton
+Βαμβάκι
 [Reroll terrain look]
 Νέα τυχαία εμφάνιση εδάφους

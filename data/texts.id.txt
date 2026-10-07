@@ -5565,44 +5565,44 @@ Impor definisi medan
 [Terrain palette]
 Palet medan
 [Food]
-Food
+Makanan
 [Paper]
-Paper
+Kertas
 [Cherries]
-Cherries
+Ceri
 [Oranges]
-Oranges
+Jeruk
 [Prunes]
-Prunes
+Prem
 [Gold]
-Gold
+Emas
 [Metal]
-Metal
+Logam
 [Glass]
-Glass
+Kaca
 [Fabric]
-Fabric
+Kain
 [Import Resource Definitions]
-Import Resource Definitions
+Impor definisi sumber daya
 [Resource palette]
-Resource palette
+Palet sumber daya
 [Trees]
-Trees
+Pepohonan
 [Rocks]
-Rocks
+Bebatuan
 [Cherry tree]
-Cherry tree
+Pohon ceri
 [Orange tree]
-Orange tree
+Pohon jeruk
 [Prune tree]
-Prune tree
+Pohon prem
 [Gold ore]
-Gold ore
+Bijih emas
 [Iron ore]
-Iron ore
+Bijih besi
 [Sand]
-Sand
+Pasir
 [Cotton]
-Cotton
+Kapas
 [Reroll terrain look]
 Acak ulang tampilan medan

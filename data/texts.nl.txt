@@ -5565,44 +5565,44 @@ Terreindefinities importeren
 [Terrain palette]
 Terreinpalet
 [Food]
-Food
+Voedsel
 [Paper]
-Paper
+Papier
 [Cherries]
-Cherries
+Kersen
 [Oranges]
-Oranges
+Sinaasappels
 [Prunes]
-Prunes
+Pruimen
 [Gold]
-Gold
+Goud
 [Metal]
-Metal
+Metaal
 [Glass]
-Glass
+Glas
 [Fabric]
-Fabric
+Stof
 [Import Resource Definitions]
-Import Resource Definitions
+Grondstofdefinities importeren
 [Resource palette]
-Resource palette
+Grondstoffenpalet
 [Trees]
-Trees
+Bomen
 [Rocks]
-Rocks
+Rotsen
 [Cherry tree]
-Cherry tree
+Kersenboom
 [Orange tree]
-Orange tree
+Sinaasappelboom
 [Prune tree]
-Prune tree
+Pruimenboom
 [Gold ore]
-Gold ore
+Gouderts
 [Iron ore]
-Iron ore
+IJzererts
 [Sand]
-Sand
+Zand
 [Cotton]
-Cotton
+Katoen
 [Reroll terrain look]
 Terreinuiterlijk opnieuw loten

@@ -5565,44 +5565,44 @@ Importa definicions de terreny
 [Terrain palette]
 Paleta de terrenys
 [Food]
-Food
+Aliments
 [Paper]
 Paper
 [Cherries]
-Cherries
+Cireres
 [Oranges]
-Oranges
+Taronges
 [Prunes]
 Prunes
 [Gold]
-Gold
+Or
 [Metal]
-Metal
+Metall
 [Glass]
-Glass
+Vidre
 [Fabric]
-Fabric
+Teixit
 [Import Resource Definitions]
-Import Resource Definitions
+Importa definicions de recursos
 [Resource palette]
-Resource palette
+Paleta de recursos
 [Trees]
-Trees
+Arbres
 [Rocks]
-Rocks
+Roques
 [Cherry tree]
-Cherry tree
+Cirerer
 [Orange tree]
-Orange tree
+Taronger
 [Prune tree]
-Prune tree
+Prunera
 [Gold ore]
-Gold ore
+Mineral d’or
 [Iron ore]
-Iron ore
+Mineral de ferro
 [Sand]
-Sand
+Sorra
 [Cotton]
-Cotton
+Cotó
 [Reroll terrain look]
 Torna a sortejar l’aspecte del terreny

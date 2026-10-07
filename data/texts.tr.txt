@@ -5565,44 +5565,44 @@ Arazi tanımlarını içe aktar
 [Terrain palette]
 Arazi paleti
 [Food]
-Food
+Yiyecek
 [Paper]
-Paper
+Kâğıt
 [Cherries]
-Cherries
+Kiraz
 [Oranges]
-Oranges
+Portakal
 [Prunes]
-Prunes
+Erik
 [Gold]
-Gold
+Altın
 [Metal]
 Metal
 [Glass]
-Glass
+Cam
 [Fabric]
-Fabric
+Kumaş
 [Import Resource Definitions]
-Import Resource Definitions
+Kaynak tanımlarını içe aktar
 [Resource palette]
-Resource palette
+Kaynak paleti
 [Trees]
-Trees
+Ağaçlar
 [Rocks]
-Rocks
+Kayalar
 [Cherry tree]
-Cherry tree
+Kiraz ağacı
 [Orange tree]
-Orange tree
+Portakal ağacı
 [Prune tree]
-Prune tree
+Erik ağacı
 [Gold ore]
-Gold ore
+Altın cevheri
 [Iron ore]
-Iron ore
+Demir cevheri
 [Sand]
-Sand
+Kum
 [Cotton]
-Cotton
+Pamuk
 [Reroll terrain look]
 Arazi görünümünü yeniden rastgele seç

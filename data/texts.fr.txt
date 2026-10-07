@@ -5565,44 +5565,44 @@ Importer des définitions de terrain
 [Terrain palette]
 Palette de terrains
 [Food]
-Food
+Nourriture
 [Paper]
-Paper
+Papier
 [Cherries]
-Cherries
+Cerises
 [Oranges]
 Oranges
 [Prunes]
 Prunes
 [Gold]
-Gold
+Or
 [Metal]
-Metal
+Métal
 [Glass]
-Glass
+Verre
 [Fabric]
-Fabric
+Tissu
 [Import Resource Definitions]
-Import Resource Definitions
+Importer des définitions de ressources
 [Resource palette]
-Resource palette
+Palette de ressources
 [Trees]
-Trees
+Arbres
 [Rocks]
-Rocks
+Rochers
 [Cherry tree]
-Cherry tree
+Cerisier
 [Orange tree]
-Orange tree
+Oranger
 [Prune tree]
-Prune tree
+Prunier
 [Gold ore]
-Gold ore
+Minerai d’or
 [Iron ore]
-Iron ore
+Minerai de fer
 [Sand]
-Sand
+Sable
 [Cotton]
-Cotton
+Coton
 [Reroll terrain look]
 Tirer à nouveau l’apparence du terrain

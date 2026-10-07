@@ -5565,44 +5565,44 @@ Nhập định nghĩa địa hình
 [Terrain palette]
 Bảng chọn địa hình
 [Food]
-Food
+Thức ăn
 [Paper]
-Paper
+Giấy
 [Cherries]
-Cherries
+Anh đào
 [Oranges]
-Oranges
+Cam
 [Prunes]
-Prunes
+Mận
 [Gold]
-Gold
+Vàng
 [Metal]
-Metal
+Kim loại
 [Glass]
-Glass
+Thủy tinh
 [Fabric]
-Fabric
+Vải
 [Import Resource Definitions]
-Import Resource Definitions
+Nhập định nghĩa tài nguyên
 [Resource palette]
-Resource palette
+Bảng tài nguyên
 [Trees]
-Trees
+Cây
 [Rocks]
-Rocks
+Đá tảng
 [Cherry tree]
-Cherry tree
+Cây anh đào
 [Orange tree]
-Orange tree
+Cây cam
 [Prune tree]
-Prune tree
+Cây mận
 [Gold ore]
-Gold ore
+Quặng vàng
 [Iron ore]
-Iron ore
+Quặng sắt
 [Sand]
-Sand
+Cát
 [Cotton]
-Cotton
+Bông
 [Reroll terrain look]
 Chọn lại ngẫu nhiên diện mạo địa hình

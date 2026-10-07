@@ -5565,44 +5565,44 @@ Importera terrängdefinitioner
 [Terrain palette]
 Terrängpalett
 [Food]
-Food
+Mat
 [Paper]
-Paper
+Papper
 [Cherries]
-Cherries
+Körsbär
 [Oranges]
-Oranges
+Apelsiner
 [Prunes]
-Prunes
+Plommon
 [Gold]
-Gold
+Guld
 [Metal]
-Metal
+Metall
 [Glass]
-Glass
+Glas
 [Fabric]
-Fabric
+Tyg
 [Import Resource Definitions]
-Import Resource Definitions
+Importera resursdefinitioner
 [Resource palette]
-Resource palette
+Resurspalett
 [Trees]
-Trees
+Träd
 [Rocks]
-Rocks
+Klippor
 [Cherry tree]
-Cherry tree
+Körsbärsträd
 [Orange tree]
-Orange tree
+Apelsinträd
 [Prune tree]
-Prune tree
+Plommonträd
 [Gold ore]
-Gold ore
+Guldmalm
 [Iron ore]
-Iron ore
+Järnmalm
 [Sand]
 Sand
 [Cotton]
-Cotton
+Bomull
 [Reroll terrain look]
 Slumpa terrängens utseende igen

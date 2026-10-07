@@ -5565,44 +5565,44 @@ Terepdefiníciók importálása
 [Terrain palette]
 Tereppaletta
 [Food]
-Food
+Élelem
 [Paper]
-Paper
+Papír
 [Cherries]
-Cherries
+Cseresznye
 [Oranges]
-Oranges
+Narancs
 [Prunes]
-Prunes
+Szilva
 [Gold]
-Gold
+Arany
 [Metal]
-Metal
+Fém
 [Glass]
-Glass
+Üveg
 [Fabric]
-Fabric
+Szövet
 [Import Resource Definitions]
-Import Resource Definitions
+Erőforrás-definíciók importálása
 [Resource palette]
-Resource palette
+Erőforráspaletta
 [Trees]
-Trees
+Fák
 [Rocks]
-Rocks
+Sziklák
 [Cherry tree]
-Cherry tree
+Cseresznyefa
 [Orange tree]
-Orange tree
+Narancsfa
 [Prune tree]
-Prune tree
+Szilvafa
 [Gold ore]
-Gold ore
+Aranyérc
 [Iron ore]
-Iron ore
+Vasérc
 [Sand]
-Sand
+Homok
 [Cotton]
-Cotton
+Pamut
 [Reroll terrain look]
 Terep megjelenésének újrasorsolása

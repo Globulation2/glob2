@@ -5565,44 +5565,44 @@ Enporzhiañ despizadurioù an tachennoù
 [Terrain palette]
 Paletenn an tachennoù
 [Food]
-Food
+Comida
 [Paper]
-Paper
+Papel
 [Cherries]
-Cherries
+Cerejas
 [Oranges]
-Oranges
+Laranjas
 [Prunes]
-Prunes
+Ameixas
 [Gold]
-Gold
+Ouro
 [Metal]
 Metal
 [Glass]
-Glass
+Vidro
 [Fabric]
-Fabric
+Tecido
 [Import Resource Definitions]
-Import Resource Definitions
+Importar definições de recursos
 [Resource palette]
-Resource palette
+Paleta de recursos
 [Trees]
-Trees
+Árvores
 [Rocks]
-Rocks
+Rochas
 [Cherry tree]
-Cherry tree
+Cerejeira
 [Orange tree]
-Orange tree
+Laranjeira
 [Prune tree]
-Prune tree
+Ameixeira
 [Gold ore]
-Gold ore
+Minério de ouro
 [Iron ore]
-Iron ore
+Minério de ferro
 [Sand]
-Sand
+Areia
 [Cotton]
-Cotton
+Algodão
 [Reroll terrain look]
 Adtresañ neuz an douar

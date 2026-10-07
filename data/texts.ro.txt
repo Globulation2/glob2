@@ -5565,44 +5565,44 @@ Importă definiții de teren
 [Terrain palette]
 Paletă de terenuri
 [Food]
-Food
+Hrană
 [Paper]
-Paper
+Hârtie
 [Cherries]
-Cherries
+Cireșe
 [Oranges]
-Oranges
+Portocale
 [Prunes]
-Prunes
+Prune
 [Gold]
-Gold
+Aur
 [Metal]
 Metal
 [Glass]
-Glass
+Sticlă
 [Fabric]
-Fabric
+Țesătură
 [Import Resource Definitions]
-Import Resource Definitions
+Importă definițiile resurselor
 [Resource palette]
-Resource palette
+Paleta de resurse
 [Trees]
-Trees
+Copaci
 [Rocks]
-Rocks
+Stânci
 [Cherry tree]
-Cherry tree
+Cireș
 [Orange tree]
-Orange tree
+Portocal
 [Prune tree]
-Prune tree
+Prun
 [Gold ore]
-Gold ore
+Minereu de aur
 [Iron ore]
-Iron ore
+Minereu de fier
 [Sand]
-Sand
+Nisip
 [Cotton]
-Cotton
+Bumbac
 [Reroll terrain look]
 Alege din nou aleatoriu aspectul terenului

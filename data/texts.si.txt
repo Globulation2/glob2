@@ -5565,44 +5565,44 @@ Uvozi definicije terena
 [Terrain palette]
 Paleta terenov
 [Food]
-Food
+Hrana
 [Paper]
-Paper
+Papir
 [Cherries]
-Cherries
+Češnje
 [Oranges]
-Oranges
+Pomaranče
 [Prunes]
-Prunes
+Slive
 [Gold]
-Gold
+Zlato
 [Metal]
-Metal
+Kovina
 [Glass]
-Glass
+Steklo
 [Fabric]
-Fabric
+Tkanina
 [Import Resource Definitions]
-Import Resource Definitions
+Uvozi definicije virov
 [Resource palette]
-Resource palette
+Paleta virov
 [Trees]
-Trees
+Drevesa
 [Rocks]
-Rocks
+Skale
 [Cherry tree]
-Cherry tree
+Češnja
 [Orange tree]
-Orange tree
+Pomarančevec
 [Prune tree]
-Prune tree
+Sliva
 [Gold ore]
-Gold ore
+Zlata ruda
 [Iron ore]
-Iron ore
+Železova ruda
 [Sand]
-Sand
+Pesek
 [Cotton]
-Cotton
+Bombaž
 [Reroll terrain look]
 Znova naključno izberi videz terena

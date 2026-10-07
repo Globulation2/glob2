@@ -5565,44 +5565,44 @@ FFmpeg در دسترس نیست، پس ضبط خاموش است. FFmpeg را ن�
 [Terrain palette]
 پالت زمین
 [Food]
-Food
+غذا
 [Paper]
-Paper
+کاغذ
 [Cherries]
-Cherries
+گیلاس
 [Oranges]
-Oranges
+پرتقال
 [Prunes]
-Prunes
+آلو
 [Gold]
-Gold
+طلا
 [Metal]
-Metal
+فلز
 [Glass]
-Glass
+شیشه
 [Fabric]
-Fabric
+پارچه
 [Import Resource Definitions]
-Import Resource Definitions
+وارد کردن تعریف منابع
 [Resource palette]
-Resource palette
+پالت منابع
 [Trees]
-Trees
+درختان
 [Rocks]
-Rocks
+صخره‌ها
 [Cherry tree]
-Cherry tree
+درخت گیلاس
 [Orange tree]
-Orange tree
+درخت پرتقال
 [Prune tree]
-Prune tree
+درخت آلو
 [Gold ore]
-Gold ore
+سنگ معدن طلا
 [Iron ore]
-Iron ore
+سنگ معدن آهن
 [Sand]
-Sand
+ماسه
 [Cotton]
-Cotton
+پنبه
 [Reroll terrain look]
 انتخاب تصادفی دوبارهٔ ظاهر زمین

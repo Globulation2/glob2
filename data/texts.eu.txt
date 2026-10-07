@@ -5565,44 +5565,44 @@ Inportatu lur-eremuaren definizioak
 [Terrain palette]
 Lur-eremuen paleta
 [Food]
-Food
+Janaria
 [Paper]
-Paper
+Papera
 [Cherries]
-Cherries
+Gereziak
 [Oranges]
-Oranges
+Laranjak
 [Prunes]
-Prunes
+Aranak
 [Gold]
-Gold
+Urrea
 [Metal]
-Metal
+Metala
 [Glass]
-Glass
+Beira
 [Fabric]
-Fabric
+Ehuna
 [Import Resource Definitions]
-Import Resource Definitions
+Inportatu baliabideen definizioak
 [Resource palette]
-Resource palette
+Baliabideen paleta
 [Trees]
-Trees
+Zuhaitzak
 [Rocks]
-Rocks
+Arrokak
 [Cherry tree]
-Cherry tree
+Gereziondoa
 [Orange tree]
-Orange tree
+Laranjondoa
 [Prune tree]
-Prune tree
+Aranondoa
 [Gold ore]
-Gold ore
+Urre-mea
 [Iron ore]
-Iron ore
+Burdin mea
 [Sand]
-Sand
+Harea
 [Cotton]
-Cotton
+Kotoia
 [Reroll terrain look]
 Ausaz aukeratu berriro lurraren itxura

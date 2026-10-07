@@ -5565,44 +5565,44 @@ Importa definizioni del terreno
 [Terrain palette]
 Tavolozza dei terreni
 [Food]
-Food
+Cibo
 [Paper]
-Paper
+Carta
 [Cherries]
-Cherries
+Ciliegie
 [Oranges]
-Oranges
+Arance
 [Prunes]
-Prunes
+Prugne
 [Gold]
-Gold
+Oro
 [Metal]
-Metal
+Metallo
 [Glass]
-Glass
+Vetro
 [Fabric]
-Fabric
+Tessuto
 [Import Resource Definitions]
-Import Resource Definitions
+Importa definizioni delle risorse
 [Resource palette]
-Resource palette
+Tavolozza delle risorse
 [Trees]
-Trees
+Alberi
 [Rocks]
-Rocks
+Rocce
 [Cherry tree]
-Cherry tree
+Ciliegio
 [Orange tree]
-Orange tree
+Arancio
 [Prune tree]
-Prune tree
+Prugno
 [Gold ore]
-Gold ore
+Minerale d’oro
 [Iron ore]
-Iron ore
+Minerale di ferro
 [Sand]
-Sand
+Sabbia
 [Cotton]
-Cotton
+Cotone
 [Reroll terrain look]
 Genera un nuovo aspetto casuale del terreno

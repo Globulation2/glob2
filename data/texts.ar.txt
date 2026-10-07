@@ -5565,44 +5565,44 @@ FFmpeg غير متاح، لذا التسجيل معطّل. ثبّت FFmpeg وت�
 [Terrain palette]
 لوحة التضاريس
 [Food]
-Food
+طعام
 [Paper]
-Paper
+ورق
 [Cherries]
-Cherries
+كرز
 [Oranges]
-Oranges
+برتقال
 [Prunes]
-Prunes
+برقوق
 [Gold]
-Gold
+ذهب
 [Metal]
-Metal
+معدن
 [Glass]
-Glass
+زجاج
 [Fabric]
-Fabric
+قماش
 [Import Resource Definitions]
-Import Resource Definitions
+استيراد تعريفات الموارد
 [Resource palette]
-Resource palette
+لوحة الموارد
 [Trees]
-Trees
+أشجار
 [Rocks]
-Rocks
+صخور
 [Cherry tree]
-Cherry tree
+شجرة كرز
 [Orange tree]
-Orange tree
+شجرة برتقال
 [Prune tree]
-Prune tree
+شجرة برقوق
 [Gold ore]
-Gold ore
+خام الذهب
 [Iron ore]
-Iron ore
+خام الحديد
 [Sand]
-Sand
+رمل
 [Cotton]
-Cotton
+قطن
 [Reroll terrain look]
 إعادة اختيار مظهر التضاريس
