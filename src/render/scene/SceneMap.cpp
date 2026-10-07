@@ -4,6 +4,7 @@
 #include "Map.h"
 #include "Game.h"
 #include "TerrainRegistry.h"
+#include "sim/snapshot/WorldSnapshot.h"
 #include <algorithm>
 #include <bit>
 
@@ -14,6 +15,7 @@ void SceneMap::extract(const Map &map)
 
 void SceneMap::extract(const Map &map, int displayW, int displayH, bool includeScriptAreas)
 {
+	snapshot.reset();
 	tick = map.game ? map.game->stepCounter : 0;
 	registry = map.frozenTerrainRegistry();
 	resourceDefinitions = map.frozenResourceRegistry();
@@ -134,8 +136,8 @@ bool SceneMap::isHardSpaceForBuilding(int x, int y, int w, int h) const
 		for (int xi = x; xi < x + w; xi++)
 		{
 			const size_t i = coordToIndex(xi, yi);
-			if ((resources[i].type != NO_RES_TYPE && resourceDefinitions->properties(static_cast<ResourceId>(resources[i].type)).blocksBuilding) || buildings[i] != 0xFFFF ||
-				!registry->properties(terrainTypes[i]).buildable)
+			if ((getResource(i).type != NO_RES_TYPE && resourceDefinitions->properties(static_cast<ResourceId>(getResource(i).type)).blocksBuilding) || getBuilding(xi, yi) != 0xFFFF ||
+				!registry->properties(terrainTypeAt(xi, yi)).buildable)
 				return false;
 		}
 	return true;
@@ -143,6 +145,8 @@ bool SceneMap::isHardSpaceForBuilding(int x, int y, int w, int h) const
 
 Uint16 SceneMap::materialAmountAt(size_t index, unsigned material) const
 {
+	if (!validMaterial(material)) return 0;
+	if (snapshot) return MapState::materialAmountAt(snapshot->view(), index, int(material));
 	if (!validMaterial(material) || resources[index].type == NO_RES_TYPE) return 0;
 	const auto& p = resourceDefinitions->properties(static_cast<ResourceId>(resources[index].type));
 	if (!(p.materialMask & (1u << material))) return 0;
@@ -150,3 +154,66 @@ Uint16 SceneMap::materialAmountAt(size_t index, unsigned material) const
 		return multiStocks[multiStockIndices[index]][material];
 	return static_cast<Uint16>(resources[index].amount);
 }
+
+void SceneMap::captureDisplay(const Map& map, int displayW, int displayH, bool includeScriptAreas)
+{
+    snapshot.reset(); snapshotFog = nullptr;
+    w = map.getW(); h = map.getH(); wMask = map.getMaskW(); hMask = map.getMaskH(); wDec = map.getShiftW();
+    sourceIdentity = map.identity(); sourceKey = &map; terrainSeedValue = map.terrainSeed();
+    displayViewportW = displayW; displayViewportH = displayH;
+    const size_t size = size_t(w) * h;
+    scriptAreas.assign(includeScriptAreas ? size : 0, 0);
+    for (size_t i = 0; includeScriptAreas && i < size; ++i)
+    {
+        if (includeScriptAreas)
+            for (int n = 0; n < 9; ++n)
+                if (map.isPointSet(n, int(i) & wMask, int(i >> wDec))) scriptAreas[i] |= 1 << n;
+    }
+    forbiddenView = map.displayedForbiddenView; guardAreaView = map.displayedGuardAreaView;
+    clearAreaView = map.displayedClearAreaView; farmAreaView = map.displayedFarmAreaView;
+}
+
+void SceneMap::bindSnapshot(const SimulationSnapshot::Handle& world)
+{
+    using namespace SimulationSnapshot;
+    auto required = bit(Component::Terrain) | bit(Component::Resources) | bit(Component::Occupancy)
+        | bit(Component::Visibility) | bit(Component::Catalogs);
+    if (world.width != w || world.height != h || world.worldIdentity != sourceIdentity)
+        throw std::invalid_argument("Scene display metadata and snapshot belong to different worlds");
+    if (world.growth) required |= bit(Component::Growth) | bit(Component::Rules);
+    snapshot = std::make_shared<const Handle>(world.project(required));
+    snapshotFog = snapshot->visibility->visible.data();
+    tick = world.tick; registry = snapshot->terrain->registry; resourceDefinitions = snapshot->catalogs->resources;
+    presentMaterials = 0;
+    for (const auto& cell : snapshot->resources->cells)
+        if (cell.resource.type != NO_RES_TYPE)
+            presentMaterials |= resourceDefinitions->properties(static_cast<ResourceId>(cell.resource.type)).materialMask;
+}
+
+Uint16 SceneMap::getTerrain(int x, int y) const
+{ const auto i = coordToIndex(x,y); return snapshot ? snapshot->terrain->legacy[i] : terrain[i]; }
+TerrainType SceneMap::terrainTypeAt(int x, int y) const
+{ const auto i = coordToIndex(x,y); return snapshot ? (*snapshot->terrain->identity)[i] : terrainTypes[i]; }
+TerrainType SceneMap::appearanceAt(int x, int y) const
+{ return snapshot ? registry->appearance(terrainTypeAt(x,y)) : terrainAppearances[coordToIndex(x,y)]; }
+const Resource& SceneMap::getResource(int x, int y) const { return getResource(coordToIndex(x,y)); }
+const Resource& SceneMap::getResource(size_t i) const
+{ return snapshot ? snapshot->resources->cells[i].resource : resources[i]; }
+bool SceneMap::isMapDiscovered(int x, int y, Uint32 mask) const
+{ const auto i = coordToIndex(x,y); return ((snapshot ? snapshot->visibility->discovered[i] : discovered[i]) & mask) != 0; }
+bool SceneMap::isFOWDiscovered(int x, int y, int mask) const
+{ return (fogOfWarData()[coordToIndex(x,y)] & mask) != 0; }
+bool SceneMap::canResourcesGrow(int x, int y) const
+{ const auto i = coordToIndex(x,y); return snapshot ? snapshot->resources->cells[i].mayGrow : resourcesGrow[i]; }
+Uint16 SceneMap::getGroundUnit(int x, int y) const
+{ const auto i = coordToIndex(x,y); return snapshot ? snapshot->occupancy->cells[i].groundUnit : groundUnits[i]; }
+Uint16 SceneMap::getAirUnit(int x, int y) const
+{ const auto i = coordToIndex(x,y); return snapshot ? snapshot->occupancy->cells[i].airUnit : airUnits[i]; }
+Uint16 SceneMap::getBuilding(int x, int y) const
+{ const auto i = coordToIndex(x,y); return snapshot ? snapshot->occupancy->cells[i].building : buildings[i]; }
+
+int SceneMap::getUMTerrain(int x, int y) const
+{ const auto i = coordToIndex(x,y); return snapshot ? snapshot->terrain->undermap[i] : undermap[i]; }
+
+bool SceneMap::canPaintFarmArea(int x,int y) const
+{ return snapshot && snapshot->canPaintFarmAt(coordToIndex(x,y)); }

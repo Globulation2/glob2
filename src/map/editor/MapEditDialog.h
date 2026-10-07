@@ -42,9 +42,7 @@ class MapEditMenuScreen : public Glob2UI::InGameDialog
 		QUIT_EDITOR,
 		SHARE_MAP,
 		IMPORT_TERRAIN,
-		TERRAIN_PALETTE,
-		IMPORT_RESOURCES,
-		RESOURCE_PALETTE
+		IMPORT_RESOURCES
 	};
 
   protected:

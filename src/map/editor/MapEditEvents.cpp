@@ -26,18 +26,18 @@ void MapEdit::processEvent(SDL_Event& event)
 
 	if (event.type==SDL_EVENT_QUIT)
 	{
-		doFullQuit=true;
+		requestApplicationQuit();
 	}
 #	ifdef USE_OSX
 	else if(event.type == SDL_EVENT_KEY_DOWN && event.key.key == SDLK_Q && (event.key.mod & SDL_KMOD_GUI))
 	{
-		doFullQuit=true;
+		requestApplicationQuit();
 	}
 #	endif
 #	ifdef USE_WIN32
 	else if(event.type == SDL_EVENT_KEY_DOWN && event.key.key == SDLK_F4 && (event.key.mod & SDL_KMOD_ALT))
 	{
-		doFullQuit=true;
+		requestApplicationQuit();
 	}
 #	endif
 

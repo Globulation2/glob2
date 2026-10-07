@@ -31,6 +31,20 @@ void GameGUI::setSelection(SelectionMode newSelMode, unsigned newSelection)
 		selectionMode=newSelMode;
 	}
 
+    if (simulationThreaded && selectionMode == BUILDING_SELECTION)
+    {
+        const auto* b = drawnScene().entities.building(newSelection);
+        selection = b ? BuildingRef{b->gid, b->generation} : BuildingRef{};
+        syncSelectionView();
+        return;
+    }
+    if (simulationThreaded && selectionMode == UNIT_SELECTION)
+    {
+        const auto* u = drawnScene().entities.unit(newSelection);
+        selection = u ? UnitRef{u->gid, u->generation} : UnitRef{};
+        syncSelectionView();
+        return;
+    }
 	if (selectionMode==BUILDING_SELECTION)
 	{
 		int id=Building::GIDtoID(newSelection);
@@ -89,8 +103,8 @@ Unit* GameGUI::selectedUnitOrNull() const
 
 void GameGUI::syncSelectionView(void)
 {
-	view.selectedBuilding=selectedBuildingOrNull();
-	view.selectedUnit=selectedUnitOrNull();
+	view.selectedBuilding=simulationThreaded ? nullptr : selectedBuildingOrNull();
+	view.selectedUnit=simulationThreaded ? nullptr : selectedUnitOrNull();
 	const BuildingRef *observed = std::get_if<BuildingRef>(&selection);
 	clientRequests.publishObservedBuilding(
 		(selectionMode==BUILDING_SELECTION && observed) ? *observed : BuildingRef());
@@ -102,6 +116,25 @@ void GameGUI::syncSelectionView(void)
 // validation here rather than in draw functions — draws should be pure.
 void GameGUI::checkSelection(void)
 {
+    if (simulationThreaded)
+    {
+        bool valid = true;
+        const auto& scene = drawnScene();
+        if (const auto* ref = std::get_if<BuildingRef>(&selection))
+        {
+            const auto* b = scene.entities.building(ref->gid);
+            valid = b && b->generation == ref->generation;
+        }
+        else if (const auto* ref = std::get_if<UnitRef>(&selection))
+        {
+            const auto* u = scene.entities.unit(ref->gid);
+            valid = u && u->generation == ref->generation;
+        }
+        else if (selectionMode == RESOURCE_SELECTION)
+            valid = scene.map.getW() && scene.map.getResource(selectionResource()).type != NO_RES_TYPE;
+        if (!valid) clearSelection(); else syncSelectionView();
+        return;
+    }
 	if ((selectionMode==BUILDING_SELECTION) && (selectionBuilding()==NULL))
 	{
 		clearSelection();
@@ -134,6 +167,36 @@ void GameGUI::iterateSelection(void)
 	// The selected entity may have died since the last draw; clear the
 	// selection first so neither branch below sees a null referent.
 	checkSelection();
+    if (simulationThreaded)
+    {
+        const auto& entities = drawnScene().entities;
+        if (selectionMode == BUILDING_SELECTION || selectionMode == TOOL_SELECTION)
+        {
+            const auto* ref = std::get_if<BuildingRef>(&selection);
+            const auto* selected = ref ? entities.building(ref->gid) : nullptr;
+            if (selectionMode == BUILDING_SELECTION && (!selected || selected->team != localTeamNo)) return;
+            const int type = selected ? selected->typeNum : game.buildingsTypes.getFinishedTypeNum(toolManager.getBuildingName());
+            const int start = selected ? Building::GIDtoID(selected->gid) : -1;
+            for (int n = 1; n <= Building::MAX_COUNT; ++n)
+            {
+                const auto* b = entities.building(Building::GIDfrom((start+n)%Building::MAX_COUNT, localTeamNo));
+                if (b && b->typeNum == type) { setSelection(BUILDING_SELECTION, unsigned(b->gid)); centerViewportOnSelection(); break; }
+            }
+        }
+        else if (selectionMode == UNIT_SELECTION)
+        {
+            const auto* ref = std::get_if<UnitRef>(&selection);
+            const auto* selected = ref ? entities.unit(ref->gid) : nullptr;
+            if (!selected) return;
+            const int start = selected->team == localTeamNo ? Unit::GIDtoID(selected->gid) : 0;
+            for (int n = 1; n < Unit::MAX_COUNT; ++n)
+            {
+                const auto* u = entities.unit(Unit::GIDfrom((start+n)%Unit::MAX_COUNT, localTeamNo));
+                if (u && u->typeNum == selected->typeNum) { setSelection(UNIT_SELECTION, unsigned(u->gid)); centerViewportOnSelection(); break; }
+            }
+        }
+        return;
+    }
 
 	if (selectionMode==BUILDING_SELECTION)
 	{
@@ -201,6 +264,22 @@ void GameGUI::iterateSelection(void)
 
 void GameGUI::centerViewportOnSelection(void)
 {
+    if (simulationThreaded)
+    {
+        const auto& entities = drawnScene().entities;
+        if (const auto* ref = std::get_if<BuildingRef>(&selection))
+        {
+            const auto* b = entities.building(ref->gid);
+            if (b && b->generation == ref->generation)
+                centerViewportOn(b->posX+b->type->width/2, b->posY+b->type->height/2);
+        }
+        else if (const auto* ref = std::get_if<UnitRef>(&selection))
+        {
+            const auto* u = entities.unit(ref->gid);
+            if (u && u->generation == ref->generation) centerViewportOn(u->posX,u->posY);
+        }
+        return;
+    }
 	if ((selectionMode==BUILDING_SELECTION) || (selectionMode==UNIT_SELECTION))
 	{
 		// Default-init so a future selectionMode that slips past the outer
@@ -253,4 +332,31 @@ void GameGUI::consumeClientEvents()
 			while (!queue.empty() && (pulse.tick - queue.front().getStep()) > GAME_EVENT_MAX_AGE_TICKS)
 				queue.pop_front();
 	syncSelectionView();
+}
+
+const SceneBuildingPanel* GameGUI::inputBuildingPanel()
+{
+    const auto* ref = std::get_if<BuildingRef>(&selection);
+    if (selectionMode != BUILDING_SELECTION || !ref) return nullptr;
+    if (!simulationThreaded)
+        SceneExtractor::extractInputPanels(game, sceneRequest(), serialInputPanels);
+    const auto& panel = simulationThreaded ? drawnScene().panels.building : serialInputPanels.building;
+    return panel.valid && panel.gid == ref->gid && panel.generation == ref->generation ? &panel : nullptr;
+}
+
+std::optional<SceneBuilding> GameGUI::inputBuilding(BuildingRef ref) const
+{
+    if (simulationThreaded)
+    {
+        const auto* b = drawnScene().entities.building(ref.gid);
+        if (b && b->generation == ref.generation) return *b;
+        return {};
+    }
+    const auto* b = game.resolveBuilding(ref);
+    if (!b) return {};
+    SceneBuilding result;
+    result.gid=b->gid; result.generation=b->scriptIdentity; result.team=b->owner->teamNumber;
+    result.type=b->type; result.typeNum=b->typeNum; result.posX=b->posX; result.posY=b->posY;
+    result.buildingState=b->buildingState;
+    return result;
 }

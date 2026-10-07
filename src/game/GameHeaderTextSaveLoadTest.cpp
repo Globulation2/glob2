@@ -338,3 +338,13 @@ TEST_CASE("AI order delay round trips at both boundaries and rejects invalid sav
         else CHECK_THROWS_AS(restored.loadWithoutPlayerInfo(&input,VERSION_MINOR),std::runtime_error);
     }
 }
+
+TEST_CASE("New games and reset headers default to eight tick AI decisions" *
+          doctest::test_suite("GameHeaderTextSaveLoad"))
+{
+    GameHeader header;
+    CHECK(header.getAIOrderDelay() == 8);
+    header.setAIOrderDelay(0);
+    header.reset();
+    CHECK(header.getAIOrderDelay() == 8);
+}

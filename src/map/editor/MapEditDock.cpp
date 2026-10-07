@@ -57,7 +57,7 @@ void MapEdit::drawStatus()
 	const int pad = 5, gap = 4;
 	// Beside the zoom controls (MapZoomControls.h: 144 pixels from x 8, 22 high
 	// ending 4 above the bottom), on their baseline.
-	const int margin = 8 + 144 + 8;
+	const int margin = phone ? 8 : 8 + 144 + 8;
 	const int mapRight = gfx->getW() - dockWidth();
 	int bottom = gfx->getH() - 4;
 	auto pill = [&](const std::string &text, GAGCore::Color border)
@@ -75,5 +75,5 @@ void MapEdit::drawStatus()
 	if (!coordinates.empty() && !phone)
 		pill(coordinates, theme.hud.border);
 	if (!statusText.empty() && SDL_GetTicks() < statusUntil)
-		pill(statusText, theme.palette.danger);
+		pill(statusText, theme.hud.ink);
 }

@@ -44,7 +44,8 @@
 
 Game::Game(GameGUI *gui, MapEdit* edit):
 	buildingsTypes(globalContainer->buildingsTypes),
-	mapscript(this, gui)
+	scriptClient(gui),
+	mapscript(this, gui ? &scriptClient : nullptr)
 {
 	init(gui, edit);
 }
@@ -99,7 +100,7 @@ void Game::init(GameGUI *gui, MapEdit* edit)
 {
 	this->gui=gui;
 	this->edit=edit;
-	clientSink=gui;
+	clientSink=gui ? &scriptClient : nullptr;
 	clientEvents=gui ? &gui->clientEvents : nullptr;
 	clientRequests=gui ? &gui->clientRequests : nullptr;
 	recordingFailingUnits=BuildingRef();

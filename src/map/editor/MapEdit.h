@@ -25,6 +25,7 @@
 #include "render/Minimap.h"
 #include "OverlayAreas.h"
 #include "ScriptEditorScreen.h"
+#include "EditorDialogs.h"
 #include <string>
 #include <vector>
 
@@ -463,7 +464,7 @@ class MapEdit
     friend class GameGUITouchHarness;
 	friend class MobileGalleryGameplay;
 	std::unique_ptr<PhoneEditor> phone;
-    bool editing = false, quitDecision = false;
+    bool editing = false;
     int editingResult = 0;
     GAGCore::InputState inputState;
     bool fertilityRequested = false;
@@ -502,7 +503,7 @@ public:
 	void drawDialog();
     bool needsFertility() const { return fertilityRequested; }
     bool finishFertility(bool completed);
-    bool needsQuitDecision() const { return quitDecision; }
+    bool needsQuitDecision() const { return confirmPurpose == ConfirmPurpose::Quit || confirmPurpose == ConfirmPurpose::QuitApplication; }
     void resolveQuitDecision(int choice);
     int editingReturnCode() const { return editingResult; }
 
@@ -1031,4 +1032,74 @@ private:
 	///Handles a click or drag of the no resource growth area placement tool
 	void handleNoResourceGrowthClick(int mx, int my);
 
+	// --- WS-E flows ---
+	// Saving, loading, sharing and quitting stay inside the editor: decisions
+	// are EditorConfirmDialog cards and fertility runs in an EditorProgressDialog
+	// over the live map (implemented in MapEditFlows.cpp).
+public:
+	bool hasUnsavedChanges() const { return hasMapBeenModified; }
+	// A window close or application quit (SDL_EVENT_QUIT, Cmd+Q, Alt+F4).
+	void requestApplicationQuit();
+	// MapShareScreen returned with this result.
+	void finishShare(bool shared);
+	bool fertilityOverlayStale() const { return isFertilityOn && fertilityStale; }
+	enum class ConfirmPurpose
+	{
+		None,
+		Quit,
+		QuitApplication,
+		LoadUnsaved,
+		ShareSaveFirst,
+		RerollTerrain
+	};
+	ConfirmPurpose pendingConfirm() const { return confirmPurpose; }
+	EditorConfirmDialog *confirmation() const { return confirmDialog.get(); }
+	EditorProgressDialog *fertilityProgress() const { return progressDialog.get(); }
+	// The map file this editor last loaded or saved; empty for a map never saved.
+	const std::string &savedMapFile() const { return savedFilename; }
+
+private:
+	enum FlowChoice
+	{
+		ChoiceSave,
+		ChoiceDiscard,
+		ChoiceCancel,
+		ChoiceShareSaved,
+		ChoiceConfirm
+	};
+	std::unique_ptr<EditorConfirmDialog> confirmDialog;
+	ConfirmPurpose confirmPurpose = ConfirmPurpose::None;
+	std::vector<FlowChoice> confirmChoices;
+	void openConfirm(ConfirmPurpose purpose);
+	void resolveConfirm(int index);
+	std::unique_ptr<EditorProgressDialog> progressDialog;
+	void openFertilityProgress();
+	void finishFertilityProgress();
+	bool fullQuitAfterSave = false, shareAfterSave = false, loadAfterSave = false;
+	bool fertilityStale = false, fertilityChipPressed = false;
+	std::string savedFilename;
+	// The load picker, after any unsaved-changes decision.
+	void openLoadDialog();
+	// Close menus and pickers before a flow opens the save dialog.
+	void closeDialogsForFlow();
+	void saveSucceeded();
+	void clearSaveFollowUps();
+	// Device file picker for definition imports.
+	std::unique_ptr<GAGCore::ApplicationHost::FileSelection> deviceSelection;
+	void beginDeviceImport();
+	void pollDeviceImport();
+	void importTerrainJson(const std::string &json);
+	void importResourceJson(const std::string &json);
+	// Snapshots taken when the teams or scenario editor opens; OK marks the map
+	// modified only when the result differs.
+	std::vector<TeamsEditor::Slot> teamSlotsAtOpen;
+	std::vector<BaseTeam> baseTeamsAtOpen;
+	std::string scenarioAtOpen;
+	std::string scenarioFingerprint();
+	bool teamSlotsChanged() const;
+	// The "refresh fertility" chip shown over the map while the overlay is stale.
+	bool handleFlowEvent(const SDL_Event &event);
+	void drawFlowOverlays();
+	widgetRectangle fertilityChipRect() const;
+	// --- end WS-E flows ---
 };

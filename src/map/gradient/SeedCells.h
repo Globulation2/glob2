@@ -31,7 +31,7 @@ void materialCells(const MapState::View& view, const Uint32* fog, int team, int 
                     if (!p || !p->blocksGround) {
                         if (cell.building==NOGBID) {
                             value=terrainAt(i);
-                        } else if constexpr (decltype(market)::value) {
+                        } else if constexpr (std::remove_cvref_t<decltype(market)>::value) {
                             const unsigned id=unsigned(cell.building)-base;
                             if (id<Building::MAX_COUNT) value=suppliers[id];
                         }

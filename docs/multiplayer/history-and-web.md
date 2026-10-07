@@ -108,6 +108,9 @@ without menu controls or status bars; no separate sprite animations are overlaid
   (`src/ui/FrontendUI.cpp`). The theme follows the system unless the viewer
   picks one with the navigation toggle (stored in that browser only; `public/theme.js`
   applies it before the first paint).
+  The browser download screen (`browser/shell.html`) uses the same theme choice
+  and palette, with the shared wordmark, Glob icon and Nunito font served from
+  `/signin/assets/`, and the site's `/favicon-32.png` favicon.
 - **Type**: Glob2 Sans (the game font, a Latin subset of `data/fonts/sans.ttf`)
   for headings and numbers, Nunito (SIL OFL, self-hosted) for body text.
 - **Team colours** are the engine's (`src/team/Team.cpp`: hue `team × 360 / teams`,

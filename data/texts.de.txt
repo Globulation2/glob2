@@ -5766,6 +5766,65 @@ Geländeaussehen neu auswürfeln
 
 [brush clearing area]
 
+[editor unsaved title]
+
+[editor quit unsaved]
+
+[editor load unsaved]
+
+[editor save]
+
+[editor discard]
+
+[editor share never saved]
+
+[editor share unsaved]
+
+[editor save and share]
+
+[editor share saved version]
+
+[editor reroll confirm]
+
+[editor reroll]
+
+[editor map saved]
+
+[editor map shared]
+
+[editor save needs fertility]
+
+[editor fertility stale]
+
+[No definition files found in %0]
+
+[From device…]
+
+[replace existing file %0?]
+
+[Replace]
+
+[Keep existing file]
+
+[editor menu save]
+
+[editor menu load]
+
+[editor menu import terrain]
+
+[editor menu import resources]
+
+[editor menu teams]
+
+[editor menu scenario]
+
+[editor menu reroll]
+
+[editor menu file]
+
+[editor menu map]
+
+[no resource growth areas]
 [dock flags and units]
 
 [dock minimap]
@@ -5811,4 +5870,8 @@ Geländeaussehen neu auswürfeln
 [switch to resources view]
 
 [dock resources base]
+
+[dock fertility stale]
+
+[dock fertility refresh]
 

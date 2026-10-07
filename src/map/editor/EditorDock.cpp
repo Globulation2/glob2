@@ -205,7 +205,7 @@ std::string EditorDock::modelSignature() const
 	s << editor.currentBrushId() << '|' << int(editor.panelMode) << '|' << int(editor.selectionMode) << '|'
 	  << editor.team << '|' << editor.game.mapHeader.getNumberOfTeams() << '|' << editor.buildingLevel << '|'
 	  << editor.buildingLevelCount << '|' << editor.placingUnitLevel << '|' << editor.brush.getFigure() << '|'
-	  << editor.brush.getType() << '|' << editor.brush.addRemoveIsEnabled() << '|' << editor.isFertilityOn << '|'
+	  << editor.brush.getType() << '|' << editor.brush.addRemoveIsEnabled() << '|' << editor.isFertilityOn << editor.fertilityOverlayStale() << '|'
 	  << editor.selectedUnitGID << '|' << editor.selectedBuildingGID << '|' << editor.areaNumber->getIndex() << '|'
 	  << editor.game.map.getAreaName(editor.areaNumber->getIndex()) << '|' << editor.dockCollapsed.size();
 	for (int i = 0; i < Team::MAX_COUNT; ++i)

@@ -75,6 +75,11 @@ namespace GAGGUI
 		//! Called between frames before host interruption or a child transition.
 		//! Discard held/queued input without synthesizing release actions.
 		virtual void cancelExecutionInput() {}
+		//! A top screen that returns true receives SDL_EVENT_QUIT (a window
+		//! close or application quit request) through handleExecutionEvent()
+		//! instead of the stack stopping, so it can ask about unsaved work and
+		//! end itself with QUIT_APPLICATION. SDL_EVENT_TERMINATING is never vetoed.
+		virtual bool interceptsQuit() const { return false; }
 		virtual void drawExecution();
 		virtual Uint32 executionDelay(Uint32 now, Uint32 fallback) { return fallback; }
 		//! How the host's wait after this frame counts in performance telemetry:

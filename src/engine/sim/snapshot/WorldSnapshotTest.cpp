@@ -448,9 +448,34 @@ TEST_SUITE("WorldSnapshot")
 		SimulationSnapshot::Store store;
 		auto terrain = store.captureBoundary(fixture.game, SimulationSnapshot::bit(SimulationSnapshot::Component::Terrain));
 		REQUIRE(terrain.terrain); CHECK_FALSE(terrain.entities); CHECK_FALSE(terrain.resources); CHECK_FALSE(terrain.growth);
-		CHECK(store.metrics.captures == 1); CHECK(store.metrics.bytesCopied == 1024 * sizeof(Uint16));
+		CHECK(store.metrics.captures == 1); CHECK(store.metrics.bytesCopied == 1024 * (sizeof(Uint16) + sizeof(Uint8)));
 		store.captureBoundary(fixture.game, SimulationSnapshot::bit(SimulationSnapshot::Component::Terrain));
 		CHECK(store.metrics.captures == 1);
+	}
+	TEST_CASE("undermap changes preserve retained terrain and reuse unchanged versions")
+	{
+		glob2test::HeadlessGlobals globals;
+		glob2test::HeadlessGame fixture{glob2test::GameOptions{.wDec=5, .hDec=5, .teams=1}};
+		auto& game = fixture.game;
+		auto& map = game.map;
+		SimulationSnapshot::Store store;
+		const auto required = SimulationSnapshot::bit(SimulationSnapshot::Component::Terrain);
+		map.setUMTerrain(4, 5, GRASS);
+		const auto original = store.captureBoundary(game, required);
+		const auto index = map.coordToIndex(4, 5);
+		map.setUMTerrain(4, 5, WATER);
+		store.invalidateBoundary();
+		const auto changed = store.captureBoundary(game, required);
+		CHECK(original.terrain != changed.terrain);
+		CHECK(original.terrain->undermap[index] == GRASS);
+		CHECK(changed.terrain->undermap[index] == WATER);
+		CHECK_NOTHROW(SimulationSnapshot::verifyCapture(game, changed));
+		map.setUMTerrain(4, 5, WATER);
+		store.invalidateBoundary();
+		CHECK(store.captureBoundary(game, required).terrain == changed.terrain);
+		store.reset();
+		CHECK(original.terrain->undermap[index] == GRASS);
+		CHECK(changed.terrain->undermap[index] == WATER);
 	}
 	TEST_CASE("warm component buffers stop allocating at a fixed population")
 	{
@@ -756,4 +781,38 @@ TEST_SUITE("WorldSnapshot")
 		CHECK(store.metrics.bytesCopied == bytes); CHECK(store.metrics.captures == 2);
 	}
 
+}
+
+TEST_SUITE("WorldSnapshot")
+{
+TEST_CASE("explicit observation boundaries refresh paused state and retain old leases")
+{
+    glob2test::HeadlessGlobals globals;
+    glob2test::HeadlessGame fixture{glob2test::GameOptions{.wDec=5, .hDec=5, .teams=1, .discovered=true, .clearImmobile=true, .loadDefaultRace=true}};
+    auto* unit = fixture.addUnit(WORKER,12,12,0);
+    REQUIRE(unit);
+    auto& store = fixture.game.snapshots();
+    constexpr auto needed = SimulationSnapshot::bit(SimulationSnapshot::Component::Entities)
+        | SimulationSnapshot::bit(SimulationSnapshot::Component::Terrain);
+    const auto before = store.captureBoundary(fixture.game, needed);
+    const auto previousHp = before.entities->units.front().hp;
+    unit->hp -= 1;
+    // Captures within a declared boundary stay coherent, even if a caller
+    // prematurely writes. Only the owner's explicit boundary makes it visible.
+    CHECK(store.captureBoundary(fixture.game, needed).entities == before.entities);
+    store.invalidateBoundary();
+    const auto after = store.captureBoundary(fixture.game, needed);
+    CHECK(after.tick == before.tick);
+    CHECK(after.observationRevision == before.observationRevision + 1);
+    CHECK(after.entities->units.front().hp == previousHp - 1);
+    CHECK(before.entities->units.front().hp == previousHp);
+    CHECK(after.terrain == before.terrain);
+    const auto projected = after.project(SimulationSnapshot::bit(SimulationSnapshot::Component::Entities));
+    CHECK(projected.observationRevision == after.observationRevision);
+    CHECK_FALSE(projected.terrain);
+    fixture.game.clearAI();
+    // Store reset does not invalidate handles already owned by consumers.
+    CHECK(before.entities->units.front().hp == previousHp);
+    CHECK(fixture.game.snapshots().captureBoundary(fixture.game, needed).entities->units.front().hp == previousHp - 1);
+}
 }

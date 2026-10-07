@@ -13,6 +13,7 @@
 #include <memory>
 #include <vector>
 
+namespace SimulationSnapshot { struct Handle; }
 class Map;
 class TerrainRegistry;
 
@@ -28,6 +29,8 @@ class SceneMap
 	std::vector<std::uint32_t> multiStockIndices;
 	std::vector<std::array<Uint16, MaterialCount>> multiStocks;
 	MaterialMask presentMaterials = 0;
+	std::shared_ptr<const SimulationSnapshot::Handle> snapshot;
+	const Uint32* snapshotFog = nullptr; // owned by snapshot; copying SceneMap retains it
 
   public:
 	Uint32 tick = 0;
@@ -44,6 +47,10 @@ class SceneMap
 	void extract(const Map &map, int displayW, int displayH, bool includeScriptAreas = false);
 	//! Single-threaded callers (tests, tools): take the drawn area from the map.
 	void extract(const Map &map);
+	//! Capture only display metadata not represented by shared world components.
+	void captureDisplay(const Map &map, int displayW, int displayH, bool includeScriptAreas);
+	//! Bind immutable components on the presentation worker; retains no live map.
+	void bindSnapshot(const SimulationSnapshot::Handle& world);
 
 	bool isPointSet(int n, int x, int y) const
 	{
@@ -61,11 +68,11 @@ class SceneMap
 	Uint32 terrainSeed() const { return terrainSeedValue; }
 
 	size_t coordToIndex(int x, int y) const { return (size_t(y & hMask) << wDec) + (x & wMask); }
-	Uint16 getTerrain(int x, int y) const { return terrain[coordToIndex(x, y)]; }
-	TerrainType terrainTypeAt(int x, int y) const { return terrainTypes[coordToIndex(x, y)]; }
+	Uint16 getTerrain(int x, int y) const;
+	TerrainType terrainTypeAt(int x, int y) const;
 	// Detailed materials use shipped appearance IDs; custom canonical IDs never
 	// index the renderer's fixed builtin binding table or legacy corner adapter.
-	TerrainType appearanceAt(int x, int y) const { return terrainAppearances[coordToIndex(x, y)]; }
+	TerrainType appearanceAt(int x, int y) const;
 	// Legacy preview hues are corner based; authored terrain has whole-cell identity.
 	TerrainType presentationTypeAt(int x, int y) const
 	{
@@ -74,20 +81,14 @@ class SceneMap
 				   ? static_cast<TerrainType>(getUMTerrain(x, y))
 				   : type;
 	}
-	const Resource &getResource(int x, int y) const { return resources[coordToIndex(x, y)]; }
-	const Resource &getResource(size_t pos) const { return resources[pos]; }
-	bool isMapDiscovered(int x, int y, Uint32 visionMask) const
-	{
-		return (discovered[coordToIndex(x, y)] & visionMask) != 0;
-	}
+	const Resource &getResource(int x, int y) const;
+	const Resource &getResource(size_t pos) const;
+	bool isMapDiscovered(int x, int y, Uint32 visionMask) const;
 	bool isMapPartiallyDiscovered(int x1, int y1, int x2, int y2, Uint32 visionMask) const;
-	bool isFOWDiscovered(int x, int y, int visionMask) const
-	{
-		return (fogOfWar[coordToIndex(x, y)] & visionMask) != 0;
-	}
+	bool isFOWDiscovered(int x, int y, int visionMask) const;
 	//! The fog of war of every tile, indexed like coordToIndex: y * getW() + x, as
 	//! the width is a power of two (coordToIndex shifts y by its log2).
-	const Uint32 *fogOfWarData() const { return fogOfWar.data(); }
+	const Uint32 *fogOfWarData() const { return snapshot ? snapshotFog : fogOfWar.data(); }
 	bool isForbiddenInDisplayedView(int x, int y) const
 	{
 		return forbiddenView.get(coordToIndex(x, y));
@@ -104,12 +105,17 @@ class SceneMap
 	{
 		return farmAreaView.get(coordToIndex(x, y));
 	}
-	bool canResourcesGrow(int x, int y) const { return resourcesGrow[coordToIndex(x, y)]; }
-	Uint16 getGroundUnit(int x, int y) const { return groundUnits[coordToIndex(x, y)]; }
-	Uint16 getAirUnit(int x, int y) const { return airUnits[coordToIndex(x, y)]; }
-	Uint16 getBuilding(int x, int y) const { return buildings[coordToIndex(x, y)]; }
+	bool canResourcesGrow(int x, int y) const;
+    bool canPaintFarmArea(int x, int y) const;
+    const Utilities::BitArray& displayedArea(unsigned zone) const
+    {
+        switch(zone) { case 0:return forbiddenView; case 1:return guardAreaView; case 2:return clearAreaView; default:return farmAreaView; }
+    }
+	Uint16 getGroundUnit(int x, int y) const;
+	Uint16 getAirUnit(int x, int y) const;
+	Uint16 getBuilding(int x, int y) const;
 	//! Undermap terrain type (Map::getUMTerrain), as an int.
-	int getUMTerrain(int x, int y) const { return undermap[coordToIndex(x, y)]; }
+	int getUMTerrain(int x, int y) const;
 	//! Map::isHardSpaceForBuilding: every tile of the rectangle permits buildings, without a
 	//! resource or a building.
 	bool isHardSpaceForBuilding(int x, int y, int w, int h) const;

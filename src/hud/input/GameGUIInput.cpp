@@ -102,7 +102,7 @@ bool GameGUI::processTypingInput(SDL_Event *event)
 			message = cmd->body;
 			if (cmd->name == "a")
 			{
-				nchatMask = localTeam->allies;
+				nchatMask = simulationThreaded ? drawnScene().panels.local.allies : localTeam->allies;
 			}
 			else
 			{
@@ -118,7 +118,7 @@ bool GameGUI::processTypingInput(SDL_Event *event)
 		}
 
 		if (!message.empty())
-			orderQueue.push_back(shared_ptr<Order>(new MessageOrder(nchatMask, MessageOrder::NORMAL_MESSAGE_TYPE, message.c_str())));
+			enqueueOrder(shared_ptr<Order>(new MessageOrder(nchatMask, MessageOrder::NORMAL_MESSAGE_TYPE, message.c_str())));
 	}
 	closeChat();
 	return true;
@@ -126,6 +126,9 @@ bool GameGUI::processTypingInput(SDL_Event *event)
 
 void GameGUI::processEvent(SDL_Event *event)
 {
+    // Live diagnostic dumps and dialog construction are exceptional owner work.
+    const bool diagnostic=(event->type==SDL_EVENT_MOUSE_BUTTON_DOWN || event->type==SDL_EVENT_MOUSE_BUTTON_UP) && (inputState.modifiers() & SDL_KMOD_SHIFT);
+    if ((diagnostic || gameMenuScreen || hive) && parkForClient([&]{processEvent(event);})) return;
     if (GAGCore::scrollGesture(*event) && !inputState.hasFocus()) return;
     inputState.observe(*event);
     if(hiveCards && !gameMenuScreen && !scrollableText && !inGameMenu && globalContainer->settings.hiveMindEnabled && hiveCards->handle(*event))return;
@@ -235,7 +238,7 @@ void GameGUI::processEvent(SDL_Event *event)
 	else if (event->type==SDL_EVENT_QUIT)
 	{
 		exitGlobCompletely=true;
-		orderQueue.push_back(shared_ptr<Order>(new PlayerQuitsGameOrder(localPlayer)));
+		enqueueOrder(shared_ptr<Order>(new PlayerQuitsGameOrder(localPlayer)));
 		flushOutgoingAndExit=true;
 	}
 }
@@ -273,6 +276,7 @@ void GameGUI::handleMenuIconClick(SDL_MouseButtonEvent mouseEvent)
 
 		if (menu != -1)
 		{
+            if (parkForClient([&]{handleMenuIconClick(mouseEvent);})) return;
 			if (inGameMenu == menu)
 			{
 				closeDialog();
@@ -504,7 +508,7 @@ void GameGUI::repairAndUpgradeBuilding(Building *building, bool repair, bool upg
 		if ((building->type->semantics.repairable && buildingType->prevLevel>=0) &&
 			(building->isHardSpaceForBuildingSite(Building::REPAIR)) &&
 			(localTeam->maxBuildLevel() >= game.buildingsTypes.get(buildingType->prevLevel)->semantics.requiredWorkerLevel))
-			orderQueue.push_back(shared_ptr<Order>(new OrderConstruction(building->gid, repairUnitWorking, std::clamp(displayedMaxUnitWorking(*building),0,buildingType->semantics.assignmentLimit))));
+			enqueueOrder(shared_ptr<Order>(new OrderConstruction(building->gid, repairUnitWorking, std::clamp(displayedMaxUnitWorking(*building),0,buildingType->semantics.assignmentLimit))));
 	}
 	else if (upgrade)
 	{
@@ -512,6 +516,23 @@ void GameGUI::repairAndUpgradeBuilding(Building *building, bool repair, bool upg
 		if (building->isUpgradeAvailable() &&
 			(building->isHardSpaceForBuildingSite(Building::UPGRADE)) &&
 			(localTeam->maxBuildLevel() >= game.buildingsTypes.get(buildingType->nextLevel)->semantics.requiredWorkerLevel))
-			orderQueue.push_back(shared_ptr<Order>(new OrderConstruction(building->gid, unitWorking, unitWorkingFuture)));
+			enqueueOrder(shared_ptr<Order>(new OrderConstruction(building->gid, unitWorking, unitWorkingFuture)));
 	}
+}
+
+void GameGUI::repairAndUpgradeBuilding(const SceneBuildingPanel* building, bool repair, bool upgrade)
+{
+    if (!building || building->owner.teamNumber != localTeamNo || building->type->isBuildingSite) return;
+    const auto& type = *building->type;
+    if (repair && building->hp < building->effectiveMaxHp)
+    {
+        if (building->hardSpaceForRepair)
+            enqueueOrder(std::make_shared<OrderConstruction>(building->gid,
+                defaultAssign.getDefaultAssignedUnits(type.prevLevel),
+                std::clamp(displayedMaxUnitWorking(*building), 0, type.semantics.assignmentLimit)));
+    }
+    else if (upgrade && building->hardSpaceForUpgrade)
+        enqueueOrder(std::make_shared<OrderConstruction>(building->gid,
+            defaultAssign.getDefaultAssignedUnits(type.nextLevel),
+            defaultAssign.getDefaultAssignedUnits(game.buildingsTypes.getFinishedTypeNum(game.buildingsTypes.get(type.nextLevel)->key))));
 }

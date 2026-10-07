@@ -343,13 +343,30 @@ Element EditorDock::catalogueSections(const Presentation &p, std::initializer_li
 		}
 		if (!searching && sectionKind == BrushSection::Areas)
 		{
-			parts.push_back(fe::toggle("dock/fertility", fe::tr("[Fertility Map]"), editor.isFertilityOn,
-									   [this](bool on)
-									   {
-										   editor.isFertilityOn = on;
-										   editor.performAction("compute fertility");
-										   invalidate();
-									   }));
+			std::vector<Element> fertility{fe::toggle("dock/fertility", fe::tr("[Fertility Map]"), editor.isFertilityOn,
+													  [this](bool on)
+													  {
+														  editor.isFertilityOn = on;
+														  editor.performAction("compute fertility");
+														  invalidate();
+													  })};
+			if (editor.fertilityOverlayStale())
+			{
+				// Strokes since the last computation: offer the recomputation here
+				// rather than over the map.
+				fe::ButtonOptions refresh;
+				refresh.icon = fe::uiIcon(fe::UIIcon::Refresh);
+				refresh.tooltip = fe::tr("[editor fertility stale]");
+				fertility.push_back(fe::hint(fe::tr("[dock fertility stale]")));
+				fertility.push_back(fe::button("dock/fertility/refresh", fe::tr("[dock fertility refresh]"),
+											   [this]
+											   {
+												   editor.performAction("refresh fertility");
+												   invalidate();
+											   },
+											   refresh));
+			}
+			parts.push_back(fe::column(std::move(fertility), {p.pt(4)}));
 		}
 	}
 	if (parts.empty())

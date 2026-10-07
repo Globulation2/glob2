@@ -38,7 +38,8 @@ bool MaterialSeedCache::trySeed(const SimulationSnapshot::Handle& snapshot, int 
         || terrainRegistry!=snapshot.terrain->registry || resourceRegistry!=snapshot.catalogs->resources;
     try {
         if (rebuild) {
-            const auto limit=budget, refreshed=refreshedCells;
+            const auto limit=budget;
+            const auto refreshed=refreshedCells;
             *this=MaterialSeedCache{}; budget=limit; refreshedCells=refreshed;
             resourceTraits.resize(view.resourceRegistry->size());
             for (size_t id=0; id<resourceTraits.size(); ++id) {

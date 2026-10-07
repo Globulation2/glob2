@@ -24,6 +24,7 @@
 
 
 class SimulationRunner;
+class ScenePreparation;
 namespace PerformanceTelemetry { struct Collector; }
 class NetGame;
 namespace Turn { class TurnLockstepSession; }
@@ -347,12 +348,13 @@ private:
 	void saveVideoshot(MainLoopState& st);
 	void configureSessionTelemetry(MainLoopState& st, PerformanceTelemetry::Collector& perf);
 	//! Threaded: fold the simulation thread's measurements into the session collector
-	//! (called with the simulation parked).
+	//! through a bounded locked mailbox without parking the simulation.
 	void absorbSimulationTelemetry();
     std::optional<MainLoopState> session;
     /// A turn game draws only after a step: polls between steps change nothing visible.
     bool turnDrawPending = true;
     std::unique_ptr<SimulationRunner> runner;
+    std::unique_ptr<ScenePreparation> serialPresentation;
     //! Host clock minus SDL_GetTicks(), published by the main thread for sessionClock.
     std::atomic<Sint64> sessionClockOffset{0};
     void publishSessionClock(Uint64 now);

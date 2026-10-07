@@ -13,6 +13,7 @@ import {
   loadMesh,
   projectPose,
   type Camera,
+  clampPitch,
   type Mesh,
   type ViewTransform,
 } from './geometry.ts';
@@ -433,7 +434,8 @@ export function MeshPreview(props: ViewportProps) {
           } else if (gesture.current) {
             const previous = gesture.current.last;
             if (gesture.current.kind === 'orbit') {
-              const dx = pos[0] - previous[0];
+              const dx = pos[0] - previous[0],
+                dy = pos[1] - previous[1];
               props.onCamera?.(
                 props.camera.game
                   ? {
@@ -443,6 +445,8 @@ export function MeshPreview(props: ViewportProps) {
                   : {
                       ...props.camera,
                       yaw: props.camera.yaw - dx * 0.008,
+                      // Dragging down tips the model's top toward the viewer.
+                      pitch: clampPitch(props.camera.pitch + dy * 0.008),
                     },
               );
             } else dab(previous, pos, e.pointerType === 'pen' ? e.pressure : 1);
