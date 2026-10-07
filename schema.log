@@ -1,0 +1,3 @@
+PASS all 29 builtin names plus legacy required categories
+PASS old schema reproduces rejection
+PASS unknown key, invalid count type and missing percent rejected
