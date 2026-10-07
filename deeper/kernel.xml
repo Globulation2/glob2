@@ -1,0 +1,10 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="1" failures="1" errors="0" skipped="0"><testsuite name="ResourceGrowthBenchmark"><testcase classname="ResourceGrowthBenchmark" name="identical live and snapshot kernel inputs [benchmark][resources]" time="0.073483" status="run">
+      <failure message="262 == 268" type="REQUIRE">
+src/map/ResourceGrowthBenchmark.cpp:79:
+REQUIRE( output[0].sampled == output[1].sampled ) is NOT correct!
+  values: REQUIRE( 262 == 268 )
+
+      </failure>
+    </testcase>
+  </testsuite></testsuites>

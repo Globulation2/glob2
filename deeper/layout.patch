@@ -1,0 +1,260 @@
+--- a/src/map/MapState.h
++++ b/src/map/MapState.h
+@@ -7,8 +7,8 @@
+ // exact types; runtime pointers and query scratch do not belong in this state.
+ namespace MapState
+ {
+-struct ResourceCell { Resource resource; Uint16 fertility = 0; Uint8 mayGrow = 0; Uint32 incarnation = 0; };
+-static_assert(sizeof(ResourceCell) == 16);
++struct ResourceCell { Resource resource; Uint16 fertility = 0; Uint8 mayGrow = 0; };
++static_assert(sizeof(ResourceCell) == 12);
+ struct OccupancyCell { Uint16 building = 0xffff, groundUnit = 0xffff, airUnit = 0xffff; Uint8 immobileUnit = 255; };
+ struct AreaCell { Uint32 forbidden = 0, guard = 0, clear = 0, farm = 0; };
+ static_assert(std::is_trivially_copyable_v<ResourceCell>);
+--- a/src/map/Map.h
++++ b/src/map/Map.h
+@@ -642,6 +642,7 @@
+ 	// derived seed data coherent. Reads never invalidate preparation caches.
+ 	size_t cellCount() const { return resourceCells.size(); }
+ 	std::span<const MapState::ResourceCell> resourceState() const { return resourceCells; }
++    std::span<const Uint32> resourceIncarnationState() const { return resourceIncarnations; }
+ 	std::span<const MapState::OccupancyCell> occupancyState() const { return occupancyCells; }
+ 	std::span<const MapState::AreaCell> areaState() const { return areaCells; }
+ 	std::span<const Uint16> legacyTerrainState() const { return legacyTerrain; }
+@@ -1159,6 +1160,7 @@
+ 	bool growthCoverageValid = false;
+ private:
+ 	std::vector<MapState::ResourceCell> resourceCells;
++    std::vector<Uint32> resourceIncarnations;
+ 	std::vector<MapState::OccupancyCell> occupancyCells;
+ 	std::vector<MapState::AreaCell> areaCells;
+ 	std::vector<Uint16> legacyTerrain;
+--- a/src/map/MapStateView.h
++++ b/src/map/MapStateView.h
+@@ -27,6 +27,7 @@
+ 	unsigned wDec = 0;
+ 	Uint32 wMask = 0, hMask = 0;
+ 	std::span<const ResourceCell> resources;
++    std::span<const Uint32> resourceIncarnations;
+ 	std::span<const OccupancyCell> occupancy;
+ 	std::span<const AreaCell> areas;
+ 	std::span<const TerrainType> terrainIds;
+--- a/src/map/MapCells.cpp
++++ b/src/map/MapCells.cpp
+@@ -25,10 +25,10 @@
+ 	const bool blockedGround = resourceBlocksGround(index);
+ 	const bool blockedAir = resourceBlocksAir(index);
+ 	const auto before = resourceMaterialMaskAt(index);
+-	if (resourceCells[index].incarnation == std::numeric_limits<Uint32>::max())
++	if (resourceIncarnations[index] == std::numeric_limits<Uint32>::max())
+         throw std::overflow_error("Resource incarnation overflow");
+ 	releaseResourceStock(index);
+-    ++resourceCells[index].incarnation;
++    ++resourceIncarnations[index];
+ 	resourceCells[index].resource = resource;
+ 	markResource(index);
+ 	initializeResourceStock(index);
+@@ -54,7 +54,7 @@
+ 	if (old.building != tile.building) changes |= ResourceSeedCache::Building;
+ 	if (old.forbidden != tile.forbidden) changes |= ResourceSeedCache::Forbidden;
+ 	legacyTerrain[index] = tile.terrain;
+-	resourceCells[index] = {resolved, tile.fertility, tile.canResourcesGrow, resourceCells[index].incarnation};
++	resourceCells[index] = {resolved, tile.fertility, tile.canResourcesGrow};
+ 	occupancyCells[index].building = tile.building;
+ 	occupancyCells[index].groundUnit = tile.groundUnit;
+ 	occupancyCells[index].airUnit = tile.airUnit;
+--- a/src/map/MapMisc.cpp
++++ b/src/map/MapMisc.cpp
+@@ -29,7 +29,7 @@
+ 				legacyTerrain[index] +
+ 				occupancyCells[index].building +
+ 				resourceCells[index].resource.getUint32() +
+-                resourceCells[index].incarnation +
++                resourceIncarnations[index] +
+                 resourceCells[index].mayGrow +
+ 				occupancyCells[index].groundUnit +
+ 				occupancyCells[index].airUnit +
+--- a/src/map/io/MapIO.cpp
++++ b/src/map/io/MapIO.cpp
+@@ -144,7 +144,7 @@
+ 	displayedGuardAreaView.resize(size, false);
+ 	displayedClearAreaView.resize(size, false);
+ 	displayedFarmAreaView.resize(size, false);
+-	resourceCells.assign(size, {});
++	resourceCells.assign(size, {}); resourceIncarnations.assign(size, 0);
+ 	occupancyCells.resize(size);
+ 	areaCells.resize(size);
+ 	legacyTerrain.resize(size);
+@@ -312,8 +312,8 @@
+ 
+     if(versionMinor>=FILE_FORMAT_VERSION_RESOURCE_GROWTH) {
+         stream->readEnterSection("resourceIncarnations");
+-        if(packed) GAGCore::PackedArray::read<Uint32>(stream,size,[&](size_t i,Uint32 value){resourceCells[i].incarnation=value;});
+-        else for(size_t i=0;i<size;++i) { stream->readEnterSection(i); resourceCells[i].incarnation=stream->readUint32("incarnation"); stream->readLeaveSection(); }
++        if(packed) GAGCore::PackedArray::read<Uint32>(stream,size,[&](size_t i,Uint32 value){resourceIncarnations[i]=value;});
++        else for(size_t i=0;i<size;++i) { stream->readEnterSection(i); resourceIncarnations[i]=stream->readUint32("incarnation"); stream->readLeaveSection(); }
+         stream->readLeaveSection();
+     }
+ 	for(int n=0; n<9; ++n)
+@@ -511,8 +511,8 @@
+     stream->writeLeaveSection();
+ 
+     stream->writeEnterSection("resourceIncarnations");
+-    if(GAGCore::PackedArray::binary(stream)) GAGCore::PackedArray::write<Uint32>(stream,size,[&](size_t i){return resourceCells[i].incarnation;});
+-    else for(size_t i=0;i<size;++i) { stream->writeEnterSection(i); stream->writeUint32(resourceCells[i].incarnation,"incarnation"); stream->writeLeaveSection(); }
++    if(GAGCore::PackedArray::binary(stream)) GAGCore::PackedArray::write<Uint32>(stream,size,[&](size_t i){return resourceIncarnations[i];});
++    else for(size_t i=0;i<size;++i) { stream->writeEnterSection(i); stream->writeUint32(resourceIncarnations[i],"incarnation"); stream->writeLeaveSection(); }
+     stream->writeLeaveSection();
+ 	//Save area names
+ 	for(int n=0; n<9; ++n)
+--- a/src/map/Map.cpp
++++ b/src/map/Map.cpp
+@@ -658,7 +658,7 @@
+ 	displayedClearAreaView.resize(size, false);
+ 	displayedFarmAreaView.resize(size, false);
+ 	
+-	resourceCells.assign(size, {});
++	resourceCells.assign(size, {}); resourceIncarnations.assign(size, 0);
+ 	for (auto &cell : resourceCells) cell.mayGrow = 1;
+ 	occupancyCells.assign(size, {});
+ 	areaCells.assign(size, {});
+--- a/src/map/MapQueryTest.cpp
++++ b/src/map/MapQueryTest.cpp
+@@ -78,7 +78,7 @@
+ 			size = static_cast<size_t>(w * h);
+ 			// Test-only private access initializes the deliberately partial map;
+ 			// subsequent mutations use the same cache notifications as gameplay.
+-			resourceCells.assign(size, {});
++			resourceCells.assign(size, {}); resourceIncarnations.assign(size, 0);
+ 			for (auto &cell : resourceCells) cell.mayGrow = 1;
+ 			occupancyCells.assign(size, {});
+ 			areaCells.assign(size, {});
+--- a/src/map/FertilityFieldTest.cpp
++++ b/src/map/FertilityFieldTest.cpp
+@@ -106,7 +106,7 @@
+ 			wMask = hMask = w - 1;
+ 			size = size_t(w) * h;
+ 			// Test-only private access bootstraps this partial map.
+-			resourceCells.assign(size, {});
++			resourceCells.assign(size, {}); resourceIncarnations.assign(size, 0);
+ 			for (auto &cell : resourceCells) cell.mayGrow = 1;
+ 			occupancyCells.assign(size, {});
+ 			areaCells.assign(size, {});
+--- a/src/map/gradient/PathGradientHarness.cpp
++++ b/src/map/gradient/PathGradientHarness.cpp
+@@ -39,7 +39,7 @@
+ 		wMask = w - 1; hMask = h - 1;
+ 		size = static_cast<size_t>(w) * h;
+ 		// Test-only private access bootstraps this partial map.
+-		resourceCells.assign(size, {});
++		resourceCells.assign(size, {}); resourceIncarnations.assign(size, 0);
+ 			for (auto &cell : resourceCells) cell.mayGrow = 1;
+ 			occupancyCells.assign(size, {});
+ 			areaCells.assign(size, {});
+--- a/src/map/gradient/GradientTest.cpp
++++ b/src/map/gradient/GradientTest.cpp
+@@ -51,7 +51,7 @@
+ 			hMask = h - 1;
+ 			size = static_cast<size_t>(w * h);
+ 			// Test-only private access bootstraps this partial map.
+-			resourceCells.assign(size, {});
++			resourceCells.assign(size, {}); resourceIncarnations.assign(size, 0);
+ 			for (auto &cell : resourceCells) cell.mayGrow = 1;
+ 			occupancyCells.assign(size, {});
+ 			areaCells.assign(size, {});
+--- a/src/map/MapResourceState.cpp
++++ b/src/map/MapResourceState.cpp
+@@ -389,7 +389,7 @@
+ {
+     MapState::View view;
+     view.width=w; view.height=h; view.wDec=unsigned(wDec); view.wMask=Uint32(wMask); view.hMask=Uint32(hMask);
+-    view.resources=resourceCells; view.occupancy=occupancyCells; view.areas=areaCells;
++    view.resources=resourceCells; view.resourceIncarnations=resourceIncarnations; view.occupancy=occupancyCells; view.areas=areaCells;
+     view.terrainIds=terrainIds; view.legacyTerrain=legacyTerrain;
+     view.stockIndices=&resourceStockIndices; view.stocks=&resourceStocks; view.materialSourceCounts=materialSourceCounts;
+     view.terrainRegistry=terrainRegistryValue.get(); view.resourceRegistry=resourceRegistryValue.get(); view.habitats=resourceHabitatsValue.get();
+--- a/src/map/ResourceGrowth.cpp
++++ b/src/map/ResourceGrowth.cpp
+@@ -48,7 +48,7 @@
+ 		proposal.type = source.type;
+ 		proposal.variety = source.variety;
+ 		proposal.spread = spread;
+-		proposal.incarnation = target.incarnation;
++		proposal.incarnation = v.resourceIncarnations[i];
+ 		const auto &yields = v.resourceRegistry->yields(static_cast<ResourceId>(source.type));
+ 		for (unsigned mask = p.materialMask; mask; mask &= mask - 1)
+ 		{
+@@ -120,7 +120,7 @@
+ 		}
+ 		const auto &cell = v.resources[p.tile];
+ 		const auto oldType = cell.resource.type;
+-		if ((!p.spread && (cell.incarnation != p.incarnation || oldType != p.type)) ||
++		if ((!p.spread && (v.resourceIncarnations[p.tile] != p.incarnation || oldType != p.type)) ||
+ 			(oldType != NO_RES_TYPE && oldType != p.type))
+ 		{
+ 			reject();
+--- a/src/map/ResourceGrowthTest.cpp
++++ b/src/map/ResourceGrowthTest.cpp
+@@ -30,7 +30,7 @@
+ 	ResourceGrowth::Proposal p;
+ 	p.tile = at;
+ 	p.type = resourceIndex(id);
+-	p.incarnation = m.cellView().resources[at].incarnation;
++	p.incarnation = m.cellView().resourceIncarnations[at];
+ 	p.spread = spread;
+ 	p.incrementMask |= materialBit(MaterialId::Food);
+ 	return p;
+--- a/src/engine/sim/snapshot/WorldSnapshot.h
++++ b/src/engine/sim/snapshot/WorldSnapshot.h
+@@ -54,6 +54,7 @@
+ struct Resources
+ {
+ 	std::vector<ResourceCell> cells;
++    std::vector<Uint32> incarnations;
+ 	std::vector<Uint32> stockIndices;
+ 	std::vector<std::array<Uint16, MaterialCount>> stocks;
+ 	std::array<Uint32, MaterialCount> materialSourceCounts{};
+--- a/src/engine/sim/snapshot/WorldSnapshot.cpp
++++ b/src/engine/sim/snapshot/WorldSnapshot.cpp
+@@ -31,7 +31,7 @@
+ 	v.width = width; v.height = height;
+ 	v.wDec = width > 0 ? unsigned(std::countr_zero(unsigned(width))) : 0;
+ 	v.wMask = Uint32(width - 1); v.hMask = Uint32(height - 1);
+-	if (resources) { v.resources = resources->cells; v.stockIndices = &resources->stockIndices; v.stocks = &resources->stocks; v.materialSourceCounts = resources->materialSourceCounts; }
++	if (resources) { v.resources = resources->cells; v.resourceIncarnations = resources->incarnations; v.stockIndices = &resources->stockIndices; v.stocks = &resources->stocks; v.materialSourceCounts = resources->materialSourceCounts; }
+ 	if (occupancy) v.occupancy = occupancy->cells;
+ 	if (areas) v.areas = areas->cells;
+ 	if (terrain) { if (terrain->identity) v.terrainIds = *terrain->identity; v.legacyTerrain = terrain->legacy; v.terrainRegistry = terrain->registry.get(); }
+--- a/src/engine/sim/snapshot/WorldCapture.cpp
++++ b/src/engine/sim/snapshot/WorldCapture.cpp
+@@ -230,9 +230,11 @@
+ 		const auto cellsSource = game.map.resourceState();
+ 		const auto indexSource = game.map.resourceStockIndexState();
+ 		bool resized = prepare(resources->cells, cellsSource.size());
++        resized |= prepare(resources->incarnations, cellsSource.size());
+ 		resized |= prepare(resources->stockIndices, indexSource.size());
+ 		refresh(resources->stamps, game.map.changes(MapState::TrackedArray::Resources), resized, [&](std::size_t start, std::size_t length) {
+ 			copyCells(resources->cells, cellsSource, start, length);
++            copyCells(resources->incarnations, game.map.resourceIncarnationState(), start, length);
+ 			if (!indexSource.empty()) copyCells(resources->stockIndices, indexSource, start, length);
+ 		});
+ 		copyArray(resources->stocks, game.map.resourceStockState());
+@@ -414,6 +416,7 @@
+ 	if (handle.resources)
+ 	{
+ 		compare("resources", handle.resources->cells, game.map.resourceState());
++        compare("incarnations", handle.resources->incarnations, game.map.resourceIncarnationState());
+ 		compare("resource stock indices", handle.resources->stockIndices, game.map.resourceStockIndexState());
+ 		// The stock sidecar and source counts ride on the Resources generation too.
+ 		if (handle.resources->stocks != *live.stocks)
+--- a/src/engine/sim/snapshot/SnapshotStorage.h
++++ b/src/engine/sim/snapshot/SnapshotStorage.h
+@@ -72,7 +72,7 @@
+ 	account(catalogs, [&](const Catalogs& value, bool leased) { remember(value.buildings, leased); remember(value.capabilities, leased); return Uint64(0); });
+ 	account(terrain, [&](const Terrain& value, bool leased) { remember(value.identity, leased); return vectorBytes(value.legacy) + vectorBytes(value.undermap); });
+ 	const auto cells = [&](const auto& value, bool) { return vectorBytes(value.cells); };
+-	account(resources, cells); account(occupancy, cells); account(areas, cells); account(visibility, [&](const Visibility& value, bool) { return vectorBytes(value.discovered) + vectorBytes(value.visible); });
++	account(resources, [&](const Resources& value, bool) { return vectorBytes(value.cells) + vectorBytes(value.incarnations); }); account(occupancy, cells); account(areas, cells); account(visibility, [&](const Visibility& value, bool) { return vectorBytes(value.discovered) + vectorBytes(value.visible); });
+ 	account(entities, [&](const Entities& value, bool) {
+ 		return vectorBytes(value.buildings) + vectorBytes(value.units) + vectorBytes(value.buildingSlotIndices) + vectorBytes(value.unitSlotIndices) + vectorBytes(value.relationships) + vectorBytes(value.projects);
+ 	});

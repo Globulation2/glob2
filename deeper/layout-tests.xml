@@ -1,0 +1,10 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="8" failures="0" errors="0" skipped="0"><testsuite name="ResourceGrowth"><testcase classname="ResourceGrowth" name="frozen input outlives terrain and resource edits and wrapping remains valid" time="0.075512" status="run" />
+  <testcase classname="ResourceGrowth" name="kernel is immutable deterministic and responds to disabled growth and scarcity" time="0.078087" status="run" />
+  <testcase classname="ResourceGrowth" name="later worker completion cannot publish ahead of an earlier owner batch" time="0.074957" status="run" />
+  <testcase classname="ResourceGrowth" name="light checksums leave owner work deferred and world replacement discards it" time="0.074442" status="run" />
+  <testcase classname="ResourceGrowth" name="owner and shared deadlines match and pending work survives saving" time="0.381259" status="run" />
+  <testcase classname="ResourceGrowth" name="pipeline waits at exact deadline and pause does not publish" time="0.072653" status="run" />
+  <testcase classname="ResourceGrowth" name="publication caps competing increments and rejects occupied empty targets" time="0.074592" status="run" />
+  <testcase classname="ResourceGrowth" name="publication preserves harvests and rejects replaced deposits but allows seeds in flight" time="0.089843" status="run" />
+  </testsuite></testsuites>

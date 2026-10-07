@@ -1,0 +1,254 @@
+{
+  "started_utc": "2026-10-07T21:44:50.074188+00:00",
+  "state": "completed",
+  "command": [
+    "python3",
+    "test/run_with_benchmark_governor.py",
+    "--audit",
+    "artifacts/resource-growth/deeper/governor-stages.json",
+    "--cpus",
+    "0",
+    "1",
+    "2",
+    "3",
+    "--",
+    "python3",
+    "docs/.work/run-growth-deeper.py",
+    "stages"
+  ],
+  "wrapper_sha256": "1c0b1b3c6257bc405b137f2e88dff98b0dea3f94faf16f32c4cb39cb7b8e3c7d",
+  "uid": 1000,
+  "gid": 1000,
+  "groups": [
+    4,
+    24,
+    27,
+    30,
+    46,
+    100,
+    101,
+    117,
+    962,
+    1000
+  ],
+  "original_affinity": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21,
+    22,
+    23,
+    24,
+    25,
+    26,
+    27,
+    28,
+    29,
+    30,
+    31
+  ],
+  "original_cgroup": "0::/user.slice/user-1000.slice/user@1000.service/app.slice/app-org.chromium.Chromium-1567836.scope",
+  "kernel": "7.0.0-31-generic",
+  "cgroup_path": "/sys/fs/cgroup/glob2-benchmark-0bc3e4c2604e439c9658d2c0479cba9e",
+  "dry_run": false,
+  "forced_cgroup_kill": false,
+  "cgroup_restored": true,
+  "limits": "Exclusive scheduler CPUs do not isolate memory bandwidth, package power, interrupts, kernel activity or shared caches. Nested governors have a separate restoration audit.",
+  "preflight": {
+    "parent": {
+      "cgroup.subtree_control": "cpuset cpu io memory hugetlb pids rdma misc dmem",
+      "cpuset.cpus.effective": "0-31",
+      "cpuset.mems.effective": "0"
+    },
+    "namespaces": {
+      "self": "cgroup:[4026531835]",
+      "1": "cgroup:[4026531835]"
+    },
+    "engine_cpus": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "reserved_cpus": [
+      0,
+      1,
+      2,
+      3,
+      16,
+      17,
+      18,
+      19
+    ],
+    "ordinary_cpus": [
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      20,
+      21,
+      22,
+      23,
+      24,
+      25,
+      26,
+      27,
+      28,
+      29,
+      30,
+      31
+    ],
+    "smt_siblings": {
+      "0": [
+        0,
+        16
+      ],
+      "1": [
+        1,
+        17
+      ],
+      "2": [
+        2,
+        18
+      ],
+      "3": [
+        3,
+        19
+      ],
+      "16": [
+        0,
+        16
+      ],
+      "17": [
+        1,
+        17
+      ],
+      "18": [
+        2,
+        18
+      ],
+      "19": [
+        3,
+        19
+      ]
+    }
+  },
+  "partition_before_command": {
+    "cpuset.cpus.partition": "root",
+    "cpuset.cpus": "0-3,16-19",
+    "cpuset.cpus.effective": "0-3,16-19",
+    "cpuset.cpus.exclusive": "0-3,16-19",
+    "cpuset.cpus.exclusive.effective": "0-3,16-19",
+    "cpuset.mems.effective": "0"
+  },
+  "child_pid": 1373504,
+  "child_identity": {
+    "uid": 1000,
+    "gid": 1000,
+    "groups": [
+      4,
+      24,
+      27,
+      30,
+      46,
+      100,
+      101,
+      117,
+      962,
+      1000
+    ],
+    "affinity": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "cgroup": "0::/glob2-benchmark-0bc3e4c2604e439c9658d2c0479cba9e"
+  },
+  "validity_checks": 172,
+  "last_partition_check": {
+    "cpuset.cpus.partition": "root",
+    "cpuset.cpus": "0-3,16-19",
+    "cpuset.cpus.effective": "0-3,16-19",
+    "cpuset.cpus.exclusive": "0-3,16-19",
+    "cpuset.cpus.exclusive.effective": "0-3,16-19",
+    "cpuset.mems.effective": "0"
+  },
+  "last_child_affinity": [
+    0,
+    1,
+    2,
+    3
+  ],
+  "partition_after_command": {
+    "cpuset.cpus.partition": "root",
+    "cpuset.cpus": "0-3,16-19",
+    "cpuset.cpus.effective": "0-3,16-19",
+    "cpuset.cpus.exclusive": "0-3,16-19",
+    "cpuset.cpus.exclusive.effective": "0-3,16-19",
+    "cpuset.mems.effective": "0"
+  },
+  "exit_code": 0,
+  "final_wrapper_affinity": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21,
+    22,
+    23,
+    24,
+    25,
+    26,
+    27,
+    28,
+    29,
+    30,
+    31
+  ],
+  "wrapper_affinity_restored": true,
+  "finished_utc": "2026-10-07T21:47:42.056015+00:00"
+}
