@@ -518,10 +518,10 @@ def fit(
             rest_basis = body_basis(rest[0], definition["bodyAxes"])
             radii, stiffness, threshold = field
         asset, uv, indices, positions, size, view = baked_frames(model, clip)
-        if not np.array_equal(surface.triangles, indices) or not np.array_equal(
-            surface.uv.astype("<f4"), uv
-        ):
+        if not np.array_equal(surface.triangles, indices):
             raise ValueError(f"{model} paint topology changed")
+        # The paint chart is unwrapped at export time; take it from the clip.
+        surface.uv = uv.astype(np.float64)
         assets += [asset, asset.with_suffix(".view.json")]
         views.append(view)
         actual[clip] = positions
@@ -802,6 +802,7 @@ def author(
         Path(__file__).with_name("export_rig.py"),
         Path(__file__).with_name("export_units.py"),
         Path(__file__).with_name("limb_surface.py"),
+        Path(__file__).with_name("chart.py"),
         DEFINITION_PATH,
         ROOT / f"data/skins/colony-v1/{model}-surface.json",
     ] + result["sources"] + result["assets"]

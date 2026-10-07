@@ -193,7 +193,8 @@ data/skins/colony-v1`. This checks retained source and mesh hashes, complete cli
 coverage, shared paint coordinates across actions, animation in all headings,
 unclipped geometry, normalized lighting normals, and identical designer models for
 all seven unit actions and the swarm. Workers and warriors additionally require
-one closed connected surface, separate limb regions, matching front/back and
+one closed connected surface once the seam welds are applied, closed seams in
+every pose, separate limb regions, matching front/back and
 top/bottom UVs and triangle interpolation, noncollapsed connection triangles,
 and a continuous flip-cycle boundary. `test/build_system/test_skin_surface_contract.py`
 injects broken paint, a cross-foot triangle and a collapsed joint to check these
@@ -204,8 +205,9 @@ The modern Blender importer converts the legacy cyclic IPO key times to
 fractions. At exact direction boundaries its floating-point cycle reduction can
 select the previous heading. The exporter samples the first pose 0.001 original
 frames after each boundary and verifies the stepped heading throughout every
-clip. Other poses retain their quarter-frame times; canonical topology and UVs
-remain unchanged, so published paint stays attached to the same vertices.
+clip. Other poses retain their quarter-frame times; the canonical topology is
+shared by every clip of a model, so paint stays attached to the same vertices
+across actions.
 
 The comparison harness writes all seven action sheets with classic poses
 above live GPU-rendered poses, at three times logical size. Add `--all-phases`
@@ -224,7 +226,8 @@ pink registration stripe. `--material mixed` cycles every material for shader ch
 
 `export_units.py` preserves all original source bytes. Worker and warrior surfaces
 are constructed from the retained definition in
-`datasrc/gfx/authored/skins/limb-surfaces.json` and `tools/skins/limb_surface.py`.
+`datasrc/gfx/authored/skins/limb-surfaces.json`, `tools/skins/limb_surface.py`
+and `tools/skins/chart.py`.
 A spherical torso has four shared socket rims; each limb follows an explicit
 path through its named source components (indices follow sorted `Mball` names).
 Section rings follow their own limb path with a minimum neck radius, a smooth
@@ -241,13 +244,31 @@ across all actions; source centers, scales, cameras and gait samples are retaine
 These surfaces approximate the original metaballs, so silhouette and motion
 review remain necessary alongside structural checks.
 
-Workers and warriors share a virtual body chart: counterpart front/back and
+Workers and warriors share a folded chart: counterpart front/back and
 top/bottom surfaces sample identical UVs, including the upper/lower limbs exchanged
 by a flip. Reflection-invariant center fans avoid different interpolation on
 opposite sides of a quad. Painting either the texture or the preview therefore
 preserves symmetry without a symmetry switch, duplicate stamps or server-side
 texture rewriting. This also applies to fill, erase and arbitrary uploaded paint.
-The retained surface contracts record reflection partners and limb regions.
+The retained surface contracts record reflection partners, limb regions and the
+seam welds. Layout v2 (`tools/skins/chart.py`) unwraps one quarter of the rest
+surface with Blender's angle-based unwrapper, as three islands: the torso
+quarter and the two half limbs, cut from the torso at their socket rims (the
+rim vertices are duplicated for the limb islands and welded to the torso's).
+Every vertex then takes its quarter representative's coordinates. Texel density
+is near uniform (the 95th/5th percentile ratio across triangles is 1.7 for both
+models, against 5 and 8 for the planar v1 chart), so checker paint reads as
+squares; the only seams are the socket rims. v2 paint does not line up with v1
+paint.
+
+Vertex correspondence across frames is tracked rather than re-solved
+(`limb_surface.py` `Tracker`): the rest surface, symmetrised under both
+reflections, is carried by one similarity transform per metaball component,
+blended by each vertex's share of the components' field at rest, and every
+vertex is then snapped onto the posed implicit surface along its gradient. The
+surface is still the metaball union, but a vertex stays on the same part of
+the body, so paint no longer swims during a gait and the collars no longer
+grow over the torso in overlapping layers.
 The explorer retains its original geometry, normal calculation and four-influence
 transfer, including ellipsoid orientations; only its UVs change to a body-space
 front/back and top/bottom folded chart. Swarm geometry and UVs are unchanged.
@@ -259,7 +280,7 @@ actions into the web designer. Preset paint remains reproducible through
 texture bytes. Colony Studio offers free camera orbit, action, animation and paused-frame
 controls. Scrubbing keeps the loaded GPU model; selecting an action loads the
 corresponding runtime mesh. Painting freezes the displayed pose; the swarm's
-separate final-view mode changes only the standardized game camera azimuth. The mesh UV layout remains experimental `colony-v1`;
+separate final-view mode changes only the standardized game camera azimuth. The mesh UV layout is the experimental v2 chart under the `colony-v1` directory;
 skins paint each model through its quadrant of a `colony-v2` atlas.
 
 GSK1 stores a bounded little-endian header (magic, vertex count, index count,

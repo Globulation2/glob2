@@ -65,12 +65,12 @@ describe('GSB1 shared conformance', () => {
   });
 });
 it.each([
-  ['worker-walk', 2834],
-  ['worker-swim', 2834],
-  ['worker-harvest', 2834],
-  ['warrior-walk', 2450],
-  ['warrior-swim', 2450],
-  ['warrior-fight', 2450],
+  ['worker-walk', 2898],
+  ['worker-swim', 2898],
+  ['worker-harvest', 2898],
+  ['warrior-walk', 2514],
+  ['warrior-swim', 2514],
+  ['warrior-fight', 2514],
 ] as const)('decodes installed %s and produces finite unit normals', (asset, count) => {
   const buffer = readFileSync(new URL(`../public/skins/models/${asset}.gsb`, import.meta.url));
   const model = decodeShapes(Uint8Array.from(buffer).buffer);

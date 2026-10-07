@@ -101,12 +101,12 @@ it('uses the same displayed rig pose for Studio projection and a fixed rest char
   expect(mesh.poses.length).toBe(model.count * 6);
 });
 it.each([
-  ['worker-walk', 2834],
-  ['worker-swim', 2834],
-  ['worker-harvest', 2834],
-  ['warrior-walk', 2450],
-  ['warrior-swim', 2450],
-  ['warrior-fight', 2450],
+  ['worker-walk', 2898],
+  ['worker-swim', 2898],
+  ['worker-harvest', 2898],
+  ['warrior-walk', 2514],
+  ['warrior-swim', 2514],
+  ['warrior-fight', 2514],
   ['explorer-fly', 1330],
 ] as const)('decodes installed %s and produces finite unit normals', (asset, count) => {
   const buffer = readFileSync(new URL(`../public/skins/models/${asset}.gsr`, import.meta.url));
