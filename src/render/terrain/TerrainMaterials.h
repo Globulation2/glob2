@@ -27,11 +27,6 @@ struct Profile
 	bool legacyEdges = false;
 	std::vector<std::vector<int>> contours; // Q12 normalized patch displacements.
 };
-struct Backdrop
-{
-	std::string sprite;
-	int firstFrame = 0, frames = 1, ticks = 1;
-};
 // Contact treatment where this material meets another. A higher material casts
 // a shade onto lower neighbors within castWidth; a fringe tints any neighbor.
 struct Seam
@@ -48,8 +43,6 @@ struct Material
 	unsigned totalWeight = 0;
 	std::uint32_t salt = 0;
 	unsigned profile = 0;
-	bool ocean = false;
-	Backdrop backdrop;
 	int animationFrames = 1, animationTicks = 1, animationStride = 0;
 	std::array<unsigned char, 3> preview{}, minimap{};
 	Seam seam;
@@ -94,7 +87,7 @@ struct Recipe
 struct Coverage
 {
 	std::array<MaterialId, 4> material{};
-	std::array<unsigned, 4> weight{}; // Sum exactly 65536, including ocean.
+	std::array<unsigned, 4> weight{}; // Sum exactly 65536.
 	// Nearest other material and an estimate of the Q8 pixel distance to it,
 	// for seam shading. Interior samples report 65535 and their own material.
 	MaterialId neighbor = 0;

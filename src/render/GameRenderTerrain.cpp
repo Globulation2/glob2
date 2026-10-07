@@ -121,21 +121,6 @@ bool drawCachedResources(const void *mapIdentity, const SceneMap& map, int left,
 // Terrain, resource, and area rendering. Split from Game_render.cpp.
 
 
-void Game::drawMapWater(int sw, int sh, int viewportX, int viewportY, int time)
-{
-	PERF_SCOPE_TIME(Water);
-    const auto &p=TerrainOceanBackdrop;
-    const int frame=terrainAnimatedFrame(p.firstFrame,p.frames,p.ticksPerFrame,time);
-    const int width=globalContainer->terrainWater->getW(frame),height=globalContainer->terrainWater->getH(frame);
-    const int waterStartX=-(((viewportX<<5)+terrainScrollOffset(time,p.scrollDivisorX))%width);
-    const int waterStartY=-(((viewportY<<5)+terrainScrollOffset(time,p.scrollDivisorY))%height);
-    for(int y=waterStartY;y<sh;y+=height) {
-        for(int x=waterStartX;x<sw;x+=width)
-            globalContainer->gfx->drawSprite(x,y,globalContainer->terrainWater,frame);
-    }
-    globalContainer->gfx->finishDrawingSprite(globalContainer->terrainWater,255);
-}
-
 void Game::drawMapTerrain(int left, int top, int right, int bot, int viewportX, int viewportY, int localTeam, Uint32 drawOptions, const SceneMap& sceneMap, int animationTime)
 {
 	PERF_SCOPE_TIME(Terrain);

@@ -176,76 +176,78 @@
   "materials": [
     {
       "key": "water",
-      "sprite": "data/gfx/terrain",
+      "sprite": "data/gfx/terrain-water",
       "profile": "sand",
-      "ocean": true,
       "preview": [70, 50, 191],
       "variants": [
         {
-          "frame": 256,
+          "frame": 0,
           "weight": 1
         },
         {
-          "frame": 257,
+          "frame": 1,
           "weight": 1
         },
         {
-          "frame": 258,
+          "frame": 2,
           "weight": 1
         },
         {
-          "frame": 259,
+          "frame": 3,
           "weight": 1
         },
         {
-          "frame": 260,
+          "frame": 4,
           "weight": 1
         },
         {
-          "frame": 261,
+          "frame": 5,
           "weight": 1
         },
         {
-          "frame": 262,
+          "frame": 6,
           "weight": 1
         },
         {
-          "frame": 263,
+          "frame": 7,
           "weight": 1
         },
         {
-          "frame": 264,
+          "frame": 8,
           "weight": 1
         },
         {
-          "frame": 265,
+          "frame": 9,
           "weight": 1
         },
         {
-          "frame": 266,
+          "frame": 10,
           "weight": 1
         },
         {
-          "frame": 267,
+          "frame": 11,
           "weight": 1
         },
         {
-          "frame": 268,
+          "frame": 12,
           "weight": 1
         },
         {
-          "frame": 269,
+          "frame": 13,
           "weight": 1
         },
         {
-          "frame": 270,
+          "frame": 14,
           "weight": 1
         },
         {
-          "frame": 271,
+          "frame": 15,
           "weight": 1
         }
       ],
+      "animation_frames": 4,
+      "animation_stride": 16,
+      "animation_ticks": 24,
       "minimap": [0, 40, 120],
       "seam": {
         "height": 5,
@@ -257,7 +259,6 @@
       "key": "sand",
       "sprite": "data/gfx/terrain",
       "profile": "sand",
-      "ocean": false,
       "preview": [182, 168, 48],
       "variants": [
         {
@@ -334,7 +335,6 @@
       "key": "grass",
       "sprite": "data/gfx/terrain",
       "profile": "sand",
-      "ocean": false,
       "preview": [30, 113, 30],
       "variants": [
         {
@@ -413,7 +413,6 @@
       "key": "ice",
       "sprite": "data/gfx/terrain",
       "profile": "fractured",
-      "ocean": false,
       "preview": [190, 225, 240],
       "variants": [
         {
@@ -495,7 +494,6 @@
       "key": "road",
       "sprite": "data/gfx/terrain-cobblestone",
       "profile": "cobblestone",
-      "ocean": false,
       "preview": [133, 120, 101],
       "variants": [
         {
@@ -574,7 +572,6 @@
       "key": "boulders",
       "sprite": "data/gfx/terrain-boulders",
       "profile": "rock",
-      "ocean": false,
       "preview": [123, 110, 94],
       "variants": [
         {
@@ -653,7 +650,6 @@
       "key": "hedge",
       "sprite": "data/gfx/terrain-hedge",
       "profile": "brush",
-      "ocean": false,
       "preview": [37, 70, 36],
       "variants": [
         {
@@ -732,7 +728,6 @@
       "key": "thicket",
       "sprite": "data/gfx/terrain-thicket",
       "profile": "brush",
-      "ocean": false,
       "preview": [62, 74, 37],
       "variants": [
         {
@@ -811,7 +806,6 @@
       "key": "ridge_rock",
       "sprite": "data/gfx/terrain-ridge_rock",
       "profile": "rock",
-      "ocean": false,
       "preview": [101, 101, 103],
       "variants": [
         {
@@ -890,7 +884,6 @@
       "key": "outcrop",
       "sprite": "data/gfx/terrain-outcrop",
       "profile": "rock",
-      "ocean": false,
       "preview": [107, 108, 103],
       "variants": [
         {
@@ -969,7 +962,6 @@
       "key": "dirt",
       "sprite": "data/gfx/terrain-dirt",
       "profile": "soft",
-      "ocean": false,
       "preview": [139, 112, 79],
       "variants": [
         {
@@ -1048,7 +1040,6 @@
       "key": "clay",
       "sprite": "data/gfx/terrain-clay",
       "profile": "soft",
-      "ocean": false,
       "preview": [163, 113, 80],
       "variants": [
         {
@@ -1127,7 +1118,6 @@
       "key": "gravel",
       "sprite": "data/gfx/terrain-gravel",
       "profile": "rock",
-      "ocean": false,
       "preview": [135, 127, 116],
       "variants": [
         {
@@ -1206,7 +1196,6 @@
       "key": "flower_meadow",
       "sprite": "data/gfx/terrain-flower_meadow",
       "profile": "brush",
-      "ocean": false,
       "preview": [62, 128, 48],
       "variants": [
         {
@@ -1285,7 +1274,6 @@
       "key": "mud",
       "sprite": "data/gfx/terrain-mud",
       "profile": "soft",
-      "ocean": false,
       "preview": [91, 73, 55],
       "variants": [
         {
@@ -1362,8 +1350,7 @@
       "key": "marsh",
       "sprite": "data/gfx/terrain-marsh",
       "profile": "soft",
-      "ocean": false,
-      "preview": [76, 93, 74],
+      "preview": [75, 92, 75],
       "variants": [
         {
           "frame": 0,
@@ -1430,7 +1417,7 @@
           "weight": 1
         }
       ],
-      "minimap": [76, 93, 74],
+      "minimap": [75, 92, 75],
       "seam": {
         "height": 1
       }
@@ -1439,7 +1426,6 @@
       "key": "deep_snow",
       "sprite": "data/gfx/terrain-deep_snow",
       "profile": "soft",
-      "ocean": false,
       "preview": [198, 202, 228],
       "variants": [
         {
@@ -1521,7 +1507,6 @@
       "key": "scree",
       "sprite": "data/gfx/terrain-scree",
       "profile": "rock",
-      "ocean": false,
       "preview": [117, 117, 119],
       "variants": [
         {
@@ -1598,7 +1583,6 @@
       "key": "dirt_track",
       "sprite": "data/gfx/terrain-dirt_track",
       "profile": "sand",
-      "ocean": false,
       "preview": [169, 142, 105],
       "variants": [
         {
@@ -1677,7 +1661,6 @@
       "key": "boardwalk",
       "sprite": "data/gfx/terrain-boardwalk",
       "profile": "crisp",
-      "ocean": false,
       "preview": [149, 128, 101],
       "variants": [
         {
@@ -1756,7 +1739,6 @@
       "key": "lava",
       "sprite": "data/gfx/terrain-lava",
       "profile": "fractured",
-      "ocean": false,
       "preview": [168, 72, 30],
       "variants": [
         {
@@ -1839,7 +1821,6 @@
       "key": "ember_field",
       "sprite": "data/gfx/terrain-ember_field",
       "profile": "fractured",
-      "ocean": false,
       "preview": [110, 52, 36],
       "variants": [
         {
@@ -1922,7 +1903,6 @@
       "key": "loam",
       "sprite": "data/gfx/terrain-loam",
       "profile": "soft",
-      "ocean": false,
       "preview": [78, 63, 41],
       "variants": [
         {
@@ -2001,7 +1981,6 @@
       "key": "moss",
       "sprite": "data/gfx/terrain-moss",
       "profile": "soft",
-      "ocean": false,
       "preview": [41, 85, 51],
       "variants": [
         {
@@ -2080,7 +2059,6 @@
       "key": "spring_meadow",
       "sprite": "data/gfx/terrain-spring_meadow",
       "profile": "brush",
-      "ocean": false,
       "preview": [89, 122, 58],
       "variants": [
         {
@@ -2159,7 +2137,6 @@
       "key": "deep_water",
       "sprite": "data/gfx/terrain-deep_water",
       "profile": "soft",
-      "ocean": false,
       "preview": [44, 34, 120],
       "variants": [
         {
@@ -2227,6 +2204,9 @@
           "weight": 1
         }
       ],
+      "animation_frames": 4,
+      "animation_stride": 16,
+      "animation_ticks": 24,
       "minimap": [24, 18, 84],
       "seam": {
         "height": 6,
@@ -2238,7 +2218,6 @@
       "key": "dark_water",
       "sprite": "data/gfx/terrain-dark_water",
       "profile": "soft",
-      "ocean": false,
       "preview": [32, 26, 76],
       "variants": [
         {
@@ -2317,7 +2296,6 @@
       "key": "void_hole",
       "sprite": "data/gfx/terrain-void_hole",
       "profile": "crisp",
-      "ocean": false,
       "preview": [28, 24, 36],
       "variants": [
         {
@@ -2396,7 +2374,6 @@
       "key": "chasm",
       "sprite": "data/gfx/terrain-chasm",
       "profile": "rock",
-      "ocean": false,
       "preview": [48, 38, 44],
       "variants": [
         {

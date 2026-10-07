@@ -89,7 +89,6 @@ class SoftwareTerrainCache
 				 int vx, int vy, Uint32 visibleTeams, bool wholeMap, int animationTime = 0,
 				 bool tiledCapture = false);
 	void draw(GAGCore::GraphicContext &);
-	std::vector<SDL_Rect> waterRegions(SDL_Rect bounds) const;
 	std::size_t bytes() const;
 	std::uint64_t cacheHits() const { return hits; }
 	std::uint64_t cacheRebuilds() const { return rebuilds; }

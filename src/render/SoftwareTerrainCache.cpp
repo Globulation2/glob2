@@ -79,7 +79,8 @@ SamplingPlan samplingPlan(const SceneMap &map, int left, int top, int right, int
 }
 
 // Box-filter composed coverage in premultiplied space, then retain straight
-// alpha for the ordinary surface upload. Transparent ocean must not darken land.
+// alpha for the ordinary surface upload. Transparent (undiscovered) cells must not
+// darken their neighbours.
 // Both surfaces are ARGB8888; the power-of-two divisor divides one native tile.
 // Filtering each tile independently preserves exact tile-aligned page crops.
 void reduceTile(SDL_Surface *source, SDL_Surface *target, int ox, int oy, int divisor)
@@ -524,43 +525,6 @@ void SoftwareTerrainCache::draw(GAGCore::GraphicContext &target)
 			}
 	}
 }
-std::vector<SDL_Rect> SoftwareTerrainCache::waterRegions(SDL_Rect bounds) const
-{
-	std::vector<SDL_Rect> remaining{bounds};
-	for (const auto &copy : copies)
-		for (const auto &run : copy.chunk->opaqueRuns)
-		{
-			SDL_Rect destination{copy.x + run.rect.x, copy.y + run.rect.y, run.rect.w, run.rect.h},
-				coverage;
-			if (!SDL_GetRectIntersection(&destination, &paintBounds, &coverage))
-				continue;
-			std::vector<SDL_Rect> next;
-			for (const auto &region : remaining)
-			{
-				SDL_Rect cut;
-				if (!SDL_GetRectIntersection(&region, &coverage, &cut))
-				{
-					next.push_back(region);
-					continue;
-				}
-				const auto append = [&](SDL_Rect rect)
-				{
-					if (rect.w > 0 && rect.h > 0)
-						next.push_back(rect);
-				};
-				append({region.x, region.y, region.w, cut.y - region.y});
-				append({region.x, cut.y + cut.h, region.w, region.y + region.h - cut.y - cut.h});
-				append({region.x, cut.y, cut.x - region.x, cut.h});
-				append({cut.x + cut.w, cut.y, region.x + region.w - cut.x - cut.w, cut.h});
-				// Bound bookkeeping even for a fragmented or repeated map.
-				if (next.size() > 64)
-					return {bounds};
-			}
-			remaining = std::move(next);
-		}
-	return remaining;
-}
-
 std::size_t SoftwareTerrainCache::bytes() const
 {
 	return chunks.size() * pageStorage(resolution, gpu, downsample);

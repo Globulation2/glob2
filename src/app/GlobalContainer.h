@@ -87,7 +87,6 @@ public:
     std::unique_ptr<TerrainVisual::Compositor> terrainCompositor_;
 	Sprite *terrain = nullptr;
 
-	Sprite *terrainWater = nullptr;
 	Sprite *terrainCloud = nullptr;
 	Sprite *terrainBlack = nullptr;
 	Sprite *terrainShader = nullptr;

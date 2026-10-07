@@ -2722,16 +2722,6 @@
       "sha256": "d886b8d597a5fd7bbfd6ee3c409a149fb86bdd490e7c6b31c3d298ba577593f7"
     },
     {
-      "runtime": "water0.png",
-      "source": "ai-materials/water0.png",
-      "sha256": "139a78352e77ba370229e60846dd6215c40daaae15862df67b1f9b2f1fe2972d"
-    },
-    {
-      "runtime": "water1.png",
-      "source": "ai-upscaled/water1.png",
-      "sha256": "d6fcb92c86707fb9bd85ed5a2f7ecab16c136ce10a95a039285aabe627e5b6e1"
-    },
-    {
       "runtime": "terrain-atlas-mip0.png",
       "source": "atlases/terrain-atlas-mip0.png",
       "sha256": "c50c135b252a0f41a2359363de8f7f58560e361bad15d1a8cb61c1ef03b4aa8a"
@@ -2774,12 +2764,12 @@
     {
       "runtime": "manifest.json",
       "source": "pack-metadata/manifest.json",
-      "sha256": "906353ec4ea0be587b7cfbd4909a5d5768f7f1fe471b4439e81bc8c7b5c35290"
+      "sha256": "8720051d259635f02c038793f7b8dba6ff93ed0617ca94970935c25303f0a81d"
     },
     {
       "runtime": "frames.txt",
       "source": "pack-metadata/frames.txt",
-      "sha256": "fcf13527ff4499024eaaf62e271c40768e555dca0b008caac3ef76f66a262824"
+      "sha256": "f6fc3874fa7d16d0b8bd102116f4b2634322bd5c376864df0a845a3cfbda2e10"
     },
     {
       "runtime": "README.md",
@@ -17709,82 +17699,82 @@
     {
       "runtime": "terrain-marsh0.png",
       "source": "procedural-materials/terrain-marsh0.png",
-      "sha256": "355c2e30a63221de4625b0b4196ad1d25f905787e531d6fb91beff4b22c6ba55"
+      "sha256": "f344097b66b0041039abb565afda32907e4da26280e1e2f250f590fba8aeeb32"
     },
     {
       "runtime": "terrain-marsh1.png",
       "source": "procedural-materials/terrain-marsh1.png",
-      "sha256": "1b39ec469737d153724bcf8f35152a7066a78e1bc5cdae1c833567048cf88cb2"
+      "sha256": "38c0ae323adc335f4833ce49c7231f9dd44da49e8ff0121d191ba398bde14cb1"
     },
     {
       "runtime": "terrain-marsh2.png",
       "source": "procedural-materials/terrain-marsh2.png",
-      "sha256": "f793d751aaa7ead725d7f69caf1d4476b8a2cf53bb2056c7e62bcec4664e0f44"
+      "sha256": "7171dacfbe7afc5d4096df7eb6340ccea286431822721eb68bc034a64b1906c2"
     },
     {
       "runtime": "terrain-marsh3.png",
       "source": "procedural-materials/terrain-marsh3.png",
-      "sha256": "d1e77c3f6e8b54adc7181c64b90a1c4fd946560815f47f58a25f52f7fdc5384d"
+      "sha256": "690b6177e29a8e1b30c1509246114e0225fa5dba32c2b5f5750af54846f2fd8b"
     },
     {
       "runtime": "terrain-marsh4.png",
       "source": "procedural-materials/terrain-marsh4.png",
-      "sha256": "c7bc5658b79e2fa39183c5d031ab24980d0de140ae2eb92485a319c9fa6cd506"
+      "sha256": "93955635bcf8d7ee011991b33f5060a1631ec125c810cd5f9b92fdd33939e213"
     },
     {
       "runtime": "terrain-marsh5.png",
       "source": "procedural-materials/terrain-marsh5.png",
-      "sha256": "6a2ce0629f7572dd00e82dffc1b055be4a1725e753d6ee3fa1baf496b09811e9"
+      "sha256": "b896bd83f8dd711533e3a645a1c920984ea99960f8f1ad3a771484f98b58cb06"
     },
     {
       "runtime": "terrain-marsh6.png",
       "source": "procedural-materials/terrain-marsh6.png",
-      "sha256": "1e14b3e57023962a7143294c5e8f8f63a92db8c3e67719661091acdd2502db93"
+      "sha256": "3a6ab92de96565126bf77d211455f995bdc471e9c1ee94b003c78ba661c6de4c"
     },
     {
       "runtime": "terrain-marsh7.png",
       "source": "procedural-materials/terrain-marsh7.png",
-      "sha256": "300a5b6f46a9d47a5ab6be07db98c065dc8272a8f1880ae65771c53785e1b81d"
+      "sha256": "f40807ab895079fadbb570b95741ad0b299c296e03f24767041a43d2d2af2c9e"
     },
     {
       "runtime": "terrain-marsh8.png",
       "source": "procedural-materials/terrain-marsh8.png",
-      "sha256": "199b3817a13e4fab4fcf46cff825325328dc5f2b70baf0e445658ac86d7eee30"
+      "sha256": "cf522a2cf1c4bbe9c31415642ad2eca1f1658e25dd2a40f534e4995e7ed50ce2"
     },
     {
       "runtime": "terrain-marsh9.png",
       "source": "procedural-materials/terrain-marsh9.png",
-      "sha256": "8612ea673049fc18dd65ed11366e11b6103126411b6758834d43a7bb45731dd2"
+      "sha256": "edcfd9fa9ca545b3a24782fcd64b58a88db59de168aaeefa89e5751cf1b78f16"
     },
     {
       "runtime": "terrain-marsh10.png",
       "source": "procedural-materials/terrain-marsh10.png",
-      "sha256": "39c664b2203f99a76d36695f49b6f4b2261aa407ca241916be8c057c26c5a590"
+      "sha256": "132d8d1ff3823f1a790cb5d61293df6d2430d2fee9674b4a7535cf48ff9d0f3d"
     },
     {
       "runtime": "terrain-marsh11.png",
       "source": "procedural-materials/terrain-marsh11.png",
-      "sha256": "a1eed9bc67b3d6974ad324d5142be7c7d40cd03c325d9d772f6d61043f1ef378"
+      "sha256": "625d18ac3754813eb6b81a6ee684d68f4f7f59a3c11a44db72772c439c43ce3d"
     },
     {
       "runtime": "terrain-marsh12.png",
       "source": "procedural-materials/terrain-marsh12.png",
-      "sha256": "3e6b1ceffd4aa449654e2717000f741e52c9c0ac381a128d413ff2fdfffb10e8"
+      "sha256": "aee7805e64d9a879da97ab9f67a4e2123059e61505510267c71f8b46882d6ec7"
     },
     {
       "runtime": "terrain-marsh13.png",
       "source": "procedural-materials/terrain-marsh13.png",
-      "sha256": "e318962413f8e773984ae5fda8da28af6d354c040a85d97d9678fdbe68b93a93"
+      "sha256": "58e89883179be5b5be2b716f474984c1b1966a581db117e6666455a0fcdff95b"
     },
     {
       "runtime": "terrain-marsh14.png",
       "source": "procedural-materials/terrain-marsh14.png",
-      "sha256": "6c631533c448cbe17a5e6c4d877811e43b3bf094bf54b263a3d35c4d2809423a"
+      "sha256": "49d078443c12510554bceae924f00d1b5aa4da872a8bb6f7671dbd6a862bb32b"
     },
     {
       "runtime": "terrain-marsh15.png",
       "source": "procedural-materials/terrain-marsh15.png",
-      "sha256": "aed64cf9f2b8c150a21426d128b028e6effaea92d92d8b407f3b105b47c2033b"
+      "sha256": "95fe9e7a1e89d759df9d920a24df96b548fdb751ea19130f6eaeaade248b59bc"
     },
     {
       "runtime": "terrain-deep_snow0.png",
@@ -18989,162 +18979,162 @@
     {
       "runtime": "terrain-deep_water0.png",
       "source": "procedural-materials/terrain-deep_water0.png",
-      "sha256": "05771b87d352762a8899512eabb74e9f4ec4f9e54471db88071d745a873ff9ab"
+      "sha256": "5aaab4e9e93b1534cdb2cb1ee42cd4d060c791570c1c0aca062bf0ef86397c0a"
     },
     {
       "runtime": "terrain-deep_water1.png",
       "source": "procedural-materials/terrain-deep_water1.png",
-      "sha256": "f9aef2f3356cfa04c2730004c9cbcf2925e0597f405feef59a27405609fd0c08"
+      "sha256": "5586f5eadb8aa47fb160cac7039c1ceeb40ccb5fd5d8595a645e485738f83c75"
     },
     {
       "runtime": "terrain-deep_water2.png",
       "source": "procedural-materials/terrain-deep_water2.png",
-      "sha256": "04ce6aa81a206d69841f9f1c553d969cf7880d233bb9945c40cb8befeaf11b2d"
+      "sha256": "9e39d1659b1dbf93f3be309ee28d653285bc6b8bb877a53413ad95d48c801689"
     },
     {
       "runtime": "terrain-deep_water3.png",
       "source": "procedural-materials/terrain-deep_water3.png",
-      "sha256": "6c0e2a75097932e40be35ee6c7015da75fa05b1a15e494325b09f97424f7308c"
+      "sha256": "5c005c37eb055dfc5f661ee4187df069fa489ac16e16f25b390ddad3617e98bd"
     },
     {
       "runtime": "terrain-deep_water4.png",
       "source": "procedural-materials/terrain-deep_water4.png",
-      "sha256": "0e442ed747d2f4ae211487cf8d16aeab50888df78bb52014c2c6cfae9615e476"
+      "sha256": "f28412bc721b1d5c1ffb69c94ffd6459a1b05684f5f79bafb38439ec5f623212"
     },
     {
       "runtime": "terrain-deep_water5.png",
       "source": "procedural-materials/terrain-deep_water5.png",
-      "sha256": "b2638559399c55960fe4c6aaac265dc1e4181c04394371c386382a7fae385977"
+      "sha256": "58812ac5f220145bb93c8f18d95d26d74d17dda417703ce5f84ade549f26c33a"
     },
     {
       "runtime": "terrain-deep_water6.png",
       "source": "procedural-materials/terrain-deep_water6.png",
-      "sha256": "c75b676738d8d8070c123e7856307015edd378ed9113593764cbb8b73bacefd9"
+      "sha256": "51d5cec183bb441fc3ec774c98bbdd43d8a15e2f357776dc46a9c06a7c4e7557"
     },
     {
       "runtime": "terrain-deep_water7.png",
       "source": "procedural-materials/terrain-deep_water7.png",
-      "sha256": "9f1fa27dd4fe7c19c46a9d3a68ede99e8f0c2eb700ca16294c7b9c1c95c75bf9"
+      "sha256": "104e68126695d280658f31f69738f74f3911ccea7e97d7ba187a10836130fef3"
     },
     {
       "runtime": "terrain-deep_water8.png",
       "source": "procedural-materials/terrain-deep_water8.png",
-      "sha256": "b1d885b8d6736efb2d4ae0f2fb752c7d2f1ace695db8113a66ce051968d1f343"
+      "sha256": "6e6f2df2521f5c175d7c0508a8d445e0c94ca88487ea9b4370e527701c682627"
     },
     {
       "runtime": "terrain-deep_water9.png",
       "source": "procedural-materials/terrain-deep_water9.png",
-      "sha256": "aa711d69c7554176cf12415be38143898f2e797e0fe45d4248e0b5abc40119a0"
+      "sha256": "15ad8e0d34841d24042ebd7bebc37a930286a22d7e024b8877eb31ed7f488b72"
     },
     {
       "runtime": "terrain-deep_water10.png",
       "source": "procedural-materials/terrain-deep_water10.png",
-      "sha256": "81ee9ac39f4ada37ae7c51720609554a19530f9db8b5e871c2fd25e36aecd894"
+      "sha256": "5f12d4f3c8ade7ad7c37c7e6b5008e2e4949aa371102a353b5e41d11cf18c374"
     },
     {
       "runtime": "terrain-deep_water11.png",
       "source": "procedural-materials/terrain-deep_water11.png",
-      "sha256": "1aede3d90aaf5e01c1ee04b12913254a87570e6d0343c2ce6799423d201217ed"
+      "sha256": "f0114b0f4ca9a6c9c5ceec5438c85166c2608cc74bc0c8e2d79a3bf86ca4ccea"
     },
     {
       "runtime": "terrain-deep_water12.png",
       "source": "procedural-materials/terrain-deep_water12.png",
-      "sha256": "f0e4b4c32e346edb162cb254b7bcf15d4118509bca7ce1e0e5c315edd3abb75a"
+      "sha256": "a113b1cad5c2c08452a4e8052f70ba78133c3ce6c021459f01bbaa783ec25abf"
     },
     {
       "runtime": "terrain-deep_water13.png",
       "source": "procedural-materials/terrain-deep_water13.png",
-      "sha256": "06b3ca052f5f547a0fc4d297a8adabf1677b7b2afd245dcdadcf8026b0e82a36"
+      "sha256": "433202f0bd0b5ccb94e25fcad73bd115568c398f1ca177d73cdc4e8db8c4eba6"
     },
     {
       "runtime": "terrain-deep_water14.png",
       "source": "procedural-materials/terrain-deep_water14.png",
-      "sha256": "c4faedc41505808c143fde321fc832dc5581125047e748815d3b2a8d69e2002d"
+      "sha256": "5f6ba130f88af065b9e806e1bce62f3d1bdb1c6dffca2c4288abb52b5b5ae50f"
     },
     {
       "runtime": "terrain-deep_water15.png",
       "source": "procedural-materials/terrain-deep_water15.png",
-      "sha256": "381e7a4de205b446fe7f0262b4bef70884f9d432f23f1e35bd9cc96e38cc9848"
+      "sha256": "8ed9e65bf803135ec18580ecac170918215a45ef4c33e8abf75422927f46cd5f"
     },
     {
       "runtime": "terrain-dark_water0.png",
       "source": "procedural-materials/terrain-dark_water0.png",
-      "sha256": "777db5c4b4e3e8ade4f5512d8c8f3f0e8abea2ba935dd0d248ea9bc2defce1c1"
+      "sha256": "4531dadef584ef3f345e8463b2a55186d2ae0cb2bdd1dbbc2eb2cabf540dabec"
     },
     {
       "runtime": "terrain-dark_water1.png",
       "source": "procedural-materials/terrain-dark_water1.png",
-      "sha256": "62e05f90718154840a4e4cfa806d34362e5bda334e90d364fdb98fde7b082d28"
+      "sha256": "e7a1b787949abef83953eeeedb2e0ef9ae017c97887e4a0007ff3e407daaa7d3"
     },
     {
       "runtime": "terrain-dark_water2.png",
       "source": "procedural-materials/terrain-dark_water2.png",
-      "sha256": "3c7f07d3b52b4a56f3ad4f7d7bca8a01cc3c5811f46a30c3982eaf388ed4b007"
+      "sha256": "b5a7e6b657748d8bd7ae8fb09a385c018d582703b23945b8a69332731ef33719"
     },
     {
       "runtime": "terrain-dark_water3.png",
       "source": "procedural-materials/terrain-dark_water3.png",
-      "sha256": "aee0dfa7062328a4e16731533beef9052e397a5cc17d823d23645f7c2d87da43"
+      "sha256": "4bff9678edbd77d26e16e06d98a71117bf0e87df24979176967378af875cff07"
     },
     {
       "runtime": "terrain-dark_water4.png",
       "source": "procedural-materials/terrain-dark_water4.png",
-      "sha256": "e345f9a703c7a0d83de920145b2828dbc080f2965be89ff444c02134b0370743"
+      "sha256": "23d49f81b3ebb2da8f92e78fd428c2ae0a5def2823f0cac9b7dcf2027b6a9402"
     },
     {
       "runtime": "terrain-dark_water5.png",
       "source": "procedural-materials/terrain-dark_water5.png",
-      "sha256": "e9ccc349171a0856081180078bc9299a58885b5ef60838f51198006269edc3b0"
+      "sha256": "6a9a014d26e9444b94d48a463646dc5b9f0bdae5f6552b6bb1453dcea25a973b"
     },
     {
       "runtime": "terrain-dark_water6.png",
       "source": "procedural-materials/terrain-dark_water6.png",
-      "sha256": "6b893f178af465a5132c1c52b682114483e217a5c89171312ed5178573ca69b0"
+      "sha256": "9d26b25963a6d5778d0c272eb7ede965369f673dae8968724b2ee7f0dc90f9a5"
     },
     {
       "runtime": "terrain-dark_water7.png",
       "source": "procedural-materials/terrain-dark_water7.png",
-      "sha256": "3df3b0c7209d4cd3967a66f6e5a994e08dd724965ff185fcaba35ccdfb98ea1d"
+      "sha256": "f702d75c6a0aaad1db02cc417a46fac49ac4e3df143016c793d29d1996e16a22"
     },
     {
       "runtime": "terrain-dark_water8.png",
       "source": "procedural-materials/terrain-dark_water8.png",
-      "sha256": "e5b5886e7acecd818df656b02ab0ccbb0287d6cd3bf3bb0575e3da9855075611"
+      "sha256": "551073048b3d0927fb06f1d308ef525ee54105d3a4c7bca97283e074ab6bbfbc"
     },
     {
       "runtime": "terrain-dark_water9.png",
       "source": "procedural-materials/terrain-dark_water9.png",
-      "sha256": "dc821d74f4af7c4a72de0d22ab12d08ba960467fa26691273cf1519833b0cc94"
+      "sha256": "76015d585d30f9d1eab0143b1ca7542992ed1236229478c88399bb68af649446"
     },
     {
       "runtime": "terrain-dark_water10.png",
       "source": "procedural-materials/terrain-dark_water10.png",
-      "sha256": "f56e592e1a5cacec4a06bd113b3dd310d6b734afdcb7e694bcccc5679ee587bb"
+      "sha256": "d6ff7df34bcb9692d7c945fb21a7addc1ed8fb29237333f0af6b85f8f7151370"
     },
     {
       "runtime": "terrain-dark_water11.png",
       "source": "procedural-materials/terrain-dark_water11.png",
-      "sha256": "86c36525b30e695f1215c158247f41462d7ffc36db8f9d7f945d0e5895c99a3a"
+      "sha256": "9253db4726ef5a29c0c3866bccce142a6dfac9ca29ef2717f9f5508b792e44af"
     },
     {
       "runtime": "terrain-dark_water12.png",
       "source": "procedural-materials/terrain-dark_water12.png",
-      "sha256": "730c1437993b5edd9634dac618e0fbda19b8fb6da3561ae62ed80bbfce17e3b2"
+      "sha256": "0b1e6b3f365e1ce7a6359ffe6a69da36ef2123906a664af4f9292257aa08de93"
     },
     {
       "runtime": "terrain-dark_water13.png",
       "source": "procedural-materials/terrain-dark_water13.png",
-      "sha256": "86a860c01ab9b73a02b2db550c1f867e088c2ba8f179195d6baa02a91106540b"
+      "sha256": "632fdb21c4ca4baaae2f2d04ac7ea37f665af969db7dc11b6bcc3d6da1c82d53"
     },
     {
       "runtime": "terrain-dark_water14.png",
       "source": "procedural-materials/terrain-dark_water14.png",
-      "sha256": "d68a630c11b2ce9b9a0b576f8dfe1d3819201151cf80f2c12f468fe72874e61e"
+      "sha256": "784ee645bdfff396c7fcda00da14916f2be19f9ea9eda22f6055df3cd004e63f"
     },
     {
       "runtime": "terrain-dark_water15.png",
       "source": "procedural-materials/terrain-dark_water15.png",
-      "sha256": "1da3a474788292f604608fb8fdaedc12d0d8ef2c1c7a1562ba512dae2a1c4bcd"
+      "sha256": "1f28fc350d4b80c84652198b6a8dc9d5cd4f1db87d9655d81f710b1b25c19fb6"
     },
     {
       "runtime": "terrain-void_hole0.png",
@@ -19305,6 +19295,566 @@
       "runtime": "terrain-chasm15.png",
       "source": "procedural-materials/terrain-chasm15.png",
       "sha256": "c5a73351e0ab46c79ae7ab1c555446c8e091f33a8bc417451e72bb1c54c9786a"
+    },
+    {
+      "runtime": "terrain-water0.png",
+      "source": "procedural-materials/terrain-water0.png",
+      "sha256": "cac281399a039335cf54361dcaf5c215f602b146cc5c8cc0f55370311c70702f"
+    },
+    {
+      "runtime": "terrain-water1.png",
+      "source": "procedural-materials/terrain-water1.png",
+      "sha256": "5c2c86bab626dc793881abe7067343cfaa0d42d2cf55befde17e3c560d48e7ac"
+    },
+    {
+      "runtime": "terrain-water2.png",
+      "source": "procedural-materials/terrain-water2.png",
+      "sha256": "463c49fe40491cdec97ef54d6ccb072b0aa20ce08f172be468f78b8bc0ed1603"
+    },
+    {
+      "runtime": "terrain-water3.png",
+      "source": "procedural-materials/terrain-water3.png",
+      "sha256": "3bb2e38b7a7c8807d3049e3846f78e2b07eb30d954d95e8dd482fdf8d6fdd1eb"
+    },
+    {
+      "runtime": "terrain-water4.png",
+      "source": "procedural-materials/terrain-water4.png",
+      "sha256": "4eacebe91a78ee490ca5a0107e13dc7d5e9cfe47b7628b5b6c92636fc22675c9"
+    },
+    {
+      "runtime": "terrain-water5.png",
+      "source": "procedural-materials/terrain-water5.png",
+      "sha256": "ff44e6fc7bc017c9a6c411bf3a034b481ddbe616aaa911946728249d19ff2863"
+    },
+    {
+      "runtime": "terrain-water6.png",
+      "source": "procedural-materials/terrain-water6.png",
+      "sha256": "b4493287694112e2022353c515d6dd5e439d2e1f3fee82083768439d126ff8e1"
+    },
+    {
+      "runtime": "terrain-water7.png",
+      "source": "procedural-materials/terrain-water7.png",
+      "sha256": "0657ccf9f43f3bb5d3692b487092e4013c5977b74b43c12cb11c3c0dd5928bd2"
+    },
+    {
+      "runtime": "terrain-water8.png",
+      "source": "procedural-materials/terrain-water8.png",
+      "sha256": "719c6a640349d890a9b58a768d273b38d498c59be86157366fa05c00dfdd9b05"
+    },
+    {
+      "runtime": "terrain-water9.png",
+      "source": "procedural-materials/terrain-water9.png",
+      "sha256": "b9de6adf4e233d94b2ded45c28a0b2e9d1e6ca20dd91caa5ce6d8f165635860d"
+    },
+    {
+      "runtime": "terrain-water10.png",
+      "source": "procedural-materials/terrain-water10.png",
+      "sha256": "9593815fa36a3576cc3cc7f26cd5e48f9340df7c6bc90dfe6c143e0e430abc16"
+    },
+    {
+      "runtime": "terrain-water11.png",
+      "source": "procedural-materials/terrain-water11.png",
+      "sha256": "8166f65906931d9991e0d98f844b77474094666b92a27508539ae68977c35b13"
+    },
+    {
+      "runtime": "terrain-water12.png",
+      "source": "procedural-materials/terrain-water12.png",
+      "sha256": "3a606d3a63a9cee918f2bf68e3a715f61f2ec7c0a4ea7aec32afa064a58e0e20"
+    },
+    {
+      "runtime": "terrain-water13.png",
+      "source": "procedural-materials/terrain-water13.png",
+      "sha256": "d98601b0d67fdae27a80825741781bebbfe300b9ded5f50b7dc27bd7cd9fc21e"
+    },
+    {
+      "runtime": "terrain-water14.png",
+      "source": "procedural-materials/terrain-water14.png",
+      "sha256": "1248018070175ed66303fe2442781fd19ac9fff189f147f2dcb776b26c746ee4"
+    },
+    {
+      "runtime": "terrain-water15.png",
+      "source": "procedural-materials/terrain-water15.png",
+      "sha256": "4187d65ba6433df0fc9e678a993913d7a50b0565caf82adf275edabaa6922e2e"
+    },
+    {
+      "runtime": "terrain-water16.png",
+      "source": "procedural-materials/terrain-water16.png",
+      "sha256": "11874feeff6acb679f93d36ce428defe117f738a618fb1b4b42e92d2031cf247"
+    },
+    {
+      "runtime": "terrain-water17.png",
+      "source": "procedural-materials/terrain-water17.png",
+      "sha256": "46e3cf49ffd88dc696603010065e40384e45f3f4460202a5f8734df5cb38c67a"
+    },
+    {
+      "runtime": "terrain-water18.png",
+      "source": "procedural-materials/terrain-water18.png",
+      "sha256": "cfe89e7e25ce847a3055b4095ecef09ace8df061e429bf812ca9d1692cb50d5f"
+    },
+    {
+      "runtime": "terrain-water19.png",
+      "source": "procedural-materials/terrain-water19.png",
+      "sha256": "d635624d1e5e034f6c03cb82dc16ad941d9bf3a8099486c41fc38b921369229c"
+    },
+    {
+      "runtime": "terrain-water20.png",
+      "source": "procedural-materials/terrain-water20.png",
+      "sha256": "62e432dd1de063c94032c4d5ee55ed3c10c4a5dc211309385735c3711c585951"
+    },
+    {
+      "runtime": "terrain-water21.png",
+      "source": "procedural-materials/terrain-water21.png",
+      "sha256": "b85f7cfa35bd040f0757520506f99ece4803e814a98ab10670ae4f728de09bb3"
+    },
+    {
+      "runtime": "terrain-water22.png",
+      "source": "procedural-materials/terrain-water22.png",
+      "sha256": "c72b343cb7becaf1779d0b41d7a4941b7f60c54809b3da997d7ba361c485110d"
+    },
+    {
+      "runtime": "terrain-water23.png",
+      "source": "procedural-materials/terrain-water23.png",
+      "sha256": "0f0dd89a2cf1603930dbbb304f81c263d74dc6f522aec22a6ec2be4f6d62379d"
+    },
+    {
+      "runtime": "terrain-water24.png",
+      "source": "procedural-materials/terrain-water24.png",
+      "sha256": "9997505ac0c62ab4de7958e885a0b2e5f1ddff48167d54632ce55b92a996569b"
+    },
+    {
+      "runtime": "terrain-water25.png",
+      "source": "procedural-materials/terrain-water25.png",
+      "sha256": "ef4ec769962655f0fcf1a73a0c9a4def59fa36e807291433151dfc449412e706"
+    },
+    {
+      "runtime": "terrain-water26.png",
+      "source": "procedural-materials/terrain-water26.png",
+      "sha256": "6027e6f003d3ae510a722e31b906871ae31845005457deaf3cf1f382e586373d"
+    },
+    {
+      "runtime": "terrain-water27.png",
+      "source": "procedural-materials/terrain-water27.png",
+      "sha256": "13f8c6359067949de6350cc055540e8ef3e419b587aed67995f2f4ed1ff0e966"
+    },
+    {
+      "runtime": "terrain-water28.png",
+      "source": "procedural-materials/terrain-water28.png",
+      "sha256": "bdd31a7ed1211cfcd685bb8131a8b83d29c921b0746f2d90e136dea0283cab2c"
+    },
+    {
+      "runtime": "terrain-water29.png",
+      "source": "procedural-materials/terrain-water29.png",
+      "sha256": "23ed217bc2cbc9c2f9b05baad1fd954617d2589bbed3606c6af46586b4a8f2a2"
+    },
+    {
+      "runtime": "terrain-water30.png",
+      "source": "procedural-materials/terrain-water30.png",
+      "sha256": "c1df58d43227196b333f3a294db3784e319a02a56df1d1937e036d51c4a35547"
+    },
+    {
+      "runtime": "terrain-water31.png",
+      "source": "procedural-materials/terrain-water31.png",
+      "sha256": "449616ccd1bf7f1d602f3dbfdc21b871d8c6a0c7143b3fc2eb722497cc4c0427"
+    },
+    {
+      "runtime": "terrain-water32.png",
+      "source": "procedural-materials/terrain-water32.png",
+      "sha256": "73d48ce4571c066303e532eb22d2204b04d982ab2e27219bd23ec2610693a561"
+    },
+    {
+      "runtime": "terrain-water33.png",
+      "source": "procedural-materials/terrain-water33.png",
+      "sha256": "26ab93fe353485011030e0999e671d579e050cab825b0f41647622f43c3c8dfc"
+    },
+    {
+      "runtime": "terrain-water34.png",
+      "source": "procedural-materials/terrain-water34.png",
+      "sha256": "fe306c392b96499252ab7ed7e78ed2dc88b261c47beeb4503600f4edb1bef53a"
+    },
+    {
+      "runtime": "terrain-water35.png",
+      "source": "procedural-materials/terrain-water35.png",
+      "sha256": "22b4b7a6430ff00764250d886775b01c84a09f4e8e959784e433b4d0b2a7ace7"
+    },
+    {
+      "runtime": "terrain-water36.png",
+      "source": "procedural-materials/terrain-water36.png",
+      "sha256": "72b45dbdfdddcba7c343a1e121500433f1fb561b7c8f57c55153335762f002ed"
+    },
+    {
+      "runtime": "terrain-water37.png",
+      "source": "procedural-materials/terrain-water37.png",
+      "sha256": "4fbf56ad844b8189ddbebc016bf440f8368c5d1db44effdd6f0134a2e793acde"
+    },
+    {
+      "runtime": "terrain-water38.png",
+      "source": "procedural-materials/terrain-water38.png",
+      "sha256": "d6d7ee9e7ec10ee352b75516c1636b17d46b70b43b44f9770b626d61ce5cbffb"
+    },
+    {
+      "runtime": "terrain-water39.png",
+      "source": "procedural-materials/terrain-water39.png",
+      "sha256": "fbc6fc606855ddf33927584d9babdf97c0827182c1bca0a08aabaf594b4f1960"
+    },
+    {
+      "runtime": "terrain-water40.png",
+      "source": "procedural-materials/terrain-water40.png",
+      "sha256": "260aaa850ad816d693ccfdd8818c2632c926fa43a5ffdb107a671c8afa2d6ae4"
+    },
+    {
+      "runtime": "terrain-water41.png",
+      "source": "procedural-materials/terrain-water41.png",
+      "sha256": "93336b04e596d26cd4cd38132b8e6c73d79fae5a7dbd8f4b6444642ae5c54c1e"
+    },
+    {
+      "runtime": "terrain-water42.png",
+      "source": "procedural-materials/terrain-water42.png",
+      "sha256": "68473da495a82e3cafb37857420263abd0a09dcbb1ff087b74850145c225ee2b"
+    },
+    {
+      "runtime": "terrain-water43.png",
+      "source": "procedural-materials/terrain-water43.png",
+      "sha256": "7651a470ede286b8898738ec8125afb145aa2ef975989ca47107f68aec452b48"
+    },
+    {
+      "runtime": "terrain-water44.png",
+      "source": "procedural-materials/terrain-water44.png",
+      "sha256": "cf12a61eb38e19285c9708cc8b9c6f61384eb052640aba23d1039def29251741"
+    },
+    {
+      "runtime": "terrain-water45.png",
+      "source": "procedural-materials/terrain-water45.png",
+      "sha256": "c57b776e3569f73a6a427a3dbd4e9b5cdee01029af7948fbbfffd28b44bbc36f"
+    },
+    {
+      "runtime": "terrain-water46.png",
+      "source": "procedural-materials/terrain-water46.png",
+      "sha256": "a2b580d9376bbb38c00f02eb1a73d37c470a08bda95a79d2c0668e01fa23a3ad"
+    },
+    {
+      "runtime": "terrain-water47.png",
+      "source": "procedural-materials/terrain-water47.png",
+      "sha256": "d3b49f1a51ce7efedd48533fcbf790800a68f314f5bf54eaf0d0a3ecdc2ecff3"
+    },
+    {
+      "runtime": "terrain-water48.png",
+      "source": "procedural-materials/terrain-water48.png",
+      "sha256": "73d48ce4571c066303e532eb22d2204b04d982ab2e27219bd23ec2610693a561"
+    },
+    {
+      "runtime": "terrain-water49.png",
+      "source": "procedural-materials/terrain-water49.png",
+      "sha256": "26ab93fe353485011030e0999e671d579e050cab825b0f41647622f43c3c8dfc"
+    },
+    {
+      "runtime": "terrain-water50.png",
+      "source": "procedural-materials/terrain-water50.png",
+      "sha256": "fe306c392b96499252ab7ed7e78ed2dc88b261c47beeb4503600f4edb1bef53a"
+    },
+    {
+      "runtime": "terrain-water51.png",
+      "source": "procedural-materials/terrain-water51.png",
+      "sha256": "22b4b7a6430ff00764250d886775b01c84a09f4e8e959784e433b4d0b2a7ace7"
+    },
+    {
+      "runtime": "terrain-water52.png",
+      "source": "procedural-materials/terrain-water52.png",
+      "sha256": "72b45dbdfdddcba7c343a1e121500433f1fb561b7c8f57c55153335762f002ed"
+    },
+    {
+      "runtime": "terrain-water53.png",
+      "source": "procedural-materials/terrain-water53.png",
+      "sha256": "4fbf56ad844b8189ddbebc016bf440f8368c5d1db44effdd6f0134a2e793acde"
+    },
+    {
+      "runtime": "terrain-water54.png",
+      "source": "procedural-materials/terrain-water54.png",
+      "sha256": "d6d7ee9e7ec10ee352b75516c1636b17d46b70b43b44f9770b626d61ce5cbffb"
+    },
+    {
+      "runtime": "terrain-water55.png",
+      "source": "procedural-materials/terrain-water55.png",
+      "sha256": "fbc6fc606855ddf33927584d9babdf97c0827182c1bca0a08aabaf594b4f1960"
+    },
+    {
+      "runtime": "terrain-water56.png",
+      "source": "procedural-materials/terrain-water56.png",
+      "sha256": "260aaa850ad816d693ccfdd8818c2632c926fa43a5ffdb107a671c8afa2d6ae4"
+    },
+    {
+      "runtime": "terrain-water57.png",
+      "source": "procedural-materials/terrain-water57.png",
+      "sha256": "93336b04e596d26cd4cd38132b8e6c73d79fae5a7dbd8f4b6444642ae5c54c1e"
+    },
+    {
+      "runtime": "terrain-water58.png",
+      "source": "procedural-materials/terrain-water58.png",
+      "sha256": "68473da495a82e3cafb37857420263abd0a09dcbb1ff087b74850145c225ee2b"
+    },
+    {
+      "runtime": "terrain-water59.png",
+      "source": "procedural-materials/terrain-water59.png",
+      "sha256": "7651a470ede286b8898738ec8125afb145aa2ef975989ca47107f68aec452b48"
+    },
+    {
+      "runtime": "terrain-water60.png",
+      "source": "procedural-materials/terrain-water60.png",
+      "sha256": "cf12a61eb38e19285c9708cc8b9c6f61384eb052640aba23d1039def29251741"
+    },
+    {
+      "runtime": "terrain-water61.png",
+      "source": "procedural-materials/terrain-water61.png",
+      "sha256": "c57b776e3569f73a6a427a3dbd4e9b5cdee01029af7948fbbfffd28b44bbc36f"
+    },
+    {
+      "runtime": "terrain-water62.png",
+      "source": "procedural-materials/terrain-water62.png",
+      "sha256": "a2b580d9376bbb38c00f02eb1a73d37c470a08bda95a79d2c0668e01fa23a3ad"
+    },
+    {
+      "runtime": "terrain-water63.png",
+      "source": "procedural-materials/terrain-water63.png",
+      "sha256": "d3b49f1a51ce7efedd48533fcbf790800a68f314f5bf54eaf0d0a3ecdc2ecff3"
+    },
+    {
+      "runtime": "terrain-deep_water16.png",
+      "source": "procedural-materials/terrain-deep_water16.png",
+      "sha256": "863696ebbeefc84025e01a8157351fbe104dad13de742b97f234900c7b3fa61e"
+    },
+    {
+      "runtime": "terrain-deep_water17.png",
+      "source": "procedural-materials/terrain-deep_water17.png",
+      "sha256": "a7baa939517585063a70b9cfdda283b3ebe1c1118ad6741ba45768ff8174e40e"
+    },
+    {
+      "runtime": "terrain-deep_water18.png",
+      "source": "procedural-materials/terrain-deep_water18.png",
+      "sha256": "c8258c55615a1e8ea68e4c37342902a538eb1e932768182f11278609520a01a4"
+    },
+    {
+      "runtime": "terrain-deep_water19.png",
+      "source": "procedural-materials/terrain-deep_water19.png",
+      "sha256": "f40e4d677ac2ce9195fa2f42620c5a179bbf7770de71919fb22610684f4b03cc"
+    },
+    {
+      "runtime": "terrain-deep_water20.png",
+      "source": "procedural-materials/terrain-deep_water20.png",
+      "sha256": "cfe18c5f67fb533307827a6b810bdcc3dc1aa0d46e74f5401ff11f19d8303a01"
+    },
+    {
+      "runtime": "terrain-deep_water21.png",
+      "source": "procedural-materials/terrain-deep_water21.png",
+      "sha256": "2b2aaa23b258c3336486973570f831c9f7fd065973f662d60831a59c37f6d4bc"
+    },
+    {
+      "runtime": "terrain-deep_water22.png",
+      "source": "procedural-materials/terrain-deep_water22.png",
+      "sha256": "37318522b7e3919440abd6ed810991e8fba92c5cd0e53197eb3d22f9c84de470"
+    },
+    {
+      "runtime": "terrain-deep_water23.png",
+      "source": "procedural-materials/terrain-deep_water23.png",
+      "sha256": "8ba7a60d83abc7f61e70d76a0881e4d5d8fc4b2da2f9dd82c6134b3bc5c6c5bb"
+    },
+    {
+      "runtime": "terrain-deep_water24.png",
+      "source": "procedural-materials/terrain-deep_water24.png",
+      "sha256": "e23b557675d641763846d257f89670e6440c6ee45a8805b8441678d7620114bf"
+    },
+    {
+      "runtime": "terrain-deep_water25.png",
+      "source": "procedural-materials/terrain-deep_water25.png",
+      "sha256": "e4ee2d01aa8b72ae05ee56298801d3149384ebb28fed593fc4bba708c196110d"
+    },
+    {
+      "runtime": "terrain-deep_water26.png",
+      "source": "procedural-materials/terrain-deep_water26.png",
+      "sha256": "ce8e7e42277a78507665d5eed63c0dac7edca1083d9060a21cbef3abd3637ade"
+    },
+    {
+      "runtime": "terrain-deep_water27.png",
+      "source": "procedural-materials/terrain-deep_water27.png",
+      "sha256": "c15836f26157386a516aa2850a791d7802a03d57844013fac8a472c367e3d09b"
+    },
+    {
+      "runtime": "terrain-deep_water28.png",
+      "source": "procedural-materials/terrain-deep_water28.png",
+      "sha256": "18a984781fc5b7a03322f6645f9a61860288d553a194a3a583483934109e7222"
+    },
+    {
+      "runtime": "terrain-deep_water29.png",
+      "source": "procedural-materials/terrain-deep_water29.png",
+      "sha256": "0ce02fc35fbf167797d879170dade4283c6053abcbcf5cb86ac39c4ffecc88cd"
+    },
+    {
+      "runtime": "terrain-deep_water30.png",
+      "source": "procedural-materials/terrain-deep_water30.png",
+      "sha256": "eb79cd9a25c438aecdc9b337aebcbcb8660eb25a1dcc115044817c0a3fb7161b"
+    },
+    {
+      "runtime": "terrain-deep_water31.png",
+      "source": "procedural-materials/terrain-deep_water31.png",
+      "sha256": "2d4b7c1903d34e84e1ab69a8f2b26fb942e87696f71727062bc8d3dade252598"
+    },
+    {
+      "runtime": "terrain-deep_water32.png",
+      "source": "procedural-materials/terrain-deep_water32.png",
+      "sha256": "ae56f1681cfb434423675d0392f8fc5f463e51299c77b4d0e9a3475b20467bc3"
+    },
+    {
+      "runtime": "terrain-deep_water33.png",
+      "source": "procedural-materials/terrain-deep_water33.png",
+      "sha256": "e26e8f6c55acb65158ee82aaf445fcb322d9bdc9d338037c0f308c9db6972777"
+    },
+    {
+      "runtime": "terrain-deep_water34.png",
+      "source": "procedural-materials/terrain-deep_water34.png",
+      "sha256": "8f63dfccc5e46e5c78e5204ee4771f23a86693b4d802e260775d5efb181b877d"
+    },
+    {
+      "runtime": "terrain-deep_water35.png",
+      "source": "procedural-materials/terrain-deep_water35.png",
+      "sha256": "ef9d1009d3b38e22eacc3df4259d66bfad4ace4ac5326b59dce9ac22ca5d6d03"
+    },
+    {
+      "runtime": "terrain-deep_water36.png",
+      "source": "procedural-materials/terrain-deep_water36.png",
+      "sha256": "581174d38768181af312f14932c82d0b38151d565a5870cd97f81d1bcbfe3b76"
+    },
+    {
+      "runtime": "terrain-deep_water37.png",
+      "source": "procedural-materials/terrain-deep_water37.png",
+      "sha256": "347207db1e388fbda341b4fbc4f5d27f3c8a12b884dddc71a8acf5f64ff0d2ca"
+    },
+    {
+      "runtime": "terrain-deep_water38.png",
+      "source": "procedural-materials/terrain-deep_water38.png",
+      "sha256": "f29a572e2c6d96f2ee7d5280d618bb9fb6e4d6f1ccded733427b8bc531c2136b"
+    },
+    {
+      "runtime": "terrain-deep_water39.png",
+      "source": "procedural-materials/terrain-deep_water39.png",
+      "sha256": "c8460cf63d6b7c9b5e3c1d22d4989cf805d2af0cd215aed150c3b8a6adb9e4b9"
+    },
+    {
+      "runtime": "terrain-deep_water40.png",
+      "source": "procedural-materials/terrain-deep_water40.png",
+      "sha256": "d447e32e5d551d69e1c58a897ae017607dccf691864d15f409aca554790be953"
+    },
+    {
+      "runtime": "terrain-deep_water41.png",
+      "source": "procedural-materials/terrain-deep_water41.png",
+      "sha256": "5dcae5ff3796b49d0edbcaf5295cc0f72ac5adf4fe1961458d496f9f86becbcd"
+    },
+    {
+      "runtime": "terrain-deep_water42.png",
+      "source": "procedural-materials/terrain-deep_water42.png",
+      "sha256": "d73a812fad62f3d5c09042ed19d3f3032dcd31c125a44f1dbcf41f322a8ffd3e"
+    },
+    {
+      "runtime": "terrain-deep_water43.png",
+      "source": "procedural-materials/terrain-deep_water43.png",
+      "sha256": "f7f63851d6deb7b4ea3ab5d1036239324c0ba98fe4555754f15774c1be97d0d2"
+    },
+    {
+      "runtime": "terrain-deep_water44.png",
+      "source": "procedural-materials/terrain-deep_water44.png",
+      "sha256": "a10638c6ace9a6a699fd9217f79551091b5775cca38af15f4332d4cc16eda534"
+    },
+    {
+      "runtime": "terrain-deep_water45.png",
+      "source": "procedural-materials/terrain-deep_water45.png",
+      "sha256": "f294e3a1ee16289862e01b5c164be34f287ad610ec6edcc1ab8eb058ab6fbb8a"
+    },
+    {
+      "runtime": "terrain-deep_water46.png",
+      "source": "procedural-materials/terrain-deep_water46.png",
+      "sha256": "95642d3043ba9d92aa9c2f2a610be621d74962eafae15c354060296ffe6dd8cd"
+    },
+    {
+      "runtime": "terrain-deep_water47.png",
+      "source": "procedural-materials/terrain-deep_water47.png",
+      "sha256": "f3d4b2ef6d17fe4b0662c4498220d4223502a5bad8a91e16aae8f47a4861ff94"
+    },
+    {
+      "runtime": "terrain-deep_water48.png",
+      "source": "procedural-materials/terrain-deep_water48.png",
+      "sha256": "ae56f1681cfb434423675d0392f8fc5f463e51299c77b4d0e9a3475b20467bc3"
+    },
+    {
+      "runtime": "terrain-deep_water49.png",
+      "source": "procedural-materials/terrain-deep_water49.png",
+      "sha256": "e26e8f6c55acb65158ee82aaf445fcb322d9bdc9d338037c0f308c9db6972777"
+    },
+    {
+      "runtime": "terrain-deep_water50.png",
+      "source": "procedural-materials/terrain-deep_water50.png",
+      "sha256": "8f63dfccc5e46e5c78e5204ee4771f23a86693b4d802e260775d5efb181b877d"
+    },
+    {
+      "runtime": "terrain-deep_water51.png",
+      "source": "procedural-materials/terrain-deep_water51.png",
+      "sha256": "ef9d1009d3b38e22eacc3df4259d66bfad4ace4ac5326b59dce9ac22ca5d6d03"
+    },
+    {
+      "runtime": "terrain-deep_water52.png",
+      "source": "procedural-materials/terrain-deep_water52.png",
+      "sha256": "581174d38768181af312f14932c82d0b38151d565a5870cd97f81d1bcbfe3b76"
+    },
+    {
+      "runtime": "terrain-deep_water53.png",
+      "source": "procedural-materials/terrain-deep_water53.png",
+      "sha256": "347207db1e388fbda341b4fbc4f5d27f3c8a12b884dddc71a8acf5f64ff0d2ca"
+    },
+    {
+      "runtime": "terrain-deep_water54.png",
+      "source": "procedural-materials/terrain-deep_water54.png",
+      "sha256": "f29a572e2c6d96f2ee7d5280d618bb9fb6e4d6f1ccded733427b8bc531c2136b"
+    },
+    {
+      "runtime": "terrain-deep_water55.png",
+      "source": "procedural-materials/terrain-deep_water55.png",
+      "sha256": "c8460cf63d6b7c9b5e3c1d22d4989cf805d2af0cd215aed150c3b8a6adb9e4b9"
+    },
+    {
+      "runtime": "terrain-deep_water56.png",
+      "source": "procedural-materials/terrain-deep_water56.png",
+      "sha256": "d447e32e5d551d69e1c58a897ae017607dccf691864d15f409aca554790be953"
+    },
+    {
+      "runtime": "terrain-deep_water57.png",
+      "source": "procedural-materials/terrain-deep_water57.png",
+      "sha256": "5dcae5ff3796b49d0edbcaf5295cc0f72ac5adf4fe1961458d496f9f86becbcd"
+    },
+    {
+      "runtime": "terrain-deep_water58.png",
+      "source": "procedural-materials/terrain-deep_water58.png",
+      "sha256": "d73a812fad62f3d5c09042ed19d3f3032dcd31c125a44f1dbcf41f322a8ffd3e"
+    },
+    {
+      "runtime": "terrain-deep_water59.png",
+      "source": "procedural-materials/terrain-deep_water59.png",
+      "sha256": "f7f63851d6deb7b4ea3ab5d1036239324c0ba98fe4555754f15774c1be97d0d2"
+    },
+    {
+      "runtime": "terrain-deep_water60.png",
+      "source": "procedural-materials/terrain-deep_water60.png",
+      "sha256": "a10638c6ace9a6a699fd9217f79551091b5775cca38af15f4332d4cc16eda534"
+    },
+    {
+      "runtime": "terrain-deep_water61.png",
+      "source": "procedural-materials/terrain-deep_water61.png",
+      "sha256": "f294e3a1ee16289862e01b5c164be34f287ad610ec6edcc1ab8eb058ab6fbb8a"
+    },
+    {
+      "runtime": "terrain-deep_water62.png",
+      "source": "procedural-materials/terrain-deep_water62.png",
+      "sha256": "95642d3043ba9d92aa9c2f2a610be621d74962eafae15c354060296ffe6dd8cd"
+    },
+    {
+      "runtime": "terrain-deep_water63.png",
+      "source": "procedural-materials/terrain-deep_water63.png",
+      "sha256": "f3d4b2ef6d17fe4b0662c4498220d4223502a5bad8a91e16aae8f47a4861ff94"
     }
   ]
 }
