@@ -1,0 +1,308 @@
+{
+  "timing_valid": false,
+  "candidate": "b3fab1a48",
+  "candidate_binary_sha256": "7de08ee1bcbb74b7d711efd29ad84237a499efc4626055d61fb1bab1db0fbbc9",
+  "reused_controls": "https://github.com/Globulation2/glob2/tree/963b0fe",
+  "artifacts": [
+    {
+      "path": "land-2-candidate-logs.tar.zst",
+      "bytes": 7251718,
+      "sha256": "a819200a6d49b0035e99d8793a1b932e2c6bf43b6a7abbd38df34d01e7a533bc",
+      "logs": 10,
+      "verification": "Every decompressed raw log SHA256 matches original completed run."
+    },
+    {
+      "path": "land-4-candidate-logs.tar.zst",
+      "bytes": 17474896,
+      "sha256": "3981b108800a62bbb46645c2a4cc0010e2f476a9e79410f594bc49e15b60cef9",
+      "logs": 10,
+      "verification": "Every decompressed raw log SHA256 matches original completed run."
+    },
+    {
+      "path": "water-2-candidate-logs.tar.zst",
+      "bytes": 9292937,
+      "sha256": "c3cccc6daa5b67dbc5dd4ff1c2eee74452f6ad79cfbb52e84ed361237a49ee1f",
+      "logs": 10,
+      "verification": "Every decompressed raw log SHA256 matches original completed run."
+    },
+    {
+      "path": "water-4-candidate-logs.tar.zst",
+      "bytes": 17058898,
+      "sha256": "0e1864ebd80f3fab2e4233ffc5b72b7d1462970cfce0a3f532ec5a04526f8fa4",
+      "logs": 10,
+      "verification": "Every decompressed raw log SHA256 matches original completed run."
+    },
+    {
+      "path": "control-candidate-logs.tar.zst",
+      "bytes": 660483,
+      "sha256": "b6bb6aa9b60a0d6df6038b0685a36a9cc8f7766d8f436207d54ee0a4fc61fe2c",
+      "logs": 2,
+      "verification": "Every decompressed raw log SHA256 matches original completed run."
+    },
+    {
+      "path": "summaries-commands-provenance.zip",
+      "bytes": 6092060,
+      "sha256": "8a0d39a7e91321d521d0931d8ac53c0081cabf246a05d534ced4a81964dbe29f",
+      "contents": "All commands/results/run records/provenance, both summaries, all metrics, telemetry extractions, exact driver/parser, verified recorded candidate data. Reused fixtures and pure/approved raw logs linked to963b0fe. No executables/dependency caches/performance datasets."
+    }
+  ],
+  "logs": [
+    {
+      "archive": "land-2-candidate-logs.tar.zst",
+      "path": "artifacts/resource-refactor/tournament-f0-candidate-b3fab1a48/land-2-1001-maxima-completion/candidate/engine.log",
+      "sha256": "e47daf3ba1094cbc434a996a47a76762d7db2ff031580c5bfe97db96da72b2a3",
+      "bytes": 16363097
+    },
+    {
+      "archive": "land-2-candidate-logs.tar.zst",
+      "path": "artifacts/resource-refactor/tournament-f0-candidate-b3fab1a48/land-2-1001-cortex-completion/candidate/engine.log",
+      "sha256": "1704345b9520ef48e6266484acb82e663eb7ea3ca95ebcb0399af3cbc04e1e78",
+      "bytes": 38051151
+    },
+    {
+      "archive": "land-2-candidate-logs.tar.zst",
+      "path": "artifacts/resource-refactor/tournament-f0-candidate-b3fab1a48/land-2-1001-nicowar-completion/candidate/engine.log",
+      "sha256": "db44cd1873fcf8a77c91587de3444fe724e51916b8067658f1f4c0423c052f84",
+      "bytes": 17774856
+    },
+    {
+      "archive": "land-2-candidate-logs.tar.zst",
+      "path": "artifacts/resource-refactor/tournament-f0-candidate-b3fab1a48/land-2-1001-mixed-completion/candidate/engine.log",
+      "sha256": "ed5daa115b25339a0a162c5360180530db99c885d212e7b9c94adba54f4fa432",
+      "bytes": 30555526
+    },
+    {
+      "archive": "land-2-candidate-logs.tar.zst",
+      "path": "artifacts/resource-refactor/tournament-f0-candidate-b3fab1a48/land-2-1002-maxima-completion/candidate/engine.log",
+      "sha256": "c191b1fbeceff26f0bda87d005f21e89679021b80252ba2086e9144a5afce8c9",
+      "bytes": 67397181
+    },
+    {
+      "archive": "land-2-candidate-logs.tar.zst",
+      "path": "artifacts/resource-refactor/tournament-f0-candidate-b3fab1a48/land-2-1002-cortex-completion/candidate/engine.log",
+      "sha256": "f96ef5809f4f28e087fce50eb367f6ec2f7e5d7f20e4ca091ff22d97aa49bfce",
+      "bytes": 38082768
+    },
+    {
+      "archive": "land-2-candidate-logs.tar.zst",
+      "path": "artifacts/resource-refactor/tournament-f0-candidate-b3fab1a48/land-2-1002-nicowar-completion/candidate/engine.log",
+      "sha256": "cfb0478900916e8ddbcf9004acbb411611d33b3ae4e7ab6ae75ee7f7b73ab7c8",
+      "bytes": 36129190
+    },
+    {
+      "archive": "land-2-candidate-logs.tar.zst",
+      "path": "artifacts/resource-refactor/tournament-f0-candidate-b3fab1a48/land-2-1002-mixed-completion/candidate/engine.log",
+      "sha256": "c36b5c5f0fc8a3b6bd25d4ade117314333870ad8d0b0cd1f345ce4c6bd507a81",
+      "bytes": 39448118
+    },
+    {
+      "archive": "land-2-candidate-logs.tar.zst",
+      "path": "artifacts/resource-refactor/tournament-f0-candidate-b3fab1a48/land-2-1001-mixed-swapped-completion/candidate/engine.log",
+      "sha256": "b2d1bb3f4fb8faef57c074d60d504a35a9beb836181d7696a0eb5d0ee4bc3c3a",
+      "bytes": 32965928
+    },
+    {
+      "archive": "land-2-candidate-logs.tar.zst",
+      "path": "artifacts/resource-refactor/tournament-f0-candidate-b3fab1a48/land-2-1002-mixed-swapped-completion/candidate/engine.log",
+      "sha256": "de1cb3af660d5546aa68de3c5cf0d38d4e1ce6a19ad3ebac142b5d4a62280ead",
+      "bytes": 25200697
+    },
+    {
+      "archive": "land-4-candidate-logs.tar.zst",
+      "path": "artifacts/resource-refactor/tournament-f0-candidate-b3fab1a48/land-4-1001-maxima-completion/candidate/engine.log",
+      "sha256": "0c740696bae1e7729cc99ee0e6da689518803a63a8d252ea145234ea4d25151a",
+      "bytes": 132850204
+    },
+    {
+      "archive": "land-4-candidate-logs.tar.zst",
+      "path": "artifacts/resource-refactor/tournament-f0-candidate-b3fab1a48/land-4-1001-cortex-completion/candidate/engine.log",
+      "sha256": "109e63748c490e084e1575149ca755241a2a0119c2c23ec7365163dab7bc9e81",
+      "bytes": 74602145
+    },
+    {
+      "archive": "land-4-candidate-logs.tar.zst",
+      "path": "artifacts/resource-refactor/tournament-f0-candidate-b3fab1a48/land-4-1001-nicowar-completion/candidate/engine.log",
+      "sha256": "a58f18456a59146875ba9a507367b1e86410b1bed2bc76b947258b210453b984",
+      "bytes": 71048481
+    },
+    {
+      "archive": "land-4-candidate-logs.tar.zst",
+      "path": "artifacts/resource-refactor/tournament-f0-candidate-b3fab1a48/land-4-1001-mixed-completion/candidate/engine.log",
+      "sha256": "4666d801676b0145a225cfd48ea0874ef13c61a402b43f9408bb8ad331d96369",
+      "bytes": 103002106
+    },
+    {
+      "archive": "land-4-candidate-logs.tar.zst",
+      "path": "artifacts/resource-refactor/tournament-f0-candidate-b3fab1a48/land-4-1002-maxima-completion/candidate/engine.log",
+      "sha256": "60194fa0ad90cc8093071747f65da8ad13f66f93a497ee53fbd0fc3a60bbcf8b",
+      "bytes": 132853634
+    },
+    {
+      "archive": "land-4-candidate-logs.tar.zst",
+      "path": "artifacts/resource-refactor/tournament-f0-candidate-b3fab1a48/land-4-1002-cortex-completion/candidate/engine.log",
+      "sha256": "6cdc927fea61039e7cb06449f5219cb42c9654ee0025ac2cba2dcff787a33e4c",
+      "bytes": 74748352
+    },
+    {
+      "archive": "land-4-candidate-logs.tar.zst",
+      "path": "artifacts/resource-refactor/tournament-f0-candidate-b3fab1a48/land-4-1002-nicowar-completion/candidate/engine.log",
+      "sha256": "97ce796872486875f3e23c7b0f093728b9aaf2319a6818c837523cf2f674e85f",
+      "bytes": 70816567
+    },
+    {
+      "archive": "land-4-candidate-logs.tar.zst",
+      "path": "artifacts/resource-refactor/tournament-f0-candidate-b3fab1a48/land-4-1002-mixed-completion/candidate/engine.log",
+      "sha256": "5cc83046e765e0f8e228995b6db09a389568462a37034a0d0a9dfd470663c0f8",
+      "bytes": 103062137
+    },
+    {
+      "archive": "land-4-candidate-logs.tar.zst",
+      "path": "artifacts/resource-refactor/tournament-f0-candidate-b3fab1a48/land-4-1001-mixed-swapped-completion/candidate/engine.log",
+      "sha256": "681c369c1045e9523146451a163dfaf90a8c2f9b9430545973458dee488c5ead",
+      "bytes": 103053575
+    },
+    {
+      "archive": "land-4-candidate-logs.tar.zst",
+      "path": "artifacts/resource-refactor/tournament-f0-candidate-b3fab1a48/land-4-1002-mixed-swapped-completion/candidate/engine.log",
+      "sha256": "1eb91e884bf834d897ecb4877e12c8a094a20a590faf9c1eef65bdbeac54b97b",
+      "bytes": 103033720
+    },
+    {
+      "archive": "water-2-candidate-logs.tar.zst",
+      "path": "artifacts/resource-refactor/tournament-f0-candidate-b3fab1a48/water-2-1001-maxima-completion/candidate/engine.log",
+      "sha256": "fd96891b26b463c237643485a39d6f44dc4af362859f4afeae13abd4f174d219",
+      "bytes": 26262179
+    },
+    {
+      "archive": "water-2-candidate-logs.tar.zst",
+      "path": "artifacts/resource-refactor/tournament-f0-candidate-b3fab1a48/water-2-1001-cortex-completion/candidate/engine.log",
+      "sha256": "aa76c755d2c2306c9b526d3468262617b58462604b3314c9c8aef6ee009d542c",
+      "bytes": 38100937
+    },
+    {
+      "archive": "water-2-candidate-logs.tar.zst",
+      "path": "artifacts/resource-refactor/tournament-f0-candidate-b3fab1a48/water-2-1001-nicowar-completion/candidate/engine.log",
+      "sha256": "592bbb825e56b13c6df536b466f389fcb3bf078b50ad2aebcffe633d97ed34b9",
+      "bytes": 36330891
+    },
+    {
+      "archive": "water-2-candidate-logs.tar.zst",
+      "path": "artifacts/resource-refactor/tournament-f0-candidate-b3fab1a48/water-2-1001-mixed-completion/candidate/engine.log",
+      "sha256": "09c1bd813842c085fe9319301330fb56e37c700353d0aae584e67f7b00c0ef4b",
+      "bytes": 42152123
+    },
+    {
+      "archive": "water-2-candidate-logs.tar.zst",
+      "path": "artifacts/resource-refactor/tournament-f0-candidate-b3fab1a48/water-2-1002-maxima-completion/candidate/engine.log",
+      "sha256": "d89ade2d66728d0ebd39969431210af8e4afe9b024be692d9c16dd00c95afdaa",
+      "bytes": 65248064
+    },
+    {
+      "archive": "water-2-candidate-logs.tar.zst",
+      "path": "artifacts/resource-refactor/tournament-f0-candidate-b3fab1a48/water-2-1002-cortex-completion/candidate/engine.log",
+      "sha256": "11082d70bb5fd56f05724892493784c9ea173d42c2dc7a12e5add7ba586a6aab",
+      "bytes": 38198028
+    },
+    {
+      "archive": "water-2-candidate-logs.tar.zst",
+      "path": "artifacts/resource-refactor/tournament-f0-candidate-b3fab1a48/water-2-1002-nicowar-completion/candidate/engine.log",
+      "sha256": "74941ab36429cf1cea99997d696ae0d5d6d4ed2fe8fa89c82ea3cd98372ba760",
+      "bytes": 33720819
+    },
+    {
+      "archive": "water-2-candidate-logs.tar.zst",
+      "path": "artifacts/resource-refactor/tournament-f0-candidate-b3fab1a48/water-2-1002-mixed-completion/candidate/engine.log",
+      "sha256": "68e3b7a16db9af064f1b8efab11f947cfd30d72858d52dd8d383fb93d93ab27e",
+      "bytes": 53011466
+    },
+    {
+      "archive": "water-2-candidate-logs.tar.zst",
+      "path": "artifacts/resource-refactor/tournament-f0-candidate-b3fab1a48/water-2-1001-mixed-swapped-completion/candidate/engine.log",
+      "sha256": "07a3393a9e315f109baea72f807ddeaca15817bdd0fae9541c1e8b17aca259f2",
+      "bytes": 24840187
+    },
+    {
+      "archive": "water-2-candidate-logs.tar.zst",
+      "path": "artifacts/resource-refactor/tournament-f0-candidate-b3fab1a48/water-2-1002-mixed-swapped-completion/candidate/engine.log",
+      "sha256": "dec55abe0f5e4cdd39c2f3a1a2d5d260236b23c6798c1a81266a4c290f089fee",
+      "bytes": 53027226
+    },
+    {
+      "archive": "water-4-candidate-logs.tar.zst",
+      "path": "artifacts/resource-refactor/tournament-f0-candidate-b3fab1a48/water-4-1001-maxima-completion/candidate/engine.log",
+      "sha256": "1728738ecca6f2473321c89cbbeae2bebeb1590be8198b1143b00577f264c7a4",
+      "bytes": 107267260
+    },
+    {
+      "archive": "water-4-candidate-logs.tar.zst",
+      "path": "artifacts/resource-refactor/tournament-f0-candidate-b3fab1a48/water-4-1001-cortex-completion/candidate/engine.log",
+      "sha256": "b4a7b0946bb03a497bcfc96f9db8c51bfced6682ae2ec3c2e0ddf0f018bd1b18",
+      "bytes": 74471497
+    },
+    {
+      "archive": "water-4-candidate-logs.tar.zst",
+      "path": "artifacts/resource-refactor/tournament-f0-candidate-b3fab1a48/water-4-1001-nicowar-completion/candidate/engine.log",
+      "sha256": "3d9fa39cb734d82e12c7b588d8ff13d5e091593d9bf52d4a7e852b7cdf7c1d01",
+      "bytes": 70988348
+    },
+    {
+      "archive": "water-4-candidate-logs.tar.zst",
+      "path": "artifacts/resource-refactor/tournament-f0-candidate-b3fab1a48/water-4-1001-mixed-completion/candidate/engine.log",
+      "sha256": "286f9e89dd3f1c3103905df5baa03fbb2794b47c3c5d26ec5e8e02cc35b0b4c4",
+      "bytes": 75602006
+    },
+    {
+      "archive": "water-4-candidate-logs.tar.zst",
+      "path": "artifacts/resource-refactor/tournament-f0-candidate-b3fab1a48/water-4-1002-maxima-completion/candidate/engine.log",
+      "sha256": "6d641989b58078903802534b1be1be73adb18c8625b04656ab4b9ee711ad3cb0",
+      "bytes": 125450470
+    },
+    {
+      "archive": "water-4-candidate-logs.tar.zst",
+      "path": "artifacts/resource-refactor/tournament-f0-candidate-b3fab1a48/water-4-1002-cortex-completion/candidate/engine.log",
+      "sha256": "ca7d0aa0c0f8156de280375ced4d749093fb68005315d3e1a248d17c636b9eaa",
+      "bytes": 74743850
+    },
+    {
+      "archive": "water-4-candidate-logs.tar.zst",
+      "path": "artifacts/resource-refactor/tournament-f0-candidate-b3fab1a48/water-4-1002-nicowar-completion/candidate/engine.log",
+      "sha256": "4c2b941a5ced8c71ba82318384556daf429b83fc9cd89f93aa4e715236706259",
+      "bytes": 57154419
+    },
+    {
+      "archive": "water-4-candidate-logs.tar.zst",
+      "path": "artifacts/resource-refactor/tournament-f0-candidate-b3fab1a48/water-4-1002-mixed-completion/candidate/engine.log",
+      "sha256": "32dee5154891988abaf10d68213e5d17ee305850afb68d9408656150240d8048",
+      "bytes": 94125368
+    },
+    {
+      "archive": "water-4-candidate-logs.tar.zst",
+      "path": "artifacts/resource-refactor/tournament-f0-candidate-b3fab1a48/water-4-1001-mixed-swapped-completion/candidate/engine.log",
+      "sha256": "57fd1a7589cf60e866c5afded688f6af35865ef9c98138d15e82d1f7e2ac804a",
+      "bytes": 102942003
+    },
+    {
+      "archive": "water-4-candidate-logs.tar.zst",
+      "path": "artifacts/resource-refactor/tournament-f0-candidate-b3fab1a48/water-4-1002-mixed-swapped-completion/candidate/engine.log",
+      "sha256": "7d15172b02aa359ecb3306aaf176307096a37a8413bda1064ef77caa524098da",
+      "bytes": 102984812
+    },
+    {
+      "archive": "control-candidate-logs.tar.zst",
+      "path": "artifacts/resource-refactor/tournament-f0-candidate-b3fab1a48/control-land-2-1002-mixed-64-completion/candidate/engine.log",
+      "sha256": "ff5761ba7a11ae84460996eee6bb6af55eb793fb83963039a339d0756cc28f40",
+      "bytes": 10246202
+    },
+    {
+      "archive": "control-candidate-logs.tar.zst",
+      "path": "artifacts/resource-refactor/tournament-f0-candidate-b3fab1a48/control-land-2-1002-mixed-64-swapped-completion/candidate/engine.log",
+      "sha256": "1118d2727db6b0f8da1b8f218ed551c32c0ba71935e4cfc568ca345d659d9e0d",
+      "bytes": 15018842
+    }
+  ],
+  "limitations": "Bootstrap clusters by terrain/teamcount/mapseed (AI mixes and swapped sides share each geometry). Only two seed values and eight geometry configurations; intervals are descriptive, not proof of equivalence. Tick-cap and otherwise unresolved outcomes are censored, never counted as losses. Win shares and winner-change intervals use only paired resolved outcomes; selection due to differential resolution remains a limitation.",
+  "recovery": "Wrapper exit143 after all42new engines and stable-runtime audit; strict84record analysis-only recovery, no reruns. Exact cause unconfirmed; approximately30min enclosing-session lifetime suspected.",
+  "data_chronology": "Later41678773c translations followed completed run audit. ZIP reconstructs exact recorded b3 data hashes, not later workspace files.",
+  "raw_log_bytes": 2632926430,
+  "compressed_log_bytes": 51738932
+}
