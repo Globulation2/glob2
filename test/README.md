@@ -1879,3 +1879,23 @@ into the fixture. Record other platform/compiler variants on those actual builds
 unavailable full hashes produce an explicit unverified warning. The four designs
 whose historical full hashes matched across platforms retain portable topology
 checks; Fingerprint's known platform variant requires its own recorded topology.
+
+### Unapproved generator fingerprint observations
+
+`python3 test/collect_generator_evidence.py collect BINARY OUTPUT --platform macos-arm64`
+runs `MapGeneratorGoldenTest --print` twice in fresh profiles, verifies the complete
+current generator/seed/revision inventory against the Linux reference, and retains
+raw logs, normalized rows, checkout provenance, host compiler, stable binary hash, and unchanged
+current/historical fixture hashes. Collection does not update expected output or
+replace the strict `--require-rows` gate. The macOS validation job uploads these
+observations as `generator-observations-macos`. The collector cannot infer the
+binary's build inputs from the checkout; its manifest marks that association
+unverified. Retain the producing build job and compiler/flags/dependencies when
+reviewing the observation.
+
+Two processes on one host establish repeatability only. Compare artifacts from
+independent jobs at the same source with
+`python3 test/collect_generator_evidence.py compare FIRST SECOND`; differences
+require investigation before acceptance. Agreement still does not establish
+historical topology preservation: independently verify against archived pre-epoch
+maps before adding new expected rows or the resource-epoch design hashes.

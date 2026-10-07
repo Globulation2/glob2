@@ -32,8 +32,20 @@ jobs:
           python3 scons/sdl3_dependencies.py --prefix build/sdl3-ci/prefix --work build/sdl3-ci/sources --jobs 2
           export PATH="$PWD/build/sdl3-ci/prefix/bin:$PATH"
           GLOB2_SDL3_PREFIX=build/sdl3-ci/prefix scons release=1 server=0 -j2 \
-            build/darwin/client/release/src/glob2 unit-tests engine-tests \
+            build/darwin/client/release/src/glob2 unit-tests engine-tests map-generator-golden-test \
             CXXFLAGS="-I$openssl/include" LINKFLAGS="-L$openssl/lib"
+      - name: Collect unapproved generator fingerprints
+        run: |
+          export DYLD_LIBRARY_PATH="$PWD/build/sdl3-ci/prefix/lib"
+          python3 test/collect_generator_evidence.py collect \
+            build/darwin/client/release/src/MapGeneratorGoldenTest \
+            artifacts/generator-evidence --platform macos-arm64
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: generator-observations-macos
+          path: artifacts/generator-evidence/
+          if-no-files-found: error
       - name: Execute selected regression cases and continuation
         run: |
           export DYLD_LIBRARY_PATH="$PWD/build/sdl3-ci/prefix/lib"
