@@ -1,0 +1,228 @@
+# To display the perf.data header info, please use --header/--header-only options.
+#
+#
+# Total Lost Samples: 0
+#
+# Samples: 7K of event 'cpu/cycles/P'
+# Event count (approx.): 60621403064
+#
+# Children      Self  Command          Shared Object        Symbol                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         
+# ........  ........  ...............  ...................  .........................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................
+#
+    36.71%     0.00%  candidate-gated  candidate-gated      [.] Engine::gatherAndAdvanceOrders(bool)
+    36.69%     0.01%  candidate-gated  candidate-gated      [.] Game::prepareAIOrders(std::span<unsigned int const, 18446744073709551615ul>, bool, std::shared_ptr<GameDiagnostics::Session> const&)
+    36.66%     0.01%  candidate-gated  candidate-gated      [.] AIEngine::Pipeline::prepare(Game&, std::span<unsigned int const, 18446744073709551615ul>, bool, std::shared_ptr<GameDiagnostics::Session> const&)
+    36.48%     0.00%  candidate-gated  candidate-gated      [.] SimulationSnapshot::Store::captureBoundary(Game const&, unsigned int)
+    36.45%     0.15%  candidate-gated  candidate-gated      [.] SimulationSnapshot::capture(Game const&, std::shared_ptr<std::vector<SimulationSnapshot::BuildingKindView, std::allocator<SimulationSnapshot::BuildingKindView> > const>, unsigned int, SimulationSnapshot::Handle const*, SimulationSnapshot::Storage*)
+    22.93%    22.92%  candidate-gated  candidate-gated      [.] gradient_preparation::MaterialSeedCache::trySeed(SimulationSnapshot::Handle const&, int, int, int, unsigned short*, unsigned short const*)
+    17.53%     7.82%  candidate-gated  libc.so.6            [.] __memmove_avx_unaligned_erms
+    16.34%    16.05%  candidate-gated  candidate-gated      [.] auto SimulationSnapshot::capture(Game const&, std::shared_ptr<std::vector<SimulationSnapshot::BuildingKindView, std::allocator<SimulationSnapshot::BuildingKindView> > const>, unsigned int, SimulationSnapshot::Handle const*, SimulationSnapshot::Storage*)::{lambda(SimulationSnapshot::ChunkStamps&, MapState::ChangeTracker const&, bool, auto:1)#1}::operator()<SimulationSnapshot::capture(Game const&, std::shared_ptr<std::vector<SimulationSnapshot::BuildingKindView, std::allocator<SimulationSnapshot::BuildingKindView> > const>, unsigned int, SimulationSnapshot::Handle const*, SimulationSnapshot::Storage*)::{lambda(unsigned long, unsigned long)#2}>(SimulationSnapshot::ChunkStamps&, MapState::ChangeTracker const&, bool, SimulationSnapshot::capture(Game const&, std::shared_ptr<std::vector<SimulationSnapshot::BuildingKindView, std::allocator<SimulationSnapshot::BuildingKindView> > const>, unsigned int, SimulationSnapshot::Handle const*, SimulationSnapshot::Storage*)::{lambda(unsigned long, unsigned long)#2}) const
+    15.36%     0.01%  candidate-gated  candidate-gated      [.] auto SimulationSnapshot::capture(Game const&, std::shared_ptr<std::vector<SimulationSnapshot::BuildingKindView, std::allocator<SimulationSnapshot::BuildingKindView> > const>, unsigned int, SimulationSnapshot::Handle const*, SimulationSnapshot::Storage*)::{lambda(auto:1&, auto:2)#1}::operator()<std::vector<std::array<unsigned short, 12ul>, std::allocator<std::array<unsigned short, 12ul> > >, std::span<std::array<unsigned short, 12ul> const, 18446744073709551615ul> >(std::vector<std::array<unsigned short, 12ul>, std::allocator<std::array<unsigned short, 12ul> > >&, std::span<std::array<unsigned short, 12ul> const, 18446744073709551615ul>) const [clone .isra.0]
+    13.87%    13.87%  candidate-gated  candidate-gated      [.] Script::Observations::observe()
+    11.16%    11.16%  candidate-gated  candidate-gated      [.] void gradient_kernel::propagateField<gradient_kernel::propagateTerrainField<gradient_preparation::propagate(gradient_preparation::Request const&, SimulationSnapshot::Handle const&, unsigned short*, GradientWorkspace&)::{lambda(unsigned long)#1}>(unsigned short*, int, int, field::Grid, GradientWorkspace&, gradient_preparation::propagate(gradient_preparation::Request const&, SimulationSnapshot::Handle const&, unsigned short*, GradientWorkspace&)::{lambda(unsigned long)#1}, bool)::{lambda(unsigned long)#1}>(unsigned short*, int, int, field::Grid, GradientWorkspace&, gradient_kernel::propagateTerrainField<gradient_preparation::propagate(gradient_preparation::Request const&, SimulationSnapshot::Handle const&, unsigned short*, GradientWorkspace&)::{lambda(unsigned long)#1}>(unsigned short*, int, int, field::Grid, GradientWorkspace&, gradient_preparation::propagate(gradient_preparation::Request const&, SimulationSnapshot::Handle const&, unsigned short*, GradientWorkspace&)::{lambda(unsigned long)#1}, bool)::{lambda(unsigned long)#1}) [clone .constprop.0]
+     9.90%     0.38%  candidate-gated  [kernel.kallsyms]    [.] asm_exc_page_fault
+     9.49%     0.11%  candidate-gated  [kernel.kallsyms]    [.] exc_page_fault
+     9.16%     0.33%  candidate-gated  [kernel.kallsyms]    [.] do_user_addr_fault
+     8.25%     0.20%  candidate-gated  [kernel.kallsyms]    [.] handle_mm_fault
+     7.85%     0.34%  candidate-gated  [kernel.kallsyms]    [.] __handle_mm_fault
+     7.48%     0.16%  candidate-gated  [kernel.kallsyms]    [.] handle_pte_fault
+     6.98%     0.44%  candidate-gated  [kernel.kallsyms]    [.] do_anonymous_page
+     4.94%     0.16%  candidate-gated  [kernel.kallsyms]    [.] alloc_anon_folio
+     4.73%     4.73%  candidate-gated  candidate-gated      [.] ResourceGrowth::calculate(MapState::View const&, MersenneTwister&, ResourceGrowth::Batch&)
+     4.72%     0.00%  candidate-gated  candidate-gated      [.] Engine::advanceSession(unsigned long, std::function<void ()> const&, bool)
+     4.70%     0.00%  candidate-gated  candidate-gated      [.] Engine::stepSessionImpl(unsigned long, std::vector<SDL_Event, std::allocator<SDL_Event> > const&)
+     4.68%     0.00%  candidate-gated  candidate-gated      [.] HeadlessRunner::game(std::map<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::vector<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::allocator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > > >, std::less<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > >, std::allocator<std::pair<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const, std::vector<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::allocator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > > > > > > const&, std::filesystem::__cxx11::path const&) [clone .isra.0]
+     4.67%     0.01%  candidate-gated  candidate-gated      [.] Engine::stepSession(unsigned long)
+     4.66%     0.00%  candidate-gated  candidate-gated      [.] Engine::stepSession(unsigned long, std::vector<SDL_Event, std::allocator<SDL_Event> > const&)
+     4.17%     0.00%  candidate-gated  candidate-gated      [.] Engine::executeOrdersAndStep(bool)
+     4.17%     0.04%  candidate-gated  [kernel.kallsyms]    [.] vma_alloc_folio_noprof
+     4.10%     0.00%  candidate-gated  candidate-gated      [.] Game::syncStep(int, Game::PreparationCompletion)
+     4.04%     0.05%  candidate-gated  [kernel.kallsyms]    [.] alloc_pages_mpol
+     3.84%     0.18%  candidate-gated  [kernel.kallsyms]    [.] __alloc_frozen_pages_noprof
+     3.71%     0.01%  candidate-gated  candidate-gated      [.] Map::syncStep(unsigned int, bool)
+     3.60%     0.13%  candidate-gated  [kernel.kallsyms]    [.] get_page_from_freelist
+     3.59%     0.99%  candidate-gated  candidate-gated      [.] ResourceGrowth::apply(Map&, ResourceGrowth::Batch const&, ResourceGrowth::Metrics&)
+     3.59%     0.00%  candidate-gated  candidate-gated      [.] ResourceGrowth::Pipeline::publish(Map&, unsigned int)
+     3.46%     3.41%  candidate-gated  candidate-gated      [.] gradient_preparation::seed(gradient_preparation::Request const&, SimulationSnapshot::Handle const&, unsigned short*, gradient_preparation::CrowdingScratch&)
+     3.04%     0.04%  candidate-gated  [kernel.kallsyms]    [.] post_alloc_hook
+     3.00%     2.96%  candidate-gated  [kernel.kallsyms]    [k] kernel_init_pages
+     2.47%     0.01%  candidate-gated  [kernel.kallsyms]    [.] do_syscall_64
+     2.47%     0.00%  candidate-gated  [kernel.kallsyms]    [.] entry_SYSCALL_64_after_hwframe
+     2.44%     0.00%  candidate-gated  [kernel.kallsyms]    [.] x64_sys_call
+     2.03%     0.00%  candidate-gated  libc.so.6            [.] _int_free_chunk
+     1.99%     0.00%  candidate-gated  [kernel.kallsyms]    [.] do_vmi_align_munmap
+     1.95%     0.00%  candidate-gated  [kernel.kallsyms]    [.] unmap_region
+     1.95%     0.00%  candidate-gated  [kernel.kallsyms]    [.] vms_complete_munmap_vmas
+     1.82%     0.00%  candidate-gated  [kernel.kallsyms]    [.] __vm_munmap
+     1.82%     0.00%  candidate-gated  [kernel.kallsyms]    [.] __x64_sys_munmap
+     1.82%     0.00%  candidate-gated  [kernel.kallsyms]    [.] do_vmi_munmap
+     1.82%     0.00%  candidate-gated  libc.so.6            [.] __munmap
+     1.34%     0.07%  candidate-gated  [kernel.kallsyms]    [.] asm_sysvec_apic_timer_interrupt
+     1.28%     0.00%  candidate-gated  [kernel.kallsyms]    [.] sysvec_apic_timer_interrupt
+     1.16%     1.11%  candidate-gated  candidate-gated      [.] Map::recordNaturalGrowth(int, int, int, int, std::array<unsigned short, 12ul> const&)
+     1.15%     0.00%  candidate-gated  [kernel.kallsyms]    [.] tlb_finish_mmu
+     1.12%     0.04%  candidate-gated  [kernel.kallsyms]    [.] hrtimer_interrupt
+     1.11%     0.03%  candidate-gated  [kernel.kallsyms]    [.] free_pages_and_swap_cache
+     1.11%     0.00%  candidate-gated  [kernel.kallsyms]    [.] __tlb_batch_free_encoded_pages
+     1.09%     0.08%  candidate-gated  [kernel.kallsyms]    [.] folios_put_refs
+     1.09%     0.01%  candidate-gated  [kernel.kallsyms]    [.] __sysvec_apic_timer_interrupt
+     1.04%     0.05%  candidate-gated  [kernel.kallsyms]    [.] __hrtimer_run_queues
+     0.96%     0.01%  candidate-gated  [kernel.kallsyms]    [.] tick_nohz_handler
+     0.88%     0.88%  candidate-gated  candidate-gated      [.] Map::materialStocksAt(unsigned long) const
+     0.80%     0.01%  candidate-gated  [kernel.kallsyms]    [.] zap_pmd_range.isra.0
+     0.80%     0.00%  candidate-gated  [kernel.kallsyms]    [.] unmap_page_range
+     0.80%     0.00%  candidate-gated  [kernel.kallsyms]    [.] unmap_single_vma
+     0.80%     0.00%  candidate-gated  [kernel.kallsyms]    [.] unmap_vmas
+     0.80%     0.05%  candidate-gated  [kernel.kallsyms]    [k] folio_add_lru
+     0.80%     0.03%  candidate-gated  [kernel.kallsyms]    [.] folio_add_lru_vma
+     0.78%     0.04%  candidate-gated  [kernel.kallsyms]    [.] zap_pte_range
+     0.76%     0.04%  candidate-gated  [kernel.kallsyms]    [.] update_process_times
+     0.75%     0.00%  candidate-gated  [kernel.kallsyms]    [.] __folio_batch_add_and_move
+     0.74%     0.09%  candidate-gated  [kernel.kallsyms]    [.] folio_batch_move_lru
+     0.73%     0.38%  candidate-gated  [kernel.kallsyms]    [.] zap_present_ptes.constprop.0
+     0.65%     0.00%  candidate-gated  [kernel.kallsyms]    [.] sched_tick
+     0.58%     0.16%  candidate-gated  [kernel.kallsyms]    [.] lru_add
+     0.47%     0.28%  candidate-gated  [kernel.kallsyms]    [.] lruvec_stat_mod_folio
+     0.47%     0.44%  candidate-gated  [kernel.kallsyms]    [k] free_unref_folios
+     0.45%     0.44%  candidate-gated  [kernel.kallsyms]    [k] srso_safe_ret
+     0.44%     0.04%  candidate-gated  [kernel.kallsyms]    [.] rmqueue.isra.0
+     0.42%     0.04%  candidate-gated  [kernel.kallsyms]    [.] folio_add_new_anon_rmap
+     0.40%     0.11%  candidate-gated  [kernel.kallsyms]    [.] __mem_cgroup_charge
+     0.38%     0.17%  candidate-gated  [kernel.kallsyms]    [k] lru_gen_add_folio
+     0.38%     0.01%  candidate-gated  [kernel.kallsyms]    [.] perf_event_task_tick
+     0.37%     0.00%  candidate-gated  [kernel.kallsyms]    [.] amd_pmu_disable_all
+     0.37%     0.00%  candidate-gated  [kernel.kallsyms]    [.] x86_pmu_disable
+     0.36%     0.01%  candidate-gated  [kernel.kallsyms]    [k] perf_adjust_freq_unthr_context
+     0.36%     0.01%  candidate-gated  candidate-gated      [.] Map::replaceResource(unsigned long, Resource const&)
+     0.36%     0.36%  candidate-gated  [kernel.kallsyms]    [k] __rmqueue_pcplist
+     0.36%     0.03%  candidate-gated  [kernel.kallsyms]    [.] rmqueue_pcplist
+     0.34%     0.03%  candidate-gated  [kernel.kallsyms]    [.] __folio_mod_stat
+     0.33%     0.01%  candidate-gated  libc.so.6            [.] __libc_malloc2
+     0.33%     0.00%  candidate-gated  libstdc++.so.6.0.35  [.] operator new(unsigned long)
+     0.33%     0.30%  candidate-gated  [kernel.kallsyms]    [k] mod_memcg_lruvec_state
+     0.33%     0.12%  candidate-gated  [kernel.kallsyms]    [.] mod_lruvec_state
+     0.33%     0.09%  candidate-gated  [kernel.kallsyms]    [k] __page_cache_release.part.0
+     0.32%     0.00%  candidate-gated  libc.so.6            [.] _int_malloc
+     0.30%     0.00%  candidate-gated  libc.so.6            [.] sysmalloc (inlined)
+     0.29%     0.07%  candidate-gated  candidate-gated      [.] auto SimulationSnapshot::capture(Game const&, std::shared_ptr<std::vector<SimulationSnapshot::BuildingKindView, std::allocator<SimulationSnapshot::BuildingKindView> > const>, unsigned int, SimulationSnapshot::Handle const*, SimulationSnapshot::Storage*)::{lambda(auto:1&, auto:2, unsigned long, unsigned long)#1}::operator()<std::vector<unsigned int, std::allocator<unsigned int> >, std::span<unsigned int const, 18446744073709551615ul> >(std::vector<unsigned int, std::allocator<unsigned int> >&, std::span<unsigned int const, 18446744073709551615ul>, unsigned long, unsigned long) const [clone .isra.0]
+     0.28%     0.07%  candidate-gated  [kernel.kallsyms]    [k] __folio_throttle_swaprate
+     0.28%     0.01%  candidate-gated  [kernel.kallsyms]    [.] do_futex
+     0.26%     0.00%  candidate-gated  [kernel.kallsyms]    [.] __x64_sys_futex
+     0.26%     0.00%  candidate-gated  [kernel.kallsyms]    [.] folio_remove_rmap_ptes
+     0.26%     0.26%  candidate-gated  libc.so.6            [.] __memmove_avx_unaligned
+     0.25%     0.00%  candidate-gated  libc.so.6            [.] sysmalloc_mmap
+     0.25%     0.09%  candidate-gated  [kernel.kallsyms]    [.] lru_gen_del_folio.constprop.0
+     0.24%     0.22%  candidate-gated  [kernel.kallsyms]    [k] __rcu_read_unlock
+     0.22%     0.16%  candidate-gated  [kernel.kallsyms]    [k] lock_vma_under_rcu
+     0.22%     0.00%  candidate-gated  candidate-gated      [.] Team::syncStep()
+     0.21%     0.21%  candidate-gated  candidate-gated      [.] Fertility::GrowthCache::rate(unsigned long, ResourceEcology, unsigned int) const
+     0.21%     0.03%  candidate-gated  [kernel.kallsyms]    [.] __futex_wait
+     0.21%     0.07%  candidate-gated  [kernel.kallsyms]    [k] __perf_sw_event
+     0.20%     0.00%  candidate-gated  [kernel.kallsyms]    [.] futex_wait
+     0.20%     0.00%  candidate-gated  [kernel.kallsyms]    [.] __x64_sys_brk
+     0.20%     0.00%  candidate-gated  libc.so.6            [.] __brk
+     0.20%     0.00%  candidate-gated  libc.so.6            [.] __glibc_morecore (inlined)
+     0.20%     0.00%  candidate-gated  libc.so.6            [.] __sbrk
+     0.20%     0.00%  candidate-gated  candidate-gated      [.] Game::checkSum(std::vector<unsigned int, std::allocator<unsigned int> >*, std::vector<unsigned int, std::allocator<unsigned int> >*, std::vector<unsigned int, std::allocator<unsigned int> >*, bool)
+     0.18%     0.00%  candidate-gated  [kernel.kallsyms]    [.] schedule
+     0.18%     0.00%  candidate-gated  [kernel.kallsyms]    [.] __schedule
+     0.18%     0.00%  candidate-gated  [kernel.kallsyms]    [.] __do_sys_brk
+     0.17%     0.00%  candidate-gated  [kernel.kallsyms]    [.] futex_do_wait
+     0.17%     0.03%  candidate-gated  [kernel.kallsyms]    [.] irqentry_exit
+     0.17%     0.11%  candidate-gated  candidate-gated      [.] Map::setMaterialAmount(unsigned long, MaterialId, unsigned short)
+     0.17%     0.00%  candidate-gated  libc.so.6            [.] systrim (inlined)
+     0.17%     0.17%  candidate-gated  candidate-gated      [.] Script::Observations::world() const
+     0.16%     0.00%  candidate-gated  candidate-gated      [.] Map::initializeResourceStock(unsigned long)
+     0.15%     0.03%  candidate-gated  [kernel.kallsyms]    [.] task_tick_fair
+     0.15%     0.13%  candidate-gated  [kernel.kallsyms]    [k] get_mem_cgroup_from_mm
+     0.15%     0.15%  candidate-gated  candidate-gated      [.] Map::releaseResourceStock(unsigned long)
+     0.15%     0.12%  candidate-gated  [kernel.kallsyms]    [k] arch_exit_to_user_mode_prepare.isra.0
+     0.14%     0.13%  candidate-gated  [kernel.kallsyms]    [k] __css_rstat_updated
+     0.14%     0.14%  candidate-gated  [kernel.kallsyms]    [k] native_read_msr
+     0.13%     0.13%  candidate-gated  [kernel.kallsyms]    [k] __rcu_read_lock
+     0.13%     0.13%  candidate-gated  [kernel.kallsyms]    [k] ___perf_sw_event
+     0.13%     0.13%  candidate-gated  [kernel.kallsyms]    [k] native_write_msr
+     0.13%     0.00%  candidate-gated  [kernel.kallsyms]    [.] __x64_sys_mmap
+     0.13%     0.00%  candidate-gated  [kernel.kallsyms]    [.] ksys_mmap_pgoff
+     0.13%     0.00%  candidate-gated  [kernel.kallsyms]    [.] vm_mmap_pgoff
+     0.13%     0.00%  candidate-gated  libc.so.6            [.] __mmap64 (inlined)
+     0.12%     0.00%  candidate-gated  [kernel.kallsyms]    [.] __irq_exit_rcu
+     0.12%     0.00%  candidate-gated  [kernel.kallsyms]    [.] handle_softirqs
+     0.12%     0.00%  candidate-gated  [kernel.kallsyms]    [.] irq_exit_rcu
+     0.12%     0.12%  candidate-gated  [kernel.kallsyms]    [k] mas_walk
+     0.12%     0.01%  candidate-gated  [kernel.kallsyms]    [k] do_mmap
+     0.12%     0.01%  candidate-gated  [kernel.kallsyms]    [.] __mem_cgroup_uncharge_folios
+     0.11%     0.11%  candidate-gated  candidate-gated      [.] __JS_FindAtom.constprop.0
+     0.11%     0.00%  candidate-gated  [kernel.kallsyms]    [.] rcu_core
+     0.11%     0.00%  candidate-gated  [kernel.kallsyms]    [.] rcu_core_si
+     0.11%     0.00%  candidate-gated  libc.so.6            [.] mmap_set_chunk (inlined)
+     0.11%     0.11%  candidate-gated  [kernel.kallsyms]    [k] blk_cgroup_congested
+     0.11%     0.11%  candidate-gated  [kernel.kallsyms]    [k] get_vma_policy
+     0.11%     0.04%  candidate-gated  [kernel.kallsyms]    [.] charge_memcg
+     0.11%     0.04%  candidate-gated  candidate-gated      [.] Map::checkSum(bool, bool)
+     0.11%     0.00%  candidate-gated  [kernel.kallsyms]    [.] tick_do_update_jiffies64
+     0.11%     0.01%  candidate-gated  [kernel.kallsyms]    [.] update_wall_time
+     0.10%     0.03%  candidate-gated  libc.so.6            [.] __memset_avx2_unaligned_erms
+     0.09%     0.09%  candidate-gated  [kernel.kallsyms]    [k] set_ptes.isra.0
+     0.09%     0.01%  candidate-gated  [kernel.kallsyms]    [.] __mmap_region
+     0.09%     0.00%  candidate-gated  [kernel.kallsyms]    [.] mmap_region
+     0.09%     0.09%  candidate-gated  [kernel.kallsyms]    [k] kthread_blkcg
+     0.09%     0.07%  candidate-gated  [kernel.kallsyms]    [k] pte_offset_map_lock
+     0.09%     0.09%  candidate-gated  candidate-gated      [.] Team::checkSum(std::vector<unsigned int, std::allocator<unsigned int> >*, std::vector<unsigned int, std::allocator<unsigned int> >*, std::vector<unsigned int, std::allocator<unsigned int> >*)
+     0.09%     0.00%  candidate-gated  [kernel.kallsyms]    [.] __timekeeping_advance
+     0.09%     0.05%  candidate-gated  candidate-gated      [.] TeamStats::step(Team*, bool)
+     0.08%     0.08%  candidate-gated  [kernel.kallsyms]    [k] x86_pmu_disable_all
+     0.08%     0.08%  candidate-gated  candidate-gated      [.] js_arena_malloc
+     0.08%     0.00%  candidate-gated  [kernel.kallsyms]    [.] prepare_task_switch
+     0.08%     0.08%  candidate-gated  [kernel.kallsyms]    [k] policy_nodemask
+     0.08%     0.07%  candidate-gated  [kernel.kallsyms]    [k] try_charge_memcg
+     0.08%     0.08%  candidate-gated  candidate-gated      [.] Map::refreshResourceTotal(unsigned long)
+     0.08%     0.01%  candidate-gated  candidate-gated      [.] ComputeExecutor::submit(std::span<ComputeExecutor::Group const, 18446744073709551615ul>, ComputeExecutor::Placement)
+     0.08%     0.00%  candidate-gated  candidate-gated      [.] AIEngine::OrderScheduler::dispatch()
+     0.08%     0.08%  candidate-gated  [kernel.kallsyms]    [k] mod_node_page_state
+     0.08%     0.08%  candidate-gated  [kernel.kallsyms]    [k] sync_regs
+     0.07%     0.07%  candidate-gated  candidate-gated      [.] Map::updateExploredArea(int)
+     0.07%     0.01%  candidate-gated  [kernel.kallsyms]    [.] perf_ctx_disable
+     0.07%     0.00%  candidate-gated  [kernel.kallsyms]    [.] __perf_event_task_sched_out
+     0.07%     0.00%  candidate-gated  [kernel.kallsyms]    [.] perf_event_context_sched_out
+     0.07%     0.01%  candidate-gated  [kernel.kallsyms]    [.] __pte_alloc
+     0.07%     0.07%  candidate-gated  [kernel.kallsyms]    [k] count_memcg_events
+     0.07%     0.00%  candidate-gated  [kernel.kallsyms]    [.] pte_offset_map_rw_nolock
+     0.07%     0.07%  candidate-gated  [kernel.kallsyms]    [k] __pte_offset_map
+     0.07%     0.07%  candidate-gated  [kernel.kallsyms]    [k] _find_first_bit
+     0.07%     0.07%  candidate-gated  [kernel.kallsyms]    [k] free_frozen_page_commit.isra.0
+     0.07%     0.04%  candidate-gated  libSDL3.so.0.4.16    [.] SDL_GetTicks_REAL
+     0.07%     0.00%  candidate-gated  libc.so.6            [.] ___pthread_cond_broadcast (inlined)
+     0.07%     0.00%  candidate-gated  libc.so.6            [.] futex_wake (inlined)
+     0.06%     0.00%  candidate-gated  candidate-gated      [.] Building::considerUnitForMaterial(Unit*, int, int*)
+     0.06%     0.00%  candidate-gated  candidate-gated      [.] Building::gatherBringMaterialsCandidates(Building::BringMaterialsCandidate*, int)
+     0.06%     0.00%  candidate-gated  candidate-gated      [.] Building::subscribeToBringMaterialsStep(bool) [clone .part.0]
+     0.06%     0.00%  candidate-gated  candidate-gated      [.] Map::getMaterialGradientSlot(int, int, int, bool, Building const*)
+     0.06%     0.00%  candidate-gated  candidate-gated      [.] Map::materialAvailableSlot(int, int, int, int, int, int*, bool, Building const*)
+     0.06%     0.00%  candidate-gated  candidate-gated      [.] Map::updateMaterialGradient(int, unsigned char, int, bool)
+     0.06%     0.02%  candidate-gated  [kernel.kallsyms]    [k] update_curr
+     0.05%     0.01%  candidate-gated  candidate-gated      [.] ComputeExecutor::execute(ComputeExecutor::Claim const&, unsigned long)
+     0.05%     0.01%  candidate-gated  candidate-gated      [.] GradientBucket::grow(unsigned long)
+     0.05%     0.01%  candidate-gated  [kernel.kallsyms]    [.] alloc_pages_noprof
+     0.05%     0.00%  candidate-gated  [kernel.kallsyms]    [.] futex_wake
+     0.05%     0.05%  candidate-gated  [kernel.kallsyms]    [k] pud_val
+     0.05%     0.00%  candidate-gated  candidate-gated      [.] Unit::syncStep()
+     0.05%     0.00%  candidate-gated  candidate-gated      [.] Map::preparePendingWorld()
+     0.05%     0.05%  candidate-gated  [kernel.kallsyms]    [k] uncharge_folio
+     0.05%     0.03%  candidate-gated  [kernel.kallsyms]    [.] timekeeping_update_from_shadow
+     0.05%     0.00%  candidate-gated  candidate-gated      [.] AIEngine::OrderScheduler::takeDue(unsigned int)
+     0.05%     0.04%  candidate-gated  [kernel.kallsyms]    [k] __free_frozen_pages
+     0.05%     0.00%  candidate-gated  [kernel.kallsyms]    [.] ___free_pages
+     0.05%     0.00%  candidate-gated  [kernel.kallsyms]    [.] rcu_do_batch
+     0.05%     0.00%  candidate-gated  [kernel.kallsyms]    [.] tlb_remove_table_rcu
+     0.05%     0.00%  candidate-gated  candidate-gated      [.] std::vector<MapState::ResourceCell, std::allocator<MapState::ResourceCell> >::_M_default_append(unsigned long)
+     0.05%     0.01%  candidate-gated  candidate-gated      [.] Map::rebuildGrowthCoverage()
+     0.05%     0.00%  candidate-gated  [kernel.kallsyms]    [.] dequeue_task
+     0.05%     0.00%  candidate-gated  [kernel.kallsyms]    [.] dequeue_task_fair
+     0.05%     0.00%  candidate-gated  [kernel.kallsyms]    [.] try_to_block_task.constprop.0.isra.0
+     0.05%     0.01%  candidate-gated  [kernel.kallsyms]    [.] account_process_tick
+
+
+#
+# (Cannot load tips.txt file, please install perf!)
+#

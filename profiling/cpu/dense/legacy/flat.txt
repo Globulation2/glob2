@@ -1,0 +1,45 @@
+# To display the perf.data header info, please use --header/--header-only options.
+#
+#
+# Total Lost Samples: 0
+#
+# Samples: 1K of event 'cpu/cycles/P'
+# Event count (approx.): 27247548322
+#
+# Overhead  Command         Shared Object         Symbol                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         
+# ........  ..............  ....................  .......................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................
+#
+    31.43%  legacy-symbols  legacy-symbols        [.] Script::Observations::observe()
+    21.23%  legacy-symbols  legacy-symbols        [.] void gradient_kernel::propagateField<gradient_kernel::propagateTerrainField<gradient_preparation::propagate(gradient_preparation::Request const&, SimulationSnapshot::Handle const&, unsigned short*, GradientWorkspace&)::{lambda(unsigned long)#1}>(unsigned short*, int, int, field::Grid, GradientWorkspace&, gradient_preparation::propagate(gradient_preparation::Request const&, SimulationSnapshot::Handle const&, unsigned short*, GradientWorkspace&)::{lambda(unsigned long)#1}, bool)::{lambda(unsigned long)#1}>(unsigned short*, int, int, field::Grid, GradientWorkspace&, gradient_kernel::propagateTerrainField<gradient_preparation::propagate(gradient_preparation::Request const&, SimulationSnapshot::Handle const&, unsigned short*, GradientWorkspace&)::{lambda(unsigned long)#1}>(unsigned short*, int, int, field::Grid, GradientWorkspace&, gradient_preparation::propagate(gradient_preparation::Request const&, SimulationSnapshot::Handle const&, unsigned short*, GradientWorkspace&)::{lambda(unsigned long)#1}, bool)::{lambda(unsigned long)#1}) [clone .constprop.0]
+    13.05%  legacy-symbols  legacy-symbols        [.] gradient_preparation::MaterialSeedCache::trySeed(SimulationSnapshot::Handle const&, int, int, int, unsigned short*, unsigned short const*)
+     6.39%  legacy-symbols  legacy-symbols        [.] auto SimulationSnapshot::capture(Game const&, std::shared_ptr<std::vector<SimulationSnapshot::BuildingKindView, std::allocator<SimulationSnapshot::BuildingKindView> > const>, unsigned int, SimulationSnapshot::Handle const*, SimulationSnapshot::Storage*)::{lambda(SimulationSnapshot::ChunkStamps&, MapState::ChangeTracker const&, bool, auto:1)#1}::operator()<SimulationSnapshot::capture(Game const&, std::shared_ptr<std::vector<SimulationSnapshot::BuildingKindView, std::allocator<SimulationSnapshot::BuildingKindView> > const>, unsigned int, SimulationSnapshot::Handle const*, SimulationSnapshot::Storage*)::{lambda(unsigned long, unsigned long)#2}>(SimulationSnapshot::ChunkStamps&, MapState::ChangeTracker const&, bool, SimulationSnapshot::capture(Game const&, std::shared_ptr<std::vector<SimulationSnapshot::BuildingKindView, std::allocator<SimulationSnapshot::BuildingKindView> > const>, unsigned int, SimulationSnapshot::Handle const*, SimulationSnapshot::Storage*)::{lambda(unsigned long, unsigned long)#2}) const
+     5.17%  legacy-symbols  legacy-symbols        [.] gradient_preparation::seed(gradient_preparation::Request const&, SimulationSnapshot::Handle const&, unsigned short*, gradient_preparation::CrowdingScratch&)
+     2.37%  legacy-symbols  legacy-symbols        [.] Fertility::applyGrowthOpportunities(Map&, int, int, unsigned int, int)
+     1.91%  legacy-symbols  legacy-symbols        [.] Script::Observations::world() const
+     1.69%  legacy-symbols  libc.so.6             [.] __memmove_avx_unaligned
+     0.95%  legacy-symbols  libc.so.6             [.] __memmove_avx_unaligned_erms
+     0.80%  legacy-symbols  legacy-symbols        [.] Map::growResources()
+     0.73%  legacy-symbols  libc.so.6             [.] pthread_mutex_unlock@@GLIBC_2.2.5
+     0.66%  legacy-symbols  legacy-symbols        [.] Fertility::GrowthCache::rate(unsigned long, ResourceEcology, unsigned int) const
+     0.66%  legacy-symbols  legacy-symbols        [.] Map::resourceGrowthRateAt(unsigned long, int) const
+     0.59%  legacy-symbols  legacy-symbols        [.] Map::recordNaturalGrowth(int, int, int, int, std::array<unsigned short, 12ul> const&)
+     0.44%  legacy-symbols  legacy-symbols        [.] SimulationSnapshot::capture(Game const&, std::shared_ptr<std::vector<SimulationSnapshot::BuildingKindView, std::allocator<SimulationSnapshot::BuildingKindView> > const>, unsigned int, SimulationSnapshot::Handle const*, SimulationSnapshot::Storage*)
+     0.38%  legacy-symbols  legacy-symbols        [.] js_arena_malloc
+     0.37%  legacy-symbols  legacy-symbols        [.] GAGCore::StringTable::load(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >)
+     0.30%  legacy-symbols  libc.so.6             [.] malloc
+     0.29%  legacy-symbols  libc.so.6             [.] __memcmp_avx2_movbe
+     0.29%  legacy-symbols  legacy-symbols        [.] auto SimulationSnapshot::capture(Game const&, std::shared_ptr<std::vector<SimulationSnapshot::BuildingKindView, std::allocator<SimulationSnapshot::BuildingKindView> > const>, unsigned int, SimulationSnapshot::Handle const*, SimulationSnapshot::Storage*)::{lambda(SimulationSnapshot::ChunkStamps&, MapState::ChangeTracker const&, bool, auto:1)#1}::operator()<SimulationSnapshot::capture(Game const&, std::shared_ptr<std::vector<SimulationSnapshot::BuildingKindView, std::allocator<SimulationSnapshot::BuildingKindView> > const>, unsigned int, SimulationSnapshot::Handle const*, SimulationSnapshot::Storage*)::{lambda(unsigned long, unsigned long)#3}>(SimulationSnapshot::ChunkStamps&, MapState::ChangeTracker const&, bool, SimulationSnapshot::capture(Game const&, std::shared_ptr<std::vector<SimulationSnapshot::BuildingKindView, std::allocator<SimulationSnapshot::BuildingKindView> > const>, unsigned int, SimulationSnapshot::Handle const*, SimulationSnapshot::Storage*)::{lambda(unsigned long, unsigned long)#3}) const
+     0.29%  legacy-symbols  libc.so.6             [.] __strlen_avx2
+     0.23%  legacy-symbols  [kernel.kallsyms]     [k] native_write_msr
+     0.22%  legacy-symbols  legacy-symbols        [.] Map::cellView() const
+     0.22%  legacy-symbols  legacy-symbols        [.] GAGCore::InputLineStream::readLine[abi:cxx11]()
+     0.22%  legacy-symbols  libc.so.6             [.] __memset_avx2_unaligned_erms
+     0.22%  legacy-symbols  legacy-symbols        [.] TeamStats::step(Team*, bool)
+     0.22%  legacy-symbols  libc.so.6             [.] pthread_mutex_lock@@GLIBC_2.2.5
+     0.22%  legacy-symbols  libc.so.6             [.] cfree@GLIBC_2.2.5
+     0.22%  legacy-symbols  [kernel.kallsyms]     [k] x86_pmu_disable_all
+
+
+#
+# (Cannot load tips.txt file, please install perf!)
+#

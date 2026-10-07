@@ -1,0 +1,175 @@
+# To display the perf.data header info, please use --header/--header-only options.
+#
+#
+# Total Lost Samples: 0
+#
+# Samples: 882  of event 'cpu/cycles/P'
+# Event count (approx.): 6973617572
+#
+# Children      Self  Command       Shared Object        Symbol                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         
+# ........  ........  ............  ...................  ...........................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................
+#
+    27.11%    27.11%  legacy-gated  legacy-gated         [.] Script::Observations::observe()
+    23.25%    23.25%  legacy-gated  legacy-gated         [.] void gradient_kernel::propagateField<gradient_kernel::propagateTerrainField<gradient_preparation::propagate(gradient_preparation::Request const&, SimulationSnapshot::Handle const&, unsigned short*, GradientWorkspace&)::{lambda(unsigned long)#1}>(unsigned short*, int, int, field::Grid, GradientWorkspace&, gradient_preparation::propagate(gradient_preparation::Request const&, SimulationSnapshot::Handle const&, unsigned short*, GradientWorkspace&)::{lambda(unsigned long)#1}, bool)::{lambda(unsigned long)#1}>(unsigned short*, int, int, field::Grid, GradientWorkspace&, gradient_kernel::propagateTerrainField<gradient_preparation::propagate(gradient_preparation::Request const&, SimulationSnapshot::Handle const&, unsigned short*, GradientWorkspace&)::{lambda(unsigned long)#1}>(unsigned short*, int, int, field::Grid, GradientWorkspace&, gradient_preparation::propagate(gradient_preparation::Request const&, SimulationSnapshot::Handle const&, unsigned short*, GradientWorkspace&)::{lambda(unsigned long)#1}, bool)::{lambda(unsigned long)#1}) [clone .constprop.0]
+    20.24%    20.24%  legacy-gated  legacy-gated         [.] gradient_preparation::MaterialSeedCache::trySeed(SimulationSnapshot::Handle const&, int, int, int, unsigned short*, unsigned short const*)
+    15.12%     0.00%  legacy-gated  legacy-gated         [.] Engine::advanceSession(unsigned long, std::function<void ()> const&, bool)
+    12.09%     0.00%  legacy-gated  legacy-gated         [.] Engine::executeOrdersAndStep(bool)
+    11.86%     0.00%  legacy-gated  legacy-gated         [.] Game::syncStep(int, Game::PreparationCompletion)
+    11.19%     0.00%  legacy-gated  legacy-gated         [.] Engine::gatherAndAdvanceOrders(bool)
+    10.62%     0.00%  legacy-gated  legacy-gated         [.] AIEngine::Pipeline::prepare(Game&, std::span<unsigned int const, 18446744073709551615ul>, bool, std::shared_ptr<GameDiagnostics::Session> const&)
+    10.62%     0.00%  legacy-gated  legacy-gated         [.] Game::prepareAIOrders(std::span<unsigned int const, 18446744073709551615ul>, bool, std::shared_ptr<GameDiagnostics::Session> const&)
+    10.28%     0.00%  legacy-gated  legacy-gated         [.] SimulationSnapshot::Store::captureBoundary(Game const&, unsigned int)
+    10.27%     0.34%  legacy-gated  legacy-gated         [.] SimulationSnapshot::capture(Game const&, std::shared_ptr<std::vector<SimulationSnapshot::BuildingKindView, std::allocator<SimulationSnapshot::BuildingKindView> > const>, unsigned int, SimulationSnapshot::Handle const*, SimulationSnapshot::Storage*)
+     9.33%     0.00%  legacy-gated  legacy-gated         [.] HeadlessRunner::game(std::map<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::vector<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::allocator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > > >, std::less<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > >, std::allocator<std::pair<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const, std::vector<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::allocator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > > > > > > const&, std::filesystem::__cxx11::path const&) [clone .isra.0]
+     9.33%     0.11%  legacy-gated  legacy-gated         [.] Engine::stepSessionImpl(unsigned long, std::vector<SDL_Event, std::allocator<SDL_Event> > const&)
+     9.33%     0.00%  legacy-gated  legacy-gated         [.] Engine::stepSession(unsigned long)
+     9.33%     0.00%  legacy-gated  legacy-gated         [.] Engine::stepSession(unsigned long, std::vector<SDL_Event, std::allocator<SDL_Event> > const&)
+     7.93%     7.81%  legacy-gated  legacy-gated         [.] auto SimulationSnapshot::capture(Game const&, std::shared_ptr<std::vector<SimulationSnapshot::BuildingKindView, std::allocator<SimulationSnapshot::BuildingKindView> > const>, unsigned int, SimulationSnapshot::Handle const*, SimulationSnapshot::Storage*)::{lambda(SimulationSnapshot::ChunkStamps&, MapState::ChangeTracker const&, bool, auto:1)#1}::operator()<SimulationSnapshot::capture(Game const&, std::shared_ptr<std::vector<SimulationSnapshot::BuildingKindView, std::allocator<SimulationSnapshot::BuildingKindView> > const>, unsigned int, SimulationSnapshot::Handle const*, SimulationSnapshot::Storage*)::{lambda(unsigned long, unsigned long)#2}>(SimulationSnapshot::ChunkStamps&, MapState::ChangeTracker const&, bool, SimulationSnapshot::capture(Game const&, std::shared_ptr<std::vector<SimulationSnapshot::BuildingKindView, std::allocator<SimulationSnapshot::BuildingKindView> > const>, unsigned int, SimulationSnapshot::Handle const*, SimulationSnapshot::Storage*)::{lambda(unsigned long, unsigned long)#2}) const
+     7.45%     6.19%  legacy-gated  legacy-gated         [.] gradient_preparation::seed(gradient_preparation::Request const&, SimulationSnapshot::Handle const&, unsigned short*, gradient_preparation::CrowdingScratch&)
+     5.65%     0.00%  legacy-gated  legacy-gated         [.] ComputeExecutor::execute(ComputeExecutor::Claim const&, unsigned long)
+     5.65%     0.00%  legacy-gated  legacy-gated         [.] ComputeExecutor::join(ComputeExecutor::Batch&)
+     5.65%     0.00%  legacy-gated  legacy-gated         [.] Map::advanceGradientPipeline()
+     5.64%     0.00%  legacy-gated  legacy-gated         [.] Map::syncStep(unsigned int, bool)
+     5.30%     1.04%  legacy-gated  legacy-gated         [.] Map::growResources()
+     4.13%     0.11%  legacy-gated  legacy-gated         [.] AIJavaScript::decide()
+     4.02%     0.12%  legacy-gated  legacy-gated         [.] AIEngine::OrderScheduler::Pending::run(void*, unsigned long)
+     4.01%     0.11%  legacy-gated  legacy-gated         [.] AI::decide(AIEngine::DecisionContext const&)
+     3.90%     0.00%  legacy-gated  legacy-gated         [.] AIJavaScript::getOrder(AIEngine::DecisionContext const&)
+     3.90%     0.00%  legacy-gated  legacy-gated         [.] std::_Function_handler<AIEngine::Command (AIEngine::AIWorldView const&), AIEngine::Pipeline::prepare(Game&, std::span<unsigned int const, 18446744073709551615ul>, bool, std::shared_ptr<GameDiagnostics::Session> const&)::{lambda(AIEngine::AIWorldView const&)#1}>::_M_invoke(std::_Any_data const&, AIEngine::AIWorldView const&)
+     2.76%     1.18%  legacy-gated  legacy-gated         [.] Fertility::applyGrowthOpportunities(Map&, int, int, unsigned int, int)
+     1.86%     0.00%  legacy-gated  legacy-gated         [.] GradientPipeline::run(void*, unsigned long)
+     1.86%     0.00%  legacy-gated  legacy-gated         [.] gradient_preparation::propagate(gradient_preparation::Request const&, SimulationSnapshot::Handle const&, unsigned short*, GradientWorkspace&)
+     1.48%     0.11%  legacy-gated  legacy-gated         [.] auto SimulationSnapshot::capture(Game const&, std::shared_ptr<std::vector<SimulationSnapshot::BuildingKindView, std::allocator<SimulationSnapshot::BuildingKindView> > const>, unsigned int, SimulationSnapshot::Handle const*, SimulationSnapshot::Storage*)::{lambda(auto:1&, auto:2, unsigned long, unsigned long)#1}::operator()<std::vector<unsigned int, std::allocator<unsigned int> >, std::span<unsigned int const, 18446744073709551615ul> >(std::vector<unsigned int, std::allocator<unsigned int> >&, std::span<unsigned int const, 18446744073709551615ul>, unsigned long, unsigned long) const [clone .isra.0]
+     1.37%     1.37%  legacy-gated  libc.so.6            [.] __memmove_avx_unaligned
+     1.15%     0.12%  legacy-gated  [kernel.kallsyms]    [.] asm_sysvec_apic_timer_interrupt
+     1.13%     1.13%  legacy-gated  legacy-gated         [.] Map::recordNaturalGrowth(int, int, int, int, std::array<unsigned short, 12ul> const&)
+     1.03%     0.00%  legacy-gated  [kernel.kallsyms]    [.] sysvec_apic_timer_interrupt
+     0.92%     0.34%  legacy-gated  legacy-gated         [.] Map::resourceGrowthRateAt(unsigned long, int) const
+     0.79%     0.00%  legacy-gated  [kernel.kallsyms]    [.] __sysvec_apic_timer_interrupt
+     0.79%     0.00%  legacy-gated  [kernel.kallsyms]    [.] hrtimer_interrupt
+     0.68%     0.00%  legacy-gated  [kernel.kallsyms]    [.] __hrtimer_run_queues
+     0.60%     0.60%  legacy-gated  libc.so.6            [.] __memmove_avx_unaligned_erms
+     0.57%     0.11%  legacy-gated  legacy-gated         [.] Team::syncStep()
+     0.57%     0.46%  legacy-gated  legacy-gated         [.] Team::checkSum(std::vector<unsigned int, std::allocator<unsigned int> >*, std::vector<unsigned int, std::allocator<unsigned int> >*, std::vector<unsigned int, std::allocator<unsigned int> >*)
+     0.57%     0.00%  legacy-gated  legacy-gated         [.] Game::checkSum(std::vector<unsigned int, std::allocator<unsigned int> >*, std::vector<unsigned int, std::allocator<unsigned int> >*, std::vector<unsigned int, std::allocator<unsigned int> >*, bool)
+     0.57%     0.11%  legacy-gated  legacy-gated         [.] Map::stateView() const
+     0.56%     0.00%  legacy-gated  [kernel.kallsyms]    [.] tick_nohz_handler
+     0.56%     0.00%  legacy-gated  [kernel.kallsyms]    [.] update_process_times
+     0.47%     0.11%  legacy-gated  [kernel.kallsyms]    [.] do_syscall_64
+     0.47%     0.00%  legacy-gated  [kernel.kallsyms]    [.] entry_SYSCALL_64_after_hwframe
+     0.46%     0.46%  legacy-gated  legacy-gated         [.] Fertility::GrowthCache::rate(unsigned long, ResourceEcology, unsigned int) const
+     0.35%     0.00%  legacy-gated  [kernel.kallsyms]    [.] x64_sys_call
+     0.35%     0.12%  legacy-gated  [kernel.kallsyms]    [.] futex_wait
+     0.35%     0.00%  legacy-gated  [kernel.kallsyms]    [.] __x64_sys_futex
+     0.35%     0.00%  legacy-gated  [kernel.kallsyms]    [.] do_futex
+     0.34%     0.23%  legacy-gated  legacy-gated         [.] Sector::step()
+     0.34%     0.34%  legacy-gated  libc.so.6            [.] pthread_mutex_unlock@@GLIBC_2.2.5
+     0.34%     0.00%  legacy-gated  legacy-gated         [.] Map::resourceGrowthField() const
+     0.34%     0.00%  legacy-gated  libc.so.6            [.] ___pthread_mutex_unlock (inlined)
+     0.34%     0.00%  legacy-gated  libc.so.6            [.] __pthread_mutex_unlock_usercnt (inlined)
+     0.34%     0.00%  legacy-gated  libc.so.6            [.] lll_mutex_unlock_optimized (inlined)
+     0.34%     0.00%  legacy-gated  [kernel.kallsyms]    [.] sched_tick
+     0.30%     0.30%  legacy-gated  legacy-gated         [.] Script::Value::~Value()
+     0.29%     0.29%  legacy-gated  legacy-gated         [.] void gradient_preparation::clearCells<Map::seedClearAreasGradient(int, int, unsigned short*)::{lambda(auto:1)#1}>(MapState::View const&, bool, int, int, unsigned short*, Map::seedClearAreasGradient(int, int, unsigned short*)::{lambda(auto:1)#1})
+     0.23%     0.23%  legacy-gated  legacy-gated         [.] Script::Observations::world() const
+     0.23%     0.23%  legacy-gated  legacy-gated         [.] add_shape_property
+     0.23%     0.23%  legacy-gated  legacy-gated         [.] Script::(anonymous namespace)::write(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, Script::Value const&, unsigned int)
+     0.23%     0.23%  legacy-gated  legacy-gated         [.] JS_CreateProperty
+     0.23%     0.12%  legacy-gated  legacy-gated         [.] Script::(anonymous namespace)::GlobalsCodec::token(JSValue, unsigned int)
+     0.23%     0.11%  legacy-gated  legacy-gated         [.] Map::incResource(int, int, ResourceId, int)
+     0.23%     0.00%  legacy-gated  legacy-gated         [.] Script::(anonymous namespace)::QuickRuntime::invoke(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&, Script::Value const&, bool, Script::Host&)
+     0.23%     0.23%  legacy-gated  legacy-gated         [.] TeamStats::step(Team*, bool)
+     0.23%     0.00%  legacy-gated  legacy-gated         [.] Unit::endOfAction()
+     0.23%     0.00%  legacy-gated  legacy-gated         [.] Unit::syncStep()
+     0.23%     0.23%  legacy-gated  libstdc++.so.6.0.35  [.] operator new(unsigned long)
+     0.23%     0.00%  legacy-gated  [kernel.kallsyms]    [.] schedule
+     0.23%     0.11%  legacy-gated  [kernel.kallsyms]    [.] __schedule
+     0.23%     0.00%  legacy-gated  [kernel.kallsyms]    [.] __futex_wait
+     0.23%     0.00%  legacy-gated  [kernel.kallsyms]    [.] futex_do_wait
+     0.22%     0.22%  legacy-gated  legacy-gated         [.] syncRandEngine()
+     0.22%     0.00%  legacy-gated  [kernel.kallsyms]    [k] perf_adjust_freq_unthr_context
+     0.22%     0.00%  legacy-gated  [kernel.kallsyms]    [.] perf_event_task_tick
+     0.22%     0.00%  legacy-gated  [kernel.kallsyms]    [.] amd_pmu_disable_all
+     0.22%     0.00%  legacy-gated  [kernel.kallsyms]    [.] x86_pmu_disable
+     0.17%     0.17%  legacy-gated  legacy-gated         [.] std::vector<MapState::ResourceCell, std::allocator<MapState::ResourceCell> >::_M_default_append(unsigned long)
+     0.15%     0.00%  legacy-gated  [kernel.kallsyms]    [.] asm_exc_page_fault
+     0.15%     0.00%  legacy-gated  [kernel.kallsyms]    [.] do_user_addr_fault
+     0.15%     0.00%  legacy-gated  [kernel.kallsyms]    [.] exc_page_fault
+     0.15%     0.02%  legacy-gated  [kernel.kallsyms]    [k] do_anonymous_page
+     0.15%     0.00%  legacy-gated  [kernel.kallsyms]    [.] __handle_mm_fault
+     0.15%     0.00%  legacy-gated  [kernel.kallsyms]    [.] handle_mm_fault
+     0.15%     0.00%  legacy-gated  [kernel.kallsyms]    [.] handle_pte_fault
+     0.13%     0.00%  legacy-gated  [kernel.kallsyms]    [.] alloc_anon_folio
+     0.12%     0.12%  legacy-gated  legacy-gated         [.] JS_FreeAtomStruct
+     0.12%     0.12%  legacy-gated  [kernel.kallsyms]    [k] __sched_balance_update_blocked_averages
+     0.12%     0.00%  legacy-gated  [kernel.kallsyms]    [.] __irq_exit_rcu
+     0.12%     0.00%  legacy-gated  [kernel.kallsyms]    [.] handle_softirqs
+     0.12%     0.00%  legacy-gated  [kernel.kallsyms]    [.] irq_exit_rcu
+     0.12%     0.00%  legacy-gated  [kernel.kallsyms]    [.] sched_balance_softirq
+     0.12%     0.00%  legacy-gated  [kernel.kallsyms]    [.] sched_balance_update_blocked_averages
+     0.12%     0.12%  legacy-gated  legacy-gated         [.] js_arena_usable_size
+     0.12%     0.12%  legacy-gated  [kernel.kallsyms]    [k] select_idle_core.isra.0
+     0.12%     0.00%  legacy-gated  [kernel.kallsyms]    [.] hrtimer_wakeup
+     0.12%     0.00%  legacy-gated  [kernel.kallsyms]    [.] select_idle_cpu
+     0.12%     0.00%  legacy-gated  [kernel.kallsyms]    [.] select_idle_sibling
+     0.12%     0.00%  legacy-gated  [kernel.kallsyms]    [.] select_task_rq
+     0.12%     0.00%  legacy-gated  [kernel.kallsyms]    [.] select_task_rq_fair
+     0.12%     0.00%  legacy-gated  [kernel.kallsyms]    [.] try_to_wake_up
+     0.12%     0.00%  legacy-gated  [kernel.kallsyms]    [.] wake_up_process
+     0.12%     0.12%  legacy-gated  [kernel.kallsyms]    [k] native_read_msr
+     0.12%     0.12%  legacy-gated  legacy-gated         [.] JS_IsFunction
+     0.11%     0.11%  legacy-gated  legacy-gated         [.] Map::terrainSupportsResourceAt(unsigned long, ResourceId) const
+     0.11%     0.11%  legacy-gated  legacy-gated         [.] GameGUI::executeOrder(std::shared_ptr<Order>)
+     0.11%     0.11%  legacy-gated  legacy-gated         [.] Map::cellView() const
+     0.11%     0.11%  legacy-gated  [kernel.kallsyms]    [k] update_rq_clock
+     0.11%     0.11%  legacy-gated  legacy-gated         [.] Map::directionByGradient(unsigned int, int, int, int, unsigned short const*, int*, int*, bool, unsigned int) const
+     0.11%     0.00%  legacy-gated  legacy-gated         [.] Map::buildingGradientDirection(Building*, int, int, int, int*, int*, bool, BuildingRoute) const
+     0.11%     0.00%  legacy-gated  legacy-gated         [.] Map::pathfindBuilding(Building*, int, int, int, int*, int*, BuildingRoute)
+     0.11%     0.00%  legacy-gated  legacy-gated         [.] Unit::handleMovementGoingToFlagOrBuilding()
+     0.11%     0.11%  legacy-gated  [kernel.kallsyms]    [k] __rcu_read_unlock
+     0.11%     0.00%  legacy-gated  [kernel.kallsyms]    [.] __mem_cgroup_charge
+     0.11%     0.00%  legacy-gated  legacy-gated         [.] std::vector<unsigned int, std::allocator<unsigned int> >::resize(unsigned long)
+     0.11%     0.00%  legacy-gated  libc.so.6            [.] __memset_avx2_unaligned_erms
+     0.11%     0.11%  legacy-gated  legacy-gated         [.] ComputeExecutor::submit(std::span<ComputeExecutor::Group const, 18446744073709551615ul>, ComputeExecutor::Placement)
+     0.11%     0.00%  legacy-gated  legacy-gated         [.] AIEngine::OrderScheduler::dispatch()
+     0.11%     0.00%  legacy-gated  legacy-gated         [.] Script::(anonymous namespace)::GlobalsCodec::capture(JSValue)
+     0.11%     0.00%  legacy-gated  legacy-gated         [.] JS_DefinePropertyValue
+     0.11%     0.00%  legacy-gated  legacy-gated         [.] JS_Glob2ModuleBindings
+     0.11%     0.11%  legacy-gated  legacy-gated         [.] Building::checkSum(std::vector<unsigned int, std::allocator<unsigned int> >*)
+     0.11%     0.00%  legacy-gated  legacy-gated         [.] AI::publishDecision(AIEngine::Command const&)
+     0.11%     0.11%  legacy-gated  legacy-gated         [.] SimulationSnapshot::Resources::~Resources()
+     0.11%     0.11%  legacy-gated  legacy-gated         [.] auto SimulationSnapshot::capture(Game const&, std::shared_ptr<std::vector<SimulationSnapshot::BuildingKindView, std::allocator<SimulationSnapshot::BuildingKindView> > const>, unsigned int, SimulationSnapshot::Handle const*, SimulationSnapshot::Storage*)::{lambda(SimulationSnapshot::ChunkStamps&, MapState::ChangeTracker const&, bool, auto:1)#1}::operator()<SimulationSnapshot::capture(Game const&, std::shared_ptr<std::vector<SimulationSnapshot::BuildingKindView, std::allocator<SimulationSnapshot::BuildingKindView> > const>, unsigned int, SimulationSnapshot::Handle const*, SimulationSnapshot::Storage*)::{lambda(unsigned long, unsigned long)#3}>(SimulationSnapshot::ChunkStamps&, MapState::ChangeTracker const&, bool, SimulationSnapshot::capture(Game const&, std::shared_ptr<std::vector<SimulationSnapshot::BuildingKindView, std::allocator<SimulationSnapshot::BuildingKindView> > const>, unsigned int, SimulationSnapshot::Handle const*, SimulationSnapshot::Storage*)::{lambda(unsigned long, unsigned long)#3}) const
+     0.11%     0.11%  legacy-gated  legacy-gated         [.] Unit::handleActivity()
+     0.11%     0.11%  legacy-gated  legacy-gated         [.] Map::growResourceStock(unsigned long)
+     0.11%     0.11%  legacy-gated  [kernel.kallsyms]    [k] fpregs_assert_state_consistent
+     0.11%     0.00%  legacy-gated  [kernel.kallsyms]    [.] irqentry_exit
+     0.11%     0.11%  legacy-gated  legacy-gated         [.] NetEngine::clearTopOrders()
+     0.11%     0.11%  legacy-gated  legacy-gated         [.] AIEngine::OrderScheduler::pendingCount() const
+     0.11%     0.00%  legacy-gated  legacy-gated         [.] AIEngine::OrderScheduler::submit(AIEngine::RequestId, std::shared_ptr<AIEngine::AIWorldView const>, std::function<AIEngine::Command (AIEngine::AIWorldView const&)>)
+     0.11%     0.11%  legacy-gated  [kernel.kallsyms]    [k] try_to_block_task.constprop.0.isra.0
+     0.11%     0.11%  legacy-gated  legacy-gated         [.] add_property
+     0.11%     0.11%  legacy-gated  legacy-gated         [.] js_malloc_rt
+     0.11%     0.11%  legacy-gated  legacy-gated         [.] JS_CallInternal
+     0.11%     0.11%  legacy-gated  [kernel.kallsyms]    [k] acct_account_cputime
+     0.11%     0.00%  legacy-gated  [kernel.kallsyms]    [.] account_process_tick
+     0.11%     0.00%  legacy-gated  [kernel.kallsyms]    [.] account_user_time
+     0.11%     0.11%  legacy-gated  [kernel.kallsyms]    [k] srso_safe_ret
+     0.11%     0.11%  legacy-gated  legacy-gated         [.] js_arena_free
+     0.11%     0.11%  legacy-gated  legacy-gated         [.] JS_FreeValueRT
+     0.11%     0.11%  legacy-gated  [kernel.kallsyms]    [k] rcu_sched_clock_irq
+     0.11%     0.11%  legacy-gated  legacy-gated         [.] std::_Sp_counted_ptr_inplace<NullOrder, std::allocator<void>, (__gnu_cxx::_Lock_policy)2>::_M_dispose()
+     0.11%     0.11%  legacy-gated  libc.so.6            [.] __memcmp_avx2_movbe
+     0.11%     0.11%  legacy-gated  [vdso]               [.] 0x0000000000000a09
+     0.11%     0.11%  legacy-gated  [kernel.kallsyms]    [k] native_write_msr
+     0.08%     0.08%  legacy-gated  legacy-gated         [.] Map::seedMaterialGradientDirect(int, unsigned char, int, unsigned short*, unsigned short const*)
+     0.08%     0.00%  legacy-gated  legacy-gated         [.] Building::considerUnitForMaterial(Unit*, int, int*)
+     0.08%     0.00%  legacy-gated  legacy-gated         [.] Building::gatherBringMaterialsCandidates(Building::BringMaterialsCandidate*, int)
+     0.08%     0.00%  legacy-gated  legacy-gated         [.] Building::subscribeToBringMaterialsStep(bool) [clone .part.0]
+     0.08%     0.00%  legacy-gated  legacy-gated         [.] Map::getMaterialGradientSlot(int, int, int, bool, Building const*)
+     0.08%     0.00%  legacy-gated  legacy-gated         [.] Map::materialAvailableSlot(int, int, int, int, int, int*, bool, Building const*)
+     0.08%     0.00%  legacy-gated  legacy-gated         [.] Map::updateMaterialGradient(int, unsigned char, int, bool)
+
+
+#
+# (Cannot load tips.txt file, please install perf!)
+#

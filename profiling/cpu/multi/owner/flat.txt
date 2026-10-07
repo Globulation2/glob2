@@ -1,0 +1,36 @@
+# To display the perf.data header info, please use --header/--header-only options.
+#
+#
+# Total Lost Samples: 0
+#
+# Samples: 8K of event 'cpu/cycles/P'
+# Event count (approx.): 166721813702
+#
+# Overhead  Command          Shared Object         Symbol                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         
+# ........  ...............  ....................  .......................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................
+#
+    21.89%  candidate-symbo  candidate-symbols     [.] gradient_preparation::MaterialSeedCache::trySeed(SimulationSnapshot::Handle const&, int, int, int, unsigned short*, unsigned short const*)
+    18.62%  candidate-symbo  candidate-symbols     [.] Script::Observations::observe()
+    13.62%  candidate-symbo  candidate-symbols     [.] void gradient_kernel::propagateField<gradient_kernel::propagateTerrainField<gradient_preparation::propagate(gradient_preparation::Request const&, SimulationSnapshot::Handle const&, unsigned short*, GradientWorkspace&)::{lambda(unsigned long)#1}>(unsigned short*, int, int, field::Grid, GradientWorkspace&, gradient_preparation::propagate(gradient_preparation::Request const&, SimulationSnapshot::Handle const&, unsigned short*, GradientWorkspace&)::{lambda(unsigned long)#1}, bool)::{lambda(unsigned long)#1}>(unsigned short*, int, int, field::Grid, GradientWorkspace&, gradient_kernel::propagateTerrainField<gradient_preparation::propagate(gradient_preparation::Request const&, SimulationSnapshot::Handle const&, unsigned short*, GradientWorkspace&)::{lambda(unsigned long)#1}>(unsigned short*, int, int, field::Grid, GradientWorkspace&, gradient_preparation::propagate(gradient_preparation::Request const&, SimulationSnapshot::Handle const&, unsigned short*, GradientWorkspace&)::{lambda(unsigned long)#1}, bool)::{lambda(unsigned long)#1}) [clone .constprop.0]
+    10.56%  candidate-symbo  libc.so.6             [.] __memmove_avx_unaligned_erms
+     9.66%  candidate-symbo  candidate-symbols     [.] auto SimulationSnapshot::capture(Game const&, std::shared_ptr<std::vector<SimulationSnapshot::BuildingKindView, std::allocator<SimulationSnapshot::BuildingKindView> > const>, unsigned int, SimulationSnapshot::Handle const*, SimulationSnapshot::Storage*)::{lambda(SimulationSnapshot::ChunkStamps&, MapState::ChangeTracker const&, bool, auto:1)#1}::operator()<SimulationSnapshot::capture(Game const&, std::shared_ptr<std::vector<SimulationSnapshot::BuildingKindView, std::allocator<SimulationSnapshot::BuildingKindView> > const>, unsigned int, SimulationSnapshot::Handle const*, SimulationSnapshot::Storage*)::{lambda(unsigned long, unsigned long)#2}>(SimulationSnapshot::ChunkStamps&, MapState::ChangeTracker const&, bool, SimulationSnapshot::capture(Game const&, std::shared_ptr<std::vector<SimulationSnapshot::BuildingKindView, std::allocator<SimulationSnapshot::BuildingKindView> > const>, unsigned int, SimulationSnapshot::Handle const*, SimulationSnapshot::Storage*)::{lambda(unsigned long, unsigned long)#2}) const
+     6.18%  candidate-symbo  candidate-symbols     [.] ResourceGrowth::calculate(MapState::View const&, MersenneTwister&, ResourceGrowth::Batch&)
+     4.01%  candidate-symbo  candidate-symbols     [.] gradient_preparation::seed(gradient_preparation::Request const&, SimulationSnapshot::Handle const&, unsigned short*, gradient_preparation::CrowdingScratch&)
+     1.92%  candidate-symbo  [kernel.kallsyms]     [k] kernel_init_pages
+     0.61%  candidate-symbo  candidate-symbols     [.] ResourceGrowth::apply(Map&, ResourceGrowth::Batch const&, ResourceGrowth::Metrics&)
+     0.53%  candidate-symbo  [kernel.kallsyms]     [k] __rmqueue_pcplist
+     0.46%  candidate-symbo  candidate-symbols     [.] Map::recordNaturalGrowth(int, int, int, int, std::array<unsigned short, 12ul> const&)
+     0.42%  candidate-symbo  candidate-symbols     [.] Map::materialStocksAt(unsigned long) const
+     0.39%  candidate-symbo  [kernel.kallsyms]     [k] asm_exc_page_fault
+     0.36%  candidate-symbo  [kernel.kallsyms]     [k] zap_present_ptes.constprop.0
+     0.31%  candidate-symbo  [kernel.kallsyms]     [k] do_anonymous_page
+     0.28%  candidate-symbo  [kernel.kallsyms]     [k] free_unref_folios
+     0.25%  candidate-symbo  [kernel.kallsyms]     [k] __rcu_read_unlock
+     0.23%  candidate-symbo  [kernel.kallsyms]     [k] __handle_mm_fault
+     0.22%  candidate-symbo  [kernel.kallsyms]     [k] srso_safe_ret
+     0.22%  candidate-symbo  libc.so.6             [.] __memmove_avx_unaligned
+
+
+#
+# (Cannot load tips.txt file, please install perf!)
+#

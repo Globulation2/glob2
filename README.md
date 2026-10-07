@@ -1,5 +1,7 @@
 # Snapshot resource growth: PR #897 evidence
 
+**Latest evidence:** [reserved-core throughput and hardware CPU profiles](profiling/README.md). Using the repository cpuset/governor wrappers, shared growth loses 9.3% dense throughput, 3.9% active-AI throughput and 4.2% in the disabled-growth control; multi-material is inconclusive. 132 native timing runs and 24 matching-window profiles separate throughput from profiler overhead. All host settings were restored. This supersedes the earlier busy-host qualification limits for these four workloads, not the platform/play limitations.
+
 **Follow-up:** [shared-snapshot attribution](attribution/README.md) corrects the standalone-cost interpretation. When every variant pays for an existing capture, immediate split ratios are 0.96–1.62×, mostly near 1.00–1.29×. Engine capture counts are unchanged, but copy volume often rises. The follow-up also records current-master integration conflicts; the earlier conflict-free statement below applies only to the originally validated master.
 
 Final implementation: `78736bfd0` on `codex/snapshot-resource-growth`. Original matched performance baseline: `d42d3e512` (immediate growth). Final integration reviewed master `591e40ecb`; its abort-session fix was cherry-picked as `e93956015`. Intervening rendering changes are unrelated and were not rebased into this branch. The later fixture-generator commit changes no production simulation code; the measured final executable is from `e93956015`. The merge tree is conflict-free.

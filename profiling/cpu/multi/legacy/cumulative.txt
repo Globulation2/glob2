@@ -1,0 +1,142 @@
+# To display the perf.data header info, please use --header/--header-only options.
+#
+#
+# Total Lost Samples: 0
+#
+# Samples: 8K of event 'cpu/cycles/P'
+# Event count (approx.): 163594446519
+#
+# Children      Self  Command         Shared Object         Symbol                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         
+# ........  ........  ..............  ....................  .............................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................
+#
+    29.68%     0.01%  legacy-symbols  legacy-symbols        [.] Engine::gatherAndAdvanceOrders(bool)
+    29.54%     0.05%  legacy-symbols  legacy-symbols        [.] AIEngine::Pipeline::prepare(Game&, std::span<unsigned int const, 18446744073709551615ul>, bool, std::shared_ptr<GameDiagnostics::Session> const&)
+    29.54%     0.00%  legacy-symbols  legacy-symbols        [.] Game::prepareAIOrders(std::span<unsigned int const, 18446744073709551615ul>, bool, std::shared_ptr<GameDiagnostics::Session> const&)
+    29.15%     0.26%  legacy-symbols  legacy-symbols        [.] SimulationSnapshot::capture(Game const&, std::shared_ptr<std::vector<SimulationSnapshot::BuildingKindView, std::allocator<SimulationSnapshot::BuildingKindView> > const>, unsigned int, SimulationSnapshot::Handle const*, SimulationSnapshot::Storage*)
+    29.15%     0.01%  legacy-symbols  legacy-symbols        [.] SimulationSnapshot::Store::captureBoundary(Game const&, unsigned int)
+    20.43%    20.43%  legacy-symbols  legacy-symbols        [.] gradient_preparation::MaterialSeedCache::trySeed(SimulationSnapshot::Handle const&, int, int, int, unsigned short*, unsigned short const*)
+    18.89%    18.89%  legacy-symbols  legacy-symbols        [.] Script::Observations::observe()
+    18.09%     9.89%  legacy-symbols  libc.so.6             [.] __memmove_avx_unaligned_erms
+    16.46%     0.00%  legacy-symbols  legacy-symbols        [.] Engine::advanceSession(unsigned long, std::function<void ()> const&, bool)
+    14.15%    14.15%  legacy-symbols  legacy-symbols        [.] void gradient_kernel::propagateField<gradient_kernel::propagateTerrainField<gradient_preparation::propagate(gradient_preparation::Request const&, SimulationSnapshot::Handle const&, unsigned short*, GradientWorkspace&)::{lambda(unsigned long)#1}>(unsigned short*, int, int, field::Grid, GradientWorkspace&, gradient_preparation::propagate(gradient_preparation::Request const&, SimulationSnapshot::Handle const&, unsigned short*, GradientWorkspace&)::{lambda(unsigned long)#1}, bool)::{lambda(unsigned long)#1}>(unsigned short*, int, int, field::Grid, GradientWorkspace&, gradient_kernel::propagateTerrainField<gradient_preparation::propagate(gradient_preparation::Request const&, SimulationSnapshot::Handle const&, unsigned short*, GradientWorkspace&)::{lambda(unsigned long)#1}>(unsigned short*, int, int, field::Grid, GradientWorkspace&, gradient_preparation::propagate(gradient_preparation::Request const&, SimulationSnapshot::Handle const&, unsigned short*, GradientWorkspace&)::{lambda(unsigned long)#1}, bool)::{lambda(unsigned long)#1}) [clone .constprop.0]
+    14.04%     0.00%  legacy-symbols  legacy-symbols        [.] auto SimulationSnapshot::capture(Game const&, std::shared_ptr<std::vector<SimulationSnapshot::BuildingKindView, std::allocator<SimulationSnapshot::BuildingKindView> > const>, unsigned int, SimulationSnapshot::Handle const*, SimulationSnapshot::Storage*)::{lambda(auto:1&, auto:2)#1}::operator()<std::vector<std::array<unsigned short, 12ul>, std::allocator<std::array<unsigned short, 12ul> > >, std::span<std::array<unsigned short, 12ul> const, 18446744073709551615ul> >(std::vector<std::array<unsigned short, 12ul>, std::allocator<std::array<unsigned short, 12ul> > >&, std::span<std::array<unsigned short, 12ul> const, 18446744073709551615ul>) const [clone .isra.0]
+    10.56%     0.00%  legacy-symbols  legacy-symbols        [.] HeadlessRunner::game(std::map<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::vector<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::allocator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > > >, std::less<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > >, std::allocator<std::pair<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const, std::vector<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::allocator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > > > > > > const&, std::filesystem::__cxx11::path const&) [clone .isra.0]
+     9.76%     0.01%  legacy-symbols  legacy-symbols        [.] Engine::stepSession(unsigned long)
+     9.75%     0.00%  legacy-symbols  legacy-symbols        [.] Engine::stepSession(unsigned long, std::vector<SDL_Event, std::allocator<SDL_Event> > const&)
+     9.75%     0.00%  legacy-symbols  legacy-symbols        [.] Engine::stepSessionImpl(unsigned long, std::vector<SDL_Event, std::allocator<SDL_Event> > const&)
+     9.36%     0.01%  legacy-symbols  legacy-symbols        [.] Engine::executeOrdersAndStep(bool)
+     9.29%     0.00%  legacy-symbols  legacy-symbols        [.] Game::syncStep(int, Game::PreparationCompletion)
+     8.66%     0.00%  legacy-symbols  legacy-symbols        [.] Map::syncStep(unsigned int, bool)
+     8.56%     8.44%  legacy-symbols  legacy-symbols        [.] auto SimulationSnapshot::capture(Game const&, std::shared_ptr<std::vector<SimulationSnapshot::BuildingKindView, std::allocator<SimulationSnapshot::BuildingKindView> > const>, unsigned int, SimulationSnapshot::Handle const*, SimulationSnapshot::Storage*)::{lambda(SimulationSnapshot::ChunkStamps&, MapState::ChangeTracker const&, bool, auto:1)#1}::operator()<SimulationSnapshot::capture(Game const&, std::shared_ptr<std::vector<SimulationSnapshot::BuildingKindView, std::allocator<SimulationSnapshot::BuildingKindView> > const>, unsigned int, SimulationSnapshot::Handle const*, SimulationSnapshot::Storage*)::{lambda(unsigned long, unsigned long)#2}>(SimulationSnapshot::ChunkStamps&, MapState::ChangeTracker const&, bool, SimulationSnapshot::capture(Game const&, std::shared_ptr<std::vector<SimulationSnapshot::BuildingKindView, std::allocator<SimulationSnapshot::BuildingKindView> > const>, unsigned int, SimulationSnapshot::Handle const*, SimulationSnapshot::Storage*)::{lambda(unsigned long, unsigned long)#2}) const
+     8.54%     2.02%  legacy-symbols  legacy-symbols        [.] Map::growResources()
+     8.20%     0.23%  legacy-symbols  [kernel.kallsyms]     [.] asm_exc_page_fault
+     7.97%     0.07%  legacy-symbols  [kernel.kallsyms]     [.] exc_page_fault
+     7.76%     0.07%  legacy-symbols  [kernel.kallsyms]     [.] do_user_addr_fault
+     7.16%     0.20%  legacy-symbols  [kernel.kallsyms]     [k] handle_mm_fault
+     6.69%     0.22%  legacy-symbols  [kernel.kallsyms]     [.] __handle_mm_fault
+     6.46%     0.13%  legacy-symbols  [kernel.kallsyms]     [.] handle_pte_fault
+     5.97%     0.33%  legacy-symbols  [kernel.kallsyms]     [.] do_anonymous_page
+     5.34%     2.72%  legacy-symbols  legacy-symbols        [.] Fertility::applyGrowthOpportunities(Map&, int, int, unsigned int, int)
+     4.45%     0.15%  legacy-symbols  [kernel.kallsyms]     [.] alloc_anon_folio
+     4.41%     4.39%  legacy-symbols  legacy-symbols        [.] gradient_preparation::seed(gradient_preparation::Request const&, SimulationSnapshot::Handle const&, unsigned short*, gradient_preparation::CrowdingScratch&)
+     3.75%     0.07%  legacy-symbols  [kernel.kallsyms]     [.] vma_alloc_folio_noprof
+     3.70%     0.11%  legacy-symbols  [kernel.kallsyms]     [.] alloc_pages_mpol
+     3.53%     0.13%  legacy-symbols  [kernel.kallsyms]     [.] __alloc_frozen_pages_noprof
+     3.31%     0.13%  legacy-symbols  [kernel.kallsyms]     [.] get_page_from_freelist
+     2.53%     0.01%  legacy-symbols  [kernel.kallsyms]     [.] x64_sys_call
+     2.53%     0.00%  legacy-symbols  [kernel.kallsyms]     [.] do_syscall_64
+     2.53%     0.00%  legacy-symbols  [kernel.kallsyms]     [.] entry_SYSCALL_64_after_hwframe
+     2.44%     0.06%  legacy-symbols  [kernel.kallsyms]     [.] post_alloc_hook
+     2.38%     2.38%  legacy-symbols  [kernel.kallsyms]     [k] kernel_init_pages
+     2.14%     0.01%  legacy-symbols  libc.so.6             [.] _int_free_chunk
+     2.08%     0.00%  legacy-symbols  [kernel.kallsyms]     [.] do_vmi_align_munmap
+     2.05%     0.00%  legacy-symbols  [kernel.kallsyms]     [.] vms_complete_munmap_vmas
+     2.03%     0.00%  legacy-symbols  [kernel.kallsyms]     [.] unmap_region
+     1.37%     0.00%  legacy-symbols  [kernel.kallsyms]     [.] __vm_munmap
+     1.37%     0.00%  legacy-symbols  [kernel.kallsyms]     [.] __x64_sys_munmap
+     1.37%     0.00%  legacy-symbols  [kernel.kallsyms]     [.] do_vmi_munmap
+     1.37%     0.00%  legacy-symbols  libc.so.6             [.] __munmap
+     1.32%     1.30%  legacy-symbols  legacy-symbols        [.] Map::materialStocksAt(unsigned long) const
+     1.05%     0.00%  legacy-symbols  [kernel.kallsyms]     [.] unmap_page_range
+     1.05%     0.00%  legacy-symbols  [kernel.kallsyms]     [.] unmap_single_vma
+     1.05%     0.00%  legacy-symbols  [kernel.kallsyms]     [.] unmap_vmas
+     1.05%     0.00%  legacy-symbols  [kernel.kallsyms]     [.] zap_pmd_range.isra.0
+     1.04%     0.02%  legacy-symbols  [kernel.kallsyms]     [.] zap_pte_range
+     0.98%     0.00%  legacy-symbols  [kernel.kallsyms]     [.] tlb_finish_mmu
+     0.98%     0.62%  legacy-symbols  [kernel.kallsyms]     [k] zap_present_ptes.constprop.0
+     0.94%     0.05%  legacy-symbols  [kernel.kallsyms]     [.] free_pages_and_swap_cache
+     0.94%     0.00%  legacy-symbols  [kernel.kallsyms]     [.] __tlb_batch_free_encoded_pages
+     0.87%     0.05%  legacy-symbols  [kernel.kallsyms]     [.] asm_sysvec_apic_timer_interrupt
+     0.87%     0.04%  legacy-symbols  [kernel.kallsyms]     [.] folios_put_refs
+     0.82%     0.00%  legacy-symbols  [kernel.kallsyms]     [.] sysvec_apic_timer_interrupt
+     0.79%     0.01%  legacy-symbols  [kernel.kallsyms]     [.] __sysvec_apic_timer_interrupt
+     0.78%     0.01%  legacy-symbols  [kernel.kallsyms]     [.] hrtimer_interrupt
+     0.75%     0.00%  legacy-symbols  [kernel.kallsyms]     [.] rmqueue.isra.0
+     0.75%     0.00%  legacy-symbols  [kernel.kallsyms]     [.] __do_sys_brk
+     0.75%     0.00%  legacy-symbols  [kernel.kallsyms]     [.] __x64_sys_brk
+     0.75%     0.00%  legacy-symbols  libc.so.6             [.] __brk
+     0.75%     0.00%  legacy-symbols  libc.so.6             [.] __glibc_morecore (inlined)
+     0.75%     0.00%  legacy-symbols  libc.so.6             [.] __sbrk
+     0.73%     0.22%  legacy-symbols  legacy-symbols        [.] Map::resourceGrowthRateAt(unsigned long, int) const
+     0.73%     0.00%  legacy-symbols  [kernel.kallsyms]     [.] __hrtimer_run_queues
+     0.71%     0.00%  legacy-symbols  libc.so.6             [.] systrim (inlined)
+     0.70%     0.01%  legacy-symbols  [kernel.kallsyms]     [.] rmqueue_pcplist
+     0.69%     0.64%  legacy-symbols  [kernel.kallsyms]     [.] __rmqueue_pcplist
+     0.68%     0.05%  legacy-symbols  [kernel.kallsyms]     [.] tick_nohz_handler
+     0.62%     0.59%  legacy-symbols  legacy-symbols        [.] Map::recordNaturalGrowth(int, int, int, int, std::array<unsigned short, 12ul> const&)
+     0.61%     0.02%  legacy-symbols  [kernel.kallsyms]     [.] folio_add_lru_vma
+     0.60%     0.02%  legacy-symbols  [kernel.kallsyms]     [.] folio_add_lru
+     0.59%     0.00%  legacy-symbols  [kernel.kallsyms]     [.] update_process_times
+     0.58%     0.02%  legacy-symbols  [kernel.kallsyms]     [.] __folio_batch_add_and_move
+     0.51%     0.06%  legacy-symbols  [kernel.kallsyms]     [.] folio_batch_move_lru
+     0.51%     0.00%  legacy-symbols  legacy-symbols        [.] Map::stateView() const
+     0.49%     0.02%  legacy-symbols  [kernel.kallsyms]     [.] sched_tick
+     0.48%     0.09%  legacy-symbols  [kernel.kallsyms]     [.] __mem_cgroup_charge
+     0.44%     0.17%  legacy-symbols  [kernel.kallsyms]     [.] lru_add
+     0.42%     0.04%  legacy-symbols  legacy-symbols        [.] Map::resourceGrowthField() const
+     0.38%     0.38%  legacy-symbols  [kernel.kallsyms]     [k] srso_safe_ret
+     0.38%     0.06%  legacy-symbols  legacy-symbols        [.] AIJavaScript::decide()
+     0.37%     0.22%  legacy-symbols  legacy-symbols        [.] Map::growResourceStock(unsigned long)
+     0.37%     0.00%  legacy-symbols  libstdc++.so.6.0.35   [.] operator new(unsigned long)
+     0.36%     0.04%  legacy-symbols  legacy-symbols        [.] AI::decide(AIEngine::DecisionContext const&)
+     0.35%     0.05%  legacy-symbols  libc.so.6             [.] __libc_malloc2
+     0.34%     0.28%  legacy-symbols  [kernel.kallsyms]     [k] free_unref_folios
+     0.32%     0.00%  legacy-symbols  legacy-symbols        [.] AIJavaScript::getOrder(AIEngine::DecisionContext const&)
+     0.32%     0.32%  legacy-symbols  libc.so.6             [.] pthread_mutex_unlock@@GLIBC_2.2.5
+     0.32%     0.00%  legacy-symbols  libc.so.6             [.] ___pthread_mutex_unlock (inlined)
+     0.32%     0.00%  legacy-symbols  libc.so.6             [.] __pthread_mutex_unlock_usercnt (inlined)
+     0.32%     0.00%  legacy-symbols  libc.so.6             [.] lll_mutex_unlock_optimized (inlined)
+     0.31%     0.07%  legacy-symbols  legacy-symbols        [.] GAGCore::StringTable::load(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >)
+     0.31%     0.00%  legacy-symbols  legacy-symbols        [.] GlobalContainer::load()
+     0.31%     0.00%  legacy-symbols  legacy-symbols        [.] Engine::initCustom(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&)
+     0.31%     0.16%  legacy-symbols  [kernel.kallsyms]     [.] lruvec_stat_mod_folio
+     0.31%     0.31%  legacy-symbols  legacy-symbols        [.] Fertility::GrowthCache::rate(unsigned long, ResourceEcology, unsigned int) const
+     0.31%     0.09%  legacy-symbols  libc.so.6             [.] _int_malloc
+     0.31%     0.00%  legacy-symbols  legacy-symbols        [.] ComputeExecutor::execute(ComputeExecutor::Claim const&, unsigned long)
+     0.30%     0.00%  legacy-symbols  [kernel.kallsyms]     [.] __x64_sys_futex
+     0.30%     0.00%  legacy-symbols  [kernel.kallsyms]     [.] do_futex
+     0.29%     0.07%  legacy-symbols  [kernel.kallsyms]     [k] perf_adjust_freq_unthr_context
+     0.29%     0.00%  legacy-symbols  legacy-symbols        [.] ComputeExecutor::join(ComputeExecutor::Batch&)
+     0.29%     0.00%  legacy-symbols  legacy-symbols        [.] AIEngine::OrderScheduler::Pending::run(void*, unsigned long)
+     0.29%     0.00%  legacy-symbols  legacy-symbols        [.] std::_Function_handler<AIEngine::Command (AIEngine::AIWorldView const&), AIEngine::Pipeline::prepare(Game&, std::span<unsigned int const, 18446744073709551615ul>, bool, std::shared_ptr<GameDiagnostics::Session> const&)::{lambda(AIEngine::AIWorldView const&)#1}>::_M_invoke(std::_Any_data const&, AIEngine::AIWorldView const&)
+     0.28%     0.01%  legacy-symbols  [kernel.kallsyms]     [.] perf_event_task_tick
+     0.28%     0.05%  legacy-symbols  [kernel.kallsyms]     [k] folio_add_new_anon_rmap
+     0.28%     0.00%  legacy-symbols  legacy-symbols        [.] Map::advanceGradientPipeline()
+     0.27%     0.05%  legacy-symbols  [kernel.kallsyms]     [.] __perf_sw_event
+     0.27%     0.05%  legacy-symbols  [kernel.kallsyms]     [k] __page_cache_release.part.0
+     0.27%     0.05%  legacy-symbols  legacy-symbols        [.] auto SimulationSnapshot::capture(Game const&, std::shared_ptr<std::vector<SimulationSnapshot::BuildingKindView, std::allocator<SimulationSnapshot::BuildingKindView> > const>, unsigned int, SimulationSnapshot::Handle const*, SimulationSnapshot::Storage*)::{lambda(auto:1&, auto:2, unsigned long, unsigned long)#1}::operator()<std::vector<unsigned int, std::allocator<unsigned int> >, std::span<unsigned int const, 18446744073709551615ul> >(std::vector<unsigned int, std::allocator<unsigned int> >&, std::span<unsigned int const, 18446744073709551615ul>, unsigned long, unsigned long) const [clone .isra.0]
+     0.26%     0.05%  legacy-symbols  legacy-symbols        [.] Map::incResource(int, int, ResourceId, int)
+     0.23%     0.00%  legacy-symbols  [kernel.kallsyms]     [.] x86_pmu_disable
+     0.23%     0.23%  legacy-symbols  [kernel.kallsyms]     [k] __rcu_read_unlock
+     0.23%     0.04%  legacy-symbols  legacy-symbols        [.] Team::syncStep()
+     0.22%     0.00%  legacy-symbols  [kernel.kallsyms]     [.] amd_pmu_disable_all
+     0.22%     0.02%  legacy-symbols  [kernel.kallsyms]     [.] __folio_mod_stat
+     0.22%     0.02%  legacy-symbols  [kernel.kallsyms]     [.] folio_remove_rmap_ptes
+     0.22%     0.11%  legacy-symbols  [kernel.kallsyms]     [.] lru_gen_add_folio
+     0.22%     0.22%  legacy-symbols  libc.so.6             [.] __memmove_avx_unaligned
+     0.21%     0.06%  legacy-symbols  [kernel.kallsyms]     [.] __mem_cgroup_uncharge_folios
+
+
+#
+# (Cannot load tips.txt file, please install perf!)
+#

@@ -1,0 +1,52 @@
+{
+  "started_utc": "2026-10-07T20:41:59.188481+00:00",
+  "command": [
+    "true"
+  ],
+  "uid": 1000,
+  "wrapper_sha256": "122756ffc7280fb71f8a39ad503c7ecae9e80a648a3ceb913b31ae281a67fa6f",
+  "selected_cpus": [
+    0,
+    1,
+    2,
+    3
+  ],
+  "original_governors": {
+    "/sys/devices/system/cpu/cpufreq/policy0": "schedutil",
+    "/sys/devices/system/cpu/cpufreq/policy1": "schedutil",
+    "/sys/devices/system/cpu/cpufreq/policy2": "schedutil",
+    "/sys/devices/system/cpu/cpufreq/policy3": "schedutil"
+  },
+  "before": {
+    "/sys/devices/system/cpu/cpufreq/policy0": {
+      "scaling_governor": "schedutil",
+      "scaling_cur_freq": "3994178",
+      "scaling_min_freq": "2200000",
+      "scaling_max_freq": "4000000",
+      "related_cpus": "0"
+    },
+    "/sys/devices/system/cpu/cpufreq/policy1": {
+      "scaling_governor": "schedutil",
+      "scaling_cur_freq": "3999362",
+      "scaling_min_freq": "2200000",
+      "scaling_max_freq": "4000000",
+      "related_cpus": "1"
+    },
+    "/sys/devices/system/cpu/cpufreq/policy2": {
+      "scaling_governor": "schedutil",
+      "scaling_cur_freq": "3926958",
+      "scaling_min_freq": "2200000",
+      "scaling_max_freq": "4000000",
+      "related_cpus": "2"
+    },
+    "/sys/devices/system/cpu/cpufreq/policy3": {
+      "scaling_governor": "schedutil",
+      "scaling_cur_freq": "3994406",
+      "scaling_min_freq": "2200000",
+      "scaling_max_freq": "4000000",
+      "related_cpus": "3"
+    }
+  },
+  "dry_run": true,
+  "state": "prepared"
+}

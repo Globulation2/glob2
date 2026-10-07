@@ -1,0 +1,213 @@
+# To display the perf.data header info, please use --header/--header-only options.
+#
+#
+# Total Lost Samples: 0
+#
+# Samples: 1K of event 'cpu/cycles/P'
+# Event count (approx.): 8233480823
+#
+# Children      Self  Command          Shared Object        Symbol                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         
+# ........  ........  ...............  ...................  .........................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................
+#
+    24.70%    24.70%  candidate-gated  candidate-gated      [.] Script::Observations::observe()
+    20.20%    20.20%  candidate-gated  candidate-gated      [.] void gradient_kernel::propagateField<gradient_kernel::propagateTerrainField<gradient_preparation::propagate(gradient_preparation::Request const&, SimulationSnapshot::Handle const&, unsigned short*, GradientWorkspace&)::{lambda(unsigned long)#1}>(unsigned short*, int, int, field::Grid, GradientWorkspace&, gradient_preparation::propagate(gradient_preparation::Request const&, SimulationSnapshot::Handle const&, unsigned short*, GradientWorkspace&)::{lambda(unsigned long)#1}, bool)::{lambda(unsigned long)#1}>(unsigned short*, int, int, field::Grid, GradientWorkspace&, gradient_kernel::propagateTerrainField<gradient_preparation::propagate(gradient_preparation::Request const&, SimulationSnapshot::Handle const&, unsigned short*, GradientWorkspace&)::{lambda(unsigned long)#1}>(unsigned short*, int, int, field::Grid, GradientWorkspace&, gradient_preparation::propagate(gradient_preparation::Request const&, SimulationSnapshot::Handle const&, unsigned short*, GradientWorkspace&)::{lambda(unsigned long)#1}, bool)::{lambda(unsigned long)#1}) [clone .constprop.0]
+    18.98%     0.00%  candidate-gated  candidate-gated      [.] Engine::gatherAndAdvanceOrders(bool)
+    18.69%     0.22%  candidate-gated  candidate-gated      [.] AIEngine::Pipeline::prepare(Game&, std::span<unsigned int const, 18446744073709551615ul>, bool, std::shared_ptr<GameDiagnostics::Session> const&)
+    18.69%     0.00%  candidate-gated  candidate-gated      [.] Game::prepareAIOrders(std::span<unsigned int const, 18446744073709551615ul>, bool, std::shared_ptr<GameDiagnostics::Session> const&)
+    17.98%     0.00%  candidate-gated  candidate-gated      [.] SimulationSnapshot::Store::captureBoundary(Game const&, unsigned int)
+    17.88%     0.49%  candidate-gated  candidate-gated      [.] SimulationSnapshot::capture(Game const&, std::shared_ptr<std::vector<SimulationSnapshot::BuildingKindView, std::allocator<SimulationSnapshot::BuildingKindView> > const>, unsigned int, SimulationSnapshot::Handle const*, SimulationSnapshot::Storage*)
+    16.58%    16.58%  candidate-gated  candidate-gated      [.] gradient_preparation::MaterialSeedCache::trySeed(SimulationSnapshot::Handle const&, int, int, int, unsigned short*, unsigned short const*)
+    13.57%    13.38%  candidate-gated  candidate-gated      [.] auto SimulationSnapshot::capture(Game const&, std::shared_ptr<std::vector<SimulationSnapshot::BuildingKindView, std::allocator<SimulationSnapshot::BuildingKindView> > const>, unsigned int, SimulationSnapshot::Handle const*, SimulationSnapshot::Storage*)::{lambda(SimulationSnapshot::ChunkStamps&, MapState::ChangeTracker const&, bool, auto:1)#1}::operator()<SimulationSnapshot::capture(Game const&, std::shared_ptr<std::vector<SimulationSnapshot::BuildingKindView, std::allocator<SimulationSnapshot::BuildingKindView> > const>, unsigned int, SimulationSnapshot::Handle const*, SimulationSnapshot::Storage*)::{lambda(unsigned long, unsigned long)#2}>(SimulationSnapshot::ChunkStamps&, MapState::ChangeTracker const&, bool, SimulationSnapshot::capture(Game const&, std::shared_ptr<std::vector<SimulationSnapshot::BuildingKindView, std::allocator<SimulationSnapshot::BuildingKindView> > const>, unsigned int, SimulationSnapshot::Handle const*, SimulationSnapshot::Storage*)::{lambda(unsigned long, unsigned long)#2}) const
+     6.71%     0.00%  candidate-gated  candidate-gated      [.] Engine::advanceSession(unsigned long, std::function<void ()> const&, bool)
+     5.84%     0.10%  candidate-gated  candidate-gated      [.] HeadlessRunner::game(std::map<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::vector<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::allocator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > > >, std::less<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > >, std::allocator<std::pair<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const, std::vector<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::allocator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > > > > > > const&, std::filesystem::__cxx11::path const&) [clone .isra.0]
+     5.84%     0.00%  candidate-gated  candidate-gated      [.] Engine::stepSession(unsigned long, std::vector<SDL_Event, std::allocator<SDL_Event> > const&)
+     5.84%     0.00%  candidate-gated  candidate-gated      [.] Engine::stepSessionImpl(unsigned long, std::vector<SDL_Event, std::allocator<SDL_Event> > const&)
+     5.74%     0.00%  candidate-gated  candidate-gated      [.] Engine::stepSession(unsigned long)
+     5.66%     5.28%  candidate-gated  candidate-gated      [.] gradient_preparation::seed(gradient_preparation::Request const&, SimulationSnapshot::Handle const&, unsigned short*, gradient_preparation::CrowdingScratch&)
+     5.52%     0.00%  candidate-gated  candidate-gated      [.] Engine::executeOrdersAndStep(bool)
+     5.33%     0.00%  candidate-gated  candidate-gated      [.] Game::syncStep(int, Game::PreparationCompletion)
+     2.94%     2.94%  candidate-gated  candidate-gated      [.] ResourceGrowth::calculate(MapState::View const&, MersenneTwister&, ResourceGrowth::Batch&)
+     2.80%     0.19%  candidate-gated  candidate-gated      [.] auto SimulationSnapshot::capture(Game const&, std::shared_ptr<std::vector<SimulationSnapshot::BuildingKindView, std::allocator<SimulationSnapshot::BuildingKindView> > const>, unsigned int, SimulationSnapshot::Handle const*, SimulationSnapshot::Storage*)::{lambda(auto:1&, auto:2, unsigned long, unsigned long)#1}::operator()<std::vector<unsigned int, std::allocator<unsigned int> >, std::span<unsigned int const, 18446744073709551615ul> >(std::vector<unsigned int, std::allocator<unsigned int> >&, std::span<unsigned int const, 18446744073709551615ul>, unsigned long, unsigned long) const [clone .isra.0]
+     2.60%     2.60%  candidate-gated  libc.so.6            [.] __memmove_avx_unaligned
+     2.34%     0.00%  candidate-gated  candidate-gated      [.] Map::syncStep(unsigned int, bool)
+     2.14%     0.00%  candidate-gated  candidate-gated      [.] ResourceGrowth::Pipeline::publish(Map&, unsigned int)
+     2.05%     0.88%  candidate-gated  candidate-gated      [.] ResourceGrowth::apply(Map&, ResourceGrowth::Batch const&, ResourceGrowth::Metrics&)
+     1.65%     0.20%  candidate-gated  [kernel.kallsyms]    [.] asm_sysvec_apic_timer_interrupt
+     1.54%     0.00%  candidate-gated  candidate-gated      [.] Map::advanceGradientPipeline()
+     1.45%     0.10%  candidate-gated  [kernel.kallsyms]    [.] tick_nohz_handler
+     1.45%     0.00%  candidate-gated  [kernel.kallsyms]    [.] __hrtimer_run_queues
+     1.45%     0.00%  candidate-gated  [kernel.kallsyms]    [.] __sysvec_apic_timer_interrupt
+     1.45%     0.00%  candidate-gated  [kernel.kallsyms]    [.] hrtimer_interrupt
+     1.45%     0.00%  candidate-gated  [kernel.kallsyms]    [.] sysvec_apic_timer_interrupt
+     1.44%     0.00%  candidate-gated  candidate-gated      [.] ComputeExecutor::execute(ComputeExecutor::Claim const&, unsigned long)
+     1.44%     0.00%  candidate-gated  candidate-gated      [.] ComputeExecutor::join(ComputeExecutor::Batch&)
+     1.36%     0.00%  candidate-gated  [kernel.kallsyms]    [.] update_process_times
+     1.26%     0.10%  candidate-gated  candidate-gated      [.] Team::syncStep()
+     1.26%     0.00%  candidate-gated  [kernel.kallsyms]    [.] sched_tick
+     0.97%     0.10%  candidate-gated  candidate-gated      [.] AIJavaScript::decide()
+     0.87%     0.00%  candidate-gated  candidate-gated      [.] AI::decide(AIEngine::DecisionContext const&)
+     0.87%     0.00%  candidate-gated  candidate-gated      [.] AIJavaScript::getOrder(AIEngine::DecisionContext const&)
+     0.87%     0.68%  candidate-gated  candidate-gated      [.] Map::recordNaturalGrowth(int, int, int, int, std::array<unsigned short, 12ul> const&)
+     0.78%     0.78%  candidate-gated  candidate-gated      [.] Script::Observations::world() const
+     0.78%     0.00%  candidate-gated  candidate-gated      [.] AIEngine::OrderScheduler::Pending::run(void*, unsigned long)
+     0.78%     0.00%  candidate-gated  candidate-gated      [.] std::_Function_handler<AIEngine::Command (AIEngine::AIWorldView const&), AIEngine::Pipeline::prepare(Game&, std::span<unsigned int const, 18446744073709551615ul>, bool, std::shared_ptr<GameDiagnostics::Session> const&)::{lambda(AIEngine::AIWorldView const&)#1}>::_M_invoke(std::_Any_data const&, AIEngine::AIWorldView const&)
+     0.75%     0.09%  candidate-gated  [kernel.kallsyms]    [.] asm_exc_page_fault
+     0.67%     0.19%  candidate-gated  [kernel.kallsyms]    [k] perf_adjust_freq_unthr_context
+     0.66%     0.00%  candidate-gated  [kernel.kallsyms]    [.] exc_page_fault
+     0.66%     0.00%  candidate-gated  [kernel.kallsyms]    [.] do_user_addr_fault
+     0.66%     0.19%  candidate-gated  [kernel.kallsyms]    [.] __handle_mm_fault
+     0.66%     0.00%  candidate-gated  [kernel.kallsyms]    [.] handle_mm_fault
+     0.61%     0.61%  candidate-gated  libc.so.6            [.] __memmove_avx_unaligned_erms
+     0.58%     0.00%  candidate-gated  [kernel.kallsyms]    [.] perf_event_task_tick
+     0.49%     0.10%  candidate-gated  candidate-gated      [.] Unit::syncStep()
+     0.47%     0.00%  candidate-gated  candidate-gated      [.] GradientPipeline::run(void*, unsigned long)
+     0.47%     0.00%  candidate-gated  candidate-gated      [.] gradient_preparation::propagate(gradient_preparation::Request const&, SimulationSnapshot::Handle const&, unsigned short*, GradientWorkspace&)
+     0.39%     0.30%  candidate-gated  candidate-gated      [.] Script::Value::Value(Script::Value const&)
+     0.39%     0.00%  candidate-gated  candidate-gated      [.] Unit::endOfAction()
+     0.39%     0.39%  candidate-gated  candidate-gated      [.] js_arena_malloc
+     0.37%     0.15%  candidate-gated  [kernel.kallsyms]    [.] do_anonymous_page
+     0.37%     0.00%  candidate-gated  [kernel.kallsyms]    [.] handle_pte_fault
+     0.31%     0.00%  candidate-gated  [kernel.kallsyms]    [.] do_syscall_64
+     0.31%     0.00%  candidate-gated  [kernel.kallsyms]    [.] entry_SYSCALL_64_after_hwframe
+     0.31%     0.00%  candidate-gated  [kernel.kallsyms]    [.] x64_sys_call
+     0.30%     0.00%  candidate-gated  libstdc++.so.6.0.35  [.] operator new(unsigned long)
+     0.30%     0.00%  candidate-gated  [kernel.kallsyms]    [.] __x64_sys_futex
+     0.30%     0.00%  candidate-gated  [kernel.kallsyms]    [.] do_futex
+     0.29%     0.29%  candidate-gated  candidate-gated      [.] Team::checkSum(std::vector<unsigned int, std::allocator<unsigned int> >*, std::vector<unsigned int, std::allocator<unsigned int> >*, std::vector<unsigned int, std::allocator<unsigned int> >*)
+     0.29%     0.00%  candidate-gated  candidate-gated      [.] Game::checkSum(std::vector<unsigned int, std::allocator<unsigned int> >*, std::vector<unsigned int, std::allocator<unsigned int> >*, std::vector<unsigned int, std::allocator<unsigned int> >*, bool)
+     0.29%     0.29%  candidate-gated  candidate-gated      [.] Team::integrity()
+     0.29%     0.00%  candidate-gated  libc.so.6            [.] __libc_malloc (inlined)
+     0.29%     0.10%  candidate-gated  candidate-gated      [.] Map::updateRoundTripGradientSlot(Building*, int, int)
+     0.29%     0.00%  candidate-gated  candidate-gated      [.] Map::pathfindMaterial(int, unsigned char, int, int, int, int*, int*, bool*, Building*, bool)
+     0.29%     0.00%  candidate-gated  candidate-gated      [.] Map::roundTripGradientSlot(Building*, int, int)
+     0.29%     0.00%  candidate-gated  candidate-gated      [.] Unit::handleMovementGoingToResource()
+     0.29%     0.19%  candidate-gated  candidate-gated      [.] TeamStats::step(Team*, bool)
+     0.29%     0.00%  candidate-gated  [kernel.kallsyms]    [.] task_tick_fair
+     0.29%     0.29%  candidate-gated  candidate-gated      [.] Fertility::GrowthCache::rate(unsigned long, ResourceEcology, unsigned int) const
+     0.29%     0.29%  candidate-gated  [kernel.kallsyms]    [k] perf_adjust_freq_unthr_events
+     0.29%     0.29%  candidate-gated  libc.so.6            [.] __strlen_avx2
+     0.29%     0.29%  candidate-gated  libc.so.6            [.] malloc
+     0.28%     0.18%  candidate-gated  candidate-gated      [.] void gradient_kernel::propagateField<gradient_kernel::propagateTerrainField<Map::propagateGradient(unsigned short*, int, int)::{lambda(unsigned long)#2}>(unsigned short*, int, int, field::Grid, GradientWorkspace&, Map::propagateGradient(unsigned short*, int, int)::{lambda(unsigned long)#2}, bool)::{lambda(unsigned long)#1}>(unsigned short*, int, int, field::Grid, GradientWorkspace&, gradient_kernel::propagateTerrainField<Map::propagateGradient(unsigned short*, int, int)::{lambda(unsigned long)#2}>(unsigned short*, int, int, field::Grid, GradientWorkspace&, Map::propagateGradient(unsigned short*, int, int)::{lambda(unsigned long)#2}, bool)::{lambda(unsigned long)#1})
+     0.28%     0.00%  candidate-gated  candidate-gated      [.] Map::propagateGradient(unsigned short*, int, int)
+     0.27%     0.27%  candidate-gated  candidate-gated      [.] GradientBucket::grow(unsigned long)
+     0.27%     0.00%  candidate-gated  candidate-gated      [.] void gradient_kernel::propagateField<gradient_kernel::propagateTerrainField<gradient_preparation::propagate(gradient_preparation::Request const&, SimulationSnapshot::Handle const&, unsigned short*, GradientWorkspace&)::{lambda(unsigned long)#1}>(unsigned short*, int, int, field::Grid, GradientWorkspace&, gradient_preparation::propagate(gradient_preparation::Request const&, SimulationSnapshot::Handle const&, unsigned short*, GradientWorkspace&)::{lambda(unsigned long)#1}, bool)::{lambda(unsigned long)#1}>(unsigned short*, int, int, field::Grid, GradientWorkspace&, gradient_kernel::propagateTerrainField<gradient_preparation::propagate(gradient_preparation::Request const&, SimulationSnapshot::Handle const&, unsigned short*, GradientWorkspace&)::{lambda(unsigned long)#1}>(unsigned short*, int, int, field::Grid, GradientWorkspace&, gradient_preparation::propagate(gradient_preparation::Request const&, SimulationSnapshot::Handle const&, unsigned short*, GradientWorkspace&)::{lambda(unsigned long)#1}, bool)::{lambda(unsigned long)#1}) [clone .constprop.0] [clone .cold]
+     0.20%     0.00%  candidate-gated  candidate-gated      [.] std::vector<MapState::OccupancyCell, std::allocator<MapState::OccupancyCell> >::_M_default_append(unsigned long)
+     0.20%     0.20%  candidate-gated  candidate-gated      [.] Script::(anonymous namespace)::write(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, Script::Value const&, unsigned int) [clone .constprop.2]
+     0.20%     0.00%  candidate-gated  candidate-gated      [.] Map::replaceResource(unsigned long, Resource const&)
+     0.19%     0.00%  candidate-gated  [kernel.kallsyms]    [.] __futex_wait
+     0.19%     0.00%  candidate-gated  [kernel.kallsyms]    [.] futex_wait
+     0.19%     0.00%  candidate-gated  candidate-gated      [.] ResourceGrowth::Pipeline::run(void*, unsigned long)
+     0.19%     0.00%  candidate-gated  libc.so.6            [.] __clock_gettime (inlined)
+     0.19%     0.19%  candidate-gated  candidate-gated      [.] Map::materialStocksAt(unsigned long) const
+     0.19%     0.19%  candidate-gated  [vdso]               [.] 0x0000000000000a09
+     0.19%     0.00%  candidate-gated  [vdso]               [.] 0x00007a2bbba12a09
+     0.19%     0.00%  candidate-gated  libstdc++.so.6.0.35  [.] std::chrono::_V2::steady_clock::now()
+     0.19%     0.19%  candidate-gated  candidate-gated      [.] SimulationSnapshot::Handle::project(unsigned int) const
+     0.19%     0.10%  candidate-gated  candidate-gated      [.] PerformanceTelemetry::Scope::Scope(PerformanceTelemetry::Id, int)
+     0.19%     0.00%  candidate-gated  candidate-gated      [.] AIEngine::Command::decode() const
+     0.19%     0.00%  candidate-gated  candidate-gated      [.] Order::getOrder(unsigned char const*, int, unsigned int)
+     0.19%     0.19%  candidate-gated  candidate-gated      [.] auto SimulationSnapshot::capture(Game const&, std::shared_ptr<std::vector<SimulationSnapshot::BuildingKindView, std::allocator<SimulationSnapshot::BuildingKindView> > const>, unsigned int, SimulationSnapshot::Handle const*, SimulationSnapshot::Storage*)::{lambda(SimulationSnapshot::ChunkStamps&, MapState::ChangeTracker const&, bool, auto:1)#1}::operator()<SimulationSnapshot::capture(Game const&, std::shared_ptr<std::vector<SimulationSnapshot::BuildingKindView, std::allocator<SimulationSnapshot::BuildingKindView> > const>, unsigned int, SimulationSnapshot::Handle const*, SimulationSnapshot::Storage*)::{lambda(unsigned long, unsigned long)#3}>(SimulationSnapshot::ChunkStamps&, MapState::ChangeTracker const&, bool, SimulationSnapshot::capture(Game const&, std::shared_ptr<std::vector<SimulationSnapshot::BuildingKindView, std::allocator<SimulationSnapshot::BuildingKindView> > const>, unsigned int, SimulationSnapshot::Handle const*, SimulationSnapshot::Storage*)::{lambda(unsigned long, unsigned long)#3}) const
+     0.19%     0.00%  candidate-gated  [kernel.kallsyms]    [.] update_curr
+     0.19%     0.19%  candidate-gated  candidate-gated      [.] Script::Value::set(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&, Script::Value)
+     0.19%     0.00%  candidate-gated  [kernel.kallsyms]    [.] amd_pmu_disable_all
+     0.19%     0.00%  candidate-gated  [kernel.kallsyms]    [.] x86_pmu_disable
+     0.19%     0.09%  candidate-gated  candidate-gated      [.] Script::(anonymous namespace)::GlobalsCodec::capture(JSValue)
+     0.14%     0.00%  candidate-gated  candidate-gated      [.] std::vector<MapState::ResourceCell, std::allocator<MapState::ResourceCell> >::_M_default_append(unsigned long)
+     0.12%     0.12%  candidate-gated  [kernel.kallsyms]    [k] mod_memcg_lruvec_state
+     0.12%     0.00%  candidate-gated  [kernel.kallsyms]    [.] __folio_mod_stat
+     0.12%     0.00%  candidate-gated  [kernel.kallsyms]    [.] folio_add_new_anon_rmap
+     0.12%     0.00%  candidate-gated  [kernel.kallsyms]    [.] lruvec_stat_mod_folio
+     0.11%     0.11%  candidate-gated  candidate-gated      [.] Script::(anonymous namespace)::GlobalsCodec::GlobalsCodec(Script::(anonymous namespace)::Environment&, JSValue)
+     0.10%     0.10%  candidate-gated  [kernel.kallsyms]    [k] propagate_entity_load_avg
+     0.10%     0.00%  candidate-gated  [kernel.kallsyms]    [.] futex_wake
+     0.10%     0.00%  candidate-gated  [kernel.kallsyms]    [.] native_queued_spin_lock_slowpath
+     0.10%     0.10%  candidate-gated  [kernel.kallsyms]    [k] mod_node_page_state
+     0.10%     0.00%  candidate-gated  [kernel.kallsyms]    [.] __folio_batch_add_and_move
+     0.10%     0.00%  candidate-gated  [kernel.kallsyms]    [.] folio_add_lru
+     0.10%     0.00%  candidate-gated  [kernel.kallsyms]    [.] folio_add_lru_vma
+     0.10%     0.00%  candidate-gated  [kernel.kallsyms]    [.] folio_batch_move_lru
+     0.10%     0.00%  candidate-gated  [kernel.kallsyms]    [.] lru_add
+     0.10%     0.00%  candidate-gated  [kernel.kallsyms]    [.] lru_gen_add_folio
+     0.10%     0.00%  candidate-gated  [kernel.kallsyms]    [.] mod_lruvec_state
+     0.10%     0.10%  candidate-gated  [kernel.kallsyms]    [k] native_read_msr
+     0.10%     0.10%  candidate-gated  candidate-gated      [.] JS_DefineProperty
+     0.10%     0.10%  candidate-gated  candidate-gated      [.] Map::resourceSeedChanged(unsigned long, unsigned int)
+     0.10%     0.00%  candidate-gated  [kernel.kallsyms]    [.] __schedule
+     0.10%     0.00%  candidate-gated  [kernel.kallsyms]    [.] schedule
+     0.10%     0.00%  candidate-gated  [kernel.kallsyms]    [.] futex_do_wait
+     0.10%     0.10%  candidate-gated  candidate-gated      [.] GameGUI::consumeClientEvents()
+     0.10%     0.10%  candidate-gated  candidate-gated      [.] AIEngine::OrderScheduler::submit(AIEngine::RequestId, std::shared_ptr<AIEngine::AIWorldView const>, std::function<AIEngine::Command (AIEngine::AIWorldView const&)>)
+     0.10%     0.10%  candidate-gated  candidate-gated      [.] ResourceGrowth::Pipeline::join(ResourceGrowth::Pipeline::Job&)
+     0.10%     0.10%  candidate-gated  candidate-gated      [.] SimulationSnapshot::Terrain::~Terrain()
+     0.10%     0.10%  candidate-gated  candidate-gated      [.] GameGUI::selectedBuildingOrNull() const
+     0.10%     0.00%  candidate-gated  candidate-gated      [.] GameGUI::syncSelectionView()
+     0.10%     0.10%  candidate-gated  candidate-gated      [.] auto SimulationSnapshot::capture(Game const&, std::shared_ptr<std::vector<SimulationSnapshot::BuildingKindView, std::allocator<SimulationSnapshot::BuildingKindView> > const>, unsigned int, SimulationSnapshot::Handle const*, SimulationSnapshot::Storage*)::{lambda<typename $T0>(std::vector<$T0, std::allocator<$T0> >&, unsigned long)#1}::operator()<SimulationSnapshot::TeamView>(std::vector<SimulationSnapshot::TeamView, std::allocator<SimulationSnapshot::TeamView> >&, unsigned long) const [clone .isra.0]
+     0.10%     0.00%  candidate-gated  candidate-gated      [.] std::vector<unsigned int, std::allocator<unsigned int> >::resize(unsigned long)
+     0.10%     0.00%  candidate-gated  libc.so.6            [.] __memset_avx2_unaligned_erms
+     0.10%     0.10%  candidate-gated  candidate-gated      [.] auto SimulationSnapshot::capture(Game const&, std::shared_ptr<std::vector<SimulationSnapshot::BuildingKindView, std::allocator<SimulationSnapshot::BuildingKindView> > const>, unsigned int, SimulationSnapshot::Handle const*, SimulationSnapshot::Storage*)::{lambda<typename $T0>(SimulationSnapshot::BufferPool<$T0, 22ul> SimulationSnapshot::Storage::*, SimulationSnapshot::Component)#2}::operator()<SimulationSnapshot::Resources>(SimulationSnapshot::BufferPool<SimulationSnapshot::Resources, 22ul> SimulationSnapshot::Storage::*, SimulationSnapshot::Component) const [clone .constprop.0] [clone .isra.0]
+     0.10%     0.10%  candidate-gated  candidate-gated      [.] BuildingGradientSearch::resolved(unsigned long) const
+     0.10%     0.00%  candidate-gated  candidate-gated      [.] BuildingGradientSearch::resolve(unsigned long)
+     0.10%     0.00%  candidate-gated  candidate-gated      [.] Map::buildingGradientDirection(Building*, int, int, int, int*, int*, bool, BuildingRoute) const
+     0.10%     0.00%  candidate-gated  candidate-gated      [.] Map::buildingGradientValue(Building*, int, unsigned long, BuildingRoute) const
+     0.10%     0.00%  candidate-gated  candidate-gated      [.] Map::pathfindBuilding(Building*, int, int, int, int*, int*, BuildingRoute)
+     0.10%     0.00%  candidate-gated  candidate-gated      [.] Unit::handleMovementGoingToFlagOrBuilding()
+     0.10%     0.00%  candidate-gated  candidate-gated      [.] Script::(anonymous namespace)::QuickRuntime::invoke(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&, Script::Value const&, bool, Script::Host&)
+     0.10%     0.00%  candidate-gated  libc.so.6            [.] tcache_get (inlined)
+     0.10%     0.00%  candidate-gated  libc.so.6            [.] tcache_get_n (inlined)
+     0.10%     0.10%  candidate-gated  candidate-gated      [.] void std::__introsort_loop<__gnu_cxx::__normal_iterator<std::pair<int, int>*, std::vector<std::pair<int, int>, std::allocator<std::pair<int, int> > > >, long, __gnu_cxx::__ops::_Iter_less_iter>(__gnu_cxx::__normal_iterator<std::pair<int, int>*, std::vector<std::pair<int, int>, std::allocator<std::pair<int, int> > > >, __gnu_cxx::__normal_iterator<std::pair<int, int>*, std::vector<std::pair<int, int>, std::allocator<std::pair<int, int> > > >, long, __gnu_cxx::__ops::_Iter_less_iter) [clone .isra.0]
+     0.10%     0.10%  candidate-gated  [kernel.kallsyms]    [k] account_user_time
+     0.10%     0.00%  candidate-gated  [kernel.kallsyms]    [.] account_process_tick
+     0.10%     0.10%  candidate-gated  candidate-gated      [.] TeamStats::observeLabour(Unit*)
+     0.10%     0.10%  candidate-gated  candidate-gated      [.] Script::Observations::remember(unsigned int)
+     0.10%     0.10%  candidate-gated  [kernel.kallsyms]    [k] futex_wait_setup
+     0.10%     0.10%  candidate-gated  candidate-gated      [.] JS_NewCFunction3
+     0.10%     0.10%  candidate-gated  candidate-gated      [.] SimulationSnapshot::Rules::~Rules()
+     0.10%     0.10%  candidate-gated  candidate-gated      [.] Map::stageResourceGrowth()
+     0.10%     0.10%  candidate-gated  candidate-gated      [.] Map::initializeResourceStock(unsigned long)
+     0.10%     0.00%  candidate-gated  candidate-gated      [.] Map::preparePendingGradient(SimulationSnapshot::Handle const&)
+     0.10%     0.00%  candidate-gated  candidate-gated      [.] Map::preparePendingWorld(SimulationSnapshot::Handle const&)
+     0.10%     0.10%  candidate-gated  candidate-gated      [.] Sector::step()
+     0.10%     0.10%  candidate-gated  libstdc++.so.6.0.35  [.] std::_Rb_tree_increment(std::_Rb_tree_node_base*)
+     0.10%     0.00%  candidate-gated  candidate-gated      [.] Game::scriptSyncStep()
+     0.10%     0.00%  candidate-gated  candidate-gated      [.] MapScriptUSL::syncStep()
+     0.10%     0.00%  candidate-gated  candidate-gated      [.] Prototype::propagateMarkForGC()
+     0.10%     0.00%  candidate-gated  candidate-gated      [.] Usl::collectGarbage()
+     0.10%     0.00%  candidate-gated  candidate-gated      [.] Usl::markGarbage() const
+     0.10%     0.00%  candidate-gated  candidate-gated      [.] Usl::run(unsigned long)
+     0.10%     0.00%  candidate-gated  candidate-gated      [.] Value::markForGC()
+     0.10%     0.10%  candidate-gated  [kernel.kallsyms]    [k] native_write_msr
+     0.10%     0.10%  candidate-gated  candidate-gated      [.] ComputeExecutor::submit(std::span<ComputeExecutor::Group const, 18446744073709551615ul>, ComputeExecutor::Placement)
+     0.10%     0.00%  candidate-gated  candidate-gated      [.] AIEngine::OrderScheduler::dispatch()
+     0.10%     0.10%  candidate-gated  [kernel.kallsyms]    [k] cpuacct_charge
+     0.10%     0.00%  candidate-gated  [kernel.kallsyms]    [.] update_se
+     0.10%     0.10%  candidate-gated  [kernel.kallsyms]    [k] psi_group_change
+     0.10%     0.00%  candidate-gated  [kernel.kallsyms]    [.] psi_task_switch
+     0.10%     0.00%  candidate-gated  candidate-gated      [.] PerformanceTelemetry::now()
+     0.10%     0.10%  candidate-gated  [kernel.kallsyms]    [k] update_deadline
+     0.10%     0.10%  candidate-gated  [kernel.kallsyms]    [k] __update_load_avg_se
+     0.10%     0.10%  candidate-gated  candidate-gated      [.] Script::(anonymous namespace)::Environment::fromJS(JSValue, unsigned int)
+     0.10%     0.10%  candidate-gated  candidate-gated      [.] Script::(anonymous namespace)::write(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, Script::Value const&, unsigned int)
+     0.10%     0.10%  candidate-gated  candidate-gated      [.] free_object
+     0.10%     0.10%  candidate-gated  candidate-gated      [.] Map::updateExploredArea(int)
+     0.10%     0.10%  candidate-gated  candidate-gated      [.] JS_SetPropertyInternal2
+     0.10%     0.10%  candidate-gated  candidate-gated      [.] Map::rebuildGrowthCoverage()
+     0.10%     0.10%  candidate-gated  candidate-gated      [.] JS_FreeAtom
+     0.10%     0.10%  candidate-gated  candidate-gated      [.] JS_NewObjectFromShape
+     0.10%     0.10%  candidate-gated  [kernel.kallsyms]    [k] arch_scale_freq_tick
+     0.10%     0.10%  candidate-gated  candidate-gated      [.] Script::(anonymous namespace)::write(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, Script::Value const&, unsigned int) [clone .constprop.3]
+     0.10%     0.10%  candidate-gated  candidate-gated      [.] JS_CallInternal
+     0.10%     0.10%  candidate-gated  candidate-gated      [.] JS_GetPropertyInternal
+     0.09%     0.09%  candidate-gated  candidate-gated      [.] __JS_NewAtom
+     0.09%     0.09%  candidate-gated  [kernel.kallsyms]    [k] x86_pmu_disable_all
+     0.09%     0.09%  candidate-gated  candidate-gated      [.] js_clone_shape
+     0.09%     0.00%  candidate-gated  candidate-gated      [.] Building::considerUnitForMaterial(Unit*, int, int*)
+     0.09%     0.00%  candidate-gated  candidate-gated      [.] Building::gatherBringMaterialsCandidates(Building::BringMaterialsCandidate*, int)
+     0.09%     0.00%  candidate-gated  candidate-gated      [.] Building::subscribeToBringMaterialsStep(bool) [clone .part.0]
+     0.09%     0.00%  candidate-gated  candidate-gated      [.] Map::getMaterialGradientSlot(int, int, int, bool, Building const*)
+     0.09%     0.00%  candidate-gated  candidate-gated      [.] Map::materialAvailableSlot(int, int, int, int, int, int*, bool, Building const*)
+     0.09%     0.00%  candidate-gated  candidate-gated      [.] Map::updateMaterialGradient(int, unsigned char, int, bool)
+
+
+#
+# (Cannot load tips.txt file, please install perf!)
+#

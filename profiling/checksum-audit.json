@@ -1,0 +1,74 @@
+{
+  "passed": true,
+  "scenarios": {
+    "ai512": {
+      "candidate_runs": 22,
+      "matching": true,
+      "signature": {
+        "finalChecksum": 3498731545,
+        "growth_accepted": 19688,
+        "growth_clamped": 141,
+        "growth_delay": 8,
+        "growth_proposals": 19940,
+        "growth_published": 1015,
+        "growth_rejected": 141,
+        "growth_sampled": 4349437,
+        "growth_stockAdded": 19688,
+        "growth_submitted": 1024,
+        "growth_tilesAdded": 936
+      }
+    },
+    "dense": {
+      "candidate_runs": 22,
+      "matching": true,
+      "signature": {
+        "finalChecksum": 3196330646,
+        "growth_accepted": 150129,
+        "growth_clamped": 934,
+        "growth_delay": 8,
+        "growth_proposals": 152573,
+        "growth_published": 1015,
+        "growth_rejected": 939,
+        "growth_sampled": 1093053,
+        "growth_stockAdded": 150129,
+        "growth_submitted": 1024,
+        "growth_tilesAdded": 34173
+      }
+    },
+    "disabled512": {
+      "candidate_runs": 22,
+      "matching": true,
+      "signature": {
+        "finalChecksum": 599290100,
+        "growth_accepted": 0,
+        "growth_clamped": 0,
+        "growth_delay": 8,
+        "growth_proposals": 0,
+        "growth_published": 0,
+        "growth_rejected": 0,
+        "growth_sampled": 0,
+        "growth_stockAdded": 0,
+        "growth_submitted": 0,
+        "growth_tilesAdded": 0
+      }
+    },
+    "multi": {
+      "candidate_runs": 22,
+      "matching": true,
+      "signature": {
+        "finalChecksum": 2211961887,
+        "growth_accepted": 811290,
+        "growth_clamped": 7501,
+        "growth_delay": 8,
+        "growth_proposals": 822385,
+        "growth_published": 1015,
+        "growth_rejected": 2719,
+        "growth_sampled": 4351927,
+        "growth_stockAdded": 1717789,
+        "growth_submitted": 1024,
+        "growth_tilesAdded": 176242
+      }
+    }
+  },
+  "profile_windows_match_native": true
+}

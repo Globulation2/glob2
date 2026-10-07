@@ -1,0 +1,75 @@
+# To display the perf.data header info, please use --header/--header-only options.
+#
+#
+# Total Lost Samples: 0
+#
+# Samples: 2K of event 'cpu/cycles/P'
+# Event count (approx.): 18733940615
+#
+# Overhead  Command          Shared Object      Symbol                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         
+# ........  ...............  .................  ...........................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................
+#
+    47.07%  candidate-gated  candidate-gated    [.] void gradient_kernel::propagateField<gradient_kernel::propagateTerrainField<gradient_preparation::propagate(gradient_preparation::Request const&, SimulationSnapshot::Handle const&, unsigned short*, GradientWorkspace&)::{lambda(unsigned long)#1}>(unsigned short*, int, int, field::Grid, GradientWorkspace&, gradient_preparation::propagate(gradient_preparation::Request const&, SimulationSnapshot::Handle const&, unsigned short*, GradientWorkspace&)::{lambda(unsigned long)#1}, bool)::{lambda(unsigned long)#1}>(unsigned short*, int, int, field::Grid, GradientWorkspace&, gradient_kernel::propagateTerrainField<gradient_preparation::propagate(gradient_preparation::Request const&, SimulationSnapshot::Handle const&, unsigned short*, GradientWorkspace&)::{lambda(unsigned long)#1}>(unsigned short*, int, int, field::Grid, GradientWorkspace&, gradient_preparation::propagate(gradient_preparation::Request const&, SimulationSnapshot::Handle const&, unsigned short*, GradientWorkspace&)::{lambda(unsigned long)#1}, bool)::{lambda(unsigned long)#1}) [clone .constprop.0]
+     9.25%  candidate-gated  candidate-gated    [.] gradient_preparation::MaterialSeedCache::trySeed(SimulationSnapshot::Handle const&, int, int, int, unsigned short*, unsigned short const*)
+     7.38%  candidate-gated  candidate-gated    [.] auto SimulationSnapshot::capture(Game const&, std::shared_ptr<std::vector<SimulationSnapshot::BuildingKindView, std::allocator<SimulationSnapshot::BuildingKindView> > const>, unsigned int, SimulationSnapshot::Handle const*, SimulationSnapshot::Storage*)::{lambda(SimulationSnapshot::ChunkStamps&, MapState::ChangeTracker const&, bool, auto:1)#1}::operator()<SimulationSnapshot::capture(Game const&, std::shared_ptr<std::vector<SimulationSnapshot::BuildingKindView, std::allocator<SimulationSnapshot::BuildingKindView> > const>, unsigned int, SimulationSnapshot::Handle const*, SimulationSnapshot::Storage*)::{lambda(unsigned long, unsigned long)#2}>(SimulationSnapshot::ChunkStamps&, MapState::ChangeTracker const&, bool, SimulationSnapshot::capture(Game const&, std::shared_ptr<std::vector<SimulationSnapshot::BuildingKindView, std::allocator<SimulationSnapshot::BuildingKindView> > const>, unsigned int, SimulationSnapshot::Handle const*, SimulationSnapshot::Storage*)::{lambda(unsigned long, unsigned long)#2}) const
+     6.91%  candidate-gated  candidate-gated    [.] gradient_preparation::seed(gradient_preparation::Request const&, SimulationSnapshot::Handle const&, unsigned short*, gradient_preparation::CrowdingScratch&)
+     3.92%  candidate-gated  candidate-gated    [.] ResourceGrowth::calculate(MapState::View const&, MersenneTwister&, ResourceGrowth::Batch&)
+     3.26%  candidate-gated  candidate-gated    [.] AIWarrush::farm()
+     2.79%  candidate-gated  libc.so.6          [.] __memmove_avx_unaligned_erms
+     1.78%  candidate-gated  candidate-gated    [.] AIEngine::WorldQueries::updateGlobalGradient(unsigned char*) const
+     1.33%  candidate-gated  candidate-gated    [.] AISharedRuntime::Gradients::Gradient::expand_bfs(field::Frontier&)
+     1.18%  candidate-gated  candidate-gated    [.] AIWarrush::buildBuildingOfType(AIPlanning::BuildingIntent)
+     1.15%  candidate-gated  candidate-gated    [.] void gradient_kernel::propagateField<gradient_kernel::propagateTerrainField<Map::propagateGradient(unsigned short*, int, int)::{lambda(unsigned long)#2}>(unsigned short*, int, int, field::Grid, GradientWorkspace&, Map::propagateGradient(unsigned short*, int, int)::{lambda(unsigned long)#2}, bool)::{lambda(unsigned long)#1}>(unsigned short*, int, int, field::Grid, GradientWorkspace&, gradient_kernel::propagateTerrainField<Map::propagateGradient(unsigned short*, int, int)::{lambda(unsigned long)#2}>(unsigned short*, int, int, field::Grid, GradientWorkspace&, Map::propagateGradient(unsigned short*, int, int)::{lambda(unsigned long)#2}, bool)::{lambda(unsigned long)#1})
+     1.15%  candidate-gated  libc.so.6          [.] __memmove_avx_unaligned
+     0.81%  candidate-gated  candidate-gated    [.] AIWarrush::pruneGuardAreas()
+     0.81%  candidate-gated  candidate-gated    [.] Fertility::GrowthCache::rate(unsigned long, ResourceEcology, unsigned int) const
+     0.73%  candidate-gated  candidate-gated    [.] BuildingGradientSearch::resolve(unsigned long)
+     0.49%  candidate-gated  candidate-gated    [.] Map::updateGlobalGradient(Building*, int, BuildingRoute)
+     0.43%  candidate-gated  candidate-gated    [.] auto SimulationSnapshot::capture(Game const&, std::shared_ptr<std::vector<SimulationSnapshot::BuildingKindView, std::allocator<SimulationSnapshot::BuildingKindView> > const>, unsigned int, SimulationSnapshot::Handle const*, SimulationSnapshot::Storage*)::{lambda(auto:1&, auto:2, unsigned long, unsigned long)#1}::operator()<std::vector<unsigned int, std::allocator<unsigned int> >, std::span<unsigned int const, 18446744073709551615ul> >(std::vector<unsigned int, std::allocator<unsigned int> >&, std::span<unsigned int const, 18446744073709551615ul>, unsigned long, unsigned long) const [clone .isra.0]
+     0.34%  candidate-gated  candidate-gated    [.] AISharedRuntime::Gradients::Entities::Unwalkable::is_entity(AIEngine::AIWorldView const&, int, int)
+     0.34%  candidate-gated  candidate-gated    [.] AISharedRuntime::Gradients::Gradient::recalculate(AIEngine::AIWorldView const&, field::Frontier&)
+     0.34%  candidate-gated  candidate-gated    [.] SimulationSnapshot::capture(Game const&, std::shared_ptr<std::vector<SimulationSnapshot::BuildingKindView, std::allocator<SimulationSnapshot::BuildingKindView> > const>, unsigned int, SimulationSnapshot::Handle const*, SimulationSnapshot::Storage*)
+     0.34%  candidate-gated  candidate-gated    [.] Map::updateRoundTripGradientSlot(Building*, int, int)
+     0.26%  candidate-gated  libc.so.6          [.] __memset_avx2_unaligned_erms
+     0.26%  candidate-gated  candidate-gated    [.] AISharedRuntime::Gradients::Entities::ResourceGroundObstacle::is_entity(AIEngine::AIWorldView const&, int, int)
+     0.26%  candidate-gated  candidate-gated    [.] Map::updateForbiddenGradient(int, int)
+     0.25%  candidate-gated  [kernel.kallsyms]  [k] perf_adjust_freq_unthr_context
+     0.22%  candidate-gated  [kernel.kallsyms]  [k] kernel_init_pages
+     0.17%  candidate-gated  [kernel.kallsyms]  [k] asm_sysvec_apic_timer_interrupt
+     0.17%  candidate-gated  candidate-gated    [.] Map::updateExploredArea(int)
+     0.17%  candidate-gated  candidate-gated    [.] Team::checkSum(std::vector<unsigned int, std::allocator<unsigned int> >*, std::vector<unsigned int, std::allocator<unsigned int> >*, std::vector<unsigned int, std::allocator<unsigned int> >*)
+     0.17%  candidate-gated  candidate-gated    [.] TeamStats::step(Team*, bool)
+     0.17%  candidate-gated  candidate-gated    [.] AISharedRuntime::Gradients::Entities::AnyTeamBuilding::is_entity(AIEngine::AIWorldView const&, int, int)
+     0.17%  candidate-gated  candidate-gated    [.] void std::__introsort_loop<__gnu_cxx::__normal_iterator<std::pair<int, int>*, std::vector<std::pair<int, int>, std::allocator<std::pair<int, int> > > >, long, __gnu_cxx::__ops::_Iter_less_iter>(__gnu_cxx::__normal_iterator<std::pair<int, int>*, std::vector<std::pair<int, int>, std::allocator<std::pair<int, int> > > >, __gnu_cxx::__normal_iterator<std::pair<int, int>*, std::vector<std::pair<int, int>, std::allocator<std::pair<int, int> > > >, long, __gnu_cxx::__ops::_Iter_less_iter) [clone .isra.0]
+     0.17%  candidate-gated  [kernel.kallsyms]  [k] ktime_get_update_offsets_now
+     0.17%  candidate-gated  candidate-gated    [.] AISharedRuntime::Gradients::GradientInfo::match_source(AIEngine::AIWorldView const&, int, int)
+     0.13%  candidate-gated  candidate-gated    [.] void gradient_preparation::clearCells<Map::seedClearAreasGradient(int, int, unsigned short*)::{lambda(auto:1)#1}>(MapState::View const&, bool, int, int, unsigned short*, Map::seedClearAreasGradient(int, int, unsigned short*)::{lambda(auto:1)#1})
+     0.13%  candidate-gated  candidate-gated    [.] AISharedRuntime::Gradients::Entities::MaterialSource::is_entity(AIEngine::AIWorldView const&, int, int)
+     0.13%  candidate-gated  candidate-gated    [.] AIWarrush::percentageOfBuildingsAreFullyWorked(int) const
+     0.13%  candidate-gated  candidate-gated    [.] AISharedRuntime::SearchTools::MapInfo::is_discovered(int, int)
+     0.13%  candidate-gated  [kernel.kallsyms]  [k] ktime_get
+     0.10%  candidate-gated  [kernel.kallsyms]  [k] policy_nodemask
+     0.09%  candidate-gated  candidate-gated    [.] Team::syncStep()
+     0.09%  candidate-gated  candidate-gated    [.] AISharedRuntime::Construction::BuildingOrder::find_location(AISharedRuntime::Runtime&, AIEngine::AIWorldView const&, AISharedRuntime::Gradients::GradientManager&)
+     0.09%  candidate-gated  [kernel.kallsyms]  [k] x86_pmu_disable_all
+     0.09%  candidate-gated  candidate-gated    [.] std::vector<MapState::ResourceCell, std::allocator<MapState::ResourceCell> >::_M_default_append(unsigned long)
+     0.09%  candidate-gated  candidate-gated    [.] std::vector<MapState::OccupancyCell, std::allocator<MapState::OccupancyCell> >::_M_default_append(unsigned long)
+     0.09%  candidate-gated  candidate-gated    [.] Order::getOrder(unsigned char const*, int, unsigned int)
+     0.09%  candidate-gated  [kernel.kallsyms]  [k] srso_safe_ret
+     0.09%  candidate-gated  candidate-gated    [.] AISharedRuntime::Gradients::GradientInfo::match_obstacle(AIEngine::AIWorldView const&, int, int)
+     0.09%  candidate-gated  candidate-gated    [.] Unit::checkSum(std::vector<unsigned int, std::allocator<unsigned int> >*)
+     0.09%  candidate-gated  candidate-gated    [.] Map::checkSum(bool, bool)
+     0.09%  candidate-gated  candidate-gated    [.] Map::recordNaturalGrowth(int, int, int, int, std::array<unsigned short, 12ul> const&)
+     0.09%  candidate-gated  candidate-gated    [.] Building::gatherBringMaterialsCandidates(Building::BringMaterialsCandidate*, int)
+     0.09%  candidate-gated  candidate-gated    [.] ThunkPrototype::propagateMarkForGC()
+     0.09%  candidate-gated  candidate-gated    [.] Sector::step()
+     0.09%  candidate-gated  candidate-gated    [.] AIWarrush::staffingOrder() const
+     0.08%  candidate-gated  [kernel.kallsyms]  [k] perf_adjust_freq_unthr_events
+     0.08%  candidate-gated  [kernel.kallsyms]  [k] account_user_time
+     0.08%  candidate-gated  [kernel.kallsyms]  [k] irqentry_enter
+     0.05%  candidate-gated  [kernel.kallsyms]  [k] handle_pte_fault
+
+
+#
+# (Cannot load tips.txt file, please install perf!)
+#

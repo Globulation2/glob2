@@ -1,0 +1,24 @@
+{
+  "candidate": {
+    "measured": {
+      "binary_sha256": "1ada564b4abd014b3dd354753e4812c8fcfaf08d835ae139e174b7e944cf2fcf",
+      "text_sha256": "0fb5e2c22ffc18786aaf78f155251eb8cb84757922c03076ed896488791eaceb"
+    },
+    "profiled": {
+      "binary_sha256": "9aa7e177fc67b1bc1142d36471a810c3dbbbcd2fb6ac67abe9679c882a54bab7",
+      "text_sha256": "0fb5e2c22ffc18786aaf78f155251eb8cb84757922c03076ed896488791eaceb"
+    },
+    "same_text": true
+  },
+  "legacy": {
+    "measured": {
+      "binary_sha256": "7c588ca2110be077a7be19e4f5d21a2e991315b07b5165558f5b7d63f20f58cb",
+      "text_sha256": "566f2de0d0ae3bee85c77b4c7d87661d6780a45bb173d4ade23dbd21c7be8de5"
+    },
+    "profiled": {
+      "binary_sha256": "18c56e68bd766e357ec67117bcc3a799dacfb276c2c34a8b7a6700ac3afb3e52",
+      "text_sha256": "566f2de0d0ae3bee85c77b4c7d87661d6780a45bb173d4ade23dbd21c7be8de5"
+    },
+    "same_text": true
+  }
+}
