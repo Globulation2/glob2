@@ -17,7 +17,7 @@ bytes, with no dependency on local authoring JSON. The existing map-content hash
 binds distributed matches to the definitions.
 Building format 137 adds configurable services and capability-driven AI; replays
 recorded before version 137 became incompatible and network protocol 57 separated
-clients using those rules. The current replay floor is 143 for engine snapshots and scheduled AI decisions.
+clients using those rules. The current replay floor is 144, including the saved greedy resource-fetching experiment.
 Supported saved games still load and adopt the current simulation;
 the save floor remains 58.
 
