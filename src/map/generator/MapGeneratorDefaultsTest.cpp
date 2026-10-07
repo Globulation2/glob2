@@ -1046,8 +1046,8 @@ TEST_SUITE("MapGeneratorDefaults")
                     if(golden.at("portable_topology").contains(original.id))
                         CHECK_MESSAGE(shape==golden.at("portable_topology").at(original.id).get<std::uint64_t>(),original.id);
                     else
-                        WARN_MESSAGE(false,"No verified portable topology for ",original.id," on ",platform);
-                    WARN_MESSAGE(false,"Full resource-epoch golden unverified on ",platform," for ",original.id);
+                        std::cout << "RESOURCE_DESIGN_UNVERIFIED portable-topology " << platform << ' ' << original.id << '\n';
+                    std::cout << "RESOURCE_DESIGN_UNVERIFIED full-epoch " << platform << ' ' << original.id << '\n';
                 }
             }
         }
