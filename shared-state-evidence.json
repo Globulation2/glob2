@@ -1,0 +1,467 @@
+{
+  "tested_revision": "a1d86f1bd3093a6dcc27fa6ac5f8cd8f352f48e1",
+  "production_refactor_revision": "302fdc50c9cc9e492e89c87ed04161a6771fa6e9",
+  "final_revision_change": "Only growth-byte reuse test corrected after broad validation; production code unchanged. Final focused suite and all 132 timing runs use final revision.",
+  "base_revision": "e53a673b2609175e781ad2608a15a220866cf2fa",
+  "latest_master_fetched": "9084ea907",
+  "latest_master_integration": "Pending: resource/material catalog migration overlaps 68 merge conflicts and independently claims save140; cannot merge/ship until snapshot queries and version gates are adapted.",
+  "platform": "macOS-26.6.2-arm64-arm-64bit-Mach-O",
+  "toolchain": "Apple clang version 21.0.0 (clang-2100.3.34.2)",
+  "build_flags": [
+    "release=1",
+    "server=0",
+    "-O3",
+    "-std=gnu++20"
+  ],
+  "binary_sha256": "028f19c4488b175714174ca19f395c88ee2104a35b4db2e82f18342e8ff2e2db",
+  "commands": {
+    "build": "scons -j8 release=1 server=0 engine-tests unit-tests build/darwin/client/release/src/glob2",
+    "broad": "python3 test/run_tests.py --binary all --build-dir build/darwin/client/release -j8 --no-display --quick --junit artifacts/async-ai/shared-state/final-native.xml --artifacts artifacts/async-ai/shared-state/final-native",
+    "focused": "python3 test/run_tests.py --binary all --build-dir build/darwin/client/release -j8 --no-display --quick --filter 'WorldSnapshot/*' --filter 'AIOrderScheduler/*' --filter 'AIPipeline/*' --filter 'JavaScriptIntegration/*' --junit artifacts/async-ai/shared-state/final-focused.xml --artifacts artifacts/async-ai/shared-state/final-focused",
+    "equivalence": "python3 test/check_parallel_compute.py artifacts/async-ai/shared-state/final-candidate --baseline artifacts/async-ai/cpu-attribution/production-query-algorithm --output artifacts/async-ai/shared-state/final-equivalence",
+    "golden": "glob2 --verify-match test/fixtures/multiplayer/FourSquares1.g2mr --map maps/FourSquares1.map.gz --out artifacts/async-ai/shared-state/final-golden; cmp checksums.txt test/fixtures/multiplayer/FourSquares1.verify-trace.txt",
+    "sim_boundary": "python3 test/check_sim_revision.py --base e9311a91c",
+    "performance": "python3 artifacts/async-ai/cpu-attribution/run-shared-state-performance.py"
+  },
+  "results": {
+    "broad": {
+      "passed_jobs": 836,
+      "failed_jobs": 2,
+      "skipped_jobs": 140,
+      "junit_cases": 1819,
+      "failures": [
+        "Existing ImageAssets 16-bit RGBA decoder failure reproduced on clean base master in prior evidence",
+        "Outdated growth-byte boolean reuse expectation, corrected and passing in final focused suite"
+      ]
+    },
+    "final_focused": {
+      "passed_jobs": 60,
+      "failed_jobs": 0,
+      "skipped_jobs": 1,
+      "junit_cases": 61,
+      "skip": "JavaScript library/telemetry dialogs requires display"
+    },
+    "equivalence": "PASS exact per-tick checksums, replay bytes, final saves, and Runtime/Castor/Numbi continuation at1/2/4/8 workers vs e9311a91c",
+    "golden": "Verified all702reports; checksum file byte-identical to committed trace; sim version contract passed"
+  },
+  "performance_method": "Four frozen8192tick fixtures, one warmup and ten balanced paired rounds for master e53, pre-refactor e931 and final.132sequential runs. Compiler monitor; no builds/tests alongside. Geometric paired CPU/elapsed ratios and Student t95%intervals on log ratios. Extraction/preparation are elapsed clocks, computation elapsed can include scheduling. Fixed-window diagnostics, not full-match gate.",
+  "performance": {
+    "numbi": {
+      "checksum": 1205227531,
+      "pairs": 10,
+      "cpu_seconds": {
+        "master": 0.5128889999999999,
+        "before": 0.872355,
+        "after": 0.716968
+      },
+      "cpu_after_over_before": {
+        "geometric_ratio": 0.82248746154059,
+        "95pct_interval": [
+          0.8169871917841217,
+          0.8280247612134367
+        ]
+      },
+      "cpu_after_over_master": {
+        "geometric_ratio": 1.3932986723070009,
+        "95pct_interval": [
+          1.3825575540098374,
+          1.4041232385748756
+        ]
+      },
+      "elapsed_seconds": {
+        "master": 0.2619326875,
+        "before": 0.5797458959999999,
+        "after": 0.42660702149999996
+      },
+      "elapsed_after_over_before": {
+        "geometric_ratio": 0.7644211635869319,
+        "95pct_interval": [
+          0.7014160881596103,
+          0.8330857036267892
+        ]
+      },
+      "elapsed_after_over_master": {
+        "geometric_ratio": 1.6503312961294756,
+        "95pct_interval": [
+          1.5063569899306002,
+          1.8080663515956295
+        ]
+      },
+      "pipeline_medians": {
+        "before": {
+          "extraction_ns": 230201768.0,
+          "preparation_ns": 4192695.5,
+          "bytes_copied": 1817763844.0,
+          "component_reuses": 130645.0,
+          "allocations": 168.0,
+          "computation_ns": 29228725.5,
+          "deadline_misses": 8324.0,
+          "deadline_wait_ns": 68756847.0,
+          "snapshot_peak_retained_bytes": 2370328.0,
+          "controller_query_vector_peak_bytes": 0.0
+        },
+        "after": {
+          "extraction_ns": 83446241.5,
+          "preparation_ns": 4364965.0,
+          "bytes_copied": 1827905108.0,
+          "component_reuses": 130645.0,
+          "allocations": 170.0,
+          "computation_ns": 28693909.0,
+          "deadline_misses": 8323.5,
+          "deadline_wait_ns": 64421738.5,
+          "snapshot_peak_retained_bytes": 2375752.0,
+          "controller_query_vector_peak_bytes": 0.0
+        }
+      }
+    },
+    "javascript": {
+      "checksum": 3649801460,
+      "pairs": 10,
+      "cpu_seconds": {
+        "master": 1.066136,
+        "before": 1.3806384999999999,
+        "after": 1.195395
+      },
+      "cpu_after_over_before": {
+        "geometric_ratio": 0.8613989075086208,
+        "95pct_interval": [
+          0.8555584941579712,
+          0.8672791900538834
+        ]
+      },
+      "cpu_after_over_master": {
+        "geometric_ratio": 1.1149054781226564,
+        "95pct_interval": [
+          1.1048302341378085,
+          1.1250726009665524
+        ]
+      },
+      "elapsed_seconds": {
+        "master": 0.5625333335,
+        "before": 0.861650417,
+        "after": 0.6813796665
+      },
+      "elapsed_after_over_before": {
+        "geometric_ratio": 0.7870008113808373,
+        "95pct_interval": [
+          0.7745575469324129,
+          0.7996439768317719
+        ]
+      },
+      "elapsed_after_over_master": {
+        "geometric_ratio": 1.2023362548404646,
+        "95pct_interval": [
+          1.1772953295865474,
+          1.2279097974604867
+        ]
+      },
+      "pipeline_medians": {
+        "before": {
+          "extraction_ns": 222082117.0,
+          "preparation_ns": 904579.0,
+          "bytes_copied": 1824104816.0,
+          "component_reuses": 43874.0,
+          "allocations": 54.0,
+          "computation_ns": 614398682.5,
+          "deadline_misses": 12355.5,
+          "deadline_wait_ns": 381309247.0,
+          "snapshot_peak_retained_bytes": 1426296.0,
+          "controller_query_vector_peak_bytes": 193648.0
+        },
+        "after": {
+          "extraction_ns": 45138868.5,
+          "preparation_ns": 1004923.0,
+          "bytes_copied": 1828587056.0,
+          "component_reuses": 43874.0,
+          "allocations": 56.0,
+          "computation_ns": 605756327.0,
+          "deadline_misses": 12717.5,
+          "deadline_wait_ns": 375680013.5,
+          "snapshot_peak_retained_bytes": 1428248.0,
+          "controller_query_vector_peak_bytes": 193648.0
+        }
+      }
+    },
+    "mixed": {
+      "checksum": 3372683497,
+      "pairs": 10,
+      "cpu_seconds": {
+        "master": 0.6179425000000001,
+        "before": 0.9893190000000001,
+        "after": 0.954892
+      },
+      "cpu_after_over_before": {
+        "geometric_ratio": 0.9718022969257967,
+        "95pct_interval": [
+          0.9614871803711608,
+          0.9822280770771065
+        ]
+      },
+      "cpu_after_over_master": {
+        "geometric_ratio": 1.5437938715461803,
+        "95pct_interval": [
+          1.5309313690599813,
+          1.5567644415614346
+        ]
+      },
+      "elapsed_seconds": {
+        "master": 0.500241521,
+        "before": 0.8437782495,
+        "after": 0.8109075835
+      },
+      "elapsed_after_over_before": {
+        "geometric_ratio": 0.9682009448876305,
+        "95pct_interval": [
+          0.9551152584159874,
+          0.9814659135861309
+        ]
+      },
+      "elapsed_after_over_master": {
+        "geometric_ratio": 1.545438322151834,
+        "95pct_interval": [
+          1.3808167669687965,
+          1.7296861283184637
+        ]
+      },
+      "pipeline_medians": {
+        "before": {
+          "extraction_ns": 95931167.0,
+          "preparation_ns": 2757895.0,
+          "bytes_copied": 453377076.0,
+          "component_reuses": 118791.0,
+          "allocations": 153.0,
+          "computation_ns": 471927790.5,
+          "deadline_misses": 8584.5,
+          "deadline_wait_ns": 513135486.0,
+          "snapshot_peak_retained_bytes": 887272.0,
+          "controller_query_vector_peak_bytes": 973844.0
+        },
+        "after": {
+          "extraction_ns": 63297692.0,
+          "preparation_ns": 2851319.5,
+          "bytes_copied": 462463048.0,
+          "component_reuses": 118791.0,
+          "allocations": 155.0,
+          "computation_ns": 471901536.5,
+          "deadline_misses": 8579.5,
+          "deadline_wait_ns": 511813556.5,
+          "snapshot_peak_retained_bytes": 891800.0,
+          "controller_query_vector_peak_bytes": 973844.0
+        }
+      }
+    },
+    "cortex": {
+      "checksum": 2824216076,
+      "pairs": 10,
+      "cpu_seconds": {
+        "master": 2.887327,
+        "before": 4.8341025,
+        "after": 3.957684
+      },
+      "cpu_after_over_before": {
+        "geometric_ratio": 0.8063056572679258,
+        "95pct_interval": [
+          0.7862318653844151,
+          0.8268919660543039
+        ]
+      },
+      "cpu_after_over_master": {
+        "geometric_ratio": 1.3736926052623681,
+        "95pct_interval": [
+          1.3464293676566228,
+          1.4015078838014159
+        ]
+      },
+      "elapsed_seconds": {
+        "master": 1.8650531044999998,
+        "before": 3.5299313545000004,
+        "after": 2.6701727295
+      },
+      "elapsed_after_over_before": {
+        "geometric_ratio": 0.7377287935196687,
+        "95pct_interval": [
+          0.710329793244975,
+          0.7661846341848285
+        ]
+      },
+      "elapsed_after_over_master": {
+        "geometric_ratio": 1.428217736543529,
+        "95pct_interval": [
+          1.3977232080274977,
+          1.459377572943177
+        ]
+      },
+      "pipeline_medians": {
+        "before": {
+          "extraction_ns": 1155940684.0,
+          "preparation_ns": 4835423.0,
+          "bytes_copied": 9368648252.0,
+          "component_reuses": 180785.0,
+          "allocations": 229.0,
+          "computation_ns": 1941764209.5,
+          "deadline_misses": 10292.5,
+          "deadline_wait_ns": 1468833719.0,
+          "snapshot_peak_retained_bytes": 11900344.0,
+          "controller_query_vector_peak_bytes": 2169805.0
+        },
+        "after": {
+          "extraction_ns": 299667259.0,
+          "preparation_ns": 5066376.0,
+          "bytes_copied": 9384361040.0,
+          "component_reuses": 180785.0,
+          "allocations": 231.0,
+          "computation_ns": 1952076707.5,
+          "deadline_misses": 10270.0,
+          "deadline_wait_ns": 1474349638.5,
+          "snapshot_peak_retained_bytes": 11909352.0,
+          "controller_query_vector_peak_bytes": 2169805.0
+        }
+      }
+    }
+  },
+  "performance_provenance": {
+    "binaries": {
+      "/Users/bradley/.codex/worktrees/async-ai-engine/glob2/artifacts/async-ai/cpu-attribution/production-master": "93b86aa8cc8205b01a863f496d422329f14751299d035fbb7a6baaa76a0c9987",
+      "/Users/bradley/.codex/worktrees/async-ai-engine/glob2/artifacts/async-ai/cpu-attribution/production-query-algorithm": "a1627ce00d34358dafdd3996f43cfbb78bc3c6a619db924bad9f6552a4df79a3",
+      "/Users/bradley/.codex/worktrees/async-ai-engine/glob2/artifacts/async-ai/shared-state/final-candidate": "028f19c4488b175714174ca19f395c88ee2104a35b4db2e82f18342e8ff2e2db"
+    },
+    "platform": "macOS-26.6.2-arm64-arm-64bit-Mach-O",
+    "repeats": 10,
+    "warmups": 1,
+    "scope_clock": "CLOCK_THREAD_CPUTIME_ID",
+    "envelope_clock": "CLOCK_PROCESS_CPUTIME_ID",
+    "flags": [
+      "release=1",
+      "server=0"
+    ],
+    "diagnostic_sources": {
+      "candidate_head": "a1d86f1bd3093a6dcc27fa6ac5f8cd8f352f48e1",
+      "master_head": "e53a673b2609175e781ad2608a15a220866cf2fa"
+    },
+    "manifest": {
+      "baseline_source_revision": "ee3be8ecd9d7100de78ef63869271371d427cb66",
+      "baseline_binary": "/Users/bradley/glob2/build/darwin/client/release/src/glob2",
+      "baseline_binary_sha256": "33f3e924256a712e0bfca043d4ac106d1b99ef8f584b4dae7c408e8e701cbe46",
+      "platform": "macOS-26.6.2-arm64-arm-64bit-Mach-O",
+      "machine": "arm64",
+      "toolchain": "Apple clang version 21.0.0 (clang-2100.3.34.2)",
+      "build_flags": [
+        "release=1",
+        "server=0"
+      ],
+      "fixture_generation_timing_is_not_performance_evidence": true,
+      "paired_timing_repeats": 10,
+      "measurements_status": "diagnostic smoke after capture/query/idle facade optimizations; not acceptance",
+      "scenarios": [
+        {
+          "id": "land-2-1003-numbi-early",
+          "group": "numbi",
+          "control": false,
+          "start_tick": 0,
+          "terrain": "land",
+          "teams": 2,
+          "map_seed": 1003,
+          "game_seed": 19,
+          "args": [
+            "--load-game",
+            "/Users/bradley/.codex/worktrees/async-ai-engine/glob2/artifacts/async-ai/performance/extra/land-2-1003-numbi/initial.game.gz",
+            "--ticks",
+            "8192"
+          ],
+          "fixture_sha256": {
+            "/Users/bradley/.codex/worktrees/async-ai-engine/glob2/artifacts/async-ai/performance/extra/land-2-1003-numbi/initial.game.gz": "aef6f5d6f6a62db06c1f9200d1101c87491cd081e46736d8a176474f72f06b95"
+          }
+        },
+        {
+          "id": "water-2-1008-javascript-early",
+          "group": "javascript",
+          "control": false,
+          "start_tick": 0,
+          "terrain": "water",
+          "teams": 2,
+          "map_seed": 1008,
+          "game_seed": 19,
+          "args": [
+            "--load-game",
+            "/Users/bradley/.codex/worktrees/async-ai-engine/glob2/artifacts/async-ai/performance/extra/water-2-1008-javascript/initial.game.gz",
+            "--ticks",
+            "8192"
+          ],
+          "fixture_sha256": {
+            "/Users/bradley/.codex/worktrees/async-ai-engine/glob2/artifacts/async-ai/performance/extra/water-2-1008-javascript/initial.game.gz": "0fb1a556ba8ebd5e51d4efc978753a469e476908576ba82659f3366f52a011e8"
+          }
+        },
+        {
+          "id": "land-2-1002-mixed-early",
+          "group": "mixed",
+          "control": true,
+          "start_tick": 0,
+          "terrain": "land",
+          "teams": 2,
+          "map_seed": 1002,
+          "game_seed": 19,
+          "args": [
+            "--load-game",
+            "/Users/bradley/.codex/worktrees/async-ai-engine/glob2/artifacts/async-ai/performance/quick/land-2-1002-mixed/initial.game.gz",
+            "--ticks",
+            "8192"
+          ],
+          "fixture_sha256": {
+            "/Users/bradley/.codex/worktrees/async-ai-engine/glob2/artifacts/async-ai/performance/quick/land-2-1002-mixed/initial.game.gz": "f91b8a87434e4330a5da3559cd290dbf7f5f39ce933ba11a1f1d35957b109475"
+          }
+        },
+        {
+          "id": "water-4-1001-cortex-early",
+          "group": "cortex",
+          "control": false,
+          "start_tick": 0,
+          "terrain": "water",
+          "teams": 4,
+          "map_seed": 1001,
+          "game_seed": 19,
+          "args": [
+            "--load-game",
+            "/Users/bradley/.codex/worktrees/async-ai-engine/glob2/artifacts/async-ai/performance/quick/water-4-1001-cortex/initial.game.gz",
+            "--ticks",
+            "8192"
+          ],
+          "fixture_sha256": {
+            "/Users/bradley/.codex/worktrees/async-ai-engine/glob2/artifacts/async-ai/performance/quick/water-4-1001-cortex/initial.game.gz": "635ad70e6577df2106314a0f1979e207fe2052f982064b621e90ee08175bafd6"
+          }
+        }
+      ],
+      "fixture_generation": {
+        "baseline_source_revision": "ee3be8ecd9d7100de78ef63869271371d427cb66",
+        "baseline_binary": "/Users/bradley/glob2/build/darwin/client/release/src/glob2",
+        "baseline_binary_sha256": "33f3e924256a712e0bfca043d4ac106d1b99ef8f584b4dae7c408e8e701cbe46",
+        "platform": "macOS-26.6.2-arm64-arm-64bit-Mach-O",
+        "machine": "arm64",
+        "toolchain": "Apple clang version 21.0.0 (clang-2100.3.34.2)",
+        "build_flags": [
+          "release=1",
+          "server=0"
+        ]
+      },
+      "legacy_baseline_fields_mean": "fixture generation only; execution_baseline identifies the binary used for measurements",
+      "execution_baseline": {
+        "source_revision": "e53a673b2609175e781ad2608a15a220866cf2fa",
+        "binary": "/Users/bradley/.codex/worktrees/async-ai-baseline-current/glob2/build/darwin/client/release/src/glob2",
+        "binary_sha256": "93b86aa8cc8205b01a863f496d422329f14751299d035fbb7a6baaa76a0c9987",
+        "build_metadata": "baseline-current/build-metadata.json",
+        "status": "ready; no measurements"
+      }
+    },
+    "diagnostic_probes": false,
+    "before_revision": "e9311a91c",
+    "master_revision": "e53a673b2609175e781ad2608a15a220866cf2fa",
+    "after_source_provenance": "Final shared authoritative map/unit/building records; source revision recorded before execution."
+  },
+  "limitations": [
+    "New master resource catalog integration/version collision unresolved; evidence applies original base only",
+    "No refreshed TSAN on shared-state revision; previous migration TSAN does not qualify final revision",
+    "No matching Linux/Windows/browser traces or display testing",
+    "Full-match zero-delay5%gate and delay gameplay experiments incomplete; window CPU remains above master; production delay0"
+  ],
+  "archive_sha256": "84c4a6370a7d1bee3256bd9860de8a037d18fbb61de3bb298ab0c8f1d4c33bcb",
+  "archive_bytes": 8299769
+}
