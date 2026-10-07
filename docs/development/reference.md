@@ -896,8 +896,24 @@ For timing and scheduling, start with `src/game/Game_sync.cpp` and `src/engine/E
   metadata. See [terrain material authoring](../assets/terrain-materials.md) for
   variants, boundary profiles, asset validation and cache behavior. Visual catalog
   changes must not change saved frames or simulation RNG use.
+- Built-in terrain is table-driven. `TerrainGroup.h` defines one property profile per
+  gameplay group; `TerrainTypeTable.h` lists every `TerrainType` with its group, external
+  name, string-table label, semantic colours and frozen saved-frame range, and the
+  `TerrainProperties.h`, `TerrainPresentation.h`, `TerrainCompatibility.h` and
+  `TerrainExperiments.h` tables derive from it. Members of a group are byte-identical
+  profiles, so the registry deduplicates them into one property index; use
+  `terrainGroup(type)` for palette and reporting buckets, never for simulation rules.
+  Adding a type is one enumerator, one row, one label and one material binding;
+  adding a group is one profile and, when gated, one `ExperimentId`.
+- Format 141 raised `TERRAIN_COUNT` from 7 to 31. Custom definitions and tile IDs in
+  older files start at 7, so `Map::loadTask` remaps IDs at or above the file's built-in
+  count (`TERRAIN_COUNT_BEFORE_CATALOGUE`) to follow the current built-ins, and
+  `TerrainRegistry::deserialize` takes that count. Built-in-only files are unchanged
+  byte for byte; custom registries re-serialize with shifted IDs, so their digest
+  changes and replays from formats 136 to 140 that embed one no longer verify.
 - Runtime types inherit a shipped appearance and use full tiles; legacy corner
-  adapters apply only to built-ins. Import definitions through
+  adapters apply only to built-ins. Any paintable built-in is a valid `base` or
+  `appearance`. Import definitions through
   `Map::importTerrainDefinitions` before a match or in the editor. It validates and
   compiles the complete replacement before publishing it, preserves existing IDs,
   and appends new keys in sorted order. Scenes and gradient jobs retain the same
@@ -908,6 +924,9 @@ For timing and scheduling, start with `src/game/Game_sync.cpp` and `src/engine/E
   authoritative for previews and minimaps; built-ins use catalog palettes.
   Experimental authoring gates live in `TerrainExperiments.h`; maps carry required
   experiments into matches, while saves retain them independently of user settings.
+  A runtime definition whose properties equal a gated built-in group's profile
+  requires that group's experiment too (`Map::requiredTerrainExperiments` compares
+  property indices); a definition with its own profile stays ungated.
 - Trail retains stable terrain ID `4` (`TRAIL`) and experiment position `3`
   (`TrailTerrain`). Its external name, translation keys and serialized experiment
   key remain `road` / `road-terrain` for scripting, reports, editor actions and

@@ -89,7 +89,7 @@ bool MapHeader::loadFields(GAGCore::InputStream *stream)
 	if (versionMinor >= FILE_FORMAT_VERSION_RUNTIME_RESOURCES)
 	{
 		resourceExperimentDefinitions = loadCatalogExperimentDefinitions(stream);
-		if (!requiredResourceExperiments.load(stream, versionMinor, true, resourceExperimentKeys())) return false;
+		if (!requiredResourceExperiments.load(stream, versionMinor, true, resourceExperimentKeys(), "resourceExperiments")) return false;
 	}
 	stream->readEnterSection("teams");
 	for(int i=0; i<numberOfTeams; ++i)
@@ -119,7 +119,7 @@ void MapHeader::save(GAGCore::OutputStream *stream, size_t *sha1Position) const
 	stream->write(SHA1, 20, "SHA1");
 	requiredTerrainExperiments.save(stream);
 	saveCatalogExperimentDefinitions(stream, resourceExperimentDefinitions);
-	requiredResourceExperiments.save(stream);
+	requiredResourceExperiments.save(stream, "resourceExperiments");
 	stream->writeEnterSection("teams");
 	for(int i=0; i<numberOfTeams; ++i)
 	{

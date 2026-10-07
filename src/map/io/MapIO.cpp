@@ -74,6 +74,12 @@ try
 	hMask = h-1;
 	size = w*h;
 
+	// Files older than the catalogue were written with seven built-ins: their custom
+	// definitions and tile IDs start at 7 and move behind the current built-ins.
+	const unsigned savedBuiltins = TerrainRegistry::savedBuiltinCount(versionMinor);
+	// Returns a value the registry rejects when the renumbered ID would not fit.
+	auto remapTerrainId = [savedBuiltins](Uint16 v) -> unsigned
+	{ return v < savedBuiltins ? v : unsigned(v) - savedBuiltins + TERRAIN_COUNT; };
 	if (versionMinor >= FILE_FORMAT_VERSION_RUNTIME_TERRAIN)
 	{
 		stream->readEnterSection("terrainRegistry");
@@ -95,7 +101,7 @@ try
 		stream->readLeaveSection();
 		try
 		{
-			terrainRegistryValue = TerrainRegistry::deserialize(definitions);
+			terrainRegistryValue = TerrainRegistry::deserialize(definitions, savedBuiltins);
 		}
 		catch (const std::exception &error)
 		{
@@ -157,7 +163,7 @@ try
         GAGCore::PackedArray::read<Uint32>(stream,size,[&](size_t i,Uint32 v){mapDiscovered[i]=v;});
         GAGCore::PackedArray::read<Uint16>(stream,size,[&](size_t i,Uint16 v){tiles[i].terrain=v;});
         if (versionMinor >= FILE_FORMAT_VERSION_TERRAIN_PROPERTIES)
-            GAGCore::PackedArray::read<Uint16>(stream,size,[&](size_t i,Uint16 v){ if (!validTerrainType(v)) throw std::ios_base::failure("Unknown terrain identity"); terrainIds[i]=static_cast<TerrainType>(v); });
+            GAGCore::PackedArray::read<Uint16>(stream,size,[&](size_t i,Uint16 v){ const auto id=remapTerrainId(v); if (!validTerrainType(id)) throw std::ios_base::failure("Unknown terrain identity"); terrainIds[i]=static_cast<TerrainType>(id); });
         GAGCore::PackedArray::read<Uint16>(stream,size,[&](size_t i,Uint16 v){tiles[i].building=v;});
         if (versionMinor>=FILE_FORMAT_VERSION_RUNTIME_RESOURCES)
             GAGCore::PackedArray::read<Uint16>(stream,size,[&](size_t i,Uint16 v){tiles[i].resource.type=v;});
@@ -194,7 +200,7 @@ try
 		{
 			if (!packed)
 			{
-				const auto id = stream->readUint16("terrainType");
+				const auto id = remapTerrainId(stream->readUint16("terrainType"));
 				if (!validTerrainType(id)) co_return false;
 				terrainIds[i] = static_cast<TerrainType>(id);
 			}

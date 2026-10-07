@@ -14,8 +14,11 @@ world-space bends; version 3 adds per-profile displacement amplitude, pebble
 speckle, diagonal bridging and up to sixty-four curves per profile. Version-2
 packs parse unchanged and render through the current resolver, which rounds
 corners and reads each curve mirrored and negated. Material keys are unique strings. Bindings map semantic terrain
-names to material keys; the five shipped bindings are water, sand, grass, ice and
-road. Adding a visual material does not add gameplay rules. Runtime terrain definitions
+names to material keys. Every paintable built-in terrain in `src/map/TerrainTypeTable.h`
+requires a binding: the classic water, sand, grass, ice and road, plus the
+terrain-catalogue types. Several names may bind the same material; the catalogue
+types ship bound to classic materials until their own artwork lands. Adding a visual
+material does not add gameplay rules. Runtime terrain definitions
 reuse a shipped appearance binding with independently resolved simulation properties;
 see [map authoring](../map-generators/GAME_RULES_FOR_MAP_DESIGN.md#authoring-additional-terrain-types) for the JSON import workflow. Runtime
 definitions cannot introduce artwork or modify this catalog. Their canonical IDs
