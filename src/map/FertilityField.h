@@ -98,11 +98,11 @@ namespace Fertility
 		const Field& landField() const { return land; }
 		const std::vector<std::uint32_t>& aquaticField() const { return aquatic; }
 	private:
+		const Map* owner = nullptr;
 		bool ready = false;
 		Field land;
 		std::vector<std::uint32_t> aquatic;
 		std::vector<std::uint16_t> localGrowth;
-		std::vector<std::uint16_t> growthHabitats;
 	};
 
 	/// Uses canonical terrain properties and the shared cached field. Tiles that no wheat

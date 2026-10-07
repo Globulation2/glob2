@@ -1,0 +1,260 @@
+{
+  "generator": "tools/artwork/terrain_synth.py",
+  "method": "procedural",
+  "generator_sha256": {
+    "tools/artwork/terrain_synth.py": "a8eda69c7b7212d9f9573766da37f1002a984d62327c108fb581e9a9c23830dc",
+    "tools/artwork/material_tiles.py": "224e159e0974023797710aa959994f11658c82da8fb80f9701e4abc13c74ed83"
+  },
+  "material": "ember_field",
+  "group": "lava",
+  "label": "Ember field",
+  "recipe": {
+    "name": "ember_field",
+    "group": "lava",
+    "label": "Ember field",
+    "profile": "fractured",
+    "seam": {
+      "height": 4,
+      "fringe": [
+        160,
+        80,
+        40
+      ],
+      "fringe_q8": 96,
+      "fringe_width_q8": 512
+    },
+    "palette": {
+      "dark": [
+        50,
+        28,
+        24
+      ],
+      "mid": [
+        60,
+        34,
+        28
+      ],
+      "light": [
+        80,
+        44,
+        32
+      ],
+      "ember_dim": [
+        120,
+        50,
+        30
+      ],
+      "ember": [
+        230,
+        120,
+        40
+      ],
+      "ember_core": [
+        250,
+        200,
+        80
+      ]
+    },
+    "style": {
+      "luma": 48,
+      "std": 10,
+      "grain_max": 9,
+      "match": 0.7
+    },
+    "phases": 4,
+    "animation_ticks": 8,
+    "alpha_range": [
+      255,
+      255
+    ],
+    "preview": [
+      110,
+      52,
+      36
+    ],
+    "minimap": [
+      120,
+      48,
+      30
+    ],
+    "placeholder_only": false,
+    "note": "placeholder until the image-generated ember field lands"
+  },
+  "seed": "fnv1a32(\"ember_field:<variant>:<phase>\")",
+  "render_size": 128,
+  "tile_size": 32,
+  "variants": 16,
+  "phases": 4,
+  "frame_layout": "variant + 16 * phase",
+  "sprite": "data/gfx/terrain-ember_field",
+  "preview": [
+    110,
+    52,
+    36
+  ],
+  "minimap": [
+    120,
+    48,
+    30
+  ],
+  "mean_color": [
+    70,
+    39,
+    30
+  ],
+  "style_stats": {
+    "0": {
+      "luma": 47.3,
+      "std": 10.7,
+      "grain": 4.2,
+      "sat": 0.56,
+      "alpha": 255.0
+    },
+    "1": {
+      "luma": 47.3,
+      "std": 10.7,
+      "grain": 4.3,
+      "sat": 0.56,
+      "alpha": 255.0
+    },
+    "2": {
+      "luma": 47.3,
+      "std": 10.7,
+      "grain": 4.3,
+      "sat": 0.56,
+      "alpha": 255.0
+    },
+    "3": {
+      "luma": 47.3,
+      "std": 10.7,
+      "grain": 4.2,
+      "sat": 0.56,
+      "alpha": 255.0
+    }
+  },
+  "style_references": {
+    "data/gfx/terrain0..15.png": {
+      "use": "statistics only",
+      "stats": {
+        "luma": 79.3,
+        "std": 5.0,
+        "grain": 3.0,
+        "sat": 0.73,
+        "alpha": 255.0
+      }
+    },
+    "data/gfx/terrain128..143.png": {
+      "use": "statistics only",
+      "stats": {
+        "luma": 160.1,
+        "std": 27.0,
+        "grain": 27.9,
+        "sat": 0.74,
+        "alpha": 255.0
+      }
+    },
+    "data/gfx/terrain256..271.png": {
+      "use": "statistics only",
+      "stats": {
+        "luma": 95.2,
+        "std": 8.4,
+        "grain": 5.5,
+        "sat": 0.92,
+        "alpha": 255.0
+      }
+    },
+    "data/gfx/terrain272..287.png": {
+      "use": "statistics only",
+      "stats": {
+        "luma": 215.4,
+        "std": 6.2,
+        "grain": 4.3,
+        "sat": 0.17,
+        "alpha": 255.0
+      }
+    },
+    "data/gfx/terrain288..303.png": {
+      "use": "statistics only",
+      "stats": {
+        "luma": 102.9,
+        "std": 10.3,
+        "grain": 7.9,
+        "sat": 0.37,
+        "alpha": 255.0
+      }
+    }
+  },
+  "python": "3.14.4",
+  "pillow": "12.2.0",
+  "platform": {
+    "system": "linux",
+    "machine": "x86_64",
+    "libc": "glibc 2.43"
+  },
+  "runtime_sha256": {
+    "data/gfx/terrain-ember_field0.png": "29e2b151ecbc46bbdd85596989183817c600857c56c63fd17a526c60c204f0dc",
+    "data/gfx/terrain-ember_field1.png": "c1a6e4c90f68b1db1d2054e674f33cf92af96d87a7baf05557e9b6b0de03c5b3",
+    "data/gfx/terrain-ember_field2.png": "c75aaae853998a7a6d3f13a1140647f7579ba3d6343b03faa7a20e83b94fa034",
+    "data/gfx/terrain-ember_field3.png": "2254335b03ae172c9793536b13a08be86ae6b9e1e162e3c3d17b3a90d806f64f",
+    "data/gfx/terrain-ember_field4.png": "8ade09695dd95ead9927bb268114d70774ae96c0f59d9f68fc8e4eec6499e6ff",
+    "data/gfx/terrain-ember_field5.png": "310649075767efeaeda726224a339b06d6c0fc78c46f597cff839f2cca7fb322",
+    "data/gfx/terrain-ember_field6.png": "6b0e8009d23b09ee5ef9d55490188d501e1fd507ae0ee2194b836fe100a430ae",
+    "data/gfx/terrain-ember_field7.png": "caba36eb09fb4edbb2d3889071eeae71eceae95e813ad6774d1c9e9e9acdaa3c",
+    "data/gfx/terrain-ember_field8.png": "9290f7e99350f99872a4aa28cd1a92e7185752c2f118b1c486a70b1f1251c5e9",
+    "data/gfx/terrain-ember_field9.png": "dd1947b04801a14a8c01e25e0fe3b8a33ab2dc61aa8ace7ed0c505da599ac38d",
+    "data/gfx/terrain-ember_field10.png": "7fe679dd75b26f0ea576009fa08ef67bec33847b84b0bc5c5d1104b2ee522c17",
+    "data/gfx/terrain-ember_field11.png": "089e849f4aba60c9f7f5ca3addc084554c160c1797a4d466d49c705ba55ba0b1",
+    "data/gfx/terrain-ember_field12.png": "77b4e315618d257b427e125cfa5f417c25b997e2a2b9dbd01b3c44dd16704705",
+    "data/gfx/terrain-ember_field13.png": "8e19c4f85244f27de4e8022616956aa993f5968f89c1df25b1114759f893390e",
+    "data/gfx/terrain-ember_field14.png": "a99014748ddf448c98b3763bc905d467969feafb0a723464743b69a730d811fa",
+    "data/gfx/terrain-ember_field15.png": "4603ace407d9efb3a91f49f12166bb4003def5a1a79d161c2acf5301a72251b0",
+    "data/gfx/terrain-ember_field16.png": "5d123185323b033345e1fc8e93578c91edd1bb52cf031375fdce975c1ce93696",
+    "data/gfx/terrain-ember_field17.png": "47d66b540d74b1281cce179e55d7601eaadd1c50a8b75c5a8bd3d5a95c7624df",
+    "data/gfx/terrain-ember_field18.png": "0d95da5e7463692250f52562692f2e4c54055ecf1b8c5821efa3a78508a8b3dc",
+    "data/gfx/terrain-ember_field19.png": "ff093f16669547e21630257729c7249e54421c38f0d2eeb6c9331f6dd212fa5e",
+    "data/gfx/terrain-ember_field20.png": "c0bcdd929b672ae14d142c5e46ab306a1a11914c3bb799f0be84d9da4f1e167f",
+    "data/gfx/terrain-ember_field21.png": "5f6cd9ec32ad35c386353a0c771aaede31391917da9f96eebf47717113184385",
+    "data/gfx/terrain-ember_field22.png": "add9993bb48d869e9007c697862f8951e622ef8c4fabaf323a3b273916c5a706",
+    "data/gfx/terrain-ember_field23.png": "2e963a82b6b359fb25acea126bbf7074b9ecd95860e7df72fbe233a1484d74ef",
+    "data/gfx/terrain-ember_field24.png": "ce0665af6080c55f81caa29d32bce94b806613f8cae3f5b8c67dc529d70a53ce",
+    "data/gfx/terrain-ember_field25.png": "d242ef27a465d1e318f86dd33bcdeb38f2fcc49199d5644bc1c10837aab70aba",
+    "data/gfx/terrain-ember_field26.png": "ed83ad4afd271c48311559becb954de53a16782bad7a5f9e46787c65d736070f",
+    "data/gfx/terrain-ember_field27.png": "06e3f84638d39ed496fd14efa7bd0e858f87e962d5fe64e5f3a6332d9794cff1",
+    "data/gfx/terrain-ember_field28.png": "c1831c101c3d26f7996b455f5ed687ad37c8daa5a1e8a42a95ed2106d685c3e0",
+    "data/gfx/terrain-ember_field29.png": "5d290aefdb772b2e8c33f1c187f8a1a11b29d557c3147e3a9a78da879b05aadb",
+    "data/gfx/terrain-ember_field30.png": "0585faa785022422a27ddfcc8e8ca1079a6fd00c79ae3bed718e1f269cd6c407",
+    "data/gfx/terrain-ember_field31.png": "aae604071609222552530c056daeb393df308339e7204310bf1a08ba13d1c730",
+    "data/gfx/terrain-ember_field32.png": "0d318c8e66c27c774104b31991e83fe532e36a053899805c866bc30c128022d6",
+    "data/gfx/terrain-ember_field33.png": "7c929734b4205b57ed6f94545464d92aac6091121305976cfed72b76b49e652f",
+    "data/gfx/terrain-ember_field34.png": "11656ed49aaf477cafe78b25a3460ce3d3a56379604d2b4dc134601b5410060e",
+    "data/gfx/terrain-ember_field35.png": "225634c982ebbffdf492f85a540260dec06aa516f3a00d6da44b70234da5999a",
+    "data/gfx/terrain-ember_field36.png": "78c07a031053df4711b709cb972a441cf690c13fef5ca3c29d55e1b565efacc5",
+    "data/gfx/terrain-ember_field37.png": "9f00bd79b5ddd5265516eeb2e01e9d5a7200c07d87687467c50ecd0ed875a48d",
+    "data/gfx/terrain-ember_field38.png": "403d828bce4a6a51260c414dff7db3e541bb4c69c8e2eb393cfed575c8d9dd22",
+    "data/gfx/terrain-ember_field39.png": "45b72f65f619646eeab9b03b93cca0f553cf2138019acea28261caf50b95910c",
+    "data/gfx/terrain-ember_field40.png": "b086dc249121a3b65b54c5415586b65c167dec64b65e96d1bce3f9fbb6fda569",
+    "data/gfx/terrain-ember_field41.png": "d4114dc13ef0254f8e54e1d6855617d10c70a80850edafc5ddaba330bb00b0e8",
+    "data/gfx/terrain-ember_field42.png": "6b0cc98ec02940abe2aa987d6a3c076c71016902837a8b57214fbd681e4fca87",
+    "data/gfx/terrain-ember_field43.png": "3fcc1d957871107a6745c431a3ca0885c8958c8e0750de7e5ed706fd2aa028f7",
+    "data/gfx/terrain-ember_field44.png": "99d108548812424578d6625750e2a632b9b8ac7ca21fce91b4c9badf76adb6ef",
+    "data/gfx/terrain-ember_field45.png": "3fe18b1168d0c1fd80a1c7cbed26297ca9a9e5a8cfe98dbe0b74d2e4e4a42e9b",
+    "data/gfx/terrain-ember_field46.png": "6a051bfabde4087baa126524841f61bed95ead819ba21f423d265d241ef9cbc9",
+    "data/gfx/terrain-ember_field47.png": "f03539c9d5077e69e3b8d0e72656fd3fd414d8e67a736e89e01779135d2fc731",
+    "data/gfx/terrain-ember_field48.png": "675727464ba91a900b909fab487535dca299dc7ea056be6422f9579f96722048",
+    "data/gfx/terrain-ember_field49.png": "2a92e09bbc46eba4cfbb892da4fa846e73a40e3c15bc492fdc15bd285dae6e88",
+    "data/gfx/terrain-ember_field50.png": "1044fbd256ba74148fb790e7fb0d48440b418fa4049b2553b67d21132a5f0756",
+    "data/gfx/terrain-ember_field51.png": "9a78c4b50ed5a03243520939445b0f20455d68622522430140063399cc70055e",
+    "data/gfx/terrain-ember_field52.png": "d3e78aa3f852c00aa4f72c64dc335708828dd693911d2c8ef42367e287904a41",
+    "data/gfx/terrain-ember_field53.png": "99b484f48027da268407199963ba5514286ff2f8072090c295024b9598ef4a36",
+    "data/gfx/terrain-ember_field54.png": "81b7f82aee9cc622de9805f8d9051957025af2f0cd115f263405540d8e680154",
+    "data/gfx/terrain-ember_field55.png": "d0a4ed12d7e39bc1fe341fe084808459b5950e5173082e89a2934ecc6eb3167e",
+    "data/gfx/terrain-ember_field56.png": "1ec70f8887c35ea200a9d308c138462297a4862e94cb9d79cc63724c507bdd0b",
+    "data/gfx/terrain-ember_field57.png": "4ecb58a22198e0f33e614f6b75cb82d9d037cf138021bd8dc7bf778906d58b8c",
+    "data/gfx/terrain-ember_field58.png": "3521c94624bdfb8acae4acf9eaccc5272e6b0191a8ccff012a775713a2afc8c7",
+    "data/gfx/terrain-ember_field59.png": "3538126ec50b43baa3371a7eb7a1e8d1aa44167c857891452b2e94e5bd95c260",
+    "data/gfx/terrain-ember_field60.png": "1f33289af7ff3d27f60b9ba6160ea4c3576bfd08f64c8b72345e406f92e0ee63",
+    "data/gfx/terrain-ember_field61.png": "9b523f32b1f6a4747b01453c84b200e6b8f912a8b1bba10cd1ac710615086fe1",
+    "data/gfx/terrain-ember_field62.png": "eb63e60c04ba72c6081e9f9f039fe318be2445bedba8329f0a853628756280d0",
+    "data/gfx/terrain-ember_field63.png": "2608d77ee48d55eb105b3e7a220c31b9b395096f7b13a238b63e036451d10dfa"
+  }
+}

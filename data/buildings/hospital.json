@@ -1,0 +1,725 @@
+{
+  "variants": [
+    {
+      "key": "hospital.0.site",
+      "next": "hospital.0.finished",
+      "previous": "",
+      "properties": {
+        "decLeft": -1,
+        "decTop": -1,
+        "fillable": 1,
+        "gameSprite": "data/gfx/hosp0c",
+        "height": 2,
+        "hpInc": 87,
+        "hpInit": 1,
+        "hpMax": 260,
+        "isBuildingSite": 1,
+        "maxMaterial": [
+          3,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "miniSprite": "data/gfx/minihosp0c",
+        "shortTypeNum": 2,
+        "type": "hospital",
+        "width": 2
+      },
+      "requiredExperiment": "",
+      "semantics": {
+        "admittedUnitMask": 7,
+        "ammunitionCost": 1,
+        "ammunitionMaterial": 3,
+        "feeding": {
+          "convertsUnits": false,
+          "cost": {},
+          "duration": 0,
+          "enabled": false,
+          "holdAdmissionUntilExit": false,
+          "optionalFruitMask": 0,
+          "partial": "none",
+          "unitMask": 7
+        },
+        "healing": {
+          "convertsUnits": false,
+          "cost": {},
+          "duration": 0,
+          "enabled": false,
+          "holdAdmissionUntilExit": false,
+          "optionalFruitMask": 0,
+          "partial": "none",
+          "unitMask": 7
+        },
+        "instantPlacement": false,
+        "market": {
+          "fetchesStock": true,
+          "fetchesStockExperiment": "markets-v2",
+          "interTeamFruitExchange": false,
+          "pickupPenalty": 5,
+          "sharedStock": false,
+          "suppliesStock": false,
+          "suppliesStockExperiment": "markets-v2",
+          "suppliesDirectStock": false,
+          "fetchesDirectStock": false,
+          "suppliesStockMaterials": [
+            "wood"
+          ],
+          "suppliesDirectStockMaterials": [
+            "wood"
+          ],
+          "fetchesStockMaterials": [
+            "wood"
+          ],
+          "fetchesDirectStockMaterials": [
+            "wood"
+          ]
+        },
+        "occupiesGround": true,
+        "placeable": true,
+        "production": {
+          "fallbackUnit": 0,
+          "initialRatios": [
+            1,
+            0,
+            0
+          ],
+          "recipes": {},
+          "scheduling": "weighted_late_choice"
+        },
+        "projectileBuildingDamage": 0,
+        "projectileDamage": [
+          0,
+          0,
+          0
+        ],
+        "regenerationPerTick": 0,
+        "relocatable": false,
+        "repairable": false,
+        "requiredWorkerLevel": 0,
+        "sightSharing": "other",
+        "training": {},
+        "trainingInParallel": false,
+        "workPriorityBias": 1,
+        "assignmentLimit": 20,
+        "constructionCost": {
+          "wood": 3
+        },
+        "repairCost": {},
+        "replenishMaterials": [
+          "wood"
+        ]
+      },
+      "presentation": {
+        "displayName": "hospital",
+        "iconFrame": 2,
+        "iconTile": false,
+        "iconPriority": 100,
+        "skinSlot": "",
+        "showLevel": true,
+        "connectionGroup": "",
+        "connectsAcrossTeams": false,
+        "defaultAssigned": 2
+      }
+    },
+    {
+      "key": "hospital.0.finished",
+      "next": "hospital.1.site",
+      "previous": "hospital.0.site",
+      "properties": {
+        "armor": 5,
+        "decLeft": -1,
+        "decTop": -1,
+        "gameSprite": "data/gfx/hosp0b",
+        "gameSpriteCount": 2,
+        "height": 2,
+        "hpInit": 260,
+        "hpMax": 260,
+        "maxUnitInside": 2,
+        "miniSprite": "data/gfx/minihosp0b",
+        "shortTypeNum": 2,
+        "type": "hospital",
+        "width": 2
+      },
+      "requiredExperiment": "",
+      "semantics": {
+        "admittedUnitMask": 7,
+        "ammunitionCost": 1,
+        "ammunitionMaterial": 3,
+        "feeding": {
+          "convertsUnits": false,
+          "cost": {},
+          "duration": 0,
+          "enabled": false,
+          "holdAdmissionUntilExit": false,
+          "optionalFruitMask": 0,
+          "partial": "none",
+          "unitMask": 7
+        },
+        "healing": {
+          "convertsUnits": false,
+          "cost": {},
+          "duration": 30,
+          "enabled": true,
+          "holdAdmissionUntilExit": false,
+          "optionalFruitMask": 0,
+          "partial": "proportional_full_cost",
+          "unitMask": 7
+        },
+        "instantPlacement": false,
+        "market": {
+          "fetchesStock": true,
+          "fetchesStockExperiment": "markets-v2",
+          "interTeamFruitExchange": false,
+          "pickupPenalty": 5,
+          "sharedStock": false,
+          "suppliesStock": false,
+          "suppliesStockExperiment": "markets-v2",
+          "suppliesDirectStock": false,
+          "fetchesDirectStock": false,
+          "suppliesStockMaterials": [],
+          "suppliesDirectStockMaterials": [],
+          "fetchesStockMaterials": [],
+          "fetchesDirectStockMaterials": []
+        },
+        "occupiesGround": true,
+        "placeable": false,
+        "production": {
+          "fallbackUnit": 0,
+          "initialRatios": [
+            1,
+            0,
+            0
+          ],
+          "recipes": {},
+          "scheduling": "weighted_late_choice"
+        },
+        "projectileBuildingDamage": 0,
+        "projectileDamage": [
+          0,
+          0,
+          0
+        ],
+        "regenerationPerTick": 0,
+        "relocatable": false,
+        "repairable": true,
+        "requiredWorkerLevel": 0,
+        "sightSharing": "other",
+        "training": {},
+        "trainingInParallel": false,
+        "workPriorityBias": 1,
+        "assignmentLimit": 0,
+        "constructionCost": {},
+        "repairCost": {
+          "wood": 3
+        },
+        "replenishMaterials": []
+      },
+      "presentation": {
+        "displayName": "hospital",
+        "iconFrame": 2,
+        "iconTile": false,
+        "iconPriority": 100,
+        "skinSlot": "",
+        "showLevel": true,
+        "connectionGroup": "",
+        "connectsAcrossTeams": false,
+        "defaultAssigned": 0
+      }
+    },
+    {
+      "key": "hospital.1.site",
+      "next": "hospital.1.finished",
+      "previous": "hospital.0.finished",
+      "properties": {
+        "decLeft": -1,
+        "decTop": -1,
+        "fillable": 1,
+        "gameSprite": "data/gfx/hosp1c",
+        "height": 2,
+        "hpInc": 30,
+        "hpInit": 260,
+        "hpMax": 500,
+        "isBuildingSite": 1,
+        "level": 1,
+        "maxMaterial": [
+          8,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "miniSprite": "data/gfx/minihosp1c",
+        "shortTypeNum": 2,
+        "type": "hospital",
+        "width": 2
+      },
+      "requiredExperiment": "",
+      "semantics": {
+        "admittedUnitMask": 7,
+        "ammunitionCost": 1,
+        "ammunitionMaterial": 3,
+        "feeding": {
+          "convertsUnits": false,
+          "cost": {},
+          "duration": 0,
+          "enabled": false,
+          "holdAdmissionUntilExit": false,
+          "optionalFruitMask": 0,
+          "partial": "none",
+          "unitMask": 7
+        },
+        "healing": {
+          "convertsUnits": false,
+          "cost": {},
+          "duration": 0,
+          "enabled": false,
+          "holdAdmissionUntilExit": false,
+          "optionalFruitMask": 0,
+          "partial": "none",
+          "unitMask": 7
+        },
+        "instantPlacement": false,
+        "market": {
+          "fetchesStock": true,
+          "fetchesStockExperiment": "markets-v2",
+          "interTeamFruitExchange": false,
+          "pickupPenalty": 5,
+          "sharedStock": false,
+          "suppliesStock": false,
+          "suppliesStockExperiment": "markets-v2",
+          "suppliesDirectStock": false,
+          "fetchesDirectStock": false,
+          "suppliesStockMaterials": [
+            "wood"
+          ],
+          "suppliesDirectStockMaterials": [
+            "wood"
+          ],
+          "fetchesStockMaterials": [
+            "wood"
+          ],
+          "fetchesDirectStockMaterials": [
+            "wood"
+          ]
+        },
+        "occupiesGround": true,
+        "placeable": false,
+        "production": {
+          "fallbackUnit": 0,
+          "initialRatios": [
+            1,
+            0,
+            0
+          ],
+          "recipes": {},
+          "scheduling": "weighted_late_choice"
+        },
+        "projectileBuildingDamage": 0,
+        "projectileDamage": [
+          0,
+          0,
+          0
+        ],
+        "regenerationPerTick": 0,
+        "relocatable": false,
+        "repairable": false,
+        "requiredWorkerLevel": 1,
+        "sightSharing": "other",
+        "training": {},
+        "trainingInParallel": false,
+        "workPriorityBias": 11,
+        "assignmentLimit": 20,
+        "constructionCost": {
+          "wood": 8
+        },
+        "repairCost": {},
+        "replenishMaterials": [
+          "wood"
+        ]
+      },
+      "presentation": {
+        "displayName": "hospital",
+        "iconFrame": 2,
+        "iconTile": false,
+        "iconPriority": 100,
+        "skinSlot": "",
+        "showLevel": true,
+        "connectionGroup": "",
+        "connectsAcrossTeams": false,
+        "defaultAssigned": 4
+      }
+    },
+    {
+      "key": "hospital.1.finished",
+      "next": "hospital.2.site",
+      "previous": "hospital.1.site",
+      "properties": {
+        "armor": 5,
+        "decLeft": -1,
+        "decTop": -1,
+        "gameSprite": "data/gfx/hosp1b",
+        "height": 2,
+        "hpInit": 500,
+        "hpMax": 500,
+        "level": 1,
+        "maxUnitInside": 5,
+        "miniSprite": "data/gfx/minihosp1b",
+        "shortTypeNum": 2,
+        "type": "hospital",
+        "width": 2
+      },
+      "requiredExperiment": "",
+      "semantics": {
+        "admittedUnitMask": 7,
+        "ammunitionCost": 1,
+        "ammunitionMaterial": 3,
+        "feeding": {
+          "convertsUnits": false,
+          "cost": {},
+          "duration": 0,
+          "enabled": false,
+          "holdAdmissionUntilExit": false,
+          "optionalFruitMask": 0,
+          "partial": "none",
+          "unitMask": 7
+        },
+        "healing": {
+          "convertsUnits": false,
+          "cost": {},
+          "duration": 18,
+          "enabled": true,
+          "holdAdmissionUntilExit": false,
+          "optionalFruitMask": 0,
+          "partial": "proportional_full_cost",
+          "unitMask": 7
+        },
+        "instantPlacement": false,
+        "market": {
+          "fetchesStock": true,
+          "fetchesStockExperiment": "markets-v2",
+          "interTeamFruitExchange": false,
+          "pickupPenalty": 5,
+          "sharedStock": false,
+          "suppliesStock": false,
+          "suppliesStockExperiment": "markets-v2",
+          "suppliesDirectStock": false,
+          "fetchesDirectStock": false,
+          "suppliesStockMaterials": [],
+          "suppliesDirectStockMaterials": [],
+          "fetchesStockMaterials": [],
+          "fetchesDirectStockMaterials": []
+        },
+        "occupiesGround": true,
+        "placeable": false,
+        "production": {
+          "fallbackUnit": 0,
+          "initialRatios": [
+            1,
+            0,
+            0
+          ],
+          "recipes": {},
+          "scheduling": "weighted_late_choice"
+        },
+        "projectileBuildingDamage": 0,
+        "projectileDamage": [
+          0,
+          0,
+          0
+        ],
+        "regenerationPerTick": 0,
+        "relocatable": false,
+        "repairable": true,
+        "requiredWorkerLevel": 1,
+        "sightSharing": "other",
+        "training": {},
+        "trainingInParallel": false,
+        "workPriorityBias": 11,
+        "assignmentLimit": 0,
+        "constructionCost": {},
+        "repairCost": {
+          "wood": 8
+        },
+        "replenishMaterials": []
+      },
+      "presentation": {
+        "displayName": "hospital",
+        "iconFrame": 2,
+        "iconTile": false,
+        "iconPriority": 100,
+        "skinSlot": "",
+        "showLevel": true,
+        "connectionGroup": "",
+        "connectsAcrossTeams": false,
+        "defaultAssigned": 0
+      }
+    },
+    {
+      "key": "hospital.2.site",
+      "next": "hospital.2.finished",
+      "previous": "hospital.1.finished",
+      "properties": {
+        "armor": 5,
+        "decLeft": -1,
+        "decTop": -1,
+        "fillable": 1,
+        "gameSprite": "data/gfx/hosp2c",
+        "height": 2,
+        "hpInc": 25,
+        "hpInit": 500,
+        "hpMax": 700,
+        "isBuildingSite": 1,
+        "level": 2,
+        "maxMaterial": [
+          3,
+          0,
+          0,
+          5,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "miniSprite": "data/gfx/minihosp2c",
+        "shortTypeNum": 2,
+        "type": "hospital",
+        "width": 2
+      },
+      "requiredExperiment": "",
+      "semantics": {
+        "admittedUnitMask": 7,
+        "ammunitionCost": 1,
+        "ammunitionMaterial": 3,
+        "feeding": {
+          "convertsUnits": false,
+          "cost": {},
+          "duration": 0,
+          "enabled": false,
+          "holdAdmissionUntilExit": false,
+          "optionalFruitMask": 0,
+          "partial": "none",
+          "unitMask": 7
+        },
+        "healing": {
+          "convertsUnits": false,
+          "cost": {},
+          "duration": 0,
+          "enabled": false,
+          "holdAdmissionUntilExit": false,
+          "optionalFruitMask": 0,
+          "partial": "none",
+          "unitMask": 7
+        },
+        "instantPlacement": false,
+        "market": {
+          "fetchesStock": true,
+          "fetchesStockExperiment": "markets-v2",
+          "interTeamFruitExchange": false,
+          "pickupPenalty": 5,
+          "sharedStock": false,
+          "suppliesStock": false,
+          "suppliesStockExperiment": "markets-v2",
+          "suppliesDirectStock": false,
+          "fetchesDirectStock": false,
+          "suppliesStockMaterials": [
+            "wood",
+            "stone"
+          ],
+          "suppliesDirectStockMaterials": [
+            "wood",
+            "stone"
+          ],
+          "fetchesStockMaterials": [
+            "wood",
+            "stone"
+          ],
+          "fetchesDirectStockMaterials": [
+            "wood",
+            "stone"
+          ]
+        },
+        "occupiesGround": true,
+        "placeable": false,
+        "production": {
+          "fallbackUnit": 0,
+          "initialRatios": [
+            1,
+            0,
+            0
+          ],
+          "recipes": {},
+          "scheduling": "weighted_late_choice"
+        },
+        "projectileBuildingDamage": 0,
+        "projectileDamage": [
+          0,
+          0,
+          0
+        ],
+        "regenerationPerTick": 0,
+        "relocatable": false,
+        "repairable": false,
+        "requiredWorkerLevel": 2,
+        "sightSharing": "other",
+        "training": {},
+        "trainingInParallel": false,
+        "workPriorityBias": 21,
+        "assignmentLimit": 20,
+        "constructionCost": {
+          "wood": 3,
+          "stone": 5
+        },
+        "repairCost": {},
+        "replenishMaterials": [
+          "wood",
+          "stone"
+        ]
+      },
+      "presentation": {
+        "displayName": "hospital",
+        "iconFrame": 2,
+        "iconTile": false,
+        "iconPriority": 100,
+        "skinSlot": "",
+        "showLevel": true,
+        "connectionGroup": "",
+        "connectsAcrossTeams": false,
+        "defaultAssigned": 6
+      }
+    },
+    {
+      "key": "hospital.2.finished",
+      "next": "",
+      "previous": "hospital.2.site",
+      "properties": {
+        "armor": 10,
+        "decLeft": -1,
+        "decTop": -1,
+        "gameSprite": "data/gfx/hosp2b",
+        "height": 2,
+        "hpInit": 700,
+        "hpMax": 700,
+        "level": 2,
+        "maxUnitInside": 7,
+        "miniSprite": "data/gfx/minihosp2b",
+        "shortTypeNum": 2,
+        "type": "hospital",
+        "width": 2
+      },
+      "requiredExperiment": "",
+      "semantics": {
+        "admittedUnitMask": 7,
+        "ammunitionCost": 1,
+        "ammunitionMaterial": 3,
+        "feeding": {
+          "convertsUnits": false,
+          "cost": {},
+          "duration": 0,
+          "enabled": false,
+          "holdAdmissionUntilExit": false,
+          "optionalFruitMask": 0,
+          "partial": "none",
+          "unitMask": 7
+        },
+        "healing": {
+          "convertsUnits": false,
+          "cost": {},
+          "duration": 6,
+          "enabled": true,
+          "holdAdmissionUntilExit": false,
+          "optionalFruitMask": 0,
+          "partial": "proportional_full_cost",
+          "unitMask": 7
+        },
+        "instantPlacement": false,
+        "market": {
+          "fetchesStock": true,
+          "fetchesStockExperiment": "markets-v2",
+          "interTeamFruitExchange": false,
+          "pickupPenalty": 5,
+          "sharedStock": false,
+          "suppliesStock": false,
+          "suppliesStockExperiment": "markets-v2",
+          "suppliesDirectStock": false,
+          "fetchesDirectStock": false,
+          "suppliesStockMaterials": [],
+          "suppliesDirectStockMaterials": [],
+          "fetchesStockMaterials": [],
+          "fetchesDirectStockMaterials": []
+        },
+        "occupiesGround": true,
+        "placeable": false,
+        "production": {
+          "fallbackUnit": 0,
+          "initialRatios": [
+            1,
+            0,
+            0
+          ],
+          "recipes": {},
+          "scheduling": "weighted_late_choice"
+        },
+        "projectileBuildingDamage": 0,
+        "projectileDamage": [
+          0,
+          0,
+          0
+        ],
+        "regenerationPerTick": 0,
+        "relocatable": false,
+        "repairable": true,
+        "requiredWorkerLevel": 2,
+        "sightSharing": "other",
+        "training": {},
+        "trainingInParallel": false,
+        "workPriorityBias": 21,
+        "assignmentLimit": 0,
+        "constructionCost": {},
+        "repairCost": {
+          "wood": 3,
+          "stone": 5
+        },
+        "replenishMaterials": []
+      },
+      "presentation": {
+        "displayName": "hospital",
+        "iconFrame": 2,
+        "iconTile": false,
+        "iconPriority": 100,
+        "skinSlot": "",
+        "showLevel": true,
+        "connectionGroup": "",
+        "connectsAcrossTeams": false,
+        "defaultAssigned": 0
+      }
+    }
+  ]
+}

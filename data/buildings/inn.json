@@ -1,0 +1,860 @@
+{
+  "variants": [
+    {
+      "key": "inn.0.site",
+      "next": "inn.0.finished",
+      "previous": "",
+      "properties": {
+        "decLeft": -1,
+        "decTop": -1,
+        "fillable": 1,
+        "gameSprite": "data/gfx/inn0c",
+        "height": 2,
+        "hpInc": 67,
+        "hpInit": 1,
+        "hpMax": 200,
+        "isBuildingSite": 1,
+        "maxMaterial": [
+          3,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "miniSprite": "data/gfx/miniinn0c",
+        "shortTypeNum": 1,
+        "type": "inn",
+        "width": 2
+      },
+      "requiredExperiment": "",
+      "semantics": {
+        "admittedUnitMask": 7,
+        "ammunitionCost": 1,
+        "ammunitionMaterial": 3,
+        "feeding": {
+          "convertsUnits": false,
+          "cost": {},
+          "duration": 0,
+          "enabled": false,
+          "holdAdmissionUntilExit": false,
+          "optionalFruitMask": 0,
+          "partial": "none",
+          "unitMask": 7
+        },
+        "healing": {
+          "convertsUnits": false,
+          "cost": {},
+          "duration": 0,
+          "enabled": false,
+          "holdAdmissionUntilExit": false,
+          "optionalFruitMask": 0,
+          "partial": "none",
+          "unitMask": 7
+        },
+        "instantPlacement": false,
+        "market": {
+          "fetchesStock": true,
+          "fetchesStockExperiment": "markets-v2",
+          "interTeamFruitExchange": false,
+          "pickupPenalty": 5,
+          "sharedStock": false,
+          "suppliesStock": false,
+          "suppliesStockExperiment": "markets-v2",
+          "suppliesDirectStock": false,
+          "fetchesDirectStock": false,
+          "suppliesStockMaterials": [
+            "wood"
+          ],
+          "suppliesDirectStockMaterials": [
+            "wood"
+          ],
+          "fetchesStockMaterials": [
+            "wood"
+          ],
+          "fetchesDirectStockMaterials": [
+            "wood"
+          ]
+        },
+        "occupiesGround": true,
+        "placeable": true,
+        "production": {
+          "fallbackUnit": 0,
+          "initialRatios": [
+            1,
+            0,
+            0
+          ],
+          "recipes": {},
+          "scheduling": "weighted_late_choice"
+        },
+        "projectileBuildingDamage": 0,
+        "projectileDamage": [
+          0,
+          0,
+          0
+        ],
+        "regenerationPerTick": 0,
+        "relocatable": false,
+        "repairable": false,
+        "requiredWorkerLevel": 0,
+        "sightSharing": "other",
+        "training": {},
+        "trainingInParallel": false,
+        "workPriorityBias": 1,
+        "assignmentLimit": 20,
+        "constructionCost": {
+          "wood": 3
+        },
+        "repairCost": {},
+        "replenishMaterials": [
+          "wood"
+        ]
+      },
+      "presentation": {
+        "displayName": "inn",
+        "iconFrame": 1,
+        "iconTile": false,
+        "iconPriority": 100,
+        "skinSlot": "",
+        "showLevel": true,
+        "connectionGroup": "",
+        "connectsAcrossTeams": false,
+        "defaultAssigned": 3
+      }
+    },
+    {
+      "key": "inn.0.finished",
+      "next": "inn.1.site",
+      "previous": "inn.0.site",
+      "properties": {
+        "decLeft": -1,
+        "decTop": -1,
+        "foodable": 1,
+        "gameSprite": "data/gfx/inn0b",
+        "gameSpriteCount": 2,
+        "height": 2,
+        "hpInit": 200,
+        "hpMax": 200,
+        "maxMaterial": [
+          0,
+          10,
+          0,
+          0,
+          0,
+          40,
+          40,
+          40,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "maxUnitInside": 4,
+        "miniSprite": "data/gfx/miniinn0b",
+        "shortTypeNum": 1,
+        "type": "inn",
+        "width": 2
+      },
+      "requiredExperiment": "",
+      "semantics": {
+        "admittedUnitMask": 7,
+        "ammunitionCost": 1,
+        "ammunitionMaterial": 3,
+        "feeding": {
+          "convertsUnits": true,
+          "cost": {
+            "food": 1
+          },
+          "duration": 24,
+          "enabled": true,
+          "holdAdmissionUntilExit": true,
+          "optionalFruitMask": 7,
+          "partial": "proportional_full_cost",
+          "unitMask": 7
+        },
+        "healing": {
+          "convertsUnits": false,
+          "cost": {},
+          "duration": 0,
+          "enabled": false,
+          "holdAdmissionUntilExit": false,
+          "optionalFruitMask": 0,
+          "partial": "none",
+          "unitMask": 7
+        },
+        "instantPlacement": false,
+        "market": {
+          "fetchesStock": true,
+          "fetchesStockExperiment": "markets-v2",
+          "interTeamFruitExchange": false,
+          "pickupPenalty": 5,
+          "sharedStock": false,
+          "suppliesStock": false,
+          "suppliesStockExperiment": "markets-v2",
+          "suppliesDirectStock": false,
+          "fetchesDirectStock": true,
+          "suppliesStockMaterials": [
+            "food",
+            "cherries",
+            "oranges",
+            "prunes"
+          ],
+          "suppliesDirectStockMaterials": [
+            "food",
+            "cherries",
+            "oranges",
+            "prunes"
+          ],
+          "fetchesStockMaterials": [
+            "food",
+            "cherries",
+            "oranges",
+            "prunes"
+          ],
+          "fetchesDirectStockMaterials": [
+            "food",
+            "cherries",
+            "oranges",
+            "prunes"
+          ]
+        },
+        "occupiesGround": true,
+        "placeable": false,
+        "production": {
+          "fallbackUnit": 0,
+          "initialRatios": [
+            1,
+            0,
+            0
+          ],
+          "recipes": {},
+          "scheduling": "weighted_late_choice"
+        },
+        "projectileBuildingDamage": 0,
+        "projectileDamage": [
+          0,
+          0,
+          0
+        ],
+        "regenerationPerTick": 0,
+        "relocatable": false,
+        "repairable": true,
+        "requiredWorkerLevel": 0,
+        "sightSharing": "food",
+        "training": {},
+        "trainingInParallel": false,
+        "workPriorityBias": 2,
+        "assignmentLimit": 20,
+        "constructionCost": {},
+        "repairCost": {
+          "wood": 3
+        },
+        "replenishMaterials": [
+          "food",
+          "cherries",
+          "oranges",
+          "prunes"
+        ]
+      },
+      "presentation": {
+        "displayName": "inn",
+        "iconFrame": 1,
+        "iconTile": false,
+        "iconPriority": 100,
+        "skinSlot": "",
+        "showLevel": true,
+        "connectionGroup": "",
+        "connectsAcrossTeams": false,
+        "defaultAssigned": 2
+      }
+    },
+    {
+      "key": "inn.1.site",
+      "next": "inn.1.finished",
+      "previous": "inn.0.finished",
+      "properties": {
+        "decLeft": -1,
+        "decTop": -1,
+        "fillable": 1,
+        "gameSprite": "data/gfx/inn1c",
+        "height": 2,
+        "hpInc": 38,
+        "hpInit": 200,
+        "hpMax": 500,
+        "isBuildingSite": 1,
+        "level": 1,
+        "maxMaterial": [
+          8,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "miniSprite": "data/gfx/miniinn1c",
+        "shortTypeNum": 1,
+        "type": "inn",
+        "width": 2
+      },
+      "requiredExperiment": "",
+      "semantics": {
+        "admittedUnitMask": 7,
+        "ammunitionCost": 1,
+        "ammunitionMaterial": 3,
+        "feeding": {
+          "convertsUnits": false,
+          "cost": {},
+          "duration": 0,
+          "enabled": false,
+          "holdAdmissionUntilExit": false,
+          "optionalFruitMask": 0,
+          "partial": "none",
+          "unitMask": 7
+        },
+        "healing": {
+          "convertsUnits": false,
+          "cost": {},
+          "duration": 0,
+          "enabled": false,
+          "holdAdmissionUntilExit": false,
+          "optionalFruitMask": 0,
+          "partial": "none",
+          "unitMask": 7
+        },
+        "instantPlacement": false,
+        "market": {
+          "fetchesStock": true,
+          "fetchesStockExperiment": "markets-v2",
+          "interTeamFruitExchange": false,
+          "pickupPenalty": 5,
+          "sharedStock": false,
+          "suppliesStock": false,
+          "suppliesStockExperiment": "markets-v2",
+          "suppliesDirectStock": false,
+          "fetchesDirectStock": false,
+          "suppliesStockMaterials": [
+            "wood"
+          ],
+          "suppliesDirectStockMaterials": [
+            "wood"
+          ],
+          "fetchesStockMaterials": [
+            "wood"
+          ],
+          "fetchesDirectStockMaterials": [
+            "wood"
+          ]
+        },
+        "occupiesGround": true,
+        "placeable": false,
+        "production": {
+          "fallbackUnit": 0,
+          "initialRatios": [
+            1,
+            0,
+            0
+          ],
+          "recipes": {},
+          "scheduling": "weighted_late_choice"
+        },
+        "projectileBuildingDamage": 0,
+        "projectileDamage": [
+          0,
+          0,
+          0
+        ],
+        "regenerationPerTick": 0,
+        "relocatable": false,
+        "repairable": false,
+        "requiredWorkerLevel": 1,
+        "sightSharing": "other",
+        "training": {},
+        "trainingInParallel": false,
+        "workPriorityBias": 11,
+        "assignmentLimit": 20,
+        "constructionCost": {
+          "wood": 8
+        },
+        "repairCost": {},
+        "replenishMaterials": [
+          "wood"
+        ]
+      },
+      "presentation": {
+        "displayName": "inn",
+        "iconFrame": 1,
+        "iconTile": false,
+        "iconPriority": 100,
+        "skinSlot": "",
+        "showLevel": true,
+        "connectionGroup": "",
+        "connectsAcrossTeams": false,
+        "defaultAssigned": 5
+      }
+    },
+    {
+      "key": "inn.1.finished",
+      "next": "inn.2.site",
+      "previous": "inn.1.site",
+      "properties": {
+        "armor": 5,
+        "decLeft": -1,
+        "decTop": -1,
+        "foodable": 1,
+        "gameSprite": "data/gfx/inn1b",
+        "gameSpriteCount": 2,
+        "height": 2,
+        "hpInit": 500,
+        "hpMax": 500,
+        "level": 1,
+        "maxMaterial": [
+          0,
+          30,
+          0,
+          0,
+          0,
+          80,
+          80,
+          80,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "maxUnitInside": 7,
+        "miniSprite": "data/gfx/miniinn1b",
+        "shortTypeNum": 1,
+        "type": "inn",
+        "width": 2
+      },
+      "requiredExperiment": "",
+      "semantics": {
+        "admittedUnitMask": 7,
+        "ammunitionCost": 1,
+        "ammunitionMaterial": 3,
+        "feeding": {
+          "convertsUnits": true,
+          "cost": {
+            "food": 1
+          },
+          "duration": 15,
+          "enabled": true,
+          "holdAdmissionUntilExit": true,
+          "optionalFruitMask": 7,
+          "partial": "proportional_full_cost",
+          "unitMask": 7
+        },
+        "healing": {
+          "convertsUnits": false,
+          "cost": {},
+          "duration": 0,
+          "enabled": false,
+          "holdAdmissionUntilExit": false,
+          "optionalFruitMask": 0,
+          "partial": "none",
+          "unitMask": 7
+        },
+        "instantPlacement": false,
+        "market": {
+          "fetchesStock": true,
+          "fetchesStockExperiment": "markets-v2",
+          "interTeamFruitExchange": false,
+          "pickupPenalty": 5,
+          "sharedStock": false,
+          "suppliesStock": false,
+          "suppliesStockExperiment": "markets-v2",
+          "suppliesDirectStock": false,
+          "fetchesDirectStock": true,
+          "suppliesStockMaterials": [
+            "food",
+            "cherries",
+            "oranges",
+            "prunes"
+          ],
+          "suppliesDirectStockMaterials": [
+            "food",
+            "cherries",
+            "oranges",
+            "prunes"
+          ],
+          "fetchesStockMaterials": [
+            "food",
+            "cherries",
+            "oranges",
+            "prunes"
+          ],
+          "fetchesDirectStockMaterials": [
+            "food",
+            "cherries",
+            "oranges",
+            "prunes"
+          ]
+        },
+        "occupiesGround": true,
+        "placeable": false,
+        "production": {
+          "fallbackUnit": 0,
+          "initialRatios": [
+            1,
+            0,
+            0
+          ],
+          "recipes": {},
+          "scheduling": "weighted_late_choice"
+        },
+        "projectileBuildingDamage": 0,
+        "projectileDamage": [
+          0,
+          0,
+          0
+        ],
+        "regenerationPerTick": 0,
+        "relocatable": false,
+        "repairable": true,
+        "requiredWorkerLevel": 1,
+        "sightSharing": "food",
+        "training": {},
+        "trainingInParallel": false,
+        "workPriorityBias": 12,
+        "assignmentLimit": 20,
+        "constructionCost": {},
+        "repairCost": {
+          "wood": 8
+        },
+        "replenishMaterials": [
+          "food",
+          "cherries",
+          "oranges",
+          "prunes"
+        ]
+      },
+      "presentation": {
+        "displayName": "inn",
+        "iconFrame": 1,
+        "iconTile": false,
+        "iconPriority": 100,
+        "skinSlot": "",
+        "showLevel": true,
+        "connectionGroup": "",
+        "connectsAcrossTeams": false,
+        "defaultAssigned": 3
+      }
+    },
+    {
+      "key": "inn.2.site",
+      "next": "inn.2.finished",
+      "previous": "inn.1.finished",
+      "properties": {
+        "armor": 5,
+        "decLeft": -1,
+        "decTop": -1,
+        "fillable": 1,
+        "gameSprite": "data/gfx/inn2c",
+        "height": 3,
+        "hpInc": 17,
+        "hpInit": 500,
+        "hpMax": 700,
+        "isBuildingSite": 1,
+        "level": 2,
+        "maxMaterial": [
+          7,
+          0,
+          0,
+          5,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "miniSprite": "data/gfx/miniinn2c",
+        "shortTypeNum": 1,
+        "type": "inn",
+        "width": 3
+      },
+      "requiredExperiment": "",
+      "semantics": {
+        "admittedUnitMask": 7,
+        "ammunitionCost": 1,
+        "ammunitionMaterial": 3,
+        "feeding": {
+          "convertsUnits": false,
+          "cost": {},
+          "duration": 0,
+          "enabled": false,
+          "holdAdmissionUntilExit": false,
+          "optionalFruitMask": 0,
+          "partial": "none",
+          "unitMask": 7
+        },
+        "healing": {
+          "convertsUnits": false,
+          "cost": {},
+          "duration": 0,
+          "enabled": false,
+          "holdAdmissionUntilExit": false,
+          "optionalFruitMask": 0,
+          "partial": "none",
+          "unitMask": 7
+        },
+        "instantPlacement": false,
+        "market": {
+          "fetchesStock": true,
+          "fetchesStockExperiment": "markets-v2",
+          "interTeamFruitExchange": false,
+          "pickupPenalty": 5,
+          "sharedStock": false,
+          "suppliesStock": false,
+          "suppliesStockExperiment": "markets-v2",
+          "suppliesDirectStock": false,
+          "fetchesDirectStock": false,
+          "suppliesStockMaterials": [
+            "wood",
+            "stone"
+          ],
+          "suppliesDirectStockMaterials": [
+            "wood",
+            "stone"
+          ],
+          "fetchesStockMaterials": [
+            "wood",
+            "stone"
+          ],
+          "fetchesDirectStockMaterials": [
+            "wood",
+            "stone"
+          ]
+        },
+        "occupiesGround": true,
+        "placeable": false,
+        "production": {
+          "fallbackUnit": 0,
+          "initialRatios": [
+            1,
+            0,
+            0
+          ],
+          "recipes": {},
+          "scheduling": "weighted_late_choice"
+        },
+        "projectileBuildingDamage": 0,
+        "projectileDamage": [
+          0,
+          0,
+          0
+        ],
+        "regenerationPerTick": 0,
+        "relocatable": false,
+        "repairable": false,
+        "requiredWorkerLevel": 2,
+        "sightSharing": "other",
+        "training": {},
+        "trainingInParallel": false,
+        "workPriorityBias": 21,
+        "assignmentLimit": 20,
+        "constructionCost": {
+          "wood": 7,
+          "stone": 5
+        },
+        "repairCost": {},
+        "replenishMaterials": [
+          "wood",
+          "stone"
+        ]
+      },
+      "presentation": {
+        "displayName": "inn",
+        "iconFrame": 1,
+        "iconTile": false,
+        "iconPriority": 100,
+        "skinSlot": "",
+        "showLevel": true,
+        "connectionGroup": "",
+        "connectsAcrossTeams": false,
+        "defaultAssigned": 15
+      }
+    },
+    {
+      "key": "inn.2.finished",
+      "next": "",
+      "previous": "inn.2.site",
+      "properties": {
+        "armor": 10,
+        "decLeft": -1,
+        "decTop": -1,
+        "foodable": 1,
+        "gameSprite": "data/gfx/inn2b",
+        "height": 3,
+        "hpInit": 700,
+        "hpMax": 700,
+        "level": 2,
+        "maxMaterial": [
+          0,
+          50,
+          0,
+          0,
+          0,
+          200,
+          200,
+          200,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "maxUnitInside": 17,
+        "miniSprite": "data/gfx/miniinn2b",
+        "shortTypeNum": 1,
+        "type": "inn",
+        "width": 3
+      },
+      "requiredExperiment": "",
+      "semantics": {
+        "admittedUnitMask": 7,
+        "ammunitionCost": 1,
+        "ammunitionMaterial": 3,
+        "feeding": {
+          "convertsUnits": true,
+          "cost": {
+            "food": 1
+          },
+          "duration": 9,
+          "enabled": true,
+          "holdAdmissionUntilExit": true,
+          "optionalFruitMask": 7,
+          "partial": "proportional_full_cost",
+          "unitMask": 7
+        },
+        "healing": {
+          "convertsUnits": false,
+          "cost": {},
+          "duration": 0,
+          "enabled": false,
+          "holdAdmissionUntilExit": false,
+          "optionalFruitMask": 0,
+          "partial": "none",
+          "unitMask": 7
+        },
+        "instantPlacement": false,
+        "market": {
+          "fetchesStock": true,
+          "fetchesStockExperiment": "markets-v2",
+          "interTeamFruitExchange": false,
+          "pickupPenalty": 5,
+          "sharedStock": false,
+          "suppliesStock": false,
+          "suppliesStockExperiment": "markets-v2",
+          "suppliesDirectStock": false,
+          "fetchesDirectStock": true,
+          "suppliesStockMaterials": [
+            "food",
+            "cherries",
+            "oranges",
+            "prunes"
+          ],
+          "suppliesDirectStockMaterials": [
+            "food",
+            "cherries",
+            "oranges",
+            "prunes"
+          ],
+          "fetchesStockMaterials": [
+            "food",
+            "cherries",
+            "oranges",
+            "prunes"
+          ],
+          "fetchesDirectStockMaterials": [
+            "food",
+            "cherries",
+            "oranges",
+            "prunes"
+          ]
+        },
+        "occupiesGround": true,
+        "placeable": false,
+        "production": {
+          "fallbackUnit": 0,
+          "initialRatios": [
+            1,
+            0,
+            0
+          ],
+          "recipes": {},
+          "scheduling": "weighted_late_choice"
+        },
+        "projectileBuildingDamage": 0,
+        "projectileDamage": [
+          0,
+          0,
+          0
+        ],
+        "regenerationPerTick": 0,
+        "relocatable": false,
+        "repairable": true,
+        "requiredWorkerLevel": 2,
+        "sightSharing": "food",
+        "training": {},
+        "trainingInParallel": false,
+        "workPriorityBias": 22,
+        "assignmentLimit": 20,
+        "constructionCost": {},
+        "repairCost": {
+          "wood": 7,
+          "stone": 5
+        },
+        "replenishMaterials": [
+          "food",
+          "cherries",
+          "oranges",
+          "prunes"
+        ]
+      },
+      "presentation": {
+        "displayName": "inn",
+        "iconFrame": 1,
+        "iconTile": false,
+        "iconPriority": 100,
+        "skinSlot": "",
+        "showLevel": true,
+        "connectionGroup": "",
+        "connectsAcrossTeams": false,
+        "defaultAssigned": 8
+      }
+    }
+  ]
+}

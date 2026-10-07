@@ -10,6 +10,10 @@
 #include <nlohmann/json.hpp>
 #include <algorithm>
 #include <filesystem>
+#include <set>
+#include "BuildingType.h"
+#include "Unit.h"
+#include <nlohmann/json.hpp>
 
 namespace
 {
@@ -33,6 +37,136 @@ void cursor(MapEdit& editor,int x,int y)
 
 TEST_SUITE("EditorActionCoverage")
 {
+    TEST_CASE("rerolling the terrain look changes the map seed and marks the map modified [display]")
+    {
+        glob2test::HeadlessGlobals globals(glob2test::GlobalsOptions{
+            .display=true,.width=1024,.height=768,.screenFlags=GAGCore::GraphicContext::PORTABLEGPU});
+        MapEdit editor; blank(editor);
+        editor.hasMapBeenModified=false;
+        editor.game.map.setTerrainSeed(0);
+        std::set<Uint32> seeds;
+        for (int i=0; i<4; ++i)
+        {
+            editor.performAction("reroll terrain look");
+            seeds.insert(editor.game.map.terrainSeed());
+        }
+        CHECK(seeds.size()>1);
+        CHECK(editor.hasMapBeenModified);
+    }
+    TEST_CASE("custom catalog editor exposes resources mixed controls and long upgrade paths [display][artifacts]")
+    {
+        glob2test::HeadlessGlobals globals(glob2test::GlobalsOptions{
+            .display=true,.width=1024,.height=768,.screenFlags=GAGCore::GraphicContext::PORTABLEGPU});
+        MapEdit editor; blank(editor);
+        auto snapshot=nlohmann::json::parse(editor.game.buildingsTypes.snapshotJson());
+        auto& variants=snapshot["variants"];
+        variants[3]["properties"]["zonable"]={1,1,1};
+        variants[3]["properties"]["defaultUnitStayRange"]=5;
+        variants[3]["properties"]["maxUnitStayRange"]=20;
+        std::vector<int> capacity(MaterialSlotCount,0);
+        std::fill_n(capacity.begin(),MaterialCount,30);
+        variants[3]["properties"]["maxMaterial"]=capacity;
+        variants[3]["semantics"]["assignmentLimit"]=40;
+        variants[3]["semantics"]["production"]=variants[1]["semantics"]["production"];
+        int previous=7;
+        for (int depth=3; depth<5; ++depth)
+        {
+            auto site=variants[2], finished=variants[3];
+            const int siteId=variants.size(), finishedId=siteId+1;
+            const std::string family="fixture.refuge."+std::to_string(depth);
+            site["id"]=siteId; site["key"]=family+".site";
+            site["previous"]=variants[previous]["key"]; site["next"]=family+".finished";
+            site["properties"]["type"]=family; site["properties"]["level"]=0; // Presentation tier is independent of path depth.
+            site["semantics"]["placeable"]=false;
+            finished["id"]=finishedId; finished["key"]=family+".finished";
+            finished["previous"]=family+".site"; finished["next"]="";
+            finished["properties"]["type"]=family; finished["properties"]["level"]=0;
+            finished["semantics"]["placeable"]=false;
+            variants[previous]["next"]=site["key"];
+            variants.push_back(site); variants.push_back(finished); previous=finishedId;
+        }
+        const int overlayId=editor.game.buildingsTypes.getFinishedTypeNum("warflag");
+        variants[overlayId]["properties"]["width"]=2;
+        variants[overlayId]["properties"]["height"]=3;
+        editor.game.buildingsTypes.loadSnapshotJson(snapshot.dump());
+        editor.game.configureBuildingCatalog(); editor.game.buildingsTypes.loadSprites();
+        editor.rebuildBuildingSelectors();
+        CHECK(editor.buildingLevelCount==5);
+        editor.performAction("next building level page");
+        CHECK(editor.buildingLevel==3);
+        editor.building_view_level2->handleClick(8,8);
+        CHECK(editor.buildingLevel==4);
+        CHECK(editor.buildingSelectionType("inn.0.finished")==previous);
+        editor.performAction("next building level page"); CHECK(editor.buildingLevel==0);
+        auto* building=editor.game.addBuilding(4,4,3,0); REQUIRE(building);
+        for (unsigned material=materialIndex(MaterialId::Gold);material<MaterialCount;++material)
+            building->materials[material]=1; // Existing owned stock makes each configured row relevant.
+        cursor(editor,4,4); editor.performAction("select map building");
+        REQUIRE(editor.selectedBuildingGID==building->gid);
+        CHECK(editor.buildingAssignedScrollBox->maximumValue()==40);
+        for (int resource=0; resource<MaterialCount; ++resource)
+        {
+            CHECK(editor.buildingResourceControls[resource]->maximumValue()==30);
+            editor.buildingResourceControls[resource]->setValue(resource+1);
+            CHECK(building->materials[resource]==resource+1);
+        }
+        editor.buildingEditFirstRow=100; editor.layoutBuildingEditRows();
+        CHECK(editor.buildingWorkerLevelScrollBox->enabled);
+        CHECK(editor.buildingBombingScrollBox->enabled);
+        editor.buildingWorkerLevelScrollBox->setValue(2);
+        editor.buildingMinimumLevelScrollBox->setValue(1);
+        editor.buildingBombingScrollBox->setValue(1);
+        CHECK(building->minWorkerLevelToFlag==2);
+        CHECK(building->minLevelToFlag==1);
+        CHECK(building->explorersRequireBombing);
+        editor.draw(SDL_GetTicks());
+        globals->gfx->printScreen(glob2test::artifactDirFromWorkingDirectory()+"/editor-composite.bmp");
+        globals->gfx->nextFrame();
+        auto* overlay=editor.game.addBuilding(31,31,overlayId,0); REQUIRE(overlay);
+        cursor(editor,0,1); editor.performAction("select map building");
+        CHECK(editor.selectedBuildingGID==overlay->gid);
+    }
+
+    TEST_CASE("editor material rows require configured capacity and natural or owned presence [display]")
+    {
+        glob2test::HeadlessGlobals globals(glob2test::GlobalsOptions{
+            .display=true,.width=1024,.height=768,.screenFlags=GAGCore::GraphicContext::PORTABLEGPU});
+        MapEdit editor; blank(editor);
+        const auto gold=materialIndex(MaterialId::Gold),metal=materialIndex(MaterialId::Metal);
+        const int inn=editor.game.buildingsTypes.getFinishedTypeNum("inn");
+        auto catalog=nlohmann::json::parse(editor.game.buildingsTypes.snapshotJson());
+        catalog["variants"][inn]["properties"]["maxMaterial"][gold]=30;
+        catalog["variants"][inn]["properties"]["maxMaterial"][metal]=0;
+        editor.game.buildingsTypes.loadSnapshotJson(catalog.dump());
+        editor.game.configureBuildingCatalog();editor.game.buildingsTypes.loadSprites();
+        auto* selected=editor.game.addBuilding(4,4,inn,0);REQUIRE(selected);
+        auto* supplier=editor.game.addBuilding(12,12,inn,0);REQUIRE(supplier);
+        auto* worker=editor.game.addUnit(20,20,0,WORKER,0,0,0,0);REQUIRE(worker);
+        auto& team=*editor.game.teams[0];
+        team.teamMaterials[metal]=1; // Presence cannot expose an unconfigured slot.
+        auto shown=[&](unsigned material) {
+            return std::any_of(editor.buildingEditRows.begin(),editor.buildingEditRows.end(),
+                [&](const auto& row){return row.second==editor.buildingResourceControls[material];});
+        };
+        auto select=[&] {cursor(editor,4,4);editor.performAction("select map building");};
+        const auto deposit=*editor.game.map.resourceRegistry().find("gold-ore");
+        for (int source=0;source<5;++source)
+        {
+            CAPTURE(source);
+            select();CHECK_FALSE(shown(gold));CHECK_FALSE(shown(metal));
+            if(source==0)editor.game.map.setResource(24,24,deposit,0);
+            if(source==1)supplier->materials[gold]=1;
+            if(source==2)worker->carriedMaterial=gold;
+            if(source==3)team.teamMaterials[gold]=1;
+            if(source==4)team.reservedTeamMaterials[gold]=1;
+            select();CHECK(shown(gold));CHECK_FALSE(shown(metal));
+            editor.game.map.replaceResource(24,24,Resource{});
+            supplier->materials[gold]=0;worker->carriedMaterial=-1;
+            team.teamMaterials[gold]=team.reservedTeamMaterials[gold]=0;
+            select();CHECK_FALSE(shown(gold));CHECK_FALSE(shown(metal));
+        }
+    }
+
     TEST_CASE("editor selects and saves the sixteenth team [display][artifacts]")
     {
         glob2test::HeadlessGlobals globals(glob2test::GlobalsOptions{
@@ -314,6 +448,19 @@ TEST_SUITE("EditorActionCoverage")
         CHECK(editor.game.map.topologyGeneration==generation+1);
         CHECK(editor.game.map.terrainTypeAt(8,8)==TRAIL);
         CHECK(editor.game.map.terrainTypeAt(7,8)==TRAIL);
+        // Catalogue brushes are gated by their group's experiment, not listed in the side panel.
+        editor.performAction("select boulders");
+        CHECK(editor.terrainType==TerrainSelector::Trail);
+        globals->settings.experiments.set(ExperimentId::ObstacleTerrain,true);
+        editor.performAction("select boulders");
+        CHECK(editor.terrainType==TerrainSelector::selectorFor(BOULDERS));
+        editor.performAction("select hedge");
+        CHECK(editor.terrainType==TerrainSelector::selectorFor(HEDGE));
+        cursor(editor,20,20);editor.performAction("terrain drag start");editor.performAction("terrain drag end");
+        CHECK(editor.game.map.terrainTypeAt(20,20)==HEDGE);
+        CHECK(editor.game.map.requiredTerrainExperiments().has(ExperimentId::ObstacleTerrain));
+        globals->settings.experiments.set(ExperimentId::ObstacleTerrain,false);
+        editor.performAction("select road");
         for (auto invalid : {static_cast<TerrainSelector::TerrainType>(-1),
                 static_cast<TerrainSelector::TerrainType>(TerrainSelector::RegisteredBegin+TERRAIN_COUNT),
                 TerrainSelector::selectorFor(GRASS_SAND_SHORE),TerrainSelector::NoTerrain}) {
@@ -403,7 +550,7 @@ TEST_SUITE("EditorActionCoverage")
 			editor.loadSaveScreen->confirmPresentedFile();
 			editor.delegateMenu(poll);
 			CHECK_FALSE(editor.loadSaveScreen);
-			CHECK(editor.game.map.terrainRegistry().size() == 47);
+			CHECK(editor.game.map.terrainRegistry().size() == 40 + TERRAIN_COUNT);
 			CHECK(editor.hasMapBeenModified);
 			REQUIRE(editor.terrainPalette);
 			editor.draw(SDL_GetTicks());

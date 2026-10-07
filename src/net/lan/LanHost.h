@@ -78,7 +78,7 @@ namespace Lan
 			/// Service the network on a thread (network hosts only).
 			bool thread = true;
 			/// The game's header loaders, so the network layer does not depend on the
-			/// engine: a save's GameHeader (Engine::loadGameHeader), and the host's
+			/// engine: a map/save's GameHeader (Engine::loadGameHeader), and the host's
 			/// experiment settings applied to a new map's header
 			/// (Engine::applyLocalExperiments). LanRoom::host fills them in.
 			std::function<GameHeader(const std::string& file)> loadSaveHeader;

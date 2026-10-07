@@ -31,26 +31,10 @@ bool atlasSized(GAGCore::DrawableSurface &surface)
 {
     return surface.getSDLSurface() && surface.getW() == AtlasSize && surface.getH() == AtlasSize;
 }
-// Which model quadrants contain hairy (id 3) texels.
-std::array<bool,4> hairyRegions(GAGCore::DrawableSurface &material)
-{
-    std::array<bool,4> result{};
-    std::unique_ptr<SDL_Surface, decltype(&SDL_DestroySurface)> rgba(
-        SDL_ConvertSurface(material.getSDLSurface(), SDL_PIXELFORMAT_RGBA32), SDL_DestroySurface);
-    if (!rgba || !SDL_LockSurface(rgba.get())) return result;
-    const auto *pixels = static_cast<const Uint8 *>(rgba->pixels);
-    for (int y = 0; y < AtlasSize; ++y)
-        for (int x = 0; x < AtlasSize; ++x)
-            if (pixels[y*rgba->pitch + x*4] == 3)
-                result[(y >= AtlasSize/2 ? 2 : 0) + (x >= AtlasSize/2 ? 1 : 0)] = true;
-    SDL_UnlockSurface(rgba.get());
-    return result;
-}
 }
 
 struct ColonySkinPreview::PreparedSkin {
     std::shared_ptr<const GAGCore::AssetImage> paint, material;
-    std::array<bool, 4> hairy{};
 };
 
 ColonySkinPreview::ColonySkinPreview()
@@ -78,7 +62,6 @@ bool ColonySkinPreview::install(int team, std::unique_ptr<GAGCore::DrawableSurfa
 {
     if (team < 0 || team >= 32 || !texture || !material || !atlasSized(*texture) || !atlasSized(*material))
         return false;
-    hairy[team] = hairyRegions(*material);
     textures[team] = std::move(texture);
     materials[team] = std::move(material);
     return true;
@@ -90,7 +73,6 @@ void ColonySkinPreview::uninstall(int team)
     preparingSkins[team] = {};
     textures[team].reset();
     materials[team].reset();
-    hairy[team] = {};
     colors[team].reset();
     swarmChoice[team] = 0;
     swarmAngles[team] = 0;
@@ -175,14 +157,14 @@ void ColonySkinPreview::prepareSkin(Online::AuthorizedSkin appearance,
             const auto *p = result->paint->surface, *m = result->material->surface;
             if (p->w != AtlasSize || p->h != AtlasSize || m->w != AtlasSize || m->h != AtlasSize)
                 throw std::runtime_error("Invalid colony skin dimensions");
+            // Ids beyond this client's catalogue shade as matte rather than
+            // rejecting a skin published for a newer material set.
             for (int y = 0; y < AtlasSize; ++y) {
                 const auto *row = reinterpret_cast<const Uint32*>(static_cast<const Uint8*>(m->pixels) + y * m->pitch);
                 for (int x = 0; x < AtlasSize; ++x) {
                     const auto id = row[x] & 255;
-                    if (id > 3 || row[x] != (0xff000000u | id << 16 | id << 8 | id))
+                    if (row[x] != (0xff000000u | id << 16 | id << 8 | id))
                         throw std::runtime_error("Invalid colony material id");
-                    if (id == 3)
-                        result->hairy[(y >= AtlasSize/2 ? 2 : 0) + (x >= AtlasSize/2 ? 1 : 0)] = true;
                 }
             }
             return result;
@@ -206,7 +188,6 @@ void ColonySkinPreview::prepareSkin(Online::AuthorizedSkin appearance,
             if (!paint || !material) return; // retain the last complete appearance
             textures[team] = std::move(paint);
             materials[team] = std::move(material);
-            hairy[team] = skin->hairy;
             colors[team] = appearance.buildingColor;
             swarmChoice[team] = appearance.swarmMesh;
             swarmAngles[team] = appearance.swarmViewAngle;
@@ -365,7 +346,7 @@ void ColonySkinPreview::prepare(GAGCore::GraphicContext &gfx, const Scene &scene
                 const auto *building = entities.building(map.getBuilding(mx,my));
                 if (!building || building->team<0 || building->team>=32 || !textures[building->team] ||
                     building->type->isBuildingSite ||
-                    building->type->shortTypeNum != IntBuildingType::SWARM_BUILDING) continue;
+                    building->type->presentation.skinSlot != "swarm") continue;
                 const auto *swarm = swarmMesh(building->team);
                 if (swarm && (wholeMap || building->team==localTeam || (building->seenByMask&visibleTeams) ||
                     map.isFOWDiscovered(mx,my,visibleTeams)))

@@ -592,7 +592,8 @@ atomically. Existing output directories are never overwritten.
 
 The render revision hashes the meshes, production shaders, view transforms,
 animation mapping, layout and encoding recipe. Changing these inputs regenerates
-derivatives while existing matches retain their pinned bundle. Focused validation
+derivatives while existing matches retain their pinned bundle.
+ Focused validation
 uses the `SkinAuthorization`, `SkinDownloads`, `SkinSprites` and `SurfaceCoverage`
 unit suites plus the skin-render worker and API tests. To exercise the actual
 worker adapter, run its opt-in `native.test.ts` under Xvfb with
@@ -728,6 +729,43 @@ Advance an AI match between comparisons to exercise resource invalidation, and
 check that each render leaves its simulation checksum unchanged. Keep commands,
 seeds, binaries, captures and timing data under `artifacts/` for review.
 
+### Skin materials
+
+Colony-skin materials are declared once in `libgag/shaders/skin-materials.json`
+(ids, keys, display names, picker groups, which materials grow fur shells, the
+shell count and the fur length and depth bias every renderer uses) and shaded
+once in `libgag/shaders/skin-material.glsl`. `scons/skin_materials.py`
+compiles both into the generated `include/glob2/SkinMaterials.h`
+(`SKIN_MATERIAL_COUNT`, `SKIN_MATERIAL_SHELLS`, the `SkinMaterials` table and the
+GLSL text) for the desktop, web and mobile builds; Colony Studio imports the GLSL
+raw, and the protocol package carries a mirrored `COLONY_SKIN_MATERIALS` list that
+`packages/protocol/test/skinMaterials.test.ts` pins to the JSON.
+
+Every material fills a `SkinSurface` (albedo, perturbed normal, roughness,
+specular, metal, wrap, rim, cel, emissive, alpha) and one `skinLight` lights them
+all, so the catalogue stays consistent. Meshes carry no tangents: perturb normals
+with `skinTilt` from a UV-space height gradient (`SKIN_GRADIENT`), never from
+tangent-space maps; scale micro-frequency octaves by `s.detail`, which fades to
+0 as texels shrink below pixels, so grain shows in the studio but never aliases
+in the baker's 128 px tiles. The wrappers only declare varyings and call
+`skinShadeAtlas` (mesh renderers, with `SKIN_TEXTURE` defined per dialect) or
+`skinShadeSphere` (swatches). Materials with `shells: true` are drawn
+`SKIN_MATERIAL_SHELLS` extra times with vertices pushed along the camera-space
+normal; their shader sets `alpha` to 0 where a shell carries no strand. Tiles
+are cached per pose, so no material can animate over time.
+
+To add a material: append it to the JSON, add `skinMaterial_<key>` and its
+dispatch line to the GLSL, mirror the entry in `platform/packages/protocol/src/skins.ts`,
+then run `test/build_system/test_skin_materials.py`, the `SkinMesh` display
+suite with `GLOB2_UPDATE_SKIN_FINGERPRINTS=1` once (it rewrites
+`test/fixtures/skins/material-fingerprints.json` and writes contact sheets under
+`artifacts/skins/materials/`) and review the sheets. While iterating on the
+GLSL, `tools/skins/material_spheres.mjs` (run from `platform/apps/web`) renders
+every material on a sphere through headless Chromium in seconds, and the
+`skins-materials.spec.ts` e2e captures each material on the worker at studio
+resolution. Any shader edit changes the
+sprite render revision and re-bakes every published skin.
+
 ## Simulation verification and diagnostics
 
 A `Team` is a colony; a `Player` controls a team, and several players can share one.
@@ -839,6 +877,10 @@ For timing and scheduling, start with `src/game/Game_sync.cpp` and `src/engine/E
   are independent capabilities. Use a property predicate when asking what a cell
   permits; compare IDs only when its identity is the actual question (for example,
   an editor brush or a generator's material selection).
+- `Map::terrainSeed()` is presentation state saved with the map (format 138): it salts
+  the terrain material hashes so maps look distinct; generators derive it from their
+  request seed and the editor can reroll it. It is never read by simulation code and
+  is not in `checkSum()`; see [terrain materials](../assets/terrain-materials.md#map-seed).
 - `Map::terrainTypeAt` reads the canonical ID plane. `Tile::terrain` is presentation
   state: its sprite frame must never determine gameplay. Use `setCellTerrain` and
   batch edits with `editTerrain()` so snapshots, topology and ecology caches stay
@@ -854,8 +896,24 @@ For timing and scheduling, start with `src/game/Game_sync.cpp` and `src/engine/E
   metadata. See [terrain material authoring](../assets/terrain-materials.md) for
   variants, boundary profiles, asset validation and cache behavior. Visual catalog
   changes must not change saved frames or simulation RNG use.
+- Built-in terrain is table-driven. `TerrainGroup.h` defines one property profile per
+  gameplay group; `TerrainTypeTable.h` lists every `TerrainType` with its group, external
+  name, string-table label, semantic colours and frozen saved-frame range, and the
+  `TerrainProperties.h`, `TerrainPresentation.h`, `TerrainCompatibility.h` and
+  `TerrainExperiments.h` tables derive from it. Members of a group are byte-identical
+  profiles, so the registry deduplicates them into one property index; use
+  `terrainGroup(type)` for palette and reporting buckets, never for simulation rules.
+  Adding a type is one enumerator, one row, one label and one material binding;
+  adding a group is one profile and, when gated, one `ExperimentId`.
+- Format 141 raised `TERRAIN_COUNT` from 7 to 31. Custom definitions and tile IDs in
+  older files start at 7, so `Map::loadTask` remaps IDs at or above the file's built-in
+  count (`TERRAIN_COUNT_BEFORE_CATALOGUE`) to follow the current built-ins, and
+  `TerrainRegistry::deserialize` takes that count. Built-in-only files are unchanged
+  byte for byte; custom registries re-serialize with shifted IDs, so their digest
+  changes and replays from formats 136 to 140 that embed one no longer verify.
 - Runtime types inherit a shipped appearance and use full tiles; legacy corner
-  adapters apply only to built-ins. Import definitions through
+  adapters apply only to built-ins. Any paintable built-in is a valid `base` or
+  `appearance`. Import definitions through
   `Map::importTerrainDefinitions` before a match or in the editor. It validates and
   compiles the complete replacement before publishing it, preserves existing IDs,
   and appends new keys in sorted order. Scenes and gradient jobs retain the same
@@ -866,6 +924,9 @@ For timing and scheduling, start with `src/game/Game_sync.cpp` and `src/engine/E
   authoritative for previews and minimaps; built-ins use catalog palettes.
   Experimental authoring gates live in `TerrainExperiments.h`; maps carry required
   experiments into matches, while saves retain them independently of user settings.
+  A runtime definition whose properties equal a gated built-in group's profile
+  requires that group's experiment too (`Map::requiredTerrainExperiments` compares
+  property indices); a definition with its own profile stays ungated.
 - Trail retains stable terrain ID `4` (`TRAIL`) and experiment position `3`
   (`TrailTerrain`). Its external name, translation keys and serialized experiment
   key remain `road` / `road-terrain` for scripting, reports, editor actions and
@@ -896,7 +957,10 @@ For timing and scheduling, start with `src/game/Game_sync.cpp` and `src/engine/E
   Loading rebuilds compiled tables before restoring dependent caches;
   it never consults authoring JSON files. Earlier files use the built-in registry;
   pre-134 files also derive canonical IDs from legacy sprite ranges. Save floor 58
-  and replay floor 134 remain unchanged; network protocol 56 gates registry support.
+  remains unchanged. Building format 137 adds the per-game building catalog; replay
+  floor 137 and network protocol 57 introduced those simulation/catalog gates.
+  The completed-tick observation phase introduced replay floor 139. Runtime resource
+  catalogs now require replay floor 140 and network protocol 59.
   Custom registry checksums hash canonical serialized fields, not struct padding.
   Built-in-only maps keep their previous terrain checksum contribution. Existing
   map-content hashes cover the embedded section for LAN, online and verification.
@@ -935,9 +999,33 @@ For timing and scheduling, start with `src/game/Game_sync.cpp` and `src/engine/E
   are rebuilt from the registry and cells, never serialized. Registry factories
   publish `shared_ptr<const TerrainRegistry>`; copying a registry is private because
   authoring presentation strings borrow its owned key/name storage.
-- Before parallelizing gradients, inspect scratch ownership and input lifetimes in
-  the current implementation; independent scratch, stable inputs and deterministic
-  publication are relevant checks.
+- The engine has a completed-tick observation phase. `Game::syncStep` first runs
+  all world mutations, including fog, projects and scripts, then selects/reserves
+  one periodic gradient job. Engine defers private seeding into its next
+  `ReadOnlyPhase` alongside AI decisions. This is the default architecture; the
+  compute mask and thread count select execution only, never observation timing.
+  Direct `Game::syncStep` callers complete preparation before returning unless
+  they explicitly request `PreparationCompletion::Deferred` and own its barrier.
+  Standalone `Map::syncStep` retains synchronous map-level preparation.
+- `ReadOnlyPhase` borrows groups of callbacks and runs them through one
+  `ComputeExecutor` barrier. World state must stay stable until every task leaves,
+  including on exceptions. Tasks may change their own controller/private results
+  and synchronized derived caches. Bind shared AI telemetry before dispatch;
+  publish orders afterwards in player order. Add further work only after auditing
+  scratch ownership, RNG use, input lifetime and every shared cache it touches.
+  Script observation and on-demand building gradients retain their existing
+  scheduling and are not automatically independent observation tasks.
+- Gradient selection, round-robin flags and queue membership stay on the simulation
+  owner. A typed reservation is visible to AI lazy invalidation before dispatch;
+  preparation writes only its private seeds and immutable terrain snapshots.
+  Propagation may then outlive the observation barrier, but publication remains
+  after its configured delay (eight ticks by default), before team stepping.
+  Worker count and completion time never
+  select publication time. Saves, compute/terrain reconfiguration and subsequent
+  mutations drain preparation; teardown discards its descriptor before resetting
+  the queue. Seed/dispatch failures mark the job completed with an error, preventing
+  a save or publication from waiting indefinitely. Inspect these contracts before
+  adding parallel work; sharing the executor alone does not establish safety.
 - Gradient field seeding lives in the area, building and resource source files.
   `MapGradientPropagation.cpp` starts eager fields through the private
   `src/field/GradientPropagation.h` core; `BuildingGradientSearch.cpp` resumes
@@ -1459,11 +1547,13 @@ it is saved, checksummed or read by the simulation.
   renderers place sprites at exact fractions, and a snapped fill beside them
   leaves hairline seams.
   The outline stroke stops thickening at two points.
-- In the cross-fade `Game::drawMapOverview` fades in one flat colour per tile
-  (terrain, or the resource's minimap colour over it); in the overview it replaces
-  the water, terrain and resource passes. It is one image, a pixel per visible tile,
-  stretched over the map in a single draw: as per-tile translucent fills it cost
-  more than the terrain it covered during the cross-fade.
+- In the cross-fade `Game::drawMapOverview` fades in terrain palette colours sampled
+  from the detailed compositor's material coverage, including legacy corner shores
+  and whole-cell materials. Four samples per tile axis keep coastlines aligned
+  during the fade; resource minimap colours tint their gameplay cells over that
+  ground. In the overview this replaces the water, terrain and resource passes.
+  The reusable image stretches over the map in a single draw, avoiding thousands
+  of translucent fills.
 - Units cross-fade to team-coloured markers (dot worker, triangle warrior, diamond
   explorer). Bullets, explosions, death animations, the magic effect and the
   level-up number go with the unit sprites. Building sprites cross-fade to chips in the
@@ -1484,7 +1574,11 @@ it is saved, checksummed or read by the simulation.
   player's ping.
 - The torus view draws its map texture through the same map transform at the
   camera's zoom (`TorusView::draw`), so it shows the same detail, overlay sizes and
-  overview as the 2D view at that zoom.
+  overview as the 2D view at that zoom. Its tiled atlas chooses terrain sampling
+  density from the complete map capture, then admits each bounded tile at that
+  density. Narrow edge tiles therefore reuse warm pages and keep the same shore
+  samples as their wider neighbors, including when HD sources exceed the cache
+  budget. Streaming fallback follows the same density choice.
 
 When tuning, capture the same save across zooms with `SoftwareRenderBenchmark`
 (`PROFILE_ZOOM`, `PROFILE_CAPTURE`); `PROFILE_ADAPTIVE_ZOOM=0` draws uniform scaling
@@ -1886,8 +1980,13 @@ can leave an older game executable in place. Preserve a baseline with the same
 benchmark instrumentation, build options and dependencies before rebuilding.
 The structured runner accepts `--benchmark-warmup N` when loading a saved game.
 It reports process CPU nanoseconds for setup/loading, execution after the warmup,
-and the final save in `result.json`. The measured execution includes pending
-pipeline completion; save compression is measured separately. `--ticks` remains
+and the final save in `result.json`. Setup CPU stops before session startup;
+measured execution begins after startup and includes session summary/teardown and
+pending pipeline completion. The engine run-wall interval also includes session
+startup (and simulation warmup, when requested), so it differs from measured CPU.
+Whole-process CPU additionally covers process startup and final teardown; these
+phase fields are not an exhaustive partition. Save compression is measured
+separately. `--ticks` remains
 an absolute game tick, and the warmup must leave a nonempty measured window.
 
 ```sh

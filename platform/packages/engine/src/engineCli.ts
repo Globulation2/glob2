@@ -12,8 +12,19 @@
 //   --verify-match <record> --map <file> --out <dir>
 //                                            ASSUMED (being built in M1); see
 //                                            parseVerifyOutputs for the contract
-import type { GeneratorDescriptor, SimVersion, TeamTimelinePoint } from '@glob2/protocol';
-import { MAX_TIMELINE_SAMPLES } from '@glob2/protocol';
+import type {
+  BuildingCatalog,
+  ResourceExperimentDefinitions,
+  GeneratorDescriptor,
+  SimVersion,
+  TeamTimelinePoint,
+} from '@glob2/protocol';
+import {
+  MAX_TIMELINE_SAMPLES,
+  buildingCatalogExperimentKeys,
+  resourceExperimentKeys,
+} from '@glob2/protocol';
+import { checkBuildingCatalogHash } from '@glob2/protocol/node';
 
 /** A failure caused by the job's input: deterministic, so it is reported, not retried. */
 export class EngineInputError extends Error {
@@ -68,6 +79,7 @@ export interface CatalogGenerator {
 }
 
 export interface EngineCatalog {
+  buildingCatalogHash?: string;
   /** VERSION_MINOR of the binary (`save_version`). */
   versionMinor: number;
   /** NET_PROTOCOL_VERSION of the binary (`protocol_version`). */
@@ -120,6 +132,9 @@ export function parseCatalog(stdout: string): EngineCatalog {
       : [],
     generators,
   };
+  const buildingCatalogHash = doc['building_catalog_hash'];
+  if (typeof buildingCatalogHash === 'string' && /^[0-9a-f]{64}$/.test(buildingCatalogHash))
+    catalog.buildingCatalogHash = buildingCatalogHash;
   const dataHash = doc['data_hash'];
   if (typeof dataHash === 'string' && /^[0-9a-f]{64}$/.test(dataHash)) catalog.dataHash = dataHash;
   return catalog;
@@ -235,6 +250,9 @@ export function generateMapArgs(
 export const GENERATED_MAP_FILE = 'map-r0.map.gz';
 
 export interface MapFacts {
+  buildingCatalog?: BuildingCatalog;
+  resourceExperiments?: ResourceExperimentDefinitions;
+  requiredResourceExperiments?: string[];
   width: number;
   height: number;
   teamCount: number;
@@ -261,7 +279,16 @@ export function parseGenerationResult(text: string): GenerationOutcome {
   const map = parseReportMap(report);
   const outcome: GenerationOutcome = {
     chosenSeed: int(doc['chosen_seed'], 'chosen_seed'),
-    map: { width: map.width, height: map.height, teamCount: map.teamCount },
+    map: {
+      width: map.width,
+      height: map.height,
+      teamCount: map.teamCount,
+      ...(map.buildingCatalog ? { buildingCatalog: map.buildingCatalog } : {}),
+      ...(map.resourceExperiments ? { resourceExperiments: map.resourceExperiments } : {}),
+      ...(map.requiredResourceExperiments
+        ? { requiredResourceExperiments: map.requiredResourceExperiments }
+        : {}),
+    },
   };
   const quality = doc['quality'];
   if (
@@ -325,7 +352,45 @@ function parseControllers(value: unknown): ReportController[] {
 
 function parseReportMap(report: Json): ReportMap {
   const map = object(report['map'], 'map report map');
+  let buildingCatalog: BuildingCatalog | undefined;
+  let resourceExperiments: ResourceExperimentDefinitions | undefined;
+  let requiredResourceExperiments: string[] | undefined;
+  if (map['resourceExperiments'] !== undefined) {
+    resourceExperiments = map['resourceExperiments'] as ResourceExperimentDefinitions;
+    try {
+      resourceExperimentKeys(resourceExperiments);
+    } catch (error) {
+      throw new EngineOutputError(String(error));
+    }
+  }
+  if (map['requiredResourceExperiments'] !== undefined) {
+    const required = map['requiredResourceExperiments'];
+    const allowed = new Set(resourceExperimentKeys(resourceExperiments ?? []));
+    if (
+      !Array.isArray(required) ||
+      required.length > 64 ||
+      required.some((key: unknown) => typeof key !== 'string' || !allowed.has(key)) ||
+      new Set(required).size !== required.length
+    )
+      throw new EngineOutputError('invalid required resource experiments');
+    requiredResourceExperiments = required as string[];
+  }
+  if (map['buildingCatalog'] !== undefined) {
+    const catalog = object(map['buildingCatalog'], 'building catalog');
+    if (typeof catalog['snapshot'] !== 'string' || typeof catalog['hash'] !== 'string')
+      throw new EngineOutputError('invalid building catalog');
+    buildingCatalog = { snapshot: catalog['snapshot'], hash: catalog['hash'] };
+    try {
+      buildingCatalogExperimentKeys(buildingCatalog);
+      checkBuildingCatalogHash(buildingCatalog);
+    } catch (error) {
+      throw new EngineOutputError(String(error));
+    }
+  }
   return {
+    ...(buildingCatalog ? { buildingCatalog } : {}),
+    ...(resourceExperiments ? { resourceExperiments } : {}),
+    ...(requiredResourceExperiments ? { requiredResourceExperiments } : {}),
     name: typeof map['name'] === 'string' ? map['name'] : null,
     width: int(map['width'], 'map width'),
     height: int(map['height'], 'map height'),

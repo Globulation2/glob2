@@ -16,6 +16,7 @@
 #include <cctype>
 #include <set>
 #include <string>
+#include <stdexcept>
 
 using namespace GAGCore;
 
@@ -52,6 +53,98 @@ namespace
 
 TEST_SUITE("ExperimentalFeatures")
 {
+	TEST_CASE("catalog definitions are validated sorted and immutable without allocating enum ids")
+	{
+		CatalogExperimentRegistry registry;
+		const CatalogExperimentDefinition alpha{"alpha-building", "Alpha building", "Enables alpha."};
+		const CatalogExperimentDefinition zeta{"zeta-building", "Zeta building", "Enables zeta."};
+		registry.install({zeta, alpha, {"markets-v2", "Catalog markets", "Uses the existing gate."}});
+		CHECK(registry.definitions() == std::vector<CatalogExperimentDefinition>{alpha, zeta});
+		CHECK_NOTHROW(registry.install({alpha, zeta}));
+		CHECK_THROWS_AS(registry.install({alpha}), std::logic_error);
+		CHECK(registry.definitions() == std::vector<CatalogExperimentDefinition>{alpha, zeta});
+		CHECK(!parseExperimentKey(alpha.key));
+
+		CatalogExperimentRegistry invalid;
+		CHECK_THROWS_AS(invalid.install({alpha, alpha}), std::invalid_argument);
+		for (const std::string &key : std::vector<std::string>{"", "Upper-case", "contains space", "-leading", "trailing-", "two--hyphens", std::string(129, 'a')})
+			CHECK_THROWS_AS(invalid.install({{key, "Label", "Help"}}), std::invalid_argument);
+		CHECK_THROWS_AS(invalid.install({{"empty-label", "", "Help"}}), std::invalid_argument);
+		CHECK_THROWS_AS(invalid.install({{"empty-help", "Label", ""}}), std::invalid_argument);
+		// Failed validation never partially installs or freezes the registry.
+		CHECK_NOTHROW(invalid.install({alpha}));
+		CHECK(invalid.definitions() == std::vector<CatalogExperimentDefinition>{alpha});
+	}
+
+	TEST_CASE("embedded catalog keys survive independently of installed definitions")
+	{
+		const std::vector<std::string> catalogKeys{"zeta-building", "alpha-building"};
+		CHECK(!knownExperimentKey("alpha-building"));
+		CHECK(knownExperimentKey("alpha-building", catalogKeys));
+		CHECK(!knownExperimentKey("bad key", {"bad key"}));
+		std::vector<std::string> unknown;
+		auto enabled = ExperimentSet::fromKeys({"zeta-building", "farm-areas", "alpha-building", "zeta-building", "unknown-building"}, &unknown, catalogKeys);
+		CHECK(unknown == std::vector<std::string>{"unknown-building"});
+		CHECK(enabled.keys() == std::vector<std::string>{"farm-areas", "alpha-building", "zeta-building"});
+		CHECK(enabled.size() == 3);
+		CHECK(enabled.has(ExperimentId::FarmAreas));
+		CHECK(enabled.has("farm-areas"));
+		CHECK(enabled.has("alpha-building"));
+		CHECK(ExperimentSet::fromText(enabled.toText(), nullptr, catalogKeys) == enabled);
+		CHECK_THROWS_AS(enabled.set("unknown-building"), std::invalid_argument);
+		enabled.set("alpha-building", false);
+		CHECK(!enabled.has("alpha-building"));
+		enabled.set("alpha-building", true, catalogKeys);
+		enabled.set("farm-areas", false);
+		CHECK(!enabled.has(ExperimentId::FarmAreas));
+
+		const std::string bytes = bytesOf(enabled);
+		for (const bool allowCatalog : {false, true})
+		{
+			auto *memory = new MemoryStreamBackend(bytes.data(), bytes.size());
+			memory->seekFromStart(0);
+			BinaryInputStream input(memory);
+			ExperimentSet restored;
+			CHECK(restored.load(&input, VERSION_MINOR, true, allowCatalog ? catalogKeys : std::vector<std::string>{}) == allowCatalog);
+			if (allowCatalog)
+			{
+				CHECK(restored == enabled);
+				CHECK(memory->getPosition() == bytes.size());
+			}
+		}
+		// Loading one game never makes its catalog valid for another game.
+		CHECK(!knownExperimentKey("alpha-building"));
+		enabled.clear();
+		CHECK(enabled.empty());
+		CHECK(enabled.size() == 0);
+	}
+
+	TEST_CASE("dynamic experiment text streams round trip and sets respect the stored count bound")
+	{
+		std::vector<std::string> catalogKeys;
+		for (unsigned i = 0; i <= ExperimentSet::MAX_STORED; ++i)
+			catalogKeys.push_back("building-" + std::to_string(i));
+		ExperimentSet enabled;
+		for (unsigned i = 0; i < ExperimentSet::MAX_STORED; ++i)
+			enabled.set(catalogKeys[i], true, catalogKeys);
+		CHECK_THROWS_AS(enabled.set(catalogKeys.back(), true, catalogKeys), std::length_error);
+		CHECK_THROWS_AS(enabled.set(ExperimentId::FarmAreas), std::length_error);
+		CHECK(enabled.size() == ExperimentSet::MAX_STORED);
+		MemoryStreamBackend copy;
+		{
+			auto *memory = new MemoryStreamBackend;
+			TextOutputStream output(memory);
+			enabled.save(&output);
+			output.flush();
+			copy = *memory;
+		}
+		copy.seekFromStart(0);
+		TextInputStream input(&copy);
+		ExperimentSet restored;
+		REQUIRE(restored.load(&input, VERSION_MINOR, true, catalogKeys));
+		CHECK(restored == enabled);
+	}
+
 	TEST_CASE("registry keys are unique kebab-case and parse back to their id")
 	{
 		const auto& definitions = experimentDefinitions();
@@ -196,11 +289,11 @@ TEST_SUITE("ExperimentalFeatures")
 			CHECK(loaded.getExperiments() == original.getExperiments());
 			CHECK(current->getPosition() == bytes.size());
 
-			// The set is the last thing written, so a version 123 header is this
-			// one without those bytes: it loads exactly, with no experiment.
+			// Building-catalog format appends an empty catalog chunk count after the
+			// experiment set. Remove both additions to form a version 123 header.
 			const std::string sectionBytes = bytesOf(original.getExperiments());
 			REQUIRE(bytes.size() > sectionBytes.size());
-			const size_t legacySize = bytes.size() - sectionBytes.size();
+			const size_t legacySize = bytes.size() - sectionBytes.size() - 2 * sizeof(Uint32);
 			auto* legacy = new MemoryStreamBackend(bytes.data(), legacySize);
 			legacy->seekFromStart(0);
 			BinaryInputStream old(legacy);
@@ -218,5 +311,29 @@ TEST_SUITE("ExperimentalFeatures")
 		// reset() clears the set like every other option.
 		original.reset();
 		CHECK(original.getExperiments().empty());
+	}
+	TEST_CASE("resource catalog keys and metadata survive both game-header transport forms")
+	{
+		GameHeader original;
+		const std::vector<CatalogExperimentDefinition> definitions{{"test-resource", "Test resource", "Enables a resource."}};
+		original.setResourceExperiments(definitions);
+		original.getExperiments().set("test-resource", true, original.catalogExperimentKeys());
+		for (bool players : {false, true})
+		{
+			auto* memory = new MemoryStreamBackend;
+			BinaryOutputStream out(memory);
+			if (players) original.save(&out); else original.saveWithoutPlayerInfo(&out);
+			out.flush();
+			const std::string bytes(memory->getBuffer(), memory->getPosition());
+			auto* restored = new MemoryStreamBackend(bytes.data(), bytes.size());
+			restored->seekFromStart(0);
+			BinaryInputStream in(restored);
+			GameHeader loaded;
+			REQUIRE((players ? loaded.load(&in, VERSION_MINOR) : loaded.loadWithoutPlayerInfo(&in, VERSION_MINOR)));
+			CHECK(loaded.resourceExperiments() == definitions);
+			CHECK(loaded.getExperiments().has("test-resource"));
+			CHECK(restored->getPosition() == bytes.size());
+		}
+		CHECK_FALSE(knownExperimentKey("test-resource"));
 	}
 }

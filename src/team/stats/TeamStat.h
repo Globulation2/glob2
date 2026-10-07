@@ -40,11 +40,13 @@ struct TeamStat
 
 	int totalUnit;
 	int numberUnitPerType[NB_UNIT_TYPE];
+	int workersByConstructionLevel[NB_UNIT_LEVELS];
 	int totalFree;
 	int isFree[NB_UNIT_TYPE];
 	int totalNeeded;
 	int totalNeededPerLevel[NB_UNIT_LEVELS];
 
+	std::vector<int> buildingCountByVariant; // concrete catalog IDs, including construction variants
 	int totalBuilding; // Note that this is the total number of *finished* buildings, building sites are ignored
 	int numberBuildingPerType[IntBuildingType::NB_BUILDING];
 	int numberBuildingPerTypePerLevel[IntBuildingType::NB_BUILDING][NB_BUILDING_LONG_LEVELS];
@@ -100,6 +102,16 @@ struct EndOfGameStat
 	int value[TYPE_NB_STATS];
 };
 
+// Per-variant diagnostics use the catalog's concrete IDs; no family/tier limit.
+struct BuildingMeasurement
+{
+	Uint64 count = 0;
+	Uint64 completed[3]{};
+	Uint64 removed[3]{};
+	Uint64 trapped[2][2]{};
+	bool operator==(const BuildingMeasurement&) const = default;
+};
+
 // Diagnostic only: never used by AI, orders, RNG or simulation checksums.
 struct GameplayMeasurements
 {
@@ -132,6 +144,8 @@ struct GameplayMeasurements
 		AMMUNITION,
 		CONSTRUCTION,
 		UPGRADE,
+		HEALING_COST,
+		TRAINING_COST,
 		PURPOSES
 	};
 	enum Completion
@@ -204,19 +218,21 @@ struct GameplayMeasurements
 		ASSIGNMENTS
 	};
 	bool operator==(const GameplayMeasurements &) const = default;
+	std::vector<BuildingMeasurement> variants;
 	Uint32 tick = 0;
 	Uint64 births[NB_UNIT_TYPE]{};
 	Uint64 deaths[NB_UNIT_TYPE][DEATH_CAUSES]{};
 	Uint64 conversionsIn[NB_UNIT_TYPE]{};
 	Uint64 conversionsOut[NB_UNIT_TYPE]{};
-	Uint64 harvested[MAX_NB_RESOURCES]{};
-	Uint64 cleared[MAX_NB_RESOURCES]{};
-	Uint64 delivered[MAX_NB_RESOURCES]{};
-	Uint64 withdrawn[MAX_NB_RESOURCES]{};
-	Uint64 transferredIn[MAX_NB_RESOURCES]{};
-	Uint64 transferredOut[MAX_NB_RESOURCES]{};
-	Uint64 consumed[PURPOSES][MAX_NB_RESOURCES]{};
-	Uint64 repairDelivered[MAX_NB_RESOURCES]{};
+	Uint64 harvested[MaterialSlotCount]{};
+	Uint64 cleared[MaterialSlotCount]{};
+	Uint64 delivered[MaterialSlotCount]{};
+	Uint64 withdrawn[MaterialSlotCount]{};
+	Uint64 transferredIn[MaterialSlotCount]{};
+	Uint64 transferredOut[MaterialSlotCount]{};
+	Uint64 consumed[PURPOSES][MaterialSlotCount]{};
+	Uint64 repairDelivered[MaterialSlotCount]{};
+	Uint64 materialSpillageEvents{};
 	Uint64 meals{};
 	Uint64 healingVisits{};
 	Uint64 hpRestored{};
@@ -228,8 +244,8 @@ struct GameplayMeasurements
 	Uint64 removed[REMOVALS][IntBuildingType::NB_BUILDING][NB_BUILDING_LONG_LEVELS]{};
 	Uint64 trainingVisits[NB_UNIT_TYPE]{};
 	Uint64 abilityGains[NB_UNIT_TYPE][NB_ABILITY]{};
-	Uint64 stock[MAX_NB_RESOURCES]{};
-	Uint64 carried[MAX_NB_RESOURCES]{};
+	Uint64 stock[MaterialSlotCount]{};
+	Uint64 carried[MaterialSlotCount]{};
 	Uint64 buildings[IntBuildingType::NB_BUILDING][NB_BUILDING_LONG_LEVELS]{};
 	Uint64 hungry{};
 	Uint64 critical{};
@@ -242,10 +258,10 @@ struct GameplayMeasurements
 	Uint64 lowFood[3][NB_UNIT_TYPE]{};
 	Uint32 trappedTick = 0;
 	// Cumulative natural map growth within 8, 16 and 32 tiles of this team.
-	Uint64 growthTiles[GROWTH_COVERAGE_BANDS][MAX_NB_RESOURCES]{};
-	Uint64 growthAmount[GROWTH_COVERAGE_BANDS][MAX_NB_RESOURCES]{};
-	Uint64 growthReduction[GROWTH_COVERAGE_BANDS][MAX_NB_RESOURCES]{};
-	Uint64 growthGlobal[3][MAX_NB_RESOURCES]{};
+	Uint64 growthTiles[GROWTH_COVERAGE_BANDS][MaterialSlotCount]{};
+	Uint64 growthAmount[GROWTH_COVERAGE_BANDS][MaterialSlotCount]{};
+	Uint64 growthReduction[GROWTH_COVERAGE_BANDS][MaterialSlotCount]{};
+	Uint64 growthGlobal[3][MaterialSlotCount]{};
 	// Format 129 (FILE_FORMAT_VERSION_LABOUR_STATS). Cumulative worker-ticks.
 	Uint64 labour[LABOUR_ACTIVITIES]{};
 	Uint64 filling[LABOUR_JOBS][LABOUR_PHASES]{};
@@ -314,6 +330,13 @@ public:
   int getStarvingUnits();
 
 private:
+	// Derived reset index for the live per-variant count, never serialized.
+	// Counts are maintained by begin/observe; cold refresh/import rebuilds this
+	// index when replacing externally supplied diagnostic measurements.
+	std::vector<size_t> measurementCountTouched;
+	size_t measurementCountCatalogSize = 0;
+	void rebuildMeasurementCountReset();
+
 	enum
 	{
 		STATS_SMOOTH_SIZE=32,

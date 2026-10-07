@@ -4,7 +4,7 @@
 #include "AINicowar.h"
 #include "AICabino.h"
 #include "ai/cortex/CortexWater.h"
-#include "ai/cortex/CortexWheat.h"
+#include "ai/cortex/CortexFoodSources.h"
 #include "Order.h"
 #include "Brush.h"
 #include "Player.h"
@@ -25,11 +25,11 @@ TEST_SUITE("AIRecoveryCoverage")
         auto empty=Cortex::assessSwim(player,true);
         CHECK(empty.landReach>0); CHECK(empty.waterReach>empty.landReach);
         CHECK(empty.algaeDiscovered==0); CHECK(empty.algaeReachable==0);
-        w.game.map.setResource(20,16,ALGA,1);
+        w.game.map.setResourceByIndex(20,16,ALGA,1);
         w.game.map.setMapDiscovered();
         auto distant=Cortex::assessSwim(player,true);
         CHECK(distant.algaeDiscovered==1); CHECK(distant.algaeReachable==0);
-        w.game.map.setResource(12,6,ALGA,1);
+        w.game.map.setResourceByIndex(12,6,ALGA,1);
         auto shore=Cortex::assessSwim(player,false);
         CHECK(shore.algaeDiscovered==1); CHECK(shore.algaeReachable==1);
         CHECK(shore.landReach==empty.landReach); CHECK(shore.waterReach==0);
@@ -59,20 +59,20 @@ TEST_SUITE("AIRecoveryCoverage")
         glob2test::HeadlessGame w(glob2test::GameOptions{
             .teams=2,.discovered=true,.clearImmobile=true,.loadDefaultRace=true,.header=true});
         w.addBuilding("inn",2,2);
-        for (int y=7;y<13;++y) for (int x=7;x<13;++x) w.game.map.setResource(x,y,WHEAT,1);
+        for (int y=7;y<13;++y) for (int x=7;x<13;++x) w.game.map.setResourceByIndex(x,y,WHEAT,1);
         w.game.map.setMapDiscovered();
         std::fill(w.game.map.fogOfWar,w.game.map.fogOfWar+32*32,~Uint32(0));
         w.game.map.addForbidden(8,8,1);
-        auto protection=Cortex::reconcileWheatForbidden(w.game.players[0],0,true);
+        auto protection=Cortex::reconcileFoodSourcesForbidden(w.game.players[0],0,true);
         REQUIRE(protection.addCount>0);
         auto apply=[&](Uint8 mode,BrushAccumulator& brush) {
             auto order=std::make_shared<OrderAlterForbidden>(0,mode,&brush,&w.game.map);
             order->sender=0; w.game.executeOrder(order,0);
         };
         apply(BrushTool::MODE_ADD,protection.add);
-        auto settled=Cortex::reconcileWheatForbidden(w.game.players[0],0,true);
+        auto settled=Cortex::reconcileFoodSourcesForbidden(w.game.players[0],0,true);
         CHECK(settled.addCount==0); CHECK(settled.delCount==0);
-        auto burst=Cortex::reconcileWheatForbidden(w.game.players[0],0,true,true);
+        auto burst=Cortex::reconcileFoodSourcesForbidden(w.game.players[0],0,true,true);
         CHECK(burst.addCount==0); REQUIRE(burst.delCount>0);
         apply(BrushTool::MODE_DEL,burst.del);
         for (int y=7;y<13;++y) for (int x=7;x<13;++x) CHECK(!w.game.map.isForbidden(x,y,w.team->me));
@@ -87,7 +87,7 @@ TEST_SUITE("AIRecoveryCoverage")
         w.game.gameHeader.getExperiments().set(ExperimentId::FarmAreas);
         w.addBuilding("inn",4,4);
         for(int y=14; y<18; ++y) for(int x=7; x<13; ++x) w.game.map.setTerrain(x,y,256);
-        for(int y=7; y<13; ++y) for(int x=7; x<13; ++x) w.game.map.setResource(x,y,WHEAT,1);
+        for(int y=7; y<13; ++y) for(int x=7; x<13; ++x) w.game.map.setResourceByIndex(x,y,WHEAT,1);
         w.game.map.setMapDiscovered();
         std::fill(w.game.map.fogOfWar,w.game.map.fogOfWar+32*32,~Uint32(0));
         // A save from the prototype contains both wheat parities and its ring.
@@ -97,24 +97,24 @@ TEST_SUITE("AIRecoveryCoverage")
             auto order=std::make_shared<OrderAlterFarmArea>(0,mode,&brush,&w.game.map);
             order->sender=0; w.game.executeOrder(order,0);
         };
-        auto farm=Cortex::reconcileWheatForbidden(w.game.players[0],0,true,false,true);
+        auto farm=Cortex::reconcileFoodSourcesForbidden(w.game.players[0],0,true,false,true);
         REQUIRE(farm.delCount>0);
         apply(BrushTool::MODE_DEL,farm.del);
-        auto expected=Cortex::scanWheatForbidden(w.game.map,w.team->me,0,{4*32+4},0,0,31,31,0,true,false);
+        auto expected=Cortex::scanFoodSourcesForbidden(w.game.map,w.team->me,0,{4*32+4},0,0,31,31,0,true,false);
         std::set<int> pattern(expected.desired.begin(),expected.desired.end());
         for(int y=6; y<14; ++y) for(int x=6; x<14; ++x)
             CHECK(w.game.map.isFarmArea(x,y,w.team->me)==pattern.contains(y*32+x));
-        auto settled=Cortex::reconcileWheatForbidden(w.game.players[0],0,true,false,true);
+        auto settled=Cortex::reconcileFoodSourcesForbidden(w.game.players[0],0,true,false,true);
         CHECK(settled.addCount==0); CHECK(settled.delCount==0);
-        auto burst=Cortex::reconcileWheatForbidden(w.game.players[0],0,true,true,true);
+        auto burst=Cortex::reconcileFoodSourcesForbidden(w.game.players[0],0,true,true,true);
         REQUIRE(burst.delCount>0); CHECK(burst.addCount==0);
         apply(BrushTool::MODE_DEL,burst.del);
         CHECK(w.game.map.isFarmArea(8,8,w.game.teams[1]->me));
-        auto restored=Cortex::reconcileWheatForbidden(w.game.players[0],0,true,false,true);
+        auto restored=Cortex::reconcileFoodSourcesForbidden(w.game.players[0],0,true,false,true);
         apply(BrushTool::MODE_ADD,restored.add);
         // Depletion must still retire farm paint when the entire field is gone.
         for(int y=7; y<13; ++y) for(int x=7; x<13; ++x) {auto resource=w.game.map.getResource(x,y);resource.type=NO_RES_TYPE;w.game.map.replaceResource(x,y,resource);}
-        auto depleted=Cortex::reconcileWheatForbidden(w.game.players[0],0,true,false,true);
+        auto depleted=Cortex::reconcileFoodSourcesForbidden(w.game.players[0],0,true,false,true);
         CHECK(depleted.addCount==0); CHECK(depleted.delCount==restored.addCount);
     }
 
@@ -161,6 +161,7 @@ TEST_SUITE("AIRecoveryCoverage")
         w.team->enemies=w.game.teams[1]->me;
         threatened->underAttackTimer=100;
         AISharedRuntime::Runtime runtime(new NewNicowar,w.game.players[0]);
+        MersenneTwister controllerRandom(713);runtime.setRandomEngine(controllerRandom);
         runtime.gm.reset(new AISharedRuntime::Gradients::GradientManager(&w.game.map));
         runtime.br.initiate();
         auto& ai=*static_cast<NewNicowar*>(runtime.runtimeai.get());
@@ -195,6 +196,7 @@ TEST_SUITE("AIRecoveryCoverage")
         auto* enemy=w.addUnit(WARRIOR,8,8,1);
         w.team->enemies=w.game.teams[1]->me;
         Cabino::AICabino ai(w.game.players[0]);
+        MersenneTwister controllerRandom(713);ai.setRandomEngine(controllerRandom);
         auto& defense=*static_cast<Cabino::SimpleBuildingDefense*>(ai.getDefenseModule());
         auto flush=[&] {
             while(!ai.orders.empty()) { auto order=ai.orders.front(); ai.orders.pop();

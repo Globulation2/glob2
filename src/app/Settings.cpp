@@ -2,6 +2,7 @@
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
 #include "Settings.h"
+#include "BuildingType.h"
 #include <InterfacePresentation.h>
 #include "GUIBase.h"
 #include "Utilities.h"
@@ -224,22 +225,59 @@ void Settings::load(std::string filename)
 			std::min(static_cast<int>(GAME_SPEED_MAXIMUM), gameSpeed));
 		GAGGUI::Screen::scrollWheelEnabled = scrollWheelEnabled;
 
-		for(int n=0; n<IntBuildingType::NB_BUILDING; ++n)
-		{
-			for(int t=0; t<6; ++t)
-			{
-				std::string keyname="defaultUnitsAssigned["+std::to_string(n)+"]["+std::to_string(t)+"]";
-				if(parsed.find(keyname)!=parsed.end())
-					defaultUnitsAssigned[n][t] = std::stoi(parsed[keyname]);
-			}
-		}
-
-		for(int n=0; n<3; ++n)
-		{
-			std::string keyname="defaultFlagRadius["+std::to_string(n)+"]";
-			if(parsed.find(keyname)!=parsed.end())
-				defaultFlagRadius[n] = std::stoi(parsed[keyname]);
-		}
+        buildingAssignments.clear(); buildingRadii.clear();
+        const auto readPreference = [](const std::string& text, int& value) {
+            const auto result=std::from_chars(text.data(),text.data()+text.size(),value);
+            return result.ec==std::errc{} && result.ptr==text.data()+text.size() && value>=0 && value<=1024;
+        };
+        const int savedVersion=parsed.count("version") ? std::atoi(parsed["version"].c_str()) : 0;
+        if(savedVersion>=2)
+        {
+            for(const auto& [key,text]:parsed)
+            {
+                int value=0;
+                if(!readPreference(text,value)) continue;
+                if(key.starts_with("buildingAssignment.")) buildingAssignments[key.substr(19)]=value;
+                else if(key.starts_with("buildingRadius.")) buildingRadii[key.substr(15)]=value;
+            }
+            // Format-137 stock preferences used the pre-material canonical JSON
+            // fingerprint. Its recipes and stable variants are unchanged; retain
+            // those preferences across the vocabulary-only identity migration.
+            // Never transfer arbitrary custom-catalog keys or overwrite new ones.
+            constexpr std::string_view priorStock = "6f09045e24e9f39f70d96366f8d315a17936880ff1cb9015d4ca52ddf0162e54";
+            BuildingsTypes stock; stock.initLegacy();
+            const auto currentStock = stock.fingerprint();
+            for (std::size_t i=0; i<stock.size(); ++i)
+            {
+                const auto& type = *stock.get(i);
+                const auto oldKey = std::string(priorStock) + "/" + type.key;
+                const auto newKey = currentStock + "/" + type.key;
+                if (const auto old = buildingAssignments.find(oldKey); old != buildingAssignments.end())
+                    buildingAssignments.try_emplace(newKey, std::clamp(old->second, 0, type.semantics.assignmentLimit));
+                if (const auto old = buildingRadii.find(oldKey); old != buildingRadii.end())
+                    buildingRadii.try_emplace(newKey, std::clamp(old->second, 0, type.maxUnitStayRange));
+            }
+        }
+        else if(savedVersion>=1)
+        {
+            // Only the frozen historical catalog can interpret the old family
+            // numbers and six construction/completion slots.
+            BuildingsTypes legacy; legacy.initLegacy();
+            const auto catalog=legacy.fingerprint();
+            for(std::size_t i=0;i<legacy.size();++i)
+            {
+                const auto& type=*legacy.get(i);
+                const int slot=type.level*2+(type.isBuildingSite?0:1);
+                const std::string key="defaultUnitsAssigned["+std::to_string(type.shortTypeNum)+"]["+std::to_string(slot)+"]";
+                int value=0;
+                if(parsed.count(key) && readPreference(parsed[key],value)) setBuildingAssignment(catalog,type,value);
+                if(type.shortTypeNum>=IntBuildingType::EXPLORATION_FLAG && type.shortTypeNum<=IntBuildingType::CLEARING_FLAG)
+                {
+                    const auto radiusKey="defaultFlagRadius["+std::to_string(type.shortTypeNum-IntBuildingType::EXPLORATION_FLAG)+"]";
+                    if(parsed.count(radiusKey) && readPreference(parsed[radiusKey],value)) setBuildingRadius(catalog,type,value);
+                }
+            }
+        }
 
 		READ_PARSED_INT(cloudPatchSize);
 		READ_PARSED_INT(cloudMaxAlpha);
@@ -254,7 +292,7 @@ void Settings::load(std::string filename)
 	delete stream;
     presentationPreference=parsePresentationPreference(interfacePresentation);
 	
-	if(version < SETTINGS_VERSION)
+	if(version < 1)
 	{
 		resetDefaultUnitsAssigned();
 	}
@@ -316,20 +354,10 @@ bool Settings::save(std::string filename)
 		Utilities::streamprintf(stream, "oneFingerZoomDirection=%d\n", oneFingerZoomDirection);
 		Utilities::streamprintf(stream, "thumbSide=%d\n", thumbSide);
 
-		for(int n=0; n<IntBuildingType::NB_BUILDING; ++n)
-		{
-			for(int t=0; t<6; ++t)
-			{
-				std::string keyname="defaultUnitsAssigned["+std::to_string(n)+"]["+std::to_string(t)+"]";
-				Utilities::streamprintf(stream, "%s=%i\n", keyname.c_str(), defaultUnitsAssigned[n][t]);
-			}
-		}
-
-		for(int n=0; n<3; ++n)
-		{
-			std::string keyname = "defaultFlagRadius["+std::to_string(n)+"]";
-			Utilities::streamprintf(stream, "%s=%i\n", keyname.c_str(), defaultFlagRadius[n]);
-		}
+        for(const auto& [key,value]:buildingAssignments)
+            Utilities::streamprintf(stream,"buildingAssignment.%s=%d\n",key.c_str(),value);
+        for(const auto& [key,value]:buildingRadii)
+            Utilities::streamprintf(stream,"buildingRadius.%s=%d\n",key.c_str(),value);
 
 		Utilities::streamprintf(stream, "cloudPatchSize=%d\n",	cloudPatchSize);
 		Utilities::streamprintf(stream, "cloudMaxAlpha=%d\n",	cloudMaxAlpha);
@@ -406,60 +434,25 @@ void Settings::changeGameSpeed(int amount)
 /**
  * resets the default units assigned to all buildings
  */
-void Settings::resetDefaultUnitsAssigned()
+int Settings::buildingAssignment(const std::string& catalog,const BuildingType& type) const
 {
-	for(int n=0; n<IntBuildingType::NB_BUILDING; ++n)
-	{
-		for(int t=0; t<6; ++t)
-		{
-			defaultUnitsAssigned[n][t] = 0;
-		}
-	}
-	defaultUnitsAssigned[IntBuildingType::WAR_FLAG][1] = 10;
-	defaultUnitsAssigned[IntBuildingType::CLEARING_FLAG][1] = 5;
-	defaultUnitsAssigned[IntBuildingType::EXPLORATION_FLAG][1] = 2;
-	defaultUnitsAssigned[IntBuildingType::SWARM_BUILDING][0] = 7;
-	defaultUnitsAssigned[IntBuildingType::SWARM_BUILDING][1] = 4;
-	defaultUnitsAssigned[IntBuildingType::FOOD_BUILDING][0] = 3;
-	defaultUnitsAssigned[IntBuildingType::FOOD_BUILDING][1] = 2;
-	defaultUnitsAssigned[IntBuildingType::FOOD_BUILDING][2] = 5;
-	defaultUnitsAssigned[IntBuildingType::FOOD_BUILDING][3] = 3;
-	defaultUnitsAssigned[IntBuildingType::FOOD_BUILDING][4] = 15;
-	defaultUnitsAssigned[IntBuildingType::FOOD_BUILDING][5] = 8;
-	defaultUnitsAssigned[IntBuildingType::HEAL_BUILDING][0] = 2;
-	defaultUnitsAssigned[IntBuildingType::HEAL_BUILDING][2] = 4;
-	defaultUnitsAssigned[IntBuildingType::HEAL_BUILDING][4] = 6;
-	defaultUnitsAssigned[IntBuildingType::WALKSPEED_BUILDING][0] = 3;
-	defaultUnitsAssigned[IntBuildingType::WALKSPEED_BUILDING][2] = 7;
-	defaultUnitsAssigned[IntBuildingType::WALKSPEED_BUILDING][4] = 12;
-	defaultUnitsAssigned[IntBuildingType::SWIMSPEED_BUILDING][0] = 2;
-	defaultUnitsAssigned[IntBuildingType::SWIMSPEED_BUILDING][2] = 5;
-	defaultUnitsAssigned[IntBuildingType::SWIMSPEED_BUILDING][4] = 12;
-	defaultUnitsAssigned[IntBuildingType::ATTACK_BUILDING][0] = 3;
-	defaultUnitsAssigned[IntBuildingType::ATTACK_BUILDING][2] = 6;
-	defaultUnitsAssigned[IntBuildingType::ATTACK_BUILDING][4] = 9;
-	defaultUnitsAssigned[IntBuildingType::SCIENCE_BUILDING][0] = 5;
-	defaultUnitsAssigned[IntBuildingType::SCIENCE_BUILDING][2] = 10;
-	defaultUnitsAssigned[IntBuildingType::SCIENCE_BUILDING][4] = 20;
-	defaultUnitsAssigned[IntBuildingType::DEFENSE_BUILDING][0] = 3;
-	defaultUnitsAssigned[IntBuildingType::DEFENSE_BUILDING][1] = 2;
-	defaultUnitsAssigned[IntBuildingType::DEFENSE_BUILDING][2] = 5;
-	defaultUnitsAssigned[IntBuildingType::DEFENSE_BUILDING][3] = 2;
-	defaultUnitsAssigned[IntBuildingType::DEFENSE_BUILDING][4] = 8;
-	defaultUnitsAssigned[IntBuildingType::DEFENSE_BUILDING][5] = 2;
-	defaultUnitsAssigned[IntBuildingType::STONE_WALL][0] = 1;
-	defaultUnitsAssigned[IntBuildingType::MARKET_BUILDING][0] = 3;
-	defaultUnitsAssigned[IntBuildingType::MARKET_BUILDING][1] = 3;
+    const auto found=buildingAssignments.find(catalog+"/"+type.key);
+    return std::clamp(found==buildingAssignments.end() ? type.presentation.defaultAssigned : found->second,
+        0,type.semantics.assignmentLimit);
 }
-
-
-/**
- * sets the radii of the clear, explore, and attack flags
- * back to their default
- */
-void Settings::resetDefaultFlagRadius()
+int Settings::buildingRadius(const std::string& catalog,const BuildingType& type) const
 {
-	defaultFlagRadius[0] = 10;
-	defaultFlagRadius[1] = 4;
-	defaultFlagRadius[2] = 3;
+    const auto found=buildingRadii.find(catalog+"/"+type.key);
+    return std::clamp(found==buildingRadii.end() ? type.defaultUnitStayRange : found->second,
+        0,type.maxUnitStayRange);
 }
+void Settings::setBuildingAssignment(const std::string& catalog,const BuildingType& type,int value)
+{
+    buildingAssignments[catalog+"/"+type.key]=std::clamp(value,0,type.semantics.assignmentLimit);
+}
+void Settings::setBuildingRadius(const std::string& catalog,const BuildingType& type,int value)
+{
+    buildingRadii[catalog+"/"+type.key]=std::clamp(value,0,type.maxUnitStayRange);
+}
+void Settings::resetDefaultUnitsAssigned() { buildingAssignments.clear(); }
+void Settings::resetDefaultFlagRadius() { buildingRadii.clear(); }

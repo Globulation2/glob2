@@ -8,6 +8,8 @@
 #include "field/AirPathfind.h"
 #include "field/TerrainMovementCosts.h"
 #include <cstdlib>
+#include <cstdint>
+#include <limits>
 
 TEST_SUITE("MapQuery")
 {
@@ -64,6 +66,9 @@ namespace
 	{
 		GrassMap()
 		{
+            // Unit binaries do not initialize Toolkit or an installed asset search path.
+            resourceRegistryValue = ResourceRegistry::loadFile((glob2test::sourceRoot() / "data/resources/registry.json").string());
+            rebuildResourceHabitats();
 			wDec = kMapDec;
 			hDec = kMapDec;
 			w = 1 << kMapDec;
@@ -71,6 +76,8 @@ namespace
 			wMask = w - 1;
 			hMask = h - 1;
 			size = static_cast<size_t>(w * h);
+			// Test-only private access initializes the deliberately partial map;
+			// subsequent mutations use the same cache notifications as gameplay.
 			tiles.assign(size, Tile());   // Tile() defaults: terrain=0 (grass), no building, no unit
             importLegacyTerrain();
 		}
@@ -95,23 +102,21 @@ namespace
 
 		void putBuilding(int x, int y, Uint16 gbid = 0)
 		{
-			tiles[coordToIndex(x, y)].building = gbid;
+			auto cell = getTile(x, y);
+			cell.building = gbid;
+			replaceTile(x, y, cell);
 		}
 		void putGroundUnit(int x, int y, Uint16 guid = 0)
 		{
-			tiles[coordToIndex(x, y)].groundUnit = guid;
+			setGroundUnit(x, y, guid);
 		}
 		void putResource(int x, int y, int type = 0)
 		{
-			Resource &r = tiles[coordToIndex(x, y)].resource;
-			r.type = type;
-			r.amount = 1;
-			r.variety = 0;
-			r.animation = 0;
+			replaceResource(x, y, Resource{static_cast<Uint8>(type), 0, 1, 0});
 		}
 		void setForbidden(int x, int y, Uint32 mask)
 		{
-			tiles[coordToIndex(x, y)].forbidden = mask;
+			setAreaMask(coordToIndex(x, y), &Tile::forbidden, mask);
 		}
 		// Terrain encoding (see Map.h:336-361):
 		//   grass : terrain <  16
@@ -500,4 +505,64 @@ TEST_CASE("reverse air field ranks many sources with forward entry costs")
 }
 }
 
+}
+
+
+TEST_SUITE("MapQuery")
+{
+TEST_CASE("wrapped distance preserves negative coordinates and multiple periods")
+{
+    GrassMap map;
+    // Normalize each endpoint independently in widened arithmetic. This oracle
+    // does not subtract the original int endpoints or mirror the fast-path guard.
+    const auto circular = [](int p, int q, int length) -> std::int64_t {
+        const std::int64_t period = length;
+        const auto a = (std::int64_t(p) % period + period) % period;
+        const auto b = (std::int64_t(q) % period + period) % period;
+        const auto clockwise = (b - a + period) % period;
+        return std::min(clockwise, period - clockwise);
+    };
+    const auto verify = [&](int p, int q, int length) {
+        const auto difference = std::int64_t(p) - q;
+        REQUIRE(difference >= -std::int64_t(std::numeric_limits<int>::max()));
+        REQUIRE(difference <= std::numeric_limits<int>::max());
+        CHECK(map.warpDist1d(p, q, length) == circular(p, q, length));
+        CHECK(map.warpDist1d(q, p, length) == circular(q, p, length));
+    };
+    for (int length = 1; length <= 9; ++length)
+        for (int p = -3 * length; p <= 3 * length; ++p)
+            for (int q = -3 * length; q <= 3 * length; ++q)
+                verify(p, q, length);
+    constexpr int maximum = std::numeric_limits<int>::max();
+    for (int length : {31, 32, 64, 1000, maximum})
+    {
+        const std::int64_t period = length;
+        for (auto distance : {std::int64_t(0), std::int64_t(1), period / 2,
+                              period / 2 + 1, period - 1, period, period + 1,
+                              2 * period})
+            if (distance <= maximum)
+            {
+                verify(static_cast<int>(distance), 0, length);
+                verify(-static_cast<int>(distance), 0, length);
+            }
+        verify(maximum, 0, length);
+        verify(-maximum, 0, length);
+        verify(std::numeric_limits<int>::min(), std::numeric_limits<int>::min() + 1, length);
+        verify(maximum, maximum - 1, length);
+    }
+    // The initialized fixture is 8x8; these composed distances only read its
+    // dimensions, so also exercise a rectangular 8x4 torus without tile access.
+    for (int height : {8, 4})
+    {
+        map.h = height;
+        for (int px = -9; px <= 9; ++px)
+            for (int qx = -9; qx <= 9; ++qx)
+            {
+                const int py = 2 * px, qy = -2 * qx;
+                const auto dx = circular(px, qx, 8), dy = circular(py, qy, height);
+                CHECK(map.warpDistMax(px, py, qx, qy) == std::max(dx, dy));
+                CHECK(map.warpDistSquare(px, py, qx, qy) == dx * dx + dy * dy);
+            }
+    }
+}
 }

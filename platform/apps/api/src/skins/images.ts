@@ -1,10 +1,11 @@
 import sharp, { type OutputInfo } from 'sharp';
+import { COLONY_SKIN_MATERIALS } from '@glob2/protocol';
 import { apiError } from '../errors.ts';
 
 /** Layout colony-v2: 512x512 images of four 256x256 model quadrants. */
 export const SKIN_ATLAS_SIZE = 512;
-/** Material ids: 0 glossy, 1 matte, 2 metallic, 3 hairy. */
-export const SKIN_MATERIAL_COUNT = 4;
+/** Material ids are 0 to this exclusive bound, in COLONY_SKIN_MATERIALS order. */
+export const SKIN_MATERIAL_COUNT = COLONY_SKIN_MATERIALS.length;
 
 function decodeUpload(encoded: string, maxBytes: number, what: string): Buffer {
   const bytes = Buffer.from(encoded, 'base64');
@@ -82,7 +83,7 @@ export async function canonicalMaterialMap(encoded: string): Promise<Buffer> {
     if (value >= SKIN_MATERIAL_COUNT)
       throw apiError(
         'bad_request',
-        'Material map pixels must be material ids 0 (glossy), 1 (matte), 2 (metallic) or 3 (hairy).',
+        `Material map pixels must be material ids 0 to ${SKIN_MATERIAL_COUNT - 1}.`,
       );
     ids[i] = value;
   }

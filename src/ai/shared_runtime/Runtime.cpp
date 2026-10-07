@@ -1,11 +1,12 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2006 Bradley Arsenault
 
+#include "Material.h"
 #include "AITelemetryFields.h"
 #include "shared_runtime/Runtime.h"
 #include "Building.h"
 #include <map>
-#include "IntBuildingType.h"
+#include "shared_runtime/BuildingDemands.h"
 #include "Game.h"
 #include "AIRules.h"
 #include "GlobalContainer.h"
@@ -21,6 +22,23 @@ using namespace AISharedRuntime::SearchTools;
 using std::shared_ptr;
 
 
+
+bool Runtime::ensure_production(const std::array<int,3>& desired,int workers,int futureWorkers)
+{
+    std::vector<int> pending;
+    for(const auto& order:building_orders) pending.push_back(order->get_concrete_type());
+    for(const auto& [id,record]:br.pending_buildings) pending.push_back(std::get<2>(record));
+    auto order=AIPlanning::missingProductionOrder(*player->game,*player->team,desired,workers,futureWorkers,pending);
+    if(!order) return false;
+    const auto& create=static_cast<const OrderCreate&>(*order);
+    const int id=br.register_building();br.issue_order(id,create.posX,create.posY,create.typeNum);
+    push_order(order);
+    auto* ratios=new ChangeSwarm(desired[WORKER],desired[EXPLORER],desired[WARRIOR],id);
+    ratios->add_condition(new ParticularBuilding(new NotUnderConstruction,id));add_management_order(ratios);
+    auto* tracker=new AddMaterialTracker(AI_SHARED_RUNTIME_RTI_TRACKER_LENGTH,RecurringInputStock,id);
+    tracker->add_condition(new ParticularBuilding(new NotUnderConstruction,id));add_management_order(tracker);
+    return true;
+}
 
 void AISharedRuntime::signature_write(GAGCore::OutputStream *stream)
 {
@@ -61,9 +79,34 @@ unsigned int Runtime::add_building_order(Construction::BuildingOrder* bo)
 	bo->queue_gradients(get_gradient_manager());
 	unsigned int id=br.register_building();
 	bo->id=id;
+    const auto intent=buildingIntent(bo->get_building_type());
+    if(intent==AIPlanning::BuildingIntent::AttractWarriors) begin_attraction(id,1u<<WARRIOR);
+    if(intent==AIPlanning::BuildingIntent::AttractExplorers) begin_attraction(id,1u<<EXPLORER);
+    if(intent==AIPlanning::BuildingIntent::AttractWorkers || intent==AIPlanning::BuildingIntent::ClearResources) begin_attraction(id,1u<<WORKER);
 	return id;
 }
 
+
+bool Runtime::begin_attraction(int id,unsigned unitMask)
+{
+    auto found=retired_attractions.find(id);
+    if(found==retired_attractions.end() || !(found->second&unitMask)) return false;
+    found->second&=~unitMask;
+    if(!found->second) retired_attractions.erase(found);
+    return true;
+}
+
+unsigned Runtime::complete_attraction_retirement(int buildingId,unsigned unitMask)
+{
+    return retired_attractions[buildingId]|=unitMask;
+}
+
+bool Runtime::attraction_retired_or_destroyed(int buildingId,unsigned unitMask) const
+{
+    const auto found=retired_attractions.find(buildingId);
+    if(found!=retired_attractions.end() && (found->second&unitMask)==unitMask) return true;
+    return !br.is_building_found(buildingId) && !br.is_building_pending(buildingId);
+}
 
 void Runtime::add_management_order(Management::ManagementOrder* mo)
 {
@@ -109,45 +152,45 @@ void Runtime::update_management_orders()
 
 
 
-void Runtime::add_resource_tracker(Management::ResourceTracker* rt, int building_id)
+void Runtime::add_material_tracker(Management::MaterialTracker* rt, int building_id)
 {
-	resource_trackers[building_id]=std::make_tuple(std::shared_ptr<ResourceTracker>(rt), true);
+	material_trackers[building_id]=std::make_tuple(std::shared_ptr<MaterialTracker>(rt), true);
 }
 
 
 
-std::shared_ptr<Management::ResourceTracker> Runtime::get_resource_tracker(int building_id)
+std::shared_ptr<Management::MaterialTracker> Runtime::get_material_tracker(int building_id)
 {
-	if(resource_trackers.find(building_id)==resource_trackers.end())
-		return std::shared_ptr<Management::ResourceTracker>();
-	return std::get<0>(resource_trackers[building_id]);
+	if(material_trackers.find(building_id)==material_trackers.end())
+		return std::shared_ptr<Management::MaterialTracker>();
+	return std::get<0>(material_trackers[building_id]);
 }
 
 
 
-void Runtime::pause_resource_tracker(int building_id)
+void Runtime::pause_material_tracker(int building_id)
 {
-	std::get<1>(resource_trackers[building_id])=false;
+	std::get<1>(material_trackers[building_id])=false;
 }
 
 
 
-void Runtime::unpause_resource_tracker(int building_id)
+void Runtime::unpause_material_tracker(int building_id)
 {
-	std::get<1>(resource_trackers[building_id])=true;
+	std::get<1>(material_trackers[building_id])=true;
 }
 
 
 
-void Runtime::update_resource_trackers()
+void Runtime::update_material_trackers()
 {
-	for(std::map<int, std::tuple<std::shared_ptr<Management::ResourceTracker>, bool> >::iterator i = resource_trackers.begin(); i!=resource_trackers.end();)
+	for(std::map<int, std::tuple<std::shared_ptr<Management::MaterialTracker>, bool> >::iterator i = material_trackers.begin(); i!=material_trackers.end();)
 	{
 		if(!br.is_building_found(i->first) && !br.is_building_pending(i->first))
 		{
-			std::map<int, std::tuple<std::shared_ptr<Management::ResourceTracker>, bool> >::iterator current=i;
+			std::map<int, std::tuple<std::shared_ptr<Management::MaterialTracker>, bool> >::iterator current=i;
 			++i;
-			resource_trackers.erase(current);
+			material_trackers.erase(current);
 			continue;
 		}
 		else if(br.is_building_found(i->first))
@@ -167,7 +210,7 @@ void Runtime::update_building_orders()
 	{
 		// A restored placement owns a register entry even before a building exists.
 		// Release both pieces before evaluating prerequisites that can never pass.
-		if (!AIRules::usefulBuilding(player->game->gameHeader,(*i)->get_building_type()))
+		if (!(*i)->bind(*this))
 		{ br.remove_building((*i)->id); i=building_orders.erase(i); continue; }
 		tribool passes=(*i)->passes_conditions(*this);
 		if(passes)
@@ -175,24 +218,15 @@ void Runtime::update_building_orders()
 			if(!(previous_building_id==-1 || br.is_building_found(previous_building_id) || !br.is_building_pending(previous_building_id)))
 				break;
 			position p=(*i)->find_location(*this, player->map, *gm);
-			if(p.x != 0 || p.y != 0)
+			if(p.x >= 0 && p.y >= 0)
 			{
-				br.issue_order((*i)->id, p.x, p.y, (*i)->get_building_type());
-				Sint32 type=-1;
-				if((*i)->get_building_type()>IntBuildingType::DEFENSE_BUILDING && (*i)->get_building_type() <IntBuildingType::STONE_WALL)
-				{
-					type=globalContainer->buildingsTypes.getTypeNum(IntBuildingType::reverseConversionMap[(*i)->get_building_type()], 0, false);
-					ManagementOrder* mo_flag=new AssignWorkers((*i)->get_number_of_workers(), (*i)->id);
-					add_management_order(mo_flag);
-				}
-				else
-				{
-					type=globalContainer->buildingsTypes.getTypeNum(IntBuildingType::reverseConversionMap[(*i)->get_building_type()], 0, true);
-					ManagementOrder* mo_during_construction=new AssignWorkers((*i)->get_number_of_workers(), (*i)->id);
-					mo_during_construction->add_condition(new ParticularBuilding(new UnderConstruction, (*i)->id));
-					add_management_order(mo_during_construction);
-				}
-				orders.push_back(shared_ptr<Order>(new OrderCreate(player->team->teamNumber, p.x, p.y, type, 1, 1)));
+    const int type=(*i)->get_concrete_type();
+    br.issue_order((*i)->id,p.x,p.y,type);
+    ManagementOrder* staffing=new AssignWorkers((*i)->get_number_of_workers(),(*i)->id);
+    if(player->game->buildingsTypes.get(type)->isBuildingSite)
+     staffing->add_condition(new ParticularBuilding(new UnderConstruction,(*i)->id));
+    add_management_order(staffing);
+				orders.push_back(AIRules::createOrder(*player->game, player->team->teamNumber, p.x, p.y, type, 1, 1));
 				telemetry.count(telemetry.series && telemetry.series->implementation == 4
 									? AITrace::AI4::shared_runtime_building_emitted
 									: AITrace::AI5::shared_runtime_building_emitted);
@@ -247,11 +281,11 @@ void Runtime::check_fruit()
 	{
 		for(int y=0; y<mi.get_height(); ++y)
 		{
-			if(mi.is_resource(x, y, CHERRY))
+			if(mi.is_resource(x, y, materialIndex(MaterialId::Cherries)))
 				is_fruit=true;
-			if(mi.is_resource(x, y, ORANGE))
+			if(mi.is_resource(x, y, materialIndex(MaterialId::Oranges)))
 				is_fruit=true;
-			if(mi.is_resource(x, y, PRUNE))
+			if(mi.is_resource(x, y, materialIndex(MaterialId::Prunes)))
 				is_fruit=true;
 			if(is_fruit)
 				return;
@@ -290,7 +324,8 @@ std::shared_ptr<Order> Runtime::getOrder(void)
 	}
 	gm->update();
 	br.tick();
-	update_resource_trackers();
+    std::erase_if(retired_attractions,[&](const auto& entry){return !br.is_building_found(entry.first) && !br.is_building_pending(entry.first);});
+	update_material_trackers();
 	update_management_orders();
 	runtimeai->telemetry = telemetry;
 	runtimeai->tick(*this);

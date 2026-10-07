@@ -251,7 +251,7 @@ GLuint createMaterial()
 #endif
 } // namespace
 
-void TorusView::releaseResources()
+void TorusView::releaseMaterials()
 {
 #ifdef GLOB2_TORUS_OPENGL
     if (graphicsContext && graphicsContext == SDL_GL_GetCurrentContext() &&
@@ -296,7 +296,7 @@ bool TorusView::prepareRenderTarget()
     if (graphicsContext != SDL_GL_GetCurrentContext() ||
         graphicsGeneration != globalContainer->gfx->getGLContextGeneration())
     {
-        releaseResources();
+        releaseMaterials();
         graphicsContext = SDL_GL_GetCurrentContext();
         graphicsGeneration = globalContainer->gfx->getGLContextGeneration();
         failed = false;
@@ -589,7 +589,7 @@ bool TorusView::draw(Game &game, int team, unsigned options, int &vx, int &vy, i
         if (!game.gui) mapView.render = std::move(standaloneRender);
         Game::ViewState &captureView = game.gui ? game.gui->view : mapView;
         const Scene *previousScene = captureView.scene;
-        const unsigned captureOptions = options | Game::DRAW_NO_CLOUD_LAYER;
+        const unsigned captureOptions = options | Game::DRAW_NO_CLOUD_LAYER | Game::DRAW_TILED_CAPTURE;
         game.prepareMapCapture(team, captureView, captureOptions, game.gui && game.gui->gamePaused);
         captureView.scene = previousScene ? previousScene : &captureView.render.ownScene;
         if (game.gui) game.gui->toolManager.setDrawnScene(captureView.scene);

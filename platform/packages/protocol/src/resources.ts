@@ -1,3 +1,4 @@
+import { ResourceExperimentDefinitions, BuildingCatalog } from './matchSetup.ts';
 // REST resource shapes for /api/v1. Accounts and auth are complete for M3;
 // rooms, matches, maps and leaderboards define the shapes later milestones
 // fill in. Server-emitted resources use Open objects (unknown fields allowed);
@@ -425,6 +426,9 @@ export const RoomState = Open(
     status: RoomStatus,
     hostAccountId: Uuid,
     simVersion: SimVersion,
+    buildingCatalog: Type.Optional(BuildingCatalog),
+    resourceExperiments: Type.Optional(ResourceExperimentDefinitions),
+    requiredResourceExperiments: Type.Optional(Type.Array(Type.String(), { maxItems: 64 })),
     map: Type.Optional(RoomMapSelection),
     mapStatus: Type.Optional(
       Type.Union([Type.Literal('ready'), Type.Literal('pending'), Type.Literal('failed')], {

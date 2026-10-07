@@ -2,11 +2,26 @@
 #include "EngineFixtures.h"
 #include "ai/cortex/AICortex.h"
 #include "ai/cortex/CortexObservation.h"
+#include "ai/cortex/CortexBuildings.h"
+#include "ai/model/BuildingProjection.h"
 #include "Order.h"
+#include "CortexPlacement.h"
+#include "CortexFoodSources.h"
+#include <algorithm>
+#include "CortexPolicy.h"
+#include <nlohmann/json.hpp>
 #include "Player.h"
 
 namespace
 {
+void refreshStats(Team& team)
+{
+    const auto* previous=team.stats.getLatestStat();
+    // A completed sample follows the smoothing window; one step only updates
+    // the intermediate counters. Wait for the real snapshot to rotate.
+    for(int sample=0;sample<128 && team.stats.getLatestStat()==previous;++sample)team.stats.step(&team);
+    REQUIRE(team.stats.getLatestStat()!=previous);
+}
 void drain(AICortex& ai,Game& game)
 {
     while (!ai.orderQueue.empty())
@@ -18,7 +33,324 @@ void drain(AICortex& ai,Game& game)
 }
 TEST_SUITE("CortexActionCoverage")
 {
-    TEST_CASE("live upgrade eligibility and worker columns drive the actual construction order")
+    TEST_CASE("wheat discovery keeps first path depths and local fog boundaries")
+    {
+        glob2test::HeadlessGlobals globals;
+        glob2test::HeadlessGame world({.terrain=WATER,.clearImmobile=true,.header=true});
+        auto& map=world.game.map;
+        std::fill(map.fogOfWar,map.fogOfWar+32*32,world.team->me);
+        for(int x=2;x<=14;++x)map.setTerrain(x,8,GRASS);
+        // A longer land-only detour reaches the far side of the third food
+        // cell later; it must not replace the first path's greater food depth.
+        for(int x=8;x<=11;++x)map.setTerrain(x,7,GRASS);
+        for(int x:{6,7,10,12}) {
+            map.setResourceByIndex(x,8,WHEAT,1);
+            REQUIRE(map.isMaterialTakeableSlot(x,8, WHEAT));
+        }
+        auto index=[&](int x,int y){return static_cast<int>(map.coordToIndex(x,y));};
+        const int seed=index(2,8); // Its land exit ring ends at x=5.
+        auto scan=[&](const std::vector<int>& seeds,int right,bool ignoreFog) {
+            return Cortex::scanFoodSourcesForbidden(map,world.team->me,0,seeds,
+                0,0,right,31,0,ignoreFog,true);
+        };
+        const auto first=scan({seed},31,false);
+        CHECK(first.fieldTileCount==4);
+        CHECK(first.componentCount==3);
+        CHECK(first.depthOf[index(6,8)]==1);
+        CHECK(first.depthOf[index(7,8)]==2);
+        CHECK(first.depthOf[index(10,8)]==3);
+        CHECK(first.depthOf[index(12,8)]==4);
+        CHECK(first.classOf[index(7,8)]==Cortex::WC_CHECKER_OPEN);
+        for(int x:{6,10,12})CHECK(first.classOf[index(x,8)]==Cortex::WC_FORBIDDEN);
+        CHECK((first.desired==std::vector<int>{index(6,8),index(10,8),index(12,8)}));
+        CHECK(first.add==first.desired);
+        CHECK(first.del.empty());
+        const auto repeated=scan({seed,seed,seed},31,false);
+        CHECK(repeated.depthOf==first.depthOf);
+        CHECK(repeated.classOf==first.classOf);
+        CHECK(repeated.desired==first.desired);
+        CHECK(repeated.add==first.add);CHECK(repeated.del==first.del);
+        CHECK(repeated.fieldTileCount==first.fieldTileCount);
+        CHECK(repeated.componentCount==first.componentCount);
+        CHECK(repeated.forbiddenCount==first.forbiddenCount);
+        CHECK(repeated.addCount==first.addCount);CHECK(repeated.delCount==first.delCount);
+        const auto clipped=scan({seed},9,false);
+        CHECK(clipped.fieldTileCount==2);
+        CHECK(clipped.componentCount==1);
+        CHECK(clipped.depthOf[index(10,8)]==-1);
+        CHECK((clipped.desired==std::vector<int>{index(6,8)}));
+        map.fogOfWar[index(12,8)]=0;
+        const auto fogged=scan({seed},31,false);
+        CHECK(fogged.fieldTileCount==3);
+        CHECK(fogged.depthOf[index(12,8)]==-1);
+        CHECK((fogged.desired==std::vector<int>{index(6,8),index(10,8)}));
+        const auto revealed=scan({seed},31,true);
+        CHECK(revealed.depthOf==first.depthOf);
+        CHECK(revealed.desired==first.desired);
+        // This scan's territory does not wrap, even when it touches the seam.
+        for(int x=0;x<=3;++x)map.setTerrain(x,20,GRASS);
+        map.setTerrain(31,20,GRASS);
+        map.setResourceByIndex(31,20,WHEAT,1);
+        REQUIRE(map.isMaterialTakeableSlot(31,20, WHEAT));
+        const auto edge=scan({index(0,20)},31,true);
+        CHECK(edge.depthOf[index(31,20)]==-1);
+        CHECK(edge.desired.empty());
+    }
+
+    TEST_CASE("placement reuses observation qualification without persisting stale worker levels")
+    {
+        using namespace Cortex;
+        glob2test::HeadlessGlobals globals;
+        glob2test::HeadlessGame world({.discovered=true,.clearImmobile=true,.loadDefaultRace=true,.header=true});
+        auto snapshot=nlohmann::json::parse(world.game.buildingsTypes.snapshotJson());
+        const int hospital=world.game.buildingsTypes.getPlaceableTypeNum("hospital");
+        REQUIRE(hospital>=0);
+        snapshot["variants"][hospital]["semantics"]["requiredWorkerLevel"]=1;
+        world.game.buildingsTypes.loadSnapshotJson(snapshot.dump());
+        world.game.configureBuildingCatalog();
+        REQUIRE(world.addBuilding("swarm",4,4));
+        auto* worker=world.addUnit(WORKER,12,12);
+        REQUIRE(worker);
+        refreshStats(*world.team);
+        auto checkCandidate=[](const BuildCandidate& actual,const BuildCandidate& expected) {
+            CHECK(actual.valid==expected.valid);
+            CHECK(actual.x==expected.x); CHECK(actual.y==expected.y);
+            CHECK(actual.score==expected.score); CHECK(actual.foodSourceDistance==expected.foodSourceDistance);
+        };
+        for(int qualification=0;qualification<=1;++qualification) {
+            CAPTURE(qualification);
+            worker->constructionLevel=qualification;
+            REQUIRE(world.team->maxBuildLevel()==qualification);
+            BuildCandidate ordinary[2][CORTEX_BUILD_CANDIDATES];
+            BuildCandidate forward[2];
+            int ordinaryCount[2],forwardCount[2];
+            std::string randomEnd[2];
+            for(int supplied=0;supplied<2;++supplied) {
+                MersenneTwister random(713);
+                SyncRandScope scope(random);
+                const int current=supplied ? world.team->maxBuildLevel() : -1;
+                ordinaryCount[supplied]=placeCandidates(&world.game,world.team,CORTEX_BUILD_HEAL,0,ordinary[supplied],-1,current);
+                forwardCount[supplied]=placeForwardCandidate(&world.game,world.team,CORTEX_BUILD_HEAL,16,16,0,31,forward[supplied],current);
+                randomEnd[supplied]=getSyncRandState();
+            }
+            CHECK(ordinaryCount[0]==ordinaryCount[1]);
+            CHECK(forwardCount[0]==forwardCount[1]);
+            CHECK(randomEnd[0]==randomEnd[1]);
+            for(int slot=0;slot<CORTEX_BUILD_CANDIDATES;++slot)
+                checkCandidate(ordinary[0][slot],ordinary[1][slot]);
+            checkCandidate(forward[0],forward[1]);
+            CHECK((ordinaryCount[0]>0)==(qualification==1));
+            CHECK((forwardCount[0]>0)==(qualification==1));
+            MersenneTwister random(713);
+            SyncRandScope scope(random);
+            const auto observation=observe(world.game.players[0],0,NOGBID);
+            CHECK(observation.maxBuildLevel==qualification);
+            CHECK((observation.buildCandidates[CORTEX_BUILD_HEAL][0].valid!=0)==(qualification==1));
+        }
+    }
+
+    TEST_CASE("bounded model channels preserve stock identity and ignore custom family metadata")
+    {
+        glob2test::HeadlessGlobals globals;
+        glob2test::HeadlessGame world;
+        for(size_t i=0;i<world.game.buildingsTypes.size();++i) {
+            const auto& type=*world.game.buildingsTypes.get(i);
+            if(!type.runtimeAvailable)continue;
+            CAPTURE(type.key);
+            CHECK(ModelBuildingProjection::channel(world.game.buildingsTypes,type)==type.shortTypeNum);
+        }
+        const int id=world.game.buildingsTypes.getFinishedTypeNum("stonewall");
+        auto snapshot=nlohmann::json::parse(world.game.buildingsTypes.snapshotJson());
+        snapshot["variants"][id]["properties"]["shortTypeNum"]=0;
+        world.game.buildingsTypes.loadSnapshotJson(snapshot.dump());world.game.configureBuildingCatalog();
+        CHECK(ModelBuildingProjection::channel(world.game.buildingsTypes,*world.game.buildingsTypes.get(id))==ModelBuildingProjection::PassiveGround);
+        snapshot["variants"][id]["semantics"]["production"]["recipes"]={{"worker",{{"enabled",true},{"duration",20},{"cost",nlohmann::json::object()}}}};
+        world.game.buildingsTypes.loadSnapshotJson(snapshot.dump());world.game.configureBuildingCatalog();
+        CHECK(ModelBuildingProjection::channel(world.game.buildingsTypes,*world.game.buildingsTypes.get(id))==ModelBuildingProjection::Production);
+    }
+
+    TEST_CASE("stock consumers are not exchange providers and hybrid attractors survive retirement")
+    {
+        glob2test::HeadlessGlobals globals;
+        for(int purpose=0;purpose<3;++purpose) {
+            CAPTURE(purpose);
+            glob2test::HeadlessGame world({.discovered=true,.clearImmobile=true,.loadDefaultRace=true,.header=true});
+            auto snapshot=nlohmann::json::parse(world.game.buildingsTypes.snapshotJson());
+            const int id=world.game.buildingsTypes.getFinishedTypeNum("inn");
+            auto& spec=snapshot["variants"][id];
+            spec["properties"]["zonable"]={0,0,1};spec["properties"]["maxUnitStayRange"]=8;
+            spec["semantics"]["feeding"]["enabled"]=purpose==0;
+            spec["semantics"]["market"]["fetchesStock"]=true;
+            spec["semantics"]["market"]["fetchesStockExperiment"]="";
+            spec["semantics"]["market"]["suppliesDirectStock"]=purpose==1;
+            spec["semantics"]["market"]["suppliesDirectStockMaterials"]={"food"};
+            world.game.buildingsTypes.loadSnapshotJson(snapshot.dump());world.game.configureBuildingCatalog();
+            auto* hybrid=world.addBuilding("inn",4,4);
+            CHECK(Cortex::servesRole(world.game,*hybrid->type,Cortex::CORTEX_BUILD_EXCHANGE)==(purpose==1));
+            AICortex ai(world.game.players[0]);
+            Uint16 gid=hybrid->gid;
+            REQUIRE(ai.findFlagByGid(gid)==hybrid);
+            hybrid->maxUnitWorking=3;
+            ai.clearOneFlag(gid);
+            CHECK(gid==NOGBID);
+            if(purpose<2) CHECK(ai.orderQueue.empty());
+            else {
+                REQUIRE(ai.orderQueue.size()==1);
+                CHECK(std::dynamic_pointer_cast<OrderModifyBuilding>(ai.orderQueue.front())!=nullptr);
+                drain(ai,world.game);CHECK(hybrid->maxUnitWorking==0);
+            }
+            CHECK(hybrid->buildingState==Building::ALIVE);
+        }
+    }
+
+    TEST_CASE("mixed renamed provider has multiple policy roles but one model and worker identity")
+    {
+        glob2test::HeadlessGlobals globals;
+        glob2test::HeadlessGame world(glob2test::GameOptions{.discovered=true,.clearImmobile=true,.loadDefaultRace=true,.header=true});
+        const int id=world.game.buildingsTypes.getFinishedTypeNum("inn");
+        auto snapshot=nlohmann::json::parse(world.game.buildingsTypes.snapshotJson());
+        auto& spec=snapshot["variants"][id];
+        spec["properties"]["type"]="unfamiliar-service";spec["properties"]["shortTypeNum"]=IntBuildingType::STONE_WALL;
+        spec["semantics"]["production"]["recipes"]={{"explorer",{{"enabled",true},{"duration",20},{"cost",nlohmann::json::object()}}}};
+        spec["semantics"]["production"]["fallbackUnit"]=EXPLORER;
+        spec["semantics"]["production"]["initialRatios"]={0,0,0};
+        spec["semantics"]["feeding"]["cost"]=nlohmann::json::object();
+        world.game.buildingsTypes.loadSnapshotJson(snapshot.dump());world.game.configureBuildingCatalog();
+        auto* building=world.game.addBuilding(4,4,id,0,1,1);REQUIRE(building);
+        auto obs = Cortex::makeEmptyObservation(); obs.valid = 1;
+        bool found = false; Sint32 x=0,y=0,r=0;
+        Cortex::observeBuildings(obs, world.team, &world.game, 0, NOGBID, found, x,y,r);
+        CHECK(Cortex::cortexFinishedBuildings(obs, Cortex::CORTEX_BUILD_SWARM) == 1);
+        CHECK(Cortex::cortexFinishedBuildings(obs, Cortex::CORTEX_BUILD_FOOD) == 1);
+        CHECK(obs.swarmCount == 1); CHECK(obs.innCount == 0);
+        int modelCount=0;
+        for (const auto& role : obs.modelBuildingCountPerLevel) for (int count : role) modelCount += count;
+        CHECK(modelCount == 1);
+        CHECK(obs.feedCapacity > 0);
+        AICortex ai(world.game.players[0]);
+        ai.translateAction(Cortex::makeSetProductionAction(2,3,4), obs);
+        REQUIRE(ai.orderQueue.size() == 1);
+        const auto order = std::dynamic_pointer_cast<OrderModifySwarm>(ai.orderQueue.front());
+        REQUIRE(order);
+        // Recipe masking survives the real executor; no unavailable unit is requested.
+        drain(ai, world.game);
+        CHECK(building->ratio[WORKER] == 0);
+        CHECK(building->ratio[EXPLORER] == 3);
+        CHECK(building->ratio[WARRIOR] == 0);
+    }
+
+    TEST_CASE("actual observation and policy build split overlay producers for requested classes")
+    {
+        glob2test::HeadlessGlobals globals;
+        glob2test::HeadlessGame world({.discovered=true,.clearImmobile=true,.loadDefaultRace=true,.header=true});
+        auto snapshot=nlohmann::json::parse(world.game.buildingsTypes.snapshotJson());
+        auto prototype=snapshot["variants"][world.game.buildingsTypes.getFinishedTypeNum("warflag")];
+        for(auto& variant:snapshot["variants"]) {
+            variant["semantics"]["production"]["recipes"]=nlohmann::json::object();
+            variant["semantics"]["production"]["initialRatios"]={0,0,0};
+        }
+        const char* names[]={"worker","explorer","warrior"};
+        int ids[3];
+        for(int unit=0;unit<3;++unit) {
+            auto variant=prototype; ids[unit]=snapshot["variants"].size();
+            variant["id"]=ids[unit];variant["key"]=std::string("split.")+names[unit];
+            variant["properties"]["type"]=std::string("split-")+names[unit];
+            variant["properties"]["zonable"]={0,0,0};
+            variant["semantics"]["assignmentLimit"]=0;
+            variant["presentation"]["defaultAssigned"]=0;
+            variant["semantics"]["production"]["fallbackUnit"]=unit;
+            variant["semantics"]["production"]["initialRatios"]={0,0,0};
+            variant["semantics"]["production"]["recipes"]={{names[unit],{{"enabled",true},{"duration",150},{"cost",nlohmann::json::object()}}}};
+            snapshot["variants"].push_back(variant);
+        }
+        world.game.buildingsTypes.loadSnapshotJson(snapshot.dump());
+        world.game.gameHeader.setHungerDisabled(true);
+        world.game.gameHeader.setUnitUpgradesDisabled(true);
+        world.game.configureBuildingCatalog();
+        for(int i=0;i<10;++i) REQUIRE(world.addUnit(WORKER));
+        // No ground footprint can be built: valid producer placement must use
+        // the engine's overlay occupancy path rather than a fabricated slot.
+        for(int y=0;y<world.game.map.getH();++y)
+            for(int x=0;x<world.game.map.getW();++x)world.game.map.setResourceByIndex(x,y,STONE,1);
+        AICortex ai(world.game.players[0]);
+        Cortex::CortexPolicy policy;
+        for(int unit=0;unit<3;++unit) {
+            bool created=false;
+            for(int cycle=0;cycle<4 && !created;++cycle) {
+                world.game.stepCounter+=300;
+                refreshStats(*world.team);
+                const auto obs=Cortex::observe(world.game.players[0],0,NOGBID);
+                Sint32 requested[3];Cortex::CortexPolicy::productionTargets(obs,requested);
+                CAPTURE(unit);CAPTURE(cycle);CAPTURE(obs.totalUnit);CAPTURE(obs.workers);CAPTURE(obs.hungerDisabled);CAPTURE(obs.productionMask);CAPTURE(obs.productionPlannedMask);CAPTURE(requested[0]);CAPTURE(requested[1]);CAPTURE(requested[2]);
+                REQUIRE(obs.productionPlacementType==ids[unit]);
+                REQUIRE(obs.buildCandidates[Cortex::CORTEX_BUILD_SWARM][0].valid);
+                const auto action=policy.decide(obs);
+                ai.translateAction(action,obs);
+                if(action.kind==Cortex::ACTION_BUILD) {
+                    REQUIRE(action.buildingType==Cortex::CORTEX_BUILD_SWARM);
+                    REQUIRE(!ai.orderQueue.empty());
+                    auto order=std::dynamic_pointer_cast<OrderCreate>(ai.orderQueue.front());
+                    REQUIRE(order);CHECK(order->typeNum==ids[unit]);created=true;
+                }
+                drain(ai,world.game);
+            }
+            REQUIRE(created);
+            bool found=false;
+            for(int i=0;i<Building::MAX_COUNT;++i)
+                if(auto* b=world.team->myBuildings[i];b && b->typeNum==ids[unit])found=true;
+            CHECK(found);
+        }
+    }
+
+    TEST_CASE("actual production observation preserves positive weights and settles output transitions")
+    {
+        glob2test::HeadlessGlobals globals;
+        glob2test::HeadlessGame world({.discovered=true,.clearImmobile=true,.loadDefaultRace=true,.header=true});
+        world.game.gameHeader.setHungerDisabled(true);
+        world.game.gameHeader.setUnitUpgradesDisabled(true);
+        auto* producer=world.addBuilding("swarm",4,4);
+        for(int i=0;i<10;++i) REQUIRE(world.addUnit(WORKER));
+        refreshStats(*world.team);
+        auto obs=Cortex::observe(world.game.players[0],0,NOGBID);
+        Sint32 target[3];Cortex::CortexPolicy::productionTargets(obs,target);
+        for(int unit=0;unit<3;++unit)producer->ratio[unit]=target[unit]>0?target[unit]+7:0;
+        obs=Cortex::observe(world.game.players[0],0,NOGBID);
+        CHECK_FALSE(obs.productionNeedsRetune);
+        Cortex::CortexPolicy policy;
+        const auto initial=policy.decide(obs);
+        CHECK(initial.kind!=Cortex::ACTION_SET_PRODUCTION);
+        AICortex ai(world.game.players[0]);ai.translateAction(initial,obs);drain(ai,world.game);
+        for(int unit=0;unit<3;++unit)producer->ratio[unit]=0;
+        obs=Cortex::observe(world.game.players[0],0,NOGBID);
+        REQUIRE(obs.productionNeedsRetune);
+        const auto action=policy.decide(obs);
+        REQUIRE(action.kind==Cortex::ACTION_SET_PRODUCTION);
+        ai.translateAction(action,obs);drain(ai,world.game);
+        obs=Cortex::observe(world.game.players[0],0,NOGBID);
+        CHECK_FALSE(obs.productionNeedsRetune);
+        CHECK(policy.decide(obs).kind!=Cortex::ACTION_SET_PRODUCTION);
+    }
+
+    TEST_CASE("provider ranking uses construction materials independently of storage")
+    {
+        glob2test::HeadlessGlobals globals;
+        glob2test::HeadlessGame world({.loadDefaultRace=true,.header=true});
+        auto snapshot=nlohmann::json::parse(world.game.buildingsTypes.snapshotJson());
+        const int first=world.game.buildingsTypes.getPlaceableTypeNum("inn");
+        const int second=world.game.buildingsTypes.getPlaceableTypeNum("hospital");
+        const int finished=world.game.buildingsTypes.get(second)->nextLevel;
+        snapshot["variants"][first]["properties"]["maxMaterial"]=std::vector<int>(MaterialSlotCount,0);
+        snapshot["variants"][first]["semantics"]["constructionCost"]={{"wood",50}};
+        snapshot["variants"][finished]["semantics"]["feeding"]["enabled"]=true;
+        snapshot["variants"][finished]["semantics"]["feeding"]["unitMask"]=7;
+        snapshot["variants"][second]["properties"]["maxMaterial"]=std::vector<int>(MaterialSlotCount,0);
+        snapshot["variants"][second]["properties"]["maxMaterial"][WHEAT]=100;
+        snapshot["variants"][second]["semantics"]["constructionCost"]={{"wood",1}};
+        world.game.buildingsTypes.loadSnapshotJson(snapshot.dump());world.game.configureBuildingCatalog();
+        CHECK(Cortex::selectBuilding(world.game,*world.team,Cortex::CORTEX_BUILD_FOOD).placementType==world.game.buildingsTypes.getPlaceableTypeNum("hospital"));
+    }
+
+    TEST_CASE("live capability upgrade eligibility and descriptor capacities drive construction")
     {
         glob2test::HeadlessGlobals globals;
         glob2test::HeadlessGame world(glob2test::GameOptions{.clearImmobile=true,.loadDefaultRace=true,.header=true});
@@ -37,40 +369,20 @@ TEST_SUITE("CortexActionCoverage")
         bool found=false; Sint32 x=0,y=0,r=0;
         Cortex::observeBuildings(obs,world.team,&world.game,2,NOGBID,found,x,y,r);
         CHECK(obs.upgradableCount[Cortex::CORTEX_BUILD_ATTACK]==2);
-        globals->settings.defaultUnitsAssigned[IntBuildingType::ATTACK_BUILDING][2]=7;
-        globals->settings.defaultUnitsAssigned[IntBuildingType::ATTACK_BUILDING][3]=9;
+        globals->settings.setBuildingAssignment(world.game.buildingsTypes.fingerprint(),
+            *world.game.buildingsTypes.get(world.game.buildingsTypes.getTypeNum("barracks",1,true)),7);
+        globals->settings.setBuildingAssignment(world.game.buildingsTypes.fingerprint(),
+            *world.game.buildingsTypes.get(world.game.buildingsTypes.getTypeNum("barracks",1,false)),9);
         ai.translateAction(Cortex::makeUpgradeAction(Cortex::CORTEX_BUILD_ATTACK),obs);
         REQUIRE(ai.orderQueue.size()==1);
         auto order=std::dynamic_pointer_cast<OrderConstruction>(ai.orderQueue.front());
         REQUIRE(order!=nullptr);
-        CHECK(order->gid==first->gid); CHECK(order->unitWorking==7); CHECK(order->unitWorkingFuture==9);
+        CHECK(order->gid==first->gid); CHECK(order->unitWorking==4); CHECK(order->unitWorkingFuture==0);
         ai.translateAction(Cortex::makeUpgradeAction(Cortex::CORTEX_BUILD_ATTACK),obs);
         CHECK(ai.orderQueue.size()==1);
         drain(ai,world.game);
         CHECK(first->constructionResultState==Building::UPGRADE);
-        CHECK(first->maxUnitWorking==7);
-    }
-
-    TEST_CASE("market levels do not introduce an AI upgrade strategy")
-    {
-        glob2test::HeadlessGlobals globals;
-        for (bool enabled : {false,true})
-        {
-            glob2test::GameOptions options{.clearImmobile=true,.loadDefaultRace=true,.header=true};
-            options.experiments.set(ExperimentId::MarketsV2,enabled);
-            glob2test::HeadlessGame world(options);
-            world.addUnit(WORKER,20,20,0,2);
-            auto* market=world.addBuilding("market",4,4);
-            REQUIRE(market);
-            AICortex ai(world.game.players[0]);
-            CHECK(ai.findUpgradeTarget(IntBuildingType::MARKET_BUILDING)==nullptr);
-            auto obs=Cortex::makeEmptyObservation(); obs.valid=1;
-            bool found=false; Sint32 x=0,y=0,r=0;
-            Cortex::observeBuildings(obs,world.team,&world.game,2,NOGBID,found,x,y,r);
-            CHECK(obs.upgradableCount[IntBuildingType::MARKET_BUILDING]==0);
-            ai.translateAction(Cortex::makeUpgradeAction(IntBuildingType::MARKET_BUILDING),obs);
-            CHECK(ai.orderQueue.empty());
-        }
+        CHECK(first->maxUnitWorking==4);
     }
 
     TEST_CASE("build actions reject invalid slots and cooldown suppresses duplicate orders")

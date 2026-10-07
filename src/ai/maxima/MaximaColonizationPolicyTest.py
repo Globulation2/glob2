@@ -37,7 +37,8 @@ class MaximaColonizationPolicyTest(unittest.TestCase):
         policy = self.maxima[start:end]
         for text in ("snapshot.free_workers-snapshot.worker_jobs_open",
                      "construction_swarm_workers", "operating_colonies",
-                     "unitsWorking", "resourceForOneUnit"):
+                     "semantics.production.recipes", "recipe.enabled",
+                     "building->materials[r]>=recipe.cost[r]"):
             self.assertIn(text, policy)
         for text in ("food_headroom", "recovery_active", "food_emergency",
                      "cooldown_ticks", "population_min"):

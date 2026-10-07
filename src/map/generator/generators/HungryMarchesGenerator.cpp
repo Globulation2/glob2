@@ -553,7 +553,7 @@ bool generate(Game &game, GenerationContext &c)
 			potential += L.fertility.values()[i];
 			if (!seeded[L.component[i]] && game.map.isResourceAllowed(i % t.w, i / t.w, WHEAT))
 			{
-				game.map.setResource(i % t.w, i / t.w, WHEAT, 1);
+				game.map.setResourceByIndex(i % t.w, i / t.w, WHEAT, 1);
 				seeded[L.component[i]] = 1;
 				++planted;
 			}
@@ -564,7 +564,7 @@ bool generate(Game &game, GenerationContext &c)
 			if (planted < wanted && !game.map.isResource(i % t.w, i / t.w) &&
 				game.map.isResourceAllowed(i % t.w, i / t.w, WHEAT))
 			{
-				game.map.setResource(i % t.w, i / t.w, WHEAT, 1);
+				game.map.setResourceByIndex(i % t.w, i / t.w, WHEAT, 1);
 				++planted;
 			}
 		c.telemetry.measure("hungry-marches.field.wheat", planted, p);
@@ -596,7 +596,7 @@ bool generate(Game &game, GenerationContext &c)
 			!game.map.isResource(i % t.w, i / t.w) &&
 			game.map.isResourceAllowed(i % t.w, i / t.w, WOOD))
 		{
-			game.map.setResource(i % t.w, i / t.w, WOOD, 1);
+			game.map.setResourceByIndex(i % t.w, i / t.w, WOOD, 1);
 			if (renewable)
 			{
 				++timber;
@@ -654,7 +654,7 @@ std::string validateWorld(const Game &game, const GenerationContext &c)
 	if (privateWheat != HungryMarchesOptions(c.request).ration * c.request.nbTeams)
 		return "The finite opening wheat no longer matches the requested ration.";
 	if (const auto access = startingAccessFailure(
-			game.map, c.request.nbTeams, {{WHEAT, 24, "opening wheat"}, {WOOD, 32, "wood"}}, 32);
+			game.map, c.request.nbTeams, {{MaterialId::Food, 24, "opening food"}, {MaterialId::Wood, 32, "wood"}}, 32);
 		!access.empty())
 		return access;
 	if (const auto error = foodAccess(game, L, c.request.nbTeams, false); !error.empty())

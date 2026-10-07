@@ -72,6 +72,28 @@ TEST_SUITE("SkinModelRender")
 			visibleFrames += coverage > 0;
 		}
 		CHECK(visibleFrames >= 200);
+		// Fur displacement must follow the deformed camera-space normal on the
+		// GPU, including when alternating with CPU-evaluated geometry.
+		for (unsigned id : {3u, 18u})
+		{
+			material.drawFilledRect(0, 0, 512, 512, GAGCore::Color(id, id, id));
+			for (unsigned frame : {0u, 37u, 91u, 193u})
+			{
+				REQUIRE(gfx->readSkinMesh({&rig, frame, &paint, &material, 0}, gpu));
+				REQUIRE(gfx->skinResources.rigProgram != 0);
+				REQUIRE(gfx->readSkinMesh({&baked, frame, &paint, &material, 0}, cpu));
+				unsigned alphaDifferences = 0, totalDifference = 0;
+				for (unsigned i = 0; i < gpu.size(); ++i)
+				{
+					totalDifference += unsigned(std::abs(int(gpu[i]) - int(cpu[i])));
+					if (i % 4 == 3) alphaDifferences += gpu[i] != cpu[i];
+				}
+				INFO("fur material " << id << " frame " << frame);
+				CHECK(alphaDifferences <= 8);
+				CHECK(totalDifference <= 4096);
+			}
+		}
+		material.drawFilledRect(0, 0, 512, 512, GAGCore::Color(1, 1, 1));
 		// Mixing baked draws and team paints must retain the rig palette while
 		// preserving the caller's texture units and compatibility client arrays.
 		GAGCore::DrawableSurface secondPaint(512, 512);

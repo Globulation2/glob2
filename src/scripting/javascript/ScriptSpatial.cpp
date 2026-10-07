@@ -6,7 +6,7 @@
 #include "Game.h"
 #include "BuildingType.h"
 #include "GlobalContainer.h"
-#include "IntBuildingType.h"
+#include "ScriptBuildingCapabilities.h"
 #include <algorithm>
 #include <array>
 #include <limits>
@@ -17,11 +17,12 @@ namespace Script
 namespace
 {
 bool passable(const Observations::Cell &cell, const std::string &mode,
-			  const TerrainRegistry &registry)
+			  const TerrainRegistry &registry, const ResourceRegistry& resources)
 {
 	const auto &terrain = registry.properties(cell.terrainType);
-	if (mode == "fly") return terrain.flyable;
-	return !cell.building && !cell.forbidden && cell.resource == 255 &&
+	const auto* deposit=cell.resource==NO_RES_TYPE ? nullptr : &resources.properties(static_cast<ResourceId>(cell.resource));
+	if (mode == "fly") return terrain.flyable && (!deposit || !deposit->blocksAir);
+	return !cell.building && !cell.forbidden && (!deposit || !deposit->blocksGround) &&
 		(terrain.walkable || (mode == "swim" && terrain.swimmable));
 }
 int number(const Value &v, const char *key, int fallback, int lo = -32768, int hi = 32767)
@@ -41,16 +42,27 @@ bool boolean(const Value &v, const char *key, bool fallback)
 		throw std::runtime_error(std::string(key) + " must be boolean");
 	return value.number != 0;
 }
-int resource(const Value &v)
+int resource(const Value &v, const ResourceRegistry& registry)
 {
 	if (v.kind == Value::Number)
-		return Value::object().set("type", v).integer("type", 0, 7);
+		return Value::object().set("type", v).integer("type", 0, int(registry.size())-1);
+	if (v.kind==Value::String) if(auto id=registry.find(v.text)) return resourceIndex(*id);
+	// Legacy script aliases.
 	const char *names[] = {"wood", "wheat",  "papyrus", "stone",
 						   "alga", "cherry", "orange",  "prune"};
+	const char* keys[] = {"trees", "wheat", "papyrus", "rocks", "algae", "cherry-tree", "orange-tree", "prune-tree"};
 	for (int i = 0; i < 8; ++i)
 		if (v.kind == Value::String && v.text == names[i])
-			return i;
+			if (const auto id = registry.find(keys[i])) return resourceIndex(*id);
 	throw std::runtime_error("Unknown resource name");
+}
+MaterialId requestedMaterial(const Value& value)
+{
+	if (value.kind == Value::String)
+		if (const auto material = parseMaterialKey(value.text)) return *material;
+	if (value.kind == Value::Number)
+		return static_cast<MaterialId>(Value::object().set("material", value).integer("material", 0, MaterialCount - 1));
+	throw std::runtime_error("Unknown material name");
 }
 int unitType(const Value &v)
 {
@@ -61,18 +73,6 @@ int unitType(const Value &v)
 		if (v.kind == Value::String && v.text == names[i])
 			return i;
 	throw std::runtime_error("Unknown unit type");
-}
-int buildingFamily(const Value &v)
-{
-	if (v.kind == Value::Number)
-		return Value::object().set("type", v).integer("type", 0, 12);
-	if (v.kind == Value::String)
-	{
-		auto found = IntBuildingType::conversionMap.find(v.text);
-		if (found != IntBuildingType::conversionMap.end())
-			return found->second;
-	}
-	throw std::runtime_error("Unknown building family");
 }
 void charge(const QueryBudget &b, std::size_t work, std::size_t bytes = 0)
 {
@@ -139,12 +139,27 @@ std::vector<int> Spatial::sources(const Value &selector, const QueryBudget &budg
 	std::vector<int> out(cells.size());
 	if (selector.get("resource").kind != Value::Null)
 	{
-		int type = resource(selector.get("resource"));
+		int type = resource(selector.get("resource"), game.map.resourceRegistry());
 		bool harvestable = boolean(selector, "harvestable", false);
 		for (std::size_t i = 0; i < cells.size(); ++i)
 			if (cells[i].known && cells[i].resource == type &&
-				(!harvestable || (!cells[i].forbidden && cells[i].amount > 0)))
+				(!harvestable || (!cells[i].forbidden && cells[i].amount > 0 &&
+				 (!game.map.resourcePropertiesByIndex(type).visibleToHarvest || cells[i].visible))))
 				out[i] = text(selector, "weight", "count") == "amount" ? cells[i].amount : 1;
+	}
+	if (selector.get("material").kind != Value::Null)
+	{
+		const auto material = requestedMaterial(selector.get("material"));
+		const bool harvestable = boolean(selector, "harvestable", false);
+		const bool amountWeight = text(selector, "weight", "count") == "amount";
+		for (std::size_t i = 0; i < cells.size(); ++i)
+		{
+			const auto& cell = cells[i];
+			if (!cell.known || cell.resource == NO_RES_TYPE || (harvestable &&
+				(cell.forbidden || (game.map.resourcePropertiesByIndex(cell.resource).visibleToHarvest && !cell.visible)))) continue;
+			const auto amount = observations.materialStock(i % width, i / width, material);
+			if (amount) out[i] = amountWeight ? amount : 1;
+		}
 	}
 	if (selector.get("points").kind != Value::Null)
 	{
@@ -160,11 +175,13 @@ std::vector<int> Spatial::sources(const Value &selector, const QueryBudget &budg
 			const auto &filter = selector.get(kind);
 			const bool units = std::string(kind) == "units";
 			const int ownerFilter = number(filter, "team", -1, 0, Team::MAX_COUNT - 1);
-			const int typeFilter =
-				filter.get("type").kind == Value::Null
-					? -1
-					: (units ? unitType(filter.get("type")) : buildingFamily(filter.get("type")));
-			const auto relation = text(filter, "relation", "any");
+			const std::string buildingName = !units && filter.get("type").kind == Value::String ? filter.get("type").text : "";
+            const int typeFilter = filter.get("type").kind == Value::Null || !buildingName.empty()
+                ? -1 : (units ? unitType(filter.get("type")) : filter.integer("type", 0, 12));
+			const auto capabilityName = text(filter, "capability", "");
+            const auto capability = capabilityName.empty() ? AIPlanning::BuildingIntent::Count : buildingCapability(capabilityName);
+            const int variantFilter = number(filter, "buildingType", -1, 0, int(game.buildingsTypes.size()) - 1);
+            const auto relation = text(filter, "relation", "any");
 			if (relation != "any" && relation != "own" && relation != "ally" && relation != "enemy")
 				throw std::runtime_error("Unknown team relation");
 			const bool weighted = units && text(selector, "weight", "count") == "strength";
@@ -183,7 +200,13 @@ std::vector<int> Spatial::sources(const Value &selector, const QueryBudget &budg
 					if ((relation == "own" && e.team != team) || (relation == "ally" && !allied) ||
 						(relation == "enemy" && (e.team == team || allied)))
 						return;
-					if (typeFilter >= 0 && e.type != typeFilter)
+					if (!units && !buildingName.empty()) {
+                        const auto* descriptor = game.buildingsTypes.get(e.buildingType);
+                        if (descriptor->type != buildingName && descriptor->key != buildingName) return;
+                    }
+                    if (!units && variantFilter >= 0 && e.buildingType != variantFilter) return;
+                    if (!units && capability != AIPlanning::BuildingIntent::Count && !buildingProvides(game, e.buildingType, capability)) return;
+                    if (typeFilter >= 0 && e.type != typeFilter)
 						return;
 					int weight = 1;
 					if (weighted)
@@ -214,7 +237,7 @@ std::shared_ptr<Spatial::Field> Spatial::distanceField(const Value &spec, const 
 		seeds[i] = source[i] > 0;
 		const auto &c = cells[i];
 		passable[i] = metric != "path" ||
-					  (c.known && ::Script::passable(c, mode, game.map.terrainRegistry()));
+					  (c.known && ::Script::passable(c, mode, game.map.terrainRegistry(), game.map.resourceRegistry()));
 		if(metric=="path")
         {
 			const auto &registry = game.map.terrainRegistry();
@@ -398,7 +421,7 @@ Value Spatial::query(const std::string &name, const std::vector<Value> &args,
 		const auto mode = text(a, "movement", "walk");
 		if (mode != "walk" && mode != "swim" && mode != "fly")
 			throw std::runtime_error("Unknown movement mode");
-		return c.known ? Value(passable(c, mode, game.map.terrainRegistry())) : Value();
+		return c.known ? Value(passable(c, mode, game.map.terrainRegistry(), game.map.resourceRegistry())) : Value();
 	}
 	if (name == "summary")
 	{
@@ -406,9 +429,13 @@ Value Spatial::query(const std::string &name, const std::vector<Value> &args,
 		if (b.w > width || b.h > height)
 			throw std::runtime_error("Region exceeds map dimensions");
 		charge(budget, std::size_t(b.w) * b.h);
-		int known = 0, visible = 0, tiles = 0, amount = 0;
+		int known = 0, visible = 0, tiles = 0;
+		std::uint64_t amount = 0;
 		double fertility = 0;
-		int type = a.get("resource").kind == Value::Null ? -1 : resource(a.get("resource"));
+		int type = a.get("resource").kind == Value::Null ? -1 : resource(a.get("resource"), game.map.resourceRegistry());
+		std::optional<MaterialId> material;
+		if (a.get("material").kind != Value::Null) material = requestedMaterial(a.get("material"));
+		const bool harvestable = boolean(a, "harvestable", false);
 		for (int dy = 0; dy < b.h; ++dy)
 			for (int dx = 0; dx < b.w; ++dx)
 			{
@@ -418,18 +445,20 @@ Value Spatial::query(const std::string &name, const std::vector<Value> &args,
 				++known;
 				visible += c.visible;
 				fertility += c.fertility;
-				if ((type < 0 ? c.resource != 255 : c.resource == type) &&
-					(!boolean(a, "harvestable", false) || (!c.forbidden && c.amount > 0)))
+				const auto stock = material ? observations.materialStock(b.x + dx, b.y + dy, *material) : c.amount;
+				if ((type < 0 ? c.resource != NO_RES_TYPE : c.resource == type) && (!material || stock) &&
+					(!harvestable || (!c.forbidden && stock > 0 &&
+					 (!game.map.resourcePropertiesByIndex(c.resource).visibleToHarvest || c.visible))))
 				{
 					++tiles;
-					amount += c.amount;
+					amount += stock;
 				}
 			}
 		return Value::object()
 			.set("knownTiles", known)
 			.set("visibleTiles", visible)
 			.set("resourceTiles", tiles)
-			.set("amount", amount)
+			.set("amount", double(amount))
 			.set("fertility", known ? Value(fertility / known) : Value());
 	}
 	if (name == "hotspots")
@@ -484,7 +513,7 @@ Value Spatial::query(const std::string &name, const std::vector<Value> &args,
 		auto open = [&](int i)
 		{
 			const auto &c = cells[i];
-			return c.known && passable(c, mode, game.map.terrainRegistry());
+			return c.known && passable(c, mode, game.map.terrainRegistry(), game.map.resourceRegistry());
 		};
 		for (unsigned i = 0; i < cells.size(); ++i)
 			if (labels[i] < 0 && open(i))
@@ -530,23 +559,27 @@ Value Spatial::query(const std::string &name, const std::vector<Value> &args,
 }
 Value Spatial::placement(const Value &spec, const Value &staged, const QueryBudget &budget)
 {
-	const auto name = spec.string("building");
-	int type = globalContainer->buildingsTypes.getTypeNum(name, 0, true);
-	if (type < 0)
-		type = globalContainer->buildingsTypes.getTypeNum(name, 0, false);
-	if (type < 0)
-		throw std::runtime_error("Unknown building family");
-	const auto *bt = globalContainer->buildingsTypes.get(type);
+	int type = -1;
+    if (spec.get("buildingType").kind != Value::Null)
+        type = spec.integer("buildingType", 0, int(game.buildingsTypes.size()) - 1);
+    else {
+        const auto name = spec.string("building");
+        type = game.buildingsTypes.findByKey(name);
+        if (type < 0) type = game.buildingsTypes.getPlaceableTypeNum(name);
+    }
+    if (type < 0 || !game.isBuildingTypeAvailable(type) || !game.buildingsTypes.get(type)->semantics.placeable)
+        throw std::runtime_error("Unknown or unavailable placeable building variant");
+	const auto *bt = game.buildingsTypes.get(type);
 	int workers = number(spec, "workers", 2, 0, 20),
 		future = number(spec, "futureWorkers", workers, 0, 20);
 	int ox = 0, oy = 0, bw = bt->width, bh = bt->height;
-	if (boolean(spec, "reserveUpgrade", true) && !bt->isVirtual)
+	if (boolean(spec, "reserveUpgrade", true) && bt->semantics.occupiesGround)
 	{
 		const auto *next = bt;
 		int left = 0, top = 0, right = bw, bottom = bh;
-		for (int n = 0; n < 16 && next->nextLevel >= 0; ++n)
+		for (int n = 0; n < int(game.buildingsTypes.size()) && next->nextLevel >= 0; ++n)
 		{
-			next = globalContainer->buildingsTypes.get(next->nextLevel);
+			next = game.buildingsTypes.get(next->nextLevel);
 			int x = next->decLeft - bt->decLeft, y = next->decTop - bt->decTop;
 			left = std::min(left, x);
 			top = std::min(top, y);
@@ -647,9 +680,9 @@ Value Spatial::placement(const Value &spec, const Value &staged, const QueryBudg
 	{
 		if (command.get("type").text != "create")
 			return;
-		int t = command.integer("buildingType", 0, int(globalContainer->buildingsTypes.size()) - 1);
-		const auto *b = globalContainer->buildingsTypes.get(t);
-		if (b->isVirtual)
+		int t = command.integer("buildingType", 0, int(game.buildingsTypes.size()) - 1);
+		const auto *b = game.buildingsTypes.get(t);
+		if (!b->semantics.occupiesGround)
 			return;
 		int x = command.integer("x", 0, width - 1), y = command.integer("y", 0, height - 1),
 			rw = number(command, "reservedWidth", b->width, 1, 32),
@@ -672,9 +705,9 @@ Value Spatial::placement(const Value &spec, const Value &staged, const QueryBudg
 		{
 			if (b.get("virtual").number)
 				continue;
-			const auto *base = globalContainer->buildingsTypes.get(int(b.get("type").number));
+			const auto *base = game.buildingsTypes.get(int(b.get("type").number));
 			const auto *next = base;
-			for (int n = 0; n < 16; ++n)
+			for (int n = 0; n < int(game.buildingsTypes.size()); ++n)
 			{
 				int x = int(b.get("x").number) + next->decLeft - base->decLeft,
 					y = int(b.get("y").number) + next->decTop - base->decTop;
@@ -683,12 +716,12 @@ Value Spatial::placement(const Value &spec, const Value &staged, const QueryBudg
 						reserved[index(x + dx, y + dy)] = 1;
 				if (next->nextLevel < 0)
 					break;
-				next = globalContainer->buildingsTypes.get(next->nextLevel);
+				next = game.buildingsTypes.get(next->nextLevel);
 			}
 		}
 	}
 	std::shared_ptr<Field> access;
-	if (!bt->isVirtual && boolean(spec, "reachable", true))
+	if (bt->semantics.occupiesGround && boolean(spec, "reachable", true))
 	{
 		Value selector = Value::object().set(
 			"buildings", Value::object().set("relation", "own").set("virtual", false));
@@ -712,7 +745,7 @@ Value Spatial::placement(const Value &spec, const Value &staged, const QueryBudg
 		{
 			int x = (area.x + dx) & (width - 1), y = (area.y + dy) & (height - 1), i = index(x, y);
 			bool valid = true;
-			if (bt->isVirtual)
+			if (!bt->semantics.occupiesGround)
 				valid = cells[i].known;
 			else
 				for (int yy = -clearance; yy < bh + clearance && valid; ++yy)
@@ -724,7 +757,7 @@ Value Spatial::placement(const Value &spec, const Value &staged, const QueryBudg
 						if (!c.known || c.building || reserved[at] ||
 							(inside &&
 							 (!c.visible || !game.map.terrainProperties(c.terrainType).buildable ||
-							  c.resource != 255)))
+							  (c.resource != NO_RES_TYPE && game.map.resourcePropertiesByIndex(c.resource).blocksBuilding))))
 						{
 							valid = false;
 							break;
@@ -806,9 +839,9 @@ Value Spatial::placement(const Value &spec, const Value &staged, const QueryBudg
 						  .set("y", y)
 						  .set("workers", workers)
 						  .set("futureWorkers", future);
-		if (bt->isVirtual)
-			order.set("range", number(spec, "range", 8, 0, 255));
-		else
+		if (bt->zonable[WORKER] || bt->zonable[EXPLORER] || bt->zonable[WARRIOR])
+			order.set("range", number(spec, "range", std::min(8, int(bt->maxUnitStayRange)), 0, bt->maxUnitStayRange));
+		if (bt->semantics.occupiesGround)
 			order.set("reservedX", (x + ox) & (width - 1))
 				.set("reservedY", (y + oy) & (height - 1))
 				.set("reservedWidth", bw)

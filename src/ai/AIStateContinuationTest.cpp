@@ -38,19 +38,22 @@ struct World
             auto* inn=world.addBuilding("inn",10+offset,4+offset,0,team);
             for (auto* building : {swarm,inn})
             {
-                building->resources[WHEAT]=depleted ? 0 : building->type->maxResource[WHEAT];
+                building->materials[WHEAT]=depleted ? 0 : building->type->maxMaterial[WHEAT];
                 building->update();
+                // These fixtures materialize finished providers directly; real
+                // games register static capabilities when construction completes.
+                world.game.teams[team]->addToStaticAbilitiesLists(building);
             }
             for (int unit=0; unit<12; ++unit)
                 world.addUnit(unit<8 ? WORKER : WARRIOR,4+offset+unit,12+offset,team);
             if (!depleted)
                 for (int y=18+offset; y<24+offset; ++y)
-                    for (int x=4+offset; x<20+offset; ++x) world.game.map.setResource(x,y,WHEAT,1);
+                    for (int x=4+offset; x<20+offset; ++x) world.game.map.setResourceByIndex(x,y,WHEAT,1);
         }
         // A sustainable colony exercises construction and scheduling rather
         // than ending early after exhausting the fixture's starting resources.
         for (int team=0;team<2;++team) for (int y=16;y<24;++y) for (int x=22;x<28;++x)
-            world.game.map.setResource(x+team*32,y+team*32,WOOD,5);
+            world.game.map.setResourceByIndex(x+team*32,y+team*32,WOOD,5);
         world.game.map.setMapDiscovered();
         world.game.teams[0]->stats.step(world.game.teams[0]);
         world.game.teams[1]->stats.step(world.game.teams[1]);

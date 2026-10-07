@@ -309,7 +309,9 @@ their goal/blocker precedence differs from resource fields.
 buildings, immobile units and forbidden masks notify it through explicit map
 mutation methods. Public tile/resource views are const; reads and amount-only
 changes do not invalidate seeds. A deduplicated dirty queue and membership
-bitsets avoid rescanning unchanged cells. Load/reset, bulk terrain reconstruction
+bitsets avoid rescanning unchanged cells. Resource-goal membership excludes
+immobile-occupied cells and refreshes on resource or immobile changes, avoiding
+a live occupancy check for each natural goal. Load/reset, bulk terrain reconstruction
 and registry replacement discard derived seeds without changing pending jobs or
 their publication deadlines. Mutation and invalidation follow the existing
 simulation write/read phase barriers; concurrent preparation requests serialize

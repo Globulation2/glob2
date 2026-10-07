@@ -261,7 +261,16 @@ export class HeadlessEngineRunner implements EngineRunner {
     return {
       valid: true,
       mapHash,
-      map: { width: report.width, height: report.height, teamCount: report.teamCount },
+      map: {
+        width: report.width,
+        height: report.height,
+        teamCount: report.teamCount,
+        ...(report.buildingCatalog ? { buildingCatalog: report.buildingCatalog } : {}),
+        ...(report.resourceExperiments ? { resourceExperiments: report.resourceExperiments } : {}),
+        ...(report.requiredResourceExperiments
+          ? { requiredResourceExperiments: report.requiredResourceExperiments }
+          : {}),
+      },
       versionMinor: header.versionMinor,
       ...(title ? { title } : {}),
       ...(players.length > 0 ? { players } : {}),

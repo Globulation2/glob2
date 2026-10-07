@@ -3,7 +3,9 @@
 
 #include "shared_runtime/Runtime.h"
 #include "Building.h"
+#include "FileFormatVersions.h"
 
+#include <bit>
 #include <limits>
 #include <stdexcept>
 
@@ -11,23 +13,35 @@ using namespace AISharedRuntime;
 using namespace AISharedRuntime::Management;
 
 
-ResourceTracker::ResourceTracker(Runtime& runtime, int building_id, int length, int resource) : record(length, 0), position(0), timer(0), length(length), runtime(runtime), building_id(building_id), resource(resource)
+MaterialTracker::MaterialTracker(Runtime& runtime, int building_id, int length, int material) : record(length, 0), position(0), timer(0), length(length), runtime(runtime), building_id(building_id), material(material)
 {
 
 }
 
 
 
-void ResourceTracker::tick()
+void MaterialTracker::tick()
 {
-	if (record.empty() || position >= record.size() || resource < 0 || resource >= MAX_RESOURCES)
+	if (record.empty() || position >= record.size() || material < 0 || material > RecurringInputStock)
 		return;
 	timer = (timer == std::numeric_limits<int>::max()) ? 0 : timer + 1;
 	if((timer%AI_SHARED_RUNTIME_TRACKER_SAMPLE_INTERVAL_TICKS)==0)
 	{
 		Building* b = runtime.get_building_register().get_building(building_id);
 		if (!b) return;
-		record[position]=b->resources[resource];
+		if(material==RecurringInputStock) {
+   int amount=0;
+   const auto& semantics=b->type->semantics;
+   unsigned inputs=semantics.feeding.enabled ? semantics.feeding.costMask : 0;
+   for(const auto& recipe:semantics.production.recipes)
+    if(recipe.enabled) inputs|=recipe.costMask;
+   while(inputs) {
+    const unsigned input=std::countr_zero(inputs);
+    amount+=b->materials[input];
+    inputs&=inputs-1;
+   }
+   record[position]=amount;
+  } else record[position]=b->materials[material];
 		position++;
 		if(position>=record.size())
 			position=0;
@@ -35,7 +49,7 @@ void ResourceTracker::tick()
 }
 
 
-int ResourceTracker::get_total_level()
+int MaterialTracker::get_total_level()
 {
 	long long sum=0;
 	for(unsigned int n=0; n<record.size(); ++n)
@@ -49,7 +63,7 @@ int ResourceTracker::get_total_level()
 
 
 
-bool ResourceTracker::load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor)
+bool MaterialTracker::load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor)
 {
 	stream->readEnterSection("RessourceTracker");
 	stream->readEnterSection("record");
@@ -71,26 +85,26 @@ bool ResourceTracker::load(GAGCore::InputStream *stream, Player *player, Sint32 
 	const Uint32 rawTimer=stream->readUint32("timer");
 	const Uint32 rawBuildingId=stream->readUint32("building_id");
 	const Uint32 rawLength=stream->readUint32("length");
-	const Uint32 rawResource=stream->readUint32("ressource");
+	const Uint32 rawMaterial=stream->readUint32("ressource");
 	// These members are signed and participate in arithmetic or lookups. Reject
 	// out-of-domain wire values before narrowing instead of relying on an
 	// implementation-defined Uint32-to-int conversion.
 	if (rawTimer > static_cast<Uint32>(std::numeric_limits<int>::max()) ||
 		rawBuildingId > static_cast<Uint32>(std::numeric_limits<int>::max()) ||
 		rawLength > static_cast<Uint32>(std::numeric_limits<int>::max()) ||
-		rawResource >= MAX_RESOURCES || position >= record.size() || rawLength != record.size())
+		rawMaterial > (versionMinor>=FILE_FORMAT_VERSION_BUILDING_CATALOG ? RecurringInputStock : MaterialCount-1) || position >= record.size() || rawLength != record.size())
 		throw std::runtime_error("Invalid saved resource tracker");
 	timer=static_cast<int>(rawTimer);
 	building_id=static_cast<int>(rawBuildingId);
 	length=static_cast<int>(rawLength);
-	resource=static_cast<int>(rawResource);
+	material=static_cast<int>(rawMaterial);
 	stream->readLeaveSection();
 	return true;
 }
 
 
 
-void ResourceTracker::save(GAGCore::OutputStream *stream)
+void MaterialTracker::save(GAGCore::OutputStream *stream)
 {
 	stream->writeEnterSection("RessourceTracker");
 	stream->writeEnterSection("record");
@@ -106,88 +120,88 @@ void ResourceTracker::save(GAGCore::OutputStream *stream)
 	stream->writeUint32(timer, "timer");
 	stream->writeUint32(building_id, "building_id");
 	stream->writeUint32(length, "length");
-	stream->writeUint32(resource, "ressource");
+	stream->writeUint32(material, "ressource");
 	stream->writeLeaveSection();
 }
 
 
 
-AddResourceTracker::AddResourceTracker(int length, int resource, int building_id) : length(length), building_id(building_id), resource(resource)
+AddMaterialTracker::AddMaterialTracker(int length, int material, int building_id) : length(length), building_id(building_id), material(material)
 {
 
 }
 
 
 
-void AddResourceTracker::modify(Runtime& runtime)
+void AddMaterialTracker::modify(Runtime& runtime)
 {
-	if (length <= 0 || length > 1048576 || resource < 0 || resource >= MAX_RESOURCES)
+	if (length <= 0 || length > 1048576 || material < 0 || material > RecurringInputStock)
 		return;
-	runtime.add_resource_tracker(new ResourceTracker(runtime, building_id, length, resource), building_id);
+	runtime.add_material_tracker(new MaterialTracker(runtime, building_id, length, material), building_id);
 }
 
 
 
-tribool AddResourceTracker::wait(Runtime& runtime)
+tribool AddMaterialTracker::wait(Runtime& runtime)
 {
 	return wait_for_building(runtime, building_id);
 }
 
 
 
-bool AddResourceTracker::load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor)
+bool AddMaterialTracker::load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor)
 {
 	stream->readEnterSection("AddRessourceTracker");
 	ManagementOrder::load(stream, player, versionMinor);
 	const Uint32 rawLength=stream->readUint32("length");
 	const Uint32 rawBuildingId=stream->readUint32("building_id");
-	const Uint32 rawResource=stream->readUint32("ressource");
+	const Uint32 rawMaterial=stream->readUint32("ressource");
 	if (rawLength == 0 || rawLength > 1048576 ||
-		rawBuildingId > static_cast<Uint32>(std::numeric_limits<int>::max()) || rawResource >= MAX_RESOURCES)
+		rawBuildingId > static_cast<Uint32>(std::numeric_limits<int>::max()) || rawMaterial > (versionMinor>=FILE_FORMAT_VERSION_BUILDING_CATALOG ? RecurringInputStock : MaterialCount-1))
 		throw std::runtime_error("Invalid resource tracker order");
 	length=static_cast<int>(rawLength);
 	building_id=static_cast<int>(rawBuildingId);
-	resource=static_cast<int>(rawResource);
+	material=static_cast<int>(rawMaterial);
 	stream->readLeaveSection();
 	return true;
 }
 
 
 
-void AddResourceTracker::save(GAGCore::OutputStream *stream)
+void AddMaterialTracker::save(GAGCore::OutputStream *stream)
 {
 	stream->writeEnterSection("AddRessourceTracker");
 	ManagementOrder::save(stream);
 	stream->writeUint32(length, "length");
 	stream->writeUint32(building_id, "building_id");
-	stream->writeUint32(resource, "ressource");
+	stream->writeUint32(material, "ressource");
 	stream->writeLeaveSection();
 }
 
 
 
-PauseResourceTracker::PauseResourceTracker(int building_id) : building_id(building_id)
+PauseMaterialTracker::PauseMaterialTracker(int building_id) : building_id(building_id)
 {
 
 }
 
 
 
-void PauseResourceTracker::modify(Runtime& runtime)
+void PauseMaterialTracker::modify(Runtime& runtime)
 {
-	runtime.pause_resource_tracker(building_id);
+	runtime.pause_material_tracker(building_id);
 }
 
 
 
-tribool PauseResourceTracker::wait(Runtime& runtime)
+tribool PauseMaterialTracker::wait(Runtime& runtime)
 {
 	return wait_for_building(runtime, building_id);
 }
 
 
 
-bool PauseResourceTracker::load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor)
+bool PauseMaterialTracker::load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor)
 {
 	stream->readEnterSection("PauseRessourceTracker");
 	ManagementOrder::load(stream, player, versionMinor);
@@ -198,7 +212,7 @@ bool PauseResourceTracker::load(GAGCore::InputStream *stream, Player *player, Si
 
 
 
-void PauseResourceTracker::save(GAGCore::OutputStream *stream)
+void PauseMaterialTracker::save(GAGCore::OutputStream *stream)
 {
 	stream->writeEnterSection("PauseRessourceTracker");
 	ManagementOrder::save(stream);
@@ -208,28 +222,28 @@ void PauseResourceTracker::save(GAGCore::OutputStream *stream)
 
 
 
-UnPauseResourceTracker::UnPauseResourceTracker(int building_id) : building_id(building_id)
+UnPauseMaterialTracker::UnPauseMaterialTracker(int building_id) : building_id(building_id)
 {
 
 }
 
 
 
-void UnPauseResourceTracker::modify(Runtime& runtime)
+void UnPauseMaterialTracker::modify(Runtime& runtime)
 {
-	runtime.unpause_resource_tracker(building_id);
+	runtime.unpause_material_tracker(building_id);
 }
 
 
 
-tribool UnPauseResourceTracker::wait(Runtime& runtime)
+tribool UnPauseMaterialTracker::wait(Runtime& runtime)
 {
 	return wait_for_building(runtime, building_id);
 }
 
 
 
-bool UnPauseResourceTracker::load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor)
+bool UnPauseMaterialTracker::load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor)
 {
 	stream->readEnterSection("UnPauseRessourceTracker");
 	ManagementOrder::load(stream, player, versionMinor);
@@ -240,7 +254,7 @@ bool UnPauseResourceTracker::load(GAGCore::InputStream *stream, Player *player, 
 
 
 
-void UnPauseResourceTracker::save(GAGCore::OutputStream *stream)
+void UnPauseMaterialTracker::save(GAGCore::OutputStream *stream)
 {
 	stream->writeEnterSection("UnPauseRessourceTracker");
 	ManagementOrder::save(stream);

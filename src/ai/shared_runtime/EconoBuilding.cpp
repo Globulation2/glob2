@@ -1,10 +1,11 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2006 Bradley Arsenault
 
+#include "Material.h"
 #include "AITelemetryFields.h"
 #include "shared_runtime/Runtime.h"
 #include <algorithm>
-#include "IntBuildingType.h"
+#include "shared_runtime/BuildingDemands.h"
 #include "Game.h"
 #include <iterator>
 #include "Utilities.h"
@@ -26,44 +27,38 @@ void Econo::tick_inns_near_wheat(Runtime& runtime)
 	if((timer%AI_SHARED_RUNTIME_RTI_INN_INTERVAL_TICKS)==0 && (timer%AI_SHARED_RUNTIME_RTI_BIG_CYCLE_TICKS)!=0)
 	{
 		BuildingSearch bs_level1(runtime);
-		bs_level1.add_condition(new SpecificBuildingType(IntBuildingType::FOOD_BUILDING));
+		bs_level1.add_condition(new ProvidesBuildingCapability(BuildingDemand::Feed));
 		bs_level1.add_condition(new BuildingLevel(1));
 		const int number1=bs_level1.count_buildings();
 
 		BuildingSearch bs_level2(runtime);
-		bs_level2.add_condition(new SpecificBuildingType(IntBuildingType::FOOD_BUILDING));
+		bs_level2.add_condition(new ProvidesBuildingCapability(BuildingDemand::Feed));
 		bs_level2.add_condition(new BuildingLevel(2));
 		const int number2=bs_level2.count_buildings();
 
 		BuildingSearch bs_level3(runtime);
-		bs_level3.add_condition(new SpecificBuildingType(IntBuildingType::FOOD_BUILDING));
+		bs_level3.add_condition(new ProvidesBuildingCapability(BuildingDemand::Feed));
 		bs_level3.add_condition(new BuildingLevel(3));
 		const int number3=bs_level3.count_buildings();
 
 		if((runtime.player->team->stats.getLatestStat()->totalUnit)>=(number1*AI_SHARED_RUNTIME_RTI_INN_POP_PER_L1 + number2*AI_SHARED_RUNTIME_RTI_INN_POP_PER_L2 + number3*AI_SHARED_RUNTIME_RTI_INN_POP_PER_L3))
 		{
 			//The main order for the inn
-			BuildingOrder* bo = new BuildingOrder(IntBuildingType::FOOD_BUILDING, 2);
-
-			//Constraints around the location of wheat
-			AISharedRuntime::Gradients::GradientInfo gi_wheat;
-			gi_wheat.add_source(new AISharedRuntime::Gradients::Entities::Resource(WHEAT));
-			//You want to be close to wheat
-			bo->add_constraint(new AISharedRuntime::Construction::MinimizedDistance(gi_wheat, AI_SHARED_RUNTIME_RTI_INN_WHEAT_WEIGHT));
-			//You can't be farther than 10 units from wheat
-			bo->add_constraint(new AISharedRuntime::Construction::MaximumDistance(gi_wheat, AI_SHARED_RUNTIME_RTI_INN_WHEAT_MAX_DIST));
+			BuildingOrder* bo = new BuildingOrder(runtime, BuildingDemand::Feed, 2);
+			// Keep each required ingredient as an independent distance objective.
+			bo->add_input_distance_constraints(runtime,AI_SHARED_RUNTIME_RTI_INN_WHEAT_WEIGHT,{},AI_SHARED_RUNTIME_RTI_INN_WHEAT_MAX_DIST);
 
 			//Constraints around nearby settlement
 			AISharedRuntime::Gradients::GradientInfo gi_building;
             gi_building.terrainTravel=field::TerrainTravel::Swim;
 			gi_building.add_source(new AISharedRuntime::Gradients::Entities::AnyTeamBuilding(runtime.player->team->teamNumber, false));
-			gi_building.add_obstacle(new AISharedRuntime::Gradients::Entities::AnyResource);
+			gi_building.add_obstacle(new AISharedRuntime::Gradients::Entities::ResourceBuildingObstacle);
 			//You want to be close to other buildings, but wheat is more important
 			bo->add_constraint(new AISharedRuntime::Construction::MinimizedDistance(gi_building, AI_SHARED_RUNTIME_RTI_BUILD_CLUSTER_WEIGHT));
 
 			AISharedRuntime::Gradients::GradientInfo gi_building_construction;
 			gi_building_construction.add_source(new AISharedRuntime::Gradients::Entities::AnyTeamBuilding(runtime.player->team->teamNumber, true));
-			gi_building_construction.add_obstacle(new AISharedRuntime::Gradients::Entities::AnyResource);
+			gi_building_construction.add_obstacle(new AISharedRuntime::Gradients::Entities::ResourceBuildingObstacle);
 			//You don't want to be too close
 			bo->add_constraint(new AISharedRuntime::Construction::MinimumDistance(gi_building_construction, AI_SHARED_RUNTIME_RTI_INN_CONSTRUCTION_MIN_DIST));
 
@@ -71,9 +66,9 @@ void Econo::tick_inns_near_wheat(Runtime& runtime)
 			{
 				//Constraints around the location of fruit
 				AISharedRuntime::Gradients::GradientInfo gi_fruit;
-				gi_fruit.add_source(new AISharedRuntime::Gradients::Entities::Resource(CHERRY));
-				gi_fruit.add_source(new AISharedRuntime::Gradients::Entities::Resource(ORANGE));
-				gi_fruit.add_source(new AISharedRuntime::Gradients::Entities::Resource(PRUNE));
+				gi_fruit.add_source(new AISharedRuntime::Gradients::Entities::MaterialSource(materialIndex(MaterialId::Cherries)));
+				gi_fruit.add_source(new AISharedRuntime::Gradients::Entities::MaterialSource(materialIndex(MaterialId::Oranges)));
+				gi_fruit.add_source(new AISharedRuntime::Gradients::Entities::MaterialSource(materialIndex(MaterialId::Prunes)));
 				//You want to be reasonably close to fruit, closer if possible
 				bo->add_constraint(new AISharedRuntime::Construction::MinimizedDistance(gi_fruit, AI_SHARED_RUNTIME_RTI_INN_FRUIT_WEIGHT));
 			}
@@ -87,7 +82,7 @@ void Econo::tick_inns_near_wheat(Runtime& runtime)
 			mo_completion->add_condition(new ParticularBuilding(new NotUnderConstruction, id));
 			runtime.add_management_order(mo_completion);
 
-			ManagementOrder* mo_tracker=new AddResourceTracker(AI_SHARED_RUNTIME_RTI_TRACKER_LENGTH, WHEAT, id);
+			ManagementOrder* mo_tracker=new AddMaterialTracker(AI_SHARED_RUNTIME_RTI_TRACKER_LENGTH, RecurringInputStock, id);
 			mo_tracker->add_condition(new ParticularBuilding(new NotUnderConstruction, id));
 			runtime.add_management_order(mo_tracker);
 		}
@@ -100,33 +95,30 @@ void Econo::tick_swarms_near_wheat(Runtime& runtime)
 	telemetry.count(AITrace::AI4::Econo_tick_swarms_near_wheat_calls);
 	if((timer%AI_SHARED_RUNTIME_RTI_BIG_CYCLE_TICKS)==AI_SHARED_RUNTIME_RTI_SWARM_OFFSET_TICKS)
 	{
+        if(runtime.ensure_production({AI_SHARED_RUNTIME_RTI_SWARM_RATIO_WORKER,AI_SHARED_RUNTIME_RTI_SWARM_RATIO_EXPLORER,AI_SHARED_RUNTIME_RTI_SWARM_RATIO_WARRIOR},AI_SHARED_RUNTIME_RTI_SWARM_WORKERS_NEW,AI_SHARED_RUNTIME_RTI_SWARM_WORKERS_FINISHED)) return;
 		BuildingSearch bs(runtime);
-		bs.add_condition(new SpecificBuildingType(IntBuildingType::SWARM_BUILDING));
+		bs.add_condition(new ProvidesBuildingCapability(BuildingDemand::ProduceWorker));
 		const int number=bs.count_buildings();
 		if((number<=AI_SHARED_RUNTIME_RTI_SWARM_EARLY_LIMIT && (runtime.player->team->stats.getLatestStat()->totalUnit/AI_SHARED_RUNTIME_RTI_SWARM_EARLY_RATIO)>=number) ||
 		   (runtime.player->team->stats.getLatestStat()->totalUnit/AI_SHARED_RUNTIME_RTI_SWARM_LATE_RATIO)>=number)
 		{
 //			std::cout<<"Constructing swarm"<<std::endl;
 			//The main order for the swarm
-			BuildingOrder* bo = new BuildingOrder(IntBuildingType::SWARM_BUILDING, AI_SHARED_RUNTIME_RTI_SWARM_WORKERS_NEW);
-
-			//Constraints around the location of wheat
-			AISharedRuntime::Gradients::GradientInfo gi_wheat;
-			gi_wheat.add_source(new AISharedRuntime::Gradients::Entities::Resource(WHEAT));
-			//You want to be close to wheat
-			bo->add_constraint(new AISharedRuntime::Construction::MinimizedDistance(gi_wheat, AI_SHARED_RUNTIME_RTI_INN_WHEAT_WEIGHT));
+			BuildingOrder* bo = new BuildingOrder(runtime, BuildingDemand::ProduceWorker, AI_SHARED_RUNTIME_RTI_SWARM_WORKERS_NEW);
+			// Keep each required ingredient as an independent distance objective.
+			bo->add_input_distance_constraints(runtime,AI_SHARED_RUNTIME_RTI_INN_WHEAT_WEIGHT);
 
 			//Constraints around nearby settlement
 			AISharedRuntime::Gradients::GradientInfo gi_building;
             gi_building.terrainTravel=field::TerrainTravel::Swim;
 			gi_building.add_source(new AISharedRuntime::Gradients::Entities::AnyTeamBuilding(runtime.player->team->teamNumber, false));
-			gi_building.add_obstacle(new AISharedRuntime::Gradients::Entities::AnyResource);
+			gi_building.add_obstacle(new AISharedRuntime::Gradients::Entities::ResourceBuildingObstacle);
 			//You want to be close to other buildings, but wheat is more important
 			bo->add_constraint(new AISharedRuntime::Construction::MinimizedDistance(gi_building, AI_SHARED_RUNTIME_RTI_SWARM_CLUSTER_WEIGHT));
 
 			AISharedRuntime::Gradients::GradientInfo gi_building_construction;
 			gi_building_construction.add_source(new AISharedRuntime::Gradients::Entities::AnyTeamBuilding(runtime.player->team->teamNumber, true));
-			gi_building_construction.add_obstacle(new AISharedRuntime::Gradients::Entities::AnyResource);
+			gi_building_construction.add_obstacle(new AISharedRuntime::Gradients::Entities::ResourceBuildingObstacle);
 			//You don't want to be too close
 			bo->add_constraint(new AISharedRuntime::Construction::MinimumDistance(gi_building_construction, AI_SHARED_RUNTIME_RTI_INN_CONSTRUCTION_MIN_DIST));
 
@@ -146,7 +138,7 @@ void Econo::tick_swarms_near_wheat(Runtime& runtime)
 			runtime.add_management_order(mo_ratios);
 
 			//Add a tracker
-			ManagementOrder* mo_tracker=new AddResourceTracker(AI_SHARED_RUNTIME_RTI_TRACKER_LENGTH, WHEAT, id);
+			ManagementOrder* mo_tracker=new AddMaterialTracker(AI_SHARED_RUNTIME_RTI_TRACKER_LENGTH, RecurringInputStock, id);
 			mo_tracker->add_condition(new ParticularBuilding(new NotUnderConstruction, id));
 			runtime.add_management_order(mo_tracker);
 
@@ -163,24 +155,18 @@ void Econo::tick_racetrack_near_stone_wood(Runtime& runtime)
 	if((timer%AI_SHARED_RUNTIME_RTI_BIG_CYCLE_TICKS)==AI_SHARED_RUNTIME_RTI_RACETRACK_OFFSET_TICKS)
 	{
 		BuildingSearch bs(runtime);
-		bs.add_condition(new SpecificBuildingType(IntBuildingType::WALKSPEED_BUILDING));
+		bs.add_condition(new ProvidesBuildingCapability(BuildingDemand::TrainWalk));
 		const int number=bs.count_buildings();
 		if((runtime.player->team->stats.getLatestStat()->totalUnit/AI_SHARED_RUNTIME_RTI_SECONDARY_BLDG_RATIO)>=number && number<AI_SHARED_RUNTIME_RTI_RACETRACK_MAX)
 		{
 			//The main order for the racetrack
-			BuildingOrder* bo = new BuildingOrder(IntBuildingType::WALKSPEED_BUILDING, AI_SHARED_RUNTIME_RTI_RACETRACK_WORKERS);
-
-			//Constraints around the location of wood
-			AISharedRuntime::Gradients::GradientInfo gi_wood;
-			gi_wood.add_source(new AISharedRuntime::Gradients::Entities::Resource(WOOD));
-			//You want to be close to wood
-			bo->add_constraint(new AISharedRuntime::Construction::MinimizedDistance(gi_wood, AI_SHARED_RUNTIME_RTI_RACETRACK_WOOD_WEIGHT));
+			BuildingOrder* bo = new BuildingOrder(runtime, BuildingDemand::TrainWalk, AI_SHARED_RUNTIME_RTI_RACETRACK_WORKERS);
+			// Keep each required ingredient as an independent distance objective.
+			bo->add_input_distance_constraints(runtime,AI_SHARED_RUNTIME_RTI_RACETRACK_STONE_WEIGHT,{{materialIndex(MaterialId::Wood),AI_SHARED_RUNTIME_RTI_RACETRACK_WOOD_WEIGHT},{materialIndex(MaterialId::Stone),AI_SHARED_RUNTIME_RTI_RACETRACK_STONE_WEIGHT}});
 
 			//Constraints around the location of stone
 			AISharedRuntime::Gradients::GradientInfo gi_stone;
-			gi_stone.add_source(new AISharedRuntime::Gradients::Entities::Resource(STONE));
-			//You want to be close to stone
-			bo->add_constraint(new AISharedRuntime::Construction::MinimizedDistance(gi_stone, AI_SHARED_RUNTIME_RTI_RACETRACK_STONE_WEIGHT));
+			gi_stone.add_source(new AISharedRuntime::Gradients::Entities::MaterialSource(materialIndex(MaterialId::Stone)));
 			//But not to close, so you have room to upgrade
 			bo->add_constraint(new AISharedRuntime::Construction::MinimumDistance(gi_stone, AI_SHARED_RUNTIME_RTI_RACETRACK_STONE_MIN_DIST));
 
@@ -188,13 +174,13 @@ void Econo::tick_racetrack_near_stone_wood(Runtime& runtime)
 			AISharedRuntime::Gradients::GradientInfo gi_building;
             gi_building.terrainTravel=field::TerrainTravel::Swim;
 			gi_building.add_source(new AISharedRuntime::Gradients::Entities::AnyTeamBuilding(runtime.player->team->teamNumber, false));
-			gi_building.add_obstacle(new AISharedRuntime::Gradients::Entities::AnyResource);
+			gi_building.add_obstacle(new AISharedRuntime::Gradients::Entities::ResourceBuildingObstacle);
 			//You want to be close to other buildings, but wheat is more important
 			bo->add_constraint(new AISharedRuntime::Construction::MinimizedDistance(gi_building, AI_SHARED_RUNTIME_RTI_BUILD_CLUSTER_WEIGHT));
 
 			AISharedRuntime::Gradients::GradientInfo gi_building_construction;
 			gi_building_construction.add_source(new AISharedRuntime::Gradients::Entities::AnyTeamBuilding(runtime.player->team->teamNumber, true));
-			gi_building_construction.add_obstacle(new AISharedRuntime::Gradients::Entities::AnyResource);
+			gi_building_construction.add_obstacle(new AISharedRuntime::Gradients::Entities::ResourceBuildingObstacle);
 			//You don't want to be too close
 			bo->add_constraint(new AISharedRuntime::Construction::MinimumDistance(gi_building_construction, AI_SHARED_RUNTIME_RTI_RACETRACK_CONSTR_MIN_DIST));
 
@@ -213,28 +199,19 @@ void Econo::tick_swimmingpool_near_wheat_wood(Runtime& runtime)
 	if((timer%AI_SHARED_RUNTIME_RTI_BIG_CYCLE_TICKS)==AI_SHARED_RUNTIME_RTI_SWIMMINGPOOL_OFFSET_TICKS)
 	{
 		BuildingSearch bs(runtime);
-		bs.add_condition(new SpecificBuildingType(IntBuildingType::SWIMSPEED_BUILDING));
+		bs.add_condition(new ProvidesBuildingCapability(BuildingDemand::TrainSwim));
 		const int number=bs.count_buildings();
 		if((runtime.player->team->stats.getLatestStat()->totalUnit/AI_SHARED_RUNTIME_RTI_SECONDARY_BLDG_RATIO)>=number && number<AI_SHARED_RUNTIME_RTI_SWIMMINGPOOL_MAX)
 		{
 			//The main order for the swimming pool
-			BuildingOrder* bo = new BuildingOrder(IntBuildingType::SWIMSPEED_BUILDING, AI_SHARED_RUNTIME_RTI_SWIMMINGPOOL_WORKERS);
+			BuildingOrder* bo = new BuildingOrder(runtime, BuildingDemand::TrainSwim, AI_SHARED_RUNTIME_RTI_SWIMMINGPOOL_WORKERS);
+			// Keep each required ingredient as an independent distance objective.
+			bo->add_input_distance_constraints(runtime,AI_SHARED_RUNTIME_RTI_SWIMMINGPOOL_WHEAT_WEIGHT,{{materialIndex(MaterialId::Wood),AI_SHARED_RUNTIME_RTI_SWIMMINGPOOL_WOOD_WEIGHT},{materialIndex(MaterialId::Food),AI_SHARED_RUNTIME_RTI_SWIMMINGPOOL_WHEAT_WEIGHT}});
 
-			//Constraints around the location of wood
-			AISharedRuntime::Gradients::GradientInfo gi_wood;
-			gi_wood.add_source(new AISharedRuntime::Gradients::Entities::Resource(WOOD));
-			//You want to be close to wood
-			bo->add_constraint(new AISharedRuntime::Construction::MinimizedDistance(gi_wood, AI_SHARED_RUNTIME_RTI_SWIMMINGPOOL_WOOD_WEIGHT));
-
-			//Constraints around the location of wheat
-			AISharedRuntime::Gradients::GradientInfo gi_wheat;
-			gi_wheat.add_source(new AISharedRuntime::Gradients::Entities::Resource(WHEAT));
-			//You want to be close to wheat
-			bo->add_constraint(new AISharedRuntime::Construction::MinimizedDistance(gi_wheat, AI_SHARED_RUNTIME_RTI_SWIMMINGPOOL_WHEAT_WEIGHT));
 
 			//Constraints around the location of stone
 			AISharedRuntime::Gradients::GradientInfo gi_stone;
-			gi_stone.add_source(new AISharedRuntime::Gradients::Entities::Resource(STONE));
+			gi_stone.add_source(new AISharedRuntime::Gradients::Entities::MaterialSource(materialIndex(MaterialId::Stone)));
 			//You don't want to be too close, so you have room to upgrade
 			bo->add_constraint(new AISharedRuntime::Construction::MinimumDistance(gi_stone, AI_SHARED_RUNTIME_RTI_SWIMMINGPOOL_STONE_MIN_DIST));
 
@@ -242,13 +219,13 @@ void Econo::tick_swimmingpool_near_wheat_wood(Runtime& runtime)
 			AISharedRuntime::Gradients::GradientInfo gi_building;
             gi_building.terrainTravel=field::TerrainTravel::Swim;
 			gi_building.add_source(new AISharedRuntime::Gradients::Entities::AnyTeamBuilding(runtime.player->team->teamNumber, false));
-			gi_building.add_obstacle(new AISharedRuntime::Gradients::Entities::AnyResource);
+			gi_building.add_obstacle(new AISharedRuntime::Gradients::Entities::ResourceBuildingObstacle);
 			//You want to be close to other buildings, but wheat is more important
 			bo->add_constraint(new AISharedRuntime::Construction::MinimizedDistance(gi_building, AI_SHARED_RUNTIME_RTI_BUILD_CLUSTER_WEIGHT));
 
 			AISharedRuntime::Gradients::GradientInfo gi_building_construction;
 			gi_building_construction.add_source(new AISharedRuntime::Gradients::Entities::AnyTeamBuilding(runtime.player->team->teamNumber, true));
-			gi_building_construction.add_obstacle(new AISharedRuntime::Gradients::Entities::AnyResource);
+			gi_building_construction.add_obstacle(new AISharedRuntime::Gradients::Entities::ResourceBuildingObstacle);
 			//You don't want to be too close
 			bo->add_constraint(new AISharedRuntime::Construction::MinimumDistance(gi_building_construction, AI_SHARED_RUNTIME_RTI_SWIMMINGPOOL_CONSTR_MIN_DIST));
 
@@ -268,24 +245,24 @@ void Econo::tick_school_inland(Runtime& runtime)
 	if((timer%AI_SHARED_RUNTIME_RTI_BIG_CYCLE_TICKS)==AI_SHARED_RUNTIME_RTI_SCHOOL_OFFSET_TICKS)
 	{
 		BuildingSearch bs(runtime);
-		bs.add_condition(new SpecificBuildingType(IntBuildingType::SCIENCE_BUILDING));
+		bs.add_condition(new ProvidesBuildingCapability(BuildingDemand::TrainConstruction));
 		const int number=bs.count_buildings();
 		if((runtime.player->team->stats.getLatestStat()->totalUnit/AI_SHARED_RUNTIME_RTI_SECONDARY_BLDG_RATIO)>=number && number<AI_SHARED_RUNTIME_RTI_SCHOOL_MAX)
 		{
 			//The main order for the school
-			BuildingOrder* bo = new BuildingOrder(IntBuildingType::SCIENCE_BUILDING, AI_SHARED_RUNTIME_RTI_SCHOOL_WORKERS);
+			BuildingOrder* bo = new BuildingOrder(runtime, BuildingDemand::TrainConstruction, AI_SHARED_RUNTIME_RTI_SCHOOL_WORKERS);
 
 			//Constraints around nearby settlement
 			AISharedRuntime::Gradients::GradientInfo gi_building;
             gi_building.terrainTravel=field::TerrainTravel::Swim;
 			gi_building.add_source(new AISharedRuntime::Gradients::Entities::AnyTeamBuilding(runtime.player->team->teamNumber, false));
-			gi_building.add_obstacle(new AISharedRuntime::Gradients::Entities::AnyResource);
+			gi_building.add_obstacle(new AISharedRuntime::Gradients::Entities::ResourceBuildingObstacle);
 			//You want to be close to other buildings, but wheat is more important
 			bo->add_constraint(new AISharedRuntime::Construction::MinimizedDistance(gi_building, AI_SHARED_RUNTIME_RTI_BUILD_CLUSTER_WEIGHT));
 
 			AISharedRuntime::Gradients::GradientInfo gi_building_construction;
 			gi_building_construction.add_source(new AISharedRuntime::Gradients::Entities::AnyTeamBuilding(runtime.player->team->teamNumber, true));
-			gi_building_construction.add_obstacle(new AISharedRuntime::Gradients::Entities::AnyResource);
+			gi_building_construction.add_obstacle(new AISharedRuntime::Gradients::Entities::ResourceBuildingObstacle);
 			//You don't want to be too close
 			bo->add_constraint(new AISharedRuntime::Construction::MinimumDistance(gi_building_construction, AI_SHARED_RUNTIME_RTI_SCHOOL_CONSTR_MIN_DIST));
 
@@ -295,7 +272,7 @@ void Econo::tick_school_inland(Runtime& runtime)
 			{
 				gi_enemy.add_source(new AISharedRuntime::Gradients::Entities::AnyTeamBuilding(*i, false));
 			}
-			gi_enemy.add_obstacle(new AISharedRuntime::Gradients::Entities::AnyResource);
+			gi_enemy.add_obstacle(new AISharedRuntime::Gradients::Entities::ResourceGroundObstacle);
 			bo->add_constraint(new AISharedRuntime::Construction::MaximizedDistance(gi_enemy, AI_SHARED_RUNTIME_RTI_SCHOOL_ENEMY_DIST_WEIGHT));
 
 			//Add the building order to the list of orders
@@ -319,7 +296,7 @@ void Econo::tick_upgrade_l1_to_l2(Runtime& runtime)
 		const int level_two_counts=level_twos.count_buildings();
 
 		BuildingSearch schools(runtime);
-		schools.add_condition(new SpecificBuildingType(IntBuildingType::SCIENCE_BUILDING));
+		schools.add_condition(new ProvidesBuildingCapability(BuildingDemand::TrainConstruction));
 		schools.add_condition(new NotUnderConstruction);
 		const int school_counts=schools.count_buildings();
 
@@ -332,7 +309,7 @@ void Econo::tick_upgrade_l1_to_l2(Runtime& runtime)
 			bs.add_condition(new Upgradable);
 			bs.add_condition(new BuildingLevel(1));
 			if(school_counts<AI_SHARED_RUNTIME_RTI_SCHOOL_THRESHOLD_FOR_UPGRADE)
-				bs.add_condition(new NotSpecificBuildingType(IntBuildingType::SCIENCE_BUILDING));
+				bs.add_condition(new LacksBuildingCapability(BuildingDemand::TrainConstruction));
 			std::vector<int> buildings;
 			std::copy(bs.begin(), bs.end(), std::back_insert_iterator<std::vector<int> >(buildings));
 
@@ -348,13 +325,13 @@ void Econo::tick_upgrade_l1_to_l2(Runtime& runtime)
 				mo_assign->add_condition(new ParticularBuilding(new UnderConstruction, buildings[chosen]));
 				runtime.add_management_order(mo_assign);
 
-				if(runtime.get_building_register().get_type(buildings[chosen])==IntBuildingType::FOOD_BUILDING)
+				if(runtime.get_building_register().provides(buildings[chosen],BuildingDemand::Feed))
 				{
-					ManagementOrder* mo_tracker_pause=new PauseResourceTracker(buildings[chosen]);
+					ManagementOrder* mo_tracker_pause=new PauseMaterialTracker(buildings[chosen]);
 					mo_tracker_pause->add_condition(new ParticularBuilding(new UnderConstruction, buildings[chosen]));
 					runtime.add_management_order(mo_tracker_pause);
 
-					ManagementOrder* mo_tracker_unpause=new UnPauseResourceTracker(buildings[chosen]);
+					ManagementOrder* mo_tracker_unpause=new UnPauseMaterialTracker(buildings[chosen]);
 					mo_tracker_unpause->add_condition(new ParticularBuilding(new NotUnderConstruction, buildings[chosen]));
 					runtime.add_management_order(mo_tracker_unpause);
 
@@ -387,13 +364,13 @@ void Econo::tick_upgrade_l2_to_l3(Runtime& runtime)
 		const int level_three_counts=level_threes.count_buildings();
 
 		BuildingSearch schools(runtime);
-		schools.add_condition(new SpecificBuildingType(IntBuildingType::SCIENCE_BUILDING));
+		schools.add_condition(new ProvidesBuildingCapability(BuildingDemand::TrainConstruction));
 		schools.add_condition(new NotUnderConstruction);
 		schools.add_condition(new BuildingLevel(2));
 		int school_counts=schools.count_buildings();
 
 		BuildingSearch schools2(runtime);
-		schools2.add_condition(new SpecificBuildingType(IntBuildingType::SCIENCE_BUILDING));
+		schools2.add_condition(new ProvidesBuildingCapability(BuildingDemand::TrainConstruction));
 		schools2.add_condition(new NotUnderConstruction);
 		schools2.add_condition(new BuildingLevel(3));
 		school_counts+=schools2.count_buildings();
@@ -407,7 +384,7 @@ void Econo::tick_upgrade_l2_to_l3(Runtime& runtime)
 			bs.add_condition(new Upgradable);
 			bs.add_condition(new BuildingLevel(2));
 			if(school_counts<AI_SHARED_RUNTIME_RTI_SCHOOL_THRESHOLD_FOR_UPGRADE)
-				bs.add_condition(new NotSpecificBuildingType(IntBuildingType::SCIENCE_BUILDING));
+				bs.add_condition(new LacksBuildingCapability(BuildingDemand::TrainConstruction));
 			std::vector<int> buildings;
 			std::copy(bs.begin(), bs.end(), std::back_insert_iterator<std::vector<int> >(buildings));
 
@@ -423,13 +400,13 @@ void Econo::tick_upgrade_l2_to_l3(Runtime& runtime)
 				mo_assign->add_condition(new ParticularBuilding(new UnderConstruction, buildings[chosen]));
 				runtime.add_management_order(mo_assign);
 
-				if(runtime.get_building_register().get_type(buildings[chosen])==IntBuildingType::FOOD_BUILDING)
+				if(runtime.get_building_register().provides(buildings[chosen],BuildingDemand::Feed))
 				{
-					ManagementOrder* mo_tracker_pause=new PauseResourceTracker(buildings[chosen]);
+					ManagementOrder* mo_tracker_pause=new PauseMaterialTracker(buildings[chosen]);
 					mo_tracker_pause->add_condition(new ParticularBuilding(new UnderConstruction, buildings[chosen]));
 					runtime.add_management_order(mo_tracker_pause);
 
-					ManagementOrder* mo_tracker_unpause=new UnPauseResourceTracker(buildings[chosen]);
+					ManagementOrder* mo_tracker_unpause=new UnPauseMaterialTracker(buildings[chosen]);
 					mo_tracker_unpause->add_condition(new ParticularBuilding(new NotUnderConstruction, buildings[chosen]));
 					runtime.add_management_order(mo_tracker_unpause);
 
@@ -458,18 +435,18 @@ void Econo::tick_delete_old_inns(Runtime& runtime)
 	if((timer%AI_SHARED_RUNTIME_RTI_DELETE_SCAN_INTERVAL_TICKS)==0)
 	{
 		BuildingSearch inns(runtime);
-		inns.add_condition(new SpecificBuildingType(IntBuildingType::FOOD_BUILDING));
+		inns.add_condition(new ProvidesBuildingCapability(BuildingDemand::Feed));
 		inns.add_condition(new NotUnderConstruction);
 		for(building_search_iterator i=inns.begin(); i!=inns.end(); ++i)
 		{
-			std::shared_ptr<ResourceTracker> rt=runtime.get_resource_tracker(*i);
+			std::shared_ptr<MaterialTracker> rt=runtime.get_material_tracker(*i);
 			if(rt)
 			{
 				if(rt->get_age()>AI_SHARED_RUNTIME_RTI_INN_DELETE_AGE_TICKS)
 				{
 					if(rt->get_total_level() < AI_SHARED_RUNTIME_RTI_INN_DELETE_FOOD_PER_LEVEL*runtime.get_building_register().get_level(*i))
 					{
-						ManagementOrder* mo_destroy=new DestroyBuilding(*i);
+						ManagementOrder* mo_destroy=new RetireFeeding(*i);
 						runtime.add_management_order(mo_destroy);
 					}
 				}

@@ -37,7 +37,11 @@ class TerrainRegistry
 	// a replacement snapshot; readers may retain the previous one indefinitely.
 	static std::shared_ptr<const TerrainRegistry> builtins();
 	std::shared_ptr<const TerrainRegistry> importJson(std::string_view source) const;
-	static std::shared_ptr<const TerrainRegistry> deserialize(std::string_view source);
+	// The TERRAIN_COUNT a file of the given format version was written with: its
+	// custom IDs start there and are renumbered to follow the current built-ins.
+	static unsigned savedBuiltinCount(int versionMinor);
+	static std::shared_ptr<const TerrainRegistry> deserialize(std::string_view source,
+																	  unsigned savedBuiltinCount = TERRAIN_COUNT);
 	// Saved definitions are resolved and authoritative: no authoring inheritance
 	// or local files are consulted during deserialization.
 	std::string serialize() const;
@@ -65,6 +69,13 @@ class TerrainRegistry
 		return savedPresentations_[id];
 	}
 	const std::string &key(TerrainType id) const { return keys_[id]; }
+	// Absent means capability-based habitats. An engaged empty list permits no
+	// deposits. Legacy numeric authoring masks are resolved to stable keys on load.
+	const std::optional<std::vector<std::string>>& resourceKeys(TerrainType id) const
+	{
+		assert(valid(id));
+		return resourceKeys_[id];
+	}
 	TerrainType appearance(TerrainType id) const { return appearances_[id]; }
 	const Movement &movement(unsigned swim) const { return movement_[swim]; }
 	unsigned airCost(TerrainType id) const { return airCosts_[id]; }
@@ -96,6 +107,7 @@ class TerrainRegistry
 	static SavedPresentation savedPreset(TerrainType appearance);
 	std::vector<SavedPresentation> savedPresentations_;
 	std::vector<std::string> keys_, names_;
+	std::vector<std::optional<std::vector<std::string>>> resourceKeys_;
 	std::vector<TerrainType> appearances_;
 	std::array<Movement, std::size(gradient_kernel::WATER_STEP)> movement_;
 	std::vector<unsigned> airCosts_;

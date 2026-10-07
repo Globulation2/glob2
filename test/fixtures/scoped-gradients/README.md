@@ -5,15 +5,27 @@ policy combined with the eight-tick periodic gradient pipeline. The superseded
 version-120 traces were removed with the test-suite cleanup and remain in git history
 (commit `508942f08`, PR #390).
 
-`test/check_telemetry_simulation.py` checks the `*.terrain.checksums.gz` traces
-across CI platforms. These are the current terrain-property simulation baselines;
-the version-123 traces remain unchanged as historical evidence. Canonical terrain
-IDs participate in map checksums and property-based ecology can change subsequent
-simulation behavior. The checker retains all original legacy save inputs and
-compares complete sidecars, including the aggregate checksum and every team/entity
-record, for fresh loads and the v108 checkpoint continuation.
+`test/check_telemetry_simulation.py` checks the `*.resources.checksums.gz`
+traces across CI platforms. These are the format-140, simulation-revision-24
+baselines. The version-123 and `*.terrain.checksums.gz` references remain unchanged
+as historical evidence, including the simulation-revision-20 capability checksums.
+All epochs use the same retained legacy save inputs.
 
-Regenerate only the terrain traces with
+The resource epoch includes the intentional material-demand, harvest revalidation
+and property-driven AI recovery policies. In particular, Castor now protects
+recoverable Food sources according to configured growth and neighboring donors,
+rather than a fixed grass/water approximation. This can change worker assignments
+in the legacy scenarios. Before refreshing this epoch, the resource-recovery
+revision-23 executable and final revision-24 executable were compared over every
+team/entity record: all four scenario traces matched. Aggregate checksums also
+encode the current save/resource representation, so historical aggregate hashes
+are not promises of cross-epoch simulation compatibility.
+
+The checker compares complete sidecars, including the aggregate checksum and every
+team/entity record, for fresh loads and the v108 checkpoint continuation. It does
+not discard differing fields or weaken the per-tick comparison.
+
+Regenerate only the resource traces with
 `python3 test/check_telemetry_simulation.py PATH/TO/glob2 --update-fixtures`, then
 verify without that flag using both the default and `--parallel-ai` modes.
 `--output artifacts/NAME` retains commands, logs, traces and a hash manifest.

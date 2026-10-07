@@ -132,7 +132,12 @@
 	handle {
 		root * /srv/web
 		# The web app: its own scripts, styles and fonts; data from this origin.
-		header Content-Security-Policy "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src 'self'; frame-src 'self'; media-src 'self'; manifest-src 'self'; worker-src 'self'; object-src 'none'; base-uri 'none'; form-action 'self'; frame-ancestors 'none'"
+		@webApp not path /music/decode-worker.js
+		header @webApp Content-Security-Policy "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src 'self'; frame-src 'self'; media-src 'self'; manifest-src 'self'; worker-src 'self'; object-src 'none'; base-uri 'none'; form-action 'self'; frame-ancestors 'none'"
+		# The dedicated music worker compiles the Opus decoder. Permit WebAssembly
+		# compilation here while keeping JavaScript eval blocked everywhere.
+		@musicDecoder path /music/decode-worker.js
+		header @musicDecoder Content-Security-Policy "default-src 'self'; script-src 'self' 'wasm-unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src 'self'; frame-src 'self'; media-src 'self'; manifest-src 'self'; worker-src 'self'; object-src 'none'; base-uri 'none'; form-action 'self'; frame-ancestors 'none'"
 		@aiStudio path /ai-studio /ai-studio/*
 		header @aiStudio Cross-Origin-Opener-Policy "same-origin"
 		header @aiStudio Cross-Origin-Embedder-Policy "require-corp"

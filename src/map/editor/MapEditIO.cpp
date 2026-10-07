@@ -36,6 +36,9 @@ GAGCore::CooperativeTask MapEdit::loadTask(std::string filename)
         doQuitAfterLoadSave = true;
         co_return false;
     }
+    rebuildBuildingSelectors();
+    if (panelMode==AddBuildings) enableOnlyGroup("building view");
+    if (panelMode==AddFlagsAndZones) enableOnlyGroup("flag view");
     team = 0;
     areaNameLabel->setLabel(game.map.getAreaName(areaNumber->getIndex()));
     minimap.resetMinimapDrawing();
@@ -249,7 +252,7 @@ void MapEdit::viewportResized(int oldWidth, int oldHeight, int width, int height
     viewportY = (viewportY + oldHeight / 64 - height / 64) & game.map.hMask;
     for (auto* widget : mew) widget->area.updateWindowWidth(width);
     for (MapEditorWidget* widget : std::initializer_list<MapEditorWidget*>{mapCoordinatesLabel, building_view_tcs,
-         building_view_level1, building_view_level2, building_view_level3, flag_view_tcs,
+         building_view_level1, building_view_level2, building_view_level3, buildingLevelNextPage, flag_view_tcs,
          flag_view_level1, flag_view_level2, flag_view_level3, flag_view_level4})
         widget->area.y += height - oldHeight;
     if (auto *dialog = activeDialog()) dialog->cancelInput();
@@ -270,6 +273,23 @@ void MapEdit::importTerrainFile(const std::string &filename)
 	if (bytes && !input->readExact(json.data(), bytes))
 		throw std::runtime_error("Cannot read terrain definitions");
 	game.map.importTerrainDefinitions(json);
+	minimap.resetMinimapDrawing();
+	hasMapBeenModified = true;
+	fertilityRequested = true;
+}
+
+void MapEdit::importResourceFile(const std::string& filename)
+{
+	std::unique_ptr<GAGCore::StreamBackend> input(Toolkit::getFileManager()->openInputStreamBackend(filename));
+	if (!input || !input->isValid()) throw std::runtime_error("Cannot open resource definitions");
+	input->seekFromEnd(0);
+	const auto bytes = input->getPosition();
+	input->seekFromStart(0);
+	if (bytes > ResourceRegistry::MaximumDefinitionBytes) throw std::runtime_error("Resource definitions exceed 32 MiB");
+	std::string json(bytes, '\0');
+	if (bytes && !input->readExact(json.data(), bytes)) throw std::runtime_error("Cannot read resource definitions");
+	game.map.installResourceDefinitions(json);
+	game.gameHeader.setResourceExperiments(game.map.resourceRegistry().experiments());
 	minimap.resetMinimapDrawing();
 	hasMapBeenModified = true;
 	fertilityRequested = true;

@@ -30,7 +30,13 @@ Add `--lossless-images` for pixel-exact runtime comparison. `--output` alone
 selects a source-pack destination and does not produce a playable client tree.
 Source manifests and provenance README files are excluded from runtime bundles.
 Experimental terrain beyond the 272 legacy connected tiles uses the shared
-terrain compiler and native fallback rather than this HD pack.
+terrain compiler and native fallback rather than this HD pack. The catalogue
+materials (`data/gfx/terrain-<name>N.png`) are produced by
+`tools/artwork/terrain_synth.py` (procedural originals) and
+`tools/artwork/export_material.py` (image-generated materials with stored
+prompts), both validated by `tools/artwork/validate_material.py`; see
+[terrain materials](../../../docs/assets/terrain-materials.md#material-production).
+They need only Pillow, not this pipeline's model tooling.
 
 ## Generate a future sprite candidate
 
@@ -63,12 +69,18 @@ the reviewed candidate selection.
 
 ## Terrain and water
 
-The committed final tiles contain shared generated materials, subdued contrast,
-rugged compatible corner transitions and periodic water. Do not run independent
+The committed final tiles contain shared original-based grass and sand,
+retained rugged corner transitions and periodic water. Do not run independent
 sprite inference over these tiles: it would break their shared boundaries.
+Grass and sand now use the original-based refinement recipe in
+`tools/artwork/terrain_materials.py`, including retained transition masks and
+canonical edges at every mip. Its source material and tuning controls are kept
+in `datasrc/gfx/derived/terrain-materials-v1`; see the
+[HD artwork guide](../../../docs/assets/high-resolution/README.md).
 `tools/artwork/validate_runtime.py` checks 91,136 directed terrain joins and water
 edges at each mip. The approved final material tiles and atlas mips are the
-reproducible production input; discarded prompts/trials are not restored.
+reproducible production input; historical generated-water prompts and trials
+are not restored.
 
 ## Validate a reviewed selection
 

@@ -28,7 +28,7 @@ static void require(bool ok, const char* message)
 	GLOB2_REQUIRE(ok, message);
 }
 
-// subscribeToBringResourcesStep() is the hiring pass Team::updateAllBuildingTasks
+// subscribeToBringMaterialsStep() is the hiring pass Team::updateAllBuildingTasks
 // runs; a subclass reaches it the same way test/README.md's Map subclass pattern
 // reaches Map's predicates.
 struct TestBuilding : Building
@@ -36,7 +36,7 @@ struct TestBuilding : Building
 	TestBuilding(int x, int y, Uint16 gid, Sint32 typeNum, Team* team, BuildingsTypes* types,
 	             Sint32 unitWorking, Sint32 unitWorkingFuture)
 		: Building(x, y, gid, typeNum, team, types, unitWorking, unitWorkingFuture) {}
-	bool hireOne() { return subscribeToBringResourcesStep(); }
+	bool hireOne() { return subscribeToBringMaterialsStep(); }
 	void refreshCallLists() { updateCallLists(); }
 };
 
@@ -53,7 +53,7 @@ static void siteSpreadsItsFetchersAcrossBothResources()
 	const Sint32 siteType = globalContainer->buildingsTypes.getTypeNum("market", 0, true);
 	require(siteType >= 0, "the market building site type exists");
 	const BuildingType* type = globalContainer->buildingsTypes.get(siteType);
-	require(type->maxResource[WOOD] == 4 && type->maxResource[STONE] == 4,
+	require(type->maxMaterial[WOOD] == 4 && type->maxMaterial[STONE] == 4,
 		"the market site wants 4 wood and 4 stone");
 
 	const int siteX = 16, siteY = 16;
@@ -65,9 +65,9 @@ static void siteSpreadsItsFetchersAcrossBothResources()
 	// Wood right beside the site, stone across the map: the layout that made the
 	// site hire eight wood fetchers and no stone fetcher at all.
 	for (int i = 0; i < 6; ++i)
-		require(game.map.incResource(siteX + 3, siteY - 2 + i, WOOD, 0), "seed a wood tile by the site");
+		require(game.map.incResourceByIndex(siteX + 3, siteY - 2 + i, WOOD, 0), "seed a wood tile by the site");
 	for (int i = 0; i < 6; ++i)
-		require(game.map.incResource(siteX - 2 + 16, siteY - 4 + 16 + i, STONE, 0), "seed a distant stone tile");
+		require(game.map.incResourceByIndex(siteX - 2 + 16, siteY - 4 + 16 + i, STONE, 0), "seed a distant stone tile");
 
 	// Eight idle workers standing on the site's doorstep, so distance never
 	// stops anybody from being hired.
@@ -90,9 +90,9 @@ static void siteSpreadsItsFetchersAcrossBothResources()
 	// apportionment did the work and not an accidentally even map.
 	int woodDistance = 0, stoneDistance = 0;
 	Unit* probe = team->myUnits[0];
-	require(game.map.resourceAvailable(0, WOOD, probe->swimClass(), probe->posX, probe->posY, &woodDistance),
+	require(game.map.materialAvailableSlot(0, WOOD, probe->swimClass(), probe->posX, probe->posY, &woodDistance),
 		"the wood is reachable");
-	require(game.map.resourceAvailable(0, STONE, probe->swimClass(), probe->posX, probe->posY, &stoneDistance),
+	require(game.map.materialAvailableSlot(0, STONE, probe->swimClass(), probe->posX, probe->posY, &stoneDistance),
 		"the stone is reachable");
 	std::printf("probe distances: wood=%d stone=%d\n", woodDistance, stoneDistance);
 	require(stoneDistance > 3 * woodDistance, "the stone is far enough to tempt the old scorer");
@@ -102,9 +102,9 @@ static void siteSpreadsItsFetchersAcrossBothResources()
 	while (site->hireOne())
 		require(++hires <= workers, "hiring stops once the site has its deliveries");
 
-	int subscribed[MAX_NB_RESOURCES] = {0};
+	int subscribed[MaterialSlotCount] = {0};
 	for (std::list<Unit*>::iterator ui = site->unitsWorking.begin(); ui != site->unitsWorking.end(); ++ui)
-		if ((*ui)->destinationPurpose >= 0 && (*ui)->destinationPurpose < MAX_NB_RESOURCES)
+		if ((*ui)->destinationPurpose >= 0 && (*ui)->destinationPurpose < MaterialSlotCount)
 			subscribed[(*ui)->destinationPurpose]++;
 
 	std::printf("hired %d: wood=%d stone=%d (wood %d tiles away, stone %d)\n",
@@ -138,10 +138,10 @@ static int hireOneOfTwo(int emptyX, int emptyY, int loadedX, int loadedY, int* e
 	game.map.setBuilding(siteX, siteY, type->width, type->height, site->gid);
 
 	// Stone only, so the apportionment has exactly one job to staff.
-	site->resources[WOOD] = type->maxResource[WOOD];
-	require(site->neededResource(WOOD) == 0, "the site wants no more wood");
-	require(site->neededResource(STONE) > 0, "the site still wants stone");
-	require(game.map.incResource(22, 9, STONE, 0), "seed the stone tile");
+	site->materials[WOOD] = type->maxMaterial[WOOD];
+	require(site->neededMaterial(WOOD) == 0, "the site wants no more wood");
+	require(site->neededMaterial(STONE) > 0, "the site still wants stone");
+	require(game.map.incResourceByIndex(22, 9, STONE, 0), "seed the stone tile");
 
 	const int positions[2][2] = {{emptyX, emptyY}, {loadedX, loadedY}};
 	for (int n = 0; n < 2; ++n)
@@ -158,8 +158,8 @@ static int hireOneOfTwo(int emptyX, int emptyY, int loadedX, int loadedY, int* e
 		unit->hungry = unit->trigHungry + 1000 * unit->race->hungriness;
 	}
 	// Unit 1 turns up holding wheat, which this site has no use for at all.
-	team->myUnits[1]->carriedResource = WHEAT;
-	require(site->neededResource(WHEAT) == 0, "the wheat is of no use here");
+	team->myUnits[1]->carriedMaterial = WHEAT;
+	require(site->neededMaterial(WHEAT) == 0, "the wheat is of no use here");
 
 	const int swimClass = team->myUnits[0]->swimClass();
 	for (int n = 0; n < 2; ++n)
@@ -168,7 +168,7 @@ static int hireOneOfTwo(int emptyX, int emptyY, int loadedX, int loadedY, int* e
 		int distBuilding = 0, distResource = 0;
 		require(game.map.buildingAvailable(site, swimClass, unit->posX, unit->posY, &distBuilding),
 			"the site is reachable from the candidate");
-		require(game.map.resourceAvailable(0, STONE, swimClass, unit->posX, unit->posY, &distResource),
+		require(game.map.materialAvailableSlot(0, STONE, swimClass, unit->posX, unit->posY, &distResource),
 			"the stone is reachable from the candidate");
 		*(n == 0 ? emptyCost : loadedCost) = distBuilding + distResource;
 	}

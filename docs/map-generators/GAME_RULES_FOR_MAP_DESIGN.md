@@ -68,7 +68,9 @@ of your game profile (the directory selected by `GLOB2_USER_DATA_DIR`, when set)
 Select the file in the import dialog, choose a type from the scrollable palette,
 and paint it like built-in terrain. The picker lists `.json` files only. A failed
 import displays an error and keeps the dialog open so you can correct the file
-and retry. For example:
+and retry. The same menu offers **Reroll terrain look**, which draws a new terrain seed for
+the map (see [terrain materials](../assets/terrain-materials.md#map-seed)): the cells stay as
+painted, only the boundary shapes and texture variants change. For example:
 
 ```json
 {
@@ -85,8 +87,13 @@ and retry. For example:
 }
 ```
 
-Both `base` and `appearance` name a shipped preset: `water`, `sand`, `grass`, `ice`
-or `road` (the compatibility key for Trail). The base supplies all simulation
+Both `base` and `appearance` name a paintable built-in terrain by its external name:
+the classic `water`, `sand`, `grass`, `ice` and `road` (the compatibility key for
+Trail) plus every terrain-catalogue type (`boulders`, `hedge`, `thicket`, `ridge_rock`,
+`outcrop`, `dirt`, `clay`, `gravel`, `flower_meadow`, `mud`, `marsh`, `deep_snow`,
+`scree`, `dirt_track`, `boardwalk`, `lava`, `ember_field`, `loam`, `moss`,
+`spring_meadow`, `deep_water`, `dark_water`, `void_hole`, `chasm`). The legacy shore
+profiles are not presets. The base supplies all simulation
 defaults; appearance selects a shipped material and resolved preview colors independently.
 Detailed artwork and natural boundaries use the shared [material catalog](../assets/terrain-materials.md);
 custom types sharing an appearance resolve to the same material. Every
@@ -116,12 +123,17 @@ Property overrides use the existing fixed schema:
 | `groundHealthQ8`, `airHealthQ8` | Signed 16-bit HP per tick divided by 256; negative damages, positive heals |
 | `growthQ8`, `inhibitionQ8`, `shoreSupportQ8` | Integers 0–1024; 256 is one |
 | `fertilityQ8` | Integer −1024–1024; 256 is one |
-| `allowedResources` | Bit mask 0–255 using existing resource IDs |
-| `farmCrop` | Resource ID 0–7 included in the allowed mask, or 255 for none |
+| `allowedResources` | Legacy import mask 0–255; prefer a top-level `allowedResourceKeys` list |
+| `farmMaterial` | Fixed material key such as `food` or `fabric`, or `null` for none |
 
-Resource bits are wood 0, wheat 1, stone 2, papyrus 3, algae 4, cherry 5, orange 6
-and prune 7. A mask is the sum of `1 << resourceId` for each allowed resource;
-for example, wood plus wheat is `3`, and algae alone is `16`. Changing an allowed mask may require changing an inherited `farmCrop`.
+Legacy resource bits are trees 0, wheat 1, papyrus 2, rocks 3, algae 4,
+cherry tree 5, orange tree 6 and prune tree 7. These import into a resource-key
+allowlist. New definitions may use `allowedResourceKeys` (outside `properties`)
+with stable resource keys; an empty list excludes all deposits, while omitted or
+`null` uses resource habitat permissions. Habitat and explicit permission must
+both match. Legacy `farmCrop` accepts numeric 0–7 or 255 and imports the matching
+material slot; saved definitions use `farmMaterial`. Farm selection chooses an
+eligible renewable resource supplying that material, rather than a fixed crop ID.
 Unknown fields and non-integer numbers for integer properties are rejected.
 
 Importing replacement definitions refreshes terrain, ecology, routes and rendering.

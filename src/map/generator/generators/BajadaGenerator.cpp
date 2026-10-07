@@ -15,6 +15,7 @@
 #include "Pipeline.h"
 #include "Planting.h"
 #include "Resources.h"
+#include "ResourceSemantics.h"
 #include "Roads.h"
 #include "Settlements.h"
 #include "Sketch.h"
@@ -1263,7 +1264,7 @@ bool generate(Game &game, GenerationContext &context)
 	writeUndermap(map, terrain);
 	for (int i = 0; i < n; ++i)
 		if (L.stone[i] && map.isResourceAllowed(i % t.w, i / t.w, STONE))
-			map.setResource(i % t.w, i / t.w, STONE, 1);
+			map.setResourceByIndex(i % t.w, i / t.w, STONE, 1);
 
 	context.stage = "bajada colonies";
 	if (!settleColonies(
@@ -1291,7 +1292,7 @@ bool generate(Game &game, GenerationContext &context)
 				const auto [x, y] = turnStencilTile(L.facing[k], s.dx, s.dy);
 				const int i = t.at(fan.x + x, fan.y + y);
 				if (clear(i) && map.isResourceAllowed(i % t.w, i / t.w, s.crop == 1 ? WHEAT : WOOD))
-					map.setResource(i % t.w, i / t.w, s.crop == 1 ? WHEAT : WOOD, 1);
+					map.setResourceByIndex(i % t.w, i / t.w, s.crop == 1 ? WHEAT : WOOD, 1);
 			}
 	}
 
@@ -1320,8 +1321,8 @@ bool generate(Game &game, GenerationContext &context)
 	const auto dryClear = [&](int i)
 	{
 		return clear(i) && fertility.at(i % t.w, i / t.w) == 0 && !L.ridge[i] && L.homeOf[i] < 0 &&
-			   (map.terrainSupportsResourceAt(i % t.w, i / t.w, STONE) &&
-				map.terrainSupportsResourceAt(i % t.w, i / t.w, WOOD));
+			   (map.terrainSupportsResourceAtByIndex(i % t.w, i / t.w, STONE) &&
+				map.terrainSupportsResourceAtByIndex(i % t.w, i / t.w, WOOD));
 	};
 	for (int i = 0; i < n; ++i)
 	{
@@ -1339,7 +1340,7 @@ bool generate(Game &game, GenerationContext &context)
 				  [&](MapGeneratorPoint p)
 				  {
 					  if (map.isResourceAllowed(p.x, p.y, WOOD))
-						  map.setResource(p.x, p.y, WOOD, 1);
+						  map.setResourceByIndex(p.x, p.y, WOOD, 1);
 				  });
 	scatterClumps(context, t, meadow, int(scaledCount(meadow.size() / kMeadowPerGrove, o.fruit)),
 				  "bajada-groves", [&](int i) { return clear(i); },
@@ -1379,8 +1380,8 @@ std::string validateWorld(const Game &game, const GenerationContext &context)
 	if (const std::string lost = homePondMissing(map, t, L.kits, teams, "spring", "pond"); !lost.empty())
 		return lost;
 	for (int i = 0; i < t.size(); ++i)
-		if (L.stone[i] && map.terrainSupportsResourceAt(i % t.w, i / t.w, STONE) &&
-			map.getResource(i % t.w, i / t.w).type != STONE)
+		if (L.stone[i] && map.terrainSupportsResourceAtByIndex(i % t.w, i / t.w, STONE) &&
+			!permanentResourceBarrier(map,i))
 			return "A range has lost its stone at (" + at(i) + ").";
 	// Every home's terrain is the first home's, tile for tile, turned as the stencil is, except where
 	// two homes' footprints overlap on a crowded map (their fans merge there).
@@ -1461,7 +1462,7 @@ std::string validateWorld(const Game &game, const GenerationContext &context)
 					if (std::abs(d) >= band)
 						continue;
 					offset[i] = d;
-					const bool stone = map.isResource(x, y) && map.getResource(x, y).type == STONE;
+					const bool stone = permanentResourceBarrier(map,i);
 					open[i] = !L.pass[i] && map.terrainPropertiesAt(x, y).walkable && !stone;
 					north[i] = d < -band + 1 && open[i];
 				}
@@ -1482,8 +1483,8 @@ std::string validateWorld(const Game &game, const GenerationContext &context)
 			const bool inTown = L.townOf[i] >= 0;
 			ground[i] = inTown ? L.townOf[i] : teams;
 			grass[i] = (map.canResourcesGrow(i % t.w, i / t.w) &&
-				(map.terrainSupportsResourceAt(i % t.w, i / t.w, WHEAT) ||
-				map.terrainSupportsResourceAt(i % t.w, i / t.w, WOOD))) && (inTown || fertility.at(i % t.w, i / t.w) > 0);
+				(map.terrainSupportsResourceAtByIndex(i % t.w, i / t.w, WHEAT) ||
+				map.terrainSupportsResourceAtByIndex(i % t.w, i / t.w, WOOD))) && (inTown || fertility.at(i % t.w, i / t.w) > 0);
 		}
 		if (const RegionLeak leak = firstRegionLeak(t, grass, ground, [](int, int) { return false; });
 			leak.tile >= 0)

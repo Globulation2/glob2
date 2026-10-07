@@ -22,7 +22,7 @@ SIMULATION = ('src/ai/', 'src/unit/', 'src/building/', 'src/team/', 'src/map/',
               'src/scripting/sgsl/', 'src/engine/sim/', 'src/game/orders/')
 PRESENTATION = ('src/hud/', 'src/render/', 'src/unit/render/', 'src/building/hud/')
 # Code inside the directories above that belongs to neither class: every check.
-UNCLASSIFIED = ('src/render/torus/', 'src/render/clouds/', 'src/render/overlay/', 'src/unit/types/',
+UNCLASSIFIED = ('data/buildings/', 'src/render/torus/', 'src/render/clouds/', 'src/render/overlay/', 'src/unit/types/',
                 'src/building/types/', 'src/team/stats/', 'src/map/preview/', 'src/map/tools/',
                 'src/net/lan/screens/')
 UNCLASSIFIED_FILES = {'libgag/include/RenderFramePacer.h', 'src/team/BaseTeam.cpp', 'src/map/MapTiling.cpp', 'src/map/FertilityCalculator.cpp',
@@ -158,7 +158,7 @@ def select(paths, labels=(), known=False):
                 add(path, 'native', 'map_generators', 'compatibility')
             else:
                 add(path, 'native')
-        elif path.startswith(('scons/', 'libusl/', 'data/terrain/')) or path in {'SConstruct', 'vcpkg.json', 'libgag/include/AudioFormat.h', 'tools/image_encoding.json', 'tools/terrain_tileset.py', 'tools/test_terrain_tileset.py'} or unclassified(path):
+        elif path.startswith(('scons/', 'libusl/', 'data/terrain/', 'data/resources/')) or path in {'SConstruct', 'vcpkg.json', 'libgag/include/AudioFormat.h', 'tools/image_encoding.json', 'tools/terrain_tileset.py', 'tools/test_terrain_tileset.py'} or unclassified(path):
             add(path, *FLAGS)
         elif path.startswith(('test/fixtures/', 'test/support/', '.github/')) or path in {
             'test/run_tests.py', 'test/ci_native_shard_plan.py', 'test/ci-native-auxiliary.json',

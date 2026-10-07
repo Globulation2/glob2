@@ -48,7 +48,8 @@ void MapEdit::processEvent(SDL_Event& event)
     else if (auto sample = GAGCore::scrollGesture(event))
     {
         auto wheel = GAGCore::gestureWheelFallback(*sample);
-        zoomMap(wheel.wheel.y * (wheel.wheel.direction == SDL_MOUSEWHEEL_FLIPPED ? -1 : 1), mouseX, mouseY);
+        const double delta=wheel.wheel.y * (wheel.wheel.direction == SDL_MOUSEWHEEL_FLIPPED ? -1 : 1);
+        if (!scrollBuildingSelectors(delta)) zoomMap(delta, mouseX, mouseY);
     }
     else if(event.type==SDL_EVENT_MOUSE_WHEEL)
     {
@@ -56,7 +57,8 @@ void MapEdit::processEvent(SDL_Event& event)
 #if SDL_VERSION_ATLEAST(2,0,18)
         delta=event.wheel.y;
 #endif
-        zoomMap(delta*(event.wheel.direction==SDL_MOUSEWHEEL_FLIPPED?-1:1),mouseX,mouseY);
+        delta*=event.wheel.direction==SDL_MOUSEWHEEL_FLIPPED?-1:1;
+        if (!scrollBuildingSelectors(delta)) zoomMap(delta,mouseX,mouseY);
     }
 	else if(event.type==SDL_EVENT_MOUSE_MOTION)
 	{

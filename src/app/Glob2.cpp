@@ -59,7 +59,7 @@
 #include "team/Team.h"
 #include "building/Building.h"
 #include "BuildingType.h"
-#include "ai/cortex/CortexWheat.h"
+#include "ai/cortex/CortexFoodSources.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -180,8 +180,8 @@ int Glob2::runTestMapGeneration()
 }
 
 
-// Headless tooling: dump a map's wheat layout and team start positions as
-// ASCII, to sanity-check AI wheat-protection field geometry. Reuses the real
+// Headless tooling: dump a map's food-source layout and team start positions as
+// ASCII, to sanity-check AI food-protection field geometry. Reuses the real
 // Game::load path so the data matches what the engine sees. Not a gameplay feature.
 static int dumpResources(const std::string& mapName)
 {
@@ -205,13 +205,13 @@ static int dumpResources(const std::string& mapName)
 	Map& map = game.map;
 	const int w = map.getW();
 	const int h = map.getH();
-	int wheatCount = 0;
+	int foodSourceCount = 0;
 	int minX = w, minY = h, maxX = -1, maxY = -1;
 	for (int y = 0; y < h; y++)
 		for (int x = 0; x < w; x++)
-			if (map.getResource(x, y).type == WHEAT)
+			if (map.materialAmountAt(map.coordToIndex(x, y), MaterialId::Food) > 0)
 			{
-				wheatCount++;
+				foodSourceCount++;
 				if (x < minX) minX = x;
 				if (x > maxX) maxX = x;
 				if (y < minY) minY = y;
@@ -220,15 +220,15 @@ static int dumpResources(const std::string& mapName)
 
 	const int teamCount = game.mapHeader.getNumberOfTeams();
 	std::cout << "Map " << mapName << " : " << w << "x" << h
-	          << ", teams=" << teamCount << ", WHEAT tiles=" << wheatCount;
-	if (wheatCount > 0)
-		std::cout << ", WHEAT bbox=(" << minX << "," << minY << ")-(" << maxX << "," << maxY << ")";
+	          << ", teams=" << teamCount << ", food source tiles=" << foodSourceCount;
+	if (foodSourceCount > 0)
+		std::cout << ", food source bbox=(" << minX << "," << minY << ")-(" << maxX << "," << maxY << ")";
 	std::cout << std::endl;
 	for (int t = 0; t < teamCount; t++)
 		if (game.teams[t])
 			std::cout << "  team " << t << " start=(" << game.teams[t]->startPosX
 			          << "," << game.teams[t]->startPosY << ")" << std::endl;
-	std::cout << "  legend: C=wheat ~=water #=non-walkable .=land  digit=team start" << std::endl;
+	std::cout << "  legend: C=food source ~=water #=non-walkable .=land  digit=team start" << std::endl;
 
 	for (int y = 0; y < h; y++)
 	{
@@ -236,7 +236,7 @@ static int dumpResources(const std::string& mapName)
 		for (int x = 0; x < w; x++)
 		{
 			char c;
-			if (map.getResource(x, y).type == WHEAT)      c = 'C';
+			if (map.materialAmountAt(map.coordToIndex(x, y), MaterialId::Food) > 0)      c = 'C';
 			else if (map.isWater(x, y))                    c = '~';
 			else if (!map.isFreeForGroundUnitNoForbidden(x, y, false)) c = '#';
 			else                                           c = '.';
@@ -253,7 +253,7 @@ static int dumpResources(const std::string& mapName)
 // Headless tooling (AI wheat-protection eyeball): run the Cortex wheat scan over
 // one team's territory on a freshly-loaded map and print the checkerboard it
 // WOULD paint, swept over the open-margin range N=0..2. No Orders are emitted —
-// this is the isolated geometry/reconcile core (ai/cortex/CortexWheat.*).
+// this is the isolated geometry/reconcile core (ai/cortex/CortexFoodSources.*).
 //
 // A loaded .map has no colony and is fully fogged, so this differs from the live
 // path in two debug-only ways, both documented inline: fog is bypassed
@@ -344,12 +344,12 @@ static int dumpWheatPlan(const std::string& mapName, int team)
 	          << ", consumer seeds=" << seeds.size()
 	          << ", region=(" << boxMinX << "," << boxMinY << ")-(" << boxMaxX << "," << boxMaxY << ")"
 	          << " [fog bypassed]" << std::endl;
-	std::cout << "  legend: ~=water #=blocked .=land c=wheat(unreached) o=open-margin"
+	std::cout << "  legend: ~=water #=blocked .=land c=food-source(unreached) o=open-margin"
 	             " +=harvest-half X=forbidden S=seed " << team << "=start" << std::endl;
 
 	for (int N = 0; N <= 2; N++)
 	{
-		Cortex::WheatScanResult r = Cortex::scanWheatForbidden(
+		Cortex::FoodSourceScanResult r = Cortex::scanFoodSourcesForbidden(
 			map, teamMask, team, seeds,
 			boxMinX, boxMinY, boxMaxX, boxMaxY,
 			/*openMargin=*/N, /*ignoreFOW=*/true, /*wantDebug=*/true);
@@ -372,7 +372,7 @@ static int dumpWheatPlan(const std::string& mapName, int team)
 				else if (cls == Cortex::WC_OPEN_MARGIN)    c = 'o';
 				else if (cls == Cortex::WC_FORBIDDEN)      c = 'X';
 				else if (cls == Cortex::WC_CHECKER_OPEN)   c = '+';
-				else if (map.getResource(x, y).type == WHEAT) c = 'c';
+				else if (map.materialAmountAt(map.coordToIndex(x, y), MaterialId::Food) > 0) c = 'c';
 				else if (map.isWater(x, y))                c = '~';
 				else if (!map.isFreeForGroundUnitNoForbidden(x, y, false)) c = '#';
 				else                                       c = '.';
@@ -410,7 +410,7 @@ static void dumpTeams(const Game& game)
 			if (Building* b = team->myBuildings[i])
 			{
 				buildings++;
-				if (b->type->unitProductionTime)
+				if (b->type->semantics.production.enabledUnitMask)
 				{
 					swarmCount++;
 					where += FormattableString(" (%0,%1)").arg(b->posX).arg(b->posY);
@@ -498,7 +498,14 @@ int Glob2::run(int argc, char *argv[])
 	if (headless >= 0) return headless;
 	srand(time(NULL));
 
-	globalContainer=new GlobalContainer();
+	std::string buildingCatalog;
+	for (int i=1; i<argc; ++i)
+		if (std::string(argv[i]) == "--building-catalog")
+		{
+			if (++i >= argc) throw std::invalid_argument("--building-catalog requires a manifest path");
+			buildingCatalog = argv[i];
+		}
+	globalContainer=new GlobalContainer("glob2", buildingCatalog);
 	globalContainer->parseArgs(argc, argv);
     globalContainer->deferAssetLoading = !globalContainer->runNoX && !globalContainer->runTestGames && !globalContainer->runTestMapGeneration;
 	globalContainer->load();

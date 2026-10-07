@@ -76,6 +76,7 @@ try {
   const platform = new PlatformClient({ baseUrl, key });
 
   let simVersion: SimVersion;
+  let buildingCatalogHash: string | undefined;
   let runner: EngineRunner;
   const binary = env['ENGINE_BINARY'];
   if (binary) {
@@ -107,6 +108,7 @@ try {
       maxOutputBytes: positive('ENGINE_MAX_RECORD_BYTES', DEFAULT_RUNNER_LIMITS.maxRecordBytes),
     });
     const catalog = await engine.catalog();
+    buildingCatalogHash = catalog.buildingCatalogHash;
     let resolved;
     try {
       resolved = await detectSimVersion(engine, catalog, {
@@ -152,6 +154,7 @@ try {
   }
 
   const agent = new EngineAgent({
+    ...(buildingCatalogHash ? { buildingCatalogHash } : {}),
     ...(process.env['ENGINE_AGENT_ID'] ? { id: process.env['ENGINE_AGENT_ID'] } : {}),
     simVersion,
     build: process.env['ENGINE_BUILD'] ?? 'unknown',

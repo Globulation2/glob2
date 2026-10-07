@@ -220,10 +220,9 @@ Unit *Game::addUnit(int x, int y, int team, Sint32 typeNum, int level, int delta
 
 bool Game::isBuildingTypeAvailable(int typeNum) const
 {
-	if (typeNum < 0 || static_cast<size_t>(typeNum) >= globalContainer->buildingsTypes.size()) return false;
-	const BuildingType *type = globalContainer->buildingsTypes.get(typeNum);
-	return type->shortTypeNum != IntBuildingType::MARKET_BUILDING || type->level == 0
-		|| gameHeader.hasExperiment(ExperimentId::MarketsV2);
+	if (typeNum < 0 || static_cast<size_t>(typeNum) >= buildingsTypes.size()) return false;
+	const BuildingType *type = buildingsTypes.get(typeNum);
+	return type->runtimeAvailable;
 }
 
 Building *Game::addBuilding(int x, int y, int typeNum, int teamNumber, Sint32 unitWorking, Sint32 unitWorkingFuture)
@@ -248,13 +247,21 @@ Building *Game::addBuilding(int x, int y, int typeNum, int teamNumber, Sint32 un
 	//ok, now we can safely deposit an building.
 	int gid=Building::GIDfrom(id, teamNumber);
 
-	int w=globalContainer->buildingsTypes.get(typeNum)->width;
-	int h=globalContainer->buildingsTypes.get(typeNum)->height;
+	int w=buildingsTypes.get(typeNum)->width;
+	int h=buildingsTypes.get(typeNum)->height;
 
-	Building *b=new Building(x&map.getMaskW(), y&map.getMaskH(), gid, typeNum, team, &globalContainer->buildingsTypes, unitWorking, unitWorkingFuture);
+	Building *b=new Building(x&map.getMaskW(), y&map.getMaskH(), gid, typeNum, team, &buildingsTypes, unitWorking, unitWorkingFuture);
 
+	if (b->type->runtimeSuppliesDirectStock) team->directStockSuppliers.push_back(b);
+	if (b->type->zonable[WARRIOR]) team->combatFlags.push_back(b);
 	if (b->type->canExchange)
 		team->canExchange.push_front(b);
+	if (b->type->runtimeSuppliesStock)
+	{
+		team->stockSuppliers.push_front(b);
+		map.invalidateSupplierLocations();
+		for (int resource=0; resource<MaterialCount; ++resource) map.dirtyMarketGradientsSlot(teamNumber,resource);
+	}
 	if (b->type->isVirtual)
 		team->virtualBuildings.push_front(b);
 	else

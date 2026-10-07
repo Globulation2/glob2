@@ -23,6 +23,7 @@
 
 #include "Building.h"
 #include "BuildingType.h"
+#include "ai/BuildingCapabilities.h"
 #include "Engine.h"
 #include "Environment.h"
 #include "Game.h"
@@ -78,20 +79,30 @@ static std::shared_ptr<Order> botOrder(Engine& engine, std::mt19937& bot)
 		return nullptr;
 	std::uniform_int_distribution<int> offset(-10, 10);
 	const int x = team->startPosX + offset(bot), y = team->startPosY + offset(bot);
+	using Intent = AIPlanning::BuildingIntent;
+	const auto choose = [&](Intent intent, int workerLimit) -> std::shared_ptr<Order> {
+		std::vector<int> candidates;
+		const auto& index = game.buildingCapabilities();
+		for (const auto& candidate : index.placements(intent))
+			if (index.available(candidate,intent,game.gameHeader)) candidates.push_back(candidate.placementType);
+		if (candidates.empty()) return nullptr;
+		const int type = candidates[bot() % candidates.size()];
+		const int limit = std::min(workerLimit,game.buildingsTypes.get(type)->semantics.assignmentLimit);
+		const int workers = limit ? 1 + bot() % limit : 0;
+		return std::make_shared<OrderCreate>(team->teamNumber,x,y,type,workers,workers);
+	};
 	switch (bot() % 4)
 	{
 	case 0:
 	case 1:
 	{
-		static const char* sites[] = {"inn", "swarm", "hospital", "racetrack", "swimmingpool", "school"};
-		const int type = globalContainer->buildingsTypes.getTypeNum(sites[bot() % 6], 0, true);
-		return std::make_shared<OrderCreate>(team->teamNumber, x, y, type, 1 + bot() % 4, 1 + bot() % 4);
+		static constexpr Intent needs[] = {Intent::Feed,Intent::ProduceWorker,Intent::Heal,
+			Intent::TrainWalk,Intent::TrainSwim,Intent::TrainConstruction};
+		return choose(needs[bot() % std::size(needs)],4);
 	}
 	case 2:
 	{
-		static const char* flags[] = {"explorationflag", "clearingflag"};
-		const int type = globalContainer->buildingsTypes.getTypeNum(flags[bot() % 2], 0, false);
-		return std::make_shared<OrderCreate>(team->teamNumber, x, y, type, 1 + bot() % 6, 1 + bot() % 6);
+		return choose(bot() % 2 ? Intent::AttractExplorers : Intent::ClearResources,6);
 	}
 	default:
 	{

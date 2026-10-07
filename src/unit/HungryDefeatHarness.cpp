@@ -48,7 +48,7 @@ struct Colony
         inn = new Building(8, 8, 0, type, team, &globalContainer->buildingsTypes, 0, 0);
         team->myBuildings[0] = inn;
         game.map.setBuilding(8, 8, inn->type->width, inn->type->height, inn->gid);
-        inn->resources[WHEAT] = corn;
+        inn->materials[WHEAT] = corn;
         inn->maxUnitInside = 1;
         inn->updateCallLists();
         game.map.setMapDiscovered();
@@ -98,7 +98,7 @@ static std::vector<Uint32> checkFeeding(int type, int corn)
     }
     require(entered && timerReachedZero && u->hungry == Unit::HUNGRY_MAX,
             "unit completes its meal, including the zero timer boundary");
-    require(c.inn->resources[WHEAT] == corn - 1, "one meal consumes exactly one wheat");
+    require(c.inn->materials[WHEAT] == corn - 1, "one meal consumes exactly one wheat");
     for (int tick = 0; tick < 300; ++tick)
         c.step(true, "fed colony remains alive through exit and medical refresh");
     require(u->attachedBuilding == nullptr && u->medical == Unit::MED_FREE,
@@ -131,13 +131,13 @@ TEST_SUITE("HungryDefeat")
 	        Unit* u = c.unit();
 	        u->medical = Unit::MED_FREE;
 	        u->hungry = Unit::HUNGRY_MAX;
-	        c.inn->resources[WHEAT] = 0;
+	        c.inn->materials[WHEAT] = 0;
 	        c.inn->updateCallLists();
 	        c.step(true, "a healthy worker without food still sustains a colony");
 	    }
 	    {
 	        Colony c;
-	        c.inn->resources[WHEAT] = 0;
+	        c.inn->materials[WHEAT] = 0;
 	        c.inn->updateCallLists();
 	        c.unit();
 	        c.step(false, "hungry colony with no food still loses");

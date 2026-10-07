@@ -14,7 +14,47 @@ from pathlib import Path
 from PIL import Image
 
 ROOT = Path(__file__).resolve().parents[1]
-BINDINGS = ("water", "sand", "grass", "ice", "road")
+LEGACY_BINDINGS = ("water", "sand", "grass", "ice", "road")
+BUILTIN_NAMES = ROOT / "tools/terrain_builtin_names.json"
+
+
+def required_bindings(root=ROOT):
+    """The five legacy names plus every paintable built-in presentation name.
+
+    tools/terrain_builtin_names.json lists the engine's paintable built-in
+    types; the engine's TerrainMaterials test compares this list with its tables.
+    """
+    names = list(LEGACY_BINDINGS)
+    path = Path(root) / BUILTIN_NAMES.relative_to(ROOT)
+    if path.is_file():
+        for name in json.loads(path.read_text()):
+            if name not in names:
+                names.append(name)
+    return tuple(names)
+
+
+BINDINGS = required_bindings()
+
+
+def material_provenance(document, root=ROOT):
+    """Per-material provenance summaries from datasrc/gfx/<key>/provenance.json.
+
+    Materials without a provenance file are existing terrain artwork with
+    shared periodic variant borders and no AI-generated imagery.
+    """
+    result = {}
+    for material in document["materials"]:
+        path = Path(root) / "datasrc/gfx" / material["key"] / "provenance.json"
+        if not path.is_file():
+            result[material["key"]] = dict(method="existing", source="Existing terrain artwork")
+            continue
+        record = json.loads(path.read_text())
+        summary = dict(method=record.get("method", "unknown"), source=path.relative_to(root).as_posix())
+        for field in ("generator", "generator_sha256", "source_sha256", "pillow", "replaces"):
+            if field in record:
+                summary[field] = record[field]
+        result[material["key"]] = summary
+    return result
 
 
 def pixel_fingerprint(image):
@@ -53,7 +93,7 @@ def validate(document, root=ROOT):
 
 
 def _validate(document, root):
-    if type(document.get("version")) is not int or document["version"] not in (1, 2):
+    if type(document.get("version")) is not int or document["version"] not in (1, 2, 3):
         raise ValueError("Unsupported terrain catalog version")
     version = document["version"]
     if version == 1 and "boundary_warp_q8" in document:
@@ -92,16 +132,24 @@ def _validate(document, root):
         if version == 1 and "feather_q8" in p:
             raise ValueError("Boundary feather requires catalog version 2")
         integer(p.get("feather_q8", 256), 128, 512, "Boundary feather")
+        for field in ("amplitude_q8", "speckle_q8", "bridge_q8"):
+            if version < 3 and field in p:
+                raise ValueError(f"{field} requires catalog version 3")
+            integer(p.get(field, 0), 0, 1024, field)
         curves = p["contours_q12"]
-        if not isinstance(curves, list) or len(curves) != 4 or any(
+        limit = {1: 256, 2: 512}.get(version, 1024)
+        if not isinstance(curves, list) or (
+            len(curves) != 4 if version < 3 else not 4 <= len(curves) <= 64
+        ) or any(
             not isinstance(c, list) or len(c) not in ((5,) if version == 1 else (5, 9, 17, 33))
             or c[0] != 0
             or c[-1] != 0
-            or any(type(n) is not int or abs(n) > (256 if version == 1 else 512) for n in c)
+            or any(type(n) is not int or abs(n) > limit for n in c)
             for c in curves
         ):
             raise ValueError(
-                "Profiles require four curves of 5, 9, 17 or 33 points with shared zero endpoints"
+                "Profiles require four curves (four to sixty-four in version 3) of 5, 9, 17 "
+                "or 33 points with shared zero endpoints"
             )
         profiles[p["key"]] = p
     materials = {}
@@ -126,6 +174,22 @@ def _validate(document, root):
             type(n) is not int or not 0 <= n <= 255 for n in minimap
         ):
             raise ValueError("Invalid minimap color")
+        if "seam" in m:
+            if version < 3:
+                raise ValueError("Seam treatments require catalog version 3")
+            seam = m["seam"]
+            if not isinstance(seam, dict):
+                raise ValueError("Seam must be an object")
+            integer(seam.get("height", 0), 0, 255, "Seam height")
+            integer(seam.get("cast_q8", 0), 0, 256, "Seam cast_q8")
+            integer(seam.get("cast_width_q8", 0), 0, 2048, "Seam cast_width_q8")
+            integer(seam.get("fringe_q8", 0), 0, 256, "Seam fringe_q8")
+            integer(seam.get("fringe_width_q8", 0), 0, 2048, "Seam fringe_width_q8")
+            fringe = seam.get("fringe", [255, 255, 255])
+            if not isinstance(fringe, list) or len(fringe) != 3 or any(
+                type(n) is not int or not 0 <= n <= 255 for n in fringe
+            ):
+                raise ValueError("Invalid seam fringe color")
         phases, stride, ticks = (
             m.get("animation_frames", 1),
             m.get("animation_stride", 0),
@@ -338,7 +402,10 @@ def compile_tileset(document, output, root=ROOT, page_size=1024, runtime_fingerp
             json.dumps(document, sort_keys=True, separators=(",", ":")).encode()
         ).hexdigest(),
         compiler_sha256=hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),
-        provenance="Existing terrain artwork; shared periodic variant borders and deterministic reusable contour masks. No AI-generated imagery.",
+        provenance=dict(
+            note="Shared periodic variant borders and deterministic reusable contour masks; per-material sources below.",
+            materials=material_provenance(document, root),
+        ),
     )
     (output / "atlas.json").write_text(json.dumps(manifest, indent=2) + "\n")
     return manifest

@@ -6,6 +6,7 @@
 #include "Growth.h"
 #include "Room.h"
 #include "Map.h"
+#include "ResourceSemantics.h"
 #include "Resources.h"
 #include "Planting.h"
 #include "Drawing.h"
@@ -241,7 +242,7 @@ int plantContainedPlot(Map &map, const Torus &t, const std::vector<int> &tiles,
 	for (int k = 0; k < count; ++k)
 	{
 		const int i = ranked[k].second;
-		map.setResource(i % t.w, i / t.w, resource, 1);
+		map.setResourceByIndex(i % t.w, i / t.w, resource, 1);
 	}
 	return count;
 }
@@ -265,14 +266,14 @@ std::string containedPlotsMismatch(const Map &map, const Torus &t, const std::ve
 				return "A spreading crop was planted outside its contained plot.";
 			continue;
 		}
-		if (!(map.terrainPropertiesAt(x,y).allowedResources & (1u<<WHEAT)))
+		if (!map.terrainSupportsResourceAtByIndex(x,y,WHEAT))
 			return "Contained plot " + std::to_string(plotOf[i]) + " lost grass at (" +
 				   std::to_string(x) + ", " + std::to_string(y) + ").";
 		for (int dy = -1; dy <= 1; ++dy)
 			for (int dx = -1; dx <= 1; ++dx)
 			{
 				const int j = t.at(x + dx, y + dy);
-				if ((map.terrainPropertiesAt(j).allowedResources & (1u<<WHEAT)) && plotOf[j] != plotOf[i])
+				if (map.terrainSupportsResourceAtByIndex(j % t.w,j / t.w,WHEAT) && plotOf[j] != plotOf[i])
 					return "A contained plot has a grass growth connection across its margin.";
 			}
 	}
@@ -703,10 +704,9 @@ double farmReachable(const Map &map, const Torus &t, const Farm &farm,
 	for (int i = 0; i < n; ++i)
 	{
 		const int x = i % t.w, y = i / t.w;
-		const bool deposit = map.isResource(x, y);
 		open[i] =
 			map.terrainPropertiesAt(x,y).walkable && map.getBuilding(x, y) == NOGBID &&
-			(!deposit || map.getResource(x, y).type == WHEAT || map.getResource(x, y).type == WOOD);
+			!permanentResourceBarrier(map, i);
 	}
 	const std::vector<int> steps = stepsFrom(t, tileMask(t, sources), open);
 	int land = 0, reached = 0;
@@ -715,7 +715,7 @@ double farmReachable(const Map &map, const Torus &t, const Farm &farm,
 		if (farm.plot[i] && steps[i] < 0)
 			return 0;
 		// Crop land is the rows' grass: the sand lane outside a sealed coast is not the farm's to work.
-		if (farm.row[i] < 0 || farm.row[i] % 2 || !open[i] || !(map.terrainPropertiesAt(i).allowedResources & (1u<<WHEAT)))
+		if (farm.row[i] < 0 || farm.row[i] % 2 || !open[i] || !map.terrainSupportsMaterialAt(i % t.w, i / t.w, MaterialId::Food))
 			continue;
 		++land;
 		reached += steps[i] >= 0;
@@ -782,8 +782,8 @@ std::pair<int, int> plantSealedGarden(Map &map, const Torus &t, GenerationContex
 	for (int i = 0; i < n; ++i)
 		if (garden[i])
 		{
-			standing.first += map.getResource(i % t.w, i / t.w).type == WHEAT;
-			standing.second += map.getResource(i % t.w, i / t.w).type == WOOD;
+			standing.first += map.materialAmountAt(i, MaterialId::Food) > 0;
+			standing.second += map.materialAmountAt(i, MaterialId::Wood) > 0;
 		}
 	return standing;
 }
@@ -848,7 +848,7 @@ int removeCropSlivers(Map &map, const Torus &t, const std::vector<unsigned char>
 			const auto open = [&](int dx, int dy)
 			{
 				const int j = t.at(x + dx, y + dy);
-				return (map.terrainPropertiesAt(j).allowedResources & (1u<<WHEAT)) && !map.isResource(j % t.w, j / t.w) &&
+				return map.terrainSupportsResourceAtByIndex(j % t.w,j / t.w,WHEAT) && !map.isResource(j % t.w, j / t.w) &&
 					   map.getBuilding(j % t.w, j / t.w) == NOGBID;
 			};
 			if ((open(-1, 0) && open(1, 0)) || (open(0, -1) && open(0, 1)))

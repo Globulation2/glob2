@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2005-2007 Bradley Arsenault
 
+#include "Material.h"
 #include "field/UniformTraversal.h"
 #include "AITelemetryFields.h"
 #include <Stream.h>
@@ -9,7 +10,8 @@
 #include "AIStateSerialization.h"
 #include "OrderMessages.h"
 #include "Game.h"
-#include "AIRules.h"
+#include "FileFormatVersions.h"
+#include <span>
 #include "Building.h"
 #include "GlobalContainer.h"
 #include "Order.h"
@@ -27,6 +29,74 @@
 #include <iomanip>
 
 using namespace Cabino;
+
+AIPlanning::BuildingIntent Cabino::intentForDemand(unsigned demand)
+{
+ using I=AIPlanning::BuildingIntent;
+ static constexpr I intents[]={I::ProduceWorker,I::Feed,I::Heal,I::TrainWalk,I::TrainSwim,
+  I::TrainAttackStrength,I::TrainConstruction,I::ProjectileDefense,I::AttractExplorers,
+  I::AttractWarriors,I::ClearResources,I::ExchangeResources};
+ assert(demand < DemandCount);
+ return intents[demand];
+}
+bool Cabino::provides(const Game& game,const Building& b,unsigned demand)
+{
+ return game.buildingCapabilities().matches(b.type->isBuildingSite ? b.type->nextLevel : b.typeNum,intentForDemand(demand));
+}
+int Cabino::selectBuilding(AICabino& ai,unsigned demand)
+{
+ const auto& index=ai.game->buildingCapabilities();
+ const auto intent=intentForDemand(demand);
+ int chosen=-1,count=0;
+ for (const auto& c:index.placements(intent))
+  if (index.available(c,intent,ai.game->gameHeader) && ai.random()%++count==0) chosen=c.placementType;
+ return chosen;
+}
+unsigned Cabino::upgradeWeight(const Game& game,const Building& b)
+{
+ unsigned weight=0;
+ for(unsigned demand=0;demand<DemandCount;++demand)
+  if(provides(game,b,demand)) weight=std::max(weight,BUILDING_UPGRADE_WEIGHTS[demand]);
+ return weight;
+}
+namespace {
+template<class X,class Y> bool placeRallyNear(AICabino& ai,int type,X& x,Y& y)
+{
+ const int originX=x,originY=y;
+ for(int radius=0;radius<=8;++radius)
+  for(int dx=-radius;dx<=radius;++dx)
+   for(int dy=-radius;dy<=radius;++dy)
+    if(ai.game->checkRoomForBuilding(originX+dx,originY+dy,ai.game->buildingsTypes.get(type),ai.team->teamNumber)) {
+     x=(originX+dx)&ai.map->wMask; y=(originY+dy)&ai.map->hMask; return true;
+    }
+ return false;
+}
+unsigned feedingStock(const Building& building,bool capacity)
+{
+ unsigned stock=0;
+ for(int resource=0;resource<MaterialSlotCount;++resource)
+  if(building.type->semantics.feeding.cost[resource]>0)
+   stock+=capacity ? building.type->maxMaterial[resource] : building.materials[resource];
+ return stock;
+}
+void retireRally(AICabino& ai,unsigned gid)
+{
+ auto* building=getBuildingFromGid(ai.game,gid);
+ if(!building) return;
+ const auto& s=building->type->semantics;
+ if(s.feeding.enabled || s.healing.enabled || building->type->shootingRange>0
+  || s.market.interTeamFruitExchange || s.market.suppliesStock || s.market.suppliesDirectStock
+  || std::any_of(s.production.recipes.begin(),s.production.recipes.end(),[](const auto& r){return r.enabled;})
+  || std::any_of(s.training.begin(),s.training.end(),[](const auto& r){return r.enabled;})) return;
+ if(s.instantPlacement && !s.occupiesGround) ai.orders.push(std::make_shared<OrderDelete>(gid));
+ else ai.orders.push(std::make_shared<OrderModifyBuilding>(gid,0));
+}
+int legacyConcrete(Game& game,unsigned family,unsigned level,bool site)
+{
+ static constexpr const char* names[]={"swarm","inn","hospital","racetrack","swimmingpool","barracks","school","defencetower","explorationflag","warflag","clearingflag","stonewall","market"};
+ return family < std::size(names) ? game.buildingsTypes.getTypeNum(names[family],level,site) : -1;
+}
+}
 
 AICabino::AICabino(Player *player)
 {
@@ -144,6 +214,7 @@ bool AICabino::load(GAGCore::InputStream *stream, Player *player, Sint32 version
 			order = Order::getOrder(buffer.data(),size,versionMinor);
 		}
 		if (!order) return false;
+		AIStateSerialization::normalizeLegacyOrderStaffing(*player->game,*order,versionMinor);
 		orders.push(order);
 		stream->readLeaveSection();
 	}
@@ -668,7 +739,7 @@ unsigned int GridPollingSystem::pollArea(unsigned int x, unsigned int y, unsigne
 				{
 					if(static_cast<int>(y) >= map->getH())
 						y=0;
-					if (map->isResourceTakeable(x, y, WHEAT))
+					if (map->isMaterialTakeable(x, y,MaterialId::Food))
 						score++;
 				}
 			}
@@ -681,7 +752,7 @@ unsigned int GridPollingSystem::pollArea(unsigned int x, unsigned int y, unsigne
 				{
 					if(static_cast<int>(y) >= map->getH())
 						y=0;
-					if (map->isResourceTakeable(x, y, WOOD))
+					if (map->isMaterialTakeable(x, y,MaterialId::Wood))
 						score++;
 				}
 			}
@@ -695,7 +766,7 @@ unsigned int GridPollingSystem::pollArea(unsigned int x, unsigned int y, unsigne
 				{
 					if(static_cast<int>(y) >= map->getH())
 						y=0;
-					if (map->isResourceTakeable(x, y, STONE))
+					if (map->isMaterialTakeable(x, y,MaterialId::Stone))
 						score++;
 				}
 			}
@@ -932,8 +1003,8 @@ unsigned int TeamStatsGenerator::getUnits(unsigned int type, Unit::Medical medic
 		Unit* u = myUnits[i];
 		if (u)
 		{
-			if (u->typeNum == static_cast<int>(type) && u->activity==activity && ((!isMinimum && u->level[ability]==static_cast<int>(level)) ||
-				(isMinimum && u->level[ability]>=static_cast<int>(level))) && u->medical==medical_state)
+			if (u->typeNum == static_cast<int>(type) && u->activity==activity && ((!isMinimum && (ability==BUILD ? u->workerLevel() : u->level[ability])==static_cast<int>(level)) ||
+				(isMinimum && (ability==BUILD ? u->workerLevel() : u->level[ability])>=static_cast<int>(level))) && u->medical==medical_state)
 			{
 				free_workers+=1;
 			}
@@ -956,34 +1027,14 @@ unsigned int TeamStatsGenerator::getUnits(unsigned int type, unsigned int abilit
 		Unit* u = myUnits[i];
 		if (u)
 		{
-			if (u->typeNum == static_cast<int>(type) && 	((!isMinimum && u->level[ability]==static_cast<int>(level)) ||
-									(  isMinimum && u->level[ability]>=static_cast<int>(level))))
+			if (u->typeNum == static_cast<int>(type) && 	((!isMinimum && (ability==BUILD ? u->workerLevel() : u->level[ability])==static_cast<int>(level)) ||
+									(  isMinimum && (ability==BUILD ? u->workerLevel() : u->level[ability])>=static_cast<int>(level))))
 			{
 				free_workers+=1;
 			}
 		}
 	}
 	return free_workers;
-}
-
-
-
-
-unsigned int TeamStatsGenerator::getMaximumBuildingLevel(unsigned int building_type)
-{
-	unsigned int level=0;
-	for (int i=0; i<1024; ++i)
-	{
-		Building* b = team->myBuildings[i];
-		if(b)
-		{
-			if(b->type->shortTypeNum == static_cast<int>(building_type))
-			{
-				level=std::max(static_cast<int>(level), b->type->level+1);
-			}
-		}
-	}
-	return level;
 }
 
 
@@ -1063,13 +1114,14 @@ int Gradient::getHeight(int x, int y) const
 
 bool Gradient::isSource(unsigned x, unsigned y)
 {
-	if(sources&VillageCenter && x==ai->getCenterX() && y==ai->getCenterY())
+	if ((map->materialMaskAt(map->coordToIndex(x,y)) & (sources>>8))!=0) return true;
+ if(sources&VillageCenter && x==ai->getCenterX() && y==ai->getCenterY())
 		return true;
-	if(sources&Wheat && map->isResourceTakeable(x, y, WHEAT))
+	if(sources&Wheat && map->isMaterialTakeable(x, y,MaterialId::Food))
 		return true;
-	if(sources&Wood && map->isResourceTakeable(x, y, WOOD))
+	if(sources&Wood && map->isMaterialTakeable(x, y,MaterialId::Wood))
 		return true;
-	if(sources&Stone && map->isResourceTakeable(x, y, STONE))
+	if(sources&Stone && map->isMaterialTakeable(x, y,MaterialId::Stone))
 		return true;
 	if(sources&TeamBuildings && map->getBuilding(x, y)!=NOGBID)
 	{
@@ -1269,15 +1321,15 @@ void SimpleBuildingDefense::save(GAGCore::OutputStream *stream) const
 
 bool SimpleBuildingDefense::findDefense()
 {
+ const int typeNum=selectBuilding(ai,AttractWarriors);
+ if(typeNum<0) return false;
 	ai.telemetry.count(AITrace::AI8::SimpleBuildingDefense_findDefense_calls);
 	ai.getUnitModule()->changeUnits("SimpleBuildingDefense", WARRIOR, BASE_DEFENSE_WARRIORS, ATTACK_STRENGTH, 1);
 	GridPollingSystem gps(ai);
 	for(std::map<unsigned int, unsigned int>::iterator i=building_health.begin(); i!=building_health.end();)
 	{
 		Building* b = getBuildingFromGid(ai.game, i->first);
-		if(b && b->type->shortTypeNum!=IntBuildingType::EXPLORATION_FLAG &&
-			b->type->shortTypeNum!=IntBuildingType::WAR_FLAG &&
-			b->type->shortTypeNum!=IntBuildingType::CLEARING_FLAG)
+		if(b && b->type->semantics.occupiesGround)
 		{
 			if(building_health.find(b->gid) != building_health.end())
 			{
@@ -1313,11 +1365,12 @@ bool SimpleBuildingDefense::findDefense()
 					dr.assigned=gps.pollArea(dr.zonex, dr.zoney, dr.width, dr.height, GridPollingSystem::MAXIMUM, GridPollingSystem::ENEMY_WARRIORS);
 					dr.assigned= std::min(20u, dr.assigned*2);
 					dr.building=b->gid;
-					defending_zones.push_back(dr);
-					Sint32 typeNum=globalContainer->buildingsTypes.getTypeNum("warflag", 0, false);
+					if(!placeRallyNear(ai,typeNum,dr.flagx,dr.flagy)) { ++i; continue; }
+     defending_zones.push_back(dr);
+
 					if(AICabino_DEBUG)
-						std::cout<<"AICabino: findDefense: Creating a defense flag at "<<dr.flagx<<", "<<dr.flagy<<", to combat "<<dr.assigned<<" units that are attacking our "<<IntBuildingType::reverseConversionMap[b->type->shortTypeNum]<<" at "<<b->posX<<","<<b->posY<<"."<<std::endl;
-					ai.orders.push(std::shared_ptr<Order>(new OrderCreate(ai.team->teamNumber, dr.flagx, dr.flagy, typeNum, 1, 1)));
+						std::cout<<"AICabino: findDefense: Creating a defense flag at "<<dr.flagx<<", "<<dr.flagy<<", to combat "<<dr.assigned<<" units that are attacking our "<<b->type->key<<" at "<<b->posX<<","<<b->posY<<"."<<std::endl;
+					ai.orders.push(AIRules::createOrder(*ai.game, ai.team->teamNumber, dr.flagx, dr.flagy, typeNum, 1, 1));
 				}
 			}
 			++i;
@@ -1336,9 +1389,7 @@ bool SimpleBuildingDefense::findDefense()
 		Building* b = ai.team->myBuildings[i];
 		if(b)
 		{
-			if(b->type->shortTypeNum!=IntBuildingType::EXPLORATION_FLAG &&
-				b->type->shortTypeNum!=IntBuildingType::WAR_FLAG &&
-				b->type->shortTypeNum!=IntBuildingType::CLEARING_FLAG)
+			if(b->type->semantics.occupiesGround)
 			{
 				building_health[b->gid]=std::min(b->getEffectiveMaxHp(), b->hp);
 			}
@@ -1372,7 +1423,7 @@ bool SimpleBuildingDefense::updateFlags()
 			{
 				if(AICabino_DEBUG)
 					std::cout<<"AICabino: updateFlags: Found a flag at "<<i->flagx<<","<<i->flagy<<" that is no longer defending against any enemy units. Removing this flag."<<std::endl;
-				ai.orders.push(std::shared_ptr<Order>(new OrderDelete(i->flag)));
+				retireRally(ai,i->flag);
 				ai.getUnitModule()->request("PrioritizedBuildingAttack", WARRIOR, ATTACK_STRENGTH, 1, 0, i->flag);
 				i=defending_zones.erase(i);
 				continue;
@@ -1405,7 +1456,7 @@ bool SimpleBuildingDefense::findCreatedDefenseFlags()
 		Building* b = ai.team->myBuildings[i];
 		if(b)
 		{
-			if(b->type->shortTypeNum == IntBuildingType::WAR_FLAG)
+			if(provides(*ai.game,*b,AttractWarriors))
 			{
 				for (std::vector<defenseRecord>::iterator i=defending_zones.begin(); i!=defending_zones.end(); ++i)
 				{
@@ -1483,6 +1534,12 @@ bool GeneralsDefense::load(GAGCore::InputStream *stream, Player *player, Sint32 
 		defenseRecord dr;
 		dr.flag=stream->readUint32("flag");
 		dr.enemy_flag=stream->readUint32("enemy_flag");
+		if (versionMinor >= FILE_FORMAT_VERSION_BUILDING_CATALOG)
+		{
+			dr.x=stream->readSint32("x"); dr.y=stream->readSint32("y");
+		}
+		else if (auto* enemy=getBuildingFromGid(player->game,dr.enemy_flag))
+		{ dr.x=enemy->posX; dr.y=enemy->posY; }
 		defending_flags.push_back(dr);
 		// FIXME : clear the container before load
 		stream->readLeaveSection();
@@ -1506,6 +1563,7 @@ void GeneralsDefense::save(GAGCore::OutputStream *stream) const
 		std::vector<defenseRecord>::const_iterator i = defending_flags.begin() + defenseRecordIndex;
 		stream->writeUint32(i->flag, "flag");
 		stream->writeUint32(i->enemy_flag, "enemy_flag");
+		stream->writeSint32(i->x, "x"); stream->writeSint32(i->y, "y");
 		stream->writeLeaveSection();
 	}
 	stream->writeLeaveSection();
@@ -1517,6 +1575,8 @@ void GeneralsDefense::save(GAGCore::OutputStream *stream) const
 
 bool GeneralsDefense::findEnemyFlags()
 {
+ const int typeNum=selectBuilding(ai,AttractWarriors);
+ if(typeNum<0) return false;
 	ai.telemetry.count(AITrace::AI8::GeneralsDefense_findEnemyFlags_calls);
 	GridPollingSystem gps(ai);
 	for (unsigned int t=0; t<static_cast<unsigned int>(Team::MAX_COUNT); t++)
@@ -1531,7 +1591,7 @@ bool GeneralsDefense::findEnemyFlags()
 					Building* b = team->myBuildings[n];
 					if(b)
 					{
-						if(b->type->shortTypeNum==IntBuildingType::WAR_FLAG)
+						if(provides(*ai.game,*b,AttractWarriors))
 						{
 
 							unsigned int score = gps.pollArea((b->posX)-(b->unitStayRange)-DEFENSE_ZONE_SIZE_INCREASE,
@@ -1554,11 +1614,14 @@ bool GeneralsDefense::findEnemyFlags()
 								defenseRecord dr;
 								dr.flag=NOGBID;
 								dr.enemy_flag=b->gid;
-								defending_flags.push_back(dr);
+								int rallyX=b->posX,rallyY=b->posY;
+        if(!placeRallyNear(ai,typeNum,rallyX,rallyY)) continue;
+        dr.x=rallyX; dr.y=rallyY;
+        defending_flags.push_back(dr);
 								if(AICabino_DEBUG)
 									std::cout<<"AICabino: findEnemyFlags: Creating new flag at "<<b->posX<<","<<b->posY<<" to combat an enemy attack!"<<std::endl;
-								Sint32 typeNum=globalContainer->buildingsTypes.getTypeNum("warflag", 0, false);
-								ai.orders.push(std::shared_ptr<Order>(new OrderCreate(ai.team->teamNumber, b->posX, b->posY, typeNum, 1, 1)));
+
+								ai.orders.push(AIRules::createOrder(*ai.game, ai.team->teamNumber, rallyX, rallyY, typeNum, 1, 1));
 							}
 						}
 					}
@@ -1593,11 +1656,11 @@ bool GeneralsDefense::updateDefenseFlags()
 				Building* b = ai.team->myBuildings[n];
 				if(b)
 				{
-					if(b->type->shortTypeNum == IntBuildingType::WAR_FLAG && b->posX==eb->posX && b->posY==eb->posY)
+					if(provides(*ai.game,*b,AttractWarriors) && b->posX==i->x && b->posY==i->y)
 					{
 						i->flag=b->gid;
-						ai.orders.push(std::shared_ptr<Order>(new OrderModifyFlag(i->flag, eb->unitStayRange)));
-						ai.orders.push(std::shared_ptr<Order>(new OrderModifyBuilding(i->flag, eb->maxUnitWorking)));
+						ai.orders.push(std::shared_ptr<Order>(new OrderModifyFlag(i->flag, std::min(eb->unitStayRange,b->type->maxUnitStayRange))));
+						ai.orders.push(std::shared_ptr<Order>(new OrderModifyBuilding(i->flag, std::min(eb->maxUnitWorking,b->type->semantics.assignmentLimit))));
 						ai.orders.push(std::shared_ptr<Order>(new OrderModifyMinLevelToFlag(i->flag, ai.game->gameHeader.isUnitUpgradesDisabled() ? 0 : eb->minLevelToFlag)));
 						break;
 					}
@@ -1751,7 +1814,7 @@ bool PrioritizedBuildingAttack::targetEnemy()
 		{
 			if(j->flag!=NOGBID)
 			{
-				ai.orders.push(std::shared_ptr<Order>(new OrderDelete(j->flag)));
+				retireRally(ai,j->flag);
 				j=attacks.erase(j);
 			}
 			else
@@ -1788,6 +1851,8 @@ bool PrioritizedBuildingAttack::targetEnemy()
 
 bool PrioritizedBuildingAttack::attack()
 {
+ const int typeNum=selectBuilding(ai,AttractWarriors);
+ if(typeNum<0) return false;
 	ai.telemetry.count(AITrace::AI8::PrioritizedBuildingAttack_attack_calls);
 	// targetEnemy() (time_slice_n==0) leaves enemy NULL when no enemy team is
 	// currently alive to target; nothing to attack this cycle in that case.
@@ -1806,11 +1871,11 @@ bool PrioritizedBuildingAttack::attack()
 		Building* b = ai.team->myBuildings[i];
 		if(b)
 		{
-			if(b->type->shortTypeNum==IntBuildingType::ATTACK_BUILDING)
+			if(provides(*ai.game,*b,TrainAttack))
 			{
 				if(b->constructionResultState==Building::NO_CONSTRUCTION)
 				{
-					max_barracks_level=std::max(max_barracks_level, static_cast<unsigned int>(b->type->level+1));
+					max_barracks_level=std::max(max_barracks_level, static_cast<unsigned int>(b->type->semantics.training[ATTACK_STRENGTH].targetLevel));
 					found_barracks++;
 				}
 			}
@@ -1882,7 +1947,7 @@ bool PrioritizedBuildingAttack::attack()
 
 	//The following goes through each of the buildings in the enemies foothold, and adds them to the appropriette list based on their position in the
 	//ATTACK_PRIORITY variable.
-	std::vector<std::vector<Building*> > buildings(IntBuildingType::NB_BUILDING);
+	std::vector<std::vector<Building*> > buildings(std::size(ATTACK_PRIORITY)+1);
 	for(int i=0; i<1024; ++i)
 	{
 		Building* b = enemy->myBuildings[i];
@@ -1890,11 +1955,11 @@ bool PrioritizedBuildingAttack::attack()
 		{
 			if(!b->locked[1])
 			{
-				if(std::find(IGNORED_BUILDINGS, IGNORED_BUILDINGS+3, b->type->shortTypeNum)==IGNORED_BUILDINGS+3)
-				{
-					unsigned int pos=std::find(ATTACK_PRIORITY, ATTACK_PRIORITY+(IntBuildingType::NB_BUILDING-3), b->type->shortTypeNum)-ATTACK_PRIORITY;
-					buildings[pos].push_back(b);
-				}
+    if(b->type->semantics.occupiesGround) {
+     unsigned pos=0;
+     while(pos<std::size(ATTACK_PRIORITY) && !provides(*ai.game,*b,ATTACK_PRIORITY[pos])) ++pos;
+     buildings[pos].push_back(b);
+    }
 			}
 		}
 	}
@@ -1902,7 +1967,9 @@ bool PrioritizedBuildingAttack::attack()
 	//And now we shuffle then for added randomness
 	for(unsigned int i=0; i<buildings.size(); ++i)
 	{
-		selection_sort(buildings[i].begin(), buildings[i].end(), buildingAttackPredicate);
+		for (size_t count=buildings[i].size();count>1;--count)
+   std::swap(buildings[i][count-1],buildings[i][ai.random()%count]);
+  std::stable_partition(buildings[i].begin(),buildings[i].end(),[](const Building* b){return b->constructionResultState==Building::NO_CONSTRUCTION;});
 	}
 
 	//Iterate through the buildings, starting attacks as neccecary, and stopping when
@@ -1951,11 +2018,12 @@ bool PrioritizedBuildingAttack::attack()
 				ar.unit_height=b->type->height+ATTACK_ZONE_EXAMINATION_PADDING*2;
 				ar.assigned_units=std::min(std::min(static_cast<unsigned int>(20), available_units), std::max(gps.pollArea(ar.unitx, ar.unity, ar.unit_width, ar.unit_height, GridPollingSystem::MAXIMUM, GridPollingSystem::ENEMY_UNITS), ATTACK_WARRIOR_MINIMUM));
 				ar.assigned_level=strength_level;
-				attacks.push_back(ar);
+				if(!placeRallyNear(ai,typeNum,ar.flagx,ar.flagy)) continue;
+    attacks.push_back(ar);
 				if(AICabino_DEBUG)
 					std::cout<<"AICabino: attack: Creating a war flag at "<<ar.flagx<<", "<<ar.flagy<<" and assigning "<<ar.assigned_units<<" units to fight and kill the building at "<<b->posX<<","<<b->posY<<"."<<std::endl;
-				Sint32 typeNum=globalContainer->buildingsTypes.getTypeNum("warflag", 0, false);
-				ai.orders.push(std::shared_ptr<Order>(new OrderCreate(ai.team->teamNumber, ar.flagx, ar.flagy, typeNum, 1, 1)));
+
+				ai.orders.push(AIRules::createOrder(*ai.game, ai.team->teamNumber, ar.flagx, ar.flagy, typeNum, 1, 1));
 				++attack_count;
 				available_units-=ar.assigned_units;
 			}
@@ -1990,7 +2058,7 @@ bool PrioritizedBuildingAttack::updateAttackFlags()
 		Building* b = ai.team->myBuildings[i];
 		if(b)
 		{
-			if(b->type->shortTypeNum==IntBuildingType::WAR_FLAG)
+			if(provides(*ai.game,*b,AttractWarriors))
 			{
 				for(std::vector<attackRecord>::iterator j = attacks.begin(); j!=attacks.end(); j++)
 				{
@@ -2027,7 +2095,7 @@ bool PrioritizedBuildingAttack::updateAttackFlags()
 				if(AICabino_DEBUG)
 					std::cout<<"AICabino: updateAttackFlags: Stopping attack on a building, removing the "<<j->flagx<<","<<j->flagy<<" flag."<<std::endl;
 				ai.getUnitModule()->request("PrioritizedBuildingAttack", WARRIOR, ATTACK_STRENGTH, j->assigned_level+1, 0, j->flag);
-				ai.orders.push(std::shared_ptr<Order>(new OrderDelete(j->flag)));
+				retireRally(ai,j->flag);
 				j=attacks.erase(j);
 				continue;
 			}
@@ -2043,11 +2111,11 @@ bool PrioritizedBuildingAttack::updateAttackFlags()
 		Building* b = ai.team->myBuildings[i];
 		if(b)
 		{
-			if(b->type->shortTypeNum==IntBuildingType::ATTACK_BUILDING)
+			if(provides(*ai.game,*b,TrainAttack))
 			{
 				if(b->constructionResultState==Building::NO_CONSTRUCTION)
 				{
-					max_barracks_level=std::max(max_barracks_level, static_cast<unsigned int>(b->type->level+1));
+					max_barracks_level=std::max(max_barracks_level, static_cast<unsigned int>(b->type->semantics.training[ATTACK_STRENGTH].targetLevel));
 					found_barracks++;
 				}
 			}
@@ -2090,7 +2158,7 @@ bool PrioritizedBuildingAttack::updateAttackFlags()
 			{
 				if(AICabino_DEBUG)
 					std::cout<<"AICabino: updateAttackFlags: Stopping attack, not enough free warriors, removing the "<<j->flagx<<","<<j->flagy<<" flag."<<std::endl;
-				ai.orders.push(std::shared_ptr<Order>(new OrderDelete(j->flag)));
+				retireRally(ai,j->flag);
 				j=attacks.erase(j);
 				continue;
 			}
@@ -2183,6 +2251,11 @@ bool DistributedNewConstructionManager::load(GAGCore::InputStream *stream, Playe
 		ncr.y = stream->readUint32("y");
 		ncr.assigned = stream->readUint32("assigned");
 		ncr.building_type = stream->readUint32("building_type");
+  if(versionMinor<FILE_FORMAT_VERSION_BUILDING_CATALOG) {
+   ncr.concreteType=legacyConcrete(*ai.game,ncr.building_type,0,true);
+   if(ncr.building_type==12) ncr.building_type=ExchangeResources;
+  } else ncr.concreteType=stream->readSint32("concreteType");
+  if(ncr.building_type>=DemandCount || ncr.concreteType<0 || size_t(ncr.concreteType)>=ai.game->buildingsTypes.size()) return false;
 		ncr.no_build_timeout = stream->readUint32("no_build_timeout");
 		new_buildings.push_back(ncr);
 		// FIXME : clear the container before load
@@ -2199,7 +2272,12 @@ bool DistributedNewConstructionManager::load(GAGCore::InputStream *stream, Playe
 		stream->readEnterSection(numBuildingWantedIndex);
 		Uint32 first=stream->readUint32("first");
 		Uint32 second=stream->readUint32("second");
-		num_buildings_wanted[first] = second;
+		if(versionMinor<FILE_FORMAT_VERSION_BUILDING_CATALOG) {
+   if(first==11) { stream->readLeaveSection(); continue; }
+   if(first==12) first=ExchangeResources;
+  }
+  if(first>=DemandCount) return false;
+  num_buildings_wanted[first] = second;
 		// FIXME : clear the container before load
 		stream->readLeaveSection();
 	}
@@ -2227,6 +2305,7 @@ void DistributedNewConstructionManager::save(GAGCore::OutputStream *stream) cons
 		stream->writeUint32(i->y, "y");
 		stream->writeUint32(i->assigned, "assigned");
 		stream->writeUint32(i->building_type, "building_type");
+  stream->writeSint32(i->concreteType,"concreteType");
 		stream->writeUint32(i->no_build_timeout, "no_build_timeout");
 		stream->writeLeaveSection();
 	}
@@ -2252,40 +2331,31 @@ void DistributedNewConstructionManager::save(GAGCore::OutputStream *stream) cons
 
 
 
-DistributedNewConstructionManager::upgradeData DistributedNewConstructionManager::findMaxSize(unsigned int building_type, unsigned int cur_level)
+DistributedNewConstructionManager::upgradeData DistributedNewConstructionManager::findMaxSize(unsigned int concreteType)
 {
-	ai.telemetry.set(AITrace::AI8::DistributedNewConstructionManager_findMaxSize_input_cur_level,
-					 cur_level);
-	ai.telemetry.set(
-		AITrace::AI8::DistributedNewConstructionManager_findMaxSize_input_building_type,
-		building_type);
-	ai.telemetry.count(AITrace::AI8::DistributedNewConstructionManager_findMaxSize_calls);
-	std::string type = IntBuildingType::reverseConversionMap[building_type];
-	BuildingType* new_type = ai.game->gameHeader.isUnitUpgradesDisabled() ? nullptr
-		: globalContainer->buildingsTypes.getByType(type, 2, false);
-	BuildingType* cur_type = globalContainer->buildingsTypes.getByType(type, cur_level, false);
-	upgradeData ud;
-	if(new_type)
-	{
-		ud.width=new_type->width;
-		ud.height=new_type->height;
-		ud.horizontal_offset = (new_type->width - cur_type->width)/2;
-		ud.vertical_offset = (new_type->height - cur_type->height)/2;
-	}
-	else
-	{
-		ud.width=cur_type->width;
-		ud.height=cur_type->height;
-		ud.horizontal_offset=0;
-		ud.vertical_offset=0;
-	}
-	return ud;
+ if(footprints.size()!=ai.game->buildingsTypes.size()) {
+  footprints.resize(ai.game->buildingsTypes.size());
+  for(size_t id=0;id<footprints.size();++id) {
+   const auto* current=ai.game->buildingsTypes.get(id);
+   unsigned width=current->width,height=current->height;
+   if(!ai.game->gameHeader.isUnitUpgradesDisabled()) {
+    const auto* next=current;
+    for(size_t count=0;next->nextLevel>=0 && count<footprints.size();++count) {
+     next=ai.game->buildingsTypes.get(next->nextLevel);
+     width=std::max<unsigned>(width,next->width); height=std::max<unsigned>(height,next->height);
+    }
+   }
+   auto& size=footprints[id]; size.width=width; size.height=height;
+   size.horizontal_offset=(width-current->width)/2; size.vertical_offset=(height-current->height)/2;
+  }
+ }
+ return footprints.at(concreteType);
 }
 
 
 
 
-DistributedNewConstructionManager::point DistributedNewConstructionManager::findBestPlace(unsigned int building_type)
+DistributedNewConstructionManager::point DistributedNewConstructionManager::findBestPlace(unsigned int building_type,unsigned int concreteType)
 {
 	ai.telemetry.set(
 		AITrace::AI8::DistributedNewConstructionManager_findBestPlace_input_building_type,
@@ -2297,7 +2367,26 @@ DistributedNewConstructionManager::point DistributedNewConstructionManager::find
 	unsigned top_score=0;
 	unsigned width=ai.map->getW();
 	unsigned height=ai.map->getH();
-	upgradeData size=findMaxSize(building_type, 0);
+	upgradeData size=findMaxSize(concreteType);
+ std::array<GradientPoll,CONSTRUCTOR_FACTORS_COUNT> factors;
+ std::copy(std::begin(CONSTRUCTION_FACTORS[building_type]),std::end(CONSTRUCTION_FACTORS[building_type]),factors.begin());
+ const auto* placement=ai.game->buildingsTypes.get(concreteType);
+ const auto* completed=placement->isBuildingSite ? ai.game->buildingsTypes.get(placement->nextLevel) : placement;
+ unsigned recurring=0,construction=0;
+ for(int resource=0;resource<MaterialSlotCount;++resource) {
+  const auto& spec=completed->semantics;
+  bool consumes=(spec.feeding.enabled && spec.feeding.cost[resource]>0) || (spec.healing.enabled && spec.healing.cost[resource]>0);
+  for(const auto& recipe:spec.production.recipes) consumes|=recipe.enabled && recipe.cost[resource]>0;
+  for(const auto& training:spec.training) consumes|=training.enabled && training.cost[resource]>0;
+  consumes|=completed->shootingRange>0 && spec.ammunitionMaterial==resource && spec.ammunitionCost>0;
+  if(consumes) recurring|=1u<<(8+resource);
+  if(placement->semantics.constructionCost[resource]>0) construction|=1u<<(8+resource);
+ }
+ const unsigned inputs=recurring ? recurring : construction;
+ for(auto& factor:factors)
+  if(!factor.is_null && (factor.source==Gradient::Wheat || factor.source==Gradient::Wood || factor.source==Gradient::Stone))
+   factor.source=static_cast<Gradient::Sources>(inputs ? inputs : Gradient::VillageCenter);
+
 	for(unsigned int x=0; x<width; ++x)
 	{
 		for(unsigned int y=0; y<height; ++y)
@@ -2310,13 +2399,13 @@ DistributedNewConstructionManager::point DistributedNewConstructionManager::find
 			bool failed=false;
 			for(unsigned int factor=0; factor<CONSTRUCTOR_FACTORS_COUNT; ++factor)
 			{
-				if(!CONSTRUCTION_FACTORS[building_type][factor].is_null)
+				if(!factors[factor].is_null)
 				{
-					const unsigned source=CONSTRUCTION_FACTORS[building_type][factor].source;
-					const unsigned obstacle=CONSTRUCTION_FACTORS[building_type][factor].obstacle;
-					const int weight = CONSTRUCTION_FACTORS[building_type][factor].weight;
-					const int min_dist = CONSTRUCTION_FACTORS[building_type][factor].min_dist;
-					const int max_dist = CONSTRUCTION_FACTORS[building_type][factor].max_dist;
+					const unsigned source=factors[factor].source;
+					const unsigned obstacle=factors[factor].obstacle;
+					const int weight = factors[factor].weight;
+					const int min_dist = factors[factor].min_dist;
+					const int max_dist = factors[factor].max_dist;
 					const Gradient& gradient = ai.getGradientManager().getGradient(source, obstacle);
 					const int top_left=gradient.getHeight(x, y);
 					const int top_right=gradient.getHeight(x+size.width-1, y);
@@ -2415,10 +2504,10 @@ bool DistributedNewConstructionManager::constructBuildings()
 	unsigned total_free_workers=ai.getUnitModule()->available("DistributedNewConstructionManager", WORKER, BUILD, 1, true);
 
 	//Counts out the number of buildings allready existing, including ones under construction
-	unsigned int counts[IntBuildingType::NB_BUILDING];
+	unsigned int counts[DemandCount];
 
 	//The totals of the number of builinds under construction only
-	unsigned int under_construction_counts[IntBuildingType::NB_BUILDING];
+	unsigned int under_construction_counts[DemandCount];
 
 	//The total amount of construction
 	unsigned int total_construction=new_buildings.size();
@@ -2443,9 +2532,11 @@ bool DistributedNewConstructionManager::constructBuildings()
 	}
 
 	//Count up the numbers of buildings not under construction on a per-building type basis
-	for(unsigned i = 0; i<IntBuildingType::NB_BUILDING; ++i)
+	for(unsigned i = 0; i<DemandCount; ++i)
 	{
-		counts[i]=ai.team->stats.getLatestStat()->numberBuildingPerType[i];
+		counts[i]=0;
+  for(auto* building:std::span<Building*>(ai.team->myBuildings,Building::MAX_COUNT))
+   if(building && !building->type->isBuildingSite && provides(*ai.game,*building,i)) ++counts[i];
 		under_construction_counts[i]=0;
 	}
 
@@ -2466,7 +2557,7 @@ bool DistributedNewConstructionManager::constructBuildings()
 	}
 
 	//Develop a list of percentages used for sorting what buildings this ai should develop first, and sort this list
-	for (unsigned int i = 0; i<IntBuildingType::NB_BUILDING; ++i)
+	for (unsigned int i = 0; i<DemandCount; ++i)
 	{
 		if(STRICT_NEW_CONSTRUCTION_PRIORITIES[i]==0)
 			continue;
@@ -2485,9 +2576,11 @@ bool DistributedNewConstructionManager::constructBuildings()
 	unsigned int min_failed_height=512;
 	for(std::vector<typePercent>::iterator i = construction_priorities.begin(); i!=construction_priorities.end(); ++i)
 	{
-		if (!AIRules::usefulBuilding(ai.game->gameHeader,i->building_type)
-			|| (ai.game->gameHeader.isHungerDisabled() && i->building_type==IntBuildingType::FOOD_BUILDING)) continue;
-		std::string building_name=IntBuildingType::reverseConversionMap[i->building_type];
+		if (!AIPlanning::BuildingCapabilityIndex::allowed(intentForDemand(i->building_type),ai.game->gameHeader)
+			|| (ai.game->gameHeader.isHungerDisabled() && i->building_type==FeedUnits)) continue;
+		const int concreteType=selectBuilding(ai,i->building_type);
+  if(concreteType<0) continue;
+  std::string building_name=ai.game->buildingsTypes.get(concreteType)->key;
 		if(CabinoStatusUpdate)
 		{
 			ai.clearDebugMessages("DistributedNewConstructionManager", "Construction", building_name);
@@ -2508,7 +2601,7 @@ bool DistributedNewConstructionManager::constructBuildings()
 			if(total_construction>=MAX_NEW_CONSTRUCTION_AT_ONCE)
 			{
 				if(local_debug)
-					std::cout<<"Fail 1, too much construction, for "<<IntBuildingType::reverseConversionMap[i->building_type]<<"."<<std::endl;
+					std::cout<<"Fail 1, too much construction, for "<<std::to_string(i->building_type)<<"."<<std::endl;
 				if(!CabinoStatusUpdate)
 					return false;
 				else
@@ -2518,7 +2611,7 @@ bool DistributedNewConstructionManager::constructBuildings()
 			if(total_free_workers<MINIMUM_TO_CONSTRUCT_NEW && !CHEAT_INSTANT_BUILDING)
 			{
 				if(local_debug)
-					std::cout<<"Fail 2, too few units, for "<<IntBuildingType::reverseConversionMap[i->building_type]<<"."<<std::endl;
+					std::cout<<"Fail 2, too few units, for "<<std::to_string(i->building_type)<<"."<<std::endl;
 				if(!CabinoStatusUpdate)
 					return false;
 				else
@@ -2528,7 +2621,7 @@ bool DistributedNewConstructionManager::constructBuildings()
 			if(under_construction_counts[i->building_type]>=MAX_NEW_CONSTRUCTION_PER_BUILDING[i->building_type])
 			{
 				if(local_debug)
-					std::cout<<"Fail 3, too many buildings of this type under constructon, for "<<IntBuildingType::reverseConversionMap[i->building_type]<<"."<<std::endl;
+					std::cout<<"Fail 3, too many buildings of this type under constructon, for "<<std::to_string(i->building_type)<<"."<<std::endl;
 				if(!CabinoStatusUpdate)
 					break;
 				else
@@ -2538,7 +2631,7 @@ bool DistributedNewConstructionManager::constructBuildings()
 			if(counts[i->building_type]>=num_buildings_wanted[i->building_type])
 			{
 				if(local_debug)
-					std::cout<<"Fail 4, building cap reached, for "<<IntBuildingType::reverseConversionMap[i->building_type]<<"."<<std::endl;
+					std::cout<<"Fail 4, building cap reached, for "<<std::to_string(i->building_type)<<"."<<std::endl;
 				if(!CabinoStatusUpdate)
 					break;
 				else
@@ -2547,7 +2640,7 @@ bool DistributedNewConstructionManager::constructBuildings()
 			}
 
 			//Find the largest size that this building can have
-			upgradeData size=findMaxSize(i->building_type, 0);
+			upgradeData size=findMaxSize(concreteType);
 			//If there wasn't a place for a smaller building than this one, than there certainly won't be a place for this one
 			if(size.width>=min_failed_width && size.height>=min_failed_height)
 			{
@@ -2558,14 +2651,14 @@ bool DistributedNewConstructionManager::constructBuildings()
 			if(should_break)
 				break;
 
-			point p = findBestPlace(i->building_type);
+			point p = findBestPlace(i->building_type,concreteType);
 			if(p.x == NO_POSITION || p.y==NO_POSITION)
 			{
 				min_failed_width=size.width;
 				min_failed_height=size.height;
 
 				if(local_debug)
-					std::cout<<"Fail 5, no suitable positon found, for "<<IntBuildingType::reverseConversionMap[i->building_type]<<"."<<std::endl;
+					std::cout<<"Fail 5, no suitable positon found, for "<<std::to_string(i->building_type)<<"."<<std::endl;
 				if(CabinoStatusUpdate)
 					ai.addDebugMessage("DistributedNewConstructionManager", "Construction", building_name, "I won't construct this because there is no place to put this building.");
 				break;
@@ -2580,27 +2673,28 @@ bool DistributedNewConstructionManager::constructBuildings()
 
 			//Don't assign more units than the total amount of resources needed to construct the building.
 			unsigned int needed_resource_total=0;
-			BuildingType* t=globalContainer->buildingsTypes.getByType(IntBuildingType::reverseConversionMap[i->building_type], 0, true);
-			for(unsigned int n=0; n<MAX_NB_RESOURCES; ++n)
+			BuildingType* t=ai.game->buildingsTypes.get(concreteType);
+			for(unsigned int n=0; n<MaterialSlotCount; ++n)
 			{
-				needed_resource_total+=t->maxResource[n];
+				needed_resource_total+=t->semantics.constructionCost[n];
 			}
 			ncr.assigned=std::min(total_free_workers, std::min(MAXIMUM_TO_CONSTRUCT_NEW, needed_resource_total));
 
 			ncr.building_type=i->building_type;
+   ncr.concreteType=concreteType;
 			ncr.no_build_timeout=BUILDING_RECORD_TIMEOUT;
 			new_buildings.push_back(ncr);
 
 			if(AICabino_DEBUG)
-				std::cout<<"AICabino: constructBuildings: Starting construction on a "<<IntBuildingType::reverseConversionMap[i->building_type]<<", at position "<<p.x<<","<<p.y<<"."<<std::endl;
-			Sint32 type=globalContainer->buildingsTypes.getTypeNum(IntBuildingType::reverseConversionMap[i->building_type], 0, !CHEAT_INSTANT_BUILDING);
-			ai.orders.push(std::shared_ptr<Order>(new OrderCreate(ai.team->teamNumber, p.x, p.y, type, 1, 1)));
+				std::cout<<"AICabino: constructBuildings: Starting construction on a "<<std::to_string(i->building_type)<<", at position "<<p.x<<","<<p.y<<"."<<std::endl;
+			Sint32 type=concreteType;
+			ai.orders.push(AIRules::createOrder(*ai.game, ai.team->teamNumber, p.x, p.y, type, 1, 1));
 			total_construction+=1;
 			total_free_workers-=ncr.assigned;
 			under_construction_counts[i->building_type]++;
 			counts[i->building_type]++;
 			///Update the imap
-			updateImap(ncr.x, ncr.y, i->building_type);
+			updateImap(ncr.x, ncr.y, concreteType);
 		}
 	}
 	return false;
@@ -2649,7 +2743,7 @@ bool DistributedNewConstructionManager::updateBuildings()
 		{
 			for(std::vector<newConstructionRecord>::iterator i = new_buildings.begin(); i != new_buildings.end(); ++i)
 			{
-				if(i->building==NOGBID && b->type->shortTypeNum == static_cast<int>(i->building_type) && b->posX == static_cast<int>(i->x) && b->posY == static_cast<int>(i->y))
+				if(i->building==NOGBID && (b->typeNum == i->concreteType || b->typeNum == ai.game->buildingsTypes.get(i->concreteType)->nextLevel) && b->posX == static_cast<int>(i->x) && b->posY == static_cast<int>(i->y))
 				{
 					i->building=b->gid;
 					i->no_build_timeout=-1;
@@ -2678,10 +2772,10 @@ bool DistributedNewConstructionManager::updateBuildings()
 bool DistributedNewConstructionManager::calculateBuildings()
 {
 	unsigned int total_units=ai.team->stats.getLatestStat()->totalUnit;
-	for (int i=0; i<IntBuildingType::NB_BUILDING; ++i)
+	for (int i=0; i<DemandCount; ++i)
 	{
-		if(AIRules::usefulBuilding(ai.game->gameHeader, i)
-			&& !(ai.game->gameHeader.isHungerDisabled() && i==IntBuildingType::FOOD_BUILDING)
+		if(AIPlanning::BuildingCapabilityIndex::allowed(intentForDemand(i),ai.game->gameHeader)
+			&& !(ai.game->gameHeader.isHungerDisabled() && i==FeedUnits)
 			&& UNITS_FOR_BUILDING[i]!=0)
 			num_buildings_wanted[i]=total_units/UNITS_FOR_BUILDING[i]+1;
 		else
@@ -2736,7 +2830,7 @@ void DistributedNewConstructionManager::updateImap()
 			if(ai.map->getBuilding(x, y)!=NOGBID)
 			{
 				Building* b=getBuildingFromGid(ai.game, ai.map->getBuilding(x, y));
-				bsize=findMaxSize(b->type->shortTypeNum, b->type->level);
+				bsize=findMaxSize(b->typeNum);
 				found_building=true;
 			}
 			else
@@ -2745,7 +2839,7 @@ void DistributedNewConstructionManager::updateImap()
 				if(i->x == x && i->y == y)
 				{
 					found_building=true;
-					bsize=findMaxSize(i->building_type, 0);
+					bsize=findMaxSize(i->concreteType);
 					break;
 				}
 			}
@@ -2788,7 +2882,7 @@ void DistributedNewConstructionManager::updateImap(unsigned x, unsigned y, unsig
 {
 	ai.telemetry.count(AITrace::AI8::DistributedNewConstructionManager_updateImap_calls);
 	upgradeData bsize;
-	bsize=findMaxSize(building_type, 0);
+	bsize=findMaxSize(building_type);
 	//Then mark all the squares this building occupies in its largest upgrade with an extra padding
 
 	const unsigned width=ai.map->getW();
@@ -2906,6 +3000,10 @@ bool RandomUpgradeRepairModule::load(GAGCore::InputStream *stream, Player *playe
 		cr.assigned=stream->readUint32("assigned");
 		cr.original=stream->readUint32("original");
 		cr.is_repair=stream->readUint8("is_repair");
+  if(versionMinor>=FILE_FORMAT_VERSION_BUILDING_CATALOG) cr.requiredLevel=stream->readUint32("requiredLevel");
+  else if(auto* building=getBuildingFromGid(ai.game,cr.building))
+   cr.requiredLevel=building->type->semantics.requiredWorkerLevel;
+  if(cr.requiredLevel>=NB_UNIT_LEVELS) return false;
 		active_construction.push_back(cr);
 		// FIXME : clear the container before load
 		stream->readLeaveSection();
@@ -2922,6 +3020,13 @@ bool RandomUpgradeRepairModule::load(GAGCore::InputStream *stream, Player *playe
 		cr.assigned=stream->readUint32("assigned");
 		cr.original=stream->readUint32("original");
 		cr.is_repair=stream->readUint8("is_repair");
+  if(versionMinor>=FILE_FORMAT_VERSION_BUILDING_CATALOG) cr.requiredLevel=stream->readUint32("requiredLevel");
+  else if(auto* building=getBuildingFromGid(ai.game,cr.building))
+   {
+   const int target=cr.is_repair ? building->type->prevLevel : building->type->nextLevel;
+   cr.requiredLevel=(target >= 0 ? ai.game->buildingsTypes.get(target) : building->type)->semantics.requiredWorkerLevel;
+  }
+  if(cr.requiredLevel>=NB_UNIT_LEVELS) return false;
 		pending_construction.push_back(cr);
 		// FIXME : clear the container before load
 		stream->readLeaveSection();
@@ -2947,6 +3052,7 @@ void RandomUpgradeRepairModule::save(GAGCore::OutputStream *stream) const
 		stream->writeUint32(i->assigned, "assigned");
 		stream->writeUint32(i->original, "original");
 		stream->writeUint8(i->is_repair, "is_repair");
+  stream->writeUint32(i->requiredLevel,"requiredLevel");
 		stream->writeLeaveSection();
 	}
 	stream->writeLeaveSection();
@@ -2961,6 +3067,7 @@ void RandomUpgradeRepairModule::save(GAGCore::OutputStream *stream) const
 		stream->writeUint32(i->assigned, "assigned");
 		stream->writeUint32(i->original, "original");
 		stream->writeUint8(i->is_repair, "is_repair");
+  stream->writeUint32(i->requiredLevel,"requiredLevel");
 		stream->writeLeaveSection();
 	}
 	stream->writeLeaveSection();
@@ -2985,8 +3092,8 @@ bool RandomUpgradeRepairModule::removeOldConstruction(void)
 		if (b->constructionResultState!=Building::UPGRADE && b->constructionResultState!=Building::REPAIR )
 		{
 			if(AICabino_DEBUG)
-				std::cout<<"AICabino: removeOldConstruction: Removing an old "<<IntBuildingType::typeFromShortNumber(b->type->shortTypeNum)<<" from the active construction list, changing assigned number of units back to "<<original<<" from "<<i->assigned<<"."<<std::endl;
-			ai.getUnitModule()->request("RandomUpgradeRepairModule", WORKER, BUILD, b->type->level+1, 0, b->gid);
+				std::cout<<"AICabino: removeOldConstruction: Removing an old "<<b->type->key<<" from the active construction list, changing assigned number of units back to "<<original<<" from "<<i->assigned<<"."<<std::endl;
+			ai.getUnitModule()->request("RandomUpgradeRepairModule", WORKER, BUILD, i->requiredLevel+1, 0, b->gid);
 			i=active_construction.erase(i);
 			ai.orders.push(std::shared_ptr<Order>(new OrderModifyBuilding(b->gid, original)));
 			continue;
@@ -3018,12 +3125,12 @@ bool RandomUpgradeRepairModule::updatePendingConstruction(void)
 		{
 			constructionRecord u=*i;
 			if(AICabino_DEBUG)
-				std::cout<<"AICabino: updatePendingConstruction: The "<<IntBuildingType::typeFromShortNumber(b->type->shortTypeNum)<<" was found that it is no longer pending construction, I am assigning number of requested units, "<<assigned<<", to it."<<std::endl;
+				std::cout<<"AICabino: updatePendingConstruction: The "<<b->type->key<<" was found that it is no longer pending construction, I am assigning number of requested units, "<<assigned<<", to it."<<std::endl;
 			active_construction.push_back(u);
 			i=pending_construction.erase(i);
 			ai.orders.push(std::shared_ptr<Order>(new OrderModifyBuilding(b->gid, assigned)));
-			ai.getUnitModule()->unreserve("RandomUpgradeRepairModule", WORKER, BUILD, b->type->level+1, u.assigned);
-			ai.getUnitModule()->request("RandomUpgradeRepairModule", WORKER, BUILD, b->type->level+1, assigned, b->gid);
+			ai.getUnitModule()->unreserve("RandomUpgradeRepairModule", WORKER, BUILD, u.requiredLevel+1, u.assigned);
+			ai.getUnitModule()->request("RandomUpgradeRepairModule", WORKER, BUILD, u.requiredLevel+1, assigned, b->gid);
 			continue;
 		}
 		i++;
@@ -3058,7 +3165,7 @@ bool RandomUpgradeRepairModule::reassignConstruction(void)
 		if(b->constructionResultState!=Building::UPGRADE && b->constructionResultState!=Building::REPAIR)
 			continue;
 
-		free_workers[b->type->level]+=b->maxUnitWorking;
+		free_workers[i->requiredLevel]+=b->maxUnitWorking;
 
 		unsigned int assigned=i->assigned;
 		bool is_repair=i->is_repair;
@@ -3072,11 +3179,11 @@ bool RandomUpgradeRepairModule::reassignConstruction(void)
 			//So in this function, b->type->level will be different then in startNewConstruction for
 			//buildings being upgraded. I have copy and pasted this section of code a thousand times
 			//between the two when I change it and each time it causes me trouble.
-			if (j > (b->type->level)-1 )
+			if (j >= static_cast<int>(i->requiredLevel))
 			{
 				available_upgrade+=free_workers[j];
 			}
-			if (j >= (b->type->level) )
+			if (j >= static_cast<int>(i->requiredLevel))
 			{
 				available_repair+=free_workers[j];
 			}
@@ -3085,8 +3192,8 @@ bool RandomUpgradeRepairModule::reassignConstruction(void)
 		if (!is_repair && available_upgrade==0)
 		{
 			if(AICabino_DEBUG)
-				std::cout<<"AICabino: reassignConstruction: There are not enough available units. Canceling upgrade on the "<<IntBuildingType::typeFromShortNumber(b->type->shortTypeNum)<<"."<<std::endl;
-			ai.getUnitModule()->request("RandomUpgradeRepairModule", WORKER, BUILD, b->type->level+1, 0, b->gid);
+				std::cout<<"AICabino: reassignConstruction: There are not enough available units. Canceling upgrade on the "<<b->type->key<<"."<<std::endl;
+			ai.getUnitModule()->request("RandomUpgradeRepairModule", WORKER, BUILD, i->requiredLevel+1, 0, b->gid);
 			ai.orders.push(std::shared_ptr<Order>(new OrderCancelConstruction(b->gid, 1)));
 			continue;
 		}
@@ -3094,8 +3201,8 @@ bool RandomUpgradeRepairModule::reassignConstruction(void)
 		else if (is_repair && available_repair==0)
 		{
 			if(AICabino_DEBUG)
-				std::cout<<"AICabino: reassignConstruction: There are not enough available units. Canceling repair on the "<<IntBuildingType::typeFromShortNumber(b->type->shortTypeNum)<<"."<<std::endl;
-			ai.getUnitModule()->request("RandomUpgradeRepairModule", WORKER, BUILD, b->type->level+1, 0, b->gid);
+				std::cout<<"AICabino: reassignConstruction: There are not enough available units. Canceling repair on the "<<b->type->key<<"."<<std::endl;
+			ai.getUnitModule()->request("RandomUpgradeRepairModule", WORKER, BUILD, i->requiredLevel+1, 0, b->gid);
 			ai.orders.push(std::shared_ptr<Order>(new OrderCancelConstruction(b->gid, 1)));
 			continue;
 		}
@@ -3121,12 +3228,12 @@ bool RandomUpgradeRepairModule::reassignConstruction(void)
 		if (num_to_assign != assigned)
 		{
 			if(AICabino_DEBUG)
-				std::cout<<"AICabino: reassignConstruction: Retasking "<<IntBuildingType::typeFromShortNumber(b->type->shortTypeNum)<<" that is under construction. Number of units available: "<<generic_available<< ". Number of units originally assigned: "<<assigned<<". Number of units assigning: "<<num_to_assign<<"."<<std::endl;
-			ai.getUnitModule()->request("RandomUpgradeRepairModule", WORKER, BUILD, b->type->level+1, num_to_assign, b->gid);
+				std::cout<<"AICabino: reassignConstruction: Retasking "<<b->type->key<<" that is under construction. Number of units available: "<<generic_available<< ". Number of units originally assigned: "<<assigned<<". Number of units assigning: "<<num_to_assign<<"."<<std::endl;
+			ai.getUnitModule()->request("RandomUpgradeRepairModule", WORKER, BUILD, i->requiredLevel+1, num_to_assign, b->gid);
 			ai.orders.push(std::shared_ptr<Order>(new OrderModifyBuilding(b->gid, num_to_assign)));
 			i->assigned=num_to_assign;
 		}
-		reduce(free_workers, b->type->level, num_to_assign);
+		reduce(free_workers, i->requiredLevel, num_to_assign);
 	}
 	return false;
 }
@@ -3136,178 +3243,66 @@ bool RandomUpgradeRepairModule::reassignConstruction(void)
 
 bool RandomUpgradeRepairModule::startNewConstruction(void)
 {
-
-	//This variable indicates the ratios of the demands for various types of buildings to be upgraded,
-	//it will be used to calculate parameters for UnitModule::changeUnits, and in turn will distribute
-	//the construction of various buildings.
-	unsigned int ratios[3];
-	for(int i=0; i<3; ++i)
-		ratios[i]=0;
-	//Look through each building we previoussly assigned to be upgraded, and take note of the type of building, counting up the numbers for each type.
-	int construction_counts[IntBuildingType::NB_BUILDING];
-	for (int j=0; j!=IntBuildingType::NB_BUILDING; j++)
-		construction_counts[j]=0;
-
-	for (std::list<constructionRecord>::iterator i = active_construction.begin(); i!=active_construction.end(); i++)
-	{
-		Building *b=getBuildingFromGid(ai.game, i->building);
-		if(b)
-		{
-			ratios[b->type->level]+=1;
-			construction_counts[b->type->shortTypeNum]+=1;
-		}
-	}
-
-	for (std::list<constructionRecord>::iterator i = pending_construction.begin(); i!=pending_construction.end(); i++)
-	{
-		Building *b=getBuildingFromGid(ai.game, i->building);
-		if(b)
-		{
-			ratios[b->type->level]+=1;
-			construction_counts[b->type->shortTypeNum]+=1;
-		}
-	}
-
-	//Make a copy of the array of buildings, then shuffle it so that every building has a random chance of being upgraded with the spare units.
-	///Also count up the numbers of buildings for each level to allow for ratio'ing and divy up the construction limits between various levels
-	std::vector<Building*> buildings;
-	buildings.reserve(1024);
-	for (int i=0; i<1024; i+=1)
-	{
-		Building *b=ai.team->myBuildings[i];
-		if (b)
-		{
-			if(b->constructionResultState==Building::NO_CONSTRUCTION           &&
-				b->buildingState==Building::ALIVE                          &&
-				construction_counts[b->type->shortTypeNum] != MAX_BUILDING_SPECIFIC_CONSTRUCTION_LIMITS[b->type->shortTypeNum])
-			{
-				if (b->type->shortTypeNum!=IntBuildingType::SWARM_BUILDING             &&
-					b->type->shortTypeNum!=IntBuildingType::EXPLORATION_FLAG       &&
-					b->type->shortTypeNum!=IntBuildingType::WAR_FLAG               &&
-					b->type->shortTypeNum!=IntBuildingType::CLEARING_FLAG          &&
-					b->hp  <  b->getEffectiveMaxHp())
-				{
-					buildings.push_back(b);
-					ratios[b->type->level]+=1;
-				}
-
-				// Keep repair candidates above; upgrades cannot create trained-worker demand when disabled.
-				else if (!ai.game->gameHeader.isUnitUpgradesDisabled() && b->type->level!=2                                     &&
-					(b->type->shortTypeNum==IntBuildingType::FOOD_BUILDING     ||
-					b->type->shortTypeNum==IntBuildingType::HEAL_BUILDING      ||
-					b->type->shortTypeNum==IntBuildingType::WALKSPEED_BUILDING ||
-					b->type->shortTypeNum==IntBuildingType::SWIMSPEED_BUILDING ||
-					b->type->shortTypeNum==IntBuildingType::ATTACK_BUILDING    ||
-					b->type->shortTypeNum==IntBuildingType::SCIENCE_BUILDING   ||
-					b->type->shortTypeNum==IntBuildingType::DEFENSE_BUILDING  ))
-				{
-					buildings.push_back(b);
-					ratios[b->type->level+1]+=1;
-				}
-			}
-		}
-	}
-	selection_sort(buildings.begin(), buildings.end(), weighted_random_upgrade_comparison);
-
-	unsigned total_construction_max=0;
-	for(int i=0; i<3; ++i)
-	{
-		if(ratios[i]!=0)
-			ratios[i]=ratios[i]/BUILDINGS_FOR_UPGRADE+1;
-		total_construction_max+=ratios[i];
-		ai.getUnitModule()->changeUnits("RandomUpgradeRepairModule", WORKER, ratios[i]*MAXIMUM_TO_UPGRADE, BUILD, i+1);
-	}
-
-	//If we already have more than our max, don't do any more
-	if (active_construction.size()+pending_construction.size()>=total_construction_max)
-		return false;
-
-	//Get the numbers of free units
-	int free_workers[NB_UNIT_LEVELS];
-	for (int j=0; j<NB_UNIT_LEVELS; j++)
-	{
-		free_workers[j]=ai.getUnitModule()->available("RandomUpgradeRepairModule", WORKER, BUILD, j+1, false);
-	}
-
-	for(unsigned i=0; static_cast<int>(i)<IntBuildingType::NB_BUILDING; ++i)
-	{
-		if(BUILDING_UPGRADE_WEIGHTS[i]>0)
-		{
-	                std::string building_name = IntBuildingType::typeFromShortNumber(i);
-	                std::stringstream s;
-	                s<<"I'm currently constructing "<<construction_counts[i]<<" of this building.";
-			ai.clearDebugMessages("RandomUpgradeRepairModule", "Construction", building_name);
-			ai.addDebugMessage("RandomUpgradeRepairModule", "Construction", building_name, s.str());
-		}
-	}
-
-	//Look through the buildings, and if their are atleast 4 of the correct unit type available to upgrade/repair it, then do it.
-	for (std::vector<Building*>::iterator i = buildings.begin(); i!=buildings.end(); i++)
-	{
-		Building *b=*i;
-		//Check if its worthy of having anything done to it.
-		{
-			//Find the number of workers with enough of a level to upgrade and repair this building (if it will need it).
-			unsigned int available_upgrade = 0;
-			unsigned int available_repair  = 0;
-			for (int j = 0; j<NB_UNIT_LEVELS; j++)
-			{
-				if (j > (b->type->level) )
-				{
-					available_upgrade+=free_workers[j];
-				}
-				if (j >= (b->type->level) )
-				{
-					available_repair+=free_workers[j];
-				}
-			}
-
-			//See if the building needs repair. Note the code for initializing a repair and the code for initializing an upgrade are very similiar.
-			if (b->type->shortTypeNum!=IntBuildingType::CLEARING_FLAG          &&
-				available_repair>=MINIMUM_TO_REPAIR                            &&
-				b->hp  <  b->getEffectiveMaxHp())
-			{
-				unsigned int num_to_assign=available_repair;
-				if( num_to_assign > MAXIMUM_TO_REPAIR)
-					num_to_assign=MAXIMUM_TO_REPAIR;
-				if(AICabino_DEBUG)
-					std::cout<<"AICabino: startNewConstruction: Found "<<available_repair<<" available workers, assigning "<<num_to_assign<<" workers to repair the "<<IntBuildingType::typeFromShortNumber(b->type->shortTypeNum)<<" with "<<b->maxUnitWorking<<" units already working on it."<<std::endl;
-				constructionRecord u;
-				u.building=b->gid;
-				u.assigned=num_to_assign;
-				u.original=b->maxUnitWorking;
-				u.is_repair=true;
-				pending_construction.push_back(u);
-				ai.orders.push(std::shared_ptr<Order>(new OrderConstruction(b->gid, 1, 1)));
-				ai.getUnitModule()->reserve("RandomUpgradeRepairModule", WORKER, BUILD, b->type->level+1, u.assigned);
-				reduce(free_workers, b->type->level, num_to_assign);
-				construction_counts[b->type->shortTypeNum]+=1;
-			}
-
-			//If we don't need to repair, see if we can upgrade
-			else if (available_upgrade>=MINIMUM_TO_UPGRADE)
-			{
-
-				//If we have a minimum of 4 available workers, upgrade the building.
-				unsigned int num_to_assign=available_upgrade;
-				if( num_to_assign > MAXIMUM_TO_UPGRADE)
-					num_to_assign=MAXIMUM_TO_UPGRADE;
-				if(AICabino_DEBUG)
-					std::cout<<"AICabino: startNewConstruction: Found "<<available_upgrade<<" available workers, assigning "<<num_to_assign<<" workers to upgrade the "<<IntBuildingType::typeFromShortNumber(b->type->shortTypeNum)<<" with "<<b->maxUnitWorking<<" units already working on it."<<std::endl;
-				constructionRecord u;
-				u.building=b->gid;
-				u.assigned=num_to_assign;
-				u.original=b->maxUnitWorking;
-				u.is_repair=false;
-				pending_construction.push_back(u);
-				ai.orders.push(std::shared_ptr<Order>(new OrderConstruction(b->gid, 1, 1)));
-				ai.getUnitModule()->reserve("RandomUpgradeRepairModule", WORKER, BUILD, b->type->level+2, u.assigned);
-				reduce(free_workers, b->type->level+1, num_to_assign);
-				construction_counts[b->type->shortTypeNum]+=1;
-			}
-		}
-	}
-	return false;
+ std::array<unsigned,NB_UNIT_LEVELS> ratios{};
+ std::array<unsigned,DemandCount> constructionCounts{};
+ auto requiredLevel=[&](const Building& building,bool repair) {
+  const int next=repair ? building.type->prevLevel : building.type->nextLevel;
+  return next<0 ? building.type->semantics.requiredWorkerLevel : ai.game->buildingsTypes.get(next)->semantics.requiredWorkerLevel;
+ };
+ auto countBuilding=[&](const Building& building) {
+  for(unsigned demand=0;demand<DemandCount;++demand)
+   if(provides(*ai.game,building,demand)) ++constructionCounts[demand];
+ };
+ for(const auto* list : {&active_construction,&pending_construction})
+  for(const auto& record:*list)
+   if(auto* building=getBuildingFromGid(ai.game,record.building)) {
+    ++ratios[requiredLevel(*building,record.is_repair)];
+    countBuilding(*building);
+   }
+ struct Candidate { Building* building; bool repair; unsigned level; unsigned score; };
+ std::vector<Candidate> candidates;
+ for(auto* building:std::span<Building*>(ai.team->myBuildings,Building::MAX_COUNT)) {
+  if(!building || building->constructionResultState!=Building::NO_CONSTRUCTION || building->buildingState!=Building::ALIVE) continue;
+  const bool repair=building->type->semantics.repairable && building->hp<building->getEffectiveMaxHp();
+  const unsigned weight=upgradeWeight(*ai.game,*building);
+  if(!repair && (weight==0 || !building->isUpgradeAvailable() || ai.game->gameHeader.isUnitUpgradesDisabled())) continue;
+  bool hasBudget=repair;
+  for(unsigned demand=0;demand<DemandCount;++demand)
+   if(provides(*ai.game,*building,demand) && constructionCounts[demand]<unsigned(MAX_BUILDING_SPECIFIC_CONSTRUCTION_LIMITS[demand])) hasBudget=true;
+  if(!hasBudget) continue;
+  const unsigned level=requiredLevel(*building,repair);
+  ++ratios[level];
+  candidates.push_back({building,repair,level,weight ? ai.random()%weight : 0});
+ }
+ // Sample each candidate once. The comparator is pure and deterministic.
+ std::sort(candidates.begin(),candidates.end(),[](const Candidate& a,const Candidate& b) {
+  if(a.score!=b.score) return a.score>b.score;
+  return a.building->gid<b.building->gid;
+ });
+ unsigned totalMaximum=0;
+ std::array<int,NB_UNIT_LEVELS> freeWorkers{};
+ for(unsigned level=0;level<NB_UNIT_LEVELS;++level) {
+  if(ratios[level]) ratios[level]=ratios[level]/BUILDINGS_FOR_UPGRADE+1;
+  totalMaximum+=ratios[level];
+  ai.getUnitModule()->changeUnits("RandomUpgradeRepairModule",WORKER,ratios[level]*MAXIMUM_TO_UPGRADE,BUILD,level+1);
+  freeWorkers[level]=ai.getUnitModule()->available("RandomUpgradeRepairModule",WORKER,BUILD,level+1,false);
+ }
+ for(const auto& candidate:candidates) {
+  if(active_construction.size()+pending_construction.size()>=totalMaximum) break;
+  unsigned available=0;
+  for(unsigned level=candidate.level;level<NB_UNIT_LEVELS;++level) available+=freeWorkers[level];
+  if(available<(candidate.repair ? MINIMUM_TO_REPAIR : MINIMUM_TO_UPGRADE)) continue;
+  auto* building=candidate.building;
+  const unsigned assigned=std::min(available,candidate.repair ? MAXIMUM_TO_REPAIR : MAXIMUM_TO_UPGRADE);
+  constructionRecord record;
+  record.building=building->gid; record.assigned=assigned; record.original=building->maxUnitWorking; record.is_repair=candidate.repair; record.requiredLevel=candidate.level;
+  pending_construction.push_back(record);
+  ai.orders.push(AIRules::constructionOrder(*ai.game, *building,1,1));
+  ai.getUnitModule()->reserve("RandomUpgradeRepairModule",WORKER,BUILD,candidate.level+1,assigned);
+  reduce(freeWorkers.data(),candidate.level,assigned);
+  countBuilding(*building);
+ }
+ return false;
 }
 
 
@@ -3412,11 +3407,17 @@ bool DistributedUnitManager::load(GAGCore::InputStream *stream, Player *player, 
 		ur.y=stream->readUint32("y");
 		ur.type=stream->readUint32("type");
 		ur.level=stream->readUint32("level");
+  if(versionMinor<FILE_FORMAT_VERSION_BUILDING_CATALOG) {
+   auto* building=getBuildingFromGid(ai.game,gid);
+   const int concrete=building ? building->typeNum : legacyConcrete(*ai.game,ur.type,ur.level,false);
+   if(concrete<0) return false;
+   ur.type=concrete;
+  }
 		ur.ability=stream->readUint32("ability");
 		ur.unit_type=stream->readUint32("unit_type");
 		ur.minimum_level=stream->readUint32("minimum_level");
 		ur.number=stream->readUint32("number");
-		if (ur.unit_type >= NB_UNIT_TYPE || ur.ability >= NB_ABILITY || ur.minimum_level >= NB_UNIT_LEVELS || ur.level >= NB_UNIT_LEVELS || ur.type >= IntBuildingType::NB_BUILDING) return false;
+		if (ur.unit_type >= NB_UNIT_TYPE || ur.ability >= NB_ABILITY || ur.minimum_level >= NB_UNIT_LEVELS || ur.level >= NB_UNIT_LEVELS || ur.type >= ai.game->buildingsTypes.size()) return false;
 		// Keep each usage record in the same bucket as its migrated usingUnits
 		// counter; reassignment and removal subtract through this stored index.
 		if (ai.game->gameHeader.isUnitUpgradesDisabled() && ur.unit_type==WARRIOR)
@@ -3552,7 +3553,7 @@ bool DistributedUnitManager::request(std::string module_name, unsigned int unit_
 		ur.owner=module_name;
 		ur.x=b->posX;
 		ur.y=b->posY;
-		ur.type=b->type->shortTypeNum;
+		ur.type=b->typeNum;
 		ur.level=b->type->level;
 		ur.ability=ability;
 		ur.unit_type=unit_type;
@@ -3686,7 +3687,7 @@ int DistributedUnitManager::getNeededUnits(int unit_type, int ability, int level
 	for(std::map<int, usageRecord>::iterator i=buildings.begin(); i!=buildings.end();)
 	{
 		Building* b = getBuildingFromGid(ai.game, i->first);
-		if(b==NULL ||  b->posX != static_cast<int>(i->second.x) || b->posY != static_cast<int>(i->second.y) || b->type->shortTypeNum != static_cast<int>(i->second.type) || b->type->level!=static_cast<int>(i->second.level))
+		if(b==NULL ||  b->posX != static_cast<int>(i->second.x) || b->posY != static_cast<int>(i->second.y) || b->typeNum != static_cast<int>(i->second.type) || b->type->level!=static_cast<int>(i->second.level))
 		{
 			module_records[i->second.owner].usingUnits[i->second.unit_type][i->second.ability][i->second.minimum_level]-=i->second.number;
 			// erase(i) invalidates i; its return value is the next valid
@@ -3694,9 +3695,15 @@ int DistributedUnitManager::getNeededUnits(int unit_type, int ability, int level
 			i = buildings.erase(i);
 			continue;
 		}
-		if((is_minimum && static_cast<int>(i->second.ability)==ability && static_cast<int>(i->second.level)<=level) || (!is_minimum && static_cast<int>(i->second.ability)==ability && static_cast<int>(i->second.level)==level))
+		const auto& usage=i->second;
+		if(static_cast<int>(usage.unit_type)==unit_type && static_cast<int>(usage.ability)==ability
+			&& (is_minimum ? static_cast<int>(usage.minimum_level)<=level : static_cast<int>(usage.minimum_level)==level))
 		{
-			needed+=b->maxUnitWorking-b->unitsWorking.size();
+			int assigned=0;
+			for(const auto* unit:b->unitsWorking)
+				if(unit->typeNum==unit_type
+					&& (ability==BUILD ? unit->workerLevel() : unit->level[ability])>=static_cast<int>(usage.minimum_level))++assigned;
+			needed+=std::max(0,static_cast<int>(usage.number)-assigned);
 		}
 		++i;
 	}
@@ -3819,18 +3826,25 @@ bool BasicDistributedSwarmManager::moderateSwarms()
 	}
 
 	unsigned int assigned_per_swarm=MAXIMUM_UNITS_FOR_SWARM;
+    if(auto order=AIPlanning::missingProductionOrder(*ai.game,*ai.team,{ratios[0],ratios[1],ratios[2]},assigned_per_swarm,assigned_per_swarm)) {
+        ai.orders.push(order);return true;
+    }
+
 
 	bool need_to_output=true;
 	for (std::list<Building*>::iterator i = ai.team->swarms.begin(); i != ai.team->swarms.end(); ++i)
 	{
 		Building* swarm=*i;
-		bool changed=false;
+  Sint32 desired[NB_UNIT_TYPE];
+  for(int unit=0;unit<NB_UNIT_TYPE;++unit) desired[unit]=swarm->type->semantics.production.recipes[unit].enabled ? ratios[unit] : 0;
+  const int assigned=std::min<int>(assigned_per_swarm,swarm->type->semantics.assignmentLimit);
+  bool changed=false;
 		for (int x = 0; x<NB_UNIT_TYPE; x++)
-			if (swarm->ratio[x]!=ratios[x])
+			if (swarm->ratio[x]!=desired[x])
 				changed=true;
 
-		if(swarm->maxUnitWorking != static_cast<int>(assigned_per_swarm))
-			ai.orders.push(std::shared_ptr<Order>(new OrderModifyBuilding(swarm->gid, assigned_per_swarm)));
+		if(swarm->maxUnitWorking < assigned)
+			ai.orders.push(std::shared_ptr<Order>(new OrderModifyBuilding(swarm->gid, assigned)));
 
 		if(!changed)
 			continue;
@@ -3838,7 +3852,7 @@ bool BasicDistributedSwarmManager::moderateSwarms()
 		if(AICabino_DEBUG && need_to_output)
 			std::cout<<"AICabino: moderateSpawns: Turning changing production ratios on a swarm from {Worker:"<<swarm->ratio[0]<<", Explorer:"<<swarm->ratio[1]<<", Warrior:"<<swarm->ratio[2]<<"} to {Worker:"<<ratios[0]<<", Explorer:"<<ratios[1]<<", Warrior:"<<ratios[2]<<"}. Assigning "<<assigned_per_swarm<<" workers."<<std::endl;
 		need_to_output=false;
-		ai.orders.push(std::shared_ptr<Order>(new OrderModifySwarm(swarm->gid, ratios)));
+		ai.orders.push(std::shared_ptr<Order>(new OrderModifySwarm(swarm->gid, desired)));
 	}
 	return false;
 }
@@ -4032,13 +4046,13 @@ bool InnManager::recordInns()
 		Building* b=ai.team->myBuildings[i];
 		if (b)
 		{
-			if(b->type->shortTypeNum==IntBuildingType::FOOD_BUILDING && b->constructionResultState==Building::NO_CONSTRUCTION)
+			if(provides(*ai.game,*b,FeedUnits) && b->constructionResultState==Building::NO_CONSTRUCTION)
 			{
 				innRecord& i = inns[b->gid];
 				if(i.records.size()<INN_RECORD_MAX)
-					i.records.push_back(singleInnRecord(b->resources[WHEAT]));
+					i.records.push_back(singleInnRecord(feedingStock(*b,false)));
 				else
-					i.records[i.pos].food_amount=b->resources[WHEAT];
+					i.records[i.pos].food_amount=feedingStock(*b,false);
 				i.pos+=1;
 				if (i.pos==INN_RECORD_MAX)
 				{
@@ -4060,7 +4074,7 @@ bool InnManager::modifyInns()
 	for(std::map<int, innRecord>::iterator i = inns.begin(); i!=inns.end();)
 	{
 		Building* inn=getBuildingFromGid(ai.game, i->first);
-		if (inn==NULL)
+		if (inn==NULL || !provides(*ai.game,*inn,FeedUnits))
 		{
 			ai.getUnitModule()->request("InnManager", WORKER, HARVEST, 1, 0, i->first);
 			// erase(i) invalidates i; its return value is the next valid
@@ -4080,9 +4094,17 @@ bool InnManager::modifyInns()
 		{
 			average+=record->food_amount;
 		}
-		average/=i->second.records.size();
+		if(i->second.records.empty()) { ++i; continue; }
+  average/=i->second.records.size();
 
-		unsigned int to_assign=std::max(INN_MINIMUM[inn->type->level], std::min(INN_MAX[inn->type->level], (inn->type->maxResource[WHEAT]-average)/WHEAT_NEEDED_FOR_UNIT));
+		const unsigned capacity=feedingStock(*inn,true);
+  const unsigned deficit=capacity>average ? capacity-average : 0;
+  const unsigned level=std::clamp(ai.game->buildingCapabilities().lineagePosition(inn->typeNum)-1,0,2);
+  unsigned to_assign=capacity ? std::max(INN_MINIMUM[level],std::min(INN_MAX[level],deficit/WHEAT_NEEDED_FOR_UNIT)) : 0;
+  unsigned services=0;
+  for(unsigned demand=0;demand<DemandCount;++demand) services+=provides(*ai.game,*inn,demand);
+  if(services>1) to_assign=std::max<unsigned>(to_assign,inn->maxUnitWorking);
+  to_assign=std::min<unsigned>(to_assign,inn->type->semantics.assignmentLimit);
 		total_workers_needed+=to_assign;
 		if(static_cast<int>(to_assign)!=inn->maxUnitWorking)
 		{
@@ -4164,16 +4186,16 @@ bool TowerController::controlTowers()
 		Building* b = ai.team->myBuildings[i];
 		if (b)
 		{
-			if(b->type->shortTypeNum == IntBuildingType::DEFENSE_BUILDING &&
+			if(provides(*ai.game,*b,DefendWithProjectiles) &&
 				b->buildingState==Building::ALIVE &&
 				b->constructionResultState==Building::NO_CONSTRUCTION)
 			{
 				count+=1;
-				if(b->maxUnitWorking != static_cast<int>(NUM_PER_TOWER))
+				if(b->maxUnitWorking < std::min<int>(NUM_PER_TOWER,b->type->semantics.assignmentLimit))
 				{
 					if(AICabino_DEBUG)
 						std::cout<<"AICabino: controlTowers: Changing number of units assigned to a tower, from "<<b->maxUnitWorking<<" to "<<NUM_PER_TOWER<<"."<<std::endl;
-					ai.orders.push(std::shared_ptr<Order>(new OrderModifyBuilding(b->gid, NUM_PER_TOWER)));
+					ai.orders.push(std::shared_ptr<Order>(new OrderModifyBuilding(b->gid, std::min<int>(NUM_PER_TOWER,b->type->semantics.assignmentLimit))));
 				}
 			}
 		}
@@ -4328,9 +4350,7 @@ bool BuildingClearer::updateClearingAreas()
 		Building* b = ai.team->myBuildings[i];
 		if(b)
 		{
-			if( b->type->shortTypeNum!=IntBuildingType::EXPLORATION_FLAG &&
-				b->type->shortTypeNum!=IntBuildingType::WAR_FLAG &&
-				b->type->shortTypeNum!=IntBuildingType::CLEARING_FLAG &&
+			if( b->type->semantics.occupiesGround &&
 				cleared_buildings.find(b->gid) == cleared_buildings.end() &&
 				b->constructionResultState==Building::NO_CONSTRUCTION)
 			{
@@ -4557,6 +4577,8 @@ bool HappinessHandler::adjustAlliances()
 
 bool HappinessHandler::searchFruitTrees()
 {
+ const int typeNum=selectBuilding(ai,AttractExplorers);
+ if(typeNum<0) return false;
 	ai.getUnitModule()->changeUnits("HappinessHandler", EXPLORER, REQUESTED_EXPLORERES*HAPPINESS_COUNT, FLY, 1);
 	computeFruitTrees();
 	int closest_tree_score[HAPPINESS_COUNT];
@@ -4597,11 +4619,12 @@ bool HappinessHandler::searchFruitTrees()
 		}
 		if(!found)
 		{
-			fruitTreeExplorationRecord fter;
+			if(!placeRallyNear(ai,typeNum,flagLocation[n].x,flagLocation[n].y)) continue;
+   fruitTreeExplorationRecord fter;
 			if(AICabino_DEBUG)
 				std::cout<<"AICabino: searchFruitTrees: Creating a new exploration flag for a group of trees."<<std::endl;
-			Sint32 typeNum=globalContainer->buildingsTypes.getTypeNum("explorationflag", 0, false);
-			ai.orders.push(std::shared_ptr<Order>(new OrderCreate(ai.team->teamNumber, flagLocation[n].x, flagLocation[n].y, typeNum, 1, 1)));
+
+			ai.orders.push(AIRules::createOrder(*ai.game, ai.team->teamNumber, flagLocation[n].x, flagLocation[n].y, typeNum, 1, 1));
 			fter.flag=NOGBID;
 			fter.pos_x=flagLocation[n].x;
 			fter.pos_y=flagLocation[n].y;
@@ -4620,7 +4643,7 @@ bool HappinessHandler::searchFruitTrees()
 				Building* b = ai.team->myBuildings[n];
 				if(b)
 				{
-					if(b->posX == i->pos_x && b->posY == i->pos_y && b->type->shortTypeNum==IntBuildingType::EXPLORATION_FLAG)
+					if(b->posX == i->pos_x && b->posY == i->pos_y && provides(*ai.game,*b,AttractExplorers))
 					{
 						i->flag=b->gid;
 						ai.orders.push(std::shared_ptr<Order>(new OrderModifyFlag(i->flag, i->radius)));
@@ -4647,8 +4670,9 @@ void HappinessHandler::computeFruitTrees()
 		{
 			for(int y=0; y<ai.map->getH(); ++y)
 			{
-				int res_type=ai.map->getResource(x, y).type;
-				if(res_type>=HAPPINESS_BASE && res_type<MAX_RESOURCES && examined_points.count(point(x, y))==0)
+				int res_type=-1;
+                for(int m=HAPPINESS_BASE;m<HAPPINESS_BASE+HAPPINESS_COUNT;++m) if(ai.map->isMaterialTakeableSlot(x,y,m)){res_type=m;break;}
+				if(res_type>=HAPPINESS_BASE && res_type<HAPPINESS_BASE+HAPPINESS_COUNT && examined_points.count(point(x, y))==0)
 				{
 					examined_points.insert(point(x, y));
 					int max_x=x;
@@ -4676,7 +4700,7 @@ void HappinessHandler::computeFruitTrees()
 							const point neighbors[8]={point(xl,yu),point(x,yu),point(xr,yu),
 								point(xl,y),point(xr,y),point(xl,yd),point(x,yd),point(xr,yd)};
 							for(const point& next:neighbors)
-								if(ai.map->getResource(next.x,next.y).type==res_type && examined_points.count(next)==0)
+								if(ai.map->isMaterialTakeableSlot(next.x,next.y,res_type) && examined_points.count(next)==0)
 								{examined_points.insert(next);points_to_examine.push_back(next);}
 							return field::Visit::Expand;
 						});
@@ -4811,7 +4835,7 @@ bool Farmer::updateFarm()
 				((x%3==0 && y%6<4) && FARMING_METHOD==Column4);
 			if(farms && ai.map->isMapDiscovered(x, y, ai.team->me))
 			{
-				const bool wheat_farm=farm_spot && ai.map->isResourceTakeable(x, y, WHEAT)
+				const bool wheat_farm=farm_spot && ai.map->isMaterialTakeable(x, y,MaterialId::Food)
 					&& !ai.map->isClearArea(x, y, ai.team->me)
 					&& ai.map->canPaintFarmArea(x, y)
 					&& water_gradient.getHeight(x, y)<=static_cast<int>(MAX_DISTANCE_FROM_WATER+2);
@@ -4825,8 +4849,8 @@ bool Farmer::updateFarm()
 			if(farm_spot)
 			{
 				const bool protectable=farms
-					? ai.map->isResourceTakeable(x, y, WOOD)
-					: ai.map->isResourceTakeable(x, y, WOOD) || ai.map->isResourceTakeable(x, y, WHEAT);
+					? ai.map->isMaterialTakeable(x, y,MaterialId::Wood)
+					: ai.map->isMaterialTakeable(x, y,MaterialId::Wood) || ai.map->isMaterialTakeable(x, y,MaterialId::Food);
 				if(!protectable || ai.map->isClearArea(x, y, ai.team->me))
 				{
 					if(resources.find(point(x, y))!=resources.end())
@@ -4880,7 +4904,8 @@ bool Gradient::load(GAGCore::InputStream *stream, AICabino& owner)
 	stream->readEnterSection("Gradient");
 	const auto savedSources=stream->readUint32("sources");
 	const auto savedObstacles=stream->readUint32("obstacles");
-	if (savedSources > 63 || savedObstacles > 3) return false;
+	const unsigned validSources = 63u | (((1u << MaterialSlotCount) - 1u) << 8);
+	if ((savedSources & ~validSources) || savedObstacles > 3) return false;
 	const auto count=stream->readUint32("cells");
 	if (count != Uint32(owner.map->getW()*owner.map->getH())) return false;
 	reset(owner,savedSources,savedObstacles);
@@ -4925,7 +4950,8 @@ bool GradientManager::load(GAGCore::InputStream *stream)
 	clear();
 	stream->readEnterSection("GradientManager");
 	const auto count=stream->readUint32("size");
-	if (count > 256) return false; // 64 source masks times 4 obstacle masks.
+	// Existing source combinations plus one compiled resource-set mask per demand.
+	if (count > 4u * (64u + team->game->buildingsTypes.size())) return false;
 	for (Uint32 i=0; i<count; ++i) {
 		stream->readEnterSection(i);
 		const auto sources=stream->readUint32("sources");

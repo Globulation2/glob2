@@ -155,6 +155,16 @@ maps, no games. Four layers of measurement sit beside the model's own ColonyQual
 | Generator telemetry | `tel_` | per-colony records the generator made while building | No |
 | Derived composites | `d_` | arithmetic over ColonyQuality fields | Wheat decayed, yes |
 
+The legacy diagnostics JSON key `renewable_wheat` now measures Food frontage from
+configured source renewal, including secondary yields and saturated stocks. Each
+reachable harvesting tile contributes its best adjacent finite renewal rate per
+scheduled source update; infinite positive stock contributes one full-rate frontage
+unit. `encroaching_wood` sums expected new Wood units entering eligible empty
+reachable cells per source update, including spread direction and scarcity.
+`threatened_build_sites` counts building origins with nonzero incoming Wood spread.
+These are property-based diagnostics, not the former terrain-fertility contact
+proxies; historical diagnostic values should be remeasured before comparison.
+
 The diagnostics and the movement, telemetry and derived layers are kept for diagnosing play —
 why an AI does well or badly on a kind of terrain — rather than for scoring. Each was measured
 against every other and against ColonyQuality over 13,200 colonies, and a measurement whose rank

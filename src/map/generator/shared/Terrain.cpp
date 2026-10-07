@@ -255,7 +255,7 @@ void paintHeightFieldResources(Map &map, HeightMap &hm, const HeightFieldTiling 
 				{
 					for (int xRepeat = 0; xRepeat < tiling.wRepeat; xRepeat++)
 					{
-						map.setResource(xRepeat * wHeightMap + x, yRepeat * hHeightMap + y,
+						map.setResourceByIndex(xRepeat * wHeightMap + x, yRepeat * hHeightMap + y,
 										tmpResource, 1);
 					}
 				}
@@ -415,7 +415,7 @@ bool plantHeightFieldGroves(Map &map, GenerationContext &context, const HeightFi
 		{
 			for (int yRepeat = 0; yRepeat < tiling.hRepeat; yRepeat++)
 				for (int xRepeat = 0; xRepeat < tiling.wRepeat; xRepeat++)
-					map.setResource(xRepeat * wHeightMap + x, yRepeat * hHeightMap + y, fruit, 1);
+					map.setResourceByIndex(xRepeat * wHeightMap + x, yRepeat * hHeightMap + y, fruit, 1);
 			// find a valid neighbor of actual coordinate
 			bool advanced = false;
 			for (int iTry = 0; iTry < 100; iTry++)

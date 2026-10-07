@@ -105,19 +105,24 @@ namespace Cortex
 		}
 
 		obs.maxBuildLevel = 0;
+		obs.hasModelProjection = 0;
+		obs.modelUpgradableTotal = 0;
+        obs.productionMask = obs.productionPlannedMask = obs.productionMissingMask = 0;
+        obs.productionPlacementType = -1;
+        obs.productionNeedsRetune = 0;
 
 		for (int t = 0; t < CORTEX_BUILDING_TYPES; t++)
 		{
 			obs.upgradableCount[t] = 0;
 			for (int l = 0; l < CORTEX_BUILDING_LONG_LEVELS; l++)
-				obs.buildingCountPerLevel[t][l] = 0;
+				{ obs.buildingCountPerLevel[t][l] = 0; obs.modelBuildingCountPerLevel[t][l] = 0; }
 			for (int c = 0; c < CORTEX_BUILD_CANDIDATES; c++)
 			{
 				obs.buildCandidates[t][c].valid = 0;
 				obs.buildCandidates[t][c].x = 0;
 				obs.buildCandidates[t][c].y = 0;
 				obs.buildCandidates[t][c].score = 0;
-				obs.buildCandidates[t][c].wheatDist = -1;
+				obs.buildCandidates[t][c].foodSourceDistance = -1;
 			}
 		}
 
@@ -127,7 +132,7 @@ namespace Cortex
 			obs.flagTargets[i].x = 0;
 			obs.flagTargets[i].y = 0;
 			obs.flagTargets[i].score = 0;
-			obs.flagTargets[i].wheatDist = -1;
+			obs.flagTargets[i].foodSourceDistance = -1;
 			obs.flagTargetSupportDist[i] = -1;
 			obs.flagTargetTeam[i] = -1;
 		}
@@ -137,7 +142,7 @@ namespace Cortex
 			obs.defenseTargets[i].x = 0;
 			obs.defenseTargets[i].y = 0;
 			obs.defenseTargets[i].score = 0;
-			obs.defenseTargets[i].wheatDist = -1;
+			obs.defenseTargets[i].foodSourceDistance = -1;
 			obs.defenseThreatCount[i] = 0;
 		}
 		obs.warFlagsActive = 0;
@@ -151,12 +156,12 @@ namespace Cortex
 		obs.forwardInn.x = 0;
 		obs.forwardInn.y = 0;
 		obs.forwardInn.score = 0;
-		obs.forwardInn.wheatDist = -1;
+		obs.forwardInn.foodSourceDistance = -1;
 		obs.forwardHeal.valid = 0;
 		obs.forwardHeal.x = 0;
 		obs.forwardHeal.y = 0;
 		obs.forwardHeal.score = 0;
-		obs.forwardHeal.wheatDist = -1;
+		obs.forwardHeal.foodSourceDistance = -1;
 		obs.forwardInnUnderway = 0;
 		obs.forwardHealUnderway = 0;
 		obs.rangeGateWaived = 0;
@@ -191,13 +196,13 @@ namespace Cortex
 		{
 			obs.trackedSwarms[i].valid = 0;
 			obs.trackedSwarms[i].gid = -1;
-			obs.trackedSwarms[i].wheat = 0;
-			obs.trackedSwarms[i].maxWheat = 0;
+			obs.trackedSwarms[i].supplyStock = 0;
+			obs.trackedSwarms[i].supplyCapacity = 0;
 			obs.trackedSwarms[i].maxUnitWorking = 0;
 			obs.trackedSwarms[i].unitsInside = 0;
 			obs.trackedSwarms[i].maxUnitInside = 0;
-			obs.trackedSwarms[i].nearestWheatDist = -1;
-			obs.trackedSwarms[i].harvestableWheatNearby = -1;
+			obs.trackedSwarms[i].nearestFoodSourceDistance = -1;
+			obs.trackedSwarms[i].harvestableFoodSourcesNearby = -1;
 			obs.trackedSwarms[i].restockTripsNeeded = -1;
 			obs.trackedSwarms[i].priority = 0;
 		}
@@ -205,15 +210,15 @@ namespace Cortex
 		{
 			obs.trackedInns[i].valid = 0;
 			obs.trackedInns[i].gid = -1;
-			obs.trackedInns[i].wheat = 0;
-			obs.trackedInns[i].maxWheat = 0;
+			obs.trackedInns[i].supplyStock = 0;
+			obs.trackedInns[i].supplyCapacity = 0;
 			obs.trackedInns[i].maxUnitWorking = 0;
 			obs.trackedInns[i].unitsInside = 0;
 			obs.trackedInns[i].maxUnitInside = 0;
-			obs.trackedInns[i].nearestWheatDist = -1;
-			obs.trackedInns[i].harvestableWheatNearby = -1;
+			obs.trackedInns[i].nearestFoodSourceDistance = -1;
+			obs.trackedInns[i].harvestableFoodSourcesNearby = -1;
 			obs.trackedInns[i].restockTripsNeeded = -1;
-			obs.trackedInns[i].diagBlindWheatNearby = -1;
+			obs.trackedInns[i].unrestrictedFoodSourcesNearby = -1;
 			obs.trackedInns[i].priority = 0;
 		}
 		obs.siteCount = 0;

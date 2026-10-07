@@ -7,15 +7,7 @@ import { MusicValidation } from './Validation.tsx';
 import { MOODS, MusicPlayer } from './Player.tsx';
 import { useMusicCatalogue } from './useMusicCatalogue.ts';
 
-export function Cover({ release }: { release: MusicRelease }) {
-  return release.coverUrl ? (
-    <img className="music-cover" src={release.coverUrl} alt={`${release.metadata.title} cover`} />
-  ) : (
-    <div className="music-cover music-cover-placeholder" aria-label="No cover art">
-      ♫
-    </div>
-  );
-}
+import { Cover } from './Cover.tsx';
 function errorText(error: unknown) {
   return error instanceof Error ? error.message : String(error);
 }
@@ -208,7 +200,13 @@ export function MusicLibrary() {
               </p>
               {release.status !== 'published' && <p>Status: {release.status}</p>}
               <div className="music-card-actions">
-                <button disabled={!release.tracks.length} onClick={() => setPreview(release)}>
+                <button
+                  disabled={!release.tracks.length}
+                  onClick={(event) => {
+                    event.currentTarget.focus();
+                    setPreview(release);
+                  }}
+                >
                   Preview
                 </button>
                 <button
@@ -314,55 +312,61 @@ export function MusicDetail({ id }: { id: string }) {
   return (
     <main className="music-detail">
       <Link to="/music">← Music library</Link>
-      <div className="music-detail-heading">
-        <Cover release={release} />
-        <div>
-          <h1>{release.metadata.title}</h1>
-          <p>By {release.metadata.artist}</p>
-          <p>
-            {release.metadata.license} ·{' '}
-            {release.metadata.aiGenerated ? 'AI-generated' : 'Not AI-generated'}
-          </p>
-          <p>{release.metadata.description}</p>
-          <p>{release.metadata.credits}</p>
-          {release.metadata.sources.map((source) => (
-            <p key={source}>
-              <a href={source} rel="noreferrer">
-                {source}
-              </a>
+      <section className="music-listening-room">
+        <div className="music-detail-heading">
+          <Cover release={release} />
+          <div>
+            <span className="music-eyebrow">A SOUNDTRACK FOR YOUR COLONY</span>
+            <h1>{release.metadata.title}</h1>
+            <p className="music-artist">By {release.metadata.artist}</p>
+            <p className="music-description-full">{release.metadata.description}</p>
+            <p className="music-attribution">
+              {release.metadata.license} ·{' '}
+              {release.metadata.aiGenerated ? 'AI-generated' : 'Not AI-generated'}
             </p>
-          ))}
-        </div>
-      </div>
-      {notice && <p role="status">{notice}</p>}
-      {release.error && <p role="alert">{release.error}</p>}
-      <p>Status: {release.status}</p>
-      {release.tracks.length === 3 && (
-        <>
-          <MusicPlayer key={release.id} release={release} />
-          <div className="music-card-actions">
-            <a href={`/api/v1/music/${id}/download`} download>
-              Download set ZIP
-            </a>
-            {release.tracks.map((track, i) => (
-              <a key={track.mood} href={track.url} download={`a${i + 1}.opus`}>
-                Download {MOODS[i]}
-              </a>
-            ))}
           </div>
-        </>
+        </div>
+        {notice && <p role="status">{notice}</p>}
+        {release.error && <p role="alert">{release.error}</p>}
+        {release.status !== 'published' && (
+          <p className="music-release-state">Status: {release.status}</p>
+        )}
+        {release.tracks.length === 3 && (
+          <>
+            <MusicPlayer key={release.id} release={release} />
+            <div className="music-downloads">
+              <a className="btn" href={`/api/v1/music/${id}/download`} download>
+                Download set
+              </a>
+              <details>
+                <summary>Individual moods</summary>
+                <div className="music-card-actions">
+                  {release.tracks.map((track, i) => (
+                    <a key={track.mood} href={track.url} download={`a${i + 1}.opus`}>
+                      Download {MOODS[i]}
+                    </a>
+                  ))}
+                </div>
+              </details>
+            </div>
+          </>
+        )}
+      </section>
+      {(release.validation || release.warnings.length > 0) && (
+        <MusicValidation checks={release.validation ?? []} warnings={release.warnings} />
       )}
-      {release.validation && <MusicValidation checks={release.validation} />}
-      {release.warnings.length > 0 && (
-        <details open>
-          <summary>Listening notes</summary>
-          <ul>
-            {release.warnings.map((warning, i) => (
-              <li key={i}>{warning}</li>
-            ))}
-          </ul>
-        </details>
-      )}
+      <details className="music-credits">
+        <summary>Credits &amp; sources</summary>
+        <p>{release.metadata.credits}</p>
+        <p>License: {release.metadata.license}</p>
+        {release.metadata.sources.map((source) => (
+          <p key={source}>
+            <a href={source} rel="noreferrer">
+              {source}
+            </a>
+          </p>
+        ))}
+      </details>
       {owner && !release.generated && ['draft', 'inspected'].includes(release.status) && (
         <section className="music-upload">
           <h2>Prepare this release</h2>

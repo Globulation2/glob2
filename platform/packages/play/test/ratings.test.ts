@@ -1,5 +1,7 @@
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import { rate } from 'openskill';
+import { catalogRulesVersion } from '@glob2/protocol/node';
+import { parseSimVersionKey, simVersionKey } from '@glob2/protocol';
 import type { VerifiedOutcome } from '@glob2/protocol';
 import { createTestDatabase, type TestDatabase } from '@glob2/db/testing';
 import {
@@ -997,6 +999,48 @@ describe('rating application', () => {
       games: 0,
     });
     expect(await ensureAiEntity(db, 'maxima', SIM_B)).toBe(maximaB!.entityId);
+  });
+
+  it('isolates AI results for different catalogs without changing verifier routing', async () => {
+    const db = database.db;
+    const human = await createAccount(db, 'Catalog challenger');
+    const rulesA = simVersionKey(catalogRulesVersion(parseSimVersionKey(SIM_A)!, '1'.repeat(64)));
+    const rulesB = simVersionKey(catalogRulesVersion(parseSimVersionKey(SIM_A)!, '2'.repeat(64)));
+    const matchId = await createMatch(db, [
+      { side: 0, accountId: human },
+      { side: 1, ai: 'numbi' },
+    ]);
+    await db
+      .updateTable('matches')
+      .set({ rules_identity: rulesA })
+      .where('id', '=', matchId)
+      .execute();
+    const job = await createVerifyJob(db, matchId);
+    await handleEngineJobResult(db, resultPayload(job, verified(['won', 'lost'])));
+    const [rated] = await aiLadderRatings(db, ['numbi'], rulesA, 'ranked-1v1');
+    const [fresh] = await aiLadderRatings(db, ['numbi'], rulesB, 'ranked-1v1');
+    expect(rated!.games).toBe(1);
+    expect(fresh!.games).toBe(0);
+    expect(rated!.entityId).not.toBe(fresh!.entityId);
+    expect(
+      (
+        await db
+          .selectFrom('matches')
+          .select('sim_version')
+          .where('id', '=', matchId)
+          .executeTakeFirstOrThrow()
+      ).sim_version,
+    ).toBe(SIM_A);
+    expect(
+      (
+        await db
+          .selectFrom('match_results_view')
+          .select('sim_version')
+          .where('match_id', '=', matchId)
+          .where('kind', '=', 'ai')
+          .executeTakeFirstOrThrow()
+      ).sim_version,
+    ).toBe(rulesA);
   });
 
   it('sweeps verified matches whose ratings are still pending', async () => {

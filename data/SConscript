@@ -32,6 +32,7 @@ if 'dist' in COMMAND_LINE_TARGETS or 'install' in COMMAND_LINE_TARGETS:
     PackTar(env["TARFILE"], "SConscript")
     
 SConscript("maxima/SConscript")
+SConscript("buildings/SConscript")
 SConscript("fonts/SConscript")
 SConscript("gfx/SConscript")
 SConscript("skins/SConscript")

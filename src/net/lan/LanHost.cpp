@@ -18,6 +18,7 @@
 
 #include "AINames.h"
 #include "GameHeader.h"
+#include "BuildingType.h"
 #include "MapCache.h"
 #include "NetBroadcaster.h"
 #include "NetworkConfig.h"
@@ -160,11 +161,13 @@ LanHost::LanHost(Options selected) : options(std::move(selected))
 	// The experiments, as the legacy lobby chose them: a save keeps its own, a map
 	// takes the host's settings. A save also keeps its rules and alliances.
 	GameHeader header;
+	if (options.loadSaveHeader)
+		header = options.loadSaveHeader(options.mapFile);
 	if (save)
 	{
 		if (!options.loadSaveHeader)
 			throw std::invalid_argument("LanHost::Options::loadSaveHeader is required to host a save");
-		const GameHeader saved = options.loadSaveHeader(options.map.getFileName());
+		const GameHeader& saved = header;
 		try
 		{
 			const auto fromSave = Online::MatchSetup::fromGameHeader(saved, options.map, setup.map, setup.simVersion);
@@ -180,6 +183,17 @@ LanHost::LanHost(Options selected) : options(std::move(selected))
 	else if (options.applyExperiments)
 		options.applyExperiments(header, options.map);
 	setup.experiments = header.getExperiments().keys();
+	if (header.getBuildingCatalogSnapshot().empty())
+	{
+		BuildingsTypes legacy;
+		legacy.initLegacy();
+		header.setBuildingCatalogSnapshot(legacy.snapshotJson());
+	}
+	setup.buildingCatalogSnapshot = header.getBuildingCatalogSnapshot();
+	setup.resourceExperiments = options.map.resourceExperimentDefinitions.empty()
+		? header.resourceExperiments() : options.map.resourceExperimentDefinitions;
+	if (!setup.buildingCatalogSnapshot.empty())
+		setup.buildingCatalogHash = Online::Sha256::hex(setup.buildingCatalogSnapshot);
 	room.hostName = clampUtf8(options.hostName.empty() ? "Host" : options.hostName, MAX_NAME_BYTES);
 	room.mapName = options.map.getMapName();
 	room.mapBytes = static_cast<std::uint32_t>(mapTransfer.size());
@@ -761,11 +775,17 @@ void LanHost::applyOptions(const GameHeader& header)
 		return;
 	try
 	{
+		GameHeader catalogHeader = header;
+		if (catalogHeader.getBuildingCatalogSnapshot().empty())
+			catalogHeader.setBuildingCatalogSnapshot(room.setup.buildingCatalogSnapshot);
+		if (catalogHeader.getBuildingCatalogSnapshot() != room.setup.buildingCatalogSnapshot)
+			throw std::invalid_argument("options cannot change the map building catalog");
 		const auto edited =
-			Online::MatchSetup::fromGameHeader(header, options.map, room.setup.map, room.setup.simVersion);
+			Online::MatchSetup::fromGameHeader(catalogHeader, options.map, room.setup.map, room.setup.simVersion);
 		room.setup.rules = edited.rules;
 		room.setup.teams = edited.teams;
 		room.setup.experiments = edited.experiments;
+		room.setup.resourceExperiments = edited.resourceExperiments;
 		changed = true;
 		broadcastState();
 	}

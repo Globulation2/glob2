@@ -1,10 +1,14 @@
+#include <nlohmann/json.hpp>
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "EngineFixtures.h"
 #include "ScriptObservations.h"
 #include "ScriptOrders.h"
+#include "ScriptSpatial.h"
+#include "ScriptBuildingCapabilities.h"
 #include "ScriptRuntime.h"
 #include "GlobalContainer.h"
 #include "GameGUI.h"
+#include "MapEdit.h"
 #include "Game.h"
 #include "Unit.h"
 #include "Building.h"
@@ -15,6 +19,7 @@
 #include "Player.h"
 #include "AIJavaScript.h"
 #include <BinaryStream.h>
+#include <TextStream.h>
 #include <StreamBackend.h>
 #include <Toolkit.h>
 #include <FileManager.h>
@@ -202,7 +207,7 @@ TEST_CASE("JavaScript orders execute and survive save load" *
 						   .set("id", unsigned(clearing->gid))
 						   .set("generation", clearing->scriptIdentity);
 	Value switches = Value::array();
-	for (int i = 0; i < BASIC_COUNT; ++i)
+	for (int i = 0; i < BASIC_COUNT - 1; ++i)
 		switches.items.emplace_back(true);
 	auto clearingOrder = Value::object()
 							 .set("type", "clearingResources")
@@ -218,6 +223,7 @@ TEST_CASE("JavaScript orders execute and survive save load" *
 		denied = true;
 	}
 	GLOB2_REQUIRE(denied, "JavaScript contract");
+	switches.items.emplace_back(true); // Five legacy material switches remain accepted.
 	switches.items[STONE] = Value(false);
 	clearingOrder.set("resources", switches);
 	game.players[0] = new Player(0, "local", game.teams[0], BasePlayer::P_LOCAL);
@@ -255,8 +261,8 @@ TEST_CASE("JavaScript orders execute and survive save load" *
 		game.addBuilding(18, 4, globals.buildingsTypes.getTypeNum("market", 0, false), 0);
 	REQUIRE(market);
 	execute(describe("exchange", market).set("receiveMask", 3).set("sendMask", 4));
-	CHECK(market->receiveResourceMask == 3);
-	CHECK(market->sendResourceMask == 4);
+	CHECK(market->receiveMaterialMask == 3);
+	CHECK(market->sendMaterialMask == 4);
 	execute(describe("range", clearing).set("range", 9));
 	CHECK(clearing->unitStayRange == 9);
 	auto *war = game.addBuilding(25, 20, globals.buildingsTypes.getTypeNum("warflag", 0, false), 0);
@@ -320,8 +326,8 @@ TEST_CASE("JavaScript orders execute and survive save load" *
 	GLOB2_REQUIRE(clearingLoaded.game.load(&clearingIn), "JavaScript contract");
 	auto *restoredFlag =
 		clearingLoaded.game.teams[0]->myBuildings[Building::GIDtoID(clearing->gid)];
-	GLOB2_REQUIRE(restoredFlag && !restoredFlag->clearingResources[STONE] &&
-					  restoredFlag->clearingResources[WOOD],
+	GLOB2_REQUIRE(restoredFlag && !restoredFlag->clearingMaterials[STONE] &&
+					  restoredFlag->clearingMaterials[WOOD],
 				  "JavaScript contract");
 }
 TEST_CASE("JavaScript scenario effects commit atomically and resume" *
@@ -988,7 +994,7 @@ TEST_CASE("JavaScript native spatial answers exclude hidden terrain resources an
 	auto initial = answers(before);
 	game.map.setFertility(22, 22, 65535);
 	game.map.setCellTerrain(22, 22,WATER);
-	game.map.setResource(21, 21, WHEAT, 1);
+	game.map.setResourceByIndex(21, 21, WHEAT, 1);
 	enemy->hp = 999;
 	world.addUnit(WARRIOR, 24, 24, 1);
 	Observations after(game, 0);
@@ -1156,6 +1162,36 @@ TEST_CASE("JavaScript placement reserves footprints and explains impossible cons
 	CHECK_THROWS(spatial.query("placement", {request, Value::array()}, {}));
 	// The reservation eliminates every candidate, but must not hide bad arguments.
 	CHECK_THROWS(spatial.query("placement", {request, staged}, {}));
+}
+
+TEST_CASE("JavaScript solid attraction placement keeps both radius and footprint reservation" *
+          doctest::test_suite("JavaScriptIntegration"))
+{
+    glob2test::HeadlessGlobals globals;
+    glob2test::HeadlessGame world({.discovered=true,.clearImmobile=true,.loadDefaultRace=true,.header=true});
+    const int variant = world.game.buildingsTypes.getPlaceableTypeNum("inn");
+    REQUIRE(variant >= 0);
+    auto snapshot=nlohmann::json::parse(world.game.buildingsTypes.snapshotJson());
+    snapshot["variants"][variant]["properties"]["zonable"]={0,0,1};
+    snapshot["variants"][variant]["properties"]["maxUnitStayRange"]=5;
+    world.game.buildingsTypes.loadSnapshotJson(snapshot.dump());
+    world.game.configureBuildingCatalog();
+    auto* type = world.game.buildingsTypes.get(variant);
+    REQUIRE(type->semantics.occupiesGround);
+    Observations observations(world.game, -1);
+    observations.setProfile(2);
+    observations.observe();
+    Spatial spatial(world.game, 0, observations);
+    spatial.begin(Value::array());
+    auto request = Value::object().set("buildingType", variant).set("reachable", false)
+        .set("clearance", 0).set("range", 4);
+    auto result = spatial.query("placement", {request, Value::array()}, {});
+    REQUIRE(result.get("found").number == 1);
+    const auto command = result.get("order");
+    CHECK(command.get("range").number == 4);
+    CHECK(command.get("reservedWidth").number >= type->width);
+    CHECK(command.get("reservedHeight").number >= type->height);
+    CHECK(order(world.game, 0, command)->getOrderType() == ORDER_CREATE);
 }
 
 TEST_CASE("JavaScript services reject unsavable transactions without changing state" *
@@ -1400,4 +1436,219 @@ TEST_CASE("JavaScript terrain registry exposes immutable property capabilities i
         CHECK(state.get("internal").number==1);CHECK(state.get("frozen").number==1);
         CHECK(state.get("unchanged").number==1);
     }
+}
+
+TEST_CASE("JavaScript material metadata and remembered multi-yield sources survive both stream formats" *
+          doctest::test_suite("JavaScriptIntegration"))
+{
+    glob2test::HeadlessGlobals globals;
+    glob2test::HeadlessGame world({.wDec=4,.hDec=4,.teams=1});
+    auto definition = nlohmann::json::parse(world.game.map.resourceRegistry().serialize())["resources"][1];
+    definition["key"] = "test:mixed-crop";
+    definition["yields"] = {{"food", {{"capacity", 60000}, {"initial", 2}}},
+                             {"paper", {{"capacity", 50000}, {"initial", 3}}}};
+    world.game.map.installResourceDefinitions(nlohmann::json{{"schemaVersion", 1}, {"resources", nlohmann::json::array({definition})}}.dump());
+    const auto resource = *world.game.map.resourceRegistry().find("test:mixed-crop");
+    world.game.map.replaceResource(5,5,Resource{Uint16(resourceIndex(resource)),0,5,0});
+    const auto index = world.game.map.coordToIndex(5,5);
+    world.game.map.setMaterialAmount(index, MaterialId::Food, 50000);
+    world.game.map.setMaterialAmount(index, MaterialId::Paper, 40000);
+    world.game.map.setMapDiscovered(5,5,world.game.teams[0]->me);
+    Observations fair(world.game,0);
+    fair.observe();
+    world.game.map.switchFogOfWar();
+    world.game.map.switchFogOfWar();
+    ++world.game.stepCounter;
+    world.game.map.setMaterialAmount(index, MaterialId::Food, 1);
+    CHECK(fair.materialStock(5,5,MaterialId::Food) == 50000);
+    CHECK(fair.materialStock(5,5,MaterialId::Paper) == 40000);
+
+    for (bool text : {false, true})
+    {
+        auto* memory = new MemoryStreamBackend;
+        std::unique_ptr<OutputStream> output;
+        if (text) output = std::make_unique<TextOutputStream>(memory);
+        else output = std::make_unique<BinaryOutputStream>(memory);
+        fair.save(output.get()); output->flush();
+        const auto bytes = memory->takeContents();
+        auto* inputMemory = new MemoryStreamBackend(bytes.data(), bytes.size());
+        inputMemory->seekFromStart(0);
+        std::unique_ptr<InputStream> input;
+        if (text) input = std::make_unique<TextInputStream>(inputMemory);
+        else input = std::make_unique<BinaryInputStream>(inputMemory);
+        Observations loaded(world.game,0);
+        loaded.load(input.get());
+        CHECK(loaded.materialStock(5,5,MaterialId::Food) == 50000);
+        CHECK(loaded.materialStock(5,5,MaterialId::Paper) == 40000);
+        const auto tile = loaded.query("tile", {5,5});
+        CHECK(tile.get("resource").get("amount").number == 90000);
+        CHECK(tile.get("materialStocks").items[materialIndex(MaterialId::Paper)].number == 40000);
+        Spatial spatial(world.game,0,loaded);
+        const auto summary = spatial.query("summary", {Value::object().set("x",5).set("y",5).set("material","food")}, {});
+        CHECK(summary.get("amount").number == 50000);
+    }
+
+    Observations full(world.game,-1);
+    for (unsigned profile : {1u,2u}) for (bool commander : {false,true})
+    {
+        Host host; host.profile=profile; host.commander=commander;
+        host.width=host.height=16; host.team=-1; host.random=[] {return 0u;};
+        host.query=[&](const auto& name,const auto& args,const QueryBudget& budget) {return full.query(name,args,budget);};
+        auto result=makeRuntime()->invoke(
+            "export function step(ctx,s){const r=ctx.game.resourceTypes(),m=ctx.game.materialTypes();"
+            "s.count=m.length;s.food=m[1].key;s.custom=r.some(x=>x.key==='test:mixed-crop');"
+            "s.frozen=Object.isFrozen(r)&&Object.isFrozen(r[0].yields)&&Object.isFrozen(m);}",
+            Value::object(),false,host);
+        CHECK(result.state.get("count").number == 12);
+        CHECK(result.state.get("food").text == "food");
+        CHECK(result.state.get("custom").number == 1);
+        CHECK(result.state.get("frozen").number == 1);
+    }
+}
+
+TEST_CASE("JavaScript legacy empty resource memories discard unused stock bytes" * doctest::test_suite("JavaScriptIntegration"))
+{
+    glob2test::HeadlessGlobals globals;
+    glob2test::HeadlessGame world;
+    auto* memory = new MemoryStreamBackend;
+    BinaryOutputStream output(memory);
+    output.writeEnterSection("scriptObservations");
+    output.writeUint32(0,"tick"); output.writeUint32(1,"count");
+    output.writeEnterSection(0);
+    output.writeUint32(0,"index"); output.writeUint32(0,"tick");
+    output.writeUint16(0,"terrain"); output.writeUint16(0,"fertility");
+    output.writeUint8(255,"type"); output.writeUint8(1,"variety"); output.writeUint8(3,"amount");
+    output.writeUint16(GRASS,"terrainType");
+    output.writeLeaveSection(); output.writeLeaveSection(); output.flush();
+    auto bytes = memory->takeContents();
+    BinaryInputStream input(new MemoryStreamBackend(bytes.data(),bytes.size()));
+    Observations restored(world.game,0);
+    CHECK_NOTHROW(restored.load(&input,FILE_FORMAT_VERSION_RUNTIME_RESOURCES-1));
+    CHECK(restored.materialStock(0,0,MaterialId::Food) == 0);
+    CHECK(restored.cell(0,0).resource == NO_RES_TYPE);
+}
+
+TEST_CASE("JavaScript custom building descriptors and orders follow services" * doctest::test_suite("JavaScriptIntegration"))
+{
+    glob2test::HeadlessGlobals globals;
+    glob2test::HeadlessGame world(glob2test::GameOptions{.discovered=true,.clearImmobile=true,.loadDefaultRace=true,.header=true});
+    const int variant=world.game.buildingsTypes.getFinishedTypeNum("inn");
+    auto snapshot=nlohmann::json::parse(world.game.buildingsTypes.snapshotJson());
+    auto& spec=snapshot["variants"][variant];
+    spec["properties"]["type"]="new-service";
+    spec["properties"]["shortTypeNum"]=IntBuildingType::STONE_WALL;
+    spec["semantics"]["production"]["recipes"]={{"explorer",{{"enabled",true},{"duration",20},{"cost",nlohmann::json::object()}}}};
+    spec["semantics"]["production"]["fallbackUnit"]=EXPLORER;
+    spec["semantics"]["production"]["initialRatios"]={0,0,0};
+    world.game.buildingsTypes.loadSnapshotJson(snapshot.dump());
+    world.game.configureBuildingCatalog();
+    auto* b=world.game.addBuilding(4,4,variant,0,1,1);
+    REQUIRE(b);
+    Observations observations(world.game, 0);
+    auto types = observations.query("buildingTypes", {});
+    const Value* descriptor = nullptr;
+    for (const auto& value : types.items) if (value.get("id").number == b->typeNum) descriptor = &value;
+    REQUIRE(descriptor);
+    CHECK(descriptor->get("feeding").get("enabled").number == 1);
+    CHECK(descriptor->get("production").items[EXPLORER].get("enabled").number == 1);
+    CHECK(buildingProvides(world.game, b->typeNum, AIPlanning::BuildingIntent::Feed));
+    CHECK(buildingProvides(world.game, b->typeNum, AIPlanning::BuildingIntent::ProduceExplorer));
+    auto ref = Value::object().set("id", unsigned(b->gid)).set("generation", b->scriptIdentity);
+    Value ratios=Value::array(); ratios.items={Value(0),Value(1),Value(0)};
+    auto command=Value::object().set("type","production").set("building",ref).set("ratios",ratios);
+    CHECK_NOTHROW(Script::order(world.game,0,command));
+    ratios.items[WORKER]=Value(1); command.set("ratios",ratios);
+    CHECK_THROWS(Script::order(world.game,0,command));
+    CHECK(buildingVariantDescendsFrom(world.game.buildingsTypes, b->type->prevLevel, b->typeNum));
+}
+
+TEST_CASE("JavaScript managed controls use capabilities and independent bombing filter" * doctest::test_suite("JavaScriptIntegration"))
+{
+    glob2test::HeadlessGlobals globals;
+    glob2test::HeadlessGame world(glob2test::GameOptions{.discovered=true,.clearImmobile=true,.loadDefaultRace=true,.header=true});
+    const int variant=world.game.buildingsTypes.getFinishedTypeNum("swarm");
+    auto snapshot=nlohmann::json::parse(world.game.buildingsTypes.snapshotJson());
+    snapshot["variants"][variant]["properties"]["shortTypeNum"]=IntBuildingType::STONE_WALL;
+    snapshot["variants"][variant]["properties"]["zonable"]={1,1,1};
+    snapshot["variants"][variant]["properties"]["maxUnitStayRange"]=12;
+    world.game.buildingsTypes.loadSnapshotJson(snapshot.dump());
+    world.game.configureBuildingCatalog();
+    auto* building=world.addBuilding("swarm",4,4);
+    Observations observations(world.game,0);observations.setProfile(2);observations.observe();
+    Services services(world.game,0,observations);services.begin();
+    Host host;host.profile=2;host.team=0;host.width=world.game.map.getW();host.height=world.game.map.getH();host.random=[] {return 0u;};
+    host.query=[&](const auto& name,const auto& args,const QueryBudget& budget){return services.query(name,args,budget);};
+    auto result=makeRuntime()->invoke(
+        "export function step(ctx,s){const b=ctx.game.buildings()[0];"
+        "b.production=[2,1,0];b.minimumLevel=2;b.requireBombing=true;b.range=8;b.workerMinimumLevel=1;}"
+        ,Value::object(),false,host);
+    REQUIRE(result.commands.items.size()==5);
+    services.commit(result.commands,result.telemetry);
+    for(int i=0;i<5;++i){auto order=services.dispatch();order->sender=0;world.game.executeOrder(order,0);}
+    CHECK(building->ratio[WORKER]==2);CHECK(building->ratio[EXPLORER]==1);
+    CHECK(building->minLevelToFlag==2);CHECK(building->explorersRequireBombing);
+    CHECK(building->unitStayRange==8);CHECK(building->minWorkerLevelToFlag==1);
+    ++world.game.stepCounter;observations.observe();services.begin();
+    for(const auto& receipt:services.actions().items)CHECK(receipt.get("status").text=="completed");
+}
+
+TEST_CASE("JavaScript terrain resource permissions follow both catalogs and charge full enumeration [display]" * doctest::test_suite("JavaScriptIntegration"))
+{
+    glob2test::HeadlessGlobals globals(glob2test::GlobalsOptions{
+        .display=true,.width=1024,.height=768,.screenFlags=GAGCore::GraphicContext::PORTABLEGPU});
+    MapEdit editor;
+    auto& map=editor.game.map;
+    map.setSize(4,4,GRASS);
+    Observations observations(editor.game,-1);
+    const auto old=observations.query("terrainTypes",{});
+    auto definition=nlohmann::json::parse(map.resourceRegistry().serialize())["resources"][0];
+    definition["key"]="test:script-habitat";
+    definition["properties"]["habitatMask"]=1;
+    definition["properties"]["requiresGrowthTerrain"]=false;
+    definition["properties"]["requiresPermanentDepositsTerrain"]=false;
+    auto install=[&] {map.installResourceDefinitions(nlohmann::json{{"schemaVersion",1},
+        {"resources",nlohmann::json::array({definition})}}.dump());};
+    install();
+    const auto resource=*map.resourceRegistry().find("test:script-habitat");
+    REQUIRE(resourceIndex(resource)>=MaterialCount);
+    size_t charged=0;
+    const auto current=observations.query("terrainTypes",{},[&](size_t nodes,size_t){charged+=nodes;});
+    CHECK(charged==map.terrainRegistry().size()*(48+map.resourceRegistry().size()));
+    auto allows=[&](const Value& catalog,TerrainType terrain) {
+        const auto& ids=catalog.items[terrain].get("allowedResources").items;
+        return std::any_of(ids.begin(),ids.end(),[&](const Value& value){return value.number==resourceIndex(resource);});
+    };
+    CHECK_FALSE(allows(old,GRASS));
+    CHECK(allows(current,GRASS));CHECK_FALSE(allows(current,WATER));
+    definition["properties"]["habitatMask"]=2;
+    install();
+    const auto changed=observations.query("terrainTypes",{});
+    CHECK_FALSE(allows(changed,GRASS));CHECK(allows(changed,WATER));
+    // Existing detached snapshots remain unchanged after resource-only imports.
+    CHECK(allows(current,GRASS));
+    map.importTerrainDefinitions(R"({"schemaVersion":1,"terrains":[{"key":"test:script-whitelist","name":"Script whitelist","base":"water","appearance":"water","properties":{},"allowedResourceKeys":["test:script-habitat"]}]})");
+    const auto terrain=*map.terrainRegistry().find("test:script-whitelist");
+    const auto whitelist=observations.query("terrainTypes",{});
+    REQUIRE(whitelist.items[terrain].get("allowedResources").items.size()==1);
+    CHECK(allows(whitelist,terrain));
+    for(unsigned terrain=0;terrain<changed.items.size();++terrain)
+        CHECK(allows(changed,static_cast<TerrainType>(terrain))==map.terrainSupportsResourceType(static_cast<TerrainType>(terrain),resource));
+    CHECK_THROWS(observations.query("terrainTypes",{},[](size_t,size_t){throw std::runtime_error("query budget");}));
+}
+
+TEST_CASE("JavaScript building clearing materials retain full fixed slots and legacy view" * doctest::test_suite("JavaScriptIntegration"))
+{
+    glob2test::HeadlessGlobals globals;
+    glob2test::HeadlessGame world({.discovered=true,.clearImmobile=true,.loadDefaultRace=true,.header=true});
+    auto* building=world.game.addBuilding(5,5,world.game.buildingsTypes.getFinishedTypeNum("inn"),0);
+    REQUIRE(building);
+    for(unsigned m=0;m<MaterialCount;++m) building->clearingMaterials[m]=(m%2)!=0;
+    Observations observations(world.game,-1);
+    const auto buildings=observations.query("buildings",{});
+    REQUIRE(buildings.items.size()==1);
+    const auto& descriptor=buildings.items.front();
+    REQUIRE(descriptor.get("clearingResources").items.size()==BASIC_COUNT);
+    REQUIRE(descriptor.get("clearingMaterials").items.size()==MaterialCount);
+    for(unsigned m=0;m<MaterialCount;++m)
+        CHECK(descriptor.get("clearingMaterials").items[m].number==((m%2)!=0));
 }

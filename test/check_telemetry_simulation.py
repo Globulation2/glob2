@@ -16,14 +16,14 @@ import tempfile
 ROOT = Path(__file__).resolve().parents[1]
 SCENARIOS = (
     (ROOT / "games/gd-large-4ai.game", 1024,
-     ROOT / "test/fixtures/scoped-gradients/gd-large-4ai-1024.terrain.checksums.gz"),
+     ROOT / "test/fixtures/scoped-gradients/gd-large-4ai-1024.resources.checksums.gz"),
     (ROOT / "games/gd-bigarena-long.game", 2048,
-     ROOT / "test/fixtures/scoped-gradients/gd-bigarena-2048.terrain.checksums.gz"),
+     ROOT / "test/fixtures/scoped-gradients/gd-bigarena-2048.resources.checksums.gz"),
     (ROOT / "test/fixtures/ai-random-streams/numbi-castor-v121.game.gz", 2048,
-     ROOT / "test/fixtures/scoped-gradients/numbi-castor-2048.terrain.checksums.gz"),
+     ROOT / "test/fixtures/scoped-gradients/numbi-castor-2048.resources.checksums.gz"),
 )
 CHECKPOINT = ROOT / "test/fixtures/team-stats/telemetry-expansion-validation/checkpoint-1024-v108.game.gz"
-PARENT_RELOAD = ROOT / "test/fixtures/scoped-gradients/v108-reload-256.terrain.checksums.gz"
+PARENT_RELOAD = ROOT / "test/fixtures/scoped-gradients/v108-reload-256.resources.checksums.gz"
 
 
 def detailed_ticks(data: bytes) -> dict[int, bytes]:
@@ -110,7 +110,7 @@ def main(binary: str, parallel_ai: bool = False, evidence: Path | None = None, u
             with gzip.open(fixture, "rb") as stream:
                 expected = stream.read()
             if actual != expected:
-                print(f"{save.name}: per-tick checksums differ from the terrain serial reference",
+                print(f"{save.name}: per-tick checksums differ from the resource-era serial reference",
                       file=sys.stderr)
                 print(f"expected SHA-256 {hashlib.sha256(expected).hexdigest()}", file=sys.stderr)
                 print(f"actual   SHA-256 {hashlib.sha256(actual).hexdigest()}", file=sys.stderr)
@@ -145,7 +145,7 @@ def main(binary: str, parallel_ai: bool = False, evidence: Path | None = None, u
         with gzip.open(PARENT_RELOAD, "rb") as stream:
             expected = stream.read()
         if actual != expected:
-            print("legacy checkpoint differs from complete terrain reference", file=sys.stderr)
+            print("legacy checkpoint differs from complete resource-era reference", file=sys.stderr)
             return 1
         print("PASS v108 checkpoint: 256 reloaded ticks, identical complete checksum sidecar")
     if evidence is not None:
@@ -161,7 +161,7 @@ if __name__ == "__main__":
     parser.add_argument("binary")
     parser.add_argument("--parallel-ai", action="store_true")
     parser.add_argument("--update-fixtures", action="store_true",
-                        help="Regenerate only terrain-era traces from retained legacy saves")
+                        help="Regenerate only resource-era traces from retained legacy saves")
     parser.add_argument("--output", type=Path, help="Retain traces, replays, saves, commands and logs")
     args = parser.parse_args()
     if args.update_fixtures and args.parallel_ai:

@@ -88,7 +88,7 @@ void Game::loadBuildProjects(GAGCore::InputStream* stream)
         if (project.posX < 0 || project.posX >= map.getW()
             || project.posY < 0 || project.posY >= map.getH()
             || project.teamNumber < 0 || project.teamNumber >= mapHeader.getNumberOfTeams()
-            || project.typeNum < 0 || static_cast<size_t>(project.typeNum) >= globalContainer->buildingsTypes.size()
+            || project.typeNum < 0 || static_cast<size_t>(project.typeNum) >= buildingsTypes.size()
             || project.unitWorking < 0 || project.unitWorking > Unit::MAX_COUNT
             || project.unitWorkingFuture < 0 || project.unitWorkingFuture > Unit::MAX_COUNT)
             throw std::runtime_error("Invalid pending construction project");
@@ -184,6 +184,13 @@ GAGCore::CooperativeTask Game::loadTask(GAGCore::InputStream *stream)
 	if (!tempGameHeader.load(stream, versionMinor))
 		co_return false;
 	gameHeader=tempGameHeader;
+	// Resolve before any entity takes a descriptor pointer. Older files must
+	// never inherit edited repository definitions.
+	if (gameHeader.getBuildingCatalogSnapshot().empty()) buildingsTypes.initLegacy();
+	else buildingsTypes.loadSnapshotJson(gameHeader.getBuildingCatalogSnapshot());
+	if (!globalContainer->runNoX) buildingsTypes.loadSprites();
+	gameHeader.setBuildingCatalogSnapshot(buildingsTypes.snapshotJson());
+	configureBuildingCatalog();
 
 	if (!readMatchingSignature(stream, FILE_SIG_GAME_BEGIN, "signatureStart"))
 		co_return false;
@@ -214,7 +221,7 @@ GAGCore::CooperativeTask Game::loadTask(GAGCore::InputStream *stream)
 		stream->readEnterSection(i);
         co_await GAGCore::CooperativeTask::checkpoint("[Loading teams]");
 		teams[i]=new Team(this);
-        if (!(co_await teams[i]->loadTask(stream, &globalContainer->buildingsTypes, versionMinor)))
+        if (!(co_await teams[i]->loadTask(stream, &buildingsTypes, versionMinor)))
             co_return false;
 		if (teams[i]->teamNumber != i) co_return false;
 		for (int slot = 0; slot < Building::MAX_COUNT; ++slot)
@@ -232,6 +239,16 @@ GAGCore::CooperativeTask Game::loadTask(GAGCore::InputStream *stream)
 
 	if (versionMinor >= FILE_FORMAT_VERSION_TERRAIN_PROPERTIES && map.requiredTerrainExperiments() != mapHeader.requiredTerrainExperiments)
 		co_return false;
+	if (versionMinor >= FILE_FORMAT_VERSION_RUNTIME_RESOURCES &&
+		(map.requiredResourceExperiments() != mapHeader.requiredResourceExperiments ||
+		 map.resourceRegistry().experiments() != mapHeader.resourceExperimentDefinitions ||
+		 gameHeader.resourceExperiments() != mapHeader.resourceExperimentDefinitions)) co_return false;
+	gameHeader.setResourceExperiments(map.resourceRegistry().experiments());
+	for (const auto& key : map.requiredResourceExperiments().keys())
+	{
+		if (mapHeader.getIsSavedGame() && !gameHeader.getExperiments().has(key)) co_return false;
+		gameHeader.getExperiments().set(key, true, gameHeader.catalogExperimentKeys());
+	}
 	for (const auto& definition : experimentDefinitions())
 		if (mapHeader.requiredTerrainExperiments.has(definition.id))
 		{
@@ -641,6 +658,11 @@ void Game::save(GAGCore::OutputStream *stream, bool fileIsAMap, const std::strin
 	mapHeader.setMapName(name);
 	mapHeader.setIsSavedGame(!fileIsAMap);
 	mapHeader.requiredTerrainExperiments = map.requiredTerrainExperiments();
+	mapHeader.requiredResourceExperiments = map.requiredResourceExperiments();
+	mapHeader.resourceExperimentDefinitions = map.resourceRegistry().experiments();
+	gameHeader.setResourceExperiments(map.resourceRegistry().experiments());
+	for (const auto& key : mapHeader.requiredResourceExperiments.keys())
+		gameHeader.getExperiments().set(key, true, gameHeader.catalogExperimentKeys());
 	mapHeader.resetGameSHA1();
 
 	for (int i=0; i<mapHeader.getNumberOfTeams(); ++i)
@@ -669,6 +691,7 @@ void Game::save(GAGCore::OutputStream *stream, bool fileIsAMap, const std::strin
 	}
 	else
 		mapHeader.save(stream);
+	gameHeader.setBuildingCatalogSnapshot(buildingsTypes.snapshotJson());
 	gameHeader.save(stream);
 
 	///Save basic informations

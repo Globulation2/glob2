@@ -61,6 +61,11 @@ TEST_SUITE("EnteringUnitSave")
 	                auto* unit = new Unit(position[0], position[1], 0, EXPLORER, team, 0);
 	                team->myUnits[0] = unit;
 	                unit->attachedBuilding = inn;
+	                unit->activity = Unit::ACT_UPGRADING;
+	                unit->destinationPurpose = FEED;
+	                const auto& meal=inn->type->semantics.feeding.cost;
+	                for (int resource=0;resource<MaterialSlotCount;++resource) inn->materials[resource]=meal[resource];
+	                inn->reserveService(unit);
 	                inn->unitsInside.push_back(unit);
 	                unit->displacement = Unit::DIS_ENTERING_BUILDING;
 	                unit->movement = Unit::MOV_ENTERING_BUILDING;

@@ -10,7 +10,7 @@ namespace gradient_preparation
 struct SeedTerrain
 {
 	Uint16 open;
-	Uint8 farmCrop;
+	Uint8 farmMaterial;
 };
 
 // The common built-in registry fits a stack table. Runtime-defined terrain uses
@@ -21,7 +21,7 @@ template<class Function> void withTerrain(const Map &map, bool canSwim, Function
 {
 	auto policy = [canSwim](const TerrainProperties &terrain) {
 		return SeedTerrain{Uint16(terrain.walkable || (canSwim && terrain.swimmable)
-			? GRADIENT_UNREACHABLE : GRADIENT_FORBIDDEN), terrain.farmCrop};
+			? GRADIENT_UNREACHABLE : GRADIENT_FORBIDDEN), terrain.farmMaterial};
 	};
 	if (map.terrainRegistry().size() == TERRAIN_COUNT)
 	{

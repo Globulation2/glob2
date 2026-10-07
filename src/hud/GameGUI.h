@@ -8,6 +8,7 @@ namespace Online { class SkinDownloads; }
 
 #include <InputState.h>
 #include <functional>
+#include <array>
 #include <atomic>
 #include <memory>
 #include <optional>
@@ -93,6 +94,7 @@ public:
 
 	///Initializes all variables
 	void init();
+	void rebuildBuildingChoices(bool preserve = false);
 	///Moves the local viewport
 	void adjustInitialViewport();
 	void adjustLocalTeam();
@@ -417,7 +419,7 @@ private:
 	void drawRedButton(int x, int y, std::string caption, bool doLanguageLookup=true);
 	void drawTextCenter(int x, int y, std::string caption);
 	void drawValueAlignedRight(int y, int v);
-	void drawCosts(int resources[BASIC_COUNT], Font *font);
+	void drawCosts(const int resources[MaterialCount], Font *font, int& ypos);
 	void drawCheckButton(int x, int y, std::string caption, bool isSet);
 	void drawRadioButton(int x, int y, bool isSet);
 
@@ -463,12 +465,28 @@ private:
 	std::optional<size_t> pickChoiceUnderMouse(int panelTopY, size_t count, unsigned numberPerLine) const;
 	//! Paint the resource/info text block at the bottom of the right panel for the given type.
 	void drawChoiceInfoPanel(const std::string& type);
+	int choiceVisibleRows(int panelTopY,unsigned columns) const;
+	bool scrollBuildingChoices(double delta);
+	int buildingChoiceRow=0, flagChoiceRow=0;
+	int buildingInfoScroll=0, buildingInfoScrollMaximum=0;
+	Uint16 buildingInfoScrollGid=0xffff;
 	//! Draw a choice of flags
 	void drawFlagView(void);
 	//! Draw the infos from a unit
 	void drawUnitInfos(void);
 	//! Draw the infos and actions from a building. Thin coordinator that calls
 	//! the per-section helpers below in vertical order.
+	// Coordinates captured by the actual draw pass, in unscrolled body space.
+	struct BuildingPreviewRows
+	{
+		int hp=-1, inside=-1, armor=-1, range=-1, bullets=-1;
+		int damageRows=0;
+		std::array<int,NB_UNIT_TYPE> damage;
+		std::array<int,MaterialCount> resource;
+		BuildingPreviewRows() { damage.fill(-1); resource.fill(-1); }
+	};
+	enum class BuildingPreview { None, Repair, Upgrade };
+	BuildingPreview hoveredBuildingPreview(const SceneBuildingPanel& building) const;
 	void drawBuildingInfos(void);
 	//! Draw the centered title row ("<building> (<player>)") and the
 	//! subtitle ("level N — (building site) — Prestige"). Advances ypos past
@@ -479,10 +497,10 @@ private:
 	void drawBuildingIcon(const SceneBuildingPanel* selBuild, BuildingType* buildingType, int ypos);
 	//! Draw the HP label and current/max value (red below 1/5th max). No
 	//! ypos advance — sits in the icon row next to the icon.
-	void drawBuildingHP(const SceneBuildingPanel* selBuild, BuildingType* buildingType, int ypos);
+	void drawBuildingHP(const SceneBuildingPanel* selBuild, BuildingType* buildingType, int ypos, BuildingPreviewRows& rows);
 	//! Draw the units-inside count ("N/maxUnitInside" when ALIVE, otherwise
 	//! the "still N units" message). Ally-gated. No ypos advance.
-	void drawBuildingInsideStats(const SceneBuildingPanel* selBuild, BuildingType* buildingType, int ypos);
+	void drawBuildingInsideStats(const SceneBuildingPanel* selBuild, BuildingType* buildingType, int ypos, BuildingPreviewRows& rows);
 	//! Draw a flag building's "in way" / "on the spot" unit counts using the
 	//! displayed (optimistic) flag position/range so the numbers track flag
 	//! movement or range edits. Ally-gated. No ypos advance.
@@ -502,15 +520,15 @@ private:
 	void drawBuildingFlagControls(const SceneBuildingPanel* selBuild, BuildingType* buildingType, int& ypos);
 	//! Draw armor / shoot damage / shoot range text rows for combat buildings.
 	//! Advances ypos.
-	void drawBuildingCombatStats(const SceneBuildingPanel* selBuild, BuildingType* buildingType, int& ypos);
+	void drawBuildingCombatStats(const SceneBuildingPanel* selBuild, BuildingType* buildingType, int& ypos, BuildingPreviewRows& rows);
 	//! Draw the market exchange panel (per-happyness resource readouts) for
 	//! buildings that can exchange and that the local team has shared-vision
 	//! exchange visibility on. Advances ypos.
-	void drawBuildingExchange(const SceneBuildingPanel* selBuild, BuildingType* buildingType, int& ypos);
+	void drawBuildingExchange(const SceneBuildingPanel* selBuild, BuildingType* buildingType, int& ypos, BuildingPreviewRows& rows);
 	//! Draw non-exchange resource readouts ("name: cur/max") and the bullets
 	//! row for shooters. Ally-gated; skipped for exchange buildings. Advances
 	//! ypos.
-	void drawBuildingResources(const SceneBuildingPanel* selBuild, BuildingType* buildingType, int& ypos);
+	void drawBuildingResources(const SceneBuildingPanel* selBuild, BuildingType* buildingType, int& ypos, BuildingPreviewRows& rows);
 	//! Draw the swarm production progress bar plus the per-unit-type ratio
 	//! scrollboxes (worker / explorer / warrior). Queues the ratio-bar
 	//! tutorial highlight arrow when active. Ally-gated. Advances ypos.
@@ -523,9 +541,9 @@ private:
 	//! bottom of the panel, plus the upgrade-preview tooltip on hover. Only
 	//! shown when the local team owns the building. Uses absolute
 	//! bottom-of-screen Y; does not consume ypos.
-	void drawBuildingActionButtons(const SceneBuildingPanel* selBuild, BuildingType* buildingType, unsigned unitInsideBarYDec);
+	void drawBuildingActionButtons(const SceneBuildingPanel* selBuild, BuildingType* buildingType);
 	//! Draw the upgrade preview tooltip (cost + new abilities) shown on hover over the upgrade button (extracted from drawBuildingInfos)
-	void drawBuildingUpgradePreview(const SceneBuildingPanel* selBuild, BuildingType* buildingType, unsigned unitInsideBarYDec);
+	void drawBuildingUpgradePreview(const SceneBuildingPanel* selBuild, BuildingType* buildingType, const BuildingPreviewRows& rows, int& ypos);
 	//! Draw the infos about a resource on map (type and number left)
 	void drawResourceInfos(void);
 	//! Draw the replay panel
@@ -855,6 +873,8 @@ private:
 	Sint32 displayedPriority(const Building& b) const;
 	bool displayedClearingResource(const Building& b, int i) const;
 	Sint32 displayedMinLevelToFlag(const Building& b) const;
+	template<class B> Sint32 displayedMinWorkerLevelToFlag(const B& b) const { return ::displayedMinWorkerLevelToFlag(buildingGuiState,b); }
+	template<class B> bool displayedExplorersRequireBombing(const B& b) const { return ::displayedExplorersRequireBombing(buildingGuiState,b); }
 	std::array<Sint32, NB_UNIT_TYPE> displayedRatio(const Building& b) const;
 	// The same for the selected building's panel model.
 	Sint32 displayedPosX(const SceneBuildingPanel& b) const { return ::displayedPosX(buildingGuiState, b); }

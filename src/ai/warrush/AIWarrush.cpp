@@ -1,3 +1,6 @@
+#include "AIResourcePolicy.h"
+#include "Material.h"
+#include "AIRuleOrders.h"
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 // Copyright (C) 2005 Eli Dupree
@@ -9,8 +12,9 @@
 #include "Building.h"
 #include "Unit.h"
 #include "Game.h"
-#include "AIRules.h"
-#include "GlobalContainer.h"
+#include <algorithm>
+#include <array>
+
 #include "Order.h"
 #include "Player.h"
 #include "Brush.h"
@@ -158,27 +162,70 @@ bool AIWarrush::isAnyUnitWithLessThanOneThirdFood()const
 				   }) != nullptr);
 }
 
-Building *AIWarrush::getSwarmWithoutSettings(const int workerRatio, const int explorerRatio, const int warriorRatio)const
+bool AIWarrush::provides(const Building& building, Intent intent) const
 {
-	return findBuildingIf(team, [=](Building *b) {
-		return b->type->shortTypeNum == IntBuildingType::SWARM_BUILDING
-			&& b->constructionResultState == Building::NO_CONSTRUCTION
-			&& (b->ratio[0] != workerRatio || b->ratio[1] != explorerRatio || b->ratio[2] != warriorRatio);
-	});
+ const int completed = building.type->isBuildingSite ? building.type->nextLevel : building.typeNum;
+ return game->buildingCapabilities().matches(completed, intent);
 }
 
-Building *AIWarrush::getBuildingWithoutWorkersAssigned(Sint32 shortTypeNum, int num_workers)const
+int AIWarrush::selectBuilding(Intent intent) const
 {
-	return findBuildingIf(team, [=](Building *b) {
-		return b->type->shortTypeNum == shortTypeNum
-			&& b->maxUnitWorking != num_workers
-			&& (b->constructionResultState != Building::NO_CONSTRUCTION
-				|| (shortTypeNum != IntBuildingType::ATTACK_BUILDING
-					&& shortTypeNum != IntBuildingType::HEAL_BUILDING
-					&& shortTypeNum != IntBuildingType::WALKSPEED_BUILDING
-					&& shortTypeNum != IntBuildingType::SWIMSPEED_BUILDING
-					&& shortTypeNum != IntBuildingType::SCIENCE_BUILDING));
-	});
+ const auto& index = game->buildingCapabilities();
+ int chosen = -1, count = 0;
+ for (const auto& candidate : index.placements(intent))
+  if (index.available(candidate, intent, game->gameHeader) && random() % ++count == 0)
+   chosen = candidate.placementType;
+ return chosen;
+}
+
+Building *AIWarrush::getSwarmWithoutSettings(const int workerRatio, const int explorerRatio, const int warriorRatio)const
+{
+ const int ratios[] = {workerRatio, explorerRatio, warriorRatio};
+ return findBuildingIf(team, [&](Building *b) {
+  if (b->constructionResultState != Building::NO_CONSTRUCTION) return false;
+  bool produces = false, differs = false;
+  for (int unit = 0; unit < NB_UNIT_TYPE; ++unit) {
+   produces |= b->type->semantics.production.recipes[unit].enabled;
+   const int desired = b->type->semantics.production.recipes[unit].enabled ? ratios[unit] : 0;
+   differs |= b->ratio[unit] != desired;
+  }
+  return produces && differs;
+ });
+}
+
+std::shared_ptr<Order> AIWarrush::staffingOrder() const
+{
+	constexpr std::array intents = {Intent::ProduceWorker, Intent::ProduceExplorer,
+		Intent::ProduceWarrior, Intent::Feed, Intent::TrainAttackStrength};
+	constexpr std::array requests = {AI_WARRUSH_SWARM_WORKER_COUNT,
+		AI_WARRUSH_SWARM_WORKER_COUNT, AI_WARRUSH_SWARM_WORKER_COUNT,
+		AI_WARRUSH_INN_WORKER_COUNT, AI_WARRUSH_BARRACKS_WORKER_COUNT};
+	constexpr auto completedIntents = (std::uint64_t{1} << unsigned(Intent::ProduceWorker))
+		| (std::uint64_t{1} << unsigned(Intent::Feed));
+	std::array<Building*, intents.size()> candidates{};
+	const auto& index = game->buildingCapabilities();
+	for (int slot = 0; slot < Building::MAX_COUNT; ++slot)
+	{
+		Building* building = team->myBuildings[slot];
+		if (!building || building->maxUnitWorking >= building->type->semantics.assignmentLimit)
+			continue;
+		const int completed = building->type->isBuildingSite ? building->type->nextLevel : building->typeNum;
+		auto mask = index.intentMask(completed);
+		if (building->constructionResultState == Building::NO_CONSTRUCTION)
+			mask &= completedIntents;
+		for (std::size_t intent = 0; intent < intents.size(); ++intent)
+			if (!candidates[intent] && (mask & (std::uint64_t{1} << unsigned(intents[intent])))
+				&& building->maxUnitWorking < requests[intent])
+				candidates[intent] = building;
+		// Intent priority precedes slot order: a later worker producer wins over
+		// an earlier explorer producer. Only the first worker candidate ends the scan.
+		if (candidates.front()) break;
+	}
+	for (std::size_t intent = 0; intent < intents.size(); ++intent)
+		if (Building* building = candidates[intent])
+			return std::make_shared<OrderModifyBuilding>(building->gid,
+				std::min(requests[intent], building->type->semantics.assignmentLimit));
+	return std::make_shared<NullOrder>();
 }
 
 Building *AIWarrush::getSwarmAtRandom()const
@@ -189,7 +236,7 @@ Building *AIWarrush::getSwarmAtRandom()const
 	for (int i=0; i<Building::MAX_COUNT; i++)
 	{
 		Building *b=myBuildings[i];
-		if ((b) && (b->type->shortTypeNum==IntBuildingType::SWARM_BUILDING))
+		if ((b) && (provides(*b, Intent::ProduceWorker)))
 		{
 			++swarmsfound;
 			if(random()%swarmsfound == 0)
@@ -201,46 +248,46 @@ Building *AIWarrush::getSwarmAtRandom()const
 	return chosen_swarm;
 }
 
-bool AIWarrush::allOfBuildingTypeAreCompleted(Sint32 shortTypeNum)const
+bool AIWarrush::allOfBuildingTypeAreCompleted(Intent intent)const
 {
 	telemetry.set(AITrace::AI3::AIWarrush_allOfBuildingTypeAreCompleted_input_shortTypeNum,
-				  shortTypeNum);
+				  static_cast<unsigned>(intent));
 	telemetry.count(AITrace::AI3::AIWarrush_allOfBuildingTypeAreCompleted_calls);
 	return telemetry.returnedBool(AITrace::AI3::AIWarrush_allOfBuildingTypeAreCompleted_result,
 								  AITrace::AI3::AIWarrush_allOfBuildingTypeAreCompleted_true,
 								  findBuildingIf(team,
-												 [shortTypeNum](Building *b)
+												 [this, intent](Building *b)
 												 {
-													 return b->type->shortTypeNum == shortTypeNum &&
+													 return provides(*b, intent) &&
 															(b->constructionResultState !=
 																 Building::NO_CONSTRUCTION ||
 															 b->buildingState == Building::DEAD);
 												 }) == nullptr);
 }
 
-bool AIWarrush::allOfBuildingTypeAreFull(Sint32 shortTypeNum)const
+bool AIWarrush::allOfBuildingTypeAreFull(Intent intent)const
 {
 	telemetry.set(AITrace::AI3::AIWarrush_allOfBuildingTypeAreFull_input_shortTypeNum,
-				  shortTypeNum);
+				  static_cast<unsigned>(intent));
 	telemetry.count(AITrace::AI3::AIWarrush_allOfBuildingTypeAreFull_calls);
 	return telemetry.returnedBool(AITrace::AI3::AIWarrush_allOfBuildingTypeAreFull_result,
 								  AITrace::AI3::AIWarrush_allOfBuildingTypeAreFull_true,
 								  findBuildingIf(team,
-												 [shortTypeNum](Building *b)
+												 [this, intent](Building *b)
 												 {
-													 return b->type->shortTypeNum == shortTypeNum &&
+													 return provides(*b, intent) &&
 															b->unitsInside.size() <
 																(size_t)b->maxUnitInside;
 												 }) == nullptr);
 }
 
-int AIWarrush::numberOfBuildingsOfType(Sint32 shortTypeNum)const
+int AIWarrush::numberOfBuildingsOfType(Intent intent)const
 {
-	telemetry.set(AITrace::AI3::AIWarrush_numberOfBuildingsOfType_input_shortTypeNum, shortTypeNum);
+	telemetry.set(AITrace::AI3::AIWarrush_numberOfBuildingsOfType_input_shortTypeNum, static_cast<unsigned>(intent));
 	telemetry.count(AITrace::AI3::AIWarrush_numberOfBuildingsOfType_calls);
 	return telemetry.returnedInt(AITrace::AI3::AIWarrush_numberOfBuildingsOfType_result,
-								 countBuildingsIf(team, [shortTypeNum](Building *b)
-												  { return b->shortTypeNum == shortTypeNum; }));
+								 countBuildingsIf(team, [this, intent](Building *b)
+												  { return provides(*b, intent); }));
 }
 
 
@@ -250,27 +297,27 @@ int AIWarrush::numberOfExtraBuildings()const
 	return telemetry.returnedInt(
 		AITrace::AI3::AIWarrush_numberOfExtraBuildings_result,
 		countBuildingsIf(team,
-						 [](Building *b)
+						 [this](Building *b)
 						 {
-							 return b->shortTypeNum == IntBuildingType::HEAL_BUILDING ||
-									b->shortTypeNum == IntBuildingType::WALKSPEED_BUILDING ||
-									b->shortTypeNum == IntBuildingType::SWIMSPEED_BUILDING ||
-									b->shortTypeNum == IntBuildingType::SCIENCE_BUILDING ||
-									b->shortTypeNum == IntBuildingType::DEFENSE_BUILDING;
+							 return provides(*b, Intent::Heal) ||
+									provides(*b, Intent::TrainWalk) ||
+									provides(*b, Intent::TrainSwim) ||
+									provides(*b, Intent::TrainConstruction) ||
+									provides(*b, Intent::ProjectileDefense);
 						 }));
 }
 
-bool AIWarrush::allOfBuildingTypeAreFullyWorked(Sint32 shortTypeNum)const
+bool AIWarrush::allOfBuildingTypeAreFullyWorked(Intent intent)const
 {
 	telemetry.set(AITrace::AI3::AIWarrush_allOfBuildingTypeAreFullyWorked_input_shortTypeNum,
-				  shortTypeNum);
+				  static_cast<unsigned>(intent));
 	telemetry.count(AITrace::AI3::AIWarrush_allOfBuildingTypeAreFullyWorked_calls);
 	return telemetry.returnedBool(AITrace::AI3::AIWarrush_allOfBuildingTypeAreFullyWorked_result,
 								  AITrace::AI3::AIWarrush_allOfBuildingTypeAreFullyWorked_true,
 								  findBuildingIf(team,
-												 [shortTypeNum](Building *b)
+												 [this, intent](Building *b)
 												 {
-													 return b->shortTypeNum == shortTypeNum &&
+													 return provides(*b, intent) &&
 															b->unitsWorking.size() !=
 																(size_t)b->maxUnitWorking;
 												 }) == nullptr);
@@ -287,8 +334,7 @@ bool AIWarrush::percentageOfBuildingsAreFullyWorked(int percentage)const
 	for (int i=0; i<Building::MAX_COUNT; i++)
 	{
 		Building *b=myBuildings[i];
-		if((b)&&AIRules::usefulBuilding(game->gameHeader,b->shortTypeNum)
-            &&(b->shortTypeNum != IntBuildingType::WAR_FLAG)&&(b->shortTypeNum != IntBuildingType::EXPLORATION_FLAG)&&(b->shortTypeNum != IntBuildingType::CLEARING_FLAG))
+		if (b && b->type->semantics.occupiesGround && b->type->maxUnitWorking > 0)
 		{
 			++num_buildings;
 			if(b->unitsWorking.size() == (size_t)b->maxUnitWorking)
@@ -296,12 +342,19 @@ bool AIWarrush::percentageOfBuildingsAreFullyWorked(int percentage)const
 				++num_worked_buildings;
 				if(verbose)std::cout << "A";
 			}
-			else if((b->type->shortTypeNum == IntBuildingType::SWARM_BUILDING
-					|| b->type->shortTypeNum == IntBuildingType::FOOD_BUILDING)
-					&&
-					b->constructionResultState == Building::NO_CONSTRUCTION
-					&&
-					(b->resources[WHEAT]) > ((b->wishedResources[WHEAT]) * AI_WARRUSH_HEAVILY_WORKED_RATIO_NUM / AI_WARRUSH_HEAVILY_WORKED_RATIO_DEN))
+			else if (b->constructionResultState == Building::NO_CONSTRUCTION
+    && [&]() {
+     bool consumes = false;
+     for (int resource = 0; resource < MaterialSlotCount; ++resource) {
+      bool required = b->type->semantics.feeding.enabled && b->type->semantics.feeding.cost[resource] > 0;
+      for (const auto& recipe : b->type->semantics.production.recipes)
+       required |= recipe.enabled && recipe.cost[resource] > 0;
+      if (!required) continue;
+      consumes = true;
+      if (b->materials[resource] <= b->wishedMaterials[resource] * AI_WARRUSH_HEAVILY_WORKED_RATIO_NUM / AI_WARRUSH_HEAVILY_WORKED_RATIO_DEN) return false;
+     }
+     return consumes;
+    }())
 			{//heavily worked swarms and inns sometimes are full and have no workers
 				++num_worked_buildings;
 				if(verbose)std::cout << "C";
@@ -348,10 +401,10 @@ std::shared_ptr<Order> AIWarrush::getOrder(void)
 		if(verbose)if(shouldBuildMore)std::cout << "AIWarrush is ready to build more stuff!";
 		//Build another swarm if all are swarms are working at capacity, and if we have other random stuff we should-have / need
 		if(verbose)std::cout << "Chance to build swarm: ";
-		if(shouldBuildMore && allOfBuildingTypeAreCompleted(IntBuildingType::SWARM_BUILDING) && numberOfExtraBuildings() >= numberOfBuildingsOfType(IntBuildingType::SWARM_BUILDING) && (game->gameHeader.isHungerDisabled() || numberOfBuildingsOfType(IntBuildingType::FOOD_BUILDING) >= numberOfBuildingsOfType(IntBuildingType::SWARM_BUILDING) * AI_WARRUSH_INNS_PER_SWARM_RATIO))
+		if(shouldBuildMore && allOfBuildingTypeAreCompleted(Intent::ProduceWorker) && numberOfExtraBuildings() >= numberOfBuildingsOfType(Intent::ProduceWorker) && (game->gameHeader.isHungerDisabled() || numberOfBuildingsOfType(Intent::Feed) >= numberOfBuildingsOfType(Intent::ProduceWorker) * AI_WARRUSH_INNS_PER_SWARM_RATIO))
 		{
 			if(verbose)std::cout << "TAKEN!\n";
-			return buildBuildingOfType(IntBuildingType::SWARM_BUILDING);
+			return buildBuildingOfType(Intent::ProduceWorker);
 		}
 		if(verbose)std::cout << "ignored.\n";
 		
@@ -363,16 +416,16 @@ std::shared_ptr<Order> AIWarrush::getOrder(void)
 				&&
 				shouldBuildMore
 				&&
-				 numberOfExtraBuildings() >= numberOfBuildingsOfType(IntBuildingType::FOOD_BUILDING) - AI_WARRUSH_INN_LOOKAHEAD
+				 numberOfExtraBuildings() >= numberOfBuildingsOfType(Intent::Feed) - AI_WARRUSH_INN_LOOKAHEAD
 				&&
 				(
-				 (allOfBuildingTypeAreCompleted(IntBuildingType::FOOD_BUILDING)
-				&& allOfBuildingTypeAreFull(IntBuildingType::FOOD_BUILDING))
-				|| allOfBuildingTypeAreFullyWorked(IntBuildingType::FOOD_BUILDING))
+				 (allOfBuildingTypeAreCompleted(Intent::Feed)
+				&& allOfBuildingTypeAreFull(Intent::Feed))
+				|| allOfBuildingTypeAreFullyWorked(Intent::Feed))
 				  )
 		{
 			if(verbose)std::cout << "TAKEN!\n";
-			return buildBuildingOfType(IntBuildingType::FOOD_BUILDING);
+			return buildBuildingOfType(Intent::Feed);
 		}
 		if(verbose)std::cout << "ignored.\n";
 		
@@ -381,12 +434,12 @@ std::shared_ptr<Order> AIWarrush::getOrder(void)
 		if(verbose)std::cout << "Chance to build barracks: ";
 		if(
 			!game->gameHeader.isPeacefulModeEnabled() && !game->gameHeader.isUnitUpgradesDisabled()
-			&& allOfBuildingTypeAreCompleted(IntBuildingType::ATTACK_BUILDING)
-			&& allOfBuildingTypeAreFull(IntBuildingType::ATTACK_BUILDING)
+			&& allOfBuildingTypeAreCompleted(Intent::TrainAttackStrength)
+			&& allOfBuildingTypeAreFull(Intent::TrainAttackStrength)
 				)
 		{
 			if(verbose)std::cout << "TAKEN!\n";
-			return buildBuildingOfType(IntBuildingType::ATTACK_BUILDING);
+			return buildBuildingOfType(Intent::TrainAttackStrength);
 		}
 		if(verbose)std::cout << "ignored.\n";
 	
@@ -395,16 +448,16 @@ std::shared_ptr<Order> AIWarrush::getOrder(void)
 		if(shouldBuildMore)
 		{
 			if(verbose)std::cout << "TAKEN!\n";
-			Sint32 type;
+			Intent type;
 			int random_number = random()%AI_WARRUSH_RANDOM_BUILDING_DENOM;
-			if(random_number < AI_WARRUSH_HEAL_PCT_THRESHOLD || numberOfBuildingsOfType(IntBuildingType::HEAL_BUILDING) == 0)type = IntBuildingType::HEAL_BUILDING;
-			else if(random_number < AI_WARRUSH_WALKSPEED_PCT_THRESHOLD || numberOfBuildingsOfType(IntBuildingType::WALKSPEED_BUILDING) == 0)type = IntBuildingType::WALKSPEED_BUILDING;
-			else if(random_number < AI_WARRUSH_SWIMSPEED_PCT_THRESHOLD)type = IntBuildingType::SWIMSPEED_BUILDING;
-			else if(random_number < AI_WARRUSH_SCIENCE_PCT_THRESHOLD)type = IntBuildingType::SCIENCE_BUILDING;
-			else type = IntBuildingType::DEFENSE_BUILDING;
+			if(random_number < AI_WARRUSH_HEAL_PCT_THRESHOLD || numberOfBuildingsOfType(Intent::Heal) == 0)type = Intent::Heal;
+			else if(random_number < AI_WARRUSH_WALKSPEED_PCT_THRESHOLD || numberOfBuildingsOfType(Intent::TrainWalk) == 0)type = Intent::TrainWalk;
+			else if(random_number < AI_WARRUSH_SWIMSPEED_PCT_THRESHOLD)type = Intent::TrainSwim;
+			else if(random_number < AI_WARRUSH_SCIENCE_PCT_THRESHOLD)type = Intent::TrainConstruction;
+			else type = Intent::ProjectileDefense;
 			// Skip unavailable choices before committing a construction turn. A rejected
 			// barracks or school must not repeatedly preempt production and staffing.
-			if (!AIRules::usefulBuilding(game->gameHeader,type)) type=IntBuildingType::HEAL_BUILDING;
+			if (!AIPlanning::BuildingCapabilityIndex::allowed(type, game->gameHeader)) type=Intent::Heal;
 			return buildBuildingOfType(type);
 		}
 		if(verbose)std::cout << "ignored.\n";
@@ -419,29 +472,18 @@ std::shared_ptr<Order> AIWarrush::getOrder(void)
 		//anything. (It can only issue one order per tick, so it has to do it over several
 		//ticks and calculate the orders separately.)
 		const int warriors=game->gameHeader.isPeacefulModeEnabled() ? 0 : AI_WARRUSH_SWARM_RATIO_WARRIOR;
+        if(auto order=AIPlanning::missingProductionOrder(*game,*team,{AI_WARRUSH_SWARM_RATIO_WORKER,AI_WARRUSH_SWARM_RATIO_EXPLORER,warriors},AI_WARRUSH_SWARM_WORKER_COUNT,AI_WARRUSH_SWARM_WORKER_COUNT)) return order;
 		Building *out_of_date_swarm = getSwarmWithoutSettings(AI_WARRUSH_SWARM_RATIO_WORKER, AI_WARRUSH_SWARM_RATIO_EXPLORER, warriors);
 		if(out_of_date_swarm)
 		{
 			Sint32 settings[3] = {AI_WARRUSH_SWARM_RATIO_WORKER, AI_WARRUSH_SWARM_RATIO_EXPLORER, warriors};
+   for (int unit = 0; unit < NB_UNIT_TYPE; ++unit)
+    if (!out_of_date_swarm->type->semantics.production.recipes[unit].enabled) settings[unit] = 0;
 			return shared_ptr<Order>(new OrderModifySwarm(out_of_date_swarm->gid, settings));
 		}
 	}
 
-	//all swarms should always have 5 workers at them!
-	Building *weak_swarm = getBuildingWithoutWorkersAssigned(IntBuildingType::SWARM_BUILDING, AI_WARRUSH_SWARM_WORKER_COUNT);
-	if (weak_swarm) return shared_ptr<Order>(new OrderModifyBuilding(weak_swarm->gid, AI_WARRUSH_SWARM_WORKER_COUNT));
-
-	//all inns should always have 3 workers at them! (best to build fast, make sure they're fed)
-	Building *weak_inn = getBuildingWithoutWorkersAssigned(IntBuildingType::FOOD_BUILDING, AI_WARRUSH_INN_WORKER_COUNT);
-	if (weak_inn) return shared_ptr<Order>(new OrderModifyBuilding(weak_inn->gid, AI_WARRUSH_INN_WORKER_COUNT));
-
-	//work barracks more too.
-	Building *weak_barracks = getBuildingWithoutWorkersAssigned(IntBuildingType::ATTACK_BUILDING, AI_WARRUSH_BARRACKS_WORKER_COUNT);
-	if (weak_barracks && weak_barracks->constructionResultState != Building::NO_CONSTRUCTION)
-	 return shared_ptr<Order>(new OrderModifyBuilding(weak_barracks->gid, AI_WARRUSH_BARRACKS_WORKER_COUNT));
-	
-	//nothing at all to do?!
-	return shared_ptr<Order>(new NullOrder);
+	return staffingOrder();
 }
 
 std::shared_ptr<Order> AIWarrush::pruneGuardAreas()
@@ -503,7 +545,7 @@ std::shared_ptr<Order> AIWarrush::placeGuardAreas()
 			for(int j=0;j<Building::MAX_COUNT;j++)
 			{
 				Building *b = t->myBuildings[j];
-				if ((b)&&(b->buildingState != Building::DEAD)&&(b->hp != 1 || b->constructionResultState == Building::NO_CONSTRUCTION)&&(b->shortTypeNum != IntBuildingType::WAR_FLAG)&&(b->shortTypeNum != IntBuildingType::EXPLORATION_FLAG)&&(b->shortTypeNum != IntBuildingType::CLEARING_FLAG))
+				if ((b)&&(b->buildingState != Building::DEAD)&&(b->hp != 1 || b->constructionResultState == Building::NO_CONSTRUCTION)&&b->type->semantics.occupiesGround)
 				{
 					BuildingType *bt = b->type;
 					if(
@@ -587,12 +629,20 @@ std::shared_ptr<Order> AIWarrush::farm()
 	{
 		for(int y=0;y<map->h;y++)
 		{
-			const bool wheat_spot = x%2==y%2 && map->isResourceTakeable(x, y, WHEAT)
+			const auto type=map->getResource(x,y).type;
+			const auto properties=type==NO_RES_TYPE ? ResourceProperties{} : map->resourcePropertiesByIndex(type);
+			const bool reserveFood=AIResourcePolicy::needsSeedReserve(*map,x,y,MaterialId::Food);
+			const bool reserveWood=AIResourcePolicy::needsSeedReserve(*map,x,y,MaterialId::Wood);
+			const bool nearGrowth=properties.ecology!=ResourceEcology::Land
+				|| water_gradient(x, y) > (AI_WARRUSH_GRADIENT_MAX - AI_WARRUSH_WATER_NEAR_OFFSET);
+			const bool wheat_spot = x%2==y%2 && reserveFood
 				&& map->isMapDiscovered(x, y, team->me)
-				&& water_gradient(x, y) > (AI_WARRUSH_GRADIENT_MAX - AI_WARRUSH_WATER_NEAR_OFFSET);
+				&& nearGrowth;
+			const auto foodYield=reserveFood ? map->resourceRegistry().yields(static_cast<ResourceId>(map->getResource(x,y).type))[materialIndex(MaterialId::Food)] : YieldProperties{};
+			const bool wheat_farm = farms && wheat_spot && properties.farmable
+					&& foodYield.consumption==ResourceConsumption::One && !foodYield.destroysDeposit && map->canPaintFarmArea(x, y);
 			if(farms && map->isMapDiscovered(x, y, team->me))
 			{
-				const bool wheat_farm = wheat_spot && map->canPaintFarmArea(x, y);
 				const bool farmed = map->isFarmArea(x, y, team->me);
 				if(wheat_farm && !farmed)
 					farm_add_acc.applyBrush(BrushApplication(x, y, 0), map);
@@ -600,11 +650,11 @@ std::shared_ptr<Order> AIWarrush::farm()
 					farm_del_acc.applyBrush(BrushApplication(x, y, 0), map);
 				// The farm replaces forbidden paint on wheat.
 				if(map->isForbidden(x, y, team->me)
-				   && map->isResourceTakeable(x, y, WHEAT))
+				   && wheat_farm && !reserveWood)
 					del_acc.applyBrush(BrushApplication(x, y, 0), map);
 			}
 
-			if((!map->isResourceTakeable(x, y, WOOD) && !map->isResourceTakeable(x, y, WHEAT)))
+			if(!reserveWood && !reserveFood)
 			{
 				if(map->isForbidden(x, y, team->me))
 				{
@@ -615,9 +665,9 @@ std::shared_ptr<Order> AIWarrush::farm()
 						&& !map->isForbidden (x,y + 1,team->me)
 						&& !map->isForbidden (x,y - 1,team->me)
 						//Or fruits'!
-						&& !map->isResourceTakeable(x, y, CHERRY)
-						&& !map->isResourceTakeable(x, y, ORANGE)
-						&& !map->isResourceTakeable(x, y, PRUNE)
+						&& !map->isMaterialTakeable(x, y,MaterialId::Cherries)
+						&& !map->isMaterialTakeable(x, y,MaterialId::Oranges)
+						&& !map->isMaterialTakeable(x, y,MaterialId::Prunes)
 						)
 					{
 						del_acc.applyBrush(BrushApplication(x, y, 0), map);
@@ -630,17 +680,23 @@ std::shared_ptr<Order> AIWarrush::farm()
 				del_acc.applyBrush(BrushApplication(x, y, 0), map);
 			}
 			
-			//we never clear anything but wood
-			if(!map->isResourceTakeable(x, y, WOOD))
+			const bool woodThreat=properties.clearable && !map->isMaterialTakeable(x,y,MaterialId::Food)
+				&& AIResourcePolicy::canPropagate(*map,x,y,MaterialId::Wood);
+			if(!woodThreat)
 			{
 				if(map->isClearArea(x, y, team->me))
 				{
-					clr_del_acc.applyBrush(BrushApplication(x, y, 0), map);
+					bool besideBuilding=false;
+					for(int dx=-1;dx<=1;++dx) for(int dy=-1;dy<=1;++dy) {
+						const auto gid=map->getBuilding(x+dx,y+dy);
+						besideBuilding|=gid!=NOGBID && Building::GIDtoTeam(gid)==team->teamNumber;
+					}
+					if(!besideBuilding) clr_del_acc.applyBrush(BrushApplication(x, y, 0), map);
 				}
 			}
 
-			//we clear wood if it's next to nice stuff like wheat or buildings
-			if(map->isResourceTakeable(x, y, WOOD))
+			// Clear spreading wood threats without destroying a mixed food source.
+			if(woodThreat)
 			{
 				if(!map->isClearArea(x, y, team->me) && map->isMapDiscovered(x, y, team->me))
 				{
@@ -648,7 +704,7 @@ std::shared_ptr<Order> AIWarrush::farm()
 					{
 						for(int ymod=-1;ymod<=1;ymod++)
 						{
-							if(map->isResourceTakeable(x+xmod, y+ymod, WHEAT)
+							if(map->isMaterialTakeable(x+xmod, y+ymod,MaterialId::Food)
 									|| (map->getBuilding(x+xmod,y+ymod)!=NOGBID
 									&& (team->me & game->teams[Building::GIDtoTeam(map->getBuilding(x+xmod,y+ymod))]->me)))
 							{
@@ -665,23 +721,23 @@ std::shared_ptr<Order> AIWarrush::farm()
 
 			if(x%2==1 && ((y%2==1 && x%4==1) || (y%2==0 && x%4==3)))
 			{
-				if(map->isResourceTakeable(x, y, WOOD))
+				if(reserveWood)
 				{
-					if(!map->isForbidden(x, y, team->me) && !map->isClearArea(x, y, team->me) && map->isMapDiscovered(x, y, team->me) && water_gradient(x, y) > (AI_WARRUSH_GRADIENT_MAX - AI_WARRUSH_WATER_NEAR_OFFSET))
+					if(!map->isForbidden(x, y, team->me) && !map->isClearArea(x, y, team->me) && map->isMapDiscovered(x, y, team->me) && nearGrowth)
 					{
 						add_acc.applyBrush(BrushApplication(x, y, 0), map);
 					}
 				}
 			}
 
-			if(!farms && wheat_spot && !map->isForbidden(x, y, team->me))
+			if(!wheat_farm && wheat_spot && !map->isForbidden(x, y, team->me))
 				add_acc.applyBrush(BrushApplication(x, y, 0), map);
 
 			//FORBID FRUITS!!! They're horrible for our warriors and we hate converting.
 			if(
-				(	map->isResourceTakeable(x, y, CHERRY)
-					|| map->isResourceTakeable(x, y, ORANGE)
-					|| map->isResourceTakeable(x, y, PRUNE)	)
+				(	map->isMaterialTakeable(x, y,MaterialId::Cherries)
+					|| map->isMaterialTakeable(x, y,MaterialId::Oranges)
+					|| map->isMaterialTakeable(x, y,MaterialId::Prunes)	)
 				&& !map->isForbidden(x, y, team->me)
 				&& map->isMapDiscovered(x, y, team->me)
 					)
@@ -728,16 +784,24 @@ std::shared_ptr<Order> AIWarrush::farm()
 std::shared_ptr<Order> AIWarrush::setupExploreFlagForTeam(Team *enemy_team)
 {
 	telemetry.count(AITrace::AI3::AIWarrush_setupExploreFlagForTeam_calls);
+ const int typeNum = selectBuilding(Intent::AttractExplorers);
+ if (typeNum < 0) return std::make_shared<NullOrder>();
+ auto placeNear = [&](int x, int y) -> std::shared_ptr<Order> {
+  for (int radius = 0; radius <= 8; ++radius)
+   for (int dx = -radius; dx <= radius; ++dx)
+    for (int dy = -radius; dy <= radius; ++dy)
+     if (game->checkRoomForBuilding(x + dx, y + dy, game->buildingsTypes.get(typeNum), team->teamNumber))
+      return AIRules::createOrder(*game, team->teamNumber, x + dx, y + dy, typeNum, 1, 1);
+  return std::make_shared<NullOrder>();
+ };
 	if(verbose)std::cout << "looking for swarms:\n";
 	for(int j=0;j<Building::MAX_COUNT;j++)
 	{
 		Building *b = enemy_team->myBuildings[j];
-		if((b)&&(b->type->shortTypeNum == IntBuildingType::SWARM_BUILDING)&&(b->constructionResultState == Building::NO_CONSTRUCTION))
+		if((b)&&(provides(*b, Intent::ProduceWorker))&&(b->constructionResultState == Building::NO_CONSTRUCTION))
 		{
-			Sint32 typeNum=globalContainer->buildingsTypes.getTypeNum("explorationflag", 0, false);
 			return telemetry.returnedOrder(AITrace::AI3::AIWarrush_setupExploreFlagForTeam_result,
-										   shared_ptr<Order>(new OrderCreate(
-											   team->teamNumber, b->posX, b->posY, typeNum, 1, 1)));
+										   placeNear(b->posX, b->posY));
 		}
 	}
 	if(verbose)std::cout << "No swarms found\n";
@@ -747,10 +811,8 @@ std::shared_ptr<Order> AIWarrush::setupExploreFlagForTeam(Team *enemy_team)
 		Building *b = enemy_team->myBuildings[j];
 		if(b)
 		{
-			Sint32 typeNum=globalContainer->buildingsTypes.getTypeNum("explorationflag", 0, false);
 			return telemetry.returnedOrder(AITrace::AI3::AIWarrush_setupExploreFlagForTeam_result,
-										   shared_ptr<Order>(new OrderCreate(
-											   team->teamNumber, b->posX, b->posY, typeNum, 1, 1)));
+										   placeNear(b->posX, b->posY));
 		}
 	}
 	if(verbose)std::cout << "No buildings found\n";
@@ -760,10 +822,8 @@ std::shared_ptr<Order> AIWarrush::setupExploreFlagForTeam(Team *enemy_team)
 		Unit *u = enemy_team->myUnits[j];
 		if(u)
 		{
-			Sint32 typeNum=globalContainer->buildingsTypes.getTypeNum("explorationflag", 0, false);
 			return telemetry.returnedOrder(AITrace::AI3::AIWarrush_setupExploreFlagForTeam_result,
-										   shared_ptr<Order>(new OrderCreate(
-											   team->teamNumber, u->posX, u->posY, typeNum, 1, 1)));
+										   placeNear(u->posX, u->posY));
 		}
 	}
 	//what, enemy has no buildings or units at the beginning of the game? o_O O_o o_O
@@ -795,11 +855,11 @@ void AIWarrush::initializeGradientWithResource(DynamicGradientMapArray &gradient
 		for(int y=0;y<map->h;y++)
 		{
 			Tile c=map->getTile(x,y);
-			if (c.resource.type==resource_type)
+			if (map->isMaterialTakeableSlot(x,y,resource_type))
 			{
 				gradient(x, y) = AI_WARRUSH_GRADIENT_MAX;
 			}
-			else if (c.resource.type!=NO_RES_TYPE)
+			else if (map->resourceBlocksGround(map->coordToIndex(x,y)))
 			{
 				gradient(x, y) = 0;
 			}
@@ -832,12 +892,15 @@ void AIWarrush::initializeGradientWithResource(DynamicGradientMapArray &gradient
 	}
 }
 
-std::shared_ptr<Order> AIWarrush::buildBuildingOfType(Sint32 shortTypeNum)
+std::shared_ptr<Order> AIWarrush::buildBuildingOfType(Intent intent)
 {
-	if (!AIRules::usefulBuilding(game->gameHeader, shortTypeNum)
-		|| (game->gameHeader.isHungerDisabled() && shortTypeNum==IntBuildingType::FOOD_BUILDING)) return std::make_shared<NullOrder>();
-	telemetry.set(AITrace::AI3::AIWarrush_buildBuildingOfType_input_shortTypeNum, shortTypeNum);
-	telemetry.count(AITrace::AI3::AIWarrush_buildBuildingOfType_calls);
+ buildingDelay = AI_WARRUSH_BUILDING_DELAY_TICKS;
+ const int typeNum = selectBuilding(intent);
+ if (typeNum < 0) return std::make_shared<NullOrder>();
+ const BuildingType* bt = game->buildingsTypes.get(typeNum);
+ const BuildingType* complete = bt->isBuildingSite ? game->buildingsTypes.get(bt->nextLevel) : bt;
+ telemetry.set(AITrace::AI3::AIWarrush_buildBuildingOfType_input_shortTypeNum, static_cast<unsigned>(intent));
+ telemetry.count(AITrace::AI3::AIWarrush_buildBuildingOfType_calls);
 
 	// set delay
 	// now doing this first in order to avoid repeated failed builds
@@ -845,21 +908,30 @@ std::shared_ptr<Order> AIWarrush::buildBuildingOfType(Sint32 shortTypeNum)
 	// in reality, if it fails to build, it should go on and get another order.
 	buildingDelay = AI_WARRUSH_BUILDING_DELAY_TICKS;
 
-	DynamicGradientMapArray wood_gradient(map->w,map->h);
-	DynamicGradientMapArray wheat_gradient(map->w,map->h);
-	initializeGradientWithResource(wood_gradient, WOOD);
-	initializeGradientWithResource(wheat_gradient, WHEAT);
-	
-	
-	BuildingType *bt=globalContainer->buildingsTypes.getByType(IntBuildingType::typeFromShortNumber(shortTypeNum), 0, true);
-	
+ // Prefer the dominant recurring input, falling back to construction cost.
+ std::array<int, MaterialSlotCount> demand{};
+ for (int r = 0; r < MaterialSlotCount; ++r) {
+  demand[r] += complete->semantics.feeding.enabled ? complete->semantics.feeding.cost[r] : 0;
+  demand[r] += complete->semantics.healing.enabled ? complete->semantics.healing.cost[r] : 0;
+  for (const auto& recipe : complete->semantics.production.recipes)
+   if (recipe.enabled) demand[r] += recipe.cost[r];
+ }
+ int resource = std::distance(demand.begin(), std::max_element(demand.begin(), demand.end()));
+ if (demand[resource] == 0) {
+  demand=bt->semantics.constructionCost;
+  resource=std::distance(demand.begin(),std::max_element(demand.begin(),demand.end()));
+ }
+ const bool needsResource=demand[resource]>0;
+ DynamicGradientMapArray resource_gradient(map->w, map->h);
+ if(needsResource) initializeGradientWithResource(resource_gradient, resource);
+
 	DynamicGradientMapArray availability_gradient(map->w,map->h);
 	for(int x=0;x<map->w;x++)
 	{
 		for(int y=0;y<map->h;y++)
 		{
 			Tile c=map->getTile(x,y);
-			if (c.resource.type!=NO_RES_TYPE)
+			if (map->resourceBlocksBuilding(map->coordToIndex(x,y)))
 			{
 				availability_gradient(x, y) = 0;
 			}
@@ -895,26 +967,17 @@ std::shared_ptr<Order> AIWarrush::buildBuildingOfType(Sint32 shortTypeNum)
 		
 		x = swarm->posX; y = swarm->posY;
 		
-		if(shortTypeNum==IntBuildingType::ATTACK_BUILDING || shortTypeNum==IntBuildingType::HEAL_BUILDING || shortTypeNum==IntBuildingType::SCIENCE_BUILDING || shortTypeNum==IntBuildingType::WALKSPEED_BUILDING || shortTypeNum==IntBuildingType::SWIMSPEED_BUILDING || shortTypeNum==IntBuildingType::DEFENSE_BUILDING)
-		{
-			map->getGlobalGradientDestination(wood_gradient.c_array(), x, y, &x_temp, &y_temp);
-			x = x_temp; y = y_temp;
-		}
-		if(shortTypeNum==IntBuildingType::SWARM_BUILDING || shortTypeNum==IntBuildingType::FOOD_BUILDING)
-		{
-			map->getGlobalGradientDestination(wheat_gradient.c_array(), x, y, &x_temp, &y_temp);
-			x = x_temp; y = y_temp;
-		}
+  if(needsResource && map->getGlobalGradientDestination(resource_gradient.c_array(), x, y, &x_temp, &y_temp))
+  { x = x_temp; y = y_temp; }
 		bool result = map->getGlobalGradientDestination(availability_gradient.c_array(), x, y, &destination_x, &destination_y);
 		
-		if(verbose)std::cout << "Trying to build " << shortTypeNum << "(" << bt->width << " x " << bt->height << ")" << " at " << destination_x << "," << destination_y << " from " << x << "," << y << " swarm is " << swarm->posX << "," << swarm->posY << ", found = " << result << std::endl;
+		if(verbose)std::cout << "Trying to build " << static_cast<unsigned>(intent) << "(" << bt->width << " x " << bt->height << ")" << " at " << destination_x << "," << destination_y << " from " << x << "," << y << " swarm is " << swarm->posX << "," << swarm->posY << ", found = " << result << std::endl;
 		if(verbose)if((int)availability_gradient(destination_x, destination_y) != AI_WARRUSH_GRADIENT_MAX)std::cout << "Could not find valid location for building! Best spot: " << destination_x << "," << destination_y << " (" << (int)availability_gradient(destination_x, destination_y) << ")\n";
 	}
 		
 	// create and return order
-	Sint32 typeNum=globalContainer->buildingsTypes.getTypeNum(IntBuildingType::typeFromShortNumber(shortTypeNum), 0, true);
+	if (!game->checkRoomForBuilding(destination_x, destination_y, bt, team->teamNumber)) return std::make_shared<NullOrder>();
 	return telemetry.returnedOrder(
 		AITrace::AI3::AIWarrush_buildBuildingOfType_result,
-		shared_ptr<Order>(
-			new OrderCreate(team->teamNumber, destination_x, destination_y, typeNum, 1, 1)));
+		AIRules::createOrder(*game,team->teamNumber,destination_x,destination_y,typeNum,1,1));
 }

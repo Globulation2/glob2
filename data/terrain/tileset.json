@@ -1,39 +1,176 @@
 {
-  "version": 2,
+  "version": 3,
   "compiled_pack": "data/terrain/compiled/atlas.json",
   "profiles": [
     {
       "key": "sand",
       "roughness_q8": 256,
+      "amplitude_q8": 1024,
+      "feather_q8": 320,
+      "speckle_q8": 512,
+      "bridge_q8": 512,
       "contours_q12": [
-        [0, -10, 140, 512, 512, 512, 512, 90, 400, 512, 380, 370, 200, 350, 180, 10, 0],
-        [0, -160, -320, -160, -160, -512, -512, -160, -320, -512, -160, -320, -160, -160, -320, -160, 0],
-        [0, 0, -160, -512, -160, -160, -160, 160, 0, -320, -160, 0, 480, 480, 0, -160, 0],
-        [0, 0, 480, 480, 0, 160, -160, 320, 160, 160, 0, 0, 0, 320, 320, 160, 0]
-      ],
-      "feather_q8": 320
+        [0, 208, 416, 368, 320, 272, 224, 176, -128, -432, -480, -528, -576, -368, -672, -720, 0],
+        [0, 48, 96, 144, 192, 240, -224, -432, 128, 176, 224, 272, 320, 368, 160, 208, 0],
+        [0, 48, 96, 400, 448, 496, 544, -432, -384, -336, -288, 272, 576, 624, 416, 208, 0],
+        [0, -224, -192, -160, -128, -96, -64, -32, 0, 32, 320, 608, 384, 416, 192, -32, 0],
+        [0, 32, 64, 96, 128, -96, -64, -288, 0, 32, 64, 96, 128, -96, -64, -32, 0],
+        [0, 0, 0, -256, -768, -1024, -1024, -1024, -512, -256, -512, -512, -256, 0, 0, 0, 0],
+        [0, -32, -64, 160, 128, -160, -192, -480, -768, -800, -64, -96, -128, -160, 64, 32, 0],
+        [0, -496, -480, -720, -448, -432, -416, -400, -128, -112, -96, -80, -64, 208, -32, -16, 0],
+        [0, -16, -32, -48, 192, 176, -352, -624, -896, -912, -928, -688, -448, -208, 32, 16, 0],
+        [0, -240, -224, -464, -448, -688, -928, -1024, -896, -880, -864, -1024, -832, -48, -32, -16, 0],
+        [0, 16, 288, 816, 832, 592, 864, 880, 896, 656, 416, 432, 704, 720, 480, 240, 0],
+        [0, -32, -64, -96, -128, 352, 320, 288, 256, 480, -64, -96, -128, 96, 64, 32, 0],
+        [0, 48, 96, 144, -64, -16, 288, 336, 384, 432, 480, 16, -192, -144, -96, -48, 0],
+        [0, -16, 224, 464, 448, 432, 416, -112, 384, 368, 608, 592, 576, 304, 32, -240, 0],
+        [0, 32, 64, -160, -128, -352, -64, 224, 512, 544, 832, 864, 896, 672, 704, 224, 0],
+        [0, 256, 0, 256, 256, 256, 0, 256, 256, 0, 0, 0, -768, -512, -256, 256, 0],
+        [0, 256, 768, 512, 0, -256, -256, 256, 256, 512, 768, 768, 0, 256, 0, 0, 0],
+        [0, 240, 480, 464, 192, -336, -352, -368, -384, -656, -928, -944, -704, 304, -480, -752, 0],
+        [0, 32, 64, 352, 384, 160, -64, 480, 512, 544, 576, 352, -384, 416, 448, -32, 0],
+        [0, -240, -224, -464, -448, -432, -160, -144, 128, 144, 416, 432, 192, 208, -32, -272, 0],
+        [0, -16, -32, -48, 192, 176, -96, -112, -128, 112, 352, 592, 576, 560, 288, 272, 0],
+        [0, 528, 544, 304, 64, 80, 96, 112, 384, 400, 160, -80, 192, 208, 224, -16, 0],
+        [0, 720, 928, 1024, 1024, 1024, 736, -80, -128, 336, -224, -16, 192, 400, 352, 48, 0],
+        [0, 0, 0, -256, -256, 0, 0, 0, 0, 0, 0, 768, 768, 256, 0, 0, 0]
+      ]
     },
     {
       "key": "fractured",
-      "roughness_q8": 384,
+      "roughness_q8": 320,
+      "amplitude_q8": 768,
+      "feather_q8": 320,
+      "speckle_q8": 128,
+      "bridge_q8": 256,
       "contours_q12": [
-        [0, 10, 180, 350, 200, 370, 380, 512, 400, 90, 512, 512, 512, 512, 140, -10, 0],
-        [0, -160, -320, -160, -160, -320, -160, -512, -320, -160, -512, -512, -160, -160, -320, -160, 0],
-        [0, -160, 0, 480, 480, 0, -160, -320, 0, 160, -160, -160, -160, -512, -160, 0, 0],
-        [0, 160, 320, 320, 0, 0, 0, 160, 160, 320, -160, 160, 0, 480, 480, 0, 0]
-      ],
-      "feather_q8": 192
+        [0, 362, 670, 352, 730, 656, 231, 0, 0],
+        [0, -343, -490, -98, -910, -83, -449, 0, 0],
+        [0, -134, -731, -585, -234, 96, -146, 0, 0],
+        [0, 646, 276, 778, 695, 303, 461, 0, 0],
+        [0, -309, -607, -852, -477, 468, 263, 0, 0],
+        [0, 228, -367, -851, -782, -40, 56, 0, 0],
+        [0, -470, -793, -951, -926, -630, -324, 0, 0],
+        [0, -339, -835, -756, 90, -301, -408, 0, 0],
+        [0, -142, 216, 81, -685, -34, -197, 0, 0],
+        [0, -235, 42, 296, 39, -244, -437, 0, 0],
+        [0, 310, -171, -544, -288, -757, -543, 0, 0],
+        [0, -839, -472, -798, -557, -825, -320, 0, 0]
+      ]
     },
     {
       "key": "cobblestone",
-      "roughness_q8": 320,
+      "roughness_q8": 256,
+      "amplitude_q8": 640,
+      "feather_q8": 224,
+      "speckle_q8": 320,
+      "bridge_q8": 384,
       "contours_q12": [
-        [0, 140, 512, 512, 400, 380, 200, 180, 0],
-        [0, -320, -160, -512, -320, -160, -160, -320, 0],
-        [0, -160, -160, -160, 0, -160, 480, 0, 0],
-        [0, 480, 0, -160, 160, 0, 0, 320, 0]
-      ],
-      "feather_q8": 224
+        [0, 570, 336, -237, -605, -10, -375, 80, 0],
+        [0, 246, 400, 479, 2, -712, -125, -649, 0],
+        [0, 210, -136, -686, 36, -474, 628, -444, 0],
+        [0, 572, 349, -53, 457, 414, -670, -359, 0],
+        [0, -235, 322, 680, 129, -423, -192, 253, 0],
+        [0, 277, 600, -23, -615, 419, -365, -30, 0],
+        [0, 321, 60, 248, 647, 3, 372, -689, 0],
+        [0, -418, -58, -143, 642, -276, -151, -711, 0],
+        [0, 7, 227, 630, -73, -464, -72, -344, 0],
+        [0, -245, -42, 252, 672, 68, 342, 616, 0],
+        [0, 54, 194, 703, 362, 251, 703, -201, 0],
+        [0, 417, 716, -403, 596, 254, -134, -29, 0]
+      ]
+    },
+    {
+      "key": "rock",
+      "roughness_q8": 384,
+      "amplitude_q8": 896,
+      "feather_q8": 192,
+      "speckle_q8": 448,
+      "bridge_q8": 192,
+      "contours_q12": [
+        [0, 261, 731, 796, 720, -394, 306, 0, 0],
+        [0, -325, -6, -302, -635, 132, 313, 0, 0],
+        [0, -366, 118, -85, 336, 1024, 389, 0, 0],
+        [0, 362, -327, -585, -439, 143, 666, 0, 0],
+        [0, -619, 400, 90, 803, -90, 785, 0, 0],
+        [0, -278, -384, 242, 797, 1024, 578, 0, 0],
+        [0, 290, 485, 199, 947, 84, -421, 0, 0],
+        [0, -387, 20, 1016, 821, 429, 698, 0, 0],
+        [0, 372, -248, 585, 439, 293, 146, 0, 0],
+        [0, -303, 426, 1024, 1024, 987, 292, 0, 0],
+        [0, 300, 827, -26, -642, -159, -396, 0, 0],
+        [0, -510, 57, 226, -576, 50, 146, 0, 0],
+        [0, -630, 74, 668, 549, 430, -348, 0, 0],
+        [0, 502, 957, 135, -293, -293, -146, 0, 0],
+        [0, 471, 737, 352, 1024, 1024, 435, 0, 0],
+        [0, 398, 1024, 1024, 853, 167, 110, 0, 0]
+      ]
+    },
+    {
+      "key": "soft",
+      "roughness_q8": 160,
+      "amplitude_q8": 512,
+      "feather_q8": 448,
+      "speckle_q8": 128,
+      "bridge_q8": 640,
+      "contours_q12": [
+        [0, 78, -45, -195, -306, -440, -384, -458, -608, -462, -405, -319, -164, -38, 83, 0, 0],
+        [0, 66, -91, -45, -168, -143, -114, -66, -280, -230, -113, -16, -135, -76, -3, 0, 0],
+        [0, 163, 66, -9, -66, -93, 27, -56, -153, -190, -229, -385, -273, -104, -206, 0, 0],
+        [0, -138, -84, -74, 152, -39, 30, -101, -243, -207, -77, 62, -112, -106, 1, 0, 0],
+        [0, -25, -62, 121, 99, 242, 316, 402, 350, 70, -57, -79, 0, -17, -93, 0, 0],
+        [0, -121, -150, -16, -99, -247, -283, -364, -420, -334, -152, -178, -52, -166, -101, 0, 0],
+        [0, -126, -11, 103, 238, 324, 492, 413, 379, 243, 378, 333, 397, 280, 224, 0, 0],
+        [0, 163, -37, -103, -212, -84, -187, -112, -160, -314, -164, -27, 207, 156, 113, 0, 0],
+        [0, -143, -59, 80, 123, 226, 310, 179, 37, 111, -24, 73, 18, -44, 99, 0, 0],
+        [0, 47, -82, -125, -199, -253, -294, -412, -149, 6, -34, -134, -179, -95, -162, 0, 0],
+        [0, -28, -125, -237, -333, -412, -433, -353, -430, -297, -222, -4, -241, -288, -110, 0, 0],
+        [0, 147, 25, -83, -213, -63, 59, -48, -127, 41, 103, 176, 48, -48, 99, 0, 0]
+      ]
+    },
+    {
+      "key": "crisp",
+      "roughness_q8": 96,
+      "amplitude_q8": 256,
+      "feather_q8": 128,
+      "speckle_q8": 0,
+      "bridge_q8": 256,
+      "contours_q12": [
+        [0, -240, -162, -383, -269, -442, -338, 0, 0],
+        [0, 234, 173, 122, 316, 430, 154, 0, 0],
+        [0, -74, -203, 24, -52, -98, -237, 0, 0],
+        [0, -229, -79, -28, 58, 102, 196, 0, 0],
+        [0, -61, -7, 257, 381, 119, -67, 0, 0],
+        [0, 232, -5, 167, 37, 155, 206, 0, 0],
+        [0, -93, -192, 52, -11, 229, 162, 0, 0],
+        [0, -115, -24, 48, 202, 293, 195, 0, 0]
+      ]
+    },
+    {
+      "key": "brush",
+      "roughness_q8": 320,
+      "amplitude_q8": 768,
+      "feather_q8": 320,
+      "speckle_q8": 384,
+      "bridge_q8": 512,
+      "contours_q12": [
+        [0, -78, -195, -379, -633, -867, -501, -320, -486, -641, -458, 16, 251, 478, 276, 0, 0],
+        [0, -296, -508, -672, -487, -324, -508, -307, -203, -43, 131, 534, 557, 518, 369, 0, 0],
+        [0, 194, 255, 325, 434, 661, 99, 341, 625, 575, 315, 368, 425, 103, 325, 0, 0],
+        [0, 341, 878, 712, 406, 649, 815, 876, 854, 552, -3, 170, -86, -389, -193, 0, 0],
+        [0, -569, -664, -895, -724, -928, -908, -889, -581, -270, -472, -234, -98, 499, 89, 0, 0],
+        [0, -302, -133, 73, 243, 475, 288, 457, 658, 458, 119, 521, 475, 429, 384, 0, 0],
+        [0, 348, 211, -323, -524, -1023, -743, -453, 143, 333, 518, -78, -350, -495, -164, 0, 0],
+        [0, -197, 155, -125, 356, 154, -101, 46, 374, 694, 657, 415, -44, -599, -345, 0, 0],
+        [0, 191, 71, 371, 227, 194, 419, 258, -242, 10, 303, 170, 418, 317, 62, 0, 0],
+        [0, 473, 580, 244, 481, 176, 675, 130, -162, -345, -589, -453, -16, 49, 252, 0, 0],
+        [0, 197, 419, 760, 819, 254, 48, -363, -104, 397, 450, -185, -361, -50, 180, 0, 0],
+        [0, 149, 26, 518, 745, 638, 1024, 1024, 923, 1024, 1024, 725, 973, 791, 264, 0, 0],
+        [0, 249, 1, -73, 561, 722, 1018, 595, 381, 134, 330, 545, 450, -87, -178, 0, 0],
+        [0, -235, -703, -1004, -998, -991, -985, -978, -972, -837, -591, -466, -300, 69, 345, 0, 0],
+        [0, -266, -46, 239, 421, 710, 916, 753, 950, 698, 962, 886, 618, 102, 402, 0, 0],
+        [0, -60, -517, -57, 130, 455, 215, -43, 177, -31, 289, 201, 533, 201, 50, 0, 0]
+      ]
     }
   ],
   "materials": [
@@ -42,11 +179,7 @@
       "sprite": "data/gfx/terrain",
       "profile": "sand",
       "ocean": true,
-      "preview": [
-        70,
-        50,
-        191
-      ],
+      "preview": [70, 50, 191],
       "variants": [
         {
           "frame": 256,
@@ -113,22 +246,19 @@
           "weight": 1
         }
       ],
-      "minimap": [
-        0,
-        40,
-        120
-      ]
+      "minimap": [0, 40, 120],
+      "seam": {
+        "height": 5,
+        "cast_q8": 72,
+        "cast_width_q8": 640
+      }
     },
     {
       "key": "sand",
       "sprite": "data/gfx/terrain",
       "profile": "sand",
       "ocean": false,
-      "preview": [
-        182,
-        168,
-        48
-      ],
+      "preview": [182, 168, 48],
       "variants": [
         {
           "frame": 128,
@@ -195,22 +325,17 @@
           "weight": 1
         }
       ],
-      "minimap": [
-        170,
-        170,
-        0
-      ]
+      "minimap": [170, 170, 0],
+      "seam": {
+        "height": 1
+      }
     },
     {
       "key": "grass",
       "sprite": "data/gfx/terrain",
       "profile": "sand",
       "ocean": false,
-      "preview": [
-        30,
-        113,
-        30
-      ],
+      "preview": [30, 113, 30],
       "variants": [
         {
           "frame": 0,
@@ -277,22 +402,19 @@
           "weight": 1
         }
       ],
-      "minimap": [
-        0,
-        90,
-        0
-      ]
+      "minimap": [0, 90, 0],
+      "seam": {
+        "height": 2,
+        "cast_q8": 56,
+        "cast_width_q8": 512
+      }
     },
     {
       "key": "ice",
       "sprite": "data/gfx/terrain",
       "profile": "fractured",
       "ocean": false,
-      "preview": [
-        190,
-        225,
-        240
-      ],
+      "preview": [190, 225, 240],
       "variants": [
         {
           "frame": 272,
@@ -359,22 +481,22 @@
           "weight": 1
         }
       ],
-      "minimap": [
-        190,
-        225,
-        240
-      ]
+      "minimap": [190, 225, 240],
+      "seam": {
+        "height": 4,
+        "cast_q8": 64,
+        "cast_width_q8": 640,
+        "fringe": [228, 240, 248],
+        "fringe_q8": 96,
+        "fringe_width_q8": 384
+      }
     },
     {
       "key": "road",
       "sprite": "data/gfx/terrain-cobblestone",
       "profile": "cobblestone",
       "ocean": false,
-      "preview": [
-        133,
-        120,
-        101
-      ],
+      "preview": [133, 120, 101],
       "variants": [
         {
           "frame": 0,
@@ -441,11 +563,1913 @@
           "weight": 1
         }
       ],
-      "minimap": [
-        176,
-        138,
-        98
-      ]
+      "minimap": [176, 138, 98],
+      "seam": {
+        "height": 3,
+        "cast_q8": 48,
+        "cast_width_q8": 512
+      }
+    },
+    {
+      "key": "boulders",
+      "sprite": "data/gfx/terrain-boulders",
+      "profile": "rock",
+      "ocean": false,
+      "preview": [123, 110, 94],
+      "variants": [
+        {
+          "frame": 0,
+          "weight": 1
+        },
+        {
+          "frame": 1,
+          "weight": 1
+        },
+        {
+          "frame": 2,
+          "weight": 1
+        },
+        {
+          "frame": 3,
+          "weight": 1
+        },
+        {
+          "frame": 4,
+          "weight": 1
+        },
+        {
+          "frame": 5,
+          "weight": 1
+        },
+        {
+          "frame": 6,
+          "weight": 1
+        },
+        {
+          "frame": 7,
+          "weight": 1
+        },
+        {
+          "frame": 8,
+          "weight": 1
+        },
+        {
+          "frame": 9,
+          "weight": 1
+        },
+        {
+          "frame": 10,
+          "weight": 1
+        },
+        {
+          "frame": 11,
+          "weight": 1
+        },
+        {
+          "frame": 12,
+          "weight": 1
+        },
+        {
+          "frame": 13,
+          "weight": 1
+        },
+        {
+          "frame": 14,
+          "weight": 1
+        },
+        {
+          "frame": 15,
+          "weight": 1
+        }
+      ],
+      "minimap": [123, 110, 94],
+      "seam": {
+        "height": 4,
+        "cast_q8": 88,
+        "cast_width_q8": 832
+      }
+    },
+    {
+      "key": "hedge",
+      "sprite": "data/gfx/terrain-hedge",
+      "profile": "brush",
+      "ocean": false,
+      "preview": [37, 70, 36],
+      "variants": [
+        {
+          "frame": 0,
+          "weight": 1
+        },
+        {
+          "frame": 1,
+          "weight": 1
+        },
+        {
+          "frame": 2,
+          "weight": 1
+        },
+        {
+          "frame": 3,
+          "weight": 1
+        },
+        {
+          "frame": 4,
+          "weight": 1
+        },
+        {
+          "frame": 5,
+          "weight": 1
+        },
+        {
+          "frame": 6,
+          "weight": 1
+        },
+        {
+          "frame": 7,
+          "weight": 1
+        },
+        {
+          "frame": 8,
+          "weight": 1
+        },
+        {
+          "frame": 9,
+          "weight": 1
+        },
+        {
+          "frame": 10,
+          "weight": 1
+        },
+        {
+          "frame": 11,
+          "weight": 1
+        },
+        {
+          "frame": 12,
+          "weight": 1
+        },
+        {
+          "frame": 13,
+          "weight": 1
+        },
+        {
+          "frame": 14,
+          "weight": 1
+        },
+        {
+          "frame": 15,
+          "weight": 1
+        }
+      ],
+      "minimap": [37, 70, 36],
+      "seam": {
+        "height": 4,
+        "cast_q8": 88,
+        "cast_width_q8": 832
+      }
+    },
+    {
+      "key": "thicket",
+      "sprite": "data/gfx/terrain-thicket",
+      "profile": "brush",
+      "ocean": false,
+      "preview": [62, 74, 37],
+      "variants": [
+        {
+          "frame": 0,
+          "weight": 1
+        },
+        {
+          "frame": 1,
+          "weight": 1
+        },
+        {
+          "frame": 2,
+          "weight": 1
+        },
+        {
+          "frame": 3,
+          "weight": 1
+        },
+        {
+          "frame": 4,
+          "weight": 1
+        },
+        {
+          "frame": 5,
+          "weight": 1
+        },
+        {
+          "frame": 6,
+          "weight": 1
+        },
+        {
+          "frame": 7,
+          "weight": 1
+        },
+        {
+          "frame": 8,
+          "weight": 1
+        },
+        {
+          "frame": 9,
+          "weight": 1
+        },
+        {
+          "frame": 10,
+          "weight": 1
+        },
+        {
+          "frame": 11,
+          "weight": 1
+        },
+        {
+          "frame": 12,
+          "weight": 1
+        },
+        {
+          "frame": 13,
+          "weight": 1
+        },
+        {
+          "frame": 14,
+          "weight": 1
+        },
+        {
+          "frame": 15,
+          "weight": 1
+        }
+      ],
+      "minimap": [62, 74, 37],
+      "seam": {
+        "height": 4,
+        "cast_q8": 88,
+        "cast_width_q8": 832
+      }
+    },
+    {
+      "key": "ridge_rock",
+      "sprite": "data/gfx/terrain-ridge_rock",
+      "profile": "rock",
+      "ocean": false,
+      "preview": [101, 101, 103],
+      "variants": [
+        {
+          "frame": 0,
+          "weight": 1
+        },
+        {
+          "frame": 1,
+          "weight": 1
+        },
+        {
+          "frame": 2,
+          "weight": 1
+        },
+        {
+          "frame": 3,
+          "weight": 1
+        },
+        {
+          "frame": 4,
+          "weight": 1
+        },
+        {
+          "frame": 5,
+          "weight": 1
+        },
+        {
+          "frame": 6,
+          "weight": 1
+        },
+        {
+          "frame": 7,
+          "weight": 1
+        },
+        {
+          "frame": 8,
+          "weight": 1
+        },
+        {
+          "frame": 9,
+          "weight": 1
+        },
+        {
+          "frame": 10,
+          "weight": 1
+        },
+        {
+          "frame": 11,
+          "weight": 1
+        },
+        {
+          "frame": 12,
+          "weight": 1
+        },
+        {
+          "frame": 13,
+          "weight": 1
+        },
+        {
+          "frame": 14,
+          "weight": 1
+        },
+        {
+          "frame": 15,
+          "weight": 1
+        }
+      ],
+      "minimap": [101, 101, 103],
+      "seam": {
+        "height": 4,
+        "cast_q8": 72,
+        "cast_width_q8": 768
+      }
+    },
+    {
+      "key": "outcrop",
+      "sprite": "data/gfx/terrain-outcrop",
+      "profile": "rock",
+      "ocean": false,
+      "preview": [107, 108, 103],
+      "variants": [
+        {
+          "frame": 0,
+          "weight": 1
+        },
+        {
+          "frame": 1,
+          "weight": 1
+        },
+        {
+          "frame": 2,
+          "weight": 1
+        },
+        {
+          "frame": 3,
+          "weight": 1
+        },
+        {
+          "frame": 4,
+          "weight": 1
+        },
+        {
+          "frame": 5,
+          "weight": 1
+        },
+        {
+          "frame": 6,
+          "weight": 1
+        },
+        {
+          "frame": 7,
+          "weight": 1
+        },
+        {
+          "frame": 8,
+          "weight": 1
+        },
+        {
+          "frame": 9,
+          "weight": 1
+        },
+        {
+          "frame": 10,
+          "weight": 1
+        },
+        {
+          "frame": 11,
+          "weight": 1
+        },
+        {
+          "frame": 12,
+          "weight": 1
+        },
+        {
+          "frame": 13,
+          "weight": 1
+        },
+        {
+          "frame": 14,
+          "weight": 1
+        },
+        {
+          "frame": 15,
+          "weight": 1
+        }
+      ],
+      "minimap": [107, 108, 103],
+      "seam": {
+        "height": 4,
+        "cast_q8": 72,
+        "cast_width_q8": 768
+      }
+    },
+    {
+      "key": "dirt",
+      "sprite": "data/gfx/terrain-dirt",
+      "profile": "soft",
+      "ocean": false,
+      "preview": [139, 112, 79],
+      "variants": [
+        {
+          "frame": 0,
+          "weight": 1
+        },
+        {
+          "frame": 1,
+          "weight": 1
+        },
+        {
+          "frame": 2,
+          "weight": 1
+        },
+        {
+          "frame": 3,
+          "weight": 1
+        },
+        {
+          "frame": 4,
+          "weight": 1
+        },
+        {
+          "frame": 5,
+          "weight": 1
+        },
+        {
+          "frame": 6,
+          "weight": 1
+        },
+        {
+          "frame": 7,
+          "weight": 1
+        },
+        {
+          "frame": 8,
+          "weight": 1
+        },
+        {
+          "frame": 9,
+          "weight": 1
+        },
+        {
+          "frame": 10,
+          "weight": 1
+        },
+        {
+          "frame": 11,
+          "weight": 1
+        },
+        {
+          "frame": 12,
+          "weight": 1
+        },
+        {
+          "frame": 13,
+          "weight": 1
+        },
+        {
+          "frame": 14,
+          "weight": 1
+        },
+        {
+          "frame": 15,
+          "weight": 1
+        }
+      ],
+      "minimap": [139, 112, 79],
+      "seam": {
+        "height": 2,
+        "cast_q8": 40,
+        "cast_width_q8": 448
+      }
+    },
+    {
+      "key": "clay",
+      "sprite": "data/gfx/terrain-clay",
+      "profile": "soft",
+      "ocean": false,
+      "preview": [163, 113, 80],
+      "variants": [
+        {
+          "frame": 0,
+          "weight": 1
+        },
+        {
+          "frame": 1,
+          "weight": 1
+        },
+        {
+          "frame": 2,
+          "weight": 1
+        },
+        {
+          "frame": 3,
+          "weight": 1
+        },
+        {
+          "frame": 4,
+          "weight": 1
+        },
+        {
+          "frame": 5,
+          "weight": 1
+        },
+        {
+          "frame": 6,
+          "weight": 1
+        },
+        {
+          "frame": 7,
+          "weight": 1
+        },
+        {
+          "frame": 8,
+          "weight": 1
+        },
+        {
+          "frame": 9,
+          "weight": 1
+        },
+        {
+          "frame": 10,
+          "weight": 1
+        },
+        {
+          "frame": 11,
+          "weight": 1
+        },
+        {
+          "frame": 12,
+          "weight": 1
+        },
+        {
+          "frame": 13,
+          "weight": 1
+        },
+        {
+          "frame": 14,
+          "weight": 1
+        },
+        {
+          "frame": 15,
+          "weight": 1
+        }
+      ],
+      "minimap": [163, 113, 80],
+      "seam": {
+        "height": 2,
+        "cast_q8": 40,
+        "cast_width_q8": 448
+      }
+    },
+    {
+      "key": "gravel",
+      "sprite": "data/gfx/terrain-gravel",
+      "profile": "rock",
+      "ocean": false,
+      "preview": [135, 127, 116],
+      "variants": [
+        {
+          "frame": 0,
+          "weight": 1
+        },
+        {
+          "frame": 1,
+          "weight": 1
+        },
+        {
+          "frame": 2,
+          "weight": 1
+        },
+        {
+          "frame": 3,
+          "weight": 1
+        },
+        {
+          "frame": 4,
+          "weight": 1
+        },
+        {
+          "frame": 5,
+          "weight": 1
+        },
+        {
+          "frame": 6,
+          "weight": 1
+        },
+        {
+          "frame": 7,
+          "weight": 1
+        },
+        {
+          "frame": 8,
+          "weight": 1
+        },
+        {
+          "frame": 9,
+          "weight": 1
+        },
+        {
+          "frame": 10,
+          "weight": 1
+        },
+        {
+          "frame": 11,
+          "weight": 1
+        },
+        {
+          "frame": 12,
+          "weight": 1
+        },
+        {
+          "frame": 13,
+          "weight": 1
+        },
+        {
+          "frame": 14,
+          "weight": 1
+        },
+        {
+          "frame": 15,
+          "weight": 1
+        }
+      ],
+      "minimap": [135, 127, 116],
+      "seam": {
+        "height": 2,
+        "cast_q8": 40,
+        "cast_width_q8": 448
+      }
+    },
+    {
+      "key": "flower_meadow",
+      "sprite": "data/gfx/terrain-flower_meadow",
+      "profile": "brush",
+      "ocean": false,
+      "preview": [62, 128, 48],
+      "variants": [
+        {
+          "frame": 0,
+          "weight": 1
+        },
+        {
+          "frame": 1,
+          "weight": 1
+        },
+        {
+          "frame": 2,
+          "weight": 1
+        },
+        {
+          "frame": 3,
+          "weight": 1
+        },
+        {
+          "frame": 4,
+          "weight": 1
+        },
+        {
+          "frame": 5,
+          "weight": 1
+        },
+        {
+          "frame": 6,
+          "weight": 1
+        },
+        {
+          "frame": 7,
+          "weight": 1
+        },
+        {
+          "frame": 8,
+          "weight": 1
+        },
+        {
+          "frame": 9,
+          "weight": 1
+        },
+        {
+          "frame": 10,
+          "weight": 1
+        },
+        {
+          "frame": 11,
+          "weight": 1
+        },
+        {
+          "frame": 12,
+          "weight": 1
+        },
+        {
+          "frame": 13,
+          "weight": 1
+        },
+        {
+          "frame": 14,
+          "weight": 1
+        },
+        {
+          "frame": 15,
+          "weight": 1
+        }
+      ],
+      "minimap": [62, 128, 48],
+      "seam": {
+        "height": 2,
+        "cast_q8": 56,
+        "cast_width_q8": 512
+      }
+    },
+    {
+      "key": "mud",
+      "sprite": "data/gfx/terrain-mud",
+      "profile": "soft",
+      "ocean": false,
+      "preview": [91, 73, 55],
+      "variants": [
+        {
+          "frame": 0,
+          "weight": 1
+        },
+        {
+          "frame": 1,
+          "weight": 1
+        },
+        {
+          "frame": 2,
+          "weight": 1
+        },
+        {
+          "frame": 3,
+          "weight": 1
+        },
+        {
+          "frame": 4,
+          "weight": 1
+        },
+        {
+          "frame": 5,
+          "weight": 1
+        },
+        {
+          "frame": 6,
+          "weight": 1
+        },
+        {
+          "frame": 7,
+          "weight": 1
+        },
+        {
+          "frame": 8,
+          "weight": 1
+        },
+        {
+          "frame": 9,
+          "weight": 1
+        },
+        {
+          "frame": 10,
+          "weight": 1
+        },
+        {
+          "frame": 11,
+          "weight": 1
+        },
+        {
+          "frame": 12,
+          "weight": 1
+        },
+        {
+          "frame": 13,
+          "weight": 1
+        },
+        {
+          "frame": 14,
+          "weight": 1
+        },
+        {
+          "frame": 15,
+          "weight": 1
+        }
+      ],
+      "minimap": [91, 73, 55],
+      "seam": {
+        "height": 1
+      }
+    },
+    {
+      "key": "marsh",
+      "sprite": "data/gfx/terrain-marsh",
+      "profile": "soft",
+      "ocean": false,
+      "preview": [76, 93, 74],
+      "variants": [
+        {
+          "frame": 0,
+          "weight": 1
+        },
+        {
+          "frame": 1,
+          "weight": 1
+        },
+        {
+          "frame": 2,
+          "weight": 1
+        },
+        {
+          "frame": 3,
+          "weight": 1
+        },
+        {
+          "frame": 4,
+          "weight": 1
+        },
+        {
+          "frame": 5,
+          "weight": 1
+        },
+        {
+          "frame": 6,
+          "weight": 1
+        },
+        {
+          "frame": 7,
+          "weight": 1
+        },
+        {
+          "frame": 8,
+          "weight": 1
+        },
+        {
+          "frame": 9,
+          "weight": 1
+        },
+        {
+          "frame": 10,
+          "weight": 1
+        },
+        {
+          "frame": 11,
+          "weight": 1
+        },
+        {
+          "frame": 12,
+          "weight": 1
+        },
+        {
+          "frame": 13,
+          "weight": 1
+        },
+        {
+          "frame": 14,
+          "weight": 1
+        },
+        {
+          "frame": 15,
+          "weight": 1
+        }
+      ],
+      "minimap": [76, 93, 74],
+      "seam": {
+        "height": 1
+      }
+    },
+    {
+      "key": "deep_snow",
+      "sprite": "data/gfx/terrain-deep_snow",
+      "profile": "soft",
+      "ocean": false,
+      "preview": [198, 202, 228],
+      "variants": [
+        {
+          "frame": 0,
+          "weight": 1
+        },
+        {
+          "frame": 1,
+          "weight": 1
+        },
+        {
+          "frame": 2,
+          "weight": 1
+        },
+        {
+          "frame": 3,
+          "weight": 1
+        },
+        {
+          "frame": 4,
+          "weight": 1
+        },
+        {
+          "frame": 5,
+          "weight": 1
+        },
+        {
+          "frame": 6,
+          "weight": 1
+        },
+        {
+          "frame": 7,
+          "weight": 1
+        },
+        {
+          "frame": 8,
+          "weight": 1
+        },
+        {
+          "frame": 9,
+          "weight": 1
+        },
+        {
+          "frame": 10,
+          "weight": 1
+        },
+        {
+          "frame": 11,
+          "weight": 1
+        },
+        {
+          "frame": 12,
+          "weight": 1
+        },
+        {
+          "frame": 13,
+          "weight": 1
+        },
+        {
+          "frame": 14,
+          "weight": 1
+        },
+        {
+          "frame": 15,
+          "weight": 1
+        }
+      ],
+      "minimap": [198, 202, 228],
+      "seam": {
+        "height": 3,
+        "cast_q8": 48,
+        "cast_width_q8": 512,
+        "fringe": [196, 210, 232],
+        "fringe_q8": 64,
+        "fringe_width_q8": 384
+      }
+    },
+    {
+      "key": "scree",
+      "sprite": "data/gfx/terrain-scree",
+      "profile": "rock",
+      "ocean": false,
+      "preview": [117, 117, 119],
+      "variants": [
+        {
+          "frame": 0,
+          "weight": 1
+        },
+        {
+          "frame": 1,
+          "weight": 1
+        },
+        {
+          "frame": 2,
+          "weight": 1
+        },
+        {
+          "frame": 3,
+          "weight": 1
+        },
+        {
+          "frame": 4,
+          "weight": 1
+        },
+        {
+          "frame": 5,
+          "weight": 1
+        },
+        {
+          "frame": 6,
+          "weight": 1
+        },
+        {
+          "frame": 7,
+          "weight": 1
+        },
+        {
+          "frame": 8,
+          "weight": 1
+        },
+        {
+          "frame": 9,
+          "weight": 1
+        },
+        {
+          "frame": 10,
+          "weight": 1
+        },
+        {
+          "frame": 11,
+          "weight": 1
+        },
+        {
+          "frame": 12,
+          "weight": 1
+        },
+        {
+          "frame": 13,
+          "weight": 1
+        },
+        {
+          "frame": 14,
+          "weight": 1
+        },
+        {
+          "frame": 15,
+          "weight": 1
+        }
+      ],
+      "minimap": [117, 117, 119],
+      "seam": {
+        "height": 1
+      }
+    },
+    {
+      "key": "dirt_track",
+      "sprite": "data/gfx/terrain-dirt_track",
+      "profile": "sand",
+      "ocean": false,
+      "preview": [169, 142, 105],
+      "variants": [
+        {
+          "frame": 0,
+          "weight": 1
+        },
+        {
+          "frame": 1,
+          "weight": 1
+        },
+        {
+          "frame": 2,
+          "weight": 1
+        },
+        {
+          "frame": 3,
+          "weight": 1
+        },
+        {
+          "frame": 4,
+          "weight": 1
+        },
+        {
+          "frame": 5,
+          "weight": 1
+        },
+        {
+          "frame": 6,
+          "weight": 1
+        },
+        {
+          "frame": 7,
+          "weight": 1
+        },
+        {
+          "frame": 8,
+          "weight": 1
+        },
+        {
+          "frame": 9,
+          "weight": 1
+        },
+        {
+          "frame": 10,
+          "weight": 1
+        },
+        {
+          "frame": 11,
+          "weight": 1
+        },
+        {
+          "frame": 12,
+          "weight": 1
+        },
+        {
+          "frame": 13,
+          "weight": 1
+        },
+        {
+          "frame": 14,
+          "weight": 1
+        },
+        {
+          "frame": 15,
+          "weight": 1
+        }
+      ],
+      "minimap": [169, 142, 105],
+      "seam": {
+        "height": 3,
+        "cast_q8": 48,
+        "cast_width_q8": 512
+      }
+    },
+    {
+      "key": "boardwalk",
+      "sprite": "data/gfx/terrain-boardwalk",
+      "profile": "crisp",
+      "ocean": false,
+      "preview": [149, 128, 101],
+      "variants": [
+        {
+          "frame": 0,
+          "weight": 1
+        },
+        {
+          "frame": 1,
+          "weight": 1
+        },
+        {
+          "frame": 2,
+          "weight": 1
+        },
+        {
+          "frame": 3,
+          "weight": 1
+        },
+        {
+          "frame": 4,
+          "weight": 1
+        },
+        {
+          "frame": 5,
+          "weight": 1
+        },
+        {
+          "frame": 6,
+          "weight": 1
+        },
+        {
+          "frame": 7,
+          "weight": 1
+        },
+        {
+          "frame": 8,
+          "weight": 1
+        },
+        {
+          "frame": 9,
+          "weight": 1
+        },
+        {
+          "frame": 10,
+          "weight": 1
+        },
+        {
+          "frame": 11,
+          "weight": 1
+        },
+        {
+          "frame": 12,
+          "weight": 1
+        },
+        {
+          "frame": 13,
+          "weight": 1
+        },
+        {
+          "frame": 14,
+          "weight": 1
+        },
+        {
+          "frame": 15,
+          "weight": 1
+        }
+      ],
+      "minimap": [149, 128, 101],
+      "seam": {
+        "height": 3,
+        "cast_q8": 48,
+        "cast_width_q8": 512
+      }
+    },
+    {
+      "key": "lava",
+      "sprite": "data/gfx/terrain-lava",
+      "profile": "fractured",
+      "ocean": false,
+      "preview": [168, 72, 30],
+      "variants": [
+        {
+          "frame": 0,
+          "weight": 1
+        },
+        {
+          "frame": 1,
+          "weight": 1
+        },
+        {
+          "frame": 2,
+          "weight": 1
+        },
+        {
+          "frame": 3,
+          "weight": 1
+        },
+        {
+          "frame": 4,
+          "weight": 1
+        },
+        {
+          "frame": 5,
+          "weight": 1
+        },
+        {
+          "frame": 6,
+          "weight": 1
+        },
+        {
+          "frame": 7,
+          "weight": 1
+        },
+        {
+          "frame": 8,
+          "weight": 1
+        },
+        {
+          "frame": 9,
+          "weight": 1
+        },
+        {
+          "frame": 10,
+          "weight": 1
+        },
+        {
+          "frame": 11,
+          "weight": 1
+        },
+        {
+          "frame": 12,
+          "weight": 1
+        },
+        {
+          "frame": 13,
+          "weight": 1
+        },
+        {
+          "frame": 14,
+          "weight": 1
+        },
+        {
+          "frame": 15,
+          "weight": 1
+        }
+      ],
+      "animation_frames": 4,
+      "animation_stride": 16,
+      "animation_ticks": 8,
+      "minimap": [176, 68, 28],
+      "seam": {
+        "height": 4,
+        "fringe": [214, 110, 40],
+        "fringe_q8": 128,
+        "fringe_width_q8": 640
+      }
+    },
+    {
+      "key": "ember_field",
+      "sprite": "data/gfx/terrain-ember_field",
+      "profile": "fractured",
+      "ocean": false,
+      "preview": [110, 52, 36],
+      "variants": [
+        {
+          "frame": 0,
+          "weight": 1
+        },
+        {
+          "frame": 1,
+          "weight": 1
+        },
+        {
+          "frame": 2,
+          "weight": 1
+        },
+        {
+          "frame": 3,
+          "weight": 1
+        },
+        {
+          "frame": 4,
+          "weight": 1
+        },
+        {
+          "frame": 5,
+          "weight": 1
+        },
+        {
+          "frame": 6,
+          "weight": 1
+        },
+        {
+          "frame": 7,
+          "weight": 1
+        },
+        {
+          "frame": 8,
+          "weight": 1
+        },
+        {
+          "frame": 9,
+          "weight": 1
+        },
+        {
+          "frame": 10,
+          "weight": 1
+        },
+        {
+          "frame": 11,
+          "weight": 1
+        },
+        {
+          "frame": 12,
+          "weight": 1
+        },
+        {
+          "frame": 13,
+          "weight": 1
+        },
+        {
+          "frame": 14,
+          "weight": 1
+        },
+        {
+          "frame": 15,
+          "weight": 1
+        }
+      ],
+      "animation_frames": 4,
+      "animation_stride": 16,
+      "animation_ticks": 8,
+      "minimap": [120, 48, 30],
+      "seam": {
+        "height": 4,
+        "fringe": [160, 80, 40],
+        "fringe_q8": 96,
+        "fringe_width_q8": 512
+      }
+    },
+    {
+      "key": "loam",
+      "sprite": "data/gfx/terrain-loam",
+      "profile": "soft",
+      "ocean": false,
+      "preview": [78, 63, 41],
+      "variants": [
+        {
+          "frame": 0,
+          "weight": 1
+        },
+        {
+          "frame": 1,
+          "weight": 1
+        },
+        {
+          "frame": 2,
+          "weight": 1
+        },
+        {
+          "frame": 3,
+          "weight": 1
+        },
+        {
+          "frame": 4,
+          "weight": 1
+        },
+        {
+          "frame": 5,
+          "weight": 1
+        },
+        {
+          "frame": 6,
+          "weight": 1
+        },
+        {
+          "frame": 7,
+          "weight": 1
+        },
+        {
+          "frame": 8,
+          "weight": 1
+        },
+        {
+          "frame": 9,
+          "weight": 1
+        },
+        {
+          "frame": 10,
+          "weight": 1
+        },
+        {
+          "frame": 11,
+          "weight": 1
+        },
+        {
+          "frame": 12,
+          "weight": 1
+        },
+        {
+          "frame": 13,
+          "weight": 1
+        },
+        {
+          "frame": 14,
+          "weight": 1
+        },
+        {
+          "frame": 15,
+          "weight": 1
+        }
+      ],
+      "minimap": [78, 63, 41],
+      "seam": {
+        "height": 2,
+        "cast_q8": 56,
+        "cast_width_q8": 512
+      }
+    },
+    {
+      "key": "moss",
+      "sprite": "data/gfx/terrain-moss",
+      "profile": "soft",
+      "ocean": false,
+      "preview": [41, 85, 51],
+      "variants": [
+        {
+          "frame": 0,
+          "weight": 1
+        },
+        {
+          "frame": 1,
+          "weight": 1
+        },
+        {
+          "frame": 2,
+          "weight": 1
+        },
+        {
+          "frame": 3,
+          "weight": 1
+        },
+        {
+          "frame": 4,
+          "weight": 1
+        },
+        {
+          "frame": 5,
+          "weight": 1
+        },
+        {
+          "frame": 6,
+          "weight": 1
+        },
+        {
+          "frame": 7,
+          "weight": 1
+        },
+        {
+          "frame": 8,
+          "weight": 1
+        },
+        {
+          "frame": 9,
+          "weight": 1
+        },
+        {
+          "frame": 10,
+          "weight": 1
+        },
+        {
+          "frame": 11,
+          "weight": 1
+        },
+        {
+          "frame": 12,
+          "weight": 1
+        },
+        {
+          "frame": 13,
+          "weight": 1
+        },
+        {
+          "frame": 14,
+          "weight": 1
+        },
+        {
+          "frame": 15,
+          "weight": 1
+        }
+      ],
+      "minimap": [41, 85, 51],
+      "seam": {
+        "height": 2,
+        "cast_q8": 56,
+        "cast_width_q8": 512
+      }
+    },
+    {
+      "key": "spring_meadow",
+      "sprite": "data/gfx/terrain-spring_meadow",
+      "profile": "brush",
+      "ocean": false,
+      "preview": [89, 122, 58],
+      "variants": [
+        {
+          "frame": 0,
+          "weight": 1
+        },
+        {
+          "frame": 1,
+          "weight": 1
+        },
+        {
+          "frame": 2,
+          "weight": 1
+        },
+        {
+          "frame": 3,
+          "weight": 1
+        },
+        {
+          "frame": 4,
+          "weight": 1
+        },
+        {
+          "frame": 5,
+          "weight": 1
+        },
+        {
+          "frame": 6,
+          "weight": 1
+        },
+        {
+          "frame": 7,
+          "weight": 1
+        },
+        {
+          "frame": 8,
+          "weight": 1
+        },
+        {
+          "frame": 9,
+          "weight": 1
+        },
+        {
+          "frame": 10,
+          "weight": 1
+        },
+        {
+          "frame": 11,
+          "weight": 1
+        },
+        {
+          "frame": 12,
+          "weight": 1
+        },
+        {
+          "frame": 13,
+          "weight": 1
+        },
+        {
+          "frame": 14,
+          "weight": 1
+        },
+        {
+          "frame": 15,
+          "weight": 1
+        }
+      ],
+      "minimap": [89, 122, 58],
+      "seam": {
+        "height": 2,
+        "cast_q8": 56,
+        "cast_width_q8": 512
+      }
+    },
+    {
+      "key": "deep_water",
+      "sprite": "data/gfx/terrain-deep_water",
+      "profile": "soft",
+      "ocean": false,
+      "preview": [44, 34, 120],
+      "variants": [
+        {
+          "frame": 0,
+          "weight": 1
+        },
+        {
+          "frame": 1,
+          "weight": 1
+        },
+        {
+          "frame": 2,
+          "weight": 1
+        },
+        {
+          "frame": 3,
+          "weight": 1
+        },
+        {
+          "frame": 4,
+          "weight": 1
+        },
+        {
+          "frame": 5,
+          "weight": 1
+        },
+        {
+          "frame": 6,
+          "weight": 1
+        },
+        {
+          "frame": 7,
+          "weight": 1
+        },
+        {
+          "frame": 8,
+          "weight": 1
+        },
+        {
+          "frame": 9,
+          "weight": 1
+        },
+        {
+          "frame": 10,
+          "weight": 1
+        },
+        {
+          "frame": 11,
+          "weight": 1
+        },
+        {
+          "frame": 12,
+          "weight": 1
+        },
+        {
+          "frame": 13,
+          "weight": 1
+        },
+        {
+          "frame": 14,
+          "weight": 1
+        },
+        {
+          "frame": 15,
+          "weight": 1
+        }
+      ],
+      "minimap": [24, 18, 84],
+      "seam": {
+        "height": 6,
+        "cast_q8": 72,
+        "cast_width_q8": 640
+      }
+    },
+    {
+      "key": "dark_water",
+      "sprite": "data/gfx/terrain-dark_water",
+      "profile": "soft",
+      "ocean": false,
+      "preview": [32, 26, 76],
+      "variants": [
+        {
+          "frame": 0,
+          "weight": 1
+        },
+        {
+          "frame": 1,
+          "weight": 1
+        },
+        {
+          "frame": 2,
+          "weight": 1
+        },
+        {
+          "frame": 3,
+          "weight": 1
+        },
+        {
+          "frame": 4,
+          "weight": 1
+        },
+        {
+          "frame": 5,
+          "weight": 1
+        },
+        {
+          "frame": 6,
+          "weight": 1
+        },
+        {
+          "frame": 7,
+          "weight": 1
+        },
+        {
+          "frame": 8,
+          "weight": 1
+        },
+        {
+          "frame": 9,
+          "weight": 1
+        },
+        {
+          "frame": 10,
+          "weight": 1
+        },
+        {
+          "frame": 11,
+          "weight": 1
+        },
+        {
+          "frame": 12,
+          "weight": 1
+        },
+        {
+          "frame": 13,
+          "weight": 1
+        },
+        {
+          "frame": 14,
+          "weight": 1
+        },
+        {
+          "frame": 15,
+          "weight": 1
+        }
+      ],
+      "minimap": [16, 12, 52],
+      "seam": {
+        "height": 7,
+        "cast_q8": 80,
+        "cast_width_q8": 704
+      }
+    },
+    {
+      "key": "void_hole",
+      "sprite": "data/gfx/terrain-void_hole",
+      "profile": "crisp",
+      "ocean": false,
+      "preview": [28, 24, 36],
+      "variants": [
+        {
+          "frame": 0,
+          "weight": 1
+        },
+        {
+          "frame": 1,
+          "weight": 1
+        },
+        {
+          "frame": 2,
+          "weight": 1
+        },
+        {
+          "frame": 3,
+          "weight": 1
+        },
+        {
+          "frame": 4,
+          "weight": 1
+        },
+        {
+          "frame": 5,
+          "weight": 1
+        },
+        {
+          "frame": 6,
+          "weight": 1
+        },
+        {
+          "frame": 7,
+          "weight": 1
+        },
+        {
+          "frame": 8,
+          "weight": 1
+        },
+        {
+          "frame": 9,
+          "weight": 1
+        },
+        {
+          "frame": 10,
+          "weight": 1
+        },
+        {
+          "frame": 11,
+          "weight": 1
+        },
+        {
+          "frame": 12,
+          "weight": 1
+        },
+        {
+          "frame": 13,
+          "weight": 1
+        },
+        {
+          "frame": 14,
+          "weight": 1
+        },
+        {
+          "frame": 15,
+          "weight": 1
+        }
+      ],
+      "minimap": [16, 14, 22],
+      "seam": {
+        "height": 8,
+        "cast_q8": 96,
+        "cast_width_q8": 512
+      }
+    },
+    {
+      "key": "chasm",
+      "sprite": "data/gfx/terrain-chasm",
+      "profile": "rock",
+      "ocean": false,
+      "preview": [48, 38, 44],
+      "variants": [
+        {
+          "frame": 0,
+          "weight": 1
+        },
+        {
+          "frame": 1,
+          "weight": 1
+        },
+        {
+          "frame": 2,
+          "weight": 1
+        },
+        {
+          "frame": 3,
+          "weight": 1
+        },
+        {
+          "frame": 4,
+          "weight": 1
+        },
+        {
+          "frame": 5,
+          "weight": 1
+        },
+        {
+          "frame": 6,
+          "weight": 1
+        },
+        {
+          "frame": 7,
+          "weight": 1
+        },
+        {
+          "frame": 8,
+          "weight": 1
+        },
+        {
+          "frame": 9,
+          "weight": 1
+        },
+        {
+          "frame": 10,
+          "weight": 1
+        },
+        {
+          "frame": 11,
+          "weight": 1
+        },
+        {
+          "frame": 12,
+          "weight": 1
+        },
+        {
+          "frame": 13,
+          "weight": 1
+        },
+        {
+          "frame": 14,
+          "weight": 1
+        },
+        {
+          "frame": 15,
+          "weight": 1
+        }
+      ],
+      "minimap": [30, 22, 28],
+      "seam": {
+        "height": 8,
+        "cast_q8": 96,
+        "cast_width_q8": 512
+      }
     }
   ],
   "bindings": {
@@ -453,7 +2477,31 @@
     "sand": "sand",
     "grass": "grass",
     "ice": "ice",
-    "road": "road"
+    "road": "road",
+    "boulders": "boulders",
+    "hedge": "hedge",
+    "thicket": "thicket",
+    "ridge_rock": "ridge_rock",
+    "outcrop": "outcrop",
+    "dirt": "dirt",
+    "clay": "clay",
+    "gravel": "gravel",
+    "flower_meadow": "flower_meadow",
+    "mud": "mud",
+    "marsh": "marsh",
+    "deep_snow": "deep_snow",
+    "scree": "scree",
+    "dirt_track": "dirt_track",
+    "boardwalk": "boardwalk",
+    "lava": "lava",
+    "ember_field": "ember_field",
+    "loam": "loam",
+    "moss": "moss",
+    "spring_meadow": "spring_meadow",
+    "deep_water": "deep_water",
+    "dark_water": "dark_water",
+    "void_hole": "void_hole",
+    "chasm": "chasm"
   },
   "pair_treatments": [
     {
@@ -465,11 +2513,352 @@
       "a": "road",
       "b": "sand",
       "profile": "cobblestone"
+    },
+    {
+      "a": "boulders",
+      "b": "grass",
+      "profile": "rock"
+    },
+    {
+      "a": "ridge_rock",
+      "b": "grass",
+      "profile": "rock"
+    },
+    {
+      "a": "outcrop",
+      "b": "grass",
+      "profile": "rock"
+    },
+    {
+      "a": "hedge",
+      "b": "grass",
+      "profile": "brush"
+    },
+    {
+      "a": "thicket",
+      "b": "grass",
+      "profile": "brush"
+    },
+    {
+      "a": "water",
+      "b": "deep_water",
+      "profile": "soft"
+    },
+    {
+      "a": "deep_water",
+      "b": "dark_water",
+      "profile": "soft"
+    },
+    {
+      "a": "lava",
+      "b": "grass",
+      "profile": "fractured"
+    },
+    {
+      "a": "lava",
+      "b": "sand",
+      "profile": "fractured"
+    },
+    {
+      "a": "lava",
+      "b": "dirt",
+      "profile": "fractured"
+    },
+    {
+      "a": "lava",
+      "b": "gravel",
+      "profile": "fractured"
+    },
+    {
+      "a": "ember_field",
+      "b": "grass",
+      "profile": "fractured"
+    },
+    {
+      "a": "ember_field",
+      "b": "sand",
+      "profile": "fractured"
+    },
+    {
+      "a": "ember_field",
+      "b": "dirt",
+      "profile": "fractured"
+    },
+    {
+      "a": "ember_field",
+      "b": "gravel",
+      "profile": "fractured"
+    },
+    {
+      "a": "void_hole",
+      "b": "water",
+      "profile": "crisp"
+    },
+    {
+      "a": "void_hole",
+      "b": "sand",
+      "profile": "crisp"
+    },
+    {
+      "a": "void_hole",
+      "b": "grass",
+      "profile": "crisp"
+    },
+    {
+      "a": "void_hole",
+      "b": "ice",
+      "profile": "crisp"
+    },
+    {
+      "a": "void_hole",
+      "b": "road",
+      "profile": "crisp"
+    },
+    {
+      "a": "void_hole",
+      "b": "dirt",
+      "profile": "crisp"
+    },
+    {
+      "a": "void_hole",
+      "b": "clay",
+      "profile": "crisp"
+    },
+    {
+      "a": "void_hole",
+      "b": "gravel",
+      "profile": "crisp"
+    },
+    {
+      "a": "void_hole",
+      "b": "flower_meadow",
+      "profile": "crisp"
+    },
+    {
+      "a": "void_hole",
+      "b": "mud",
+      "profile": "crisp"
+    },
+    {
+      "a": "void_hole",
+      "b": "marsh",
+      "profile": "crisp"
+    },
+    {
+      "a": "void_hole",
+      "b": "deep_snow",
+      "profile": "crisp"
+    },
+    {
+      "a": "void_hole",
+      "b": "scree",
+      "profile": "crisp"
+    },
+    {
+      "a": "void_hole",
+      "b": "dirt_track",
+      "profile": "crisp"
+    },
+    {
+      "a": "void_hole",
+      "b": "boardwalk",
+      "profile": "crisp"
+    },
+    {
+      "a": "void_hole",
+      "b": "loam",
+      "profile": "crisp"
+    },
+    {
+      "a": "void_hole",
+      "b": "moss",
+      "profile": "crisp"
+    },
+    {
+      "a": "void_hole",
+      "b": "spring_meadow",
+      "profile": "crisp"
+    },
+    {
+      "a": "void_hole",
+      "b": "deep_water",
+      "profile": "crisp"
+    },
+    {
+      "a": "void_hole",
+      "b": "dark_water",
+      "profile": "crisp"
+    },
+    {
+      "a": "void_hole",
+      "b": "ridge_rock",
+      "profile": "crisp"
+    },
+    {
+      "a": "void_hole",
+      "b": "outcrop",
+      "profile": "crisp"
+    },
+    {
+      "a": "void_hole",
+      "b": "boulders",
+      "profile": "crisp"
+    },
+    {
+      "a": "void_hole",
+      "b": "hedge",
+      "profile": "crisp"
+    },
+    {
+      "a": "void_hole",
+      "b": "thicket",
+      "profile": "crisp"
+    },
+    {
+      "a": "void_hole",
+      "b": "lava",
+      "profile": "crisp"
+    },
+    {
+      "a": "void_hole",
+      "b": "ember_field",
+      "profile": "crisp"
+    },
+    {
+      "a": "chasm",
+      "b": "water",
+      "profile": "crisp"
+    },
+    {
+      "a": "chasm",
+      "b": "sand",
+      "profile": "crisp"
+    },
+    {
+      "a": "chasm",
+      "b": "grass",
+      "profile": "crisp"
+    },
+    {
+      "a": "chasm",
+      "b": "ice",
+      "profile": "crisp"
+    },
+    {
+      "a": "chasm",
+      "b": "road",
+      "profile": "crisp"
+    },
+    {
+      "a": "chasm",
+      "b": "dirt",
+      "profile": "crisp"
+    },
+    {
+      "a": "chasm",
+      "b": "clay",
+      "profile": "crisp"
+    },
+    {
+      "a": "chasm",
+      "b": "gravel",
+      "profile": "crisp"
+    },
+    {
+      "a": "chasm",
+      "b": "flower_meadow",
+      "profile": "crisp"
+    },
+    {
+      "a": "chasm",
+      "b": "mud",
+      "profile": "crisp"
+    },
+    {
+      "a": "chasm",
+      "b": "marsh",
+      "profile": "crisp"
+    },
+    {
+      "a": "chasm",
+      "b": "deep_snow",
+      "profile": "crisp"
+    },
+    {
+      "a": "chasm",
+      "b": "scree",
+      "profile": "crisp"
+    },
+    {
+      "a": "chasm",
+      "b": "dirt_track",
+      "profile": "crisp"
+    },
+    {
+      "a": "chasm",
+      "b": "boardwalk",
+      "profile": "crisp"
+    },
+    {
+      "a": "chasm",
+      "b": "loam",
+      "profile": "crisp"
+    },
+    {
+      "a": "chasm",
+      "b": "moss",
+      "profile": "crisp"
+    },
+    {
+      "a": "chasm",
+      "b": "spring_meadow",
+      "profile": "crisp"
+    },
+    {
+      "a": "chasm",
+      "b": "deep_water",
+      "profile": "crisp"
+    },
+    {
+      "a": "chasm",
+      "b": "dark_water",
+      "profile": "crisp"
+    },
+    {
+      "a": "chasm",
+      "b": "ridge_rock",
+      "profile": "crisp"
+    },
+    {
+      "a": "chasm",
+      "b": "outcrop",
+      "profile": "crisp"
+    },
+    {
+      "a": "chasm",
+      "b": "boulders",
+      "profile": "crisp"
+    },
+    {
+      "a": "chasm",
+      "b": "hedge",
+      "profile": "crisp"
+    },
+    {
+      "a": "chasm",
+      "b": "thicket",
+      "profile": "crisp"
+    },
+    {
+      "a": "chasm",
+      "b": "lava",
+      "profile": "crisp"
+    },
+    {
+      "a": "chasm",
+      "b": "ember_field",
+      "profile": "crisp"
     }
   ],
-  "boundary_warp_q8": [
-    768,
-    0,
-    0
-  ]
+  "boundary_warp_q8": [640, 256, 96]
 }

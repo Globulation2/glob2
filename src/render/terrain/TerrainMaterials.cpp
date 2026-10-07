@@ -1,7 +1,10 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "TerrainMaterials.h"
+#include "map/TerrainPresentation.h"
 #include <nlohmann/json.hpp>
 #include <algorithm>
+#include <cstdlib>
+#include <iterator>
 #include <limits>
 #include <stdexcept>
 #include <set>
@@ -65,15 +68,6 @@ int wrap(int x, int size)
 	x %= size;
 	return x < 0 ? x + size : x;
 }
-// Artist-authored piecewise-linear contours; zero at both sample centers. Q12 in/out.
-int wave(const Profile &profile, int t, unsigned motif)
-{
-	const auto &points = profile.contours[motif & 3];
-	const int segments = int(points.size()) - 1;
-	const int scaled = t * segments;
-	const int i = std::min(scaled / 4096, segments - 1), f = scaled - i * 4096;
-	return (points[i] * (4096 - f) + points[i + 1] * f) / 4096;
-}
 } // namespace
 std::uint32_t hash(std::uint32_t x, std::uint32_t y, std::uint32_t salt)
 {
@@ -102,7 +96,8 @@ Catalog Catalog::parse(const nlohmann::json &j)
 					std::count(c.compiledPack.begin(), c.compiledPack.end(), '/') >= 3,
 				"compiled pack must name atlas.json in its own data subdirectory");
 	}
-	const int version = integerInRange(j.at("version"), 1, 2);
+	const int version = integerInRange(j.at("version"), 1, 3);
+	c.version = version;
 	if (j.contains("boundary_warp_q8"))
 	{
 		require(version >= 2, "boundary warp requires catalog version 2");
@@ -121,23 +116,33 @@ Catalog Catalog::parse(const nlohmann::json &j)
 		require(version >= 2 || !p.contains("feather_q8"),
 				"boundary feather requires catalog version 2");
 		v.feather = integerInRange(p.value("feather_q8", nlohmann::json(256)), 128, 512);
+		for (const char *field : {"amplitude_q8", "speckle_q8", "bridge_q8"})
+			require(version >= 3 || !p.contains(field),
+					"contour amplitude, speckle and bridge require catalog version 3");
+		v.amplitude = integerInRange(p.value("amplitude_q8", nlohmann::json(512)), 0, 1024);
+		v.speckle = integerInRange(p.value("speckle_q8", nlohmann::json(0)), 0, 1024);
+		v.bridge = integerInRange(p.value("bridge_q8", nlohmann::json(0)), 0, 1024);
+		v.shearScale = version >= 3 ? 256 : 128;
 		require(!v.key.empty() && keys.insert(v.key).second, "duplicate boundary profile");
 		const auto &curves = p.at("contours_q12");
-		require(curves.is_array() && curves.size() == 4, "profile requires four contours");
-		for (int i = 0; i < 4; ++i)
+		require(curves.is_array() && (version >= 3 ? curves.size() >= 4 && curves.size() <= 64
+												   : curves.size() == 4),
+				"profile requires four contours, or four to sixty-four in version 3");
+		const int limit = version == 1 ? 256 : version == 2 ? 512 : 1024;
+		for (const auto &curve : curves)
 		{
-			const auto count = curves[i].size();
-			require(
-				curves[i].is_array() &&
-					(count == 5 || (version >= 2 && (count == 9 || count == 17 || count == 33))),
-				"contour requires 5, 9, 17 or 33 points");
-			for (const auto &point : curves[i])
-				v.contours[i].push_back(
-					integerInRange(point, version == 1 ? -256 : -512, version == 1 ? 256 : 512));
-			require(v.contours[i].front() == 0 && v.contours[i].back() == 0,
+			const auto count = curve.size();
+			require(curve.is_array() &&
+						(count == 5 || (version >= 2 && (count == 9 || count == 17 || count == 33))),
+					"contour requires 5, 9, 17 or 33 points");
+			std::vector<int> points;
+			for (const auto &point : curve)
+				points.push_back(integerInRange(point, -limit, limit));
+			require(points.front() == 0 && points.back() == 0,
 					"contours must share zero endpoints");
+			v.contours.push_back(std::move(points));
 		}
-		c.profiles.push_back(v);
+		c.profiles.push_back(std::move(v));
 	}
 	auto findProfile = [&](const std::string &key)
 	{
@@ -182,6 +187,20 @@ Catalog Catalog::parse(const nlohmann::json &j)
 				"animated material needs a frame stride");
 		v.preview = rgbColor(m.at("preview"));
 		v.minimap = rgbColor(m.value("minimap", m.at("preview")));
+		if (m.contains("seam"))
+		{
+			require(version >= 3, "seam treatments require catalog version 3");
+			const auto &s = m.at("seam");
+			require(s.is_object(), "seam must be an object");
+			v.seam.height = integerInRange(s.value("height", nlohmann::json(0)), 0, 255);
+			v.seam.cast = integerInRange(s.value("cast_q8", nlohmann::json(0)), 0, 256);
+			v.seam.castWidth = integerInRange(s.value("cast_width_q8", nlohmann::json(0)), 0, 2048);
+			v.seam.fringe = integerInRange(s.value("fringe_q8", nlohmann::json(0)), 0, 256);
+			v.seam.fringeWidth =
+				integerInRange(s.value("fringe_width_q8", nlohmann::json(0)), 0, 2048);
+			if (s.contains("fringe"))
+				v.seam.fringeColor = rgbColor(s.at("fringe"));
+		}
 		require(m.at("variants").is_array() && !m.at("variants").empty(),
 				"material needs variants");
 		for (const auto &a : m.at("variants"))
@@ -196,12 +215,15 @@ Catalog Catalog::parse(const nlohmann::json &j)
 		}
 		c.materials.push_back(std::move(v));
 	}
-	const char *names[] = {"water", "sand", "grass", "ice", "road"};
 	require(j.at("bindings").is_object(), "bindings must be an object");
 	for (const auto &[key, value] : j.at("bindings").items())
 		c.bindings.emplace(key, c.find(value));
-	for (const auto *name : names)
-		require(c.bindings.contains(name), "missing terrain binding");
+	// Every paintable built-in terrain needs a material; legacy shores resolve
+	// through their corner materials.
+	for (unsigned type = 0; type < TERRAIN_COUNT; ++type)
+		if (terrainPaintable(TerrainType(type)))
+			require(c.bindings.contains(terrainPresentation(TerrainType(type)).name),
+					"missing terrain binding");
 	require(c.materials[c.bindings.at("water")].ocean, "water binding must use ocean backdrop");
 	std::set<std::pair<MaterialId, MaterialId>> pairs;
 	const auto treatments = j.value("pair_treatments", nlohmann::json::array());
@@ -229,10 +251,16 @@ unsigned Catalog::profileFor(MaterialId a, MaterialId b) const
 			   ? bb.profile
 			   : (aa.key < bb.key ? aa.profile : bb.profile);
 }
-unsigned Catalog::variantIndex(MaterialId id, int x, int y) const
+std::uint32_t mapSeedSalt(std::uint32_t seed)
+{
+	// Spread the seed before it meets the material and profile salts, so small
+	// seeds do not merely flip low bits of every hash.
+	return seed ? hash(seed, 0x7f4a7c15u, 0x9e3779b9u) : 0;
+}
+unsigned Catalog::variantIndex(MaterialId id, int x, int y, std::uint32_t seed) const
 {
 	const auto &m = materials[id];
-	unsigned n = hash(x, y, m.salt) % m.totalWeight;
+	unsigned n = hash(x, y, m.salt ^ mapSeedSalt(seed)) % m.totalWeight;
 	for (unsigned i = 0; i < m.variants.size(); ++i)
 	{
 		if (n < m.variants[i].weight)
@@ -241,10 +269,10 @@ unsigned Catalog::variantIndex(MaterialId id, int x, int y) const
 	}
 	return unsigned(m.variants.size() - 1);
 }
-int Catalog::frame(MaterialId id, int x, int y, int time) const
+int Catalog::frame(MaterialId id, int x, int y, int time, std::uint32_t seed) const
 {
 	const auto &m = materials[id];
-	return m.variants[variantIndex(id, x, y)].frame +
+	return m.variants[variantIndex(id, x, y, seed)].frame +
 		   (unsigned(time) / m.animationTicks % m.animationFrames) * m.animationStride;
 }
 std::array<unsigned, 4> legacyCorners(unsigned frame)
@@ -267,17 +295,38 @@ std::array<unsigned, 4> legacyCorners(unsigned frame)
 		result[i] = (mask & (1u << i)) ? (shore ? 1 : 2) : (shore ? 0 : 1);
 	return result;
 }
+PreparedCoverage::Curve::Curve(const Profile *p, unsigned motif) : profile(p)
+{
+	// Version-1 packs keep their four motifs. Later packs read any curve count
+	// and quadruple the variety with mirrored and negated readings of each one.
+	const bool varied = !p->legacyEdges;
+	const auto &curve = p->contours[varied ? motif % p->contours.size() : motif & 3];
+	points = curve.data();
+	segments = int(curve.size()) - 1;
+	mirror = varied && (motif & 0x100);
+	sign = varied && (motif & 0x200) ? -1 : 1;
+}
+int PreparedCoverage::Curve::wave(int t) const
+{
+	// Artist-authored piecewise-linear contours; zero at both sample centers.
+	// Q12 in/out, with the original rounding.
+	if (mirror)
+		t = 4096 - t;
+	const int scaled = t * segments;
+	const int i = std::min(scaled / 4096, segments - 1), f = scaled - i * 4096;
+	return sign * (points[i] * (4096 - f) + points[i + 1] * f) / 4096;
+}
 PreparedCoverage::PreparedCoverage(const Catalog &c, const Recipe &r)
 {
 	// A single world-space field bends the complete material partition. Using
 	// different fields per material would pull junctions apart. Hash only grid
 	// vertices here; native and HD pixels interpolate the same prepared field.
-	// Reserve the remaining part of the eight-pixel halo for the two local
-	// contour displacements. Old catalogs keep their original two-pixel limits.
-	localDisplacementLimit =
-		std::min(512, (2048 - c.boundaryWarp[0] - c.boundaryWarp[1] - c.boundaryWarp[2]) / 2);
+	// Local contours displace samples inside their own patch, so this field is
+	// the only displacement that consumes the eight-pixel halo of prepared patches.
+	legacy = c.version == 1;
+	seed = mapSeedSalt(r.seed);
 	constexpr int scales[] = {64, 32, 8};
-	for (unsigned i = 0; i < warp.size(); ++i)
+	for (unsigned i = 0; i < std::size(warp); ++i)
 	{
 		const int amplitude = c.boundaryWarp[i];
 		if (!amplitude)
@@ -299,7 +348,8 @@ PreparedCoverage::PreparedCoverage(const Catalog &c, const Recipe &r)
 				const int gy = wrap(r.y * 32 / spacing + y, r.height * 32 / spacing);
 				for (unsigned axis = 0; axis < 2; ++axis)
 					layer.vertices[y * 5 + x][axis] =
-						int(hash(gx, gy, 0x61c88647u + i * 0x9e3779b9u + axis * 0x85ebca6bu) %
+						int(hash(gx, gy,
+								 salted(0x61c88647u + i * 0x9e3779b9u + axis * 0x85ebca6bu)) %
 							(2 * amplitude + 1)) -
 						amplitude;
 			}
@@ -325,10 +375,12 @@ PreparedCoverage::PreparedCoverage(const Catalog &c, const Recipe &r)
 				const auto salt =
 					c.materials[a].salt ^ c.materials[b].salt ^ (vertical ? 0x46ac23u : 0x973adafu);
 				const auto &profile = c.profiles[c.profileFor(a, b)];
-				const auto motif = hash(wrap(x, r.width * 2), wrap(y, r.height * 2), salt);
-				return Curve{&profile, motif,
-							 std::clamp(wave(profile, 2048, motif) * profile.roughness / 256,
-										-localDisplacementLimit, localDisplacementLimit)};
+				const auto motif =
+					hash(wrap(x, r.width * 2), wrap(y, r.height * 2), salted(salt));
+				Curve curve{&profile, motif};
+				curve.anchor = std::clamp(curve.wave(2048) * profile.roughness / 256,
+										  -profile.amplitude, profile.amplitude);
+				return curve;
 			};
 			// Adjoining patches use the same wrapped coordinates and endpoint keys.
 			patch.edges = {
@@ -337,10 +389,14 @@ PreparedCoverage::PreparedCoverage(const Catalog &c, const Recipe &r)
 			// Interpolate material softness from the same corner labels as coverage.
 			// A patch-wide maximum would disagree across edges at mixed junctions.
 			for (int i = 0; i < 4; ++i)
-				patch.feather[i] = c.profiles[c.materials[ids[i]].profile].feather;
+			{
+				const auto &profile = c.profiles[c.materials[ids[i]].profile];
+				patch.feather[i] = profile.feather;
+				patch.speckle[i] = legacy ? 0 : profile.speckle;
+			}
 			const auto vertex = hash(wrap(qx, r.width * 2), wrap(qy, r.height * 2),
-									 c.materials[ids[0]].salt + c.materials[ids[1]].salt +
-										 c.materials[ids[2]].salt + c.materials[ids[3]].salt);
+									 salted(c.materials[ids[0]].salt + c.materials[ids[1]].salt +
+											c.materials[ids[2]].salt + c.materials[ids[3]].salt));
 			const auto contour =
 				[&](MaterialId a, MaterialId b, MaterialId d, MaterialId e, unsigned motif)
 			{
@@ -380,7 +436,71 @@ PreparedCoverage::PreparedCoverage(const Catalog &c, const Recipe &r)
 				}
 				patch.slots[i] = slot;
 			}
+			if (legacy)
+				continue;
+			// Two lobes of one material meeting across the center join through a
+			// narrow neck, as in the original diagonal tiles, instead of a hard cross.
+			if (patch.count == 4)
+			{
+				const bool choice = (vertex >> 4) & 1;
+				if (ids[0] == ids[3] && choice)
+					patch.bridge = {int(patch.slots[0]), int(patch.slots[3])};
+				else if (ids[1] == ids[2] && !choice)
+					patch.bridge = {int(patch.slots[1]), int(patch.slots[2])};
+				if (patch.bridge[0] >= 0)
+					patch.bridgeScale = patch.contours[0].profile->bridge * 3 / 2;
+			}
+			if (std::any_of(patch.speckle.begin(), patch.speckle.end(), [](unsigned s) { return s; }))
+				for (unsigned slot = 0; slot < patch.count; ++slot)
+					patch.pebbles[slot] = pebbleField(c, r, patch.materials[slot]);
 		}
+}
+int PreparedCoverage::pebbleField(const Catalog &c, const Recipe &r, MaterialId id)
+{
+	for (unsigned i = 0; i < pebbles.size(); ++i)
+		if (pebbles[i].material == id)
+			return int(i);
+	PebbleField field;
+	field.material = id;
+	const int columns = r.width * 8, rows = r.height * 8;
+	for (int cy = -1; cy <= 8; ++cy)
+		for (int cx = -1; cx <= 8; ++cx)
+		{
+			const int gx = wrap(r.x * 8 + cx, columns), gy = wrap(r.y * 8 + cy, rows);
+			const auto h = hash(gx, gy, salted(c.materials[id].salt ^ 0x2545f491u));
+			if (h & 0x80)
+				continue; // Half of the cells carry a pebble.
+			const auto detail = hash(gx, gy, salted(c.materials[id].salt ^ 0x9e3779b9u));
+			auto &pebble = field.cells[(cy + 1) * 10 + cx + 1];
+			pebble.x = cx * 1024 + int((h >> 8) & 1023);
+			pebble.y = cy * 1024 + int((h >> 18) & 1023);
+			pebble.radius = 320 + int(detail & 255) * 3 / 2; // 1.25 to 2.75 pixels
+			pebble.strength = 128 + int((detail >> 8) & 127);
+		}
+	pebbles.push_back(field);
+	return int(pebbles.size() - 1);
+}
+int PreparedCoverage::PebbleField::at(int px, int py) const
+{
+	const int cx = px >> 10, cy = py >> 10;
+	int best = 0;
+	for (int dy = -1; dy <= 1; ++dy)
+		for (int dx = -1; dx <= 1; ++dx)
+		{
+			const int ix = cx + dx + 1, iy = cy + dy + 1;
+			if (ix < 0 || ix >= 10 || iy < 0 || iy >= 10)
+				continue;
+			const auto &pebble = cells[iy * 10 + ix];
+			if (!pebble.strength)
+				continue;
+			const std::int64_t ox = px - pebble.x, oy = py - pebble.y;
+			const std::int64_t squared = ox * ox + oy * oy,
+							   radius = std::int64_t(pebble.radius) * pebble.radius;
+			if (squared >= radius)
+				continue;
+			best = std::max(best, int((4096 - squared * 4096 / radius) * pebble.strength >> 8));
+		}
+	return best;
 }
 std::array<int, 2> PreparedCoverage::WarpLayer::at(int px, int py) const
 {
@@ -423,12 +543,13 @@ Coverage PreparedCoverage::at(int px, int py) const
 	const auto &patch = patches[sy * 3 + sx];
 	Coverage out;
 	out.material = patch.materials;
+	out.neighbor = patch.materials[0];
 	if (patch.count == 1)
 	{
 		out.weight[0] = 65536;
 		return out;
 	}
-	const auto edge = [this](const Curve &curve, int t)
+	const auto edge = [](const Curve &curve, int t)
 	{
 		if (!curve.profile)
 			return 0;
@@ -437,35 +558,99 @@ Coverage PreparedCoverage::at(int px, int py) const
 		// crossing and taper to the vertices; put the detail in interior shears.
 		if (!curve.profile->legacyEdges)
 			return curve.anchor * std::min(t, 4096 - t) / 2048;
-		return std::clamp(wave(*curve.profile, t, curve.motif) * curve.profile->roughness / 256,
-						  -localDisplacementLimit, localDisplacementLimit);
+		return std::clamp(curve.wave(t) * curve.profile->roughness / 256,
+						  -curve.profile->amplitude, curve.profile->amplitude);
 	};
 	const int du = (edge(patch.edges[0], u) * (4096 - v) + edge(patch.edges[1], u) * v) / 4096;
 	const int dv = (edge(patch.edges[2], v) * (4096 - u) + edge(patch.edges[3], v) * u) / 4096;
 	u = std::clamp(u + du, 0, 4096);
 	v = std::clamp(v + dv, 0, 4096);
-	// Bounded interior shears vanish on every patch edge. Their sequential
-	// evaluation preserves connectivity and the original integer rounding.
-	const auto contour = [this](const Curve &curve, int t)
+	// Bounded interior shears vanish on every patch edge. Version-1 packs taper
+	// them linearly from the edges; later packs hold the full displacement over
+	// the central half of the patch so authored pixel amplitudes survive. That
+	// window stays fold-free up to the four-pixel amplitude limit.
+	const auto contour = [](const Curve &curve, int t)
 	{
-		return curve.profile ? std::clamp(wave(*curve.profile, t, curve.motif) *
-											  curve.profile->roughness / 128,
-										  -localDisplacementLimit, localDisplacementLimit)
+		return curve.profile ? std::clamp(curve.wave(t) * curve.profile->roughness /
+											  curve.profile->shearScale,
+										  -curve.profile->amplitude, curve.profile->amplitude)
 							 : 0;
 	};
-	u += contour(patch.contours[0], v) * std::min(u, 4096 - u) / 2048;
-	v += contour(patch.contours[1], u) * std::min(v, 4096 - v) / 2048;
+	const auto window = [this](int t)
+	{ return legacy ? 2 * std::min(t, 4096 - t) : std::min(4096, 4 * std::min(t, 4096 - t)); };
+	u += contour(patch.contours[0], v) * window(u) / 4096;
+	v += contour(patch.contours[1], u) * window(v) / 4096;
+	u = std::clamp(u, 0, 4096);
+	v = std::clamp(v, 0, 4096);
+	if (!legacy)
+	{
+		// Rounder lobes: a smoothstep keeps edge midpoints and shared-edge
+		// weights while single-corner regions approach quarter discs.
+		const auto smooth = [](int t) { return int(std::int64_t(t) * t * (12288 - 2 * t) >> 24); };
+		u = smooth(u);
+		v = smooth(v);
+	}
 	const unsigned weights[] = {unsigned((4096 - u) * (4096 - v)), unsigned(u * (4096 - v)),
 								unsigned((4096 - u) * v), unsigned(u * v)};
 	std::array<unsigned, 4> scores{};
 	for (int i = 0; i < 4; ++i)
 		scores[patch.slots[i]] += weights[i];
-	const unsigned maximum = *std::max_element(scores.begin(), scores.end());
-	unsigned total = 0;
-	std::uint64_t featherSum = 0;
+	std::uint64_t featherSum = 0, speckleSum = 0;
 	for (int i = 0; i < 4; ++i)
+	{
 		featherSum += std::uint64_t(weights[i]) * patch.feather[i];
+		speckleSum += std::uint64_t(weights[i]) * patch.speckle[i];
+	}
 	const unsigned feather = unsigned(featherSum >> 12);
+	if (patch.bridge[0] >= 0)
+	{
+		const int tent = (4096 - std::abs(2 * u - 4096)) * (4096 - std::abs(2 * v - 4096)) >> 12;
+		scores[patch.bridge[0]] += unsigned(tent * patch.bridgeScale);
+		scores[patch.bridge[1]] += unsigned(tent * patch.bridgeScale);
+	}
+	// Pebbles of a material raise its score near an edge: inside its own region
+	// nothing changes, across the edge a speck or a bite appears where the
+	// pebble outweighs the distance to the boundary. Interior samples skip them.
+	if (const unsigned speckle = unsigned(speckleSum >> 24))
+	{
+		unsigned first = 0, second = 0;
+		for (unsigned i = 0; i < patch.count; ++i)
+			if (scores[i] > first)
+			{
+				second = first;
+				first = scores[i];
+			}
+			else
+				second = std::max(second, scores[i]);
+		if (first - second < speckle * 12288 + feather)
+			for (unsigned i = 0; i < patch.count; ++i)
+				if (patch.pebbles[i] >= 0)
+				{
+					const auto shape = pebbles[patch.pebbles[i]].at(originalX, originalY);
+					scores[i] += (speckle * unsigned(shape) >> 12) * 12288;
+				}
+	}
+	const unsigned maximum = *std::max_element(scores.begin(), scores.end());
+	// Along a straight edge the score gap grows by 12288 per Q8 pixel, so it
+	// doubles as a cheap distance estimate to the nearest other material.
+	{
+		unsigned top = 0, next = patch.count;
+		for (unsigned i = 1; i < patch.count; ++i)
+			if (scores[i] > scores[top])
+				top = i;
+		for (unsigned i = 0; i < patch.count; ++i)
+			if (patch.materials[i] != patch.materials[top] &&
+				(next == patch.count || scores[i] > scores[next]))
+				next = i;
+		if (next < patch.count)
+		{
+			out.neighbor = patch.materials[next];
+			out.margin = std::min(65535u, (scores[top] - scores[next]) / 12288);
+		}
+		else
+			out.neighbor = patch.materials[top];
+	}
+	unsigned total = 0;
 	for (unsigned i = 0; i < patch.count; ++i)
 	{
 		out.weight[i] = scores[i] + feather > maximum ? scores[i] + feather - maximum : 0;

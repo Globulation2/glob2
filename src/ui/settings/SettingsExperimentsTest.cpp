@@ -18,6 +18,22 @@
 
 TEST_SUITE("SettingsExperiments")
 {
+	TEST_CASE("catalog experiments use translated text when available and English metadata otherwise")
+	{
+		glob2test::GlobalsOptions options{.loadStrings = true};
+		options.beforeLoad = [](GlobalContainer& globals) { globals.settings.language = "en"; };
+		glob2test::HeadlessGlobals globals(options);
+		glob2test::CapturedStderr errors;
+		const CatalogExperimentDefinition custom{"custom-building-fixture", "Custom building", "Enables the custom building."};
+		CHECK(experimentLabel(custom) == custom.label);
+		CHECK(experimentHelp(custom) == custom.help);
+		const auto &builtin = experimentDefinition(ExperimentId::GuardAreaBalancing);
+		const CatalogExperimentDefinition translated{builtin.key, "Fallback label", "Fallback help"};
+		CHECK(experimentLabel(translated) == builtin.label);
+		CHECK(experimentHelp(translated) == builtin.help);
+		CHECK(errors.text().find("no such key") == std::string::npos);
+	}
+
 	// The registry's label and help are the English source; the interface reads
 	// "[experiment <key>]" and "[experiment <key> help]" from the string table,
 	// which data/check_translations.py cannot connect to the registry because the

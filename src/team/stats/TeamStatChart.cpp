@@ -274,7 +274,7 @@ struct ChartPainter
 				used |= std::any_of(team.values[b].begin(), team.values[b].end(), [](double value) { return value > 0; });
 			if (!used)
 				continue;
-			const std::string label = tr(chart.bandKeys[b]);
+			const std::string label = (b < chart.bandLabelLiteral.size() && chart.bandLabelLiteral[b] ? chart.bandKeys[b] : tr(chart.bandKeys[b]));
 			const int need = legendSwatch + 4 + text.width(label) + 12;
 			if (x + need > left + width - pad && x > left + pad)
 			{
@@ -371,7 +371,7 @@ struct ChartPainter
 		text.surface.drawVertLine(x, plot.y, plot.h, TeamStatChart::ink);
 		std::vector<ReadoutRow> rows;
 		for (std::size_t b = series.values.size(); b-- > 0;)
-			rows.push_back({TeamStatChart::bandColor(chart, b), tr(chart.bandKeys[b]), series.values[b][at]});
+			rows.push_back({TeamStatChart::bandColor(chart, b), (b < chart.bandLabelLiteral.size() && chart.bandLabelLiteral[b] ? chart.bandKeys[b] : tr(chart.bandKeys[b])), series.values[b][at]});
 		paintReadout(text, left, top, width, height, x, Stats::timeText(Stats::secondsAt(series.ticks[at])) + "  " + team.name, rows,
 					 chart.percent, chart.decimals, {});
 	}

@@ -213,8 +213,8 @@ to write eight numbered pages per action covering all 32 phases in every
 heading (the static swarm has one page). Run it with white, stripes, spots and
 an isolated patch to review both geometry and paint attachment. Generated files stay
 under `artifacts/`. `python3 tools/skins/make_paint.py <DIR> [--pattern
-checker|stripes|spots|solid] [--color RRGGBB] [--material
-glossy|matte|metallic|hairy|mixed]` writes the colony-v2 pair `<DIR>/paint.webp`
+checker|stripes|spots|solid] [--color RRGGBB] [--material <key>|mixed]` (keys
+from `libgag/shaders/skin-materials.json`) writes the colony-v2 pair `<DIR>/paint.webp`
 (512x512 colour atlas, one 256x256 quadrant per model: worker top-left, warrior
 top-right, explorer bottom-left, swarm bottom-right) and `<DIR>/material.webp`
 (the matching material-id map). The generator requires Pillow with WebP support
@@ -284,7 +284,8 @@ matching copies and generated native matrices. `studio_thumbnails.py` updates th
 model/action selectors under the web public assets directory. The skin projection
 unit suite checks depth coverage, seam margins, curated fill masks and full-ring
 bounds; `SkinMesh` native tests verify world height, normals and cache isolation
-for transformed views. Shader parity checks use `skins/materialShader.ts`.
+for transformed views. The studio imports the game's material GLSL raw through
+`skins/materialShader.ts`; see "Skin materials" in `docs/development/reference.md`.
 
 The renderer performs depth-tested mesh rasterization into a transparent GPU
 atlas, then composites into the existing sprite order. A visible-scene prepass

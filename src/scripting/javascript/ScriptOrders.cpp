@@ -5,8 +5,8 @@
 #include "Building.h"
 #include "BuildingType.h"
 #include "GlobalContainer.h"
-#include "IntBuildingType.h"
 #include "Brush.h"
+#include "AIRuleOrders.h"
 #include <stdexcept>
 namespace Script
 {
@@ -21,17 +21,17 @@ std::shared_ptr<Order> order(Game &game, int team, const Value &d)
 	{ return d.integer(name, lo, hi); };
 	if (type == "create")
 	{
-		int t = number("buildingType", 0, int(globalContainer->buildingsTypes.size()) - 1);
-		const auto *bt = globalContainer->buildingsTypes.get(t);
-		if (!bt->isVirtual && (!bt->isBuildingSite || bt->level != 0))
-			throw std::runtime_error("Creation requires a basic building site or flag");
+		int t = number("buildingType", 0, int(game.buildingsTypes.size()) - 1);
+		const auto *bt = game.buildingsTypes.get(t);
+		if (!bt->semantics.placeable || !game.isBuildingTypeAvailable(t))
+			throw std::runtime_error("Creation requires an available placeable building variant");
 		std::optional<Sint32> range;
-		if (bt->isVirtual)
-			range = number("range", 0, 255);
+		if (bt->zonable[WORKER] || bt->zonable[EXPLORER] || bt->zonable[WARRIOR])
+			range = number("range", 0, bt->maxUnitStayRange);
 		return std::make_shared<OrderCreate>(
 			team, number("x", 0, game.map.getW() - 1), number("y", 0, game.map.getH() - 1), t,
-			number("workers", 0, MAX_BUILDING_WORKER_REQUEST),
-			number("futureWorkers", 0, MAX_BUILDING_WORKER_REQUEST), range);
+			std::min(number("workers", 0, MAX_BUILDING_WORKER_REQUEST),int(bt->semantics.assignmentLimit)),
+			std::min(number("futureWorkers", 0, MAX_BUILDING_WORKER_REQUEST),int((bt->isBuildingSite?game.buildingsTypes.get(bt->nextLevel):bt)->semantics.assignmentLimit)), range);
 	}
 	if (type == "forbidden" || type == "guardArea" || type == "clearArea" || type == "farmArea")
 	{
@@ -86,8 +86,8 @@ std::shared_ptr<Order> order(Game &game, int team, const Value &d)
 		&& !b->type->isBuildingSite && b->hp >= b->getEffectiveMaxHp())
 		throw std::runtime_error("Building upgrades are disabled by game rules");
 	if (type == "construction")
-		return std::make_shared<OrderConstruction>(
-			gid, number("workers", 0, MAX_BUILDING_WORKER_REQUEST),
+		return AIRules::constructionOrder(
+			game, *b, number("workers", 0, MAX_BUILDING_WORKER_REQUEST),
 			number("futureWorkers", 0, MAX_BUILDING_WORKER_REQUEST));
 	if (type == "cancelConstruction" && b->type->isBuildingSite &&
 		(b->buildingState != Building::ALIVE || (b->constructionResultState != Building::UPGRADE &&
@@ -100,49 +100,67 @@ std::shared_ptr<Order> order(Game &game, int team, const Value &d)
 		return std::make_shared<OrderChangePriority>(gid, number("priority", -1, 1));
 	if (type == "production")
 	{
-		if (b->shortTypeNum != IntBuildingType::SWARM_BUILDING)
-			throw std::runtime_error("Production requires a swarm");
+		if (!b->type->semantics.production.enabledUnitMask)
+			throw std::runtime_error("Building does not produce units");
 		const auto &a = d.get("ratios");
 		if (a.kind != Value::Array || a.items.size() != NB_UNIT_TYPE)
 			throw std::runtime_error("Production requires three ratios");
 		Sint32 ratios[NB_UNIT_TYPE];
 		for (int i = 0; i < NB_UNIT_TYPE; ++i)
 			ratios[i] = Value::object().set("value", a.items[i]).integer("value", 0, 16);
+		for (int i = 0; i < NB_UNIT_TYPE; ++i)
+			if (ratios[i] && !b->type->semantics.production.recipes[i].enabled)
+				throw std::runtime_error("Requested unit recipe is unavailable");
 		return std::make_shared<OrderModifySwarm>(gid, ratios);
 	}
 	if (type == "exchange")
 	{
-		if (b->shortTypeNum != IntBuildingType::MARKET_BUILDING)
-			throw std::runtime_error("Exchange requires a market");
+		if (!b->type->semantics.market.interTeamFruitExchange)
+			throw std::runtime_error("Building does not support resource exchange");
 		return std::make_shared<OrderModifyExchange>(
-			gid, number("receiveMask", 0, (1 << MAX_NB_RESOURCES) - 1),
-			number("sendMask", 0, (1 << MAX_NB_RESOURCES) - 1));
+			gid, number("receiveMask", 0, (1 << MaterialSlotCount) - 1),
+			number("sendMask", 0, (1 << MaterialSlotCount) - 1));
 	}
-	if (!b->type->isVirtual)
+	if (!(b->type->zonable[WORKER] || b->type->zonable[EXPLORER] || b->type->zonable[WARRIOR]))
 		throw std::runtime_error("Flag order requires a flag");
 	if (type == "range")
-		return std::make_shared<OrderModifyFlag>(gid, number("range", 0, 255));
+		return std::make_shared<OrderModifyFlag>(gid, number("range", 0, b->type->maxUnitStayRange));
 	if (type == "minimumLevel")
+	{
+		if (!b->type->zonable[WARRIOR])
+			throw std::runtime_error("Minimum combat level requires warrior attraction");
 		return std::make_shared<OrderModifyMinLevelToFlag>(gid, number("level", 0, 3));
+	}
+	if (type == "workerMinimumLevel")
+	{
+		if (!b->type->zonable[WORKER])throw std::runtime_error("Minimum construction level requires worker attraction");
+		return std::make_shared<OrderModifyMinLevelToFlag>(gid, number("workerMinimumLevel",0,3), 2);
+	}
+	if (type == "requireBombing")
+	{
+		if (!b->type->zonable[EXPLORER] || d.get("requireBombing").kind != Value::Boolean)
+			throw std::runtime_error("Bombing requirement needs explorer attraction and a boolean");
+		return std::make_shared<OrderModifyMinLevelToFlag>(gid, d.get("requireBombing").number != 0, 1);
+	}
+	if (type == "moveFlag" && !b->type->semantics.relocatable)
+		throw std::runtime_error("Building cannot relocate");
 	if (type == "moveFlag")
 		return std::make_shared<OrderMoveFlag>(gid, number("x", 0, game.map.getW() - 1),
 											   number("y", 0, game.map.getH() - 1), false);
-	if (type == "clearingResources")
+	if (type == "clearingResources" || type == "clearingMaterials")
 	{
-		if (b->shortTypeNum != IntBuildingType::CLEARING_FLAG)
-			throw std::runtime_error("Clearing requires a clearing flag");
-		const auto &a = d.get("resources");
-		if (a.kind != Value::Array || a.items.size() != BASIC_COUNT)
-			throw std::runtime_error("Clearing requires five booleans");
-		bool resources[BASIC_COUNT];
-		for (int i = 0; i < BASIC_COUNT; ++i)
+		if (!b->type->zonable[WORKER])
+			throw std::runtime_error("Building does not attract resource-clearing workers");
+		const auto &a = d.get(type == "clearingMaterials" ? "materials" : "resources");
+		if (a.kind != Value::Array || a.items.size() != BASIC_COUNT && a.items.size() != MaterialCount)
+			throw std::runtime_error("Clearing requires twelve material booleans (or five legacy booleans)");
+		bool resources[MaterialCount]{};
+		for (unsigned i = 0; i < a.items.size(); ++i)
 		{
 			if (a.items[i].kind != Value::Boolean)
 				throw std::runtime_error("Clearing requires booleans");
 			resources[i] = a.items[i].number != 0;
 		}
-		if (resources[STONE])
-			throw std::runtime_error("Clearing flags cannot clear stone");
 		return std::make_shared<OrderModifyClearingFlag>(gid, resources);
 	}
 	throw std::runtime_error("Unsupported gameplay order");

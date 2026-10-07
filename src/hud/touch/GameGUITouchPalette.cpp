@@ -117,7 +117,7 @@ void GameGUITouch::drawBuildPalette()
 			drawPointLabel(rect, zones[items[i].name.back() - '0'], .75);
 			continue;
 		}
-		auto *type = globalContainer->buildingsTypes.getByType(items[i].name.c_str(), 0, false);
+		auto *type = gui.game.buildingsTypes.getByType(items[i].name.c_str(), 0, false);
 		if (type)
 		{
 			auto *sprite = type->miniSpriteImage >= 0 ? type->miniSpritePtr : type->gameSpritePtr;

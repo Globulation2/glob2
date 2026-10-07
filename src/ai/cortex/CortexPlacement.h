@@ -22,7 +22,7 @@ class Map;
 namespace Cortex
 {
 	/// Fill `out` with up to CORTEX_BUILD_CANDIDATES ranked candidate locations
-	/// for placing a building of `buildingType` (an IntBuildingType::Number) at
+	/// for placing a building of `buildingType` (a Cortex semantic role) at
 	/// internal level `level` (0-based; use 0 for a fresh building) for `team`.
 	///
 	/// Candidates are returned best-first (highest BuildCandidate::score in slot
@@ -31,22 +31,25 @@ namespace Cortex
 	///
 	/// Returns the number of valid candidates written (0..CORTEX_BUILD_CANDIDATES).
 	/// Returns 0 (and leaves all slots valid == 0) when no legal placement exists.
+	/// Pass a qualification computed for the current observation to avoid rescanning
+	/// workers for each role. The default computes it for standalone callers.
 	int placeCandidates(Game* game, Team* team, int buildingType, int level,
-	                    BuildCandidate out[CORTEX_BUILD_CANDIDATES]);
+	                    BuildCandidate out[CORTEX_BUILD_CANDIDATES], int placementType = -1,
+	                    int maxWorkerQualification = -1);
 
 	/// Forward-base variant of placeCandidates: the single best legal spot for
 	/// `buildingType` whose distance to the attack target (targetX, targetY) lies
 	/// in [minTargetDist, maxTargetDist] — near enough that the finished building
 	/// brings the target inside the attack-range support envelope, far enough not
 	/// to be built under enemy fire. All normal legality gates for the type still
-	/// apply (a forward inn still needs harvestable wheat at the front); only the
+	/// apply (a forward inn still needs harvestable food at the front); only the
 	/// stay-clustered-with-the-colony cap is lifted. Among legal spots the one
 	/// closest to the colony wins (safest that does the job). Returns 1 and fills
 	/// `out`, or 0 (out.valid == 0) when no legal forward spot exists.
 	int placeForwardCandidate(Game* game, Team* team, int buildingType,
 	                          int targetX, int targetY,
 	                          int minTargetDist, int maxTargetDist,
-	                          BuildCandidate& out);
+	                          BuildCandidate& out, int maxWorkerQualification = -1);
 
 	/// Fill `out` with up to CORTEX_FLAG_TARGETS DISCOVERED enemy buildings, ranked
 	/// nearest-first to our colony, to serve as war-flag offense targets. Each
@@ -65,13 +68,13 @@ namespace Cortex
 	/// we have not yet discovered any enemy building.
 	int placeFlagTargets(Game* game, Team* team, BuildCandidate out[CORTEX_FLAG_TARGETS], Sint32 outTeam[CORTEX_FLAG_TARGETS]);
 
-	/// Chebyshev distance from tile (x, y) to the nearest wheat tile, found
+	/// Chebyshev distance from tile (x, y) to the nearest food tile, found
 	/// by an outward radial scan bounded at `cap` rings. Returns the distance in
-	/// [0, cap], or -1 when no WHEAT lies within `cap` tiles. Warp-safe (uses Map's
+	/// [0, cap], or -1 when no Food lies within `cap` tiles. Warp-safe (uses Map's
 	/// coordinate normalization). Deterministic (fixed scan order, no rand). Shared
-	/// by placeCandidates (a candidate site's BuildCandidate::wheatDist) and
-	/// Cortex::observe (a tracked swarm/inn's TrackedBuilding::nearestWheatDist), so
-	/// the wheat-distance metric is defined in exactly one place. Pass
+	/// by placeCandidates (a candidate site's BuildCandidate::foodSourceDistance) and
+	/// Cortex::observe (a tracked swarm/inn's TrackedBuilding::nearestFoodSourceDistance), so
+	/// the food-distance metric is defined in exactly one place. Pass
 	/// CORTEX_WHEAT_SCAN_CAP for `cap`.
-	int nearestWheatDist(const Map& map, int x, int y, int cap);
+	int nearestFoodSourceDistance(const Map& map, int x, int y, int cap);
 }

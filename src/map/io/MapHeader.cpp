@@ -28,6 +28,8 @@ void MapHeader::reset()
 	isSavedGame=false;
 	fileNameOverride = "";
 	requiredTerrainExperiments.clear();
+	requiredResourceExperiments.clear();
+	resourceExperimentDefinitions.clear();
 	resetGameSHA1();
 }
 
@@ -46,15 +48,16 @@ bool MapHeader::load(GAGCore::InputStream *stream)
 
 bool MapHeader::loadFields(GAGCore::InputStream *stream)
 {
-	///First, check if its an old format map
-	Uint32 pos = stream->getPosition();
-	char signature[4];
-	stream->read(signature, 4, "signature");
-	if(memcmp(signature, "SEGb",4) == 0)
+	// The obsolete binary prefix is a byte-stream probe, not a named text
+	// field. Structured text maps begin directly with the MapHeader section.
+	if (stream->canSeek())
 	{
-		return false;
+		const auto pos=stream->getPosition();
+		char signature[4];
+		stream->read(signature,4,"signature");
+		if (memcmp(signature,"SEGb",4)==0) return false;
+		stream->seekFromStart(pos);
 	}
-	stream->seekFromStart(pos);
 
 	stream->readEnterSection("MapHeader");
 	mapName = stream->readText("mapName");
@@ -83,6 +86,11 @@ bool MapHeader::loadFields(GAGCore::InputStream *stream)
 	}
 	
 	if (versionMinor >= FILE_FORMAT_VERSION_TERRAIN_PROPERTIES && !requiredTerrainExperiments.load(stream, versionMinor, true)) return false;
+	if (versionMinor >= FILE_FORMAT_VERSION_RUNTIME_RESOURCES)
+	{
+		resourceExperimentDefinitions = loadCatalogExperimentDefinitions(stream);
+		if (!requiredResourceExperiments.load(stream, versionMinor, true, resourceExperimentKeys(), "resourceExperiments")) return false;
+	}
 	stream->readEnterSection("teams");
 	for(int i=0; i<numberOfTeams; ++i)
 	{
@@ -110,6 +118,8 @@ void MapHeader::save(GAGCore::OutputStream *stream, size_t *sha1Position) const
 		*sha1Position = stream->getPosition();
 	stream->write(SHA1, 20, "SHA1");
 	requiredTerrainExperiments.save(stream);
+	saveCatalogExperimentDefinitions(stream, resourceExperimentDefinitions);
+	requiredResourceExperiments.save(stream, "resourceExperiments");
 	stream->writeEnterSection("teams");
 	for(int i=0; i<numberOfTeams; ++i)
 	{
@@ -267,6 +277,8 @@ Uint32 MapHeader::checkSum() const
 	cs^=numberOfTeams;
 	for (const auto& definition : experimentDefinitions())
 		if (requiredTerrainExperiments.has(definition.id)) cs ^= Sint32((1u + static_cast<unsigned>(definition.id)) * 0x9e3779b9u);
+	for (const auto& key : requiredResourceExperiments.keys())
+		for (unsigned char c : key) cs = Sint32((Uint32(cs) ^ c) * 16777619u);
 	// Keep the historical arithmetic right shift, but shift unsigned bits
 	// on the left so experiment hashes cannot trigger signed-shift overflow.
 	return (Uint32(cs)<<31)|Uint32(cs>>1);
@@ -281,6 +293,8 @@ bool MapHeader::operator!=(const MapHeader& rhs) const
 		rhs.isSavedGame != isSavedGame ||
 		rhs.mapName != mapName ||
 		rhs.requiredTerrainExperiments != requiredTerrainExperiments ||
+		rhs.requiredResourceExperiments != requiredResourceExperiments ||
+		rhs.resourceExperimentDefinitions != resourceExperimentDefinitions ||
 		!std::equal(SHA1, SHA1+20, rhs.SHA1))
 		return true;
 	return false;
@@ -295,6 +309,8 @@ bool MapHeader::operator==(const MapHeader& rhs) const
 		rhs.isSavedGame == isSavedGame &&
 		rhs.mapName == mapName &&
 		rhs.requiredTerrainExperiments == requiredTerrainExperiments &&
+		rhs.requiredResourceExperiments == requiredResourceExperiments &&
+		rhs.resourceExperimentDefinitions == resourceExperimentDefinitions &&
 		std::equal(SHA1, SHA1+20, rhs.SHA1))
 		return true;
 	return false;
@@ -421,4 +437,3 @@ std::vector<std::string> glob2ListMapOrSaveFiles(GAGCore::FileManager& files, co
 	scan(baseExtension + ".gz", true);
 	return result;
 }
-

@@ -21,7 +21,9 @@
 #ifndef AI_MAXIMA_FOOD_LEDGER_H
 #define AI_MAXIMA_FOOD_LEDGER_H
 
+#include "Material.h"
 #include <stdint.h>
+#include <array>
 #include <vector>
 
 namespace AIMaximaFoodLedger
@@ -45,6 +47,22 @@ enum ConsumerStage
 	ReservedStage
 };
 
+// A cold operating forecast. Negative carriers preserves planner-only legacy
+// fixtures; real providers always supply a bounded requested allowance.
+struct OperatingPlan
+{
+    int carriers=-1;
+    int fixedTicks=1,ticksPerTile=0;
+    std::array<int,MaterialCount> independent{},production{},trips{};
+};
+struct OperatingQuery
+{
+    int demand=0,productionDemand=0,quality=0;
+    long long residual=0; // actual candidate components funded, capped by demand
+    long long transferred=0; // funded feeding reservation credited only against margin
+    bool feasible=true;
+};
+
 /// One inn or swarm that eats wheat, including planned ones. Colony swarms are
 /// ordinary claimers: they compete for the same wheat, they simply keep their
 /// own placement rules and are exempt from retirement while establishing.
@@ -56,8 +74,10 @@ struct ConsumerInput
 	int key;
 	ConsumerKind kind;
 	ConsumerStage stage;
-	/// Full-capacity consumption in micro-wheat per tick.
+	/// Recurring operating claim in micro-wheat packets per tick.
 	int demand;
+    int productionDemand=0; // component of demand from planned production
+    OperatingPlan operating;
 	/// Demand level, used only to break quality ties between claimers.
 	int level;
 	int centerX;
@@ -89,16 +109,22 @@ struct ConsumerResult
 {
 	ConsumerResult();
 	int key;
+    int level; // exact profile stage charged, including authorized upgrades
 	ConsumerKind kind;
 	bool colony;
 	bool retirable;
 	int demand;
+    int productionDemand=0; // component of demand from planned production
 	/// Supply this claimer actually took, capped by its demand.
 	int claimed;
+    int claimedProduction=0; // exact second-phase allocation
 	/// claimed plus the unclaimed supply it could still reach. An upgrade is
 	/// judged against this, because its own claim is released and retaken.
 	long long available;
 	int coveragePercent;
+	/// Coverage by reachable recurring supply before competing claims, capped
+	/// at full demand. This describes site viability, not spendable funding.
+	int uncontestedCoveragePercent = 0;
 	int availablePercent;
 	/// Supply-weighted mean route distance to the wheat covering full demand,
 	/// ignoring every other claimer, in hundredths of a tile.
@@ -106,6 +132,13 @@ struct ConsumerResult
 	int qualityBand;
 	/// Final position in the interleaved claim order.
 	int order;
+
+	int retirementCoveragePercent() const
+	{
+		// Feeding priority can leave a viable producer temporarily unfunded.
+		// Services without production still use their actual allocation.
+		return productionDemand > 0 ? uncontestedCoveragePercent : coveragePercent;
+	}
 };
 
 struct Input
@@ -132,6 +165,8 @@ struct Result
 	std::vector<ConsumerResult> consumers;
 	/// Supply still unclaimed on every cell, in the same micro-wheat units.
 	std::vector<uint32_t> residual;
+    std::vector<uint32_t> serviceResidual; // after independent services, before production
+    long long independentClaimed=0;
 	long long totalSupply;
 	long long totalDemand;
 	long long totalClaimed;
@@ -148,17 +183,30 @@ private:
 	// snapshot makes copies and queries of older results independent of the
 	// ledger's scratch buffers. Treat evaluated results as read-only.
 	std::vector<long long> residualSums;
+    std::vector<long long> serviceResidualSums;
 	int residualSumsWidth;
 	int residualSumsHeight;
 };
 
+enum class EvaluationMode { Full, CandidateQuery };
+
 /// Holds the reusable scratch buffers. Queries never allocate once a map size
 /// has been seen, which keeps the per-candidate placement check cheap.
+
 class Ledger
 {
 public:
 	Ledger();
-	void evaluate(const Input& input, Result& result) const;
+	// Candidate snapshots retain exact allocation/query layers, but omit the
+    // final-residual economic bound used only by the authoritative baseline.
+	void evaluate(const Input& input, Result& result,
+        EvaluationMode mode=EvaluationMode::Full) const;
+    void reserveQueryFootprint(const Input& input,int width,int height) const;
+    /// Combines the existing exact residual walk with uncontested supply work.
+    /// The result can be reused by the candidate's feasibility and score calls.
+    OperatingQuery operatingQuery(const Input& input,const Result& result,
+        const ConsumerInput& candidate,int marginPercent,
+        const Result* transferBaseline=nullptr,int feedingTransferLimit=0) const;
 
 	/// Unclaimed supply a building with this footprint could reach, stopping
 	/// once `cap` is met so a satisfied candidate never walks its whole radius.
@@ -180,10 +228,12 @@ public:
 	/// residual. Reach is contained in the Chebyshev square, so a candidate
 	/// rejected here would also fail the exact walk. Requires an unmodified
 	/// result from evaluate; reads its prepared table without scanning,
-	/// allocating or rebuilding. A default/invalid result returns zero.
+	/// allocating or rebuilding. A candidate snapshot without a final-residual
+    /// table uses total residual as a conservative bound. A default/invalid
+    /// result returns zero.
 	long long residualUpperBound(const Input& input, const Result& result,
 		int centerX, int centerY, int left, int top, int width,
-		int height) const;
+		int height,bool services=false) const;
 
 private:
 	struct ReachCell
@@ -194,8 +244,13 @@ private:
 	void walk(const Input& input, int centerX, int centerY, int left, int top,
 		int width, int height, std::vector<ReachCell>& reach,
 		const std::vector<uint32_t>* residual = nullptr, long long cap = 0) const;
-	void prepareResidualSums(const Input& input, Result& result) const;
-	mutable std::vector<int> distanceScratch;
+	void prepareResidualSums(const Input& input, Result& result, EvaluationMode mode) const;
+	void prepareWorkCurve(const Input& input,const std::vector<ReachCell>& reach,
+        const OperatingPlan& plan) const;
+    long long wheatWork(long long quantity) const;
+    mutable std::vector<long long> workSupply,workQuantity,workPrefix;
+    mutable int workFixed=1,workStep=0,workTail=1;
+    mutable std::vector<int> distanceScratch;
 	mutable std::vector<uint32_t> distanceGeneration;
 	mutable uint32_t generation;
 	mutable std::vector<ReachCell> reachScratch;
@@ -208,7 +263,7 @@ private:
 uint32_t cellYield(uint32_t fertility, int openNeighbors, int growthPeriodTicks);
 
 /// Full-capacity demand of a swarm, in micro-wheat per tick.
-int swarmDemand(int resourceForOneUnit, int unitProductionTime, int percent);
+int swarmDemand(int foodPerUnit, int unitProductionTime, int percent);
 
 /// Full-capacity demand of an inn serving `servedUnits`, in micro-wheat per
 /// tick, where a fed unit eats one wheat every `ticksPerMeal` ticks.

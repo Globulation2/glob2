@@ -1,6 +1,10 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "EngineFixtures.h"
 #include "GameDiagnostics.h"
+#include "DatasetWriter.h"
+#include "Order.h"
+#include "ai/model/BuildingProjection.h"
+#include "MetricCatalog.h"
 #include "render/scene/SceneExtract.h"
 #include "AIMaximaPlacement.h"
 #include "AIMaxima.h"
@@ -84,7 +88,7 @@ TEST_CASE("capped scene export survives repeated graphics lifetimes and write fa
 		glob2test::HeadlessGlobals globals;
 		glob2test::HeadlessGame world({.wDec=5,.hDec=4,.teams=2,.discovered=true,.loadDefaultRace=true});
 		REQUIRE(world.addBuilding("inn",4,4)); REQUIRE(world.addUnit(WORKER,12,8));
-		world.game.map.setResource(18,10,WHEAT,1);
+		world.game.map.setResourceByIndex(18,10,WHEAT,1);
 		Scene scene; SceneRequest request; request.includePanels=false;
 		extractScene(world.game,request,scene);
 		const auto checksum=world.game.checkSum();
@@ -139,5 +143,133 @@ TEST_CASE("offscreen pass restores transformed drawing after exceptions [display
 		gfx.setClipRect();gfx.drawFilledRect(0,0,10,10,0,255,0);gfx.nextFrame();
 		SDL_DestroySurface(target);
 	}
+}
+}
+
+namespace
+{
+struct DatasetFixtureReader
+{
+    std::string bytes;
+    size_t cursor=0;
+    Uint32 number(unsigned width)
+    {
+        REQUIRE(cursor+width<=bytes.size());
+        Uint32 value=0;
+        for(unsigned i=0;i<width;++i)value|=Uint32(static_cast<unsigned char>(bytes[cursor++]))<<(8*i);
+        return value;
+    }
+    std::string text(size_t count)
+    {
+        REQUIRE(cursor+count<=bytes.size());
+        const auto result=bytes.substr(cursor,count);cursor+=count;return result;
+    }
+};
+}
+
+TEST_SUITE("DatasetWriter")
+{
+TEST_CASE("GDS2 embeds the catalog, projects unique model counts and preserves wide concrete spatial IDs [artifacts]")
+{
+    glob2test::HeadlessGlobals globals;
+    glob2test::HeadlessGame world({.teams=2,.header=true});
+    auto snapshot=nlohmann::json::parse(world.game.buildingsTypes.snapshotJson());
+    auto prototype=snapshot["variants"][world.game.buildingsTypes.getFinishedTypeNum("stonewall")];
+    prototype["previous"]="";prototype["next"]="";
+    prototype["semantics"]["repairable"]=false;
+    prototype["semantics"]["placeable"]=true;
+    prototype["semantics"]["instantPlacement"]=true;
+    while(snapshot["variants"].size()<=300)
+    {
+        const auto id=snapshot["variants"].size();auto variant=prototype;
+        variant["id"]=id;variant["key"]="dataset.variant."+std::to_string(id);
+        variant["properties"]["type"]="dataset-"+std::to_string(id);
+        snapshot["variants"].push_back(variant);
+    }
+    world.game.buildingsTypes.loadSnapshotJson(snapshot.dump());world.game.configureBuildingCatalog();
+    auto* own=world.game.addBuilding(4,4,300,0,0,0);REQUIRE(own);
+    world.game.map.setBuilding(4,4,1,1,own->gid);
+    auto* hidden=world.game.addBuilding(8,8,299,1,0,0);REQUIRE(hidden);
+    world.game.map.setBuilding(8,8,1,1,hidden->gid);
+    auto* stat=world.team->stats.getLatestStat();
+    stat->buildingCountByVariant.assign(world.game.buildingsTypes.size(),0);
+    stat->buildingCountByVariant[300]=1;
+    stat->numberBuildingPerType[0]=99; // legacy metadata must not leak into model counts
+    const auto path=(glob2test::artifactDir()/"catalog.dataset").string();
+    DatasetWriter writer;REQUIRE(writer.open(path));
+    OrderModifyBuilding order(own->gid,0);order.sender=0;
+    writer.writeRecord(42,order,world.game);writer.close();
+    std::ifstream in(path,std::ios::binary);
+    DatasetFixtureReader file{std::string(std::istreambuf_iterator<char>(in),{})};
+    CHECK(file.text(4)=="GDS2");CHECK(file.number(4)==1);
+    const auto metadata=nlohmann::json::parse(file.text(file.number(4)));
+    CHECK(metadata["buildingCatalog"]["hash"]==world.game.buildingsTypes.fingerprint());
+    CHECK(metadata["buildingCatalog"]["snapshot"]==nlohmann::json::parse(world.game.buildingsTypes.snapshotJson()));
+    CHECK(metadata["modelChannels"].size()==301);
+    CHECK(file.number(4)==42);CHECK(file.number(1)==0);CHECK(file.number(1)==order.getOrderType());
+    DatasetFixtureReader state{file.text(file.number(4))};
+    CHECK(state.number(4)==1);state.number(4);state.number(4);
+    for(int i=0;i<MaterialSlotCount+NB_UNIT_TYPE;++i)state.number(4);
+    for(int i=0;i<ModelBuildingProjection::Count;++i)
+        CHECK(state.number(4)==(i==ModelBuildingProjection::PassiveGround ? 1u : 0u));
+    const auto width=state.number(4),height=state.number(4);
+    CHECK(width==32);CHECK(height==32);
+    for(unsigned y=0;y<height;++y)for(unsigned x=0;x<width;++x)
+    {
+        for(int i=0;i<4;++i)state.number(1);
+        const auto mine=state.number(2),enemy=state.number(2);state.number(1);
+        CHECK(mine==(x==4 && y==4 ? 301u : 0u));
+        CHECK(enemy==0); // undiscovered enemy remains private
+    }
+    CHECK(state.cursor==state.bytes.size());
+    CHECK(file.number(4)==unsigned(order.getDataLength()));
+    CHECK(file.text(order.getDataLength())==std::string(reinterpret_cast<const char*>(order.getData()),order.getDataLength()));
+    CHECK(file.cursor==file.bytes.size());
+}
+
+TEST_CASE("reader migration distinguishes the retained GDS1 cell layout")
+{
+    // A complete one-record old file: the metadata-less header and two
+    // one-byte family values must retain their original meaning.
+    const auto u32=[](std::string& out,Uint32 n) {for(int i=0;i<4;++i)out+=char(n>>(8*i));};
+    std::string state;u32(state,1);
+    for(int i=0;i<2+MaterialSlotCount+NB_UNIT_TYPE+13;++i)u32(state,0);
+    u32(state,1);u32(state,1);
+    const unsigned char cell[]={2,5,1,0,13,6,2};
+    state.append(reinterpret_cast<const char*>(cell),sizeof(cell));
+    std::string bytes="GDS1";u32(bytes,1);u32(bytes,42);
+    bytes+=char(0);bytes+=char(ORDER_MODIFY_BUILDING);u32(bytes,state.size());
+    bytes+=state;u32(bytes,0);
+    DatasetFixtureReader old{bytes};
+    CHECK(old.text(4)=="GDS1");CHECK(old.number(4)==1);
+    CHECK(old.number(4)==42);CHECK(old.number(1)==0);CHECK(old.number(1)==ORDER_MODIFY_BUILDING);
+    DatasetFixtureReader observation{old.text(old.number(4))};
+    CHECK(observation.number(4)==1);
+    for(int i=0;i<2+MaterialSlotCount+NB_UNIT_TYPE+13;++i)observation.number(4);
+    CHECK(observation.number(4)==1);CHECK(observation.number(4)==1);
+    for(int i=0;i<4;++i)observation.number(1);
+    CHECK(observation.number(1)==13);CHECK(observation.number(1)==6);CHECK(observation.number(1)==2);
+    CHECK(observation.cursor==observation.bytes.size());
+    CHECK(old.number(4)==0);CHECK(old.cursor==old.bytes.size());
+}
+
+TEST_CASE("per-game metric bands retain labels and count every finished ground variant exactly once")
+{
+    BuildingsTypes catalog;catalog.initLegacy();
+    auto* type=catalog.get(catalog.getFinishedTypeNum("inn"));
+    type->presentation.displayName="Combined services";type->shortTypeNum=500;
+    const int inn=catalog.getFinishedTypeNum("inn");
+    auto metrics=Stats::catalogForBuildings(catalog);
+    const auto& buildings=metrics[Stats::findMetric("buildings")];
+    GameplayMeasurements sample;sample.variants.resize(catalog.size());sample.variants[inn].count=4;
+    double total=0;bool label=false;
+    for(const auto& band:buildings.bands) {total+=band.value(sample);label|=band.labelKey.find("Combined services")!=std::string::npos;}
+    CHECK(total==4);CHECK(label);
+    const auto captured=buildings.bands;
+    catalog.initLegacy(); // labels/closures own their values, no descriptor lifetime dependency
+    for(size_t i=0;i<captured.size();++i)CHECK(buildings.bands[i].labelKey==captured[i].labelKey);
+    size_t completed=0;for(size_t i=0;i<catalog.size();++i)
+        completed+=!catalog.get(i)->isBuildingSite && catalog.get(i)->semantics.occupiesGround;
+    CHECK(buildings.bands.size()==completed);
 }
 }

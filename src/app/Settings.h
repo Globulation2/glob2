@@ -8,6 +8,8 @@
 #include <string>
 #include <map>
 #include "IntBuildingType.h"
+class BuildingType;
+class BuildingsTypes;
 #include "BasePlayer.h" // for the MAX_NAME_LENGTH val.
 
 class Settings
@@ -154,11 +156,14 @@ public:
 
 	
 
-	///Levels are from 0 to 5, where even numbers are building
-	///under construction and odd ones are completed buildings.
-	int defaultUnitsAssigned[IntBuildingType::NB_BUILDING][6];
-	///Default radius of flags, 0 for exploration, 1 for war flag, 2 for clearing flag
-	int defaultFlagRadius[3];
+	// Preferences are isolated by complete catalog fingerprint and stable variant
+	// key: a custom catalog may reuse stock keys without changing stock defaults.
+	std::map<std::string, int> buildingAssignments;
+	std::map<std::string, int> buildingRadii;
+	int buildingAssignment(const std::string& catalog, const BuildingType& type) const;
+	int buildingRadius(const std::string& catalog, const BuildingType& type) const;
+	void setBuildingAssignment(const std::string& catalog, const BuildingType& type, int value);
+	void setBuildingRadius(const std::string& catalog, const BuildingType& type, int value);
 
 	int cloudPatchSize;//the bigger the faster the uglier
 	int cloudMaxAlpha;//the higher the nicer the clouds the harder the units are visible
@@ -175,5 +180,5 @@ public:
 	void resetDefaultFlagRadius();
 };
 
-//Version 1 - Resets default units assigned and keyboard shortcuts
-#define SETTINGS_VERSION 1
+// Version 2 imports the historical family/level preferences into catalog keys.
+#define SETTINGS_VERSION 2

@@ -1,9 +1,11 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2026 The Globulation 2 Authors
 
+#include "Material.h"
 #include "CortexPlacement.h"
 
 #include "CortexPlacementGeo.h"
+#include "CortexFoodAvailability.h"
 #include "Game.h"
 #include "Utilities.h"
 #include "building/Building.h"
@@ -90,81 +92,31 @@ namespace Cortex
 		}
 	} // namespace
 
-	// Chebyshev distance from tile (x, y) to the nearest wheat resource
+	// Chebyshev distance from tile (x, y) to the nearest food resource
 	// tile, found by an outward "ring" scan capped at `cap`. Shared utility used
-	// by placeCandidates (wheatDist of each retained BuildCandidate) and by
-	// Cortex::observe (TrackedBuilding::nearestWheatDist for each tracked swarm
-	// and inn), so the wheat-proximity metric is defined in exactly one place.
+	// by placeCandidates (foodSourceDistance of each retained BuildCandidate) and by
+	// Cortex::observe (TrackedBuilding::nearestFoodSourceDistance for each tracked swarm
+	// and inn), so the food-proximity metric is defined in exactly one place.
 	//
 	// Algorithm: for r = 0, 1, 2, ..., cap, iterate every tile at EXACTLY
 	// Chebyshev distance r from (x, y) — the square ring of side 2r+1. Return
-	// the first r at which a WHEAT tile is found. The scan terminates immediately
+	// the first r at which a Food tile is found. The scan terminates immediately
 	// on the first hit at the current radius, not at the first hit overall, so we
-	// never report a radius larger than the true minimum. Return -1 if no WHEAT is
+	// never report a radius larger than the true minimum. Return -1 if no Food is
 	// found within `cap`.
 	//
-	// WHEAT detection: map.getResource(x, y).type == WHEAT — identical to the
-	// isWheat() predicate in CortexWheat.cpp (anonymous namespace, line ~29) so
-	// the two subsystems agree on what counts as wheat.
-	// C++: Resource.h:#define WHEAT 1; Map::getResource (map/Map.h:302).
+	// Food detection: map.isMaterialTakeableSlot(x, y, Food) — identical to the
+	// isFoodSource() predicate in CortexFoodSources.cpp (anonymous namespace, line ~29) so
+	// the two subsystems agree on what counts as food.
+	// Material stock is queried independently of map resource identity.
 	//
 	// Determinism: fixed ring/scan order (top row → right col → bottom row →
 	// left col, no rand, no pointer reads), warp-safe via normalizeX/normalizeY.
-	int nearestWheatDist(const Map& map, int x, int y, int cap)
+	int nearestFoodSourceDistance(const Map& map, int x, int y, int cap)
 	{
-		for (int r = 0; r <= cap; r++)
-		{
-			if (r == 0)
-			{
-				// Centre tile: radius-0 ring is just (x, y) itself.
-				if (map.getResource(map.normalizeX(x), map.normalizeY(y)).type == WHEAT)
-					return 0;
-				continue;
-			}
-
-			// Iterate the square ring at Chebyshev distance exactly r.
-			// The ring has four sides; adjacent corners are shared — use half-
-			// open intervals to avoid double-counting corners.
-			//
-			// Top row:    y - r,  x in [x-r, x+r)   (left-to-right, right col excluded)
-			// Right col:  x + r,  y in [y-r, y+r)   (top-to-bottom, bottom row excluded)
-			// Bottom row: y + r,  x in (x-r, x+r]   (right-to-left, left col excluded)
-			// Left col:   x - r,  y in (y-r, y+r]   (bottom-to-top, top row excluded)
-
-			// Top row: (x-r .. x+r-1, y-r)
-			for (int dx = -r; dx < r; dx++)
-			{
-				const int nx = map.normalizeX(x + dx);
-				const int ny = map.normalizeY(y - r);
-				if (map.getResource(nx, ny).type == WHEAT)
-					return r;
-			}
-			// Right column: (x+r, y-r .. y+r-1)
-			for (int dy = -r; dy < r; dy++)
-			{
-				const int nx = map.normalizeX(x + r);
-				const int ny = map.normalizeY(y + dy);
-				if (map.getResource(nx, ny).type == WHEAT)
-					return r;
-			}
-			// Bottom row: (x+r .. x-r+1, y+r) — right-to-left
-			for (int dx = r; dx > -r; dx--)
-			{
-				const int nx = map.normalizeX(x + dx);
-				const int ny = map.normalizeY(y + r);
-				if (map.getResource(nx, ny).type == WHEAT)
-					return r;
-			}
-			// Left column: (x-r, y+r .. y-r+1) — bottom-to-top
-			for (int dy = r; dy > -r; dy--)
-			{
-				const int nx = map.normalizeX(x - r);
-				const int ny = map.normalizeY(y + dy);
-				if (map.getResource(nx, ny).type == WHEAT)
-					return r;
-			}
-		}
-		return -1; // no WHEAT within cap tiles
+		return food_queries::nearest(x,y,cap,[&](int px,int py) {
+			return map.isMaterialTakeable(px,py,MaterialId::Food);
+		});
 	}
 
 	// AICortex war-flag offense-target surface.

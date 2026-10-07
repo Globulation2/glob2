@@ -21,7 +21,7 @@
 // (glob2/src/ai/nicowar/Phases.cpp), so the policy never has to reach past this
 // struct into Game*. The field comments name the exact TeamStat / Game source
 // each value mirrors. The cortex-local CORTEX_* size constants mirror the engine
-// constants (NB_UNIT_LEVELS, IntBuildingType::NB_BUILDING, NB_BUILDING_LONG_LEVELS,
+// constants (NB_UNIT_LEVELS, Cortex role count, NB_BUILDING_LONG_LEVELS,
 // Team count); CortexObservation.cpp static_asserts that they stay in sync so
 // this header itself stays free of heavy engine includes.
 //
@@ -50,18 +50,18 @@ namespace Cortex
 	/// signals: maxBuildLevel (== team->maxBuildLevel(), the engine gate on whether
 	/// a building can be upgraded) and upgradableCount[] (per-type count of
 	/// finished instances that pass the full engine Upgradable predicate right now).
-	/// v5 (2026-06-04, wheat-protection increment) added the wheat-sustainability
-	/// signals: wheatOpenMargin (the seeded open-margin N; the wheat executor reads it),
+	/// v5 (2026-06-04, food-protection increment) added the food-sustainability
+	/// signals: wheatOpenMargin (the seeded open-margin N; the food executor reads it),
 	/// wheatProtectAddCount/wheatProtectDelCount (the reconcile diff against the
 	/// team's current forbidden paint), and swarmsProducingExplorer (so the policy
 	/// can revert the early-explorer mix cleanly without reading raw swarm ratios).
-	/// v6 (2026-06-05, closed-loop wheat-economy increment) added the per-building
+	/// v6 (2026-06-05, closed-loop food-economy increment) added the per-building
 	/// economy signals: TrackedBuilding arrays for our swarms (trackedSwarms[]) and
-	/// inns (trackedInns[]) carrying each building's gid, WHEAT buffer, maxWheat,
-	/// maxUnitWorking, occupancy, and nearest-WHEAT distance — the inputs to the
+	/// inns (trackedInns[]) carrying each building's gid, Food buffer, maxWheat,
+	/// maxUnitWorking, occupancy, and nearest-Food distance — the inputs to the
 	/// worker-tuning control loop and the supply-distance expansion gate — plus
-	/// BuildCandidate.wheatDist (a candidate site's distance to the nearest wheat)
-	/// for the min-swarm-spacing / max-wheat-distance placement constraints.
+	/// BuildCandidate.foodSourceDistance (a candidate site's distance to the nearest food)
+	/// for the min-swarm-spacing / max-food-distance placement constraints.
 	/// v7 (2026-06-05, pre-combat panic-defense increment) added the signals the
 	/// economy-phase panic response needs: swarmsProducingWarrior (count of swarms
 	/// already flipped to 100%-warrior production, so the policy knows when the flip
@@ -93,20 +93,20 @@ namespace Cortex
 	/// nonzero, the symmetric peer of swarmsProducingExplorer/Warrior. It lets the
 	/// policy stop minting workers (warriors-and-scout mix) once idle labour piles
 	/// up and resume once it drains, reading the on/off state without raw ratios.
-	/// v12 (2026-06-06, wheat-starved swarm throttle) added
-	/// TrackedBuilding.harvestableWheatNearby — the count of non-forbidden WHEAT tiles
+	/// v12 (2026-06-06, food-starved swarm throttle) added
+	/// TrackedBuilding.harvestableFoodSourcesNearby — the count of non-forbidden Food tiles
 	/// within CORTEX_SWARM_WHEAT_STARVED_RADIUS of a swarm's footprint (filled for
 	/// swarms; -1 for inns / when unknown). The worker-tuning loop caps a swarm at
 	/// CORTEX_SWARM_WHEAT_STARVED_WORKER_CAP workers while this is below
 	/// CORTEX_SWARM_WHEAT_STARVED_TILES — no point staffing more haulers than there is
-	/// reachable wheat to harvest.
-	/// v13 (2026-06-06, inn hauler ceiling = wheat-deficit demand) added
-	/// TrackedBuilding.restockTripsNeeded — for inns, the WHEAT deficit (maxWheat - wheat)
-	/// expressed in hauler TRIPS (deficit / multiplierResource[WHEAT]). Wheat is the feed
+	/// reachable food to harvest.
+	/// v13 (2026-06-06, inn hauler ceiling = food-deficit demand) added
+	/// TrackedBuilding.restockTripsNeeded — for inns, the Food deficit (maxWheat - food)
+	/// expressed in hauler TRIPS (deficit / multiplierResource[Food]). Wheat is the feed
 	/// resource that limits how many units the inn sustains, so the hauler ceiling tracks
-	/// how empty the wheat buffer is; fruit is happiness garnish and is excluded. The
+	/// how empty the food buffer is; fruit is happiness garnish and is excluded. The
 	/// worker-tuning loop sets the inn's maxUnitWorking to this (clamped to [MIN, CAP]),
-	/// EXCEPT when nearestWheatDist puts all wheat beyond CORTEX_INN_WHEAT_STARVED_RADIUS,
+	/// EXCEPT when nearestFoodSourceDistance puts all food beyond CORTEX_INN_WHEAT_STARVED_RADIUS,
 	/// which forces the floor (haulers would have nothing to fetch). It does NOT gate on
 	/// Map::resourceAvailable: that probes the inn's own footprint tile, which the
 	/// resource gradient always marks forbidden, so it zeroed the deficit and pinned
@@ -153,7 +153,9 @@ namespace Cortex
 	/// (forward rally or amphibious landing) so warriors eat forward instead of
 	/// hunger-commuting home across the long march.
 	/// v21 adds effective rule capabilities to observation-only planning state.
-	static const Uint32 OBSERVATION_VERSION = 21;
+	/// v22 projects semantic building roles and independent construction qualification.
+	/// v23 adds policy-only per-class production bindings; model vectors stay unchanged.
+	static const Uint32 OBSERVATION_VERSION = 23;
 	/// Layout version of CortexAction. Bump on any field add/remove/resize.
 	/// v2 (2026-06-02) added ACTION_SET_PRODUCTION + productionRatio[].
 	/// v3 (2026-06-03) added the war-flag action kinds (ACTION_PLACE_WAR_FLAG,
@@ -161,8 +163,8 @@ namespace Cortex
 	/// v4 (2026-06-04) added ACTION_UPGRADE_BUILDING (upgrade an existing finished
 	/// building to its next level via OrderConstruction; reuses buildingType).
 	/// v5 (2026-06-04) added ACTION_PROTECT_WHEAT + wheatOpenMargin (paint the
-	/// checkerboard forbidden pattern over our wheat for sustainability). REMOVED in
-	/// v10 — wheat upkeep moved to a per-cycle parallel pass (see below).
+	/// checkerboard forbidden pattern over our food for sustainability). REMOVED in
+	/// v10 — food upkeep moved to a per-cycle parallel pass (see below).
 	/// v6 (2026-06-05) added ACTION_TUNE_WORKERS + swarmWorkers[]/innWorkers[]:
 	/// the per-tracked-building desired maxUnitWorking (-1 == leave unchanged),
 	/// applied via OrderModifyBuilding with action-layer dedup. Arrays are indexed
@@ -179,10 +181,10 @@ namespace Cortex
 	/// per construction site (trackedSites[]), to pour idle workers into in-progress
 	/// builds. Applied via OrderModifyBuilding with the same per-target dedup.
 	/// v10 (2026-06-06) removed ACTION_PROTECT_WHEAT + the wheatOpenMargin field
-	/// (the v5 additions): wheat-forbidden upkeep no longer competes for the cycle's
+	/// (the v5 additions): food-forbidden upkeep no longer competes for the cycle's
 	/// single action slot. It now runs every decision cycle in parallel with the
-	/// primary action — CortexPolicy::wantWheatProtection decides, AICortex::
-	/// enqueueWheatForbidden paints — reading the open-margin from the AICortex member.
+	/// primary action — CortexPolicy::wantFoodSourceProtection decides, AICortex::
+	/// enqueueFoodSourcesForbidden paints — reading the open-margin from the AICortex member.
 	/// v11 (added CortexAction.minLevelToFlag — per-flag veteran filter for offense/
 	/// defense war flags).
 	/// v12 (2026-06-13) ACTION_CLEAR_FLAGS now stands down ALL offense waves (the offense
@@ -192,7 +194,8 @@ namespace Cortex
 	/// extend the attack-range support envelope toward the front). No field-layout
 	/// change (reuses buildingType); ACTION_PLACE_DEFENSE_FLAG now reconciles the
 	/// whole defenseTargets[] SET (one flag per valid target), not a single flag.
-	static const Uint32 ACTION_VERSION = 13;
+	/// v14 buildingType names a strategic capability role, independent of catalog IDs.
+	static const Uint32 ACTION_VERSION = 14;
 
 	// --- tunable constants + enums: see CortexConstants.h (included above) ---
 
@@ -214,10 +217,10 @@ namespace Cortex
 		Sint32 x;     ///< Map tile x of the building's top-left corner. Valid only if valid==1.
 		Sint32 y;     ///< Map tile y.
 		Sint32 score; ///< Relative placement score; higher is better. Ranking only, not normalized.
-		Sint32 wheatDist; ///< Chebyshev distance from this footprint to the nearest WHEAT tile, or -1 if none within CORTEX_WHEAT_SCAN_CAP. Meaningful for wheat-fed sites (swarm/inn); left -1 for flag targets. Filled by placeCandidates.
+		Sint32 foodSourceDistance; ///< Chebyshev distance from this footprint to the nearest Food tile, or -1 if none within CORTEX_WHEAT_SCAN_CAP. Meaningful for food-fed sites (swarm/inn); left -1 for flag targets. Filled by placeCandidates.
 	};
 
-	/// One of our own existing wheat-fed buildings (a swarm or an inn), projected
+	/// One of our own existing food-fed buildings (a swarm or an inn), projected
 	/// into the observation so the pure policy can run the per-building worker-tuning
 	/// control loop. POD, bounded; gid lets the action layer target an
 	/// OrderModifyBuilding without the policy holding a pointer.
@@ -225,17 +228,17 @@ namespace Cortex
 	{
 		Sint32 valid;          ///< 0 = empty slot.
 		Sint32 gid;            ///< Building::gid (OrderModifyBuilding target), or -1 when invalid.
-		Sint32 wheat;          ///< resources[WHEAT] — the current wheat buffer driving the control loop.
-		Sint32 maxWheat;       ///< type->maxResource[WHEAT] — the buffer ceiling.
+		Sint32 supplyStock;          ///< Stock of the primary configured recipe material driving the control loop.
+		Sint32 supplyCapacity;       ///< Storage ceiling for that same configured material.
 		Sint32 maxUnitWorking; ///< Current maxUnitWorking (worker request); the value the loop nudges +/-1.
 		Sint32 unitsInside;    ///< unitsInside.size() — occupancy (inns: units feeding/queued).
 		Sint32 maxUnitInside;  ///< type->maxUnitInside — occupancy ceiling.
-		Sint32 nearestWheatDist; ///< Chebyshev to the nearest WHEAT tile (supply-distance expansion signal), or -1 if none within CORTEX_WHEAT_SCAN_CAP.
-		Sint32 harvestableWheatNearby; ///< Swarms only: count of non-forbidden WHEAT tiles within CORTEX_SWARM_WHEAT_STARVED_RADIUS of the footprint (the wheat-starved worker-throttle signal). -1 for inns / when unknown (game absent).
-		Sint32 restockTripsNeeded; ///< Inns only: collectable restock demand in hauler trips (Σ over stocked resources of (cap-stock)/multiplier, counting only resources currently reachable/in-sight via Map::resourceAvailable). The inn-hauler ceiling. -1 for swarms / when unknown (game absent).
+		Sint32 nearestFoodSourceDistance; ///< Chebyshev to the nearest Food tile (supply-distance expansion signal), or -1 if none within CORTEX_WHEAT_SCAN_CAP.
+		Sint32 harvestableFoodSourcesNearby; ///< Swarms only: count of non-forbidden Food tiles within CORTEX_SWARM_WHEAT_STARVED_RADIUS of the footprint (the food-starved worker-throttle signal). -1 for inns / when unknown (game absent).
+		Sint32 restockTripsNeeded; ///< Inns only: collectable restock demand in hauler trips (Σ over stocked materials of (cap-stock)/multiplier, counting only materials currently available via Map::materialAvailable). The inn-hauler ceiling. -1 for swarms / when unknown (game absent).
 		Sint32 priority;       ///< Building::priority (-1/0/+1) — lets the policy raise/restore swarm priority for the panic defense.
 		Sint32 ticksSinceFinished; ///< Inns only: ticks since Cortex first saw this inn finished (the post-build tune-cooldown clock); -1 = unknown / not tracked. Stamped by AICortex after observe(); swarms leave it -1.
-		Sint32 diagBlindWheatNearby; ///< DIAGNOSTIC (inns only): forbidden-BLIND WHEAT-tile count within CORTEX_WHEAT_MIN_TILES_RADIUS of the footprint. (diagBlindWheatNearby - harvestableWheatNearby) is the forbidden-but-present wheat — separates checkerboard-forbidding from field depletion at a feedCap blackout. No policy reads it; -1 when unknown. NOT networked (observation is rebuilt each cycle).
+		Sint32 unrestrictedFoodSourcesNearby; ///< DIAGNOSTIC (inns only): forbidden-BLIND Food-tile count within CORTEX_WHEAT_MIN_TILES_RADIUS of the footprint. (unrestrictedFoodSourcesNearby - harvestableFoodSourcesNearby) is the forbidden-but-present food — separates checkerboard-forbidding from field depletion at a feedCap blackout. No policy reads it; -1 when unknown. NOT networked (observation is rebuilt each cycle).
 	};
 
 	/// One of our own CONSTRUCTION SITES (a new build or an in-progress upgrade),
@@ -320,9 +323,20 @@ namespace Cortex
 		Sint32 upgradableCount[CORTEX_BUILDING_TYPES];
 
 		// --- buildings: full per-type, per-long-level histogram ---
-		// Direct mirror of stat->numberBuildingPerTypePerLevel. Read it through
+		// Bounded semantic role histogram; mixed buildings contribute to each supported role. Read it through
 		// the cortex* helpers (finished vs site, by level) below.
 		Sint32 buildingCountPerLevel[CORTEX_BUILDING_TYPES][CORTEX_BUILDING_LONG_LEVELS];
+        // Live model adapter projection: each GID belongs to one dominant role.
+        // Hand-authored policy fixtures may omit it and use the policy histogram.
+        Sint32 hasModelProjection;
+        Sint32 modelBuildingCountPerLevel[CORTEX_BUILDING_TYPES][CORTEX_BUILDING_LONG_LEVELS];
+        Sint32 modelUpgradableTotal;
+        // Runtime policy facts only: not added to either learned-model vector.
+        Sint32 productionMask;
+        Sint32 productionPlannedMask;
+        Sint32 productionMissingMask;
+        Sint32 productionPlacementType;
+        Sint32 productionNeedsRetune;
 
 		// --- candidate build locations, per building type ---
 		// Filled by the placement helper for the building types the AI may build;
@@ -396,19 +410,19 @@ namespace Cortex
 		Sint32 flagPosture;     ///< == AICortex.flagPosture (a CortexFlagPosture).
 		Sint32 offenseHoldUntil;///< == AICortex.offenseHoldUntil (tick the offense hold expires; 0 == none).
 
-		// --- wheat sustainability (v5) ---
+		// --- food sustainability (v5) ---
 		// The open margin N drawn once per game (AICortex, via syncRand) and runtimeed
 		// through the observation so the pure policy reads it like any other feature.
 		// It is the ML seam (a learned policy later OUTPUTS N here instead of runtimeing
-		// the seeded value); the wheat executor reads it each cycle via the AICortex
+		// the seeded value); the food executor reads it each cycle via the AICortex
 		// member to drive the checkerboard scan.
 		Sint32 wheatOpenMargin;
-		// Reconcile diff between the checkerboard we WANT over our wheat right now and
+		// Reconcile diff between the checkerboard we WANT over our food right now and
 		// the team's CURRENT forbidden paint (footprints excluded). Counts-only summary
 		// from a bounded colony-region scan; the full tile masks are rebuilt in the
-		// action layer. CortexPolicy::wantWheatProtection returns true only when either is > 0.
+		// action layer. CortexPolicy::wantFoodSourceProtection returns true only when either is > 0.
 		Sint32 wheatProtectAddCount; ///< tiles to newly forbid (desired - current).
-		Sint32 wheatProtectDelCount; ///< tiles to un-forbid (current - desired: wheat gone/out of view).
+		Sint32 wheatProtectDelCount; ///< tiles to un-forbid (current - desired: food gone/out of view).
 		// Count of FINISHED swarms whose EXPLORER production ratio is nonzero. Lets the
 		// pure policy revert the one-shot early-explorer mix back to workers-only after
 		// the explorer is made, without reading raw per-swarm ratios (which it can't).
@@ -426,11 +440,11 @@ namespace Cortex
 		// per-cycle dedup the explorer slice uses.
 		Sint32 swarmsProducingWorker;
 
-		// --- closed-loop wheat economy (v6) ---
+		// --- closed-loop food economy (v6) ---
 		// Our own FINISHED swarms and inns, one TrackedBuilding each (index-scan
 		// order over team->myBuildings, capped at the array bounds). The pure policy
-		// reads each building's WHEAT buffer + maxUnitWorking to nudge worker counts
-		// (ACTION_TUNE_WORKERS) and its nearestWheatDist to decide expansion. Reading
+		// reads each building's Food buffer + maxUnitWorking to nudge worker counts
+		// (ACTION_TUNE_WORKERS) and its nearestFoodSourceDistance to decide expansion. Reading
 		// our OWN buildings is not a fog cheat. *Count is the number of valid entries.
 		Sint32 swarmCount;
 		TrackedBuilding trackedSwarms[CORTEX_MAX_TRACKED_SWARMS];
@@ -487,7 +501,7 @@ namespace Cortex
 		// attack target, computed ONLY when at least one offense target exists and
 		// NONE is inside the attack range (valid==0 otherwise — including when the
 		// range gate is disabled). A candidate satisfies every normal placement rule
-		// for its type (an inn still needs harvestable wheat at the front) plus the
+		// for its type (an inn still needs harvestable food at the front) plus the
 		// forward constraints: at least CORTEX_FORWARD_MIN_ENEMY_DIST from the target
 		// and close enough that the finished building brings the target in range
 		// (<= range - CORTEX_FORWARD_RANGE_SLACK). *Underway flags: the forward site
@@ -560,8 +574,8 @@ namespace Cortex
 		ACTION_CLEAR_FLAGS,     ///< Stand the offense down: remove ALL offense war flags (OrderDelete each). The defense flag is managed separately.
 		ACTION_UPGRADE_BUILDING,///< Upgrade one finished `buildingType` instance to its next level (engine OrderConstruction). The action layer resolves which instance (the bottleneck-eligible one) and the worker counts.
 		// (Wheat-forbidden paint is NOT an action kind: it runs every cycle in
-		// parallel with the primary action — see CortexPolicy::wantWheatProtection
-		// and AICortex::enqueueWheatForbidden.)
+		// parallel with the primary action — see CortexPolicy::wantFoodSourceProtection
+		// and AICortex::enqueueFoodSourcesForbidden.)
 		ACTION_TUNE_WORKERS,    ///< Set each tracked swarm/inn/site's maxUnitWorking to swarmWorkers[i]/innWorkers[i]/siteWorkers[i] (indexed in lockstep with obs.trackedSwarms[]/trackedInns[]/trackedSites[]); -1 == leave unchanged. The action layer dedups against the building's current maxUnitWorking and emits one OrderModifyBuilding per real change.
 		ACTION_SET_PRIORITY,    ///< Set tracked-swarm engine priority via OrderChangePriority: the FIRST swarm (trackedSwarms[0], the primary/starting swarm) to priorityTarget, every other swarm to priorityRest (-1/0/+1 each). The action layer dedups against each swarm's current Building::priority and emits one order per real change.
 		ACTION_BUILD_FORWARD,   ///< Build buildingType (CORTEX_BUILD_FOOD or CORTEX_BUILD_HEAL) at the observation's forward-base candidate (obs.forwardInn / obs.forwardHeal) to extend the attack-range support envelope toward the front. Appended (never reorder existing kinds).
@@ -576,7 +590,7 @@ namespace Cortex
 	{
 		Uint32 version;      ///< == ACTION_VERSION.
 		Sint32 kind;         ///< A CortexActionKind value.
-		Sint32 buildingType; ///< For ACTION_BUILD: an IntBuildingType::Number in [0, CORTEX_BUILDING_TYPES). Else -1.
+		Sint32 buildingType; ///< For ACTION_BUILD: a Cortex semantic role in [0, CORTEX_BUILDING_TYPES). Else -1.
 		Sint32 locationSlot; ///< For ACTION_BUILD: index in [0, CORTEX_BUILD_CANDIDATES). For ACTION_PLACE_WAR_FLAG: index in [0, CORTEX_FLAG_TARGETS). Else -1.
 		Sint32 productionRatio[CORTEX_UNIT_TYPES]; ///< For ACTION_SET_PRODUCTION: target swarm ratio [WORKER,EXPLORER,WARRIOR], each 0..CORTEX_MAX_RATIO ({0,0,0} = halt). Else all 0.
 		Sint32 flagRadius;   ///< For ACTION_PLACE_*_FLAG: war-flag attraction radius (unitStayRange), clamped to [1, CORTEX_MAX_FLAG_RADIUS]. Else -1.

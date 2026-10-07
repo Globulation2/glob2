@@ -1,0 +1,912 @@
+{
+  "variants": [
+    {
+      "key": "market.0.site",
+      "next": "market.0.finished",
+      "previous": "",
+      "properties": {
+        "decLeft": -1,
+        "decTop": -1,
+        "fillable": 1,
+        "gameSprite": "data/gfx/buildingsite",
+        "gameSpriteImage": 2,
+        "height": 3,
+        "hpInc": 50,
+        "hpInit": 1,
+        "hpMax": 400,
+        "isBuildingSite": 1,
+        "maxMaterial": [
+          4,
+          0,
+          0,
+          4,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "miniSprite": "data/gfx/minibuildingsite",
+        "miniSpriteImage": 2,
+        "shortTypeNum": 12,
+        "type": "market",
+        "width": 3
+      },
+      "requiredExperiment": "",
+      "semantics": {
+        "admittedUnitMask": 7,
+        "ammunitionCost": 1,
+        "ammunitionMaterial": 3,
+        "feeding": {
+          "convertsUnits": false,
+          "cost": {},
+          "duration": 0,
+          "enabled": false,
+          "holdAdmissionUntilExit": false,
+          "optionalFruitMask": 0,
+          "partial": "none",
+          "unitMask": 7
+        },
+        "healing": {
+          "convertsUnits": false,
+          "cost": {},
+          "duration": 0,
+          "enabled": false,
+          "holdAdmissionUntilExit": false,
+          "optionalFruitMask": 0,
+          "partial": "none",
+          "unitMask": 7
+        },
+        "instantPlacement": false,
+        "market": {
+          "fetchesStock": false,
+          "fetchesStockExperiment": "markets-v2",
+          "interTeamFruitExchange": false,
+          "pickupPenalty": 5,
+          "sharedStock": false,
+          "suppliesStock": false,
+          "suppliesStockExperiment": "markets-v2",
+          "suppliesDirectStock": false,
+          "fetchesDirectStock": false,
+          "suppliesStockMaterials": [
+            "wood",
+            "stone"
+          ],
+          "suppliesDirectStockMaterials": [
+            "wood",
+            "stone"
+          ],
+          "fetchesStockMaterials": [
+            "wood",
+            "stone"
+          ],
+          "fetchesDirectStockMaterials": [
+            "wood",
+            "stone"
+          ]
+        },
+        "occupiesGround": true,
+        "placeable": true,
+        "production": {
+          "fallbackUnit": 0,
+          "initialRatios": [
+            1,
+            0,
+            0
+          ],
+          "recipes": {},
+          "scheduling": "weighted_late_choice"
+        },
+        "projectileBuildingDamage": 0,
+        "projectileDamage": [
+          0,
+          0,
+          0
+        ],
+        "regenerationPerTick": 0,
+        "relocatable": false,
+        "repairable": false,
+        "requiredWorkerLevel": 0,
+        "sightSharing": "other",
+        "training": {},
+        "trainingInParallel": false,
+        "workPriorityBias": 1,
+        "assignmentLimit": 20,
+        "constructionCost": {
+          "wood": 4,
+          "stone": 4
+        },
+        "repairCost": {},
+        "replenishMaterials": [
+          "wood",
+          "stone"
+        ]
+      },
+      "presentation": {
+        "displayName": "market",
+        "iconFrame": 11,
+        "iconTile": false,
+        "iconPriority": 100,
+        "skinSlot": "",
+        "showLevel": true,
+        "connectionGroup": "",
+        "connectsAcrossTeams": false,
+        "defaultAssigned": 3
+      }
+    },
+    {
+      "key": "market.0.finished",
+      "next": "market.1.site",
+      "previous": "market.0.site",
+      "properties": {
+        "armor": 6,
+        "decLeft": -1,
+        "decTop": -1,
+        "fillable": 1,
+        "gameSprite": "data/gfx/market0b",
+        "height": 3,
+        "hpInit": 400,
+        "hpMax": 400,
+        "maxMaterial": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          200,
+          200,
+          200,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "miniSprite": "data/gfx/minimarket0b",
+        "shortTypeNum": 12,
+        "type": "market",
+        "width": 3
+      },
+      "requiredExperiment": "",
+      "semantics": {
+        "admittedUnitMask": 7,
+        "ammunitionCost": 1,
+        "ammunitionMaterial": 3,
+        "feeding": {
+          "convertsUnits": false,
+          "cost": {},
+          "duration": 0,
+          "enabled": false,
+          "holdAdmissionUntilExit": false,
+          "optionalFruitMask": 0,
+          "partial": "none",
+          "unitMask": 7
+        },
+        "healing": {
+          "convertsUnits": false,
+          "cost": {},
+          "duration": 0,
+          "enabled": false,
+          "holdAdmissionUntilExit": false,
+          "optionalFruitMask": 0,
+          "partial": "none",
+          "unitMask": 7
+        },
+        "instantPlacement": false,
+        "market": {
+          "fetchesStock": false,
+          "fetchesStockExperiment": "markets-v2",
+          "interTeamFruitExchange": true,
+          "pickupPenalty": 5,
+          "sharedStock": true,
+          "suppliesStock": true,
+          "suppliesStockExperiment": "markets-v2",
+          "suppliesDirectStock": true,
+          "fetchesDirectStock": false,
+          "suppliesStockMaterials": [
+            "cherries",
+            "oranges",
+            "prunes"
+          ],
+          "suppliesDirectStockMaterials": [
+            "cherries",
+            "oranges",
+            "prunes"
+          ],
+          "fetchesStockMaterials": [
+            "cherries",
+            "oranges",
+            "prunes"
+          ],
+          "fetchesDirectStockMaterials": [
+            "cherries",
+            "oranges",
+            "prunes"
+          ]
+        },
+        "occupiesGround": true,
+        "placeable": false,
+        "production": {
+          "fallbackUnit": 0,
+          "initialRatios": [
+            1,
+            0,
+            0
+          ],
+          "recipes": {},
+          "scheduling": "weighted_late_choice"
+        },
+        "projectileBuildingDamage": 0,
+        "projectileDamage": [
+          0,
+          0,
+          0
+        ],
+        "regenerationPerTick": 0,
+        "relocatable": false,
+        "repairable": true,
+        "requiredWorkerLevel": 0,
+        "sightSharing": "exchange",
+        "training": {},
+        "trainingInParallel": false,
+        "workPriorityBias": 1,
+        "assignmentLimit": 20,
+        "constructionCost": {},
+        "repairCost": {
+          "wood": 4,
+          "stone": 4
+        },
+        "replenishMaterials": [
+          "cherries",
+          "oranges",
+          "prunes"
+        ]
+      },
+      "presentation": {
+        "displayName": "market",
+        "iconFrame": 11,
+        "iconTile": false,
+        "iconPriority": 100,
+        "skinSlot": "",
+        "showLevel": true,
+        "connectionGroup": "",
+        "connectsAcrossTeams": false,
+        "defaultAssigned": 3
+      }
+    },
+    {
+      "key": "market.1.site",
+      "next": "market.1.finished",
+      "previous": "market.0.finished",
+      "properties": {
+        "armor": 6,
+        "decLeft": -1,
+        "decTop": -1,
+        "fillable": 1,
+        "gameSprite": "data/gfx/buildingsite",
+        "gameSpriteImage": 2,
+        "height": 3,
+        "hpInc": 10,
+        "hpInit": 400,
+        "hpMax": 600,
+        "isBuildingSite": 1,
+        "level": 1,
+        "maxMaterial": [
+          6,
+          0,
+          0,
+          6,
+          4,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "miniSprite": "data/gfx/minibuildingsite",
+        "miniSpriteImage": 2,
+        "shortTypeNum": 12,
+        "type": "market",
+        "width": 3
+      },
+      "requiredExperiment": "markets-v2",
+      "semantics": {
+        "admittedUnitMask": 7,
+        "ammunitionCost": 1,
+        "ammunitionMaterial": 3,
+        "feeding": {
+          "convertsUnits": false,
+          "cost": {},
+          "duration": 0,
+          "enabled": false,
+          "holdAdmissionUntilExit": false,
+          "optionalFruitMask": 0,
+          "partial": "none",
+          "unitMask": 7
+        },
+        "healing": {
+          "convertsUnits": false,
+          "cost": {},
+          "duration": 0,
+          "enabled": false,
+          "holdAdmissionUntilExit": false,
+          "optionalFruitMask": 0,
+          "partial": "none",
+          "unitMask": 7
+        },
+        "instantPlacement": false,
+        "market": {
+          "fetchesStock": false,
+          "fetchesStockExperiment": "markets-v2",
+          "interTeamFruitExchange": false,
+          "pickupPenalty": 5,
+          "sharedStock": false,
+          "suppliesStock": false,
+          "suppliesStockExperiment": "markets-v2",
+          "suppliesDirectStock": false,
+          "fetchesDirectStock": false,
+          "suppliesStockMaterials": [
+            "wood",
+            "stone",
+            "algae"
+          ],
+          "suppliesDirectStockMaterials": [
+            "wood",
+            "stone",
+            "algae"
+          ],
+          "fetchesStockMaterials": [
+            "wood",
+            "stone",
+            "algae"
+          ],
+          "fetchesDirectStockMaterials": [
+            "wood",
+            "stone",
+            "algae"
+          ]
+        },
+        "occupiesGround": true,
+        "placeable": false,
+        "production": {
+          "fallbackUnit": 0,
+          "initialRatios": [
+            1,
+            0,
+            0
+          ],
+          "recipes": {},
+          "scheduling": "weighted_late_choice"
+        },
+        "projectileBuildingDamage": 0,
+        "projectileDamage": [
+          0,
+          0,
+          0
+        ],
+        "regenerationPerTick": 0,
+        "relocatable": false,
+        "repairable": false,
+        "requiredWorkerLevel": 1,
+        "sightSharing": "other",
+        "training": {},
+        "trainingInParallel": false,
+        "workPriorityBias": 11,
+        "assignmentLimit": 20,
+        "constructionCost": {
+          "wood": 6,
+          "stone": 6,
+          "algae": 4
+        },
+        "repairCost": {},
+        "replenishMaterials": [
+          "wood",
+          "stone",
+          "algae"
+        ]
+      },
+      "presentation": {
+        "displayName": "market",
+        "iconFrame": 11,
+        "iconTile": false,
+        "iconPriority": 100,
+        "skinSlot": "",
+        "showLevel": true,
+        "connectionGroup": "",
+        "connectsAcrossTeams": false,
+        "defaultAssigned": 0
+      }
+    },
+    {
+      "key": "market.1.finished",
+      "next": "market.2.site",
+      "previous": "market.1.site",
+      "properties": {
+        "armor": 8,
+        "decLeft": -1,
+        "decTop": -1,
+        "fillable": 1,
+        "gameSprite": "data/gfx/market0b",
+        "height": 3,
+        "hpInit": 600,
+        "hpMax": 600,
+        "level": 1,
+        "maxMaterial": [
+          200,
+          200,
+          0,
+          0,
+          0,
+          200,
+          200,
+          200,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "miniSprite": "data/gfx/minimarket0b",
+        "shortTypeNum": 12,
+        "type": "market",
+        "width": 3
+      },
+      "requiredExperiment": "markets-v2",
+      "semantics": {
+        "admittedUnitMask": 7,
+        "ammunitionCost": 1,
+        "ammunitionMaterial": 3,
+        "feeding": {
+          "convertsUnits": false,
+          "cost": {},
+          "duration": 0,
+          "enabled": false,
+          "holdAdmissionUntilExit": false,
+          "optionalFruitMask": 0,
+          "partial": "none",
+          "unitMask": 7
+        },
+        "healing": {
+          "convertsUnits": false,
+          "cost": {},
+          "duration": 0,
+          "enabled": false,
+          "holdAdmissionUntilExit": false,
+          "optionalFruitMask": 0,
+          "partial": "none",
+          "unitMask": 7
+        },
+        "instantPlacement": false,
+        "market": {
+          "fetchesStock": false,
+          "fetchesStockExperiment": "markets-v2",
+          "interTeamFruitExchange": true,
+          "pickupPenalty": 5,
+          "sharedStock": true,
+          "suppliesStock": true,
+          "suppliesStockExperiment": "markets-v2",
+          "suppliesDirectStock": true,
+          "fetchesDirectStock": false,
+          "suppliesStockMaterials": [
+            "wood",
+            "food",
+            "cherries",
+            "oranges",
+            "prunes"
+          ],
+          "suppliesDirectStockMaterials": [
+            "wood",
+            "food",
+            "cherries",
+            "oranges",
+            "prunes"
+          ],
+          "fetchesStockMaterials": [
+            "wood",
+            "food",
+            "cherries",
+            "oranges",
+            "prunes"
+          ],
+          "fetchesDirectStockMaterials": [
+            "wood",
+            "food",
+            "cherries",
+            "oranges",
+            "prunes"
+          ]
+        },
+        "occupiesGround": true,
+        "placeable": false,
+        "production": {
+          "fallbackUnit": 0,
+          "initialRatios": [
+            1,
+            0,
+            0
+          ],
+          "recipes": {},
+          "scheduling": "weighted_late_choice"
+        },
+        "projectileBuildingDamage": 0,
+        "projectileDamage": [
+          0,
+          0,
+          0
+        ],
+        "regenerationPerTick": 0,
+        "relocatable": false,
+        "repairable": true,
+        "requiredWorkerLevel": 1,
+        "sightSharing": "exchange",
+        "training": {},
+        "trainingInParallel": false,
+        "workPriorityBias": 11,
+        "assignmentLimit": 20,
+        "constructionCost": {},
+        "repairCost": {
+          "wood": 6,
+          "stone": 6,
+          "algae": 4
+        },
+        "replenishMaterials": [
+          "wood",
+          "food",
+          "cherries",
+          "oranges",
+          "prunes"
+        ]
+      },
+      "presentation": {
+        "displayName": "market",
+        "iconFrame": 11,
+        "iconTile": false,
+        "iconPriority": 100,
+        "skinSlot": "",
+        "showLevel": true,
+        "connectionGroup": "",
+        "connectsAcrossTeams": false,
+        "defaultAssigned": 0
+      }
+    },
+    {
+      "key": "market.2.site",
+      "next": "market.2.finished",
+      "previous": "market.1.finished",
+      "properties": {
+        "armor": 8,
+        "decLeft": -1,
+        "decTop": -1,
+        "fillable": 1,
+        "gameSprite": "data/gfx/buildingsite",
+        "gameSpriteImage": 2,
+        "height": 3,
+        "hpInc": 10,
+        "hpInit": 600,
+        "hpMax": 800,
+        "isBuildingSite": 1,
+        "level": 2,
+        "maxMaterial": [
+          8,
+          0,
+          4,
+          8,
+          8,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "miniSprite": "data/gfx/minibuildingsite",
+        "miniSpriteImage": 2,
+        "shortTypeNum": 12,
+        "type": "market",
+        "width": 3
+      },
+      "requiredExperiment": "markets-v2",
+      "semantics": {
+        "admittedUnitMask": 7,
+        "ammunitionCost": 1,
+        "ammunitionMaterial": 3,
+        "feeding": {
+          "convertsUnits": false,
+          "cost": {},
+          "duration": 0,
+          "enabled": false,
+          "holdAdmissionUntilExit": false,
+          "optionalFruitMask": 0,
+          "partial": "none",
+          "unitMask": 7
+        },
+        "healing": {
+          "convertsUnits": false,
+          "cost": {},
+          "duration": 0,
+          "enabled": false,
+          "holdAdmissionUntilExit": false,
+          "optionalFruitMask": 0,
+          "partial": "none",
+          "unitMask": 7
+        },
+        "instantPlacement": false,
+        "market": {
+          "fetchesStock": false,
+          "fetchesStockExperiment": "markets-v2",
+          "interTeamFruitExchange": false,
+          "pickupPenalty": 5,
+          "sharedStock": false,
+          "suppliesStock": false,
+          "suppliesStockExperiment": "markets-v2",
+          "suppliesDirectStock": false,
+          "fetchesDirectStock": false,
+          "suppliesStockMaterials": [
+            "wood",
+            "paper",
+            "stone",
+            "algae"
+          ],
+          "suppliesDirectStockMaterials": [
+            "wood",
+            "paper",
+            "stone",
+            "algae"
+          ],
+          "fetchesStockMaterials": [
+            "wood",
+            "paper",
+            "stone",
+            "algae"
+          ],
+          "fetchesDirectStockMaterials": [
+            "wood",
+            "paper",
+            "stone",
+            "algae"
+          ]
+        },
+        "occupiesGround": true,
+        "placeable": false,
+        "production": {
+          "fallbackUnit": 0,
+          "initialRatios": [
+            1,
+            0,
+            0
+          ],
+          "recipes": {},
+          "scheduling": "weighted_late_choice"
+        },
+        "projectileBuildingDamage": 0,
+        "projectileDamage": [
+          0,
+          0,
+          0
+        ],
+        "regenerationPerTick": 0,
+        "relocatable": false,
+        "repairable": false,
+        "requiredWorkerLevel": 2,
+        "sightSharing": "other",
+        "training": {},
+        "trainingInParallel": false,
+        "workPriorityBias": 21,
+        "assignmentLimit": 20,
+        "constructionCost": {
+          "wood": 8,
+          "paper": 4,
+          "stone": 8,
+          "algae": 8
+        },
+        "repairCost": {},
+        "replenishMaterials": [
+          "wood",
+          "paper",
+          "stone",
+          "algae"
+        ]
+      },
+      "presentation": {
+        "displayName": "market",
+        "iconFrame": 11,
+        "iconTile": false,
+        "iconPriority": 100,
+        "skinSlot": "",
+        "showLevel": true,
+        "connectionGroup": "",
+        "connectsAcrossTeams": false,
+        "defaultAssigned": 0
+      }
+    },
+    {
+      "key": "market.2.finished",
+      "next": "",
+      "previous": "market.2.site",
+      "properties": {
+        "armor": 10,
+        "decLeft": -1,
+        "decTop": -1,
+        "fillable": 1,
+        "gameSprite": "data/gfx/market0b",
+        "height": 3,
+        "hpInit": 800,
+        "hpMax": 800,
+        "level": 2,
+        "maxMaterial": [
+          200,
+          200,
+          200,
+          200,
+          200,
+          200,
+          200,
+          200,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "miniSprite": "data/gfx/minimarket0b",
+        "shortTypeNum": 12,
+        "type": "market",
+        "width": 3
+      },
+      "requiredExperiment": "markets-v2",
+      "semantics": {
+        "admittedUnitMask": 7,
+        "ammunitionCost": 1,
+        "ammunitionMaterial": 3,
+        "feeding": {
+          "convertsUnits": false,
+          "cost": {},
+          "duration": 0,
+          "enabled": false,
+          "holdAdmissionUntilExit": false,
+          "optionalFruitMask": 0,
+          "partial": "none",
+          "unitMask": 7
+        },
+        "healing": {
+          "convertsUnits": false,
+          "cost": {},
+          "duration": 0,
+          "enabled": false,
+          "holdAdmissionUntilExit": false,
+          "optionalFruitMask": 0,
+          "partial": "none",
+          "unitMask": 7
+        },
+        "instantPlacement": false,
+        "market": {
+          "fetchesStock": false,
+          "fetchesStockExperiment": "markets-v2",
+          "interTeamFruitExchange": true,
+          "pickupPenalty": 5,
+          "sharedStock": true,
+          "suppliesStock": true,
+          "suppliesStockExperiment": "markets-v2",
+          "suppliesDirectStock": true,
+          "fetchesDirectStock": false,
+          "suppliesStockMaterials": [
+            "wood",
+            "food",
+            "paper",
+            "stone",
+            "algae",
+            "cherries",
+            "oranges",
+            "prunes"
+          ],
+          "suppliesDirectStockMaterials": [
+            "wood",
+            "food",
+            "paper",
+            "stone",
+            "algae",
+            "cherries",
+            "oranges",
+            "prunes"
+          ],
+          "fetchesStockMaterials": [
+            "wood",
+            "food",
+            "paper",
+            "stone",
+            "algae",
+            "cherries",
+            "oranges",
+            "prunes"
+          ],
+          "fetchesDirectStockMaterials": [
+            "wood",
+            "food",
+            "paper",
+            "stone",
+            "algae",
+            "cherries",
+            "oranges",
+            "prunes"
+          ]
+        },
+        "occupiesGround": true,
+        "placeable": false,
+        "production": {
+          "fallbackUnit": 0,
+          "initialRatios": [
+            1,
+            0,
+            0
+          ],
+          "recipes": {},
+          "scheduling": "weighted_late_choice"
+        },
+        "projectileBuildingDamage": 0,
+        "projectileDamage": [
+          0,
+          0,
+          0
+        ],
+        "regenerationPerTick": 0,
+        "relocatable": false,
+        "repairable": true,
+        "requiredWorkerLevel": 2,
+        "sightSharing": "exchange",
+        "training": {},
+        "trainingInParallel": false,
+        "workPriorityBias": 21,
+        "assignmentLimit": 20,
+        "constructionCost": {},
+        "repairCost": {
+          "wood": 8,
+          "paper": 4,
+          "stone": 8,
+          "algae": 8
+        },
+        "replenishMaterials": [
+          "wood",
+          "food",
+          "paper",
+          "stone",
+          "algae",
+          "cherries",
+          "oranges",
+          "prunes"
+        ]
+      },
+      "presentation": {
+        "displayName": "market",
+        "iconFrame": 11,
+        "iconTile": false,
+        "iconPriority": 100,
+        "skinSlot": "",
+        "showLevel": true,
+        "connectionGroup": "",
+        "connectsAcrossTeams": false,
+        "defaultAssigned": 0
+      }
+    }
+  ]
+}

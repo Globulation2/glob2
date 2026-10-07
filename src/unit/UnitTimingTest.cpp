@@ -64,3 +64,15 @@ TEST_CASE("terrain travel speed uses deterministic bounded Q8 factors")
     CHECK_EQ(unitTerrainMovementSpeed(32,128,false),32);
     CHECK(unitActionStepSpeed(unitTerrainMovementSpeed(1,64),WALK,1,1)>0);
 }
+
+
+TEST_CASE("inside service phase advances stay within one action per tick")
+{
+    CHECK(unitActionStepSpeed(1,WALK,1,1,true)==1);
+    CHECK(unitActionStepSpeed(12,WALK,1,0,true)==12);
+    CHECK(unitActionStepSpeed(12,WALK,1,1,true)==8);
+    CHECK(unitActionStepSpeed(256,STOP_WALK,0,0,true)==256);
+    CHECK(unitActionStepSpeed(2400,STOP_WALK,0,0,true)==256);
+    CHECK(unitActionStepSpeed(51200,WALK,1,1,true)==256);
+    CHECK(unitActionStepSpeed(2400,STOP_WALK,0,0)==2400);
+}

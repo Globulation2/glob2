@@ -1,0 +1,783 @@
+{
+  "variants": [
+    {
+      "key": "barracks.0.site",
+      "next": "barracks.0.finished",
+      "previous": "",
+      "properties": {
+        "decLeft": -2,
+        "decTop": -2,
+        "fillable": 1,
+        "gameSprite": "data/gfx/buildingsite",
+        "gameSpriteImage": 3,
+        "height": 4,
+        "hpInc": 63,
+        "hpInit": 1,
+        "hpMax": 440,
+        "isBuildingSite": 1,
+        "maxMaterial": [
+          7,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "miniSprite": "data/gfx/minibuildingsite",
+        "miniSpriteImage": 3,
+        "shortTypeNum": 5,
+        "type": "barracks",
+        "width": 4
+      },
+      "requiredExperiment": "",
+      "semantics": {
+        "admittedUnitMask": 7,
+        "ammunitionCost": 1,
+        "ammunitionMaterial": 3,
+        "feeding": {
+          "convertsUnits": false,
+          "cost": {},
+          "duration": 0,
+          "enabled": false,
+          "holdAdmissionUntilExit": false,
+          "optionalFruitMask": 0,
+          "partial": "none",
+          "unitMask": 7
+        },
+        "healing": {
+          "convertsUnits": false,
+          "cost": {},
+          "duration": 0,
+          "enabled": false,
+          "holdAdmissionUntilExit": false,
+          "optionalFruitMask": 0,
+          "partial": "none",
+          "unitMask": 7
+        },
+        "instantPlacement": false,
+        "market": {
+          "fetchesStock": true,
+          "fetchesStockExperiment": "markets-v2",
+          "interTeamFruitExchange": false,
+          "pickupPenalty": 5,
+          "sharedStock": false,
+          "suppliesStock": false,
+          "suppliesStockExperiment": "markets-v2",
+          "suppliesDirectStock": false,
+          "fetchesDirectStock": false,
+          "suppliesStockMaterials": [
+            "wood"
+          ],
+          "suppliesDirectStockMaterials": [
+            "wood"
+          ],
+          "fetchesStockMaterials": [
+            "wood"
+          ],
+          "fetchesDirectStockMaterials": [
+            "wood"
+          ]
+        },
+        "occupiesGround": true,
+        "placeable": true,
+        "production": {
+          "fallbackUnit": 0,
+          "initialRatios": [
+            1,
+            0,
+            0
+          ],
+          "recipes": {},
+          "scheduling": "weighted_late_choice"
+        },
+        "projectileBuildingDamage": 0,
+        "projectileDamage": [
+          0,
+          0,
+          0
+        ],
+        "regenerationPerTick": 0,
+        "relocatable": false,
+        "repairable": false,
+        "requiredWorkerLevel": 0,
+        "sightSharing": "other",
+        "training": {},
+        "trainingInParallel": false,
+        "workPriorityBias": 1,
+        "assignmentLimit": 20,
+        "constructionCost": {
+          "wood": 7
+        },
+        "repairCost": {},
+        "replenishMaterials": [
+          "wood"
+        ]
+      },
+      "presentation": {
+        "displayName": "barracks",
+        "iconFrame": 5,
+        "iconTile": false,
+        "iconPriority": 100,
+        "skinSlot": "",
+        "showLevel": true,
+        "connectionGroup": "",
+        "connectsAcrossTeams": false,
+        "defaultAssigned": 3
+      }
+    },
+    {
+      "key": "barracks.0.finished",
+      "next": "barracks.1.site",
+      "previous": "barracks.0.site",
+      "properties": {
+        "armor": 5,
+        "decLeft": -2,
+        "decTop": -2,
+        "gameSprite": "data/gfx/barracks0b",
+        "height": 4,
+        "hpInit": 440,
+        "hpMax": 440,
+        "maxUnitInside": 2,
+        "miniSprite": "data/gfx/minibarracks0b",
+        "shortTypeNum": 5,
+        "type": "barracks",
+        "width": 4
+      },
+      "requiredExperiment": "",
+      "semantics": {
+        "admittedUnitMask": 7,
+        "ammunitionCost": 1,
+        "ammunitionMaterial": 3,
+        "feeding": {
+          "convertsUnits": false,
+          "cost": {},
+          "duration": 0,
+          "enabled": false,
+          "holdAdmissionUntilExit": false,
+          "optionalFruitMask": 0,
+          "partial": "none",
+          "unitMask": 7
+        },
+        "healing": {
+          "convertsUnits": false,
+          "cost": {},
+          "duration": 0,
+          "enabled": false,
+          "holdAdmissionUntilExit": false,
+          "optionalFruitMask": 0,
+          "partial": "none",
+          "unitMask": 7
+        },
+        "instantPlacement": false,
+        "market": {
+          "fetchesStock": true,
+          "fetchesStockExperiment": "markets-v2",
+          "interTeamFruitExchange": false,
+          "pickupPenalty": 5,
+          "sharedStock": false,
+          "suppliesStock": false,
+          "suppliesStockExperiment": "markets-v2",
+          "suppliesDirectStock": false,
+          "fetchesDirectStock": false,
+          "suppliesStockMaterials": [],
+          "suppliesDirectStockMaterials": [],
+          "fetchesStockMaterials": [],
+          "fetchesDirectStockMaterials": []
+        },
+        "occupiesGround": true,
+        "placeable": false,
+        "production": {
+          "fallbackUnit": 0,
+          "initialRatios": [
+            1,
+            0,
+            0
+          ],
+          "recipes": {},
+          "scheduling": "weighted_late_choice"
+        },
+        "projectileBuildingDamage": 0,
+        "projectileDamage": [
+          0,
+          0,
+          0
+        ],
+        "regenerationPerTick": 0,
+        "relocatable": false,
+        "repairable": true,
+        "requiredWorkerLevel": 0,
+        "sightSharing": "other",
+        "training": {
+          "attackSpeed": {
+            "cost": {},
+            "duration": 21,
+            "enabled": true,
+            "targetLevel": 1,
+            "unitMask": 7
+          },
+          "attackStrength": {
+            "cost": {},
+            "duration": 21,
+            "enabled": true,
+            "targetLevel": 1,
+            "unitMask": 7
+          }
+        },
+        "trainingInParallel": true,
+        "workPriorityBias": 1,
+        "assignmentLimit": 0,
+        "constructionCost": {},
+        "repairCost": {
+          "wood": 7
+        },
+        "replenishMaterials": []
+      },
+      "presentation": {
+        "displayName": "barracks",
+        "iconFrame": 5,
+        "iconTile": false,
+        "iconPriority": 100,
+        "skinSlot": "",
+        "showLevel": true,
+        "connectionGroup": "",
+        "connectsAcrossTeams": false,
+        "defaultAssigned": 0
+      }
+    },
+    {
+      "key": "barracks.1.site",
+      "next": "barracks.1.finished",
+      "previous": "barracks.0.finished",
+      "properties": {
+        "armor": 5,
+        "decLeft": -2,
+        "decTop": -2,
+        "fillable": 1,
+        "gameSprite": "data/gfx/buildingsite",
+        "gameSpriteImage": 3,
+        "height": 4,
+        "hpInc": 28,
+        "hpInit": 440,
+        "hpMax": 800,
+        "isBuildingSite": 1,
+        "level": 1,
+        "maxMaterial": [
+          3,
+          0,
+          0,
+          10,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "miniSprite": "data/gfx/minibuildingsite",
+        "miniSpriteImage": 3,
+        "shortTypeNum": 5,
+        "type": "barracks",
+        "width": 4
+      },
+      "requiredExperiment": "",
+      "semantics": {
+        "admittedUnitMask": 7,
+        "ammunitionCost": 1,
+        "ammunitionMaterial": 3,
+        "feeding": {
+          "convertsUnits": false,
+          "cost": {},
+          "duration": 0,
+          "enabled": false,
+          "holdAdmissionUntilExit": false,
+          "optionalFruitMask": 0,
+          "partial": "none",
+          "unitMask": 7
+        },
+        "healing": {
+          "convertsUnits": false,
+          "cost": {},
+          "duration": 0,
+          "enabled": false,
+          "holdAdmissionUntilExit": false,
+          "optionalFruitMask": 0,
+          "partial": "none",
+          "unitMask": 7
+        },
+        "instantPlacement": false,
+        "market": {
+          "fetchesStock": true,
+          "fetchesStockExperiment": "markets-v2",
+          "interTeamFruitExchange": false,
+          "pickupPenalty": 5,
+          "sharedStock": false,
+          "suppliesStock": false,
+          "suppliesStockExperiment": "markets-v2",
+          "suppliesDirectStock": false,
+          "fetchesDirectStock": false,
+          "suppliesStockMaterials": [
+            "wood",
+            "stone"
+          ],
+          "suppliesDirectStockMaterials": [
+            "wood",
+            "stone"
+          ],
+          "fetchesStockMaterials": [
+            "wood",
+            "stone"
+          ],
+          "fetchesDirectStockMaterials": [
+            "wood",
+            "stone"
+          ]
+        },
+        "occupiesGround": true,
+        "placeable": false,
+        "production": {
+          "fallbackUnit": 0,
+          "initialRatios": [
+            1,
+            0,
+            0
+          ],
+          "recipes": {},
+          "scheduling": "weighted_late_choice"
+        },
+        "projectileBuildingDamage": 0,
+        "projectileDamage": [
+          0,
+          0,
+          0
+        ],
+        "regenerationPerTick": 0,
+        "relocatable": false,
+        "repairable": false,
+        "requiredWorkerLevel": 1,
+        "sightSharing": "other",
+        "training": {},
+        "trainingInParallel": false,
+        "workPriorityBias": 11,
+        "assignmentLimit": 20,
+        "constructionCost": {
+          "wood": 3,
+          "stone": 10
+        },
+        "repairCost": {},
+        "replenishMaterials": [
+          "wood",
+          "stone"
+        ]
+      },
+      "presentation": {
+        "displayName": "barracks",
+        "iconFrame": 5,
+        "iconTile": false,
+        "iconPriority": 100,
+        "skinSlot": "",
+        "showLevel": true,
+        "connectionGroup": "",
+        "connectsAcrossTeams": false,
+        "defaultAssigned": 6
+      }
+    },
+    {
+      "key": "barracks.1.finished",
+      "next": "barracks.2.site",
+      "previous": "barracks.1.site",
+      "properties": {
+        "armor": 10,
+        "decLeft": -2,
+        "decTop": -2,
+        "gameSprite": "data/gfx/barracks1b",
+        "height": 4,
+        "hpInit": 800,
+        "hpMax": 800,
+        "level": 1,
+        "maxUnitInside": 4,
+        "miniSprite": "data/gfx/minibarracks1b",
+        "shortTypeNum": 5,
+        "type": "barracks",
+        "width": 4
+      },
+      "requiredExperiment": "",
+      "semantics": {
+        "admittedUnitMask": 7,
+        "ammunitionCost": 1,
+        "ammunitionMaterial": 3,
+        "feeding": {
+          "convertsUnits": false,
+          "cost": {},
+          "duration": 0,
+          "enabled": false,
+          "holdAdmissionUntilExit": false,
+          "optionalFruitMask": 0,
+          "partial": "none",
+          "unitMask": 7
+        },
+        "healing": {
+          "convertsUnits": false,
+          "cost": {},
+          "duration": 0,
+          "enabled": false,
+          "holdAdmissionUntilExit": false,
+          "optionalFruitMask": 0,
+          "partial": "none",
+          "unitMask": 7
+        },
+        "instantPlacement": false,
+        "market": {
+          "fetchesStock": true,
+          "fetchesStockExperiment": "markets-v2",
+          "interTeamFruitExchange": false,
+          "pickupPenalty": 5,
+          "sharedStock": false,
+          "suppliesStock": false,
+          "suppliesStockExperiment": "markets-v2",
+          "suppliesDirectStock": false,
+          "fetchesDirectStock": false,
+          "suppliesStockMaterials": [],
+          "suppliesDirectStockMaterials": [],
+          "fetchesStockMaterials": [],
+          "fetchesDirectStockMaterials": []
+        },
+        "occupiesGround": true,
+        "placeable": false,
+        "production": {
+          "fallbackUnit": 0,
+          "initialRatios": [
+            1,
+            0,
+            0
+          ],
+          "recipes": {},
+          "scheduling": "weighted_late_choice"
+        },
+        "projectileBuildingDamage": 0,
+        "projectileDamage": [
+          0,
+          0,
+          0
+        ],
+        "regenerationPerTick": 0,
+        "relocatable": false,
+        "repairable": true,
+        "requiredWorkerLevel": 1,
+        "sightSharing": "other",
+        "training": {
+          "attackSpeed": {
+            "cost": {},
+            "duration": 30,
+            "enabled": true,
+            "targetLevel": 2,
+            "unitMask": 7
+          },
+          "attackStrength": {
+            "cost": {},
+            "duration": 30,
+            "enabled": true,
+            "targetLevel": 2,
+            "unitMask": 7
+          }
+        },
+        "trainingInParallel": true,
+        "workPriorityBias": 11,
+        "assignmentLimit": 0,
+        "constructionCost": {},
+        "repairCost": {
+          "wood": 3,
+          "stone": 10
+        },
+        "replenishMaterials": []
+      },
+      "presentation": {
+        "displayName": "barracks",
+        "iconFrame": 5,
+        "iconTile": false,
+        "iconPriority": 100,
+        "skinSlot": "",
+        "showLevel": true,
+        "connectionGroup": "",
+        "connectsAcrossTeams": false,
+        "defaultAssigned": 0
+      }
+    },
+    {
+      "key": "barracks.2.site",
+      "next": "barracks.2.finished",
+      "previous": "barracks.1.finished",
+      "properties": {
+        "armor": 10,
+        "decLeft": -2,
+        "decTop": -2,
+        "fillable": 1,
+        "gameSprite": "data/gfx/buildingsite",
+        "gameSpriteImage": 3,
+        "height": 4,
+        "hpInc": 25,
+        "hpInit": 800,
+        "hpMax": 1300,
+        "isBuildingSite": 1,
+        "level": 2,
+        "maxMaterial": [
+          10,
+          0,
+          0,
+          10,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "miniSprite": "data/gfx/minibuildingsite",
+        "miniSpriteImage": 3,
+        "shortTypeNum": 5,
+        "type": "barracks",
+        "width": 4
+      },
+      "requiredExperiment": "",
+      "semantics": {
+        "admittedUnitMask": 7,
+        "ammunitionCost": 1,
+        "ammunitionMaterial": 3,
+        "feeding": {
+          "convertsUnits": false,
+          "cost": {},
+          "duration": 0,
+          "enabled": false,
+          "holdAdmissionUntilExit": false,
+          "optionalFruitMask": 0,
+          "partial": "none",
+          "unitMask": 7
+        },
+        "healing": {
+          "convertsUnits": false,
+          "cost": {},
+          "duration": 0,
+          "enabled": false,
+          "holdAdmissionUntilExit": false,
+          "optionalFruitMask": 0,
+          "partial": "none",
+          "unitMask": 7
+        },
+        "instantPlacement": false,
+        "market": {
+          "fetchesStock": true,
+          "fetchesStockExperiment": "markets-v2",
+          "interTeamFruitExchange": false,
+          "pickupPenalty": 5,
+          "sharedStock": false,
+          "suppliesStock": false,
+          "suppliesStockExperiment": "markets-v2",
+          "suppliesDirectStock": false,
+          "fetchesDirectStock": false,
+          "suppliesStockMaterials": [
+            "wood",
+            "stone"
+          ],
+          "suppliesDirectStockMaterials": [
+            "wood",
+            "stone"
+          ],
+          "fetchesStockMaterials": [
+            "wood",
+            "stone"
+          ],
+          "fetchesDirectStockMaterials": [
+            "wood",
+            "stone"
+          ]
+        },
+        "occupiesGround": true,
+        "placeable": false,
+        "production": {
+          "fallbackUnit": 0,
+          "initialRatios": [
+            1,
+            0,
+            0
+          ],
+          "recipes": {},
+          "scheduling": "weighted_late_choice"
+        },
+        "projectileBuildingDamage": 0,
+        "projectileDamage": [
+          0,
+          0,
+          0
+        ],
+        "regenerationPerTick": 0,
+        "relocatable": false,
+        "repairable": false,
+        "requiredWorkerLevel": 2,
+        "sightSharing": "other",
+        "training": {},
+        "trainingInParallel": false,
+        "workPriorityBias": 21,
+        "assignmentLimit": 20,
+        "constructionCost": {
+          "wood": 10,
+          "stone": 10
+        },
+        "repairCost": {},
+        "replenishMaterials": [
+          "wood",
+          "stone"
+        ]
+      },
+      "presentation": {
+        "displayName": "barracks",
+        "iconFrame": 5,
+        "iconTile": false,
+        "iconPriority": 100,
+        "skinSlot": "",
+        "showLevel": true,
+        "connectionGroup": "",
+        "connectsAcrossTeams": false,
+        "defaultAssigned": 9
+      }
+    },
+    {
+      "key": "barracks.2.finished",
+      "next": "",
+      "previous": "barracks.2.site",
+      "properties": {
+        "armor": 12,
+        "decLeft": -2,
+        "decTop": -2,
+        "gameSprite": "data/gfx/barracks2b",
+        "height": 4,
+        "hpInit": 1300,
+        "hpMax": 1300,
+        "level": 2,
+        "maxUnitInside": 5,
+        "miniSprite": "data/gfx/minibarracks2b",
+        "shortTypeNum": 5,
+        "type": "barracks",
+        "width": 4
+      },
+      "requiredExperiment": "",
+      "semantics": {
+        "admittedUnitMask": 7,
+        "ammunitionCost": 1,
+        "ammunitionMaterial": 3,
+        "feeding": {
+          "convertsUnits": false,
+          "cost": {},
+          "duration": 0,
+          "enabled": false,
+          "holdAdmissionUntilExit": false,
+          "optionalFruitMask": 0,
+          "partial": "none",
+          "unitMask": 7
+        },
+        "healing": {
+          "convertsUnits": false,
+          "cost": {},
+          "duration": 0,
+          "enabled": false,
+          "holdAdmissionUntilExit": false,
+          "optionalFruitMask": 0,
+          "partial": "none",
+          "unitMask": 7
+        },
+        "instantPlacement": false,
+        "market": {
+          "fetchesStock": true,
+          "fetchesStockExperiment": "markets-v2",
+          "interTeamFruitExchange": false,
+          "pickupPenalty": 5,
+          "sharedStock": false,
+          "suppliesStock": false,
+          "suppliesStockExperiment": "markets-v2",
+          "suppliesDirectStock": false,
+          "fetchesDirectStock": false,
+          "suppliesStockMaterials": [],
+          "suppliesDirectStockMaterials": [],
+          "fetchesStockMaterials": [],
+          "fetchesDirectStockMaterials": []
+        },
+        "occupiesGround": true,
+        "placeable": false,
+        "production": {
+          "fallbackUnit": 0,
+          "initialRatios": [
+            1,
+            0,
+            0
+          ],
+          "recipes": {},
+          "scheduling": "weighted_late_choice"
+        },
+        "projectileBuildingDamage": 0,
+        "projectileDamage": [
+          0,
+          0,
+          0
+        ],
+        "regenerationPerTick": 0,
+        "relocatable": false,
+        "repairable": true,
+        "requiredWorkerLevel": 2,
+        "sightSharing": "other",
+        "training": {
+          "attackSpeed": {
+            "cost": {},
+            "duration": 42,
+            "enabled": true,
+            "targetLevel": 3,
+            "unitMask": 7
+          },
+          "attackStrength": {
+            "cost": {},
+            "duration": 42,
+            "enabled": true,
+            "targetLevel": 3,
+            "unitMask": 7
+          }
+        },
+        "trainingInParallel": true,
+        "workPriorityBias": 21,
+        "assignmentLimit": 0,
+        "constructionCost": {},
+        "repairCost": {
+          "wood": 10,
+          "stone": 10
+        },
+        "replenishMaterials": []
+      },
+      "presentation": {
+        "displayName": "barracks",
+        "iconFrame": 5,
+        "iconTile": false,
+        "iconPriority": 100,
+        "skinSlot": "",
+        "showLevel": true,
+        "connectionGroup": "",
+        "connectsAcrossTeams": false,
+        "defaultAssigned": 0
+      }
+    }
+  ]
+}

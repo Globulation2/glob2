@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "StartQuality.h"
+#include "Material.h"
 #include "FairnessModel.h"
 #include "FertilityField.h"
 #include "Game.h"
@@ -118,7 +119,7 @@ StartQualityReport scoreStarts(Game &game, int requestedTeams, const StartQualit
 						const int x = p % w, y = p / w;
 						++band.reachedTiles;
 						band.buildableTiles += map.isFreeForBuilding(x, y);
-						if ((map.terrainPropertiesAt(p).allowedResources & (1u<<WHEAT)))
+						if (map.terrainSupportsMaterialAt(x,y,MaterialId::Food))
 						{
 							++band.grassTiles;
 							band.fertileGrassTiles += fertility.at(x, y) > 0;
@@ -129,7 +130,7 @@ StartQualityReport scoreStarts(Game &game, int requestedTeams, const StartQualit
 			const int x = p % w, y = p / w;
 			++colony.catchmentTiles;
 			colony.meanFertility += fertility.at(x, y);
-			if ((map.terrainPropertiesAt(p).allowedResources & (1u<<WHEAT)))
+			if (map.terrainSupportsMaterialAt(x,y,MaterialId::Food))
 			{
 				++colony.catchmentGrass;
 				colony.catchmentFertileGrass += fertility.at(x, y) > 0;
@@ -148,7 +149,7 @@ StartQualityReport scoreStarts(Game &game, int requestedTeams, const StartQualit
 			for (int x = 0; x < w; ++x)
 			{
 				const Resource &resource = map.getResource(x, y);
-				if (resource.type >= MAX_RESOURCES)
+				if (resource.type == NO_RES_TYPE)
 					continue;
 				int nearest = -1;
 				for (int dy = -1; dy <= 1; ++dy)
@@ -163,25 +164,30 @@ StartQualityReport scoreStarts(Game &game, int requestedTeams, const StartQualit
 				if (nearest < 0)
 					continue;
 				const int reach = nearest + 1;
-				auto &access = colony.resources[resource.type];
+                for (unsigned material=0; material<MaterialCount; ++material)
+                {
+                    const auto amount=map.materialAmountAtSlot(y*w+x,material);
+                    if (!amount) continue;
+				auto &access = colony.materials[material];
 				if (access.nearestDistance < 0 || reach < access.nearestDistance)
 					access.nearestDistance = reach;
 				if (nearest <= scale.catchmentSteps)
 				{
 					++access.catchmentDeposits;
-					access.catchmentAmount += resource.amount;
+					access.catchmentAmount += amount;
 				}
 				for (auto &band : colony.distanceBands)
 					if (nearest <= band.walkingSteps)
 					{
-						++band.depositTiles[resource.type];
-						band.storedAmount[resource.type] += resource.amount;
+						++band.depositTiles[material];
+						band.storedAmount[material] += amount;
 					}
+                }
 			}
-		colony.wheatDistance = colony.resources[WHEAT].nearestDistance;
-		colony.woodDistance = colony.resources[WOOD].nearestDistance;
-		colony.resourceAmount = colony.resources[WHEAT].catchmentAmount +
-								colony.resources[WOOD].catchmentAmount;
+		colony.wheatDistance = colony.materials[materialIndex(MaterialId::Food)].nearestDistance;
+		colony.woodDistance = colony.materials[materialIndex(MaterialId::Wood)].nearestDistance;
+		colony.resourceAmount = colony.materials[materialIndex(MaterialId::Food)].catchmentAmount +
+								colony.materials[materialIndex(MaterialId::Wood)].catchmentAmount;
 
 		for (int rival = 0; rival < nbTeams; ++rival)
 		{
@@ -260,7 +266,7 @@ StartQualityReport scoreStarts(Game &game, int requestedTeams, const StartQualit
 		for (int x = 0; x < w; ++x)
 		{
 			const Resource &resource = map.getResource(x, y);
-			if (resource.type >= MAX_RESOURCES)
+			if (resource.type == NO_RES_TYPE)
 				continue;
 			int best = -1, ties = 0, owner = -1;
 			std::fill(approach.begin(), approach.end(), -1);
@@ -293,19 +299,23 @@ StartQualityReport scoreStarts(Game &game, int requestedTeams, const StartQualit
 			{
 				if ((ties == 1 && team != owner) || (ties > 1 && approach[team] != best))
 					continue;
-				auto &access = report.colonies[team].resources[resource.type];
+                for (unsigned material=0; material<MaterialCount; ++material)
+                {
+                    const auto amount=map.materialAmountAtSlot(y*w+x,material);
+                    if (!amount) continue;
+				auto &access = report.colonies[team].materials[material];
 				for (auto &band : report.colonies[team].distanceBands)
 					if (best <= band.walkingSteps)
 					{
 						if (ties == 1)
 						{
-							++band.exclusiveDepositTiles[resource.type];
-							band.exclusiveStoredAmount[resource.type] += resource.amount;
+							++band.exclusiveDepositTiles[material];
+							band.exclusiveStoredAmount[material] += amount;
 						}
 						else
 						{
-							++band.tiedDepositTiles[resource.type];
-							band.tiedStoredAmount[resource.type] += resource.amount;
+							++band.tiedDepositTiles[material];
+							band.tiedStoredAmount[material] += amount;
 						}
 					}
 				if (best > scale.catchmentSteps)
@@ -313,13 +323,14 @@ StartQualityReport scoreStarts(Game &game, int requestedTeams, const StartQualit
 				if (ties == 1)
 				{
 					++access.exclusiveCatchmentDeposits;
-					access.exclusiveCatchmentAmount += resource.amount;
+					access.exclusiveCatchmentAmount += amount;
 				}
 				else
 				{
 					++access.tiedCatchmentDeposits;
-					access.tiedCatchmentAmount += resource.amount;
+					access.tiedCatchmentAmount += amount;
 				}
+                }
 			}
 		}
 

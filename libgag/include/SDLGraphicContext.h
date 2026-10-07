@@ -9,7 +9,9 @@
 #include "RenderFramePacer.h"
 #include "SkinAtlasCache.h"
 #include <AssetLoader.h>
+#include <array>
 #include <map>
+#include <utility>
 #include <vector>
 #include <string>
 #include <iostream>
@@ -485,7 +487,7 @@ namespace GAGCore
 			};
 			struct Uniforms
 			{
-				int region = -1, bones = -1, view = -1, normalView = -1;
+				int region = -1, bones = -1, view = -1, normalView = -1, shell = -1;
 				void initialize(unsigned program);
 			} uniforms, rigUniforms;
 			void prepareRigShader();
@@ -508,6 +510,8 @@ namespace GAGCore
 			std::uint64_t paletteIdentity = 0;
 			unsigned paletteFrame = ~0u;
 			bool attempted = false, rigAttempted = false;
+			// Fur support is cached by material-map identity and revision.
+			std::map<std::pair<std::uint64_t, std::uint64_t>, std::array<bool, 4>> shellRegions;
 		} skinResources;
 		void destroySkinRenderer();
         unsigned unitShaderProgram = 0;

@@ -58,10 +58,12 @@ class SDLRenderBackend final : public RenderBackend
 					  y = int(std::floor(rect->y * scale + offsetY));
 			SDL_Rect mapped{x, y, int(std::ceil((rect->x + rect->w) * scale + offsetX)) - x,
 							int(std::ceil((rect->y + rect->h) * scale + offsetY)) - y};
-			if (bounds)
-				SDL_GetRectIntersection(&mapped, &*bounds, &mapped);
+			if (bounds && !SDL_GetRectIntersection(&mapped, &*bounds, &mapped))
+				mapped = {}; // SDL treats negative clip extents as clipping disabled.
 			result = mapped;
 		}
+		if (result && (result->w <= 0 || result->h <= 0))
+			result = SDL_Rect{};
 		check(SDL_SetRenderClipRect(renderer, result ? &*result : nullptr));
 	}
 	SDL_Texture *textureFor(const void *key, SDL_Surface *pixels, std::uint64_t revision,

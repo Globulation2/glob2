@@ -1,0 +1,13 @@
+{
+  "format": 138,
+  "source_format": 137,
+  "source_fixture": "control-land-2-1002-mixed-64/checkpoint-8192.game.gz",
+  "source_decompressed_sha256": "829b461f84e3d3cd096c602a54ac0f1f867b53e4ff2052a369474b1e466b7d5e",
+  "source_binary_sha256": "c5d6d16ed9c3c0ec5c1e0260ba35830d94be3f887c42c3f7e26b62fc9664b84f",
+  "source_tick": 8192,
+  "conversion": "The only upstream format138 wire addition is uint32 terrainSeed immediately after Map terrainRegistry. Patch header minor137 to138, insert big-endian seed after terrainRegistry chunks; no other payload changes. This fixture has released legacy8 resource layout, never the unpublished resource138 draft.",
+  "header_minor_offset": 24,
+  "terrain_seed_offset": 988410,
+  "terrain_seed": 1369948382,
+  "sha256": "e94bceea56f7be3a9d2e4bb9aa427154d64254bb8a621ec9f547f80d3644475c"
+}

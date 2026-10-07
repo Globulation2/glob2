@@ -43,12 +43,16 @@ def main():
         (directory / 'command.json').write_text(json.dumps(command))
         for phase, tick in [('early', 0), ('middle', 8192), ('late', 24576)]:
             save = directory / ('initial.game' if tick == 0 else f'checkpoint-{tick}.game')
+            if not save.exists() and Path(str(save)+".gz").exists():
+                save = Path(str(save)+".gz")
             if not save.exists(): continue  # finished games have no later checkpoint
             scenario = dict(id=name+'-'+phase, group=mix, control=(size == 6), start_tick=tick, args=['--load-game', str(save), '--ticks', str(tick+8192)], fixture_sha256={str(save): hashlib.sha256(save.read_bytes()).hexdigest()})
             windows.append(scenario)
             if tick == 0:
                 completed.append(scenario | {'id': name+'-completion', 'args': ['--load-game', str(save), '--ticks', '90000']})
         print(name, flush=True)
+    if not windows:
+        raise RuntimeError('No benchmark checkpoints were collected')
     meta = dict(binary=str(binary), binary_sha256=hashlib.sha256(binary.read_bytes()).hexdigest())
     for name, scenarios in [('windows', windows), ('completion', completed)]:
         (output / (name+'.json')).write_text(json.dumps(meta | {'scenarios': scenarios}, indent=2))

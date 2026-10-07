@@ -69,7 +69,8 @@ class NetTransport
 	static constexpr size_t queueLimit = 1024 * 1024;
 	static constexpr size_t chunkLimit = 16 * 1024;
 	// Largest text message either direction accepts (binary messages: 64 KiB).
-	static constexpr size_t textMessageLimit = 256 * 1024;
+	static constexpr size_t textMessageLimit = 32 * 1024 * 1024;
+	static constexpr size_t textQueueLimit = 64 * 1024 * 1024;
 	virtual ~NetTransport() = default;
 	// The port parameter is retained for source compatibility; URLs own routing.
 	virtual void open(const std::string &endpoint, uint16_t port = 0) = 0;

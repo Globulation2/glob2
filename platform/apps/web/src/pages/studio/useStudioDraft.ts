@@ -8,6 +8,7 @@ export interface Pending {
 interface Design {
   settings: StudioSettings;
   parent?: string;
+  fresh?: boolean;
 }
 function readSaved<T>(key: string): T | undefined {
   try {
@@ -30,6 +31,7 @@ export function useStudioDraft(accountId: string, id?: string) {
     return {
       settings: saved?.settings ?? { width: 256, height: 256, players: 4 },
       parent: saved?.parent,
+      fresh: saved?.fresh ?? false,
     };
   });
   useEffect(() => {
@@ -55,7 +57,9 @@ export function useStudioDraft(accountId: string, id?: string) {
     setPending,
     settings: design.settings,
     parent: design.parent,
+    fresh: design.fresh,
     setSettings: (settings: StudioSettings) => setDesign((current) => ({ ...current, settings })),
-    setParent: (parent: string | undefined) => setDesign((current) => ({ ...current, parent })),
+    setParent: (parent: string | undefined) =>
+      setDesign((current) => ({ ...current, parent, fresh: !parent })),
   };
 }

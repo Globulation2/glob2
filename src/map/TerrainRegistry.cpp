@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "TerrainRegistry.h"
+#include "FileFormatVersions.h"
 #include "online/Sha256.h"
 #include <nlohmann/json.hpp>
 #include <algorithm>
@@ -34,8 +35,9 @@ std::string text(const Json &j, const char *key,
 }
 TerrainType preset(const std::string &name)
 {
-	for (unsigned i = 0; i < GRASS_SAND_SHORE; ++i)
-		if (name == TerrainPresentations[i].name)
+	// Every paintable built-in is a preset; legacy corner shores are not.
+	for (unsigned i = 0; i < TERRAIN_COUNT; ++i)
+		if (terrainPaintable(TerrainType(i)) && name == TerrainPresentations[i].name)
 			return TerrainType(i);
 	throw std::invalid_argument("Unknown built-in terrain preset: " + name);
 }
@@ -101,17 +103,37 @@ template <class T> void property(const Json &j, const char *key, T &value, bool 
 	X(fertilityQ8) \
 	X(inhibitionQ8) \
 	X(shoreSupportQ8) \
-	X(allowedResources) \
-	X(farmCrop)
+	X(allowedResources)
 // clang-format on
 TerrainProperties readProperties(const Json &j, TerrainProperties p, bool complete = false)
 {
 #define NAME(f) #f,
-	fields(j, {TERRAIN_FIELDS(NAME)});
+	fields(j, {TERRAIN_FIELDS(NAME) "farmMaterial", "farmCrop"});
 #undef NAME
 #define READ(f) property(j, #f, p.f, complete);
 	TERRAIN_FIELDS(READ)
 #undef READ
+	if (j.contains("farmMaterial") && j.contains("farmCrop"))
+		throw std::invalid_argument("Conflicting terrain farm material aliases");
+	if (j.contains("farmMaterial"))
+	{
+		const auto& value = j.at("farmMaterial");
+		if (value.is_null()) p.farmMaterial = 255;
+		else if (value.is_string())
+		{
+			const auto material = parseMaterialKey(value.get<std::string>());
+			if (!material) throw std::invalid_argument("Unknown terrain farm material");
+			p.farmMaterial = materialIndex(*material);
+		}
+		else throw std::invalid_argument("farmMaterial must be a material key or null");
+	}
+	else if (j.contains("farmCrop"))
+	{
+		property(j, "farmCrop", p.farmMaterial);
+		if (p.farmMaterial != 255 && p.farmMaterial >= 8)
+			throw std::invalid_argument("Legacy farmCrop must be 0 through 7 or 255");
+	}
+	else if (complete) throw std::invalid_argument("Missing terrain farmMaterial");
 	if (!validTerrainProperties(p))
 		throw std::invalid_argument("Invalid terrain property combination or range");
 	return p;
@@ -122,12 +144,13 @@ Json writeProperties(const TerrainProperties &p)
 #define WRITE(f) j[#f] = p.f;
 	TERRAIN_FIELDS(WRITE)
 #undef WRITE
+	j["farmMaterial"] = p.farmMaterial == 255 ? Json(nullptr) : Json(materialKey(static_cast<MaterialId>(p.farmMaterial)));
 	return j;
 }
 auto propertyKey(const TerrainProperties &p)
 {
 #define VALUE(f) int(p.f),
-	return std::to_array<int>({TERRAIN_FIELDS(VALUE)});
+	return std::to_array<int>({TERRAIN_FIELDS(VALUE) int(p.farmMaterial)});
 #undef VALUE
 }
 #undef TERRAIN_FIELDS
@@ -161,6 +184,40 @@ Json parse(std::string_view source)
 		throw std::invalid_argument("Unsupported terrain schema or definition count");
 	return j;
 }
+std::optional<std::vector<std::string>> readResourceKeys(const Json& definition, bool legacySnapshot = false)
+{
+	if (definition.contains("allowedResourceKeys"))
+	{
+		const auto& value = definition.at("allowedResourceKeys");
+		if (value.is_null()) return std::nullopt;
+		if (!value.is_array() || value.size() > 16384)
+			throw std::invalid_argument("Invalid allowedResourceKeys array");
+		std::vector<std::string> result;
+		for (const auto& entry : value)
+		{
+			if (!entry.is_string()) throw std::invalid_argument("Resource keys must be text");
+			auto key = entry.get<std::string>();
+			if (key.empty() || key.size() > 128 || key.find('\0') != std::string::npos)
+				throw std::invalid_argument("Invalid allowed resource key");
+			result.push_back(std::move(key));
+		}
+		std::sort(result.begin(), result.end());
+		if (std::adjacent_find(result.begin(), result.end()) != result.end())
+			throw std::invalid_argument("Duplicate allowed resource key");
+		return result;
+	}
+	if (legacySnapshot || definition.at("properties").contains("allowedResources"))
+	{
+		// This is an old-format identity adapter, never a simulation predicate.
+		static constexpr const char* keys[] = {"trees", "wheat", "papyrus", "rocks", "algae", "cherry-tree", "orange-tree", "prune-tree"};
+		const unsigned mask = definition.at("properties").at("allowedResources").get<unsigned>();
+		std::vector<std::string> result;
+		for (unsigned i = 0; i < std::size(keys); ++i) if (mask & (1u << i)) result.emplace_back(keys[i]);
+		std::sort(result.begin(), result.end());
+		return result;
+	}
+	return std::nullopt;
+}
 } // namespace
 
 TerrainRegistry::SavedPresentation TerrainRegistry::savedPreset(TerrainType appearance)
@@ -192,6 +249,7 @@ TerrainRegistry::TerrainRegistry()
 		keys_.emplace_back(TerrainPresentations[i].name);
 		names_.emplace_back(TerrainPresentations[i].label);
 		appearances_.push_back(TerrainType(i));
+		resourceKeys_.push_back(std::nullopt);
 		savedPresentations_.push_back(savedPreset(TerrainType(i)));
 	}
 }
@@ -213,7 +271,7 @@ std::shared_ptr<const TerrainRegistry> TerrainRegistry::importJson(std::string_v
 	auto &definitions = j.at("terrains");
 	for (const auto &item : definitions)
 	{
-		fields(item, {"key", "name", "base", "properties", "appearance"});
+		fields(item, {"key", "name", "base", "properties", "appearance", "allowedResourceKeys"});
 		auto key = text(item, "key");
 		validKey(key);
 		if (!imported.insert(key).second)
@@ -234,6 +292,7 @@ std::shared_ptr<const TerrainRegistry> TerrainRegistry::importJson(std::string_v
 		const auto key = text(item, "key"), name = text(item, "name");
 		const auto base = preset(text(item, "base")), appearance = preset(text(item, "appearance"));
 		auto p = readProperties(item.at("properties"), TERRAIN_PROPERTIES[base]);
+		auto allowedResources = readResourceKeys(item);
 		const auto id = ids.try_emplace(key, result->size()).first->second;
 		if (id == result->size())
 		{
@@ -245,6 +304,7 @@ std::shared_ptr<const TerrainRegistry> TerrainRegistry::importJson(std::string_v
 			result->appearances_.push_back(appearance);
 			result->presentations_.push_back(TerrainPresentations[appearance]);
 			result->savedPresentations_.push_back(savedPreset(appearance));
+			result->resourceKeys_.push_back(std::move(allowedResources));
 		}
 		else
 		{
@@ -253,6 +313,7 @@ std::shared_ptr<const TerrainRegistry> TerrainRegistry::importJson(std::string_v
 			result->appearances_[id] = appearance;
 			result->presentations_[id] = TerrainPresentations[appearance];
 			result->savedPresentations_[id] = savedPreset(appearance);
+			result->resourceKeys_[id] = std::move(allowedResources);
 		}
 		result->savedPresentations_[id].legacyCorners = false;
 		result->presentations_[id].editorSelectable = true;
@@ -290,20 +351,30 @@ std::string TerrainRegistry::serialize() const
 		visual["preview"] = color(colors.preview);
 		if (i != TERRAIN_COUNT)
 			result += ',';
-		result += Json{
+		Json definition = {
 			{"id", i},
 			{"key", keys_[i]},
 			{"name", names_[i]},
 			{"properties", writeProperties(properties_[i])},
 			{"appearance", TerrainPresentations[appearances_[i]].name},
 			{"presentation",
-			 visual}}.dump();
+			 visual}};
+		definition["allowedResourceKeys"] = resourceKeys_[i] ? Json(*resourceKeys_[i]) : Json(nullptr);
+		result += definition.dump();
 	}
 	result += "]}";
 	return result;
 }
-std::shared_ptr<const TerrainRegistry> TerrainRegistry::deserialize(std::string_view source)
+unsigned TerrainRegistry::savedBuiltinCount(int versionMinor)
 {
+	return versionMinor < FILE_FORMAT_VERSION_TERRAIN_CATALOGUE ? TERRAIN_COUNT_BEFORE_CATALOGUE
+																		: unsigned(TERRAIN_COUNT);
+}
+std::shared_ptr<const TerrainRegistry> TerrainRegistry::deserialize(std::string_view source,
+																			  unsigned savedBuiltinCount)
+{
+	if (savedBuiltinCount < TERRAIN_COUNT_BEFORE_CATALOGUE || savedBuiltinCount > TERRAIN_COUNT)
+		throw std::invalid_argument("Unsupported saved terrain built-in count");
 	auto j = parse(source);
 	if (j.at("terrains").empty())
 		return builtins();
@@ -311,8 +382,12 @@ std::shared_ptr<const TerrainRegistry> TerrainRegistry::deserialize(std::string_
 	std::set<std::string> keys;
 	for (const auto &item : j.at("terrains"))
 	{
-		fields(item, {"id", "key", "name", "properties", "appearance", "presentation"});
-		if (!item.at("id").is_number_integer() || item.at("id") != result->size())
+		fields(item, {"id", "key", "name", "properties", "appearance", "presentation", "allowedResourceKeys"});
+		// Saved IDs are sequential from the writer's built-in count; canonical IDs
+		// follow the current built-ins so older files keep loading after the
+		// catalogue grew.
+		const auto savedId = savedBuiltinCount + (result->size() - TERRAIN_COUNT);
+		if (!item.at("id").is_number_integer() || item.at("id") != savedId)
 			throw std::invalid_argument("Invalid saved terrain ID");
 		const auto key = text(item, "key");
 		validKey(key);
@@ -322,6 +397,7 @@ std::shared_ptr<const TerrainRegistry> TerrainRegistry::deserialize(std::string_
 		result->keys_.push_back(key);
 		result->names_.push_back(text(item, "name"));
 		result->properties_.push_back(readProperties(item.at("properties"), {}, true));
+		result->resourceKeys_.push_back(readResourceKeys(item, true));
 		result->appearances_.push_back(appearance);
 		auto p = savedPreset(appearance);
 		p.legacyCorners = false;

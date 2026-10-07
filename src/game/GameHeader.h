@@ -243,7 +243,18 @@ public:
 	inline void setExperiments(const ExperimentSet& set) { experiments = set; }
 	///The hot-path read for simulation code: is this experiment on in this game?
 	inline bool hasExperiment(ExperimentId id) const { return experiments.has(id); }
+	// Empty only in pre-catalog files or an unresolved setup. A Game fills this
+	// before saving or sending its setup so later local edits cannot change it.
+	const std::string& getBuildingCatalogSnapshot() const { return buildingCatalogSnapshot; }
+	void setBuildingCatalogSnapshot(const std::string& snapshot);
+	const std::vector<std::string>& buildingExperimentKeys() const { return buildingCatalogExperimentKeys; }
+	const std::vector<CatalogExperimentDefinition>& resourceExperiments() const { return resourceCatalogExperiments; }
+	void setResourceExperiments(const std::vector<CatalogExperimentDefinition>& definitions);
+	std::vector<std::string> catalogExperimentKeys() const;
 private:
+	std::string buildingCatalogSnapshot;
+	std::vector<std::string> buildingCatalogExperimentKeys;
+	std::vector<CatalogExperimentDefinition> resourceCatalogExperiments;
 	std::string aiConfig[Team::MAX_COUNT];
 	bool loadAIConfig(GAGCore::InputStream *stream, Sint32 versionMinor);
 	void saveAIConfig(GAGCore::OutputStream *stream) const;
@@ -311,5 +322,3 @@ private:
 	///Experimental features enabled for this game; empty is the default game
 	ExperimentSet experiments;
 };
-
-

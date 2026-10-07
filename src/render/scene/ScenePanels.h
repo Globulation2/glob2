@@ -36,10 +36,12 @@ struct SceneBuildingPanel
 	BuildingType *type = nullptr; //!< static building type definition
 	Sint32 typeNum = 0, posX = 0, posY = 0;
 	Sint32 hp = 0, effectiveMaxHp = 0, buildingState = 0, constructionResultState = 0;
+	bool explorersRequireBombing=false;
+	Sint32 minWorkerLevelToFlag=0;
 	Sint32 maxUnitWorking = 0, desiredMaxUnitWorking = 0, priority = 0, unitStayRange = 0, minLevelToFlag = 0;
-	bool clearingResources[BASIC_COUNT] = {};
-	Sint32 resources[MAX_RESOURCES] = {};
-	Sint32 bullets = 0, productionTimeout = 0;
+	bool clearingMaterials[MaterialCount] = {};
+	Sint32 materials[MaterialCount] = {};
+	Sint32 bullets = 0, productionTimeout = 0, productionDuration = 0;
 	Sint32 ratio[NB_UNIT_TYPE] = {};
 	std::array<Uint32, SceneSelectedBuilding::FailReasons> unitsFailingRequirements{};
 	Sint32 unitsInside = 0, unitsWorking = 0;
@@ -51,7 +53,7 @@ struct SceneBuildingPanel
 	//! Queries answered during extraction.
 	bool hardSpaceForRepair = false, hardSpaceForUpgrade = false;
 	bool showLevel = false;
-	int repairCost[BASIC_COUNT] = {};
+	int repairCost[MaterialCount] = {};
 	int buildingHpMultiplier = 1;
 };
 
@@ -63,7 +65,7 @@ struct SceneUnitPanel
 	ScenePanelOwner owner;
 	Race *race = nullptr; //!< static per-team unit definitions
 	Sint32 typeNum = 0, action = 0, direction = 0, delta = 0;
-	Sint32 hp = 0, trigHP = 0, hungry = 0, speed = 0, carriedResource = 0;
+	Sint32 hp = 0, trigHP = 0, hungry = 0, speed = 0, carriedMaterial = 0;
 	Uint32 fruitCount = 0;
 	Sint32 experience = 0, experienceLevel = 0;
 	Sint32 performance[NB_ABILITY] = {};

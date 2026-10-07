@@ -43,6 +43,7 @@ namespace AISharedRuntime
 			CEitherCondition = 3,
 			// value 4 reserved (was CAllConditions, removed — never instantiated by any AI)
 			CPopulation = 5,
+            CAttractionRetiredOrDestroyed = 6,
 		};
 
 		class BuildingCondition;
@@ -101,6 +102,22 @@ namespace AISharedRuntime
 		private:
 			int id = 0;
 		};
+
+        class AttractionRetiredOrDestroyed : public Condition
+        {
+        public:
+            AttractionRetiredOrDestroyed(int id,unsigned unitMask):id(id),unitMask(unitMask) {}
+        protected:
+            friend class Condition;
+            AttractionRetiredOrDestroyed() = default;
+            tribool passes(Runtime&) override;
+            ConditionType get_type() override {return CAttractionRetiredOrDestroyed;}
+            bool load(GAGCore::InputStream*,Player*,Sint32) override;
+            void save(GAGCore::OutputStream*) override;
+        private:
+            int id=-1;
+            unsigned unitMask=0;
+        };
 
 		///This condition matches when the provided gid of the enemy building, obtained from an enemy_building_iterator,
 		///is destroyed. It's meant for use with war flags or exploration flags.
@@ -178,8 +195,8 @@ namespace AISharedRuntime
 			CNotSpecificBuildingType = 5,
 			CBuildingLevel = 6,
 			CUpgradable = 7,
-			CResourceTrackerAmount = 8,
-			CResourceTrackerAge = 9,
+			CMaterialTrackerAmount = 8,
+			CMaterialTrackerAge = 9,
 			// value 10 reserved (was CTicksPassed, removed — debug-only, never instantiated by any AI)
 		};
 
@@ -253,12 +270,12 @@ namespace AISharedRuntime
 			int level;
 		};
 
-		///This condition tells whether a building is a particular type, as defined in IntBuildingType.h
-		class SpecificBuildingType : public BuildingCondition
+		///Matches a semantic capability; mixed buildings may match several such conditions.
+		class ProvidesBuildingCapability : public BuildingCondition
 		{
 		public:
-			SpecificBuildingType() : building_type(0) {}
-			explicit SpecificBuildingType(int building_type);
+			ProvidesBuildingCapability() : building_type(0) {}
+			explicit ProvidesBuildingCapability(int building_type);
 		protected:
 			bool passes(Runtime& runtime, int id);
 			BuildingConditionType get_type();
@@ -268,12 +285,12 @@ namespace AISharedRuntime
 			int building_type;
 		};
 
-		///This condition matches any building that isn't of a particular type
-		class NotSpecificBuildingType : public BuildingCondition
+		///Matches buildings without the requested semantic capability.
+		class LacksBuildingCapability : public BuildingCondition
 		{
 		public:
-			NotSpecificBuildingType() : building_type(0) {}
-			explicit NotSpecificBuildingType(int building_type);
+			LacksBuildingCapability() : building_type(0) {}
+			explicit LacksBuildingCapability(int building_type);
 		protected:
 			bool passes(Runtime& runtime, int id);
 			BuildingConditionType get_type();
@@ -311,7 +328,7 @@ namespace AISharedRuntime
 		};
 
 		///This class compares the total amount of resources recorded by a resource tracker.
-		class ResourceTrackerAmount : public BuildingCondition
+		class MaterialTrackerAmount : public BuildingCondition
 		{
 		public:
 			enum TrackerMethod
@@ -320,10 +337,10 @@ namespace AISharedRuntime
 				Lesser,
 			};
 
-			explicit ResourceTrackerAmount(int amount, TrackerMethod tracker_method);
+			explicit MaterialTrackerAmount(int amount, TrackerMethod tracker_method);
 		private:
 			friend class BuildingCondition;
-			ResourceTrackerAmount() = default;
+			MaterialTrackerAmount() = default;
 			bool passes(Runtime& runtime, int id);
 			BuildingConditionType get_type();
 			bool load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor);
@@ -333,7 +350,7 @@ namespace AISharedRuntime
 		};
 
 		///This class compares the age provided by a resource tracker
-		class ResourceTrackerAge : public BuildingCondition
+		class MaterialTrackerAge : public BuildingCondition
 		{
 		public:
 			enum TrackerMethod
@@ -342,10 +359,10 @@ namespace AISharedRuntime
 				Lesser,
 			};
 
-			explicit ResourceTrackerAge(int age, TrackerMethod tracker_method);
+			explicit MaterialTrackerAge(int age, TrackerMethod tracker_method);
 		private:
 			friend class BuildingCondition;
-			ResourceTrackerAge() = default;
+			MaterialTrackerAge() = default;
 			bool passes(Runtime& runtime, int id);
 			BuildingConditionType get_type();
 			bool load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor);
@@ -394,14 +411,14 @@ inline AISharedRuntime::Conditions::BuildingConditionType AISharedRuntime::Condi
 
 
 
-inline AISharedRuntime::Conditions::BuildingConditionType AISharedRuntime::Conditions::SpecificBuildingType::get_type()
+inline AISharedRuntime::Conditions::BuildingConditionType AISharedRuntime::Conditions::ProvidesBuildingCapability::get_type()
 {
 	return CSpecificBuildingType;
 }
 
 
 
-inline AISharedRuntime::Conditions::BuildingConditionType AISharedRuntime::Conditions::NotSpecificBuildingType::get_type()
+inline AISharedRuntime::Conditions::BuildingConditionType AISharedRuntime::Conditions::LacksBuildingCapability::get_type()
 {
 	return CNotSpecificBuildingType;
 }

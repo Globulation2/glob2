@@ -36,6 +36,9 @@ Element MapEditMenuScreen::build(const Presentation &p)
 						  {"share", "[maps share online]", SHARE_MAP, false},
 						  {"terrain/import", "[Import Terrain Definitions]", IMPORT_TERRAIN, false},
 						  {"terrain/palette", "[Terrain palette]", TERRAIN_PALETTE, false},
+						  {"resource/import", "[Import Resource Definitions]", IMPORT_RESOURCES, false},
+						  {"resource/palette", "[Resource palette]", RESOURCE_PALETTE, false},
+						  {"terrain/reroll", "[Reroll terrain look]", REROLL_TERRAIN_LOOK, false},
 						  {"quit", "[quit the editor]", QUIT_EDITOR, false}};
 	std::vector<Element> buttons;
 	for (const auto &item : items)
@@ -88,6 +91,35 @@ Element AskForTextInput::build(const Presentation &p)
 	actions.push_back({"ok", fe::tr("[ok]"), [this] { confirm(); }, true});
 	actions.push_back({"cancel", fe::tr("[Cancel]"), [this] { finish(CANCEL); }, false, SDLK_ESCAPE});
 	return fe::footer(fe::column({fe::paragraph(fe::tr(labelText), {fe::FontRole::Heading}), field}, {p.pt(8)}), dialogActions(std::move(actions), p));
+}
+
+Element ResourcePaletteDialog::build(const Presentation& p)
+{
+	std::vector<Element> entries;
+	std::vector<Element> controls;
+	for (const auto& experiment : registry->experiments())
+	{
+		const auto key = experiment.key;
+		controls.push_back(fe::toggle("resource-experiment/" + key, experimentLabel(experiment),
+			enabled.has(key),
+			[this, key](bool active) { enabled.set(key, active, registry->experimentKeys()); invalidate(); }));
+	}
+	for (unsigned id = 0; id < registry->size(); ++id)
+	{
+		const auto resource = static_cast<ResourceId>(id);
+		const auto& experiment = registry->requiredExperiment(resource);
+		if (!experiment.empty() && !enabled.has(experiment)) continue;
+		fe::ButtonOptions options;
+		options.minHeight = p.pt(48);
+		entries.push_back(fe::button("resource/" + registry->key(resource), getResourceDisplayName(registry->presentation(resource).name),
+			[this, id] { finish(int(id)); }, options));
+	}
+	fe::WrapOptions grid;
+	grid.minChildWidth = p.pt(160);
+	grid.maxColumns = 4;
+	return fe::footer(fe::column({fe::paragraph(fe::tr("[Resource palette]"), {fe::FontRole::Heading}), fe::column(std::move(controls)),
+		fe::scroll("resource/scroll", fe::wrap(std::move(entries), grid))}, {p.pt(8)}),
+		dialogActions({{"cancel", fe::tr("[Cancel]"), [this] { finish(-1); }, false, SDLK_ESCAPE}}, p));
 }
 
 TeamsEditor::TeamsEditor(Game *game) : InGameDialog(Glob2UI::Surface::Editor), game(game)

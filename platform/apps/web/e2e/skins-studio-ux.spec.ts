@@ -51,11 +51,13 @@ test('studio retains usable canvas and reachable controls at every supported lay
     if (compact) await page.getByRole('button', { name: 'Expand toolbox' }).click();
     await page.getByLabel('Pen pressure').check();
     await expect(page.getByLabel('Pen pressure')).toBeChecked();
-    await toolbox.locator('summary').click();
+    await toolbox.getByText('Paint repeats on matching surfaces', { exact: true }).click();
     await expect(
       toolbox.getByText(/Some front\/back and top\/bottom surfaces share paint/),
     ).toBeVisible();
-    const help = await boxFor(toolbox.locator('summary'));
+    const help = await boxFor(
+      toolbox.getByText('Paint repeats on matching surfaces', { exact: true }),
+    );
     expect(help.y + help.height).toBeLessThanOrEqual(size.height);
     await page.getByRole('button', { name: 'Collapse toolbox' }).click();
     await expect(page.getByRole('button', { name: 'Patterns', exact: true })).toBeVisible();
@@ -128,10 +130,9 @@ test('studio follows the shared system and saved themes, including open dialogs'
   await expect(page.getByLabel('Skin name')).toBeEnabled();
   await page.getByLabel('Skin name').fill('Shared theme design');
   await expectTheme('light');
-  await page.getByRole('button', { name: 'Skin settings' }).click();
   await page.emulateMedia({ colorScheme: 'dark' });
   await expectTheme('dark');
-  const toggle = page.getByRole('dialog').getByTestId('theme-toggle');
+  const toggle = page.getByTestId('theme-toggle');
   await toggle.click(); // System → light, overriding the dark device setting.
   await expectTheme('light');
   await page.screenshot({
@@ -146,11 +147,9 @@ test('studio follows the shared system and saved themes, including open dialogs'
   });
   await page.reload();
   await expectTheme('dark');
-  await page.getByRole('button', { name: 'Skin settings' }).click();
   await toggle.click(); // Dark → system.
   await page.emulateMedia({ colorScheme: 'light' });
   await expectTheme('light');
-  await page.getByRole('button', { name: 'Close Skin settings' }).click();
   await page.getByRole('button', { name: 'Patterns', exact: true }).click();
   await expectTheme('light');
   await page.emulateMedia({ colorScheme: 'dark' });

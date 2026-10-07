@@ -171,16 +171,23 @@ JSValue managedBuilding(Value data)
 	for (const auto &[field, value] : pending.fields)
 		m.desired.set(field, value);
 	JSValueOwner object(ctx, JS_NewObjectProto(ctx, JS_NULL));
+	auto capable = [&](const char* key) {
+		for (const auto& value : data.get("capabilities").items) if (value.text == key) return true;
+		return false;
+	};
+	const bool workers = capable("attractWorkers"), explorers = capable("attractExplorers"), warriors = capable("attractWarriors");
+	const bool production = capable("produceWorker") || capable("produceExplorer") || capable("produceWarrior");
 	for (const auto &[field, value] : data.fields)
 	{
-		const bool flag = data.get("virtual").number != 0;
 		const bool writable = field == "workers" || field == "priority" ||
-							  (field == "production" && data.get("shortType").number == 0) ||
-							  ((field == "receiveMask" || field == "sendMask") &&
-							   data.get("shortType").number == 12) ||
-							  (flag && (field == "x" || field == "y" || field == "range" ||
-										field == "minimumLevel")) ||
-							  (field == "clearingResources" && data.get("shortType").number == 10);
+			(field == "production" && production) ||
+			((field == "receiveMask" || field == "sendMask") && data.get("interTeamExchange").number != 0) ||
+			((field == "x" || field == "y") && data.get("relocatable").number != 0) ||
+			(field == "range" && (workers || explorers || warriors)) ||
+			(field == "minimumLevel" && warriors) ||
+			(field == "workerMinimumLevel" && workers) ||
+			(field == "requireBombing" && explorers) ||
+			(field == "clearingResources" && workers);
 		JSAtomOwner atom(ctx, JS_NewAtom(ctx, field.c_str()));
 		if (writable)
 		{

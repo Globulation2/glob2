@@ -2,5 +2,6 @@ Import("env")
 Import("PackTar")
 if 'dist' in COMMAND_LINE_TARGETS or 'install' in COMMAND_LINE_TARGETS:
     PackTar(env["TARFILE"], "SConscript")
+    PackTar(env["TARFILE"], Split("shaders/skin-materials.json shaders/skin-material.glsl"))
 SConscript("src/SConscript")
 SConscript("include/SConscript")

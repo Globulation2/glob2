@@ -26,6 +26,7 @@ static BuildingProfile makeProfile(int type,int initial,int terminal)
 		BuildingLevelProfile value;value.level=level;
 		const int size=level==3?terminal:initial;
 		value.footprint=Footprint(-size/2,-size/2,size,size);
+		value.roles=AIMaximaBuildings::roleBit(type);value.operatingMaterials[1]=(type==0?100:type==1?100*level:0);
 		value.serviceThroughput=level*5;value.capability=level;
 		result.levels.push_back(value);
 	}
@@ -174,7 +175,7 @@ static void placementReviewRegressions()
 		world.buildings.push_back(building);
 		DevelopmentAction footprint;footprint.centerX=10;footprint.centerY=12;
 		footprint.initialFootprint=world.profile(1)->atLevel(1)->footprint;occupy(world,footprint);
-		world.tile(11,12).resourceType=0;world.tile(11,12).clearableResource=true;
+		world.tile(11,12).materialType=0;world.tile(11,12).clearableResource=true;
 		Planner planner;planner.configure(world.profiles,1,2,6,5,7);planner.adoptStartingBuildings(world);
 		REQUIRE(planner.standaloneContracts().at(0).maximumLevel==2);
 		DevelopmentLimits limits;limits.allowUpgrades=true;limits.level1Upgrades=1;
@@ -183,7 +184,7 @@ static void placementReviewRegressions()
 		const int reservation=planner.standaloneContracts()[0].reservationId;
 		const uint32_t revision=planner.spatialRevision();
 		planner.adoptStartingBuildings(world);REQUIRE(planner.spatialRevision()==revision);
-		world.tile(11,12).resourceType=-1;world.tile(11,12).clearableResource=false;
+		world.tile(11,12).materialType=-1;world.tile(11,12).clearableResource=false;
 		planner.adoptStartingBuildings(world);
 		REQUIRE(planner.standaloneContracts().at(0).maximumLevel==3);
 		REQUIRE(planner.standaloneContracts().at(0).reservationId==reservation);
@@ -203,7 +204,7 @@ static void placementReviewRegressions()
 		building.centerX=build.centerX;building.centerY=build.centerY;building.hp=building.hpMax=100;
 		world.buildings.push_back(building);occupy(world,build);planner.observe(world);
 		for(int index:build.parcelTiles)if(!world.tiles[index].occupied)
-		{world.tiles[index].resourceType=0;world.tiles[index].clearableResource=true;}
+		{world.tiles[index].materialType=0;world.tiles[index].clearableResource=true;}
 		limits.newConstruction=0;limits.allowUpgrades=true;limits.level1Upgrades=1;
 		DevelopmentAction upgrade;REQUIRE(planner.selectAction(world,{},limits,upgrade));
 		RejectionReason reason;
@@ -223,7 +224,7 @@ static void placementReviewRegressions()
 		GAGCore::BinaryInputStream input(inputBackend);Planner restored;
 		restored.configure(world.profiles,1,2,6,5,7);REQUIRE(restored.load(&input,VERSION_MINOR));
 		REQUIRE(restored.actions().at(upgrade.id).state==ParcelReserved);
-		for(int index:build.parcelTiles){world.tiles[index].resourceType=-1;world.tiles[index].clearableResource=false;}
+		for(int index:build.parcelTiles){world.tiles[index].materialType=-1;world.tiles[index].clearableResource=false;}
 		REQUIRE(restored.revalidateSelection(world,{},limits,upgrade,&reason));
 		REQUIRE(restored.revalidate(world,upgrade,&reason,true));
 		restored.markInvalidated(upgrade.id,UpgradeBlocked,world.computeSignature());
@@ -315,9 +316,9 @@ static void relocationAppraisalRegression()
 {
 	WorldState world=makeWorld();
 	for(auto& profile:world.profiles)if(profile.buildingType==1)
-		for(auto& level:profile.levels)level.constructionResources[0]=3;
+		for(auto& level:profile.levels)level.constructionMaterials[0]=3;
 	// Wood to rebuild from, and a protected farm the old inn cannot reach.
-	world.tile(20,20).resourceType=0;world.tile(20,20).resourceAmount=5;
+	world.tile(20,20).materialType=0;world.tile(20,20).materialAmount=5;
 	world.tile(20,20).clearableResource=true;
 	const int farmX=24,farmY=24;
 	for(int dy=-1;dy<=1;++dy)for(int dx=-1;dx<=1;++dx)
@@ -929,12 +930,12 @@ TEST_SUITE("Maxima.Placement")
 		WorldBuilding home;home.id=1;home.buildingType=0;home.level=1;
 		home.centerX=8;home.centerY=8;home.hp=home.hpMax=100;
 		colonyWorld.buildings.push_back(home);
-		colonyWorld.tile(40,40).resourceType=1; colonyWorld.tile(40,40).foodOpportunity=64*65536;
-		colonyWorld.tile(40,40).resourceAmount=10;
+		colonyWorld.tile(40,40).materialType=1; colonyWorld.tile(40,40).foodOpportunity=64*65536;
+		colonyWorld.tile(40,40).materialAmount=10;
 		colonyWorld.tile(40,40).permanentResource=true;
 		DevelopmentIntent colony;colony.buildingType=0;colony.purpose=ColonySeed;
 		colony.unmetCount=1;colony.priority=100;colony.workers=2;
-		colony.requiredResourceType=1;
+		colony.requiredMaterialType=1;
 		Planner colonizer;colonizer.configure(makeProfiles(),1,2,6,5,7);
 		colonizer.adoptStartingBuildings(colonyWorld);DevelopmentAction seed;
 		REQUIRE(colonizer.selectAction(colonyWorld,
@@ -982,19 +983,19 @@ TEST_SUITE("Maxima.Placement")
 		REQUIRE(independentlyBlocked.blockedSignature(0,ColonySeed)!=0);
 		REQUIRE(independentlyBlocked.blockedSignature(0,CoreCapacity)==0);
 		DevelopmentIntent coreSwarm=colony;coreSwarm.purpose=CoreCapacity;
-		coreSwarm.requiredResourceType=-1;
+		coreSwarm.requiredMaterialType=-1;
 		REQUIRE(independentlyBlocked.selectAction(colonyWorld,
 			std::vector<DevelopmentIntent>(1,coreSwarm),fourSites,seed));
 		WorldState islands=colonyWorld;
 		for(size_t tile=0;tile<islands.tiles.size();++tile)
 		{islands.tiles[tile].buildable=false;islands.tiles[tile].swimmable=true;islands.tiles[tile].walkable=false;islands.tiles[tile].fertilitySource=true;
-		 islands.tiles[tile].resourceType=-1;islands.tiles[tile].foodOpportunity=0;islands.tiles[tile].permanentResource=false;}
+		 islands.tiles[tile].materialType=-1;islands.tiles[tile].foodOpportunity=0;islands.tiles[tile].permanentResource=false;}
 		for(int y=0;y<=20;++y)for(int x=0;x<=20;++x)
 		{islands.tile(x,y).buildable=true;islands.tile(x,y).swimmable=false;islands.tile(x,y).walkable=true;islands.tile(x,y).fertilitySource=false;}
 		for(int y=32;y<=60;++y)for(int x=32;x<=60;++x)
 		{islands.tile(x,y).buildable=true;islands.tile(x,y).swimmable=false;islands.tile(x,y).walkable=true;islands.tile(x,y).fertilitySource=false;}
-		islands.tile(45,45).resourceType=1; islands.tile(45,45).foodOpportunity=64*65536;
-		islands.tile(45,45).resourceAmount=10;
+		islands.tile(45,45).materialType=1; islands.tile(45,45).foodOpportunity=64*65536;
+		islands.tile(45,45).materialAmount=10;
 		islands.tile(45,45).permanentResource=true;
 		Planner dryColonizer;dryColonizer.configure(makeProfiles(),1,2,6,5,7);
 		dryColonizer.adoptStartingBuildings(islands);
@@ -1052,7 +1053,7 @@ TEST_SUITE("Maxima.Placement")
 			changed=islands;changed.tiles[seed.parcelTiles.front()].threat=100;
 			REQUIRE(!swimmingColonizer.revalidateSelection(changed,intents,fourSites,seed,&reason));
 			REQUIRE(reason==RejectedColonyThreat);
-			changed=islands;changed.tile(45,45).resourceType=-1;
+			changed=islands;changed.tile(45,45).materialType=-1;
 			REQUIRE(swimmingColonizer.revalidateSelection(changed,intents,fourSites,seed,&reason));
 			changed.tile(45,45).foodOpportunity=0;
 			REQUIRE(!swimmingColonizer.revalidateSelection(changed,intents,fourSites,seed,&reason));
@@ -1062,8 +1063,8 @@ TEST_SUITE("Maxima.Placement")
 			REQUIRE(reason==RejectedAccess);
 			// Relocated corn is still present globally but no longer supports this
 			// colony. This catches reuse of distance caches from the old snapshot.
-			changed=islands;changed.tile(45,45).resourceType=-1;changed.tile(45,45).foodOpportunity=0;
-			changed.tile(8,8).resourceType=1;changed.tile(8,8).foodOpportunity=65536;
+			changed=islands;changed.tile(45,45).materialType=-1;changed.tile(45,45).foodOpportunity=0;
+			changed.tile(8,8).materialType=1;changed.tile(8,8).foodOpportunity=65536;
 			REQUIRE(!swimmingColonizer.revalidateSelection(changed,intents,fourSites,seed,&reason));
 			REQUIRE(reason==RejectedColonyCorn);
 			REQUIRE(swimmingColonizer.revalidateSelection(islands,intents,fourSites,seed,&reason));
@@ -1194,14 +1195,14 @@ TEST_SUITE("Maxima.Placement")
 		{
 			if(!resourceWorld.tiles[i].buildable)continue;
 			resourceWorld.tiles[i].clearableResource=true;
-			resourceWorld.tiles[i].resourceType=0;
-			resourceWorld.tiles[i].resourceAmount=5;
+			resourceWorld.tiles[i].materialType=0;
+			resourceWorld.tiles[i].materialAmount=5;
 		}
 		for(int y=10;y<=13;++y)for(int x=10;x<=13;++x)
 		{
 			resourceWorld.tile(x,y).clearableResource=false;
-			resourceWorld.tile(x,y).resourceType=-1;
-			resourceWorld.tile(x,y).resourceAmount=0;
+			resourceWorld.tile(x,y).materialType=-1;
+			resourceWorld.tile(x,y).materialAmount=0;
 		}
 		Planner preserving;preserving.configure(makeProfiles(),1,2,6,5,7);
 		DevelopmentIntent largeIntent;largeIntent.buildingType=3;
@@ -1249,7 +1250,7 @@ TEST_SUITE("Maxima.Placement")
 		// decisions. An unchanged signature does not scan the map again.
 		Planner blocked;blocked.configure(makeProfiles(),1,2,6,5,7);
 		DevelopmentIntent required;required.buildingType=1;required.unmetCount=1;
-		required.priority=80;required.requiredResourceType=1;DevelopmentAction none;
+		required.priority=80;required.requiredMaterialType=1;DevelopmentAction none;
 		REQUIRE(!blocked.selectAction(makeWorld(),std::vector<DevelopmentIntent>(1,required),limits,none));
 		REQUIRE(blocked.selectionSummary().rejected[RejectedRequiredSource]==1);
 		REQUIRE(!blocked.actions().empty());
@@ -1291,7 +1292,7 @@ TEST_SUITE("Maxima.Placement")
 		REQUIRE((replanned.centerX!=timed.centerX||replanned.centerY!=timed.centerY));
 		// Discovery/resource churn elsewhere must not reactivate a locally failed
 		// engine coordinate.
-		unchanged.tile(20,20).resourceType=1;unchanged.tile(20,20).resourceAmount=7;
+		unchanged.tile(20,20).materialType=1;unchanged.tile(20,20).materialAmount=7;
 		DevelopmentAction afterRemoteChange;
 		REQUIRE(timeout.selectAction(unchanged,std::vector<DevelopmentIntent>(1,ordinary),
 			limits,afterRemoteChange));
@@ -1336,4 +1337,30 @@ TEST_CASE("Explicit noncanonical neighborhood tables survive compact saves" * do
     GAGCore::BinaryOutputStream writer(result);
     restored.saveExecutionState(&writer);
     CHECK(result->takeContents()==bytes);
+}
+
+TEST_CASE("Catalog profiles share capabilities without sharing template identity" * doctest::test_suite("Maxima.Placement"))
+{
+ using namespace AIMaximaPlacement;
+ auto world=makeWorld();world.profiles.clear();
+ auto mixed=makeProfile(101,2,3),other=makeProfile(205,3,4);
+ for(auto& v:mixed.levels){v.roles=AIMaximaBuildings::roleBit(AIMaximaBuildings::Feeding)|AIMaximaBuildings::roleBit(AIMaximaBuildings::Production);v.productionUnitMask=2;}
+ for(auto& v:other.levels)v.roles=AIMaximaBuildings::roleBit(AIMaximaBuildings::Feeding);
+ // Five explicit steps are legal planner positions, independent of engine tier labels.
+ for(int level=4;level<=5;++level){auto v=other.levels.back();v.level=level;v.engineType=900+level;other.levels.push_back(v);}
+ world.profiles={mixed,other};Planner planner;planner.configure(world.profiles,1,2,6,5,7,0);
+ std::set<int> identities;for(const auto& t:planner.templates())CHECK(identities.insert(int(t.id)).second);
+ WorldBuilding building;building.id=10;building.gid=55;building.buildingType=101;building.level=1;world.buildings.push_back(building);
+ CHECK(planner.committedRoleCount(world,AIMaximaBuildings::Feeding)==1);
+ CHECK(planner.committedRoleCount(world,AIMaximaBuildings::Production)==1);
+ CHECK(planner.committedBuildingCount(world,101)==1);
+ CHECK(planner.committedRoleCount(world,AIMaximaBuildings::Production,1)==0);
+ CHECK(planner.committedRoleCount(world,AIMaximaBuildings::Production,2)==1);
+ CHECK(planner.committedRoleCount(world,AIMaximaBuildings::Production,4)==0);
+ // A copied snapshot must not retain pointers into its source cache.
+ auto copied=world;copied.profiles[0].levels[0].seats=37;
+ REQUIRE(copied.profile(101));CHECK(copied.profile(101)->atLevel(1)->seats==37);
+ CHECK(world.profile(101)->atLevel(1)->seats!=37);
+ CHECK(world.profile(205)->atLevel(5)->engineType==905);
+ CHECK(world.profile(205)->maximumLevel()==5);
 }

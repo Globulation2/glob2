@@ -9,6 +9,7 @@
 
 #include "AINames.h"
 #include "AIThreading.h"
+#include "ReadOnlyPhase.h"
 #include "ChecksumSidecar.h"
 #include "ConnectionOverlay.h"
 #include "DatasetWriter.h"
@@ -169,6 +170,9 @@ void Engine::gatherAndAdvanceOrders(bool wasReadyLastTick)
 	if (diagnostics) diagnostics->beginTick(gui.game);
 	const bool localAI = wasReadyLastTick && globalContainer->liveSpectating &&
 		gui.game.players[orderPlayer]->ai;
+	const bool parallelPreparation = !gui.gamePaused && gui.game.map.computeEnabled(Map::ComputeAI)
+		&& gui.game.map.computeExecutor().threadCount() > 1;
+	if (!parallelPreparation) gui.game.map.preparePendingGradient();
 	if (!gui.gamePaused && gui.game.map.computeEnabled(Map::ComputeAI) &&
 		gui.game.map.computeExecutor().threadCount() > 1)
 	{
@@ -191,9 +195,18 @@ void Engine::gatherAndAdvanceOrders(bool wasReadyLastTick)
 		}
 
 		std::array<shared_ptr<Order>, Team::MAX_COUNT> aiOrders{};
-		gui.game.map.computeExecutor().run(aiCount, [&](size_t job) {
+		// Borrowed tasks live until the phase barrier. Future observation work
+		// joins here after auditing its world reads and cache synchronization.
+		ReadOnlyPhase phase;
+		auto prepareGradient = [&](size_t) { gui.game.map.preparePendingGradient(); };
+		auto decide = [&](size_t job) {
 			aiOrders[job] = gui.game.players[aiPlayers[job]]->ai->getOrder(gui.gamePaused);
-		});
+		};
+		// Preparation comes first so a serial AI error cannot strand its reservation.
+		phase.add(gui.game.map.hasPendingGradientPreparation() ? 1 : 0, prepareGradient);
+		phase.add(aiCount, decide);
+		phase.run(gui.game.map.computeExecutor());
+		// World/order publication resumes only after every observer has left.
 		size_t firstRemote = 0;
 		if (localAI)
 		{
@@ -244,6 +257,8 @@ void Engine::gatherAndAdvanceOrders(bool wasReadyLastTick)
 // implicit here.
 void Engine::executeOrdersAndStep(bool readyNow)
 {
+	// Defensive drain for paused/stalled/no-controller paths and direct callers.
+	gui.game.map.preparePendingGradient();
 	if (readyNow)
 	{
 		// A turn session never reports a mismatch here: the relay arbitrates the
@@ -313,7 +328,7 @@ void Engine::executeOrdersAndStep(bool readyNow)
 			globalContainer->replayReader->advanceStep();
 		}
 
-		gui.game.syncStep(gui.localTeamNo);
+		gui.game.syncStep(gui.localTeamNo, Game::PreparationCompletion::Deferred);
 		// Hand the tick's notices to the GUI now, also under --nox where
 		// gui.step never runs, so the event queue cannot grow unbounded. With a
 		// simulation thread the GUI consumes them while the simulation is parked.

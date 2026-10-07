@@ -13,6 +13,8 @@
 #include <string>
 #include <vector>
 
+class BuildingsTypes;
+
 namespace Stats
 {
 //! Ticks between two samples of a team's history (TeamStats::step).
@@ -24,7 +26,7 @@ enum class Group
 	Population,
 	Food,
 	Work,
-	Resources,
+	Materials,
 	Buildings,
 	Military,
 	Map,
@@ -38,11 +40,13 @@ const char *groupKey(Group group);
 using Extract = std::function<double(const GameplayMeasurements &)>;
 
 //! One part of a metric that can be shown split up (deaths by cause, harvest by
-//! resource).
+//! material).
 struct Band
 {
 	std::string labelKey;
 	Extract value = nullptr;
+	bool literalLabel = false; //!< Catalog-authored label, already human-readable.
+	int material = -1; //!< Material slot, or -1 for other kinds of bands.
 };
 
 //! One entry of the catalog. A metric's value comes either from the sampled
@@ -52,7 +56,7 @@ struct Metric
 {
 	enum Kind
 	{
-		Gauge,	//!< A level at the moment of each sample (units alive, wheat stored).
+		Gauge,	//!< A level at the moment of each sample (units alive, food stored).
 		Counter //!< A running total since the start (units born); shown as a rate.
 	};
 	//! Stable name: the settings file and the text keys "[stat <id>]" and
@@ -111,7 +115,7 @@ struct Metric
 	//! A split metric whose bands are better read as shares of their whole than
 	//! in their own units: it opens as percentages.
 	bool percentByDefault = false;
-	//! Text key of the control that splits it into its bands ("By resource").
+	//! Text key of the control that splits it into its bands ("By material").
 	const char *splitKey = "[stat view split]";
 
 	std::string titleKey() const { return std::string("[stat ") + id + "]"; }
@@ -120,6 +124,8 @@ struct Metric
 
 //! Every metric, grouped and in display order.
 const std::vector<Metric> &catalog();
+//! Per-game building bands, with owned labels and concrete variant counters.
+std::vector<Metric> catalogForBuildings(const BuildingsTypes& buildings);
 //! Index into catalog() of the metric with this id, or -1.
 int findMetric(const std::string &id);
 //! The metric with this id, for ids written in the code: it must exist.
@@ -195,6 +201,7 @@ struct Chart
 	bool global = false;   //!< One series for the whole map rather than one per team.
 	bool ordered = false;  //!< Bands run from worst to best (hunger), not unrelated kinds.
 	bool any = false;	   //!< Some value is not zero: there is something to see.
+	std::vector<bool> bandLabelLiteral;
 	std::vector<std::string> bandKeys; //!< Text keys of the bands; empty unless stacked.
 	std::vector<TeamSeries> teams;	   //!< A single entry when `global`.
 	double low = 0, high = 0;		   //!< Range of the values (stacked: of the stack), zero included.

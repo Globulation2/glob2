@@ -8,7 +8,6 @@
 #include <vector>
 
 #include "BuildingType.h"
-#include "RessourceType.h"
 #include "Settings.h"
 #include "TerrainType.h"
 #include <array>
@@ -48,7 +47,7 @@ private:
 	bool menuMusic = false;
 
 public:
-	explicit GlobalContainer(const char *profileName="glob2");
+	explicit GlobalContainer(const char *profileName="glob2", const std::string& buildingCatalog="");
 	virtual ~GlobalContainer(void);
 
 	void parseArgs(int argc, char *argv[]);
@@ -114,7 +113,6 @@ public:
 	Settings settings;
 
 	BuildingsTypes buildingsTypes;
-	ResourcesTypes resourcesTypes;
 
 	std::string videoshotName; //!< Legacy -vs shorthand for compressed capture.
 	std::string recordingPath;

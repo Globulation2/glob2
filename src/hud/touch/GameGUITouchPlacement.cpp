@@ -179,7 +179,7 @@ Building *GameGUITouch::draggedFlag() const
 		return nullptr;
 	auto *team = gui.game.teams[Building::GIDtoTeam(Uint16(flagDrag->gid))];
 	auto *flag = team ? team->myBuildings[Building::GIDtoID(Uint16(flagDrag->gid))] : nullptr;
-	if (!flag || flag->gid != flagDrag->gid || flag->owner != gui.localTeam || !flag->type->isVirtual ||
+	if (!flag || flag->gid != flagDrag->gid || flag->owner != gui.localTeam || !flag->type->semantics.relocatable ||
 		flag->buildingState != Building::ALIVE)
 		return nullptr;
 	return flag;

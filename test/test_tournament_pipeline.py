@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Adversarial concurrency tests for independent tournament stages."""
 import concurrent.futures
+import errno
 import json
 import os
 from pathlib import Path
@@ -16,7 +17,7 @@ from tools.tournaments.common import atomic_json, read_json
 from tools.tournaments.coordinator import Coordinator
 from tools.tournaments.model import job
 from tools.tournaments.transport import Transport
-from tools.tournaments.worker import Worker, pack
+from tools.tournaments.worker import Worker, pack, usage
 
 
 def stop_transport(transport):
@@ -122,6 +123,30 @@ class PipelineTests(unittest.TestCase):
             worker.acknowledge(attempts[1]['id'],attempts[1]['token'])
             self.assertFalse((worker.root/'spool'/sha).exists())
         finally:worker.close()
+
+    def test_usage_survives_directory_removal_during_traversal(self):
+        directory = self.root / 'usage'
+        disappearing = directory / 'packing-removed'
+        disappearing.mkdir(parents=True)
+        (disappearing / 'old.bin').write_bytes(b'abandoned')
+        remaining = directory / 'remaining'
+        remaining.mkdir()
+        (remaining / 'live.bin').write_bytes(b'live data')
+        (directory / 'symlink.bin').symlink_to(remaining / 'live.bin')
+        original = os.scandir
+        def scan(path):
+            if Path(path) == disappearing:
+                raise FileNotFoundError(errno.ENOENT, 'concurrently removed directory', str(path))
+            return original(path)
+        with patch('os.scandir', side_effect=scan):
+            self.assertEqual(usage(directory), len(b'live data'))
+
+    def test_usage_does_not_hide_other_directory_errors(self):
+        directory = self.root / 'usage-denied'
+        directory.mkdir()
+        with patch('os.scandir', side_effect=PermissionError(errno.EACCES, 'denied')):
+            with self.assertRaises(PermissionError):
+                usage(directory)
 
     def test_slow_collection_does_not_starve_execution_or_control(self):
         c=self.expand(8)

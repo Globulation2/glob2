@@ -572,8 +572,8 @@ void placeCoreResources(Game &game, GenerationContext &context, const FjordLayou
 			// Wheat/stone/fruit all require grass, so the sand ring the lake just grew (when there
 			// is one) is deliberately excluded here rather than merely non-water - a clump center
 			// landing on sand could miss every grass tile within its own radius and place nothing.
-			if (!(game.map.terrainSupportsResourceAt(x, y, STONE) && game.map.terrainSupportsResourceAt(x, y, CHERRY) &&
-				game.map.terrainSupportsResourceAt(x, y, ORANGE) && game.map.terrainSupportsResourceAt(x, y, PRUNE)) ||
+			if (!(game.map.terrainSupportsResourceAtByIndex(x, y, STONE) && game.map.terrainSupportsResourceAtByIndex(x, y, CHERRY) &&
+				game.map.terrainSupportsResourceAtByIndex(x, y, ORANGE) && game.map.terrainSupportsResourceAtByIndex(x, y, PRUNE)) ||
 				grid[y * layout.W + x] != 0)
 				continue;
 			const auto shaped = layout.toShape({double(x), double(y)});
@@ -617,7 +617,7 @@ void placeCoreResources(Game &game, GenerationContext &context, const FjordLayou
 		for (int y = 0; y < layout.H; ++y)
 			for (int x = 0; x < layout.W; ++x)
 			{
-				if (!game.map.terrainSupportsResourceAt(x, y, ALGA))
+				if (!game.map.terrainSupportsResourceAtByIndex(x, y, ALGA))
 					continue;
 				const auto shaped = layout.toShape({double(x), double(y)});
 				double u = shaped.x, v = shaped.y;
@@ -647,7 +647,7 @@ void placeOpenSeaAlgae(Game &game, GenerationContext &context, const FjordLayout
 	{
 		for (int x = 0; x < layout.W; ++x)
 		{
-			if (!game.map.terrainSupportsResourceAt(x, y, ALGA))
+			if (!game.map.terrainSupportsResourceAtByIndex(x, y, ALGA))
 				continue;
 			const auto shaped = layout.toShape({double(x), double(y)});
 			double u = shaped.x, v = shaped.y;
@@ -707,7 +707,7 @@ bool placeStarterKits(Game &game, GenerationContext &context, const FjordLayout 
 		std::vector<MapGeneratorPoint> stonePts = homePoints;
 		chooseRandomPoints(game.map, context, stonePts, 1);
 		for (unsigned int j = 0; j < stonePts.size(); ++j)
-			game.map.setResource(stonePts[j].x, stonePts[j].y, STONE, 1);
+			game.map.setResourceByIndex(stonePts[j].x, stonePts[j].y, STONE, 1);
 
 		std::vector<unsigned char> home(size_t(layout.W) * layout.H, 0);
 		for (const auto &point : homePoints)

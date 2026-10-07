@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #pragma once
 #include "GenerationContext.h"
+#include "Material.h"
 #include "Geometry.h"
 #include "Grid.h"
 #include "Regions.h"
@@ -173,12 +174,13 @@ bool settleRoundColonies(Game &, GenerationContext &, const char *stream,
 template <typename Layout>
 std::string designMismatch(const Layout &L, const Map &map, const char *name);
 
-/// A finished colony must be able to harvest `type` within `range` walking steps. `name` is
+/// A finished colony must be able to harvest `material` within `range` walking steps. `name` is
 /// used in failure diagnostics. The last step means gathering from a neighboring walkable tile,
 /// not walking through the resource. Permanent resources are valid targets too.
-struct ResourceAccessRule
+struct MaterialAccessRule
 {
-	int type, range;
+	MaterialId material;
+	int range;
 	const char *name;
 };
 /// Read-only counterpart to starting-resource/room repairs, for maps whose resource policy
@@ -187,8 +189,8 @@ struct ResourceAccessRule
 /// Requires `minimumSites` overlapping 4x4 anchors within `buildingRange`; these are placement
 /// options, not disjoint buildings. Returns the first unmet rule with colony and observed distance
 /// or site count. No mutation, RNG draws or silent weakening of requirements. Invalid budgets or
-/// resource rules throw GenerationFailure; no worker for a colony is an explicit failure.
-std::string startingAccessFailure(const Map &, int teams, const std::vector<ResourceAccessRule> &,
+/// material rules throw GenerationFailure; no worker for a colony is an explicit failure.
+std::string startingAccessFailure(const Map &, int teams, const std::vector<MaterialAccessRule> &,
 								  int minimumSites = 16, int buildingRange = 24);
 
 /// Farther than any walk on the largest supported map, so a rule given this range asks only that
@@ -220,14 +222,14 @@ std::string coloniesApart(const Map &, int teams, const std::string &route);
 ColonyWalk walkFromFirstColony(const Map &, int teams, const std::string &ground,
 							   const std::string &route);
 
-/// Which crops a walk stands beside: whether any wheat deposit, and any wood deposit, has a tile
+/// Which crops a walk stands beside: whether any food source, and any wood source, has a tile
 /// of `reach` (a flood's steps, -1 where nothing was reached) within one tile of it, diagonals
 /// included, the way a worker harvests from the tile next to a deposit. The check a validator
 /// makes after flooding from a colony's workers over walkable land.
 struct CropsInReach
 {
-	bool wheat = false, wood = false;
-	/// "" when both are in reach, else which is not: "cannot walk to wheat."
+	bool food = false, wood = false;
+	/// "" when both are in reach, else which is not: "cannot walk to food."
 	std::string missing() const;
 };
 CropsInReach cropsBesideReach(const Map &, const std::vector<int> &reach);

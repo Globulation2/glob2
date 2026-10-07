@@ -54,6 +54,7 @@
 #include <numeric>
 #include <set>
 #include <optional>
+#include <nlohmann/json.hpp>
 #include <unistd.h>
 
 namespace
@@ -72,6 +73,32 @@ struct CountingAI : AIImplementation {
 // Named in friend declarations, so it stays at global scope.
 struct CustomGameSetupHarness
 {
+    static void catalogExperimentsInPreview()
+    {
+        glob2test::HeadlessGame world({.teams=2, .header=true});
+        auto json = nlohmann::json::parse(world.game.buildingsTypes.snapshotJson());
+        json["experiments"].push_back({{"key", "preview-building"}, {"label", "Preview"}, {"help", "Fixture"}});
+        world.game.buildingsTypes.loadSnapshotJson(json.dump());
+        world.game.configureBuildingCatalog();
+        const auto path = glob2test::artifactDir() / "experiment-preview.map";
+        {
+            GAGCore::BinaryOutputStream out(Toolkit::getFileManager()->openOutputStreamBackend(path.string()));
+            world.game.save(&out, true, "Preview experiment");
+        }
+        globalContainer->settings.experiments.set("preview-building", true, {"preview-building"});
+        GAGGUI::ScreenStack stack(*globalContainer->gfx);
+        CustomGameScreen screen(stack);
+        for (int load=0; load<2; ++load)
+        {
+            REQUIRE(screen.loadMap(path.string()));
+            CHECK(screen.getGameHeader().getExperiments().has("preview-building"));
+            CHECK(screen.getGameHeader().getBuildingCatalogSnapshot() == world.game.buildingsTypes.snapshotJson());
+        }
+        REQUIRE(screen.loadMap((glob2test::sourceRoot() / "maps/FourSquares1.map.gz").string()));
+        CHECK_FALSE(screen.getGameHeader().getExperiments().has("preview-building"));
+        globalContainer->settings.experiments.clear();
+    }
+
     static void catalogLaunch()
     {
         Online::ServicesOwner online;
@@ -2475,6 +2502,43 @@ static void commonChecks()
 
 TEST_SUITE("CustomGameSetup")
 {
+    TEST_CASE("map previews retain embedded experimental catalogs through cache hits")
+    {
+        glob2test::HeadlessGlobals globals(setupOptions(false));
+        CustomGameSetupHarness::catalogExperimentsInPreview();
+    }
+
+    TEST_CASE("local building experiments are filtered by the destination catalog while saves retain theirs")
+    {
+        glob2test::HeadlessGlobals globals;
+        const std::vector<std::string> localKeys{"fixture-local", "fixture-foreign"};
+        auto& settings = globalContainer->settings.experiments;
+        settings.set(ExperimentId::GuardAreaBalancing);
+        for (const auto& key : localKeys) settings.set(key, true, localKeys);
+        BuildingsTypes catalog;
+        catalog.initLegacy();
+        auto json = nlohmann::json::parse(catalog.snapshotJson());
+        json["experiments"].push_back({{"key", localKeys[0]}, {"label", "Local"}, {"help", "Fixture"}});
+        GameHeader header;
+        header.setBuildingCatalogSnapshot(json.dump());
+        MapHeader map;
+        map.setIsSavedGame(false);
+        Engine::applyLocalExperiments(header, map);
+        CHECK(header.getExperiments().has(ExperimentId::GuardAreaBalancing));
+        CHECK(header.getExperiments().has(localKeys[0]));
+        CHECK_FALSE(header.getExperiments().has(localKeys[1]));
+        header.setBuildingCatalogSnapshot(catalog.snapshotJson());
+        Engine::applyLocalExperiments(header, map);
+        CHECK(header.getExperiments().size() == 1);
+        header.setBuildingCatalogSnapshot(json.dump());
+        header.getExperiments().set(localKeys[0], true, localKeys);
+        const auto saved = header.getExperiments();
+        settings.clear();
+        map.setIsSavedGame(true);
+        Engine::applyLocalExperiments(header, map);
+        CHECK(header.getExperiments() == saved);
+    }
+
     TEST_CASE("catalog local launch loads the exact cached version and rejects invalid maps [writes-preferences]")
     {
         glob2test::HeadlessGlobals globals(setupOptions(false));
@@ -2529,7 +2593,7 @@ TEST_SUITE("CustomGameSetup")
 	static_assert(AI::ECONO == 4, "Econo must retain its save ID");
 	REQUIRE(AINames::parseAIName("Econo") == AI::ECONO);
 	REQUIRE(AINames::getAISelectorText(AI::ECONO) == "Econo - Easy (" + std::to_string(AINames::getAIStrength(AI::ECONO)) + ") - No warriors");
-	REQUIRE(AINames::getAIProfile(AI::CORTEX).find("wheat") != std::string::npos);
+	REQUIRE(AINames::getAIProfile(AI::CORTEX).find("food") != std::string::npos);
 	REQUIRE(AINames::getAIProfile(AI::CORTEX).find("\n\nStrengths and weaknesses:") != std::string::npos);
 	const auto dir =
 		std::filesystem::temp_directory_path() / ("glob2-setup-test-" + std::to_string(getpid()));

@@ -160,7 +160,7 @@ void GameGUI::iterateSelection(void)
 	}
 	else if (selectionMode==TOOL_SELECTION)
 	{
-		Sint32 typeNum=globalContainer->buildingsTypes.getTypeNum(toolManager.getBuildingName(), 0, false);
+		Sint32 typeNum=game.buildingsTypes.getFinishedTypeNum(toolManager.getBuildingName());
 		for (int i=0; i<Building::MAX_COUNT; i++)
 		{
 			Building *b=game.teams[localTeamNo]->myBuildings[i];

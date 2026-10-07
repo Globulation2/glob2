@@ -1,0 +1,32 @@
+{
+  "format": 139,
+  "source_commit": "ee3be8ecd9d7100de78ef63869271371d427cb66",
+  "source_binary_sha256": "0d62ae957e9094fa2c5f785c1d068923d11104945897aa2cd01769841e7a054c",
+  "source_format": 137,
+  "source_tick": 8192,
+  "saved_tick": 8193,
+  "source_fixture_sha256": "014aebcd7e3fca842b6a6006acb54952fd15908feff132ecf8cf8839e5b0faef",
+  "source_decompressed_sha256": "829b461f84e3d3cd096c602a54ac0f1f867b53e4ff2052a369474b1e466b7d5e",
+  "conversion": "Authentic upstream serializer output, with no byte patching. Reconstruct the input checkpoint by reversing the documented terrain-seed138 fixture conversion, load using source_commit, advance one tick and save final.",
+  "arguments": [
+    "--run-game",
+    "--load-game",
+    "restored-137.game",
+    "--ticks",
+    "8193",
+    "--save",
+    "final",
+    "--output-dir",
+    "output",
+    "--compute-threads",
+    "4",
+    "--compute-experiments",
+    "ai",
+    "--gradient-workers",
+    "2",
+    "--gradient-delay",
+    "8"
+  ],
+  "sha256": "32b514b16c0b65de78091f0c7848f444373cc6beb6bfe32e0d06ad2f2f2cf2f5",
+  "decompressed_sha256": "58b8ec670617a45f4d6b9a8833e73f1f65d9ee15b299ec33de9dd4c6075f3879"
+}

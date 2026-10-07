@@ -74,7 +74,7 @@ namespace WinProbability
 	{
 		Sint32 units;         ///< living units, all types
 		Sint32 prestige;      ///< the team's prestige
-		Sint32 barracks;      ///< finished barracks
+		Sint32 barracks;      ///< unique warrior combat-training providers, including their construction sites
 		Sint32 explorers;     ///< living explorers
 		Sint32 foodCritical;  ///< units that are starving
 		Sint32 attack;        ///< total attack power

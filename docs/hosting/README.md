@@ -288,6 +288,8 @@ Caddy adds security headers to everything it serves: `Strict-Transport-Security`
 and a `Content-Security-Policy` with `frame-ancestors 'none'`:
 
 - the web app: scripts, styles, fonts and data from the instance origin only;
+  `/music/decode-worker.js` additionally permits `'wasm-unsafe-eval'` to compile
+  the Opus decoder inside its dedicated worker; JavaScript `eval` stays blocked;
 - `/play/`: also inline scripts (the client's loader page), `'wasm-unsafe-eval'`,
   `blob:` workers, and `https:`/`wss:` connections (players choose instances and
   relays); `Cross-Origin-Opener-Policy`/`-Embedder-Policy` stay as before;

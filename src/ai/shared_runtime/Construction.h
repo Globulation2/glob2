@@ -7,14 +7,17 @@
 #include "shared_runtime/Position.h"
 #include "Player.h"
 #include "BuildingType.h"
+#include "shared_runtime/BuildingDemands.h"
 
 #include <map>
+#include <initializer_list>
 #include <memory>
 #include <tuple>
 #include <vector>
 #include "Tribool.h"
 
 class RuntimeBuildingOrderSaveLoadTest;
+class RuntimeContinuationTest;
 
 namespace AISharedRuntime
 {
@@ -28,8 +31,8 @@ namespace AISharedRuntime
 		class UnderConstruction;
 		class BeingUpgraded;
 		class BeingUpgradedTo;
-		class SpecificBuildingType;
-		class NotSpecificBuildingType;
+		class ProvidesBuildingCapability;
+		class LacksBuildingCapability;
 		class BuildingLevel;
 		class Upgradable;
 		class EnemyBuildingDestroyed;
@@ -41,10 +44,10 @@ namespace AISharedRuntime
 		class AssignWorkers;
 		class ChangeSwarm;
 		class DestroyBuilding;
-		class ResourceTracker;
-		class AddResourceTracker;
-		class PauseResourceTracker;
-		class UnPauseResourceTracker;
+		class MaterialTracker;
+		class AddMaterialTracker;
+		class PauseMaterialTracker;
+		class UnPauseMaterialTracker;
 		class ChangeFlagSize;
 		class ChangeFlagMinimumLevel;
 		class GlobalManagementOrder;
@@ -91,6 +94,8 @@ namespace AISharedRuntime
 			friend class AISharedRuntime::Construction::BuildingOrder;
 			virtual int calculate_constraint(Runtime& runtime, int x, int y)=0;
 			virtual bool passes_constraint(Runtime& runtime, int x, int y)=0;
+			// Exact anchors constrain the origin; terrain/distance constraints cover the perimeter.
+			virtual bool applies_to_origin() const { return false; }
 			///This function is meant for the registering of GradientInfo, return NULL if the Constraint doesn't use a gradient
 			virtual Gradients::GradientInfo* get_gradient_info()=0;
 			virtual ConstraintType get_type()=0;
@@ -195,6 +200,7 @@ namespace AISharedRuntime
 			friend class Constraint;
 			int calculate_constraint(Runtime& runtime, int x, int y);
 			bool passes_constraint(Runtime& runtime, int x, int y);
+			bool applies_to_origin() const override { return true; }
 			Gradients::GradientInfo* get_gradient_info() { return NULL; }
 			ConstraintType get_type();
 			bool load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor);
@@ -216,6 +222,7 @@ namespace AISharedRuntime
 			friend class Constraint;
 			int calculate_constraint(Runtime& runtime, int x, int y);
 			bool passes_constraint(Runtime& runtime, int x, int y);
+			bool applies_to_origin() const override { return true; }
 			Gradients::GradientInfo* get_gradient_info() { return NULL; }
 			ConstraintType get_type();
 			bool load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor);
@@ -226,12 +233,16 @@ namespace AISharedRuntime
 		};
 
 
-		///An order for new buildings to be constructed. It takes the type of building from IntBuildingType.h,
+		///A construction plan requests a semantic demand and binds one concrete catalog variant,
 		///and the number of workers that should be used to construct it.
 		class BuildingOrder
 		{
 		public:
 			BuildingOrder(int building_type, int number_of_workers);
+   BuildingOrder(Runtime& runtime,int demand,int workers);
+   unsigned input_resource_mask(Runtime& runtime) const;
+   void add_input_distance_constraints(Runtime& runtime,int defaultWeight,
+       std::initializer_list<std::pair<int,int>> resourceWeights={},int maximumDistance=-1);
 			///Adds a constraint to be used in finding a location of the building. This class takes ownership of the constraint.
 			void add_constraint(Constraint*  constraint);
 			///Adds a new condition to the building order. This assumes ownership of the condition.
@@ -248,8 +259,11 @@ namespace AISharedRuntime
 			///An internal function that has all of the constraints register their respective Gradients with the GradientManager
 			void queue_gradients(Gradients::GradientManager& manager);
 			int get_building_type() const { return building_type; }
+   int get_concrete_type() const { return concrete_type; }
+   bool bind(Runtime& runtime);
 			int get_number_of_workers() const { return number_of_workers; }
 			int building_type;
+   int concrete_type = -1;
 			int number_of_workers;
 			/// Assigned by Runtime::add_building_order from BuildingRegister, and the key
 			/// this order is known by in BuildingRegister::pending_buildings. Defaulted
@@ -297,12 +311,14 @@ namespace AISharedRuntime
 		///it was unable to be set for various reasons (resources grew into its area)
 		class BuildingRegister
 		{
+			friend class ::RuntimeContinuationTest;
 		public:
 			BuildingRegister(Player* player, Runtime& runtime);
-			bool is_building_pending(unsigned int id);
-			bool is_building_found(unsigned int id);
+			bool is_building_pending(unsigned int id) const;
+			bool is_building_found(unsigned int id) const;
 			bool is_building_upgrading(unsigned int id);
-			int get_type(unsigned int id);
+			int get_type(unsigned int id); // concrete match-local descriptor ID
+   bool provides(unsigned int id,int demand);
 			int get_level(unsigned int id);
 			int get_assigned(unsigned int id);
 			Building* get_building(unsigned int id);
@@ -317,8 +333,8 @@ namespace AISharedRuntime
 			friend class AISharedRuntime::Conditions::UnderConstruction;
 			friend class AISharedRuntime::Conditions::BeingUpgraded;
 			friend class AISharedRuntime::Conditions::BeingUpgradedTo;
-			friend class AISharedRuntime::Conditions::SpecificBuildingType;
-			friend class AISharedRuntime::Conditions::NotSpecificBuildingType;
+			friend class AISharedRuntime::Conditions::ProvidesBuildingCapability;
+			friend class AISharedRuntime::Conditions::LacksBuildingCapability;
 			friend class AISharedRuntime::Conditions::BuildingLevel;
 			friend class AISharedRuntime::Conditions::Upgradable;
 			friend class AISharedRuntime::Conditions::EnemyBuildingDestroyed;
@@ -326,10 +342,10 @@ namespace AISharedRuntime
 			friend class AISharedRuntime::Management::AssignWorkers;
 			friend class AISharedRuntime::Management::ChangeSwarm;
 			friend class AISharedRuntime::Management::DestroyBuilding;
-			friend class AISharedRuntime::Management::ResourceTracker;
-			friend class AISharedRuntime::Management::AddResourceTracker;
-			friend class AISharedRuntime::Management::PauseResourceTracker;
-			friend class AISharedRuntime::Management::UnPauseResourceTracker;
+			friend class AISharedRuntime::Management::MaterialTracker;
+			friend class AISharedRuntime::Management::AddMaterialTracker;
+			friend class AISharedRuntime::Management::PauseMaterialTracker;
+			friend class AISharedRuntime::Management::UnPauseMaterialTracker;
 			friend class AISharedRuntime::Management::ChangeFlagSize;
 			friend class AISharedRuntime::Management::ChangeFlagMinimumLevel;
 			friend class AISharedRuntime::Management::GlobalManagementOrder;

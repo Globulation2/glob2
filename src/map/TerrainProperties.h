@@ -1,54 +1,18 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #pragma once
 
-#include "TerrainType.h"
+#include "TerrainPropertiesLayout.h"
+#include "TerrainTypeTable.h"
 #include <array>
 #include <cassert>
 #include <cstdint>
 
-// Q8 factors use 256 for one. Health is signed HP per tick in the same scale.
-// Keep presentation out of this table: hot simulation queries only need these
-// immutable fixed-layout values. The table below supplies compile-time built-ins;
-// runtime registries preserve this layout. Resource masks use the resource wire IDs.
-struct TerrainProperties
-{
-	bool walkable = false, swimmable = false, flyable = true;
-	bool resourcesGrow = false, fertilitySource = false, nonGrowingResources = false;
-	bool buildable = false, projectileBlocks = false, shoreline = false;
-	std::uint16_t groundSpeedQ8 = 256, airSpeedQ8 = 256;
-	std::int16_t groundHealthQ8 = 0, airHealthQ8 = 0;
-	std::uint16_t growthQ8 = 256;
-	std::int16_t fertilityQ8 = 0;
-	std::uint16_t inhibitionQ8 = 0, shoreSupportQ8 = 0;
-	std::uint16_t allowedResources = 0;
-	std::uint8_t farmCrop = 255;
-};
-
+// Compile-time built-in profiles, derived from each type's group so every member
+// of a group is byte-identical. Runtime registries preserve this layout.
 inline constexpr auto TERRAIN_PROPERTIES = [] {
 	std::array<TerrainProperties, TERRAIN_COUNT> definitions{};
-	auto& water = definitions[WATER];
-	water.swimmable = true;
-	water.resourcesGrow = water.fertilitySource = true;
-	water.fertilityQ8 = 256;
-	water.allowedResources = (1u << 4); // algae
-	water.farmCrop = 4;
-	auto& sand = definitions[SAND];
-	sand.walkable = sand.shoreline = true;
-	sand.inhibitionQ8 = sand.shoreSupportQ8 = 256;
-	auto& grass = definitions[GRASS];
-	grass.walkable = grass.resourcesGrow = grass.nonGrowingResources = grass.buildable = true;
-	grass.allowedResources = (1u << 0) | (1u << 1) | (1u << 2) | (1u << 3) |
-		(1u << 5) | (1u << 6) | (1u << 7);
-	grass.farmCrop = 1;
-	auto& ice = definitions[ICE];
-	ice.walkable = true;
-	ice.groundSpeedQ8 = 128;
-	ice.groundHealthQ8 = -8;
-	auto& trail = definitions[TRAIL];
-	trail.walkable = trail.buildable = true;
-	trail.groundSpeedQ8 = 512;
-	definitions[GRASS_SAND_SHORE].walkable = definitions[GRASS_SAND_SHORE].shoreline = true;
-	definitions[SAND_WATER_SHORE].walkable = definitions[SAND_WATER_SHORE].shoreline = true;
+	for (unsigned i = 0; i < TERRAIN_COUNT; ++i)
+		definitions[i] = TERRAIN_GROUPS[unsigned(TERRAIN_TYPES[i].group)].properties;
 	return definitions;
 }();
 
@@ -59,23 +23,14 @@ constexpr const TerrainProperties& terrainProperties(TerrainType type)
 	return TERRAIN_PROPERTIES[static_cast<unsigned>(type)];
 }
 
-// Irrigation heuristics need a beneficial source, not merely an enabled
-// (possibly zero or negative) contribution to the signed ecology field.
-constexpr bool terrainProvidesFertility(const TerrainProperties& p)
-{
-    return p.fertilitySource && p.fertilityQ8>0;
-}
-
-constexpr bool validTerrainProperties(const TerrainProperties& p)
-{
-	return !(p.walkable && p.swimmable) && (p.allowedResources & ~0xffu) == 0 &&
-		p.groundSpeedQ8 >= 64 &&
-		p.groundSpeedQ8 <= 1024 && p.airSpeedQ8 >= 64 && p.airSpeedQ8 <= 1024 &&
-		p.growthQ8 <= 1024 && p.inhibitionQ8 <= 1024 && p.shoreSupportQ8 <= 1024 &&
-		p.fertilityQ8 >= -1024 && p.fertilityQ8 <= 1024 &&
-		(p.farmCrop == 255 || (p.farmCrop < 8 && (p.allowedResources & (1u << p.farmCrop))));
-}
 static_assert([] { for (const auto& p : TERRAIN_PROPERTIES) if (!validTerrainProperties(p)) return false; return true; }());
+// Classic rules are frozen: the legacy types keep their exact profiles.
+static_assert(TERRAIN_PROPERTIES[ICE].groundSpeedQ8 == 128 && TERRAIN_PROPERTIES[ICE].groundHealthQ8 == -8 &&
+	TERRAIN_PROPERTIES[TRAIL].groundSpeedQ8 == 512 && TERRAIN_PROPERTIES[TRAIL].buildable &&
+	TERRAIN_PROPERTIES[SAND].inhibitionQ8 == 256 && TERRAIN_PROPERTIES[SAND].shoreSupportQ8 == 256 &&
+	TERRAIN_PROPERTIES[WATER].swimmable && TERRAIN_PROPERTIES[WATER].fertilityQ8 == 256 &&
+	TERRAIN_PROPERTIES[GRASS].buildable && TERRAIN_PROPERTIES[GRASS].farmMaterial == materialIndex(MaterialId::Food) &&
+	TERRAIN_PROPERTIES[GRASS_SAND_SHORE].shoreline && !TERRAIN_PROPERTIES[GRASS_SAND_SHORE].buildable);
 
 // Only old-format import and the legacy corner editor use this adapter.
 constexpr TerrainType legacyTerrainType(std::uint16_t sprite)

@@ -9,6 +9,9 @@ inline constexpr const char *SkinDeformationGLSL = R"GLSL(
 uniform mat4 bones[32];
 uniform mat4 view;
 uniform mat3 normalView;
+uniform float shell;
+uniform float furLength;
+uniform float shellDepth;
 vec3 rigNormal(vec3 n) {
     float l = length(n);
     return l < 1e-8 ? vec3(0.0, 0.0, 1.0) : n / l;
@@ -26,7 +29,8 @@ void main() {
     vec4 projected = view * vec4(p, 1.0);
     uv = texcoord;
     normal = rigNormal(normalView * rigNormal(n));
-    gl_Position = vec4(projected.xy / 1.25, projected.z, 1.0);
+    gl_Position = vec4(projected.xy / 1.25 + normal.xy * shell * furLength,
+                       projected.z - shell * shellDepth, 1.0);
 }
 )GLSL";
 } // namespace GAGCore

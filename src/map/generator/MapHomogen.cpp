@@ -74,15 +74,17 @@ void Map::smoothResources(int times)
 			for (int x=0; x<w; x++)
 			{
 				Resource &r=tiles[coordToIndex(x, y)].resource;
-				if (r.type!=WOOD && r.type!=WHEAT && r.type!=STONE && r.type!=ALGA)
+				if (r.type==NO_RES_TYPE || !resourcePropertiesByIndex(r.type).smoothPlacement)
 					continue;
 				if (!(syncRand()&4))
 					continue;
-				const ResourceType *rt=globalContainer->resourcesTypes.get(r.type);
+				const auto& definition = resourceRegistry().yields(static_cast<ResourceId>(r.type));
+				const auto material = resourcePropertiesByIndex(r.type).primaryMaterial;
+				const auto& yield = definition[materialIndex(material)];
 				if (int(r.amount)-RESOURCE_INITIAL_AMOUNT<=int(syncRand()&3))
 				{
-					if (r.amount<rt->sizesCount)
-						r.amount++;
+					if (r.amount<yield.capacity)
+						setMaterialAmountSlot(coordToIndex(x,y), materialIndex(material), r.amount+1);
 				}
 				else
 				{
@@ -91,11 +93,12 @@ void Map::smoothResources(int times)
 					const int nx=normalizeX(x+dx), ny=normalizeY(y+dy);
 					if (getResource(nx, ny).type==NO_RES_TYPE && isResourceAllowed(nx, ny, r.type))
 					{
-						Resource &sprout=tiles[coordToIndex(nx, ny)].resource;
+						Resource sprout;
 						sprout.type=r.type;
-						sprout.variety=syncRand()%rt->varietiesCount;
+						sprout.variety=0;
 						sprout.amount=RESOURCE_INITIAL_AMOUNT;
 						sprout.animation=0;
+						replaceResource(nx,ny,sprout);
 					}
 				}
 			}

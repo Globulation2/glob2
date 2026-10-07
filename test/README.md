@@ -213,7 +213,13 @@ Switches the online and LAN tests use:
 resource-growth attribution, full-array enemy iteration, indexed text alliances,
 dense-map request boundaries, malformed script-generation counts, and
 deterministic sixteen-team save/load continuation. `Maxima.Economy` covers counted opponents,
-legacy twelve-record loading and malformed counts. Replay and network boundaries
+legacy twelve-record loading and malformed counts. Its producer-retirement case
+also distinguishes a feeding-priority allocation shortfall from an unreachable
+site, checks that viable capacity is retained, and verifies unchanged birth
+funding. `Maxima.FoodLedger` checks that the corresponding uncontested coverage
+signal never doubles resource claims, including mixed-service providers and
+zero-demand consumers, and that non-producing services retain their allocation-based
+signal. Replay and network boundaries
 remain covered by `JavaScriptCompatibility` and `TeamStatsSave`.
 
 `fixtures/team-limit/pre-v127-maxima.game.gz` is an actual format-126 tick-zero
@@ -302,10 +308,16 @@ to compare this platform's rows of `test/map-generator-golden.txt` against fresh
 `--sweep` to roll every playable landscape at the lobby's colony counts and sizes. A platform
 with no rows reports and passes, so a new machine can run the check before its rows exist;
 `--require-rows` makes that a failure instead, which is what CI runs, so the table must carry
-rows for every platform CI builds on (`linux-x86_64` today, next to the maintainers'
-`macos-arm64`). Rows for a platform you cannot build on come from the `--print` output in its
-CI log, which the workflow prints before the check. The framework reference under
-`docs/map-generators/` describes the rules it enforces.
+rows for every platform running that check in CI (`linux-x86_64` today). The current
+table records runtime-resource RNG epoch 1: resource sprite selection no longer consumes
+simulation RNG, so initial stock quantities and full fingerprints can change without
+individual generator recipe revisions. The complete pre-epoch table, including historical
+`macos-arm64` rows, is retained in
+`test/fixtures/map-generators/pre-resource-epoch-golden.txt`. Current macOS full rows are
+unverified and must be measured on macOS before `--require-rows` can pass there; do not copy
+Linux hashes. The five separately verified explicit-design topology comparisons below do
+not establish topology equivalence for every changed golden. The framework reference under
+`docs/map-generators/` describes the remaining rules it enforces.
 
 `MapGeneratorGoldenTest <profile> --telemetry` compares telemetry enabled/disabled and repeated
 attempts for all registered generators at three seeds, including complete serialized worlds and
@@ -887,11 +899,8 @@ Older saves do not carry it and load leaves the member at `-1`, the sentinel
 The fixture checks the version-96 round trip, that an unregistered order's `-1`
 survives the `Uint32` on the wire rather than returning as a huge positive key,
 and that a pre-96 stream leaves the sentinel with every following field still
-decoding from the right offset. `test/unit/stubs/RuntimeStubs.cpp` satisfies the
-`find_location` / `passes_conditions` link surface (`BuildingsTypes`, `FlagMap`,
-`GradientManager`, and the `Constraint` / `Condition` factories) that a
-constraint-free order never reaches at runtime. It is the `RuntimeBuildingOrderSaveLoad`
-suite of `glob2-unit-tests`.
+decoding from the right offset. The `RuntimeBuildingOrderSaveLoad` suite runs in
+`glob2-engine-tests`, linking the real catalog, placement and runtime components.
 
 ### Native main Settings redesign
 
@@ -1384,9 +1393,10 @@ simulator, an owned `--simulator-set` to install, run and retrieve the separate 
 To retain released simulation compatibility traces, replays, commands, and logs,
 pass `--output artifacts/released-compatibility` to
 `test/check_telemetry_simulation.py`. Fresh-load traces compare complete bytes;
-the legacy checkpoint comparison excludes the version-dependent aggregate and
-compares every stored team/entity record. The evidence manifest records this
-exception. CI retains these artifacts even when verification fails.
+the legacy checkpoint comparison also checks complete bytes, including the
+aggregate checksum and every stored team/entity record. The current references
+include simulation revision 20's capability state; historical version-123
+references remain separate. CI retains these artifacts even when verification fails.
 
 The shared evidence comparator requires successful runs of the same clean source
 revision. `--allow-development` permits diagnostic comparisons while recording
@@ -1468,6 +1478,11 @@ Versioned Linux tools can be selected with `--cc clang-18 --cxx clang++-18
 Each run gets a fresh directory under ignored `artifacts/native-coverage/`, with
 build/test logs, JUnit, compiler/tool versions, source revision, selection,
 profiles, full coverage JSON, weighted implementation summaries and HTML.
+CI gives the instrumented suite a 90-minute job budget while retaining the
+900-second per-case timeout. It passes `--stream-logs` so command progress and
+diagnostics remain visible in the job log even when artifact upload cannot finish.
+Local runs keep file-only output unless this option is requested.
+
 CI passes `--discard-merged-profiles` to remove redundant raw profiles only after
 the binary's tests, profile merge, JSON export and HTML generation succeed. The
 merged profile and all reports and test evidence remain; failed runs retain raw
@@ -1508,7 +1523,8 @@ and logs; a timeout must identify its case rather than hide the whole catalog.
 
 Use `python3 test/test_cli_smoke.py --binary <client> --artifacts artifacts/cli --junit artifacts/cli.xml`
 for real executable contracts: argument validation, map image/report workflows,
-headless worker parity and saved continuation. `test/run_coverage.py --with-cli`
+headless worker parity, experimental catalog generation, embedded-catalog reopening
+without installed definitions, and saved continuation. `test/run_coverage.py --with-cli`
 builds the instrumented client and exports these profiles separately under `client/`;
 never merge its counts with independently linked engine or unit reports.
 
@@ -1793,3 +1809,73 @@ and captures screenshots. `TerrainPresentation` covers software and GPU
 registry/asset invalidation, plus explicit edge-mask expectations for custom aliases
 at wrapped map boundaries. Cache-versus-direct pixel equality alone is insufficient:
 both paths can share the same wrong layer description.
+
+### Building catalog composition and performance
+
+`BuildingCatalogFixtures` loads retained manifests under
+`test/fixtures/building-catalog/composition/`; it never regenerates definitions at
+runtime. The seeded combinations exercise mixed services, split recipes, shared
+stock, rectangular overlays and missing capabilities. Per-tick save continuation,
+resource conservation and retained custom-rule traces complement the focused
+`BuildingCatalog`, `BuildingServices` and `BuildingProductionCombat` suites.
+`AICustomCatalog` checks actual replacement-provider selection and split-production
+orders across the native controllers. These custom traces do not establish stock
+behavior parity.
+
+`BuildingGradientBenchmark` is opt-in (`--tag benchmark --filter
+'BuildingGradientBenchmark/*'`). It measures actual building/resource field
+preparation and a fixed stock simulation without AI decisions. The source compiles
+unchanged against the pre-catalog engine for paired measurements. Kernel rows
+include input dimensions, repetitions, iteration counts and output digests;
+simulation rows retain endpoint unit/building counts, health and inventory.
+Run matched release toolchains one process at a time on an otherwise idle host.
+Timing thresholds are evaluated from retained interleaved runs, not asserted in CI.
+
+`BuildingCatalogBenchmark` separates catalog setup from steady simulation with
+55, 256 and 1,024 definitions, keeping live entities fixed. Its private supply
+routing workload reports cold, warm and depletion passes below, at and above the
+cache budget, including retained cell bytes. These custom-catalog measurements
+complement the unchanged-source stock comparison; they have no historical
+baseline equivalent.
+
+### Runtime resource stress components
+
+`ResourceRuntimeBenchmark` is opt-in (`--tag benchmark --filter
+'ResourceRuntimeBenchmark/*'`). It holds map geometry fixed at 256² and 512² with
+eight teams, comparing one resource definition against 512 equivalent definitions
+and a 512-definition variant whose deposits yield three materials. Sparse material
+coverage must allocate fields only for materials present; equivalent definitions
+must preserve the query/field digest. No building recipes are changed.
+
+The `GLOB2_RESOURCE_STRESS` JSON rows separate definition installation, placement,
+field requests, source scans, mutations, seed refresh and growth. Growth uses a
+configured nonzero uniform rate in three batches of 16 passes, after the matched
+query phases, with stock digests verifying equivalent-definition behavior. They include allocated
+material fields, shared absent fields, preparation and consumer cache bytes, and
+stock index/sidecar/free-list capacities. Set `GLOB2_RESOURCE_STRESS_OUTPUT` to an
+ignored artifact directory to save `report.json` and six binary games with eight
+small colonies for additional CLI continuation. Colony creation and serialization
+occur after the measured phases. This is a bounded component benchmark, not a
+statistical gameplay comparison or proof of no regression against the old engine.
+Run it on an otherwise idle host, separately from builds and tournaments.
+
+The five explicit-design generator regressions use
+`test/map-generator-resource-epoch.json` to separate topology from initial stock.
+Resource epoch 1 removes resource-sprite draws from the simulation RNG; historical
+full hashes are retained, while new full hashes include the resulting stock
+quantities. Topology hashes still cover every underlying/render terrain tile,
+resource identity/location, and colony start. A stock-only change cannot silently
+approve a changed route or deposit layout.
+
+To record an epoch row, first generate the five historical explicit designs with
+the archived engine (256², four teams, seed 1: maze `cell-shape=0`, fingerprint
+`pattern=0,barrier=0`, canals `block-shape=0`, caravanserai `desert=1`, honeycomb-isle
+`block-shape=1`). Keep their `.map.gz` files under their generator names in an
+ignored artifact directory. Set `GLOB2_RECORD_RESOURCE_DESIGN_GOLDENS` to that
+absolute directory and run the `MapGeneratorDefaults/Explicit designs*` test.
+Recording verifies the historical full hashes and compares topology before writing
+an `epoch1-<platform>.json` artifact. Review every comparison before copying rows
+into the fixture. Record other platform/compiler variants on those actual builds;
+unavailable full hashes produce an explicit unverified warning. The four designs
+whose historical full hashes matched across platforms retain portable topology
+checks; Fingerprint's known platform variant requires its own recorded topology.

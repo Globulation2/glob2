@@ -57,7 +57,7 @@ namespace Turn
 		static constexpr std::uint32_t FLAG_DESYNC_FLAGGED = 1u << 0;
 		static constexpr std::uint32_t FLAG_INCOMPLETE = 1u << 1;
 		static constexpr std::size_t MAX_ID_BYTES = 256;
-		static constexpr std::size_t MAX_SETUP_BYTES = 4u << 20;
+		static constexpr std::size_t MAX_SETUP_BYTES = 32u << 20;
 
 		std::uint32_t flags = 0;
 		std::string matchId;

@@ -2,6 +2,8 @@
 // NOTIFY fan-out, map generation, sim-version partitioning, invite codes,
 // the start sequence down to tickets verified with the published JWKS, and
 // the invite landing page.
+import { createHash } from 'node:crypto';
+import { catalogRulesVersion } from '@glob2/protocol/node';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import { sql } from 'kysely';
 import { STANDARD_RULES, checkDocument as check, simVersionKey } from '@glob2/protocol';
@@ -103,10 +105,16 @@ describe('rooms', () => {
     expect(room.code).toMatch(/^[A-Z2-9]{10}$/);
     expect(room['inviteUrl']).toBe(`${ORIGIN}/j/${room.code}`);
 
+    engine.resourceExperiments = [{ key: 'coral-food', label: 'Coral', help: 'Food from coral.' }];
+    engine.requiredResourceExperiments = ['coral-food'];
     // The engine agent finishes the job; the worker's result task NOTIFYs map_jobs.
     expect(await engine.runPending()).toBe(1);
     room = (await roomState(host.client, (r) => r['mapStatus'] === 'ready')) as Room;
     expect(room.map?.hash).toMatch(/^[0-9a-f]{64}$/);
+    expect(room['resourceExperiments']).toEqual(engine.resourceExperiments);
+    expect(room['experiments']).toContain('coral-food');
+    engine.resourceExperiments = [];
+    engine.requiredResourceExperiments = [];
     // Generated map bytes are public: anyone can download them by hash.
     const download = await fetch(`${a.url}/api/v1/blobs/maps/${room.map!.hash}`);
     expect(download.status).toBe(200);
@@ -310,6 +318,23 @@ describe('rooms', () => {
   });
 
   it('starts: every seated player gets match.start with a ticket that verifies against the JWKS', async () => {
+    const snapshot = JSON.stringify({
+      schemaVersion: 1,
+      catalogKey: 'room-fixture',
+      experiments: [],
+      variants: [],
+    });
+    const buildingCatalog = { snapshot, hash: createHash('sha256').update(snapshot).digest('hex') };
+    const resourceExperiments = [{ key: 'coral-food', label: 'Coral', help: 'Food from coral.' }];
+    await harness.database.db
+      .updateTable('generated_maps')
+      .set({
+        building_catalog: JSON.stringify(buildingCatalog),
+        resource_experiments: JSON.stringify(resourceExperiments),
+        required_resource_experiments: JSON.stringify(['coral-food']),
+      })
+      .where('map_hash', '=', room.map!.hash!)
+      .execute();
     await registerRelay(a, 'relay-eu-1', { region: 'eu-west' });
     host.client.clear();
     guest.client.clear();
@@ -328,6 +353,13 @@ describe('rooms', () => {
         seed: number;
       };
       expect(setup.map).toMatchObject({ kind: 'generated', hash: room.map!.hash });
+      expect((setup as unknown as { buildingCatalog: unknown }).buildingCatalog).toEqual(
+        buildingCatalog,
+      );
+      expect((setup as unknown as { resourceExperiments: unknown }).resourceExperiments).toEqual(
+        resourceExperiments,
+      );
+      expect((setup as unknown as { experiments: string[] }).experiments).toContain('coral-food');
       // The locked, empty seat's team is closed: no player, no colony.
       expect(setup.seats.map((s) => s.kind)).toEqual(['human', 'human', 'closed']);
       expect(setup.seats[2]).toEqual({ seat: 2, kind: 'closed', team: 2 });
@@ -363,6 +395,10 @@ describe('rooms', () => {
       relay_id: 'relay-eu-1',
     });
     expect(match.seed).toBe((match.setup as { seed: number }).seed);
+    expect(match.sim_version).toBe(simVersionKey(SIM));
+    expect(match.rules_identity).toBe(
+      simVersionKey(catalogRulesVersion(SIM, buildingCatalog.hash)),
+    );
     // Participants are the players; the closed seat is none.
     const participants = await harness.database.db
       .selectFrom('match_participants')

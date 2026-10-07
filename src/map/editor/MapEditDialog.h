@@ -6,6 +6,7 @@
 
 #include "Team.h"
 #include "map/TerrainRegistry.h"
+#include "resource/ResourceRegistry.h"
 #include "ui/FrontendUI.h"
 #include <string>
 
@@ -23,13 +24,16 @@ class MapEditMenuScreen : public Glob2UI::InGameDialog
 	{
 		LOAD_MAP,
 		SAVE_MAP,
+		REROLL_TERRAIN_LOOK,
 		OPEN_SCRIPT_EDITOR,
 		OPEN_TEAMS_EDITOR,
 		RETURN_EDITOR,
 		QUIT_EDITOR,
 		SHARE_MAP,
 		IMPORT_TERRAIN,
-		TERRAIN_PALETTE
+		TERRAIN_PALETTE,
+		IMPORT_RESOURCES,
+		RESOURCE_PALETTE
 	};
 
   protected:
@@ -123,6 +127,21 @@ class TerrainPaletteDialog : public Glob2UI::InGameDialog
 	Glob2UI::Element build(const Glob2UI::Presentation &p) override;
 
   protected:
+	void onEscape() override { finish(-1); }
+	bool fillHeight() const override { return true; }
+	double maxWidth() const override { return 760; }
+};
+
+class ResourcePaletteDialog : public Glob2UI::InGameDialog
+{
+	std::shared_ptr<const ResourceRegistry> registry;
+	ExperimentSet& enabled;
+public:
+	explicit ResourcePaletteDialog(std::shared_ptr<const ResourceRegistry> value, ExperimentSet& experiments)
+		: InGameDialog(Glob2UI::Surface::Editor), registry(std::move(value)), enabled(experiments) {}
+	const char* recordingId() const override { return "resource_palette"; }
+	Glob2UI::Element build(const Glob2UI::Presentation& p) override;
+protected:
 	void onEscape() override { finish(-1); }
 	bool fillHeight() const override { return true; }
 	double maxWidth() const override { return 760; }

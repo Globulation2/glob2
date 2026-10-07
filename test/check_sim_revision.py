@@ -66,7 +66,9 @@ def key_at(root, revision, sim_version):
     """The sim version key of a revision of the tree, from its own files."""
     with tempfile.TemporaryDirectory() as scratch:
         tree = Path(scratch)
-        for path in KEY_INPUTS + sim_version.SIM_DATA_FILES:
+        catalog_files = git(root, 'ls-tree', '-r', '--name-only', revision, 'data/buildings', 'data/resources', check=False)
+        dependencies = tuple(catalog_files.stdout.decode().splitlines()) if catalog_files.returncode == 0 else ()
+        for path in KEY_INPUTS + sim_version.SIM_DATA_FILES + dependencies:
             content = file_at(root, revision, path)
             if content is not None:
                 (tree / path).parent.mkdir(parents=True, exist_ok=True)

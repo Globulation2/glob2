@@ -2,6 +2,7 @@
 #pragma once
 #include "Regions.h"
 #include "Grid.h"
+#include "Material.h"
 #include <algorithm>
 #include <cmath>
 #include <cstdint>
@@ -50,7 +51,7 @@ int placeResourceClump(Map &, GenerationContext &, MapGeneratorPoint center, int
 int placeResourceClumpInArea(Map &, GenerationContext &, const std::vector<MapGeneratorPoint> &,
 							  int resourceType, int radius,
 							  const std::vector<unsigned char> *allowed = nullptr);
-// Map::setResource(x, y, type, size) scaled to `percent` of that square's tiles: the tiles
+// Map::setResourceByIndex(x, y, type, size) scaled to `percent` of that square's tiles: the tiles
 // nearest its centre, placed in setResource's own order, so 100 is exactly that call.
 void setScaledResource(Map &, int x, int y, int resourceType, int size, int percent);
 void scatterResources(Game &, GenerationContext &, const ResourceDensities &);
@@ -98,4 +99,8 @@ struct ResourceFrontage
 /// outside the visited catchment. Absent resource types have no entry.
 std::map<int, ResourceFrontage> resourceFrontages(const Map &, const Flood &, int maximumSteps,
 												  const Fertility::Field *fertility = nullptr);
+/// Harvesting frontage grouped by positive material stock, including secondary yields.
+/// With renewal enabled, saturated renewable and inexhaustible sources still count.
+std::map<MaterialId, ResourceFrontage> materialFrontages(const Map &, const Flood &,
+                                                       int maximumSteps, bool renewal = false);
 } // namespace MapGeneration

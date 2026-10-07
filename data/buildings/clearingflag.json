@@ -1,0 +1,109 @@
+{
+  "variants": [
+    {
+      "key": "clearingflag.0.finished",
+      "next": "",
+      "previous": "",
+      "properties": {
+        "defaultUnitStayRange": 3,
+        "gameSprite": "data/gfx/clearingflag",
+        "height": 1,
+        "hueImage": 1,
+        "isCloaked": 1,
+        "maxUnitStayRange": 14,
+        "miniSpriteImage": -1,
+        "shortTypeNum": 10,
+        "type": "clearingflag",
+        "width": 1,
+        "zonable": [
+          1,
+          0,
+          0
+        ]
+      },
+      "requiredExperiment": "",
+      "semantics": {
+        "admittedUnitMask": 7,
+        "ammunitionCost": 1,
+        "ammunitionMaterial": 3,
+        "feeding": {
+          "convertsUnits": false,
+          "cost": {},
+          "duration": 0,
+          "enabled": false,
+          "holdAdmissionUntilExit": false,
+          "optionalFruitMask": 0,
+          "partial": "none",
+          "unitMask": 7
+        },
+        "healing": {
+          "convertsUnits": false,
+          "cost": {},
+          "duration": 0,
+          "enabled": false,
+          "holdAdmissionUntilExit": false,
+          "optionalFruitMask": 0,
+          "partial": "none",
+          "unitMask": 7
+        },
+        "instantPlacement": true,
+        "market": {
+          "fetchesStock": true,
+          "fetchesStockExperiment": "markets-v2",
+          "interTeamFruitExchange": false,
+          "pickupPenalty": 5,
+          "sharedStock": false,
+          "suppliesStock": false,
+          "suppliesStockExperiment": "markets-v2",
+          "suppliesDirectStock": false,
+          "fetchesDirectStock": false,
+          "suppliesStockMaterials": [],
+          "suppliesDirectStockMaterials": [],
+          "fetchesStockMaterials": [],
+          "fetchesDirectStockMaterials": []
+        },
+        "occupiesGround": false,
+        "placeable": true,
+        "production": {
+          "fallbackUnit": 0,
+          "initialRatios": [
+            1,
+            0,
+            0
+          ],
+          "recipes": {},
+          "scheduling": "weighted_late_choice"
+        },
+        "projectileBuildingDamage": 0,
+        "projectileDamage": [
+          0,
+          0,
+          0
+        ],
+        "regenerationPerTick": 0,
+        "relocatable": true,
+        "repairable": false,
+        "requiredWorkerLevel": 0,
+        "sightSharing": "other",
+        "training": {},
+        "trainingInParallel": false,
+        "workPriorityBias": 1,
+        "assignmentLimit": 20,
+        "constructionCost": {},
+        "repairCost": {},
+        "replenishMaterials": []
+      },
+      "presentation": {
+        "displayName": "clearingflag",
+        "iconFrame": 10,
+        "iconTile": false,
+        "iconPriority": 100,
+        "skinSlot": "",
+        "showLevel": true,
+        "connectionGroup": "",
+        "connectsAcrossTeams": false,
+        "defaultAssigned": 5
+      }
+    }
+  ]
+}

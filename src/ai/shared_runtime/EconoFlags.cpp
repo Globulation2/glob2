@@ -1,10 +1,11 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2006 Bradley Arsenault
 
+#include "Material.h"
 #include "AITelemetryFields.h"
 #include "Game.h"
 #include "shared_runtime/Runtime.h"
-#include "IntBuildingType.h"
+#include "shared_runtime/BuildingDemands.h"
 
 using namespace AISharedRuntime;
 using namespace AISharedRuntime::Gradients;
@@ -31,14 +32,14 @@ void Econo::tick_explorer_flags_fruit(Runtime& runtime)
 				if(!flag_on_cherry)
 				{
 					//The main order for the exploration flag
-					BuildingOrder* bo_cherry = new BuildingOrder(IntBuildingType::EXPLORATION_FLAG, 2);
+					BuildingOrder* bo_cherry = new BuildingOrder(runtime, BuildingDemand::AttractExplorers, 2);
 
 					//You want the closest fruit to your settlement possible
 					bo_cherry->add_constraint(new AISharedRuntime::Construction::MinimizedDistance(gi_building, 1));
 
 					//Constraint around the location of fruit
 					AISharedRuntime::Gradients::GradientInfo gi_cherry;
-					gi_cherry.add_source(new AISharedRuntime::Gradients::Entities::Resource(CHERRY));
+					gi_cherry.add_source(new AISharedRuntime::Gradients::Entities::MaterialSource(materialIndex(MaterialId::Cherries)));
 					//You want to be on top of the cherry trees
 					bo_cherry->add_constraint(new AISharedRuntime::Construction::MaximumDistance(gi_cherry, 0));
 
@@ -62,14 +63,14 @@ void Econo::tick_explorer_flags_fruit(Runtime& runtime)
 				if(!flag_on_orange)
 				{
 					//The main order for the exploration flag
-					BuildingOrder* bo_orange = new BuildingOrder(IntBuildingType::EXPLORATION_FLAG, 2);
+					BuildingOrder* bo_orange = new BuildingOrder(runtime, BuildingDemand::AttractExplorers, 2);
 
 					//You want the closest fruit to your settlement possible
 					bo_orange->add_constraint(new AISharedRuntime::Construction::MinimizedDistance(gi_building, 1));
 
 					//Constraints around the location of fruit
 					AISharedRuntime::Gradients::GradientInfo gi_orange;
-					gi_orange.add_source(new AISharedRuntime::Gradients::Entities::Resource(ORANGE));
+					gi_orange.add_source(new AISharedRuntime::Gradients::Entities::MaterialSource(materialIndex(MaterialId::Oranges)));
 					//You want to be on top of the orange trees
 					bo_orange->add_constraint(new AISharedRuntime::Construction::MaximumDistance(gi_orange, 0));
 
@@ -92,13 +93,13 @@ void Econo::tick_explorer_flags_fruit(Runtime& runtime)
 				if(!flag_on_prune)
 				{
 					//The main order for the exploration flag
-					BuildingOrder* bo_prune = new BuildingOrder(IntBuildingType::EXPLORATION_FLAG, 2);
+					BuildingOrder* bo_prune = new BuildingOrder(runtime, BuildingDemand::AttractExplorers, 2);
 
 					//You want the closest fruit to your settlement possible
 					bo_prune->add_constraint(new AISharedRuntime::Construction::MinimizedDistance(gi_building, 1));
 
 					AISharedRuntime::Gradients::GradientInfo gi_prune;
-					gi_prune.add_source(new AISharedRuntime::Gradients::Entities::Resource(PRUNE));
+					gi_prune.add_source(new AISharedRuntime::Gradients::Entities::MaterialSource(materialIndex(MaterialId::Prunes)));
 					//You want to be on top of the prune trees
 					bo_prune->add_constraint(new AISharedRuntime::Construction::MaximumDistance(gi_prune, 0));
 
@@ -135,12 +136,12 @@ void Econo::tick_explorer_flags_enemies(Runtime& runtime)
 		{
 			for(enemy_team_iterator i(runtime); i!=enemy_team_iterator(); ++i)
 			{
-				for(enemy_building_iterator ebi(runtime, *i, IntBuildingType::SWARM_BUILDING, AI_SHARED_RUNTIME_WILDCARD_LEVEL, false); ebi!=enemy_building_iterator(); ++ebi)
+				for(enemy_building_iterator ebi(runtime, *i, BuildingDemand::ProduceWorker, AI_SHARED_RUNTIME_WILDCARD_LEVEL, false); ebi!=enemy_building_iterator(); ++ebi)
 				{
 					if(flags_on_enemy.find(*i)!=flags_on_enemy.end())
 						continue;
 
-					BuildingOrder* bo = new BuildingOrder(IntBuildingType::EXPLORATION_FLAG, 1);
+					BuildingOrder* bo = new BuildingOrder(runtime, BuildingDemand::AttractExplorers, 1);
 					bo->add_constraint(new CenterOfBuilding(*ebi));
 					unsigned int id=runtime.add_building_order(bo);
 
@@ -149,7 +150,7 @@ void Econo::tick_explorer_flags_enemies(Runtime& runtime)
 						ManagementOrder* mo_completion=new ChangeFlagSize(AI_SHARED_RUNTIME_RTI_ENEMY_FLAG_RADIUS, id);
 						runtime.add_management_order(mo_completion);
 
-						ManagementOrder* mo_destroyed=new DestroyBuilding(id);
+						ManagementOrder* mo_destroyed=new RetireAttraction(id,1u<<EXPLORER);
 						mo_destroyed->add_condition(new EnemyBuildingDestroyed(runtime, *ebi));
 						runtime.add_management_order(mo_destroyed);
 
@@ -189,7 +190,7 @@ void Econo::tick_farming_areas(Runtime& runtime)
 				if(farms && mi.is_discovered(x, y))
 				{
 					const bool wheat_farm = farm_spot &&
-						mi.is_resource(x, y, WHEAT) && mi.can_paint_farm(x, y) &&
+						mi.is_resource(x, y, materialIndex(MaterialId::Food)) && mi.can_paint_farm(x, y) &&
 						gradient.within_dist(x, y, AI_SHARED_RUNTIME_RTI_FARMING_WATER_MAX_DIST);
 					if(wheat_farm && !mi.is_farm_area(x, y))
 						mo_farm->add_location(x, y);
@@ -199,8 +200,8 @@ void Econo::tick_farming_areas(Runtime& runtime)
 				if(farm_spot)
 				{
 					const bool protected_resource = farms
-						? mi.is_resource(x, y, WOOD)
-						: mi.is_resource(x, y, WOOD) || mi.is_resource(x, y, WHEAT);
+						? mi.is_resource(x, y, materialIndex(MaterialId::Wood))
+						: mi.is_resource(x, y, materialIndex(MaterialId::Wood)) || mi.is_resource(x, y, materialIndex(MaterialId::Food));
 					if(!protected_resource && mi.is_forbidden_area(x, y))
 					{
 						mo_non_farming->add_location(x, y);

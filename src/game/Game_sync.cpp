@@ -49,7 +49,7 @@ void Game::buildProjectSyncStep(Sint32 localTeam)
 		int teamNumber=bpi->teamNumber;
 		assert(teamNumber <= teamsCount());
 		Sint32 typeNum=(bpi->typeNum);
-		BuildingType *bt=globalContainer->buildingsTypes.get(typeNum);
+		BuildingType *bt=buildingsTypes.get(typeNum);
 		int w=bt->width;
 		int h=bt->height;
 		if (!map.isHardSpaceForBuilding(posX, posY, w, h))
@@ -212,9 +212,10 @@ void Game::prestigeSyncStep()
 
 
 
-void Game::syncStep(Sint32 localTeam)
+void Game::syncStep(Sint32 localTeam, PreparationCompletion completion)
 {
 	const auto random = bindRandom();
+	map.preparePendingGradient();
 	applyClientRequests();
 	if (!anyPlayerWaited)
 	{
@@ -232,7 +233,7 @@ void Game::syncStep(Sint32 localTeam)
 		for (int i=0; i<mapHeader.getNumberOfTeams(); i++)
 			teams[i]->syncStep();
 
-		map.syncStep(stepCounter);
+		map.syncStep(stepCounter, false);
 		if (globalContainer->replaying && globalContainer->replayReader)
 			globalContainer->replayReader->applyTelemetry(*this);
 		if ((stepCounter & 31) == 0)
@@ -282,6 +283,10 @@ void Game::syncStep(Sint32 localTeam)
 		ticksGameSum[stepCounter&(TICK_PROFILE_BUF_LEN-1)]+=static_cast<Sint64>(endTick) - static_cast<Sint64>(startTick);
 		publishTickEvents();
 		stepCounter++;
+		// All world mutations, including script/fog/project tail work, are done.
+		// Selection stays ordered; only private preparation can join AI decisions.
+		map.stagePeriodicGradientPreparation();
+		if (completion == PreparationCompletion::Complete) map.preparePendingGradient();
 	}
 }
 

@@ -285,11 +285,11 @@ namespace Cortex
 
 	int CortexNet::chooseSwarmWorkers(const int features[NUM_FEATURES],
 	                                  int maxBuildLevel, int freeWorkers,
-	                                  int harvestableWheatNearby) const
+	                                  int harvestableFoodSourcesNearby) const
 	{
 		// 1. Wheat-starved hard clamp (bypass the net).
-		if (harvestableWheatNearby >= 0
-		 && harvestableWheatNearby < CORTEX_SWARM_WHEAT_STARVED_TILES)
+		if (harvestableFoodSourcesNearby >= 0
+		 && harvestableFoodSourcesNearby < CORTEX_SWARM_WHEAT_STARVED_TILES)
 			return CORTEX_SWARM_WHEAT_STARVED_WORKER_CAP;
 
 		// 2. Integer forward pass. Argmax on the full-precision Sint64 logits so

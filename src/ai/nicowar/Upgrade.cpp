@@ -21,7 +21,7 @@ int NewNicowar::choose_building_upgrade_type_level1(Runtime& runtime)
 {
 	telemetry.count(AITrace::AI5::NewNicowar_choose_building_upgrade_type_level1_calls);
 	BuildingSearch schools(runtime);
-	schools.add_condition(new SpecificBuildingType(IntBuildingType::SCIENCE_BUILDING));
+	schools.add_condition(new ProvidesBuildingCapability(BuildingDemand::TrainConstruction));
 	schools.add_condition(new BeingUpgradedTo(2));
 	const int school_counts=schools.count_buildings();
 
@@ -46,18 +46,18 @@ int NewNicowar::choose_building_upgrade_type_level2(Runtime& runtime)
 {
 	telemetry.count(AITrace::AI5::NewNicowar_choose_building_upgrade_type_level2_calls);
 	BuildingSearch schools_upgrading(runtime);
-	schools_upgrading.add_condition(new SpecificBuildingType(IntBuildingType::SCIENCE_BUILDING));
+	schools_upgrading.add_condition(new ProvidesBuildingCapability(BuildingDemand::TrainConstruction));
 	schools_upgrading.add_condition(new BeingUpgradedTo(3));
 	const int school_counts_upgrading=schools_upgrading.count_buildings();
 
 	BuildingSearch schools_lvl2(runtime);
-	schools_lvl2.add_condition(new SpecificBuildingType(IntBuildingType::SCIENCE_BUILDING));
+	schools_lvl2.add_condition(new ProvidesBuildingCapability(BuildingDemand::TrainConstruction));
 	schools_lvl2.add_condition(new BuildingLevel(2));
 	schools_lvl2.add_condition(new NotUnderConstruction);
 	const int school_counts_level2=schools_lvl2.count_buildings();
 
 	BuildingSearch schools_lvl3(runtime);
-	schools_lvl3.add_condition(new SpecificBuildingType(IntBuildingType::SCIENCE_BUILDING));
+	schools_lvl3.add_condition(new ProvidesBuildingCapability(BuildingDemand::TrainConstruction));
 	schools_lvl3.add_condition(new BuildingLevel(3));
 	schools_lvl3.add_condition(new NotUnderConstruction);
 	const int school_counts_level3=schools_lvl3.count_buildings();
@@ -97,8 +97,8 @@ int NewNicowar::choose_building_upgrade_type(Runtime& runtime, int level, int in
 	telemetry.count(AITrace::AI5::NewNicowar_choose_building_upgrade_type_calls);
 	///First count the types of buildings that are available to us for upgrading
 	///you wouldn't want to choose a Barracks to be upgraded if there are none
-	int building_count[IntBuildingType::NB_BUILDING];
-	std::fill(building_count, building_count+IntBuildingType::NB_BUILDING, 0);
+	int building_count[BuildingDemand::Count];
+	std::fill(building_count, building_count+BuildingDemand::Count, 0);
 
 	BuildingSearch bs(runtime);
 	bs.add_condition(new NotUnderConstruction);
@@ -106,46 +106,47 @@ int NewNicowar::choose_building_upgrade_type(Runtime& runtime, int level, int in
 	bs.add_condition(new Upgradable);
 	for(building_search_iterator i = bs.begin(); i!=bs.end(); ++i)
 	{
-		building_count[runtime.get_building_register().get_type(*i)]+=1;
+		for(int demand=0;demand<BuildingDemand::Count;++demand)
+   if(runtime.get_building_register().provides(*i,demand)) ++building_count[demand];
 	}
 
 	///Next, add in the n slices for each of the buildings with respect to their ratio
 	std::vector<int> buildings;
 	buildings.reserve(100);
-	if(building_count[IntBuildingType::FOOD_BUILDING] > 0)
+	if(building_count[BuildingDemand::Feed] > 0)
 	{
 		for(int n=0; n<inn_ratio; ++n)
-			buildings.push_back(IntBuildingType::FOOD_BUILDING);
+			buildings.push_back(BuildingDemand::Feed);
 	}
-	if(building_count[IntBuildingType::HEAL_BUILDING] > 0)
+	if(building_count[BuildingDemand::Heal] > 0)
 	{
 		for(int n=0; n<hospital_ratio; ++n)
-			buildings.push_back(IntBuildingType::HEAL_BUILDING);
+			buildings.push_back(BuildingDemand::Heal);
 	}
-	if(building_count[IntBuildingType::WALKSPEED_BUILDING] > 0)
+	if(building_count[BuildingDemand::TrainWalk] > 0)
 	{
 		for(int n=0; n<racetrack_ratio; ++n)
-			buildings.push_back(IntBuildingType::WALKSPEED_BUILDING);
+			buildings.push_back(BuildingDemand::TrainWalk);
 	}
-	if(building_count[IntBuildingType::SWIMSPEED_BUILDING] > 0)
+	if(building_count[BuildingDemand::TrainSwim] > 0)
 	{
 		for(int n=0; n<swimmingpool_ratio; ++n)
-			buildings.push_back(IntBuildingType::SWIMSPEED_BUILDING);
+			buildings.push_back(BuildingDemand::TrainSwim);
 	}
-	if(building_count[IntBuildingType::ATTACK_BUILDING] > 0)
+	if(building_count[BuildingDemand::TrainAttackStrength] > 0)
 	{
 		for(int n=0; n<barracks_ratio; ++n)
-			buildings.push_back(IntBuildingType::ATTACK_BUILDING);
+			buildings.push_back(BuildingDemand::TrainAttackStrength);
 	}
-	if(building_count[IntBuildingType::SCIENCE_BUILDING] > 0)
+	if(building_count[BuildingDemand::TrainConstruction] > 0)
 	{
 		for(int n=0; n<school_ratio; ++n)
-			buildings.push_back(IntBuildingType::SCIENCE_BUILDING);
+			buildings.push_back(BuildingDemand::TrainConstruction);
 	}
-	if(building_count[IntBuildingType::DEFENSE_BUILDING] > 0)
+	if(building_count[BuildingDemand::ProjectileDefense] > 0)
 	{
 		for(int n=0; n<tower_ratio; ++n)
-			buildings.push_back(IntBuildingType::DEFENSE_BUILDING);
+			buildings.push_back(BuildingDemand::ProjectileDefense);
 	}
 
 	if(buildings.size()==0)
@@ -166,13 +167,14 @@ int NewNicowar::choose_building_for_upgrade(Runtime& runtime, int type, int leve
 	telemetry.set(AITrace::AI5::NewNicowar_choose_building_for_upgrade_input_type, type);
 	telemetry.count(AITrace::AI5::NewNicowar_choose_building_for_upgrade_calls);
 	BuildingSearch bs(runtime);
-	bs.add_condition(new SpecificBuildingType(type));
+	bs.add_condition(new ProvidesBuildingCapability(type));
 	bs.add_condition(new NotUnderConstruction);
 	bs.add_condition(new BuildingLevel(level));
 	bs.add_condition(new Upgradable);
 	std::vector<int> buildings;
 	std::copy(bs.begin(), bs.end(), std::back_insert_iterator<std::vector<int> >(buildings));
-	int random=runtime.random() % buildings.size();
+	if(buildings.empty()) return AI_NICOWAR_NO_BUILDING_TYPE;
+ int random=runtime.random() % buildings.size();
 	int id=buildings[random];
 
 	return telemetry.returnedInt(AITrace::AI5::NewNicowar_choose_building_for_upgrade_result, id);
@@ -182,8 +184,8 @@ int NewNicowar::choose_building_for_upgrade(Runtime& runtime, int type, int leve
 void NewNicowar::upgrade_buildings(Runtime& runtime)
 {
 	TeamStat* stat=runtime.player->team->stats.getLatestStat();
-	int can_upgrade_level1 = stat->upgradeState[BUILD][1] + stat->upgradeState[BUILD][2] + stat->upgradeState[BUILD][3];
-	int can_upgrade_level2 = stat->upgradeState[BUILD][2] + stat->upgradeState[BUILD][3];
+	int can_upgrade_level1 = stat->workersByConstructionLevel[1] + stat->workersByConstructionLevel[2] + stat->workersByConstructionLevel[3];
+	int can_upgrade_level2 = stat->workersByConstructionLevel[2] + stat->workersByConstructionLevel[3];
 
 	int num_to_upgrade_level1=0;
 	int num_to_upgrade_level2=0;
@@ -221,9 +223,10 @@ void NewNicowar::upgrade_buildings(Runtime& runtime)
 		int building_type=choose_building_upgrade_type_level1(runtime);
 		if(building_type!=AI_NICOWAR_NO_BUILDING_TYPE)
 		{
-			std::string type=IntBuildingType::typeFromShortNumber(building_type);
+
 
 			int id=choose_building_for_upgrade(runtime, building_type, 1);
+ if(id==AI_NICOWAR_NO_BUILDING_TYPE) return;
 
 			ManagementOrder* uro = new UpgradeRepair(id);
 			runtime.add_management_order(uro);
@@ -234,7 +237,7 @@ void NewNicowar::upgrade_buildings(Runtime& runtime)
 
 			//Cause the building to be updated after its completion. Not all buildings need
 			//to be updated, in which case the order will simply be ignored
-			ManagementOrder* mo_completion=new SendMessage(FormattableString("update %0 %1").arg(type).arg(id));
+			ManagementOrder* mo_completion=new SendMessage(FormattableString("update services %0").arg(id));
 			mo_completion->add_condition(new ParticularBuilding(new NotUnderConstruction, id));
 			runtime.add_management_order(mo_completion);
 		}
@@ -246,9 +249,10 @@ void NewNicowar::upgrade_buildings(Runtime& runtime)
 		int building_type=choose_building_upgrade_type_level2(runtime);
 		if(building_type!=AI_NICOWAR_NO_BUILDING_TYPE)
 		{
-			std::string type=IntBuildingType::typeFromShortNumber(building_type);
+
 
 			int id=choose_building_for_upgrade(runtime, building_type, 2);
+ if(id==AI_NICOWAR_NO_BUILDING_TYPE) return;
 			ManagementOrder* uro = new UpgradeRepair(id);
 			runtime.add_management_order(uro);
 
@@ -258,7 +262,7 @@ void NewNicowar::upgrade_buildings(Runtime& runtime)
 
 			//Cause the building to be updated after its completion. Not all buildings need
 			//to be updated, in which case the order will simply be ignored
-			ManagementOrder* mo_completion=new SendMessage(FormattableString("update %0 %1").arg(type).arg(id));
+			ManagementOrder* mo_completion=new SendMessage(FormattableString("update services %0").arg(id));
 			mo_completion->add_condition(new ParticularBuilding(new NotUnderConstruction, id));
 			runtime.add_management_order(mo_completion);
 		}

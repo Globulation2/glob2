@@ -5564,3 +5564,155 @@ AI 遙測
 匯入地形定義
 [Terrain palette]
 地形選擇面板
+[Food]
+食物
+[Paper]
+紙張
+[Cherries]
+櫻桃
+[Oranges]
+橘子
+[Prunes]
+李子
+[Gold]
+黃金
+[Metal]
+金屬
+[Glass]
+玻璃
+[Fabric]
+布料
+[Import Resource Definitions]
+匯入資源定義
+[Resource palette]
+資源面板
+[Trees]
+樹木
+[Rocks]
+岩石
+[Cherry tree]
+櫻桃樹
+[Orange tree]
+橘子樹
+[Prune tree]
+李子樹
+[Gold ore]
+金礦石
+[Iron ore]
+鐵礦石
+[Sand]
+沙子
+[Cotton]
+棉花
+[Reroll terrain look]
+重新隨機產生地形外觀
+[boulders]
+
+[hedge]
+
+[thicket]
+
+[ridge_rock]
+
+[outcrop]
+
+[dirt]
+
+[clay]
+
+[gravel]
+
+[flower_meadow]
+
+[mud]
+
+[marsh]
+
+[deep_snow]
+
+[scree]
+
+[dirt_track]
+
+[boardwalk]
+
+[lava]
+
+[ember_field]
+
+[loam]
+
+[moss]
+
+[spring_meadow]
+
+[deep_water]
+
+[dark_water]
+
+[void_hole]
+
+[chasm]
+
+[terrain group water]
+
+[terrain group sand]
+
+[terrain group grass]
+
+[terrain group ice]
+
+[terrain group paths]
+
+[terrain group obstacles]
+
+[terrain group ridges]
+
+[terrain group barren]
+
+[terrain group rough]
+
+[terrain group lava]
+
+[terrain group fertile]
+
+[terrain group deep-water]
+
+[terrain group void]
+
+[experiment obstacle-terrain]
+
+[experiment obstacle-terrain help]
+
+[experiment ridge-terrain]
+
+[experiment ridge-terrain help]
+
+[experiment barren-terrain]
+
+[experiment barren-terrain help]
+
+[experiment rough-terrain]
+
+[experiment rough-terrain help]
+
+[experiment path-terrain]
+
+[experiment path-terrain help]
+
+[experiment lava-terrain]
+
+[experiment lava-terrain help]
+
+[experiment fertile-terrain]
+
+[experiment fertile-terrain help]
+
+[experiment deep-water-terrain]
+
+[experiment deep-water-terrain help]
+
+[experiment void-terrain]
+
+[experiment void-terrain help]
+

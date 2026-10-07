@@ -241,7 +241,7 @@ void fillInOrder(Map &map, std::vector<CellTile> region, int count, int resource
 {
 	std::stable_sort(region.begin(), region.end(), before);
 	for (int i = 0; i < count && i < int(region.size()); ++i)
-		map.setResource(region[i].x, region[i].y, resourceType, 1);
+		map.setResourceByIndex(region[i].x, region[i].y, resourceType, 1);
 }
 
 // A cell's free resource habitat in row order, measured in its exit's frame.
@@ -257,9 +257,9 @@ std::vector<CellTile> resourceTilesOfCell(const Map &map, const Torus &t, const 
 		const int x = i % t.w, y = i / t.w;
 		if (d.labels[i] != cell || map.isResource(x, y))
 			continue;
-		const bool habitat = resourceType >= 0 ? map.terrainSupportsResourceAt(x, y, resourceType) :
-			map.terrainSupportsResourceAt(x, y, WHEAT) &&
-			map.terrainSupportsResourceAt(x, y, WOOD) && map.terrainSupportsResourceAt(x, y, STONE);
+		const bool habitat = resourceType >= 0 ? map.terrainSupportsResourceAtByIndex(x, y, resourceType) :
+			map.terrainSupportsResourceAtByIndex(x, y, WHEAT) &&
+			map.terrainSupportsResourceAtByIndex(x, y, WOOD) && map.terrainSupportsResourceAtByIndex(x, y, STONE);
 		if (!habitat)
 			continue;
 		tiles.push_back(frame.measure(t, x, y));
@@ -394,7 +394,7 @@ void scatterThroughMaze(Map &map, GenerationContext &context, const MazeDesign &
 		for (int attempt = 0; attempt < 32 && seed < 0; ++attempt)
 		{
 			const int candidate = pool[context.bounded("resources", pool.size())];
-			if (free[candidate] && map.terrainSupportsResourceAt(candidate % w, candidate / w, resourceType))
+			if (free[candidate] && map.terrainSupportsResourceAtByIndex(candidate % w, candidate / w, resourceType))
 				seed = candidate;
 		}
 		if (seed < 0)
@@ -406,11 +406,11 @@ void scatterThroughMaze(Map &map, GenerationContext &context, const MazeDesign &
 		for (size_t head = 0; head < frontier.size() && placed < size; ++head, ++placed)
 		{
 			const int x = frontier[head] % w, y = frontier[head] / w;
-			map.setResource(x, y, resourceType, 1);
+			map.setResourceByIndex(x, y, resourceType, 1);
 			for (const auto &s : steps)
 			{
 				const size_t n = size_t(map.normalizeY(y + s[1])) * w + map.normalizeX(x + s[0]);
-				if (free[n] && map.terrainSupportsResourceAt(n % w, n / w, resourceType))
+				if (free[n] && map.terrainSupportsResourceAtByIndex(n % w, n / w, resourceType))
 				{
 					free[n] = 0;
 					frontier.push_back(int(n));
@@ -451,7 +451,7 @@ void seedAlgae(Map &map, GenerationContext &context, int algae)
 	std::vector<MapGeneratorPoint> water;
 	for (int y = 0; y < h; ++y)
 		for (int x = 0; x < w; ++x)
-			if (map.terrainSupportsResourceAt(x, y, ALGA))
+			if (map.terrainSupportsResourceAtByIndex(x, y, ALGA))
 				water.emplace_back(x, y);
 	if (water.empty())
 		return;
@@ -576,7 +576,7 @@ bool generate(Game &game, GenerationContext &context)
 	}
 	for (int i = 0; i < t.size(); ++i)
 		if (stone.stone[i])
-			map.setResource(i % t.w, i / t.w, STONE, 1);
+			map.setResourceByIndex(i % t.w, i / t.w, STONE, 1);
 
 	const auto chamber = [&](int team)
 	{

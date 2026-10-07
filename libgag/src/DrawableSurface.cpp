@@ -7,6 +7,7 @@
 #include <assert.h>
 #include <algorithm>
 #include <atomic>
+#include <memory>
 #include <string>
 #include <valarray>
 #include <SDL3_image/SDL_image.h>
@@ -177,8 +178,16 @@ namespace GAGCore
 				int w = getMinPowerOfTwo(sdlsurface->w);
 				int h = getMinPowerOfTwo(sdlsurface->h);
 				glState.allocatedTextureBytes-=gpuBytes;gpuBytes=w*h*4;glState.allocatedTextureBytes+=gpuBytes;
-				std::valarray<char> zeroBuffer((char)0, w * h * 4);
-				glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0, GL_RGBA, GL_UNSIGNED_BYTE, &zeroBuffer[0]);
+#ifdef GLOB2_WEBGL2
+                // WebGL zero-initializes storage for a null pixels argument.
+                // Avoid a second texture-sized allocation in the bounded Wasm heap.
+                glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
+#else
+				// Value initialization preserves zeroed native texture padding without
+				// an instrumented per-byte valarray construction loop.
+				std::unique_ptr<char[]> zeroBuffer(new char[std::size_t(w) * h * 4]());
+				glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0, GL_RGBA, GL_UNSIGNED_BYTE, zeroBuffer.get());
+#endif
 
 				texMultX = 1.0f / static_cast<float>(w);
 				texMultY = 1.0f / static_cast<float>(h);

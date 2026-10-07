@@ -1099,7 +1099,7 @@ std::vector<unsigned char> stoneTiles(const Map &map, const Layout &L)
 	stone = sealCoasts(map, t, seaMargin(map, L), wallable);
 	for (int i = 0; i < n; ++i)
 		if ((L.strip[i] || L.ridge[i]) && !L.road[i] &&
-			map.terrainSupportsResourceAt(i % t.w, i / t.w, STONE))
+			map.terrainSupportsResourceAtByIndex(i % t.w, i / t.w, STONE))
 			stone[i] = 1;
 	return stone;
 }
@@ -1364,7 +1364,7 @@ void stockCommons(Map &map, const Layout &L, GenerationContext &context, const C
 	if (L.heartKind == ForestHeart)
 		for (int i = 0; i < n; ++i)
 			if (eligible(i) && L.radius[i] >= L.lakeR + 2 && L.radius[i] < L.forestR)
-				map.setResource(i % t.w, i / t.w, WOOD, 1);
+				map.setResourceByIndex(i % t.w, i / t.w, WOOD, 1);
 }
 
 // Wheat covers every plantable islet tile outside the sand-bordered building plot.
@@ -1375,7 +1375,7 @@ void stockIslets(Map &map, const Layout &L, const Farm &plots)
 	for (int i = 0; i < t.size(); ++i)
 		if (L.region[i] == Islet && !plots.plot[i] && !plots.sand[i] &&
 			map.isResourceAllowed(i % t.w, i / t.w, WHEAT))
-			map.setResource(i % t.w, i / t.w, WHEAT, 1);
+			map.setResourceByIndex(i % t.w, i / t.w, WHEAT, 1);
 }
 
 // Causeways and their approaches hold nothing but the causeways' own stone lines.
@@ -1462,7 +1462,7 @@ bool generate(Game &game, GenerationContext &context)
 	const std::vector<unsigned char> line = stoneTiles(map, L);
 	for (int i = 0; i < n; ++i)
 		if (line[i])
-			map.setResource(i % t.w, i / t.w, STONE, 1);
+			map.setResourceByIndex(i % t.w, i / t.w, STONE, 1);
 
 	context.stage = "city colonies";
 	const auto home = [&](int team)
@@ -1572,7 +1572,7 @@ std::string validateWorld(const Game &game, const GenerationContext &context)
 	}
 
 	for (int i = 0; i < n; ++i)
-		if (L.region[i] == Islet && !isletPlot[i] && map.terrainSupportsResourceAt(i % t.w, i / t.w, WHEAT) &&
+		if (L.region[i] == Islet && !isletPlot[i] && map.terrainSupportsResourceAtByIndex(i % t.w, i / t.w, WHEAT) &&
 			map.getResource(i % t.w, i / t.w).type != WHEAT)
 			return "The islet grass at " + where(i) + " is not covered with wheat.";
 

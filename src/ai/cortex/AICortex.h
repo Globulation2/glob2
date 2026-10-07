@@ -63,7 +63,7 @@ private:
 	/// straight to a productive hauler count so the early worker economy ramps at
 	/// once instead of crawling up one hauler per cycle through the ±1 worker-tuning
 	/// loop. One-shot (see swarmKickstarted); tuning takes over from this baseline.
-	static const int SWARM_START_WORKERS = 4;
+	static constexpr int SWARM_START_WORKERS = 4;
 
 	/// Ticks to suppress a new build order OF THE SAME TYPE after issuing one, so
 	/// the in-flight OrderCreate has time to execute and show up as a building site
@@ -217,7 +217,7 @@ private:
 	/// resolve->emit->arm step (the candidate SOURCE is all that differs between them).
 	/// Returns true when an OrderCreate was actually queued (false when the type has no
 	/// buildable site), so translateActionBuildForward can record the ordered position.
-	bool emitBuildOrder(int type, int x, int y, int tick);
+	bool emitBuildOrder(int type, int x, int y, int tick, int placementType = -1);
 
 	/// Shared "decode GID → verify building → dedup → push OrderModifyBuilding"
 	/// loop used by translateActionTuneWorkers for all three building sets
@@ -249,14 +249,14 @@ private:
 	                     Accept accept);
 
 	/// Wheat-forbidden executor, run EVERY decision cycle in parallel with
-	/// translateAction (gated by CortexPolicy::wantWheatProtection) — not as a
+	/// translateAction (gated by CortexPolicy::wantFoodSourceProtection) — not as a
 	/// competing action. Rebuilds the full ADD/DEL checkerboard tile masks over our
-	/// wheat (a bounded colony-region scan, RNG-free) at the per-game open-margin
+	/// food (a bounded colony-region scan, RNG-free) at the per-game open-margin
 	/// wheatOpenMargin and appends one area-paint order per non-empty diff
 	/// (DEL before ADD). A single order carries the whole diff, so all newly-revealed
-	/// wheat is fenced in one cycle. Self-correcting: an already-painted diff is empty
+	/// food is fenced in one cycle. Self-correcting: an already-painted diff is empty
 	/// next cycle, so re-running each cycle is free when there is no new work.
-	void enqueueWheatForbidden(const Cortex::CortexObservation& obs, bool liftAll = false);
+	void enqueueFoodSourcesForbidden(const Cortex::CortexObservation& obs, bool liftAll = false);
 
 	/// Resolve a tracked flag gid to its live ALIVE WAR_FLAG building, or NULL if the
 	/// gid is unset (NOGBID) or the flag no longer exists (died / was deleted).
@@ -342,7 +342,7 @@ private:
 	void sweepOrphanWarFlags(const Cortex::CortexObservation& obs);
 
 	/// Find the single best finished instance of `buildingType` (an
-	/// IntBuildingType shortTypeNum) to upgrade to its next level, or NULL if no
+	/// Cortex semantic role) to upgrade to its next level, or NULL if no
 	/// instance currently passes the full engine Upgradable predicate. Scans
 	/// team->myBuildings by ARRAY INDEX (never a std::set) and ranks eligible
 	/// instances deterministically — improving on Nicowar's random pick. See the
@@ -371,7 +371,7 @@ private:
 	/// (building/Construction.cpp:394-423) — so without this guard the policy,
 	/// still seeing the pre-upgrade count finished and none upgrading, re-issues a
 	/// SECOND upgrade and blacks out the whole class at once (measured: both
-	/// barracks offline simultaneously). Holds the shortTypeNum of an upgrade we
+	/// barracks offline simultaneously). Holds the semantic role of an upgrade we
 	/// issued that has not yet become a visible site; -1 == none pending. Cleared
 	/// the cycle the upgrade becomes visible (the policy's own
 	/// cortexBuildingsUpgrading / finished-count gates take over then) or after
@@ -434,7 +434,7 @@ private:
 	int flagPosture;
 	int offenseHoldUntil;
 
-	/// Per-game wheat open-margin N: the first N rows of wheat nearest the harvest
+	/// Per-game food open-margin N: the first N rows of food nearest the harvest
 	/// source stay unpainted; the checkerboard starts at depth N+1. Drawn ONCE via
 	/// syncRand on the first decision cycle (sentinel -1 = not yet drawn) and then
 	/// persisted (NOT redrawn on load) so same-seed replays stay byte-identical.
@@ -519,8 +519,8 @@ private:
 	/// no Order). When GLOB2_CORTEX_INN_TRACE=<abs prefix> is set, every decision
 	/// cycle appends one CSV row per valid tracked INN to <prefix>.team<N>.csv — the
 	/// inn-side companion to the swarm worker trace, for debugging worker allocation
-	/// to inns (restock demand, wheat gate, the production-mix tiers). Each row is the
-	/// inn's observed state this cycle (wheat buffer, restockTripsNeeded, wheat
+	/// to inns (restock demand, food gate, the production-mix tiers). Each row is the
+	/// inn's observed state this cycle (food buffer, restockTripsNeeded, food
 	/// diagnostics), the worker cap the tune action chose (or the current one when it
 	/// left the inn unchanged), and the colony-level context + tier facts (recomputed
 	/// via the pure CortexPolicy::computeFacts, since getOrder() has no DecideFacts to

@@ -1,0 +1,175 @@
+{
+  "generator": "tools/artwork/terrain_synth.py",
+  "method": "procedural",
+  "generator_sha256": {
+    "tools/artwork/terrain_synth.py": "a8eda69c7b7212d9f9573766da37f1002a984d62327c108fb581e9a9c23830dc",
+    "tools/artwork/material_tiles.py": "224e159e0974023797710aa959994f11658c82da8fb80f9701e4abc13c74ed83"
+  },
+  "material": "deep_water",
+  "group": "deep_water",
+  "label": "Deep water",
+  "recipe": {
+    "name": "deep_water",
+    "group": "deep_water",
+    "label": "Deep water",
+    "profile": "soft",
+    "seam": {
+      "height": 6,
+      "cast_q8": 72,
+      "cast_width_q8": 640
+    },
+    "palette": {
+      "tint": [
+        53,
+        41,
+        128
+      ],
+      "swell": [
+        62,
+        50,
+        142
+      ],
+      "thread": [
+        120,
+        104,
+        210
+      ],
+      "alpha": [
+        150,
+        172
+      ]
+    },
+    "style": {
+      "luma": 58,
+      "std": 6,
+      "grain_max": 6,
+      "match": 0.5
+    },
+    "phases": 1,
+    "animation_ticks": 8,
+    "alpha_range": [
+      140,
+      185
+    ],
+    "preview": [
+      44,
+      34,
+      120
+    ],
+    "minimap": [
+      24,
+      18,
+      84
+    ],
+    "placeholder_only": false,
+    "note": ""
+  },
+  "seed": "fnv1a32(\"deep_water:<variant>:<phase>\")",
+  "render_size": 128,
+  "tile_size": 32,
+  "variants": 16,
+  "phases": 1,
+  "frame_layout": "variant + 16 * phase",
+  "sprite": "data/gfx/terrain-deep_water",
+  "preview": [
+    44,
+    34,
+    120
+  ],
+  "minimap": [
+    24,
+    18,
+    84
+  ],
+  "mean_color": [
+    56,
+    44,
+    133
+  ],
+  "style_stats": {
+    "0": {
+      "luma": 57.9,
+      "std": 2.2,
+      "grain": 0.7,
+      "sat": 0.67,
+      "alpha": 161.0
+    }
+  },
+  "style_references": {
+    "data/gfx/terrain0..15.png": {
+      "use": "statistics only",
+      "stats": {
+        "luma": 79.3,
+        "std": 5.0,
+        "grain": 3.0,
+        "sat": 0.73,
+        "alpha": 255.0
+      }
+    },
+    "data/gfx/terrain128..143.png": {
+      "use": "statistics only",
+      "stats": {
+        "luma": 160.1,
+        "std": 27.0,
+        "grain": 27.9,
+        "sat": 0.74,
+        "alpha": 255.0
+      }
+    },
+    "data/gfx/terrain256..271.png": {
+      "use": "statistics only",
+      "stats": {
+        "luma": 95.2,
+        "std": 8.4,
+        "grain": 5.5,
+        "sat": 0.92,
+        "alpha": 255.0
+      }
+    },
+    "data/gfx/terrain272..287.png": {
+      "use": "statistics only",
+      "stats": {
+        "luma": 215.4,
+        "std": 6.2,
+        "grain": 4.3,
+        "sat": 0.17,
+        "alpha": 255.0
+      }
+    },
+    "data/gfx/terrain288..303.png": {
+      "use": "statistics only",
+      "stats": {
+        "luma": 102.9,
+        "std": 10.3,
+        "grain": 7.9,
+        "sat": 0.37,
+        "alpha": 255.0
+      }
+    }
+  },
+  "python": "3.14.4",
+  "pillow": "12.2.0",
+  "platform": {
+    "system": "linux",
+    "machine": "x86_64",
+    "libc": "glibc 2.43"
+  },
+  "runtime_sha256": {
+    "data/gfx/terrain-deep_water0.png": "57a67c301d08168c2e86a1e5e25e84ee48f92a3d797b3c17367ee5d38f711dcd",
+    "data/gfx/terrain-deep_water1.png": "5564ff49f7f1ea5df4449df4bf236e9598b126d131c02e82cc01e2cf09b3df1a",
+    "data/gfx/terrain-deep_water2.png": "0354b411353acff7b9856513733e891087b5e2b9e576864dca8350eeba505f5a",
+    "data/gfx/terrain-deep_water3.png": "526308fde7d55b2a77818447a310749aa49fa117ddcfd01bf95ab736928b3661",
+    "data/gfx/terrain-deep_water4.png": "ac79b6c850cf0fdf22b61881f306dadfc80e480c68a20e3afc3e069ac0130543",
+    "data/gfx/terrain-deep_water5.png": "091d7b71e7f751af96a11ad411b9f34c3e3d749c02dea1d45ac0ecab469623d6",
+    "data/gfx/terrain-deep_water6.png": "801a3043d87c9cbf9d281256e642b066ec711664365a8bf02b7ab60abd8ca773",
+    "data/gfx/terrain-deep_water7.png": "88cc2da9264dfbad33d795ea522a7293364a7c1ba43b77ae50fff82d7dc41bf2",
+    "data/gfx/terrain-deep_water8.png": "a13969bb9ca1856ede83587064806549fee5ed7effd0d4e297906877931ce805",
+    "data/gfx/terrain-deep_water9.png": "95629ed5e42e0aebd29fa88bc2a7e8f944d8a8456760100bf15525494f4da3c5",
+    "data/gfx/terrain-deep_water10.png": "1ef968622fe113b1c82a8aac341945b0816abd7e727460f7a68a748a7e2ce4f9",
+    "data/gfx/terrain-deep_water11.png": "4b09e102bbcaa0edd856fe5ce35438d2072378635183b24997b308dade068947",
+    "data/gfx/terrain-deep_water12.png": "1580fdecd07494f12f2b4f6c12ec22093c37f9a2c1975a1fd770768318be73d7",
+    "data/gfx/terrain-deep_water13.png": "2df9c33597048e951df2871583aa1a8cac119039d0e53bc3530f69300264d64d",
+    "data/gfx/terrain-deep_water14.png": "a068bbb06a6d3f02e5a03258c2c6a3131772b194597297c9fe5ca4408ed27592",
+    "data/gfx/terrain-deep_water15.png": "f1f6a03b5deaf2639035bb6ae9c721e3cf4df6e5360f32695a32af6f7d3d94d3"
+  }
+}

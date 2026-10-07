@@ -6,7 +6,12 @@ import { createHash } from 'node:crypto';
 import { sql, type Kysely } from 'kysely';
 import { contentKey, submitEngineJob, type JobQueue, type MapPoolEntry } from '@glob2/core';
 import type { Database } from '@glob2/db';
-import { parseSimVersionKey, type GeneratorDescriptor } from '@glob2/protocol';
+import {
+  parseSimVersionKey,
+  type ResourceExperimentDefinitions,
+  type BuildingCatalog,
+  type GeneratorDescriptor,
+} from '@glob2/protocol';
 import {
   STORED_GENERATE_MAP_RESULT,
   STORED_RENDER_PREVIEW_RESULT,
@@ -41,7 +46,15 @@ export function descriptorHash(generator: GeneratorDescriptor): string {
 
 export type GeneratedMapState =
   | { status: 'pending'; jobId: string | null }
-  | { status: 'ready'; mapHash: string; teamCount: number | null; jobId: string | null }
+  | {
+      status: 'ready';
+      mapHash: string;
+      teamCount: number | null;
+      jobId: string | null;
+      buildingCatalog?: BuildingCatalog;
+      resourceExperiments: ResourceExperimentDefinitions;
+      requiredResourceExperiments: string[];
+    }
   | { status: 'failed'; failure: string; jobId: string | null };
 
 function stateOf(row: {
@@ -50,9 +63,20 @@ function stateOf(row: {
   team_count: number | null;
   failure: string | null;
   job_id: string | null;
+  building_catalog: unknown;
+  resource_experiments: ResourceExperimentDefinitions;
+  required_resource_experiments: string[];
 }): GeneratedMapState {
   if (row.status === 'ready' && row.map_hash) {
-    return { status: 'ready', mapHash: row.map_hash, teamCount: row.team_count, jobId: row.job_id };
+    return {
+      status: 'ready',
+      mapHash: row.map_hash,
+      teamCount: row.team_count,
+      resourceExperiments: row.resource_experiments,
+      requiredResourceExperiments: row.required_resource_experiments,
+      jobId: row.job_id,
+      ...(row.building_catalog ? { buildingCatalog: row.building_catalog as BuildingCatalog } : {}),
+    };
   }
   if (row.status === 'failed') {
     return { status: 'failed', failure: row.failure ?? 'generation failed', jobId: row.job_id };
@@ -67,7 +91,16 @@ export async function generatedMapState(
 ): Promise<GeneratedMapState | undefined> {
   const row = await db
     .selectFrom('generated_maps')
-    .select(['status', 'map_hash', 'team_count', 'failure', 'job_id'])
+    .select([
+      'status',
+      'map_hash',
+      'team_count',
+      'failure',
+      'job_id',
+      'building_catalog',
+      'resource_experiments',
+      'required_resource_experiments',
+    ])
     .where('descriptor_hash', '=', descriptorHash(generator))
     .where('sim_version', '=', simVersion)
     .executeTakeFirst();
@@ -234,6 +267,13 @@ export async function applyMapJobResult(db: Db, jobId: string): Promise<boolean>
           width: result.map.width,
           height: result.map.height,
           team_count: result.map.teamCount,
+          resource_experiments: JSON.stringify(result.map.resourceExperiments ?? []),
+          required_resource_experiments: JSON.stringify(
+            result.map.requiredResourceExperiments ?? [],
+          ),
+          building_catalog: result.map.buildingCatalog
+            ? JSON.stringify(result.map.buildingCatalog)
+            : null,
           job_id: jobId,
           completed_at: sql<Date>`now()`,
         })
@@ -274,6 +314,13 @@ export async function applyMapJobResult(db: Db, jobId: string): Promise<boolean>
           width: result.map.width,
           height: result.map.height,
           team_count: result.map.teamCount,
+          resource_experiments: JSON.stringify(result.map.resourceExperiments ?? []),
+          required_resource_experiments: JSON.stringify(
+            result.map.requiredResourceExperiments ?? [],
+          ),
+          building_catalog: result.map.buildingCatalog
+            ? JSON.stringify(result.map.buildingCatalog)
+            : null,
           version_minor: result.versionMinor,
           title: result.title ?? null,
           players: result.players ? JSON.stringify(result.players) : null,

@@ -1,3 +1,4 @@
+import { catalogRulesVersion, checkBuildingCatalogHash } from '@glob2/protocol/node';
 // The match start sequence shared by rooms (API) and quick-match queues
 // (worker): access checks, map, `matches` row with the setup and a seed the
 // platform chose, and relay placement. Tickets are signed by the API replica
@@ -13,8 +14,10 @@ import {
   STANDARD_RULES,
   matchSetupProblems,
   parseSimVersionKey,
+  simVersionKey,
   playerSeats,
   type AiId,
+  type BuildingCatalog,
   type GeneratorDescriptor,
   type MatchSetup,
 } from '@glob2/protocol';
@@ -150,7 +153,46 @@ function isUniqueViolation(error: unknown): boolean {
  * `unavailable` when no relay can take it. Idempotent per proposal id.
  */
 export async function createMatch(db: Db, request: CreateMatchRequest): Promise<CreatedMatch> {
-  const problems = matchSetupProblems(request.setup);
+  const setup = { ...request.setup };
+  let mapCatalog: BuildingCatalog | undefined;
+  for (const table of ['map_versions', 'map_uploads', 'generated_maps'] as const) {
+    const row =
+      table === 'map_versions'
+        ? await db
+            .selectFrom(table)
+            .select(['building_catalog', 'resource_experiments', 'required_resource_experiments'])
+            .where('hash', '=', setup.map.hash)
+            .executeTakeFirst()
+        : table === 'map_uploads'
+          ? await db
+              .selectFrom(table)
+              .select(['building_catalog', 'resource_experiments', 'required_resource_experiments'])
+              .where('blob_sha256', '=', setup.map.hash)
+              .where('sim_version', '=', simVersionKey(setup.simVersion))
+              .executeTakeFirst()
+          : await db
+              .selectFrom(table)
+              .select(['building_catalog', 'resource_experiments', 'required_resource_experiments'])
+              .where('map_hash', '=', setup.map.hash)
+              .where('sim_version', '=', simVersionKey(setup.simVersion))
+              .executeTakeFirst();
+    if (row) {
+      // These declarations were extracted from the map by its engine, never supplied by a room host.
+      setup.resourceExperiments = row.resource_experiments;
+      setup.experiments = [
+        ...new Set([...setup.experiments, ...row.required_resource_experiments]),
+      ];
+      if (row.building_catalog) mapCatalog = row.building_catalog as BuildingCatalog;
+      break;
+    }
+  }
+  if (mapCatalog) {
+    if (setup.buildingCatalog && setup.buildingCatalog.hash !== mapCatalog.hash)
+      throw new Error('match building catalog differs from its validated map');
+    setup.buildingCatalog = mapCatalog;
+  }
+  if (setup.buildingCatalog) checkBuildingCatalogHash(setup.buildingCatalog);
+  const problems = matchSetupProblems(setup);
   if (problems.length > 0) {
     throw new Error(`invalid setup: ${problems.map((p) => `${p.path} ${p.message}`).join('; ')}`);
   }
@@ -160,13 +202,15 @@ export async function createMatch(db: Db, request: CreateMatchRequest): Promise<
   }
   const relay = await placeMatch(db, request.placement);
   if (!relay) throw new StartError('unavailable', 'No relay is available to host the match.');
-  const setup = request.setup;
   try {
     const matchId = await db.transaction().execute(async (trx) => {
       const match = await trx
         .insertInto('matches')
         .values({
           sim_version: `${setup.simVersion.versionMinor}-${setup.simVersion.netProtocol}-${setup.simVersion.dataHash}`,
+          rules_identity: simVersionKey(
+            catalogRulesVersion(setup.simVersion, setup.buildingCatalog?.hash),
+          ),
           origin: request.origin,
           room_id: request.roomId ?? null,
           queue_id: request.origin === 'queue' ? (request.queueId ?? null) : null,

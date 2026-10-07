@@ -4,8 +4,8 @@
 #include "shared_runtime/Runtime.h"
 #include <limits>
 #include "BuildingType.h"
-#include "IntBuildingType.h"
-#include "GlobalContainer.h"
+#include "shared_runtime/BuildingDemands.h"
+#include "FileFormatVersions.h"
 
 using namespace AISharedRuntime;
 using namespace AISharedRuntime::Gradients;
@@ -20,11 +20,51 @@ BuildingOrder::BuildingOrder(int building_type, int number_of_workers) : buildin
 
 
 
+BuildingOrder::BuildingOrder(Runtime& runtime,int demand,int workers) : BuildingOrder(demand,workers)
+{
+ bind(runtime);
+}
+unsigned BuildingOrder::input_resource_mask(Runtime& runtime) const
+{
+ if(concrete_type<0) return 0;
+ const auto* placement=runtime.player->game->buildingsTypes.get(concrete_type);
+ const auto* completed=placement->isBuildingSite ? runtime.player->game->buildingsTypes.get(placement->nextLevel) : placement;
+ const auto& spec=completed->semantics;
+ unsigned recurring=0,construction=0;
+ for(int resource=0;resource<MaterialSlotCount;++resource) {
+  bool consumes=(spec.feeding.enabled && spec.feeding.cost[resource]>0) || (spec.healing.enabled && spec.healing.cost[resource]>0);
+  for(const auto& recipe:spec.production.recipes) consumes|=recipe.enabled && recipe.cost[resource]>0;
+  for(const auto& training:spec.training) consumes|=training.enabled && training.cost[resource]>0;
+  consumes|=completed->shootingRange>0 && spec.ammunitionMaterial==resource && spec.ammunitionCost>0;
+  if(consumes) recurring|=1u<<resource;
+  if(placement->semantics.constructionCost[resource]>0) construction|=1u<<resource;
+ }
+ return recurring ? recurring : construction;
+}
+
+void BuildingOrder::add_input_distance_constraints(Runtime& runtime,int defaultWeight,
+    std::initializer_list<std::pair<int,int>> resourceWeights,int maximumDistance)
+{
+    const unsigned inputs=input_resource_mask(runtime);
+    for(int resource=0;resource<MaterialSlotCount;++resource) if(inputs&(1u<<resource)) {
+        int weight=defaultWeight;
+        for(const auto& [selected,preference]:resourceWeights) if(selected==resource) weight=preference;
+        GradientInfo gradient;gradient.add_source(new Entities::MaterialSource(resource));
+        add_constraint(new MinimizedDistance(gradient,weight));
+        if(maximumDistance>=0) add_constraint(new MaximumDistance(gradient,maximumDistance));
+    }
+}
+
 bool BuildingOrder::load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor)
 {
 	stream->readEnterSection("BuildingOrder");
 
 	building_type=stream->readUint32("building_type");
+ if(versionMinor<FILE_FORMAT_VERSION_BUILDING_CATALOG) {
+  concrete_type=player ? importLegacyBuildingId(*player->game,building_type,0,true) : -1;
+  building_type=importLegacyBuildingDemand(building_type);
+ } else concrete_type=stream->readSint32("concrete_type");
+ if(building_type<0 || building_type>=BuildingDemand::Count || concrete_type < -1 || (concrete_type>=0 && player && size_t(concrete_type)>=player->game->buildingsTypes.size())) return false;
 	number_of_workers=stream->readUint32("number_of_workers");
 	// Saves older than 96 do not carry it; Runtime::load registers a fresh one.
 	if (versionMinor>=96)
@@ -63,6 +103,7 @@ void BuildingOrder::save(GAGCore::OutputStream *stream)
 	stream->writeEnterSection("BuildingOrder");
 
 	stream->writeUint32(building_type, "building_type");
+ stream->writeSint32(concrete_type,"concrete_type");
 	stream->writeUint32(number_of_workers, "number_of_workers");
 	stream->writeUint32(static_cast<Uint32>(id), "id");
 
@@ -104,25 +145,36 @@ void BuildingOrder::add_condition(Condition* condition)
 
 
 
+bool BuildingOrder::bind(Runtime& runtime)
+{
+ auto& game=*runtime.player->game;
+ const auto& index=game.buildingCapabilities();
+ const auto intent=buildingIntent(building_type);
+ if(!AIPlanning::BuildingCapabilityIndex::allowed(intent,game.gameHeader)) return false;
+ if(concrete_type>=0) {
+  const auto* type=game.buildingsTypes.get(concrete_type);
+  return index.available({concrete_type,type->isBuildingSite ? type->nextLevel : concrete_type},intent,game.gameHeader);
+ }
+ int count=0;
+ for(const auto& candidate:index.placements(intent))
+  if(index.available(candidate,intent,game.gameHeader) && runtime.random()%++count==0) concrete_type=candidate.placementType;
+ return concrete_type>=0;
+}
+
 position BuildingOrder::find_location(Runtime& runtime, Map* map, GradientManager& manager)
 {
-	position best(0,0);
+	position best(-1,-1);
 	Player* player=runtime.player;
 	int best_score=std::numeric_limits<int>::min();
-	BuildingType* type=globalContainer->buildingsTypes.getByType(IntBuildingType::typeFromShortNumber(building_type), 0, true);
-	bool check_flag=false;
-	//If theres no type for a construction zone, then this is a flag
-	if(type==NULL)
-	{
-		type=globalContainer->buildingsTypes.getByType(IntBuildingType::typeFromShortNumber(building_type), 0, false);
-		check_flag=true;
-	}
+ if(!bind(runtime)) return position(-1,-1);
+ const auto* type=runtime.player->game->buildingsTypes.get(concrete_type);
+ const bool check_flag=!type->semantics.occupiesGround;
 
 	for(int x=0; x<map->getW(); ++x)
 	{
 		for(int y=0; y<map->getH(); ++y)
 		{
-			if(!check_flag && !map->isHardSpaceForBuilding(x, y, type->width, type->height))
+			if(!runtime.player->game->checkRoomForBuilding(x,y,type,runtime.player->team->teamNumber))
 				continue;
 
 			if(check_flag && runtime.get_flag_map().get_flag(x, y)!=NOGBID)
@@ -131,6 +183,9 @@ position BuildingOrder::find_location(Runtime& runtime, Map* map, GradientManage
 			bool passes=true;
 			for(std::vector<std::shared_ptr<Constraint> >::iterator i=constraints.begin(); i!=constraints.end(); ++i)
 			{
+				if ((*i)->applies_to_origin())
+					passes=(*i)->passes_constraint(runtime,x,y);
+				else
 				for(int x2=0; x2<type->width && passes; ++x2)
 					for(int y2=0; y2<type->height && passes; ++y2)
 						if((x2==0 || y2==0 || x2==type->width-1 || y2==type->height-1))

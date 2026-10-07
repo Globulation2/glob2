@@ -1,18 +1,19 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2026 The Globulation 2 Authors
 
+#include "Material.h"
 #include "AITelemetryFields.h"
 #include "AIStateSerialization.h"
 #include "AICortex.h"
 #include "CortexObservation.h"
-#include "CortexWheat.h"
+#include "CortexFoodSources.h"
 
 #include "Order.h"
 #include "AIRuleOrders.h"
 #include "OrderMessages.h"
 #include "Player.h"
 #include "team/Team.h"
-#include "IntBuildingType.h"
+#include "CortexBuildings.h"
 #include "BuildingType.h"
 #include "building/Building.h"
 #include "Ressource.h"
@@ -148,7 +149,7 @@ bool AICortex::load(GAGCore::InputStream* stream, Player* player, Sint32 version
 	flagPosture = stream->readSint32("flagPosture");
 	offenseHoldUntil = stream->readSint32("offenseHoldUntil");
 	// Persisted, NOT redrawn on load: re-drawing would consume a fresh syncRand on
-	// every load and desync replays. -1 means a pre-wheat save (or a game that has
+	// every load and desync replays. -1 means a pre-food save (or a game that has
 	// not reached its first decision cycle yet) — getOrder draws it next cycle.
 	wheatOpenMargin = stream->readSint32("wheatOpenMargin");
 	if (versionMinor >= 101)
@@ -190,6 +191,7 @@ bool AICortex::load(GAGCore::InputStream* stream, Player* player, Sint32 version
 			envelope.setDecodeVersionMinor(versionMinor);
 			envelope.decodeData(stream);
 			if (!envelope.getOrder()) return false;
+			AIStateSerialization::normalizeLegacyOrderStaffing(*player->game,*envelope.getOrder(),versionMinor);
 			orderQueue.push(envelope.getOrder());
 			stream->readLeaveSection();
 		}
@@ -313,7 +315,7 @@ Building* AICortex::findUpgradeTarget(int buildingType) const
 {
 	// Scan our real buildings by ARRAY INDEX (myBuildings, never team->upgrade
 	// or any std::set) so the selection is lockstep-deterministic. We keep the
-	// single best instance whose b->type->shortTypeNum == buildingType and that
+	// single best instance whose building serves the requested role and that
 	// passes the FULL engine Upgradable predicate — the same seven conditions the
 	// observation's upgradableCount uses (CortexTypes.h:182-189), which are in
 	// turn exactly what Building::launchConstruction's UPGRADE branch and the GUI
@@ -325,7 +327,7 @@ Building* AICortex::findUpgradeTarget(int buildingType) const
 	//   - constructionResultState == NO_CONSTRUCTION (not already up/repairing)
 	//   - type->nextLevel != BUILDING_LEVEL_NONE (not already at max level)
 	//                                                      (C++: Construction.cpp:105, GameGUIInput.cpp:424)
-	//   - team->maxBuildLevel() > type->level             (C++: GameGUIInput.cpp:426)
+	//   - worker construction qualification meets the target requiredWorkerLevel
 	//   - isHardSpaceForBuildingSite(UPGRADE) (larger next-level footprint fits)
 	//                                                      (C++: Construction.cpp:105, GameGUIInput.cpp:425)
 	// If ANY condition fails the OrderConstruction would be silently dropped, so
@@ -341,20 +343,20 @@ Building* AICortex::findUpgradeTarget(int buildingType) const
 		Building* b = team->myBuildings[i];
 		if (b == NULL)
 			continue;
-		if (b->type->shortTypeNum != buildingType)
+		if (!Cortex::servesRole(*team->game, *b->type, buildingType))
 			continue;
 		// C++: Building::launchConstruction, building/Construction.cpp:93-108.
 		if (b->buildingState != Building::ALIVE)
 			continue;
 		if (b->type->isBuildingSite)
 			continue;
-		if (b->type->shortTypeNum == IntBuildingType::MARKET_BUILDING || !b->isUpgradeAvailable())
+		if (!b->isUpgradeAvailable())
 			continue;
 		if (b->hp != b->getEffectiveMaxHp())
 			continue; // hp < hpMax would launch a REPAIR; > can't happen.
 		if (b->constructionResultState != Building::NO_CONSTRUCTION)
 			continue;
-		if (maxBuildLevel <= b->type->level) // C++: GameGUIInput.cpp:426 (> level)
+		if (maxBuildLevel < team->game->buildingsTypes.get(b->type->nextLevel)->semantics.requiredWorkerLevel)
 			continue;
 		if (!b->isHardSpaceForBuildingSite(Building::UPGRADE)) // C++: building/Building.h:200
 			continue;
@@ -409,7 +411,7 @@ shared_ptr<Order> AICortex::getOrder(void)
 	timer++;
 	if ((timer % OBSERVE_INTERVAL) == 0)
 	{
-		// Draw the per-game wheat open-margin N exactly once, lazily, on the first
+		// Draw the per-game food open-margin N exactly once, lazily, on the first
 		// decision cycle — not in the constructor — so the sync RNG is live and the
 		// draw lands at the same point in the shared stream on every client (all
 		// clients run getOrder in lockstep). syncRand(), NEVER rand(): this value
@@ -466,13 +468,13 @@ shared_ptr<Order> AICortex::getOrder(void)
 			const int bid = Building::GIDtoID(static_cast<Uint16>(t0.gid));
 			Building* b = player->team->myBuildings[bid];
 			if (b && b->buildingState == Building::ALIVE && !b->type->isBuildingSite
-			 && b->type->shortTypeNum == IntBuildingType::SWARM_BUILDING)
+			 && Cortex::servesRole(*b->owner->game, *b->type, Cortex::CORTEX_BUILD_SWARM))
 			{
-				b->maxUnitWorking = SWARM_START_WORKERS;
+				b->maxUnitWorking = std::min(SWARM_START_WORKERS, int(b->type->semantics.assignmentLimit));
 				b->update();
 				orderQueue.push(shared_ptr<Order>(
-					new OrderModifyBuilding(b->gid, SWARM_START_WORKERS)));
-				t0.maxUnitWorking = SWARM_START_WORKERS;
+					new OrderModifyBuilding(b->gid, b->maxUnitWorking)));
+				t0.maxUnitWorking = b->maxUnitWorking;
 				swarmKickstarted = true;
 			}
 		}
@@ -517,43 +519,43 @@ shared_ptr<Order> AICortex::getOrder(void)
 			          << " underAtk=" << (obs.buildingsUnderAttack + obs.unitsUnderAttack)
 			          << " starv=" << obs.starvingUnits
 			          << "\n";
-			// Per-inn wheat-gate detail (feedCap root-cause). feedCapacity sums only
+			// Per-inn food-gate detail (feedCap root-cause). feedCapacity sums only
 			// inns that pass the gate (harvestable >= CORTEX_WHEAT_MIN_TILES=5).
 			// nearestWheat is forbidden-BLIND; harvestable is forbidden-AWARE. When
-			// feedCap==0: wheat-present (nearestWheat small) + gate-fail => FORBIDDEN (b);
+			// feedCap==0: food-present (nearestWheat small) + gate-fail => FORBIDDEN (b);
 			// nearestWheat large/-1 => DEPLETED/ABSENT (c).
 			for (int i = 0; i < obs.innCount && i < CORTEX_MAX_TRACKED_INNS; i++)
 			{
 				const Cortex::TrackedBuilding& n = obs.trackedInns[i];
 				if (!n.valid) continue;
 				std::cerr << "CORTEX_INN t=" << obs.tick << " inn=" << i
-				          << " wheat=" << n.wheat << "/" << n.maxWheat
+				          << " wheat=" << n.supplyStock << "/" << n.supplyCapacity
 				          << " haulers=" << n.maxUnitWorking
 				          << " restockReq=" << n.restockTripsNeeded
 				          << " inside=" << n.unitsInside << "/" << n.maxUnitInside
-				          << " nearestWheat=" << n.nearestWheatDist
-				          << " blindWheat=" << n.diagBlindWheatNearby
-				          << " harvestable=" << n.harvestableWheatNearby
-				          << " feedsGate=" << (n.harvestableWheatNearby >= CORTEX_WHEAT_MIN_TILES ? 1 : 0)
+				          << " nearestWheat=" << n.nearestFoodSourceDistance
+				          << " blindWheat=" << n.unrestrictedFoodSourcesNearby
+				          << " harvestable=" << n.harvestableFoodSourcesNearby
+				          << " feedsGate=" << (n.harvestableFoodSourcesNearby >= CORTEX_WHEAT_MIN_TILES ? 1 : 0)
 				          << "\n";
 			}
-			// Per-swarm wheat buffer + assigned haulers: contrast against the inns above to
-			// see whether the scarce haulers are feeding PRODUCTION (swarm wheat full) while
+			// Per-swarm food buffer + assigned haulers: contrast against the inns above to
+			// see whether the scarce haulers are feeding PRODUCTION (swarm food full) while
 			// the inns (FEEDING) sit empty.
 			for (int i = 0; i < obs.swarmCount && i < CORTEX_MAX_TRACKED_SWARMS; i++)
 			{
 				const Cortex::TrackedBuilding& s = obs.trackedSwarms[i];
 				if (!s.valid) continue;
 				std::cerr << "CORTEX_SWARM t=" << obs.tick << " swarm=" << i
-				          << " wheat=" << s.wheat << "/" << s.maxWheat
+				          << " wheat=" << s.supplyStock << "/" << s.supplyCapacity
 				          << " haulers=" << s.maxUnitWorking
 				          << " prio=" << s.priority
-				          << " harvestable=" << s.harvestableWheatNearby
+				          << " harvestable=" << s.harvestableFoodSourcesNearby
 				          << "\n";
 			}
 			// Direct engine-gradient probe per real inn: is COLLECTABLE (ripe, reachable)
-			// wheat actually available at the inn? wheatAvail=0 with wheat tiles nearby ⇒ the
-			// local wheat is unripe/over-harvested, not merely fogged — that is why
+			// food actually available at the inn? wheatAvail=0 with food tiles nearby ⇒ the
+			// local food is unripe/over-harvested, not merely fogged — that is why
 			// restockTripsNeeded computes 0 and the inn never refills.
 			{
 				Game* g = player->team->game;
@@ -564,13 +566,13 @@ shared_ptr<Order> AICortex::getOrder(void)
 					Building* bb = tm->myBuildings[b];
 					if (bb == NULL || bb->buildingState == Building::DEAD)
 						continue;
-					if (bb->type->shortTypeNum != IntBuildingType::FOOD_BUILDING)
+					if (!Cortex::servesRole(*bb->owner->game, *bb->type, Cortex::CORTEX_BUILD_FOOD))
 						continue;
 					std::cerr << "CORTEX_INNGRAD t=" << obs.tick << " inn=" << innIdx++
 					          << " at=" << bb->posX << "," << bb->posY
-					          << " wheat=" << bb->resources[WHEAT] << "/" << bb->type->maxResource[WHEAT]
-					          << " wheatAvail=" << (g->map.resourceAvailable(tm->teamNumber, WHEAT, 0, bb->posX, bb->posY) ? 1 : 0)
-					          << " wheatGrad=" << (int)g->map.getGradient(tm->teamNumber, WHEAT, 0, bb->posX, bb->posY)
+					          << " wheat=" << bb->materials[materialIndex(MaterialId::Food)] << "/" << bb->type->maxMaterial[materialIndex(MaterialId::Food)]
+					          << " wheatAvail=" << (g->map.materialAvailable(tm->teamNumber,MaterialId::Food, 0, bb->posX, bb->posY) ? 1 : 0)
+					          << " wheatGrad=" << (int)g->map.getGradient(tm->teamNumber, materialIndex(MaterialId::Food), 0, bb->posX, bb->posY)
 					          << "\n";
 				}
 			}
@@ -648,7 +650,7 @@ shared_ptr<Order> AICortex::getOrder(void)
 					Building* bb = team->myBuildings[b];
 					if (bb == NULL || bb->buildingState == Building::DEAD)
 						continue;
-					if (bb->type->shortTypeNum != IntBuildingType::FOOD_BUILDING)
+					if (!Cortex::servesRole(*bb->owner->game, *bb->type, Cortex::CORTEX_BUILD_FOOD))
 						continue;
 					int d = game->map.warpDistMax(flag->posX, flag->posY, bb->posX, bb->posY);
 					if (innDist < 0 || d < innDist)
@@ -726,7 +728,7 @@ shared_ptr<Order> AICortex::getOrder(void)
 			Sint32* trackX[2]      = { &forwardInnX,  &forwardHealX };
 			Sint32* trackY[2]      = { &forwardInnY,  &forwardHealY };
 			const int types[2]     = { Cortex::CORTEX_BUILD_FOOD, Cortex::CORTEX_BUILD_HEAL };
-			const int shortTypes[2] = { IntBuildingType::FOOD_BUILDING, IntBuildingType::HEAL_BUILDING };
+			const int shortTypes[2] = { Cortex::CORTEX_BUILD_FOOD, Cortex::CORTEX_BUILD_HEAL };
 			Sint32* underway[2]    = { &obs.forwardInnUnderway, &obs.forwardHealUnderway };
 			for (int p = 0; p < 2; p++)
 			{
@@ -738,7 +740,7 @@ shared_ptr<Order> AICortex::getOrder(void)
 					Building* b = player->team->myBuildings[i];
 					if (b == NULL || b->buildingState != Building::ALIVE)
 						continue;
-					if (b->type->shortTypeNum != shortTypes[p])
+					if (!Cortex::servesRole(*b->owner->game, *b->type, shortTypes[p]))
 						continue;
 					if (b->posX == *trackX[p] && b->posY == *trackY[p])
 					{
@@ -924,15 +926,15 @@ shared_ptr<Order> AICortex::getOrder(void)
 		// says yes we enqueue the full ADD/DEL paint here, alongside whatever orders
 		// translateAction queued. They drain one-per-tick over the many ticks until
 		// the next decision cycle, so both go out — they no longer compete for a turn.
-		// WHEAT-BLITZ takes precedence: during a famine (foodSaturated with a
-		// committable army and a target) we LIFT all wheat protection for a one-time
-		// food burst to fuel the attack. wantWheatProtection returns false while
+		// Food-BLITZ takes precedence: during a famine (foodSaturated with a
+		// committable army and a target) we LIFT all food protection for a one-time
+		// food burst to fuel the attack. wantFoodSourceProtection returns false while
 		// starving, so the two gates are mutually exclusive and the executor never
 		// double-emits; blitz-lift wins when both could apply.
-		if (policy.wantWheatBlitzLift(obs))
-			enqueueWheatForbidden(obs, /*liftAll=*/true);
-		else if (policy.wantWheatProtection(obs))
-			enqueueWheatForbidden(obs);
+		if (policy.wantFoodBurstLift(obs))
+			enqueueFoodSourcesForbidden(obs, /*liftAll=*/true);
+		else if (policy.wantFoodSourceProtection(obs))
+			enqueueFoodSourcesForbidden(obs);
 
 		while (!orderQueue.empty() && !AIRules::permittedQueuedOrder(*player->game, *orderQueue.front())) orderQueue.pop();
 		if (!orderQueue.empty())

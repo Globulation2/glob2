@@ -5,33 +5,28 @@
 #include "Map.h"
 #include "Team.h"
 #include "Unit.h"
+#include <algorithm>
 
 void Team::createLists(void)
 {
-	assert(swarms.size()==0);
-	assert(turrets.size()==0);
-	assert(virtualBuildings.size()==0);
-
+	// Setup helpers can register buildings before requesting a complete rebuild.
+	// Rebuild only static capability lists; active service and staffing queues
+	// retain their scheduling state.
+	stockSuppliers.clear();
+	directStockSuppliers.clear();
+	combatFlags.clear();
 	swarms.clear();
 	turrets.clear();
 	virtualBuildings.clear();
-
-	for (int i=0; i<Building::MAX_COUNT; i++)
-		if (myBuildings[i])
-	{
-		if (myBuildings[i]->type->unitProductionTime)
-			swarms.push_back(myBuildings[i]);
-		if (myBuildings[i]->type->shootingRange)
-			turrets.push_back(myBuildings[i]);
-		if (myBuildings[i]->type->isVirtual)
-			virtualBuildings.push_back(myBuildings[i]);
-		if (myBuildings[i]->type->zonable[WORKER])
-			clearingFlags.push_back(myBuildings[i]);
-		myBuildings[i]->update();
-	}
+	clearingFlags.clear();
+	canExchange.clear();
+	for (int i=0; i<Building::MAX_COUNT; ++i)
+		if (Building* building=myBuildings[i])
+		{
+			addToStaticAbilitiesLists(building);
+			building->update();
+		}
 }
-
-
 
 
 void Team::clearLists(void)
@@ -45,6 +40,9 @@ void Team::clearLists(void)
 	buildingsToBeDestroyed.clear();
 	buildingsTryToBuildingSiteRoom.clear();
 	buildingsNeedingUnits.clear();
+	stockSuppliers.clear();
+	directStockSuppliers.clear();
+	combatFlags.clear();
 	swarms.clear();
 	turrets.clear();
 	virtualBuildings.clear();
@@ -116,18 +114,23 @@ void Team::clearMem(void)
 
 void Team::removeFromAbilitiesLists(Building *building)
 {
+	if (building->type->runtimeSuppliesStock || building->type->runtimeSuppliesDirectStock) map->invalidateSupplierLocations();
+	building->cancelProduction();
+	stockSuppliers.remove(building);
+	directStockSuppliers.remove(building);
+	combatFlags.remove(building);
 	for (int ui=0; ui<NB_ABILITY; ui++)
-		if (building->type->upgrade[ui])
-			canUpgrade[ui].remove(building);
+		if (building->type->upgrade[ui]) canUpgrade[ui].remove(building);
 
 	if (building->type->canFeedUnit)
 		canFeedUnit.remove(building);
 	if (building->type->canHealUnit)
 		canHealUnit.remove(building);
+	building->resetServiceListState();
 	if (building->type->canExchange)
 		canExchange.remove(building);
 
-	if (building->type->unitProductionTime)
+	if (building->type->semantics.production.enabledUnitMask)
 		swarms.remove(building);
 	if (building->type->shootingRange)
 		turrets.remove(building);
@@ -144,18 +147,24 @@ void Team::removeFromAbilitiesLists(Building *building)
 
 void Team::addToStaticAbilitiesLists(Building *building)
 {
+	if (building->type->runtimeSuppliesDirectStock && building->buildingState == Building::ALIVE && std::find(directStockSuppliers.begin(),directStockSuppliers.end(),building)==directStockSuppliers.end()) directStockSuppliers.push_back(building);
+	if (building->type->zonable[WARRIOR] && std::find(combatFlags.begin(),combatFlags.end(),building)==combatFlags.end()) combatFlags.push_back(building);
+	if (building->type->runtimeSuppliesStock || building->type->runtimeSuppliesDirectStock) map->invalidateSupplierLocations();
+	if (building->type->runtimeSuppliesStock && building->buildingState == Building::ALIVE &&
+		std::find(stockSuppliers.begin(), stockSuppliers.end(), building) == stockSuppliers.end())
+		stockSuppliers.push_back(building);
 	if (building->type->canExchange)
-		canExchange.push_back(building);
+		if (std::find(canExchange.begin(), canExchange.end(), building) == canExchange.end()) canExchange.push_back(building);
 
-	if (building->type->unitProductionTime)
-		swarms.push_back(building);
+	if (building->type->semantics.production.enabledUnitMask)
+		if (std::find(swarms.begin(), swarms.end(), building) == swarms.end()) swarms.push_back(building);
 
 	if (building->type->shootingRange)
-		turrets.push_back(building);
+		if (std::find(turrets.begin(), turrets.end(), building) == turrets.end()) turrets.push_back(building);
 
 	if (building->type->zonable[WORKER])
-		clearingFlags.push_back(building);
+		if (std::find(clearingFlags.begin(), clearingFlags.end(), building) == clearingFlags.end()) clearingFlags.push_back(building);
 ;
 	if (building->type->isVirtual)
-		virtualBuildings.push_back(building);
+		if (std::find(virtualBuildings.begin(), virtualBuildings.end(), building) == virtualBuildings.end()) virtualBuildings.push_back(building);
 }

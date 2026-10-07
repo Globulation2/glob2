@@ -5,6 +5,9 @@
 #include <math.h>
 #include <stdlib.h>
 #include <algorithm>
+#include <bit>
+#include <limits>
+#include <stdexcept>
 
 #include "Building.h"
 #include "BuildingType.h"
@@ -19,85 +22,132 @@
 #include "Order.h"
 #include "Bullet.h"
 
+int Building::selectProductionRecipe() const
+{
+	Sint64 best = std::numeric_limits<Sint64>::max();
+	int chosen = -1;
+	for (int u = 0; u < NB_UNIT_TYPE; ++u)
+		if ((runtime->productionEnabledMask&(1u<<u)) && ratio[u] > 0)
+		{
+			const Sint64 proportion = (Sint64(percentUsed[u]) << FIXED_POINT_SHIFT_16) / ratio[u];
+			if (proportion <= best) { best = proportion; chosen = u; }
+		}
+	return chosen;
+}
+
+bool Building::canAffordProduction(int unitType) const
+{
+	if (buildingState != ALIVE || siteCompletionPending) return false;
+	if (unitType < 0 || unitType >= NB_UNIT_TYPE) return false;
+	const auto& recipe = type->semantics.production.recipes[unitType];
+	if (!recipe.enabled) return false;
+	if (productionUnit == unitType) return true; // committed resources are reserved
+	for (unsigned mask = recipe.costMask; mask; mask &= mask - 1)
+	{
+		const int r = std::countr_zero(mask);
+		if (availableMaterial(r) < recipe.cost[r]) return false;
+	}
+	return true;
+}
+
+void Building::resetProduction()
+{
+	cancelProduction();
+	productionTimeout = 0;
+	for (const auto& recipe : type->semantics.production.recipes)
+		if (recipe.enabled) { productionTimeout = recipe.duration; break; }
+}
+
+void Building::cancelProduction()
+{
+	if (productionUnit >= 0)
+	{
+		releaseMaterials(type->semantics.production.recipes[productionUnit].cost);
+		productionUnit = -1;
+	}
+}
+
+void Building::restoreProductionReservations()
+{
+	if (productionUnit < 0) return;
+	const auto& p = type->semantics.production;
+	if (productionUnit >= NB_UNIT_TYPE || !p.recipes[productionUnit].enabled ||
+		p.scheduling != BuildingProductionScheduling::WeightedCommittedJob ||
+		buildingState != ALIVE || productionTimeout < -1 || productionTimeout > p.recipes[productionUnit].duration)
+		throw std::runtime_error("Invalid saved committed production job");
+	if (!restoreMaterialsReservation(p.recipes[productionUnit].cost))
+		throw std::runtime_error("Saved production overbooks materials");
+}
+
+void Building::regenerationStep()
+{
+	if (buildingState == DEAD || hp >= getEffectiveMaxHp()) return;
+	hp += std::min(runtime->regenerationPerTick, getEffectiveMaxHp() - hp);
+}
+
 void Building::swarmStep(void)
 {
-	// increase HP
-	if (hp<getEffectiveMaxHp())
-		hp++;
-	assert(NB_UNIT_TYPE==3);
-	if ((resources[WHEAT]>=type->resourceForOneUnit)&&(ratio[0]|ratio[1]|ratio[2]))
-		productionTimeout--;
-
-	if (productionTimeout<0)
+	if (buildingState != ALIVE || siteCompletionPending) return;
+	const auto& production = type->semantics.production;
+	const bool committed = runtime->has(BuildingRuntimeTraits::CommittedProduction);
+	int chosen;
+	if (committed)
 	{
-		// We find the kind of unit we have to create:
-		Sint32 fProportion;
-		Sint32 fMinProportion = MIN_PROPORTION_INIT;
-		int minType=-1;
-		for (int i=0; i<NB_UNIT_TYPE; i++)
-			if (ratio[i]!=0)
-			{
-				fProportion=(percentUsed[i]<<FIXED_POINT_SHIFT_16)/ratio[i];
-				if (fProportion<=fMinProportion)
-				{
-					fMinProportion=fProportion;
-					minType=i;
-				}
-			}
-
-		if (minType==-1)
-			minType=0;
-		assert(minType>=0);
-		assert(minType<NB_UNIT_TYPE);
-		if (minType<0 || minType>=NB_UNIT_TYPE)
-			minType=0;
-
-		// We get the unit UnitType:
-		int posX, posY, dx, dy;
-		UnitType *ut=owner->race.getUnitType(minType, 0);
-
-		// Is there a place to exit ?
-		bool exitFound;
-		if (ut->performance[FLY])
-			exitFound=findAirExit(&posX, &posY, &dx, &dy);
-		else
-			exitFound=findGroundExit(&posX, &posY, &dx, &dy, ut->performance[SWIM]);
-		if (exitFound)
+		if (productionUnit < 0)
 		{
-			Unit * u=owner->game->addUnit(posX, posY, owner->teamNumber, minType, 0, 0, dx, dy);
-			if (u)
-			{
-				++owner->stats.measurements.births[minType];
-				owner->stats.measurements.consumed[GameplayMeasurements::SPAWNING][WHEAT] +=
-					type->resourceForOneUnit;
-				resources[WHEAT]-=type->resourceForOneUnit;
-				updateCallLists();
-
-				u->activity=Unit::ACT_RANDOM;
-				u->displacement=Unit::DIS_RANDOM;
-				u->movement=Unit::MOV_EXITING_BUILDING;
-				u->speed=unitTerrainMovementSpeed(u->performance[u->action], u->performance[FLY]
-                    ? owner->map->terrainPropertiesAt(u->posX,u->posY).airSpeedQ8
-                    : owner->map->terrainPropertiesAt(u->posX,u->posY).groundSpeedQ8);
-
-				productionTimeout=type->unitProductionTime;
-
-				// We update percentUsed[]
-				percentUsed[minType]++;
-
-				bool allDone=true;
-				for (int i=0; i<NB_UNIT_TYPE; i++)
-					if (percentUsed[i]<ratio[i])
-						allDone=false;
-
-				if (allDone)
-					for (int i=0; i<NB_UNIT_TYPE; i++)
-						percentUsed[i]=0;
-			}
-			else if (verbose)
-				printf("WARNING, no more UNIT ID free for team %d\n", owner->teamNumber);
+			chosen = selectProductionRecipe();
+			if (chosen < 0 || !reserveMaterials(production.recipes[chosen].cost)) return;
+			productionUnit = chosen;
+			productionTimeout = production.recipes[chosen].duration;
 		}
+		chosen = productionUnit;
+		if (productionTimeout >= 0) --productionTimeout;
 	}
+	else
+	{
+		// Late-choice recipes have identical validated costs and durations. A
+		// pending timer needs only availability and an active ratio, not ranking.
+		const bool affordable=canAffordProduction(production.fallbackUnit);
+		bool active=false;
+		for (int unit=0; unit<NB_UNIT_TYPE; ++unit)
+			active |= (runtime->productionEnabledMask&(1u<<unit)) && ratio[unit]>0;
+		if (active && affordable && productionTimeout>std::numeric_limits<Sint32>::min()) --productionTimeout;
+		if (productionTimeout>=0 || !affordable) return;
+		chosen=selectProductionRecipe();
+		if (chosen<0) chosen=production.fallbackUnit;
+	}
+	if (committed && (productionTimeout>=0 || !canAffordProduction(chosen))) return;
+
+	int x, y, dx, dy;
+	const UnitType* ut = owner->race.getUnitType(chosen, 0);
+	const bool exitFound = ut->performance[FLY] ? findAirExit(&x, &y, &dx, &dy)
+		: findGroundExit(&x, &y, &dx, &dy, ut->performance[SWIM]);
+	if (!exitFound) return;
+	Unit* u = owner->game->addUnit(x, y, owner->teamNumber, chosen, 0, 0, dx, dy);
+	if (!u) return;
+	const auto& recipe = production.recipes[chosen];
+	if (!committed)
+	{
+		const bool reserved = reserveMaterials(recipe.cost);
+		assert(reserved); // availability was checked before creating the unit
+		(void)reserved;
+	}
+	consumeReservedMaterials(recipe.cost, GameplayMeasurements::SPAWNING);
+	productionUnit = -1;
+	++owner->stats.measurements.births[chosen];
+	updateCallLists();
+	u->activity = Unit::ACT_RANDOM;
+	u->displacement = Unit::DIS_RANDOM;
+	u->movement = Unit::MOV_EXITING_BUILDING;
+	u->speed = unitTerrainMovementSpeed(u->performance[u->action], u->performance[FLY]
+		? owner->map->terrainPropertiesAt(u->posX,u->posY).airSpeedQ8
+		: owner->map->terrainPropertiesAt(u->posX,u->posY).groundSpeedQ8);
+	productionTimeout = recipe.duration;
+	++percentUsed[chosen];
+	bool allDone = true;
+	for (int i = 0; i < NB_UNIT_TYPE; ++i)
+		if (production.recipes[i].enabled && percentUsed[i] < ratio[i]) allDone = false;
+	if (allDone) std::fill(std::begin(percentUsed), std::end(percentUsed), 0);
 }
 
 
@@ -113,20 +163,20 @@ namespace
 	/// Ticks a unit will remain on its current tile before it may move away.
 	int ticksUntilUnitMoves(const Unit* u)
 	{
-		return (TILE_DELTA_RANGE - u->delta) / u->speed;
+		return u->speed > 0 ? (TILE_DELTA_RANGE - u->delta) / u->speed : std::numeric_limits<int>::max();
 	}
 }
 
 void Building::convertStoneToBullet()
 {
-	// create bullet from stones in stock
-	if (resources[STONE]>0 && (bullets<=(type->maxBullets-type->multiplierStoneToBullets)))
+	const int resource = type->semantics.ammunitionMaterial;
+	const int cost = type->semantics.ammunitionCost;
+	if (availableMaterial(resource) >= cost && bullets <= type->maxBullets - type->multiplierStoneToBullets)
 	{
-		resources[STONE]--;
-		++owner->stats.measurements.consumed[GameplayMeasurements::AMMUNITION][STONE];
+		materials[resource] -= cost;
+		owner->stats.measurements.consumed[GameplayMeasurements::AMMUNITION][resource] += cost;
 		bullets += type->multiplierStoneToBullets;
-
-		// we need to be stone-fed
+		if (cost && (type->useTeamMaterials || type->runtimeSuppliesStock || type->runtimeSuppliesDirectStock)) owner->map->dirtyMarketGradientsSlot(owner->teamNumber, resource);
 		updateCallLists();
 	}
 }
@@ -135,7 +185,7 @@ bool Building::tickShootingCooldown()
 {
 	if (shootingCooldown > 0)
 	{
-		shootingCooldown -= type->shootRhythm;
+		shootingCooldown -= runtime->shootRhythm;
 		return false;
 	}
 	return true;
@@ -152,10 +202,6 @@ void Building::turretStep(Uint32 stepCounter)
 	// if we have no bullet, don't try to shoot
 	if (bullets <= 0)
 		return;
-
-	//for some reason, any turret that is not 2x2 makes no sense at all to the game
-	assert(type->width == TURRET_SIZE);
-	assert(type->height == TURRET_SIZE);
 
 	shootingStep = (shootingStep+1) & (SHOOTING_ANIMATION_FRAMES - 1);
 
@@ -174,7 +220,7 @@ int Building::scoreWarriorTarget(const Unit* target, int ring) const
 	int targetWeakness = 0; // 0 to 512
 	if (target->hp > 0)
 	{
-		if (target->hp < type->shootDamage) // hahaha, how mean!
+		if (target->hp < runtime->projectileDamage[target->typeNum]) // hahaha, how mean!
 			targetWeakness = 512;
 		else
 			targetWeakness = 256 / target->hp;
@@ -232,12 +278,12 @@ void Building::considerScanTile(int targetX, int targetY, int ring, int ticksToH
 				if (targetTicks <= ticksToHit)
 					return;
 				// shoot warrior first, then workers if no warrior
-				if (testUnit->typeNum == WARRIOR)
+				if (testUnit->typeNum == WARRIOR && runtime->projectileDamage[WARRIOR] > 0)
 				{
 					applyCandidate(best, scoreWarriorTarget(testUnit, ring),
 						targetTicks, targetX, targetY, TARGETTYPE_WARRIOR);
 				}
-				else if ((best.type != TARGETTYPE_WARRIOR) && (testUnit->typeNum == WORKER))
+				else if ((best.type != TARGETTYPE_WARRIOR) && (testUnit->typeNum == WORKER) && runtime->projectileDamage[WORKER] > 0)
 				{
 					// adjust score for range
 					applyCandidate(best, -testUnit->hp,
@@ -248,7 +294,7 @@ void Building::considerScanTile(int targetX, int targetY, int ring, int ticksToH
 	}
 	//explorers are now priority targets as defined later
 
-	if (airTargetGUID != NOGUID)
+	if (airTargetGUID != NOGUID && runtime->projectileDamage[EXPLORER] > 0)
 	{
 		Sint32 otherTeam = Unit::GIDtoTeam(airTargetGUID);
 		Sint32 targetID = Unit::GIDtoID(airTargetGUID);
@@ -271,7 +317,7 @@ void Building::considerScanTile(int targetX, int targetY, int ring, int ticksToH
 	}
 
 	// shoot building only if no unit is found
-	if (best.type == TARGETTYPE_NONE)
+	if (best.type == TARGETTYPE_NONE && runtime->projectileBuildingDamage > 0)
 	{
 		Uint16 targetGBID = map->getBuilding(targetX, targetY);
 		if (targetGBID != NOGBID)
@@ -290,21 +336,39 @@ void Building::considerScanTile(int targetX, int targetY, int ring, int ticksToH
 
 Building::TurretTarget Building::findBestTarget() const
 {
-	int range = type->shootingRange;
+	int range = runtime->shootingRange;
 
 	Uint32 enemies = owner->attackableTeams();
 	Map *map = owner->map;
 	assert(map);
 
 	// half the building's pixel width — the centre offset of the turret footprint
-	const int halfWidthPx = (type->width << Map::TILE_PIXEL_SHIFT) / 2;
+	const int halfWidthPx = (runtime->width << Map::TILE_PIXEL_SHIFT) / 2;
 
 	TurretTarget best;
+	if (runtime->width != TURRET_SIZE || runtime->height != TURRET_SIZE)
+	{
+		const auto consider = [&](int x, int y, int ring) {
+			const auto shot = computeFiringSolution(x, y);
+			considerScanTile(x, y, ring, shot.ticksLeft, enemies, map, best);
+		};
+		// The footprint may contain targets for a non-occupying structure.
+		for (int y = posY; y < posY + runtime->height; ++y)
+			for (int x = posX; x < posX + runtime->width; ++x) consider(x, y, 0);
+		for (int ring = 1; ring <= range && best.type != TARGETTYPE_EXPLORER; ++ring)
+		{
+			const int left = posX - ring, right = posX + runtime->width - 1 + ring;
+			const int top = posY - ring, bottom = posY + runtime->height - 1 + ring;
+			for (int x = left; x <= right; ++x) { consider(x, top, ring); consider(x, bottom, ring); }
+			for (int y = top + 1; y < bottom; ++y) { consider(left, y, ring); consider(right, y, ring); }
+		}
+		return best;
+	}
 
 	for (int i=0; i<=range ; i++)
 	{
 		// The number of ticks before the bullet hits the target at range "i".
-		int ticksToHit = ((i << Map::TILE_PIXEL_SHIFT) + halfWidthPx) / (type->shootSpeed>>Q8_FIXED_POINT_SHIFT);
+		int ticksToHit = ((i << Map::TILE_PIXEL_SHIFT) + halfWidthPx) / (runtime->shootSpeed>>Q8_FIXED_POINT_SHIFT);
 		for (int j=0; j<=i ; j++)
 		{
 			for (int k=0; k<8; k++)
@@ -326,8 +390,8 @@ Building::TurretFiringSolution Building::computeFiringSolution(int targetX, int 
 	Map *map = owner->map;
 
 	// half the building's pixel width/height — the centre offset of the footprint
-	const int halfWidthPx = (type->width << Map::TILE_PIXEL_SHIFT) / 2;
-	const int halfHeightPx = (type->height << Map::TILE_PIXEL_SHIFT) / 2;
+	const int halfWidthPx = (runtime->width << Map::TILE_PIXEL_SHIFT) / 2;
+	const int halfHeightPx = (runtime->height << Map::TILE_PIXEL_SHIFT) / 2;
 
 	TurretFiringSolution sol;
 	sol.originX = ((posX)<<Map::TILE_PIXEL_SHIFT)+halfWidthPx;
@@ -350,21 +414,24 @@ Building::TurretFiringSolution Building::computeFiringSolution(int targetX, int 
 
 	int mdp;
 
-	assert(dpx);
-	assert(dpy);
+	if (dpx == 0 && dpy == 0)
+	{
+		sol.speedX = sol.speedY = sol.ticksLeft = 0;
+		return sol;
+	}
 	if (abs(dpx)>abs(dpy)) //we avoid a square root, since all distances are squares lengthed.
 	{
 		mdp=abs(dpx);
-		sol.speedX=((dpx*type->shootSpeed)/(mdp<<Q8_FIXED_POINT_SHIFT));
-		sol.speedY=((dpy*type->shootSpeed)/(mdp<<Q8_FIXED_POINT_SHIFT));
+		sol.speedX=static_cast<int>((Sint64(dpx)*runtime->shootSpeed)/(Sint64(mdp)<<Q8_FIXED_POINT_SHIFT));
+		sol.speedY=static_cast<int>((Sint64(dpy)*runtime->shootSpeed)/(Sint64(mdp)<<Q8_FIXED_POINT_SHIFT));
 		assert(sol.speedX!=0);
 		sol.ticksLeft=abs(mdp/sol.speedX);
 	}
 	else
 	{
 		mdp=abs(dpy);
-		sol.speedX=((dpx*type->shootSpeed)/(mdp<<Q8_FIXED_POINT_SHIFT));
-		sol.speedY=((dpy*type->shootSpeed)/(mdp<<Q8_FIXED_POINT_SHIFT));
+		sol.speedX=static_cast<int>((Sint64(dpx)*runtime->shootSpeed)/(Sint64(mdp)<<Q8_FIXED_POINT_SHIFT));
+		sol.speedY=static_cast<int>((Sint64(dpy)*runtime->shootSpeed)/(Sint64(mdp)<<Q8_FIXED_POINT_SHIFT));
 		assert(sol.speedY!=0);
 		sol.ticksLeft=abs(mdp/sol.speedY);
 	}
@@ -380,7 +447,8 @@ void Building::fireBullet(const TurretTarget& target, Uint32 stepCounter)
 
 	if (sol.ticksLeft < target.ticks)
 	{
-		Bullet *b = new Bullet(sol.originX, sol.originY, sol.speedX, sol.speedY, sol.ticksLeft, type->shootDamage, target.x, target.y, posX-1, posY-1, type->width+2, type->height+2);
+		Bullet *b = new Bullet(sol.originX, sol.originY, sol.speedX, sol.speedY, sol.ticksLeft, runtime->projectileBuildingDamage, target.x, target.y, posX-1, posY-1, runtime->width+2, runtime->height+2);
+		b->unitDamage = runtime->projectileDamage;
 		b->sourceTeam = owner->teamNumber;
 		++owner->stats.measurements.shots[GameplayMeasurements::TOWER];
 		s->bullets.push_front(b);
@@ -395,3 +463,18 @@ void Building::fireBullet(const TurretTarget& target, Uint32 stepCounter)
 
 
 
+
+
+void Building::transitionProductionPreferences(const BuildingType* previous, const BuildingType* origin, bool restoring)
+{
+    totalRatio=0;
+    for (int unit=0; unit<NB_UNIT_TYPE; ++unit)
+    {
+        if (restoring) ratio[unit]=constructionOriginRatios[unit];
+        else if (!type->semantics.production.recipes[unit].enabled) ratio[unit]=0;
+        else if (previous->semantics.production.recipes[unit].enabled) {} // retain the current preference
+        else if (origin && origin->semantics.production.recipes[unit].enabled) ratio[unit]=constructionOriginRatios[unit];
+        else ratio[unit]=type->semantics.production.initialRatios[unit];
+        totalRatio+=ratio[unit]; percentUsed[unit]=0;
+    }
+}

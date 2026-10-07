@@ -1,0 +1,769 @@
+{
+  "variants": [
+    {
+      "key": "racetrack.0.site",
+      "next": "racetrack.0.finished",
+      "previous": "",
+      "properties": {
+        "decLeft": -2,
+        "decTop": -2,
+        "fillable": 1,
+        "gameSprite": "data/gfx/racetrack0c",
+        "height": 4,
+        "hpInc": 97,
+        "hpInit": 1,
+        "hpMax": 675,
+        "isBuildingSite": 1,
+        "maxMaterial": [
+          6,
+          0,
+          0,
+          1,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "miniSprite": "data/gfx/miniracetrack0c",
+        "shortTypeNum": 3,
+        "type": "racetrack",
+        "width": 4
+      },
+      "requiredExperiment": "",
+      "semantics": {
+        "admittedUnitMask": 7,
+        "ammunitionCost": 1,
+        "ammunitionMaterial": 3,
+        "feeding": {
+          "convertsUnits": false,
+          "cost": {},
+          "duration": 0,
+          "enabled": false,
+          "holdAdmissionUntilExit": false,
+          "optionalFruitMask": 0,
+          "partial": "none",
+          "unitMask": 7
+        },
+        "healing": {
+          "convertsUnits": false,
+          "cost": {},
+          "duration": 0,
+          "enabled": false,
+          "holdAdmissionUntilExit": false,
+          "optionalFruitMask": 0,
+          "partial": "none",
+          "unitMask": 7
+        },
+        "instantPlacement": false,
+        "market": {
+          "fetchesStock": true,
+          "fetchesStockExperiment": "markets-v2",
+          "interTeamFruitExchange": false,
+          "pickupPenalty": 5,
+          "sharedStock": false,
+          "suppliesStock": false,
+          "suppliesStockExperiment": "markets-v2",
+          "suppliesDirectStock": false,
+          "fetchesDirectStock": false,
+          "suppliesStockMaterials": [
+            "wood",
+            "stone"
+          ],
+          "suppliesDirectStockMaterials": [
+            "wood",
+            "stone"
+          ],
+          "fetchesStockMaterials": [
+            "wood",
+            "stone"
+          ],
+          "fetchesDirectStockMaterials": [
+            "wood",
+            "stone"
+          ]
+        },
+        "occupiesGround": true,
+        "placeable": true,
+        "production": {
+          "fallbackUnit": 0,
+          "initialRatios": [
+            1,
+            0,
+            0
+          ],
+          "recipes": {},
+          "scheduling": "weighted_late_choice"
+        },
+        "projectileBuildingDamage": 0,
+        "projectileDamage": [
+          0,
+          0,
+          0
+        ],
+        "regenerationPerTick": 0,
+        "relocatable": false,
+        "repairable": false,
+        "requiredWorkerLevel": 0,
+        "sightSharing": "other",
+        "training": {},
+        "trainingInParallel": false,
+        "workPriorityBias": 1,
+        "assignmentLimit": 20,
+        "constructionCost": {
+          "wood": 6,
+          "stone": 1
+        },
+        "repairCost": {},
+        "replenishMaterials": [
+          "wood",
+          "stone"
+        ]
+      },
+      "presentation": {
+        "displayName": "racetrack",
+        "iconFrame": 3,
+        "iconTile": false,
+        "iconPriority": 100,
+        "skinSlot": "",
+        "showLevel": true,
+        "connectionGroup": "",
+        "connectsAcrossTeams": false,
+        "defaultAssigned": 3
+      }
+    },
+    {
+      "key": "racetrack.0.finished",
+      "next": "racetrack.1.site",
+      "previous": "racetrack.0.site",
+      "properties": {
+        "armor": 5,
+        "decLeft": -2,
+        "decTop": -2,
+        "gameSprite": "data/gfx/racetrack0b",
+        "gameSpriteCount": 3,
+        "height": 4,
+        "hpInit": 675,
+        "hpMax": 675,
+        "maxUnitInside": 2,
+        "miniSprite": "data/gfx/miniracetrack0b",
+        "shortTypeNum": 3,
+        "type": "racetrack",
+        "width": 4
+      },
+      "requiredExperiment": "",
+      "semantics": {
+        "admittedUnitMask": 7,
+        "ammunitionCost": 1,
+        "ammunitionMaterial": 3,
+        "feeding": {
+          "convertsUnits": false,
+          "cost": {},
+          "duration": 0,
+          "enabled": false,
+          "holdAdmissionUntilExit": false,
+          "optionalFruitMask": 0,
+          "partial": "none",
+          "unitMask": 7
+        },
+        "healing": {
+          "convertsUnits": false,
+          "cost": {},
+          "duration": 0,
+          "enabled": false,
+          "holdAdmissionUntilExit": false,
+          "optionalFruitMask": 0,
+          "partial": "none",
+          "unitMask": 7
+        },
+        "instantPlacement": false,
+        "market": {
+          "fetchesStock": true,
+          "fetchesStockExperiment": "markets-v2",
+          "interTeamFruitExchange": false,
+          "pickupPenalty": 5,
+          "sharedStock": false,
+          "suppliesStock": false,
+          "suppliesStockExperiment": "markets-v2",
+          "suppliesDirectStock": false,
+          "fetchesDirectStock": false,
+          "suppliesStockMaterials": [],
+          "suppliesDirectStockMaterials": [],
+          "fetchesStockMaterials": [],
+          "fetchesDirectStockMaterials": []
+        },
+        "occupiesGround": true,
+        "placeable": false,
+        "production": {
+          "fallbackUnit": 0,
+          "initialRatios": [
+            1,
+            0,
+            0
+          ],
+          "recipes": {},
+          "scheduling": "weighted_late_choice"
+        },
+        "projectileBuildingDamage": 0,
+        "projectileDamage": [
+          0,
+          0,
+          0
+        ],
+        "regenerationPerTick": 0,
+        "relocatable": false,
+        "repairable": true,
+        "requiredWorkerLevel": 0,
+        "sightSharing": "other",
+        "training": {
+          "walk": {
+            "cost": {},
+            "duration": 21,
+            "enabled": true,
+            "targetLevel": 1,
+            "unitMask": 7
+          }
+        },
+        "trainingInParallel": false,
+        "workPriorityBias": 1,
+        "assignmentLimit": 0,
+        "constructionCost": {},
+        "repairCost": {
+          "wood": 6,
+          "stone": 1
+        },
+        "replenishMaterials": []
+      },
+      "presentation": {
+        "displayName": "racetrack",
+        "iconFrame": 3,
+        "iconTile": false,
+        "iconPriority": 100,
+        "skinSlot": "",
+        "showLevel": true,
+        "connectionGroup": "",
+        "connectsAcrossTeams": false,
+        "defaultAssigned": 0
+      }
+    },
+    {
+      "key": "racetrack.1.site",
+      "next": "racetrack.1.finished",
+      "previous": "racetrack.0.finished",
+      "properties": {
+        "armor": 5,
+        "decLeft": -3,
+        "decTop": -3,
+        "fillable": 1,
+        "gameSprite": "data/gfx/buildingsite",
+        "gameSpriteImage": 5,
+        "height": 6,
+        "hpInc": 22,
+        "hpInit": 675,
+        "hpMax": 1000,
+        "isBuildingSite": 1,
+        "level": 1,
+        "maxMaterial": [
+          10,
+          0,
+          0,
+          5,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "miniSprite": "data/gfx/minibuildingsite",
+        "miniSpriteImage": 5,
+        "shortTypeNum": 3,
+        "type": "racetrack",
+        "width": 6
+      },
+      "requiredExperiment": "",
+      "semantics": {
+        "admittedUnitMask": 7,
+        "ammunitionCost": 1,
+        "ammunitionMaterial": 3,
+        "feeding": {
+          "convertsUnits": false,
+          "cost": {},
+          "duration": 0,
+          "enabled": false,
+          "holdAdmissionUntilExit": false,
+          "optionalFruitMask": 0,
+          "partial": "none",
+          "unitMask": 7
+        },
+        "healing": {
+          "convertsUnits": false,
+          "cost": {},
+          "duration": 0,
+          "enabled": false,
+          "holdAdmissionUntilExit": false,
+          "optionalFruitMask": 0,
+          "partial": "none",
+          "unitMask": 7
+        },
+        "instantPlacement": false,
+        "market": {
+          "fetchesStock": true,
+          "fetchesStockExperiment": "markets-v2",
+          "interTeamFruitExchange": false,
+          "pickupPenalty": 5,
+          "sharedStock": false,
+          "suppliesStock": false,
+          "suppliesStockExperiment": "markets-v2",
+          "suppliesDirectStock": false,
+          "fetchesDirectStock": false,
+          "suppliesStockMaterials": [
+            "wood",
+            "stone"
+          ],
+          "suppliesDirectStockMaterials": [
+            "wood",
+            "stone"
+          ],
+          "fetchesStockMaterials": [
+            "wood",
+            "stone"
+          ],
+          "fetchesDirectStockMaterials": [
+            "wood",
+            "stone"
+          ]
+        },
+        "occupiesGround": true,
+        "placeable": false,
+        "production": {
+          "fallbackUnit": 0,
+          "initialRatios": [
+            1,
+            0,
+            0
+          ],
+          "recipes": {},
+          "scheduling": "weighted_late_choice"
+        },
+        "projectileBuildingDamage": 0,
+        "projectileDamage": [
+          0,
+          0,
+          0
+        ],
+        "regenerationPerTick": 0,
+        "relocatable": false,
+        "repairable": false,
+        "requiredWorkerLevel": 1,
+        "sightSharing": "other",
+        "training": {},
+        "trainingInParallel": false,
+        "workPriorityBias": 11,
+        "assignmentLimit": 20,
+        "constructionCost": {
+          "wood": 10,
+          "stone": 5
+        },
+        "repairCost": {},
+        "replenishMaterials": [
+          "wood",
+          "stone"
+        ]
+      },
+      "presentation": {
+        "displayName": "racetrack",
+        "iconFrame": 3,
+        "iconTile": false,
+        "iconPriority": 100,
+        "skinSlot": "",
+        "showLevel": true,
+        "connectionGroup": "",
+        "connectsAcrossTeams": false,
+        "defaultAssigned": 7
+      }
+    },
+    {
+      "key": "racetrack.1.finished",
+      "next": "racetrack.2.site",
+      "previous": "racetrack.1.site",
+      "properties": {
+        "armor": 10,
+        "decLeft": -3,
+        "decTop": -3,
+        "gameSprite": "data/gfx/racetrack1b",
+        "gameSpriteCount": 3,
+        "height": 6,
+        "hpInit": 1000,
+        "hpMax": 1000,
+        "level": 1,
+        "maxUnitInside": 4,
+        "miniSprite": "data/gfx/miniracetrack1b",
+        "shortTypeNum": 3,
+        "type": "racetrack",
+        "width": 6
+      },
+      "requiredExperiment": "",
+      "semantics": {
+        "admittedUnitMask": 7,
+        "ammunitionCost": 1,
+        "ammunitionMaterial": 3,
+        "feeding": {
+          "convertsUnits": false,
+          "cost": {},
+          "duration": 0,
+          "enabled": false,
+          "holdAdmissionUntilExit": false,
+          "optionalFruitMask": 0,
+          "partial": "none",
+          "unitMask": 7
+        },
+        "healing": {
+          "convertsUnits": false,
+          "cost": {},
+          "duration": 0,
+          "enabled": false,
+          "holdAdmissionUntilExit": false,
+          "optionalFruitMask": 0,
+          "partial": "none",
+          "unitMask": 7
+        },
+        "instantPlacement": false,
+        "market": {
+          "fetchesStock": true,
+          "fetchesStockExperiment": "markets-v2",
+          "interTeamFruitExchange": false,
+          "pickupPenalty": 5,
+          "sharedStock": false,
+          "suppliesStock": false,
+          "suppliesStockExperiment": "markets-v2",
+          "suppliesDirectStock": false,
+          "fetchesDirectStock": false,
+          "suppliesStockMaterials": [],
+          "suppliesDirectStockMaterials": [],
+          "fetchesStockMaterials": [],
+          "fetchesDirectStockMaterials": []
+        },
+        "occupiesGround": true,
+        "placeable": false,
+        "production": {
+          "fallbackUnit": 0,
+          "initialRatios": [
+            1,
+            0,
+            0
+          ],
+          "recipes": {},
+          "scheduling": "weighted_late_choice"
+        },
+        "projectileBuildingDamage": 0,
+        "projectileDamage": [
+          0,
+          0,
+          0
+        ],
+        "regenerationPerTick": 0,
+        "relocatable": false,
+        "repairable": true,
+        "requiredWorkerLevel": 1,
+        "sightSharing": "other",
+        "training": {
+          "walk": {
+            "cost": {},
+            "duration": 21,
+            "enabled": true,
+            "targetLevel": 2,
+            "unitMask": 7
+          }
+        },
+        "trainingInParallel": false,
+        "workPriorityBias": 11,
+        "assignmentLimit": 0,
+        "constructionCost": {},
+        "repairCost": {
+          "wood": 10,
+          "stone": 5
+        },
+        "replenishMaterials": []
+      },
+      "presentation": {
+        "displayName": "racetrack",
+        "iconFrame": 3,
+        "iconTile": false,
+        "iconPriority": 100,
+        "skinSlot": "",
+        "showLevel": true,
+        "connectionGroup": "",
+        "connectsAcrossTeams": false,
+        "defaultAssigned": 0
+      }
+    },
+    {
+      "key": "racetrack.2.site",
+      "next": "racetrack.2.finished",
+      "previous": "racetrack.1.finished",
+      "properties": {
+        "armor": 10,
+        "decLeft": -3,
+        "decTop": -3,
+        "fillable": 1,
+        "gameSprite": "data/gfx/buildingsite",
+        "gameSpriteImage": 5,
+        "height": 6,
+        "hpInc": 25,
+        "hpInit": 1000,
+        "hpMax": 1500,
+        "isBuildingSite": 1,
+        "level": 2,
+        "maxMaterial": [
+          15,
+          0,
+          0,
+          5,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "miniSprite": "data/gfx/minibuildingsite",
+        "miniSpriteImage": 5,
+        "shortTypeNum": 3,
+        "type": "racetrack",
+        "width": 6
+      },
+      "requiredExperiment": "",
+      "semantics": {
+        "admittedUnitMask": 7,
+        "ammunitionCost": 1,
+        "ammunitionMaterial": 3,
+        "feeding": {
+          "convertsUnits": false,
+          "cost": {},
+          "duration": 0,
+          "enabled": false,
+          "holdAdmissionUntilExit": false,
+          "optionalFruitMask": 0,
+          "partial": "none",
+          "unitMask": 7
+        },
+        "healing": {
+          "convertsUnits": false,
+          "cost": {},
+          "duration": 0,
+          "enabled": false,
+          "holdAdmissionUntilExit": false,
+          "optionalFruitMask": 0,
+          "partial": "none",
+          "unitMask": 7
+        },
+        "instantPlacement": false,
+        "market": {
+          "fetchesStock": true,
+          "fetchesStockExperiment": "markets-v2",
+          "interTeamFruitExchange": false,
+          "pickupPenalty": 5,
+          "sharedStock": false,
+          "suppliesStock": false,
+          "suppliesStockExperiment": "markets-v2",
+          "suppliesDirectStock": false,
+          "fetchesDirectStock": false,
+          "suppliesStockMaterials": [
+            "wood",
+            "stone"
+          ],
+          "suppliesDirectStockMaterials": [
+            "wood",
+            "stone"
+          ],
+          "fetchesStockMaterials": [
+            "wood",
+            "stone"
+          ],
+          "fetchesDirectStockMaterials": [
+            "wood",
+            "stone"
+          ]
+        },
+        "occupiesGround": true,
+        "placeable": false,
+        "production": {
+          "fallbackUnit": 0,
+          "initialRatios": [
+            1,
+            0,
+            0
+          ],
+          "recipes": {},
+          "scheduling": "weighted_late_choice"
+        },
+        "projectileBuildingDamage": 0,
+        "projectileDamage": [
+          0,
+          0,
+          0
+        ],
+        "regenerationPerTick": 0,
+        "relocatable": false,
+        "repairable": false,
+        "requiredWorkerLevel": 2,
+        "sightSharing": "other",
+        "training": {},
+        "trainingInParallel": false,
+        "workPriorityBias": 21,
+        "assignmentLimit": 20,
+        "constructionCost": {
+          "wood": 15,
+          "stone": 5
+        },
+        "repairCost": {},
+        "replenishMaterials": [
+          "wood",
+          "stone"
+        ]
+      },
+      "presentation": {
+        "displayName": "racetrack",
+        "iconFrame": 3,
+        "iconTile": false,
+        "iconPriority": 100,
+        "skinSlot": "",
+        "showLevel": true,
+        "connectionGroup": "",
+        "connectsAcrossTeams": false,
+        "defaultAssigned": 12
+      }
+    },
+    {
+      "key": "racetrack.2.finished",
+      "next": "",
+      "previous": "racetrack.2.site",
+      "properties": {
+        "armor": 12,
+        "decLeft": -3,
+        "decTop": -3,
+        "gameSprite": "data/gfx/racetrack2b",
+        "height": 6,
+        "hpInit": 1500,
+        "hpMax": 1500,
+        "level": 2,
+        "maxUnitInside": 6,
+        "miniSprite": "data/gfx/miniracetrack2b",
+        "shortTypeNum": 3,
+        "type": "racetrack",
+        "width": 6
+      },
+      "requiredExperiment": "",
+      "semantics": {
+        "admittedUnitMask": 7,
+        "ammunitionCost": 1,
+        "ammunitionMaterial": 3,
+        "feeding": {
+          "convertsUnits": false,
+          "cost": {},
+          "duration": 0,
+          "enabled": false,
+          "holdAdmissionUntilExit": false,
+          "optionalFruitMask": 0,
+          "partial": "none",
+          "unitMask": 7
+        },
+        "healing": {
+          "convertsUnits": false,
+          "cost": {},
+          "duration": 0,
+          "enabled": false,
+          "holdAdmissionUntilExit": false,
+          "optionalFruitMask": 0,
+          "partial": "none",
+          "unitMask": 7
+        },
+        "instantPlacement": false,
+        "market": {
+          "fetchesStock": true,
+          "fetchesStockExperiment": "markets-v2",
+          "interTeamFruitExchange": false,
+          "pickupPenalty": 5,
+          "sharedStock": false,
+          "suppliesStock": false,
+          "suppliesStockExperiment": "markets-v2",
+          "suppliesDirectStock": false,
+          "fetchesDirectStock": false,
+          "suppliesStockMaterials": [],
+          "suppliesDirectStockMaterials": [],
+          "fetchesStockMaterials": [],
+          "fetchesDirectStockMaterials": []
+        },
+        "occupiesGround": true,
+        "placeable": false,
+        "production": {
+          "fallbackUnit": 0,
+          "initialRatios": [
+            1,
+            0,
+            0
+          ],
+          "recipes": {},
+          "scheduling": "weighted_late_choice"
+        },
+        "projectileBuildingDamage": 0,
+        "projectileDamage": [
+          0,
+          0,
+          0
+        ],
+        "regenerationPerTick": 0,
+        "relocatable": false,
+        "repairable": true,
+        "requiredWorkerLevel": 2,
+        "sightSharing": "other",
+        "training": {
+          "walk": {
+            "cost": {},
+            "duration": 24,
+            "enabled": true,
+            "targetLevel": 3,
+            "unitMask": 7
+          }
+        },
+        "trainingInParallel": false,
+        "workPriorityBias": 21,
+        "assignmentLimit": 0,
+        "constructionCost": {},
+        "repairCost": {
+          "wood": 15,
+          "stone": 5
+        },
+        "replenishMaterials": []
+      },
+      "presentation": {
+        "displayName": "racetrack",
+        "iconFrame": 3,
+        "iconTile": false,
+        "iconPriority": 100,
+        "skinSlot": "",
+        "showLevel": true,
+        "connectionGroup": "",
+        "connectsAcrossTeams": false,
+        "defaultAssigned": 0
+      }
+    }
+  ]
+}

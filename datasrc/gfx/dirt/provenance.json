@@ -1,0 +1,168 @@
+{
+  "generator": "tools/artwork/terrain_synth.py",
+  "method": "procedural",
+  "generator_sha256": {
+    "tools/artwork/terrain_synth.py": "a8eda69c7b7212d9f9573766da37f1002a984d62327c108fb581e9a9c23830dc",
+    "tools/artwork/material_tiles.py": "224e159e0974023797710aa959994f11658c82da8fb80f9701e4abc13c74ed83"
+  },
+  "material": "dirt",
+  "group": "barren",
+  "label": "Dirt",
+  "recipe": {
+    "name": "dirt",
+    "group": "barren",
+    "label": "Dirt",
+    "profile": "soft",
+    "seam": {
+      "height": 2,
+      "cast_q8": 40,
+      "cast_width_q8": 448
+    },
+    "palette": {
+      "dark": [
+        104,
+        82,
+        56
+      ],
+      "mid": [
+        136,
+        108,
+        74
+      ],
+      "light": [
+        160,
+        132,
+        96
+      ],
+      "pebble": [
+        86,
+        68,
+        48
+      ]
+    },
+    "style": {
+      "luma": 116,
+      "std": 9,
+      "grain_max": 8,
+      "match": 1.0
+    },
+    "phases": 1,
+    "animation_ticks": 8,
+    "alpha_range": [
+      255,
+      255
+    ],
+    "preview": null,
+    "minimap": null,
+    "placeholder_only": false,
+    "note": ""
+  },
+  "seed": "fnv1a32(\"dirt:<variant>:<phase>\")",
+  "render_size": 128,
+  "tile_size": 32,
+  "variants": 16,
+  "phases": 1,
+  "frame_layout": "variant + 16 * phase",
+  "sprite": "data/gfx/terrain-dirt",
+  "preview": [
+    139,
+    112,
+    79
+  ],
+  "minimap": [
+    139,
+    112,
+    79
+  ],
+  "mean_color": [
+    139,
+    112,
+    79
+  ],
+  "style_stats": {
+    "0": {
+      "luma": 116.6,
+      "std": 8.8,
+      "grain": 4.5,
+      "sat": 0.43,
+      "alpha": 255.0
+    }
+  },
+  "style_references": {
+    "data/gfx/terrain0..15.png": {
+      "use": "statistics only",
+      "stats": {
+        "luma": 79.3,
+        "std": 5.0,
+        "grain": 3.0,
+        "sat": 0.73,
+        "alpha": 255.0
+      }
+    },
+    "data/gfx/terrain128..143.png": {
+      "use": "statistics only",
+      "stats": {
+        "luma": 160.1,
+        "std": 27.0,
+        "grain": 27.9,
+        "sat": 0.74,
+        "alpha": 255.0
+      }
+    },
+    "data/gfx/terrain256..271.png": {
+      "use": "statistics only",
+      "stats": {
+        "luma": 95.2,
+        "std": 8.4,
+        "grain": 5.5,
+        "sat": 0.92,
+        "alpha": 255.0
+      }
+    },
+    "data/gfx/terrain272..287.png": {
+      "use": "statistics only",
+      "stats": {
+        "luma": 215.4,
+        "std": 6.2,
+        "grain": 4.3,
+        "sat": 0.17,
+        "alpha": 255.0
+      }
+    },
+    "data/gfx/terrain288..303.png": {
+      "use": "statistics only",
+      "stats": {
+        "luma": 102.9,
+        "std": 10.3,
+        "grain": 7.9,
+        "sat": 0.37,
+        "alpha": 255.0
+      }
+    }
+  },
+  "python": "3.14.4",
+  "pillow": "12.2.0",
+  "platform": {
+    "system": "linux",
+    "machine": "x86_64",
+    "libc": "glibc 2.43"
+  },
+  "runtime_sha256": {
+    "data/gfx/terrain-dirt0.png": "26453b426ecbdd3c308f15663236c252009c4c3a9367f49e1aea90c44577862f",
+    "data/gfx/terrain-dirt1.png": "e2a491ca5548ba37b475b23671de353462bc7cecc7dce29564ae67d2ba65b87d",
+    "data/gfx/terrain-dirt2.png": "c55c8cd97f176de1ebf46a842cbf4c9c85a386da5403de05e97358b2e0c1d8d0",
+    "data/gfx/terrain-dirt3.png": "3de8bf30dad9ae5b10502ecee6bfebcb4e5806fa770977caa1b2876f2238fdb6",
+    "data/gfx/terrain-dirt4.png": "b60203f82656a2cebe7bfdb1852b9fed4c2b8878b91115ed03e2812d60a2859b",
+    "data/gfx/terrain-dirt5.png": "c2ebbb34ff0a349f0fcf8e3b1e5aa524f017aed5152acf8921bb082e02ffff48",
+    "data/gfx/terrain-dirt6.png": "0d8b11cf4d56245643ca54f36da8379c4f43d4c448d9ad90dff501fe524ccde1",
+    "data/gfx/terrain-dirt7.png": "e90facc87c06b1404774e6e1051927d8740121d13fb07fef52249f230e8750c0",
+    "data/gfx/terrain-dirt8.png": "a9780f7f24cef59fb5dd16ff73f82e57bd47f2470d72177d87b2123f685ffa96",
+    "data/gfx/terrain-dirt9.png": "5e3d8ddc5c7cae3e2781c1c303f8839a01156cf505e291e1b4f1ff65d31976b2",
+    "data/gfx/terrain-dirt10.png": "aa1192adcdb7624c2f2260e52e2ecde823e1ebf4d66d176fdd00a01686aee88c",
+    "data/gfx/terrain-dirt11.png": "dd11ea0310fed28ee291c5b88082da6e5ef5e1ccd3e86f6c9a6d425c791c9d87",
+    "data/gfx/terrain-dirt12.png": "8e8db3144dd1cfe4c3797f1830572eb99cdc55a0840fe43d033fb4c8b80f0d0f",
+    "data/gfx/terrain-dirt13.png": "307d819a4e1085aa72a201634070e769ac6acb775bcfe4e9ba1f45de96333961",
+    "data/gfx/terrain-dirt14.png": "3c7e5d666a9b0fb3e6d0e8d155595261dffbe68544231fd68b2b4d078f8d8fa2",
+    "data/gfx/terrain-dirt15.png": "4aecedd0a292b619eff5d48d7052b571edac23e7bccf2495b9180471b71aa91c"
+  }
+}

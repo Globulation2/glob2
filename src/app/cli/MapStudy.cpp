@@ -3,6 +3,8 @@
 #define SDL_MAIN_HANDLED
 #include <SDL3/SDL_main.h>
 #include "MapReport.h"
+#include "Material.h"
+#include <array>
 #include "TerrainPresentation.h"
 #include "Game.h"
 #include "GenerationService.h"
@@ -157,7 +159,7 @@ std::string diagnosticsJson(Game &game, int nbTeams, bool wanted)
 	{
 		const auto &c = report.colonies[i];
 		if (i) out << ',';
-		out << "{\"start\":" << i << ",\"renewable_wheat\":" << c.renewableWheat
+		out << "{\"start\":" << i << ",\"renewable_wheat\":" << c.renewableFood
 			<< ",\"wheat_throughput\":" << c.wheatThroughput
 			<< ",\"wood_throughput\":" << c.woodThroughput
 			<< ",\"stone_throughput\":" << c.stoneThroughput
@@ -227,7 +229,9 @@ std::uint64_t worldHash(const Game &game)
 	for (const auto &tile : game.map.getTiles())
 	{
 		hash = fnv(hash, tile.terrain);
-		hash = fnv(hash, tile.resource.getUint32());
+		hash = fnv(hash, tile.resource.getUint64());
+		for (const auto stock : game.map.materialStocksAt(&tile - game.map.getTiles().data()))
+			hash = fnv(hash, stock);
 		hash = fnv(hash, tile.fertility);
 		hash = fnv(hash, tile.canResourcesGrow);
 	}
@@ -256,8 +260,8 @@ std::uint64_t colonySignature(const Game &game, int team)
 								   std::int64_t(b->typeNum), std::int64_t(b->posX),
 								   std::int64_t(b->posY), std::int64_t(b->hp)})
 				hash = fnv(hash, std::uint64_t(v));
-	for (unsigned r = 0; r < MAX_NB_RESOURCES; ++r)
-		hash = fnv(hash, colony->teamResources[r]);
+	for (unsigned r = 0; r < MaterialSlotCount; ++r)
+		hash = fnv(hash, colony->teamMaterials[r]);
 	return hash;
 }
 
@@ -594,11 +598,14 @@ int runMapStudy(int argc, char **argv)
 	const unsigned seed = std::strtoul(argv[2], nullptr, 10);
 
 	SDL_SetMainReady();
-	GlobalContainer globals(argv[3]);
+	std::string buildingCatalog;
+	for (int i=4; i<argc; ++i)
+		if (std::string(argv[i]).starts_with("building-catalog=")) buildingCatalog=std::string(argv[i]).substr(17);
+	GlobalContainer globals(argv[3], buildingCatalog);
 	globalContainer = &globals;
 	globals.runNoX = true;
 	globals.settings.rememberUnit = false;
-	globals.buildingsTypes.init();
+
 	IntBuildingType::init();
 	Race::loadDefault();
 	Game game(nullptr);
@@ -649,6 +656,8 @@ int runMapStudy(int argc, char **argv)
 			if (eq == std::string::npos)
 				return 2;
 			std::string id = arg.substr(0, eq);
+			// Consumed before GlobalContainer construction, not a numeric generator control.
+			if (id == "building-catalog") continue;
 			if (id == "dump" || id == "save" || id == "name" || id == "overlay" || id == "result")
 			{
 				(id == "dump"   ? dump
@@ -718,19 +727,21 @@ int runMapStudy(int argc, char **argv)
 	std::vector<int> materialCounts(map.terrainRegistry().size());
 	std::uint64_t hash = 14695981039346656037ULL;
 	std::vector<int> footprint(map.getW() * map.getH(), 0);
-	int resources[8] = {};
+	std::array<int, MaterialCount> materialSources{};
 	for (int y = 0; y < map.getH(); ++y)
 		for (int x = 0; x < map.getW(); ++x)
 		{
 			const auto material = map.terrainTypeAt(x,y);
             ++materialCounts[material];
-            if (material == GRASS)
+            // Classic buckets by group: catalogue types report through materialCounts.
+            const auto group = unsigned(material) < TERRAIN_COUNT ? std::optional(terrainGroup(material)) : std::nullopt;
+            if (group == TerrainGroup::Grass)
 				++grass;
-			else if (material == SAND)
+			else if (group == TerrainGroup::Sand)
 				++sand;
-			else if (material == WATER)
+			else if (group == TerrainGroup::Water)
 				++water;
-			else if (map.terrainUsesLegacyCorners(material))
+			else if (group == TerrainGroup::Shore)
 				++shore;
 			if (map.isFreeForBuilding(x, y))
 				++free;
@@ -739,8 +750,9 @@ int runMapStudy(int argc, char **argv)
 				++fit4;
 				footprint[y * map.getW() + x] = 1;
 			}
-			if (map.getResource(x, y).type < 8)
-				++resources[map.getResource(x, y).type];
+			const auto sources = map.materialMaskAt(y * map.getW() + x);
+			for (unsigned material = 0; material < MaterialCount; ++material)
+				if (sources & (MaterialMask(1) << material)) ++materialSources[material];
 			switch (map.getUMTerrain(x, y))
 			{
 			case GRASS:
@@ -755,7 +767,7 @@ int runMapStudy(int argc, char **argv)
 			}
 			hash ^= map.getTerrain(x, y);
 			hash *= 1099511628211ULL;
-			hash ^= map.getResource(x, y).getUint32();
+			hash ^= map.getResource(x, y).getUint64();
 			hash *= 1099511628211ULL;
 		}
 	std::printf("STUDY,%d,%u,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%.6f,%llu\n", method, seed, success,
@@ -802,10 +814,10 @@ int runMapStudy(int argc, char **argv)
 								continue;
 							int nx = map.normalizeX(x + dx), ny = map.normalizeY(y + dy),
 								np = ny * map.getW() + nx;
-							auto type = map.getResource(nx, ny).type;
-							if (type == WHEAT)
+							const auto sources = map.materialMaskAt(np);
+							if (sources & materialBit(MaterialId::Food))
 								wheat = std::min(wheat, dist[p] + 1);
-							if (type == WOOD)
+							if (sources & materialBit(MaterialId::Wood))
 								wood = std::min(wood, dist[p] + 1);
 							if (dist[np] < 0 && map.isHardSpaceForGroundUnit(nx, ny, false, 0))
 							{
@@ -840,18 +852,18 @@ int runMapStudy(int argc, char **argv)
 			<< ",\"worst_wood_distance\":" << minWood << ",\"viable_teams\":" << viableTeams
 			<< ",\"best_wheat_distance\":" << bestWheat << ",\"best_wood_distance\":" << bestWood;
 		std::printf("TUNE,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d\n", minLocal, minWheat, minWood,
-					viableTeams, resources[WHEAT], resources[WOOD], resources[STONE],
-					resources[ALGA], bestWheat, bestWood);
+					viableTeams, materialSources[materialIndex(MaterialId::Food)], materialSources[materialIndex(MaterialId::Wood)], materialSources[materialIndex(MaterialId::Stone)],
+					materialSources[materialIndex(MaterialId::Algae)], bestWheat, bestWood);
 	}
 	if (headroom)
 	{
 		// How much of the fairness gap is recoverable by *placement alone*, on this exact
 		// finished map? Nothing here changes the map; it asks what the colony sites could have
-		// been. One multi-source flood per resource gives every tile its walking distance to
+		// been. One multi-source flood per material gives every tile its walking distance to
 		// the nearest deposit, so scoring a candidate site is a lookup rather than its own
 		// search, and the whole map's candidates cost two floods total.
 		const int mw = map.getW(), mh = map.getH();
-		auto distanceField = [&](int resourceType)
+		auto distanceField = [&](MaterialId material)
 		{
 			std::vector<int> d(size_t(mw) * mh, -1);
 			std::queue<int> q;
@@ -860,7 +872,7 @@ int runMapStudy(int argc, char **argv)
 			for (int y = 0; y < mh; ++y)
 				for (int x = 0; x < mw; ++x)
 				{
-					if (map.getResource(x, y).type != resourceType)
+					if (!(map.materialMaskAt(y * mw + x) & materialBit(material)))
 						continue;
 					for (int dy = -1; dy <= 1; ++dy)
 						for (int dx = -1; dx <= 1; ++dx)
@@ -895,8 +907,8 @@ int runMapStudy(int argc, char **argv)
 			}
 			return d;
 		};
-		const std::vector<int> woodField = distanceField(WOOD), wheatField = distanceField(WHEAT);
-		// A site's score is its binding constraint: the further of its two primary resources.
+		const std::vector<int> woodField = distanceField(MaterialId::Wood), wheatField = distanceField(MaterialId::Food);
+		// A site's score is its binding constraint: the further of its two primary materials.
 		auto siteScore = [&](int x, int y) -> int
 		{
 			int p = map.normalizeY(y) * mw + map.normalizeX(x);
@@ -1027,21 +1039,22 @@ int runMapStudy(int argc, char **argv)
 			for (int x = 0; x < map.getW(); ++x)
 			{
 				const auto type = map.terrainTypeAt(x,y);
-				int c = type == GRASS                        ? 0
-						: type == SAND                       ? 1
-						: type == WATER                      ? 2
-						: map.terrainUsesLegacyCorners(type) ? 3
-															 : 10 + int(type);
-				if (map.getResource(x, y).type == WHEAT)
+				const auto group = unsigned(type) < TERRAIN_COUNT ? std::optional(terrainGroup(type)) : std::nullopt;
+				int c = group == TerrainGroup::Grass ? 0
+						: group == TerrainGroup::Sand  ? 1
+						: group == TerrainGroup::Water ? 2
+						: group == TerrainGroup::Shore ? 3
+													   : 10 + int(type);
+				if (map.materialMaskAt(y * map.getW() + x) & materialBit(MaterialId::Food))
 					c = 4;
-				if (map.getResource(x, y).type == WOOD)
+				if (map.materialMaskAt(y * map.getW() + x) & materialBit(MaterialId::Wood))
 					c = 5;
-				if (map.getResource(x, y).type == STONE)
+				if (map.materialMaskAt(y * map.getW() + x) & materialBit(MaterialId::Stone))
 					c = 6;
-				if (map.getResource(x, y).type >= CHERRY &&
-					map.getResource(x, y).type <= CHERRY + 2)
+				if (map.materialMaskAt(y * map.getW() + x) &
+					(materialBit(MaterialId::Cherries) | materialBit(MaterialId::Oranges) | materialBit(MaterialId::Prunes)))
 					c = 8;
-				if (map.getResource(x, y).type == ALGA)
+				if (map.materialMaskAt(y * map.getW() + x) & materialBit(MaterialId::Algae))
 					c = 9;
 				if (map.getBuilding(x, y) != NOGBID)
 					c = 7;
@@ -1080,9 +1093,17 @@ int runMapStudy(int argc, char **argv)
 		out << "}},\"statistics\":{\"tiles\":" << map.getW()*map.getH()
 			<< ",\"grass_tiles\":" << grass << ",\"sand_tiles\":" << sand << ",\"water_tiles\":" << water
 			<< ",\"shore\":" << shore << ",\"free\":" << free << ",\"fit4\":" << fit4
-			<< ",\"wheat_tiles\":" << resources[WHEAT] << ",\"wood_tiles\":" << resources[WOOD]
-			<< ",\"stone_tiles\":" << resources[STONE] << ",\"algae_tiles\":" << resources[ALGA]
-			<< measurements.str() << "}," << diagnosticsJson(game, descriptor.nbTeams, diagnostics)
+			<< ",\"wheat_tiles\":" << materialSources[materialIndex(MaterialId::Food)] << ",\"wood_tiles\":" << materialSources[materialIndex(MaterialId::Wood)]
+			<< ",\"stone_tiles\":" << materialSources[materialIndex(MaterialId::Stone)] << ",\"algae_tiles\":" << materialSources[materialIndex(MaterialId::Algae)]
+            << ",\"material_source_tiles\":{";
+        for(unsigned material=0;material<MaterialCount;++material)
+        {
+            if(material) out << ',';
+            out << Headless::quote(std::string(materialKey(static_cast<MaterialId>(material))))
+                << ':' << materialSources[material];
+        }
+        // Legacy wheat/wood/stone/algae keys above remain for old analysis consumers.
+        out << '}' << measurements.str() << "}," << diagnosticsJson(game, descriptor.nbTeams, diagnostics)
 			<< timingJson
 			<< "\"quality\":{\"score\":" << result.quality.score
 			<< ",\"fairness\":" << result.quality.fairness
@@ -1094,8 +1115,10 @@ int runMapStudy(int argc, char **argv)
 			const auto &c=result.quality.colonies[t];
 			if(t) out << ',';
 			out << "{\"start\":" << t << ",\"wheat_distance\":" << c.wheatDistance
+				<< ",\"food_distance\":" << c.wheatDistance
 				<< ",\"wood_distance\":" << c.woodDistance << ",\"catchment_tiles\":" << c.catchmentTiles
 				<< ",\"build_sites\":" << c.buildSites << ",\"resource_amount\":" << c.resourceAmount
+                << ",\"material_amount\":" << c.resourceAmount
 				<< ",\"rival_distance\":" << c.rivalDistance << ",\"rivals_within_threat\":" << c.rivalsWithinThreat
 				<< ",\"mean_fertility\":" << c.meanFertility << ",\"fitness\":" << c.fitness
 				<< ",\"win_probability\":" << c.winProbability << '}';
@@ -1114,11 +1137,17 @@ int runMapStudy(int argc, char **argv)
 		const std::string kind = spec.substr(0, first);
 		const int team = std::atoi(spec.substr(first + 1, second - first - 1).c_str());
 		const int radius = std::atoi(spec.substr(second + 1).c_str());
-		const int resource = kind == "remove-wheat" ? WHEAT : kind == "remove-wood" ? WOOD
-						   : kind == "remove-stone" ? STONE : -1;
-		if (resource < 0)
-			return 2;
-		const int removed = MapGeneration::removeResourceNear(game, team, resource, radius);
+		const char* resourceKey = kind == "remove-wheat" ? "wheat" : kind == "remove-wood" ? "trees"
+							 : kind == "remove-stone" ? "rocks" : nullptr;
+		if (!resourceKey) return 2;
+        const auto resource = game.map.resourceRegistry().find(resourceKey);
+        if (!resource)
+        {
+            std::fprintf(stderr,"Cannot apply %s: resource key '%s' is absent from this map's catalog.\n",
+                         kind.c_str(),resourceKey);
+            return 2;
+        }
+		const int removed = MapGeneration::removeResourceNear(game, team, resourceIndex(*resource), radius);
 		std::printf("PERTURB,%s,%d,%d,%d\n", kind.c_str(), team, radius, removed);
 		perturbed += std::string(perturbed.empty() ? "" : ",") + "{\"kind\":" + Headless::quote(kind) +
 					 ",\"team\":" + std::to_string(team) + ",\"radius\":" + std::to_string(radius) +

@@ -210,17 +210,20 @@ void Game::executeCreate(const OrderCreate& oc, int localPlayer)
 	int posX=(oc.posX)&map.getMaskW();
 	int posY=(oc.posY)&map.getMaskH();
 	if (oc.teamNumber != players[oc.sender]->team->teamNumber || oc.typeNum < 0 ||
-		static_cast<size_t>(oc.typeNum) >= globalContainer->buildingsTypes.size() ||
-		oc.unitWorking < 0 || oc.unitWorking > MAX_BUILDING_WORKER_REQUEST ||
-		oc.unitWorkingFuture < 0 || oc.unitWorkingFuture > MAX_BUILDING_WORKER_REQUEST ||
+		static_cast<size_t>(oc.typeNum) >= buildingsTypes.size() ||
+		oc.unitWorking < 0 || oc.unitWorking > Unit::MAX_COUNT ||
+		oc.unitWorkingFuture < 0 || oc.unitWorkingFuture > Unit::MAX_COUNT ||
 		(oc.flagRadius && (*oc.flagRadius < 0 || *oc.flagRadius > 32767))) return;
 	if (!isBuildingTypeAvailable(oc.typeNum)) return;
-	BuildingType *bt=globalContainer->buildingsTypes.get(oc.typeNum);
-	if(!mapscript.buildingAllowed(IntBuildingType::typeFromShortNumber(bt->shortTypeNum),bt->isVirtual))return;
+	BuildingType *bt=buildingsTypes.get(oc.typeNum);
+	const BuildingType* finished = bt->isBuildingSite ? buildingsTypes.get(bt->nextLevel) : bt;
+	if (oc.unitWorking > bt->semantics.assignmentLimit || oc.unitWorkingFuture > finished->semantics.assignmentLimit) return;
+	if (!bt->semantics.placeable || (oc.flagRadius && *oc.flagRadius > bt->maxUnitStayRange)) return;
+	if(!mapscript.buildingAllowed(bt->key,bt->isVirtual) || !mapscript.buildingAllowed(bt->type,bt->isVirtual))return;
 	bool isVirtual=bt->isVirtual;
 	int w=bt->width;
 	int h=bt->height;
-	if (!isVirtual && (teams[oc.teamNumber]->noMoreBuildingSitesCountdown>0))
+	if (bt->isBuildingSite && (teams[oc.teamNumber]->noMoreBuildingSitesCountdown>0))
 		return;
 	bool isRoom=checkRoomForBuilding(posX, posY, bt, oc.teamNumber);
 	if (isVirtual || isRoom)
@@ -228,7 +231,7 @@ void Game::executeCreate(const OrderCreate& oc, int localPlayer)
 		Building *b=addBuilding(posX, posY, oc.typeNum, oc.teamNumber, oc.unitWorking, oc.unitWorkingFuture);
 		if (b)
 		{
-			if(isVirtual && oc.flagRadius.has_value())
+			if(bt->maxUnitStayRange && oc.flagRadius.has_value())
 			{
 				b->unitStayRange = *oc.flagRadius;
 			}
@@ -262,7 +265,7 @@ void Game::executeModifyBuilding(const OrderModifyBuilding& omb, int localPlayer
 	Building *b=lookupBuilding(omb.gid);
 	if ((b) && (b->buildingState==Building::ALIVE))
 	{
-		if (omb.numberRequested > MAX_BUILDING_WORKER_REQUEST) return;
+		if (omb.numberRequested > b->type->semantics.assignmentLimit) return;
 		b->maxUnitWorking=omb.numberRequested;
 		b->maxUnitWorkingPreferred=b->maxUnitWorking;
 		b->update();
@@ -272,10 +275,10 @@ void Game::executeModifyBuilding(const OrderModifyBuilding& omb, int localPlayer
 void Game::executeModifyExchange(const OrderModifyExchange& ome, int localPlayer)
 {
 	Building *b=lookupBuilding(ome.gid);
-	if ((b) && (b->buildingState==Building::ALIVE))
+	if ((b) && (b->buildingState==Building::ALIVE) && b->type->canExchange)
 	{
-		b->receiveResourceMask=ome.receiveResourceMask;
-		b->sendResourceMask=ome.sendResourceMask;
+		b->receiveMaterialMask=ome.receiveMaterialMask;
+		b->sendMaterialMask=ome.sendMaterialMask;
 		b->update();
 	}
 }
@@ -283,11 +286,11 @@ void Game::executeModifyExchange(const OrderModifyExchange& ome, int localPlayer
 void Game::executeModifyFlag(const OrderModifyFlag& omf, int localPlayer)
 {
 	Building *b=lookupBuilding(omf.gid);
-	if ((b) && (b->buildingState==Building::ALIVE) && (b->type->defaultUnitStayRange))
+	if ((b) && (b->buildingState==Building::ALIVE) && (b->type->zonable[WORKER] || b->type->zonable[EXPLORER] || b->type->zonable[WARRIOR]))
 	{
 		int oldRange=b->unitStayRange;
 		int newRange=omf.range;
-		if (newRange < 0 || newRange > 32767) return;
+		if (newRange < 0 || newRange > b->type->maxUnitStayRange) return;
 		b->unitStayRange=newRange;
 
 		if (b->type->zonableForbidden)
@@ -295,10 +298,7 @@ void Game::executeModifyFlag(const OrderModifyFlag& omf, int localPlayer)
 			if (newRange<oldRange)
 				b->owner->dirtyGlobalGradient();
 		}
-		else
-		{
-			b->resetPathfindGradients();
-		}
+		b->resetPathfindGradients();
 	}
 }
 
@@ -307,11 +307,9 @@ void Game::executeModifyClearingFlag(const OrderModifyClearingFlag& omcf, int lo
 	Building *b=lookupBuilding(omcf.gid);
 	if (b
 		&& b->buildingState==Building::ALIVE
-		&& b->type->defaultUnitStayRange
 		&& b->type->zonable[WORKER])
 	{
-		if (omcf.clearingResources[STONE]) return;
-		memcpy(b->clearingResources, omcf.clearingResources, sizeof(bool)*BASIC_COUNT);
+		memcpy(b->clearingMaterials, omcf.clearingMaterials, sizeof(bool)*MaterialCount);
 	}
 }
 
@@ -320,11 +318,15 @@ void Game::executeModifyMinLevelToFlag(const OrderModifyMinLevelToFlag& omwf, in
 	Building *b=lookupBuilding(omwf.gid);
 	if (b
 		&& b->buildingState==Building::ALIVE
-		&& b->type->defaultUnitStayRange
-		&& (b->type->zonable[WARRIOR] || b->type->zonable[EXPLORER]))
+		&& (b->type->zonable[WORKER] || b->type->zonable[WARRIOR] || b->type->zonable[EXPLORER]))
 	{
-		if (omwf.minLevelToFlag >= NB_UNIT_LEVELS) return;
-		b->minLevelToFlag = omwf.minLevelToFlag;
+		if (omwf.targetRole > 2 || (!b->type->zonable[omwf.targetRole == 1 ? EXPLORER : omwf.targetRole == 2 ? WORKER : WARRIOR]
+			&& !(omwf.legacyCombinedRole && b->type->zonable[EXPLORER]))) return;
+		if (omwf.targetRole > 2 || omwf.minLevelToFlag >= NB_UNIT_LEVELS || (omwf.targetRole == 1 && omwf.minLevelToFlag > 1)) return;
+		if (omwf.targetRole == 1 || (omwf.legacyCombinedRole && b->type->zonable[EXPLORER]))
+			b->explorersRequireBombing = omwf.minLevelToFlag != 0;
+		if (omwf.targetRole == 0) b->minLevelToFlag = omwf.minLevelToFlag;
+		if (omwf.targetRole == 2) b->minWorkerLevelToFlag = omwf.minLevelToFlag;
 
 		// flush all the actual units
 		int maxUnitWorkingSaved = b->maxUnitWorking;
@@ -339,20 +341,34 @@ void Game::executeMoveFlag(const OrderMoveFlag& omf, int localPlayer)
 {
 	bool drop=omf.drop;
 	Building *b=lookupBuilding(omf.gid);
-	if ((b) && (b->buildingState==Building::ALIVE) && (b->type->isVirtual))
+	if ((b) && (b->buildingState==Building::ALIVE) && b->type->semantics.relocatable)
 	{
+		if (omf.x < 0 || omf.x >= map.getW() || omf.y < 0 || omf.y >= map.getH()) return;
+		for (const Unit* unit : b->unitsInside)
+			if (unit->displacement == Unit::DIS_ENTERING_BUILDING || unit->displacement == Unit::DIS_EXITING_BUILDING) return;
+		if (b->type->semantics.occupiesGround)
+		{
+			// Entry/exit animations cross the old footprint boundary. Finish those
+			// transitions before moving an occupied physical building.
+			if (!map.isFreeForBuilding(omf.x, omf.y, b->type->width, b->type->height, b->gid)) return;
+			map.setBuilding(b->posX, b->posY, b->type->width, b->type->height, NOGBID);
+			map.setBuilding(omf.x, omf.y, b->type->width, b->type->height, b->gid);
+			b->owner->dirtyGlobalGradient();
+		}
 		b->posX=omf.x;
 		b->posY=omf.y;
+		if (b->type->runtimeSuppliesStock || b->type->runtimeSuppliesDirectStock)
+		{
+			map.invalidateSupplierLocations();
+			for (int resource=0; resource<MaterialCount; ++resource) map.dirtyMarketGradientsSlot(b->owner->teamNumber, resource);
+		}
 
 		if (b->type->zonableForbidden)
 		{
 			if (drop)
 				b->owner->dirtyGlobalGradient();
 		}
-		else
-		{
-			b->resetPathfindGradients();
-		}
+		b->resetPathfindGradients();
 	}
 }
 
@@ -374,8 +390,8 @@ void Game::executeAlterForbidden(const OrderAlterForbidden& oaa, int localPlayer
 			if (bool(tile.forbidden & teamMask) != adding)
 			{
 				changed = true;
-				// Resources already block walking, but can be harvesting/clearing goals.
-				walkingChanged |= tile.resource.type == NO_RES_TYPE;
+				// Passable resources need the same topology refresh as bare terrain.
+				walkingChanged |= !map.resourceBlocksGround(map.coordToIndex(x,y));
 				clearingChanged |= ((tile.clearArea | (tile.farmArea & clearingMask)) & teamMask) != 0;
 				if (adding) map.addForbidden(x, y, oaa.teamNumber);
 				else map.removeForbidden(x, y, oaa.teamNumber);
@@ -391,14 +407,14 @@ void Game::executeAlterForbidden(const OrderAlterForbidden& oaa, int localPlayer
 			Building* building = teams[team]->myBuildings[id];
 			if (!building) continue;
 			const bool ownTeam = team == oaa.teamNumber;
-			const bool clearingFlag = building->type->isVirtual && building->type->zonable[WORKER];
+			const bool clearingFlag = building->type->zonable[WORKER];
 			if (ownTeam && (walkingChanged || clearingFlag))
 				building->resetPathfindGradients();
 			else
 			{
 				// A team-local edit must not newly stale unrelated walking fields.
 				// Keep earlier staleness, dirty flags and unfinished searches intact.
-				for (int swim=0; swim<SWIM_CLASS_COUNT; ++swim)
+				for (int swim=0; swim<BUILDING_GRADIENT_COUNT; ++swim)
 					if (building->gradientGeneration[swim] == oldGeneration)
 						building->gradientGeneration[swim] = map.topologyGeneration;
 				if (ownTeam) building->resetRoundTripGradients();
@@ -485,8 +501,10 @@ void Game::executeModifySwarm(const OrderModifySwarm& oms, int localPlayer)
 {
 	for (int ratio : oms.ratio) if (ratio < 0 || ratio > 32767) return;
 	Building *b=lookupBuilding(oms.gid);
-	if ((b) && (b->buildingState==Building::ALIVE) && (b->type->unitProductionTime))
+	if ((b) && (b->buildingState==Building::ALIVE) && (b->type->semantics.production.enabledUnitMask))
 	{
+		for (int j=0; j<NB_UNIT_TYPE; ++j)
+			if (!(b->type->semantics.production.enabledUnitMask & (1u<<j)) && oms.ratio[j]) return;
 		for (int j=0; j<NB_UNIT_TYPE; j++)
 		{
 			b->ratio[j]=oms.ratio[j];
@@ -528,7 +546,7 @@ void Game::executeCancelDelete(const OrderCancelDelete& ocd)
 
 void Game::executeConstruction(const OrderConstruction& oc)
 {
-	if (oc.unitWorking > MAX_BUILDING_WORKER_REQUEST || oc.unitWorkingFuture > MAX_BUILDING_WORKER_REQUEST) return;
+	if (oc.unitWorking > Unit::MAX_COUNT || oc.unitWorkingFuture > Unit::MAX_COUNT) return;
 	Building *b=lookupBuilding(oc.gid);
 	if (b)
 	{
@@ -538,7 +556,7 @@ void Game::executeConstruction(const OrderConstruction& oc)
 
 void Game::executeCancelConstruction(const OrderCancelConstruction& oc)
 {
-	if (oc.unitWorking > MAX_BUILDING_WORKER_REQUEST) return;
+	if (oc.unitWorking > Unit::MAX_COUNT) return;
 	Building *b=lookupBuilding(oc.gid);
 	if (b)
 	{

@@ -41,7 +41,7 @@ Finalizing recording…
 [%0 units can't access fruit]
 %0 units can't access fruit
 [%0 units can't access resource]
-%0 units can't access resource
+%0 units can't access needed materials
 [%0 units not available]
 %0 units not available
 [%0 units too far from building]
@@ -51,7 +51,7 @@ Finalizing recording…
 [%0 units too far from fruit]
 %0 units too far from fruit
 [%0 units too far from resource]
-%0 units too far from resource
+%0 units too far from needed materials
 [%0 units too low level]
 %0 units too low level
 [%0% Uploaded]
@@ -728,6 +728,8 @@ Do you want to save before quitting?
 Save game
 [save map]
 Save Map
+[Reroll terrain look]
+Reroll terrain look
 [save replay]
 Save Replay
 [save script]
@@ -1133,11 +1135,11 @@ Still working: %0
 [AI strategy & counterplay]
 AI strategy & counterplay
 [AICastor-Profile]
-Core strategy: Invests in a productive colony and technology before committing substantial attacks. Prioritized construction projects build up its settlement; development, military infrastructure and time increase war readiness.\n\nEconomy and development: Studies hydration, wheat growth, obstacles and worker reach. Manages food expansion, upgrades and defenses alongside production.\n\nAttack and defense: Estimates healthy warriors' attack power and begins strikes when power or timing conditions are met. Favors previously seen, accessible buildings, especially barracks and schools, and moves its attack flags toward valuable targets.\n\nCompared with other AIs: More deliberate about terrain and target value than Numbi. More patient than Warrush, trading early pressure for a developed base and stronger troops.\n\nStrengths and weaknesses: Broad infrastructure planning and valuable military targets give its strikes purpose. Preparation takes time, allowing faster opponents to contest resources before its main force is ready.\n\nCounterplay to try: Contest expansion early. Protect barracks and schools as well as food, and keep a reserve when attacking its developed settlement.
+Core strategy: Invests in a productive colony and technology before committing substantial attacks. Prioritized construction projects build up its settlement; development, military infrastructure and time increase war readiness.\n\nEconomy and development: Studies hydration, food-source growth, obstacles and worker reach. Manages food expansion, upgrades and defenses alongside production.\n\nAttack and defense: Estimates healthy warriors' attack power and begins strikes when power or timing conditions are met. Favors previously seen, accessible buildings, especially barracks and schools, and moves its attack flags toward valuable targets.\n\nCompared with other AIs: More deliberate about terrain and target value than Numbi. More patient than Warrush, trading early pressure for a developed base and stronger troops.\n\nStrengths and weaknesses: Broad infrastructure planning and valuable military targets give its strikes purpose. Preparation takes time, allowing faster opponents to contest resources before its main force is ready.\n\nCounterplay to try: Contest expansion early. Protect barracks and schools as well as food, and keep a reserve when attacking its developed settlement.
 [AICastor-Summary]
 Develops a fortified colony, then strikes at military and science buildings.
 [AICortex-Profile]
-Core strategy: Uses reactive priorities to grow a working economy and turn spare labor into food, technology and military pressure. Its normal policy is rule-based; learned-policy experiments require separate configuration.\n\nEconomy and development: Adjusts worker production to staffing demand and keeps births going. Food trouble suppresses expansion and technology spending. Adds swimming when water access materially helps.\n\nAttack and defense: Prepares attacks using observed enemy technology and available troops. Water-crossing campaigns need swimming-capable warriors. Supports long campaigns with forward inns and hospitals, and can stage forces before advancing.\n\nCommitment and emergencies: Holds an offensive through minor harassment instead of repeatedly marching home. Serious attacks can recall defenders. Early emergencies can trigger warrior-only production and a hospital; famine can trigger a smaller desperation attack.\n\nCompared with other AIs: More concerned with forward support than Warrush. Maxima goes further in budgeting sustainable births, training and deployment against estimated enemy strength.\n\nStrengths and weaknesses: Connects pressure to food, healing and reachability. Forward infrastructure must stay supplied, and continued births can keep pressure on limited food. Emergency priorities force tradeoffs between growth and survival.\n\nCounterplay to try: Contest forward inns, hospitals and wheat. Keep defenders together against its push; minor harassment may not persuade it to retreat.\n\nScouting: Uses discovered enemy buildings and observed enemy troops.
+Core strategy: Uses reactive priorities to grow a working economy and turn spare labor into food, technology and military pressure. Its normal policy is rule-based; learned-policy experiments require separate configuration.\n\nEconomy and development: Adjusts worker production to staffing demand and keeps births going. Food trouble suppresses expansion and technology spending. Adds swimming when water access materially helps.\n\nAttack and defense: Prepares attacks using observed enemy technology and available troops. Water-crossing campaigns need swimming-capable warriors. Supports long campaigns with forward inns and hospitals, and can stage forces before advancing.\n\nCommitment and emergencies: Holds an offensive through minor harassment instead of repeatedly marching home. Serious attacks can recall defenders. Early emergencies can trigger warrior-only production and a hospital; famine can trigger a smaller desperation attack.\n\nCompared with other AIs: More concerned with forward support than Warrush. Maxima goes further in budgeting sustainable births, training and deployment against estimated enemy strength.\n\nStrengths and weaknesses: Connects pressure to food, healing and reachability. Forward infrastructure must stay supplied, and continued births can keep pressure on limited food. Emergency priorities force tradeoffs between growth and survival.\n\nCounterplay to try: Contest forward inns, hospitals and food sources. Keep defenders together against its push; minor harassment may not persuade it to retreat.\n\nScouting: Uses discovered enemy buildings and observed enemy troops.
 [AICortex-Summary]
 Supports committed military pushes with forward food and healing.
 [AINicowar-Profile]
@@ -1149,15 +1151,15 @@ Core strategy: Issues no AI orders.\n\nStrengths: A predictable idle opponent fo
 [AINone-Summary]
 An idle colony for experiments.
 [AINumbi-Profile]
-Core strategy: Builds food and population first, adds healing, science and training, then shifts toward warfare. Its broad phases advance with time rather than with the opponent's progress.\n\nEconomy and development: Scales building demand with population and estimates nearby wheat. Later phases add upgrades, defenses and expansion to support its growing army.\n\nAttack and defense: Attacks when enough healthy fighters exist or a timeout expires. Places war flags on sampled enemy buildings. When its fighting force falls too low, removes attack flags and raises the thresholds for another attempt.\n\nCompared with other AIs: More predictable than Castor or Nicowar. Castor considers terrain and target value more carefully; Nicowar applies pressure much earlier.\n\nStrengths and weaknesses: Broad supporting infrastructure can make it dangerous after an uninterrupted buildup, but its timetable may not match the battle. Simple target selection and longer pauses after losses make its attacks easier to anticipate.\n\nCounterplay to try: Apply pressure before its military phase. Grow food and training behind your attacks, and exploit the pause after defeating an assault.\n\nScouting: Its attack routine reads enemy building positions directly without a visibility check.
+Core strategy: Builds food and population first, adds healing, science and training, then shifts toward warfare. Its broad phases advance with time rather than with the opponent's progress.\n\nEconomy and development: Scales building demand with population and estimates nearby food sources. Later phases add upgrades, defenses and expansion to support its growing army.\n\nAttack and defense: Attacks when enough healthy fighters exist or a timeout expires. Places war flags on sampled enemy buildings. When its fighting force falls too low, removes attack flags and raises the thresholds for another attempt.\n\nCompared with other AIs: More predictable than Castor or Nicowar. Castor considers terrain and target value more carefully; Nicowar applies pressure much earlier.\n\nStrengths and weaknesses: Broad supporting infrastructure can make it dangerous after an uninterrupted buildup, but its timetable may not match the battle. Simple target selection and longer pauses after losses make its attacks easier to anticipate.\n\nCounterplay to try: Apply pressure before its military phase. Grow food and training behind your attacks, and exploit the pause after defeating an assault.\n\nScouting: Its attack routine reads enemy building positions directly without a visibility check.
 [AINumbi-Summary]
 A gradual colony builder that follows a timetable, then attacks in numbers.
 [AIEcono-Profile]
-Core strategy: Produces workers and explorers, expands its economy, and attracts enemy units through food and fruit. Has no conventional warrior offensive.\n\nEconomy and development: Builds inns and swarms near wheat, adds education and movement training, and upgrades infrastructure. Tracks food supplies and replaces old inns and swarms when their resource position deteriorates.\n\nFarming and conversion: Protects renewable wheat and wood near water. Sends explorers to fruit deposits and enemy colonies, and advertises food to enemies when pursuing fruit supply. Better food and fruit can help attract converts.\n\nCompared with other AIs: The most specialized economic opponent. Cabino and Maxima pursue fruit too, but combine it with armies.\n\nStrengths and weaknesses: Can grow while military opponents exhaust themselves, with conversion providing another form of competition. Produces no warriors to answer a sustained assault. Food, fruit, geography and victory rules strongly affect its opportunities.\n\nCounterplay to try: Pressure exposed expansion. Keep your own inns supplied with food and fruit to retain units. Avoid exhausting your colony in unnecessary fights while it grows.
+Core strategy: Produces workers and explorers, expands its economy, and attracts enemy units through food and fruit. Has no conventional warrior offensive.\n\nEconomy and development: Builds inns and swarms near food sources, adds education and movement training, and upgrades infrastructure. Tracks food supplies and replaces old inns and swarms when their access to material sources deteriorates.\n\nFarming and conversion: Protects renewable food and wood sources near water. Sends explorers to fruit deposits and enemy colonies, and advertises food to enemies when pursuing fruit supply. Better food and fruit can help attract converts.\n\nCompared with other AIs: The most specialized economic opponent. Cabino and Maxima pursue fruit too, but combine it with armies.\n\nStrengths and weaknesses: Can grow while military opponents exhaust themselves, with conversion providing another form of competition. Produces no warriors to answer a sustained assault. Food, fruit, geography and victory rules strongly affect its opportunities.\n\nCounterplay to try: Pressure exposed expansion. Keep your own inns supplied with food and fruit to retain units. Avoid exhausting your colony in unnecessary fights while it grows.
 [AIEcono-Summary]
 Grows a food-rich colony and competes for converts without producing warriors.
 [AIWarrush-Profile]
-Core strategy: Attacks before opponents finish a long economic or technological buildup. Expects combat to decide the game before a large support network becomes necessary.\n\nEconomy and development: Once six units can harvest, sets production to four workers, one explorer and three warriors. Adds barracks as training fills up, but restricts new inns. Spare construction often goes toward hospitals and movement training.\n\nAttack and defense: Marks discovered enemy buildings with guard areas so warriors apply continuing pressure. Does not wait for a carefully assembled wave. Clears obstructing wood and protects some renewable resources.\n\nFruit policy: Forbids fruit harvesting, avoiding fruit-related armor penalties and declining Econo's conversion strategy.\n\nCompared with other AIs: More committed to early pressure than Numbi or Castor. Nicowar also opens aggressively, but follows through with a broader upgrade and tactical program.\n\nStrengths and weaknesses: Punishes slow openings and forces early defensive spending. Limited systematic upgrading and lean food support make a stalled offensive costly. Terrain and long journeys can erode its early advantage.\n\nCounterplay to try: Protect inns and swarms early. Replace workers as well as defenders, develop training, then counterattack once its rush loses momentum.\n\nScouting: Opening exploration flags use enemy starting locations directly. Later attack-area placement requires visibility.
+Core strategy: Attacks before opponents finish a long economic or technological buildup. Expects combat to decide the game before a large support network becomes necessary.\n\nEconomy and development: Once six units can harvest, sets production to four workers, one explorer and three warriors. Adds barracks as training fills up, but restricts new inns. Spare construction often goes toward hospitals and movement training.\n\nAttack and defense: Marks discovered enemy buildings with guard areas so warriors apply continuing pressure. Does not wait for a carefully assembled wave. Clears obstructing resources and protects some renewable sources.\n\nFruit policy: Forbids fruit harvesting, avoiding fruit-related armor penalties and declining Econo's conversion strategy.\n\nCompared with other AIs: More committed to early pressure than Numbi or Castor. Nicowar also opens aggressively, but follows through with a broader upgrade and tactical program.\n\nStrengths and weaknesses: Punishes slow openings and forces early defensive spending. Limited systematic upgrading and lean food support make a stalled offensive costly. Terrain and long journeys can erode its early advantage.\n\nCounterplay to try: Protect inns and swarms early. Replace workers as well as defenders, develop training, then counterattack once its rush loses momentum.\n\nScouting: Opening exploration flags use enemy starting locations directly. Later attack-area placement requires visibility.
 [AIWarrush-Summary]
 Early warrior pressure backed by a deliberately lean support economy.
 [AICabino-Profile]
@@ -2167,9 +2169,9 @@ Deaths
 [Stats starvation]
 Starvation
 [Stats wheat stock]
-Wheat stock
+Food stock
 [Stats wheat loads]
-Wheat loads
+Food loads
 [Stats meals]
 Meals served
 [Stats new buildings]
@@ -2229,7 +2231,7 @@ New resource tiles
 [Stats growth reductions]
 Natural reductions
 [Stats growth per minute]
-Wheat growth/min
+Food growth/min
 [Stats growth near 8]
 Growth within 8 tiles
 [Stats growth near 16]
@@ -2797,7 +2799,7 @@ AI strategy
 [AIMaxima-Summary]
 Balances sustainable growth and training, then gathers armies into waves.
 [AIMaxima-Profile]
-Core strategy: Treats food, workers, births, training, construction and combat as competing demands. Sizes its army partly against estimated enemy strength, then tries to deliver that army effectively.\n\nEconomy and development: Budgets births against food and labor, preserves idle opportunities for training, and stops adding surplus workers when military production is needed. Scales training capacity and avoids taking too much infrastructure offline for upgrades.\n\nScouting and decisions: Estimates enemy forces from visible units and remembered sightings using a fitted model. Targets depend on value, distance, towers, exposed workers and persistence. Fruit missions support food variety and conversion.\n\nAttack and defense: Reserves warriors for training and defense, then gathers eligible land forces near friendly food infrastructure before launching waves. Uses local defensive responses and evaluates approaches to the colony.\n\nWhen attacks stall: After four consecutive wave-delivery failures, switches to continuously reinforced attack flags. Amphibious attacks can also use continuous reinforcement. This fallback does not solve every blockage before a rally can form.\n\nCompared with other AIs: Integrates food, training, intelligence and deployment more tightly. Cabino emphasizes several building attacks; Maxima emphasizes estimated demand and delivering gathered forces.\n\nStrengths and weaknesses: Sustains growth and military replacement while adapting to food pressure and observed threats. Needs food, training capacity and open gathering space; congestion and long routes can undermine delivery.\n\nCounterplay to try: Contest exposed wheat, inns and barracks before waves gather. Keep a supplied defensive force together and disrupt reinforcement routes. Expect repeated pressure after the first wave.\n\nScouting: Force estimates use sightings and observation history, rather than hidden enemy troop totals.
+Core strategy: Treats food, workers, births, training, construction and combat as competing demands. Sizes its army partly against estimated enemy strength, then tries to deliver that army effectively.\n\nEconomy and development: Budgets births against food and labor, preserves idle opportunities for training, and stops adding surplus workers when military production is needed. Scales training capacity and avoids taking too much infrastructure offline for upgrades.\n\nScouting and decisions: Estimates enemy forces from visible units and remembered sightings using a fitted model. Targets depend on value, distance, towers, exposed workers and persistence. Fruit missions support food variety and conversion.\n\nAttack and defense: Reserves warriors for training and defense, then gathers eligible land forces near friendly food infrastructure before launching waves. Uses local defensive responses and evaluates approaches to the colony.\n\nWhen attacks stall: After four consecutive wave-delivery failures, switches to continuously reinforced attack flags. Amphibious attacks can also use continuous reinforcement. This fallback does not solve every blockage before a rally can form.\n\nCompared with other AIs: Integrates food, training, intelligence and deployment more tightly. Cabino emphasizes several building attacks; Maxima emphasizes estimated demand and delivering gathered forces.\n\nStrengths and weaknesses: Sustains growth and military replacement while adapting to food pressure and observed threats. Needs food, training capacity and open gathering space; congestion and long routes can undermine delivery.\n\nCounterplay to try: Contest exposed food sources, inns and barracks before waves gather. Keep a supplied defensive force together and disrupt reinforcement routes. Expect repeated pressure after the first wave.\n\nScouting: Force estimates use sightings and observation history, rather than hidden enemy troop totals.
 [Fertility]
 Fertility
 [Deposits]
@@ -2807,7 +2809,7 @@ Room
 [Isolation]
 Isolation
 [Each colony's start is measured on the finished map: the walk to wheat and to wood, how well its ground regrows, the deposits and building sites within reach, and its distance from rivals. Every factor scores from 0 to 1 against a fixed bar, the total weighs them, fairness is the worst colony's total over the best, and the score is the worst total times the fairness.]
-Each colony's start is measured on the finished map: the walk to wheat and to wood, how well its ground regrows, the deposits and building sites within reach, and its distance from rivals. Every factor scores from 0 to 1 against a fixed bar, the total weighs them, fairness is the worst colony's total over the best, and the score is the worst total times the fairness.
+Each colony's start is measured on the finished map: the walk to food and wood sources, how well its ground regrows, the deposits and building sites within reach, and its distance from rivals. Every factor scores from 0 to 1 against a fixed bar, the total weighs them, fairness is the worst colony's total over the best, and the score is the worst total times the fairness.
 [ERROR_CANT_SAVE_MAP]
 The map could not be saved. Check the destination and available space. Your edits are still open.
 [Loading headers]
@@ -4729,7 +4731,7 @@ Population
 [stat group food]
 Food and wellbeing
 [stat group resources]
-Resources
+Materials
 [stat group buildings]
 Buildings
 [stat group military]
@@ -4783,13 +4785,13 @@ Units eating or healing
 [stat in care about]
 Units inside an inn eating or inside a hospital being healed, and so not working.
 [stat wheat harvested]
-Wheat harvested
+Food harvested
 [stat wheat harvested about]
-Loads of wheat picked by workers. Wheat is what inns turn into meals.
+Loads of food harvested by workers from food-producing resources. Inns turn food into meals.
 [stat wheat stored]
-Wheat in storage
+Food in storage
 [stat wheat stored about]
-Wheat sitting in the colony's buildings, ready to be served or used.
+Food sitting in the colony's buildings, ready to be served or used.
 [stat meals]
 Meals served
 [stat meals about]
@@ -4803,25 +4805,25 @@ Health restored
 [stat healing about]
 Hit points the colony's hospitals gave back to wounded units.
 [stat gathered]
-Resources gathered
+Materials gathered
 [stat gathered about]
-Loads of every resource picked up by workers. Split it to see each resource.
+Loads of every material harvested by workers. Split it to see each material.
 [stat stored]
-Resources in storage
+Materials in storage
 [stat stored about]
-Resources sitting in the colony's buildings. Split it to see each resource.
+Materials sitting in the colony's buildings. Split it to see each material.
 [stat spending]
-Resource spending
+Material spending
 [stat spending about]
-Where delivered resources went: meals, new units, tower ammunition, new buildings or upgrades.
+Where delivered materials went: meals, new units, tower ammunition, new buildings or upgrades.
 [stat delivered]
-Resources delivered
+Materials delivered
 [stat delivered about]
 Loads workers carried into buildings.
 [stat traded]
 Net trade
 [stat traded about]
-Resources received through markets minus resources given away.
+Materials received through markets minus materials given away.
 [stat buildings]
 Buildings standing
 [stat buildings about]
@@ -4881,11 +4883,11 @@ Skill levels the colony's units gained through training.
 [stat growth nearby]
 Resource growth near the colony
 [stat growth nearby about]
-How much wheat, wood and other resources grew within 32 squares of the colony's buildings, in growth points rather than loads. Split it to see how close to home they grew.
+How much material stock grew in resources within 32 squares of the colony's buildings, in growth points rather than harvested loads. Split it to see how close to home they grew.
 [stat growth map]
 Resource growth across the map
 [stat growth map about]
-How much resources grew anywhere on the map, in growth points rather than loads. This is the same for every colony.
+How much material stock grew in resources anywhere on the map, in growth points rather than harvested loads. This is the same for every colony.
 [stat stranded]
 Units unable to move
 [stat stranded about]
@@ -4967,13 +4969,13 @@ Within 8 squares
 [stat unit units]
 units
 [stat unit wheat]
-wheat
+food
 [stat unit meals]
 meals
 [stat unit hit points]
 hit points
 [stat unit resources]
-resources
+units
 [stat unit buildings]
 buildings
 [stat unit strength]
@@ -5029,7 +5031,7 @@ Born
 [stat column lost]
 Lost
 [stat column wheat]
-Wheat
+Food
 [stat column damage dealt]
 Damage dealt
 [stat column damage taken]
@@ -5071,7 +5073,7 @@ By unit type
 [stat view by state]
 By state
 [stat view by resource]
-By resource
+By material
 [stat view by building]
 By building
 [stat view by work]
@@ -5179,7 +5181,7 @@ Combat is off, so the rules below have no effect.
 [Players see the map's terrain from the start; enemy units stay hidden.]
 Players see the map's terrain from the start; enemy units stay hidden.
 [Each team starts with extra resources in its shared pool.]
-Each team starts with extra resources in its shared pool.
+Each team starts with extra materials in its shared pool.
 [Units hit harder but have less HP and armor.]
 Units hit harder but have less HP and armor.
 [Teams can attack each other. Turn off for a peaceful match.]
@@ -5211,7 +5213,7 @@ How far, on average, a harvesting worker was from the building it was supplying,
 [stat hauling]
 Fetching and carrying
 [stat hauling about]
-How the workers supplying buildings divided between walking to a resource, harvesting it, carrying it back, and delivering it or waiting for a resource they can reach. Most of it is walking, so the closer the resources, the more gets done.
+How the workers supplying buildings divided between walking to a resource, harvesting it, carrying materials back, and delivering it or waiting for a resource they can reach. Most of it is walking, so the closer the resources, the more gets done.
 [stat eating time]
 Workers going to eat
 [stat eating time about]
@@ -5559,8 +5561,158 @@ Adds weathered trails to the map editor. Ground units move at double speed. Trai
 [experiment markets-v2]
 Markets V2
 [experiment markets-v2 help]
-Workers can fetch supplies from shared market stock. Markets can upgrade to store wheat and wood, then every resource. Trading between teams remains fruit-only. Applies to new games; saves keep their original setting.
+Workers can fetch supplies from shared market stock. Markets can upgrade to store food and wood, then every material. Trading between teams remains fruit-only. Applies to new games; saves keep their original setting.
 [Import Terrain Definitions]
 Import Terrain Definitions
 [Terrain palette]
 Terrain palette
+[Food]
+Food
+[Paper]
+Paper
+[Cherries]
+Cherries
+[Oranges]
+Oranges
+[Prunes]
+Prunes
+[Gold]
+Gold
+[Metal]
+Metal
+[Glass]
+Glass
+[Fabric]
+Fabric
+[Import Resource Definitions]
+Import Resource Definitions
+[Resource palette]
+Resource palette
+[Trees]
+Trees
+[Rocks]
+Rocks
+[Cherry tree]
+Cherry tree
+[Orange tree]
+Orange tree
+[Prune tree]
+Prune tree
+[Gold ore]
+Gold ore
+[Iron ore]
+Iron ore
+[Sand]
+Sand
+[Cotton]
+Cotton
+[boulders]
+Boulders
+[hedge]
+Hedge
+[thicket]
+Thicket
+[ridge_rock]
+Ridge
+[outcrop]
+Outcrop
+[dirt]
+Dirt
+[clay]
+Clay
+[gravel]
+Gravel
+[flower_meadow]
+Flower meadow
+[mud]
+Mud
+[marsh]
+Marsh
+[deep_snow]
+Deep snow
+[scree]
+Scree
+[dirt_track]
+Dirt track
+[boardwalk]
+Boardwalk
+[lava]
+Lava
+[ember_field]
+Ember field
+[loam]
+Loam
+[moss]
+Moss
+[spring_meadow]
+Spring meadow
+[deep_water]
+Deep water
+[dark_water]
+Dark water
+[void_hole]
+Hole
+[chasm]
+Chasm
+[terrain group water]
+Water
+[terrain group sand]
+Sand
+[terrain group grass]
+Grass
+[terrain group ice]
+Ice
+[terrain group paths]
+Paths
+[terrain group obstacles]
+Obstacles
+[terrain group ridges]
+Ridges
+[terrain group barren]
+Barren ground
+[terrain group rough]
+Rough ground
+[terrain group lava]
+Lava
+[terrain group fertile]
+Fertile ground
+[terrain group deep-water]
+Deep water
+[terrain group void]
+Void
+[experiment obstacle-terrain]
+Obstacle terrain
+[experiment obstacle-terrain help]
+Adds boulders, hedges and thickets to the map editor. Ground units cannot cross them and they stop projectiles; flying units pass over. They hold neither buildings nor resources.
+[experiment ridge-terrain]
+Ridge terrain
+[experiment ridge-terrain help]
+Adds rock ridges and outcrops to the map editor. Ground units cannot cross them, but towers shoot over them and flying units pass. They hold neither buildings nor resources.
+[experiment barren-terrain]
+Barren ground
+[experiment barren-terrain help]
+Adds dirt, clay, gravel and flower meadows to the map editor. Buildings can stand on them, nothing grows on or next to them, and they do not count as shoreline.
+[experiment rough-terrain]
+Rough ground
+[experiment rough-terrain help]
+Adds mud, marsh, deep snow and scree to the map editor. Ground units move at about two thirds speed. Rough ground holds neither buildings nor resources.
+[experiment path-terrain]
+Path terrain
+[experiment path-terrain help]
+Adds dirt tracks and boardwalks to the map editor. Like trails, ground units move at double speed and buildings are allowed, but nothing grows.
+[experiment lava-terrain]
+Lava terrain
+[experiment lava-terrain help]
+Adds lava and ember fields to the map editor. Ground units cannot enter them; flying units crossing them lose health quickly. Projectiles pass over.
+[experiment fertile-terrain]
+Fertile ground
+[experiment fertile-terrain help]
+Adds loam, moss and spring meadows to the map editor. They support buildings and crops and irrigate the land around them more strongly than water does.
+[experiment deep-water-terrain]
+Deep water
+[experiment deep-water-terrain help]
+Adds deep and dark water to the map editor. Swimmers cross them more slowly, no algae grows in them, and they still irrigate nearby fields.
+[experiment void-terrain]
+Void terrain
+[experiment void-terrain help]
+Adds holes and chasms to the map editor. Nothing can cross them, not even flying units, and projectiles stop at their edge.

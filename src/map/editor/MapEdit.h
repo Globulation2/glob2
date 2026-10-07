@@ -117,11 +117,13 @@ public:
 class SingleLevelSelector : public MapEditorWidget
 {
 public:
-	SingleLevelSelector(MapEdit& me, const widgetRectangle& area, const std::string& group, const std::string& name, const std::string& action, int level, int& levelNum);
+	SingleLevelSelector(MapEdit& me, const widgetRectangle& area, const std::string& group, const std::string& name, const std::string& action, int level, int& levelNum, bool catalogPages=false);
 	void draw();
+	void handleClick(int relMouseX,int relMouseY) override;
 private:
 	int level;
 	int& levelNum;
+	bool catalogPages;
 };
 
 
@@ -213,6 +215,7 @@ public:
         // Compatibility aliases for callers selecting the example materials.
         Ice = RegisteredBegin + ICE,
         Trail = RegisteredBegin + TRAIL,
+        ResourceBegin = RegisteredBegin + TerrainRegistry::Capacity,
     };
     static bool isBaseTerrain(TerrainType type)
     {
@@ -232,6 +235,22 @@ public:
         if (type == SAND) return Sand;
         if (type == WATER) return Water;
         return static_cast<TerrainType>(int(RegisteredBegin) + int(type));
+    }
+    static bool isResource(TerrainType type)
+    {
+        return (type >= Wheat && type <= PruneTree) ||
+            (type >= ResourceBegin && type < int(ResourceBegin) + int(ResourceRegistry::Capacity));
+    }
+    static TerrainType selectorForResource(ResourceId type)
+    {
+        return static_cast<TerrainType>(int(ResourceBegin) + int(resourceIndex(type)));
+    }
+    static ResourceId resourceType(TerrainType type, const ResourceRegistry& registry)
+    {
+        if (type >= ResourceBegin) return static_cast<ResourceId>(int(type) - int(ResourceBegin));
+        static constexpr const char* legacyKeys[] = {"wheat", "trees", "rocks", "algae", "papyrus", "cherry-tree", "orange-tree", "prune-tree"};
+        if (type < Wheat || type > PruneTree) return NoResource;
+        return registry.find(legacyKeys[type - Wheat]).value_or(NoResource);
     }
 	TerrainSelector(MapEdit& me, const widgetRectangle& area, const std::string& group, const std::string& name, const std::string& action, TerrainType terrainType);
 	void draw();
@@ -609,27 +628,18 @@ private:
 
 	///Building view
 	///@{
-	BuildingSelectorWidget* swarm;
-	BuildingSelectorWidget* inn;
-	BuildingSelectorWidget* hospital;
-	BuildingSelectorWidget* racetrack;
-	BuildingSelectorWidget* swimmingpool;
-	BuildingSelectorWidget* barracks;
-	BuildingSelectorWidget* school;
-	BuildingSelectorWidget* defencetower;
-	BuildingSelectorWidget* stonewall;
-	BuildingSelectorWidget* market;
+	std::vector<BuildingSelectorWidget*> buildingSelectors;
+	std::vector<BuildingSelectorWidget*> flagSelectors;
 	TeamColorSelector* building_view_tcs;
 	SingleLevelSelector* building_view_level1;
 	SingleLevelSelector* building_view_level2;
 	SingleLevelSelector* building_view_level3;
+	TextLabel* buildingLevelNextPage=nullptr;
+	int buildingLevelCount=1;
 	///@}
 
 	///Flag, zone, and unit view
 	///@{
-	BuildingSelectorWidget* warflag;
-	BuildingSelectorWidget* explorationflag;
-	BuildingSelectorWidget* clearingflag;
 	ZoneSelector* forbiddenZone;
 	ZoneSelector* guardZone;
 	ZoneSelector* clearingZone;
@@ -700,10 +710,18 @@ private:
 	///@{
 	BuildingInfoTitle* buildingInfoTitle;
 	BuildingPicture* buildingPicture;
+	std::array<FractionValueText*, MaterialCount> buildingResourceLabels{};
+	std::array<ValueScrollBox*, MaterialCount> buildingResourceControls{};
+	std::vector<std::pair<FractionValueText*,ValueScrollBox*>> buildingEditRows;
+	int buildingEditFirstRow=0;
+	Sint32 buildingBombingRequirement=0;
+	FractionValueText* buildingWorkerLevelLabel;
+	ValueScrollBox* buildingWorkerLevelScrollBox;
+	FractionValueText* buildingBombingLabel;
+	ValueScrollBox* buildingBombingScrollBox;
+	void layoutBuildingEditRows();
 	FractionValueText* buildingHPLabel;
 	ValueScrollBox* buildingHPScrollBox;
-	FractionValueText* buildingFoodQuantityLabel;
-	ValueScrollBox* buildingFoodQuantityScrollBox;
 	FractionValueText* buildingAssignedLabel;
 	ValueScrollBox* buildingAssignedScrollBox;
 	FractionValueText* buildingWorkerRatioLabel;
@@ -712,14 +730,6 @@ private:
 	ValueScrollBox* buildingExplorerRatioScrollBox;
 	FractionValueText* buildingWarriorRatioLabel;
 	ValueScrollBox* buildingWarriorRatioScrollBox;
-	FractionValueText* buildingCherryLabel;
-	ValueScrollBox* buildingCherryScrollBox;
-	FractionValueText* buildingOrangeLabel;
-	ValueScrollBox* buildingOrangeScrollBox;
-	FractionValueText* buildingPruneLabel;
-	ValueScrollBox* buildingPruneScrollBox;
-	FractionValueText* buildingStoneLabel;
-	ValueScrollBox* buildingStoneScrollBox;
 	FractionValueText* buildingBulletsLabel;
 	ValueScrollBox* buildingBulletsScrollBox;
 	FractionValueText* buildingMinimumLevelLabel;
@@ -734,7 +744,11 @@ private:
     ///changed by the buttons at the bottom of the building menu
 	int buildingLevel;
 	///Returns whether the particular type of building is upgradable
-	bool isUpgradable(int buildingType);
+	int buildingSelectionType(const std::string& key);
+	void rebuildBuildingSelectors();
+	void layoutBuildingSelectors();
+	bool scrollBuildingSelectors(double delta);
+	int buildingSelectorRow=0, flagSelectorRow=0;
 
 	///A pointer to the editor sprites
 	Sprite *menu;
@@ -794,6 +808,9 @@ private:
 	bool showingSave;
 	std::unique_ptr<LoadSaveDialog> loadSaveScreen;
 	std::unique_ptr<TerrainPaletteDialog> terrainPalette;
+	std::unique_ptr<ResourcePaletteDialog> resourcePalette;
+	bool importingResources = false;
+	void importResourceFile(const std::string& filename);
 	bool importingTerrain = false;
 	void importTerrainFile(const std::string &filename);
 
@@ -858,7 +875,7 @@ private:
 	void beginTerrainPlacement(TerrainSelector::TerrainType type, TerrainPlacementMode mode);
 	void resetPlacementTracking();
 	void refreshSelectedUnitPerformance(int stat);
-	void layoutOrDisableRow(FractionValueText* label, ValueScrollBox* scrollBox, bool shown, int& ypos);
+	void addBuildingEditRow(FractionValueText* label, ValueScrollBox* scrollBox, bool shown);
 
 	///This vector of the keys on the team view. It allows one to choose between AI and human teams for campaign games
 	std::vector<std::string> teamViewSelectorKeys;

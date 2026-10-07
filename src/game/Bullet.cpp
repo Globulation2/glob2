@@ -25,6 +25,7 @@ Bullet::Bullet(Sint32 px, Sint32 py, Sint32 speedX, Sint32 speedY, Sint32 ticksL
 	this->ticksInitial = ticksLeft;
 	this->ticksLeft = ticksLeft;
 	this->shootDamage = shootDamage;
+	unitDamage.fill(shootDamage);
 	this->targetX = targetX;
 	this->targetY = targetY;
 	this->revealX = revealX;
@@ -69,6 +70,17 @@ bool Bullet::load(GAGCore::InputStream *stream, Sint32 versionMinor)
 		if (sourceTeam < -1 || sourceTeam >= Team::MAX_COUNT)
 			throw std::runtime_error("Invalid bullet source team");
 	}
+	unitDamage.fill(shootDamage);
+	if (versionMinor >= FILE_FORMAT_VERSION_BUILDING_CATALOG)
+	{
+		GAGCore::BinaryInputStream::CheckedReads checked(stream);
+		for (int u = 0; u < NB_UNIT_TYPE; ++u)
+		{
+			unitDamage[u] = stream->readSint32("unitDamage" + std::to_string(u));
+			if (unitDamage[u] < 0 || unitDamage[u] > 1000000)
+				throw std::runtime_error("Invalid saved bullet damage");
+		}
+	}
 	return true;
 }
 
@@ -88,6 +100,8 @@ void Bullet::save(GAGCore::OutputStream *stream)
 	stream->writeSint32(revealW, "revealW");
 	stream->writeSint32(revealH, "revealH");
 	stream->writeSint32(sourceTeam, "sourceTeam");
+	for (int u = 0; u < NB_UNIT_TYPE; ++u)
+		stream->writeSint32(unitDamage[u], "unitDamage" + std::to_string(u));
 }
 
 void Bullet::step(void)
@@ -100,3 +114,16 @@ void Bullet::step(void)
 	}
 }
 
+
+Uint32 Bullet::checkSum() const
+{
+	Uint32 checksum = 0;
+	const auto mix = [&](Sint32 value) {
+		checksum = (checksum << 1) | (checksum >> 31);
+		checksum ^= static_cast<Uint32>(value);
+	};
+	for (const Sint32 value : {px, py, speedX, speedY, ticksInitial, ticksLeft,
+		shootDamage, targetX, targetY, revealX, revealY, revealW, revealH, sourceTeam}) mix(value);
+	for (const Sint32 value : unitDamage) mix(value);
+	return checksum;
+}

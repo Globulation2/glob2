@@ -2,6 +2,7 @@
 // Copyright (C) 2006 Bradley Arsenault
 
 #pragma once
+#include "shared_runtime/BuildingDemands.h"
 
 #include "shared_runtime/Position.h"
 #include "shared_runtime/Gradients.h"
@@ -108,14 +109,19 @@ namespace AISharedRuntime
 
 	  unsigned int add_building_order(Construction::BuildingOrder *bo);
 	  void add_management_order(Management::ManagementOrder *mo);
-	  void add_resource_tracker(Management::ResourceTracker *rt, int building_id);
-	  std::shared_ptr<Management::ResourceTracker> get_resource_tracker(int building_id);
+	  void add_material_tracker(Management::MaterialTracker *rt, int building_id);
+	  std::shared_ptr<Management::MaterialTracker> get_material_tracker(int building_id);
 
 	  TeamStat &get_team_stats();
 	  void flare(int x, int y);
 	  Construction::BuildingRegister &get_building_register();
 	  Construction::FlagMap &get_flag_map();
 	  void push_order(std::shared_ptr<Order> order);
+      // Bind a new task after its predecessor completed; never call for routine staffing.
+    bool begin_attraction(int id,unsigned unitMask);
+    unsigned complete_attraction_retirement(int buildingId,unsigned unitMask);
+      bool attraction_retired_or_destroyed(int buildingId,unsigned unitMask) const;
+      bool ensure_production(const std::array<int,3>& desired,int workers,int futureWorkers);
 	  Gradients::GradientManager &get_gradient_manager();
 	  std::set<int> &get_starting_buildings();
 
@@ -124,9 +130,9 @@ namespace AISharedRuntime
 	  Player *player;
 	private:
 
-		friend class AISharedRuntime::Management::AddResourceTracker;
-		friend class AISharedRuntime::Management::PauseResourceTracker;
-		friend class AISharedRuntime::Management::UnPauseResourceTracker;
+		friend class AISharedRuntime::Management::AddMaterialTracker;
+		friend class AISharedRuntime::Management::PauseMaterialTracker;
+		friend class AISharedRuntime::Management::UnPauseMaterialTracker;
 		friend class AISharedRuntime::Management::ChangeAlliances;
 		friend class AISharedRuntime::Management::SendMessage;
 
@@ -139,10 +145,10 @@ namespace AISharedRuntime
 		Uint32 other_view = 0;
 
 		void update_management_orders();
-		void pause_resource_tracker(int building_id);
-		void unpause_resource_tracker(int building_id);
+		void pause_material_tracker(int building_id);
+		void unpause_material_tracker(int building_id);
 		void init_starting_buildings();
-		void update_resource_trackers();
+		void update_material_trackers();
 		void update_building_orders();
 		void check_fruit();
 
@@ -153,9 +159,10 @@ namespace AISharedRuntime
 		Construction::FlagMap fm;
 		std::vector<std::shared_ptr<Construction::BuildingOrder> > building_orders;
 		std::vector<std::shared_ptr<Management::ManagementOrder> > management_orders;
-		std::map<int, std::tuple<std::shared_ptr<Management::ResourceTracker>, bool> > resource_trackers;
-		typedef std::map<int, std::tuple<std::shared_ptr<Management::ResourceTracker>, bool> >::iterator tracker_iterator;
+		std::map<int, std::tuple<std::shared_ptr<Management::MaterialTracker>, bool> > material_trackers;
+		typedef std::map<int, std::tuple<std::shared_ptr<Management::MaterialTracker>, bool> >::iterator tracker_iterator;
 		std::set<int> starting_buildings;
+        std::map<int,unsigned> retired_attractions;
 		int timer;
 		///This to keep multiple buildings from being constructed on the same tick.
 		///Before the next building is constructed, the previous building must be

@@ -275,6 +275,7 @@ TEST_SUITE("TeamStatsSave")
 			CAPTURE(c.y);
 			auto *u = w.world.addUnit(c.type, c.x, c.y, 0);
 			u->attachedBuilding = c.attached;
+			if(c.attached && c.attached->type->zonable[c.type])u->activity=Unit::ACT_FLAG;
 			const Uint64 place = m.combatDeathPlace[c.type][c.place];
 			const Uint64 assignment = m.combatDeathAssignment[c.type][c.assignment];
 			const Uint32 checksum = w.game().checkSum();
@@ -306,6 +307,7 @@ TEST_SUITE("TeamStatsSave")
 		hurt->medical = Unit::MED_DAMAGED;
 		auto *flagged = warrior(41, 15, 0, 3, 1);
 		flagged->attachedBuilding = war;
+		flagged->activity = Unit::ACT_FLAG;
 		auto *inside = warrior(30, 50, 0, 0, 1);
 		inside->displacement = Unit::DIS_INSIDE;
 		warrior(13, 15, 1, 2, 2); // enemy warrior at our home
@@ -339,14 +341,14 @@ TEST_SUITE("TeamStatsSave")
 		glob2test::HeadlessGame world(glob2test::GameOptions{
 			.wDec = 6, .hDec = 6, .clearImmobile = true, .loadDefaultRace = true, .header = true});
 		auto *swarm = world.addBuilding("swarm", 10, 10);
-		swarm->resources[WHEAT] = swarm->type->maxResource[WHEAT];
+		swarm->materials[WHEAT] = swarm->type->maxMaterial[WHEAT];
 		swarm->update();
 		world.addBuilding("inn", 20, 10);
 		for (int i = 0; i < 6; ++i)
 			world.addUnit(i < 4 ? WORKER : WARRIOR, 12 + i, 20);
 		for (int y = 30; y < 34; ++y)
 			for (int x = 10; x < 20; ++x)
-				world.game.map.setResource(x, y, WHEAT, 1);
+				world.game.map.setResourceByIndex(x, y, WHEAT, 1);
 		world.step(1100);
 		const auto &stats = world.team->stats;
 		REQUIRE(stats.measurementHistory.size() >= 2);

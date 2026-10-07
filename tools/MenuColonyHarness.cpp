@@ -35,6 +35,8 @@
 #include "ReplayWriter.h"
 #include "DatasetWriter.h"
 #include <filesystem>
+#include <fstream>
+#include <iterator>
 #include <sstream>
 #include <BinaryStream.h>
 #include <FileManager.h>
@@ -125,6 +127,10 @@ void generate(const char *path)
 	// The legacy island generator supplies terrain only. Seed small groves
 	// and grain fields with the existing resource API, leaving walking lanes.
 	const int bx = d.bootX[0], by = d.bootY[0];
+	const auto trees = game.map.resourceRegistry().find("trees");
+	const auto wheat = game.map.resourceRegistry().find("wheat");
+	const auto rocks = game.map.resourceRegistry().find("rocks");
+	require(trees && wheat && rocks, "decorative colony resources exist");
 	for (int y = 0; y < game.map.getH(); ++y)
 		for (int x = 0; x < game.map.getW(); ++x)
 		{
@@ -133,8 +139,8 @@ void generate(const char *path)
 				continue;
 			if ((x % 8 < 4) && (y % 8 < 4))
 			{
-				const int resource =
-					((x / 8 + y / 8) % 5 == 0) ? STONE : ((x / 8 + y / 8) % 2 ? WHEAT : WOOD);
+				const ResourceId resource =
+					((x / 8 + y / 8) % 5 == 0) ? *rocks : ((x / 8 + y / 8) % 2 ? *wheat : *trees);
 				game.map.setResource(x, y, resource, 3);
 			}
 		}
@@ -148,7 +154,7 @@ void generate(const char *path)
 	header.getWinningConditions().clear();
 	game.setGameHeader(header);
 	game.setAlliances();
-	game.map.getResourceGradient(0, WHEAT, 0);
+	game.map.getMaterialGradient(0, MaterialId::Food, 0);
 	game.teams[0]->color = Color(73, 191, 184);
 	for (int i = 0; i < 12000; ++i)
 	{
@@ -592,7 +598,7 @@ int main(int argc, char **argv)
 			require(gui.game.load(&in), "load real-game fixture");
 			std::istringstream state(in.readText("rng") + " ");
 			state >> gui.game.syncRandom;
-			gui.game.map.getResourceGradient(0, WHEAT, 0);
+			gui.game.map.getMaterialGradient(0, MaterialId::Food, 0);
 			gui.localTeamNo = 0;
 			gui.localPlayer = 0;
 			gui.adjustLocalTeam();
@@ -623,6 +629,12 @@ int main(int argc, char **argv)
 				"real match checksum and RNG unaffected by menu");
 		const auto datasetPath =
 			(std::filesystem::temp_directory_path() / "glob2-menu-isolation.gds").string();
+		const auto emptyDatasetPath = datasetPath + ".empty";
+		{
+			DatasetWriter emptyDataset;
+			require(emptyDataset.open(emptyDatasetPath), "open empty recording control");
+			emptyDataset.close();
+		}
 		globals.datasetWriter = std::make_unique<DatasetWriter>();
 		require(globals.datasetWriter->open(datasetPath), "open recording isolation fixture");
 		auto *dataset = globals.datasetWriter.get();
@@ -631,9 +643,16 @@ int main(int argc, char **argv)
 			theme.colony->update(4000000 + i * 40);
 		require(globals.datasetWriter.get() == dataset, "restore dataset writer");
 		globals.datasetWriter.reset();
-		require(std::filesystem::file_size(datasetPath) == 8,
+		const auto readDataset = [](const std::string &path) {
+			std::ifstream stream(path, std::ios::binary);
+			require(stream.good(), "read recording isolation fixture");
+			return std::string(std::istreambuf_iterator<char>(stream),
+						   std::istreambuf_iterator<char>());
+		};
+		require(readDataset(datasetPath) == readDataset(emptyDatasetPath),
 				"menu cannot append training records");
 		std::filesystem::remove(datasetPath);
+		std::filesystem::remove(emptyDatasetPath);
 		MenuColony missing;
 		require(!missing.load("data/menu/does-not-exist.bin"), "missing asset fallback");
 		const auto invalidPath =

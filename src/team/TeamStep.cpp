@@ -51,12 +51,10 @@ bool allRemainingUnitsTrapped(Team& team)
 	if (freeUnitSlot)
 		for (Building* swarm : team.swarms)
 		{
-			if (swarm->resources[WHEAT] < swarm->type->resourceForOneUnit
-				&& swarm->productionTimeout >= 0)
-				continue;
 			// Ratios can still be changed by the player, including from zero.
 			for (int type = 0; type < NB_UNIT_TYPE; ++type)
 			{
+				if (!swarm->canAffordProduction(type)) continue;
 				const UnitType* ut = team.race.getUnitType(type, 0);
 				if (hasExit(swarm, ut->performance[FLY], ut->performance[SWIM]))
 					return false;
@@ -71,17 +69,8 @@ bool Team::buildingHasHigherPriority(Building* lhs, Building* rhs)
 	if(lhs->priority != rhs->priority)
 		return lhs->priority > rhs->priority;
 
-	int priority_lhs=0;
-	if(lhs->type->shortTypeNum==IntBuildingType::FOOD_BUILDING && !lhs->type->isBuildingSite)
-		priority_lhs=2+lhs->type->level*10;
-	else
-		priority_lhs=1+lhs->type->level*10;
-
-	int priority_rhs=0;
-	if(rhs->type->shortTypeNum==IntBuildingType::FOOD_BUILDING && !rhs->type->isBuildingSite)
-		priority_rhs=2+rhs->type->level*10;
-	else
-		priority_rhs=1+rhs->type->level*10;
+	const int priority_lhs = lhs->runtime->workPriorityBias;
+	const int priority_rhs = rhs->runtime->workPriorityBias;
 
 	if(priority_lhs != priority_rhs)
 	{
@@ -97,8 +86,8 @@ bool Team::buildingHasHigherPriority(Building* lhs, Building* rhs)
 		int ratio_rhs_unit = (rhs->maxUnitWorking  - rhs->unitsWorking.size()) * lhs->unitsWorking.size();
 		if(ratio_lhs_unit == ratio_rhs_unit)
 		{
-			int ratio_lhs_resource = lhs->totalWishedResource();
-			int ratio_rhs_resource = rhs->totalWishedResource();
+			int ratio_lhs_resource = lhs->totalWishedMaterial();
+			int ratio_rhs_resource = rhs->totalWishedMaterial();
 			if(ratio_lhs_resource != ratio_rhs_resource)
 				return ratio_lhs_resource > ratio_rhs_resource;
 			// Tiebreak on gid: std::sort is unstable, so without a final
@@ -159,9 +148,7 @@ void Team::updateAllBuildingTasks()
 			std::vector<Building*> hiring;
 			for(std::vector<Building*>::iterator b=pending.begin(); b!=pending.end(); ++b)
 			{
-				bool thisFound = (*b)->type->isVirtual
-					? (*b)->subscribeForFlagingStep()
-					: (*b)->subscribeToBringResourcesStep();
+				bool thisFound = (*b)->subscribeWorkStep();
 				if(thisFound)
 					hiring.push_back(*b);
 			}
@@ -197,14 +184,14 @@ namespace
 		int swimClass = u->swimClass();
 		if (b->globalGradient[swimClass] == NULL)
 			return false;
-		if (u->carriedResource >= 0)
-			return u->carriedResource == resource && map->buildingAvailable(b, swimClass, u->posX, u->posY, cost);
-		if (map->roundTripDistance(b, resource, swimClass, u->posX, u->posY, cost))
+		if (u->carriedMaterial >= 0)
+			return u->carriedMaterial == resource && map->buildingAvailable(b, swimClass, u->posX, u->posY, cost, BuildingRoute::Footprint);
+		if (map->roundTripDistanceSlot(b, resource, swimClass, u->posX, u->posY, cost))
 			return true;
 		// No round-trip field for this class yet: the plain distances, as hiring uses them.
 		int toBuilding, toResource;
-		if (!map->buildingAvailable(b, swimClass, u->posX, u->posY, &toBuilding)
-			|| !map->resourceAvailable(b->owner->teamNumber, resource, swimClass, u->posX, u->posY, &toResource, b->fetchesFromMarkets()))
+		if (!map->buildingAvailable(b, swimClass, u->posX, u->posY, &toBuilding, BuildingRoute::Footprint)
+			|| !map->materialAvailableSlot(b->owner->teamNumber, resource, swimClass, u->posX, u->posY, &toResource, b->fetchesFromMarkets(), b))
 			return false;
 		*cost = toBuilding + toResource;
 		return true;
@@ -227,7 +214,7 @@ namespace
 			*cost = 1 + (Sint32)sqrt(map->warpDistSquare(u->posX, u->posY, b->posX, b->posY));
 			return true;
 		}
-		return map->buildingAvailable(b, u->swimClass(), u->posX, u->posY, cost);
+		return map->buildingAvailable(b, u->swimClass(), u->posX, u->posY, cost, BuildingRoute::Footprint);
 	}
 
 	// Move `u`'s booking from one inn to the other; both keep their head count.
@@ -246,7 +233,7 @@ namespace
 		u->destinationPurpose = resource;
 		b->unitsWorking.push_back(u);
 		b->updateCallLists();
-		if (u->carriedResource == resource)
+		if (u->carriedMaterial == resource)
 		{
 			u->displacement = Unit::DIS_GOING_TO_BUILDING;
 			u->setTargetBuilding(b);
@@ -255,7 +242,7 @@ namespace
 		{
 			u->displacement = Unit::DIS_GOING_TO_RESOURCE;
 			u->setTargetBuilding(NULL);
-			b->owner->map->resourceAvailableUpdate(b->owner->teamNumber, resource, u->swimClass(), u->posX, u->posY, &u->targetX, &u->targetY, NULL, b->fetchesFromMarkets());
+			b->owner->map->materialAvailableUpdateSlot(b->owner->teamNumber, resource, u->swimClass(), u->posX, u->posY, &u->targetX, &u->targetY, NULL, b->fetchesFromMarkets(), b);
 		}
 		u->validTarget = true;
 	}
@@ -318,6 +305,8 @@ void Team::swapInn(Unit *unit)
 		if (mate == unit || !isWalkingToInn(mate) || mate->attachedBuilding == a || mate->attachedBuilding->owner != this)
 			continue;
 		Building *b = mate->attachedBuilding;
+		if (!(b->type->semantics.admittedUnitMask & b->type->semantics.feeding.unitMask & (1u << unit->typeNum))
+			|| !(a->type->semantics.admittedUnitMask & a->type->semantics.feeding.unitMask & (1u << mate->typeNum))) continue;
 		int mateOwn, mine, theirs;
 		if (!innCost(mate, b, &mateOwn) || !innCost(unit, b, &mine) || !innCost(mate, a, &theirs))
 			continue;
@@ -333,8 +322,12 @@ void Team::swapInn(Unit *unit)
 	if (best == NULL)
 		return;
 	Building *b = best->attachedBuilding;
+	a->releaseService(unit);
+	b->releaseService(best);
 	rebook(unit, a, b);
 	rebook(best, b, a);
+	b->reserveService(unit);
+	a->reserveService(best);
 	a->updateCallLists();
 	b->updateCallLists();
 }
@@ -358,7 +351,7 @@ void Team::syncStep(void)
 			if (u->typeNum != EXPLORER)
 			{
 				nbUsefulUnits++;
-				if (u->medical == Unit::MED_FREE || (u->insideTimeout < 0 && u->attachedBuilding && u->attachedBuilding->type->canFeedUnit))
+				if (u->medical == Unit::MED_FREE || (u->insideTimeout < 0 && u->destinationPurpose==FEED && u->attachedBuilding && u->attachedBuilding->type->semantics.feeding.enabled))
 					nbUsefulUnitsAlone++;
 			}
 			u->syncStep();
@@ -390,12 +383,16 @@ void Team::syncStep(void)
 			{
 				if (!building->type->isVirtual)
 				{
-					++stats.measurements
-						  .removed[GameplayMeasurements::DEMOLISHED][building->type->shortTypeNum]
-								  [building->getLongLevel()];
+					stats.measurements.variants.resize(game->buildingsTypes.size());
+					++stats.measurements.variants[building->typeNum].removed[GameplayMeasurements::DEMOLISHED];
+					if (building->type->shortTypeNum>=0 && building->type->shortTypeNum<IntBuildingType::NB_BUILDING && building->getLongLevel()<NB_BUILDING_LONG_LEVELS)
+						++stats.measurements.removed[GameplayMeasurements::DEMOLISHED][building->type->shortTypeNum][building->getLongLevel()];
 					map->setBuilding(building->posX, building->posY, building->type->width, building->type->height, NOGBID);
 					isDirtyGlobalGradient=true;
 				}
+				// Keep commitments while demolition can still be canceled. Once
+				// removal is final, release construction funding or pay repaired HP.
+				building->cancelConstructionMaterials();
 				building->buildingState=Building::DEAD;
 				prestige-=(*it)->type->prestige;
 				buildingsToBeDestroyed.push_front(building);
@@ -459,13 +456,15 @@ void Team::syncStep(void)
 		{
 			//Step in myBuildings does virtually nothing
 			myBuildings[i]->step();
+			myBuildings[i]->regenerationStep();
 		}
 	}
 
 	for (std::list<Building *>::iterator it=swarms.begin(); it!=swarms.end(); ++it)
 		{
-			if (!(*it)->locked[SWIM_VARIANT_CAN_SWIM] && (*it)->resources[WHEAT]>(*it)->type->resourceForOneUnit)
-				isEnoughFoodInSwarm=true;
+			if (!(*it)->locked[SWIM_VARIANT_CAN_SWIM])
+				for (int unitType = 0; unitType < NB_UNIT_TYPE; ++unitType)
+					if ((*it)->canAffordProduction(unitType)) { isEnoughFoodInSwarm = true; break; }
 			(*it)->swarmStep();
 		}
 
@@ -501,7 +500,7 @@ void Team::dirtyGlobalGradient()
 
 void Team::dirtyWarFlagGradient()
 {
-	for (std::list<Building *>::const_iterator it = virtualBuildings.begin(); it != virtualBuildings.end(); ++it)
+	for (std::list<Building *>::const_iterator it = combatFlags.begin(); it != combatFlags.end(); ++it)
 	{
 		Building *b = *it;
 		if (b->type->zonable[WARRIOR])

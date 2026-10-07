@@ -184,6 +184,55 @@
             ],
             "additionalProperties": false
           }
+        },
+        "buildingCatalog": {
+          "type": "object",
+          "description": "Frozen canonical building specification and its SHA-256. Optional in older schema-2 reports.",
+          "properties": {
+            "snapshot": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 8388608
+            },
+            "hash": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$"
+            }
+          },
+          "required": [
+            "snapshot",
+            "hash"
+          ],
+          "additionalProperties": false
+        },
+        "resourceExperiments": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "key": {
+                "type": "string"
+              },
+              "label": {
+                "type": "string"
+              },
+              "help": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "key",
+              "label",
+              "help"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "requiredResourceExperiments": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
         }
       },
       "required": [
@@ -301,7 +350,9 @@
         "unknown"
       ],
       "patternProperties": {
-        "^[a-z0-9_.-]+:[a-z0-9_.-]+$": { "$ref": "#/$defs/coverage" }
+        "^[a-z0-9_.-]+:[a-z0-9_.-]+$": {
+          "$ref": "#/$defs/coverage"
+        }
       },
       "additionalProperties": false
     },
@@ -341,43 +392,22 @@
         },
         "types": {
           "type": "object",
-          "properties": {
-            "wood": {
-              "$ref": "#/$defs/resource"
-            },
-            "wheat": {
-              "$ref": "#/$defs/resource"
-            },
-            "papyrus": {
-              "$ref": "#/$defs/resource"
-            },
-            "stone": {
-              "$ref": "#/$defs/resource"
-            },
-            "algae": {
-              "$ref": "#/$defs/resource"
-            },
-            "cherry": {
-              "$ref": "#/$defs/resource"
-            },
-            "orange": {
-              "$ref": "#/$defs/resource"
-            },
-            "prune": {
-              "$ref": "#/$defs/resource"
-            }
+          "additionalProperties": {
+            "$ref": "#/$defs/resource"
           },
-          "required": [
-            "wood",
-            "wheat",
-            "papyrus",
-            "stone",
-            "algae",
-            "cherry",
-            "orange",
-            "prune"
-          ],
-          "additionalProperties": false
+          "description": "Compatibility resource keys; use definitions for canonical authoring keys."
+        },
+        "definitions": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/$defs/resource"
+          }
+        },
+        "legacy_type_aliases": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
         }
       },
       "required": [
@@ -776,6 +806,18 @@
                 },
                 "prune": {
                   "$ref": "#/$defs/quality_resource_access"
+                },
+                "gold": {
+                  "$ref": "#/$defs/quality_resource_access"
+                },
+                "metal": {
+                  "$ref": "#/$defs/quality_resource_access"
+                },
+                "glass": {
+                  "$ref": "#/$defs/quality_resource_access"
+                },
+                "fabric": {
+                  "$ref": "#/$defs/quality_resource_access"
                 }
               },
               "required": [
@@ -787,6 +829,63 @@
                 "cherry",
                 "orange",
                 "prune"
+              ],
+              "additionalProperties": false,
+              "description": "Legacy material-key aliases retained for version-2 consumers."
+            },
+            "materials": {
+              "type": "object",
+              "properties": {
+                "wood": {
+                  "$ref": "#/$defs/quality_resource_access"
+                },
+                "food": {
+                  "$ref": "#/$defs/quality_resource_access"
+                },
+                "paper": {
+                  "$ref": "#/$defs/quality_resource_access"
+                },
+                "stone": {
+                  "$ref": "#/$defs/quality_resource_access"
+                },
+                "algae": {
+                  "$ref": "#/$defs/quality_resource_access"
+                },
+                "cherries": {
+                  "$ref": "#/$defs/quality_resource_access"
+                },
+                "oranges": {
+                  "$ref": "#/$defs/quality_resource_access"
+                },
+                "prunes": {
+                  "$ref": "#/$defs/quality_resource_access"
+                },
+                "gold": {
+                  "$ref": "#/$defs/quality_resource_access"
+                },
+                "metal": {
+                  "$ref": "#/$defs/quality_resource_access"
+                },
+                "glass": {
+                  "$ref": "#/$defs/quality_resource_access"
+                },
+                "fabric": {
+                  "$ref": "#/$defs/quality_resource_access"
+                }
+              },
+              "required": [
+                "wood",
+                "food",
+                "paper",
+                "stone",
+                "algae",
+                "cherries",
+                "oranges",
+                "prunes",
+                "gold",
+                "metal",
+                "glass",
+                "fabric"
               ],
               "additionalProperties": false
             }
@@ -830,7 +929,7 @@
         },
         "win_probability": {
           "type": "number",
-          "description": "Softmax of the fitnesses over this map’s colonies."
+          "description": "Softmax of the fitnesses over this map\u2019s colonies."
         }
       },
       "required": [
@@ -1111,6 +1210,18 @@
             },
             "prune": {
               "$ref": "#/$defs/access"
+            },
+            "gold": {
+              "$ref": "#/$defs/access"
+            },
+            "metal": {
+              "$ref": "#/$defs/access"
+            },
+            "glass": {
+              "$ref": "#/$defs/access"
+            },
+            "fabric": {
+              "$ref": "#/$defs/access"
             }
           },
           "required": [
@@ -1122,6 +1233,63 @@
             "cherry",
             "orange",
             "prune"
+          ],
+          "additionalProperties": false,
+          "description": "Legacy material-key aliases retained for version-2 consumers."
+        },
+        "materials": {
+          "type": "object",
+          "properties": {
+            "wood": {
+              "$ref": "#/$defs/access"
+            },
+            "food": {
+              "$ref": "#/$defs/access"
+            },
+            "paper": {
+              "$ref": "#/$defs/access"
+            },
+            "stone": {
+              "$ref": "#/$defs/access"
+            },
+            "algae": {
+              "$ref": "#/$defs/access"
+            },
+            "cherries": {
+              "$ref": "#/$defs/access"
+            },
+            "oranges": {
+              "$ref": "#/$defs/access"
+            },
+            "prunes": {
+              "$ref": "#/$defs/access"
+            },
+            "gold": {
+              "$ref": "#/$defs/access"
+            },
+            "metal": {
+              "$ref": "#/$defs/access"
+            },
+            "glass": {
+              "$ref": "#/$defs/access"
+            },
+            "fabric": {
+              "$ref": "#/$defs/access"
+            }
+          },
+          "required": [
+            "wood",
+            "food",
+            "paper",
+            "stone",
+            "algae",
+            "cherries",
+            "oranges",
+            "prunes",
+            "gold",
+            "metal",
+            "glass",
+            "fabric"
           ],
           "additionalProperties": false
         }
@@ -1692,6 +1860,18 @@
             },
             "prune": {
               "$ref": "#/$defs/quality_distance_band_resource"
+            },
+            "gold": {
+              "$ref": "#/$defs/quality_distance_band_resource"
+            },
+            "metal": {
+              "$ref": "#/$defs/quality_distance_band_resource"
+            },
+            "glass": {
+              "$ref": "#/$defs/quality_distance_band_resource"
+            },
+            "fabric": {
+              "$ref": "#/$defs/quality_distance_band_resource"
             }
           },
           "required": [
@@ -1703,6 +1883,63 @@
             "cherry",
             "orange",
             "prune"
+          ],
+          "additionalProperties": false,
+          "description": "Legacy material-key aliases retained for version-2 consumers."
+        },
+        "materials": {
+          "type": "object",
+          "properties": {
+            "wood": {
+              "$ref": "#/$defs/quality_distance_band_resource"
+            },
+            "food": {
+              "$ref": "#/$defs/quality_distance_band_resource"
+            },
+            "paper": {
+              "$ref": "#/$defs/quality_distance_band_resource"
+            },
+            "stone": {
+              "$ref": "#/$defs/quality_distance_band_resource"
+            },
+            "algae": {
+              "$ref": "#/$defs/quality_distance_band_resource"
+            },
+            "cherries": {
+              "$ref": "#/$defs/quality_distance_band_resource"
+            },
+            "oranges": {
+              "$ref": "#/$defs/quality_distance_band_resource"
+            },
+            "prunes": {
+              "$ref": "#/$defs/quality_distance_band_resource"
+            },
+            "gold": {
+              "$ref": "#/$defs/quality_distance_band_resource"
+            },
+            "metal": {
+              "$ref": "#/$defs/quality_distance_band_resource"
+            },
+            "glass": {
+              "$ref": "#/$defs/quality_distance_band_resource"
+            },
+            "fabric": {
+              "$ref": "#/$defs/quality_distance_band_resource"
+            }
+          },
+          "required": [
+            "wood",
+            "food",
+            "paper",
+            "stone",
+            "algae",
+            "cherries",
+            "oranges",
+            "prunes",
+            "gold",
+            "metal",
+            "glass",
+            "fabric"
           ],
           "additionalProperties": false
         }

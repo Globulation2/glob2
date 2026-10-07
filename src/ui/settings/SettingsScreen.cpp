@@ -606,11 +606,12 @@ Element SettingsScreen::rowElement(const Row &r, const Presentation &p)
 		if (r.buildingIcon < 0)
 			return control;
 		// Building rows lead with the building's own artwork.
-		const auto name = IntBuildingType::typeFromShortNumber(r.buildingIcon);
+
 		GAGCore::Sprite *artwork = nullptr;
 		int frame = -1;
-		if (auto *type = globalContainer->buildingsTypes.getByType(name, 0, false))
-		{
+		if (std::size_t(r.buildingIcon)<globalContainer->buildingsTypes.size())
+        {
+            auto* type=globalContainer->buildingsTypes.get(r.buildingIcon);
 			artwork = type->miniSpriteImage >= 0 ? type->miniSpritePtr : type->gameSpritePtr;
 			frame = type->miniSpriteImage >= 0 ? type->miniSpriteImage : type->gameSpriteImage;
 		}

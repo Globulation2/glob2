@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Real-engine regression for Building::canUnitWorkHere: the schooling gate
-// reads the one worker level (build), not the harvest half.
+// reads the independent construction qualification, not work-speed training.
 #include "EngineFixtures.h"
 #include "GlobalContainer.h"
 #include "FileManager.h"
@@ -41,13 +41,14 @@ static bool hiringPass(const char* kind, int level, bool site, int carried, int 
 	Building* building = game.addBuilding(8, 8, typeNum, 0);
 	require(building != nullptr, "create building");
 	building->maxUnitWorking = 2;
-	building->resources[carried] = 0;
+	building->materials[carried] = 0;
 	building->updateCallLists();
 	Unit* unit = game.addUnit(12, 12, 0, WORKER, 0, 255, 0, 0);
 	require(unit != nullptr, "create worker");
 	unit->level[HARVEST] = harvestLevel < 0 ? workerLevel : harvestLevel;
-	unit->level[BUILD] = workerLevel;
-	unit->carriedResource = carried;
+	unit->level[BUILD] = 3-workerLevel; // Deliberately different from qualification.
+	unit->constructionLevel = workerLevel;
+	unit->carriedMaterial = carried;
 	unit->activity = Unit::ACT_RANDOM;
 	unit->medical = Unit::MED_FREE;
 	team->updateAllBuildingTasks();
@@ -61,19 +62,19 @@ static bool hiringPass(const char* kind, int level, bool site, int carried, int 
 
 TEST_SUITE("LevelGate")
 {
-	TEST_CASE("completed buildings hire any worker while sites keep the schooling gate")
+	TEST_CASE("worker hiring reads construction qualification independently of speed training")
 	{
 		glob2test::HeadlessGlobals globals;
 		Uint32 tooLow = 0;
-		// The gate compares the building's tier with the worker level.
+		// The gate compares the authored requirement with construction qualification.
 		require(hiringPass("inn", 0, false, WHEAT, 0, &tooLow) && tooLow == 0, "unschooled worker stocks a level-1 inn");
 		require(!hiringPass("inn", 1, false, WHEAT, 0, &tooLow) && tooLow == 1, "unschooled worker refused by a level-2 inn");
 		require(hiringPass("inn", 1, false, WHEAT, 1, &tooLow) && tooLow == 0, "level-1 worker stocks a level-2 inn");
 		require(!hiringPass("inn", 1, true, WOOD, 0, &tooLow) && tooLow == 1, "unschooled worker refused by a level-2 inn site");
 		require(hiringPass("inn", 1, true, WOOD, 1, &tooLow) && tooLow == 0, "level-1 worker builds a level-2 inn site");
 		require(hiringPass("inn", 2, true, WOOD, 2, &tooLow) && tooLow == 0, "level-2 worker builds a level-3 inn site");
-		// It reads the worker level (build); a stale harvest value does not matter.
-		require(hiringPass("inn", 1, true, WOOD, 1, &tooLow, 0) && tooLow == 0, "build level 1 with harvest 0 builds a level-2 inn site");
-		require(!hiringPass("inn", 1, true, WOOD, 0, &tooLow, 1) && tooLow == 1, "build level 0 with harvest 1 is refused by a level-2 inn site");
+		// Harvest speed is independent of construction qualification.
+		require(hiringPass("inn", 1, true, WOOD, 1, &tooLow, 0) && tooLow == 0, "qualification 1 with harvest 0 builds a level-2 inn site");
+		require(!hiringPass("inn", 1, true, WOOD, 0, &tooLow, 1) && tooLow == 1, "qualification 0 with harvest 1 is refused by a level-2 inn site");
 	}
 }
