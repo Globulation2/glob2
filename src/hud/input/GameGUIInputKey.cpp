@@ -215,7 +215,7 @@ void GameGUI::handleKey(SDL_KeyboardEvent key, bool pressed, bool repeat)
 					{
 						const auto* selBuild = inputBuildingPanel();
 						if (!selBuild) break;
-						int unitWorking = defaultAssign.getDefaultAssignedUnits(selBuild->state().constructionOriginTypeNum);
+						int unitWorking = defaultAssign.getDefaultAssignedUnits(drawnScene(), selBuild->state().constructionOriginTypeNum);
 						// Another team's building can be selected for viewing; its upgrade is not ours to cancel.
 						if (selBuild->owner().number != localTeamNo)
 							break;
@@ -238,7 +238,7 @@ void GameGUI::handleKey(SDL_KeyboardEvent key, bool pressed, bool repeat)
 							int nbReq=std::min(20, current+1);
 							pendingFor(selBuild->state().gid).pendingMaxUnitWorking = nbReq;
 							enqueueOrder(shared_ptr<Order>(new OrderModifyBuilding(selBuild->state().gid, nbReq)));
-							defaultAssign.setDefaultAssignedUnits(selBuild->state().typeNum, nbReq);
+							defaultAssign.setDefaultAssignedUnits(drawnScene(), selBuild->state().typeNum, nbReq);
 						}
 					}
 				}
@@ -255,7 +255,7 @@ void GameGUI::handleKey(SDL_KeyboardEvent key, bool pressed, bool repeat)
 							int nbReq=std::max(0, current-1);
 							pendingFor(selBuild->state().gid).pendingMaxUnitWorking = nbReq;
 							enqueueOrder(shared_ptr<Order>(new OrderModifyBuilding(selBuild->state().gid, nbReq)));
-							defaultAssign.setDefaultAssignedUnits(selBuild->state().typeNum, nbReq);
+							defaultAssign.setDefaultAssignedUnits(drawnScene(), selBuild->state().typeNum, nbReq);
 						}
 					}
 				}
@@ -346,7 +346,7 @@ void GameGUI::handleKey(SDL_KeyboardEvent key, bool pressed, bool repeat)
 					{
 						const auto* selBuild = inputBuildingPanel();
 						if (!selBuild) break;
-						int unitWorking = defaultAssign.getDefaultAssignedUnits(selBuild->state().constructionOriginTypeNum);
+						int unitWorking = defaultAssign.getDefaultAssignedUnits(drawnScene(), selBuild->state().constructionOriginTypeNum);
 						// Another team's building can be selected for viewing; its repair is not ours to cancel.
 						if (selBuild->owner().number != localTeamNo)
 							break;

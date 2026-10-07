@@ -30,7 +30,7 @@ MemoryMetrics Storage::memoryMetrics() const
 			if (leased) result.leasedBytes += sizeof(T) + capacity;
 		});
 	};
-	account(catalogs, [&](const Catalogs& value, bool leased) { remember(value.buildings, leased); remember(value.capabilities, leased); remember(value.typeDefinitions, leased); return Uint64(0); });
+	account(catalogs, [&](const Catalogs& value, bool leased) { remember(value.buildings, leased); remember(value.capabilities, leased); remember(value.typeDefinitions, leased); return Uint64(value.buildingFingerprint.capacity()); });
     account(session, [&](const Session& value, bool) { return vectorBytes(value.players); });
     account(effects, [&](const Effects& value, bool) {
         Uint64 bytes=vectorBytes(value.sectors);

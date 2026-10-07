@@ -32,7 +32,9 @@ DRAWING = ('src/render/GameRender*.cpp', 'src/render/Minimap.cpp', 'src/render/t
            'src/hud/touch/GameGUITouchView.cpp', 'src/hud/touch/GameGUITouchPalette.cpp',
            'src/hud/touch/GameGUITouchLens.cpp', 'src/hud/touch/GameGUITouchPlacement.cpp',
            'src/map/editor/MapEditInspector.cpp', 'src/map/editor/EditorDockObjects.cpp',
-           'src/map/editor/EditorDock.cpp')
+           'src/map/editor/EditorDock.cpp', 'src/hud/GameGUIGhostBuildingManager.cpp',
+           'src/hud/GameGUITorus.cpp', 'src/hud/draw/GameGUIParticles.cpp', 'src/hud/GameGUIStep.cpp',
+           'src/render/overlay/MarkManager.cpp', 'src/hud/GameGUIDialog.cpp', 'src/hud/input/GameGUIInputMouse.cpp', 'src/hud/input/GameGUIInputMenu.cpp', 'src/hud/GameGUIScript.cpp', 'src/hud/GameGUIToolManager.cpp')
 
 # Live entity tables and queues the simulation mutates.
 LIVE_READS = re.compile(
@@ -70,6 +72,11 @@ class SceneBoundaryTests(unittest.TestCase):
                         self.assertIsNone(LIVE_READS.search(line), line.strip())
 
     def test_preparation_cannot_capture_or_read_live_objects(self):
+        for path in (ROOT / 'src').rglob('*'):
+            if path.suffix not in ('.h', '.cpp'):
+                continue
+            with self.subTest(file=str(path.relative_to(ROOT))):
+                self.assertNotRegex(path.read_text(), r'\b(?:extractScene|captureSceneInputs|extractInputPanels)\s*\(')
         for name in ('SceneExtract.cpp', 'SceneExtract.h', 'SceneMap.cpp', 'SceneMap.h'):
             source = (ROOT / 'src/render/scene' / name).read_text()
             with self.subTest(file=name):

@@ -79,6 +79,7 @@ void SimulationRunner::run()
             {
                 std::lock_guard telemetryLock(telemetryMutex);
                 telemetryMailbox.absorb(telemetry);
+                completedTelemetryTick = engine.gui.game.stepCounter;
             }
 			lock.lock();
 			if (!running)
@@ -171,7 +172,11 @@ void SimulationRunner::resume()
 
 const PresentationFrame *SimulationRunner::acquireScene()
 {
-	while (engine.gui.game.map.computeExecutor().pumpPresentation()) {}
+	// A one-participant native executor uses the graphics thread for preparation.
+	// Yield between chunks just as the serial/browser producer does.
+	const auto until = std::chrono::steady_clock::now() + std::chrono::milliseconds(2);
+	while (engine.gui.game.map.computeExecutor().pumpPresentation() &&
+	       std::chrono::steady_clock::now() < until) {}
 	if (scenes.acquire())
 	{
 		haveScene = true;
@@ -205,4 +210,10 @@ void SimulationRunner::absorbTelemetry(PerformanceTelemetry::Collector& target)
 {
     std::lock_guard lock(telemetryMutex);
     target.absorb(telemetryMailbox);
+}
+
+Uint32 SimulationRunner::latestTelemetryTick()
+{
+    std::lock_guard lock(telemetryMutex);
+    return completedTelemetryTick;
 }

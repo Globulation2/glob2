@@ -12,6 +12,8 @@
 #include <cstdint>
 #include <iterator>
 #include "Engine.h"
+#include "sim/SimulationRunner.h"
+#include "MenuColony.h"
 #include "GameGUITouch.h"
 #include <GraphicContext.h>
 #include "Unit.h"
@@ -72,6 +74,52 @@ GAGCore::CooperativeSlice fixedSlice()
 
 TEST_SUITE("EngineSession")
 {
+    TEST_CASE("menu colony rendering consumes its shared boundary without recapture [display]")
+    {
+        glob2test::HeadlessGlobals globals({.display=true, .width=800, .height=600});
+        MenuColony colony;
+        REQUIRE(colony.load());
+        const auto initialTick = colony.tick();
+        const auto captures = colony.game->snapshots().metrics.captures;
+        const auto readyBy = SDL_GetTicks() + 5000;
+        do {
+            colony.draw(800, 600);
+            SDL_Delay(1);
+        } while (!colony.view.scene && SDL_GetTicks() < readyBy);
+        REQUIRE(colony.view.scene);
+        CHECK(colony.view.scene->tick == initialTick);
+        CHECK(colony.game->snapshots().metrics.captures == captures);
+        colony.update(1000);
+        colony.update(1040);
+        CHECK(colony.tick() == initialTick + 1);
+        const auto afterStep = colony.game->snapshots().metrics.captures;
+        colony.draw(800, 600);
+        CHECK(colony.game->snapshots().metrics.captures == afterStep);
+        CHECK(colony.view.scene->tick == initialTick);
+        colony.pause();
+        colony.draw(800, 600);
+        CHECK(colony.game->snapshots().metrics.captures == afterStep);
+    }
+
+    TEST_CASE("native presentation fallback yields between expensive chunks")
+    {
+        glob2test::HeadlessGlobals globals;
+        Engine engine;
+        auto& executor = engine.gui.game.map.computeExecutor();
+        executor.configure(1);
+        SimulationRunner runner(engine);
+        unsigned completed = 0;
+        auto work = executor.submitPresentation(100, [&](size_t) {
+            std::this_thread::sleep_for(std::chrono::milliseconds(3));
+            ++completed;
+        });
+        CHECK(runner.acquireScene() == nullptr);
+        CHECK(completed == 1);
+        CHECK_FALSE(work->finished());
+        runner.stop();
+        CHECK(work->status() == ComputeExecutor::Presentation::Status::Canceled);
+    }
+
     TEST_CASE("external replay retains recorded simulation checksums [benchmark][artifacts]")
     {
         const char* path=SDL_getenv_unsafe("GLOB2_REFERENCE_REPLAY");REQUIRE(path);
@@ -240,6 +288,16 @@ TEST_SUITE("EngineSession")
 			auto frame = [&](const std::vector<SDL_Event> &events = {}) {
 				REQUIRE(threaded ? engine.threadedClientFrame(0, events) : engine.stepSession(0, events));
 			};
+			// Input targets the displayed immutable world, including on the first
+			// threaded frame. Wait for initial publication before sending gestures.
+			const auto readyBy = SDL_GetTicks() + 5000;
+			while (!engine.gui.drawnScene().world.entities && SDL_GetTicks() < readyBy)
+			{
+				frame();
+				engine.drawSession(true);
+				SDL_Delay(1);
+			}
+			REQUIRE(engine.gui.drawnScene().world.entities);
 			auto finger = [&](Uint32 type, float x) {
 				SDL_Event event{};
 				event.type = type;
@@ -486,6 +544,7 @@ TEST_SUITE("EngineSession")
 		        minimap.setMapSize(view.game.map.getW(), view.game.map.getH());
 		        minimap.resizeViewport(1200);
 		        require(minimap.insideMinimap(1100, 74) && !minimap.insideMinimap(700, 74), "Minimap hit area did not follow the viewport");
+		        view.prepareLocalPresentation();
 		        require(view.zoomMap(3, 300, 200), "Could not zoom the desktop camera");
 		        const auto center = view.camera.screenToWorld(view.camera.offsetX + view.camera.width / 2,
 		                                                      view.camera.offsetY + view.camera.height / 2);

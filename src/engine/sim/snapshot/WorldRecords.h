@@ -48,7 +48,7 @@ struct TeamView
 	std::string firstPlayerName;
 	int unitConversionGained = 0, unitConversionLost = 0, noMoreBuildingSitesCountdown = 0;
 	std::array<Sint32, MaterialSlotCount> reservedMaterials{};
-	Uint32 mask = 0, allies = 0, enemies = 0;
+	Uint32 mask = 0, allies = 0, enemies = 0, playersMask = 0;
 	Uint32 foodVision = 0, exchangeVision = 0, otherVision = 0;
 	TeamStat statistics;
 	std::array<Sint32, MaterialSlotCount> materials{};

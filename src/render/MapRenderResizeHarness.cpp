@@ -27,13 +27,15 @@
 #include <filesystem>
 #include "CreditScreen.h"
 #include <iostream>
+#include "sim/snapshot/SnapshotStore.h"
 
 // GameGUI::drawAll extracts the frame's PresentationFrame before drawing overlays; do the
 // same when drawing them directly.
 static void drawOverlays(GameGUI &gui)
 {
 	PresentationFrame scene;
-	gui.extractScene(scene);
+    gui.game.snapshots().invalidateBoundary();
+	gui.prepareLocalPresentation(scene);
 	gui.setPublishedScene(&scene);
 	gui.drawOverlayInfos();
 	gui.setPublishedScene(nullptr);
@@ -216,11 +218,13 @@ void run(bool gpu)
 		// is covered by the high-resolution integration harness.
 		gui.camera.width=gui.camera.height=0;
 		gui.camera.originX=gui.camera.originY=0;
+        gui.clientRequests.publishDisplaySize(width-160,1100);
 	};
 	const auto clear = [&] { gfx->setClipRect(); gfx->drawFilledRect(0,0,gfx->getW(),gfx->getH(),0,0,0); };
 	// Six displayed copies: three across and two down. Compare exact pixel counts,
 	// not just nonblack output somewhere in the viewport.
 	const auto copies = [&](int x, int y, int w, int h) {
+        INFO("copy region " << x << "," << y << " " << w << "x" << h);
 		capturePixels(gfx);
 		int expected=colored(gfx->getSDLSurface(),x,y,w,h);
 		REQUIRE(expected > 0);
@@ -407,14 +411,15 @@ void run(bool gpu)
 	std::cout << "PASS fog of war shade fades between in sight and fogged\n";
 
 	clear();
+	gui.prepareLocalPresentation();
 	gui.ghostManager.addBuilding(building->typeNum,7,7);
-	gui.ghostManager.drawAll(0,0,0);
+	gui.ghostManager.drawAll(gui.drawnScene(),0,0,0,gfx->getW()-160,gfx->getH());
 	copies(224,224,96,96);
 	gui.ghostManager.removeBuilding(7,7);
 	clear();
 	Mark marker(3,3,Color(255,255,255),60);
 	marker.showTicks=45;
-	marker.drawInMainView(0,0,game);
+	marker.drawInMainView(0,0,gui.drawnScene());
 	copies(20,20,160,160);
 	int clipX,clipY,clipW,clipH;
 	gfx->getClipRect(&clipX,&clipY,&clipW,&clipH);

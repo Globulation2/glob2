@@ -57,7 +57,7 @@ void prepareSource(const SceneInputs& input,PresentationFrame& scene)
     e.selectedUnit=selectedUnit ? selectedUnit->identity : UnitRef{};
     e.highlightUnitType=request.highlights ? request.highlights->first : 0;
     e.highlightBuildingType=request.highlights ? request.highlights->second : 0;
-    if (!request.includePanels || world.teams->values.empty()) return;
+    if (!request.includePanels || request.localTeam < 0 || size_t(request.localTeam) >= world.teams->values.size()) return;
     const auto& local=world.teams->values.at(request.localTeam);
     auto& panels=scene.panels;
     panels.world=world;
@@ -143,7 +143,7 @@ void prepareConnections(const SceneMap& map,SceneEntities& e,
 namespace {
 void preparePanels(const SceneInputs& input, PresentationFrame& scene, const std::array<int,SceneEntities::Teams>& buildLevels)
 {
-    if (!input.request.includePanels) return;
+    if (!input.request.includePanels || !scene.panels.local.record) return;
     const auto& world = input.world;
     auto& panels = scene.panels;
     panels.local.maxBuildLevel = buildLevels[input.request.localTeam];

@@ -23,7 +23,7 @@ public:
         auto* building = world.addBuilding("swarm",4,4);
         gui.setSelection(GameGUI::BUILDING_SELECTION, building);
         PresentationFrame scene;
-        gui.extractScene(scene);
+        gui.prepareLocalPresentation(scene);
         gui.setPublishedScene(&scene);
         gui.simulationThreaded = threaded;
         const auto original = Game::refOf(building);
@@ -50,7 +50,7 @@ public:
         gui.enqueueOrder(std::make_shared<NullOrder>());
         gui.orderQueue.front()->clientWorld = scene.map.identity()+1;
         CHECK(gui.getOrder()->getOrderType() == ORDER_NULL);
-        gui.extractScene(scene);
+        gui.prepareLocalPresentation(scene);
         gui.checkSelection();
         CHECK(gui.selectionMode != GameGUI::BUILDING_SELECTION);
         gui.simulationThreaded = false;
@@ -63,7 +63,7 @@ public:
         const auto viewport=std::pair{gui.viewportX,gui.viewportY};
         auto* building=world.addBuilding("swarm",4,4);
         gui.setSelection(GameGUI::BUILDING_SELECTION,building);
-        gui.extractScene(gui.frameScene);
+        gui.prepareLocalPresentation(gui.frameScene);
         gui.checkSelection();
         REQUIRE(gui.selectionMode==GameGUI::BUILDING_SELECTION);
         REQUIRE(gui.view.selectedBuilding==nullptr);
@@ -71,20 +71,20 @@ public:
         // The retained frame and its selection remain coherent until replacement.
         gui.checkSelection();
         REQUIRE(gui.selectionMode==GameGUI::BUILDING_SELECTION);
-        gui.extractScene(gui.frameScene);
+        gui.prepareLocalPresentation(gui.frameScene);
         gui.iterateSelection();
         assertClearedKeepViewport(gui);
 
         auto* unit=world.addUnit(WORKER,10,10);
         gui.setSelection(GameGUI::UNIT_SELECTION,unit);
-        gui.extractScene(gui.frameScene);
+        gui.prepareLocalPresentation(gui.frameScene);
         gui.iterateSelection();
         REQUIRE(gui.selectionMode==GameGUI::UNIT_SELECTION);
         REQUIRE(gui.view.selectedUnit==nullptr);
         REQUIRE(world.game.removeUnitAndBuildingAndFlags(10,10,Game::DEL_UNIT));
         gui.checkSelection();
         REQUIRE(gui.selectionMode==GameGUI::UNIT_SELECTION);
-        gui.extractScene(gui.frameScene);
+        gui.prepareLocalPresentation(gui.frameScene);
         gui.iterateSelection();
         assertClearedKeepViewport(gui);
         gui.iterateSelection();

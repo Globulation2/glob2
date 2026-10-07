@@ -752,6 +752,8 @@ TEST_CASE("statistics history is optional immutable and reused until a new sampl
     REQUIRE_FALSE(before.history->teams.empty());
     const auto retained = before.history->teams[0];
     const auto samples = retained->measurementHistory.size();
+    game.objectives.setGameObjectiveText(0, "original objective");
+    game.gameHints.setHintVisible(0);
     game.snapshots().invalidateBoundary();
     const auto unchanged = game.captureReadBoundary({}, true, SceneExtractor::requirements(chart));
     CHECK(unchanged.history->teams[0] == retained);
@@ -811,4 +813,54 @@ TEST_CASE("large defence overlay preparation yields and finishes its kernel" * d
     CHECK(frame.overlay->getOverlayType() == OverlayArea::Defence);
     CHECK(frame.overlay != previousOverlay);
     CHECK(previousOverlay->getOverlayType() == OverlayArea::Fertility);
+}
+
+TEST_CASE("empty worlds and a view whose team disappeared prepare without live fallback" * doctest::test_suite("SceneExtract"))
+{
+    glob2test::HeadlessGlobals globals;
+    glob2test::HeadlessGame fixture({.teams=0});
+    SceneRequest request;
+    const auto world=fixture.game.captureReadBoundary({},true,SceneExtractor::requirements(request));
+    SceneExtractor extractor;
+    PresentationFrame frame;
+    extractor.prepare(world,request,frame);
+    CHECK(frame.entities.teamCount==0);
+    CHECK_FALSE(frame.panels.local.record);
+    CHECK(frame.world.entities==world.entities);
+    request.localTeam=31;
+    extractor.prepare(world,request,frame);
+    CHECK_FALSE(frame.panels.local.record);
+}
+
+TEST_CASE("session narrative payloads are immutable and reused until mutation" * doctest::test_suite("SceneExtract"))
+{
+    glob2test::HeadlessGlobals globals;
+    glob2test::HeadlessGame fixture;
+    auto& game = fixture.game;
+    game.missionBriefing = "original briefing";
+    game.objectives.setGameObjectiveText(0, "original objective");
+    game.gameHints.addNewHint("original hint", false, 1);
+    const auto required = SceneExtractor::requirements({});
+    const auto first = game.captureReadBoundary({}, true, required);
+    game.objectives.setGameObjectiveText(0, "original objective");
+    game.gameHints.setHintVisible(0);
+    game.snapshots().invalidateBoundary();
+    const auto unchanged = game.captureReadBoundary({}, true, required);
+    CHECK(first.session->objectives == unchanged.session->objectives);
+    CHECK(first.session->hints == unchanged.session->hints);
+    CHECK(first.session->missionBriefing == unchanged.session->missionBriefing);
+    game.objectives.setGameObjectiveText(0, "edited objective");
+    game.objectives.setObjectiveComplete(0);
+    game.gameHints.setHintHidden(0);
+    game.missionBriefing = "edited briefing";
+    game.snapshots().invalidateBoundary();
+    const auto changed = game.captureReadBoundary({}, true, required);
+    CHECK(first.session->objectives->getGameObjectiveText(0) == "original objective");
+    CHECK_FALSE(first.session->objectives->isObjectiveComplete(0));
+    CHECK(first.session->hints->isHintVisible(0));
+    CHECK(*first.session->missionBriefing == "original briefing");
+    CHECK(changed.session->objectives->getGameObjectiveText(0) == "edited objective");
+    CHECK(changed.session->objectives->isObjectiveComplete(0));
+    CHECK_FALSE(changed.session->hints->isHintVisible(0));
+    CHECK(*changed.session->missionBriefing == "edited briefing");
 }

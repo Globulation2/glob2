@@ -9,14 +9,21 @@
 #include <string>
 #include <vector>
 
+class GameObjectives;
+class GameHints;
+
 namespace SimulationSnapshot
 {
 // Optional world observations. These contain source values, never renderer
 // objects, view-dependent selections, formatting, or pointers into live state.
 struct Session
 {
-    struct Player { std::string name; int teamNumber = 0; bool competing = false; };
+    struct Player { std::string name; int teamNumber = 0; bool competing = false; int type = 0; };
     std::vector<Player> players;
+    bool fixedAlliances = false;
+    std::shared_ptr<const std::string> missionBriefing;
+    std::shared_ptr<const GameObjectives> objectives;
+    std::shared_ptr<const GameHints> hints;
     bool editor = false, totalPrestigeReached = false, prestigeWinCondition = false;
     int prestigeToReach = 0;
     bool anyPlayerWaited = false;

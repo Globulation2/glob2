@@ -60,9 +60,6 @@ void GameGUI::moveFlag(int mx, int my, bool drop)
 		queueFlagMove(*selBuild, posX, posY, drop);
 }
 
-void GameGUI::queueFlagMove(Building &flag, int x, int y, bool drop)
-{ queueFlagMove(flag.gid,x,y,drop); }
-
 void GameGUI::queueFlagMove(const SnapshotBuilding &flag, int x, int y, bool drop)
 { queueFlagMove(flag.gid,x,y,drop); }
 
@@ -172,7 +169,7 @@ void GameGUI::step(const std::vector<SDL_Event>& events, Uint64 now)
 				when drawing areas with the brush. */
 			if (onViewport)
 			{
-				game.map.cursorToBuildingPos (mapMouseX(lastMouseX), mapMouseY(lastMouseY), 1, 1, &mouseMapX, &mouseMapY, viewportX, viewportY);
+				drawnScene().map.cursorToBuildingPos (mapMouseX(lastMouseX), mapMouseY(lastMouseY), 1, 1, &mouseMapX, &mouseMapY, viewportX, viewportY);
 			}
 			else
 			{
@@ -241,8 +238,8 @@ void GameGUI::step(const std::vector<SDL_Event>& events, Uint64 now)
 	int oldViewportX = viewportX;
 	int oldViewportY = viewportY;
 
-	viewportX += game.map.getW();
-	viewportY += game.map.getH();
+	viewportX += drawnScene().map.getW();
+	viewportY += drawnScene().map.getH();
 	// Continuous scrolling keeps its normal 25 Hz cadence at every game speed.
 
 	if (now < lastViewportStep) lastViewportStep = now;
@@ -262,8 +259,11 @@ void GameGUI::step(const std::vector<SDL_Event>& events, Uint64 now)
         camera.normalize();viewportX=camera.tileX();viewportY=camera.tileY();
 	}
 	if (touch) touch->advanceScroll(now);
-	viewportX &= game.map.getMaskW();
-	viewportY &= game.map.getMaskH();
+	if (drawnScene().map.getW() && drawnScene().map.getH())
+	{
+		viewportX &= drawnScene().map.getMaskW();
+		viewportY &= drawnScene().map.getMaskH();
+	}
 
 	updateCamera();
 	// Pushed every frame rather than at press and release: several paths clear
@@ -330,15 +330,10 @@ void GameGUI::step(const std::vector<SDL_Event>& events, Uint64 now)
 		order = toolManager.getOrder();
 	}
 
-	///This shows the mission briefing at the beginning of the mission
-	if((simulationThreaded ? drawnScene().tick : game.stepCounter) == 12)
-	{
-		if(game.missionBriefing != "")
-		{
-			const auto briefing=[&]{openDialog(IGM_OBJECTIVES, std::make_unique<InGameObjectivesScreen>(this, true));};
-            if(!parkForClient(briefing)) briefing();
-		}
-	}
+	// The briefing belongs to the displayed world, like the objective dialog.
+    if (drawnScene().tick == 12 && drawnScene().world.session &&
+        drawnScene().world.session->missionBriefing && !drawnScene().world.session->missionBriefing->empty())
+        openDialog(IGM_OBJECTIVES, std::make_unique<InGameObjectivesScreen>(this, true));
 
 	// Overlay maps are computed during scene extraction (SceneExtractor), from the
 	// overlay drawAll publishes in clientRequests.
@@ -356,14 +351,19 @@ void GameGUI::stepEventFeed(int viewedTeam)
 {
 	if (eventFeed.team() != viewedTeam)
 		eventFeed.clear(viewedTeam);
-	if (viewedTeam < 0 || viewedTeam >= Team::MAX_COUNT)
+	if (viewedTeam < 0 || viewedTeam >= Team::MAX_COUNT || !drawnScene().map.getW() || !drawnScene().map.getH())
 		return;
 
 	// The simulation forwards GameEvents through ClientEvents; coalesce the
 	// ones for the team being viewed, oldest first.
 	const Uint64 nowMs = SDL_GetTicks();
 	const auto distanceSquared = [this](int px, int py, int qx, int qy) -> std::int64_t
-	{ return game.map.warpDistSquare(px, py, qx, qy); };
+	{
+        const int width = drawnScene().map.getW(), height = drawnScene().map.getH();
+        const int x = std::abs((px-qx) % width), y = std::abs((py-qy) % height);
+        const int dx = std::min(x, width-x), dy = std::min(y, height-y);
+        return dx * dx + dy * dy;
+    };
 	auto &teamEvents = pendingTeamEvents[viewedTeam];
 	while (!teamEvents.empty())
 	{

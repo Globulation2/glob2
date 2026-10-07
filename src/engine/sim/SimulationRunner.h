@@ -63,12 +63,14 @@ public:
 	//! thread absorbs the mailbox while running, or this collector after stop().
 	PerformanceTelemetry::Collector telemetry;
     void absorbTelemetry(PerformanceTelemetry::Collector& target);
+    Uint32 latestTelemetryTick();
 
 
 private:
 	void run();
     std::mutex telemetryMutex;
     PerformanceTelemetry::Collector telemetryMailbox;
+    Uint32 completedTelemetryTick = 0;
 	void park(std::unique_lock<std::mutex> &lock);
 
 	Engine &engine;

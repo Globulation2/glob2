@@ -210,6 +210,7 @@ static void run(bool gpu, int width, int height)
         REQUIRE(gui.loadFromHeaders(mapHeader, gameHeader, true, true));
         gui.adjustLocalTeam();
         gui.adjustInitialViewport();
+        gui.prepareLocalPresentation();
         gui.updateCamera();
         // A drag beginning on empty ground moves the map with the pointer.
         // Find an actual empty visible tile so the fixture can change freely.
@@ -595,7 +596,7 @@ static void run(bool gpu, int width, int height)
                 auto capture = [&]()
                 {
                     gui.game.snapshots().invalidateBoundary();
-                    gui.extractScene(scene);
+                    gui.prepareLocalPresentation(scene);
                     gui.setPublishedScene(&scene);
                     draw(1);
                     gui.setPublishedScene(nullptr);

@@ -23,6 +23,7 @@ int GameHints::getNumberOfHints() const
 
 void GameHints::addNewHint(const std::string& hint, bool nhidden, int scriptNumber)
 {
+	frozenValue.reset();
 	texts.push_back(hint);
 	hidden.push_back(nhidden);
 	scriptNumbers.push_back(ScriptNumber::clampToWireDomain(scriptNumber));
@@ -32,6 +33,7 @@ void GameHints::addNewHint(const std::string& hint, bool nhidden, int scriptNumb
 
 void GameHints::removeHint(int n)
 {
+	frozenValue.reset();
 	texts.erase(texts.begin() + n);
 	hidden.erase(hidden.begin() + n);
 	scriptNumbers.erase(scriptNumbers.begin() + n);
@@ -41,6 +43,8 @@ void GameHints::removeHint(int n)
 
 void GameHints::setGameHintText(int n, const std::string& hint)
 {
+	if (n >= 0 && n < int(texts.size()) && (texts[n] == hint)) return;
+	frozenValue.reset();
 	assert (n < (int)texts.size());
 	texts[n]=hint;
 }
@@ -57,6 +61,8 @@ const std::string& GameHints::getGameHintText(int n) const
 
 void GameHints::setHintHidden(int n)
 {
+	if (n >= 0 && n < int(texts.size()) && (hidden[n])) return;
+	frozenValue.reset();
 	if (n >= 0 && n < (int)hidden.size())
 		hidden[n]=true;
 }
@@ -65,6 +71,8 @@ void GameHints::setHintHidden(int n)
 
 void GameHints::setHintVisible(int n)
 {
+	if (n >= 0 && n < int(texts.size()) && (!hidden[n])) return;
+	frozenValue.reset();
 	if (n >= 0 && n < (int)hidden.size())
 		hidden[n]=false;
 }
@@ -83,6 +91,8 @@ bool GameHints::isHintVisible(int n) const
 
 void GameHints::setScriptNumber(int n, int scriptNumber)
 {
+	if (n >= 0 && n < int(texts.size()) && (scriptNumbers[n] == ScriptNumber::clampToWireDomain(scriptNumber))) return;
+	frozenValue.reset();
 	assert(n < (int)scriptNumbers.size());
 	scriptNumbers[n]=ScriptNumber::clampToWireDomain(scriptNumber);
 }
@@ -118,6 +128,7 @@ void GameHints::encodeData(GAGCore::OutputStream* stream) const
 
 void GameHints::decodeData(GAGCore::InputStream* stream, Uint32 versionMinor)
 {
+	frozenValue.reset();
 	texts.clear();
 	hidden.clear();
 	scriptNumbers.clear();

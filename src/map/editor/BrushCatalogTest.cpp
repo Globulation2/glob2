@@ -42,6 +42,7 @@ void blank(MapEdit &editor)
 void importTerrain(MapEdit &editor, const Json &terrains)
 {
 	editor.game.map.importTerrainDefinitions(Json{{"schemaVersion", 1}, {"terrains", terrains}}.dump());
+    editor.preparePresentation();
 }
 
 Json customTerrain(const std::string &key, const std::string &name, const char *appearance = "sand")

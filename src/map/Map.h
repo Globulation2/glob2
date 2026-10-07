@@ -973,7 +973,7 @@ public:
 	//! simulation code. Generators derive it from their request seed, the editor
 	//! rerolls it, and maps saved before format 138 load with seed 0.
 	Uint32 terrainSeed() const { return terrainSeedValue; }
-	void setTerrainSeed(Uint32 seed) { terrainSeedValue = seed; }
+	void setTerrainSeed(Uint32 seed);
 	void mapCaseToDisplayable(int mx, int my, int *px, int *py, int viewportX, int viewportY) const;
 	//! Transform coordinate from map (mx,my) to screen (px,py). Use this one to display a path line to the screen.
 	void mapCaseToDisplayableVector(int mx, int my, int *px, int *py, int viewportX, int viewportY, int screenW, int screenH) const;

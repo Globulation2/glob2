@@ -21,7 +21,7 @@ Uint64 renderPanel(GameGUI& gui)
     gfx->beginFrame(GAGCore::GraphicContext::FrameMode::FullRedraw);
     gfx->setClipRect();
     gfx->drawFilledRect(0,0,gfx->getW(),gfx->getH(),GAGCore::Color(0,0,0));
-    gui.game.snapshots().invalidateCatalog(); gui.extractScene(gui.frameScene);
+    gui.game.snapshots().invalidateCatalog(); gui.prepareLocalPresentation(gui.frameScene);
     gui.drawUnitInfos(); gfx->nextFrame();
     auto* frame=gfx->completedFrame(); REQUIRE(frame);
     Uint64 hash=1469598103934665603ull;
@@ -77,7 +77,7 @@ TEST_SUITE("GUIInteractionCoverage")
             world.game.buildingsTypes.loadSnapshotJson(catalog.dump());world.game.buildingsTypes.loadSprites();world.game.configureBuildingCatalog();
             auto* building=world.game.addBuilding(8,8,typeId,0,0,0);REQUIRE(building);
             auto& gui=world.gui;gui.localTeamNo=0;gui.localPlayer=0;gui.localTeam=world.team;
-            gui.setSelection(GameGUI::BUILDING_SELECTION,building);gui.extractScene(gui.frameScene);
+            gui.setSelection(GameGUI::BUILDING_SELECTION,building);gui.prepareLocalPresentation(gui.frameScene);
             auto& panel=gui.frameScene.panels.building;REQUIRE(panel.valid);
             const auto checksum=world.checksum();
             const int rowY=YPOS_BASE_BUILDING+YOFFSET_NAME+YOFFSET_ICON+YOFFSET_B_SEP+YOFFSET_INFOS;
@@ -151,7 +151,7 @@ TEST_SUITE("GUIInteractionCoverage")
             gfx->beginFrame(GAGCore::GraphicContext::FrameMode::FullRedraw);
             gfx->setClipRect();
             gfx->drawFilledRect(0,0,gfx->getW(),gfx->getH(),GAGCore::Color(24,35,28));
-            gui.game.snapshots().invalidateCatalog(); gui.extractScene(gui.frameScene);
+            gui.game.snapshots().invalidateCatalog(); gui.prepareLocalPresentation(gui.frameScene);
             gui.drawChoiceInfoPanel("inn"); gfx->nextFrame();
             auto* frame=gfx->completedFrame(); REQUIRE(frame);
             Uint64 hash=1469598103934665603ull;
@@ -213,7 +213,7 @@ TEST_SUITE("GUIInteractionCoverage")
             const auto before=world.checksum();
             gfx->beginFrame(GAGCore::GraphicContext::FrameMode::FullRedraw);gfx->setClipRect();
             gfx->drawFilledRect(0,0,gfx->getW(),gfx->getH(),GAGCore::Color(24,35,28));
-            if(extract) { gui.game.snapshots().invalidateCatalog(); gui.extractScene(gui.frameScene); }
+            if(extract) { gui.game.snapshots().invalidateCatalog(); gui.prepareLocalPresentation(gui.frameScene); }
             gui.drawBuildingInfos();gfx->nextFrame();
             CHECK(world.checksum()==before);REQUIRE(gfx->completedFrame());
         };
@@ -344,7 +344,7 @@ TEST_SUITE("GUIInteractionCoverage")
             gfx->beginFrame(GAGCore::GraphicContext::FrameMode::FullRedraw);
             gfx->setClipRect();
             gfx->drawFilledRect(0,0,gfx->getW(),gfx->getH(),GAGCore::Color(24,35,28));
-            gui.game.snapshots().invalidateCatalog(); gui.extractScene(gui.frameScene);
+            gui.game.snapshots().invalidateCatalog(); gui.prepareLocalPresentation(gui.frameScene);
             gui.drawBuildingInfos();
             gfx->nextFrame();
             CHECK(world.checksum()==before);
@@ -458,6 +458,8 @@ TEST_SUITE("GUIInteractionCoverage")
         glob2test::HeadlessGame w(glob2test::GameOptions{.clearImmobile=true,.loadDefaultRace=true,.header=true});
         auto& gui=w.gui; gui.localTeamNo=0; gui.localPlayer=0; gui.localTeam=w.team;
         w.team->startPosX=31; w.team->startPosY=31;
+        gui.game.snapshots().invalidateBoundary();
+        gui.prepareLocalPresentation();
         gui.keyboardManager.getKeyboardShortcuts().clear();
         SDL_KeyboardEvent symbol{}; symbol.key=SDLK_F9;
         KeyboardShortcut shortcut; shortcut.addKeyPress(KeyPress(symbol,true)); shortcut.setAction(GameGUIKeyActions::GoToHome);
@@ -546,7 +548,7 @@ TEST_CASE("resource inspectors show infinity only for stocked infinite yields [d
     gui.setSelection(GameGUI::RESOURCE_SELECTION,unsigned(index));
     auto* gfx=globals->gfx;
     const auto inspect=[&](const std::string& expected) {
-        gui.game.snapshots().invalidateCatalog(); gui.extractScene(gui.frameScene);
+        gui.game.snapshots().invalidateCatalog(); gui.prepareLocalPresentation(gui.frameScene);
         const auto info=gui.touch->resourceInfo();REQUIRE(info.has_value());CHECK(info->amount==expected);
         gfx->beginFrame(GAGCore::GraphicContext::FrameMode::FullRedraw);gfx->setClipRect();
         gfx->drawFilledRect(0,0,gfx->getW(),gfx->getH(),GAGCore::Color(0,0,0));

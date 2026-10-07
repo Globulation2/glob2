@@ -272,6 +272,7 @@ public:
     {
         publishedScene = scene;
         view.scene = &drawnScene();
+        if (view.scene->buildingTypes) choiceCatalog = view.scene->buildingTypes;
         toolManager.setDrawnScene(view.scene->world.catalogs ? view.scene : nullptr);
     }
 	/// What the next scene should show; read by extraction, which runs where the
@@ -279,11 +280,11 @@ public:
 	SceneRequest sceneRequest(bool includeTiming = true);
     void stampPresentationRequest(SceneRequest& request) const { request.tickTime=lastTickTime;request.tickInterval=tickInterval; }
 	/// Standalone owner-side observation through the shared read boundary.
-	void extractScene(PresentationFrame& scene) { const auto request=sceneRequest(); sceneExtractor.prepare(game.captureReadBoundary({},true,SceneExtractor::requirements(request)),request,scene); }
+	void prepareLocalPresentation(PresentationFrame& scene) { const auto request=sceneRequest(); sceneExtractor.prepare(game.captureReadBoundary({},true,SceneExtractor::requirements(request)),request,scene); }
     // Explicit observation for standalone clients and owner-side tools.
     void prepareLocalPresentation()
     {
-        if (!publishedScene) extractScene(frameScene);
+        if (!publishedScene) prepareLocalPresentation(frameScene);
         setPublishedScene(publishedScene);
     }
 
@@ -586,7 +587,6 @@ private:
 	void moveFlag(int mx, int my, bool drop);
 	//! Queues a move of one of the local team's flags to tile (x, y), replacing any
 	//! move of the same flag still in the queue, and shows the flag there at once.
-	void queueFlagMove(Building &flag, int x, int y, bool drop);
 	void queueFlagMove(const SnapshotBuilding &flag, int x, int y, bool drop);
 	void queueFlagMove(Uint16 gid, int x, int y, bool drop);
 	const SnapshotBuilding* inputBuilding(BuildingRef ref) const;
@@ -680,6 +680,9 @@ private:
 
 	// What's visible or hidden on GUI
 	std::vector<std::string> buildingsChoiceName;
+	// Owner initialization binds the immutable catalog before script restoration;
+	// published frames subsequently supply its frozen revision to client queries.
+	std::shared_ptr<const std::vector<BuildingType>> choiceCatalog;
 	std::vector<bool> buildingsChoiceState;
 	std::vector<std::string> flagsChoiceName;
 	std::vector<bool> flagsChoiceState;

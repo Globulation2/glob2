@@ -4,6 +4,7 @@
 #pragma once
 
 #include <string>
+#include <memory>
 #include <vector>
 #include <SDL3_net/SDL_net.h>
 #include "ScriptNumber.h"
@@ -37,7 +38,7 @@ public:
 	static constexpr int MaxScriptNumber = ScriptNumber::Max;
 
 	///This gets the number of objectives there are
-	int getNumberOfObjectives();
+	int getNumberOfObjectives() const;
 	///This adds a new objective. scriptNumber is clamped to [0..MaxScriptNumber]
 	void addNewObjective(const std::string& objective, bool hidden, bool complete, bool failed, GameObjectiveType type, int scriptNumber);
 	///This removes the given objective
@@ -46,7 +47,7 @@ public:
 	///This sets the text for the game objective at n; ignored if n is out of range
 	void setGameObjectiveText(int n, const std::string& objective);
 	///This returns the text for the game objective at n, or "invalid" if n is out of range
-	const std::string& getGameObjectiveText(int n);
+	const std::string& getGameObjectiveText(int n) const;
 	
 	
 	///This sets the given objective text as hidden
@@ -54,7 +55,7 @@ public:
 	///This sets the given objective text as visible
 	void setObjectiveVisible(int n);
 	///This returns true if the given objective text is visible
-	bool isObjectiveVisible(int n);
+	bool isObjectiveVisible(int n) const;
 	
 	///This sets the given objective text as complete
 	void setObjectiveComplete(int n);
@@ -63,28 +64,35 @@ public:
 	///This sets the given objective text as failed
 	void setObjectiveFailed(int n);
 	///This returns true if the given objective is complete
-	bool isObjectiveComplete(int n);
+	bool isObjectiveComplete(int n) const;
 	///This returns true if the given objective is failed
-	bool isObjectiveFailed(int n);
+	bool isObjectiveFailed(int n) const;
 	
 	///This sets the given objective type; ignored if n is out of range
 	void setObjectiveType(int n, GameObjectiveType type);
 	///This returns the given objective type, or Invalid if n is out of range
-	GameObjectiveType getObjectiveType(int n);
+	GameObjectiveType getObjectiveType(int n) const;
 
 	///This sets the script number, which is how scripts will reference the given object;
 	///ignored if n is out of range. The value is clamped to [0..MaxScriptNumber]
 	void setScriptNumber(int n, int scriptNumber);
 	///This returns the script number, which is how scripts will reference the given object,
 	///or InvalidScriptNumber if n is out of range
-	int getScriptNumber(int n);
+	int getScriptNumber(int n) const;
 
 	///Encodes this GameObjectives into a bit stream
 	void encodeData(GAGCore::OutputStream* stream) const;
 	///Decodes this GameObjectives from a bit stream
 	void decodeData(GAGCore::InputStream* stream, Uint32 versionMinor);
 	
+    //! Immutable value payload reused until an owner mutation; never serialized.
+    std::shared_ptr<const GameObjectives> frozen() const
+    {
+        if (!frozenValue) frozenValue = std::make_shared<const GameObjectives>(*this);
+        return frozenValue;
+    }
 private:
+    mutable std::shared_ptr<const GameObjectives> frozenValue;
 	///True if n indexes an existing objective. All accessors share this
 	///guard: out-of-range indices are silently ignored by setters and give
 	///the documented defaults from getters.

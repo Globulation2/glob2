@@ -5,12 +5,26 @@
 #include "GameGUI.h"
 #include "GlobalContainer.h"
 #include "IntBuildingType.h"
+#include "render/scene/BuildingCatalogView.h"
+
+namespace
+{
+const std::string& choiceAlias(const std::shared_ptr<const std::vector<BuildingType>>& catalog, const std::string& key)
+{
+    static const std::string empty;
+    if (!catalog) return empty;
+    const BuildingCatalogView view(*catalog);
+    const auto* type = view.get(view.findByKey(key));
+    return type ? type->type : empty;
+}
+}
+
 
 void GameGUI::enableBuildingsChoice(const std::string &name)
 {
 	for (size_t i = 0; i < buildingsChoiceName.size(); ++i)
 	{
-		if (name == buildingsChoiceName[i] || name == game.buildingsTypes.get(game.buildingsTypes.findByKey(buildingsChoiceName[i]))->type)
+		if (name == buildingsChoiceName[i] || name == choiceAlias(choiceCatalog, buildingsChoiceName[i]))
 			buildingsChoiceState[i] = true;
 	}
 }
@@ -19,7 +33,7 @@ void GameGUI::disableBuildingsChoice(const std::string &name)
 {
 	for (size_t i = 0; i < buildingsChoiceName.size(); ++i)
 	{
-		if (name == buildingsChoiceName[i] || name == game.buildingsTypes.get(game.buildingsTypes.findByKey(buildingsChoiceName[i]))->type)
+		if (name == buildingsChoiceName[i] || name == choiceAlias(choiceCatalog, buildingsChoiceName[i]))
 			buildingsChoiceState[i] = false;
 	}
 }
@@ -28,7 +42,7 @@ bool GameGUI::isBuildingEnabled(const std::string &name)
 {
 	for (size_t i = 0; i < buildingsChoiceName.size(); ++i)
 	{
-		if (name == buildingsChoiceName[i] || name == game.buildingsTypes.get(game.buildingsTypes.findByKey(buildingsChoiceName[i]))->type)
+		if (name == buildingsChoiceName[i] || name == choiceAlias(choiceCatalog, buildingsChoiceName[i]))
 			return buildingsChoiceState[i];
 	}
 	return false;
@@ -38,7 +52,7 @@ void GameGUI::enableFlagsChoice(const std::string &name)
 {
 	for (size_t i = 0; i < flagsChoiceName.size(); ++i)
 	{
-		if (name == flagsChoiceName[i] || name == game.buildingsTypes.get(game.buildingsTypes.findByKey(flagsChoiceName[i]))->type)
+		if (name == flagsChoiceName[i] || name == choiceAlias(choiceCatalog, flagsChoiceName[i]))
 			flagsChoiceState[i] = true;
 	}
 }
@@ -47,7 +61,7 @@ void GameGUI::disableFlagsChoice(const std::string &name)
 {
 	for (size_t i = 0; i < flagsChoiceName.size(); ++i)
 	{
-		if (name == flagsChoiceName[i] || name == game.buildingsTypes.get(game.buildingsTypes.findByKey(flagsChoiceName[i]))->type)
+		if (name == flagsChoiceName[i] || name == choiceAlias(choiceCatalog, flagsChoiceName[i]))
 			flagsChoiceState[i] = false;
 	}
 }
@@ -56,7 +70,7 @@ bool GameGUI::isFlagEnabled(const std::string &name)
 {
 	for (size_t i = 0; i < flagsChoiceName.size(); ++i)
 	{
-		if (name == flagsChoiceName[i] || name == game.buildingsTypes.get(game.buildingsTypes.findByKey(flagsChoiceName[i]))->type)
+		if (name == flagsChoiceName[i] || name == choiceAlias(choiceCatalog, flagsChoiceName[i]))
 			return flagsChoiceState[i];
 	}
 	return false;
@@ -125,7 +139,7 @@ void GameGUI::startScriptClientChannel()
 	const auto choices = [&](const auto& names, const auto& states) {
 		std::vector<ScriptClientChannel::Choice> result;
 		for (size_t i = 0; i < names.size(); ++i)
-			result.push_back({names[i], game.buildingsTypes.get(game.buildingsTypes.findByKey(names[i]))->type, states[i]});
+			result.push_back({names[i], choiceAlias(choiceCatalog, names[i]), states[i]});
 		return result;
 	};
 	game.scriptClient.start(clientEvents, choices(buildingsChoiceName, buildingsChoiceState), choices(flagsChoiceName, flagsChoiceState));

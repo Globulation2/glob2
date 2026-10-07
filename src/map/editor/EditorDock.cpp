@@ -412,7 +412,6 @@ Element EditorDock::body(const Presentation &p)
 
 Element EditorDock::build(const Presentation &p)
 {
-    if (!editor.view.scene) return fe::column({});
 	builtRevision = editor.catalogRevision();
 	builtSignature = modelSignature();
 	builtBrush = editor.currentBrushId();

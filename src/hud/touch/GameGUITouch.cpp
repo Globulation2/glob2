@@ -42,7 +42,6 @@ GameGUITouch::GameGUITouch(GameGUI &gui) : gui(gui)
 	touchActive = phonePresentationRequested();
 	hudMinimap = std::make_unique<Minimap>(globalContainer->runNoX, 128, 128, 0, 0, 128, 128,
 										   Minimap::ShowFOW);
-	hudMinimap->setMapSize(gui.game.map.getW(), gui.game.map.getH());
 }
 bool GameGUITouch::usesHUD() const
 {
@@ -1384,7 +1383,7 @@ void GameGUITouch::interfaceTap(ViewPoint point)
                 gui.openDialog(GameGUI::IGM_ALLIANCE, std::make_unique<InGameAllianceScreen>(&gui));
             else gui.openMainMenu();
         };
-        if (!gui.parkForClient(open)) open();
+        if (button == 3 || button == 4 || !gui.parkForClient(open)) open();
 		return;
 	}
 	else if (hudInput && layout().panel.contains(point))

@@ -572,7 +572,7 @@ void GameGUI::drawOverlayInfos(void)
 
 	// display map mark
 	globalContainer->gfx->setClipRect();
-	markManager.drawAll(localTeamNo, globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+20, 10, 128, viewportX, viewportY, game, &camera);
+	markManager.drawAll(localTeamNo, globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+20, 10, 128, viewportX, viewportY, drawnScene(), &camera);
 
 	// display text if placing a building
 	if(!touch->usesHUD() && selectionMode == TOOL_SELECTION && toolManager.getBuildingName() != "")
@@ -706,7 +706,8 @@ void GameGUI::drawAll(int team)
 		}
 
 		///Draw ghost buildings
-		if (!globalContainer->isViewingGame()) ghostManager.drawAll(viewportX, viewportY, localTeamNo);
+		if (!globalContainer->isViewingGame()) ghostManager.drawAll(drawnScene(), viewportX, viewportY, localTeamNo,
+            std::ceil(camera.visibleW()+camera.fractionX()), std::ceil(camera.visibleH()+camera.fractionY()));
 
 	}
 	// if paused, tint the game area

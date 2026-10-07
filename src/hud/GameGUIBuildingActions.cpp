@@ -11,7 +11,7 @@ void GameGUI::requestBuildingConstruction(const SceneBuildingPanel &building)
 		return;
 	if (building.state().constructionResultState==Building::REPAIR || building.state().constructionResultState==Building::UPGRADE)
 	{
-		const int workers=defaultAssign.getDefaultAssignedUnits(building.state().constructionOriginTypeNum);
+		const int workers=defaultAssign.getDefaultAssignedUnits(drawnScene(), building.state().constructionOriginTypeNum);
 		enqueueOrder(std::make_shared<OrderCancelConstruction>(building.state().gid,workers));
 	}
 	else if ((building.state().constructionResultState == Building::NO_CONSTRUCTION) &&

@@ -172,128 +172,57 @@ void GameGUI::handleMapClick(int mx, int my, int button)
 			selectionPushed=true;
 			return;
 		}
-        // Keep exact flag hits above units/buildings as before. The extra
-        // touch-only selection halo claims otherwise empty ground, so it cannot
-        // steal direct clicks from a neighbouring building or unit.
-        // Shift-click dumps serialize live entities. This diagnostic retains
-        // the caller's owner-boundary protection until lifecycle input is split.
-        if (!(inputState.modifiers() & SDL_KMOD_SHIFT))
-        {
-            const auto& scene=drawnScene();
-            const auto* unit=scene.entities.unit(view.mouseUnit.gid);
-            if (unit && unit->scriptIdentity != view.mouseUnit.generation) unit=nullptr;
-            const auto gid=scene.map.getBuilding(mapX,mapY);
-            if (touch->usesHUD() && !torusView.active() && !unit && gid==NOGBID)
-                if (auto nearest=flagAt(mx,my,flagReach))
-                { setSelection(BUILDING_SELECTION,unsigned(nearest->gid)); selectionPushed=false; return; }
-            if (unit)
-            { setSelection(UNIT_SELECTION,unsigned(unit->gid)); selectionPushed=true; return; }
-            const auto me=Team::teamNumberToMask(localTeamNo);
-            if (gid!=NOGBID)
-            {
-                const int team=Building::GIDtoTeam(gid);
-                if (team==localTeamNo || scene.map.isFOWDiscovered(mapX,mapY,me) ||
-                    (scene.map.isMapDiscovered(mapX,mapY,me) && (scene.entities.teams[team].allies&me)) ||
-                    globalContainer->isViewingGame())
-                { setSelection(BUILDING_SELECTION,unsigned(gid)); selectionPushed=true; }
-            }
-            else if (scene.map.getResource(mapX,mapY).type!=NO_RES_TYPE && scene.map.isMapDiscovered(mapX,mapY,me))
-            { setSelection(RESOURCE_SELECTION,unsigned(scene.map.coordToIndex(mapX,mapY))); selectionPushed=true; }
-            else if (selectionMode==RESOURCE_SELECTION) clearSelection();
-            return;
-        }
-        Unit *mouseUnit = game.resolveUnit(view.mouseUnit);
-        if (touch->usesHUD() && !torusView.active() && !mouseUnit &&
-            game.map.getBuilding(mapX, mapY) == NOGBID)
-        {
-            if (auto nearest=flagAt(mx, my, flagReach))
-            {
-                setSelection(BUILDING_SELECTION, unsigned(nearest->gid));
-                // A forgiving selection click must not move the flag onto the
-                // neighbouring tile on mouse-up. Touch drags move flags through
-                // GameGUITouch, which grabs them before the map pans.
-                selectionPushed = false;
+        // Selection always resolves against the displayed generation. Shift-click
+        // additionally serializes that exact entity under the caller's owner guard;
+        // an entity deleted since publication has nothing left to dump.
+        const auto dump = [&](UnitRef unit, BuildingRef building) {
+            if (!(inputState.modifiers() & SDL_KMOD_SHIFT)) return;
+            Unit* liveUnit = game.resolveUnit(unit);
+            Building* liveBuilding = game.resolveBuilding(building);
+            if (!liveUnit && !liveBuilding) return;
+            const char* filename = liveUnit ? "unit.dump.txt" : "building.dump.txt";
+            TextOutputStream stream(Toolkit::getFileManager()->openOutputStreamBackend(filename));
+            if (stream.isEndOfStream()) {
+                std::cerr << "Can't dump entity to file " << filename << std::endl;
                 return;
             }
+            if (liveUnit) {
+                liveUnit->save(&stream);
+                liveUnit->saveCrossRef(&stream);
+                liveBuilding = liveUnit->attachedBuilding;
+            }
+            if (liveBuilding) {
+                liveBuilding->save(&stream);
+                liveBuilding->saveCrossRef(&stream);
+            }
+        };
+        const auto& scene=drawnScene();
+        const auto* unit=scene.entities.unit(view.mouseUnit);
+        const auto gid=scene.map.getBuilding(mapX,mapY);
+        if (touch->usesHUD() && !torusView.active() && !unit && gid==NOGBID)
+            if (auto nearest=flagAt(mx,my,flagReach))
+            { setSelection(BUILDING_SELECTION,unsigned(nearest->gid)); selectionPushed=false; return; }
+        if (unit)
+        {
+            setSelection(UNIT_SELECTION,unsigned(unit->gid)); selectionPushed=true;
+            dump(unit->identity,{});
+            return;
         }
-		// then for unit
-		if (mouseUnit)
-		{
-			// a unit is selected:
-			setSelection(UNIT_SELECTION, mouseUnit);
-			selectionPushed = true;
-			// handle dump of unit characteristics
-			if ((inputState.modifiers() & SDL_KMOD_SHIFT) != 0)
-			{
-				OutputStream *stream = new TextOutputStream(Toolkit::getFileManager()->openOutputStreamBackend("unit.dump.txt"));
-				if (stream->isEndOfStream())
-				{
-					std::cerr << "Can't dump unit to file unit.dump.txt" << std::endl;
-				}
-				else
-				{
-					std::cerr << "Dump unit " << mouseUnit->gid << " memory" << std::endl;
-					mouseUnit->save(stream);
-					mouseUnit->saveCrossRef(stream);
-					if (mouseUnit->attachedBuilding)
-					{
-						mouseUnit->attachedBuilding->save(stream);
-						mouseUnit->attachedBuilding->saveCrossRef(stream);
-					}
-				}
-				delete stream;
-			}
-		}
-		else
-		{
-			// then for building
-			Uint16 gbid=game.map.getBuilding(mapX, mapY);
-			if (gbid != NOGBID)
-			{
-				int buildingTeam=Building::GIDtoTeam(gbid);
-				// we can select for view buildings that are in shared vision, or any building in replay mode
-				if ((buildingTeam==localTeamNo)
-					|| game.map.isFOWDiscovered(mapX, mapY, localTeam->me)
-					|| (game.map.isMapDiscovered(mapX, mapY, localTeam->me) && (game.teams[buildingTeam]->allies&(Team::teamNumberToMask(localTeamNo))))
-					|| globalContainer->isViewingGame() )
-				{
-					setSelection(BUILDING_SELECTION, gbid);
-					selectionPushed=true;
-					// showUnitWorkingToBuilding=true;
-					// handle dump of building characteristics
-					if ((inputState.modifiers() & SDL_KMOD_SHIFT) != 0)
-					{
-						OutputStream *stream = new TextOutputStream(Toolkit::getFileManager()->openOutputStreamBackend("building.dump.txt"));
-						if (stream->isEndOfStream())
-						{
-							std::cerr << "Can't dump unit to file building.dump.txt" << std::endl;
-						}
-						else
-						{
-							Building* selBuild=selectionBuilding();
-							std::cerr << "Dump building " << selBuild->gid << " memory" << std::endl;
-							selBuild->save(stream);
-							selBuild->saveCrossRef(stream);
-						}
-						delete stream;
-					}
-				}
-			}
-			else
-			{
-				// and resource
-				if (game.map.isResource(mapX, mapY) && game.map.isMapDiscovered(mapX, mapY, localTeam->me))
-				{
-					setSelection(RESOURCE_SELECTION, mapY*game.map.getW()+mapX);
-					selectionPushed=true;
-				}
-				else
-				{
-					if (selectionMode == RESOURCE_SELECTION)
-						clearSelection();
-				}
-			}
-		}
+        const auto me=Team::teamNumberToMask(localTeamNo);
+        if (const auto* building=scene.entities.building(gid))
+        {
+            const int team=building->team;
+            if (team==localTeamNo || scene.map.isFOWDiscovered(mapX,mapY,me) ||
+                (scene.map.isMapDiscovered(mapX,mapY,me) && (scene.entities.teams[team].allies&me)) ||
+                globalContainer->isViewingGame())
+            {
+                setSelection(BUILDING_SELECTION,unsigned(gid)); selectionPushed=true;
+                dump({},building->identity);
+            }
+        }
+        else if (scene.map.getResource(mapX,mapY).type!=NO_RES_TYPE && scene.map.isMapDiscovered(mapX,mapY,me))
+        { setSelection(RESOURCE_SELECTION,unsigned(scene.map.coordToIndex(mapX,mapY))); selectionPushed=true; }
+        else if (selectionMode==RESOURCE_SELECTION) clearSelection();
 	}
 }
 

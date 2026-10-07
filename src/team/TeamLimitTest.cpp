@@ -87,6 +87,7 @@ TEST_CASE("alliance and chat controls include the sixteenth controller")
     world.game.gameHeader.setAllyTeamsFixed(false);
     world.gui.localTeamNo = world.gui.localPlayer = 0;
     world.gui.adjustLocalTeam();
+    world.gui.prepareLocalPresentation();
     InGameAllianceScreen dialog(&world.gui);
     REQUIRE(dialog.entries().size() == size_t(Team::MAX_COUNT - 1));
     CHECK(dialog.entries().back().player == Team::MAX_COUNT - 1);

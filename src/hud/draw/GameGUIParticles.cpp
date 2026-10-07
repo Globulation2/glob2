@@ -84,11 +84,11 @@ void GameGUI::drawParticles(bool advance)
 		int radius = std::max(globalContainer->particles->getW(cf.frameA), globalContainer->particles->getH(cf.frameA));
 		if (cf.hasFrameB)
 			radius = std::max({radius, globalContainer->particles->getW(cf.frameB), globalContainer->particles->getH(cf.frameB)});
-		const float x=MapCamera::wrap(p->x-viewportX*32,game.map.getW()*32);
-		const float y=MapCamera::wrap(p->y-viewportY*32,game.map.getH()*32);
+		const float x=MapCamera::wrap(p->x-viewportX*32,drawnScene().map.getW()*32);
+		const float y=MapCamera::wrap(p->y-viewportY*32,drawnScene().map.getH()*32);
 		forEachMapCopy(int(x)-radius, int(y)-radius, int(x)+radius, int(y)+radius,
-			game.map.getW()*32, game.map.getH()*32, game.map.displayViewportW ? game.map.displayViewportW : globalContainer->gfx->getW()-GAME_GUI_RIGHT_MENU_WIDTH,
-			game.map.displayViewportH ? game.map.displayViewportH : globalContainer->gfx->getH(), [&](int dx, int dy) {
+			drawnScene().map.getW()*32, drawnScene().map.getH()*32, std::ceil(camera.visibleW()+camera.fractionX()),
+			std::ceil(camera.visibleH()+camera.fractionY()), [&](int dx, int dy) {
 				drawCenteredParticleSprite(x+dx, y+dy, cf.frameA, cf.alphaA);
 				if (cf.hasFrameB)
 					drawCenteredParticleSprite(x+dx, y+dy, cf.frameB, cf.alphaB);

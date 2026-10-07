@@ -156,6 +156,7 @@ Handle capture(const Game& game,
 	terrain->airConstraints = game.map.hasAirTerrainConstraints();
 	const auto& header = game.gameHeader;
 	if (needs(requirements, Component::Catalogs)) {
+		catalogs->buildingFingerprint = game.buildingsTypes.fingerprint();
 		catalogs->buildings = std::move(catalog);
 		catalogs->capabilities = game.buildingCapabilities().frozenTables();
 		for (int type = 0; type < NB_UNIT_TYPE; ++type)
@@ -300,6 +301,7 @@ Handle capture(const Game& game,
 		target.startX = team->startPosX; target.startY = team->startPosY;
 		target.mask = team->me; target.allies = team->allies;
 		target.enemies = team->attackableTeams();
+		target.playersMask = team->playersMask;
 		target.foodVision = team->sharedVisionFood;
 		target.exchangeVision = team->sharedVisionExchange;
 		target.otherVision = team->sharedVisionOther;
@@ -369,6 +371,11 @@ Handle capture(const Game& game,
 
     if (auto session=acquire(&Storage::session,Component::Session)) {
         session->editor=game.edit!=nullptr;
+        session->fixedAlliances=game.gameHeader.areAllyTeamsFixed();
+        session->objectives=game.objectives.frozen();
+        session->hints=game.gameHints.frozen();
+        const auto briefing=previous && previous->session ? previous->session->missionBriefing : nullptr;
+        session->missionBriefing=briefing && *briefing==game.missionBriefing ? briefing : std::make_shared<const std::string>(game.missionBriefing);
         session->terrainSeed=game.map.terrainSeed(); session->fertilityMaximum=game.map.fertilityMaximum;
         session->executedOrderRevision=game.clientEvents ? game.clientEvents->executedOrderRevision() : 0;
         session->totalPrestigeReached=game.totalPrestigeReached;
@@ -382,7 +389,7 @@ Handle capture(const Game& game,
         for (size_t p=0;p<session->players.size();++p) {
             const auto* player=game.players[p];
             session->players[p]=player ? Session::Player{player->name,player->teamNumber,
-                player->type!=BasePlayer::P_NONE && player->type!=BasePlayer::playerTypeFromImplementationID(AI::NONE)} : Session::Player{};
+                player->type!=BasePlayer::P_NONE && player->type!=BasePlayer::playerTypeFromImplementationID(AI::NONE), int(player->type)} : Session::Player{};
         }
         result->session=std::move(session);
     }

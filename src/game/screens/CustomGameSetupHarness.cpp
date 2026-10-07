@@ -140,7 +140,7 @@ struct CustomGameSetupHarness
             world.game.teams[t]->stats.getLatestStat()->totalUnit = 10 + t;
         }
         PresentationFrame scene;
-        world.gui.extractScene(scene);
+        world.gui.prepareLocalPresentation(scene);
         world.gui.setPublishedScene(&scene);
         globalContainer->liveSpectating = true;
         world.gui.measurementPage = world.gui.statisticsPages() - 1;

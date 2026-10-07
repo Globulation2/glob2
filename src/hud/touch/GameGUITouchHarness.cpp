@@ -425,6 +425,7 @@ class GameGUITouchHarness
 			// terrain, catalogue group variants, the fertility overlay and Teams.
 			auto showRow = [&](const std::string &id)
 			{
+				editor.preparePresentation();
 				touch.prepare();
 				int i = touch.rowOf(id);
 				if (i < 0)
@@ -2996,7 +2997,9 @@ class GameGUITouchHarness
 			const auto savedHints = gui.game.gameHints;
 			for (int i = 0; i < 24; ++i)
 				gui.game.gameHints.addNewHint("A long mission hint with enough detail to wrap across multiple lines on a phone.", false, 1);
-			GAGCore::userTextScale = 1.5;
+			gui.game.snapshots().invalidateBoundary();
+            gui.prepareLocalPresentation();
+            GAGCore::userTextScale = 1.5;
 			gui.openDialog(GameGUI::IGM_OBJECTIVES, std::make_unique<InGameObjectivesScreen>(&gui, false));
 			static_cast<InGameObjectivesScreen *>(gui.gameMenuScreen.get())->showTab(InGameObjectivesScreen::HINTS);
 			checkModal("long-hints-large-text");
@@ -3004,6 +3007,8 @@ class GameGUITouchHarness
 				"Long hints scroll within the inset dialog");
 			pressDialog("ok");
 			gui.game.gameHints = savedHints;
+            gui.game.snapshots().invalidateBoundary();
+            gui.prepareLocalPresentation();
 			gui.openDialog(GameGUI::IGM_ALLIANCE, std::make_unique<InGameAllianceScreen>(&gui));
 			checkModal("teams-large-text");
 			auto *teams = static_cast<InGameAllianceScreen *>(gui.gameMenuScreen.get());
@@ -3937,6 +3942,7 @@ class GameGUITouchHarness
 		gui.localPlayer = 0;
 		gui.adjustLocalTeam();
 		gui.viewportX = gui.viewportY = 0;
+		gui.prepareLocalPresentation();
 		gui.updateCamera();
 		auto *gfx = globalContainer->gfx;
 		const double mapWidth = gui.game.map.getW() * 32.0;

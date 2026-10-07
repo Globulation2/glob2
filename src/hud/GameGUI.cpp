@@ -45,9 +45,7 @@ GameGUI::GameGUI(bool persistPreferences)
 	         10, // y offset
 	         128, // width
 	         128, //height
-	         Minimap::ShowFOW), // minimap mode
-
-	  ghostManager(game)
+	         Minimap::ShowFOW) // minimap mode
 {
 	this->persistPreferences = persistPreferences;
 }
@@ -131,7 +129,8 @@ void GameGUI::init()
 	// A new game starts with empty client channels.
 	clientEvents.reset();
 	clientRequests.reset();
-	clientRequests.publishDisplaySize(game.map.displayViewportW, game.map.displayViewportH);
+	clientRequests.publishDisplaySize(globalContainer->gfx ? std::max(0, globalContainer->gfx->getW()-RIGHT_MENU_WIDTH) : 0,
+                                     globalContainer->gfx ? globalContainer->gfx->getH() : 0);
 	for (auto &queue : pendingTeamEvents)
 		queue.clear();
 	eventFeed.clear();
@@ -186,6 +185,7 @@ void GameGUI::rebuildBuildingChoices(bool preserve)
 		for (size_t i=0; i<flagsChoiceName.size(); ++i) previous[flagsChoiceName[i]]=flagsChoiceState[i];
 	}
 	buildingsChoiceName.clear(); flagsChoiceName.clear();
+	choiceCatalog = game.buildingsTypes.retainTypes();
 	for (size_t id=0; id<game.buildingsTypes.size(); ++id)
 	{
 		const auto* type=game.buildingsTypes.get(id);
@@ -339,21 +339,23 @@ void GameGUI::addMessage(const GAGCore::Color& color, const std::string &msgText
 
 void GameGUI::addMark(shared_ptr<MapMarkOrder>mmo)
 {
-	markManager.addMark(Mark(mmo->x, mmo->y, game.teams[mmo->teamNumber]->color));
+	if (mmo->teamNumber < drawnScene().entities.teamCount)
+		markManager.addMark(Mark(mmo->x, mmo->y, presentationColor(drawnScene().entities.teams[mmo->teamNumber].color)));
 }
 
 void GameGUI::updateCamera()
 {
+    const auto& map = drawnScene().map;
+    if (!map.getW() || !map.getH()) return;
     if (camera.tileX()!=viewportX) camera.originX=viewportX*32.0+camera.fractionX();
     if (camera.tileY()!=viewportY) camera.originY=viewportY*32.0+camera.fractionY();
     if (touch && touch->usesHUD()) {
         const auto bounds=touch->worldBounds();
-        camera.resize(bounds.w,bounds.h,game.map.getW()*32.0,game.map.getH()*32.0,bounds.x,bounds.y);
-    } else camera.resize(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH,globalContainer->gfx->getH(),game.map.getW()*32.0,game.map.getH()*32.0);
+        camera.resize(bounds.w,bounds.h,map.getW()*32.0,map.getH()*32.0,bounds.x,bounds.y);
+    } else camera.resize(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH,globalContainer->gfx->getH(),map.getW()*32.0,map.getH()*32.0);
     viewportX=camera.tileX();viewportY=camera.tileY();
-    game.map.displayViewportW=std::ceil(camera.visibleW()+camera.fractionX());
-    game.map.displayViewportH=std::ceil(camera.visibleH()+camera.fractionY());
-    clientRequests.publishDisplaySize(game.map.displayViewportW,game.map.displayViewportH);
+    clientRequests.publishDisplaySize(std::ceil(camera.visibleW()+camera.fractionX()),
+                                      std::ceil(camera.visibleH()+camera.fractionY()));
     view.mouseX=mapMouseX(mouseX);view.mouseY=mapMouseY(mouseY);
 }
 bool GameGUI::zoomMap(double steps,int x,int y)
@@ -372,9 +374,8 @@ bool GameGUI::zoomMap(double steps,int x,int y)
     else camera.wheel(steps,x,y);
     viewportX=camera.tileX();viewportY=camera.tileY();
     torusView.rebaseViewport(viewportX,viewportY);
-    game.map.displayViewportW=std::ceil(camera.visibleW()+camera.fractionX());
-    game.map.displayViewportH=std::ceil(camera.visibleH()+camera.fractionY());
-    clientRequests.publishDisplaySize(game.map.displayViewportW,game.map.displayViewportH);
+    clientRequests.publishDisplaySize(std::ceil(camera.visibleW()+camera.fractionX()),
+                                      std::ceil(camera.visibleH()+camera.fractionY()));
     view.mouseX=mapMouseX(mouseX);view.mouseY=mapMouseY(mouseY);
     return true;
 }

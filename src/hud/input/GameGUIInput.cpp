@@ -127,7 +127,8 @@ void GameGUI::processEvent(SDL_Event *event)
 {
     // Live diagnostic dumps and dialog construction are exceptional owner work.
     const bool diagnostic=(event->type==SDL_EVENT_MOUSE_BUTTON_DOWN || event->type==SDL_EVENT_MOUSE_BUTTON_UP) && (inputState.modifiers() & SDL_KMOD_SHIFT);
-    const bool ownerDialog = gameMenuScreen && inGameMenu != IGM_TELEMETRY;
+    const bool ownerDialog = gameMenuScreen && inGameMenu != IGM_TELEMETRY
+        && inGameMenu != IGM_ALLIANCE && inGameMenu != IGM_OBJECTIVES;
     if ((diagnostic || ownerDialog || hive) && parkForClient([&]{processEvent(event);})) return;
     if (GAGCore::scrollGesture(*event) && !inputState.hasFocus()) return;
     inputState.observe(*event);
@@ -276,7 +277,7 @@ void GameGUI::handleMenuIconClick(SDL_MouseButtonEvent mouseEvent)
 
 		if (menu != -1)
 		{
-            if (parkForClient([&]{handleMenuIconClick(mouseEvent);})) return;
+            if (menu == IGM_MAIN && parkForClient([&]{handleMenuIconClick(mouseEvent);})) return;
 			if (inGameMenu == menu)
 			{
 				closeDialog();
@@ -500,12 +501,12 @@ void GameGUI::repairAndUpgradeBuilding(const SceneBuildingPanel* building, bool 
     {
         if (building->hardSpaceForRepair)
             enqueueOrder(std::make_shared<OrderConstruction>(building->state().gid,
-                defaultAssign.getDefaultAssignedUnits(type.prevLevel),
+                defaultAssign.getDefaultAssignedUnits(drawnScene(), type.prevLevel),
                 std::clamp(displayedMaxUnitWorking(*building), 0, type.semantics.assignmentLimit)));
     }
     else if (upgrade && building->hardSpaceForUpgrade)
         enqueueOrder(std::make_shared<OrderConstruction>(building->state().gid,
-            defaultAssign.getDefaultAssignedUnits(type.nextLevel),
-            defaultAssign.getDefaultAssignedUnits(BuildingCatalogView(*drawnScene().buildingTypes).getFinishedTypeNum(
+            defaultAssign.getDefaultAssignedUnits(drawnScene(), type.nextLevel),
+            defaultAssign.getDefaultAssignedUnits(drawnScene(), BuildingCatalogView(*drawnScene().buildingTypes).getFinishedTypeNum(
                 BuildingCatalogView(*drawnScene().buildingTypes).get(type.nextLevel)->key))));
 }

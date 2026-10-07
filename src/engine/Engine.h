@@ -206,7 +206,6 @@ public:
     //! in the background: the latest clock the host passed in, advanced by real time.
     Uint64 sessionClock() const;
     bool simulationStep(Uint64 now);
-    void extractScene(PresentationFrame& scene);
     // Called on the main thread with the simulation parked. GUI timing uses
     // the SDL clock, independently of the host/session simulation clock.
     void clientStep(const std::vector<SDL_Event>& events);

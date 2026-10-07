@@ -41,7 +41,7 @@ std::string experimentLabel(MapEdit &editor, const std::string &key)
 	for (const auto &definition : registeredExperimentDefinitions())
 		if (definition.key == key)
 			return definition.label;
-	for (const auto &definition : editor.game.map.resourceRegistry().experiments())
+	for (const auto &definition : editor.view.scene->map.resourceRegistry().experiments())
 		if (definition.key == key)
 			return definition.label;
 	return key;
@@ -358,14 +358,14 @@ void PhoneEditor::drawSwatch(const BrushEntry &entry, ViewRect box)
 		break;
 	case BrushSwatch::Kind::Building:
 	{
-		const int type = editor.buildingSelectionType(swatch.key);
-		if (auto *bt = type >= 0 ? editor.game.buildingsTypes.get(type) : nullptr)
+		const int type = editor.displayedBuildingSelectionType(swatch.key);
+		if (auto *bt = type >= 0 ? &(*editor.view.scene->buildingTypes)[type] : nullptr)
 		{
 			Sprite *sprite = bt->miniSpriteImage >= 0 ? bt->miniSpritePtr : bt->gameSpritePtr;
 			const int frame = bt->miniSpriteImage >= 0 ? bt->miniSpriteImage : bt->gameSpriteImage;
 			if (sprite)
 			{
-				sprite->setBaseColor(editor.game.teams[editor.team]->color);
+				sprite->setBaseColor(presentationColor(editor.view.scene->entities.teams[editor.team].color));
 				drawSpriteFit(sprite, frame, {box.x + 2 * u, box.y + 2 * u, box.w - 4 * u, box.h - 4 * u}, clip);
 			}
 		}
@@ -375,7 +375,7 @@ void PhoneEditor::drawSwatch(const BrushEntry &entry, ViewRect box)
 	{
 		const int type = swatch.key == "explorer" ? EXPLORER : swatch.key == "warrior" ? WARRIOR : WORKER;
 		Sprite *sprite = globalContainer->units;
-		sprite->setBaseColor(editor.game.teams[editor.team]->color);
+		sprite->setBaseColor(presentationColor(editor.view.scene->entities.teams[editor.team].color));
 		drawSpriteFit(sprite, unitAnimationFrame(g_unitSkins[type].startImage[STOP_WALK], 0, 0),
 					  {box.x + 4 * u, box.y + 4 * u, box.w - 8 * u, box.h - 8 * u}, clip);
 		break;

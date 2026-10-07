@@ -22,6 +22,7 @@ namespace SimulationSnapshot
 
 struct Catalogs
 {
+	std::string buildingFingerprint;
 	std::shared_ptr<const std::vector<BuildingKindView>> buildings;
 	std::shared_ptr<const std::vector<BuildingType>> typeDefinitions;
 	std::shared_ptr<const AIPlanning::BuildingCapabilityTables> capabilities;

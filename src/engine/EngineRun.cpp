@@ -475,11 +475,6 @@ Uint64 Engine::sessionClock() const
     return static_cast<Uint64>(static_cast<Sint64>(SDL_GetTicks()) + sessionClockOffset.load());
 }
 
-void Engine::extractScene(PresentationFrame& scene)
-{
-    gui.extractScene(scene);
-}
-
 void Engine::pollTurnSession(Uint64 now)
 {
 	if (turn && session)
@@ -1069,14 +1064,17 @@ void Engine::configureSessionTelemetry(MainLoopState& st, PerformanceTelemetry::
 void Engine::absorbSimulationTelemetry()
 {
 	auto &perf = PerformanceTelemetry::collector();
+    // Headless runs admit no presentation frames. Their telemetry clock comes
+    // from the owner mailbox, without retaining or capturing a render world.
     const auto& scene=gui.drawnScene();
+    const auto tick = globalContainer->runNoX ? runner->latestTelemetryTick() : scene.tick;
     const auto fps=globalContainer->settings.targetRenderFps;
     const auto frameBudget=globalContainer->runNoX || fps==0 ? 0ULL : (1000000000ULL+fps-1)/fps;
-    perf.configure(scene.tick, std::uint64_t(scene.tickInterval)*1000000ULL, frameBudget,
+    perf.configure(tick, globalContainer->runNoX ? 0ULL : std::uint64_t(scene.tickInterval)*1000000ULL, frameBudget,
         gui.gamePaused || gui.hardPause ? "paused" : globalContainer->runNoX ? "headless" :
         globalContainer->replaying ? "replay" : scene.panels.hud.state().anyPlayerWaited ? "waiting" : "live");
     runner->absorbTelemetry(perf);
-    perf.capture(scene.tick);
+    perf.capture(tick);
 }
 
 bool Engine::advanceSession(Uint64 now, const std::function<void()>& clientWork, bool handleExit)

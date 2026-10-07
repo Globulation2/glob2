@@ -221,7 +221,6 @@ void GameGUI::save(GAGCore::OutputStream *stream, const std::string name, Deferr
 
 void GameGUI::viewportResized(int oldWidth, int oldHeight, int width, int height)
 {
-    if (!game.map.getW() || !game.map.getH()) return;
     minimap.resizeViewport(width);
     suspendInput();
     const int oldX = viewportX, oldY = viewportY;
@@ -229,9 +228,14 @@ void GameGUI::viewportResized(int oldWidth, int oldHeight, int width, int height
     // legacy tile-centered viewport in that case; an initialized camera keeps
     // its precise world center (including zoom and fractional panning).
     if (camera.width <= 0 || camera.height <= 0) {
-        viewportX = (viewportX + (oldWidth - GAME_GUI_RIGHT_MENU_WIDTH) / 64 -
-                     (width - GAME_GUI_RIGHT_MENU_WIDTH) / 64) & game.map.wMask;
-        viewportY = (viewportY + oldHeight / 64 - height / 64) & game.map.hMask;
+        viewportX += (oldWidth - GAME_GUI_RIGHT_MENU_WIDTH) / 64 - (width - GAME_GUI_RIGHT_MENU_WIDTH) / 64;
+        viewportY += oldHeight / 64 - height / 64;
+        // Before first publication, retain the client-space resize delta. The
+        // first snapshot supplies dimensions for wrapping and camera bounds.
+        if (drawnScene().map.getW() && drawnScene().map.getH()) {
+            viewportX &= drawnScene().map.getMaskW();
+            viewportY &= drawnScene().map.getMaskH();
+        }
     }
     updateCamera();
     viewportChanged(oldX, viewportX, oldY, viewportY);

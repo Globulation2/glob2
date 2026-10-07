@@ -61,7 +61,7 @@ bool GameGUI::requestWorkerAllocation(const SceneBuildingPanel& building, int re
     if (requested==displayedMaxUnitWorking(building)) return false;
     pendingFor(building.state().gid).pendingMaxUnitWorking=requested;
     enqueueOrder(std::make_shared<OrderModifyBuilding>(building.state().gid,requested));
-    defaultAssign.setDefaultAssignedUnits(building.state().typeNum,requested);
+    defaultAssign.setDefaultAssignedUnits(drawnScene(), building.state().typeNum,requested);
     return true;
 }
 

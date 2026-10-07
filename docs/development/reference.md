@@ -1583,7 +1583,11 @@ or map-array capture. `Game::drawMap` requires an explicitly supplied frame;
   AI telemetry, debug gradients, failure histories, and statistics histories are requested
   separately from ordinary frames. Statistics histories share immutable samples
   between observations until the next history revision; the compact HUD sample
-  ring remains independent.
+  ring remains independent. Alliance controls read session player identities and
+  team masks; objective and hint dialogs retain immutable narrative payloads that
+  are reused until mutation. Opening these dialogs does not park simulation.
+  Shift-click diagnostic dumps select the displayed generation and serialize it
+  only if that same entity still exists at the explicit owner boundary.
 - The editor and standalone tools explicitly obtain an owner-boundary snapshot before
   preparing a frame. Offline map images and diagnostic PNGs use the same drawing
   passes and graphics-thread asset ownership. Diagnostic preparation consumes the
@@ -1591,6 +1595,9 @@ or map-array capture. `Game::drawMap` requires an explicitly supplied frame;
   batch owns its fields and snapshot independently; PNG preparation and export do
   not park the simulation. Occupied publication slots stop further diagnostic
   admission, with skipped or superseded output reported explicitly.
+- The animated menu colony includes admitted presentation requirements in its AI
+  boundary and uses the same bounded preparation producer. Drawing and resizing
+  never capture another world; headless menu simulations admit no presentation.
 - `test/build_system/test_scene_boundary.py` checks the rendering dependency boundary;
   compile-time preparation tests reject live `Game`, `Map`, `Unit` and `Building`
   inputs. New authoritative values belong in the owning standard snapshot component,

@@ -405,17 +405,17 @@ bool GameGUIToolManager::placeBuildingAt(int mapX, int mapY, int localteam)
             else isRoom=scene.map.isHardSpaceForBuilding(mapX,mapY,bt->width,bt->height);
         }
 
-		if(ghostManager.isGhostBuilding(mapX, mapY, bt->width, bt->height))
+		if(ghostManager.isGhostBuilding(*drawnScene, mapX, mapY, bt->width, bt->height))
 			isRoom = false;
 		
-		int unitWorking = defaultAssign.getDefaultAssignedUnits(typeNum);
-		int unitWorkingFuture = defaultAssign.getDefaultAssignedUnits(BuildingCatalogView(*drawnScene->buildingTypes).getFinishedTypeNum(building));
+		int unitWorking = defaultAssign.getDefaultAssignedUnits(*drawnScene, typeNum);
+		int unitWorkingFuture = defaultAssign.getDefaultAssignedUnits(*drawnScene, BuildingCatalogView(*drawnScene->buildingTypes).getFinishedTypeNum(building));
 		
 		if (isRoom)
 		{
             std::optional<Sint32> r;
             if(bt->zonable[WORKER] || bt->zonable[WARRIOR] || bt->zonable[EXPLORER])
-                r=globalContainer->settings.buildingRadius(game.buildingsTypes.fingerprint(),*bt);
+                r=globalContainer->settings.buildingRadius(drawnScene->world.catalogs->buildingFingerprint,*bt);
 			ghostManager.addBuilding(typeNum, mapX, mapY);
 			orders.push(std::shared_ptr<Order>(new OrderCreate(localteam, mapX, mapY, typeNum, unitWorking, unitWorkingFuture, r)));
             return true;
@@ -453,7 +453,7 @@ void GameGUIToolManager::drawBuildingAt(int mapX, int mapY, int localteam, int v
 		isRoom = scene.map.isHardSpaceForBuilding(tempX, tempY, bt->width, bt->height);
 			
 	
-	if(ghostManager.isGhostBuilding(tempX, tempY, bt->width, bt->height))
+	if(ghostManager.isGhostBuilding(scene, tempX, tempY, bt->width, bt->height))
 		isRoom = false;
 	
 	// Increase/Decrease highlight strength, given whether there is room or not

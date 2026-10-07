@@ -49,6 +49,9 @@ GAGCore::CooperativeTask MapEdit::loadTask(std::string filename)
     hasMapBeenModified = false;
     savedFilename = filename;
     fertilityStale = false;
+    view.selectedBuilding = nullptr; view.selectedUnit = nullptr;
+    selectedBuildingGID = NOGBID; selectedUnitGID = NOGUID;
+    preparePresentation();
     co_return true;
 }
 
