@@ -881,7 +881,11 @@ Procedural pattern repeats are set in `skinMaterialRepeat` in the shared GLSL:
 classic glossy uses 4×, wood 3×, leather 5×, and woven fabric, stone, scales and
 honeycomb 2×; other materials use 1×. The scale applies to material detail after
 sampling the paint and material atlas, so painted markings retain their placement.
-Studio, native rendering and sprite baking use these same settings.
+Studio, native rendering and sprite baking use these same settings. Worker and
+warrior meshes retain the established paint UVs and carry a separate bounded
+GUV1 sidecar for procedural detail, so rebuilding the surface does not move saved
+paint. Both renderers use the paint UVs when a sidecar is absent; malformed
+sidecars are rejected. See the [unit asset pipeline](../../tools/unit-animation/README.md#experimental-live-colony-skins).
 
 Colony-skin materials are declared once in `libgag/shaders/skin-materials.json`
 (ids, keys, display names, picker groups, which materials grow fur shells, the

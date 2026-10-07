@@ -52,6 +52,8 @@ def install(staged):
                     hashlib.sha256((ROOT / path_key).read_bytes()).hexdigest()
                     == exported[hash_key]
                 ), "Staged export has stale surface sources"
+        for dependency, digest in exported.get("surfaceDependencies", {}).items():
+            assert hashlib.sha256((ROOT / dependency).read_bytes()).hexdigest() == digest, "Staged export has stale surface dependency"
         exports[model] = exported
     for model, exported in exports.items():
         for clip in exported["clips"].values():
@@ -78,7 +80,12 @@ def install(staged):
                     "chartSha256": exported["surfaceChartSha256"],
                     "contract": exported["surfaceContract"],
                     "contractSha256": exported["surfaceContractSha256"],
+                    "dependencies": exported["surfaceDependencies"],
                 }
+            if "detailUV" in clip:
+                record["detailUV"] = clip["detailUV"]
+                for folder in (destination, designer):
+                    shutil.copyfile(staged / clip["detailUV"]["file"], folder / clip["detailUV"]["file"])
             manifest["meshes"][name] = record
             shutil.copyfile(staged / name, destination / name)
             shutil.copyfile(staged / name, designer / name)

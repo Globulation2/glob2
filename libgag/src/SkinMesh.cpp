@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include <SkinMesh.h>
 #include <SkinModel.h>
+#include <FileManager.h>
 #include <SkinShapeModel.h>
 #include <array>
 #include <atomic>
@@ -67,11 +68,17 @@ bool SkinMesh::evaluate(unsigned frame, std::vector<float> &output) const
 AssetLoader::Handle<SkinMesh> requestSkinMesh(AssetLoader& loader, const std::string& path)
 {
     auto bytes = loader.requestBytes(path);
-    return loader.requestEstimated<SkinMesh>("mesh:" + path, {bytes.dependency()}, [bytes] {
+    return loader.requestEstimated<SkinMesh>("mesh:" + path, {bytes.dependency()}, [bytes, path] {
         auto input = bytes.get();
         MemoryStreamBackend stream(input->data(), input->size());
         auto mesh = std::make_shared<SkinMesh>(); std::string error;
         if (!mesh->load(stream, error)) throw std::runtime_error(error);
+        std::filesystem::path sidecar(path);
+        sidecar.replace_extension(".guv");
+        auto *files = Toolkit::getFileManager();
+        std::unique_ptr<StreamBackend> detail(files ? files->openInputStreamBackend(sidecar.string())
+            : new FileStreamBackend(std::fopen(sidecar.string().c_str(), "rb")));
+        if (detail->isValid() && !mesh->loadDetailUV(*detail, error)) throw std::runtime_error(error);
         return mesh;
     }, [bytes] { return bytes.get()->size() * 2; });
 }
@@ -97,7 +104,14 @@ bool SkinMesh::load(const std::string &path, std::string &error)
         *this = *mesh; error.clear(); return true;
     }
     FileStreamBackend input(std::fopen(path.c_str(), "rb"));
-    return load(input, error);
+    SkinMesh candidate;
+    if (!candidate.load(input, error)) return false;
+    std::filesystem::path sidecar(path);
+    sidecar.replace_extension(".guv");
+    FileStreamBackend detail(std::fopen(sidecar.string().c_str(), "rb"));
+    if (detail.isValid() && !candidate.loadDetailUV(detail, error)) return false;
+    *this = std::move(candidate);
+    return true;
 }
 bool SkinMesh::load(StreamBackend &input, std::string &error)
 {
@@ -171,6 +185,32 @@ bool SkinMesh::load(StreamBackend &input, std::string &error)
     if (!complete) return fail("truncated skin mesh");
     candidate.identity = nextIdentity.fetch_add(1, std::memory_order_relaxed);
     *this = std::move(candidate);
+    return true;
+}
+bool SkinMesh::loadDetailUV(StreamBackend &input, std::string &error)
+{
+    auto fail = [&](const char *why) { error = why; return false; };
+    if (!vertices || vertices > 8192 || !input.isValid()) return fail("invalid detail UV mesh");
+    input.seekFromEnd(0);
+    if (input.getPosition() != 8 + vertices * 8) return fail("detail UV payload length mismatch");
+    input.seekFromStart(0);
+    std::array<char, 4> magic{};
+    if (!input.readExact(magic.data(), magic.size()) || magic != std::array<char, 4>{'G','U','V','1'})
+        return fail("unsupported detail UV format");
+    auto word = [&]() {
+        std::array<unsigned char, 4> b{};
+        if (!input.readExact(b.data(), b.size())) return std::uint32_t(0xffffffff);
+        return std::uint32_t(b[0]) | std::uint32_t(b[1]) << 8 | std::uint32_t(b[2]) << 16 | std::uint32_t(b[3]) << 24;
+    };
+    if (word() != vertices) return fail("detail UV vertex count mismatch");
+    std::vector<float> candidate(vertices * 2);
+    for (auto &v : candidate) {
+        v = std::bit_cast<float>(word());
+        if (!std::isfinite(v) || v < 0 || v > 1) return fail("invalid detail UV coordinate");
+    }
+    detailUV = std::move(candidate);
+    identity = nextIdentity.fetch_add(1, std::memory_order_relaxed);
+    error.clear();
     return true;
 }
 SkinMesh SkinMesh::rotatedView(unsigned angle, const std::array<float, 16> &inverse,

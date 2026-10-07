@@ -1,6 +1,10 @@
 #!/usr/bin/env python3
 # SPDX-License-Identifier: GPL-3.0-or-later
-"""Conformal paint chart for the folded glob surfaces (layout v2).
+"""Stable paint chart for folded glob surfaces (layout v2).
+
+Installed workers and warriors use the retained authored chart, so rebuilding
+their geometry never reinterprets a saved skin. The conformal unwrapper below
+remains available for authoring new topology.
 
 The v1 chart projected the whole body onto one plane, so surfaces facing
 sideways shared a handful of texels while the front compressed many. This chart
@@ -12,6 +16,9 @@ the coordinates of its quarter representative. Front/back and top/bottom
 counterparts therefore still sample identical texels. The only seams are the
 socket rims, whose limb-side copies are welded to the torso vertices.
 """
+
+import json
+from pathlib import Path
 
 import bpy
 import numpy as np
@@ -92,6 +99,18 @@ def fitted(uv):
 
 def chart(surface, rest_positions):
     """Per-vertex UVs for the whole surface, shared across its reflections."""
+    if "paintChart" in surface.definition:
+        source = surface.definition["paintChart"]
+        charts = json.loads((Path(__file__).resolve().parents[2] / source["file"]).read_text())
+        uv = np.array(charts[source["model"]], dtype=float)
+        if uv.shape != (len(surface.vertices), 2) or not np.isfinite(uv).all() or np.any((uv < 0) | (uv > 1)):
+            raise ValueError("Authored paint chart differs from the established topology")
+        return uv
+    return detail_chart(surface, rest_positions)
+
+
+def detail_chart(surface, rest_positions):
+    """Clean procedural unwrap, independent of the retained paint atlas."""
     members, representative, triangles = quarter(surface)
     uv = fitted(unwrap(np.asarray(rest_positions, dtype=float), members, triangles))
     lookup = {int(v): uv[i] for i, v in enumerate(members)}

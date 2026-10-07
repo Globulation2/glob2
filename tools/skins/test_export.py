@@ -13,6 +13,15 @@ import struct
 from surface_contract import validate_surface
 
 
+def validate_detail_uv(root, record, vertices):
+    blob = (root / record["file"]).read_bytes()
+    assert hashlib.sha256(blob).hexdigest() == record["sha256"], "stale detail UV sidecar"
+    assert struct.unpack_from("<4sI", blob) == (b"GUV1", vertices)
+    assert len(blob) == 8 + vertices * 8
+    uv = struct.unpack_from("<" + str(vertices * 2) + "f", blob, 8)
+    assert all(math.isfinite(v) and 0 <= v <= 1 for v in uv)
+
+
 def validate_model(root, path):
     manifest = json.loads(path.read_text())
     reference = None
@@ -31,6 +40,8 @@ def validate_model(root, path):
         magic, vertices, indices, frames, size = struct.unpack_from("<4sIIII", data)
         assert magic == b"GSK1" and frames == 256 and size == manifest["logicalSize"]
         assert 3 <= vertices <= 8192 and indices % 3 == 0
+        if "detailUV" in record:
+            validate_detail_uv(root, record["detailUV"], vertices)
         end_uv = 20 + vertices * 8
         end_indices = end_uv + indices * 4
         assert len(data) == end_indices + frames * vertices * 24
@@ -136,6 +147,8 @@ def validate_installed(root, repository):
                     ).hexdigest()
                     == surface[hash_field]
                 ), (name + ": surface source changed")
+            for dependency, digest in surface.get("dependencies", {}).items():
+                assert hashlib.sha256((repository / dependency).read_bytes()).hexdigest() == digest, name + ": surface dependency changed"
             contract_bytes = (root / surface["contract"]).read_bytes()
             assert (
                 hashlib.sha256(contract_bytes).hexdigest() == surface["contractSha256"]
@@ -147,6 +160,8 @@ def validate_installed(root, repository):
             name + ": installed mesh changed"
         )
         magic, vertices, indices, frames, size = struct.unpack_from("<4sIIII", data)
+        if "detailUV" in record:
+            validate_detail_uv(root, record["detailUV"], vertices)
         assert (
             magic == b"GSK1"
             and vertices == record["vertices"]

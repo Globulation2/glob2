@@ -468,10 +468,13 @@ vec4 skinShade(vec3 albedo, float material, vec3 surfaceNormal, vec2 uv, float s
 // quadrant of the colony atlas; material noise keeps the mesh UV. Wrappers
 // define SKIN_TEXTURE as texture (ES 3.00) or texture2D (GLSL 1.20).
 #ifdef SKIN_TEXTURE
-vec4 skinShadeAtlas(sampler2D paint, sampler2D material, vec2 region, vec3 normal, vec2 uv, float shell) {
+vec4 skinShadeAtlas(sampler2D paint, sampler2D material, vec2 region, vec3 normal, vec2 uv, vec2 detailUV, float shell) {
   vec2 atlasUv = uv * 0.5 + region;
   float id = floor(SKIN_TEXTURE(material, atlasUv).r * 255.0 + 0.5);
-  return skinShade(SKIN_TEXTURE(paint, atlasUv).rgb, id, normal, uv, shell);
+  return skinShade(SKIN_TEXTURE(paint, atlasUv).rgb, id, normal, detailUV, shell);
+}
+vec4 skinShadeAtlas(sampler2D paint, sampler2D material, vec2 region, vec3 normal, vec2 uv, float shell) {
+  return skinShadeAtlas(paint, material, region, normal, uv, uv, shell);
 }
 #endif
 // The swatch sphere: q is the fragment's position within the unit disc of a

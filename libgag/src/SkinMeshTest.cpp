@@ -51,6 +51,37 @@ std::string fixture(unsigned frames = 256)
 }
 TEST_SUITE("SkinMesh")
 {
+    TEST_CASE("detail unwrap preserves paint and rejects malformed sidecars transactionally")
+    {
+        auto bytes = fixture();
+        GAGCore::MemoryStreamBackend input(bytes.data(), bytes.size());
+        GAGCore::SkinMesh mesh; std::string error;
+        REQUIRE(mesh.load(input, error));
+        const auto paint = mesh.uv;
+        std::string sidecar = "GUV1"; word(sidecar, 3);
+        for (float value : {0.f, 0.f, 1.f, 0.f, 0.5f, 1.f})
+            word(sidecar, std::bit_cast<std::uint32_t>(value));
+        GAGCore::MemoryStreamBackend detail(sidecar.data(), sidecar.size());
+        REQUIRE(mesh.loadDetailUV(detail, error));
+        CHECK(mesh.uv == paint);
+        CHECK(mesh.detailUV != paint);
+        const auto uv = mesh.detailUV;
+        const auto identity = mesh.identity;
+        for (unsigned fault = 0; fault < 6; ++fault) {
+            auto bad = sidecar;
+            if (fault == 0) bad.pop_back();
+            if (fault == 1) bad[0] = 'X';
+            if (fault == 2) replaceWord(bad, 4, 4);
+            if (fault == 3) replaceWord(bad, 8, std::bit_cast<std::uint32_t>(-0.1f));
+            if (fault == 4) replaceWord(bad, 8, std::bit_cast<std::uint32_t>(1.1f));
+            if (fault == 5) replaceWord(bad, 8, std::bit_cast<std::uint32_t>(std::numeric_limits<float>::quiet_NaN()));
+            GAGCore::MemoryStreamBackend corrupt(bad.data(), bad.size());
+            CHECK_FALSE(mesh.loadDetailUV(corrupt, error));
+            CHECK(mesh.detailUV == uv);
+            CHECK(mesh.uv == paint);
+            CHECK(mesh.identity == identity);
+        }
+    }
     TEST_CASE("virtual asset streams use the same bounded decoder")
     {
         auto bytes=fixture();
