@@ -1,0 +1,8 @@
+Settings::load("preferences.txt") : error, can't open file.
+GPU=llvmpipe (LLVM 21.1.8, 256 bits) map=maps/Archipelago.map.gz 128x128 viewport=1120x800 frames=200
+WARMUP frame=0 elapsed_ms=182.404 process_cpu_ms=1465.737
+WARMUP frame=1 elapsed_ms=3.883 process_cpu_ms=55.197
+2D no clouds median=2.827 ms p95=5.780 ms
+2D no clouds process_cpu_median=25.329 ms process_cpu_p95=67.459 ms
+capture=4096x4096 tiles=9 pixels/cell=32 texture_bytes=73547776 cloud=0x0
+capture=4096x4096 tiles=9 pixels/cell=32 texture_bytes=73547776 cloud=128x128

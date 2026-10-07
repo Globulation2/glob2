@@ -1,0 +1,13 @@
+GPU=llvmpipe (LLVM 21.1.8, 256 bits) map=maps/A_big_pond.map.gz 128x128 viewport=1120x800 frames=300
+WARMUP frame=0 elapsed_ms=100.078 process_cpu_ms=966.303
+WARMUP frame=1 elapsed_ms=3.567 process_cpu_ms=38.834
+WARMUP frame=2 elapsed_ms=2.360 process_cpu_ms=33.700
+WARMUP frame=3 elapsed_ms=2.482 process_cpu_ms=36.623
+WARMUP frame=4 elapsed_ms=1.978 process_cpu_ms=34.088
+WARMUP frame=5 elapsed_ms=2.155 process_cpu_ms=42.265
+WARMUP frame=6 elapsed_ms=1.847 process_cpu_ms=34.740
+WARMUP frame=7 elapsed_ms=1.913 process_cpu_ms=23.495
+2D no clouds median=1.477 ms p95=3.153 ms
+2D no clouds process_cpu_median=18.930 ms process_cpu_p95=45.935 ms
+capture=4096x4096 tiles=9 pixels/cell=32 texture_bytes=73547776 cloud=0x0
+capture=4096x4096 tiles=9 pixels/cell=32 texture_bytes=73547776 cloud=128x128

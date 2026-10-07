@@ -1,0 +1,13 @@
+GPU=llvmpipe (LLVM 21.1.8, 256 bits) map=maps/Archipelago.map.gz 128x128 viewport=1120x800 frames=300
+WARMUP frame=0 elapsed_ms=147.165 process_cpu_ms=1225.267
+WARMUP frame=1 elapsed_ms=2.927 process_cpu_ms=46.670
+WARMUP frame=2 elapsed_ms=2.311 process_cpu_ms=41.511
+WARMUP frame=3 elapsed_ms=2.245 process_cpu_ms=39.540
+WARMUP frame=4 elapsed_ms=2.207 process_cpu_ms=39.424
+WARMUP frame=5 elapsed_ms=2.357 process_cpu_ms=48.760
+WARMUP frame=6 elapsed_ms=2.421 process_cpu_ms=40.994
+WARMUP frame=7 elapsed_ms=2.698 process_cpu_ms=48.509
+2D no clouds median=2.076 ms p95=3.306 ms
+2D no clouds process_cpu_median=24.970 ms process_cpu_p95=28.505 ms
+capture=4096x4096 tiles=9 pixels/cell=32 texture_bytes=73547776 cloud=0x0
+capture=4096x4096 tiles=9 pixels/cell=32 texture_bytes=73547776 cloud=128x128

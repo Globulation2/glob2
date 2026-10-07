@@ -1,0 +1,13 @@
+GPU=llvmpipe (LLVM 21.1.8, 256 bits) map=maps/A_big_pond.map.gz 128x128 viewport=1120x800 frames=300
+WARMUP frame=0 elapsed_ms=59.260 process_cpu_ms=60.994
+WARMUP frame=1 elapsed_ms=1.480 process_cpu_ms=1.521
+WARMUP frame=2 elapsed_ms=1.423 process_cpu_ms=1.455
+WARMUP frame=3 elapsed_ms=1.588 process_cpu_ms=1.633
+WARMUP frame=4 elapsed_ms=1.213 process_cpu_ms=1.227
+WARMUP frame=5 elapsed_ms=1.105 process_cpu_ms=1.153
+WARMUP frame=6 elapsed_ms=1.011 process_cpu_ms=1.022
+WARMUP frame=7 elapsed_ms=1.434 process_cpu_ms=1.578
+2D no clouds median=1.239 ms p95=1.674 ms
+2D no clouds process_cpu_median=1.270 ms process_cpu_p95=1.735 ms
+torus-render-benchmark: src/render/torus/TorusRenderBenchmark.cpp:430: static int TorusRenderBenchmark::run(int, char**): Assertion `view.draw(gui.game, 0, Game::DRAW_WHOLE_MAP, x, y, width, height, ringZoom)' failed.
+Aborted

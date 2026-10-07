@@ -1,0 +1,13 @@
+GPU=llvmpipe (LLVM 21.1.8, 256 bits) map=maps/Archipelago.map.gz 128x128 viewport=1120x800 frames=300
+WARMUP frame=0 elapsed_ms=104.346 process_cpu_ms=107.460
+WARMUP frame=1 elapsed_ms=2.240 process_cpu_ms=2.329
+WARMUP frame=2 elapsed_ms=2.475 process_cpu_ms=2.525
+WARMUP frame=3 elapsed_ms=2.447 process_cpu_ms=2.529
+WARMUP frame=4 elapsed_ms=2.655 process_cpu_ms=2.694
+WARMUP frame=5 elapsed_ms=2.681 process_cpu_ms=2.792
+WARMUP frame=6 elapsed_ms=2.247 process_cpu_ms=2.291
+WARMUP frame=7 elapsed_ms=2.763 process_cpu_ms=2.878
+2D no clouds median=2.273 ms p95=2.935 ms
+2D no clouds process_cpu_median=2.347 ms process_cpu_p95=3.019 ms
+torus-render-benchmark: src/render/torus/TorusRenderBenchmark.cpp:430: static int TorusRenderBenchmark::run(int, char**): Assertion `view.draw(gui.game, 0, Game::DRAW_WHOLE_MAP, x, y, width, height, ringZoom)' failed.
+Aborted
