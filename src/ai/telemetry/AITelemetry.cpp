@@ -368,6 +368,13 @@ void capture(Team *team, bool retain, bool output, bool final)
 			r->current.available = false;
 			r->current.tick = team->game->stepCounter;
 		}
+		// A sample is the series as published by this tick. A synchronous AI
+		// stamps it in AI::captureTelemetry; an asynchronous one publishes the
+		// values of a decision taken on an earlier tick and is not asked, so
+		// stamp it here. Each value keeps its own `updated`. Without this the
+		// 512-tick history holds unaligned ticks and the save does not load.
+		if (!replay && r->active)
+			r->current.tick = team->game->stepCounter;
 		if (retain && r->active && r->current.available &&
 			(r->history.empty() || r->history.back().tick != r->current.tick))
 			r->history.push_back(r->current);
