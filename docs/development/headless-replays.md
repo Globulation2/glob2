@@ -404,7 +404,7 @@ at the same boundary. The default worker cap is unchanged. Fixed publication
 cadence and saved pending deadlines are unchanged; saves drain deferred preparation
 before serializing, and old saves still load. Moving the observation point can
 change routes/AI trajectories and introduced replay floor 139. Runtime resource
-catalogs extend the simulation in format 140 / simulation revision 22, with replay
+catalogs extend the simulation in format 140, with replay
 floor 140 and network protocol 59. Hazard routing raises the floor to 141 and
 network protocol to 60; supported saves still load back to format 58. LAN and
 online sim-version gates reject clients using the older boundary. See the

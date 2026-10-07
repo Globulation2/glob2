@@ -846,7 +846,7 @@ TEST_CASE("old hazard route caches rebuild while current saves retain routing st
     auto& map=world.game.map;
     map.setCellTerrain(9,8,ICE);
     map.setResourceByIndex(10,8,WHEAT,1);
-    const auto* field=map.getResourceGradient(0,WHEAT,0);
+    const auto* field=map.getMaterialGradientSlot(0,WHEAT,0);
     REQUIRE(field);
     std::vector<Uint16> expected(field,field+map.getW()*map.getH());
     map.configureGradientPipeline(0,2);
@@ -858,15 +858,15 @@ TEST_CASE("old hazard route caches rebuild while current saves retain routing st
     {
         GAGCore::BinaryInputStream input(new GAGCore::MemoryStreamBackend(std::string(saved)));
         map.loadRuntimeState(&input,VERSION_MINOR);
-        REQUIRE(map.resourcesGradient[0][WHEAT][0]);
-        CHECK(std::equal(expected.begin(),expected.end(),map.resourcesGradient[0][WHEAT][0]));
+        REQUIRE(map.materialGradients[0][WHEAT][0]);
+        CHECK(std::equal(expected.begin(),expected.end(),map.materialGradients[0][WHEAT][0]));
     }
     {
         GAGCore::BinaryInputStream input(new GAGCore::MemoryStreamBackend(std::string(saved)));
         map.loadRuntimeState(&input,140); // identical stream layout, pre-penalty field semantics
-        CHECK(map.resourcesGradient[0][WHEAT][0]==nullptr);
+        CHECK(map.materialGradients[0][WHEAT][0]==nullptr);
         CHECK(map.gradientRuntime->pipeline.delayTicks()==2);
-        const auto* rebuilt=map.getResourceGradient(0,WHEAT,0);
+        const auto* rebuilt=map.getMaterialGradientSlot(0,WHEAT,0);
         REQUIRE(rebuilt);
         CHECK(std::equal(expected.begin(),expected.end(),rebuilt));
     }
@@ -969,4 +969,81 @@ TEST_CASE("flyers share safety fields across teams and ignore ground invalidatio
     CHECK(map.gradientRuntime->safety.builds==2);
     CHECK(first->dx==0); CHECK(first->dy==1);
 }
+}
+
+TEST_CASE("escape fields respect runtime resource blocking and ignore stock-only edits" *
+          doctest::test_suite("TerrainHazardRouting"))
+{
+    glob2test::HeadlessGlobals globals;
+    glob2test::HeadlessGame world({.loadDefaultRace=true,.header=true});
+    auto& map=world.game.map;
+    map.game=nullptr;
+    map.importTerrainDefinitions(R"({"schemaVersion":1,"terrains":[{"key":"test:both-hazard","name":"Hazard","base":"grass","properties":{"groundHealthQ8":-16,"airHealthQ8":-16},"appearance":"ice"}]})");
+    map.installResourceDefinitions(R"({"schemaVersion":1,"resources":[{"key":"test:canopy","properties":{"blocksGround":false,"blocksAir":true,"persistsWhenEmpty":true},"yields":{"food":{"capacity":9,"initial":3,"consumption":"one"}},"presentation":{"name":"Canopy","sprite":"data/gfx/ressource","minimap":[10,20,30],"levels":[{"stock":0,"variants":[{"frame":1}]}]}}]})");
+    map.setGame(&world.game);
+    const auto hazard=*map.terrainRegistry().find("test:both-hazard");
+    for(int y=0;y<map.getH();++y) for(int x=0;x<map.getW();++x) map.setCellTerrain(x,y,hazard);
+    map.setCellTerrain(13,8,GRASS);
+    auto* ground=world.addUnit(WORKER,12,8);
+    auto* air=world.addUnit(EXPLORER,12,8);
+    REQUIRE(ground); REQUIRE(air);
+    REQUIRE(map.pathfindTerrainSafety(ground));
+    REQUIRE(map.pathfindTerrainSafety(air));
+    auto& cache=map.gradientRuntime->safety;
+    CHECK(cache.builds==2);
+    map.setResource(13,8,*map.resourceRegistry().find("test:canopy"),1);
+    REQUIRE(map.pathfindTerrainSafety(ground));
+    CHECK(cache.builds==2); // A walk-through deposit does not invalidate ground routes.
+    CHECK_FALSE(map.pathfindTerrainSafety(air));
+    CHECK(cache.builds==3);
+    map.setResourceAmount(map.coordToIndex(13,8),0);
+    CHECK_FALSE(map.pathfindTerrainSafety(air));
+    CHECK(cache.builds==3); // Empty persistent deposits retain their blocking properties.
+    map.setNoResource(13,8,1);
+    REQUIRE(map.pathfindTerrainSafety(air));
+    CHECK(cache.builds==4);
+}
+
+TEST_CASE("escape fields charge destination terrain and choose a cheaper indirect exit" *
+          doctest::test_suite("TerrainHazardRouting"))
+{
+    glob2test::HeadlessGlobals globals;
+    glob2test::HeadlessGame world({.terrain=WATER,.loadDefaultRace=true,.header=true});
+    auto& map=world.game.map;
+    map.game=nullptr;
+    map.importTerrainDefinitions(R"({"schemaVersion":1,"terrains":[{"key":"test:mild","name":"Mild hazard","base":"grass","properties":{"groundHealthQ8":-1},"appearance":"ice"},{"key":"test:slow-safe","name":"Slow safety","base":"grass","properties":{"groundSpeedQ8":32},"appearance":"grass"}]})");
+    map.setGame(&world.game);
+    map.setCellTerrain(8,8,ICE);
+    map.setCellTerrain(9,8,*map.terrainRegistry().find("test:slow-safe"));
+    map.setCellTerrain(8,7,*map.terrainRegistry().find("test:mild"));
+    map.setCellTerrain(8,6,GRASS);
+    auto* unit=world.addUnit(WORKER,8,8);
+    REQUIRE(unit);
+    REQUIRE(map.pathfindTerrainSafety(unit));
+    CHECK(unit->dx==0); CHECK(unit->dy==-1);
+    const auto& costs=map.gradientRuntime->safety.fields.begin()->second.costs;
+    // Enter mild terrain (11), then grass (10); the adjacent slow goal costs 80.
+    CHECK(costs[map.coordToIndex(8,8)]==21);
+    CHECK(costs[map.coordToIndex(8,7)]==10);
+}
+
+TEST_CASE("escape cache evicts the least recently used profile and resets generations" *
+          doctest::test_suite("TerrainHazardRouting"))
+{
+    TerrainSafetyCache cache;
+    // Simulate a two-field budget without allocating map-sized cell vectors.
+    const auto cells=TerrainSafetyCache::MaximumBytes/(2*sizeof(Uint32));
+    cache.acquire(1,cells);
+    cache.acquire(2,cells);
+    cache.acquire(1,cells);
+    cache.acquire(3,cells);
+    CHECK(cache.fields.contains(1));
+    CHECK_FALSE(cache.fields.contains(2));
+    CHECK(cache.fields.contains(3));
+    cache.invalidate(true,false);
+    CHECK(cache.groundGeneration==2); CHECK(cache.airGeneration==1);
+    cache.groundGeneration=std::numeric_limits<Uint64>::max();
+    cache.invalidate(true,true);
+    CHECK(cache.fields.empty());
+    CHECK(cache.groundGeneration==1); CHECK(cache.airGeneration==1);
 }

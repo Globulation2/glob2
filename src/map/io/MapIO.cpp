@@ -994,14 +994,14 @@ void Map::loadRuntimeState(GAGCore::InputStream *stream, Sint32 versionMinor)
         const unsigned delay = gradientRuntime->pipeline.delayTicks();
         gradientRuntime->pipeline.reset();
         if (delay) configureGradientPipeline(2,delay);
-        gradientRuntime->resourceFields.clear();
-        gradientRuntime->resourceLru.clear();
+        gradientRuntime->materialFields.clear();
+        gradientRuntime->materialLru.clear();
         for (int t=0; t<game->teamsCount(); ++t) {
             for (int sw=0; sw<SWIM_CLASS_COUNT; ++sw) {
-                for (int r=0; r<MAX_NB_RESOURCES; ++r) {
-                    delete[] resourcesGradient[t][r][sw]; resourcesGradient[t][r][sw]=nullptr;
+                for (int r=0; r<MaterialSlotCount; ++r) {
+                    delete[] materialGradients[t][r][sw]; materialGradients[t][r][sw]=nullptr;
                     gradientUpdated[t][r][sw]=false;
-                    delete[] marketResourcesGradient[t][r][sw]; marketResourcesGradient[t][r][sw]=nullptr;
+                    delete[] marketMaterialGradients[t][r][sw]; marketMaterialGradients[t][r][sw]=nullptr;
                     marketGradientDirty[t][r][sw]=marketGradientUpdated[t][r][sw]=false;
                 }
                 delete[] forbiddenGradient[t][sw]; forbiddenGradient[t][sw]=nullptr;

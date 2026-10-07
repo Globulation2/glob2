@@ -941,8 +941,9 @@ For timing and scheduling, start with `src/game/Game_sync.cpp` and `src/engine/E
   remains unchanged. Building format 137 adds the per-game building catalog; replay
   floor 137 and network protocol 57 introduced those simulation/catalog gates.
   The completed-tick observation phase introduced replay floor 139. Runtime resource
-  catalogs now require replay floor 140 and network protocol 59.
-  The current replay floor is 141 for damage-weighted routing and idle safety.
+  catalogs introduced replay floor 140 and network protocol 59.
+  The current replay floor is 141 and network protocol is 60 for damage-weighted
+  routing and idle safety.
   Loading earlier saves rebuilds cached routes on maps with terrain health effects;
   current saves retain their completed and pending fields for exact continuation.
   Custom registry checksums hash canonical serialized fields, not struct padding.
@@ -963,14 +964,17 @@ For timing and scheduling, start with `src/game/Game_sync.cpp` and `src/engine/E
   exposed follow a lazily built shared reverse escape field, allowing hazardous
   intermediate steps. Ground fields are keyed by team, swim class and whether the
   unit is escaping forbidden paint; flyers share a separate air field across teams.
-  Static resources, buildings, terrain and forbidden paint invalidate ground fields;
-  only terrain invalidates air fields. Occupancy is checked at the next step and
+  Buildings, terrain and forbidden paint invalidate ground fields. Resource edits
+  invalidate only the movement classes whose blocking properties changed; stock
+  changes alone do not. Air fields react to terrain and air-blocking resources. Occupancy is checked at the next step and
   does not invalidate either field. Unreachable results are cached too. The cache
   retains at most 64 MiB of 32-bit field cells (or one field on larger maps), evicting
-  least-recently-used profiles. Complete synchronous rebuilds consume no RNG, so
+  least-recently-used profiles; temporary propagation queues are additional memory.
+  Complete synchronous rebuilds consume no RNG, so
   cache eviction and save/load discard cannot change directions or timing rules.
   A cold query can still require a full-map build; subsequent queries inspect eight
-  neighbors. Flyers use their separate air damage rate. These rules are preferences for travel, not
+  neighbors. A unit waits if traffic blocks every descending step. Flyers use their
+  separate air damage rate. These rules are preferences for travel, not
   guarantees against lethal crossings or overrides of explicit local combat moves.
 - Registry compilation calculates movement and air costs once, deduplicates cost
   profiles and caches distinct edge steps. Runtime gradient setup scales with
