@@ -13,8 +13,6 @@
 #include "ResourcePlaneKey.h"
 #include "MapChangeTracking.h"
 #include <span>
-#include <map>
-#include <tuple>
 #include <stdexcept>
 #include <limits>
 
@@ -90,7 +88,6 @@ struct Rules
 	std::vector<std::pair<std::string, int>> named;
 	std::vector<std::string> experiments;
 };
-using ResourceFieldKey = std::tuple<int, int, int, bool>;
 // One captured plane, shared with earlier captures while its generation holds.
 struct ResourceField
 {

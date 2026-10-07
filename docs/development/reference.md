@@ -28,9 +28,17 @@ coverage when extending them.
 Map storage and snapshots use the same trivially copyable records from
 `src/map/MapState.h`. Resource, occupancy and area arrays are authoritative;
 there is no maintained `Tile` mirror. Legacy terrain sprites and visibility
-remain contiguous scalar arrays. Capture compares mutation generations and bulk
-copies each requested changed array into pooled storage, without per-cell
-translation. Warm buffers retain their constructed ranges and capacity. The old
+remain contiguous scalar arrays. The live `Map` and every snapshot expose the same
+borrowed `MapState::View` (`src/map/MapStateView.h`), and each cell query has one
+inline implementation there; `Map` members forward to it. Every cell write stamps
+its 16x16 chunk (`src/map/MapChangeTracking.h`); capture compares whole-array
+generations to share unchanged components and copies only the chunks a reused
+pooled buffer does not already mirror, without per-cell translation. Writes that
+bypass the marked setters are caught by `GLOB2_SNAPSHOT_VERIFY=1`, which
+byte-compares every capture with the live game. Published material gradient planes
+sit in a dense registry keyed like the snapshot's plane table
+(`src/map/ResourcePlaneKey.h`); teams keep sorted live entity lists
+(`src/team/LiveSlotList.h`) so extraction visits occupied slots only. The old
 `Tile` value is assembled only for compatibility consumers such as editor undo.
 Growth flags retain their original byte values; growth predicates test nonzero.
 
@@ -67,22 +75,24 @@ queries at diagnostic boundaries; do not add component or bounds checks to each
 inner-loop read. Use full tiles only when the consumer needs the combined fields,
 including derived farm eligibility.
 
-Snapshot component pools synchronize final lease release and subsequent buffer
-reuse through the same mutex. A reference count establishes that readers have
-finished; this release/acquire barrier also orders their accesses before the owner
-writes the buffer again, including inputs retired by delayed gradient jobs. Reads
-need no locking. Alias lease control blocks use a standard synchronized memory
-pool, retaining their allocator state until the last weak reference is destroyed,
-so leases may safely outlive the capture Store. Warm control-block reuse avoids
-repeated upstream allocations without adding a custom free list.
+Snapshot component buffers are plain shared pointers in a bounded pool
+(`src/engine/sim/snapshot/BufferPool.h`). A consumer holds a buffer through its
+pointer; the pool reuses a buffer once that pointer is the only one left, after an
+acquire fence that orders the consumer's final reads before the owner's next write,
+including inputs retired by delayed gradient jobs. Reads need no locking, and a
+buffer outlives the capture Store while any consumer holds it. Memory metrics are
+computed on telemetry query, never on the capture path.
 
-`AIEngine::Pipeline` orders each controller's decisions on its private worker
-stream. The match-wide `GameHeader::aiOrderDelay` is an integer from 0 through 8,
-defaulting to 0. An order observed at logical tick `t` is delivered at `t + delay`.
-Worker completion time does not choose that deadline: the owner waits for due
-work, then publishes in stable request order. Changing worker count selects
-execution resources, not game timing. Human orders and scenario map scripts retain
-their existing scheduling.
+All parallel simulation work shares the map's `ComputeExecutor`
+(`src/common/ComputeExecutor.h`): blocking `run()` batches for map computation and
+deferred lane batches for AI decisions. `AIEngine::Pipeline` submits one batch per
+tick with one job per controller on that controller's lane, and joins it at the
+deadline, executing remaining jobs itself from the oldest live batch forward. The
+match-wide `GameHeader::aiOrderDelay` is an integer from 0 through 8, defaulting
+to 0. An order observed at logical tick `t` is delivered at `t + delay`. Thread
+count and completion time never choose that deadline or which decision a
+controller makes; the owner publishes in stable request order. Human orders and
+scenario map scripts retain their existing scheduling.
 
 Commands own encoded order bytes, target incarnation, diagnostics and telemetry.
 The owner validates current identities and normal order rules at delivery and
@@ -110,7 +120,7 @@ orders and resource-field enrollment planes remain intact. Repeated enrollment p
 share one restored allocation after their initialization identity and contents match.
 
 Save barriers finish outstanding computation without delivering future orders
-early. Format 140 retains the match delay, completed pending command bytes and
+early. Format 143 retains the match delay, completed pending command bytes and
 deadlines, request sequences, execution feedback, controller RNG and private
 continuation state. Older supported saves load with delay 0 and an empty engine
 order queue; the save compatibility floor remains 58. Lifecycle changes cancel
