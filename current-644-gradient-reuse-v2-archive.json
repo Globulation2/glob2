@@ -1,0 +1,12 @@
+{
+  "archive": "current-644-gradient-reuse-v2.zip",
+  "sha256": "cb0e8e6892b884b306a3bf88deef2a6627e2975e4788888fdf371b87a90998de",
+  "bytes": 46997743,
+  "files": 358,
+  "verified": true,
+  "excluded": [
+    "engine binaries",
+    "duplicate data trees"
+  ],
+  "source_scope": "644611925c66ee9a1259bbd90e72744d387bc59c plus exact a5cb v2 patch"
+}

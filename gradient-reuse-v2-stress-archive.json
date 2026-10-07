@@ -1,0 +1,12 @@
+{
+  "archive": "gradient-reuse-v2-stress-correctness.zip",
+  "bytes": 61228885,
+  "sha256": "88d74af85144435840afbf2b013e6beea3cbb6376a5afb9021f5e3a614e1d636",
+  "files": 297,
+  "verified": true,
+  "scope": "Frozen SIM24 merged77fb/v2-4a, nine2048-record windows, workers1/4; correctness only",
+  "omitted": [
+    "binaries",
+    "duplicated fixture/data trees"
+  ]
+}
