@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "GlacisGenerator.h"
+#include "ResourceSemantics.h"
 #include "Contact.h"
 #include "Drawing.h"
 #include "FertilityField.h"
@@ -887,7 +888,7 @@ bool generate(Game &game, GenerationContext &context)
 	}
 	for (int i = 0; i < n; ++i)
 		if (walls.stone[i])
-			map.setResource(i % t.w, i / t.w, STONE, 1);
+			map.setResourceByIndex(i % t.w, i / t.w, STONE, 1);
 
 	context.stage = "glacis colonies";
 	std::vector<int> courtOf(n, -1);
@@ -956,7 +957,7 @@ bool generate(Game &game, GenerationContext &context)
 			const auto eligible = [&](int i)
 			{
 				return L.gardenOf[i] == k * 3 + h &&
-					map.terrainSupportsResourceAt(i % t.w, i / t.w, (wood ? WOOD : WHEAT)) && !reserved[i] &&
+					map.terrainSupportsResourceAtByIndex(i % t.w, i / t.w, (wood ? WOOD : WHEAT)) && !reserved[i] &&
 					   clearGround(map, i % t.w, i / t.w);
 			};
 			int placed = 0;
@@ -979,7 +980,7 @@ bool generate(Game &game, GenerationContext &context)
 				for (const auto &[d, i] : garden)
 					if (placed < std::min(wanted, s.gardenTiles[h]))
 					{
-						map.setResource(i % t.w, i / t.w, WHEAT, 1);
+						map.setResourceByIndex(i % t.w, i / t.w, WHEAT, 1);
 						++placed;
 					}
 			}
@@ -1008,7 +1009,7 @@ bool generate(Game &game, GenerationContext &context)
 	const int forest =
 		std::min(int(open.size()), int(scaledCount(int(open.size()) * kForestPercent / 100, o.wood)));
 	for (int j = 0; j < forest; ++j)
-		map.setResource(open[j] % t.w, open[j] / t.w, WOOD, 1);
+		map.setResourceByIndex(open[j] % t.w, open[j] / t.w, WOOD, 1);
 	context.telemetry.measure("glacis.country.forest-tiles", forest);
 	// The contested fords' prizes, before the fields take the banks.
 	for (size_t f = 0; f < L.fords.size(); ++f)
@@ -1065,9 +1066,9 @@ std::vector<int> grassReach(const Map &map, const Torus &t, const std::vector<un
 	for (int i = 0; i < n; ++i)
 	{
 		const int x = i % t.w, y = i / t.w;
-		open[i] = (map.canResourcesGrow(x, y) && (map.terrainSupportsResourceAt(x, y, WHEAT) ||
-			map.terrainSupportsResourceAt(x, y, WOOD))) &&
-				  !(map.isResource(x, y) && map.getResource(x, y).type == STONE);
+		open[i] = (map.canResourcesGrow(x, y) && (map.terrainSupportsResourceAtByIndex(x, y, WHEAT) ||
+			map.terrainSupportsResourceAtByIndex(x, y, WOOD))) &&
+				  !permanentResourceBarrier(map, i);
 	}
 	std::vector<unsigned char> source(n, 0);
 	for (int i = 0; i < n; ++i)
@@ -1131,7 +1132,7 @@ std::string validateWorld(const Game &game, const GenerationContext &context)
 	if (const ColonyWalk walk = walkFromFirstColony(map, teams, "the country", "over the fords");
 		!walk.error.empty())
 		return walk.error;
-	return startingAccessFailure(map, teams, {{WHEAT, 24, "wheat"}, {WOOD, 32, "wood"}}, 16, 24);
+	return startingAccessFailure(map, teams, {{MaterialId::Food, 24, "food"}, {MaterialId::Wood, 32, "wood"}}, 16, 24);
 }
 } // namespace
 

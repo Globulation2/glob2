@@ -35,7 +35,7 @@ struct SceneUnit
 	Sint32 typeNum = 0, posX = 0, posY = 0, dx = 0, dy = 0, direction = 0, delta = 0;
 	//! How far delta advances next tick (unitActionStepSpeed).
 	Sint32 stepSpeed = 0;
-	Sint32 action = 0, hp = 0, hungry = 0, carriedResource = 0, experienceLevel = 0;
+	Sint32 action = 0, hp = 0, hungry = 0, carriedMaterial = 0, experienceLevel = 0;
 	Sint32 levelUpAnimation = 0, magicActionAnimation = 0;
 	bool validTarget = false;
 	Sint32 targetX = 0, targetY = 0;
@@ -52,7 +52,7 @@ struct SceneBuilding
 	BuildingType *lastUpgradeType = nullptr;
 	Sint32 typeNum = 0, shortTypeNum = 0, posX = 0, posY = 0, hp = 0, effectiveMaxHp = 0;
 	Sint32 maxUnitInside = 0, unitsInside = 0, maxUnitWorking = 0, unitsWorking = 0;
-	Sint32 resources[MAX_RESOURCES] = {};
+	Sint32 materials[MaterialCount] = {};
 	Sint32 bullets = 0, unitStayRange = 0;
 	Uint8 connectionMask=0;
 	Uint32 seenByMask = 0;
@@ -94,6 +94,7 @@ struct SceneEntities
 	static constexpr int SlotsPerTeam = 1024;  //!< >= Unit/Building::MAX_COUNT (checked)
 
 	int teamCount = 0;
+	MaterialMask materialPresence = 0;
 	std::array<SceneTeam, Teams> teams{};
 	std::vector<SceneUnit> units;
 	std::vector<SceneBuilding> buildings;

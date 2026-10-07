@@ -264,7 +264,7 @@ void furnishBiome(Map &map, const Torus &t, GenerationContext &context,
 	const int n = t.size();
 	for (int i = 0; i < n; ++i)
 		if (terrain.wall[i] && !keepClear[i] && map.isResourceAllowed(i % t.w, i / t.w, STONE))
-			map.setResource(i % t.w, i / t.w, STONE, 1);
+			map.setResourceByIndex(i % t.w, i / t.w, STONE, 1);
 	// Outcrops and groves are clumps a tile across (placeResourceClump), so everything keeps a tile in
 	// from the ground's edge, the wall, the island and the clear ground.
 	std::vector<unsigned char> ground(size_t(n), 0);
@@ -293,7 +293,7 @@ void furnishBiome(Map &map, const Torus &t, GenerationContext &context,
 	int fruit = 0;
 	for (int i = 0; i < n; ++i)
 		if (terrain.island[i] && !keepClear[i] && map.isResourceAllowed(i % t.w, i / t.w, CHERRY))
-			map.setResource(i % t.w, i / t.w, CHERRY + fruit++ % 3, 1);
+			map.setResourceByIndex(i % t.w, i / t.w, CHERRY + fruit++ % 3, 1);
 	// The dry reserve: finite crops on the ground where nothing regrows, in the same patches (the
 	// top of the patch noise) so they read as fields and not speckle, dealt by the split noise.
 	if (kit.dryFarmPerMille > 0)

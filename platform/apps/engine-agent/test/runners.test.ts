@@ -3,7 +3,7 @@
 import { readFileSync } from 'node:fs';
 import { randomUUID } from 'node:crypto';
 import { gzipSync } from 'node:zlib';
-import { afterAll, beforeAll, describe, expect, it } from 'vitest';
+import { afterAll, beforeAll, describe, expect, it, vi } from 'vitest';
 import { contentKey, defaultMapPool, putContent, sha256Hex } from '@glob2/core';
 import {
   engineJobs,
@@ -115,6 +115,28 @@ describe('generate-map', () => {
 });
 
 describe('validate-map', () => {
+  it.each(['map', 'save'] as const)(
+    'preserves required resource experiments in a validated %s',
+    async (format) => {
+      const bytes = fakeMap({ saved: format === 'save' });
+      const inspected = await h.engine.inspect(bytes, { signal });
+      const resourceExperiments = [
+        { key: 'custom-crop', label: 'Custom crop', help: 'A custom renewable food source.' },
+      ];
+      const requiredResourceExperiments = ['custom-crop'];
+      const inspection = vi.spyOn(h.engine, 'inspect').mockResolvedValueOnce({
+        ...inspected,
+        report: { ...inspected.report, resourceExperiments, requiredResourceExperiments },
+      });
+      try {
+        const result = await run('validate-map', { blobHash: await store(bytes), format });
+        expect(result['map']).toMatchObject({ resourceExperiments, requiredResourceExperiments });
+      } finally {
+        inspection.mockRestore();
+      }
+    },
+  );
+
   it('accepts a gzip upload, storing the decompressed bytes under their own hash', async () => {
     const raw = fakeMap({ name: 'Two Rivers', minor: 118, teams: 4, width: 256, height: 128 });
     const blobHash = await store(gzipSync(raw));

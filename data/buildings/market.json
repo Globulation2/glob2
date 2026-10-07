@@ -15,7 +15,7 @@
         "hpInit": 1,
         "hpMax": 400,
         "isBuildingSite": 1,
-        "maxResource": [
+        "maxMaterial": [
           4,
           0,
           0,
@@ -42,7 +42,7 @@
       "semantics": {
         "admittedUnitMask": 7,
         "ammunitionCost": 1,
-        "ammunitionResource": 3,
+        "ammunitionMaterial": 3,
         "feeding": {
           "convertsUnits": false,
           "cost": {},
@@ -74,19 +74,19 @@
           "suppliesStockExperiment": "markets-v2",
           "suppliesDirectStock": false,
           "fetchesDirectStock": false,
-          "suppliesStockResources": [
+          "suppliesStockMaterials": [
             "wood",
             "stone"
           ],
-          "suppliesDirectStockResources": [
+          "suppliesDirectStockMaterials": [
             "wood",
             "stone"
           ],
-          "fetchesStockResources": [
+          "fetchesStockMaterials": [
             "wood",
             "stone"
           ],
-          "fetchesDirectStockResources": [
+          "fetchesDirectStockMaterials": [
             "wood",
             "stone"
           ]
@@ -123,7 +123,7 @@
           "stone": 4
         },
         "repairCost": {},
-        "replenishResources": [
+        "replenishMaterials": [
           "wood",
           "stone"
         ]
@@ -153,7 +153,7 @@
         "height": 3,
         "hpInit": 400,
         "hpMax": 400,
-        "maxResource": [
+        "maxMaterial": [
           0,
           0,
           0,
@@ -179,7 +179,7 @@
       "semantics": {
         "admittedUnitMask": 7,
         "ammunitionCost": 1,
-        "ammunitionResource": 3,
+        "ammunitionMaterial": 3,
         "feeding": {
           "convertsUnits": false,
           "cost": {},
@@ -211,25 +211,25 @@
           "suppliesStockExperiment": "markets-v2",
           "suppliesDirectStock": true,
           "fetchesDirectStock": false,
-          "suppliesStockResources": [
-            "cherry",
-            "orange",
-            "prune"
+          "suppliesStockMaterials": [
+            "cherries",
+            "oranges",
+            "prunes"
           ],
-          "suppliesDirectStockResources": [
-            "cherry",
-            "orange",
-            "prune"
+          "suppliesDirectStockMaterials": [
+            "cherries",
+            "oranges",
+            "prunes"
           ],
-          "fetchesStockResources": [
-            "cherry",
-            "orange",
-            "prune"
+          "fetchesStockMaterials": [
+            "cherries",
+            "oranges",
+            "prunes"
           ],
-          "fetchesDirectStockResources": [
-            "cherry",
-            "orange",
-            "prune"
+          "fetchesDirectStockMaterials": [
+            "cherries",
+            "oranges",
+            "prunes"
           ]
         },
         "occupiesGround": true,
@@ -264,10 +264,10 @@
           "wood": 4,
           "stone": 4
         },
-        "replenishResources": [
-          "cherry",
-          "orange",
-          "prune"
+        "replenishMaterials": [
+          "cherries",
+          "oranges",
+          "prunes"
         ]
       },
       "presentation": {
@@ -299,7 +299,7 @@
         "hpMax": 600,
         "isBuildingSite": 1,
         "level": 1,
-        "maxResource": [
+        "maxMaterial": [
           6,
           0,
           0,
@@ -326,7 +326,7 @@
       "semantics": {
         "admittedUnitMask": 7,
         "ammunitionCost": 1,
-        "ammunitionResource": 3,
+        "ammunitionMaterial": 3,
         "feeding": {
           "convertsUnits": false,
           "cost": {},
@@ -358,22 +358,22 @@
           "suppliesStockExperiment": "markets-v2",
           "suppliesDirectStock": false,
           "fetchesDirectStock": false,
-          "suppliesStockResources": [
+          "suppliesStockMaterials": [
             "wood",
             "stone",
             "algae"
           ],
-          "suppliesDirectStockResources": [
+          "suppliesDirectStockMaterials": [
             "wood",
             "stone",
             "algae"
           ],
-          "fetchesStockResources": [
+          "fetchesStockMaterials": [
             "wood",
             "stone",
             "algae"
           ],
-          "fetchesDirectStockResources": [
+          "fetchesDirectStockMaterials": [
             "wood",
             "stone",
             "algae"
@@ -412,7 +412,7 @@
           "algae": 4
         },
         "repairCost": {},
-        "replenishResources": [
+        "replenishMaterials": [
           "wood",
           "stone",
           "algae"
@@ -444,7 +444,7 @@
         "hpInit": 600,
         "hpMax": 600,
         "level": 1,
-        "maxResource": [
+        "maxMaterial": [
           200,
           200,
           0,
@@ -470,7 +470,7 @@
       "semantics": {
         "admittedUnitMask": 7,
         "ammunitionCost": 1,
-        "ammunitionResource": 3,
+        "ammunitionMaterial": 3,
         "feeding": {
           "convertsUnits": false,
           "cost": {},
@@ -502,33 +502,33 @@
           "suppliesStockExperiment": "markets-v2",
           "suppliesDirectStock": true,
           "fetchesDirectStock": false,
-          "suppliesStockResources": [
+          "suppliesStockMaterials": [
             "wood",
-            "wheat",
-            "cherry",
-            "orange",
-            "prune"
+            "food",
+            "cherries",
+            "oranges",
+            "prunes"
           ],
-          "suppliesDirectStockResources": [
+          "suppliesDirectStockMaterials": [
             "wood",
-            "wheat",
-            "cherry",
-            "orange",
-            "prune"
+            "food",
+            "cherries",
+            "oranges",
+            "prunes"
           ],
-          "fetchesStockResources": [
+          "fetchesStockMaterials": [
             "wood",
-            "wheat",
-            "cherry",
-            "orange",
-            "prune"
+            "food",
+            "cherries",
+            "oranges",
+            "prunes"
           ],
-          "fetchesDirectStockResources": [
+          "fetchesDirectStockMaterials": [
             "wood",
-            "wheat",
-            "cherry",
-            "orange",
-            "prune"
+            "food",
+            "cherries",
+            "oranges",
+            "prunes"
           ]
         },
         "occupiesGround": true,
@@ -564,12 +564,12 @@
           "stone": 6,
           "algae": 4
         },
-        "replenishResources": [
+        "replenishMaterials": [
           "wood",
-          "wheat",
-          "cherry",
-          "orange",
-          "prune"
+          "food",
+          "cherries",
+          "oranges",
+          "prunes"
         ]
       },
       "presentation": {
@@ -601,7 +601,7 @@
         "hpMax": 800,
         "isBuildingSite": 1,
         "level": 2,
-        "maxResource": [
+        "maxMaterial": [
           8,
           0,
           4,
@@ -628,7 +628,7 @@
       "semantics": {
         "admittedUnitMask": 7,
         "ammunitionCost": 1,
-        "ammunitionResource": 3,
+        "ammunitionMaterial": 3,
         "feeding": {
           "convertsUnits": false,
           "cost": {},
@@ -660,27 +660,27 @@
           "suppliesStockExperiment": "markets-v2",
           "suppliesDirectStock": false,
           "fetchesDirectStock": false,
-          "suppliesStockResources": [
+          "suppliesStockMaterials": [
             "wood",
-            "papyrus",
+            "paper",
             "stone",
             "algae"
           ],
-          "suppliesDirectStockResources": [
+          "suppliesDirectStockMaterials": [
             "wood",
-            "papyrus",
+            "paper",
             "stone",
             "algae"
           ],
-          "fetchesStockResources": [
+          "fetchesStockMaterials": [
             "wood",
-            "papyrus",
+            "paper",
             "stone",
             "algae"
           ],
-          "fetchesDirectStockResources": [
+          "fetchesDirectStockMaterials": [
             "wood",
-            "papyrus",
+            "paper",
             "stone",
             "algae"
           ]
@@ -714,14 +714,14 @@
         "assignmentLimit": 20,
         "constructionCost": {
           "wood": 8,
-          "papyrus": 4,
+          "paper": 4,
           "stone": 8,
           "algae": 8
         },
         "repairCost": {},
-        "replenishResources": [
+        "replenishMaterials": [
           "wood",
-          "papyrus",
+          "paper",
           "stone",
           "algae"
         ]
@@ -752,7 +752,7 @@
         "hpInit": 800,
         "hpMax": 800,
         "level": 2,
-        "maxResource": [
+        "maxMaterial": [
           200,
           200,
           200,
@@ -778,7 +778,7 @@
       "semantics": {
         "admittedUnitMask": 7,
         "ammunitionCost": 1,
-        "ammunitionResource": 3,
+        "ammunitionMaterial": 3,
         "feeding": {
           "convertsUnits": false,
           "cost": {},
@@ -810,45 +810,45 @@
           "suppliesStockExperiment": "markets-v2",
           "suppliesDirectStock": true,
           "fetchesDirectStock": false,
-          "suppliesStockResources": [
+          "suppliesStockMaterials": [
             "wood",
-            "wheat",
-            "papyrus",
+            "food",
+            "paper",
             "stone",
             "algae",
-            "cherry",
-            "orange",
-            "prune"
+            "cherries",
+            "oranges",
+            "prunes"
           ],
-          "suppliesDirectStockResources": [
+          "suppliesDirectStockMaterials": [
             "wood",
-            "wheat",
-            "papyrus",
+            "food",
+            "paper",
             "stone",
             "algae",
-            "cherry",
-            "orange",
-            "prune"
+            "cherries",
+            "oranges",
+            "prunes"
           ],
-          "fetchesStockResources": [
+          "fetchesStockMaterials": [
             "wood",
-            "wheat",
-            "papyrus",
+            "food",
+            "paper",
             "stone",
             "algae",
-            "cherry",
-            "orange",
-            "prune"
+            "cherries",
+            "oranges",
+            "prunes"
           ],
-          "fetchesDirectStockResources": [
+          "fetchesDirectStockMaterials": [
             "wood",
-            "wheat",
-            "papyrus",
+            "food",
+            "paper",
             "stone",
             "algae",
-            "cherry",
-            "orange",
-            "prune"
+            "cherries",
+            "oranges",
+            "prunes"
           ]
         },
         "occupiesGround": true,
@@ -881,19 +881,19 @@
         "constructionCost": {},
         "repairCost": {
           "wood": 8,
-          "papyrus": 4,
+          "paper": 4,
           "stone": 8,
           "algae": 8
         },
-        "replenishResources": [
+        "replenishMaterials": [
           "wood",
-          "wheat",
-          "papyrus",
+          "food",
+          "paper",
           "stone",
           "algae",
-          "cherry",
-          "orange",
-          "prune"
+          "cherries",
+          "oranges",
+          "prunes"
         ]
       },
       "presentation": {

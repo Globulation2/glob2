@@ -253,13 +253,13 @@ void run(const Scenario &scenario, const std::filesystem::path &output, unsigned
 		Building *inn = game.addBuilding(x, siteY + 2, type, team);
 		require(inn != nullptr, "inn fits generated clearing");
 		game.map.setBuilding(x, siteY + 2, inn->type->width, inn->type->height, inn->gid);
-		inn->resources[WHEAT] = wheat ? std::min(10, inn->type->maxResource[WHEAT]) : 0;
+		inn->materials[WHEAT] = wheat ? std::min(10, inn->type->maxMaterial[WHEAT]) : 0;
 		const int kinds[] = {CHERRY, ORANGE, PRUNE};
 		for (int i = 0; i < 3; ++i)
-			inn->resources[kinds[i]] =
-				i < varieties ? std::min(10, inn->type->maxResource[kinds[i]]) : 0;
-		for (int r = 0; r < MAX_RESOURCES; ++r)
-			require(inn->resources[r] <= inn->type->maxResource[r], "stock fits inn capacity");
+			inn->materials[kinds[i]] =
+				i < varieties ? std::min(10, inn->type->maxMaterial[kinds[i]]) : 0;
+		for (int r = 0; r < MaterialCount; ++r)
+			require(inn->materials[r] <= inn->type->maxMaterial[r], "stock fits inn capacity");
 		// Public building ticks honor its normal conversion cooldown.
 		for (int i = 0; i < 256; ++i)
 			inn->step();

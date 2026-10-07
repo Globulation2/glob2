@@ -190,6 +190,8 @@ LanHost::LanHost(Options selected) : options(std::move(selected))
 		header.setBuildingCatalogSnapshot(legacy.snapshotJson());
 	}
 	setup.buildingCatalogSnapshot = header.getBuildingCatalogSnapshot();
+	setup.resourceExperiments = options.map.resourceExperimentDefinitions.empty()
+		? header.resourceExperiments() : options.map.resourceExperimentDefinitions;
 	if (!setup.buildingCatalogSnapshot.empty())
 		setup.buildingCatalogHash = Online::Sha256::hex(setup.buildingCatalogSnapshot);
 	room.hostName = clampUtf8(options.hostName.empty() ? "Host" : options.hostName, MAX_NAME_BYTES);
@@ -783,6 +785,7 @@ void LanHost::applyOptions(const GameHeader& header)
 		room.setup.rules = edited.rules;
 		room.setup.teams = edited.teams;
 		room.setup.experiments = edited.experiments;
+		room.setup.resourceExperiments = edited.resourceExperiments;
 		changed = true;
 		broadcastState();
 	}

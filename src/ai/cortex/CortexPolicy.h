@@ -63,19 +63,19 @@ namespace Cortex
 
 		// Second swarm — GRADED, computed in scoreSecondSwarm as
 		// SCORE_SECOND_SWARM_BASE + severity*SCORE_SECOND_SWARM_STEP where severity
-		// is the worst wheat-bottlenecked swarm's WHEAT deficit (1..5). It fires only
-		// when an existing swarm is pinned at the worker cap with a draining WHEAT
-		// buffer — the wheat catchment is the bottleneck, and a fresh swarm on a new
+		// is the worst food-bottlenecked swarm's Food deficit (1..5). It fires only
+		// when an existing swarm is pinned at the worker cap with a draining Food
+		// buffer — the food catchment is the bottleneck, and a fresh swarm on a new
 		// patch is the cure. Lands at 6200..6600: ABOVE the whole tech/upgrade band
-		// (more valuable than another upgrade when wheat is the binding constraint)
+		// (more valuable than another upgrade when food is the binding constraint)
 		// but below swarm recovery (7000) and a first/healthy inn (8000).
 		SCORE_SECOND_SWARM_BASE  =  6100,
 		SCORE_SECOND_SWARM_STEP  =   100,
 		// FAMINE RELOCATION. When the colony is established BUT starving (foodSaturated)
-		// because its wheat catchment is spent, the second swarm is not a luxury upgrade
+		// because its food catchment is spent, the second swarm is not a luxury upgrade
 		// — it is the escape from the depletion trap (relocating the economy onto a fresh
 		// patch is what lifts feedCapacity back off zero). A valid swarm candidate
-		// guarantees real fresh wheat to move to, so relocation outranks the wheat-blitz
+		// guarantees real fresh food to move to, so relocation outranks the food-blitz
 		// (SCORE_OFFENSE_BLITZ=6700, the spend-the-army-before-we-die desperation):
 		// recovery beats a hail-mary when recovery is genuinely possible. Sits ABOVE the
 		// blitz but still below swarm recovery (7000) and survival/production-control.
@@ -83,8 +83,8 @@ namespace Cortex
 		// places the swarm; the standing war flag then lets the blitz resume, so the two
 		// coexist (we both spend the army AND fix the economy).
 		SCORE_SECOND_SWARM_FAMINE =  6800,
-		// A wheat-bottlenecked inn — GRADED DOWN. When the feeding deficit is a
-		// wheat-SUPPLY problem (a swarm is bottlenecked) another inn cannot be
+		// A food-bottlenecked inn — GRADED DOWN. When the feeding deficit is a
+		// food-SUPPLY problem (a swarm is bottlenecked) another inn cannot be
 		// stocked, so its marginal value collapses below the second-swarm score and
 		// the tech band. Above retire/offense but below defense's flag work.
 		SCORE_FEED_BOTTLENECKED  =  3500,
@@ -156,7 +156,7 @@ namespace Cortex
 		GATE_BOOTSTRAP = 1u << 0,
 		/// Spare labour exists (obs.freeWorkers >= 1), so a gated build/upgrade
 		/// crew comes off idle hands rather than off the hauling that keeps the
-		/// swarm + inn WHEAT buffers full. Deliberately WEAKER than f.canExpand
+		/// swarm + inn Food buffers full. Deliberately WEAKER than f.canExpand
 		/// (which folds in the !starving/!hungry food-trouble terms): scorers
 		/// whose spare-labour requirement is entangled in canExpand keep it there.
 		GATE_LABOR     = 1u << 1,
@@ -219,7 +219,7 @@ namespace Cortex
 	  /// exactly: serious-defense > blitz-offense > defense > retire > offense.
 	  /// Split out of decide() so a busy economy never preempts a war-flag move; the
 	  /// action layer drains the combat orders alongside the economy ones, exactly
-	  /// like tuneWorkers() / wantWheatProtection(). The 19-class DECIDE_CONTRACT
+	  /// like tuneWorkers() / wantFoodSourceProtection(). The 19-class DECIDE_CONTRACT
 	  /// trace/ML mask still EVALUATES these three (training continuity); only the
 	  /// SELECTION moved here — decide() no longer acts on them.
 	  CortexAction decideCombat(const CortexObservation &obs) const;
@@ -241,7 +241,7 @@ namespace Cortex
 	  /// Keeping existing buildings fed is independent of starting new ones: the
 	  /// tune emits OrderModifyBuilding (a worker-count change), which need not
 	  /// contend for the cycle's one build/upgrade slot — the action layer drains
-	  /// both alongside each other, exactly like wantWheatProtection().
+	  /// both alongside each other, exactly like wantFoodSourceProtection().
 	  CortexAction tuneWorkers(const CortexObservation &obs) const;
 
 	  /// Wheat-forbidden upkeep decision, evaluated EVERY decision cycle in
@@ -249,26 +249,26 @@ namespace Cortex
 	  /// decision the build/upgrade scorers could starve. Painting the checkerboard
 	  /// is area-paint (OrderAlterForbidden), not an OrderCreate, so it need not
 	  /// contend for the cycle's one action slot. The policy still owns the gate:
-	  /// true only when the colony is not starving (never wall off wheat while the
-	  /// colony is dying) and the reconcile has real work (newly-revealed wheat to
-	  /// forbid, or wheat gone/out of view to un-forbid). The open-margin N feeds
+	  /// true only when the colony is not starving (never wall off food while the
+	  /// colony is dying) and the reconcile has real work (newly-revealed food to
+	  /// forbid, or food gone/out of view to un-forbid). The open-margin N feeds
 	  /// the executor from obs.wheatOpenMargin (the ML seam — a learned policy later
-	  /// outputs it). The action layer (AICortex::enqueueWheatForbidden) rebuilds
+	  /// outputs it). The action layer (AICortex::enqueueFoodSourcesForbidden) rebuilds
 	  /// the full ADD/DEL tile masks and emits the orders.
-	  bool wantWheatProtection(const CortexObservation &obs) const;
+	  bool wantFoodSourceProtection(const CortexObservation &obs) const;
 
 	  /// Wheat-blitz lift gate, evaluated EVERY decision cycle in PARALLEL with
-	  /// decide() (alongside wantWheatProtection). True exactly when the wheat-blitz
-	  /// is active: the colony is past wheat capacity and starving (foodSaturated)
-	  /// with a committable army and a scouted target. When true the wheat executor
+	  /// decide() (alongside wantFoodSourceProtection). True exactly when the food-blitz
+	  /// is active: the colony is past food capacity and starving (foodSaturated)
+	  /// with a committable army and a scouted target. When true the food executor
 	  /// runs in lift-all mode (un-forbid the WHOLE field for a one-time harvest
 	  /// burst to fuel the attack) instead of the steady-state checkerboard. This is
 	  /// a deliberate strategic-mode override, NOT a change to the reconcile invariant
-	  /// (which only retires paint when wheat is visibly depleted); normal protection
-	  /// resumes once the famine ends. Mutually exclusive with wantWheatProtection
+	  /// (which only retires paint when food is visibly depleted); normal protection
+	  /// resumes once the famine ends. Mutually exclusive with wantFoodSourceProtection
 	  /// (which returns false while starving), and takes precedence when both could
 	  /// apply, so the executor never double-emits.
-	  bool wantWheatBlitzLift(const CortexObservation &obs) const;
+	  bool wantFoodBurstLift(const CortexObservation &obs) const;
 
 	private:
 		/// Facts derived ONCE from the (const) observation at the top of decide() and
@@ -288,7 +288,7 @@ namespace Cortex
 			bool starving, hungry;
 			bool combatPhase;
 			bool economyEstablished;  ///< inn+swarm+pop established, REGARDLESS of starvation.
-			bool foodSaturated;       ///< established AND starving — past what wheat can feed (famine).
+			bool foodSaturated;       ///< established AND starving — past what food can feed (famine).
 			bool canExpand;
 
 			int growWorker, growExplorer, growWarrior;
@@ -345,7 +345,7 @@ namespace Cortex
 		ScoredAction scoreInnUpgrade(const CortexObservation& obs, const DecideFacts& f) const;
 		/// Hospital expand + upgrade.
 		ScoredAction scoreHospitalExpandUpgrade(const CortexObservation& obs, const DecideFacts& f) const;
-		/// Second swarm on a freshly-discovered wheat patch.
+		/// Second swarm on a freshly-discovered food patch.
 		ScoredAction scoreSecondSwarm(const CortexObservation& obs, const DecideFacts& f) const;
 		/// Forward base (inn, then hospital) toward an out-of-range front.
 		ScoredAction scoreForwardBase(const CortexObservation& obs, const DecideFacts& f) const;

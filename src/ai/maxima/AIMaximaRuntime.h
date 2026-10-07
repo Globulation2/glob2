@@ -145,8 +145,8 @@ enum DistanceState
 };
 namespace Entities
 {
-	enum EntityType { EBuilding, EAnyTeamBuilding, EAnyResource, EResource,
-		EWater, EPosition, ESand, EUnwalkable };
+	enum EntityType { EBuilding, EAnyTeamBuilding, EAnyResource, EMaterialSource,
+		EWater, EPosition, ESand, EUnwalkable, EResourceGroundObstacle };
 
 	class Entity
 	{
@@ -189,17 +189,17 @@ namespace Entities
 		bool includeConstruction;
 	};
 
-	class Resource : public Entity
+	class MaterialSource : public Entity
 	{
 	public:
-		explicit Resource(int resourceType);
+		explicit MaterialSource(int material);
 		bool matches(Player*, int, int) const;
 		bool equals(const Entity&) const;
 		bool can_change() const;
-		EntityType type() const { return EResource; }
+		EntityType type() const { return EMaterialSource; }
 		void save(GAGCore::OutputStream*) const;
 	private:
-		int resourceType;
+		int material;
 	};
 
 	class AnyResource : public Entity
@@ -211,6 +211,16 @@ namespace Entities
 		EntityType type() const { return EAnyResource; }
 		void save(GAGCore::OutputStream*) const;
 	};
+
+    class ResourceGroundObstacle : public Entity
+    {
+    public:
+        bool matches(Player*, int, int) const;
+        bool equals(const Entity&) const;
+        bool can_change() const { return true; }
+        EntityType type() const { return EResourceGroundObstacle; }
+        void save(GAGCore::OutputStream*) const;
+    };
 
 	class Water : public Entity
 	{
@@ -269,6 +279,7 @@ public:
 	void save(GAGCore::OutputStream*) const;
 	bool load(GAGCore::InputStream*,Sint32 versionMinor);
 private:
+    friend class Gradient;
 	std::vector<std::shared_ptr<Entities::Entity> > sources;
 	std::vector<std::shared_ptr<Entities::Entity> > obstacles;
 };
@@ -538,21 +549,21 @@ namespace Construction
 
 namespace Management
 {
-	class ResourceTracker
+	class MaterialTracker
 	{
 	public:
-		static constexpr int RecurringInputStock = MAX_RESOURCES;
-		ResourceTracker(Context&, int id, int length, int resource);
+		static constexpr int RecurringInputStock = MaterialCount;
+		MaterialTracker(Context&, int id, int length, int material);
 		int get_total_level() const;
 		int get_age() const { return timer; }
 		void tick();
 		void save(GAGCore::OutputStream*) const;
-		static ResourceTracker* load(Context&, GAGCore::InputStream*);
+		static MaterialTracker* load(Context&, GAGCore::InputStream*);
 	private:
 		Context& context;
 		std::vector<int> record;
 		unsigned position;
-		int timer, buildingId, resource;
+		int timer, buildingId, material;
 	};
 
 	class ManagementOrder
@@ -579,8 +590,8 @@ namespace Management
 	// Tactical cleanup must not demolish a building providing another service.
 	class RetireAttraction : public ManagementOrder
 	{ public: RetireAttraction(int id,unsigned unitMask) : id(id),unitMask(unitMask) {} Conditions::Result wait(Context&) const; void modify(Context&); int type()const{return 13;} void save_payload(GAGCore::OutputStream*)const; private:int id; unsigned unitMask; };
-	class AddResourceTracker : public ManagementOrder
-	{ public: AddResourceTracker(int length,int resource,int id); Conditions::Result wait(Context&) const; void modify(Context&); int type()const{return 3;} void save_payload(GAGCore::OutputStream*)const; private:int length,resource,id; };
+	class AddMaterialTracker : public ManagementOrder
+	{ public: AddMaterialTracker(int length,int material,int id); Conditions::Result wait(Context&) const; void modify(Context&); int type()const{return 3;} void save_payload(GAGCore::OutputStream*)const; private:int length,material,id; };
 	class ChangeFlagSize : public ManagementOrder
 	{ public: ChangeFlagSize(int size,int id); Conditions::Result wait(Context&) const; void modify(Context&); int type()const{return 4;} void save_payload(GAGCore::OutputStream*)const; private:int size,id; };
 	class ChangeFlagMinimumLevel : public ManagementOrder
@@ -689,7 +700,7 @@ class Context
     unsigned complete_attraction_retirement(int id,unsigned unitMask);
     bool attraction_retired_or_destroyed(int id,unsigned unitMask) const;
 	///Find queued, issued, and observed exploration flags anchored on a resource.
-	std::vector<int> resource_flags(int resource) const;
+	std::vector<int> material_source_flags(int material) const;
 	///Issue an exact planner-selected construction after a final engine-space
 	///check. Returns the Maxima building id, or -1 without queuing an order.
 	int issue_building_at(int shortType, int workers, int x, int y);
@@ -698,8 +709,8 @@ class Context
 	///Issue an explicitly classified upgrade or repair after revalidation.
 	bool issue_upgrade_repair(int id, bool repair);
 	void add_management_order(Management::ManagementOrder*);
-	void add_resource_tracker(Management::ResourceTracker*, int id);
-	std::shared_ptr<Management::ResourceTracker> get_resource_tracker(int id);
+	void add_material_tracker(Management::MaterialTracker*, int id);
+	std::shared_ptr<Management::MaterialTracker> get_material_tracker(int id);
 	Construction::BuildingRegister& get_building_register() { return buildings; }
 	Gradients::GradientManager& get_gradient_manager() { return gradients; }
 	TeamStat& get_team_stats();
@@ -714,7 +725,7 @@ class Context
 	Player* player;
 	Uint32 allies, enemies, inn_view, market_view, other_view;
 private:
-	friend class Management::ResourceTracker;
+	friend class Management::MaterialTracker;
 	void initialize();
 	void update_management_orders();
 	void update_building_orders();
@@ -727,7 +738,7 @@ private:
 	std::shared_ptr<Order> nullOrder;
 	std::vector<std::shared_ptr<Construction::BuildingOrder> > buildingOrders;
 	std::vector<std::shared_ptr<Management::ManagementOrder> > managementOrders;
-	std::map<int, std::shared_ptr<Management::ResourceTracker> > trackers;
+	std::map<int, std::shared_ptr<Management::MaterialTracker> > trackers;
     std::map<int,unsigned> retiredAttractions;
 	int timer;
 	int previousBuildingId;

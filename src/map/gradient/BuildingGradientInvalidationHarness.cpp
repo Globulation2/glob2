@@ -365,13 +365,13 @@ static void delayedFields()
 		World world(7);
 		Map &map=world.game.map;
 		map.setTerrain(55, 55, 256);
-		map.setResource(30, 30, 0, 1);
+		map.setResourceByIndex(30, 30, 0, 1);
 		map.addGuardArea(40, 40, 0);
 		map.addClearArea(30, 30, 0);
 		const int swim=1;
-		auto field=[&]() { return kind==0 ? map.getResourceGradient(0, 0, swim)
+		auto field=[&]() { return kind==0 ? map.getMaterialGradientSlot(0, 0, swim)
 			: kind==1 ? map.getGuardAreasGradient(0, swim) : map.getClearAreasGradient(0, swim); };
-		auto refresh=[&]() { if(kind==0) map.updateResourcesGradient(0, 0, swim);
+		auto refresh=[&]() { if(kind==0) map.updateMaterialGradient(0, 0, swim);
 			else if(kind==1) map.updateGuardAreasGradient(0, swim); else map.updateClearAreasGradient(0, swim); };
 		const auto cells=map.getW()*map.getH();
 		field();
@@ -392,7 +392,7 @@ static void delayedFields()
 		require(map.gradientPipelineStatus().published==1, "publication at deadline");
 		map.syncStep(2);
 		std::vector<Uint16> frozen(cells);
-		if(kind==0) map.seedResourcesGradient(0, 0, swim, frozen.data());
+		if(kind==0) map.seedMaterialGradient(0, 0, swim, frozen.data());
 		else if(kind==1) map.seedGuardAreasGradient(0, swim, frozen.data());
 		else map.seedClearAreasGradient(0, swim, frozen.data());
 		map.propagateGradient(frozen.data(), swim);

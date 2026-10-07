@@ -615,8 +615,8 @@ bool generate(Game &game, GenerationContext &context)
 	// The built kinds' walls: stone on every designed wall tile (all pure grass, by the design's own
 	// check), before anything else is placed.
 	for (int i = 0; i < n; ++i)
-		if (L.stone[i] && map.terrainSupportsResourceAt(i % t.w, i / t.w, STONE))
-			map.setResource(i % t.w, i / t.w, STONE, 1);
+		if (L.stone[i] && map.terrainSupportsResourceAtByIndex(i % t.w, i / t.w, STONE))
+			map.setResourceByIndex(i % t.w, i / t.w, STONE, 1);
 
 	context.stage = "canals colonies";
 	if (!settleRoundColonies(game, context, "canals-starts", L.homeOf, L.homes, L.homeRadius))

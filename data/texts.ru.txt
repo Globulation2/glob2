@@ -5564,5 +5564,45 @@ FFmpeg недоступен, поэтому запись отключена. У�
 Импорт определений местности
 [Terrain palette]
 Палитра местности
+[Food]
+Пища
+[Paper]
+Бумага
+[Cherries]
+Вишни
+[Oranges]
+Апельсины
+[Prunes]
+Сливы
+[Gold]
+Золото
+[Metal]
+Металл
+[Glass]
+Стекло
+[Fabric]
+Ткань
+[Import Resource Definitions]
+Импорт определений ресурсов
+[Resource palette]
+Палитра ресурсов
+[Trees]
+Деревья
+[Rocks]
+Скалы
+[Cherry tree]
+Вишнёвое дерево
+[Orange tree]
+Апельсиновое дерево
+[Prune tree]
+Сливовое дерево
+[Gold ore]
+Золотая руда
+[Iron ore]
+Железная руда
+[Sand]
+Песок
+[Cotton]
+Хлопок
 [Reroll terrain look]
 Заново выбрать случайный вид ландшафта

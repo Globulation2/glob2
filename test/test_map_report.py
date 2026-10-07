@@ -237,12 +237,22 @@ def main():
         assert fixtures['invalid-1']['generation']['raw_request']['options'] == {}
         assert fixtures['invalid-2']['generation']['raw_request']['width_exponent'] == -100
         assert fixtures['invalid-3']['generation']['raw_request']['options']['unknown-option'] == 7
+        compound = fixtures['compound']
+        assert compound['resources']['definitions']['wood']['stored_amount'] == 5
+        assert compound['resources']['types']['wood']['stored_amount'] == 5
+        assert compound['resources']['types']['trees']['stored_amount'] == 0
+        assert 'wood' not in compound['resources']['legacy_type_aliases']
+        access = compound['movement']['walking']['colonies'][0]
+        assert access['materials']['food'] == access['resources']['wheat']
+        assert access['materials']['wood'] == access['resources']['wood']
         grass=fixtures['grass']
         assert grass['map']['name'] == 'A "quoted" map\né'
         assert grass['terrain']['grass'] == {'tiles':4096,'percent':100}
         assert grass['resources']['occupied']['tiles'] == 2
+        assert grass['resources']['definitions']['trees'] == grass['resources']['types']['wood']
+        assert grass['resources']['legacy_type_aliases']['wood'] == 'trees'
         assert grass['resources']['types']['wood']['stored_amount'] == 3
-        assert grass['resources']['types']['wheat']['stored_amount'] == 7
+        assert grass['resources']['types']['wheat']['stored_amount'] == 5
         assert grass['space']['buildable']['tiles'] == 4092
         assert grass['space']['build_sites_4x4'] == 4052
         assert grass['movement']['walking']['between_colonies'] == [[0,1],[1,0]]

@@ -35,6 +35,7 @@
 #include <new>
 #include "terrain/TerrainCompositor.h"
 #include "SoftwareTerrainCache.h"
+#include "ResourceSprites.h"
 
 namespace
 {
@@ -45,6 +46,7 @@ namespace
 bool drawCachedResources(const void *mapIdentity, const SceneMap& map, int left, int top,
     int right, int bottom, int viewportX, int viewportY)
 {
+    const auto& presentation = ResourceSprites::resolve(map.frozenResourceRegistry());
     auto *gfx = globalContainer->gfx;
     auto *batch = gfx->getRenderBatch();
     if (!batch) return false;
@@ -53,6 +55,16 @@ bool drawCachedResources(const void *mapIdentity, const SceneMap& map, int left,
     GAGCore::MapGeometryCache *cache;
     try { frames.resize(map.getW()); cache = &batch->geometryCache(); }
     catch (const std::bad_alloc&) { return false; }
+    // Decide before emitting geometry: fallback must never redraw earlier rows.
+    for (int y = top; y <= bottom; ++y)
+        for (int x = 0; x < map.getW(); ++x)
+        {
+            const int mapY = (y + viewportY) & map.getMaskH();
+            const auto& r = map.getResource(x, mapY);
+            if (r.type == NO_RES_TYPE) continue;
+            if (presentation.sprites[r.type] != sprite) return false;
+            if (map.resourceRegistry().presentation(static_cast<ResourceId>(r.type)).frame(r.amount, x, mapY, map.tick) >= sprite->getFrameCount()) return false;
+        }
     GAGCore::MapGeometryCache::Layer layer(*cache);
     for (int y = top; y <= bottom; ++y)
     {
@@ -63,8 +75,8 @@ bool drawCachedResources(const void *mapIdentity, const SceneMap& map, int left,
             if (resource.type == NO_RES_TYPE) frames[mapX] = -1;
             else
             {
-                const auto *type = globalContainer->resourcesTypes.get(resource.type);
-                frames[mapX] = type->gfxId + resource.variety * type->sizesCount + resource.amount - (type->eternal ? 0 : 1);
+                const auto& type = map.resourceRegistry().presentation(static_cast<ResourceId>(resource.type));
+                frames[mapX] = type.frame(resource.amount, mapX, mapY, map.tick);
             }
         }
         auto draw = [&](int first, int last, int originX, int originY)
@@ -145,7 +157,12 @@ void Game::drawMapResources(int left, int top, int right, int bot, int viewportX
 
     if ((drawOptions & DRAW_WHOLE_MAP) && drawCachedResources(sceneMap.cacheKey(), sceneMap, left, top,
             right, bot, viewportX, viewportY)) return;
-    GAGCore::SpriteDrawBatch batch(globalContainer->gfx, globalContainer->resources);
+    const auto& catalog = ResourceSprites::resolve(sceneMap.frozenResourceRegistry());
+    Sprite* pendingSprite = nullptr;
+    const auto flush = [&] {
+        if (pendingSprite) globalContainer->gfx->finishDrawingSprite(pendingSprite, 255);
+        pendingSprite = nullptr;
+    };
 
 	for (int y=top; y<=bot; y++)
 		for (int x=left; x<=right; x++)
@@ -160,26 +177,24 @@ void Game::drawMapResources(int left, int top, int right, int bot, int viewportX
 				const auto& r = sceneMap.getResource(x+viewportX, y+viewportY);
 				if (r.type!=NO_RES_TYPE)
 				{
-					Sprite *sprite=globalContainer->resources;
-					int type=r.type;
-					int amount=r.amount;
-					int variety=r.variety;
-					const ResourceType *rt=globalContainer->resourcesTypes.get(type);
-					int imgid=rt->gfxId+(variety*rt->sizesCount)+amount;
-					if (!rt->eternal)
-						imgid--;
-					int dx=(sprite->getW(imgid)-32)>>1;
-					int dy=(sprite->getH(imgid)-32)>>1;
-					assert(type>=0);
-					assert(type<(int)globalContainer->resourcesTypes.size());
-					assert(amount>=0);
-					assert(amount<=rt->sizesCount);
-					assert(variety>=0);
-					assert(variety<rt->varietiesCount);
+					const auto& presentation = sceneMap.resourceRegistry().presentation(static_cast<ResourceId>(r.type));
+					Sprite *sprite = catalog.sprites[r.type];
+					const int imgid = presentation.frame(r.amount, (x+viewportX)&sceneMap.getMaskW(), (y+viewportY)&sceneMap.getMaskH(), sceneMap.tick);
+					if (!sprite || imgid >= sprite->getFrameCount())
+					{
+						// Explicit missing-art marker; gameplay remains authoritative.
+						flush();
+						globalContainer->gfx->drawFilledRect((x<<5)+8, (y<<5)+8, 16, 16, 255, 0, 255);
+						globalContainer->gfx->drawFilledRect((x<<5)+12, (y<<5)+12, 8, 8, 0, 0, 0);
+						continue;
+					}
+					if (pendingSprite != sprite) { flush(); pendingSprite = sprite; }
+					const int dx=(sprite->getW(imgid)-32)>>1;
+					const int dy=(sprite->getH(imgid)-32)>>1;
 					globalContainer->gfx->drawSprite((x<<5)-dx, (y<<5)-dy, sprite, imgid);
 				}
 			}
-	globalContainer->gfx->finishDrawingSprite(globalContainer->resources, 255);
+	flush();
 }
 
 void Game::drawMapOverview(int left, int top, int right, int bot, int viewportX, int viewportY, int localTeam, Uint32 drawOptions, const SceneMap& sceneMap, MapRenderState& render)
@@ -214,16 +229,16 @@ void Game::drawMapOverview(int left, int top, int right, int bot, int viewportX,
 				sceneMap.isMapPartiallyDiscovered(x+viewportX-1, y+viewportY-1, x+viewportX+1, y+viewportY+1, visibleTeams)))
 			{
 				// Resource fields retain their gameplay-cell position over the ground.
-				const ResourceType *rt = globalContainer->resourcesTypes.get(resource.type);
+				const auto& colorResource = sceneMap.resourceRegistry().presentation(static_cast<ResourceId>(resource.type)).minimap;
 				for (int py = oy; py < oy+samples; ++py)
 				{
 					auto *row = reinterpret_cast<Uint32 *>(static_cast<Uint8 *>(pixels->pixels) + py*pixels->pitch);
 					for (int px = ox; px < ox+samples; ++px)
 					{
 						const auto color = row[px];
-						const unsigned r = (((color >> 16) & 255) + 3*rt->minimapR) / 4;
-						const unsigned g = (((color >> 8) & 255) + 3*rt->minimapG) / 4;
-						const unsigned b = ((color & 255) + 3*rt->minimapB) / 4;
+						const unsigned r = (((color >> 16) & 255) + 3*colorResource[0]) / 4;
+						const unsigned g = (((color >> 8) & 255) + 3*colorResource[1]) / 4;
+						const unsigned b = ((color & 255) + 3*colorResource[2]) / 4;
 						row[px] = 0xFF000000u | (r << 16) | (g << 8) | b;
 					}
 				}

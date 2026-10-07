@@ -3,7 +3,7 @@
 Experiments are gameplay features we are still testing. They are off by default;
 a player switches them on under **Settings → Experiments**. New local or hosted
 games retain enabled built-in experiments and enabled building experiments declared
-by their destination catalog, plus any terrain experiments required by the map.
+by their destination catalog, plus any terrain or resource experiments required by the map.
 That selection stays with the game for its whole life. This guide
 covers what players see, the compatibility rules, and how to add an experiment.
 
@@ -29,6 +29,12 @@ covers what players see, the compatibility rules, and how to add an experiment.
 - Terrain experiments control which brushes the editor offers. A map containing
   experimental terrain declares that requirement and enables it when played, even
   if the local editor switch is off. Ice and Trail have separate switches.
+- [Resource catalogs](resource-catalogs.md) can declare experiments with the same
+  stable key, label and help fields as building catalogs. The resource palette
+  provides map-local authoring switches. Maps preserve their declarations and
+  required keys, so joiners and saved games do not need the original installed
+  catalog. The `foundation-resources` experiment exposes gold ore, iron ore, sand
+  and cotton in the editor without adding them to stock generators or buildings.
 - Experiments can change balance and pacing. A map without experimental terrain
   does not acquire new terrain when a switch is enabled.
 

@@ -94,7 +94,7 @@ void GameGUI::reconcileBuildingGuiState(const std::shared_ptr<Order>& order)
 			auto it = buildingGuiState.find(omcf->gid);
 			if (it != buildingGuiState.end()
 				&& (landed(*omcf) || (it->second.pendingClearingResources
-					&& std::equal(omcf->clearingResources, omcf->clearingResources + BASIC_COUNT, it->second.pendingClearingResources->begin()))))
+					&& std::equal(omcf->clearingMaterials, omcf->clearingMaterials + MaterialCount, it->second.pendingClearingResources->begin()))))
 				it->second.pendingClearingResources.reset();
 			break;
 		}

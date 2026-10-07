@@ -215,6 +215,7 @@ public:
         // Compatibility aliases for callers selecting the example materials.
         Ice = RegisteredBegin + ICE,
         Trail = RegisteredBegin + TRAIL,
+        ResourceBegin = RegisteredBegin + TerrainRegistry::Capacity,
     };
     static bool isBaseTerrain(TerrainType type)
     {
@@ -234,6 +235,22 @@ public:
         if (type == SAND) return Sand;
         if (type == WATER) return Water;
         return static_cast<TerrainType>(int(RegisteredBegin) + int(type));
+    }
+    static bool isResource(TerrainType type)
+    {
+        return (type >= Wheat && type <= PruneTree) ||
+            (type >= ResourceBegin && type < int(ResourceBegin) + int(ResourceRegistry::Capacity));
+    }
+    static TerrainType selectorForResource(ResourceId type)
+    {
+        return static_cast<TerrainType>(int(ResourceBegin) + int(resourceIndex(type)));
+    }
+    static ResourceId resourceType(TerrainType type, const ResourceRegistry& registry)
+    {
+        if (type >= ResourceBegin) return static_cast<ResourceId>(int(type) - int(ResourceBegin));
+        static constexpr const char* legacyKeys[] = {"wheat", "trees", "rocks", "algae", "papyrus", "cherry-tree", "orange-tree", "prune-tree"};
+        if (type < Wheat || type > PruneTree) return NoResource;
+        return registry.find(legacyKeys[type - Wheat]).value_or(NoResource);
     }
 	TerrainSelector(MapEdit& me, const widgetRectangle& area, const std::string& group, const std::string& name, const std::string& action, TerrainType terrainType);
 	void draw();
@@ -693,8 +710,8 @@ private:
 	///@{
 	BuildingInfoTitle* buildingInfoTitle;
 	BuildingPicture* buildingPicture;
-	std::array<FractionValueText*, MAX_RESOURCES> buildingResourceLabels{};
-	std::array<ValueScrollBox*, MAX_RESOURCES> buildingResourceControls{};
+	std::array<FractionValueText*, MaterialCount> buildingResourceLabels{};
+	std::array<ValueScrollBox*, MaterialCount> buildingResourceControls{};
 	std::vector<std::pair<FractionValueText*,ValueScrollBox*>> buildingEditRows;
 	int buildingEditFirstRow=0;
 	Sint32 buildingBombingRequirement=0;
@@ -791,6 +808,9 @@ private:
 	bool showingSave;
 	std::unique_ptr<LoadSaveDialog> loadSaveScreen;
 	std::unique_ptr<TerrainPaletteDialog> terrainPalette;
+	std::unique_ptr<ResourcePaletteDialog> resourcePalette;
+	bool importingResources = false;
+	void importResourceFile(const std::string& filename);
 	bool importingTerrain = false;
 	void importTerrainFile(const std::string &filename);
 

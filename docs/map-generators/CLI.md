@@ -266,8 +266,13 @@ can still alter terrain or drop illegal resources in that region. This local heu
 crossings; it does not guarantee continuity for large feature offsets or preserve
 route topology. Engine shores can change cells just beyond the strip.
 
-After terrain rebuilding, legal wood, wheat and algae footprints are interpolated
-across the same seam strip. Stone, fruit and papyrus deposits remain fixed.
+The image palette is a legacy content adapter for named built-in resources;
+custom resource definitions and compound stock quantities cannot be represented
+losslessly by these colors. After terrain rebuilding, resources with configured
+spreading, growth and ecology are interpolated across the same seam strip.
+With the shipped catalog these are trees, wheat and algae; rocks, fruit trees and
+papyrus remain fixed. Suitability and budget-restoration groups use each palette
+resource's configured habitat permissions rather than resource identities.
 Opposite unprotected resource edge cells are reconciled. The pass preserves each
 resource type's legal tile count **after** terrain legality filtering; it does not
 preserve exact stored amounts, since amounts are inferred afterward. Surplus

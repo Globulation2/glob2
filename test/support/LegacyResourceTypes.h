@@ -8,13 +8,8 @@
 
 #include "Ressource.h"
 
-// ResourceType describes the static configuration of a resource kind
-// (Wood, Wheat, Papyrus, Stone, Alga, Cherry, Orange, Prune). Historically
-// these values were loaded at runtime from data/resources.txt via the
-// EntitiesTypes<T> template; they are now baked into a compile-time const
-// table in resources.cpp. The fields remain Sint32 for ABI parity with the
-// old loader (booleans were stored as ints).
-struct ResourceType
+// Frozen pre-runtime catalog, exclusively for the legacy ecology reference.
+struct LegacyResourceType
 {
 	Sint32 gfxId;
 	Sint32 sizesCount;
@@ -33,14 +28,10 @@ struct ResourceType
 	Sint32 clearable;
 };
 
-// ResourcesTypes is the read-only registry of resource types, indexed by the
-// in-game ResourceType integer ID (WOOD=0, WHEAT=1, ..., PRUNE=7). The class
-// keeps the same accessor surface (.get / .size) as the old EntitiesTypes<T>
-// subclass so existing callers compile unchanged; it is now backed by a
-// compile-time const array rather than a parsed text file.
-class ResourcesTypes
+// Test-only lookup; never used by the production engine.
+class LegacyResourcesTypes
 {
 public:
-	const ResourceType* get(unsigned int num) const;
+	const LegacyResourceType* get(unsigned int num) const;
 	std::size_t size() const;
 };

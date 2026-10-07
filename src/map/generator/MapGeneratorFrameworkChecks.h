@@ -41,7 +41,10 @@ inline std::uint64_t mapFingerprint(const Game &game)
 		{
 			add(game.map.getUMTerrain(x, y));
 			add(game.map.getTerrain(x, y));
-			add(game.map.getResource(x, y).type);
+			// Keep the historical empty marker in geometry fingerprints; storage
+			// widening alone must not invalidate established generator worlds.
+			const auto resource=game.map.getResource(x,y).type;
+			add(resource==NO_RES_TYPE ? 255u : resource);
 			add(game.map.getResource(x, y).amount);
 		}
 	add(game.teamsCount());

@@ -466,7 +466,7 @@ bool populate(Game &game, GenerationContext &c, const Layout &L, const std::vect
 	writeUndermap(map, L.terrain);
 	for (int k = 0; k < c.request.nbTeams; ++k) game.addTeam();
 	for (int i = 0; i < t.size(); ++i)
-		if (L.wall[i]) map.setResource(i % t.w, i / t.w, STONE, 1);
+		if (L.wall[i]) map.setResourceByIndex(i % t.w, i / t.w, STONE, 1);
 	const auto fertility = Fertility::forMap(map, false);
 	std::vector<int> starterOwner(L.plots.size(), -1);
 	for (int site : sites)
@@ -524,13 +524,13 @@ bool populate(Game &game, GenerationContext &c, const Layout &L, const std::vect
 			!L.wall[i] && clearGround(map, i % t.w, i / t.w))
 		{
 			const auto draw = c.bounded("faulted-city-ambient", 12000);
-			if (draw < unsigned(o.stone)) { map.setResource(i % t.w, i / t.w, STONE, 1); ++stones; }
+			if (draw < unsigned(o.stone)) { map.setResourceByIndex(i % t.w, i / t.w, STONE, 1); ++stones; }
 
 		}
 	for (int i = 0; i < t.size(); ++i)
 		if (L.crop[i] >= CHERRY && !L.junction[i] && clearGround(map, i % t.w, i / t.w) &&
 			c.bounded("faulted-city-fruit", 300) < unsigned(o.fruit))
-		{ map.setResource(i % t.w, i / t.w, L.crop[i], 1); ++fruits; }
+		{ map.setResourceByIndex(i % t.w, i / t.w, L.crop[i], 1); ++fruits; }
 	seedAlgae(map, c, t, "faulted-city-algae", o.algae, AlgaeBand::anyWater());
 	if (const auto routes = colonyRoutes(map, L, c.request.nbTeams); !routes.empty())
 	{ c.telemetry.choice("faulted-city.rejected-check", "routes"); c.detail = routes; return false; }
@@ -538,10 +538,10 @@ bool populate(Game &game, GenerationContext &c, const Layout &L, const std::vect
 	{ c.telemetry.choice("faulted-city.rejected-check", "food"); c.detail = food; return false; }
 	if (const auto room = colonyRoom(map, L, c.request.nbTeams); !room.empty())
 	{ c.telemetry.choice("faulted-city.rejected-check", "room"); c.detail = room; return false; }
-	c.telemetry.measure("faulted-city.resources.wheat", planted[0]);
-	c.telemetry.measure("faulted-city.resources.wood", planted[1]);
-	c.telemetry.measure("faulted-city.resources.stone-extra", stones);
-	c.telemetry.measure("faulted-city.resources.fruit", fruits);
+	c.telemetry.measure("faulted-city.materials.wheat", planted[0]);
+	c.telemetry.measure("faulted-city.materials.wood", planted[1]);
+	c.telemetry.measure("faulted-city.materials.stone-extra", stones);
+	c.telemetry.measure("faulted-city.materials.fruit", fruits);
 	return true;
 }
 
@@ -549,8 +549,8 @@ std::string qualityFailure(const StartQualityReport &q)
 {
 	for (const auto &s : q.colonies)
 		if (s.wheatDistance < 0 || s.wheatDistance > 12 || s.woodDistance < 0 || s.woodDistance > 24 ||
-			s.resources[STONE].nearestDistance < 0 || s.resources[STONE].nearestDistance > 32 || s.buildSites < 48 ||
-			s.distanceBands[0].depositTiles[WHEAT] < 12 || s.resources[WHEAT].catchmentDeposits < 24)
+			s.materials[materialIndex(MaterialId::Stone)].nearestDistance < 0 || s.materials[materialIndex(MaterialId::Stone)].nearestDistance > 32 || s.buildSites < 48 ||
+			s.distanceBands[0].depositTiles[materialIndex(MaterialId::Food)] < 12 || s.materials[materialIndex(MaterialId::Food)].catchmentDeposits < 24)
 		return "A city neighbourhood lacks reachable crops or building room.";
 	if (q.fairness < 0.80) return "The city neighbourhoods are too unequal; try another seed.";
 	return {};
@@ -652,7 +652,7 @@ std::string validateWorld(const Game &game, const GenerationContext &c)
 			return "A city fault is obstructed.";
 	}
 	if (const auto access = startingAccessFailure(game.map, c.request.nbTeams,
-		{{WHEAT, 12, "wheat"}, {WOOD, 24, "wood"}, {STONE, 32, "stone"}}, 48); !access.empty()) return access;
+		{{MaterialId::Food, 12, "food"}, {MaterialId::Wood, 24, "wood"}, {MaterialId::Stone, 32, "stone"}}, 48); !access.empty()) return access;
 	if (const auto routes = colonyRoutes(game.map, L, c.request.nbTeams); !routes.empty()) return routes;
 	if (const auto food = colonyFood(game.map, L, c.request.nbTeams); !food.empty()) return food;
 	if (const auto room = colonyRoom(game.map, L, c.request.nbTeams); !room.empty()) return room;

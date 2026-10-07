@@ -461,7 +461,7 @@ bool generate(Game &game, GenerationContext &context)
 	const int woodBudget =
 		std::min(int(woodOrder.size() * 0.58), int(scaledCount(woodOrder.size() / 5, o.wood)));
 	for (int j = 0; j < woodBudget; ++j)
-		map.setResource(woodOrder[j] % t.w, woodOrder[j] / t.w, WOOD, 1);
+		map.setResourceByIndex(woodOrder[j] % t.w, woodOrder[j] / t.w, WOOD, 1);
 	furnishGround(
 		map, t, context, fertility,
 		[&](int i) { return ambient[i] && !reserved[i] && clearGround(map, i % t.w, i / t.w); },

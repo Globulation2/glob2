@@ -5564,5 +5564,45 @@ Työläiset voivat hakea tarvikkeita markkinoiden yhteisestä varastosta. Markki
 Tuo maastomäärittelyt
 [Terrain palette]
 Maastopaletti
+[Food]
+Ruoka
+[Paper]
+Paperi
+[Cherries]
+Kirsikat
+[Oranges]
+Appelsiinit
+[Prunes]
+Luumut
+[Gold]
+Kulta
+[Metal]
+Metalli
+[Glass]
+Lasi
+[Fabric]
+Kangas
+[Import Resource Definitions]
+Tuo resurssimääritykset
+[Resource palette]
+Resurssipaletti
+[Trees]
+Puut
+[Rocks]
+Kalliot
+[Cherry tree]
+Kirsikkapuu
+[Orange tree]
+Appelsiinipuu
+[Prune tree]
+Luumupuu
+[Gold ore]
+Kultamalmi
+[Iron ore]
+Rautamalmi
+[Sand]
+Hiekka
+[Cotton]
+Puuvilla
 [Reroll terrain look]
 Arvo maaston ulkoasu uudelleen

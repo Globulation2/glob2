@@ -117,10 +117,10 @@ uint32_t cellYield(uint32_t fertility, int openNeighbors, int growthPeriodTicks)
 	return uint32_t(static_cast<long long>(fertility)*open*rateScale/denominator);
 }
 
-int swarmDemand(int resourceForOneUnit, int unitProductionTime, int percent)
+int swarmDemand(int foodPerUnit, int unitProductionTime, int percent)
 {
-	if(resourceForOneUnit<=0||unitProductionTime<=0||percent<=0)return 0;
-	return int(static_cast<long long>(resourceForOneUnit)*rateScale*percent
+	if(foodPerUnit<=0||unitProductionTime<=0||percent<=0)return 0;
+	return int(static_cast<long long>(foodPerUnit)*rateScale*percent
 		/(static_cast<long long>(unitProductionTime)*percentScale));
 }
 

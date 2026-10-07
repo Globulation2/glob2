@@ -196,7 +196,7 @@ bool generate(Game &game, GenerationContext &context)
 	writeUndermap(map, terrain);
 	for (int i = 0; i < n; ++i)
 		if (L.stone[i] && map.isResourceAllowed(i % t.w, i / t.w, STONE))
-			map.setResource(i % t.w, i / t.w, STONE, 1);
+			map.setResourceByIndex(i % t.w, i / t.w, STONE, 1);
 
 	context.stage = "fingerprint colonies";
 	if (!settleRoundColonies(game, context, "fingerprint-starts", L.homeOf, L.homes, L.homeRadius))

@@ -12,11 +12,11 @@
 
 // Resource pathfinding for units (pathfindResource, pathfindRandom)
 
-bool Map::pathfindResource(int teamNumber, Uint8 resourceType, int swimClass, int x, int y, int *dx, int *dy, bool *stopWork, Building *target, bool withMarkets)
+bool Map::pathfindMaterial(int teamNumber, Uint8 resourceType, int swimClass, int x, int y, int *dx, int *dy, bool *stopWork, Building *target, bool withMarkets)
 {
 	PERF_SCOPE_TIME(PathResource);
-	assert(resourceType<MAX_RESOURCES);
-	const Uint16 *gradient=getResourceGradient(teamNumber, resourceType, swimClass, withMarkets, target);
+	assert(resourceType<MaterialCount);
+	const Uint16 *gradient=getMaterialGradientSlot(teamNumber, resourceType, swimClass, withMarkets, target);
 	size_t hereIndex=coordToIndex(x, y);
 	Uint16 here=gradient[hereIndex];
 	Uint32 teamMask=Team::teamNumberToMask(teamNumber);
@@ -38,7 +38,7 @@ bool Map::pathfindResource(int teamNumber, Uint8 resourceType, int swimClass, in
 		// The round-trip gradient may lag behind this one by a few ticks; when
 		// it is blocked or stale here, the plain gradient below still leads to
 		// a resource.
-		const Uint16 *roundTrip=roundTripGradient(target, resourceType, swimClass);
+		const Uint16 *roundTrip=roundTripGradientSlot(target, resourceType, swimClass);
 		if (roundTrip && roundTrip[hereIndex]>GRADIENT_UNREACHABLE
 			&& directionByGradient(teamMask, swimClass, x, y, roundTrip, dx, dy, true))
 			return true;

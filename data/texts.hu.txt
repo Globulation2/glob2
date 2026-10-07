@@ -5564,5 +5564,45 @@ A munkások a piacok közös készletéből is hozhatnak ellátmányt. A piacok 
 Terepdefiníciók importálása
 [Terrain palette]
 Tereppaletta
+[Food]
+Élelem
+[Paper]
+Papír
+[Cherries]
+Cseresznye
+[Oranges]
+Narancs
+[Prunes]
+Szilva
+[Gold]
+Arany
+[Metal]
+Fém
+[Glass]
+Üveg
+[Fabric]
+Szövet
+[Import Resource Definitions]
+Erőforrás-definíciók importálása
+[Resource palette]
+Erőforráspaletta
+[Trees]
+Fák
+[Rocks]
+Sziklák
+[Cherry tree]
+Cseresznyefa
+[Orange tree]
+Narancsfa
+[Prune tree]
+Szilvafa
+[Gold ore]
+Aranyérc
+[Iron ore]
+Vasérc
+[Sand]
+Homok
+[Cotton]
+Pamut
 [Reroll terrain look]
 Terep megjelenésének újrasorsolása

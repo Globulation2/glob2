@@ -5564,5 +5564,45 @@ Arbeiter können Vorräte aus dem gemeinsamen Marktbestand holen. Märkte lassen
 Geländedefinitionen importieren
 [Terrain palette]
 Geländepalette
+[Food]
+Nahrung
+[Paper]
+Papier
+[Cherries]
+Kirschen
+[Oranges]
+Orangen
+[Prunes]
+Pflaumen
+[Gold]
+Gold
+[Metal]
+Metall
+[Glass]
+Glas
+[Fabric]
+Stoff
+[Import Resource Definitions]
+Ressourcendefinitionen importieren
+[Resource palette]
+Ressourcenpalette
+[Trees]
+Bäume
+[Rocks]
+Felsen
+[Cherry tree]
+Kirschbaum
+[Orange tree]
+Orangenbaum
+[Prune tree]
+Pflaumenbaum
+[Gold ore]
+Golderz
+[Iron ore]
+Eisenerz
+[Sand]
+Sand
+[Cotton]
+Baumwolle
 [Reroll terrain look]
 Geländeaussehen neu auswürfeln

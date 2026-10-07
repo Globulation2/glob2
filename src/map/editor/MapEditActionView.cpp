@@ -114,21 +114,32 @@ bool MapEdit::performViewAction(const std::string& action, float relMouseX, floa
 		menuScreen.reset();
 		showingMenuScreen=false;
 	}
-	else if (action == "import terrain definitions")
+	else if (action == "import terrain definitions" || action == "import resource definitions")
 	{
 		performAction("unselect");
 		loadSaveScreen = std::make_unique<LoadSaveDialog>(
-			"terrain", "json", true, Glob2UI::tr("[Import Terrain Definitions]"), nullptr, nullptr,
+			action == "import terrain definitions" ? "terrain" : "resources", "json", true,
+			Glob2UI::tr(action == "import terrain definitions" ? "[Import Terrain Definitions]" : "[Import Resource Definitions]"), nullptr, nullptr,
 			nullptr, Glob2UI::Surface::Editor, false);
 		attachDialog(*loadSaveScreen);
 		showingLoad = true;
-		importingTerrain = true;
+		importingTerrain = action == "import terrain definitions";
+		importingResources = !importingTerrain;
 	}
 	else if (action == "open terrain palette")
 	{
 		performAction("unselect");
 		terrainPalette = std::make_unique<TerrainPaletteDialog>(game.map.frozenTerrainRegistry());
 		attachDialog(*terrainPalette);
+	}
+	else if (action == "open resource palette")
+	{
+		performAction("unselect");
+		for (const auto& key : game.map.resourceRegistry().experimentKeys())
+			if (globalContainer->settings.experiments.has(key))
+				game.gameHeader.getExperiments().set(key, true, game.map.resourceRegistry().experimentKeys());
+		resourcePalette = std::make_unique<ResourcePaletteDialog>(game.map.frozenResourceRegistry(), game.gameHeader.getExperiments());
+		attachDialog(*resourcePalette);
 	}
 	else if (action == "open load screen")
 	{
@@ -144,6 +155,7 @@ bool MapEdit::performViewAction(const std::string& action, float relMouseX, floa
 		loadSaveScreen.reset();
 		showingLoad=false;
 		importingTerrain = false;
+		importingResources = false;
 	}
 	else if(action=="open save screen")
 	{

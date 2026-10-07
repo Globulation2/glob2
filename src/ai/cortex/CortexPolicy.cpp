@@ -37,7 +37,7 @@ namespace Cortex
 	// never zeroed, and idle labour is continuously turned into capacity (more
 	// inns to stay ahead of population) and tech (school → racetrack → hospital)
 	// rather than parked at an artificial population ceiling. The only real size
-	// governor is physical: a swarm stalls when its WHEAT buffer runs below 5
+	// governor is physical: a swarm stalls when its Food buffer runs below 5
 	// (engine), and feeding is kept ahead of the population by inn-led growth.
 
 	/// Reactive thresholds that suppress *expansion spending* (never swarm
@@ -147,7 +147,7 @@ namespace Cortex
 		// Cortex is still bootstrapping (workers only); at or above it the colony both
 		// techs up AND folds warriors into the production mix. There is NO population
 		// ceiling and NO production halt — feeding is kept ahead of population by
-		// inn-led expansion (Priority 2), and the engine's WHEAT-buffer stall is the
+		// inn-led expansion (Priority 2), and the engine's Food-buffer stall is the
 		// real supply governor.
 		//
 		// The inn requirement is "feeding is established", not "the first inn has
@@ -164,7 +164,7 @@ namespace Cortex
 		// the healthy slice (mature AND not starving) — it gates offense/defense/
 		// barracks and the steady-state production mix, which all want a healthy
 		// colony. foodSaturated is the complementary famine slice (mature BUT starving):
-		// the population has overshot what the wheat catchment can feed. The two are
+		// the population has overshot what the food catchment can feed. The two are
 		// mutually exclusive and partition economyEstablished by f.starving.
 		// No hunger removes the inn prerequisite as well as starvation scores;
 		// otherwise the controller waits forever for feeding capacity it no longer builds.
@@ -175,7 +175,7 @@ namespace Cortex
 		f.foodSaturated = f.economyEstablished &&  f.starving;
 
 		// Spare labour: idle workers exist, so a tech/expansion build can be started
-		// without stealing the haulers that keep the swarm + inn WHEAT buffers full.
+		// without stealing the haulers that keep the swarm + inn Food buffers full.
 		// The economy expands whenever this holds — there is never an idle
 		// "surplus, do nothing" state. Feeding (the inn, Priority 2) is exempt: it is
 		// built on the capacity trigger regardless of spare labour, because feeding
@@ -183,7 +183,7 @@ namespace Cortex
 		f.canExpand       = (obs.freeWorkers > 0 && !f.starving && !f.hungry);
 
 		// Explorer slice of the production mix. Bootstrap puts one early explorer
-		// out (reveal our wheat / scout); once established we keep ≥1 explorer out
+		// out (reveal our food / scout); once established we keep ≥1 explorer out
 		// at all times (so flagTargets can populate for offense). The WORKER and
 		// WARRIOR slices are decided by the worker-target rule below.
 		const bool wantEarlyExplorer = (!f.combatPhase && f.swarms >= 1 && obs.explorers == 0);
@@ -215,7 +215,7 @@ namespace Cortex
 		//   base  = Σ(swarm + inn hauler requests) + WORKER_TARGET_BUFFER — the hauler
 		//           floor: enough workers to staff every swarm + inn hauling job plus a
 		//           small buffer. Each building's CURRENT maxUnitWorking is its live
-		//           hauler request (tuneWorkers converges it to the level the wheat
+		//           hauler request (tuneWorkers converges it to the level the food
 		//           buffer / restock deficit calls for), so summing them is the live
 		//           "how many haulers does the economy want" figure.
 		//   needs = obs.workers + fillableNeeded — the full STAFFABLE worker demand:
@@ -254,7 +254,7 @@ namespace Cortex
 		//   workers >= mid       -> warriors: the worker base has covered half the gap
 		//        to full staffing (and since `needs` tracks live demand, in practice
 		//        nearly all of it), so spare population goes to the army. During a
-		//        famine the population has overshot what wheat can feed, so few jobs
+		//        famine the population has overshot what food can feed, so few jobs
 		//        are open (needs low, mid ~ base) and the swarm converts the doomed
 		//        surplus food into SOLDIERS rather than more starving mouths.
 		if (obs.workers < base)

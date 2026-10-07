@@ -50,7 +50,7 @@ TEST_CASE("unused definitions do not enlarge simulation work [benchmark]")
             for (int n=0;n<8;++n)
             {
                 auto* inn=world.addBuilding("inn",4+n*12,4);
-                inn->resources[WHEAT]=inn->type->maxResource[WHEAT];
+                inn->materials[WHEAT]=inn->type->maxMaterial[WHEAT];
             }
             for (int n=0;n<64;++n) world.addUnit(WORKER,4+n%32,12+n/32);
             world.team->createLists(); world.game.setWaitingOnMask(0); world.step(128);
@@ -79,39 +79,39 @@ TEST_CASE("private stock routing measures warm fields invalidation and working s
         auto& spec=catalog["variants"][id];
         spec["semantics"]["occupiesGround"]=false;
         auto& market=spec["semantics"]["market"];
-        market["suppliesDirectStock"]=true; market["suppliesDirectStockResources"]={"wood"};
-        market["fetchesDirectStock"]=true; market["fetchesDirectStockResources"]={"wood"};
+        market["suppliesDirectStock"]=true; market["suppliesDirectStockMaterials"]={"wood"};
+        market["fetchesDirectStock"]=true; market["fetchesDirectStockMaterials"]={"wood"};
         market["fetchesStock"]=false; market["sharedStock"]=false;
         world.game.buildingsTypes.loadSnapshotJson(catalog.dump()); world.game.configureBuildingCatalog();
         auto& map=world.game.map;
         const int budgetFields=shift==9 ? 128 : 32;
         const int fields=budgetFields*multiple/2;
         const Uint64 fieldBytes=Uint64(map.getW())*map.getH()*sizeof(Uint16);
-        map.setResourceRoutingCacheBudget(fieldBytes*budgetFields);
+        map.setMaterialRoutingCacheBudget(fieldBytes*budgetFields);
         std::vector<Building*> consumers;
         for (int n=0;n<fields;++n)
         {
             auto* b=world.addBuilding("inn",(n*7)%map.getW(),(n*13)%map.getH());
-            b->resources[WOOD]=10; consumers.push_back(b);
+            b->materials[WOOD]=10; consumers.push_back(b);
         }
         world.team->createLists();
         for (int repeat=0;repeat<3;++repeat) for (int phase=0;phase<3;++phase)
         {
             // A revision models depletion/replenishment. Warm passes use the
             // same tick so age expiry does not obscure working-set effects.
-            if(phase==0 || phase==2) map.dirtyMarketGradients(0,WOOD);
-            if(phase==2) consumers.front()->resources[WOOD]=0;
+            if(phase==0 || phase==2) map.dirtyMarketGradientsSlot(0,WOOD);
+            if(phase==2) consumers.front()->materials[WOOD]=0;
             Uint64 digest=0; const auto start=Clock::now();
             for(auto* consumer : consumers)
             {
-                const auto* field=map.getResourceGradient(0,WOOD,0,false,consumer);
+                const auto* field=map.getMaterialGradientSlot(0,WOOD,0,false,consumer);
                 digest+=field[map.coordToIndex(consumer->posX,consumer->posY)];
             }
             const auto duration=elapsed(start);
-            CHECK(map.resourceRoutingCacheBytes()<=fieldBytes*budgetFields);
+            CHECK(map.materialRoutingCacheBytes()<=fieldBytes*budgetFields);
             std::printf("catalog_routes,%d,%d,%d,%d,%d,%lld,%llu,%llu\n",map.getW(),budgetFields,fields,repeat,phase,duration,
-                static_cast<unsigned long long>(map.resourceRoutingCacheBytes()),static_cast<unsigned long long>(digest));
-            if(phase==2) consumers.front()->resources[WOOD]=10;
+                static_cast<unsigned long long>(map.materialRoutingCacheBytes()),static_cast<unsigned long long>(digest));
+            if(phase==2) consumers.front()->materials[WOOD]=10;
         }
     }
 }

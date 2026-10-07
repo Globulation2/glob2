@@ -98,6 +98,9 @@ namespace
 	{
 		TinyMap()
 		{
+            // Unit binaries do not initialize Toolkit or an installed asset search path.
+            resourceRegistryValue = ResourceRegistry::loadFile((glob2test::sourceRoot() / "data/resources/registry.json").string());
+            rebuildResourceHabitats();
 			wDec = hDec = kMapDec;
 			w = h = 1 << kMapDec;
 			wMask = hMask = w - 1;
@@ -396,6 +399,7 @@ TEST_CASE("future terrain ecology properties invalidate only their effective inp
     cache.rebuild(map);
     const auto land=cache.landField().values(), aquatic=cache.aquaticField();
     const auto wood=cache.rate(index,WOOD);
+    const auto food=cache.rate(index,WHEAT);
     auto changed=grass;
     changed.fertilityQ8=1024; // Disabled source: this value contributes nothing.
     changed.allowedResources &= ~(1u<<WHEAT);
@@ -403,7 +407,9 @@ TEST_CASE("future terrain ecology properties invalidate only their effective inp
     changed.groundHealthQ8=-8;
     cache.terrainChanged(index,grass,changed);
     REQUIRE(cache.validFor(map));
-    CHECK(cache.rate(index,WHEAT)==0);
+    // Notification alone does not publish terrain properties: habitat comes
+    // from the map's compiled catalog, not a duplicate mask inside this cache.
+    CHECK(cache.rate(index,WHEAT)==food);
     CHECK(cache.rate(index,WOOD)==wood);
     CHECK(cache.landField().values()==land);
     CHECK(cache.aquaticField()==aquatic);

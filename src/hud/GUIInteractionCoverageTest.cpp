@@ -2,6 +2,7 @@
 #include "EngineFixtures.h"
 #include "GameGUIViewport.h"
 #include "GameGUIInternal.h"
+#include "touch/GameGUITouch.h"
 #include <nlohmann/json.hpp>
 #include "Order.h"
 #include "GameGUIKeyActions.h"
@@ -66,7 +67,7 @@ TEST_SUITE("GUIInteractionCoverage")
             auto& spec=catalog["variants"][typeId];auto& properties=spec["properties"];auto& semantics=spec["semantics"];
             spec["previous"]="";spec["next"]="";semantics["repairable"]=false;
             semantics["assignmentLimit"]=0;spec["presentation"]["defaultAssigned"]=0;
-            properties["armor"]=0;properties["maxResource"]=std::vector<int>(15,0);properties["maxUnitInside"]=3;
+            properties["armor"]=0;properties["maxMaterial"]=std::vector<int>(15,0);properties["maxUnitInside"]=3;
             const int feed=instant?0:10,heal=instant?0:100,training=instant?0:250;
             semantics["feeding"]={{"enabled",true},{"duration",feed},{"cost",nlohmann::json::object()}};
             semantics["healing"]={{"enabled",true},{"duration",heal},{"cost",nlohmann::json::object()}};
@@ -136,6 +137,7 @@ TEST_SUITE("GUIInteractionCoverage")
             gfx->beginFrame(GAGCore::GraphicContext::FrameMode::FullRedraw);
             gfx->setClipRect();
             gfx->drawFilledRect(0,0,gfx->getW(),gfx->getH(),GAGCore::Color(24,35,28));
+            gui.extractScene(gui.frameScene);
             gui.drawChoiceInfoPanel("inn"); gfx->nextFrame();
             auto* frame=gfx->completedFrame(); REQUIRE(frame);
             Uint64 hash=1469598103934665603ull;
@@ -144,15 +146,25 @@ TEST_SUITE("GUIInteractionCoverage")
             return hash;
         };
         const auto original=render();
-        site->maxResource[WOOD]+=17;
+        site->maxMaterial[WOOD]+=17;
         CHECK(render()==original);
         site->semantics.constructionCost[WOOD]+=17;
         const auto changedCost=render(); CHECK(changedCost!=original);
-        for (int resource=HAPPINESS_BASE; resource<MAX_RESOURCES; ++resource)
+        for (int resource=HAPPINESS_BASE; resource<MaterialCount; ++resource)
         {
             const auto before=render();
             site->semantics.constructionCost[resource]=resource+1;
-            CHECK(render()!=before);
+            if (resource<8) CHECK(render()!=before);
+            else
+            {
+                CHECK(render()==before); // A configured cost alone must not expose absent materials.
+                world.team->teamMaterials[resource]=1;
+                CHECK(render()!=before); // Stored stock counts as presence without a natural deposit.
+                if (resource==int(materialIndex(MaterialId::Fabric)))
+                    REQUIRE(SDL_SaveBMP(gfx->completedFrame(),(glob2test::artifactDir()/"construction-fabric-cost.bmp").string().c_str()));
+                site->semantics.constructionCost[resource]=0;
+                CHECK(render()==before); // Present but unused inputs stay hidden.
+            }
         }
         REQUIRE(SDL_SaveBMP(gfx->completedFrame(),(glob2test::artifactDir()/"construction-fruit-costs.bmp").string().c_str()));
     }
@@ -169,14 +181,14 @@ TEST_SUITE("GUIInteractionCoverage")
         auto& from=catalog["variants"][current];
         from["properties"]["defaultUnitStayRange"]=0;from["properties"]["maxUnitStayRange"]=16;
         from["properties"]["zonable"]={1,1,1};
-        from["properties"]["maxResource"][STONE]=15;
-        for(int r=HAPPINESS_BASE;r<MAX_RESOURCES;++r)from["properties"]["maxResource"][r]=20;
+        from["properties"]["maxMaterial"][STONE]=15;
+        for(int r=HAPPINESS_BASE;r<MaterialCount;++r)from["properties"]["maxMaterial"][r]=20;
         from["semantics"]["market"]["interTeamFruitExchange"]=true;
         const int producer=world.game.buildingsTypes.getFinishedTypeNum("swarm");
         from["semantics"]["production"]=catalog["variants"][producer]["semantics"]["production"];
         from["semantics"]["repairCost"]={{"wood",8},{"orange",13},{"prune",17}};
         auto& to=catalog["variants"][next];to["properties"]["hpMax"]=1379;
-        to["properties"]["maxResource"][WOOD]=7;to["properties"]["maxResource"][STONE]=0;
+        to["properties"]["maxMaterial"][WOOD]=7;to["properties"]["maxMaterial"][STONE]=0;
         catalog["variants"][nextSite]["semantics"]["constructionCost"]={{"wood",8},{"cherry",23},{"orange",29},{"prune",31}};
         world.game.buildingsTypes.loadSnapshotJson(catalog.dump());world.game.buildingsTypes.loadSprites();world.game.configureBuildingCatalog();
         auto* building=world.game.addBuilding(8,8,current,0);REQUIRE(building);
@@ -256,9 +268,14 @@ TEST_SUITE("GUIInteractionCoverage")
         // New and removed storage capacities and fruit costs must remain
         // reachable while the pointer stays on the fixed upgrade button.
         auto* target=world.game.buildingsTypes.get(next);
-        target->maxResource[WOOD]=9;render();CHECK(frameHash()!=original);
-        const auto changedWood=frameHash();target->maxResource[STONE]=3;render();CHECK(frameHash()!=changedWood);
-        target->maxResource[STONE]=0;target->maxResource[WOOD]=7;render();
+        const auto gold=materialIndex(MaterialId::Gold);
+        const auto priorGold=target->maxMaterial[gold];
+        target->maxMaterial[gold]=19;render();CHECK(frameHash()==original);
+        worker->carriedMaterial=gold;render();CHECK(frameHash()!=original);
+        worker->carriedMaterial=-1;target->maxMaterial[gold]=priorGold;render();CHECK(frameHash()==original);
+        target->maxMaterial[WOOD]=9;render();CHECK(frameHash()!=original);
+        const auto changedWood=frameHash();target->maxMaterial[STONE]=3;render();CHECK(frameHash()!=changedWood);
+        target->maxMaterial[STONE]=0;target->maxMaterial[WOOD]=7;render();
         CHECK(headerIsBlank());
         REQUIRE(SDL_SaveBMP(gfx->completedFrame(),(glob2test::artifactDir()/"mixed-upgrade-costs.bmp").string().c_str()));
         auto* site=world.game.buildingsTypes.get(nextSite);
@@ -342,7 +359,7 @@ TEST_SUITE("GUIInteractionCoverage")
                 const auto healthy=renderPanel(gui);
                 CHECK(world.checksum()==before);
                 unit->hp=1; unit->hungry=0;
-                if (type==WORKER) unit->carriedResource=WHEAT;
+                if (type==WORKER) unit->carriedMaterial=WHEAT;
                 if (type==WARRIOR) world.game.gameHeader.setGlassCannonLevel(1);
                 const auto damagedState=world.checksum();
                 const auto damaged=renderPanel(gui);
@@ -495,4 +512,50 @@ TEST_SUITE("GUIInteractionCoverage")
         REQUIRE(accepted.finished()); CHECK(accepted.result()==InGameEndOfGameScreen::QUIT);
     }
 
+}
+
+TEST_CASE("resource inspectors show infinity only for stocked infinite yields [display:1024x768][artifacts]" * doctest::test_suite("GUIInteractionCoverage"))
+{
+    glob2test::HeadlessGlobals globals({.display=true,.loadStrings=true,.width=1024,.height=768});
+    glob2test::HeadlessGame world({.discovered=true,.clearImmobile=true,.loadDefaultRace=true,.header=true});
+    auto& map=world.game.map;
+    auto definitions=nlohmann::json::parse(map.resourceRegistry().serialize());
+    auto entry=definitions["resources"][0];entry.erase("requiredExperiment");
+    entry["key"]="test:inspector-infinite";
+    entry["properties"]={{"primaryMaterial","wood"},{"persistsWhenEmpty",true}};
+    entry["yields"]={{"wood",{{"capacity",5},{"initial",2},{"consumption","one"}}},
+        {"food",{{"capacity",4},{"initial",0},{"consumption","infinite"}}}};
+    definitions["resources"].push_back(entry);map.installResourceDefinitions(definitions.dump());
+    const auto id=map.resourceRegistry().find("test:inspector-infinite");REQUIRE(id.has_value());
+    map.setResource(20,20,*id,0);const auto index=map.coordToIndex(20,20);
+    auto& gui=world.gui;gui.init();REQUIRE(gui.touch);gui.localTeamNo=0;gui.localPlayer=0;gui.localTeam=world.team;
+    gui.setSelection(GameGUI::RESOURCE_SELECTION,unsigned(index));
+    auto* gfx=globals->gfx;
+    const auto inspect=[&](const std::string& expected) {
+        gui.extractScene(gui.frameScene);
+        const auto info=gui.touch->resourceInfo();REQUIRE(info.has_value());CHECK(info->amount==expected);
+        gfx->beginFrame(GAGCore::GraphicContext::FrameMode::FullRedraw);gfx->setClipRect();
+        gfx->drawFilledRect(0,0,gfx->getW(),gfx->getH(),GAGCore::Color(0,0,0));
+        gui.drawResourceInfos();gfx->nextFrame();
+        auto* frame=gfx->completedFrame();REQUIRE(frame);
+        const int left=(gfx->getW()-GAME_GUI_RIGHT_MENU_WIDTH)*frame->w/gfx->getW();
+        const int top=(YPOS_BASE_RESOURCE+2*YOFFSET_TEXT_PARA+40)*frame->h/gfx->getH();
+        const auto* pixels=static_cast<const Uint8*>(frame->pixels);Uint64 hash=1469598103934665603ull;
+        for(int y=top;y<frame->h;++y)
+            for(int x=left*SDL_BYTESPERPIXEL(frame->format);x<frame->w*SDL_BYTESPERPIXEL(frame->format);++x)
+                hash=(hash^pixels[y*frame->pitch+x])*1099511628211ull;
+        return hash;
+    };
+    const auto prefix=getMaterialName(materialIndex(MaterialId::Wood))+": 2/5\n"+
+        getMaterialName(materialIndex(MaterialId::Food))+": ";
+    const auto empty=inspect(prefix+"0/4");
+    REQUIRE(SDL_SaveBMP(gfx->completedFrame(),(glob2test::artifactDir()/"resource-infinite-empty.bmp").string().c_str()));
+    map.setMaterialAmount(index,MaterialId::Food,1);const auto stocked=inspect(prefix+"∞");CHECK(stocked!=empty);
+    REQUIRE(SDL_SaveBMP(gfx->completedFrame(),(glob2test::artifactDir()/"resource-infinite-stocked.bmp").string().c_str()));
+    map.setMaterialAmount(index,MaterialId::Food,2);CHECK(inspect(prefix+"∞")==stocked);
+    map.setMaterialAmount(index,MaterialId::Food,0);CHECK(inspect(prefix+"0/4")==empty);
+    map.setMaterialAmount(index,MaterialId::Wood,0);
+    inspect(getMaterialName(materialIndex(MaterialId::Wood))+": 0/5\n"+
+        getMaterialName(materialIndex(MaterialId::Food))+": 0/4");
+    CHECK(map.getResource(index).type==resourceIndex(*id));
 }

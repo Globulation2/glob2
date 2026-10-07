@@ -262,7 +262,7 @@ class OrderModifyExchange:public OrderModify
 {
 public:
 	OrderModifyExchange() = default;
-	OrderModifyExchange(Uint16 gid, Uint32 receiveResourceMask, Uint32 sendResourceMask);
+	OrderModifyExchange(Uint16 gid, Uint32 receiveMaterialMask, Uint32 sendMaterialMask);
 	virtual ~OrderModifyExchange(void) {}
 
 	//! See OrderModifyBuilding::deserialize.
@@ -274,8 +274,8 @@ public:
 	Uint8 getOrderType(void) { return ORDER_MODIFY_EXCHANGE; }
 
 	Uint16 gid;
-	Uint32 receiveResourceMask;
-	Uint32 sendResourceMask;
+	Uint32 receiveMaterialMask;
+	Uint32 sendMaterialMask;
 
 protected:
 	Uint8 data[10];
@@ -331,7 +331,7 @@ class OrderModifyClearingFlag:public OrderModify
 {
 public:
 	OrderModifyClearingFlag() = default;
-	OrderModifyClearingFlag(Uint16 gid, bool clearingResources[BASIC_COUNT]);
+	OrderModifyClearingFlag(Uint16 gid, bool clearingMaterials[MaterialCount]);
 	virtual ~OrderModifyClearingFlag(void);
 
 	//! See OrderModifyBuilding::deserialize.
@@ -339,11 +339,11 @@ public:
 
 	Uint8 *getData(void);
 	bool setData(const Uint8 *data, int dataLength, Uint32 versionMinor);
-	int getDataLength(void) { return 2+BASIC_COUNT; }
+	int getDataLength(void) { return 2+MaterialCount; }
 	Uint8 getOrderType(void) { return ORDER_MODIFY_CLEARING_FLAG; }
 
 	Uint16 gid;
-	bool clearingResources[BASIC_COUNT];
+	bool clearingMaterials[MaterialCount];
 
 protected:
 	Uint8 *data = nullptr;

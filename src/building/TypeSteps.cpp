@@ -45,7 +45,7 @@ bool Building::canAffordProduction(int unitType) const
 	for (unsigned mask = recipe.costMask; mask; mask &= mask - 1)
 	{
 		const int r = std::countr_zero(mask);
-		if (availableResource(r) < recipe.cost[r]) return false;
+		if (availableMaterial(r) < recipe.cost[r]) return false;
 	}
 	return true;
 }
@@ -62,7 +62,7 @@ void Building::cancelProduction()
 {
 	if (productionUnit >= 0)
 	{
-		releaseResources(type->semantics.production.recipes[productionUnit].cost);
+		releaseMaterials(type->semantics.production.recipes[productionUnit].cost);
 		productionUnit = -1;
 	}
 }
@@ -75,8 +75,8 @@ void Building::restoreProductionReservations()
 		p.scheduling != BuildingProductionScheduling::WeightedCommittedJob ||
 		buildingState != ALIVE || productionTimeout < -1 || productionTimeout > p.recipes[productionUnit].duration)
 		throw std::runtime_error("Invalid saved committed production job");
-	if (!restoreResourcesReservation(p.recipes[productionUnit].cost))
-		throw std::runtime_error("Saved production overbooks resources");
+	if (!restoreMaterialsReservation(p.recipes[productionUnit].cost))
+		throw std::runtime_error("Saved production overbooks materials");
 }
 
 void Building::regenerationStep()
@@ -96,7 +96,7 @@ void Building::swarmStep(void)
 		if (productionUnit < 0)
 		{
 			chosen = selectProductionRecipe();
-			if (chosen < 0 || !reserveResources(production.recipes[chosen].cost)) return;
+			if (chosen < 0 || !reserveMaterials(production.recipes[chosen].cost)) return;
 			productionUnit = chosen;
 			productionTimeout = production.recipes[chosen].duration;
 		}
@@ -128,11 +128,11 @@ void Building::swarmStep(void)
 	const auto& recipe = production.recipes[chosen];
 	if (!committed)
 	{
-		const bool reserved = reserveResources(recipe.cost);
+		const bool reserved = reserveMaterials(recipe.cost);
 		assert(reserved); // availability was checked before creating the unit
 		(void)reserved;
 	}
-	consumeReservedResources(recipe.cost, GameplayMeasurements::SPAWNING);
+	consumeReservedMaterials(recipe.cost, GameplayMeasurements::SPAWNING);
 	productionUnit = -1;
 	++owner->stats.measurements.births[chosen];
 	updateCallLists();
@@ -169,14 +169,14 @@ namespace
 
 void Building::convertStoneToBullet()
 {
-	const int resource = type->semantics.ammunitionResource;
+	const int resource = type->semantics.ammunitionMaterial;
 	const int cost = type->semantics.ammunitionCost;
-	if (availableResource(resource) >= cost && bullets <= type->maxBullets - type->multiplierStoneToBullets)
+	if (availableMaterial(resource) >= cost && bullets <= type->maxBullets - type->multiplierStoneToBullets)
 	{
-		resources[resource] -= cost;
+		materials[resource] -= cost;
 		owner->stats.measurements.consumed[GameplayMeasurements::AMMUNITION][resource] += cost;
 		bullets += type->multiplierStoneToBullets;
-		if (cost && (type->useTeamResources || type->runtimeSuppliesStock || type->runtimeSuppliesDirectStock)) owner->map->dirtyMarketGradients(owner->teamNumber, resource);
+		if (cost && (type->useTeamMaterials || type->runtimeSuppliesStock || type->runtimeSuppliesDirectStock)) owner->map->dirtyMarketGradientsSlot(owner->teamNumber, resource);
 		updateCallLists();
 	}
 }

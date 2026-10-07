@@ -2,8 +2,10 @@
 #include "SceneMap.h"
 
 #include "Map.h"
+#include "Game.h"
 #include "TerrainRegistry.h"
 #include <algorithm>
+#include <bit>
 
 void SceneMap::extract(const Map &map)
 {
@@ -12,7 +14,9 @@ void SceneMap::extract(const Map &map)
 
 void SceneMap::extract(const Map &map, int displayW, int displayH, bool includeScriptAreas)
 {
+	tick = map.game ? map.game->stepCounter : 0;
 	registry = map.frozenTerrainRegistry();
+	resourceDefinitions = map.frozenResourceRegistry();
 	w = map.getW();
 	h = map.getH();
 	wMask = map.getMaskW();
@@ -26,6 +30,9 @@ void SceneMap::extract(const Map &map, int displayW, int displayH, bool includeS
 	terrainTypes = map.terrainTypes();
 	terrainAppearances.resize(size);
 	resources.resize(size);
+	multiStocks.clear();
+	if (!multiStockIndices.empty()) multiStockIndices.assign(size, UINT32_MAX);
+	presentMaterials = 0;
 	resourcesGrow.resize(size);
 	groundUnits.resize(size);
 	airUnits.resize(size);
@@ -37,6 +44,18 @@ void SceneMap::extract(const Map &map, int displayW, int displayH, bool includeS
 		terrainAppearances[i] = registry->appearance(terrainTypes[i]);
 		terrain[i] = tile.terrain;
 		resources[i] = tile.resource;
+		if (tile.resource.type != NO_RES_TYPE)
+		{
+			const auto mask = resourceDefinitions->properties(static_cast<ResourceId>(tile.resource.type)).materialMask;
+			presentMaterials |= mask;
+			if (std::popcount(mask) > 1)
+			{
+				if (multiStockIndices.empty()) multiStockIndices.assign(size, UINT32_MAX);
+				multiStockIndices[i] = multiStocks.size();
+				auto& stock = multiStocks.emplace_back();
+				for (unsigned m = 0; m < MaterialCount; ++m) stock[m] = map.materialAmountAtSlot(i, m);
+			}
+		}
 		resourcesGrow[i] = tile.canResourcesGrow;
 		groundUnits[i] = tile.groundUnit;
 		airUnits[i] = tile.airUnit;
@@ -102,7 +121,7 @@ void SceneMap::mapCaseToDisplayableVector(int mx, int my, int *px, int *py, int 
 	*py = y << 5;
 }
 
-SceneMap::SceneMap() : registry(TerrainRegistry::builtins()) {}
+SceneMap::SceneMap() : registry(TerrainRegistry::builtins()), resourceDefinitions(ResourceRegistry::availableDefaults()) {}
 
 const TerrainPresentation &SceneMap::terrainPresentation(TerrainType type) const
 {
@@ -115,9 +134,19 @@ bool SceneMap::isHardSpaceForBuilding(int x, int y, int w, int h) const
 		for (int xi = x; xi < x + w; xi++)
 		{
 			const size_t i = coordToIndex(xi, yi);
-			if (resources[i].type != NO_RES_TYPE || buildings[i] != 0xFFFF ||
+			if ((resources[i].type != NO_RES_TYPE && resourceDefinitions->properties(static_cast<ResourceId>(resources[i].type)).blocksBuilding) || buildings[i] != 0xFFFF ||
 				!registry->properties(terrainTypes[i]).buildable)
 				return false;
 		}
 	return true;
+}
+
+Uint16 SceneMap::materialAmountAt(size_t index, unsigned material) const
+{
+	if (!validMaterial(material) || resources[index].type == NO_RES_TYPE) return 0;
+	const auto& p = resourceDefinitions->properties(static_cast<ResourceId>(resources[index].type));
+	if (!(p.materialMask & (1u << material))) return 0;
+	if (!multiStockIndices.empty() && multiStockIndices[index] != UINT32_MAX)
+		return multiStocks[multiStockIndices[index]][material];
+	return static_cast<Uint16>(resources[index].amount);
 }

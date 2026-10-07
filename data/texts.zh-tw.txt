@@ -5564,5 +5564,45 @@ AI 遙測
 匯入地形定義
 [Terrain palette]
 地形選擇面板
+[Food]
+食物
+[Paper]
+紙張
+[Cherries]
+櫻桃
+[Oranges]
+橘子
+[Prunes]
+李子
+[Gold]
+黃金
+[Metal]
+金屬
+[Glass]
+玻璃
+[Fabric]
+布料
+[Import Resource Definitions]
+匯入資源定義
+[Resource palette]
+資源面板
+[Trees]
+樹木
+[Rocks]
+岩石
+[Cherry tree]
+櫻桃樹
+[Orange tree]
+橘子樹
+[Prune tree]
+李子樹
+[Gold ore]
+金礦石
+[Iron ore]
+鐵礦石
+[Sand]
+沙子
+[Cotton]
+棉花
 [Reroll terrain look]
 重新隨機產生地形外觀

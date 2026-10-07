@@ -1,3 +1,4 @@
+#include "Material.h"
 #include "AIRuleOrders.h"
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
@@ -28,9 +29,9 @@ std::shared_ptr<Order>AICastor::findGoodBuilding(Sint32 typeNum, bool food, bool
 	int h=map->h;
 	const auto* placement = game->buildingsTypes.get(typeNum);
  const auto* completed = placement->isBuildingSite ? game->buildingsTypes.get(placement->nextLevel) : placement;
- food = completed->semantics.feeding.enabled && completed->semantics.feeding.cost[WHEAT] > 0;
+ food = completed->semantics.feeding.enabled && completed->semantics.feeding.cost[materialIndex(MaterialId::Food)] > 0;
  for (const auto& recipe : completed->semantics.production.recipes)
-  food |= recipe.enabled && recipe.cost[WHEAT] > 0;
+  food |= recipe.enabled && recipe.cost[materialIndex(MaterialId::Food)] > 0;
  defense = game->buildingCapabilities().matches(placement->isBuildingSite ? placement->nextLevel : typeNum, AIPlanning::BuildingIntent::ProjectileDefense);
  int bw=placement->width;
 	int bh=game->buildingsTypes.get(typeNum)->height;

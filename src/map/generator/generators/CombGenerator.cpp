@@ -371,7 +371,7 @@ bool populate(Game &game, GenerationContext &c, const Layout &L, const std::vect
 			count = normal + (int(tiles.size()) - normal) * (o.wheat - 100) / 200;
 		}
 		for (int j = 0; j < count; ++j)
-			game.map.setResource(tiles[j] % t.w, tiles[j] / t.w, L.kind[p], 1);
+			game.map.setResourceByIndex(tiles[j] % t.w, tiles[j] / t.w, L.kind[p], 1);
 		c.telemetry.measure(food ? "comb.wheat.planted" : "comb.wood.planted", count, int(p));
 	}
 	for (int type : {WOOD})
@@ -384,7 +384,7 @@ bool populate(Game &game, GenerationContext &c, const Layout &L, const std::vect
 		const int amount = type == WHEAT ? o.wheat : o.wood;
 		const int count = int(seeds.size()) * amount / 300;
 		for (int k = 0; k < count; ++k)
-			game.map.setResource(seeds[k] % t.w, seeds[k] / t.w, type, 1);
+			game.map.setResourceByIndex(seeds[k] % t.w, seeds[k] / t.w, type, 1);
 		c.telemetry.measure("comb.scatter.crop-seeds", count, type);
 	}
 	// Fertile tufts follow the central inlet, without changing its banks.
@@ -405,7 +405,7 @@ bool populate(Game &game, GenerationContext &c, const Layout &L, const std::vect
 			else if (u % 9 >= 6)
 				fruits.push_back(i);
 		}
-		if (game.map.terrainSupportsResourceAt(i % t.w, i / t.w, ALGA) && (d < -2 && d > -9) && u >= 20 &&
+		if (game.map.terrainSupportsResourceAtByIndex(i % t.w, i / t.w, ALGA) && (d < -2 && d > -9) && u >= 20 &&
 			u < L.length - 20)
 			algae.push_back(i);
 	}
@@ -416,7 +416,7 @@ bool populate(Game &game, GenerationContext &c, const Layout &L, const std::vect
 	{
 		count = std::min(count, int(cells.size()));
 		for (int j = 0; j < count; ++j)
-			game.map.setResource(cells[j] % t.w, cells[j] / t.w,
+			game.map.setResourceByIndex(cells[j] % t.w, cells[j] / t.w,
 								 type == CHERRY ? CHERRY + j % 3 : type, 1);
 		c.telemetry.measure("comb.resource.planted", count, type);
 	};

@@ -822,7 +822,8 @@ private:
 		int seeds;
 		explicit WoodReserve(int size): cells(size,0), seeds(0) {}
 	};
-	WoodReserve select_wood_reserve(AIMaximaRuntime::Context& runtime) const;
+	WoodReserve select_wood_reserve(AIMaximaRuntime::Context& runtime,
+        const std::vector<Uint8>* seedEligibility=nullptr) const;
 	bool wheat_invasion_clearing_required(AIMaximaRuntime::Context& runtime,
 		int index, const std::vector<Uint8>& protected_wheat,
 		const WoodReserve& wood_reserve) const;

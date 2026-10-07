@@ -1,3 +1,5 @@
+#include "AIResourcePolicy.h"
+#include "Material.h"
 #include "AIRuleOrders.h"
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
@@ -343,13 +345,13 @@ bool AIWarrush::percentageOfBuildingsAreFullyWorked(int percentage)const
 			else if (b->constructionResultState == Building::NO_CONSTRUCTION
     && [&]() {
      bool consumes = false;
-     for (int resource = 0; resource < MAX_NB_RESOURCES; ++resource) {
+     for (int resource = 0; resource < MaterialSlotCount; ++resource) {
       bool required = b->type->semantics.feeding.enabled && b->type->semantics.feeding.cost[resource] > 0;
       for (const auto& recipe : b->type->semantics.production.recipes)
        required |= recipe.enabled && recipe.cost[resource] > 0;
       if (!required) continue;
       consumes = true;
-      if (b->resources[resource] <= b->wishedResources[resource] * AI_WARRUSH_HEAVILY_WORKED_RATIO_NUM / AI_WARRUSH_HEAVILY_WORKED_RATIO_DEN) return false;
+      if (b->materials[resource] <= b->wishedMaterials[resource] * AI_WARRUSH_HEAVILY_WORKED_RATIO_NUM / AI_WARRUSH_HEAVILY_WORKED_RATIO_DEN) return false;
      }
      return consumes;
     }())
@@ -627,12 +629,20 @@ std::shared_ptr<Order> AIWarrush::farm()
 	{
 		for(int y=0;y<map->h;y++)
 		{
-			const bool wheat_spot = x%2==y%2 && map->isResourceTakeable(x, y, WHEAT)
+			const auto type=map->getResource(x,y).type;
+			const auto properties=type==NO_RES_TYPE ? ResourceProperties{} : map->resourcePropertiesByIndex(type);
+			const bool reserveFood=AIResourcePolicy::needsSeedReserve(*map,x,y,MaterialId::Food);
+			const bool reserveWood=AIResourcePolicy::needsSeedReserve(*map,x,y,MaterialId::Wood);
+			const bool nearGrowth=properties.ecology!=ResourceEcology::Land
+				|| water_gradient(x, y) > (AI_WARRUSH_GRADIENT_MAX - AI_WARRUSH_WATER_NEAR_OFFSET);
+			const bool wheat_spot = x%2==y%2 && reserveFood
 				&& map->isMapDiscovered(x, y, team->me)
-				&& water_gradient(x, y) > (AI_WARRUSH_GRADIENT_MAX - AI_WARRUSH_WATER_NEAR_OFFSET);
+				&& nearGrowth;
+			const auto foodYield=reserveFood ? map->resourceRegistry().yields(static_cast<ResourceId>(map->getResource(x,y).type))[materialIndex(MaterialId::Food)] : YieldProperties{};
+			const bool wheat_farm = farms && wheat_spot && properties.farmable
+					&& foodYield.consumption==ResourceConsumption::One && !foodYield.destroysDeposit && map->canPaintFarmArea(x, y);
 			if(farms && map->isMapDiscovered(x, y, team->me))
 			{
-				const bool wheat_farm = wheat_spot && map->canPaintFarmArea(x, y);
 				const bool farmed = map->isFarmArea(x, y, team->me);
 				if(wheat_farm && !farmed)
 					farm_add_acc.applyBrush(BrushApplication(x, y, 0), map);
@@ -640,11 +650,11 @@ std::shared_ptr<Order> AIWarrush::farm()
 					farm_del_acc.applyBrush(BrushApplication(x, y, 0), map);
 				// The farm replaces forbidden paint on wheat.
 				if(map->isForbidden(x, y, team->me)
-				   && map->isResourceTakeable(x, y, WHEAT))
+				   && wheat_farm && !reserveWood)
 					del_acc.applyBrush(BrushApplication(x, y, 0), map);
 			}
 
-			if((!map->isResourceTakeable(x, y, WOOD) && !map->isResourceTakeable(x, y, WHEAT)))
+			if(!reserveWood && !reserveFood)
 			{
 				if(map->isForbidden(x, y, team->me))
 				{
@@ -655,9 +665,9 @@ std::shared_ptr<Order> AIWarrush::farm()
 						&& !map->isForbidden (x,y + 1,team->me)
 						&& !map->isForbidden (x,y - 1,team->me)
 						//Or fruits'!
-						&& !map->isResourceTakeable(x, y, CHERRY)
-						&& !map->isResourceTakeable(x, y, ORANGE)
-						&& !map->isResourceTakeable(x, y, PRUNE)
+						&& !map->isMaterialTakeable(x, y,MaterialId::Cherries)
+						&& !map->isMaterialTakeable(x, y,MaterialId::Oranges)
+						&& !map->isMaterialTakeable(x, y,MaterialId::Prunes)
 						)
 					{
 						del_acc.applyBrush(BrushApplication(x, y, 0), map);
@@ -670,17 +680,23 @@ std::shared_ptr<Order> AIWarrush::farm()
 				del_acc.applyBrush(BrushApplication(x, y, 0), map);
 			}
 			
-			//we never clear anything but wood
-			if(!map->isResourceTakeable(x, y, WOOD))
+			const bool woodThreat=properties.clearable && !map->isMaterialTakeable(x,y,MaterialId::Food)
+				&& AIResourcePolicy::canPropagate(*map,x,y,MaterialId::Wood);
+			if(!woodThreat)
 			{
 				if(map->isClearArea(x, y, team->me))
 				{
-					clr_del_acc.applyBrush(BrushApplication(x, y, 0), map);
+					bool besideBuilding=false;
+					for(int dx=-1;dx<=1;++dx) for(int dy=-1;dy<=1;++dy) {
+						const auto gid=map->getBuilding(x+dx,y+dy);
+						besideBuilding|=gid!=NOGBID && Building::GIDtoTeam(gid)==team->teamNumber;
+					}
+					if(!besideBuilding) clr_del_acc.applyBrush(BrushApplication(x, y, 0), map);
 				}
 			}
 
-			//we clear wood if it's next to nice stuff like wheat or buildings
-			if(map->isResourceTakeable(x, y, WOOD))
+			// Clear spreading wood threats without destroying a mixed food source.
+			if(woodThreat)
 			{
 				if(!map->isClearArea(x, y, team->me) && map->isMapDiscovered(x, y, team->me))
 				{
@@ -688,7 +704,7 @@ std::shared_ptr<Order> AIWarrush::farm()
 					{
 						for(int ymod=-1;ymod<=1;ymod++)
 						{
-							if(map->isResourceTakeable(x+xmod, y+ymod, WHEAT)
+							if(map->isMaterialTakeable(x+xmod, y+ymod,MaterialId::Food)
 									|| (map->getBuilding(x+xmod,y+ymod)!=NOGBID
 									&& (team->me & game->teams[Building::GIDtoTeam(map->getBuilding(x+xmod,y+ymod))]->me)))
 							{
@@ -705,23 +721,23 @@ std::shared_ptr<Order> AIWarrush::farm()
 
 			if(x%2==1 && ((y%2==1 && x%4==1) || (y%2==0 && x%4==3)))
 			{
-				if(map->isResourceTakeable(x, y, WOOD))
+				if(reserveWood)
 				{
-					if(!map->isForbidden(x, y, team->me) && !map->isClearArea(x, y, team->me) && map->isMapDiscovered(x, y, team->me) && water_gradient(x, y) > (AI_WARRUSH_GRADIENT_MAX - AI_WARRUSH_WATER_NEAR_OFFSET))
+					if(!map->isForbidden(x, y, team->me) && !map->isClearArea(x, y, team->me) && map->isMapDiscovered(x, y, team->me) && nearGrowth)
 					{
 						add_acc.applyBrush(BrushApplication(x, y, 0), map);
 					}
 				}
 			}
 
-			if(!farms && wheat_spot && !map->isForbidden(x, y, team->me))
+			if(!wheat_farm && wheat_spot && !map->isForbidden(x, y, team->me))
 				add_acc.applyBrush(BrushApplication(x, y, 0), map);
 
 			//FORBID FRUITS!!! They're horrible for our warriors and we hate converting.
 			if(
-				(	map->isResourceTakeable(x, y, CHERRY)
-					|| map->isResourceTakeable(x, y, ORANGE)
-					|| map->isResourceTakeable(x, y, PRUNE)	)
+				(	map->isMaterialTakeable(x, y,MaterialId::Cherries)
+					|| map->isMaterialTakeable(x, y,MaterialId::Oranges)
+					|| map->isMaterialTakeable(x, y,MaterialId::Prunes)	)
 				&& !map->isForbidden(x, y, team->me)
 				&& map->isMapDiscovered(x, y, team->me)
 					)
@@ -839,11 +855,11 @@ void AIWarrush::initializeGradientWithResource(DynamicGradientMapArray &gradient
 		for(int y=0;y<map->h;y++)
 		{
 			Tile c=map->getTile(x,y);
-			if (c.resource.type==resource_type)
+			if (map->isMaterialTakeableSlot(x,y,resource_type))
 			{
 				gradient(x, y) = AI_WARRUSH_GRADIENT_MAX;
 			}
-			else if (c.resource.type!=NO_RES_TYPE)
+			else if (map->resourceBlocksGround(map->coordToIndex(x,y)))
 			{
 				gradient(x, y) = 0;
 			}
@@ -893,8 +909,8 @@ std::shared_ptr<Order> AIWarrush::buildBuildingOfType(Intent intent)
 	buildingDelay = AI_WARRUSH_BUILDING_DELAY_TICKS;
 
  // Prefer the dominant recurring input, falling back to construction cost.
- std::array<int, MAX_NB_RESOURCES> demand{};
- for (int r = 0; r < MAX_NB_RESOURCES; ++r) {
+ std::array<int, MaterialSlotCount> demand{};
+ for (int r = 0; r < MaterialSlotCount; ++r) {
   demand[r] += complete->semantics.feeding.enabled ? complete->semantics.feeding.cost[r] : 0;
   demand[r] += complete->semantics.healing.enabled ? complete->semantics.healing.cost[r] : 0;
   for (const auto& recipe : complete->semantics.production.recipes)
@@ -915,7 +931,7 @@ std::shared_ptr<Order> AIWarrush::buildBuildingOfType(Intent intent)
 		for(int y=0;y<map->h;y++)
 		{
 			Tile c=map->getTile(x,y);
-			if (c.resource.type!=NO_RES_TYPE)
+			if (map->resourceBlocksBuilding(map->coordToIndex(x,y)))
 			{
 				availability_gradient(x, y) = 0;
 			}

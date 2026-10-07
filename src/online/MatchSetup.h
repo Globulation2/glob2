@@ -43,6 +43,7 @@
 #include <vector>
 
 #include "SimVersion.h"
+#include "ExperimentalFeatures.h"
 
 class GameHeader;
 class MapHeader;
@@ -157,6 +158,8 @@ namespace Online
 		// build used to route verification jobs.
 		std::string buildingCatalogSnapshot;
 		std::string buildingCatalogHash;
+		// Presentation/allowlist metadata only; map bytes remain authoritative.
+		std::vector<CatalogExperimentDefinition> resourceExperiments;
 		/// Absent: pausing is unlimited (and the setup's JSON has no pauseLimit).
 		std::optional<PauseLimit> pauseLimit;
 

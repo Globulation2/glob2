@@ -260,7 +260,7 @@ Building *Game::addBuilding(int x, int y, int typeNum, int teamNumber, Sint32 un
 	{
 		team->stockSuppliers.push_front(b);
 		map.invalidateSupplierLocations();
-		for (int resource=0; resource<MAX_RESOURCES; ++resource) map.dirtyMarketGradients(teamNumber,resource);
+		for (int resource=0; resource<MaterialCount; ++resource) map.dirtyMarketGradientsSlot(teamNumber,resource);
 	}
 	if (b->type->isVirtual)
 		team->virtualBuildings.push_front(b);

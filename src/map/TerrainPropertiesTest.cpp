@@ -123,13 +123,13 @@ TEST_CASE("terrain edits refresh escape costs and supersede queued route snapsho
         for (int x=8;x<12;++x) map.setCellTerrain(x,8,TRAIL);
     }
     CHECK(escape[map.coordToIndex(8,8)] > old);
-    map.setResource(15,15,WHEAT,1);
-    map.getResourceGradient(0,WHEAT,0);
+    map.setResourceByIndex(15,15,WHEAT,1);
+    map.getMaterialGradientSlot(0,WHEAT,0);
     map.configureGradientPipeline(0,2);
     map.advanceGradientPipeline();
     auto& pipeline = map.gradientRuntime->pipeline;
-    pipeline.submit(&map.resourcesGradient[0][WHEAT][0],0,[&](auto& job) {
-        map.seedResourcesGradient(0,WHEAT,0,job.data.get());
+    pipeline.submit(&map.materialGradients[0][WHEAT][0],0,[&](auto& job) {
+        map.seedMaterialGradient(0,WHEAT,0,job.data.get());
         job.modifiedCosts = true;
         job.terrain = map.frozenTerrainSnapshot();
     });
@@ -508,10 +508,10 @@ TEST_SUITE("TerrainRuntime")
 							map.setCellTerrain(x, y, water);
 				}
 				CHECK(map.hasTerrainMovementModifiers() == (speed != 256));
-				map.setResource(20, 20, WHEAT, 1);
-				map.getResourceGradient(0, WHEAT, 6);
+				map.setResourceByIndex(20, 20, WHEAT, 1);
+				map.getMaterialGradientSlot(0, WHEAT, 6);
 				std::vector<Uint16> expected(1024);
-				map.seedResourcesGradient(0, WHEAT, 6, expected.data());
+				map.seedMaterialGradient(0, WHEAT, 6, expected.data());
 				map.propagateGradient(expected.data(), 6);
 
 				// Exercise Map's actual dispatch and worker callback: neutral-speed
@@ -533,16 +533,16 @@ TEST_SUITE("TerrainRuntime")
 				map.gradientRuntime->pipeline.visitPendingSnapshots([&](const auto &pending)
 																	{ CHECK(pending.superseded); });
 				std::vector<Uint16> replacement(1024);
-				map.seedResourcesGradient(0, WHEAT, 6, replacement.data());
+				map.seedMaterialGradient(0, WHEAT, 6, replacement.data());
 				map.propagateGradient(replacement.data(), 6);
 				REQUIRE(replacement != expected);
-				map.updateResourcesGradient(0, WHEAT, 6);
+				map.updateMaterialGradient(0, WHEAT, 6);
 				map.advanceGradientPipeline();
 				map.advanceGradientPipeline();
 				CHECK(map.gradientRuntime->pipeline.metrics.discarded == 1);
 				CHECK(map.gradientRuntime->pipeline.pendingCount() == 0);
 				CHECK(std::equal(replacement.begin(), replacement.end(),
-								 map.resourcesGradient[0][WHEAT][6]));
+								 map.materialGradients[0][WHEAT][6]));
 			}
 	}
 	TEST_CASE("unused distinct costs do not expand map movement setup")
@@ -631,14 +631,14 @@ TEST_SUITE("TerrainRuntime")
 		REQUIRE(worker);
 		for (int i = 0; i < 7; ++i)
 			worker->applyTerrainHealth();
-		map.setResource(15, 15, WHEAT, 1);
-		map.getResourceGradient(0, WHEAT, 6);
+		map.setResourceByIndex(15, 15, WHEAT, 1);
+		map.getMaterialGradientSlot(0, WHEAT, 6);
 		map.configureGradientPipeline(1, 2);
 		map.advanceGradientPipeline();
-		map.gradientRuntime->pipeline.submit(&map.resourcesGradient[0][WHEAT][6], 6,
+		map.gradientRuntime->pipeline.submit(&map.materialGradients[0][WHEAT][6], 6,
 											 [&](auto &job)
 											 {
-												 map.seedResourcesGradient(0, WHEAT, 6,
+												 map.seedMaterialGradient(0, WHEAT, 6,
 																		   job.data.get());
 												 job.modifiedCosts = true;
 												 job.registry = map.frozenTerrainRegistry();
@@ -665,9 +665,9 @@ TEST_SUITE("TerrainRuntime")
 			map.advanceGradientPipeline();
 			resumed.game.map.advanceGradientPipeline();
 		}
-		CHECK(std::equal(map.resourcesGradient[0][WHEAT][6],
-						 map.resourcesGradient[0][WHEAT][6] + 1024,
-						 resumed.game.map.resourcesGradient[0][WHEAT][6]));
+		CHECK(std::equal(map.materialGradients[0][WHEAT][6],
+						 map.materialGradients[0][WHEAT][6] + 1024,
+						 resumed.game.map.materialGradients[0][WHEAT][6]));
 		for (int i = 0; i < 100; ++i)
 		{
 			world.game.syncStep(0);

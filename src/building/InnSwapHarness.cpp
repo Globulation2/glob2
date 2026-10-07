@@ -34,7 +34,7 @@ struct World
 		game.addTeam(0);
 		team = game.teams[0];
 		// The gradient scheduler expects an in-use field; allocation is lazy (#243 lifts this).
-		game.map.getResourceGradient(0, WOOD, 0);
+		game.map.getMaterialGradientSlot(0, WOOD, 0);
 	}
 
 	// An inn with `meals` wheat: it takes bookings while it has more wheat than guests.
@@ -45,7 +45,7 @@ struct World
 		Building* b = game.addBuilding(x, y, typeNum, 0);
 		require(b != nullptr, "inn placed");
 		game.map.setBuilding(x, y, b->type->width, b->type->height, b->gid);
-		b->resources[WHEAT] = meals;
+		b->materials[WHEAT] = meals;
 		b->update();
 		return b;
 	}

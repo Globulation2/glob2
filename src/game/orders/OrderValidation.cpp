@@ -257,7 +257,7 @@ Result validate(const Game& game, int senderPlayer, Order& order)
 		const auto& o=static_cast<OrderModifyClearingFlag&>(order);
 		if (Result r=ownBuilding(c,o.gid,b); r.verdict != Verdict::Accepted) return r;
 		if (b && !b->type->zonable[WORKER]) return rejected(Reason::BadState);
-		return o.clearingResources[STONE] ? rejected(Reason::OutOfRange) : accepted();
+		return accepted();
 	}
 
 	case ORDER_MODIFY_MIN_LEVEL_TO_FLAG:

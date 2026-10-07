@@ -5564,5 +5564,45 @@ Pekerja dapat mengambil persediaan dari stok bersama pasar. Pasar dapat ditingka
 Impor definisi medan
 [Terrain palette]
 Palet medan
+[Food]
+Makanan
+[Paper]
+Kertas
+[Cherries]
+Ceri
+[Oranges]
+Jeruk
+[Prunes]
+Prem
+[Gold]
+Emas
+[Metal]
+Logam
+[Glass]
+Kaca
+[Fabric]
+Kain
+[Import Resource Definitions]
+Impor definisi sumber daya
+[Resource palette]
+Palet sumber daya
+[Trees]
+Pepohonan
+[Rocks]
+Bebatuan
+[Cherry tree]
+Pohon ceri
+[Orange tree]
+Pohon jeruk
+[Prune tree]
+Pohon prem
+[Gold ore]
+Bijih emas
+[Iron ore]
+Bijih besi
+[Sand]
+Pasir
+[Cotton]
+Kapas
 [Reroll terrain look]
 Acak ulang tampilan medan

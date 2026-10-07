@@ -7,36 +7,36 @@ using namespace AISharedRuntime;
 using namespace AISharedRuntime::Conditions;
 
 
-ResourceTrackerAmount::ResourceTrackerAmount(int amount, TrackerMethod tracker_method) : amount(amount), tracker_method(tracker_method)
+MaterialTrackerAmount::MaterialTrackerAmount(int amount, TrackerMethod tracker_method) : amount(amount), tracker_method(tracker_method)
 {
 
 }
 
 
 
-bool ResourceTrackerAmount::passes(Runtime& runtime, int id)
+bool MaterialTrackerAmount::passes(Runtime& runtime, int id)
 {
 	if(tracker_method==Greater)
 	{
-		return runtime.get_resource_tracker(id)->get_total_level() > amount;
+		return runtime.get_material_tracker(id)->get_total_level() > amount;
 	}
 	else if(tracker_method==Lesser)
 	{
-		return runtime.get_resource_tracker(id)->get_total_level() < amount;
+		return runtime.get_material_tracker(id)->get_total_level() < amount;
 	}
 	return false;
 }
 
 
 
-BuildingConditionType ResourceTrackerAmount::get_type()
+BuildingConditionType MaterialTrackerAmount::get_type()
 {
-	return CResourceTrackerAmount;
+	return CMaterialTrackerAmount;
 }
 
 
 
-bool ResourceTrackerAmount::load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor)
+bool MaterialTrackerAmount::load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor)
 {
 	stream->readEnterSection("RessourceTrackerAmount");
 	amount=stream->readUint32("amount");
@@ -47,7 +47,7 @@ bool ResourceTrackerAmount::load(GAGCore::InputStream *stream, Player *player, S
 
 
 
-void ResourceTrackerAmount::save(GAGCore::OutputStream *stream)
+void MaterialTrackerAmount::save(GAGCore::OutputStream *stream)
 {
 	stream->writeEnterSection("RessourceTrackerAmount");
 	stream->writeUint32(amount, "amount");
@@ -57,36 +57,36 @@ void ResourceTrackerAmount::save(GAGCore::OutputStream *stream)
 
 
 
-ResourceTrackerAge::ResourceTrackerAge(int age, TrackerMethod tracker_method) : age(age), tracker_method(tracker_method)
+MaterialTrackerAge::MaterialTrackerAge(int age, TrackerMethod tracker_method) : age(age), tracker_method(tracker_method)
 {
 
 }
 
 
 
-bool ResourceTrackerAge::passes(Runtime& runtime, int id)
+bool MaterialTrackerAge::passes(Runtime& runtime, int id)
 {
 	if(tracker_method==Greater)
 	{
-		return runtime.get_resource_tracker(id)->get_age() > age;
+		return runtime.get_material_tracker(id)->get_age() > age;
 	}
 	else if(tracker_method==Lesser)
 	{
-		return runtime.get_resource_tracker(id)->get_age() < age;
+		return runtime.get_material_tracker(id)->get_age() < age;
 	}
 	return false;
 }
 
 
 
-BuildingConditionType ResourceTrackerAge::get_type()
+BuildingConditionType MaterialTrackerAge::get_type()
 {
-	return CResourceTrackerAge;
+	return CMaterialTrackerAge;
 }
 
 
 
-bool ResourceTrackerAge::load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor)
+bool MaterialTrackerAge::load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor)
 {
 	stream->readEnterSection("RessourceTrackerAge");
 	age=stream->readUint32("age");
@@ -97,7 +97,7 @@ bool ResourceTrackerAge::load(GAGCore::InputStream *stream, Player *player, Sint
 
 
 
-void ResourceTrackerAge::save(GAGCore::OutputStream *stream)
+void MaterialTrackerAge::save(GAGCore::OutputStream *stream)
 {
 	stream->writeEnterSection("RessourceTrackerAge");
 	stream->writeUint32(age, "age");

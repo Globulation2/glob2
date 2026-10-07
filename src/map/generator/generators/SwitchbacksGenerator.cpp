@@ -704,7 +704,7 @@ bool generate(Game &game, GenerationContext &context)
 	const std::vector<unsigned char> stone = stoneTiles(map, L);
 	for (int i = 0; i < n; ++i)
 		if (stone[i])
-			map.setResource(i % t.w, i / t.w, STONE, 1);
+			map.setResourceByIndex(i % t.w, i / t.w, STONE, 1);
 
 	context.stage = "switchbacks colonies";
 	const auto home = [&](int team)

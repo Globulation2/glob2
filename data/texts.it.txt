@@ -5564,5 +5564,45 @@ I lavoratori possono prelevare scorte dal magazzino condiviso dei mercati. I mer
 Importa definizioni del terreno
 [Terrain palette]
 Tavolozza dei terreni
+[Food]
+Cibo
+[Paper]
+Carta
+[Cherries]
+Ciliegie
+[Oranges]
+Arance
+[Prunes]
+Prugne
+[Gold]
+Oro
+[Metal]
+Metallo
+[Glass]
+Vetro
+[Fabric]
+Tessuto
+[Import Resource Definitions]
+Importa definizioni delle risorse
+[Resource palette]
+Tavolozza delle risorse
+[Trees]
+Alberi
+[Rocks]
+Rocce
+[Cherry tree]
+Ciliegio
+[Orange tree]
+Arancio
+[Prune tree]
+Prugno
+[Gold ore]
+Minerale d’oro
+[Iron ore]
+Minerale di ferro
+[Sand]
+Sabbia
+[Cotton]
+Cotone
 [Reroll terrain look]
 Genera un nuovo aspetto casuale del terreno

@@ -118,12 +118,17 @@ Property overrides use the existing fixed schema:
 | `groundHealthQ8`, `airHealthQ8` | Signed 16-bit HP per tick divided by 256; negative damages, positive heals |
 | `growthQ8`, `inhibitionQ8`, `shoreSupportQ8` | Integers 0–1024; 256 is one |
 | `fertilityQ8` | Integer −1024–1024; 256 is one |
-| `allowedResources` | Bit mask 0–255 using existing resource IDs |
-| `farmCrop` | Resource ID 0–7 included in the allowed mask, or 255 for none |
+| `allowedResources` | Legacy import mask 0–255; prefer a top-level `allowedResourceKeys` list |
+| `farmMaterial` | Fixed material key such as `food` or `fabric`, or `null` for none |
 
-Resource bits are wood 0, wheat 1, stone 2, papyrus 3, algae 4, cherry 5, orange 6
-and prune 7. A mask is the sum of `1 << resourceId` for each allowed resource;
-for example, wood plus wheat is `3`, and algae alone is `16`. Changing an allowed mask may require changing an inherited `farmCrop`.
+Legacy resource bits are trees 0, wheat 1, papyrus 2, rocks 3, algae 4,
+cherry tree 5, orange tree 6 and prune tree 7. These import into a resource-key
+allowlist. New definitions may use `allowedResourceKeys` (outside `properties`)
+with stable resource keys; an empty list excludes all deposits, while omitted or
+`null` uses resource habitat permissions. Habitat and explicit permission must
+both match. Legacy `farmCrop` accepts numeric 0–7 or 255 and imports the matching
+material slot; saved definitions use `farmMaterial`. Farm selection chooses an
+eligible renewable resource supplying that material, rather than a fixed crop ID.
 Unknown fields and non-integer numbers for integer properties are rejected.
 
 Importing replacement definitions refreshes terrain, ecology, routes and rendering.

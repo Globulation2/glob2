@@ -120,10 +120,11 @@ def _build_variant(directory, identity, arguments, threaded=False, packaged=None
         # The plan also reads the browser copies (browser/derive_assets.py) and the game
         # sprite names in GlobalContainer::loadGameGraphics, terrain and building tables.
         plan_inputs = ['scons/web_assets.py', 'deploy/sim_version.py', 'browser/derive_assets.py',
-                       'src/app/GlobalContainer.cpp', 'src/map/TerrainPresentation.h', 'data/terrain/tileset.json']
+                       'src/app/GlobalContainer.cpp', 'src/map/TerrainPresentation.h', 'data/terrain/tileset.json', 'data/resources/registry.json']
         plan_inputs += [str(p) for p in Path('browser/assets').glob('*') if p.is_file()]
         plan_inputs += [str(p) for p in Path('src/building/types').glob('BuildingTypes*.cpp')]
         plan_inputs += [str(p) for p in Path('data/buildings').rglob('*.json')]
+        plan_inputs += [str(p) for p in Path('data/resources').rglob('*.json')]
         assets = env.Command(str(asset_manifest), [exported] + plan_inputs,
             Action(lambda target, source, env: web_assets.build(root, output, target[0].abspath, asset_root) and 0,
                    'Packaging browser game data'))
@@ -195,6 +196,7 @@ def _build_variant(directory, identity, arguments, threaded=False, packaged=None
                 ('#src/ai/cortex/CortexActionCoverageTest.cpp', dict(cxxflags=['-fno-access-control'])),
                 ('#src/map/MapQueryTest.cpp', dict(cxxflags=['-fno-access-control'])),
                 ('#src/hud/GUIInteractionCoverageTest.cpp', dict(cxxflags=['-fno-access-control'])),
+                '#src/resource/ResourceRegistryTest.cpp', '#src/map/TerrainResourcesHarness.cpp',
                 '#src/building/types/BuildingCatalogTest.cpp', '#src/building/BuildingCatalogFixtureHarness.cpp',
                 '#src/building/BuildingServicesTest.cpp', '#src/building/BuildingProductionCombatTest.cpp',
                 '#src/ai/shared_runtime/RuntimeContinuationTest.cpp',

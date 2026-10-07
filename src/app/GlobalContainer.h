@@ -8,7 +8,6 @@
 #include <vector>
 
 #include "BuildingType.h"
-#include "RessourceType.h"
 #include "Settings.h"
 #include "TerrainType.h"
 #include <array>
@@ -114,7 +113,6 @@ public:
 	Settings settings;
 
 	BuildingsTypes buildingsTypes;
-	ResourcesTypes resourcesTypes;
 
 	std::string videoshotName; //!< Legacy -vs shorthand for compressed capture.
 	std::string recordingPath;

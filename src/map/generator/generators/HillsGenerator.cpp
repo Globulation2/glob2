@@ -336,7 +336,7 @@ bool generate(Game &game, GenerationContext &context)
 			context.detail = "A summit quarry does not fit.";
 			return false;
 		}
-		map.setResource(quarry % t.w, quarry / t.w, STONE, 1);
+		map.setResourceByIndex(quarry % t.w, quarry / t.w, STONE, 1);
 	}
 	// Separate each hill's budget so raster ordering cannot give one hill all the wood.
 	// A small starter guarantee survives 0%; all additional terrace crops scale normally.
@@ -346,8 +346,8 @@ bool generate(Game &game, GenerationContext &context)
 		int area = 0;
 		for (int i = 0; i < n; ++i)
 			area += L.hillOf[i] == k && L.farm.row[i] >= 0 && L.farm.row[i] % 2 == 0 &&
-					(map.terrainSupportsResourceAt(i % t.w, i / t.w, WHEAT) &&
-						map.terrainSupportsResourceAt(i % t.w, i / t.w, WOOD));
+					(map.terrainSupportsResourceAtByIndex(i % t.w, i / t.w, WHEAT) &&
+						map.terrainSupportsResourceAtByIndex(i % t.w, i / t.w, WOOD));
 		const int wheat = int(scaledCount(area * 45 / 100, o.wheat));
 		const int wood = int(scaledCount(area * 8 / 100, o.wood));
 		const int actual = plantFarm(map, t, L.farm, wheat, wood,

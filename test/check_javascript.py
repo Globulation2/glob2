@@ -66,6 +66,26 @@ def save_header(path):
             length = struct.unpack_from('>I', data, game_header)[0]
             game_header += 4 + length
             assert game_header <= len(data), 'truncated terrain experiment key'
+    if minor >= 140:
+        # Resource experiment declarations precede their required enabled keys.
+        # Metadata is bounded by the native catalog transport contract.
+        count = struct.unpack_from('>I', data, game_header)[0]
+        game_header += 4
+        assert count <= 64, 'invalid resource experiment declaration count'
+        for _ in range(count):
+            for limit in (128, 512, 4096):
+                length = struct.unpack_from('>I', data, game_header)[0]
+                assert 0 < length <= limit, 'invalid resource experiment metadata length'
+                game_header += 4 + length
+                assert game_header <= len(data), 'truncated resource experiment metadata'
+        count = struct.unpack_from('>I', data, game_header)[0]
+        game_header += 4
+        assert count <= 64, 'invalid required resource experiment count'
+        for _ in range(count):
+            length = struct.unpack_from('>I', data, game_header)[0]
+            assert 0 < length <= 128, 'invalid required resource experiment key length'
+            game_header += 4 + length
+            assert game_header <= len(data), 'truncated resource experiment key'
     game_header += 20 * teams
     players = struct.unpack_from('>I', data, game_header + 5)[0]
     assert 0 < teams <= 32 and 0 < players <= 32
@@ -119,10 +139,10 @@ def main():
                    for tick, record in released_ticks.items()), name + ': released entity records differ'
         # Preserve historical migration evidence independently of the current
         # simulation trace. Still load the original version-125 save below.
-        trace = FIXTURE / (name + '-256-terrain.checksums.gz')
+        trace = FIXTURE / (name + '-256-resources.checksums.gz')
         expected = gzip.decompress(trace.read_bytes())
         ticks = complete_ticks(expected)
-        assert set(ticks) == set(range(256)), name + ': incomplete terrain trace'
+        assert set(ticks) == set(range(256)), name + ': incomplete resource trace'
         initial = FIXTURE / (name + '-initial.game.gz')
         manifest['fixtures'][name] = {'initialSha256': hashlib.sha256(initial.read_bytes()).hexdigest(),
                                      'trace': str(trace.relative_to(ROOT)),

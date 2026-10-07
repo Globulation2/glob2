@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2006 Bradley Arsenault
 
+#include "Material.h"
 #include "AITelemetryFields.h"
 #include "AINicowar.h"
 #include <string>
@@ -26,7 +27,7 @@ int NewNicowar::choose_building_to_attack(Runtime& runtime)
 	AISharedRuntime::Gradients::GradientInfo gi_building;
     gi_building.terrainTravel=field::TerrainTravel::Swim;
 	gi_building.add_source(new Entities::AnyTeamBuilding(runtime.player->team->teamNumber, false));
-	gi_building.add_obstacle(new Entities::AnyResource);
+	gi_building.add_obstacle(new Entities::ResourceGroundObstacle);
 	Gradient& gradient=runtime.get_gradient_manager().get_gradient(gi_building);
 
 	for(enemy_building_iterator ebi(runtime, target, -1, -1, indeterminate); ebi!=enemy_building_iterator(); ++ebi)
@@ -104,7 +105,7 @@ void NewNicowar::control_attacks(Runtime& runtime)
 	AISharedRuntime::Gradients::GradientInfo gi_building;
     gi_building.terrainTravel=field::TerrainTravel::Swim;
 	gi_building.add_source(new Entities::AnyTeamBuilding(runtime.player->team->teamNumber, false));
-	gi_building.add_obstacle(new Entities::AnyResource);
+	gi_building.add_obstacle(new Entities::ResourceGroundObstacle);
 	if(num_pool == 0)
     {
         gi_building.terrainTravel=field::TerrainTravel::Walk;
@@ -134,7 +135,7 @@ void NewNicowar::choose_enemy_target(Runtime& runtime)
 	AISharedRuntime::Gradients::GradientInfo gi_building;
     gi_building.terrainTravel=field::TerrainTravel::Swim;
 	gi_building.add_source(new Entities::AnyTeamBuilding(runtime.player->team->teamNumber, false));
-	gi_building.add_obstacle(new Entities::AnyResource);
+	gi_building.add_obstacle(new Entities::ResourceGroundObstacle);
 	Gradient& gradient=runtime.get_gradient_manager().get_gradient(gi_building);
 
 	if(target==AI_NICOWAR_NO_TARGET || !runtime.player->game->teams[target]->isAlive)
@@ -188,7 +189,7 @@ bool NewNicowar::dig_out_enemy(Runtime& runtime)
 	AISharedRuntime::Gradients::GradientInfo gi_building;
     gi_building.terrainTravel=field::TerrainTravel::Swim;
 	gi_building.add_source(new Entities::AnyTeamBuilding(runtime.player->team->teamNumber, false));
-	gi_building.add_obstacle(new Entities::AnyResource);
+	gi_building.add_obstacle(new Entities::ResourceGroundObstacle);
 	Gradient& gradient=runtime.get_gradient_manager().get_gradient(gi_building);
 
 	for(enemy_building_iterator ebi(runtime, target, -1, -1, indeterminate); ebi!=enemy_building_iterator(); ++ebi)
@@ -214,7 +215,7 @@ bool NewNicowar::dig_out_enemy(Runtime& runtime)
 	AISharedRuntime::Gradients::GradientInfo gi_pathfind;
     gi_pathfind.terrainTravel=field::TerrainTravel::Swim;
 	gi_pathfind.add_source(new Entities::Position(bx, by));
-	gi_pathfind.add_obstacle(new Entities::Resource(STONE));
+	gi_pathfind.add_obstacle(new Entities::MaterialSource(materialIndex(MaterialId::Stone)));
 	Gradient& gradient_pathfind=runtime.get_gradient_manager().get_gradient(gi_pathfind);
 
 	///Next, find the closest point manhattan distance wise, to the building that is accessible

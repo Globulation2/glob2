@@ -206,8 +206,8 @@ bool AINumbi::findNewEmplacement(Intent intent, int typeNum, int *posX, int *pos
 		? game->buildingsTypes.get(placement->nextLevel) : placement;
 	const int width = placement->width, height = placement->height;
 	// Compile the relevant operating inputs once, outside the placement scan.
-	std::array<bool, MAX_NB_RESOURCES> needs{};
-	for (int resource = 0; resource < MAX_NB_RESOURCES; ++resource)
+	std::array<bool, MaterialSlotCount> needs{};
+	for (int resource = 0; resource < MaterialSlotCount; ++resource)
 	{
 		const auto& p = completed->semantics;
 		needs[resource] = (p.feeding.enabled && p.feeding.cost[resource] > 0)
@@ -234,11 +234,11 @@ bool AINumbi::findNewEmplacement(Intent intent, int typeNum, int *posX, int *pos
 		if (score <= AI_NUMBI_PLACEMENT_SCORE_MIN || score <= best
 			|| !game->checkRoomForBuilding(px, py, placement, team->teamNumber)) continue;
 		bool supplied = true;
-		for (int resource = 0; resource < MAX_NB_RESOURCES && supplied; ++resource)
+		for (int resource = 0; resource < MaterialSlotCount && supplied; ++resource)
 			if (needs[resource])
 			{
 				int rx, ry, distance;
-				supplied = map->resourceAvailableUpdate(team->teamNumber, resource, 0, px, py, &rx, &ry, &distance)
+				supplied = map->materialAvailableUpdateSlot(team->teamNumber, resource, 0, px, py, &rx, &ry, &distance)
 					&& distance <= AI_NUMBI_WHEAT_DISTANCE_BIAS + width*height;
 			}
 		if (!supplied) continue;

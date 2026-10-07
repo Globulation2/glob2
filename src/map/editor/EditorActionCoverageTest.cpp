@@ -12,6 +12,7 @@
 #include <filesystem>
 #include <set>
 #include "BuildingType.h"
+#include "Unit.h"
 #include <nlohmann/json.hpp>
 
 namespace
@@ -62,7 +63,9 @@ TEST_SUITE("EditorActionCoverage")
         variants[3]["properties"]["zonable"]={1,1,1};
         variants[3]["properties"]["defaultUnitStayRange"]=5;
         variants[3]["properties"]["maxUnitStayRange"]=20;
-        variants[3]["properties"]["maxResource"]={30,30,30,30,30,30,30,30,0,0,0,0,0,0,0};
+        std::vector<int> capacity(MaterialSlotCount,0);
+        std::fill_n(capacity.begin(),MaterialCount,30);
+        variants[3]["properties"]["maxMaterial"]=capacity;
         variants[3]["semantics"]["assignmentLimit"]=40;
         variants[3]["semantics"]["production"]=variants[1]["semantics"]["production"];
         int previous=7;
@@ -96,14 +99,16 @@ TEST_SUITE("EditorActionCoverage")
         CHECK(editor.buildingSelectionType("inn.0.finished")==previous);
         editor.performAction("next building level page"); CHECK(editor.buildingLevel==0);
         auto* building=editor.game.addBuilding(4,4,3,0); REQUIRE(building);
+        for (unsigned material=materialIndex(MaterialId::Gold);material<MaterialCount;++material)
+            building->materials[material]=1; // Existing owned stock makes each configured row relevant.
         cursor(editor,4,4); editor.performAction("select map building");
         REQUIRE(editor.selectedBuildingGID==building->gid);
         CHECK(editor.buildingAssignedScrollBox->maximumValue()==40);
-        for (int resource=0; resource<MAX_RESOURCES; ++resource)
+        for (int resource=0; resource<MaterialCount; ++resource)
         {
             CHECK(editor.buildingResourceControls[resource]->maximumValue()==30);
             editor.buildingResourceControls[resource]->setValue(resource+1);
-            CHECK(building->resources[resource]==resource+1);
+            CHECK(building->materials[resource]==resource+1);
         }
         editor.buildingEditFirstRow=100; editor.layoutBuildingEditRows();
         CHECK(editor.buildingWorkerLevelScrollBox->enabled);
@@ -120,6 +125,46 @@ TEST_SUITE("EditorActionCoverage")
         auto* overlay=editor.game.addBuilding(31,31,overlayId,0); REQUIRE(overlay);
         cursor(editor,0,1); editor.performAction("select map building");
         CHECK(editor.selectedBuildingGID==overlay->gid);
+    }
+
+    TEST_CASE("editor material rows require configured capacity and natural or owned presence [display]")
+    {
+        glob2test::HeadlessGlobals globals(glob2test::GlobalsOptions{
+            .display=true,.width=1024,.height=768,.screenFlags=GAGCore::GraphicContext::PORTABLEGPU});
+        MapEdit editor; blank(editor);
+        const auto gold=materialIndex(MaterialId::Gold),metal=materialIndex(MaterialId::Metal);
+        const int inn=editor.game.buildingsTypes.getFinishedTypeNum("inn");
+        auto catalog=nlohmann::json::parse(editor.game.buildingsTypes.snapshotJson());
+        catalog["variants"][inn]["properties"]["maxMaterial"][gold]=30;
+        catalog["variants"][inn]["properties"]["maxMaterial"][metal]=0;
+        editor.game.buildingsTypes.loadSnapshotJson(catalog.dump());
+        editor.game.configureBuildingCatalog();editor.game.buildingsTypes.loadSprites();
+        auto* selected=editor.game.addBuilding(4,4,inn,0);REQUIRE(selected);
+        auto* supplier=editor.game.addBuilding(12,12,inn,0);REQUIRE(supplier);
+        auto* worker=editor.game.addUnit(20,20,0,WORKER,0,0,0,0);REQUIRE(worker);
+        auto& team=*editor.game.teams[0];
+        team.teamMaterials[metal]=1; // Presence cannot expose an unconfigured slot.
+        auto shown=[&](unsigned material) {
+            return std::any_of(editor.buildingEditRows.begin(),editor.buildingEditRows.end(),
+                [&](const auto& row){return row.second==editor.buildingResourceControls[material];});
+        };
+        auto select=[&] {cursor(editor,4,4);editor.performAction("select map building");};
+        const auto deposit=*editor.game.map.resourceRegistry().find("gold-ore");
+        for (int source=0;source<5;++source)
+        {
+            CAPTURE(source);
+            select();CHECK_FALSE(shown(gold));CHECK_FALSE(shown(metal));
+            if(source==0)editor.game.map.setResource(24,24,deposit,0);
+            if(source==1)supplier->materials[gold]=1;
+            if(source==2)worker->carriedMaterial=gold;
+            if(source==3)team.teamMaterials[gold]=1;
+            if(source==4)team.reservedTeamMaterials[gold]=1;
+            select();CHECK(shown(gold));CHECK_FALSE(shown(metal));
+            editor.game.map.replaceResource(24,24,Resource{});
+            supplier->materials[gold]=0;worker->carriedMaterial=-1;
+            team.teamMaterials[gold]=team.reservedTeamMaterials[gold]=0;
+            select();CHECK_FALSE(shown(gold));CHECK_FALSE(shown(metal));
+        }
     }
 
     TEST_CASE("editor selects and saves the sixteenth team [display][artifacts]")

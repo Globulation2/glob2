@@ -35,10 +35,10 @@ void Map::updateForbiddenGradient(int, int) { std::abort(); }
 // Supplier discovery is exercised by the real-engine catalog fixtures. Unit map
 // fixtures have no teams/buildings and must not accidentally test a fake balance.
 #include "Building.h"
-Sint32 Building::availableResource(int) const { std::abort(); }
+Sint32 Building::availableMaterial(int) const { std::abort(); }
 
-unsigned Map::resourceSupplyModes(const Building*, int) const { std::abort(); }
-bool Map::stockSupplierEligible(const Building*, const Building*, int, unsigned) const { std::abort(); }
+unsigned Map::materialSupplyModesSlot(const Building*, int) const { std::abort(); }
+bool Map::stockSupplierEligibleSlot(const Building*, const Building*, int, unsigned) const { std::abort(); }
 
 // Unit Map fixtures have no Game tick or deferred preparation. Preserve real
 // completed-job draining for terrain import, and fail if an engine reservation

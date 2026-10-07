@@ -3,7 +3,7 @@
 
 #pragma once
 
-#include "ResourcePacket.h"
+#include "MaterialPacket.h"
 #include <vector>
 #include <string>
 #include <optional>
@@ -293,9 +293,9 @@ public:
 	//! no idea what this is. TODO: Explain
 	Building *ownExchangeBuilding;
 	Sint32 destinationPurpose;
-	int carriedResource;
-	ResourcePacket carriedPacket{};
-	void receiveCarriedResource(int resource, ResourcePacket packet);
+	int carriedMaterial;
+	MaterialPacket carriedPacket{};
+	void receiveCarriedMaterial(int resource, MaterialPacket packet);
 	/// This counts 32 ticks to wait for a job before a unit goes off
 	/// to upgrade or heal when it is otherwise doing nothing.
 	Sint32 jobTimer;

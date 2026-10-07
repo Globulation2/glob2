@@ -239,6 +239,16 @@ GAGCore::CooperativeTask Game::loadTask(GAGCore::InputStream *stream)
 
 	if (versionMinor >= FILE_FORMAT_VERSION_TERRAIN_PROPERTIES && map.requiredTerrainExperiments() != mapHeader.requiredTerrainExperiments)
 		co_return false;
+	if (versionMinor >= FILE_FORMAT_VERSION_RUNTIME_RESOURCES &&
+		(map.requiredResourceExperiments() != mapHeader.requiredResourceExperiments ||
+		 map.resourceRegistry().experiments() != mapHeader.resourceExperimentDefinitions ||
+		 gameHeader.resourceExperiments() != mapHeader.resourceExperimentDefinitions)) co_return false;
+	gameHeader.setResourceExperiments(map.resourceRegistry().experiments());
+	for (const auto& key : map.requiredResourceExperiments().keys())
+	{
+		if (mapHeader.getIsSavedGame() && !gameHeader.getExperiments().has(key)) co_return false;
+		gameHeader.getExperiments().set(key, true, gameHeader.catalogExperimentKeys());
+	}
 	for (const auto& definition : experimentDefinitions())
 		if (mapHeader.requiredTerrainExperiments.has(definition.id))
 		{
@@ -648,6 +658,11 @@ void Game::save(GAGCore::OutputStream *stream, bool fileIsAMap, const std::strin
 	mapHeader.setMapName(name);
 	mapHeader.setIsSavedGame(!fileIsAMap);
 	mapHeader.requiredTerrainExperiments = map.requiredTerrainExperiments();
+	mapHeader.requiredResourceExperiments = map.requiredResourceExperiments();
+	mapHeader.resourceExperimentDefinitions = map.resourceRegistry().experiments();
+	gameHeader.setResourceExperiments(map.resourceRegistry().experiments());
+	for (const auto& key : mapHeader.requiredResourceExperiments.keys())
+		gameHeader.getExperiments().set(key, true, gameHeader.catalogExperimentKeys());
 	mapHeader.resetGameSHA1();
 
 	for (int i=0; i<mapHeader.getNumberOfTeams(); ++i)

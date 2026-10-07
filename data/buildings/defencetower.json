@@ -15,7 +15,7 @@
         "hpInit": 1,
         "hpMax": 480,
         "isBuildingSite": 1,
-        "maxResource": [
+        "maxMaterial": [
           6,
           0,
           0,
@@ -42,7 +42,7 @@
       "semantics": {
         "admittedUnitMask": 7,
         "ammunitionCost": 1,
-        "ammunitionResource": 3,
+        "ammunitionMaterial": 3,
         "feeding": {
           "convertsUnits": false,
           "cost": {},
@@ -74,16 +74,16 @@
           "suppliesStockExperiment": "markets-v2",
           "suppliesDirectStock": false,
           "fetchesDirectStock": false,
-          "suppliesStockResources": [
+          "suppliesStockMaterials": [
             "wood"
           ],
-          "suppliesDirectStockResources": [
+          "suppliesDirectStockMaterials": [
             "wood"
           ],
-          "fetchesStockResources": [
+          "fetchesStockMaterials": [
             "wood"
           ],
-          "fetchesDirectStockResources": [
+          "fetchesDirectStockMaterials": [
             "wood"
           ]
         },
@@ -118,7 +118,7 @@
           "wood": 6
         },
         "repairCost": {},
-        "replenishResources": [
+        "replenishMaterials": [
           "wood"
         ]
       },
@@ -148,7 +148,7 @@
         "hpInit": 480,
         "hpMax": 480,
         "maxBullets": 12,
-        "maxResource": [
+        "maxMaterial": [
           0,
           0,
           0,
@@ -180,7 +180,7 @@
       "semantics": {
         "admittedUnitMask": 7,
         "ammunitionCost": 1,
-        "ammunitionResource": 3,
+        "ammunitionMaterial": 3,
         "feeding": {
           "convertsUnits": false,
           "cost": {},
@@ -212,16 +212,16 @@
           "suppliesStockExperiment": "markets-v2",
           "suppliesDirectStock": false,
           "fetchesDirectStock": false,
-          "suppliesStockResources": [
+          "suppliesStockMaterials": [
             "stone"
           ],
-          "suppliesDirectStockResources": [
+          "suppliesDirectStockMaterials": [
             "stone"
           ],
-          "fetchesStockResources": [
+          "fetchesStockMaterials": [
             "stone"
           ],
-          "fetchesDirectStockResources": [
+          "fetchesDirectStockMaterials": [
             "stone"
           ]
         },
@@ -256,7 +256,7 @@
         "repairCost": {
           "wood": 6
         },
-        "replenishResources": [
+        "replenishMaterials": [
           "stone"
         ]
       },
@@ -289,7 +289,7 @@
         "hpMax": 1440,
         "isBuildingSite": 1,
         "level": 1,
-        "maxResource": [
+        "maxMaterial": [
           10,
           0,
           0,
@@ -317,7 +317,7 @@
       "semantics": {
         "admittedUnitMask": 7,
         "ammunitionCost": 1,
-        "ammunitionResource": 3,
+        "ammunitionMaterial": 3,
         "feeding": {
           "convertsUnits": false,
           "cost": {},
@@ -349,19 +349,19 @@
           "suppliesStockExperiment": "markets-v2",
           "suppliesDirectStock": false,
           "fetchesDirectStock": false,
-          "suppliesStockResources": [
+          "suppliesStockMaterials": [
             "wood",
             "stone"
           ],
-          "suppliesDirectStockResources": [
+          "suppliesDirectStockMaterials": [
             "wood",
             "stone"
           ],
-          "fetchesStockResources": [
+          "fetchesStockMaterials": [
             "wood",
             "stone"
           ],
-          "fetchesDirectStockResources": [
+          "fetchesDirectStockMaterials": [
             "wood",
             "stone"
           ]
@@ -398,7 +398,7 @@
           "stone": 14
         },
         "repairCost": {},
-        "replenishResources": [
+        "replenishMaterials": [
           "wood",
           "stone"
         ]
@@ -431,7 +431,7 @@
         "hpMax": 1440,
         "level": 1,
         "maxBullets": 16,
-        "maxResource": [
+        "maxMaterial": [
           0,
           0,
           0,
@@ -463,7 +463,7 @@
       "semantics": {
         "admittedUnitMask": 7,
         "ammunitionCost": 1,
-        "ammunitionResource": 3,
+        "ammunitionMaterial": 3,
         "feeding": {
           "convertsUnits": false,
           "cost": {},
@@ -495,16 +495,16 @@
           "suppliesStockExperiment": "markets-v2",
           "suppliesDirectStock": false,
           "fetchesDirectStock": false,
-          "suppliesStockResources": [
+          "suppliesStockMaterials": [
             "stone"
           ],
-          "suppliesDirectStockResources": [
+          "suppliesDirectStockMaterials": [
             "stone"
           ],
-          "fetchesStockResources": [
+          "fetchesStockMaterials": [
             "stone"
           ],
-          "fetchesDirectStockResources": [
+          "fetchesDirectStockMaterials": [
             "stone"
           ]
         },
@@ -540,7 +540,7 @@
           "wood": 10,
           "stone": 14
         },
-        "replenishResources": [
+        "replenishMaterials": [
           "stone"
         ]
       },
@@ -573,7 +573,7 @@
         "hpMax": 2000,
         "isBuildingSite": 1,
         "level": 2,
-        "maxResource": [
+        "maxMaterial": [
           8,
           0,
           0,
@@ -601,7 +601,7 @@
       "semantics": {
         "admittedUnitMask": 7,
         "ammunitionCost": 1,
-        "ammunitionResource": 3,
+        "ammunitionMaterial": 3,
         "feeding": {
           "convertsUnits": false,
           "cost": {},
@@ -633,22 +633,22 @@
           "suppliesStockExperiment": "markets-v2",
           "suppliesDirectStock": false,
           "fetchesDirectStock": false,
-          "suppliesStockResources": [
+          "suppliesStockMaterials": [
             "wood",
             "stone",
             "algae"
           ],
-          "suppliesDirectStockResources": [
+          "suppliesDirectStockMaterials": [
             "wood",
             "stone",
             "algae"
           ],
-          "fetchesStockResources": [
+          "fetchesStockMaterials": [
             "wood",
             "stone",
             "algae"
           ],
-          "fetchesDirectStockResources": [
+          "fetchesDirectStockMaterials": [
             "wood",
             "stone",
             "algae"
@@ -687,7 +687,7 @@
           "algae": 2
         },
         "repairCost": {},
-        "replenishResources": [
+        "replenishMaterials": [
           "wood",
           "stone",
           "algae"
@@ -720,7 +720,7 @@
         "hpMax": 2000,
         "level": 2,
         "maxBullets": 20,
-        "maxResource": [
+        "maxMaterial": [
           0,
           0,
           0,
@@ -752,7 +752,7 @@
       "semantics": {
         "admittedUnitMask": 7,
         "ammunitionCost": 1,
-        "ammunitionResource": 3,
+        "ammunitionMaterial": 3,
         "feeding": {
           "convertsUnits": false,
           "cost": {},
@@ -784,16 +784,16 @@
           "suppliesStockExperiment": "markets-v2",
           "suppliesDirectStock": false,
           "fetchesDirectStock": false,
-          "suppliesStockResources": [
+          "suppliesStockMaterials": [
             "stone"
           ],
-          "suppliesDirectStockResources": [
+          "suppliesDirectStockMaterials": [
             "stone"
           ],
-          "fetchesStockResources": [
+          "fetchesStockMaterials": [
             "stone"
           ],
-          "fetchesDirectStockResources": [
+          "fetchesDirectStockMaterials": [
             "stone"
           ]
         },
@@ -830,7 +830,7 @@
           "stone": 14,
           "algae": 2
         },
-        "replenishResources": [
+        "replenishMaterials": [
           "stone"
         ]
       },

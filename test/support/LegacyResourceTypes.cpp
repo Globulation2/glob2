@@ -4,19 +4,10 @@
 #include <cassert>
 #include <cstddef>
 
-#include "RessourceType.h"
+#include "LegacyResourceTypes.h"
 
-// Compile-time const table of resource types. The order MUST match the
-// integer IDs declared in Resource.h (WOOD=0, WHEAT=1, PAPYRUS=2, STONE=3,
-// ALGA=4, CHERRY=5, ORANGE=6, PRUNE=7) — those IDs are persisted in saves,
-// replays and network traffic, so reordering is a behavioral change.
-//
-// Values are transcribed from data/resources.txt (which used a defaults +
-// per-section overrides format); each entry below spells out every field
-// explicitly. The 'clearable' field replaces a hard-coded predicate that
-// previously listed WOOD/WHEAT/PAPYRUS/ALGA at the call sites in
-// UnitMovement.cpp and MapGradientArea.cpp.
-static constexpr ResourceType kResourceTypes[] = {
+// Frozen legacy values for the ecology comparison harness.
+static constexpr LegacyResourceType kLegacyResourceTypes[] = {
 	// WOOD
 	{ /*gfxId*/  0, /*sizesCount*/ 5, /*varietiesCount*/ 2,
 	  /*shrinkable*/ 1, /*expendable*/ 1, /*eternal*/ 0, /*granular*/ 0, /*visibleToBeCollected*/ 0,
@@ -51,16 +42,16 @@ static constexpr ResourceType kResourceTypes[] = {
 	  /*minimapR*/ 255, /*minimapG*/ 127, /*minimapB*/   0, /*clearable*/ 0 },
 };
 
-const ResourceType* ResourcesTypes::get(unsigned int num) const
+const LegacyResourceType* LegacyResourcesTypes::get(unsigned int num) const
 {
-	const std::size_t count = sizeof(kResourceTypes) / sizeof(kResourceTypes[0]);
+	const std::size_t count = sizeof(kLegacyResourceTypes) / sizeof(kLegacyResourceTypes[0]);
 	if (num < count)
-		return &kResourceTypes[num];
+		return &kLegacyResourceTypes[num];
 	assert(false);
 	return nullptr;
 }
 
-std::size_t ResourcesTypes::size() const
+std::size_t LegacyResourcesTypes::size() const
 {
-	return sizeof(kResourceTypes) / sizeof(kResourceTypes[0]);
+	return sizeof(kLegacyResourceTypes) / sizeof(kLegacyResourceTypes[0]);
 }

@@ -5564,5 +5564,45 @@ Werkers kunnen voorraden uit de gedeelde marktvoorraad halen. Markten kunnen wor
 Terreindefinities importeren
 [Terrain palette]
 Terreinpalet
+[Food]
+Voedsel
+[Paper]
+Papier
+[Cherries]
+Kersen
+[Oranges]
+Sinaasappels
+[Prunes]
+Pruimen
+[Gold]
+Goud
+[Metal]
+Metaal
+[Glass]
+Glas
+[Fabric]
+Stof
+[Import Resource Definitions]
+Grondstofdefinities importeren
+[Resource palette]
+Grondstoffenpalet
+[Trees]
+Bomen
+[Rocks]
+Rotsen
+[Cherry tree]
+Kersenboom
+[Orange tree]
+Sinaasappelboom
+[Prune tree]
+Pruimenboom
+[Gold ore]
+Gouderts
+[Iron ore]
+IJzererts
+[Sand]
+Zand
+[Cotton]
+Katoen
 [Reroll terrain look]
 Terreinuiterlijk opnieuw loten

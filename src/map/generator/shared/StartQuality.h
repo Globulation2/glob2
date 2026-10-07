@@ -35,11 +35,11 @@ struct ColonyQuality
 		int walkingSteps = 0;
 		int reachedTiles = 0, grassTiles = 0, buildableTiles = 0, fertileGrassTiles = 0;
 		int exclusiveNearestTiles = 0, tiedNearestTiles = 0;
-		std::array<int, MAX_RESOURCES> depositTiles{}, storedAmount{};
-		std::array<int, MAX_RESOURCES> exclusiveDepositTiles{}, exclusiveStoredAmount{};
-		std::array<int, MAX_RESOURCES> tiedDepositTiles{}, tiedStoredAmount{};
+		std::array<int, MaterialCount> depositTiles{}, storedAmount{};
+		std::array<int, MaterialCount> exclusiveDepositTiles{}, exclusiveStoredAmount{};
+		std::array<int, MaterialCount> tiedDepositTiles{}, tiedStoredAmount{};
 	};
-	struct ResourceAccess
+	struct MaterialAccess
 	{
 		int nearestDistance = -1; ///< neighboring walking tile plus one gathering step
 		int catchmentDeposits = 0, catchmentAmount = 0;
@@ -53,7 +53,7 @@ struct ColonyQuality
 	int catchmentFertileGrass = 0, catchmentGrowthEnabledGrass = 0;
 	int exclusiveNearestTiles = 0, tiedNearestTiles = 0;
 	int exclusiveCatchmentTiles = 0, tiedCatchmentTiles = 0;
-	std::array<ResourceAccess, MAX_RESOURCES> resources{};
+	std::array<MaterialAccess, MaterialCount> materials{};
 	std::array<DistanceBand, 3> distanceBands{{DistanceBand{12}, DistanceBand{24},
 																		 DistanceBand{48}}};
 	int rivalDistance = -1, rivalsWithinThreat = 0;

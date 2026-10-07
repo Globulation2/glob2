@@ -119,14 +119,14 @@ inline void orbitChecks()
 	for (int e = 0; e < lattice.order(); ++e)
 	{
 		const int i = lattice.tile(e, 10, 12);
-		game.map.setResource(i % 64, i / 64, WOOD, 1);
+		game.map.setResourceByIndex(i % 64, i / 64, WOOD, 1);
 	}
 	std::string detail;
 	assert(equaliseDeposits(game.map, lattice, detail) && detail.empty());
-	game.map.setResource(40, 40, WHEAT, 1);
+	game.map.setResourceByIndex(40, 40, WHEAT, 1);
 	assert(!equaliseDeposits(game.map, lattice, detail) && !detail.empty());
 	game.map.setNoResource(40, 40, 1);
-	game.map.setResource(40, 40, STONE, 1);
+	game.map.setResourceByIndex(40, 40, STONE, 1);
 	assert(orbitMismatch(game, lattice, 4).find("Deposit") == 0);
 }
 
@@ -237,16 +237,16 @@ inline void growthChecks()
 			if (x <= 22 || x >= 38 || y <= 22 || y >= 38)
 				enclosed[t.at(x, y)] = SAND;
 	writeUndermap(game.map, enclosed);
-	game.map.setResource(5, 5, STONE, 1);
+	game.map.setResourceByIndex(5, 5, STONE, 1);
 	assert(cropSpreadEnvelope(game.map).visited.empty());
-	game.map.setResource(0, 0, WHEAT, 1);
+	game.map.setResourceByIndex(0, 0, WHEAT, 1);
 	const auto spread = cropSpreadEnvelope(game.map);
 	assert(spread.steps[t.at(63, 63)] == 1); // Diagonal wrapping is a growth route too.
 	assert(spread.steps[t.at(30, 30)] < 0);
 	std::vector<unsigned char> reserved(t.size(), 0);
 	reserved[t.at(30, 30)] = 1;
 	assert(cropSeedsIn(game.map, reserved) == 0);
-	game.map.setResource(30, 30, WOOD, 1);
+	game.map.setResourceByIndex(30, 30, WOOD, 1);
 	assert(cropSeedsIn(game.map, reserved) == 1);
 	assert(cropSpreadEnvelope(game.map).steps[t.at(31, 31)] == 1);
 	reserved[t.at(0, 0)] = reserved[t.at(5, 5)] = 1;
@@ -262,7 +262,7 @@ inline void contactChecks()
 	Map &map = game.map;
 	const Torus t(map);
 	for (int y = 0; y < t.h; ++y)
-		map.setResource(16, y, WOOD, 1);
+		map.setResourceByIndex(16, y, WOOD, 1);
 	assert(stepCost(map, 16, 3, StepCosts::walking()) == -1 &&
 		   stepCost(map, 16, 3, StepCosts::chopping(5)) == 5);
 	// The wall wraps, so the torus is still open round the other side: walkers go round.
@@ -508,7 +508,7 @@ inline void roomChecks()
 	Game game(nullptr);
 	landscapeGrass(game, 4, 4);
 	assert(count(buildableTiles(game.map)) == 256);
-	game.map.setResource(3, 3, WOOD, 1);
+	game.map.setResourceByIndex(3, 3, WOOD, 1);
 	assert(count(buildableTiles(game.map)) == 255);
 }
 
@@ -892,8 +892,8 @@ inline void lavaPrimitiveChecks()
 		const int x = proposal[0];
 		if (!placeSettlement(world, c, 0, home, {x, 12}, "trial-settle"))
 			return false;
-		world.map.setResource(x + 7, 12, WHEAT, 1);
-		world.map.setResource(x + 7, 16, WOOD, 1);
+		world.map.setResourceByIndex(x + 7, 12, WHEAT, 1);
+		world.map.setResourceByIndex(x + 7, 16, WOOD, 1);
 		return true;
 	};
 	const auto selected = chooseScoredSettlements(

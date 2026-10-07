@@ -2,6 +2,7 @@
 #pragma once
 
 #include "TerrainType.h"
+#include "resource/Material.h"
 #include <array>
 #include <cassert>
 #include <cstdint>
@@ -9,7 +10,7 @@
 // Q8 factors use 256 for one. Health is signed HP per tick in the same scale.
 // Keep presentation out of this table: hot simulation queries only need these
 // immutable fixed-layout values. The table below supplies compile-time built-ins;
-// runtime registries preserve this layout. Resource masks use the resource wire IDs.
+// runtime registries preserve this layout. The legacy resource mask is retained only for import adapters.
 struct TerrainProperties
 {
 	bool walkable = false, swimmable = false, flyable = true;
@@ -21,7 +22,7 @@ struct TerrainProperties
 	std::int16_t fertilityQ8 = 0;
 	std::uint16_t inhibitionQ8 = 0, shoreSupportQ8 = 0;
 	std::uint16_t allowedResources = 0;
-	std::uint8_t farmCrop = 255;
+	std::uint8_t farmMaterial = 255;
 };
 
 inline constexpr auto TERRAIN_PROPERTIES = [] {
@@ -31,7 +32,7 @@ inline constexpr auto TERRAIN_PROPERTIES = [] {
 	water.resourcesGrow = water.fertilitySource = true;
 	water.fertilityQ8 = 256;
 	water.allowedResources = (1u << 4); // algae
-	water.farmCrop = 4;
+	water.farmMaterial = materialIndex(MaterialId::Algae);
 	auto& sand = definitions[SAND];
 	sand.walkable = sand.shoreline = true;
 	sand.inhibitionQ8 = sand.shoreSupportQ8 = 256;
@@ -39,7 +40,7 @@ inline constexpr auto TERRAIN_PROPERTIES = [] {
 	grass.walkable = grass.resourcesGrow = grass.nonGrowingResources = grass.buildable = true;
 	grass.allowedResources = (1u << 0) | (1u << 1) | (1u << 2) | (1u << 3) |
 		(1u << 5) | (1u << 6) | (1u << 7);
-	grass.farmCrop = 1;
+	grass.farmMaterial = materialIndex(MaterialId::Food);
 	auto& ice = definitions[ICE];
 	ice.walkable = true;
 	ice.groundSpeedQ8 = 128;
@@ -73,7 +74,7 @@ constexpr bool validTerrainProperties(const TerrainProperties& p)
 		p.groundSpeedQ8 <= 1024 && p.airSpeedQ8 >= 64 && p.airSpeedQ8 <= 1024 &&
 		p.growthQ8 <= 1024 && p.inhibitionQ8 <= 1024 && p.shoreSupportQ8 <= 1024 &&
 		p.fertilityQ8 >= -1024 && p.fertilityQ8 <= 1024 &&
-		(p.farmCrop == 255 || (p.farmCrop < 8 && (p.allowedResources & (1u << p.farmCrop))));
+		(p.farmMaterial == 255 || p.farmMaterial < MaterialCount);
 }
 static_assert([] { for (const auto& p : TERRAIN_PROPERTIES) if (!validTerrainProperties(p)) return false; return true; }());
 

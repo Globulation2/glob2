@@ -403,7 +403,7 @@ static void fruitStrategyRegressions()
     ai.budget.fruit_active=true;ai.budget.fruit_units_per_flag=1;
     ai.budget.fruit_flag_radius=3;
     game.map.setMapDiscovered();
-    game.map.setResource(24,10,CHERRY,1);
+    game.map.setResourceByIndex(24,10,CHERRY,1);
     c.initialize();
     int innId=-1;
     for(const auto& entry:c.buildings.found())
@@ -414,7 +414,7 @@ static void fruitStrategyRegressions()
     auto opportunity=field.assessBuilding(10,10,inn->type->width,inn->type->height);
     REQUIRE((opportunity.available==1 && opportunity.covered==0));
     ai.update_fruit_flags(c);
-    REQUIRE(c.resource_flags(CHERRY).size()==1);
+    REQUIRE(c.material_source_flags(CHERRY).size()==1);
     bool advertisesInn=false;
     for(const auto& order:c.managementOrders)
         if(auto* alliance=dynamic_cast<Management::ChangeAlliances*>(order.get()))
@@ -424,7 +424,7 @@ static void fruitStrategyRegressions()
         }
     REQUIRE(advertisesInn);
     ai.update_fruit_flags(c);
-    REQUIRE(c.resource_flags(CHERRY).size()==1);
+    REQUIRE(c.material_source_flags(CHERRY).size()==1);
     for(auto posture:{AIMaxima::Maxima::PostureDefend,AIMaxima::Maxima::PostureRecover})
     {
         ai.posture=posture;
@@ -433,7 +433,7 @@ static void fruitStrategyRegressions()
         REQUIRE(ai.budget.fruit_active);
         REQUIRE(ai.budget.desired_explorers>=ai.strategy.fruit.units_per_flag);
         ai.update_fruit_flags(c);
-        REQUIRE(c.resource_flags(CHERRY).size()==1);
+        REQUIRE(c.material_source_flags(CHERRY).size()==1);
     }
     // Pending mission identity survives a save; the next pass must reuse it.
     auto* backend=new GAGCore::MemoryStreamBackend;
@@ -444,22 +444,22 @@ static void fruitStrategyRegressions()
     input.seekFromStart(0);
     AIMaxima::Maxima restored(&player);
     REQUIRE(restored.load(&input,&player,VERSION_MINOR));
-    REQUIRE(restored.context.resource_flags(CHERRY)==c.resource_flags(CHERRY));
+    REQUIRE(restored.context.material_source_flags(CHERRY)==c.material_source_flags(CHERRY));
     restored.update_fruit_flags(restored.context);
-    REQUIRE(restored.context.resource_flags(CHERRY)==c.resource_flags(CHERRY));
+    REQUIRE(restored.context.material_source_flags(CHERRY)==c.material_source_flags(CHERRY));
     // Completed building vision replaces the pending explorer assignment.
     ::Building* covering=game.addBuilding(22,11,innType,0);REQUIRE(covering);
     const int coverId=c.buildings.register_building();
     c.buildings.issue_order(coverId,22,11,innType);
     c.buildings.tick();
     ai.update_fruit_flags(c);
-    REQUIRE(c.resource_flags(CHERRY).empty());
+    REQUIRE(c.material_source_flags(CHERRY).empty());
     covering->kill();player.team->syncStep();c.buildings.tick();
     ai.update_fruit_flags(c);
-    REQUIRE(c.resource_flags(CHERRY).size()==1);
+    REQUIRE(c.material_source_flags(CHERRY).size()==1);
     ai.strategy.fruit.enabled=false;ai.budget.fruit_active=false;
     ai.update_fruit_flags(c);
-    REQUIRE(c.resource_flags(CHERRY).empty());
+    REQUIRE(c.material_source_flags(CHERRY).empty());
 }
 
 static void reviewBugRegressions()
@@ -628,7 +628,7 @@ static void applyClearingGeometry(Context& c, ::Building* flag)
         auto selector=std::dynamic_pointer_cast<OrderModifyClearingFlag>(order);
         if(selector && selector->gid==flag->gid)
             for(int r=0; r<BASIC_COUNT; ++r)
-                flag->clearingResources[r]=selector->clearingResources[r];
+                flag->clearingMaterials[r]=selector->clearingMaterials[r];
     }
     c.orders.clear();
 }
@@ -1030,8 +1030,8 @@ static void innCompletionStaffingRegressions()
     c.orders.clear();
     // Finish through the engine so its one-worker post-construction default
     // is in place before the completion callback runs.
-    for(int resource=0;resource<MAX_RESOURCES;++resource)
-        inn->resources[resource]=inn->type->maxResource[resource];
+    for(int resource=0;resource<MaterialCount;++resource)
+        inn->materials[resource]=inn->type->maxMaterial[resource];
     inn->updateBuildingSite();
     REQUIRE(inn->constructionResultState==Building::NO_CONSTRUCTION);
     REQUIRE(inn->maxUnitWorking==1);
@@ -1086,7 +1086,7 @@ static void placementMaintenanceRegressions()
         for(int y=0;y<64;++y)for(int x=0;x<64;++x)
         {
             game.map.setMapDiscovered(x,y,player.team->me);
-            if(x<20||x>=24||y<20||y>=24)game.map.setResource(x,y,WOOD,1);
+            if(x<20||x>=24||y<20||y>=24)game.map.setResourceByIndex(x,y,WOOD,1);
         }
         game.map.setNoResource(17,21,0);
         REQUIRE(game.addUnit(17,21,0,WORKER,0,0,0,0));
@@ -1167,7 +1167,7 @@ static void placementMaintenanceRegressions()
         }
         REQUIRE(ai.development_planner.campuses().size()==1);
         const auto& reservation=ai.development_planner.reservations().begin()->second;
-        for(int index:reservation.circulationTiles)game.map.setResource(index%64,index/64,WOOD,1);
+        for(int index:reservation.circulationTiles)game.map.setResourceByIndex(index%64,index/64,WOOD,1);
         ai.budget.farming_enabled=true;ai.budget.farming_maintenance_clearing_enabled=true;
         ai.budget.farming_resource_preserving_circulation_enabled=true;
         ai.budget.farming_wood_firebreak_enabled=false;
@@ -1210,7 +1210,7 @@ static void upgradeClearingRegressions()
         std::vector<int> expansion;
         for(int index:contract.footprintTiles)if(game.map.getBuilding(index%64,index/64)==NOGBID)
         {
-            game.map.setResource(index%64,index/64,WOOD,1);
+            game.map.setResourceByIndex(index%64,index/64,WOOD,1);
             expansion.push_back(index);
         }
         REQUIRE(expansion.size()==20);
@@ -1275,7 +1275,7 @@ static void rejectedPlacementUpgradeRegressions()
     auto dispatched=c.getOrder(ai);
     REQUIRE(std::dynamic_pointer_cast<OrderConstruction>(dispatched));
     REQUIRE(c.buildings.is_building_upgrading(id));
-    game.map.setResource(19,19,WOOD,1);
+    game.map.setResourceByIndex(19,19,WOOD,1);
     building->launchConstruction(1,0);
     REQUIRE(building->constructionResultState==Building::NO_CONSTRUCTION);
     c.buildings.tick();REQUIRE(!c.buildings.is_building_upgrading(id));
@@ -1310,7 +1310,7 @@ static void explorerSwarmStaffingRegressions()
         game.map.setMapDiscovered(x,y,player.team->me);
     for(int position:{30,50})
     {
-        game.map.setResource(position+6,position+1,WHEAT,1);
+        game.map.setResourceByIndex(position+6,position+1,WHEAT,1);
         game.map.setCellTerrain(position+6,position+3,WATER);
     }
     // Swarm 0 runs empty; swarms 1 and 2 stay full. Staffing is each swarm's
@@ -1318,7 +1318,7 @@ static void explorerSwarmStaffingRegressions()
     // apportionment to check: what matters is that the empty one ends up with
     // more carriers than the full ones.
     for(int id=0;id<3;++id)
-        c.buildings.get_building(id)->resources[WHEAT]=id ? 20 : 0;
+        c.buildings.get_building(id)->materials[WHEAT]=id ? 20 : 0;
     ai.budget.staffing_window_samples=2;
     ai.budget.staffing_cooldown_passes=0;
     ai.budget.staffing_minimum_workers=1;
@@ -1396,7 +1396,7 @@ static void completedSwarmBudgetRegressions()
             ai.strategy.economy.swarm_pressure_sensitivity,ai.strategy.economy.swarm_workers_per_building).workers);
     };
     verify(1);
-    for(int resource=0;resource<MAX_RESOURCES;++resource) site->resources[resource]=site->type->maxResource[resource];
+    for(int resource=0;resource<MaterialCount;++resource) site->materials[resource]=site->type->maxMaterial[resource];
     site->updateBuildingSite(); verify(2);
     // Repair changes available producers, not the colony-wide labor budget.
     complete->hp/=2; complete->launchConstruction(1,1);
@@ -1414,10 +1414,10 @@ static void economicResourceAccessRegressions()
     for(int y=0;y<64;++y)
     { game.map.setCellTerrain(0,y,WATER); game.map.setCellTerrain(16,y,WATER); }
     for(int y=0;y<64;++y) for(int x=0;x<64;++x) game.map.setMapDiscovered(x,y,player.team->me);
-    game.map.setResource(13,20,WHEAT,1);
-    game.map.setResource(19,11,WHEAT,1);
-    game.map.setResource(19,12,WOOD,1);
-    game.map.setResource(19,13,STONE,1);
+    game.map.setResourceByIndex(13,20,WHEAT,1);
+    game.map.setResourceByIndex(19,11,WHEAT,1);
+    game.map.setResourceByIndex(19,12,WOOD,1);
+    game.map.setResourceByIndex(19,13,STONE,1);
     AIMaxima::Maxima ai(&player); Context& c=ai.context; c.initialize();
     ai.snapshot.population=1; ai.snapshot.workers=1;
     // Food now reports whole fertility-equivalent tiles, not deposit counts.
@@ -1441,10 +1441,10 @@ static void economicResourceAccessRegressions()
     REQUIRE(game.addUnit(20,16,0,WORKER,0,0,0,0)); verify(1,1);
 
     // Sharing connectivity must preserve algae's unit counts and shore access.
-    game.map.setResource(16,24,ALGA,1);
+    game.map.setResourceByIndex(16,24,ALGA,1);
     game.map.setResourceAmount(game.map.coordToIndex(16,24), 4);
     for(int y=18;y<=21;++y) for(int x=20;x<=23;++x) game.map.setCellTerrain(x,y,WATER);
-    game.map.setResource(21,19,ALGA,1);
+    game.map.setResourceByIndex(21,19,ALGA,1);
     game.map.setResourceAmount(game.map.coordToIndex(21,19), 3);
     ai.update_environment_model(c);
     REQUIRE((ai.known_algae_units==7 && ai.walk_accessible_algae_units==4));
@@ -1790,7 +1790,7 @@ TEST_CASE("Maxima food catchments and carrier discounts follow trail and ice tra
     auto* inn=game.addBuilding(2,2,innType,0);REQUIRE(inn);
     const int sx=inn->posX+inn->type->width,sy=inn->posY;
     for(int dx=0;dx<=4;++dx)map.setCellTerrain(sx+dx,sy,GRASS);
-    map.setResource(sx+4,sy,WHEAT,1);
+    map.setResourceByIndex(sx+4,sy,WHEAT,1);
     AIMaxima::Farming::ExactFertilityCache fertility;
     fertility.rebuild(32,32,std::vector<uint8_t>(1024),std::vector<uint8_t>(1024));
     auto capacity=[&](int radius) {
@@ -1810,4 +1810,54 @@ TEST_CASE("Maxima food catchments and carrier discounts follow trail and ice tra
     CHECK(capacity(3)==0);
     CHECK(capacity(8)>0);
     CHECK(distant()<neutral);
+}
+
+#include <nlohmann/json.hpp>
+#include "field/UniformTraversal.h"
+
+TEST_CASE("prepared resource obstacles match scalar entity gradients" * doctest::test_suite("Maxima.Implementation"))
+{
+    glob2test::HeadlessGlobals globals;
+    Map map;map.setSize(4,4,GRASS);
+    Player player;player.map=&map;
+    using Json=nlohmann::json;
+    auto prototype=Json::parse(map.resourceRegistry().serialize())["resources"][1];
+    Json definitions=Json::array();
+    for(int n=0;n<260;++n)
+    {
+        auto definition=prototype;
+        definition["key"]="fixture:obstacle-"+std::to_string(1000+n);
+        definition["properties"]["blocksGround"]=bool(n&1);
+        definition["properties"]["persistsWhenEmpty"]=true;
+        definitions.push_back(std::move(definition));
+    }
+    map.installResourceDefinitions(Json{{"schemaVersion",1},{"resources",definitions}}.dump());
+    for(int n=0;n<8;++n)
+    {
+        const auto id=map.resourceRegistry().find("fixture:obstacle-"+std::to_string(1252+n));REQUIRE(id);
+        REQUIRE(resourceIndex(*id)>255);
+        map.setResource(4+n,4,*id,0);
+        if(n%3==0) map.setResourceAmount(map.coordToIndex(4+n,4),0);
+    }
+    for(bool groundSource:{false,true})
+    {
+        Gradients::GradientInfo info;
+        info.add_source(new Gradients::Entities::Position(5,4)); // Source wins even on a blocker.
+        info.add_source(new Gradients::Entities::Position(0,0));
+        if(groundSource) info.add_source(new Gradients::Entities::ResourceGroundObstacle);
+        info.add_obstacle(new Gradients::Entities::ResourceGroundObstacle);
+        info.add_obstacle(new Gradients::Entities::Position(8,8));
+        info.add_obstacle(new Gradients::Entities::ResourceGroundObstacle); // OR duplicate.
+        std::vector<Sint16> expected(map.size,Gradients::UnreachableCell);
+        field::Frontier frontier;
+        for(int x=0;x<map.getW();++x) for(int y=0;y<map.getH();++y)
+        {
+            const int index=y*map.getW()+x;
+            if(info.matches_source(&player,x,y)) {expected[index]=Gradients::SourceCell;frontier.push_back(index);}
+            else if(info.matches_obstacle(&player,x,y)) expected[index]=Gradients::ObstacleCell;
+        }
+        field::expandDistances(expected,frontier,{map.getW(),map.getH()},field::Surrounding,Gradients::UnreachableCell);
+        Gradients::Gradient actual(info);actual.recalculate(&player,frontier);
+        CHECK(actual.values==expected);
+    }
 }

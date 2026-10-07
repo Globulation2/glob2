@@ -92,12 +92,12 @@
   {
     "name": "firefox WSS and simulation",
     "browsers": "firefox",
-    "command": "GLOB2_FIREFOX_HEADED=1 xvfb-run -a npx playwright test determinism.spec.js --project=firefox --grep='WebAssembly produces|WebAssembly verifies|Markets V2'"
+    "command": "GLOB2_FIREFOX_HEADED=1 xvfb-run -a npx playwright test determinism.spec.js --project=firefox --grep='WebAssembly produces|WebAssembly verifies|Markets V2|runtime resource'"
   },
   {
     "name": "webkit WSS and simulation",
     "browsers": "webkit",
-    "command": "xvfb-run -a npx playwright test determinism.spec.js --project=webkit --grep='WebAssembly produces|WebAssembly verifies|Markets V2'"
+    "command": "xvfb-run -a npx playwright test determinism.spec.js --project=webkit --grep='WebAssembly produces|WebAssembly verifies|Markets V2|runtime resource'"
   },
   {
     "name": "firefox scripting",
@@ -115,5 +115,15 @@
     "browsers": "chromium",
     "renderer": "webgl2",
     "command": "GLOB2_SKIN_TEST_THREADS=threaded xvfb-run -a npx playwright test colony-skins.spec.js skin-assets.spec.js --project=chromium"
+  },
+  {
+    "name": "firefox replay import and reload",
+    "browsers": "firefox",
+    "command": "GLOB2_FIREFOX_HEADED=1 xvfb-run -a npx playwright test import.spec.js session-reload.spec.js --project=firefox --grep='imports a complete replay|an active replay'"
+  },
+  {
+    "name": "webkit replay import and reload",
+    "browsers": "webkit",
+    "command": "xvfb-run -a npx playwright test import.spec.js session-reload.spec.js --project=webkit --grep='imports a complete replay|an active replay'"
   }
 ]

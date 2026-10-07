@@ -5564,5 +5564,45 @@ Les ouvriers peuvent prendre des provisions dans le stock partagé des marchés.
 Importer des définitions de terrain
 [Terrain palette]
 Palette de terrains
+[Food]
+Nourriture
+[Paper]
+Papier
+[Cherries]
+Cerises
+[Oranges]
+Oranges
+[Prunes]
+Prunes
+[Gold]
+Or
+[Metal]
+Métal
+[Glass]
+Verre
+[Fabric]
+Tissu
+[Import Resource Definitions]
+Importer des définitions de ressources
+[Resource palette]
+Palette de ressources
+[Trees]
+Arbres
+[Rocks]
+Rochers
+[Cherry tree]
+Cerisier
+[Orange tree]
+Oranger
+[Prune tree]
+Prunier
+[Gold ore]
+Minerai d’or
+[Iron ore]
+Minerai de fer
+[Sand]
+Sable
+[Cotton]
+Coton
 [Reroll terrain look]
 Tirer à nouveau l’apparence du terrain

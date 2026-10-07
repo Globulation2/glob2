@@ -258,7 +258,7 @@ inline void braidedDeltaChecks()
 		const auto overgrown = MapGeneration::cropSpreadEnvelope(game.map);
 		for (int i : overgrown.visited)
 			if (game.map.isResourceAllowed(i % torus.w, i / torus.w, WHEAT))
-				game.map.setResource(i % torus.w, i / torus.w, WHEAT, 1);
+				game.map.setResourceByIndex(i % torus.w, i / torus.w, WHEAT, 1);
 		assert(MapGeneration::walkFromFirstColony(game.map, request.nbTeams, "the overgrown delta",
 												  "over its ford approaches")
 				   .error.empty());
@@ -268,7 +268,7 @@ inline void braidedDeltaChecks()
 		for (int y = 0; y < game.map.getH(); ++y)
 			for (int x = 0; x < game.map.getW(); ++x)
 				if (game.map.isResourceAllowed(x, y, STONE))
-					game.map.setResource(x, y, STONE, 1);
+					game.map.setResourceByIndex(x, y, STONE, 1);
 		assert(!definition.validateWorld(game, context).empty());
 	}
 	// Restore the smallest layout for request-boundary checks after the large fixture.
@@ -329,7 +329,7 @@ inline void breachableHighlandsContracts()
 	std::printf("Breachable highlands seed 1: clearing saddles saves up to %d walking steps\n",
 				bestSaving);
 	for (int i : saddle)
-		game.map.setResource(i % game.map.getW(), i / game.map.getW(), WOOD, 1);
+		game.map.setResourceByIndex(i % game.map.getW(), i / game.map.getW(), WOOD, 1);
 	assert(definition.validateWorld(game, context).empty());
 	game.map.setNoResource(ridge % game.map.getW(), ridge / game.map.getW(), 1);
 	assert(definition.validateWorld(game, context).find("ridge") != std::string::npos);
@@ -627,10 +627,10 @@ inline void locustFoodChecks()
 	}
 	assert(rejected);
 	assert(
-		MapGeneration::startingAccessFailure(map, 2, {{WHEAT, 24, "wheat"}, {WOOD, 32, "wood"}})
+		MapGeneration::startingAccessFailure(map, 2, {{MaterialId::Food, 24, "food"}, {MaterialId::Wood, 32, "wood"}})
 			.empty());
 	// No fruit exists here: a required absent supply must fail, as must an impossible room budget.
-	assert(!MapGeneration::startingAccessFailure(map, 2, {{CHERRY, 24, "cherries"}}).empty());
+	assert(!MapGeneration::startingAccessFailure(map, 2, {{MaterialId::Cherries, 24, "cherries"}}).empty());
 	assert(
 		!MapGeneration::startingAccessFailure(map, 2, {}, map.getW() * map.getH(), 1).empty());
 	std::vector<unsigned char> food(map.getW() * map.getH(), 0);
@@ -781,7 +781,7 @@ inline void rebuiltLandscapeContracts()
 				if (!game.map.isGrass(x, y) || game.map.isResource(x, y) || game.map.getBuilding(x, y) != NOGBID)
 					continue;
 				++tries;
-				game.map.setResource(x, y, WHEAT, 1);
+				game.map.setResourceByIndex(x, y, WHEAT, 1);
 				if (definition.validateWorld(game, check).find("glacis") != std::string::npos)
 					planted = true;
 				else
@@ -1025,7 +1025,7 @@ inline void karstTowersContracts()
 					continue;
 				const int x = (team->startPosX + 6 + dx + 256) % 256, y = (team->startPosY + 2 + dy + 256) % 256;
 				if (game.map.isGrass(x, y) && !game.map.isResource(x, y))
-					game.map.setResource(x, y, STONE, 1);
+					game.map.setResourceByIndex(x, y, STONE, 1);
 			}
 		assert(!definition.validateWorld(game, check).empty());
 	}
@@ -1140,7 +1140,7 @@ inline void bajadaContracts()
 				if (std::max(std::abs(dx), std::abs(dy)) >= 4 && game.map.isResourceAllowed(x, y, WHEAT) &&
 					game.map.isFreeForGroundUnit(x, y, false, 0))
 				{
-					game.map.setResource(x, y, WHEAT, 1);
+					game.map.setResourceByIndex(x, y, WHEAT, 1);
 					sown = true;
 				}
 			}
@@ -1493,7 +1493,7 @@ inline void encircledKingdomContracts()
 			// must reject it even though all original starting supplies remain intact.
 			const int x = t.w / 2 + 2, y = t.h / 2 - 20;
 			assert(game.map.isResourceAllowed(x, y, WHEAT));
-			game.map.setResource(x, y, WHEAT, 1);
+			game.map.setResourceByIndex(x, y, WHEAT, 1);
 			assert(!definition.validateWorld(game, check).empty());
 		}
 	// Retained random-study failures: a concave rectangular approach and a remote outer town.
@@ -1647,7 +1647,7 @@ inline void faultedCityContracts()
 		}
 		assert(x >= 0 && y >= 0);
 		// Leave the centre open, but obstruct its reserved gathering/circulation width.
-		world.map.setResource((x + 1) % world.map.getW(), y, STONE, 1);
+		world.map.setResourceByIndex((x + 1) % world.map.getW(), y, STONE, 1);
 		GenerationContext context(request);
 		assert(!definition.validateWorld(world, context).empty());
 	}

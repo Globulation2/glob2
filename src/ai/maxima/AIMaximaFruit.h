@@ -14,7 +14,9 @@ struct Tile
 	bool passable=false;
 	bool visible=false;
 	bool buildingVision=false;
-	int variety=-1;
+	int variety=-1; // Legacy fixture adapter; live maps populate varieties.
+    unsigned varieties=0;
+    unsigned mask() const { return varieties ? varieties : variety>=0 ? 1u<<variety : 0; }
 };
 
 struct Supply
@@ -48,7 +50,7 @@ struct Field
 			// Row-major sources and neighbour order make equal routes stable.
 			for(int at=0;at<int(tiles.size());++at)
 			{
-				if(tiles[at].variety!=variety)continue;
+				if(!(tiles[at].mask()&(1u<<variety)))continue;
 				distances[variety][at]=0;
 				sources[variety][at]=at;
 				queue.push_back(at);

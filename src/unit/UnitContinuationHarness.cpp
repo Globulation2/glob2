@@ -79,7 +79,7 @@ static void checkContinuation(int checkpoint)
         for (int x = 0; x < 32; ++x) game.map.clearImmobileUnit(x, y);
     for (int x = 12; x < 15; ++x)
     {
-        game.map.setResource(x, 12, WOOD, 1);
+        game.map.setResourceByIndex(x, 12, WOOD, 1);
         game.map.setAreaMask(game.map.coordToIndex(x, 12), &Tile::clearArea, game.teams[0]->me);
     }
     auto* first = game.addUnit(7, 12, 0, WORKER, 0, 0, 0, 0);
@@ -90,9 +90,9 @@ static void checkContinuation(int checkpoint)
     auto* secondInn = game.addBuilding(20, 4, innType, 0);
     REQUIRE((firstInn && secondInn));
     // Availability order deliberately differs from building-id order.
-    secondInn->resources[WHEAT] = 10;
+    secondInn->materials[WHEAT] = 10;
     secondInn->update();
-    firstInn->resources[WHEAT] = 10;
+    firstInn->materials[WHEAT] = 10;
     firstInn->update();
     auto* flyer = game.addUnit(12, 4, 0, EXPLORER, 0, 0, 0, 0);
     REQUIRE((flyer && game.teams[0]->findNearestFood(flyer) == firstInn));
