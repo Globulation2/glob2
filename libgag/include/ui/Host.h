@@ -80,6 +80,8 @@ class Host
 	// their frame budget while this holds so the motion stays smooth.
 	bool animating() const { return scrolling && (scrolling->axis.isAnimating() || (gestureScrolling && scrollGestureMotion.needsFrames())); }
 	void scrollIntoView(const std::string &key);
+	// Aligns the element's top with its scroll container's top (a section heading).
+	void scrollToTop(const std::string &key);
 
 	// Queries, also for harnesses.
 	Node *root() const { return tree.get(); }
