@@ -1,0 +1,4 @@
+PASS ResourceGrowthFixtures/controlled full-engine growth fixtures [benchmark][resources] (2.6s)
+
+1 passed, 0 failed, 0 skipped (2.6s of test time)
+[run_tests] JUnit report: artifacts/resource-growth/fixture-generator.xml (1 cases)

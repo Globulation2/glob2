@@ -93,3 +93,19 @@ The full matrix above measured the feature before the master abort-session fix. 
 The disabled-growth owner/shared comparison submits no growth jobs. Its variability is a negative control for host/scheduling noise; small apparent gains or regressions elsewhere cannot be treated as definitive. No overall end-to-end speedup is established. Shared placement remains the requested default.
 
 Snapshot copying, proposal retention and publication add substantial standalone cost. Shared execution reduces some delayed-owner costs, but does not produce a consistent engine win over the original algorithm in these workloads. A quiet, isolated run is still needed to qualify small engine differences.
+
+## Controlled full-engine scenarios
+
+These additional starting saves were emitted by the fixture generator compiled against the baseline. They preserve buildings/teams but replace the field with uniform crops: sparse/blocked 128², dense/low-stock active-AI/disabled 256², saturated/multi-material 512². Each comparison uses delay 8, four executor slots, one warm-up and ten paired measured runs of 256 ticks. Fourteen separate owner/shared checksum runs passed. The low-stock case retains active Nicowar/Warrush controllers; other cases retain idle controllers.
+
+| Scenario | Legacy run ms | Owner run ms | Shared run ms | Shared/legacy ratio (95% CI), delta ms | Shared/owner ratio (95% CI), delta ms |
+|---|---:|---:|---:|---|---|
+| blocked | 91.69 | 82.75 | 92.69 | 1.071 (0.781–1.898), +4.43 | 1.236 (0.876–1.644), +11.96 |
+| dense | 336.04 | 405.91 | 312.57 | 0.952 (0.888–1.075), -16.71 | 0.836 (0.726–0.885), -66.15 |
+| disabled | 149.38 | 141.42 | 139.30 | 0.957 (0.840–1.069), -5.88 | 0.972 (0.947–1.035), -3.90 |
+| harvested | 411.98 | 574.07 | 431.11 | 0.945 (0.843–1.327), -21.01 | 0.693 (0.610–0.949), -182.99 |
+| multi | 1129.71 | 1455.82 | 1248.13 | 1.022 (0.942–1.124), +24.87 | 0.833 (0.759–0.915), -243.90 |
+| saturated | 1063.76 | 1349.51 | 1081.69 | 0.984 (0.942–1.090), -16.18 | 0.787 (0.726–0.822), -272.61 |
+| sparse | 96.22 | 85.37 | 96.48 | 1.095 (0.773–1.128), +8.35 | 1.054 (0.740–1.231), +4.42 |
+
+All controlled shared/legacy intervals include parity. Dense, low-stock active-AI, multi-material and saturated fields show lower shared costs than delayed owner execution, but that does not establish an improvement over legacy growth. This directly illustrates the split overhead consuming the recovered parallel benefit in these runs.

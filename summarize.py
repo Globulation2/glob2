@@ -69,4 +69,15 @@ if p.exists():
   costs=' / '.join(f"{g[k]/1e6:.2f}" for k in ('growth_computeNs','growth_queueNs','growth_waitNs','growth_publicationNs'))
   lines.append(f"| {scenario} | {c['wall_s']*1000:.2f} | {c['cpu_s']*1000:.2f} | {c['peak_rss_bytes']/2**20:.2f} | {pct} | {costs} |")
  lines += ['','The disabled-growth owner/shared comparison submits no growth jobs. Its variability is a negative control for host/scheduling noise; small apparent gains or regressions elsewhere cannot be treated as definitive. No overall end-to-end speedup is established. Shared placement remains the requested default.','','Snapshot copying, proposal retention and publication add substantial standalone cost. Shared execution reduces some delayed-owner costs, but does not produce a consistent engine win over the original algorithm in these workloads. A quiet, isolated run is still needed to qualify small engine differences.']
+p=root/'engine-controlled/summary.json'
+if p.exists():
+ engine=json.loads(p.read_text())
+ lines += ['','## Controlled full-engine scenarios','','These additional starting saves were emitted by the fixture generator compiled against the baseline. They preserve buildings/teams but replace the field with uniform crops: sparse/blocked 128², dense/low-stock active-AI/disabled 256², saturated/multi-material 512². Each comparison uses delay 8, four executor slots, one warm-up and ten paired measured runs of 256 ticks. Fourteen separate owner/shared checksum runs passed. The low-stock case retains active Nicowar/Warrush controllers; other cases retain idle controllers.','','| Scenario | Legacy run ms | Owner run ms | Shared run ms | Shared/legacy ratio (95% CI), delta ms | Shared/owner ratio (95% CI), delta ms |','|---|---:|---:|---:|---|---|']
+ for scenario,vs in engine.items():
+  a,b,c=vs['legacy-t4'],vs['d8t4-owner'],vs['d8t4-shared']
+  cells=[scenario]+[f"{v['run_s']*1000:.2f}" for v in (a,b,c)]
+  for ref in ('legacy-t4','d8t4-owner'):
+   r=c[ref];cells.append(f"{r['run_time_ratio']:.3f} ({r['ratio_95pct_ci'][0]:.3f}–{r['ratio_95pct_ci'][1]:.3f}), {r['run_delta_ms']:+.2f}")
+  lines.append('| '+' | '.join(cells)+' |')
+ lines += ['','All controlled shared/legacy intervals include parity. Dense, low-stock active-AI, multi-material and saturated fields show lower shared costs than delayed owner execution, but that does not establish an improvement over legacy growth. This directly illustrates the split overhead consuming the recovered parallel benefit in these runs.']
 (root/'performance.md').write_text('\n'.join(lines)+'\n')

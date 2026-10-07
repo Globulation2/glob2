@@ -40,3 +40,12 @@ python3 artifacts/resource-growth/baseline-src/test/run_tests.py --binary engine
 python3 artifacts/resource-growth/baseline-src/test/run_tests.py --binary engine --no-display --filter 'JavaScriptSimulation/*conversion boundary*' --junit artifacts/resource-growth/baseline-conversion.xml
 
 Playable legacy/delayed saves use the ai256 initial save, 256 ticks, fixed gradient/AI settings, --save final and --telemetry team-timeline. These are generated examples, not maintainer play acceptance.
+
+Controlled full-engine coverage added on the same production executable:
+Copy src/map/ResourceGrowthFixtures.cpp into the baseline archive at the same path and add ('#src/map/ResourceGrowthFixtures.cpp', dict(cxxflags=['-fno-access-control'])) to its ENGINE_TESTS registry. Build its glob2-engine-tests target with the same baseline flags. This adds a test-only fixture generator, not a production implementation change.
+GLOB2_GROWTH_FIXTURE_INPUT=$PWD/artifacts/resource-growth/fixtures GLOB2_GROWTH_FIXTURE_OUTPUT=$PWD/artifacts/resource-growth/controlled-fixtures python3 artifacts/resource-growth/baseline-src/test/run_tests.py --binary engine --filter 'ResourceGrowthFixtures/*' --tag benchmark --no-display --junit artifacts/resource-growth/fixture-generator.xml
+Compress each emitted initial.game with gzip (mtime=0), retain its SHA-256, and construct the same manifest shape with 256 ticks, --gradient-workers 2 and --compute-experiments ai.
+python3 test/benchmark_resource_growth.py build/linux/client/release/src/glob2 artifacts/resource-growth/controlled-fixtures/manifest.json --verify --delays 8 --threads 4 --output artifacts/resource-growth/controlled-verification
+python3 test/benchmark_resource_growth.py build/linux/client/release/src/glob2 artifacts/resource-growth/controlled-fixtures/manifest.json --baseline artifacts/resource-growth/baseline-glob2 --delays 8 --threads 4 --output artifacts/resource-growth/engine-controlled
+All 14 controlled checksum runs passed. All 231 controlled timing runs completed. The new helper also compiled against the candidate and passed GCC 13/Clang 18 syntax checks.
+A post-run audit of 2,156 non-legacy timing runs verifies matching final heavy checksums and deterministic growth counters in 28 fixed-scenario/delay groups. Unlike per-tick checksum runs, these runs leave jobs deferred until their ordinary deadlines.

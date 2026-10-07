@@ -1,0 +1,427 @@
+{
+  "passed": true,
+  "runs": 2156,
+  "groups": {
+    "idle128/d8": {
+      "signature": {
+        "finalChecksum": 989208984,
+        "growth_submitted": 256,
+        "growth_published": 247,
+        "growth_sampled": 68889,
+        "growth_proposals": 719,
+        "growth_accepted": 688,
+        "growth_rejected": 7,
+        "growth_clamped": 7,
+        "growth_stockAdded": 688,
+        "growth_tilesAdded": 23
+      },
+      "runs": 110
+    },
+    "idle128/d3": {
+      "signature": {
+        "finalChecksum": 1173775041,
+        "growth_submitted": 256,
+        "growth_published": 252,
+        "growth_sampled": 68887,
+        "growth_proposals": 717,
+        "growth_accepted": 702,
+        "growth_rejected": 2,
+        "growth_clamped": 2,
+        "growth_stockAdded": 702,
+        "growth_tilesAdded": 23
+      },
+      "runs": 88
+    },
+    "idle128/d1": {
+      "signature": {
+        "finalChecksum": 859559309,
+        "growth_submitted": 256,
+        "growth_published": 254,
+        "growth_sampled": 68887,
+        "growth_proposals": 717,
+        "growth_accepted": 707,
+        "growth_rejected": 2,
+        "growth_clamped": 2,
+        "growth_stockAdded": 707,
+        "growth_tilesAdded": 24
+      },
+      "runs": 88
+    },
+    "idle256/d8": {
+      "signature": {
+        "finalChecksum": 652003961,
+        "growth_submitted": 256,
+        "growth_published": 247,
+        "growth_sampled": 273361,
+        "growth_proposals": 2329,
+        "growth_accepted": 2231,
+        "growth_rejected": 32,
+        "growth_clamped": 32,
+        "growth_stockAdded": 2231,
+        "growth_tilesAdded": 66
+      },
+      "runs": 110
+    },
+    "idle256/d3": {
+      "signature": {
+        "finalChecksum": 3919851350,
+        "growth_submitted": 256,
+        "growth_published": 252,
+        "growth_sampled": 273372,
+        "growth_proposals": 2316,
+        "growth_accepted": 2259,
+        "growth_rejected": 18,
+        "growth_clamped": 18,
+        "growth_stockAdded": 2259,
+        "growth_tilesAdded": 68
+      },
+      "runs": 88
+    },
+    "idle256/d1": {
+      "signature": {
+        "finalChecksum": 1192500686,
+        "growth_submitted": 256,
+        "growth_published": 254,
+        "growth_sampled": 273372,
+        "growth_proposals": 2308,
+        "growth_accepted": 2271,
+        "growth_rejected": 13,
+        "growth_clamped": 13,
+        "growth_stockAdded": 2271,
+        "growth_tilesAdded": 69
+      },
+      "runs": 88
+    },
+    "idle512/d8": {
+      "signature": {
+        "finalChecksum": 3302670018,
+        "growth_submitted": 256,
+        "growth_published": 247,
+        "growth_sampled": 1087598,
+        "growth_proposals": 6745,
+        "growth_accepted": 6458,
+        "growth_rejected": 91,
+        "growth_clamped": 91,
+        "growth_stockAdded": 6458,
+        "growth_tilesAdded": 209
+      },
+      "runs": 110
+    },
+    "idle512/d3": {
+      "signature": {
+        "finalChecksum": 3970294225,
+        "growth_submitted": 256,
+        "growth_published": 252,
+        "growth_sampled": 1087601,
+        "growth_proposals": 6697,
+        "growth_accepted": 6567,
+        "growth_rejected": 43,
+        "growth_clamped": 43,
+        "growth_stockAdded": 6567,
+        "growth_tilesAdded": 209
+      },
+      "runs": 88
+    },
+    "idle512/d1": {
+      "signature": {
+        "finalChecksum": 190063996,
+        "growth_submitted": 256,
+        "growth_published": 254,
+        "growth_sampled": 1087612,
+        "growth_proposals": 6683,
+        "growth_accepted": 6608,
+        "growth_rejected": 30,
+        "growth_clamped": 30,
+        "growth_stockAdded": 6608,
+        "growth_tilesAdded": 210
+      },
+      "runs": 88
+    },
+    "ai128/d8": {
+      "signature": {
+        "finalChecksum": 66537134,
+        "growth_submitted": 256,
+        "growth_published": 247,
+        "growth_sampled": 68796,
+        "growth_proposals": 725,
+        "growth_accepted": 694,
+        "growth_rejected": 9,
+        "growth_clamped": 9,
+        "growth_stockAdded": 694,
+        "growth_tilesAdded": 26
+      },
+      "runs": 110
+    },
+    "ai128/d3": {
+      "signature": {
+        "finalChecksum": 3368810024,
+        "growth_submitted": 256,
+        "growth_published": 252,
+        "growth_sampled": 68791,
+        "growth_proposals": 720,
+        "growth_accepted": 707,
+        "growth_rejected": 4,
+        "growth_clamped": 4,
+        "growth_stockAdded": 707,
+        "growth_tilesAdded": 28
+      },
+      "runs": 88
+    },
+    "ai128/d1": {
+      "signature": {
+        "finalChecksum": 805123640,
+        "growth_submitted": 256,
+        "growth_published": 254,
+        "growth_sampled": 68791,
+        "growth_proposals": 718,
+        "growth_accepted": 710,
+        "growth_rejected": 2,
+        "growth_clamped": 2,
+        "growth_stockAdded": 710,
+        "growth_tilesAdded": 28
+      },
+      "runs": 88
+    },
+    "ai256/d8": {
+      "signature": {
+        "finalChecksum": 137648842,
+        "growth_submitted": 256,
+        "growth_published": 247,
+        "growth_sampled": 273013,
+        "growth_proposals": 2337,
+        "growth_accepted": 2236,
+        "growth_rejected": 27,
+        "growth_clamped": 27,
+        "growth_stockAdded": 2236,
+        "growth_tilesAdded": 63
+      },
+      "runs": 110
+    },
+    "ai256/d3": {
+      "signature": {
+        "finalChecksum": 1139382160,
+        "growth_submitted": 256,
+        "growth_published": 252,
+        "growth_sampled": 273020,
+        "growth_proposals": 2323,
+        "growth_accepted": 2272,
+        "growth_rejected": 17,
+        "growth_clamped": 17,
+        "growth_stockAdded": 2272,
+        "growth_tilesAdded": 65
+      },
+      "runs": 88
+    },
+    "ai256/d1": {
+      "signature": {
+        "finalChecksum": 3115842080,
+        "growth_submitted": 256,
+        "growth_published": 254,
+        "growth_sampled": 273020,
+        "growth_proposals": 2315,
+        "growth_accepted": 2284,
+        "growth_rejected": 10,
+        "growth_clamped": 10,
+        "growth_stockAdded": 2284,
+        "growth_tilesAdded": 65
+      },
+      "runs": 88
+    },
+    "ai512/d8": {
+      "signature": {
+        "finalChecksum": 2236880625,
+        "growth_submitted": 256,
+        "growth_published": 247,
+        "growth_sampled": 1086706,
+        "growth_proposals": 6747,
+        "growth_accepted": 6473,
+        "growth_rejected": 63,
+        "growth_clamped": 63,
+        "growth_stockAdded": 6473,
+        "growth_tilesAdded": 195
+      },
+      "runs": 110
+    },
+    "ai512/d3": {
+      "signature": {
+        "finalChecksum": 3250364082,
+        "growth_submitted": 256,
+        "growth_published": 252,
+        "growth_sampled": 1086672,
+        "growth_proposals": 6714,
+        "growth_accepted": 6596,
+        "growth_rejected": 33,
+        "growth_clamped": 33,
+        "growth_stockAdded": 6596,
+        "growth_tilesAdded": 202
+      },
+      "runs": 88
+    },
+    "ai512/d1": {
+      "signature": {
+        "finalChecksum": 3023083720,
+        "growth_submitted": 256,
+        "growth_published": 254,
+        "growth_sampled": 1086673,
+        "growth_proposals": 6703,
+        "growth_accepted": 6633,
+        "growth_rejected": 24,
+        "growth_clamped": 24,
+        "growth_stockAdded": 6633,
+        "growth_tilesAdded": 203
+      },
+      "runs": 88
+    },
+    "disabled512/d8": {
+      "signature": {
+        "finalChecksum": 241131961,
+        "growth_submitted": 0,
+        "growth_published": 0,
+        "growth_sampled": 0,
+        "growth_proposals": 0,
+        "growth_accepted": 0,
+        "growth_rejected": 0,
+        "growth_clamped": 0,
+        "growth_stockAdded": 0,
+        "growth_tilesAdded": 0
+      },
+      "runs": 110
+    },
+    "disabled512/d3": {
+      "signature": {
+        "finalChecksum": 1787853452,
+        "growth_submitted": 0,
+        "growth_published": 0,
+        "growth_sampled": 0,
+        "growth_proposals": 0,
+        "growth_accepted": 0,
+        "growth_rejected": 0,
+        "growth_clamped": 0,
+        "growth_stockAdded": 0,
+        "growth_tilesAdded": 0
+      },
+      "runs": 88
+    },
+    "disabled512/d1": {
+      "signature": {
+        "finalChecksum": 3622048409,
+        "growth_submitted": 0,
+        "growth_published": 0,
+        "growth_sampled": 0,
+        "growth_proposals": 0,
+        "growth_accepted": 0,
+        "growth_rejected": 0,
+        "growth_clamped": 0,
+        "growth_stockAdded": 0,
+        "growth_tilesAdded": 0
+      },
+      "runs": 88
+    },
+    "sparse/d8": {
+      "signature": {
+        "finalChecksum": 2121760993,
+        "growth_submitted": 256,
+        "growth_published": 247,
+        "growth_sampled": 68776,
+        "growth_proposals": 393,
+        "growth_accepted": 378,
+        "growth_rejected": 1,
+        "growth_clamped": 1,
+        "growth_stockAdded": 378,
+        "growth_tilesAdded": 115
+      },
+      "runs": 22
+    },
+    "dense/d8": {
+      "signature": {
+        "finalChecksum": 569814429,
+        "growth_submitted": 256,
+        "growth_published": 247,
+        "growth_sampled": 273804,
+        "growth_proposals": 25988,
+        "growth_accepted": 24738,
+        "growth_rejected": 93,
+        "growth_clamped": 93,
+        "growth_stockAdded": 24738,
+        "growth_tilesAdded": 7296
+      },
+      "runs": 22
+    },
+    "saturated/d8": {
+      "signature": {
+        "finalChecksum": 3089777705,
+        "growth_submitted": 256,
+        "growth_published": 247,
+        "growth_sampled": 1087603,
+        "growth_proposals": 87987,
+        "growth_accepted": 84171,
+        "growth_rejected": 19,
+        "growth_clamped": 18,
+        "growth_stockAdded": 84171,
+        "growth_tilesAdded": 48915
+      },
+      "runs": 22
+    },
+    "harvested/d8": {
+      "signature": {
+        "finalChecksum": 47675657,
+        "growth_submitted": 256,
+        "growth_published": 247,
+        "growth_sampled": 273453,
+        "growth_proposals": 22460,
+        "growth_accepted": 21275,
+        "growth_rejected": 2,
+        "growth_clamped": 2,
+        "growth_stockAdded": 21275,
+        "growth_tilesAdded": 3546
+      },
+      "runs": 22
+    },
+    "blocked/d8": {
+      "signature": {
+        "finalChecksum": 156523617,
+        "growth_submitted": 256,
+        "growth_published": 247,
+        "growth_sampled": 68941,
+        "growth_proposals": 3511,
+        "growth_accepted": 3436,
+        "growth_rejected": 25,
+        "growth_clamped": 24,
+        "growth_stockAdded": 3436,
+        "growth_tilesAdded": 0
+      },
+      "runs": 22
+    },
+    "multi/d8": {
+      "signature": {
+        "finalChecksum": 1178984214,
+        "growth_submitted": 256,
+        "growth_published": 247,
+        "growth_sampled": 1087923,
+        "growth_proposals": 123548,
+        "growth_accepted": 117607,
+        "growth_rejected": 1,
+        "growth_clamped": 24,
+        "growth_stockAdded": 278650,
+        "growth_tilesAdded": 43538
+      },
+      "runs": 22
+    },
+    "disabled/d8": {
+      "signature": {
+        "finalChecksum": 1627094417,
+        "growth_submitted": 0,
+        "growth_published": 0,
+        "growth_sampled": 0,
+        "growth_proposals": 0,
+        "growth_accepted": 0,
+        "growth_rejected": 0,
+        "growth_clamped": 0,
+        "growth_stockAdded": 0,
+        "growth_tilesAdded": 0
+      },
+      "runs": 22
+    }
+  },
+  "note": "Normal timing runs do not join growth every tick. Their final heavy checksum and deterministic operation counters match at each fixed delay, across execution modes, thread counts and repetitions."
+}

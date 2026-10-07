@@ -1,6 +1,6 @@
 # Snapshot resource growth: PR #897 evidence
 
-Final implementation: `e93956015` on `codex/snapshot-resource-growth`. Original matched performance baseline: `d42d3e512` (immediate growth). Final integration reviewed master `591e40ecb`; its abort-session fix was cherry-picked as `e93956015`. Intervening rendering changes are unrelated and were not rebased into this branch. The merge tree is conflict-free.
+Final implementation: `78736bfd0` on `codex/snapshot-resource-growth`. Original matched performance baseline: `d42d3e512` (immediate growth). Final integration reviewed master `591e40ecb`; its abort-session fix was cherry-picked as `e93956015`. Intervening rendering changes are unrelated and were not rebased into this branch. The later fixture-generator commit changes no production simulation code; the measured final executable is from `e93956015`. The merge tree is conflict-free.
 
 [Performance and ecology tables](performance.md) contain the measured results and uncertainty. [Build provenance](build-provenance.json), [environment](environment.txt), and [exact commands](commands.txt) identify the inputs and tools. This was a shared, busy Linux x86-64 host with GCC 15 release builds; no CPU isolation was used.
 
@@ -13,6 +13,8 @@ The 20-seed ecology study covers both reserve-preserving and deposit-depleting h
 ## Validation
 
 - Full checksum matrix: **168 runs passed** across delays 1/3/8, executor sizes 1/2/4/8, owner/shared execution, three map sizes, idle/active-AI scenarios and a disabled-growth control.
+- Controlled full-engine cases: **14 additional runs passed**, bringing exact per-tick verification to **196 runs**.
+- A [normal-timing audit](timing-determinism-audit.json) also confirms matching final heavy checksums and deterministic growth counters in **2,156 non-legacy timing runs**, without joining work on every tick.
 - Final integration: **14 further runs passed** at delay 8/thread count 4, and all world traces match the pre-integration feature revision byte-for-byte.
 - Final focused native checks: **39 passed, 1 skipped**, covering growth, shared-worker lifecycle, JavaScript version/session boundaries, saves and the simulation golden record.
 - Broad pre-integration compatibility inventory: **1,432 cases passed, 61 skipped, 3 failed**. All three failures reproduced against the preserved baseline. Master's subsequent abort-session fix resolves the fatal-JavaScript teardown case in the final focused run. The remaining baseline failures are JavaScript conversion continuation and 16-bit image channel normalization; their logs are retained.
@@ -27,6 +29,7 @@ The baseline failure probes were built from a source archive. Their embedded Tes
 
 - `engine-timing/`: full 2,156-run matrix (seven scenarios × 28 variants × eleven rounds), measured before the abort-path integration. Its metadata records exact executable hashes.
 - `engine-default-final/`: 231-run refresh on the final executable (seven scenarios × three variants × eleven rounds), delay 8/thread count 4.
+- `engine-controlled/`: 231 additional timings for the controlled full-engine fixtures; `controlled-verification/` retains their separate correctness runs.
 - `verification/` and `verification-integration/`: correctness runs, kept separate from timing; archives contain per-tick checksums and logs.
 - `component.json` / `component-summary.json`: final four-way component measurements for 128², 256², 512² maps and sparse, dense, saturated, harvested, blocked, multi-material and disabled scenarios.
 - `ecology.json` / `ecology-summary.json`: final 20-seed ecology results, including removals, seeding, replenishment and harvest.
@@ -35,7 +38,7 @@ The baseline failure probes were built from a source archive. Their embedded Tes
 
 Compressed measurement rows retain each command, wall/CPU/RSS, load average, full AI/snapshot/gradient metrics, resource counters, compute/queue/join/publication times and pending-buffer peaks. Snapshot capture/copy figures are shared engine totals; their old/new deltas are observational and also reflect trajectory changes. The original binary supplies a tick histogram, not exact percentiles. Growth join time includes final draining as well as deadline waits. The legacy component control runs the old algorithm in the candidate binary; full-engine legacy timings use the preserved old executable.
 
-The full-engine fixtures are generated starting games with a no-op JavaScript controller or active Nicowar/Warrush controllers. Controlled dense/blocked/multi-material scenarios are covered by the component benchmark, rather than an exhaustive full-engine Cartesian product. Each engine run lasts 256 ticks. No claim is made about long-match performance or every map generator.
+The full-engine fixtures are generated starting games with a no-op JavaScript controller or active Nicowar/Warrush controllers. Additional controlled full-engine cases cover sparse/blocked 128², dense/low-stock active-AI/disabled 256², and saturated/multi-material 512² at delay 8/thread count 4. The generic engine suite covers the full delay/thread matrix; the controlled cases do not repeat that entire Cartesian product. Each engine run lasts 256 ticks. No claim is made about long-match performance or every map generator.
 
 ## Reproduction
 
@@ -48,10 +51,10 @@ LD_LIBRARY_PATH=/path/to/SDL/prefix/lib python3 test/benchmark_resource_growth.p
   --baseline /path/to/baseline-glob2 --output artifacts/resource-growth-retest
 ```
 
-Run `--verify` separately. The manifest builder resolves the supplied initial saves to absolute paths while preserving their SHA-256 checks. `commands.txt` gives the component and focused-test commands. `summarize.py` regenerates the tables when called from the implementation checkout with the evidence directory as its argument.
+Run `--verify` separately. Pass `--controlled` to `prepare_manifest.py` to reconstruct the controlled-fixture manifest. The manifest builder resolves the supplied initial saves to absolute paths while preserving their SHA-256 checks. `commands.txt` gives the component and focused-test commands. `summarize.py` regenerates the tables when called from the implementation checkout with the evidence directory as its argument.
 
 ## Play and remaining coverage
 
-`fixtures/ai256/initial.game.gz` plus `playable/legacy/final.game.gz` and `playable/delayed/final.game.gz` provide matched playable before/after examples after 256 ticks. Use the baseline executable for the legacy trajectory and the candidate for delayed growth. The final saves were generated before the abort-path integration; the final integration checks establish unchanged normal simulation traces.
+`controlled-fixtures/` also contains all seven loadable controlled starting saves. `fixtures/ai256/initial.game.gz` plus `playable/legacy/final.game.gz` and `playable/delayed/final.game.gz` provide matched playable before/after examples after 256 ticks. Use the baseline executable for the legacy trajectory and the candidate for delayed growth. The final saves were generated before the abort-path integration; the final integration checks establish unchanged normal simulation traces.
 
 Actual Windows/macOS/ARM/WebAssembly determinism and a threadless-platform build were not available here. Owner execution and a one-slot executor were tested, but they do not replace threadless platform coverage. Display tests and maintainer play assessment remain outstanding. The PR stays draft; this evidence does not constitute maintainer acceptance or a complete platform qualification.

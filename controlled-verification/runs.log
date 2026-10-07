@@ -1,0 +1,14 @@
+sparse 0 d8t4-owner wall=0.654s cpu=0.725s
+sparse 0 d8t4-shared wall=0.418s cpu=0.485s
+dense 0 d8t4-owner wall=1.276s cpu=1.572s
+dense 0 d8t4-shared wall=1.276s cpu=1.594s
+saturated 0 d8t4-owner wall=3.502s cpu=4.934s
+saturated 0 d8t4-shared wall=3.442s cpu=4.927s
+harvested 0 d8t4-owner wall=1.235s cpu=1.672s
+harvested 0 d8t4-shared wall=1.089s cpu=1.522s
+blocked 0 d8t4-owner wall=0.647s cpu=0.760s
+blocked 0 d8t4-shared wall=0.760s cpu=0.913s
+multi 0 d8t4-owner wall=4.194s cpu=6.049s
+multi 0 d8t4-shared wall=4.305s cpu=6.043s
+disabled 0 d8t4-owner wall=0.957s cpu=1.504s
+disabled 0 d8t4-shared wall=0.761s cpu=1.211s

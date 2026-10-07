@@ -9,12 +9,15 @@
   "candidate_revision": "ad1a109a1",
   "candidate_binary_sha256": "0daf730a8e87bd0bbee1daa7fb269ac9d4c02ac583dc7ebc29283ab89b31f0f3",
   "baseline_probe_note": "Archive from d42d3e512, built with a local test registry restriction to ScriptSessionTest.cpp and ImageAssetTest.cpp. TestMain git provenance searches upward into the parent candidate checkout and is misleading for this archive; source files and production objects remain from the baseline archive. Both observed failures reproduce.",
-  "final_revision": "e939560153dfb244638875d17b8d80cd3b30be77",
+  "final_revision": "78736bfd0f8984316857f4603b39c56c9a27a462",
   "final_binary_sha256": "1ada564b4abd014b3dd354753e4812c8fcfaf08d835ae139e174b7e944cf2fcf",
   "integration_note": "Cherry-picked master abort-session fix 591e40ecb. Fourteen final delay-8/thread-4 world traces match the pre-integration measured revision exactly. Full timing matrix identifies its pre-integration binary. Final default timing and component/ecology checks use the integrated build.",
   "validated_master_revision": "591e40ecb7be98fc7f4e5327234d27bb13934c17",
   "final_test_binary_sha256": "2f6a99cf2dd9443cfb7549e7a84a869899a4c79054e3c63e78f62b3b3ef3d39b",
   "full_timing_runs": 2156,
   "final_default_timing_runs": 231,
-  "checksum_runs": 182
+  "checksum_runs": 196,
+  "runtime_revision": "e939560153dfb244638875d17b8d80cd3b30be77",
+  "controlled_engine_runs": 231,
+  "fixture_generator_note": "ResourceGrowthFixtures.cpp from final revision was compiled as a test-only addition against d42d3e512 to emit compatible format-143 controlled initial saves. The preserved game executable was not rebuilt or changed."
 }
