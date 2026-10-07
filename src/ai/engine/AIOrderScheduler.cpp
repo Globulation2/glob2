@@ -313,8 +313,9 @@ void OrderScheduler::save(GAGCore::OutputStream* stream)
 			stream->writeText(named.unit, "unit"); stream->writeText(named.meaning, "meaning");
 			stream->writeUint32(named.updated, "updated"); stream->writeLeaveSection();
 		}
-		stream->writeUint8(bool(command.fieldDiagnostics), "hasFieldDiagnostics");
-		if (command.fieldDiagnostics) command.fieldDiagnostics->save(stream);
+		// Captured diagnostic images belong to this process, not the match.
+        // Keep the format-143 optional field slot so existing saves still load.
+        stream->writeUint8(0, "hasFieldDiagnostics");
 		stream->writeUint32(command.diagnostics.size(), "diagnostics");
 		for (unsigned j = 0; j < command.diagnostics.size(); ++j) {
 			stream->writeEnterSection(j);
