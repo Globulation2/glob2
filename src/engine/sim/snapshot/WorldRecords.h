@@ -28,6 +28,7 @@ struct BuildingView : BuildingStateRecord
 	int team = 0;
 	int maxHp = 0;
 	bool usesTeamResources = false;
+	MaterialMask availableSupplyMask = 0; // Stock after reservations, captured for gradient readers.
 	UnitRange working, inside;
 };
 

@@ -1,4 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
+#include "sim/snapshot/SnapshotStore.h"
 #include "EngineFixtures.h"
 #include "MapInternal.h"
 #include "gradient/GradientRuntime.h"
@@ -822,11 +823,16 @@ TEST_CASE("compound passable material goals track depletion visibility and overl
     const auto a=map.coordToIndex(10,10), b=map.coordToIndex(11,10);
     map.fogOfWar[a]=map.fogOfWar[b]=0;
     std::vector<Uint16> direct(map.size),cached(map.size);
+    gradient_preparation::MaterialSeedCache snapshotCache;
     auto compare=[&](int material) {
         map.seedMaterialGradientDirect(0,material,0,direct.data(),nullptr);
         for (int repeat=0;repeat<32;++repeat) map.seedMaterialGradient(0,material,0,cached.data(),false);
         REQUIRE(map.gradientRuntime->resourceSeeds.valid);
         requireSameField(map,"compound source",cached,direct);
+        gradient_preparation::Request request{gradient_preparation::Kind::Materials,0,material,0};
+        auto snapshot=SimulationSnapshot::capture(world.game,SimulationSnapshot::captureCatalog(world.game),request.requirements());
+        REQUIRE(snapshotCache.trySeed(snapshot,0,material,0,cached.data(),nullptr));
+        requireSameField(map,"compound snapshot cache",cached,direct);
     };
     compare(int(MaterialId::Food));
     CHECK(cached[a]==GRADIENT_UNREACHABLE);
@@ -1079,4 +1085,132 @@ TEST_CASE("published plane registry matches a sweep of live material fields" * d
 	const auto* stone = handle.resourceFields->find(MapState::planeKey(1, STONE, 1, false));
 	REQUIRE(stone); CHECK(stone->values->at(7) == 5);
 	CHECK_FALSE(handle.resourceFields->find(MapState::planeKey(0, WOOD, 0, false)));
+}
+
+TEST_CASE("snapshot seeds preserve every periodic kind after the live world changes" * doctest::test_suite("GradientPreparation"))
+{
+    glob2test::HeadlessGlobals globals;
+    glob2test::HeadlessGame world({.wDec=6, .hDec=6, .teams=2, .discovered=true, .clearImmobile=true, .loadDefaultRace=true, .header=true});
+    auto& game=world.game; auto& m=game.map;
+    game.gameHeader.getExperiments().set(ExperimentId::MarketsV2, true);
+    game.gameHeader.getExperiments().set(ExperimentId::GuardAreaBalancing, true);
+    game.gameHeader.getExperiments().set(ExperimentId::FarmAreas, true);
+    game.configureBuildingCatalog();
+    for (size_t i=0; i<m.size; ++i) {
+        m.setCellTerrain(i, static_cast<TerrainType>(i%TERRAIN_COUNT));
+        m.resourceCells[i].resource=Resource{Uint16(i%3==0 ? WHEAT : NO_RES_TYPE),0,1,0};
+        m.areaCells[i].forbidden=i%7==0?1:0;
+        m.areaCells[i].guard=i%5==0?3:0;
+        m.areaCells[i].clear=i%3==0?3:0;
+        m.areaCells[i].farm=i%2==0?3:0;
+        m.occupancyCells[i].immobileUnit=i%11==0?0:IMMOBILE_UNIT_NONE;
+        m.fogOfWar[i]=i%2?1:3;
+    }
+    for (int pos : {32,33}) {
+        m.setCellTerrain(pos,pos,GRASS); m.resourceCells[m.coordToIndex(pos,pos)].resource=Resource{}; m.clearImmobileUnit(pos,pos);
+    }
+    REQUIRE(world.addUnit(WARRIOR,32,32));
+    REQUIRE(world.addUnit(WARRIOR,33,33,1));
+    using namespace gradient_preparation;
+    for (auto kind : {Kind::Materials, Kind::Markets, Kind::Guard, Kind::Clear})
+    for (int swim=0; swim<SWIM_CLASS_COUNT; ++swim) {
+        Request request{kind,0,WHEAT,swim,game.teams[0]->allies,true,m.terrainQueueBuckets()};
+        auto snapshot=SimulationSnapshot::capture(game, SimulationSnapshot::captureCatalog(game), request.requirements());
+        std::vector<Uint16> expected(m.size), actual(m.size);
+        if(kind==Kind::Materials || kind==Kind::Markets) scalarResource(m,0,WHEAT,swim,expected.data(),kind==Kind::Markets);
+        else if(kind==Kind::Clear) scalarClear(m,0,swim,expected.data());
+        else scalarGuard(m,0,swim,expected.data());
+        CrowdingScratch scratch;
+        seed(request,snapshot,actual.data(),scratch);
+        requireSameField(m,"snapshot seed",actual,expected);
+        m.propagateGradient(expected.data(),swim);
+        // All worker input comes from the lease, even after these live writes.
+        const auto old=m.areaCells[1].forbidden;
+        m.areaCells[1].forbidden=~old;
+        seed(request,snapshot,actual.data(),scratch);
+        GradientWorkspace propagation;
+        propagate(request,snapshot,actual.data(),propagation);
+        requireSameField(m,"frozen propagation",actual,expected);
+        m.areaCells[1].forbidden=old;
+    }
+}
+
+TEST_CASE("periodic supplier snapshots subtract reservations and retain overlay seeds" * doctest::test_suite("GradientPreparation"))
+{
+    glob2test::HeadlessGlobals globals;
+    glob2test::HeadlessGame world({.wDec=7, .hDec=7, .teams=2, .discovered=true, .clearImmobile=true, .loadDefaultRace=true, .header=true});
+    auto& game=world.game; auto& m=game.map;
+    auto catalog=nlohmann::json::parse(game.buildingsTypes.snapshotJson());
+    auto& spec=catalog["variants"][game.buildingsTypes.getFinishedTypeNum("inn")];
+    spec["properties"]["maxMaterial"][WHEAT]=20;
+    spec["semantics"]["occupiesGround"]=false;
+    auto& market=spec["semantics"]["market"];
+    market["suppliesStock"]=true; market["suppliesStockExperiment"]="";
+    market["suppliesStockMaterials"]={"food"}; market["pickupPenalty"]=7;
+    game.buildingsTypes.loadSnapshotJson(catalog.dump());
+    game.gameHeader.getExperiments().set(ExperimentId::MarketsV2,true);
+    game.configureBuildingCatalog();
+    auto* supplier=world.addBuilding("inn",8,8); REQUIRE(supplier);
+    supplier->materials[WHEAT]=10;
+    using namespace gradient_preparation;
+    Request request{Kind::Markets,0,WHEAT,0};
+    CrowdingScratch scratch;
+    for (int reserved : {0,10}) {
+        supplier->reservedMaterials[WHEAT]=reserved;
+        auto snapshot=SimulationSnapshot::capture(game,SimulationSnapshot::captureCatalog(game),request.requirements());
+        std::vector<Uint16> expected(m.size),actual(m.size);
+        m.seedMaterialGradient(0,WHEAT,0,expected.data(),true);
+        supplier->materials[WHEAT]=0;
+        seed(request,snapshot,actual.data(),scratch);
+        requireSameField(m,"supplier snapshot",actual,expected);
+        supplier->materials[WHEAT]=10;
+    }
+}
+
+TEST_CASE("snapshot material templates refresh changed chunks and accept older snapshots" * doctest::test_suite("GradientPreparation"))
+{
+    glob2test::HeadlessGlobals globals;
+    glob2test::HeadlessGame world({.wDec=7,.hDec=7,.teams=2,.discovered=true,.clearImmobile=true,.header=true});
+    auto& game=world.game; auto& map=game.map;
+    for (size_t i=0;i<map.size;++i) {
+        map.setCellTerrain(i,static_cast<TerrainType>(i%TERRAIN_COUNT));
+        map.replaceResource(i,Resource{Uint16(i%3==0?WHEAT:i%5==0?WOOD:NO_RES_TYPE),0,1,0});
+    }
+    using namespace gradient_preparation;
+    Request request{Kind::Materials,0,WHEAT,0};
+    SimulationSnapshot::Store store;
+    auto before=store.captureBoundary(game,request.requirements());
+    CrowdingScratch scratch;
+    std::vector<Uint16> actual(map.size),expected(map.size);
+    auto check=[&](const auto& snapshot) {
+        for (int team : {0,1}) for (int material : {WHEAT,WOOD,STONE})
+        for (int swim=0;swim<SWIM_CLASS_COUNT;++swim) {
+            request.team=team;request.material=material;request.swim=swim;
+            CrowdingScratch direct; direct.materials.budget=0;
+            seed(request,snapshot,expected.data(),direct);
+            seed(request,snapshot,actual.data(),scratch);
+            requireSameField(map,"cached snapshot",actual,expected);
+        }
+    };
+    check(before);
+    const auto initial=scratch.materials.refreshedCells;
+    CHECK(initial==size_t(map.size));
+    check(before); CHECK(scratch.materials.refreshedCells==initial);
+    map.replaceResource(0,Resource{});
+    map.setCellTerrain(1,WATER);
+    map.areaCells[2].forbidden=3; map.markArea(2);
+    map.areaCells[5].guard=1; map.markArea(5);
+    map.areaCells[6].clear=1; map.markArea(6);
+    map.occupancyCells[3].immobileUnit=0; map.markOccupancy(3);
+    map.fogOfWar[6]=0; map.markVisibility(6);
+    ++game.stepCounter;
+    auto after=store.captureBoundary(game,request.requirements());
+    check(after);
+    CHECK(scratch.materials.refreshedCells-initial==256);
+    check(before); // Worker scheduling need not visit snapshot ticks in order.
+    check(after);
+    // A reused cache must discard templates after registry/world replacement.
+    glob2test::HeadlessGame replacement({.wDec=7,.hDec=7,.teams=2,.discovered=true,.clearImmobile=true,.header=true});
+    auto other=SimulationSnapshot::capture(replacement.game,SimulationSnapshot::captureCatalog(replacement.game),request.requirements());
+    check(other);
 }

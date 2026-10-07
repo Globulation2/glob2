@@ -235,48 +235,51 @@ Map::GradientPipelineStatus Map::gradientPipelineStatus() const
 }
 
 bool Map::hasPendingGradientPreparation() const { return gradientRuntime->preparation.job != nullptr; }
+namespace {
+gradient_preparation::Request gradientRequest(const GradientRuntime::Preparation& p, const Map& map)
+{
+    gradient_preparation::Request request;
+    request.kind=p.kind; request.team=p.team; request.material=p.material; request.swim=p.swim;
+    request.terrainBuckets=map.terrainQueueBuckets();
+    if (p.kind == gradient_preparation::Kind::Guard) {
+        request.allies=map.game->teams[p.team]->allies;
+        request.crowding=map.game->gameHeader.hasExperiment(ExperimentId::GuardAreaBalancing);
+    }
+    return request;
+}
+}
 SimulationSnapshot::Requirements Map::pendingGradientRequirements() const
 {
-    return hasPendingGradientPreparation() ? SimulationSnapshot::bit(SimulationSnapshot::Component::Terrain) : 0;
+    return hasPendingGradientPreparation() ? gradientRequest(gradientRuntime->preparation, *this).requirements() : 0;
 }
-void Map::preparePendingGradient() { preparePendingGradientInputs(nullptr); }
+void Map::preparePendingGradient()
+{
+    if (const auto requirements=pendingGradientRequirements()) {
+        auto& store=game->snapshotStore();
+        store.invalidateBoundary(); // Direct map stepping may not advance Game's tick.
+        preparePendingGradient(store.captureBoundary(*game, requirements));
+    }
+}
 void Map::preparePendingGradient(const SimulationSnapshot::Handle& foundation)
 {
     if (!hasPendingGradientPreparation()) return;
-    if (!foundation.terrain || foundation.worldIdentity != identity() ||
-        foundation.width != getW() || foundation.height != getH() ||
-        foundation.terrain->revision != terrainGeneration())
-        throw std::invalid_argument("Gradient preparation requires current projected terrain");
-    preparePendingGradientInputs(&foundation);
-}
-void Map::preparePendingGradientInputs(const SimulationSnapshot::Handle* foundation)
-{
-	// Consume before executing: failure leaves no dangling descriptor, while the
-	// pipeline records a completed error so saves/publication cannot wait forever.
-	const auto preparation = std::exchange(gradientRuntime->preparation, {});
-	if (!preparation.job) return;
-	gradientRuntime->pipeline.prepare(preparation.job, [&](GradientPipeline::Job &job) {
-		const auto [reserved, kind, team, material, swim] = preparation;
-		using Kind = GradientRuntime::Preparation::Kind;
-		switch (kind) {
-		case Kind::Materials: seedMaterialGradient(team, material, swim, job.data.get()); break;
-		case Kind::Markets: seedMaterialGradient(team, material, swim, job.data.get(), true); break;
-		case Kind::Guard: seedGuardAreasGradient(team, swim, job.data.get()); break;
-		case Kind::Clear: seedClearAreasGradient(team, swim, job.data.get()); break;
-		}
-		// Propagation owns immutable terrain inputs after the read barrier closes.
-		if (foundation) job.terrainLease = foundation->project(SimulationSnapshot::bit(SimulationSnapshot::Component::Terrain));
-        job.modifiedCosts = foundation ? foundation->terrain->movementModifiers : hasTerrainMovementModifiers();
-		job.registry = foundation ? foundation->terrain->registry : frozenTerrainRegistry();
-		job.terrainBuckets = terrainQueueBuckets();
-		job.water = !job.modifiedCosts && terrainRegistry().size()>TERRAIN_COUNT && gradient_kernel::weightedClass(swim) ? frozenWaterSnapshot() : nullptr;
-		job.profiles = job.modifiedCosts && terrainRegistry().size()>TERRAIN_COUNT ? frozenTerrainMovementSnapshot(swim) : nullptr;
-		job.terrain = !job.profiles && !job.water && (job.modifiedCosts || (swim != 0 && swim != SWIM_CLASS_EVEN)) ? (foundation ? foundation->terrain->identity : frozenTerrainSnapshot()) : nullptr;
-	});
+    const auto request=gradientRequest(gradientRuntime->preparation, *this);
+    if (!foundation.terrain || foundation.terrain->revision != terrainGeneration() ||
+        foundation.worldIdentity != identity() || foundation.tick != game->stepCounter ||
+        foundation.width != getW() || foundation.height != getH())
+        throw std::invalid_argument("Gradient preparation requires the current observation boundary");
+    auto projected=foundation.project(request.requirements());
+    auto* job=std::exchange(gradientRuntime->preparation, {}).job;
+    job->request=request;
+    job->snapshotLease=std::move(projected);
+    gradientRuntime->pipeline.prepare(job, [](GradientPipeline::Job& job) {
+        gradient_preparation::seed(job.request, *job.snapshotLease, job.data.get(), *job.crowding);
+    });
 }
 
 void Map::advanceGradientPipeline() { preparePendingGradient(); gradientRuntime->pipeline.advance(); }
 void Map::finishGradientPipeline() { preparePendingGradient(); gradientRuntime->pipeline.finish(); }
+void Map::resetGradientPipeline() noexcept { gradientRuntime->preparation={}; gradientRuntime->pipeline.reset(); }
 void Map::setGradientWorkerCount(unsigned workers) { preparePendingGradient(); gradientRuntime->pipeline.setWorkerCount(workers); }
 
 void Map::configureGradientPipeline(unsigned workers, unsigned delay)
@@ -284,28 +287,10 @@ void Map::configureGradientPipeline(unsigned workers, unsigned delay)
 	if (workers>16 || delay<1 || delay>16) throw std::invalid_argument("Invalid gradient pipeline configuration");
 	preparePendingGradient();
 	gradientRuntime->pipeline.onPublished = [this](Uint16** slot) { publishPlane(slot); };
-	gradientRuntime->pipeline.configure(workers, delay, size, [this](GradientPipeline::Job &job, GradientWorkspace &scratch) {
-		const field::Grid geometry{getW(), getH()};
-		if (job.water && job.registry && job.registry->size()>TERRAIN_COUNT && !job.modifiedCosts) {
-            gradient_kernel::propagateField(job.data.get(),job.swim,GRADIENT_COST_LIMIT,geometry,scratch,
-                [water=job.water->data()](size_t i){return water[i]!=0;});
-            return;
-        }
-        if (job.profiles)
-		{
-			gradient_kernel::propagateTerrainProfiles(job.data.get(), job.swim, GRADIENT_COST_LIMIT,
-													  geometry, scratch, job.profiles->data(),
-													  job.profiles->movement, job.terrainBuckets);
-			return;
-		}
-		const auto *types = job.terrain ? job.terrain->data() : nullptr;
-        // Uniform profiles perform no terrain reads. A weighted profile always
-        // captures its semantic IDs before the job leaves the simulation thread.
-		gradient_kernel::propagateTerrainField(
-			job.data.get(), job.swim, GRADIENT_COST_LIMIT, geometry, scratch,
-			[types](size_t i) { return types ? types[i] : GRASS; }, job.modifiedCosts,
-			job.registry ? *job.registry : terrainRegistry(), job.terrainBuckets);
-	});
+	gradientRuntime->pipeline.configure(compute, workers != 0, delay, size,
+        [](GradientPipeline::Job &job, GradientWorkspace &scratch) {
+            gradient_preparation::propagate(job.request, *job.snapshotLease, job.data.get(), scratch);
+        });
 }
 
 void Map::syncStep(Uint32 stepCounter, bool preparePeriodic)

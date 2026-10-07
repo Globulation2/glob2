@@ -14,7 +14,7 @@
 
 #include <mutex>
 #include <array>
-#include "SeedTerrain.h"
+#include "SeedCells.h"
 #include <type_traits>
 
 Uint16 *Map::getMaterialGradientSlot(int teamNumber, int resourceType, int swimClass, bool withMarkets, const Building* consumer)
@@ -117,56 +117,8 @@ void Map::seedMaterialGradientWithSuppliers(int teamNumber, Uint8 resourceType, 
 
 void Map::seedMaterialGradientDirect(int teamNumber, Uint8 resourceType, int swimClass, Uint16 *gradient, const Uint16 *supplierSeeds)
 {
-	const bool withMarkets = supplierSeeds != nullptr;
-	assert(gradient);
-	const bool canSwim = swimClass > 0;
-
-	const Uint32 teamMask=Team::teamNumberToMask(teamNumber);
-	const unsigned teamBuildingBase=unsigned(teamNumber)*Building::MAX_COUNT;
-	const auto *occupancy = occupancyCells.data();
-	const auto *areas = areaCells.data();
-	const Uint32 *fog = fogOfWar;
-	const MaterialMask requested = MaterialMask(1u << resourceType);
-	const MapState::View& view = liveCells;
-	gradient_preparation::withTerrain(*this, canSwim, [&](auto terrainAt) {
-		auto seed = [&](auto marketsTag) {
-			initializeGradientCells([&](size_t begin, size_t end) {
-				for (size_t i = begin; i < end; ++i)
-				{
-
-					Uint16 value = GRADIENT_FORBIDDEN;
-					if (!(areas[i].forbidden & teamMask) && occupancy[i].immobileUnit == IMMOBILE_UNIT_NONE)
-					{
-						// One deposit read per cell: its properties decide both the
-						// obstacle and the goal (MapState::materialMaskAt semantics).
-						const auto& deposit = view.resources[i].resource;
-						const ResourceProperties* properties = deposit.type != NO_RES_TYPE ? &view.resourceProperties(deposit.type) : nullptr;
-						if (!properties || !properties->blocksGround)
-						{
-							if (occupancy[i].building == NOGBID) value = terrainAt(i).open;
-							else if constexpr (decltype(marketsTag)::value)
-							{
-								const unsigned localId=unsigned(occupancy[i].building)-teamBuildingBase;
-								if (localId<Building::MAX_COUNT) value=supplierSeeds[localId];
-							}
-						}
-						// Passable sources are goals too. Visibility belongs to each
-						// source, not to the requested material.
-						if (properties && (properties->materialMask & requested))
-						{
-							const bool stocked = std::has_single_bit(properties->materialMask)
-								? deposit.amount != 0 : MapState::materialAmountAt(view, i, int(resourceType)) > 0;
-							if (stocked && (!properties->visibleToHarvest || (fog[i] & teamMask)))
-								value = GRADIENT_AT_GOAL;
-						}
-					}
-					gradient[i] = value;
-				}
-			});
-		};
-		if (withMarkets) seed(std::true_type{});
-		else seed(std::false_type{});
-	});
+    gradient_preparation::materialCells(liveCells, fogOfWar, teamNumber, resourceType, swimClass, gradient, supplierSeeds,
+        [this](auto fn) { initializeGradientCells(fn); });
 }
 
 void Map::dirtyMarketGradientsSlot(int teamNumber, int resourceType)

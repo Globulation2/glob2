@@ -233,8 +233,8 @@ public:
 	};
 	bool gradientPipelineEnabled() const;
 	GradientPipelineStatus gradientPipelineStatus() const;
-	// Owner selects/reserves before any AI work; preparation writes private job data
-	// and synchronized caches only. Drain before world mutation, save or reconfigure.
+	// Owner selects/reserves and captures inputs before dispatch. Deferred jobs
+	// seed and propagate private data from immutable leases; join before save/reconfigure.
 	void stagePeriodicGradientPreparation();
 	bool hasPendingGradientPreparation() const;
 	SimulationSnapshot::Requirements pendingGradientRequirements() const;
@@ -242,6 +242,7 @@ public:
 	void preparePendingGradient(const SimulationSnapshot::Handle& foundation);
 	void advanceGradientPipeline();
 	void finishGradientPipeline();
+	void resetGradientPipeline() noexcept;
 	void setGradientWorkerCount(unsigned workers);
 	void configureGradientPipeline(unsigned workers, unsigned delay);
 	void updateTeamAreaGradients(int teamNumber);
@@ -329,7 +330,7 @@ public:
 			((Uint32(1) << Team::MAX_COUNT) - 1);
 	}
 	//! Do a step associated with map (grow resources and process bullets)
-	// Standalone map callers retain synchronous periodic preparation. Game defers
+	// Standalone map callers capture/submit periodic preparation here. Game defers
 	// selection until its entire tick (including scripts/fog/projects) is complete.
 	void syncStep(Uint32 stepCounter, bool preparePeriodic = true);
 	//! Switch the Fog of War bufferResourceType
@@ -1340,5 +1341,4 @@ public:
 	void smoothResources(int times);
 
 private:
-	void preparePendingGradientInputs(const SimulationSnapshot::Handle* foundation);
 };
