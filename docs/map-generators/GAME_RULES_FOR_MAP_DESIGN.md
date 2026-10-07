@@ -74,7 +74,12 @@ in natural name order with their own rules. The side panel shows one brush per e
 group: a group with a single enabled type (ice, or trail while path terrain is off)
 paints directly, and a group with several types opens the palette scrolled to that
 group's section. The editor action `open terrain palette <group>` does the same by
-group key. The picker lists `.json` files only. A failed
+group key; cancelling the palette keeps the brush you had. A group counts as enabled
+when its experiment is on in your settings or already carried by the edited map.
+Every brush also has a stable action, `select terrain <key>` (for example
+`select terrain example:mud`); the short `select <name>` form only names built-in
+types, so an imported type called "stone" or "wheat" never replaces the resource
+brushes of the same name. The picker lists `.json` files only. A failed
 import displays an error and keeps the dialog open so you can correct the file
 and retry. The same menu offers **Reroll terrain look**, which draws a new terrain seed for
 the map (see [terrain materials](../assets/terrain-materials.md#map-seed)): the cells stay as

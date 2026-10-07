@@ -1516,6 +1516,7 @@ The added behavior coverage focuses on the following native boundaries:
 | `LegacyScriptCoverage`, `USLCoverage` | Parsing failures, legacy and painted area waits, counts, flags and suspension, summons and alliances, recursion, thread yields, garbage collection and runtime errors |
 | `GUIOrderCoverage`, `GUIInteractionCoverage` | Queued requests, clamps, deduplication, field reconciliation, replay input, desktop menu interactions and unit information |
 | `EditorActionCoverage` | Action dispatch, unit/building editing, matching controls and save/load persistence |
+| `BrushCatalog` | Editor brush catalogue contents, imported terrain order, experiment locks and map-header enabling, resource placement validity, catalogue action round trips, imported-name collisions and opaque map-matching swatches |
 | `SurfaceCoverage` | Alpha grids, cropped/scaled blits, clip boundaries and progress-bar pixels |
 
 Use uncovered functions and branch annotations to choose the next scenario by
