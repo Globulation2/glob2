@@ -1,0 +1,73 @@
+{
+  "rebased_source": "2409edc8444d693828cf36755eceba967bd9fd36",
+  "final_master": "4c3f6074ff1fd1c5f91dc9a7e1fac448d274d98e",
+  "master_tree_equals_rebased_source": true,
+  "original_validated_source": "1807fbf8e48cf57f3f211841eb1a2568804070b5",
+  "changed_files_from_original": [
+    "browser/shell.html",
+    "docs/multiplayer/history-and-web.md"
+  ],
+  "additional_master_commit": "82007aa6d",
+  "wasm_binaries_match_original": {
+    "build/emscripten/client/release/index.wasm": true,
+    "build/emscripten/client/release/threaded/index.wasm": true
+  },
+  "prs": [
+    {
+      "mergeCommit": {
+        "oid": "2a880f7daa27de0c4e47af2cf6e6f4d89ec86e65"
+      },
+      "number": 877,
+      "state": "MERGED",
+      "url": "https://github.com/Globulation2/glob2/pull/877"
+    },
+    {
+      "mergeCommit": {
+        "oid": "ce14f1804489873910042c141d6acd2abea699dd"
+      },
+      "number": 879,
+      "state": "MERGED",
+      "url": "https://github.com/Globulation2/glob2/pull/879"
+    },
+    {
+      "mergeCommit": {
+        "oid": "7ba4c41abfc7aa1b8385f8005aa6b05fec0fc2b8"
+      },
+      "number": 881,
+      "state": "MERGED",
+      "url": "https://github.com/Globulation2/glob2/pull/881"
+    },
+    {
+      "mergeCommit": {
+        "oid": "37adfe4594a4906e72ad70f8a309ef709d0a254e"
+      },
+      "number": 882,
+      "state": "MERGED",
+      "url": "https://github.com/Globulation2/glob2/pull/882"
+    },
+    {
+      "mergeCommit": {
+        "oid": "d70f4968768e09922b3a9428d2b392f90a7cd72f"
+      },
+      "number": 885,
+      "state": "MERGED",
+      "url": "https://github.com/Globulation2/glob2/pull/885"
+    },
+    {
+      "mergeCommit": {
+        "oid": "4c3f6074ff1fd1c5f91dc9a7e1fac448d274d98e"
+      },
+      "number": 887,
+      "state": "MERGED",
+      "url": "https://github.com/Globulation2/glob2/pull/887"
+    },
+    {
+      "mergeCommit": {
+        "oid": "c1724ef9820df7c0f3ff184f7228295bc0c7073e"
+      },
+      "number": 888,
+      "state": "MERGED",
+      "url": "https://github.com/Globulation2/glob2/pull/888"
+    }
+  ]
+}
