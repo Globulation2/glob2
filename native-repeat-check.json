@@ -1,0 +1,74 @@
+{
+  "renderer": "Apple M3 OpenGL 2.1 Metal 90.5",
+  "captures": [
+    {
+      "file": "artifacts/junction-rebuild/native-repeat-0.bmp",
+      "size": [
+        2048,
+        2048
+      ],
+      "alpha": [
+        0,
+        255
+      ]
+    },
+    {
+      "file": "artifacts/junction-rebuild/native-repeat-1.bmp",
+      "size": [
+        2048,
+        2048
+      ],
+      "alpha": [
+        0,
+        255
+      ]
+    },
+    {
+      "file": "artifacts/junction-rebuild/native-repeat-2.bmp",
+      "size": [
+        2048,
+        2048
+      ],
+      "alpha": [
+        0,
+        255
+      ]
+    },
+    {
+      "file": "artifacts/junction-rebuild/native-repeat-3.bmp",
+      "size": [
+        2048,
+        2048
+      ],
+      "alpha": [
+        0,
+        255
+      ]
+    },
+    {
+      "file": "artifacts/junction-rebuild/native-repeat-4.bmp",
+      "size": [
+        2048,
+        2048
+      ],
+      "alpha": [
+        0,
+        255
+      ]
+    },
+    {
+      "file": "artifacts/junction-rebuild/native-repeat-5.bmp",
+      "size": [
+        2048,
+        2048
+      ],
+      "alpha": [
+        0,
+        255
+      ]
+    }
+  ],
+  "framesPerCapture": 256,
+  "linkCommand": "native-link-command.txt",
+  "buildNote": "SCons compiled native objects; unrelated artwork export stopped. Linked diagnostic from those objects using repository libraries."
+}

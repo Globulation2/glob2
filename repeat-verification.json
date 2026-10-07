@@ -1,0 +1,18 @@
+{
+  "testedCommit": "14ec723766e9e7c7e5b384691afe3675267807e0",
+  "sourceBase": "4cb2ac0585e8caf0468427a8a38704a80f69664c",
+  "integrationBase": "52e4d3dc0440e12ff65494ad3eb1681e9c2c0af3",
+  "os": "macOS-26.6.2-arm64-arm-64bit-Mach-O",
+  "architecture": "arm64",
+  "toolchain": "Apple clang version 21.0.0 (clang-2100.3.34.2)",
+  "checks": [
+    "6 Python skin-material contracts passed",
+    "Browser ES 3.00 shared shader rendered successfully",
+    "Native GLSL 1.20 shared shader compiled, six 256-pose GPU readback sheets passed alpha/size checks"
+  ],
+  "limits": [
+    "Native diagnostic linked from SCons-compiled release objects; unrelated artwork packaging export was stopped",
+    "No full engine, mobile or full native fingerprint suite; visual shader change only",
+    "Experimental rebuilt mesh remains outside production source"
+  ]
+}
