@@ -1,0 +1,62 @@
+[
+  {
+    "case": "balanced",
+    "cores": 2,
+    "ticks": 2500,
+    "sha256": "eb101d3b10a374fb9e354f614d7fff24929ec815df8da38643d173520828ad43",
+    "runs": [
+      "verify-balanced-2cpu-draw1-0-baseline",
+      "verify-balanced-2cpu-draw1-0-final"
+    ]
+  },
+  {
+    "case": "balanced",
+    "cores": 4,
+    "ticks": 2500,
+    "sha256": "eb101d3b10a374fb9e354f614d7fff24929ec815df8da38643d173520828ad43",
+    "runs": [
+      "verify-balanced-4cpu-draw1-0-baseline",
+      "verify-balanced-4cpu-draw1-0-final"
+    ]
+  },
+  {
+    "case": "balanced",
+    "cores": 8,
+    "ticks": 2500,
+    "sha256": "eb101d3b10a374fb9e354f614d7fff24929ec815df8da38643d173520828ad43",
+    "runs": [
+      "verify-balanced-8cpu-draw1-0-baseline",
+      "verify-balanced-8cpu-draw1-0-final"
+    ]
+  },
+  {
+    "case": "large512",
+    "cores": 2,
+    "ticks": 2500,
+    "sha256": "800f2275c80a9b4c67a0dfe486c257daec2eb611577b64a2391c17dbf6646132",
+    "runs": [
+      "verify-large512-2cpu-draw1-0-baseline",
+      "verify-large512-2cpu-draw1-0-final"
+    ]
+  },
+  {
+    "case": "large512",
+    "cores": 4,
+    "ticks": 2500,
+    "sha256": "800f2275c80a9b4c67a0dfe486c257daec2eb611577b64a2391c17dbf6646132",
+    "runs": [
+      "verify-large512-4cpu-draw1-0-baseline",
+      "verify-large512-4cpu-draw1-0-final"
+    ]
+  },
+  {
+    "case": "large512",
+    "cores": 8,
+    "ticks": 2500,
+    "sha256": "800f2275c80a9b4c67a0dfe486c257daec2eb611577b64a2391c17dbf6646132",
+    "runs": [
+      "verify-large512-8cpu-draw1-0-baseline",
+      "verify-large512-8cpu-draw1-0-final"
+    ]
+  }
+]

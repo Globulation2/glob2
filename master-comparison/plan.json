@@ -1,0 +1,26 @@
+[
+  {
+    "case": "balanced",
+    "cores": 2,
+    "ticks": 2000,
+    "warmup": 500
+  },
+  {
+    "case": "balanced",
+    "cores": 4,
+    "ticks": 2000,
+    "warmup": 500
+  },
+  {
+    "case": "large512",
+    "cores": 2,
+    "ticks": 2000,
+    "warmup": 500
+  },
+  {
+    "case": "large512",
+    "cores": 4,
+    "ticks": 2000,
+    "warmup": 500
+  }
+]

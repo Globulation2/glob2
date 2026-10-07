@@ -1,0 +1,1160 @@
+[
+  {
+    "phase": "control",
+    "case": "balanced",
+    "cores": 4,
+    "pairs": 4,
+    "baseline": {
+      "tps": {
+        "median": 1876.009106380507,
+        "min": 1838.707564803676,
+        "max": 1932.7917831795028
+      },
+      "cpu_us_per_tick": {
+        "median": 786.7080102499999,
+        "min": 776.8759494999999,
+        "max": 799.710978
+      },
+      "owner_cpu_us_per_tick": {
+        "median": 494.317098,
+        "min": 487.9363505,
+        "max": 507.9200225
+      },
+      "process_cpu_percent": {
+        "median": 147.45901311767886,
+        "min": 147.0434624905146,
+        "max": 150.36869206427033
+      },
+      "rss_median_bytes": {
+        "median": 1251022848.0,
+        "min": 1244856320,
+        "max": 1253515264
+      },
+      "rss_max_bytes": {
+        "median": 1264885760.0,
+        "min": 1257996288,
+        "max": 1267097600
+      },
+      "process_peak_rss_bytes": {
+        "median": 1263894528.0,
+        "min": 1257877504,
+        "max": 1266454528
+      },
+      "simulation_ns_p50": {
+        "median": 258183.0,
+        "min": 247998,
+        "max": 263108
+      },
+      "simulation_ns_p95": {
+        "median": 2237201.5,
+        "min": 2178737,
+        "max": 2258136
+      },
+      "simulation_ns_p99": {
+        "median": 4255683.5,
+        "min": 4119615,
+        "max": 4406863
+      },
+      "owner_iteration_ns_p50": {
+        "median": 258213.0,
+        "min": 248028,
+        "max": 263138
+      },
+      "owner_iteration_ns_p95": {
+        "median": 2237226.5,
+        "min": 2178767,
+        "max": 2258166
+      },
+      "owner_iteration_ns_p99": {
+        "median": 4255703.5,
+        "min": 4119655,
+        "max": 4406893
+      },
+      "completion_interval_ns_p50": {
+        "median": 258283.0,
+        "min": 248118,
+        "max": 263238
+      },
+      "completion_interval_ns_p95": {
+        "median": 2237306.5,
+        "min": 2178847,
+        "max": 2258226
+      },
+      "completion_interval_ns_p99": {
+        "median": 4255783.5,
+        "min": 4119735,
+        "max": 4406993
+      },
+      "frame_p50_ns": {
+        "median": 0.0,
+        "min": 0,
+        "max": 0
+      },
+      "frame_p95_ns": {
+        "median": 0.0,
+        "min": 0,
+        "max": 0
+      },
+      "scene_age_p95_ms": {
+        "median": 0.0,
+        "min": 0,
+        "max": 0
+      }
+    },
+    "final": {
+      "tps": {
+        "median": 1840.3309569814144,
+        "min": 1776.7792625781144,
+        "max": 1897.6676567646457
+      },
+      "cpu_us_per_tick": {
+        "median": 802.38325375,
+        "min": 790.444046,
+        "max": 824.0262610000001
+      },
+      "owner_cpu_us_per_tick": {
+        "median": 511.05094324999993,
+        "min": 492.0904385,
+        "max": 529.6818320000001
+      },
+      "process_cpu_percent": {
+        "median": 147.09885834686838,
+        "min": 145.93796292061913,
+        "max": 151.60920888926282
+      },
+      "rss_median_bytes": {
+        "median": 1251325952.0,
+        "min": 1248530432,
+        "max": 1255825408
+      },
+      "rss_max_bytes": {
+        "median": 1264986112.0,
+        "min": 1262145536,
+        "max": 1269489664
+      },
+      "process_peak_rss_bytes": {
+        "median": 1264594944.0,
+        "min": 1261834240,
+        "max": 1269043200
+      },
+      "simulation_ns_p50": {
+        "median": 263753.5,
+        "min": 256849,
+        "max": 278698
+      },
+      "simulation_ns_p95": {
+        "median": 2257471.5,
+        "min": 2180797,
+        "max": 2331776
+      },
+      "simulation_ns_p99": {
+        "median": 4201220.0,
+        "min": 4177165,
+        "max": 4453563
+      },
+      "owner_iteration_ns_p50": {
+        "median": 264583.5,
+        "min": 257648,
+        "max": 279478
+      },
+      "owner_iteration_ns_p95": {
+        "median": 2258291.5,
+        "min": 2181557,
+        "max": 2332686
+      },
+      "owner_iteration_ns_p99": {
+        "median": 4202485.0,
+        "min": 4178095,
+        "max": 4454963
+      },
+      "completion_interval_ns_p50": {
+        "median": 264648.5,
+        "min": 257699,
+        "max": 279558
+      },
+      "completion_interval_ns_p95": {
+        "median": 2258376.5,
+        "min": 2181637,
+        "max": 2332776
+      },
+      "completion_interval_ns_p99": {
+        "median": 4202540.0,
+        "min": 4178185,
+        "max": 4455063
+      },
+      "frame_p50_ns": {
+        "median": 0.0,
+        "min": 0,
+        "max": 0
+      },
+      "frame_p95_ns": {
+        "median": 0.0,
+        "min": 0,
+        "max": 0
+      },
+      "scene_age_p95_ms": {
+        "median": 0.0,
+        "min": 0,
+        "max": 0
+      }
+    },
+    "paired_changes_percent": {
+      "tps": {
+        "median": -1.969018676912615,
+        "min": -6.5728608474063694,
+        "max": 1.6835712324664298
+      },
+      "cpu_us_per_tick": {
+        "median": 2.0001709254261146,
+        "min": -1.1587851429994966,
+        "max": 6.069220128431874
+      },
+      "owner_cpu_us_per_tick": {
+        "median": 1.8093798943604078,
+        "min": 0.8513585830904447,
+        "max": 7.5273298039922665
+      },
+      "process_cpu_percent": {
+        "median": -0.16703611497099757,
+        "min": -0.9025621125391181,
+        "max": 0.824983450984762
+      },
+      "rss_median_bytes": {
+        "median": -0.08817321875383977,
+        "min": -0.17357301692828564,
+        "max": 0.8811529349828984
+      },
+      "rss_max_bytes": {
+        "median": -0.09280378741197137,
+        "min": -0.19001683283698112,
+        "max": 0.9136255893308354
+      },
+      "process_peak_rss_bytes": {
+        "median": -0.05739202183979719,
+        "min": -0.13993942436953954,
+        "max": 0.8876616335448784
+      },
+      "simulation_ns_p50": {
+        "median": 2.4022973337346265,
+        "min": -0.17583560135775445,
+        "max": 9.397153376930255
+      },
+      "simulation_ns_p95": {
+        "median": 1.9819560889782095,
+        "min": -2.042432466546018,
+        "max": 3.261096762993909
+      },
+      "simulation_ns_p99": {
+        "median": 0.17964182190441935,
+        "min": -4.461404858739648,
+        "max": 4.18195688071914
+      },
+      "owner_iteration_ns_p50": {
+        "median": 2.7109455127395266,
+        "min": 0.12612846757733553,
+        "max": 9.690409281441825
+      },
+      "owner_iteration_ns_p95": {
+        "median": 2.017586214054301,
+        "min": -2.0091749176992857,
+        "max": 3.300023116103956
+      },
+      "owner_iteration_ns_p99": {
+        "median": 0.2029987553515855,
+        "min": -4.42915223945759,
+        "max": 4.21421942901361
+      },
+      "completion_interval_ns_p50": {
+        "median": 2.696391503871054,
+        "min": 0.12227367906216813,
+        "max": 9.691671440566907
+      },
+      "completion_interval_ns_p95": {
+        "median": 2.017294221015953,
+        "min": -2.008222437921847,
+        "max": 3.3012639124693433
+      },
+      "completion_interval_ns_p99": {
+        "median": 0.2027483593437518,
+        "min": -4.4299593850047,
+        "max": 4.2146084124210725
+      }
+    }
+  },
+  {
+    "phase": "control",
+    "case": "large512",
+    "cores": 4,
+    "pairs": 4,
+    "baseline": {
+      "tps": {
+        "median": 306.9960213437155,
+        "min": 295.6183104165784,
+        "max": 323.61599681417914
+      },
+      "cpu_us_per_tick": {
+        "median": 5713.128017,
+        "min": 5459.735648,
+        "max": 5974.6196310000005
+      },
+      "owner_cpu_us_per_tick": {
+        "median": 2717.8142455,
+        "min": 2531.111828,
+        "max": 2819.608542
+      },
+      "process_cpu_percent": {
+        "median": 176.22539249770068,
+        "min": 174.70317862916693,
+        "max": 176.68577940694283
+      },
+      "rss_median_bytes": {
+        "median": 1674006528.0,
+        "min": 1650892800,
+        "max": 1687236608
+      },
+      "rss_max_bytes": {
+        "median": 1694484480.0,
+        "min": 1680363520,
+        "max": 1708888064
+      },
+      "process_peak_rss_bytes": {
+        "median": 1693497344.0,
+        "min": 1679458304,
+        "max": 1708060672
+      },
+      "simulation_ns_p50": {
+        "median": 1210902.5,
+        "min": 1141973,
+        "max": 1326722
+      },
+      "simulation_ns_p95": {
+        "median": 13104435.0,
+        "min": 12865342,
+        "max": 13321499
+      },
+      "simulation_ns_p99": {
+        "median": 27753266.5,
+        "min": 27350633,
+        "max": 28900304
+      },
+      "owner_iteration_ns_p50": {
+        "median": 1210992.5,
+        "min": 1142213,
+        "max": 1326842
+      },
+      "owner_iteration_ns_p95": {
+        "median": 13104540.0,
+        "min": 12865432,
+        "max": 13321989
+      },
+      "owner_iteration_ns_p99": {
+        "median": 27753431.5,
+        "min": 27350663,
+        "max": 28900544
+      },
+      "completion_interval_ns_p50": {
+        "median": 1211272.5,
+        "min": 1142473,
+        "max": 1327122
+      },
+      "completion_interval_ns_p95": {
+        "median": 13105415.0,
+        "min": 12866172,
+        "max": 13322399
+      },
+      "completion_interval_ns_p99": {
+        "median": 27753821.5,
+        "min": 27351363,
+        "max": 28901314
+      },
+      "frame_p50_ns": {
+        "median": 0.0,
+        "min": 0,
+        "max": 0
+      },
+      "frame_p95_ns": {
+        "median": 0.0,
+        "min": 0,
+        "max": 0
+      },
+      "scene_age_p95_ms": {
+        "median": 0.0,
+        "min": 0,
+        "max": 0
+      }
+    },
+    "final": {
+      "tps": {
+        "median": 319.26980997011833,
+        "min": 312.80984895710714,
+        "max": 328.1388023537555
+      },
+      "cpu_us_per_tick": {
+        "median": 5564.763273750001,
+        "min": 5463.6489945,
+        "max": 5696.684384499999
+      },
+      "owner_cpu_us_per_tick": {
+        "median": 2609.6380182499997,
+        "min": 2518.5304840000003,
+        "max": 2650.2131400000003
+      },
+      "process_cpu_percent": {
+        "median": 178.19889260138717,
+        "min": 177.02084036450694,
+        "max": 179.28352375365304
+      },
+      "rss_median_bytes": {
+        "median": 1687685120.0,
+        "min": 1675190272,
+        "max": 1709281280
+      },
+      "rss_max_bytes": {
+        "median": 1712076800.0,
+        "min": 1702809600,
+        "max": 1729798144
+      },
+      "process_peak_rss_bytes": {
+        "median": 1711339520.0,
+        "min": 1701748736,
+        "max": 1728688128
+      },
+      "simulation_ns_p50": {
+        "median": 1168838.0,
+        "min": 1129533,
+        "max": 1210972
+      },
+      "simulation_ns_p95": {
+        "median": 12889821.5,
+        "min": 12806183,
+        "max": 13209280
+      },
+      "simulation_ns_p99": {
+        "median": 26304380.5,
+        "min": 25454646,
+        "max": 28127569
+      },
+      "owner_iteration_ns_p50": {
+        "median": 1172068.0,
+        "min": 1130753,
+        "max": 1213433
+      },
+      "owner_iteration_ns_p95": {
+        "median": 12892796.5,
+        "min": 12808483,
+        "max": 13212520
+      },
+      "owner_iteration_ns_p99": {
+        "median": 26307200.5,
+        "min": 25457846,
+        "max": 28129819
+      },
+      "completion_interval_ns_p50": {
+        "median": 1172743.0,
+        "min": 1131363,
+        "max": 1213832
+      },
+      "completion_interval_ns_p95": {
+        "median": 12893121.5,
+        "min": 12808803,
+        "max": 13213330
+      },
+      "completion_interval_ns_p99": {
+        "median": 26307530.0,
+        "min": 25457906,
+        "max": 28130789
+      },
+      "frame_p50_ns": {
+        "median": 0.0,
+        "min": 0,
+        "max": 0
+      },
+      "frame_p95_ns": {
+        "median": 0.0,
+        "min": 0,
+        "max": 0
+      },
+      "scene_age_p95_ms": {
+        "median": 0.0,
+        "min": 0,
+        "max": 0
+      }
+    },
+    "paired_changes_percent": {
+      "tps": {
+        "median": 4.40320003079766,
+        "min": 0.5115184434236753,
+        "max": 5.970522318131555
+      },
+      "cpu_us_per_tick": {
+        "median": -2.638372674839262,
+        "min": -4.651932067070885,
+        "max": 0.19662226693948348
+      },
+      "owner_cpu_us_per_tick": {
+        "median": -4.909751334622026,
+        "min": -6.196130079676854,
+        "max": 1.709220391664168
+      },
+      "process_cpu_percent": {
+        "median": 1.1837369333920544,
+        "min": 0.7091464695224259,
+        "max": 1.9640750051072908
+      },
+      "rss_median_bytes": {
+        "median": 1.1377201946722648,
+        "min": 0.6667803131773065,
+        "max": 1.4717776950750494
+      },
+      "rss_max_bytes": {
+        "median": 1.165894274839352,
+        "min": 0.9656368321477427,
+        "max": 1.3377372058160475
+      },
+      "process_peak_rss_bytes": {
+        "median": 1.1699444764540656,
+        "min": 0.95643087988726,
+        "max": 1.3450432169824111
+      },
+      "simulation_ns_p50": {
+        "median": -2.8709357584826067,
+        "min": -9.690726467187549,
+        "max": -1.0610005878047502
+      },
+      "simulation_ns_p95": {
+        "median": -0.7180757636902568,
+        "min": -2.838779629829946,
+        "max": -0.277208234728088
+      },
+      "simulation_ns_p99": {
+        "median": -5.85772881506233,
+        "min": -8.611411146401782,
+        "max": 0.47961102134759237
+      },
+      "owner_iteration_ns_p50": {
+        "median": -2.7366783575802636,
+        "min": -9.448675878514546,
+        "max": -0.790954467590399
+      },
+      "owner_iteration_ns_p95": {
+        "median": -0.6965181912763907,
+        "min": -2.824338017393646,
+        "max": -0.2528986256172483
+      },
+      "owner_iteration_ns_p99": {
+        "median": -5.847090662577392,
+        "min": -8.60206645245155,
+        "max": 0.4866794457872192
+      },
+      "completion_interval_ns_p50": {
+        "median": -2.709677939348204,
+        "min": -9.44517534936502,
+        "max": -0.7385723076175355
+      },
+      "completion_interval_ns_p95": {
+        "median": -0.7004962722328201,
+        "min": -2.824476282387278,
+        "max": -0.25325965459486177
+      },
+      "completion_interval_ns_p99": {
+        "median": -5.849203430146277,
+        "min": -8.602498142472005,
+        "max": 0.48978555159593373
+      }
+    }
+  },
+  {
+    "phase": "measure",
+    "case": "balanced",
+    "cores": 4,
+    "pairs": 6,
+    "baseline": {
+      "tps": {
+        "median": 1657.605832010046,
+        "min": 1588.097846958101,
+        "max": 1726.7149488973962
+      },
+      "cpu_us_per_tick": {
+        "median": 1285.62557525,
+        "min": 1241.3181415,
+        "max": 1353.5382155
+      },
+      "owner_cpu_us_per_tick": {
+        "median": 570.4719964999999,
+        "min": 544.2245389999999,
+        "max": 596.0749635
+      },
+      "process_cpu_percent": {
+        "median": 214.41333522539358,
+        "min": 211.5522245406122,
+        "max": 214.982955025575
+      },
+      "rss_median_bytes": {
+        "median": 1253019648.0,
+        "min": 1245487104,
+        "max": 1259470848
+      },
+      "rss_max_bytes": {
+        "median": 1265887232.0,
+        "min": 1260888064,
+        "max": 1272377344
+      },
+      "process_peak_rss_bytes": {
+        "median": 1265641472.0,
+        "min": 1260027904,
+        "max": 1271877632
+      },
+      "simulation_ns_p50": {
+        "median": 291868.5,
+        "min": 281328,
+        "max": 309818
+      },
+      "simulation_ns_p95": {
+        "median": 2353766.0,
+        "min": 2274847,
+        "max": 2442085
+      },
+      "simulation_ns_p99": {
+        "median": 4356053.5,
+        "min": 4161935,
+        "max": 4500113
+      },
+      "owner_iteration_ns_p50": {
+        "median": 298839.0,
+        "min": 284939,
+        "max": 314998
+      },
+      "owner_iteration_ns_p95": {
+        "median": 2420515.0,
+        "min": 2288296,
+        "max": 2472825
+      },
+      "owner_iteration_ns_p99": {
+        "median": 4500272.5,
+        "min": 4228605,
+        "max": 4646152
+      },
+      "completion_interval_ns_p50": {
+        "median": 298999.0,
+        "min": 285039,
+        "max": 315058
+      },
+      "completion_interval_ns_p95": {
+        "median": 2430435.0,
+        "min": 2288386,
+        "max": 2481245
+      },
+      "completion_interval_ns_p99": {
+        "median": 4500357.5,
+        "min": 4257784,
+        "max": 4646552
+      },
+      "frame_p50_ns": {
+        "median": 17759787.0,
+        "min": 16971347,
+        "max": 19386332
+      },
+      "frame_p95_ns": {
+        "median": 20749214.0,
+        "min": 20257197,
+        "max": 23809385
+      },
+      "scene_age_p95_ms": {
+        "median": 39.0,
+        "min": 38,
+        "max": 46
+      }
+    },
+    "final": {
+      "tps": {
+        "median": 1628.039782927139,
+        "min": 1581.3168389568423,
+        "max": 1695.538075663863
+      },
+      "cpu_us_per_tick": {
+        "median": 1346.6103025,
+        "min": 1298.2213844999999,
+        "max": 1395.6549315
+      },
+      "owner_cpu_us_per_tick": {
+        "median": 581.31155225,
+        "min": 566.761433,
+        "max": 597.7045019999999
+      },
+      "process_cpu_percent": {
+        "median": 220.40782163074573,
+        "min": 215.52828508914348,
+        "max": 223.37508980175895
+      },
+      "rss_median_bytes": {
+        "median": 1254213632.0,
+        "min": 1247543296,
+        "max": 1257259008
+      },
+      "rss_max_bytes": {
+        "median": 1268348928.0,
+        "min": 1260482560,
+        "max": 1270525952
+      },
+      "process_peak_rss_bytes": {
+        "median": 1267793920.0,
+        "min": 1259900928,
+        "max": 1270652928
+      },
+      "simulation_ns_p50": {
+        "median": 310748.5,
+        "min": 293768,
+        "max": 329498
+      },
+      "simulation_ns_p95": {
+        "median": 2317186.0,
+        "min": 2247576,
+        "max": 2348276
+      },
+      "simulation_ns_p99": {
+        "median": 4580242.0,
+        "min": 4242004,
+        "max": 4614152
+      },
+      "owner_iteration_ns_p50": {
+        "median": 316413.0,
+        "min": 298268,
+        "max": 334568
+      },
+      "owner_iteration_ns_p95": {
+        "median": 2350710.5,
+        "min": 2265816,
+        "max": 2377446
+      },
+      "owner_iteration_ns_p99": {
+        "median": 4696986.0,
+        "min": 4507983,
+        "max": 4764341
+      },
+      "completion_interval_ns_p50": {
+        "median": 316493.0,
+        "min": 298819,
+        "max": 334798
+      },
+      "completion_interval_ns_p95": {
+        "median": 2350785.5,
+        "min": 2266346,
+        "max": 2377496
+      },
+      "completion_interval_ns_p99": {
+        "median": 4697061.0,
+        "min": 4508063,
+        "max": 4764731
+      },
+      "frame_p50_ns": {
+        "median": 17632823.0,
+        "min": 16611349,
+        "max": 17886962
+      },
+      "frame_p95_ns": {
+        "median": 20436926.0,
+        "min": 18633327,
+        "max": 27885640
+      },
+      "scene_age_p95_ms": {
+        "median": 40.0,
+        "min": 37,
+        "max": 47
+      }
+    },
+    "paired_changes_percent": {
+      "tps": {
+        "median": -2.324507185784813,
+        "min": -3.760993329165907,
+        "max": 2.5211211880166395
+      },
+      "cpu_us_per_tick": {
+        "median": 5.2502964938313195,
+        "min": 0.7238996664571395,
+        "max": 7.802467301060356
+      },
+      "owner_cpu_us_per_tick": {
+        "median": 3.5993529768458377,
+        "min": -3.528982642801437,
+        "max": 5.551401839362069
+      },
+      "process_cpu_percent": {
+        "median": 3.2253837505048844,
+        "min": 0.25366200008907214,
+        "max": 3.9170862788741267
+      },
+      "rss_median_bytes": {
+        "median": 0.14457491412024348,
+        "min": -0.6238417164782906,
+        "max": 0.6528016206581277
+      },
+      "rss_max_bytes": {
+        "median": 0.16812230770794634,
+        "min": -0.5969320020802193,
+        "max": 0.5699559225431194
+      },
+      "process_peak_rss_bytes": {
+        "median": 0.19069314025076944,
+        "min": -0.639269701394185,
+        "max": 0.5839496525807508
+      },
+      "simulation_ns_p50": {
+        "median": 5.4479890106934326,
+        "min": -0.412823012220076,
+        "max": 11.793145800182536
+      },
+      "simulation_ns_p95": {
+        "median": -3.011151681997082,
+        "min": -5.9956144032660585,
+        "max": 3.2278654344665814
+      },
+      "simulation_ns_p99": {
+        "median": 3.979154649625838,
+        "min": 1.150859989515829,
+        "max": 8.56664746695579
+      },
+      "owner_iteration_ns_p50": {
+        "median": 4.907503422590887,
+        "min": -0.37778017638206984,
+        "max": 10.780804545559896
+      },
+      "owner_iteration_ns_p95": {
+        "median": -3.9867973005250024,
+        "min": -5.809404443446753,
+        "max": 3.895912067319962
+      },
+      "owner_iteration_ns_p99": {
+        "median": 5.381036634743374,
+        "min": 0.9502271987657851,
+        "max": 9.431368425166875
+      },
+      "completion_interval_ns_p50": {
+        "median": 4.981371993696726,
+        "min": -0.37453421274813437,
+        "max": 10.78359678235923
+      },
+      "completion_interval_ns_p95": {
+        "median": -3.988234358529963,
+        "min": -6.554571261877317,
+        "max": 3.8940108880232582
+      },
+      "completion_interval_ns_p99": {
+        "median": 5.270555646417774,
+        "min": 0.9432585710866803,
+        "max": 9.430705657534677
+      },
+      "frame_p50_ns": {
+        "median": -3.5464419990199727,
+        "min": -8.246191119591462,
+        "max": 3.9338053772349335
+      },
+      "frame_p95_ns": {
+        "median": -5.548667980440792,
+        "min": -9.756467880207742,
+        "max": 32.963621730539636
+      },
+      "scene_age_p95_ms": {
+        "median": 1.1627906976744207,
+        "min": -10.869565217391308,
+        "max": 20.512820512820507
+      }
+    }
+  },
+  {
+    "phase": "measure",
+    "case": "large512",
+    "cores": 4,
+    "pairs": 6,
+    "baseline": {
+      "tps": {
+        "median": 259.1355139280276,
+        "min": 252.3220742210597,
+        "max": 268.80253407761364
+      },
+      "cpu_us_per_tick": {
+        "median": 8188.7143785,
+        "min": 8035.977374,
+        "max": 8438.193942
+      },
+      "owner_cpu_us_per_tick": {
+        "median": 3305.191065,
+        "min": 3249.1456705,
+        "max": 3420.734286
+      },
+      "process_cpu_percent": {
+        "median": 213.7678374026931,
+        "min": 210.95095849160552,
+        "max": 216.09366888629432
+      },
+      "rss_median_bytes": {
+        "median": 1686069248.0,
+        "min": 1668014080,
+        "max": 1718423552
+      },
+      "rss_max_bytes": {
+        "median": 1713022976.0,
+        "min": 1699942400,
+        "max": 1750171648
+      },
+      "process_peak_rss_bytes": {
+        "median": 1712459776.0,
+        "min": 1698918400,
+        "max": 1751355392
+      },
+      "simulation_ns_p50": {
+        "median": 1455816.5,
+        "min": 1322252,
+        "max": 1532561
+      },
+      "simulation_ns_p95": {
+        "median": 12125446.0,
+        "min": 11819518,
+        "max": 12417185
+      },
+      "simulation_ns_p99": {
+        "median": 23095529.5,
+        "min": 22278265,
+        "max": 25824003
+      },
+      "owner_iteration_ns_p50": {
+        "median": 2012307.5,
+        "min": 1901338,
+        "max": 2092218
+      },
+      "owner_iteration_ns_p95": {
+        "median": 12878956.5,
+        "min": 12586383,
+        "max": 13260509
+      },
+      "owner_iteration_ns_p99": {
+        "median": 23419063.0,
+        "min": 23121039,
+        "max": 26611328
+      },
+      "completion_interval_ns_p50": {
+        "median": 2013042.5,
+        "min": 1902238,
+        "max": 2092807
+      },
+      "completion_interval_ns_p95": {
+        "median": 12885317.0,
+        "min": 12640303,
+        "max": 13329799
+      },
+      "completion_interval_ns_p99": {
+        "median": 23455912.5,
+        "min": 23121299,
+        "max": 26611628
+      },
+      "frame_p50_ns": {
+        "median": 21549034.0,
+        "min": 20981102,
+        "max": 23611637
+      },
+      "frame_p95_ns": {
+        "median": 39015233.0,
+        "min": 35344365,
+        "max": 40685643
+      },
+      "scene_age_p95_ms": {
+        "median": 54.0,
+        "min": 52,
+        "max": 57
+      }
+    },
+    "final": {
+      "tps": {
+        "median": 219.42197059765218,
+        "min": 213.0712264062529,
+        "max": 230.89391147442603
+      },
+      "cpu_us_per_tick": {
+        "median": 10345.847847000001,
+        "min": 10058.699179,
+        "max": 10928.332451999999
+      },
+      "owner_cpu_us_per_tick": {
+        "median": 4002.8002195,
+        "min": 3717.0903879999996,
+        "max": 4160.8066185
+      },
+      "process_cpu_percent": {
+        "median": 232.11113798664783,
+        "min": 220.58532539229608,
+        "max": 233.212205855143
+      },
+      "rss_median_bytes": {
+        "median": 1707393024.0,
+        "min": 1700487168,
+        "max": 1728761856
+      },
+      "rss_max_bytes": {
+        "median": 1750849536.0,
+        "min": 1732526080,
+        "max": 1764499456
+      },
+      "process_peak_rss_bytes": {
+        "median": 1749934080.0,
+        "min": 1731649536,
+        "max": 1763663872
+      },
+      "simulation_ns_p50": {
+        "median": 2513124.5,
+        "min": 2304116,
+        "max": 2643574
+      },
+      "simulation_ns_p95": {
+        "median": 13460553.5,
+        "min": 13138240,
+        "max": 13598368
+      },
+      "simulation_ns_p99": {
+        "median": 23615826.0,
+        "min": 22422814,
+        "max": 24982898
+      },
+      "owner_iteration_ns_p50": {
+        "median": 2709813.5,
+        "min": 2526015,
+        "max": 2864913
+      },
+      "owner_iteration_ns_p95": {
+        "median": 14174009.0,
+        "min": 13958626,
+        "max": 14526612
+      },
+      "owner_iteration_ns_p99": {
+        "median": 24755344.5,
+        "min": 23349638,
+        "max": 26229151
+      },
+      "completion_interval_ns_p50": {
+        "median": 2710048.5,
+        "min": 2526765,
+        "max": 2865193
+      },
+      "completion_interval_ns_p95": {
+        "median": 14174229.0,
+        "min": 13958906,
+        "max": 14527332
+      },
+      "completion_interval_ns_p99": {
+        "median": 24755704.5,
+        "min": 23350498,
+        "max": 26229800
+      },
+      "frame_p50_ns": {
+        "median": 19231818.0,
+        "min": 18147829,
+        "max": 22190275
+      },
+      "frame_p95_ns": {
+        "median": 23132194.0,
+        "min": 21297160,
+        "max": 27899981
+      },
+      "scene_age_p95_ms": {
+        "median": 51.5,
+        "min": 49,
+        "max": 57
+      }
+    },
+    "paired_changes_percent": {
+      "tps": {
+        "median": -15.55489729468336,
+        "min": -17.396780547462953,
+        "max": -12.080756096608669
+      },
+      "cpu_us_per_tick": {
+        "median": 27.558671506056584,
+        "min": 21.41383672762236,
+        "max": 31.67142704337147
+      },
+      "owner_cpu_us_per_tick": {
+        "median": 19.317993809275315,
+        "min": 13.94115746095439,
+        "max": 25.94614277742684
+      },
+      "process_cpu_percent": {
+        "median": 8.523494698398004,
+        "min": 3.602889532410569,
+        "max": 9.64359695647834
+      },
+      "rss_median_bytes": {
+        "median": 1.4438895816006547,
+        "min": -0.7779394999677391,
+        "max": 3.641922255236607
+      },
+      "rss_max_bytes": {
+        "median": 2.039190978580896,
+        "min": -0.4797432585366801,
+        "max": 3.522225079242247
+      },
+      "process_peak_rss_bytes": {
+        "median": 2.021579533876894,
+        "min": -0.4563178119349032,
+        "max": 3.5712653493210844
+      },
+      "simulation_ns_p50": {
+        "median": 73.94302263215756,
+        "min": 59.304166238883504,
+        "max": 87.93346502784642
+      },
+      "simulation_ns_p95": {
+        "median": 10.799270822324669,
+        "min": 9.068957938908051,
+        "max": 12.175462654230063
+      },
+      "simulation_ns_p99": {
+        "median": 0.9089358823895832,
+        "min": -7.291390881576342,
+        "max": 12.140231746053832
+      },
+      "owner_iteration_ns_p50": {
+        "median": 33.57580620350548,
+        "min": 24.339293550927078,
+        "max": 44.33989071148376
+      },
+      "owner_iteration_ns_p95": {
+        "median": 10.425387068542381,
+        "min": 6.619316045862189,
+        "max": 12.557467860305849
+      },
+      "owner_iteration_ns_p99": {
+        "median": 3.207968211449763,
+        "min": -6.3262908187069815,
+        "max": 12.657581295298304
+      },
+      "completion_interval_ns_p50": {
+        "median": 33.559295747024876,
+        "min": 24.30574327456332,
+        "max": 44.265323570610725
+      },
+      "completion_interval_ns_p95": {
+        "median": 10.138609234694462,
+        "min": 6.068846199406308,
+        "max": 12.078674063430284
+      },
+      "completion_interval_ns_p99": {
+        "median": 3.207686323549863,
+        "min": -6.326444966087752,
+        "max": 12.306939131743855
+      },
+      "frame_p50_ns": {
+        "median": -12.855293586017869,
+        "min": -16.166168402470362,
+        "max": -3.455060823863143
+      },
+      "frame_p95_ns": {
+        "median": -39.81942729660968,
+        "min": -45.285785530111674,
+        "max": -31.425488347326848
+      },
+      "scene_age_p95_ms": {
+        "median": -2.813390313390318,
+        "min": -12.28070175438597,
+        "max": 0.0
+      }
+    }
+  }
+]

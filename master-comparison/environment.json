@@ -1,0 +1,236 @@
+{
+  "baseline": "a60018aa0066d1f4dc5e733cb86d0085b80bd604",
+  "final": "4c3f6074ff1fd1c5f91dc9a7e1fac448d274d98e",
+  "platform": "Linux-7.0.0-31-generic-x86_64-with-glibc2.43",
+  "compiler": "g++ (Ubuntu 15.2.0-16ubuntu1) 15.2.0",
+  "flags": "release=1 server=0 optimized_assets=0; production -O3; harness -fno-access-control; SDL3 native prefix /home/bradley/glob2-claude/build/sdl3/prefix",
+  "dependencies": {
+    "SDL3": "3.4.16",
+    "SDL3_image": "3.4.6",
+    "SDL3_ttf": "3.2.2",
+    "SDL3_net": "3.2.0"
+  },
+  "rendering": "800x600 PORTABLEGPU under Xvfb; LP_NUM_THREADS=1; 60 FPS target; no gameplay orders beyond fixed mouse motion",
+  "isolated_profiles": true,
+  "exclusive_host": false,
+  "fixtures": {
+    "artifacts/render-master-benchmark/fixture-512/final.game.gz": "8810b89482613532ebea871b02fabec83ed3ee7d26092bdb0da504e42b8db40e",
+    "artifacts/render-master-benchmark/fixture-balanced/initial.game.gz": "e24fc703af85426dbcbe24a575c3e30dcd3c222dac28433d1a6224110d900b68"
+  },
+  "binaries": {
+    "baseline": {
+      "path": "/home/bradley/.codex/worktrees/render-bench-baseline/glob2/build/linux/client/release/test/glob2-engine-tests",
+      "sha256": "4c01e0134ddd192edbc4f92dfc9609648f7ec2b8fd85acdb39266663f18769fc"
+    },
+    "final": {
+      "path": "/home/bradley/.codex/worktrees/render-bench-final/glob2/build/linux/client/release/test/glob2-engine-tests",
+      "sha256": "bfdb959ccc4c6d95f025148fe3bf74336dcf6fa4443f2d569a632191a3effda2"
+    }
+  },
+  "instrumentation": {
+    "baseline": {
+      "src/engine/sim/SimulationRunner.cpp": "ebc3fde1a3ef47b2a1991bd1ef213f3bcd630933f387cf78a15cbeca5435032c",
+      "src/engine/sim/RenderBenchProbe.h": "c793eb7c5f29a5a2915151565211d549ce9bdaa5ee90661fb60b65925fd4c9b3",
+      "test/SConscript": "a91870a0754174ce4fd6f01bb9151a77da4f3075e399c013f6d47b3616955a43",
+      "test/RenderRevisionBench.cpp": "0260917f580fd1c553dddb9b7774bfd0d365b9ea01c1cbaa41b6140e52610075"
+    },
+    "final": {
+      "src/engine/sim/SimulationRunner.cpp": "8afda95c4f5f8aca203d205dae64061aad8ab4ea42195d81aa3c3296037ebbb6",
+      "src/engine/sim/RenderBenchProbe.h": "c793eb7c5f29a5a2915151565211d549ce9bdaa5ee90661fb60b65925fd4c9b3",
+      "test/SConscript": "a91870a0754174ce4fd6f01bb9151a77da4f3075e399c013f6d47b3616955a43",
+      "test/RenderRevisionBench.cpp": "0260917f580fd1c553dddb9b7774bfd0d365b9ea01c1cbaa41b6140e52610075"
+    }
+  },
+  "build_commands": {
+    "baseline": "CCACHE=1 GLOB2_SDL3_PREFIX=/home/bradley/glob2-claude/build/sdl3/prefix taskset -c 0-11,16-27 scons -j8 release=1 server=0 optimized_assets=0 engine-tests",
+    "final": "CCACHE=1 GLOB2_SDL3_PREFIX=/home/bradley/glob2-claude/build/sdl3/prefix taskset -c 0-11,16-27 scons -j8 release=1 server=0 optimized_assets=0 engine-tests"
+  },
+  "cpu": {
+    "lscpu": [
+      {
+        "field": "Architecture:",
+        "data": "x86_64"
+      },
+      {
+        "field": "CPU op-mode(s):",
+        "data": "32-bit, 64-bit"
+      },
+      {
+        "field": "Address sizes:",
+        "data": "43 bits physical, 48 bits virtual"
+      },
+      {
+        "field": "Byte Order:",
+        "data": "Little Endian"
+      },
+      {
+        "field": "CPU(s):",
+        "data": "32"
+      },
+      {
+        "field": "On-line CPU(s) list:",
+        "data": "0-31"
+      },
+      {
+        "field": "Vendor ID:",
+        "data": "AuthenticAMD"
+      },
+      {
+        "field": "Model name:",
+        "data": "AMD Ryzen Threadripper 2950X 16-Core Processor"
+      },
+      {
+        "field": "CPU family:",
+        "data": "23"
+      },
+      {
+        "field": "Model:",
+        "data": "8"
+      },
+      {
+        "field": "Thread(s) per core:",
+        "data": "2"
+      },
+      {
+        "field": "Core(s) per socket:",
+        "data": "16"
+      },
+      {
+        "field": "Socket(s):",
+        "data": "1"
+      },
+      {
+        "field": "Stepping:",
+        "data": "2"
+      },
+      {
+        "field": "Frequency boost:",
+        "data": "disabled"
+      },
+      {
+        "field": "CPU(s) scaling MHz:",
+        "data": "100%"
+      },
+      {
+        "field": "CPU max MHz:",
+        "data": "4000.0000"
+      },
+      {
+        "field": "CPU min MHz:",
+        "data": "2200.0000"
+      },
+      {
+        "field": "BogoMIPS:",
+        "data": "7998.72"
+      },
+      {
+        "field": "Flags:",
+        "data": "fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 ht syscall nx mmxext fxsr_opt pdpe1gb rdtscp lm constant_tsc rep_good nopl nonstop_tsc cpuid extd_apicid amd_dcm aperfmperf rapl pni pclmulqdq monitor ssse3 fma cx16 sse4_1 sse4_2 movbe popcnt aes xsave avx f16c rdrand lahf_lm cmp_legacy svm extapic cr8_legacy abm sse4a misalignsse 3dnowprefetch osvw skinit wdt tce topoext perfctr_core perfctr_nb bpext perfctr_llc mwaitx cpb hw_pstate ssbd ibpb vmmcall fsgsbase bmi1 avx2 smep bmi2 rdseed adx smap clflushopt sha_ni xsaveopt xsavec xgetbv1 clzero xsaveerptr arat npt lbrv svm_lock nrip_save tsc_scale vmcb_clean flushbyasid decodeassists pausefilter pfthreshold avic v_vmsave_vmload vgif overflow_recov succor smca sev sev_es"
+      },
+      {
+        "field": "Virtualization:",
+        "data": "AMD-V"
+      },
+      {
+        "field": "L1d cache:",
+        "data": "512 KiB (16 instances)"
+      },
+      {
+        "field": "L1i cache:",
+        "data": "1 MiB (16 instances)"
+      },
+      {
+        "field": "L2 cache:",
+        "data": "8 MiB (16 instances)"
+      },
+      {
+        "field": "L3 cache:",
+        "data": "32 MiB (4 instances)"
+      },
+      {
+        "field": "NUMA node(s):",
+        "data": "1"
+      },
+      {
+        "field": "NUMA node0 CPU(s):",
+        "data": "0-31"
+      },
+      {
+        "field": "Vulnerability Gather data sampling:",
+        "data": "Not affected"
+      },
+      {
+        "field": "Vulnerability Ghostwrite:",
+        "data": "Not affected"
+      },
+      {
+        "field": "Vulnerability Indirect target selection:",
+        "data": "Not affected"
+      },
+      {
+        "field": "Vulnerability Itlb multihit:",
+        "data": "Not affected"
+      },
+      {
+        "field": "Vulnerability L1tf:",
+        "data": "Not affected"
+      },
+      {
+        "field": "Vulnerability Mds:",
+        "data": "Not affected"
+      },
+      {
+        "field": "Vulnerability Meltdown:",
+        "data": "Not affected"
+      },
+      {
+        "field": "Vulnerability Mmio stale data:",
+        "data": "Not affected"
+      },
+      {
+        "field": "Vulnerability Old microcode:",
+        "data": "Not affected"
+      },
+      {
+        "field": "Vulnerability Reg file data sampling:",
+        "data": "Not affected"
+      },
+      {
+        "field": "Vulnerability Retbleed:",
+        "data": "Mitigation; untrained return thunk; SMT vulnerable"
+      },
+      {
+        "field": "Vulnerability Spec rstack overflow:",
+        "data": "Mitigation; Safe RET"
+      },
+      {
+        "field": "Vulnerability Spec store bypass:",
+        "data": "Mitigation; Speculative Store Bypass disabled via prctl"
+      },
+      {
+        "field": "Vulnerability Spectre v1:",
+        "data": "Mitigation; usercopy/swapgs barriers and __user pointer sanitization"
+      },
+      {
+        "field": "Vulnerability Spectre v2:",
+        "data": "Mitigation; Retpolines; IBPB conditional; STIBP disabled; RSB filling; PBRSB-eIBRS Not affected; BHI Not affected"
+      },
+      {
+        "field": "Vulnerability Srbds:",
+        "data": "Not affected"
+      },
+      {
+        "field": "Vulnerability Tsa:",
+        "data": "Not affected"
+      },
+      {
+        "field": "Vulnerability Tsx async abort:",
+        "data": "Not affected"
+      },
+      {
+        "field": "Vulnerability Vmscape:",
+        "data": "Mitigation; IBPB before exit to userspace"
+      }
+    ]
+  }
+}

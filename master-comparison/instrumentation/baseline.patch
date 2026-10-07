@@ -1,0 +1,177 @@
+diff --git a/src/engine/sim/RenderBenchProbe.h b/src/engine/sim/RenderBenchProbe.h
+new file mode 100644
+index 000000000..225608476
+--- /dev/null
++++ b/src/engine/sim/RenderBenchProbe.h
+@@ -0,0 +1,35 @@
++#pragma once
++// Benchmark-only instrumentation, identical in both revisions; never shipped.
++#include <atomic>
++#include <chrono>
++#include <cstdint>
++#include <cstdlib>
++#include <vector>
++#include <time.h>
++namespace RenderBench {
++inline uint64_t ns() { return std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::steady_clock::now().time_since_epoch()).count(); }
++inline uint64_t cpu(clockid_t id) { timespec t{}; clock_gettime(id,&t);return uint64_t(t.tv_sec)*1000000000+t.tv_nsec; }
++inline unsigned option(const char* key,unsigned fallback) {const char* v=std::getenv(key);return v?std::strtoul(v,nullptr,10):fallback;}
++struct Row { unsigned tick; uint64_t simulation,owner,interval; };
++struct Probe {
++ bool enabled=false,verify=false; unsigned first=0,warm=0,last=0,before=0;
++ uint64_t beginNs=0,simulationEnd=0,previousEnd=0,wallStart=0,wallEnd=0,processStart=0,processEnd=0,ownerStart=0,ownerEnd=0;
++ std::atomic<unsigned> phase{0}; std::vector<Row> rows; std::vector<uint32_t> checksums;
++ void setup(unsigned initial) {enabled=true;verify=option("GLOB2_BENCH_VERIFY",0);first=initial;warm=initial+option("GLOB2_BENCH_WARMUP",500);last=warm+option("GLOB2_BENCH_TICKS",2000);rows.reserve(last-initial);checksums.reserve(last-initial);}
++ void begin(unsigned tick) {
++  if(!enabled)return;before=tick;beginNs=ns();
++  if(tick==warm && phase.load(std::memory_order_relaxed)==0) {wallStart=beginNs;previousEnd=beginNs;processStart=cpu(CLOCK_PROCESS_CPUTIME_ID);ownerStart=cpu(CLOCK_THREAD_CPUTIME_ID);phase.store(1);}
++ }
++ void simulationDone(){if(enabled)simulationEnd=ns();}
++ template<class Game> bool end(Game& game) {
++  if(!enabled || game.stepCounter==before)return false;
++  const auto now=ns();
++  if(before>=warm)rows.push_back({unsigned(game.stepCounter),simulationEnd-beginNs,now-beginNs,now-previousEnd});
++  previousEnd=now;
++  if(verify)checksums.push_back(game.checkSum());
++  if(game.stepCounter>=last) {wallEnd=now;processEnd=cpu(CLOCK_PROCESS_CPUTIME_ID);ownerEnd=cpu(CLOCK_THREAD_CPUTIME_ID);phase.store(2);return true;}
++  return false;
++ }
++};
++inline Probe probe;
++}
+diff --git a/src/engine/sim/SimulationRunner.cpp b/src/engine/sim/SimulationRunner.cpp
+index aa94b584e..3595b37da 100644
+--- a/src/engine/sim/SimulationRunner.cpp
++++ b/src/engine/sim/SimulationRunner.cpp
+@@ -2,6 +2,7 @@
+ #include "sim/SimulationRunner.h"
+ 
+ #include "Engine.h"
++#include "sim/RenderBenchProbe.h"
+ #include <SDL3/SDL_stdinc.h>
+ 
+ #include <chrono>
+@@ -71,17 +72,20 @@ void SimulationRunner::run()
+ 				continue;
+ 			}
+ 			lock.unlock();
++			RenderBench::probe.begin(engine.gui.game.stepCounter);
+ 			const Uint64 now = engine.sessionClock();
+ 			const Uint32 delay = engine.sessionDelay(now);
+ 			bool running = true;
+ 			if (delay == 0)
+ 				running = engine.simulationStep(now);
++			RenderBench::probe.simulationDone();
+ 			// Extract at most once per scene the main thread takes.
+ 			if (!scenes.pending())
+ 			{
+ 				engine.extractScene(scenes.back());
+ 				scenes.publish();
+ 			}
++			if (RenderBench::probe.end(engine.gui.game)) break;
+ 			lock.lock();
+ 			if (!running)
+ 				break;
+diff --git a/test/RenderRevisionBench.cpp b/test/RenderRevisionBench.cpp
+new file mode 100644
+index 000000000..5f4939eb9
+--- /dev/null
++++ b/test/RenderRevisionBench.cpp
+@@ -0,0 +1,84 @@
++#include "EngineFixtures.h"
++#include "ScopedEnvironment.h"
++#include "Engine.h"
++#include "render/scene/Scene.h"
++#include <GraphicContext.h>
++#include <SDL3_net/SDL_net.h>
++#include <algorithm>
++#include <chrono>
++#include <cstdlib>
++#include <fstream>
++#include <vector>
++#include <utility>
++
++#include "sim/RenderBenchProbe.h"
++#include <unistd.h>
++#include <sys/resource.h>
++TEST_CASE("matched revision rendering benchmark [benchmark][display][artifacts]" * doctest::test_suite("RenderRevisionBenchmark"))
++{
++    glob2test::ScopedEnvironment desktop("GLOB2_MOBILE_UI","0");
++    glob2test::HeadlessGlobals globals({.display=true,.loadStrings=true,.width=800,.height=600,.screenFlags=GAGCore::GraphicContext::PORTABLEGPU});
++    REQUIRE(NET_Init());
++    struct NetworkScope { ~NetworkScope(){NET_Quit();} } network;
++    globalContainer->automaticEndingGame=false;
++    globalContainer->settings.autosaveGames=false;
++    globalContainer->settings.gameSpeed=Settings::GAME_SPEED_MAXIMUM;
++    globalContainer->aiThreads=RenderBench::option("GLOB2_BENCH_THREADS",2);
++    setSyncRandSeed(123);
++    Engine engine;
++    const char* fixture=std::getenv("GLOB2_BENCH_FIXTURE");
++    if(fixture) REQUIRE(engine.initCustom(fixture)==Engine::EE_NO_ERROR);
++    else REQUIRE(engine.initCampaign("maps/balanced.map")==Engine::EE_NO_ERROR);
++    globalContainer->settings.gameSpeed=Settings::GAME_SPEED_MAXIMUM;
++    const auto initialChecksum=engine.gui.game.checkSum(nullptr,nullptr,nullptr,true);
++    auto entities=[&] { unsigned units=0,buildings=0;for(int t=0;t<engine.gui.game.mapHeader.getNumberOfTeams();++t) {
++      auto* team=engine.gui.game.teams[t];if(!team)continue;
++      for(int i=0;i<Unit::MAX_COUNT;++i)if(team->myUnits[i])++units;for(int i=0;i<Building::MAX_COUNT;++i)if(team->myBuildings[i])++buildings;
++    } return std::pair(units,buildings);};
++    const auto initialEntities=entities();
++    engine.beginSession(SDL_GetTicks());
++    // Warm graphics resources before timing, without advancing the world or
++    // retaining serial-producer snapshot leases in the threaded benchmark.
++    { Scene scene; engine.extractScene(scene);
++      for(unsigned i=0;i<20;++i) {engine.drawFrame(*engine.session,true,&scene);SDL_Delay(16);}
++    }
++    engine.gui.setPublishedScene(nullptr);
++    auto& p=RenderBench::probe;p.setup(engine.gui.game.stepCounter);
++    const bool draw=RenderBench::option("GLOB2_BENCH_DRAW",1);
++    const unsigned fps=RenderBench::option("GLOB2_BENCH_FPS",60);
++    std::vector<uint64_t> rss,frames,ages;
++    rss.reserve(20000);frames.reserve(20000);ages.reserve(20000);
++    REQUIRE(engine.startSimulationThread(SDL_GetTicks()));
++    uint64_t nextRss=0;auto next=RenderBench::ns();const auto deadline=next+300000000000ULL;
++    while(p.phase.load()!=2) {
++      REQUIRE(RenderBench::ns()<deadline);
++      const auto now=RenderBench::ns();
++      if(draw && now>=next) {
++        const auto phase=p.phase.load();
++        SDL_Event motion{};motion.type=SDL_EVENT_MOUSE_MOTION;motion.motion.x=250;motion.motion.y=250;
++        const bool running=engine.threadedClientFrame(SDL_GetTicks(),{motion});
++        engine.drawSession();
++        if(phase==1) {frames.push_back(RenderBench::ns()-now);if(engine.gui.drawnScene().tickTime)ages.push_back(SDL_GetTicks()-engine.gui.drawnScene().tickTime);}
++        if(!running)break;
++        next=std::max<uint64_t>(next+1000000000ULL/fps,RenderBench::ns());
++      }
++      if(p.phase.load()==1 && (rss.empty() || RenderBench::ns()>=nextRss)) {
++        std::ifstream stat("/proc/self/statm");uint64_t size=0,resident=0;stat>>size>>resident;
++        rss.push_back(resident*sysconf(_SC_PAGESIZE));nextRss=RenderBench::ns()+20000000;
++      }
++      SDL_Delay(1);
++    }
++    engine.stopSimulationThread();
++    REQUIRE(p.phase.load()==2);REQUIRE(engine.gui.game.stepCounter==p.last);REQUIRE(p.rows.size()==p.last-p.warm);
++    const auto finalChecksum=engine.gui.game.checkSum(nullptr,nullptr,nullptr,true);
++    const auto finalEntities=entities();
++    rusage usage{};getrusage(RUSAGE_SELF,&usage);
++    auto pct=[](std::vector<uint64_t> values,unsigned q) {if(values.empty())return uint64_t(0);std::sort(values.begin(),values.end());return values[std::min(values.size()-1,values.size()*q/100)];};
++    const auto dir=glob2test::artifactDir();
++    std::ofstream summary(dir/"metrics.csv");
++    summary<<"width,height,initial_tick,warmup_ticks,measured_ticks,threads,draw,fps,wall_ns,process_cpu_ns,owner_cpu_ns,rss_median_bytes,rss_max_bytes,process_peak_rss_bytes,frames,frame_p50_ns,frame_p95_ns,scene_age_p95_ms,initial_checksum,final_checksum,initial_units,final_units,initial_buildings,final_buildings\n";
++    summary<<engine.gui.game.map.getW()<<','<<engine.gui.game.map.getH()<<','<<p.first<<','<<p.warm-p.first<<','<<p.rows.size()<<','<<globalContainer->aiThreads<<','<<draw<<','<<fps<<','<<p.wallEnd-p.wallStart<<','<<p.processEnd-p.processStart<<','<<p.ownerEnd-p.ownerStart<<','<<pct(rss,50)<<','<<pct(rss,100)<<','<<uint64_t(usage.ru_maxrss)*1024<<','<<frames.size()<<','<<pct(frames,50)<<','<<pct(frames,95)<<','<<pct(ages,95)<<','<<initialChecksum<<','<<finalChecksum<<','<<initialEntities.first<<','<<finalEntities.first<<','<<initialEntities.second<<','<<finalEntities.second<<'\n';
++    std::ofstream ticks(dir/"ticks.csv");ticks<<"tick,simulation_ns,owner_iteration_ns,completion_interval_ns\n";for(const auto& row:p.rows)ticks<<row.tick<<','<<row.simulation<<','<<row.owner<<','<<row.interval<<'\n';
++    std::ofstream trace(dir/"checksums.txt");for(size_t i=0;i<p.checksums.size();++i)trace<<p.first+i+1<<' '<<p.checksums[i]<<'\n';
++    p.enabled=false;engine.gui.isRunning=false;CHECK_FALSE(engine.finishSession());
++}
+diff --git a/test/SConscript b/test/SConscript
+index 83dbc34c8..274e0235b 100644
+--- a/test/SConscript
++++ b/test/SConscript
+@@ -100,7 +100,7 @@ if env['PLATFORM'] == 'darwin':
+     test_env.AppendUnique(FRAMEWORKS=['Foundation'])
+ 
+ engine = test_env.Program('glob2-engine-tests',
+-    objects(native_support + registry.ENGINE_SUPPORT + registry.ENGINE_TESTS, 'engine-')
++    objects(native_support + registry.ENGINE_SUPPORT + [('#test/RenderRevisionBench.cpp', dict(cxxflags=['-fno-access-control']))], 'engine-')
+     + client_objects + client_libs)
+ unit = test_env.Program('glob2-unit-tests',
+     objects(native_support + registry.UNIT_STUBS + registry.UNIT_TESTS, 'unit-')

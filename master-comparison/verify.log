@@ -1,0 +1,8 @@
+verify-balanced-2cpu-draw1-0-baseline: 128x128, units 40->81, 268.4 ticks/s, 3659.4 CPU us/tick, RSS 1190.1 MiB
+verify-balanced-2cpu-draw1-0-final: 128x128, units 40->81, 525.0 ticks/s, 2713.8 CPU us/tick, RSS 1191.0 MiB
+verify-balanced-4cpu-draw1-0-baseline: 128x128, units 40->81, 404.2 ticks/s, 3326.4 CPU us/tick, RSS 1198.6 MiB
+verify-balanced-4cpu-draw1-0-final: 128x128, units 40->81, 511.5 ticks/s, 3102.5 CPU us/tick, RSS 1188.6 MiB
+verify-large512-2cpu-draw1-0-baseline: 512x512, units 48->72, 65.3 ticks/s, 15949.5 CPU us/tick, RSS 1506.7 MiB
+verify-large512-2cpu-draw1-0-final: 512x512, units 48->72, 75.9 ticks/s, 20421.1 CPU us/tick, RSS 1518.4 MiB
+verify-large512-4cpu-draw1-0-baseline: 512x512, units 48->72, 96.0 ticks/s, 14613.9 CPU us/tick, RSS 1523.3 MiB
+verify-large512-4cpu-draw1-0-final: 512x512, units 48->72, 81.6 ticks/s, 19157.2 CPU us/tick, RSS 1552.5 MiB

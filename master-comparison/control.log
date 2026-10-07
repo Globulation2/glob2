@@ -1,0 +1,16 @@
+control-balanced-4cpu-draw0-0-baseline: 128x128, units 40->81, 557.4 ticks/s, 1852.5 CPU us/tick, RSS 1192.8 MiB
+control-balanced-4cpu-draw0-0-final: 128x128, units 40->81, 555.7 ticks/s, 1913.7 CPU us/tick, RSS 1195.1 MiB
+control-large512-4cpu-draw0-0-baseline: 512x512, units 48->72, 107.5 ticks/s, 10046.5 CPU us/tick, RSS 1509.6 MiB
+control-large512-4cpu-draw0-0-final: 512x512, units 48->72, 125.1 ticks/s, 9124.7 CPU us/tick, RSS 1492.1 MiB
+control-balanced-4cpu-draw0-1-final: 128x128, units 40->81, 461.4 ticks/s, 1981.1 CPU us/tick, RSS 1196.3 MiB
+control-balanced-4cpu-draw0-1-baseline: 128x128, units 40->81, 235.2 ticks/s, 1763.9 CPU us/tick, RSS 1190.7 MiB
+control-large512-4cpu-draw0-1-final: 512x512, units 48->72, 116.7 ticks/s, 9597.2 CPU us/tick, RSS 1512.6 MiB
+control-large512-4cpu-draw0-1-baseline: 512x512, units 48->72, 114.1 ticks/s, 9553.8 CPU us/tick, RSS 1500.7 MiB
+control-balanced-4cpu-draw0-2-baseline: 128x128, units 40->81, 540.8 ticks/s, 1940.4 CPU us/tick, RSS 1194.6 MiB
+control-balanced-4cpu-draw0-2-final: 128x128, units 40->81, 631.5 ticks/s, 1683.6 CPU us/tick, RSS 1192.3 MiB
+control-large512-4cpu-draw0-2-baseline: 512x512, units 48->72, 81.7 ticks/s, 9836.4 CPU us/tick, RSS 1506.3 MiB
+control-large512-4cpu-draw0-2-final: 512x512, units 48->72, 121.2 ticks/s, 9582.9 CPU us/tick, RSS 1517.7 MiB
+control-balanced-4cpu-draw0-3-final: 128x128, units 40->81, 545.5 ticks/s, 1855.1 CPU us/tick, RSS 1191.3 MiB
+control-balanced-4cpu-draw0-3-baseline: 128x128, units 40->81, 396.4 ticks/s, 1895.5 CPU us/tick, RSS 1197.4 MiB
+control-large512-4cpu-draw0-3-final: 512x512, units 48->72, 125.8 ticks/s, 9291.7 CPU us/tick, RSS 1519.3 MiB
+control-large512-4cpu-draw0-3-baseline: 512x512, units 48->72, 117.5 ticks/s, 9712.5 CPU us/tick, RSS 1503.6 MiB
