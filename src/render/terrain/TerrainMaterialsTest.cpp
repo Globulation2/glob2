@@ -811,6 +811,7 @@ TEST_SUITE("TerrainMaterials")
 			{nlohmann::json::json_pointer("/materials/0/preview"), {1, 2, true}},
 			{nlohmann::json::json_pointer("/materials/0/variants/0/weight"), 1.5},
 			{nlohmann::json::json_pointer("/materials/0/animation_frames"), 257},
+			{nlohmann::json::json_pointer("/materials/0/edges"), "wrap"},
 			{nlohmann::json::json_pointer("/materials/1/backdrop"),
 			 {{"sprite", "data/gfx/terrain"}}},
 			{nlohmann::json::json_pointer("/bindings"), nlohmann::json::array()},

@@ -167,6 +167,9 @@ Catalog Catalog::parse(const nlohmann::json &j)
 		// backdrop and per-material backdrops were retired.
 		require(!m.contains("ocean") && !m.contains("backdrop"),
 				"ocean and backdrop materials are no longer supported");
+		const auto edges = m.value("edges", nlohmann::json("blend"));
+		require(edges == "blend" || edges == "periodic", "edges must be 'blend' or 'periodic'");
+		v.periodicEdges = edges == "periodic";
 		v.animationFrames = integerInRange(m.value("animation_frames", nlohmann::json(1)), 1, 256);
 		v.animationTicks = integerInRange(m.value("animation_ticks", nlohmann::json(1)), 1,
 										  std::numeric_limits<int>::max());
