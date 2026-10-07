@@ -1880,7 +1880,7 @@ unavailable full hashes produce an explicit unverified warning. The four designs
 whose historical full hashes matched across platforms retain portable topology
 checks; Fingerprint's known platform variant requires its own recorded topology.
 
-### Unapproved generator fingerprint observations
+### Generator fingerprint verification and observations
 
 `python3 test/collect_generator_evidence.py collect BINARY OUTPUT --platform macos-arm64`
 reads `MapGeneratorGoldenTest --inventory` and runs `--print` twice in fresh profiles.
@@ -1890,7 +1890,10 @@ key to remain in that inventory and every requested row to be observed exactly o
 it rejects missing or extra rows and changed revisions. It retains
 raw logs, normalized rows, checkout provenance, host compiler, stable binary hash, and unchanged
 current/historical fixture hashes. Collection does not update expected output or
-replace the strict `--require-rows` gate. The macOS validation job uploads these
+replace the strict `--require-rows` gate. The macOS validation job runs that gate
+against its accepted platform rows before collecting observations; both checks
+and the five explicit-design checks are attempted even if another fails. Missing
+rows and full fingerprint changes fail verification. It uploads these
 observations as `generator-observations-macos`. The collector cannot infer the
 binary's build inputs from the checkout; its manifest marks that association
 unverified. Retain the producing build job and compiler/flags/dependencies when

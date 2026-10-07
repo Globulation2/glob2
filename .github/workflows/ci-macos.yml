@@ -49,11 +49,13 @@ jobs:
           python3 test/run-browser-determinism.py build/darwin/client/release/src/glob2 artifacts/browser-determinism --engine-binary build/darwin/client/release/test/glob2-engine-tests
           python3 test/check_javascript.py build/darwin/client/release/src/glob2 --output artifacts/javascript-profile
           python3 test/check_javascript_corpus.py --build-dir build/darwin/client/release --output artifacts/javascript-corpus
-      - name: Collect unapproved generator fingerprints
+      - name: Verify accepted generator fingerprints and retain observations
         if: ${{ !cancelled() && steps.build.outcome == 'success' }}
         run: |
           export DYLD_LIBRARY_PATH="$PWD/build/sdl3-ci/prefix/lib"
+          mkdir -p artifacts/generator-check-profile
           python3 test/ci_run_commands.py \
+            --check 'accepted generator fingerprints' 'build/darwin/client/release/src/MapGeneratorGoldenTest artifacts/generator-check-profile --require-rows' \
             --check 'generator fingerprints' 'python3 test/collect_generator_evidence.py collect build/darwin/client/release/src/MapGeneratorGoldenTest artifacts/generator-evidence --platform macos-arm64' \
             --check 'resource design fingerprints' "python3 test/run_tests.py --binary engine --build-dir build/darwin/client/release --in-process --no-display --filter 'MapGeneratorDefaults/Explicit designs preserve topology*' --artifacts artifacts/generator-evidence/designs --junit artifacts/generator-evidence/designs-junit.xml"
       - uses: actions/upload-artifact@v4
