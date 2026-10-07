@@ -238,7 +238,10 @@ Writes occur outside AI updates. A capture directory is published only after all
 requested outputs close successfully; failures are reported without stopping the
 game. `summary.json` counts completed, failed and skipped captures. Files from an
 interrupted write are never marked complete. Capture state is session-local and
-is neither saved nor included in simulation checksums.
+is neither saved nor included in simulation checksums. Pending AI decisions keep
+their live capture buffers when a checkpoint is written, but those buffers are
+omitted from the checkpoint. Loading starts a new capture session rather than
+resuming an image that was pending in the old process.
 
 These options apply to `--run-game`, including loaded games, and require a Maxima
 controller. Interactive captures and environment-variable aliases are not

@@ -2,6 +2,7 @@
 #include "EngineFixtures.h"
 #include "AIOrderScheduler.h"
 #include "Order.h"
+#include "GameDiagnostics.h"
 #include <BinaryStream.h>
 #include <StreamBackend.h>
 #include <atomic>
@@ -274,4 +275,36 @@ TEST_SUITE("AIOrderScheduler")
 		CHECK_FALSE(restore(bad)); // pending sequence ahead of the latest submitted request
 	}
 
+}
+
+TEST_CASE("Diagnostic captures do not change saved pending orders" * doctest::test_suite("AIOrderScheduler"))
+{
+    const auto serialize = [](bool capture) {
+        TestScheduler scheduler;
+        scheduler.configure(8, 2);
+        scheduler.submit({0, 1, 0, 1, 0}, observation(0), [capture](const auto&) {
+            auto command = nullCommand();
+            if (capture) command.fieldDiagnostics = std::make_shared<GameDiagnostics::FieldSink>();
+            return command;
+        });
+        CHECK(scheduler.takeDue(0).empty());
+        auto* backend = new GAGCore::MemoryStreamBackend;
+        GAGCore::BinaryOutputStream output(backend);
+        scheduler.save(&output);
+        output.flush();
+        const auto bytes = backend->takeContents();
+        const auto live = scheduler.takeDue(8);
+        REQUIRE(live.size() == 1);
+        CHECK(bool(live[0].command.fieldDiagnostics) == capture);
+        AIEngine::OrderScheduler restored;
+        GAGCore::BinaryInputStream input(new GAGCore::MemoryStreamBackend(bytes.data(), bytes.size()));
+        input.seekFromStart(0);
+        REQUIRE(restored.load(&input));
+        const auto resumed = restored.takeDue(8);
+        REQUIRE(resumed.size() == 1);
+        CHECK_FALSE(resumed[0].command.fieldDiagnostics);
+        CHECK(resumed[0].command.bytes == live[0].command.bytes);
+        return bytes;
+    };
+    CHECK(serialize(false) == serialize(true));
 }

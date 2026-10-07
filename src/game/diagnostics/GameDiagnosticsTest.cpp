@@ -356,3 +356,38 @@ TEST_CASE("per-game metric bands retain labels and count every finished ground v
     CHECK(buildings.bands.size()==completed);
 }
 }
+
+TEST_CASE("Delayed diagnostic offers cover planner ticks without duplicate captures" * doctest::test_suite("GameDiagnostics"))
+{
+    glob2test::HeadlessGlobals globals;
+    glob2test::HeadlessGame fixture({.wDec=5,.hDec=5,.loadDefaultRace=true});
+    GameHeader header; header.setNumberOfPlayers(1);
+    header.getBasePlayer(0)=BasePlayer(0,"diagnostics",0,BasePlayer::playerTypeFromImplementationID(AI::MAXIMA));
+    fixture.game.setGameHeader(header);
+    GameDiagnostics::Session session(fixture.game,(glob2test::artifactDir()/"delayed-offers").string(),500,false);
+    std::vector<std::shared_ptr<GameDiagnostics::FieldSink>> offers;
+    for (unsigned tick=0;tick<8;++tick) {
+        fixture.game.stepCounter=tick;
+        session.beginTick(fixture.game);
+        offers.push_back(session.reserveCapture(0,tick));
+        REQUIRE(offers.back());
+    }
+    AIMaximaPlacement::WorldState state;
+    state.reset(32,32);
+    offers[3]->capture(state);
+    offers[4]->capture(state);
+    REQUIRE(offers[3]->captured);
+    REQUIRE(offers[4]->captured);
+    for (unsigned tick=0;tick<8;++tick) session.publishCapture(*offers[tick]);
+    auto* maxima=dynamic_cast<AIMaxima::Maxima*>(fixture.game.players[0]->ai->aiImplementation);
+    REQUIRE(maxima);
+    CHECK(maxima->fieldDiagnostics->tick==3);
+    CHECK(maxima->fieldDiagnostics->nextTick==503);
+    session.completeTick(fixture.game);
+    REQUIRE(session.pending());
+    session.drain();
+    fixture.game.stepCounter=502; session.beginTick(fixture.game);
+    CHECK_FALSE(session.reserveCapture(0,502));
+    fixture.game.stepCounter=503; session.beginTick(fixture.game);
+    CHECK(session.reserveCapture(0,503)!=nullptr);
+}
