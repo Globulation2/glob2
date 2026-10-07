@@ -22,7 +22,7 @@ class Order;
 //! the reader still accepts. Version 142 introduces damage-weighted routing and
 //! safe idle movement; older replays have different trajectories.
 //! Save compatibility has a separate floor in Version.h.
-static constexpr Uint16 REPLAY_MINIMUM_VERSION_MINOR = 143;
+static constexpr Uint16 REPLAY_MINIMUM_VERSION_MINOR = 144;
 
 /// This class is used for reading replays.
 /// The replay stream is kept open and read every time you do retrieveOrder.
