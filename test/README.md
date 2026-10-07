@@ -1899,3 +1899,10 @@ independent jobs at the same source with
 require investigation before acceptance. Agreement still does not establish
 historical topology preservation: independently verify against archived pre-epoch
 maps before adding new expected rows or the resource-epoch design hashes.
+
+The macOS job also runs the five explicit-design resource-epoch checks separately
+and retains `resource-design-observations.json` with every actual full and topology
+hash. Existing accepted-platform and portable-topology assertions still run;
+unverified full hashes are marked as observations, and the record distinguishes
+which references exist. The existing `GLOB2_RECORD_RESOURCE_DESIGN_GOLDENS`
+archived-map comparison remains available for independent historical validation.
