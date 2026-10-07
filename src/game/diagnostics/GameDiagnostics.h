@@ -53,6 +53,7 @@ private:
 	std::vector<std::shared_ptr<FieldSink>> sinks;
 	size_t byteBudget;
     size_t reservedBytes = 0;
+    std::map<int,std::uint64_t> publishedNextTicks;
     std::map<std::pair<int,std::uint64_t>,size_t> reservations;
 	std::unique_ptr<Scene> scene;
 	std::atomic<bool> ready{false};

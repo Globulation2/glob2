@@ -163,7 +163,9 @@ std::shared_ptr<FieldSink> Session::reserveCapture(int player, std::uint64_t obs
             // The owner prepared these buffers within its deterministic budget.
             // Transfer their storage; no worker shares the stable Session sink.
             result->fields=std::move(sink->fields);
-            sink->enabled=false;sink->nextTick=observedTick+sink->interval;
+            // Offer every eligible observation until a completed capture arrives.
+            // Waiting a full interval here can phase-lock away from planner refreshes.
+            sink->enabled=false;sink->nextTick=observedTick+1;
             return result;
         } catch(...) {sink->enabled=false;sink->failed=true;sink->nextTick=observedTick+sink->interval;}
         return {};
@@ -226,7 +228,12 @@ void Session::publishCapture(const FieldSink& completed) noexcept
     } release{*this,{completed.player,completed.tick}};
     for(auto& sink:sinks) if(sink->player==completed.player && sink->team==completed.team) {
         if(!completed.captured && !completed.failed && !completed.skipped) {
-            sink->nextTick=completed.nextTick;return;
+            return;
+        }
+        if (completed.captured) {
+            auto& next=publishedNextTicks[completed.player];
+            if (completed.tick < next) return;
+            next=completed.nextTick;
         }
         try {
             const auto scheduled=sink->nextTick;
