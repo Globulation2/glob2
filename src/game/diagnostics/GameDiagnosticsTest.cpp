@@ -414,7 +414,7 @@ TEST_CASE("Delayed diagnostic offers cover planner ticks without duplicate captu
     REQUIRE(maxima);
     CHECK(maxima->fieldDiagnostics->tick==3);
     CHECK(maxima->fieldDiagnostics->nextTick==503);
-    session.completeTick(fixture.game);
+    session.completeTick(fixture.game.captureReadBoundary({}, true, session.observationRequirements(fixture.game.stepCounter)));
     REQUIRE(session.pending());
     session.drain();
     fixture.game.stepCounter=502; session.beginTick(fixture.game);
