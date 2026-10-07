@@ -86,7 +86,7 @@ test(`an active replay can be loaded again through the scheduled loader (${mode}
   expect((await state(page)).executionMode).toBe(mode);
   const replay=await require('node:fs/promises').readFile(path.resolve(__dirname,'fixtures/cross-replay.replay'));
   expect(replay.subarray(4,16).toString()).toBe('replayHeader');
-  expect(replay.readUInt32BE(20)).toBe(140);
+  expect(replay.readUInt32BE(20)).toBe(141);
   await clickMainMenu(page,'load');await screen(page,'ChooseMapScreen');await clickControl(page,'switch');
   const chooser=page.waitForEvent('filechooser');await clickControl(page,'import');
   await (await chooser).setFiles({name:'AAA Replay.replay',mimeType:'application/octet-stream',

@@ -990,7 +990,8 @@ public:
 	//! fetching and carrying it there; without one, for the resource nearest to itself.
 	bool pathfindMaterial(int teamNumber, Uint8 resourceType, int swimClass, int x, int y, int *dx, int *dy, bool *stopWork, Building *target, bool withMarkets = false);
 	void pathfindRandom(Unit *unit);
-	// Idle escape: least-cost reachable non-damaging cell, sharing point-search scratch.
+	//! Idle escape toward non-damaging terrain using a lazily shared field.
+	//! Checks live occupancy at descent; returns false with zero direction if blocked.
 	bool pathfindTerrainSafety(Unit *unit);
 
 	//! Initialize a fresh building field and retain its search frontier. Point

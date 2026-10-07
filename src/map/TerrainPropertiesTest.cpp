@@ -1011,7 +1011,7 @@ TEST_CASE("escape fields charge destination terrain and choose a cheaper indirec
     glob2test::HeadlessGame world({.terrain=WATER,.loadDefaultRace=true,.header=true});
     auto& map=world.game.map;
     map.game=nullptr;
-    map.importTerrainDefinitions(R"({"schemaVersion":1,"terrains":[{"key":"test:mild","name":"Mild hazard","base":"grass","properties":{"groundHealthQ8":-1},"appearance":"ice"},{"key":"test:slow-safe","name":"Slow safety","base":"grass","properties":{"groundSpeedQ8":32},"appearance":"grass"}]})");
+    map.importTerrainDefinitions(R"({"schemaVersion":1,"terrains":[{"key":"test:mild","name":"Mild hazard","base":"grass","properties":{"groundHealthQ8":-1},"appearance":"ice"},{"key":"test:slow-safe","name":"Slow safety","base":"grass","properties":{"groundSpeedQ8":64},"appearance":"grass"}]})");
     map.setGame(&world.game);
     map.setCellTerrain(8,8,ICE);
     map.setCellTerrain(9,8,*map.terrainRegistry().find("test:slow-safe"));
@@ -1022,7 +1022,7 @@ TEST_CASE("escape fields charge destination terrain and choose a cheaper indirec
     REQUIRE(map.pathfindTerrainSafety(unit));
     CHECK(unit->dx==0); CHECK(unit->dy==-1);
     const auto& costs=map.gradientRuntime->safety.fields.begin()->second.costs;
-    // Enter mild terrain (11), then grass (10); the adjacent slow goal costs 80.
+    // Enter mild terrain (11), then grass (10); the adjacent slow goal costs 40.
     CHECK(costs[map.coordToIndex(8,8)]==21);
     CHECK(costs[map.coordToIndex(8,7)]==10);
 }
