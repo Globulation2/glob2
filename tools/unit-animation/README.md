@@ -456,8 +456,13 @@ blender-3.6.23 --background --factory-startup -t 1 --python-exit-code 1 \
 - **Rest surface.** The walk source's armature is put in its rest position and
   the same `limb_surface.py` fit used by `export_units.py` is evaluated on the
   resulting metaball transforms. This keeps the published topology and paint
-  UVs; the surface is symmetrised exactly under the chart's front/back and
-  top/bottom reflections (the measured asymmetry is recorded in the report).
+  UVs; the surface is symmetrised under the chart's front/back and top/bottom
+  reflections (the measured asymmetry is recorded in the report). The warrior
+  uses that surface directly. The worker's body ball is smaller than its
+  shoulder and hip balls, so its source rest surface is an hourglass that
+  skinning would carry into every frame as a waist crease; its rest mesh is
+  instead each vertex's mean over every baked frame, un-posed through its home
+  bone, then symmetrised (`--rest` overrides the per-model default).
 - **Bones.** One `body` bone, and per limb a `socket` bone at the body centre
   plus, for each metaball along the limb, a bone halfway along the segment
   (`arm.1.mid.R`) and one on the ball (`arm.1.R`): 29 bones for the worker, 21

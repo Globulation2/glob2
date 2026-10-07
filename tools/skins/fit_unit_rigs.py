@@ -62,6 +62,12 @@ DEFAULT_SUPPORT_PASSES = 5
 # position. Unbounded translations fix large placement errors but also pinch
 # the socket rings into dark flipped specks.
 DEFAULT_TRANSLATION_BOUND = 1.0
+# Rest mesh per model: the worker's body ball is smaller than its shoulder and
+# hip balls, so the surface at the source rest pose is an hourglass that
+# skinning would carry into every frame; its rest comes from the baked frames
+# un-posed through their bones. The warrior's body ball is the largest, its
+# source rest surface is already right, and the un-posed mean cracks its joints.
+REST_SOURCES = {"worker": "unposed", "warrior": "source"}
 MAXIMUM_INFLUENCES = 4
 # Refined bone scale relative to the bind pose; the format allows far more,
 # this keeps a bone from "explaining" a merge by collapsing.
@@ -240,8 +246,9 @@ def solve_weights(
             normal += strength[:, None, None]
             rhs += strength[:, None]
             if prior is not None:
-                normal += (smoothness * strength)[:, None, None] * np.eye(bones)
-                rhs += (smoothness * strength)[:, None] * prior[chunk]
+                pull = np.broadcast_to(smoothness, (vertices,))[chunk] * strength
+                normal += pull[:, None, None] * np.eye(bones)
+                rhs += pull[:, None] * prior[chunk]
             lipschitz = np.linalg.eigvalsh(normal).max(axis=1)
             initial = mask[chunk] / np.maximum(mask[chunk].sum(axis=1, keepdims=True), 1)
             weights[chunk] = descend(
@@ -267,7 +274,7 @@ def solve_weights(
             raise ValueError("Mirrored vertices share no influence")
         return mask
 
-    rounds = SMOOTHING_ROUNDS if graph is not None and smoothness > 0 else 1
+    rounds = SMOOTHING_ROUNDS if graph is not None and np.any(np.asarray(smoothness) > 0) else 1
     full = np.ones((vertices, bones)) if allowed is None else allowed
     dense = prior
     for _ in range(rounds):
@@ -328,14 +335,17 @@ def refine_bones(relative, homogeneous, targets, weights, chain, bound):
     return relative
 
 
-def allowed_influences(surface, layout, paths):
+def allowed_influences(surface, layout, paths, torso_sockets=True):
     """Which bones may influence each vertex: the torso uses the body and socket
-    bones, a limb uses the body, its socket and its own bones. Quad centres take
-    the union of their corners. This keeps a torso vertex from borrowing a limb
-    bone whose rotation would turn its normal away from the surface."""
+    bones (or the body alone), a limb uses the body, its socket and its own
+    bones. Quad centres take the union of their corners. This keeps a torso
+    vertex from borrowing a limb bone whose rotation would turn its normal away
+    from the surface."""
     limb_of = np.array([limb for _, _, _, limb, _ in layout])
     kind_of = [kind for _, _, kind, _, _ in layout]
-    torso = np.array([kind in ("body", "socket") for kind in kind_of], dtype=float)
+    torso = np.array(
+        [kind == "body" or (torso_sockets and kind == "socket") for kind in kind_of], dtype=float
+    )
     allowed = np.zeros((len(surface.vertices), len(layout)))
     for v, descriptor in enumerate(surface.vertices):
         if descriptor[0] == "average":
@@ -418,6 +428,9 @@ def fit(
     smoothness=DEFAULT_SMOOTHNESS,
     support_passes=DEFAULT_SUPPORT_PASSES,
     translation_bound=DEFAULT_TRANSLATION_BOUND,
+    torso_smoothness=0.0,
+    torso_sockets=True,
+    rest_source=None,
     log=print,
 ):
     definition = json.loads(DEFINITION_PATH.read_text())[model]
@@ -453,25 +466,30 @@ def fit(
     layout = bone_layout(paths, midpoints)
     bind = chain_bones(layout, paths, rest, rest_basis, rest, rest_basis, unit_scale=True)
     inverse_bind = np.linalg.inv(bind)
-    # Rest surface: the same fit to the metaball field, at the source rest pose.
-    rest_positions = surface.evaluate(rest, radii, stiffness, threshold, clips[0])
     centre = rest[0, :3, 3]
-    local = (rest_positions - centre) @ rest_basis
     reflections = surface.contract()["reflections"]
-    images = [local]
-    for axis, name in ((0, "frontBack"), (2, "topBottom")):
-        mirrored = local[reflections[name]].copy()
-        mirrored[:, axis] *= -1
-        images.append(mirrored)
-    both = local[np.array(reflections["frontBack"])[reflections["topBottom"]]].copy()
-    both[:, [0, 2]] *= -1
-    images.append(both)
-    asymmetry = float(max(np.abs(image - local).max() for image in images))
-    if asymmetry > 1e-3:
-        raise ValueError(f"Rest surface is not symmetric: {asymmetry}")
-    rest_positions = centre + np.mean(images, axis=0) @ rest_basis.T
-    normals = surface.normals(rest_positions)
-    homogeneous = np.concatenate((rest_positions, np.ones((len(rest_positions), 1))), axis=1)
+
+    def symmetrised(positions, tolerance):
+        """Average the surface with its reflections in the body frame."""
+        local = (positions - centre) @ rest_basis
+        images = [local]
+        for axis, name in ((0, "frontBack"), (2, "topBottom")):
+            mirrored = local[reflections[name]].copy()
+            mirrored[:, axis] *= -1
+            images.append(mirrored)
+        both = local[np.array(reflections["frontBack"])[reflections["topBottom"]]].copy()
+        both[:, [0, 2]] *= -1
+        images.append(both)
+        asymmetry = float(max(np.abs(image - local).max() for image in images))
+        if asymmetry > tolerance:
+            raise ValueError(f"Rest surface is not symmetric: {asymmetry}")
+        return centre + np.mean(images, axis=0) @ rest_basis.T, asymmetry
+
+    # The source rest pose gives exact, symmetric bones; the surface there is
+    # only a starting point.
+    rest_positions, asymmetry = symmetrised(
+        surface.evaluate(rest, radii, stiffness, threshold, clips[0]), 1e-3
+    )
     bone_mirrors = mirror_maps(layout, paths, bind, rest_basis, centre)
     front_back = np.array(reflections["frontBack"])
     top_bottom = np.array(reflections["topBottom"])
@@ -490,12 +508,48 @@ def fit(
             ]
         )
         relative[clip] = world @ inverse_bind
+    if (rest_source or REST_SOURCES[model]) == "unposed":
+        # Each vertex's mean position over every baked frame, un-posed through
+        # its home bone (the body, or its limb's nearest chain bone); see
+        # REST_SOURCES for why the worker needs this.
+        home = np.zeros(len(rest_positions), dtype=int)
+        bone_centres = bind[:, :3, 3]
+        for v, descriptor in enumerate(surface.vertices):
+            if descriptor[0] in ("body", "average"):
+                continue
+            candidates = [
+                i for i, (_, _, kind, limb, _) in enumerate(layout)
+                if limb == descriptor[1] and kind in ("ball", "mid")
+            ]
+            home[v] = candidates[
+                int(np.argmin(np.linalg.norm(bone_centres[candidates] - rest_positions[v], axis=1)))
+            ]
+        for v, descriptor in enumerate(surface.vertices):
+            if descriptor[0] == "average":
+                corners = home[list(descriptor[1])]
+                home[v] = np.bincount(corners).argmax()
+        unposed = np.zeros_like(rest_positions)
+        count = 0
+        for clip in clips:
+            inverse = np.linalg.inv(relative[clip][:, :, :, :])
+            for s in range(samples[clip]):
+                hom = np.concatenate((targets[clip][s], np.ones((len(unposed), 1))), axis=1)
+                unposed += np.einsum("vij,vj->vi", inverse[s][home][:, :3, :], hom)
+                count += 1
+        rest_positions, asymmetry = symmetrised(unposed / count, np.inf)
+    normals = surface.normals(rest_positions)
+    homogeneous = np.concatenate((rest_positions, np.ones((len(rest_positions), 1))), axis=1)
     stacked = lambda: np.concatenate([relative[c] for c in clips])
     mean_targets = np.concatenate([targets[c] for c in clips])
     graph = neighbour_graph(surface.triangles, len(homogeneous))
-    allowed = allowed_influences(surface, layout, paths)
+    allowed = allowed_influences(surface, layout, paths, torso_sockets)
+    torso = np.array([descriptor[0] == "body" for descriptor in surface.vertices])
+    for v, descriptor in enumerate(surface.vertices):
+        if descriptor[0] == "average":
+            torso[v] = all(torso[list(descriptor[1])])
+    pull = np.where(torso, max(smoothness, torso_smoothness), smoothness)
     solve = lambda prior: solve_weights(
-        stacked(), homogeneous, mean_targets, mirrors, graph, smoothness, prior, support_passes, allowed
+        stacked(), homogeneous, mean_targets, mirrors, graph, pull, prior, support_passes, allowed
     )
 
     def error(weights):
@@ -603,6 +657,9 @@ def author(
     smoothness=DEFAULT_SMOOTHNESS,
     support_passes=DEFAULT_SUPPORT_PASSES,
     translation_bound=DEFAULT_TRANSLATION_BOUND,
+    torso_smoothness=0.0,
+    torso_sockets=True,
+    rest_source=None,
 ):
     if bpy.app.version[:3] != (3, 6, 23):
         raise ValueError("Use Blender 3.6.23")
@@ -613,7 +670,15 @@ def author(
     elif action_name or preview_clip:
         raise ValueError("--action and --clip require --action-blend")
     result = result or fit(
-        model, iterations, midpoints, smoothness, support_passes, translation_bound
+        model,
+        iterations,
+        midpoints,
+        smoothness,
+        support_passes,
+        translation_bound,
+        torso_smoothness,
+        torso_sockets,
+        rest_source,
     )
     layout, bind = result["layout"], result["bind"]
     scene_bones = [(name, parent, Matrix(bind[i])) for i, (name, parent, *_) in enumerate(layout)]
@@ -716,6 +781,14 @@ if __name__ == "__main__":
         default=DEFAULT_TRANSLATION_BOUND,
         help="maximum refined bone displacement from the metaball chain",
     )
+    parser.add_argument("--torso-smoothness", type=float, default=0.0, help="torso-only weight prior")
+    parser.add_argument(
+        "--rest",
+        choices=("unposed", "source"),
+        help="rest mesh: baked frames un-posed through their bones, or the source rest pose "
+        "(default per model, see REST_SOURCES)",
+    )
+    parser.add_argument("--rigid-torso", action="store_true", help="torso follows the body bone only")
     parser.add_argument(
         "--no-midpoint-bones",
         action="store_true",
@@ -736,4 +809,7 @@ if __name__ == "__main__":
         smoothness=args.smoothness,
         support_passes=args.support_passes,
         translation_bound=args.translation_bound,
+        torso_smoothness=args.torso_smoothness,
+        torso_sockets=not args.rigid_torso,
+        rest_source=args.rest,
     )
