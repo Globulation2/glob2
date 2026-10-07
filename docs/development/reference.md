@@ -97,6 +97,18 @@ count and completion time never choose that deadline or which decision a
 controller makes; the owner publishes in stable request order. Human orders and
 scenario map scripts retain their existing scheduling.
 
+The executor also provides a separate, bounded presentation queue. It runs one
+chunk at a time on the last compute worker, leaving another worker for simulation
+when at least two are available. Ready simulation work takes precedence between
+chunks. Submission replaces the single pending request; the active request keeps
+its immutable inputs until its current chunk finishes. Tickets expose completion,
+cancellation and failures without joining. Simulation `run()`, `join()` and
+`joinAll()` never execute or await presentation. With no workers, the application
+thread calls `pumpPresentation()` explicitly. Reconfiguration and teardown cancel
+pending work and wait for the active chunk without executing it on the caller.
+Captured inputs are released on completion, even if a caller retains its ticket.
+These scheduling APIs do not yet move the existing Scene extractor off simulation.
+
 Commands own encoded order bytes, target incarnation, diagnostics and telemetry.
 The owner validates current identities and normal order rules at delivery and
 reports accepted, rejected or canceled execution through immutable receipts on
