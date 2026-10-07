@@ -203,6 +203,15 @@ TEST_SUITE("EngineSession")
         }
         REQUIRE(engine.gui.drawnScene().map.getW()>0);
         CHECK(parked==0);
+        engine.gui.openChat();
+        for(unsigned i=0;i<5;++i)
+        {
+            SDL_Event motion{}; motion.type=SDL_EVENT_MOUSE_MOTION;
+            motion.motion.x=200+i; motion.motion.y=250;
+            REQUIRE(engine.threadedClientFrame(SDL_GetTicks(),{motion}));
+        }
+        CHECK(parked==0); // Chat updates and pointer motion remain client-only.
+        engine.gui.closeChat();
         engine.gui.cycleGameSpeed();
         CHECK(parked==1); // Explicit settings boundary, including nested setGameSpeed.
         engine.gui.isRunning=false;
