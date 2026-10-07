@@ -33,3 +33,7 @@ Results: 89 CI policy/selector/contract cases passed; 3 collector cases passed. 
 Raw API snapshots: `artifacts/resource-followup/platform-closure/`. Publish this matrix and logs to an evidence branch / PR after finalizing the tested revision. These local paths alone are not published evidence. Deferred: physical ARM/iOS, expanded statistical gameplay trials and maintainer gameplay review.
 
 Repair source: `17bbbcf41`. Focused tooling tests only; native/browser execution of the new collector is pending. Raw logs and environment are in `platform/`. Older campaign evidence remains linked above.
+
+## Benchmark tooling
+
+Tested source `4b7fa7a37`, base `17bbbcf41`; Linux x86-64/Python3.14.4. `python3 -m unittest discover -s test -p 'test_*benchmark*.py'`:22passed, exact output in `benchmark/benchmark-contracts-final.log`. Independent rotated review passed. Report-only preserves threshold diagnostics and still rejects execution, changed inputs and incomplete windows. Governor orchestration tests cover restoration and interruption/owned-child cleanup. No live governors changed and no performance acceptance is claimed. Native builds and recovery of removed original checkpoint assets remain underway; actual effective interval frequency is explicitly unavailable without a supported measurement.
