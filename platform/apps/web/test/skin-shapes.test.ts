@@ -83,7 +83,7 @@ describe('GSB1 shared conformance', () => {
         mesh,
         view,
         frame,
-        { yaw: 0, zoom: 1, game: true, angle: 0 },
+        { yaw: 0, pitch: 0, zoom: 1, game: true, angle: 0 },
         1,
       );
       const direct = evaluateShapes(model, 1, frame);
@@ -99,7 +99,13 @@ describe('GSB1 shared conformance', () => {
     // Animation never moves the chart that fill and pattern tools paint into.
     expect(buildFillChart(mesh, view, 'worker')).toEqual(chart);
     // The inspection camera frames the rest pose and stays finite.
-    const inspected = projectPose(mesh, view, 3, { yaw: 1, zoom: 1, game: false, angle: 0 }, 1.5);
+    const inspected = projectPose(
+      mesh,
+      view,
+      3,
+      { yaw: 1, pitch: 0, zoom: 1, game: false, angle: 0 },
+      1.5,
+    );
     expect(inspected.every(Number.isFinite)).toBe(true);
   });
   it('animates workers and warriors from blend shapes, the explorer from its rig', () => {
