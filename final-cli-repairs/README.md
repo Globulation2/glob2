@@ -15,3 +15,5 @@ Exact engine argv, output traces, saves and execution manifests are retained bel
 ## Publication supplement
 
 Bundle SHA256: `91a6bc8fb1bba8f613e411d6ded483902c31d6ce5622521507551e0d93d5fd96`. The adjacent `merge-generator-reporting.log`, JUnit XML and inventory retain the final targeted generator check: 1 passed, 0 failed, 0 skipped. `sha256.json` identifies the bundle and supplement bytes.
+
+`telemetry-epoch-classification.zip` supplies the actual pure/approved/9a/SIM23/final comparison artifacts referenced above: pure f0 reproduces the old gd-large reference, 9a matches approved-fix entities, and SIM23 matches final b3 entity/team records for all four retained scenarios. Aggregate bytes retain epoch differences; the checker compares the complete new sidecars.
