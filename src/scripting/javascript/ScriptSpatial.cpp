@@ -1,4 +1,4 @@
-#include <unordered_set>
+#include <set>
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "ScriptSpatial.h"
 #include "TerrainProperties.h"
@@ -866,7 +866,7 @@ Value Spatial::placement(const Value &spec, const Value &staged, const QueryBudg
 std::uint64_t Script::Spatial::retainedQueryVectorBytes() const {
     std::uint64_t bytes=cells.capacity()*sizeof(Observations::Cell)+handles.capacity()*sizeof(std::shared_ptr<Field>)
         +frontier.capacity()*sizeof(unsigned)+prefix.capacity()*sizeof(long long)+retainedValueVectorBytes(reservations);
-    std::unordered_set<const Field*> allocations;
+    std::set<const Field*> allocations;
     auto count=[&](const std::shared_ptr<Field>& field) {
         if(!field || !allocations.insert(field.get()).second) return;
         bytes+=field->sources.capacity()+field->passable.capacity()+field->distances.capacity()*sizeof(int)
