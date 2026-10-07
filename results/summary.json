@@ -1,0 +1,1540 @@
+{
+  "coral": {
+    "independent_seed_pairs": 6,
+    "metrics": {
+      "cpu_seconds": {
+        "zero_baseline_matches": 0,
+        "pooled_percent_change_95ci": [
+          -17.01964037304382,
+          -8.430758591690847
+        ],
+        "round_trip_mean": 2.6776395,
+        "greedy_mean": 2.3437793333333334,
+        "pooled_percent_change": -12.46845091233032,
+        "mean_paired_percent_change": -12.428787339054958,
+        "mean_paired_percent_change_95ci": [
+          -17.101135278127213,
+          -8.247840487961316
+        ],
+        "paired_absolute_change_95ci": [
+          -0.4473020000000001,
+          -0.2217815
+        ],
+        "individual_percent_changes": [
+          -23.280199042486217,
+          -12.862249167431639,
+          -5.664061283107269,
+          -12.477977330495793,
+          -6.409346931812965,
+          -13.87889027899587
+        ]
+      },
+      "wall_seconds": {
+        "zero_baseline_matches": 0,
+        "pooled_percent_change_95ci": [
+          -13.524679036444454,
+          -9.19752802854832
+        ],
+        "round_trip_mean": 6.559870271206212,
+        "greedy_mean": 5.813327277467276,
+        "pooled_percent_change": -11.38045361988027,
+        "mean_paired_percent_change": -11.404067620903609,
+        "mean_paired_percent_change_95ci": [
+          -13.645832564611137,
+          -9.13851254287463
+        ],
+        "paired_absolute_change_95ci": [
+          -0.8844160981243476,
+          -0.6039740004731963
+        ],
+        "individual_percent_changes": [
+          -15.594263169949896,
+          -11.752254901781145,
+          -8.131323561835025,
+          -11.609514095852425,
+          -7.674699970936438,
+          -13.662350025066727
+        ]
+      },
+      "run_seconds": {
+        "zero_baseline_matches": 0,
+        "pooled_percent_change_95ci": [
+          -14.037764623605554,
+          -9.501614729494012
+        ],
+        "round_trip_mean": 6.346380298666666,
+        "greedy_mean": 5.599638798666667,
+        "pooled_percent_change": -11.766415891541914,
+        "mean_paired_percent_change": -11.793246695195505,
+        "mean_paired_percent_change_95ci": [
+          -14.10775532229129,
+          -9.473801913044948
+        ],
+        "paired_absolute_change_95ci": [
+          -0.8849630833333334,
+          -0.603879
+        ],
+        "individual_percent_changes": [
+          -16.181605865190928,
+          -12.151121277844435,
+          -8.409149269483152,
+          -11.966825284509097,
+          -7.953283188474924,
+          -14.097495285670492
+        ]
+      },
+      "rss_bytes": {
+        "zero_baseline_matches": 0,
+        "pooled_percent_change_95ci": [
+          -7.0995423340961095,
+          -5.397569190218188
+        ],
+        "round_trip_mean": 94532949.33333333,
+        "greedy_mean": 88615594.66666667,
+        "pooled_percent_change": -6.259568445073516,
+        "mean_paired_percent_change": -6.243610675972072,
+        "mean_paired_percent_change_95ci": [
+          -7.090417140938345,
+          -5.397531915257526
+        ],
+        "paired_absolute_change_95ci": [
+          -6802090.666666667,
+          -5029888
+        ],
+        "individual_percent_changes": [
+          -5.5813124108416545,
+          -7.477431442684379,
+          -7.713080168776376,
+          -6.198564174400278,
+          -4.532726636331819,
+          -5.958549222797926
+        ]
+      },
+      "units": {
+        "zero_baseline_matches": 0,
+        "pooled_percent_change_95ci": [
+          -5.309734513274334,
+          14.163090128755362
+        ],
+        "round_trip_mean": 82,
+        "greedy_mean": 84.83333333333333,
+        "pooled_percent_change": 3.455284552845539,
+        "mean_paired_percent_change": 4.903744403744403,
+        "mean_paired_percent_change_95ci": [
+          -4.304639804639805,
+          15.075702075702072
+        ],
+        "paired_absolute_change_95ci": [
+          -5,
+          10.666666666666666
+        ],
+        "individual_percent_changes": [
+          4.615384615384621,
+          -11.428571428571432,
+          8.000000000000007,
+          5.952380952380953,
+          27.777777777777768,
+          -5.494505494505497
+        ]
+      },
+      "buildings": {
+        "zero_baseline_matches": 0,
+        "pooled_percent_change_95ci": [
+          -7.14285714285714,
+          14.761904761904754
+        ],
+        "round_trip_mean": 75.5,
+        "greedy_mean": 77.83333333333333,
+        "pooled_percent_change": 3.0905077262693093,
+        "mean_paired_percent_change": 4.1269041341569395,
+        "mean_paired_percent_change_95ci": [
+          -7.142987489397371,
+          15.39679575771125
+        ],
+        "paired_absolute_change_95ci": [
+          -5.833333333333333,
+          10.333333333333334
+        ],
+        "individual_percent_changes": [
+          14.084507042253524,
+          26.984126984126977,
+          3.750000000000009,
+          -10.1123595505618,
+          6.493506493506485,
+          -16.43835616438356
+        ]
+      },
+      "hungry_units": {
+        "zero_baseline_matches": 0,
+        "pooled_percent_change_95ci": [
+          -86.36363636363636,
+          -36.8421052631579
+        ],
+        "round_trip_mean": 3.6666666666666665,
+        "greedy_mean": 1.3333333333333333,
+        "pooled_percent_change": -63.63636363636363,
+        "mean_paired_percent_change": -63.333333333333336,
+        "mean_paired_percent_change_95ci": [
+          -91.11111111111111,
+          -33.333333333333336
+        ],
+        "paired_absolute_change_95ci": [
+          -3.5,
+          -1.1666666666666667
+        ],
+        "individual_percent_changes": [
+          -33.333333333333336,
+          -66.66666666666667,
+          0.0,
+          -100.0,
+          -100.0,
+          -80.0
+        ]
+      },
+      "alive_teams": {
+        "zero_baseline_matches": 0,
+        "pooled_percent_change_95ci": [
+          0.0,
+          0.0
+        ],
+        "round_trip_mean": 4,
+        "greedy_mean": 4,
+        "pooled_percent_change": 0.0,
+        "mean_paired_percent_change": 0.0,
+        "mean_paired_percent_change_95ci": [
+          0.0,
+          0.0
+        ],
+        "paired_absolute_change_95ci": [
+          0,
+          0
+        ],
+        "individual_percent_changes": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "wheat_delivered": {
+        "zero_baseline_matches": 0,
+        "pooled_percent_change_95ci": [
+          -0.43436948554363974,
+          11.05049875311721
+        ],
+        "round_trip_mean": 1192,
+        "greedy_mean": 1249.5,
+        "pooled_percent_change": 4.823825503355694,
+        "mean_paired_percent_change": 5.647806272647206,
+        "mean_paired_percent_change_95ci": [
+          -0.019094077248316133,
+          11.573716531216096
+        ],
+        "paired_absolute_change_95ci": [
+          -5.333333333333333,
+          118
+        ],
+        "individual_percent_changes": [
+          16.780045351473927,
+          -1.9593613933236553,
+          8.854166666666675,
+          1.3835511145272816,
+          12.207357859531776,
+          -3.3789219629927647
+        ]
+      },
+      "wheat_harvested": {
+        "zero_baseline_matches": 0,
+        "pooled_percent_change_95ci": [
+          -1.1309374214626744,
+          10.872405283785746
+        ],
+        "round_trip_mean": 1228,
+        "greedy_mean": 1280.8333333333333,
+        "pooled_percent_change": 4.302388707926164,
+        "mean_paired_percent_change": 5.194960771230925,
+        "mean_paired_percent_change_95ci": [
+          -0.9246429580306897,
+          11.72314143301312
+        ],
+        "paired_absolute_change_95ci": [
+          -15,
+          120.66666666666667
+        ],
+        "individual_percent_changes": [
+          16.648291069459752,
+          -2.52808988764045,
+          8.319327731092429,
+          0.07462686567163423,
+          13.2292522596549,
+          -4.573643410852712
+        ]
+      },
+      "construction_completed": {
+        "zero_baseline_matches": 0,
+        "pooled_percent_change_95ci": [
+          -6.175298804780871,
+          3.813559322033888
+        ],
+        "round_trip_mean": 83.16666666666667,
+        "greedy_mean": 81.83333333333333,
+        "pooled_percent_change": -1.603206412825653,
+        "mean_paired_percent_change": -1.2585273511360315,
+        "mean_paired_percent_change_95ci": [
+          -5.970294656997586,
+          3.946661007357098
+        ],
+        "paired_absolute_change_95ci": [
+          -5.166666666666667,
+          3.1666666666666665
+        ],
+        "individual_percent_changes": [
+          3.750000000000009,
+          -6.976744186046513,
+          1.2499999999999956,
+          -6.451612903225811,
+          9.210526315789469,
+          -8.333333333333337
+        ]
+      },
+      "starvation_deaths": {
+        "zero_baseline_matches": 5,
+        "pooled_percent_change_95ci": [
+          -100.0,
+          200.0
+        ],
+        "round_trip_mean": 0.16666666666666666,
+        "greedy_mean": 0.16666666666666666,
+        "pooled_percent_change": 0.0,
+        "mean_paired_percent_change": null,
+        "mean_paired_percent_change_95ci": null,
+        "paired_absolute_change_95ci": [
+          -0.5,
+          0.5
+        ],
+        "individual_percent_changes": []
+      }
+    }
+  },
+  "oazis": {
+    "independent_seed_pairs": 12,
+    "metrics": {
+      "cpu_seconds": {
+        "zero_baseline_matches": 0,
+        "pooled_percent_change_95ci": [
+          -15.970246111430065,
+          -7.658226454521289
+        ],
+        "round_trip_mean": 55.54113970225,
+        "greedy_mean": 48.959239496833334,
+        "pooled_percent_change": -11.85049539980907,
+        "mean_paired_percent_change": -12.710376725989526,
+        "mean_paired_percent_change_95ci": [
+          -16.2403121466112,
+          -9.097514247922337
+        ],
+        "paired_absolute_change_95ci": [
+          -8.608962544999999,
+          -4.444940977166667
+        ],
+        "individual_percent_changes": [
+          -18.226120514372724,
+          -15.85866807670968,
+          -8.883554158031126,
+          -13.339434287987528,
+          -11.27695506454025,
+          -6.883384682341031,
+          -21.169122556731345,
+          -23.258357584614163,
+          -13.236154008803247,
+          -7.296309015238145,
+          -14.387036148216803,
+          1.2905753857117341
+        ]
+      },
+      "wall_seconds": {
+        "zero_baseline_matches": 0,
+        "pooled_percent_change_95ci": [
+          -14.981279867623165,
+          -9.381242773009923
+        ],
+        "round_trip_mean": 89.34320737535988,
+        "greedy_mean": 78.3673859948467,
+        "pooled_percent_change": -12.28500935096295,
+        "mean_paired_percent_change": -12.725146777341907,
+        "mean_paired_percent_change_95ci": [
+          -15.146161104595913,
+          -10.080050413383988
+        ],
+        "paired_absolute_change_95ci": [
+          -13.475971854990348,
+          -8.479585504266046
+        ],
+        "individual_percent_changes": [
+          -16.030735209642643,
+          -14.670373231679756,
+          -7.794918707117748,
+          -15.099862265792785,
+          -12.865999465842215,
+          -5.482060352564155,
+          -16.675063802546497,
+          -20.035273707431035,
+          -14.932705959964077,
+          -11.299392343473237,
+          -13.973431415372284,
+          -3.841944866676461
+        ]
+      },
+      "run_seconds": {
+        "zero_baseline_matches": 0,
+        "pooled_percent_change_95ci": [
+          -15.064669258033003,
+          -9.464755347532972
+        ],
+        "round_trip_mean": 89.07586940341666,
+        "greedy_mean": 78.09927019483334,
+        "pooled_percent_change": -12.322752819701687,
+        "mean_paired_percent_change": -12.76684769991071,
+        "mean_paired_percent_change_95ci": [
+          -15.249526896815551,
+          -10.010114387808017
+        ],
+        "paired_absolute_change_95ci": [
+          -13.371056026499998,
+          -8.4989003085
+        ],
+        "individual_percent_changes": [
+          -16.089360147025555,
+          -14.723478699455628,
+          -7.819786846067755,
+          -15.151780126534685,
+          -12.913908458619805,
+          -5.503257007245321,
+          -16.73158875615227,
+          -20.10426140126036,
+          -14.9807384256183,
+          -11.333853858295406,
+          -13.99882226335044,
+          -3.8513364093029856
+        ]
+      },
+      "rss_bytes": {
+        "zero_baseline_matches": 0,
+        "pooled_percent_change_95ci": [
+          -5.32765986924264,
+          -2.3625555388873565
+        ],
+        "round_trip_mean": 526603264,
+        "greedy_mean": 505971370.6666667,
+        "pooled_percent_change": -3.917919759292132,
+        "mean_paired_percent_change": -3.9150837601681134,
+        "mean_paired_percent_change_95ci": [
+          -5.366340906524574,
+          -2.3783195688277923
+        ],
+        "paired_absolute_change_95ci": [
+          -28030293.333333332,
+          -12368554.666666666
+        ],
+        "individual_percent_changes": [
+          -7.206022944550671,
+          -6.897402677524833,
+          -0.4675849867306958,
+          -2.0996640537514044,
+          -1.83986803705114,
+          1.5046226358088166,
+          -5.401433033253722,
+          -3.5088268436208825,
+          -4.15319875586998,
+          -6.282055291468602,
+          -6.25996174689194,
+          -4.369609387112305
+        ]
+      },
+      "units": {
+        "zero_baseline_matches": 0,
+        "pooled_percent_change_95ci": [
+          -2.9200746161572644,
+          5.520872508461827
+        ],
+        "round_trip_mean": 1146.3333333333333,
+        "greedy_mean": 1155.9166666666667,
+        "pooled_percent_change": 0.8359988368711768,
+        "mean_paired_percent_change": 1.0630055488025765,
+        "mean_paired_percent_change_95ci": [
+          -2.8071632989759916,
+          5.817494086164548
+        ],
+        "paired_absolute_change_95ci": [
+          -33.083333333333336,
+          62.75
+        ],
+        "individual_percent_changes": [
+          2.064631956912022,
+          7.180851063829796,
+          -5.1768766177739405,
+          1.2646793134597933,
+          3.4420289855072506,
+          0.49301561216104073,
+          -6.030150753768848,
+          -7.468879668049788,
+          -6.914433880726012,
+          0.1721170395869276,
+          1.653611836379465,
+          22.075471698113212
+        ]
+      },
+      "buildings": {
+        "zero_baseline_matches": 0,
+        "pooled_percent_change_95ci": [
+          -2.0368574199805978,
+          2.650523560209428
+        ],
+        "round_trip_mean": 255.41666666666666,
+        "greedy_mean": 256.1666666666667,
+        "pooled_percent_change": 0.29363784665579207,
+        "mean_paired_percent_change": 0.3111564093356343,
+        "mean_paired_percent_change_95ci": [
+          -1.9707656377211151,
+          2.8002679419780465
+        ],
+        "paired_absolute_change_95ci": [
+          -5.25,
+          6.75
+        ],
+        "individual_percent_changes": [
+          2.6515151515151603,
+          -1.1406844106463865,
+          -4.400000000000004,
+          0.7874015748031482,
+          9.090909090909083,
+          3.759398496240607,
+          3.6144578313253017,
+          -7.786885245901642,
+          -1.1363636363636354,
+          -1.9607843137254943,
+          -2.6022304832713727,
+          2.857142857142847
+        ]
+      },
+      "hungry_units": {
+        "zero_baseline_matches": 0,
+        "pooled_percent_change_95ci": [
+          -18.083182640144667,
+          13.71158392434988
+        ],
+        "round_trip_mean": 41.666666666666664,
+        "greedy_mean": 40.166666666666664,
+        "pooled_percent_change": -3.600000000000003,
+        "mean_paired_percent_change": 0.4187256540615616,
+        "mean_paired_percent_change_95ci": [
+          -15.85441260277235,
+          16.64352991859596
+        ],
+        "paired_absolute_change_95ci": [
+          -7.916666666666667,
+          4.916666666666667
+        ],
+        "individual_percent_changes": [
+          37.142857142857146,
+          -42.22222222222223,
+          -13.513513513513509,
+          17.500000000000004,
+          -18.181818181818176,
+          31.034482758620683,
+          -23.529411764705888,
+          -28.260869565217394,
+          18.181818181818187,
+          53.33333333333334,
+          -31.11111111111111,
+          4.651162790697683
+        ]
+      },
+      "alive_teams": {
+        "zero_baseline_matches": 0,
+        "pooled_percent_change_95ci": [
+          0.0,
+          3.937007874015741
+        ],
+        "round_trip_mean": 10.75,
+        "greedy_mean": 10.916666666666666,
+        "pooled_percent_change": 1.5503875968992276,
+        "mean_paired_percent_change": 1.666666666666668,
+        "mean_paired_percent_change_95ci": [
+          0.0,
+          4.1666666666666705
+        ],
+        "paired_absolute_change_95ci": [
+          0,
+          0.4166666666666667
+        ],
+        "individual_percent_changes": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          10.000000000000009,
+          0.0,
+          10.000000000000009,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "wheat_delivered": {
+        "zero_baseline_matches": 0,
+        "pooled_percent_change_95ci": [
+          -2.5422704827575138,
+          3.6411583159330796
+        ],
+        "round_trip_mean": 10166.75,
+        "greedy_mean": 10189.416666666666,
+        "pooled_percent_change": 0.22294899222137232,
+        "mean_paired_percent_change": 0.33949037038230334,
+        "mean_paired_percent_change_95ci": [
+          -2.5082872398821277,
+          3.7684410981577834
+        ],
+        "paired_absolute_change_95ci": [
+          -264.4166666666667,
+          349
+        ],
+        "individual_percent_changes": [
+          -2.721632979787869,
+          1.4860742052947629,
+          -0.16949152542372614,
+          0.8653652646407828,
+          3.87030365414307,
+          -0.34357879097409727,
+          -4.436699321778448,
+          -4.967979817581991,
+          -8.105542900531514,
+          2.161635832521913,
+          1.727427940142623,
+          14.708002883922134
+        ]
+      },
+      "wheat_harvested": {
+        "zero_baseline_matches": 0,
+        "pooled_percent_change_95ci": [
+          -2.0780142391027656,
+          3.9874870990711297
+        ],
+        "round_trip_mean": 10644.833333333334,
+        "greedy_mean": 10721.583333333334,
+        "pooled_percent_change": 0.721007061328649,
+        "mean_paired_percent_change": 0.8328153523293645,
+        "mean_paired_percent_change_95ci": [
+          -1.9116513821816812,
+          4.20322933616146
+        ],
+        "paired_absolute_change_95ci": [
+          -217.5,
+          420.4166666666667
+        ],
+        "individual_percent_changes": [
+          -2.173498570066734,
+          2.3273344012060715,
+          0.10474195391354524,
+          1.7223130953526455,
+          4.454715311240043,
+          0.7132667617689048,
+          -3.596927248079529,
+          -4.509259259259258,
+          -7.3634634543972455,
+          2.2061549870226127,
+          0.9897221164826719,
+          15.118684132768646
+        ]
+      },
+      "construction_completed": {
+        "zero_baseline_matches": 0,
+        "pooled_percent_change_95ci": [
+          -3.4065662799308782,
+          1.3612301487269995
+        ],
+        "round_trip_mean": 333.6666666666667,
+        "greedy_mean": 329.8333333333333,
+        "pooled_percent_change": -1.1488511488511488,
+        "mean_paired_percent_change": -1.0635027449849908,
+        "mean_paired_percent_change_95ci": [
+          -3.3239048040916255,
+          1.4069591972036029
+        ],
+        "paired_absolute_change_95ci": [
+          -11.666666666666666,
+          4.25
+        ],
+        "individual_percent_changes": [
+          -5.847953216374268,
+          -2.023121387283233,
+          -1.5479876160990669,
+          -5.882352941176472,
+          6.709265175718859,
+          3.834808259587019,
+          -5.142857142857138,
+          -4.573170731707322,
+          -4.71976401179941,
+          0.3039513677811634,
+          2.114803625377637,
+          4.012345679012341
+        ]
+      },
+      "starvation_deaths": {
+        "zero_baseline_matches": 0,
+        "pooled_percent_change_95ci": [
+          -4.761904761904767,
+          68.86792452830188
+        ],
+        "round_trip_mean": 10.916666666666666,
+        "greedy_mean": 13.583333333333334,
+        "pooled_percent_change": 24.427480916030532,
+        "mean_paired_percent_change": null,
+        "mean_paired_percent_change_95ci": null,
+        "paired_absolute_change_95ci": [
+          -0.75,
+          6.333333333333333
+        ],
+        "individual_percent_changes": []
+      }
+    }
+  },
+  "old-town": {
+    "independent_seed_pairs": 6,
+    "metrics": {
+      "cpu_seconds": {
+        "zero_baseline_matches": 0,
+        "pooled_percent_change_95ci": [
+          -13.080154796979592,
+          -5.906790934754158
+        ],
+        "round_trip_mean": 4.755137108333333,
+        "greedy_mean": 4.2967260676666665,
+        "pooled_percent_change": -9.64033276481777,
+        "mean_paired_percent_change": -9.470166507893184,
+        "mean_paired_percent_change_95ci": [
+          -12.82338948945303,
+          -5.754674444148841
+        ],
+        "paired_absolute_change_95ci": [
+          -0.643329243,
+          -0.2615010011666666
+        ],
+        "individual_percent_changes": [
+          -12.60778283742754,
+          -11.31527475381018,
+          -2.1078436451370863,
+          -11.413626698229319,
+          -15.095012974510913,
+          -4.281458138244066
+        ]
+      },
+      "wall_seconds": {
+        "zero_baseline_matches": 0,
+        "pooled_percent_change_95ci": [
+          -12.970116247342101,
+          -9.443009856432605
+        ],
+        "round_trip_mean": 11.99809668872816,
+        "greedy_mean": 10.63975757919252,
+        "pooled_percent_change": -11.321288240757033,
+        "mean_paired_percent_change": -11.295896621268469,
+        "mean_paired_percent_change_95ci": [
+          -12.946217985275496,
+          -9.424835423147595
+        ],
+        "paired_absolute_change_95ci": [
+          -1.580412614857778,
+          -1.127031603595242
+        ],
+        "individual_percent_changes": [
+          -12.099234047590324,
+          -12.236531636666959,
+          -7.509974197642421,
+          -14.58771793739727,
+          -11.626235904033312,
+          -9.71568600428052
+        ]
+      },
+      "run_seconds": {
+        "zero_baseline_matches": 0,
+        "pooled_percent_change_95ci": [
+          -13.13076790414418,
+          -9.639805296606042
+        ],
+        "round_trip_mean": 11.809027778333334,
+        "greedy_mean": 10.453097555666666,
+        "pooled_percent_change": -11.482149488668881,
+        "mean_paired_percent_change": -11.45670859437475,
+        "mean_paired_percent_change_95ci": [
+          -13.131277717747466,
+          -9.585300896978106
+        ],
+        "paired_absolute_change_95ci": [
+          -1.5632624946666667,
+          -1.1247896195000004
+        ],
+        "individual_percent_changes": [
+          -12.271457977505495,
+          -12.404059147386025,
+          -7.623011704719307,
+          -14.718316028350875,
+          -11.769499099938797,
+          -9.953907608348
+        ]
+      },
+      "rss_bytes": {
+        "zero_baseline_matches": 0,
+        "pooled_percent_change_95ci": [
+          -7.587213545467819,
+          -4.076640533366261
+        ],
+        "round_trip_mean": 90085376,
+        "greedy_mean": 84891648,
+        "pooled_percent_change": -5.7653397594743865,
+        "mean_paired_percent_change": -5.705038198315373,
+        "mean_paired_percent_change_95ci": [
+          -7.5355742017605065,
+          -4.09697949207673
+        ],
+        "paired_absolute_change_95ci": [
+          -7026005.333333333,
+          -3593557.3333333335
+        ],
+        "individual_percent_changes": [
+          -9.209192294694157,
+          -3.71308420147185,
+          -3.7220843672456594,
+          -6.706908115358823,
+          -7.515602177665648,
+          -3.3633580334560986
+        ]
+      },
+      "units": {
+        "zero_baseline_matches": 0,
+        "pooled_percent_change_95ci": [
+          -3.90625,
+          7.86516853932584
+        ],
+        "round_trip_mean": 43.833333333333336,
+        "greedy_mean": 45,
+        "pooled_percent_change": 2.6615969581748944,
+        "mean_paired_percent_change": 2.381981713377059,
+        "mean_paired_percent_change_95ci": [
+          -4.535794739283111,
+          7.683031869078372
+        ],
+        "paired_absolute_change_95ci": [
+          -1.6666666666666667,
+          3.5
+        ],
+        "individual_percent_changes": [
+          8.888888888888879,
+          6.976744186046502,
+          4.166666666666674,
+          -12.82051282051282,
+          9.302325581395344,
+          -2.2222222222222254
+        ]
+      },
+      "buildings": {
+        "zero_baseline_matches": 0,
+        "pooled_percent_change_95ci": [
+          0.0,
+          21.813031161473084
+        ],
+        "round_trip_mean": 62.833333333333336,
+        "greedy_mean": 69.16666666666667,
+        "pooled_percent_change": 10.07957559681698,
+        "mean_paired_percent_change": 11.518386859100993,
+        "mean_paired_percent_change_95ci": [
+          0.7053644978525676,
+          23.08920187793427
+        ],
+        "paired_absolute_change_95ci": [
+          -0.16666666666666666,
+          12.833333333333334
+        ],
+        "individual_percent_changes": [
+          -3.797468354430378,
+          15.999999999999993,
+          34.00000000000001,
+          4.918032786885251,
+          22.535211267605625,
+          -4.545454545454541
+        ]
+      },
+      "hungry_units": {
+        "zero_baseline_matches": 1,
+        "pooled_percent_change_95ci": [
+          -100.0,
+          100.0
+        ],
+        "round_trip_mean": 1.5,
+        "greedy_mean": 1.1666666666666667,
+        "pooled_percent_change": -22.22222222222222,
+        "mean_paired_percent_change": 0.0,
+        "mean_paired_percent_change_95ci": [
+          -100.0,
+          120.0
+        ],
+        "paired_absolute_change_95ci": [
+          -1.8333333333333333,
+          1.1666666666666667
+        ],
+        "individual_percent_changes": [
+          -100.0,
+          -100.0,
+          100.0,
+          200.0,
+          -100.0
+        ]
+      },
+      "alive_teams": {
+        "zero_baseline_matches": 0,
+        "pooled_percent_change_95ci": [
+          0.0,
+          0.0
+        ],
+        "round_trip_mean": 4,
+        "greedy_mean": 4,
+        "pooled_percent_change": 0.0,
+        "mean_paired_percent_change": 0.0,
+        "mean_paired_percent_change_95ci": [
+          0.0,
+          0.0
+        ],
+        "paired_absolute_change_95ci": [
+          0,
+          0
+        ],
+        "individual_percent_changes": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "wheat_delivered": {
+        "zero_baseline_matches": 0,
+        "pooled_percent_change_95ci": [
+          0.10405827263266776,
+          15.019210618232615
+        ],
+        "round_trip_mean": 479.1666666666667,
+        "greedy_mean": 512,
+        "pooled_percent_change": 6.852173913043469,
+        "mean_paired_percent_change": 6.889424625535765,
+        "mean_paired_percent_change_95ci": [
+          0.017017956236801506,
+          14.88468758357102
+        ],
+        "paired_absolute_change_95ci": [
+          0.3333333333333333,
+          71.33333333333333
+        ],
+        "individual_percent_changes": [
+          -1.3282732447817858,
+          -0.8547008547008517,
+          16.086956521739125,
+          -0.7142857142857117,
+          22.96450939457202,
+          5.182341650671796
+        ]
+      },
+      "wheat_harvested": {
+        "zero_baseline_matches": 0,
+        "pooled_percent_change_95ci": [
+          0.12303906490309657,
+          14.925887624956902
+        ],
+        "round_trip_mean": 500,
+        "greedy_mean": 535.5,
+        "pooled_percent_change": 7.099999999999995,
+        "mean_paired_percent_change": 7.250338460466007,
+        "mean_paired_percent_change_95ci": [
+          0.4837848409696181,
+          15.172075268775767
+        ],
+        "paired_absolute_change_95ci": [
+          0,
+          75.83333333333333
+        ],
+        "individual_percent_changes": [
+          -3.374777975133214,
+          -0.20746887966804906,
+          16.176470588235304,
+          2.0594965675057253,
+          23.10756972111554,
+          5.740740740740735
+        ]
+      },
+      "construction_completed": {
+        "zero_baseline_matches": 0,
+        "pooled_percent_change_95ci": [
+          0.24038461538462563,
+          23.404255319148938
+        ],
+        "round_trip_mean": 58.833333333333336,
+        "greedy_mean": 65.16666666666667,
+        "pooled_percent_change": 10.764872521246449,
+        "mean_paired_percent_change": 12.442145219866566,
+        "mean_paired_percent_change_95ci": [
+          0.8295071479540375,
+          24.70842252897321
+        ],
+        "paired_absolute_change_95ci": [
+          0,
+          13
+        ],
+        "individual_percent_changes": [
+          -4.0000000000000036,
+          17.391304347826097,
+          36.956521739130444,
+          5.263157894736836,
+          23.880597014925375,
+          -4.8387096774193505
+        ]
+      },
+      "starvation_deaths": {
+        "zero_baseline_matches": 3,
+        "pooled_percent_change_95ci": [
+          -100.0,
+          19.999999999999996
+        ],
+        "round_trip_mean": 1.1666666666666667,
+        "greedy_mean": 1,
+        "pooled_percent_change": -14.28571428571429,
+        "mean_paired_percent_change": null,
+        "mean_paired_percent_change_95ci": null,
+        "paired_absolute_change_95ci": [
+          -0.6666666666666666,
+          0.3333333333333333
+        ],
+        "individual_percent_changes": []
+      }
+    }
+  },
+  "all": {
+    "independent_seed_pairs": 24,
+    "metrics": {
+      "cpu_seconds": {
+        "zero_baseline_matches": 0,
+        "pooled_percent_change_95ci": [
+          -15.707596686336423,
+          -7.536221433362355
+        ],
+        "round_trip_mean": 29.62876400320833,
+        "greedy_mean": 26.139746098666667,
+        "pooled_percent_change": -11.77577945594983,
+        "mean_paired_percent_change": -11.829926824731798,
+        "mean_paired_percent_change_95ci": [
+          -14.283624650487484,
+          -9.396164942142592
+        ],
+        "paired_absolute_change_95ci": [
+          -5.150743441791667,
+          -1.9328121164999996
+        ],
+        "individual_percent_changes": [
+          -18.226120514372724,
+          -15.85866807670968,
+          -8.883554158031126,
+          -13.339434287987528,
+          -11.27695506454025,
+          -6.883384682341031,
+          -21.169122556731345,
+          -23.258357584614163,
+          -13.236154008803247,
+          -23.280199042486217,
+          -12.862249167431639,
+          -5.664061283107269,
+          -12.477977330495793,
+          -6.409346931812965,
+          -13.87889027899587,
+          -7.296309015238145,
+          -14.387036148216803,
+          1.2905753857117341,
+          -12.60778283742754,
+          -11.31527475381018,
+          -2.1078436451370863,
+          -11.413626698229319,
+          -15.095012974510913,
+          -4.281458138244066
+        ]
+      },
+      "wall_seconds": {
+        "zero_baseline_matches": 0,
+        "pooled_percent_change_95ci": [
+          -14.712467118304595,
+          -9.54055568764598
+        ],
+        "round_trip_mean": 49.31109542766353,
+        "greedy_mean": 43.296964211588296,
+        "pooled_percent_change": -12.196304227103628,
+        "mean_paired_percent_change": -12.037564449213972,
+        "mean_paired_percent_change_95ci": [
+          -13.479512884253467,
+          -10.524122968123754
+        ],
+        "paired_absolute_change_95ci": [
+          -8.444038491890145,
+          -3.705119073119325
+        ],
+        "individual_percent_changes": [
+          -16.030735209642643,
+          -14.670373231679756,
+          -7.794918707117748,
+          -15.099862265792785,
+          -12.865999465842215,
+          -5.482060352564155,
+          -16.675063802546497,
+          -20.035273707431035,
+          -14.932705959964077,
+          -15.594263169949896,
+          -11.752254901781145,
+          -8.131323561835025,
+          -11.609514095852425,
+          -7.674699970936438,
+          -13.662350025066727,
+          -11.299392343473237,
+          -13.973431415372284,
+          -3.841944866676461,
+          -12.099234047590324,
+          -12.236531636666959,
+          -7.509974197642421,
+          -14.58771793739727,
+          -11.626235904033312,
+          -9.71568600428052
+        ]
+      },
+      "run_seconds": {
+        "zero_baseline_matches": 0,
+        "pooled_percent_change_95ci": [
+          -14.692884308993094,
+          -9.582009626176669
+        ],
+        "round_trip_mean": 49.07678672095833,
+        "greedy_mean": 43.062819186,
+        "pooled_percent_change": -12.254199870811943,
+        "mean_paired_percent_change": -12.195912672347918,
+        "mean_paired_percent_change_95ci": [
+          -13.720036715134805,
+          -10.68331463906477
+        ],
+        "paired_absolute_change_95ci": [
+          -8.385557672708332,
+          -3.751885057666667
+        ],
+        "individual_percent_changes": [
+          -16.089360147025555,
+          -14.723478699455628,
+          -7.819786846067755,
+          -15.151780126534685,
+          -12.913908458619805,
+          -5.503257007245321,
+          -16.73158875615227,
+          -20.10426140126036,
+          -14.9807384256183,
+          -16.181605865190928,
+          -12.151121277844435,
+          -8.409149269483152,
+          -11.966825284509097,
+          -7.953283188474924,
+          -14.097495285670492,
+          -11.333853858295406,
+          -13.99882226335044,
+          -3.8513364093029856,
+          -12.271457977505495,
+          -12.404059147386025,
+          -7.623011704719307,
+          -14.718316028350875,
+          -11.769499099938797,
+          -9.953907608348
+        ]
+      },
+      "rss_bytes": {
+        "zero_baseline_matches": 0,
+        "pooled_percent_change_95ci": [
+          -5.513905855258261,
+          -2.871470489060468
+        ],
+        "round_trip_mean": 309456213.3333333,
+        "greedy_mean": 296362496,
+        "pooled_percent_change": -4.231201950121887,
+        "mean_paired_percent_change": -4.944704098655918,
+        "mean_paired_percent_change_95ci": [
+          -5.876795873431998,
+          -3.908603811096582
+        ],
+        "paired_absolute_change_95ci": [
+          -18220714.666666668,
+          -8236373.333333333
+        ],
+        "individual_percent_changes": [
+          -7.206022944550671,
+          -6.897402677524833,
+          -0.4675849867306958,
+          -2.0996640537514044,
+          -1.83986803705114,
+          1.5046226358088166,
+          -5.401433033253722,
+          -3.5088268436208825,
+          -4.15319875586998,
+          -5.5813124108416545,
+          -7.477431442684379,
+          -7.713080168776376,
+          -6.198564174400278,
+          -4.532726636331819,
+          -5.958549222797926,
+          -6.282055291468602,
+          -6.25996174689194,
+          -4.369609387112305,
+          -9.209192294694157,
+          -3.71308420147185,
+          -3.7220843672456594,
+          -6.706908115358823,
+          -7.515602177665648,
+          -3.3633580334560986
+        ]
+      },
+      "units": {
+        "zero_baseline_matches": 0,
+        "pooled_percent_change_95ci": [
+          -2.6334933798923377,
+          5.649588289112528
+        ],
+        "round_trip_mean": 604.625,
+        "greedy_mean": 610.4166666666666,
+        "pooled_percent_change": 0.9578940114395973,
+        "mean_paired_percent_change": 2.352934303681654,
+        "mean_paired_percent_change_95ci": [
+          -1.2312445100491902,
+          6.173995062335879
+        ],
+        "paired_absolute_change_95ci": [
+          -15.833333333333334,
+          31.708333333333332
+        ],
+        "individual_percent_changes": [
+          2.064631956912022,
+          7.180851063829796,
+          -5.1768766177739405,
+          1.2646793134597933,
+          3.4420289855072506,
+          0.49301561216104073,
+          -6.030150753768848,
+          -7.468879668049788,
+          -6.914433880726012,
+          4.615384615384621,
+          -11.428571428571432,
+          8.000000000000007,
+          5.952380952380953,
+          27.777777777777768,
+          -5.494505494505497,
+          0.1721170395869276,
+          1.653611836379465,
+          22.075471698113212,
+          8.888888888888879,
+          6.976744186046502,
+          4.166666666666674,
+          -12.82051282051282,
+          9.302325581395344,
+          -2.2222222222222254
+        ]
+      },
+      "buildings": {
+        "zero_baseline_matches": 0,
+        "pooled_percent_change_95ci": [
+          -0.9011203117389233,
+          4.4413793103448285
+        ],
+        "round_trip_mean": 162.29166666666666,
+        "greedy_mean": 164.83333333333334,
+        "pooled_percent_change": 1.5661103979460744,
+        "mean_paired_percent_change": 4.0669009529823,
+        "mean_paired_percent_change_95ci": [
+          -0.4061709107389927,
+          8.922294761755957
+        ],
+        "paired_absolute_change_95ci": [
+          -1.625,
+          6.458333333333333
+        ],
+        "individual_percent_changes": [
+          2.6515151515151603,
+          -1.1406844106463865,
+          -4.400000000000004,
+          0.7874015748031482,
+          9.090909090909083,
+          3.759398496240607,
+          3.6144578313253017,
+          -7.786885245901642,
+          -1.1363636363636354,
+          14.084507042253524,
+          26.984126984126977,
+          3.750000000000009,
+          -10.1123595505618,
+          6.493506493506485,
+          -16.43835616438356,
+          -1.9607843137254943,
+          -2.6022304832713727,
+          2.857142857142847,
+          -3.797468354430378,
+          15.999999999999993,
+          34.00000000000001,
+          4.918032786885251,
+          22.535211267605625,
+          -4.545454545454541
+        ]
+      },
+      "hungry_units": {
+        "zero_baseline_matches": 1,
+        "pooled_percent_change_95ci": [
+          -20.37671232876712,
+          8.87728459530026
+        ],
+        "round_trip_mean": 22.125,
+        "greedy_mean": 20.708333333333332,
+        "pooled_percent_change": -6.4030131826742,
+        "mean_paired_percent_change": -16.30327357179397,
+        "mean_paired_percent_change_95ci": [
+          -44.08981061571319,
+          14.97669104160311
+        ],
+        "paired_absolute_change_95ci": [
+          -4.708333333333333,
+          1.875
+        ],
+        "individual_percent_changes": [
+          37.142857142857146,
+          -42.22222222222223,
+          -13.513513513513509,
+          17.500000000000004,
+          -18.181818181818176,
+          31.034482758620683,
+          -23.529411764705888,
+          -28.260869565217394,
+          18.181818181818187,
+          -33.333333333333336,
+          -66.66666666666667,
+          0.0,
+          -100.0,
+          -100.0,
+          -80.0,
+          53.33333333333334,
+          -31.11111111111111,
+          4.651162790697683,
+          -100.0,
+          -100.0,
+          100.0,
+          200.0,
+          -100.0
+        ]
+      },
+      "alive_teams": {
+        "zero_baseline_matches": 0,
+        "pooled_percent_change_95ci": [
+          0.0,
+          2.7624309392265234
+        ],
+        "round_trip_mean": 7.375,
+        "greedy_mean": 7.458333333333333,
+        "pooled_percent_change": 1.1299435028248483,
+        "mean_paired_percent_change": 0.833333333333334,
+        "mean_paired_percent_change_95ci": [
+          0.0,
+          2.0833333333333353
+        ],
+        "paired_absolute_change_95ci": [
+          0,
+          0.20833333333333334
+        ],
+        "individual_percent_changes": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          10.000000000000009,
+          0.0,
+          10.000000000000009,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "wheat_delivered": {
+        "zero_baseline_matches": 0,
+        "pooled_percent_change_95ci": [
+          -1.9266392341520722,
+          3.701990711298686
+        ],
+        "round_trip_mean": 5501.166666666667,
+        "greedy_mean": 5535.083333333333,
+        "pooled_percent_change": 0.616535886327152,
+        "mean_paired_percent_change": 3.3040529097368947,
+        "mean_paired_percent_change_95ci": [
+          0.41412171270709625,
+          6.508214375799016
+        ],
+        "paired_absolute_change_95ci": [
+          -114.91666666666667,
+          191.75
+        ],
+        "individual_percent_changes": [
+          -2.721632979787869,
+          1.4860742052947629,
+          -0.16949152542372614,
+          0.8653652646407828,
+          3.87030365414307,
+          -0.34357879097409727,
+          -4.436699321778448,
+          -4.967979817581991,
+          -8.105542900531514,
+          16.780045351473927,
+          -1.9593613933236553,
+          8.854166666666675,
+          1.3835511145272816,
+          12.207357859531776,
+          -3.3789219629927647,
+          2.161635832521913,
+          1.727427940142623,
+          14.708002883922134,
+          -1.3282732447817858,
+          -0.8547008547008517,
+          16.086956521739125,
+          -0.7142857142857117,
+          22.96450939457202,
+          5.182341650671796
+        ]
+      },
+      "wheat_harvested": {
+        "zero_baseline_matches": 0,
+        "pooled_percent_change_95ci": [
+          -1.5110744857974145,
+          4.240266820601635
+        ],
+        "round_trip_mean": 5754.416666666667,
+        "greedy_mean": 5814.875,
+        "pooled_percent_change": 1.0506422602928112,
+        "mean_paired_percent_change": 3.527732484088915,
+        "mean_paired_percent_change_95ci": [
+          0.5389447646278277,
+          6.760131181681503
+        ],
+        "paired_absolute_change_95ci": [
+          -87.125,
+          227.5
+        ],
+        "individual_percent_changes": [
+          -2.173498570066734,
+          2.3273344012060715,
+          0.10474195391354524,
+          1.7223130953526455,
+          4.454715311240043,
+          0.7132667617689048,
+          -3.596927248079529,
+          -4.509259259259258,
+          -7.3634634543972455,
+          16.648291069459752,
+          -2.52808988764045,
+          8.319327731092429,
+          0.07462686567163423,
+          13.2292522596549,
+          -4.573643410852712,
+          2.2061549870226127,
+          0.9897221164826719,
+          15.118684132768646,
+          -3.374777975133214,
+          -0.20746887966804906,
+          16.176470588235304,
+          2.0594965675057253,
+          23.10756972111554,
+          5.740740740740735
+        ]
+      },
+      "construction_completed": {
+        "zero_baseline_matches": 0,
+        "pooled_percent_change_95ci": [
+          -2.4625267665952855,
+          2.187738488934121
+        ],
+        "round_trip_mean": 202.33333333333334,
+        "greedy_mean": 201.66666666666666,
+        "pooled_percent_change": -0.32948929159802853,
+        "mean_paired_percent_change": 2.2641530946901383,
+        "mean_paired_percent_change_95ci": [
+          -1.5142457323207024,
+          6.748706834999101
+        ],
+        "paired_absolute_change_95ci": [
+          -5.25,
+          4
+        ],
+        "individual_percent_changes": [
+          -5.847953216374268,
+          -2.023121387283233,
+          -1.5479876160990669,
+          -5.882352941176472,
+          6.709265175718859,
+          3.834808259587019,
+          -5.142857142857138,
+          -4.573170731707322,
+          -4.71976401179941,
+          3.750000000000009,
+          -6.976744186046513,
+          1.2499999999999956,
+          -6.451612903225811,
+          9.210526315789469,
+          -8.333333333333337,
+          0.3039513677811634,
+          2.114803625377637,
+          4.012345679012341,
+          -4.0000000000000036,
+          17.391304347826097,
+          36.956521739130444,
+          5.263157894736836,
+          23.880597014925375,
+          -4.8387096774193505
+        ]
+      },
+      "starvation_deaths": {
+        "zero_baseline_matches": 8,
+        "pooled_percent_change_95ci": [
+          -7.857142857142863,
+          63.52941176470588
+        ],
+        "round_trip_mean": 5.791666666666667,
+        "greedy_mean": 7.083333333333333,
+        "pooled_percent_change": 22.302158273381288,
+        "mean_paired_percent_change": null,
+        "mean_paired_percent_change_95ci": null,
+        "paired_absolute_change_95ci": [
+          -0.375,
+          3.3333333333333335
+        ],
+        "individual_percent_changes": []
+      }
+    }
+  }
+}

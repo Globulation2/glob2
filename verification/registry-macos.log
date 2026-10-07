@@ -1,0 +1,6 @@
+PASS glob2-unit-tests ReplayStepCounter (7 cases) (0.0s)
+PASS glob2-unit-tests ExperimentalFeatures (9 cases) (0.0s)
+PASS glob2-unit-tests GameHeaderTextSaveLoad (5 cases) (0.1s)
+
+3 passed, 0 failed, 0 skipped (0.2s of test time)
+[run_tests] JUnit report: artifacts/greedy-fetch/registry-compatible-mac.xml (21 cases)

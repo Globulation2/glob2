@@ -1,0 +1,28 @@
+{
+  "final_source": "b507dcebbfc07e6139d4c36d5e9a0cd088767adf",
+  "tested_runtime_source": "fa4344bb5",
+  "base": "64406b0826289c94b9a8eadb590ef551cf39efa9",
+  "latest_master": "6831dcfef",
+  "latest_master_change": "Only save-evidence parser; no changed simulation/build inputs.",
+  "macos_binary_sha256": "16f9f2486e1751fbb1f4556c5eb84a7337fd9b76ba54e456302bc97f3e85d462",
+  "linux_binary_sha256": "b37fc7c041cd0eb13c34658cb6e647412485c13d2d848d89ad8180483c2e555a",
+  "matching_trace_sha256": "5146f335b758dfaa353c7a108bf76a322fe0be7667ac0e5efe1d430658b9add3",
+  "ticks": 1024,
+  "gradient_workers": [
+    0,
+    1,
+    2,
+    4,
+    8
+  ],
+  "compute_threads": [
+    1,
+    1,
+    2,
+    4,
+    8
+  ],
+  "snapshot_verification": true,
+  "save_resume_matching_ticks_each_platform": 512,
+  "other_platforms": "Not executed: Windows, Android, browser/WASM. Native browser fixture regeneration is not browser execution."
+}
