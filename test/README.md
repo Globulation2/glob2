@@ -1098,6 +1098,22 @@ microbenchmarks, not frame-rate or whole-game speedup measurements; pool payload
 accounting excludes registry heaps and allocator overhead. No timing threshold is
 used as a test assertion.
 
+The end-to-end client diagnostic compares a forced frame-wide simulation boundary
+with routine snapshot input in the same executable:
+
+```sh
+python3 test/run_tests.py --binary engine --tag benchmark --filter 'EngineSession/snapshot client frame latency*' --artifacts artifacts/client-latency
+```
+
+Each arm runs five seconds on `balanced.map`, seed 123, maximum simulation speed,
+two compute threads and an 800×600 portable graphics context. The CSV records
+completed frames, ticks, input and whole-frame median/p95 duration, and p95 Scene
+age. Whole-frame duration includes drawing; input duration excludes it. These are
+host processing times, not event-to-photon latency. The forced boundary isolates
+parking cost within this implementation, not the performance of an older binary.
+Repeat runs with recorded CPU affinity and system load; throughput and frame age
+can trade off under contention, and no performance threshold is asserted.
+
 ### Distributed gameplay, AI and performance telemetry
 
 `python3 test/test_distributed_game_telemetry.py` tests typed streaming extraction,
