@@ -217,9 +217,13 @@ Handle capture(const Game& game,
 	if (needs(requirements, Component::Terrain))
 	{
 		const auto source = game.map.legacyTerrainState();
-		const bool resized = prepare(terrain->legacy, source.size());
+		bool resized = prepare(terrain->legacy, source.size());
+		resized |= prepare(terrain->undermap, source.size());
 		refresh(terrain->stamps, game.map.changes(MapState::TrackedArray::Terrain), resized,
-			[&](std::size_t start, std::size_t length) { copyCells(terrain->legacy, source, start, length); });
+			[&](std::size_t start, std::size_t length) {
+                copyCells(terrain->legacy, source, start, length);
+                copyCells(terrain->undermap, game.map.undermapState(), start, length);
+            });
 	}
 	if (needs(requirements, Component::Resources))
 	{
@@ -402,6 +406,7 @@ void verifyCapture(const Game& game, const Handle& handle)
 	if (handle.terrain)
 	{
 		compare("terrain", handle.terrain->legacy, game.map.legacyTerrainState());
+		compare("undermap", handle.terrain->undermap, game.map.undermapState());
 		if (!handle.terrain->identity || handle.terrain->identity->size() != live.terrainIds.size()
 			|| (!live.terrainIds.empty() && std::memcmp(handle.terrain->identity->data(), live.terrainIds.data(), live.terrainIds.size_bytes())))
 			throw std::logic_error("snapshot verification: terrain identity differs from the live map");

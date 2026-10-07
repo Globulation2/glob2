@@ -3,8 +3,10 @@
 
 #include "render/scene/Scene.h"
 #include "render/scene/SceneBuffer.h"
+#include "render/scene/SceneExtract.h"
 
 #include <PerformanceTelemetry.h>
+#include "ComputeExecutor.h"
 
 #include <atomic>
 #include <condition_variable>
@@ -19,8 +21,9 @@ class Engine;
 //! handles input and draws.
 //!
 //! - The simulation thread paces and runs ticks (Engine::simulationStep) and,
-//!   whenever the main thread has taken the previous Scene, extracts the next one
-//!   into a SceneBuffer. It is the only thread that touches the game while running.
+//!   whenever the main thread has taken the previous Scene, captures immutable
+//!   inputs for a compute-worker presentation task. That task publishes a complete
+//!   Scene without participating in simulation barriers.
 //! - withGame() runs main-thread work that reads or writes the game (input, GUI
 //!   logic) while the simulation is parked between ticks; a sleeping simulation
 //!   counts as parked, so at normal speed this does not wait.
@@ -63,6 +66,8 @@ private:
 
 	Engine &engine;
 	SceneBuffer<Scene> scenes;
+	SceneExtractor presentationExtractor;
+	ComputeExecutor::PresentationTicket presentation;
 	std::thread thread;
 	std::mutex mutex;
 	std::condition_variable wake, parkedChanged;

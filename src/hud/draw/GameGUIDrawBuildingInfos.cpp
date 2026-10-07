@@ -12,7 +12,9 @@
 void GameGUI::drawBuildingInfos(void)
 {
 	const SceneBuildingPanel* selBuild = &drawnScene().panels.building;
-	if (!selBuild->valid)
+	const auto* selected = std::get_if<BuildingRef>(&selection);
+    if (!selBuild->valid || !selected || selected->gid != selBuild->gid || selected->generation != selBuild->generation
+        || drawnScene().panels.local.teamNumber != localTeamNo)
 		return;
 	BuildingType *buildingType = selBuild->type;
 	int ypos = YPOS_BASE_BUILDING;

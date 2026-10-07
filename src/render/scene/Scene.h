@@ -11,6 +11,7 @@
 
 class OverlayArea;
 struct BuildingType;
+class Race;
 
 //! Everything the renderer draws for one frame, extracted from the simulation at a
 //! tick boundary and read-only afterwards. Grows as render passes are ported to it.
@@ -25,6 +26,8 @@ struct Scene
 			if (p.clearable && (p.materialMask & (1u << material)) && materialVisible(material)) return true;
 		return false;
 	}
+	//! Own the stateless race facade used by retained unit presentation records.
+	std::shared_ptr<Race> race;
 	bool editor = false;
 	Uint32 tick = 0;
 	//! When that tick finished (SDL_GetTicks) and the interval to the next one in
