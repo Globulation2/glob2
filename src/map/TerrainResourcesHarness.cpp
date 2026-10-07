@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Exercise real terrain regeneration and resource clearing without a window.
 #include "EngineFixtures.h"
+#include "Version.h"
 #include "FileFormatVersions.h"
 #include "Building.h"
 #include "Game.h"
@@ -1345,7 +1346,7 @@ TEST_CASE("released observation format 139 imports legacy stocks and preserves c
     auto* copy=new GAGCore::MemoryStreamBackend(*memory); copy->seekFromStart(0);
     GAGCore::BinaryInputStream currentInput(copy);
     REQUIRE(restored.game.load(&currentInput));
-    REQUIRE(restored.game.mapHeader.getVersionMinor()==FILE_FORMAT_VERSION_RUNTIME_RESOURCES);
+    REQUIRE(restored.game.mapHeader.getVersionMinor()==VERSION_MINOR);
     // File-format versions contribute to checksums but are not simulation state.
     // Verify the remaining header metadata before normalizing only that boundary.
     REQUIRE(original.game.mapHeader==restored.game.mapHeader);

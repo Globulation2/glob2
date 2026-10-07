@@ -215,12 +215,14 @@ TEST_SUITE("TerrainMaterials")
 		glob2test::HeadlessGlobals globals({.display = true});
 		std::ifstream input(glob2test::sourceRoot() / "data/terrain/tileset.json");
 		auto j = nlohmann::json::parse(input);
-		for (int i = 5; i < 64; ++i)
+		// Pad the shipped catalog to 64 materials with grass clones.
+		for (auto i = j["materials"].size(); i < 64; ++i)
 		{
 			auto m = j["materials"][2];
 			m["key"] = "fixture-" + std::to_string(i);
 			j["materials"].push_back(m);
 		}
+		REQUIRE(j["materials"].size() == 64);
 		TerrainVisual::Compositor compositor(TerrainVisual::Catalog::parse(j));
 		compositor.prepare(false, 0);
 		TerrainVisual::Recipe r;
@@ -407,7 +409,7 @@ TEST_SUITE("TerrainMaterials")
 					auto &p = j["profiles"][i];
 					for (const char *field : {"feather_q8", "amplitude_q8", "speckle_q8", "bridge_q8"})
 						p.erase(field);
-					p["roughness_q8"] = roughness[i];
+					p["roughness_q8"] = roughness[i % std::size(roughness)];
 					p["contours_q12"] = {{0, 180, -120, 100, 0},
 										 {0, -130, 200, -80, 0},
 										 {0, 90, 160, -170, 0},
@@ -445,6 +447,58 @@ TEST_SUITE("TerrainMaterials")
 			// matching partition sum.
 			CHECK(digest == (legacy ? 18185691832014944171ull : 1965875410804105497ull));
 		}
+	}
+	TEST_CASE("the Python validator's built-in name list mirrors the terrain table")
+	{
+		std::ifstream input(glob2test::sourceRoot() / "tools/terrain_builtin_names.json");
+		REQUIRE(input);
+		const auto listed = nlohmann::json::parse(input);
+		REQUIRE(listed.is_array());
+		std::vector<std::string> expected;
+		for (unsigned i = 0; i < TERRAIN_COUNT; ++i)
+			if (terrainPaintable(TerrainType(i)))
+				expected.push_back(terrainPresentation(TerrainType(i)).name);
+		std::vector<std::string> actual;
+		for (const auto &name : listed)
+			actual.push_back(name.get<std::string>());
+		CHECK(actual == expected);
+	}
+	TEST_CASE("catalogue boundary profiles keep their reviewed geometry")
+	{
+		glob2test::HeadlessGlobals globals;
+		const auto definitions = catalog();
+		// One material per new profile: rock, soft, crisp and brush, beside grass.
+		const std::array<TerrainVisual::MaterialId, 4> samples{
+			definitions.find("boulders"), definitions.find("mud"), definitions.find("void_hole"),
+			definitions.find("hedge")};
+		for (auto id : samples)
+			CHECK(definitions.materials[id].profile != definitions.materials[definitions.find("grass")].profile);
+		std::uint64_t digest = 14695981039346656037ull;
+		for (unsigned configuration = 0; configuration < 256; ++configuration)
+		{
+			TerrainVisual::Recipe recipe;
+			recipe.width = recipe.height = 16;
+			recipe.x = 15;
+			recipe.y = 9;
+			for (int y = 0; y < 4; ++y)
+				for (int x = 0; x < 4; ++x)
+					recipe.samples[y * 4 + x] =
+						samples[(configuration >> (2 * ((x & 1) + 2 * (y & 1)))) & 3];
+			const TerrainVisual::PreparedCoverage prepared(definitions, recipe);
+			for (int scale : {1, 4})
+				for (int y = 0; y < 32 * scale; ++y)
+					for (int x = 0; x < 32 * scale; ++x)
+					{
+						const auto pixel = prepared.at((x * 256 + 128) / scale, (y * 256 + 128) / scale);
+						for (int k = 0; k < 4; ++k)
+						{
+							digest = (digest ^ pixel.material[k]) * 1099511628211ull;
+							digest = (digest ^ pixel.weight[k]) * 1099511628211ull;
+						}
+					}
+		}
+		// Intentional profile changes need a rendered comparison and a new digest.
+		CHECK(digest == 7217410723105018781ull);
 	}
 	TEST_CASE("coverage partitions every binary shape and multi-material junction")
 	{
@@ -693,7 +747,7 @@ TEST_SUITE("TerrainMaterials")
 		glob2test::HeadlessGlobals globals;
 		std::ifstream input(glob2test::sourceRoot() / "data/terrain/tileset.json");
 		auto j = nlohmann::json::parse(input);
-		for (int i = 0; i < 59; ++i)
+		for (auto i = j["materials"].size(); i < 64; ++i)
 		{
 			auto m = j["materials"][2];
 			m["key"] = "fixture-" + std::to_string(i);
@@ -719,6 +773,9 @@ TEST_SUITE("TerrainMaterials")
 		CHECK_THROWS(TerrainVisual::Catalog::parse(invalid));
 		invalid = j;
 		invalid["bindings"]["ice"] = "absent";
+		CHECK_THROWS(TerrainVisual::Catalog::parse(invalid));
+		invalid = j;
+		invalid["bindings"].erase("mud"); // Every paintable built-in needs a material.
 		CHECK_THROWS(TerrainVisual::Catalog::parse(invalid));
 		const std::vector<std::pair<nlohmann::json::json_pointer, nlohmann::json>> malformed = {
 			{nlohmann::json::json_pointer("/profiles/0/feather_q8"), true},

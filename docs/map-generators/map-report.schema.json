@@ -339,6 +339,78 @@
         },
         "road": {
           "$ref": "#/$defs/coverage"
+        },
+        "boulders": {
+          "$ref": "#/$defs/coverage"
+        },
+        "hedge": {
+          "$ref": "#/$defs/coverage"
+        },
+        "thicket": {
+          "$ref": "#/$defs/coverage"
+        },
+        "ridge_rock": {
+          "$ref": "#/$defs/coverage"
+        },
+        "outcrop": {
+          "$ref": "#/$defs/coverage"
+        },
+        "dirt": {
+          "$ref": "#/$defs/coverage"
+        },
+        "clay": {
+          "$ref": "#/$defs/coverage"
+        },
+        "gravel": {
+          "$ref": "#/$defs/coverage"
+        },
+        "flower_meadow": {
+          "$ref": "#/$defs/coverage"
+        },
+        "mud": {
+          "$ref": "#/$defs/coverage"
+        },
+        "marsh": {
+          "$ref": "#/$defs/coverage"
+        },
+        "deep_snow": {
+          "$ref": "#/$defs/coverage"
+        },
+        "scree": {
+          "$ref": "#/$defs/coverage"
+        },
+        "dirt_track": {
+          "$ref": "#/$defs/coverage"
+        },
+        "boardwalk": {
+          "$ref": "#/$defs/coverage"
+        },
+        "lava": {
+          "$ref": "#/$defs/coverage"
+        },
+        "ember_field": {
+          "$ref": "#/$defs/coverage"
+        },
+        "loam": {
+          "$ref": "#/$defs/coverage"
+        },
+        "moss": {
+          "$ref": "#/$defs/coverage"
+        },
+        "spring_meadow": {
+          "$ref": "#/$defs/coverage"
+        },
+        "deep_water": {
+          "$ref": "#/$defs/coverage"
+        },
+        "dark_water": {
+          "$ref": "#/$defs/coverage"
+        },
+        "void_hole": {
+          "$ref": "#/$defs/coverage"
+        },
+        "chasm": {
+          "$ref": "#/$defs/coverage"
         }
       },
       "required": [

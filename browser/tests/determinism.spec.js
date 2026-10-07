@@ -261,7 +261,7 @@ for (const variant of ['serial', 'threaded']) {
     expect(result.error).toBeUndefined();expect(result.exit).toBe(0);
     expect(result.files['tests.xml']).toMatch(/failures="0"/);
     expect(result.files['tests.xml']).toMatch(/errors="0"/);
-    expect(result.files['tests.xml']).toContain('disabled fruit deliveries match master per tick');
+    expect(result.files['tests.xml']).toContain('disabled fruit deliveries have a stable per-tick trace and save continuation');
     expect(result.files['tests.xml']).toContain('enabled supply networks repeat deterministically');
     const traces=Object.entries(result.files).filter(([file])=>file.endsWith('/checksums.txt'));
     expect(traces.length).toBe(2);

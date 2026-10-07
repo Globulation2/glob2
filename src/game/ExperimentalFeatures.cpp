@@ -26,6 +26,24 @@ const std::vector<ExperimentDefinition> &experimentDefinitions()
 		 "Adds weathered trails to the map editor. Ground units move at double speed. Trails support buildings but no resources. Flying units are unaffected."},
 		{ExperimentId::MarketsV2, "markets-v2", "Markets V2",
 		 "Workers can fetch supplies from shared market stock. Markets can upgrade to store food and wood, then every material. Trading between teams remains fruit-only. Applies to new games; saves keep their original setting."},
+		{ExperimentId::ObstacleTerrain, "obstacle-terrain", "Obstacle terrain",
+		 "Adds boulders, hedges and thickets to the map editor. Ground units cannot cross them and they stop projectiles; flying units pass over. They hold neither buildings nor resources."},
+		{ExperimentId::RidgeTerrain, "ridge-terrain", "Ridge terrain",
+		 "Adds rock ridges and outcrops to the map editor. Ground units cannot cross them, but towers shoot over them and flying units pass. They hold neither buildings nor resources."},
+		{ExperimentId::BarrenTerrain, "barren-terrain", "Barren ground",
+		 "Adds dirt, clay, gravel and flower meadows to the map editor. Buildings can stand on them, nothing grows on or next to them, and they do not count as shoreline."},
+		{ExperimentId::RoughTerrain, "rough-terrain", "Rough ground",
+		 "Adds mud, marsh, deep snow and scree to the map editor. Ground units move at about two thirds speed. Rough ground holds neither buildings nor resources."},
+		{ExperimentId::PathTerrain, "path-terrain", "Path terrain",
+		 "Adds dirt tracks and boardwalks to the map editor. Like trails, ground units move at double speed and buildings are allowed, but nothing grows."},
+		{ExperimentId::LavaTerrain, "lava-terrain", "Lava terrain",
+		 "Adds lava and ember fields to the map editor. Ground units cannot enter them; flying units crossing them lose health quickly. Projectiles pass over."},
+		{ExperimentId::FertileTerrain, "fertile-terrain", "Fertile ground",
+		 "Adds loam, moss and spring meadows to the map editor. They support buildings and crops and irrigate the land around them more strongly than water does."},
+		{ExperimentId::DeepWaterTerrain, "deep-water-terrain", "Deep water",
+		 "Adds deep and dark water to the map editor. Swimmers cross them more slowly, no algae grows in them, and they still irrigate nearby fields."},
+		{ExperimentId::VoidTerrain, "void-terrain", "Void terrain",
+		 "Adds holes and chasms to the map editor. Nothing can cross them, not even flying units, and projectiles stop at their edge."},
 	};
 	return definitions;
 }
@@ -251,10 +269,10 @@ ExperimentSet ExperimentSet::fromText(const std::string &text, std::vector<std::
 	return fromKeys(keys, unknown, allowedKeys);
 }
 
-void ExperimentSet::save(GAGCore::OutputStream *stream) const
+void ExperimentSet::save(GAGCore::OutputStream *stream, const char *section) const
 {
 	const auto enabled = keys();
-	stream->writeEnterSection("experiments");
+	stream->writeEnterSection(section);
 	stream->writeUint32(static_cast<Uint32>(enabled.size()), "count");
 	for (std::size_t i = 0; i < enabled.size(); ++i)
 	{
@@ -266,12 +284,12 @@ void ExperimentSet::save(GAGCore::OutputStream *stream) const
 }
 
 bool ExperimentSet::load(GAGCore::InputStream *stream, Sint32 versionMinor, bool rejectUnknown,
-	const std::vector<std::string> &allowedKeys)
+	const std::vector<std::string> &allowedKeys, const char *section)
 {
 	clear();
 	if (versionMinor < FILE_FORMAT_VERSION_EXPERIMENTS)
 		return true;
-	stream->readEnterSection("experiments");
+	stream->readEnterSection(section);
 	const Uint32 count = stream->readUint32("count");
 	if (count > MAX_STORED)
 	{

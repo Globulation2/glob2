@@ -66,26 +66,28 @@ TEST_SUITE("TerrainRegistry")
 		auto builtin = TerrainRegistry::builtins();
 		auto registry = builtin->importJson(source(Json::array(
 			{definition("test:z"), definition("test:a", "grass", {{"groundSpeedQ8", 192}})})));
-		REQUIRE(registry->size() == 9);
-		CHECK(registry->find("test:a") == TerrainType(7));
-		CHECK(registry->find("test:z") == TerrainType(8));
-		CHECK(registry->properties(TerrainType(7)).groundSpeedQ8 == 192);
-		CHECK_FALSE(registry->compatibility(TerrainType(7)).legacyCorners);
-		CHECK(registry->appearance(TerrainType(7)) == SAND);
+		constexpr auto first = TerrainType(TERRAIN_COUNT), second = TerrainType(TERRAIN_COUNT + 1),
+					   third = TerrainType(TERRAIN_COUNT + 2);
+		REQUIRE(registry->size() == TERRAIN_COUNT + 2);
+		CHECK(registry->find("test:a") == first);
+		CHECK(registry->find("test:z") == second);
+		CHECK(registry->properties(first).groundSpeedQ8 == 192);
+		CHECK_FALSE(registry->compatibility(first).legacyCorners);
+		CHECK(registry->appearance(first) == SAND);
 		auto updated = registry->importJson(source(Json::array(
 			{definition("test:a", "grass", {{"groundSpeedQ8", 64}}), definition("test:0")})));
-		CHECK(updated->find("test:a") == TerrainType(7));
-		CHECK(updated->find("test:0") == TerrainType(9));
-		CHECK(registry->properties(TerrainType(7)).groundSpeedQ8 == 192);
-		CHECK(builtin->size() == 7);
+		CHECK(updated->find("test:a") == first);
+		CHECK(updated->find("test:0") == third);
+		CHECK(registry->properties(first).groundSpeedQ8 == 192);
+		CHECK(builtin->size() == TERRAIN_COUNT);
 		CHECK(builtin->checksum() == 0);
 		const auto serialized = updated->serialize();
 		CHECK(serialized == Json::parse(serialized).dump());
 		auto loaded = TerrainRegistry::deserialize(serialized);
 		CHECK(loaded->serialize() == updated->serialize());
 		CHECK(loaded->digest() == updated->digest());
-		CHECK(std::string(loaded->presentation(TerrainType(7)).name) == "test:a");
-		CHECK(std::string(loaded->presentation(TerrainType(7)).label) == "Custom terrain");
+		CHECK(std::string(loaded->presentation(first).name) == "test:a");
+		CHECK(std::string(loaded->presentation(first).label) == "Custom terrain");
 		CHECK(loaded->movement(0).minimum == 5); // Built-in road remains an admissible lower bound.
 	}
 	TEST_CASE("appearance presets preserve snapshot names and resolved saved metadata")
@@ -174,12 +176,81 @@ TEST_SUITE("TerrainRegistry")
 						std::invalid_argument);
 		auto imported = registry->importJson(source(Json::array({definition()})));
 		auto saved = Json::parse(imported->serialize());
-		saved["terrains"][0]["id"] = 10;
+		saved["terrains"][0]["id"] = TERRAIN_COUNT + 3;
 		CHECK_THROWS(TerrainRegistry::deserialize(saved.dump()));
 		saved = Json::parse(imported->serialize());
 		saved["terrains"][0]["presentation"]["firstFrame"] = 999999;
 		CHECK_THROWS(TerrainRegistry::deserialize(saved.dump()));
 		CHECK(registry->size() == TERRAIN_COUNT);
+	}
+	TEST_CASE("catalogue groups share one profile, every paintable built-in is a preset and "
+			  "format-136 saved IDs remap behind the current built-ins")
+	{
+		const auto builtin = TerrainRegistry::builtins();
+		// A group is one mechanic: the registry deduplicates its members into one
+		// property profile, and no two groups collapse together.
+		CHECK(builtin->propertyProfiles().size() == TERRAIN_GROUP_COUNT);
+		for (unsigned i = 0; i < TERRAIN_COUNT; ++i)
+			for (unsigned j = 0; j < TERRAIN_COUNT; ++j)
+			{
+				CAPTURE(i);
+				CAPTURE(j);
+				CHECK((builtin->propertyIndex(TerrainType(i)) == builtin->propertyIndex(TerrainType(j))) ==
+					  (terrainGroup(TerrainType(i)) == terrainGroup(TerrainType(j))));
+			}
+		// Built-in movement stays on the small prepared tables and the 64-bucket ring.
+		static_assert(gradient_kernel::BUCKETS == 64);
+		for (unsigned swim = 0; swim < 7; ++swim)
+			CHECK(std::holds_alternative<gradient_kernel::PreparedTerrainCosts<8>>(
+				*builtin->movement(swim).prepared));
+		unsigned presets = 0;
+		for (unsigned i = 0; i < TERRAIN_COUNT; ++i)
+		{
+			const auto type = TerrainType(i);
+			const auto *name = TerrainPresentations[i].name;
+			Json item = {{"key", "test:preset"},
+						 {"name", "Preset"},
+						 {"base", name},
+						 {"properties", Json::object()},
+						 {"appearance", name}};
+			CAPTURE(name);
+			if (!terrainPaintable(type))
+			{
+				CHECK_THROWS(builtin->importJson(source(Json::array({item}))));
+				continue;
+			}
+			++presets;
+			const auto registry = builtin->importJson(source(Json::array({item})));
+			const auto id = *registry->find("test:preset");
+			CHECK(registry->appearance(id) == type);
+			CHECK(registry->propertyIndex(id) == registry->propertyIndex(type));
+			CHECK(registry->compatibility(id).firstFrame == terrainCompatibility(type).firstFrame);
+			CHECK(registry->compatibility(id).variants == terrainCompatibility(type).variants);
+			CHECK_FALSE(registry->compatibility(id).legacyCorners);
+			CHECK(registry->presentation(id).minimap.r == TerrainPresentations[i].minimap.r);
+			// Saved metadata round-trips through the frozen-frame check.
+			CHECK(TerrainRegistry::deserialize(registry->serialize())->digest() == registry->digest());
+		}
+		CHECK(presets == TERRAIN_COUNT - 2);
+
+		// A file written with seven built-ins numbers its definitions from 7; the
+		// loader renumbers them behind the current built-ins without changing content.
+		const auto registry = builtin->importJson(
+			source(Json::array({definition("test:z"), definition("test:a", "grass", {{"groundSpeedQ8", 192}})})));
+		auto saved = Json::parse(registry->serialize());
+		for (auto &item : saved["terrains"])
+			item["id"] = item["id"].get<unsigned>() - TERRAIN_COUNT + TERRAIN_COUNT_BEFORE_CATALOGUE;
+		CHECK(saved["terrains"][0]["id"] == TERRAIN_COUNT_BEFORE_CATALOGUE);
+		const auto legacy = TerrainRegistry::deserialize(saved.dump(), TERRAIN_COUNT_BEFORE_CATALOGUE);
+		CHECK(legacy->serialize() == registry->serialize());
+		CHECK(legacy->digest() == registry->digest());
+		CHECK(legacy->find("test:a") == TerrainType(TERRAIN_COUNT));
+		CHECK(legacy->find("test:z") == TerrainType(TERRAIN_COUNT + 1));
+		CHECK_THROWS(TerrainRegistry::deserialize(saved.dump()));
+		CHECK_THROWS(TerrainRegistry::deserialize(registry->serialize(), TERRAIN_COUNT_BEFORE_CATALOGUE));
+		CHECK_THROWS(TerrainRegistry::deserialize(saved.dump(), TERRAIN_COUNT_BEFORE_CATALOGUE - 1));
+		CHECK_THROWS(TerrainRegistry::deserialize(saved.dump(), TERRAIN_COUNT + 1));
+		CHECK(TerrainRegistry::deserialize(R"({"schemaVersion":1,"terrains":[]})", TERRAIN_COUNT_BEFORE_CATALOGUE) == builtin);
 	}
 	TEST_CASE("large registries compile equivalent definitions into bounded movement profiles")
 	{
@@ -191,8 +262,10 @@ TEST_SUITE("TerrainRegistry")
 		CHECK(registry->propertyProfiles().size() ==
 			  TerrainRegistry::builtins()->propertyProfiles().size());
 		CHECK(registry->propertyIndex(TerrainType(1000)) ==
-			  registry->propertyIndex(TerrainType(7)));
-		CHECK(registry->movement(4).profiles.size() == 4);
+			  registry->propertyIndex(TerrainType(TERRAIN_COUNT)));
+		// Equivalent definitions add no movement profile beyond the built-ins'.
+		CHECK(registry->movement(4).profiles.size() ==
+			  TerrainRegistry::builtins()->movement(4).profiles.size());
 		CHECK_THROWS(registry->importJson(source(Json::array({definition("overflow:x")}))));
 		CHECK(TerrainRegistry::deserialize(registry->serialize())->digest() == registry->digest());
 	}
@@ -243,6 +316,23 @@ TEST_SUITE("TerrainRegistry")
 					CHECK(actual == expected);
 				}
 	}
+	TEST_CASE("many distinct hazard costs retain compact profile indices and exact propagation")
+    {
+        Json definitions=Json::array();
+        for(int damage=0;damage<240;++damage)
+            definitions.push_back(definition("test:damage"+std::to_string(damage),"grass",{{"groundHealthQ8",-damage}}));
+        auto registry=TerrainRegistry::builtins()->importJson(source(definitions));
+        REQUIRE(registry->movement(0).profiles.size()>128);
+        std::vector<TerrainType> ids(1024);
+        for(unsigned i=0;i<ids.size();++i) ids[i]=*registry->find("test:damage"+std::to_string(i%240));
+        std::vector<std::uint16_t> seeds(1024,GRADIENT_UNREACHABLE);
+        seeds[0]=GRADIENT_AT_GOAL;
+        auto expected=oracle(seeds,32,32,0,gradient_kernel::COST_LIMIT,ids,*registry);
+        GradientWorkspace workspace;
+        gradient_kernel::propagateTerrainField(seeds.data(),0,gradient_kernel::COST_LIMIT,
+            {32,32},workspace,[&](size_t i){return ids[i];},true,*registry,256);
+        CHECK(seeds==expected);
+    }
 	TEST_CASE("runtime searches reject undersized queues before changing the field")
 	{
 		auto registry = TerrainRegistry::builtins()->importJson(

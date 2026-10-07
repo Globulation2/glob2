@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "TerrainRegistry.h"
+#include "FileFormatVersions.h"
 #include "online/Sha256.h"
 #include <nlohmann/json.hpp>
 #include <algorithm>
@@ -34,8 +35,9 @@ std::string text(const Json &j, const char *key,
 }
 TerrainType preset(const std::string &name)
 {
-	for (unsigned i = 0; i < GRASS_SAND_SHORE; ++i)
-		if (name == TerrainPresentations[i].name)
+	// Every paintable built-in is a preset; legacy corner shores are not.
+	for (unsigned i = 0; i < TERRAIN_COUNT; ++i)
+		if (terrainPaintable(TerrainType(i)) && name == TerrainPresentations[i].name)
 			return TerrainType(i);
 	throw std::invalid_argument("Unknown built-in terrain preset: " + name);
 }
@@ -363,8 +365,16 @@ std::string TerrainRegistry::serialize() const
 	result += "]}";
 	return result;
 }
-std::shared_ptr<const TerrainRegistry> TerrainRegistry::deserialize(std::string_view source)
+unsigned TerrainRegistry::savedBuiltinCount(int versionMinor)
 {
+	return versionMinor < FILE_FORMAT_VERSION_TERRAIN_CATALOGUE ? TERRAIN_COUNT_BEFORE_CATALOGUE
+																		: unsigned(TERRAIN_COUNT);
+}
+std::shared_ptr<const TerrainRegistry> TerrainRegistry::deserialize(std::string_view source,
+																			  unsigned savedBuiltinCount)
+{
+	if (savedBuiltinCount < TERRAIN_COUNT_BEFORE_CATALOGUE || savedBuiltinCount > TERRAIN_COUNT)
+		throw std::invalid_argument("Unsupported saved terrain built-in count");
 	auto j = parse(source);
 	if (j.at("terrains").empty())
 		return builtins();
@@ -373,7 +383,11 @@ std::shared_ptr<const TerrainRegistry> TerrainRegistry::deserialize(std::string_
 	for (const auto &item : j.at("terrains"))
 	{
 		fields(item, {"id", "key", "name", "properties", "appearance", "presentation", "allowedResourceKeys"});
-		if (!item.at("id").is_number_integer() || item.at("id") != result->size())
+		// Saved IDs are sequential from the writer's built-in count; canonical IDs
+		// follow the current built-ins so older files keep loading after the
+		// catalogue grew.
+		const auto savedId = savedBuiltinCount + (result->size() - TERRAIN_COUNT);
+		if (!item.at("id").is_number_integer() || item.at("id") != savedId)
 			throw std::invalid_argument("Invalid saved terrain ID");
 		const auto key = text(item, "key");
 		validKey(key);
@@ -442,7 +456,7 @@ std::shared_ptr<const TerrainRegistry> TerrainRegistry::deserialize(std::string_
 
 void TerrainRegistry::Movement::prepare()
 {
-	if (profiles.empty() || profiles.size() > 128)
+	if (profiles.empty() || profiles.size() > 256)
 		throw std::logic_error("Invalid terrain movement profiles");
 	auto make = [&]<std::size_t N>()
 	{
@@ -454,7 +468,7 @@ void TerrainRegistry::Movement::prepare()
 	if (profiles.size() <= 8)
 		make.template operator()<8>();
 	else
-		make.template operator()<128>();
+		make.template operator()<256>();
 }
 
 void TerrainRegistry::compile()
@@ -474,6 +488,8 @@ void TerrainRegistry::compile()
 	}
 
 	airCosts_.resize(size());
+	airRouteCosts_.resize(size());
+	groundTravelCosts_.resize(size());
 	minimumAirCost_ = GRADIENT_STEP;
 	for (unsigned i = 0; i < size(); ++i)
 	{
@@ -483,7 +499,9 @@ void TerrainRegistry::compile()
 			presentations_[i].label = names_[i].c_str();
 		}
 		const auto &p = properties_[i];
+		groundTravelCosts_[i] = gradient_kernel::scaledTerrainStep(GRADIENT_STEP, p.groundSpeedQ8);
 		airCosts_[i] = gradient_kernel::scaledTerrainStep(GRADIENT_STEP, p.airSpeedQ8);
+		airRouteCosts_[i] = gradient_kernel::hazardRouteCost(airCosts_[i], p.airHealthQ8);
 		if (p.flyable)
 			minimumAirCost_ = std::min(minimumAirCost_, airCosts_[i]);
 	}
@@ -496,9 +514,9 @@ void TerrainRegistry::compile()
 		std::array<bool, 256> used{};
 		for (const auto &p : properties_)
 		{
-			auto cost = gradient_kernel::entrySteps(gradient_kernel::scaledTerrainStep(
+			auto cost = gradient_kernel::entrySteps(gradient_kernel::hazardRouteCost(gradient_kernel::scaledTerrainStep(
 				p.swimmable && sw ? gradient_kernel::WATER_STEP[sw] : GRADIENT_STEP,
-				p.groundSpeedQ8));
+				p.groundSpeedQ8), p.groundHealthQ8));
 			if (cost.cardinal == 0 || cost.diagonal >= 256)
 				throw std::invalid_argument("Terrain edge exceeds supported gradient queue");
 			m.entries.push_back(cost);

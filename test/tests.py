@@ -91,6 +91,7 @@ ENGINE_TESTS = [
     ('#src/unit/MarketsV2Test.cpp', dict(cxxflags=['-fno-access-control'])),
     '#src/unit/RoundTripHungerGateHarness.cpp',
     '#src/map/TerrainResourcesHarness.cpp',
+    '#src/map/pathfind/TerrainHazardBenchmark.cpp',
     '#src/map/TerrainEcologyHarness.cpp',
     ('#src/map/TerrainPropertiesTest.cpp', dict(cxxflags=['-fno-access-control'])),
     '#src/net/LockstepSessionTest.cpp',

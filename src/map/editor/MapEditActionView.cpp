@@ -5,6 +5,7 @@
 #include "Game.h"
 #include "GlobalContainer.h"
 #include "MapEdit.h"
+#include <optional>
 #include "PhoneEditor.h"
 #include "ScriptEditorScreen.h"
 #include "Utilities.h"
@@ -126,11 +127,20 @@ bool MapEdit::performViewAction(const std::string& action, float relMouseX, floa
 		importingTerrain = action == "import terrain definitions";
 		importingResources = !importingTerrain;
 	}
-	else if (action == "open terrain palette")
+	else if (action.starts_with("open terrain palette"))
 	{
+		// "open terrain palette <group>" opens scrolled to that catalogue group; the
+		// current brush stays highlighted in the palette.
+		const std::optional<::TerrainType> brush = TerrainSelector::isBaseTerrain(terrainType)
+			? std::optional(TerrainSelector::baseTerrain(terrainType)) : std::nullopt;
 		performAction("unselect");
-		terrainPalette = std::make_unique<TerrainPaletteDialog>(game.map.frozenTerrainRegistry());
+		const std::string prefix = "open terrain palette";
+		const int focus = action.size() > prefix.size() + 1
+			? TerrainPaletteDialog::groupFor(action.substr(prefix.size() + 1)) : -1;
+		brushBeforePalette = terrainType;
+		terrainPalette = std::make_unique<TerrainPaletteDialog>(game.map.frozenTerrainRegistry(), brush, focus);
 		attachDialog(*terrainPalette);
+		terrainPalette->focusOnOpen();
 	}
 	else if (action == "open resource palette")
 	{

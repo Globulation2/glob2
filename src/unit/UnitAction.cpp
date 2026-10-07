@@ -67,15 +67,26 @@ void Unit::handleActionRandomFly()
 {
 	assert(performance[FLY]);
 	clearOccupiedMapSlot();
-	for(int q = 0; q < RANDOM_FLY_TOWER_AVOIDANCE_ATTEMPTS; ++q)
+	if (owner->map->terrainPropertiesAt(posX,posY).airHealthQ8 < 0)
+		owner->map->pathfindTerrainSafety(this);
+	else
 	{
-		dx=-1+syncRand()%3;
-		dy=-1+syncRand()%3;
-		if(!locationIsInEnemyGuardTowerRange(posX + dx, posY + dy))
-			break;
+		for(int q = 0; q < RANDOM_FLY_TOWER_AVOIDANCE_ATTEMPTS; ++q)
+		{
+			dx=-1+syncRand()%3;
+			dy=-1+syncRand()%3;
+			if(!locationIsInEnemyGuardTowerRange(posX + dx, posY + dy))
+				break;
+		}
+		directionFromDxDy();
+		setNewValidDirectionAir();
+		// Direction repair can rotate onto a hazard, so check the final step.
+		if (owner->map->terrainPropertiesAt(posX+dx,posY+dy).airHealthQ8 < 0) {
+			dx=dy=0;
+			directionFromDxDy();
+		}
 	}
-	directionFromDxDy();
-	setNewValidDirectionAir();
+
 	wrapPosition();
 	action=FLY;
 	speed=unitTerrainMovementSpeed(performance[FLY], owner->map->terrainPropertiesAt(posX,posY).airSpeedQ8, dx != 0 || dy != 0);

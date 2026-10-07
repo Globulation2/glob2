@@ -181,20 +181,34 @@ bool Map::projectilePathClear(Sint32 x0, Sint32 y0, Sint32 x1, Sint32 y1) const
 ExperimentSet Map::requiredTerrainExperiments() const
 {
 	ExperimentSet required;
-	for (unsigned t = 0; t < TERRAIN_COUNT; ++t)
-		if (terrainCounts[t])
-			if (const auto experiment = terrainExperiment(static_cast<TerrainType>(t))) required.set(*experiment);
+	const auto &registry = terrainRegistry();
+	for (unsigned t = 0; t < registry.size(); ++t)
+	{
+		if (!terrainCounts[t])
+			continue;
+		auto type = static_cast<TerrainType>(t);
+		// A runtime definition with a gated group's exact profile plays that
+		// group's mechanic, so it declares the same experiment. Definitions with
+		// their own profile stay ungated, as every custom type was before.
+		if (t >= TERRAIN_COUNT)
+		{
+			unsigned builtin = 0;
+			while (builtin < TERRAIN_COUNT &&
+				   registry.propertyIndex(static_cast<TerrainType>(builtin)) != registry.propertyIndex(type))
+				++builtin;
+			if (builtin == TERRAIN_COUNT)
+				continue;
+			type = static_cast<TerrainType>(builtin);
+		}
+		if (const auto experiment = terrainExperiment(type)) required.set(*experiment);
+	}
 	return required;
 }
 
 void Map::adjustTerrainFeatures(TerrainType type, bool add)
 {
 	const auto &p = terrainProperties(type);
-	const unsigned edge =
-		gradient_kernel::entrySteps(
-			gradient_kernel::scaledTerrainStep(
-				p.swimmable ? GRADIENT_SLOWEST_SWIM_STEP : GRADIENT_STEP, p.groundSpeedQ8))
-			.diagonal;
+	const unsigned edge = terrainRegistry().movement(p.swimmable ? SWIM_CLASS_COUNT - 1 : 0).entries[type].diagonal;
 	for (unsigned sw = 0; sw < 7; ++sw)
 		if (p.walkable || (sw && p.swimmable))
 		{
@@ -220,8 +234,8 @@ void Map::adjustTerrainFeatures(TerrainType type, bool add)
 		}
 	}
 	const bool flags[] = {bool(p.groundHealthQ8 || p.airHealthQ8),
-						  p.groundSpeedQ8 != 256,
-						  !p.flyable || p.airSpeedQ8 != 256,
+						  p.groundSpeedQ8 != 256 || p.groundHealthQ8 < 0,
+						  !p.flyable || p.airSpeedQ8 != 256 || p.airHealthQ8 < 0,
 						  p.projectileBlocks,
 						  edge >= 64,
 						  edge >= 128};
@@ -403,7 +417,8 @@ void Map::changeTerrainIdentity(size_t index, TerrainType type)
 	const auto &before = terrainProperties(old), &after = terrainProperties(type);
 	if (before.walkable != after.walkable || before.swimmable != after.swimmable ||
 		before.groundSpeedQ8 != after.groundSpeedQ8 || before.flyable != after.flyable ||
-		before.airSpeedQ8 != after.airSpeedQ8)
+		before.airSpeedQ8 != after.airSpeedQ8 ||
+		before.groundHealthQ8 != after.groundHealthQ8 || before.airHealthQ8 != after.airHealthQ8)
 		terrainRoutesChanged = true;
 	if (!terrainEditDepth) finishTerrainEdit();
 }
@@ -515,6 +530,7 @@ void Map::clear()
 	gradientRuntime->overlaySupplierLocations.clear();
 	gradientRuntime->supplierLocationsDirty=true;
 	gradientRuntime->resourceSeeds.reset();
+	gradientRuntime->safety.reset();
 	clearGradientBufferPool();
 	clearBuildingGradientSearchPool();
 	{

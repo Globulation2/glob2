@@ -28,7 +28,7 @@ class TerrainRegistry
 		std::vector<std::uint8_t> profileIds;
 		std::vector<unsigned> steps;
 		using Prepared = std::variant<gradient_kernel::PreparedTerrainCosts<8>,
-									  gradient_kernel::PreparedTerrainCosts<128>>;
+									  gradient_kernel::PreparedTerrainCosts<256>>;
 		std::optional<Prepared> prepared;
 		void prepare();
 		unsigned minimum = GRADIENT_STEP;
@@ -37,7 +37,11 @@ class TerrainRegistry
 	// a replacement snapshot; readers may retain the previous one indefinitely.
 	static std::shared_ptr<const TerrainRegistry> builtins();
 	std::shared_ptr<const TerrainRegistry> importJson(std::string_view source) const;
-	static std::shared_ptr<const TerrainRegistry> deserialize(std::string_view source);
+	// The TERRAIN_COUNT a file of the given format version was written with: its
+	// custom IDs start there and are renumbered to follow the current built-ins.
+	static unsigned savedBuiltinCount(int versionMinor);
+	static std::shared_ptr<const TerrainRegistry> deserialize(std::string_view source,
+																	  unsigned savedBuiltinCount = TERRAIN_COUNT);
 	// Saved definitions are resolved and authoritative: no authoring inheritance
 	// or local files are consulted during deserialization.
 	std::string serialize() const;
@@ -73,8 +77,12 @@ class TerrainRegistry
 		return resourceKeys_[id];
 	}
 	TerrainType appearance(TerrainType id) const { return appearances_[id]; }
+	// Damage-weighted route profiles; do not use for travel-only influence fields.
 	const Movement &movement(unsigned swim) const { return movement_[swim]; }
 	unsigned airCost(TerrainType id) const { return airCosts_[id]; }
+	// Travel-only cardinal cost at the standard ground speed (no damage penalty).
+	unsigned groundTravelCost(TerrainType id) const { return groundTravelCosts_[id]; }
+	unsigned airRouteCost(TerrainType id) const { return airRouteCosts_[id]; }
 	unsigned minimumAirCost() const { return minimumAirCost_; }
 	bool swimming(TerrainType id) const { return properties_[id].swimmable; }
 	std::uint32_t checksum() const { return checksum_; }
@@ -106,7 +114,7 @@ class TerrainRegistry
 	std::vector<std::optional<std::vector<std::string>>> resourceKeys_;
 	std::vector<TerrainType> appearances_;
 	std::array<Movement, std::size(gradient_kernel::WATER_STEP)> movement_;
-	std::vector<unsigned> airCosts_;
+	std::vector<unsigned> airCosts_, airRouteCosts_, groundTravelCosts_;
 	unsigned minimumAirCost_ = GRADIENT_STEP;
 	std::uint32_t checksum_ = 0;
 	std::string digest_;

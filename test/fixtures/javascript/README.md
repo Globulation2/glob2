@@ -123,7 +123,7 @@ MapHeader version normalization and the final-save SHA1 exclusion described abov
 remain unchanged.
 
 `profile1-256-resources.checksums.gz` and
-`realistic-profile1-256-resources.checksums.gz` are the current SIM_REVISION 24
+`realistic-profile1-256-resources.checksums.gz` are the resource-catalog SIM_REVISION 24
 complete-trace baselines. The runtime resource registry and material-gradient
 cache state now participate in the aggregate checksum. Every team, building and
 unit record at all 256 ticks remains byte-identical to the terrain-era traces;

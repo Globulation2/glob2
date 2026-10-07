@@ -1,0 +1,255 @@
+{
+  "generator": "tools/artwork/terrain_synth.py",
+  "method": "procedural",
+  "generator_sha256": {
+    "tools/artwork/terrain_synth.py": "a8eda69c7b7212d9f9573766da37f1002a984d62327c108fb581e9a9c23830dc",
+    "tools/artwork/material_tiles.py": "224e159e0974023797710aa959994f11658c82da8fb80f9701e4abc13c74ed83"
+  },
+  "material": "lava",
+  "group": "lava",
+  "label": "Lava",
+  "recipe": {
+    "name": "lava",
+    "group": "lava",
+    "label": "Lava",
+    "profile": "fractured",
+    "seam": {
+      "height": 4,
+      "fringe": [
+        214,
+        110,
+        40
+      ],
+      "fringe_q8": 128,
+      "fringe_width_q8": 640
+    },
+    "palette": {
+      "crust_dark": [
+        36,
+        18,
+        16
+      ],
+      "crust": [
+        50,
+        24,
+        20
+      ],
+      "crust_warm": [
+        96,
+        42,
+        26
+      ],
+      "glow": [
+        170,
+        70,
+        24
+      ],
+      "glow_bright": [
+        220,
+        150,
+        60
+      ]
+    },
+    "style": {
+      "luma": 58,
+      "std": 17,
+      "grain_max": 13,
+      "match": 0.8
+    },
+    "phases": 4,
+    "animation_ticks": 8,
+    "alpha_range": [
+      255,
+      255
+    ],
+    "preview": [
+      168,
+      72,
+      30
+    ],
+    "minimap": [
+      176,
+      68,
+      28
+    ],
+    "placeholder_only": false,
+    "note": "placeholder until the image-generated lava lands"
+  },
+  "seed": "fnv1a32(\"lava:<variant>:<phase>\")",
+  "render_size": 128,
+  "tile_size": 32,
+  "variants": 16,
+  "phases": 4,
+  "frame_layout": "variant + 16 * phase",
+  "sprite": "data/gfx/terrain-lava",
+  "preview": [
+    168,
+    72,
+    30
+  ],
+  "minimap": [
+    176,
+    68,
+    28
+  ],
+  "mean_color": [
+    76,
+    46,
+    35
+  ],
+  "style_stats": {
+    "0": {
+      "luma": 53.6,
+      "std": 17.1,
+      "grain": 7.6,
+      "sat": 0.51,
+      "alpha": 255.0
+    },
+    "1": {
+      "luma": 53.8,
+      "std": 17.7,
+      "grain": 7.9,
+      "sat": 0.52,
+      "alpha": 255.0
+    },
+    "2": {
+      "luma": 54.1,
+      "std": 17.9,
+      "grain": 8.0,
+      "sat": 0.52,
+      "alpha": 255.0
+    },
+    "3": {
+      "luma": 53.9,
+      "std": 17.3,
+      "grain": 7.7,
+      "sat": 0.51,
+      "alpha": 255.0
+    }
+  },
+  "style_references": {
+    "data/gfx/terrain0..15.png": {
+      "use": "statistics only",
+      "stats": {
+        "luma": 79.3,
+        "std": 5.0,
+        "grain": 3.0,
+        "sat": 0.73,
+        "alpha": 255.0
+      }
+    },
+    "data/gfx/terrain128..143.png": {
+      "use": "statistics only",
+      "stats": {
+        "luma": 160.1,
+        "std": 27.0,
+        "grain": 27.9,
+        "sat": 0.74,
+        "alpha": 255.0
+      }
+    },
+    "data/gfx/terrain256..271.png": {
+      "use": "statistics only",
+      "stats": {
+        "luma": 95.2,
+        "std": 8.4,
+        "grain": 5.5,
+        "sat": 0.92,
+        "alpha": 255.0
+      }
+    },
+    "data/gfx/terrain272..287.png": {
+      "use": "statistics only",
+      "stats": {
+        "luma": 215.4,
+        "std": 6.2,
+        "grain": 4.3,
+        "sat": 0.17,
+        "alpha": 255.0
+      }
+    },
+    "data/gfx/terrain288..303.png": {
+      "use": "statistics only",
+      "stats": {
+        "luma": 102.9,
+        "std": 10.3,
+        "grain": 7.9,
+        "sat": 0.37,
+        "alpha": 255.0
+      }
+    }
+  },
+  "python": "3.14.4",
+  "pillow": "12.2.0",
+  "platform": {
+    "system": "linux",
+    "machine": "x86_64",
+    "libc": "glibc 2.43"
+  },
+  "runtime_sha256": {
+    "data/gfx/terrain-lava0.png": "260b5c7dd4c7b6552c25b9e5b18e2967e3cd81f26bc43a8058fa21c397ddadf6",
+    "data/gfx/terrain-lava1.png": "78b4e426e2c90c32a2385050b2d6aa05a15c6d0a24780ca45930b4f8764190d7",
+    "data/gfx/terrain-lava2.png": "ad8a727c02d339199c45f7c7bd13e152b8730ba4f91f2783541d4b2578cd7e6a",
+    "data/gfx/terrain-lava3.png": "087035d2916d6b5560047852f9d634b99db14ff78df33633c6809a487fb121bd",
+    "data/gfx/terrain-lava4.png": "d64e4e5c9bc3624492658e2ce3c8dd28ef575ace4137649b16cfc2923bb6cf78",
+    "data/gfx/terrain-lava5.png": "3077df769ec39514e1758899081c2ac3a6f97e1363c40e603bbd1e37d200ace1",
+    "data/gfx/terrain-lava6.png": "ccc7eb3f8768df1c3903454d65679a9969d5bc5224c8bd75f511374d05cd6056",
+    "data/gfx/terrain-lava7.png": "22144101d7f43972c1ea38716174554048bfbec44cafdd47d2b6c7ae59969f25",
+    "data/gfx/terrain-lava8.png": "6298909f35b6d879bf4e10be33f7d166f14d0fa300f62c998d71f24e888fcbd8",
+    "data/gfx/terrain-lava9.png": "32a637d1d5e56ac62782364ad6b524a1d5178af2a226464d92cddc5d1ed2f38a",
+    "data/gfx/terrain-lava10.png": "4f95fb101a331db339942e22fd593743c06c057600c29d85c860ba60fe451b21",
+    "data/gfx/terrain-lava11.png": "2ed6d64c976910a4b06cae235b4e3908fe944bdbb8d7fc343b6bba328d93c825",
+    "data/gfx/terrain-lava12.png": "3f0266a6cc4099f22e15ad7a5eb46b24a8ced8a74e1741d00c9883879271b17d",
+    "data/gfx/terrain-lava13.png": "32fbdf5c64b858f54bf42af017ca4dc64e302a4e72976539b35284d28ae4e774",
+    "data/gfx/terrain-lava14.png": "65d258f22ccdd078f184ee85eb9ddbb0ba0b906f39d3dadeea1f6e683cc1c387",
+    "data/gfx/terrain-lava15.png": "b71c76cdc05d39f22a2b998080b05c1570540332ad2daab905e33ccdae4ffd2a",
+    "data/gfx/terrain-lava16.png": "f9f62ea4a27e45857b31666bacf49432519d0ae013c009c8f8478a7a464afee9",
+    "data/gfx/terrain-lava17.png": "629d67d8425a1a24c4732056204369aa06b63be47f49eb44ddae4912e63a7de5",
+    "data/gfx/terrain-lava18.png": "2998ae50beaa05a22f91e85aba34d694ba404b0bc6fc88bd1f64c27335fbb5ed",
+    "data/gfx/terrain-lava19.png": "130ce0afeee07fa921f4162b3d55d7d1951f9cf8406c731a66b06712ccb44d9c",
+    "data/gfx/terrain-lava20.png": "f546f32b742e56b811c04a24820fdba3108d2862c5822c121e3e936fb2171307",
+    "data/gfx/terrain-lava21.png": "2f37efcc9a197255a7937c89ddbf69596c749c6bc9b6ea88d6d9e85756845272",
+    "data/gfx/terrain-lava22.png": "a06c3f36d7a30c1aac1b836bce89f25d900f93826f89bd14531c432b4b1e7080",
+    "data/gfx/terrain-lava23.png": "e7f8065af85b8ba7807e7141d5b92160d5091f7b3954eab41207fd3f6f67fd4b",
+    "data/gfx/terrain-lava24.png": "417c1f98bdd1f424263cc53d97d0c122db1f28b03f7586471926c793d165bdbf",
+    "data/gfx/terrain-lava25.png": "b746fde1b155a25c21cab9a0b9c99ad7321bab28fbe96372646be88027313a04",
+    "data/gfx/terrain-lava26.png": "86405517fe718bf2075dad388540372b39f03326d22b5689cfab5ac6fcf92084",
+    "data/gfx/terrain-lava27.png": "958a056e56e981a08d7f4ac6a25983d339dd10d222d813a894bba39d17e94fcf",
+    "data/gfx/terrain-lava28.png": "cb74588b2b2492cac66207f7f1baa682ebde43ddb4922a464d7f1968cf087bb2",
+    "data/gfx/terrain-lava29.png": "4e5a17895edd148590e648696a9f77296d97fffe624f0e0f9c1f0519583e6f51",
+    "data/gfx/terrain-lava30.png": "6201200f4ed9c492c23df038d3fc0c11e4cb69d978f30b4b89eef2b282d59e7f",
+    "data/gfx/terrain-lava31.png": "c0be440eeac3493e22468d49f79708312d9a91ed98dc8b2cb0dbb7419b6e6257",
+    "data/gfx/terrain-lava32.png": "aa9145f79c7ab0b9b8b6784c14d02303a14ef9998e6a67da4e11fc8acd0c60f6",
+    "data/gfx/terrain-lava33.png": "e2688e31f2c699346a69614118c0d64db319e7dbfbf324d1eb6e82ebfb688e10",
+    "data/gfx/terrain-lava34.png": "5f34c03ce2c26c86ec055c187bd96c3e362dede83eb0ae0603c8f32fb8f18edf",
+    "data/gfx/terrain-lava35.png": "b30cb54f06305100a65c139e5377320d28fb946a3b6b9ebe2a50b9edd6a1c417",
+    "data/gfx/terrain-lava36.png": "219c04c864b693fdbae0e023766464101edbf420e68d0860c71f50c9f40f6185",
+    "data/gfx/terrain-lava37.png": "b76873ecf89f58e9acfbbd025c9369f9acbc013631e1010524d06dae100e8684",
+    "data/gfx/terrain-lava38.png": "8b49831c3675fa902d0dc2961e5a4b6553895f9057a64d2429c3dad4124547c6",
+    "data/gfx/terrain-lava39.png": "5c277a2902d39134f85b215068851ab9c914d3770dff95ce2f4eb26d3d75b15c",
+    "data/gfx/terrain-lava40.png": "b3a7c389ad7a4c4dfcd1ebb33609cdb845f64b5cdac0e4ea4a0b1f5362fe0392",
+    "data/gfx/terrain-lava41.png": "aabf0cde7626ff519f3785bc711a36caac560102b04b0d40fbaa5fd1e87395bc",
+    "data/gfx/terrain-lava42.png": "51fceeb3eb77b4f01d0c6792f62c33695c90a473912e9db77303dde5da8b8c73",
+    "data/gfx/terrain-lava43.png": "7ce246909ea71802f8fba6e3d914f6010409fd68bf047f1d870a8aac38174a84",
+    "data/gfx/terrain-lava44.png": "d6ed793ff45162c646de89c61e3f1c9f2e436dc0d7df72d7078583df681fd1bc",
+    "data/gfx/terrain-lava45.png": "003e89c4c2388414b019ed3fc4982d5027db768e0414021d82631ea8f0ef346b",
+    "data/gfx/terrain-lava46.png": "2054f067e962238ccfc4a8e5d644cdc103618f806a8f45dfdf263cb6825fd18e",
+    "data/gfx/terrain-lava47.png": "49ecbc031d9235870ecdca26428e834c7be8095e63fb5ece15068a79de8caba8",
+    "data/gfx/terrain-lava48.png": "07b283e38fce84b0ffe6208b1891c039ba4d62ea4bce550c33094b19065ce8bf",
+    "data/gfx/terrain-lava49.png": "24a2688ef3b6ff4a314079f7d1e42e92418955a6813251a896d0aa89ade67010",
+    "data/gfx/terrain-lava50.png": "935a4893d23dc8372281612c7303882f9e3a4a7c1c857ae6b9fff6b47239c95b",
+    "data/gfx/terrain-lava51.png": "b2920a04023762bffd897606dac6f1aa8c1aba2bae4839bde9a11e036151d0ab",
+    "data/gfx/terrain-lava52.png": "9b6582e143303f598aac146d854cc7d5856bdbaec1e0157abf561e2e01d27f0f",
+    "data/gfx/terrain-lava53.png": "e1697cfa4343f30014b34e2a1167274aaa8c67cf2077c99c9085537969542024",
+    "data/gfx/terrain-lava54.png": "73d2f7889f403af54d15964f5301e48cc195d6ad2e764492e311d67b317aa82f",
+    "data/gfx/terrain-lava55.png": "5e94596e8cf498e57e99ca7f2212573d9dc0f73f6f377c162b6eed2a5c3fdc40",
+    "data/gfx/terrain-lava56.png": "5872afc2d954f043f8ca5b5507780da40914a7c1a8631ff6c0ba7dd96d1c449c",
+    "data/gfx/terrain-lava57.png": "d623c0b36f433a8054f3d698f75e151ff9b9c1b131c12a8827b4139928226f47",
+    "data/gfx/terrain-lava58.png": "06f852e7403b981b3c31837d42b43d13efdc68f9e78d07ecaeadde1922185145",
+    "data/gfx/terrain-lava59.png": "3db877ee4e9b5cebe2c9af80d1f8177d8a99fdb2b14810846758420c9b991775",
+    "data/gfx/terrain-lava60.png": "bbb0c0e10c2f1a7cdba57b93c4ff628c97774e13d95cb86c1a2d17cc8b09a098",
+    "data/gfx/terrain-lava61.png": "eba651f56e0da1904ce5e6fa635667b252c2accb9368c3d38c4cf0b934a63636",
+    "data/gfx/terrain-lava62.png": "a7808edab5df6d5166624f7b4cdf304cfc3059e25d4df95081079163a5847788",
+    "data/gfx/terrain-lava63.png": "e92517b0a70666ebcb30116bcc3ff29f0a6981c8f2ebd27b9d32ef4080ac60b6"
+  }
+}

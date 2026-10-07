@@ -35,6 +35,7 @@
     "TerrainMaterials/*",
     "TerrainValidation/*",
     "TerrainProperties/*",
+    "TerrainHazardRouting/*",
     "TerrainRuntime/*",
     "TerrainEcology/*",
     "RuntimeContinuation/*",
