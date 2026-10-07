@@ -1,0 +1,46 @@
+{
+  "current": {
+    "command": [
+      "g++-11",
+      "-std=gnu++20",
+      "-Isrc",
+      "-Isrc/game",
+      "-Isrc/map",
+      "-Isrc/resource",
+      "-Ilibgag/include",
+      "-I/tmp/glob2-terrain-sdl-patched/prefix/include",
+      "-I/tmp/glob2-sdl3/prefix/include",
+      "-fsyntax-only",
+      "artifacts/hazard-integrated/gcc11-baseline/probe.cpp"
+    ],
+    "exit": 1,
+    "same_error": true
+  },
+  "master": {
+    "command": [
+      "g++-11",
+      "-std=gnu++20",
+      "-Iartifacts/hazard-integrated/gcc11-baseline/master/src",
+      "-Iartifacts/hazard-integrated/gcc11-baseline/master/src/game",
+      "-Iartifacts/hazard-integrated/gcc11-baseline/master/src/map",
+      "-Iartifacts/hazard-integrated/gcc11-baseline/master/src/resource",
+      "-Iartifacts/hazard-integrated/gcc11-baseline/master/libgag/include",
+      "-I/tmp/glob2-terrain-sdl-patched/prefix/include",
+      "-I/tmp/glob2-sdl3/prefix/include",
+      "-fsyntax-only",
+      "artifacts/hazard-integrated/gcc11-baseline/probe.cpp"
+    ],
+    "exit": 1,
+    "same_error": true
+  },
+  "identical_dependency_files": {
+    "src/map/TerrainExperiments.h": true,
+    "src/map/TerrainType.h": true,
+    "src/map/TerrainTypeTable.h": true,
+    "src/map/TerrainGroup.h": true,
+    "src/map/TerrainPropertiesLayout.h": true,
+    "src/resource/Material.h": true,
+    "src/game/ExperimentalFeatures.h": true,
+    "libgag/include/Types.h": true
+  }
+}

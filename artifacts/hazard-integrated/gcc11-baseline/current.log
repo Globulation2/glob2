@@ -1,0 +1,11 @@
+In file included from artifacts/hazard-integrated/gcc11-baseline/probe.cpp:1:
+src/map/TerrainExperiments.h:36:2:   in ‘constexpr’ expansion of ‘<lambda closure object><lambda()>{}.<lambda()>()’
+src/map/TerrainExperiments.h:33:43:   in ‘constexpr’ expansion of ‘terrainGroupExperiment(((TerrainGroup)TERRAIN_TYPES.std::array<TerrainTypeDefinition, 31>::operator[](((std::array<TerrainTypeDefinition, 31>::size_type)i)).TerrainTypeDefinition::group))’
+src/map/TerrainExperiments.h:36:3:   in ‘constexpr’ expansion of ‘std::optional<ExperimentId>()’
+/usr/include/c++/11/optional:694:37:   in ‘constexpr’ expansion of ‘((std::optional<ExperimentId>*)this)->std::optional<ExperimentId>::<anonymous>.std::_Optional_base<ExperimentId, true, true>::_Optional_base()’
+/usr/include/c++/11/optional:605:17:   in ‘constexpr’ expansion of ‘((std::_Optional_base<ExperimentId, true, true>*)this)->std::_Optional_base<ExperimentId, true, true>::_M_payload.std::_Optional_payload<ExperimentId, true, true, true>::_Optional_payload()’
+/usr/include/c++/11/optional:303:7:   in ‘constexpr’ expansion of ‘((std::_Optional_payload<ExperimentId, true, true, true>*)this)->std::_Optional_payload<ExperimentId, true, true, true>::<anonymous>.std::_Optional_payload_base<ExperimentId>::_Optional_payload_base()’
+/usr/include/c++/11/optional:111:7:   in ‘constexpr’ expansion of ‘((std::_Optional_payload_base<ExperimentId>*)this)->std::_Optional_payload_base<ExperimentId>::_M_payload.std::_Optional_payload_base<ExperimentId>::_Storage<ExperimentId, true>::_Storage()’
+src/map/TerrainExperiments.h:36:3: error: modification of ‘TERRAIN_GROUP_EXPERIMENTS’ is not a constant expression
+   36 | }();
+      |   ^

@@ -109,5 +109,11 @@
     "old_save_format": 139,
     "initial_tick": 90000,
     "ticks": 256
+  },
+  "hosted_base_failure": {
+    "job": "https://github.com/Globulation2/glob2/actions/runs/37556520435/job/112585396667",
+    "error": "GCC11 rejects constexpr TERRAIN_GROUP_EXPERIMENTS initialization in unchanged master TerrainExperiments.h",
+    "proof": "gcc11-baseline/result.json records the same error in current/master and byte-identical eight-header dependency closure",
+    "limitation": "GCC11 platform coverage blocked by existing master regression; remaining hosted jobs may still run"
   }
 }
