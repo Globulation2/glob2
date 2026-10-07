@@ -512,7 +512,10 @@ python3 test/analyze_building_gradient_demand.py artifacts/match-a artifacts/mat
   --output artifacts/demand-summary.json
 ```
 
-The analyzer accepts gzip CSVs. Use multiple independent seeds and layouts, and
+The analyzer accepts gzip CSVs. `--export-aggregates DIRECTORY` retains compact
+request histograms and search lifetimes that reproduce the analysis; directories
+containing only these aggregates can be analyzed with the same command. Retain
+raw trace hashes alongside shared aggregates. Use independent seeds and layouts, and
 retain input/source/binary hashes and commands with the traces. It compares fixed
 cost budgets with offline quantile tables by building type, colony size, route,
 swim class and resource. It validates by leaving out entire matches, weights

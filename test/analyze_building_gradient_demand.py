@@ -57,13 +57,37 @@ def weighted_quantile(histogram, fraction):
     return max(histogram)
 
 
+def export_aggregate(match, path):
+    """Retain sufficient statistics for reproducible policy fitting without huge CSVs."""
+    payload = {k: v for k, v in match.items() if k not in ('rows', 'extension_rows', '_fit_groups')}
+    payload['schema'] = 1
+    for name in ('rows', 'extension_rows'):
+        payload[name] = [[list(features), cost, count] for (features, cost), count in match[name].items()]
+    with gzip.open(path, 'wt') as stream:
+        json.dump(payload, stream, separators=(',', ':'))
+
+
+def read_aggregate(path):
+    with gzip.open(path, 'rt') as stream:
+        match = json.load(stream)
+    if match.pop('schema') != 1:
+        raise ValueError('unsupported demand aggregate schema')
+    for name in ('rows', 'extension_rows'):
+        match[name] = collections.Counter({(tuple(features), cost): count for features, cost, count in match[name]})
+    return match
+
+
 def read_match(directory):
+    aggregate = directory / 'building-gradient-demand-aggregate.json.gz'
+    if not csv_path(directory, 'building-gradient-demand-requests.csv').exists() and aggregate.exists():
+        return read_aggregate(aggregate)
     with opened(csv_path(directory, 'building-gradient-demand-ticks.csv')) as stream:
         ticks = list(csv.DictReader(stream))
     dropped = sum(int(r['dropped_requests']) for r in ticks)
     if dropped:
         raise ValueError(f'{directory}: {dropped} dropped requests; incomplete traces cannot fit a policy')
     rows = collections.Counter()
+    extension_rows = collections.Counter()
     epochs = {}
     callers = collections.Counter()
     caller_popped = collections.Counter()
@@ -75,6 +99,8 @@ def read_match(directory):
             cost = required_cost(row)
             features = (row['type'], row['colony_units'], row['colony_buildings'], row['route'], row['swim'], row['resource'])
             rows[(features, cost)] += row['requests']
+            if row['extended']:
+                extension_rows[(features, cost)] += row['requests']
             callers[(row['caller'], row['full'])] += row['requests']
             caller_popped[(row['caller'], row['full'])] += row['popped']
             totals['queries'] += row['requests']
@@ -92,14 +118,15 @@ def read_match(directory):
     expected = sum(int(r['requests']) for r in ticks)
     if totals['queries'] != expected:
         raise ValueError(f'{directory}: request denominator mismatch {totals["queries"]} != {expected}')
-    return {'directory': str(directory.resolve()), 'rows': rows, 'epochs': epochs, 'totals': dict(totals),
+    return {'directory': str(directory.resolve()), 'rows': rows, 'extension_rows': extension_rows, 'epochs': epochs, 'totals': dict(totals),
             'popped': total_popped, 'callers': [{'caller': k[0], 'full': bool(k[1]), 'requests': n, 'popped': caller_popped[k]} for k, n in callers.items()],
             'ticks': len(ticks), 'first_tick': min((int(r['tick']) for r in ticks), default=0)}
 
 
 def observations(match, mode):
-    if mode.endswith('queries'):
-        yield from ((features, cost, count) for (features, cost), count in match['rows'].items()
+    if mode.endswith('queries') or mode.endswith('extensions'):
+        source = match['extension_rows'] if mode.endswith('extensions') else match['rows']
+        yield from ((features, cost, count) for (features, cost), count in source.items()
                     if not mode.startswith('walking') or features[-1] < 0)
     else:
         for epoch in match['epochs'].values():
@@ -117,12 +144,19 @@ def features_dict(features):
 def fit(matches, fraction, mode, minimum_matches=3):
     grouped = [collections.defaultdict(lambda: collections.defaultdict(collections.Counter)) for _ in range(3)]
     for index, match in enumerate(matches):
-        for features, cost, count in observations(match, mode):
-            if cost is None:
-                continue
-            row = features_dict(features)
-            for level in range(3):
-                grouped[level][feature_key(row, level)][index][cost] += count
+        cached = match.setdefault('_fit_groups', {}).get(mode)
+        if cached is None:
+            cached = [collections.defaultdict(collections.Counter) for _ in range(3)]
+            for features, cost, count in observations(match, mode):
+                if cost is None:
+                    continue
+                row = features_dict(features)
+                for level in range(3):
+                    cached[level][feature_key(row, level)][cost] += count
+            match['_fit_groups'][mode] = cached
+        for level, groups in enumerate(cached):
+            for key, histogram in groups.items():
+                grouped[level][key][index] = histogram
     model = []
     for groups in grouped:
         table = {}
@@ -231,16 +265,22 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('directories', nargs='+', type=Path)
     parser.add_argument('--output', type=Path)
+    parser.add_argument('--export-aggregates', type=Path, help='Export sufficient statistics for sharing and reproducing the analysis')
     args = parser.parse_args()
     paths = [p.resolve() for p in args.directories]
     if len(paths) != len(set(paths)):
         parser.error('each match directory must be unique')
     matches = [read_match(p) for p in paths]
+    if args.export_aggregates:
+        for path, match in zip(paths, matches):
+            target = args.export_aggregates / path.name
+            target.mkdir(parents=True, exist_ok=True)
+            export_aggregate(match, target / 'building-gradient-demand-aggregate.json.gz')
     result = {'schema': 1, 'note': 'Offline coverage prediction, not measured performance. Independent-match bootstrap; no within-match lookup independence claim. Partial observation lifetimes and future topology changes limit prediction. Raw cost/10 is land-equivalent movement cost, not a geometric radius. Full and unreachable requests require exhaustion, not merely a nearby tile. Unknown or unseen strata count as misses.',
               'runs': summarize(matches),
-              'fixed_budgets': [fixed_budgets(matches, mode) for mode in ('queries', 'epochs', 'walking_queries', 'walking_epochs')],
-              'fitted_models': [model_tables(matches, .95, mode) for mode in ('queries', 'epochs', 'walking_queries', 'walking_epochs')],
-              'policies': [evaluate(matches, q, mode) for mode in ('queries', 'epochs', 'walking_queries', 'walking_epochs') for q in (.95, .975, .99)]}
+              'fixed_budgets': [fixed_budgets(matches, mode) for mode in ('queries', 'epochs', 'walking_queries', 'walking_epochs', 'walking_extensions')],
+              'fitted_models': [model_tables(matches, .95, mode) for mode in ('queries', 'epochs', 'walking_queries', 'walking_epochs', 'walking_extensions')],
+              'policies': [evaluate(matches, q, mode) for mode in ('queries', 'epochs', 'walking_queries', 'walking_epochs', 'walking_extensions') for q in (.95, .975, .99)]}
     text = json.dumps(result, indent=2) + '\n'
     if args.output:
         args.output.write_text(text)

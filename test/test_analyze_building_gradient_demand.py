@@ -2,7 +2,7 @@ import collections
 import unittest
 import tempfile
 from pathlib import Path
-from analyze_building_gradient_demand import required_cost, weighted_quantile, fit, predict, evaluate, read_match
+from analyze_building_gradient_demand import required_cost, weighted_quantile, fit, predict, evaluate, read_match, export_aggregate, read_aggregate
 
 F = ('inn', 100, 12, 0, 0, -1)
 
@@ -40,6 +40,17 @@ class DemandAnalysisTest(unittest.TestCase):
         report = evaluate([match(str(i), 10) for i in range(3)] + [match('unknown', None, 10)], .95, 'queries')
         self.assertEqual(report['matches'][-1]['observations'], 10)
         self.assertEqual(report['matches'][-1]['coverage'], 0)
+
+    def test_aggregate_retains_policy_inputs_and_unknown_denominators(self):
+        sample=match('sample', 303)
+        sample['rows'][(F, None)]=7
+        sample['extension_rows']=collections.Counter({(F, 303):1})
+        with tempfile.TemporaryDirectory() as directory:
+            path=Path(directory)/'aggregate.json.gz'
+            export_aggregate(sample,path)
+            recovered=read_aggregate(path)
+            self.assertEqual(recovered,sample)
+            self.assertEqual(predict(fit([recovered]*3,.95,'queries'),F)[0],310)
 
     def test_dropped_queries_reject_incomplete_trace(self):
         with tempfile.TemporaryDirectory() as directory:
