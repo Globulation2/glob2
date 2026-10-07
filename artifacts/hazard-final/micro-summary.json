@@ -1,0 +1,20 @@
+[
+  {
+    "layout": "ice-edge",
+    "width": 512,
+    "idle-cold_cpu_ms": 2.181,
+    "idle_cpu_ms": 0.000149281
+  },
+  {
+    "layout": "ice-patch",
+    "width": 512,
+    "idle-cold_cpu_ms": 3.497,
+    "idle_cpu_ms": 0.00010718899999999999
+  },
+  {
+    "layout": "unreachable-safety",
+    "width": 512,
+    "idle-cold_cpu_ms": 4.545,
+    "idle_cpu_ms": 1.7673e-05
+  }
+]

@@ -1,0 +1,13 @@
+Independent review by sub-agent review_hazard_routing (full diff against origin/master, including integrated runtime resource catalogs).
+
+Findings addressed:
+1. Save migration and hazard tests retained pre-resource-refactor API names. Updated to materialFields/materialLru/materialGradients/marketMaterialGradients/MaterialSlotCount/getMaterialGradientSlot.
+2. Runtime resource test imported custom terrain on a non-editor bound game. Detached/rebound map for definition setup, matching existing fixtures.
+3. Follow-up mixed-cost test used speed32 below supported minimum64. Corrected to64; indirect escape remains21, direct safe entry40.
+
+Recommendations addressed:
+- Mixed-cost escape test asserts reverse destination charging and cheaper indirect exit.
+- Direct LRU eviction and generation-wrap/reset test added; prior direction-rebuild check retained.
+- Fixture README describes SIM_REVISION24 traces historically rather than calling them current.
+
+Reviewer conclusion: no further correctness defects found in reverse charging, queue bounds, permission keys, deterministic rebuilding, occupancy handling, runtime-resource blocking/invalidation or format141/protocol60/sim25 boundaries. Refactor into MapTerrainSafety.cpp and TerrainSafetyCache.h improves separation and readability. Final approval was conditional on refreshed build, tests and fixture regeneration.

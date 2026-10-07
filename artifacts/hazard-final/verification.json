@@ -1,0 +1,96 @@
+{
+  "head": "516f256c6e9103ee1c1c048408d56fd204c22219",
+  "base": "9084ea907a004ec9a2315598256e1631793c00bf",
+  "platform": "Linux-7.0.0-31-generic-x86_64-with-glibc2.43",
+  "compiler": "g++ (Ubuntu 15.2.0-16ubuntu1) 15.2.0",
+  "build": "GLOB2_SDL3_PREFIX=/tmp/glob2-terrain-sdl-patched/prefix CCACHE=1 scons -j8 release=1 optimized_assets=0 tests build/linux/client/release/src/glob2",
+  "dependencies": "LD_LIBRARY_PATH=/tmp/glob2-terrain-sdl-patched/prefix/lib:/tmp/glob2-sdl3/prefix/lib; compile/link commands retained in build logs",
+  "tests": {
+    "focused": {
+      "cases": 47,
+      "failures": 0,
+      "skipped": 0
+    },
+    "quick": {
+      "cases": 1840,
+      "failures": 0,
+      "skipped": 141
+    },
+    "golden": {
+      "cases": 1,
+      "failures": 0,
+      "skipped": 0
+    },
+    "resource-golden": {
+      "cases": 1,
+      "failures": 0,
+      "skipped": 0
+    },
+    "png-runtime": {
+      "cases": 1,
+      "failures": 0,
+      "skipped": 0
+    }
+  },
+  "limits": [
+    "Linux x86_64 only locally; hosted platform checks requested separately.",
+    "Native browser replay fixture recording verified; local browser playback not run.",
+    "141 display cases skipped; --quick excludes slow cases and benchmarks were separately measured. Human gameplay feel review unverified.",
+    "Earlier paired performance results precede the master resource integration; final microbenchmark separately recorded."
+  ],
+  "binaries": {
+    "build/linux/client/release/src/glob2": "c7577167adfa34f3234c99d666f2c622b3dd1475c1908a9dc8e2837c0463408c",
+    "build/linux/client/release/test/glob2-engine-tests": "a7593c917a63cac9b2c8ae07e3cccb34beb1bc581655304992169c9e7c904cd7",
+    "build/linux/client/release/test/glob2-unit-tests": "52e5d8e6ebf58a7ed15bc04263a04d477978f3cc1f1d8be8a83cf993c2874d4b"
+  },
+  "commands": {
+    "quick": "LD_LIBRARY_PATH=/tmp/glob2-terrain-sdl-patched/prefix/lib:/tmp/glob2-sdl3/prefix/lib python3 test/run_tests.py -j8 --quick --exclude-tag benchmark --no-display --artifacts artifacts/hazard-final/quick-artifacts --junit artifacts/hazard-final/quick.xml",
+    "micro": "LD_LIBRARY_PATH=/tmp/glob2-terrain-sdl-patched/prefix/lib:/tmp/glob2-sdl3/prefix/lib SDL_VIDEODRIVER=dummy SDL_AUDIODRIVER=dummy GLOB2_TEST_SOURCE_ROOT=$PWD taskset -c 12 build/linux/client/release/test/glob2-engine-tests -ts=TerrainHazardBenchmark -tc=*idle\\ decisions*,*shared\\ terrain\\ fields* --no-breaks=true",
+    "sim_version": "python3 test/check_sim_revision.py --base origin/master"
+  },
+  "continuation": {
+    "commands": [
+      [
+        "/home/bradley/.codex/worktrees/4823/glob2/build/linux/client/release/src/glob2",
+        "--run-game",
+        "--load-game",
+        "/home/bradley/.codex/worktrees/4823/glob2/artifacts/hazard-performance/fixtures/patchwork-ice.game",
+        "--ticks",
+        "90256",
+        "--compute-threads",
+        "1",
+        "--replay",
+        "true",
+        "--telemetry",
+        "checksums",
+        "--save",
+        "final",
+        "--output-dir",
+        "/home/bradley/.codex/worktrees/4823/glob2/artifacts/hazard-final/continuation-patched-1"
+      ],
+      [
+        "/home/bradley/.codex/worktrees/4823/glob2/build/linux/client/release/src/glob2",
+        "--run-game",
+        "--load-game",
+        "/home/bradley/.codex/worktrees/4823/glob2/artifacts/hazard-performance/fixtures/patchwork-ice.game",
+        "--ticks",
+        "90256",
+        "--compute-threads",
+        "4",
+        "--replay",
+        "true",
+        "--telemetry",
+        "checksums",
+        "--save",
+        "final",
+        "--output-dir",
+        "/home/bradley/.codex/worktrees/4823/glob2/artifacts/hazard-final/continuation-patched-4"
+      ]
+    ],
+    "equal": true,
+    "sha256": "7dcaf2de6a99d2c4a8b05cc496642943afb0b1176b47f876d1a02d48512230c9",
+    "old_save_format": 139,
+    "initial_tick": 90000,
+    "ticks": 256
+  }
+}
