@@ -32,7 +32,7 @@ struct Storage
 	BufferPool<ResourceFields> resourceFields;
 	BufferPool<Fertility::GrowthCache> growth;
 	// Every live plane of every retained capture may be distinct.
-	BufferPool<std::vector<Uint16>, std::size_t(BufferPool<Uint16>::Limit) * MapState::PlaneCount> resourcePlanes;
+	BufferPool<std::vector<Uint16>, std::size_t(17) * MapState::PlaneCount> resourcePlanes;
 	Uint64 allocations = 0;
 	Uint64 preparationNs = 0;
 	//! Bytes of map arrays actually copied (changed chunks and full fills).
@@ -48,7 +48,7 @@ inline MemoryMetrics Storage::memoryMetrics() const
 	MemoryMetrics result;
 	const auto vectorBytes = []<class T>(const std::vector<T>& values) { return Uint64(values.capacity()) * sizeof(T); };
 	struct SharedPayload { const void* identity = nullptr; Uint64 object = 0, capacity = 0; bool leased = false; };
-	std::array<SharedPayload, 51> shared{};
+	std::array<SharedPayload, 3 * BufferPool<Catalogs>::Limit> shared{};
 	std::size_t sharedCount = 0;
 	const auto remember = [&](const auto& owner, bool leased) {
 		if (!owner) return;

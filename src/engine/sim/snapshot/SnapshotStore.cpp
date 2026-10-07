@@ -8,7 +8,7 @@ Handle Store::captureBoundary(const Game& game, Requirements required)
 {
 	const auto requested = required;
 	if (latest && latest->worldIdentity != game.map.identity()) reset();
-	if (latest && latest->tick == game.stepCounter) {
+	if (latest && latest->tick == game.stepCounter && latest->observationRevision == observationRevision) {
 		if ((required & latest->requirements) == required) return latest->project(requested);
 		required |= latest->requirements;
 	}
@@ -20,6 +20,7 @@ Handle Store::captureBoundary(const Game& game, Requirements required)
 	}
 	const auto copiedBefore = storage.bytesCopied;
 	auto next = capture(game, catalog, required, latest ? &*latest : nullptr, &storage);
+	next.observationRevision = observationRevision;
 	// Map arrays report the chunks they actually copied; other components are
 	// accounted by size when not shared with the previous capture.
 	metrics.bytesCopied += storage.bytesCopied - copiedBefore;

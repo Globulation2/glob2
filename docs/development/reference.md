@@ -12,7 +12,10 @@ documented in [Distributed tournaments](../tools/tournaments.md).
 
 All shipped AI controllers decide from an immutable engine snapshot through
 `AIEngine::AIWorldView`. The simulation owner captures a union of required
-components at the polling boundary. Engine snapshot records live under
+components at the polling boundary. `Game::snapshots()` owns the shared Store;
+the AI pipeline borrows it rather than owning a separate capture cache. Explicit
+`Store::invalidateBoundary()` revisions allow an owner to publish same-tick edits
+without advancing game time; existing leases stay immutable. Engine snapshot records live under
 `src/engine/sim/snapshot/`; the AI adapter and shared queries live under
 `src/ai/observation/`. Records contain values and stable entity identities;
 rendering pointers and live `Game`, `Map`, `Team`, `Unit` or `Building` objects
@@ -83,7 +86,11 @@ pointer; the pool reuses a buffer once that pointer is the only one left, after 
 acquire fence that orders the consumer's final reads before the owner's next write,
 including inputs retired by delayed gradient jobs. Reads need no locking, and a
 buffer outlives the capture Store while any consumer holds it. Memory metrics are
-computed on telemetry query, never on the capture path.
+computed on telemetry query, never on the capture path. Component pools permit
+22 buffers: the existing 17-epoch simulation horizon plus five presentation
+leases (active input, pending input and three Scene slots). Buffers allocate only
+on demand. The resource-plane pool retains its original 17-epoch bound because
+presentation does not lease resource-gradient fields.
 
 All parallel simulation work shares the map's `ComputeExecutor`
 (`src/common/ComputeExecutor.h`): blocking `run()` batches for map computation and

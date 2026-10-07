@@ -112,6 +112,7 @@ struct ResourceFields
 struct Handle
 {
 	Uint32 tick = 0;
+	Uint64 observationRevision = 0;
 	int width = 0, height = 0;
 	Requirements requirements = 0;
 	std::shared_ptr<const Catalogs> catalogs;

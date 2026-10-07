@@ -309,6 +309,7 @@ Handle capture(const Game& game,
 				std::memcpy(static_cast<BuildingStateRecord*>(&v), static_cast<const BuildingStateRecord*>(b), sizeof(BuildingStateRecord));
 				v.identity = Game::refOf(b); v.team = t;
 				v.maxHp = b->getEffectiveMaxHp();
+				v.lastShootStep = b->lastShootStep; v.lastShootSpeedX = b->lastShootSpeedX; v.lastShootSpeedY = b->lastShootSpeedY;
 				v.usesTeamResources = b->materials == team->teamMaterials;
 				for (unsigned supplied=b->runtime->suppliesStockMask; supplied; supplied &= supplied-1) {
 					const unsigned material=std::countr_zero(supplied);
@@ -331,6 +332,7 @@ Handle capture(const Game& game,
 				UnitView v;
 				std::memcpy(static_cast<UnitState*>(&v), static_cast<const UnitState*>(u), sizeof(UnitState));
 				v.identity = Game::refOf(u); v.team = t;
+				v.levelUpAnimation = u->levelUpAnimation; v.magicActionAnimation = u->magicActionAnimation;
 				v.attached = Game::refOf(u->attachedBuilding);
 				v.target = Game::refOf(u->targetBuilding);
 				append(entities->units, std::move(v));
