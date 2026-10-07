@@ -25,6 +25,10 @@ struct BuildingStateRecord
 		REPAIR=3
 	};
 
+	// Presentation clocks remain excluded from legacy simulation checksums.
+	Uint32 lastShootStep;
+	Sint32 lastShootSpeedX, lastShootSpeedY;
+
 	Sint32 typeNum;
 	int shortTypeNum;
 	BuildingState buildingState;
@@ -56,6 +60,8 @@ struct BuildingStateRecord
 	// Authoritative order-applied production ratios; pending slider values
 	// live in BuildingGuiState.
 	Sint32 ratio[NB_UNIT_TYPE];
+	Sint32 percentUsed[NB_UNIT_TYPE];
+	Uint32 unitsFailingRequirements[8];
 	Uint32 receiveMaterialMask, sendMaterialMask;
 	Sint32 bullets;
 	Uint32 seenByMask;
