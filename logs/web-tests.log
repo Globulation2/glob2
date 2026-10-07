@@ -5,7 +5,7 @@
 
  Test Files  3 passed (3)
       Tests  72 passed (72)
-   Start at  23:10:50
-   Duration  37.40s (tests 95%, transform 3%, import 2%)
+   Start at  23:36:54
+   Duration  37.38s (tests 95%, transform 3%, import 3%)
 
 vitest exit 0

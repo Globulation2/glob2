@@ -1,7 +1,7 @@
 # Fitted unit rigs: local review evidence
 
 Evidence for draft PR #821 after replacing the authored tube-and-sphere rigs with
-rigs fitted to the baked metaball clips. Tested commit: `d0b9ae70f` on
+rigs fitted to the baked metaball clips. Tested commit: `44ec5319a` on
 `codex/worker-rig-pipeline` (previous head `d396f7e09`). Not a merge request;
 all candidates stay `accepted: false`.
 
@@ -13,7 +13,11 @@ platform lockfile.
 ## What changed in the look
 
 The rest surface is the same `limb_surface.py` fit the baked clips use,
-evaluated at the source rig's rest pose. Bones sit on the original metaball
+evaluated at the source rig's rest pose for the warrior; the worker's rest mesh
+is the baked frames un-posed through their bones and symmetrised, because its
+source rest surface is an hourglass (its body ball is smaller than the shoulder
+and hip balls) that skinning carried into every frame as a waist crease. Bones
+sit on the original metaball
 chain (plus socket and segment-midpoint bones), weights are solved against
 every baked frame, and refinement moves bones only in translation and scale,
 bounded to one model unit, with rotations kept on the chain. Worker swim and
@@ -47,9 +51,9 @@ scored 82.5 % mean against this kind of reference.
 
 | Clip | RMS | p95 | max | IoU mean | IoU min | strayed normals max |
 | --- | --- | --- | --- | --- | --- | --- |
-| worker walk | 0.503 | 1.071 | 3.456 | 94.2 % | 88.1 % | 438 |
-| worker swim | 0.509 | 1.031 | 6.181 | 93.8 % | 86.8 % | 497 |
-| worker harvest | 0.653 | 1.508 | 3.940 | 93.5 % | 89.9 % | 560 |
+| worker walk | 0.465 | 1.025 | 2.639 | 94.1 % | 88.6 % | 531 |
+| worker swim | 0.507 | 1.042 | 5.970 | 94.4 % | 90.7 % | 612 |
+| worker harvest | 0.621 | 1.363 | 3.270 | 94.1 % | 90.4 % | 570 |
 | warrior walk | 0.574 | 1.208 | 4.607 | 96.1 % | 92.9 % | 296 |
 | warrior swim | 1.126 | 2.559 | 8.223 | 91.9 % | 78.1 % | 450 |
 | warrior fight | 0.579 | 1.247 | 4.749 | 96.6 % | 95.1 % | 297 |
@@ -67,6 +71,9 @@ Design choices and the measurements behind them (worker, from
   chain rotations and bounding bone displacement to one unit removed them at
   RMS 0.50.
 - Segment-midpoint bones lower the error by about a fifth over the bare chain.
+- The un-posed rest mesh removes the worker's waist crease (`torso-*.png`
+  sweeps); on the warrior it cracks the limb joints, so the warrior keeps the
+  source rest surface.
 - The warrior's swim stroke is not periodic across directions and keeps 256
   samples; its full retraction merges all limbs into one ball, which linear
   skinning cannot follow, hence its residual.
@@ -92,7 +99,7 @@ npm exec --prefix platform -- eslint platform/apps/web/e2e/rig-conformance.ts pl
 
 Results (logs in `logs/`):
 
-- Rig authoring suite (Blender): 7 passed (193 s).
+- Rig authoring suite (Blender): 7 passed (195 s).
 - Installed asset contract: 3 passed.
 - Native `Skin*`, `ColonySkinPreview`, `RenderBatch`: 47 cases passed, 0 failed.
 - Web unit tests: 72 passed; typecheck and eslint clean.

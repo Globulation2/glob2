@@ -3,7 +3,7 @@
   "version": 1,
   "experimental": true,
   "file": "worker-walk.gsr",
-  "sha256": "aefce0faa9fcc973bbd57c4b5bfda0a544acbf3904a375857837ecea7eaa9322",
+  "sha256": "93253677363dd3eadf8663f11efd6d2d7b11dcf31110326d5d4f854e2ec65996",
   "clips": [
     {
       "id": 0,
@@ -14,7 +14,7 @@
     }
   ],
   "sources": {
-    "tools/skins/fit_unit_rigs.py": "7106a7c61734e86240eccdfd0716cabd9cd376fb77d578bde1406d4ac2137ee0",
+    "tools/skins/fit_unit_rigs.py": "f88a60e2d2f9253834513aa5dc715aa612420254d461f5da6e704d9e2a47afd5",
     "tools/skins/rig_scene.py": "63ab0b31fb853235941702de0eddefc19ba8dce21a0aa3704c0cbba72f627641",
     "tools/skins/export_rig.py": "41aecaed307114817279b056f615a174f4a58cb83ea6ce735aaeec211201c372",
     "tools/skins/export_units.py": "d9eeab2165559c625b6f7cba4d2d8616690bc37c86ba1cbc36923b206f21b9bb",

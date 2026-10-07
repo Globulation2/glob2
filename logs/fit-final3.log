@@ -1,0 +1,22 @@
+worker: 29 bones, samples {'walk': 64, 'swim': 64, 'harvest': 64}, initial rms 0.5950 (7s)
+worker-walk: 2834 vertices, 29 bones, 312912 bytes, rms 0.465 p95 1.025 max 2.639 flipped faces max 281 strayed normals max 531
+worker-swim: 2834 vertices, 29 bones, 312912 bytes, rms 0.507 p95 1.042 max 5.970 flipped faces max 549 strayed normals max 612
+worker-harvest: 2834 vertices, 29 bones, 312912 bytes, rms 0.621 p95 1.363 max 3.270 flipped faces max 497 strayed normals max 570
+warrior: 21 bones, samples {'walk': 64, 'swim': 256, 'fight': 64}, initial rms 0.9982 (7s)
+warrior-walk: 2450 vertices, 21 bones, 262192 bytes, rms 0.574 p95 1.208 max 4.607 flipped faces max 346 strayed normals max 296
+warrior-swim: 2450 vertices, 21 bones, 391216 bytes, rms 1.126 p95 2.559 max 8.223 flipped faces max 856 strayed normals max 450
+warrior-fight: 2450 vertices, 21 bones, 262192 bytes, rms 0.579 p95 1.247 max 4.749 flipped faces max 372 strayed normals max 297
+warrior-walk unchanged
+warrior-swim unchanged
+warrior-fight unchanged
+explorer-fly: 1330 vertices, 4 bones, 120700 bytes
+installed worker-harvest.gsr (312912 bytes, accepted=False)
+installed worker-swim.gsr (312912 bytes, accepted=False)
+installed worker-walk.gsr (312912 bytes, accepted=False)
+installed warrior-fight.gsr (262192 bytes, accepted=False)
+installed warrior-swim.gsr (391216 bytes, accepted=False)
+installed warrior-walk.gsr (262192 bytes, accepted=False)
+installed explorer-fly.gsr (120700 bytes, accepted=False)
+
+OK
+done
