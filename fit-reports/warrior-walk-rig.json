@@ -3,7 +3,7 @@
   "version": 1,
   "experimental": true,
   "file": "warrior-walk.gsr",
-  "sha256": "34b6dc414f4637a9ba3bec2f99ba1e45d83f0c3711f6c3489671b8da7565ccc6",
+  "sha256": "11f6cb56c0ee60838e10cf4cf5be50d4d97f3af0e70cdb71c041a53af6bc4830",
   "clips": [
     {
       "id": 0,
@@ -14,7 +14,7 @@
     }
   ],
   "sources": {
-    "tools/skins/fit_unit_rigs.py": "f88a60e2d2f9253834513aa5dc715aa612420254d461f5da6e704d9e2a47afd5",
+    "tools/skins/fit_unit_rigs.py": "bbd04c133d0e1d0c61895f854a3599ab62fdf0e63afe93ac1192f5bfd9d3e90e",
     "tools/skins/rig_scene.py": "63ab0b31fb853235941702de0eddefc19ba8dce21a0aa3704c0cbba72f627641",
     "tools/skins/export_rig.py": "41aecaed307114817279b056f615a174f4a58cb83ea6ce735aaeec211201c372",
     "tools/skins/export_units.py": "d9eeab2165559c625b6f7cba4d2d8616690bc37c86ba1cbc36923b206f21b9bb",

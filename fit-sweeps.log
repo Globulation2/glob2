@@ -198,3 +198,29 @@ warrior-swim: 2450 vertices, 21 bones, 391216 bytes, rms 1.110 p95 2.372 max 8.1
 warrior-fight: 2450 vertices, 21 bones, 262192 bytes, rms 0.600 p95 1.338 max 4.233 flipped faces max 488 strayed normals max 464
 silhouette IoU mean 0.9479 p5 0.9325 min 0.9264 (frame 144)
 done
+### fit-torso2
+== prox-src --torso-bones proximal --rest source
+worker: 29 bones, samples {'walk': 64, 'swim': 64, 'harvest': 64}, initial rms 0.6939 (6s)
+worker-walk: 2834 vertices, 29 bones, 312912 bytes, rms 0.473 p95 0.938 max 2.913 flipped faces max 345 strayed normals max 511
+worker-swim: 2834 vertices, 29 bones, 312912 bytes, rms 0.512 p95 1.069 max 6.211 flipped faces max 676 strayed normals max 525
+worker-harvest: 2834 vertices, 29 bones, 312912 bytes, rms 0.642 p95 1.481 max 4.085 flipped faces max 505 strayed normals max 643
+silhouette IoU mean 0.9407 p5 0.9017 min 0.8799 (frame 254)
+== all-src --torso-bones all --rest source
+worker: 29 bones, samples {'walk': 64, 'swim': 64, 'harvest': 64}, initial rms 0.6955 (7s)
+worker-walk: 2834 vertices, 29 bones, 312912 bytes, rms 0.484 p95 0.989 max 3.235 flipped faces max 366 strayed normals max 495
+worker-swim: 2834 vertices, 29 bones, 312912 bytes, rms 0.507 p95 1.024 max 6.252 flipped faces max 559 strayed normals max 554
+worker-harvest: 2834 vertices, 29 bones, 312912 bytes, rms 0.640 p95 1.481 max 3.760 flipped faces max 509 strayed normals max 654
+silhouette IoU mean 0.9402 p5 0.9010 min 0.8785 (frame 254)
+== prox-unposed --torso-bones proximal --rest unposed
+worker: 29 bones, samples {'walk': 64, 'swim': 64, 'harvest': 64}, initial rms 0.5964 (7s)
+worker-walk: 2834 vertices, 29 bones, 312912 bytes, rms 0.466 p95 0.999 max 2.741 flipped faces max 341 strayed normals max 541
+worker-swim: 2834 vertices, 29 bones, 312912 bytes, rms 0.494 p95 1.015 max 6.018 flipped faces max 537 strayed normals max 581
+worker-harvest: 2834 vertices, 29 bones, 312912 bytes, rms 0.603 p95 1.296 max 3.703 flipped faces max 488 strayed normals max 627
+silhouette IoU mean 0.9407 p5 0.8991 min 0.8841 (frame 254)
+== all-unposed --torso-bones all --rest unposed
+worker: 29 bones, samples {'walk': 64, 'swim': 64, 'harvest': 64}, initial rms 0.5963 (6s)
+worker-walk: 2834 vertices, 29 bones, 312912 bytes, rms 0.466 p95 0.999 max 2.750 flipped faces max 326 strayed normals max 535
+worker-swim: 2834 vertices, 29 bones, 312912 bytes, rms 0.497 p95 1.010 max 6.071 flipped faces max 574 strayed normals max 592
+worker-harvest: 2834 vertices, 29 bones, 312912 bytes, rms 0.604 p95 1.298 max 3.633 flipped faces max 509 strayed normals max 616
+silhouette IoU mean 0.9411 p5 0.8996 min 0.8839 (frame 248)
+done

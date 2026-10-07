@@ -1,7 +1,7 @@
 # Fitted unit rigs: local review evidence
 
 Evidence for draft PR #821 after replacing the authored tube-and-sphere rigs with
-rigs fitted to the baked metaball clips. Tested commit: `44ec5319a` on
+rigs fitted to the baked metaball clips. Tested commit: `5a8885933` on
 `codex/worker-rig-pipeline` (previous head `d396f7e09`). Not a merge request;
 all candidates stay `accepted: false`.
 
@@ -13,11 +13,12 @@ platform lockfile.
 ## What changed in the look
 
 The rest surface is the same `limb_surface.py` fit the baked clips use,
-evaluated at the source rig's rest pose for the warrior; the worker's rest mesh
-is the baked frames un-posed through their bones and symmetrised, because its
-source rest surface is an hourglass (its body ball is smaller than the shoulder
-and hip balls) that skinning carried into every frame as a waist crease. Bones
-sit on the original metaball
+evaluated at the source rig's rest pose. Torso vertices may follow the body,
+the socket bones and each limb's first segment: in the baked frames the torso
+surface slides outward over the shoulder and hip lobes as the limbs move, and
+with the body and socket bones alone the limb rings covered the real torso,
+leaving a fold across its middle (`worker-torso-5x.png` shows the fixed torso
+at 5x; `torso-variants2.png` the variants). Bones sit on the original metaball
 chain (plus socket and segment-midpoint bones), weights are solved against
 every baked frame, and refinement moves bones only in translation and scale,
 bounded to one model unit, with rotations kept on the chain. Worker swim and
@@ -51,12 +52,12 @@ scored 82.5 % mean against this kind of reference.
 
 | Clip | RMS | p95 | max | IoU mean | IoU min | strayed normals max |
 | --- | --- | --- | --- | --- | --- | --- |
-| worker walk | 0.465 | 1.025 | 2.639 | 94.1 % | 88.6 % | 531 |
-| worker swim | 0.507 | 1.042 | 5.970 | 94.4 % | 90.7 % | 612 |
-| worker harvest | 0.621 | 1.363 | 3.270 | 94.1 % | 90.4 % | 570 |
-| warrior walk | 0.574 | 1.208 | 4.607 | 96.1 % | 92.9 % | 296 |
-| warrior swim | 1.126 | 2.559 | 8.223 | 91.9 % | 78.1 % | 450 |
-| warrior fight | 0.579 | 1.247 | 4.749 | 96.6 % | 95.1 % | 297 |
+| worker walk | 0.473 | 0.938 | 2.913 | 94.1 % | 88.0 % | 511 |
+| worker swim | 0.512 | 1.069 | 6.211 | 93.7 % | 87.6 % | 525 |
+| worker harvest | 0.642 | 1.481 | 4.085 | 93.7 % | 89.7 % | 643 |
+| warrior walk | 0.589 | 1.225 | 5.818 | 96.2 % | 93.0 % | 305 |
+| warrior swim | 1.124 | 2.543 | 8.240 | 92.0 % | 78.9 % | 477 |
+| warrior fight | 0.594 | 1.282 | 5.715 | 96.5 % | 94.6 % | 313 |
 
 "Strayed normals" counts vertices (of 2834 worker / 2450 warrior) whose
 rig-rotated rest normal differs from the posed surface normal by more than
@@ -71,9 +72,11 @@ Design choices and the measurements behind them (worker, from
   chain rotations and bounding bone displacement to one unit removed them at
   RMS 0.50.
 - Segment-midpoint bones lower the error by about a fifth over the bare chain.
-- The un-posed rest mesh removes the worker's waist crease (`torso-*.png`
-  sweeps); on the warrior it cracks the limb joints, so the warrior keeps the
-  source rest surface.
+- The fold across the worker's torso was not the rest mesh (an un-posed mean
+  rest moved it but did not remove it, and cracked the warrior's joints); it
+  came from torso vertices being limited to the body and socket bones. Letting
+  them follow each limb's first segment removes it at the same error
+  (`torso-variants2.png`, `torso-prox-other-frames.png`, `torso-diag-16.png`).
 - The warrior's swim stroke is not periodic across directions and keeps 256
   samples; its full retraction merges all limbs into one ball, which linear
   skinning cannot follow, hence its residual.
@@ -99,7 +102,7 @@ npm exec --prefix platform -- eslint platform/apps/web/e2e/rig-conformance.ts pl
 
 Results (logs in `logs/`):
 
-- Rig authoring suite (Blender): 7 passed (195 s).
+- Rig authoring suite (Blender): 7 passed (176 s).
 - Installed asset contract: 3 passed.
 - Native `Skin*`, `ColonySkinPreview`, `RenderBatch`: 47 cases passed, 0 failed.
 - Web unit tests: 72 passed; typecheck and eslint clean.
