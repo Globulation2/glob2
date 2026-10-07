@@ -1,0 +1,12 @@
+4,048,596,486 (100.0%)  PROGRAM TOTALS
+2,074,938,850 (51.25%)  ???:Engine::run() [/home/bradley/glob2-master-644/build/linux/client/release/src/glob2-sym]
+--- branch after Phase 1
+4,197,198,903 (100.0%)  PROGRAM TOTALS
+2,130,691,026 (50.76%)  ???:Engine::run() [/home/bradley/glob2-pr857/build/linux/client/release/src/glob2-sym]
+   71,460,050 ( 1.70%)  ???:SimulationSnapshot::Store::captureBoundary(Game const&, unsigned int) [/home/bradley/glob2-p
+   66,741,939 ( 1.59%)  ???:SimulationSnapshot::capture(Game const&, std::shared_ptr<std::vector<SimulationSnapshot::Bui
+--- PR 857 head 872b44685
+4,728,262,354 (100.0%)  PROGRAM TOTALS
+2,702,448,297 (57.16%)  ???:Engine::run() [/home/bradley/glob2-pr857/build/linux/client/release/src/glob2-sym]
+  728,043,497 (15.40%)  ???:SimulationSnapshot::capture(Game const&, std::shared_ptr<std::vector<SimulationSnapshot::Bui
+  289,005,155 ( 6.11%)  ???:void Map::visitPublishedResourceFields<SimulationSnapshot::capture(Game const&, std::shared_

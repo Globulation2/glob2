@@ -1,0 +1,6 @@
+ThreadSanitizer standalone executor test (scratch harness, g++ -fsanitize=thread), FIFO/lanes/errors/placement/stress
+#include "ComputeExecutor.h"
+#include <cstdio>
+#include <numeric>
+struct Counter { std::atomic<int> value{0}; std::vector<int> order; std::mutex m; };
+static void bump(void* c, std::size_t i) { auto* counter = static_cast<Counter*>(c); counter->value.fetch_add(int(i) + 1); std::lock_guard<std::mutex> l(counter->m); counter->order.push_back(int(i)); }
