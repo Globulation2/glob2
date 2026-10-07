@@ -1,0 +1,88 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="86" failures="0" errors="0" skipped="0"><testsuite name="ClientChannels"><testcase classname="ClientChannels" name="LosslessQueue hands every item over once, in order" time="0" status="run" />
+  <testcase classname="ClientChannels" name="concurrent event delivery preserves every value and coherent pulses" time="0.00168" status="run" />
+  <testcase classname="ClientChannels" name="order side effects reach the GUI as events" time="0.132047" status="run" />
+  <testcase classname="ClientChannels" name="queue callbacks can publish the next bounded batch" time="0" status="run" />
+  <testcase classname="ClientChannels" name="script queries observe commands before the client consumes them" time="0" status="run" />
+  <testcase classname="ClientChannels" name="scripts reach the client only through ClientCommandSink" time="0.24218" status="run" />
+  <testcase classname="ClientChannels" name="team events reach the GUI exactly once, in order, and age like Team::updateEvents" time="0.077195" status="run" />
+  </testsuite><testsuite name="GUIInteractionCoverage"><testcase classname="GUIInteractionCoverage" name="configured keyboard actions toggle presentation and queue pause without changing simulation [display]" time="0.89051" status="run" />
+  <testcase classname="GUIInteractionCoverage" name="construction choice displays recipe costs independently of storage [display][artifacts]" time="1.19909" status="run" />
+  <testcase classname="GUIInteractionCoverage" name="custom mixed building panels render without mutating simulation [display][artifacts]" time="0.955216" status="run" />
+  <testcase classname="GUIInteractionCoverage" name="desktop building menu clicks queue authoritative worker and priority orders [display]" time="0.949797" status="run" />
+  <testcase classname="GUIInteractionCoverage" name="home keyboard action wraps the camera and script messages preserve history [display]" time="0.735772" status="run" />
+  <testcase classname="GUIInteractionCoverage" name="match and editor dialogs wear the in-match theme; results dialogs stay on paper [display][artifacts]" time="0.837237" status="run" />
+  <testcase classname="GUIInteractionCoverage" name="match dialogs accept return and distinguish continuing from ending a game [display]" time="0.710011" status="run" />
+  <testcase classname="GUIInteractionCoverage" name="mixed service progress stays in its row and preserves downstream hit testing [display:1700x900][artifacts]" time="2.20607" status="run" />
+  <testcase classname="GUIInteractionCoverage" name="mixed upgrade preview tracks actual rows scroll and recipe inputs [display][artifacts]" time="1.17385" status="run" />
+  <testcase classname="GUIInteractionCoverage" name="resource inspectors show infinity only for stocked infinite yields [display:1024x768][artifacts]" time="0.921697" status="run" />
+  <testcase classname="GUIInteractionCoverage" name="service progress horizon covers mixed visits and preserves stock horizons" time="0.054741" status="run" />
+  <testcase classname="GUIInteractionCoverage" name="unit information reflects damage hunger ownership and abilities without mutating simulation [display][artifacts]" time="1.06405" status="run" />
+  </testsuite><testsuite name="GUIOrderCoverage"><testcase classname="GUIOrderCoverage" name="priority and radius requests clamp and reconcile against real orders" time="0.095431" status="run" />
+  <testcase classname="GUIOrderCoverage" name="reconciliation is field-specific and replay clears superseded shadows" time="0.081296" status="run" />
+  <testcase classname="GUIOrderCoverage" name="worker requests clamp deduplicate and retain newer pending changes" time="0.074207" status="run" />
+  </testsuite><testsuite name="GameGUISelection"><testcase classname="GameGUISelection" name="a building destroyed by a tick clears its selection and pending shadow" time="0.095885" status="run" />
+  <testcase classname="GameGUISelection" name="a converted unit stays selected" time="0.080288" status="run" />
+  <testcase classname="GameGUISelection" name="selection and failing-unit recording do not follow a reused gid" time="0.062862" status="run" />
+  <testcase classname="GameGUISelection" name="selection clears once its entity is destroyed" time="0.079187" status="run" />
+  </testsuite><testsuite name="LegacyScriptCoverage"><testcase classname="LegacyScriptCoverage" name="alliance levels preserve unrelated teams and apply vision masks" time="0.105541" status="run" />
+  <testcase classname="LegacyScriptCoverage" name="area waits observe team alliance and negation instead of unrelated units" time="0.10188" status="run" />
+  <testcase classname="LegacyScriptCoverage" name="authored flag aliases resolve game catalog IDs and respect missing definitions" time="0.146434" status="run" />
+  <testcase classname="LegacyScriptCoverage" name="count waits evaluate all building classes exact levels and unit comparisons" time="0.522252" status="run" />
+  <testcase classname="LegacyScriptCoverage" name="flag lifecycle and GUI commands change their real game objects" time="0.102139" status="run" />
+  <testcase classname="LegacyScriptCoverage" name="independent stories timers space and saved suspension resume exactly" time="0.099932" status="run" />
+  <testcase classname="LegacyScriptCoverage" name="invalid references and value boundaries report typed errors" time="0.100501" status="run" />
+  <testcase classname="LegacyScriptCoverage" name="legacy resetAI tokens with invalid player or implementation leave players intact" time="0.076931" status="run" />
+  <testcase classname="LegacyScriptCoverage" name="named highlights target distinct GUI elements and unhighlight restores state" time="0.092037" status="run" />
+  <testcase classname="LegacyScriptCoverage" name="objectives and hints resolve script numbers and persist in game snapshots" time="0.170376" status="run" />
+  <testcase classname="LegacyScriptCoverage" name="resetAI authoring accepts valid slots before an editor map has a player header" time="0.076381" status="run" />
+  <testcase classname="LegacyScriptCoverage" name="resetAI changes only the chosen player and rejects unsafe indices" time="0.110894" status="run" />
+  <testcase classname="LegacyScriptCoverage" name="summons respect painted area capacity and unit attributes" time="0.103917" status="run" />
+  <testcase classname="LegacyScriptCoverage" name="supported statements and wait forms compile" time="0.105097" status="run" />
+  <testcase classname="LegacyScriptCoverage" name="truncated arguments fail without accepting incomplete statements" time="0.099043" status="run" />
+  <testcase classname="LegacyScriptCoverage" name="unit and building highlights use map and panel channels independently" time="0.107589" status="run" />
+  </testsuite><testsuite name="SceneExtract"><testcase classname="SceneExtract" name="building events preserve concrete catalog IDs and key-only display names" time="0.181995" status="run" />
+  <testcase classname="SceneExtract" name="building sprite frames honor damage effective maximum and connection precedence" time="0.000123" status="run" />
+  <testcase classname="SceneExtract" name="connected overlays use configured groups and scene retains its catalog" time="0.101446" status="run" />
+  <testcase classname="SceneExtract" name="custom ground and overlay frames render connections and damage [display:1100x1100][artifacts]" time="1.35477" status="run" />
+  <testcase classname="SceneExtract" name="map service indicators follow arbitrary and free recipes" time="0" status="run" />
+  <testcase classname="SceneExtract" name="overlay maps match a direct computation and refresh per 25-tick window or type change" time="0.075745" status="run" />
+  <testcase classname="SceneExtract" name="published scene retains old entity fields while subsequent scenes reflect changes" time="0.07718" status="run" />
+  <testcase classname="SceneExtract" name="script area snapshots are opt-in and independent of later map edits" time="0.077759" status="run" />
+  <testcase classname="SceneExtract" name="smooth unit motion advances the drawn delta within the current action only" time="0.07865" status="run" />
+  <testcase classname="SceneExtract" name="snapshot preparation matches legacy queries and survives later live mutations" time="0.111046" status="run" />
+  <testcase classname="SceneExtract" name="snapshot preparation retains definitions after the source game is destroyed" time="0.079727" status="run" />
+  <testcase classname="SceneExtract" name="stale selection generation never selects a replacement occupying the same gid" time="0.072889" status="run" />
+  <testcase classname="SceneExtract" name="units and buildings resolve by gid with their drawn fields and the selection" time="0.077449" status="run" />
+  </testsuite><testsuite name="SharedWorkerLifecycle"><testcase classname="SharedWorkerLifecycle" name="background saves finish on a worker and remain readable after teardown" time="0.054975" status="run" />
+  <testcase classname="SharedWorkerLifecycle" name="pending gradient work survives a save and continues at the same deadlines" time="0.340555" status="run" />
+  <testcase classname="SharedWorkerLifecycle" name="resource catalog import drains deferred material preparation before replacing stocks" time="0.158906" status="run" />
+  </testsuite><testsuite name="WorldSnapshot"><testcase classname="WorldSnapshot" name="AI boundary validates each captured map array before fast reads" time="0.000422" status="run" />
+  <testcase classname="WorldSnapshot" name="AI fast scalar reads preserve checked values and frozen lease isolation" time="0.083727" status="run" />
+  <testcase classname="WorldSnapshot" name="a retained consumer leaves the newest free buffer to absorb only later changes" time="0.081155" status="run" />
+  <testcase classname="WorldSnapshot" name="a single cell change copies one chunk of one component into a reused buffer" time="0.099181" status="run" />
+  <testcase classname="WorldSnapshot" name="building snapshots copy shared scalar records and freeze selected stock" time="0.081583" status="run" />
+  <testcase classname="WorldSnapshot" name="capture requirements exclude arrays that no scheduled consumer requests" time="0.076686" status="run" />
+  <testcase classname="WorldSnapshot" name="capture verification rejects writes that bypass the change trackers" time="0.082321" status="run" />
+  <testcase classname="WorldSnapshot" name="catalog refresh survives intervening projections and rules reuse independently" time="0.079728" status="run" />
+  <testcase classname="WorldSnapshot" name="component leases and weak control blocks outlive the owning store" time="0.101385" status="run" />
+  <testcase classname="WorldSnapshot" name="component mutation generations preserve isolation and reuse unchanged arrays" time="0.079109" status="run" />
+  <testcase classname="WorldSnapshot" name="coordinate wrapping preserves signed edges for power of two and general dimensions" time="0.000356" status="run" />
+  <testcase classname="WorldSnapshot" name="explicit observation boundaries refresh paused state and retain old leases" time="0.073673" status="run" />
+  <testcase classname="WorldSnapshot" name="farm paint queries match frozen growth and resource inputs" time="0.0867" status="run" />
+  <testcase classname="WorldSnapshot" name="flat relationship ranges preserve every building list in order" time="0.071736" status="run" />
+  <testcase classname="WorldSnapshot" name="map snapshots bulk copy authoritative records without translation" time="0.08089" status="run" />
+  <testcase classname="WorldSnapshot" name="memory metrics distinguish held epochs from reusable high water capacity" time="0.072674" status="run" />
+  <testcase classname="WorldSnapshot" name="narrow component queries preserve combined tile values and projection defaults" time="0.089905" status="run" />
+  <testcase classname="WorldSnapshot" name="no-op map writes reuse components while changed values remain isolated" time="0.079332" status="run" />
+  <testcase classname="WorldSnapshot" name="on-demand construction feasibility matches live helpers and remains frozen" time="0.136096" status="run" />
+  <testcase classname="WorldSnapshot" name="pooled captures never overwrite a held worker projection" time="0.083953" status="run" />
+  <testcase classname="WorldSnapshot" name="projected terrain lease cannot retain unrelated world components" time="0.081404" status="run" />
+  <testcase classname="WorldSnapshot" name="same tick component expansion preserves narrow leases and captures arrays once" time="0.079227" status="run" />
+  <testcase classname="WorldSnapshot" name="shared entity indices preserve empty slots and canonical record addresses" time="0.088409" status="run" />
+  <testcase classname="WorldSnapshot" name="snapshot capability tables share authoritative immutable catalog data" time="0.081926" status="run" />
+  <testcase classname="WorldSnapshot" name="undermap changes preserve retained terrain and reuse unchanged versions" time="0.083439" status="run" />
+  <testcase classname="WorldSnapshot" name="unit snapshots share authoritative scalar state and remain frozen" time="0.118754" status="run" />
+  <testcase classname="WorldSnapshot" name="warm component buffers stop allocating at a fixed population" time="0.0829" status="run" />
+  <testcase classname="WorldSnapshot" name="worker final lease release synchronizes owner buffer reuse" time="0.002865" status="run" />
+  </testsuite></testsuites>

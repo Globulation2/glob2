@@ -1,0 +1,18 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="16" failures="0" errors="0" skipped="0"><testsuite name="ComputeExecutor"><testcase classname="ComputeExecutor" name="supported platforms execute jobs concurrently on distinct threads" time="0.000354" status="run" />
+    <testcase classname="ComputeExecutor" name="exclusive slots; nested batches; reuse; errors; barriers and reconfiguration" time="0.020925" status="run" />
+    <testcase classname="ComputeExecutor" name="deferred batches drain FIFO with owner participation, lanes, isolated errors and placements" time="0.108887" status="run" />
+    <testcase classname="ComputeExecutor" name="lane groups run in index order, placements cannot mix on a lane, and the horizon is bounded" time="0.001703" status="run" />
+    <testcase classname="ComputeExecutor" name="presentation cannot delay simulation barriers or run on the simulation owner" time="0.000924" status="run" />
+    <testcase classname="ComputeExecutor" name="presentation progresses before a continuous simulation backlog drains" time="0.00392" status="run" />
+    <testcase classname="ComputeExecutor" name="presentation replacement, chunk pumping, cancellation and errors retain no captures" time="0" status="run" />
+  </testsuite><testsuite name="FogFade"><testcase classname="FogFade" name="The first update settles every tile without fading" time="0" status="run" />
+    <testcase classname="FogFade" name="Darkening and revealing fade monotonically over their durations" time="0" status="run" />
+    <testcase classname="FogFade" name="Changing back mid-fade continues from the level reached" time="0" status="run" />
+    <testcase classname="FogFade" name="A short gap between ticks keeps fading from the new tick" time="0" status="run" />
+    <testcase classname="FogFade" name="A repeated tick changes nothing" time="0" status="run" />
+    <testcase classname="FogFade" name="A new map, other teams, a jump in time or a reset settle every tile" time="0" status="run" />
+    <testcase classname="FogFade" name="Shade alphas stack to the plain fog shade" time="0" status="run" />
+  </testsuite><testsuite name="SceneBuffer"><testcase classname="SceneBuffer" name="the consumer sees the newest published value and nothing before the first publish" time="0" status="run" />
+    <testcase classname="SceneBuffer" name="concurrent producer and consumer never observe torn or out-of-order values" time="0.051668" status="run" />
+  </testsuite></testsuites>

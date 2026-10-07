@@ -1,0 +1,10 @@
+{
+  "source": "0588770be31bb23c4a9d6af4565abeb2b4ab823b",
+  "base": "64406b082",
+  "platform": "Linux-7.0.0-31-generic-x86_64-with-glibc2.43",
+  "compiler": "g++ (Ubuntu 15.2.0-16ubuntu1) 15.2.0\nCopyright (C) 2025 Free Software Foundation, Inc.\nThis is free software; see the source for copying conditions.  There is NO\nwarranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.",
+  "SDL": "3.4.16\n3.4.6\n3.2.2\n3.2.0",
+  "build": "CCACHE=1 GLOB2_SDL3_PREFIX=/home/bradley/glob2-claude/build/sdl3/prefix scons -j8 release=1 server=0 optimized_assets=0 unit-tests engine-tests build/linux/client/release/src/glob2",
+  "latest_master_checked": "6831dcfefeaac6255c9a93222d0c567fb9359385",
+  "latest_master_integration": "git merge-tree --write-tree HEAD origin/master succeeded; only intervening files were test/check_javascript.py and test/test_javascript_evidence.py"
+}
