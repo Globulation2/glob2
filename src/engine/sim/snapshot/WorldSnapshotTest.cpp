@@ -336,14 +336,19 @@ TEST_SUITE("WorldSnapshot")
 		map.setAirUnit(20,20,map.getAirUnit(20,20));
 		map.setResourceAmount(index,map.getResource(index).amount);
 		map.setFertility(20,20,map.getTile(index).fertility);
-		map.setResourcesGrow(20,20,2); // Preserve the raw byte, with the same captured boolean.
+		map.setResourcesGrow(20,20,1); // Exact authoritative byte is unchanged.
 		auto& inactive=map.fogOfWar==map.fogOfWarA.data()?map.fogOfWarB:map.fogOfWarA;
 		inactive[index]=0; // Fixture setup: this plane is not exposed by the snapshot.
 		map.setMapDiscovered(20,20,1u);
 		const auto unchanged=next();
 		CHECK(unchanged.resources==original.resources); CHECK(unchanged.occupancy==original.occupancy);
 		CHECK(unchanged.visibility==original.visibility);
-		CHECK(map.getTile(index).canResourcesGrow==2); CHECK((inactive[index]&1u)==1u);
+		CHECK(map.getTile(index).canResourcesGrow==1); CHECK((inactive[index]&1u)==1u);
+		map.setResourcesGrow(20,20,2); // Both values allow growth, but their stored bytes differ.
+		const auto rawChanged=next();
+		CHECK(rawChanged.resources!=unchanged.resources);
+		CHECK(rawChanged.resourceAt(index).mayGrow==2);
+		CHECK(original.resourceAt(index).mayGrow==1);
 		map.setResourceAmount(index,Uint8(map.getResource(index).amount+1));
 		map.setFertility(20,20,Uint16(map.getTile(index).fertility+1));
 		map.setResourcesGrow(20,20,0);
