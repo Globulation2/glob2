@@ -1,0 +1,103 @@
+{
+  "platform": "Linux-7.0.0-31-generic-x86_64-with-glibc2.43",
+  "input_sha256": {
+    "examples/javascript/studio-starter.js": "f5f099760dc5085746c4112a3a91a3aad7075457895d44cfb5f8e949a7253d80",
+    "platform/apps/engine-agent/fixtures/ais/two.map.gz": "b3cba13a66f18eb2680df431c4e5b0b7bf594b9ada759283af981f3cc15f4a39"
+  },
+  "seed": 19,
+  "ticks": 1024,
+  "players": [
+    "javascript",
+    "numbi"
+  ],
+  "old_fixture_sha256": "3bfb63dd4724281d4c162fd144d137b6da64ed05d35e821511cefb71f28c22fe",
+  "merged_native_sha256": "1b0332b0c8e24b5dd71934e351b5778cd52510cdf56778792feb6799d400daeb",
+  "trace_bytes": 1849612,
+  "records": 1024,
+  "original_equals_pure_team_entity_records": true,
+  "approved_equals_merged_team_entity_records": true,
+  "first_pure_approved_team_entity_divergence": 581,
+  "first_entity": {
+    "team": 1,
+    "unit": 1025,
+    "fields": {
+      "posX": [
+        20,
+        19
+      ],
+      "posY": [
+        12,
+        13
+      ],
+      "dy": [
+        -1,
+        0
+      ],
+      "direction": [
+        2,
+        3
+      ],
+      "speed": [
+        16,
+        8
+      ],
+      "displacement": [
+        16,
+        2
+      ],
+      "movement": [
+        4,
+        5
+      ],
+      "action": [
+        3,
+        7
+      ]
+    }
+  },
+  "attribution": "All 1024 merged detailed records match the previously approved behavior-fixes control. Original fixture and pure control detailed records also match; first trajectory difference is tick581. This attributes the trajectory change to the approved fix set, not to this fixture repair. Aggregate checksums additionally include changed map header/catalog epochs. No claim identifying a single fix or broader gameplay equivalence.",
+  "arms": {
+    "original": {
+      "binary": "/home/bradley/.codex/worktrees/eded/glob2/artifacts/resource-followup/original-source/build/linux/client/release/src/glob2",
+      "binary_sha256": "3b66cdad51d6028c8919ad0272ba9c1a4ae5b7cacb9fdffc3ac4bd00217201df",
+      "trace_sha256": "3bfb63dd4724281d4c162fd144d137b6da64ed05d35e821511cefb71f28c22fe",
+      "trace_bytes": 1849612
+    },
+    "pure": {
+      "binary": "/home/bradley/.codex/worktrees/eded/glob2/artifacts/resource-followup/pr846-retained/symbolized-f0-pure/glob2",
+      "binary_sha256": "8296540a82234e060250b1b6d8d445743e239f7049e1bd6c5219c4f6c36accab",
+      "trace_sha256": "3bfb63dd4724281d4c162fd144d137b6da64ed05d35e821511cefb71f28c22fe",
+      "trace_bytes": 1849612
+    },
+    "approved": {
+      "binary": "/home/bradley/.codex/worktrees/eded/glob2/artifacts/resource-followup/pr846-retained/symbolized-f0-approved/glob2",
+      "binary_sha256": "91d3543383785811fc1fbd79ee497d6cdf7c67201464383ba09f471fbf741741",
+      "trace_sha256": "badef54a3faa5db70f8c69cb297b0af74773c4c65882f7352e74928e6904314a",
+      "trace_bytes": 1849612
+    },
+    "native": {
+      "binary": "/home/bradley/.codex/worktrees/eded/glob2/artifacts/resource-followup/merged-reference/glob2",
+      "binary_sha256": "77fb4b9d29432cdfea08734b4eb0b0d3eb7c354862fdc9820ba01c89a76333b6",
+      "trace_sha256": "1b0332b0c8e24b5dd71934e351b5778cd52510cdf56778792feb6799d400daeb",
+      "trace_bytes": 1849612
+    }
+  },
+  "command": "BINARY --run-game --map-file MAP --game-seed 19 --player javascript --ai-script 0:SOURCE --player numbi --ticks 1024 --replay true --telemetry checksums --save initial --save final --output-dir OUTPUT",
+  "environment": {
+    "LD_LIBRARY_PATH": "/tmp/glob2-terrain-sdl-patched/prefix/lib:/tmp/glob2-sdl3/prefix/lib",
+    "SDL_VIDEODRIVER": "dummy",
+    "SDL_AUDIODRIVER": "dummy",
+    "GLOB2_CHECKSUM_SIDECAR": "1",
+    "GLOB2_USER_DATA_DIR": "separate studio-ARM/profile"
+  },
+  "browser_evidence": {
+    "run": 37551820848,
+    "job": 112582896396,
+    "variants": [
+      "chromium serial",
+      "chromium threaded"
+    ],
+    "trace_sha256": "1b0332b0c8e24b5dd71934e351b5778cd52510cdf56778792feb6799d400daeb",
+    "full_six_browser_variants": "pending"
+  }
+}

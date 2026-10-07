@@ -1,0 +1,8 @@
+{
+  "native_inventory_rows": 564,
+  "macos_observed_rows": 564,
+  "committed_reference_rows": 544,
+  "missing": [],
+  "extra": [],
+  "expected_or_historical_tables_changed": false
+}
