@@ -63,6 +63,20 @@ Simulation CPU includes all threads through finishSession and final gradient dra
 
 The isolated runs reserve CPUs0–7 plus SMT siblings16–23, with engine affinity0–7 and ordinary work on8–15/24–31. Every owned build/profile/compression workload stops for timing. Whole-host busy time is not a contamination verdict under the partition: per-CPU reserved residual and outside activity are reported separately. Residuals include wrappers/kernel and coarse-jiffy/boundary skew; shared power, thermal, memory and interrupts remain possible influences. Governor/cpuset restoration and stable inputs are mandatory. No acceptance conclusion relies on the former percentage gates.
 
+## Refresh-backoff v3 preparation: copied bytes decrease, benefit still unmeasured
+
+Evidence-only v2/v3 counter builds preserve full before/after traces for Nicowar early8192 ticks, Maxima late8192 ticks and custom sparse5122048 ticks. Independent reread verifies six complete byte-identical trace pairs, stable source/runtime/fixture snapshots, frozen counter binary/patch identities and all counter arithmetic. These instrumented observations are **not performance measurements**.
+
+| Window | v2 hits→v3 hits | v2 refreshes→v3 refreshes | v2 copied bytes→v3 copied bytes |
+| --- | --- | --- | --- |
+| water-2-1002-nicowar-early | 6 → 1 | 7294 → 857 | 1,912,864,768 → 224,788,480 |
+| land-2-1002-maxima-late | 2187 → 1034 | 6005 → 1899 | 1,860,829,184 → 633,339,904 |
+| stress-512-0 | 3 → 0 | 2045 → 276 | 2,145,910,784 → 289,406,976 |
+
+The prototype bounds unsuccessful refresh frequency, reducing copy traffic in near-zero-hit Nicowar/custom workloads. Maxima exposes the tradeoff: hits drop2187→1034 while copied bytes fall1.86GB→0.63GB. Fewer bytes do not prove saved CPU; lost reuse may increase propagation work. The uninstrumented frozen v3 must pass independent correctness and the five-window controlled pilot before any broader retention decision. No catalog/schema/material/save/gameplay change is planned.
+
+[Diagnostic counter/fulltrace evidence](gradient-reuse-v3-preparation.zip) includes exact instrumented patches, headers, build/runtime identities, commands, all traces and arithmetic audit, omitting binaries with hashes retained. [Separate flat-IP analysis](gradient-reuse-v2-regression-analysis.zip) of the earlier six raw profiles records new worker copy samples but cannot distinguish hits from refresh copies because worker DWARF chains were incomplete; event-header warnings remain disclosed. Neither diagnostic replaces end-to-end CPU measurements.
+
 ## Reproducibility and tooling
 
 [Recovered98-window fixtures](recovered-98-windows.zip) retain exact required bytes after an unrelated worktree archival:31 missing fixtures regenerated with original7e54 and archived commands,37 reused, all identities audited. This was input recovery, not a tournament rerun. Extract using `fixture-paths.json`; relocate both argument paths and `fixture_sha256` keys, preserve hashes/tick bounds and original manifest, and write a new relocated manifest.

@@ -199,6 +199,20 @@ Reserved busy minus whole-child CPU averages 0.259461 cores, maximum 0.453687; o
 
 [Full raw custom stress evidence](gradient-reuse-v2-isolated-custom.zip) contains all outputs, commands, audits, statistical summaries and exact scripts. The full 98, eight-team and custom campaigns are now measured; unexplained performance costs and the final retention decision remain open.
 
+## Refresh-backoff v3 preparation: copied bytes decrease, benefit still unmeasured
+
+Evidence-only v2/v3 counter builds preserve full before/after traces for Nicowar early8192 ticks, Maxima late8192 ticks and custom sparse5122048 ticks. Independent reread verifies six complete byte-identical trace pairs, stable source/runtime/fixture snapshots, frozen counter binary/patch identities and all counter arithmetic. These instrumented observations are **not performance measurements**.
+
+| Window | v2 hits→v3 hits | v2 refreshes→v3 refreshes | v2 copied bytes→v3 copied bytes |
+| --- | --- | --- | --- |
+| water-2-1002-nicowar-early | 6 → 1 | 7294 → 857 | 1,912,864,768 → 224,788,480 |
+| land-2-1002-maxima-late | 2187 → 1034 | 6005 → 1899 | 1,860,829,184 → 633,339,904 |
+| stress-512-0 | 3 → 0 | 2045 → 276 | 2,145,910,784 → 289,406,976 |
+
+The prototype bounds unsuccessful refresh frequency, reducing copy traffic in near-zero-hit Nicowar/custom workloads. Maxima exposes the tradeoff: hits drop2187→1034 while copied bytes fall1.86GB→0.63GB. Fewer bytes do not prove saved CPU; lost reuse may increase propagation work. The uninstrumented frozen v3 must pass independent correctness and the five-window controlled pilot before any broader retention decision. No catalog/schema/material/save/gameplay change is planned.
+
+[Diagnostic counter/fulltrace evidence](gradient-reuse-v3-preparation.zip) includes exact instrumented patches, headers, build/runtime identities, commands, all traces and arithmetic audit, omitting binaries with hashes retained. [Separate flat-IP analysis](gradient-reuse-v2-regression-analysis.zip) of the earlier six raw profiles records new worker copy samples but cannot distinguish hits from refresh copies because worker DWARF chains were incomplete; event-header warnings remain disclosed. Neither diagnostic replaces end-to-end CPU measurements.
+
 ## Ranked remaining investigations and evidence rejections
 
 1. **Indexed-ring candidate rejected with controlled CPU evidence.** Original production code is restored. Preserve the diagnostic reduction in instructions alongside the null aggregate CPU result and Maxima slowdown; do not resurrect this patch from instruction counts alone.

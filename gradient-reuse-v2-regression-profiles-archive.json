@@ -1,0 +1,8 @@
+{
+  "path": "artifacts/resource-followup/publication/gradient-reuse-v2-regression-profiles.zip",
+  "sha256": "ab76d6ffdc4827c7dbc5cbbbd8cd0b2ba1851f5348207a7ecb3060a9eeba26dd",
+  "bytes": 15919787,
+  "entries": 86,
+  "timing_valid": false,
+  "contents": "Six raw perf.data records, per-TID stacks, reports, engine results/logs, source/symbol/provenance/input/restoration audits. No engine binaries. Header event-description warning retained; zero reported loss and all advertised raw sample headers decoded. Flat IP follow-up extraction and causal analysis are separate; worker DWARF callchains can be empty, so zero lost samples does not mean complete unwinding."
+}
