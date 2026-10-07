@@ -2,7 +2,7 @@
   "generator": "tools/artwork/terrain_synth.py",
   "method": "procedural",
   "generator_sha256": {
-    "tools/artwork/terrain_synth.py": "a8eda69c7b7212d9f9573766da37f1002a984d62327c108fb581e9a9c23830dc",
+    "tools/artwork/terrain_synth.py": "68ee111bc32af6bd9ea74cfe300cd0bdad708fc301aad03789f46edd90dace10",
     "tools/artwork/material_tiles.py": "224e159e0974023797710aa959994f11658c82da8fb80f9701e4abc13c74ed83"
   },
   "material": "chasm",
@@ -172,5 +172,23 @@
     "data/gfx/terrain-chasm13.png": "d663d764090f96945cd746796b4f994b6c99b9c52fbfc186fc6f956847bba105",
     "data/gfx/terrain-chasm14.png": "9a7bae243fe61f91f374254a495bf2bdb4783b20b4be69ff2ad43f12eab18a1a",
     "data/gfx/terrain-chasm15.png": "6e6396a06227d3356a755a1a06ff0b38efeec91a0fd98de0d2af8961f9df0942"
+  },
+  "highres_sha256": {
+    "data/highres/v1/terrain-chasm0.png": "024f412cd96972eba4ab31799352015562256a6ca7a1cf1aec9398951d0ef843",
+    "data/highres/v1/terrain-chasm1.png": "8cb6221704c432ddc3a7e57e7cce3fce9bc75fd7456f14684c96fa94ff460753",
+    "data/highres/v1/terrain-chasm2.png": "a1dbab762f397e76f114b9c15359c98f27fcade524303f7990fe706a788d38a6",
+    "data/highres/v1/terrain-chasm3.png": "4419100cf2e412c945b30b1363022b556a14a033d2cde43c94d592123793a0bf",
+    "data/highres/v1/terrain-chasm4.png": "005bdd52ec0f3949232b46d5d492043fd066775da87783ddb68615d41cf88060",
+    "data/highres/v1/terrain-chasm5.png": "eee473599c5f021bbe625a9d4b34643c98322886bc9e50a9ef093064a9c84808",
+    "data/highres/v1/terrain-chasm6.png": "2bd4f403e618ad10594c2373b945fe9be564db413ed58e496ed5b87258a82a18",
+    "data/highres/v1/terrain-chasm7.png": "2af125c6b733669fd1571d1b3f8e5162bd11cea328a0722c52edb6cb8357f66d",
+    "data/highres/v1/terrain-chasm8.png": "a54810ed75a18d9ce1defdd3701f209f4e451b449eb0959e3121d13e3b28d1bd",
+    "data/highres/v1/terrain-chasm9.png": "72caf0bdfca41d86d3111cce4ba4764d976738f77b98e0d5c87edb2667d04fea",
+    "data/highres/v1/terrain-chasm10.png": "af50c92d1b4754d1e5a5b2d47800635d87dfe035098464412c2d6744e832cf5a",
+    "data/highres/v1/terrain-chasm11.png": "bf6265e5e4ebf842e9c8aba5aaa63fe32325ea4c7b3a913de01ada34af115eb6",
+    "data/highres/v1/terrain-chasm12.png": "7e3c79393ead4a1c81f787004d280fb9e6e09dccf288c32f5645a5601375aaad",
+    "data/highres/v1/terrain-chasm13.png": "17795f4b83ffaf74e59dbe69e91f2acc37ce8b4d987e02ca1a6487072a2c0540",
+    "data/highres/v1/terrain-chasm14.png": "6e61c0a0c771892c52ea24e06d07ba4860bf34b5db33c3cdbd3c0d2d59ebe02a",
+    "data/highres/v1/terrain-chasm15.png": "d2d980dd85db93199a2792878e5e77eac4993eb72f8dbd43431a51d9e8db9711"
   }
 }

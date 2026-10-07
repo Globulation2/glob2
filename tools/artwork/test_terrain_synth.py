@@ -36,7 +36,7 @@ class TerrainSynth(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
-        cls.results = synth.synthesize(synth.BUILTIN_ORDER)
+        cls.results, cls.hd = synth.synthesize_both(synth.BUILTIN_ORDER)
 
     def tiles(self, name, phase=0):
         return self.results[name][phase]
@@ -54,7 +54,37 @@ class TerrainSynth(unittest.TestCase):
             if synth.RECIPES[name].placeholder_only:
                 continue
             with self.subTest(material=name):
-                self.assertEqual(synth.check_material(name, self.results[name], ROOT), [])
+                self.assertEqual(synth.check_material(name, self.results[name], ROOT, self.hd[name]), [])
+
+    def test_every_catalogue_sprite_frame_has_registered_hd(self):
+        """Native-only terrain is limited to legacy art without an HD source."""
+        catalog = json.loads((ROOT / "data/terrain/tileset.json").read_text())
+        rows = {line.split()[0] for line in (ROOT / "data/highres/v1/frames.txt").read_text().splitlines()[1:]}
+        native_only = {"data/gfx/terrain", "data/gfx/terrain-cobblestone"}
+        for material in catalog["materials"]:
+            sprite = material["sprite"]
+            if sprite in native_only or material.get("ocean"):
+                continue
+            stem = sprite.removeprefix("data/gfx/")
+            phases = material.get("animation_frames", 1)
+            stride = material.get("animation_stride", 0)
+            for variant in material["variants"]:
+                for phase in range(phases):
+                    frame = f"{stem}{variant['frame'] + phase * stride}"
+                    with self.subTest(frame=frame):
+                        self.assertIn(frame, rows)
+                        self.assertTrue((ROOT / "data/highres/v1" / f"{frame}.png").is_file())
+
+    def test_hd_frames_match_their_classic_downsample(self):
+        """HD frames are the 4x source of the classic tiles, not a separate look."""
+        _, hd = synth.synthesize_both(["gravel", "lava"], jobs=1)
+        for name, phases in hd.items():
+            for phase, tiles in phases.items():
+                for tile, native in zip(tiles, self.tiles(name, phase)):
+                    with self.subTest(material=name, phase=phase):
+                        self.assertEqual(tile.size, (4 * TILE, 4 * TILE))
+                        down = tile.convert("RGB").resize((TILE, TILE), Image.Resampling.BOX)
+                        self.assertLess(color_distance(mean_color([down]), mean_color([native])), 6)
 
     def test_second_synthesis_is_identical(self):
         again = synth.synthesize(["dirt", "lava"], jobs=1)

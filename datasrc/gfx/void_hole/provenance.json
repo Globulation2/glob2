@@ -2,7 +2,7 @@
   "generator": "tools/artwork/terrain_synth.py",
   "method": "procedural",
   "generator_sha256": {
-    "tools/artwork/terrain_synth.py": "a8eda69c7b7212d9f9573766da37f1002a984d62327c108fb581e9a9c23830dc",
+    "tools/artwork/terrain_synth.py": "68ee111bc32af6bd9ea74cfe300cd0bdad708fc301aad03789f46edd90dace10",
     "tools/artwork/material_tiles.py": "224e159e0974023797710aa959994f11658c82da8fb80f9701e4abc13c74ed83"
   },
   "material": "void_hole",
@@ -167,5 +167,23 @@
     "data/gfx/terrain-void_hole13.png": "6dde3b2790443ef0eea2f4144f002e422b06129ea3209be75f8aba19c943a557",
     "data/gfx/terrain-void_hole14.png": "e41e11e74501aacb3fa1ced0f7a1b8d5e3f729f80893c1c7761e308e46607167",
     "data/gfx/terrain-void_hole15.png": "7f092e9c75303831ecf6658ae510cc1e3bdb0e83f0828358f40f2079e3aed3cf"
+  },
+  "highres_sha256": {
+    "data/highres/v1/terrain-void_hole0.png": "f2fa18d6d38f82a891363bc8ca2c4c3d41f36ca6344a252e290f04f395033d15",
+    "data/highres/v1/terrain-void_hole1.png": "ac6d3f28eaf7ea745cf622bd5b4dd4b7a3f65e744ae53992fbfd3be130a63f90",
+    "data/highres/v1/terrain-void_hole2.png": "7ce297f126399773678d9df44c04356548b82305b0e8b55a755dbc8e7011e91d",
+    "data/highres/v1/terrain-void_hole3.png": "cb8b520693ff64392956682532f1a7809d315eb417c8fceab0762b66f361708d",
+    "data/highres/v1/terrain-void_hole4.png": "8aa7767cbd8138b10a29570e23f6a5839e3c5061fe369133e446694f27a495e0",
+    "data/highres/v1/terrain-void_hole5.png": "7d878ded01acf2c719b76abc03d076755342cec79e26b48eae60bed512d9021f",
+    "data/highres/v1/terrain-void_hole6.png": "caae5f9502e162a8d850aa546a86a9860242348ab9a355bbc5e6e7d655d224c6",
+    "data/highres/v1/terrain-void_hole7.png": "19a6507c209b84ce11b670bab3669cd0413071553a20139b51c3d0e0f3136a2b",
+    "data/highres/v1/terrain-void_hole8.png": "5f9c8b766035f673d33e2071c6784f2aa5f30301fae28223941b2d1daa5a609c",
+    "data/highres/v1/terrain-void_hole9.png": "2b7e4119129849b11a04dd4379cc69f6f33d5de7d2db55c92b60b77dbad30bde",
+    "data/highres/v1/terrain-void_hole10.png": "750d8740cd786cfae3b40c23495f91589cfe44d659cda258fd2e76492aa6b98d",
+    "data/highres/v1/terrain-void_hole11.png": "9cf648974f17b65865c75cd6021aa1ba8567f88e9ea8acf518792b571180d4b5",
+    "data/highres/v1/terrain-void_hole12.png": "72776fe81298b322d9ffb7f018cd34ea5d93f7e8b41f75d1886f8dfa617113ec",
+    "data/highres/v1/terrain-void_hole13.png": "211bc0d63a0fc8e8513344bc679c42e37388f017ef1c57d115ef4940d187e3e1",
+    "data/highres/v1/terrain-void_hole14.png": "6a80061770742410973c5073389c63992b4f8b943031623a6e336713431dfe67",
+    "data/highres/v1/terrain-void_hole15.png": "341d9ec0d7a30b44ec646bb8853eefcaa7af57fd2c22888613e6cc13a8d54b84"
   }
 }

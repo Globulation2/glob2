@@ -59,8 +59,8 @@ def validate_frames(root, pack, manifest):
                 require(role in layers, f'Missing {role} layer: {frame_id}')
     expected = {p.stem.removesuffix('r') for p in (root / 'data/gfx').glob('*.png')
                 if WORLD_FRAME.fullmatch(p.name)}
-    # New experimental terrain is compiled by the shared tileset pipeline and
-    # uses native fallback. This HD pack covers the 272 legacy connected tiles.
+    # Legacy connected terrain must cover the 272 atlas tiles; catalogue
+    # materials (terrain-<name>N) register standalone 4x frames instead.
     connected = topology(root)
     expected = {name for name in expected if not name.startswith('terrain') or
                 int(name.removeprefix('terrain')) in connected}

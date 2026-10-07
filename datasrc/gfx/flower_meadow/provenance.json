@@ -2,7 +2,7 @@
   "generator": "tools/artwork/terrain_synth.py",
   "method": "procedural",
   "generator_sha256": {
-    "tools/artwork/terrain_synth.py": "a8eda69c7b7212d9f9573766da37f1002a984d62327c108fb581e9a9c23830dc",
+    "tools/artwork/terrain_synth.py": "68ee111bc32af6bd9ea74cfe300cd0bdad708fc301aad03789f46edd90dace10",
     "tools/artwork/material_tiles.py": "224e159e0974023797710aa959994f11658c82da8fb80f9701e4abc13c74ed83"
   },
   "material": "flower_meadow",
@@ -186,5 +186,23 @@
     "data/gfx/terrain-flower_meadow13.png": "e6f2bb37c5c5caa4030e27b81c4ecbeac642e204ad80dcfad68135c8bd3de2ca",
     "data/gfx/terrain-flower_meadow14.png": "eabccf114b122eba5d3cceb8f6fc2eba361b7cfdbce8217f61637f5782374857",
     "data/gfx/terrain-flower_meadow15.png": "d20565f57f446ac6bde200083cd5f7387dced51f27d15aab7e56e8303f608310"
+  },
+  "highres_sha256": {
+    "data/highres/v1/terrain-flower_meadow0.png": "861f70f4ce9175cf32b6e3cf228c581b80d36df35ab7121b2c536f6b5109c97f",
+    "data/highres/v1/terrain-flower_meadow1.png": "30bebd524d972077cf6042f8f7bd9ca75195b4b853f2d019f9b9bbba105f467e",
+    "data/highres/v1/terrain-flower_meadow2.png": "cacb3aa37aa75ec1d72766e0f193b03606d217672e3e7e65cbf51e76c65a7dfe",
+    "data/highres/v1/terrain-flower_meadow3.png": "2db986fed17f29552ea2215b7cb7ea0a92398d70e145a41551ff9463356440a1",
+    "data/highres/v1/terrain-flower_meadow4.png": "c7e7d31b083465414db8fdca7a70bfd039a2efa13f5974c501e71368157f1add",
+    "data/highres/v1/terrain-flower_meadow5.png": "1887fec93c990638452a319869b1172cdc72bde92a6010b24dab3cbc720f708b",
+    "data/highres/v1/terrain-flower_meadow6.png": "cb0e8c2b3d1d00bee7c04fcf5ca5418d4291267e47d34dc6c6c289653547d53b",
+    "data/highres/v1/terrain-flower_meadow7.png": "70135fe329ce98983ac1195ab79b6f11516cbc389cd90609adba25f0982d61b3",
+    "data/highres/v1/terrain-flower_meadow8.png": "a67f2837f89f26028fcdd23b9b6dcf611b5c9a9e2419059d58c9417eafecbc95",
+    "data/highres/v1/terrain-flower_meadow9.png": "86eebf46f22a59e93917db1ca65438282dd5f1afdd6c2f77804df40c0d716a51",
+    "data/highres/v1/terrain-flower_meadow10.png": "c723ea0125d44ffbdb7c2b79bfa7aa3aa5a790e11bfd574fc67922d9578db361",
+    "data/highres/v1/terrain-flower_meadow11.png": "045f66201583bd9465b454c41fbe1db44309bc08820956622007d3a46a05c10b",
+    "data/highres/v1/terrain-flower_meadow12.png": "d0e390cf5f6cae6289fd051f5647cb65cb4762b1aa56e4d459b30b1dd9aebb22",
+    "data/highres/v1/terrain-flower_meadow13.png": "44ba23a04eda9b6e07f624a52570a2556259f1ca74afc8a22c04644c83d0b55a",
+    "data/highres/v1/terrain-flower_meadow14.png": "3f2be8d83dc13bb02f46533ba1863d7948f6081177deb9a57b9551088b213ff2",
+    "data/highres/v1/terrain-flower_meadow15.png": "6b86600018442c8e2128bbec8d3dd767a9abbdc2ca626fb65b00c94bd9b70753"
   }
 }

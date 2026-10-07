@@ -2774,17 +2774,17 @@
     {
       "runtime": "manifest.json",
       "source": "pack-metadata/manifest.json",
-      "sha256": "48e7abc9b00eca08d7923dd6c373cc0b0fa12d7335d3a6ac5d3cfbb2565c0bac"
+      "sha256": "906353ec4ea0be587b7cfbd4909a5d5768f7f1fe471b4439e81bc8c7b5c35290"
     },
     {
       "runtime": "frames.txt",
       "source": "pack-metadata/frames.txt",
-      "sha256": "11d005b4761078fac39ccdd12c4953f8d695b4d442856f9dc9092514ad7972e5"
+      "sha256": "fcf13527ff4499024eaaf62e271c40768e555dca0b008caac3ef76f66a262824"
     },
     {
       "runtime": "README.md",
       "source": "pack-metadata/README.md",
-      "sha256": "05bed337d88f0efafe80085fd07305a55cfb971425e4fdb20b90759f363b2217"
+      "sha256": "869fc986750f8eb2189674f6cb71febf201d8313fb9e8b339c121fe0a4f4270f"
     },
     {
       "runtime": "area-farm0.png",
@@ -16905,6 +16905,2406 @@
       "runtime": "unit1791.png",
       "source": "original-derived/unit1791.png",
       "sha256": "a9a2b25c1863494d676b4d4bf7aef90d6328f4656b731eaab25c6c618d72d92b"
+    },
+    {
+      "runtime": "terrain-boulders0.png",
+      "source": "procedural-materials/terrain-boulders0.png",
+      "sha256": "d8c523b3eae4158fd528cd4822837316614d2d29b662c831982ec143e510e9d0"
+    },
+    {
+      "runtime": "terrain-boulders1.png",
+      "source": "procedural-materials/terrain-boulders1.png",
+      "sha256": "a1200dc7c38482c5971a3cda7adde5d56eea70238ba33e7a14b8f6fcd765261e"
+    },
+    {
+      "runtime": "terrain-boulders2.png",
+      "source": "procedural-materials/terrain-boulders2.png",
+      "sha256": "f76ab687f5e579ddd7f5c8c6d8cf14c394f6a1bad37758ee2a09c29a855375af"
+    },
+    {
+      "runtime": "terrain-boulders3.png",
+      "source": "procedural-materials/terrain-boulders3.png",
+      "sha256": "8bb9a93d7eb5cb679469329b5dc5f60820a894557cc46cb34b41e1bc5e58f84e"
+    },
+    {
+      "runtime": "terrain-boulders4.png",
+      "source": "procedural-materials/terrain-boulders4.png",
+      "sha256": "3dddff3740ef04b537e1b3557eac1d3418eaabc3b0eebb8b047c2eefb25fc82a"
+    },
+    {
+      "runtime": "terrain-boulders5.png",
+      "source": "procedural-materials/terrain-boulders5.png",
+      "sha256": "73a4ef550dc1dc8f600b5fdabc0e50616d15301615da0acb3ba57e71f40283ac"
+    },
+    {
+      "runtime": "terrain-boulders6.png",
+      "source": "procedural-materials/terrain-boulders6.png",
+      "sha256": "0984bbaa31a588b9760dcd9cafc89b74f94127fd9db13961cde33d6e6bf4f28a"
+    },
+    {
+      "runtime": "terrain-boulders7.png",
+      "source": "procedural-materials/terrain-boulders7.png",
+      "sha256": "0a1e82b6958c6b590e237c08bfff139e7783c8a8e372fd1473aa2a21a1fe399c"
+    },
+    {
+      "runtime": "terrain-boulders8.png",
+      "source": "procedural-materials/terrain-boulders8.png",
+      "sha256": "ced471dc1fd38a46a50537bcefdd9e3a1e35b6c6b8885d738a8f4cdcc91192a0"
+    },
+    {
+      "runtime": "terrain-boulders9.png",
+      "source": "procedural-materials/terrain-boulders9.png",
+      "sha256": "8e0b80f2fff8af13badd581d976e3917b159d2b278a9a059ee902017ffe06c5f"
+    },
+    {
+      "runtime": "terrain-boulders10.png",
+      "source": "procedural-materials/terrain-boulders10.png",
+      "sha256": "3df67ae5ee420a3a798ff53fbb4b3a17dd3110bde5c7e88bd1b6b9a67470db5c"
+    },
+    {
+      "runtime": "terrain-boulders11.png",
+      "source": "procedural-materials/terrain-boulders11.png",
+      "sha256": "36816b1a22df4450c62187863dd405177feeed45e2dc6ce440353765a112bae1"
+    },
+    {
+      "runtime": "terrain-boulders12.png",
+      "source": "procedural-materials/terrain-boulders12.png",
+      "sha256": "bb2134ffed96a900228e43a372e90c1483031bfbcc5d7818333a7f2a42272e38"
+    },
+    {
+      "runtime": "terrain-boulders13.png",
+      "source": "procedural-materials/terrain-boulders13.png",
+      "sha256": "ea1a61bc568d5ace4c915c8cf23630930d83a8fcb4428c8038e3428d6c6c7f84"
+    },
+    {
+      "runtime": "terrain-boulders14.png",
+      "source": "procedural-materials/terrain-boulders14.png",
+      "sha256": "328a6adce2e983490e981233214a7d51de921bf8761633105bf2aa679e7fef6a"
+    },
+    {
+      "runtime": "terrain-boulders15.png",
+      "source": "procedural-materials/terrain-boulders15.png",
+      "sha256": "942764b1b85b3b21b60a38e6d87f49e27409b5fa8101f89b2971e9a3a62b1ad7"
+    },
+    {
+      "runtime": "terrain-hedge0.png",
+      "source": "procedural-materials/terrain-hedge0.png",
+      "sha256": "f575f49dbc5e7ff7809b3975990098770c9b7e715b5c6141bddcd25579e9aad7"
+    },
+    {
+      "runtime": "terrain-hedge1.png",
+      "source": "procedural-materials/terrain-hedge1.png",
+      "sha256": "be8ea71bc2f88a741796dc002629967a98a500aa7ebfb9d41034cf8892deaa97"
+    },
+    {
+      "runtime": "terrain-hedge2.png",
+      "source": "procedural-materials/terrain-hedge2.png",
+      "sha256": "5abaa00e06ff232253c0b7cef161925826eccfabf1c5dec3a29c90a4048df415"
+    },
+    {
+      "runtime": "terrain-hedge3.png",
+      "source": "procedural-materials/terrain-hedge3.png",
+      "sha256": "f96ac4e8c01a464451f1c5f342eff48ef10fc00791e9326138a41559cdbb2001"
+    },
+    {
+      "runtime": "terrain-hedge4.png",
+      "source": "procedural-materials/terrain-hedge4.png",
+      "sha256": "29f96df472cf62e170b091d9085f717031f29669effd1bbed8fcbc667d65ec43"
+    },
+    {
+      "runtime": "terrain-hedge5.png",
+      "source": "procedural-materials/terrain-hedge5.png",
+      "sha256": "cbf783ad6216adb4e1a667afe25c67123fe33912917149cb7f597c9bf1341eb1"
+    },
+    {
+      "runtime": "terrain-hedge6.png",
+      "source": "procedural-materials/terrain-hedge6.png",
+      "sha256": "b9c030281c33b44850ca59a7bafd9dbf2ef321d60897c6d9031c2b6c95d16dfd"
+    },
+    {
+      "runtime": "terrain-hedge7.png",
+      "source": "procedural-materials/terrain-hedge7.png",
+      "sha256": "d2ec94c199b92998a3bbcbf92e151a0b7686400edae65d1e4870251ada9153fb"
+    },
+    {
+      "runtime": "terrain-hedge8.png",
+      "source": "procedural-materials/terrain-hedge8.png",
+      "sha256": "21fe825519b5c220397e3f55bab6b02a06f2dc702581de29589554e66b9405b1"
+    },
+    {
+      "runtime": "terrain-hedge9.png",
+      "source": "procedural-materials/terrain-hedge9.png",
+      "sha256": "a5aa14fb95a36af4cd51d23cdd1b5509b1cef6c5258c13bd263dd932dac0e468"
+    },
+    {
+      "runtime": "terrain-hedge10.png",
+      "source": "procedural-materials/terrain-hedge10.png",
+      "sha256": "9d45a594fe2ebd5a691323a3b7eb0fe60e483182d14c9c4f1814456553fc3651"
+    },
+    {
+      "runtime": "terrain-hedge11.png",
+      "source": "procedural-materials/terrain-hedge11.png",
+      "sha256": "b91e2c4ceeb07246cdff29690ecf6cf47225aed644ccaca545d2b75ab6f439ad"
+    },
+    {
+      "runtime": "terrain-hedge12.png",
+      "source": "procedural-materials/terrain-hedge12.png",
+      "sha256": "1f5d11d320d30d129be634b25018bd84cf6f80b4ac2958899c1d42f4c4ff732b"
+    },
+    {
+      "runtime": "terrain-hedge13.png",
+      "source": "procedural-materials/terrain-hedge13.png",
+      "sha256": "fcc7398cf18038175ae1a71bdfd72ee6eb9840a7e32404c62b01ed2a3d1adbd0"
+    },
+    {
+      "runtime": "terrain-hedge14.png",
+      "source": "procedural-materials/terrain-hedge14.png",
+      "sha256": "30029545618f8728e0c254f4d2c5b95a3e8d0d163110df7052ccdd24aaa88618"
+    },
+    {
+      "runtime": "terrain-hedge15.png",
+      "source": "procedural-materials/terrain-hedge15.png",
+      "sha256": "c364f1be7becbdbe477a01e217d42d3c940067bd406fec51ea5b6cfc12100167"
+    },
+    {
+      "runtime": "terrain-thicket0.png",
+      "source": "procedural-materials/terrain-thicket0.png",
+      "sha256": "e1b7e21fd72b7936d0e62d19c42c384535e51e31f1272d4fdc380d90e5760695"
+    },
+    {
+      "runtime": "terrain-thicket1.png",
+      "source": "procedural-materials/terrain-thicket1.png",
+      "sha256": "655089f4e8e1aeb088eaafd4b5dd07c23e36733c78af66194f97560d7f7477a7"
+    },
+    {
+      "runtime": "terrain-thicket2.png",
+      "source": "procedural-materials/terrain-thicket2.png",
+      "sha256": "5f3d0771c60ee3acc29d61c9518e88135a0216bbe35b43d430fcb16f696cbecf"
+    },
+    {
+      "runtime": "terrain-thicket3.png",
+      "source": "procedural-materials/terrain-thicket3.png",
+      "sha256": "06df887bd51081a2ad59f6e086d142f8404b226a41f35bb99f1377ac08567b88"
+    },
+    {
+      "runtime": "terrain-thicket4.png",
+      "source": "procedural-materials/terrain-thicket4.png",
+      "sha256": "2eb2bfa618497d6065f6e08b3e49523a19b6ec7add71bc56f09702c6112d77d9"
+    },
+    {
+      "runtime": "terrain-thicket5.png",
+      "source": "procedural-materials/terrain-thicket5.png",
+      "sha256": "cf98ac9f9d65099bf26daddcdc8f1b6eae78429e6a6878f91ac25cd9d88e61ed"
+    },
+    {
+      "runtime": "terrain-thicket6.png",
+      "source": "procedural-materials/terrain-thicket6.png",
+      "sha256": "bf72fc335f3103e2361740fc2a57cd908e8ea0b16378bee5a2cd3af9c1846d07"
+    },
+    {
+      "runtime": "terrain-thicket7.png",
+      "source": "procedural-materials/terrain-thicket7.png",
+      "sha256": "2d6413b3d19483a1802b4b5d16d1f4e87fe806078e1bd0b727df6f63f242dea0"
+    },
+    {
+      "runtime": "terrain-thicket8.png",
+      "source": "procedural-materials/terrain-thicket8.png",
+      "sha256": "4c3c62a93dd8c3efc80103e7b1d34dff90159e609368eecb124f0fc101e124ad"
+    },
+    {
+      "runtime": "terrain-thicket9.png",
+      "source": "procedural-materials/terrain-thicket9.png",
+      "sha256": "a562e050ffb7d3fdfb67382c10f15f7af7c9fa3f1a797f7bbbb37c36c4975999"
+    },
+    {
+      "runtime": "terrain-thicket10.png",
+      "source": "procedural-materials/terrain-thicket10.png",
+      "sha256": "411e4321a22b8962d8d2f2ce1036d656ce72bd0a2cc0d719558b99fe2790c0a5"
+    },
+    {
+      "runtime": "terrain-thicket11.png",
+      "source": "procedural-materials/terrain-thicket11.png",
+      "sha256": "78bea7e02f3a1aa3d890cf19fa12c1e97d2465511203c8fdc0da28b24d6d1e06"
+    },
+    {
+      "runtime": "terrain-thicket12.png",
+      "source": "procedural-materials/terrain-thicket12.png",
+      "sha256": "7c03a845dcde0fe85b6116fd92f86a61d5ce55eb04eb5d9e212f8c8db879d457"
+    },
+    {
+      "runtime": "terrain-thicket13.png",
+      "source": "procedural-materials/terrain-thicket13.png",
+      "sha256": "3eaa5436cb7d94bce88d9e6593944db222294759c176a62063e6dbcd6d6d3202"
+    },
+    {
+      "runtime": "terrain-thicket14.png",
+      "source": "procedural-materials/terrain-thicket14.png",
+      "sha256": "31382a8fd5d5c99a317918ef986703cb092339618a747ef98653fa2ba4c3f353"
+    },
+    {
+      "runtime": "terrain-thicket15.png",
+      "source": "procedural-materials/terrain-thicket15.png",
+      "sha256": "636d5da6f47a1c0f722a59eeb848ebe45e34126c61d3261ae8014d1dd41e787e"
+    },
+    {
+      "runtime": "terrain-ridge_rock0.png",
+      "source": "procedural-materials/terrain-ridge_rock0.png",
+      "sha256": "2c58b840a5d60feb70f3e88a1b52a7b3144d021b3ca2bdc8c257afdc713d72de"
+    },
+    {
+      "runtime": "terrain-ridge_rock1.png",
+      "source": "procedural-materials/terrain-ridge_rock1.png",
+      "sha256": "f4e3f54efcc47b6730442b447754594b27659b5cc1c04a1c82ac82f009ee4f03"
+    },
+    {
+      "runtime": "terrain-ridge_rock2.png",
+      "source": "procedural-materials/terrain-ridge_rock2.png",
+      "sha256": "a45c93a35d3f875d1ce4de503ccbaa896aa08ad63a753aa8e7866d005be44abe"
+    },
+    {
+      "runtime": "terrain-ridge_rock3.png",
+      "source": "procedural-materials/terrain-ridge_rock3.png",
+      "sha256": "32177772b314ee0f46999c084328c72170199bd03040d70c54335da63a845414"
+    },
+    {
+      "runtime": "terrain-ridge_rock4.png",
+      "source": "procedural-materials/terrain-ridge_rock4.png",
+      "sha256": "904f29b4f0b6d40c0d702a80f4b7ac5dca56897c6a77845089c30499589f5d25"
+    },
+    {
+      "runtime": "terrain-ridge_rock5.png",
+      "source": "procedural-materials/terrain-ridge_rock5.png",
+      "sha256": "9a33e32ada5f5539cc4e39513d50d30ef31823ce7085433c61cfada4c53869f2"
+    },
+    {
+      "runtime": "terrain-ridge_rock6.png",
+      "source": "procedural-materials/terrain-ridge_rock6.png",
+      "sha256": "b632eb6ed17faf5d235dba6d6a3fe28e9916cf8256fedc3d0f46ef027c03598f"
+    },
+    {
+      "runtime": "terrain-ridge_rock7.png",
+      "source": "procedural-materials/terrain-ridge_rock7.png",
+      "sha256": "bb340f0a213db57d4c5f90cd571bf4cf8d1a44f712fe5c3440247f646d38e219"
+    },
+    {
+      "runtime": "terrain-ridge_rock8.png",
+      "source": "procedural-materials/terrain-ridge_rock8.png",
+      "sha256": "b5ce17930046ee81fdaaf222e0b7a343d97fc316250c6987012ca9c38d498476"
+    },
+    {
+      "runtime": "terrain-ridge_rock9.png",
+      "source": "procedural-materials/terrain-ridge_rock9.png",
+      "sha256": "b172b7439ef9593a637c79ddadde5c744c6d3ca4712c1e35b9db2e77161431ec"
+    },
+    {
+      "runtime": "terrain-ridge_rock10.png",
+      "source": "procedural-materials/terrain-ridge_rock10.png",
+      "sha256": "96b83df4802c243ceac49c1d51ecc8bc5b50d2db141ea9fc064352f74ef778b7"
+    },
+    {
+      "runtime": "terrain-ridge_rock11.png",
+      "source": "procedural-materials/terrain-ridge_rock11.png",
+      "sha256": "001dbf346b1e91cf6100f585975e6ac12a524352d9164b7a38a4685a4a84ce67"
+    },
+    {
+      "runtime": "terrain-ridge_rock12.png",
+      "source": "procedural-materials/terrain-ridge_rock12.png",
+      "sha256": "5c81478ac8492a8028da724b1677eb6171ff24570ec3be55aa0f07a2a659f8d4"
+    },
+    {
+      "runtime": "terrain-ridge_rock13.png",
+      "source": "procedural-materials/terrain-ridge_rock13.png",
+      "sha256": "b0a41c23338fe39ff551bb4cd16d2d974a08ec21aba6af8f0938cc98a443da9c"
+    },
+    {
+      "runtime": "terrain-ridge_rock14.png",
+      "source": "procedural-materials/terrain-ridge_rock14.png",
+      "sha256": "b7baf3c7a399ceca9947a28bb9b18747e9346df717b78255195358abcdaa0649"
+    },
+    {
+      "runtime": "terrain-ridge_rock15.png",
+      "source": "procedural-materials/terrain-ridge_rock15.png",
+      "sha256": "dfc2ffe1da1cda258745392bb1dcdfbfe6dd22f8094dfbe1a37eea3b2e5e6170"
+    },
+    {
+      "runtime": "terrain-outcrop0.png",
+      "source": "procedural-materials/terrain-outcrop0.png",
+      "sha256": "d6a96138e9f8e36095dec41f30eb64704d021326004e436a97b04d52c8bf3178"
+    },
+    {
+      "runtime": "terrain-outcrop1.png",
+      "source": "procedural-materials/terrain-outcrop1.png",
+      "sha256": "f9020737e9249cdfcd6c53af5d4d15573cd4836c18d65e2ba158fe5818f2bec3"
+    },
+    {
+      "runtime": "terrain-outcrop2.png",
+      "source": "procedural-materials/terrain-outcrop2.png",
+      "sha256": "9c8c822f576701eb66e276a0bcea77122286d9cdace4933b12225113cbe79e0d"
+    },
+    {
+      "runtime": "terrain-outcrop3.png",
+      "source": "procedural-materials/terrain-outcrop3.png",
+      "sha256": "85d8668c5487ad92b5b9cc25b62187e5fab15eaebfda6946d5315263688c648a"
+    },
+    {
+      "runtime": "terrain-outcrop4.png",
+      "source": "procedural-materials/terrain-outcrop4.png",
+      "sha256": "2ae41b3cb8e8268080e3851b58cbcbf7778dd8be6bff915408357226de8a388d"
+    },
+    {
+      "runtime": "terrain-outcrop5.png",
+      "source": "procedural-materials/terrain-outcrop5.png",
+      "sha256": "20b0219d0fd90c0ef9b990173e26c0c82c60e8df0d784de50b01e291c6b34930"
+    },
+    {
+      "runtime": "terrain-outcrop6.png",
+      "source": "procedural-materials/terrain-outcrop6.png",
+      "sha256": "eea43d2de54b4238cfe635a2f78fd4ddf77f3f419b94d6e0bcc31b5ee3cd8668"
+    },
+    {
+      "runtime": "terrain-outcrop7.png",
+      "source": "procedural-materials/terrain-outcrop7.png",
+      "sha256": "218494fa7c41f03fac1d70d697d26336d36ff9a6fe4d67918c4e859d0108c867"
+    },
+    {
+      "runtime": "terrain-outcrop8.png",
+      "source": "procedural-materials/terrain-outcrop8.png",
+      "sha256": "b6bc5c51a6f5d4d47773967a5d6f8947263caacb51c1fad59c9b9f75ab484754"
+    },
+    {
+      "runtime": "terrain-outcrop9.png",
+      "source": "procedural-materials/terrain-outcrop9.png",
+      "sha256": "44d842f385166bf077ed0b52f9395071d4ced60df0a98b0d5e5a64b0ffdfe910"
+    },
+    {
+      "runtime": "terrain-outcrop10.png",
+      "source": "procedural-materials/terrain-outcrop10.png",
+      "sha256": "08765f81e3141e51ea2469956f1e788f947e1773ed691b6ad004dee4f018e789"
+    },
+    {
+      "runtime": "terrain-outcrop11.png",
+      "source": "procedural-materials/terrain-outcrop11.png",
+      "sha256": "73b4d9d5235881a1572eca83d7adb02d9d88b521aae3473c8fca6ff5d9c235da"
+    },
+    {
+      "runtime": "terrain-outcrop12.png",
+      "source": "procedural-materials/terrain-outcrop12.png",
+      "sha256": "b299a4127615d706c36ae7764ab9da102a9e7cd7b7efe9489c063cadbbe18260"
+    },
+    {
+      "runtime": "terrain-outcrop13.png",
+      "source": "procedural-materials/terrain-outcrop13.png",
+      "sha256": "62d3f94cba8fd6b8c849376872f0bd102dd747b9d282c58073c41d3a0d47e10a"
+    },
+    {
+      "runtime": "terrain-outcrop14.png",
+      "source": "procedural-materials/terrain-outcrop14.png",
+      "sha256": "8b05144ec36ca9c30461ba352376196cb1b0d61ba9d6fa3fda10848fa5630b3f"
+    },
+    {
+      "runtime": "terrain-outcrop15.png",
+      "source": "procedural-materials/terrain-outcrop15.png",
+      "sha256": "a9ce1db8323893059d02abe4dda8ed3c97589522552eb62e24ab798c5f78737d"
+    },
+    {
+      "runtime": "terrain-dirt0.png",
+      "source": "procedural-materials/terrain-dirt0.png",
+      "sha256": "eb017f9a82817e77a75ac819ffa6892945a9e95b73f6d4bd67a5bfc313e42945"
+    },
+    {
+      "runtime": "terrain-dirt1.png",
+      "source": "procedural-materials/terrain-dirt1.png",
+      "sha256": "156b5c1da7837c70e9d4ef8086b63d91d0bd296a58d658d0665b09b73c667103"
+    },
+    {
+      "runtime": "terrain-dirt2.png",
+      "source": "procedural-materials/terrain-dirt2.png",
+      "sha256": "4aa5ed7b2bc8de699a4c5076470ad0c9da8a35ca81db6c637d11a67af7bc8ffc"
+    },
+    {
+      "runtime": "terrain-dirt3.png",
+      "source": "procedural-materials/terrain-dirt3.png",
+      "sha256": "7f8bb039f707f0ed133a9fd41c12cc38169ee64998adb1899357f7f6ab809fcc"
+    },
+    {
+      "runtime": "terrain-dirt4.png",
+      "source": "procedural-materials/terrain-dirt4.png",
+      "sha256": "4c1ba6ea68727cb53f0833ffaaf3c90dae2da1352271718e1b79b7c7dc9d4442"
+    },
+    {
+      "runtime": "terrain-dirt5.png",
+      "source": "procedural-materials/terrain-dirt5.png",
+      "sha256": "6a08ead2e957ff0b75645abd309bb4717a180662ecbad2e5c3ba3eb17ba1f1fd"
+    },
+    {
+      "runtime": "terrain-dirt6.png",
+      "source": "procedural-materials/terrain-dirt6.png",
+      "sha256": "54ec53fb9e907db14515bc88f241e1acc08ebf6ca391c6366b88424f3d3720c8"
+    },
+    {
+      "runtime": "terrain-dirt7.png",
+      "source": "procedural-materials/terrain-dirt7.png",
+      "sha256": "f7ab777a35eb77b3848a1e9d11d428570a004a7d453cadf6c71833917872cbea"
+    },
+    {
+      "runtime": "terrain-dirt8.png",
+      "source": "procedural-materials/terrain-dirt8.png",
+      "sha256": "c085af53c7a8ed0d781be4dbb09c0a8632b4f5076026ac1492d7b23c31f65d20"
+    },
+    {
+      "runtime": "terrain-dirt9.png",
+      "source": "procedural-materials/terrain-dirt9.png",
+      "sha256": "c29d23436a1df1f6d807c49023af41200ad33846a1ef549eeac9c6d8a1a5bcb1"
+    },
+    {
+      "runtime": "terrain-dirt10.png",
+      "source": "procedural-materials/terrain-dirt10.png",
+      "sha256": "b67ef379145c2d49b585cde54014b3e28f2d5b19ce4f028f235b7fb60b066f46"
+    },
+    {
+      "runtime": "terrain-dirt11.png",
+      "source": "procedural-materials/terrain-dirt11.png",
+      "sha256": "6f9f2afedec6ceabd83f1d6576347ef5869c3fbd094895d1dbeda77348a601f4"
+    },
+    {
+      "runtime": "terrain-dirt12.png",
+      "source": "procedural-materials/terrain-dirt12.png",
+      "sha256": "46a3785fcd637013c9bb80ca2e6d82e9cfb1920389a1fe17f8611d6cca111e73"
+    },
+    {
+      "runtime": "terrain-dirt13.png",
+      "source": "procedural-materials/terrain-dirt13.png",
+      "sha256": "2a418d8c9a1229b13f004f383b2c2ad57deb00c63ff600d54add0a69f6fdb2a2"
+    },
+    {
+      "runtime": "terrain-dirt14.png",
+      "source": "procedural-materials/terrain-dirt14.png",
+      "sha256": "82a72089023015badf4f47ed2172eb22a0ff8ddfb9c22d7858cdb5287db7b11f"
+    },
+    {
+      "runtime": "terrain-dirt15.png",
+      "source": "procedural-materials/terrain-dirt15.png",
+      "sha256": "434e04e182604662468a8553b9a326f37fa542e861398e3e4779998c8db6cb14"
+    },
+    {
+      "runtime": "terrain-clay0.png",
+      "source": "procedural-materials/terrain-clay0.png",
+      "sha256": "426e6bca3ea490f9e32546f9a6df9c6da25d8283b40d9c49c2364f785a3f5140"
+    },
+    {
+      "runtime": "terrain-clay1.png",
+      "source": "procedural-materials/terrain-clay1.png",
+      "sha256": "803977bb6868d552b7235d3b1ebcc5ab8dc677f9d80e947e104c86ba3e5bdb67"
+    },
+    {
+      "runtime": "terrain-clay2.png",
+      "source": "procedural-materials/terrain-clay2.png",
+      "sha256": "5f50c3a0c7171a6542bf0ee467b78697b8c972a1f6821cb1a42e7140252b0442"
+    },
+    {
+      "runtime": "terrain-clay3.png",
+      "source": "procedural-materials/terrain-clay3.png",
+      "sha256": "6566e455212b18ded514d797ebf889c560034bdc908e924c6b88a0aca8f884ba"
+    },
+    {
+      "runtime": "terrain-clay4.png",
+      "source": "procedural-materials/terrain-clay4.png",
+      "sha256": "975ad90528860411789adf0d2290b579e90086bf2de05eff51aeb14f7c65aca5"
+    },
+    {
+      "runtime": "terrain-clay5.png",
+      "source": "procedural-materials/terrain-clay5.png",
+      "sha256": "114dd0185fedcd44f859a1dba8882785a606629cb05df34ce06f7dd22db3006e"
+    },
+    {
+      "runtime": "terrain-clay6.png",
+      "source": "procedural-materials/terrain-clay6.png",
+      "sha256": "9af0cabe245ce2efc7e4d05995aef5387d84947a9239bca5875ff84a66f48ae1"
+    },
+    {
+      "runtime": "terrain-clay7.png",
+      "source": "procedural-materials/terrain-clay7.png",
+      "sha256": "a5a38fe75eac6a068b477a07a690c7243e836cde34f9fb10c965955ae4ce77d4"
+    },
+    {
+      "runtime": "terrain-clay8.png",
+      "source": "procedural-materials/terrain-clay8.png",
+      "sha256": "5fb68f71fe1cccbb0f0bfa82d55d9b1d6f64200d172888709748110cc42df3a1"
+    },
+    {
+      "runtime": "terrain-clay9.png",
+      "source": "procedural-materials/terrain-clay9.png",
+      "sha256": "b56d210744b89f383943d3078512d4ab8c9716b9e11f3c935803de4e05f34a92"
+    },
+    {
+      "runtime": "terrain-clay10.png",
+      "source": "procedural-materials/terrain-clay10.png",
+      "sha256": "9eea2fe7523df073e12cdbca0cbbe8d93ed91ab735e104c8002813fe6aaef3d4"
+    },
+    {
+      "runtime": "terrain-clay11.png",
+      "source": "procedural-materials/terrain-clay11.png",
+      "sha256": "c8e398e9473c7c2a3b4cab4d52091338f9c531d637b223e341f90d67b07b8a6c"
+    },
+    {
+      "runtime": "terrain-clay12.png",
+      "source": "procedural-materials/terrain-clay12.png",
+      "sha256": "f19662cc0416e852c07f6469a1de34ca0db470656e00fd0365be44bb0106c1e1"
+    },
+    {
+      "runtime": "terrain-clay13.png",
+      "source": "procedural-materials/terrain-clay13.png",
+      "sha256": "de1a7cb4acdd60299c3832de71ec5b75ad75808e9a805bfd770f4453ec9903db"
+    },
+    {
+      "runtime": "terrain-clay14.png",
+      "source": "procedural-materials/terrain-clay14.png",
+      "sha256": "1a97d2288a7c85dcc97d72fbe1d2ba238ce334ac2b595f00c475d39f6658fcc9"
+    },
+    {
+      "runtime": "terrain-clay15.png",
+      "source": "procedural-materials/terrain-clay15.png",
+      "sha256": "342150c0ea702e2f650b8dc27dfe733792b405ae6972d20a9d40fe4ebc1a7ce9"
+    },
+    {
+      "runtime": "terrain-gravel0.png",
+      "source": "procedural-materials/terrain-gravel0.png",
+      "sha256": "a64e1e8cd91897f0e1982fe613365b532e5d5f5a49ee195436ac04782361b6a1"
+    },
+    {
+      "runtime": "terrain-gravel1.png",
+      "source": "procedural-materials/terrain-gravel1.png",
+      "sha256": "6dea5cbf6760ccca391caa17f6010732ffa3b9094158edd5930ec283919070fb"
+    },
+    {
+      "runtime": "terrain-gravel2.png",
+      "source": "procedural-materials/terrain-gravel2.png",
+      "sha256": "badeb928efaeeb771c648cf72b7920003ffe9a2d58a4841d68c7b129d6721ff8"
+    },
+    {
+      "runtime": "terrain-gravel3.png",
+      "source": "procedural-materials/terrain-gravel3.png",
+      "sha256": "61a85203c5d17fc769daa7767e1abd09ca3bf45457ea21e08c6833b481e36702"
+    },
+    {
+      "runtime": "terrain-gravel4.png",
+      "source": "procedural-materials/terrain-gravel4.png",
+      "sha256": "5f0013676ffc5641d202b0365e3b5b1d0ea6aba9dff7d77a16edbd377f08ab4d"
+    },
+    {
+      "runtime": "terrain-gravel5.png",
+      "source": "procedural-materials/terrain-gravel5.png",
+      "sha256": "95c0fc9ce6a8509bb37ff9a4dd7af958e6d46036d19e76259a7e7fe23fcd6c8b"
+    },
+    {
+      "runtime": "terrain-gravel6.png",
+      "source": "procedural-materials/terrain-gravel6.png",
+      "sha256": "d893bb88a889517de55eaead8332d3c59cb5f7e7ec94242eaa1304edb01cb6c1"
+    },
+    {
+      "runtime": "terrain-gravel7.png",
+      "source": "procedural-materials/terrain-gravel7.png",
+      "sha256": "c127e9c66268717caa2b6143293030b3ab6ded2f0df85a6dd611470e2776d1e0"
+    },
+    {
+      "runtime": "terrain-gravel8.png",
+      "source": "procedural-materials/terrain-gravel8.png",
+      "sha256": "c8cacb11c7a349076394f4cf99214b4998d970bea6e11806bb4ac839e1b7feeb"
+    },
+    {
+      "runtime": "terrain-gravel9.png",
+      "source": "procedural-materials/terrain-gravel9.png",
+      "sha256": "bc54e368be3159aeeba84fd14569ec4300c34eca8538b2f9e4c0ebe409cd94c3"
+    },
+    {
+      "runtime": "terrain-gravel10.png",
+      "source": "procedural-materials/terrain-gravel10.png",
+      "sha256": "0ea556cbe25ce5ef2f722b00f7a3396523acea273d6fcee4152938f632649439"
+    },
+    {
+      "runtime": "terrain-gravel11.png",
+      "source": "procedural-materials/terrain-gravel11.png",
+      "sha256": "7edb47cdaff68d2b90334405cb7915b57fe55c03661032e5a5f9bf3efba5551d"
+    },
+    {
+      "runtime": "terrain-gravel12.png",
+      "source": "procedural-materials/terrain-gravel12.png",
+      "sha256": "508870363d1d29dc471f7414532a54cc9a23570a5c8da00d430f0e81ad2192bf"
+    },
+    {
+      "runtime": "terrain-gravel13.png",
+      "source": "procedural-materials/terrain-gravel13.png",
+      "sha256": "f0868fd6a577c5b4b47aa03276bcb38b18944fe5961419b8002df040f5fb15d2"
+    },
+    {
+      "runtime": "terrain-gravel14.png",
+      "source": "procedural-materials/terrain-gravel14.png",
+      "sha256": "afab93622c8b7c1e08bbee69b4110b5201e93d8e5c9aee606d21ad85c6cde0fc"
+    },
+    {
+      "runtime": "terrain-gravel15.png",
+      "source": "procedural-materials/terrain-gravel15.png",
+      "sha256": "b392ce93041b2db10a6b6867adbd180ea792a42644448ae66a90a7d5d2908d98"
+    },
+    {
+      "runtime": "terrain-flower_meadow0.png",
+      "source": "procedural-materials/terrain-flower_meadow0.png",
+      "sha256": "c1a06169c9f188fdc7ddad45ca72843760c67c1e3627e531910986532895b0f8"
+    },
+    {
+      "runtime": "terrain-flower_meadow1.png",
+      "source": "procedural-materials/terrain-flower_meadow1.png",
+      "sha256": "02a2a8b515eec010d07de336c6cf63c1b8a335959eb46e20ef92e9c12aef9ef8"
+    },
+    {
+      "runtime": "terrain-flower_meadow2.png",
+      "source": "procedural-materials/terrain-flower_meadow2.png",
+      "sha256": "7498104fbc80498a4650458a65a50c79e0a2caa6fa2dfe6783e8150ffdf83033"
+    },
+    {
+      "runtime": "terrain-flower_meadow3.png",
+      "source": "procedural-materials/terrain-flower_meadow3.png",
+      "sha256": "2662f38ce655901578099e767fb72772d547ed1d4643d5658035246bf6efc2be"
+    },
+    {
+      "runtime": "terrain-flower_meadow4.png",
+      "source": "procedural-materials/terrain-flower_meadow4.png",
+      "sha256": "d93f3c8f8e192ae8006e2480953a95d9c5628d35724a57e8d8f3d7df9e2ee54f"
+    },
+    {
+      "runtime": "terrain-flower_meadow5.png",
+      "source": "procedural-materials/terrain-flower_meadow5.png",
+      "sha256": "f105aad61cf836d1c6f9754e0b6fea2c7320aa14f363def0c363b32beeefce00"
+    },
+    {
+      "runtime": "terrain-flower_meadow6.png",
+      "source": "procedural-materials/terrain-flower_meadow6.png",
+      "sha256": "9e2cfd3d6519c89a0de9664470c37df9167d80fca864a4c50f1f13f8724c3d01"
+    },
+    {
+      "runtime": "terrain-flower_meadow7.png",
+      "source": "procedural-materials/terrain-flower_meadow7.png",
+      "sha256": "6fe64c5c2de392c2a828b05ab12d281b566fd190062c5568ed5cd4e0bb3b2bf0"
+    },
+    {
+      "runtime": "terrain-flower_meadow8.png",
+      "source": "procedural-materials/terrain-flower_meadow8.png",
+      "sha256": "7e59a8bff423767fc27fc1dab908ff70de817db172a8de7ee9b47c57976f6053"
+    },
+    {
+      "runtime": "terrain-flower_meadow9.png",
+      "source": "procedural-materials/terrain-flower_meadow9.png",
+      "sha256": "3fd9c7410f995717a136008f3934f3e30202cca65a7a9fc55c13941d949ec0d4"
+    },
+    {
+      "runtime": "terrain-flower_meadow10.png",
+      "source": "procedural-materials/terrain-flower_meadow10.png",
+      "sha256": "6e74fb86b0603ff583f9704d629e37d1a9bef7e73518ec96133b3119fdc5f008"
+    },
+    {
+      "runtime": "terrain-flower_meadow11.png",
+      "source": "procedural-materials/terrain-flower_meadow11.png",
+      "sha256": "b7c8df661a6b87ef4df4e3799b502f3d0af3d1487a7798291ada021374709e76"
+    },
+    {
+      "runtime": "terrain-flower_meadow12.png",
+      "source": "procedural-materials/terrain-flower_meadow12.png",
+      "sha256": "0801743ae740ddb86e962c9c89cb7804e8a548eb6830849fce2e64e1312af725"
+    },
+    {
+      "runtime": "terrain-flower_meadow13.png",
+      "source": "procedural-materials/terrain-flower_meadow13.png",
+      "sha256": "8812ca99b482c32dbe2790234174636a841681693fcd132885c004355ab90544"
+    },
+    {
+      "runtime": "terrain-flower_meadow14.png",
+      "source": "procedural-materials/terrain-flower_meadow14.png",
+      "sha256": "96f3fbbecb78634e6e396fa83d47ca410046fd025c233b76f00aca98a2953f36"
+    },
+    {
+      "runtime": "terrain-flower_meadow15.png",
+      "source": "procedural-materials/terrain-flower_meadow15.png",
+      "sha256": "4ec18ad91f11c1793ce667588429a5bd028c7991be7d98ef9cd871a0c5b035cd"
+    },
+    {
+      "runtime": "terrain-mud0.png",
+      "source": "procedural-materials/terrain-mud0.png",
+      "sha256": "2b1c31fe83fcd17a3a36c2fa18cd7a2f1e24395c7d391365446bcdd3113683ef"
+    },
+    {
+      "runtime": "terrain-mud1.png",
+      "source": "procedural-materials/terrain-mud1.png",
+      "sha256": "02303c32909daf526e81a1c08e5c1961d5acd3bc568bf94df20b170e887092c9"
+    },
+    {
+      "runtime": "terrain-mud2.png",
+      "source": "procedural-materials/terrain-mud2.png",
+      "sha256": "655b13c96d3952bf61fb9b47b4443a75bd1e3734eebe75acc06d6f8c344bc894"
+    },
+    {
+      "runtime": "terrain-mud3.png",
+      "source": "procedural-materials/terrain-mud3.png",
+      "sha256": "bc058ea906c12a5563531911126c7ed2afb875d10e92660e28f998427f1e3fef"
+    },
+    {
+      "runtime": "terrain-mud4.png",
+      "source": "procedural-materials/terrain-mud4.png",
+      "sha256": "1eff484b0aa4573ab2d192d10bef5fbc45e56d7fd6a44d40db213221ec262ed0"
+    },
+    {
+      "runtime": "terrain-mud5.png",
+      "source": "procedural-materials/terrain-mud5.png",
+      "sha256": "4befe916ecf505906078241b0b16ecc7ce14e244cd91a96d3a093c128e729fb5"
+    },
+    {
+      "runtime": "terrain-mud6.png",
+      "source": "procedural-materials/terrain-mud6.png",
+      "sha256": "3a53aa1439b66eb5def632056208fc600ee47e97071d367b065f5216c9381815"
+    },
+    {
+      "runtime": "terrain-mud7.png",
+      "source": "procedural-materials/terrain-mud7.png",
+      "sha256": "b16708503b153ca92c54a9aafe7343a1439531edca7a3cc973044022f5cebab2"
+    },
+    {
+      "runtime": "terrain-mud8.png",
+      "source": "procedural-materials/terrain-mud8.png",
+      "sha256": "5e9cc01d31d92eb898719de00d3774849649203383b468d2b1c4289156f8cb21"
+    },
+    {
+      "runtime": "terrain-mud9.png",
+      "source": "procedural-materials/terrain-mud9.png",
+      "sha256": "4e690db8838bb40ec6eb018a9223d604dc900f0378d282a6d0495e928e15723e"
+    },
+    {
+      "runtime": "terrain-mud10.png",
+      "source": "procedural-materials/terrain-mud10.png",
+      "sha256": "8a51c2a6b19577ee96c6ab237808da6f28ed00796657dac81e52ee4394b5db94"
+    },
+    {
+      "runtime": "terrain-mud11.png",
+      "source": "procedural-materials/terrain-mud11.png",
+      "sha256": "ad60b5e0d893274096aaa511708348a1b86ba943446c9d29f9fc022813151074"
+    },
+    {
+      "runtime": "terrain-mud12.png",
+      "source": "procedural-materials/terrain-mud12.png",
+      "sha256": "2d6c6346a28fc15f5cc56246fba0e459da4fa97bdbdbdff5816ba2a937f1f33f"
+    },
+    {
+      "runtime": "terrain-mud13.png",
+      "source": "procedural-materials/terrain-mud13.png",
+      "sha256": "b9e7c0d114593b18efaf1d85f7421f7290cfc9a2bd5265a40a3d5b097d640904"
+    },
+    {
+      "runtime": "terrain-mud14.png",
+      "source": "procedural-materials/terrain-mud14.png",
+      "sha256": "62dc80513d26b5643a47d0cff32e0866a5c8578b00f8b691eb0025d3dfd89909"
+    },
+    {
+      "runtime": "terrain-mud15.png",
+      "source": "procedural-materials/terrain-mud15.png",
+      "sha256": "899de29eec27db698076eb1da696342e3950feffe4c80961f446b3cc6e6d4c07"
+    },
+    {
+      "runtime": "terrain-marsh0.png",
+      "source": "procedural-materials/terrain-marsh0.png",
+      "sha256": "355c2e30a63221de4625b0b4196ad1d25f905787e531d6fb91beff4b22c6ba55"
+    },
+    {
+      "runtime": "terrain-marsh1.png",
+      "source": "procedural-materials/terrain-marsh1.png",
+      "sha256": "1b39ec469737d153724bcf8f35152a7066a78e1bc5cdae1c833567048cf88cb2"
+    },
+    {
+      "runtime": "terrain-marsh2.png",
+      "source": "procedural-materials/terrain-marsh2.png",
+      "sha256": "f793d751aaa7ead725d7f69caf1d4476b8a2cf53bb2056c7e62bcec4664e0f44"
+    },
+    {
+      "runtime": "terrain-marsh3.png",
+      "source": "procedural-materials/terrain-marsh3.png",
+      "sha256": "d1e77c3f6e8b54adc7181c64b90a1c4fd946560815f47f58a25f52f7fdc5384d"
+    },
+    {
+      "runtime": "terrain-marsh4.png",
+      "source": "procedural-materials/terrain-marsh4.png",
+      "sha256": "c7bc5658b79e2fa39183c5d031ab24980d0de140ae2eb92485a319c9fa6cd506"
+    },
+    {
+      "runtime": "terrain-marsh5.png",
+      "source": "procedural-materials/terrain-marsh5.png",
+      "sha256": "6a2ce0629f7572dd00e82dffc1b055be4a1725e753d6ee3fa1baf496b09811e9"
+    },
+    {
+      "runtime": "terrain-marsh6.png",
+      "source": "procedural-materials/terrain-marsh6.png",
+      "sha256": "1e14b3e57023962a7143294c5e8f8f63a92db8c3e67719661091acdd2502db93"
+    },
+    {
+      "runtime": "terrain-marsh7.png",
+      "source": "procedural-materials/terrain-marsh7.png",
+      "sha256": "300a5b6f46a9d47a5ab6be07db98c065dc8272a8f1880ae65771c53785e1b81d"
+    },
+    {
+      "runtime": "terrain-marsh8.png",
+      "source": "procedural-materials/terrain-marsh8.png",
+      "sha256": "199b3817a13e4fab4fcf46cff825325328dc5f2b70baf0e445658ac86d7eee30"
+    },
+    {
+      "runtime": "terrain-marsh9.png",
+      "source": "procedural-materials/terrain-marsh9.png",
+      "sha256": "8612ea673049fc18dd65ed11366e11b6103126411b6758834d43a7bb45731dd2"
+    },
+    {
+      "runtime": "terrain-marsh10.png",
+      "source": "procedural-materials/terrain-marsh10.png",
+      "sha256": "39c664b2203f99a76d36695f49b6f4b2261aa407ca241916be8c057c26c5a590"
+    },
+    {
+      "runtime": "terrain-marsh11.png",
+      "source": "procedural-materials/terrain-marsh11.png",
+      "sha256": "a1eed9bc67b3d6974ad324d5142be7c7d40cd03c325d9d772f6d61043f1ef378"
+    },
+    {
+      "runtime": "terrain-marsh12.png",
+      "source": "procedural-materials/terrain-marsh12.png",
+      "sha256": "3e6b1ceffd4aa449654e2717000f741e52c9c0ac381a128d413ff2fdfffb10e8"
+    },
+    {
+      "runtime": "terrain-marsh13.png",
+      "source": "procedural-materials/terrain-marsh13.png",
+      "sha256": "e318962413f8e773984ae5fda8da28af6d354c040a85d97d9678fdbe68b93a93"
+    },
+    {
+      "runtime": "terrain-marsh14.png",
+      "source": "procedural-materials/terrain-marsh14.png",
+      "sha256": "6c631533c448cbe17a5e6c4d877811e43b3bf094bf54b263a3d35c4d2809423a"
+    },
+    {
+      "runtime": "terrain-marsh15.png",
+      "source": "procedural-materials/terrain-marsh15.png",
+      "sha256": "aed64cf9f2b8c150a21426d128b028e6effaea92d92d8b407f3b105b47c2033b"
+    },
+    {
+      "runtime": "terrain-deep_snow0.png",
+      "source": "procedural-materials/terrain-deep_snow0.png",
+      "sha256": "4328dff82563d68b33641bcc2e83ed8b7805b62bcb152bf8d1d16a280186bd50"
+    },
+    {
+      "runtime": "terrain-deep_snow1.png",
+      "source": "procedural-materials/terrain-deep_snow1.png",
+      "sha256": "eca7ed898da3c560077f42c85841dc0571aa209ca4cc1da5ade267e0e21c2903"
+    },
+    {
+      "runtime": "terrain-deep_snow2.png",
+      "source": "procedural-materials/terrain-deep_snow2.png",
+      "sha256": "60b4a3710c0dd7ff660d07f5b556fde7cbbb845e32650096033781f6ac91556d"
+    },
+    {
+      "runtime": "terrain-deep_snow3.png",
+      "source": "procedural-materials/terrain-deep_snow3.png",
+      "sha256": "cec844b4c6206cae205061545d4b1e1333ba280e0cba889bbf0825073209b4c7"
+    },
+    {
+      "runtime": "terrain-deep_snow4.png",
+      "source": "procedural-materials/terrain-deep_snow4.png",
+      "sha256": "1904bfe73ccf82008c1b994a56aa382ea9ca6f51b3e8eb0156143a3a2b77dd3e"
+    },
+    {
+      "runtime": "terrain-deep_snow5.png",
+      "source": "procedural-materials/terrain-deep_snow5.png",
+      "sha256": "736234605dbb156d540293d521fcc43e5cc7c127a2d8dfaf3415765a988b10ea"
+    },
+    {
+      "runtime": "terrain-deep_snow6.png",
+      "source": "procedural-materials/terrain-deep_snow6.png",
+      "sha256": "c749649572b95edcc8c12273cf8d4f733f96486264a77854dd2f04c69d68f66a"
+    },
+    {
+      "runtime": "terrain-deep_snow7.png",
+      "source": "procedural-materials/terrain-deep_snow7.png",
+      "sha256": "63b5240a852d1cdd60ee55d0a524a349b4bd34a6f821ca134b51e0fc741efa55"
+    },
+    {
+      "runtime": "terrain-deep_snow8.png",
+      "source": "procedural-materials/terrain-deep_snow8.png",
+      "sha256": "9bbccd5a79d3d285c57217481eb6ae3eb5daa4c756f41597de0ae1fa2a67e9a4"
+    },
+    {
+      "runtime": "terrain-deep_snow9.png",
+      "source": "procedural-materials/terrain-deep_snow9.png",
+      "sha256": "b8d6003d84789ee1a2dcb4256271c398f234cd9f0b248de24a3cc690b54469fe"
+    },
+    {
+      "runtime": "terrain-deep_snow10.png",
+      "source": "procedural-materials/terrain-deep_snow10.png",
+      "sha256": "a1aade2a2418cabafb6da3e09fac5620eb2aa9a64f6a32f03c0693594f60d655"
+    },
+    {
+      "runtime": "terrain-deep_snow11.png",
+      "source": "procedural-materials/terrain-deep_snow11.png",
+      "sha256": "78ff9c0f1feb79e106807bbe8c216c39e9c1b775087711267d0145200d903b57"
+    },
+    {
+      "runtime": "terrain-deep_snow12.png",
+      "source": "procedural-materials/terrain-deep_snow12.png",
+      "sha256": "6cdcaf8067b10b4a60a746f1ed8305ea7745952ede872f845fd87c76b80a4f49"
+    },
+    {
+      "runtime": "terrain-deep_snow13.png",
+      "source": "procedural-materials/terrain-deep_snow13.png",
+      "sha256": "280a3f4e80f205600dd08b61405a0a4a6132edc11c2549e1d78eca493a8e9c79"
+    },
+    {
+      "runtime": "terrain-deep_snow14.png",
+      "source": "procedural-materials/terrain-deep_snow14.png",
+      "sha256": "2b697083a320c41bbcb36f61b33bb636e39aacb700b986751ea22daf32f2b5e9"
+    },
+    {
+      "runtime": "terrain-deep_snow15.png",
+      "source": "procedural-materials/terrain-deep_snow15.png",
+      "sha256": "303e6f480d7a032600185df83318c29519464cae77766d4b33d8ca6c75d4a859"
+    },
+    {
+      "runtime": "terrain-scree0.png",
+      "source": "procedural-materials/terrain-scree0.png",
+      "sha256": "c71d5fcccd70996d81520f46161d51d459273ea09a4b582b51396a5875c9ff34"
+    },
+    {
+      "runtime": "terrain-scree1.png",
+      "source": "procedural-materials/terrain-scree1.png",
+      "sha256": "a671aa40f415748f17d67b9531a872777c36ba5754a9f2e140e2d8746e5421e4"
+    },
+    {
+      "runtime": "terrain-scree2.png",
+      "source": "procedural-materials/terrain-scree2.png",
+      "sha256": "3468884e5eb2112bd37df3d666c825a0c55e673082568d1d0503d74a523dede1"
+    },
+    {
+      "runtime": "terrain-scree3.png",
+      "source": "procedural-materials/terrain-scree3.png",
+      "sha256": "2c50f7463003485665764817c9846b5d7d63b8dbb5a39dce5a601db1b4180360"
+    },
+    {
+      "runtime": "terrain-scree4.png",
+      "source": "procedural-materials/terrain-scree4.png",
+      "sha256": "1d09cc7cf0cc7c4c9ec9dd3561a7822a43b955af3b3f45f13786dd74d16a91ce"
+    },
+    {
+      "runtime": "terrain-scree5.png",
+      "source": "procedural-materials/terrain-scree5.png",
+      "sha256": "c107dbbae9bdf4661033c0e3c8e00335e6f9172137c54de01ddedb2a6b3991dd"
+    },
+    {
+      "runtime": "terrain-scree6.png",
+      "source": "procedural-materials/terrain-scree6.png",
+      "sha256": "accc537dd7fcb485353ee0b3a3c985fd97a83b9e7686fc949d1e1b0a50eb7fd2"
+    },
+    {
+      "runtime": "terrain-scree7.png",
+      "source": "procedural-materials/terrain-scree7.png",
+      "sha256": "3d2617923869013041b0e8028b7eb6f957fb4c856599f75b340815e33091e38b"
+    },
+    {
+      "runtime": "terrain-scree8.png",
+      "source": "procedural-materials/terrain-scree8.png",
+      "sha256": "0e2f15c94791c24df54a192d95b388a5b24706258420874055372d63fa66812e"
+    },
+    {
+      "runtime": "terrain-scree9.png",
+      "source": "procedural-materials/terrain-scree9.png",
+      "sha256": "2a3e3d59b956b7711d79adc041c62619ca76f6d8ed00cba3508f2f7e93c441dd"
+    },
+    {
+      "runtime": "terrain-scree10.png",
+      "source": "procedural-materials/terrain-scree10.png",
+      "sha256": "b2002e8cc1b4f6f7e02fd26bf7464968cfbf56827573f59599e95f01831980f9"
+    },
+    {
+      "runtime": "terrain-scree11.png",
+      "source": "procedural-materials/terrain-scree11.png",
+      "sha256": "72eb760f134269107f8454c64cc18668516fcf368b262159e16b9e0e8d3e28cb"
+    },
+    {
+      "runtime": "terrain-scree12.png",
+      "source": "procedural-materials/terrain-scree12.png",
+      "sha256": "cc76008049db6f06e1935926dd5f9293418fe490ac4c97a99e96ac576416cd3a"
+    },
+    {
+      "runtime": "terrain-scree13.png",
+      "source": "procedural-materials/terrain-scree13.png",
+      "sha256": "5a7f7e1aadf80160f8ccb918480abd6e0f0fa8370e65700944d7d24b17941239"
+    },
+    {
+      "runtime": "terrain-scree14.png",
+      "source": "procedural-materials/terrain-scree14.png",
+      "sha256": "35e69747da38140ac3acc25a1aea124646b2859ee50617f09cd9e6cc5bd0b1cd"
+    },
+    {
+      "runtime": "terrain-scree15.png",
+      "source": "procedural-materials/terrain-scree15.png",
+      "sha256": "8b4d8bc549e73b7afb478213288412f104f8ee6eed61c274e0241f6fbc9e1898"
+    },
+    {
+      "runtime": "terrain-dirt_track0.png",
+      "source": "procedural-materials/terrain-dirt_track0.png",
+      "sha256": "f2ec73b8fec60c375cb32ff409118db46aae177b854c390ba3efc48fd722c858"
+    },
+    {
+      "runtime": "terrain-dirt_track1.png",
+      "source": "procedural-materials/terrain-dirt_track1.png",
+      "sha256": "d9678fe96f7c0bfa486b659c7e83bdfbb144327bb88e93fe858bfb3b05fbab33"
+    },
+    {
+      "runtime": "terrain-dirt_track2.png",
+      "source": "procedural-materials/terrain-dirt_track2.png",
+      "sha256": "8d68c075db3d32f7075186a7ba7eaca765c3569b9967136ee17eed00ef2e92c4"
+    },
+    {
+      "runtime": "terrain-dirt_track3.png",
+      "source": "procedural-materials/terrain-dirt_track3.png",
+      "sha256": "16e88f8d3a88154ccb7a59acf840ffa4d3cb912ab5accbd6a2e8697a817344dd"
+    },
+    {
+      "runtime": "terrain-dirt_track4.png",
+      "source": "procedural-materials/terrain-dirt_track4.png",
+      "sha256": "955ca493e4c4b435a6544b0d25cf1de875f999730dce2ccf76b17fe2addc495c"
+    },
+    {
+      "runtime": "terrain-dirt_track5.png",
+      "source": "procedural-materials/terrain-dirt_track5.png",
+      "sha256": "61b9d03851fdf5300efa4699fea081d29391552ca9dcbb567c3657bb5110ee54"
+    },
+    {
+      "runtime": "terrain-dirt_track6.png",
+      "source": "procedural-materials/terrain-dirt_track6.png",
+      "sha256": "07ecc68e921bb60a59cfd7a396a5ddffc5d88b3dc713e74e2c6052ead420fd00"
+    },
+    {
+      "runtime": "terrain-dirt_track7.png",
+      "source": "procedural-materials/terrain-dirt_track7.png",
+      "sha256": "acce0c1cced39463afc4a4af378306777d928740e1071fc93d926263a7b09ed0"
+    },
+    {
+      "runtime": "terrain-dirt_track8.png",
+      "source": "procedural-materials/terrain-dirt_track8.png",
+      "sha256": "488a6d79418d5bba0f45e5a11017ef42668b102554e7e7cd51f8142d0db9c072"
+    },
+    {
+      "runtime": "terrain-dirt_track9.png",
+      "source": "procedural-materials/terrain-dirt_track9.png",
+      "sha256": "dccc3b666344480e8a593620e3231bf24906a4d4b417efeea228630cff5fd171"
+    },
+    {
+      "runtime": "terrain-dirt_track10.png",
+      "source": "procedural-materials/terrain-dirt_track10.png",
+      "sha256": "34cb0c901516b5704d4308dcc5abd280571b692ee509fd3c7c87bc932915e3be"
+    },
+    {
+      "runtime": "terrain-dirt_track11.png",
+      "source": "procedural-materials/terrain-dirt_track11.png",
+      "sha256": "13dc52c12bdb31e4742f330b48e013ef5840858f2d020a4c1190db74f2bbfaf9"
+    },
+    {
+      "runtime": "terrain-dirt_track12.png",
+      "source": "procedural-materials/terrain-dirt_track12.png",
+      "sha256": "d058fc5d18a49aaad4329d990523586a31025c8d798c1935ea384032071d7cee"
+    },
+    {
+      "runtime": "terrain-dirt_track13.png",
+      "source": "procedural-materials/terrain-dirt_track13.png",
+      "sha256": "697610a13b43f6ff0b0edb545e22f70867ebdeb5ca050c88a98446e049ce3308"
+    },
+    {
+      "runtime": "terrain-dirt_track14.png",
+      "source": "procedural-materials/terrain-dirt_track14.png",
+      "sha256": "156949f0ee17073475c0c45b2d52307989c8c0ca29b5567e2b84d3fed11648d4"
+    },
+    {
+      "runtime": "terrain-dirt_track15.png",
+      "source": "procedural-materials/terrain-dirt_track15.png",
+      "sha256": "c9d1485c1b3a4233790fcb595cdf791194533299c975bc36926ec5ca0184d087"
+    },
+    {
+      "runtime": "terrain-boardwalk0.png",
+      "source": "procedural-materials/terrain-boardwalk0.png",
+      "sha256": "4967d85ec5ea80cfefe8f8512cdfb01ec2e9625232e31b914d62470f11fc8214"
+    },
+    {
+      "runtime": "terrain-boardwalk1.png",
+      "source": "procedural-materials/terrain-boardwalk1.png",
+      "sha256": "9bbdd350aa7ca06d435ec557ede66decca98919fbf8705775c542d3faac85670"
+    },
+    {
+      "runtime": "terrain-boardwalk2.png",
+      "source": "procedural-materials/terrain-boardwalk2.png",
+      "sha256": "b461417cf380b8f46279fac35fa85d40a5b0514fe6037acea0e50544563b84f9"
+    },
+    {
+      "runtime": "terrain-boardwalk3.png",
+      "source": "procedural-materials/terrain-boardwalk3.png",
+      "sha256": "35125a2d833245395114ae67dd868e70b36f5cb0d24b0d36bd842a27a3633f2e"
+    },
+    {
+      "runtime": "terrain-boardwalk4.png",
+      "source": "procedural-materials/terrain-boardwalk4.png",
+      "sha256": "40cc1847b4ef0f1fa98d49b12bf5fe2ec01afbf2d8f75021bebc5d15989f999f"
+    },
+    {
+      "runtime": "terrain-boardwalk5.png",
+      "source": "procedural-materials/terrain-boardwalk5.png",
+      "sha256": "eeecad2fec75bfad4b8d04ba8b35d867ce90676b842b9c200758f58dceccf05b"
+    },
+    {
+      "runtime": "terrain-boardwalk6.png",
+      "source": "procedural-materials/terrain-boardwalk6.png",
+      "sha256": "b5178a2e2c8b40aa958c3d24616bf2e41ab7739312db4a35a95a91613fa85201"
+    },
+    {
+      "runtime": "terrain-boardwalk7.png",
+      "source": "procedural-materials/terrain-boardwalk7.png",
+      "sha256": "53867e2f1d25fc108028483a9d5a1fef811babd03e4a29ec12558442f554ec30"
+    },
+    {
+      "runtime": "terrain-boardwalk8.png",
+      "source": "procedural-materials/terrain-boardwalk8.png",
+      "sha256": "df2640e03515078a6091899cb7e064eb9c53ec5306dcdac8340370c6c320b219"
+    },
+    {
+      "runtime": "terrain-boardwalk9.png",
+      "source": "procedural-materials/terrain-boardwalk9.png",
+      "sha256": "a87f54840dd27765d4c0f7d1a6e9a6dee85b908a0d933ed7463be117518feeb9"
+    },
+    {
+      "runtime": "terrain-boardwalk10.png",
+      "source": "procedural-materials/terrain-boardwalk10.png",
+      "sha256": "5569bbbeecd479b419a9713dcead63cb0d6c4f1ec7dea1cfbf2396bfb4e52ddd"
+    },
+    {
+      "runtime": "terrain-boardwalk11.png",
+      "source": "procedural-materials/terrain-boardwalk11.png",
+      "sha256": "50159e33181140a3578df3b10632cfc621a7b67de27c1f254fefee25cf9ef0ac"
+    },
+    {
+      "runtime": "terrain-boardwalk12.png",
+      "source": "procedural-materials/terrain-boardwalk12.png",
+      "sha256": "8d169d8bd4dec934c2cc81100472fb8eef9ac6b74007e3c73b43fca68a9b0d84"
+    },
+    {
+      "runtime": "terrain-boardwalk13.png",
+      "source": "procedural-materials/terrain-boardwalk13.png",
+      "sha256": "43f977149b31385ba08c76d967ab60646523f45a934706cb156ba407f962b932"
+    },
+    {
+      "runtime": "terrain-boardwalk14.png",
+      "source": "procedural-materials/terrain-boardwalk14.png",
+      "sha256": "f5b90fd5e27ee064c92b30374fb32e4beafa568184ebc33ff31c2c13631b1692"
+    },
+    {
+      "runtime": "terrain-boardwalk15.png",
+      "source": "procedural-materials/terrain-boardwalk15.png",
+      "sha256": "3dd8c90562cedc7dff58d7cf7082940bcdb4c0501aa51a60d5e90eb53934b288"
+    },
+    {
+      "runtime": "terrain-lava0.png",
+      "source": "procedural-materials/terrain-lava0.png",
+      "sha256": "869a33b30a89df35f2d904a6464d26ae31c8fbd491bad0f03547367fcef86016"
+    },
+    {
+      "runtime": "terrain-lava1.png",
+      "source": "procedural-materials/terrain-lava1.png",
+      "sha256": "386b75e317cf8f0659266cff3d976ab202f240cbc1c18026f63cac5329d9ea61"
+    },
+    {
+      "runtime": "terrain-lava2.png",
+      "source": "procedural-materials/terrain-lava2.png",
+      "sha256": "8ec23a98bc7eaeaed9d7f7750f21bdf2dd13ffd0a6aea1087bb94387ceb72335"
+    },
+    {
+      "runtime": "terrain-lava3.png",
+      "source": "procedural-materials/terrain-lava3.png",
+      "sha256": "885227742775c715947a7f2529434b67de3695591ef11964852193266307ec0c"
+    },
+    {
+      "runtime": "terrain-lava4.png",
+      "source": "procedural-materials/terrain-lava4.png",
+      "sha256": "c861d0d3f2bc5b65ec72953fbdee7130460eb2d882ee0bd8b35d838f76e50bc8"
+    },
+    {
+      "runtime": "terrain-lava5.png",
+      "source": "procedural-materials/terrain-lava5.png",
+      "sha256": "bb584c41f040320772a05834fef4c57d0fd00e2453c715daf8e57303424e3eda"
+    },
+    {
+      "runtime": "terrain-lava6.png",
+      "source": "procedural-materials/terrain-lava6.png",
+      "sha256": "a16eef7bc8d73d213bee8056a7abfe5c39cd62b51b9bf109f079fae422cd3ab9"
+    },
+    {
+      "runtime": "terrain-lava7.png",
+      "source": "procedural-materials/terrain-lava7.png",
+      "sha256": "c394615e410d4ff80613de8fbd0289ae2d0f63a8db11d83611d4dc1aa680fbd5"
+    },
+    {
+      "runtime": "terrain-lava8.png",
+      "source": "procedural-materials/terrain-lava8.png",
+      "sha256": "c6970d6da517a60d591aa065913a41b9233ae5b64ba12425af8062774c6cdd82"
+    },
+    {
+      "runtime": "terrain-lava9.png",
+      "source": "procedural-materials/terrain-lava9.png",
+      "sha256": "4eaa8c535581e40e75fcc875564817d9a41c5cde630b566afeac56021d64108b"
+    },
+    {
+      "runtime": "terrain-lava10.png",
+      "source": "procedural-materials/terrain-lava10.png",
+      "sha256": "35911a0d55cdc29a417fd9c914d201ebdfa4c3c1cecec2cda343fa13d9a83b25"
+    },
+    {
+      "runtime": "terrain-lava11.png",
+      "source": "procedural-materials/terrain-lava11.png",
+      "sha256": "1ffd985748f9adb0134d5327f0a73c2eeb89dd9688d6bc392770ea89b3283417"
+    },
+    {
+      "runtime": "terrain-lava12.png",
+      "source": "procedural-materials/terrain-lava12.png",
+      "sha256": "1e564de2fea2b667b45f470056f77325dd17bc5463f926e29c8ec30f802bde5e"
+    },
+    {
+      "runtime": "terrain-lava13.png",
+      "source": "procedural-materials/terrain-lava13.png",
+      "sha256": "a744ecb4e69ac43d49042c60d1bee24d389169dcfc8424665b1de35c407b240e"
+    },
+    {
+      "runtime": "terrain-lava14.png",
+      "source": "procedural-materials/terrain-lava14.png",
+      "sha256": "a132f535fd725f4183d61a731b398ea3d5e74c8711504e557fa5b8163108e030"
+    },
+    {
+      "runtime": "terrain-lava15.png",
+      "source": "procedural-materials/terrain-lava15.png",
+      "sha256": "a9a4c3ffddc3898573153aeccfa86c5b8a1135e3970668089700c62d45300f6b"
+    },
+    {
+      "runtime": "terrain-lava16.png",
+      "source": "procedural-materials/terrain-lava16.png",
+      "sha256": "b90d24823907d1d035f37685d1aedbcb17471b126d0c0643dc2a77f60c2c529e"
+    },
+    {
+      "runtime": "terrain-lava17.png",
+      "source": "procedural-materials/terrain-lava17.png",
+      "sha256": "bacec4dbe4cba8b03f66ad343b1c7e2374a3059e247d1d82db8763f99a524c6f"
+    },
+    {
+      "runtime": "terrain-lava18.png",
+      "source": "procedural-materials/terrain-lava18.png",
+      "sha256": "2776c176933c9ebd6cbed2590ae80c0ca3697693497152981f9087e33c395b38"
+    },
+    {
+      "runtime": "terrain-lava19.png",
+      "source": "procedural-materials/terrain-lava19.png",
+      "sha256": "f6421ccdaaee699bb1bab7e7aa5df94b4b4a3b5312bd59f173398b1039c9c01b"
+    },
+    {
+      "runtime": "terrain-lava20.png",
+      "source": "procedural-materials/terrain-lava20.png",
+      "sha256": "925dc1f1367a9ab21f1dc6e8afcbe340775a7f7ca5331c028b5ba642999e328c"
+    },
+    {
+      "runtime": "terrain-lava21.png",
+      "source": "procedural-materials/terrain-lava21.png",
+      "sha256": "65a4e1dafa5a8e7fabca828080c5aadc2d1e9e62675271fb990643e64ce4fba2"
+    },
+    {
+      "runtime": "terrain-lava22.png",
+      "source": "procedural-materials/terrain-lava22.png",
+      "sha256": "64cfeb201e673c8d5e686c1ce44a41c2a5dcb9d632c04ff4901469d2a101491b"
+    },
+    {
+      "runtime": "terrain-lava23.png",
+      "source": "procedural-materials/terrain-lava23.png",
+      "sha256": "2b140c05998799c8cb94bd4d756394b4279835efce37f7d214777322a0552c26"
+    },
+    {
+      "runtime": "terrain-lava24.png",
+      "source": "procedural-materials/terrain-lava24.png",
+      "sha256": "101f0b6b267897dde12aee78aedd4773bc9a3c1aaf1120d02b1f9d2dc8f7582a"
+    },
+    {
+      "runtime": "terrain-lava25.png",
+      "source": "procedural-materials/terrain-lava25.png",
+      "sha256": "87cad557b04cbab87bf1456353e89cc381574d0f444e06a30eb102ad483dbfc8"
+    },
+    {
+      "runtime": "terrain-lava26.png",
+      "source": "procedural-materials/terrain-lava26.png",
+      "sha256": "8606a9224ee543b7e56c189acced6f1c8b480762d5f8cdead35e240d4943deea"
+    },
+    {
+      "runtime": "terrain-lava27.png",
+      "source": "procedural-materials/terrain-lava27.png",
+      "sha256": "9e5721c04169f1ed45f22e165048ef9755b11961b53e26088e7cf52f9bb3a9bf"
+    },
+    {
+      "runtime": "terrain-lava28.png",
+      "source": "procedural-materials/terrain-lava28.png",
+      "sha256": "2998be46810b086061a346490ec8c67a20edb279f20e924e2929e6f22fa0c132"
+    },
+    {
+      "runtime": "terrain-lava29.png",
+      "source": "procedural-materials/terrain-lava29.png",
+      "sha256": "aabe9b207d17a1032318cbf4e8bd0e3ba3b99d078912d9ebdc5d09112e8c0242"
+    },
+    {
+      "runtime": "terrain-lava30.png",
+      "source": "procedural-materials/terrain-lava30.png",
+      "sha256": "b924f4b6f342a9db2e92b604bfbcfd05a7df6f83ac4e3fffade0999097da8bf4"
+    },
+    {
+      "runtime": "terrain-lava31.png",
+      "source": "procedural-materials/terrain-lava31.png",
+      "sha256": "62a40d39aeed77df77b4bc1f3357401579295bf52331e9732d10fd2e620fc003"
+    },
+    {
+      "runtime": "terrain-lava32.png",
+      "source": "procedural-materials/terrain-lava32.png",
+      "sha256": "1563a8ea1c0f78ddefd94f6177acb5adb2de4a4c898046b6f6de94cc5e2d5f67"
+    },
+    {
+      "runtime": "terrain-lava33.png",
+      "source": "procedural-materials/terrain-lava33.png",
+      "sha256": "a9e6e1b59c394cdfd59785081dedca577e309aa2f28a2940f0b6619419441d36"
+    },
+    {
+      "runtime": "terrain-lava34.png",
+      "source": "procedural-materials/terrain-lava34.png",
+      "sha256": "dfdeee71c58307fd0216d01d958f4ca42f798a34486a45d6c165d2d867f749a3"
+    },
+    {
+      "runtime": "terrain-lava35.png",
+      "source": "procedural-materials/terrain-lava35.png",
+      "sha256": "ef97b8850199d205110d7fb0da917caf5125b0f4714599ef76f8dd6252661b54"
+    },
+    {
+      "runtime": "terrain-lava36.png",
+      "source": "procedural-materials/terrain-lava36.png",
+      "sha256": "398522b703424ff2031e86f05e9081a56adf431a4a26bec0a6f490fa748c202c"
+    },
+    {
+      "runtime": "terrain-lava37.png",
+      "source": "procedural-materials/terrain-lava37.png",
+      "sha256": "372a52ce7d1fe32d6ca689c09d79b2b8d4a1a95e23db226e654163e4e9292271"
+    },
+    {
+      "runtime": "terrain-lava38.png",
+      "source": "procedural-materials/terrain-lava38.png",
+      "sha256": "3d4e972d8a97523d51cba1ea79b51e5e13f2afc49fe5b17482174ecadb61e1b4"
+    },
+    {
+      "runtime": "terrain-lava39.png",
+      "source": "procedural-materials/terrain-lava39.png",
+      "sha256": "aac05522a0eaa633df01f2d23c0699b71db819a983b69ee4d436ff27bef16fee"
+    },
+    {
+      "runtime": "terrain-lava40.png",
+      "source": "procedural-materials/terrain-lava40.png",
+      "sha256": "9a9396c942d7a6c35de492c60734875ebe098396e25f492da3e887556efadd45"
+    },
+    {
+      "runtime": "terrain-lava41.png",
+      "source": "procedural-materials/terrain-lava41.png",
+      "sha256": "a372a3eea4f0514a7c8a623899251b97aa39a8a69d85ee139dfddb5013903311"
+    },
+    {
+      "runtime": "terrain-lava42.png",
+      "source": "procedural-materials/terrain-lava42.png",
+      "sha256": "f35effbba1ce79341d8d53cc22fdc3cc637867ac8c2f0ccf6084160f1bfb50f9"
+    },
+    {
+      "runtime": "terrain-lava43.png",
+      "source": "procedural-materials/terrain-lava43.png",
+      "sha256": "59c6a2e9bebb43e666a6be7aa2f00435bbd91a2242b90f25cae1a6dde1eede8f"
+    },
+    {
+      "runtime": "terrain-lava44.png",
+      "source": "procedural-materials/terrain-lava44.png",
+      "sha256": "39bcd8ed0f75e6f412a413becc0c0b8bec5eabc9f86dba99d4364a6dc62f1775"
+    },
+    {
+      "runtime": "terrain-lava45.png",
+      "source": "procedural-materials/terrain-lava45.png",
+      "sha256": "e6f834494df0b4cac0aab54998fccd7e775ca832ca5ab111f262390a43987ce6"
+    },
+    {
+      "runtime": "terrain-lava46.png",
+      "source": "procedural-materials/terrain-lava46.png",
+      "sha256": "aef433e32532dfb32fd9fbafb1c3213481151f335ac06bd07162e69ab72b791e"
+    },
+    {
+      "runtime": "terrain-lava47.png",
+      "source": "procedural-materials/terrain-lava47.png",
+      "sha256": "43b27f5a50b72f9d852bc49b54e8b293ca63f765f254eb267a21cfe009f50291"
+    },
+    {
+      "runtime": "terrain-lava48.png",
+      "source": "procedural-materials/terrain-lava48.png",
+      "sha256": "872db9653695ae741735fa002b506767e32a3431a96caf30a4b1514ad07fcad0"
+    },
+    {
+      "runtime": "terrain-lava49.png",
+      "source": "procedural-materials/terrain-lava49.png",
+      "sha256": "ee99ac8129d4b5a3d2e6e15e0af272c1097fa72b643c6db00efe686a4ea792c5"
+    },
+    {
+      "runtime": "terrain-lava50.png",
+      "source": "procedural-materials/terrain-lava50.png",
+      "sha256": "fe9dec10b55f288f8f185b0a31df625e3371f040f1df5cc45c7ccd2902c586d6"
+    },
+    {
+      "runtime": "terrain-lava51.png",
+      "source": "procedural-materials/terrain-lava51.png",
+      "sha256": "eca9bd30d6fb5e0ad35ab6cc0ac73bc8630d12f36c6e0d617456c36e03c9f585"
+    },
+    {
+      "runtime": "terrain-lava52.png",
+      "source": "procedural-materials/terrain-lava52.png",
+      "sha256": "5e5e3cf6af85291977c9958dc046c0057e480984342db2e0dd9179e90d60fc45"
+    },
+    {
+      "runtime": "terrain-lava53.png",
+      "source": "procedural-materials/terrain-lava53.png",
+      "sha256": "299ece6a5582fce8d8a6f96f4a7ae49cfd860d8b038a4ab1f00df50e48553613"
+    },
+    {
+      "runtime": "terrain-lava54.png",
+      "source": "procedural-materials/terrain-lava54.png",
+      "sha256": "2c5bf6f39d71883e714ad1dab72bf0864109c508a03b5448087e28996c4d54c7"
+    },
+    {
+      "runtime": "terrain-lava55.png",
+      "source": "procedural-materials/terrain-lava55.png",
+      "sha256": "78561091cf4a2219bf7c213723fc10e8b6575fa964429e8e00df7ae6fca1fcf0"
+    },
+    {
+      "runtime": "terrain-lava56.png",
+      "source": "procedural-materials/terrain-lava56.png",
+      "sha256": "08584ed82fbe61ac41aae0d3f27b8955e782871278cf8fe7cd02f3f6c035c0d1"
+    },
+    {
+      "runtime": "terrain-lava57.png",
+      "source": "procedural-materials/terrain-lava57.png",
+      "sha256": "23f181919dfa01b06b8889a2dd8e39a6e32fe2e620c5b5005380d143ca3b48a4"
+    },
+    {
+      "runtime": "terrain-lava58.png",
+      "source": "procedural-materials/terrain-lava58.png",
+      "sha256": "de6e502745996faa052b1e3f98be8b08bb7a47f0dc01c77c8f8ef2dec35b34ba"
+    },
+    {
+      "runtime": "terrain-lava59.png",
+      "source": "procedural-materials/terrain-lava59.png",
+      "sha256": "b9b06e3d36972f5b91b40c0ac37eb014588176a9ec2079a75bc6d007276f3245"
+    },
+    {
+      "runtime": "terrain-lava60.png",
+      "source": "procedural-materials/terrain-lava60.png",
+      "sha256": "869f456c64e53dab9dc5db5c30a845fe2e9a218100f959c8a516b5cbef6f7d95"
+    },
+    {
+      "runtime": "terrain-lava61.png",
+      "source": "procedural-materials/terrain-lava61.png",
+      "sha256": "9a4e7575014189addbe7deedfb271ec13303c03f96de5241884614792dae7a3a"
+    },
+    {
+      "runtime": "terrain-lava62.png",
+      "source": "procedural-materials/terrain-lava62.png",
+      "sha256": "0f28e8c3197ba0df1ee349ede17941451ab4f5c07b932257261049381d1642d5"
+    },
+    {
+      "runtime": "terrain-lava63.png",
+      "source": "procedural-materials/terrain-lava63.png",
+      "sha256": "ba5e731e03f74c8e61a1da82e2ab9322630267178983e1dfc4594f198c562617"
+    },
+    {
+      "runtime": "terrain-ember_field0.png",
+      "source": "procedural-materials/terrain-ember_field0.png",
+      "sha256": "f9a1315b473a027d654c3e40295b682f4737213cae8af14d1014fe613a94ed7f"
+    },
+    {
+      "runtime": "terrain-ember_field1.png",
+      "source": "procedural-materials/terrain-ember_field1.png",
+      "sha256": "b5cc4eccff50cff43d1c164f548c8f52bb00026446797cabdd7b0b92bc991391"
+    },
+    {
+      "runtime": "terrain-ember_field2.png",
+      "source": "procedural-materials/terrain-ember_field2.png",
+      "sha256": "ec44cdee09ae46260bf76bae1f69ecab552ef376eafbfc0ea5e27bc71cdcfccc"
+    },
+    {
+      "runtime": "terrain-ember_field3.png",
+      "source": "procedural-materials/terrain-ember_field3.png",
+      "sha256": "aa7c01aec038c121c942f8d40a7794f140f80ffa3493a62a8a11d81fcc0e152f"
+    },
+    {
+      "runtime": "terrain-ember_field4.png",
+      "source": "procedural-materials/terrain-ember_field4.png",
+      "sha256": "5510c0ea753a9eab2cf65adb62c9f7631f156e25f8290c95005c049c4afe7e76"
+    },
+    {
+      "runtime": "terrain-ember_field5.png",
+      "source": "procedural-materials/terrain-ember_field5.png",
+      "sha256": "715d86d2d24492e66bc4eb3fd97e6bfcdb021a51b5bd3d88a4b0770631d6da7e"
+    },
+    {
+      "runtime": "terrain-ember_field6.png",
+      "source": "procedural-materials/terrain-ember_field6.png",
+      "sha256": "f9b6fc824c40a6b22fbafc46403f5ba65f862dc0f3737919c31e54df5fc7aa30"
+    },
+    {
+      "runtime": "terrain-ember_field7.png",
+      "source": "procedural-materials/terrain-ember_field7.png",
+      "sha256": "b0e44146e19ea176e14829146421142a2e2d83f4633a9ffe9b9a1cf10d747215"
+    },
+    {
+      "runtime": "terrain-ember_field8.png",
+      "source": "procedural-materials/terrain-ember_field8.png",
+      "sha256": "86f968b597cfc01abb5b1a73b7a5ee5d14b70333138395d0464e9579b84f8b2d"
+    },
+    {
+      "runtime": "terrain-ember_field9.png",
+      "source": "procedural-materials/terrain-ember_field9.png",
+      "sha256": "96a6e357b35a2faeb72ccc0ddd8458a3ef76c2fffeb2eb238c7d0d95bca9d6f7"
+    },
+    {
+      "runtime": "terrain-ember_field10.png",
+      "source": "procedural-materials/terrain-ember_field10.png",
+      "sha256": "6a0a1bc425ca6be4c2c0b344cfa761467f9ed6401d4b253feb0f4c1e28d2b7a5"
+    },
+    {
+      "runtime": "terrain-ember_field11.png",
+      "source": "procedural-materials/terrain-ember_field11.png",
+      "sha256": "99e28d51b8dbaa54347fddeb3591488fb159b6d4eb6210afb2f5b8f876672eb5"
+    },
+    {
+      "runtime": "terrain-ember_field12.png",
+      "source": "procedural-materials/terrain-ember_field12.png",
+      "sha256": "1a3a91091921a2010f799cee45042f8bf9b359faaf3b9eace1bb9cfd97109b95"
+    },
+    {
+      "runtime": "terrain-ember_field13.png",
+      "source": "procedural-materials/terrain-ember_field13.png",
+      "sha256": "1d4d01b90097b71cbbd7df0378385bb446ad7c14075eff2e21f7a8f532468c3f"
+    },
+    {
+      "runtime": "terrain-ember_field14.png",
+      "source": "procedural-materials/terrain-ember_field14.png",
+      "sha256": "9edb412097ad3bc558556a2c0d2afe90a71041db7a3218b359f9cce709e7c922"
+    },
+    {
+      "runtime": "terrain-ember_field15.png",
+      "source": "procedural-materials/terrain-ember_field15.png",
+      "sha256": "5c5711bd7821b7dff5ec8a03b0e8220caa38945b9321fe853c446ac62e83c892"
+    },
+    {
+      "runtime": "terrain-ember_field16.png",
+      "source": "procedural-materials/terrain-ember_field16.png",
+      "sha256": "14bf6a76b241b7fa4cad5bcbfa4ef3437c71c386ff354ef675baa3659e0e9952"
+    },
+    {
+      "runtime": "terrain-ember_field17.png",
+      "source": "procedural-materials/terrain-ember_field17.png",
+      "sha256": "4e0f6ab384cc7331db97b2d70b747583f54ebff8b86e442f7cdfcbf9e966ad35"
+    },
+    {
+      "runtime": "terrain-ember_field18.png",
+      "source": "procedural-materials/terrain-ember_field18.png",
+      "sha256": "6cd7dc571e05d4971cf9dd28be5974a3362403a8321ad3b7b3490a3c58695642"
+    },
+    {
+      "runtime": "terrain-ember_field19.png",
+      "source": "procedural-materials/terrain-ember_field19.png",
+      "sha256": "141f9b5582c7625cdd3f43802f0bdc3ccaf1cdd1b2de7011b9b622c8a3c72bd2"
+    },
+    {
+      "runtime": "terrain-ember_field20.png",
+      "source": "procedural-materials/terrain-ember_field20.png",
+      "sha256": "04d79fd58d1832a494838a3fab4f0c1889ca1018d82f9968ddb393b57e62933f"
+    },
+    {
+      "runtime": "terrain-ember_field21.png",
+      "source": "procedural-materials/terrain-ember_field21.png",
+      "sha256": "4908e5638aa7a5ae832eb1612b6fa84af83a960be6ad64d692d057c53a26dfb4"
+    },
+    {
+      "runtime": "terrain-ember_field22.png",
+      "source": "procedural-materials/terrain-ember_field22.png",
+      "sha256": "12d1697ef418e80eab877cd39ea1cfbbaf24dc95f07ddccaf54cb9069dacd282"
+    },
+    {
+      "runtime": "terrain-ember_field23.png",
+      "source": "procedural-materials/terrain-ember_field23.png",
+      "sha256": "e6e2366d34117ad441cd447110ff1ae9c9404c7a4481104e6259d235438e005f"
+    },
+    {
+      "runtime": "terrain-ember_field24.png",
+      "source": "procedural-materials/terrain-ember_field24.png",
+      "sha256": "1b45a6edde55eace1e04a11a905dba13c2b61bf54515e956232dcdef6cec4bf7"
+    },
+    {
+      "runtime": "terrain-ember_field25.png",
+      "source": "procedural-materials/terrain-ember_field25.png",
+      "sha256": "e41e742613127efc90e05539ed74b9fa3b018d0d0d3230189407e3c3f0212489"
+    },
+    {
+      "runtime": "terrain-ember_field26.png",
+      "source": "procedural-materials/terrain-ember_field26.png",
+      "sha256": "1f8c67bbae2738aeee0da24b18318d6881b0250abe947aa1bea0690da1c7174f"
+    },
+    {
+      "runtime": "terrain-ember_field27.png",
+      "source": "procedural-materials/terrain-ember_field27.png",
+      "sha256": "72aa7f0af3afc7daaef90282cc9a4ebff4cdb1f8bdefa38711c1d169e54c50a1"
+    },
+    {
+      "runtime": "terrain-ember_field28.png",
+      "source": "procedural-materials/terrain-ember_field28.png",
+      "sha256": "b37c592623106f20142104e1b6535d6d28b80326f440009ad3bdba578c07a6b1"
+    },
+    {
+      "runtime": "terrain-ember_field29.png",
+      "source": "procedural-materials/terrain-ember_field29.png",
+      "sha256": "d7e2921adf82f1d3facd5accb4e39e34f5014001813fc46dddef0d1514ca73dc"
+    },
+    {
+      "runtime": "terrain-ember_field30.png",
+      "source": "procedural-materials/terrain-ember_field30.png",
+      "sha256": "a82e21ff116518927827948ef4256ff9550c61d8dd1a0b062bf05cd81891116f"
+    },
+    {
+      "runtime": "terrain-ember_field31.png",
+      "source": "procedural-materials/terrain-ember_field31.png",
+      "sha256": "48110fb63ed99c6a80549dd9b724d1391e285cdd8dfd9d3a00488ea225764494"
+    },
+    {
+      "runtime": "terrain-ember_field32.png",
+      "source": "procedural-materials/terrain-ember_field32.png",
+      "sha256": "a5b3603c8bcc23823494d473b740bfeffeb80bd95fa6cd5c89d02ce490d75524"
+    },
+    {
+      "runtime": "terrain-ember_field33.png",
+      "source": "procedural-materials/terrain-ember_field33.png",
+      "sha256": "1fd444072bd51cb86d24bc772731d5fccc70a7733e9f7b9f26367a8458c5341b"
+    },
+    {
+      "runtime": "terrain-ember_field34.png",
+      "source": "procedural-materials/terrain-ember_field34.png",
+      "sha256": "94b5956132d73c9a29d54b5247c5043f59d96e807ad7b0774579658ece30263d"
+    },
+    {
+      "runtime": "terrain-ember_field35.png",
+      "source": "procedural-materials/terrain-ember_field35.png",
+      "sha256": "f8287ef9e529429677ed070fb4b340e0bf147190d660e281212929fd4d6b3400"
+    },
+    {
+      "runtime": "terrain-ember_field36.png",
+      "source": "procedural-materials/terrain-ember_field36.png",
+      "sha256": "940bdcb9ba0804ad23754c290cfe7fba57805be16b56706eaa7092234e30a288"
+    },
+    {
+      "runtime": "terrain-ember_field37.png",
+      "source": "procedural-materials/terrain-ember_field37.png",
+      "sha256": "1c3153ac800db4d6478e67d2f9cf4a535059a31951da1703c6adcfb5f15d2d3a"
+    },
+    {
+      "runtime": "terrain-ember_field38.png",
+      "source": "procedural-materials/terrain-ember_field38.png",
+      "sha256": "f4905c6ef383b330339aa430cd7909dd9fdbc8409b418319ef07659538fc0f2e"
+    },
+    {
+      "runtime": "terrain-ember_field39.png",
+      "source": "procedural-materials/terrain-ember_field39.png",
+      "sha256": "fab7efc45d240e467c6a4db4ca700dbead915727e9f60e42eb867aa72bb069e6"
+    },
+    {
+      "runtime": "terrain-ember_field40.png",
+      "source": "procedural-materials/terrain-ember_field40.png",
+      "sha256": "cd41a45eee1a58c9cfd8dc08f192f434c9fed85120a4221014fc2e7891b94930"
+    },
+    {
+      "runtime": "terrain-ember_field41.png",
+      "source": "procedural-materials/terrain-ember_field41.png",
+      "sha256": "8978a15b06037812dd52f7d47039360688965f9f711ccd155e74fd5e0f8f08a5"
+    },
+    {
+      "runtime": "terrain-ember_field42.png",
+      "source": "procedural-materials/terrain-ember_field42.png",
+      "sha256": "9c638ea5e76c0e93238052b1a402f26ffd9c8bd7c85fcb8c061f4957a91c5123"
+    },
+    {
+      "runtime": "terrain-ember_field43.png",
+      "source": "procedural-materials/terrain-ember_field43.png",
+      "sha256": "f9eb54c2a38b0aee2fead5544f7922d798c4e9fbcd3e8f31c71ffb61a96312db"
+    },
+    {
+      "runtime": "terrain-ember_field44.png",
+      "source": "procedural-materials/terrain-ember_field44.png",
+      "sha256": "e353a560cc1a849892d24eaaa5d3ad676e2fa67dadbdf6a5ec185398a47330ee"
+    },
+    {
+      "runtime": "terrain-ember_field45.png",
+      "source": "procedural-materials/terrain-ember_field45.png",
+      "sha256": "8c91dfcbc8f0d35d443152cc7b805df01897fdaa92f5c039f17edc9533567d07"
+    },
+    {
+      "runtime": "terrain-ember_field46.png",
+      "source": "procedural-materials/terrain-ember_field46.png",
+      "sha256": "48b6efaf18a18b78e8f470c4050a7cf4ccb74843dd265591003d6e7e0b7c2b90"
+    },
+    {
+      "runtime": "terrain-ember_field47.png",
+      "source": "procedural-materials/terrain-ember_field47.png",
+      "sha256": "5cc1d111c6cf57cc5793a137ac5e2913b41739909185d9f5aec9b60a2eba4d01"
+    },
+    {
+      "runtime": "terrain-ember_field48.png",
+      "source": "procedural-materials/terrain-ember_field48.png",
+      "sha256": "74b0ec8988d8c507b83f13f247e929dc310c49ebd8566dd954a8b72d585c8d86"
+    },
+    {
+      "runtime": "terrain-ember_field49.png",
+      "source": "procedural-materials/terrain-ember_field49.png",
+      "sha256": "ea099e7267af447a958bb272560827b3e709661b6df60bc8548aefd4d5e7945d"
+    },
+    {
+      "runtime": "terrain-ember_field50.png",
+      "source": "procedural-materials/terrain-ember_field50.png",
+      "sha256": "0858ed6d6a0b94b3f25fdd45c9bdac853bc8324c85e0f1c6191515f7a92b46f6"
+    },
+    {
+      "runtime": "terrain-ember_field51.png",
+      "source": "procedural-materials/terrain-ember_field51.png",
+      "sha256": "ef867b9ce64188402a443aa5740aea972d36e34448c0b39c4f3f48aaa8510999"
+    },
+    {
+      "runtime": "terrain-ember_field52.png",
+      "source": "procedural-materials/terrain-ember_field52.png",
+      "sha256": "92c630eb28772466e882c00cab02980a6161df820098cfccce249bed468b75a2"
+    },
+    {
+      "runtime": "terrain-ember_field53.png",
+      "source": "procedural-materials/terrain-ember_field53.png",
+      "sha256": "582cff22bdb174893978645316e4f622c6caf68d1ac4250717f82cbf36685e28"
+    },
+    {
+      "runtime": "terrain-ember_field54.png",
+      "source": "procedural-materials/terrain-ember_field54.png",
+      "sha256": "163032511f68ee2e440266b70ac17cfc450407e9e4a7291eb90bbc7244b4a5d9"
+    },
+    {
+      "runtime": "terrain-ember_field55.png",
+      "source": "procedural-materials/terrain-ember_field55.png",
+      "sha256": "0f394e317fa6b43bf61fd5074fd416c255c72dbf314ef29f28829bfa97fc982c"
+    },
+    {
+      "runtime": "terrain-ember_field56.png",
+      "source": "procedural-materials/terrain-ember_field56.png",
+      "sha256": "4f1028930c23e71e55cc06c1bf75976193761497b0fd8492ae71824e87142cc8"
+    },
+    {
+      "runtime": "terrain-ember_field57.png",
+      "source": "procedural-materials/terrain-ember_field57.png",
+      "sha256": "111794b77a0f0431291da515e982c1ee3ed1ee615538ee2cc1933530d0d74e6e"
+    },
+    {
+      "runtime": "terrain-ember_field58.png",
+      "source": "procedural-materials/terrain-ember_field58.png",
+      "sha256": "9c35557cad3b20ffad6498e5887c3f7f2d959d1623de7942343eaa377661bacc"
+    },
+    {
+      "runtime": "terrain-ember_field59.png",
+      "source": "procedural-materials/terrain-ember_field59.png",
+      "sha256": "c8af7f44695cbab475c73d33d62f05fac161e3f4052c39bdd2c2e33a27601f60"
+    },
+    {
+      "runtime": "terrain-ember_field60.png",
+      "source": "procedural-materials/terrain-ember_field60.png",
+      "sha256": "ecddd81ada89b7325258a17444d6e071ac20c37270c4776ee5f63ddec13ff277"
+    },
+    {
+      "runtime": "terrain-ember_field61.png",
+      "source": "procedural-materials/terrain-ember_field61.png",
+      "sha256": "48a161119121447850798a8f821ce035f602077c839ac5e6a1b25fdf5803a566"
+    },
+    {
+      "runtime": "terrain-ember_field62.png",
+      "source": "procedural-materials/terrain-ember_field62.png",
+      "sha256": "12a958e08066ffcc2d24308a869cb6ca44be7dcea98bb40b3aaaf02a6b3ff8ee"
+    },
+    {
+      "runtime": "terrain-ember_field63.png",
+      "source": "procedural-materials/terrain-ember_field63.png",
+      "sha256": "d6387e16cf296047263adfc986e0db620c1dffdbee10ee4e07604e6a6d4ca3a1"
+    },
+    {
+      "runtime": "terrain-loam0.png",
+      "source": "procedural-materials/terrain-loam0.png",
+      "sha256": "1bff84d3427de014b4bc5322371d5616e14740997b1418381ca7d5c1ea7cba60"
+    },
+    {
+      "runtime": "terrain-loam1.png",
+      "source": "procedural-materials/terrain-loam1.png",
+      "sha256": "04ad82fab74912bf81566fa3652bec6a4ebc25915a59dd444cd8be6fc7b6f347"
+    },
+    {
+      "runtime": "terrain-loam2.png",
+      "source": "procedural-materials/terrain-loam2.png",
+      "sha256": "50fd0d0ae55e4f6f5e63cc7d34e8cd3217006828f06c49c174d8ac76c1274f33"
+    },
+    {
+      "runtime": "terrain-loam3.png",
+      "source": "procedural-materials/terrain-loam3.png",
+      "sha256": "7d5882a32b3ac66f779fd3fd6c6b6ec6583e104ebbb12f49072a8df8695d8d95"
+    },
+    {
+      "runtime": "terrain-loam4.png",
+      "source": "procedural-materials/terrain-loam4.png",
+      "sha256": "7efe3e7cba1a9e3d761502c6dd7b38ed7b2d21c7a99afa6e00bb3f87c1496ad5"
+    },
+    {
+      "runtime": "terrain-loam5.png",
+      "source": "procedural-materials/terrain-loam5.png",
+      "sha256": "d6534113c62e089cff4e90bca851f80d2fcdc5bee34848dc70e10e4304187024"
+    },
+    {
+      "runtime": "terrain-loam6.png",
+      "source": "procedural-materials/terrain-loam6.png",
+      "sha256": "224c25b57758b5278374ab79b52650dea0dfbcf092d8405537e1edac4c856ffe"
+    },
+    {
+      "runtime": "terrain-loam7.png",
+      "source": "procedural-materials/terrain-loam7.png",
+      "sha256": "16c0680d11009fbbcea4d867a9eee4e32ac5c1ae4d3e89f3d5f802e9b088c7e0"
+    },
+    {
+      "runtime": "terrain-loam8.png",
+      "source": "procedural-materials/terrain-loam8.png",
+      "sha256": "416e0f078224a71cb6736cb8944ff825677d5bd0a1529e99a2ff44fc54cac009"
+    },
+    {
+      "runtime": "terrain-loam9.png",
+      "source": "procedural-materials/terrain-loam9.png",
+      "sha256": "9890a1424241172a20a960e47dc1018c2f9254ebaff5a232d7b73736c9165730"
+    },
+    {
+      "runtime": "terrain-loam10.png",
+      "source": "procedural-materials/terrain-loam10.png",
+      "sha256": "740cce7c471069b5eca662eb7e24f67a175ad39be5906af3af04d1a6c63863f6"
+    },
+    {
+      "runtime": "terrain-loam11.png",
+      "source": "procedural-materials/terrain-loam11.png",
+      "sha256": "50004ba12afea2cd4c661c9f4ac5897ae65bd30482de4811e20313adb1fd5af4"
+    },
+    {
+      "runtime": "terrain-loam12.png",
+      "source": "procedural-materials/terrain-loam12.png",
+      "sha256": "f1bec4f71fd4bc4cbd00b31e907fba7fddd6e9795e77a4906a98d18e5e97e526"
+    },
+    {
+      "runtime": "terrain-loam13.png",
+      "source": "procedural-materials/terrain-loam13.png",
+      "sha256": "39946701c3ab5f73626ebcb9cad6d77b4b724f96199269f81b6e7a2e6eb41195"
+    },
+    {
+      "runtime": "terrain-loam14.png",
+      "source": "procedural-materials/terrain-loam14.png",
+      "sha256": "d2d002929fd662e29a436f8c6d4fd91f1c4419cc43ffbb355303a72c95c26b7a"
+    },
+    {
+      "runtime": "terrain-loam15.png",
+      "source": "procedural-materials/terrain-loam15.png",
+      "sha256": "fb0bee14be50abeda3df50026501294f238d86ce01287b6d963b50152d2955d1"
+    },
+    {
+      "runtime": "terrain-moss0.png",
+      "source": "procedural-materials/terrain-moss0.png",
+      "sha256": "2715730002ab5b81a18c72f22f24e67c7a3066e882c92ff854fc14150dee57fb"
+    },
+    {
+      "runtime": "terrain-moss1.png",
+      "source": "procedural-materials/terrain-moss1.png",
+      "sha256": "feceefa33fd8a4eec61f20046be846a1243f50f1fabeffe9fac5dddf48ac5126"
+    },
+    {
+      "runtime": "terrain-moss2.png",
+      "source": "procedural-materials/terrain-moss2.png",
+      "sha256": "8d4baefe09c52bc993d6b411b3245ecb531f81b1e9d78912444f7ac446a73a41"
+    },
+    {
+      "runtime": "terrain-moss3.png",
+      "source": "procedural-materials/terrain-moss3.png",
+      "sha256": "43fb3f21deea1fd912ea31d76b3d16085401ab606fecdee9782c185cfe7e450b"
+    },
+    {
+      "runtime": "terrain-moss4.png",
+      "source": "procedural-materials/terrain-moss4.png",
+      "sha256": "c3896af79c6acaf49a1580fcc21c78e214ed7a199d178222039de788b9f68865"
+    },
+    {
+      "runtime": "terrain-moss5.png",
+      "source": "procedural-materials/terrain-moss5.png",
+      "sha256": "76a90992f31328ae671b68c6baa2b5f4fc59bfde51c5796db7a9f6e3216922de"
+    },
+    {
+      "runtime": "terrain-moss6.png",
+      "source": "procedural-materials/terrain-moss6.png",
+      "sha256": "073248e29eefa479e489925a32120faa98106b526b96992f9b7cde9ed332676c"
+    },
+    {
+      "runtime": "terrain-moss7.png",
+      "source": "procedural-materials/terrain-moss7.png",
+      "sha256": "737767292b0582fca13acc270cc78200db1297efa0fa29064fa59021a07b857e"
+    },
+    {
+      "runtime": "terrain-moss8.png",
+      "source": "procedural-materials/terrain-moss8.png",
+      "sha256": "724300a22de342b216ca034be2beff2569c544dad0f6256299db3b0bfcacfb80"
+    },
+    {
+      "runtime": "terrain-moss9.png",
+      "source": "procedural-materials/terrain-moss9.png",
+      "sha256": "8ceb92a6c6e19d04dafc03bc7c7e9d76543411f0bf80c1f35d6e6355c789f3c3"
+    },
+    {
+      "runtime": "terrain-moss10.png",
+      "source": "procedural-materials/terrain-moss10.png",
+      "sha256": "3486c1598879a1ea556e66851ad247b74cf9e15982c8912bf3b2a9cba2680730"
+    },
+    {
+      "runtime": "terrain-moss11.png",
+      "source": "procedural-materials/terrain-moss11.png",
+      "sha256": "262205e62a799a1581a83eecae1e1c1c2dcfaf5379d8deef623953f658623369"
+    },
+    {
+      "runtime": "terrain-moss12.png",
+      "source": "procedural-materials/terrain-moss12.png",
+      "sha256": "40bd2e1453bfec768d8132c552e47ac88a403ff47b3f8e8ab0fe49762d81c046"
+    },
+    {
+      "runtime": "terrain-moss13.png",
+      "source": "procedural-materials/terrain-moss13.png",
+      "sha256": "eb1ff5d8699e208f7ec9236c119682ec0304de1350d195e68abe688d08405c68"
+    },
+    {
+      "runtime": "terrain-moss14.png",
+      "source": "procedural-materials/terrain-moss14.png",
+      "sha256": "a0c1c6c6f8fc1f7654f35f7566409bc986a9219ab6312da4bb58704eea285977"
+    },
+    {
+      "runtime": "terrain-moss15.png",
+      "source": "procedural-materials/terrain-moss15.png",
+      "sha256": "5ae60c2f0ea07bf7b843b8a0489602100a66b00879cb15ad54d24d8ab7fe45ee"
+    },
+    {
+      "runtime": "terrain-spring_meadow0.png",
+      "source": "procedural-materials/terrain-spring_meadow0.png",
+      "sha256": "37d6534e8dbae95587298b7e4aa3e884dbdceecbc7dc27bae310be32f551eb42"
+    },
+    {
+      "runtime": "terrain-spring_meadow1.png",
+      "source": "procedural-materials/terrain-spring_meadow1.png",
+      "sha256": "1a159756f5a031c2bc8481c61a1286e7914cb209f40184b507976a4527a4970c"
+    },
+    {
+      "runtime": "terrain-spring_meadow2.png",
+      "source": "procedural-materials/terrain-spring_meadow2.png",
+      "sha256": "addad6a484138c33859a8b8a13be03e1a2ab2c171f122f0db5a4f181e7763cd1"
+    },
+    {
+      "runtime": "terrain-spring_meadow3.png",
+      "source": "procedural-materials/terrain-spring_meadow3.png",
+      "sha256": "e4bd9a25e2f3ed61fab10a069690a2bbe18f44bb3d63e64a68bf913715fda30a"
+    },
+    {
+      "runtime": "terrain-spring_meadow4.png",
+      "source": "procedural-materials/terrain-spring_meadow4.png",
+      "sha256": "cfd71c9b9d9ae421c9ca988173d3545728a83ce9558eafb9dcbeed80f416e7ba"
+    },
+    {
+      "runtime": "terrain-spring_meadow5.png",
+      "source": "procedural-materials/terrain-spring_meadow5.png",
+      "sha256": "5d5f7f7bc9d1fc9dc560338dd259fc3ce95723146a2f2b0c1db97469b431bbbf"
+    },
+    {
+      "runtime": "terrain-spring_meadow6.png",
+      "source": "procedural-materials/terrain-spring_meadow6.png",
+      "sha256": "d094f268c03597dff25c3b68d0182fe1322019dd03a45942dec18a82fcfb3c89"
+    },
+    {
+      "runtime": "terrain-spring_meadow7.png",
+      "source": "procedural-materials/terrain-spring_meadow7.png",
+      "sha256": "4670e84a56a442e14b804f680dfdacdeba036e5e001a2058238c0ab4dd3da357"
+    },
+    {
+      "runtime": "terrain-spring_meadow8.png",
+      "source": "procedural-materials/terrain-spring_meadow8.png",
+      "sha256": "36af575f9fe6e011f64776ed72280010e5133c2ae0a624938e2c803a2d43ce82"
+    },
+    {
+      "runtime": "terrain-spring_meadow9.png",
+      "source": "procedural-materials/terrain-spring_meadow9.png",
+      "sha256": "a598da7abf6b8bed9328db088f0ab7c629236abde11f7455cb34c8fdaccbc505"
+    },
+    {
+      "runtime": "terrain-spring_meadow10.png",
+      "source": "procedural-materials/terrain-spring_meadow10.png",
+      "sha256": "d87681c8263fd5bd2bbb4132f1bdba1cc45c42898eb6c8bdb45c6a7ae8ee082c"
+    },
+    {
+      "runtime": "terrain-spring_meadow11.png",
+      "source": "procedural-materials/terrain-spring_meadow11.png",
+      "sha256": "14ca798f5c2a9326c237e8d740382ac9d75799539335bb65660f9383e74d6021"
+    },
+    {
+      "runtime": "terrain-spring_meadow12.png",
+      "source": "procedural-materials/terrain-spring_meadow12.png",
+      "sha256": "e2874c5147dcf63235963c909a20e75e8a896b8629dbe6ec9d843cea5f34d92d"
+    },
+    {
+      "runtime": "terrain-spring_meadow13.png",
+      "source": "procedural-materials/terrain-spring_meadow13.png",
+      "sha256": "8d52d9cfc9c66de6e16e335c6b9507ec659718b65aca37e0d8a8b48ddc0a745a"
+    },
+    {
+      "runtime": "terrain-spring_meadow14.png",
+      "source": "procedural-materials/terrain-spring_meadow14.png",
+      "sha256": "28672ae761b2ec40355a1f90c710e15603d31e055f2594076e25aeb07799d4c6"
+    },
+    {
+      "runtime": "terrain-spring_meadow15.png",
+      "source": "procedural-materials/terrain-spring_meadow15.png",
+      "sha256": "7d937b3f700d9dfd5667aa8ff904c56d79b36118ebab19b802a86168447d808b"
+    },
+    {
+      "runtime": "terrain-deep_water0.png",
+      "source": "procedural-materials/terrain-deep_water0.png",
+      "sha256": "05771b87d352762a8899512eabb74e9f4ec4f9e54471db88071d745a873ff9ab"
+    },
+    {
+      "runtime": "terrain-deep_water1.png",
+      "source": "procedural-materials/terrain-deep_water1.png",
+      "sha256": "f9aef2f3356cfa04c2730004c9cbcf2925e0597f405feef59a27405609fd0c08"
+    },
+    {
+      "runtime": "terrain-deep_water2.png",
+      "source": "procedural-materials/terrain-deep_water2.png",
+      "sha256": "04ce6aa81a206d69841f9f1c553d969cf7880d233bb9945c40cb8befeaf11b2d"
+    },
+    {
+      "runtime": "terrain-deep_water3.png",
+      "source": "procedural-materials/terrain-deep_water3.png",
+      "sha256": "6c0e2a75097932e40be35ee6c7015da75fa05b1a15e494325b09f97424f7308c"
+    },
+    {
+      "runtime": "terrain-deep_water4.png",
+      "source": "procedural-materials/terrain-deep_water4.png",
+      "sha256": "0e442ed747d2f4ae211487cf8d16aeab50888df78bb52014c2c6cfae9615e476"
+    },
+    {
+      "runtime": "terrain-deep_water5.png",
+      "source": "procedural-materials/terrain-deep_water5.png",
+      "sha256": "b2638559399c55960fe4c6aaac265dc1e4181c04394371c386382a7fae385977"
+    },
+    {
+      "runtime": "terrain-deep_water6.png",
+      "source": "procedural-materials/terrain-deep_water6.png",
+      "sha256": "c75b676738d8d8070c123e7856307015edd378ed9113593764cbb8b73bacefd9"
+    },
+    {
+      "runtime": "terrain-deep_water7.png",
+      "source": "procedural-materials/terrain-deep_water7.png",
+      "sha256": "9f1fa27dd4fe7c19c46a9d3a68ede99e8f0c2eb700ca16294c7b9c1c95c75bf9"
+    },
+    {
+      "runtime": "terrain-deep_water8.png",
+      "source": "procedural-materials/terrain-deep_water8.png",
+      "sha256": "b1d885b8d6736efb2d4ae0f2fb752c7d2f1ace695db8113a66ce051968d1f343"
+    },
+    {
+      "runtime": "terrain-deep_water9.png",
+      "source": "procedural-materials/terrain-deep_water9.png",
+      "sha256": "aa711d69c7554176cf12415be38143898f2e797e0fe45d4248e0b5abc40119a0"
+    },
+    {
+      "runtime": "terrain-deep_water10.png",
+      "source": "procedural-materials/terrain-deep_water10.png",
+      "sha256": "81ee9ac39f4ada37ae7c51720609554a19530f9db8b5e871c2fd25e36aecd894"
+    },
+    {
+      "runtime": "terrain-deep_water11.png",
+      "source": "procedural-materials/terrain-deep_water11.png",
+      "sha256": "1aede3d90aaf5e01c1ee04b12913254a87570e6d0343c2ce6799423d201217ed"
+    },
+    {
+      "runtime": "terrain-deep_water12.png",
+      "source": "procedural-materials/terrain-deep_water12.png",
+      "sha256": "f0e4b4c32e346edb162cb254b7bcf15d4118509bca7ce1e0e5c315edd3abb75a"
+    },
+    {
+      "runtime": "terrain-deep_water13.png",
+      "source": "procedural-materials/terrain-deep_water13.png",
+      "sha256": "06b3ca052f5f547a0fc4d297a8adabf1677b7b2afd245dcdadcf8026b0e82a36"
+    },
+    {
+      "runtime": "terrain-deep_water14.png",
+      "source": "procedural-materials/terrain-deep_water14.png",
+      "sha256": "c4faedc41505808c143fde321fc832dc5581125047e748815d3b2a8d69e2002d"
+    },
+    {
+      "runtime": "terrain-deep_water15.png",
+      "source": "procedural-materials/terrain-deep_water15.png",
+      "sha256": "381e7a4de205b446fe7f0262b4bef70884f9d432f23f1e35bd9cc96e38cc9848"
+    },
+    {
+      "runtime": "terrain-dark_water0.png",
+      "source": "procedural-materials/terrain-dark_water0.png",
+      "sha256": "777db5c4b4e3e8ade4f5512d8c8f3f0e8abea2ba935dd0d248ea9bc2defce1c1"
+    },
+    {
+      "runtime": "terrain-dark_water1.png",
+      "source": "procedural-materials/terrain-dark_water1.png",
+      "sha256": "62e05f90718154840a4e4cfa806d34362e5bda334e90d364fdb98fde7b082d28"
+    },
+    {
+      "runtime": "terrain-dark_water2.png",
+      "source": "procedural-materials/terrain-dark_water2.png",
+      "sha256": "3c7f07d3b52b4a56f3ad4f7d7bca8a01cc3c5811f46a30c3982eaf388ed4b007"
+    },
+    {
+      "runtime": "terrain-dark_water3.png",
+      "source": "procedural-materials/terrain-dark_water3.png",
+      "sha256": "aee0dfa7062328a4e16731533beef9052e397a5cc17d823d23645f7c2d87da43"
+    },
+    {
+      "runtime": "terrain-dark_water4.png",
+      "source": "procedural-materials/terrain-dark_water4.png",
+      "sha256": "e345f9a703c7a0d83de920145b2828dbc080f2965be89ff444c02134b0370743"
+    },
+    {
+      "runtime": "terrain-dark_water5.png",
+      "source": "procedural-materials/terrain-dark_water5.png",
+      "sha256": "e9ccc349171a0856081180078bc9299a58885b5ef60838f51198006269edc3b0"
+    },
+    {
+      "runtime": "terrain-dark_water6.png",
+      "source": "procedural-materials/terrain-dark_water6.png",
+      "sha256": "6b893f178af465a5132c1c52b682114483e217a5c89171312ed5178573ca69b0"
+    },
+    {
+      "runtime": "terrain-dark_water7.png",
+      "source": "procedural-materials/terrain-dark_water7.png",
+      "sha256": "3df3b0c7209d4cd3967a66f6e5a994e08dd724965ff185fcaba35ccdfb98ea1d"
+    },
+    {
+      "runtime": "terrain-dark_water8.png",
+      "source": "procedural-materials/terrain-dark_water8.png",
+      "sha256": "e5b5886e7acecd818df656b02ab0ccbb0287d6cd3bf3bb0575e3da9855075611"
+    },
+    {
+      "runtime": "terrain-dark_water9.png",
+      "source": "procedural-materials/terrain-dark_water9.png",
+      "sha256": "dc821d74f4af7c4a72de0d22ab12d08ba960467fa26691273cf1519833b0cc94"
+    },
+    {
+      "runtime": "terrain-dark_water10.png",
+      "source": "procedural-materials/terrain-dark_water10.png",
+      "sha256": "f56e592e1a5cacec4a06bd113b3dd310d6b734afdcb7e694bcccc5679ee587bb"
+    },
+    {
+      "runtime": "terrain-dark_water11.png",
+      "source": "procedural-materials/terrain-dark_water11.png",
+      "sha256": "86c36525b30e695f1215c158247f41462d7ffc36db8f9d7f945d0e5895c99a3a"
+    },
+    {
+      "runtime": "terrain-dark_water12.png",
+      "source": "procedural-materials/terrain-dark_water12.png",
+      "sha256": "730c1437993b5edd9634dac618e0fbda19b8fb6da3561ae62ed80bbfce17e3b2"
+    },
+    {
+      "runtime": "terrain-dark_water13.png",
+      "source": "procedural-materials/terrain-dark_water13.png",
+      "sha256": "86a860c01ab9b73a02b2db550c1f867e088c2ba8f179195d6baa02a91106540b"
+    },
+    {
+      "runtime": "terrain-dark_water14.png",
+      "source": "procedural-materials/terrain-dark_water14.png",
+      "sha256": "d68a630c11b2ce9b9a0b576f8dfe1d3819201151cf80f2c12f468fe72874e61e"
+    },
+    {
+      "runtime": "terrain-dark_water15.png",
+      "source": "procedural-materials/terrain-dark_water15.png",
+      "sha256": "1da3a474788292f604608fb8fdaedc12d0d8ef2c1c7a1562ba512dae2a1c4bcd"
+    },
+    {
+      "runtime": "terrain-void_hole0.png",
+      "source": "procedural-materials/terrain-void_hole0.png",
+      "sha256": "de2ffd17fb904efae6f7aee0b9827c88efb67caa490ba90defa0bb063fcbd9bf"
+    },
+    {
+      "runtime": "terrain-void_hole1.png",
+      "source": "procedural-materials/terrain-void_hole1.png",
+      "sha256": "d937a8a7fa4cfdc45d47d7771e32d499f2d33f85a4f0815e7afd65b52ae83a30"
+    },
+    {
+      "runtime": "terrain-void_hole2.png",
+      "source": "procedural-materials/terrain-void_hole2.png",
+      "sha256": "2fb7259622cc59604de67eb163e93177bea68a7fe7936267dea6a4756e998af6"
+    },
+    {
+      "runtime": "terrain-void_hole3.png",
+      "source": "procedural-materials/terrain-void_hole3.png",
+      "sha256": "58ec719129803512833a0e73aef013ba9da7772920facd1c41d19ff0b8b7ba9e"
+    },
+    {
+      "runtime": "terrain-void_hole4.png",
+      "source": "procedural-materials/terrain-void_hole4.png",
+      "sha256": "e4b6f641dd497462d6a8a20cf2967c919dca45bd6ceb86011111a5423a63ccca"
+    },
+    {
+      "runtime": "terrain-void_hole5.png",
+      "source": "procedural-materials/terrain-void_hole5.png",
+      "sha256": "8a81bbade4ce7c956cfc38017cfcd955f1fcac96e0ec2a508af51744e0b63d9c"
+    },
+    {
+      "runtime": "terrain-void_hole6.png",
+      "source": "procedural-materials/terrain-void_hole6.png",
+      "sha256": "0728ee4938816cd7daa657c2ec1df786e4bbf53a360979a4275ce76d8eb9ea34"
+    },
+    {
+      "runtime": "terrain-void_hole7.png",
+      "source": "procedural-materials/terrain-void_hole7.png",
+      "sha256": "78de405faae5054121e676c6f0877482f5f6860f71d21f823dad9a56df7e3189"
+    },
+    {
+      "runtime": "terrain-void_hole8.png",
+      "source": "procedural-materials/terrain-void_hole8.png",
+      "sha256": "eaa502932873726a19c608a0307edbb23af0745124eea8a39164fa4da2edd213"
+    },
+    {
+      "runtime": "terrain-void_hole9.png",
+      "source": "procedural-materials/terrain-void_hole9.png",
+      "sha256": "fcefd00dde164e60cef0a94e3cf04da7ef1d1461b9d193ce3c91cb2981f6c3b3"
+    },
+    {
+      "runtime": "terrain-void_hole10.png",
+      "source": "procedural-materials/terrain-void_hole10.png",
+      "sha256": "4206fca61d9c22a92e1f8b6585c7c0e6cd99b544d6eb58525ef52d956f9549f8"
+    },
+    {
+      "runtime": "terrain-void_hole11.png",
+      "source": "procedural-materials/terrain-void_hole11.png",
+      "sha256": "12892098ab20899dbcf58ac8ac3c012c5978f546a9937286993b87dd37c17d63"
+    },
+    {
+      "runtime": "terrain-void_hole12.png",
+      "source": "procedural-materials/terrain-void_hole12.png",
+      "sha256": "4b0ced5382147b96593a0ff0678be5b9dae67a48539fbbb707c83f2878f2e8c4"
+    },
+    {
+      "runtime": "terrain-void_hole13.png",
+      "source": "procedural-materials/terrain-void_hole13.png",
+      "sha256": "c8fd2df89c260abb37764bc6b42f817c75c34afa7933b49cf923a6aa8599bd2c"
+    },
+    {
+      "runtime": "terrain-void_hole14.png",
+      "source": "procedural-materials/terrain-void_hole14.png",
+      "sha256": "8acd30efb1e879cfe7caaa38eaa4118e29f055ce4c9627bc034471f689baa7d0"
+    },
+    {
+      "runtime": "terrain-void_hole15.png",
+      "source": "procedural-materials/terrain-void_hole15.png",
+      "sha256": "238d056a99d105608f6ef0a2e1b0cc7b0aa9ecb044b27197b9beb4adc0798d40"
+    },
+    {
+      "runtime": "terrain-chasm0.png",
+      "source": "procedural-materials/terrain-chasm0.png",
+      "sha256": "ab55431c4034fb915d15df3b67c355eb0db827448da166ea5718c767d6597c96"
+    },
+    {
+      "runtime": "terrain-chasm1.png",
+      "source": "procedural-materials/terrain-chasm1.png",
+      "sha256": "e62a49b560db646b13ee6439ab9e0e1068ed8f96efee3176582f77fd6363cf4a"
+    },
+    {
+      "runtime": "terrain-chasm2.png",
+      "source": "procedural-materials/terrain-chasm2.png",
+      "sha256": "ea21c851f0afc42e3e6b921768863d9cd794917f0023e5f5daea497087209188"
+    },
+    {
+      "runtime": "terrain-chasm3.png",
+      "source": "procedural-materials/terrain-chasm3.png",
+      "sha256": "44756d7e92eebbfffac7e39f2dd90d55b57c1c7f3636825930fd532c47e5e9be"
+    },
+    {
+      "runtime": "terrain-chasm4.png",
+      "source": "procedural-materials/terrain-chasm4.png",
+      "sha256": "bc140d3be6a61d0e310c4898c6ded2dbd8ea5e080e32f3f7ef52072fc48e9bcb"
+    },
+    {
+      "runtime": "terrain-chasm5.png",
+      "source": "procedural-materials/terrain-chasm5.png",
+      "sha256": "e92ff17e58c12a1b068a25a74e822b0727dfdb0161a148dbc37e1797f921afc7"
+    },
+    {
+      "runtime": "terrain-chasm6.png",
+      "source": "procedural-materials/terrain-chasm6.png",
+      "sha256": "5a7591a3210245e7b52a1e25908690b8d86e0462b6051cd28e15a552fa2985e8"
+    },
+    {
+      "runtime": "terrain-chasm7.png",
+      "source": "procedural-materials/terrain-chasm7.png",
+      "sha256": "ef02378a9b3bf5d3c0956d55ac3b267da2191b2295f122eb966386d9406500dd"
+    },
+    {
+      "runtime": "terrain-chasm8.png",
+      "source": "procedural-materials/terrain-chasm8.png",
+      "sha256": "e0c343706cfe9a38f6d7c78b0d482096a4a40bb002ba2731b0cfc3276b34cf87"
+    },
+    {
+      "runtime": "terrain-chasm9.png",
+      "source": "procedural-materials/terrain-chasm9.png",
+      "sha256": "af98bac0821fb0ea46b25391f59da2a9d9aac9e1804a32182af8b059e5463e91"
+    },
+    {
+      "runtime": "terrain-chasm10.png",
+      "source": "procedural-materials/terrain-chasm10.png",
+      "sha256": "503ddf05a2b4073dec79bb32553db06ae64e775029c4b48ad25bf1e24e671283"
+    },
+    {
+      "runtime": "terrain-chasm11.png",
+      "source": "procedural-materials/terrain-chasm11.png",
+      "sha256": "f32dc9c4d3e013015ae3b5ba3dfef64aea24cdc0d5b2d34f66385e9ca42a7a86"
+    },
+    {
+      "runtime": "terrain-chasm12.png",
+      "source": "procedural-materials/terrain-chasm12.png",
+      "sha256": "6c1cb91b492b543be4f7db51af730e8e20ad6c11558765f5f5f3fb3af07d112e"
+    },
+    {
+      "runtime": "terrain-chasm13.png",
+      "source": "procedural-materials/terrain-chasm13.png",
+      "sha256": "64d7334de98afe74abf13f628be87d68e449bc8f454f1171f59a89baf366a9b3"
+    },
+    {
+      "runtime": "terrain-chasm14.png",
+      "source": "procedural-materials/terrain-chasm14.png",
+      "sha256": "cd4f9aaf96c243b07adf2ad1118061952058f626d59a92880ed638d7bdd9fff0"
+    },
+    {
+      "runtime": "terrain-chasm15.png",
+      "source": "procedural-materials/terrain-chasm15.png",
+      "sha256": "c5a73351e0ab46c79ae7ab1c555446c8e091f33a8bc417451e72bb1c54c9786a"
     }
   ]
 }

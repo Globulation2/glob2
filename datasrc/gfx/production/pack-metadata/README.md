@@ -17,5 +17,7 @@ Client builds export WebP through tools/package_assets.py and rewrite frames.txt
 with WebP filenames. Lossless exports retain every RGBA pixel; release exports
 select the smaller permitted lossless or Q90 WebP image with exact alpha and
 geometry. The PNG manifest hashes describe sources, not encoded WebP bytes.
-The HD terrain atlas covers 272 legacy connected tiles; additional experimental
-terrain uses the shared terrain compiler and native fallback.
+The HD terrain atlas covers 272 legacy connected tiles. Catalogue materials
+(`terrain-<name>N`) ship standalone 4x frames rendered by terrain_synth.py from
+the same source the classic tiles are downsampled from; ice and cobblestone use
+native fallback.

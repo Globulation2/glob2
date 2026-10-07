@@ -2,7 +2,7 @@
   "generator": "tools/artwork/terrain_synth.py",
   "method": "procedural",
   "generator_sha256": {
-    "tools/artwork/terrain_synth.py": "a8eda69c7b7212d9f9573766da37f1002a984d62327c108fb581e9a9c23830dc",
+    "tools/artwork/terrain_synth.py": "68ee111bc32af6bd9ea74cfe300cd0bdad708fc301aad03789f46edd90dace10",
     "tools/artwork/material_tiles.py": "224e159e0974023797710aa959994f11658c82da8fb80f9701e4abc13c74ed83"
   },
   "material": "scree",
@@ -162,5 +162,23 @@
     "data/gfx/terrain-scree13.png": "f0b209cd3f1638e92003b118ec4bad4be91cc2e90fd0a2413d7be63196d8b376",
     "data/gfx/terrain-scree14.png": "602c1e3bd8cb0f93606f696813618463e7d13ae4378f5ec0b16ab07aafb00134",
     "data/gfx/terrain-scree15.png": "d248a8c0de8c3bce84845ac7c7cee788f2a5a38e4ac81e37cd0840a401120163"
+  },
+  "highres_sha256": {
+    "data/highres/v1/terrain-scree0.png": "7d589d058f2d91b11b1f58ab80080baee3048b2d7fadd25227b0e91f6e8fb074",
+    "data/highres/v1/terrain-scree1.png": "4a96469e5aef68f31cb447dafa72ccc4a9c357c7e89dbaad94e2542953e2784c",
+    "data/highres/v1/terrain-scree2.png": "f083af66f7576bd1ce2840eb9beda8e1101a8c118cfa6be20891ee263e471d02",
+    "data/highres/v1/terrain-scree3.png": "e38b00c9e27ec10125ae34bad4901fe83114f70f2db9c65b01112546ad7a9f44",
+    "data/highres/v1/terrain-scree4.png": "d6d98ced02cfeb2594c1c395150847f36147e2afb77bb59f6198e68647e9cb9a",
+    "data/highres/v1/terrain-scree5.png": "90bcdfcee59561aa884135ef69779fbf18f07a583fcf5655e45581c9efdd3e88",
+    "data/highres/v1/terrain-scree6.png": "71e4f17810505b9448d6cf4e703e96266b410d9f71a943e9a1992ef87700945a",
+    "data/highres/v1/terrain-scree7.png": "cbe18ca67759dad77ac6302a473a68b76a670ba8d324812df8c3e85b3d9a526d",
+    "data/highres/v1/terrain-scree8.png": "3526aec019c398ff4d8261a08bf5ae71236f17745051db16fc3e23245f8133ef",
+    "data/highres/v1/terrain-scree9.png": "0f9d7551a1656cb31ad0ce0c39ba9050d70a553399d96e90e11d309e03a1b8f7",
+    "data/highres/v1/terrain-scree10.png": "dd6d779cdf90639044e87a8bb7f4ee7a39a79d0673b123aeaee0a659aa711170",
+    "data/highres/v1/terrain-scree11.png": "14c8677f37e337807d88a8fe9f7ee7b4ab3a820171b4a10570b1a53c0a8d7a2f",
+    "data/highres/v1/terrain-scree12.png": "96b9aaf5a0f33ef57d5cf99501a369d80a566c78ac38b8b3ec76830c3408295d",
+    "data/highres/v1/terrain-scree13.png": "4ff87b0f1e86a3a774b8a8027dfa31e84b2c1a065f5a3878e5d79fcb449d2e02",
+    "data/highres/v1/terrain-scree14.png": "c413692b32e9967a43ce9efdf2e0c55d4c0c3d4e2793b566591a97b21f6fa88c",
+    "data/highres/v1/terrain-scree15.png": "348c3d11a44a73f5faa194c6b10654c03248cb5173c2bfc3478909520cb9a17e"
   }
 }
