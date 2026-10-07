@@ -296,7 +296,7 @@ struct HeadlessRunner
 			if(telemetry=="checksums") setHeadlessEnvironment("GLOB2_CHECKSUM_SIDECAR", "1");
 			else if(telemetry=="team-timeline") setHeadlessEnvironment("GLOB2_TEAM_TIMELINE", "1");
 			else if (telemetry == "building-gradient-impact" ||
-					 telemetry == "building-gradient-timing")
+					 telemetry == "building-gradient-timing" || telemetry == "building-gradient-demand")
 			{
 			}
 			else if (telemetry == "building-gradients")
@@ -493,12 +493,14 @@ struct HeadlessRunner
 		engine.gui.game.map.configureBuildingGradientInstrumentation(gradientInstrumentation == "on");
 		if (gradientInstrumentation == "off")
 			for (const auto &mode : telemetryModes)
-				if (mode == "building-gradients" || mode == "building-gradient-timing" || mode == "building-gradient-impact")
+				if (mode == "building-gradients" || mode == "building-gradient-timing" || mode == "building-gradient-impact" || mode == "building-gradient-demand")
 					throw std::invalid_argument("Building gradient instrumentation off requires building telemetry disabled");
 		if (std::find(telemetryModes.begin(), telemetryModes.end(), "building-gradients") !=
 			telemetryModes.end())
 			engine.gui.game.map.configureBuildingGradientDiagnostics(
 				(output / "building-gradients").string());
+		if (std::find(telemetryModes.begin(), telemetryModes.end(), "building-gradient-demand") != telemetryModes.end())
+			engine.gui.game.map.configureBuildingGradientDemand((output / "building-gradient-demand").string());
 		if (std::find(telemetryModes.begin(), telemetryModes.end(), "building-gradient-timing") !=
 			telemetryModes.end())
 			engine.gui.game.map.configureBuildingGradientTiming(

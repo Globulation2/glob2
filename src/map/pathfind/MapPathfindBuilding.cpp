@@ -10,6 +10,7 @@
 #include "Unit.h"
 #include "MapInternal.h"
 #include "BuildingGradientSearch.h"
+#include "GradientRuntime.h"
 
 
 
@@ -36,6 +37,46 @@ constexpr Uint32 ROUND_TRIP_REFRESH_TICKS = 120;
 
 
 } // namespace
+
+void Map::resolveBuildingGradientQuery(Building* building,int swim,BuildingRoute route,int resource,
+    std::size_t cell,const char* caller) const
+{
+    route=building->resolveRoute(route);
+    const int slot=building->routeSlot(swim,route);
+    auto* search=resource<0 ? building->globalGradientSearch[slot].get()
+        : building->roundTripGradientSearch[resource][swim].get();
+    auto* demand=gradientRuntime->demand.get();
+    if(!demand) {
+        if(search) {if(cell==std::size_t(size))search->finish(caller);else search->resolve(cell,caller);}
+        return;
+    }
+    BuildingGradientDemand::Request request;
+    if(demand) {
+        request.team=building->owner->teamNumber;request.gid=building->gid;request.identity=building->scriptIdentity;
+        request.type=building->type->key;request.route=int(route);request.swim=swim;request.resource=resource;
+        request.captured=resource<0 ? building->lastGlobalGradientUpdateStepCounter[slot] : building->roundTripGradientStep[resource][swim];
+        request.generation=resource<0 ? building->gradientGeneration[slot] : 0;
+        request.caller=caller;request.full=cell==std::size_t(size);
+        request.before=search ? search->frontierCost() : -1;
+        request.popped=search ? search->poppedEntries() : 0;
+    }
+    if(search) {if(cell==std::size_t(size))search->finish(caller);else search->resolve(cell,caller);}
+    if(demand) {
+        request.after=search ? search->frontierCost() : -1;
+        request.complete=!search || search->complete();
+        request.popped=(search ? search->poppedEntries() : 0)-request.popped;
+        request.extended=request.popped>0;
+        const auto* field=resource<0 ? building->globalGradient[slot] : building->roundTripGradient[resource][swim];
+        if(!request.full) {
+            const auto value=field[cell];request.reachable=value>GRADIENT_UNREACHABLE;
+            request.forbidden=value==GRADIENT_FORBIDDEN;
+            if(request.reachable)request.cost=GRADIENT_AT_GOAL-value;
+        }
+        if(!search && (request.full || (!request.reachable && !request.forbidden)))
+            request.after=demand->finishedCost(request,field,size);
+        demand->record(std::move(request),search ? &search->demandEpoch : nullptr);
+    }
+}
 
 bool Map::prepareBuildingGradient(Building *building, int swimClass, BuildingRoute route)
 {
@@ -76,7 +117,7 @@ Uint16 Map::buildingGradientValue(Building *building, int swimClass, size_t cell
 	const int slot = building->routeSlot(swimClass, route);
 	assert(building->globalGradient[slot]);
 	assert(cell < size);
-	if (auto &search = building->globalGradientSearch[slot]) search->resolve(cell);
+	resolveBuildingGradientQuery(building,swimClass,route,-1,cell,"walking_query");
 	return building->globalGradient[slot][cell];
 }
 
@@ -112,7 +153,7 @@ bool Map::buildingAvailable(Building *building, int swimClass, int x, int y, int
 
 void Map::finishRoundTripGradient(Building *building, int resourceType, int swimClass) const
 {
-	if (auto &search = building->roundTripGradientSearch[resourceType][swimClass]) search->finish("round_trip_full_api");
+	resolveBuildingGradientQuery(building,swimClass,BuildingRoute::Footprint,resourceType,size,"round_trip_full_api");
 }
 
 const Uint16 *Map::roundTripGradientSlot(Building *building, int resourceType, int swimClass)
@@ -125,8 +166,7 @@ const Uint16 *Map::roundTripGradientSlot(Building *building, int resourceType, i
 const Uint16 *Map::roundTripGradientAt(Building *building, int resourceType, int swimClass, std::size_t cell)
 {
 	const auto *field = prepareRoundTripGradient(building, resourceType, swimClass);
-	if (field)
-		if (auto &search = building->roundTripGradientSearch[resourceType][swimClass]) search->resolve(cell, "round_trip_query");
+	if (field) resolveBuildingGradientQuery(building,swimClass,BuildingRoute::Footprint,resourceType,cell,"round_trip_query");
 	return field;
 }
 
@@ -159,7 +199,7 @@ bool Map::roundTripDistanceSlot(Building *building, int resourceType, int swimCl
 	if (!materialAvailableSlot(building->owner->teamNumber, resourceType, swimClass, x, y, false, building))
 		return false;
 	building->roundTripGradientUsedStep[resourceType][swimClass]=game->stepCounter;
-	if(auto &search=building->roundTripGradientSearch[resourceType][swimClass]) search->resolve(coordToIndex(x,y),"hiring_trip");
+	resolveBuildingGradientQuery(building,swimClass,BuildingRoute::Footprint,resourceType,coordToIndex(x,y),"hiring_trip");
 	Uint16 g=gradient[coordToIndex(x, y)];
 	if (g<=GRADIENT_UNREACHABLE)
 		return false;

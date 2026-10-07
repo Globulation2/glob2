@@ -521,6 +521,11 @@ void Map::configureBuildingGradientDiagnostics(const std::string &prefix)
 	gradientRuntime->buildingDiagnostics = std::make_unique<BuildingGradientDiagnostics>(prefix);
 }
 
+void Map::configureBuildingGradientDemand(const std::string &prefix)
+{
+	gradientRuntime->demand = std::make_unique<BuildingGradientDemand>(prefix);
+}
+
 void Map::configureBuildingGradientInstrumentation(bool enabled)
 {
 	gradientRuntime->buildings.measure = enabled;
@@ -545,6 +550,15 @@ void Map::finishBuildingGradientTiming()
 }
 void Map::beginBuildingGradientTick()
 {
+    if (auto* demand=gradientRuntime->demand.get()) {
+        std::array<BuildingGradientDemand::Colony,32> counts{};
+        for(int t=0;t<game->mapHeader.getNumberOfTeams();++t) {
+            const auto* team=game->teams[t];
+            for(int i=0;i<Unit::MAX_COUNT;++i) {const auto* unit=team->myUnits[i];if(unit && !unit->isDead) ++counts[t].units;}
+            for(int i=0;i<Building::MAX_COUNT;++i) {const auto* building=team->myBuildings[i];if(building && !building->type->isVirtual) ++counts[t].buildings;}
+        }
+        demand->begin(game->stepCounter,counts);
+    }
 	if (!gradientRuntime->timingPath.empty())
 	{
 		gradientRuntime->timingStart = BuildingGradientDiagnostics::now();
@@ -582,6 +596,7 @@ void Map::beginBuildingGradientTick()
 
 void Map::endBuildingGradientTick()
 {
+	if (gradientRuntime->demand) gradientRuntime->demand->end();
 	if (!gradientRuntime->timingPath.empty())
 	{
 		auto &runtime = *gradientRuntime;
@@ -604,6 +619,7 @@ void Map::buildingGradientPhase(const char *phase)
 
 void Map::flushBuildingGradientDiagnostics()
 {
+	if (gradientRuntime->demand) gradientRuntime->demand->flush();
 	if (auto *d = buildingGradientDiagnostics())
 		d->flush();
 }

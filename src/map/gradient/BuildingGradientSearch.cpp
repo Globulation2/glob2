@@ -38,7 +38,7 @@ void BuildingGradientSearch::beginFrozen(int width,int height,std::uint16_t *see
 {
  assert(width>0 && height>0 && !(width&(width-1)) && !(height&(height-1)));
  assert(swim>=0 && swim<SWIM_CLASS_COUNT && limit>=0 && settled>=0);
- sourceMap=nullptr; buildingId=-1; gradient=seeded; cells=std::size_t(width)*height;
+ demandEpoch=0; sourceMap=nullptr; buildingId=-1; gradient=seeded; cells=std::size_t(width)*height;
  widthMask=width-1; heightMask=height-1; swimClass=swim; currentCost=settled;
  popped=0; pending=nextSeed=0; costLimit=std::min(limit,COST_LIMIT);
  terrain=inputs.terrain; registry=inputs.registry; profiles=inputs.profiles; water=inputs.water;

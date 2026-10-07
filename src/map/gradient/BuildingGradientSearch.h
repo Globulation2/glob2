@@ -55,6 +55,7 @@ class BuildingGradientSearch
 	void advance(std::size_t target);
 
   public:
+	std::uint64_t demandEpoch = 0; // Local observation only; excluded from saves and decisions.
 	void begin(const Map &map, std::uint16_t *seeded, int swim, int gid = -1);
  void beginFrozen(int width, int height, std::uint16_t *seeded, int swim,
                   const BuildingGradientInputs &inputs, int limit, int settled = 0);
@@ -72,6 +73,7 @@ class BuildingGradientSearch
 	bool resolved(std::size_t target) const;
 	std::uint64_t poppedEntries() const { return popped; }
 	int settledCost() const { return complete() ? -1 : currentCost; }
+	int frontierCost() const { return currentCost; }
 	std::size_t retainedBytes() const;
 	// Complete a detached copy with the original frozen costs. No live fields,
 	// ages, call lists or diagnostic collectors are touched.

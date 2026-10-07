@@ -7,6 +7,7 @@
 #include "BuildingGradientScheduler.h"
 #include "BuildingGradientImpact.h"
 #include "BuildingGradientDiagnostics.h"
+#include "BuildingGradientDemand.h"
 #include "ResourceSeedCache.h"
 #include "TerrainSafetyCache.h"
 #include "field/GradientWorkspace.h"
@@ -59,6 +60,7 @@ struct GradientRuntime
 	BuildingGradientScheduler buildings{async};
 	bool buildingAccessByClass = false;
 	std::unique_ptr<BuildingGradientDiagnostics> buildingDiagnostics;
+	std::unique_ptr<BuildingGradientDemand> demand;
 	std::unique_ptr<BuildingGradientImpact> impact;
 	struct TickTiming
 	{

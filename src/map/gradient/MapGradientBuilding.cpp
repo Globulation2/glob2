@@ -17,7 +17,7 @@
 
 void Map::finishBuildingGradient(Building *building, int swimClass, BuildingRoute route, const char *caller) const
 {
-	if (auto &search = building->globalGradientSearch[building->routeSlot(swimClass, route)]) search->finish(caller);
+	resolveBuildingGradientQuery(building,swimClass,route,-1,size,caller);
 }
 
 // updateGlobalGradient(Building*): the full-map gradient toward a building, a

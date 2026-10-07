@@ -10,6 +10,9 @@
 #include <algorithm>
 #include <array>
 #include <vector>
+#include <filesystem>
+#include <fstream>
+#include <chrono>
 
 namespace
 {
@@ -115,6 +118,38 @@ static_assert(std::is_const_v<std::remove_reference_t<decltype(std::declval<Map 
 
 TEST_SUITE("GradientPreparation")
 {
+    TEST_CASE("demand observation records cached queries extensions and full completion")
+    {
+        glob2test::HeadlessGlobals globals;
+        glob2test::HeadlessGame world({.wDec=6, .hDec=6, .teams=1, .discovered=true, .clearImmobile=true, .loadDefaultRace=true, .header=true});
+        auto& map=world.game.map;
+        auto* building=world.addBuilding("inn",8,8); REQUIRE(building);
+        const auto directory=std::filesystem::temp_directory_path()/
+            ("glob2-demand-"+std::to_string(std::chrono::steady_clock::now().time_since_epoch().count()));
+        std::filesystem::create_directory(directory);
+        struct Cleanup {std::filesystem::path path;~Cleanup(){std::filesystem::remove_all(path);}} cleanup{directory};
+        map.configureBuildingGradientDemand((directory/"demand").string());
+        map.beginBuildingGradientTick();
+        REQUIRE(map.prepareBuildingGradient(building,0));
+        const auto near=map.buildingGradientValue(building,0,map.coordToIndex(12,8));
+        CHECK(near>GRADIENT_UNREACHABLE);
+        CHECK(map.buildingGradientValue(building,0,map.coordToIndex(12,8))==near);
+        const auto far=map.buildingGradientValue(building,0,map.coordToIndex(30,8));
+        CHECK(far<near);
+        map.finishBuildingGradient(building,0,BuildingRoute::Footprint,"test_full");
+        CHECK(map.buildingGradientValue(building,0,map.coordToIndex(12,8))==near);
+        CHECK(map.buildingGradientValue(building,0,map.coordToIndex(30,8))==far);
+        map.endBuildingGradientTick();
+        map.gradientRuntime->demand->flush();
+        std::ifstream stream(directory/"demand-requests.csv");
+        const std::string content{std::istreambuf_iterator<char>(stream),std::istreambuf_iterator<char>()};
+        CHECK(content.find("test_full")!=std::string::npos);
+        CHECK(content.find("walking_query")!=std::string::npos);
+        std::ifstream ticks(directory/"demand-ticks.csv");
+        const std::string census{std::istreambuf_iterator<char>(ticks),std::istreambuf_iterator<char>()};
+        CHECK(census.find(",6,")!=std::string::npos);
+    }
+
 	TEST_CASE("warm preparation keeps custom supplier unions exclusions penalties and overlays live")
 	{
 		glob2test::HeadlessGlobals globals;

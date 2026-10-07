@@ -494,6 +494,42 @@ Sharing a topology generation and phase does not prove fields can be scheduled
 together: immobile blockers and caller-visible state can change within a phase.
 
 
+### Building-gradient demand coverage
+
+`--run-game --telemetry building-gradient-demand` writes
+`building-gradient-demand-requests.csv` and `building-gradient-demand-ticks.csv`.
+This opt-in simulation-owner collector records cached queries as well as queue
+extensions. Each row identifies a search lifetime, building identity and type,
+route, swim class, resource, colony unit/building counts, caller, requested cost,
+frontier before/after, reachability, full-completion requests and popped entries.
+Repeated identical observations within a tick carry a request count. The tick
+file supplies denominators and dropped counts; traces with drops cannot fit a
+policy. The collector does not enter saves, decisions or checksums. Census,
+aggregation and output are substantial diagnostic work: disable it for timing.
+
+```sh
+python3 test/analyze_building_gradient_demand.py artifacts/match-a artifacts/match-b \
+  --output artifacts/demand-summary.json
+```
+
+The analyzer accepts gzip CSVs. Use multiple independent seeds and layouts, and
+retain input/source/binary hashes and commands with the traces. It compares fixed
+cost budgets with offline quantile tables by building type, colony size, route,
+swim class and resource. It validates by leaving out entire matches, weights
+training matches equally within each stratum, and bootstraps match-level coverage.
+Sparse strata fall back to type and then field kind; at least three training
+matches must support a stratum. Unknown demand and unsupported strata count as
+misses. Query coverage and maximum demand per observed search lifetime are
+reported separately; lifetimes already present at the first recorded tick are
+marked as partially observed.
+
+Cost divided by ten is cardinal land-step equivalent, not a geometric radius:
+diagonals, water, terrain modifiers and resource-parent seed costs change it.
+Full-completion and unreachable queries require exhausting the reachable field.
+A policy covering 95% of repeated queries need not remove 95% of propagation
+work, and the fitted tables are not activated in the simulation. Measure CPU,
+lazy extensions and unnecessary proactive work separately before adopting one.
+
 ### Scheduled building-gradient experiment
 
 Two additional saved, opt-in policies require `building-gradient-pipeline`:

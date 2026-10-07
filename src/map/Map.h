@@ -212,6 +212,9 @@ public:
 	enum ComputeExperiment { ComputeAreas = 1, ComputeInitialize = 2, ComputeHiring = 4, ComputeAI = 8 };
 	void configureCompute(unsigned threads, unsigned experiments);
 	void configureBuildingGradientDiagnostics(const std::string &prefix);
+	void configureBuildingGradientDemand(const std::string &prefix);
+	void resolveBuildingGradientQuery(Building *building, int swim, BuildingRoute route, int resource,
+		std::size_t cell, const char *caller) const;
 	BuildingGradientDiagnostics *buildingGradientDiagnostics() const;
 	void configureBuildingGradientTiming(const std::string &path);
 	void configureBuildingGradientInstrumentation(bool enabled);
