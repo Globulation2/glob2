@@ -941,18 +941,22 @@ For timing and scheduling, start with `src/game/Game_sync.cpp` and `src/engine/E
   so visual effects can change, run at any frame rate or move to another thread
   without consuming simulation draws.
 - Simulation/client boundary (`src/engine/sim/`). Simulation code must not call `GameGUI`;
-  it talks to the client through three channels, which `GameGUI` owns and `Game`
-  points to (all null without a GUI):
+  it talks to the client through value channels. `GameGUI` owns the event/request
+  queues; `Game` owns the stable script endpoint (inactive without a GUI):
   - `ClientEvents`: lossless queue of notices the simulation publishes (team
     `GameEvent`s, chat, voice, marks, pause, ghost removal, building removal, unit
-    conversion, executed orders) plus a per-tick latest-value pulse
+    conversion, executed orders, script presentation) plus a per-tick latest-value pulse
     (`Team::wasRecentEvent` for every team). `Game::executeOrderAndNotify` publishes
     the order effects; `GameGUI::consumeClientEvents` applies them after each order,
     after each engine tick, and at the start of `step` and `drawAll`.
   - `ClientCommandSink`: the presentation commands map scripts issue (building and
     flag choices, GUI elements, highlights, Space swallowing, script text). SGSL,
     USL and JavaScript map scripts call it instead of `GameGUI`. Its two read
-    methods are legacy USL queries; do not add more.
+    methods are legacy USL queries; do not add more. `Game::scriptClient` forwards
+    directly during serial execution. At threaded startup it receives the current
+    ordered choices and aliases, then updates its own enablement mirror and enqueues
+    commands. Queries never wait for GUI consumption. USL retains this same stable
+    endpoint across mode changes.
   - `ClientRequests`: a latest-value `ClientView` (viewport, observed building,
     overlay, debug layers) and a lossless command queue (the SGSL Space
     acknowledgement). `Game::applyClientRequests` applies them at the start of
@@ -961,9 +965,10 @@ For timing and scheduling, start with `src/game/Game_sync.cpp` and `src/engine/E
 
   Client code holds entities as `BuildingRef`/`UnitRef` (gid plus `scriptIdentity`)
   and resolves them through `Game::resolveBuilding`/`resolveUnit` at each use; do not
-  keep `Building*`/`Unit*` across ticks in client code. The channels are
-  single-threaded for now. Making them thread-safe only changes `LosslessQueue` and
-  the latest-value accessors.
+  keep `Building*`/`Unit*` across ticks in client code. Queue and pulse access are
+  synchronized. Draining swaps out one batch under a short lock, then delivers it
+  without holding the lock; notices published during delivery wait for the next
+  drain. Channel resets require a lifecycle boundary with producers stopped.
 - For behavior-preserving refactors and optimizations, compare base and changed
   builds using identical saves/maps, seeds, settings and orders. Compare per-tick
   state/checksums as well as replay bytes: matching orders alone do not prove that
@@ -1552,6 +1557,8 @@ bounded software target. Asset loading is shared with normal game startup.
   prepares entity records, connections, panels and overlays, then publishes the
   complete Scene through a triple buffer. Simulation barriers never join that task.
   One preparation is in flight; a slow consumer retains its previous complete Scene.
+  After eight simulation claims, the designated worker gives a pending presentation
+  chunk a turn, preventing starvation under a continuous compute backlog.
   Without a compute worker, the graphics owner explicitly pumps preparation.
 - `SceneExtractor::extract(game, request, scene)` remains the synchronous path for
   serial sessions, the editor and standalone rendering. `Game::ViewState::drawnScene()`
@@ -1613,8 +1620,9 @@ also remains the headless default and the equivalence reference.
 
 - The simulation thread paces itself with the speed presets and runs ticks
   (`Engine::simulationStep`: orders, network, `Game::syncStep`). After a tick, if the main
-  thread has taken the previous Scene, it extracts the next one into a `SceneBuffer`
-  (lock-free triple buffer), so fast-forward extracts at most once per drawn frame.
+  thread has taken the previous Scene, it captures frozen inputs and submits
+  preparation. A compute worker publishes the result into a `SceneBuffer`
+  (lock-free triple buffer); only one preparation is in flight.
 - The main thread draws the newest Scene when the render ceiling permits a frame. Work that reads or writes the game —
   input, `GameGUI::step`, consuming `ClientEvents`, checking the selection, script
   highlights — runs in `SimulationRunner::withGame`, which parks the simulation between

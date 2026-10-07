@@ -9,8 +9,12 @@
 #include "sim/ClientCommandSink.h"
 #include "sim/ClientEvents.h"
 #include "sim/ClientRequests.h"
+#include "sim/ScriptClientChannel.h"
 
 #include <string>
+#include <atomic>
+#include <thread>
+#include <ThreadSupport.h>
 #include <vector>
 
 namespace
@@ -64,6 +68,80 @@ TEST_SUITE("ClientChannels")
 		CHECK(queue.empty());
 		queue.drain([&](int v) { seen.push_back(v); });
 		CHECK(seen.size() == 5);
+	}
+
+	TEST_CASE("queue callbacks can publish the next bounded batch")
+	{
+		LosslessQueue<int> queue;
+		queue.push(1);
+		std::vector<int> seen;
+		queue.drain([&](int value) { seen.push_back(value); queue.push(2); });
+		CHECK(seen == std::vector<int>{1});
+		CHECK(queue.size() == 1);
+		queue.drain([&](int value) { seen.push_back(value); });
+		CHECK(seen == std::vector<int>{1, 2});
+		CHECK(queue.empty());
+	}
+
+	TEST_CASE("concurrent event delivery preserves every value and coherent pulses")
+	{
+		if constexpr (!GAGCore::ThreadSupport::available) return;
+		ClientEvents events;
+		std::atomic<bool> done{false};
+		constexpr unsigned count = 10000;
+		std::thread producer([&] {
+			for (unsigned i = 0; i < count; ++i)
+			{
+				events.push(ClientEvent::BuildingRemoved{Uint16(i)});
+				ClientEvents::TickPulse pulse;
+				pulse.valid = true;
+				pulse.tick = i;
+				for (auto &team : pulse.recentEvents) team.fill((i & 1) != 0);
+				events.publishPulse(pulse);
+			}
+			done.store(true, std::memory_order_release);
+		});
+		unsigned received = 0;
+		bool ordered = true, coherent = true;
+		do {
+			events.drain([&](ClientEventVariant&& event) {
+				ordered &= std::get<ClientEvent::BuildingRemoved>(event).gid == received++;
+			});
+			const auto pulse = events.pulse();
+			if (pulse.valid)
+				for (const auto &team : pulse.recentEvents)
+					for (bool value : team) coherent &= value == bool(pulse.tick & 1);
+			std::this_thread::yield();
+		} while (!done.load(std::memory_order_acquire) || !events.empty());
+		producer.join();
+		CHECK(ordered);
+		CHECK(coherent);
+		CHECK(received == count);
+	}
+
+	TEST_CASE("script queries observe commands before the client consumes them")
+	{
+		RecordingSink sink;
+		ClientEvents events;
+		ScriptClientChannel channel(&sink);
+		channel.start(events, {{"inn-a", "inn", true}, {"inn-b", "inn", true}}, {{"warflag", "war", false}});
+		channel.disableBuildingsChoice("inn");
+		channel.enableFlagsChoice("warflag");
+		channel.showScriptText("hello");
+		CHECK_FALSE(channel.isBuildingEnabled("inn-a"));
+		CHECK_FALSE(channel.isBuildingEnabled("inn-b"));
+		CHECK_FALSE(channel.isBuildingEnabled("unknown"));
+		CHECK(channel.isFlagEnabled("war"));
+		CHECK(sink.calls.empty());
+		channel.enableBuildingsChoice("inn-b");
+		CHECK_FALSE(channel.isBuildingEnabled("inn")); // first matching alias, as before
+		CHECK(channel.isBuildingEnabled("inn-b"));
+		events.drain([&](ClientEventVariant&& event) { std::get<ScriptPresentation>(event).apply(sink); });
+		CHECK(sink.calls == std::vector<std::string>{"disableBuilding inn", "enableFlag warflag", "show hello", "enableBuilding inn-b"});
+		channel.stop();
+		channel.hideScriptText();
+		CHECK(sink.calls.back() == "hide");
+		CHECK(events.empty());
 	}
 
 	TEST_CASE("team events reach the GUI exactly once, in order, and age like Team::updateEvents")
@@ -141,8 +219,8 @@ TEST_SUITE("ClientChannels")
 		CHECK(sink.saw("swallow off"));
 		CHECK(sink.saw("highlight " + std::to_string(GameGUI::HighlightWorkers) + " off"));
 
-		// The game's own client sink is the GUI.
-		CHECK(world.game.clientSink == static_cast<ClientCommandSink *>(&world.gui));
+		// All interpreters use the same stable endpoint; serial mode forwards to the GUI.
+		CHECK(world.game.clientSink == static_cast<ClientCommandSink *>(&world.game.scriptClient));
 		CHECK(world.game.clientEvents == &world.gui.clientEvents);
 		CHECK(world.game.clientRequests == &world.gui.clientRequests);
 	}

@@ -143,6 +143,7 @@ public:
 	//! engine calls this after each tick; executeOrder, step and drawAll call
 	//! it too, so the GUI never acts on a stale view of the simulation.
 	void consumeClientEvents();
+	void startScriptClientChannel();
 
 	// Script interface (ClientCommandSink)
 	void enableBuildingsChoice(const std::string &name) override;

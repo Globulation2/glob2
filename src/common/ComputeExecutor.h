@@ -279,14 +279,27 @@ private:
 	}
 	void worker(std::size_t slot)
 	{
-		std::size_t seen = 0;
+		std::size_t seen = 0, simulationClaims = 0;
 		std::unique_lock<std::mutex> lock(mutex);
 		for (;;)
 		{
 			ready.wait(lock, [&] { return stopping || generation != seen || claimable(false) || presentationClaimable(slot); });
 			if (stopping) return;
+			// The designated worker lends capacity to simulation, but must not
+			// starve presentation under a continuous deferred backlog. The owner
+			// and other workers remain available to every simulation barrier.
+			if (simulationClaims >= 8 && presentationClaimable(slot))
+			{
+				const auto work = claimPresentation();
+				simulationClaims = 0;
+				lock.unlock();
+				executePresentation(work, slot);
+				lock.lock();
+				continue;
+			}
 			if (generation != seen)
 			{
+				++simulationClaims;
 				seen = generation;
 				++inFlight;
 				lock.unlock();
@@ -300,11 +313,13 @@ private:
 			{
 				if (!presentationClaimable(slot)) continue;
 				const auto work = claimPresentation();
+				simulationClaims = 0;
 				lock.unlock();
 				executePresentation(work, slot);
 				lock.lock();
 				continue;
 			}
+			++simulationClaims;
 			lock.unlock();
 			execute(claimed, slot);
 			lock.lock();

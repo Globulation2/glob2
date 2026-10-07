@@ -146,3 +146,14 @@ void GameGUI::updateHighlightInGame()
 		}
 	}
 }
+
+void GameGUI::startScriptClientChannel()
+{
+	const auto choices = [&](const auto& names, const auto& states) {
+		std::vector<ScriptClientChannel::Choice> result;
+		for (size_t i = 0; i < names.size(); ++i)
+			result.push_back({names[i], game.buildingsTypes.get(game.buildingsTypes.findByKey(names[i]))->type, states[i]});
+		return result;
+	};
+	game.scriptClient.start(clientEvents, choices(buildingsChoiceName, buildingsChoiceState), choices(flagsChoiceName, flagsChoiceState));
+}

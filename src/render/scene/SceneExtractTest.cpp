@@ -383,6 +383,11 @@ TEST_SUITE("SceneExtract")
                 return pixels;
             };
             const auto actual=render(scene,"connected");
+            SceneExtractor workerExtractor;
+            auto inputs = workerExtractor.capture(world.game, request);
+            Scene prepared;
+            workerExtractor.prepare(*inputs, prepared);
+            CHECK_MESSAGE(actual == render(prepared, "snapshot"), "snapshot preparation must preserve every rendered pixel");
             CHECK_MESSAGE(actual==render(scene,"repeat"),"identical frozen scenes must render identically before the mask control");
             // Counterfactual RENDER-ONLY control: same scene and entities, masks forced to zero.
             // Both the ground and overlay renderer must use these extracted masks.
@@ -400,6 +405,35 @@ TEST_SUITE("SceneExtract")
 
 TEST_SUITE("SceneExtract")
 {
+TEST_CASE("snapshot preparation retains definitions after the source game is destroyed")
+{
+    glob2test::HeadlessGlobals globals;
+    SceneExtractor extractor;
+    std::shared_ptr<SceneInputs> input;
+    Uint16 unitId = 0xffff, buildingId = 0xffff;
+    {
+        glob2test::HeadlessGame world{glob2test::GameOptions{.wDec=5, .hDec=5, .teams=1, .loadDefaultRace=true}};
+        auto* unit = world.addUnit(WORKER, 12, 12, 0);
+        auto* building = world.addBuilding("inn", 4, 4, 0, 0);
+        REQUIRE(unit); REQUIRE(building);
+        unitId = unit->gid; buildingId = building->gid;
+        SceneRequest request;
+        request.selectedUnit = Game::refOf(unit);
+        request.selectedBuilding = Game::refOf(building);
+        input = extractor.capture(world.game, request);
+    }
+    Scene scene;
+    extractor.prepare(*input, scene);
+    input.reset();
+    REQUIRE(scene.entities.unit(unitId));
+    REQUIRE(scene.entities.building(buildingId));
+    CHECK(scene.entities.unit(unitId)->race == scene.race.get());
+    CHECK(scene.entities.building(buildingId)->type->key == "inn.0.finished");
+    CHECK(scene.panels.unit.race == scene.race.get());
+    CHECK(scene.map.getW() == 32);
+    CHECK(scene.map.getBuilding(4, 4) == buildingId);
+}
+
 TEST_CASE("snapshot preparation matches legacy queries and survives later live mutations")
 {
     glob2test::HeadlessGlobals globals;

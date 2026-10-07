@@ -257,7 +257,10 @@ private selection API without exposing it to game callers.
 `ClientChannelsTest.cpp` covers the `src/engine/sim/` channels: team events reaching the
 GUI once, in order and aged like `Team::updateEvents`; script presentation going
 through `ClientCommandSink`; the SGSL Space acknowledgement in `ClientRequests`;
-and order effects such as pause arriving as events.
+and order effects such as pause arriving as events. Concurrent delivery checks
+FIFO completeness and coherent pulses; reentrant publication waits for the next
+batch. Script-channel cases check immediate enablement queries before the client
+drains commands, including ordered alias matching.
 
 Run as the `GameGUISelection` and `ClientChannels` suites of `glob2-engine-tests`:
 
