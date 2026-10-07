@@ -24,7 +24,7 @@ def render():
         recipe = frame['recipe']
         original = recipe.startswith('recovered original')
         authored = recipe.startswith('hand-authored SVG')
-        procedural = recipe.startswith('procedural terrain synthesis')
+        procedural = recipe.startswith('procedural terrain')
         category = ('Recovered original' if original
                     else 'Hand-authored vector' if authored
                     else 'Procedural terrain synthesis' if procedural else CATEGORIES[recipe])

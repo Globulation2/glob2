@@ -44,7 +44,7 @@ def category(recipe):
         return 'ai-materials'
     if recipe in ORIGINAL_MATERIALS:
         return 'original-materials'
-    if recipe.startswith('procedural terrain synthesis'):
+    if recipe.startswith('procedural terrain'):
         return 'procedural-materials'
     if recipe.startswith('generated terrain material'):
         return 'ai-materials'

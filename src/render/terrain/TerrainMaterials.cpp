@@ -170,6 +170,20 @@ Catalog Catalog::parse(const nlohmann::json &j)
 		const auto edges = m.value("edges", nlohmann::json("blend"));
 		require(edges == "blend" || edges == "periodic", "edges must be 'blend' or 'periodic'");
 		v.periodicEdges = edges == "periodic";
+		if (m.contains("decor"))
+		{
+			const auto &d = m.at("decor");
+			require(d.is_object(), "decor must be an object");
+			v.decor.sprite = dataPath(d.at("sprite"));
+			for (const auto *key : {"full", "edge"})
+			{
+				auto &frames = std::string(key) == "full" ? v.decor.full : v.decor.edge;
+				require(d.at(key).is_array() && !d.at(key).empty() && d.at(key).size() <= 256,
+						"decor frames must be a non-empty array");
+				for (const auto &frame : d.at(key))
+					frames.push_back(integerInRange(frame, 0, 65535));
+			}
+		}
 		v.animationFrames = integerInRange(m.value("animation_frames", nlohmann::json(1)), 1, 256);
 		v.animationTicks = integerInRange(m.value("animation_ticks", nlohmann::json(1)), 1,
 										  std::numeric_limits<int>::max());
@@ -259,6 +273,15 @@ unsigned Catalog::variantIndex(MaterialId id, int x, int y, std::uint32_t seed) 
 		n -= m.variants[i].weight;
 	}
 	return unsigned(m.variants.size() - 1);
+}
+int Catalog::decorFrame(MaterialId id, int x, int y, bool edge, std::uint32_t seed) const
+{
+	const auto &d = materials[id].decor;
+	const auto &frames = edge ? d.edge : d.full;
+	if (frames.empty())
+		return -1;
+	// A salt distinct from the ground variant's, so the two choices are independent.
+	return frames[hash(x, y, materials[id].salt ^ mapSeedSalt(seed) ^ 0x6dec0u) % frames.size()];
 }
 int Catalog::frame(MaterialId id, int x, int y, int time, std::uint32_t seed) const
 {

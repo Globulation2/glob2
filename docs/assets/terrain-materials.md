@@ -167,6 +167,46 @@ and saturated, fertile ground warm and saturated (umber loam, moss, meadow),
 barren ground muted warm neutrals, rough ground cool and desaturated, paths warm
 and light, void near black with a cast onto every neighbour.
 
+### Raised obstacle decor
+
+Obstacle terrain is drawn in two layers, as forest is. The ground material is
+composed like any other terrain: dusty earth for boulders, leaf litter for hedge,
+undergrowth for thicket, and rock for ridge rock and outcrop. A decor sprite per
+cell is then drawn with the resources, row by row, so objects stand up, overlap
+neighbouring cells and occlude each other.
+
+A material opts in with a `decor` block:
+
+```json
+"decor": {"sprite": "data/gfx/terrain-decor", "full": [0, 1, 2], "edge": [8, 9]}
+```
+
+- `full` frames are used for cells whose four neighbours share the cell's
+  appearance.
+- `edge` frames are smaller and pulled toward the cell centre, for cells with an
+  open neighbour, so clusters do not spill far onto open ground.
+- The frame is chosen by a coordinate hash salted with the map's terrain seed.
+- All decor blocks share one sprite, so the cached GPU path batches decor rows
+  like resource rows.
+- Frames are at most 64×64; they are centred on the cell, and the shipped 48×48
+  frames overhang neighbours by 8 px.
+
+`tools/artwork/terrain_decor.py` synthesises the frames in the game's soft
+three-quarter view:
+
+- Each object stands on a base point and rises into the cell above.
+- The body has a lit top and a darker front face, with edge shading only on the
+  side away from the light.
+- One soft ground shadow falls to the lower right.
+
+The sets are rounded boulders, a continuous hedge mass that joins its
+neighbours, scrubby bushes with twigs, tilted ridge slabs and shards, and
+bedrock massifs with sparse lichen. The tool writes `data/gfx/terrain-decorN.png`
+(set k at frames 12k–12k+11), the HD frames, provenance and, with
+`--write-catalog`, the `decor` blocks. `--check` reproduces them, and `--sheet`
+writes a review sheet. Decor is presentation only: the minimap, the overview and
+the simulation ignore it.
+
 ### Periodic edges
 
 The runtime blend above ghosts any texture built from discrete objects (pebbles,

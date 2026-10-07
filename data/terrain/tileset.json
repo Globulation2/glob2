@@ -644,6 +644,11 @@
         "height": 4,
         "cast_q8": 88,
         "cast_width_q8": 832
+      },
+      "decor": {
+        "sprite": "data/gfx/terrain-decor",
+        "full": [0, 1, 2, 3, 4, 5, 6, 7],
+        "edge": [8, 9, 10, 11]
       }
     },
     {
@@ -722,6 +727,11 @@
         "height": 4,
         "cast_q8": 88,
         "cast_width_q8": 832
+      },
+      "decor": {
+        "sprite": "data/gfx/terrain-decor",
+        "full": [12, 13, 14, 15, 16, 17, 18, 19],
+        "edge": [20, 21, 22, 23]
       }
     },
     {
@@ -800,6 +810,11 @@
         "height": 4,
         "cast_q8": 88,
         "cast_width_q8": 832
+      },
+      "decor": {
+        "sprite": "data/gfx/terrain-decor",
+        "full": [24, 25, 26, 27, 28, 29, 30, 31],
+        "edge": [32, 33, 34, 35]
       }
     },
     {
@@ -878,6 +893,11 @@
         "height": 4,
         "cast_q8": 72,
         "cast_width_q8": 768
+      },
+      "decor": {
+        "sprite": "data/gfx/terrain-decor",
+        "full": [36, 37, 38, 39, 40, 41, 42, 43],
+        "edge": [44, 45, 46, 47]
       }
     },
     {
@@ -956,6 +976,11 @@
         "height": 4,
         "cast_q8": 72,
         "cast_width_q8": 768
+      },
+      "decor": {
+        "sprite": "data/gfx/terrain-decor",
+        "full": [48, 49, 50, 51, 52, 53, 54, 55],
+        "edge": [56, 57, 58, 59]
       }
     },
     {

@@ -179,7 +179,7 @@ def game_sprites(root):
         if document.get('compiled_pack'):
             names.add(str(Path(document['compiled_pack']).parent) + '/')
         for material in document['materials']:
-            for source in (material['sprite'], material.get('backdrop', {}).get('sprite')):
+            for source in (material['sprite'], material.get('decor', {}).get('sprite')):
                 if source:
                     names.add(source.removeprefix('data/gfx/') if source.startswith('data/gfx/') else source)
     for path in sorted((root / 'src/building/types').glob('BuildingTypes*.cpp')):

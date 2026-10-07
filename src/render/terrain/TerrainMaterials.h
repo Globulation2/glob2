@@ -36,6 +36,15 @@ struct Seam
 	int fringe = 0, fringeWidth = 0; // Q8 tint strength and Q8 pixel width.
 	std::array<unsigned char, 3> fringeColor{255, 255, 255};
 };
+// Raised objects drawn over a material's cells with the resources, in screen
+// row order, so they overlap neighbouring cells (boulders, hedges, rock).
+// `full` frames are for cells surrounded by the same material, `edge` frames
+// (smaller, pulled toward the cell centre) for cells with an open neighbour.
+struct Decor
+{
+	std::string sprite;
+	std::vector<int> full, edge;
+};
 struct Material
 {
 	std::string key, sprite;
@@ -47,6 +56,7 @@ struct Material
 	// Variants share one periodic edge band and join without the runtime's
 	// border blend toward variant 0 ("edges": "periodic").
 	bool periodicEdges = false;
+	Decor decor;
 	std::array<unsigned char, 3> preview{}, minimap{};
 	Seam seam;
 };
@@ -72,6 +82,8 @@ class Catalog
 	// seed is the map's terrain look seed (Recipe::seed); zero for diagnostics.
 	unsigned variantIndex(MaterialId material, int x, int y, std::uint32_t seed = 0) const;
 	int frame(MaterialId material, int x, int y, int time, std::uint32_t seed = 0) const;
+	// Decor frame for a cell of this material, or -1 when it has no decor.
+	int decorFrame(MaterialId material, int x, int y, bool edge, std::uint32_t seed = 0) const;
 };
 std::uint32_t hash(std::uint32_t x, std::uint32_t y, std::uint32_t salt = 0);
 // Pure presentation adapter. Saved sprite numbers never become material handles.

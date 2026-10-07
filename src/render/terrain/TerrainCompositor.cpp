@@ -38,6 +38,19 @@ Compositor::Compositor(Catalog catalog) : definitions(std::move(catalog))
 				auto *native = sprite->nativeFrame(frame);
 				cleanSources[native->lifetimeIdentity()] = native->contentRevision();
 			}
+		if (!m.decor.sprite.empty())
+		{
+			auto *decor = GAGCore::Toolkit::getSprite(m.decor.sprite);
+			if (!decor || (decorSprite_ && decor != decorSprite_))
+				throw std::runtime_error("Terrain decor must share one loadable sprite: " + m.key);
+			for (const auto &frames : {m.decor.full, m.decor.edge})
+				for (int frame : frames)
+					if (frame >= decor->getFrameCount() || decor->getW(frame) > 64 ||
+						decor->getH(frame) > 64)
+						throw std::runtime_error("Terrain decor frame missing or larger than 64x64: " +
+												 m.key);
+			decorSprite_ = decor;
+		}
 		sprites.push_back(sprite);
 		textures.emplace_back(m.variants.size());
 		materialRevisions.push_back(0);
@@ -160,6 +173,21 @@ void Compositor::prepare(bool hd, int time)
 				}
 	}
 	resolution = nextResolution;
+}
+int Compositor::decorFrame(const SceneMap &map, int x, int y) const
+{
+	x &= map.getMaskW();
+	y &= map.getMaskH();
+	const auto type = map.appearanceAt(x, y);
+	if (unsigned(type) >= TERRAIN_COUNT || terrainUsesLegacyCorners(type))
+		return -1;
+	const auto id = terrainBindings[unsigned(type)];
+	if (definitions.materials[id].decor.full.empty())
+		return -1;
+	bool edge = false;
+	for (const auto [dx, dy] : {std::pair{-1, 0}, {1, 0}, {0, -1}, {0, 1}})
+		edge |= map.appearanceAt((x + dx) & map.getMaskW(), (y + dy) & map.getMaskH()) != type;
+	return definitions.decorFrame(id, x, y, edge, map.terrainSeed());
 }
 Recipe Compositor::describe(const SceneMap &map, int x, int y) const
 {
