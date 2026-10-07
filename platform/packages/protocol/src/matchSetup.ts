@@ -172,7 +172,13 @@ export const MatchRules = Strict(
     allyTeamsFixed: Type.Boolean({ description: 'Alliances cannot change during the game.' }),
     resourceGrowthDisabled: Type.Boolean(),
     resourceScarcityLevel: Type.Integer({ minimum: 0, maximum: 3 }),
-    aiOrderDelay: Type.Optional(Type.Integer({ minimum: 0, maximum: 8, description: 'Engine-wide AI decision delay in ticks; absent means zero.' })),
+    aiOrderDelay: Type.Optional(
+      Type.Integer({
+        minimum: 0,
+        maximum: 8,
+        description: 'Engine-wide AI decision delay in ticks; absent means zero.',
+      }),
+    ),
     instantConstruction: Type.Boolean(),
     stockpileStartLevel: Type.Integer({ minimum: 0, maximum: 3 }),
     hungerDisabled: Type.Boolean(),
