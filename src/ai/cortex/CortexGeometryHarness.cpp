@@ -257,7 +257,7 @@ TEST_CASE("lazy placement hard space matches canonical rectangles and refreshes 
         const auto building=map.resourceRegistry().find("test:building-only");
         REQUIRE(ground.has_value());REQUIRE(building.has_value());
         const auto compare=[&] {
-            Cortex::HardSpaceView view(map.cellView());
+            const auto cells = map.cellView(); Cortex::HardSpaceView view(cells);
             for(int y=-2;y<map.getH()+2;++y) for(int x=-2;x<map.getW()+2;++x)
                 for(int w:{0,1,3,19}) for(int h:{0,1,4,11})
                     CHECK(view.rectangle(x,y,w,h)==map.isHardSpaceForBuilding(x,y,w,h));
@@ -265,22 +265,22 @@ TEST_CASE("lazy placement hard space matches canonical rectangles and refreshes 
         compare();
         map.setResource(0,0,*ground,0);map.setGroundUnit(0,0,0);
         map.setAreaMask(map.coordToIndex(0,0),&Tile::forbidden,~Uint32(0));
-        {Cortex::HardSpaceView view(map.cellView());CHECK(view.at(0,0));} // Units, fog and paint ignored.
+        {const auto cells = map.cellView(); Cortex::HardSpaceView view(cells);CHECK(view.at(0,0));} // Units, fog and paint ignored.
         compare();
         map.setResource(0,0,*building,0);
-        {Cortex::HardSpaceView view(map.cellView());CHECK_FALSE(view.at(0,0));}
+        {const auto cells = map.cellView(); Cortex::HardSpaceView view(cells);CHECK_FALSE(view.at(0,0));}
         compare();
         // Restore the authored ground-blocking resource before adding occupancy;
         // the placement API correctly rejects it while the earlier unit remains.
         map.setGroundUnit(0,0,NOGUID);
         map.setResource(0,0,*ground,0);map.setBuilding(0,0,1,1,0);
-        {Cortex::HardSpaceView view(map.cellView());CHECK_FALSE(view.at(0,0));} // No ignored occupant.
+        {const auto cells = map.cellView(); Cortex::HardSpaceView view(cells);CHECK_FALSE(view.at(0,0));} // No ignored occupant.
         compare();
         map.setBuilding(0,0,1,1,NOGBID);map.setCellTerrain(0,0,WATER);
-        {Cortex::HardSpaceView view(map.cellView());CHECK_FALSE(view.at(0,0));}
+        {const auto cells = map.cellView(); Cortex::HardSpaceView view(cells);CHECK_FALSE(view.at(0,0));}
         compare();
         map.setCellTerrain(0,0,GRASS);
-        {Cortex::HardSpaceView view(map.cellView());CHECK(view.at(0,0));} // A fresh pass sees mutations.
+        {const auto cells = map.cellView(); Cortex::HardSpaceView view(cells);CHECK(view.at(0,0));} // A fresh pass sees mutations.
         compare();
     }
 }
