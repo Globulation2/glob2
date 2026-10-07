@@ -5828,3 +5828,5 @@ Denove hazardigi la aspekton de la tereno
 
 [Enabled %0 for this map]
 
+[editor fertility tap refresh]
+

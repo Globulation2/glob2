@@ -5828,3 +5828,5 @@ Acak ulang tampilan medan
 
 [Enabled %0 for this map]
 
+[editor fertility tap refresh]
+

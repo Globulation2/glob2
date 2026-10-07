@@ -9,6 +9,8 @@
 #include "MapEdit.h"
 #include "MapEditPresentation.h"
 #include "PhoneEditor.h"
+#include "EditorDialogs.h"
+#include <ui/Host.h>
 #include "Race.h"
 #include <InterfacePresentation.h>
 #include <SDL3/SDL.h>
@@ -63,6 +65,17 @@ struct PresentationScope
 		GAGCore::updatePresentation({width, height, 1, {}, 0}, input);
 	}
 };
+
+const GAGGUI::ui::Node *findNode(const GAGGUI::ui::Node &node, const std::string &key)
+{
+	if (node.key == key)
+		return &node;
+	for (const auto &child : node.children)
+		if (child)
+			if (const auto *found = findNode(*child, key))
+				return found;
+	return nullptr;
+}
 
 void blank(MapEdit &editor)
 {
@@ -317,5 +330,61 @@ TEST_SUITE("EditorPresentation")
 			editor.advanceEditing({event}, 0);
 		}
 		CHECK(editor.currentBrushId() == "terrain/grass");
+	}
+
+	TEST_CASE("decision cards fit the phone tray presentation in both orientations [display][artifacts]")
+	{
+		for (const auto &[width, height] : {std::pair{390, 844}, std::pair{844, 390}})
+		{
+			CAPTURE(width);
+			PresentationScope scope;
+			glob2test::setEnv("GLOB2_MOBILE_UI", "1");
+			glob2test::HeadlessGlobals globals(glob2test::GlobalsOptions{.display = true,
+																		 .loadStrings = true,
+																		 .width = width,
+																		 .height = height,
+																		 .screenFlags = GAGCore::GraphicContext::PORTABLEGPU});
+			auto *gfx = globalContainer->gfx;
+			// MapEditorScreen's viewport policy, as the gallery applies it.
+			gfx->setResponsiveViewport(true, 800, 600);
+			PresentationScope::host(width, height, true);
+			MapEdit editor;
+			blank(editor);
+			editor.beginEditing();
+			REQUIRE(editor.usesPhone());
+			editor.mapHasBeenModified();
+			for (const char *action : {"open load screen", "quit editor"})
+			{
+				CAPTURE(action);
+				editor.performAction(action);
+				editor.advanceEditing({}, 1000);
+				REQUIRE(editor.confirmation());
+				editor.drawEditing();
+				auto *card = editor.confirmation();
+				REQUIRE(card->host().root());
+				const GAGGUI::ui::Rect surface{0, 0, gfx->getW(), gfx->getH()};
+				const double unit = gfx->logicalUnitsPerPoint();
+				for (std::size_t i = 0; i < card->choiceCount(); ++i)
+				{
+					const auto *choice = findNode(*card->host().root(), "choice/" + std::to_string(i));
+					REQUIRE(choice);
+					const auto b = choice->bounds;
+					CHECK(b.x >= surface.x);
+					CHECK(b.y >= surface.y);
+					CHECK(b.x + b.w <= surface.w);
+					CHECK(b.y + b.h <= surface.h);
+					CHECK(b.h >= int(40 * unit));
+				}
+				const std::string name = std::string("editor-card-") + (action[0] == 'o' ? "load-" : "quit-") +
+										 std::to_string(width) + "x" + std::to_string(height) + ".bmp";
+				gfx->printScreen(glob2test::artifactDirFromWorkingDirectory() + "/" + name);
+				editor.drawEditing(); // The frame's end writes the capture.
+				card->choose(card->cancelChoice());
+				SDL_Event poll{};
+				poll.type = SDL_EVENT_USER;
+				editor.delegateMenu(poll);
+				CHECK_FALSE(editor.confirmation());
+			}
+		}
 	}
 }

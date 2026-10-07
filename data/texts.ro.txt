@@ -5828,3 +5828,5 @@ Alege din nou aleatoriu aspectul terenului
 
 [Enabled %0 for this map]
 
+[editor fertility tap refresh]
+

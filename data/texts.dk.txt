@@ -5828,3 +5828,5 @@ Vælg terrænets udseende tilfældigt igen
 
 [Enabled %0 for this map]
 
+[editor fertility tap refresh]
+

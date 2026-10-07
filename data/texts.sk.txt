@@ -5828,3 +5828,5 @@ Znova náhodne vybrať vzhľad terénu
 
 [Enabled %0 for this map]
 
+[editor fertility tap refresh]
+

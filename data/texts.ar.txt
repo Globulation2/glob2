@@ -5828,3 +5828,5 @@ FFmpeg غير متاح، لذا التسجيل معطّل. ثبّت FFmpeg وت�
 
 [Enabled %0 for this map]
 
+[editor fertility tap refresh]
+

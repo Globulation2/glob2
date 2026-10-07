@@ -5828,3 +5828,5 @@ Volver a sortear el aspecto del terreno
 
 [Enabled %0 for this map]
 
+[editor fertility tap refresh]
+

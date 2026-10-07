@@ -5828,3 +5828,5 @@ Tirer à nouveau l’apparence du terrain
 
 [Enabled %0 for this map]
 
+[editor fertility tap refresh]
+

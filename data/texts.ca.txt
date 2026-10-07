@@ -5828,3 +5828,5 @@ Torna a sortejar l’aspecte del terreny
 
 [Enabled %0 for this map]
 
+[editor fertility tap refresh]
+

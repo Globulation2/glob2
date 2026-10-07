@@ -5828,3 +5828,5 @@ CPU %0%
 
 [Enabled %0 for this map]
 
+[editor fertility tap refresh]
+

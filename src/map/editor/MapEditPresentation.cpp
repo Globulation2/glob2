@@ -105,9 +105,11 @@ bool MapEdit::syncPresentation()
 	return true;
 }
 
-// Seam for the EditorDock (WS-C). The desktop sidebar widgets exist for the
-// editor's whole life and lay themselves out against the window width, so until
-// the dock lands entering or leaving it needs nothing. With the dock these call
-// createDock() / destroyDock(); hasDock() then mirrors !phone.
+// Seam for the EditorDock (WS-C, EditorDock.h). The desktop sidebar widgets
+// exist for the editor's whole life and lay themselves out against the window
+// width, so until the dock lands entering or leaving it needs nothing. With the
+// dock, enterDockPresentation() calls createDock() and leaveDockPresentation()
+// destroyDock(); hasDock() then mirrors !phone, and the constructor's
+// "if (!phone) createDock()" stays as WS-C wrote it.
 void MapEdit::enterDockPresentation() {}
 void MapEdit::leaveDockPresentation() {}

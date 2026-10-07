@@ -501,6 +501,18 @@ class GameGUITouchHarness
 			tap(showRow("tool/fertility"));
 			require(editor.isFertilityOn && editor.needsFertility(), "The fertility card turns the overlay on");
 			editor.fertilityRequested = false;
+			// Painting since the overlay was computed makes the card offer a refresh.
+			editor.fertilityStale = true;
+			{
+				const auto stale = showRow("tool/fertility");
+				require(touch.rows[touch.rowOf("tool/fertility")].lines.front() != "Fertility Map" &&
+							editor.fertilityOverlayStale(),
+						"A stale fertility overlay relabels its card");
+				tap(stale);
+				require(editor.isFertilityOn && editor.needsFertility(), "Tapping a stale fertility card refreshes it");
+				editor.fertilityRequested = false;
+				editor.fertilityStale = false;
+			}
 			touch.draw();
 			gfx->printScreen("touch-editor-tray-terrain.bmp");
 			gfx->nextFrame();

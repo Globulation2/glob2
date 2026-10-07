@@ -5828,3 +5828,5 @@ FFmpeg није доступан, па је снимање искључено. �
 
 [Enabled %0 for this map]
 
+[editor fertility tap refresh]
+

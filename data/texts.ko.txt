@@ -5828,3 +5828,5 @@ AI 원격 측정
 
 [Enabled %0 for this map]
 
+[editor fertility tap refresh]
+

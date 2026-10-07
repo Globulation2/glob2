@@ -5828,3 +5828,5 @@ FFmpeg недоступний, тому запис вимкнено. Устан�
 
 [Enabled %0 for this map]
 
+[editor fertility tap refresh]
+

@@ -5828,3 +5828,5 @@ Wylosuj ponownie wygląd terenu
 
 [Enabled %0 for this map]
 
+[editor fertility tap refresh]
+

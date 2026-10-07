@@ -5828,3 +5828,5 @@ AI 遙測
 
 [Enabled %0 for this map]
 
+[editor fertility tap refresh]
+

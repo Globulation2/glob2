@@ -5828,3 +5828,5 @@ Map
 No-growth areas
 [Enabled %0 for this map]
 Enabled %0 for this map
+[editor fertility tap refresh]
+Fertility map out of date: tap to refresh

@@ -5828,3 +5828,5 @@ Chọn lại ngẫu nhiên diện mạo địa hình
 
 [Enabled %0 for this map]
 
+[editor fertility tap refresh]
+

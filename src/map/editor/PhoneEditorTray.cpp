@@ -114,7 +114,7 @@ void PhoneEditor::layoutTray(double unit)
 	const double textScale = gfx->textUnitsPerPoint();
 	const bool scriptAreas = editor.selectionMode == MapEdit::ChangeAreas;
 	const std::string key = std::to_string(editor.catalogRevision()) + '|' + std::to_string(paletteMode) + '|' +
-							std::to_string(unit) + '|' + std::to_string(textScale) + '|' + std::to_string(scriptAreas) +
+							std::to_string(unit) + '|' + std::to_string(textScale) + '|' + std::to_string(scriptAreas) + std::to_string(editor.fertilityOverlayStale()) +
 							'|' + (scriptAreas && editor.areaNumber ? std::to_string(editor.areaNumber->getIndex()) +
 																		  editor.game.map.getAreaName(editor.areaNumber->getIndex())
 																	: std::string());
@@ -210,7 +210,9 @@ void PhoneEditor::layoutTray(double unit)
 		Row fertility;
 		fertility.kind = Row::Kind::Fertility;
 		fertility.id = "tool/fertility";
-		addCard(std::move(fertility), tr("[Fertility Map]"));
+		// A stale overlay (terrain changed since it was computed) offers a refresh.
+		addCard(std::move(fertility), editor.fertilityOverlayStale() ? tr("[editor fertility tap refresh]")
+																	  : tr("[Fertility Map]"));
 	}
 	else if (paletteMode == 1)
 		addSection(BrushSection::Resources, true);
@@ -302,6 +304,11 @@ void PhoneEditor::activateRow(const Row &row, ViewPoint)
 {
 	if (row.kind == Row::Kind::Fertility)
 	{
+		if (editor.fertilityOverlayStale())
+		{
+			editor.performAction("refresh fertility");
+			return;
+		}
 		editor.isFertilityOn = !editor.isFertilityOn;
 		editor.performAction("compute fertility");
 		return;
@@ -472,7 +479,13 @@ void PhoneEditor::drawCard(const Row &row)
 			gfx->drawFilledRect(float(x + w / 2 - u), float(y + 3 * u), float(2 * u), float(5 * u), Color(60, 45, 20));
 		}
 		if (row.kind == Row::Kind::Fertility && editor.isFertilityOn)
-			gfx->drawRect(float(box.x), float(box.y), float(box.w), float(box.h), InGameTouchTheme::ink());
+		{
+			const bool stale = editor.fertilityOverlayStale();
+			const Color edge = stale ? Color(245, 180, 60) : InGameTouchTheme::ink();
+			for (int i = 0; i < (stale ? 2 : 1); ++i)
+				gfx->drawRect(float(box.x + i * u), float(box.y + i * u), float(box.w - 2 * i * u),
+							  float(box.h - 2 * i * u), edge);
+		}
 		textX = box.x + box.w + labelGap * u;
 	}
 	if (selected)

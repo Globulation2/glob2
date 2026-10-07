@@ -5828,3 +5828,5 @@ FFmpeg در دسترس نیست، پس ضبط خاموش است. FFmpeg را ن�
 
 [Enabled %0 for this map]
 
+[editor fertility tap refresh]
+

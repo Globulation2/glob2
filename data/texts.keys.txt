@@ -2913,3 +2913,4 @@
 [editor menu map]
 [no resource growth areas]
 [Enabled %0 for this map]
+[editor fertility tap refresh]
