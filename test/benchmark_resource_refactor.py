@@ -17,6 +17,7 @@ import shutil
 import statistics
 import subprocess
 import sys
+import time
 import benchmark_parallel_compute
 from pathlib import Path
 from benchmark_parallel_compute import ROOT, digest, execute
@@ -48,6 +49,65 @@ METRIC_DESCRIPTIONS = {
 }
 RUNNER_INPUTS = (Path(__file__).resolve(), Path(benchmark_parallel_compute.__file__).resolve())
 CATALOG_SUFFIXES = {'.json', '.txt', '.js', '.sgsl'}
+HOST_ACTIVITY_NOTE = ('Approximate host activity across all CPUs, not attribution to a process or proof of interference. '
+    'Busy excludes idle/iowait and includes steal; guest time is already included in user/nice. '
+    'Other busy subtracts whole-child wait4 CPU from host busy, includes runner/kernel activity, and can be negative '
+    'because /proc/stat uses coarse jiffies and its snapshot boundaries differ from wait4. '
+    'Average cores use the monotonic interval between snapshots, not engine wall time. No automatic performance gate applies.')
+
+
+def parse_cpu_busy_jiffies(contents):
+    """Read Linux CPU accounting without double-counting guest/guest_nice."""
+    counters = {}
+    for line in contents.splitlines():
+        fields = line.split()
+        if not fields or not (fields[0] == 'cpu' or
+                              fields[0].startswith('cpu') and fields[0][3:].isdigit()):
+            continue
+        name = fields[0]
+        values = [int(value) for value in fields[1:]]
+        if name in counters or len(values) < 4 or any(value < 0 for value in values):
+            raise ValueError(f'Invalid CPU accounting row: {name}')
+        # user, nice, system, idle, iowait, irq, softirq, steal, guest, guest_nice.
+        counters[name] = sum(value for index, value in enumerate(values[:8]) if index not in (3, 4))
+    if 'cpu' not in counters or len(counters) < 2:
+        raise ValueError('Missing aggregate or per-CPU accounting rows')
+    return counters
+
+
+def host_cpu_snapshot():
+    if platform.system() != 'Linux':
+        return {'status': 'unavailable', 'reason': 'Linux /proc/stat unavailable on this platform'}
+    try:
+        contents = Path('/proc/stat').read_text()
+        captured_ns = time.monotonic_ns()
+        return {'status': 'available', 'monotonic_ns': captured_ns,
+                'clock_ticks_per_second': os.sysconf('SC_CLK_TCK'),
+                'busy_jiffies': parse_cpu_busy_jiffies(contents)}
+    except (OSError, ValueError) as error:
+        return {'status': 'unavailable', 'reason': str(error)}
+
+
+def host_cpu_activity(before, after, child_cpu_s):
+    """Estimate other host activity; retain negative estimates rather than hide skew."""
+    result = {'note': HOST_ACTIVITY_NOTE}
+    if before.get('status') != 'available' or after.get('status') != 'available':
+        return dict(result, status='unavailable', reason='One or both CPU snapshots unavailable')
+    ticks = before['clock_ticks_per_second']
+    elapsed_s = (after['monotonic_ns'] - before['monotonic_ns']) / 1e9
+    first, last = before['busy_jiffies'], after['busy_jiffies']
+    if (ticks <= 0 or ticks != after['clock_ticks_per_second'] or elapsed_s <= 0 or
+            first.keys() != last.keys() or not math.isfinite(child_cpu_s) or child_cpu_s < 0):
+        return dict(result, status='unavailable', reason='CPU topology, clock or interval changed/invalid')
+    deltas = {name: (last[name] - value) / ticks for name, value in first.items()}
+    if any(value < 0 for value in deltas.values()):
+        return dict(result, status='unavailable', reason='CPU busy counter decreased')
+    other = deltas['cpu'] - child_cpu_s
+    return dict(result, status='available', snapshot_elapsed_s=elapsed_s,
+                host_busy_cpu_s=deltas['cpu'],
+                per_cpu_busy_s={name: value for name, value in deltas.items() if name != 'cpu'},
+                child_cpu_s=child_cpu_s, approximate_other_busy_cpu_s=other,
+                approximate_other_busy_average_cores=other / elapsed_s)
 
 
 def frequency_snapshot():
@@ -262,6 +322,7 @@ def main():
                 'scope_output': 'enabled only when --telemetry team-timeline is requested'},
             measurement_descriptions=METRIC_DESCRIPTIONS,
             frequency_evidence=frequency_capability(),
+            host_cpu_activity_description=HOST_ACTIVITY_NOTE,
             warmup={'discarded_pairs_per_scenario': 1, 'simulation_warmup_ticks': 0,
                 'meaning': 'Fresh-process warmup for OS caches; every measured run starts from its save, not a warmed in-process simulation.'},
             ordering={'kind': 'alternating paired order', 'balanced': args.repeats % 2 == 0},
@@ -279,8 +340,13 @@ def main():
                         run_args = list(scenario['args']) + ['--benchmark-warmup', '0']
                         load_before = os.getloadavg()
                         frequency_before = frequency_snapshot()
+                        host_before = host_cpu_snapshot()
                         row = dict(scenario=scenario['id'], repeat=repeat, variant=variant,
                             **execute(binaries[variant], run_args, out/scenario['id']/str(repeat)/variant, cwd=roots[variant]))
+                        host_after = host_cpu_snapshot()
+                        row['host_cpu_before'] = host_before
+                        row['host_cpu_after'] = host_after
+                        row['host_cpu_activity'] = host_cpu_activity(host_before, host_after, row['cpu_s'])
                         row['system_load_before'] = load_before
                         row['system_load_after'] = os.getloadavg()
                         row['frequency_before'] = frequency_before

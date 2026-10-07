@@ -394,6 +394,18 @@ Instrumented scopes and instruction counts explain costs but do not replace
 end-to-end paired CPU measurements. Report confidence intervals, CPU, wall time and
 peak RSS separately; the runner's memory metric includes the entire process.
 
+On Linux, each raw measurement also retains `/proc/stat` snapshots immediately
+before and after its child run, outside the timed interval. `host_cpu_activity`
+reports total and per-CPU busy seconds, excluding idle/iowait without counting guest
+time twice. It subtracts whole-child `wait4` CPU to estimate other busy CPU seconds
+and average cores over the snapshot interval. This can reveal activity starting
+mid-campaign that load averages hide. It covers all host CPUs, includes kernel,
+runner and steal time, and does not identify other processes or prove interference
+with the benchmark's CPU affinity. Coarse jiffies and different accounting boundaries
+can yield small negative estimates; these remain visible. Missing counters, topology
+changes or decreasing busy counters mark the estimate unavailable. These diagnostics
+do not change threshold classification or automatically accept/reject a campaign.
+
 After authorization to change the selected CPU policies, use the maintained wrapper
 to record original governors, stabilize them, run an unprivileged command and verify
 restoration (CPUs 0–7 by default):
