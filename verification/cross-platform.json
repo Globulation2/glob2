@@ -1,6 +1,6 @@
 {
-  "final_source": "b507dcebbfc07e6139d4c36d5e9a0cd088767adf",
-  "tested_runtime_source": "fa4344bb5",
+  "final_source": "640bf561459444bbf31126434e5a94e6f8edd25b",
+  "tested_runtime_source": "640bf561459444bbf31126434e5a94e6f8edd25b",
   "base": "64406b0826289c94b9a8eadb590ef551cf39efa9",
   "latest_master": "6831dcfef",
   "latest_master_change": "Only save-evidence parser; no changed simulation/build inputs.",
@@ -24,5 +24,6 @@
   ],
   "snapshot_verification": true,
   "save_resume_matching_ticks_each_platform": 512,
-  "other_platforms": "Not executed: Windows, Android, browser/WASM. Native browser fixture regeneration is not browser execution."
+  "other_platforms": "Not executed: Windows, Android, browser/WASM. Native browser fixture regeneration is not browser execution.",
+  "native_cases_each_platform": 43
 }
