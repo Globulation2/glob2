@@ -236,3 +236,44 @@ void GameGUI::handleClientEvent(ClientEventVariant&& event)
 		}
 	}, std::move(event));
 }
+
+void GameGUI::stampClientOrder(const std::shared_ptr<Order>& order, bool simulationOwner)
+{
+    const bool frozen = simulationThreaded && !simulationOwner;
+    order->clientWorld = frozen ? drawnScene().map.identity() : game.map.identity();
+    std::optional<Uint16> gid;
+    switch (order->getOrderType())
+    {
+    case ORDER_DELETE: gid = std::static_pointer_cast<OrderDelete>(order)->gid; break;
+    case ORDER_CANCEL_DELETE: gid = std::static_pointer_cast<OrderCancelDelete>(order)->gid; break;
+    case ORDER_CONSTRUCTION: gid = std::static_pointer_cast<OrderConstruction>(order)->gid; break;
+    case ORDER_CANCEL_CONSTRUCTION: gid = std::static_pointer_cast<OrderCancelConstruction>(order)->gid; break;
+    case ORDER_CHANGE_PRIORITY: gid = std::static_pointer_cast<OrderChangePriority>(order)->gid; break;
+    case ORDER_MODIFY_BUILDING: gid = std::static_pointer_cast<OrderModifyBuilding>(order)->gid; break;
+    case ORDER_MODIFY_EXCHANGE: gid = std::static_pointer_cast<OrderModifyExchange>(order)->gid; break;
+    case ORDER_MODIFY_SWARM: gid = std::static_pointer_cast<OrderModifySwarm>(order)->gid; break;
+    case ORDER_MODIFY_FLAG: gid = std::static_pointer_cast<OrderModifyFlag>(order)->gid; break;
+    case ORDER_MODIFY_CLEARING_FLAG: gid = std::static_pointer_cast<OrderModifyClearingFlag>(order)->gid; break;
+    case ORDER_MODIFY_MIN_LEVEL_TO_FLAG: gid = std::static_pointer_cast<OrderModifyMinLevelToFlag>(order)->gid; break;
+    case ORDER_MOVE_FLAG: gid = std::static_pointer_cast<OrderMoveFlag>(order)->gid; break;
+    default: break;
+    }
+    if (!gid) return;
+    if (frozen)
+    {
+        const auto* building = drawnScene().entities.building(*gid);
+        order->clientTarget = building ? BuildingRef{*gid, building->generation} : BuildingRef{};
+    }
+    else
+    {
+        const unsigned team = Building::GIDtoTeam(*gid), slot = Building::GIDtoID(*gid);
+        order->clientTarget = team < unsigned(game.teamsCount()) && game.teams[team]
+            ? Game::refOf(game.teams[team]->myBuildings[slot]) : BuildingRef{};
+    }
+}
+
+void GameGUI::enqueueOrder(std::shared_ptr<Order> order)
+{
+    stampClientOrder(order);
+    orderQueue.push_back(std::move(order));
+}

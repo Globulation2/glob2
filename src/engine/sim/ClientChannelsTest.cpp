@@ -8,6 +8,7 @@
 #include "Order.h"
 #include "sim/ClientCommandSink.h"
 #include "sim/ClientEvents.h"
+#include "sim/ClientOrderQueue.h"
 #include "sim/ClientRequests.h"
 #include "sim/ScriptClientChannel.h"
 
@@ -57,6 +58,38 @@ struct ClientChannelsFixture
 
 TEST_SUITE("ClientChannels")
 {
+    TEST_CASE("client orders cross the producer consumer boundary once in FIFO order")
+    {
+        if (!GAGCore::ThreadSupport::available) return;
+        ClientOrderQueue orders;
+        std::thread producer([&] {
+            for (int i=0;i<10000;++i) orders.push_back(std::make_shared<OrderChangePriority>(0,i));
+        });
+        for (int i=0;i<10000;)
+        {
+            auto order=orders.take();
+            if (!order) { std::this_thread::yield(); continue; }
+            CHECK(std::static_pointer_cast<OrderChangePriority>(order)->priority == i++);
+        }
+        producer.join();
+        CHECK(orders.empty());
+    }
+    TEST_CASE("flag coalescing preserves incarnation and queue position")
+    {
+        ClientOrderQueue orders;
+        auto first=std::make_shared<OrderMoveFlag>(4,1,1,false);
+        first->clientTarget=BuildingRef{4,1}; orders.moveFlag(first);
+        orders.push_back(std::make_shared<NullOrder>());
+        auto replacement=std::make_shared<OrderMoveFlag>(4,2,2,true);
+        replacement->clientTarget=BuildingRef{4,1}; orders.moveFlag(replacement);
+        auto newcomer=std::make_shared<OrderMoveFlag>(4,3,3,false);
+        newcomer->clientTarget=BuildingRef{4,2}; orders.moveFlag(newcomer);
+        CHECK(orders.size()==3);
+        CHECK(orders.take()==replacement);
+        CHECK(orders.take()->getOrderType()==ORDER_NULL);
+        CHECK(orders.take()==newcomer);
+    }
+
 	TEST_CASE("LosslessQueue hands every item over once, in order")
 	{
 		LosslessQueue<int> queue;

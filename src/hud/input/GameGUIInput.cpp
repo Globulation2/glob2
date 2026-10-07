@@ -118,7 +118,7 @@ bool GameGUI::processTypingInput(SDL_Event *event)
 		}
 
 		if (!message.empty())
-			orderQueue.push_back(shared_ptr<Order>(new MessageOrder(nchatMask, MessageOrder::NORMAL_MESSAGE_TYPE, message.c_str())));
+			enqueueOrder(shared_ptr<Order>(new MessageOrder(nchatMask, MessageOrder::NORMAL_MESSAGE_TYPE, message.c_str())));
 	}
 	closeChat();
 	return true;
@@ -235,7 +235,7 @@ void GameGUI::processEvent(SDL_Event *event)
 	else if (event->type==SDL_EVENT_QUIT)
 	{
 		exitGlobCompletely=true;
-		orderQueue.push_back(shared_ptr<Order>(new PlayerQuitsGameOrder(localPlayer)));
+		enqueueOrder(shared_ptr<Order>(new PlayerQuitsGameOrder(localPlayer)));
 		flushOutgoingAndExit=true;
 	}
 }
@@ -504,7 +504,7 @@ void GameGUI::repairAndUpgradeBuilding(Building *building, bool repair, bool upg
 		if ((building->type->semantics.repairable && buildingType->prevLevel>=0) &&
 			(building->isHardSpaceForBuildingSite(Building::REPAIR)) &&
 			(localTeam->maxBuildLevel() >= game.buildingsTypes.get(buildingType->prevLevel)->semantics.requiredWorkerLevel))
-			orderQueue.push_back(shared_ptr<Order>(new OrderConstruction(building->gid, repairUnitWorking, std::clamp(displayedMaxUnitWorking(*building),0,buildingType->semantics.assignmentLimit))));
+			enqueueOrder(shared_ptr<Order>(new OrderConstruction(building->gid, repairUnitWorking, std::clamp(displayedMaxUnitWorking(*building),0,buildingType->semantics.assignmentLimit))));
 	}
 	else if (upgrade)
 	{
@@ -512,6 +512,23 @@ void GameGUI::repairAndUpgradeBuilding(Building *building, bool repair, bool upg
 		if (building->isUpgradeAvailable() &&
 			(building->isHardSpaceForBuildingSite(Building::UPGRADE)) &&
 			(localTeam->maxBuildLevel() >= game.buildingsTypes.get(buildingType->nextLevel)->semantics.requiredWorkerLevel))
-			orderQueue.push_back(shared_ptr<Order>(new OrderConstruction(building->gid, unitWorking, unitWorkingFuture)));
+			enqueueOrder(shared_ptr<Order>(new OrderConstruction(building->gid, unitWorking, unitWorkingFuture)));
 	}
+}
+
+void GameGUI::repairAndUpgradeBuilding(const SceneBuildingPanel* building, bool repair, bool upgrade)
+{
+    if (!building || building->owner.teamNumber != localTeamNo || building->type->isBuildingSite) return;
+    const auto& type = *building->type;
+    if (repair && building->hp < building->effectiveMaxHp)
+    {
+        if (building->hardSpaceForRepair)
+            enqueueOrder(std::make_shared<OrderConstruction>(building->gid,
+                defaultAssign.getDefaultAssignedUnits(type.prevLevel),
+                std::clamp(displayedMaxUnitWorking(*building), 0, type.semantics.assignmentLimit)));
+    }
+    else if (upgrade && building->hardSpaceForUpgrade)
+        enqueueOrder(std::make_shared<OrderConstruction>(building->gid,
+            defaultAssign.getDefaultAssignedUnits(type.nextLevel),
+            defaultAssign.getDefaultAssignedUnits(game.buildingsTypes.getFinishedTypeNum(game.buildingsTypes.get(type.nextLevel)->key))));
 }

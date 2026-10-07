@@ -72,7 +72,7 @@ void GameGUI::requestPause(bool pause)
 		addNotice(Toolkit::getStringTable()->getString("[turn no pauses left]"));
 		return;
 	}
-	orderQueue.push_back(std::make_shared<PauseGameOrder>(pause));
+	enqueueOrder(std::make_shared<PauseGameOrder>(pause));
 }
 
 GameGUI::~GameGUI()
@@ -239,16 +239,14 @@ void GameGUI::adjustInitialViewport()
 
 std::shared_ptr<Order> GameGUI::getOrder(void)
 {
-	if(globalContainer->liveSpectating) { orderQueue.clear(); return std::make_shared<NullOrder>(); }
-	std::shared_ptr<Order> order;
-	if (orderQueue.size()==0)
-		order=shared_ptr<Order>(new NullOrder());
-	else
+	if (globalContainer->liveSpectating) { orderQueue.clear(); return std::make_shared<NullOrder>(); }
+	while (auto order = orderQueue.take())
 	{
-		order=orderQueue.front();
-		orderQueue.pop_front();
+		if (order->clientWorld && order->clientWorld != game.map.identity()) continue;
+		if (order->clientTarget && !game.resolveBuilding(*order->clientTarget)) continue;
+		return order;
 	}
-	return order;
+	return std::make_shared<NullOrder>();
 }
 
 void GameGUI::setMultiLine(const std::string &input, std::vector<std::string> *output, std::string indent)
@@ -396,7 +394,8 @@ bool GameGUI::enqueueCommanderOrders(const std::vector<std::shared_ptr<Order>> &
   return false;
  std::list<std::shared_ptr<Order>> prepared(orders.begin(),orders.end());
  if(!commit())return false;
- orderQueue.splice(orderQueue.end(),prepared);
+ for (const auto& order : prepared) stampClientOrder(order, true);
+ orderQueue.append(prepared);
  return true;
 }
 

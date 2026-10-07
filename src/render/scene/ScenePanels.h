@@ -36,6 +36,7 @@ struct SceneBuildingPanel
 	BuildingType *type = nullptr; //!< static building type definition
 	Sint32 typeNum = 0, posX = 0, posY = 0;
 	Sint32 hp = 0, effectiveMaxHp = 0, buildingState = 0, constructionResultState = 0;
+	Sint32 constructionOriginTypeNum = -1;
 	bool explorersRequireBombing=false;
 	Sint32 minWorkerLevelToFlag=0;
 	Sint32 maxUnitWorking = 0, desiredMaxUnitWorking = 0, priority = 0, unitStayRange = 0, minLevelToFlag = 0;
@@ -89,6 +90,9 @@ struct ScenePanelLocal
 //! Game-wide values the HUD shows.
 struct SceneHud
 {
+    bool totalPrestigeReached = false, prestigeWinCondition = false, drawn = false;
+    bool localWon = false, localLost = false, localDraw = false;
+    int winningTeam = -1;
 	struct WinChance { std::string name; GAGCore::Color color; int permille = 0; bool alive = false; };
 	std::vector<WinChance> winChances;
 	int totalPrestige = 0, prestigeToReach = 0;
