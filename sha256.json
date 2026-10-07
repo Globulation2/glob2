@@ -1,5 +1,5 @@
 {
-  "README.md": "0cec6a712a6efc803c74355800962bac16f2e385b21dae1be7864f321d828839",
+  "README.md": "a61f4672c134b83eb0c47ad2aff130ff1dc3e66f4f89362ee48bce4605809af3",
   "accepted-macos-fingerprints-final-integration.zip": "19d7fa99db2e77c3db639fc272b730e187137afefa91da62bbf8185b63a1f644",
   "benchmark/benchmark-contracts-final.log": "af213ba9f02876b35a1f21f60689d517bbd18b12292fd0ef0aa4b50903c1cbf5",
   "benchmark/benchmark-host-activity-contracts.log": "40a568dea068d2461f26dcd5212f6a1976ed0707cff961a3c239597abfe85de8",
@@ -51,6 +51,7 @@
   "maxima-repair/gcc11-cli-failure.log": "40783cfe1c8eeb9a15d1349169ae960faa3c906c58a2544c18b32d3d3db32295",
   "maxima-repair/maxima-policy-after.log": "720c67f790b16abe579a9231b8910d23641af1a01f41593a9b3f982d50d38904",
   "maxima-repair/maxima-policy-before.log": "7a420ab5cd8f4b59ebc5ce1c7473ba0fcee3fb4e7b32b84dc8bb1c7144736b6a",
+  "merge-record.json": "07ac9f84d7d12765d0b8531e44bf5fb90ed6fd3d7be26c2d27a05d9d9d993db6",
   "native-7baf-validation.zip": "cb3bb5234ce1447e37313449b4fbfb45f8c5a30f0c7d03d04a53dce416dff0fe",
   "optimization-backlog.md": "c956b34c137d2f8f100b81b2122168d2fe7511d9aa30885d53372aedf670af23",
   "original-editor-crash/README.md": "fdfb0532b77713fe4757ccc4b5adad96e4ffad1a726278bb8c436421963f2579",

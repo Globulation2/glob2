@@ -1,0 +1,63 @@
+{
+  "merges": [
+    {
+      "baseRefName": "master",
+      "headRefOid": "838290ec480162d620bb0b5bab9eddbb8c2df562",
+      "mergeCommit": {
+        "oid": "84233226a66633d5e5df34a5d213481c64d87d0c"
+      },
+      "mergedAt": "2026-10-07T13:30:11Z",
+      "number": 861,
+      "state": "MERGED",
+      "url": "https://github.com/Globulation2/glob2/pull/861"
+    },
+    {
+      "baseRefName": "master",
+      "headRefOid": "c7f71a29030e4de043ce4454b107e2215a993ad9",
+      "mergeCommit": {
+        "oid": "7582d4690948830eb05eff9b33b2e1a5f0468eb6"
+      },
+      "mergedAt": "2026-10-07T13:30:56Z",
+      "number": 863,
+      "state": "MERGED",
+      "url": "https://github.com/Globulation2/glob2/pull/863"
+    },
+    {
+      "baseRefName": "master",
+      "headRefOid": "85ee7b70f2605c18e868da6a67c2c13a170da85a",
+      "mergeCommit": {
+        "oid": "2c6a001c5e5b5baf99cfb16046501d79c2be0f55"
+      },
+      "mergedAt": "2026-10-07T13:31:32Z",
+      "number": 868,
+      "state": "MERGED",
+      "url": "https://github.com/Globulation2/glob2/pull/868"
+    },
+    {
+      "baseRefName": "master",
+      "headRefOid": "ea722d86b25ab8eaf84740a71ba1a110a1b2bd6b",
+      "mergeCommit": {
+        "oid": "fcf58e141590fe78be79268a27a8040f366882db"
+      },
+      "mergedAt": "2026-10-07T13:32:03Z",
+      "number": 864,
+      "state": "MERGED",
+      "url": "https://github.com/Globulation2/glob2/pull/864"
+    },
+    {
+      "baseRefName": "master",
+      "headRefOid": "8a90b5c3c6972b1403e6318f99b96226ded5e0e8",
+      "mergeCommit": {
+        "oid": "27b2b1ae3230c030e2d159dad8facfeddeea222a"
+      },
+      "mergedAt": "2026-10-07T13:32:45Z",
+      "number": 872,
+      "state": "MERGED",
+      "url": "https://github.com/Globulation2/glob2/pull/872"
+    }
+  ],
+  "method": "squash (repository rules disallowed merge commits)",
+  "restacking": "Each dependent PR retargeted to master and rebased with explicit force-with-lease. Range-diff confirmed retained patches unchanged. #880 and later master changes included in final integration.",
+  "historical_validation": "Existing measurements and platform evidence remain pinned to their actual tested revisions. This merge record is not a new test or timing campaign.",
+  "rejected_pr_873": "closed and unmerged"
+}
