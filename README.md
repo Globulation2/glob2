@@ -37,3 +37,7 @@ Repair source: `17bbbcf41`. Focused tooling tests only; native/browser execution
 ## Benchmark tooling
 
 Tested source `4b7fa7a37`, base `17bbbcf41`; Linux x86-64/Python3.14.4. `python3 -m unittest discover -s test -p 'test_*benchmark*.py'`:22passed, exact output in `benchmark/benchmark-contracts-final.log`. Independent rotated review passed. Report-only preserves threshold diagnostics and still rejects execution, changed inputs and incomplete windows. Governor orchestration tests cover restoration and interruption/owned-child cleanup. No live governors changed and no performance acceptance is claimed. Native builds and recovery of removed original checkpoint assets remain underway; actual effective interval frequency is explicitly unavailable without a supported measurement.
+
+## Generator evidence collector
+
+Tested source `0a19ac804`, base `4b7fa7a37`; Linux x86-64/Python3.14.4. `python3 -m unittest discover -s test/build_system -p test_generator_evidence.py`:4passed. Rotated review identified a binary-provenance gap, corrected with before/after binary/source/table audits and explicit limitation that producing build-job evidence binds executable to source. Host compiler is labelled as such. Same-host repeats are not independent-platform evidence, and collected rows remain unapproved. Historical expectations and strict missing-row checks are unchanged. Actual macOS collection awaits hosted execution.
