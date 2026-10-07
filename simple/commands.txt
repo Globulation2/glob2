@@ -1,0 +1,22 @@
+Source revision: 5430ef31c135667deeb8043c827d79b3fec4cda4
+Integrated master: 06a106d3a888ef11482a955bddb713d584cd5570
+Latest merge-tree check: 52e4d3dc0440e12ff65494ad3eb1681e9c2c0af3 (clean; intervening changes are scripting test/trace updates)
+
+Build (dependency prefixes are host-specific; see docs/development/reference.md):
+CCACHE=1 GLOB2_SDL3_PREFIX=/tmp/glob2-sdl3/prefix GLOB2_RECORDING_PREFIX=/home/bradley/glob2-terrain-art2/build/linux/client/release/recording/prefix scons -j16 release=1 server=0 optimized_assets=0 build/linux/client/release/src/glob2 build/linux/client/release/test/glob2-engine-tests
+
+Broad checks:
+LD_LIBRARY_PATH=/tmp/glob2-sdl3/prefix/lib python3 test/run_tests.py --binary engine --filter '*Resource*/*' --filter 'WorldSnapshot/*' --filter 'TeamStatsSave/*' --filter 'JavaScriptCompatibility/*' --filter '*Gradient*/*' --filter 'ComputeExecutor/*' --filter 'EngineSession/*' --filter 'GameDiagnostics/*' --filter '*Version*/*' --filter 'TurnEngineHarness/*' --no-display -j8 --timeout 600 --junit artifacts/resource-growth/simple/compatibility.xml --artifacts artifacts/resource-growth/simple/compatibility
+LD_LIBRARY_PATH=/tmp/glob2-sdl3/prefix/lib python3 test/run_tests.py --binary engine --tag golden --no-display -j4 --timeout 600 --junit artifacts/resource-growth/simple/golden-verify.xml --artifacts artifacts/resource-growth/simple/golden-verify
+python3 test/check_sim_revision.py --base origin/master
+
+Timing (restore the evidence tree under artifacts/resource-growth; build the preserved baseline/previous revisions at the paths in the runner, with their matching source/data roots):
+LD_LIBRARY_PATH=/tmp/glob2-sdl3/prefix/lib python3 test/run_with_benchmark_cpuset.py --audit artifacts/resource-growth/simple/cpuset-timing.json --cpus 0-3 --reserve-cpus 0-3,16-19 --timeout-seconds 2400 -- python3 test/run_with_benchmark_governor.py --audit artifacts/resource-growth/simple/governor-timing.json --cpus 0 1 2 3 -- python3 docs/.work/benchmark-simple-growth.py
+
+Per-tick determinism (checksum-manifest.json uses the same scenarios at 128 ticks; relocate fixture paths before running on another checkout):
+LD_LIBRARY_PATH=/tmp/glob2-sdl3/prefix/lib python3 test/benchmark_resource_growth.py build/linux/client/release/src/glob2 artifacts/resource-growth/simple/checksum-manifest.json --output artifacts/resource-growth/simple/determinism --delays 1 3 8 --threads 1 2 4 8 --verify
+
+Component/kernel/ecology (environment output paths must be absolute):
+LD_LIBRARY_PATH=/tmp/glob2-sdl3/prefix/lib GLOB2_GROWTH_EXISTING_CAPTURE=1 GLOB2_GROWTH_BENCHMARK_OUTPUT="$PWD/artifacts/resource-growth/simple/component.json" GLOB2_GROWTH_ECOLOGY_OUTPUT="$PWD/artifacts/resource-growth/simple/ecology.json" GLOB2_GROWTH_KERNEL_OUTPUT="$PWD/artifacts/resource-growth/simple/kernel.json" python3 test/run_with_benchmark_cpuset.py --audit artifacts/resource-growth/simple/cpuset-components.json --cpus 0-3 --reserve-cpus 0-3,16-19 --timeout-seconds 1800 -- python3 test/run_with_benchmark_governor.py --audit artifacts/resource-growth/simple/governor-components.json --cpus 0 1 2 3 -- python3 test/run_tests.py --binary engine --filter 'ResourceGrowthBenchmark/*' --tag benchmark --no-display -j1 --timeout 1200 --junit artifacts/resource-growth/simple/components.xml --artifacts artifacts/resource-growth/simple/components
+
+Old-save and playable-save reproduction scripts are included under scripts/. Per-run commands, input hashes and binary hashes are in the measurement metadata and rows. Distinct output directories are required for reruns.

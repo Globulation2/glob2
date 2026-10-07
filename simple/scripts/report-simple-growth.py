@@ -1,0 +1,47 @@
+from pathlib import Path
+import json,statistics as S
+r=Path('artifacts/resource-growth/simple');s=json.load(open(r/'timing/summary.json'));rows=[json.loads(l) for l in (r/'timing/measurements.jsonl').read_text().splitlines()];measured=[x for x in rows if x['repeat']>=0]
+lines=['# Compact signed resource growth: implementation and reserved-core measurements','',
+'## Implementation','',
+'- Proposals are eight bytes: uint32 cell, uint16 resource type, uint8 material, int8 delta. The material slot uses the byte that would otherwise be padding in a naturally aligned cell/type/delta record. Multi-material deposits emit separate deltas; record count is therefore not directly comparable to the previous mask representation.',
+'- Removed deposit incarnation counters from live state, snapshots, checksums and new saves. ResourceCell is back to twelve bytes. No spread/replenishment flag or inherited variety is retained.',
+'- Positive deltas add one unit to a matching deposit or seed an empty cell with exactly one selected material unit. Negative deltas subtract one unit from a matching deposit and do nothing to an empty cell. Different types reject the proposal. Capacity/floor limits and authoritative setters remain. The natural-growth kernel currently emits positives only.',
+'- Habitat, growth-permission and occupancy checks run during calculation. They are not repeated at publication. Removing a deposit or replacing it with the same type does not invalidate pending deltas. Disabling growth rejects the due batch. World/catalog identity is checked once per batch.',
+'- Preallocate a full delay horizon of pooled vectors, initially max(128, cells/16) records each. Raise the reservation to an observed batch size plus 25% headroom if needed. Vectors may grow beyond this heuristic; no proposals are dropped. Capacity growth is measured, not assumed to fit a theoretical percentile.',
+'- Statistics consume the known accepted material delta directly, avoiding full before/after material-stock arrays and material-mask scans per proposal. New-tile, addition and reduction counters are tested.',
+'- Save/replay format 145, protocol 63, simulation revision 30. Save floor remains 58. Format 144 incarnation streams are consumed/discarded; pending masks become ordered positive unit deltas with deadlines retained. Older save loading and current pending save/load are covered.',
+'', '## Throughput','',
+'One warm-up and ten paired measured repetitions per scenario/variant, rotated/reversed order, 1,024 ticks from identical starting saves. Four executor slots; gradient workers two; growth delay eight. Same AI settings for all variants. Separate original-immediate, previous-delayed-shared, simplified-owner and simplified-shared binaries/modes. Ticks/s columns are independent medians; percentage changes are medians of paired ratios and need not equal ratios of those columns. Intervals are deterministic bootstrap 95% intervals over paired median ratios (2,000 resamples).','',
+'| Scenario | Original ticks/s | Previous delayed ticks/s | Simplified owner ticks/s | Simplified shared ticks/s | Shared vs previous (95% CI) | Shared vs original (95% CI) |','|---|---:|---:|---:|---:|---|---|']
+for sc,a in s.items():
+ def fmt(d):
+  lo,hi=d['throughput_ci'];return f"{d['throughput']*100:+.1f}% ({lo*100:+.1f} to {hi*100:+.1f}%)"
+ lines.append('| '+sc+' | '+' | '.join(f"{a[v]['ticks_per_second']:.1f}" for v in ['legacy','previous','owner','shared'])+' | '+fmt(a['shared-vs-previous'])+' | '+fmt(a['shared-vs-legacy'])+' |')
+lines+=['','| Scenario | Shared CPU vs previous (95% CI) | Shared CPU vs original (95% CI) | Paired wall difference vs previous, ms/1,024 ticks | Paired CPU difference vs previous, ms/1,024 ticks |','|---|---|---|---:|---:|']
+for sc,a in s.items():
+ def fmt(d):
+  lo,hi=d['cpu_ci'];return f"{d['cpu']*100:+.1f}% ({lo*100:+.1f} to {hi*100:+.1f}%)"
+ vs={v:{x['repeat']:x for x in measured if x['scenario']==sc and x['variant']==v} for v in ['previous','shared']}
+ deltas=[S.median((vs['shared'][i]['result'][k]-vs['previous'][i]['result'][k])/1e6 for i in vs['previous']) for k in ['run_ns','benchmark_run_cpu_ns']]
+ lines.append('| '+sc+' | '+fmt(a['shared-vs-previous'])+' | '+fmt(a['shared-vs-legacy'])+' | '+' | '.join(f'{x:+.1f}' for x in deltas)+' |')
+lines+=['','## Effective growth and allocations','',
+'Old/new trajectories intentionally differ. In particular, new multi-material seeds receive unit deltas instead of configured initial-stock bundles. These measurements describe actual engine throughput under the chosen rules, not a pure identical-work algorithm speedup. Sampled/accepted/rejected/clamped counters are retained in raw rows; stock and tile additions below expose gameplay differences.','',
+'| Scenario | Previous / simplified stock additions | Previous / simplified tile additions | Simplified peak proposals per tick | Calculation-time vector growth batches / submitted (measured owner + shared) | Reserved proposal-buffer high-water bytes |','|---|---:|---:|---:|---:|---:|']
+for sc,a in s.items():
+ rs=[x for x in measured if x['scenario']==sc and x['variant'] in ['owner','shared']];growth=sum(x['result']['growth_capacityGrowthBatches'] for x in rs);count=sum(x['result']['growth_submitted'] for x in rs)
+ lines.append(f"| {sc} | {a['previous']['growth_stockAdded']:.0f} / {a['shared']['growth_stockAdded']:.0f} | {a['previous']['growth_tilesAdded']:.0f} / {a['shared']['growth_tilesAdded']:.0f} | {a['shared']['growth_maxProposals']:.0f} | {growth} / {count} | {a['shared']['growth_maxProposalBytes']:.0f} |")
+lines+=['','Zero calculation-time growth does not mean zero allocations: startup reserves the pool, and the queue/other engine components allocate independently. The estimator is conservative and has no universal 99th-percentile guarantee for arbitrary custom resource definitions. Memory accounting now includes known reserved capacities in in-flight jobs; old proposal-buffer metrics undercounted these, so use process peak RSS for cross-version memory comparisons.','',
+'| Scenario | Copied snapshot MB, previous / simplified | Peak process RSS MiB, previous / simplified |','|---|---:|---:|']
+for sc,a in s.items():
+ vals=[S.median(x['result']['ai_pipeline']['bytes_copied']/1e6 for x in measured if x['scenario']==sc and x['variant']==v) for v in ['previous','shared']]
+ lines.append(f"| {sc} | {vals[0]:.1f} / {vals[1]:.1f} | {a['previous']['peak_rss_bytes']/2**20:.1f} / {a['shared']['peak_rss_bytes']/2**20:.1f} |")
+lines+=['','## Reproducibility and validation','',
+'- AMD Threadripper 2950X, Linux x86-64, GCC 15.2, release/O3; existing SDL3 and recording dependency prefixes unchanged. Exact build/link logs, binary hashes, input hashes and run commands are included. Original immediate binary is d42d3e512; previous binary is the preserved e93956015 production executable from source through 5925e3fe6. Simplified code also integrates master 06a106d3a; this is a full-revision comparison, not a single-change assembly ablation.',
+'- Existing benchmark cpuset wrapper reserves physical cores 0–3 and SMT siblings 16–19, engine affinity 0–3. Governor wrapper selects performance and restores prior settings. Raw rows include host CPU activity/frequency snapshots. Reservation does not isolate shared memory bandwidth, package power or all kernel activity.',
+'- The requested threaded default remains enabled. Worker timing alone is not used as proof of speedup. Main throughput runs have no checksum sidecars and drain pending computation before stopping the timer. Owner/shared final heavy checksums and growth counters are required to match in every measured run.',
+'- Focused growth suite: 10 passing cases. Broader resource/snapshot/gradient/save/replay/network-version/executor/engine-session/diagnostics coverage: 152 passed, zero failed, five skipped. Twelve golden tests regenerated the affected traces and match record. The simulation-revision gate passed against integrated master. Subsequent verification logs are included separately.',
+'- A real format-144 save with outstanding work loads, resaves to 145 and continues identically. CLI checksum comparison normalizes only the known map-header file-format contribution (144 xor 145, rotated through the two-team/two-player checksum); all 64 overlapping ticks and the final state match after that normalization. The initial unnormalized failure is retained. Native unit tests compare current-format continuation exactly, including pending output.',
+'- Native per-tick checks across worker counts and delays are recorded under determinism/. Cross-platform Windows/macOS/browser and actual threadless builds are not verified in this local campaign. The PR remains draft; maintainer playtesting of changed seeding and stale-condition behavior remains necessary.',
+'- Initial build was superseded when current master integration removed an editor source file. The final integrated build and focused rerun passed. An initial unit assertion assumed a fixed stock from randomized resource placement; it was corrected to set the input stock explicitly. Failed exploratory logs are retained, not counted as successful validation.',
+'- Raw measurements, checksums, fixtures/playable saves, wrappers audits, build/test logs and reproduction scripts accompany this report. No timing runs overlap our builds or correctness tests. Only light inspection/report preparation ran while timing.']
+(r/'README.md').write_text('\n'.join(lines)+'\n')

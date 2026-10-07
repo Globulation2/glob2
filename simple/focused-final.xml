@@ -1,0 +1,12 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="10" failures="0" errors="0" skipped="0"><testsuite name="ResourceGrowth"><testcase classname="ResourceGrowth" name="frozen input outlives terrain and resource edits and wrapping remains valid" time="0.075587" status="run" />
+  <testcase classname="ResourceGrowth" name="kernel is immutable deterministic and responds to disabled growth and scarcity" time="0.069309" status="run" />
+  <testcase classname="ResourceGrowth" name="later worker completion cannot publish ahead of an earlier owner batch" time="0.072663" status="run" />
+  <testcase classname="ResourceGrowth" name="legacy pending masks migrate and signed pending proposals validate on load" time="0.072162" status="run" />
+  <testcase classname="ResourceGrowth" name="light checksums leave owner work deferred and world replacement discards it" time="0.073316" status="run" />
+  <testcase classname="ResourceGrowth" name="material deltas cap independently and seed exactly one unit" time="0.071782" status="run" />
+  <testcase classname="ResourceGrowth" name="owner and shared deadlines match and pending work survives saving" time="0.365969" status="run" />
+  <testcase classname="ResourceGrowth" name="pipeline waits at exact deadline and pause does not publish" time="0.07023" status="run" />
+  <testcase classname="ResourceGrowth" name="proposal capacity grows safely and is retained for reuse" time="0.070957" status="run" />
+  <testcase classname="ResourceGrowth" name="signed proposals use only current resource type and apply in order" time="0.073748" status="run" />
+  </testsuite></testsuites>

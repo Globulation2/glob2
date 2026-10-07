@@ -1,0 +1,9 @@
+{
+  "revision": "5430ef31c135667deeb8043c827d79b3fec4cda4",
+  "integrated_master": "06a106d3a888ef11482a955bddb713d584cd5570",
+  "latest_master_checked": "52e4d3dc0440e12ff65494ad3eb1681e9c2c0af3",
+  "clean_worktree": true,
+  "engine_sha256": "4552348a057fe975be05bf0d8056e67c4585e6328594b02bb1ed9acf3a3482aa",
+  "test_sha256": "b609dfaf941688945547eb17930a0b707384b0f1ceadd096ca8a5f9285a47687",
+  "per_tick_runs": 96
+}

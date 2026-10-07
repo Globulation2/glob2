@@ -1,0 +1,31 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="10" failures="3" errors="0" skipped="0"><testsuite name="ResourceGrowth"><testcase classname="ResourceGrowth" name="frozen input outlives terrain and resource edits and wrapping remains valid" time="0.070597" status="run" />
+  <testcase classname="ResourceGrowth" name="kernel is immutable deterministic and responds to disabled growth and scarcity" time="0.070044" status="run" />
+  <testcase classname="ResourceGrowth" name="later worker completion cannot publish ahead of an earlier owner batch" time="0.0665" status="run" />
+  <testcase classname="ResourceGrowth" name="legacy pending masks migrate and signed pending proposals validate on load" time="0.069028" status="run" />
+  <testcase classname="ResourceGrowth" name="light checksums leave owner work deferred and world replacement discards it" time="0.06758" status="run" />
+  <testcase classname="ResourceGrowth" name="material deltas cap independently and seed exactly one unit" time="0.080592" status="run" />
+  <testcase classname="ResourceGrowth" name="owner and shared deadlines match and pending work survives saving" time="0.358459" status="run" />
+  <testcase classname="ResourceGrowth" name="pipeline waits at exact deadline and pause does not publish" time="0.070343" status="run" />
+  <testcase classname="ResourceGrowth" name="proposal capacity grows safely and is retained for reuse" time="0.071627" status="run" />
+  <testcase classname="ResourceGrowth" name="signed proposals use only current resource type and apply in order" time="0.067868" status="run">
+      <failure message="3 == 2" type="CHECK">
+src/map/ResourceGrowthTest.cpp:67:
+CHECK( m.materialAmountAt(at, MaterialId::Food) == 2 ) is NOT correct!
+  values: CHECK( 3 == 2 )
+
+      </failure>
+      <failure message="2 == 1" type="CHECK">
+src/map/ResourceGrowthTest.cpp:70:
+CHECK( m.materialAmountAt(at, MaterialId::Food) == 1 ) is NOT correct!
+  values: CHECK( 2 == 1 )
+
+      </failure>
+      <failure message="3 == 2" type="CHECK">
+src/map/ResourceGrowthTest.cpp:73:
+CHECK( m.materialAmountAt(at, MaterialId::Food) == 2 ) is NOT correct!
+  values: CHECK( 3 == 2 )
+
+      </failure>
+    </testcase>
+  </testsuite></testsuites>

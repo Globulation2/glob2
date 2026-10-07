@@ -1,0 +1,3850 @@
+{
+  "ai512": {
+    "d1t1-owner": {
+      "wall_s": 1.1404600641690195,
+      "cpu_s": 1.139945,
+      "peak_rss_bytes": 120602624,
+      "run_s": 0.747799071,
+      "tick_percentiles_ns": {
+        "tick_p50_ns": 0,
+        "tick_p95_ns": 0,
+        "tick_p99_ns": 0
+      },
+      "growth": {
+        "growth_submitted": 128,
+        "growth_published": 126,
+        "growth_sampled": 543468,
+        "growth_proposals": 3693,
+        "growth_accepted": 3639,
+        "growth_rejected": 16,
+        "growth_clamped": 16,
+        "growth_stockAdded": 3639,
+        "growth_tilesAdded": 105,
+        "growth_capacityGrowthBatches": 0,
+        "growth_maxProposals": 51,
+        "growth_maxPending": 2,
+        "growth_maxProposalBytes": 262144,
+        "growth_computeNs": 26322609,
+        "growth_queueNs": 500724584,
+        "growth_waitNs": 512068448,
+        "growth_publicationNs": 1572043,
+        "growth_delay": 1
+      },
+      "d1t1-owner": {
+        "run_time_ratio": 1.0,
+        "ratio_95pct_ci": [
+          1.0,
+          1.0
+        ],
+        "run_delta_ms": 0.0,
+        "cpu_ratio": 1.0
+      }
+    },
+    "d1t1-shared": {
+      "wall_s": 1.1780318971723318,
+      "cpu_s": 1.17764,
+      "peak_rss_bytes": 120315904,
+      "run_s": 0.798865203,
+      "tick_percentiles_ns": {
+        "tick_p50_ns": 0,
+        "tick_p95_ns": 0,
+        "tick_p99_ns": 0
+      },
+      "growth": {
+        "growth_submitted": 128,
+        "growth_published": 126,
+        "growth_sampled": 543468,
+        "growth_proposals": 3693,
+        "growth_accepted": 3639,
+        "growth_rejected": 16,
+        "growth_clamped": 16,
+        "growth_stockAdded": 3639,
+        "growth_tilesAdded": 105,
+        "growth_capacityGrowthBatches": 0,
+        "growth_maxProposals": 51,
+        "growth_maxPending": 2,
+        "growth_maxProposalBytes": 262144,
+        "growth_computeNs": 29197222,
+        "growth_queueNs": 541340086,
+        "growth_waitNs": 554445811,
+        "growth_publicationNs": 1779058,
+        "growth_delay": 1
+      },
+      "d1t1-owner": {
+        "run_time_ratio": 1.0682885737364067,
+        "ratio_95pct_ci": [
+          1.0682885737364067,
+          1.0682885737364067
+        ],
+        "run_delta_ms": 51.066132,
+        "cpu_ratio": 1.0330673848299698
+      }
+    },
+    "d1t2-owner": {
+      "wall_s": 1.1013826387934387,
+      "cpu_s": 1.4930880000000002,
+      "peak_rss_bytes": 127344640,
+      "run_s": 0.67827135,
+      "tick_percentiles_ns": {
+        "tick_p50_ns": 0,
+        "tick_p95_ns": 0,
+        "tick_p99_ns": 0
+      },
+      "growth": {
+        "growth_submitted": 128,
+        "growth_published": 126,
+        "growth_sampled": 543468,
+        "growth_proposals": 3693,
+        "growth_accepted": 3639,
+        "growth_rejected": 16,
+        "growth_clamped": 16,
+        "growth_stockAdded": 3639,
+        "growth_tilesAdded": 105,
+        "growth_capacityGrowthBatches": 0,
+        "growth_maxProposals": 51,
+        "growth_maxPending": 2,
+        "growth_maxProposalBytes": 262144,
+        "growth_computeNs": 33598324,
+        "growth_queueNs": 343303998,
+        "growth_waitNs": 356040682,
+        "growth_publicationNs": 1688646,
+        "growth_delay": 1
+      },
+      "d1t2-owner": {
+        "run_time_ratio": 1.0,
+        "ratio_95pct_ci": [
+          1.0,
+          1.0
+        ],
+        "run_delta_ms": 0.0,
+        "cpu_ratio": 1.0
+      }
+    },
+    "d1t2-shared": {
+      "wall_s": 1.033089759759605,
+      "cpu_s": 1.416288,
+      "peak_rss_bytes": 127201280,
+      "run_s": 0.652453836,
+      "tick_percentiles_ns": {
+        "tick_p50_ns": 0,
+        "tick_p95_ns": 0,
+        "tick_p99_ns": 0
+      },
+      "growth": {
+        "growth_submitted": 128,
+        "growth_published": 126,
+        "growth_sampled": 543468,
+        "growth_proposals": 3693,
+        "growth_accepted": 3639,
+        "growth_rejected": 16,
+        "growth_clamped": 16,
+        "growth_stockAdded": 3639,
+        "growth_tilesAdded": 105,
+        "growth_capacityGrowthBatches": 0,
+        "growth_maxProposals": 51,
+        "growth_maxPending": 2,
+        "growth_maxProposalBytes": 262144,
+        "growth_computeNs": 34985522,
+        "growth_queueNs": 217185703,
+        "growth_waitNs": 351779515,
+        "growth_publicationNs": 1656493,
+        "growth_delay": 1
+      },
+      "d1t2-owner": {
+        "run_time_ratio": 0.9619363046957534,
+        "ratio_95pct_ci": [
+          0.9619363046957534,
+          0.9619363046957534
+        ],
+        "run_delta_ms": -25.817514,
+        "cpu_ratio": 0.9485629782035618
+      }
+    },
+    "d1t4-owner": {
+      "wall_s": 1.1123203919269145,
+      "cpu_s": 1.867398,
+      "peak_rss_bytes": 146190336,
+      "run_s": 0.721839148,
+      "tick_percentiles_ns": {
+        "tick_p50_ns": 0,
+        "tick_p95_ns": 0,
+        "tick_p99_ns": 0
+      },
+      "growth": {
+        "growth_submitted": 128,
+        "growth_published": 126,
+        "growth_sampled": 543468,
+        "growth_proposals": 3693,
+        "growth_accepted": 3639,
+        "growth_rejected": 16,
+        "growth_clamped": 16,
+        "growth_stockAdded": 3639,
+        "growth_tilesAdded": 105,
+        "growth_capacityGrowthBatches": 0,
+        "growth_maxProposals": 51,
+        "growth_maxPending": 2,
+        "growth_maxProposalBytes": 262144,
+        "growth_computeNs": 36864997,
+        "growth_queueNs": 318569750,
+        "growth_waitNs": 338012262,
+        "growth_publicationNs": 1995756,
+        "growth_delay": 1
+      },
+      "d1t4-owner": {
+        "run_time_ratio": 1.0,
+        "ratio_95pct_ci": [
+          1.0,
+          1.0
+        ],
+        "run_delta_ms": 0.0,
+        "cpu_ratio": 1.0
+      }
+    },
+    "d1t4-shared": {
+      "wall_s": 0.9873213260434568,
+      "cpu_s": 1.5937739999999998,
+      "peak_rss_bytes": 142446592,
+      "run_s": 0.616092225,
+      "tick_percentiles_ns": {
+        "tick_p50_ns": 0,
+        "tick_p95_ns": 0,
+        "tick_p99_ns": 0
+      },
+      "growth": {
+        "growth_submitted": 128,
+        "growth_published": 126,
+        "growth_sampled": 543468,
+        "growth_proposals": 3693,
+        "growth_accepted": 3639,
+        "growth_rejected": 16,
+        "growth_clamped": 16,
+        "growth_stockAdded": 3639,
+        "growth_tilesAdded": 105,
+        "growth_capacityGrowthBatches": 0,
+        "growth_maxProposals": 51,
+        "growth_maxPending": 2,
+        "growth_maxProposalBytes": 262144,
+        "growth_computeNs": 41463553,
+        "growth_queueNs": 72635440,
+        "growth_waitNs": 265801186,
+        "growth_publicationNs": 2083993,
+        "growth_delay": 1
+      },
+      "d1t4-owner": {
+        "run_time_ratio": 0.8535034802518081,
+        "ratio_95pct_ci": [
+          0.8535034802518081,
+          0.8535034802518081
+        ],
+        "run_delta_ms": -105.746923,
+        "cpu_ratio": 0.8534731214234994
+      }
+    },
+    "d1t8-owner": {
+      "wall_s": 0.9507142673246562,
+      "cpu_s": 1.8176459999999999,
+      "peak_rss_bytes": 172785664,
+      "run_s": 0.568976489,
+      "tick_percentiles_ns": {
+        "tick_p50_ns": 0,
+        "tick_p95_ns": 0,
+        "tick_p99_ns": 0
+      },
+      "growth": {
+        "growth_submitted": 128,
+        "growth_published": 126,
+        "growth_sampled": 543468,
+        "growth_proposals": 3693,
+        "growth_accepted": 3639,
+        "growth_rejected": 16,
+        "growth_clamped": 16,
+        "growth_stockAdded": 3639,
+        "growth_tilesAdded": 105,
+        "growth_capacityGrowthBatches": 0,
+        "growth_maxProposals": 51,
+        "growth_maxPending": 2,
+        "growth_maxProposalBytes": 262144,
+        "growth_computeNs": 34022634,
+        "growth_queueNs": 200961786,
+        "growth_waitNs": 217634636,
+        "growth_publicationNs": 1884536,
+        "growth_delay": 1
+      },
+      "d1t8-owner": {
+        "run_time_ratio": 1.0,
+        "ratio_95pct_ci": [
+          1.0,
+          1.0
+        ],
+        "run_delta_ms": 0.0,
+        "cpu_ratio": 1.0
+      }
+    },
+    "d1t8-shared": {
+      "wall_s": 1.158852961845696,
+      "cpu_s": 2.002094,
+      "peak_rss_bytes": 175935488,
+      "run_s": 0.641091274,
+      "tick_percentiles_ns": {
+        "tick_p50_ns": 0,
+        "tick_p95_ns": 0,
+        "tick_p99_ns": 0
+      },
+      "growth": {
+        "growth_submitted": 128,
+        "growth_published": 126,
+        "growth_sampled": 543468,
+        "growth_proposals": 3693,
+        "growth_accepted": 3639,
+        "growth_rejected": 16,
+        "growth_clamped": 16,
+        "growth_stockAdded": 3639,
+        "growth_tilesAdded": 105,
+        "growth_capacityGrowthBatches": 0,
+        "growth_maxProposals": 51,
+        "growth_maxPending": 2,
+        "growth_maxProposalBytes": 262144,
+        "growth_computeNs": 45426034,
+        "growth_queueNs": 60211097,
+        "growth_waitNs": 262753393,
+        "growth_publicationNs": 2185299,
+        "growth_delay": 1
+      },
+      "d1t8-owner": {
+        "run_time_ratio": 1.1267447537713637,
+        "ratio_95pct_ci": [
+          1.1267447537713637,
+          1.1267447537713637
+        ],
+        "run_delta_ms": 72.114785,
+        "cpu_ratio": 1.1014763050671035
+      }
+    },
+    "d3t1-owner": {
+      "wall_s": 1.2538175899535418,
+      "cpu_s": 1.2534200000000002,
+      "peak_rss_bytes": 120049664,
+      "run_s": 0.875545991,
+      "tick_percentiles_ns": {
+        "tick_p50_ns": 0,
+        "tick_p95_ns": 0,
+        "tick_p99_ns": 0
+      },
+      "growth": {
+        "growth_submitted": 128,
+        "growth_published": 124,
+        "growth_sampled": 543472,
+        "growth_proposals": 3698,
+        "growth_accepted": 3598,
+        "growth_rejected": 20,
+        "growth_clamped": 20,
+        "growth_stockAdded": 3598,
+        "growth_tilesAdded": 105,
+        "growth_capacityGrowthBatches": 0,
+        "growth_maxProposals": 51,
+        "growth_maxPending": 4,
+        "growth_maxProposalBytes": 524288,
+        "growth_computeNs": 32006639,
+        "growth_queueNs": 592388156,
+        "growth_waitNs": 605372971,
+        "growth_publicationNs": 1849239,
+        "growth_delay": 3
+      },
+      "d3t1-owner": {
+        "run_time_ratio": 1.0,
+        "ratio_95pct_ci": [
+          1.0,
+          1.0
+        ],
+        "run_delta_ms": 0.0,
+        "cpu_ratio": 1.0
+      }
+    },
+    "d3t1-shared": {
+      "wall_s": 1.1647201380692422,
+      "cpu_s": 1.1643150000000002,
+      "peak_rss_bytes": 120930304,
+      "run_s": 0.783939413,
+      "tick_percentiles_ns": {
+        "tick_p50_ns": 0,
+        "tick_p95_ns": 0,
+        "tick_p99_ns": 0
+      },
+      "growth": {
+        "growth_submitted": 128,
+        "growth_published": 124,
+        "growth_sampled": 543472,
+        "growth_proposals": 3698,
+        "growth_accepted": 3598,
+        "growth_rejected": 20,
+        "growth_clamped": 20,
+        "growth_stockAdded": 3598,
+        "growth_tilesAdded": 105,
+        "growth_capacityGrowthBatches": 0,
+        "growth_maxProposals": 51,
+        "growth_maxPending": 4,
+        "growth_maxProposalBytes": 524288,
+        "growth_computeNs": 25797596,
+        "growth_queueNs": 532781548,
+        "growth_waitNs": 543283664,
+        "growth_publicationNs": 1519513,
+        "growth_delay": 3
+      },
+      "d3t1-owner": {
+        "run_time_ratio": 0.8953720547616556,
+        "ratio_95pct_ci": [
+          0.8953720547616556,
+          0.8953720547616556
+        ],
+        "run_delta_ms": -91.606578,
+        "cpu_ratio": 0.9289105008696208
+      }
+    },
+    "d3t2-owner": {
+      "wall_s": 1.318332971073687,
+      "cpu_s": 1.712741,
+      "peak_rss_bytes": 127270912,
+      "run_s": 0.784794998,
+      "tick_percentiles_ns": {
+        "tick_p50_ns": 0,
+        "tick_p95_ns": 0,
+        "tick_p99_ns": 0
+      },
+      "growth": {
+        "growth_submitted": 128,
+        "growth_published": 124,
+        "growth_sampled": 543472,
+        "growth_proposals": 3698,
+        "growth_accepted": 3598,
+        "growth_rejected": 20,
+        "growth_clamped": 20,
+        "growth_stockAdded": 3598,
+        "growth_tilesAdded": 105,
+        "growth_capacityGrowthBatches": 0,
+        "growth_maxProposals": 51,
+        "growth_maxPending": 4,
+        "growth_maxProposalBytes": 524288,
+        "growth_computeNs": 35445183,
+        "growth_queueNs": 445698402,
+        "growth_waitNs": 460569333,
+        "growth_publicationNs": 1947503,
+        "growth_delay": 3
+      },
+      "d3t2-owner": {
+        "run_time_ratio": 1.0,
+        "ratio_95pct_ci": [
+          1.0,
+          1.0
+        ],
+        "run_delta_ms": 0.0,
+        "cpu_ratio": 1.0
+      }
+    },
+    "d3t2-shared": {
+      "wall_s": 1.0653804261237383,
+      "cpu_s": 1.471199,
+      "peak_rss_bytes": 129699840,
+      "run_s": 0.675810695,
+      "tick_percentiles_ns": {
+        "tick_p50_ns": 0,
+        "tick_p95_ns": 0,
+        "tick_p99_ns": 0
+      },
+      "growth": {
+        "growth_submitted": 128,
+        "growth_published": 124,
+        "growth_sampled": 543472,
+        "growth_proposals": 3698,
+        "growth_accepted": 3598,
+        "growth_rejected": 20,
+        "growth_clamped": 20,
+        "growth_stockAdded": 3598,
+        "growth_tilesAdded": 105,
+        "growth_capacityGrowthBatches": 0,
+        "growth_maxProposals": 51,
+        "growth_maxPending": 4,
+        "growth_maxProposalBytes": 524288,
+        "growth_computeNs": 35075265,
+        "growth_queueNs": 242099077,
+        "growth_waitNs": 364794937,
+        "growth_publicationNs": 1675179,
+        "growth_delay": 3
+      },
+      "d3t2-owner": {
+        "run_time_ratio": 0.8611302272851642,
+        "ratio_95pct_ci": [
+          0.8611302272851642,
+          0.8611302272851642
+        ],
+        "run_delta_ms": -108.984303,
+        "cpu_ratio": 0.8589734233021804
+      }
+    },
+    "d3t4-owner": {
+      "wall_s": 1.0785279870033264,
+      "cpu_s": 1.753513,
+      "peak_rss_bytes": 142671872,
+      "run_s": 0.693805716,
+      "tick_percentiles_ns": {
+        "tick_p50_ns": 0,
+        "tick_p95_ns": 0,
+        "tick_p99_ns": 0
+      },
+      "growth": {
+        "growth_submitted": 128,
+        "growth_published": 124,
+        "growth_sampled": 543472,
+        "growth_proposals": 3698,
+        "growth_accepted": 3598,
+        "growth_rejected": 20,
+        "growth_clamped": 20,
+        "growth_stockAdded": 3598,
+        "growth_tilesAdded": 105,
+        "growth_capacityGrowthBatches": 0,
+        "growth_maxProposals": 51,
+        "growth_maxPending": 4,
+        "growth_maxProposalBytes": 524288,
+        "growth_computeNs": 40680112,
+        "growth_queueNs": 282180656,
+        "growth_waitNs": 303972071,
+        "growth_publicationNs": 2241619,
+        "growth_delay": 3
+      },
+      "d3t4-owner": {
+        "run_time_ratio": 1.0,
+        "ratio_95pct_ci": [
+          1.0,
+          1.0
+        ],
+        "run_delta_ms": 0.0,
+        "cpu_ratio": 1.0
+      }
+    },
+    "d3t4-shared": {
+      "wall_s": 0.9651562599465251,
+      "cpu_s": 1.591851,
+      "peak_rss_bytes": 143269888,
+      "run_s": 0.573021705,
+      "tick_percentiles_ns": {
+        "tick_p50_ns": 0,
+        "tick_p95_ns": 0,
+        "tick_p99_ns": 0
+      },
+      "growth": {
+        "growth_submitted": 128,
+        "growth_published": 124,
+        "growth_sampled": 543472,
+        "growth_proposals": 3698,
+        "growth_accepted": 3598,
+        "growth_rejected": 20,
+        "growth_clamped": 20,
+        "growth_stockAdded": 3598,
+        "growth_tilesAdded": 105,
+        "growth_capacityGrowthBatches": 0,
+        "growth_maxProposals": 51,
+        "growth_maxPending": 4,
+        "growth_maxProposalBytes": 524288,
+        "growth_computeNs": 36965837,
+        "growth_queueNs": 90253982,
+        "growth_waitNs": 291038698,
+        "growth_publicationNs": 1498873,
+        "growth_delay": 3
+      },
+      "d3t4-owner": {
+        "run_time_ratio": 0.8259109024117639,
+        "ratio_95pct_ci": [
+          0.8259109024117639,
+          0.8259109024117639
+        ],
+        "run_delta_ms": -120.784011,
+        "cpu_ratio": 0.9078067855784359
+      }
+    },
+    "d3t8-owner": {
+      "wall_s": 1.0005993861705065,
+      "cpu_s": 1.848943,
+      "peak_rss_bytes": 174514176,
+      "run_s": 0.566448424,
+      "tick_percentiles_ns": {
+        "tick_p50_ns": 0,
+        "tick_p95_ns": 0,
+        "tick_p99_ns": 0
+      },
+      "growth": {
+        "growth_submitted": 128,
+        "growth_published": 124,
+        "growth_sampled": 543472,
+        "growth_proposals": 3698,
+        "growth_accepted": 3598,
+        "growth_rejected": 20,
+        "growth_clamped": 20,
+        "growth_stockAdded": 3598,
+        "growth_tilesAdded": 105,
+        "growth_capacityGrowthBatches": 0,
+        "growth_maxProposals": 51,
+        "growth_maxPending": 4,
+        "growth_maxProposalBytes": 524288,
+        "growth_computeNs": 33995056,
+        "growth_queueNs": 189736643,
+        "growth_waitNs": 206564517,
+        "growth_publicationNs": 1808585,
+        "growth_delay": 3
+      },
+      "d3t8-owner": {
+        "run_time_ratio": 1.0,
+        "ratio_95pct_ci": [
+          1.0,
+          1.0
+        ],
+        "run_delta_ms": 0.0,
+        "cpu_ratio": 1.0
+      }
+    },
+    "d3t8-shared": {
+      "wall_s": 0.9433029419742525,
+      "cpu_s": 1.719174,
+      "peak_rss_bytes": 175435776,
+      "run_s": 0.554068099,
+      "tick_percentiles_ns": {
+        "tick_p50_ns": 0,
+        "tick_p95_ns": 0,
+        "tick_p99_ns": 0
+      },
+      "growth": {
+        "growth_submitted": 128,
+        "growth_published": 124,
+        "growth_sampled": 543472,
+        "growth_proposals": 3698,
+        "growth_accepted": 3598,
+        "growth_rejected": 20,
+        "growth_clamped": 20,
+        "growth_stockAdded": 3598,
+        "growth_tilesAdded": 105,
+        "growth_capacityGrowthBatches": 0,
+        "growth_maxProposals": 51,
+        "growth_maxPending": 4,
+        "growth_maxProposalBytes": 524288,
+        "growth_computeNs": 43874759,
+        "growth_queueNs": 78785071,
+        "growth_waitNs": 191734073,
+        "growth_publicationNs": 2108952,
+        "growth_delay": 3
+      },
+      "d3t8-owner": {
+        "run_time_ratio": 0.9781439501365794,
+        "ratio_95pct_ci": [
+          0.9781439501365794,
+          0.9781439501365794
+        ],
+        "run_delta_ms": -12.380325,
+        "cpu_ratio": 0.9298144940109024
+      }
+    },
+    "d8t1-owner": {
+      "wall_s": 1.2753173601813614,
+      "cpu_s": 1.274789,
+      "peak_rss_bytes": 120487936,
+      "run_s": 0.904748584,
+      "tick_percentiles_ns": {
+        "tick_p50_ns": 0,
+        "tick_p95_ns": 0,
+        "tick_p99_ns": 0
+      },
+      "growth": {
+        "growth_submitted": 128,
+        "growth_published": 119,
+        "growth_sampled": 543478,
+        "growth_proposals": 3716,
+        "growth_accepted": 3451,
+        "growth_rejected": 40,
+        "growth_clamped": 40,
+        "growth_stockAdded": 3451,
+        "growth_tilesAdded": 100,
+        "growth_capacityGrowthBatches": 0,
+        "growth_maxProposals": 51,
+        "growth_maxPending": 9,
+        "growth_maxProposalBytes": 1179648,
+        "growth_computeNs": 34077978,
+        "growth_queueNs": 613558734,
+        "growth_waitNs": 629127056,
+        "growth_publicationNs": 1888849,
+        "growth_delay": 8
+      },
+      "d8t1-owner": {
+        "run_time_ratio": 1.0,
+        "ratio_95pct_ci": [
+          1.0,
+          1.0
+        ],
+        "run_delta_ms": 0.0,
+        "cpu_ratio": 1.0
+      }
+    },
+    "d8t1-shared": {
+      "wall_s": 1.128927992656827,
+      "cpu_s": 1.128547,
+      "peak_rss_bytes": 120954880,
+      "run_s": 0.768964753,
+      "tick_percentiles_ns": {
+        "tick_p50_ns": 0,
+        "tick_p95_ns": 0,
+        "tick_p99_ns": 0
+      },
+      "growth": {
+        "growth_submitted": 128,
+        "growth_published": 119,
+        "growth_sampled": 543478,
+        "growth_proposals": 3716,
+        "growth_accepted": 3451,
+        "growth_rejected": 40,
+        "growth_clamped": 40,
+        "growth_stockAdded": 3451,
+        "growth_tilesAdded": 100,
+        "growth_capacityGrowthBatches": 0,
+        "growth_maxProposals": 51,
+        "growth_maxPending": 9,
+        "growth_maxProposalBytes": 1179648,
+        "growth_computeNs": 29571937,
+        "growth_queueNs": 514217622,
+        "growth_waitNs": 527333915,
+        "growth_publicationNs": 1669749,
+        "growth_delay": 8
+      },
+      "d8t1-owner": {
+        "run_time_ratio": 0.8499209245515658,
+        "ratio_95pct_ci": [
+          0.8499209245515658,
+          0.8499209245515658
+        ],
+        "run_delta_ms": -135.783831,
+        "cpu_ratio": 0.885281407354472
+      }
+    },
+    "d8t2-owner": {
+      "wall_s": 1.0179938520304859,
+      "cpu_s": 1.389582,
+      "peak_rss_bytes": 127885312,
+      "run_s": 0.663545769,
+      "tick_percentiles_ns": {
+        "tick_p50_ns": 0,
+        "tick_p95_ns": 0,
+        "tick_p99_ns": 0
+      },
+      "growth": {
+        "growth_submitted": 128,
+        "growth_published": 119,
+        "growth_sampled": 543478,
+        "growth_proposals": 3716,
+        "growth_accepted": 3451,
+        "growth_rejected": 40,
+        "growth_clamped": 40,
+        "growth_stockAdded": 3451,
+        "growth_tilesAdded": 100,
+        "growth_capacityGrowthBatches": 0,
+        "growth_maxProposals": 51,
+        "growth_maxPending": 9,
+        "growth_maxProposalBytes": 1179648,
+        "growth_computeNs": 33764821,
+        "growth_queueNs": 349444299,
+        "growth_waitNs": 362800204,
+        "growth_publicationNs": 1612188,
+        "growth_delay": 8
+      },
+      "d8t2-owner": {
+        "run_time_ratio": 1.0,
+        "ratio_95pct_ci": [
+          1.0,
+          1.0
+        ],
+        "run_delta_ms": 0.0,
+        "cpu_ratio": 1.0
+      }
+    },
+    "d8t2-shared": {
+      "wall_s": 1.049064134247601,
+      "cpu_s": 1.420121,
+      "peak_rss_bytes": 127352832,
+      "run_s": 0.663219991,
+      "tick_percentiles_ns": {
+        "tick_p50_ns": 0,
+        "tick_p95_ns": 0,
+        "tick_p99_ns": 0
+      },
+      "growth": {
+        "growth_submitted": 128,
+        "growth_published": 119,
+        "growth_sampled": 543478,
+        "growth_proposals": 3716,
+        "growth_accepted": 3451,
+        "growth_rejected": 40,
+        "growth_clamped": 40,
+        "growth_stockAdded": 3451,
+        "growth_tilesAdded": 100,
+        "growth_capacityGrowthBatches": 0,
+        "growth_maxProposals": 51,
+        "growth_maxPending": 9,
+        "growth_maxProposalBytes": 1179648,
+        "growth_computeNs": 35401837,
+        "growth_queueNs": 222040014,
+        "growth_waitNs": 356198101,
+        "growth_publicationNs": 1663925,
+        "growth_delay": 8
+      },
+      "d8t2-owner": {
+        "run_time_ratio": 0.9995090346209411,
+        "ratio_95pct_ci": [
+          0.9995090346209411,
+          0.9995090346209411
+        ],
+        "run_delta_ms": -0.325778,
+        "cpu_ratio": 1.0219771125417572
+      }
+    },
+    "d8t4-owner": {
+      "wall_s": 0.9193518674001098,
+      "cpu_s": 1.521337,
+      "peak_rss_bytes": 142405632,
+      "run_s": 0.549486877,
+      "tick_percentiles_ns": {
+        "tick_p50_ns": 0,
+        "tick_p95_ns": 0,
+        "tick_p99_ns": 0
+      },
+      "growth": {
+        "growth_submitted": 128,
+        "growth_published": 119,
+        "growth_sampled": 543478,
+        "growth_proposals": 3716,
+        "growth_accepted": 3451,
+        "growth_rejected": 40,
+        "growth_clamped": 40,
+        "growth_stockAdded": 3451,
+        "growth_tilesAdded": 100,
+        "growth_capacityGrowthBatches": 0,
+        "growth_maxProposals": 51,
+        "growth_maxPending": 9,
+        "growth_maxProposalBytes": 1179648,
+        "growth_computeNs": 33917458,
+        "growth_queueNs": 214915419,
+        "growth_waitNs": 232030142,
+        "growth_publicationNs": 1605309,
+        "growth_delay": 8
+      },
+      "d8t4-owner": {
+        "run_time_ratio": 1.0,
+        "ratio_95pct_ci": [
+          1.0,
+          1.0
+        ],
+        "run_delta_ms": 0.0,
+        "cpu_ratio": 1.0
+      }
+    },
+    "d8t4-shared": {
+      "wall_s": 0.9288972192443907,
+      "cpu_s": 1.569176,
+      "peak_rss_bytes": 142004224,
+      "run_s": 0.553543252,
+      "tick_percentiles_ns": {
+        "tick_p50_ns": 0,
+        "tick_p95_ns": 0,
+        "tick_p99_ns": 0
+      },
+      "growth": {
+        "growth_submitted": 128,
+        "growth_published": 119,
+        "growth_sampled": 543478,
+        "growth_proposals": 3716,
+        "growth_accepted": 3451,
+        "growth_rejected": 40,
+        "growth_clamped": 40,
+        "growth_stockAdded": 3451,
+        "growth_tilesAdded": 100,
+        "growth_capacityGrowthBatches": 0,
+        "growth_maxProposals": 51,
+        "growth_maxPending": 9,
+        "growth_maxProposalBytes": 1179648,
+        "growth_computeNs": 41423544,
+        "growth_queueNs": 78749213,
+        "growth_waitNs": 207670232,
+        "growth_publicationNs": 1692720,
+        "growth_delay": 8
+      },
+      "d8t4-owner": {
+        "run_time_ratio": 1.0073821144230892,
+        "ratio_95pct_ci": [
+          1.0073821144230892,
+          1.0073821144230892
+        ],
+        "run_delta_ms": 4.056375,
+        "cpu_ratio": 1.0314453668056454
+      }
+    },
+    "d8t8-owner": {
+      "wall_s": 0.9235192411579192,
+      "cpu_s": 1.71502,
+      "peak_rss_bytes": 175378432,
+      "run_s": 0.550987418,
+      "tick_percentiles_ns": {
+        "tick_p50_ns": 0,
+        "tick_p95_ns": 0,
+        "tick_p99_ns": 0
+      },
+      "growth": {
+        "growth_submitted": 128,
+        "growth_published": 119,
+        "growth_sampled": 543478,
+        "growth_proposals": 3716,
+        "growth_accepted": 3451,
+        "growth_rejected": 40,
+        "growth_clamped": 40,
+        "growth_stockAdded": 3451,
+        "growth_tilesAdded": 100,
+        "growth_capacityGrowthBatches": 0,
+        "growth_maxProposals": 51,
+        "growth_maxPending": 9,
+        "growth_maxProposalBytes": 1179648,
+        "growth_computeNs": 37550792,
+        "growth_queueNs": 174511988,
+        "growth_waitNs": 192721727,
+        "growth_publicationNs": 1851481,
+        "growth_delay": 8
+      },
+      "d8t8-owner": {
+        "run_time_ratio": 1.0,
+        "ratio_95pct_ci": [
+          1.0,
+          1.0
+        ],
+        "run_delta_ms": 0.0,
+        "cpu_ratio": 1.0
+      }
+    },
+    "d8t8-shared": {
+      "wall_s": 0.9826951241120696,
+      "cpu_s": 1.776205,
+      "peak_rss_bytes": 173215744,
+      "run_s": 0.595903817,
+      "tick_percentiles_ns": {
+        "tick_p50_ns": 0,
+        "tick_p95_ns": 0,
+        "tick_p99_ns": 0
+      },
+      "growth": {
+        "growth_submitted": 128,
+        "growth_published": 119,
+        "growth_sampled": 543478,
+        "growth_proposals": 3716,
+        "growth_accepted": 3451,
+        "growth_rejected": 40,
+        "growth_clamped": 40,
+        "growth_stockAdded": 3451,
+        "growth_tilesAdded": 100,
+        "growth_capacityGrowthBatches": 0,
+        "growth_maxProposals": 51,
+        "growth_maxPending": 9,
+        "growth_maxProposalBytes": 1179648,
+        "growth_computeNs": 41245266,
+        "growth_queueNs": 100871703,
+        "growth_waitNs": 234110270,
+        "growth_publicationNs": 1765833,
+        "growth_delay": 8
+      },
+      "d8t8-owner": {
+        "run_time_ratio": 1.0815198270099156,
+        "ratio_95pct_ci": [
+          1.0815198270099156,
+          1.0815198270099156
+        ],
+        "run_delta_ms": 44.916399,
+        "cpu_ratio": 1.0356759687933668
+      }
+    }
+  },
+  "dense": {
+    "d1t1-owner": {
+      "wall_s": 0.8905129097402096,
+      "cpu_s": 0.8827079999999999,
+      "peak_rss_bytes": 64327680,
+      "run_s": 0.436453258,
+      "tick_percentiles_ns": {
+        "tick_p50_ns": 0,
+        "tick_p95_ns": 0,
+        "tick_p99_ns": 0
+      },
+      "growth": {
+        "growth_submitted": 128,
+        "growth_published": 126,
+        "growth_sampled": 136777,
+        "growth_proposals": 12198,
+        "growth_accepted": 12134,
+        "growth_rejected": 8,
+        "growth_clamped": 8,
+        "growth_stockAdded": 12134,
+        "growth_tilesAdded": 3716,
+        "growth_capacityGrowthBatches": 0,
+        "growth_maxProposals": 213,
+        "growth_maxPending": 2,
+        "growth_maxProposalBytes": 65536,
+        "growth_computeNs": 11492988,
+        "growth_queueNs": 278168414,
+        "growth_waitNs": 269771840,
+        "growth_publicationNs": 4021989,
+        "growth_delay": 1
+      },
+      "d1t1-owner": {
+        "run_time_ratio": 1.0,
+        "ratio_95pct_ci": [
+          1.0,
+          1.0
+        ],
+        "run_delta_ms": 0.0,
+        "cpu_ratio": 1.0
+      }
+    },
+    "d1t1-shared": {
+      "wall_s": 0.5941022280603647,
+      "cpu_s": 0.59181,
+      "peak_rss_bytes": 64327680,
+      "run_s": 0.289394605,
+      "tick_percentiles_ns": {
+        "tick_p50_ns": 0,
+        "tick_p95_ns": 0,
+        "tick_p99_ns": 0
+      },
+      "growth": {
+        "growth_submitted": 128,
+        "growth_published": 126,
+        "growth_sampled": 136777,
+        "growth_proposals": 12198,
+        "growth_accepted": 12134,
+        "growth_rejected": 8,
+        "growth_clamped": 8,
+        "growth_stockAdded": 12134,
+        "growth_tilesAdded": 3716,
+        "growth_capacityGrowthBatches": 0,
+        "growth_maxProposals": 213,
+        "growth_maxPending": 2,
+        "growth_maxProposalBytes": 65536,
+        "growth_computeNs": 6210739,
+        "growth_queueNs": 187987908,
+        "growth_waitNs": 181030807,
+        "growth_publicationNs": 2911839,
+        "growth_delay": 1
+      },
+      "d1t1-owner": {
+        "run_time_ratio": 0.6630597886383517,
+        "ratio_95pct_ci": [
+          0.6630597886383517,
+          0.6630597886383517
+        ],
+        "run_delta_ms": -147.058653,
+        "cpu_ratio": 0.6704482116396362
+      }
+    },
+    "d1t2-owner": {
+      "wall_s": 0.5791223580017686,
+      "cpu_s": 0.7394459999999999,
+      "peak_rss_bytes": 64327680,
+      "run_s": 0.239679235,
+      "tick_percentiles_ns": {
+        "tick_p50_ns": 0,
+        "tick_p95_ns": 0,
+        "tick_p99_ns": 0
+      },
+      "growth": {
+        "growth_submitted": 128,
+        "growth_published": 126,
+        "growth_sampled": 136777,
+        "growth_proposals": 12198,
+        "growth_accepted": 12134,
+        "growth_rejected": 8,
+        "growth_clamped": 8,
+        "growth_stockAdded": 12134,
+        "growth_tilesAdded": 3716,
+        "growth_capacityGrowthBatches": 0,
+        "growth_maxProposals": 213,
+        "growth_maxPending": 2,
+        "growth_maxProposalBytes": 65536,
+        "growth_computeNs": 11158952,
+        "growth_queueNs": 103184208,
+        "growth_waitNs": 97241062,
+        "growth_publicationNs": 3256422,
+        "growth_delay": 1
+      },
+      "d1t2-owner": {
+        "run_time_ratio": 1.0,
+        "ratio_95pct_ci": [
+          1.0,
+          1.0
+        ],
+        "run_delta_ms": 0.0,
+        "cpu_ratio": 1.0
+      }
+    },
+    "d1t2-shared": {
+      "wall_s": 0.5892790271900594,
+      "cpu_s": 0.7097859999999999,
+      "peak_rss_bytes": 64327680,
+      "run_s": 0.256238355,
+      "tick_percentiles_ns": {
+        "tick_p50_ns": 0,
+        "tick_p95_ns": 0,
+        "tick_p99_ns": 0
+      },
+      "growth": {
+        "growth_submitted": 128,
+        "growth_published": 126,
+        "growth_sampled": 136777,
+        "growth_proposals": 12198,
+        "growth_accepted": 12134,
+        "growth_rejected": 8,
+        "growth_clamped": 8,
+        "growth_stockAdded": 12134,
+        "growth_tilesAdded": 3716,
+        "growth_capacityGrowthBatches": 0,
+        "growth_maxProposals": 213,
+        "growth_maxPending": 2,
+        "growth_maxProposalBytes": 65536,
+        "growth_computeNs": 14247806,
+        "growth_queueNs": 80707410,
+        "growth_waitNs": 129773865,
+        "growth_publicationNs": 2956594,
+        "growth_delay": 1
+      },
+      "d1t2-owner": {
+        "run_time_ratio": 1.069088671782518,
+        "ratio_95pct_ci": [
+          1.069088671782518,
+          1.069088671782518
+        ],
+        "run_delta_ms": 16.55912,
+        "cpu_ratio": 0.9598888897904647
+      }
+    },
+    "d1t4-owner": {
+      "wall_s": 0.49525130400434136,
+      "cpu_s": 0.725992,
+      "peak_rss_bytes": 66334720,
+      "run_s": 0.184665587,
+      "tick_percentiles_ns": {
+        "tick_p50_ns": 0,
+        "tick_p95_ns": 0,
+        "tick_p99_ns": 0
+      },
+      "growth": {
+        "growth_submitted": 128,
+        "growth_published": 126,
+        "growth_sampled": 136777,
+        "growth_proposals": 12198,
+        "growth_accepted": 12134,
+        "growth_rejected": 8,
+        "growth_clamped": 8,
+        "growth_stockAdded": 12134,
+        "growth_tilesAdded": 3716,
+        "growth_capacityGrowthBatches": 0,
+        "growth_maxProposals": 213,
+        "growth_maxPending": 2,
+        "growth_maxProposalBytes": 65536,
+        "growth_computeNs": 9100690,
+        "growth_queueNs": 70267906,
+        "growth_waitNs": 64447530,
+        "growth_publicationNs": 2789925,
+        "growth_delay": 1
+      },
+      "d1t4-owner": {
+        "run_time_ratio": 1.0,
+        "ratio_95pct_ci": [
+          1.0,
+          1.0
+        ],
+        "run_delta_ms": 0.0,
+        "cpu_ratio": 1.0
+      }
+    },
+    "d1t4-shared": {
+      "wall_s": 0.6933896690607071,
+      "cpu_s": 0.9189999999999999,
+      "peak_rss_bytes": 66441216,
+      "run_s": 0.244490255,
+      "tick_percentiles_ns": {
+        "tick_p50_ns": 0,
+        "tick_p95_ns": 0,
+        "tick_p99_ns": 0
+      },
+      "growth": {
+        "growth_submitted": 128,
+        "growth_published": 126,
+        "growth_sampled": 136777,
+        "growth_proposals": 12198,
+        "growth_accepted": 12134,
+        "growth_rejected": 8,
+        "growth_clamped": 8,
+        "growth_stockAdded": 12134,
+        "growth_tilesAdded": 3716,
+        "growth_capacityGrowthBatches": 0,
+        "growth_maxProposals": 213,
+        "growth_maxPending": 2,
+        "growth_maxProposalBytes": 65536,
+        "growth_computeNs": 13870079,
+        "growth_queueNs": 27984705,
+        "growth_waitNs": 73161954,
+        "growth_publicationNs": 3653490,
+        "growth_delay": 1
+      },
+      "d1t4-owner": {
+        "run_time_ratio": 1.3239621900966312,
+        "ratio_95pct_ci": [
+          1.3239621900966312,
+          1.3239621900966312
+        ],
+        "run_delta_ms": 59.824668,
+        "cpu_ratio": 1.265854169191947
+      }
+    },
+    "d1t8-owner": {
+      "wall_s": 0.45981773687526584,
+      "cpu_s": 0.790926,
+      "peak_rss_bytes": 73809920,
+      "run_s": 0.147063503,
+      "tick_percentiles_ns": {
+        "tick_p50_ns": 0,
+        "tick_p95_ns": 0,
+        "tick_p99_ns": 0
+      },
+      "growth": {
+        "growth_submitted": 128,
+        "growth_published": 126,
+        "growth_sampled": 136777,
+        "growth_proposals": 12198,
+        "growth_accepted": 12134,
+        "growth_rejected": 8,
+        "growth_clamped": 8,
+        "growth_stockAdded": 12134,
+        "growth_tilesAdded": 3716,
+        "growth_capacityGrowthBatches": 0,
+        "growth_maxProposals": 213,
+        "growth_maxPending": 2,
+        "growth_maxProposalBytes": 65536,
+        "growth_computeNs": 9464724,
+        "growth_queueNs": 18474136,
+        "growth_waitNs": 11904367,
+        "growth_publicationNs": 2842537,
+        "growth_delay": 1
+      },
+      "d1t8-owner": {
+        "run_time_ratio": 1.0,
+        "ratio_95pct_ci": [
+          1.0,
+          1.0
+        ],
+        "run_delta_ms": 0.0,
+        "cpu_ratio": 1.0
+      }
+    },
+    "d1t8-shared": {
+      "wall_s": 0.4793718592263758,
+      "cpu_s": 0.8150829999999999,
+      "peak_rss_bytes": 72949760,
+      "run_s": 0.146166538,
+      "tick_percentiles_ns": {
+        "tick_p50_ns": 0,
+        "tick_p95_ns": 0,
+        "tick_p99_ns": 0
+      },
+      "growth": {
+        "growth_submitted": 128,
+        "growth_published": 126,
+        "growth_sampled": 136777,
+        "growth_proposals": 12198,
+        "growth_accepted": 12134,
+        "growth_rejected": 8,
+        "growth_clamped": 8,
+        "growth_stockAdded": 12134,
+        "growth_tilesAdded": 3716,
+        "growth_capacityGrowthBatches": 0,
+        "growth_maxProposals": 213,
+        "growth_maxPending": 2,
+        "growth_maxProposalBytes": 65536,
+        "growth_computeNs": 14112464,
+        "growth_queueNs": 4339460,
+        "growth_waitNs": 6974715,
+        "growth_publicationNs": 2950212,
+        "growth_delay": 1
+      },
+      "d1t8-owner": {
+        "run_time_ratio": 0.993900832077963,
+        "ratio_95pct_ci": [
+          0.993900832077963,
+          0.993900832077963
+        ],
+        "run_delta_ms": -0.896965,
+        "cpu_ratio": 1.0305426803518911
+      }
+    },
+    "d3t1-owner": {
+      "wall_s": 0.5634095328859985,
+      "cpu_s": 0.562908,
+      "peak_rss_bytes": 64327680,
+      "run_s": 0.272434008,
+      "tick_percentiles_ns": {
+        "tick_p50_ns": 0,
+        "tick_p95_ns": 0,
+        "tick_p99_ns": 0
+      },
+      "growth": {
+        "growth_submitted": 128,
+        "growth_published": 124,
+        "growth_sampled": 136933,
+        "growth_proposals": 12846,
+        "growth_accepted": 12532,
+        "growth_rejected": 18,
+        "growth_clamped": 18,
+        "growth_stockAdded": 12532,
+        "growth_tilesAdded": 3869,
+        "growth_capacityGrowthBatches": 0,
+        "growth_maxProposals": 213,
+        "growth_maxPending": 4,
+        "growth_maxProposalBytes": 131072,
+        "growth_computeNs": 5519879,
+        "growth_queueNs": 183084518,
+        "growth_waitNs": 176510629,
+        "growth_publicationNs": 2732300,
+        "growth_delay": 3
+      },
+      "d3t1-owner": {
+        "run_time_ratio": 1.0,
+        "ratio_95pct_ci": [
+          1.0,
+          1.0
+        ],
+        "run_delta_ms": 0.0,
+        "cpu_ratio": 1.0
+      }
+    },
+    "d3t1-shared": {
+      "wall_s": 0.5706389592960477,
+      "cpu_s": 0.570164,
+      "peak_rss_bytes": 64327680,
+      "run_s": 0.274702793,
+      "tick_percentiles_ns": {
+        "tick_p50_ns": 0,
+        "tick_p95_ns": 0,
+        "tick_p99_ns": 0
+      },
+      "growth": {
+        "growth_submitted": 128,
+        "growth_published": 124,
+        "growth_sampled": 136933,
+        "growth_proposals": 12846,
+        "growth_accepted": 12532,
+        "growth_rejected": 18,
+        "growth_clamped": 18,
+        "growth_stockAdded": 12532,
+        "growth_tilesAdded": 3869,
+        "growth_capacityGrowthBatches": 0,
+        "growth_maxProposals": 213,
+        "growth_maxPending": 4,
+        "growth_maxProposalBytes": 131072,
+        "growth_computeNs": 5762277,
+        "growth_queueNs": 183367517,
+        "growth_waitNs": 176965733,
+        "growth_publicationNs": 2733478,
+        "growth_delay": 3
+      },
+      "d3t1-owner": {
+        "run_time_ratio": 1.0083278332857768,
+        "ratio_95pct_ci": [
+          1.0083278332857768,
+          1.0083278332857768
+        ],
+        "run_delta_ms": 2.268785,
+        "cpu_ratio": 1.0128902058595721
+      }
+    },
+    "d3t2-owner": {
+      "wall_s": 0.5180581761524081,
+      "cpu_s": 0.664016,
+      "peak_rss_bytes": 64327680,
+      "run_s": 0.221496924,
+      "tick_percentiles_ns": {
+        "tick_p50_ns": 0,
+        "tick_p95_ns": 0,
+        "tick_p99_ns": 0
+      },
+      "growth": {
+        "growth_submitted": 128,
+        "growth_published": 124,
+        "growth_sampled": 136933,
+        "growth_proposals": 12846,
+        "growth_accepted": 12532,
+        "growth_rejected": 18,
+        "growth_clamped": 18,
+        "growth_stockAdded": 12532,
+        "growth_tilesAdded": 3869,
+        "growth_capacityGrowthBatches": 0,
+        "growth_maxProposals": 213,
+        "growth_maxPending": 4,
+        "growth_maxProposalBytes": 131072,
+        "growth_computeNs": 9353054,
+        "growth_queueNs": 98489591,
+        "growth_waitNs": 91866012,
+        "growth_publicationNs": 3049314,
+        "growth_delay": 3
+      },
+      "d3t2-owner": {
+        "run_time_ratio": 1.0,
+        "ratio_95pct_ci": [
+          1.0,
+          1.0
+        ],
+        "run_delta_ms": 0.0,
+        "cpu_ratio": 1.0
+      }
+    },
+    "d3t2-shared": {
+      "wall_s": 0.5079893372021616,
+      "cpu_s": 0.6530929999999999,
+      "peak_rss_bytes": 64327680,
+      "run_s": 0.223159925,
+      "tick_percentiles_ns": {
+        "tick_p50_ns": 0,
+        "tick_p95_ns": 0,
+        "tick_p99_ns": 0
+      },
+      "growth": {
+        "growth_submitted": 128,
+        "growth_published": 124,
+        "growth_sampled": 136933,
+        "growth_proposals": 12846,
+        "growth_accepted": 12532,
+        "growth_rejected": 18,
+        "growth_clamped": 18,
+        "growth_stockAdded": 12532,
+        "growth_tilesAdded": 3869,
+        "growth_capacityGrowthBatches": 0,
+        "growth_maxProposals": 213,
+        "growth_maxPending": 4,
+        "growth_maxProposalBytes": 131072,
+        "growth_computeNs": 11549139,
+        "growth_queueNs": 72531266,
+        "growth_waitNs": 96141370,
+        "growth_publicationNs": 3055172,
+        "growth_delay": 3
+      },
+      "d3t2-owner": {
+        "run_time_ratio": 1.007508009456601,
+        "ratio_95pct_ci": [
+          1.007508009456601,
+          1.007508009456601
+        ],
+        "run_delta_ms": 1.663001,
+        "cpu_ratio": 0.9835500951784293
+      }
+    },
+    "d3t4-owner": {
+      "wall_s": 0.43375336518511176,
+      "cpu_s": 0.640587,
+      "peak_rss_bytes": 66920448,
+      "run_s": 0.147705189,
+      "tick_percentiles_ns": {
+        "tick_p50_ns": 0,
+        "tick_p95_ns": 0,
+        "tick_p99_ns": 0
+      },
+      "growth": {
+        "growth_submitted": 128,
+        "growth_published": 124,
+        "growth_sampled": 136933,
+        "growth_proposals": 12846,
+        "growth_accepted": 12532,
+        "growth_rejected": 18,
+        "growth_clamped": 18,
+        "growth_stockAdded": 12532,
+        "growth_tilesAdded": 3869,
+        "growth_capacityGrowthBatches": 0,
+        "growth_maxProposals": 213,
+        "growth_maxPending": 4,
+        "growth_maxProposalBytes": 131072,
+        "growth_computeNs": 7480770,
+        "growth_queueNs": 53913920,
+        "growth_waitNs": 51426357,
+        "growth_publicationNs": 2510041,
+        "growth_delay": 3
+      },
+      "d3t4-owner": {
+        "run_time_ratio": 1.0,
+        "ratio_95pct_ci": [
+          1.0,
+          1.0
+        ],
+        "run_delta_ms": 0.0,
+        "cpu_ratio": 1.0
+      }
+    },
+    "d3t4-shared": {
+      "wall_s": 0.4628990590572357,
+      "cpu_s": 0.684877,
+      "peak_rss_bytes": 66449408,
+      "run_s": 0.168478214,
+      "tick_percentiles_ns": {
+        "tick_p50_ns": 0,
+        "tick_p95_ns": 0,
+        "tick_p99_ns": 0
+      },
+      "growth": {
+        "growth_submitted": 128,
+        "growth_published": 124,
+        "growth_sampled": 136933,
+        "growth_proposals": 12846,
+        "growth_accepted": 12532,
+        "growth_rejected": 18,
+        "growth_clamped": 18,
+        "growth_stockAdded": 12532,
+        "growth_tilesAdded": 3869,
+        "growth_capacityGrowthBatches": 0,
+        "growth_maxProposals": 213,
+        "growth_maxPending": 4,
+        "growth_maxProposalBytes": 131072,
+        "growth_computeNs": 9700232,
+        "growth_queueNs": 26624101,
+        "growth_waitNs": 56568393,
+        "growth_publicationNs": 2802531,
+        "growth_delay": 3
+      },
+      "d3t4-owner": {
+        "run_time_ratio": 1.1406384240163696,
+        "ratio_95pct_ci": [
+          1.1406384240163696,
+          1.1406384240163696
+        ],
+        "run_delta_ms": 20.773025,
+        "cpu_ratio": 1.0691397109213892
+      }
+    },
+    "d3t8-owner": {
+      "wall_s": 0.4200939266011119,
+      "cpu_s": 0.7529790000000001,
+      "peak_rss_bytes": 75014144,
+      "run_s": 0.124782697,
+      "tick_percentiles_ns": {
+        "tick_p50_ns": 0,
+        "tick_p95_ns": 0,
+        "tick_p99_ns": 0
+      },
+      "growth": {
+        "growth_submitted": 128,
+        "growth_published": 124,
+        "growth_sampled": 136933,
+        "growth_proposals": 12846,
+        "growth_accepted": 12532,
+        "growth_rejected": 18,
+        "growth_clamped": 18,
+        "growth_stockAdded": 12532,
+        "growth_tilesAdded": 3869,
+        "growth_capacityGrowthBatches": 0,
+        "growth_maxProposals": 213,
+        "growth_maxPending": 4,
+        "growth_maxProposalBytes": 131072,
+        "growth_computeNs": 8220078,
+        "growth_queueNs": 15851635,
+        "growth_waitNs": 11397867,
+        "growth_publicationNs": 2582901,
+        "growth_delay": 3
+      },
+      "d3t8-owner": {
+        "run_time_ratio": 1.0,
+        "ratio_95pct_ci": [
+          1.0,
+          1.0
+        ],
+        "run_delta_ms": 0.0,
+        "cpu_ratio": 1.0
+      }
+    },
+    "d3t8-shared": {
+      "wall_s": 0.4263407797552645,
+      "cpu_s": 0.7639139999999999,
+      "peak_rss_bytes": 73752576,
+      "run_s": 0.134090682,
+      "tick_percentiles_ns": {
+        "tick_p50_ns": 0,
+        "tick_p95_ns": 0,
+        "tick_p99_ns": 0
+      },
+      "growth": {
+        "growth_submitted": 128,
+        "growth_published": 124,
+        "growth_sampled": 136933,
+        "growth_proposals": 12846,
+        "growth_accepted": 12532,
+        "growth_rejected": 18,
+        "growth_clamped": 18,
+        "growth_stockAdded": 12532,
+        "growth_tilesAdded": 3869,
+        "growth_capacityGrowthBatches": 0,
+        "growth_maxProposals": 213,
+        "growth_maxPending": 4,
+        "growth_maxProposalBytes": 131072,
+        "growth_computeNs": 13993679,
+        "growth_queueNs": 3523105,
+        "growth_waitNs": 6164001,
+        "growth_publicationNs": 2740989,
+        "growth_delay": 3
+      },
+      "d3t8-owner": {
+        "run_time_ratio": 1.0745935552266512,
+        "ratio_95pct_ci": [
+          1.0745935552266512,
+          1.0745935552266512
+        ],
+        "run_delta_ms": 9.307985,
+        "cpu_ratio": 1.0145223173554638
+      }
+    },
+    "d8t1-owner": {
+      "wall_s": 0.5970959099940956,
+      "cpu_s": 0.595291,
+      "peak_rss_bytes": 64327680,
+      "run_s": 0.289889842,
+      "tick_percentiles_ns": {
+        "tick_p50_ns": 0,
+        "tick_p95_ns": 0,
+        "tick_p99_ns": 0
+      },
+      "growth": {
+        "growth_submitted": 128,
+        "growth_published": 119,
+        "growth_sampled": 136865,
+        "growth_proposals": 12025,
+        "growth_accepted": 11095,
+        "growth_rejected": 40,
+        "growth_clamped": 40,
+        "growth_stockAdded": 11095,
+        "growth_tilesAdded": 3444,
+        "growth_capacityGrowthBatches": 0,
+        "growth_maxProposals": 207,
+        "growth_maxPending": 9,
+        "growth_maxProposalBytes": 294912,
+        "growth_computeNs": 6415332,
+        "growth_queueNs": 193178869,
+        "growth_waitNs": 186650118,
+        "growth_publicationNs": 2738134,
+        "growth_delay": 8
+      },
+      "d8t1-owner": {
+        "run_time_ratio": 1.0,
+        "ratio_95pct_ci": [
+          1.0,
+          1.0
+        ],
+        "run_delta_ms": 0.0,
+        "cpu_ratio": 1.0
+      }
+    },
+    "d8t1-shared": {
+      "wall_s": 0.6250352310016751,
+      "cpu_s": 0.624529,
+      "peak_rss_bytes": 64327680,
+      "run_s": 0.317438126,
+      "tick_percentiles_ns": {
+        "tick_p50_ns": 0,
+        "tick_p95_ns": 0,
+        "tick_p99_ns": 0
+      },
+      "growth": {
+        "growth_submitted": 128,
+        "growth_published": 119,
+        "growth_sampled": 136865,
+        "growth_proposals": 12025,
+        "growth_accepted": 11095,
+        "growth_rejected": 40,
+        "growth_clamped": 40,
+        "growth_stockAdded": 11095,
+        "growth_tilesAdded": 3444,
+        "growth_capacityGrowthBatches": 0,
+        "growth_maxProposals": 207,
+        "growth_maxPending": 9,
+        "growth_maxProposalBytes": 294912,
+        "growth_computeNs": 7944009,
+        "growth_queueNs": 207859220,
+        "growth_waitNs": 201443505,
+        "growth_publicationNs": 2911358,
+        "growth_delay": 8
+      },
+      "d8t1-owner": {
+        "run_time_ratio": 1.0950301804642055,
+        "ratio_95pct_ci": [
+          1.0950301804642055,
+          1.0950301804642055
+        ],
+        "run_delta_ms": 27.548284,
+        "cpu_ratio": 1.049115474616616
+      }
+    },
+    "d8t2-owner": {
+      "wall_s": 0.515576581005007,
+      "cpu_s": 0.6526479999999999,
+      "peak_rss_bytes": 64327680,
+      "run_s": 0.216209006,
+      "tick_percentiles_ns": {
+        "tick_p50_ns": 0,
+        "tick_p95_ns": 0,
+        "tick_p99_ns": 0
+      },
+      "growth": {
+        "growth_submitted": 128,
+        "growth_published": 119,
+        "growth_sampled": 136865,
+        "growth_proposals": 12025,
+        "growth_accepted": 11095,
+        "growth_rejected": 40,
+        "growth_clamped": 40,
+        "growth_stockAdded": 11095,
+        "growth_tilesAdded": 3444,
+        "growth_capacityGrowthBatches": 0,
+        "growth_maxProposals": 207,
+        "growth_maxPending": 9,
+        "growth_maxProposalBytes": 294912,
+        "growth_computeNs": 9586620,
+        "growth_queueNs": 98830647,
+        "growth_waitNs": 93113310,
+        "growth_publicationNs": 2827418,
+        "growth_delay": 8
+      },
+      "d8t2-owner": {
+        "run_time_ratio": 1.0,
+        "ratio_95pct_ci": [
+          1.0,
+          1.0
+        ],
+        "run_delta_ms": 0.0,
+        "cpu_ratio": 1.0
+      }
+    },
+    "d8t2-shared": {
+      "wall_s": 0.5523982290178537,
+      "cpu_s": 0.6831149999999999,
+      "peak_rss_bytes": 64327680,
+      "run_s": 0.219935233,
+      "tick_percentiles_ns": {
+        "tick_p50_ns": 0,
+        "tick_p95_ns": 0,
+        "tick_p99_ns": 0
+      },
+      "growth": {
+        "growth_submitted": 128,
+        "growth_published": 119,
+        "growth_sampled": 136865,
+        "growth_proposals": 12025,
+        "growth_accepted": 11095,
+        "growth_rejected": 40,
+        "growth_clamped": 40,
+        "growth_stockAdded": 11095,
+        "growth_tilesAdded": 3444,
+        "growth_capacityGrowthBatches": 0,
+        "growth_maxProposals": 207,
+        "growth_maxPending": 9,
+        "growth_maxProposalBytes": 294912,
+        "growth_computeNs": 11125719,
+        "growth_queueNs": 70336038,
+        "growth_waitNs": 99457241,
+        "growth_publicationNs": 2569533,
+        "growth_delay": 8
+      },
+      "d8t2-owner": {
+        "run_time_ratio": 1.0172343745939982,
+        "ratio_95pct_ci": [
+          1.0172343745939982,
+          1.0172343745939982
+        ],
+        "run_delta_ms": 3.726227,
+        "cpu_ratio": 1.04668213186894
+      }
+    },
+    "d8t4-owner": {
+      "wall_s": 0.4467311962507665,
+      "cpu_s": 0.6739819999999999,
+      "peak_rss_bytes": 66633728,
+      "run_s": 0.15921427,
+      "tick_percentiles_ns": {
+        "tick_p50_ns": 0,
+        "tick_p95_ns": 0,
+        "tick_p99_ns": 0
+      },
+      "growth": {
+        "growth_submitted": 128,
+        "growth_published": 119,
+        "growth_sampled": 136865,
+        "growth_proposals": 12025,
+        "growth_accepted": 11095,
+        "growth_rejected": 40,
+        "growth_clamped": 40,
+        "growth_stockAdded": 11095,
+        "growth_tilesAdded": 3444,
+        "growth_capacityGrowthBatches": 0,
+        "growth_maxProposals": 207,
+        "growth_maxPending": 9,
+        "growth_maxProposalBytes": 294912,
+        "growth_computeNs": 6641969,
+        "growth_queueNs": 65119867,
+        "growth_waitNs": 58539451,
+        "growth_publicationNs": 2480384,
+        "growth_delay": 8
+      },
+      "d8t4-owner": {
+        "run_time_ratio": 1.0,
+        "ratio_95pct_ci": [
+          1.0,
+          1.0
+        ],
+        "run_delta_ms": 0.0,
+        "cpu_ratio": 1.0
+      }
+    },
+    "d8t4-shared": {
+      "wall_s": 0.47397759230807424,
+      "cpu_s": 0.686026,
+      "peak_rss_bytes": 65871872,
+      "run_s": 0.171620525,
+      "tick_percentiles_ns": {
+        "tick_p50_ns": 0,
+        "tick_p95_ns": 0,
+        "tick_p99_ns": 0
+      },
+      "growth": {
+        "growth_submitted": 128,
+        "growth_published": 119,
+        "growth_sampled": 136865,
+        "growth_proposals": 12025,
+        "growth_accepted": 11095,
+        "growth_rejected": 40,
+        "growth_clamped": 40,
+        "growth_stockAdded": 11095,
+        "growth_tilesAdded": 3444,
+        "growth_capacityGrowthBatches": 0,
+        "growth_maxProposals": 207,
+        "growth_maxPending": 9,
+        "growth_maxProposalBytes": 294912,
+        "growth_computeNs": 10510789,
+        "growth_queueNs": 24700757,
+        "growth_waitNs": 54043410,
+        "growth_publicationNs": 2542087,
+        "growth_delay": 8
+      },
+      "d8t4-owner": {
+        "run_time_ratio": 1.077921752868006,
+        "ratio_95pct_ci": [
+          1.077921752868006,
+          1.077921752868006
+        ],
+        "run_delta_ms": 12.406255,
+        "cpu_ratio": 1.017869913439825
+      }
+    },
+    "d8t8-owner": {
+      "wall_s": 0.39361516619101167,
+      "cpu_s": 0.667719,
+      "peak_rss_bytes": 74027008,
+      "run_s": 0.115063026,
+      "tick_percentiles_ns": {
+        "tick_p50_ns": 0,
+        "tick_p95_ns": 0,
+        "tick_p99_ns": 0
+      },
+      "growth": {
+        "growth_submitted": 128,
+        "growth_published": 119,
+        "growth_sampled": 136865,
+        "growth_proposals": 12025,
+        "growth_accepted": 11095,
+        "growth_rejected": 40,
+        "growth_clamped": 40,
+        "growth_stockAdded": 11095,
+        "growth_tilesAdded": 3444,
+        "growth_capacityGrowthBatches": 0,
+        "growth_maxProposals": 207,
+        "growth_maxPending": 9,
+        "growth_maxProposalBytes": 294912,
+        "growth_computeNs": 7219713,
+        "growth_queueNs": 14366111,
+        "growth_waitNs": 9347179,
+        "growth_publicationNs": 2380309,
+        "growth_delay": 8
+      },
+      "d8t8-owner": {
+        "run_time_ratio": 1.0,
+        "ratio_95pct_ci": [
+          1.0,
+          1.0
+        ],
+        "run_delta_ms": 0.0,
+        "cpu_ratio": 1.0
+      }
+    },
+    "d8t8-shared": {
+      "wall_s": 0.4120448548346758,
+      "cpu_s": 0.7418549999999999,
+      "peak_rss_bytes": 75653120,
+      "run_s": 0.12435906,
+      "tick_percentiles_ns": {
+        "tick_p50_ns": 0,
+        "tick_p95_ns": 0,
+        "tick_p99_ns": 0
+      },
+      "growth": {
+        "growth_submitted": 128,
+        "growth_published": 119,
+        "growth_sampled": 136865,
+        "growth_proposals": 12025,
+        "growth_accepted": 11095,
+        "growth_rejected": 40,
+        "growth_clamped": 40,
+        "growth_stockAdded": 11095,
+        "growth_tilesAdded": 3444,
+        "growth_capacityGrowthBatches": 0,
+        "growth_maxProposals": 207,
+        "growth_maxPending": 9,
+        "growth_maxProposalBytes": 294912,
+        "growth_computeNs": 14478149,
+        "growth_queueNs": 2989654,
+        "growth_waitNs": 8303955,
+        "growth_publicationNs": 2381448,
+        "growth_delay": 8
+      },
+      "d8t8-owner": {
+        "run_time_ratio": 1.080790800686921,
+        "ratio_95pct_ci": [
+          1.080790800686921,
+          1.080790800686921
+        ],
+        "run_delta_ms": 9.296034,
+        "cpu_ratio": 1.111028741132123
+      }
+    }
+  },
+  "disabled512": {
+    "d1t1-owner": {
+      "wall_s": 1.0371909458190203,
+      "cpu_s": 1.036791,
+      "peak_rss_bytes": 124559360,
+      "run_s": 0.658850668,
+      "tick_percentiles_ns": {
+        "tick_p50_ns": 0,
+        "tick_p95_ns": 0,
+        "tick_p99_ns": 0
+      },
+      "growth": {
+        "growth_submitted": 0,
+        "growth_published": 0,
+        "growth_sampled": 0,
+        "growth_proposals": 0,
+        "growth_accepted": 0,
+        "growth_rejected": 0,
+        "growth_clamped": 0,
+        "growth_stockAdded": 0,
+        "growth_tilesAdded": 0,
+        "growth_capacityGrowthBatches": 0,
+        "growth_maxProposals": 0,
+        "growth_maxPending": 0,
+        "growth_maxProposalBytes": 0,
+        "growth_computeNs": 0,
+        "growth_queueNs": 0,
+        "growth_waitNs": 0,
+        "growth_publicationNs": 0,
+        "growth_delay": 1
+      },
+      "d1t1-owner": {
+        "run_time_ratio": 1.0,
+        "ratio_95pct_ci": [
+          1.0,
+          1.0
+        ],
+        "run_delta_ms": 0.0,
+        "cpu_ratio": 1.0
+      }
+    },
+    "d1t1-shared": {
+      "wall_s": 1.0635453066788614,
+      "cpu_s": 1.063135,
+      "peak_rss_bytes": 124612608,
+      "run_s": 0.699024965,
+      "tick_percentiles_ns": {
+        "tick_p50_ns": 0,
+        "tick_p95_ns": 0,
+        "tick_p99_ns": 0
+      },
+      "growth": {
+        "growth_submitted": 0,
+        "growth_published": 0,
+        "growth_sampled": 0,
+        "growth_proposals": 0,
+        "growth_accepted": 0,
+        "growth_rejected": 0,
+        "growth_clamped": 0,
+        "growth_stockAdded": 0,
+        "growth_tilesAdded": 0,
+        "growth_capacityGrowthBatches": 0,
+        "growth_maxProposals": 0,
+        "growth_maxPending": 0,
+        "growth_maxProposalBytes": 0,
+        "growth_computeNs": 0,
+        "growth_queueNs": 0,
+        "growth_waitNs": 0,
+        "growth_publicationNs": 0,
+        "growth_delay": 1
+      },
+      "d1t1-owner": {
+        "run_time_ratio": 1.0609763318931629,
+        "ratio_95pct_ci": [
+          1.0609763318931629,
+          1.0609763318931629
+        ],
+        "run_delta_ms": 40.174297,
+        "cpu_ratio": 1.025409171183006
+      }
+    },
+    "d1t2-owner": {
+      "wall_s": 0.9985107793472707,
+      "cpu_s": 1.394437,
+      "peak_rss_bytes": 129142784,
+      "run_s": 0.576208405,
+      "tick_percentiles_ns": {
+        "tick_p50_ns": 0,
+        "tick_p95_ns": 0,
+        "tick_p99_ns": 0
+      },
+      "growth": {
+        "growth_submitted": 0,
+        "growth_published": 0,
+        "growth_sampled": 0,
+        "growth_proposals": 0,
+        "growth_accepted": 0,
+        "growth_rejected": 0,
+        "growth_clamped": 0,
+        "growth_stockAdded": 0,
+        "growth_tilesAdded": 0,
+        "growth_capacityGrowthBatches": 0,
+        "growth_maxProposals": 0,
+        "growth_maxPending": 0,
+        "growth_maxProposalBytes": 0,
+        "growth_computeNs": 0,
+        "growth_queueNs": 0,
+        "growth_waitNs": 0,
+        "growth_publicationNs": 0,
+        "growth_delay": 1
+      },
+      "d1t2-owner": {
+        "run_time_ratio": 1.0,
+        "ratio_95pct_ci": [
+          1.0,
+          1.0
+        ],
+        "run_delta_ms": 0.0,
+        "cpu_ratio": 1.0
+      }
+    },
+    "d1t2-shared": {
+      "wall_s": 1.172192991245538,
+      "cpu_s": 1.6722039999999998,
+      "peak_rss_bytes": 127852544,
+      "run_s": 0.78926375,
+      "tick_percentiles_ns": {
+        "tick_p50_ns": 0,
+        "tick_p95_ns": 0,
+        "tick_p99_ns": 0
+      },
+      "growth": {
+        "growth_submitted": 0,
+        "growth_published": 0,
+        "growth_sampled": 0,
+        "growth_proposals": 0,
+        "growth_accepted": 0,
+        "growth_rejected": 0,
+        "growth_clamped": 0,
+        "growth_stockAdded": 0,
+        "growth_tilesAdded": 0,
+        "growth_capacityGrowthBatches": 0,
+        "growth_maxProposals": 0,
+        "growth_maxPending": 0,
+        "growth_maxProposalBytes": 0,
+        "growth_computeNs": 0,
+        "growth_queueNs": 0,
+        "growth_waitNs": 0,
+        "growth_publicationNs": 0,
+        "growth_delay": 1
+      },
+      "d1t2-owner": {
+        "run_time_ratio": 1.3697539694860925,
+        "ratio_95pct_ci": [
+          1.3697539694860925,
+          1.3697539694860925
+        ],
+        "run_delta_ms": 213.055345,
+        "cpu_ratio": 1.199196521606928
+      }
+    },
+    "d1t4-owner": {
+      "wall_s": 1.0128019717521966,
+      "cpu_s": 1.638358,
+      "peak_rss_bytes": 136884224,
+      "run_s": 0.488364406,
+      "tick_percentiles_ns": {
+        "tick_p50_ns": 0,
+        "tick_p95_ns": 0,
+        "tick_p99_ns": 0
+      },
+      "growth": {
+        "growth_submitted": 0,
+        "growth_published": 0,
+        "growth_sampled": 0,
+        "growth_proposals": 0,
+        "growth_accepted": 0,
+        "growth_rejected": 0,
+        "growth_clamped": 0,
+        "growth_stockAdded": 0,
+        "growth_tilesAdded": 0,
+        "growth_capacityGrowthBatches": 0,
+        "growth_maxProposals": 0,
+        "growth_maxPending": 0,
+        "growth_maxProposalBytes": 0,
+        "growth_computeNs": 0,
+        "growth_queueNs": 0,
+        "growth_waitNs": 0,
+        "growth_publicationNs": 0,
+        "growth_delay": 1
+      },
+      "d1t4-owner": {
+        "run_time_ratio": 1.0,
+        "ratio_95pct_ci": [
+          1.0,
+          1.0
+        ],
+        "run_delta_ms": 0.0,
+        "cpu_ratio": 1.0
+      }
+    },
+    "d1t4-shared": {
+      "wall_s": 0.8574675298295915,
+      "cpu_s": 1.560748,
+      "peak_rss_bytes": 137375744,
+      "run_s": 0.469196091,
+      "tick_percentiles_ns": {
+        "tick_p50_ns": 0,
+        "tick_p95_ns": 0,
+        "tick_p99_ns": 0
+      },
+      "growth": {
+        "growth_submitted": 0,
+        "growth_published": 0,
+        "growth_sampled": 0,
+        "growth_proposals": 0,
+        "growth_accepted": 0,
+        "growth_rejected": 0,
+        "growth_clamped": 0,
+        "growth_stockAdded": 0,
+        "growth_tilesAdded": 0,
+        "growth_capacityGrowthBatches": 0,
+        "growth_maxProposals": 0,
+        "growth_maxPending": 0,
+        "growth_maxProposalBytes": 0,
+        "growth_computeNs": 0,
+        "growth_queueNs": 0,
+        "growth_waitNs": 0,
+        "growth_publicationNs": 0,
+        "growth_delay": 1
+      },
+      "d1t4-owner": {
+        "run_time_ratio": 0.9607499752961112,
+        "ratio_95pct_ci": [
+          0.9607499752961112,
+          0.9607499752961112
+        ],
+        "run_delta_ms": -19.168315,
+        "cpu_ratio": 0.9526294009001696
+      }
+    },
+    "d1t8-owner": {
+      "wall_s": 0.8510710778646171,
+      "cpu_s": 1.5633160000000001,
+      "peak_rss_bytes": 152772608,
+      "run_s": 0.457111244,
+      "tick_percentiles_ns": {
+        "tick_p50_ns": 0,
+        "tick_p95_ns": 0,
+        "tick_p99_ns": 0
+      },
+      "growth": {
+        "growth_submitted": 0,
+        "growth_published": 0,
+        "growth_sampled": 0,
+        "growth_proposals": 0,
+        "growth_accepted": 0,
+        "growth_rejected": 0,
+        "growth_clamped": 0,
+        "growth_stockAdded": 0,
+        "growth_tilesAdded": 0,
+        "growth_capacityGrowthBatches": 0,
+        "growth_maxProposals": 0,
+        "growth_maxPending": 0,
+        "growth_maxProposalBytes": 0,
+        "growth_computeNs": 0,
+        "growth_queueNs": 0,
+        "growth_waitNs": 0,
+        "growth_publicationNs": 0,
+        "growth_delay": 1
+      },
+      "d1t8-owner": {
+        "run_time_ratio": 1.0,
+        "ratio_95pct_ci": [
+          1.0,
+          1.0
+        ],
+        "run_delta_ms": 0.0,
+        "cpu_ratio": 1.0
+      }
+    },
+    "d1t8-shared": {
+      "wall_s": 0.8792542992159724,
+      "cpu_s": 1.6344509999999999,
+      "peak_rss_bytes": 154525696,
+      "run_s": 0.503149136,
+      "tick_percentiles_ns": {
+        "tick_p50_ns": 0,
+        "tick_p95_ns": 0,
+        "tick_p99_ns": 0
+      },
+      "growth": {
+        "growth_submitted": 0,
+        "growth_published": 0,
+        "growth_sampled": 0,
+        "growth_proposals": 0,
+        "growth_accepted": 0,
+        "growth_rejected": 0,
+        "growth_clamped": 0,
+        "growth_stockAdded": 0,
+        "growth_tilesAdded": 0,
+        "growth_capacityGrowthBatches": 0,
+        "growth_maxProposals": 0,
+        "growth_maxPending": 0,
+        "growth_maxProposalBytes": 0,
+        "growth_computeNs": 0,
+        "growth_queueNs": 0,
+        "growth_waitNs": 0,
+        "growth_publicationNs": 0,
+        "growth_delay": 1
+      },
+      "d1t8-owner": {
+        "run_time_ratio": 1.1007148535598044,
+        "ratio_95pct_ci": [
+          1.1007148535598044,
+          1.1007148535598044
+        ],
+        "run_delta_ms": 46.037892,
+        "cpu_ratio": 1.045502636703008
+      }
+    },
+    "d3t1-owner": {
+      "wall_s": 1.0150452489033341,
+      "cpu_s": 1.014611,
+      "peak_rss_bytes": 124948480,
+      "run_s": 0.658793438,
+      "tick_percentiles_ns": {
+        "tick_p50_ns": 0,
+        "tick_p95_ns": 0,
+        "tick_p99_ns": 0
+      },
+      "growth": {
+        "growth_submitted": 0,
+        "growth_published": 0,
+        "growth_sampled": 0,
+        "growth_proposals": 0,
+        "growth_accepted": 0,
+        "growth_rejected": 0,
+        "growth_clamped": 0,
+        "growth_stockAdded": 0,
+        "growth_tilesAdded": 0,
+        "growth_capacityGrowthBatches": 0,
+        "growth_maxProposals": 0,
+        "growth_maxPending": 0,
+        "growth_maxProposalBytes": 0,
+        "growth_computeNs": 0,
+        "growth_queueNs": 0,
+        "growth_waitNs": 0,
+        "growth_publicationNs": 0,
+        "growth_delay": 3
+      },
+      "d3t1-owner": {
+        "run_time_ratio": 1.0,
+        "ratio_95pct_ci": [
+          1.0,
+          1.0
+        ],
+        "run_delta_ms": 0.0,
+        "cpu_ratio": 1.0
+      }
+    },
+    "d3t1-shared": {
+      "wall_s": 1.022421944886446,
+      "cpu_s": 1.0220559999999999,
+      "peak_rss_bytes": 124874752,
+      "run_s": 0.662284827,
+      "tick_percentiles_ns": {
+        "tick_p50_ns": 0,
+        "tick_p95_ns": 0,
+        "tick_p99_ns": 0
+      },
+      "growth": {
+        "growth_submitted": 0,
+        "growth_published": 0,
+        "growth_sampled": 0,
+        "growth_proposals": 0,
+        "growth_accepted": 0,
+        "growth_rejected": 0,
+        "growth_clamped": 0,
+        "growth_stockAdded": 0,
+        "growth_tilesAdded": 0,
+        "growth_capacityGrowthBatches": 0,
+        "growth_maxProposals": 0,
+        "growth_maxPending": 0,
+        "growth_maxProposalBytes": 0,
+        "growth_computeNs": 0,
+        "growth_queueNs": 0,
+        "growth_waitNs": 0,
+        "growth_publicationNs": 0,
+        "growth_delay": 3
+      },
+      "d3t1-owner": {
+        "run_time_ratio": 1.0052996717918128,
+        "ratio_95pct_ci": [
+          1.0052996717918128,
+          1.0052996717918128
+        ],
+        "run_delta_ms": 3.491389,
+        "cpu_ratio": 1.007337787585587
+      }
+    },
+    "d3t2-owner": {
+      "wall_s": 0.8923856178298593,
+      "cpu_s": 1.3001260000000001,
+      "peak_rss_bytes": 129024000,
+      "run_s": 0.520766769,
+      "tick_percentiles_ns": {
+        "tick_p50_ns": 0,
+        "tick_p95_ns": 0,
+        "tick_p99_ns": 0
+      },
+      "growth": {
+        "growth_submitted": 0,
+        "growth_published": 0,
+        "growth_sampled": 0,
+        "growth_proposals": 0,
+        "growth_accepted": 0,
+        "growth_rejected": 0,
+        "growth_clamped": 0,
+        "growth_stockAdded": 0,
+        "growth_tilesAdded": 0,
+        "growth_capacityGrowthBatches": 0,
+        "growth_maxProposals": 0,
+        "growth_maxPending": 0,
+        "growth_maxProposalBytes": 0,
+        "growth_computeNs": 0,
+        "growth_queueNs": 0,
+        "growth_waitNs": 0,
+        "growth_publicationNs": 0,
+        "growth_delay": 3
+      },
+      "d3t2-owner": {
+        "run_time_ratio": 1.0,
+        "ratio_95pct_ci": [
+          1.0,
+          1.0
+        ],
+        "run_delta_ms": 0.0,
+        "cpu_ratio": 1.0
+      }
+    },
+    "d3t2-shared": {
+      "wall_s": 0.878374224063009,
+      "cpu_s": 1.295074,
+      "peak_rss_bytes": 129056768,
+      "run_s": 0.522484839,
+      "tick_percentiles_ns": {
+        "tick_p50_ns": 0,
+        "tick_p95_ns": 0,
+        "tick_p99_ns": 0
+      },
+      "growth": {
+        "growth_submitted": 0,
+        "growth_published": 0,
+        "growth_sampled": 0,
+        "growth_proposals": 0,
+        "growth_accepted": 0,
+        "growth_rejected": 0,
+        "growth_clamped": 0,
+        "growth_stockAdded": 0,
+        "growth_tilesAdded": 0,
+        "growth_capacityGrowthBatches": 0,
+        "growth_maxProposals": 0,
+        "growth_maxPending": 0,
+        "growth_maxProposalBytes": 0,
+        "growth_computeNs": 0,
+        "growth_queueNs": 0,
+        "growth_waitNs": 0,
+        "growth_publicationNs": 0,
+        "growth_delay": 3
+      },
+      "d3t2-owner": {
+        "run_time_ratio": 1.0032991160386426,
+        "ratio_95pct_ci": [
+          1.0032991160386426,
+          1.0032991160386426
+        ],
+        "run_delta_ms": 1.71807,
+        "cpu_ratio": 0.996114222775331
+      }
+    },
+    "d3t4-owner": {
+      "wall_s": 1.1493632500059903,
+      "cpu_s": 2.132739,
+      "peak_rss_bytes": 136892416,
+      "run_s": 0.7428981,
+      "tick_percentiles_ns": {
+        "tick_p50_ns": 0,
+        "tick_p95_ns": 0,
+        "tick_p99_ns": 0
+      },
+      "growth": {
+        "growth_submitted": 0,
+        "growth_published": 0,
+        "growth_sampled": 0,
+        "growth_proposals": 0,
+        "growth_accepted": 0,
+        "growth_rejected": 0,
+        "growth_clamped": 0,
+        "growth_stockAdded": 0,
+        "growth_tilesAdded": 0,
+        "growth_capacityGrowthBatches": 0,
+        "growth_maxProposals": 0,
+        "growth_maxPending": 0,
+        "growth_maxProposalBytes": 0,
+        "growth_computeNs": 0,
+        "growth_queueNs": 0,
+        "growth_waitNs": 0,
+        "growth_publicationNs": 0,
+        "growth_delay": 3
+      },
+      "d3t4-owner": {
+        "run_time_ratio": 1.0,
+        "ratio_95pct_ci": [
+          1.0,
+          1.0
+        ],
+        "run_delta_ms": 0.0,
+        "cpu_ratio": 1.0
+      }
+    },
+    "d3t4-shared": {
+      "wall_s": 0.7982545271515846,
+      "cpu_s": 1.367334,
+      "peak_rss_bytes": 137089024,
+      "run_s": 0.419970897,
+      "tick_percentiles_ns": {
+        "tick_p50_ns": 0,
+        "tick_p95_ns": 0,
+        "tick_p99_ns": 0
+      },
+      "growth": {
+        "growth_submitted": 0,
+        "growth_published": 0,
+        "growth_sampled": 0,
+        "growth_proposals": 0,
+        "growth_accepted": 0,
+        "growth_rejected": 0,
+        "growth_clamped": 0,
+        "growth_stockAdded": 0,
+        "growth_tilesAdded": 0,
+        "growth_capacityGrowthBatches": 0,
+        "growth_maxProposals": 0,
+        "growth_maxPending": 0,
+        "growth_maxProposalBytes": 0,
+        "growth_computeNs": 0,
+        "growth_queueNs": 0,
+        "growth_waitNs": 0,
+        "growth_publicationNs": 0,
+        "growth_delay": 3
+      },
+      "d3t4-owner": {
+        "run_time_ratio": 0.5653142698843893,
+        "ratio_95pct_ci": [
+          0.5653142698843893,
+          0.5653142698843893
+        ],
+        "run_delta_ms": -322.927203,
+        "cpu_ratio": 0.6411164235286174
+      }
+    },
+    "d3t8-owner": {
+      "wall_s": 0.9428424551151693,
+      "cpu_s": 1.71446,
+      "peak_rss_bytes": 154423296,
+      "run_s": 0.449784608,
+      "tick_percentiles_ns": {
+        "tick_p50_ns": 0,
+        "tick_p95_ns": 0,
+        "tick_p99_ns": 0
+      },
+      "growth": {
+        "growth_submitted": 0,
+        "growth_published": 0,
+        "growth_sampled": 0,
+        "growth_proposals": 0,
+        "growth_accepted": 0,
+        "growth_rejected": 0,
+        "growth_clamped": 0,
+        "growth_stockAdded": 0,
+        "growth_tilesAdded": 0,
+        "growth_capacityGrowthBatches": 0,
+        "growth_maxProposals": 0,
+        "growth_maxPending": 0,
+        "growth_maxProposalBytes": 0,
+        "growth_computeNs": 0,
+        "growth_queueNs": 0,
+        "growth_waitNs": 0,
+        "growth_publicationNs": 0,
+        "growth_delay": 3
+      },
+      "d3t8-owner": {
+        "run_time_ratio": 1.0,
+        "ratio_95pct_ci": [
+          1.0,
+          1.0
+        ],
+        "run_delta_ms": 0.0,
+        "cpu_ratio": 1.0
+      }
+    },
+    "d3t8-shared": {
+      "wall_s": 0.8282162263058126,
+      "cpu_s": 1.535939,
+      "peak_rss_bytes": 154820608,
+      "run_s": 0.434664308,
+      "tick_percentiles_ns": {
+        "tick_p50_ns": 0,
+        "tick_p95_ns": 0,
+        "tick_p99_ns": 0
+      },
+      "growth": {
+        "growth_submitted": 0,
+        "growth_published": 0,
+        "growth_sampled": 0,
+        "growth_proposals": 0,
+        "growth_accepted": 0,
+        "growth_rejected": 0,
+        "growth_clamped": 0,
+        "growth_stockAdded": 0,
+        "growth_tilesAdded": 0,
+        "growth_capacityGrowthBatches": 0,
+        "growth_maxProposals": 0,
+        "growth_maxPending": 0,
+        "growth_maxProposalBytes": 0,
+        "growth_computeNs": 0,
+        "growth_queueNs": 0,
+        "growth_waitNs": 0,
+        "growth_publicationNs": 0,
+        "growth_delay": 3
+      },
+      "d3t8-owner": {
+        "run_time_ratio": 0.9663832427098084,
+        "ratio_95pct_ci": [
+          0.9663832427098084,
+          0.9663832427098084
+        ],
+        "run_delta_ms": -15.1203,
+        "cpu_ratio": 0.8958733362108184
+      }
+    },
+    "d8t1-owner": {
+      "wall_s": 1.28625307418406,
+      "cpu_s": 1.2850489999999999,
+      "peak_rss_bytes": 124764160,
+      "run_s": 0.773589585,
+      "tick_percentiles_ns": {
+        "tick_p50_ns": 0,
+        "tick_p95_ns": 0,
+        "tick_p99_ns": 0
+      },
+      "growth": {
+        "growth_submitted": 0,
+        "growth_published": 0,
+        "growth_sampled": 0,
+        "growth_proposals": 0,
+        "growth_accepted": 0,
+        "growth_rejected": 0,
+        "growth_clamped": 0,
+        "growth_stockAdded": 0,
+        "growth_tilesAdded": 0,
+        "growth_capacityGrowthBatches": 0,
+        "growth_maxProposals": 0,
+        "growth_maxPending": 0,
+        "growth_maxProposalBytes": 0,
+        "growth_computeNs": 0,
+        "growth_queueNs": 0,
+        "growth_waitNs": 0,
+        "growth_publicationNs": 0,
+        "growth_delay": 8
+      },
+      "d8t1-owner": {
+        "run_time_ratio": 1.0,
+        "ratio_95pct_ci": [
+          1.0,
+          1.0
+        ],
+        "run_delta_ms": 0.0,
+        "cpu_ratio": 1.0
+      }
+    },
+    "d8t1-shared": {
+      "wall_s": 1.2826519762165844,
+      "cpu_s": 1.282133,
+      "peak_rss_bytes": 124416000,
+      "run_s": 0.800724322,
+      "tick_percentiles_ns": {
+        "tick_p50_ns": 0,
+        "tick_p95_ns": 0,
+        "tick_p99_ns": 0
+      },
+      "growth": {
+        "growth_submitted": 0,
+        "growth_published": 0,
+        "growth_sampled": 0,
+        "growth_proposals": 0,
+        "growth_accepted": 0,
+        "growth_rejected": 0,
+        "growth_clamped": 0,
+        "growth_stockAdded": 0,
+        "growth_tilesAdded": 0,
+        "growth_capacityGrowthBatches": 0,
+        "growth_maxProposals": 0,
+        "growth_maxPending": 0,
+        "growth_maxProposalBytes": 0,
+        "growth_computeNs": 0,
+        "growth_queueNs": 0,
+        "growth_waitNs": 0,
+        "growth_publicationNs": 0,
+        "growth_delay": 8
+      },
+      "d8t1-owner": {
+        "run_time_ratio": 1.0350763990701866,
+        "ratio_95pct_ci": [
+          1.0350763990701866,
+          1.0350763990701866
+        ],
+        "run_delta_ms": 27.134737,
+        "cpu_ratio": 0.9977308258284315
+      }
+    },
+    "d8t2-owner": {
+      "wall_s": 0.9009793479926884,
+      "cpu_s": 1.314186,
+      "peak_rss_bytes": 129380352,
+      "run_s": 0.534245308,
+      "tick_percentiles_ns": {
+        "tick_p50_ns": 0,
+        "tick_p95_ns": 0,
+        "tick_p99_ns": 0
+      },
+      "growth": {
+        "growth_submitted": 0,
+        "growth_published": 0,
+        "growth_sampled": 0,
+        "growth_proposals": 0,
+        "growth_accepted": 0,
+        "growth_rejected": 0,
+        "growth_clamped": 0,
+        "growth_stockAdded": 0,
+        "growth_tilesAdded": 0,
+        "growth_capacityGrowthBatches": 0,
+        "growth_maxProposals": 0,
+        "growth_maxPending": 0,
+        "growth_maxProposalBytes": 0,
+        "growth_computeNs": 0,
+        "growth_queueNs": 0,
+        "growth_waitNs": 0,
+        "growth_publicationNs": 0,
+        "growth_delay": 8
+      },
+      "d8t2-owner": {
+        "run_time_ratio": 1.0,
+        "ratio_95pct_ci": [
+          1.0,
+          1.0
+        ],
+        "run_delta_ms": 0.0,
+        "cpu_ratio": 1.0
+      }
+    },
+    "d8t2-shared": {
+      "wall_s": 0.8885293831117451,
+      "cpu_s": 1.294673,
+      "peak_rss_bytes": 129196032,
+      "run_s": 0.518020507,
+      "tick_percentiles_ns": {
+        "tick_p50_ns": 0,
+        "tick_p95_ns": 0,
+        "tick_p99_ns": 0
+      },
+      "growth": {
+        "growth_submitted": 0,
+        "growth_published": 0,
+        "growth_sampled": 0,
+        "growth_proposals": 0,
+        "growth_accepted": 0,
+        "growth_rejected": 0,
+        "growth_clamped": 0,
+        "growth_stockAdded": 0,
+        "growth_tilesAdded": 0,
+        "growth_capacityGrowthBatches": 0,
+        "growth_maxProposals": 0,
+        "growth_maxPending": 0,
+        "growth_maxProposalBytes": 0,
+        "growth_computeNs": 0,
+        "growth_queueNs": 0,
+        "growth_waitNs": 0,
+        "growth_publicationNs": 0,
+        "growth_delay": 8
+      },
+      "d8t2-owner": {
+        "run_time_ratio": 0.9696304286494548,
+        "ratio_95pct_ci": [
+          0.9696304286494548,
+          0.9696304286494548
+        ],
+        "run_delta_ms": -16.224801,
+        "cpu_ratio": 0.9851520256645557
+      }
+    },
+    "d8t4-owner": {
+      "wall_s": 0.8397132772952318,
+      "cpu_s": 1.409813,
+      "peak_rss_bytes": 137670656,
+      "run_s": 0.410793083,
+      "tick_percentiles_ns": {
+        "tick_p50_ns": 0,
+        "tick_p95_ns": 0,
+        "tick_p99_ns": 0
+      },
+      "growth": {
+        "growth_submitted": 0,
+        "growth_published": 0,
+        "growth_sampled": 0,
+        "growth_proposals": 0,
+        "growth_accepted": 0,
+        "growth_rejected": 0,
+        "growth_clamped": 0,
+        "growth_stockAdded": 0,
+        "growth_tilesAdded": 0,
+        "growth_capacityGrowthBatches": 0,
+        "growth_maxProposals": 0,
+        "growth_maxPending": 0,
+        "growth_maxProposalBytes": 0,
+        "growth_computeNs": 0,
+        "growth_queueNs": 0,
+        "growth_waitNs": 0,
+        "growth_publicationNs": 0,
+        "growth_delay": 8
+      },
+      "d8t4-owner": {
+        "run_time_ratio": 1.0,
+        "ratio_95pct_ci": [
+          1.0,
+          1.0
+        ],
+        "run_delta_ms": 0.0,
+        "cpu_ratio": 1.0
+      }
+    },
+    "d8t4-shared": {
+      "wall_s": 0.8263009581714869,
+      "cpu_s": 1.461828,
+      "peak_rss_bytes": 137117696,
+      "run_s": 0.468003498,
+      "tick_percentiles_ns": {
+        "tick_p50_ns": 0,
+        "tick_p95_ns": 0,
+        "tick_p99_ns": 0
+      },
+      "growth": {
+        "growth_submitted": 0,
+        "growth_published": 0,
+        "growth_sampled": 0,
+        "growth_proposals": 0,
+        "growth_accepted": 0,
+        "growth_rejected": 0,
+        "growth_clamped": 0,
+        "growth_stockAdded": 0,
+        "growth_tilesAdded": 0,
+        "growth_capacityGrowthBatches": 0,
+        "growth_maxProposals": 0,
+        "growth_maxPending": 0,
+        "growth_maxProposalBytes": 0,
+        "growth_computeNs": 0,
+        "growth_queueNs": 0,
+        "growth_waitNs": 0,
+        "growth_publicationNs": 0,
+        "growth_delay": 8
+      },
+      "d8t4-owner": {
+        "run_time_ratio": 1.139268204279866,
+        "ratio_95pct_ci": [
+          1.139268204279866,
+          1.139268204279866
+        ],
+        "run_delta_ms": 57.210415,
+        "cpu_ratio": 1.0368949640838891
+      }
+    },
+    "d8t8-owner": {
+      "wall_s": 0.9118660311214626,
+      "cpu_s": 1.6900979999999999,
+      "peak_rss_bytes": 153534464,
+      "run_s": 0.506845163,
+      "tick_percentiles_ns": {
+        "tick_p50_ns": 0,
+        "tick_p95_ns": 0,
+        "tick_p99_ns": 0
+      },
+      "growth": {
+        "growth_submitted": 0,
+        "growth_published": 0,
+        "growth_sampled": 0,
+        "growth_proposals": 0,
+        "growth_accepted": 0,
+        "growth_rejected": 0,
+        "growth_clamped": 0,
+        "growth_stockAdded": 0,
+        "growth_tilesAdded": 0,
+        "growth_capacityGrowthBatches": 0,
+        "growth_maxProposals": 0,
+        "growth_maxPending": 0,
+        "growth_maxProposalBytes": 0,
+        "growth_computeNs": 0,
+        "growth_queueNs": 0,
+        "growth_waitNs": 0,
+        "growth_publicationNs": 0,
+        "growth_delay": 8
+      },
+      "d8t8-owner": {
+        "run_time_ratio": 1.0,
+        "ratio_95pct_ci": [
+          1.0,
+          1.0
+        ],
+        "run_delta_ms": 0.0,
+        "cpu_ratio": 1.0
+      }
+    },
+    "d8t8-shared": {
+      "wall_s": 0.8043918488547206,
+      "cpu_s": 1.450314,
+      "peak_rss_bytes": 151916544,
+      "run_s": 0.425273986,
+      "tick_percentiles_ns": {
+        "tick_p50_ns": 0,
+        "tick_p95_ns": 0,
+        "tick_p99_ns": 0
+      },
+      "growth": {
+        "growth_submitted": 0,
+        "growth_published": 0,
+        "growth_sampled": 0,
+        "growth_proposals": 0,
+        "growth_accepted": 0,
+        "growth_rejected": 0,
+        "growth_clamped": 0,
+        "growth_stockAdded": 0,
+        "growth_tilesAdded": 0,
+        "growth_capacityGrowthBatches": 0,
+        "growth_maxProposals": 0,
+        "growth_maxPending": 0,
+        "growth_maxProposalBytes": 0,
+        "growth_computeNs": 0,
+        "growth_queueNs": 0,
+        "growth_waitNs": 0,
+        "growth_publicationNs": 0,
+        "growth_delay": 8
+      },
+      "d8t8-owner": {
+        "run_time_ratio": 0.8390609540057897,
+        "ratio_95pct_ci": [
+          0.8390609540057897,
+          0.8390609540057897
+        ],
+        "run_delta_ms": -81.571177,
+        "cpu_ratio": 0.8581242034485576
+      }
+    }
+  },
+  "multi": {
+    "d1t1-owner": {
+      "wall_s": 1.6941680046729743,
+      "cpu_s": 1.693657,
+      "peak_rss_bytes": 130674688,
+      "run_s": 1.293891228,
+      "tick_percentiles_ns": {
+        "tick_p50_ns": 0,
+        "tick_p95_ns": 0,
+        "tick_p99_ns": 0
+      },
+      "growth": {
+        "growth_submitted": 128,
+        "growth_published": 126,
+        "growth_sampled": 543660,
+        "growth_proposals": 101100,
+        "growth_accepted": 99283,
+        "growth_rejected": 1,
+        "growth_clamped": 1,
+        "growth_stockAdded": 99283,
+        "growth_tilesAdded": 18356,
+        "growth_capacityGrowthBatches": 0,
+        "growth_maxProposals": 1652,
+        "growth_maxPending": 2,
+        "growth_maxProposalBytes": 262144,
+        "growth_computeNs": 46294753,
+        "growth_queueNs": 719845230,
+        "growth_waitNs": 745009336,
+        "growth_publicationNs": 26136934,
+        "growth_delay": 1
+      },
+      "d1t1-owner": {
+        "run_time_ratio": 1.0,
+        "ratio_95pct_ci": [
+          1.0,
+          1.0
+        ],
+        "run_delta_ms": 0.0,
+        "cpu_ratio": 1.0
+      }
+    },
+    "d1t1-shared": {
+      "wall_s": 1.691105964127928,
+      "cpu_s": 1.69055,
+      "peak_rss_bytes": 129646592,
+      "run_s": 1.292148149,
+      "tick_percentiles_ns": {
+        "tick_p50_ns": 0,
+        "tick_p95_ns": 0,
+        "tick_p99_ns": 0
+      },
+      "growth": {
+        "growth_submitted": 128,
+        "growth_published": 126,
+        "growth_sampled": 543660,
+        "growth_proposals": 101100,
+        "growth_accepted": 99283,
+        "growth_rejected": 1,
+        "growth_clamped": 1,
+        "growth_stockAdded": 99283,
+        "growth_tilesAdded": 18356,
+        "growth_capacityGrowthBatches": 0,
+        "growth_maxProposals": 1652,
+        "growth_maxPending": 2,
+        "growth_maxProposalBytes": 262144,
+        "growth_computeNs": 46147287,
+        "growth_queueNs": 717297996,
+        "growth_waitNs": 742447279,
+        "growth_publicationNs": 25714704,
+        "growth_delay": 1
+      },
+      "d1t1-owner": {
+        "run_time_ratio": 0.9986528396187566,
+        "ratio_95pct_ci": [
+          0.9986528396187566,
+          0.9986528396187566
+        ],
+        "run_delta_ms": -1.743079,
+        "cpu_ratio": 0.9981655081282692
+      }
+    },
+    "d1t2-owner": {
+      "wall_s": 1.5651063122786582,
+      "cpu_s": 1.810481,
+      "peak_rss_bytes": 144105472,
+      "run_s": 1.1742632,
+      "tick_percentiles_ns": {
+        "tick_p50_ns": 0,
+        "tick_p95_ns": 0,
+        "tick_p99_ns": 0
+      },
+      "growth": {
+        "growth_submitted": 128,
+        "growth_published": 126,
+        "growth_sampled": 543660,
+        "growth_proposals": 101100,
+        "growth_accepted": 99283,
+        "growth_rejected": 1,
+        "growth_clamped": 1,
+        "growth_stockAdded": 99283,
+        "growth_tilesAdded": 18356,
+        "growth_capacityGrowthBatches": 0,
+        "growth_maxProposals": 1652,
+        "growth_maxPending": 2,
+        "growth_maxProposalBytes": 262144,
+        "growth_computeNs": 46384865,
+        "growth_queueNs": 570433895,
+        "growth_waitNs": 598419702,
+        "growth_publicationNs": 26083194,
+        "growth_delay": 1
+      },
+      "d1t2-owner": {
+        "run_time_ratio": 1.0,
+        "ratio_95pct_ci": [
+          1.0,
+          1.0
+        ],
+        "run_delta_ms": 0.0,
+        "cpu_ratio": 1.0
+      }
+    },
+    "d1t2-shared": {
+      "wall_s": 1.535935278981924,
+      "cpu_s": 2.141778,
+      "peak_rss_bytes": 142569472,
+      "run_s": 1.103311058,
+      "tick_percentiles_ns": {
+        "tick_p50_ns": 0,
+        "tick_p95_ns": 0,
+        "tick_p99_ns": 0
+      },
+      "growth": {
+        "growth_submitted": 128,
+        "growth_published": 126,
+        "growth_sampled": 543660,
+        "growth_proposals": 101100,
+        "growth_accepted": 99283,
+        "growth_rejected": 1,
+        "growth_clamped": 1,
+        "growth_stockAdded": 99283,
+        "growth_tilesAdded": 18356,
+        "growth_capacityGrowthBatches": 0,
+        "growth_maxProposals": 1652,
+        "growth_maxPending": 2,
+        "growth_maxProposalBytes": 262144,
+        "growth_computeNs": 61039163,
+        "growth_queueNs": 220886336,
+        "growth_waitNs": 405376186,
+        "growth_publicationNs": 27733577,
+        "growth_delay": 1
+      },
+      "d1t2-owner": {
+        "run_time_ratio": 0.9395773094141076,
+        "ratio_95pct_ci": [
+          0.9395773094141076,
+          0.9395773094141076
+        ],
+        "run_delta_ms": -70.952142,
+        "cpu_ratio": 1.182988388168669
+      }
+    },
+    "d1t4-owner": {
+      "wall_s": 1.3119336189702153,
+      "cpu_s": 2.281449,
+      "peak_rss_bytes": 159232000,
+      "run_s": 0.909668155,
+      "tick_percentiles_ns": {
+        "tick_p50_ns": 0,
+        "tick_p95_ns": 0,
+        "tick_p99_ns": 0
+      },
+      "growth": {
+        "growth_submitted": 128,
+        "growth_published": 126,
+        "growth_sampled": 543660,
+        "growth_proposals": 101100,
+        "growth_accepted": 99283,
+        "growth_rejected": 1,
+        "growth_clamped": 1,
+        "growth_stockAdded": 99283,
+        "growth_tilesAdded": 18356,
+        "growth_capacityGrowthBatches": 0,
+        "growth_maxProposals": 1652,
+        "growth_maxPending": 2,
+        "growth_maxProposalBytes": 262144,
+        "growth_computeNs": 51973888,
+        "growth_queueNs": 259726988,
+        "growth_waitNs": 294258432,
+        "growth_publicationNs": 25134845,
+        "growth_delay": 1
+      },
+      "d1t4-owner": {
+        "run_time_ratio": 1.0,
+        "ratio_95pct_ci": [
+          1.0,
+          1.0
+        ],
+        "run_delta_ms": 0.0,
+        "cpu_ratio": 1.0
+      }
+    },
+    "d1t4-shared": {
+      "wall_s": 1.3104804689064622,
+      "cpu_s": 2.167088,
+      "peak_rss_bytes": 159293440,
+      "run_s": 0.906394015,
+      "tick_percentiles_ns": {
+        "tick_p50_ns": 0,
+        "tick_p95_ns": 0,
+        "tick_p99_ns": 0
+      },
+      "growth": {
+        "growth_submitted": 128,
+        "growth_published": 126,
+        "growth_sampled": 543660,
+        "growth_proposals": 101100,
+        "growth_accepted": 99283,
+        "growth_rejected": 1,
+        "growth_clamped": 1,
+        "growth_stockAdded": 99283,
+        "growth_tilesAdded": 18356,
+        "growth_capacityGrowthBatches": 0,
+        "growth_maxProposals": 1652,
+        "growth_maxPending": 2,
+        "growth_maxProposalBytes": 262144,
+        "growth_computeNs": 59336699,
+        "growth_queueNs": 60932999,
+        "growth_waitNs": 289286525,
+        "growth_publicationNs": 25855271,
+        "growth_delay": 1
+      },
+      "d1t4-owner": {
+        "run_time_ratio": 0.9964007314293639,
+        "ratio_95pct_ci": [
+          0.9964007314293639,
+          0.9964007314293639
+        ],
+        "run_delta_ms": -3.27414,
+        "cpu_ratio": 0.9498735233616883
+      }
+    },
+    "d1t8-owner": {
+      "wall_s": 1.1391590312123299,
+      "cpu_s": 2.439227,
+      "peak_rss_bytes": 194154496,
+      "run_s": 0.732671081,
+      "tick_percentiles_ns": {
+        "tick_p50_ns": 0,
+        "tick_p95_ns": 0,
+        "tick_p99_ns": 0
+      },
+      "growth": {
+        "growth_submitted": 128,
+        "growth_published": 126,
+        "growth_sampled": 543660,
+        "growth_proposals": 101100,
+        "growth_accepted": 99283,
+        "growth_rejected": 1,
+        "growth_clamped": 1,
+        "growth_stockAdded": 99283,
+        "growth_tilesAdded": 18356,
+        "growth_capacityGrowthBatches": 0,
+        "growth_maxProposals": 1652,
+        "growth_maxPending": 2,
+        "growth_maxProposalBytes": 262144,
+        "growth_computeNs": 55296316,
+        "growth_queueNs": 19978940,
+        "growth_waitNs": 55004039,
+        "growth_publicationNs": 26282604,
+        "growth_delay": 1
+      },
+      "d1t8-owner": {
+        "run_time_ratio": 1.0,
+        "ratio_95pct_ci": [
+          1.0,
+          1.0
+        ],
+        "run_delta_ms": 0.0,
+        "cpu_ratio": 1.0
+      }
+    },
+    "d1t8-shared": {
+      "wall_s": 1.2537026209756732,
+      "cpu_s": 2.756353,
+      "peak_rss_bytes": 195547136,
+      "run_s": 0.841271827,
+      "tick_percentiles_ns": {
+        "tick_p50_ns": 0,
+        "tick_p95_ns": 0,
+        "tick_p99_ns": 0
+      },
+      "growth": {
+        "growth_submitted": 128,
+        "growth_published": 126,
+        "growth_sampled": 543660,
+        "growth_proposals": 101100,
+        "growth_accepted": 99283,
+        "growth_rejected": 1,
+        "growth_clamped": 1,
+        "growth_stockAdded": 99283,
+        "growth_tilesAdded": 18356,
+        "growth_capacityGrowthBatches": 0,
+        "growth_maxProposals": 1652,
+        "growth_maxPending": 2,
+        "growth_maxProposalBytes": 262144,
+        "growth_computeNs": 77511013,
+        "growth_queueNs": 6276124,
+        "growth_waitNs": 63986488,
+        "growth_publicationNs": 29800046,
+        "growth_delay": 1
+      },
+      "d1t8-owner": {
+        "run_time_ratio": 1.1482257848252646,
+        "ratio_95pct_ci": [
+          1.1482257848252646,
+          1.1482257848252646
+        ],
+        "run_delta_ms": 108.600746,
+        "cpu_ratio": 1.13001085999786
+      }
+    },
+    "d3t1-owner": {
+      "wall_s": 2.219138049054891,
+      "cpu_s": 2.217972,
+      "peak_rss_bytes": 130752512,
+      "run_s": 1.668131962,
+      "tick_percentiles_ns": {
+        "tick_p50_ns": 0,
+        "tick_p95_ns": 0,
+        "tick_p99_ns": 0
+      },
+      "growth": {
+        "growth_submitted": 128,
+        "growth_published": 124,
+        "growth_sampled": 544069,
+        "growth_proposals": 101560,
+        "growth_accepted": 97866,
+        "growth_rejected": 0,
+        "growth_clamped": 0,
+        "growth_stockAdded": 97866,
+        "growth_tilesAdded": 18161,
+        "growth_capacityGrowthBatches": 0,
+        "growth_maxProposals": 1628,
+        "growth_maxPending": 4,
+        "growth_maxProposalBytes": 524288,
+        "growth_computeNs": 60926035,
+        "growth_queueNs": 916535428,
+        "growth_waitNs": 949158499,
+        "growth_publicationNs": 31105760,
+        "growth_delay": 3
+      },
+      "d3t1-owner": {
+        "run_time_ratio": 1.0,
+        "ratio_95pct_ci": [
+          1.0,
+          1.0
+        ],
+        "run_delta_ms": 0.0,
+        "cpu_ratio": 1.0
+      }
+    },
+    "d3t1-shared": {
+      "wall_s": 1.8779116459190845,
+      "cpu_s": 1.877273,
+      "peak_rss_bytes": 130392064,
+      "run_s": 1.480063005,
+      "tick_percentiles_ns": {
+        "tick_p50_ns": 0,
+        "tick_p95_ns": 0,
+        "tick_p99_ns": 0
+      },
+      "growth": {
+        "growth_submitted": 128,
+        "growth_published": 124,
+        "growth_sampled": 544069,
+        "growth_proposals": 101560,
+        "growth_accepted": 97866,
+        "growth_rejected": 0,
+        "growth_clamped": 0,
+        "growth_stockAdded": 97866,
+        "growth_tilesAdded": 18161,
+        "growth_capacityGrowthBatches": 0,
+        "growth_maxProposals": 1628,
+        "growth_maxPending": 4,
+        "growth_maxProposalBytes": 524288,
+        "growth_computeNs": 45582926,
+        "growth_queueNs": 912555226,
+        "growth_waitNs": 935502333,
+        "growth_publicationNs": 25287100,
+        "growth_delay": 3
+      },
+      "d3t1-owner": {
+        "run_time_ratio": 0.8872577462190009,
+        "ratio_95pct_ci": [
+          0.8872577462190009,
+          0.8872577462190009
+        ],
+        "run_delta_ms": -188.068957,
+        "cpu_ratio": 0.8463916586864035
+      }
+    },
+    "d3t2-owner": {
+      "wall_s": 1.4633452058769763,
+      "cpu_s": 2.14966,
+      "peak_rss_bytes": 137777152,
+      "run_s": 1.068468917,
+      "tick_percentiles_ns": {
+        "tick_p50_ns": 0,
+        "tick_p95_ns": 0,
+        "tick_p99_ns": 0
+      },
+      "growth": {
+        "growth_submitted": 128,
+        "growth_published": 124,
+        "growth_sampled": 544069,
+        "growth_proposals": 101560,
+        "growth_accepted": 97866,
+        "growth_rejected": 0,
+        "growth_clamped": 0,
+        "growth_stockAdded": 97866,
+        "growth_tilesAdded": 18161,
+        "growth_capacityGrowthBatches": 0,
+        "growth_maxProposals": 1628,
+        "growth_maxPending": 4,
+        "growth_maxProposalBytes": 524288,
+        "growth_computeNs": 58888829,
+        "growth_queueNs": 318535044,
+        "growth_waitNs": 349771563,
+        "growth_publicationNs": 26870553,
+        "growth_delay": 3
+      },
+      "d3t2-owner": {
+        "run_time_ratio": 1.0,
+        "ratio_95pct_ci": [
+          1.0,
+          1.0
+        ],
+        "run_delta_ms": 0.0,
+        "cpu_ratio": 1.0
+      }
+    },
+    "d3t2-shared": {
+      "wall_s": 1.5138135622255504,
+      "cpu_s": 1.7811020000000002,
+      "peak_rss_bytes": 145063936,
+      "run_s": 1.113109348,
+      "tick_percentiles_ns": {
+        "tick_p50_ns": 0,
+        "tick_p95_ns": 0,
+        "tick_p99_ns": 0
+      },
+      "growth": {
+        "growth_submitted": 128,
+        "growth_published": 124,
+        "growth_sampled": 544069,
+        "growth_proposals": 101560,
+        "growth_accepted": 97866,
+        "growth_rejected": 0,
+        "growth_clamped": 0,
+        "growth_stockAdded": 97866,
+        "growth_tilesAdded": 18161,
+        "growth_capacityGrowthBatches": 0,
+        "growth_maxProposals": 1628,
+        "growth_maxPending": 4,
+        "growth_maxProposalBytes": 524288,
+        "growth_computeNs": 63827310,
+        "growth_queueNs": 182762862,
+        "growth_waitNs": 556622635,
+        "growth_publicationNs": 25582961,
+        "growth_delay": 3
+      },
+      "d3t2-owner": {
+        "run_time_ratio": 1.0417798124865807,
+        "ratio_95pct_ci": [
+          1.0417798124865807,
+          1.0417798124865807
+        ],
+        "run_delta_ms": 44.640431,
+        "cpu_ratio": 0.8285505614841419
+      }
+    },
+    "d3t4-owner": {
+      "wall_s": 1.4214216591790318,
+      "cpu_s": 2.445171,
+      "peak_rss_bytes": 160456704,
+      "run_s": 1.01175546,
+      "tick_percentiles_ns": {
+        "tick_p50_ns": 0,
+        "tick_p95_ns": 0,
+        "tick_p99_ns": 0
+      },
+      "growth": {
+        "growth_submitted": 128,
+        "growth_published": 124,
+        "growth_sampled": 544069,
+        "growth_proposals": 101560,
+        "growth_accepted": 97866,
+        "growth_rejected": 0,
+        "growth_clamped": 0,
+        "growth_stockAdded": 97866,
+        "growth_tilesAdded": 18161,
+        "growth_capacityGrowthBatches": 0,
+        "growth_maxProposals": 1628,
+        "growth_maxPending": 4,
+        "growth_maxProposalBytes": 524288,
+        "growth_computeNs": 56709589,
+        "growth_queueNs": 276372075,
+        "growth_waitNs": 311870344,
+        "growth_publicationNs": 27225912,
+        "growth_delay": 3
+      },
+      "d3t4-owner": {
+        "run_time_ratio": 1.0,
+        "ratio_95pct_ci": [
+          1.0,
+          1.0
+        ],
+        "run_delta_ms": 0.0,
+        "cpu_ratio": 1.0
+      }
+    },
+    "d3t4-shared": {
+      "wall_s": 1.3251425898633897,
+      "cpu_s": 2.2453950000000003,
+      "peak_rss_bytes": 159485952,
+      "run_s": 0.903624701,
+      "tick_percentiles_ns": {
+        "tick_p50_ns": 0,
+        "tick_p95_ns": 0,
+        "tick_p99_ns": 0
+      },
+      "growth": {
+        "growth_submitted": 128,
+        "growth_published": 124,
+        "growth_sampled": 544069,
+        "growth_proposals": 101560,
+        "growth_accepted": 97866,
+        "growth_rejected": 0,
+        "growth_clamped": 0,
+        "growth_stockAdded": 97866,
+        "growth_tilesAdded": 18161,
+        "growth_capacityGrowthBatches": 0,
+        "growth_maxProposals": 1628,
+        "growth_maxPending": 4,
+        "growth_maxProposalBytes": 524288,
+        "growth_computeNs": 55729067,
+        "growth_queueNs": 70192049,
+        "growth_waitNs": 291371014,
+        "growth_publicationNs": 26523080,
+        "growth_delay": 3
+      },
+      "d3t4-owner": {
+        "run_time_ratio": 0.8931255987489309,
+        "ratio_95pct_ci": [
+          0.8931255987489309,
+          0.8931255987489309
+        ],
+        "run_delta_ms": -108.130759,
+        "cpu_ratio": 0.9182977386857607
+      }
+    },
+    "d3t8-owner": {
+      "wall_s": 1.3015198418870568,
+      "cpu_s": 2.752424,
+      "peak_rss_bytes": 198754304,
+      "run_s": 0.881761523,
+      "tick_percentiles_ns": {
+        "tick_p50_ns": 0,
+        "tick_p95_ns": 0,
+        "tick_p99_ns": 0
+      },
+      "growth": {
+        "growth_submitted": 128,
+        "growth_published": 124,
+        "growth_sampled": 544069,
+        "growth_proposals": 101560,
+        "growth_accepted": 97866,
+        "growth_rejected": 0,
+        "growth_clamped": 0,
+        "growth_stockAdded": 97866,
+        "growth_tilesAdded": 18161,
+        "growth_capacityGrowthBatches": 0,
+        "growth_maxProposals": 1628,
+        "growth_maxPending": 4,
+        "growth_maxProposalBytes": 524288,
+        "growth_computeNs": 65260649,
+        "growth_queueNs": 22574849,
+        "growth_waitNs": 65009910,
+        "growth_publicationNs": 30497712,
+        "growth_delay": 3
+      },
+      "d3t8-owner": {
+        "run_time_ratio": 1.0,
+        "ratio_95pct_ci": [
+          1.0,
+          1.0
+        ],
+        "run_delta_ms": 0.0,
+        "cpu_ratio": 1.0
+      }
+    },
+    "d3t8-shared": {
+      "wall_s": 1.1398923969827592,
+      "cpu_s": 2.474371,
+      "peak_rss_bytes": 194052096,
+      "run_s": 0.735837374,
+      "tick_percentiles_ns": {
+        "tick_p50_ns": 0,
+        "tick_p95_ns": 0,
+        "tick_p99_ns": 0
+      },
+      "growth": {
+        "growth_submitted": 128,
+        "growth_published": 124,
+        "growth_sampled": 544069,
+        "growth_proposals": 101560,
+        "growth_accepted": 97866,
+        "growth_rejected": 0,
+        "growth_clamped": 0,
+        "growth_stockAdded": 97866,
+        "growth_tilesAdded": 18161,
+        "growth_capacityGrowthBatches": 0,
+        "growth_maxProposals": 1628,
+        "growth_maxPending": 4,
+        "growth_maxProposalBytes": 524288,
+        "growth_computeNs": 70113216,
+        "growth_queueNs": 5276802,
+        "growth_waitNs": 56596158,
+        "growth_publicationNs": 26200424,
+        "growth_delay": 3
+      },
+      "d3t8-owner": {
+        "run_time_ratio": 0.8345083730762881,
+        "ratio_95pct_ci": [
+          0.8345083730762881,
+          0.8345083730762881
+        ],
+        "run_delta_ms": -145.924149,
+        "cpu_ratio": 0.8989788637215779
+      }
+    },
+    "d8t1-owner": {
+      "wall_s": 1.6905903262086213,
+      "cpu_s": 1.690169,
+      "peak_rss_bytes": 129753088,
+      "run_s": 1.288266892,
+      "tick_percentiles_ns": {
+        "tick_p50_ns": 0,
+        "tick_p95_ns": 0,
+        "tick_p99_ns": 0
+      },
+      "growth": {
+        "growth_submitted": 128,
+        "growth_published": 119,
+        "growth_sampled": 543650,
+        "growth_proposals": 111924,
+        "growth_accepted": 101833,
+        "growth_rejected": 3,
+        "growth_clamped": 3,
+        "growth_stockAdded": 101833,
+        "growth_tilesAdded": 19134,
+        "growth_capacityGrowthBatches": 0,
+        "growth_maxProposals": 1586,
+        "growth_maxPending": 9,
+        "growth_maxProposalBytes": 1179648,
+        "growth_computeNs": 46988993,
+        "growth_queueNs": 719799588,
+        "growth_waitNs": 743307430,
+        "growth_publicationNs": 26603482,
+        "growth_delay": 8
+      },
+      "d8t1-owner": {
+        "run_time_ratio": 1.0,
+        "ratio_95pct_ci": [
+          1.0,
+          1.0
+        ],
+        "run_delta_ms": 0.0,
+        "cpu_ratio": 1.0
+      }
+    },
+    "d8t1-shared": {
+      "wall_s": 1.7135441680438817,
+      "cpu_s": 1.7131329999999998,
+      "peak_rss_bytes": 129490944,
+      "run_s": 1.286853121,
+      "tick_percentiles_ns": {
+        "tick_p50_ns": 0,
+        "tick_p95_ns": 0,
+        "tick_p99_ns": 0
+      },
+      "growth": {
+        "growth_submitted": 128,
+        "growth_published": 119,
+        "growth_sampled": 543650,
+        "growth_proposals": 111924,
+        "growth_accepted": 101833,
+        "growth_rejected": 3,
+        "growth_clamped": 3,
+        "growth_stockAdded": 101833,
+        "growth_tilesAdded": 19134,
+        "growth_capacityGrowthBatches": 0,
+        "growth_maxProposals": 1586,
+        "growth_maxPending": 9,
+        "growth_maxProposalBytes": 1179648,
+        "growth_computeNs": 46989647,
+        "growth_queueNs": 713664049,
+        "growth_waitNs": 739039689,
+        "growth_publicationNs": 26335544,
+        "growth_delay": 8
+      },
+      "d8t1-owner": {
+        "run_time_ratio": 0.9989025791093605,
+        "ratio_95pct_ci": [
+          0.9989025791093605,
+          0.9989025791093605
+        ],
+        "run_delta_ms": -1.413771,
+        "cpu_ratio": 1.0135868069997733
+      }
+    },
+    "d8t2-owner": {
+      "wall_s": 1.3937691361643374,
+      "cpu_s": 1.7981960000000001,
+      "peak_rss_bytes": 136581120,
+      "run_s": 0.990214809,
+      "tick_percentiles_ns": {
+        "tick_p50_ns": 0,
+        "tick_p95_ns": 0,
+        "tick_p99_ns": 0
+      },
+      "growth": {
+        "growth_submitted": 128,
+        "growth_published": 119,
+        "growth_sampled": 543650,
+        "growth_proposals": 111924,
+        "growth_accepted": 101833,
+        "growth_rejected": 3,
+        "growth_clamped": 3,
+        "growth_stockAdded": 101833,
+        "growth_tilesAdded": 19134,
+        "growth_capacityGrowthBatches": 0,
+        "growth_maxProposals": 1586,
+        "growth_maxPending": 9,
+        "growth_maxProposalBytes": 1179648,
+        "growth_computeNs": 50423639,
+        "growth_queueNs": 403246695,
+        "growth_waitNs": 429718302,
+        "growth_publicationNs": 26094759,
+        "growth_delay": 8
+      },
+      "d8t2-owner": {
+        "run_time_ratio": 1.0,
+        "ratio_95pct_ci": [
+          1.0,
+          1.0
+        ],
+        "run_delta_ms": 0.0,
+        "cpu_ratio": 1.0
+      }
+    },
+    "d8t2-shared": {
+      "wall_s": 1.8876610668376088,
+      "cpu_s": 2.433408,
+      "peak_rss_bytes": 135962624,
+      "run_s": 1.386315321,
+      "tick_percentiles_ns": {
+        "tick_p50_ns": 0,
+        "tick_p95_ns": 0,
+        "tick_p99_ns": 0
+      },
+      "growth": {
+        "growth_submitted": 128,
+        "growth_published": 119,
+        "growth_sampled": 543650,
+        "growth_proposals": 111924,
+        "growth_accepted": 101833,
+        "growth_rejected": 3,
+        "growth_clamped": 3,
+        "growth_stockAdded": 101833,
+        "growth_tilesAdded": 19134,
+        "growth_capacityGrowthBatches": 0,
+        "growth_maxProposals": 1586,
+        "growth_maxPending": 9,
+        "growth_maxProposalBytes": 1179648,
+        "growth_computeNs": 70555406,
+        "growth_queueNs": 264474576,
+        "growth_waitNs": 533027696,
+        "growth_publicationNs": 32966737,
+        "growth_delay": 8
+      },
+      "d8t2-owner": {
+        "run_time_ratio": 1.4000147325609225,
+        "ratio_95pct_ci": [
+          1.4000147325609225,
+          1.4000147325609225
+        ],
+        "run_delta_ms": 396.100512,
+        "cpu_ratio": 1.3532495901447894
+      }
+    },
+    "d8t4-owner": {
+      "wall_s": 1.289908932056278,
+      "cpu_s": 2.16509,
+      "peak_rss_bytes": 158597120,
+      "run_s": 0.891698093,
+      "tick_percentiles_ns": {
+        "tick_p50_ns": 0,
+        "tick_p95_ns": 0,
+        "tick_p99_ns": 0
+      },
+      "growth": {
+        "growth_submitted": 128,
+        "growth_published": 119,
+        "growth_sampled": 543650,
+        "growth_proposals": 111924,
+        "growth_accepted": 101833,
+        "growth_rejected": 3,
+        "growth_clamped": 3,
+        "growth_stockAdded": 101833,
+        "growth_tilesAdded": 19134,
+        "growth_capacityGrowthBatches": 0,
+        "growth_maxProposals": 1586,
+        "growth_maxPending": 9,
+        "growth_maxProposalBytes": 1179648,
+        "growth_computeNs": 58154269,
+        "growth_queueNs": 254088940,
+        "growth_waitNs": 291575526,
+        "growth_publicationNs": 26735689,
+        "growth_delay": 8
+      },
+      "d8t4-owner": {
+        "run_time_ratio": 1.0,
+        "ratio_95pct_ci": [
+          1.0,
+          1.0
+        ],
+        "run_delta_ms": 0.0,
+        "cpu_ratio": 1.0
+      }
+    },
+    "d8t4-shared": {
+      "wall_s": 1.5339536610990763,
+      "cpu_s": 2.474273,
+      "peak_rss_bytes": 159985664,
+      "run_s": 0.965075491,
+      "tick_percentiles_ns": {
+        "tick_p50_ns": 0,
+        "tick_p95_ns": 0,
+        "tick_p99_ns": 0
+      },
+      "growth": {
+        "growth_submitted": 128,
+        "growth_published": 119,
+        "growth_sampled": 543650,
+        "growth_proposals": 111924,
+        "growth_accepted": 101833,
+        "growth_rejected": 3,
+        "growth_clamped": 3,
+        "growth_stockAdded": 101833,
+        "growth_tilesAdded": 19134,
+        "growth_capacityGrowthBatches": 0,
+        "growth_maxProposals": 1586,
+        "growth_maxPending": 9,
+        "growth_maxProposalBytes": 1179648,
+        "growth_computeNs": 63174833,
+        "growth_queueNs": 70390419,
+        "growth_waitNs": 307228811,
+        "growth_publicationNs": 28591323,
+        "growth_delay": 8
+      },
+      "d8t4-owner": {
+        "run_time_ratio": 1.0822895087205262,
+        "ratio_95pct_ci": [
+          1.0822895087205262,
+          1.0822895087205262
+        ],
+        "run_delta_ms": 73.377398,
+        "cpu_ratio": 1.1428037633539483
+      }
+    },
+    "d8t8-owner": {
+      "wall_s": 1.1499057058244944,
+      "cpu_s": 2.5206049999999998,
+      "peak_rss_bytes": 196120576,
+      "run_s": 0.737670702,
+      "tick_percentiles_ns": {
+        "tick_p50_ns": 0,
+        "tick_p95_ns": 0,
+        "tick_p99_ns": 0
+      },
+      "growth": {
+        "growth_submitted": 128,
+        "growth_published": 119,
+        "growth_sampled": 543650,
+        "growth_proposals": 111924,
+        "growth_accepted": 101833,
+        "growth_rejected": 3,
+        "growth_clamped": 3,
+        "growth_stockAdded": 101833,
+        "growth_tilesAdded": 19134,
+        "growth_capacityGrowthBatches": 0,
+        "growth_maxProposals": 1586,
+        "growth_maxPending": 9,
+        "growth_maxProposalBytes": 1179648,
+        "growth_computeNs": 56942310,
+        "growth_queueNs": 30963825,
+        "growth_waitNs": 68586410,
+        "growth_publicationNs": 26671957,
+        "growth_delay": 8
+      },
+      "d8t8-owner": {
+        "run_time_ratio": 1.0,
+        "ratio_95pct_ci": [
+          1.0,
+          1.0
+        ],
+        "run_delta_ms": 0.0,
+        "cpu_ratio": 1.0
+      }
+    },
+    "d8t8-shared": {
+      "wall_s": 1.5916965319775045,
+      "cpu_s": 2.954936,
+      "peak_rss_bytes": 194613248,
+      "run_s": 0.950992435,
+      "tick_percentiles_ns": {
+        "tick_p50_ns": 0,
+        "tick_p95_ns": 0,
+        "tick_p99_ns": 0
+      },
+      "growth": {
+        "growth_submitted": 128,
+        "growth_published": 119,
+        "growth_sampled": 543650,
+        "growth_proposals": 111924,
+        "growth_accepted": 101833,
+        "growth_rejected": 3,
+        "growth_clamped": 3,
+        "growth_stockAdded": 101833,
+        "growth_tilesAdded": 19134,
+        "growth_capacityGrowthBatches": 0,
+        "growth_maxProposals": 1586,
+        "growth_maxPending": 9,
+        "growth_maxProposalBytes": 1179648,
+        "growth_computeNs": 77313445,
+        "growth_queueNs": 6683458,
+        "growth_waitNs": 84141586,
+        "growth_publicationNs": 32616882,
+        "growth_delay": 8
+      },
+      "d8t8-owner": {
+        "run_time_ratio": 1.2891828730917931,
+        "ratio_95pct_ci": [
+          1.2891828730917931,
+          1.2891828730917931
+        ],
+        "run_delta_ms": 213.321733,
+        "cpu_ratio": 1.172312202824322
+      }
+    }
+  }
+}

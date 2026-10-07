@@ -1,0 +1,5 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="3" failures="0" errors="0" skipped="0"><testsuite name="ResourceGrowthBenchmark"><testcase classname="ResourceGrowthBenchmark" name="identical live and snapshot kernel inputs [benchmark][resources]" time="3.53261" status="run" />
+  <testcase classname="ResourceGrowthBenchmark" name="paired legacy split and delayed growth component costs [benchmark][resources]" time="72.7148" status="run" />
+  <testcase classname="ResourceGrowthBenchmark" name="twenty seed ecology comparison [benchmark][resources]" time="3.43255" status="run" />
+  </testsuite></testsuites>
