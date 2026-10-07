@@ -1,0 +1,50 @@
+26dfc5575757598b14669fc7199c3a3749127d61
+100644 5ccf6060988ba7955182b67437097f6e71b1c37e 1	test/fixtures/building-catalog/composition/seed-713.trace
+100644 0cb71aefcf7868734c9f95646db60f5b7f9571b8 2	test/fixtures/building-catalog/composition/seed-713.trace
+100644 a00a4a0cdeed0d1804484084c14bbc48ce6c1ce6 3	test/fixtures/building-catalog/composition/seed-713.trace
+100644 9dd19380fcfcccf6e36f0cd92a3ccd3949f79bf3 1	test/fixtures/building-catalog/composition/seed-714.trace
+100644 927434db8a6e0bb50697fe1832806623150f7cb6 2	test/fixtures/building-catalog/composition/seed-714.trace
+100644 b647a65670d8e3fefdd76719dc58b5c6764ec1d5 3	test/fixtures/building-catalog/composition/seed-714.trace
+100644 3485f08534670fef419323c331003d0a5255dcaf 1	test/fixtures/building-catalog/composition/seed-715.trace
+100644 a732044a70054393ae02dbbe29fe57fd45204086 2	test/fixtures/building-catalog/composition/seed-715.trace
+100644 e63b647f998afa1e0ade5ab9b5dc229833eb7475 3	test/fixtures/building-catalog/composition/seed-715.trace
+100644 b30a6627a199f2a792b102d8679dc202ba8c3051 1	test/fixtures/markets-v2/disabled-checksums.txt
+100644 5f76008165f4cd6d01e92545d712be9bbf323cb9 2	test/fixtures/markets-v2/disabled-checksums.txt
+100644 b60659344847634d644eafdb4365670285f57d17 3	test/fixtures/markets-v2/disabled-checksums.txt
+100644 1fd0dc8edbd336cd62a283e57b70b75037357587 1	test/fixtures/markets-v2/enabled-checksums.txt
+100644 efdefd5831c0d424ff7d884cb7c30e36b4b749fc 2	test/fixtures/markets-v2/enabled-checksums.txt
+100644 fdde301d9d6cd274093afeb940383ed5dda7e14f 3	test/fixtures/markets-v2/enabled-checksums.txt
+100644 b6fd5253d3b29b93c4ed37b41f06ed0ded6a91da 1	test/fixtures/multiplayer/FourSquares1.g2mr
+100644 7cea85029895a923556560304a6998033bc7bfac 2	test/fixtures/multiplayer/FourSquares1.g2mr
+100644 da0e32c28166dce5baef121c3022e86dd4556fac 3	test/fixtures/multiplayer/FourSquares1.g2mr
+100644 e47ff42fcc611b85be0279715788c1ab729a8305 1	test/fixtures/resources/seeded-compositions.trace
+100644 2cb60d601a77736375635e7ee969860476866c02 2	test/fixtures/resources/seeded-compositions.trace
+100644 11c7b0944094480b499450fdb388ecb155451200 3	test/fixtures/resources/seeded-compositions.trace
+100644 d61b58563879ada8cda6af1634825a21faf747b5 1	test/fixtures/win-probability/rule-trace.txt
+100644 aa726534582e2ee95ee6446d47b00b6519b038d9 2	test/fixtures/win-probability/rule-trace.txt
+100644 ddfa1e7332f0c64846228fb109df2b3f5cb51f20 3	test/fixtures/win-probability/rule-trace.txt
+
+Auto-merging docs/development/reference.md
+Auto-merging docs/features/resource-catalogs.md
+Auto-merging scons/sources.py
+Auto-merging src/engine/EngineRun.cpp
+Auto-merging src/map/Map.h
+Auto-merging src/team/stats/TeamStatsSaveHarness.cpp
+Auto-merging test/fixtures/building-catalog/composition/seed-713.trace
+CONFLICT (content): Merge conflict in test/fixtures/building-catalog/composition/seed-713.trace
+Auto-merging test/fixtures/building-catalog/composition/seed-714.trace
+CONFLICT (content): Merge conflict in test/fixtures/building-catalog/composition/seed-714.trace
+Auto-merging test/fixtures/building-catalog/composition/seed-715.trace
+CONFLICT (content): Merge conflict in test/fixtures/building-catalog/composition/seed-715.trace
+Auto-merging test/fixtures/markets-v2/disabled-checksums.txt
+CONFLICT (content): Merge conflict in test/fixtures/markets-v2/disabled-checksums.txt
+Auto-merging test/fixtures/markets-v2/enabled-checksums.txt
+CONFLICT (content): Merge conflict in test/fixtures/markets-v2/enabled-checksums.txt
+warning: Cannot merge binary files: test/fixtures/multiplayer/FourSquares1.g2mr (HEAD vs. origin/master)
+Auto-merging test/fixtures/multiplayer/FourSquares1.g2mr
+CONFLICT (content): Merge conflict in test/fixtures/multiplayer/FourSquares1.g2mr
+Auto-merging test/fixtures/resources/seeded-compositions.trace
+CONFLICT (content): Merge conflict in test/fixtures/resources/seeded-compositions.trace
+Auto-merging test/fixtures/win-probability/rule-trace.txt
+CONFLICT (content): Merge conflict in test/fixtures/win-probability/rule-trace.txt
+Auto-merging test/tests.py

@@ -1,0 +1,11 @@
+{
+  "parent_revision": "78736bfd0f8984316857f4603b39c56c9a27a462",
+  "test_binary_sha256": "136e575e927fe5d207ee22a81d4d7d4ff8214a5f77c0c5b18ac75d22addebd3a",
+  "source_sha256": "1bb82504bd4e5e397fa49cbfe5fc14d972c70f82446cb6ce7d66cd7b44636a85",
+  "compiler": "GCC 15.2 release; same dependency prefixes and flags as original evidence",
+  "samples": 924,
+  "test_result": "1 passed, 0 failed, 0 skipped",
+  "production_changes": false,
+  "current_master": "4cb2ac0585e8caf0468427a8a38704a80f69664c",
+  "integration_limit": "Current master has advanced since measured baseline, including changed simulation goldens. Merge-tree conflicts recorded; no merge/rebase performed during this attribution experiment. Draft requires integration refresh before merge."
+}

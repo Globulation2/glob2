@@ -1,5 +1,7 @@
 # Snapshot resource growth: PR #897 evidence
 
+**Follow-up:** [shared-snapshot attribution](attribution/README.md) corrects the standalone-cost interpretation. When every variant pays for an existing capture, immediate split ratios are 0.96–1.62×, mostly near 1.00–1.29×. Engine capture counts are unchanged, but copy volume often rises. The follow-up also records current-master integration conflicts; the earlier conflict-free statement below applies only to the originally validated master.
+
 Final implementation: `78736bfd0` on `codex/snapshot-resource-growth`. Original matched performance baseline: `d42d3e512` (immediate growth). Final integration reviewed master `591e40ecb`; its abort-session fix was cherry-picked as `e93956015`. Intervening rendering changes are unrelated and were not rebased into this branch. The later fixture-generator commit changes no production simulation code; the measured final executable is from `e93956015`. The merge tree is conflict-free.
 
 [Performance and ecology tables](performance.md) contain the measured results and uncertainty. [Build provenance](build-provenance.json), [environment](environment.txt), and [exact commands](commands.txt) identify the inputs and tools. This was a shared, busy Linux x86-64 host with GCC 15 release builds; no CPU isolation was used.
