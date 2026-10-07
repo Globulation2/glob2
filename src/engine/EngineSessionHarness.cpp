@@ -138,7 +138,7 @@ TEST_SUITE("EngineSession")
         globalContainer->settings.gameSpeed=Settings::GAME_SPEED_MAXIMUM;
         globalContainer->aiThreads=2;
         std::ofstream evidence(glob2test::artifactDir()/"client-frame-latency.csv");
-        evidence << "forced_park,frames,ticks,elapsed_ms,frame_p50_us,frame_p95_us,scene_age_p95_ms\n";
+        evidence << "forced_park,frames,ticks,elapsed_ms,frame_p50_us,frame_p95_us,scene_age_p95_ms,input_p50_us,input_p95_us\n";
         for(bool forced : {true,false})
         {
             setSyncRandSeed(123);
@@ -146,7 +146,7 @@ TEST_SUITE("EngineSession")
             REQUIRE(engine.initCampaign("maps/balanced.map")==Engine::EE_NO_ERROR);
             engine.beginSession(SDL_GetTicks());
             REQUIRE(engine.startSimulationThread(SDL_GetTicks()));
-            std::vector<double> frames,ages;
+            std::vector<double> frames,ages,inputs;
             const auto start=SDL_GetTicks();
             while(SDL_GetTicks()-start<5000)
             {
@@ -155,9 +155,11 @@ TEST_SUITE("EngineSession")
                 motion.motion.x=200+(frames.size()%100); motion.motion.y=250;
                 const auto input=[&]{REQUIRE(engine.threadedClientFrame(SDL_GetTicks(),{motion}));};
                 if(forced) engine.gui.parkForClient(input); else input();
+                const auto inputEnd=std::chrono::steady_clock::now();
                 engine.drawSession();
                 if(engine.gui.drawnScene().tickTime)
                 {
+                    inputs.push_back(std::chrono::duration<double,std::micro>(inputEnd-frameStart).count());
                     frames.push_back(std::chrono::duration<double,std::micro>(std::chrono::steady_clock::now()-frameStart).count());
                     ages.push_back(double(SDL_GetTicks()-engine.gui.drawnScene().tickTime));
                 }
@@ -166,9 +168,10 @@ TEST_SUITE("EngineSession")
             engine.stopSimulationThread();
             const auto elapsed=SDL_GetTicks()-start;
             REQUIRE(!frames.empty());
-            std::sort(frames.begin(),frames.end()); std::sort(ages.begin(),ages.end());
+            std::sort(frames.begin(),frames.end()); std::sort(ages.begin(),ages.end()); std::sort(inputs.begin(),inputs.end());
             evidence << forced << ',' << frames.size() << ',' << engine.gui.game.stepCounter << ',' << elapsed << ','
-                << frames[frames.size()/2] << ',' << frames[frames.size()*95/100] << ',' << ages[ages.size()*95/100] << '\n';
+                << frames[frames.size()/2] << ',' << frames[frames.size()*95/100] << ',' << ages[ages.size()*95/100]
+                << ',' << inputs[inputs.size()/2] << ',' << inputs[inputs.size()*95/100] << '\n';
             engine.gui.isRunning=false;
             CHECK_FALSE(engine.finishSession());
         }
