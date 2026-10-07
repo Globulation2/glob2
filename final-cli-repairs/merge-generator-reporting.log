@@ -1,0 +1,4 @@
+PASS MapGeneratorDefaults/Explicit designs preserve topology across the runtime-resource RNG epoch (0.9s)
+
+1 passed, 0 failed, 0 skipped (0.9s of test time)
+[run_tests] JUnit report: artifacts/resource-refactor/merge-generator-reporting.xml (1 cases)

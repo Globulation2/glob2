@@ -1,0 +1,3 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="1" failures="0" errors="0" skipped="0"><testsuite name="MapGeneratorDefaults"><testcase classname="MapGeneratorDefaults" name="Explicit designs preserve topology across the runtime-resource RNG epoch" time="0.835626" status="run" />
+  </testsuite></testsuites>
