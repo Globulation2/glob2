@@ -24,6 +24,9 @@ async function startAndSave(page) {
     return saves.filter(name=>name.startsWith('Reload_regression_')).length;
   }).toBe(1);
   await expect.poll(async()=>(await state(page)).persistence).toBe('persisted');
+  // Persistence can finish before the scheduled Save dialog completion runs.
+  // Wait for gameplay before a later Escape attempts to open its menu.
+  await expect.poll(async()=>(await state(page)).screenClass).toContain('GameSessionScreen');
   return (await page.evaluate(()=>glob2Diagnostics.saves())).find(name=>name.startsWith('Reload_regression_'));
 }
 async function loadSaved(page,replay=false,observeLoading=true) {

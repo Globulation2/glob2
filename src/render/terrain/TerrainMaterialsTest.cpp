@@ -409,7 +409,7 @@ TEST_SUITE("TerrainMaterials")
 					auto &p = j["profiles"][i];
 					for (const char *field : {"feather_q8", "amplitude_q8", "speckle_q8", "bridge_q8"})
 						p.erase(field);
-					p["roughness_q8"] = roughness[i];
+					p["roughness_q8"] = roughness[i % std::size(roughness)];
 					p["contours_q12"] = {{0, 180, -120, 100, 0},
 										 {0, -130, 200, -80, 0},
 										 {0, 90, 160, -170, 0},
