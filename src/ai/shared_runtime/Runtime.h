@@ -14,8 +14,11 @@
 #include "AISharedRuntimeTuning.h"
 #include "AIImplementation.h"
 #include "Order.h"
+#include "ai/observation/OrderSelection.h"
 #include "Player.h"
 #include "TeamStat.h"
+#include "ai/observation/ObservationQueries.h"
+#include "ai/engine/AIDecision.h"
 
 #include <list>
 #include <map>
@@ -33,6 +36,7 @@ namespace AISharedRuntime
 	public:
 	  AITelemetry::Sink telemetry;
 	  virtual void captureTelemetry() {}
+	  virtual Uint64 retainedQueryVectorBytes() const noexcept { return 0; }
 	  virtual Uint32 telemetrySchemaVersion() const { return 1; }
 	  virtual const std::vector<AITelemetry::Field> &telemetrySchema() const
 	  {
@@ -96,6 +100,7 @@ namespace AISharedRuntime
 	{
 	public:
 	  void captureTelemetry() override;
+      std::optional<Uint64> retainedQueryVectorBytes() const override;
 	  const std::vector<AITelemetry::Field> &telemetrySchema() const override
 	  {
 		  return runtimeai->telemetrySchema();
@@ -106,13 +111,32 @@ namespace AISharedRuntime
 	  void save(GAGCore::OutputStream *stream);
 
 	  std::shared_ptr<Order> getOrder(void);
+      std::shared_ptr<Order> getOrder(const AIEngine::DecisionContext&) override;
+      bool supportsObservation() const override { return true; }
+      // Owner-only helpers explicitly borrow a view for their operation. The
+      // normal worker decision supplies its own immutable context instead.
+      class OwnerObservationScope {
+          Runtime& runtime;
+          bool active;
+      public:
+          explicit OwnerObservationScope(Runtime& runtime);
+          ~OwnerObservationScope();
+          OwnerObservationScope(const OwnerObservationScope&)=delete;
+      };
+      void refreshOwnerObservation();
+      const AIEngine::AIWorldView& observation();
+      const AIEngine::AIWorldView& observation() const {return *currentObservation;}
+      unsigned teamNumber() const {return observedTeamNumber;}
+      unsigned playerNumber() const {return observedPlayerNumber;}
+      const AIEngine::TeamView& observedTeam() {return observation().teams[teamNumber()];}
+	  void orderExecutionCompleted(const Order& order, bool accepted) override;
 
 	  unsigned int add_building_order(Construction::BuildingOrder *bo);
 	  void add_management_order(Management::ManagementOrder *mo);
 	  void add_material_tracker(Management::MaterialTracker *rt, int building_id);
 	  std::shared_ptr<Management::MaterialTracker> get_material_tracker(int building_id);
 
-	  TeamStat &get_team_stats();
+	  const TeamStat &get_team_stats();
 	  void flare(int x, int y);
 	  Construction::BuildingRegister &get_building_register();
 	  Construction::FlagMap &get_flag_map();
@@ -170,7 +194,14 @@ namespace AISharedRuntime
 		int previous_building_id;
 		bool is_fruit;
 
-		int from_load_timer;
+        std::shared_ptr<const AIEngine::AIWorldView> currentObservation;
+        std::shared_ptr<const AIEngine::AIWorldView::Catalog> observationCatalog;
+        unsigned observedTeamNumber=0,observedPlayerNumber=0;
+        bool deciding=false;
+        unsigned ownerObservationDepth=0;
+        void releaseObservation();
+        std::shared_ptr<Order> decide();
+        int from_load_timer;
 	};
 
 	const unsigned int INVALID_BUILDING=65535;
@@ -238,16 +269,17 @@ namespace AISharedRuntime
 
 
 
-inline TeamStat& AISharedRuntime::Runtime::get_team_stats()
+inline const TeamStat& AISharedRuntime::Runtime::get_team_stats()
 {
-	return *player->team->stats.getLatestStat();
+	return observedTeam().statistics;
 }
 
 
 
 inline void AISharedRuntime::Runtime::flare(int x, int y)
 {
-	orders.push_back(std::shared_ptr<Order>(new MapMarkOrder(player->team->teamNumber, x, y)));
+    OwnerObservationScope scope(*this);
+	push_order(std::shared_ptr<Order>(new MapMarkOrder(teamNumber(), x, y)));
 }
 
 
@@ -268,6 +300,10 @@ inline AISharedRuntime::Construction::FlagMap& AISharedRuntime::Runtime::get_fla
 
 inline void AISharedRuntime::Runtime::push_order(std::shared_ptr<Order> order)
 {
+    if(AIEngine::Command::targetGid(*order)) {
+        OwnerObservationScope scope(*this);
+        AIEngine::selectTarget(*order,observation());
+    }
 	orders.push_back(order);
 }
 
@@ -275,6 +311,9 @@ inline void AISharedRuntime::Runtime::push_order(std::shared_ptr<Order> order)
 
 inline AISharedRuntime::Gradients::GradientManager& AISharedRuntime::Runtime::get_gradient_manager()
 {
+	observation();
+    if(!gm) gm=std::make_unique<Gradients::GradientManager>(observation());
+    gm->bindWorld(observation());
 	return *gm;
 }
 

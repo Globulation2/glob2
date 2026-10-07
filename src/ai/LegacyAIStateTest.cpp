@@ -4,6 +4,7 @@
 #include "AINumbi.h"
 #include "AINicowar.h"
 #include "AICabino.h"
+#include "CabinoObservationFixture.h"
 #include "cortex/AICortex.h"
 #include "Player.h"
 #include "AI.h"
@@ -269,13 +270,15 @@ TEST_CASE("Cabino preserves stale gradients module latches and fruit memories")
         happy->fruit_trees.push_back({12,14,6,4,1});
         happy->exploring_fruit_trees.push_back({17,8,9,3});
         auto* farmer=dynamic_cast<Farmer*>(original.getOtherModule("Farmer")); REQUIRE(farmer);
-        farmer->water_gradient.reset(original,Gradient::Water,Gradient::None);
-        field::Frontier frontier; farmer->water_gradient.update(frontier); farmer->water_gradient.gradient[7]=123;
-        farmer->is_water_gradient_computed=true;
         auto& manager=original.getGradientManager();
-        manager.getGradient(Gradient::Wood,Gradient::Resource).gradient[5]=77;
-        manager.getGradient(Gradient::Wheat,Gradient::Building).gradient[6]=88;
-        manager.updateGradients(); // rotate the refresh FIFO away from map order.
+        glob2test::withCabinoObservation(original,w.world.game,[&] {
+            farmer->water_gradient.reset(original,Gradient::Water,Gradient::None);
+            field::Frontier frontier; farmer->water_gradient.update(frontier); farmer->water_gradient.gradient[7]=123;
+            farmer->is_water_gradient_computed=true;
+            manager.getGradient(Gradient::Wood,Gradient::Resource).gradient[5]=77;
+            manager.getGradient(Gradient::Wheat,Gradient::Building).gradient[6]=88;
+            manager.updateGradients(); // rotate the refresh FIFO away from map order.
+        });
         const auto bytes=write(text,[&](auto* out){original.save(out);});
         AICabino loaded(w.player());
         for (int attempt=0;attempt<2;++attempt) read(bytes,text,[&](auto* in){
@@ -338,12 +341,14 @@ TEST_CASE("shared runtime reload replaces queues and registrations in binary and
     using namespace AISharedRuntime;
     for (bool text : {false,true}) {
         Runtime original(new Econo,w.player());
+        Runtime::OwnerObservationScope originalObservation(original);
         original.push_order(std::make_shared<OrderModifyBuilding>(17,5));
         original.push_order(std::make_shared<NullOrder>());
         original.add_building_order(new Construction::BuildingOrder(IntBuildingType::FOOD_BUILDING,3));
         original.add_management_order(new Management::AssignWorkers(4,17));
         const auto bytes=write(text,[&](auto* out){original.save(out);out->writeUint32(sentinel,"sentinel");});
         Runtime loaded(new Econo,w.player());
+        Runtime::OwnerObservationScope loadedObservation(loaded);
         for (int attempt=0;attempt<2;++attempt) read(bytes,text,[&](auto* in){
             REQUIRE(loaded.load(in,w.player(),VERSION_MINOR));
             REQUIRE(loaded.orders.size()==2); CHECK(wire(loaded.orders.front())==wire(original.orders.front()));

@@ -5,20 +5,28 @@
 #pragma once
 #include <CooperativeTask.h>
 #include "ComputeExecutor.h"
+#include "sim/snapshot/Requirements.h"
 #include <array>
 #include <bit>
 #include <cstddef>
 #include <cstdint>
 #include <list>
+#include <map>
 #include <memory>
 #include <mutex>
 #include <optional>
+#include <span>
 #include <vector>
 #include <assert.h>
 
 #include "Building.h"
 #include "Ressource.h"
+#include "MapState.h"
 #include "ResourceRegistry.h"
+#include "ResourceHabitats.h"
+#include "MapStateView.h"
+#include "ResourcePlaneKey.h"
+#include "MapChangeTracking.h"
 #include "Sector.h"
 #include "Team.h"
 #include "TerrainType.h"
@@ -27,6 +35,8 @@
 #include "TerrainRegistry.h"
 #include "TerrainExperiments.h"
 #include "BitArray.h"
+
+namespace SimulationSnapshot { struct Handle; }
 
 class Unit;
 
@@ -98,6 +108,30 @@ class Map
 	mutable ComputeExecutor compute;
 	mutable std::unique_ptr<GradientRuntime> gradientRuntime;
 	unsigned computeExperiments = 0;
+	// The live cell view minus the game's growth settings, rebound by
+	// refreshLiveView() whenever an input is replaced. Per-cell queries read
+	// it directly instead of assembling a view on every call.
+	MapState::View liveCells;
+	// Per-array change tracking at chunk granularity; see MapChangeTracking.h.
+	MapState::ChunkGeometry chunkGeometry;
+	MapState::ChangeTracker terrainChanges, resourceChanges, occupancyChanges, areaChanges, visibilityChanges;
+	void markTerrain(size_t index) { terrainChanges.mark(chunkGeometry.chunkOf(index)); }
+	void markResource(size_t index) { resourceChanges.mark(chunkGeometry.chunkOf(index)); }
+	void markOccupancy(size_t index) { occupancyChanges.mark(chunkGeometry.chunkOf(index)); }
+	void markArea(size_t index) { areaChanges.mark(chunkGeometry.chunkOf(index)); }
+	void markVisibility(size_t index) { visibilityChanges.mark(chunkGeometry.chunkOf(index)); }
+	void markAllChanges() { terrainChanges.markAll(); resourceChanges.markAll(); occupancyChanges.markAll(); areaChanges.markAll(); visibilityChanges.markAll(); }
+	//! For fixtures that assign the cell arrays directly instead of calling
+	//! setSize: size the change trackers and bind the live view to the arrays.
+	void bindBootstrappedArrays() { resetChangeTracking(); refreshLiveView(); }
+	//! Size the trackers to the current dimensions; every chunk becomes dirty.
+	void resetChangeTracking()
+	{
+		chunkGeometry.reset(w, h, unsigned(wDec), Uint32(wMask));
+		const auto count = chunkGeometry.count();
+		terrainChanges.reset(count); resourceChanges.reset(count); occupancyChanges.reset(count);
+		areaChanges.reset(count); visibilityChanges.reset(count);
+	}
 	mutable std::mutex waterSnapshotMutex;
 	mutable std::shared_ptr<const std::vector<Uint8>> waterSnapshot;
 	mutable std::shared_ptr<const std::vector<TerrainType>> terrainSnapshot;
@@ -105,18 +139,12 @@ class Map
 	std::shared_ptr<const ResourceRegistry> resourceRegistryValue = ResourceRegistry::availableDefaults();
 	// Single-yield tiles keep stock inline. The index plane is allocated only
 	// when a multi-yield deposit is first placed; zero means no sidecar slot.
-    std::vector<Uint16> resourceHabitatProfiles;
-    std::vector<Uint8> resourceHabitatPermissions;
-    std::vector<MaterialMask> terrainMaterialPermissions;
-    std::vector<std::shared_ptr<const std::vector<Uint64>>> terrainResourceAllowLists;
-    std::vector<MaterialMask> explicitTerrainMaterialPermissions;
-    std::vector<int> terrainFarmResources;
-    unsigned resourceHabitatProfileCount=0;
+    std::shared_ptr<const ResourceHabitats> resourceHabitatsValue=std::make_shared<const ResourceHabitats>();
     void rebuildResourceHabitats();
 	std::vector<Uint32> resourceStockIndices;
 	std::vector<std::array<Uint16, MaterialCount>> resourceStocks;
 	std::vector<Uint32> freeResourceStocks;
-	std::array<size_t, MaterialCount> materialSourceCounts{};
+	std::array<Uint32, MaterialCount> materialSourceCounts{};
 	void initializeResourceStock(size_t index);
 	void releaseResourceStock(size_t index);
 	void refreshResourceTotal(size_t index);
@@ -161,6 +189,20 @@ class Map
 	std::mutex gradientBufferPoolMutex;
 	void clearGradientBufferPool();
 public:
+	std::array<Uint64, 5> snapshotGenerations() const
+	{ return {terrainChanges.generation, resourceChanges.generation, occupancyChanges.generation, areaChanges.generation, visibilityChanges.generation}; }
+	const MapState::ChunkGeometry& chunks() const { return chunkGeometry; }
+	const MapState::ChangeTracker& changes(MapState::TrackedArray array) const
+	{
+		switch (array)
+		{
+		case MapState::TrackedArray::Terrain: return terrainChanges;
+		case MapState::TrackedArray::Resources: return resourceChanges;
+		case MapState::TrackedArray::Occupancy: return occupancyChanges;
+		case MapState::TrackedArray::Areas: return areaChanges;
+		default: return visibilityChanges;
+		}
+	}
 	// Immutable terrain costs shared by independent resumed searches.
 	std::shared_ptr<const std::vector<Uint8>> frozenWaterSnapshot() const;
 	Uint16 *acquireBuildingGradientBuffer();
@@ -187,7 +229,7 @@ public:
 		unsigned workers = 0, delay = 0;
 		std::size_t pending = 0;
 		std::uint64_t jobs = 0, published = 0, discarded = 0;
-		std::uint64_t maxPending = 0, waitNs = 0, activeElapsedNs = 0;
+		std::uint64_t maxPending = 0, waitNs = 0, activeElapsedNs = 0, preparationNs = 0;
 	};
 	bool gradientPipelineEnabled() const;
 	GradientPipelineStatus gradientPipelineStatus() const;
@@ -195,7 +237,9 @@ public:
 	// and synchronized caches only. Drain before world mutation, save or reconfigure.
 	void stagePeriodicGradientPreparation();
 	bool hasPendingGradientPreparation() const;
+	SimulationSnapshot::Requirements pendingGradientRequirements() const;
 	void preparePendingGradient();
+	void preparePendingGradient(const SimulationSnapshot::Handle& foundation);
 	void advanceGradientPipeline();
 	void finishGradientPipeline();
 	void setGradientWorkerCount(unsigned workers);
@@ -377,7 +421,7 @@ public:
 	//! Returns true if the position(x, y) is a forbidden area for the given team
 	bool isForbidden(int x, int y, Uint32 teamMask) const
 	{
-		return tiles[coordToIndex(x, y)].forbidden&teamMask;
+		return areaCells[coordToIndex(x, y)].forbidden&teamMask;
 	}
 
 	//! Return true if (x,y) is a guard area in the locally-displayed team's overlay cache
@@ -390,7 +434,7 @@ public:
 	//! Returns true if the position(x, y) is a guard area for the given team
 	bool isGuardArea(int x, int y, Uint32 teamMask) const
 	{
-		return tiles[coordToIndex(x, y)].guardArea&teamMask;
+		return areaCells[coordToIndex(x, y)].guard&teamMask;
 	}
 
 	//! Return true if (x,y) is a clear area in the locally-displayed team's overlay cache
@@ -403,7 +447,7 @@ public:
 	//! Returns true if the position(x, y) is a clear area for the given team
 	bool isClearArea(int x, int y, Uint32 teamMask) const
 	{
-		return tiles[coordToIndex(x, y)].clearArea&teamMask;
+		return areaCells[coordToIndex(x, y)].clear&teamMask;
 	}
 
 	//! Return true if (x,y) is a farm area in the locally-displayed team's overlay cache
@@ -416,19 +460,19 @@ public:
 	//! Returns true if the position(x, y) is a farm area for the given team
 	bool isFarmArea(int x, int y, Uint32 teamMask) const
 	{
-		return tiles[coordToIndex(x, y)].farmArea&teamMask;
+		return areaCells[coordToIndex(x, y)].farm&teamMask;
 	}
 	
 	// These rebuild the render-only displayed*View caches from the authoritative
-	// tiles[] bits, and are only meaningful for the locally-displayed team (the one
+	// areaCells[] bits, and are only meaningful for the locally-displayed team (the one
 	// whose areas are drawn on screen). They do not touch checkSum() state.
-	//! Rebuild displayedForbiddenView from tiles[].forbidden for the given team.
+	//! Rebuild displayedForbiddenView from areaCells[].forbidden for the given team.
 	void computeDisplayedForbidden(int teamNumber);
-	//! Rebuild displayedGuardAreaView from tiles[].guardArea for the given team.
+	//! Rebuild displayedGuardAreaView from areaCells[].guard for the given team.
 	void computeDisplayedGuardArea(int teamNumber);
-	//! Rebuild displayedClearAreaView from tiles[].clearArea for the given team.
+	//! Rebuild displayedClearAreaView from areaCells[].clear for the given team.
 	void computeDisplayedClearArea(int teamNumber);
-	//! Rebuild displayedFarmAreaView from tiles[].farmArea for the given team.
+	//! Rebuild displayedFarmAreaView from areaCells[].farm for the given team.
 	void computeDisplayedFarmArea(int teamNumber);
 
 	//! Sentinel for "no displayed team yet" — used before GameGUI::adjustLocalTeam has run.
@@ -441,21 +485,21 @@ public:
 	Sint32 getDisplayedTeam() const { return displayedTeam; }
 	
 	//! Return the const tile at a given position
-	inline const Tile &getTile(int x, int y) const
+	inline const Tile getTile(int x, int y) const
 	{
-		return tiles[coordToIndex(x, y)];
+		return getTile(size_t(coordToIndex(x, y)));
 	}
 
 	//! Return the terrain for a given coordinate
 	inline Uint16 getTerrain(int x, int y) const
 	{
-		return tiles[coordToIndex(x, y)].terrain;
+		return legacyTerrain[coordToIndex(x, y)];
 	}
 	
 	//! Return the terrain for a given position in tile array
 	inline Uint16 getTerrain(size_t pos) const
 	{
-		return tiles[pos].terrain;
+		return legacyTerrain[pos];
 	}
 
 	//! Canonical gameplay identity; never inferred from art in a simulation query.
@@ -537,48 +581,37 @@ public:
 
 	const ResourceRegistry& resourceRegistry() const { return *resourceRegistryValue; }
     std::shared_ptr<const ResourceRegistry> frozenResourceRegistry() const { return resourceRegistryValue; }
+    std::shared_ptr<const ResourceHabitats> frozenResourceHabitats() const { return resourceHabitatsValue; }
+    const ResourceHabitats& resourceHabitats() const { return *resourceHabitatsValue; }
+    std::span<const Uint32> resourceStockIndexState() const { return resourceStockIndices; }
+    std::span<const std::array<Uint16, MaterialCount>> resourceStockState() const { return resourceStocks; }
+    int resourceScarcityLevel() const;
+    // Borrowed read-only view over the authoritative records; the shared
+    // MapState queries read these arrays directly, as do engine snapshots.
+    //! Borrowed read-only view of the live cell arrays and registries plus
+    //! the game's growth settings; stateView() adds the growth field.
+    MapState::View cellView() const;
+    MapState::View stateView() const;
+    //! Rebind liveCells after an array, registry or habitat table is replaced.
+    void refreshLiveView();
+    //! Expected growth opportunities per visit for a deposit of this type here.
+    std::uint32_t resourceGrowthRateAt(size_t index,int resourceType) const;
 	void installResourceDefinitions(const std::string& json);
 	const ResourceProperties& resourceProperties(ResourceId type) const
 	{
 	    return resourceRegistry().properties(type);
 	}
     const ResourceProperties& resourcePropertiesByIndex(int type) const { return resourceProperties(static_cast<ResourceId>(type)); }
-	Uint16 materialAmountAtSlot(size_t index, int material) const
-	{
-	    if (material < 0 || material >= int(MaterialCount)) return 0;
-	    const auto& r = tiles[index].resource;
-	    if (r.type == NO_RES_TYPE) return 0;
-	    const auto& p = resourcePropertiesByIndex(r.type);
-	    if (!(p.materialMask & (1u << material))) return 0;
-	    if (std::has_single_bit(p.materialMask)) return static_cast<Uint16>(r.amount);
-	    const auto slot = resourceStockIndices.empty() ? 0 : resourceStockIndices[index];
-	    return slot ? resourceStocks[slot - 1][material] : 0;
-	}
+	Uint16 materialAmountAtSlot(size_t index, int material) const { return MapState::materialAmountAt(liveCells, index, material); }
 	Uint16 materialAmountAt(size_t index, MaterialId material) const { return materialAmountAtSlot(index, static_cast<int>(material)); }
-	MaterialMask materialMaskAt(size_t index) const
-	{
-	    const auto& r = tiles[index].resource;
-	    if (r.type == NO_RES_TYPE) return 0;
-	    const auto& p = resourcePropertiesByIndex(r.type);
-	    if (std::has_single_bit(p.materialMask)) return r.amount ? p.materialMask : 0;
-	    const auto slot=resourceStockIndices.empty() ? 0 : resourceStockIndices[index];
-	    if (!slot) return 0;
-	    const auto& stocks=resourceStocks[slot-1];
-	    MaterialMask result = 0;
-	    for (unsigned mask=p.materialMask; mask; mask&=mask-1)
-	    {
-	        const auto material=std::countr_zero(mask);
-	        if (stocks[material]) result|=MaterialMask(1u<<material);
-	    }
-	    return result;
-	}
+	MaterialMask materialMaskAt(size_t index) const { return MapState::materialMaskAt(liveCells, index); }
     std::array<Uint16,MaterialCount> materialStocksAt(size_t index) const;
 	MaterialMask resourceMaterialMaskAt(size_t index) const;
-	bool resourceBlocksGround(size_t index) const { const auto id=tiles[index].resource.type; return id!=NO_RES_TYPE && resourcePropertiesByIndex(id).blocksGround; }
-	bool resourceBlocksAir(size_t index) const { const auto id=tiles[index].resource.type; return id!=NO_RES_TYPE && resourcePropertiesByIndex(id).blocksAir; }
-	bool resourceBlocksBuilding(size_t index) const { const auto id=tiles[index].resource.type; return id!=NO_RES_TYPE && resourcePropertiesByIndex(id).blocksBuilding; }
-	bool resourceVisibleToHarvest(size_t index) const { const auto id=tiles[index].resource.type; return id!=NO_RES_TYPE && resourcePropertiesByIndex(id).visibleToHarvest; }
-	bool hasMaterialSourceSlot(int material) const { return material >= 0 && material < int(MaterialCount) && materialSourceCounts[material] != 0; }
+	bool resourceBlocksGround(size_t index) const { return MapState::resourceBlocksGround(liveCells, index); }
+	bool resourceBlocksAir(size_t index) const { return MapState::resourceBlocksAir(liveCells, index); }
+	bool resourceBlocksBuilding(size_t index) const { return MapState::resourceBlocksBuilding(liveCells, index); }
+	bool resourceVisibleToHarvest(size_t index) const { return MapState::resourceVisibleToHarvest(liveCells, index); }
+	bool hasMaterialSourceSlot(int material) const { return MapState::hasMaterialSource(liveCells, material); }
 	bool hasMaterialSource(MaterialId material) const { return hasMaterialSourceSlot(static_cast<int>(material)); }
 	void setMaterialAmount(size_t index, MaterialId material, Uint16 amount);
     void setMaterialAmountSlot(size_t index,int material,Uint16 amount) { if (validMaterial(material)) setMaterialAmount(index,static_cast<MaterialId>(material),amount); }
@@ -587,18 +620,38 @@ public:
     bool isMaterialTakeableSlot(int x,int y,int material) const { return validMaterial(material) && isMaterialTakeable(x,y,static_cast<MaterialId>(material)); }
 	const Resource& getResource(int x, int y) const
 	{
-		return tiles[coordToIndex(x, y)].resource;
+		return resourceCells[coordToIndex(x, y)].resource;
 	}
 
 	const Resource& getResource(size_t pos) const
 	{
-		return tiles[pos].resource;
+		return resourceCells[pos].resource;
 	}
 
 	// Explicit cell writes preserve existing topology/refresh timing while keeping
 	// derived seed data coherent. Reads never invalidate preparation caches.
-	const std::vector<Tile> &getTiles() const { return tiles; }
-	const Tile &getTile(size_t index) const { return tiles[index]; }
+	size_t cellCount() const { return resourceCells.size(); }
+	std::span<const MapState::ResourceCell> resourceState() const { return resourceCells; }
+	std::span<const MapState::OccupancyCell> occupancyState() const { return occupancyCells; }
+	std::span<const MapState::AreaCell> areaState() const { return areaCells; }
+	std::span<const Uint16> legacyTerrainState() const { return legacyTerrain; }
+	const Tile getTile(size_t index) const
+	{
+		Tile tile;
+		tile.terrain = legacyTerrain[index];
+		tile.resource = resourceCells[index].resource;
+		tile.fertility = resourceCells[index].fertility;
+		tile.canResourcesGrow = resourceCells[index].mayGrow;
+		tile.building = occupancyCells[index].building;
+		tile.groundUnit = occupancyCells[index].groundUnit;
+		tile.airUnit = occupancyCells[index].airUnit;
+		tile.forbidden = areaCells[index].forbidden;
+		tile.guardArea = areaCells[index].guard;
+		tile.clearArea = areaCells[index].clear;
+		tile.farmArea = areaCells[index].farm;
+		tile.scriptAreas = scriptAreaCells[index];
+		return tile;
+	}
 	// Restores stored cell data (including its sprite), not canonical terrain
 	// identity. Terrain changes still use setCellTerrain/importLegacyTerrain.
 	void replaceTile(size_t index, const Tile &tile);
@@ -606,15 +659,30 @@ public:
 	void replaceResource(size_t index, const Resource &resource);
 	void replaceResource(int x, int y, const Resource &resource) { replaceResource(coordToIndex(x, y), resource); }
 	void setResourceAmount(size_t index, Uint32 amount);
-	void setFertility(int x, int y, Uint16 value) { tiles[coordToIndex(x, y)].fertility = value; }
-	void setResourcesGrow(int x, int y, Uint8 value) { tiles[coordToIndex(x, y)].canResourcesGrow = value; }
+	void setFertility(int x, int y, Uint16 value)
+	{
+		const auto index = coordToIndex(x, y);
+		auto &stored = resourceCells[index].fertility;
+		const bool changed = stored != value;
+		stored = value;
+		if (changed) markResource(index);
+	}
+	void setResourcesGrow(int x, int y, Uint8 value)
+	{
+		const auto index = coordToIndex(x, y);
+		auto &stored = resourceCells[index].mayGrow;
+		// Preserve the stored legacy byte in shared live/snapshot records.
+		const bool changed = stored != value;
+		stored = value;
+		if (changed) markResource(index);
+	}
 	// Raw mask replacement for order application/import; callers retain their
 	// existing topology-generation and displayed-overlay updates.
 	void setAreaMask(size_t index, Uint32 Tile::*field, Uint32 value);
 
 	Uint32 getForbidden(int x, int y) const
 	{
-		return tiles[coordToIndex(x, y)].forbidden;
+		return areaCells[coordToIndex(x, y)].forbidden;
 	}
 	
 	Uint8 getExplored(int x, int y, int team) const
@@ -632,17 +700,17 @@ public:
 
 	void addClearArea(int x, int y, Uint32 teamNum)
 	{
-		tiles[coordToIndex(x, y)].clearArea |=  Team::teamNumberToMask(teamNum);
+		setAreaMask(coordToIndex(x,y), &Tile::clearArea, areaCells[coordToIndex(x,y)].clear | Team::teamNumberToMask(teamNum));
 	}
 	
 	void addGuardArea(int x, int y, Uint32 teamNum)
 	{
-		tiles[coordToIndex(x, y)].guardArea |=  Team::teamNumberToMask(teamNum);
+		setAreaMask(coordToIndex(x,y), &Tile::guardArea, areaCells[coordToIndex(x,y)].guard | Team::teamNumberToMask(teamNum));
 	}
 
 	void addFarmArea(int x, int y, Uint32 teamNum)
 	{
-		tiles[coordToIndex(x, y)].farmArea |=  Team::teamNumberToMask(teamNum);
+		setAreaMask(coordToIndex(x,y), &Tile::farmArea, areaCells[coordToIndex(x,y)].farm | Team::teamNumberToMask(teamNum));
 	}
 
 	
@@ -660,13 +728,13 @@ public:
 
 	bool isResource(int x, int y) const
 	{
-		return getTile(x, y).resource.type != NO_RES_TYPE;
+		return getResource(x, y).type != NO_RES_TYPE;
 	}
 
     bool isClearableResourceForMaterials(int x,int y,bool materials[MaterialCount]) const
     {
         const auto index=coordToIndex(x,y);
-        const auto& r=tiles[index].resource;
+        const auto& r=resourceCells[index].resource;
         if (r.type==NO_RES_TYPE || !resourcePropertiesByIndex(r.type).clearable) return false;
         // Clearing targets the configured deposit, including empty persistent
         // obstacles; harvested-stock availability is irrelevant to removal.
@@ -677,7 +745,7 @@ public:
 
 	bool isResource(int x, int y, int *resourceType) const
 	{
-		const Resource &resource = getTile(x, y).resource;
+		const Resource &resource = getResource(x, y);
 		if (resource.type == NO_RES_TYPE)
 			return false;
 		*resourceType = resource.type;
@@ -686,7 +754,7 @@ public:
 
 	bool canResourcesGrow(int x, int y) const
 	{
-		return getTile(x, y).canResourcesGrow && terrainPropertiesAt(x,y).resourcesGrow;
+		return resourceCells[coordToIndex(x, y)].mayGrow && terrainPropertiesAt(x,y).resourcesGrow;
 	}
 
 	//! Apply one clearing action using the deposit's configured consumption policy.
@@ -806,12 +874,26 @@ public:
 	Uint8 getImmobileUnit(int x, int y) const;
 
 	//! Return GID
-	Uint16 getGroundUnit(int x, int y) const { return tiles[coordToIndex(x, y)].groundUnit; }
-	Uint16 getAirUnit(int x, int y) const { return tiles[coordToIndex(x, y)].airUnit; }
-	Uint16 getBuilding(int x, int y) const { return tiles[coordToIndex(x, y)].building; }
+	Uint16 getGroundUnit(int x, int y) const { return occupancyCells[coordToIndex(x, y)].groundUnit; }
+	Uint16 getAirUnit(int x, int y) const { return occupancyCells[coordToIndex(x, y)].airUnit; }
+	Uint16 getBuilding(int x, int y) const { return occupancyCells[coordToIndex(x, y)].building; }
 	
-	void setGroundUnit(int x, int y, Uint16 guid) { tiles[coordToIndex(x, y)].groundUnit = guid; }
-	void setAirUnit(int x, int y, Uint16 guid) { tiles[coordToIndex(x, y)].airUnit = guid; }
+	void setGroundUnit(int x, int y, Uint16 guid)
+	{
+		const auto index = coordToIndex(x, y);
+		auto &stored = occupancyCells[index].groundUnit;
+		const bool changed = stored != guid;
+		stored = guid;
+		if (changed) markOccupancy(index);
+	}
+	void setAirUnit(int x, int y, Uint16 guid)
+	{
+		const auto index = coordToIndex(x, y);
+		auto &stored = occupancyCells[index].airUnit;
+		const bool changed = stored != guid;
+		stored = guid;
+		if (changed) markOccupancy(index);
+	}
 	void setBuilding(int x, int y, int w, int h, Uint16 gbid);
 
 	//! Return the sector index of the sector containing tile (x,y). The
@@ -1061,7 +1143,11 @@ public:
 	Uint32 growthCoverageGeneration[Team::MAX_COUNT]{};
 	bool growthCoverageValid = false;
 private:
-	std::vector<Tile> tiles;
+	std::vector<MapState::ResourceCell> resourceCells;
+	std::vector<MapState::OccupancyCell> occupancyCells;
+	std::vector<MapState::AreaCell> areaCells;
+	std::vector<Uint16> legacyTerrain;
+	std::vector<Uint16> scriptAreaCells;
 public:
 	Uint64 identityValue = 0;
 	Uint32 terrainSeedValue = 0;
@@ -1087,8 +1173,8 @@ public:
 	std::vector<Uint32> fogOfWarB;
 	Uint32* fogOfWar = nullptr; // if valid, either points to &fogOfWarA[0] or &fogOfWarB[0]
 	//! Render-only overlay caches for the locally-displayed team's areas (forbidden /
-	//! guard / clear / farm). These mirror the per-team bits in tiles[].{forbidden,guardArea,
-	//! clearArea,farmArea} but only for displayedTeam, so the renderer can query one tile cheaply.
+	//! guard / clear / farm). These mirror the per-team bits in areaCells[].{forbidden,guard,
+	//! clear,farm} but only for displayedTeam, so the renderer can query one tile cheaply.
 	//! They are NOT in checkSum() and must never be read from a sim path — doing so would
 	//! desync, because displayedTeam differs per client. true = bit set.
 	Utilities::BitArray displayedForbiddenView;
@@ -1124,6 +1210,21 @@ protected:
 	mutable std::mutex materialGradientMutex;
 	//! Same, with the team's stocked markets as goals (see getResourceGradient).
 	Uint16 *marketMaterialGradients[Team::MAX_COUNT][MaterialSlotCount][SWIM_CLASS_COUNT];
+	// Dense registry of the published planes in both arrays above, maintained
+	// by every publication site so a capture visits only live planes. Plane
+	// generations are kept per key and survive republication, so a consumer
+	// never mistakes a re-added plane for the one it already holds.
+	std::vector<MapState::PublishedPlane> publishedPlanes;
+	std::array<Uint16, MapState::PlaneCount> publishedPlaneIndex{};
+	std::array<Uint64, MapState::PlaneCount> planeGenerations{};
+	//! The plane key of a material gradient slot; nullopt for any other field slot.
+	std::optional<Uint16> planeKeyForSlot(Uint16* const* slot) const;
+	//! Register a publication into slot; other field slots (areas, buildings) are ignored.
+	void publishPlane(Uint16* const* slot);
+	void clearPlaneRegistry() { publishedPlanes.clear(); publishedPlaneIndex.fill(0); planeGenerations.fill(0); }
+	//! Re-register every non-null slot with a fresh generation after bulk slot
+	//! changes (load, team removal) that bypass publishPlane.
+	void rebuildPlaneRegistry();
 	
 	// Used to go out of forbidden areas
 	Uint16 *forbiddenGradient[Team::MAX_COUNT][SWIM_CLASS_COUNT];
@@ -1142,6 +1243,9 @@ protected:
 	Uint16 *clearAreasGradient[Team::MAX_COUNT][SWIM_CLASS_COUNT];
 	
 public:
+	void installObservedResourceField(int team, int resource, int swim, std::span<const Uint16> values);
+	//! Live published material planes in publication order; every plane has size cells.
+	std::span<const MapState::PublishedPlane> publishedResourceFields() const { return publishedPlanes; }
 	// Used to guide explorers
 	//[int team]
 	// 0=unexplored, 255=just explored
@@ -1156,7 +1260,7 @@ public:
 	/// square, and if so, what team number it is. In terms of the engine, these
 	/// are treated like forbidden areas
 private:
-	Uint8 *immobileUnits;
+
 public:
 	
 protected:
@@ -1235,4 +1339,6 @@ public:
 	void controlSand(void);
 	void smoothResources(int times);
 
+private:
+	void preparePendingGradientInputs(const SimulationSnapshot::Handle* foundation);
 };

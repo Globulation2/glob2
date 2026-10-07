@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #pragma once
+#include "CortexSnapshotQueries.h"
 
 #include "CortexConstants.h"
 #include "BuildingCapabilities.h"
@@ -14,10 +15,10 @@ namespace Cortex
 // Fixed model/policy channels describe demands, never catalog family IDs. A
 // mixed building contributes to every role it serves. The unused wall channel
 // remains reserved so existing bounded policy arrays keep their shape.
-inline unsigned buildingRoles(const Game& game, const BuildingType& type)
+inline unsigned buildingRoles(const AIEngine::AIWorldView& game, const BuildingType& type)
 {
  const BuildingType* b = &type;
- if (b->isBuildingSite && b->nextLevel >= 0) b = game.buildingsTypes.get(b->nextLevel);
+ if (b->isBuildingSite && b->nextLevel >= 0) b = catalogType(game,b->nextLevel);
  if (!b || !b->runtimeAvailable) return 0;
  const auto& s = b->semantics;
  unsigned roles = 0;
@@ -40,7 +41,7 @@ inline unsigned buildingRoles(const Game& game, const BuildingType& type)
  add(CORTEX_BUILD_EXCHANGE, (s.market.interTeamFruitExchange || b->runtimeSuppliesDirectStock) || b->runtimeSuppliesStock);
  return roles;
 }
-inline bool servesRole(const Game& game, const BuildingType& type, int role)
+inline bool servesRole(const AIEngine::AIWorldView& game, const BuildingType& type, int role)
 {
  return role >= 0 && role < CORTEX_BUILDING_TYPES && (buildingRoles(game, type) & (1u << role));
 }
@@ -55,19 +56,20 @@ inline int primaryMaterialSlot(const BuildingMaterialCost& cost)
 // Resolve once before a placement search; never enumerate the catalog per tile.
 // Cost then footprint then numeric ID give deterministic choices for unfamiliar
 // providers while preserving the policy's existing strategic role demands.
-inline AIPlanning::BuildingCandidate selectBuilding(Game& game, Team& team, int role, int productionClass = WORKER, int maxWorkerQualification = -1)
+inline AIPlanning::BuildingCandidate selectBuilding(const AIEngine::AIWorldView& game, const AIEngine::TeamView& team, int role, int productionClass = WORKER, int maxWorkerQualification = -1)
 {
  using I = AIPlanning::BuildingIntent;
  AIPlanning::BuildingCandidate best;
  long long bestCost = std::numeric_limits<long long>::max();
  int bestArea = std::numeric_limits<int>::max();
- const int qualification = maxWorkerQualification >= 0 ? maxWorkerQualification : team.maxBuildLevel();
+ const int qualification = maxWorkerQualification >= 0 ? maxWorkerQualification : maxBuildLevel(game,team);
  auto consider = [&](I intent) {
-  for (const auto& candidate : game.buildingCapabilities().placements(intent))
+  for (const auto& candidate : game.capabilities().placements(intent))
   {
-   if (!game.buildingCapabilities().available(candidate, intent, game.gameHeader)) continue;
-   const auto* placement = game.buildingsTypes.get(candidate.placementType);
-   const auto* completed = game.buildingsTypes.get(candidate.completedType);
+   const auto& kind = game.catalog->at(candidate.placementType);
+   if (!kind.available || !(kind.capabilityMask & (Uint64(1) << unsigned(intent)))) continue;
+   const auto* placement = catalogType(game,candidate.placementType);
+   const auto* completed = catalogType(game,candidate.completedType);
    if (!placement || !completed || placement->semantics.requiredWorkerLevel > qualification) continue;
    long long cost = 0;
    if (placement->isBuildingSite) for (int amount : placement->semantics.constructionCost) cost += amount;
@@ -93,5 +95,13 @@ inline AIPlanning::BuildingCandidate selectBuilding(Game& game, Team& team, int 
  default: break;
  }
  return best;
+}
+}
+
+namespace Cortex {
+inline AIPlanning::BuildingCandidate selectBuilding(::Game& game,::Team& team,int role,int productionClass=WORKER,int qualification=-1)
+{
+    const auto view=AIEngine::AIWorldView::capture(game, AIEngine::AIWorldView::captureCatalog(game));
+    return selectBuilding(*view,view->teams[team.teamNumber],role,productionClass,qualification);
 }
 }

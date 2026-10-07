@@ -110,6 +110,7 @@ TEST_CASE("enemy team searches terminate when every team slot is occupied")
     auto *player = world.game.players[0];
     AISharedRuntime::Runtime runtime(nullptr, player);
     const auto enemies = [&]() {
+        AISharedRuntime::Runtime::OwnerObservationScope observationScope(runtime);
         std::vector<int> teams;
         using AISharedRuntime::SearchTools::enemy_team_iterator;
         for (enemy_team_iterator it(runtime); it != enemy_team_iterator(); ++it)

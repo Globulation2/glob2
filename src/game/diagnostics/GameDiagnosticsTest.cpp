@@ -14,6 +14,8 @@
 #include <SDL3_image/SDL_image.h>
 #include <fstream>
 #include <limits>
+#include <BinaryStream.h>
+#include <StreamBackend.h>
 
 TEST_SUITE("GameDiagnostics")
 {
@@ -46,6 +48,87 @@ TEST_CASE("controller capture follows simulation cadence and preserves unsigned 
 	CHECK(sink.fields[2].values[0]==4294967295LL);
 	sink.captured=false; sink.tick=9; sink.capture(world); CHECK_FALSE(sink.captured);
 	sink.tick=10; sink.capture(world); CHECK(sink.captured);
+}
+TEST_CASE("private diagnostic reservation survives owner ticks and serialization [artifacts]")
+{
+    glob2test::HeadlessGlobals globals;
+    glob2test::HeadlessGame fixture({.loadDefaultRace=true});
+    GameHeader header;header.setNumberOfPlayers(1);
+    header.getBasePlayer(0)=BasePlayer(0,"diagnostics",0,BasePlayer::playerTypeFromImplementationID(AI::MAXIMA));
+    fixture.game.setGameHeader(header);
+    GameDiagnostics::Session session(fixture.game,(glob2test::artifactDir()/"private-captures").string(),10,false);
+    auto* maxima=dynamic_cast<AIMaxima::Maxima*>(fixture.game.players[0]->ai->aiImplementation);
+    REQUIRE(maxima);
+    const auto stable=maxima->fieldDiagnostics;
+    session.beginTick(fixture.game);
+    auto clone=session.reserveCapture(0,0);
+    REQUIRE(clone);CHECK(clone!=stable);CHECK_FALSE(stable->enabled);
+    CHECK_FALSE(session.reserveCapture(0,0));
+    fixture.game.stepCounter=8;session.beginTick(fixture.game);
+    CHECK(clone->tick==0);CHECK(clone->enabled);
+    AIMaximaPlacement::WorldState state;state.reset(fixture.game.map.getW(),fixture.game.map.getH());state.tick=23;
+    state.tiles[0].foodOpportunity=std::numeric_limits<std::uint32_t>::max();
+    clone->capture(state);REQUIRE(clone->captured);CHECK_FALSE(stable->captured);
+    clone->fields[0].values[0]=std::numeric_limits<std::int64_t>::min();
+    clone->fields[1].values[0]=std::numeric_limits<std::int64_t>::max();
+    auto* backend=new GAGCore::MemoryStreamBackend;
+    GAGCore::BinaryOutputStream out(backend);clone->save(&out);out.flush();
+    const auto bytes=backend->takeContents();
+    GAGCore::BinaryInputStream in(new GAGCore::MemoryStreamBackend(bytes.data(),bytes.size()));in.seekFromStart(0);
+    GameDiagnostics::FieldSink restored;REQUIRE(restored.load(&in));
+    CHECK(restored.tick==0);CHECK(restored.nextTick==10);CHECK(restored.plannerTick==23);
+    CHECK(restored.fields[0].values[0]==std::numeric_limits<std::int64_t>::min());
+    CHECK(restored.fields[1].values[0]==std::numeric_limits<std::int64_t>::max());
+    CHECK(restored.fields[2].values[0]==4294967295LL);
+    {
+        const size_t fieldBytes=size_t(fixture.game.map.getW())*fixture.game.map.getH()*5*sizeof(std::int64_t);
+        GameDiagnostics::Session resumed(fixture.game,(glob2test::artifactDir()/"adopt-private").string(),10,false,2*fieldBytes);
+        REQUIRE(resumed.adoptCapture(restored));
+        CHECK(resumed.adoptCapture(restored)); // idempotent setup registration
+        auto another=restored;another.tick=1;
+        CHECK_FALSE(resumed.adoptCapture(another));
+        resumed.cancelCaptures(0);
+        CHECK(resumed.adoptCapture(another));
+        resumed.cancelCaptures(0);
+    }
+    maxima->fieldDiagnostics=stable;
+    session.publishCapture(restored);CHECK(stable->captured);CHECK(stable->tick==0);
+    restored.fields[0].values[0]=5;CHECK(stable->fields[0].values[0]!=5);
+    session.completeTick(fixture.game);REQUIRE(session.pending());session.drain();
+    fixture.game.stepCounter=9;session.beginTick(fixture.game);CHECK_FALSE(session.reserveCapture(0,9));
+    fixture.game.stepCounter=10;session.beginTick(fixture.game);CHECK(session.reserveCapture(0,10)!=nullptr);
+    CHECK(maxima->fieldDiagnostics==stable);
+    // Declared counts cannot bypass the bounded field layout on reload.
+    restored.fields[0].width=1;
+    auto* invalidBackend=new GAGCore::MemoryStreamBackend;
+    GAGCore::BinaryOutputStream bad(invalidBackend);restored.save(&bad);bad.flush();
+    const auto invalid=invalidBackend->takeContents();
+    GAGCore::BinaryInputStream malformed(new GAGCore::MemoryStreamBackend(invalid.data(),invalid.size()));malformed.seekFromStart(0);
+    CHECK_FALSE(restored.load(&malformed));
+}
+TEST_CASE("diagnostic budget counts private captures across the delay horizon [artifacts]")
+{
+    glob2test::HeadlessGlobals globals;
+    glob2test::HeadlessGame fixture({.wDec=5,.hDec=5,.loadDefaultRace=true});
+    GameHeader header;header.setNumberOfPlayers(1);
+    header.getBasePlayer(0)=BasePlayer(0,"diagnostics",0,BasePlayer::playerTypeFromImplementationID(AI::MAXIMA));
+    fixture.game.setGameHeader(header);
+    const size_t bytes=32*32*5*sizeof(std::int64_t);
+    GameDiagnostics::Session session(fixture.game,(glob2test::artifactDir()/"bounded-private").string(),1,false,2*bytes);
+    session.beginTick(fixture.game);
+    auto first=session.reserveCapture(0,0);REQUIRE(first);
+    // An interval shorter than the eight-tick scheduling horizon cannot admit
+    // another full field allocation while the first private output is held.
+    fixture.game.stepCounter=1;session.beginTick(fixture.game);
+    CHECK_FALSE(session.reserveCapture(0,1));
+    session.completeTick(fixture.game);REQUIRE(session.pending());session.drain();
+    session.publishCapture(*first);first.reset(); // an uncaptured invocation releases its reservation
+    fixture.game.stepCounter=2;session.beginTick(fixture.game);
+    auto second=session.reserveCapture(0,2);REQUIRE(second);
+    second.reset(); // cancellation joins the stream before discarding its output
+    session.cancelCaptures(0);
+    fixture.game.stepCounter=3;session.beginTick(fixture.game);
+    CHECK(session.reserveCapture(0,3)!=nullptr);
 }
 TEST_CASE("controllers sharing a team publish distinct complete captures and recover after failures [artifacts]")
 {

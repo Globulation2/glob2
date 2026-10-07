@@ -330,14 +330,14 @@ void GameGUI::drawBuildingExchange(const SceneBuildingPanel* selBuild, BuildingT
 		// Exchange feature is broken/disabled. If revived, this should use
 		// BuildingGuiState::pendingReceiveResourceMask /
 		// pendingSendResourceMask (TODO: add) for the in-flight mask, falling
-		// back to receiveResourceMask / sendResourceMask. See the equivalent
+		// back to receiveMaterialMask / sendMaterialMask. See the equivalent
 		// pattern for ratio / priority.
 		int inId, outId;
-		if (selBuild->receiveResourceMask & (1<<i))
+		if (selBuild->receiveMaterialMask & (1<<i))
 			inId = 20;
 		else
 			inId = 19;
-		if (selBuild->sendResourceMask & (1<<i))
+		if (selBuild->sendMaterialMask & (1<<i))
 			outId = 20;
 		else
 			outId = 19;

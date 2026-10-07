@@ -2,14 +2,11 @@
 // Copyright (C) 2026 The Globulation 2 Authors
 
 #pragma once
+#include "CortexSnapshotQueries.h"
 
 #include <SDL3/SDL_stdinc.h>
 #include <vector>
 
-class Game;
-class BuildingsTypes;
-class Team;
-class Map;
 struct BuildingType;
 
 // AICortex placement geometry helpers.
@@ -31,13 +28,13 @@ namespace Cortex
 		struct Box { int x, y, w, h; };
 		struct Inn { Box box; unsigned sides; };
 		struct BuildingBox { Box box; unsigned roles; };
-		Map& map;
+		const AIEngine::AIWorldView& map;
 		std::vector<Box> buildings;
 		std::vector<BuildingBox> typedBuildings;
 		std::vector<Box> reservations;
 		std::vector<Inn> inns;
 	public:
-		PlacementGeometry(Team* team, Map& map);
+		PlacementGeometry(const AIEngine::TeamView* team, const AIEngine::AIWorldView& map, const PlanningIntent& intents);
 		int distanceToNearestBuilding(int x, int y) const;
 		int distanceToNearestBuildingType(int x, int y, int type) const;
 		int nearestBuildingEdgeDist(int x, int y, int w, int h) const;
@@ -67,7 +64,7 @@ namespace Cortex
 	/// live building owned by `team`. Returns -1 when the team has no buildings
 	/// yet (first placement: distance is meaningless). Shared by placeCandidates
 	/// and placeFlagTargets.
-	int distanceToNearestBuilding(Game* game, Team* team, int x, int y);
+	int distanceToNearestBuilding(const AIEngine::AIWorldView* game, const AIEngine::TeamView* team, const PlanningIntent& intents, int x, int y);
 
 	/// Translate a Chebyshev distance-to-colony into a placement score. Closer is
 	/// better; we want a compact colony but not literally stacked, so the score
@@ -85,13 +82,13 @@ namespace Cortex
 	/// Corner-aware: a tile in the clearance frame that is outside the footprint on
 	/// BOTH axes (a diagonal corner) counts toward both adjacent sides, so a building
 	/// parked at a corner occupies two sides. Returns 0..4.
-	int innOccupiedSides(const Map& map, int innX, int innY, int innW, int innH,
+	int innOccupiedSides(const AIEngine::AIWorldView& map, int innX, int innY, int innW, int innH,
 	                     int candX, int candY, int candW, int candH);
 
 	/// True if any food tile lies within `dist` Chebyshev tiles of the
 	/// footprint (innX, innY, w x h). Used to keep non-food-fed buildings off the
 	/// food lanes. Early-outs on the first Food found.
-	bool anyFoodSourceWithin(const Map& map, int x, int y, int w, int h, int dist);
+	bool anyFoodSourceWithin(const AIEngine::AIWorldView& map, int x, int y, int w, int h, int dist);
 
 	/// Counts the HARVESTABLE food tiles within `dist` Chebyshev tiles of the
 	/// footprint (x, y, w x h): tiles that are Food AND not forbidden for `teamMask`.
@@ -99,14 +96,14 @@ namespace Cortex
 	/// (forbidden) half of a field are excluded, so the result is the live food the
 	/// team's workers can actually take. Used by placeCandidates to require a real
 	/// cluster of harvestable food (CORTEX_WHEAT_MIN_TILES) around a new swarm/inn.
-	int countHarvestableFoodSourcesWithin(const Map& map, Uint32 teamMask,
+	int countHarvestableFoodSourcesWithin(const AIEngine::AIWorldView& map, Uint32 teamMask,
 	                               int x, int y, int w, int h, int dist);
 
 	/// Forbidden-BLIND food-tile count within `dist` Chebyshev tiles of the footprint:
 	/// every Food tile regardless of the forbidden mask. (countHarvestableFoodSourcesWithin
 	/// minus this is the forbidden-but-present food.) Diagnostic discriminator between
 	/// checkerboard-forbidding and field depletion; no policy reads it.
-	int countFoodSourcesWithin(const Map& map, int x, int y, int w, int h, int dist);
+	int countFoodSourcesWithin(const AIEngine::AIWorldView& map, int x, int y, int w, int h, int dist);
 
 	/// Count of the Food tiles within `dist` Chebyshev tiles of the footprint that
 	/// SURVIVE Cortex's food-protection checkerboard — the open-parity half the paint
@@ -116,7 +113,7 @@ namespace Cortex
 	/// harvestable set — paint-timing independent. The durable food signal both inn/swarm
 	/// placement and feedCapacity want: depleted tiles drop out (no longer Food), but our
 	/// own recoverable checkerboard does not zero it.
-	int countSurvivingFoodSourcesWithin(const Map& map, int x, int y, int w, int h, int dist);
+	int countSurvivingFoodSourcesWithin(const AIEngine::AIWorldView& map, int x, int y, int w, int h, int dist);
 
 	/// Fills (w, h) with the LARGEST footprint a building of type `bt` can grow into
 	/// by walking its upgrade chain (BuildingType::nextLevel). For an inn this yields
@@ -124,7 +121,7 @@ namespace Cortex
 	/// grows it returns its own width/height. Growth is anchored at the top-left
 	/// corner (decLeft/decTop are constant across inn levels, so the footprint expands
 	/// toward +x/+y), so the grown footprint shares the placed building's (posX, posY).
-	void grownFootprint(const BuildingsTypes& catalog, const BuildingType* bt, int& w, int& h);
+	void grownFootprint(const AIEngine::AIWorldView& catalog, const BuildingType* bt, int& w, int& h);
 
 	/// Bounding box, RELATIVE to the placed level-0 top-left corner, that covers the
 	/// building's footprint at EVERY level of its upgrade chain. Unlike grownFootprint
@@ -137,13 +134,13 @@ namespace Cortex
 	/// corner (<= 0 when it grows up/left) and its size (w, h). For a type that never
 	/// grows, or grows from a fixed corner (the inn, constant decLeft), ox == oy == 0
 	/// and (w, h) equals grownFootprint — so callers can use this uniformly.
-	void grownFootprintBox(const BuildingsTypes& catalog, const BuildingType* bt, int& ox, int& oy, int& w, int& h);
+	void grownFootprintBox(const AIEngine::AIWorldView& catalog, const BuildingType* bt, int& ox, int& oy, int& w, int& h);
 
 	/// True if placing a building of footprint (x, y, w x h) would push one of
 	/// `team`'s existing inns past CORTEX_INN_MAX_TOUCH_SIDES occupied sides. Only
 	/// rejects when the candidate actually WORSENS an inn's count, so a pre-existing
 	/// violation does not block every nearby placement.
-	bool candidateCrowdsInn(Game* game, Team* team, const Map& map,
+	bool candidateCrowdsInn(const AIEngine::AIWorldView* game, const AIEngine::TeamView* team, const PlanningIntent& intents, const AIEngine::AIWorldView& map,
 	                        int x, int y, int w, int h);
 
 	/// Chebyshev edge-to-edge gap between two warp-wrapped boxes A (ax, ay, aw x ah)
@@ -166,6 +163,6 @@ namespace Cortex
 	/// building must not occupy tiles they will expand into. Uses grownFootprintBox on
 	/// each existing building's CURRENT type, anchored at its (posX, posY), so it is
 	/// correct whether the building is level 0 or already partly upgraded. Warp-safe.
-	bool candidateOverlapsReservedExpansion(Game* game, Team* team, const Map& map,
+	bool candidateOverlapsReservedExpansion(const AIEngine::AIWorldView* game, const AIEngine::TeamView* team, const PlanningIntent& intents, const AIEngine::AIWorldView& map,
 	                                        int cgx, int cgy, int cew, int ceh);
 }

@@ -33,9 +33,9 @@ void NewNicowar::queue_buildings(Runtime& runtime)
 void NewNicowar::queue_inns(Runtime& runtime)
 {
 	// Feeding capacity cannot constrain production when units never need meals.
-	if (runtime.player->game->gameHeader.isHungerDisabled()) return;
+	if (runtime.observation().configuration->isHungerDisabled()) return;
 	//Get some statistics
-	TeamStat* stat=runtime.player->team->stats.getLatestStat();
+	const TeamStat* stat=&runtime.observedTeam().statistics;
 	int total_workers=stat->numberUnitPerType[WORKER];
 	int total_explorers=stat->numberUnitPerType[EXPLORER];
 	int total_warriors=stat->numberUnitPerType[WARRIOR];
@@ -88,7 +88,7 @@ void NewNicowar::queue_swarms(Runtime& runtime)
 	bs.add_condition(new ProvidesBuildingCapability(BuildingDemand::ProduceWorker));
 	bs.add_condition(new NotUnderConstruction);
 	const int swarm_count = bs.count_buildings() + buildings_under_construction_per_type[RegularSwarm];
-	const int total_unit = runtime.player->team->stats.getLatestStat()->totalUnit;
+	const int total_unit = runtime.observedTeam().statistics.totalUnit;
 	int demand=0;
 	if(growth_phase)
 	{
@@ -109,7 +109,7 @@ void NewNicowar::queue_swarms(Runtime& runtime)
 void NewNicowar::queue_racetracks(Runtime& runtime)
 {
 	// Training cannot increase levels here; do not fund or wait for an impossible upgrade.
-	if (runtime.player->game->gameHeader.isUnitUpgradesDisabled()) return;
+	if (runtime.observation().configuration->isUnitUpgradesDisabled()) return;
 	BuildingSearch bs_finished(runtime);
 	bs_finished.add_condition(new ProvidesBuildingCapability(BuildingDemand::TrainWalk));
 	bs_finished.add_condition(new NotUnderConstruction);
@@ -135,7 +135,7 @@ void NewNicowar::queue_racetracks(Runtime& runtime)
 void NewNicowar::queue_swimmingpools(Runtime& runtime)
 {
 	// Training cannot increase levels here; do not fund or wait for an impossible upgrade.
-	if (runtime.player->game->gameHeader.isUnitUpgradesDisabled()) return;
+	if (runtime.observation().configuration->isUnitUpgradesDisabled()) return;
 	BuildingSearch bs_finished(runtime);
 	bs_finished.add_condition(new ProvidesBuildingCapability(BuildingDemand::TrainSwim));
 	bs_finished.add_condition(new NotUnderConstruction);
@@ -161,7 +161,7 @@ void NewNicowar::queue_swimmingpools(Runtime& runtime)
 void NewNicowar::queue_schools(Runtime& runtime)
 {
 	// Training cannot increase levels here; do not fund or wait for an impossible upgrade.
-	if (runtime.player->game->gameHeader.isUnitUpgradesDisabled()) return;
+	if (runtime.observation().configuration->isUnitUpgradesDisabled()) return;
 	BuildingSearch bs_finished(runtime);
 	bs_finished.add_condition(new ProvidesBuildingCapability(BuildingDemand::TrainConstruction));
 	bs_finished.add_condition(new NotUnderConstruction);
@@ -187,8 +187,8 @@ void NewNicowar::queue_schools(Runtime& runtime)
 void NewNicowar::queue_barracks(Runtime& runtime)
 {
 	// Combat cannot damage opponents here; military work must not reserve economic labour.
-	if (runtime.player->game->gameHeader.isPeacefulModeEnabled()
-		|| runtime.player->game->gameHeader.isUnitUpgradesDisabled()) return;
+	if (runtime.observation().configuration->isPeacefulModeEnabled()
+		|| runtime.observation().configuration->isUnitUpgradesDisabled()) return;
 	BuildingSearch bs_finished(runtime);
 	bs_finished.add_condition(new ProvidesBuildingCapability(BuildingDemand::TrainAttackStrength));
 	bs_finished.add_condition(new NotUnderConstruction);
@@ -204,7 +204,7 @@ void NewNicowar::queue_barracks(Runtime& runtime)
 	{
 		demand=strategy.war_preparation_phase_number_of_barracks;
 		///This only kicks in right at the start, so that it doesn't build barracks when it doesn't need to
-		demand = std::min(demand, runtime.player->team->stats.getLatestStat()->isFree[WARRIOR] / AI_NICOWAR_BARRACKS_FREE_WARRIOR_DIVISOR);
+		demand = std::min(demand, runtime.observedTeam().statistics.isFree[WARRIOR] / AI_NICOWAR_BARRACKS_FREE_WARRIOR_DIVISOR);
 	}
 
 	if(demand > barracks_count)
@@ -225,10 +225,10 @@ void NewNicowar::queue_hospitals(Runtime& runtime)
 	bs_upgrading.add_condition(new BeingUpgraded);
 
 	const int hospital_count=bs_finished.count_buildings() + bs_upgrading.count_buildings() + buildings_under_construction_per_type[RegularHospital];
-	const int total_warrior = runtime.player->team->stats.getLatestStat()->numberUnitPerType[WARRIOR];
+	const int total_warrior = runtime.observedTeam().statistics.numberUnitPerType[WARRIOR];
 
 	int demand=0;
-	if(runtime.player->team->stats.getLatestStat()->needHeal > 0)
+	if(runtime.observedTeam().statistics.needHeal > 0)
 		demand += strategy.base_number_of_hospitals;
 	if(war_preparation || war)
 	{
@@ -246,7 +246,7 @@ void NewNicowar::queue_hospitals(Runtime& runtime)
 void NewNicowar::order_buildings(Runtime& runtime)
 {
 	telemetry.count(AITrace::AI5::NewNicowar_order_buildings_calls);
-	const auto& rules=runtime.player->game->gameHeader;
+	const auto& rules=*runtime.observation().configuration;
 	const auto unavailable=[&](BuildingPlacement b) {
 		return (rules.isUnitUpgradesDisabled() && (b==RegularSchool || b==RegularRacetrack || b==RegularSwimmingpool || b==RegularBarracks))
 			|| (rules.isPeacefulModeEnabled() && b==RegularBarracks)
@@ -355,7 +355,7 @@ int NewNicowar::order_regular_inn(Runtime& runtime)
 	//Constraints around nearby settlement
 	AISharedRuntime::Gradients::GradientInfo gi_building;
     gi_building.terrainTravel=can_swim?field::TerrainTravel::Swim:field::TerrainTravel::Walk;
-	gi_building.add_source(new AISharedRuntime::Gradients::Entities::AnyTeamBuilding(runtime.player->team->teamNumber, false));
+	gi_building.add_source(new AISharedRuntime::Gradients::Entities::AnyTeamBuilding(runtime.teamNumber(), false));
 	gi_building.add_obstacle(new AISharedRuntime::Gradients::Entities::ResourceBuildingObstacle);
 	if(!can_swim)
 		gi_building.add_obstacle(new AISharedRuntime::Gradients::Entities::Unwalkable);
@@ -363,7 +363,7 @@ int NewNicowar::order_regular_inn(Runtime& runtime)
 	bo->add_constraint(new AISharedRuntime::Construction::MinimizedDistance(gi_building, AI_NICOWAR_INN_BUILDING_PREF));
 
 	AISharedRuntime::Gradients::GradientInfo gi_building_construction;
-	gi_building_construction.add_source(new AISharedRuntime::Gradients::Entities::AnyTeamBuilding(runtime.player->team->teamNumber, true));
+	gi_building_construction.add_source(new AISharedRuntime::Gradients::Entities::AnyTeamBuilding(runtime.teamNumber(), true));
 	gi_building_construction.add_obstacle(new AISharedRuntime::Gradients::Entities::ResourceBuildingObstacle);
 	if(!can_swim)
 		gi_building_construction.add_obstacle(new AISharedRuntime::Gradients::Entities::Unwalkable);
@@ -422,7 +422,7 @@ int NewNicowar::order_regular_swarm(Runtime& runtime)
 	//Constraints around nearby settlement
 	AISharedRuntime::Gradients::GradientInfo gi_building;
     gi_building.terrainTravel=can_swim?field::TerrainTravel::Swim:field::TerrainTravel::Walk;
-	gi_building.add_source(new AISharedRuntime::Gradients::Entities::AnyTeamBuilding(runtime.player->team->teamNumber, false));
+	gi_building.add_source(new AISharedRuntime::Gradients::Entities::AnyTeamBuilding(runtime.teamNumber(), false));
 	gi_building.add_obstacle(new AISharedRuntime::Gradients::Entities::ResourceBuildingObstacle);
 	if(!can_swim)
 		gi_building.add_obstacle(new AISharedRuntime::Gradients::Entities::Unwalkable);
@@ -430,7 +430,7 @@ int NewNicowar::order_regular_swarm(Runtime& runtime)
 	bo->add_constraint(new AISharedRuntime::Construction::MinimizedDistance(gi_building, AI_NICOWAR_SWARM_BUILDING_PREF));
 
 	AISharedRuntime::Gradients::GradientInfo gi_building_construction;
-	gi_building_construction.add_source(new AISharedRuntime::Gradients::Entities::AnyTeamBuilding(runtime.player->team->teamNumber, true));
+	gi_building_construction.add_source(new AISharedRuntime::Gradients::Entities::AnyTeamBuilding(runtime.teamNumber(), true));
 	gi_building_construction.add_obstacle(new AISharedRuntime::Gradients::Entities::ResourceBuildingObstacle);
 	if(!can_swim)
 		gi_building_construction.add_obstacle(new AISharedRuntime::Gradients::Entities::Unwalkable);
@@ -476,7 +476,7 @@ int NewNicowar::order_regular_racetrack(Runtime& runtime)
 	//Constraints around nearby settlement
 	AISharedRuntime::Gradients::GradientInfo gi_building;
     gi_building.terrainTravel=can_swim?field::TerrainTravel::Swim:field::TerrainTravel::Walk;
-	gi_building.add_source(new AISharedRuntime::Gradients::Entities::AnyTeamBuilding(runtime.player->team->teamNumber, false));
+	gi_building.add_source(new AISharedRuntime::Gradients::Entities::AnyTeamBuilding(runtime.teamNumber(), false));
 	gi_building.add_obstacle(new AISharedRuntime::Gradients::Entities::ResourceBuildingObstacle);
 	if(!can_swim)
 		gi_building.add_obstacle(new AISharedRuntime::Gradients::Entities::Unwalkable);
@@ -489,7 +489,7 @@ int NewNicowar::order_regular_racetrack(Runtime& runtime)
 	bo->add_constraint(new AISharedRuntime::Construction::MinimumDistance(gi_sand, AI_NICOWAR_RACETRACK_SAND_MIN));
 
 	AISharedRuntime::Gradients::GradientInfo gi_building_construction;
-	gi_building_construction.add_source(new AISharedRuntime::Gradients::Entities::AnyTeamBuilding(runtime.player->team->teamNumber, true));
+	gi_building_construction.add_source(new AISharedRuntime::Gradients::Entities::AnyTeamBuilding(runtime.teamNumber(), true));
 	gi_building_construction.add_obstacle(new AISharedRuntime::Gradients::Entities::ResourceBuildingObstacle);
 	if(!can_swim)
 		gi_building_construction.add_obstacle(new AISharedRuntime::Gradients::Entities::Unwalkable);
@@ -527,7 +527,7 @@ int NewNicowar::order_regular_swimmingpool(Runtime& runtime)
 	//Constraints around nearby settlement
 	AISharedRuntime::Gradients::GradientInfo gi_building;
     gi_building.terrainTravel=can_swim?field::TerrainTravel::Swim:field::TerrainTravel::Walk;
-	gi_building.add_source(new AISharedRuntime::Gradients::Entities::AnyTeamBuilding(runtime.player->team->teamNumber, false));
+	gi_building.add_source(new AISharedRuntime::Gradients::Entities::AnyTeamBuilding(runtime.teamNumber(), false));
 	gi_building.add_obstacle(new AISharedRuntime::Gradients::Entities::ResourceBuildingObstacle);
 	if(!can_swim)
 		gi_building.add_obstacle(new AISharedRuntime::Gradients::Entities::Unwalkable);
@@ -540,7 +540,7 @@ int NewNicowar::order_regular_swimmingpool(Runtime& runtime)
 	bo->add_constraint(new AISharedRuntime::Construction::MinimumDistance(gi_sand, AI_NICOWAR_SWIMMINGPOOL_SAND_MIN));
 
 	AISharedRuntime::Gradients::GradientInfo gi_building_construction;
-	gi_building_construction.add_source(new AISharedRuntime::Gradients::Entities::AnyTeamBuilding(runtime.player->team->teamNumber, true));
+	gi_building_construction.add_source(new AISharedRuntime::Gradients::Entities::AnyTeamBuilding(runtime.teamNumber(), true));
 	gi_building_construction.add_obstacle(new AISharedRuntime::Gradients::Entities::ResourceBuildingObstacle);
 	if(!can_swim)
 		gi_building_construction.add_obstacle(new AISharedRuntime::Gradients::Entities::Unwalkable);
@@ -563,7 +563,7 @@ int NewNicowar::order_regular_school(Runtime& runtime)
 	//Constraints around nearby settlement
 	AISharedRuntime::Gradients::GradientInfo gi_building;
     gi_building.terrainTravel=can_swim?field::TerrainTravel::Swim:field::TerrainTravel::Walk;
-	gi_building.add_source(new AISharedRuntime::Gradients::Entities::AnyTeamBuilding(runtime.player->team->teamNumber, false));
+	gi_building.add_source(new AISharedRuntime::Gradients::Entities::AnyTeamBuilding(runtime.teamNumber(), false));
 	gi_building.add_obstacle(new AISharedRuntime::Gradients::Entities::ResourceBuildingObstacle);
 	if(!can_swim)
 		gi_building.add_obstacle(new AISharedRuntime::Gradients::Entities::Unwalkable);
@@ -577,7 +577,7 @@ int NewNicowar::order_regular_school(Runtime& runtime)
 	bo->add_constraint(new AISharedRuntime::Construction::MinimumDistance(gi_water, AI_NICOWAR_SCHOOL_WATER_MIN_DIST));
 
 	AISharedRuntime::Gradients::GradientInfo gi_building_construction;
-	gi_building_construction.add_source(new AISharedRuntime::Gradients::Entities::AnyTeamBuilding(runtime.player->team->teamNumber, true));
+	gi_building_construction.add_source(new AISharedRuntime::Gradients::Entities::AnyTeamBuilding(runtime.teamNumber(), true));
 	gi_building_construction.add_obstacle(new AISharedRuntime::Gradients::Entities::ResourceBuildingObstacle);
 	if(!can_swim)
 		gi_building_construction.add_obstacle(new AISharedRuntime::Gradients::Entities::Unwalkable);
@@ -618,7 +618,7 @@ int NewNicowar::order_regular_barracks(Runtime& runtime)
 	//Constraints around nearby settlement
 	AISharedRuntime::Gradients::GradientInfo gi_building;
     gi_building.terrainTravel=can_swim?field::TerrainTravel::Swim:field::TerrainTravel::Walk;
-	gi_building.add_source(new AISharedRuntime::Gradients::Entities::AnyTeamBuilding(runtime.player->team->teamNumber, false));
+	gi_building.add_source(new AISharedRuntime::Gradients::Entities::AnyTeamBuilding(runtime.teamNumber(), false));
 	gi_building.add_obstacle(new AISharedRuntime::Gradients::Entities::ResourceBuildingObstacle);
 	if(!can_swim)
 		gi_building.add_obstacle(new AISharedRuntime::Gradients::Entities::Unwalkable);
@@ -626,7 +626,7 @@ int NewNicowar::order_regular_barracks(Runtime& runtime)
 	bo->add_constraint(new AISharedRuntime::Construction::MinimizedDistance(gi_building, AI_NICOWAR_BARRACKS_BUILDING_PREF));
 
 	AISharedRuntime::Gradients::GradientInfo gi_building_construction;
-	gi_building_construction.add_source(new AISharedRuntime::Gradients::Entities::AnyTeamBuilding(runtime.player->team->teamNumber, true));
+	gi_building_construction.add_source(new AISharedRuntime::Gradients::Entities::AnyTeamBuilding(runtime.teamNumber(), true));
 	gi_building_construction.add_obstacle(new AISharedRuntime::Gradients::Entities::ResourceBuildingObstacle);
 	if(!can_swim)
 		gi_building_construction.add_obstacle(new AISharedRuntime::Gradients::Entities::Unwalkable);
@@ -657,7 +657,7 @@ int NewNicowar::order_regular_hospital(Runtime& runtime)
 	//Constraints around nearby settlement
 	AISharedRuntime::Gradients::GradientInfo gi_building;
     gi_building.terrainTravel=can_swim?field::TerrainTravel::Swim:field::TerrainTravel::Walk;
-	gi_building.add_source(new AISharedRuntime::Gradients::Entities::AnyTeamBuilding(runtime.player->team->teamNumber, false));
+	gi_building.add_source(new AISharedRuntime::Gradients::Entities::AnyTeamBuilding(runtime.teamNumber(), false));
 	gi_building.add_obstacle(new AISharedRuntime::Gradients::Entities::ResourceBuildingObstacle);
 	if(!can_swim)
 		gi_building.add_obstacle(new AISharedRuntime::Gradients::Entities::Unwalkable);
@@ -665,7 +665,7 @@ int NewNicowar::order_regular_hospital(Runtime& runtime)
 	bo->add_constraint(new AISharedRuntime::Construction::MinimizedDistance(gi_building, AI_NICOWAR_HOSPITAL_BUILDING_PREF));
 
 	AISharedRuntime::Gradients::GradientInfo gi_building_construction;
-	gi_building_construction.add_source(new AISharedRuntime::Gradients::Entities::AnyTeamBuilding(runtime.player->team->teamNumber, true));
+	gi_building_construction.add_source(new AISharedRuntime::Gradients::Entities::AnyTeamBuilding(runtime.teamNumber(), true));
 	gi_building_construction.add_obstacle(new AISharedRuntime::Gradients::Entities::ResourceBuildingObstacle);
 	if(!can_swim)
 		gi_building_construction.add_obstacle(new AISharedRuntime::Gradients::Entities::Unwalkable);
@@ -741,7 +741,7 @@ void NewNicowar::manage_inn(Runtime& runtime, int id)
 NewNicowar::ProductionDemand NewNicowar::manage_swarm(Runtime& runtime, int id)
 {
 	//Get some statistics
-	TeamStat* stat=runtime.player->team->stats.getLatestStat();
+	const TeamStat* stat=&runtime.observedTeam().statistics;
 	int total_explorers=stat->numberUnitPerType[EXPLORER];
 	if(stat->totalUnit == 0)
 		return {};
@@ -768,7 +768,7 @@ NewNicowar::ProductionDemand NewNicowar::manage_swarm(Runtime& runtime, int id)
 		to_assign*=2;
 
 	///Half units if world is hungry
-	if(!runtime.player->game->gameHeader.isHungerDisabled() && (total_starving_percent + total_hungry_percent) > strategy.base_swarm_hungry_reduce_trigger_percent)
+	if(!runtime.observation().configuration->isHungerDisabled() && (total_starving_percent + total_hungry_percent) > strategy.base_swarm_hungry_reduce_trigger_percent)
 		to_assign/=2;
 	
 	///No units when the world is starving
@@ -806,7 +806,7 @@ NewNicowar::ProductionDemand NewNicowar::manage_swarm(Runtime& runtime, int id)
 		explorer_ratio=0;
 
 	///Warriors are constructed during the war preparation phase
-	if(!runtime.player->game->gameHeader.isPeacefulModeEnabled() && (war_preparation || (runtime.player->game->gameHeader.isUnitUpgradesDisabled() && war)))
+	if(!runtime.observation().configuration->isPeacefulModeEnabled() && (war_preparation || (runtime.observation().configuration->isUnitUpgradesDisabled() && war)))
 	{
 		warrior_ratio=strategy.war_preparation_swarm_warrior_ratio;
 	}

@@ -50,6 +50,7 @@ struct Fixture
 	}
 	void update()
 	{
+        AISharedRuntime::Runtime::OwnerObservationScope observation(*runtime);
 		static_cast<NewNicowar*>(runtime->runtimeai.get())->update_farming(*runtime);
 		runtime->update_management_orders();
 		for (auto order : runtime->orders)

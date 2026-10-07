@@ -230,7 +230,7 @@ TEST_CASE("empty and prohibited resource cells do not acquire bonus growth")
     auto resource=map.getResource(12,12);
     resource.type=WHEAT;resource.amount=1;resource.variety=0;
     map.replaceResource(12,12,resource);
-    CHECK(map.resourceGrowthField().rate(map.coordToIndex(12,12),WHEAT)==0);
+    CHECK(map.resourceGrowthRateAt(map.coordToIndex(12,12),WHEAT)==0);
     CHECK_FALSE(map.incResourceByIndex(12,12,WHEAT,0));
     CHECK(map.getResource(12,12).amount==1);
 }

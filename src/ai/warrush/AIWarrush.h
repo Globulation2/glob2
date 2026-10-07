@@ -8,6 +8,9 @@
 #include "AIImplementation.h"
 #include "BuildingCapabilities.h"
 #include <valarray>
+#include "ai/observation/AIWorldView.h"
+#include "ai/observation/ResourceInitializationCache.h"
+namespace AIEngine { class WorldQueries; }
 
 class Game;
 class Map;
@@ -72,9 +75,35 @@ public:
 	void save(GAGCore::OutputStream *stream);
 	
 	std::shared_ptr<Order> getOrder(void);
+ bool supportsObservation() const override { return true; }
+ SimulationSnapshot::Requirements observationRequirements() const override { return SimulationSnapshot::All & ~SimulationSnapshot::bit(SimulationSnapshot::Component::ResourceFields); }
+ std::optional<Uint64> retainedQueryVectorBytes() const override
+ {
+  Uint64 bytes = 0;
+  for (const auto& [key, field] : resourceInitializations)
+   if (field.values) bytes += Uint64(field.values->capacity()) * sizeof(Uint16);
+  return bytes;
+ }
+ std::shared_ptr<Order> getOrder(const AIEngine::DecisionContext&) override;
+ void orderExecutionCompleted(const Order&,bool) override;
 private:
+ struct PendingRequest {
+  Uint32 tick=0;Uint64 pollSequence=0;
+  BuildingRef target;
+  std::shared_ptr<Order> order;
+ };
+ std::vector<PendingRequest> pendingRequests;
+ bool hasPending(const AIEngine::BuildingView&) const;
+ void settleObservedRequests(const AIEngine::DecisionContext&);
+ const AIEngine::TeamView* observedTeam=nullptr;
+ const AIEngine::TeamView* teamAt(int index) const;
+ int teamNumber=0;
+ const AIEngine::AIWorldView* observation=nullptr;
+ AIEngine::WorldQueries* queries=nullptr;
+ AIEngine::ResourceInitializations resourceInitializations;
+ std::shared_ptr<Order> decide();
 	using Intent = AIPlanning::BuildingIntent;
-	bool provides(const Building& building, Intent intent) const;
+	bool provides(const AIEngine::BuildingView& building, Intent intent) const;
 	int selectBuilding(Intent intent) const;
 	void init(Player *player);
 	//implementation functions to make the code more like the pseudocode;
@@ -89,14 +118,14 @@ private:
 	int numberOfUnitsWithSkillEqualToValue(int skill, int value)const;
 	int numberOfBuildingsOfType(Intent intent)const;
 	bool isAnyUnitWithLessThanOneThirdFood()const;
-	Building *getSwarmWithoutSettings(int workerRatio, int explorerRatio, int warriorRatio)const;
-	Building *getSwarmAtRandom()const;
+	const AIEngine::BuildingView *getSwarmWithoutSettings(int workerRatio, int explorerRatio, int warriorRatio)const;
+	const AIEngine::BuildingView *getSwarmAtRandom()const;
 	//functions called by getOrder, filled with pseudocode and its product,
 	//real code.
 	std::shared_ptr<Order> placeGuardAreas(void);
 	std::shared_ptr<Order> pruneGuardAreas(void);
 	std::shared_ptr<Order> farm(void);
-	std::shared_ptr<Order> setupExploreFlagForTeam(Team *enemy_team);
+	std::shared_ptr<Order> setupExploreFlagForTeam(const AIEngine::TeamView *enemy_team);
 	bool locationIsAvailableForBuilding(int x, int y, int width, int height);
 	void initializeGradientWithResource(DynamicGradientMapArray &gradient, Uint8 resource_type);
 	std::shared_ptr<Order> buildBuildingOfType(Intent intent);

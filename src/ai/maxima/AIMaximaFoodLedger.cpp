@@ -539,3 +539,17 @@ long long Ledger::reachableResidual(const Input& input, const Result& result,
 }
 
 }
+
+uint64_t AIMaximaFoodLedger::Result::retainedVectorBytes() const noexcept
+{
+    return consumers.capacity() * sizeof(ConsumerResult)
+        + (residual.capacity() + serviceResidual.capacity()) * sizeof(uint32_t)
+        + (residualSums.capacity() + serviceResidualSums.capacity()) * sizeof(long long);
+}
+
+uint64_t AIMaximaFoodLedger::Ledger::retainedVectorBytes() const noexcept
+{
+    return (workSupply.capacity() + workQuantity.capacity() + workPrefix.capacity()) * sizeof(long long)
+        + distanceScratch.capacity() * sizeof(int) + distanceGeneration.capacity() * sizeof(uint32_t)
+        + (reachScratch.capacity() + queryScratch.capacity()) * sizeof(ReachCell);
+}

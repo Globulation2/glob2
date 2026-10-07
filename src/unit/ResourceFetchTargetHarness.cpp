@@ -53,6 +53,7 @@ static void staleTargetIsRefreshedAfterGradientRebuild(int expectedClass, int sw
 
 	TestUnit* unit = new TestUnit(unitX, unitY, 0, WORKER, team, 0);
 	team->myUnits[0] = unit;
+	team->rebuildLiveLists();
 	game.map.setGroundUnit(unitX, unitY, unit->gid);
 	unit->destinationPurpose = WHEAT;
 	unit->activity = Unit::ACT_FILLING;
@@ -139,6 +140,7 @@ static void targetTracksTheGradientTheUnitActuallyFollows()
 
 	TestUnit* unit = new TestUnit(unitX, unitY, 0, WORKER, team, 0);
 	team->myUnits[0] = unit;
+	team->rebuildLiveLists();
 	game.map.setGroundUnit(unitX, unitY, unit->gid);
 	unit->attachedBuilding = inn;
 	unit->destinationPurpose = WHEAT;

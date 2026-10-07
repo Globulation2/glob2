@@ -137,7 +137,9 @@ void Unit::handleActivity(void)
 						Sint32 currentID=Unit::GIDtoID(gid);
 						assert(currentTeam->myUnits[currentID]);
 						currentTeam->myUnits[currentID]=NULL;
+						currentTeam->detachUnit(currentID);
 						targetTeam->myUnits[targetID]=this;
+						targetTeam->attachUnit(targetID);
 
 						if (verbose)
 							printf("Unit guid=%d (%d) switched to guid=%d (%d)\n", gid, Unit::GIDtoTeam(gid), targetGID, Unit::GIDtoTeam(targetGID));

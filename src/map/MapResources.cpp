@@ -29,50 +29,31 @@ bool Map::farmAreasEnabled() const
 
 bool Map::canResourceEverGrowHereByIndex(int x, int y, int resourceType) const
 {
-	const auto &terrain = terrainPropertiesAt(x, y);
-	if (!terrain.resourcesGrow || !terrainSupportsResourceAtByIndex(x,y,resourceType))
-		return false;
-	return resourceGrowthField().rate(coordToIndex(x, y), resourceType) != 0;
+	return MapState::canResourceEverGrowHere(stateView(),x,y,resourceType);
 }
 
 int Map::farmCropAt(int x,int y) const
 {
-    const unsigned requested=terrainPropertiesAt(x,y).farmMaterial;
-    if (requested>=MaterialCount) return NO_RES_TYPE;
-    // Prefer a compatible nearby living source without scanning the catalog.
-    int nearby=NO_RES_TYPE;
-    for (int dy=-1;dy<=1;++dy) for (int dx=-1;dx<=1;++dx)
-    {
-        const auto id=getResource(x+dx,y+dy).type;
-        if (id==NO_RES_TYPE) continue;
-        const auto& p=resourcePropertiesByIndex(id);
-        if (p.farmable && (p.materialMask&(1u<<requested)) && terrainSupportsResourceAtByIndex(x,y,id)) nearby=std::min<int>(nearby,id);
-    }
-    return nearby!=NO_RES_TYPE ? nearby : terrainFarmResources[static_cast<size_t>(terrainTypeAt(x,y))];
+    return MapState::farmCropAt(liveCells,x,y);
 }
 
 bool Map::isClearingTarget(size_t index, Uint32 teamMask, bool farmAreas) const
 {
-    const auto& tile=tiles[index];
-    if (tile.resource.type==NO_RES_TYPE) return false;
-    const bool explicitClear=(tile.clearArea&teamMask)!=0;
-    if (!explicitClear && !(farmAreas && (tile.farmArea&teamMask))) return false;
-    const auto& properties=resourcePropertiesByIndex(tile.resource.type);
+    if (resourceCells[index].resource.type==NO_RES_TYPE) return false;
+    const bool explicitClear=(areaCells[index].clear&teamMask)!=0;
+    if (!explicitClear && !(farmAreas && (areaCells[index].farm&teamMask))) return false;
+    const auto& properties=resourcePropertiesByIndex(resourceCells[index].resource.type);
     return properties.clearable && (explicitClear || !properties.farmable);
 }
 
 bool Map::canPaintFarmArea(int x,int y) const
 {
-    if (!canResourcesGrow(x,y)) return false;
-    const auto& r=getResource(x,y);
-    if (r.type!=NO_RES_TYPE && !resourcePropertiesByIndex(r.type).clearable && !isFarmableResourceByIndex(r.type)) return false;
-    const int crop=farmCropAt(x,y);
-    return crop!=NO_RES_TYPE && canResourceEverGrowHereByIndex(x,y,crop);
+    return MapState::canPaintFarmArea(stateView(),x,y);
 }
 
 bool Map::isFarmableResourceByIndex(int resourceType) const
 {
-    return resourceType!=NO_RES_TYPE && resourceRegistry().valid(unsigned(resourceType)) && resourcePropertiesByIndex(resourceType).farmable;
+    return MapState::isFarmableResource(liveCells,resourceType);
 }
 
 std::optional<size_t> Map::pickFarmHarvestTileSlot(int x, int y, int resourceType, Uint32 teamMask)
@@ -83,12 +64,11 @@ std::optional<size_t> Map::pickFarmHarvestTileSlot(int x, int y, int resourceTyp
 	// and still holds the resource; an emptied tile drops out and can split the
 	// field in two. That is the whole of "no teleportation across empty fields".
 	auto inField = [&](size_t index) {
-		const Tile &tile = tiles[index];
-		return (tile.farmArea & teamMask) != 0
-			&& isFarmableResourceByIndex(tile.resource.type)
+		return (areaCells[index].farm & teamMask) != 0
+			&& isFarmableResourceByIndex(resourceCells[index].resource.type)
             && materialAmountAtSlot(index,resourceType)>0
-            && resourceRegistry().yields(static_cast<ResourceId>(tile.resource.type))[resourceType].consumption != ResourceConsumption::All
-            && !resourceRegistry().yields(static_cast<ResourceId>(tile.resource.type))[resourceType].destroysDeposit;
+            && resourceRegistry().yields(static_cast<ResourceId>(resourceCells[index].resource.type))[resourceType].consumption != ResourceConsumption::All
+            && !resourceRegistry().yields(static_cast<ResourceId>(resourceCells[index].resource.type))[resourceType].destroysDeposit;
 	};
 
 	// One stamp buffer per map, bumped instead of cleared. Wrapping the counter
@@ -142,7 +122,7 @@ std::optional<size_t> Map::pickFarmHarvestTileSlot(int x, int y, int resourceTyp
 		const Sint32 amount = materialAmountAtSlot(index,resourceType);
 		const Sint32 distance = warpDistSquare(x, y, tx, ty);
 		// No regrowth makes every grain finite supply, including the last seed.
-        const auto& harvest=resourceRegistry().yields(static_cast<ResourceId>(tiles[index].resource.type))[resourceType];
+        const auto& harvest=resourceRegistry().yields(static_cast<ResourceId>(resourceCells[index].resource.type))[resourceType];
         const int seedAmount=game && game->gameHeader.isResourceGrowthDisabled() ? 0 : harvest.seedReserve;
 		// Infinite harvests leave the reserve intact even at the reserve level.
 		if ((amount > seedAmount || harvest.consumption == ResourceConsumption::Infinite)
@@ -179,7 +159,7 @@ bool Map::takeHarvest(int x,int y,int dx,int dy,MaterialId materialId,Uint32 tea
     if (!materialAmountAtSlot(target,material)) return false;
     if (isFarmArea(x+dx,y+dy,teamMask) && farmAreasEnabled())
     {
-        const auto resource=tiles[target].resource.type;
+        const auto resource=resourceCells[target].resource.type;
         if (!isFarmableResourceByIndex(resource)) return harvestMaterial(target,material);
         const auto& yield=resourceRegistry().yields(static_cast<ResourceId>(resource))[material];
         // Destructive harvests cannot pool through a field: harvest the
@@ -195,7 +175,7 @@ bool Map::takeHarvest(int x,int y,int dx,int dy,MaterialId materialId,Uint32 tea
 
 bool Map::growResourceStock(size_t index)
 {
-    const auto& r=tiles[index].resource;
+    const auto& r=resourceCells[index].resource;
     if (r.type==NO_RES_TYPE) return false;
     const auto& yields=resourceRegistry().yields(static_cast<ResourceId>(r.type));
     bool changed=false;
@@ -217,7 +197,7 @@ bool Map::incResource(int x,int y,ResourceId resourceId,int variety)
     const int resourceType=resourceIndex(resourceId);
     if (!terrainSupportsResourceAtByIndex(x,y,resourceType)) return false;
     const auto index=coordToIndex(x,y);
-    const auto& r=tiles[index].resource;
+    const auto& r=resourceCells[index].resource;
     if (r.type==NO_RES_TYPE)
     {
         const auto& p=resourcePropertiesByIndex(resourceType);
@@ -247,7 +227,7 @@ void Map::removeUnallowedResources(int x, int y, int w, int h)
 	for (int dx=x; dx<x+w; dx++)
 		for (int dy=y; dy<y+h; dy++)
 		{
-			Resource& r=tiles[coordToIndex(dx, dy)].resource;
+			Resource& r=resourceCells[coordToIndex(dx, dy)].resource;
 			if (r.type!=NO_RES_TYPE && !terrainSupportsResourceAtByIndex(dx,dy,r.type))
 				replaceResource(dx, dy, Resource{});
 		}
@@ -281,17 +261,17 @@ bool Map::isResourceAllowed(int x,int y,int type)
 
 bool Map::isPointSet(int n, int x, int y) const
 {
-	return tiles[coordToIndex(x, y)].scriptAreas & 1<<n;
+	return scriptAreaCells[coordToIndex(x, y)] & 1<<n;
 }
 
 void Map::setPoint(int n, int x, int y)
 {
-	tiles[coordToIndex(x, y)].scriptAreas |= 1<<n;
+	scriptAreaCells[coordToIndex(x, y)] |= 1<<n;
 }
 
 void Map::unsetPoint(int n, int x, int y)
 {
-	tiles[coordToIndex(x, y)].scriptAreas ^= tiles[coordToIndex(x, y)].scriptAreas & (1<<n);
+	scriptAreaCells[coordToIndex(x, y)] ^= scriptAreaCells[coordToIndex(x, y)] & (1<<n);
 }
 
 std::string Map::getAreaName(int n) const

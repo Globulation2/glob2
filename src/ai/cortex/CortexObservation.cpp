@@ -1,3 +1,4 @@
+#include "CortexSnapshotQueries.h"
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2026 The Globulation 2 Authors
 
@@ -31,37 +32,37 @@ static_assert(Cortex::CORTEX_UNIT_TYPES == NB_UNIT_TYPE,
 	"CORTEX_UNIT_TYPES must match UnitConsts.h NB_UNIT_TYPE");
 static_assert(Cortex::CORTEX_BUILDING_LONG_LEVELS == NB_BUILDING_LONG_LEVELS,
 	"CORTEX_BUILDING_LONG_LEVELS must match TeamStat.h NB_BUILDING_LONG_LEVELS");
-static_assert(Cortex::MAX_ENEMY_SLOTS >= Team::MAX_COUNT,
-	"MAX_ENEMY_SLOTS must cover the engine team array bound Team::MAX_COUNT");
+static_assert(Cortex::MAX_ENEMY_SLOTS >= ::Team::MAX_COUNT,
+	"MAX_ENEMY_SLOTS must cover the engine team array bound ::Team::MAX_COUNT");
 static_assert(Cortex::CORTEX_MAX_BUILDING_WORKERS == MAX_BUILDING_WORKER_REQUEST,
 	"CORTEX_MAX_BUILDING_WORKERS must match the engine worker-request ceiling "
-	"asserted in Game::executeModifyBuilding");
+	"asserted in const AIEngine::AIWorldView::executeModifyBuilding");
 
 namespace Cortex
 {
-	void observeBuildings(CortexObservation& obs, Team* team, Game* game,
+	void observeBuildings(CortexObservation& obs, const AIEngine::TeamView* team, const AIEngine::AIWorldView* game, const PlanningIntent& intents,
 		int maxBuildLevel, Uint16 offenseFlagGid, bool& warFlagFound,
 		Sint32& warFlagX, Sint32& warFlagY, Sint32& warFlagRange)
 	{
 		obs.hasModelProjection = 1;
-		for (int i = 0; i < Building::MAX_COUNT; i++)
+		for (int i = 0; i < ::Building::MAX_COUNT; i++)
 		{
-			Building* b = team->myBuildings[i];
+			const AIEngine::BuildingView* b = game->buildingSlots(team->number)[i];
 			if (b == NULL)
 				continue;
-			BuildingType* bt = b->type;
-            const unsigned roles = buildingRoles(*team->game, *bt);
-            if (b->buildingState == Building::ALIVE) {
-                const auto& completed = ModelBuildingProjection::completed(team->game->buildingsTypes,*bt);
+			const BuildingType* bt = buildingType(*game,*b);
+            const unsigned roles = buildingRoles(*game, *bt);
+            if (b->buildingState == ::Building::ALIVE) {
+                const auto& completed = completedType(*game,*bt);
                 obs.productionPlannedMask |= completed.semantics.production.enabledUnitMask;
                 if (!bt->isBuildingSite) obs.productionMask |= completed.semantics.production.enabledUnitMask;
             }
-            if (b->buildingState == Building::ALIVE)
+            if (b->buildingState == ::Building::ALIVE)
                 for (int role = 0; role < CORTEX_BUILDING_TYPES; ++role)
                     if (roles & (1u << role))
                         ++obs.buildingCountPerLevel[role][(std::clamp(int(bt->level), 0, 2) << 1) + !bt->isBuildingSite];
-            if (b->buildingState == Building::ALIVE) {
-                const int channel=ModelBuildingProjection::channel(team->game->buildingsTypes,*bt);
+            if (b->buildingState == ::Building::ALIVE) {
+                const int channel=modelChannel(*game,*bt);
                 if(channel>=0)++obs.modelBuildingCountPerLevel[channel][(std::clamp(int(bt->level),0,2)<<1)+!bt->isBuildingSite];
             }
 			// Feed capacity = the population this inn actually keeps fed, NOT its
@@ -84,11 +85,11 @@ namespace Cortex
 			// feedCapacity to 0 mid-game, making the inn-build gate fire forever (the Muka
 			// inn-spam spiral). The surviving count drops to 0 only on real depletion.
 			// game==NULL (no-map test path): can't measure, so fall back to counting it.
-			if (!bt->isBuildingSite && b->buildingState == Building::ALIVE && bt->semantics.feeding.enabled)
+			if (!bt->isBuildingSite && b->buildingState == ::Building::ALIVE && bt->semantics.feeding.enabled)
 			{
 				const bool innHasWheat = bt->semantics.feeding.cost[materialIndex(MaterialId::Food)] == 0 || (game == NULL)
-					|| Cortex::countSurvivingFoodSourcesWithin(game->map,
-					                                    b->posX, b->posY,
+					|| Cortex::countSurvivingFoodSourcesWithin(*game,
+					                                    plannedX(intents,*b), plannedY(intents,*b),
 					                                    bt->width, bt->height,
 					                                    CORTEX_WHEAT_MIN_TILES_RADIUS)
 					   >= CORTEX_WHEAT_MIN_TILES;
@@ -97,35 +98,37 @@ namespace Cortex
 						bt->maxUnitInside, bt->semantics.feeding.duration);
 			}
 			if ((roles & (1u << Cortex::CORTEX_BUILD_SWARM))
-			 && b->buildingState == Building::ALIVE
+			 && b->buildingState == ::Building::ALIVE
 			 && !bt->isBuildingSite)  // exclude swarm sites / swarms under upgrade
 			{
-				if (b->ratio[0] | b->ratio[1] | b->ratio[2])
+				if (plannedRatio(intents,*b,0) | plannedRatio(intents,*b,1) | plannedRatio(intents,*b,2))
 					obs.swarmsProducing++;
 				// EXPLORER == unit-type index 1; lets the policy revert the one-shot
 				// early-explorer mix once an explorer is actually being produced.
-				if (b->ratio[EXPLORER] > 0)
+				if (plannedRatio(intents,*b,EXPLORER) > 0)
 					obs.swarmsProducingExplorer++;
 				// WORKER == unit-type index 0; the worker-surplus throttle reads this
 				// to tell whether the swarm is currently minting workers, so it can
 				// stop (idle labour piling up) and resume (labour scarce) cleanly.
-				if (b->ratio[WORKER] > 0)
+				if (plannedRatio(intents,*b,WORKER) > 0)
 					obs.swarmsProducingWorker++;
 				// 100%-warrior swarm: WARRIOR ratio set, WORKER+EXPLORER both zero.
 				// Tells the panic defense the all-warrior flip is complete.
-				if (b->ratio[WARRIOR] > 0 && b->ratio[WORKER] == 0 && b->ratio[EXPLORER] == 0)
+				if (plannedRatio(intents,*b,WARRIOR) > 0 && plannedRatio(intents,*b,WORKER) == 0 && plannedRatio(intents,*b,EXPLORER) == 0)
 					obs.swarmsProducingWarrior++;
 
 				// Wheat-economy tracking: record per-swarm supply signals up to the
 				// bounded POD array. Buildings beyond CORTEX_MAX_TRACKED_SWARMS are
 				// not individually tracked — that's intentional (bounded array).
 				// C++: Building::resources (Sint32*), building/Building.h:538
-				// C++: BuildingType::maxResource[], maxUnitWorking, maxUnitInside
+				// C++: BuildingType::maxMaterial[], maxUnitWorking, maxUnitInside
 				//      game/entities/BuildingType.h:76,80,79
 				// C++: Building::unitsInside (std::list<Unit*>), building/Building.h:510
-				// C++: nearestFoodSourceDistance: Chebyshev to nearest Food tile, ai/cortex/CortexPlacement
-                // Inventory may belong to the building or its shared team pool.
-                // Track the primary configured production input below.
+				// C++: nearestFoodSourceDistance: Chebyshev to nearest WHEAT tile, ai/cortex/CortexPlacement
+				// NOTE: game->buildingResources(*b)[WHEAT] is safe — for buildings with local (not
+				// global) resources it points to localResources; for global-resource
+				// buildings it points to Team::teamMaterials. The swarm is always a
+				// local-resource building, so this is the building's own wheat stock.
 				if (obs.swarmCount < CORTEX_MAX_TRACKED_SWARMS)
 				{
 					TrackedBuilding& t = obs.trackedSwarms[obs.swarmCount];
@@ -134,16 +137,16 @@ namespace Cortex
 					int input = -1;
                     for (const auto& recipe : bt->semantics.production.recipes)
                         if (recipe.enabled && input < 0) input = primaryMaterialSlot(recipe.cost);
-                    t.supplyStock = input >= 0 ? b->materials[input] : CORTEX_SWARM_WHEAT_REM_HI;
+                    t.supplyStock = input >= 0 ? game->buildingResources(*b)[input] : CORTEX_SWARM_WHEAT_REM_HI;
                     t.supplyCapacity = input >= 0 ? bt->maxMaterial[input] : CORTEX_SWARM_WHEAT_REM_HI;
-					t.maxUnitWorking  = b->maxUnitWorking;
-					t.unitsInside     = static_cast<Sint32>(b->unitsInside.size());
+					t.maxUnitWorking  = plannedWorkers(intents,*b);
+					t.unitsInside     = static_cast<Sint32>(game->occupants(*b).size());
 					t.maxUnitInside   = bt->maxUnitInside;
 					// Only call nearestFoodSourceDistance when game is available — the Map
 					// reference is owned by Game and the building scan is NOT guarded
 					// by (game != NULL). When game is absent, leave -1 (no result).
 					t.nearestFoodSourceDistance = input != materialIndex(MaterialId::Food) ? 0 : (game != NULL)
-						? Cortex::nearestFoodSourceDistance(game->map, b->posX, b->posY,
+						? Cortex::nearestFoodSourceDistance(*game, plannedX(intents,*b), plannedY(intents,*b),
 						                          CORTEX_WHEAT_SCAN_CAP)
 						: -1;
 					// Harvestable-food count in the swarm's catchment — the input to the
@@ -152,14 +155,14 @@ namespace Cortex
 					// footprint, so it tracks the field draining/being checkerboarded over
 					// time, not just the spot the swarm was built on.
 					t.harvestableFoodSourcesNearby = input != materialIndex(MaterialId::Food) ? -1 : (game != NULL)
-						? Cortex::countHarvestableFoodSourcesWithin(game->map, team->me,
-						                                     b->posX, b->posY,
+						? Cortex::countHarvestableFoodSourcesWithin(*game, team->mask,
+						                                     plannedX(intents,*b), plannedY(intents,*b),
 						                                     bt->width, bt->height,
 						                                     CORTEX_SWARM_WHEAT_STARVED_RADIUS)
 						: -1;
 					t.restockTripsNeeded = -1; // inn-only hauler-ceiling signal; unused for swarms.
 					// C++: Building::priority (-1/0/+1), building/Building.h:516
-					t.priority        = b->priority;
+					t.priority        = plannedPriority(intents,*b);
 					t.ticksSinceFinished = -1; // swarms do not use the inn tune-cooldown.
 					t.unrestrictedFoodSourcesNearby = -1; // inn-only diagnostic; unused for swarms.
 					obs.swarmCount++;
@@ -171,12 +174,12 @@ namespace Cortex
 			// ALIVE/!isBuildingSite predicate used for swarmsProducing above.
 			// Buildings beyond CORTEX_MAX_TRACKED_INNS are silently not tracked.
 			// C++: Building::resources[Food], building/Building.h:538
-			// C++: BuildingType::maxResource[Food], maxUnitInside, maxUnitWorking
+			// C++: BuildingType::maxMaterial[Food], maxUnitInside, maxUnitWorking
 			//      game/entities/BuildingType.h:76,79,80
 			// C++: Building::unitsInside (std::list<Unit*>), building/Building.h:510
 			if ((roles & (1u << Cortex::CORTEX_BUILD_FOOD))
              && !bt->semantics.production.enabledUnitMask
-			 && b->buildingState == Building::ALIVE
+			 && b->buildingState == ::Building::ALIVE
 			 && !bt->isBuildingSite)  // exclude inn sites / inns under upgrade
 			{
 				if (obs.innCount < CORTEX_MAX_TRACKED_INNS)
@@ -185,13 +188,13 @@ namespace Cortex
 					t.valid           = 1;
 					t.gid             = b->gid;
 					const int input = primaryMaterialSlot(bt->semantics.feeding.cost);
-                    t.supplyStock = input >= 0 ? b->materials[input] : 1;
+                    t.supplyStock = input >= 0 ? game->buildingResources(*b)[input] : 1;
                     t.supplyCapacity = input >= 0 ? bt->maxMaterial[input] : 1;
-					t.maxUnitWorking  = b->maxUnitWorking;
-					t.unitsInside     = static_cast<Sint32>(b->unitsInside.size());
+					t.maxUnitWorking  = plannedWorkers(intents,*b);
+					t.unitsInside     = static_cast<Sint32>(game->occupants(*b).size());
 					t.maxUnitInside   = bt->maxUnitInside;
 					t.nearestFoodSourceDistance = input != materialIndex(MaterialId::Food) ? 0 : (game != NULL)
-						? Cortex::nearestFoodSourceDistance(game->map, b->posX, b->posY,
+						? Cortex::nearestFoodSourceDistance(*game, plannedX(intents,*b), plannedY(intents,*b),
 						                          CORTEX_WHEAT_SCAN_CAP)
 						: -1;
 					// DIAGNOSTIC (Phase-1 feedCap root-cause): the EXACT quantity the
@@ -203,8 +206,8 @@ namespace Cortex
 					// policy reads inn harvestableFoodSourcesNearby (verified swarm-only), so
 					// this is purely a trace signal. -1 when game absent (no map).
 					t.harvestableFoodSourcesNearby = (game != NULL)
-						? Cortex::countHarvestableFoodSourcesWithin(game->map, team->me,
-						                                     b->posX, b->posY,
+						? Cortex::countHarvestableFoodSourcesWithin(*game, team->mask,
+						                                     plannedX(intents,*b), plannedY(intents,*b),
 						                                     bt->width, bt->height,
 						                                     CORTEX_WHEAT_MIN_TILES_RADIUS)
 						: -1;
@@ -212,7 +215,7 @@ namespace Cortex
 					// is the forbidden-but-present food. blind>=MIN & harvestable<MIN =>
 					// checkerboard-forbidding (b); blind<MIN => field depleted/absent (c).
 					t.unrestrictedFoodSourcesNearby = (game != NULL)
-						? Cortex::countFoodSourcesWithin(game->map, b->posX, b->posY,
+						? Cortex::countFoodSourcesWithin(*game, plannedX(intents,*b), plannedY(intents,*b),
 						                          bt->width, bt->height,
 						                          CORTEX_WHEAT_MIN_TILES_RADIUS)
 						: -1;
@@ -221,7 +224,7 @@ namespace Cortex
 					// resource that limits how many units the inn sustains, so the hauler
 					// count tracks how empty the food buffer is; fruit is happiness garnish
 					// and does not drive feeding, so it is deliberately excluded. One trip
-					// delivers multiplierResource[Food] units, so divide the deficit by it.
+					// delivers materialMultiplier[Food] units, so divide the deficit by it.
 					//
 					// We do NOT gate on Map::resourceAvailable here: it reads the team
 					// resource gradient at (posX, posY), but updateResourcesGradient marks
@@ -229,23 +232,23 @@ namespace Cortex
 					// :141), so probing the inn's OWN footprint corner always returned false
 					// and zeroed the deficit — pinning every inn to one hauler. "No food in
 					// reach" is instead handled coarsely in the policy via nearestFoodSourceDistance
-					// (CORTEX_INN_WHEAT_STARVED_RADIUS). C++: maxResource/multiplierResource
+					// (CORTEX_INN_WHEAT_STARVED_RADIUS). C++: maxMaterial/materialMultiplier
 					// game/entities/BuildingType.h:76,78.
 					t.restockTripsNeeded = 0;
                     for (int resource = 0; resource < MaterialSlotCount; ++resource)
                         if (bt->semantics.feeding.cost[resource] > 0) {
-                            const int deficit = std::max(0, bt->maxMaterial[resource] - b->materials[resource]);
+                            const int deficit = std::max(0, bt->maxMaterial[resource] - game->buildingResources(*b)[resource]);
                             const int delivered = std::max(1, bt->materialMultiplier[resource]);
                             t.restockTripsNeeded += (deficit + delivered - 1) / delivered;
                         }
-					t.priority        = b->priority; // C++: building/Building.h:516
+					t.priority        = plannedPriority(intents,*b); // C++: building/const AIEngine::BuildingView.h:516
 					t.ticksSinceFinished = -1; // stamped post-observe by AICortex.
 					obs.innCount++;
 				}
 			}
 			// Warrior-attraction providers are independent of presentation or family.
 			if ((roles & (1u << Cortex::CORTEX_BUILD_WAR))
-			 && b->buildingState == Building::ALIVE)
+			 && b->buildingState == ::Building::ALIVE)
 			{
 				obs.warFlagsActive++;
 				// Remember the OFFENSE flag's footprint (gid match) so the enemy-unit
@@ -259,8 +262,8 @@ namespace Cortex
 				if (offenseFlagGid != NOGBID && b->gid == offenseFlagGid)
 				{
 					warFlagFound = true;
-					warFlagX     = b->posX;
-					warFlagY     = b->posY;
+					warFlagX     = plannedX(intents,*b);
+					warFlagY     = plannedY(intents,*b);
 					warFlagRange = b->unitStayRange;
 				}
 			}
@@ -279,13 +282,13 @@ namespace Cortex
 			// Construction qualification must meet the next descriptor's requiredWorkerLevel.
 			// C++: Building::isHardSpaceForBuildingSite(UPGRADE) building/Update.cpp:410,
 			//      Building::UPGRADE building/Building.h:110 (larger footprint fits)
-			if (b->buildingState == Building::ALIVE
+			if (b->buildingState == ::Building::ALIVE
 			 && !bt->isBuildingSite
-						 && b->isUpgradeAvailable()
-			 && b->hp == b->getEffectiveMaxHp()
-			 && b->constructionResultState == Building::NO_CONSTRUCTION
-			 && maxBuildLevel >= team->game->buildingsTypes.get(bt->nextLevel)->semantics.requiredWorkerLevel
-			 && b->isHardSpaceForBuildingSite(Building::UPGRADE))
+						 && game->isUpgradeAvailable(*b)
+			 && b->hp == b->maxHp
+			 && b->constructionResultState == ::Building::NO_CONSTRUCTION
+			 && maxBuildLevel >= catalogType(*game,bt->nextLevel)->semantics.requiredWorkerLevel
+			 && game->isHardSpaceForBuildingSite(*b, true))
 			{
 				++obs.modelUpgradableTotal;
 				for (int role = 0; role < CORTEX_BUILDING_TYPES; ++role)
@@ -294,14 +297,14 @@ namespace Cortex
 
 			// Construction sites (new builds AND in-progress upgrades): record the
 			// resource hauler-trips still needed so the policy can pour idle workers
-			// into them. A delivery adds multiplierResource[r] to resources[r]
+			// into them. A delivery adds materialMultiplier[r] to resources[r]
 			// (building/Misc.cpp:178), so the trips left for resource r are
-			// ceil((maxResource[r] - resources[r]) / multiplierResource[r]); the
+			// ceil((maxMaterial[r] - resources[r]) / materialMultiplier[r]); the
 			// sum over the basic resource types bounds how many workers can usefuly
-			// build it. b->materials is the site's own (local) build stock.
+			// build it. game->buildingResources(*b) is the site's own (local) build stock.
 			// C++: BuildingType::isBuildingSite game/entities/BuildingType.h:92,
-			//      maxResource/multiplierResource :76,78; Building::resources :538.
-			if (bt->isBuildingSite && b->buildingState == Building::ALIVE
+			//      maxMaterial/materialMultiplier :76,78; Building::resources :538.
+			if (bt->isBuildingSite && b->buildingState == ::Building::ALIVE
 			 && obs.siteCount < CORTEX_MAX_TRACKED_SITES)
 			{
 				int deliveriesLeft = 0;
@@ -310,7 +313,7 @@ namespace Cortex
 					const int mult = bt->materialMultiplier[r];
 					if (mult <= 0)
 						continue;
-					const int rem = bt->maxMaterial[r] - b->materials[r];
+					const int rem = bt->maxMaterial[r] - game->buildingResources(*b)[r];
 					if (rem > 0)
 						deliveriesLeft += (rem + mult - 1) / mult; // ceil to whole trips.
 				}
@@ -319,9 +322,9 @@ namespace Cortex
 					TrackedSite& s = obs.trackedSites[obs.siteCount];
 					s.valid          = 1;
 					s.gid            = b->gid;
-					s.maxUnitWorking = b->maxUnitWorking;
+					s.maxUnitWorking = plannedWorkers(intents,*b);
 					s.deliveriesLeft = deliveriesLeft;
-					s.priority       = b->priority; // C++: building/Building.h:516
+					s.priority       = plannedPriority(intents,*b); // C++: building/const AIEngine::BuildingView.h:516
 					obs.siteCount++;
 				}
 			}

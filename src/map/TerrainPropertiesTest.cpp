@@ -399,7 +399,7 @@ TEST_SUITE("TerrainRuntime")
 		map.resourceGrowthField();
 		CHECK(map.growthCache.validFor(map));
 		CHECK(map.growthCache.landField().at(8, 8) > 0);
-		CHECK(map.growthCache.rate(map.coordToIndex(8, 8), WHEAT) > 0);
+		CHECK(map.resourceGrowthRateAt(map.coordToIndex(8, 8), WHEAT) > 0);
 		CHECK(map.stepCost(1, 0, map.coordToIndex(8, 8), 0) == 29);
 		CHECK(map.stepCost(1, 1, map.coordToIndex(8, 8), 0) == 40);
 		auto *worker = world.addUnit(WORKER, 8, 8);

@@ -217,3 +217,6 @@ static constexpr int FILE_FORMAT_VERSION_TERRAIN_CATALOGUE = 141;
 
 //! Hazard-weighted routing fields; older cached fields must be rebuilt.
 static constexpr int FILE_FORMAT_VERSION_HAZARD_ROUTING = 142;
+
+//! Shared AI scheduling and pending command execution state.
+static constexpr int FILE_FORMAT_VERSION_AI_PIPELINE = 143;

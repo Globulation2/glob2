@@ -197,10 +197,12 @@ protected:
 public:
 	//! Apply this brush to the brush application vector and extend dim as required
 	void applyBrush(const BrushApplication &brush, const Map* map);
+	void applyBrush(const BrushApplication &brush, int mapWidth, int mapHeight);
 	//! Clear the vector of brush applications
 	void clear(void) { applications.clear(); }
 	//! Return a bitmap which is the result of the fusion of all accumulated brush applications
 	bool getBitmap(Utilities::BitArray *array, AreaDimensions *dim, const Map *map);
+	bool getBitmap(Utilities::BitArray *array, AreaDimensions *dim);
 	//! Return the area surface
 	unsigned getAreaSurface(void);
 	//! Return the number of brush applied

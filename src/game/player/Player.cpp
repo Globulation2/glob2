@@ -7,6 +7,7 @@
 #include "Player.h"
 #include "Team.h"
 #include "Utilities.h"
+#include "Game.h"
 
 Player::Player()
 :BasePlayer()
@@ -18,7 +19,7 @@ Player::Player()
 }
 
 Player::Player(GAGCore::InputStream *stream, Team *teams[Team::MAX_COUNT], Sint32 versionMinor)
-:BasePlayer()
+:Player()
 {
 	bool success=load(stream, teams, versionMinor);
 	assert(success);
@@ -42,6 +43,7 @@ Player::Player(Sint32 number, const std::string& name, Team *team, PlayerType ty
 
 Player::~Player()
 {
+	if (!disableRecursiveDestruction && game) game->cancelAI(number);
 	if (!disableRecursiveDestruction)
 		if (ai)
 		{
@@ -97,6 +99,7 @@ void Player::setBasePlayer(const BasePlayer *initial, Team *teams[Team::MAX_COUN
 
 bool Player::load(GAGCore::InputStream *stream, Team *teams[Team::MAX_COUNT], Sint32 versionMinor)
 {
+	if (game) game->cancelAI(number);
 	stream->readEnterSection("Player");
 	char signature[FILE_SIG_LEN];
 	stream->read(signature, FILE_SIG_LEN, "signatureStart");
@@ -177,6 +180,7 @@ void Player::save(GAGCore::OutputStream  *stream)
 
 void Player::makeItAI(AI::ImplementationID aiType)
 {
+	if (game) game->cancelAI(number);
 	BasePlayer::makeItAI(aiType);
 	if(ai)
 		delete ai;

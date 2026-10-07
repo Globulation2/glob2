@@ -3,6 +3,7 @@
 #include "field/GradientWorkspace.h"
 #include "map/TerrainType.h"
 #include "map/TerrainRegistry.h"
+#include "sim/snapshot/WorldSnapshot.h"
 #include <atomic>
 #include <algorithm>
 #include <chrono>
@@ -12,6 +13,7 @@
 #include <exception>
 #include <functional>
 #include <memory>
+#include <optional>
 #include <mutex>
 #include <thread>
 #include <ThreadSupport.h>
@@ -26,6 +28,7 @@ class GradientPipeline
 {
 public:
 	struct Job {
+		std::optional<SimulationSnapshot::Handle> terrainLease;
 		std::uint16_t **slot = nullptr;
 		std::unique_ptr<std::uint16_t[]> data;
 		std::shared_ptr<const std::vector<std::uint8_t>> water; // Test callback compatibility.
@@ -56,7 +59,9 @@ public:
 	};
 	using Work = std::function<void(Job &, GradientWorkspace &)>;
 	using Factory = std::function<std::thread(std::function<void()>)>;
-	struct Metrics { std::uint64_t jobs=0, published=0, discarded=0, waitNs=0, maxPending=0; } metrics;
+	// Simulation-owner callback observes publication, never computation.
+	std::function<void(std::uint16_t**)> onPublished;
+	struct Metrics { std::uint64_t jobs=0, published=0, discarded=0, waitNs=0, maxPending=0, preparationNs=0; } metrics;
 private:
 	std::deque<std::unique_ptr<Job>> pending;
 	std::vector<std::unique_ptr<Job>> spare;
@@ -80,15 +85,14 @@ private:
 		try
 		{
 			work(job, scratch);
-			job.water.reset();
-			job.terrain.reset();
-			job.registry.reset();
-			job.profiles.reset();
 		}
 		catch (...)
 		{
 			job.error = std::current_exception();
 		}
+		// Completion releases all borrowed immutable inputs, including failures.
+		job.water.reset(); job.terrain.reset(); job.registry.reset(); job.profiles.reset();
+		job.terrainLease.reset();
 		activeNs.fetch_add(ns(start), std::memory_order_relaxed);
 		{ std::lock_guard<std::mutex> lock(mutex); job.done = true; }
 		completed.notify_one();
@@ -175,6 +179,7 @@ public:
 			if (!job.superseded) {
 				auto *old = *job.slot; *job.slot = job.data.release(); job.data.reset(old);
 				++metrics.published;
+				if (onPublished) onPublished(job.slot);
 			} else ++metrics.discarded;
 			spare.push_back(std::move(pending.front())); pending.pop_front();
 		}
@@ -200,12 +205,17 @@ public:
 	// The owner reserves before the read-only batch; only this job's private
 	// inputs are written during preparation. Queue membership stays unchanged.
 	template<class Seed> void prepare(Job *ptr, Seed &&seed) {
+        const auto preparationStart=Clock::now();
+        bool inputsPrepared=false;
 		try {
 			seed(*ptr);
+            metrics.preparationNs += ns(preparationStart); inputsPrepared=true;
 			if (workers.empty()) execute(*ptr, serialWorkspace);
 			else { { std::lock_guard<std::mutex> lock(mutex); ready.push_back(ptr); } wake.notify_one(); }
 		}
 		catch (...) {
+            if (!inputsPrepared) metrics.preparationNs += ns(preparationStart);
+			ptr->water.reset(); ptr->terrain.reset(); ptr->registry.reset(); ptr->profiles.reset(); ptr->terrainLease.reset();
 			{ std::lock_guard<std::mutex> lock(mutex); ptr->error=std::current_exception(); ptr->done=true; }
 			completed.notify_one();
 			throw;

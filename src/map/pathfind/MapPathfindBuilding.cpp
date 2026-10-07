@@ -152,7 +152,7 @@ bool Map::pathfindBuilding(Building *building, int swimClass, int x, int y, int 
 	assert(building);
 	assert(x>=0);
 	assert(y>=0);
-	if (((tiles[coordToIndex(x, y)].forbidden) & building->owner->me)!=0)
+	if (((areaCells[coordToIndex(x, y)].forbidden) & building->owner->me)!=0)
 	{
 		// This escape path reads the cached field directly as a tie-breaker.
 		// Preserve its old age (do not call buildingGradient here).

@@ -411,6 +411,12 @@
           "minimum": 0,
           "maximum": 3
         },
+        "aiOrderDelay": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 8,
+          "description": "Engine-wide AI decision delay in ticks; absent means zero."
+        },
         "instantConstruction": {
           "type": "boolean"
         },

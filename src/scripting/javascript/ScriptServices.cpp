@@ -36,18 +36,36 @@ std::string key(const Value &c)
 }
 } // namespace
 Services::Services(Game &g, int t, Observations &o)
-	: game(g), team(t), observations(o), spatial(std::make_unique<Spatial>(g, t, o))
+	: team(t), observations(o), spatial(std::make_unique<Spatial>(g, t, o))
 {
 }
 Services::~Services() = default;
+void Services::applyExecutionReceipts(const std::vector<AIEngine::ExecutionReceipt>& receipts)
+{
+    waitForExecution = true;
+    for(const auto& receipt:receipts)
+        for(auto& record:records.items)
+        {
+            if(record.get("status").text != "issued" || !record.get("awaitingExecution").number
+                || record.get("tick").number != receipt.request.observedTick)continue;
+            record.set("awaitingExecution",false);
+            if(receipt.status==AIEngine::ExecutionStatus::Accepted)
+                record.set("tick",receipt.executionTick);
+            else record.set("status",receipt.status==AIEngine::ExecutionStatus::Canceled ? "cancelled" : "failed")
+                .set("reason",receipt.status==AIEngine::ExecutionStatus::Canceled ? "Order cancelled before execution" : "Order rejected at execution");
+            break;
+        }
+}
 void Services::begin()
 {
+	auto observation = observations.captureObservation();
 	reconcile();
 	spatial->begin(records);
 }
 Value Services::query(const std::string &name, const std::vector<Value> &args,
 					  const QueryBudget &budget)
 {
+	auto observation = observations.captureObservation();
 	if (name.rfind("spatial.", 0) == 0)
 		return spatial->query(name.substr(8), args, budget);
 	if (name == "desired")
@@ -93,13 +111,14 @@ Value Services::query(const std::string &name, const std::vector<Value> &args,
 		if (c.get("type").text == "cancel")
 			c.integer("target", 1, 0x7fffffff);
 		else
-			order(game, team, c);
+			order(observations.world(), team, c);
 		return {};
 	}
 	return observations.query(name, args, budget);
 }
 void Services::commit(const Value &commands, const Value &telemetry)
 {
+	auto observation = observations.captureObservation();
 	if (commands.kind != Value::Array || commands.items.size() > 256)
 		throw std::runtime_error("Too many AI actions");
 	auto candidate = records;
@@ -121,7 +140,7 @@ void Services::commit(const Value &commands, const Value &telemetry)
 										  .set("id", c.get("actionId"))
 										  .set("command", c)
 										  .set("status", cancelled ? "completed" : "failed")
-										  .set("tick", game.stepCounter)
+										  .set("tick", observations.world().tick)
 										  .set("reason", cancelled
 															 ? "Pending action cancelled"
 															 : "Action was no longer pending"));
@@ -144,7 +163,7 @@ void Services::commit(const Value &commands, const Value &telemetry)
 										  .set("id", c.get("actionId"))
 										  .set("command", c)
 										  .set("status", "pending")
-										  .set("tick", game.stepCounter));
+										  .set("tick", observations.world().tick));
 	}
 	if (std::count_if(candidate.items.begin(), candidate.items.end(), pending) > 256)
 		throw std::runtime_error("AI action queue is full");
@@ -188,7 +207,7 @@ void Services::reconcile()
 		const auto status = r.get("status").text;
 		if (status != "issued" && status != "constructing")
 			continue;
-		if (r.get("tick").number == game.stepCounter)
+		if (r.get("awaitingExecution").number || r.get("tick").number == observations.world().tick)
 			continue;
 		const auto &c = r.get("command");
 		if (c.get("type").text == "create")
@@ -204,7 +223,7 @@ void Services::reconcile()
 				for (const auto &b : owned.items)
 					if (b.get("x").number == c.get("x").number &&
 						b.get("y").number == c.get("y").number &&
-						buildingVariantDescendsFrom(game.buildingsTypes, int(c.get("buildingType").number), int(b.get("type").number)) &&
+						buildingVariantDescendsFrom(*observations.world().catalog, int(c.get("buildingType").number), int(b.get("type").number)) &&
 						b.get("generation").number != r.get("previousGeneration").number)
 					{
 						building = b;
@@ -219,7 +238,7 @@ void Services::reconcile()
 				r.set("status", building.get("construction").number ? "constructing" : "completed");
 			}
 			else if (status == "constructing" ||
-					 game.stepCounter - unsigned(r.get("tick").number) > 32)
+					 observations.world().tick - unsigned(r.get("tick").number) > 32)
 				r.set("status", "failed")
 					.set("reason", "Construction did not appear or was destroyed");
 		}
@@ -264,7 +283,7 @@ void Services::reconcile()
 			if (applied)
 				r.set("status", "completed");
 			else if (b.kind == Value::Null ||
-					 game.stepCounter - unsigned(r.get("tick").number) > 32)
+					 observations.world().tick - unsigned(r.get("tick").number) > 32)
 				r.set("status", "failed")
 					.set("reason", "Order no longer applies or was not applied");
 		}
@@ -272,6 +291,7 @@ void Services::reconcile()
 }
 std::shared_ptr<Order> Services::dispatch()
 {
+	auto observation = observations.captureObservation();
 	for (auto &r : records.items)
 		if (pending(r))
 		{
@@ -303,7 +323,7 @@ std::shared_ptr<Order> Services::dispatch()
 						r.set("beforeLevel", b.get("level"));
 					}
 				}
-				auto result = order(game, team, command);
+				auto result = order(observations.world(), team, command);
 				if (r.get("command").get("type").text == "create")
 				{
 					const auto &c = command;
@@ -313,7 +333,8 @@ std::shared_ptr<Order> Services::dispatch()
 							b.get("y").number == c.get("y").number)
 							r.set("previousGeneration", b.get("generation"));
 				}
-				r.set("status", "issued").set("tick", game.stepCounter);
+				r.set("status", "issued").set("tick", observations.world().tick);
+				if (waitForExecution) r.set("awaitingExecution", true);
 				return result;
 			}
 			catch (const std::bad_alloc &)
@@ -335,6 +356,7 @@ Value Services::save() const
 }
 void Services::load(const Value &v)
 {
+	auto observation = observations.captureObservation();
 	const unsigned candidateNext = v.integer("next", 1, 0x7fffffff);
 	if (v.get("records").kind != Value::Array || v.get("records").items.size() > 1024 ||
 		v.get("telemetry").kind != Value::Object || v.get("telemetry").fields.size() > 130)
@@ -347,13 +369,13 @@ void Services::load(const Value &v)
 			throw std::runtime_error("Invalid saved action identity");
 		if (r.get("command").get("actionId").number != id ||
 			r.get("command").get("type").kind != Value::String ||
-			r.get("tick").kind != Value::Number || r.get("tick").number > game.stepCounter)
+			r.get("tick").kind != Value::Number || r.get("tick").number > observations.world().tick)
 			throw std::runtime_error("Invalid saved action descriptor");
 		const auto &command = r.get("command");
 		const auto type = command.string("type");
 		if (type == "create" || type == "forbidden" || type == "guardArea" || type == "clearArea" ||
 			type == "farmArea")
-			order(game, team, command); // Validate types and bounds without executing it.
+			order(observations.world(), team, command); // Validate types and bounds without executing it.
 		else if (type == "cancel")
 			command.integer("target", 1, 0x7fffffff);
 		else
@@ -378,3 +400,8 @@ void Services::load(const Value &v)
 	next = candidateNext;
 }
 } // namespace Script
+
+std::uint64_t Script::Services::retainedQueryVectorBytes() const {
+    return retainedValueVectorBytes(records)+retainedValueVectorBytes(diagnostics)
+        +(spatial?spatial->retainedQueryVectorBytes():0);
+}

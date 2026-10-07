@@ -87,6 +87,7 @@ GAGCore::CooperativeTask Team::loadTask(GAGCore::InputStream *stream, BuildingsT
 		stream->readLeaveSection();
 	}
 	stream->readLeaveSection();
+	rebuildLiveLists();
 
 	// resolve cross reference
 	stream->readEnterSection("myUnits");

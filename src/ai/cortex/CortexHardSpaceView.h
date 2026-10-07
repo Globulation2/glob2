@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #pragma once
-#include "Map.h"
+#include "MapStateView.h"
 #include <vector>
 
 namespace Cortex
@@ -9,18 +9,18 @@ namespace Cortex
 // Discovery, transient units and immediate/virtual placement remain caller checks.
 class HardSpaceView
 {
-    const Map& map;
+    const MapState::View& world;
     int width,maskX,maskY;
     std::vector<unsigned char> states; // 0 unknown, 1 allowed, 2 blocked
 public:
-    explicit HardSpaceView(const Map& map)
-        : map(map),width(map.getW()),maskX(width-1),maskY(map.getH()-1),
-          states(size_t(width)*map.getH(),0) {}
+    explicit HardSpaceView(const MapState::View& world)
+        : world(world),width(world.width),maskX(width-1),maskY(world.height-1),
+          states(size_t(width)*world.height,0) {}
     bool at(int x,int y)
     {
         const int nx=x&maskX,ny=y&maskY;
         auto& state=states[size_t(ny)*width+nx];
-        if(!state) state=map.isHardSpaceForBuilding(nx,ny) ? 1 : 2;
+        if(!state) state=MapState::hardSpaceForBuildingAt(world,size_t(ny)*width+nx) ? 1 : 2;
         return state==1;
     }
     bool rectangle(int x,int y,int w,int h)

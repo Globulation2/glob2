@@ -1,3 +1,4 @@
+#include "CabinoObservationFixture.h"
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "EngineFixtures.h"
 #include "AI.h"
@@ -85,6 +86,51 @@ std::string tick(Game& g)
 }
 TEST_SUITE("AIRules")
 {
+TEST_CASE("owner and snapshot selection audits agree for rule constrained orders")
+{
+    glob2test::HeadlessGlobals globals;
+    glob2test::HeadlessGame fixture(glob2test::GameOptions{.clearImmobile=true,.loadDefaultRace=true,.header=true});
+    auto& game=fixture.game;
+    auto* inn=fixture.addBuilding("inn",4,4);REQUIRE(inn);
+    auto* school=fixture.addBuilding("school",12,4);REQUIRE(school);
+    const int siteType=game.buildingsTypes.getTypeNum("inn",0,true);REQUIRE(siteType>=0);
+    auto* site=game.addBuilding(20,4,siteType,0);REQUIRE(site);
+    auto* flag=fixture.addBuilding("warflag",2,2);REQUIRE(flag);
+    const auto missing=Building::GIDfrom(Building::MAX_COUNT-1,0);
+    for(unsigned rules=0;rules<8;++rules) {
+        game.gameHeader.setUnitUpgradesDisabled(rules&1);
+        game.gameHeader.setHungerDisabled(rules&2);
+        game.gameHeader.setPeacefulModeEnabled(rules&4);
+        for(bool damaged:{false,true}) {
+            inn->hp=inn->getEffectiveMaxHp()-(damaged?1:0);
+            const auto view=AIEngine::AIWorldView::capture(game,AIEngine::AIWorldView::captureCatalog(game));
+            auto parity=[&](Order& order) {
+                CAPTURE(rules);CAPTURE(damaged);CAPTURE(order.getOrderType());
+                CHECK(AIRules::permittedQueuedOrder(*view,order)==AIRules::permittedQueuedOrder(game,order));
+            };
+            for(int type=-1;type<=int(game.buildingsTypes.size());++type) {
+                OrderCreate create(0,0,0,type,1,1);parity(create);
+            }
+            for(Uint16 gid:{inn->gid,school->gid,site->gid,missing,Uint16(0xffff)}) {
+                // Malformed wire targets bypass constructor preconditions before audit.
+                OrderConstruction construction(inn->gid,1,1);construction.gid=gid;parity(construction);
+                OrderMoveFlag move(inn->gid,4,4,false);move.gid=gid;parity(move);
+            }
+            OrderMoveFlag move(flag->gid,4,4,false);parity(move);
+            for(int warriors:{0,1}) {
+                Sint32 ratios[NB_UNIT_TYPE]={1,0,warriors};
+                OrderModifySwarm swarm(inn->gid,ratios);parity(swarm);
+            }
+            NullOrder nothing;parity(nothing);
+        }
+    }
+    const auto frozen=AIEngine::AIWorldView::capture(game,AIEngine::AIWorldView::captureCatalog(game));
+    OrderMoveFlag move(flag->gid,4,4,false);
+    CHECK_FALSE(AIRules::permittedQueuedOrder(*frozen,move));
+    game.gameHeader.setPeacefulModeEnabled(false);
+    CHECK(AIRules::permittedQueuedOrder(game,move));
+    CHECK_FALSE(AIRules::permittedQueuedOrder(*frozen,move));
+}
 TEST_CASE("disabled training preserves independent services of mixed providers")
 {
     glob2test::HeadlessGlobals globals;
@@ -191,16 +237,16 @@ TEST_CASE("Cabino reservations match unit class and qualification instead of bui
     } reservations(ai);
     auto* building=world.addBuilding("inn",2,2);
     building->maxUnitWorking=7;
-    REQUIRE(reservations.request("construction",WORKER,BUILD,2,4,building->gid));
-    CHECK(reservations.getNeededUnits(WORKER,BUILD,0,false)==0);
-    CHECK(reservations.getNeededUnits(WARRIOR,BUILD,1,false)==0);
-    CHECK(reservations.getNeededUnits(WORKER,BUILD,1,false)==4);
+    REQUIRE(glob2test::withCabinoObservation(ai,world.game,[&]{return reservations.request("construction",WORKER,BUILD,2,4,building->gid);}));
+    CHECK(glob2test::withCabinoObservation(ai,world.game,[&]{return reservations.getNeededUnits(WORKER,BUILD,0,false);})==0);
+    CHECK(glob2test::withCabinoObservation(ai,world.game,[&]{return reservations.getNeededUnits(WARRIOR,BUILD,1,false);})==0);
+    CHECK(glob2test::withCabinoObservation(ai,world.game,[&]{return reservations.getNeededUnits(WORKER,BUILD,1,false);})==4);
     auto* worker=world.addUnit(WORKER,10,10);worker->constructionLevel=1;
     auto* unqualified=world.addUnit(WORKER,11,10);unqualified->constructionLevel=0;
     auto* warrior=world.addUnit(WARRIOR,12,10);warrior->constructionLevel=1;
     building->unitsWorking={worker,unqualified,warrior};
-    CHECK(reservations.getNeededUnits(WORKER,BUILD,1,false)==3);
-    CHECK(reservations.getNeededUnits(WORKER,BUILD,2,true)==3);
+    CHECK(glob2test::withCabinoObservation(ai,world.game,[&]{return reservations.getNeededUnits(WORKER,BUILD,1,false);})==3);
+    CHECK(glob2test::withCabinoObservation(ai,world.game,[&]{return reservations.getNeededUnits(WORKER,BUILD,2,true);})==3);
     building->unitsWorking.clear();
 }
 TEST_CASE("retained tournament replay contains no unavailable orders")
@@ -293,7 +339,7 @@ TEST_CASE("engine prevents training and upgrades while retaining repairs and sta
     CHECK(OrderValidation::validate(g,0,upgrade).verdict==OrderValidation::Verdict::Rejected);
     inn->launchConstruction(2,2);CHECK(inn->constructionResultState==Building::NO_CONSTRUCTION);
     Script::Observations obs(g,0);
-    auto descriptor=Script::Value::object().set("type","construction").set("building",obs.building(*inn))
+    auto descriptor=Script::Value::object().set("type","construction").set("building",Script::Value::object().set("id",unsigned(inn->gid)).set("generation",unsigned(inn->scriptIdentity)))
         .set("workers",2).set("futureWorkers",2);
     CHECK_THROWS(Script::order(g,0,descriptor));
     inn->hp-=10;
@@ -332,17 +378,21 @@ TEST_CASE("restored controller queues discard unavailable work and release prere
     OrderCreate training(0,20,20,school,2,2);
     CHECK(!AIRules::permittedQueuedOrder(g,training));
     AIMaximaRuntime::Context maxima(g.players[0]);
-    auto& register_=maxima.get_building_register();register_.initiate();
-    const auto id=register_.found().begin()->first;
-    AIMaximaRuntime::Management::UpgradeRepair savedUpgrade(id);
-    savedUpgrade.modify(maxima);
-    CHECK(!register_.is_building_upgrading(id));
-    CHECK(maxima.orders.empty());
+    {
+        auto ownerObservation=maxima.scopeOwnerObservation();
+        auto& register_=maxima.get_building_register();register_.initiate();
+        const auto id=register_.found().begin()->first;
+        AIMaximaRuntime::Management::UpgradeRepair savedUpgrade(id);
+        savedUpgrade.modify(maxima);
+        CHECK(!register_.is_building_upgrading(id));
+        CHECK(maxima.orders.empty());
+    }
     AICortex cortex(g.players[0]);
     cortex.orderQueue.push(std::make_shared<OrderConstruction>(inn->gid,2,2));
     CHECK(cortex.getOrder()->getOrderType()==ORDER_NULL);CHECK(cortex.orderQueue.empty());
     NewNicowar nicowar;
     AISharedRuntime::Runtime runtime(nullptr,g.players[0]);
+    AISharedRuntime::Runtime::OwnerObservationScope observationScope(runtime);
     nicowar.placement_queue.push_back(NewNicowar::RegularSchool);
     nicowar.construction_queue.push_back(NewNicowar::RegularInn);
     nicowar.buildings_under_construction_per_type[NewNicowar::RegularInn]=1;
@@ -374,7 +424,7 @@ TEST_CASE("Cabino migrates legacy warrior reservations only when training is dis
         auto* loaded=static_cast<Cabino::DistributedUnitManager*>(restored.getUnitModule());
         GAGCore::BinaryInputStream in(new GAGCore::MemoryStreamBackend(bytes.data(),bytes.size()));
         in.seekFromStart(0);
-        REQUIRE(loaded->load(&in,w.game.players[0],VERSION_MINOR));
+        REQUIRE(glob2test::withCabinoObservation(restored,w.game,[&]{return loaded->load(&in,w.game.players[0],VERSION_MINOR);}));
         const unsigned bucket=disabled?0:2;
         auto& migrated=loaded->module_records["legacy"];
         CHECK(migrated.requested[WARRIOR][ATTACK_STRENGTH][bucket]==7);
@@ -384,8 +434,8 @@ TEST_CASE("Cabino migrates legacy warrior reservations only when training is dis
         CHECK(loaded->buildings[flag->gid].minimum_level==bucket);
         // Releasing both saved claims must subtract from their migrated bucket,
         // rather than wrapping an unsigned zero and starving later army requests.
-        loaded->unreserve("legacy",WARRIOR,ATTACK_STRENGTH,3,5);
-        REQUIRE(loaded->request("legacy",WARRIOR,ATTACK_STRENGTH,3,0,flag->gid));
+        glob2test::withCabinoObservation(restored,w.game,[&]{loaded->unreserve("legacy",WARRIOR,ATTACK_STRENGTH,3,5);});
+        REQUIRE(glob2test::withCabinoObservation(restored,w.game,[&]{return loaded->request("legacy",WARRIOR,ATTACK_STRENGTH,3,0,flag->gid);}));
         CHECK(migrated.reservedUnits[WARRIOR][ATTACK_STRENGTH][bucket]==0);
         CHECK(migrated.usingUnits[WARRIOR][ATTACK_STRENGTH][bucket]==0);
         CHECK(loaded->buildings.count(flag->gid)==0);
@@ -450,9 +500,10 @@ TEST_CASE("Maxima removes disabled reserves while retaining finite production su
     CHECK(disabled.trainingSlots==0);CHECK(disabled.trainable==0);
     CHECK(AIMaxima::Labour::plan(disabled,maxima.labour_policy(),4).trainingReserve==0);
     CHECK(disabled.hospitals==1);CHECK(disabled.swarms==1);
-    CHECK(AIMaxima::effectiveNaturalGrowth(&g.map,800)==800);
-    g.gameHeader.setResourceScarcityLevel(3);CHECK(AIMaxima::effectiveNaturalGrowth(&g.map,800)==100);
-    g.gameHeader.setResourceGrowthDisabled(true);CHECK(AIMaxima::effectiveNaturalGrowth(&g.map,800)==0);
+    const auto growth=[&]{ const auto observed=AIEngine::AIWorldView::capture(g,AIEngine::AIWorldView::captureCatalog(g)); return AIMaxima::effectiveNaturalGrowth(observed.get(),800); };
+    CHECK(growth()==800);
+    g.gameHeader.setResourceScarcityLevel(3);CHECK(growth()==100);
+    g.gameHeader.setResourceGrowthDisabled(true);CHECK(growth()==0);
 }
 TEST_CASE("Cortex excludes unavailable technology from scoring and feeding prerequisites")
 {
@@ -480,12 +531,12 @@ TEST_CASE("renewable material potential survives saturation and honors yield pol
     // All-grass fixture maps have zero land fertility until a water donor exists.
     map.setCellTerrain(9,8,WATER);
     map.setResource(8,8,wheat,0);
-    const auto ecology=map.resourceGrowthField().rate(index,resourceIndex(wheat));
+    const auto ecology=map.resourceGrowthRateAt(index,resourceIndex(wheat));
     REQUIRE(ecology>0);
     for(unsigned stock=1;stock<=5;++stock)
     {
         map.setMaterialAmount(index,MaterialId::Food,stock);
-        CHECK(AIResourceSources::renewablePotential(map,index,food)==ecology);
+        CHECK(AIResourceSources::renewablePotential(map.stateView(),index,MaterialId::Food)==ecology);
         if(stock==5) CHECK(map.materialGrowthRateAt(index,MaterialId::Food)==0);
     }
     using Json=nlohmann::json;
@@ -505,7 +556,7 @@ TEST_CASE("renewable material potential survives saturation and honors yield pol
         map.installResourceDefinitions(Json{{"schemaVersion",1},{"resources",Json::array({definition})}}.dump());
         const auto id=*map.resourceRegistry().find("renewal-fixture");
         map.setResource(8,8,id,0);
-        return map.resourceGrowthField().rate(index,resourceIndex(id));
+        return map.resourceGrowthRateAt(index,resourceIndex(id));
     };
     // Combining branch numerators preserves exact calibration even when the
     // ecological rate does not divide evenly by eight.
@@ -517,12 +568,12 @@ TEST_CASE("renewable material potential survives saturation and honors yield pol
         map.installResourceDefinitions(Json{{"schemaVersion",1},{"resources",Json::array({definition})}}.dump());
         const auto id=*map.resourceRegistry().find("wheat");
         map.setResource(8,8,id,0);
-        const auto rate=map.resourceGrowthField().rate(index,resourceIndex(id));
+        const auto rate=map.resourceGrowthRateAt(index,resourceIndex(id));
         REQUIRE(rate%8!=0);
         for(unsigned stock=1;stock<=5;++stock)
         {
             map.setMaterialAmount(index,MaterialId::Food,stock);
-            const auto potential=AIResourceSources::renewablePotential(map,index,food);
+            const auto potential=AIResourceSources::renewablePotential(map.stateView(),index,MaterialId::Food);
             CHECK(potential==rate);
         }
     }
@@ -533,25 +584,25 @@ TEST_CASE("renewable material potential survives saturation and honors yield pol
     CHECK(map.materialGrowthRateAt(index,MaterialId::Gold)==0);
     CHECK(map.materialRenewalPotentialAt(index,MaterialId::Gold)==base/4);
     CHECK(map.materialRenewalPotentialAt(index,MaterialId::Food)==base/2);
-    CHECK(AIResourceSources::renewablePotential(map,index,gold)==base/4);
+    CHECK(AIResourceSources::renewablePotential(map.stateView(),index,MaterialId::Gold)==base/4);
     // A configured reserve equal to capacity does not restrict harvesting outside
     // an active farm area. The source accessibility policy owns farm eligibility.
     w.game.gameHeader.setResourceScarcityLevel(2);
-    CHECK(AIResourceSources::renewablePotential(map,index,gold)==base/16);
+    CHECK(AIResourceSources::renewablePotential(map.stateView(),index,MaterialId::Gold)==base/16);
     w.game.gameHeader.setResourceGrowthDisabled(true);
-    CHECK(AIResourceSources::renewablePotential(map,index,gold)==0);
+    CHECK(AIResourceSources::renewablePotential(map.stateView(),index,MaterialId::Gold)==0);
     w.game.gameHeader.setResourceGrowthDisabled(false);
     for(const char* policy : {"all","one"})
     {
         install(policy,true,false,true,2);
-        CHECK(AIResourceSources::renewablePotential(map,index,gold)==0);
+        CHECK(AIResourceSources::renewablePotential(map.stateView(),index,MaterialId::Gold)==0);
     }
     CHECK_THROWS(install("infinite",true,false,true,2));
     w.game.gameHeader.setResourceGrowthDisabled(true);
     install("infinite",false,false,true,2);
-    CHECK(AIResourceSources::renewablePotential(map,index,gold)==ResourceRateScale);
+    CHECK(AIResourceSources::renewablePotential(map.stateView(),index,MaterialId::Gold)==ResourceRateScale);
     map.setMaterialAmount(index,MaterialId::Gold,0);
-    CHECK(AIResourceSources::renewablePotential(map,index,gold)==0);
+    CHECK(AIResourceSources::renewablePotential(map.stateView(),index,MaterialId::Gold)==0);
     w.game.gameHeader.setResourceGrowthDisabled(false);
     w.game.gameHeader.setResourceScarcityLevel(0);
     install("one",false,false,false,1);
@@ -584,7 +635,7 @@ TEST_CASE("prospective material supply combines mixed branch numerators without 
         map.installResourceDefinitions(Json{{"schemaVersion",1},{"resources",Json::array({definition})}}.dump());
         const auto id=*map.resourceRegistry().find("prospective-mixed");
         map.setResource(8,8,id,0);
-        return std::uint64_t(map.resourceGrowthField().rate(index,resourceIndex(id)));
+        return std::uint64_t(map.resourceGrowthRateAt(index,resourceIndex(id)));
     };
     const auto rate=install();
     REQUIRE(rate%8!=0);
@@ -601,7 +652,7 @@ TEST_CASE("prospective material supply combines mixed branch numerators without 
     const auto expected=largeRate+largeRate*65535;
     REQUIRE(expected>std::numeric_limits<Uint32>::max());
     CHECK(map.materialRenewalPotentialAt(index,MaterialId::Gold)==expected);
-    CHECK(AIResourceSources::renewablePotential(map,index,materialIndex(MaterialId::Gold))==expected);
+    CHECK(AIResourceSources::renewablePotential(map.stateView(),index,MaterialId::Gold)==expected);
     definition["yields"]["gold"]["consumption"]="all";
     const auto destructiveRate=install();
     CHECK(map.materialRenewalPotentialAt(index,MaterialId::Gold)==destructiveRate);

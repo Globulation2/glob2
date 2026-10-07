@@ -62,6 +62,8 @@ class PolicyTest(unittest.TestCase):
         self.assertTrue(network['windows'] and network['deployment'] and network['cross_platform'])
         self.assertTrue(self.select(['src/engine/sim/SimulationRunner.cpp'])['tsan'])
         self.assertTrue(self.select(['src/render/scene/Scene.cpp'])['tsan'])
+        self.assertTrue(self.select(['src/ai/engine/AIPipeline.cpp'])['tsan'])
+        self.assertTrue(self.select(['src/ai/observation/AIQueries.cpp'])['tsan'])
 
     def test_music_pipeline_is_a_cheap_job_and_sets_are_packaged_data(self):
         music = self.select(['tools/music/glob2music/qa/seam.py', 'tools/music/sets/woodland/set.toml'])

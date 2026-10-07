@@ -104,15 +104,13 @@ namespace
 class AlgaeGrowth
 {
 public:
-	AlgaeGrowth(const Map& map, const Torus&) : map(map), field(map.resourceGrowthField()) {}
+	AlgaeGrowth(const Map& map, const Torus&) : view(map.stateView()) {}
 	double at(int i) const
 	{
-		if (!map.terrainSupportsResourceAtByIndex(i % map.getW(),i / map.getW(),ALGA)) return 0;
-		return double(field.rate(i,ALGA))/Fertility::kRateScale;
+		return double(MapState::resourceGrowthRate(view,i,ALGA))/Fertility::kRateScale;
 	}
 private:
-	const Map& map;
-	const Fertility::GrowthCache& field;
+	const MapState::View view;
 };
 } // namespace
 

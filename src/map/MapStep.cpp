@@ -69,7 +69,6 @@ void Map::growResources(void)
     rebuildGrowthCoverage();
     static constexpr int scarcityDivisor[]={1,2,4,8};
     const int scarcity=scarcityDivisor[game->gameHeader.getResourceScarcityLevel()];
-    const auto& ecology=resourceGrowthField();
     const int firstY=syncRand()&3;
     for(int y=firstY;y<h;y+=4)
         for(int x=syncRand()&15;x<w;x+=syncRand()&31)
@@ -77,7 +76,7 @@ void Map::growResources(void)
             const auto& resource=getResource(x,y);
             if(resource.type!=NO_RES_TYPE)
                 Fertility::applyGrowthOpportunities(*this,x,y,
-                    ecology.rate(coordToIndex(x,y),resource.type),scarcity);
+                    resourceGrowthRateAt(coordToIndex(x,y),resource.type),scarcity);
         }
 }
 
@@ -192,7 +191,7 @@ void Map::recordNaturalGrowth(int x,int y,int resourceType,int oldType,const std
 {
     if (!game || !resourceRegistry().valid(unsigned(resourceType))) return;
     const auto index=coordToIndex(x,y);
-    const auto& after=tiles[index].resource;
+    const auto& after=resourceCells[index].resource;
     const bool newTile=oldType==NO_RES_TYPE && after.type==resourceType;
     const auto stocks=materialStocksAt(index);
     if (growthCoverage.size()!=size) rebuildGrowthCoverage();
@@ -232,11 +231,25 @@ Map::GradientPipelineStatus Map::gradientPipelineStatus() const
 	const auto &metrics = pipeline.metrics;
 	return {pipeline.enabled(), pipeline.workerCount(), pipeline.delayTicks(),
 		pipeline.pendingCount(), metrics.jobs, metrics.published, metrics.discarded,
-		metrics.maxPending, metrics.waitNs, pipeline.activeElapsedNs()};
+		metrics.maxPending, metrics.waitNs, pipeline.activeElapsedNs(), metrics.preparationNs};
 }
 
 bool Map::hasPendingGradientPreparation() const { return gradientRuntime->preparation.job != nullptr; }
-void Map::preparePendingGradient()
+SimulationSnapshot::Requirements Map::pendingGradientRequirements() const
+{
+    return hasPendingGradientPreparation() ? SimulationSnapshot::bit(SimulationSnapshot::Component::Terrain) : 0;
+}
+void Map::preparePendingGradient() { preparePendingGradientInputs(nullptr); }
+void Map::preparePendingGradient(const SimulationSnapshot::Handle& foundation)
+{
+    if (!hasPendingGradientPreparation()) return;
+    if (!foundation.terrain || foundation.worldIdentity != identity() ||
+        foundation.width != getW() || foundation.height != getH() ||
+        foundation.terrain->revision != terrainGeneration())
+        throw std::invalid_argument("Gradient preparation requires current projected terrain");
+    preparePendingGradientInputs(&foundation);
+}
+void Map::preparePendingGradientInputs(const SimulationSnapshot::Handle* foundation)
 {
 	// Consume before executing: failure leaves no dangling descriptor, while the
 	// pipeline records a completed error so saves/publication cannot wait forever.
@@ -252,12 +265,13 @@ void Map::preparePendingGradient()
 		case Kind::Clear: seedClearAreasGradient(team, swim, job.data.get()); break;
 		}
 		// Propagation owns immutable terrain inputs after the read barrier closes.
-		job.modifiedCosts = hasTerrainMovementModifiers();
-		job.registry = frozenTerrainRegistry();
+		if (foundation) job.terrainLease = foundation->project(SimulationSnapshot::bit(SimulationSnapshot::Component::Terrain));
+        job.modifiedCosts = foundation ? foundation->terrain->movementModifiers : hasTerrainMovementModifiers();
+		job.registry = foundation ? foundation->terrain->registry : frozenTerrainRegistry();
 		job.terrainBuckets = terrainQueueBuckets();
 		job.water = !job.modifiedCosts && terrainRegistry().size()>TERRAIN_COUNT && gradient_kernel::weightedClass(swim) ? frozenWaterSnapshot() : nullptr;
 		job.profiles = job.modifiedCosts && terrainRegistry().size()>TERRAIN_COUNT ? frozenTerrainMovementSnapshot(swim) : nullptr;
-		job.terrain = !job.profiles && !job.water && (job.modifiedCosts || (swim != 0 && swim != SWIM_CLASS_EVEN)) ? frozenTerrainSnapshot() : nullptr;
+		job.terrain = !job.profiles && !job.water && (job.modifiedCosts || (swim != 0 && swim != SWIM_CLASS_EVEN)) ? (foundation ? foundation->terrain->identity : frozenTerrainSnapshot()) : nullptr;
 	});
 }
 
@@ -269,6 +283,7 @@ void Map::configureGradientPipeline(unsigned workers, unsigned delay)
 {
 	if (workers>16 || delay<1 || delay>16) throw std::invalid_argument("Invalid gradient pipeline configuration");
 	preparePendingGradient();
+	gradientRuntime->pipeline.onPublished = [this](Uint16** slot) { publishPlane(slot); };
 	gradientRuntime->pipeline.configure(workers, delay, size, [this](GradientPipeline::Job &job, GradientWorkspace &scratch) {
 		const field::Grid geometry{getW(), getH()};
 		if (job.water && job.registry && job.registry->size()>TERRAIN_COUNT && !job.modifiedCosts) {
@@ -337,11 +352,10 @@ void Map::syncStep(Uint32 stepCounter, bool preparePeriodic)
 				const Uint32 teamMask = Team::teamNumberToMask(escapeTeam);
 				for (size_t i = 0; i < size; ++i)
 				{
-					const Tile& tile = tiles[i];
 					const bool blocked = resourceBlocksGround(i)
-						|| tile.building != NOGBID || (!terrainPropertiesAt(i).walkable && !(escapeSwim > 0 && terrainPropertiesAt(i).swimmable))
-						|| immobileUnits[i] != IMMOBILE_UNIT_NONE;
-					const bool goal = !blocked && !(tile.forbidden & teamMask);
+						|| occupancyCells[i].building != NOGBID || (!terrainPropertiesAt(i).walkable && !(escapeSwim > 0 && terrainPropertiesAt(i).swimmable))
+						|| occupancyCells[i].immobileUnit != IMMOBILE_UNIT_NONE;
+					const bool goal = !blocked && !(areaCells[i].forbidden & teamMask);
 					if ((field[i] == GRADIENT_FORBIDDEN) != blocked
 						|| (field[i] == GRADIENT_AT_GOAL) != goal)
 					{
@@ -440,6 +454,7 @@ void Map::stagePeriodicGradientPreparation()
 
 void Map::switchFogOfWar(void)
 {
+	visibilityChanges.markAll();
 	PERF_SCOPE_TIME(Fog);
 	memset(fogOfWar, 0, size*sizeof(Uint32));
 	if (fogOfWar == &fogOfWarA[0])
@@ -451,6 +466,11 @@ void Map::switchFogOfWar(void)
 void Map::setMapDiscovered(int x, int y, Uint32 sharedVision)
 {
 	size_t index = coordToIndex(x, y);
+	// The snapshot observes discovery and the active fog plane. Updating only
+	// the inactive plane becomes visible after switchFogOfWar invalidates it.
+	if ((mapDiscovered[index] & sharedVision) != sharedVision
+		|| (fogOfWar && (fogOfWar[index] & sharedVision) != sharedVision))
+		markVisibility(index);
 	mapDiscovered[index] |= sharedVision;
 	fogOfWarA[index] |= sharedVision;
 	fogOfWarB[index] |= sharedVision;
@@ -465,7 +485,7 @@ void Map::setMapDiscovered(int x, int y, int w, int h,  Uint32 sharedVision)
 
 void Map::setMapBuildingsDiscovered(int x, int y, Uint32 sharedVision, Team *teams[Team::MAX_COUNT])
 {
-	Uint16 bgid = tiles[coordToIndex(x, y)].building;
+	Uint16 bgid = occupancyCells[coordToIndex(x, y)].building;
 	if (bgid != NOGBID)
 	{
 		int id = Building::GIDtoID(bgid);
@@ -503,6 +523,7 @@ void Map::setMapExploredByBuilding(int x, int y, int w, int h, int team)
 void Map::unsetMapDiscovered(void)
 {
 	fill(mapDiscovered, 0u);
+	visibilityChanges.markAll();
 }
 
 bool Map::isMapPartiallyDiscovered(int x1, int y1, int x2, int y2, Uint32 visionMask) const
@@ -524,34 +545,35 @@ bool Map::isMapPartiallyDiscovered(int x1, int y1, int x2, int y2, Uint32 vision
 void Map::setMapDiscovered(void)
 {
 	fill(mapDiscovered, ~0u);
+	visibilityChanges.markAll();
 }
 
 void Map::computeDisplayedForbidden(int teamNumber)
 {
 	Uint32 teamMask = Team::teamNumberToMask(teamNumber);
 	for (size_t i=0; i<size; i++)
-		displayedForbiddenView.set(i, (tiles[i].forbidden & teamMask) != 0);
+		displayedForbiddenView.set(i, (areaCells[i].forbidden & teamMask) != 0);
 }
 
 void Map::computeDisplayedGuardArea(int teamNumber)
 {
 	Uint32 teamMask = Team::teamNumberToMask(teamNumber);
 	for (size_t i=0; i<size; i++)
-		displayedGuardAreaView.set(i, (tiles[i].guardArea & teamMask) != 0);
+		displayedGuardAreaView.set(i, (areaCells[i].guard & teamMask) != 0);
 }
 
 void Map::computeDisplayedClearArea(int teamNumber)
 {
 	Uint32 teamMask = Team::teamNumberToMask(teamNumber);
 	for (size_t i=0; i<size; i++)
-		displayedClearAreaView.set(i, (tiles[i].clearArea & teamMask) != 0);
+		displayedClearAreaView.set(i, (areaCells[i].clear & teamMask) != 0);
 }
 
 void Map::computeDisplayedFarmArea(int teamNumber)
 {
 	Uint32 teamMask = Team::teamNumberToMask(teamNumber);
 	for (size_t i=0; i<size; i++)
-		displayedFarmAreaView.set(i, (tiles[i].farmArea & teamMask) != 0);
+		displayedFarmAreaView.set(i, (areaCells[i].farm & teamMask) != 0);
 }
 
 

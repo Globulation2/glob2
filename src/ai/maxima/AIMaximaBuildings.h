@@ -6,11 +6,17 @@
 #include "Game.h"
 #include "Team.h"
 #include "UnitConsts.h"
+#include "ai/observation/ObservationQueries.h"
 #include <algorithm>
 #include <limits>
 namespace AIMaximaBuildings
 {
-inline const BuildingType* completed(const Game& game, const BuildingType& type)
+inline const BuildingType* completed(const AIEngine::AIWorldView& world,const BuildingType& type)
+{ return type.isBuildingSite && type.nextLevel>=0 ? &world.catalog->at(type.nextLevel).resolvedType : &type; }
+inline int lineageRoot(const AIEngine::AIWorldView& world,int type) {return world.capabilities().lineageRoot(type);}
+inline int lineagePosition(const AIEngine::AIWorldView& world,int type) {return world.capabilities().lineagePosition(type);}
+template<class World>
+inline const BuildingType* completed(const World& game, const BuildingType& type)
 { return type.isBuildingSite && type.nextLevel>=0 ? game.buildingsTypes.get(type.nextLevel) : &type; }
 // A service timeout counts unit actions. The final action performs completion;
 // insideSpeed advances the unit's fixed-point action clock each simulation tick.
@@ -20,7 +26,8 @@ inline int serviceTicks(const BuildingType& type,int duration)
  const int advance=std::clamp(type.insideSpeed,1,UNIT_DELTA_QUANTUM);
  return int(((static_cast<long long>(std::max(0,duration))+1)*UNIT_DELTA_QUANTUM+advance-1)/advance);
 }
-inline unsigned capabilities(const Game& game, const BuildingType& type)
+template<class World>
+inline unsigned capabilities(const World& game, const BuildingType& type)
 {
  const auto* b=completed(game,type); if(!b || !b->runtimeAvailable)return 0;
  const auto& s=b->semantics; unsigned result=0;
@@ -37,19 +44,22 @@ inline unsigned capabilities(const Game& game, const BuildingType& type)
  add(ResourceExchange,(s.market.interTeamFruitExchange || b->runtimeSuppliesDirectStock)||b->runtimeSuppliesStock);
  return result;
 }
-inline bool serves(const Game& game,const BuildingType& type,int role)
+template<class World>
+inline bool serves(const World& game,const BuildingType& type,int role)
 {return (capabilities(game,type)&roleBit(role))!=0;}
-inline int lineageRoot(const Game& game,int type)
+template<class World>
+inline int lineageRoot(const World& game,int type)
 {return game.buildingCapabilities().lineageRoot(type);}
-inline int lineagePosition(const Game& game,int type)
+template<class World>
+inline int lineagePosition(const World& game,int type)
 {return game.buildingCapabilities().lineagePosition(type);}
-inline AIPlanning::BuildingCandidate choose(Game& game,Team& team,int role)
+inline AIPlanning::BuildingCandidate choose(const AIEngine::AIWorldView& game,const AIEngine::TeamView& team,int role)
 {
  using I=AIPlanning::BuildingIntent;AIPlanning::BuildingCandidate best;long long score=std::numeric_limits<long long>::max();
- const int qualification=team.maxBuildLevel();
- auto consider=[&](I intent){for(const auto& c:game.buildingCapabilities().placements(intent)){
-  if(!game.buildingCapabilities().available(c,intent,game.gameHeader))continue;
-  const auto* p=game.buildingsTypes.get(c.placementType);if(p->semantics.requiredWorkerLevel>qualification)continue;
+ const int qualification=AIEngine::ObservationQueries::maxBuildLevel(game,team.number);
+ auto consider=[&](I intent){for(const auto& c:game.capabilities().placements(intent)){
+  if(!AIEngine::ObservationQueries::available(game,c,intent))continue;
+  const auto* p=&game.catalog->at(c.placementType).resolvedType;if(p->semantics.requiredWorkerLevel>qualification)continue;
   long long cost=p->width*p->height;for(int r:p->semantics.constructionCost)if(p->isBuildingSite)cost+=r;
   if(cost<score||(cost==score&&c.placementType<best.placementType)){score=cost;best=c;}
  }};

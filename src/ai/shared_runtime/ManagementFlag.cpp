@@ -2,6 +2,7 @@
 // Copyright (C) 2006 Bradley Arsenault
 
 #include "shared_runtime/Runtime.h"
+#include "ai/observation/ObservationAreaOrders.h"
 #include "FileFormatVersions.h"
 #include "Order.h"
 #include "Brush.h"
@@ -39,26 +40,26 @@ namespace
 		BrushAccumulator acc;
 		for(std::vector<position>::const_iterator i=locations.begin(); i!=locations.end(); ++i)
 		{
-			acc.applyBrush(BrushApplication(runtime.player->map->normalizeX(i->x), runtime.player->map->normalizeY(i->y), 0), runtime.player->map);
+			acc.applyBrush(BrushApplication(runtime.observation().normalizeX(i->x), runtime.observation().normalizeY(i->y), 0), runtime.observation().width, runtime.observation().height);
 		}
 		if(acc.getApplicationCount()==0)
 			return;
-		Uint8 team = runtime.player->team->teamNumber;
-		const Map* map = runtime.player->map;
+		Uint8 team = runtime.teamNumber();
+
 		switch(areatype)
 		{
 			case ClearingArea:
-				runtime.push_order(shared_ptr<Order>(new OrderAlterClearArea(team, mode, &acc, map)));
+				runtime.push_order(AIEngine::observationAreaOrder<OrderAlterClearArea>(team,mode,acc));
 				break;
 			case ForbiddenArea:
-				runtime.push_order(shared_ptr<Order>(new OrderAlterForbidden(team, mode, &acc, map)));
+				runtime.push_order(AIEngine::observationAreaOrder<OrderAlterForbidden>(team,mode,acc));
 				break;
 			case GuardArea:
-				runtime.push_order(shared_ptr<Order>(new OrderAlterGuardArea(team, mode, &acc, map)));
+				runtime.push_order(AIEngine::observationAreaOrder<OrderAlterGuardArea>(team,mode,acc));
 				break;
 			case FarmArea:
 				// Only issued when the game carries the farm-areas experiment.
-				runtime.push_order(shared_ptr<Order>(new OrderAlterFarmArea(team, mode, &acc, map)));
+				runtime.push_order(AIEngine::observationAreaOrder<OrderAlterFarmArea>(team,mode,acc));
 				break;
 		}
 	}
@@ -75,7 +76,7 @@ ChangeFlagSize::ChangeFlagSize(int size, int building_id) : size(size), building
 void ChangeFlagSize::modify(Runtime& runtime)
 {
 	auto* building=runtime.get_building_register().get_building(building_id);
- runtime.push_order(std::make_shared<OrderModifyFlag>(building->gid,std::clamp(size,0,building->type->maxUnitStayRange)));
+ runtime.push_order(std::make_shared<OrderModifyFlag>(building->gid,std::clamp(size,0,AIEngine::ObservationQueries::buildingType(runtime.observation(),*building).maxUnitStayRange)));
 }
 
 
@@ -121,8 +122,8 @@ void ChangeFlagMinimumLevel::modify(Runtime& runtime)
 {
 	const auto* building=runtime.get_building_register().get_building(building_id);
 	if(!building)return;
-	const bool explorers=targetRole==1 || (targetRole<0 && building->type->zonable[EXPLORER]
-		&& !building->type->zonable[WORKER] && !building->type->zonable[WARRIOR]);
+	const bool explorers=targetRole==1 || (targetRole<0 && AIEngine::ObservationQueries::buildingType(runtime.observation(),*building).zonable[EXPLORER]
+		&& !AIEngine::ObservationQueries::buildingType(runtime.observation(),*building).zonable[WORKER] && !AIEngine::ObservationQueries::buildingType(runtime.observation(),*building).zonable[WARRIOR]);
 	const int requirement=explorers ? (targetRole<0 ? minimum_level>1 : minimum_level!=0)
 		: minimum_level-AI_SHARED_RUNTIME_LEVEL_OFFSET_USER_TO_ENGINE;
 	runtime.push_order(std::make_shared<OrderModifyMinLevelToFlag>(building->gid,requirement,explorers ? 1 : 0));
@@ -173,7 +174,7 @@ ChangeFlagPosition::ChangeFlagPosition(int x, int y, int building_id)
 void ChangeFlagPosition::modify(Runtime& runtime)
 {
 	const auto* building = runtime.get_building_register().get_building(building_id);
-	if (building && building->type->semantics.relocatable)
+	if (building && AIEngine::ObservationQueries::buildingType(runtime.observation(),*building).semantics.relocatable)
 		runtime.push_order(shared_ptr<Order>(new OrderMoveFlag(building->gid, x, y, true)));
 }
 
@@ -227,7 +228,8 @@ AdjustPriority::AdjustPriority(int building_id, AdjustPriority::BuildingPriority
 
 void AdjustPriority::modify(Runtime& runtime)
 {
-	runtime.push_order(shared_ptr<Order>(new OrderChangePriority(runtime.get_building_register().get_building(building_id)->gid, priority_to_int(priority))));
+    if(const auto* building=runtime.get_building_register().get_building(building_id))
+        runtime.push_order(shared_ptr<Order>(new OrderChangePriority(building->gid, priority_to_int(priority))));
 }
 
 

@@ -73,7 +73,7 @@ void Map::smoothResources(int times)
 		for (int y=0; y<h; y++)
 			for (int x=0; x<w; x++)
 			{
-				Resource &r=tiles[coordToIndex(x, y)].resource;
+				Resource &r=resourceCells[coordToIndex(x, y)].resource;
 				if (r.type==NO_RES_TYPE || !resourcePropertiesByIndex(r.type).smoothPlacement)
 					continue;
 				if (!(syncRand()&4))

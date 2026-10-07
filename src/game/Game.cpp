@@ -38,6 +38,7 @@
 
 #include "render/GameAnimations.h"
 #include "render/SoftwareTerrainCache.h"
+#include "ai/engine/AIPipeline.h"
 
 #define BULLET_IMGID 0
 
@@ -135,6 +136,7 @@ void Game::init(GameGUI *gui, MapEdit* edit)
 /** Reset player and team lists, game end stuff and selection stuff. */
 void Game::clearGame()
 {
+	clearAI(); // Join all controller work before deleting teams or players.
 	scriptGenerations.fill(0);
 	recordingFailingUnits=BuildingRef();
 	hasSavedRandomState = false;
@@ -181,6 +183,11 @@ void Game::clearGame()
 // header paired with a smaller-team map.
 void Game::setGameHeader(const GameHeader& newGameHeader, bool saveAI)
 {
+	if (saveAI) {
+		drainAI();
+		if (aiPipeline && gameHeader.getAIOrderDelay()!=newGameHeader.getAIOrderDelay())
+			throw std::logic_error("A saved match cannot change its AI delay");
+	} else clearAI();
 	const GameHeader previousHeader = gameHeader;
 	GameHeader resolvedHeader = newGameHeader;
 	if (!resolvedHeader.getBuildingCatalogSnapshot().empty()
@@ -208,6 +215,7 @@ void Game::setGameHeader(const GameHeader& newGameHeader, bool saveAI)
 		//Don't change AI's
 		if(!saveAI || previousHeader.getBasePlayer(i).type < BasePlayer::P_AI)
 		{
+			cancelAI(i);
 			delete players[i];
 			players[i]=new Player();
 			players[i]->setBasePlayer(&newGameHeader.getBasePlayer(i), teams);
@@ -238,7 +246,7 @@ void Game::setGameHeader(const GameHeader& newGameHeader, bool saveAI)
 	// setGameHeader can run more than once before a match starts (e.g. the
 	// lobby's player list changing) AND when loading an existing save
 	// (GameGUI::loadFromHeaders calls Game::load(), which already restores
-	// each team's real, accumulated teamResources, before calling this).
+	// each team's real, accumulated teamMaterials, before calling this).
 	// Re-seed only when the level actually changes from what gameHeader
 	// (the outgoing header, about to be replaced below) already had: a
 	// plain assignment -- like Team::init's own zeroing -- rather than an

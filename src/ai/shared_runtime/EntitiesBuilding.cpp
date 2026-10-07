@@ -2,6 +2,7 @@
 // Copyright (C) 2006 Bradley Arsenault
 
 #include "shared_runtime/Runtime.h"
+#include "ai/observation/AIWorldView.h"
 #include "Building.h"
 #include "Game.h"
 
@@ -15,7 +16,7 @@ Entities::Building::Building(int building_type, int team, bool under_constructio
 
 bool Entities::Building::is_entity(Map* map, int posx, int posy)
 {
-	int building_id=map->getBuilding(posx, posy);
+	int building_id=map->getBuilding(posx,posy);
 	if(building_id==NOGBID)
 		return false;
 	int team_id=::Building::GIDtoTeam(building_id);
@@ -70,7 +71,7 @@ Entities::AnyTeamBuilding::AnyTeamBuilding(int team, bool under_construction) : 
 
 bool Entities::AnyTeamBuilding::is_entity(Map* map, int posx, int posy)
 {
-	int building_id=map->getBuilding(posx, posy);
+	int building_id=map->getBuilding(posx,posy);
 	if(building_id==NOGBID)
 		return false;
 	int team_id=::Building::GIDtoTeam(building_id);
@@ -122,7 +123,7 @@ Entities::AnyBuilding::AnyBuilding(bool under_construction) : under_construction
 
 bool Entities::AnyBuilding::is_entity(Map* map, int posx, int posy)
 {
-	int building_id=map->getBuilding(posx, posy);
+	int building_id=map->getBuilding(posx,posy);
 	if(building_id==NOGBID)
 		return false;
 	int team_id=::Building::GIDtoTeam(building_id);
@@ -160,4 +161,22 @@ void Entities::AnyBuilding::save(GAGCore::OutputStream *stream)
 	stream->writeEnterSection("AnyBuilding");
 	stream->writeUint8(under_construction, "under_construction");
 	stream->writeLeaveSection();
+}
+
+bool Entities::Building::is_entity(const AIEngine::AIWorldView& world,int x,int y)
+{
+    const auto* building=world.buildingAtSlot(world.occupancyAt(world.tileIndex(x,y)).building);
+    return building && building->team==team && building->typeNum==building_type
+        && (building->constructionResultState==::Building::NO_CONSTRUCTION || under_construction);
+}
+bool Entities::AnyTeamBuilding::is_entity(const AIEngine::AIWorldView& world,int x,int y)
+{
+    const auto* building=world.buildingAtSlot(world.occupancyAt(world.tileIndex(x,y)).building);
+    return building && building->team==team
+        && (building->constructionResultState==::Building::NO_CONSTRUCTION || under_construction);
+}
+bool Entities::AnyBuilding::is_entity(const AIEngine::AIWorldView& world,int x,int y)
+{
+    const auto* building=world.buildingAtSlot(world.occupancyAt(world.tileIndex(x,y)).building);
+    return building && (building->constructionResultState==::Building::NO_CONSTRUCTION || under_construction);
 }

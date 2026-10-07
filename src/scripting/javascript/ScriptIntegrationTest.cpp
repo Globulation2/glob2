@@ -472,7 +472,7 @@ TEST_CASE("JavaScript AI state RNG and disabled state survive continuation" *
 	auto disabledBytes = disabledBefore->takeContents();
 	game.stepCounter++;
 	game.map.setMapDiscovered(22, 22, game.teams[0]->me);
-	disabledController->observe();
+	disabledController->observe(*AIEngine::AIWorldView::capture(game, AIEngine::AIWorldView::captureCatalog(game)));
 	auto *disabledAfter = new MemoryStreamBackend;
 	BinaryOutputStream disabledAgain(disabledAfter);
 	disabledController->save(&disabledAgain);
@@ -484,7 +484,7 @@ TEST_CASE("JavaScript AI state RNG and disabled state survive continuation" *
 	liveController->save(&deadOut);
 	auto deadBytes = deadBefore->takeContents();
 	game.stepCounter++;
-	liveController->observe();
+	liveController->observe(*AIEngine::AIWorldView::capture(game, AIEngine::AIWorldView::captureCatalog(game)));
 	auto *deadAfter = new MemoryStreamBackend;
 	BinaryOutputStream deadAgain(deadAfter);
 	liveController->save(&deadAgain);
@@ -1590,6 +1590,159 @@ TEST_CASE("JavaScript managed controls use capabilities and independent bombing 
     CHECK(building->unitStayRange==8);CHECK(building->minWorkerLevelToFlag==1);
     ++world.game.stepCounter;observations.observe();services.begin();
     for(const auto& receipt:services.actions().items)CHECK(receipt.get("status").text=="completed");
+}
+
+TEST_CASE("JavaScript bound observations and order encoding remain isolated from live mutations" *
+          doctest::test_suite("JavaScriptIntegration"))
+{
+    glob2test::HeadlessGlobals bootstrap;
+    GameGUI gui;
+    auto& game = gui.game;
+    game.map.setSize(5, 5, GRASS);
+    game.map.setGame(&game);
+    game.addTeam();
+    Race::loadDefault();
+    auto* unit = game.addUnit(2, 2, 0, WORKER, 0, 0, 0, 0);
+    const int swarm = bootstrap.globals.buildingsTypes.getTypeNum("swarm", 0, false);
+    auto* building = game.addBuilding(5, 5, swarm, 0, 2, 2);
+    REQUIRE(unit);
+    REQUIRE(building);
+    unit->fruitCount=0xffffffffu; unit->fruitMask=0x80000000u;
+    building->receiveMaterialMask=0xffffffffu; building->sendMaterialMask=0x80000000u;
+    const auto captured = AIEngine::AIWorldView::capture(game, AIEngine::AIWorldView::captureCatalog(game));
+    Observations observations(game, 0);
+    {
+    auto observationScope = observations.bindObservation(*captured);
+    observations.observe();
+    const auto units = observations.query("units", {});
+    const auto buildings = observations.query("buildings", {});
+    REQUIRE(units.items.size() == 1);
+    REQUIRE(buildings.items.size() == 1);
+    CHECK(units.items[0].get("fruitCount").number==-1);
+    CHECK(units.items[0].get("fruitMask").number==-2147483648.0);
+    CHECK(buildings.items[0].get("receiveMask").number==-1);
+    CHECK(buildings.items[0].get("sendMask").number==-2147483648.0);
+    const auto reference = Value::object().set("id", unsigned(building->gid))
+        .set("generation", building->scriptIdentity);
+    const auto command = Value::object().set("type", "workers").set("building", reference).set("workers", 3);
+    const auto before = Script::order(observations.world(), 0, command);
+    unit->hp = 1;
+    unit->posX = 12;
+    building->maxUnitWorking = 7;
+    building->scriptIdentity = game.allocateScriptIdentity(true, building->gid);
+    game.stepCounter += 8;
+    observations.observe();
+    CHECK(observations.query("units", {}).encode() == units.encode());
+    CHECK(observations.query("buildings", {}).encode() == buildings.encode());
+    CHECK(observations.world().tick == captured->tick);
+    const auto after = Script::order(observations.world(), 0, command);
+    CHECK(before->getOrderType() == after->getOrderType());
+    CHECK(static_cast<const OrderModifyBuilding&>(*after).numberRequested == 3);
+    }
+    CHECK_FALSE(observations.hasObservation());
+}
+
+TEST_CASE("JavaScript ordered observations keep the first view of each logical tick" *
+          doctest::test_suite("JavaScriptIntegration"))
+{
+    glob2test::HeadlessGlobals bootstrap;
+    GameGUI gui;
+    auto& game = gui.game;
+    game.map.setSize(5, 5, GRASS);
+    game.map.setGame(&game);
+    game.addTeam();
+    game.map.unsetMapDiscovered();
+    game.map.switchFogOfWar();
+    game.map.switchFogOfWar();
+    Observations observations(game, 0);
+    const auto capture = [&] {
+        return AIEngine::AIWorldView::capture(game, AIEngine::AIWorldView::captureCatalog(game));
+    };
+    {
+        const auto view = capture();
+        auto scope = observations.bindObservation(*view);
+        observations.observe();
+    }
+    // The former post-sync callback repeats this tick after world mutations.
+    // Its lastTick guard must not replace the decision's remembered state.
+    game.map.setMapDiscovered(22, 22, game.teams[0]->me);
+    {
+        const auto view = capture();
+        auto scope = observations.bindObservation(*view);
+        observations.observe();
+    }
+    game.map.switchFogOfWar();
+    game.map.switchFogOfWar();
+    ++game.stepCounter;
+    {
+        const auto view = capture();
+        auto scope = observations.bindObservation(*view);
+        observations.observe();
+        CHECK(observations.query("tile", {22, 22}).get("explored").number == 0);
+    }
+    // An unpolled controller can consume an ordered frozen observation without
+    // accessing the owner world or retaining the complete view afterward.
+    ++game.stepCounter;
+    game.map.setMapDiscovered(22, 22, game.teams[0]->me);
+    const auto visible = capture();
+    game.map.switchFogOfWar();
+    game.map.switchFogOfWar();
+    {
+        auto scope = observations.bindObservation(*visible);
+        observations.observe();
+    }
+    ++game.stepCounter;
+    {
+        const auto view = capture();
+        auto scope = observations.bindObservation(*view);
+        observations.observe();
+        const auto remembered = observations.query("tile", {22, 22});
+        CHECK(remembered.get("visible").number == 0);
+        CHECK(remembered.get("explored").number != 0);
+    }
+    CHECK_FALSE(observations.hasObservation());
+}
+
+TEST_CASE("JavaScript projected boundary preserves history and spatial resources without ecology fields" *
+          doctest::test_suite("JavaScriptIntegration"))
+{
+    glob2test::HeadlessGlobals globals;
+    glob2test::HeadlessGame fixture(glob2test::GameOptions{.wDec=4,.hDec=4,.clearImmobile=true,.loadDefaultRace=true,.header=true});
+    auto& game=fixture.game;
+    game.gameHeader.setAIConfig(0,config("export function step(ctx){return null;}"));
+    AIJavaScript controller(game.players[0]);
+    const auto requirements=controller.observationRequirements();
+    CHECK_FALSE(SimulationSnapshot::needs(requirements,SimulationSnapshot::Component::Growth));
+    CHECK_FALSE(SimulationSnapshot::needs(requirements,SimulationSnapshot::Component::ResourceFields));
+    for(int y=0;y<16;++y)for(int x=0;x<16;++x)game.map.fogOfWar[game.map.coordToIndex(x,y)]=1;
+    game.map.setResourceByIndex(2,2,WHEAT,1);
+    Observations full(game,0),projected(game,0);
+    full.setProfile(2);projected.setProfile(2);
+    Spatial fullSpatial(game,0,full),projectedSpatial(game,0,projected);
+    auto compare=[&] {
+        const auto captured=SimulationSnapshot::capture(game,SimulationSnapshot::captureCatalog(game),SimulationSnapshot::All);
+        AIEngine::AIWorldView complete(captured),narrow(captured.project(requirements));
+        REQUIRE_FALSE(narrow.components().growth);
+        REQUIRE_FALSE(narrow.components().resourceFields);
+        auto fullScope=full.bindObservation(complete);
+        auto projectedScope=projected.bindObservation(narrow);
+        full.observe();projected.observe();
+        CHECK(full.query("tile",{Value(2),Value(2)}).encode()==projected.query("tile",{Value(2),Value(2)}).encode());
+        CHECK(full.query("terrainTypes",{}).encode()==projected.query("terrainTypes",{}).encode());
+        fullSpatial.begin(Value::array());projectedSpatial.begin(Value::array());
+        for(const auto* metric:{"chebyshev","path"}) {
+            const auto spec=Value::object().set("sources",Value::object().set("resource","wheat")).set("metric",metric);
+            const auto a=fullSpatial.query("distanceField",{spec},{});
+            const auto b=projectedSpatial.query("distanceField",{spec},{});
+            CHECK(fullSpatial.query("fieldValue",{a,Value(4),Value(2)},{}).encode()==
+                projectedSpatial.query("fieldValue",{b,Value(4),Value(2)},{}).encode());
+        }
+    };
+    compare();
+    ++game.stepCounter;
+    game.map.fogOfWar[game.map.coordToIndex(2,2)]=0;
+    game.map.setResourceAmount(game.map.coordToIndex(2,2),7);
+    compare();
 }
 
 TEST_CASE("JavaScript terrain resource permissions follow both catalogs and charge full enumeration [display]" * doctest::test_suite("JavaScriptIntegration"))

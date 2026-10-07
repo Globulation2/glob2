@@ -207,6 +207,7 @@ Unit *Game::addUnit(int x, int y, int team, Sint32 typeNum, int level, int delta
 		map.setGroundUnit(x, y, gid);
 
 	teams[team]->myUnits[id]= new Unit(x, y, gid, typeNum, teams[team], level);
+	teams[team]->attachUnit(id);
 	teams[team]->myUnits[id]->dx=dx;
 	teams[team]->myUnits[id]->dy=dy;
 	teams[team]->myUnits[id]->directionFromDxDy();
@@ -267,6 +268,7 @@ Building *Game::addBuilding(int x, int y, int typeNum, int teamNumber, Sint32 un
 	else
 		map.setBuilding(x, y, w, h, gid);
 	team->myBuildings[id]=b;
+	team->attachBuilding(id);
 	return b;
 }
 
@@ -283,6 +285,7 @@ bool Game::removeUnitAndBuildingAndFlags(int x, int y, unsigned flags)
 			map.setAirUnit(x, y, NOGUID);
 			delete (teams[team]->myUnits[id]);
 			teams[team]->myUnits[id]=NULL;
+			teams[team]->detachUnit(id);
 			found=true;
 		}
 	}
@@ -296,6 +299,7 @@ bool Game::removeUnitAndBuildingAndFlags(int x, int y, unsigned flags)
 			map.setGroundUnit(x, y, NOGUID);
 			delete (teams[team]->myUnits[id]);
 			teams[team]->myUnits[id]=NULL;
+			teams[team]->detachUnit(id);
 			found=true;
 		}
 	}
@@ -311,6 +315,7 @@ bool Game::removeUnitAndBuildingAndFlags(int x, int y, unsigned flags)
 				map.setBuilding(b->posX, b->posY, b->type->width, b->type->height, NOGBID);
 			delete b;
 			teams[team]->myBuildings[id]=NULL;
+			teams[team]->detachBuilding(id);
 			found=true;
 		}
 	}
@@ -321,6 +326,7 @@ bool Game::removeUnitAndBuildingAndFlags(int x, int y, unsigned flags)
 				if ((*bi)->posX==x && (*bi)->posY==y)
 				{
 					teams[ti]->myBuildings[Building::GIDtoID((*bi)->gid)]=NULL;
+					teams[ti]->detachBuilding(Building::GIDtoID((*bi)->gid));
 					delete *bi;
 					teams[ti]->virtualBuildings.erase(bi);
 					found=true;

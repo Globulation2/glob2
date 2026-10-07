@@ -2,6 +2,8 @@
 // Copyright (C) 2026 The Globulation 2 Authors
 
 #pragma once
+#include "CortexSnapshotQueries.h"
+class Player;
 
 #include "CortexTypes.h" // FOOD_SOURCE_PARITY and the other food tunables.
 
@@ -9,8 +11,6 @@
 #include <SDL3/SDL_stdinc.h>
 #include <vector>
 
-class Map;
-class Player;
 
 // AICortex food-sustainability geometry.
 //
@@ -23,7 +23,7 @@ class Player;
 //   * scanFoodSourcesForbidden(...) — the PURE geometry + reconcile core. It takes
 //     explicit inputs (no Player*/Game*), so the same code serves both the live
 //     path and the headless `-dump-food` debug tool. It emits no Orders.
-//   * reconcileFoodSourcesForbidden(Player*, ...) — the live wrapper. It derives the
+//   * reconcileFoodSourcesForbiddenWorld(Player*, ...) — the live wrapper. It derives the
 //     team mask, consumer (inn) seeds, and colony region from the player, calls
 //     scanFoodSourcesForbidden, and (when asked) accumulates the ADD/DEL tile lists
 //     into BrushAccumulators ready for OrderAlterForbidden. It still emits no
@@ -57,11 +57,11 @@ namespace Cortex
 		Sint32 delCount = 0;
 		Sint32 forbiddenCount = 0; //!< == desired.size()
 		Sint32 openCount = 0;      //!< WC_OPEN_MARGIN tile count
-		Sint32 fieldTileCount = 0; //!< reachable Food tiles (all classes)
-		Sint32 componentCount = 0; //!< connected components among reachable Food
-		// Debug overlays, sized map.getW()*map.getH() (empty unless wantDebug):
-		std::vector<Uint8>  classOf; //!< FoodSourceClass per map index
-		std::vector<Sint16> depthOf; //!< food-depth per map index, -1 = none
+		Sint32 fieldTileCount = 0; //!< reachable WHEAT tiles (all classes)
+		Sint32 componentCount = 0; //!< connected components among reachable WHEAT
+		// Debug overlays, sized map.width*map.height (empty unless wantDebug):
+		std::vector<Uint8>  classOf; //!< WheatClass per map index
+		std::vector<Sint16> depthOf; //!< wheat-depth per map index, -1 = none
 	};
 
 	//! `farmPaint` uses the same geometry and upkeep with farm paint instead.
@@ -86,7 +86,12 @@ namespace Cortex
 	//!                   identical, so determinism is preserved. Default false leaves
 	//!                   every existing caller unchanged.
 	FoodSourceScanResult scanFoodSourcesForbidden(
-		Map& map, Uint32 teamMask, int teamNumber,
+		const AIEngine::AIWorldView& map, FoodSourceScratch& scratch, Uint32 teamMask, int teamNumber,
+		const std::vector<int>& consumerSeeds,
+		int boxMinX, int boxMinY, int boxMaxX, int boxMaxY,
+		int openMargin, bool ignoreFOW, bool wantDebug, bool liftAll = false, bool farmPaint = false);
+	FoodSourceScanResult scanFoodSourcesForbidden(
+		::Map& map, Uint32 teamMask, int teamNumber,
 		const std::vector<int>& consumerSeeds,
 		int boxMinX, int boxMinY, int boxMaxX, int boxMaxY,
 		int openMargin, bool ignoreFOW, bool wantDebug, bool liftAll = false, bool farmPaint = false);
@@ -109,7 +114,11 @@ namespace Cortex
 	//! `liftAll` (default false) is passed through to scanFoodSourcesForbidden: when true
 	//! the whole field is un-forbidden for the food-blitz food burst (only the DEL
 	//! mask is non-empty). Default false keeps every existing caller unchanged.
-	FoodSourceReconcile reconcileFoodSourcesForbidden(Player* player, int openMargin, bool buildMasks,
+	FoodSourceReconcile reconcileFoodSourcesForbiddenWorld(const AIEngine::AIWorldView* game, const AIEngine::TeamView* team, QueryScratch& scratch, const PlanningIntent& intents, std::ostream* diagnostics, int openMargin, bool buildMasks,
 	                                       bool liftAll = false, bool farmPaint = false);
 
+}
+
+namespace Cortex {
+FoodSourceReconcile reconcileWheatForbidden(::Player*,int,bool,bool liftAll=false,bool farmPaint=false);
 }

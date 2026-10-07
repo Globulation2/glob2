@@ -3,6 +3,7 @@
 
 #include <PerformanceTelemetry.h>
 #include "Map.h"
+#include <bit>
 #include "gradient/GradientRuntime.h"
 #include "GlobalContainer.h"
 #include "Unit.h"
@@ -30,8 +31,9 @@ Uint16 *Map::getMaterialGradientSlot(int teamNumber, int resourceType, int swimC
 	withMarkets = withMarkets && marketsV2Enabled();
 	// Keep colonies without markets on the original field and refresh schedule.
 	if (withMarkets && game->teams[teamNumber]->stockSuppliers.empty()) withMarkets=false;
-	// AI workers may request the same lazy field concurrently. Cover both
-	// allocation and pipeline invalidation before publishing the pointer.
+	// Compute jobs (hiring searches, AI-enrolled fields) may request the same
+	// lazy field concurrently. Cover both allocation and pipeline invalidation
+	// before publishing the pointer.
 	std::lock_guard<std::mutex> lock(materialGradientMutex);
 	if (!withMarkets && !hasMaterialSourceSlot(resourceType))
 	{
@@ -57,6 +59,7 @@ void Map::updateMaterialGradient(int teamNumber, Uint8 resourceType, int swimCla
 	Uint16 *gradient = slot;
 	seedMaterialGradient(teamNumber, resourceType, swimClass, gradient, withMarkets);
 	propagateGradient(gradient, swimClass);
+	publishPlane(&slot);
 	if (withMarkets) marketGradientDirty[teamNumber][resourceType][swimClass]=false;
 }
 
@@ -95,8 +98,9 @@ void Map::seedMaterialGradientWithSuppliers(int teamNumber, Uint8 resourceType, 
 	if ((modes&2) || game->buildingsTypes.usesOverlaySuppliers())
 	{
 		const Uint32 teamMask=Team::teamNumberToMask(teamNumber);
-		const Tile *tile = tiles.data();
-		const Uint8 *immobile = immobileUnits;
+		const auto *occupancy = occupancyCells.data();
+		const auto *areas = areaCells.data();
+
 		visitSuppliers([&](const Building* supplier) {
 			const Uint16 seed = supplierSeeds[Building::GIDtoID(supplier->gid)];
 			if (supplier->runtime->has(BuildingRuntimeTraits::OccupiesGround) || seed <= GRADIENT_UNREACHABLE) return;
@@ -104,7 +108,7 @@ void Map::seedMaterialGradientWithSuppliers(int teamNumber, Uint8 resourceType, 
 				for (int x=0; x<supplier->type->width; ++x)
 				{
 					const size_t i = coordToIndex(supplier->posX+x, supplier->posY+y);
-					if (!(tile[i].forbidden & teamMask) && immobile[i] == IMMOBILE_UNIT_NONE)
+					if (!(areas[i].forbidden & teamMask) && occupancy[i].immobileUnit == IMMOBILE_UNIT_NONE)
 						gradient[i] = std::max(gradient[i], seed);
 				}
 		});
@@ -119,33 +123,42 @@ void Map::seedMaterialGradientDirect(int teamNumber, Uint8 resourceType, int swi
 
 	const Uint32 teamMask=Team::teamNumberToMask(teamNumber);
 	const unsigned teamBuildingBase=unsigned(teamNumber)*Building::MAX_COUNT;
-	const Tile *tile = tiles.data();
-	const Uint8 *immobile = immobileUnits;
+	const auto *occupancy = occupancyCells.data();
+	const auto *areas = areaCells.data();
 	const Uint32 *fog = fogOfWar;
 	const MaterialMask requested = MaterialMask(1u << resourceType);
+	const MapState::View& view = liveCells;
 	gradient_preparation::withTerrain(*this, canSwim, [&](auto terrainAt) {
 		auto seed = [&](auto marketsTag) {
 			initializeGradientCells([&](size_t begin, size_t end) {
 				for (size_t i = begin; i < end; ++i)
 				{
-					const Tile &c = tile[i];
+
 					Uint16 value = GRADIENT_FORBIDDEN;
-					if (!(c.forbidden & teamMask) && immobile[i] == IMMOBILE_UNIT_NONE)
+					if (!(areas[i].forbidden & teamMask) && occupancy[i].immobileUnit == IMMOBILE_UNIT_NONE)
 					{
-						if (!resourceBlocksGround(i))
+						// One deposit read per cell: its properties decide both the
+						// obstacle and the goal (MapState::materialMaskAt semantics).
+						const auto& deposit = view.resources[i].resource;
+						const ResourceProperties* properties = deposit.type != NO_RES_TYPE ? &view.resourceProperties(deposit.type) : nullptr;
+						if (!properties || !properties->blocksGround)
 						{
-							if (c.building == NOGBID) value = terrainAt(i).open;
+							if (occupancy[i].building == NOGBID) value = terrainAt(i).open;
 							else if constexpr (decltype(marketsTag)::value)
 							{
-								const unsigned localId=unsigned(c.building)-teamBuildingBase;
+								const unsigned localId=unsigned(occupancy[i].building)-teamBuildingBase;
 								if (localId<Building::MAX_COUNT) value=supplierSeeds[localId];
 							}
 						}
 						// Passable sources are goals too. Visibility belongs to each
 						// source, not to the requested material.
-						if ((materialMaskAt(i) & requested) &&
-							(!resourceVisibleToHarvest(i) || (fog[i] & teamMask)))
-							value = GRADIENT_AT_GOAL;
+						if (properties && (properties->materialMask & requested))
+						{
+							const bool stocked = std::has_single_bit(properties->materialMask)
+								? deposit.amount != 0 : MapState::materialAmountAt(view, i, int(resourceType)) > 0;
+							if (stocked && (!properties->visibleToHarvest || (fog[i] & teamMask)))
+								value = GRADIENT_AT_GOAL;
+						}
 					}
 					gradient[i] = value;
 				}
@@ -250,4 +263,59 @@ unsigned Map::materialSupplyModesSlot(const Building* consumer, int resource) co
     // field is exactly the union. Resolve this property once per catalog.
     if (modes==3 && !(game->buildingsTypes.extraDirectSupplyMask()&bit)) modes=1;
     return modes;
+}
+
+// Enrollment is an owner-side logical delivery effect. Workers supply the field
+// computed from their observation, so admitting it never reads a newer world.
+void Map::installObservedResourceField(int team, int resource, int swim, std::span<const Uint16> values)
+{
+	if (team < 0 || team >= Team::MAX_COUNT || resource < 0 || resource >= MaterialSlotCount ||
+		swim < 0 || swim >= SWIM_CLASS_COUNT || values.size() != std::size_t(size))
+		throw std::invalid_argument("Invalid observed resource field enrollment");
+	auto& slot = materialGradients[team][resource][swim];
+	if (slot) return;
+	auto data = std::make_unique<Uint16[]>(size);
+	std::copy(values.begin(), values.end(), data.get());
+	slot = data.release();
+	publishPlane(&slot);
+}
+
+std::optional<Uint16> Map::planeKeyForSlot(Uint16* const* slot) const
+{
+	constexpr auto perArray = std::size_t(Team::MAX_COUNT) * MaterialSlotCount * SWIM_CLASS_COUNT;
+	const auto decode = [&](Uint16* const* first, bool market) {
+		const auto offset = std::size_t(slot - first);
+		return MapState::planeKey(int(offset / (MaterialSlotCount * SWIM_CLASS_COUNT)),
+			int((offset / SWIM_CLASS_COUNT) % MaterialSlotCount), int(offset % SWIM_CLASS_COUNT), market);
+	};
+	if (const auto* first = &materialGradients[0][0][0]; slot >= first && slot < first + perArray) return decode(first, false);
+	if (const auto* first = &marketMaterialGradients[0][0][0]; slot >= first && slot < first + perArray) return decode(first, true);
+	return std::nullopt;
+}
+
+void Map::publishPlane(Uint16* const* slot)
+{
+	const auto found = planeKeyForSlot(slot);
+	if (!found) return;
+	const auto key = *found;
+	auto& index = publishedPlaneIndex[key];
+	if (!index)
+	{
+		publishedPlanes.push_back({key, 0, slot});
+		index = Uint16(publishedPlanes.size());
+	}
+	publishedPlanes[index - 1].generation = ++planeGenerations[key];
+}
+
+void Map::rebuildPlaneRegistry()
+{
+	publishedPlanes.clear();
+	publishedPlaneIndex.fill(0);
+	for (int team = 0; team < Team::MAX_COUNT; ++team)
+		for (int resource = 0; resource < MaterialSlotCount; ++resource)
+			for (int swim = 0; swim < SWIM_CLASS_COUNT; ++swim)
+			{
+				if (materialGradients[team][resource][swim]) publishPlane(&materialGradients[team][resource][swim]);
+				if (marketMaterialGradients[team][resource][swim]) publishPlane(&marketMaterialGradients[team][resource][swim]);
+			}
 }

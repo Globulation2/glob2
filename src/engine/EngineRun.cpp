@@ -9,7 +9,6 @@
 
 #include "AINames.h"
 #include "AIThreading.h"
-#include "ReadOnlyPhase.h"
 #include "ChecksumSidecar.h"
 #include "ConnectionOverlay.h"
 #include "DatasetWriter.h"
@@ -132,11 +131,9 @@ void Engine::pollAutomaticEndingConditions(Uint64 now)
 		endGame("gui.game.isGameEnded");
 }
 
-// Push this tick's local + AI orders into the network layer. AI poll and
-// setWaitingOnMask always run; the "previous tick
-// committed" branches (syncStep, addLocalOrder, advanceStep, sidecar) only
-// fire when wasReadyLastTick — otherwise we're still waiting on a remote peer
-// and must not advance.
+// Route this completed tick's local and scheduled AI orders. Game owns poll
+// identity and the due batch, so another gather while a peer is late reuses
+// those outputs. Network advancement still follows the previous ready turn.
 void Engine::gatherAndAdvanceOrders(bool wasReadyLastTick)
 {
 	PERF_SCOPE_TIME(Orders);
@@ -167,73 +164,24 @@ void Engine::gatherAndAdvanceOrders(bool wasReadyLastTick)
 			net->addLocalOrder(order);
 	}
 
-	if (diagnostics) diagnostics->beginTick(gui.game);
-	const bool localAI = wasReadyLastTick && globalContainer->liveSpectating &&
-		gui.game.players[orderPlayer]->ai;
-	const bool parallelPreparation = !gui.gamePaused && gui.game.map.computeEnabled(Map::ComputeAI)
-		&& gui.game.map.computeExecutor().threadCount() > 1;
-	if (!parallelPreparation) gui.game.map.preparePendingGradient();
-	if (!gui.gamePaused && gui.game.map.computeEnabled(Map::ComputeAI) &&
-		gui.game.map.computeExecutor().threadCount() > 1)
-	{
-		// Decisions read the same completed tick. Bind telemetry before dispatch:
-		// its first use can append to shared team statistics, including when two
-		// controllers belong to one team. The workers only update their own AI.
-		std::array<int, Team::MAX_COUNT> aiPlayers{};
-		size_t aiCount = 0;
-		if (localAI) aiPlayers[aiCount++] = orderPlayer;
-		for (int i = 0; i < gui.game.gameHeader.getNumberOfPlayers(); ++i)
-			if (gui.game.players[i]->ai &&
-				!(globalContainer->liveSpectating && i == orderPlayer) &&
-				!net->orderReceived(i))
-				aiPlayers[aiCount++] = i;
-		for (size_t job = 0; job < aiCount; ++job)
-		{
-			const int i = aiPlayers[job];
-			if (!gui.gamePaused && gui.game.players[i]->team->isAlive)
-				gui.game.players[i]->ai->bindTelemetry();
-		}
+    const bool localAI=wasReadyLastTick && globalContainer->liveSpectating &&
+        gui.game.players[orderPlayer]->ai;
+    std::vector<unsigned> eligible;
+    for(int i=0;i<gui.game.gameHeader.getNumberOfPlayers();++i)
+        if(gui.game.players[i]->ai &&
+            ((localAI && i==orderPlayer) ||
+             (!(globalContainer->liveSpectating && i==orderPlayer) && !net->orderReceived(i))))
+            eligible.push_back(unsigned(i));
+    // The observation pipeline captures AI and reserved gradient requirements
+    // together, then prepares the gradient at its existing owner-side phase.
+    const auto scheduled=gui.game.prepareAIOrders(eligible,
+        gui.gamePaused || globalContainer->replaying,diagnostics);
+    for(const auto& [actor,order]:scheduled) {
+        if(localAI && actor==unsigned(orderPlayer)) localOrder=order;
+        else net->pushOrder(order,actor,true);
+    }
+    if(wasReadyLastTick)net->addLocalOrder(localOrder);
 
-		std::array<shared_ptr<Order>, Team::MAX_COUNT> aiOrders{};
-		// Borrowed tasks live until the phase barrier. Future observation work
-		// joins here after auditing its world reads and cache synchronization.
-		ReadOnlyPhase phase;
-		auto prepareGradient = [&](size_t) { gui.game.map.preparePendingGradient(); };
-		auto decide = [&](size_t job) {
-			aiOrders[job] = gui.game.players[aiPlayers[job]]->ai->getOrder(gui.gamePaused);
-		};
-		// Preparation comes first so a serial AI error cannot strand its reservation.
-		phase.add(gui.game.map.hasPendingGradientPreparation() ? 1 : 0, prepareGradient);
-		phase.add(aiCount, decide);
-		phase.run(gui.game.map.computeExecutor());
-		// World/order publication resumes only after every observer has left.
-		size_t firstRemote = 0;
-		if (localAI)
-		{
-			localOrder = aiOrders[0];
-			firstRemote = 1;
-		}
-		if (wasReadyLastTick) net->addLocalOrder(localOrder);
-		for (size_t job = firstRemote; job < aiCount; ++job)
-			net->pushOrder(aiOrders[job], aiPlayers[job], true);
-	}
-	else
-	{
-		if (localAI)
-			localOrder = gui.game.players[orderPlayer]->ai->getOrder(gui.gamePaused);
-		if (wasReadyLastTick) net->addLocalOrder(localOrder);
-		// Get and push AI orders when they are needed for this frame.
-		for (int i = 0; i < gui.game.gameHeader.getNumberOfPlayers(); i++)
-		{
-			if (gui.game.players[i]->ai && !(globalContainer->liveSpectating && i==orderPlayer) && !net->orderReceived(i))
-			{
-				shared_ptr<Order> order = gui.game.players[i]->ai->getOrder(gui.gamePaused);
-				net->pushOrder(order, i, true);
-			}
-		}
-	}
-
-	if (diagnostics) diagnostics->completeTick(gui.game);
 	if (wasReadyLastTick)
 	{
 		PERF_SCOPE_TIME(Replay);
@@ -278,6 +226,9 @@ void Engine::executeOrdersAndStep(bool readyNow)
 				shared_ptr<Order> order = net->retrieveOrder(i);
 				if (!globalContainer->replaying)
 				{
+                    // Validate the observed incarnation before the execution
+                    // boundary records the effective order in replay/dataset.
+                    order=gui.game.validateAIOrder(order,unsigned(i));
 					gui.executeOrder(order);
 				}
 				else if (order->getOrderType() == ORDER_PLAYER_QUIT_GAME ||
@@ -409,8 +360,9 @@ bool Engine::startSimulationThread(Uint64 now)
 
 void Engine::stopSimulationThread()
 {
-    if (!runner) return;
+    if (!runner) {gui.game.drainAI();return;}
     runner->stop();
+    gui.game.drainAI();
     // The simulation's measurements since the last client frame.
     PerformanceTelemetry::collector().absorb(runner->telemetry);
     runner.reset();
@@ -708,6 +660,9 @@ void Engine::printTeamTimeline()
 // stays alive for a possible reload.
 void Engine::teardownSession()
 {
+    // Complete private jobs before session-owned telemetry/diagnostic sinks
+    // close. Logical deadlines and queued commands remain game-owned.
+    gui.game.drainAI();
 	gui.waitForAutosave();
 
 	if (checksumSidecar)
@@ -987,9 +942,10 @@ void Engine::clientStep(const std::vector<SDL_Event>& events)
         // Match SDL input timestamps, not the suspendable simulation clock.
         gui.threadedClientStep(events, SDL_GetTicks());
     handleExitRequest();
-    // Read Studio diagnostics only while the simulation is parked for client work.
+    // Studio reads controller-private status only after its worker stream ends.
 #ifdef __EMSCRIPTEN__
     if (std::getenv("GLOB2_STUDIO_PLAYTEST")) {
+        gui.game.drainAI();
         auto &game = gui.game;
         auto *player = game.players[0];
         auto *ai = player && player->ai && player->ai->implementationID == AI::JAVASCRIPT

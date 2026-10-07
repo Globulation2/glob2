@@ -76,7 +76,7 @@ struct BuildingType
 	Sint32 foodPerUnit = 0;
 
 	Sint32 maxMaterial[MaterialSlotCount] = {};
-	// multiplierResource defaults: 1 for the basic 5 (wood/wheat/papyrus/stone/algue), 10 for fruits 0..9.
+	// materialMultiplier defaults: 1 for the basic 5 (wood/wheat/papyrus/stone/algue), 10 for fruits 0..9.
 	Sint32 materialMultiplier[MaterialSlotCount] = { 1, 1, 1, 1, 1, 10, 10, 10, 1, 1, 1, 1, 1, 1, 1 };
 	Sint32 maxUnitInside = 0;
 	Sint32 maxUnitWorking = 0; // Derived boolean: semantics.assignmentLimit is positive.

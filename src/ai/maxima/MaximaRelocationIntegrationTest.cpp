@@ -1,3 +1,4 @@
+#include "MaximaObservationFixture.h"
 // Link with the game objects (excluding Glob2.cpp) to exercise the real runtime.
 #include "EngineFixtures.h"
 #include <utility>
@@ -65,7 +66,7 @@ struct Fixture
         auto& c=ai->context; c.initialize();
         for(int y=0;y<64;++y)for(int x=0;x<64;++x)
             game.map.setMapDiscovered(x,y,game.teams[0]->me);
-        ai->initialize_farming_cache(c); ai->configure_development_planner();
+        ai->initialize_farming_cache(c); glob2test::withMaximaObservation(ai->context,[&]() -> decltype(auto) {return ai->configure_development_planner();});
         ai->budget.food_ledger_enabled=true;
         ai->budget.food_relocation_enabled=true;
         ai->budget.food_retirement_enabled=true;
@@ -97,7 +98,7 @@ struct Fixture
     }
     bool offersReplacement()
     {
-        for(const auto& intent:ai->collect_development_intents(world()))
+        for(const auto& intent:glob2test::withMaximaObservation(ai->context,[&]() -> decltype(auto) {return ai->collect_development_intents(world());}))
             if(intent.purpose==Relocation && intent.replacesBuildingId==0)return true;
         return false;
     }
@@ -175,7 +176,7 @@ void lostReplacement()
         f.ai->update_food_relocation(f.ai->context,f.world());
         assert(f.ai->relocation_completed_tick==7000);
         if(restored)f.roundTrip();
-        f.buildings[1]->kill(); f.game.teams[0]->syncStep(); f.ai->context.buildings.tick();
+        f.buildings[1]->kill(); f.game.teams[0]->syncStep(); {auto observation=f.ai->context.scopeOwnerObservation();f.ai->context.buildings.tick();}
         f.ai->snapshot.critical_food=0; f.ai->timer=8000;
         auto w=f.world(); f.ai->development_planner.observe(w);
         f.ai->update_food_relocation(f.ai->context,w);

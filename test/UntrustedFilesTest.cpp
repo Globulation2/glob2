@@ -139,6 +139,12 @@ TEST_CASE("terrain loaders reject invalid resources occupants and sector dimensi
     auto header = world.game.mapHeader;
     // Exercise semantic validation after decoding, independent of the tile encoding.
     const auto original=world.game.map.getTile(0);
+    auto poke=[&](const Tile& t) {
+        auto& m=world.game.map;
+        m.legacyTerrain[0]=t.terrain;
+        m.resourceCells[0]={t.resource,t.fertility,t.canResourcesGrow};
+        m.occupancyCells[0].building=t.building; m.occupancyCells[0].groundUnit=t.groundUnit; m.occupancyCells[0].airUnit=t.airUnit;
+    };
     for(int field=0;field<5;++field) {
         auto tile=original;
         if(field==0) tile.terrain=272;
@@ -147,7 +153,7 @@ TEST_CASE("terrain loaders reject invalid resources occupants and sector dimensi
         if(field==3) tile.groundUnit=65534;
         if(field==4) tile.airUnit=65534;
         // Deliberately bypass validated mutation to exercise corrupt serialized input.
-        const_cast<Tile&>(world.game.map.getTile(0))=tile;
+        poke(tile);
         auto* storage=new GAGCore::MemoryStreamBackend;
         GAGCore::BinaryOutputStream writer(storage);
         world.game.map.save(&writer);
@@ -155,7 +161,7 @@ TEST_CASE("terrain loaders reject invalid resources occupants and sector dimensi
         Map restored;
         CHECK_FALSE(restored.load(stream.get(),header,&world.game));
     }
-    const_cast<Tile&>(world.game.map.getTile(0))=original;
+    poke(original);
 	auto bad = poisoned(bytes, out, "encoding", 254); // First packed array is the undermap.
 	auto stream = input(bad);
 	Map restored;

@@ -207,6 +207,11 @@ static const int AI_NICOWAR_NO_TARGET = -1;
 class NewNicowar : public AISharedRuntime::RuntimeAI
 {
 public:
+  Uint64 retainedQueryVectorBytes() const noexcept override
+  {
+      return Uint64(defenseScanScratch.counts.capacity() + defenseScanScratch.buildingGID.capacity()
+          + defenseScanScratch.unitGID.capacity()) * sizeof(Uint16);
+  }
   void captureTelemetry() override;
   const std::vector<AITelemetry::Field> &telemetrySchema() const override
   {
@@ -218,12 +223,19 @@ public:
 	void tick(AISharedRuntime::Runtime& runtime);
 	void handle_message(AISharedRuntime::Runtime& runtime, const std::string& message);
 private:
+	// Every scan rebuilds these planes before reading them. Only capacities
+	// persist between polls, owned by this controller rather than its worker.
+	struct DefenseScanScratch
+	{
+		std::vector<Uint16> counts, buildingGID, unitGID;
+	} defenseScanScratch;
 	///This function loads up all available strategies, and selects one at random.
 	///As such, Nicowar may be going war-rush style, or it may try a longer game.
 	void selectStrategy();
 
 	///This is the basic, variable strategy that Nicowar will be taking at all times
 	NicowarStrategy strategy;
+    std::shared_ptr<NicowarStrategyLoader> strategyDefinitions; // Loaded on owner, chosen on worker.
 
 	///These are all of the various buildings that can be constructed. Note that,
 	///while their may be more than one for a particular type of building, the

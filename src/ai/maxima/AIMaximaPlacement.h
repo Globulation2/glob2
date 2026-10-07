@@ -194,7 +194,7 @@ struct BuildingLevelProfile
     int productionDemandPercent=100;
     AIMaxima::ProductionRecipeModel productionRecipes;
     int independentMaterials[MaterialCount]{};
-    int productionMaterials[MaterialCount]{}; // mechanical production-only packet ceiling // component already included in operatingResources
+    int productionMaterials[MaterialCount]{}; // mechanical production-only packet ceiling // component already included in operatingMaterials
 	int seats=0;
 	int assignmentLimit=20;
 	int requiredWorkerLevel=0;
@@ -290,6 +290,7 @@ struct WorldState
 	WorldTile& tile(int x, int y);
 	const BuildingProfile* profile(int buildingType) const;
 	void invalidateProfileIndex() const;
+    uint64_t retainedProfileIndexBytes() const noexcept { return profileIndexes.capacity() * sizeof(int); }
 	const WorldBuilding* building(int id) const;
 	uint32_t computeSignature() const;
 
@@ -544,6 +545,7 @@ class Planner
 {
 public:
 	Planner();
+    uint64_t retainedQueryVectorBytes() const noexcept;
 	void reset();
 	void configure(const std::vector<BuildingProfile>& profiles,
 		int innType, int hospitalType, int schoolType,

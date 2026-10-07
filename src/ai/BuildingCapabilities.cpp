@@ -190,18 +190,17 @@ int BuildingCapabilityIndex::trainingAbility(BuildingIntent intent)
 }
 
 BuildingCapabilityIndex::BuildingCapabilityIndex(const BuildingsTypes& catalog)
-	: catalog_(catalog), masks_(catalog.size()), intentMasks_(catalog.size()), lineageRoots_(catalog.size(), -1),
-	  lineagePositions_(catalog.size(), 0)
+	: catalog_(catalog), data_(std::make_shared<BuildingCapabilityTables>(catalog.size()))
 {
 	for (std::size_t id = 0; id < catalog.size(); ++id)
 	{
 		const auto& type = *catalog.get(id);
 		if (type.isBuildingSite) continue;
 		for (std::size_t demand = 0; demand < IntentCount; ++demand)
-			if ((masks_[id][demand] = serviceMask(type, static_cast<Intent>(demand))))
+			if ((data_->masks_[id][demand] = serviceMask(type, static_cast<Intent>(demand))))
 			{
-				intentMasks_[id] |= std::uint64_t(1) << demand;
-				providers_[demand].push_back(static_cast<int>(id));
+				data_->intentMasks_[id] |= std::uint64_t(1) << demand;
+				data_->providers_[demand].push_back(static_cast<int>(id));
 			}
 	}
 	for (std::size_t id = 0; id < catalog.size(); ++id)
@@ -211,56 +210,56 @@ BuildingCapabilityIndex::BuildingCapabilityIndex(const BuildingsTypes& catalog)
 		int position = 0;
 		for (int current = static_cast<int>(id); current >= 0
 			&& static_cast<std::size_t>(current) < catalog.size()
-			&& lineageRoots_[current] < 0; current = catalog.get(current)->nextLevel)
+			&& data_->lineageRoots_[current] < 0; current = catalog.get(current)->nextLevel)
 		{
 			const auto& variant = *catalog.get(current);
-			lineageRoots_[current] = static_cast<int>(id);
-			lineagePositions_[current] = variant.isBuildingSite ? position + 1 : ++position;
+			data_->lineageRoots_[current] = static_cast<int>(id);
+			data_->lineagePositions_[current] = variant.isBuildingSite ? position + 1 : ++position;
 		}
 		const int complete = type.isBuildingSite ? type.nextLevel : static_cast<int>(id);
 		if (complete < 0 || static_cast<std::size_t>(complete) >= catalog.size()
 			|| catalog.get(complete)->isBuildingSite)
 			throw std::invalid_argument("Placeable building has no completed variant");
 		for (std::size_t demand = 0; demand < IntentCount; ++demand)
-			if (masks_[complete][demand])
-				placements_[demand].push_back({static_cast<int>(id), complete});
+			if (data_->masks_[complete][demand])
+				data_->placements_[demand].push_back({static_cast<int>(id), complete});
 	}
     // This fallback ranks the unweighted construction resource total, then ID.
     // Strategies with labor/throughput models can use their own valuation.
-    placementsByCost_ = placements_;
+    data_->placementsByCost_ = data_->placements_;
     std::vector<int> costs(catalog.size());
     for (std::size_t id = 0; id < catalog.size(); ++id)
         for (int amount : catalog.get(id)->semantics.constructionCost) costs[id] += amount;
-    for (auto& candidates : placementsByCost_)
+    for (auto& candidates : data_->placementsByCost_)
         std::sort(candidates.begin(), candidates.end(), [&](const auto& a, const auto& b) {
             return std::tie(costs[a.placementType], a.placementType)
                 < std::tie(costs[b.placementType], b.placementType);
         });
 }
 
-const std::vector<int>& BuildingCapabilityIndex::providers(BuildingIntent intent) const
+const std::vector<int>& BuildingCapabilityTables::providers(BuildingIntent intent) const
 {
 	return providers_[index(intent)];
 }
 
-const std::vector<BuildingCandidate>& BuildingCapabilityIndex::placements(BuildingIntent intent) const
+const std::vector<BuildingCandidate>& BuildingCapabilityTables::placements(BuildingIntent intent) const
 {
 	return placements_[index(intent)];
 }
 
-const std::vector<BuildingCandidate>& BuildingCapabilityIndex::placementsByCost(BuildingIntent intent) const
+const std::vector<BuildingCandidate>& BuildingCapabilityTables::placementsByCost(BuildingIntent intent) const
 {
     return placementsByCost_[index(intent)];
 }
 
-bool BuildingCapabilityIndex::matches(int type, BuildingIntent intent, int unit) const
+bool BuildingCapabilityTables::matches(int type, BuildingIntent intent, int unit) const
 {
 	if (type < 0 || static_cast<std::size_t>(type) >= masks_.size()) return false;
 	const unsigned mask = masks_[type][index(intent)];
 	return unit == -1 ? mask != 0 : unit >= 0 && unit < NB_UNIT_TYPE && (mask & (1u << unit)) != 0;
 }
 
-int BuildingCapabilityIndex::lineageRoot(int type) const
+int BuildingCapabilityTables::lineageRoot(int type) const
 {
 	return type >= 0 && static_cast<std::size_t>(type) < lineageRoots_.size() ? lineageRoots_[type] : -1;
 }

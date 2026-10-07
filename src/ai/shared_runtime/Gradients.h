@@ -2,6 +2,7 @@
 // Copyright (C) 2006 Bradley Arsenault
 
 #pragma once
+namespace AIEngine { class AIWorldView; }
 
 #include "field/Frontier.h"
 #include "field/TerrainTravel.h"
@@ -64,6 +65,7 @@ namespace AISharedRuntime
 				friend class AISharedRuntime::Gradients::GradientInfo;
 			protected:
 				virtual bool is_entity(Map* map, int posx, int posy)=0;
+				virtual bool is_entity(const AIEngine::AIWorldView&, int, int)=0;
 				///The comparison operator is used to reference gradients by the entities and sources that was use to compute them
 				virtual bool operator==(const Entity& rhs) const=0;
 
@@ -71,7 +73,7 @@ namespace AISharedRuntime
 				///the coarse of the game, however the layout of buildings can.
 				virtual bool can_change()=0;
                 // Catalog-dependent sources refine the ordinary entity policy.
-                virtual bool can_change(Map*) { return can_change(); }
+                virtual bool can_change(const ResourceRegistry&) { return can_change(); }
 
 				virtual EntityType get_type()=0;
 				virtual std::shared_ptr<Entity> clone() const=0;
@@ -89,9 +91,10 @@ namespace AISharedRuntime
    protected:
     friend class Entity;
     bool is_entity(Map*,int,int) override;
+    bool is_entity(const AIEngine::AIWorldView&, int, int) override;
     bool operator==(const Entity&) const override;
     bool can_change() override { return true; }
-    bool can_change(Map* map) override;
+    bool can_change(const ResourceRegistry&) override;
     EntityType get_type() override { return EMaterialSources; }
     std::shared_ptr<Entity> clone() const override { return std::make_shared<MaterialSources>(*this); }
     bool load(GAGCore::InputStream*,Player*,Sint32) override;
@@ -109,6 +112,7 @@ namespace AISharedRuntime
 				Building() : building_type(-1), team(-1), under_construction(false) {}
 				friend class Entity;
 				bool is_entity(Map* map, int posx, int posy);
+    bool is_entity(const AIEngine::AIWorldView&, int, int) override;
 				bool operator==(const Entity& rhs) const;
 				bool can_change();
 				EntityType get_type();
@@ -130,6 +134,7 @@ namespace AISharedRuntime
 				AnyTeamBuilding() : team(-1), under_construction(false) {}
 				friend class Entity;
 				bool is_entity(Map* map, int posx, int posy);
+    bool is_entity(const AIEngine::AIWorldView&, int, int) override;
 				bool operator==(const Entity& rhs) const;
 				bool can_change();
 				EntityType get_type();
@@ -150,6 +155,7 @@ namespace AISharedRuntime
 				AnyBuilding() : under_construction(false) {}
 				friend class Entity;
 				bool is_entity(Map* map, int posx, int posy);
+    bool is_entity(const AIEngine::AIWorldView&, int, int) override;
 				bool operator==(const Entity& rhs) const;
 				bool can_change();
 				EntityType get_type();
@@ -169,9 +175,10 @@ namespace AISharedRuntime
 				MaterialSource() : material(-1) {}
 				friend class Entity;
 				bool is_entity(Map* map, int posx, int posy);
+    bool is_entity(const AIEngine::AIWorldView&, int, int) override;
 				bool operator==(const Entity& rhs) const;
 				bool can_change();
-                bool can_change(Map* map) override;
+                bool can_change(const ResourceRegistry&) override;
 				EntityType get_type();
 				std::shared_ptr<Entity> clone() const override { return std::make_shared<MaterialSource>(*this); }
 				bool load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor);
@@ -188,6 +195,7 @@ namespace AISharedRuntime
 			protected:
 				friend class Entity;
 				bool is_entity(Map* map, int posx, int posy);
+    bool is_entity(const AIEngine::AIWorldView&, int, int) override;
 				bool operator==(const Entity& rhs) const;
 				bool can_change();
 				EntityType get_type();
@@ -202,6 +210,7 @@ namespace AISharedRuntime
             protected:
                 friend class Entity;
                 bool is_entity(Map*, int, int) override;
+                bool is_entity(const AIEngine::AIWorldView&, int, int) override;
                 bool operator==(const Entity&) const override;
                 bool can_change() override { return true; }
                 EntityType get_type() override { return EResourceGroundObstacle; }
@@ -216,6 +225,7 @@ namespace AISharedRuntime
             protected:
                 friend class Entity;
                 bool is_entity(Map*, int, int) override;
+                bool is_entity(const AIEngine::AIWorldView&, int, int) override;
                 bool operator==(const Entity&) const override;
                 bool can_change() override { return true; }
                 EntityType get_type() override { return EResourceBuildingObstacle; }
@@ -232,6 +242,7 @@ namespace AISharedRuntime
 			protected:
 				friend class Entity;
 				bool is_entity(Map* map, int posx, int posy);
+    bool is_entity(const AIEngine::AIWorldView&, int, int) override;
 				bool operator==(const Entity& rhs) const;
 				bool can_change();
 				EntityType get_type();
@@ -245,6 +256,7 @@ namespace AISharedRuntime
 			{
 			protected:
 				bool is_entity(Map*, int, int) override;
+    bool is_entity(const AIEngine::AIWorldView&, int, int) override;
 				bool operator==(const Entity&) const override;
 				EntityType get_type() override { return EUnwalkable; }
 				std::shared_ptr<Entity> clone() const override { return std::make_shared<Unwalkable>(*this); }
@@ -259,6 +271,7 @@ namespace AISharedRuntime
 				Position() : x(-1), y(-1) {}
 				friend class Entity;
 				bool is_entity(Map* map, int posx, int posy);
+    bool is_entity(const AIEngine::AIWorldView&, int, int) override;
 				bool operator==(const Entity& rhs) const;
 				bool can_change();
 				EntityType get_type();
@@ -277,6 +290,7 @@ namespace AISharedRuntime
 			protected:
 				friend class Entity;
 				bool is_entity(Map* map, int posx, int posy);
+    bool is_entity(const AIEngine::AIWorldView&, int, int) override;
 				bool operator==(const Entity& rhs) const;
 				bool can_change();
 				EntityType get_type();
@@ -312,11 +326,15 @@ namespace AISharedRuntime
 
 			///Returns true if the provided position matches any of the sources that where added
 			bool match_source(Map* map, int posx, int posy);
+			bool match_source(const AIEngine::AIWorldView&, int, int);
 			///Returns true if the provided position matches any of the obstacles that where added
 			bool match_obstacle(Map* map, int posx, int posy);
+			bool match_obstacle(const AIEngine::AIWorldView&, int, int);
 			///Returns true if this GradientInfo has any entities that can change, causing it to need to be updated.
 			///Memoized for the immutable resource catalog owned by this map.
 			bool needs_updating(Map* map) const;
+			bool needs_updating(const AIEngine::AIWorldView& world) const;
+			bool needs_updating(const std::shared_ptr<const ResourceRegistry>& registry) const;
 
 			bool operator==(const GradientInfo& rhs) const;
 			GradientInfo clone() const;
@@ -356,6 +374,7 @@ namespace AISharedRuntime
 
 			///Causes the gradient to be updated
 			void recalculate(Map* map, field::Frontier& frontier);
+            void recalculate(const AIEngine::AIWorldView&, field::Frontier&);
 			///Toroidal 8-connected BFS expansion from sources already seeded in `gradient`.
 			///Push order is fixed for deterministic networking; do not change without
 			///verifying lockstep behavior. Clears `frontier`, retaining its capacity.
@@ -367,6 +386,7 @@ namespace AISharedRuntime
             std::uint64_t staticMaterialSourceGeneration=0;
             std::shared_ptr<const ResourceRegistry> resourceRegistry;
             bool current(Map* map) const;
+            bool current(const AIEngine::AIWorldView& world) const;
 			int get_pos(int x, int y) const { return y*width + x; }
 			GradientInfo gradient_info;
 			std::vector<Sint16> gradient;
@@ -380,6 +400,10 @@ namespace AISharedRuntime
 		{
 		public:
 			explicit GradientManager(Map* map);
+            Uint64 retainedVectorBytes() const noexcept;
+            explicit GradientManager(const AIEngine::AIWorldView& world);
+            void bindWorld(const AIEngine::AIWorldView& world);
+            void unbindWorld() {world=nullptr;}
 			///A simple function, returns the Gradient that matches the GradientInfo. Its guaranteed to be up to date within the last 150 ticks.
 			///If a matching gradient isn't found, a new one is created. 150 ticks may sound like a large amount of leeway, however, most
 			///gradients are updated sooner than that. As well, at normal game speed, 150 ticks is only 6 seconds, and you can count it yourself,
@@ -401,7 +425,16 @@ namespace AISharedRuntime
 			std::queue<int> queuedGradients;
 			field::Frontier frontier; // transient, shared by this manager's fields
 			std::vector<int> ticks_since_update;
-			Map* map;
+            Map* map=nullptr;
+            const AIEngine::AIWorldView* world=nullptr;
+            bool snapshotMode=false;
+            std::uint64_t boundTerrainRevision=0;
+            int boundWidth=0, boundHeight=0;
+            std::uint64_t terrain_revision() const;
+            std::uint64_t static_material_source_generation() const;
+            std::shared_ptr<const ResourceRegistry> frozen_resource_registry() const;
+            bool is_current(const Gradient& gradient) const;
+            void recalculate(Gradient& gradient);
 			unsigned int cur_update;
 			int timer;
 		};

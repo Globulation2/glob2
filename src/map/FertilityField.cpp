@@ -327,7 +327,6 @@ void GrowthCache::terrainChanged(std::size_t index, const TerrainProperties& bef
 
 void GrowthCache::rebuild(const Map& map)
 {
-    owner=&map;
 	const int w=map.getW(), h=map.getH();
 	const std::size_t size=std::size_t(w)*h;
 	std::vector<std::int16_t> contribution(size);
@@ -347,22 +346,18 @@ void GrowthCache::rebuild(const Map& map)
 	ready=true;
 }
 
-std::uint32_t GrowthCache::rate(std::size_t index,int resourceType) const
+std::uint32_t GrowthCache::rate(std::size_t index,ResourceEcology ecology,std::uint32_t growthRate) const
 {
-    assert(owner && index<localGrowth.size());
-    if (resourceType<0 || !owner->resourceRegistry().valid(unsigned(resourceType)) ||
-        !owner->terrainPropertiesAt(index).resourcesGrow ||
-        !owner->terrainSupportsResourceAt(index,static_cast<ResourceId>(resourceType))) return 0;
-    const auto& p=owner->resourcePropertiesByIndex(resourceType);
+    assert(ready && index<localGrowth.size());
     std::uint64_t value=0;
-    switch (p.ecology)
+    switch (ecology)
     {
     case ResourceEcology::Land: value=land.values()[index]; break;
     case ResourceEcology::Shore: value=std::uint64_t(aquatic[index])*localGrowth[index]/256; break;
     case ResourceEcology::Uniform: value=std::uint64_t(kScale)*localGrowth[index]/256; break;
     case ResourceEcology::None: return 0;
     }
-    value=value*p.growthRate/kScale;
+    value=value*growthRate/kScale;
     return static_cast<std::uint32_t>(std::min<std::uint64_t>(value,4u*kRateScale));
 }
 

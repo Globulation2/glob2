@@ -4,6 +4,7 @@
 // Save/load of the resolved strategy, director, and pending execution work.
 #include "AIMaximaContinuation.h"
 #include "AIMaxima.h"
+#include "Version.h"
 #include "Game.h"
 #include "Player.h"
 #include "Map.h"
@@ -290,20 +291,47 @@ void Maxima::loadExecutionState(GAGCore::InputStream* stream, Sint32 versionMino
 
 std::string Maxima::auditStrategyJson() const
 {
+    auto ownerObservation=context.scopeOwnerObservation();
     ResolvedStrategy actual;
     std::string error;
-    StrategyResolver::resolveForPlayer(context.player->game->gameHeader,
-        context.player->number, actual, error);
+    StrategyResolver::resolveForPlayer(*context.observation().configuration,
+        context.playerNumber(), actual, error);
     actual.values=strategy;
     return StrategyResolver::resolvedJson(actual);
 }
 
 std::shared_ptr<Order> Maxima::getOrder()
 {
-	observe_wave_delivery();
-	ensure_strategy();
-	context.telemetry = telemetry;
-	return context.getOrder(*this);
+    auto world=AIEngine::AIWorldView::capture(*context.player->game,AIEngine::AIWorldView::captureCatalog(*context.player->game));
+    const std::vector<AIEngine::ExecutionReceipt> receipts;
+    AIEngine::DecisionContext decision{*world,unsigned(context.player->number),unsigned(context.player->team->teamNumber),receipts,world};
+    decision.fieldDiagnostics=fieldDiagnostics;
+    return getOrder(decision);
+}
+std::shared_ptr<Order> Maxima::getOrder(const AIEngine::DecisionContext& decision)
+{
+    // The engine gives each job its own diagnostic sink. A missing job sink
+    // disables capture; the Session-owned sink is restored on every exit.
+    auto ownerDiagnostics=fieldDiagnostics;
+    fieldDiagnostics=decision.fieldDiagnostics;
+    const auto release=[&] {context.releaseObservation();fieldDiagnostics=ownerDiagnostics;};
+    try {
+        context.bindObservation(decision);
+        for(const auto& receipt:decision.receipts) {
+            if(receipt.command.empty())continue;
+            auto order=Order::getOrder(receipt.command.data(),receipt.command.size(),VERSION_MINOR);
+            if(order) {
+            order->aiSelectedTarget=receipt.selectedTarget;
+            orderExecutionCompleted(*order,receipt.status==AIEngine::ExecutionStatus::Accepted);
+        }
+        }
+        observe_wave_delivery();ensure_strategy();context.telemetry=telemetry;
+        auto order=context.getOrder(*this);
+        for(auto& diagnostic:context.bufferedDiagnostics)
+            bufferedDiagnostics.push_back(std::move(diagnostic));
+        context.bufferedDiagnostics.clear();
+        release();return order;
+    } catch(...) {release();throw;}
 }
 
 
@@ -428,7 +456,7 @@ bool Maxima::loadDirector(GAGCore::InputStream* stream,
 	const Uint32 count = versionMinor >= FILE_FORMAT_VERSION_COUNTED_TEAM_STATE
 		? stream->readCount("count") : MAXIMA_LEGACY_OPPONENT_COUNT;
 	if (count == 0 || count > Team::MAX_COUNT ||
-		(context.player && count < unsigned(context.player->game->teamsCount())))
+		count < context.observation().teams.size())
 		throw std::runtime_error("Invalid Maxima opponent record count");
 	std::fill(std::begin(opponents), std::end(opponents), OpponentAssessment{});
 	for (Uint32 i = 0; i < count; ++i)
@@ -508,6 +536,7 @@ bool Maxima::loadDirector(GAGCore::InputStream* stream,
 
 bool Maxima::load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor)
 {
+    auto ownerObservation=context.scopeOwnerObservation();
 	if(versionMinor<115)
 		throw std::runtime_error("This Maxima save uses a retired strategy format");
 	ensure_strategy();
@@ -521,6 +550,7 @@ bool Maxima::load(GAGCore::InputStream *stream, Player *player, Sint32 versionMi
 bool Maxima::loadState(GAGCore::InputStream *stream, Player *player,
 	Sint32 versionMinor)
 {
+    auto ownerObservation=context.scopeOwnerObservation();
 	if(versionMinor<115)
 		throw std::runtime_error("This Maxima save uses a retired strategy format");
 	director=StrategyDirector();
@@ -676,6 +706,7 @@ bool Maxima::loadState(GAGCore::InputStream *stream, Player *player,
 
 void Maxima::save(GAGCore::OutputStream *stream)
 {
+    auto ownerObservation=context.scopeOwnerObservation();
 	ensure_strategy();
 	stream->writeEnterSection("AIMaxima");
 	context.save(stream);
@@ -736,4 +767,11 @@ void Maxima::save(GAGCore::OutputStream *stream)
 
 
 
+}
+
+void AIMaxima::Maxima::orderExecutionCompleted(const Order& order, bool accepted)
+{
+    if(const auto* construction=dynamic_cast<const OrderConstruction*>(&order))
+        context.get_building_register().order_execution_completed(construction->gid,accepted,
+            order.aiSelectedTarget ? std::optional<Uint32>(order.aiSelectedTarget->generation) : std::nullopt);
 }

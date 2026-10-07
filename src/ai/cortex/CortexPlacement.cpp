@@ -1,3 +1,4 @@
+#include "CortexSnapshotQueries.h"
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2026 The Globulation 2 Authors
 
@@ -105,17 +106,17 @@ namespace Cortex
 	// never report a radius larger than the true minimum. Return -1 if no Food is
 	// found within `cap`.
 	//
-	// Food detection: map.isMaterialTakeableSlot(x, y, Food) — identical to the
+	// Food detection: MapState::hasMaterialSlot(map.state(),map.tileIndex(x,y),Food) — identical to the
 	// isFoodSource() predicate in CortexFoodSources.cpp (anonymous namespace, line ~29) so
 	// the two subsystems agree on what counts as food.
 	// Material stock is queried independently of map resource identity.
 	//
 	// Determinism: fixed ring/scan order (top row → right col → bottom row →
 	// left col, no rand, no pointer reads), warp-safe via normalizeX/normalizeY.
-	int nearestFoodSourceDistance(const Map& map, int x, int y, int cap)
+	int nearestFoodSourceDistance(const AIEngine::AIWorldView& map, int x, int y, int cap)
 	{
 		return food_queries::nearest(x,y,cap,[&](int px,int py) {
-			return map.isMaterialTakeable(px,py,MaterialId::Food);
+			return MapState::hasMaterial(map.state(),map.tileIndex(px,py),MaterialId::Food);
 		});
 	}
 
@@ -129,12 +130,12 @@ namespace Cortex
 	// FAIRNESS GATE (no fog-of-war cheat): we only ever consider enemy buildings
 	// the team has legitimately discovered. Each Building carries the engine's own
 	// per-team discovery record, seenByMask (building/Building.h:560), and we
-	// include a building ONLY when (b->seenByMask & team->me) != 0. We never read
+	// include a building ONLY when (b->seenByMask & team->mask) != 0. We never read
 	// unfogged enemy state — an undiscovered enemy base is invisible to this scan,
 	// exactly as it is on the player's minimap. The same enemy/alive test as the
 	// observation opponents loop (CortexObservation.cpp:171-172) selects which
-	// teams to scan: an enemy is (team->attackableTeams() & other->me) != 0 and alive is
-	// other->isAlive.
+	// teams to scan: an enemy is (team->enemies & other->mask) != 0 and alive is
+	// other->alive.
 	//
 	// SCORING (nearer == higher): we reuse scoreFromDistance on the Chebyshev
 	// distance from the enemy building to our NEAREST live building
@@ -146,10 +147,10 @@ namespace Cortex
 	// gets a well-defined, equal score and ranking degrades to scan order.
 	//
 	// DETERMINISM: teams are iterated by index over game->teams[], buildings by
-	// index over other->myBuildings[] (never an std::set); ties break first by scan
+	// index over game->buildingSlots(other->number)[] (never an std::set); ties break first by scan
 	// order (strict-greater insert) and finally by syncRand() — never rand(), never
 	// wall-clock — exactly as placeCandidates does.
-	int placeFlagTargets(Game* game, Team* team, BuildCandidate out[CORTEX_FLAG_TARGETS], Sint32 outTeam[CORTEX_FLAG_TARGETS])
+	int placeFlagTargetsWorld(const AIEngine::AIWorldView* game, const AIEngine::TeamView* team, const PlanningIntent& intents, BuildCandidate out[CORTEX_FLAG_TARGETS], Sint32 outTeam[CORTEX_FLAG_TARGETS])
 	{
 		// Always leave the output well-defined, even on the error paths below.
 		for (int i = 0; i < CORTEX_FLAG_TARGETS; i++)
@@ -168,38 +169,38 @@ namespace Cortex
 		int count = 0;
 
 		// Enumerate enemy teams strictly by index.
-		for (int i = 0; i < game->teamsCount(); i++)
+		for (int i = 0; i < game->teams.size(); i++)
 		{
-			Team* other = game->teams[i];
+			const AIEngine::TeamView* other = &game->teams[i];
 			if (other == NULL)
 				continue;
-			const bool isEnemy = (team->attackableTeams() & other->me) != 0;
-			if (!isEnemy || !other->isAlive)
+			const bool isEnemy = (team->enemies & other->mask) != 0;
+			if (!isEnemy || !other->alive)
 				continue;
 
 			// Scan this enemy's buildings by index (never an std::set).
-			for (int j = 0; j < Building::MAX_COUNT; j++)
+			for (int j = 0; j < ::Building::MAX_COUNT; j++)
 			{
-				Building* b = other->myBuildings[j];
-				if (b == NULL || b->buildingState == Building::DEAD)
+				const AIEngine::BuildingView* b = game->buildingSlots(other->number)[j];
+				if (b == NULL || b->buildingState == ::Building::DEAD)
 					continue;
 
 				// Fairness gate: only buildings we have legitimately seen. An
 				// undiscovered enemy building is invisible to this scan.
-				if ((b->seenByMask & team->me) == 0)
+				if ((b->seenByMask & team->mask) == 0)
 					continue;
 
 				// Distance from the enemy building to our nearest live building;
 				// nearer enemies score higher (slot 0 == closest reachable).
-				const int distToColony = distanceToNearestBuilding(game, team, b->posX, b->posY);
+				const int distToColony = distanceToNearestBuilding(game, team, intents, plannedX(intents,*b), plannedY(intents,*b));
 				const int score = scoreFromDistance(distToColony);
 
 				ScoredSpot spot;
-				spot.x = b->posX;
-				spot.y = b->posY;
+				spot.x = plannedX(intents,*b);
+				spot.y = plannedY(intents,*b);
 				spot.score = score;
 				spot.distToColony = distToColony;
-				spot.team = other->teamNumber;
+				spot.team = other->number;
 				insertTopKBounded(heap, count, CORTEX_FLAG_TARGETS, spot);
 			}
 		}
@@ -234,3 +235,12 @@ namespace Cortex
 		return count;
 	}
 } // namespace Cortex
+
+namespace Cortex {
+int placeFlagTargets(::Game* game,::Team* team,BuildCandidate out[CORTEX_FLAG_TARGETS],Sint32 owners[CORTEX_FLAG_TARGETS])
+{
+    const auto view=AIEngine::AIWorldView::capture(*game, AIEngine::AIWorldView::captureCatalog(*game));
+    QueryScratch scratch; PlanningIntent intents;
+    return placeFlagTargetsWorld(view.get(),&view->teams[team->teamNumber],intents,out,owners);
+}
+}

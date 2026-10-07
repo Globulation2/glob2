@@ -84,6 +84,34 @@ std::string sha256Hex(const std::string& text)
 
 TEST_SUITE("MatchSetup")
 {
+    TEST_CASE("AI order delay is optional bounded integer data and round trips through headers")
+    {
+        glob2test::HeadlessGlobals globals;
+        auto document=json::parse(glob2test::readFile(fixtureRoot()/"valid/MatchSetup/room-closed-seats.json"));
+        document["rules"].erase("aiOrderDelay");
+        const auto absent=MatchSetup::fromJson(document);
+        CHECK(absent.rules.aiOrderDelay==0);
+        CHECK(absent.toGameHeader(mapWithTeams(4)).getAIOrderDelay()==0);
+        for(unsigned delay : {0u,8u}) {
+            CAPTURE(delay);
+            document["rules"]["aiOrderDelay"]=delay;
+            const auto setup=MatchSetup::fromJson(document);
+            CHECK(setup.rules.aiOrderDelay==delay);
+            CHECK(MatchSetup::parse(setup.dump()).rules.aiOrderDelay==delay);
+            auto map=mapWithTeams(4);
+            auto header=setup.toGameHeader(map);
+            CHECK(header.getAIOrderDelay()==delay);
+            const auto restored=MatchSetup::fromGameHeader(header,map,setup.map,setup.simVersion);
+            CHECK(restored.rules.aiOrderDelay==delay);
+            CHECK(restored.toJson()["rules"]["aiOrderDelay"]==delay);
+        }
+        for(const auto& invalid : {json(-1),json(9),json(0.5),json(8.0),json("4"),json(true),json(nullptr)}) {
+            CAPTURE(invalid);
+            document["rules"]["aiOrderDelay"]=invalid;
+            CHECK_THROWS_AS(MatchSetup::fromJsonSchemaOnly(document),MatchSetupError);
+        }
+    }
+
 	TEST_CASE("embedded catalogs carry dynamic experiments independently of installed definitions")
 	{
 		glob2test::HeadlessGlobals globals;
@@ -183,9 +211,13 @@ TEST_SUITE("MatchSetup")
 			{
 				MatchSetup setup;
 				CHECK_NOTHROW(setup = MatchSetup::parse(text));
-				// The canonical form round-trips to the same document.
-				CHECK(setup.toJson() == document);
-				CHECK(MatchSetup::parse(setup.dump()).toJson() == document);
+				// Older setup documents omit the optional delay. Canonical output
+				// spells out its engine default while preserving every other field.
+				json canonical = document;
+				if (!canonical["rules"].contains("aiOrderDelay"))
+					canonical["rules"]["aiOrderDelay"] = 0;
+				CHECK(setup.toJson() == canonical);
+				CHECK(MatchSetup::parse(setup.dump()).toJson() == canonical);
 				++valid;
 				continue;
 			}

@@ -67,6 +67,7 @@ TEST_SUITE("BuildingFootprint")
 	        auto* building = new Building(position[0], position[1], 0, type, team,
 	                                      &globals->buildingsTypes, 0, 0);
 	        team->myBuildings[0] = building;
+	        team->rebuildLiveLists();
 	        game.map.setBuilding(building->posX, building->posY,
 	                             building->type->width, building->type->height, building->gid);
 	        // Both genuine repairs must keep working alongside wrapped preservation.

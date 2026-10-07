@@ -117,11 +117,11 @@ void ResourceSeedCache::changed(std::size_t index, unsigned flags)
 void ResourceSeedCache::refresh(const Map &map, std::size_t index, unsigned flags)
 {
 	auto &s = *storage;
-	const auto &cell = map.tiles[index];
+
 	if (flags & (Resource | Terrain | Building | Immobile))
 	{
-		const auto resource = cell.resource.type;
-		const bool unoccupied = map.immobileUnits[index] == IMMOBILE_UNIT_NONE;
+		const auto resource = map.resourceCells[index].resource.type;
+		const bool unoccupied = map.occupancyCells[index].immobileUnit == IMMOBILE_UNIT_NONE;
 		// Occupancy alone cannot change a resource-free cell's goal membership.
 		// Resource notices still handle removals, including coalesced edits.
 		if ((flags & Resource) || ((flags & Immobile) && resource != NO_RES_TYPE))
@@ -137,21 +137,21 @@ void ResourceSeedCache::refresh(const Map &map, std::size_t index, unsigned flag
 			s.materialMasks[index] = next;
 		}
 		const auto &terrain = map.terrainPropertiesAt(index);
-		const bool open = !map.resourceBlocksGround(index) && cell.building == NOGBID && unoccupied;
+		const bool open = !map.resourceBlocksGround(index) && map.occupancyCells[index].building == NOGBID && unoccupied;
 		s.base[0][index] = open && terrain.walkable ? GRADIENT_UNREACHABLE : GRADIENT_FORBIDDEN;
 		s.base[1][index] = open && (terrain.walkable || terrain.swimmable)
 			? GRADIENT_UNREACHABLE : GRADIENT_FORBIDDEN;
 	}
-	if (flags & Building) setBit(s.buildings, index, cell.building != NOGBID);
+	if (flags & Building) setBit(s.buildings, index, map.occupancyCells[index].building != NOGBID);
 	if (flags & Forbidden)
 	{
-		for (auto changed = s.forbiddenMasks[index] ^ cell.forbidden; changed; changed &= changed - 1)
+		for (auto changed = s.forbiddenMasks[index] ^ map.areaCells[index].forbidden; changed; changed &= changed - 1)
 		{
 			const unsigned team = std::countr_zero(changed);
 			if (team < Team::MAX_COUNT)
-				setBit(s.forbidden[team], index, cell.forbidden & Team::teamNumberToMask(team));
+				setBit(s.forbidden[team], index, map.areaCells[index].forbidden & Team::teamNumberToMask(team));
 		}
-		s.forbiddenMasks[index] = cell.forbidden;
+		s.forbiddenMasks[index] = map.areaCells[index].forbidden;
 	}
 }
 
@@ -220,9 +220,8 @@ bool ResourceSeedCache::trySeed(const Map &map, int team, int resource, int swim
 	{
 		const unsigned teamBuildingBase=unsigned(team)*Building::MAX_COUNT;
 		visit(s.buildings, [&](std::size_t index) {
-			const auto &cell = map.tiles[index];
-			const unsigned localId=unsigned(cell.building)-teamBuildingBase;
-			if (!map.resourceBlocksGround(index) && map.immobileUnits[index] == IMMOBILE_UNIT_NONE &&
+			const unsigned localId=unsigned(map.occupancyCells[index].building)-teamBuildingBase;
+			if (!map.resourceBlocksGround(index) && map.occupancyCells[index].immobileUnit == IMMOBILE_UNIT_NONE &&
 				localId<Building::MAX_COUNT)
 				output[index] = supplierSeeds[localId];
 		});

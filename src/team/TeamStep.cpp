@@ -367,6 +367,7 @@ void Team::syncStep(void)
 				// it no longer resolves; nothing to notify here.
 				delete u;
 				myUnits[i] = NULL;
+				detachUnit(i);
 			}
 		}
 	}
@@ -427,6 +428,7 @@ void Team::syncStep(void)
 		game->publishClientEvent(ClientEvent::BuildingRemoved{building->gid});
 
 		myBuildings[Building::GIDtoID(building->gid)]=NULL;
+		detachBuilding(Building::GIDtoID(building->gid));
 		delete building;
 	}
 

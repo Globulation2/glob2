@@ -197,7 +197,7 @@ def select(paths, labels=(), known=False):
             add(path, 'native')
         else:
             add(path, *FLAGS)
-        if path.startswith(('src/engine/sim/', 'src/render/scene/')) and not is_test_source(path) or path in THREAD_FILES:
+        if path.startswith(('src/engine/sim/', 'src/render/scene/', 'src/ai/engine/', 'src/ai/observation/')) and not is_test_source(path) or path in THREAD_FILES:
             add(path, 'tsan')
     # The stack's own inputs run the stack smoke; shared and unknown paths
     # above already select every check, the stack included.

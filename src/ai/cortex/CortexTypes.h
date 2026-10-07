@@ -102,7 +102,7 @@ namespace Cortex
 	/// reachable food to harvest.
 	/// v13 (2026-06-06, inn hauler ceiling = food-deficit demand) added
 	/// TrackedBuilding.restockTripsNeeded — for inns, the Food deficit (maxWheat - food)
-	/// expressed in hauler TRIPS (deficit / multiplierResource[Food]). Wheat is the feed
+	/// expressed in hauler TRIPS (deficit / materialMultiplier[Food]). Wheat is the feed
 	/// resource that limits how many units the inn sustains, so the hauler ceiling tracks
 	/// how empty the food buffer is; fruit is happiness garnish and is excluded. The
 	/// worker-tuning loop sets the inn's maxUnitWorking to this (clamped to [MIN, CAP]),
@@ -249,12 +249,12 @@ namespace Cortex
 		Sint32 valid;          ///< 0 = empty slot.
 		Sint32 gid;            ///< Building::gid (OrderModifyBuilding/OrderChangePriority target), or -1 when invalid.
 		Sint32 maxUnitWorking; ///< Current maxUnitWorking (worker cap) on the site.
-		Sint32 deliveriesLeft; ///< Resource hauler-trips still needed to finish the site = sum over resources of ceil((maxResource-resources)/multiplier). Caps how many workers can usefuly build it.
+		Sint32 deliveriesLeft; ///< Resource hauler-trips still needed to finish the site = sum over resources of ceil((maxMaterial-resources)/multiplier). Caps how many workers can usefuly build it.
 		Sint32 priority;       ///< Building::priority (-1/0/+1) — lets the policy pin every construction site to LOW so construction never out-recruits feeding/production. C++: building/Building.h:516
 	};
 
 	/// The full feature vector handed to the policy layer. Built by
-	/// Cortex::observe(); read by CortexPolicy::decide(). The policy must read
+	/// Cortex::observeWorld(); read by CortexPolicy::decide(). The policy must read
 	/// ONLY this struct — never Game* directly (see README anti-pattern).
 	struct CortexObservation
 	{

@@ -1021,6 +1021,33 @@ export const fixtureCases: FixtureCase[] = [
   // ------------------------------------------------------------ MatchSetup
   {
     schema: 'MatchSetup',
+    name: 'ai-order-delay-eight',
+    valid: true,
+    note: 'The same eight-tick engine delay applies to every AI seat.',
+    value: { ...SETUP_CATALOG_1V1, rules: { ...STANDARD_RULES, aiOrderDelay: 8 } },
+  },
+  {
+    schema: 'MatchSetup',
+    name: 'ai-order-delay-omitted',
+    valid: true,
+    note: 'Older setup documents omit the delay and retain the zero-tick default.',
+    value: {
+      ...SETUP_CATALOG_1V1,
+      rules: Object.fromEntries(
+        Object.entries(STANDARD_RULES).filter(([key]) => key !== 'aiOrderDelay'),
+      ),
+    },
+  },
+  ...[-1, 9, 1.5].map((delay) => ({
+    schema: 'MatchSetup' as const,
+    name: `ai-order-delay-${delay === -1 ? 'negative' : delay === 9 ? 'too-large' : 'fractional'}`,
+    valid: false,
+    stage: 'schema' as const,
+    note: 'AI order delay must be an integer from zero through eight.',
+    value: { ...SETUP_CATALOG_1V1, rules: { ...STANDARD_RULES, aiOrderDelay: delay } },
+  })),
+  {
+    schema: 'MatchSetup',
     name: 'catalog-1v1',
     valid: true,
     note: 'Two humans on a catalog map, standard rules.',

@@ -5,6 +5,8 @@
 #include "scripting/javascript/ScriptRuntime.h"
 #include "scripting/javascript/ScriptValue.h"
 #include "PerformanceTelemetry.h"
+#include <array>
+#include <bit>
 #include "Engine.h"
 #include "GameDiagnostics.h"
 #include "GlobalContainer.h"
@@ -314,7 +316,7 @@ struct HeadlessRunner
 		if(!fs::is_regular_file(requested)) throw std::invalid_argument("input file does not exist");
 		if(!saved.empty())
 		{
-			for(const auto &key : {"--player","--ai-param","--ai-script","--map-script","--alliance","--win-condition","--game-seed","--experiment","--rule"})
+			for(const auto &key : {"--player","--ai-param","--ai-script","--map-script","--alliance","--win-condition","--game-seed","--experiment","--rule","--ai-order-delay"})
 				if(options.count(key)) throw std::invalid_argument(std::string(key)+" cannot override a saved game");
 			if(engine.initCustom(saved)!=Engine::EE_NO_ERROR) throw std::invalid_argument("cannot load saved game");
 			if(globals.automaticEndingSteps <= int(engine.gui.game.stepCounter)) throw std::invalid_argument("tick limit must exceed the saved tick");
@@ -370,6 +372,7 @@ struct HeadlessRunner
 					std::optional<Uint32>(static_cast<Uint32>(permille)));
 			}
 			for (const auto& rule:many(options,"--rule")) applyGameRule(header, rule);
+			if (options.count("--ai-order-delay")) header.setAIOrderDelay(integer(one(options,"--ai-order-delay"), 0, 8));
 			std::map<int,std::string> overrides;
 			std::set<std::pair<int,std::string>> seen;
 			for(const auto &assignment : many(options,"--ai-param"))
@@ -456,6 +459,7 @@ struct HeadlessRunner
 		const auto runStart = std::chrono::steady_clock::now();
 		uint64_t setupCpu=0,runCpu=0,measureStart=0;
 		unsigned measuredTicks=0;
+        std::array<Uint64,64> tickHistogram{};
 		if(benchmark)
 		{
 			const uint64_t first=engine.gui.game.stepCounter;
@@ -466,7 +470,13 @@ struct HeadlessRunner
 			if(benchmarkWarmup==0) measureStart=processCpuNs();
 			while(engine.gui.isRunning)
 			{
+                const auto beforeTick=engine.gui.game.stepCounter;
+                const auto tickStart=std::chrono::steady_clock::now();
 				engine.stepSession(SDL_GetTicks()); engine.drawSession();
+                if(beforeTick>=start && engine.gui.game.stepCounter>beforeTick) {
+                    const auto duration=Uint64(std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::steady_clock::now()-tickStart).count());
+                    ++tickHistogram[std::min<unsigned>(std::bit_width(duration),63)];
+                }
 				if(!measureStart && engine.gui.game.stepCounter>=start) measureStart=processCpuNs();
 			}
 			engine.finishSession();
@@ -516,6 +526,7 @@ struct HeadlessRunner
 			<< ",\"gradient_discarded\":" << pipelineResult.discarded
 			<< ",\"gradient_max_pending\":" << pipelineResult.maxPending
 			<< ",\"gradient_wait_ns\":" << pipelineResult.waitNs
+			<< ",\"gradient_preparation_ns\":" << pipelineResult.preparationNs
 			<< ",\"gradient_active_elapsed_ns\":" << pipelineResult.activeElapsedNs
 			<< ",\"compute_active_elapsed_ns\":" << game.map.computeExecutor().activeNs()
 			<< ",\"hiring_prepasses\":" << game.map.hiringPrepasses
@@ -527,6 +538,23 @@ struct HeadlessRunner
 			<< ",\"compute_parallel_batches\":" << game.map.computeExecutor().metrics().parallelBatches
 			<< ",\"compute_batch_ns\":" << game.map.computeExecutor().metrics().batchNs
 			<< ",\"compute_wait_ns\":" << game.map.computeExecutor().metrics().waitNs
+			<< ",\"compute_deferred_batches\":" << game.map.computeExecutor().metrics().deferredBatches
+			<< ",\"compute_deferred_jobs\":" << game.map.computeExecutor().metrics().deferredJobs
+			<< ",\"compute_owner_jobs\":" << game.map.computeExecutor().metrics().ownerJobs
+			<< ",\"compute_worker_jobs\":" << game.map.computeExecutor().metrics().workerJobs
+			<< ",\"compute_lane_wait_ns\":" << game.map.computeExecutor().metrics().laneWaitNs
+			<< ",\"compute_join_wait_ns\":" << game.map.computeExecutor().metrics().joinWaitNs
+			<< ",\"ai_pipeline\":{";
+		bool metricComma=false;
+		for(const auto& [name,value]:game.aiMetrics()) {if(metricComma)result<<',';metricComma=true;result<<quote(name)<<':'<<value;}
+        result << "},\"benchmark_tick_histogram\":[";
+        for(unsigned i=0;i<tickHistogram.size();++i) {
+            if(i) result<<',';
+            result<<"{\"upper_ns_exclusive\":";
+            if(i==63)result<<"null";else result<<(Uint64(1)<<i);
+            result<<",\"count\":"<<tickHistogram[i]<<'}';
+        }
+        result << ']'
 			<< ",\"game_seed\":" << game.gameHeader.getRandomSeed() << ",\"termination\":"
 			<< quote(termination)
 			<< ",\"resolved\":{\"tick_limit\":" << globals.automaticEndingSteps << ",\"map\":" << quote(game.mapHeader.getMapName())
@@ -612,7 +640,7 @@ int runHeadlessCommand(int argc,char **argv)
 			std::cout << "}" << std::endl;return 0;
 		}
 		const std::set<std::string> common={"--output-dir","--profile","--building-catalog"};
-		const std::set<std::string> gameKeys={"--diagnostic-fields","--diagnostic-interval","--diagnostic-png","--benchmark-warmup","--ai-script","--map-script","--map-file","--load-game","--game-seed","--player","--ai-param","--alliance","--win-condition","--win-probability","--experiment","--rule","--ticks","--compute-threads","--compute-experiments","--gradient-workers","--gradient-delay","--save","--telemetry","--replay","--generator","--map-seed","--param","--candidates"};
+		const std::set<std::string> gameKeys={"--diagnostic-fields","--diagnostic-interval","--diagnostic-png","--benchmark-warmup","--ai-script","--map-script","--map-file","--load-game","--game-seed","--player","--ai-param","--alliance","--win-condition","--win-probability","--experiment","--rule","--ticks","--compute-threads","--compute-experiments","--gradient-workers","--gradient-delay","--ai-order-delay","--save","--telemetry","--replay","--generator","--map-seed","--param","--candidates"};
 		const std::set<std::string> mapKeys={"--generator","--map-seed","--param","--candidates","--rotations","--write-map","--report","--perturb"};
 		Options options;
 		for(int i=2;i<argc;++i)

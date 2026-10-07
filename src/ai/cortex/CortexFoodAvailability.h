@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #pragma once
-#include "Map.h"
+#include "MapStateView.h"
 #include <vector>
 
 namespace Cortex
@@ -37,11 +37,11 @@ class FoodAvailabilityView
     int width,maskX,maskY;
     std::vector<unsigned char> available;
 public:
-    explicit FoodAvailabilityView(const Map& map)
-        : width(map.getW()),maskX(width-1),maskY(map.getH()-1),available(size_t(width)*map.getH())
+    explicit FoodAvailabilityView(const MapState::View& world)
+        : width(world.width),maskX(width-1),maskY(world.height-1),available(size_t(width)*world.height)
     {
         for(size_t index=0;index<available.size();++index)
-            available[index]=map.materialAmountAt(index,MaterialId::Food)>0;
+            available[index]=MapState::hasMaterial(world,index,MaterialId::Food);
     }
     bool at(int x,int y) const { return available[(y&maskY)*width+(x&maskX)]!=0; }
     int nearestDistance(int x,int y,int cap) const

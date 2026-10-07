@@ -80,7 +80,7 @@ std::array<Sint32, NB_UNIT_TYPE> displayedRatio(const BuildingGuiStateMap& m, co
 
 /// The same accessors for presentation copies of a building (e.g. SceneBuildingPanel):
 /// any type with the Building field names gid, posX, posY, maxUnitWorking,
-/// unitStayRange, priority, clearingResources, minLevelToFlag and ratio.
+/// unitStayRange, priority, clearingMaterials, minLevelToFlag and ratio.
 template <class B> const BuildingGuiState* pendingStateOf(const BuildingGuiStateMap& m, const B& b)
 {
 	auto it = m.find(b.gid);

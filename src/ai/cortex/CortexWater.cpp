@@ -1,3 +1,4 @@
+#include "CortexSnapshotQueries.h"
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2026 The Globulation 2 Authors
 
@@ -17,23 +18,12 @@
 
 #include <vector>
 #include <cstdlib>  // getenv (gated diagnostics)
-#include <iostream> // std::cerr (gated diagnostics)
+#include <iostream> // owner-wrapper diagnostic output only
 
 namespace Cortex
 {
 	namespace
 	{
-		// AI decisions on different compute threads must not share mutable fields.
-		// Keeping the capacities here avoids rebuilding full-map arrays every cycle.
-		struct WaterScratch
-		{
-			std::vector<char> visited;
-			std::vector<int> frontier;
-			std::vector<int> land;
-			std::vector<int> swim;
-			std::vector<int> target;
-		};
-		thread_local WaterScratch waterScratch;
 
 		// Count tiles reachable from (cx, cy) by an 8-connected flood-fill, bounded
 		// to a Chebyshev radius of CORTEX_SWIM_REACH_RADIUS around the anchor and to
@@ -53,16 +43,16 @@ namespace Cortex
 		// stand on reachable ground and harvest that algae from the shore. (Only
 		// meaningful with canSwim=false: a non-swimmer's reachable region tells us
 		// whether algae can be hauled to a building site WITHOUT a swimming pool.)
-		int countReach(Map& map, const Team* team, int cx, int cy, bool canSwim,
+		int countReach(const AIEngine::AIWorldView& map, QueryScratch& scratch, const AIEngine::TeamView* team, int cx, int cy, bool canSwim,
 		               bool* algaeAdjacent = NULL)
 		{
-			const int w = map.getW();
-			const int h = map.getH();
-			const Uint32 me = team->me;
+			const int w = map.width;
+			const int h = map.height;
+			const Uint32 me = team->mask;
 			const int R = CORTEX_SWIM_REACH_RADIUS;
 
-			std::vector<char>& visited = waterScratch.visited;
-			std::vector<int>& frontier = waterScratch.frontier;
+			std::vector<char>& visited = scratch.water.visited;
+			std::vector<int>& frontier = scratch.water.frontier;
 			visited.assign(static_cast<size_t>(w) * h, 0);
 			frontier.clear(); // queue of flattened indices, drained by head.
 
@@ -78,7 +68,7 @@ namespace Cortex
 					const size_t idx = static_cast<size_t>(ny) * w + nx;
 					if (visited[idx])
 						continue;
-					if (!map.isHardSpaceForGroundUnit(nx, ny, canSwim, me))
+					if (!isHardSpaceForGroundUnit(map,nx, ny, canSwim, me))
 						continue;
 					visited[idx] = 1;
 					frontier.push_back(static_cast<int>(idx));
@@ -92,11 +82,11 @@ namespace Cortex
 					// Probe shore resources before the radius and passability gates:
 					// harvestable algae can sit beside reachable ground.
 					if(algaeAdjacent!=NULL && !*algaeAdjacent
-					   && map.isMaterialTakeable(nx,ny,MaterialId::Algae)
-					   && map.isMapDiscovered(nx,ny,team->allies))*algaeAdjacent=true;
-					if(map.warpDistMax(cx,cy,nx,ny)>R)return;
+					   && MapState::hasMaterial(map.state(),map.tileIndex(nx,ny),MaterialId::Algae)
+					   && isMapDiscovered(map,nx,ny,team->allies))*algaeAdjacent=true;
+					if(warpDistMax(map,cx,cy,nx,ny)>R)return;
 					const size_t idx=static_cast<size_t>(ny)*w+nx;
-					if(visited[idx] || !map.isHardSpaceForGroundUnit(nx,ny,canSwim,me))return;
+					if(visited[idx] || !isHardSpaceForGroundUnit(map,nx,ny,canSwim,me))return;
 					visited[idx]=1;frontier.push_back(static_cast<int>(idx));
 				});
 			count=static_cast<int>(frontier.size());
@@ -104,7 +94,7 @@ namespace Cortex
 		}
 	} // namespace
 
-	SwimAssessment assessSwim(Player* player, bool wantSwimReach)
+	SwimAssessment assessSwimWorld(const AIEngine::AIWorldView* game, const AIEngine::TeamView* team, QueryScratch& scratch, const PlanningIntent& intents, std::ostream* diagnostics, bool wantSwimReach)
 	{
 		SwimAssessment out;
 		out.algaeDiscovered = 0;
@@ -112,15 +102,15 @@ namespace Cortex
 		out.waterReach = 0;
 		out.algaeReachable = 0;
 
-		if (player == NULL || player->team == NULL)
+		if (!game || !team)
 			return out;
-		Team* team = player->team;
-		Game* game = team->game;
+
+
 		if (game == NULL)
 			return out;
-		Map& map = game->map;
-		const int w = map.getW();
-		const int h = map.getH();
+		const auto& map = *game;
+		const int w = map.width;
+		const int h = map.height;
 
 		// (1) Algae: any takeable ALGA tile we have legitimately discovered. Algae
 		// grows on water and is harvestable only by swimmers, so a revealed algae
@@ -129,8 +119,8 @@ namespace Cortex
 		// Only existence matters, so visit adjacent tiles in storage order.
 		for (int y = 0; y < h && out.algaeDiscovered == 0; y++)
 			for (int x = 0; x < w; x++)
-				if (map.isMaterialTakeable(x, y,MaterialId::Algae)
-				 && map.isMapDiscovered(x, y, team->allies))
+				if (MapState::hasMaterial(map.state(),map.tileIndex(x,y),MaterialId::Algae)
+				 && isMapDiscovered(map,x, y, team->allies))
 				{
 					out.algaeDiscovered = 1;
 					break;
@@ -142,15 +132,15 @@ namespace Cortex
 		// nothing to anchor on (and the reach signal is meaningless), so leave both
 		// counts at 0 (the policy's reach-expansion gate then never fires).
 		int anchorX = -1, anchorY = -1;
-		for (int i = 0; i < Building::MAX_COUNT; i++)
+		for (int i = 0; i < ::Building::MAX_COUNT; i++)
 		{
-			Building* b = team->myBuildings[i];
-			if (b == NULL || b->buildingState == Building::DEAD)
+			const AIEngine::BuildingView* b = game->buildingSlots(team->number)[i];
+			if (b == NULL || b->buildingState == ::Building::DEAD)
 				continue;
-			if (b->type != NULL && b->type->isVirtual)
+			if (buildingType(*game,*b) != NULL && buildingType(*game,*b)->isVirtual)
 				continue; // flags occupy no ground; not a colony anchor.
-			anchorX = b->posX;
-			anchorY = b->posY;
+			anchorX = plannedX(intents,*b);
+			anchorY = plannedY(intents,*b);
 			break;
 		}
 		if (anchorX < 0)
@@ -160,7 +150,7 @@ namespace Cortex
 		// any discovered algae is harvestable from shore (algaeReachable) — the signal the
 		// school gate needs at every stage of the game.
 		bool algaeAdjacent = false;
-		out.landReach = countReach(map, team, anchorX, anchorY, /*canSwim=*/false,
+		out.landReach = countReach(map, scratch, team, anchorX, anchorY, /*canSwim=*/false,
 		                           &algaeAdjacent);
 		out.algaeReachable = algaeAdjacent ? 1 : 0;
 
@@ -168,7 +158,7 @@ namespace Cortex
 		// swimming-pool decision, which never re-fires once a pool exists — so the caller
 		// skips this second fill in that case to bound observation cost.
 		if (wantSwimReach)
-			out.waterReach = countReach(map, team, anchorX, anchorY, /*canSwim=*/true);
+			out.waterReach = countReach(map, scratch, team, anchorX, anchorY, /*canSwim=*/true);
 		return out;
 	}
 
@@ -182,13 +172,13 @@ namespace Cortex
 		// unweighted 8-connected grid is visitation-order independent, so no tie-break
 		// is needed for determinism. Warp-safe via Map normalization; no floats / RNG /
 		// std::set. Unbounded (whole map) — unlike countReach's radius-bounded fill.
-		void bfsGroundField(Map& map, Uint32 me, int seedX, int seedY, bool canSwim,
+		void bfsGroundField(const AIEngine::AIWorldView& map, QueryScratch& scratch, Uint32 me, int seedX, int seedY, bool canSwim,
 		                    std::vector<int>& dist)
 		{
-			const int w = map.getW();
-			const int h = map.getH();
+			const int w = map.width;
+			const int h = map.height;
 			dist.assign(static_cast<size_t>(w) * h, -1);
-			std::vector<int>& frontier = waterScratch.frontier;
+			std::vector<int>& frontier = scratch.water.frontier;
 			frontier.clear(); // queue of flattened indices, drained by head.
 
 			for (int dy = -1; dy <= 1; dy++)
@@ -201,7 +191,7 @@ namespace Cortex
 					const size_t idx = static_cast<size_t>(ny) * w + nx;
 					if (dist[idx] >= 0)
 						continue;
-					if (!map.isHardSpaceForGroundUnit(nx, ny, canSwim, me))
+					if (!isHardSpaceForGroundUnit(map,nx, ny, canSwim, me))
 						continue;
 					dist[idx] = 1;
 					frontier.push_back(static_cast<int>(idx));
@@ -212,7 +202,7 @@ namespace Cortex
 				[&](int current,int px,int py) {
 					const int nx=map.normalizeX(px),ny=map.normalizeY(py);
 					const size_t idx=static_cast<size_t>(ny)*w+nx;
-					if(dist[idx]>=0 || !map.isHardSpaceForGroundUnit(nx,ny,canSwim,me))return;
+					if(dist[idx]>=0 || !isHardSpaceForGroundUnit(map,nx,ny,canSwim,me))return;
 					dist[idx]=dist[current]+1;frontier.push_back(static_cast<int>(idx));
 				});
 		}
@@ -222,9 +212,9 @@ namespace Cortex
 		// field), so we read its 8-neighbourhood — the same "reached when BFS touches
 		// any 8-adjacent tile" trick countReach uses for its anchor. -1 when none of
 		// the 8 neighbours was reached (the target's land region is unreachable).
-		int distToTarget(Map& map, const std::vector<int>& dist, int tx, int ty)
+		int distToTarget(const AIEngine::AIWorldView& map, const std::vector<int>& dist, int tx, int ty)
 		{
-			const int w = map.getW();
+			const int w = map.width;
 			int best = -1;
 			for (int dy = -1; dy <= 1; dy++)
 				for (int dx = -1; dx <= 1; dx++)
@@ -245,35 +235,35 @@ namespace Cortex
 		// a virtual-building skip) so the landing-zone swim ranking measures from the same
 		// muster origin the offense pipeline gathers at. Returns false when the team has
 		// no building.
-		bool rallyTile(const Team* team, int& rx, int& ry)
+		bool rallyTile(const AIEngine::AIWorldView* game, const AIEngine::TeamView* team, const PlanningIntent& intents, int& rx, int& ry)
 		{
-			Building* fallback = NULL;
-			for (int i = 0; i < Building::MAX_COUNT; i++)
+			const AIEngine::BuildingView* fallback = NULL;
+			for (int i = 0; i < ::Building::MAX_COUNT; i++)
 			{
-				Building* b = team->myBuildings[i];
-				if (b == NULL || b->buildingState == Building::DEAD)
+				const AIEngine::BuildingView* b = game->buildingSlots(team->number)[i];
+				if (b == NULL || b->buildingState == ::Building::DEAD)
 					continue;
 				if (fallback == NULL)
 					fallback = b;
-				if (b->type != NULL
-				 && Cortex::servesRole(*b->owner->game, *b->type, Cortex::CORTEX_BUILD_SWARM))
+				if (buildingType(*game,*b) != NULL
+				 && Cortex::servesRole(*game, *buildingType(*game,*b), Cortex::CORTEX_BUILD_SWARM))
 				{
-					rx = b->posX;
-					ry = b->posY;
+					rx = plannedX(intents,*b);
+					ry = plannedY(intents,*b);
 					return true;
 				}
 			}
 			if (fallback != NULL)
 			{
-				rx = fallback->posX;
-				ry = fallback->posY;
+				rx = plannedX(intents,*fallback);
+				ry = plannedY(intents,*fallback);
 				return true;
 			}
 			return false;
 		}
 	} // namespace
 
-	AmphibiousAssessment assessAmphibious(Player* player, int targetX, int targetY,
+	AmphibiousAssessment assessAmphibiousWorld(const AIEngine::AIWorldView* game, const AIEngine::TeamView* team, QueryScratch& scratch, const PlanningIntent& intents, std::ostream* diagnostics, int targetX, int targetY,
 	                                      const Sint32* standoffX, const Sint32* standoffY,
 	                                      int standoffCount, int landingStandoffTiles,
 	                                      int forwardRallyPathDist)
@@ -289,27 +279,27 @@ namespace Cortex
 		out.forwardRallyX     = -1;
 		out.forwardRallyY     = -1;
 
-		if (player == NULL || player->team == NULL)
+		if (!game || !team)
 			return out;
-		Team* team = player->team;
-		Game* game = team->game;
+
+
 		if (game == NULL)
 			return out;
-		Map& map = game->map;
-		const Uint32 me = team->me;
-		const int w = map.getW();
-		const int h = map.getH();
+		const auto& map = *game;
+		const Uint32 me = team->mask;
+		const int w = map.width;
+		const int h = map.height;
 
 		int rallyX = -1, rallyY = -1;
-		if (!rallyTile(team, rallyX, rallyY))
+		if (!rallyTile(game,team,intents, rallyX, rallyY))
 			return out; // no colony anchor to march from.
 
 		// Two full-map BFS from the rally: the LAND path (water blocks) and the SWIM
 		// path (water passes). Each distance is measured to the target's 8-neighbourhood.
-		std::vector<int>& landField = waterScratch.land;
-		std::vector<int>& swimField = waterScratch.swim;
-		bfsGroundField(map, me, rallyX, rallyY, /*canSwim=*/false, landField);
-		bfsGroundField(map, me, rallyX, rallyY, /*canSwim=*/true,  swimField);
+		std::vector<int>& landField = scratch.water.land;
+		std::vector<int>& swimField = scratch.water.swim;
+		bfsGroundField(map, scratch, me, rallyX, rallyY, /*canSwim=*/false, landField);
+		bfsGroundField(map, scratch, me, rallyX, rallyY, /*canSwim=*/true,  swimField);
 		out.landDist = distToTarget(map, landField, targetX, targetY);
 		out.swimDist = distToTarget(map, swimField, targetX, targetY);
 
@@ -323,8 +313,8 @@ namespace Cortex
 		// counts (and how much of the swim field is actually water) alongside the two
 		// distances. Locked-equal distances with a large swimWater count means the
 		// shortest route genuinely gains nothing from water (e.g. a resource-walled
-		// approach), not that the swim toggle is broken. Pure read -> stderr.
-		if (getenv("CORTEX_DUMP_AMPHIB"))
+		// approach), not that the swim toggle is broken. Pure read -> invocation-owned diagnostic buffer.
+		if (getenv("CORTEX_DUMP_AMPHIB") && diagnostics)
 		{
 			int landReached = 0, swimReached = 0, swimWater = 0;
 			for (int y = 0; y < h; y++)
@@ -336,11 +326,11 @@ namespace Cortex
 					if (swimField[idx] >= 0)
 					{
 						swimReached++;
-						if (map.terrainPropertiesAt(x, y).swimmable)
+						if (terrainPropertiesAt(map,x, y).swimmable)
 							swimWater++;
 					}
 				}
-			std::cerr << "CORTEX_AMPHIB rally=" << rallyX << "," << rallyY
+			(*diagnostics) << "CORTEX_AMPHIB rally=" << rallyX << "," << rallyY
 			          << " tgt=" << targetX << "," << targetY
 			          << " landDist=" << out.landDist << " swimDist=" << out.swimDist
 			          << " landReached=" << landReached
@@ -361,8 +351,8 @@ namespace Cortex
 			// target over land (canSwim=false) — each tile's true path distance to
 			// the target, the "how far forward is this tile" metric the staging
 			// selection minimizes.
-			std::vector<int>& targetLand = waterScratch.target;
-			bfsGroundField(map, me, targetX, targetY, /*canSwim=*/false, targetLand);
+			std::vector<int>& targetLand = scratch.water.target;
+			bfsGroundField(map, scratch, me, targetX, targetY, /*canSwim=*/false, targetLand);
 
 			// Corridor scan. A staging tile must be reachable from the rally by LAND
 			// (the marchers can't swim) and from the target's side (targetLand). Rank:
@@ -403,7 +393,7 @@ namespace Cortex
 					// bound the landing zone keeps).
 					bool tooClose = false;
 					for (int s = 0; s < standoffCount && !tooClose; s++)
-						if (map.warpDistMax(x, y, standoffX[s], standoffY[s]) < landingStandoffTiles)
+						if (warpDistMax(map,x, y, standoffX[s], standoffY[s]) < landingStandoffTiles)
 							tooClose = true;
 					if (tooClose)
 						continue;
@@ -426,20 +416,20 @@ namespace Cortex
 				out.forwardRallyY = chosen / w;
 			}
 			// DIAGNOSTIC (gated): the staging pick alongside the trigger inputs.
-			if (getenv("CORTEX_DUMP_AMPHIB"))
+			if (getenv("CORTEX_DUMP_AMPHIB") && diagnostics)
 			{
-				std::cerr << "CORTEX_FWDRALLY tgt=" << targetX << "," << targetY
+				(*diagnostics) << "CORTEX_FWDRALLY tgt=" << targetX << "," << targetY
 				          << " landDist=" << out.landDist
 				          << " pathKnob=" << forwardRallyPathDist
 				          << " rally=";
 				if (out.forwardRallyValid)
-					std::cerr << out.forwardRallyX << "," << out.forwardRallyY
+					(*diagnostics) << out.forwardRallyX << "," << out.forwardRallyY
 					          << " tgtD=" << ((bestIdx >= 0) ? bestTgt : bestTgtAny)
 					          << " rallyD=" << ((bestIdx >= 0) ? bestRally : bestRallyAny)
 					          << " standoffOk=" << (bestIdx >= 0 ? 1 : 0);
 				else
-					std::cerr << "none";
-				std::cerr << "\n";
+					(*diagnostics) << "none";
+				(*diagnostics) << "\n";
 			}
 			return out;
 		}
@@ -448,8 +438,8 @@ namespace Cortex
 		// Third BFS (amphibious branch only): the TARGET's own land COMPONENT (canSwim=
 		// false reachable set from the target). The landing zone must sit in it — that is
 		// the land the swimmers climb out onto and then walk to the enemy.
-		std::vector<int>& targetLand = waterScratch.target;
-		bfsGroundField(map, me, targetX, targetY, /*canSwim=*/false, targetLand);
+		std::vector<int>& targetLand = scratch.water.target;
+		bfsGroundField(map, scratch, me, targetX, targetY, /*canSwim=*/false, targetLand);
 
 		// Scan the component for shore tiles (8-adjacent to a water tile — where a
 		// swimmer leaves the water). Track two bests: one that clears the standoff and,
@@ -473,7 +463,7 @@ namespace Cortex
 					{
 						if (dx == 0 && dy == 0)
 							continue;
-						if (map.terrainPropertiesAt(x + dx, y + dy).swimmable)
+						if (terrainPropertiesAt(map,x + dx, y + dy).swimmable)
 							shore = true;
 					}
 				if (!shore)
@@ -491,7 +481,7 @@ namespace Cortex
 				// form up out of shelling range before pushing inland.
 				bool tooClose = false;
 				for (int s = 0; s < standoffCount && !tooClose; s++)
-					if (map.warpDistMax(x, y, standoffX[s], standoffY[s]) < landingStandoffTiles)
+					if (warpDistMax(map,x, y, standoffX[s], standoffY[s]) < landingStandoffTiles)
 						tooClose = true;
 				if (tooClose)
 					continue;
@@ -512,4 +502,21 @@ namespace Cortex
 		out.landingY = chosen / w;
 		return out;
 	}
+}
+
+namespace Cortex {
+SwimAssessment assessSwim(::Player* player,bool swim)
+{
+    if(!player || !player->team)return {};
+    const auto view=AIEngine::AIWorldView::capture(*player->game, AIEngine::AIWorldView::captureCatalog(*player->game));
+    QueryScratch scratch; PlanningIntent intents;
+    return assessSwimWorld(view.get(),&view->teams[player->teamNumber],scratch,intents,&std::cerr,swim);
+}
+AmphibiousAssessment assessAmphibious(::Player* player,int x,int y,const Sint32* sx,const Sint32* sy,int count,int standoff,int distance)
+{
+    if(!player || !player->team)return {};
+    const auto view=AIEngine::AIWorldView::capture(*player->game, AIEngine::AIWorldView::captureCatalog(*player->game));
+    QueryScratch scratch; PlanningIntent intents;
+    return assessAmphibiousWorld(view.get(),&view->teams[player->teamNumber],scratch,intents,&std::cerr,x,y,sx,sy,count,standoff,distance);
+}
 }

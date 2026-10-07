@@ -275,11 +275,11 @@ void GameGUI::handleMenuClickBuildingSelection(int mx, int my, int button)
 		if ((my>startY) && (my<endY))
 		{
 			int r = (my-startY)/YOFFSET_TEXT_PARA;
-			Uint32 nextRecv = selBuild->receiveResourceMask;
-			Uint32 nextSend = selBuild->sendResourceMask;
+			Uint32 nextRecv = selBuild->receiveMaterialMask;
+			Uint32 nextSend = selBuild->sendMaterialMask;
 			if ((lmx>92) && (lmx<104))
 			{
-				if (selBuild->receiveResourceMask & (1<<r))
+				if (selBuild->receiveMaterialMask & (1<<r))
 				{
 					nextRecv &= ~(1<<r);
 				}
@@ -293,7 +293,7 @@ void GameGUI::handleMenuClickBuildingSelection(int mx, int my, int button)
 
 			if ((lmx>110) && (lmx<122))
 			{
-				if (selBuild->sendResourceMask & (1<<r))
+				if (selBuild->sendMaterialMask & (1<<r))
 				{
 					nextSend &= ~(1<<r);
 				}

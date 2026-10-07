@@ -27,21 +27,21 @@ void MaterialTracker::tick()
 	timer = (timer == std::numeric_limits<int>::max()) ? 0 : timer + 1;
 	if((timer%AI_SHARED_RUNTIME_TRACKER_SAMPLE_INTERVAL_TICKS)==0)
 	{
-		Building* b = runtime.get_building_register().get_building(building_id);
+		const AIEngine::BuildingView* b = runtime.get_building_register().get_building(building_id);
 		if (!b) return;
 		if(material==RecurringInputStock) {
    int amount=0;
-   const auto& semantics=b->type->semantics;
+   const auto& semantics=AIEngine::ObservationQueries::buildingType(runtime.observation(),*b).semantics;
    unsigned inputs=semantics.feeding.enabled ? semantics.feeding.costMask : 0;
    for(const auto& recipe:semantics.production.recipes)
     if(recipe.enabled) inputs|=recipe.costMask;
    while(inputs) {
     const unsigned input=std::countr_zero(inputs);
-    amount+=b->materials[input];
+    amount+=runtime.observation().buildingResources(*b)[input];
     inputs&=inputs-1;
    }
    record[position]=amount;
-  } else record[position]=b->materials[material];
+  } else record[position]=runtime.observation().buildingResources(*b)[material];
 		position++;
 		if(position>=record.size())
 			position=0;

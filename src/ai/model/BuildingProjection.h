@@ -14,7 +14,7 @@ enum Channel { Production, Feeding, Healing, Walking, Swimming, CombatTraining,
     Education, ProjectileDefense, Exploration, WarriorAttraction, WorkerAttraction,
     PassiveGround, Exchange, Count };
 
-inline const BuildingType& completed(const BuildingsTypes& catalog,const BuildingType& type)
+template<class Catalog> inline const BuildingType& completed(const Catalog& catalog,const BuildingType& type)
 {
     return type.isBuildingSite && type.nextLevel>=0 ? *catalog.get(type.nextLevel) : type;
 }
@@ -27,9 +27,9 @@ inline bool trainsWarriorCombat(const BuildingType& type)
     }
     return false;
 }
-inline int channel(const BuildingsTypes& catalog,const BuildingType& input)
+inline int channelCompleted(const BuildingType& type)
 {
-    const auto& type=completed(catalog,input);const auto& s=type.semantics;
+    const auto& s=type.semantics;
     const bool seats=type.maxUnitInside>0;
     auto training=[&](int ability){return seats && s.training[ability].enabled && (s.training[ability].unitMask&s.admittedUnitMask);};
     if(s.production.enabledUnitMask)return Production;
@@ -47,6 +47,8 @@ inline int channel(const BuildingsTypes& catalog,const BuildingType& input)
     if((s.market.interTeamFruitExchange || type.runtimeSuppliesDirectStock) || type.runtimeSuppliesStock)return Exchange;
     return s.occupiesGround ? PassiveGround : -1;
 }
+template<class Catalog> inline int channel(const Catalog& catalog,const BuildingType& input)
+{ return channelCompleted(completed(catalog,input)); }
 inline std::vector<int> channels(const BuildingsTypes& catalog)
 {
     std::vector<int> result;result.reserve(catalog.size());

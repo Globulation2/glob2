@@ -8,10 +8,12 @@
 #include "CortexPlacement.h"
 #include "CortexFoodAvailability.h"
 #include "CortexHardSpaceView.h"
+#include "ai/observation/AIWorldView.h"
 #include <nlohmann/json.hpp>
 #include <algorithm>
 #include <cstdio>
 #include <cstdlib>
+#include <limits>
 
 namespace
 {
@@ -24,7 +26,10 @@ static unsigned compare(Game& game)
 {
     unsigned checks = 0;
     auto* team = game.teams[0];
-    Cortex::PlacementGeometry snapshot(team, game.map);
+    const auto captured=AIEngine::AIWorldView::capture(game, AIEngine::AIWorldView::captureCatalog(game));
+    Cortex::PlanningIntent intents;
+    const auto* observedTeam=&captured->teams[0];
+    Cortex::PlacementGeometry snapshot(observedTeam,*captured,intents);
     // Compare the mask against the independent per-building distance query,
     // including footprints/radii that wrap or cover the whole map.
     for (int w : {1, 2, 6, 20})
@@ -48,11 +53,11 @@ static unsigned compare(Game& game)
                 for (int h : {0, 1, 2, 3, 4, 6})
                 {
                     require(snapshot.candidateCrowdsInn(x,y,w,h) ==
-                        Cortex::candidateCrowdsInn(&game,team,game.map,x,y,w,h));
+                        Cortex::candidateCrowdsInn(captured.get(),observedTeam,intents,*captured,x,y,w,h));
                     require(snapshot.candidateOverlapsReservedExpansion(x,y,w,h) ==
-                        Cortex::candidateOverlapsReservedExpansion(&game,team,game.map,x,y,w,h));
+                        Cortex::candidateOverlapsReservedExpansion(captured.get(),observedTeam,intents,*captured,x,y,w,h));
                     require(snapshot.distanceToNearestBuilding(x,y) ==
-                        Cortex::distanceToNearestBuilding(&game,team,x,y));
+                        Cortex::distanceToNearestBuilding(captured.get(),observedTeam,intents,x,y));
                     int edge = -1, swarm = -1, inn = -1;
                     for (int i=0;i<Building::MAX_COUNT;++i)
                     {
@@ -62,8 +67,8 @@ static unsigned compare(Game& game)
                             b->posY,b->type->height,game.map.getW(),game.map.getH());
                         if (edge<0 || gap<edge) edge=gap;
                         const int distance=game.map.warpDistMax(x,y,b->posX,b->posY);
-                        if (Cortex::servesRole(game,*b->type,Cortex::CORTEX_BUILD_SWARM) && (swarm<0 || distance<swarm)) swarm=distance;
-                        if (Cortex::servesRole(game,*b->type,Cortex::CORTEX_BUILD_FOOD) && (inn<0 || distance<inn)) inn=distance;
+                        if (Cortex::servesRole(*captured,*b->type,Cortex::CORTEX_BUILD_SWARM) && (swarm<0 || distance<swarm)) swarm=distance;
+                        if (Cortex::servesRole(*captured,*b->type,Cortex::CORTEX_BUILD_FOOD) && (inn<0 || distance<inn)) inn=distance;
                     }
                     require(snapshot.nearestBuildingEdgeDist(x,y,w,h)==edge);
                     require(snapshot.distanceToNearestBuildingType(x,y,IntBuildingType::SWARM_BUILDING)==swarm);
@@ -76,6 +81,28 @@ static unsigned compare(Game& game)
 
 TEST_SUITE("CortexGeometry")
 {
+    TEST_CASE("snapshot distances preserve wrapped inputs and discovery never bypasses legality")
+    {
+        glob2test::HeadlessGlobals globals;
+        glob2test::HeadlessGame fixture{glob2test::GameOptions{.wDec=5, .hDec=5, .teams=1, .discovered=true, .clearImmobile=true, .loadDefaultRace=true}};
+        auto& game=fixture.game;
+        auto captured=AIEngine::AIWorldView::capture(game, AIEngine::AIWorldView::captureCatalog(game));
+        Cortex::PlanningIntent intents;
+        const std::array coordinates{std::numeric_limits<int>::min(),-4097,-33,-1,0,1,31,32,4097,std::numeric_limits<int>::max()};
+        const auto axis=[](int a,int b,int period) {
+            auto wrap=[&](int v){int r=v%period;return r<0?r+period:r;};
+            int delta=std::abs(wrap(a)-wrap(b));return std::min(delta,period-delta);
+        };
+        for(int x:coordinates)for(int y:coordinates)for(int xx:coordinates)for(int yy:coordinates)
+            CHECK(Cortex::warpDistMax(*captured,x,y,xx,yy)==std::max(axis(x,xx,32),axis(y,yy,32)));
+        auto type=*game.buildingsTypes.get(game.buildingsTypes.getTypeNum("inn",0,false));
+        type.width=2;type.height=2;type.isVirtual=false;
+        CHECK(Cortex::checkRoomForBuilding(*captured,10,10,&type,0,intents));
+        game.map.setBuilding(11,11,1,1,Building::GIDfrom(0,7));
+        captured=AIEngine::AIWorldView::capture(game, AIEngine::AIWorldView::captureCatalog(game));
+        CHECK_FALSE(Cortex::checkRoomForBuilding(*captured,10,10,&type,0,intents));
+    }
+
 	TEST_CASE("placement geometry matches the tile-scan oracle")
 	{
 		glob2test::HeadlessGlobals globals;
@@ -96,13 +123,22 @@ TEST_SUITE("CortexGeometry")
 	    auto* pool = add(2,9,IntBuildingType::SWIMSPEED_BUILDING,0,false);
 	    add(10,2,IntBuildingType::WALKSPEED_BUILDING,1,false);
 	    checks += compare(game);
-	    auto* previousType = pool->type;
-	    pool->type = nullptr;
-	    checks += compare(game);
-	    pool->type = globals->buildingsTypes.get(globals->buildingsTypes.getTypeNum(
-	        IntBuildingType::reverseConversionMap[IntBuildingType::SWARM_BUILDING], 0, false));
-	    checks += compare(game);
-	    pool->type = previousType;
+        const auto previousTypeNum = pool->typeNum;
+        auto* previousType = pool->type;
+        // An absent entity is omitted by both the live oracle and extraction.
+        // A null type pointer is not a valid serialized simulation state.
+        const auto slot = Building::GIDtoID(pool->gid);
+        game.teams[0]->myBuildings[slot] = nullptr;
+        game.teams[0]->rebuildLiveLists();
+        checks += compare(game);
+        game.teams[0]->myBuildings[slot] = pool;
+        game.teams[0]->rebuildLiveLists();
+        pool->typeNum = game.buildingsTypes.getTypeNum(
+            IntBuildingType::reverseConversionMap[IntBuildingType::SWARM_BUILDING], 0, false);
+        pool->type = game.buildingsTypes.get(pool->typeNum);
+        checks += compare(game);
+        pool->typeNum = previousTypeNum;
+        pool->type = previousType;
 	    // Map-only occupants include other teams; corner tiles count on both sides.
 	    game.map.setBuilding(14,14,1,1,Building::GIDfrom(1,1));
 	    game.map.setBuilding(3,15,1,1,Building::GIDfrom(2,1));
@@ -139,7 +175,8 @@ TEST_CASE("placement food snapshot matches scalar stock queries and refreshes pe
     map.setMaterialAmount(map.coordToIndex(7,3),MaterialId::Food,0);
     map.setAreaMask(map.coordToIndex(0,0),&Tile::forbidden,~Uint32(0));
     const auto compare=[&] {
-        const Cortex::FoodAvailabilityView view(map);
+        const auto observed=AIEngine::AIWorldView::capture(game,AIEngine::AIWorldView::captureCatalog(game));
+        const Cortex::FoodAvailabilityView view(map.stateView());
         for(int y=-9;y<17;y+=3) for(int x=-17;x<34;x+=5) {
             for(int cap:{-1,0,1,4,20}) {
                 int expected=-1;
@@ -149,14 +186,14 @@ TEST_CASE("placement food snapshot matches scalar stock queries and refreshes pe
                         if(expected<0 || distance<expected) expected=distance;
                     }
                 CHECK(view.nearestDistance(x,y,cap)==expected);
-                CHECK(Cortex::nearestFoodSourceDistance(map,x,y,cap)==expected);
+                CHECK(Cortex::nearestFoodSourceDistance(*observed,x,y,cap)==expected);
             }
             for(int w:{0,1,3,19}) for(int h:{0,2,10}) for(int distance:{0,1,9}) {
                 bool expected=false;
                 for(int dy=-distance;dy<h+distance;++dy) for(int dx=-distance;dx<w+distance;++dx)
                     expected|=map.materialAmountAt(map.coordToIndex(x+dx,y+dy),MaterialId::Food)>0;
                 CHECK(view.anyWithin(x,y,w,h,distance)==expected);
-                CHECK(Cortex::anyFoodSourceWithin(map,x,y,w,h,distance)==expected);
+                CHECK(Cortex::anyFoodSourceWithin(*observed,x,y,w,h,distance)==expected);
             }
         }
         CHECK_FALSE(view.at(7,3)); // Other stock keeps this mixed deposit alive.
@@ -178,7 +215,7 @@ TEST_CASE("placement food snapshot matches toroidal scalar distances on thin map
         const auto food=map.resourceRegistry().find("wheat");
         REQUIRE(food.has_value());
         const auto compare=[&] {
-            const Cortex::FoodAvailabilityView view(map);
+            const Cortex::FoodAvailabilityView view(map.stateView());
             for(int y=-map.getH()-1;y<=map.getH()+1;++y)
                 for(int x=-map.getW()-1;x<=map.getW()+1;++x) {
                     int expected=-1;
@@ -220,7 +257,7 @@ TEST_CASE("lazy placement hard space matches canonical rectangles and refreshes 
         const auto building=map.resourceRegistry().find("test:building-only");
         REQUIRE(ground.has_value());REQUIRE(building.has_value());
         const auto compare=[&] {
-            Cortex::HardSpaceView view(map);
+            Cortex::HardSpaceView view(map.cellView());
             for(int y=-2;y<map.getH()+2;++y) for(int x=-2;x<map.getW()+2;++x)
                 for(int w:{0,1,3,19}) for(int h:{0,1,4,11})
                     CHECK(view.rectangle(x,y,w,h)==map.isHardSpaceForBuilding(x,y,w,h));
@@ -228,22 +265,22 @@ TEST_CASE("lazy placement hard space matches canonical rectangles and refreshes 
         compare();
         map.setResource(0,0,*ground,0);map.setGroundUnit(0,0,0);
         map.setAreaMask(map.coordToIndex(0,0),&Tile::forbidden,~Uint32(0));
-        {Cortex::HardSpaceView view(map);CHECK(view.at(0,0));} // Units, fog and paint ignored.
+        {Cortex::HardSpaceView view(map.cellView());CHECK(view.at(0,0));} // Units, fog and paint ignored.
         compare();
         map.setResource(0,0,*building,0);
-        {Cortex::HardSpaceView view(map);CHECK_FALSE(view.at(0,0));}
+        {Cortex::HardSpaceView view(map.cellView());CHECK_FALSE(view.at(0,0));}
         compare();
         // Restore the authored ground-blocking resource before adding occupancy;
         // the placement API correctly rejects it while the earlier unit remains.
         map.setGroundUnit(0,0,NOGUID);
         map.setResource(0,0,*ground,0);map.setBuilding(0,0,1,1,0);
-        {Cortex::HardSpaceView view(map);CHECK_FALSE(view.at(0,0));} // No ignored occupant.
+        {Cortex::HardSpaceView view(map.cellView());CHECK_FALSE(view.at(0,0));} // No ignored occupant.
         compare();
         map.setBuilding(0,0,1,1,NOGBID);map.setCellTerrain(0,0,WATER);
-        {Cortex::HardSpaceView view(map);CHECK_FALSE(view.at(0,0));}
+        {Cortex::HardSpaceView view(map.cellView());CHECK_FALSE(view.at(0,0));}
         compare();
         map.setCellTerrain(0,0,GRASS);
-        {Cortex::HardSpaceView view(map);CHECK(view.at(0,0));} // A fresh pass sees mutations.
+        {Cortex::HardSpaceView view(map.cellView());CHECK(view.at(0,0));} // A fresh pass sees mutations.
         compare();
     }
 }

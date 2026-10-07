@@ -226,11 +226,12 @@ bool loadMapBytes(Game &game, const std::string &bytes)
 std::uint64_t worldHash(const Game &game)
 {
 	std::uint64_t hash = kFnvOffset;
-	for (const auto &tile : game.map.getTiles())
+	for (std::size_t index=0; index<game.map.cellCount(); ++index)
 	{
+        const auto tile=game.map.getTile(index);
 		hash = fnv(hash, tile.terrain);
 		hash = fnv(hash, tile.resource.getUint64());
-		for (const auto stock : game.map.materialStocksAt(&tile - game.map.getTiles().data()))
+		for (const auto stock : game.map.materialStocksAt(index))
 			hash = fnv(hash, stock);
 		hash = fnv(hash, tile.fertility);
 		hash = fnv(hash, tile.canResourcesGrow);
@@ -367,7 +368,7 @@ void shiftTeams(Game &game, int shift)
 				building->seenByMask = mask(building->seenByMask);
 			}
 	}
-	for (size_t index = 0; index < game.map.getTiles().size(); ++index)
+	for (size_t index = 0; index < game.map.cellCount(); ++index)
 	{
 		auto tile = game.map.getTile(index);
 		tile.building = buildingGid(tile.building);

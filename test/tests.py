@@ -32,6 +32,11 @@ ENGINE_TESTS = [
     # SDL driver/device fixtures run in their own engine-test process.
     '#src/audio/SoundMixerTrackSelectionHarness.cpp',
     ('#src/ui/screens/MusicScreensTest.cpp', dict(cxxflags=['-fno-access-control'])),
+    '#src/ai/numbi/NumbiObservationTest.cpp',
+    ('#src/ai/warrush/WarrushObservationTest.cpp', dict(cxxflags=['-fno-access-control'])),
+    '#src/ai/engine/AIOrderSchedulerTest.cpp',
+    '#src/ai/engine/AIPipelineTest.cpp',
+    ('#src/engine/sim/snapshot/WorldSnapshotTest.cpp', dict(cxxflags=['-fno-access-control'])),
     ('#src/ai/LegacyAIStateTest.cpp', dict(cxxflags=['-fno-access-control'])),
     '#src/ai/AIStateContinuationTest.cpp',
     '#src/ai/BuildingCapabilitiesTest.cpp',
@@ -60,7 +65,7 @@ ENGINE_TESTS = [
     ('#src/ai/AIRulesTest.cpp', dict(cxxflags=['-fno-access-control'])),
     # Calls Cortex's and Numbi's private helpers to drive single offense decisions.
     ('#src/ai/telemetry/AITargetTelemetryTest.cpp', dict(cxxflags=['-fno-access-control'])),
-    '#src/ai/castor/CastorContinuationTest.cpp',
+    ('#src/ai/castor/CastorContinuationTest.cpp', dict(cxxflags=['-fno-access-control'])),
     '#src/ai/cortex/CortexNetCoverageTest.cpp',
     ('#src/ai/cortex/CortexActionCoverageTest.cpp', dict(cxxflags=['-fno-access-control'])),
     ('#src/ai/cortex/CortexPolicyCoverageTest.cpp', dict(cxxflags=['-fno-access-control'])),
@@ -114,7 +119,7 @@ ENGINE_TESTS = [
     '#src/unit/TrappedUnitLifecycleTest.cpp',
     '#src/unit/UnitContinuationHarness.cpp',
     'SavegameSafetyHarness.cpp',
-    'UntrustedFilesTest.cpp',
+    ('UntrustedFilesTest.cpp', dict(cxxflags=['-fno-access-control'])),
     ('TournamentCompatibilityTest.cpp', dict(cxxflags=['-fno-access-control'])),
     ('#src/ai/maxima/MaximaRelocationIntegrationTest.cpp', dict(cxxflags=['-fno-access-control'])),
     '#src/map/generator/CombGeneratorTest.cpp',
@@ -175,6 +180,7 @@ ENGINE_TESTS = [
     # Command-line harnesses whose modes became cases.
     '#src/game/screens/CustomGameSetupHarness.cpp',
     '#src/team/TeamLimitTest.cpp',
+    '#src/team/LiveSlotListTest.cpp',
     '#src/map/preview/MapPreviewHarness.cpp',
     ('#src/map/generator/MapGeneratorDefaultsTest.cpp', dict(cxxflags=['-fno-access-control'])),
 ]
@@ -348,6 +354,7 @@ UNIT_PRODUCTION_SOURCES = [
     '#src/audio/MusicStream.cpp',
     '#src/audio/MusicProducer.cpp',
     '#src/map/FertilityField.cpp',
+    '#src/engine/sim/snapshot/WorldSnapshot.cpp',
     '#src/map/Map.cpp',
     '#src/map/MapCells.cpp',
     '#src/map/MapResourceState.cpp',

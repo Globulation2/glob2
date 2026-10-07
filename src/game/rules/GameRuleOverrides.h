@@ -22,6 +22,7 @@ inline void applyGameRule(GameHeader& header, const std::string& item)
 		std::function<void(GameHeader&, int)> apply;
 	};
 	std::vector<Rule> rules = {
+		{"aiOrderDelay", 8, [](GameHeader& h, int v) { h.setAIOrderDelay(v); }},
 		{"noGrowth", 1, [](GameHeader& h, int v) { h.setResourceGrowthDisabled(v); }},
 		{"scarcity", 3, [](GameHeader& h, int v) { h.setResourceScarcityLevel(v); }},
 		{"instantConstruction", 1, [](GameHeader& h, int v) { h.setInstantConstructionEnabled(v); }},
@@ -76,7 +77,7 @@ inline std::vector<std::pair<std::string, int>> gameRuleValues(const GameHeader&
 		if(c->getType()==WCSuddenDeath) timer=int(static_cast<const WinningConditionSuddenDeath&>(*c).endStepTick);
 		if(c->getType()==WCWinProbability) probability=int(static_cast<const WinningConditionWinProbability&>(*c).thresholdPermille);
 	}
-	return {{"noGrowth", h.isResourceGrowthDisabled()}, {"scarcity", h.getResourceScarcityLevel()},
+	return {{"aiOrderDelay", h.getAIOrderDelay()}, {"noGrowth", h.isResourceGrowthDisabled()}, {"scarcity", h.getResourceScarcityLevel()},
 		{"instantConstruction", h.isInstantConstructionEnabled()}, {"stockpile", h.getStockpileStartLevel()},
 		{"noHunger", h.isHungerDisabled()}, {"noUpgrades", h.isUnitUpgradesDisabled()},
 		{"glassCannon", h.getGlassCannonLevel()}, {"fearless", h.isUnitsFearless()},

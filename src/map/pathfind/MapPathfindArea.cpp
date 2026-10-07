@@ -61,7 +61,7 @@ bool Map::pathfindArea(AreaKind kind, int teamNumber, int swimClass, int x, int 
 	const Uint16 here = gradient[index];
 	if (here <= GRADIENT_UNREACHABLE)
 		return false; // any existing area is too far away.
-	if (kind == AreaKind::Guard && (tiles[index].guardArea & teamMask)
+	if (kind == AreaKind::Guard && (areaCells[index].guard & teamMask)
 		&& game->gameHeader.hasExperiment(ExperimentId::GuardAreaBalancing))
 	{
 		// Guard-area balancing: crowded seeds sit below the goal, so another

@@ -16,6 +16,7 @@ class Frontier
   public:
 	bool empty() const { return count == 0; }
 	std::size_t capacity() const { return cells.size(); }
+	std::size_t retainedBytes() const noexcept { return cells.capacity() * sizeof(int); }
 	void clear() { head = count = 0; }
 	int front() const
 	{

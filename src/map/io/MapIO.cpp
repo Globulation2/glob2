@@ -144,13 +144,20 @@ try
 	displayedGuardAreaView.resize(size, false);
 	displayedClearAreaView.resize(size, false);
 	displayedFarmAreaView.resize(size, false);
-	tiles.resize(size);
+	resourceCells.resize(size);
+	occupancyCells.resize(size);
+	areaCells.resize(size);
+	legacyTerrain.resize(size);
+	scriptAreaCells.resize(size);
+	for (auto &cell : resourceCells) cell.mayGrow = 1;
+	for (auto &cell : occupancyCells) cell.immobileUnit = 255;
 	terrainIds.assign(size, GRASS);
+	resetChangeTracking();
+	refreshLiveView();
 	undermap = new Uint8[size];
 	listedAddr = new Uint8*[size];
 	aStarPoints=new AStarAlgorithmPoint[size];
-	immobileUnits = new Uint8[size];
-	memset(immobileUnits, 255, size*sizeof(Uint8));
+
 
 	// We read what's inside the map:
 	if (packed) GAGCore::PackedArray::read<Uint8>(stream,size,[&](size_t i,Uint8 v){undermap[i]=v;});
@@ -161,28 +168,28 @@ try
     if(packed)
     {
         GAGCore::PackedArray::read<Uint32>(stream,size,[&](size_t i,Uint32 v){mapDiscovered[i]=v;});
-        GAGCore::PackedArray::read<Uint16>(stream,size,[&](size_t i,Uint16 v){tiles[i].terrain=v;});
+        GAGCore::PackedArray::read<Uint16>(stream,size,[&](size_t i,Uint16 v){legacyTerrain[i]=v;});
         if (versionMinor >= FILE_FORMAT_VERSION_TERRAIN_PROPERTIES)
             GAGCore::PackedArray::read<Uint16>(stream,size,[&](size_t i,Uint16 v){ const auto id=remapTerrainId(v); if (!validTerrainType(id)) throw std::ios_base::failure("Unknown terrain identity"); terrainIds[i]=static_cast<TerrainType>(id); });
-        GAGCore::PackedArray::read<Uint16>(stream,size,[&](size_t i,Uint16 v){tiles[i].building=v;});
+        GAGCore::PackedArray::read<Uint16>(stream,size,[&](size_t i,Uint16 v){occupancyCells[i].building=v;});
         if (versionMinor>=FILE_FORMAT_VERSION_RUNTIME_RESOURCES)
-            GAGCore::PackedArray::read<Uint16>(stream,size,[&](size_t i,Uint16 v){tiles[i].resource.type=v;});
-        else GAGCore::PackedArray::read<Uint8>(stream,size,[&](size_t i,Uint8 v){tiles[i].resource.type=v==255 ? NO_RES_TYPE : v;});
-        GAGCore::PackedArray::read<Uint8>(stream,size,[&](size_t i,Uint8 v){tiles[i].resource.variety=v;});
+            GAGCore::PackedArray::read<Uint16>(stream,size,[&](size_t i,Uint16 v){resourceCells[i].resource.type=v;});
+        else GAGCore::PackedArray::read<Uint8>(stream,size,[&](size_t i,Uint8 v){resourceCells[i].resource.type=v==255 ? NO_RES_TYPE : v;});
+        GAGCore::PackedArray::read<Uint8>(stream,size,[&](size_t i,Uint8 v){resourceCells[i].resource.variety=v;});
         if (versionMinor>=FILE_FORMAT_VERSION_RUNTIME_RESOURCES)
-            GAGCore::PackedArray::read<Uint32>(stream,size,[&](size_t i,Uint32 v){tiles[i].resource.amount=v;});
-        else GAGCore::PackedArray::read<Uint8>(stream,size,[&](size_t i,Uint8 v){tiles[i].resource.amount=v;});
-        GAGCore::PackedArray::read<Uint8>(stream,size,[&](size_t i,Uint8 v){tiles[i].resource.animation=v;});
-        GAGCore::PackedArray::read<Uint16>(stream,size,[&](size_t i,Uint16 v){tiles[i].groundUnit=v;});
-        GAGCore::PackedArray::read<Uint16>(stream,size,[&](size_t i,Uint16 v){tiles[i].airUnit=v;});
-        GAGCore::PackedArray::read<Uint32>(stream,size,[&](size_t i,Uint32 v){tiles[i].forbidden=v;});
-        GAGCore::PackedArray::read<Uint32>(stream,size,[&](size_t i,Uint32 v){tiles[i].guardArea=v;});
-        GAGCore::PackedArray::read<Uint32>(stream,size,[&](size_t i,Uint32 v){tiles[i].clearArea=v;});
+            GAGCore::PackedArray::read<Uint32>(stream,size,[&](size_t i,Uint32 v){resourceCells[i].resource.amount=v;});
+        else GAGCore::PackedArray::read<Uint8>(stream,size,[&](size_t i,Uint8 v){resourceCells[i].resource.amount=v;});
+        GAGCore::PackedArray::read<Uint8>(stream,size,[&](size_t i,Uint8 v){resourceCells[i].resource.animation=v;});
+        GAGCore::PackedArray::read<Uint16>(stream,size,[&](size_t i,Uint16 v){occupancyCells[i].groundUnit=v;});
+        GAGCore::PackedArray::read<Uint16>(stream,size,[&](size_t i,Uint16 v){occupancyCells[i].airUnit=v;});
+        GAGCore::PackedArray::read<Uint32>(stream,size,[&](size_t i,Uint32 v){areaCells[i].forbidden=v;});
+        GAGCore::PackedArray::read<Uint32>(stream,size,[&](size_t i,Uint32 v){areaCells[i].guard=v;});
+        GAGCore::PackedArray::read<Uint32>(stream,size,[&](size_t i,Uint32 v){areaCells[i].clear=v;});
         if (versionMinor >= FILE_FORMAT_VERSION_FARM_AREA)
-            GAGCore::PackedArray::read<Uint32>(stream,size,[&](size_t i,Uint32 v){tiles[i].farmArea=v;});
-        GAGCore::PackedArray::read<Uint16>(stream,size,[&](size_t i,Uint16 v){tiles[i].scriptAreas=v;});
-        GAGCore::PackedArray::read<Uint8>(stream,size,[&](size_t i,Uint8 v){tiles[i].canResourcesGrow=v;});
-        GAGCore::PackedArray::read<Uint16>(stream,size,[&](size_t i,Uint16 v){tiles[i].fertility=v;});
+            GAGCore::PackedArray::read<Uint32>(stream,size,[&](size_t i,Uint32 v){areaCells[i].farm=v;});
+        GAGCore::PackedArray::read<Uint16>(stream,size,[&](size_t i,Uint16 v){scriptAreaCells[i]=v;});
+        GAGCore::PackedArray::read<Uint8>(stream,size,[&](size_t i,Uint8 v){resourceCells[i].mayGrow=v;});
+        GAGCore::PackedArray::read<Uint16>(stream,size,[&](size_t i,Uint16 v){resourceCells[i].fertility=v;});
     }
 	for (size_t i=0; i<size; i++)
 	{
@@ -190,11 +197,11 @@ try
 		stream->readEnterSection(i);
 		if (!packed) mapDiscovered[i] = stream->readUint32("mapDiscovered");
 
-		if (!packed) tiles[i].terrain = stream->readUint16("terrain");
+		if (!packed) legacyTerrain[i] = stream->readUint16("terrain");
 		if (versionMinor < FILE_FORMAT_VERSION_TERRAIN_PROPERTIES)
 		{
-			if (tiles[i].terrain >= 272) co_return false;
-			terrainIds[i] = legacyTerrainType(tiles[i].terrain);
+			if (legacyTerrain[i] >= 272) co_return false;
+			terrainIds[i] = legacyTerrainType(legacyTerrain[i]);
 		}
 		else
 		{
@@ -205,15 +212,15 @@ try
 				terrainIds[i] = static_cast<TerrainType>(id);
 			}
 			const auto& visual = terrainRegistry().compatibility(terrainIds[i]);
-			if (tiles[i].terrain < visual.firstFrame || tiles[i].terrain >= visual.firstFrame + visual.variants) co_return false;
+			if (legacyTerrain[i] < visual.firstFrame || legacyTerrain[i] >= visual.firstFrame + visual.variants) co_return false;
 		}
-		if (!packed) tiles[i].building = stream->readUint16("building");
-		if (tiles[i].building != NOGBID && tiles[i].building >= Building::MAX_COUNT * header.getNumberOfTeams())
+		if (!packed) occupancyCells[i].building = stream->readUint16("building");
+		if (occupancyCells[i].building != NOGBID && occupancyCells[i].building >= Building::MAX_COUNT * header.getNumberOfTeams())
 			co_return false;
 
         if (!packed)
         {
-            auto& r=tiles[i].resource;
+            auto& r=resourceCells[i].resource;
             if (versionMinor>=FILE_FORMAT_VERSION_RUNTIME_RESOURCES)
             {
                 r.type=stream->readUint16("resourceType");
@@ -228,9 +235,9 @@ try
                 r.variety=legacy[1]; r.amount=legacy[2]; r.animation=legacy[3];
             }
         }
-        if (tiles[i].resource.type==NO_RES_TYPE)
+        if (resourceCells[i].resource.type==NO_RES_TYPE)
         {
-            auto& r=tiles[i].resource;
+            auto& r=resourceCells[i].resource;
             // Historical clearing only changed the type byte. Unused stock and
             // animation bytes in supported saves are not a surviving deposit.
             if (versionMinor<FILE_FORMAT_VERSION_RUNTIME_RESOURCES) r.clear();
@@ -238,29 +245,29 @@ try
         }
         else
         {
-            const auto& r=tiles[i].resource;
+            const auto& r=resourceCells[i].resource;
             if (!resourceRegistry().valid(r.type)) throw std::ios_base::failure("Unknown saved resource");
             Uint32 maximum=0;
             for (const auto& y:resourceRegistry().yields(static_cast<ResourceId>(r.type))) maximum+=y.capacity;
             if (r.amount>maximum || (!r.amount && !resourcePropertiesByIndex(r.type).persistsWhenEmpty)) throw std::ios_base::failure("Invalid saved resource stock");
         }
-		if (!packed) tiles[i].groundUnit = stream->readUint16("groundUnit");
-		if (!packed) tiles[i].airUnit = stream->readUint16("airUnit");
-		if ((tiles[i].groundUnit != NOGUID && tiles[i].groundUnit >= Unit::MAX_COUNT * header.getNumberOfTeams()) ||
-			(tiles[i].airUnit != NOGUID && tiles[i].airUnit >= Unit::MAX_COUNT * header.getNumberOfTeams()))
+		if (!packed) occupancyCells[i].groundUnit = stream->readUint16("groundUnit");
+		if (!packed) occupancyCells[i].airUnit = stream->readUint16("airUnit");
+		if ((occupancyCells[i].groundUnit != NOGUID && occupancyCells[i].groundUnit >= Unit::MAX_COUNT * header.getNumberOfTeams()) ||
+			(occupancyCells[i].airUnit != NOGUID && occupancyCells[i].airUnit >= Unit::MAX_COUNT * header.getNumberOfTeams()))
 			co_return false;
-		if (!packed) tiles[i].forbidden = stream->readUint32("forbidden");
+		if (!packed) areaCells[i].forbidden = stream->readUint32("forbidden");
 		if(!packed && versionMinor < 62)
 			stream->readUint32("hiddenForbidden");
-		if (!packed) tiles[i].guardArea = stream->readUint32("guardArea");
-		if (!packed) tiles[i].clearArea = stream->readUint32("clearArea");
+		if (!packed) areaCells[i].guard = stream->readUint32("guardArea");
+		if (!packed) areaCells[i].clear = stream->readUint32("clearArea");
 		if (!packed && versionMinor >= FILE_FORMAT_VERSION_FARM_AREA)
-			tiles[i].farmArea = stream->readUint32("farmArea");
-		if (!packed) tiles[i].scriptAreas = stream->readUint16("scriptAreas");
-		if (!packed) tiles[i].canResourcesGrow = stream->readUint8("canRessourcesGrow");
+			areaCells[i].farm = stream->readUint32("farmArea");
+		if (!packed) scriptAreaCells[i] = stream->readUint16("scriptAreas");
+		if (!packed) resourceCells[i].mayGrow = stream->readUint8("canRessourcesGrow");
 		if(!packed && versionMinor >= 63)
-			tiles[i].fertility = stream->readUint16("fertility");
-		fertilityMaximum = std::max(fertilityMaximum, tiles[i].fertility);
+			resourceCells[i].fertility = stream->readUint16("fertility");
+		fertilityMaximum = std::max(fertilityMaximum, resourceCells[i].fertility);
 
 		stream->readLeaveSection();
 	}
@@ -268,8 +275,8 @@ try
 
     std::vector<Uint32> savedMultiTotals;
     if (versionMinor>=FILE_FORMAT_VERSION_RUNTIME_RESOURCES)
-        for (const auto& tile:tiles)
-            if (tile.resource.type!=NO_RES_TYPE && !std::has_single_bit(resourcePropertiesByIndex(tile.resource.type).materialMask)) savedMultiTotals.push_back(tile.resource.amount);
+        for (const auto& cell:resourceCells)
+            if (cell.resource.type!=NO_RES_TYPE && !std::has_single_bit(resourcePropertiesByIndex(cell.resource.type).materialMask)) savedMultiTotals.push_back(cell.resource.amount);
     rebuildResourceHabitats();
     rebuildResourceState();
     if (versionMinor>=FILE_FORMAT_VERSION_RUNTIME_RESOURCES)
@@ -288,16 +295,16 @@ try
             seen[i]=true;
             const auto before=resourceMaterialMaskAt(i);
             auto& stocks=resourceStocks[resourceStockIndices[i]-1];
-            const auto& yields=resourceRegistry().yields(static_cast<ResourceId>(tiles[i].resource.type));
+            const auto& yields=resourceRegistry().yields(static_cast<ResourceId>(resourceCells[i].resource.type));
             for (unsigned m=0;m<MaterialCount;++m)
             {
                 stream->readEnterSection(m); stocks[m]=stream->readUint16("stock"); stream->readLeaveSection();
                 if (stocks[m]>yields[m].capacity) throw std::ios_base::failure("Material stock exceeds capacity");
             }
             refreshResourceTotal(i);
-            if (tiles[i].resource.amount!=savedMultiTotals[resourceStockIndices[i]-1]) throw std::ios_base::failure("Inconsistent resource total stock");
+            if (resourceCells[i].resource.amount!=savedMultiTotals[resourceStockIndices[i]-1]) throw std::ios_base::failure("Inconsistent resource total stock");
             materialStockChanged(i,before);
-            if (!tiles[i].resource.amount && !resourcePropertiesByIndex(tiles[i].resource.type).persistsWhenEmpty) throw std::ios_base::failure("Empty finite resource");
+            if (!resourceCells[i].resource.amount && !resourcePropertiesByIndex(resourceCells[i].resource.type).persistsWhenEmpty) throw std::ios_base::failure("Empty finite resource");
             stream->readLeaveSection();
         }
         stream->readLeaveSection();
@@ -438,46 +445,46 @@ void Map::save(GAGCore::OutputStream *stream)
     if(GAGCore::PackedArray::binary(stream))
     {
         GAGCore::PackedArray::write<Uint32>(stream,size,[&](size_t i){return mapDiscovered[i];});
-        GAGCore::PackedArray::write<Uint16>(stream,size,[&](size_t i){return tiles[i].terrain;});
+        GAGCore::PackedArray::write<Uint16>(stream,size,[&](size_t i){return legacyTerrain[i];});
         GAGCore::PackedArray::write<Uint16>(stream,size,[&](size_t i){return static_cast<Uint16>(terrainIds[i]);});
-        GAGCore::PackedArray::write<Uint16>(stream,size,[&](size_t i){return tiles[i].building;});
-        GAGCore::PackedArray::write<Uint16>(stream,size,[&](size_t i){return tiles[i].resource.type;});
-        GAGCore::PackedArray::write<Uint8>(stream,size,[&](size_t i){return tiles[i].resource.variety;});
-        GAGCore::PackedArray::write<Uint32>(stream,size,[&](size_t i){return tiles[i].resource.amount;});
-        GAGCore::PackedArray::write<Uint8>(stream,size,[&](size_t i){return tiles[i].resource.animation;});
-        GAGCore::PackedArray::write<Uint16>(stream,size,[&](size_t i){return tiles[i].groundUnit;});
-        GAGCore::PackedArray::write<Uint16>(stream,size,[&](size_t i){return tiles[i].airUnit;});
-        GAGCore::PackedArray::write<Uint32>(stream,size,[&](size_t i){return tiles[i].forbidden;});
-        GAGCore::PackedArray::write<Uint32>(stream,size,[&](size_t i){return tiles[i].guardArea;});
-        GAGCore::PackedArray::write<Uint32>(stream,size,[&](size_t i){return tiles[i].clearArea;});
-        GAGCore::PackedArray::write<Uint32>(stream,size,[&](size_t i){return tiles[i].farmArea;});
-        GAGCore::PackedArray::write<Uint16>(stream,size,[&](size_t i){return tiles[i].scriptAreas;});
-        GAGCore::PackedArray::write<Uint8>(stream,size,[&](size_t i){return tiles[i].canResourcesGrow;});
-        GAGCore::PackedArray::write<Uint16>(stream,size,[&](size_t i){return tiles[i].fertility;});
+        GAGCore::PackedArray::write<Uint16>(stream,size,[&](size_t i){return occupancyCells[i].building;});
+        GAGCore::PackedArray::write<Uint16>(stream,size,[&](size_t i){return resourceCells[i].resource.type;});
+        GAGCore::PackedArray::write<Uint8>(stream,size,[&](size_t i){return resourceCells[i].resource.variety;});
+        GAGCore::PackedArray::write<Uint32>(stream,size,[&](size_t i){return resourceCells[i].resource.amount;});
+        GAGCore::PackedArray::write<Uint8>(stream,size,[&](size_t i){return resourceCells[i].resource.animation;});
+        GAGCore::PackedArray::write<Uint16>(stream,size,[&](size_t i){return occupancyCells[i].groundUnit;});
+        GAGCore::PackedArray::write<Uint16>(stream,size,[&](size_t i){return occupancyCells[i].airUnit;});
+        GAGCore::PackedArray::write<Uint32>(stream,size,[&](size_t i){return areaCells[i].forbidden;});
+        GAGCore::PackedArray::write<Uint32>(stream,size,[&](size_t i){return areaCells[i].guard;});
+        GAGCore::PackedArray::write<Uint32>(stream,size,[&](size_t i){return areaCells[i].clear;});
+        GAGCore::PackedArray::write<Uint32>(stream,size,[&](size_t i){return areaCells[i].farm;});
+        GAGCore::PackedArray::write<Uint16>(stream,size,[&](size_t i){return scriptAreaCells[i];});
+        GAGCore::PackedArray::write<Uint8>(stream,size,[&](size_t i){return resourceCells[i].mayGrow;});
+        GAGCore::PackedArray::write<Uint16>(stream,size,[&](size_t i){return resourceCells[i].fertility;});
     }
     else for (size_t i=0; i<size ;i++)
 	{
 		stream->writeEnterSection(i);
 		stream->writeUint32(mapDiscovered[i], "mapDiscovered");
 
-		stream->writeUint16(tiles[i].terrain, "terrain");
+		stream->writeUint16(legacyTerrain[i], "terrain");
 		stream->writeUint16(static_cast<Uint16>(terrainIds[i]), "terrainType");
-		stream->writeUint16(tiles[i].building, "building");
+		stream->writeUint16(occupancyCells[i].building, "building");
 		
-		stream->writeUint16(tiles[i].resource.type,"resourceType");
-        stream->writeUint8(tiles[i].resource.variety,"resourceVariety");
-        stream->writeUint32(tiles[i].resource.amount,"resourceStock");
-        stream->writeUint8(tiles[i].resource.animation,"resourceAnimation");
+		stream->writeUint16(resourceCells[i].resource.type,"resourceType");
+        stream->writeUint8(resourceCells[i].resource.variety,"resourceVariety");
+        stream->writeUint32(resourceCells[i].resource.amount,"resourceStock");
+        stream->writeUint8(resourceCells[i].resource.animation,"resourceAnimation");
 		
-		stream->writeUint16(tiles[i].groundUnit, "groundUnit");
-		stream->writeUint16(tiles[i].airUnit, "airUnit");
-		stream->writeUint32(tiles[i].forbidden, "forbidden");
-		stream->writeUint32(tiles[i].guardArea, "guardArea");
-		stream->writeUint32(tiles[i].clearArea, "clearArea");
-		stream->writeUint32(tiles[i].farmArea, "farmArea");
-		stream->writeUint16(tiles[i].scriptAreas, "scriptAreas");
-		stream->writeUint8(tiles[i].canResourcesGrow, "canRessourcesGrow");
-		stream->writeUint16(tiles[i].fertility, "fertility");
+		stream->writeUint16(occupancyCells[i].groundUnit, "groundUnit");
+		stream->writeUint16(occupancyCells[i].airUnit, "airUnit");
+		stream->writeUint32(areaCells[i].forbidden, "forbidden");
+		stream->writeUint32(areaCells[i].guard, "guardArea");
+		stream->writeUint32(areaCells[i].clear, "clearArea");
+		stream->writeUint32(areaCells[i].farm, "farmArea");
+		stream->writeUint16(scriptAreaCells[i], "scriptAreas");
+		stream->writeUint8(resourceCells[i].mayGrow, "canRessourcesGrow");
+		stream->writeUint16(resourceCells[i].fertility, "fertility");
 		stream->writeLeaveSection();
 	}
 	stream->writeLeaveSection();
@@ -586,8 +593,8 @@ void Map::removeTeam(void)
 		delete[] clearAreasGradient[t][s];
 		clearAreasGradient[t][s]=NULL;
 	}
+	rebuildPlaneRegistry();
 
-	
 	assert(exploredArea[t] != NULL);
 	delete[] exploredArea[t];
 	exploredArea[t]=NULL;
@@ -648,14 +655,14 @@ void Map::saveRuntimeState(GAGCore::OutputStream *stream) const
 	stream->writeEnterSection("cells");
     if(GAGCore::PackedArray::binary(stream))
     {
-        GAGCore::PackedArray::write<Uint8>(stream,size,[&](size_t i){return immobileUnits[i];});
+        GAGCore::PackedArray::write<Uint8>(stream,size,[&](size_t i){return occupancyCells[i].immobileUnit;});
         GAGCore::PackedArray::write<Uint32>(stream,size,[&](size_t i){return fogOfWarA[i];});
         GAGCore::PackedArray::write<Uint32>(stream,size,[&](size_t i){return fogOfWarB[i];});
     }
     else for (size_t i=0; i<size; ++i)
 	{
 		stream->writeEnterSection(i);
-		stream->writeUint8(immobileUnits[i], "immobileUnit");
+		stream->writeUint8(occupancyCells[i].immobileUnit, "immobileUnit");
 		stream->writeUint32(fogOfWarA[i], "fogA");
 		stream->writeUint32(fogOfWarB[i], "fogB");
 		stream->writeLeaveSection();
@@ -821,19 +828,21 @@ void Map::loadRuntimeState(GAGCore::InputStream *stream, Sint32 versionMinor)
 	stream->readEnterSection("cells");
     if(packed)
     {
-        GAGCore::PackedArray::read<Uint8>(stream,size,[&](size_t i,Uint8 v){immobileUnits[i]=v;});
+        GAGCore::PackedArray::read<Uint8>(stream,size,[&](size_t i,Uint8 v){occupancyCells[i].immobileUnit=v;});
         GAGCore::PackedArray::read<Uint32>(stream,size,[&](size_t i,Uint32 v){fogOfWarA[i]=v;});
         GAGCore::PackedArray::read<Uint32>(stream,size,[&](size_t i,Uint32 v){fogOfWarB[i]=v;});
     }
     else for (size_t i=0; i<size; ++i)
 	{
 		stream->readEnterSection(i);
-		immobileUnits[i]=stream->readUint8("immobileUnit");
+		occupancyCells[i].immobileUnit=stream->readUint8("immobileUnit");
 		fogOfWarA[i]=stream->readUint32("fogA");
 		fogOfWarB[i]=stream->readUint32("fogB");
 		stream->readLeaveSection();
 	}
 	stream->readLeaveSection();
+	// Immobile occupancy and both fog planes were replaced wholesale.
+	occupancyChanges.markAll(); visibilityChanges.markAll();
 	stream->readEnterSection("teams");
 	for (int t=0; t<game->teamsCount(); ++t)
 	{
@@ -1019,7 +1028,8 @@ void Map::loadRuntimeState(GAGCore::InputStream *stream, Sint32 versionMinor)
                 if (auto* building=game->teams[t]->myBuildings[b]) building->freeGradients();
         }
     }
-
+    // Loaded and discarded slots bypassed publishPlane.
+    rebuildPlaneRegistry();
 }
 
 

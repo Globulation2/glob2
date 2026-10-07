@@ -25,6 +25,7 @@
 #include "BinaryStream.h"
 #include "StreamBackend.h"
 #include "GameHeader.h"
+#include "FileFormatVersions.h"
 #include "Version.h"
 #include "BuildingType.h"
 #include <nlohmann/json.hpp>
@@ -54,6 +55,7 @@ GameHeader makeFixtureHeader()
 	header.setNumberOfPlayers(4);
 	header.setGameLatency(12);
 	header.setOrderRate(3);
+	header.setAIOrderDelay(8);
 	header.setRandomSeed(0xCAFEBABE);
 	header.setMapDiscovered(true);
 	header.setAllyTeamsFixed(true);
@@ -118,6 +120,7 @@ void testFullRoundTrip()
 	check(loaded.getNumberOfPlayers() == 4, "full: numberOfPlayers preserved");
 	check(loaded.getGameLatency() == 12, "full: gameLatency preserved");
 	check(loaded.getOrderRate() == 3, "full: orderRate preserved");
+	check(loaded.getAIOrderDelay() == 8, "full: AI order delay preserved");
 	for (int team = 0; team < Team::MAX_COUNT; ++team)
 		check(loaded.getAllyTeamNumber(team) == original.getAllyTeamNumber(team),
 		      "full: indexed alliance slots preserved");
@@ -205,22 +208,28 @@ void testBinaryHeaderFormsAndLegacy()
 		const size_t catalogBytes=4; // Empty catalog: zero chunk count (version136).
         const size_t resourceExperimentBytes=4; // Empty declaration count (version140).
 		if (form!=1) extension+=ruleBytes+experimentBytes+catalogBytes+resourceExperimentBytes;
-		memory->seekFromEnd(0);
-		const size_t legacySize=memory->getPosition()-extension;
-		auto *oldBytes=new MemoryStreamBackend(memory->getBuffer(),legacySize);
+        // Version 143 inserted delay after int32 latency and uint8 rate,
+        // before the existing payload. Older forms need that byte removed,
+        // not a shorter tail; player-info-only records never contain it.
+        memory->seekFromEnd(0);
+        std::string historical(memory->getBuffer(),memory->getPosition());
+        if(form!=1) historical.erase(5,1);
+		const size_t legacySize=historical.size()-extension;
+		auto *oldBytes=new MemoryStreamBackend(historical.data(),legacySize);
 		oldBytes->seekFromStart(0);
 		BinaryInputStream old(oldBytes);
 		loaded.setAIConfig(0,"stale");
 		const bool legacy=form==0 ? loaded.load(&old,100)
 			: form==1 ? loaded.loadPlayerInfo(&old,100) : loaded.loadWithoutPlayerInfo(&old,100);
-		check(legacy && loaded.getAIConfig(0).empty() && oldBytes->getPosition()==legacySize,
+		check(legacy && loaded.getAIConfig(0).empty() && oldBytes->getPosition()==legacySize
+            && (form==1 || loaded.getAIOrderDelay()==0),
 			"version 100 full/partial header loads without reading extension bytes");
 		if (form!=1)
 		{
 			// Version 101 ended before the custom-game rule bytes: its headers load
 			// exactly, with every rule off.
-			const size_t v101Size=memory->getPosition()-ruleBytes-experimentBytes-catalogBytes-resourceExperimentBytes;
-			auto *v101Bytes=new MemoryStreamBackend(memory->getBuffer(),v101Size);
+			const size_t v101Size=historical.size()-ruleBytes-experimentBytes-catalogBytes-resourceExperimentBytes;
+			auto *v101Bytes=new MemoryStreamBackend(historical.data(),v101Size);
 			v101Bytes->seekFromStart(0);
 			BinaryInputStream v101(v101Bytes);
 			GameHeader ruled;
@@ -228,8 +237,26 @@ void testBinaryHeaderFormsAndLegacy()
 			check(read && v101Bytes->getPosition()==v101Size && ruled.getAIConfig(0)==original.getAIConfig(0)
 				&& !ruled.isResourceGrowthDisabled() && ruled.getResourceScarcityLevel()==0
 				&& !ruled.isInstantConstructionEnabled() && ruled.getStockpileStartLevel()==0
-				&& !ruled.isHungerDisabled() && ruled.getExperiments().empty(),
+				&& !ruled.isHungerDisabled() && ruled.getExperiments().empty() && ruled.getAIOrderDelay()==0,
 				"version 101 header loads without rule bytes, rules off");
+            // The format just before the AI pipeline has every prior extension
+            // but neither a delay byte nor any engine queue section. A
+            // following record stays aligned.
+            constexpr Sint32 priorVersion=FILE_FORMAT_VERSION_AI_PIPELINE-1;
+            constexpr Uint32 sentinel=0x51A140;
+            auto* priorBytes=new MemoryStreamBackend;
+            BinaryOutputStream legacyOut(priorBytes);
+            legacyOut.write(historical.data(),historical.size(),"header");
+            legacyOut.writeUint32(sentinel,"nextRecord");legacyOut.flush();
+            priorBytes->seekFromStart(0);
+            BinaryInputStream prior(new MemoryStreamBackend(*priorBytes));
+            GameHeader older;older.setAIOrderDelay(8);
+            REQUIRE((form==0 ? older.load(&prior,priorVersion) : older.loadWithoutPlayerInfo(&prior,priorVersion)));
+            CHECK(older.getAIOrderDelay()==0);
+            CHECK(older.getAIConfig(0)==original.getAIConfig(0));
+            CHECK(older.getRandomSeed()==original.getRandomSeed());
+            CHECK(older.getExperiments()==original.getExperiments());
+            CHECK(prior.readUint32("nextRecord")==sentinel);
 		}
 	}
 }
@@ -275,4 +302,39 @@ TEST_SUITE("GameHeaderTextSaveLoad")
 	TEST_CASE("FullRoundTrip") { testFullRoundTrip(); }
 	TEST_CASE("PlayerInfoRoundTrip") { testPlayerInfoRoundTrip(); }
 	TEST_CASE("BinaryHeaderFormsAndLegacy") { testBinaryHeaderFormsAndLegacy(); }
+}
+
+TEST_CASE("AI order delay round trips at both boundaries and rejects invalid saved bytes" *
+          doctest::test_suite("GameHeaderTextSaveLoad"))
+{
+    for(unsigned delay : {0u,8u}) for(bool text : {false,true}) for(bool players : {false,true}) {
+        CAPTURE(delay); CAPTURE(text); CAPTURE(players);
+        auto original=makeFixtureHeader();original.setAIOrderDelay(delay);
+        auto* memory=new MemoryStreamBackend;
+        std::unique_ptr<OutputStream> output(text ? static_cast<OutputStream*>(new TextOutputStream(memory))
+            : static_cast<OutputStream*>(new BinaryOutputStream(memory)));
+        if(players) original.save(output.get());else original.saveWithoutPlayerInfo(output.get());
+        output->writeUint32(0xA17,"sentinel");output->flush();
+        std::unique_ptr<InputStream> input;
+        if(text) input=makeInputStream(*memory);
+        else {auto* copy=new MemoryStreamBackend(*memory);copy->seekFromStart(0);input=std::make_unique<BinaryInputStream>(copy);}
+        GameHeader restored;
+        REQUIRE((players ? restored.load(input.get(),VERSION_MINOR) : restored.loadWithoutPlayerInfo(input.get(),VERSION_MINOR)));
+        CHECK(restored.getAIOrderDelay()==delay);
+        CHECK(restored.getRandomSeed()==original.getRandomSeed());
+        CHECK(input->readUint32("sentinel")==0xA17);
+    }
+    GameHeader header;
+    CHECK_THROWS_AS(header.setAIOrderDelay(9),std::invalid_argument);
+    CHECK_THROWS_AS(header.setAIOrderDelay(unsigned(-1)),std::invalid_argument);
+    for(unsigned invalid : {9u,255u}) for(bool players : {false,true}) {
+        auto* memory=new MemoryStreamBackend;
+        BinaryOutputStream output(memory);
+        if(players) header.save(&output);else header.saveWithoutPlayerInfo(&output);
+        output.flush();auto bytes=memory->takeContents();bytes[5]=char(invalid);
+        BinaryInputStream input(new MemoryStreamBackend(bytes.data(),bytes.size()));input.seekFromStart(0);
+        GameHeader restored;
+        if(players) CHECK_THROWS_AS(restored.load(&input,VERSION_MINOR),std::runtime_error);
+        else CHECK_THROWS_AS(restored.loadWithoutPlayerInfo(&input,VERSION_MINOR),std::runtime_error);
+    }
 }
