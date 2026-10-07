@@ -321,15 +321,20 @@ void Engine::drawSession(bool everyFrame)
     if (globalContainer->runNoX) return;
     if (!runner)
     {
-        if (turn && !std::exchange(turnDrawPending, false)) return;
+        const bool captureRequested=!turn || std::exchange(turnDrawPending, false);
         if (!serialPresentation)
             serialPresentation=std::make_unique<ScenePreparation>(gui.game.map.computeExecutor());
-        if (serialPresentation->readyToCapture())
-            serialPresentation->submit(gui.captureSceneInputs(gui.sceneRequest()));
-        const auto* scene=serialPresentation->acquire();
-        if (!scene) return;
+        if (captureRequested && ((everyFrame && !turn) || session->nextGuiStep==0))
+        {
+            if (serialPresentation->readyToCapture())
+                serialPresentation->submit(gui.captureSceneInputs(gui.sceneRequest()));
+            else if(turn) turnDrawPending=true;
+        }
+        bool changed=false;
+        const auto* scene=serialPresentation->acquire(&changed);
+        if (!scene || (turn && !changed)) return;
         gui.setPublishedScene(scene);
-        drawFrame(*session, everyFrame && !turn, scene);
+        drawFrame(*session, turn || everyFrame, scene);
         return;
     }
     // Threaded: draw the newest scene the simulation published, every frame.
@@ -363,6 +368,7 @@ bool Engine::startSimulationThread(Uint64 now)
         return false;
     }
     runner = std::move(started);
+    gui.simulationAccess=[this](const auto& work){runner->withGame(work);};
     return true;
 }
 
@@ -372,8 +378,10 @@ void Engine::stopSimulationThread()
     gui.setPublishedScene(nullptr);
     if (!runner) {gui.game.drainAI();return;}
     runner->stop();
+    gui.simulationAccess={};
     gui.game.drainAI();
     // The simulation's measurements since the last client frame.
+    runner->absorbTelemetry(PerformanceTelemetry::collector());
     PerformanceTelemetry::collector().absorb(runner->telemetry);
     runner.reset();
     gui.simulationThreaded = false;
@@ -397,12 +405,12 @@ bool Engine::threadedClientFrame(Uint64 now, const std::vector<SDL_Event>& event
         gui.setPublishedScene(scene);
     }
     if (gui.isRunning)
-        runner->withGame([&] {
-            clientStep(sessionInput.events());
-            sessionInput.clear();
-            runner->requestScene(gui.sceneRequest(false));
-            absorbSimulationTelemetry();
-        });
+    {
+        clientStep(sessionInput.events());
+        sessionInput.clear();
+        runner->requestScene(gui.sceneRequest(false));
+        absorbSimulationTelemetry();
+    }
     runner->rethrowFailure();
     return gui.isRunning && !runner->ended();
 }
@@ -967,7 +975,11 @@ void Engine::clientStep(const std::vector<SDL_Event>& events)
     else
         // Match SDL input timestamps, not the suspendable simulation clock.
         gui.threadedClientStep(events, SDL_GetTicks());
-    handleExitRequest();
+    if (gui.flushOutgoingAndExit)
+    {
+        const auto exit=[&]{handleExitRequest();};
+        if (!gui.parkForClient(exit)) exit();
+    }
     // Studio reads controller-private status only after its worker stream ends.
 #ifdef __EMSCRIPTEN__
     if (std::getenv("GLOB2_STUDIO_PLAYTEST")) {
@@ -1012,9 +1024,14 @@ void Engine::configureSessionTelemetry(MainLoopState& st, PerformanceTelemetry::
 void Engine::absorbSimulationTelemetry()
 {
 	auto &perf = PerformanceTelemetry::collector();
-	perf.absorb(runner->telemetry);
-	configureSessionTelemetry(*session, perf);
-	perf.capture(gui.game.stepCounter);
+    const auto& scene=gui.drawnScene();
+    const auto fps=globalContainer->settings.targetRenderFps;
+    const auto frameBudget=globalContainer->runNoX || fps==0 ? 0ULL : (1000000000ULL+fps-1)/fps;
+    perf.configure(scene.tick, std::uint64_t(scene.tickInterval)*1000000ULL, frameBudget,
+        gui.gamePaused || gui.hardPause ? "paused" : globalContainer->runNoX ? "headless" :
+        globalContainer->replaying ? "replay" : scene.panels.hud.anyPlayerWaited ? "waiting" : "live");
+    runner->absorbTelemetry(perf);
+    perf.capture(scene.tick);
 }
 
 bool Engine::advanceSession(Uint64 now, const std::function<void()>& clientWork, bool handleExit)

@@ -160,6 +160,8 @@ void GameGUI::handleClientEvent(ClientEventVariant&& event)
 		{
 			e.apply(*this);
 		}
+		else if constexpr (std::is_same_v<T, ClientEvent::ReplayEnded>)
+            showEndOfReplayScreen(true);
 		else if constexpr (std::is_same_v<T, ClientEvent::TeamEvent>)
 		{
 			if (e.team >= 0 && e.team < Team::MAX_COUNT)
@@ -201,7 +203,7 @@ void GameGUI::handleClientEvent(ClientEventVariant&& event)
 		}
 		else if constexpr (std::is_same_v<T, ClientEvent::MapMark>)
 		{
-			if (e.markingTeamAllies & (game.teams[localTeamNo]->me))
+			if (e.markingTeamAllies & Team::teamNumberToMask(localTeamNo))
 				addMark(e.order);
 		}
 		else if constexpr (std::is_same_v<T, ClientEvent::PauseChanged>)
@@ -216,6 +218,7 @@ void GameGUI::handleClientEvent(ClientEventVariant&& event)
 		else if constexpr (std::is_same_v<T, ClientEvent::OrderExecuted>)
 		{
 			reconcileBuildingGuiState(e.order);
+            if(simulationThreaded) toolManager.acknowledgePaint(*e.order,e.revision);
 		}
 		else if constexpr (std::is_same_v<T, ClientEvent::BuildingRemoved>)
 		{
@@ -275,5 +278,6 @@ void GameGUI::stampClientOrder(const std::shared_ptr<Order>& order, bool simulat
 void GameGUI::enqueueOrder(std::shared_ptr<Order> order)
 {
     stampClientOrder(order);
+    if(simulationThreaded) toolManager.trackPaint(order);
     orderQueue.push_back(std::move(order));
 }

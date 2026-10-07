@@ -348,7 +348,7 @@ private:
 	void saveVideoshot(MainLoopState& st);
 	void configureSessionTelemetry(MainLoopState& st, PerformanceTelemetry::Collector& perf);
 	//! Threaded: fold the simulation thread's measurements into the session collector
-	//! (called with the simulation parked).
+	//! through a bounded locked mailbox without parking the simulation.
 	void absorbSimulationTelemetry();
     std::optional<MainLoopState> session;
     /// A turn game draws only after a step: polls between steps change nothing visible.

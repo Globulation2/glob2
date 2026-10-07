@@ -190,8 +190,8 @@ namespace
 				selected.unitsWorking.push_back(u->gid);
 		}
 		e.selectedUnit = game.resolveUnit(request.selectedUnit) ? request.selectedUnit : UnitRef();
-		e.highlightUnitType = game.highlightUnitType;
-		e.highlightBuildingType = game.highlightBuildingType;
+		e.highlightUnitType = request.highlights ? request.highlights->first : game.highlightUnitType;
+		e.highlightBuildingType = request.highlights ? request.highlights->second : game.highlightBuildingType;
 	}
 }
 
@@ -440,6 +440,7 @@ void SceneExtractor::extract(const Game &game, const SceneRequest &request, Scen
 	scene.buildingTypes = game.buildingsTypes.retainTypes();
 	scene.editor = game.edit != nullptr;
 	scene.tick = game.stepCounter;
+    scene.executedOrderRevision=game.clientEvents ? game.clientEvents->executedOrderRevision() : 0;
 	scene.tickTime = request.tickTime;
 	scene.tickInterval = request.tickInterval;
 	scene.map.extract(game.map, request.view.displayW, request.view.displayH, request.includeScriptAreas);
@@ -482,14 +483,16 @@ std::shared_ptr<SceneInputs> SceneExtractor::capture(const Game& game, const Sce
     // older same-tick entity snapshot.
     auto& store = game.snapshots();
     store.invalidateBoundary();
-    constexpr auto requirements = bit(Component::Catalogs) | bit(Component::Terrain) | bit(Component::Resources)
+    auto requirements = bit(Component::Catalogs) | bit(Component::Terrain) | bit(Component::Resources)
         | bit(Component::Occupancy) | bit(Component::Visibility) | bit(Component::Entities)
         | bit(Component::Teams) | bit(Component::Rules);
+    if (game.gameHeader.hasExperiment(ExperimentId::FarmAreas)) requirements |= bit(Component::Growth);
     input->world = store.captureBoundary(game, requirements);
     auto& scene = input->source;
     scene.buildingTypes = game.buildingsTypes.retainTypes();
     scene.race = std::make_shared<Race>();
     scene.editor = game.edit != nullptr;
+    scene.executedOrderRevision=game.clientEvents ? game.clientEvents->executedOrderRevision() : 0;
     scene.tick = input->world.tick; scene.tickTime = request.tickTime; scene.tickInterval = request.tickInterval;
     scene.map.captureDisplay(game.map, request.view.displayW, request.view.displayH, request.includeScriptAreas);
     extractEntities(game, request, scene.entities, false);

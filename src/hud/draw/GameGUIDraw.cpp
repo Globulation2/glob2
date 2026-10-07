@@ -19,6 +19,7 @@
 
 #include "Game.h"
 #include "GameGUI.h"
+#include "IntBuildingType.h"
 #include "TeamStatChart.h"
 #include "GameGUITouch.h"
 #include "GameGUIInternal.h"
@@ -147,7 +148,7 @@ void GameGUI::drawPanel(void)
 {
 	PERF_SCOPE_TIME(Panel);
 	// ensure we have a valid selection and associate pointers (with a simulation
-	// thread, threadedClientStep does this while the simulation is parked)
+	// thread, threadedClientStep checks the immutable Scene)
 	if (!simulationThreaded)
 		checkSelection();
 
@@ -639,7 +640,7 @@ void GameGUI::drawAll(int team)
 	PERF_SCOPE_TIME(Render);
 	// Apply any simulation notices not consumed yet and resolve the selection
 	// for the renderer (view.selectedBuilding/selectedUnit). With a simulation
-	// thread, that happens in threadedClientStep while the simulation is parked.
+	// thread, that happens in threadedClientStep against the immutable Scene.
 	if (!simulationThreaded)
 		consumeClientEvents();
 	clientRequests.publishViewport(viewportX, viewportY, int(camera.visibleW() / 32), int(camera.visibleH() / 32));
@@ -663,6 +664,7 @@ void GameGUI::drawAll(int team)
 	// Panels, the top bar and the statistics pages draw the scene's copy of the stats.
 	teamStats = scene.panels.localStats.get();
 	toolManager.setDrawnScene(&scene);
+    view.displayedAreas=simulationThreaded ? &toolManager.displayedAreas() : nullptr;
     globalContainer->gfx->beginFrame(GraphicContext::FrameMode::FullRedraw);
 	updateCamera();
 	globalContainer->gfx->setClipRect();
@@ -976,17 +978,27 @@ SceneRequest GameGUI::sceneRequest(bool includeTiming)
 	if (selectionMode == UNIT_SELECTION)
 		if (const UnitRef *u = std::get_if<UnitRef>(&selection))
 			request.selectedUnit = *u;
+	if (simulationThreaded)
+    {
+        Uint32 units=0, buildings=0;
+        if(highlights.contains(HighlightWorkers)) units|=1u<<WORKER;
+        if(highlights.contains(HighlightExplorers)) units|=1u<<EXPLORER;
+        if(highlights.contains(HighlightWarriors)) units|=1u<<WARRIOR;
+        for(int i=0;i<IntBuildingType::NB_BUILDING;++i)
+            if(highlights.contains(HighlightBuildingOnMap+i)) buildings|=1u<<i;
+        request.highlights=std::pair{units,buildings};
+    }
 	if (includeTiming) { request.tickTime = lastTickTime; request.tickInterval = tickInterval; }
 	return request;
 }
 
 void GameGUI::threadedClientStep(const std::vector<SDL_Event>& events, Uint64 now)
 {
-	// The simulation is parked: GUI work that reads or writes the game runs here,
-	// in the order drawAll and step used to run it.
+	toolManager.setDrawnScene(&drawnScene());
+	// Keep the original client event ordering against the displayed Scene.
 	consumeClientEvents();
 	checkSelection();
-	updateHighlightInGame();
+	if (!simulationThreaded) updateHighlightInGame();
 	step(events, now);
 }
 

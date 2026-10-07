@@ -1,4 +1,6 @@
 #include "GameEvent.h"
+#include "ClientAreaPreview.h"
+#include "sim/ClientEvents.h"
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Scene extraction: entities by gid, the selection's map-view contribution, and
 // the overlay map's refresh cadence.
@@ -584,4 +586,80 @@ TEST_CASE("Serial hosts publish immutable Scenes through workers or explicit fal
         presentation.submit(extractor.capture(world.game,{}));
         // Destruction cancels without waiting; an active chunk owns its storage.
     }
+}
+
+TEST_SUITE("SceneExtract")
+{
+TEST_CASE("client paint survives old Scenes and retires only with its execution revision")
+{
+    glob2test::HeadlessGlobals globals;
+    glob2test::HeadlessGame world;
+    SceneExtractor extractor;
+    Scene oldScene;
+    extractor.prepare(*extractor.capture(world.game,{}),oldScene);
+    ClientAreaPreview preview;
+    preview.refresh(oldScene,0);
+    const auto index=oldScene.map.coordToIndex(3,4);
+    Utilities::BitArray mask(1,true);
+    auto add=std::make_shared<OrderAlterForbidden>(0,BrushTool::MODE_ADD,3,4,1,1,mask);
+    preview.set(0,index,true);
+    preview.track(add,true);
+    preview.acknowledge(*add,1);
+    preview.refresh(oldScene,0);
+    CHECK(preview.shown[0].get(index));
+    CHECK_FALSE(oldScene.map.displayedArea(0).get(index));
+    auto remove=std::make_shared<OrderAlterForbidden>(0,BrushTool::MODE_DEL,3,4,1,1,mask);
+    preview.track(remove);
+    Scene next;
+    world.game.map.displayedForbiddenView.set(index,true);
+    extractor.prepare(*extractor.capture(world.game,{}),next);
+    next.executedOrderRevision=1;
+    preview.refresh(next,0);
+    CHECK_FALSE(preview.shown[0].get(index));
+    // An active stroke remains above both the acknowledged and queued layers.
+    preview.set(0,index,true);
+    next.tick++;
+    preview.refresh(next,0);
+    CHECK(preview.shown[0].get(index));
+    preview.refresh(next,1);
+    CHECK(preview.shown[0].get(index)==next.map.displayedArea(0).get(index));
+}
+TEST_CASE("order execution revisions are captured even without advancing the tick")
+{
+    glob2test::HeadlessGlobals globals;
+    glob2test::HeadlessGame world;
+    ClientEvents events;
+    world.game.clientEvents=&events;
+    SceneExtractor extractor;
+    Scene before,after;
+    extractor.prepare(*extractor.capture(world.game,{}),before);
+    events.push(ClientEvent::OrderExecuted{std::make_shared<NullOrder>()});
+    extractor.prepare(*extractor.capture(world.game,{}),after);
+    CHECK(before.tick==after.tick);
+    CHECK(after.executedOrderRevision==before.executedOrderRevision+1);
+    events.drain([&](auto event) {
+        if(auto* done=std::get_if<ClientEvent::OrderExecuted>(&event))
+            CHECK(done->revision==after.executedOrderRevision);
+    });
+    world.game.clientEvents=nullptr;
+}
+}
+
+TEST_CASE("farm input eligibility is frozen with presentation inputs" * doctest::test_suite("SceneExtract"))
+{
+    glob2test::HeadlessGlobals globals;
+    glob2test::GameOptions options;
+    options.header=true;
+    options.experiments.set(ExperimentId::FarmAreas);
+    glob2test::HeadlessGame world(options);
+    SceneExtractor extractor;
+    auto input=extractor.capture(world.game,{});
+    Scene scene;
+    extractor.prepare(*input,scene);
+    for(int y=0;y<world.game.map.getH();++y)
+        for(int x=0;x<world.game.map.getW();++x)
+            CHECK(scene.map.canPaintFarmArea(x,y)==world.game.map.canPaintFarmArea(x,y));
+    const bool before=scene.map.canPaintFarmArea(4,4);
+    world.game.map.setUMTerrain(4,4,WATER);
+    CHECK(scene.map.canPaintFarmArea(4,4)==before);
 }

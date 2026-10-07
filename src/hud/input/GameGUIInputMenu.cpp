@@ -138,7 +138,12 @@ void GameGUI::saveGameTo(LoadSaveDialog &dialog)
     const std::string name=dialog.getName();
     if(!autosaveWriter) autosaveWriter=std::make_unique<BackgroundFileWriter>(Toolkit::getFileManager());
     dialog.beginPersistence(std::make_unique<SaveOperation>(*autosaveWriter,locationName,
-        [this,name]{return captureSave([&](OutputStream* stream,DeferredGameSHA1* sha){save(stream,name,sha);});},
+        [this,name]{
+            BackgroundFileWriter::Encode encode;
+            const auto capture=[&]{encode=captureSave([&](OutputStream* stream,DeferredGameSHA1* sha){save(stream,name,sha);});};
+            if(!parkForClient(capture)) capture();
+            return encode;
+        },
         [this,name]{defaultGameSaveName=name;}));
 }
 
@@ -146,6 +151,8 @@ void GameGUI::saveGameTo(LoadSaveDialog &dialog)
 // the dialog consumed the event or completed.
 bool GameGUI::processGameMenu(SDL_Event *event)
 {
+    bool boundaryResult=false;
+    if (gameMenuScreen && parkForClient([&]{boundaryResult=processGameMenu(event);})) return boundaryResult;
 	if (!gameMenuScreen)
 		return false;
 	bool consumed = false;

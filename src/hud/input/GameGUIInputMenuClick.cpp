@@ -22,6 +22,7 @@ using std::static_pointer_cast;
 
 void GameGUI::handleMenuClick(int mx, int my, int button)
 {
+    if(globalContainer->isViewingGame() && parkForClient([&]{handleMenuClick(mx,my,button);})) return;
 	// handle minimap
 	if (my<128 && mx > (RIGHT_MENU_OFFSET) && mx < RIGHT_MENU_WIDTH - RIGHT_MENU_OFFSET)
 	{

@@ -24,9 +24,8 @@ class Engine;
 //!   whenever the main thread has taken the previous Scene, captures immutable
 //!   inputs for a compute-worker presentation task. That task publishes a complete
 //!   Scene without participating in simulation barriers.
-//! - withGame() runs main-thread work that reads or writes the game (input, GUI
-//!   logic) while the simulation is parked between ticks; a sleeping simulation
-//!   counts as parked, so at normal speed this does not wait.
+//! - withGame() protects exceptional live-state access (save capture, dialogs,
+//!   settings and diagnostics). Routine input and rendering use immutable Scenes.
 //! - Drawing reads only acquireScene() and GUI state.
 //!
 //! The simulation's results do not depend on this: ticks, orders and the
@@ -59,11 +58,15 @@ public:
 	//! Rethrow a failure raised on the simulation thread, if any.
 	void rethrowFailure();
 	//! What the simulation thread measures (PerformanceTelemetry scopes). The main
-	//! thread absorbs it while the simulation is parked or after stop().
+	//! thread absorbs the mailbox while running, or this collector after stop().
 	PerformanceTelemetry::Collector telemetry;
+    void absorbTelemetry(PerformanceTelemetry::Collector& target);
+
 
 private:
 	void run();
+    std::mutex telemetryMutex;
+    PerformanceTelemetry::Collector telemetryMailbox;
 	void park(std::unique_lock<std::mutex> &lock);
 
 	Engine &engine;

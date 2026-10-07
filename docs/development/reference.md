@@ -1629,10 +1629,14 @@ also remains the headless default and the equivalence reference.
   thread has taken the previous Scene, it captures frozen inputs and submits
   preparation. A compute worker publishes the result into a `SceneBuffer`
   (lock-free triple buffer); only one preparation is in flight.
-- The main thread draws the newest Scene when the render ceiling permits a frame. Work that reads or writes the game —
-  input, `GameGUI::step`, consuming `ClientEvents`, checking the selection, script
-  highlights — runs in `SimulationRunner::withGame`, which parks the simulation between
-  ticks (immediately when it is sleeping between ticks).
+- The main thread draws the newest Scene when the render ceiling permits a frame.
+  Routine input, selection, client events and script highlights use the Scene and
+  client-owned state without parking the simulation. Exceptional live-state work
+  (save capture, dialogs, settings, viewpoint changes and diagnostic dumps) uses
+  `GameGUI::parkForClient` / `SimulationRunner::withGame` at a tick boundary.
+  Autosave scheduling publishes an atomic pending request; the client owns the
+  writer and captures the save at that explicit boundary. Telemetry windows cross
+  a locked mailbox after simulation work finishes.
 - Only state both threads use is shared: `ClientRequests`' view is locked; `gamePaused`,
   `hardPause`, `isRunning` and the CPU-load history are atomics. A pause order or the local
   player leaving takes effect on the simulation thread in the same tick, as in serial
@@ -1643,8 +1647,10 @@ also remains the headless default and the equivalence reference.
   displayed incarnation and world identity; admission drops obsolete targets before
   sending or recording them. These guards are not serialized and do not alter the
   wire protocol. Building actions and threaded selection read the displayed Scene;
-  touch gestures retain incarnation identities. Routine frame parking still protects
-  the remaining area-preview, lifecycle and shared GUI paths.
+  touch gestures retain incarnation identities. Area previews are client-owned layers
+  over the Scene: active strokes and queued paint remain visible until an execution
+  acknowledgement is included in the acquired Scene. Farm paint eligibility reads
+  retained growth/rules inputs when the experiment is enabled.
 - The synchronized RNG belongs to the game, so results do not depend on the thread.
   `GLOB2_SIM_THREAD=1` runs headless sessions on the simulation thread for
   `check_sim_thread.py --candidate-env GLOB2_SIM_THREAD=1`; `GLOB2_SIM_THREAD=0` keeps

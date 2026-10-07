@@ -292,9 +292,11 @@ void GameGUIToolManager::handleZonePlacement(int mouseX, int mouseY, int localte
 			{
 				if (!BrushTool::getBrushValue(fig, x-startX, y-startY, mapX, mapY, firstX, firstY))
 					continue;
-				if (honourFarmTerrain && !game.map.canPaintFarmArea(x, y))
+				if (honourFarmTerrain && !canPaintFarmArea(x, y))
 					continue;
-				view.set(game.map.w*(y&game.map.hMask)+(x&game.map.wMask), value);
+				const auto index=game.map.coordToIndex(x,y);
+                if(game.gui->simulationThreaded) preview.set(zone,index,value);
+                else view.set(index,value);
 			}
 		}
 	}
@@ -310,6 +312,7 @@ void GameGUIToolManager::handleZonePlacement(int mouseX, int mouseY, int localte
 
 Utilities::BitArray& GameGUIToolManager::displayedViewForZone(ZoneType type)
 {
+    if(game.gui->simulationThreaded) return preview.shown[type];
 	switch (type)
 	{
 	case Forbidden:
@@ -364,7 +367,9 @@ void GameGUIToolManager::flushBrushOrders(int localteam)
 {
 	if (brushAccumulator.getApplicationCount() > 0)
 	{
-		orders.push(zoneOrder(getZoneType(), Uint8(localteam), Uint8(brush.getType()), &brushAccumulator, &game.map));
+		auto order=zoneOrder(getZoneType(), Uint8(localteam), Uint8(brush.getType()), &brushAccumulator, &game.map);
+        if(game.gui->simulationThreaded) preview.track(order,true);
+        orders.push(std::move(order));
 		brushAccumulator.clear();
 	}
 }
@@ -383,7 +388,7 @@ bool GameGUIToolManager::confirmBuilding(int mouseX, int mouseY, int localteam, 
 bool GameGUIToolManager::placeBuildingAt(int mapX, int mapY, int localteam)
 {
 	// Count down whether a building site can be placed
-	if (game.teams[localteam]->noMoreBuildingSitesCountdown==0)
+	if ((game.gui->simulationThreaded ? (drawnScene ? drawnScene->panels.local.noMoreBuildingSitesCountdown : 1) : game.teams[localteam]->noMoreBuildingSitesCountdown)==0)
 	{
 		// we get the type of building
 		Sint32 typeNum = game.buildingsTypes.getPlaceableTypeNum(building);
@@ -391,7 +396,20 @@ bool GameGUIToolManager::placeBuildingAt(int mapX, int mapY, int localteam)
 
 		int tempX = mapX, tempY = mapY;
 		bool isRoom;
-		if (bt->isVirtual)
+        if(game.gui->simulationThreaded)
+        {
+            if(!drawnScene || drawnScene->panels.local.teamNumber!=localteam) return false;
+            const auto& scene=*drawnScene;
+            mapX=tempX+bt->decLeft; mapY=tempY+bt->decTop;
+            isRoom=true;
+            if(bt->isVirtual)
+            {
+                for(auto gid:scene.entities.virtualBuildings[localteam])
+                    if(const auto* b=scene.entities.building(gid); b && b->posX==(mapX & scene.map.getMaskW()) && b->posY==(mapY & scene.map.getMaskH())) {isRoom=false;break;}
+            }
+            else isRoom=scene.map.isHardSpaceForBuilding(mapX,mapY,bt->width,bt->height);
+        }
+        else if (bt->isVirtual)
 			isRoom=game.checkRoomForBuilding(tempX, tempY, bt, &mapX, &mapY, localteam);
 		else
 			isRoom=game.checkHardRoomForBuilding(tempX, tempY, bt, &mapX, &mapY);
@@ -699,4 +717,14 @@ void GameGUIToolManager::cancelDrag(int localteam)
 {
     if (mode == PlaceZone) flushBrushOrders(localteam);
     firstPlacement.reset();
+}
+
+void GameGUIToolManager::setDrawnScene(const Scene* scene)
+{
+    drawnScene=scene;
+    if(scene && game.gui->simulationThreaded) preview.refresh(*scene,game.gui->localTeamNo);
+}
+bool GameGUIToolManager::canPaintFarmArea(int x,int y) const
+{
+    return game.gui->simulationThreaded ? drawnScene && drawnScene->map.canPaintFarmArea(x,y) : game.map.canPaintFarmArea(x,y);
 }
