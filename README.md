@@ -6,7 +6,54 @@ frames; the explorer keeps its bone rig. The earlier bone-rig sections below
 are kept for comparison (their worker and warrior assets stay installed as
 `.gsr` files but are no longer selected).
 
-## Blend-shape clips (current, commit `36a139677`)
+## Paint chart v2 and tracked correspondence (current, commit `24730b0ce`)
+
+Two offline changes on top of the blend-shape clips, both at the exporter
+(`tools/skins/export_units.py`); formats and runtime are unchanged.
+
+- **Chart v2** (`tools/skins/chart.py`): the v1 chart was a planar projection,
+  so sideways-facing surfaces shared a few texels and checker paint read as
+  confetti (`chart-v2-worker-checker.png` row 1). v2 unwraps one symmetric
+  quarter of the rest surface with Blender's angle-based unwrapper as three
+  islands (torso quarter, two half limbs cut at their socket rims, whose
+  limb-side rim vertices are duplicated and welded) and mirrors the result to
+  the other quarters. Texel density across triangles (95th/5th percentile
+  ratio): worker 1.7 (v1: 5.0), warrior 1.7 (v1: 8.0); charts in
+  `chart-worker.png` and `chart-warrior.png`. Vertex counts: worker 2898,
+  warrior 2514 (64 rim duplicates each). v2 paint does not line up with v1.
+- **Tracked correspondence** (`limb_surface.py` `Tracker`): the baked clips
+  used to re-solve the surface every frame, so paint swam across the body and
+  collars grew over the torso in overlapping layers. The rest surface is now
+  carried by one similarity transform per metaball component, blended by each
+  vertex's field share, and snapped onto the posed implicit surface. Same
+  surface (silhouette IoU against the previous baked clips 99.4–99.7 %, see
+  `tracked-*` images), stable paint (`chart-v2-worker-checker.png` rows 2–3,
+  `chart-v2-warrior-checker.png`, `*-checker.gif`), no overlapping layers.
+
+Blend-shape fit on the tracked frames (same 32 + 24 shapes; the smoother
+correspondence compresses far better):
+
+| Clip | RMS | p95 | max | normal median | normal p99 | IoU mean | IoU min |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| worker walk | 0.010 | 0.020 | 0.113 | 0.4° | 2.2° | 99.8 % | 99.3 % |
+| worker swim | 0.016 | 0.020 | 0.612 | 0.3° | 4.9° | 99.8 % | 99.4 % |
+| worker harvest | 0.011 | 0.014 | 0.486 | 0.2° | 4.6° | 99.8 % | 99.4 % |
+| warrior walk | 0.083 | 0.149 | 1.537 | 1.3° | 17.0° | 99.3 % | 98.3 % |
+| warrior swim | 0.083 | 0.126 | 1.794 | 1.5° | 16.7° | 99.2 % | 97.7 % |
+| warrior fight | 0.082 | 0.138 | 1.669 | 1.0° | 16.0° | 99.5 % | 98.8 % |
+
+The bone rigs kept for comparison also refit to the tracked frames (worker
+walk 0.22 RMS, was 0.47) but still show the socket seams; they stay unselected.
+
+Verification for this head (logs in `logs/`): staged and installed export
+validation (`tools/skins/test_export.py`, now weld-aware); asset, surface
+contract and web-asset build-system tests; native `Skin*`, `ColonySkinPreview`,
+`RenderBatch` and `SkinShapeModel` suites (15 suites, material fingerprints
+regenerated for the new chart); web unit tests (82); Chromium/Firefox/WebKit
+conformance (27); typecheck, eslint; `test_fit_shapes.py` (5) and
+`test_fit_rigs.py` (7). Limitations as below.
+
+## Blend-shape clips (commit `36a139677`)
 
 Why: every bone-rig weighting scheme left a seam across the worker's torso.
 Cross-sections of the baked frames (`slab-14.png`, `slab-lobes.png`,

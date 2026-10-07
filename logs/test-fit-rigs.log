@@ -43,59 +43,67 @@ test_rest_surface_keeps_paint_topology_and_both_reflections (__main__.FittedRigT
 test_weights_are_valid_mirrored_and_bounded_to_four_bones (__main__.FittedRigTest) ... ok
 
 ----------------------------------------------------------------------
-Ran 7 tests in 176.422s
+Ran 7 tests in 247.865s
 
 OK
 Warning: Library file, loading empty scene
 Warning: Library file, loading empty scene
 Warning: Library file, loading empty scene
-worker: 29 bones, samples {'walk': 64, 'swim': 64, 'harvest': 64}, initial rms 0.6939 (6s)
-worker: pass 1 rms 0.6187 (14s)
-worker: pass 2 rms 0.5517 (22s)
-worker: pass 3 rms 0.5397 (30s)
-worker: pass 4 rms 0.5368 (38s)
-worker: pass 5 rms 0.5356 (46s)
-worker-walk: 2834 vertices, 29 bones, 312912 bytes, rms 0.473 p95 0.938 max 2.913 flipped faces max 345 strayed normals max 511
-worker-swim: 2834 vertices, 29 bones, 312912 bytes, rms 0.512 p95 1.069 max 6.211 flipped faces max 676 strayed normals max 525
-worker-harvest: 2834 vertices, 29 bones, 312912 bytes, rms 0.642 p95 1.481 max 4.085 flipped faces max 505 strayed normals max 643
+worker: 29 bones, samples {'walk': 64, 'swim': 64, 'harvest': 64}, initial rms 0.4050 (7s)
+worker: pass 1 rms 0.3248 (15s)
+worker: pass 2 rms 0.2682 (23s)
+worker: pass 3 rms 0.2487 (31s)
+worker: pass 4 rms 0.2423 (39s)
+worker: pass 5 rms 0.2401 (46s)
+worker: pass 6 rms 0.2381 (54s)
+worker: pass 7 rms 0.2365 (61s)
+worker: pass 8 rms 0.2357 (69s)
+worker-walk: 2898 vertices, 29 bones, 317008 bytes, rms 0.216 p95 0.402 max 1.113 flipped faces max 201 strayed normals max 330
+worker-swim: 2898 vertices, 29 bones, 317008 bytes, rms 0.310 p95 0.545 max 4.496 flipped faces max 434 strayed normals max 515
+worker-harvest: 2898 vertices, 29 bones, 317008 bytes, rms 0.247 p95 0.475 max 2.707 flipped faces max 231 strayed normals max 424
 Info: Saved "worker.blend"
 Warning: Library file, loading empty scene
 Warning: Library file, loading empty scene
 Warning: Library file, loading empty scene
-warrior: 21 bones, samples {'walk': 64, 'swim': 256, 'fight': 64}, initial rms 0.9984 (6s)
-warrior: pass 1 rms 0.9348 (15s)
-warrior: pass 2 rms 0.9782 (22s)
-warrior-walk: 2450 vertices, 21 bones, 262192 bytes, rms 0.589 p95 1.225 max 5.818 flipped faces max 382 strayed normals max 305
-warrior-swim: 2450 vertices, 21 bones, 391216 bytes, rms 1.124 p95 2.543 max 8.240 flipped faces max 846 strayed normals max 477
-warrior-fight: 2450 vertices, 21 bones, 262192 bytes, rms 0.594 p95 1.282 max 5.715 flipped faces max 395 strayed normals max 313
+warrior: 21 bones, samples {'walk': 64, 'swim': 256, 'fight': 64}, initial rms 0.4963 (6s)
+warrior: pass 1 rms 0.4334 (14s)
+warrior: pass 2 rms 0.4200 (22s)
+warrior: pass 3 rms 0.4224 (31s)
+warrior-walk: 2514 vertices, 21 bones, 266288 bytes, rms 0.276 p95 0.600 max 1.858 flipped faces max 217 strayed normals max 379
+warrior-swim: 2514 vertices, 21 bones, 395312 bytes, rms 0.484 p95 1.125 max 4.383 flipped faces max 480 strayed normals max 603
+warrior-fight: 2514 vertices, 21 bones, 266288 bytes, rms 0.263 p95 0.572 max 1.991 flipped faces max 208 strayed normals max 422
 Info: Saved "warrior.blend"
 Warning: Library file, loading empty scene
 explorer-fly: 1330 vertices, 4 bones, 120700 bytes
 Info: Saved "explorer.blend"
-worker-swim: 2834 vertices, 29 bones, 312912 bytes, rms 0.512 p95 1.069 max 6.211 flipped faces max 676 strayed normals max 525
+worker-swim: 2898 vertices, 29 bones, 317008 bytes, rms 0.310 p95 0.545 max 4.496 flipped faces max 434 strayed normals max 515
 Info: Saved "worker.blend"
 Warning: Library file, loading empty scene
 Warning: Library file, loading empty scene
 Warning: Library file, loading empty scene
-worker: 29 bones, samples {'walk': 64, 'swim': 64, 'harvest': 64}, initial rms 0.6939 (7s)
-worker: pass 1 rms 0.6187 (14s)
-worker: pass 2 rms 0.5517 (22s)
-worker: pass 3 rms 0.5397 (29s)
-worker: pass 4 rms 0.5368 (37s)
-worker: pass 5 rms 0.5356 (44s)
-worker-walk: 2834 vertices, 29 bones, 312912 bytes, rms 0.473 p95 0.938 max 2.913 flipped faces max 345 strayed normals max 511
-worker-swim: 2834 vertices, 29 bones, 312912 bytes, rms 0.512 p95 1.069 max 6.211 flipped faces max 676 strayed normals max 525
-worker-harvest: 2834 vertices, 29 bones, 312912 bytes, rms 0.642 p95 1.481 max 4.085 flipped faces max 505 strayed normals max 643
+worker: 29 bones, samples {'walk': 64, 'swim': 64, 'harvest': 64}, initial rms 0.4050 (7s)
+worker: pass 1 rms 0.3248 (15s)
+worker: pass 2 rms 0.2682 (23s)
+worker: pass 3 rms 0.2487 (31s)
+worker: pass 4 rms 0.2423 (39s)
+worker: pass 5 rms 0.2401 (47s)
+worker: pass 6 rms 0.2381 (55s)
+worker: pass 7 rms 0.2365 (63s)
+worker: pass 8 rms 0.2357 (71s)
+worker-walk: 2898 vertices, 29 bones, 317008 bytes, rms 0.216 p95 0.402 max 1.113 flipped faces max 201 strayed normals max 330
+worker-swim: 2898 vertices, 29 bones, 317008 bytes, rms 0.310 p95 0.545 max 4.496 flipped faces max 434 strayed normals max 515
+worker-harvest: 2898 vertices, 29 bones, 317008 bytes, rms 0.247 p95 0.475 max 2.707 flipped faces max 231 strayed normals max 424
 Info: Saved "worker.blend"
 Warning: Library file, loading empty scene
 Warning: Library file, loading empty scene
 Warning: Library file, loading empty scene
-warrior: 21 bones, samples {'walk': 64, 'swim': 256, 'fight': 64}, initial rms 0.9984 (6s)
-warrior: pass 1 rms 0.9348 (14s)
-warrior: pass 2 rms 0.9782 (21s)
-warrior-walk: 2450 vertices, 21 bones, 262192 bytes, rms 0.589 p95 1.225 max 5.818 flipped faces max 382 strayed normals max 305
-warrior-swim: 2450 vertices, 21 bones, 391216 bytes, rms 1.124 p95 2.543 max 8.240 flipped faces max 846 strayed normals max 477
-warrior-fight: 2450 vertices, 21 bones, 262192 bytes, rms 0.594 p95 1.282 max 5.715 flipped faces max 395 strayed normals max 313
+warrior: 21 bones, samples {'walk': 64, 'swim': 256, 'fight': 64}, initial rms 0.4963 (6s)
+warrior: pass 1 rms 0.4334 (15s)
+warrior: pass 2 rms 0.4200 (23s)
+warrior: pass 3 rms 0.4224 (32s)
+warrior-walk: 2514 vertices, 21 bones, 266288 bytes, rms 0.276 p95 0.600 max 1.858 flipped faces max 217 strayed normals max 379
+warrior-swim: 2514 vertices, 21 bones, 395312 bytes, rms 0.484 p95 1.125 max 4.383 flipped faces max 480 strayed normals max 603
+warrior-fight: 2514 vertices, 21 bones, 266288 bytes, rms 0.263 p95 0.572 max 1.991 flipped faces max 208 strayed normals max 422
 Info: Saved "warrior.blend"
 Warning: Library file, loading empty scene
 explorer-fly: 1330 vertices, 4 bones, 120700 bytes

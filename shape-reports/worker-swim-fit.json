@@ -4,11 +4,11 @@
   "shapes": 32,
   "normalShapes": 24,
   "frames": {
-    "rms": 0.06488285310272976,
-    "p95": 0.08289397275668983,
-    "max": 1.990830099810573,
-    "worstFrame": 71,
-    "normalMedianDegrees": 0.6281846655541494,
-    "normalP99Degrees": 10.88351733516114
+    "rms": 0.016367057992295812,
+    "p95": 0.02033574571989866,
+    "max": 0.61244795241662,
+    "worstFrame": 223,
+    "normalMedianDegrees": 0.3072093854453601,
+    "normalP99Degrees": 4.866143656929448
   }
 }

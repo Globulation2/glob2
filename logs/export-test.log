@@ -1,0 +1,49 @@
+Warning: Library file, loading empty scene
+Warning: Library file, loading empty scene
+Exported /home/bradley/glob2-rigfit/artifacts/export-test/worker-walk.gsk
+Warning: Library file, loading empty scene
+Exported /home/bradley/glob2-rigfit/artifacts/export-test/worker-swim.gsk
+Warning: Library file, loading empty scene
+Exported /home/bradley/glob2-rigfit/artifacts/export-test/worker-harvest.gsk
+Warning: Library file, loading empty scene
+Warning: Library file, loading empty scene
+Exported /home/bradley/glob2-rigfit/artifacts/export-test/warrior-walk.gsk
+Warning: Library file, loading empty scene
+Exported /home/bradley/glob2-rigfit/artifacts/export-test/warrior-swim.gsk
+Warning: Library file, loading empty scene
+Exported /home/bradley/glob2-rigfit/artifacts/export-test/warrior-fight.gsk
+Warning: Library file, loading empty scene
+Warning: Library file, loading empty scene
+Exported /home/bradley/glob2-rigfit/artifacts/export-test/explorer-fly.gsk
+Blender 3.6.23 (hash e467db79ca8c built 2025-06-17 01:32:54)
+Read blend: "/home/bradley/glob2-rigfit/datasrc/gfx/originals/units/glob-worker-walk.blend"
+NOTE: ortho render has changed, tweak new Camera 'scale' value.
+Read blend: "/home/bradley/glob2-rigfit/datasrc/gfx/originals/units/glob-worker-walk.blend"
+NOTE: ortho render has changed, tweak new Camera 'scale' value.
+Read blend: "/home/bradley/glob2-rigfit/datasrc/gfx/originals/units/glob-worker-swim.blend"
+NOTE: ortho render has changed, tweak new Camera 'scale' value.
+Read blend: "/home/bradley/glob2-rigfit/datasrc/gfx/originals/units/glob-worker-harvest.blend"
+NOTE: ortho render has changed, tweak new Camera 'scale' value.
+Read blend: "/home/bradley/glob2-rigfit/datasrc/gfx/originals/units/glob-warrior-walk.blend"
+NOTE: ortho render has changed, tweak new Camera 'scale' value.
+Read blend: "/home/bradley/glob2-rigfit/datasrc/gfx/originals/units/glob-warrior-walk.blend"
+NOTE: ortho render has changed, tweak new Camera 'scale' value.
+Read blend: "/home/bradley/glob2-rigfit/datasrc/gfx/originals/units/glob-warrior-swim.blend"
+NOTE: ortho render has changed, tweak new Camera 'scale' value.
+Read blend: "/home/bradley/glob2-rigfit/datasrc/gfx/originals/units/glob-warrior-fight.blend"
+NOTE: ortho render has changed, tweak new Camera 'scale' value.
+Read blend: "/home/bradley/glob2-rigfit/datasrc/gfx/originals/units/explorer.blend"
+NOTE: ortho render has changed, tweak new Camera 'scale' value.
+Read blend: "/home/bradley/glob2-rigfit/datasrc/gfx/originals/units/explorer.blend"
+NOTE: ortho render has changed, tweak new Camera 'scale' value.
+
+Blender quit
+export exit 0
+explorer-v1/fly: finite animated poses and shared UV/index topology verified
+warrior-v1/walk: finite animated poses and shared UV/index topology verified
+warrior-v1/swim: finite animated poses and shared UV/index topology verified
+warrior-v1/fight: finite animated poses and shared UV/index topology verified
+worker-v1/walk: finite animated poses and shared UV/index topology verified
+worker-v1/swim: finite animated poses and shared UV/index topology verified
+worker-v1/harvest: finite animated poses and shared UV/index topology verified
+validate exit 0

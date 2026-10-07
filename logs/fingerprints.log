@@ -1,0 +1,7 @@
+PASS SkinMesh/rotated swarms render independently with every material [display][artifacts] (1.5s)
+PASS SkinMesh/material contact sheet [display][artifacts] (2.5s)
+PASS glob2-unit-tests SkinMesh (4 cases) (0.2s)
+
+3 passed, 0 failed, 0 skipped (4.3s of test time)
+[run_tests] JUnit report: /home/bradley/glob2-rigfit/artifacts/tests/junit.xml (6 cases)
+exit 0
