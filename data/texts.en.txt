@@ -5750,3 +5750,7 @@ Pick a brush. Groups share one set of rules; their members differ only in look.
 Algae grow
 [terrain palette experiments hint]
 Pick a brush. More terrain groups appear here once their experiments are enabled under Settings > Experiments.
+[experiment greedy-resource-fetching]
+Greedy resource fetching
+[experiment greedy-resource-fetching help]
+Fetch from the nearest available resource, then return to the building. Hiring and job swaps use estimated trip distances.
