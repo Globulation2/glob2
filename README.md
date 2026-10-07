@@ -59,6 +59,8 @@ All six worker styles have identical GPU/CPU alpha coverage. The integrated rend
 
 [Measurements and scope](performance/evaluation.json) · [Frame-time chart](performance/frame-times.png) · [Raw paired runs, commands, hashes and source snapshots](performance/raw-runs.tar.gz) · [Scene save](performance/preview.game)
 
+The benchmark paint/material fixtures and original measured worker rig are in [performance/assets](performance/assets). Other baked assets and view transforms are the repository files at `43a28506b14692cb91799c07345b8a0c79aaecaf`. The worker search reference is preserved byte-for-byte as [compressed BMP](worker/reference-matte.bmp.gz).
+
 The earlier evaluation contains 120 paired-run entries and 57,600 measured frames on Linux/RTX 2070 SUPER. It predates the final geometry and current-master material integration. It supports the earlier pipeline evaluation, **not a fresh performance claim for this final revision**. Raw runs retain binary/asset hashes, commands, warm/miss cases and Scene state-checksum comparisons. M3 was explicitly deferred by the user.
 
 ## Scope and limitations
