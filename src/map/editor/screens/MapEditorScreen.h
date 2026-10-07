@@ -24,6 +24,7 @@ class MapEditorScreen : public GAGGUI::Screen
     bool usesResponsiveViewport() const override;
     std::pair<int,int> minimumViewportSize() const override { return {800,600}; }
     void cancelExecutionInput() override { suspendExecution(); }
+	bool interceptsQuit() const override;
 
   private:
 	FrontendScope theme{false};
