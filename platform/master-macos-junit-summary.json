@@ -1,0 +1,24 @@
+{
+  "tests/engine-junit.xml": {
+    "root": {
+      "tests": "975",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "132"
+    },
+    "testcase_elements": 975,
+    "failures": 0,
+    "skips": 132
+  },
+  "tests/unit-junit.xml": {
+    "root": {
+      "tests": "871",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "19"
+    },
+    "testcase_elements": 871,
+    "failures": 0,
+    "skips": 19
+  }
+}

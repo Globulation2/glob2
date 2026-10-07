@@ -1,0 +1,6 @@
+2026-10-07T02:01:59.5516724Z FAIL glob2-unit-tests (851 cases) (23.1s)
+2026-10-07T02:01:59.5602052Z ===== FAIL glob2-unit-tests (851 cases) =====
+2026-10-07T02:01:59.5742070Z [failure] recording encodes audio, odd resized frames, and semantic chapters [recording]: 18446744073709551615 != 18446744073709551615
+2026-10-07T02:01:59.5742678Z libgag/src/GameplayRecordingTest.cpp:259:
+2026-10-07T02:01:59.5743160Z CHECK( manifest.find("\"screen\":\"multiplayer_game\"") != std::string::npos ) is NOT correct!
+2026-10-07T02:08:27.9862325Z 843 passed, 0 failed, 130 skipped (1466.7s of test time)

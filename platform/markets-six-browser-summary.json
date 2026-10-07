@@ -1,0 +1,71 @@
+{
+  "runtime_revision": "7bafc3f15298a1649e807e42909c3fa2fe3bc609",
+  "browser_cases_passed": 6,
+  "complete_traces": [
+    {
+      "file": "serial/chromium/cases/MarketsV2/disabled_fruit_deliveries_have_a_stable_per-tick_trace_and_save_continuation__golden__save-format__artifacts/checksums.txt",
+      "lines": 3000,
+      "sha256": "b3653dda25a9ad4ba775488b0242509bdbe3e50433c5c4d8842f2e5d5780ee0d"
+    },
+    {
+      "file": "serial/chromium/cases/MarketsV2/enabled_supply_networks_repeat_deterministically_with_save_continuation__golden__save-format__artifacts/checksums.txt",
+      "lines": 3000,
+      "sha256": "b2d29311f93a1cdf2e40f03fcb3cbdda5d94648714bf981f9e2a3c4ee3f13c08"
+    },
+    {
+      "file": "serial/firefox/cases/MarketsV2/disabled_fruit_deliveries_have_a_stable_per-tick_trace_and_save_continuation__golden__save-format__artifacts/checksums.txt",
+      "lines": 3000,
+      "sha256": "b3653dda25a9ad4ba775488b0242509bdbe3e50433c5c4d8842f2e5d5780ee0d"
+    },
+    {
+      "file": "serial/firefox/cases/MarketsV2/enabled_supply_networks_repeat_deterministically_with_save_continuation__golden__save-format__artifacts/checksums.txt",
+      "lines": 3000,
+      "sha256": "b2d29311f93a1cdf2e40f03fcb3cbdda5d94648714bf981f9e2a3c4ee3f13c08"
+    },
+    {
+      "file": "serial/webkit/cases/MarketsV2/disabled_fruit_deliveries_have_a_stable_per-tick_trace_and_save_continuation__golden__save-format__artifacts/checksums.txt",
+      "lines": 3000,
+      "sha256": "b3653dda25a9ad4ba775488b0242509bdbe3e50433c5c4d8842f2e5d5780ee0d"
+    },
+    {
+      "file": "serial/webkit/cases/MarketsV2/enabled_supply_networks_repeat_deterministically_with_save_continuation__golden__save-format__artifacts/checksums.txt",
+      "lines": 3000,
+      "sha256": "b2d29311f93a1cdf2e40f03fcb3cbdda5d94648714bf981f9e2a3c4ee3f13c08"
+    },
+    {
+      "file": "threaded/chromium/cases/MarketsV2/disabled_fruit_deliveries_have_a_stable_per-tick_trace_and_save_continuation__golden__save-format__artifacts/checksums.txt",
+      "lines": 3000,
+      "sha256": "b3653dda25a9ad4ba775488b0242509bdbe3e50433c5c4d8842f2e5d5780ee0d"
+    },
+    {
+      "file": "threaded/chromium/cases/MarketsV2/enabled_supply_networks_repeat_deterministically_with_save_continuation__golden__save-format__artifacts/checksums.txt",
+      "lines": 3000,
+      "sha256": "b2d29311f93a1cdf2e40f03fcb3cbdda5d94648714bf981f9e2a3c4ee3f13c08"
+    },
+    {
+      "file": "threaded/firefox/cases/MarketsV2/disabled_fruit_deliveries_have_a_stable_per-tick_trace_and_save_continuation__golden__save-format__artifacts/checksums.txt",
+      "lines": 3000,
+      "sha256": "b3653dda25a9ad4ba775488b0242509bdbe3e50433c5c4d8842f2e5d5780ee0d"
+    },
+    {
+      "file": "threaded/firefox/cases/MarketsV2/enabled_supply_networks_repeat_deterministically_with_save_continuation__golden__save-format__artifacts/checksums.txt",
+      "lines": 3000,
+      "sha256": "b2d29311f93a1cdf2e40f03fcb3cbdda5d94648714bf981f9e2a3c4ee3f13c08"
+    },
+    {
+      "file": "threaded/webkit/cases/MarketsV2/disabled_fruit_deliveries_have_a_stable_per-tick_trace_and_save_continuation__golden__save-format__artifacts/checksums.txt",
+      "lines": 3000,
+      "sha256": "b3653dda25a9ad4ba775488b0242509bdbe3e50433c5c4d8842f2e5d5780ee0d"
+    },
+    {
+      "file": "threaded/webkit/cases/MarketsV2/enabled_supply_networks_repeat_deterministically_with_save_continuation__golden__save-format__artifacts/checksums.txt",
+      "lines": 3000,
+      "sha256": "b2d29311f93a1cdf2e40f03fcb3cbdda5d94648714bf981f9e2a3c4ee3f13c08"
+    }
+  ],
+  "distinct_hashes_by_fixture": {
+    "disabled_fruit_deliveries_have_a_stable_per-tick_trace_and_save_continuation__golden__save-format__artifacts": 1,
+    "enabled_supply_networks_repeat_deterministically_with_save_continuation__golden__save-format__artifacts": 1
+  },
+  "orchestration": "Ignored executed-spec.js copy with only testcase title repaired; clean7b source and runtime producer matched in every case."
+}

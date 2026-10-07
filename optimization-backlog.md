@@ -33,6 +33,8 @@ Each process-scoped profile ran the exact 8192-tick window with affinity 0–7, 
 
 Separate exact-window process-counter runs measured effective frequency as cycles divided by task-clock: Cortex 2.5957 GHz and Maxima 3.5079 GHz, with all events running 100%. These cover all engine threads including startup, not a particular simulation phase, and are separate instrumented runs.
 
+A later separate diagnostic repeated both frozen engines under the performance governor: merged Maxima3.9526GHz/Cortex3.9636GHz and rejected-ring Maxima3.9510GHz/Cortex3.9634GHz. All counters ran100%; inputs stayed stable and all eight governors were restored. Two unrelated asset encoders were active, so these are instrumented diagnostics and **not the effective frequencies of the earlier paired CPU observations**. [Raw counters, provenance and restoration audit](stabilized-frequency-diagnostics.zip) preserve that distinction.
+
 ## Rejected indexed-ring candidate
 
 Annotated Cortex assembly shows each vertical ring byte lookup wrapping y, multiplying by width, and adding x. The dependent vertical load branches account for 24.44% and 22.65% of nearest's local samples. This supports testing compact indexed traversal; it does not predict savings.

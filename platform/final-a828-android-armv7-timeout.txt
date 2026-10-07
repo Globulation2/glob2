@@ -1,0 +1,5 @@
+2026-10-07T02:12:33.0420042Z Collecting Pillow==12.2.0 (from -r /home/runner/work/glob2/glob2/tools/asset-requirements.txt (line 2))
+2026-10-07T02:12:33.8219394Z   Downloading pillow-12.2.0-cp312-cp312-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl.metadata (8.8 kB)
+2026-10-07T02:12:40.8575618Z Downloading pillow-12.2.0-cp312-cp312-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl (7.1 MB)
+2026-10-07T02:12:55.8772188Z pip._vendor.urllib3.exceptions.ReadTimeoutError: HTTPSConnectionPool(host='files.pythonhosted.org', port=443): Read timed out.
+2026-10-07T02:12:55.9365838Z Command '['/home/runner/work/glob2/glob2/build/mobile-tools/asset-encoder-runtime-assets-v1-py3.12/venv/bin/python', '-m', 'pip', 'install', '--only-binary=:all:', '-r', '/home/runner/work/glob2/glob2/tools/asset-requirements.txt']' returned non-zero exit status 2.

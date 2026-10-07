@@ -1,0 +1,29 @@
+{
+  "native.replay.checksums": {
+    "bytes": 3472650,
+    "sha256": "5570a99e4345b5aa80d1f14928c4a5e5b37a03244b9327310ca1d0760d3df7e4",
+    "matches_original_windows_native": true
+  },
+  "verify-match.checksums.txt": {
+    "bytes": 9094,
+    "sha256": "c02adc67dc9e6b9a30b289f78038d72c3b7550c95db84025b28d65f49bf0cd38",
+    "matches_original_windows_native": true
+  },
+  "composition": {
+    "lines": 150,
+    "matches_original_windows_native": true
+  },
+  "producer": {
+    "compiler": "g++",
+    "dirty": false,
+    "flags": {
+      "CCFLAGS": "",
+      "CPPDEFINES": "GLOB2_OFFICIAL_INSTANCE_ORIGIN \\\"https://app.glob2online.com\\\" GLOB2_OFFICIAL_INSTANCE_FORMER_ORIGINS \\\"https://glob2online.com\\\" WIN32 HAVE_CONFIG_H SDL_MAIN_HANDLED",
+      "CXXFLAGS": "-std=gnu++20 -Wall -fPIC -O3 -s",
+      "LINKFLAGS": "-Wall -O3 -fwhole-program"
+    },
+    "revision": "c3fc51e3cc090bdbf49376a6756270b9ff4e91f8",
+    "sourceStatus": [],
+    "sourceTreeSha256": "058b60539c9675566a95f6b3f857136a3e53ad7301bd3325d47b5147b195df88"
+  }
+}
