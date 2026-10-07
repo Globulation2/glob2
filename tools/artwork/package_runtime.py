@@ -44,6 +44,10 @@ def category(recipe):
         return 'ai-materials'
     if recipe in ORIGINAL_MATERIALS:
         return 'original-materials'
+    if recipe.startswith('procedural terrain synthesis'):
+        return 'procedural-materials'
+    if recipe.startswith('generated terrain material'):
+        return 'ai-materials'
     if recipe == 'soft mask resampling':
         return 'resampled-masks'
     raise ValueError('Unclassified recipe: ' + recipe)

@@ -2,7 +2,7 @@
   "generator": "tools/artwork/terrain_synth.py",
   "method": "procedural",
   "generator_sha256": {
-    "tools/artwork/terrain_synth.py": "a8eda69c7b7212d9f9573766da37f1002a984d62327c108fb581e9a9c23830dc",
+    "tools/artwork/terrain_synth.py": "68ee111bc32af6bd9ea74cfe300cd0bdad708fc301aad03789f46edd90dace10",
     "tools/artwork/material_tiles.py": "224e159e0974023797710aa959994f11658c82da8fb80f9701e4abc13c74ed83"
   },
   "material": "loam",
@@ -164,5 +164,23 @@
     "data/gfx/terrain-loam13.png": "97618c090a91cb04cf67f13236bd309641244dcb4618e2e8b06c7f690c135994",
     "data/gfx/terrain-loam14.png": "79d16cb410f35dd70fb981d09c463a1d3148feae9894338eec4258ab603ad678",
     "data/gfx/terrain-loam15.png": "1b744935aa9cffe1dcaf5af16a41e5a557dee2bf27e294146496eced43edad23"
+  },
+  "highres_sha256": {
+    "data/highres/v1/terrain-loam0.png": "a6e703714ba2c179dfa616785a7837a8f5ac27649786a8772846cb5d8da5ac74",
+    "data/highres/v1/terrain-loam1.png": "4fe40334663daf2b0010f52d7eae9dc575a3fb613946704cb53a9cf52f76180e",
+    "data/highres/v1/terrain-loam2.png": "bb32742849907f355d84efb5a6221cc8f82c577c113774ad90c703165fabb66c",
+    "data/highres/v1/terrain-loam3.png": "b345d16d1d870773f210f0ee29013c9d695e049c719b3c535e03a61b131469ea",
+    "data/highres/v1/terrain-loam4.png": "3ad26ffde69beb3f34b4f31a4234e8ef0d4fae7640c97ef52ad02fd106a4d312",
+    "data/highres/v1/terrain-loam5.png": "5a7ae3a56d798ec4d2aaa9c5cb89fe280ec6515e53564d3648b7a16eb04a8429",
+    "data/highres/v1/terrain-loam6.png": "06f5efbdd41a6e587cdc0d28ae9601c142419a0b25d5ff6c0efb193d64ed88e2",
+    "data/highres/v1/terrain-loam7.png": "a9f2d285c495d4824eb287290126a95dc8c1bc94a27b520626146e05f3801490",
+    "data/highres/v1/terrain-loam8.png": "81798fb90fcccb67c9c8502ac058eff6a04dcb25d052c02cfcbdbcefe4cf3fe6",
+    "data/highres/v1/terrain-loam9.png": "2ce69db946abb6e7def2e6e7086eddd9391d5f454b10cb678ddad1c4433f3b28",
+    "data/highres/v1/terrain-loam10.png": "818c1c206bb3940d5f1a639d0a37a6144267369cf49a41056d2b639fd51bbf48",
+    "data/highres/v1/terrain-loam11.png": "d6ddec507b431c91c4aa5d5c8b0fd5050423f8ef72a98f193b194a02b341ef49",
+    "data/highres/v1/terrain-loam12.png": "2f9af6d80d54984d3927840e0257370215cd5d8f8bfcfad66370742a93764d45",
+    "data/highres/v1/terrain-loam13.png": "df83408023a9e30b5048d5165d7850efab25ee5ce69e9fe7266ea3ba00ea6b37",
+    "data/highres/v1/terrain-loam14.png": "0b616071b1f86222c617c5eff0440d4ceae7c1dda49ecfb65ccdd91812c72156",
+    "data/highres/v1/terrain-loam15.png": "d552f5ba87aeae280a35923498dab4c62c44a57f7f3e15796afa4e2f453882d9"
   }
 }

@@ -13,6 +13,7 @@
 #include "terrain/TerrainCatalogIO.h"
 #include "scene/SceneMap.h"
 #include "SoftwareTerrainCache.h"
+#include <Toolkit.h>
 #include "MapRenderState.h"
 #include "MapThumbnail.h"
 #include "MapImage.h"
@@ -1245,6 +1246,51 @@ TEST_SUITE("TerrainValidation")
 			if (const auto experiment = terrainExperiment(type))
 				CHECK(required.has(*experiment));
 		CHECK(required.size() == 9);
+	}
+	TEST_CASE("catalogue materials load 4x HD frames and compose at 4x [display][artifacts]")
+	{
+		// HD frames load only on the GPU renderers.
+		glob2test::HeadlessGlobals globals(
+			{.display = true,
+			 .width = 640,
+			 .height = 480,
+			 .screenFlags = Uint32(GAGCore::GraphicContext::USEGPU)});
+		GAGCore::Sprite::setHighResolution(true);
+		struct Restore
+		{
+			~Restore() { GAGCore::Sprite::setHighResolution(false); }
+		} restore;
+		auto &compositor = globals->terrainCompositor();
+		compositor.prepare(true, 0);
+		const auto &catalog = compositor.catalog();
+		std::vector<std::string> keys;
+		for (unsigned i = TERRAIN_COUNT_BEFORE_CATALOGUE; i < TERRAIN_COUNT; ++i)
+			if (terrainPaintable(TerrainType(i)))
+				keys.push_back(terrainPresentation(TerrainType(i)).name);
+		REQUIRE(keys.size() == 24);
+		// One 4x composed tile per catalogue material, six per row.
+		GAGCore::DrawableSurface sheet(6 * 128, 4 * 128);
+		for (std::size_t n = 0; n < keys.size(); ++n)
+		{
+			INFO(keys[n]);
+			const auto id = catalog.bindings.at(keys[n]);
+			const auto &material = catalog.materials[id];
+			auto *sprite = GAGCore::Toolkit::getSprite(material.sprite);
+			REQUIRE(sprite);
+			for (const auto &variant : material.variants)
+			{
+				auto *hd = sprite->baseFrame(variant.frame);
+				REQUIRE(hd);
+				CHECK(hd->getW() == 128);
+				CHECK(hd->getH() == 128);
+			}
+			TerrainVisual::Recipe recipe;
+			recipe.samples.fill(id);
+			recipe.width = recipe.height = 1;
+			compositor.compose(recipe, sheet.getSDLSurface(), int(n % 6) * 128, int(n / 6) * 128, 4);
+		}
+		CHECK(IMG_SavePNG(sheet.getSDLSurface(),
+						  (glob2test::artifactDir() / "terrain-catalogue-hd.png").string().c_str()));
 	}
 	TEST_CASE("mixed terrain simulation trace and visual gallery [display][artifacts]")
 	{

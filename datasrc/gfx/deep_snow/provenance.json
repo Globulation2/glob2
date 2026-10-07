@@ -2,7 +2,7 @@
   "generator": "tools/artwork/terrain_synth.py",
   "method": "procedural",
   "generator_sha256": {
-    "tools/artwork/terrain_synth.py": "a8eda69c7b7212d9f9573766da37f1002a984d62327c108fb581e9a9c23830dc",
+    "tools/artwork/terrain_synth.py": "68ee111bc32af6bd9ea74cfe300cd0bdad708fc301aad03789f46edd90dace10",
     "tools/artwork/material_tiles.py": "224e159e0974023797710aa959994f11658c82da8fb80f9701e4abc13c74ed83"
   },
   "material": "deep_snow",
@@ -171,5 +171,23 @@
     "data/gfx/terrain-deep_snow13.png": "6aa6d54c7ee769e0cabc97083786a2a9de90b747653d4320ffab5837f29f0bc6",
     "data/gfx/terrain-deep_snow14.png": "dc623cba4ebb33920ddaa2d0514a1966b9ad8ecc7afd190e876fef5443582574",
     "data/gfx/terrain-deep_snow15.png": "94b7ed824362d86e0ca47b7a7717705541d6f33201327b647af6de6762d8e3e3"
+  },
+  "highres_sha256": {
+    "data/highres/v1/terrain-deep_snow0.png": "888129033b2b8a1a77e76947c68ab6482c76d44761942bbffdcebd6a12e6dad3",
+    "data/highres/v1/terrain-deep_snow1.png": "3e1519405055e9179f7444fda38162c832b706acce140802991add749c1263eb",
+    "data/highres/v1/terrain-deep_snow2.png": "cff0ac6b609847966045a2762befbc6d530fca3d46ef489c3425e4638514d848",
+    "data/highres/v1/terrain-deep_snow3.png": "fa5678238bd6829b621045b26009eee76638917e566b17fc203d53ba92271064",
+    "data/highres/v1/terrain-deep_snow4.png": "02f2a05eafec3d39d36a82f8ea990505d9b0d352bfd1bbe4cd528db768b61d23",
+    "data/highres/v1/terrain-deep_snow5.png": "24e4b65b06c7a57b0baecfecca243d761d0dac197236d3496ca068c9e365809e",
+    "data/highres/v1/terrain-deep_snow6.png": "92c69f154e075f30e14c08dbe3d6bdaf42c34575d2459e3e6fa4a5f32bae4168",
+    "data/highres/v1/terrain-deep_snow7.png": "bb0caeadf88b21cd8778a134ff0e2850551d67a99c2dd57885b29d70d112575a",
+    "data/highres/v1/terrain-deep_snow8.png": "f516d285d840f08a78cfaa1b239bbff3b22bc02d5bc4f483f693fe2d1b3d160c",
+    "data/highres/v1/terrain-deep_snow9.png": "9b3d728dbf3e41741cfb5cfe96319de29d7088f8b39f8494c405b05b80adcd69",
+    "data/highres/v1/terrain-deep_snow10.png": "a4be4d24713433aafc21e0c7b6638473a035cfc2ab2040a743dd505d9b32db7e",
+    "data/highres/v1/terrain-deep_snow11.png": "2d8a240d29a907058e60cf1acf4c64bde413e6962decc052952b725d6bbd92dd",
+    "data/highres/v1/terrain-deep_snow12.png": "b163ce7035f0031f49edb9bfbc1b9f411bce24920b29256b82179a42494d0582",
+    "data/highres/v1/terrain-deep_snow13.png": "126a0b82da1833fffa3219c80dbea187d30f18feeba83325b35c89d797d456d8",
+    "data/highres/v1/terrain-deep_snow14.png": "1ff0363708bd476c5bd05df8354ec658905aa7ee2a54b42089fd4d911eddc1b0",
+    "data/highres/v1/terrain-deep_snow15.png": "c1ccfc80cde73fdcb6bc692ec38082da93527e8fab0a48b195981bbd837a6528"
   }
 }

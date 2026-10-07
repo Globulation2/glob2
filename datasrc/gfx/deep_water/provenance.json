@@ -2,7 +2,7 @@
   "generator": "tools/artwork/terrain_synth.py",
   "method": "procedural",
   "generator_sha256": {
-    "tools/artwork/terrain_synth.py": "a8eda69c7b7212d9f9573766da37f1002a984d62327c108fb581e9a9c23830dc",
+    "tools/artwork/terrain_synth.py": "68ee111bc32af6bd9ea74cfe300cd0bdad708fc301aad03789f46edd90dace10",
     "tools/artwork/material_tiles.py": "224e159e0974023797710aa959994f11658c82da8fb80f9701e4abc13c74ed83"
   },
   "material": "deep_water",
@@ -171,5 +171,23 @@
     "data/gfx/terrain-deep_water13.png": "2df9c33597048e951df2871583aa1a8cac119039d0e53bc3530f69300264d64d",
     "data/gfx/terrain-deep_water14.png": "a068bbb06a6d3f02e5a03258c2c6a3131772b194597297c9fe5ca4408ed27592",
     "data/gfx/terrain-deep_water15.png": "f1f6a03b5deaf2639035bb6ae9c721e3cf4df6e5360f32695a32af6f7d3d94d3"
+  },
+  "highres_sha256": {
+    "data/highres/v1/terrain-deep_water0.png": "3d00705e4bc7f497343e94d7fca003fbb3e9e836459cf3f85ef3adce4237e510",
+    "data/highres/v1/terrain-deep_water1.png": "219856688ccf2df1f1a7bcaea599bb95d7096bef52ccc74219b458ed3275cf94",
+    "data/highres/v1/terrain-deep_water2.png": "b529c79315f56331d4d6165d9cf49406de0f6df7cd3048630122f809232b95a4",
+    "data/highres/v1/terrain-deep_water3.png": "8d561cc6e865ca64d17c89905cdd0a7997ae96d5f18cba843faa937c17a00732",
+    "data/highres/v1/terrain-deep_water4.png": "bb5b1623e29b90f6b22451039ad198ce7a1c8dd0ba560f29e147f8c4e7c0158b",
+    "data/highres/v1/terrain-deep_water5.png": "1c3b45bbe6e60e93e95334a1f14f6a5f77061715818adb931d850fc13103dd57",
+    "data/highres/v1/terrain-deep_water6.png": "a220ac5845cfa7b6a01d24eaf9d3131e5a096327d04b1ebdd432f814c3f91645",
+    "data/highres/v1/terrain-deep_water7.png": "fe547ae27fe35a18558f36192639956332adcdaf7efa62e2e8ac2427e34b4fcc",
+    "data/highres/v1/terrain-deep_water8.png": "5d2bc407b0eb2353c65379600c0a65f870bb52869246b53da60c37546abeb8a9",
+    "data/highres/v1/terrain-deep_water9.png": "dfe9152f4308b4db77710fbae349b6f865d1bb7725412e8f0031d1072fdebe6a",
+    "data/highres/v1/terrain-deep_water10.png": "8e14bfb87976dea5af05c0a44119d4e97f9fe2e11c336dcf48697eb2c176b99c",
+    "data/highres/v1/terrain-deep_water11.png": "91f9f647730af2a5d9b638ec2d90178daae654ab0c9a5f0e15a3f2afc3c1833d",
+    "data/highres/v1/terrain-deep_water12.png": "21f58f4357d91b257986473a1f6842b99a583ea5644ce082deadea6d81f34f88",
+    "data/highres/v1/terrain-deep_water13.png": "62bd5ba74fade3615541659a326f05975f08b3a38303e07c8a7dab661961e8ee",
+    "data/highres/v1/terrain-deep_water14.png": "14fb4467c4cdbf932aa6743a082218b49a7e7072293cc7f2dc9cb9f41166ac02",
+    "data/highres/v1/terrain-deep_water15.png": "f49cd95120a3bc1e4668750c2c20d171c1bf7a629024f76c9e13b4d69cf5ae11"
   }
 }

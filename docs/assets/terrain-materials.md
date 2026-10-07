@@ -192,8 +192,12 @@ Pillow's kernels the renders depend on the C library's `sin`/`atan2`/`hypot` and
 on `round()` boundaries, so the provenance records the platform and a mismatch
 on another platform is reported with that note. Recipes swapped to
 image-generated art are marked `placeholder_only=True` and skipped by `--check`.
-`--hd` writes the 128×128 renders under `artifacts/terrain/hd/` for review only
-and writes no frames.
+Writing frames also writes each variant's 128×128 render, the exact source the
+classic tile is downsampled from, as its HD frame (`data/highres/v1/terrain-<name>N.png`
+and `datasrc/gfx/production/procedural-materials/`), registers it in the pack
+manifest and `frames.txt` through `tools/artwork/highres_pack.py`, and records its
+hash in the provenance; `--check` compares both resolutions. `--hd` alone writes
+the renders under `artifacts/terrain/hd/` for review and changes nothing else.
 Preview and minimap colours derive from the rendered mean unless a recipe
 overrides them for legibility (void, hazards, deep water).
 

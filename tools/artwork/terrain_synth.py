@@ -24,7 +24,9 @@ Each material renders sixteen independent, periodic 128x128 variants,
 box-downsamples them to 32x32 and shares ring 0 of the perimeter across variants
 (tools/artwork/material_tiles.py) so any two variants join. Animated materials
 render four phases per variant; the frame layout is `variant + 16 * phase`.
-Outputs are `data/gfx/terrain-<name>N.png` and `datasrc/gfx/<name>/provenance.json`.
+Outputs are `data/gfx/terrain-<name>N.png`, the 128x128 HD frames the classic
+tiles were downsampled from (`data/highres/v1/terrain-<name>N.png`, registered in
+the pack through tools/artwork/highres_pack.py) and `datasrc/gfx/<name>/provenance.json`.
 
 Pixel-exact reproduction (`--check`) is pinned to the encoder interpreter on
 Linux x86-64: besides Pillow's resampling kernels, the renders depend on the C
@@ -76,6 +78,9 @@ PILLOW_VERSION = "12.2.0"
 N = SHEET  # render size; four render pixels per native pixel
 VARIANTS = 16
 FRAME_PREFIX = "data/gfx/terrain-"
+HD_PREFIX = "data/highres/v1/terrain-"
+HD_CATEGORY = "procedural-materials"
+HD_RECIPE = "procedural terrain synthesis v1"
 XS = [i % N for i in range(N * N)]
 YS = [i // N for i in range(N * N)]
 TAU = 2 * math.pi
@@ -1255,14 +1260,16 @@ def perimeter_structure(rgb, depth=16):
     return math.sqrt(sum((v - mean) ** 2 for v in values) / len(values))
 
 
-def render_phase(name, phase, hd=False):
+def render_phase(name, phase):
     """Render the sixteen variants of one phase, before perimeter sharing.
 
+    Returns (native 32x32 tiles, 128x128 HD tiles) from the same renders, so
+    the HD frames are the exact source the classic tiles were downsampled from.
     Frame 0 is the master the runtime blends every other variant's border
     toward, so the render with the quietest perimeter takes that slot (the
     sixteen seeds are unchanged; only their order is). The pooled 32-pixel
     statistics of all variants define the material's style transform, which
-    is applied to every variant.
+    is applied to every variant at both resolutions.
     """
     rec = RECIPES[name]
     renders = [render_fields(name, variant, phase) for variant in range(VARIANTS)]
@@ -1275,37 +1282,43 @@ def render_phase(name, phase, hd=False):
     small = [box_down_fields(rgb, alpha) for rgb, alpha in renders]
     pooled = [sum((rgb[k] for rgb, _ in small), []) for k in range(3)]
     transform = style_transform(pooled, rec.style.luma, rec.style.std, rec.style.match)
-    tiles = []
+    native, hd = [], []
     for (rgb, alpha), (small_rgb, small_alpha) in zip(renders, small):
-        if hd:
-            tiles.append(fields_to_image(apply_style(rgb, transform), alpha, N))
-            continue
-        tiles.append(fields_to_image(apply_style(small_rgb, transform),
-                                     small_alpha if alpha is not None else None, TILE))
-    return tiles
+        hd.append(fields_to_image(apply_style(rgb, transform), alpha, N))
+        native.append(fields_to_image(apply_style(small_rgb, transform),
+                                      small_alpha if alpha is not None else None, TILE))
+    return native, hd
 
 
 def _render_job(args):
-    name, phase, hd = args
-    tiles = render_phase(name, phase, hd)
-    return name, phase, [tile.tobytes() for tile in tiles], tiles[0].size
+    name, phase = args
+    native, hd = render_phase(name, phase)
+    return (name, phase, [t.tobytes() for t in native], native[0].size,
+            [t.tobytes() for t in hd], hd[0].size)
 
 
-def synthesize(names, jobs=None, hd=False):
-    """Render and perimeter-share all variants: {name: {phase: [tiles]}}."""
-    tasks = [(name, phase, hd) for name in names for phase in range(RECIPES[name].phases)]
+def synthesize_both(names, jobs=None):
+    """Render and perimeter-share all variants at both resolutions:
+    ({name: {phase: [native tiles]}}, {name: {phase: [HD tiles]}})."""
+    tasks = [(name, phase) for name in names for phase in range(RECIPES[name].phases)]
     jobs = jobs or min(32, os.cpu_count() or 1)
     if jobs > 1 and len(tasks) > 1:
         with concurrent.futures.ProcessPoolExecutor(max_workers=min(jobs, len(tasks))) as pool:
             rendered = list(pool.map(_render_job, tasks))
     else:
         rendered = [_render_job(task) for task in tasks]
-    results = {}
-    width = 2 * (N // TILE) if hd else 2
-    for name, phase, data, size in rendered:
-        tiles = [Image.frombytes("RGBA", size, d) for d in data]
-        results.setdefault(name, {})[phase] = share_perimeter(tiles, width)
-    return results
+    native, hd = {}, {}
+    for name, phase, small, small_size, large, large_size in rendered:
+        tiles = [Image.frombytes("RGBA", small_size, d) for d in small]
+        native.setdefault(name, {})[phase] = share_perimeter(tiles, 2)
+        tiles = [Image.frombytes("RGBA", large_size, d) for d in large]
+        hd.setdefault(name, {})[phase] = share_perimeter(tiles, 2 * (N // TILE))
+    return native, hd
+
+
+def synthesize(names, jobs=None, hd=False):
+    """Render and perimeter-share all variants: {name: {phase: [tiles]}}."""
+    return synthesize_both(names, jobs)[1 if hd else 0]
 
 
 def frames_of(name, phases):
@@ -1418,7 +1431,7 @@ def platform_record():
     }
 
 
-def provenance_document(name, phases, hashes, root):
+def provenance_document(name, phases, hashes, root, hd_hashes=None):
     rec = RECIPES[name]
     preview, minimap, mean = preview_colors(name, phases)
     references = reference_stats(root)
@@ -1449,13 +1462,23 @@ def provenance_document(name, phases, hashes, root):
         "pillow": PIL.__version__,
         "platform": platform_record(),
         "runtime_sha256": hashes,
+        "highres_sha256": hd_hashes or {},
     }
 
 
-def write_material(name, phases, root):
+def write_material(name, phases, hd_phases, root):
+    from highres_pack import register_frames, source_record
+
     frames = frames_of(name, phases)
     hashes = write_frames(frames, f"{FRAME_PREFIX}{name}", 0, root)
-    document = provenance_document(name, phases, hashes, root)
+    hd_frames = frames_of(name, hd_phases)
+    generators = [source_record(Path(path), root) for path in generator_hashes()]
+    register_frames([
+        {"id": f"terrain-{name}{i}", "image": tile, "recipe": f"{HD_RECIPE}: {name}", "sources": generators}
+        for i, tile in enumerate(hd_frames)
+    ], HD_CATEGORY, root)
+    hd_hashes = {f"{HD_PREFIX}{name}{i}.png": pixel_sha256(tile) for i, tile in enumerate(hd_frames)}
+    document = provenance_document(name, phases, hashes, root, hd_hashes)
     path = root / "datasrc/gfx" / name / "provenance.json"
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(json.dumps(document, indent=2) + "\n")
@@ -1468,7 +1491,7 @@ PLATFORM_NOTE = (
 )
 
 
-def check_material(name, phases, root):
+def check_material(name, phases, root, hd_phases=None):
     """Compare a fresh synthesis with committed frames and provenance."""
     rec = RECIPES[name]
     problems = []
@@ -1500,6 +1523,20 @@ def check_material(name, phases, root):
             problems.append(f"{relative}: committed pixels differ from a fresh synthesis{platform_hint}")
         if recorded.get(relative) != committed:
             problems.append(f"{relative}: provenance hash differs from committed pixels")
+    if hd_phases is not None:
+        recorded_hd = provenance.get("highres_sha256", {})
+        for i, tile in enumerate(frames_of(name, hd_phases)):
+            relative = f"{HD_PREFIX}{name}{i}.png"
+            path = root / relative
+            if not path.exists():
+                problems.append(f"{relative}: missing HD frame")
+                continue
+            with Image.open(path) as image:
+                committed = pixel_sha256(image)
+            if committed != pixel_sha256(tile):
+                problems.append(f"{relative}: committed HD pixels differ from a fresh synthesis{platform_hint}")
+            if recorded_hd.get(relative) != committed:
+                problems.append(f"{relative}: provenance HD hash differs from committed pixels")
     if provenance.get("generator_sha256") != generator_hashes():
         problems.append(f"{name}: generator sha256 differs; re-run terrain_synth.py to refresh provenance")
     if provenance.get("pillow") != PIL.__version__:
@@ -1621,8 +1658,8 @@ def main(argv=None):
 
     if args.check:
         checked = [n for n in names if not RECIPES[n].placeholder_only]
-        results = synthesize(checked, jobs)
-        problems = [p for name in checked for p in check_material(name, results[name], root)]
+        results, hd_results = synthesize_both(checked, jobs)
+        problems = [p for name in checked for p in check_material(name, results[name], root, hd_results[name])]
         skipped = [n for n in names if RECIPES[n].placeholder_only]
         for problem in problems:
             print("FAIL", problem)
@@ -1640,7 +1677,7 @@ def main(argv=None):
     needs_native = args.contact_sheet is not None or args.emit_catalog or args.write_catalog or not modes or args.write
     if not needs_native:
         return
-    results = synthesize(names, jobs)
+    results, hd_results = synthesize_both(names, jobs)
     if args.contact_sheet is not None:
         args.contact_sheet.parent.mkdir(parents=True, exist_ok=True)
         contact_sheet(results, root).save(args.contact_sheet)
@@ -1653,7 +1690,7 @@ def main(argv=None):
         print(f"Merged {len(results)} material blocks into data/terrain/tileset.json")
     if not modes or args.write:
         for name in names:
-            hashes = write_material(name, results[name], root)
+            hashes = write_material(name, results[name], hd_results[name], root)
             stats = style_stats(results[name][0])
             print(f"{name:<14} {len(hashes):3d} frames  luma {stats['luma']:5.1f} std {stats['std']:4.1f} "
                   f"grain {stats['grain']:4.1f} sat {stats['sat']:.2f}")

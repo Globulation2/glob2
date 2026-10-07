@@ -24,8 +24,10 @@ def render():
         recipe = frame['recipe']
         original = recipe.startswith('recovered original')
         authored = recipe.startswith('hand-authored SVG')
+        procedural = recipe.startswith('procedural terrain synthesis')
         category = ('Recovered original' if original
-                    else 'Hand-authored vector' if authored else CATEGORIES[recipe])
+                    else 'Hand-authored vector' if authored
+                    else 'Procedural terrain synthesis' if procedural else CATEGORIES[recipe])
         sources = frame.get('sources', [])
         if original or authored:
             require(sources, 'Missing provenance sources: ' + frame['id'])
