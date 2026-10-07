@@ -7,6 +7,7 @@ from unittest.mock import patch
 from PIL import Image
 from tools import package_assets
 from tools.package_assets import export_assets, include_asset
+from tools import terrain_tileset
 
 
 class TerrainRuntimeFingerprintTests(unittest.TestCase):
@@ -64,7 +65,7 @@ class TerrainEncoderHandoffTests(unittest.TestCase):
                 "materials": [{"key": "water", "profile": "flat", "ocean": True,
                                "sprite": "data/gfx/tile", "preview": [20, 80, 130],
                                "variants": [{"frame": 0, "weight": 1}]}],
-                "bindings": {key: "water" for key in ("water", "sand", "grass", "ice", "road")},
+                "bindings": {key: "water" for key in terrain_tileset.BINDINGS},
             }
             (root / "data/terrain/tileset.json").write_text(json.dumps(document))
             script = (

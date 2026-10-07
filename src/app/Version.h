@@ -7,7 +7,8 @@
 // This is the version of map and savegame format, and all of the recorded data on the server
 #define VERSION_MAJOR 0
 #define MINIMUM_VERSION_MINOR 58
-#define VERSION_MINOR 140
+#define VERSION_MINOR 141
+// version 141 adds the built-in terrain catalogue; older custom terrain IDs are remapped on load.
 // version 140 separates fixed materials from embedded runtime resource definitions.
 // version 139 moves periodic gradient preparation to the completed-tick observation phase.
 // version 138 saves the map's terrain look seed; older maps load with seed 0.

@@ -37,7 +37,11 @@ class TerrainRegistry
 	// a replacement snapshot; readers may retain the previous one indefinitely.
 	static std::shared_ptr<const TerrainRegistry> builtins();
 	std::shared_ptr<const TerrainRegistry> importJson(std::string_view source) const;
-	static std::shared_ptr<const TerrainRegistry> deserialize(std::string_view source);
+	// The TERRAIN_COUNT a file of the given format version was written with: its
+	// custom IDs start there and are renumbered to follow the current built-ins.
+	static unsigned savedBuiltinCount(int versionMinor);
+	static std::shared_ptr<const TerrainRegistry> deserialize(std::string_view source,
+																	  unsigned savedBuiltinCount = TERRAIN_COUNT);
 	// Saved definitions are resolved and authoritative: no authoring inheritance
 	// or local files are consulted during deserialization.
 	std::string serialize() const;

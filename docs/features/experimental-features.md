@@ -28,7 +28,9 @@ covers what players see, the compatibility rules, and how to add an experiment.
   saved game that carries any.
 - Terrain experiments control which brushes the editor offers. A map containing
   experimental terrain declares that requirement and enables it when played, even
-  if the local editor switch is off. Ice and Trail have separate switches.
+  if the local editor switch is off. Ice and Trail have separate switches; every
+  other terrain group (`src/map/TerrainGroup.h`) has one switch shared by all of
+  its visual variants.
 - [Resource catalogs](resource-catalogs.md) can declare experiments with the same
   stable key, label and help fields as building catalogs. The resource palette
   provides map-local authoring switches. Maps preserve their declarations and
@@ -96,6 +98,19 @@ game's experiments. See [headless replays](../development/headless-replays.md).
 | `ice-terrain` | Ice terrain | Enables the ice editor brush. Ice halves ground movement speed and costs an exposed ground unit one HP per 32 ticks; flying units are unaffected. Ice supports neither buildings nor resources. |
 | `road-terrain` | Trail terrain | Enables the Trail editor brush. Weathered trails double ground movement speed, permit buildings, and support no resources. Flying units are unaffected. |
 | `markets-v2` | Markets V2 | Workers fetch shared market stock; upgrades add wheat and wood, then all resources. [Markets V2](markets-v2.md). |
+| `obstacle-terrain` | Obstacle terrain | Boulders, hedge and thicket brushes: impassable on the ground, stop projectiles, passable by fliers; no buildings or resources. |
+| `ridge-terrain` | Ridge terrain | Ridge and outcrop brushes: impassable on the ground, but towers shoot over them and fliers pass. |
+| `barren-terrain` | Barren ground | Dirt, clay, gravel and flower-meadow brushes: buildable, inhibit growth like sand, never count as shoreline. |
+| `rough-terrain` | Rough ground | Mud, marsh, deep-snow and scree brushes: ground units move at 160/256 speed; no buildings or resources. |
+| `path-terrain` | Path terrain | Dirt-track and boardwalk brushes with Trail's rules: double ground speed, buildable, nothing grows. |
+| `lava-terrain` | Lava terrain | Lava and ember-field brushes: impassable on the ground, fliers lose 64/256 HP per tick, projectiles pass. |
+| `fertile-terrain` | Fertile ground | Loam, moss and spring-meadow brushes: buildable crop land that is a fertility source three times as strong as water. |
+| `deep-water-terrain` | Deep water | Deep-water and dark-water brushes: swimmable at 192/256 speed, no algae, still a fertility source. |
+| `void-terrain` | Void terrain | Hole and chasm brushes: nothing crosses, not even fliers; projectiles stop at the edge. |
+
+Each terrain group is one `TerrainProperties` profile in `src/map/TerrainGroup.h`;
+`src/map/TerrainTypeTable.h` lists its members and
+[terrain materials](../assets/terrain-materials.md) covers their artwork.
 
 Trail retains the legacy experiment key `road-terrain`, terrain ID `4`, and
 external terrain name `road`. Existing preferences, maps, saves, scripts, map
@@ -130,8 +145,10 @@ For a built-in engine experiment:
 1. Append an `ExperimentId` before `Count` in `src/game/ExperimentalFeatures.h` and add
    its definition (stable key, English label and help) to the table in
    `src/game/ExperimentalFeatures.cpp`. Keys are lowercase letters, digits and hyphens.
-2. For terrain, associate its ID with the experiment in `TerrainExperiments.h` and
-   gate authoring controls. Simulation always reads the terrain properties; local
+2. For terrain, add the group to `TerrainGroup.h` (one property profile), list its
+   types in `TerrainTypeTable.h`, and associate the group with the experiment in
+   `TerrainExperiments.h`; the editor gates every member of the group through that
+   one switch. Simulation always reads the terrain properties; local
    preferences must never change an existing map cell's behavior. For other features,
    gate the simulation on `game->gameHeader.hasExperiment(ExperimentId::X)` (from a
    unit, `owner->game->gameHeader`). The path with the experiment off must stay
