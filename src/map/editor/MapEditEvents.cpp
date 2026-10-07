@@ -9,6 +9,7 @@
 #include "MapEdit.h"
 #include "PhoneEditor.h"
 #include "MapEditKeyActions.h"
+#include "EditorDock.h"
 #include <SDL3/SDL.h>
 
 void MapEdit::processEvent(SDL_Event& event)
@@ -25,24 +26,28 @@ void MapEdit::processEvent(SDL_Event& event)
 
 	if (event.type==SDL_EVENT_QUIT)
 	{
-		doFullQuit=true;
+		requestApplicationQuit();
 	}
 #	ifdef USE_OSX
 	else if(event.type == SDL_EVENT_KEY_DOWN && event.key.key == SDLK_Q && (event.key.mod & SDL_KMOD_GUI))
 	{
-		doFullQuit=true;
+		requestApplicationQuit();
 	}
 #	endif
 #	ifdef USE_WIN32
 	else if(event.type == SDL_EVENT_KEY_DOWN && event.key.key == SDLK_F4 && (event.key.mod & SDL_KMOD_ALT))
 	{
-		doFullQuit=true;
+		requestApplicationQuit();
 	}
 #	endif
 
 	else if (hasDialog())
 	{
 		delegateMenu(event);
+		return;
+	}
+	else if (dock && routeToDock(event))
+	{
 		return;
 	}
     else if (auto sample = GAGCore::scrollGesture(event))
@@ -75,12 +80,12 @@ void MapEdit::processEvent(SDL_Event& event)
 		}
 		else if(isDraggingZone)
 		{
-			if(widgetRectangle(0, 16, globalContainer->gfx->getW()-menuWidth(), globalContainer->gfx->getH()-16).is_in(mouseX, mouseY))
+			if(widgetRectangle(0, 16, globalContainer->gfx->getW()-dockWidth(), globalContainer->gfx->getH()-16).is_in(mouseX, mouseY))
 				performAction("zone drag motion", relMouseX, relMouseY);
 		}
 		else if(isDraggingTerrain)
 		{
-			if(widgetRectangle(0, 16, globalContainer->gfx->getW()-menuWidth(), globalContainer->gfx->getH()-16).is_in(mouseX, mouseY))
+			if(widgetRectangle(0, 16, globalContainer->gfx->getW()-dockWidth(), globalContainer->gfx->getH()-16).is_in(mouseX, mouseY))
 				performAction("terrain drag motion", relMouseX, relMouseY);
 		}
 		else if(isScrollDragging)
@@ -130,7 +135,7 @@ void MapEdit::handleMouseButtonEvent(SDL_Event& event)
 {
 	if(event.type==SDL_EVENT_MOUSE_BUTTON_DOWN && event.button.button==SDL_BUTTON_LEFT)
 	{
-		if((phone || !findAction(event.button.x, event.button.y)) && camera.contains(mouseX,mouseY) && widgetRectangle(0, 16, globalContainer->gfx->getW()-menuWidth(), globalContainer->gfx->getH()).is_in(mouseX, mouseY))
+		if((phone || dock || !findAction(event.button.x, event.button.y)) && camera.contains(mouseX,mouseY) && widgetRectangle(0, 16, globalContainer->gfx->getW()-dockWidth(), globalContainer->gfx->getH()).is_in(mouseX, mouseY))
 		{
 			//The button wasn't clicked in any registered area
 			if(selectionMode==PlaceBuilding)
@@ -158,7 +163,7 @@ void MapEdit::handleMouseButtonEvent(SDL_Event& event)
 				}
 			}
 		}
-		else if(widgetRectangle(globalContainer->gfx->getW()-menuWidth()+RIGHT_MENU_OFFSET+14, 14, 100, 100).is_in(mouseX, mouseY))
+		else if(!dock && widgetRectangle(globalContainer->gfx->getW()-dockWidth()+RIGHT_MENU_OFFSET+14, 14, 100, 100).is_in(mouseX, mouseY))
 			performAction("minimap drag start");
 	}
 	else if(event.type==SDL_EVENT_MOUSE_BUTTON_DOWN && event.button.button==SDL_BUTTON_RIGHT)
@@ -317,6 +322,24 @@ void MapEdit::handleKeyPressed(SDL_KeyboardEvent key, bool pressed)
 			performAction("switch to flag view&select delete objects");
 		}
 		break;
+		case MapEditKeyActions::FocusBrushSearch:
+		{
+			if (dock)
+			{
+				dock->focusSearch();
+				// The key's own text arrives next; it must not land in the field.
+				swallowSearchKeyText = true;
+			}
+		}
+		break;
+		case MapEditKeyActions::SwitchToResourcesView:
+		{
+			if (dock)
+				dock->showTab(EditorDock::Tab::Resources);
+			else
+				performAction("switch to terrain view");
+		}
+		break;
 	}
 }
 
@@ -335,4 +358,74 @@ void MapEdit::suspendInput()
     // Neutralize edge scrolling until a new motion event arrives.
     mouseX = globalContainer->gfx->getW() / 2;
     mouseY = globalContainer->gfx->getH() / 2;
+}
+
+
+// Pointer events over the dock, or while it owns a press, drag or scroll, go to
+// the dock; so do keys and text while its search field is editing. Map strokes
+// and drags that started on the map keep their events wherever the pointer goes.
+bool MapEdit::routeToDock(SDL_Event& event)
+{
+	const bool mapCapture = isDraggingMinimap || isDraggingZone || isDraggingTerrain || isScrollDragging ||
+		isDraggingDelete || isDraggingArea || isDraggingNoResourceGrowthArea;
+	int x = 0, y = 0;
+	bool pointer = true;
+	switch (event.type)
+	{
+	case SDL_EVENT_MOUSE_MOTION: x = int(event.motion.x); y = int(event.motion.y); break;
+	case SDL_EVENT_MOUSE_BUTTON_DOWN:
+	case SDL_EVENT_MOUSE_BUTTON_UP: x = int(event.button.x); y = int(event.button.y); break;
+	case SDL_EVENT_MOUSE_WHEEL: x = int(event.wheel.mouse_x); y = int(event.wheel.mouse_y); break;
+	case SDL_EVENT_FINGER_DOWN:
+	case SDL_EVENT_FINGER_MOTION:
+	case SDL_EVENT_FINGER_UP:
+		x = int(event.tfinger.x * globalContainer->gfx->getW());
+		y = int(event.tfinger.y * globalContainer->gfx->getH());
+		break;
+	default:
+		pointer = GAGCore::scrollGesture(event).has_value();
+		if (pointer)
+		{
+			const auto sample = GAGCore::scrollGesture(event);
+			x = int(sample->x); y = int(sample->y);
+		}
+		break;
+	}
+	if (pointer)
+	{
+		if (mapCapture)
+			return false;
+		if (dock->interacting() || dock->contains(x, y))
+		{
+			if (event.type == SDL_EVENT_MOUSE_MOTION)
+			{
+				// The map's own pointer leaves for the dock: no brush preview there.
+				mouseX = x;
+				mouseY = y;
+			}
+			dock->eventLogical(event);
+			return true;
+		}
+		// Hover elsewhere still updates the dock (tooltips end, the wheel target).
+		if (event.type == SDL_EVENT_MOUSE_MOTION)
+			dock->eventLogical(event);
+		return false;
+	}
+	const bool keyboard = event.type == SDL_EVENT_KEY_DOWN || event.type == SDL_EVENT_KEY_UP ||
+		event.type == SDL_EVENT_TEXT_INPUT || event.type == SDL_EVENT_TEXT_EDITING;
+	if (!keyboard)
+		return false;
+	if (event.type == SDL_EVENT_TEXT_INPUT && swallowSearchKeyText)
+	{
+		swallowSearchKeyText = false;
+		const std::string text = event.text.text ? event.text.text : "";
+		if (text == "/" || text == "f" || text == "F")
+			return true;
+	}
+	if (event.type == SDL_EVENT_KEY_DOWN)
+		swallowSearchKeyText = false;
+	if (!dock->editingText())
+		return false;
+	dock->eventLogical(event);
+	return true;
 }

@@ -22,8 +22,8 @@
       "recipe": "FFmpeg scale to fit square with transparent centered padding; preserve RGBA alpha."
     },
     {
-      "source": "datasrc/gfx/resources/sand-deposit.png",
-      "output": "data/gfx/resource-sand0.png",
+      "source": "datasrc/gfx/resources/silica-deposit.png",
+      "output": "data/gfx/resource-silica0.png",
       "tool": "built-in image_gen",
       "transparent_background": true,
       "prompt": "Use case: stylized-concept. Asset type: Globulation 2 RTS game map resource sprite. Subject: A small pale beige mound of harvestable sand with a few loose grains. Single isolated object centered, 3/4 overhead top-down RTS perspective, entirely transparent background. Match an early 2000s hand-painted 32px strategy-game sprite: simple readable silhouette, tiny soft highlights upper-left, subtle violet-grey shadows, restrained earthy palette, no outlines, no ground tile, no text or borders. It must remain readable downscaled to 32x32 and 16x16. Leave generous transparent margins. Generate only this one asset.",

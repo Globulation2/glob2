@@ -777,6 +777,8 @@ private:
 	///Denotes the name of the game save for saving,
 	///set on loading the map	
 	std::string defaultGameSaveName;
+	///The save this session last wrote; saving to it again needs no overwrite confirmation
+	std::string ownGameSaveName;
 
 	bool hasEndOfGameDialogBeenShown;
 

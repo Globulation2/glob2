@@ -32,10 +32,10 @@ covers what players see, the compatibility rules, and how to add an experiment.
   other terrain group (`src/map/TerrainGroup.h`) has one switch shared by all of
   its visual variants.
 - [Resource catalogs](resource-catalogs.md) can declare experiments with the same
-  stable key, label and help fields as building catalogs. The resource palette
-  provides map-local authoring switches. Maps preserve their declarations and
+  stable key, label and help fields as building catalogs. The editor dock shows
+  gated resources locked, with a map-local **Enable for this map** action. Maps preserve their declarations and
   required keys, so joiners and saved games do not need the original installed
-  catalog. The `foundation-resources` experiment exposes gold ore, iron ore, sand
+  catalog. The `foundation-resources` experiment exposes gold ore, iron ore, silica
   and cotton in the editor without adding them to stock generators or buildings.
 - Experiments can change balance and pacing. A map without experimental terrain
   does not acquire new terrain when a switch is enabled.

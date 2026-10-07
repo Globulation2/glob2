@@ -10,6 +10,7 @@
 #include "MapEdit.h"
 #include "MapEditDialog.h"
 #include "PhoneEditor.h"
+#include "EditorDock.h"
 #include <InterfacePresentation.h>
 #include "ScriptEditorScreen.h"
 #include "Utilities.h"
@@ -28,8 +29,8 @@ MapEdit::MapEdit()
             Minimap::HideFOW)
 {
 	Sprite::requestHighResolution(globalContainer->settings.highResolutionArtwork);
-    const bool usePhone=GAGCore::phonePresentationRequested();
-    if(usePhone && globalContainer->gfx->hasPortableRenderer()) phone=std::make_unique<PhoneEditor>(*this);
+    // The initial presentation; viewportResized() switches it live.
+    if(wantedPresentation()==EditorPresentation::Phone) phone=std::make_unique<PhoneEditor>(*this);
 	doQuit=false;
 	doFullQuit=false;
 	doQuitAfterLoadSave=false;
@@ -136,7 +137,7 @@ MapEdit::MapEdit()
         const auto group = TerrainGroup(g);
         const auto &definition = terrainGroupDefinition(group);
         if (!definition.paletteVisible || terrainGroupIsClassic(group)) continue;
-        const auto enabled = offeredTerrainBrushes(game.map.terrainRegistry(), group);
+        const auto enabled = offeredTerrainBrushes(game.map.terrainRegistry(), group, experimentGate());
         if (enabled.empty()) continue;
         const int slot = int(additionalTerrainSelectors.size());
         const widgetRectangle area(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+32*(slot%4)+decX, 286+38*(slot/4), 32, 32);
@@ -156,7 +157,7 @@ MapEdit::MapEdit()
         addWidget(selector);
     }
     const int terrainExtraRow = 38*((int(additionalTerrainSelectors.size())+3)/4);
-	noResourceGrowthButton = new BlueButton(*this, widgetRectangle(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH + 8+decX, 294+terrainExtraRow, 112, 16), "terrain view", "no ressources growth button", "select no ressources growth", "[no ressources growth areas]");
+	noResourceGrowthButton = new BlueButton(*this, widgetRectangle(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH + 8+decX, 294+terrainExtraRow, 112, 16), "terrain view", "no ressources growth button", "select no ressources growth", "[no resource growth areas]");
 	areasButton = new BlueButton(*this, widgetRectangle(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH + 8+decX, 320+terrainExtraRow, 112, 16), "terrain view", "script areas button", "select change areas", "[Script Areas]");
 	areaNumber = new NumberCycler(*this, widgetRectangle(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+8+decX, 336+terrainExtraRow, 8, 16), "terrain view", "script area number selector", "update script area number", 9);
 	areaNameLabel = new TextLabel(*this, widgetRectangle(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+24+decX, 336+terrainExtraRow, 104, 16), "terrain view", "script area name label", "open area name", "", false, Toolkit::getStringTable()->getString("[Unnamed Area]"));
@@ -310,6 +311,11 @@ MapEdit::MapEdit()
 	isShowingAreaName=false;
 	
 	isFertilityOn=false;
+
+	// Desktop and tablet presentations browse brushes in the dock; the legacy
+	// sidebar widgets above stay constructed for the phone tray (PhoneEditor).
+	if (!phone)
+		createDock();
 }
 
 
@@ -328,7 +334,7 @@ void MapEdit::updateCamera()
 {
     if (camera.tileX()!=viewportX) camera.originX=viewportX*32.0+camera.fractionX();
     if (camera.tileY()!=viewportY) camera.originY=viewportY*32.0+camera.fractionY();
-    camera.resize(globalContainer->gfx->getW()-menuWidth(),globalContainer->gfx->getH(),game.map.getW()*32.0,game.map.getH()*32.0);
+    camera.resize(globalContainer->gfx->getW()-dockWidth(),globalContainer->gfx->getH(),game.map.getW()*32.0,game.map.getH()*32.0);
     if(!globalContainer->gfx->canDrawStretchedSprite()){camera.zoom=1;camera.offsetX=camera.offsetY=0;}
     viewportX=camera.tileX();viewportY=camera.tileY();
     game.map.displayViewportW=std::ceil(camera.visibleW()+camera.fractionX());

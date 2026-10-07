@@ -144,7 +144,7 @@ void GameGUI::saveGameTo(LoadSaveDialog &dialog)
             if(!parkForClient(capture)) capture();
             return encode;
         },
-        [this,name]{defaultGameSaveName=name;}));
+        [this,name]{defaultGameSaveName=name;ownGameSaveName=name;}));
 }
 
 // Feed the event to the open dialog and act on its result. Returns true when
@@ -180,7 +180,10 @@ bool GameGUI::processGameMenu(SDL_Event *event)
 				}
 				case InGameMainScreen::SAVE_GAME:
 				{
-					openDialog(IGM_SAVE, std::make_unique<LoadSaveDialog>("games", "game", false, Toolkit::getStringTable()->getString("[save game]"), defaultGameSaveName.c_str(), glob2FilenameToName, glob2NameToFilename));
+					auto save = std::make_unique<LoadSaveDialog>("games", "game", false, Toolkit::getStringTable()->getString("[save game]"), defaultGameSaveName.c_str(), glob2FilenameToName, glob2NameToFilename);
+					// Re-saving this session's own save replaces it without asking.
+					if (!ownGameSaveName.empty()) save->allowOverwriteOf(ownGameSaveName);
+					openDialog(IGM_SAVE, std::move(save));
 					return true;
 				}
 				case InGameMainScreen::AI_TELEMETRY:

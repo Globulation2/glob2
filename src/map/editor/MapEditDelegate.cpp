@@ -7,6 +7,7 @@
 #include "GlobalContainer.h"
 #include "MapEdit.h"
 #include "PhoneEditor.h"
+#include "EditorDock.h"
 #include "ScriptEditorScreen.h"
 #include <sstream>
 #include "Utilities.h"
@@ -14,16 +15,17 @@
 
 bool MapEdit::hasDialog() const
 {
-	return bool(terrainPalette) || bool(resourcePalette) || showingMenuScreen || showingLoad || showingSave ||
+	return bool(confirmDialog) || bool(progressDialog) || showingMenuScreen || showingLoad || showingSave ||
 		   showingScriptEditor || showingTeamsEditor || isShowingAreaName;
 }
 
 Glob2UI::InGameDialog *MapEdit::activeDialog() const
 {
-	if (terrainPalette)
-		return terrainPalette.get();
-	if (resourcePalette)
-		return resourcePalette.get();
+	// Decisions and progress cards sit above the dialog that started them.
+	if (confirmDialog)
+		return confirmDialog.get();
+	if (progressDialog)
+		return progressDialog.get();
 	if (showingMenuScreen)
 		return menuScreen.get();
 	if (showingLoad || showingSave)
@@ -78,7 +80,7 @@ void MapEdit::delegateMenu(SDL_Event& event)
 			case MapEditMenuScreen::REROLL_TERRAIN_LOOK:
 			{
 				performAction("close menu screen");
-				performAction("reroll terrain look");
+				performAction("request reroll terrain look");
 			}
 			break;
 			case MapEditMenuScreen::OPEN_SCRIPT_EDITOR:
@@ -100,26 +102,18 @@ void MapEdit::delegateMenu(SDL_Event& event)
 			break;
 			case MapEditMenuScreen::SHARE_MAP:
 			{
-				// Shares the map as last saved (the file the catalog validates).
+				// The catalog validates a saved file: unsaved maps are saved first.
 				performAction("close menu screen");
-				pendingShareFilename = game.mapHeader.getFileName();
+				performAction("share map");
 			}
 			break;
 			case MapEditMenuScreen::IMPORT_TERRAIN:
 				performAction("close menu screen");
 				performAction("import terrain definitions");
 				break;
-			case MapEditMenuScreen::TERRAIN_PALETTE:
-				performAction("close menu screen");
-				performAction("open terrain palette");
-				break;
 			case MapEditMenuScreen::IMPORT_RESOURCES:
 				performAction("close menu screen");
 				performAction("import resource definitions");
-				break;
-			case MapEditMenuScreen::RESOURCE_PALETTE:
-				performAction("close menu screen");
-				performAction("open resource palette");
 				break;
 			case MapEditMenuScreen::QUIT_EDITOR:
 			{
@@ -149,7 +143,8 @@ void MapEdit::delegateMenu(SDL_Event& event)
 						break;
 					}
 					performAction("close load screen");
-					performAction(resources ? "open resource palette" : "open terrain palette");
+					// Imported definitions land in the dock's "custom" sections.
+					performAction(resources ? "open resource palette custom" : "open terrain palette custom");
 				}
 				else
 				{
@@ -163,34 +158,10 @@ void MapEdit::delegateMenu(SDL_Event& event)
 				performAction("close load screen");
 			}
 			break;
-		}
-	}
-	if (terrainPalette && terrainPalette->finished())
-	{
-		const int selected = terrainPalette->result();
-		terrainPalette.reset();
-		if (selected >= 0)
-		{
-			performAction("switch to terrain view");
-			beginTerrainPlacement(TerrainSelector::selectorFor(TerrainType(selected)),
-								  TerrainPlacementMode::BaseTerrain);
-		}
-		else if (brushBeforePalette != TerrainSelector::NoTerrain)
-		{
-			// Looking at the palette and cancelling keeps the brush the author had.
-			performAction("switch to terrain view");
-			beginTerrainPlacement(brushBeforePalette, TerrainPlacementMode::BaseTerrain);
-		}
-		brushBeforePalette = TerrainSelector::NoTerrain;
-	}
-	if (resourcePalette && resourcePalette->finished())
-	{
-		const int selected = resourcePalette->result();
-		resourcePalette.reset();
-		if (selected >= 0)
-		{
-			performAction("switch to terrain view");
-			beginTerrainPlacement(TerrainSelector::selectorForResource(static_cast<ResourceId>(selected)), TerrainPlacementMode::Resource);
+			case LoadSaveDialog::DEVICE:
+				loadSaveScreen->resume();
+				beginDeviceImport();
+				break;
 		}
 	}
 	if(showingSave && loadSaveScreen->finished())
@@ -209,6 +180,7 @@ void MapEdit::delegateMenu(SDL_Event& event)
 			case LoadSaveDialog::CANCEL:
 			{
                 doQuitAfterLoadSave = false;
+				clearSaveFollowUps();
 				performAction("close save screen");
 			}
 		}
@@ -228,6 +200,10 @@ void MapEdit::delegateMenu(SDL_Event& event)
 	{
 		performAction("close area name");
 	}
+	if (progressDialog && progressDialog->finished())
+		finishFertilityProgress();
+	if (confirmDialog && confirmDialog->finished())
+		resolveConfirm(confirmDialog->result());
 }
 
 void MapEdit::handleMapScroll()
@@ -235,7 +211,8 @@ void MapEdit::handleMapScroll()
 	xSpeed = 0;
 	ySpeed = 0;
 	int scrollAreaWidth=10; // if the cursor is that close to the border the viewport will scroll
-	const bool edgeScroll = !isLeftScrollDragging &&
+	// The dock is not a map edge: resting the pointer on it never pans the map.
+	const bool edgeScroll = !isLeftScrollDragging && !(dock && dock->contains(mouseX, mouseY)) &&
 		globalContainer->settings.edgeScrollingEnabled(
 			globalContainer->gfx->getOptionFlags() & GraphicContext::FULLSCREEN);
 
@@ -261,7 +238,7 @@ void MapEdit::handleMapScroll()
 				good to subtract 1 so that there would be a small
 				overlap between what is viewable both before and
 				after the motion.) */
-			xMotion = ((globalContainer->gfx->getW()-RIGHT_MENU_WIDTH)>>6);
+			xMotion = ((globalContainer->gfx->getW()-dockWidth())>>6);
 			yMotion = ((globalContainer->gfx->getH())>>6);
 		}
 		else
@@ -323,10 +300,9 @@ void MapEdit::updateCoordinatesLabel()
 	std::ostringstream s;
 	int x;
 	int y;
-	if (panelMode==Terrain) //terrain has a slightly different coordinates system
-		game.map.displayToMapCaseAligned(mouseX+(terrainType>TerrainSelector::Water ? 0 : 16), mouseY+(terrainType>TerrainSelector::Water ? 0 : 16), &x, &y,  viewportX, viewportY);
-	else
-		game.map.displayToMapCaseAligned(mapMouseX(mouseX), mapMouseY(mouseY), &x, &y, viewportX, viewportY);
+	// Every brush, terrain included, is centred on the cell under the pointer.
+	game.map.displayToMapCaseAligned(mapMouseX(mouseX), mapMouseY(mouseY), &x, &y, viewportX, viewportY);
 	s << "X: " << x << " Y: " << y;
-	mapCoordinatesLabel->setLabel(s.str());
+	coordinates = s.str();
+	mapCoordinatesLabel->setLabel(coordinates);
 }

@@ -133,7 +133,11 @@ is the same for frontend modals; `Glob2UI::InGameDialog` takes a `Surface`
 `themeFor()` maps it to, on every host. On big
 desktop windows whose interface scale follows a 100 % desktop, `Glob2UI::Screen`
 enlarges points and text up to 1.5x (`ui::comfortScale`, via
-`UIScreen::adjustPresentation`); gameplay and dialogs keep their sizes. `endExecute(code)` and the
+`UIScreen::adjustPresentation`); gameplay and dialogs keep their sizes. A screen holding unsaved work overrides `interceptsQuit()`: while
+it is the running top screen, `SDL_EVENT_QUIT` (window close, Cmd+Q) reaches its
+`handleExecutionEvent()` instead of stopping the stack, and the screen ends with
+`QUIT_APPLICATION` once the player decides; `SDL_EVENT_TERMINATING` is never
+vetoed. `endExecute(code)` and the
 `ScreenStack` completion callback remain the navigation contract; push child
 screens onto the stack rather than running them inline.
 
@@ -426,6 +430,17 @@ Dialogs override `onEscape()`, `available()`/`place()` for non-centered
 placement (the chat composer sits at the bottom), `maxWidth()`, `fillHeight()`
 and `scrim()`. `resume()` reopens a dialog whose result was consumed but must
 retry (a failed save).
+
+A dialog can also be a permanent docked panel. The map editor's brush browser
+(`src/map/editor/EditorDock.h`) is an `InGameDialog` that never finishes and has
+no scrim: `available()` returns a full-height column at the right edge
+(`clamp(300pt, 240, 40%)` wide, so it follows the interface scale), `place()`
+fills it and `paintPanel()` paints the column. Its owner draws it beneath any
+modal dialog, sends it pointer events inside its rectangle or while
+`host().interacting()`, and keys only while a text field is editing; strokes that
+started on the map keep their events. `onUpdate()` compares the model (catalogue
+revision, selection, panel mode) with what the last `build()` saw and invalidates
+on change. Its controls publish under `dock/...` and `brush/<catalogue id>`.
 
 ### Focus, keyboard and touch
 
