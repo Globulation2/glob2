@@ -32,7 +32,7 @@ export function Matches() {
   return (
     <>
       <div className="page-head">
-        <GameArt name="swarm" size={72} className="head-art" />
+        <GameArt name="warrior" size={72} className="head-art" />
         <div className="grow">
           <h1>Recent matches</h1>
           <p className="sub">Quick-match games and public rooms, newest first.</p>

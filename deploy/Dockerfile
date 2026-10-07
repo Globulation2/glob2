@@ -120,6 +120,8 @@ COPY platform/ ./
 COPY examples/javascript /app/examples/javascript
 # Colony Studio imports the game's material shader raw (materialShader.ts).
 COPY libgag/shaders /app/libgag/shaders
+# The navigation shares the game's Tabler icon sources (src/icons.tsx).
+COPY datasrc/icons/tabler /app/datasrc/icons/tabler
 COPY --from=music-web-build /source/platform/apps/web/public/music/decoder.js apps/web/public/music/decoder.js
 COPY --from=music-web-build /source/platform/apps/web/public/music/decoder.wasm apps/web/public/music/decoder.wasm
 RUN VITE_WEBSITE_URL="$GLOB2_WEBSITE_URL" VITE_DOWNLOAD_URL="$GLOB2_DOWNLOAD_URL" \

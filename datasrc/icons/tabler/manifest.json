@@ -313,6 +313,16 @@
       "name": "users-group",
       "upstream": "https://raw.githubusercontent.com/tabler/tabler-icons/v3.48.0/icons/outline/users-group.svg",
       "sha256": "2d196e620662a694bf579893db6a4d3b42557a2a6484174fe46029f2bcbae731"
+    },
+    {
+      "name": "music",
+      "upstream": "https://raw.githubusercontent.com/tabler/tabler-icons/v3.48.0/icons/outline/music.svg",
+      "sha256": "8b69aafb5497fc9773078aab151dda57434e89011e712bb24c10c9b66f80ab68"
+    },
+    {
+      "name": "palette",
+      "upstream": "https://raw.githubusercontent.com/tabler/tabler-icons/v3.48.0/icons/outline/palette.svg",
+      "sha256": "27a5a19ae4b0f73ff4089b7f5a6c8fdf17f19ecc853e19fa04494f083943e778"
     }
   ]
 }
