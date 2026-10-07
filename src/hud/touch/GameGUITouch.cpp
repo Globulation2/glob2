@@ -1078,7 +1078,7 @@ void GameGUITouch::replayStroke(const TouchStrokeSession &completed)
 		const int x = cx & map.getMaskW(), y = cy & map.getMaskH();
 		const bool before = view.get(map.coordToIndex(x, y));
 		// The farm brush skips ground nothing can grow on, so those cells never change.
-		if (zone == GameGUIToolManager::Farm && adding && !map.canPaintFarmArea(x, y))
+		if (zone == GameGUIToolManager::Farm && adding && !gui.toolManager.canPaintFarmArea(x,y))
 			continue;
 		if (before != adding)
 			changed.insert({x, y});
@@ -1377,12 +1377,14 @@ void GameGUITouch::interfaceTap(ViewPoint point)
 			return;
 		}
 		// Touch opens dialogs by intent, never by synthesizing desktop pixels.
-		if (button == 3)
-			gui.openDialog(GameGUI::IGM_OBJECTIVES, std::make_unique<InGameObjectivesScreen>(&gui, false));
-		else if (button == 4)
-			gui.openDialog(GameGUI::IGM_ALLIANCE, std::make_unique<InGameAllianceScreen>(&gui));
-		else
-			gui.openMainMenu();
+        const auto open=[&] {
+            if (button == 3)
+                gui.openDialog(GameGUI::IGM_OBJECTIVES, std::make_unique<InGameObjectivesScreen>(&gui, false));
+            else if (button == 4)
+                gui.openDialog(GameGUI::IGM_ALLIANCE, std::make_unique<InGameAllianceScreen>(&gui));
+            else gui.openMainMenu();
+        };
+        if (!gui.parkForClient(open)) open();
 		return;
 	}
 	else if (hudInput && layout().panel.contains(point))
@@ -1642,6 +1644,7 @@ void GameGUITouch::prepareDraw()
 
 void GameGUITouch::menuAction(int action)
 {
+    if(gui.parkForClient([&]{menuAction(action);})) return;
 	if (action == -2)
 		return;
 	if (action == -1)

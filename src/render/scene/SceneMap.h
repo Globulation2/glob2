@@ -106,6 +106,11 @@ class SceneMap
 		return farmAreaView.get(coordToIndex(x, y));
 	}
 	bool canResourcesGrow(int x, int y) const;
+    bool canPaintFarmArea(int x, int y) const;
+    const Utilities::BitArray& displayedArea(unsigned zone) const
+    {
+        switch(zone) { case 0:return forbiddenView; case 1:return guardAreaView; case 2:return clearAreaView; default:return farmAreaView; }
+    }
 	Uint16 getGroundUnit(int x, int y) const;
 	Uint16 getAirUnit(int x, int y) const;
 	Uint16 getBuilding(int x, int y) const;

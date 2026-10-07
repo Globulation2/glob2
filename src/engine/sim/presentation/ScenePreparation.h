@@ -39,12 +39,14 @@ public:
             if (chunk + 1 == chunks) state->scenes.publish();
         });
     }
-    const Scene* acquire()
+    const Scene* acquire(bool* changed = nullptr)
     {
         // Explicit fallback for builds/hosts without compute workers.
         while (executor.pumpPresentation()) {}
         if (ticket && ticket->finished()) ticket->rethrowFailure();
-        if (state->scenes.acquire()) haveScene = true;
+        const bool acquired=state->scenes.acquire();
+        if (changed) *changed=acquired;
+        if (acquired) haveScene = true;
         return haveScene ? &state->scenes.current() : nullptr;
     }
 };

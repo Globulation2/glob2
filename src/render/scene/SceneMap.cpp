@@ -176,10 +176,11 @@ void SceneMap::captureDisplay(const Map& map, int displayW, int displayH, bool i
 void SceneMap::bindSnapshot(const SimulationSnapshot::Handle& world)
 {
     using namespace SimulationSnapshot;
-    constexpr auto required = bit(Component::Terrain) | bit(Component::Resources) | bit(Component::Occupancy)
+    auto required = bit(Component::Terrain) | bit(Component::Resources) | bit(Component::Occupancy)
         | bit(Component::Visibility) | bit(Component::Catalogs);
     if (world.width != w || world.height != h || world.worldIdentity != sourceIdentity)
         throw std::invalid_argument("Scene display metadata and snapshot belong to different worlds");
+    if (world.growth) required |= bit(Component::Growth) | bit(Component::Rules);
     snapshot = std::make_shared<const Handle>(world.project(required));
     snapshotFog = snapshot->visibility->visible.data();
     tick = world.tick; registry = snapshot->terrain->registry; resourceDefinitions = snapshot->catalogs->resources;
@@ -213,3 +214,6 @@ Uint16 SceneMap::getBuilding(int x, int y) const
 
 int SceneMap::getUMTerrain(int x, int y) const
 { const auto i = coordToIndex(x,y); return snapshot ? snapshot->terrain->undermap[i] : undermap[i]; }
+
+bool SceneMap::canPaintFarmArea(int x,int y) const
+{ return snapshot && snapshot->canPaintFarmAt(coordToIndex(x,y)); }

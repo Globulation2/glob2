@@ -14,6 +14,7 @@ struct SceneInputs;
 //! What the client wants drawn this frame: whose view, and what it has selected.
 struct SceneRequest
 {
+	std::optional<std::pair<Uint32, Uint32>> highlights;
 	bool includeScriptAreas = false;
 	bool includePanels = true;
 	int localTeam = 0;

@@ -126,12 +126,19 @@ void GameGUI::step(void)
 void GameGUI::step(const std::vector<SDL_Event>& events, Uint64 now)
 {
     if(autosaveWriter) autosaveWriter->poll();
+    if (simulationThreaded && autosavePending && (!autosaveWriter || !autosaveWriter->busy()))
+        parkForClient([&] {
+            if (autosavePending.exchange(false)) { lastAutosaveStep=game.stepCounter; autosave(); }
+        });
     consumeClientEvents();
     if (inGameMenu == IGM_SAVE && gameMenuScreen &&
         static_cast<LoadSaveDialog*>(gameMenuScreen.get())->pollPersistence())
         closeDialog();
     if (auto *dialog = activeDialog())
-        dialog->update(Uint32(now));
+    {
+        const auto update=[&]{dialog->update(Uint32(now));};
+        if (!parkForClient(update)) update();
+    }
     // A dialog can finish without an SDL event (browser-native text editing
     // submits through the host bridge); act on its result every frame.
     if (gameMenuScreen && gameMenuScreen->finished())
@@ -331,7 +338,8 @@ void GameGUI::step(const std::vector<SDL_Event>& events, Uint64 now)
 	{
 		if(game.missionBriefing != "")
 		{
-			openDialog(IGM_OBJECTIVES, std::make_unique<InGameObjectivesScreen>(this, true));
+			const auto briefing=[&]{openDialog(IGM_OBJECTIVES, std::make_unique<InGameObjectivesScreen>(this, true));};
+            if(!parkForClient(briefing)) briefing();
 		}
 	}
 
@@ -366,8 +374,11 @@ void GameGUI::stepEventFeed(int viewedTeam)
 		teamEvents.pop_front();
 		const GameEventType type = gevent.getEventType();
 		const bool conversion = type == GEUnitLostConversion || type == GEUnitGainedConversion;
+        std::string message;
+        const auto format=[&]{message=gevent.formatMessage(game);};
+        if(!conversion || !parkForClient(format)) format();
 		eventFeed.ingest({type, conversion ? gevent.getOtherTeamNumber() : gevent.getTypeNum(), gevent.getStep(),
-						  gevent.getX(), gevent.getY(), gevent.formatMessage(game), gevent.formatColor()},
+						  gevent.getX(), gevent.getY(), message, gevent.formatColor()},
 						 nowMs, distanceSquared);
 		eventGoPosX = gevent.getX();
 		eventGoPosY = gevent.getY();
@@ -398,7 +409,7 @@ void GameGUI::syncStep(void)
 		? game.stepCounter % AUTOSAVE_INTERVAL_TICKS == AUTOSAVE_PHASE_TICKS
 		: static_cast<Sint64>(game.stepCounter) - lastAutosaveStep >= autosaveInterval);
 	if(autosaveDue) autosavePending=true;
-	if (autosavePending && globalContainer->settings.autosaveGames && (!autosaveWriter || !autosaveWriter->busy()))
+	if (!simulationThreaded && autosavePending && globalContainer->settings.autosaveGames && (!autosaveWriter || !autosaveWriter->busy()))
 	{
         autosavePending=false;
 		lastAutosaveStep = game.stepCounter;
@@ -538,8 +549,9 @@ void GameGUI::checkWonConditions(void)
 	}
 }
 
-void GameGUI::showEndOfReplayScreen()
+void GameGUI::showEndOfReplayScreen(bool client)
 {
+    if(simulationThreaded && !client) { gamePaused=true; clientEvents.push(ClientEvent::ReplayEnded{}); return; }
 	gamePaused = true;
 
 	if (!hasEndOfGameDialogBeenShown)

@@ -102,7 +102,7 @@ bool GameGUI::processTypingInput(SDL_Event *event)
 			message = cmd->body;
 			if (cmd->name == "a")
 			{
-				nchatMask = localTeam->allies;
+				nchatMask = simulationThreaded ? drawnScene().panels.local.allies : localTeam->allies;
 			}
 			else
 			{
@@ -126,6 +126,9 @@ bool GameGUI::processTypingInput(SDL_Event *event)
 
 void GameGUI::processEvent(SDL_Event *event)
 {
+    // Live diagnostic dumps and dialog construction are exceptional owner work.
+    const bool diagnostic=(event->type==SDL_EVENT_MOUSE_BUTTON_DOWN || event->type==SDL_EVENT_MOUSE_BUTTON_UP) && (inputState.modifiers() & SDL_KMOD_SHIFT);
+    if ((diagnostic || activeDialog() || hive) && parkForClient([&]{processEvent(event);})) return;
     if (GAGCore::scrollGesture(*event) && !inputState.hasFocus()) return;
     inputState.observe(*event);
     if(hiveCards && !gameMenuScreen && !scrollableText && !inGameMenu && globalContainer->settings.hiveMindEnabled && hiveCards->handle(*event))return;
@@ -273,6 +276,7 @@ void GameGUI::handleMenuIconClick(SDL_MouseButtonEvent mouseEvent)
 
 		if (menu != -1)
 		{
+            if (parkForClient([&]{handleMenuIconClick(mouseEvent);})) return;
 			if (inGameMenu == menu)
 			{
 				closeDialog();

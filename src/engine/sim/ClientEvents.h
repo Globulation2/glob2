@@ -2,6 +2,7 @@
 #pragma once
 
 #include <array>
+#include <atomic>
 #include <deque>
 #include <memory>
 #include <mutex>
@@ -86,10 +87,11 @@ namespace ClientEvent
 	//! `markingTeamAllies` is the marking team's alliance mask at execution.
 	struct MapMark { std::shared_ptr<MapMarkOrder> order; Uint32 markingTeamAllies; };
 	struct PauseChanged { bool paused; };
+	struct ReplayEnded {};
 	//! An ORDER_CREATE reached the simulation (whether or not it succeeded).
 	struct BuildingRequested { int team; Sint32 posX, posY; };
 	//! Any order finished executing; the client reconciles its pending shadows.
-	struct OrderExecuted { std::shared_ptr<Order> order; };
+	struct OrderExecuted { std::shared_ptr<Order> order; Uint64 revision = 0; };
 	//! A building was deleted. Its gid may be reused immediately.
 	struct BuildingRemoved { Uint16 gid; };
 	//! A unit kept its identity but moved to another team's slot (conversion).
@@ -98,7 +100,7 @@ namespace ClientEvent
 
 using ClientEventVariant = std::variant<ClientEvent::TeamEvent, ClientEvent::ChatMessage, ClientEvent::VoiceData,
 	ClientEvent::PlayerQuit, ClientEvent::MapMark, ClientEvent::PauseChanged, ClientEvent::BuildingRequested,
-	ClientEvent::OrderExecuted, ClientEvent::BuildingRemoved, ClientEvent::UnitConverted, ScriptPresentation>;
+	ClientEvent::ReplayEnded, ClientEvent::OrderExecuted, ClientEvent::BuildingRemoved, ClientEvent::UnitConverted, ScriptPresentation>;
 
 /// Simulation → client channel: a lossless event queue plus latest-value state
 /// that is cheaper to overwrite each tick than to queue.
@@ -118,7 +120,12 @@ public:
 		std::array<std::array<bool, GESize>, MaxTeams> recentEvents{};
 	};
 
-	void push(ClientEventVariant event) { events.push(std::move(event)); }
+	void push(ClientEventVariant event)
+    {
+        if (auto* order=std::get_if<ClientEvent::OrderExecuted>(&event)) order->revision=++orderRevision;
+        events.push(std::move(event));
+    }
+    Uint64 executedOrderRevision() const { return orderRevision.load(); }
 	template <typename F>
 	void drain(F &&consume) { events.drain(std::forward<F>(consume)); }
 	bool empty() const { return events.empty(); }
@@ -131,11 +138,13 @@ public:
 	void reset()
 	{
 		events.clear();
+        orderRevision=0;
 		publishPulse(TickPulse());
 	}
 
 private:
 	LosslessQueue<ClientEventVariant> events;
+    std::atomic<Uint64> orderRevision{0};
 	mutable std::mutex pulseMutex;
 	TickPulse pulseValue;
 };

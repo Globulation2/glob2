@@ -441,7 +441,7 @@ private:
 	static void drawMapBuilding(int x, int y, int gid, int viewportX, int viewportY, int localTeam, Uint32 drawOptions, const Scene& scene, MapRenderState* drawnRender, ViewState* view = nullptr);
     static void prepareSceneMapFrame(const Scene &scene, int team, ViewState &view, Uint32 options, bool paused);
 	static void drawMapAreas(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions, ViewState& view, const SceneMap& sceneMap, bool advanceAnimation = true);
-	static void drawMapArea(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions, const SceneMap& map, bool (SceneMap::*mapIs)(int, int) const, int areaAnimationTick, AreaType areaType, const MapRenderState& render);
+	static void drawMapArea(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions, const SceneMap& map, bool (SceneMap::*mapIs)(int, int) const, int areaAnimationTick, AreaType areaType, const MapRenderState& render, const Utilities::BitArray* preview = nullptr);
 	static void drawMapAirUnits(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions, ViewState& view, const Scene& scene);
 	static void drawMapScriptAreas(int left, int top, int right, int bot, int viewportX, int viewportY, const SceneMap& map);
 	static void drawMapBulletsExplosionsDeathAnimations(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions, const Scene& scene);
@@ -534,6 +534,7 @@ public:
 		MapRenderState render;            //!< This view's animation phases and render caches.
 		//! Scene to draw, published by the simulation; null to extract one from the game.
 		const Scene *scene = nullptr;
+        const std::array<Utilities::BitArray,4>* displayedAreas = nullptr;
 		//! The scene the last drawMap drew: the published one, else the view's own.
 		const Scene &drawnScene() const { return scene ? *scene : render.ownScene; }
 	};
