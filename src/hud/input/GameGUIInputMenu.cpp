@@ -138,7 +138,12 @@ void GameGUI::saveGameTo(LoadSaveDialog &dialog)
     const std::string name=dialog.getName();
     if(!autosaveWriter) autosaveWriter=std::make_unique<BackgroundFileWriter>(Toolkit::getFileManager());
     dialog.beginPersistence(std::make_unique<SaveOperation>(*autosaveWriter,locationName,
-        [this,name]{return captureSave([&](OutputStream* stream,DeferredGameSHA1* sha){save(stream,name,sha);});},
+        [this,name]{
+            BackgroundFileWriter::Encode encode;
+            const auto capture=[&]{encode=captureSave([&](OutputStream* stream,DeferredGameSHA1* sha){save(stream,name,sha);});};
+            if(!parkForClient(capture)) capture();
+            return encode;
+        },
         [this,name]{defaultGameSaveName=name;}));
 }
 
@@ -146,6 +151,8 @@ void GameGUI::saveGameTo(LoadSaveDialog &dialog)
 // the dialog consumed the event or completed.
 bool GameGUI::processGameMenu(SDL_Event *event)
 {
+    bool boundaryResult=false;
+    if (gameMenuScreen && parkForClient([&]{boundaryResult=processGameMenu(event);})) return boundaryResult;
 	if (!gameMenuScreen)
 		return false;
 	bool consumed = false;
@@ -208,7 +215,7 @@ bool GameGUI::processGameMenu(SDL_Event *event)
 						return true;
 					}
 					closeDialog();
-					orderQueue.push_back(shared_ptr<Order>(new PlayerQuitsGameOrder(localPlayer)));
+					enqueueOrder(shared_ptr<Order>(new PlayerQuitsGameOrder(localPlayer)));
 					flushOutgoingAndExit=true;
 					return true;
 				}
@@ -222,7 +229,7 @@ bool GameGUI::processGameMenu(SDL_Event *event)
 			closeDialog();
 			if (result == InGameConfirmScreen::CONFIRM)
 			{
-				orderQueue.push_back(shared_ptr<Order>(new PlayerQuitsGameOrder(localPlayer)));
+				enqueueOrder(shared_ptr<Order>(new PlayerQuitsGameOrder(localPlayer)));
 				flushOutgoingAndExit = true;
 			}
 			else
@@ -264,7 +271,7 @@ bool GameGUI::processGameMenu(SDL_Event *event)
 				if (game.teams[ti]->playersMask==0)
 					teamMask[1]|=(1<<ti); // we want to hit them.
 
-			orderQueue.push_back(shared_ptr<Order>(new SetAllianceOrder(localTeamNo,
+			enqueueOrder(shared_ptr<Order>(new SetAllianceOrder(localTeamNo,
 				teamMask[0], teamMask[1], teamMask[2], teamMask[3], teamMask[4])));
 			chatMask=alliance->getChatMask();
 			closeDialog();
@@ -310,7 +317,7 @@ bool GameGUI::processGameMenu(SDL_Event *event)
 					if (inGameMenu==IGM_LOAD)
 					{
 						toLoadGameFileName = locationName;
-						orderQueue.push_back(shared_ptr<Order>(new PlayerQuitsGameOrder(localPlayer)));
+						enqueueOrder(shared_ptr<Order>(new PlayerQuitsGameOrder(localPlayer)));
 						flushOutgoingAndExit=true;
 						closeDialog();
 					}
@@ -333,7 +340,7 @@ bool GameGUI::processGameMenu(SDL_Event *event)
 			switch (result)
 			{
 				case InGameEndOfGameScreen::QUIT:
-				orderQueue.push_back(shared_ptr<Order>(new PlayerQuitsGameOrder(localPlayer)));
+				enqueueOrder(shared_ptr<Order>(new PlayerQuitsGameOrder(localPlayer)));
 				flushOutgoingAndExit=true;
 				closeDialog();
 				return true;
@@ -346,7 +353,7 @@ bool GameGUI::processGameMenu(SDL_Event *event)
 				assert(globalContainer->replaying);
 				closeDialog();
 				toLoadGameFileName = globalContainer->replayFileName;
-				orderQueue.push_back(shared_ptr<Order>(new PlayerQuitsGameOrder(localPlayer)));
+				enqueueOrder(shared_ptr<Order>(new PlayerQuitsGameOrder(localPlayer)));
 				flushOutgoingAndExit=true;
 				return true;
 

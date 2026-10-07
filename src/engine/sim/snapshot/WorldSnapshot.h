@@ -43,6 +43,7 @@ struct Terrain
 	std::shared_ptr<const TerrainRegistry> registry;
 	std::shared_ptr<const std::vector<TerrainType>> identity;
 	std::vector<Uint16> legacy;
+	std::vector<Uint8> undermap;
 	Uint64 revision = 0;
 	bool movementModifiers = false, airConstraints = false;
 	ChunkStamps stamps;
@@ -112,6 +113,7 @@ struct ResourceFields
 struct Handle
 {
 	Uint32 tick = 0;
+	Uint64 observationRevision = 0;
 	int width = 0, height = 0;
 	Requirements requirements = 0;
 	std::shared_ptr<const Catalogs> catalogs;

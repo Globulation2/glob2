@@ -2,6 +2,7 @@
 #include "sim/SimulationRunner.h"
 
 #include "Engine.h"
+#include "sim/presentation/SceneInputs.h"
 #include <SDL3/SDL_stdinc.h>
 
 #include <chrono>
@@ -19,6 +20,8 @@ bool SimulationRunner::start()
 	return false;
 #else
 	telemetry.reset();
+	requestedScene = engine.gui.sceneRequest(false);
+	engine.gui.startScriptClientChannel();
 	try
 	{
 		thread = std::thread([this] { run(); });
@@ -26,6 +29,7 @@ bool SimulationRunner::start()
 	}
 	catch (const std::system_error &)
 	{
+		engine.gui.game.scriptClient.stop();
 		return false;
 	}
 #endif
@@ -40,6 +44,8 @@ void SimulationRunner::stop()
 	wake.notify_all();
 	if (thread.joinable())
 		thread.join();
+	engine.gui.game.map.computeExecutor().cancelPresentationAndWait();
+	engine.gui.game.scriptClient.stop();
 }
 
 void SimulationRunner::park(std::unique_lock<std::mutex> &lock)
@@ -70,6 +76,7 @@ void SimulationRunner::run()
 				wake.wait(lock, [&] { return stopping || parkRequested || suspended || !engine.diagnosticsPending(); });
 				continue;
 			}
+			const auto request = requestedScene;
 			lock.unlock();
 			const Uint64 now = engine.sessionClock();
 			const Uint32 delay = engine.sessionDelay(now);
@@ -77,17 +84,26 @@ void SimulationRunner::run()
 			if (delay == 0)
 				running = engine.simulationStep(now);
 			// Extract at most once per scene the main thread takes.
-			if (!scenes.pending())
-			{
-				engine.extractScene(scenes.back());
-				scenes.publish();
-			}
+			if (presentation && presentation->finished()) presentation->rethrowFailure();
+            if (!scenes.pending() && (!presentation || presentation->finished()))
+            {
+                auto input = engine.gui.captureSceneInputs(request);
+                const auto chunks = SceneExtractor::preparationChunks(*input);
+                presentation = engine.gui.game.map.computeExecutor().submitPresentation(chunks, [this, input, chunks](size_t chunk) {
+                    presentationExtractor.prepareChunk(*input, scenes.back(), chunk);
+                    if (chunk+1 == chunks) { scenes.publish(); wake.notify_all(); }
+                });
+            }
+            {
+                std::lock_guard telemetryLock(telemetryMutex);
+                telemetryMailbox.absorb(telemetry);
+            }
 			lock.lock();
 			if (!running)
 				break;
 			if (delay > 0)
 				wake.wait_for(lock, std::chrono::milliseconds(delay),
-							  [&] { return stopping || parkRequested || suspended || !scenes.pending(); });
+							  [&] { return stopping || parkRequested || suspended || (!scenes.pending() && (!presentation || presentation->finished())); });
 		}
 	}
 	catch (...)
@@ -150,6 +166,7 @@ void SimulationRunner::resume()
 
 const Scene *SimulationRunner::acquireScene()
 {
+	while (engine.gui.game.map.computeExecutor().pumpPresentation()) {}
 	if (scenes.acquire())
 	{
 		haveScene = true;
@@ -171,4 +188,16 @@ void SimulationRunner::rethrowFailure()
 	}
 	if (error)
 		std::rethrow_exception(error);
+}
+
+void SimulationRunner::requestScene(SceneRequest request)
+{
+    { std::lock_guard lock(mutex); requestedScene = std::move(request); }
+    wake.notify_all();
+}
+
+void SimulationRunner::absorbTelemetry(PerformanceTelemetry::Collector& target)
+{
+    std::lock_guard lock(telemetryMutex);
+    target.absorb(telemetryMailbox);
 }

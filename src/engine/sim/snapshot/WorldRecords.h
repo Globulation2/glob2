@@ -30,6 +30,8 @@ struct BuildingView : BuildingStateRecord
 	bool usesTeamResources = false;
 	MaterialMask availableSupplyMask = 0; // Stock after reservations, captured for gradient readers.
 	UnitRange working, inside;
+	Uint32 lastShootStep = 0;
+	Sint32 lastShootSpeedX = 0, lastShootSpeedY = 0;
 };
 
 struct UnitView : UnitState
@@ -37,6 +39,7 @@ struct UnitView : UnitState
 	UnitRef identity;
 	int team = 0;
 	BuildingRef attached, target;
+	Sint32 levelUpAnimation = 0, magicActionAnimation = 0;
 };
 
 struct TeamView

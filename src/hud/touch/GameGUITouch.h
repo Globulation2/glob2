@@ -23,6 +23,7 @@ class DrawableSurface;
 #include "sim/EntityRef.h"
 class GameGUI;
 struct SceneBuildingPanel;
+#include "render/scene/SceneEntities.h"
 class Building;
 class Unit;
 class Minimap;
@@ -113,12 +114,12 @@ class GameGUITouch
 	bool processPalettePointer(const SDL_Event &event, GAGCore::ViewPoint point);
 	// Flags move by dragging them; a drag anywhere else still pans the map.
 	std::optional<TouchFlagSession> flagDrag;
-	Building *grabbableFlag(GAGCore::ViewPoint point);
-	Building *draggedFlag() const;
-	void beginFlagDrag(Building &flag, TouchPlacementSession::Pointer pointer, GAGCore::ViewPoint point);
+	std::optional<SceneBuilding> grabbableFlag(GAGCore::ViewPoint point);
+	std::optional<SceneBuilding> draggedFlag() const;
+	void beginFlagDrag(const SceneBuilding &flag, TouchPlacementSession::Pointer pointer, GAGCore::ViewPoint point);
 	void advanceFlagDrag();
 	void releaseFlagDrag(bool restore);
-	Unit *unitAt(GAGCore::ViewPoint point, double reachPoints = 0) const;
+	UnitRef unitAt(GAGCore::ViewPoint point, double reachPoints = 0) const;
 	void advancePlacement();
 	void updatePlacementPreview(GAGCore::ViewPoint point);
 	bool commitPlacement();
@@ -203,8 +204,8 @@ class GameGUITouch
 	double buildingActionsHeight(double width) const;
 	void drawBuildingActions();
 	void tapBuildingAction(GAGCore::ViewPoint point);
-	void applyDiscreteAction(Building &building, const BuildingAction &row);
-	void setRatio(Building &building, int type, int value);
+	void applyDiscreteAction(const SceneBuildingPanel &building, const BuildingAction &row);
+	void setRatio(const SceneBuildingPanel &building, int type, int value);
 	// Compact (phone) inspectors are a thumb dial: concentric quarter rings in
 	// the thumb corner for workers, priority and a ratio or range, with chips
 	// for discrete choices and actions. Spacious panels keep the row list.
@@ -237,10 +238,10 @@ class GameGUITouch
 	std::vector<DialRegion> dialRegions() const;
 	std::optional<DialRegion> dialRegionAt(GAGCore::ViewPoint point) const;
 	GAGCore::ViewPoint dialActionPoint(int kind, int value, int side) const;
-	void tapDial(Building &building, const DialRegion &region, GAGCore::ViewPoint point);
+	void tapDial(const SceneBuildingPanel &building, const DialRegion &region, GAGCore::ViewPoint point);
 	void drawDial();
 	std::array<int, 3> dialRatios() const;
-	void commitRatios(Building &building, const std::array<int, 3> &ratios);
+	void commitRatios(const SceneBuildingPanel &building, const std::array<int, 3> &ratios);
 	int heldActionKind = -1, heldActionValue = 0;
 	std::string heldActionLabel;
 	bool heldActionConfirmation = false;
@@ -251,7 +252,7 @@ class GameGUITouch
 	BuildingRef lastInspectedBuilding;
 	void drawPointLabel(GAGCore::ViewRect rect, const std::string &text, double textScale = 1.15,
 						bool leading = false);
-	const void *ownerBuilding = nullptr;
+	BuildingRef ownerBuilding;
 	const void *ownerDialog = nullptr;
 	bool panelOpen = false;
 	bool showStatistics = false;

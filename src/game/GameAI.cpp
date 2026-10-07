@@ -10,12 +10,12 @@ std::shared_ptr<Order> Game::validateAIOrder(std::shared_ptr<Order> order,unsign
 void Game::settleAIOrder(const std::shared_ptr<Order>& order,bool accepted) {if(aiPipeline)aiPipeline->settle(*this,order,accepted);}
 void Game::cancelAI(unsigned player) {if(aiPipeline)aiPipeline->cancel(player);}
 void Game::drainAI() {if(aiPipeline)aiPipeline->drain();}
-void Game::clearAI() { map.finishGradientPipeline(); aiPipeline.reset(); snapshots.reset(); }
+void Game::clearAI() { map.finishGradientPipeline(); aiPipeline.reset(); worldSnapshots.reset(); }
 void Game::saveAI(GAGCore::OutputStream* stream) {if(!aiPipeline){aiPipeline=std::make_unique<AIEngine::Pipeline>();aiPipeline->prepare(*this,{},true,nullptr);}aiPipeline->save(stream);}
 bool Game::loadAI(GAGCore::InputStream* stream) {auto pipeline=std::make_unique<AIEngine::Pipeline>();if(!pipeline->load(*this,stream))return false;aiPipeline=std::move(pipeline);return true;}
 std::vector<std::pair<std::string,Uint64>> Game::aiMetrics() const {
  if(!aiPipeline)return {};
- const auto& capture=snapshots.metrics;const auto& scheduling=aiPipeline->schedulingMetrics();const auto memory=snapshots.memoryMetrics();const auto queryMemory=aiPipeline->queryVectorMemory();
+ const auto& capture=worldSnapshots.metrics;const auto& scheduling=aiPipeline->schedulingMetrics();const auto memory=worldSnapshots.memoryMetrics();const auto queryMemory=aiPipeline->queryVectorMemory();
  return {{"captures",capture.captures},{"extraction_ns",capture.captureNs},{"preparation_ns",capture.preparationNs},
   {"bytes_copied",capture.bytesCopied},{"component_reuses",capture.reusedComponents},{"allocations",capture.allocations},
   {"computation_ns",aiPipeline->computationNs()},{"controller_query_vector_bytes",queryMemory.first},
@@ -47,7 +47,7 @@ void Game::observeUnpolledAI() {
   |SimulationSnapshot::bit(SimulationSnapshot::Component::Visibility)
   |SimulationSnapshot::bit(SimulationSnapshot::Component::Teams);
  // Replica-only observations historically capture fresh inputs at this mid-tick phase.
- if(!aiPipeline) snapshots.invalidateBoundary();
- const AIEngine::AIWorldView world(snapshots.captureBoundary(*this,requirements));
+ if(!aiPipeline) worldSnapshots.invalidateBoundary();
+ const AIEngine::AIWorldView world(worldSnapshots.captureBoundary(*this,requirements));
  for(auto* controller:idle)controller->observe(world);
 }

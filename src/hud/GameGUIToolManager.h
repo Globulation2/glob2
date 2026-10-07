@@ -7,6 +7,7 @@
 #include <memory>
 #include "Brush.h"
 #include "Types.h"
+#include "ClientAreaPreview.h"
 #include <optional>
 #include <string>
 #include <queue>
@@ -68,7 +69,11 @@ public:
 	///Draws the tool on the map
 	void drawTool(int mouseX, int mouseY, int localteam, int viewportX, int viewportY, int modifiers);
 	//! Draw building previews from scene (the frame's extracted state).
-	void setDrawnScene(const Scene* scene) { drawnScene = scene; }
+	void setDrawnScene(const Scene* scene);
+    bool canPaintFarmArea(int x,int y) const;
+    void trackPaint(const std::shared_ptr<Order>& order) { preview.track(order); }
+    void acknowledgePaint(Order& order,Uint64 revision) { preview.acknowledge(order,revision); }
+    const std::array<Utilities::BitArray,4>& displayedAreas() const { return preview.shown; }
 	
 	///Returns the name of the current building
 	std::string getBuildingName() const;
@@ -130,6 +135,7 @@ private:
 	Game& game;
 	//! The frame's Scene; the building preview reads placement room from it.
 	const Scene* drawnScene = nullptr;
+    ClientAreaPreview preview;
 	BrushTool& brush;
 	GameGUIDefaultAssignManager& defaultAssign;
 	GameGUIGhostBuildingManager& ghostManager;

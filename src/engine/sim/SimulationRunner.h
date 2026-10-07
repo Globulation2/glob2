@@ -3,8 +3,10 @@
 
 #include "render/scene/Scene.h"
 #include "render/scene/SceneBuffer.h"
+#include "render/scene/SceneExtract.h"
 
 #include <PerformanceTelemetry.h>
+#include "ComputeExecutor.h"
 
 #include <atomic>
 #include <condition_variable>
@@ -19,11 +21,11 @@ class Engine;
 //! handles input and draws.
 //!
 //! - The simulation thread paces and runs ticks (Engine::simulationStep) and,
-//!   whenever the main thread has taken the previous Scene, extracts the next one
-//!   into a SceneBuffer. It is the only thread that touches the game while running.
-//! - withGame() runs main-thread work that reads or writes the game (input, GUI
-//!   logic) while the simulation is parked between ticks; a sleeping simulation
-//!   counts as parked, so at normal speed this does not wait.
+//!   whenever the main thread has taken the previous Scene, captures immutable
+//!   inputs for a compute-worker presentation task. That task publishes a complete
+//!   Scene without participating in simulation barriers.
+//! - withGame() protects exceptional live-state access (save capture, dialogs,
+//!   settings and diagnostics). Routine input and rendering use immutable Scenes.
 //! - Drawing reads only acquireScene() and GUI state.
 //!
 //! The simulation's results do not depend on this: ticks, orders and the
@@ -47,22 +49,31 @@ public:
 	//! until resume().
 	void suspend();
 	void resume();
+	void requestScene(SceneRequest request);
 	//! The newest published Scene, or null before the first one.
 	const Scene *acquireScene();
+	bool sceneReady() const { return haveScene; }
 	//! True once the simulation ended the session or failed.
 	bool ended() const { return finished.load(); }
 	//! Rethrow a failure raised on the simulation thread, if any.
 	void rethrowFailure();
 	//! What the simulation thread measures (PerformanceTelemetry scopes). The main
-	//! thread absorbs it while the simulation is parked or after stop().
+	//! thread absorbs the mailbox while running, or this collector after stop().
 	PerformanceTelemetry::Collector telemetry;
+    void absorbTelemetry(PerformanceTelemetry::Collector& target);
+
 
 private:
 	void run();
+    std::mutex telemetryMutex;
+    PerformanceTelemetry::Collector telemetryMailbox;
 	void park(std::unique_lock<std::mutex> &lock);
 
 	Engine &engine;
 	SceneBuffer<Scene> scenes;
+	SceneRequest requestedScene;
+	SceneExtractor presentationExtractor;
+	ComputeExecutor::PresentationTicket presentation;
 	std::thread thread;
 	std::mutex mutex;
 	std::condition_variable wake, parkedChanged;

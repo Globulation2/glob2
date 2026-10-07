@@ -2,6 +2,7 @@
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
 #pragma once
+#include <atomic>
 
 #include <memory>
 #include <CooperativeTask.h>
@@ -176,7 +177,7 @@ public:
 	bool isViewingGame() const { return replaying || liveSpectating; }
 	bool replaying; //!< Whether the current game is a replay or a usual game
 	std::string replayFileName; //!< The name of the replay file.
-	bool replayFastForward; //!< If set to true, the replay will play faster.
+	std::atomic<bool> replayFastForward{false}; //!< If set to true, the replay will play faster.
 	bool replayShowFog; //!< Draw the fog of war or draw the entire map. Can be edited real-time.
 	Uint32 replayVisibleTeams; //!< A mask of which teams can be seen in the replay. Can be edited real-time.
 	bool replayShowAreas; //!< Show areas of gui.localPlayer or not. Can be edited real-time.

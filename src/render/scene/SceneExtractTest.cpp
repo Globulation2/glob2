@@ -1,4 +1,6 @@
 #include "GameEvent.h"
+#include "ClientAreaPreview.h"
+#include "sim/ClientEvents.h"
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Scene extraction: entities by gid, the selection's map-view contribution, and
 // the overlay map's refresh cadence.
@@ -11,6 +13,14 @@
 #include <nlohmann/json.hpp>
 #include <SDLGraphicContext.h>
 #include <array>
+#include <chrono>
+#include <cstdlib>
+#include <cstdio>
+#include <algorithm>
+#include "sim/presentation/SceneInputs.h"
+#include "sim/presentation/ScenePreparation.h"
+#include <thread>
+#include "sim/snapshot/SnapshotStore.h"
 
 TEST_SUITE("SceneExtract")
 {
@@ -381,6 +391,11 @@ TEST_SUITE("SceneExtract")
                 return pixels;
             };
             const auto actual=render(scene,"connected");
+            SceneExtractor workerExtractor;
+            auto inputs = workerExtractor.capture(world.game, request);
+            Scene prepared;
+            workerExtractor.prepare(*inputs, prepared);
+            CHECK_MESSAGE(actual == render(prepared, "snapshot"), "snapshot preparation must preserve every rendered pixel");
             CHECK_MESSAGE(actual==render(scene,"repeat"),"identical frozen scenes must render identically before the mask control");
             // Counterfactual RENDER-ONLY control: same scene and entities, masks forced to zero.
             // Both the ground and overlay renderer must use these extracted masks.
@@ -394,4 +409,257 @@ TEST_SUITE("SceneExtract")
         }
     }
 
+}
+
+TEST_SUITE("SceneExtract")
+{
+TEST_CASE("snapshot preparation retains definitions after the source game is destroyed")
+{
+    glob2test::HeadlessGlobals globals;
+    SceneExtractor extractor;
+    std::shared_ptr<SceneInputs> input;
+    Uint16 unitId = 0xffff, buildingId = 0xffff;
+    {
+        glob2test::HeadlessGame world{glob2test::GameOptions{.wDec=5, .hDec=5, .teams=1, .loadDefaultRace=true}};
+        auto* unit = world.addUnit(WORKER, 12, 12, 0);
+        auto* building = world.addBuilding("inn", 4, 4, 0, 0);
+        REQUIRE(unit); REQUIRE(building);
+        unitId = unit->gid; buildingId = building->gid;
+        SceneRequest request;
+        request.selectedUnit = Game::refOf(unit);
+        request.selectedBuilding = Game::refOf(building);
+        input = extractor.capture(world.game, request);
+    }
+    Scene scene;
+    extractor.prepare(*input, scene);
+    input.reset();
+    REQUIRE(scene.entities.unit(unitId));
+    REQUIRE(scene.entities.building(buildingId));
+    CHECK(scene.entities.unit(unitId)->race == scene.race.get());
+    CHECK(scene.entities.building(buildingId)->type->key == "inn.0.finished");
+    CHECK(scene.panels.unit.race == scene.race.get());
+    CHECK(scene.map.getW() == 32);
+    CHECK(scene.map.getBuilding(4, 4) == buildingId);
+}
+
+TEST_CASE("snapshot preparation matches legacy queries and survives later live mutations")
+{
+    glob2test::HeadlessGlobals globals;
+    glob2test::HeadlessGame world{glob2test::GameOptions{.wDec=5, .hDec=5, .teams=1, .discovered=true, .clearImmobile=true, .loadDefaultRace=true}};
+    auto* unit = world.addUnit(WORKER,12,12,0);
+    auto* building = world.addBuilding("inn",4,4,0,0);
+    REQUIRE(unit); REQUIRE(building);
+    unit->levelUpAnimation = 7; unit->magicActionAnimation = 3;
+    unit->medical = Unit::MED_DAMAGED; unit->hp = 1; unit->hungry = 0;
+    building->lastShootStep = 19; building->lastShootSpeedX = 2;
+    SceneRequest request;
+    request.selectedUnit = Game::refOf(unit); request.selectedBuilding = Game::refOf(building);
+    request.view.displayW = 800; request.view.displayH = 600;
+    request.includeScriptAreas = true;
+    world.game.map.setPoint(8,3,4);
+    for (auto overlay : {OverlayArea::None, OverlayArea::Starving, OverlayArea::Damage, OverlayArea::Defence, OverlayArea::Fertility})
+    {
+        CAPTURE(overlay);
+        request.view.overlay = overlay;
+        SceneExtractor legacyExtractor, snapshotExtractor;
+        Scene legacy, actual;
+        legacyExtractor.extract(world.game, request, legacy);
+        auto input = snapshotExtractor.capture(world.game, request);
+        // No later read may reach the live unit or any map layer.
+        const auto hp = unit->hp;
+        unit->hp = 123;
+        world.game.map.setGroundUnit(20,20,42);
+        snapshotExtractor.prepare(*input, actual);
+        unit->hp = hp;
+        world.game.map.setGroundUnit(20,20,legacy.map.getGroundUnit(20,20));
+        CHECK(actual.tick == legacy.tick);
+        CHECK(actual.entities.units.size() == legacy.entities.units.size());
+        CHECK(actual.entities.buildings.size() == legacy.entities.buildings.size());
+        REQUIRE(actual.entities.unit(unit->gid));
+        const auto& u = *actual.entities.unit(unit->gid);
+        CHECK(u.hp == hp); CHECK(u.levelUpAnimation == 7); CHECK(u.magicActionAnimation == 3);
+        CHECK(u.stepSpeed == legacy.entities.unit(unit->gid)->stepSpeed);
+        CHECK(actual.entities.building(building->gid)->lastShootStep == 19);
+        CHECK(actual.entities.building(building->gid)->lastShootSpeedX == 2);
+        CHECK(actual.panels.unit.hp == legacy.panels.unit.hp);
+        CHECK(actual.panels.building.hardSpaceForUpgrade == legacy.panels.building.hardSpaceForUpgrade);
+        CHECK(actual.map.materialPresence() == legacy.map.materialPresence());
+        for (int y=0; y<32; ++y) for (int x=0; x<32; ++x)
+        {
+            CHECK(actual.map.getTerrain(x,y) == legacy.map.getTerrain(x,y));
+            CHECK(actual.map.terrainTypeAt(x,y) == legacy.map.terrainTypeAt(x,y));
+            CHECK(actual.map.appearanceAt(x,y) == legacy.map.appearanceAt(x,y));
+            CHECK(actual.map.getUMTerrain(x,y) == legacy.map.getUMTerrain(x,y));
+            CHECK(actual.map.getGroundUnit(x,y) == legacy.map.getGroundUnit(x,y));
+            CHECK(actual.map.getAirUnit(x,y) == legacy.map.getAirUnit(x,y));
+            CHECK(actual.map.getBuilding(x,y) == legacy.map.getBuilding(x,y));
+            CHECK(actual.map.getResource(x,y).type == legacy.map.getResource(x,y).type);
+            CHECK(actual.map.canResourcesGrow(x,y) == legacy.map.canResourcesGrow(x,y));
+            CHECK(actual.map.isMapDiscovered(x,y,1) == legacy.map.isMapDiscovered(x,y,1));
+            CHECK(actual.map.isFOWDiscovered(x,y,1) == legacy.map.isFOWDiscovered(x,y,1));
+            CHECK(actual.map.isPointSet(8,x,y) == legacy.map.isPointSet(8,x,y));
+            CHECK(actual.map.isHardSpaceForBuilding(x,y,1,1) == legacy.map.isHardSpaceForBuilding(x,y,1,1));
+            for (unsigned m=0; m<MaterialCount; ++m)
+                CHECK(actual.map.materialAmountAt(actual.map.coordToIndex(x,y),m) == legacy.map.materialAmountAt(legacy.map.coordToIndex(x,y),m));
+            if (overlay != OverlayArea::None)
+            {
+                REQUIRE(actual.overlay);
+                CHECK(actual.overlay->getMaximum() == legacy.overlay->getMaximum());
+                CHECK(actual.overlay->getValue(x,y) == legacy.overlay->getValue(x,y));
+            }
+        }
+    }
+}
+}
+
+// Opt-in diagnostic: matched state and extraction inputs, no timing assertions.
+// Keep capture and preparation separate: only capture delays the simulation owner.
+TEST_CASE("Scene extraction performance" * doctest::test_suite("ScenePerformance") * doctest::skip(std::getenv("GLOB2_SCENE_BENCH") == nullptr))
+{
+    glob2test::HeadlessGlobals globals;
+    using Clock=std::chrono::steady_clock;
+    auto micros=[](auto from,auto to) { return std::chrono::duration<double,std::micro>(to-from).count(); };
+    std::puts("scene_bench,size,units,mode,phase,median_us,p95_us,pool_capacity_bytes,pool_leased_bytes,bytes_copied");
+    for (int exponent : {7,9,10})
+    {
+        glob2test::HeadlessGame world({.wDec=exponent,.hDec=exponent,.discovered=true,.loadDefaultRace=true,.header=true,.seed=1});
+        auto& game=world.game;
+        const int width=1<<exponent;
+        for (int i=0;i<512;++i) world.addUnit(WORKER,2+(i%(width-4)),2+(i/(width-4)));
+        SceneRequest request;
+        SceneExtractor direct,capture,prepare;
+        Scene oldScene,newScene;
+        std::array<Scene,3> retained;
+        for (bool changed : {false,true})
+        {
+            std::vector<double> legacy,captures,prepares;
+            for (int i=0;i<45;++i)
+            {
+                if (changed) { ++game.stepCounter; game.map.setUMTerrain(i%width,0,static_cast<TerrainType>(i%2)); }
+                auto a=Clock::now(); direct.extract(game,request,oldScene); auto b=Clock::now();
+                auto inputs=capture.capture(game,request); auto c=Clock::now();
+                prepare.prepare(*inputs,newScene); auto d=Clock::now();
+                retained[i%3]=newScene;
+                if (i>=5) { legacy.push_back(micros(a,b)); captures.push_back(micros(b,c)); prepares.push_back(micros(c,d)); }
+                REQUIRE(oldScene.tick==newScene.tick);
+                REQUIRE(oldScene.entities.units.size()==newScene.entities.units.size());
+            }
+            const auto memory=game.snapshots().memoryMetrics();
+            auto print=[&](const char* phase,std::vector<double>& samples) {
+                std::sort(samples.begin(),samples.end());
+                std::printf("scene_bench,%d,512,%s,%s,%.3f,%.3f,%llu,%llu,%llu\n",width,changed?"changed":"unchanged",phase,
+                    samples[samples.size()/2],samples[samples.size()*95/100],
+                    (unsigned long long)memory.capacityBytes,(unsigned long long)memory.leasedBytes,
+                    (unsigned long long)game.snapshots().metrics.bytesCopied);
+            };
+            print("legacy",legacy);print("capture",captures);print("prepare",prepares);
+        }
+    }
+}
+
+TEST_CASE("Serial hosts publish immutable Scenes through workers or explicit fallback" * doctest::test_suite("SceneExtract"))
+{
+    glob2test::HeadlessGlobals globals;
+    for (unsigned threads : {1u,2u})
+    {
+        if (threads>1 && !GAGCore::ThreadSupport::available) continue;
+        glob2test::HeadlessGame world;
+        auto* unit=world.addUnit(WORKER,2,2);
+        ComputeExecutor executor; executor.configure(threads);
+        SceneExtractor extractor;
+        ScenePreparation presentation(executor);
+        REQUIRE(presentation.readyToCapture());
+        const auto gid=unit->gid;
+        const auto hp=unit->hp;
+        presentation.submit(extractor.capture(world.game,{}));
+        unit->hp=hp-1;
+        const Scene* scene=nullptr;
+        const auto deadline=std::chrono::steady_clock::now()+std::chrono::seconds(5);
+        do { scene=presentation.acquire(); if (!scene) std::this_thread::yield(); }
+        while (!scene && std::chrono::steady_clock::now()<deadline);
+        REQUIRE(scene);
+        REQUIRE(scene->entities.unit(gid));
+        CHECK(scene->entities.unit(gid)->hp==hp);
+        // Publishing can precede the task's final return; allow that narrow tail.
+        while (!presentation.readyToCapture() && std::chrono::steady_clock::now()<deadline) std::this_thread::yield();
+        REQUIRE(presentation.readyToCapture());
+        presentation.submit(extractor.capture(world.game,{}));
+        // Destruction cancels without waiting; an active chunk owns its storage.
+    }
+}
+
+TEST_SUITE("SceneExtract")
+{
+TEST_CASE("client paint survives old Scenes and retires only with its execution revision")
+{
+    glob2test::HeadlessGlobals globals;
+    glob2test::HeadlessGame world;
+    SceneExtractor extractor;
+    Scene oldScene;
+    extractor.prepare(*extractor.capture(world.game,{}),oldScene);
+    ClientAreaPreview preview;
+    preview.refresh(oldScene,0);
+    const auto index=oldScene.map.coordToIndex(3,4);
+    Utilities::BitArray mask(1,true);
+    auto add=std::make_shared<OrderAlterForbidden>(0,BrushTool::MODE_ADD,3,4,1,1,mask);
+    preview.set(0,index,true);
+    preview.track(add,true);
+    preview.acknowledge(*add,1);
+    preview.refresh(oldScene,0);
+    CHECK(preview.shown[0].get(index));
+    CHECK_FALSE(oldScene.map.displayedArea(0).get(index));
+    auto remove=std::make_shared<OrderAlterForbidden>(0,BrushTool::MODE_DEL,3,4,1,1,mask);
+    preview.track(remove);
+    Scene next;
+    world.game.map.displayedForbiddenView.set(index,true);
+    extractor.prepare(*extractor.capture(world.game,{}),next);
+    next.executedOrderRevision=1;
+    preview.refresh(next,0);
+    CHECK_FALSE(preview.shown[0].get(index));
+    // An active stroke remains above both the acknowledged and queued layers.
+    preview.set(0,index,true);
+    next.tick++;
+    preview.refresh(next,0);
+    CHECK(preview.shown[0].get(index));
+    preview.refresh(next,1);
+    CHECK(preview.shown[0].get(index)==next.map.displayedArea(0).get(index));
+}
+TEST_CASE("order execution revisions are captured even without advancing the tick")
+{
+    glob2test::HeadlessGlobals globals;
+    glob2test::HeadlessGame world;
+    ClientEvents events;
+    world.game.clientEvents=&events;
+    SceneExtractor extractor;
+    Scene before,after;
+    extractor.prepare(*extractor.capture(world.game,{}),before);
+    events.push(ClientEvent::OrderExecuted{std::make_shared<NullOrder>()});
+    extractor.prepare(*extractor.capture(world.game,{}),after);
+    CHECK(before.tick==after.tick);
+    CHECK(after.executedOrderRevision==before.executedOrderRevision+1);
+    events.drain([&](auto event) {
+        if(auto* done=std::get_if<ClientEvent::OrderExecuted>(&event))
+            CHECK(done->revision==after.executedOrderRevision);
+    });
+    world.game.clientEvents=nullptr;
+}
+}
+
+TEST_CASE("farm input eligibility is frozen with presentation inputs" * doctest::test_suite("SceneExtract"))
+{
+    glob2test::HeadlessGlobals globals;
+    glob2test::GameOptions options;
+    options.header=true;
+    options.experiments.set(ExperimentId::FarmAreas);
+    glob2test::HeadlessGame world(options);
+    SceneExtractor extractor;
+    auto input=extractor.capture(world.game,{});
+    Scene scene;
+    extractor.prepare(*input,scene);
+    for(int y=0;y<world.game.map.getH();++y)
+        for(int x=0;x<world.game.map.getW();++x)
+            CHECK(scene.map.canPaintFarmArea(x,y)==world.game.map.canPaintFarmArea(x,y));
+    const bool before=scene.map.canPaintFarmArea(4,4);
+    world.game.map.setUMTerrain(4,4,WATER);
+    CHECK(scene.map.canPaintFarmArea(4,4)==before);
 }

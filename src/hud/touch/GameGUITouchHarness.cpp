@@ -1543,7 +1543,7 @@ class GameGUITouchHarness
 				tap(p.x, p.y);
 				require(!gui.touch->zoneUndo && !gui.orderQueue.empty(), "Undo sends its orders once");
 				std::set<size_t> reverted;
-				for (const auto &order : gui.orderQueue)
+				for (const auto &order : gui.orderQueue.snapshot())
 				{
 					auto inverse = std::dynamic_pointer_cast<OrderAlterForbidden>(order);
 					require(inverse && inverse->type == BrushTool::MODE_DEL && inverse->teamNumber == gui.localTeamNo,
@@ -3252,11 +3252,11 @@ class GameGUITouchHarness
 				gui.viewportX = gui.camera.tileX(); gui.viewportY = gui.camera.tileY(); gui.updateCamera();
 				const auto c = std::pair{gfx->getW()/2.,gfx->getH()/2.};
 				const double scale = gfx->logicalUnitsPerPoint();
-				require(gui.touch->unitAt({c.first+28*scale,c.second}) == nullptr, "Near tap misses exact sprite");
-				require(gui.touch->unitAt({c.first+28*scale,c.second},30) == worker, "30 point halo works at every zoom");
-				require(gui.touch->unitAt({c.first+32*scale,c.second},30) == nullptr, "Outside unit halo stays empty");
+				require(gui.touch->unitAt({c.first+28*scale,c.second}).empty(), "Near tap misses exact sprite");
+				require(gui.touch->unitAt({c.first+28*scale,c.second},30) == Game::refOf(worker), "30 point halo works at every zoom");
+				require(gui.touch->unitAt({c.first+32*scale,c.second},30).empty(), "Outside unit halo stays empty");
 				globalContainer->replayShowFog = true; globalContainer->replayVisibleTeams = 0;
-				require(!gui.touch->unitAt({c.first,c.second},30), "Fog-hidden unit cannot be picked");
+				require(gui.touch->unitAt({c.first,c.second},30).empty(), "Fog-hidden unit cannot be picked");
 				globalContainer->replayShowFog = false;
 				tap(c.first+28*scale,c.second);
 				require(gui.selectionMode == GameGUI::UNIT_SELECTION && gui.selectionUnit() == worker, "Real near-unit touch selects unit");
@@ -3302,14 +3302,14 @@ class GameGUITouchHarness
 			gui.view.render.unitMotion = 1;
 			const double reachUnit = gfx->logicalUnitsPerPoint();
 			const GAGCore::ViewPoint visibleCenter{gfx->getW() / 2. - 15, gfx->getH() / 2.};
-			require(gui.touch->unitAt({visibleCenter.x - 14, visibleCenter.y}) == worker,
+			require(gui.touch->unitAt({visibleCenter.x - 14, visibleCenter.y}) == Game::refOf(worker),
 				"Exact touch follows the last rendered smooth-motion rectangle");
-			require(gui.touch->unitAt({visibleCenter.x - 28 * reachUnit, visibleCenter.y}, 30) == worker,
+			require(gui.touch->unitAt({visibleCenter.x - 28 * reachUnit, visibleCenter.y}, 30) == Game::refOf(worker),
 				"Unit halo follows the last rendered smooth-motion centre");
-			require(!gui.touch->unitAt({visibleCenter.x - 32 * reachUnit, visibleCenter.y}, 30),
+			require(gui.touch->unitAt({visibleCenter.x - 32 * reachUnit, visibleCenter.y}, 30).empty(),
 				"Smooth motion does not enlarge the 30-point halo");
 			++shown->generation;
-			require(!gui.touch->unitAt(visibleCenter, 30),
+			require(gui.touch->unitAt(visibleCenter, 30).empty(),
 				"A stale displayed identity cannot select a replacement live unit");
 			gui.view.scene = previousScene;
 			gui.view.render.unitMotion = previousMotion;
@@ -3323,11 +3323,11 @@ class GameGUITouchHarness
 		gui.viewportX = gui.camera.tileX(); gui.viewportY = gui.camera.tileY(); gui.updateCamera();
 		const GAGCore::ViewPoint center{gfx->getW()/2.,gfx->getH()/2.};
 		gui.drawAll(0); // Newly created units must be presented before they can be picked.
-		require(gui.touch->unitAt(center,30) == flyer, "Direct airborne sprite wins draw order over ground unit");
+		require(gui.touch->unitAt(center,30) == Game::refOf(flyer), "Direct airborne sprite wins draw order over ground unit");
 		auto *nearby = gui.game.addUnit(42,40,0,WORKER,0,255,0,0);
 		require(nearby, "Nearby worker exists");
 		gui.drawAll(0);
-		require(gui.touch->unitAt({center.x+64,center.y},30) == nearby, "Exact unit beats neighbouring halo");
+		require(gui.touch->unitAt({center.x+64,center.y},30) == Game::refOf(nearby), "Exact unit beats neighbouring halo");
 		// A neighbouring resource is a direct target, not empty halo ground.
 		map.setResourceByIndex(41, 40, WHEAT, 0);
 		map.setMapDiscovered(41, 40, gui.localTeam->me);
@@ -3559,7 +3559,7 @@ class GameGUITouchHarness
 			auto moves = [&]()
 			{
 				std::vector<std::shared_ptr<OrderMoveFlag>> result;
-				for (const auto &order : gui.orderQueue)
+				for (const auto &order : gui.orderQueue.snapshot())
 					if (order->getOrderType() == ORDER_MOVE_FLAG)
 						result.push_back(std::static_pointer_cast<OrderMoveFlag>(order));
 				return result;
@@ -3621,7 +3621,7 @@ class GameGUITouchHarness
 
 			// 28 points from the flag still grabs it anywhere on screen; 40 never does.
 			start = centre();
-			require(gui.touch->grabbableFlag({start.x + 28 * unit, start.y}) == flag,
+			require(gui.touch->grabbableFlag({start.x + 28 * unit, start.y})->gid == flag->gid,
 					"A contact 28 points from a flag grabs it");
 			require(!gui.touch->grabbableFlag({start.x + 40 * unit, start.y}),
 					"A contact 40 points from a flag pans instead");
@@ -3712,7 +3712,7 @@ class GameGUITouchHarness
 			globalContainer->liveSpectating = true;
 			require(!gui.touch->grabbableFlag(centre()), "A spectator cannot grab a flag");
 			globalContainer->liveSpectating = false;
-			require(gui.touch->grabbableFlag(centre()) == flag, "The player can grab the flag");
+			require(gui.touch->grabbableFlag(centre())->gid == flag->gid, "The player can grab the flag");
 
 			// Held at the map's edge, the carried flag pans the map and rides along.
 			start = centre();
