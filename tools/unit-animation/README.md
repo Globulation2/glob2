@@ -697,7 +697,8 @@ npm exec --prefix platform -- vitest run --root platform \
 ```
 
 `SkinModelRender` compares every mapped frame through the actual native atlas
-shader and CPU-baked reference. It requires GPU skinning, verifies lazy shader
+shader and CPU-baked reference, including deformed fur shells for hairy and cloud
+materials. It requires GPU skinning, verifies lazy shader
 creation, interleaved baked/rig draws, paint variants and restored GL state, then
 exercises renderer resource recreation and forced CPU uploads. Run it with a
 working OpenGL display; a software OpenGL driver is useful for correctness but
@@ -709,7 +710,7 @@ python3 test/run_tests.py --binary unit --filter 'SkinModelRender/*'
 
 The focused browser suite captures the production deformation shader's outputs
 with WebGL2 transform feedback. It checks every frame of every clip in both the
-analytic and translated-camera fixtures plus the installed worker against the
+analytic and translated-camera fixtures plus all five installed rig candidates against the
 TypeScript evaluator, enforcing
 0.05 logical-pixel position error and 0.001 normal-vector error. It records the
 browser-reported renderer and measured errors as test attachments. The suite has
