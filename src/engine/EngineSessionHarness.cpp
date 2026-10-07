@@ -13,6 +13,7 @@
 #include <iterator>
 #include "Engine.h"
 #include "sim/SimulationRunner.h"
+#include "sim/presentation/SceneInputs.h"
 #include "MenuColony.h"
 #include "GameGUITouch.h"
 #include <GraphicContext.h>
@@ -74,6 +75,39 @@ GAGCore::CooperativeSlice fixedSlice()
 
 TEST_SUITE("EngineSession")
 {
+    TEST_CASE("paced sessions publish completed worlds before waiting and AI reuses them [display]")
+    {
+        glob2test::ScopedEnvironment desktop("GLOB2_MOBILE_UI","0");
+        glob2test::HeadlessGlobals globals({.display=true,.loadStrings=true,.width=800,.height=600});
+        REQUIRE(NET_Init());
+        struct NetworkScope { ~NetworkScope(){NET_Quit();} } network;
+        globalContainer->automaticEndingGame=false;
+        globalContainer->settings.autosaveGames=false;
+        globalContainer->aiThreads=1;
+        Engine engine;
+        REQUIRE(engine.initCampaign("maps/balanced.map")==Engine::EE_NO_ERROR);
+        globalContainer->settings.gameSpeed=Settings::GAME_SPEED_NORMAL;
+        engine.beginSession(1000);
+        REQUIRE(engine.stepSession(1000,{}));
+        // Complete the startup publication before the next boundary.
+        while(engine.gui.game.map.computeExecutor().pumpPresentation()) {}
+        engine.drawSession();
+        REQUIRE(engine.stepSession(1040,{}));
+        REQUIRE(engine.retainedPresentation);
+        const auto published=engine.retainedPresentation->world;
+        CHECK(published.tick==engine.gui.game.stepCounter);
+        CHECK(engine.retainedPresentation->request.tickTime==engine.gui.lastTickTime);
+        const auto captures=engine.gui.game.snapshots().metrics.captures;
+        engine.gatherAndAdvanceOrders(true);
+        CHECK(engine.gui.game.snapshots().metrics.captures==captures);
+        const auto reused=engine.gui.game.captureReadBoundary({},true,published.requirements);
+        CHECK(reused.entities==published.entities);
+        CHECK(reused.resources==published.resources);
+        CHECK(engine.gui.game.snapshots().metrics.captures==captures);
+        engine.gui.isRunning=false;
+        CHECK_FALSE(engine.finishSession());
+    }
+
     TEST_CASE("new client requests replace completed pending frames without recapture")
     {
         glob2test::HeadlessGlobals globals;

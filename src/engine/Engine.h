@@ -356,6 +356,9 @@ private:
     std::unique_ptr<SimulationRunner> runner;
     std::unique_ptr<ScenePreparation> serialPresentation;
     std::shared_ptr<const SceneInputs> retainedPresentation;
+    bool readBoundaryOpened = false;
+    std::vector<unsigned> observationPlayers(bool wasReadyLastTick) const;
+    SimulationSnapshot::Handle openReadBoundary(std::span<const unsigned> players, bool paused, bool present);
     void refreshRetainedPresentation();
     std::optional<SceneRequest> admitPresentation();
     void publishPresentation(const SimulationSnapshot::Handle& world,SceneRequest request);

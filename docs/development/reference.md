@@ -1566,6 +1566,11 @@ or map-array capture. `Game::drawMap` requires an explicitly supplied frame;
   simulation objects. Preparation runs on the shared compute executor. A complete
   frame is published through `SceneBuffer`; drawing keeps the previous complete
   frame while work is in flight. Simulation barriers do not join presentation.
+  Interactive sessions open the next completed world's shared read boundary
+  before waiting for tick pacing. AI polling and order delivery stay at their
+  existing deadlines and reuse that publication; presentation does not wait a
+  whole tick interval before starting. The native mailbox admits at most one
+  preparation per client request and can replace an unconsumed completed frame.
 - Serial hosts and browsers use the same preparation path. Hosts without a compute
   worker pump bounded chunks between simulation work; cancellation does not wait
   on the browser event loop. Camera and selection updates can prepare from a retained

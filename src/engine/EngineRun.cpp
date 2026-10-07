@@ -167,20 +167,11 @@ void Engine::gatherAndAdvanceOrders(bool wasReadyLastTick)
 
     const bool localAI=wasReadyLastTick && globalContainer->liveSpectating &&
         gui.game.players[orderPlayer]->ai;
-    std::vector<unsigned> eligible;
-    for(int i=0;i<gui.game.gameHeader.getNumberOfPlayers();++i)
-        if(gui.game.players[i]->ai &&
-            ((localAI && i==orderPlayer) ||
-             (!(globalContainer->liveSpectating && i==orderPlayer) && !net->orderReceived(i))))
-            eligible.push_back(unsigned(i));
-    // The observation pipeline captures AI and reserved gradient requirements
-    // together, then dispatches AI and private gradient work to the shared executor.
+    const auto eligible=observationPlayers(wasReadyLastTick);
     const bool paused=gui.gamePaused || globalContainer->replaying;
-    const auto presentation=admitPresentation();
-    const auto world=gui.game.captureReadBoundary(eligible,paused,
-        (presentation ? presentationRequirements(*presentation) : 0)
-        | (diagnostics ? diagnostics->observationRequirements(gui.game.stepCounter) : 0));
-    if (presentation) publishPresentation(world.project(presentationRequirements(*presentation)),*presentation);
+    // After startup, the completed world's union was published before pacing.
+    // AI polling and delivery remain at their original logical deadline.
+    const auto world=openReadBoundary(eligible,paused,!readBoundaryOpened);
     const auto scheduled=gui.game.prepareAIOrders(eligible,paused,diagnostics,&world);
     for(const auto& [actor,order]:scheduled) {
         if(localAI && actor==unsigned(orderPlayer)) localOrder=order;
@@ -313,6 +304,30 @@ void Engine::drawFrame(MainLoopState& st, bool everyFrame, const PresentationFra
 		PerformanceTelemetry::collector().presented();
 	}
 
+}
+
+std::vector<unsigned> Engine::observationPlayers(bool wasReadyLastTick) const
+{
+    const int orderPlayer=globalContainer->liveSpectating ? 0 : gui.localPlayer;
+    const bool localAI=wasReadyLastTick && globalContainer->liveSpectating &&
+        gui.game.players[orderPlayer]->ai;
+    std::vector<unsigned> eligible;
+    for(int i=0;i<gui.game.gameHeader.getNumberOfPlayers();++i)
+        if(gui.game.players[i]->ai && ((localAI && i==orderPlayer) ||
+            (!(globalContainer->liveSpectating && i==orderPlayer) && !net->orderReceived(i))))
+            eligible.push_back(unsigned(i));
+    return eligible;
+}
+
+SimulationSnapshot::Handle Engine::openReadBoundary(std::span<const unsigned> players, bool paused, bool present)
+{
+    const auto presentation=present ? admitPresentation() : std::optional<SceneRequest>{};
+    const auto world=gui.game.captureReadBoundary(players,paused,
+        (presentation ? presentationRequirements(*presentation) : 0)
+        | (diagnostics ? diagnostics->observationRequirements(gui.game.stepCounter) : 0));
+    readBoundaryOpened=true;
+    if (presentation) publishPresentation(world.project(presentationRequirements(*presentation)),*presentation);
+    return world;
 }
 
 std::optional<SceneRequest> Engine::admitPresentation()
@@ -885,6 +900,7 @@ void Engine::beginSession(Uint64 now)
     st.startTime = now;
     teamEliminatedTick.clear();
     session = st;
+    readBoundaryOpened = false;
     randomRequirement.emplace();
     automaticGameStartTick = now;
 	if (!globalContainer->runNoX)
@@ -1101,12 +1117,6 @@ bool Engine::advanceSession(Uint64 now, const std::function<void()>& clientWork,
     pumpTurnSession(now);
     gui.updateCommander(turn && turn->turn().tickIntervalMicros()!=0);
     bool readyNow = st.wasReadyLastTick;
-    if (gui.hardPause) {
-        if (auto request=admitPresentation()) {
-            const auto required=presentationRequirements(*request);
-            publishPresentation(gui.game.captureReadBoundary({},true,required).project(required),*request);
-        }
-    }
     if (!gui.hardPause) {
         gatherAndAdvanceOrders(st.wasReadyLastTick);
         readyNow = net->tickReady();
@@ -1146,6 +1156,15 @@ bool Engine::advanceSession(Uint64 now, const std::function<void()>& clientWork,
     // waiting for the relay poll quickly instead of sleeping a whole tick.
     if (turn ? readyNow : !globalContainer->runNoX) st.needToBeTime += st.speed;
     if (handleExit) handleExitRequest();
+    if (gui.isRunning && !globalContainer->runNoX)
+    {
+        // Open the next shared read phase now, before the host's pacing wait.
+        // Its AI/gradient projections are consumed at the next gather without
+        // another world copy. Presentation can prepare this completed tick
+        // immediately, with the timestamp and receipts belonging to that tick.
+        const auto players=gui.hardPause ? std::vector<unsigned>{} : observationPlayers(st.wasReadyLastTick);
+        openReadBoundary(players,gui.hardPause || gui.gamePaused || globalContainer->replaying,true);
+    }
     workTime.stop();
     loopTime.stop();
     if (!gui.simulationThreaded)
