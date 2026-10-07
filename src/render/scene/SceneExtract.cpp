@@ -13,6 +13,7 @@
 #include "UnitTiming.h"
 #include "TeamStat.h"
 #include "WinProbability.h"
+#include "WinningConditions.h"
 #include "Unit.h"
 #include "AITelemetry.h"
 #include "render/GameAnimations.h"
@@ -81,6 +82,7 @@ namespace
 		s.lastUpgradeType = const_cast<BuildingType*>(lastType);
 		s.typeNum = b.typeNum;
 		s.shortTypeNum = b.shortTypeNum;
+		s.buildingState = b.buildingState;
 		s.posX = b.posX;
 		s.posY = b.posY;
 		s.hp = b.hp;
@@ -251,6 +253,19 @@ namespace
 			local.prestige, local.unitConversionGained, local.unitConversionLost, local.noMoreBuildingSitesCountdown};
 
 		SceneHud &hud = panels.hud;
+        hud.totalPrestigeReached=game.totalPrestigeReached;
+        hud.prestigeWinCondition=const_cast<Game&>(game).isPrestigeWinCondition();
+        hud.localWon=local.hasWon; hud.localLost=local.hasLost;
+        hud.winningTeam=-1;
+        for (int t=0;t<game.teamsCount();++t) if (game.teams[t]->hasWon) { hud.winningTeam=t; break; }
+        hud.drawn=false; hud.localDraw=false;
+        if (hud.winningTeam>=0 || hud.totalPrestigeReached)
+        {
+            auto* source=const_cast<Game*>(&game);
+            const auto contested=contestedTeamsMask(source);
+            hud.drawn=isGameDrawn(source,contested);
+            hud.localDraw=classifyTeamOutcome(source,request.localTeam,contested)==TeamOutcome::Draw;
+        }
 		if (!raw)
 		{
 		std::vector<int> allianceOf;
@@ -341,6 +356,7 @@ namespace
 			bp.effectiveMaxHp = b->getEffectiveMaxHp();
 			bp.buildingState = b->buildingState;
 			bp.constructionResultState = b->constructionResultState;
+			bp.constructionOriginTypeNum = b->getConstructionOriginTypeNum();
 			bp.maxUnitWorking = b->maxUnitWorking;
 			bp.desiredMaxUnitWorking = b->desiredMaxUnitWorking;
 			bp.priority = b->priority;
@@ -673,3 +689,6 @@ void SceneExtractor::prepareChunk(const SceneInputs& input, Scene& scene, size_t
     overlayType = requested; overlayWindow = window; overlayTeam = request.localTeam;
     if (overlay || !scene.editor) scene.overlay = overlay;
 }
+
+void SceneExtractor::extractInputPanels(const Game& game, const SceneRequest& request, ScenePanels& panels)
+{ extractPanels(game, request, panels); }

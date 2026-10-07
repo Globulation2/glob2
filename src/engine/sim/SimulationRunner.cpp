@@ -20,6 +20,7 @@ bool SimulationRunner::start()
 	return false;
 #else
 	telemetry.reset();
+	requestedScene = engine.gui.sceneRequest(false);
 	engine.gui.startScriptClientChannel();
 	try
 	{
@@ -75,6 +76,7 @@ void SimulationRunner::run()
 				wake.wait(lock, [&] { return stopping || parkRequested || suspended || !engine.diagnosticsPending(); });
 				continue;
 			}
+			const auto request = requestedScene;
 			lock.unlock();
 			const Uint64 now = engine.sessionClock();
 			const Uint32 delay = engine.sessionDelay(now);
@@ -85,7 +87,7 @@ void SimulationRunner::run()
 			if (presentation && presentation->finished()) presentation->rethrowFailure();
             if (!scenes.pending() && (!presentation || presentation->finished()))
             {
-                auto input = engine.gui.captureSceneInputs();
+                auto input = engine.gui.captureSceneInputs(request);
                 const auto chunks = SceneExtractor::preparationChunks(*input);
                 presentation = engine.gui.game.map.computeExecutor().submitPresentation(chunks, [this, input, chunks](size_t chunk) {
                     presentationExtractor.prepareChunk(*input, scenes.back(), chunk);
@@ -182,4 +184,10 @@ void SimulationRunner::rethrowFailure()
 	}
 	if (error)
 		std::rethrow_exception(error);
+}
+
+void SimulationRunner::requestScene(SceneRequest request)
+{
+    { std::lock_guard lock(mutex); requestedScene = std::move(request); }
+    wake.notify_all();
 }

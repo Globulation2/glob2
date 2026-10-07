@@ -103,40 +103,36 @@ double GameGUI::flagReachAt(double screenX, double screenY) const
 	return InGameTouchTheme::flagReach + (InGameTouchTheme::flagReachEdge - InGameTouchTheme::flagReach) * toward;
 }
 
-Building *GameGUI::flagAt(int mx, int my, double reachPoints)
+std::optional<SceneBuilding> GameGUI::flagAt(int mx, int my, double reachPoints)
 {
-	int mapX, mapY;
-	game.map.displayToMapCaseAligned(mx, my, &mapX, &mapY, viewportX, viewportY);
-	for (Building *flag : localTeam->virtualBuildings)
-		if (displayedPosX(*flag)==mapX && displayedPosY(*flag)==mapY)
-			return flag;
-	if (reachPoints <= 0)
-		return nullptr;
-	// Screen points whatever the zoom, measured to the flag's tile centre across
-	// the map's wrap.
-	const double radius = reachPoints * globalContainer->gfx->logicalUnitsPerPoint() / camera.zoom;
-	double nearestDistance = radius * radius;
-	Building *nearest = nullptr;
-	const double worldX = mx + viewportX * 32., worldY = my + viewportY * 32.;
-	const auto wrappedDistance = [](double delta, double period)
-	{
-		return MapCamera::wrap(delta + period / 2, period) - period / 2;
-	};
-	for (auto *flag : localTeam->virtualBuildings)
-	{
-		const double dx = wrappedDistance(worldX - (displayedPosX(*flag) * 32. + 16),
-										   game.map.getW() * 32.);
-		const double dy = wrappedDistance(worldY - (displayedPosY(*flag) * 32. + 16),
-										   game.map.getH() * 32.);
-		const double distance = dx * dx + dy * dy;
-		if (distance < nearestDistance ||
-			(distance == nearestDistance && nearest && flag->gid < nearest->gid))
-		{
-			nearest = flag;
-			nearestDistance = distance;
-		}
-	}
-	return nearest;
+    int mapX, mapY;
+    game.map.displayToMapCaseAligned(mx,my,&mapX,&mapY,viewportX,viewportY);
+    std::vector<BuildingRef> flags;
+    if (simulationThreaded)
+    {
+        const auto& e=drawnScene().entities;
+        for (auto gid : e.virtualBuildings[localTeamNo])
+            if (const auto* b=e.building(gid)) flags.push_back({gid,b->generation});
+    }
+    else for (const auto* b : localTeam->virtualBuildings) flags.push_back(Game::refOf(b));
+    for (const auto ref : flags)
+        if (auto b=inputBuilding(ref); b && displayedPosX(*b)==mapX && displayedPosY(*b)==mapY) return b;
+    if (reachPoints <= 0) return {};
+    const double radius=reachPoints*globalContainer->gfx->logicalUnitsPerPoint()/camera.zoom;
+    double nearestDistance=radius*radius;
+    std::optional<SceneBuilding> nearest;
+    const double worldX=mx+viewportX*32., worldY=my+viewportY*32.;
+    const auto wrapped=[](double delta,double period) { return MapCamera::wrap(delta+period/2,period)-period/2; };
+    for (const auto ref : flags)
+    {
+        auto b=inputBuilding(ref); if (!b) continue;
+        const double dx=wrapped(worldX-(displayedPosX(*b)*32.+16),game.map.getW()*32.);
+        const double dy=wrapped(worldY-(displayedPosY(*b)*32.+16),game.map.getH()*32.);
+        const double distance=dx*dx+dy*dy;
+        if (distance<nearestDistance || (distance==nearestDistance && nearest && b->gid<nearest->gid))
+        { nearest=b; nearestDistance=distance; }
+    }
+    return nearest;
 }
 
 void GameGUI::handleMapClick(int mx, int my, int button)
@@ -158,7 +154,7 @@ void GameGUI::handleMapClick(int mx, int my, int button)
 	{
 		int markx, marky;
 		game.map.displayToMapCaseAligned(mx, my, &markx, &marky, viewportX, viewportY);
-		orderQueue.push_back(shared_ptr<Order>(new MapMarkOrder(localTeamNo, markx, marky)));
+		enqueueOrder(shared_ptr<Order>(new MapMarkOrder(localTeamNo, markx, marky)));
 		globalContainer->gfx->cursorManager.setNextType(CursorManager::CURSOR_NORMAL);
 		putMark = false;
 	}
@@ -169,22 +165,49 @@ void GameGUI::handleMapClick(int mx, int my, int button)
 		selectionPushedPosX=mapX;
 		selectionPushedPosY=mapY;
 		// check for flag first
-		if (Building *flag=flagAt(mx, my, 0))
+		if (auto flag=flagAt(mx, my, 0))
 		{
-			setSelection(BUILDING_SELECTION, flag);
+			setSelection(BUILDING_SELECTION, unsigned(flag->gid));
 			selectionPushed=true;
 			return;
 		}
         // Keep exact flag hits above units/buildings as before. The extra
         // touch-only selection halo claims otherwise empty ground, so it cannot
         // steal direct clicks from a neighbouring building or unit.
+        // Shift-click dumps serialize live entities. This diagnostic retains
+        // the caller's owner-boundary protection until lifecycle input is split.
+        if (simulationThreaded && !(inputState.modifiers() & SDL_KMOD_SHIFT))
+        {
+            const auto& scene=drawnScene();
+            const auto* unit=scene.entities.unit(view.mouseUnit.gid);
+            if (unit && unit->generation != view.mouseUnit.generation) unit=nullptr;
+            const auto gid=scene.map.getBuilding(mapX,mapY);
+            if (touch->usesHUD() && !torusView.active() && !unit && gid==NOGBID)
+                if (auto nearest=flagAt(mx,my,flagReach))
+                { setSelection(BUILDING_SELECTION,unsigned(nearest->gid)); selectionPushed=false; return; }
+            if (unit)
+            { setSelection(UNIT_SELECTION,unsigned(unit->gid)); selectionPushed=true; return; }
+            const auto me=Team::teamNumberToMask(localTeamNo);
+            if (gid!=NOGBID)
+            {
+                const int team=Building::GIDtoTeam(gid);
+                if (team==localTeamNo || scene.map.isFOWDiscovered(mapX,mapY,me) ||
+                    (scene.map.isMapDiscovered(mapX,mapY,me) && (scene.entities.teams[team].allies&me)) ||
+                    globalContainer->isViewingGame())
+                { setSelection(BUILDING_SELECTION,unsigned(gid)); selectionPushed=true; }
+            }
+            else if (scene.map.getResource(mapX,mapY).type!=NO_RES_TYPE && scene.map.isMapDiscovered(mapX,mapY,me))
+            { setSelection(RESOURCE_SELECTION,unsigned(scene.map.coordToIndex(mapX,mapY))); selectionPushed=true; }
+            else if (selectionMode==RESOURCE_SELECTION) clearSelection();
+            return;
+        }
         Unit *mouseUnit = game.resolveUnit(view.mouseUnit);
         if (touch->usesHUD() && !torusView.active() && !mouseUnit &&
             game.map.getBuilding(mapX, mapY) == NOGBID)
         {
-            if (Building *nearest=flagAt(mx, my, flagReach))
+            if (auto nearest=flagAt(mx, my, flagReach))
             {
-                setSelection(BUILDING_SELECTION, nearest);
+                setSelection(BUILDING_SELECTION, unsigned(nearest->gid));
                 // A forgiving selection click must not move the flag onto the
                 // neighbouring tile on mouse-up. Touch drags move flags through
                 // GameGUITouch, which grabs them before the map pans.

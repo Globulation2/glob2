@@ -1560,8 +1560,14 @@ bounded software target. Asset loading is shared with normal game startup.
   After eight simulation claims, the designated worker gives a pending presentation
   chunk a turn, preventing starvation under a continuous compute backlog.
   Without a compute worker, the graphics owner explicitly pumps preparation.
+- Serial simulation hosts (including turn matches and both browser runtimes) use
+  `ScenePreparation` to submit the same immutable inputs to the compute executor.
+  Transport polling stays on the host thread. Pthread builds prepare on a worker;
+  without workers the host explicitly pumps the task. Cancellation retains only
+  the active task's immutable storage and does not wait on the browser event loop.
+  World replacement discards the outgoing producer and its published Scene.
 - `SceneExtractor::extract(game, request, scene)` remains the synchronous path for
-  serial sessions, the editor and standalone rendering. `Game::ViewState::drawnScene()`
+  the editor, standalone rendering and direct GUI test callers. `Game::ViewState::drawnScene()`
   returns the Scene supplied by the session or extracted for the current draw.
 - Snapshot-backed `SceneMap` retains terrain, resources, occupancy and visibility
   component leases instead of copying their full arrays into each Scene. The terrain
@@ -1630,8 +1636,15 @@ also remains the headless default and the equivalence reference.
 - Only state both threads use is shared: `ClientRequests`' view is locked; `gamePaused`,
   `hardPause`, `isRunning` and the CPU-load history are atomics. A pause order or the local
   player leaving takes effect on the simulation thread in the same tick, as in serial
-  execution. GUI state extraction reads (selection, local team) changes only while the
-  simulation is parked.
+  execution. Scene requests (selection, local team and view options) cross a locked
+  latest-value mailbox; the simulation fills in its own tick timing at capture.
+- GUI orders cross `ClientOrderQueue`, which atomically takes orders and coalesces
+  flag moves without exposing iterators. Locally issued entity orders carry the
+  displayed incarnation and world identity; admission drops obsolete targets before
+  sending or recording them. These guards are not serialized and do not alter the
+  wire protocol. Building actions and threaded selection read the displayed Scene;
+  touch gestures retain incarnation identities. Routine frame parking still protects
+  the remaining area-preview, lifecycle and shared GUI paths.
 - The synchronized RNG belongs to the game, so results do not depend on the thread.
   `GLOB2_SIM_THREAD=1` runs headless sessions on the simulation thread for
   `check_sim_thread.py --candidate-env GLOB2_SIM_THREAD=1`; `GLOB2_SIM_THREAD=0` keeps

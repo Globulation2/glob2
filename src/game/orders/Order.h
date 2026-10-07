@@ -78,6 +78,9 @@ public:
 	Uint32 gameCheckSum;
 	// Local engine transport metadata. Replay/network payloads still encode
 	// actual orders only; independently generated AI streams tag their outputs.
+	// Local admission guard, stripped by the existing wire/replay serializers.
+	Uint64 clientWorld = 0;
+	std::optional<BuildingRef> clientTarget;
 	Uint32 aiGeneration = 0;
 	Uint64 aiPollSequence = 0;
 	std::optional<BuildingRef> aiSelectedTarget;
