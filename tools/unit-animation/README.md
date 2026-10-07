@@ -457,12 +457,9 @@ blender-3.6.23 --background --factory-startup -t 1 --python-exit-code 1 \
   the same `limb_surface.py` fit used by `export_units.py` is evaluated on the
   resulting metaball transforms. This keeps the published topology and paint
   UVs; the surface is symmetrised under the chart's front/back and top/bottom
-  reflections (the measured asymmetry is recorded in the report). The warrior
-  uses that surface directly. The worker's body ball is smaller than its
-  shoulder and hip balls, so its source rest surface is an hourglass that
-  skinning would carry into every frame as a waist crease; its rest mesh is
-  instead each vertex's mean over every baked frame, un-posed through its home
-  bone, then symmetrised (`--rest` overrides the per-model default).
+  reflections (the measured asymmetry is recorded in the report). `--rest
+  unposed` instead averages the baked frames un-posed through their bones; it
+  is kept as an experiment, not a default.
 - **Bones.** One `body` bone, and per limb a `socket` bone at the body centre
   plus, for each metaball along the limb, a bone halfway along the segment
   (`arm.1.mid.R`) and one on the ball (`arm.1.R`): 29 bones for the worker, 21
@@ -480,8 +477,12 @@ blender-3.6.23 --background --factory-startup -t 1 --python-exit-code 1 \
   phase` of a `samples/32` second cycle. Sample targets average the frames
   sharing them.
 - **Weights.** Per vertex, non-negative least squares over all clips with a
-  sum-to-one penalty. Torso vertices may use the body and socket bones, limb
-  vertices the body, their socket and their own limb's bones. The four
+  sum-to-one penalty. Torso vertices may use the body, the socket bones and
+  each limb's first segment (`--torso-bones`): in the baked frames the torso
+  surface slides outward over the shoulder and hip lobes as the limbs move, and
+  with the body and socket bones alone the limb rings end up covering the real
+  torso, leaving a fold across its middle. Limb vertices use the body, their
+  socket and their own limb's bones. The four
   influences are chosen from neighbour-averaged weights (`--support-passes`,
   default 5) so adjacent vertices pick the same bones, solved again under that
   support, then mirrored across both reflections so symmetric vertices carry

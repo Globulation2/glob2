@@ -62,12 +62,17 @@ DEFAULT_SUPPORT_PASSES = 5
 # position. Unbounded translations fix large placement errors but also pinch
 # the socket rings into dark flipped specks.
 DEFAULT_TRANSLATION_BOUND = 1.0
-# Rest mesh per model: the worker's body ball is smaller than its shoulder and
-# hip balls, so the surface at the source rest pose is an hourglass that
-# skinning would carry into every frame; its rest comes from the baked frames
-# un-posed through their bones. The warrior's body ball is the largest, its
-# source rest surface is already right, and the un-posed mean cracks its joints.
-REST_SOURCES = {"worker": "unposed", "warrior": "source"}
+# Rest mesh per model: "source" evaluates the surface at the source rest pose;
+# "unposed" averages the baked frames un-posed through their bones (kept as an
+# experiment: it smoothed the worker's torso but cracked the warrior's joints,
+# and letting torso vertices follow the proximal limb bones fixed the torso
+# without it).
+REST_SOURCES = {"worker": "source", "warrior": "source"}
+# Which bones may influence torso vertices. In the baked frames the torso
+# surface slides outward over the shoulder and hip lobes as the limbs move;
+# with only the body and socket bones the torso patch stays compact and the
+# limb rings cover the real torso, leaving a fold across its middle.
+DEFAULT_TORSO_BONES = "proximal"
 MAXIMUM_INFLUENCES = 4
 # Refined bone scale relative to the bind pose; the format allows far more,
 # this keeps a bone from "explaining" a merge by collapsing.
@@ -335,16 +340,27 @@ def refine_bones(relative, homogeneous, targets, weights, chain, bound):
     return relative
 
 
-def allowed_influences(surface, layout, paths, torso_sockets=True):
-    """Which bones may influence each vertex: the torso uses the body and socket
-    bones (or the body alone), a limb uses the body, its socket and its own
-    bones. Quad centres take the union of their corners. This keeps a torso
-    vertex from borrowing a limb bone whose rotation would turn its normal away
-    from the surface."""
+def allowed_influences(surface, layout, paths, torso_bones="sockets"):
+    """Which bones may influence each vertex. A limb uses the body, its socket
+    and its own bones. The torso uses the body alone (``"body"``), the body and
+    socket bones (``"sockets"``), those plus each limb's first segment
+    (``"proximal"``), or every bone (``"all"``). Quad centres take the union of
+    their corners."""
     limb_of = np.array([limb for _, _, _, limb, _ in layout])
     kind_of = [kind for _, _, kind, _, _ in layout]
+    first = [
+        kind in ("ball", "mid") and paths[limb].index(part) == 0
+        for _, _, kind, limb, part in layout
+    ]
     torso = np.array(
-        [kind == "body" or (torso_sockets and kind == "socket") for kind in kind_of], dtype=float
+        [
+            kind == "body"
+            or (torso_bones != "body" and kind == "socket")
+            or (torso_bones == "proximal" and first[i])
+            or torso_bones == "all"
+            for i, kind in enumerate(kind_of)
+        ],
+        dtype=float,
     )
     allowed = np.zeros((len(surface.vertices), len(layout)))
     for v, descriptor in enumerate(surface.vertices):
@@ -429,7 +445,7 @@ def fit(
     support_passes=DEFAULT_SUPPORT_PASSES,
     translation_bound=DEFAULT_TRANSLATION_BOUND,
     torso_smoothness=0.0,
-    torso_sockets=True,
+    torso_bones=DEFAULT_TORSO_BONES,
     rest_source=None,
     log=print,
 ):
@@ -542,7 +558,7 @@ def fit(
     stacked = lambda: np.concatenate([relative[c] for c in clips])
     mean_targets = np.concatenate([targets[c] for c in clips])
     graph = neighbour_graph(surface.triangles, len(homogeneous))
-    allowed = allowed_influences(surface, layout, paths, torso_sockets)
+    allowed = allowed_influences(surface, layout, paths, torso_bones)
     torso = np.array([descriptor[0] == "body" for descriptor in surface.vertices])
     for v, descriptor in enumerate(surface.vertices):
         if descriptor[0] == "average":
@@ -658,7 +674,7 @@ def author(
     support_passes=DEFAULT_SUPPORT_PASSES,
     translation_bound=DEFAULT_TRANSLATION_BOUND,
     torso_smoothness=0.0,
-    torso_sockets=True,
+    torso_bones=DEFAULT_TORSO_BONES,
     rest_source=None,
 ):
     if bpy.app.version[:3] != (3, 6, 23):
@@ -677,7 +693,7 @@ def author(
         support_passes,
         translation_bound,
         torso_smoothness,
-        torso_sockets,
+        torso_bones,
         rest_source,
     )
     layout, bind = result["layout"], result["bind"]
@@ -788,7 +804,12 @@ if __name__ == "__main__":
         help="rest mesh: baked frames un-posed through their bones, or the source rest pose "
         "(default per model, see REST_SOURCES)",
     )
-    parser.add_argument("--rigid-torso", action="store_true", help="torso follows the body bone only")
+    parser.add_argument(
+        "--torso-bones",
+        choices=("body", "sockets", "proximal", "all"),
+        default=DEFAULT_TORSO_BONES,
+        help="which bones may influence torso vertices",
+    )
     parser.add_argument(
         "--no-midpoint-bones",
         action="store_true",
@@ -810,6 +831,6 @@ if __name__ == "__main__":
         support_passes=args.support_passes,
         translation_bound=args.translation_bound,
         torso_smoothness=args.torso_smoothness,
-        torso_sockets=not args.rigid_torso,
+        torso_bones=args.torso_bones,
         rest_source=args.rest,
     )
