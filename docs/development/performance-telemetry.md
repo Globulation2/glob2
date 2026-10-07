@@ -517,3 +517,50 @@ succeeded but readback failed. Cleanup/restoration failures remain errors even i
 the command succeeded. Keep the audit beside the results; SIGKILL, power loss or a
 host crash cannot guarantee restoration, so inspect saved originals after an abrupt
 termination. The wrapper does not itself pin CPU affinity.
+
+CPU affinity alone does not keep other processes off the selected cores. On Linux
+with cgroup v2 and an already-enabled cpuset controller, an authorized temporary
+partition can reserve complete physical cores while ordinary work keeps the other
+CPUs. Verify the host's SMT topology first; these defaults describe a host whose
+CPUs 0–7 have siblings 16–23:
+
+```sh
+python3 test/run_with_benchmark_cpuset.py --audit artifacts/cpuset-priority.json \
+  --cpus 0-7 --reserve-cpus 0-7,16-23 -- \
+  python3 test/run_with_benchmark_governor.py --audit artifacts/governor-priority.json \
+  --cpus 0 1 2 3 4 5 6 7 -- \
+  python3 test/benchmark_resource_refactor.py MERGED_ENGINE CANDIDATE_ENGINE PRIORITY_WINDOWS.json \
+  --before-root MERGED_CHECKOUT --after-root CANDIDATE_CHECKOUT \
+  --repeats 16 --report-only --output artifacts/resource-priority
+```
+
+The wrapper runs unprivileged, creates one fresh root-level cgroup, and uses
+noninteractive `sudo` only for individual operations on that group (and reading
+init's namespace identity if permissions require it). It does not write existing
+cgroup controls or individual process affinity masks; the kernel temporarily
+restricts their effective CPU allocation to the complementary cores. A gate
+preserves the caller's UID, GID, groups and environment, confirms placement, and
+sets command affinity before execution. `--dry-run` records preflight information
+without creating a cgroup or launching the command. Every reserved core must
+include all its SMT siblings, and CPUs must remain available outside the partition.
+
+The partition uses `root`, which preserves scheduler load balancing. It verifies
+exclusive/effective CPU masks and the complementary ordinary-work mask before
+launch and throughout execution, and stops on invalidation or command-affinity
+changes. See the kernel's [cpuset partition documentation](https://docs.kernel.org/admin-guide/cgroup-v2.html#cpuset).
+Timeout and catchable signals allow graceful shutdown before removing the group;
+nested governor wrappers get time to restore their original settings. Last-resort
+`cgroup.kill` is restricted to the owned group and makes the run fail with an
+explicit warning to inspect the governor audit. Group removal, original parent
+state and the wrapper's original affinity are audited separately from governor
+restoration. SIGKILL, host failure or power loss can prevent cleanup: retain the
+audit containing the exact group path and inspect outstanding processes and nested
+governor originals before recovery.
+
+Exclusive CPU allocation does not isolate shared memory bandwidth, package power,
+interrupts, kernel activity or shared caches. Other-host CPU activity is expected
+outside the reserved set; use the runner's per-CPU busy counters to distinguish
+that from residual activity on reserved CPUs, including deliberately idle SMT
+siblings. Whole-host busy counts alone do not establish contamination of the
+reserved cores. Continue recording CPU, wall time, RSS and frequency evidence and
+retain anomalous runs for separate investigation.
