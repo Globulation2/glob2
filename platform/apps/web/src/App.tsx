@@ -372,7 +372,9 @@ function Layout() {
                   aria-current={section === item.id ? 'page' : undefined}
                 >
                   {item.icon ? (
-                    <Icon name={item.icon} size={24} />
+                    <span className={`nav-chip nav-chip-${item.id}`}>
+                      <Icon name={item.icon} size={20} />
+                    </span>
                   ) : (
                     <img src={GLOB_ICON} width={26} height={26} alt="" />
                   )}
