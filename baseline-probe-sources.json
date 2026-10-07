@@ -1,0 +1,14 @@
+{
+  "revision": "d42d3e512",
+  "sha256": {
+    "src/game/GameAI.cpp": "f3c662a218e96a4fef0d428abc0e31c213b8e62d3b7af7d222159a3ffd7c8985",
+    "src/game/Game_sync.cpp": "30526a42568055cc2b56c84b251631ef71929d0f52b928bcb28b47794893717d",
+    "src/engine/EngineRun.cpp": "b19cb0c7a04239ddb34713e674610b110408fe1a01261b80e0f2e48d2035faa0",
+    "src/map/MapStep.cpp": "3a8eb7189802fa84877bb5edb20f44cab8e07b2dedfec369bc6302cc3e45d36a",
+    "src/map/MapState.h": "6d013dbfacd5532fdff15af05fcb9d80ce166ee3c20cf18c286002d3a886f6b4",
+    "src/game/SimRevision.h": "27fb50f895fea30d0a88c8a154cc21107beb6f88567a5902ca1e8b16376ee1f6",
+    "src/scripting/javascript/ScriptSessionTest.cpp": "91fa701dabd0dc2608888f8210ef20ec1ad67e08bfb13458e94aa4cf0a0fd4b8",
+    "src/scripting/javascript/ScriptSimulationTest.cpp": "fadaf7534e32b2e8e153e1ab6dc3657fa1d5cff220e6e96951f2045c632ac1fd",
+    "libgag/src/ImageAssetTest.cpp": "b6de4fe1dca3b38e9357a8fc69809d4139d21268162e7e493cbe051e765343ec"
+  }
+}

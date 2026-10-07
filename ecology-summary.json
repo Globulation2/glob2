@@ -1,0 +1,155 @@
+{
+  "reserve/food": {
+    "legacy_mean": 7947.85,
+    "delayed_mean": 7642.8,
+    "median_paired_ratio": 0.9641772995754618,
+    "ratio_ci": [
+      0.9464482959259064,
+      0.9828032202530708
+    ],
+    "paired_delta_range": [
+      -969,
+      74
+    ]
+  },
+  "reserve/deposits": {
+    "legacy_mean": 5799.15,
+    "delayed_mean": 5720.45,
+    "median_paired_ratio": 0.9847543040065637,
+    "ratio_ci": [
+      0.978645771550313,
+      0.9951217838953285
+    ],
+    "paired_delta_range": [
+      -317,
+      56
+    ]
+  },
+  "reserve/harvested": {
+    "legacy_mean": 16261,
+    "delayed_mean": 15999.3,
+    "median_paired_ratio": 0.9847873930123432,
+    "ratio_ci": [
+      0.9753519323854838,
+      0.9942153426982213
+    ],
+    "paired_delta_range": [
+      -1258,
+      888
+    ]
+  },
+  "reserve/depleted": {
+    "legacy_mean": 0,
+    "delayed_mean": 0,
+    "median_paired_ratio": null,
+    "ratio_ci": null,
+    "paired_delta_range": [
+      0,
+      0
+    ]
+  },
+  "reserve/seeded": {
+    "legacy_mean": 1703.15,
+    "delayed_mean": 1624.45,
+    "median_paired_ratio": 0.9482113019420932,
+    "ratio_ci": [
+      0.9286565897425535,
+      0.9829621010638299
+    ],
+    "paired_delta_range": [
+      -317,
+      56
+    ]
+  },
+  "reserve/replenished": {
+    "legacy_mean": 12261,
+    "delayed_mean": 11772.95,
+    "median_paired_ratio": 0.9592688169228905,
+    "ratio_ci": [
+      0.9432974639360485,
+      0.9773013418382941
+    ],
+    "paired_delta_range": [
+      -1910,
+      768
+    ]
+  },
+  "deplete/food": {
+    "legacy_mean": 244.2,
+    "delayed_mean": 203.25,
+    "median_paired_ratio": 0.8847176728671455,
+    "ratio_ci": [
+      0.6740998363338788,
+      0.9966741071428571
+    ],
+    "paired_delta_range": [
+      -317,
+      178
+    ]
+  },
+  "deplete/deposits": {
+    "legacy_mean": 90.55,
+    "delayed_mean": 77.05,
+    "median_paired_ratio": 0.9382352941176471,
+    "ratio_ci": [
+      0.7014851485148514,
+      1.0421052631578946
+    ],
+    "paired_delta_range": [
+      -113,
+      74
+    ]
+  },
+  "deplete/harvested": {
+    "legacy_mean": 10477.45,
+    "delayed_mean": 10351.95,
+    "median_paired_ratio": 0.989005995644391,
+    "ratio_ci": [
+      0.9848575813384892,
+      0.9922462519981212
+    ],
+    "paired_delta_range": [
+      -264,
+      -16
+    ]
+  },
+  "deplete/depleted": {
+    "legacy_mean": 4114.4,
+    "delayed_mean": 4112.4,
+    "median_paired_ratio": 0.9991488916251787,
+    "ratio_ci": [
+      0.9981793707362063,
+      1.0012165450121655
+    ],
+    "paired_delta_range": [
+      -33,
+      16
+    ]
+  },
+  "deplete/seeded": {
+    "legacy_mean": 108.95,
+    "delayed_mean": 93.45,
+    "median_paired_ratio": 0.9209164818920916,
+    "ratio_ci": [
+      0.6941666666666667,
+      1.141509433962264
+    ],
+    "paired_delta_range": [
+      -141,
+      90
+    ]
+  },
+  "deplete/replenished": {
+    "legacy_mean": 368,
+    "delayed_mean": 217.05,
+    "median_paired_ratio": 0.5663682366679641,
+    "ratio_ci": [
+      0.45075985075985076,
+      0.7343826635303539
+    ],
+    "paired_delta_range": [
+      -425,
+      59
+    ]
+  }
+}

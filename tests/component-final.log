@@ -1,0 +1,5 @@
+PASS ResourceGrowthBenchmark/paired legacy split and delayed growth component costs [benchmark][resources] (173.1s)
+PASS ResourceGrowthBenchmark/twenty seed ecology comparison [benchmark][resources] (6.9s)
+
+2 passed, 0 failed, 0 skipped (180.0s of test time)
+[run_tests] JUnit report: artifacts/resource-growth/component-final.xml (2 cases)

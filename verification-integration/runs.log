@@ -1,0 +1,14 @@
+idle128 0 d8t4-owner wall=1.047s cpu=0.770s
+idle128 0 d8t4-shared wall=0.761s cpu=0.778s
+idle256 0 d8t4-owner wall=1.217s cpu=1.299s
+idle256 0 d8t4-shared wall=1.253s cpu=1.331s
+idle512 0 d8t4-owner wall=2.381s cpu=3.481s
+idle512 0 d8t4-shared wall=2.671s cpu=3.481s
+ai128 0 d8t4-owner wall=1.118s cpu=0.788s
+ai128 0 d8t4-shared wall=0.774s cpu=0.762s
+ai256 0 d8t4-owner wall=1.390s cpu=1.295s
+ai256 0 d8t4-shared wall=1.297s cpu=1.373s
+ai512 0 d8t4-owner wall=2.592s cpu=3.429s
+ai512 0 d8t4-shared wall=2.655s cpu=3.340s
+disabled512 0 d8t4-owner wall=2.600s cpu=2.867s
+disabled512 0 d8t4-shared wall=2.904s cpu=2.980s

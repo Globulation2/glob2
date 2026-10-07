@@ -1,0 +1,285 @@
+{
+  "kind": "growth-ecology",
+  "samples": [
+    {
+      "deposits": 5745,
+      "food": 7907,
+      "harvested": 16390,
+      "seed": 1,
+      "variant": 0
+    },
+    {
+      "deposits": 5665,
+      "food": 7515,
+      "harvested": 16168,
+      "seed": 1,
+      "variant": 1
+    },
+    {
+      "deposits": 5872,
+      "food": 8110,
+      "harvested": 16494,
+      "seed": 2,
+      "variant": 0
+    },
+    {
+      "deposits": 5720,
+      "food": 7684,
+      "harvested": 15960,
+      "seed": 2,
+      "variant": 1
+    },
+    {
+      "deposits": 5912,
+      "food": 8271,
+      "harvested": 16754,
+      "seed": 3,
+      "variant": 0
+    },
+    {
+      "deposits": 5782,
+      "food": 7736,
+      "harvested": 16340,
+      "seed": 3,
+      "variant": 1
+    },
+    {
+      "deposits": 5996,
+      "food": 8403,
+      "harvested": 16564,
+      "seed": 4,
+      "variant": 0
+    },
+    {
+      "deposits": 5833,
+      "food": 7993,
+      "harvested": 16317,
+      "seed": 4,
+      "variant": 1
+    },
+    {
+      "deposits": 5774,
+      "food": 7979,
+      "harvested": 16269,
+      "seed": 5,
+      "variant": 0
+    },
+    {
+      "deposits": 5650,
+      "food": 7494,
+      "harvested": 15416,
+      "seed": 5,
+      "variant": 1
+    },
+    {
+      "deposits": 5808,
+      "food": 7924,
+      "harvested": 16038,
+      "seed": 6,
+      "variant": 0
+    },
+    {
+      "deposits": 5690,
+      "food": 7476,
+      "harvested": 15699,
+      "seed": 6,
+      "variant": 1
+    },
+    {
+      "deposits": 5910,
+      "food": 8284,
+      "harvested": 16575,
+      "seed": 7,
+      "variant": 0
+    },
+    {
+      "deposits": 5593,
+      "food": 7315,
+      "harvested": 15317,
+      "seed": 7,
+      "variant": 1
+    },
+    {
+      "deposits": 5757,
+      "food": 7864,
+      "harvested": 16406,
+      "seed": 8,
+      "variant": 0
+    },
+    {
+      "deposits": 5807,
+      "food": 7777,
+      "harvested": 16289,
+      "seed": 8,
+      "variant": 1
+    },
+    {
+      "deposits": 5701,
+      "food": 7567,
+      "harvested": 16461,
+      "seed": 9,
+      "variant": 0
+    },
+    {
+      "deposits": 5707,
+      "food": 7467,
+      "harvested": 16674,
+      "seed": 9,
+      "variant": 1
+    },
+    {
+      "deposits": 5806,
+      "food": 7929,
+      "harvested": 16433,
+      "seed": 10,
+      "variant": 0
+    },
+    {
+      "deposits": 5861,
+      "food": 8003,
+      "harvested": 16638,
+      "seed": 10,
+      "variant": 1
+    },
+    {
+      "deposits": 5658,
+      "food": 7772,
+      "harvested": 15506,
+      "seed": 11,
+      "variant": 0
+    },
+    {
+      "deposits": 5702,
+      "food": 7696,
+      "harvested": 16394,
+      "seed": 11,
+      "variant": 1
+    },
+    {
+      "deposits": 5918,
+      "food": 8182,
+      "harvested": 16760,
+      "seed": 12,
+      "variant": 0
+    },
+    {
+      "deposits": 5799,
+      "food": 7893,
+      "harvested": 15789,
+      "seed": 12,
+      "variant": 1
+    },
+    {
+      "deposits": 5684,
+      "food": 7791,
+      "harvested": 15979,
+      "seed": 13,
+      "variant": 0
+    },
+    {
+      "deposits": 5740,
+      "food": 7704,
+      "harvested": 16156,
+      "seed": 13,
+      "variant": 1
+    },
+    {
+      "deposits": 5794,
+      "food": 7791,
+      "harvested": 16229,
+      "seed": 14,
+      "variant": 0
+    },
+    {
+      "deposits": 5705,
+      "food": 7508,
+      "harvested": 15830,
+      "seed": 14,
+      "variant": 1
+    },
+    {
+      "deposits": 5760,
+      "food": 7858,
+      "harvested": 16497,
+      "seed": 15,
+      "variant": 0
+    },
+    {
+      "deposits": 5721,
+      "food": 7606,
+      "harvested": 15997,
+      "seed": 15,
+      "variant": 1
+    },
+    {
+      "deposits": 5694,
+      "food": 7654,
+      "harvested": 15888,
+      "seed": 16,
+      "variant": 0
+    },
+    {
+      "deposits": 5677,
+      "food": 7614,
+      "harvested": 15597,
+      "seed": 16,
+      "variant": 1
+    },
+    {
+      "deposits": 5798,
+      "food": 7791,
+      "harvested": 16278,
+      "seed": 17,
+      "variant": 0
+    },
+    {
+      "deposits": 5711,
+      "food": 7626,
+      "harvested": 16051,
+      "seed": 17,
+      "variant": 1
+    },
+    {
+      "deposits": 5740,
+      "food": 7824,
+      "harvested": 15535,
+      "seed": 18,
+      "variant": 0
+    },
+    {
+      "deposits": 5602,
+      "food": 7397,
+      "harvested": 15294,
+      "seed": 18,
+      "variant": 1
+    },
+    {
+      "deposits": 5840,
+      "food": 8038,
+      "harvested": 16165,
+      "seed": 19,
+      "variant": 0
+    },
+    {
+      "deposits": 5716,
+      "food": 7595,
+      "harvested": 16132,
+      "seed": 19,
+      "variant": 1
+    },
+    {
+      "deposits": 5816,
+      "food": 8018,
+      "harvested": 15999,
+      "seed": 20,
+      "variant": 0
+    },
+    {
+      "deposits": 5728,
+      "food": 7757,
+      "harvested": 15928,
+      "seed": 20,
+      "variant": 1
+    }
+  ]
+}

@@ -1,0 +1,110 @@
+$ uname -a
+Linux therig 7.0.0-31-generic #31-Ubuntu SMP PREEMPT_DYNAMIC Sat Aug  1 04:26:38 UTC 2026 x86_64 GNU/Linux
+$ lscpu
+Architecture:                            x86_64
+CPU op-mode(s):                          32-bit, 64-bit
+Address sizes:                           43 bits physical, 48 bits virtual
+Byte Order:                              Little Endian
+CPU(s):                                  32
+On-line CPU(s) list:                     0-31
+Vendor ID:                               AuthenticAMD
+Model name:                              AMD Ryzen Threadripper 2950X 16-Core Processor
+CPU family:                              23
+Model:                                   8
+Thread(s) per core:                      2
+Core(s) per socket:                      16
+Socket(s):                               1
+Stepping:                                2
+Frequency boost:                         disabled
+CPU(s) scaling MHz:                      100%
+CPU max MHz:                             4000.0000
+CPU min MHz:                             2200.0000
+BogoMIPS:                                7998.72
+Flags:                                   fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 ht syscall nx mmxext fxsr_opt pdpe1gb rdtscp lm constant_tsc rep_good nopl nonstop_tsc cpuid extd_apicid amd_dcm aperfmperf rapl pni pclmulqdq monitor ssse3 fma cx16 sse4_1 sse4_2 movbe popcnt aes xsave avx f16c rdrand lahf_lm cmp_legacy svm extapic cr8_legacy abm sse4a misalignsse 3dnowprefetch osvw skinit wdt tce topoext perfctr_core perfctr_nb bpext perfctr_llc mwaitx cpb hw_pstate ssbd ibpb vmmcall fsgsbase bmi1 avx2 smep bmi2 rdseed adx smap clflushopt sha_ni xsaveopt xsavec xgetbv1 clzero xsaveerptr arat npt lbrv svm_lock nrip_save tsc_scale vmcb_clean flushbyasid decodeassists pausefilter pfthreshold avic v_vmsave_vmload vgif overflow_recov succor smca sev sev_es
+Virtualization:                          AMD-V
+L1d cache:                               512 KiB (16 instances)
+L1i cache:                               1 MiB (16 instances)
+L2 cache:                                8 MiB (16 instances)
+L3 cache:                                32 MiB (4 instances)
+NUMA node(s):                            1
+NUMA node0 CPU(s):                       0-31
+Vulnerability Gather data sampling:      Not affected
+Vulnerability Ghostwrite:                Not affected
+Vulnerability Indirect target selection: Not affected
+Vulnerability Itlb multihit:             Not affected
+Vulnerability L1tf:                      Not affected
+Vulnerability Mds:                       Not affected
+Vulnerability Meltdown:                  Not affected
+Vulnerability Mmio stale data:           Not affected
+Vulnerability Old microcode:             Not affected
+Vulnerability Reg file data sampling:    Not affected
+Vulnerability Retbleed:                  Mitigation; untrained return thunk; SMT vulnerable
+Vulnerability Spec rstack overflow:      Mitigation; Safe RET
+Vulnerability Spec store bypass:         Mitigation; Speculative Store Bypass disabled via prctl
+Vulnerability Spectre v1:                Mitigation; usercopy/swapgs barriers and __user pointer sanitization
+Vulnerability Spectre v2:                Mitigation; Retpolines; IBPB conditional; STIBP disabled; RSB filling; PBRSB-eIBRS Not affected; BHI Not affected
+Vulnerability Srbds:                     Not affected
+Vulnerability Tsa:                       Not affected
+Vulnerability Tsx async abort:           Not affected
+Vulnerability Vmscape:                   Mitigation; IBPB before exit to userspace
+$ g++ --version
+g++ (Ubuntu 15.2.0-16ubuntu1) 15.2.0
+Copyright (C) 2025 Free Software Foundation, Inc.
+This is free software; see the source for copying conditions.  There is NO
+warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+
+$ g++-13 --version
+g++-13 (Ubuntu 13.4.0-10ubuntu1) 13.4.0
+Copyright (C) 2023 Free Software Foundation, Inc.
+This is free software; see the source for copying conditions.  There is NO
+warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+
+$ clang++-18 --version
+Ubuntu clang version 18.1.8 (20ubuntu8)
+Target: x86_64-pc-linux-gnu
+Thread model: posix
+InstalledDir: /usr/bin
+$ ldd build/linux/client/release/src/glob2
+	linux-vdso.so.1 (0x00007f355c301000)
+	libz.so.1 => /usr/lib/x86_64-linux-gnu/libz.so.1 (0x00007f355c2c2000)
+	libssl.so.3 => /usr/lib/x86_64-linux-gnu/libssl.so.3 (0x00007f355c1b1000)
+	libcrypto.so.3 => /usr/lib/x86_64-linux-gnu/libcrypto.so.3 (0x00007f3558200000)
+	libepoxy.so.0 => /usr/lib/x86_64-linux-gnu/libepoxy.so.0 (0x00007f35588df000)
+	libfribidi.so.0 => /usr/lib/x86_64-linux-gnu/libfribidi.so.0 (0x00007f355c192000)
+	libva.so.2 => /usr/lib/x86_64-linux-gnu/libva.so.2 (0x00007f35588a7000)
+	libva-drm.so.2 => /usr/lib/x86_64-linux-gnu/libva-drm.so.2 (0x00007f35588a2000)
+	libSDL3_net.so.0 => /tmp/glob2-sdl3/prefix/lib/libSDL3_net.so.0 (0x00007f3558895000)
+	libopusfile.so.0 => /usr/lib/x86_64-linux-gnu/libopusfile.so.0 (0x00007f3558886000)
+	libSDL3_ttf.so.0 => /tmp/glob2-sdl3/prefix/lib/libSDL3_ttf.so.0 (0x00007f355885b000)
+	libSDL3_image.so.0 => /tmp/glob2-sdl3/prefix/lib/libSDL3_image.so.0 (0x00007f35580df000)
+	libspeex.so.1 => /usr/lib/x86_64-linux-gnu/libspeex.so.1 (0x00007f355883b000)
+	libSDL3.so.0 => /tmp/glob2-sdl3/prefix/lib/libSDL3.so.0 (0x00007f3557cfa000)
+	libstdc++.so.6 => /usr/lib/x86_64-linux-gnu/libstdc++.so.6 (0x00007f3557a00000)
+	libm.so.6 => /usr/lib/x86_64-linux-gnu/libm.so.6 (0x00007f35578da000)
+	libgcc_s.so.1 => /usr/lib/x86_64-linux-gnu/libgcc_s.so.1 (0x00007f3557ccc000)
+	libc.so.6 => /usr/lib/x86_64-linux-gnu/libc.so.6 (0x00007f3557600000)
+	/lib64/ld-linux-x86-64.so.2 (0x00007f355c303000)
+	libzstd.so.1 => /usr/lib/x86_64-linux-gnu/libzstd.so.1 (0x00007f355753d000)
+	libdrm.so.2 => /usr/lib/x86_64-linux-gnu/libdrm.so.2 (0x00007f3558822000)
+	libogg.so.0 => /usr/lib/x86_64-linux-gnu/libogg.so.0 (0x00007f3557cc2000)
+	libopus.so.0 => /usr/lib/x86_64-linux-gnu/libopus.so.0 (0x00007f3557000000)
+	libfreetype.so.6 => /usr/lib/x86_64-linux-gnu/libfreetype.so.6 (0x00007f3557468000)
+	libtiff.so.6 => /usr/lib/x86_64-linux-gnu/libtiff.so.6 (0x00007f3557846000)
+	libpng16.so.16 => /usr/lib/x86_64-linux-gnu/libpng16.so.16 (0x00007f355742e000)
+	libbz2.so.1.0 => /usr/lib/x86_64-linux-gnu/libbz2.so.1.0 (0x00007f3557cad000)
+	libbrotlidec.so.1 => /usr/lib/x86_64-linux-gnu/libbrotlidec.so.1 (0x00007f3557837000)
+	libwebp.so.7 => /usr/lib/x86_64-linux-gnu/libwebp.so.7 (0x00007f3556f6d000)
+	liblzma.so.5 => /usr/lib/x86_64-linux-gnu/liblzma.so.5 (0x00007f3556f38000)
+	libLerc.so.4 => /usr/lib/x86_64-linux-gnu/libLerc.so.4 (0x00007f3556ea3000)
+	libjbig.so.0 => /usr/lib/x86_64-linux-gnu/libjbig.so.0 (0x00007f3557825000)
+	libjpeg.so.8 => /usr/lib/x86_64-linux-gnu/libjpeg.so.8 (0x00007f3556e0c000)
+	libdeflate.so.0 => /usr/lib/x86_64-linux-gnu/libdeflate.so.0 (0x00007f3557416000)
+	libbrotlicommon.so.1 => /usr/lib/x86_64-linux-gnu/libbrotlicommon.so.1 (0x00007f3556de9000)
+	libsharpyuv.so.0 => /usr/lib/x86_64-linux-gnu/libsharpyuv.so.0 (0x00007f3557ca4000)
+$ pkg-config --modversion sdl3 SDL3_image SDL3_ttf
+Package SDL3_image was not found in the pkg-config search path.
+Perhaps you should add the directory containing `SDL3_image.pc'
+to the PKG_CONFIG_PATH environment variable
+Package 'SDL3_image' not found
+Package 'SDL3_ttf' not found
+CPU isolation: none; shared busy host. Load averages recorded for every engine run.

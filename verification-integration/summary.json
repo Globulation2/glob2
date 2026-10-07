@@ -1,0 +1,548 @@
+{
+  "ai128": {
+    "d8t4-owner": {
+      "wall_s": 1.1182953836396337,
+      "cpu_s": 0.7876129999999999,
+      "peak_rss_bytes": 64024576,
+      "run_s": 0.385150217,
+      "tick_percentiles_ns": {
+        "tick_p50_ns": 0,
+        "tick_p95_ns": 0,
+        "tick_p99_ns": 0
+      },
+      "growth": {
+        "growth_submitted": 256,
+        "growth_published": 247,
+        "growth_sampled": 68796,
+        "growth_proposals": 725,
+        "growth_accepted": 694,
+        "growth_rejected": 9,
+        "growth_clamped": 9,
+        "growth_stockAdded": 694,
+        "growth_tilesAdded": 26,
+        "growth_maxPending": 9,
+        "growth_maxProposalBytes": 1280,
+        "growth_computeNs": 13480748,
+        "growth_queueNs": 102367639,
+        "growth_waitNs": 68810148,
+        "growth_publicationNs": 1006580,
+        "growth_delay": 8
+      },
+      "d8t4-owner": {
+        "run_time_ratio": 1.0,
+        "ratio_95pct_ci": [
+          1.0,
+          1.0
+        ],
+        "run_delta_ms": 0.0,
+        "cpu_ratio": 1.0
+      }
+    },
+    "d8t4-shared": {
+      "wall_s": 0.7736712540499866,
+      "cpu_s": 0.762003,
+      "peak_rss_bytes": 64024576,
+      "run_s": 0.266054476,
+      "tick_percentiles_ns": {
+        "tick_p50_ns": 0,
+        "tick_p95_ns": 0,
+        "tick_p99_ns": 0
+      },
+      "growth": {
+        "growth_submitted": 256,
+        "growth_published": 247,
+        "growth_sampled": 68796,
+        "growth_proposals": 725,
+        "growth_accepted": 694,
+        "growth_rejected": 9,
+        "growth_clamped": 9,
+        "growth_stockAdded": 694,
+        "growth_tilesAdded": 26,
+        "growth_maxPending": 9,
+        "growth_maxProposalBytes": 1280,
+        "growth_computeNs": 6988046,
+        "growth_queueNs": 21507214,
+        "growth_waitNs": 28119110,
+        "growth_publicationNs": 1174763,
+        "growth_delay": 8
+      },
+      "d8t4-owner": {
+        "run_time_ratio": 0.6907810621848878,
+        "ratio_95pct_ci": [
+          0.6907810621848878,
+          0.6907810621848878
+        ],
+        "run_delta_ms": -119.095741,
+        "cpu_ratio": 0.9674840308628732
+      }
+    }
+  },
+  "ai256": {
+    "d8t4-owner": {
+      "wall_s": 1.3903196048922837,
+      "cpu_s": 1.29476,
+      "peak_rss_bytes": 69406720,
+      "run_s": 0.748652014,
+      "tick_percentiles_ns": {
+        "tick_p50_ns": 0,
+        "tick_p95_ns": 0,
+        "tick_p99_ns": 0
+      },
+      "growth": {
+        "growth_submitted": 256,
+        "growth_published": 247,
+        "growth_sampled": 273013,
+        "growth_proposals": 2337,
+        "growth_accepted": 2236,
+        "growth_rejected": 27,
+        "growth_clamped": 27,
+        "growth_stockAdded": 2236,
+        "growth_tilesAdded": 63,
+        "growth_maxPending": 9,
+        "growth_maxProposalBytes": 4352,
+        "growth_computeNs": 34115836,
+        "growth_queueNs": 162870797,
+        "growth_waitNs": 152140807,
+        "growth_publicationNs": 2798467,
+        "growth_delay": 8
+      },
+      "d8t4-owner": {
+        "run_time_ratio": 1.0,
+        "ratio_95pct_ci": [
+          1.0,
+          1.0
+        ],
+        "run_delta_ms": 0.0,
+        "cpu_ratio": 1.0
+      }
+    },
+    "d8t4-shared": {
+      "wall_s": 1.2967084990814328,
+      "cpu_s": 1.373248,
+      "peak_rss_bytes": 70860800,
+      "run_s": 0.685102117,
+      "tick_percentiles_ns": {
+        "tick_p50_ns": 0,
+        "tick_p95_ns": 0,
+        "tick_p99_ns": 0
+      },
+      "growth": {
+        "growth_submitted": 256,
+        "growth_published": 247,
+        "growth_sampled": 273013,
+        "growth_proposals": 2337,
+        "growth_accepted": 2236,
+        "growth_rejected": 27,
+        "growth_clamped": 27,
+        "growth_stockAdded": 2236,
+        "growth_tilesAdded": 63,
+        "growth_maxPending": 9,
+        "growth_maxProposalBytes": 4352,
+        "growth_computeNs": 28897511,
+        "growth_queueNs": 73251228,
+        "growth_waitNs": 175793060,
+        "growth_publicationNs": 2461637,
+        "growth_delay": 8
+      },
+      "d8t4-owner": {
+        "run_time_ratio": 0.915114237574201,
+        "ratio_95pct_ci": [
+          0.915114237574201,
+          0.915114237574201
+        ],
+        "run_delta_ms": -63.549897,
+        "cpu_ratio": 1.0606197287528192
+      }
+    }
+  },
+  "ai512": {
+    "d8t4-owner": {
+      "wall_s": 2.5917599978856742,
+      "cpu_s": 3.428689,
+      "peak_rss_bytes": 154013696,
+      "run_s": 1.8502492,
+      "tick_percentiles_ns": {
+        "tick_p50_ns": 0,
+        "tick_p95_ns": 0,
+        "tick_p99_ns": 0
+      },
+      "growth": {
+        "growth_submitted": 256,
+        "growth_published": 247,
+        "growth_sampled": 1086706,
+        "growth_proposals": 6747,
+        "growth_accepted": 6473,
+        "growth_rejected": 63,
+        "growth_clamped": 63,
+        "growth_stockAdded": 6473,
+        "growth_tilesAdded": 195,
+        "growth_maxPending": 9,
+        "growth_maxProposalBytes": 9216,
+        "growth_computeNs": 118060893,
+        "growth_queueNs": 618955560,
+        "growth_waitNs": 686254996,
+        "growth_publicationNs": 9381276,
+        "growth_delay": 8
+      },
+      "d8t4-owner": {
+        "run_time_ratio": 1.0,
+        "ratio_95pct_ci": [
+          1.0,
+          1.0
+        ],
+        "run_delta_ms": 0.0,
+        "cpu_ratio": 1.0
+      }
+    },
+    "d8t4-shared": {
+      "wall_s": 2.6552134756930172,
+      "cpu_s": 3.3400220000000003,
+      "peak_rss_bytes": 156348416,
+      "run_s": 2.010121587,
+      "tick_percentiles_ns": {
+        "tick_p50_ns": 0,
+        "tick_p95_ns": 0,
+        "tick_p99_ns": 0
+      },
+      "growth": {
+        "growth_submitted": 256,
+        "growth_published": 247,
+        "growth_sampled": 1086706,
+        "growth_proposals": 6747,
+        "growth_accepted": 6473,
+        "growth_rejected": 63,
+        "growth_clamped": 63,
+        "growth_stockAdded": 6473,
+        "growth_tilesAdded": 195,
+        "growth_maxPending": 9,
+        "growth_maxProposalBytes": 9216,
+        "growth_computeNs": 130997044,
+        "growth_queueNs": 130675462,
+        "growth_waitNs": 700356924,
+        "growth_publicationNs": 6123300,
+        "growth_delay": 8
+      },
+      "d8t4-owner": {
+        "run_time_ratio": 1.0864058673826207,
+        "ratio_95pct_ci": [
+          1.0864058673826207,
+          1.0864058673826207
+        ],
+        "run_delta_ms": 159.872387,
+        "cpu_ratio": 0.9741396784601929
+      }
+    }
+  },
+  "disabled512": {
+    "d8t4-owner": {
+      "wall_s": 2.600126297213137,
+      "cpu_s": 2.8674350000000004,
+      "peak_rss_bytes": 143290368,
+      "run_s": 1.940800554,
+      "tick_percentiles_ns": {
+        "tick_p50_ns": 0,
+        "tick_p95_ns": 0,
+        "tick_p99_ns": 0
+      },
+      "growth": {
+        "growth_submitted": 0,
+        "growth_published": 0,
+        "growth_sampled": 0,
+        "growth_proposals": 0,
+        "growth_accepted": 0,
+        "growth_rejected": 0,
+        "growth_clamped": 0,
+        "growth_stockAdded": 0,
+        "growth_tilesAdded": 0,
+        "growth_maxPending": 0,
+        "growth_maxProposalBytes": 0,
+        "growth_computeNs": 0,
+        "growth_queueNs": 0,
+        "growth_waitNs": 0,
+        "growth_publicationNs": 0,
+        "growth_delay": 8
+      },
+      "d8t4-owner": {
+        "run_time_ratio": 1.0,
+        "ratio_95pct_ci": [
+          1.0,
+          1.0
+        ],
+        "run_delta_ms": 0.0,
+        "cpu_ratio": 1.0
+      }
+    },
+    "d8t4-shared": {
+      "wall_s": 2.9035889101214707,
+      "cpu_s": 2.980101,
+      "peak_rss_bytes": 143937536,
+      "run_s": 2.007720983,
+      "tick_percentiles_ns": {
+        "tick_p50_ns": 0,
+        "tick_p95_ns": 0,
+        "tick_p99_ns": 0
+      },
+      "growth": {
+        "growth_submitted": 0,
+        "growth_published": 0,
+        "growth_sampled": 0,
+        "growth_proposals": 0,
+        "growth_accepted": 0,
+        "growth_rejected": 0,
+        "growth_clamped": 0,
+        "growth_stockAdded": 0,
+        "growth_tilesAdded": 0,
+        "growth_maxPending": 0,
+        "growth_maxProposalBytes": 0,
+        "growth_computeNs": 0,
+        "growth_queueNs": 0,
+        "growth_waitNs": 0,
+        "growth_publicationNs": 0,
+        "growth_delay": 8
+      },
+      "d8t4-owner": {
+        "run_time_ratio": 1.0344808377460923,
+        "ratio_95pct_ci": [
+          1.0344808377460923,
+          1.0344808377460923
+        ],
+        "run_delta_ms": 66.920429,
+        "cpu_ratio": 1.0392915619708902
+      }
+    }
+  },
+  "idle128": {
+    "d8t4-owner": {
+      "wall_s": 1.0473129730671644,
+      "cpu_s": 0.770348,
+      "peak_rss_bytes": 64024576,
+      "run_s": 0.225227912,
+      "tick_percentiles_ns": {
+        "tick_p50_ns": 0,
+        "tick_p95_ns": 0,
+        "tick_p99_ns": 0
+      },
+      "growth": {
+        "growth_submitted": 256,
+        "growth_published": 247,
+        "growth_sampled": 68889,
+        "growth_proposals": 719,
+        "growth_accepted": 688,
+        "growth_rejected": 7,
+        "growth_clamped": 7,
+        "growth_stockAdded": 688,
+        "growth_tilesAdded": 23,
+        "growth_maxPending": 9,
+        "growth_maxProposalBytes": 1408,
+        "growth_computeNs": 6706156,
+        "growth_queueNs": 53581705,
+        "growth_waitNs": 28615676,
+        "growth_publicationNs": 1031560,
+        "growth_delay": 8
+      },
+      "d8t4-owner": {
+        "run_time_ratio": 1.0,
+        "ratio_95pct_ci": [
+          1.0,
+          1.0
+        ],
+        "run_delta_ms": 0.0,
+        "cpu_ratio": 1.0
+      }
+    },
+    "d8t4-shared": {
+      "wall_s": 0.7614434571005404,
+      "cpu_s": 0.778208,
+      "peak_rss_bytes": 64024576,
+      "run_s": 0.246086936,
+      "tick_percentiles_ns": {
+        "tick_p50_ns": 0,
+        "tick_p95_ns": 0,
+        "tick_p99_ns": 0
+      },
+      "growth": {
+        "growth_submitted": 256,
+        "growth_published": 247,
+        "growth_sampled": 68889,
+        "growth_proposals": 719,
+        "growth_accepted": 688,
+        "growth_rejected": 7,
+        "growth_clamped": 7,
+        "growth_stockAdded": 688,
+        "growth_tilesAdded": 23,
+        "growth_maxPending": 9,
+        "growth_maxProposalBytes": 1408,
+        "growth_computeNs": 7153807,
+        "growth_queueNs": 50415298,
+        "growth_waitNs": 59603077,
+        "growth_publicationNs": 1049987,
+        "growth_delay": 8
+      },
+      "d8t4-owner": {
+        "run_time_ratio": 1.0926129617540477,
+        "ratio_95pct_ci": [
+          1.0926129617540477,
+          1.0926129617540477
+        ],
+        "run_delta_ms": 20.859024,
+        "cpu_ratio": 1.0102031809000607
+      }
+    }
+  },
+  "idle256": {
+    "d8t4-owner": {
+      "wall_s": 1.2170634288340807,
+      "cpu_s": 1.298936,
+      "peak_rss_bytes": 65220608,
+      "run_s": 0.554844384,
+      "tick_percentiles_ns": {
+        "tick_p50_ns": 0,
+        "tick_p95_ns": 0,
+        "tick_p99_ns": 0
+      },
+      "growth": {
+        "growth_submitted": 256,
+        "growth_published": 247,
+        "growth_sampled": 273361,
+        "growth_proposals": 2329,
+        "growth_accepted": 2231,
+        "growth_rejected": 32,
+        "growth_clamped": 32,
+        "growth_stockAdded": 2231,
+        "growth_tilesAdded": 66,
+        "growth_maxPending": 9,
+        "growth_maxProposalBytes": 4352,
+        "growth_computeNs": 26128051,
+        "growth_queueNs": 196075074,
+        "growth_waitNs": 176046764,
+        "growth_publicationNs": 2490687,
+        "growth_delay": 8
+      },
+      "d8t4-owner": {
+        "run_time_ratio": 1.0,
+        "ratio_95pct_ci": [
+          1.0,
+          1.0
+        ],
+        "run_delta_ms": 0.0,
+        "cpu_ratio": 1.0
+      }
+    },
+    "d8t4-shared": {
+      "wall_s": 1.2529650223441422,
+      "cpu_s": 1.3314050000000002,
+      "peak_rss_bytes": 66203648,
+      "run_s": 0.613681408,
+      "tick_percentiles_ns": {
+        "tick_p50_ns": 0,
+        "tick_p95_ns": 0,
+        "tick_p99_ns": 0
+      },
+      "growth": {
+        "growth_submitted": 256,
+        "growth_published": 247,
+        "growth_sampled": 273361,
+        "growth_proposals": 2329,
+        "growth_accepted": 2231,
+        "growth_rejected": 32,
+        "growth_clamped": 32,
+        "growth_stockAdded": 2231,
+        "growth_tilesAdded": 66,
+        "growth_maxPending": 9,
+        "growth_maxProposalBytes": 4352,
+        "growth_computeNs": 28630405,
+        "growth_queueNs": 105070025,
+        "growth_waitNs": 218069672,
+        "growth_publicationNs": 2530746,
+        "growth_delay": 8
+      },
+      "d8t4-owner": {
+        "run_time_ratio": 1.106042388995326,
+        "ratio_95pct_ci": [
+          1.106042388995326,
+          1.106042388995326
+        ],
+        "run_delta_ms": 58.837024,
+        "cpu_ratio": 1.0249966126121688
+      }
+    }
+  },
+  "idle512": {
+    "d8t4-owner": {
+      "wall_s": 2.3811471983790398,
+      "cpu_s": 3.481106,
+      "peak_rss_bytes": 138027008,
+      "run_s": 1.587575595,
+      "tick_percentiles_ns": {
+        "tick_p50_ns": 0,
+        "tick_p95_ns": 0,
+        "tick_p99_ns": 0
+      },
+      "growth": {
+        "growth_submitted": 256,
+        "growth_published": 247,
+        "growth_sampled": 1087598,
+        "growth_proposals": 6745,
+        "growth_accepted": 6458,
+        "growth_rejected": 91,
+        "growth_clamped": 91,
+        "growth_stockAdded": 6458,
+        "growth_tilesAdded": 209,
+        "growth_maxPending": 9,
+        "growth_maxProposalBytes": 9216,
+        "growth_computeNs": 100923376,
+        "growth_queueNs": 708110121,
+        "growth_waitNs": 767536246,
+        "growth_publicationNs": 6356930,
+        "growth_delay": 8
+      },
+      "d8t4-owner": {
+        "run_time_ratio": 1.0,
+        "ratio_95pct_ci": [
+          1.0,
+          1.0
+        ],
+        "run_delta_ms": 0.0,
+        "cpu_ratio": 1.0
+      }
+    },
+    "d8t4-shared": {
+      "wall_s": 2.671262087766081,
+      "cpu_s": 3.481237,
+      "peak_rss_bytes": 136912896,
+      "run_s": 2.028381836,
+      "tick_percentiles_ns": {
+        "tick_p50_ns": 0,
+        "tick_p95_ns": 0,
+        "tick_p99_ns": 0
+      },
+      "growth": {
+        "growth_submitted": 256,
+        "growth_published": 247,
+        "growth_sampled": 1087598,
+        "growth_proposals": 6745,
+        "growth_accepted": 6458,
+        "growth_rejected": 91,
+        "growth_clamped": 91,
+        "growth_stockAdded": 6458,
+        "growth_tilesAdded": 209,
+        "growth_maxPending": 9,
+        "growth_maxProposalBytes": 9216,
+        "growth_computeNs": 114806604,
+        "growth_queueNs": 277023680,
+        "growth_waitNs": 747775011,
+        "growth_publicationNs": 6887447,
+        "growth_delay": 8
+      },
+      "d8t4-owner": {
+        "run_time_ratio": 1.2776600008140084,
+        "ratio_95pct_ci": [
+          1.2776600008140084,
+          1.2776600008140084
+        ],
+        "run_delta_ms": 440.806241,
+        "cpu_ratio": 1.0000376317181954
+      }
+    }
+  }
+}

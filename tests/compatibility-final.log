@@ -1,0 +1,797 @@
+PASS AICustomCatalog/production placement falls back from an obstructed preferred footprint (0.2s)
+PASS AICustomCatalog/Nicowar retained attraction retirement completes missions across save load (0.5s)
+PASS AICustomCatalog/shared runtime retirement distinguishes attraction and feeding and preserves mixed services (0.5s)
+PASS ScreenExecution/screen phases; completion; reuse; quit and compatibility host (0.6s)
+PASS AICustomCatalog/Nicowar and Econo keep independent weighted material objectives and stone clearance (0.7s)
+PASS AICustomCatalog/Nicowar resolves one aggregate production demand per colony management pass (0.7s)
+PASS AICustomCatalog/Maxima exact anchors support rectangular footprints across the torus (0.4s)
+PASS AICustomCatalog/shared runtime exact anchors support rectangular attractors across the torus (0.5s)
+PASS AICustomCatalog/Warrush staffing preserves intent priority slot order and current stage limits (0.3s)
+PASS AICustomCatalog/Castor bulk wheat reads preserve weighted distance rounding and sentinels (0.3s)
+PASS AICustomCatalog/Warrush mixed producer staffing respects zero and saturated assignment limits (0.3s)
+PASS AICustomCatalog/Castor projects only its strategic demands and preserves mixed staffing (0.6s)
+PASS AICustomCatalog/AI source selectors discover renamed multi-material deposits and independent depletion (0.4s)
+PASS AICustomCatalog/six native strategies construct and use separate demanded production classes (1.1s)
+PASS AICustomCatalog/all native controllers select renamed mixed providers and release missing demands (2.0s)
+PASS AICustomCatalog/historical farming reserves only propagating finite material donors (1.8s)
+PASS AIDecisionCoverage/Cortex economy and food shortage survive save-load (3.2s)
+PASS AICustomCatalog/all native controllers continue deterministically with mixed permuted catalog (4.3s)
+PASS AIDecisionCoverage/Cabino specialist modules survive save-load (3.7s)
+PASS AIDecisionCoverage/Econo adds new swarms as its colony grows (0.5s)
+PASS AIDecisionCoverage/Econo retains wheat-starved swarms while still retiring starved inns (0.8s)
+PASS AIDecisionCoverage/Warrush growth and attack preparation survive save-load (4.1s)
+PASS AIDecisionCoverage/Nicowar shared runtime survives save-load (2.1s)
+PASS AIDecisionCoverage/Numbi growth and attack preparation survive save-load (3.8s)
+PASS AIRecoveryCoverage/Cabino declared inputs omit published fields without changing decisions (0.4s)
+PASS AIRecoveryCoverage/Cortex shore harvest differs from inaccessible algae and swimming opens islands (0.4s)
+PASS AIRecoveryCoverage/Cortex amphibious assessment distinguishes land water and blocked targets (0.4s)
+PASS AIDecisionCoverage/with the farm-areas experiment every farming AI farms its wheat with a farm area and survives save-load (6.0s)
+PASS AIRecoveryCoverage/Cortex wheat protection emits real area orders and food burst releases only our paint (0.2s)
+PASS AIDecisionCoverage/Econo shared runtime survives save-load (1.9s)
+PASS AIRecoveryCoverage/Castor projects deduplicate replace and decline already satisfied requests (0.3s)
+PASS AIRecoveryCoverage/Cortex farm checkerboard retires prototype paint and wheat blitz releases it (0.3s)
+PASS AIRecoveryCoverage/Nicowar defense flags materialize once and withdraw when the threat disappears (0.3s)
+PASS AIRecoveryCoverage/Castor food lock backs off growth and boot projects wait for their cadence (0.4s)
+PASS AIRecoveryCoverage/Cabino pending upgrades survive delayed observation and release rejected reservations (0.2s)
+PASS AIRecoveryCoverage/Cabino defense records create assign deduplicate and retire actual flags (0.3s)
+PASS AIRules/owner and snapshot selection audits agree for rule constrained orders (0.2s)
+PASS AIRules/disabled training preserves independent services of mixed providers (0.2s)
+PASS AIRecoveryCoverage/Cabino queued target identities survive saves and reject reused building slots (0.3s)
+PASS AIRules/construction staffing uses separate site and completed capacities (0.2s)
+PASS AIRules/retained tournament replay contains no unavailable orders (0.1s)
+PASS AIRules/legacy queued staffing imports explicit 135 wire without weakening modern validation (0.2s)
+PASS AIRules/Cabino reservations match unit class and qualification instead of building level (0.2s)
+PASS AIRules/engine prevents training and upgrades while retaining repairs and starting levels (0.2s)
+PASS AIRules/restored controller queues discard unavailable work and release prerequisites (0.2s)
+PASS AIRules/Cabino migrates legacy warrior reservations only when training is disabled (0.3s)
+PASS AIRules/rule parser and script observations use effective match values (0.3s)
+PASS AIRules/JavaScript profiles can inspect rules and issue useful orders (0.3s)
+PASS AIRules/Cortex excludes unavailable technology from scoring and feeding prerequisites (0.0s)
+PASS AIRules/no growth farms harvest their finite seed rather than waiting forever (0.2s)
+PASS AIRules/Maxima removes disabled reserves while retaining finite production supply (0.4s)
+PASS AIRules/renewable material potential survives saturation and honors yield policies (0.3s)
+PASS AIRules/prospective material supply combines mixed branch numerators without overflow (0.3s)
+PASS AISavePortability/runtime initialisation; area order serialisation and Maxima reserved telemetry (0.3s)
+PASS AIStateContinuation/Cortex economy and food shortage survive save-load (2.7s)
+PASS AIDecisionCoverage/Castor and Maxima growth and shortage resume at early and active checkpoints (9.1s)
+PASS AIDecisionCoverage/farm areas reuse each AI's forbidden wheat placement on an unchanged colony (15.3s)
+FAIL glob2-unit-tests (874 cases) (25.0s)
+PASS AIStateContinuation/Econo shared runtime survives save-load (11.8s)
+PASS AIStateContinuation/Nicowar shared runtime survives save-load (16.8s)
+PASS BuildingCapabilities/stock demand lookup distinguishes finished providers and placements (0.1s)
+PASS BuildingCapabilities/fetching stock is not an exchange or supply service (0.1s)
+PASS BuildingCapabilities/direct stock supply is independently available without market experiments (0.1s)
+PASS BuildingCapabilities/lineage follows forward transitions without treating repair links as ancestry (0.0s)
+PASS BuildingCapabilities/construction qualification grants are independent from building speed (0.0s)
+PASS BuildingCapabilities/combined providers retain independent admission and operation rule gates (0.0s)
+PASS BuildingCapabilities/experiment gates apply to both initial placement and completion without rebuilding (0.1s)
+PASS BuildingCapabilities/renamed families and reordered concrete IDs preserve capability membership (0.2s)
+PASS AIStateContinuation/Numbi growth and attack preparation survive save-load (20.8s)
+PASS LegacyAIState/Warrush timers and constructors round-trip at boundaries (0.3s)
+PASS BuildingCapabilities/concurrent first reads share one immutable catalog index (0.9s)
+PASS LegacyAIState/Numbi phase clock survives and advances on the original poll (0.2s)
+PASS LegacyAIState/old layouts default omitted clocks without consuming the following field (0.3s)
+PASS LegacyAIState/new timer records reject out-of-range missing and malformed values (0.2s)
+PASS LegacyAIState/Warrush wrapper preserves the next decision and its random stream (0.2s)
+PASS LegacyAIState/pre-fix format 127 writers remain aligned for Cabino Nicowar and Cortex (0.4s)
+PASS LegacyAIState/Nicowar explorer phases and full construction counts survive (0.2s)
+PASS LegacyAIState/Numbi wrapper preserves an active phase clock and the next decision (0.3s)
+PASS LegacyAIState/Cabino preserves stale gradients module latches and fruit memories (0.3s)
+PASS LegacyAIState/Cabino saving leaves its pending FIFO intact (0.4s)
+PASS LegacyAIState/shared runtime reload replaces queues and registrations in binary and text (0.2s)
+PASS LegacyAIState/Cortex saved policy and model supersede the current process selection (0.3s)
+PASS CastorContinuation/crop habitat excludes transition sprite sixteen and new paved terrain (0.2s)
+PASS AIRules/Castor waits for configured recovery rather than exhausted finite food (0.3s)
+PASS CastorContinuation/Castor seeded boot and active decisions repeat exactly (1.7s)
+PASS CastorContinuation/binary and text snapshots preserve project fields and cache history (0.4s)
+PASS CastorContinuation/decisions keep assignments private and rejected requests can retry (0.2s)
+PASS CastorContinuation/snapshot decisions ignore later live changes and release borrowed inputs (0.4s)
+PASS CastorContinuation/historical timer-only AI saves remain readable (0.4s)
+PASS CortexActionCoverage/idle polls preserve slow path timer and random state (0.2s)
+PASS AIStateContinuation/all controllers continue alongside another AI and a shared-team controller [slow] (13.1s)
+PASS AIStateContinuation/Cabino specialist modules survive save-load (29.1s)
+PASS CortexActionCoverage/placement reuses observation qualification without persisting stale worker levels (0.3s)
+PASS CortexActionCoverage/wheat discovery keeps first path depths and local fog boundaries (0.4s)
+PASS AIStateContinuation/Castor and Maxima active full games preserve decisions and RNG [slow] (10.1s)
+PASS CortexActionCoverage/Cortex observations stay isolated from later simulation changes (0.3s)
+PASS CortexActionCoverage/bounded model channels preserve stock identity and ignore custom family metadata (0.3s)
+PASS CortexActionCoverage/mixed renamed provider has multiple policy roles but one model and worker identity (0.3s)
+PASS CortexActionCoverage/actual observation and policy build split overlay producers for requested classes (0.3s)
+PASS CortexActionCoverage/actual production observation preserves positive weights and settles output transitions (0.2s)
+PASS AIDecisionCoverage/long AI campaigns resume with identical orders state and game RNG [slow][artifacts] (32.9s)
+PASS CortexActionCoverage/stock consumers are not exchange providers and hybrid attractors survive retirement (0.6s)
+PASS CortexActionCoverage/provider ranking uses construction materials independently of storage (0.3s)
+PASS CortexActionCoverage/build actions reject invalid slots and cooldown suppresses duplicate orders (0.2s)
+PASS AIStateContinuation/Warrush growth and attack preparation survive save-load (29.8s)
+PASS CortexActionCoverage/live capability upgrade eligibility and descriptor capacities drive construction (0.4s)
+PASS CortexActionCoverage/rally selection and bound warrior arrivals respect colony preference and toroidal range (0.2s)
+PASS CortexActionCoverage/war flags create once reconcile force limits and retarget through real orders (0.4s)
+PASS CortexNetCoverage/integer inference matches an independent two-signal oracle (0.1s)
+PASS CortexNetCoverage/equal negative logits select the lowest eligible class (0.1s)
+PASS CortexNetCoverage/worker caps mask impossible outputs and clamp depleted wheat (0.1s)
+PASS CortexActionCoverage/production clamps ratios applies orders and deduplicates finished swarms (0.3s)
+PASS CortexNetCoverage/truncated blobs and invalid header or layer contracts are rejected (0.1s)
+PASS CortexActionCoverage/Cortex delayed staffing overlay respects entity incarnations (0.2s)
+PASS CortexNetCoverage/file loaders reject missing empty and wrong-net blobs (0.1s)
+PASS CortexActionCoverage/Cortex rejection receipts clear exact delayed upgrade and flag intents (0.3s)
+PASS AIOrderScheduler/save drains computation and retains future outputs without recomputing (0.1s)
+PASS CortexActionCoverage/flag rediscovery excludes claimed flags and stale defense teardown is idempotent (0.5s)
+PASS AIOrderScheduler/failure joins work and cannot partially publish or lose the original error (0.0s)
+PASS AIOrderScheduler/same initialization identity cannot restore contradictory planes (0.1s)
+PASS AIOrderScheduler/cancellation joins the old controller generation before replacement (0.1s)
+PASS AIOrderScheduler/configuration rejects live work and submissions after a tick was dispatched (0.0s)
+PASS AIOrderScheduler/saved repeated enrollments retain the first initialization tick (0.1s)
+PASS AIOrderScheduler/placement follows the delay and the measured decision work (0.1s)
+PASS AIOrderScheduler/restore refuses truncated duplicate and out of window pending requests (0.1s)
+PASS AIPipeline/replacement cancels an old output without rejecting identical new wire bytes (0.2s)
+PASS AIOrderScheduler/all delays preserve every FIFO poll and fixed player ordered deadlines (0.5s)
+PASS AIPipeline/a submitted deadline is delivered even when no new poll is eligible (0.3s)
+PASS AIPipeline/team death cancels submitted work and saves receipts for a revived controller (0.5s)
+PASS NumbiObservation/private initial resource fields match live seeds costs and destination ties (0.2s)
+PASS RuntimeBuildingOrderSaveLoad/RoundTripCurrentVersion (0.0s)
+PASS NumbiObservation/published aged resource fields survive changed resources without fresh reconstruction (0.2s)
+PASS RuntimeBuildingOrderSaveLoad/UnregisteredOrderRoundTrips (0.0s)
+PASS RuntimeBuildingOrderSaveLoad/Pre96StreamLeavesSentinel (0.0s)
+PASS AIPipeline/wrapper preemption preserves controller rejection feedback and pending release identity across save (0.4s)
+PASS RuntimeContinuation/terrain weighted influence retains obstacles and sub-tile trail costs (0.0s)
+PASS RuntimeContinuation/irrigation heuristics require a positive enabled fertility contribution (0.0s)
+PASS RuntimeContinuation/position entities retain historical binary and text payloads (0.0s)
+PASS AIPipeline/pause and repeated boundary calls cannot execute a published command twice (0.9s)
+PASS RuntimeContinuation/runtime owner helpers and decisions release their full observation leases (0.2s)
+PASS RuntimeContinuation/recurring input tracking and provider lookup preserve composite membership (0.3s)
+PASS RuntimeContinuation/flat building relationships resolve captured unit incarnations (0.2s)
+PASS RuntimeContinuation/queued orders preserve selection incarnations through save and slot replacement (0.3s)
+PASS RuntimeContinuation/gradient manager state survives binary and text round trips [save-format] (0.8s)
+PASS RuntimeContinuation/static material fields invalidate on source edits and preserve continuation (0.4s)
+PASS AITargetTelemetrySave/target fields are declared in schema version 2 (0.5s)
+PASS AITargetTelemetrySave/Cortex flag targets carry the team that owns each building (0.3s)
+PASS CastorContinuation/Castor boot and active projects survive save-load (6.7s)
+PASS AITargetTelemetrySave/Numbi reports the highest-numbered enemy its attack searches (0.3s)
+PASS AITargetTelemetrySave/Cortex records its committed target until the offense stands down, across saves (0.4s)
+PASS WarrushObservation/declared inputs omit published fields without changing decisions (0.3s)
+PASS AITelemetryUI/telemetry selection filtering samples and access changes preserve safe state (0.5s)
+PASS WarrushObservation/snapshot influence and uphill destination preserve live query semantics (0.2s)
+PASS WarrushObservation/pending assignments settle through immutable rejection receipts (0.2s)
+PASS CommunityMusic/computed fades preserve every entry of the original lookup table (0.1s)
+PASS CommunityMusic/preview storage is bounded independently of track length (0.1s)
+PASS AITelemetryUI/telemetry waits for touch coasting and scrolls long details independently (0.7s)
+PASS CommunityMusic/archive parser rejects malformed and oversized archives (0.1s)
+PASS SoundMixerTrackSelection/Opus trimmed timeline looping seeking and unavailable decoder (0.0s)
+PASS CommunityMusic/archive offsets and sizes cannot wrap on 32-bit targets (0.1s)
+PASS SoundMixerTrackSelection/track selection while closed and queued mid-fade changes (0.1s)
+PASS AITelemetryUI/telemetry layout and painting stay bounded with full schemas (1.1s)
+PASS SoundMixerTrackSelection/muted preview controls and shutdown do not require a device callback (0.2s)
+PASS BuildingCatalogFixtures/retained split recipes conserve every charged resource through cancellation (0.3s)
+PASS BuildingProductionCombat/committed recipes reserve distinct resources and ratio changes choose the next job (0.2s)
+PASS BuildingProductionCombat/completed blocked job retains its budget and zero duration remains a producer (0.2s)
+PASS BuildingCatalogFixtures/format136 terrain snapshot imports frozen buildings and continues after resave (0.8s)
+PASS BuildingCatalogFixtures/retained seeded compositions preserve full simulation continuation [golden] (0.9s)
+PASS BuildingProductionCombat/rectangular hybrid shoots class-specific snapshots and regenerates without production (0.3s)
+PASS BuildingProductionCombat/stock suppliers route independently of fruit exchange with configured pickup cost (0.4s)
+PASS SoundMixerTrackSelection/buffered facade runs at ordinary priority and joins on shutdown (1.8s)
+PASS BuildingProductionCombat/overlay services and suppliers share a footprint without occupying ground (0.2s)
+PASS BuildingProductionCombat/combined attraction profiles independently require warrior level and explorer bombing (0.2s)
+PASS BuildingProductionCombat/committed recipe survives binary and text continuation with its reservation (1.2s)
+PASS BuildingProductionCombat/direct stock withdrawal is independent of food and fruit exchange (0.3s)
+PASS BuildingProductionCombat/physical combat attraction invalidates on enemy changes and mixed relocation resets routes (0.4s)
+PASS BuildingProductionCombat/hybrid attraction and service routes remain independent across save continuation (1.4s)
+PASS BuildingProductionCombat/repair budgets use independent fruit costs and cancellation creates no material credits (0.2s)
+PASS BuildingProductionCombat/converging upgrades cancel to the instance origin and return real materials (0.2s)
+PASS BuildingProductionCombat/zero cost roots and upgrade stages complete without a delivery event (0.2s)
+PASS BuildingProductionCombat/construction reserves independent costs beyond storage and survives continuation (0.6s)
+PASS BuildingProductionCombat/repair earns only original damage and paid materials cannot be refunded after healing (0.2s)
+PASS BuildingProductionCombat/version135 partial repair imports remaining work without material credits (0.4s)
+PASS AIPipeline/every shipped controller preserves orders and state across worker counts and all delays (5.6s)
+PASS BuildingProductionCombat/zero cost repair preserves damage received after the repair started (0.2s)
+PASS BuildingProductionCombat/partial supplier packets preserve raw equivalents and save continuation (0.5s)
+PASS BuildingProductionCombat/shared repair sites restore each recorded origin and staffing cap (0.4s)
+PASS BuildingProductionCombat/combined stock routes include both provider modes and track direct overlay relocation (0.2s)
+PASS BuildingProductionCombat/unfunded new-site cooldown uses job state and counts fruit funding (0.3s)
+PASS BuildingProductionCombat/resource permissions separate storage replenishment and direct withdrawal (0.4s)
+PASS BuildingProductionCombat/bounded supply cache excludes the recipient and its shared inventory and resumes eviction (0.4s)
+PASS BuildingProductionCombat/shared ammunition consumption invalidates stock advertised by another building (0.2s)
+PASS BuildingProductionCombat/overlay transition and cancellation discard cached footprint routes (0.2s)
+PASS BuildingProductionCombat/mixed attraction borrows quota from an unavailable unit class (0.3s)
+PASS BuildingProductionCombat/late choice advances the common timer and selects ratios only at completion (0.2s)
+PASS BuildingProductionCombat/production transitions initialize new recipes and restore canceled preferences (0.6s)
+PASS BuildingProductionCombat/ground buildings with attraction radii remain melee targets (0.4s)
+PASS BuildingServices/mixed visits share capacity and inventory and settle once (0.2s)
+PASS BuildingProductionCombat/sole supplier demolition and cancellation preserve routing across save continuation (0.7s)
+PASS BuildingProductionCombat/demolition settles shared partial construction only when removal becomes final (0.7s)
+PASS BuildingServices/shared inventory cannot be committed twice by separate buildings (0.3s)
+PASS BuildingServices/completed feeding admission buffer ignores unrelated mixed services (0.4s)
+PASS BuildingServices/pending mixed visits restore reservations and cancellation releases only unpaid costs (0.4s)
+PASS BuildingServices/construction eligibility and work speed are independently trainable (0.3s)
+PASS BuildingServices/shared delivery never discards inventory above a recipient capacity (0.3s)
+PASS BuildingServices/parallel training waits for the slowest requested course (0.2s)
+PASS BuildingServices/zero duration parallel courses select the slowest inclusive action clock (0.2s)
+PASS BuildingProductionCombat/current saves reject construction origins outside the explicit job graph (1.4s)
+PASS BuildingServices/canceling a service capable site restores each origin service exactly once (0.3s)
+PASS BuildingServices/save loading rejects a reservation detached from its visitor list (0.4s)
+PASS BuildingServices/parallel training compares whole remaining ticks from the entry phase (0.3s)
+PASS BuildingServices/stock tiny deficit healing completes without storing a post exit speed burst (0.2s)
+PASS BuildingServices/minimum service speed completes after diagonal entry (0.3s)
+PASS BuildingCatalog/shipped JSON preserves all 55 frozen variants and exact canonical stock snapshot (0.2s)
+PASS BuildingCatalog/snapshot roundtrip owns independent descriptors and ignores runtime gates (0.1s)
+PASS BuildingCatalog/documented experimental field kitchen loads from its authored files (0.0s)
+PASS BuildingCatalog/manifest parsing identifies the broken definition file without publishing a catalog (0.2s)
+PASS BuildingCatalog/renamed composite variant and added feature survive embedded snapshot (0.2s)
+PASS BuildingCatalog/assignment limits compile staffing capability independently for each stage (0.1s)
+PASS BuildingServices/long high speed healing retains bounded phase across save continuation (0.6s)
+PASS BuildingCatalog/compiled runtime rows are dense aligned value copies and refresh gates in place (0.0s)
+PASS BuildingCatalog/experiment metadata obeys the same contract before startup and transport (0.4s)
+PASS BuildingCatalog/stable keys need no compatibility family alias and defaults are bounded preferences (0.1s)
+PASS BuildingCatalog/compact runtime traits preserve validated numeric boundaries (0.1s)
+PASS BuildingCatalog/legacy inventory vocabulary imports and ambiguous material aliases fail atomically (0.1s)
+PASS BuildingCatalog/new materials retain high bits through catalogs and compact runtime rows (0.2s)
+PASS BuildingCatalog/invalid catalog reports the rejected field and preserves the active catalog (0.7s)
+PASS WorldSnapshot/snapshot capability tables share authoritative immutable catalog data (0.2s)
+PASS WorldSnapshot/shared entity indices preserve empty slots and canonical record addresses (0.2s)
+PASS WorldSnapshot/unit snapshots share authoritative scalar state and remain frozen (0.2s)
+PASS WorldSnapshot/on-demand construction feasibility matches live helpers and remains frozen (0.3s)
+PASS WorldSnapshot/coordinate wrapping preserves signed edges for power of two and general dimensions (0.0s)
+PASS WorldSnapshot/narrow component queries preserve combined tile values and projection defaults (0.2s)
+PASS WorldSnapshot/AI boundary validates each captured map array before fast reads (0.1s)
+PASS WorldSnapshot/map snapshots bulk copy authoritative records without translation (0.3s)
+PASS WorldSnapshot/worker final lease release synchronizes owner buffer reuse (0.1s)
+PASS WorldSnapshot/AI fast scalar reads preserve checked values and frozen lease isolation (0.2s)
+PASS WorldSnapshot/component leases and weak control blocks outlive the owning store (0.2s)
+PASS WorldSnapshot/catalog refresh survives intervening projections and rules reuse independently (0.2s)
+PASS WorldSnapshot/projected terrain lease cannot retain unrelated world components (0.2s)
+PASS WorldSnapshot/component mutation generations preserve isolation and reuse unchanged arrays (0.2s)
+PASS WorldSnapshot/capture requirements exclude arrays that no scheduled consumer requests (0.2s)
+PASS WorldSnapshot/undermap changes preserve retained terrain and reuse unchanged versions (0.2s)
+PASS WorldSnapshot/no-op map writes reuse components while changed values remain isolated (0.3s)
+PASS BuildingCatalog/expanded canonical snapshots must fit transport before catalog publication (1.3s)
+PASS WorldSnapshot/warm component buffers stop allocating at a fixed population (0.2s)
+PASS WorldSnapshot/building snapshots copy shared scalar records and freeze selected stock (0.2s)
+PASS WorldSnapshot/pooled captures never overwrite a held worker projection (0.2s)
+PASS WorldSnapshot/flat relationship ranges preserve every building list in order (0.3s)
+PASS WorldSnapshot/farm paint queries match frozen growth and resource inputs (0.3s)
+PASS WorldSnapshot/memory metrics distinguish held epochs from reusable high water capacity (0.3s)
+PASS WorldSnapshot/a single cell change copies one chunk of one component into a reused buffer (0.2s)
+PASS WorldSnapshot/a retained consumer leaves the newest free buffer to absorb only later changes (0.2s)
+PASS WorldSnapshot/capture verification rejects writes that bypass the change trackers (0.2s)
+PASS WorldSnapshot/same tick component expansion preserves narrow leases and captures arrays once (0.2s)
+PASS WorldSnapshot/explicit observation boundaries refresh paused state and retain old leases (0.2s)
+PASS SharedWorkerLifecycle/background saves finish on a worker and remain readable after teardown (0.2s)
+PASS GameDiagnostics/field reader rejects malformed counts and retains unsigned food values [artifacts] (0.0s)
+PASS GameDiagnostics/controller capture follows simulation cadence and preserves unsigned values (0.0s)
+PASS SharedWorkerLifecycle/resource catalog import drains deferred material preparation before replacing stocks (0.3s)
+PASS GameDiagnostics/private diagnostic reservation survives owner ticks and serialization [artifacts] (0.3s)
+PASS GameDiagnostics/diagnostic budget counts private captures across the delay horizon [artifacts] (0.3s)
+PASS SharedWorkerLifecycle/pending gradient work survives a save and continues at the same deadlines (0.6s)
+PASS GameDiagnostics/controllers sharing a team publish distinct complete captures and recover after failures [artifacts] (0.4s)
+PASS SimulationReadPhase/direct completed steps match deferred preparation across worker counts (1.1s)
+PASS DatasetWriter/reader migration distinguishes the retained GDS1 cell layout (0.1s)
+PASS DatasetWriter/per-game metric bands retain labels and count every finished ground variant exactly once (0.1s)
+PASS DatasetWriter/GDS2 embeds the catalog, projects unique model counts and preserves wide concrete spatial IDs [artifacts] (0.7s)
+PASS HiveMindIntegration/Hive Mind copies the engine fog boundary and validates ownership (0.4s)
+PASS SharedWorkerLifecycle/no-AI completed ticks agree across shared worker counts [artifacts] (1.6s)
+PASS HiveMindEvaluation/Hive Mind evaluation gameplay fixture (0.1s)
+PASS HiveMindReliability/Hive Mind pending requests preserve drafts and stop feedback (0.2s)
+PASS MapTiling/rejects invalid requests without mutating the source [save-format] (0.2s)
+PASS MapTiling/copies colonies, painted areas and clearing settings [save-format] (0.6s)
+PASS MapTiling/wraps swimmers, buildings and team areas together across the source seam [save-format] (0.2s)
+PASS MapTiling/writes a compressed source as a reloadable ordinary map [save-format] (0.4s)
+PASS MapTiling/refuses over-capacity bases before replacing the source [save-format] (0.3s)
+PASS MapTiling/a repeated starting map has portable per-tick checksums [save-format][golden] (0.4s)
+PASS ResourceGrowth/publication preserves harvests and rejects replaced deposits but allows seeds in flight (0.3s)
+PASS ResourceGrowth/publication caps competing increments and rejects occupied empty targets (0.2s)
+PASS ResourceGrowth/kernel is immutable deterministic and responds to disabled growth and scarcity (0.3s)
+PASS ResourceGrowth/pipeline waits at exact deadline and pause does not publish (0.2s)
+PASS ResourceGrowth/frozen input outlives terrain and resource edits and wrapping remains valid (0.4s)
+PASS GameDiagnostics/portrait exports cover the whole map after dimension rounding [artifacts] (3.5s)
+PASS ResourceGrowth/owner and shared deadlines match and pending work survives saving (1.0s)
+PASS ResourceGrowth/light checksums leave owner work deferred and world replacement discards it (0.3s)
+PASS HiveMindScheduler/Hive Mind cadence replacement cancellation and lost acknowledgements (2.6s)
+PASS TerrainProperties/exclusive movement modes and bounded compile-time definitions (0.1s)
+PASS TerrainProperties/Trail retains legacy identities and terrain behavior (0.0s)
+PASS ResourceGrowth/later worker completion cannot publish ahead of an earlier owner batch (0.3s)
+PASS TerrainProperties/canonical terrain survives presentation regeneration and batches snapshot invalidation (0.1s)
+PASS TerrainEcology/empty and prohibited resource cells do not acquire bonus growth (0.3s)
+PASS TerrainProperties/same-size map replacement and legacy import refresh ecology (0.2s)
+PASS TerrainProperties/terrain edits refresh escape costs and supersede queued route snapshots (0.3s)
+PASS TerrainEcology/four growth opportunities preserve capped stacks and measured conservation (0.6s)
+PASS TerrainProperties/required terrain experiments survive tiling and distinguish map headers (0.4s)
+PASS TerrainProperties/ice exposure includes stationary units and preserves fractional health in saves (0.4s)
+PASS TerrainProperties/explorers ignore ice damage and no-permadeath applies to ground hazards (0.4s)
+PASS TerrainProperties/projectile supercover tests intermediate cells corners and wrapped coordinates (0.1s)
+PASS TerrainProperties/health modifiers clip healing and expose units that have found an exit (0.4s)
+PASS TerrainProperties/explorer flag eligibility applies route accessibility and hunger distance (0.3s)
+PASS TerrainProperties/terrain health profiles choose independent air and ground rates (0.4s)
+PASS TerrainRuntime/eager resumed and worker gradients agree on custom slow swimming (0.1s)
+PASS TerrainRuntime/maps isolate registries and reject failed imports atomically (0.2s)
+PASS TerrainRuntime/custom capabilities drive map queries health ecology and immutable match definitions (0.4s)
+PASS TerrainRuntime/production pipeline captures custom movement and discards fields after reimport (0.5s)
+PASS TerrainRuntime/unused distinct costs do not expand map movement setup (0.4s)
+PASS TerrainRuntime/embedded registry restores custom state and pending gradients without source files (0.4s)
+PASS TerrainRuntime/each catalogue type requires exactly its group's experiment and shares the group profile (0.2s)
+PASS TerrainRuntime/format-137 saves with custom terrain load with remapped IDs and resave at the current format (0.5s)
+PASS TerrainHazardRouting/ice costs twenty recovery ticks per HP and remains traversable (0.3s)
+PASS GameDiagnostics/capped scene export survives repeated graphics lifetimes and write failures [artifacts] (6.0s)
+PASS TerrainHazardRouting/idle ground units avoid entering ice and escape a multi-cell patch (0.5s)
+PASS TerrainHazardRouting/custom air damage routes flyers and idle flyers escape it (0.3s)
+PASS TerrainHazardRouting/extreme authored hazards saturate and shared fields agree with point costs (0.3s)
+PASS TerrainHazardRouting/old hazard route caches rebuild while current saves retain routing state (0.3s)
+PASS TerrainHazardRouting/workers and warriors reuse escape fields and moving units do not invalidate them (0.4s)
+PASS TerrainHazardRouting/escape fields separate team permissions swimming and forbidden-area escape (0.4s)
+PASS TerrainHazardRouting/flyers share safety fields across teams and ignore ground invalidations (0.4s)
+PASS TerrainHazardRouting/escape fields charge destination terrain and choose a cheaper indirect exit (0.2s)
+PASS TerrainHazardRouting/escape cache evicts the least recently used profile and resets generations (0.1s)
+PASS TerrainRuntime/painted catalogue terrain survives save and reload with its frames and checksum (1.8s)
+PASS TerrainHazardRouting/escape fields respect runtime resource blocking and ignore stock-only edits (0.3s)
+PASS RuntimeResources/material harvesting consumes stock and never invents a delivery (0.1s)
+PASS RuntimeResources/custom compound deposit has independent material stock and destructive harvest (0.1s)
+PASS RuntimeResources/last finite source extinction and persistent source regrowth update material presence (0.1s)
+PASS RuntimeResources/growth at capacity stays capped and persistent fruit depletes (0.3s)
+PASS RuntimeResources/starting crop guarantees and adjacent supply use live material yields (0.3s)
+PASS RuntimeResources/shared starting supply checks accept material sources above resource id 255 (0.4s)
+PASS TerrainRuntime/large embedded registry crosses the stream string limit (2.8s)
+PASS RuntimeResources/material frontage counts secondary stocks and prospective renewable supply (0.2s)
+PASS RuntimeResources/bounded starter crop replacement uses surplus materials and respects clearability (0.3s)
+PASS RuntimeResources/resource identities above byte range preserve compound stocks through save and continuation (0.7s)
+PASS RuntimeResources/redefined builtin resource follows declarative habitat and terrain whitelist intersection (0.1s)
+PASS RuntimeResources/start diagnostics distinguish configured renewal from spreading pressure (0.3s)
+PASS RuntimeResources/fixed property ablations preserve harvest growth clearing and movement invariants (0.2s)
+PASS RuntimeResources/editor catalog replacement preserves materials across layouts and rejects invalid imports atomically (0.3s)
+PASS RuntimeResources/infinite farm stocks remain harvestable at their seed reserve (0.3s)
+PASS RuntimeResources/farm harvest uses the touched material policy before pooling neighboring stock (0.5s)
+PASS RuntimeResources/embedded resource save starts with an invalid installed catalog (0.4s)
+PASS RuntimeResources/renamed deposits and sprite variants preserve stochastic stock trajectories (0.4s)
+PASS RuntimeResources/destructive resources cannot bridge pooled farms even without reserves or regrowth (0.9s)
+PASS RuntimeResources/legacy resource saves ignore reordered modified installed defaults in a fresh process (0.4s)
+PASS RuntimeResources/custom ground and air obstruction independently govern routes across toroidal barriers (0.6s)
+PASS BuildingGradientInvalidation/centre placed inside an existing ring (0.3s)
+PASS RuntimeResources/released observation format 139 imports legacy stocks and preserves current save continuation (0.8s)
+PASS RuntimeResources/released terrain-seed format 138 retains legacy resource and material continuation (0.9s)
+PASS BuildingGradientInvalidation/a rival teams ring cuts off a cached field (0.2s)
+PASS BuildingGradientInvalidation/a ring cuts off a virtual flags field (0.2s)
+PASS BuildingGradientInvalidation/ring placed around an existing field (0.3s)
+PASS BuildingGradientInvalidation/a paused field keeps its original obstacles (0.3s)
+PASS BuildingGradientInvalidation/public reads resolve their inputs (0.3s)
+PASS RuntimeResources/frozen seeded resource compositions preserve invariants and exact simulation continuation [golden] (1.7s)
+PASS BuildingGradientInvalidation/parallel fields (0.4s)
+PASS BuildingGradientInvalidation/idle field storage is reused without stale routes (0.2s)
+PASS ClearingFlagGradient/empty persistent deposits remain clearing flag goals and worker targets (0.2s)
+PASS ClearingFlagGradient/passable clearing sources respect forbidden paint buildings and immobile units (0.4s)
+PASS ClearingFlagGradient/material switches; declarative clearing; empty tiles; padding independence and swimming variants (0.7s)
+PASS GradientPreparation/warm preparation keeps custom supplier unions exclusions penalties and overlays live (0.5s)
+PASS GradientPreparation/supplier seed indexing rejects foreign and invalid building IDs in cached and direct fields (0.4s)
+PASS GradientPreparation/cached natural goals follow immobile occupancy and live overlays (0.3s)
+PASS GradientPreparation/concurrent preparation owns buffers and serializes dirty cache refresh (0.2s)
+PASS GradientPreparation/resource cache tracks cell writes and falls back through mutation bursts (0.5s)
+PASS GradientPreparation/custom terrain and registry replacement preserve cached and direct seeds (0.2s)
+PASS BuildingGradientInvalidation/delayed fields (1.5s)
+PASS GradientPreparation/all supported team masks match the scalar fields (0.3s)
+PASS GradientPreparation/explicit clearing overrides farm crop protection but never forbidden paint (0.3s)
+PASS GradientPreparation/mutation and reset boundaries use current state (0.3s)
+PASS GradientPreparation/compound passable material goals track depletion visibility and overlapping suppliers (0.3s)
+PASS GradientPreparation/concurrent lazy requests publish one complete resource field (0.5s)
+PASS RuntimeResources/seed cache allocates only live material bitsets and reuses them after depletion (0.3s)
+PASS GradientPreparation/compact clearing traits preserve custom high-ID property combinations (0.4s)
+PASS RuntimeResources/unused catalog definitions allocate no material gradients and schedule no extra work (0.8s)
+PASS GradientPreparation/optional cache storage can be unavailable or over budget (1.9s)
+PASS GradientPreparation/published plane registry matches a sweep of live material fields (0.3s)
+PASS GradientPreparation/snapshot seeds preserve every periodic kind after the live world changes (0.2s)
+PASS ImmobileUnitGradient/fresh map has no immobile units (0.2s)
+PASS GradientPreparation/periodic supplier snapshots subtract reservations and retain overlay seeds (0.4s)
+PASS GradientPreparation/snapshot material templates refresh changed chunks and accept older snapshots (0.4s)
+PASS ImmobileUnitGradient/painting forbidden area refreshes gradients (0.2s)
+PASS ImmobileUnitGradient/immobile unit blocks its own tile (0.3s)
+PASS LanIdentity/a scoped IPv6 LAN address has an unscoped certificate identity (0.1s)
+PASS MapGradientInvalidation/forbidden painting refreshes routes across passable resources (1.1s)
+PASS LanMatchHarness/LAN catalog messages fragment and reject malformed fragment streams (0.1s)
+PASS LanMatchHarness/LAN departure waits for asynchronous transport writes (0.1s)
+PASS GradientPreparation/seed cells match scalar predicates across policies and changing overlays (6.0s)
+PASS LanMatchHarness/custom catalog transfer and execution enforce catalog identity [network][artifacts] (5.6s)
+PASS MapGradientInvalidation/forbidden edits invalidate exactly the affected fields and preserve the rest (11.6s)
+PASS LanMatchHarness/custom terrain survives LAN map transfer [network][artifacts] (7.8s)
+PASS NetFrame/the reader refuses bytes beyond its limit and keeps what it had (0.0s)
+PASS LanMatchHarness/timeout diagnostics tolerate a destroyed guest room [network] (0.5s)
+PASS NetFrame/frames carry at most 65535 bytes (0.1s)
+PASS TerrainPresentation/terrain seed survives save and load and stays out of the simulation checksum (0.4s)
+PASS TerrainPresentation/catalog palettes preserve distinct legacy shores and independent preview colors (0.1s)
+PASS NetFrame/the reader hands out frames in place and stays bounded over a long stream (1.2s)
+PASS TerrainPresentation/custom thumbnail palettes retain embedded colors alongside catalog builtins (0.2s)
+PASS TerrainPresentation/image import keeps whole-cell material edges out of legacy gameplay [artifacts] (0.3s)
+PASS SceneExtract/map service indicators follow arbitrary and free recipes (0.1s)
+PASS TerrainPresentation/export uses registered whole-cell material colors [artifacts] (0.5s)
+PASS SceneExtract/script area snapshots are opt-in and independent of later map edits (0.4s)
+PASS SceneExtract/units and buildings resolve by gid with their drawn fields and the selection (0.2s)
+PASS AIPipeline/save continuation retains controller caches receipts and future commands at pipeline boundaries (39.6s)
+PASS SceneExtract/overlay maps match a direct computation and refresh per 25-tick window or type change (0.2s)
+PASS SceneExtract/published scene retains old entity fields while subsequent scenes reflect changes (0.3s)
+PASS SceneExtract/stale selection generation never selects a replacement occupying the same gid (0.3s)
+PASS SceneExtract/smooth unit motion advances the drawn delta within the current action only (0.2s)
+PASS SceneExtract/building sprite frames honor damage effective maximum and connection precedence (0.1s)
+PASS SceneExtract/connected overlays use configured groups and scene retains its catalog (0.3s)
+PASS SceneExtract/snapshot preparation retains definitions after the source game is destroyed (0.2s)
+PASS SceneExtract/building events preserve concrete catalog IDs and key-only display names (0.4s)
+PASS SceneExtract/snapshot preparation matches legacy queries and survives later live mutations (0.3s)
+PASS SceneExtract/client paint survives old Scenes and retires only with its execution revision (0.2s)
+PASS SceneExtract/Serial hosts publish immutable Scenes through workers or explicit fallback (0.3s)
+PASS SceneExtract/order execution revisions are captured even without advancing the tick (0.2s)
+PASS SceneExtract/farm input eligibility is frozen with presentation inputs (0.2s)
+PASS TerrainMaterials/map seed reseeds variants and boundaries without breaking partitions or edges (0.2s)
+PASS TerrainMaterials/compiled pages validate metadata and stale catalogs use source fallback [artifacts] (0.3s)
+PASS TerrainMaterials/all legacy shore groups retain their corner orientation (0.0s)
+PASS TerrainMaterials/unequal variant weights affect deterministic texture selection (0.5s)
+PASS TerrainMaterials/the Python validator's built-in name list mirrors the terrain table (0.1s)
+PASS TerrainMaterials/legacy decoder inverts the engine lookup for both compatibility profiles (0.2s)
+PASS TerrainMaterials/coverage partitions every binary shape and multi-material junction (0.4s)
+PASS TerrainMaterials/shared edges and wrapped samples have identical coverage (0.2s)
+PASS TerrainMaterials/diagonal contacts stay distinct and both torus axes share coverage (0.2s)
+PASS TerrainMaterials/organic contours agree across ordinary tile edges and both torus axes (0.3s)
+PASS TerrainMaterials/straight boundaries bend over multiple cells without moving their solid cores (0.2s)
+PASS TerrainMaterials/steep detailed contours retain one crossing on shared patch edges (0.2s)
+PASS TerrainMaterials/catalogue boundary profiles keep their reviewed geometry (1.6s)
+PASS TerrainMaterials/weighted choices are stable and all existing variants are reachable (0.2s)
+PASS TerrainMaterials/catalog rejects corrupt references and grows independently of gameplay IDs (0.3s)
+PASS JavaScriptCompatibility/JavaScript test environment scopes restore SDL and CRT readers (0.1s)
+PASS TerrainMaterials/single cells retain their center and animation does not reseed variants (0.2s)
+PASS TerrainMaterials/prepared coverage preserves native and HD contour geometry (2.6s)
+PASS JavaScriptCompatibility/Resource catalog simulation change rejects released replays and enforces acceptance boundaries (0.5s)
+PASS JavaScriptCompatibility/JavaScript pass assigns valid identities to released saves (0.5s)
+PASS JavaScriptCompatibility/JavaScript upgrade retains genuine master124 experiments and continuation (0.6s)
+PASS JavaScriptIntegration/JavaScript observations visibility memory pagination and stale references (0.5s)
+PASS JavaScriptIntegration/JavaScript orders execute and survive save load (0.6s)
+PASS JavaScriptIntegration/JavaScript scenario effects commit atomically and resume (0.4s)
+PASS JavaScriptCompatibility/JavaScript current saves reject truncated generation tables (2.1s)
+PASS JavaScriptIntegration/JavaScript AI state RNG and disabled state survive continuation (0.5s)
+PASS JavaScriptIntegration/JavaScript custom library atomic updates and frozen source (0.1s)
+PASS JavaScriptIntegration/JavaScript profile two spatial cache and queued save continuity (0.2s)
+PASS JavaScriptIntegration/JavaScript large world observations respect work limits (0.4s)
+PASS JavaScriptIntegration/JavaScript upgrade dispatch survives tracking record growth (0.2s)
+PASS JavaScriptIntegration/JavaScript native spatial answers exclude hidden terrain resources and enemies (0.2s)
+PASS JavaScriptIntegration/JavaScript telemetry scene permissions and replay diagnostic roundtrip (0.3s)
+PASS JavaScriptIntegration/JavaScript linked sources freeze once and removal retains external files (0.1s)
+PASS JavaScriptIntegration/JavaScript queued edits preserve fairness cancellation and stale targets (0.2s)
+PASS JavaScriptIntegration/JavaScript placement reserves footprints and explains impossible constraints (0.3s)
+PASS JavaScriptIntegration/JavaScript services reject unsavable transactions without changing state (0.2s)
+PASS JavaScriptIntegration/JavaScript solid attraction placement keeps both radius and footprint reservation (0.3s)
+PASS JavaScriptIntegration/Online AI installs verify bytes and preserve provenance on rollback (0.1s)
+PASS JavaScriptIntegration/JavaScript path fields use terrain travel costs and invalidate speed-only changes (0.2s)
+PASS JavaScriptIntegration/JavaScript farm areas: experiments query, farmArea order and tile field (0.3s)
+PASS JavaScriptIntegration/JavaScript path diagonals retain the neutral strategic metric (0.2s)
+PASS JavaScriptIntegration/JavaScript terrain registry exposes immutable property capabilities in both profiles (0.2s)
+PASS JavaScriptIntegration/JavaScript material metadata and remembered multi-yield sources survive both stream formats (0.2s)
+PASS JavaScriptIntegration/JavaScript legacy empty resource memories discard unused stock bytes (0.2s)
+PASS JavaScriptIntegration/JavaScript custom building descriptors and orders follow services (0.3s)
+PASS JavaScriptIntegration/JavaScript managed controls use capabilities and independent bombing filter (0.3s)
+PASS JavaScriptIntegration/JavaScript bound observations and order encoding remain isolated from live mutations (0.2s)
+PASS JavaScriptIntegration/JavaScript ordered observations keep the first view of each logical tick (0.2s)
+PASS JavaScriptIntegration/JavaScript projected boundary preserves history and spatial resources without ecology fields (0.2s)
+PASS JavaScriptIntegration/JavaScript building clearing materials retain full fixed slots and legacy view (0.3s)
+PASS JavaScriptPresentation/JavaScript presentation publishes only changed localized messages (0.5s)
+PASS JavaScriptPresentation/JavaScript load restores presentation without a callback or history entry (0.6s)
+PASS JavaScriptPresentation/Leaving a JavaScript scenario resets choices before loading a legacy map (0.5s)
+PASS JavaScriptPresentation/JavaScript does not advance or display a retained SGSL timer (0.4s)
+PASS JavaScriptPresentation/JavaScript leaves stored SGSL execution and victory conditions dormant (0.7s)
+PASS JavaScriptPresentation/Failed prepared map replacements preserve active globals and language (0.2s)
+PASS JavaScriptPresentation/Prepared SGSL exchanges rebind stories in both runtimes (0.2s)
+PASS JavaScriptRealistic/JavaScript realistic economic planner and scenario survey (0.3s)
+ERROR JavaScriptSession/JavaScript fatal failure tears down a live engine session (0.5s)
+PASS JavaScriptSession/JavaScript deterministic scenario failure ends the engine session (0.9s)
+PASS JavaScriptCompatibility/JavaScript current text saves validate unused generation counters (8.8s)
+PASS JavaScriptSession/JavaScript initialization errors reach headless and UI load diagnostics (1.1s)
+ERROR JavaScriptSimulation/JavaScript conversion boundary resumes globals RNG references and complete tick records (3.8s)
+PASS JavaScriptSimulation/JavaScript original fixture executes, resumes and replays 256 ticks (4.8s)
+PASS ScriptEditor/JavaScript maps reopen in the editor without resetting live globals (0.4s)
+PASS ScriptEditor/Script language drafts survive switching and invalid JavaScript cannot commit (0.9s)
+PASS ScriptEditor/Cancelling script drafts preserves the source, globals and scenario text (0.5s)
+PASS ScriptEditor/JavaScript script file dialogs use js and leave loading as a draft (0.5s)
+PASS ScriptEditor/JavaScript file loading preserves embedded NULs for validation (0.4s)
+PASS ScriptEditor/Editing legacy SGSL retains the released USL and SGSL payload pairing (0.5s)
+PASS ScriptEditor/JavaScript to SGSL prepares both runtimes before committing (0.5s)
+PASS AIRules/native controllers exclude disabled work and continue after reload [slow] (91.8s)
+PASS LegacyScriptCoverage/supported statements and wait forms compile (0.2s)
+PASS LegacyScriptCoverage/invalid references and value boundaries report typed errors (0.2s)
+PASS LegacyScriptCoverage/truncated arguments fail without accepting incomplete statements (0.2s)
+PASS LegacyScriptCoverage/summons respect painted area capacity and unit attributes (0.4s)
+PASS LegacyScriptCoverage/alliance levels preserve unrelated teams and apply vision masks (0.7s)
+PASS LegacyScriptCoverage/area waits observe team alliance and negation instead of unrelated units (0.7s)
+PASS LegacyScriptCoverage/flag lifecycle and GUI commands change their real game objects (0.7s)
+PASS LegacyScriptCoverage/count waits evaluate all building classes exact levels and unit comparisons (1.4s)
+PASS JavaScriptSimulation/JavaScript profile two actions fields telemetry and construction survive save resume and worker counts (7.3s)
+PASS LegacyScriptCoverage/independent stories timers space and saved suspension resume exactly (0.4s)
+PASS LegacyScriptCoverage/authored flag aliases resolve game catalog IDs and respect missing definitions (1.0s)
+PASS LegacyScriptCoverage/resetAI authoring accepts valid slots before an editor map has a player header (0.4s)
+PASS LegacyScriptCoverage/resetAI changes only the chosen player and rejects unsafe indices (0.5s)
+PASS LegacyScriptCoverage/legacy resetAI tokens with invalid player or implementation leave players intact (0.2s)
+PASS LegacyScriptCoverage/objectives and hints resolve script numbers and persist in game snapshots (0.3s)
+PASS AITargetTelemetrySave/target telemetry names only real enemies and leaves the simulation unchanged (62.3s)
+PASS TeamStatsSave/every live worker-tick lands in exactly one labour bucket (0.2s)
+PASS LegacyScriptCoverage/named highlights target distinct GUI elements and unhighlight restores state (0.6s)
+PASS LegacyScriptCoverage/unit and building highlights use map and panel channels independently (0.6s)
+PASS TeamStatsSave/places: own buildings first, then enemies; allies, flags and new buildings do not count (0.3s)
+PASS TeamStatsSave/place lookup agrees with a brute-force scan of every building tile (0.3s)
+PASS TeamStatsSave/defence snapshot counts warriors by place and enemy warriors at home (0.2s)
+PASS TeamStatsSave/older saves load with labour coverage starting at the loaded tick [save-format] (0.2s)
+PASS TeamStatsSave/combat deaths are attributed by place and assignment (0.5s)
+PASS TeamStatsSave/legacy version 88 fixture replays the golden trace [save-format][golden] (0.3s)
+PASS TeamStatsSave/clearing telemetry counts operations once by configured primary material (0.6s)
+PASS TeamStatsSave/legacy version 84 fixture replays the golden trace [save-format][golden] (0.3s)
+PASS TeamStatsSave/labour, combat and defence measurements survive a save [save-format] (1.3s)
+PASS JavaScriptLifecycle/Scripting identity survives conversion and save load (0.4s)
+PASS JavaScriptLifecycle/Scripting level reset preserves generation counters (0.2s)
+PASS JavaScriptLifecycle/Scripting conversion allocates fresh identity in a reused destination slot (1.0s)
+PASS JavaScriptLifecycle/Scripting editor deletion and reuse never revive a reference (1.0s)
+PASS JavaScriptLifecycle/Scripting conversion back never resurrects the original reference (0.9s)
+PASS JavaScriptLifecycle/Scripting normal death invalidates lookup before cleanup and slot reuse (0.3s)
+PASS JavaScriptLifecycle/Scripting building completion upgrade and repair preserve identity (1.9s)
+PASS LanMatchHarness/LAN WSS drop, restart and host departure [network][slow][artifacts] (31.3s)
+PASS JavaScriptCompatibility/Compact identity tables preserve unused slots and reject invalid entries (1.1s)
+PASS TeamStatsSave/Compact team histories preserve samples across two batch boundaries (1.0s)
+PASS LanMatchHarness/an idle LAN host sleeps and wakes at once for guests and the host [network][artifacts] (2.7s)
+PASS TeamStatsSave/Compact telemetry retains every sample across chunk boundaries (4.1s)
+PASS TeamStatsSave/Sparse variant snapshot reset clears vanished types without clearing history (2.6s)
+PASS TeamStatsSave/AI telemetry continues across a save [save-format] (7.4s)
+PASS TeamStatsSave/Sparse variant reset accepts refreshed diagnostics and restored snapshots (2.0s)
+PASS WinProbability/rule serialization gates the new tag and rejects ambiguous thresholds (0.1s)
+PASS WinProbability/combat facilities count concrete providers once, including explicit construction targets (0.4s)
+PASS WinProbability/the rule waits for the minimum tick and sample boundary then ends all teams (0.2s)
+PASS WinProbability/native arithmetic reproduces every published calibration sample (0.0s)
+PASS WinProbability/equal alliances share chances and eliminated allies contribute nothing (0.4s)
+PASS WinProbability/calling an early loser cannot change later teams' decision inputs (0.3s)
+PASS SettingsGraphics/text size applies to desktop and touch independently of interface scale (0.1s)
+PASS SettingsGraphics/render ceiling defaults migrates validates and round trips (0.2s)
+PASS SettingsGraphics/edge scrolling defaults migrate and independent modes round trip (0.3s)
+PASS WinProbability/enabled rule preserves the per-tick checksum trace across its decision boundary [golden][artifacts] (0.4s)
+PASS MarketFetch/deliverer stays attached and fetches the next market delivery (0.2s)
+PASS EnteringUnitSave/the retained fixture loads [save-format] (0.4s)
+PASS SettingsGraphics/legacy preferences migrate and independent effects round trip (0.4s)
+PASS MarketFetch/stocked markets are resource goals, depleted markets are not (0.4s)
+PASS MarketsV2/legacy workers already travelling to markets continue after migration [golden][save-format] (0.3s)
+PASS MarketFetch/market fields and pending publications survive binary and text saves [save-format] (4.7s)
+PASS MarketsV2/disabled gate blocks explicit fetch APIs and upgrade execution (0.2s)
+PASS MarketFetch/upgraded market IDs and stock survive binary and text saves [save-format] (4.9s)
+PASS MarketsV2/each market level accepts only its resources across all swim classes (0.3s)
+PASS MarketsV2/market routes respect forbidden ground and water across swim classes (0.5s)
+PASS MarketsV2/a frequently refreshed market field publishes depletion and restocking (0.6s)
+PASS MarketsV2/market repair materials do not overwrite shared stock (0.4s)
+PASS MarketsV2/upgrading cancelling and completing preserve shared stock and gate (1.1s)
+PASS UnitHighResolutionCache/HD layer mappings and fallbacks in software rendering (0.5s)
+PASS MarketsV2/disabled fruit deliveries have a stable per-tick trace and save continuation [golden][save-format][artifacts] (7.4s)
+PASS EnteringUnitSave/generated fixtures round-trip through binary saves [save-format] (8.3s)
+PASS GameplayRecording.Integration/global recording shortcut toggles and shutdown awaits finalization [artifacts][writes-preferences] (2.8s)
+PASS TerrainResources/terrain strokes clear incompatible resources; buildings and units (65.6s)
+PASS MarketsV2/enabled supply networks repeat deterministically with save continuation [golden][save-format][artifacts] (10.4s)
+PASS TeamStatsSave/32 sampling phases; ring wrap; repeated loads; text streams and corruption controls [save-format] (23.7s)
+PASS JavaScriptSimulation/JavaScript economic planners and map survey execute, resume and replay 256 ticks (37.9s)
+PASS SavegameSafety/autosave defaults; atomic and background writes; truncated and malformed loads; imports and campaign progress [save-format][writes-preferences] (34.6s)
+
+===== ERROR JavaScriptSession/JavaScript fatal failure tears down a live engine session =====
+GLOB2_TEST_BUILD compiler=15.2.0 platform=Linux pointer_bits=64
+GLOB2_TEST_PROVENANCE {"compiler": "g++", "dirty": true, "flags": {"CCFLAGS": "", "CPPDEFINES": "GLOB2_OFFICIAL_INSTANCE_ORIGIN \\\"https://app.glob2online.com\\\" GLOB2_OFFICIAL_INSTANCE_FORMER_ORIGINS \\\"https://glob2online.com\\\" HAVE_CONFIG_H SDL_MAIN_HANDLED", "CXXFLAGS": "-std=gnu++20 -Wall -fPIC -O3 -s", "LINKFLAGS": "-Wl,-rpath,$ORIGIN/../lib/glob2 -Wall -O3 -fwhole-program -Wl,-rpath,/tmp/glob2-sdl3/prefix/lib -Wl,--enable-new-dtags"}, "revision": "3a7d70241686ffb19a8c9d61818b4fea612a7e3d", "sourceStatus": [" M src/map/ResourceGrowth.cpp", " M src/scripting/javascript/ScriptCompatibilityTest.cpp", " M src/team/stats/TeamStatsSaveHarness.cpp", " M test/fixtures/building-catalog/composition/seed-713.trace", " M test/fixtures/building-catalog/composition/seed-714.trace", " M test/fixtures/building-catalog/composition/seed-715.trace"], "sourceTreeSha256": "149438c7d0c7589e92cb63a49315df6025eb8d85c05b91c6db3ed77a29a6cac2"}
+Failure while closing game resources; session cannot continue
+terminate called after throwing an instance of 'Script::HostFailure'
+  what():  injected fatal resource failure during AI callback
+
+[run_tests] exit status -6
+
+[error] JavaScript fatal failure tears down a live engine session: exception
+SIGABRT - Abort (abnormal termination) signal
+
+
+===== ERROR JavaScriptSimulation/JavaScript conversion boundary resumes globals RNG references and complete tick records =====
+GLOB2_TEST_BUILD compiler=15.2.0 platform=Linux pointer_bits=64
+GLOB2_TEST_PROVENANCE {"compiler": "g++", "dirty": true, "flags": {"CCFLAGS": "", "CPPDEFINES": "GLOB2_OFFICIAL_INSTANCE_ORIGIN \\\"https://app.glob2online.com\\\" GLOB2_OFFICIAL_INSTANCE_FORMER_ORIGINS \\\"https://glob2online.com\\\" HAVE_CONFIG_H SDL_MAIN_HANDLED", "CXXFLAGS": "-std=gnu++20 -Wall -fPIC -O3 -s", "LINKFLAGS": "-Wl,-rpath,$ORIGIN/../lib/glob2 -Wall -O3 -fwhole-program -Wl,-rpath,/tmp/glob2-sdl3/prefix/lib -Wl,--enable-new-dtags"}, "revision": "3a7d70241686ffb19a8c9d61818b4fea612a7e3d", "sourceStatus": [" M src/map/ResourceGrowth.cpp", " M src/scripting/javascript/ScriptCompatibilityTest.cpp", " M src/team/stats/TeamStatsSaveHarness.cpp", " M test/fixtures/building-catalog/composition/seed-713.trace", " M test/fixtures/building-catalog/composition/seed-714.trace", " M test/fixtures/building-catalog/composition/seed-715.trace"], "sourceTreeSha256": "149438c7d0c7589e92cb63a49315df6025eb8d85c05b91c6db3ed77a29a6cac2"}
+nox::gui.game.checkSum() = 49b2522c
+automaticEndingGame ended: 256 ticks, 0 minutes, 10 seconds
+GLOB2_GAME_END ticks=256 winner_team=-1 seed=19 map="Conversion boundary" orders=496 players=team0:JavaScript,team1:JavaScript
+nox::gui.game.checkSum() = 49b2522c
+automaticEndingGame ended: 256 ticks, 0 minutes, 10 seconds
+GLOB2_GAME_END ticks=256 winner_team=-1 seed=19 map="Conversion boundary" orders=496 players=team0:JavaScript,team1:JavaScript
+nox::gui.game.checkSum() = 49b2522c
+
+[run_tests] exit status -11
+
+[error] JavaScript conversion boundary resumes globals RNG references and complete tick records: exception
+SIGSEGV - Segmentation violation signal
+
+
+===== FAIL glob2-unit-tests (874 cases) =====
+TextStream::parser : error @ 1:9 : unexpected EOF
+TextInputStream::readFromTableToString : no entry named a
+TextStream::parser : error @ 1:7 : unexpected EOF
+TextInputStream::readFromTableToString : no entry named a
+fertility_512_us=54907 fertility_512_cpu_us=41948
+templates=10 first=0,9 second=8,9 campus_members=4
+OrderAlterArea::setData(dataLength=13) failure
+data[0]=0
+data[1]=0
+data[2]=0
+data[3]=0
+data[4]=0
+data[5]=0
+data[6]=0
+data[7]=0
+data[8]=0
+data[9]=0
+data[10]=0
+data[11]=0
+data[12]=0
+BasePlayer::load: invalid player type 15 (must be below 15)
+BasePlayer::load: invalid player type 4294967295 (must be below 15)
+BasePlayer::load: out-of-range player number 16 (must be in [0, 16))
+BasePlayer::load: out-of-range player number -1 (must be in [0, 16))
+BasePlayer::load: out-of-range teamNumber 16 (must be in [0, 16))
+BasePlayer::load: stream invalid or exhausted before BasePlayer record
+PASS parallel eager/lazy gradients at 1, 2, 4, 8 threads
+PASS lazy building gradients: paused terrain snapshots, query ordering, equal-cost movement, unreachable cells, toroidal geometry, independent frontiers and rebuilds
+Turn session: diverged at tick 325; reloading
+Turn session: relay refused us: The match is over
+Turn session: diverged at tick 925; reloading
+Turn session: diverged at tick 0; reloading
+Turn session: nothing from the relay for 5100 ms; reconnecting
+Turn session: relay refused protocol 2; retrying with 1
+Turn session: relay refused protocol 2; retrying with 1
+Turn session: relay refused us: 
+Turn session: too many queued orders; dropping the newest
+Turn session: relay says we sent too much; reconnecting
+Turn session: relay refused us: 
+Ignoring invalid invite: no!
+Error reading replay: Incomplete binary field: versionMajor: iostream error
+Error reading replay: Incomplete binary field: versionMajor: iostream error
+Error reading replay: Incomplete binary field: versionMinor: iostream error
+Error reading replay: Incomplete binary field: versionMinor: iostream error
+Error reading replay: Incomplete binary field: replayStepCounter: iostream error
+Error reading replay: Incomplete binary field: replayStepCounter: iostream error
+Error reading replay: Incomplete binary field: replayStepCounter: iostream error
+Error reading replay: Incomplete binary field: replayStepCounter: iostream error
+Error reading replay: Incomplete binary field: size: iostream error
+Error reading replay: Incomplete binary field: size: iostream error
+Error reading replay: Incomplete binary field: size: iostream error
+Error reading replay: Incomplete binary field: size: iostream error
+Error reading replay: Incomplete binary field: data: iostream error
+Error reading replay: Incomplete binary field: sender: iostream error
+Error reading replay: Incomplete binary field: checksum: iostream error
+Error reading replay: Incomplete binary field: checksum: iostream error
+Error reading replay: Incomplete binary field: checksum: iostream error
+Error reading replay: Incomplete binary field: checksum: iostream error
+Error reading replay: Incomplete binary field: replayStepCounter: iostream error
+Error reading replay: Incomplete binary field: replayStepCounter: iostream error
+Error reading replay: Incomplete binary field: replayStepCounter: iostream error
+Error reading replay: Incomplete binary field: replayStepCounter: iostream error
+Error reading replay: Incomplete binary field: size: iostream error
+Error reading replay: Incomplete binary field: size: iostream error
+Error reading replay: Incomplete binary field: size: iostream error
+Error reading replay: Incomplete binary field: size: iostream error
+Error reading replay: Incomplete binary field: data: iostream error
+Error reading replay: Incomplete binary field: sender: iostream error
+Error reading replay: Incomplete binary field: checksum: iostream error
+Error reading replay: Incomplete binary field: checksum: iostream error
+Error reading replay: Incomplete binary field: checksum: iostream error
+Error reading replay: Incomplete binary field: checksum: iostream error
+Error reading replay: Incomplete binary field: telemetryMagic: iostream error
+Error reading replay: Incomplete binary field: telemetryMagic: iostream error
+Error reading replay: Incomplete binary field: telemetryMagic: iostream error
+Error reading replay: Incomplete binary field: telemetryMagic: iostream error
+Error reading replay: Incomplete binary field: telemetryVersion: iostream error
+Error reading replay: Incomplete binary field: telemetryVersion: iostream error
+Error reading replay: Incomplete binary field: telemetryVersion: iostream error
+Error reading replay: Incomplete binary field: telemetryVersion: iostream error
+Error reading replay: Incomplete binary field: telemetryUntil: iostream error
+Error reading replay: Incomplete binary field: telemetryUntil: iostream error
+Error reading replay: Incomplete binary field: telemetryUntil: iostream error
+Error reading replay: Incomplete binary field: telemetryUntil: iostream error
+Error reading replay: Incomplete binary field: telemetryTruncated: iostream error
+Error reading replay: Incomplete binary field: telemetryFrames: iostream error
+Error reading replay: Incomplete binary field: telemetryFrames: iostream error
+Error reading replay: Incomplete binary field: telemetryFrames: iostream error
+Error reading replay: Incomplete binary field: telemetryFrames: iostream error
+Error reading replay: Replay counters overflow: iostream error
+Error in replay: checksums don't match!
+	Current game's checksum: 0x1c8
+	Checksum in replay file: 0x7b
+Error reading replay: Replay checksum mismatch: iostream error
+Error reading replay: Unsupported replay version: iostream error
+Error reading replay: Unsupported replay version: iostream error
+Error reading replay: Unsupported replay version: iostream error
+Error reading replay: Unsupported replay version: iostream error
+Error reading replay: Unsupported replay version: iostream error
+Error reading replay: Unsupported replay version: iostream error
+Error reading replay: Unsupported replay version: iostream error
+numeric-bits 3ff0c152382d7366 3ff5124271980434 3fe0c152382d7366 3ff719218313d087 3ff1b6e192ebbe44 4002d97c7f3321d2 3fe193ea7aad030a bfdaa22657537205 400e18fa0df2d9bc 401d8e64b8d4ddae 3fbaec7b35a00d3a 3fe62e42fefa39ef 3fb8663f793c46c7 3ff95c01a39fbd68 3fde8927964fd5fd 400d03cf63b6e1a0 3ff6a09e667f3bcd c0017af62e0950f8 3feed9505e1bc3d4 3ff428a2f98d728b 400cd82b446159f3
+edge-bits bfea2c16b010e385 bfe2699022adc4c1 1 c0874385446d71c3 1e60000000000000 1e60000000000000 c00921fb54442d18
+rejected: Class instances are not script data
+rejected: Symbol keys are not script data
+rejected: JavaScript work budget exhausted
+rejected: JavaScript work budget exhausted
+rejected: Cyclic script data
+rejected: Script data requires finite numbers
+rejected: Accessors are not script data
+rejected: TypeError: Dynamic code generation is disabled
+    at Function (native)
+    at step (<glob2-script>:1:39)
+    at __glob2_step (<glob2-script>:3:85)
+
+rejected: SyntaxError: RegExp are not supported
+    at <glob2-script>:1:31
+
+rejected: SyntaxError: Async functions are disabled
+    at <glob2-script>:1:27
+
+rejected: SyntaxError: Await is disabled
+    at <glob2-script>:1:5
+
+rejected: SyntaxError: BigInt is disabled
+    at <glob2-script>:1:31
+
+rejected: SyntaxError: Imports are disabled
+    at <glob2-script>:1:31
+
+rejected: SyntaxError: Imports are disabled
+    at <glob2-script>:1:1
+
+rejected: InternalError: interrupted
+    at step (<glob2-script>:1:50)
+    at __glob2_step (<glob2-script>:3:85)
+
+rejected: JavaScript work budget exhausted
+rejected: JavaScript work budget exhausted
+rejected: JavaScript work budget exhausted
+rejected: JavaScript work budget exhausted
+rejected: JavaScript work budget exhausted
+rejected: JavaScript work budget exhausted
+rejected: JavaScript work budget exhausted
+rejected: JavaScript work budget exhausted
+rejected: JavaScript work budget exhausted
+rejected: JavaScript work budget exhausted
+rejected: JavaScript work budget exhausted
+rejected: JavaScript work budget exhausted
+rejected: JavaScript work budget exhausted
+rejected: JavaScript work budget exhausted
+rejected: JavaScript work budget exhausted
+rejected: InternalError: interrupted
+    at parse (native)
+    at step (<glob2-script>:1:58)
+    at __glob2_step (<glob2-script>:3:85)
+
+rejected: InternalError: interrupted
+    at stringify (native)
+    at step (<glob2-script>:1:82)
+    at __glob2_step (<glob2-script>:3:85)
+
+rejected: InternalError: interrupted
+    at flat (native)
+    at step (<glob2-script>:1:76)
+    at __glob2_step (<glob2-script>:3:85)
+
+rejected: InternalError: interrupted
+
+rejected: InternalError: interrupted
+
+rejected: Sparse or named arrays are not script data
+rejected: Native script data exceeds limit
+rejected: Invalid array key
+rejected: SyntaxError: variable name expected
+    at <glob2-script>:1:28
+
+JavaScript runtime tests passed
+rejected: Global functions cannot capture private local state; use top-level variables
+rejected: Global functions must be unchanged source definitions; captured local closures are not saveable
+rejected: Global functions cannot capture private local state; use top-level variables
+rejected: Persistent globals require plain objects and arrays
+rejected: Persistent globals cannot retain built-ins or function-owned objects; use independent top-level data
+rejected: Source functions cannot hide private closure or class state
+rejected: Source function properties cannot retain opaque objects
+rejected: Persistent global objects cannot have custom prototypes
+rejected: TypeError: object is not extensible
+    at step (<glob2-script>:1:17)
+    at __glob2_step (<glob2-script>:3:85)
+
+Hello, world!
+
+[failure] 16-bit RGBA rounds normalized channels to the exporter reference: -1 == 0
+libgag/src/ImageAssetTest.cpp:74:
+CHECK( std::memcmp(static_cast<char*>(rgba->pixels) + y * rgba->pitch, rgba16Fixture::rgba + y * 8, 8) == 0 ) is NOT correct!
+  values: CHECK( -1 == 0 )
+[failure] 16-bit RGBA rounds normalized channels to the exporter reference: -1 == 0
+libgag/src/ImageAssetTest.cpp:74:
+CHECK( std::memcmp(static_cast<char*>(rgba->pixels) + y * rgba->pitch, rgba16Fixture::rgba + y * 8, 8) == 0 ) is NOT correct!
+  values: CHECK( -1 == 0 )
+
+559 passed, 3 failed, 61 skipped (961.9s of test time)
+[run_tests] JUnit report: artifacts/resource-growth/compatibility-final.xml (1496 cases)

@@ -1,0 +1,793 @@
+{
+  "ai128": {
+    "d8t4-owner": {
+      "wall_s": 0.6199389006942511,
+      "cpu_s": 0.6758474999999999,
+      "peak_rss_bytes": 64389120.0,
+      "run_s": 0.11941910850000001,
+      "tick_percentiles_ns": {
+        "tick_p50_ns": 235803.5,
+        "tick_p95_ns": 1557470.0,
+        "tick_p99_ns": 3187655.5
+      },
+      "growth": {
+        "growth_submitted": 256.0,
+        "growth_published": 247.0,
+        "growth_sampled": 68796.0,
+        "growth_proposals": 725.0,
+        "growth_accepted": 694.0,
+        "growth_rejected": 9.0,
+        "growth_clamped": 9.0,
+        "growth_stockAdded": 694.0,
+        "growth_tilesAdded": 26.0,
+        "growth_maxPending": 9.0,
+        "growth_maxProposalBytes": 1280.0,
+        "growth_computeNs": 9662562.5,
+        "growth_queueNs": 876423870.0,
+        "growth_waitNs": 8219512.5,
+        "growth_publicationNs": 670794.5,
+        "growth_delay": 8.0
+      },
+      "legacy-t4": {
+        "run_time_ratio": 1.1284601755284338,
+        "ratio_95pct_ci": [
+          0.8334814014272434,
+          1.3311313690231705
+        ],
+        "run_delta_ms": 12.910435999999999,
+        "cpu_ratio": 1.1073082402206809
+      },
+      "d8t4-owner": {
+        "run_time_ratio": 1.0,
+        "ratio_95pct_ci": [
+          1.0,
+          1.0
+        ],
+        "run_delta_ms": 0.0,
+        "cpu_ratio": 1.0
+      }
+    },
+    "d8t4-shared": {
+      "wall_s": 0.5438781683333218,
+      "cpu_s": 0.6007,
+      "peak_rss_bytes": 64389120.0,
+      "run_s": 0.1064478475,
+      "tick_percentiles_ns": {
+        "tick_p50_ns": 209344.0,
+        "tick_p95_ns": 1611945.0,
+        "tick_p99_ns": 3366944.5
+      },
+      "growth": {
+        "growth_submitted": 256.0,
+        "growth_published": 247.0,
+        "growth_sampled": 68796.0,
+        "growth_proposals": 725.0,
+        "growth_accepted": 694.0,
+        "growth_rejected": 9.0,
+        "growth_clamped": 9.0,
+        "growth_stockAdded": 694.0,
+        "growth_tilesAdded": 26.0,
+        "growth_maxPending": 9.0,
+        "growth_maxProposalBytes": 1280.0,
+        "growth_computeNs": 7098056.0,
+        "growth_queueNs": 264828859.0,
+        "growth_waitNs": 144264.5,
+        "growth_publicationNs": 647361.0,
+        "growth_delay": 8.0
+      },
+      "legacy-t4": {
+        "run_time_ratio": 1.0340790837003302,
+        "ratio_95pct_ci": [
+          0.8165367987057147,
+          1.2549617274092382
+        ],
+        "run_delta_ms": 3.4021844999999997,
+        "cpu_ratio": 0.9922518728016306
+      },
+      "d8t4-owner": {
+        "run_time_ratio": 0.8965391348491083,
+        "ratio_95pct_ci": [
+          0.7696995496294796,
+          0.9575512080414146
+        ],
+        "run_delta_ms": -12.358425,
+        "cpu_ratio": 0.9080287438770155
+      }
+    },
+    "legacy-t4": {
+      "wall_s": 0.5657868199050426,
+      "cpu_s": 0.6056524999999999,
+      "peak_rss_bytes": 64389120.0,
+      "run_s": 0.1033264415,
+      "tick_percentiles_ns": {},
+      "growth": {},
+      "legacy-t4": {
+        "run_time_ratio": 1.0,
+        "ratio_95pct_ci": [
+          1.0,
+          1.0
+        ],
+        "run_delta_ms": 0.0,
+        "cpu_ratio": 1.0
+      }
+    }
+  },
+  "ai256": {
+    "d8t4-owner": {
+      "wall_s": 0.8756703054532409,
+      "cpu_s": 1.049696,
+      "peak_rss_bytes": 77615104.0,
+      "run_s": 0.3636038895,
+      "tick_percentiles_ns": {
+        "tick_p50_ns": 488457.5,
+        "tick_p95_ns": 4308408.5,
+        "tick_p99_ns": 11863458.0
+      },
+      "growth": {
+        "growth_submitted": 256.0,
+        "growth_published": 247.0,
+        "growth_sampled": 273013.0,
+        "growth_proposals": 2337.0,
+        "growth_accepted": 2236.0,
+        "growth_rejected": 27.0,
+        "growth_clamped": 27.0,
+        "growth_stockAdded": 2236.0,
+        "growth_tilesAdded": 63.0,
+        "growth_maxPending": 9.0,
+        "growth_maxProposalBytes": 4352.0,
+        "growth_computeNs": 38907543.5,
+        "growth_queueNs": 2517757862.5,
+        "growth_waitNs": 25388142.0,
+        "growth_publicationNs": 1847116.5,
+        "growth_delay": 8.0
+      },
+      "legacy-t4": {
+        "run_time_ratio": 1.145805136180102,
+        "ratio_95pct_ci": [
+          1.0173170850876567,
+          1.2530537851233878
+        ],
+        "run_delta_ms": 48.837928000000005,
+        "cpu_ratio": 1.0165221757362173
+      },
+      "d8t4-owner": {
+        "run_time_ratio": 1.0,
+        "ratio_95pct_ci": [
+          1.0,
+          1.0
+        ],
+        "run_delta_ms": 0.0,
+        "cpu_ratio": 1.0
+      }
+    },
+    "d8t4-shared": {
+      "wall_s": 0.9433659489732236,
+      "cpu_s": 1.0517525,
+      "peak_rss_bytes": 76722176.0,
+      "run_s": 0.433500824,
+      "tick_percentiles_ns": {
+        "tick_p50_ns": 360338.0,
+        "tick_p95_ns": 7293920.5,
+        "tick_p99_ns": 10975868.0
+      },
+      "growth": {
+        "growth_submitted": 256.0,
+        "growth_published": 247.0,
+        "growth_sampled": 273013.0,
+        "growth_proposals": 2337.0,
+        "growth_accepted": 2236.0,
+        "growth_rejected": 27.0,
+        "growth_clamped": 27.0,
+        "growth_stockAdded": 2236.0,
+        "growth_tilesAdded": 63.0,
+        "growth_maxPending": 9.0,
+        "growth_maxProposalBytes": 4352.0,
+        "growth_computeNs": 29214737.0,
+        "growth_queueNs": 1413942082.0,
+        "growth_waitNs": 412962.5,
+        "growth_publicationNs": 1855537.0,
+        "growth_delay": 8.0
+      },
+      "legacy-t4": {
+        "run_time_ratio": 1.1275907357819324,
+        "ratio_95pct_ci": [
+          0.97214660591222,
+          1.1903961458155217
+        ],
+        "run_delta_ms": 35.821526,
+        "cpu_ratio": 1.0214267730187325
+      },
+      "d8t4-owner": {
+        "run_time_ratio": 0.9780811423985882,
+        "ratio_95pct_ci": [
+          0.799317670206706,
+          1.0548343683215033
+        ],
+        "run_delta_ms": -5.4931615,
+        "cpu_ratio": 0.9969212653238597
+      }
+    },
+    "legacy-t4": {
+      "wall_s": 0.84985531703569,
+      "cpu_s": 1.0210175000000001,
+      "peak_rss_bytes": 72628224.0,
+      "run_s": 0.33088063300000004,
+      "tick_percentiles_ns": {},
+      "growth": {},
+      "legacy-t4": {
+        "run_time_ratio": 1.0,
+        "ratio_95pct_ci": [
+          1.0,
+          1.0
+        ],
+        "run_delta_ms": 0.0,
+        "cpu_ratio": 1.0
+      }
+    }
+  },
+  "ai512": {
+    "d8t4-owner": {
+      "wall_s": 1.6978139276616275,
+      "cpu_s": 2.814551,
+      "peak_rss_bytes": 180625408.0,
+      "run_s": 1.077435029,
+      "tick_percentiles_ns": {
+        "tick_p50_ns": 1642270.0,
+        "tick_p95_ns": 13494638.0,
+        "tick_p99_ns": 36736837.0
+      },
+      "growth": {
+        "growth_submitted": 256.0,
+        "growth_published": 247.0,
+        "growth_sampled": 1086706.0,
+        "growth_proposals": 6747.0,
+        "growth_accepted": 6473.0,
+        "growth_rejected": 63.0,
+        "growth_clamped": 63.0,
+        "growth_stockAdded": 6473.0,
+        "growth_tilesAdded": 195.0,
+        "growth_maxPending": 9.0,
+        "growth_maxProposalBytes": 9216.0,
+        "growth_computeNs": 133675878.0,
+        "growth_queueNs": 6449977399.0,
+        "growth_waitNs": 85524048.5,
+        "growth_publicationNs": 7204975.5,
+        "growth_delay": 8.0
+      },
+      "legacy-t4": {
+        "run_time_ratio": 0.9811770871500672,
+        "ratio_95pct_ci": [
+          0.955687210514975,
+          1.0412847147607927
+        ],
+        "run_delta_ms": -20.0656225,
+        "cpu_ratio": 1.0477153552959169
+      },
+      "d8t4-owner": {
+        "run_time_ratio": 1.0,
+        "ratio_95pct_ci": [
+          1.0,
+          1.0
+        ],
+        "run_delta_ms": 0.0,
+        "cpu_ratio": 1.0
+      }
+    },
+    "d8t4-shared": {
+      "wall_s": 1.6379282013513148,
+      "cpu_s": 2.861293,
+      "peak_rss_bytes": 178161664.0,
+      "run_s": 0.992467752,
+      "tick_percentiles_ns": {
+        "tick_p50_ns": 1213782.5,
+        "tick_p95_ns": 14039399.5,
+        "tick_p99_ns": 38050394.0
+      },
+      "growth": {
+        "growth_submitted": 256.0,
+        "growth_published": 247.0,
+        "growth_sampled": 1086706.0,
+        "growth_proposals": 6747.0,
+        "growth_accepted": 6473.0,
+        "growth_rejected": 63.0,
+        "growth_clamped": 63.0,
+        "growth_stockAdded": 6473.0,
+        "growth_tilesAdded": 195.0,
+        "growth_maxPending": 9.0,
+        "growth_maxProposalBytes": 9216.0,
+        "growth_computeNs": 132504770.5,
+        "growth_queueNs": 2911925665.5,
+        "growth_waitNs": 93240.0,
+        "growth_publicationNs": 7826943.0,
+        "growth_delay": 8.0
+      },
+      "legacy-t4": {
+        "run_time_ratio": 0.9164135147434656,
+        "ratio_95pct_ci": [
+          0.8069373895411529,
+          1.015755593562874
+        ],
+        "run_delta_ms": -91.8341205,
+        "cpu_ratio": 1.0261110777475961
+      },
+      "d8t4-owner": {
+        "run_time_ratio": 0.8821240908426993,
+        "ratio_95pct_ci": [
+          0.8201402179797124,
+          1.010141560712882
+        ],
+        "run_delta_ms": -121.1091475,
+        "cpu_ratio": 1.0008831058845638
+      }
+    },
+    "legacy-t4": {
+      "wall_s": 1.662196127930656,
+      "cpu_s": 2.7341015,
+      "peak_rss_bytes": 167421952.0,
+      "run_s": 1.0339673635,
+      "tick_percentiles_ns": {},
+      "growth": {},
+      "legacy-t4": {
+        "run_time_ratio": 1.0,
+        "ratio_95pct_ci": [
+          1.0,
+          1.0
+        ],
+        "run_delta_ms": 0.0,
+        "cpu_ratio": 1.0
+      }
+    }
+  },
+  "disabled512": {
+    "d8t4-owner": {
+      "wall_s": 1.462442827410996,
+      "cpu_s": 2.139481,
+      "peak_rss_bytes": 143953920.0,
+      "run_s": 0.8450094375,
+      "tick_percentiles_ns": {
+        "tick_p50_ns": 290743.5,
+        "tick_p95_ns": 13521247.5,
+        "tick_p99_ns": 38363062.5
+      },
+      "growth": {
+        "growth_submitted": 0.0,
+        "growth_published": 0.0,
+        "growth_sampled": 0.0,
+        "growth_proposals": 0.0,
+        "growth_accepted": 0.0,
+        "growth_rejected": 0.0,
+        "growth_clamped": 0.0,
+        "growth_stockAdded": 0.0,
+        "growth_tilesAdded": 0.0,
+        "growth_maxPending": 0.0,
+        "growth_maxProposalBytes": 0.0,
+        "growth_computeNs": 0.0,
+        "growth_queueNs": 0.0,
+        "growth_waitNs": 0.0,
+        "growth_publicationNs": 0.0,
+        "growth_delay": 8.0
+      },
+      "legacy-t4": {
+        "run_time_ratio": 0.9615765462975301,
+        "ratio_95pct_ci": [
+          0.863994779235042,
+          1.1596643785856888
+        ],
+        "run_delta_ms": -32.032354999999995,
+        "cpu_ratio": 0.9692974844940107
+      },
+      "d8t4-owner": {
+        "run_time_ratio": 1.0,
+        "ratio_95pct_ci": [
+          1.0,
+          1.0
+        ],
+        "run_delta_ms": 0.0,
+        "cpu_ratio": 1.0
+      }
+    },
+    "d8t4-shared": {
+      "wall_s": 1.4198550819419324,
+      "cpu_s": 2.1490745,
+      "peak_rss_bytes": 142864384.0,
+      "run_s": 0.784986042,
+      "tick_percentiles_ns": {
+        "tick_p50_ns": 287663.5,
+        "tick_p95_ns": 12037911.5,
+        "tick_p99_ns": 36931475.5
+      },
+      "growth": {
+        "growth_submitted": 0.0,
+        "growth_published": 0.0,
+        "growth_sampled": 0.0,
+        "growth_proposals": 0.0,
+        "growth_accepted": 0.0,
+        "growth_rejected": 0.0,
+        "growth_clamped": 0.0,
+        "growth_stockAdded": 0.0,
+        "growth_tilesAdded": 0.0,
+        "growth_maxPending": 0.0,
+        "growth_maxProposalBytes": 0.0,
+        "growth_computeNs": 0.0,
+        "growth_queueNs": 0.0,
+        "growth_waitNs": 0.0,
+        "growth_publicationNs": 0.0,
+        "growth_delay": 8.0
+      },
+      "legacy-t4": {
+        "run_time_ratio": 1.0002483869429886,
+        "ratio_95pct_ci": [
+          0.8877979639059053,
+          1.1064069998060766
+        ],
+        "run_delta_ms": -0.563857,
+        "cpu_ratio": 0.9757417075852121
+      },
+      "d8t4-owner": {
+        "run_time_ratio": 1.0007747824938682,
+        "ratio_95pct_ci": [
+          0.8615689842140225,
+          1.110409355438498
+        ],
+        "run_delta_ms": 4.767815500000001,
+        "cpu_ratio": 1.0433993790043166
+      }
+    },
+    "legacy-t4": {
+      "wall_s": 1.3668972891755402,
+      "cpu_s": 2.1396745,
+      "peak_rss_bytes": 138854400.0,
+      "run_s": 0.8081312764999999,
+      "tick_percentiles_ns": {},
+      "growth": {},
+      "legacy-t4": {
+        "run_time_ratio": 1.0,
+        "ratio_95pct_ci": [
+          1.0,
+          1.0
+        ],
+        "run_delta_ms": 0.0,
+        "cpu_ratio": 1.0
+      }
+    }
+  },
+  "idle128": {
+    "d8t4-owner": {
+      "wall_s": 0.5840359085705131,
+      "cpu_s": 0.6816774999999999,
+      "peak_rss_bytes": 64389120.0,
+      "run_s": 0.112410371,
+      "tick_percentiles_ns": {
+        "tick_p50_ns": 212088.5,
+        "tick_p95_ns": 1376117.0,
+        "tick_p99_ns": 2765238.0
+      },
+      "growth": {
+        "growth_submitted": 256.0,
+        "growth_published": 247.0,
+        "growth_sampled": 68889.0,
+        "growth_proposals": 719.0,
+        "growth_accepted": 688.0,
+        "growth_rejected": 7.0,
+        "growth_clamped": 7.0,
+        "growth_stockAdded": 688.0,
+        "growth_tilesAdded": 23.0,
+        "growth_maxPending": 9.0,
+        "growth_maxProposalBytes": 1408.0,
+        "growth_computeNs": 10774170.5,
+        "growth_queueNs": 788731098.5,
+        "growth_waitNs": 8263896.5,
+        "growth_publicationNs": 736854.5,
+        "growth_delay": 8.0
+      },
+      "legacy-t4": {
+        "run_time_ratio": 1.0006164662464991,
+        "ratio_95pct_ci": [
+          0.7905259952521082,
+          1.3010070531339124
+        ],
+        "run_delta_ms": 0.18477849999999996,
+        "cpu_ratio": 1.0256569044006612
+      },
+      "d8t4-owner": {
+        "run_time_ratio": 1.0,
+        "ratio_95pct_ci": [
+          1.0,
+          1.0
+        ],
+        "run_delta_ms": 0.0,
+        "cpu_ratio": 1.0
+      }
+    },
+    "d8t4-shared": {
+      "wall_s": 0.5809582970105112,
+      "cpu_s": 0.6706699999999999,
+      "peak_rss_bytes": 64389120.0,
+      "run_s": 0.106712101,
+      "tick_percentiles_ns": {
+        "tick_p50_ns": 175704.0,
+        "tick_p95_ns": 1802669.0,
+        "tick_p99_ns": 3044912.0
+      },
+      "growth": {
+        "growth_submitted": 256.0,
+        "growth_published": 247.0,
+        "growth_sampled": 68889.0,
+        "growth_proposals": 719.0,
+        "growth_accepted": 688.0,
+        "growth_rejected": 7.0,
+        "growth_clamped": 7.0,
+        "growth_stockAdded": 688.0,
+        "growth_tilesAdded": 23.0,
+        "growth_maxPending": 9.0,
+        "growth_maxProposalBytes": 1408.0,
+        "growth_computeNs": 8241751.5,
+        "growth_queueNs": 427025022.0,
+        "growth_waitNs": 526551.5,
+        "growth_publicationNs": 649756.0,
+        "growth_delay": 8.0
+      },
+      "legacy-t4": {
+        "run_time_ratio": 0.9882719320287703,
+        "ratio_95pct_ci": [
+          0.8152203963027388,
+          1.3037945016368424
+        ],
+        "run_delta_ms": -1.2076075,
+        "cpu_ratio": 1.0272379519943164
+      },
+      "d8t4-owner": {
+        "run_time_ratio": 1.0242506974656451,
+        "ratio_95pct_ci": [
+          0.7893292440685521,
+          1.345069267511959
+        ],
+        "run_delta_ms": 3.056267,
+        "cpu_ratio": 0.9716148530575881
+      }
+    },
+    "legacy-t4": {
+      "wall_s": 0.5692841883283108,
+      "cpu_s": 0.666445,
+      "peak_rss_bytes": 64389120.0,
+      "run_s": 0.10343097600000001,
+      "tick_percentiles_ns": {},
+      "growth": {},
+      "legacy-t4": {
+        "run_time_ratio": 1.0,
+        "ratio_95pct_ci": [
+          1.0,
+          1.0
+        ],
+        "run_delta_ms": 0.0,
+        "cpu_ratio": 1.0
+      }
+    }
+  },
+  "idle256": {
+    "d8t4-owner": {
+      "wall_s": 0.7667661434970796,
+      "cpu_s": 1.191459,
+      "peak_rss_bytes": 74379264.0,
+      "run_s": 0.272888386,
+      "tick_percentiles_ns": {
+        "tick_p50_ns": 451727.0,
+        "tick_p95_ns": 3622898.0,
+        "tick_p99_ns": 6515825.5
+      },
+      "growth": {
+        "growth_submitted": 256.0,
+        "growth_published": 247.0,
+        "growth_sampled": 273361.0,
+        "growth_proposals": 2329.0,
+        "growth_accepted": 2231.0,
+        "growth_rejected": 32.0,
+        "growth_clamped": 32.0,
+        "growth_stockAdded": 2231.0,
+        "growth_tilesAdded": 66.0,
+        "growth_maxPending": 9.0,
+        "growth_maxProposalBytes": 4352.0,
+        "growth_computeNs": 35177138.5,
+        "growth_queueNs": 1630889803.5,
+        "growth_waitNs": 17317268.5,
+        "growth_publicationNs": 1949837.0,
+        "growth_delay": 8.0
+      },
+      "legacy-t4": {
+        "run_time_ratio": 1.0764911383813454,
+        "ratio_95pct_ci": [
+          0.9840155976856337,
+          1.2819494878590034
+        ],
+        "run_delta_ms": 20.210116499999998,
+        "cpu_ratio": 1.0525681424854925
+      },
+      "d8t4-owner": {
+        "run_time_ratio": 1.0,
+        "ratio_95pct_ci": [
+          1.0,
+          1.0
+        ],
+        "run_delta_ms": 0.0,
+        "cpu_ratio": 1.0
+      }
+    },
+    "d8t4-shared": {
+      "wall_s": 0.7494200135115534,
+      "cpu_s": 1.1855745,
+      "peak_rss_bytes": 73814016.0,
+      "run_s": 0.2534932035,
+      "tick_percentiles_ns": {
+        "tick_p50_ns": 364742.5,
+        "tick_p95_ns": 4038915.5,
+        "tick_p99_ns": 6217243.0
+      },
+      "growth": {
+        "growth_submitted": 256.0,
+        "growth_published": 247.0,
+        "growth_sampled": 273361.0,
+        "growth_proposals": 2329.0,
+        "growth_accepted": 2231.0,
+        "growth_rejected": 32.0,
+        "growth_clamped": 32.0,
+        "growth_stockAdded": 2231.0,
+        "growth_tilesAdded": 66.0,
+        "growth_maxPending": 9.0,
+        "growth_maxProposalBytes": 4352.0,
+        "growth_computeNs": 32523472.5,
+        "growth_queueNs": 891842477.0,
+        "growth_waitNs": 115129.0,
+        "growth_publicationNs": 2116141.5,
+        "growth_delay": 8.0
+      },
+      "legacy-t4": {
+        "run_time_ratio": 1.0259457468809448,
+        "ratio_95pct_ci": [
+          1.002454942795612,
+          1.1766221260688712
+        ],
+        "run_delta_ms": 5.4173925,
+        "cpu_ratio": 1.074668666377197
+      },
+      "d8t4-owner": {
+        "run_time_ratio": 0.9880876861371786,
+        "ratio_95pct_ci": [
+          0.9166767605357089,
+          1.1063218875016443
+        ],
+        "run_delta_ms": -3.1631155,
+        "cpu_ratio": 0.9918930925015876
+      }
+    },
+    "legacy-t4": {
+      "wall_s": 0.7132500528823584,
+      "cpu_s": 1.1121555,
+      "peak_rss_bytes": 69097472.0,
+      "run_s": 0.2292444165,
+      "tick_percentiles_ns": {},
+      "growth": {},
+      "legacy-t4": {
+        "run_time_ratio": 1.0,
+        "ratio_95pct_ci": [
+          1.0,
+          1.0
+        ],
+        "run_delta_ms": 0.0,
+        "cpu_ratio": 1.0
+      }
+    }
+  },
+  "idle512": {
+    "d8t4-owner": {
+      "wall_s": 1.3713693474419415,
+      "cpu_s": 3.002805,
+      "peak_rss_bytes": 166264832.0,
+      "run_s": 0.7503643425,
+      "tick_percentiles_ns": {
+        "tick_p50_ns": 1340292.0,
+        "tick_p95_ns": 8471488.5,
+        "tick_p99_ns": 17829072.0
+      },
+      "growth": {
+        "growth_submitted": 256.0,
+        "growth_published": 247.0,
+        "growth_sampled": 1087598.0,
+        "growth_proposals": 6745.0,
+        "growth_accepted": 6458.0,
+        "growth_rejected": 91.0,
+        "growth_clamped": 91.0,
+        "growth_stockAdded": 6458.0,
+        "growth_tilesAdded": 209.0,
+        "growth_maxPending": 9.0,
+        "growth_maxProposalBytes": 9216.0,
+        "growth_computeNs": 108763637.5,
+        "growth_queueNs": 4457616809.0,
+        "growth_waitNs": 38770883.5,
+        "growth_publicationNs": 6165620.0,
+        "growth_delay": 8.0
+      },
+      "legacy-t4": {
+        "run_time_ratio": 1.064848950046664,
+        "ratio_95pct_ci": [
+          0.974496326139205,
+          1.1757982106564802
+        ],
+        "run_delta_ms": 45.072486,
+        "cpu_ratio": 1.02947387134089
+      },
+      "d8t4-owner": {
+        "run_time_ratio": 1.0,
+        "ratio_95pct_ci": [
+          1.0,
+          1.0
+        ],
+        "run_delta_ms": 0.0,
+        "cpu_ratio": 1.0
+      }
+    },
+    "d8t4-shared": {
+      "wall_s": 1.3244091677479446,
+      "cpu_s": 2.916138,
+      "peak_rss_bytes": 160534528.0,
+      "run_s": 0.7094903960000001,
+      "tick_percentiles_ns": {
+        "tick_p50_ns": 995114.0,
+        "tick_p95_ns": 10147153.0,
+        "tick_p99_ns": 17181381.0
+      },
+      "growth": {
+        "growth_submitted": 256.0,
+        "growth_published": 247.0,
+        "growth_sampled": 1087598.0,
+        "growth_proposals": 6745.0,
+        "growth_accepted": 6458.0,
+        "growth_rejected": 91.0,
+        "growth_clamped": 91.0,
+        "growth_stockAdded": 6458.0,
+        "growth_tilesAdded": 209.0,
+        "growth_maxPending": 9.0,
+        "growth_maxProposalBytes": 9216.0,
+        "growth_computeNs": 113679845.0,
+        "growth_queueNs": 2436901656.0,
+        "growth_waitNs": 83603.5,
+        "growth_publicationNs": 5816307.5,
+        "growth_delay": 8.0
+      },
+      "legacy-t4": {
+        "run_time_ratio": 0.9897414983160473,
+        "ratio_95pct_ci": [
+          0.9284163431145611,
+          1.105995514676421
+        ],
+        "run_delta_ms": -6.9533475000000005,
+        "cpu_ratio": 1.0012876696998207
+      },
+      "d8t4-owner": {
+        "run_time_ratio": 0.9415989519012948,
+        "ratio_95pct_ci": [
+          0.8561600125053049,
+          1.0004866888472723
+        ],
+        "run_delta_ms": -44.174481,
+        "cpu_ratio": 0.9627885254536461
+      }
+    },
+    "legacy-t4": {
+      "wall_s": 1.360684636514634,
+      "cpu_s": 2.8986105,
+      "peak_rss_bytes": 148080640.0,
+      "run_s": 0.7074242935,
+      "tick_percentiles_ns": {},
+      "growth": {},
+      "legacy-t4": {
+        "run_time_ratio": 1.0,
+        "ratio_95pct_ci": [
+          1.0,
+          1.0
+        ],
+        "run_delta_ms": 0.0,
+        "cpu_ratio": 1.0
+      }
+    }
+  }
+}

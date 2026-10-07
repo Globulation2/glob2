@@ -1,0 +1,20 @@
+{
+  "baseline_revision": "d42d3e512",
+  "initial_revision": "a60018aa0066d1f4dc5e733cb86d0085b80bd604",
+  "baseline_binary_sha256": "7c588ca2110be077a7be19e4f5d21a2e991315b07b5165558f5b7d63f20f58cb",
+  "platform": "Linux-7.0.0-31-generic-x86_64-with-glibc2.43",
+  "compiler": "g++ (Ubuntu 15.2.0-16ubuntu1) 15.2.0",
+  "build": "CCACHE=1 GLOB2_SDL3_PREFIX=/tmp/glob2-sdl3/prefix GLOB2_RECORDING_PREFIX=/home/bradley/glob2-terrain-art2/build/linux/client/release/recording/prefix scons -j12 release=1 server=0 optimized_assets=0",
+  "note": "Original baseline build was refreshed after integrating current-master executor/presentation and AI-delay changes. Timing must use the current-master baseline. Source paths and binaries are preserved locally; do not count exploratory timings during builds as acceptance evidence.",
+  "candidate_revision": "ad1a109a1",
+  "candidate_binary_sha256": "0daf730a8e87bd0bbee1daa7fb269ac9d4c02ac583dc7ebc29283ab89b31f0f3",
+  "baseline_probe_note": "Archive from d42d3e512, built with a local test registry restriction to ScriptSessionTest.cpp and ImageAssetTest.cpp. TestMain git provenance searches upward into the parent candidate checkout and is misleading for this archive; source files and production objects remain from the baseline archive. Both observed failures reproduce.",
+  "final_revision": "e939560153dfb244638875d17b8d80cd3b30be77",
+  "final_binary_sha256": "1ada564b4abd014b3dd354753e4812c8fcfaf08d835ae139e174b7e944cf2fcf",
+  "integration_note": "Cherry-picked master abort-session fix 591e40ecb. Fourteen final delay-8/thread-4 world traces match the pre-integration measured revision exactly. Full timing matrix identifies its pre-integration binary. Final default timing and component/ecology checks use the integrated build.",
+  "validated_master_revision": "591e40ecb7be98fc7f4e5327234d27bb13934c17",
+  "final_test_binary_sha256": "2f6a99cf2dd9443cfb7549e7a84a869899a4c79054e3c63e78f62b3b3ef3d39b",
+  "full_timing_runs": 2156,
+  "final_default_timing_runs": 231,
+  "checksum_runs": 182
+}

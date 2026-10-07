@@ -1,0 +1,42 @@
+Baseline source: git archive d42d3e512, extracted into artifacts/resource-growth/baseline-src.
+Initial pre-integration revision recorded: a60018aa0066d1f4dc5e733cb86d0085b80bd604.
+Baseline was refreshed to d42d3e512 when integrating shared executor/presentation and default AI-delay changes.
+
+Build baseline and candidate with the same environment and options:
+CCACHE=1 GLOB2_SDL3_PREFIX=/tmp/glob2-sdl3/prefix GLOB2_RECORDING_PREFIX=/home/bradley/glob2-terrain-art2/build/linux/client/release/recording/prefix scons -j12 release=1 server=0 optimized_assets=0 tests build/linux/client/release/src/glob2
+The baseline game executable is preserved as baseline-glob2; its hash is in build-provenance.json.
+All native runs used LD_LIBRARY_PATH=/tmp/glob2-sdl3/prefix/lib.
+
+Full candidate checksum matrix (pre-abort-fix feature revision):
+python3 test/benchmark_resource_growth.py build/linux/client/release/src/glob2 artifacts/resource-growth/fixtures/manifest-256.json --verify --output artifacts/resource-growth/determinism-final
+
+Full paired timing matrix (one warm-up + ten measured rounds):
+python3 test/benchmark_resource_growth.py build/linux/client/release/src/glob2 artifacts/resource-growth/fixtures/manifest-256.json --baseline artifacts/resource-growth/baseline-glob2 --output artifacts/resource-growth/engine-timing
+
+Final integration checks after cherry-picking master's abort-session fix:
+GLOB2_SNAPSHOT_VERIFY=1 python3 test/run_tests.py --binary engine --filter 'ResourceGrowth/*' --filter 'JavaScriptCompatibility/*' --filter 'JavaScriptSession/*' --filter 'SharedWorkerLifecycle/*' --filter 'TeamStatsSave/*' --filter 'TurnEngineHarness/the committed*' --no-display -j6 --junit artifacts/resource-growth/focused-final.xml --artifacts artifacts/resource-growth/focused-final
+python3 test/benchmark_resource_growth.py build/linux/client/release/src/glob2 artifacts/resource-growth/fixtures/manifest-256.json --verify --delays 8 --threads 4 --output artifacts/resource-growth/verification-integration
+All fourteen integration world traces also compare byte-for-byte equal to their pre-integration counterparts.
+
+Final component and ecology benchmark (output variables resolved to absolute paths):
+GLOB2_GROWTH_BENCHMARK_OUTPUT=$PWD/artifacts/resource-growth/component.json GLOB2_GROWTH_ECOLOGY_OUTPUT=$PWD/artifacts/resource-growth/ecology.json python3 test/run_tests.py --binary engine --filter 'ResourceGrowthBenchmark/*' --tag benchmark --no-display -j1 --timeout 1800 --junit artifacts/resource-growth/component-final.xml --artifacts artifacts/resource-growth/component-final
+
+Final paired default configuration timing:
+python3 test/benchmark_resource_growth.py build/linux/client/release/src/glob2 artifacts/resource-growth/fixtures/manifest-256.json --baseline artifacts/resource-growth/baseline-glob2 --delays 8 --threads 4 --output artifacts/resource-growth/engine-default-final
+
+Broad pre-integration compatibility run:
+GLOB2_SNAPSHOT_VERIFY=1 python3 test/run_tests.py --coverage-profile compatibility --no-display -j8 --timeout 180 --junit artifacts/resource-growth/compatibility-final.xml --artifacts artifacts/resource-growth/compatibility-final
+
+Other checks:
+python3 test/check_sim_revision.py --base origin/master
+python3 -m unittest discover -s test/build_system -p test_ci_policy.py
+GCC 13 and Clang 18 -fsyntax-only on ResourceGrowth.cpp, ResourceGrowthTest.cpp and ResourceGrowthBenchmark.cpp, using the exact SCons include/define flags (commands retained in their logs).
+git diff --check
+git merge-tree --write-tree HEAD origin/master
+
+Baseline failure probes:
+The baseline archive's local test registry was narrowed to ScriptSessionTest.cpp, ScriptSimulationTest.cpp and ImageAssetTest.cpp, then its glob2-engine-tests target was built with identical flags. No baseline simulation sources were modified. The archive has no .git directory: embedded TestMain git provenance incorrectly walks to the parent candidate checkout. See baseline-probe-sources.json for relevant baseline source hashes checked against d42d3e512.
+python3 artifacts/resource-growth/baseline-src/test/run_tests.py --binary engine --no-display --filter 'JavaScriptSession/*' --filter 'ImageAssets/*' --junit artifacts/resource-growth/baseline-probes.xml
+python3 artifacts/resource-growth/baseline-src/test/run_tests.py --binary engine --no-display --filter 'JavaScriptSimulation/*conversion boundary*' --junit artifacts/resource-growth/baseline-conversion.xml
+
+Playable legacy/delayed saves use the ai256 initial save, 256 ticks, fixed gradient/AI settings, --save final and --telemetry team-timeline. These are generated examples, not maintainer play acceptance.
