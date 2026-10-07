@@ -171,7 +171,7 @@ class AndroidRetrievalTests(unittest.TestCase):
 
 class SaveHeaderTests(unittest.TestCase):
     @staticmethod
-    def fixture(version, resource_declarations=None, required=()):
+    def fixture(version, resource_declarations=None, required=(), ai_delay=0):
         def text(value):
             encoded = value.encode('utf8')
             return struct.pack('>I', len(encoded)) + encoded
@@ -187,7 +187,10 @@ class SaveHeaderTests(unittest.TestCase):
             result += struct.pack('>I', len(required))
             result += b''.join(text(key) for key in required)
         result += bytes(40)  # Two BaseTeam headers.
-        result += bytes(5) + struct.pack('>I', 3)  # Three players in GameHeader.
+        result += bytes(5)
+        if version >= 143:
+            result += bytes([ai_delay])
+        result += struct.pack('>I', 3)  # Three players in GameHeader.
         return gzip.compress(result)
 
     def parse(self, value):
@@ -197,10 +200,14 @@ class SaveHeaderTests(unittest.TestCase):
             return save_header(path)
 
     def test_legacy_and_resource_headers_have_correct_player_offsets(self):
-        for version in (125, 137, 138, 139, 140):
+        for version in (125, 137, 138, 139, 140, 142, 143):
             self.assertEqual(self.parse(self.fixture(version)), (0, version, 2, 3))
         declarations = [('custom-crops', 'Custom crops', 'Enable experimental multi-material crops.')]
         self.assertEqual(self.parse(self.fixture(140, declarations, ['custom-crops'])), (0, 140, 2, 3))
+
+    def test_ai_delay_does_not_shift_player_count(self):
+        for delay in (0, 1, 8):
+            self.assertEqual(self.parse(self.fixture(143, ai_delay=delay)), (0, 143, 2, 3))
 
     def test_resource_header_metadata_bounds_are_checked(self):
         for declarations, required in [([('x' * 129, 'Label', 'Help')], []),

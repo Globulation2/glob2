@@ -87,7 +87,9 @@ def save_header(path):
             game_header += 4 + length
             assert game_header <= len(data), 'truncated resource experiment key'
     game_header += 20 * teams
-    players = struct.unpack_from('>I', data, game_header + 5)[0]
+    # Version 143 inserts uint8 aiOrderDelay after latency and order rate.
+    players_offset = game_header + 5 + (1 if minor >= 143 else 0)
+    players = struct.unpack_from('>I', data, players_offset)[0]
     assert 0 < teams <= 32 and 0 < players <= 32
     return major, minor, teams, players
 
