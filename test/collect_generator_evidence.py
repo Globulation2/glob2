@@ -33,13 +33,36 @@ def rows(text, platform_tag):
 
 def check_inventory(observed, reference):
     if observed.keys() != reference.keys():
-        raise ValueError('Generator inventory differs from current reference (missing or extra rows)')
+        raise ValueError(f'Generator inventory differs: missing={sorted(reference.keys() - observed.keys())}, extra={sorted(observed.keys() - reference.keys())}')
+
+
+def inventory(text, platform_tag):
+    result = {}
+    for line in text.splitlines():
+        if not line.startswith(platform_tag + ' '):
+            continue
+        fields = line.split()
+        if len(fields) != 7:
+            raise ValueError(f'Malformed generator inventory row: {line}')
+        key = tuple(int(value) for value in fields[1:])
+        if key in result:
+            raise ValueError(f'Repeated generator inventory row: {line}')
+        result[key] = None
+    if not result:
+        raise ValueError(f'No generator inventory for {platform_tag}')
+    return result
+
+
+def require_reference_inventory(requests, reference):
+    missing = reference.keys() - requests.keys()
+    if missing:
+        raise ValueError(f'Generator inventory omits committed reference rows: {sorted(missing)}')
 
 
 def compare(first, second):
     a = json.loads((first / 'manifest.json').read_text())
     b = json.loads((second / 'manifest.json').read_text())
-    for key in ('platform', 'source', 'expected_tables'):
+    for key in ('platform', 'source', 'expected_tables', 'inventory_sha256'):
         if a[key] != b[key]:
             raise ValueError(f'Generator evidence inputs differ: {key}')
     observed = rows((first / 'rows.txt').read_text(), a['platform'])
@@ -67,6 +90,15 @@ def collect(binary, output, platform_tag):
     binary_before = digest(binary)
     observed = None
     commands = []
+    with tempfile.TemporaryDirectory(prefix='glob2-generator-inventory-') as profile:
+        command = [str(binary), profile, '--inventory']
+        commands.append(command)
+        with (output / 'inventory.log').open('w') as log:
+            subprocess.run(command, cwd=ROOT, check=True, timeout=120, stdout=log,
+                           stderr=subprocess.STDOUT, env=dict(os.environ,
+                           SDL_VIDEODRIVER='dummy', SDL_AUDIODRIVER='dummy'))
+    requests = inventory((output / 'inventory.log').read_text(), platform_tag)
+    require_reference_inventory(requests, reference)
     for index in range(2):
         with tempfile.TemporaryDirectory(prefix='glob2-generator-evidence-') as profile:
             command = [str(binary), profile, '--print']
@@ -76,7 +108,7 @@ def collect(binary, output, platform_tag):
                                stderr=subprocess.STDOUT, env=dict(os.environ,
                                SDL_VIDEODRIVER='dummy', SDL_AUDIODRIVER='dummy'))
         current = rows((output / f'print-{index}.log').read_text(), platform_tag)
-        check_inventory(current, reference)
+        check_inventory(current, requests)
         if observed is not None and current != observed:
             raise ValueError('Fresh-process generator fingerprints differ')
         observed = current
@@ -96,6 +128,7 @@ def collect(binary, output, platform_tag):
         source=source, platform=platform_tag, host=platform.platform(), host_compiler=compiler,
         source_binary_association='unverified by collector; inspect the producing build job',
         binary_sha256=binary_before, expected_tables=before, commands=commands,
+        inventory_sha256=hashlib.sha256(json.dumps(sorted(requests)).encode()).hexdigest(),
         row_count=len(observed), acceptance='unapproved; same-host fresh-process repeatability only',
         github_run_id=os.environ.get('GITHUB_RUN_ID'), github_job=os.environ.get('GITHUB_JOB'),
     ), indent=2) + '\n')

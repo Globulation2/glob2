@@ -31,6 +31,23 @@ class GeneratorEvidenceTest(unittest.TestCase):
         with self.assertRaises(ValueError):
             evidence.check_inventory({}, reference)
 
+    def test_complete_inventory_includes_unapproved_extended_team_cases(self):
+        # The current Linux epoch table omits these valid 13--16 team requests.
+        committed = evidence.rows('linux-x86_64 59 2 9 9 12 1 ok 123\n', 'linux-x86_64')
+        requests = evidence.inventory('macos-arm64 59 2 9 9 12 1\nmacos-arm64 59 2 9 9 13 1\n', 'macos-arm64')
+        evidence.require_reference_inventory(requests, committed)
+        observed = evidence.rows('macos-arm64 59 2 9 9 12 1 ok 456\nmacos-arm64 59 2 9 9 13 1 ok 789\n', 'macos-arm64')
+        evidence.check_inventory(observed, requests)
+        with self.assertRaisesRegex(ValueError, 'missing='):
+            evidence.check_inventory(committed, requests)
+        with self.assertRaisesRegex(ValueError, 'extra='):
+            evidence.check_inventory(observed | {(59, 2, 9, 9, 17, 1): ('ok', 1)}, requests)
+        with self.assertRaisesRegex(ValueError, 'omits committed'):
+            evidence.require_reference_inventory({}, committed)
+        for malformed in ('', 'macos-arm64 59 2 9 9 12\n', 'macos-arm64 59 2 9 9 12 1\n' * 2):
+            with self.assertRaises(ValueError):
+                evidence.inventory(malformed, 'macos-arm64')
+
     def test_collection_rejects_binary_mutation_and_cleans_profiles(self):
         for mutate in (False, True):
             with self.subTest(mutate=mutate), tempfile.TemporaryDirectory() as directory:
@@ -49,8 +66,8 @@ class GeneratorEvidenceTest(unittest.TestCase):
                 def run(command, **options):
                     profiles.append(Path(command[1]))
                     self.assertTrue(profiles[-1].exists())
-                    self.assertEqual(command[2], '--print')
-                    options['stdout'].write('macos-arm64 1 2 8 8 4 1 ok 456\n')
+                    self.assertIn(command[2], ('--inventory', '--print'))
+                    options['stdout'].write('macos-arm64 1 2 8 8 4 1' + ('\n' if command[2] == '--inventory' else ' ok 456\n'))
                     if mutate:
                         binary.write_bytes(b'changed binary')
                     return subprocess.CompletedProcess(command, 0)
@@ -74,7 +91,7 @@ class GeneratorEvidenceTest(unittest.TestCase):
     def test_independent_comparison_requires_same_inputs_and_every_fingerprint(self):
         with tempfile.TemporaryDirectory() as directory:
             first, second = Path(directory) / 'first', Path(directory) / 'second'
-            manifest = dict(platform='macos-arm64', source={'revision': 'same'}, expected_tables={'table': 'hash'})
+            manifest = dict(platform='macos-arm64', source={'revision': 'same'}, expected_tables={'table': 'hash'}, inventory_sha256='inventory')
             for path in (first, second):
                 path.mkdir()
                 (path / 'manifest.json').write_text(json.dumps(manifest))
@@ -84,7 +101,7 @@ class GeneratorEvidenceTest(unittest.TestCase):
             with self.assertRaises(ValueError):
                 evidence.compare(first, second)
             (second / 'rows.txt').write_text((first / 'rows.txt').read_text())
-            for key in ('platform', 'source', 'expected_tables'):
+            for key in ('platform', 'source', 'expected_tables', 'inventory_sha256'):
                 (second / 'manifest.json').write_text(json.dumps(dict(manifest, **{key: 'changed'})))
                 with self.assertRaises(ValueError):
                     evidence.compare(first, second)
