@@ -136,7 +136,7 @@ MapEdit::MapEdit()
         const auto group = TerrainGroup(g);
         const auto &definition = terrainGroupDefinition(group);
         if (!definition.paletteVisible || terrainGroupIsClassic(group)) continue;
-        const auto enabled = offeredTerrainBrushes(game.map.terrainRegistry(), group);
+        const auto enabled = offeredTerrainBrushes(game.map.terrainRegistry(), group, experimentGate());
         if (enabled.empty()) continue;
         const int slot = int(additionalTerrainSelectors.size());
         const widgetRectangle area(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+32*(slot%4)+decX, 286+38*(slot/4), 32, 32);

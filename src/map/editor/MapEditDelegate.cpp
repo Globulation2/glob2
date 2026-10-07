@@ -179,7 +179,8 @@ void MapEdit::delegateMenu(SDL_Event& event)
 		{
 			// Looking at the palette and cancelling keeps the brush the author had.
 			performAction("switch to terrain view");
-			beginTerrainPlacement(brushBeforePalette, TerrainPlacementMode::BaseTerrain);
+			beginTerrainPlacement(brushBeforePalette, TerrainSelector::isResource(brushBeforePalette)
+				? TerrainPlacementMode::Resource : TerrainPlacementMode::BaseTerrain);
 		}
 		brushBeforePalette = TerrainSelector::NoTerrain;
 	}

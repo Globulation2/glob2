@@ -34,17 +34,18 @@ void MapEdit::beginTerrainPlacement(TerrainSelector::TerrainType type, TerrainPl
 		if (!game.map.validTerrainType(material) ||
 			!game.map.terrainPresentation(material).editorSelectable)
 			return;
-		if (const auto requirement=terrainExperiment(material);
-            requirement && !globalContainer->settings.experiments.has(*requirement)) return;
+		if (const auto requirement=terrainExperimentKey(material);
+            requirement && !experimentEnabled(*requirement)) return;
         type = TerrainSelector::selectorFor(material);
     }
     else
     {
         const auto resource = TerrainSelector::resourceType(type, game.map.resourceRegistry());
         if (!game.map.resourceRegistry().valid(resource)) return;
-        const auto& requirement = game.map.resourceRegistry().requiredExperiment(resource);
-        if (!requirement.empty() && !globalContainer->settings.experiments.has(requirement) &&
-            !game.gameHeader.getExperiments().has(requirement)) return;
+        if (!experimentEnabled(game.map.resourceRegistry().requiredExperiment(resource))) return;
+        // Legacy selectors (Wheat..PruneTree) and registry selectors name the same
+        // brush: keep one canonical value so every presentation highlights it.
+        type = TerrainSelector::selectorForResource(resource);
     }
 	performAction("unselect");
 	terrainType=type;
@@ -70,9 +71,35 @@ bool MapEdit::performTerrainAction(const std::string& action, float relMouseX, f
         if (id) beginTerrainPlacement(TerrainSelector::selectorForResource(*id), TerrainPlacementMode::Resource);
         return true;
     }
+    if (action.starts_with("select terrain "))
+    {
+        // Registry keys address built-in and imported types alike.
+        if (const auto type = game.map.terrainRegistry().find(action.substr(15)))
+            beginTerrainPlacement(TerrainSelector::selectorFor(*type), TerrainPlacementMode::BaseTerrain);
+        return true;
+    }
+    // Legacy resource aliases first: an imported terrain named "stone" or "wheat"
+    // must not take over these actions.
+    {
+        static constexpr std::pair<const char*, TerrainSelector::TerrainType> legacyResources[] = {
+            {"select wheat", TerrainSelector::Wheat}, {"select trees", TerrainSelector::Trees},
+            {"select stone", TerrainSelector::Stone}, {"select algae", TerrainSelector::Algae},
+            {"select papyrus", TerrainSelector::Papyrus},
+            {"select cherry tree", TerrainSelector::CherryTree}, {"select cherry", TerrainSelector::CherryTree},
+            {"select orange tree", TerrainSelector::OrangeTree}, {"select orange", TerrainSelector::OrangeTree},
+            {"select prune tree", TerrainSelector::PruneTree}, {"select prune", TerrainSelector::PruneTree}};
+        for (const auto& [name, selector] : legacyResources)
+            if (action == name)
+            {
+                beginTerrainPlacement(selector, TerrainPlacementMode::Resource);
+                return true;
+            }
+    }
+    // "select <name>" for the built-in types only (grass, sand, water, road, ...);
+    // imported types are addressed by "select terrain <key>".
     if (action.starts_with("select "))
     {
-        for (unsigned id=0; id<game.map.terrainRegistry().size(); ++id)
+        for (unsigned id=0; id<TERRAIN_COUNT && id<game.map.terrainRegistry().size(); ++id)
         {
             const auto type = static_cast<::TerrainType>(id);
 			const auto &presentation = game.map.terrainPresentation(type);
@@ -161,7 +188,7 @@ bool MapEdit::performTerrainAction(const std::string& action, float relMouseX, f
 	}
 	else if(action=="select farm zone")
 	{
-		if(farmingZone)
+		if(experimentEnabled(experimentDefinition(ExperimentId::FarmAreas).key))
 			beginZonePlacement(FarmAreaBrush);
 	}
 	else if(action=="handle zone click")
@@ -190,38 +217,6 @@ bool MapEdit::performTerrainAction(const std::string& action, float relMouseX, f
 		resetPlacementTracking();
 	}
 
-	else if(action=="select wheat")
-	{
-		beginTerrainPlacement(TerrainSelector::Wheat, TerrainPlacementMode::Resource);
-	}
-	else if(action=="select trees")
-	{
-		beginTerrainPlacement(TerrainSelector::Trees, TerrainPlacementMode::Resource);
-	}
-	else if(action=="select stone")
-	{
-		beginTerrainPlacement(TerrainSelector::Stone, TerrainPlacementMode::Resource);
-	}
-	else if(action=="select algae")
-	{
-		beginTerrainPlacement(TerrainSelector::Algae, TerrainPlacementMode::Resource);
-	}
-	else if(action=="select papyrus")
-	{
-		beginTerrainPlacement(TerrainSelector::Papyrus, TerrainPlacementMode::Resource);
-	}
-	else if(action=="select cherry tree")
-	{
-		beginTerrainPlacement(TerrainSelector::CherryTree, TerrainPlacementMode::Resource);
-	}
-	else if(action=="select orange tree")
-	{
-		beginTerrainPlacement(TerrainSelector::OrangeTree, TerrainPlacementMode::Resource);
-	}
-	else if(action=="select prune tree")
-	{
-		beginTerrainPlacement(TerrainSelector::PruneTree, TerrainPlacementMode::Resource);
-	}
 	else if(action=="select delete objects")
 	{
 		performAction("unselect");

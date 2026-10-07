@@ -5750,3 +5750,19 @@ FFmpeg недоступний, тому запис вимкнено. Устан�
 
 [terrain palette experiments hint]
 
+[brush valid on %0]
+
+[brush valid nowhere]
+
+[brush requires experiment %0]
+
+[brush resources custom]
+
+[brush section zones]
+
+[brush section areas]
+
+[brush section tools]
+
+[brush clearing area]
+

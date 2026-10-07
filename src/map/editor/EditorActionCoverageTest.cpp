@@ -473,11 +473,15 @@ TEST_SUITE("EditorActionCoverage")
         editor.beginTerrainPlacement(static_cast<TerrainSelector::TerrainType>(TerrainSelector::RegisteredBegin+GRASS),
             MapEdit::TerrainPlacementMode::BaseTerrain);
         CHECK(editor.terrainType==TerrainSelector::Grass);
+        // Legacy resource selectors normalise to the registry selector, so the
+        // side panel, palettes and actions share one canonical brush.
+        const auto wheat=TerrainSelector::selectorForResource(*editor.game.map.resourceRegistry().find("wheat"));
         editor.performAction("select wheat");
-        CHECK(editor.terrainType==TerrainSelector::Wheat);
+        CHECK(editor.terrainType==wheat);
+        CHECK(editor.currentBrushId()=="resource/wheat");
         CHECK(editor.brush.addRemoveEnabled);
         editor.beginTerrainPlacement(TerrainSelector::Wheat,MapEdit::TerrainPlacementMode::BaseTerrain);
-        CHECK(editor.terrainType==TerrainSelector::Wheat);
+        CHECK(editor.terrainType==wheat);
     }
 
 	TEST_CASE("catalogue groups get side-panel selectors that open the palette at their section [display][artifacts]")
@@ -536,14 +540,17 @@ TEST_SUITE("EditorActionCoverage")
 		editor.terrainPalette->finish(-1);
 		editor.delegateMenu(poll);
 		CHECK_FALSE(editor.terrainPalette);
-		// Unknown group keys open unfocused. Opening the palette clears the brush
-		// like the other dialogs, and cancelling leaves nothing selected.
+		// Cancelling the palette restores the brush the author had before opening it.
+		CHECK(editor.terrainType==TerrainSelector::selectorFor(HEDGE));
+		// Unknown group keys open unfocused; cancelling restores resource brushes too.
+		editor.performAction("select wheat");
 		editor.performAction("open terrain palette nonsense");
 		REQUIRE(editor.terrainPalette);
 		CHECK(editor.terrainPalette->focusedGroup()==-1);
+		CHECK(editor.currentBrushId().empty());
 		editor.terrainPalette->finish(-1);
 		editor.delegateMenu(poll);
-		CHECK(editor.terrainType==TerrainSelector::NoTerrain);
+		CHECK(editor.currentBrushId()=="resource/wheat");
 	}
 	TEST_CASE("custom terrain imports palettes and saved maps work on desktop and phone "
 			  "[display][artifacts]")

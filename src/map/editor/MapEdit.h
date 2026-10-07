@@ -9,6 +9,8 @@
 #include <utility>
 
 #include "Brush.h"
+#include "BrushCatalog.h"
+#include "BrushSwatches.h"
 #include "TerrainPresentation.h"
 #include "GAGSys.h"
 #include "LoadSaveDialog.h"
@@ -509,6 +511,42 @@ public:
 	///Game::ViewState. Owned here (not on Game) and passed into game.drawMap.
 	///The editor only ever uses selectedUnit.
 	Game::ViewState view;
+
+	// --- WS-A brush catalogue ---
+	// One brush model for every presentation; see BrushCatalog.h for entry ids
+	// and actions. The catalogue is rebuilt lazily whenever the map's terrain or
+	// resource definitions, the enabled experiments or the building catalog change.
+	const std::vector<BrushGroup>& brushCatalog();
+	// Increases whenever brushCatalog() content may have changed; presentations
+	// rebuild their cards when it differs from the value they last saw.
+	std::uint64_t catalogRevision();
+	// The catalogue entry with this id, or nullptr.
+	const BrushEntry* findBrush(std::string_view id);
+	// Catalogue id of the active brush ("terrain/grass", "resource/wheat",
+	// "building/swarm", "zone/guard", "tool/delete", ...), empty when nothing is
+	// selected. Presentations highlight the entry whose id matches.
+	std::string currentBrushId() const;
+	// Whether the edited map may use an experiment: switched on in the player's
+	// settings or already carried by the map's game header.
+	bool experimentEnabled(const std::string& key) const;
+	// Carries the experiment in this map's game header, marks the map modified and
+	// refreshes the catalogue. Returns false for keys the map cannot carry.
+	bool enableExperimentForMap(const std::string& key);
+	// The shared swatch cache, bound to the map's current registries.
+	BrushSwatches& brushSwatches();
+private:
+	ExperimentGate experimentGate() const;
+	BrushCatalogInputs brushCatalogInputs() const;
+	std::string brushCatalogSignature() const;
+	// Maps legacy resource selectors (Wheat..PruneTree) and terrain aliases to the
+	// canonical selector, so equal brushes compare equal.
+	TerrainSelector::TerrainType canonicalSelector(TerrainSelector::TerrainType type) const;
+	std::vector<BrushGroup> brushCatalogCache;
+	std::string brushCatalogKey;
+	std::uint64_t brushCatalogRevision = 0;
+	std::unique_ptr<BrushSwatches> swatches;
+public:
+	// --- end WS-A brush catalogue ---
 
 	friend class MapEditorWidget;
 	friend class BuildingSelectorWidget;
