@@ -112,7 +112,7 @@ export class LeaderElection {
     if (!this.leading || this.leading.signal.aborted) {
       throw new LeaderLostError(`not leading ${this.options.name}`);
     }
-    if (Date.now() - this.lastVerified <= maxAgeMs) return;
+    if (maxAgeMs > 0 && Date.now() - this.lastVerified <= maxAgeMs) return;
     this.checking ??= this.check().finally(() => {
       this.checking = undefined;
     });
