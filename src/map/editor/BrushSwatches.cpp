@@ -1,0 +1,203 @@
+// SPDX-License-Identifier: GPL-3.0-or-later
+#include "BrushSwatches.h"
+#include "GlobalContainer.h"
+#include "GraphicContext.h"
+#include "map/TerrainRegistry.h"
+#include "render/ResourceSprites.h"
+#include "render/terrain/TerrainCompositor.h"
+#include "resource/ResourceRegistry.h"
+#include <algorithm>
+
+using GAGCore::DrawableSurface;
+
+BrushSwatches::BrushSwatches() = default;
+BrushSwatches::~BrushSwatches() = default;
+
+void BrushSwatches::bind(std::shared_ptr<const TerrainRegistry> terrain,
+						 std::shared_ptr<const ResourceRegistry> resources)
+{
+	std::string next = (terrain ? terrain->digest() : std::string()) + "/" + (resources ? resources->digest() : std::string());
+	terrainRegistry = std::move(terrain);
+	resourceRegistry = std::move(resources);
+	if (next != digest)
+	{
+		digest = std::move(next);
+		clear();
+	}
+}
+
+void BrushSwatches::clear()
+{
+	cache.clear();
+	prepared = false;
+}
+
+bool BrushSwatches::usable()
+{
+	if (!globalContainer || globalContainer->runNoX || !globalContainer->gfx || !terrainRegistry)
+		return false;
+	// Composed pixels outlive a device reset, but drop them anyway so a lost
+	// context never leaves stale textures bound to cached swatches.
+	const auto generation = GAGCore::GraphicContext::renderResetGeneration();
+	if (generation != resetGeneration)
+	{
+		resetGeneration = generation;
+		clear();
+	}
+	if (!prepared)
+	{
+		// The same texture set the map renderer uses, so swatches match the map
+		// and the renderer is not forced to reload its sources afterwards.
+		const bool gpu = globalContainer->gfx->getOptionFlags() &
+						 (GAGCore::GraphicContext::USEGPU | GAGCore::GraphicContext::PORTABLEGPU);
+		globalContainer->terrainCompositor().prepare(gpu, 0);
+		prepared = true;
+	}
+	return true;
+}
+
+GAGCore::DrawableSurface *BrushSwatches::get(const BrushEntry &entry, int px)
+{
+	switch (entry.swatch.kind)
+	{
+	case BrushSwatch::Kind::Terrain:
+		return terrain(entry.swatch.terrain, px);
+	case BrushSwatch::Kind::Resource:
+		return resource(entry.swatch.resource, entry.swatch.terrain, px);
+	default:
+		return nullptr;
+	}
+}
+
+GAGCore::DrawableSurface *BrushSwatches::terrain(TerrainType type, int px)
+{
+	if (px <= 0 || !usable() || !terrainRegistry->valid(type))
+		return nullptr;
+	const auto key = std::make_pair("terrain/" + std::to_string(unsigned(type)), px);
+	if (auto found = cache.find(key); found != cache.end())
+		return found->second.get();
+	auto surface = composeTerrain(type, px);
+	return cache.emplace(key, std::move(surface)).first->second.get();
+}
+
+GAGCore::DrawableSurface *BrushSwatches::resource(ResourceId id, TerrainType backdrop, int px)
+{
+	if (px <= 0 || !usable() || !resourceRegistry || !resourceRegistry->valid(id) || !terrainRegistry->valid(backdrop))
+		return nullptr;
+	const auto key = std::make_pair("resource/" + std::to_string(resourceIndex(id)) + "/" + std::to_string(unsigned(backdrop)), px);
+	if (auto found = cache.find(key); found != cache.end())
+		return found->second.get();
+	auto surface = composeResource(id, backdrop, px);
+	return cache.emplace(key, std::move(surface)).first->second.get();
+}
+
+namespace
+{
+// Every pixel opaque: presentations draw swatches over arbitrary backgrounds.
+void makeOpaque(DrawableSurface &surface)
+{
+	auto *sdl = surface.getSDLSurface();
+	if (!sdl || sdl->format != SDL_PIXELFORMAT_ARGB8888)
+		return;
+	for (int y = 0; y < sdl->h; ++y)
+	{
+		auto *row = reinterpret_cast<Uint32 *>(static_cast<unsigned char *>(sdl->pixels) + y * sdl->pitch);
+		for (int x = 0; x < sdl->w; ++x)
+			row[x] |= 0xff000000u;
+	}
+	surface.markPixelsChanged();
+}
+
+// The shared ocean exactly as Game::drawMapWater tiles it, at `scale` swatch
+// pixels per map pixel.
+void drawOcean(DrawableSurface &target, int size, int scale)
+{
+	auto *sprite = globalContainer->terrainWater;
+	if (!sprite)
+		return;
+	const int frame = TerrainOceanBackdrop.firstFrame;
+	auto *source = sprite->baseFrame(frame);
+	if (!source || !source->getSDLSurface())
+		source = sprite->nativeFrame(frame);
+	if (!source || !source->getSDLSurface())
+		return;
+	const int w = std::max(1, sprite->getW(frame) * scale), h = std::max(1, sprite->getH(frame) * scale);
+	for (int y = 0; y < size; y += h)
+		for (int x = 0; x < size; x += w)
+			target.drawSurface(x, y, w, h, source);
+}
+} // namespace
+
+std::unique_ptr<DrawableSurface> BrushSwatches::composeTerrain(TerrainType type, int px)
+{
+	auto &compositor = globalContainer->terrainCompositor();
+	const auto &catalog = compositor.catalog();
+	// Imported types draw with the built-in look they name.
+	const auto appearance = terrainRegistry->appearance(type);
+	const bool builtinLook = unsigned(appearance) < TERRAIN_COUNT;
+	const auto binding = builtinLook ? catalog.bindings.find(terrainPresentation(appearance).name) : catalog.bindings.end();
+	// Two by two map cells, as the map shows them at 100% zoom, at an integer
+	// scale at least as large as the swatch: neighbouring cells pick their own
+	// texture variants and the ocean shows its own variation.
+	const int scale = std::clamp((px + 63) / 64, 1, 8);
+	const int cell = 32 * scale, size = 2 * cell;
+	DrawableSurface base(size, size);
+	// An opaque floor in case artwork is missing: the material's preview colour,
+	// or the type's own saved colour.
+	const auto &colours = terrainRegistry->presentation(type);
+	GAGCore::Color fill(colours.preview.r, colours.preview.g, colours.preview.b);
+	if (binding != catalog.bindings.end())
+	{
+		const auto &material = catalog.materials[binding->second];
+		fill = GAGCore::Color(material.preview[0], material.preview[1], material.preview[2]);
+	}
+	base.drawFilledRect(0, 0, size, size, fill);
+	// The map draws the shared ocean beneath every swimmable cell; translucent
+	// water materials (and the ocean itself) read through it.
+	if (terrainRegistry->properties(type).swimmable || terrainRegistry->properties(appearance).swimmable ||
+		(binding != catalog.bindings.end() && catalog.materials[binding->second].ocean))
+		drawOcean(base, size, scale);
+	if (binding != catalog.bindings.end() && !catalog.materials[binding->second].ocean)
+	{
+		DrawableSurface texture(size, size);
+		TerrainVisual::Recipe recipe;
+		recipe.samples.fill(binding->second);
+		recipe.width = recipe.height = 2;
+		for (int y = 0; y < 2; ++y)
+			for (int x = 0; x < 2; ++x)
+			{
+				recipe.x = x;
+				recipe.y = y;
+				compositor.compose(recipe, texture.getSDLSurface(), x * cell, y * cell, scale);
+			}
+		texture.markPixelsChanged();
+		base.drawSurface(0, 0, &texture);
+	}
+	makeOpaque(base);
+	auto result = std::make_unique<DrawableSurface>(px, px);
+	result->drawSurface(0, 0, px, px, &base);
+	makeOpaque(*result);
+	return result;
+}
+
+std::unique_ptr<DrawableSurface> BrushSwatches::composeResource(ResourceId id, TerrainType backdrop, int px)
+{
+	auto result = std::make_unique<DrawableSurface>(px, px);
+	if (auto *ground = terrain(backdrop, px))
+		result->drawSurface(0, 0, ground);
+	const auto &presentation = resourceRegistry->presentation(id);
+	const auto &sprites = ResourceSprites::resolve(resourceRegistry);
+	auto *sprite = resourceIndex(id) < sprites.sprites.size() ? sprites.sprites[resourceIndex(id)] : nullptr;
+	if (sprite && !presentation.levels.empty())
+	{
+		// The fullest stage, the look an author expects of a freshly painted deposit.
+		const unsigned frame = presentation.frame(presentation.levels.back().stock, 0, 0, 0);
+		auto *source = sprite->baseFrame(frame);
+		if (!source || !source->getSDLSurface())
+			source = sprite->nativeFrame(frame);
+		if (source && source->getSDLSurface())
+			result->drawSurface(0, 0, px, px, source);
+	}
+	makeOpaque(*result);
+	return result;
+}

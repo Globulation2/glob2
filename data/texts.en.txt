@@ -5750,3 +5750,19 @@ Pick a brush. Groups share one set of rules; their members differ only in look.
 Algae grow
 [terrain palette experiments hint]
 Pick a brush. More terrain groups appear here once their experiments are enabled under Settings > Experiments.
+[brush valid on %0]
+Valid on: %0
+[brush valid nowhere]
+Cannot be placed on any terrain of this map
+[brush requires experiment %0]
+Requires the %0 experiment
+[brush resources custom]
+Imported resources
+[brush section zones]
+Zones
+[brush section areas]
+Areas
+[brush section tools]
+Tools
+[brush clearing area]
+Clearing area

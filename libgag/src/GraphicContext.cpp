@@ -593,6 +593,9 @@ int GraphicContext::maximumTextureSize() const
         return true;
     }
 
+	namespace { std::uint64_t renderResets = 0; }
+	std::uint64_t GraphicContext::renderResetGeneration() { return renderResets; }
+
 	void GraphicContext::translateMouseEvent(SDL_Event *event)
 	{
 		if (auto sample = scrollGesture(*event))
@@ -631,6 +634,7 @@ int GraphicContext::maximumTextureSize() const
             case SDL_EVENT_RENDER_DEVICE_RESET:
             case SDL_EVENT_RENDER_TARGETS_RESET:
                 if (_gc->renderer) _gc->renderer->reset();
+                ++renderResets;
                 break;
 			case SDL_EVENT_MOUSE_MOTION:
                 // SDL3 keeps all renderer events in window coordinates. Convert

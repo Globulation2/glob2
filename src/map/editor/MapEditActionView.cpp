@@ -130,15 +130,19 @@ bool MapEdit::performViewAction(const std::string& action, float relMouseX, floa
 	else if (action.starts_with("open terrain palette"))
 	{
 		// "open terrain palette <group>" opens scrolled to that catalogue group; the
-		// current brush stays highlighted in the palette.
-		const std::optional<::TerrainType> brush = TerrainSelector::isBaseTerrain(terrainType)
-			? std::optional(TerrainSelector::baseTerrain(terrainType)) : std::nullopt;
+		// current brush stays highlighted in the palette, and cancelling restores it
+		// (so it is captured before "unselect" clears it).
+		const std::string current = currentBrushId();
+		brushBeforePalette = terrainType;
 		performAction("unselect");
 		const std::string prefix = "open terrain palette";
 		const int focus = action.size() > prefix.size() + 1
 			? TerrainPaletteDialog::groupFor(action.substr(prefix.size() + 1)) : -1;
-		brushBeforePalette = terrainType;
-		terrainPalette = std::make_unique<TerrainPaletteDialog>(game.map.frozenTerrainRegistry(), brush, focus);
+		std::vector<BrushGroup> terrainGroups;
+		for (const auto &group : brushCatalog())
+			if (group.section == BrushSection::Terrain)
+				terrainGroups.push_back(group);
+		terrainPalette = std::make_unique<TerrainPaletteDialog>(std::move(terrainGroups), brushSwatches(), current, focus);
 		attachDialog(*terrainPalette);
 		terrainPalette->focusOnOpen();
 	}
