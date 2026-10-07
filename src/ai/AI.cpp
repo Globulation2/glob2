@@ -246,6 +246,9 @@ void AI::publishDecision(const AIEngine::Command& output)
 	// copies completed values and never visits mutable controller state.
 	if (output.telemetry && telemetrySeries) {
 		telemetrySeries->current = *output.telemetry; telemetrySeries->named = output.namedTelemetry;
+        // Published samples use the owner clock; field update times retain the
+        // observation clock of the delayed decision.
+        telemetrySeries->current.tick = player->game->stepCounter;
 	}
 	for (const auto& diagnostic : output.diagnostics)
 	{
@@ -480,7 +483,10 @@ void AI::bindTelemetry()
 void AI::captureTelemetry()
 {
 	// Async controller state belongs to its lane; the owner samples only published output.
-	if (decisionTelemetry) return;
+	if (decisionTelemetry) {
+        telemetrySeries->current.tick = player->game->stepCounter;
+        return;
+    }
 	bindTelemetry();
 	aiImplementation->telemetry.tick = player->game->stepCounter;
 	// Initial/dormant AIs may have lazily initialized state. Never inspect it.
