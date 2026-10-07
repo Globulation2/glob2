@@ -122,8 +122,9 @@ bool chooseEscapeStep(const Map& map, const EscapeProfile& profile, const Safety
     Uint64 best = std::numeric_limits<Uint64>::max();
     for (const auto& offset : tabClose)
     {
-        const int x = (unit.posX + offset[0] + map.getW()) % map.getW();
-        const int y = (unit.posY + offset[1] + map.getH()) % map.getH();
+        // Map cell queries wrap coordinates on the torus.
+        const int x = unit.posX + offset[0];
+        const int y = unit.posY + offset[1];
         const auto next = map.coordToIndex(x, y);
         // Strict descent prevents oscillation if traffic blocks the ideal step.
         // Blocked origins may still escape (e.g. a deposit appeared under a unit).
