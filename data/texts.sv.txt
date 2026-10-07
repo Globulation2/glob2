@@ -5600,8 +5600,8 @@ Plommonträd
 Guldmalm
 [Iron ore]
 Järnmalm
-[Sand]
-Sand
+[Silica]
+Kvartssand
 [Cotton]
 Bomull
 [Reroll terrain look]

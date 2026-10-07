@@ -5600,8 +5600,8 @@ Luumupuu
 Kultamalmi
 [Iron ore]
 Rautamalmi
-[Sand]
-Hiekka
+[Silica]
+Kvartsihiekka
 [Cotton]
 Puuvilla
 [Reroll terrain look]

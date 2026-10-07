@@ -5600,8 +5600,8 @@ FFmpeg در دسترس نیست، پس ضبط خاموش است. FFmpeg را ن�
 سنگ معدن طلا
 [Iron ore]
 سنگ معدن آهن
-[Sand]
-ماسه
+[Silica]
+سیلیس
 [Cotton]
 پنبه
 [Reroll terrain look]

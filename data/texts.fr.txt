@@ -5600,8 +5600,8 @@ Prunier
 Minerai d’or
 [Iron ore]
 Minerai de fer
-[Sand]
-Sable
+[Silica]
+Silice
 [Cotton]
 Coton
 [Reroll terrain look]

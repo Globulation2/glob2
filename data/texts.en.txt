@@ -5602,8 +5602,8 @@ Prune tree
 Gold ore
 [Iron ore]
 Iron ore
-[Sand]
-Sand
+[Silica]
+Silica
 [Cotton]
 Cotton
 [boulders]

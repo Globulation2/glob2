@@ -5600,8 +5600,8 @@ AI 遙測
 金礦石
 [Iron ore]
 鐵礦石
-[Sand]
-沙子
+[Silica]
+矽砂
 [Cotton]
 棉花
 [Reroll terrain look]

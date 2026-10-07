@@ -5600,8 +5600,8 @@ Aranondoa
 Urre-mea
 [Iron ore]
 Burdin mea
-[Sand]
-Harea
+[Silica]
+Silizea
 [Cotton]
 Kotoia
 [Reroll terrain look]

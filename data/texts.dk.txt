@@ -5600,8 +5600,8 @@ Blommetræ
 Guldmalm
 [Iron ore]
 Jernmalm
-[Sand]
-Sand
+[Silica]
+Kvartssand
 [Cotton]
 Bomuld
 [Reroll terrain look]

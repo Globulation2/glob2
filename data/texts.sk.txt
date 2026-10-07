@@ -5600,8 +5600,8 @@ Slivka
 Zlatá ruda
 [Iron ore]
 Železná ruda
-[Sand]
-Piesok
+[Silica]
+Kremeň
 [Cotton]
 Bavlna
 [Reroll terrain look]

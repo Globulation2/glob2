@@ -5600,8 +5600,8 @@ Prunera
 Mineral d’or
 [Iron ore]
 Mineral de ferro
-[Sand]
-Sorra
+[Silica]
+Sílice
 [Cotton]
 Cotó
 [Reroll terrain look]

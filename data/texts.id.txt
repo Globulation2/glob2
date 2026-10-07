@@ -5600,8 +5600,8 @@ Pohon prem
 Bijih emas
 [Iron ore]
 Bijih besi
-[Sand]
-Pasir
+[Silica]
+Silika
 [Cotton]
 Kapas
 [Reroll terrain look]

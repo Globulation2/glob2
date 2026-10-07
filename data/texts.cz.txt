@@ -5600,8 +5600,8 @@ Pomerančovník
 Zlatá ruda
 [Iron ore]
 Železná ruda
-[Sand]
-Písek
+[Silica]
+Křemen
 [Cotton]
 Bavlna
 [Reroll terrain look]

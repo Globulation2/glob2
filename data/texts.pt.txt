@@ -5600,8 +5600,8 @@ Ameixeira
 Minério de ouro
 [Iron ore]
 Minério de ferro
-[Sand]
-Areia
+[Silica]
+Sílica
 [Cotton]
 Algodão
 [Reroll terrain look]

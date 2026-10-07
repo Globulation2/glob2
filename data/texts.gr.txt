@@ -5600,8 +5600,8 @@ CPU %0%
 Χρυσομετάλλευμα
 [Iron ore]
 Σιδηρομετάλλευμα
-[Sand]
-Άμμος
+[Silica]
+Πυριτία
 [Cotton]
 Βαμβάκι
 [Reroll terrain look]

@@ -5600,8 +5600,8 @@ AI 원격 측정
 금광석
 [Iron ore]
 철광석
-[Sand]
-모래
+[Silica]
+규사
 [Cotton]
 목화
 [Reroll terrain look]

@@ -5600,8 +5600,8 @@ Prugno
 Minerale d’oro
 [Iron ore]
 Minerale di ferro
-[Sand]
-Sabbia
+[Silica]
+Silice
 [Cotton]
 Cotone
 [Reroll terrain look]

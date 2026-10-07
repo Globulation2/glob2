@@ -5600,8 +5600,8 @@ Prun
 Minereu de aur
 [Iron ore]
 Minereu de fier
-[Sand]
-Nisip
+[Silica]
+Silice
 [Cotton]
 Bumbac
 [Reroll terrain look]

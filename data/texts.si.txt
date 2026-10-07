@@ -5600,8 +5600,8 @@ Sliva
 Zlata ruda
 [Iron ore]
 Železova ruda
-[Sand]
-Pesek
+[Silica]
+Kremen
 [Cotton]
 Bombaž
 [Reroll terrain look]

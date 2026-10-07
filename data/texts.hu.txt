@@ -5600,8 +5600,8 @@ Szilvafa
 Aranyérc
 [Iron ore]
 Vasérc
-[Sand]
-Homok
+[Silica]
+Kvarchomok
 [Cotton]
 Pamut
 [Reroll terrain look]

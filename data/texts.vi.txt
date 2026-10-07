@@ -5600,8 +5600,8 @@ Cây mận
 Quặng vàng
 [Iron ore]
 Quặng sắt
-[Sand]
-Cát
+[Silica]
+Cát thạch anh
 [Cotton]
 Bông
 [Reroll terrain look]

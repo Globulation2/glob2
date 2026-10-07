@@ -5600,8 +5600,8 @@ Ciruelo
 Mineral de oro
 [Iron ore]
 Mineral de hierro
-[Sand]
-Arena
+[Silica]
+Sílice
 [Cotton]
 Algodón
 [Reroll terrain look]

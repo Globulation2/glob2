@@ -5600,8 +5600,8 @@ Drzewo pomarańczowe
 Ruda złota
 [Iron ore]
 Ruda żelaza
-[Sand]
-Piasek
+[Silica]
+Krzemionka
 [Cotton]
 Bawełna
 [Reroll terrain look]

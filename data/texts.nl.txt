@@ -5600,8 +5600,8 @@ Pruimenboom
 Gouderts
 [Iron ore]
 IJzererts
-[Sand]
-Zand
+[Silica]
+Kwartszand
 [Cotton]
 Katoen
 [Reroll terrain look]

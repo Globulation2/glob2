@@ -139,7 +139,7 @@
 [Prune tree]
 [Gold ore]
 [Iron ore]
-[Sand]
+[Silica]
 [Cotton]
 [boulders]
 [hedge]

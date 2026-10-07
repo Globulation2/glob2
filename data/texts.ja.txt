@@ -5600,8 +5600,8 @@ JavaScriptのAIは「設定」→「カスタムAI」で追加します。追加
 金鉱石
 [Iron ore]
 鉄鉱石
-[Sand]
-砂
+[Silica]
+珪砂
 [Cotton]
 綿花
 [Reroll terrain look]

@@ -5600,8 +5600,8 @@ Prunarbo
 Ora erco
 [Iron ore]
 Fera erco
-[Sand]
-Sablo
+[Silica]
+Kvarco
 [Cotton]
 Kotono
 [Reroll terrain look]

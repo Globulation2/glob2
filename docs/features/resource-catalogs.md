@@ -18,10 +18,11 @@ validated compact loops or legacy input adapters; a deposit ID is never a materi
 
 The installed definitions are `data/resources/registry.json`. Existing deposits
 are trees, wheat, papyrus, rocks, algae and cherry, orange and prune trees. Gold
-ore, iron ore, sand and cotton are supplied as an optional editor experiment;
-stock generators, building costs and service recipes do not use them. New material
-inventory rows appear only when a material is present in map sources, carried
-packets or inventory and the building uses that material.
+ore, iron ore, silica (a glass-yielding deposit, distinct from sand terrain) and
+cotton are supplied as an optional editor experiment; stock generators, building
+costs and service recipes do not use them. New material inventory rows appear
+only when a material is present in map sources, carried packets or inventory and
+the building uses that material.
 
 ## Importing resources
 

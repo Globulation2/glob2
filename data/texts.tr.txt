@@ -5600,8 +5600,8 @@ Erik ağacı
 Altın cevheri
 [Iron ore]
 Demir cevheri
-[Sand]
-Kum
+[Silica]
+Silika
 [Cotton]
 Pamuk
 [Reroll terrain look]

@@ -5600,8 +5600,8 @@ Pflaumenbaum
 Golderz
 [Iron ore]
 Eisenerz
-[Sand]
-Sand
+[Silica]
+Quarzsand
 [Cotton]
 Baumwolle
 [Reroll terrain look]
