@@ -7,6 +7,32 @@
 #include "GlobalContainer.h"
 #include <algorithm>
 
+namespace
+{
+// Selection-time only: materials can outlive their last natural deposit.
+MaterialMask editorMaterialPresence(const Game& game, MaterialMask requested)
+{
+    if (!requested) return 0;
+    MaterialMask present=0;
+    for (unsigned m=0;m<MaterialCount;++m)
+        if ((requested&(1u<<m)) && game.map.hasMaterialSourceSlot(m)) present|=MaterialMask(1u<<m);
+    for (const Team* team:game.teams)
+    {
+        if (!team || (present&requested)==requested) continue;
+        for (unsigned m=0;m<MaterialCount;++m)
+            if (team->teamMaterials[m] || team->reservedTeamMaterials[m]) present|=MaterialMask(1u<<m);
+        for (int id=0;id<Unit::MAX_COUNT;++id)
+            if (const Unit* unit=team->myUnits[id];unit && validMaterial(unit->carriedMaterial))
+                present|=MaterialMask(1u<<unit->carriedMaterial);
+        for (int id=0;id<Building::MAX_COUNT;++id)
+            if (const Building* building=team->myBuildings[id])
+                for (unsigned m=0;m<MaterialCount;++m)
+                    if (building->materials[m]) present|=MaterialMask(1u<<m);
+    }
+    return present;
+}
+}
+
 void MapEdit::addBuildingEditRow(FractionValueText* label, ValueScrollBox* control, bool shown)
 {
 	label->disable(); control->disable();
@@ -87,11 +113,16 @@ bool MapEdit::performBuildingAction(const std::string& action, float relMouseX, 
 			addBuildingEditRow(buildingWorkerRatioLabel,buildingWorkerRatioScrollBox,spec.production.recipes[WORKER].enabled);
 			addBuildingEditRow(buildingExplorerRatioLabel,buildingExplorerRatioScrollBox,spec.production.recipes[EXPLORER].enabled);
 			addBuildingEditRow(buildingWarriorRatioLabel,buildingWarriorRatioScrollBox,spec.production.recipes[WARRIOR].enabled);
-			for (int resource=0; resource<MAX_RESOURCES; ++resource)
+            MaterialMask requested=0;
+            for (unsigned material=materialIndex(MaterialId::Gold);material<MaterialCount;++material)
+                if (b->type->maxMaterial[material]>0) requested|=MaterialMask(1u<<material);
+            const auto present=editorMaterialPresence(game,requested);
+			for (int resource=0; resource<MaterialCount; ++resource)
 			{
-				buildingResourceLabels[resource]->setValues(&b->resources[resource],&b->type->maxResource[resource]);
-				buildingResourceControls[resource]->setValues(&b->resources[resource],&b->type->maxResource[resource]);
-				addBuildingEditRow(buildingResourceLabels[resource],buildingResourceControls[resource],b->type->maxResource[resource]>0);
+				buildingResourceLabels[resource]->setValues(&b->materials[resource],&b->type->maxMaterial[resource]);
+				buildingResourceControls[resource]->setValues(&b->materials[resource],&b->type->maxMaterial[resource]);
+				addBuildingEditRow(buildingResourceLabels[resource],buildingResourceControls[resource],b->type->maxMaterial[resource]>0 &&
+					(resource < int(MaterialId::Gold) || (present&(1u<<resource))));
 			}
 			addBuildingEditRow(buildingBulletsLabel,buildingBulletsScrollBox,b->type->maxBullets>0);
 			addBuildingEditRow(buildingMinimumLevelLabel,buildingMinimumLevelScrollBox,b->type->zonable[WARRIOR]);

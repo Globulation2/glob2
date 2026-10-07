@@ -160,24 +160,29 @@ export async function createMatch(db: Db, request: CreateMatchRequest): Promise<
       table === 'map_versions'
         ? await db
             .selectFrom(table)
-            .select('building_catalog')
+            .select(['building_catalog', 'resource_experiments', 'required_resource_experiments'])
             .where('hash', '=', setup.map.hash)
             .executeTakeFirst()
         : table === 'map_uploads'
           ? await db
               .selectFrom(table)
-              .select('building_catalog')
+              .select(['building_catalog', 'resource_experiments', 'required_resource_experiments'])
               .where('blob_sha256', '=', setup.map.hash)
               .where('sim_version', '=', simVersionKey(setup.simVersion))
               .executeTakeFirst()
           : await db
               .selectFrom(table)
-              .select('building_catalog')
+              .select(['building_catalog', 'resource_experiments', 'required_resource_experiments'])
               .where('map_hash', '=', setup.map.hash)
               .where('sim_version', '=', simVersionKey(setup.simVersion))
               .executeTakeFirst();
-    if (row?.building_catalog) {
-      mapCatalog = row.building_catalog as BuildingCatalog;
+    if (row) {
+      // These declarations were extracted from the map by its engine, never supplied by a room host.
+      setup.resourceExperiments = row.resource_experiments;
+      setup.experiments = [
+        ...new Set([...setup.experiments, ...row.required_resource_experiments]),
+      ];
+      if (row.building_catalog) mapCatalog = row.building_catalog as BuildingCatalog;
       break;
     }
   }

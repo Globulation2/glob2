@@ -146,7 +146,8 @@ TEST_CASE("terrain loaders reject invalid resources occupants and sector dimensi
         if(field==2) tile.resource.type=254;
         if(field==3) tile.groundUnit=65534;
         if(field==4) tile.airUnit=65534;
-        world.game.map.replaceTile(0,tile);
+        // Deliberately bypass validated mutation to exercise corrupt serialized input.
+        const_cast<Tile&>(world.game.map.getTile(0))=tile;
         auto* storage=new GAGCore::MemoryStreamBackend;
         GAGCore::BinaryOutputStream writer(storage);
         world.game.map.save(&writer);
@@ -154,7 +155,7 @@ TEST_CASE("terrain loaders reject invalid resources occupants and sector dimensi
         Map restored;
         CHECK_FALSE(restored.load(stream.get(),header,&world.game));
     }
-    world.game.map.replaceTile(0,original);
+    const_cast<Tile&>(world.game.map.getTile(0))=original;
 	auto bad = poisoned(bytes, out, "encoding", 254); // First packed array is the undermap.
 	auto stream = input(bad);
 	Map restored;
@@ -225,7 +226,7 @@ TEST_CASE("entity loaders reject malicious indices before using them [save-forma
     for (const auto& [field, value] : std::vector<std::pair<const char*, Uint32>>{
             {"typeNum", 0xffffffff}, {"typeNum", Uint32(globals->buildingsTypes.size())}, {"gid", 0xffff},
             {"unitStayRange", 0xffffffff}, {"minLevelToFlag", 0xffffffff}, {"ratio[0]", 0x7fffffff},
-            {"buildingState", 0xffffffff}, {"constructionResultState", 0xffffffff}, {"clearingRessources[3]", 1}}) {
+            {"buildingState", 0xffffffff}, {"constructionResultState", 0xffffffff}, {"clearingRessources[3]", 2}}) {
         auto stream = input(poisoned(buildingBytes, buildingOut, field, value));
         CHECK_THROWS_AS(Building(stream.get(), &globals->buildingsTypes, world.team, VERSION_MINOR), std::runtime_error);
     }

@@ -121,7 +121,7 @@ void Unit::init(int x, int y, Uint16 gid, Sint32 typeNum, Team *team, int level)
 	targetBuilding=NULL;
 	ownExchangeBuilding=NULL;
 	destinationPurpose=UNIT_DEST_PURPOSE_NONE;
-	carriedResource=UNIT_CARRIED_RESOURCE_NONE;
+	carriedMaterial=UNIT_CARRIED_RESOURCE_NONE;
 	jobTimer = 0;
 
 	previousClearingArea=std::nullopt;
@@ -165,7 +165,7 @@ void Unit::subscriptionSuccess(Building* building, bool inside, bool attraction)
 	else if(inside == false)
 	{
 		assert(destinationPurpose>=0);
-		assert(b->neededResource(destinationPurpose));
+		assert(b->neededMaterial(destinationPurpose));
 		activity=ACT_FILLING;
 		attachedBuilding=b;
 		setTargetBuilding(NULL);
@@ -209,7 +209,7 @@ void Unit::subscriptionSuccess(Building* building, bool inside, bool attraction)
 				case ACT_FILLING:
 				{
 					assert(attachedBuilding);
-					if (carriedResource==destinationPurpose)
+					if (carriedMaterial==destinationPurpose)
 					{
 						displacement=DIS_GOING_TO_BUILDING;
 						setTargetBuilding(attachedBuilding);
@@ -219,7 +219,7 @@ void Unit::subscriptionSuccess(Building* building, bool inside, bool attraction)
 					{
 						displacement=DIS_GOING_TO_RESOURCE;
 						targetBuilding=NULL;
-						owner->map->resourceAvailableUpdate(owner->teamNumber, destinationPurpose, swimClass(), posX, posY, &targetX, &targetY, NULL, attachedBuilding->fetchesFromMarkets(), attachedBuilding);
+						owner->map->materialAvailableUpdateSlot(owner->teamNumber, destinationPurpose, swimClass(), posX, posY, &targetX, &targetY, NULL, attachedBuilding->fetchesFromMarkets(), attachedBuilding);
 						validTarget=true;
 					}
 				}
@@ -422,9 +422,9 @@ void Unit::recordLethalDamage(int damage, int cause)
 		diagnosticDeathCause = cause;
 }
 
-void Unit::receiveCarriedResource(int resource, ResourcePacket packet)
+void Unit::receiveCarriedMaterial(int resource, MaterialPacket packet)
 {
-	if (carriedResource>=0) ++owner->stats.measurements.resourceSpillageEvents;
-	carriedResource=resource;
+	if (carriedMaterial>=0) ++owner->stats.measurements.materialSpillageEvents;
+	carriedMaterial=resource;
 	carriedPacket=packet;
 }

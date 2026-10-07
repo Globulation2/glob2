@@ -158,8 +158,8 @@ void DatasetWriter::writeStateBlob(int senderTeamNum, Game& game)
 	if (senderTeam->hasLost) flags |= 1u << 2;
 	writeU32(flags);
 
-	for (int i = 0; i < MAX_NB_RESOURCES; i++)
-		writeI32(senderTeam->teamResources[i]);
+	for (int i = 0; i < MaterialSlotCount; i++)
+		writeI32(senderTeam->teamMaterials[i]);
 
 	for (int i = 0; i < NB_UNIT_TYPE; i++)
 		writeI32(stat->numberUnitPerType[i]);

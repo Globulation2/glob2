@@ -56,7 +56,7 @@ struct BuildingType
 	Sint32 insideSpeed = 12;
 	// Derived mirrors of market.interTeamFruitExchange and market.sharedStock.
 	Sint32 canExchange = 0;
-	Sint32 useTeamResources = 0;
+	Sint32 useTeamMaterials = 0;
 
 	Sint32 width = 0, height = 0; // Footprint in map tiles.
 	Sint32 decLeft = 0, decTop = 0;
@@ -73,11 +73,11 @@ struct BuildingType
 	// enabled recipe. They cannot describe heterogeneous production recipes;
 	// simulation and strategy code must use semantics.production instead.
 	Sint32 unitProductionTime = 0;
-	Sint32 resourceForOneUnit = 0;
+	Sint32 foodPerUnit = 0;
 
-	Sint32 maxResource[MAX_NB_RESOURCES] = {};
+	Sint32 maxMaterial[MaterialSlotCount] = {};
 	// multiplierResource defaults: 1 for the basic 5 (wood/wheat/papyrus/stone/algue), 10 for fruits 0..9.
-	Sint32 multiplierResource[MAX_NB_RESOURCES] = { 1, 1, 1, 1, 1, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10 };
+	Sint32 materialMultiplier[MaterialSlotCount] = { 1, 1, 1, 1, 1, 10, 10, 10, 1, 1, 1, 1, 1, 1, 1 };
 	Sint32 maxUnitInside = 0;
 	Sint32 maxUnitWorking = 0; // Derived boolean: semantics.assignmentLimit is positive.
 
@@ -119,8 +119,8 @@ struct BuildingType
 	BuildingPresentationSpec presentation;
 	// Effective match gates; rebuilt once from the saved feature keys.
 	Sint32 terminalTypeNum = -1; // compiled final forward successor
-	std::uint8_t runtimeSuppliesStockMask = 0, runtimeSuppliesDirectStockMask = 0;
-	std::uint8_t runtimeFetchesStockMask = 0, runtimeFetchesDirectStockMask = 0;
+	MaterialMask runtimeSuppliesStockMask = 0, runtimeSuppliesDirectStockMask = 0;
+	MaterialMask runtimeFetchesStockMask = 0, runtimeFetchesDirectStockMask = 0;
 	bool runtimeSuppliesDirectStock = false, runtimeFetchesDirectStock = false;
 	bool runtimeAvailable = true;
 	bool runtimeSuppliesStock = false;
@@ -164,9 +164,9 @@ public:
 	bool isAvailable(std::size_t id, const std::set<std::string>& enabledExperiments) const;
 	// Rebuild effective gates and compact runtime rows in place during setup.
 	void configureExperiments(const std::vector<std::string>& keys);
-	std::uint8_t stockSupplyMask() const { return stockSupplyMask_; }
-	std::uint8_t directSupplyMask() const { return directSupplyMask_; }
-	std::uint8_t extraDirectSupplyMask() const { return extraDirectSupplyMask_; }
+	MaterialMask stockSupplyMask() const { return stockSupplyMask_; }
+	MaterialMask directSupplyMask() const { return directSupplyMask_; }
+	MaterialMask extraDirectSupplyMask() const { return extraDirectSupplyMask_; }
 	bool usesMarketRouting() const { return usesMarketRouting_; }
 	bool usesOverlaySuppliers() const { return usesOverlaySuppliers_; }
 	void loadSprites();
@@ -193,9 +193,9 @@ private:
 	std::string catalogKey_;
 	std::string startingBuildingKey_;
 	Sint32 startingBuildingId_ = -1;
-	std::uint8_t stockSupplyMask_ = 0;
-	std::uint8_t directSupplyMask_ = 0;
-	std::uint8_t extraDirectSupplyMask_ = 0;
+	MaterialMask stockSupplyMask_ = 0;
+	MaterialMask directSupplyMask_ = 0;
+	MaterialMask extraDirectSupplyMask_ = 0;
 	bool usesMarketRouting_ = false;
 	bool usesOverlaySuppliers_ = false;
 };

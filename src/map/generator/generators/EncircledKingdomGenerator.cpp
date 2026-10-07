@@ -11,6 +11,7 @@
 #include "Pipeline.h"
 #include "Planting.h"
 #include "Resources.h"
+#include "ResourceSemantics.h"
 #include "Room.h"
 #include "Sketch.h"
 #include "Walls.h"
@@ -716,7 +717,7 @@ bool generate(Game &game, GenerationContext &c)
 	writeUndermap(game.map, L.terrain);
 	for (int i = 0; i < t.size(); ++i)
 		if (L.wall[i])
-			game.map.setResource(i % t.w, i / t.w, STONE, 1);
+			game.map.setResourceByIndex(i % t.w, i / t.w, STONE, 1);
 	for (int k = 0; k < c.request.nbTeams; ++k)
 		game.addTeam();
 	c.stage = "kingdom colonies";
@@ -781,12 +782,12 @@ bool generate(Game &game, GenerationContext &c)
 	for (int j = 0; j < woods; ++j)
 	{
 		int i = scenery[j];
-		game.map.setResource(i % t.w, i / t.w, WOOD, 1);
+		game.map.setResourceByIndex(i % t.w, i / t.w, WOOD, 1);
 	}
 	for (int j = 0; j < stones; ++j)
 	{
 		int i = scenery[scenery.size() - 1 - j];
-		game.map.setResource(i % t.w, i / t.w, STONE, 1);
+		game.map.setResourceByIndex(i % t.w, i / t.w, STONE, 1);
 	}
 	c.telemetry.measure("kingdom.scenery.wood", woods);
 	c.telemetry.measure("kingdom.scenery.stone", stones);
@@ -799,7 +800,7 @@ bool generate(Game &game, GenerationContext &c)
 						  y = t.y(int(L.homes[k].y) + (L.townPlan == 1 ? -20 : 8) + fruit * 4 +
 								  n / 3);
 				if (L.plotOf[t.at(x, y)] < 0 && !L.wall[t.at(x, y)] && clearGround(game.map, x, y))
-					game.map.setResource(x, y, CHERRY + fruit, 1);
+					game.map.setResourceByIndex(x, y, CHERRY + fruit, 1);
 			}
 	seedAlgae(game.map, c, t, "kingdom-algae", o.algae, AlgaeBand::anyWater());
 	c.detail = assess(game, L, c);
@@ -818,9 +819,9 @@ std::string validateWorld(const Game &game, const GenerationContext &c)
 	for (int i = 0; i < t.size(); ++i)
 	{
 		if (L.wall[i] &&
-			(!game.map.isResource(i % t.w, i / t.w) || game.map.getResource(i).type != STONE))
+			!permanentResourceBarrier(game.map,i))
 			return "A kingdom rampart is missing.";
-		if (L.roads[i] && game.map.isResource(i % t.w, i / t.w))
+		if (L.roads[i] && game.map.resourceBlocksGround(i))
 			return "A kingdom road is obstructed at " + std::to_string(i % t.w) + "," +
 				   std::to_string(i / t.w);
 	}
@@ -865,7 +866,7 @@ std::string validateWorld(const Game &game, const GenerationContext &c)
 	}
 	if (auto e = startingAccessFailure(
 			game.map, c.request.nbTeams,
-			{{WHEAT, 24, "wheat"}, {WOOD, 24, "wood"}, {STONE, 36, "stone"}}, 32, 24);
+			{{MaterialId::Food, 24, "food"}, {MaterialId::Wood, 24, "wood"}, {MaterialId::Stone, 36, "stone"}}, 32, 24);
 		!e.empty())
 		return e;
 	const auto swim = groundUnitTiles(game.map, true);

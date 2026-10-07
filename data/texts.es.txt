@@ -5564,5 +5564,45 @@ Los trabajadores pueden recoger suministros del almacén compartido de los merca
 Importar definiciones de terreno
 [Terrain palette]
 Paleta de terrenos
+[Food]
+Alimentos
+[Paper]
+Papel
+[Cherries]
+Cerezas
+[Oranges]
+Naranjas
+[Prunes]
+Ciruelas
+[Gold]
+Oro
+[Metal]
+Metal
+[Glass]
+Vidrio
+[Fabric]
+Tela
+[Import Resource Definitions]
+Importar definiciones de recursos
+[Resource palette]
+Paleta de recursos
+[Trees]
+Árboles
+[Rocks]
+Rocas
+[Cherry tree]
+Cerezo
+[Orange tree]
+Naranjo
+[Prune tree]
+Ciruelo
+[Gold ore]
+Mineral de oro
+[Iron ore]
+Mineral de hierro
+[Sand]
+Arena
+[Cotton]
+Algodón
 [Reroll terrain look]
 Volver a sortear el aspecto del terreno

@@ -1138,7 +1138,7 @@ bool generate(Game &game, GenerationContext &context)
 	}
 	for (int i = 0; i < n; ++i)
 		if (outcrop[i])
-			map.setResource(i % t.w, i / t.w, STONE, 1);
+			map.setResourceByIndex(i % t.w, i / t.w, STONE, 1);
 	context.telemetry.measure("central-quarry.quarry.tiles", quarryTilesPlaced);
 	if (quarryTilesPlaced != o.quarrySize)
 	{

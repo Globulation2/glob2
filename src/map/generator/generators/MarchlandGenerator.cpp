@@ -925,10 +925,10 @@ bool generate(Game &game, GenerationContext &context)
 	const std::vector<std::vector<int>> cost = colonyCosts(map, t, teams);
 	std::vector<unsigned char> open(t.size(), 0);
 	for (int i = 0; i < t.size(); ++i)
-		open[i] = L.march[i] && (map.terrainSupportsResourceAt(i % t.w, i / t.w, STONE) &&
-			map.terrainSupportsResourceAt(i % t.w, i / t.w, CHERRY) &&
-			map.terrainSupportsResourceAt(i % t.w, i / t.w, ORANGE) &&
-			map.terrainSupportsResourceAt(i % t.w, i / t.w, PRUNE)) &&
+		open[i] = L.march[i] && (map.terrainSupportsResourceAtByIndex(i % t.w, i / t.w, STONE) &&
+			map.terrainSupportsResourceAtByIndex(i % t.w, i / t.w, CHERRY) &&
+			map.terrainSupportsResourceAtByIndex(i % t.w, i / t.w, ORANGE) &&
+			map.terrainSupportsResourceAtByIndex(i % t.w, i / t.w, PRUNE)) &&
 			clearGround(map, i % t.w, i / t.w);
 	const std::vector<int> room = clearance(t, open);
 	// Only genuinely contested ground is a candidate at all. A prize is required to sit on a front,
@@ -1057,7 +1057,7 @@ bool generate(Game &game, GenerationContext &context)
 				if (dx * dx + dy * dy <= groveRadius * groveRadius && (dx + dy) % 2 == 0 &&
 					clearGround(map, i % t.w, i / t.w) &&
 					map.isResourceAllowed(i % t.w, i / t.w, fruit))
-					map.setResource(i % t.w, i / t.w, fruit, 1);
+					map.setResourceByIndex(i % t.w, i / t.w, fruit, 1);
 			}
 		const double angle = context.bounded("marchland-prizes", 360) * kPi / 180.0;
 		const int qx = t.x(site % t.w + int(std::lround(kQuarryOffset * std::cos(angle))));
@@ -1075,7 +1075,7 @@ bool generate(Game &game, GenerationContext &context)
 	std::vector<int> open2;
 	for (int i = 0; i < t.size(); ++i)
 		if (L.march[i] && !reserved[i] && clearGround(map, i % t.w, i / t.w) &&
-			map.terrainSupportsResourceAt(i % t.w, i / t.w, WHEAT))
+			map.terrainSupportsResourceAtByIndex(i % t.w, i / t.w, WHEAT))
 			open2.push_back(i);
 	context.telemetry.measure(
 		"marchland.commons.wheat-tiles",
@@ -1084,7 +1084,7 @@ bool generate(Game &game, GenerationContext &context)
 	open2.clear();
 	for (int i = 0; i < t.size(); ++i)
 		if (L.march[i] && !reserved[i] && clearGround(map, i % t.w, i / t.w) &&
-			map.terrainSupportsResourceAt(i % t.w, i / t.w, WOOD))
+			map.terrainSupportsResourceAtByIndex(i % t.w, i / t.w, WOOD))
 			open2.push_back(i);
 	context.telemetry.measure(
 		"marchland.commons.wood-tiles",
@@ -1137,7 +1137,7 @@ std::string validateWorld(const Game &game, const GenerationContext &context)
 		!cut.empty())
 		return cut;
 	if (const std::string hungry = startingAccessFailure(
-			game.map, teams, {{WHEAT, 24, "wheat"}, {WOOD, 32, "wood"}, {STONE, 40, "stone"}});
+			game.map, teams, {{MaterialId::Food, 24, "food"}, {MaterialId::Wood, 32, "wood"}, {MaterialId::Stone, 40, "stone"}});
 		!hungry.empty())
 		return hungry;
 	// Every colony's own water. The engine regrows crops from the water beside them, so a homeland

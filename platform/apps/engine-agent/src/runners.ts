@@ -266,6 +266,10 @@ export class HeadlessEngineRunner implements EngineRunner {
         height: report.height,
         teamCount: report.teamCount,
         ...(report.buildingCatalog ? { buildingCatalog: report.buildingCatalog } : {}),
+        ...(report.resourceExperiments ? { resourceExperiments: report.resourceExperiments } : {}),
+        ...(report.requiredResourceExperiments
+          ? { requiredResourceExperiments: report.requiredResourceExperiments }
+          : {}),
       },
       versionMinor: header.versionMinor,
       ...(title ? { title } : {}),

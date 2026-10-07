@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "EngineFixtures.h"
 #include "Engine.h"
+#include "field/GradientConstants.h"
 #include <BackgroundFileWriter.h>
 #include <BinaryStream.h>
 #include <StreamBackend.h>
@@ -8,6 +9,7 @@
 #include <filesystem>
 #include <fstream>
 #include <thread>
+#include <nlohmann/json.hpp>
 
 TEST_SUITE("SharedWorkerLifecycle") {
 TEST_CASE("background saves finish on a worker and remain readable after teardown") {
@@ -27,6 +29,57 @@ TEST_CASE("background saves finish on a worker and remain readable after teardow
     std::string bytes((std::istreambuf_iterator<char>(file)), {});
     REQUIRE(bytes == "finished on worker");
     REQUIRE((writingThread != submittingThread) == GAGCore::ThreadSupport::available);
+}
+TEST_CASE("resource catalog import drains deferred material preparation before replacing stocks") {
+    glob2test::HeadlessGlobals globals;
+    GameGUI source;
+    GameHeader header;
+    header.setNumberOfPlayers(1);
+    header.setRandomSeed(123456);
+    header.getBasePlayer(0) = BasePlayer(0, "Test", 0, BasePlayer::P_LOCAL);
+    auto mapHeader = Engine::loadMapHeader("maps/balanced.map");
+    REQUIRE(source.loadFromHeaders(mapHeader, header, true, true));
+    REQUIRE(source.game.stepCounter == 0);
+    auto &map = source.game.map;
+    using Json = nlohmann::json;
+    const auto trees = *map.resourceRegistry().find("trees");
+    auto definition = Json::parse(map.resourceRegistry().serialize())["resources"][resourceIndex(trees)];
+    definition["key"] = "test:deferred-compound";
+    definition["properties"]["primaryMaterial"] = "gold";
+    definition["properties"]["persistsWhenEmpty"] = true;
+    definition["yields"] = {{"gold", {{"capacity", 4}, {"initial", 2}, {"consumption", "one"}}},
+        {"food", {{"capacity", 4}, {"initial", 3}, {"consumption", "one"}}}};
+    auto install = [&] {
+        map.installResourceDefinitions(Json{{"schemaVersion", 1}, {"resources", Json::array({definition})}}.dump());
+    };
+    install();
+    const auto resource = *map.resourceRegistry().find("test:deferred-compound");
+    size_t index = 0;
+    for (; index < size_t(map.getW()) * map.getH(); ++index) {
+        const auto &tile = map.getTile(index % map.getW(), index / map.getW());
+        if (tile.building == NOGBID && tile.groundUnit == NOGUID && !tile.forbidden && map.terrainTypeAt(index) == GRASS) break;
+    }
+    REQUIRE(index < size_t(map.getW()) * map.getH());
+    map.setResource(index % map.getW(), index / map.getW(), resource, 0);
+    map.setMapDiscovered(index % map.getW(), index / map.getW(), Team::teamNumberToMask(0));
+    REQUIRE(map.materialAmountAt(index, MaterialId::Gold) == 2);
+    REQUIRE(map.materialAmountAt(index, MaterialId::Food) == 3);
+    map.getMaterialGradient(0, MaterialId::Gold, 0);
+    map.configureGradientPipeline(2, 3);
+    map.advanceGradientPipeline();
+    map.stagePeriodicGradientPreparation();
+    REQUIRE(map.hasPendingGradientPreparation());
+    REQUIRE(map.gradientPipelineStatus().pending == 1);
+    definition["yields"]["gold"]["capacity"] = 1;
+    definition["yields"]["gold"]["initial"] = 1;
+    install();
+    CHECK_FALSE(map.hasPendingGradientPreparation());
+    CHECK(map.materialAmountAt(index, MaterialId::Gold) == 1);
+    CHECK(map.materialAmountAt(index, MaterialId::Food) == 3);
+    // Finish respects publication deadlines; advancing safely publishes the
+    // prepared goal after the immutable definition snapshot was replaced.
+    for (int tick = 0; tick < 3; ++tick) map.advanceGradientPipeline();
+    CHECK(map.getMaterialGradient(0, MaterialId::Gold, 0)[index] == GRADIENT_AT_GOAL);
 }
 TEST_CASE("pending gradient work survives a save and continues at the same deadlines") {
     glob2test::HeadlessGlobals globals;
@@ -89,7 +142,7 @@ TEST_CASE("direct completed steps match deferred preparation across worker count
     REQUIRE(deferred.loadFromHeaders(mapHeader, header, true, true));
     for (Game *game : {&direct.game, &deferred.game}) {
         game->map.getClearAreasGradient(0, 0);
-        game->map.getResourceGradient(0, 0, 0);
+        game->map.getMaterialGradient(0, MaterialId::Wood, 0);
         game->map.configureGradientPipeline(0, 8);
     }
     for (unsigned threads : {1, 4}) {
@@ -101,7 +154,7 @@ TEST_CASE("direct completed steps match deferred preparation across worker count
             REQUIRE(deferred.game.map.hasPendingGradientPreparation());
             ReadOnlyPhase phase;
             auto prepare = [&](size_t) { deferred.game.map.preparePendingGradient(); };
-            auto read = [&](size_t) { deferred.game.map.getResourceGradient(0, 0, 0); };
+            auto read = [&](size_t) { deferred.game.map.getMaterialGradient(0, MaterialId::Wood, 0); };
             phase.add(1, prepare); phase.add(1, read);
             phase.run(deferred.game.map.computeExecutor());
             CHECK_FALSE(deferred.game.map.hasPendingGradientPreparation());

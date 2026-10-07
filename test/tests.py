@@ -21,6 +21,7 @@ SUPPORT = [
 # Linked into glob2-engine-tests only.
 ENGINE_SUPPORT = [
     'support/EngineFixtures.cpp',
+    'support/LegacyResourceTypes.cpp',
 ]
 
 # glob2-engine-tests: every client object except the entry point, plus these.
@@ -40,6 +41,7 @@ ENGINE_TESTS = [
     '#src/building/BuildingProductionCombatTest.cpp',
     '#src/building/BuildingCatalogFixtureHarness.cpp',
     '#src/building/BuildingCatalogBenchmark.cpp',
+    ('#src/resource/ResourceRuntimeBenchmark.cpp', dict(cxxflags=['-fno-access-control'])),
     ('#src/map/gradient/BuildingGradientBenchmark.cpp', dict(cxxflags=['-fno-access-control'])),
     '#src/building/BuildingServicesTest.cpp',
     # This fixture selects SDL's dummy driver; isolate its client context from display cases.
@@ -101,7 +103,7 @@ ENGINE_TESTS = [
     ('#src/ai/AISavePortabilityHarness.cpp', dict(cxxflags=['-fno-access-control'])),
     '#src/building/BuildingFootprintHarness.cpp',
     '#src/map/MapTilingHarness.cpp',
-    '#src/map/gradient/ClearingFlagGradientTest.cpp',
+    ('#src/map/gradient/ClearingFlagGradientTest.cpp', dict(cxxflags=['-fno-access-control'])),
     '#src/ai/cortex/CortexGeometryHarness.cpp',
     '#src/unit/EnteringUnitSaveHarness.cpp',
     '#src/map/gradient/MapGradientInvalidationTest.cpp',
@@ -236,6 +238,7 @@ UNIT_TESTS = [
     '#src/online/ReplayAppearanceTest.cpp',
     '#src/online/PlatformClientTest.cpp',
     '#src/online/OnlineResourcesTest.cpp',
+    '#src/resource/ResourceRegistryTest.cpp',
     '#src/online/QuickMatchTest.cpp',
     '#src/online/MapCatalogTest.cpp',
     '#src/ui/KeyActionLookupTest.cpp',
@@ -347,6 +350,7 @@ UNIT_PRODUCTION_SOURCES = [
     '#src/map/FertilityField.cpp',
     '#src/map/Map.cpp',
     '#src/map/MapCells.cpp',
+    '#src/map/MapResourceState.cpp',
     '#src/map/MapQuery.cpp',
     '#src/map/MapTerrain.cpp',
     '#src/map/editor/MapEditKeyActions.cpp',
@@ -356,7 +360,7 @@ UNIT_PRODUCTION_SOURCES = [
     '#src/map/gradient/MapGradientChamfer.cpp',
     '#src/map/gradient/MapGradientPropagation.cpp',
     '#src/map/gradient/ResourceSeedCache.cpp',
-    '#src/resource/Resources.cpp',
+    '#src/resource/ResourceRegistry.cpp',
     '#src/map/pathfind/MapPathfindPoint.cpp',
     '#src/net/message/MessageRecipients.cpp',
     '#src/render/FogFade.cpp',

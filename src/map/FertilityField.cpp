@@ -321,18 +321,18 @@ void GrowthCache::terrainChanged(std::size_t index, const TerrainProperties& bef
 	}
 	// Habitat permissions affect only this cell's resource-rate lookup. The
 	// terrain-weighted fields remain exact, including the exposed landField().
-	assert(index < growthHabitats.size());
-	growthHabitats[index] = after.resourcesGrow ? after.allowedResources : 0;
+    // The resource registry's compiled habitat table is read live by rate().
+    assert(index < localGrowth.size());
 }
 
 void GrowthCache::rebuild(const Map& map)
 {
+    owner=&map;
 	const int w=map.getW(), h=map.getH();
 	const std::size_t size=std::size_t(w)*h;
 	std::vector<std::int16_t> contribution(size);
 	std::vector<std::uint16_t> inhibition(size), shore(size);
 	localGrowth.resize(size);
-	growthHabitats.resize(size);
 	for (std::size_t i=0; i<size; ++i)
 	{
 		const auto& p=map.terrainPropertiesAt(i);
@@ -340,7 +340,6 @@ void GrowthCache::rebuild(const Map& map)
 		inhibition[i]=p.inhibitionQ8;
 		shore[i]=p.shoreSupportQ8;
 		localGrowth[i]=p.growthQ8;
-		growthHabitats[i]=p.resourcesGrow ? p.allowedResources : 0;
 	}
 	land.rebuildWeighted(w,h,contribution,inhibition);
 	aquatic=shoreGrowthField(w,h,contribution,shore);
@@ -348,22 +347,23 @@ void GrowthCache::rebuild(const Map& map)
 	ready=true;
 }
 
-std::uint32_t GrowthCache::rate(std::size_t index, int resourceType) const
+std::uint32_t GrowthCache::rate(std::size_t index,int resourceType) const
 {
-	assert(index<localGrowth.size());
-	if (resourceType<0 || resourceType>=MAX_RESOURCES ||
-		!(growthHabitats[index] & (1u<<resourceType))) return 0;
-	std::uint64_t value;
-	if (resourceType==WHEAT || resourceType==WOOD)
-		value=land.values()[index];
-	else if (resourceType==ALGA)
-		value=std::uint64_t(aquatic[index])*localGrowth[index]/256;
-	else if (resourceType==STONE || resourceType==NO_RES_TYPE)
-		return 0;
-	else
-		value=std::uint64_t(kScale)*localGrowth[index]/256;
-	if (resourceType!=WHEAT) value*=3;
-	return static_cast<std::uint32_t>(std::min<std::uint64_t>(value,4u*kRateScale));
+    assert(owner && index<localGrowth.size());
+    if (resourceType<0 || !owner->resourceRegistry().valid(unsigned(resourceType)) ||
+        !owner->terrainPropertiesAt(index).resourcesGrow ||
+        !owner->terrainSupportsResourceAt(index,static_cast<ResourceId>(resourceType))) return 0;
+    const auto& p=owner->resourcePropertiesByIndex(resourceType);
+    std::uint64_t value=0;
+    switch (p.ecology)
+    {
+    case ResourceEcology::Land: value=land.values()[index]; break;
+    case ResourceEcology::Shore: value=std::uint64_t(aquatic[index])*localGrowth[index]/256; break;
+    case ResourceEcology::Uniform: value=std::uint64_t(kScale)*localGrowth[index]/256; break;
+    case ResourceEcology::None: return 0;
+    }
+    value=value*p.growthRate/kScale;
+    return static_cast<std::uint32_t>(std::min<std::uint64_t>(value,4u*kRateScale));
 }
 
 void Field::gate(const std::vector<std::uint8_t>& keep)
@@ -392,7 +392,7 @@ namespace
 		std::queue<std::pair<int, int>> frontier;
 		for (int y = 0; y < h; ++y)
 			for (int x = 0; x < w; ++x)
-				if (map.isResourceTakeable(x, y, WHEAT) || map.isResourceTakeable(x, y, WOOD))
+				if (map.isMaterialTakeable(x,y,MaterialId::Food) || map.isMaterialTakeable(x,y,MaterialId::Wood))
 				{
 					reached[size_t(y) * w + x] = 1;
 					frontier.emplace(x, y);
@@ -408,7 +408,7 @@ namespace
 						continue;
 					const int nx = map.normalizeX(px + dx), ny = map.normalizeY(py + dy);
 					std::uint8_t& cell = reached[size_t(ny) * w + nx];
-					if (!cell && (map.terrainPropertiesAt(nx, ny).allowedResources & (1u << WHEAT)))
+					if (!cell && map.terrainSupportsMaterialAt(nx,ny,MaterialId::Food))
 					{
 						cell = 1;
 						frontier.emplace(nx, ny);
@@ -427,7 +427,7 @@ Field forMap(const Map& map, bool gateOnReachableDeposits)
 	{
 		auto keep=depositReach(map);
 		for (std::size_t i=0; i<keep.size(); ++i)
-			if ((map.terrainPropertiesAt(i).allowedResources & (1u<<WHEAT))==0) keep[i]=0;
+			if (!map.terrainSupportsMaterialAt(int(i%w),int(i/w),MaterialId::Food)) keep[i]=0;
 		field.gate(keep);
 	}
 	return field;

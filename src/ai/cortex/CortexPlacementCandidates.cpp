@@ -1,9 +1,12 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2026 The Globulation 2 Authors
 
+#include "Material.h"
 #include "CortexPlacement.h"
 
 #include "CortexPlacementGeo.h"
+#include "CortexFoodAvailability.h"
+#include "CortexHardSpaceView.h"
 #include "Game.h"
 #include "GlobalContainer.h"
 #include "CortexBuildings.h"
@@ -101,7 +104,7 @@ namespace Cortex
 	                               const ForwardBias* forward, int placementType = -1, int maxWorkerQualification = -1)
 	{
 		// Always leave the output well-defined, even on the error paths below.
-		// wheatDist is initialised to -1 (no wheat in reach) matching the
+		// foodSourceDistance is initialised to -1 (no food in reach) matching the
 		// makeEmptyObservation() sentinel so the policy never reads garbage on
 		// valid == 0 slots.
 		for (int i = 0; i < CORTEX_BUILD_CANDIDATES; i++)
@@ -110,7 +113,7 @@ namespace Cortex
 			out[i].x = 0;
 			out[i].y = 0;
 			out[i].score = 0;
-			out[i].wheatDist = -1;
+			out[i].foodSourceDistance = -1;
 		}
 
 		if (game == NULL || team == NULL)
@@ -138,15 +141,17 @@ namespace Cortex
 		const int mapH = map.getH();
 
 		const PlacementGeometry geometry(team, map);
+		const FoodAvailabilityView food(map);
+		HardSpaceView hardSpace(map);
 
 		ScoredSpot heap[CORTEX_BUILD_CANDIDATES];
 		int count = 0;
 
 		const bool isSwarm = completed->semantics.production.enabledUnitMask != 0;
         const bool isInn = completed->semantics.feeding.enabled;
-        bool isWheatFed = isInn && completed->semantics.feeding.cost[WHEAT] > 0;
+        bool usesFood = isInn && completed->semantics.feeding.cost[materialIndex(MaterialId::Food)] > 0;
         for (const auto& recipe : completed->semantics.production.recipes)
-            isWheatFed |= recipe.enabled && recipe.cost[WHEAT] > 0;
+            usesFood |= recipe.enabled && recipe.cost[materialIndex(MaterialId::Food)] > 0;
 
 		// Effective footprint used for space reservation. Some buildings grow on
 		// upgrade and must reserve room for the final size at placement time, or the
@@ -165,7 +170,7 @@ namespace Cortex
 		// forward bases and empty colonies are exempt. Precompute that gate once
 		// instead of scanning every building for each candidate, keeping scan order.
 		thread_local std::vector<unsigned char> proximity;
-		if (!isWheatFed && forward == NULL)
+		if (!usesFood && forward == NULL)
 			geometry.buildingProximityMask(w, h, CORTEX_MAX_BUILD_EDGE_DIST, proximity);
 		else
 			proximity.clear();
@@ -209,7 +214,7 @@ namespace Cortex
 				// building, so a resulting OrderCreate will not be rejected. We gate
 				// on the GROWN footprint (gx, gy, ew x eh) so the spot also has room
 				// for the eventual upgrades; the placed footprint is a subset of it.
-				if (occupiesGround ? !map.isHardSpaceForBuilding(gx, gy, ew, eh)
+				if (occupiesGround ? !hardSpace.rectangle(gx, gy, ew, eh)
                     : !game->checkRoomForBuilding(x, y, bt, team->teamNumber))
 					continue;
 
@@ -231,67 +236,67 @@ namespace Cortex
 				if (forward != NULL && !game->checkRoomForBuilding(x, y, bt, team->teamNumber))
 					continue;
 
-				// Geography rejects for wheat-fed buildings.
+				// Geography rejects for food-fed buildings.
 				//
-				// HARD REJECT (swarm and inn): no WHEAT within the maximum haul
-				// distance. Engine fact: a swarm L0 stalls when its WHEAT buffer
+				// HARD REJECT (swarm and inn): no Food within the maximum haul
+				// distance. Engine fact: a swarm L0 stalls when its Food buffer
 				// drops below 5 (building/TypeSteps.cpp:31); a unit on a field tile
 				// more than ~5 tiles away cannot keep the buffer above the stall
 				// line within one production cycle of 150 ticks. CORTEX_WHEAT_MAX_DIST
 				// encodes this. Use the cheap bounded scan (cap == WHEAT_MAX_DIST) to
 				// avoid scanning far on a reject; the full SCAN_CAP is used only for
-				// the retained candidates' wheatDist field at copy-out.
-				if (isWheatFed &&
-				    nearestWheatDist(map, x, y, CORTEX_WHEAT_MAX_DIST) < 0)
+				// the retained candidates' foodSourceDistance field at copy-out.
+				if (usesFood &&
+				    food.nearestDistance(x, y, CORTEX_WHEAT_MAX_DIST) < 0)
 					continue;
 
 				// HARD REJECT (swarm and inn): the field must hold a real CLUSTER of
-				// harvestable wheat, not just the single tile the check above needs.
-				// Require at least CORTEX_WHEAT_MIN_TILES wheat tiles that will SURVIVE
+				// harvestable food, not just the single tile the check above needs.
+				// Require at least CORTEX_WHEAT_MIN_TILES food tiles that will SURVIVE
 				// the protection checkerboard (the open-parity half) within
 				// CORTEX_WHEAT_MIN_TILES_RADIUS of the footprint. We count the SURVIVING
 				// set, not the live non-forbidden set, so the gate measures the field as
 				// it WILL be once the checkerboard settles: a candidate near freshly-
-				// revealed wheat (not yet painted) no longer passes on the full field only
+				// revealed food (not yet painted) no longer passes on the full field only
 				// to have the reconcile paint half of it away and leave the inn below the
-				// threshold within a cycle. Depleted tiles are no longer WHEAT, so this
+				// threshold within a cycle. Depleted tiles are no longer Food, so this
 				// still rejects a swarm hugging a nearly-exhausted patch and an inn dropped
-				// on a field whose wheat is already gone (both observed in play).
-				if (isWheatFed &&
-				    countSurvivingWheatWithin(map, x, y, w, h,
+				// on a field whose food is already gone (both observed in play).
+				if (usesFood &&
+				    countSurvivingFoodSourcesWithin(map, x, y, w, h,
 				                             CORTEX_WHEAT_MIN_TILES_RADIUS)
 				        < CORTEX_WHEAT_MIN_TILES)
 					continue;
 
 				// HARD REJECT (swarm only): the swarm's footprint EDGE must sit within
-				// CORTEX_SWARM_WHEAT_EDGE_DIST tiles of a WHEAT tile. This is STRICTER
-				// than the shared corner-based nearestWheatDist check above (which still
+				// CORTEX_SWARM_WHEAT_EDGE_DIST tiles of a Food tile. This is STRICTER
+				// than the shared corner-based nearestFoodSourceDistance check above (which still
 				// gates inns): a swarm spawns the haulers that feed the whole colony, so
-				// it must hug the wheat far more tightly than an inn does. anyWheatWithin
+				// it must hug the food far more tightly than an inn does. anyFoodSourceWithin
 				// is edge-aware (it scans the footprint expanded by `dist`), so this is
 				// measured from the footprint edge, not the top-left corner.
-				if (isSwarm && isWheatFed && !anyWheatWithin(map, x, y, w, h, CORTEX_SWARM_WHEAT_EDGE_DIST))
+				if (isSwarm && usesFood && !food.anyWithin(x, y, w, h, CORTEX_SWARM_WHEAT_EDGE_DIST))
 					continue;
 
 				// HARD REJECT (inn only): the inn's GROWN footprint edge must sit within
-				// CORTEX_INN_WHEAT_EDGE_DIST tiles of a HARVESTABLE (surviving-parity) WHEAT
-				// tile. Unlike the cluster gate above (which counts surviving wheat within a
+				// CORTEX_INN_WHEAT_EDGE_DIST tiles of a HARVESTABLE (surviving-parity) Food
+				// tile. Unlike the cluster gate above (which counts surviving food within a
 				// wide radius of the PLACED 2x2 to prove a real field exists), this measures
 				// from the GROWN box (gx, gy, ew x eh) so the expansion area is included: the
-				// inn — at its final size — hugs the wheat with at most a one-tile gap and
+				// inn — at its final size — hugs the food with at most a one-tile gap and
 				// never blocks the lane its haulers use to reach the field. countSurviving
-				// WheatWithin scans the box expanded by `dist`, so dist == 1 means "wheat
+				// WheatWithin scans the box expanded by `dist`, so dist == 1 means "food
 				// touching or one tile off the grown edge".
-				if (isInn && isWheatFed &&
-				    countSurvivingWheatWithin(map, gx, gy, ew, eh, CORTEX_INN_WHEAT_EDGE_DIST)
+				if (isInn && usesFood &&
+				    countSurvivingFoodSourcesWithin(map, gx, gy, ew, eh, CORTEX_INN_WHEAT_EDGE_DIST)
 				        < 1)
 					continue;
 
 				// HARD REJECT (swarm only): must sit at least CORTEX_SWARM_MIN_SPACING
 				// Chebyshev tiles from every existing live swarm of this team so that
-				// two swarms do not compete for the same wheat catchment.
+				// two swarms do not compete for the same food catchment.
 				// distanceToNearestSwarm returns -1 when no swarms exist; skip the
-				// reject in that case (first swarm goes wherever wheat exists).
+				// reject in that case (first swarm goes wherever food exists).
 				if (isSwarm)
 				{
 					const int swarmDist = geometry.distanceToNearestBuildingType(x, y, CORTEX_BUILD_SWARM);
@@ -301,7 +306,7 @@ namespace Cortex
 
 				// HARD REJECT (inn only): keep inns at least CORTEX_INN_MIN_SPACING
 				// Chebyshev tiles apart so they do not pile on top of each other and
-				// split the same wheat catchment. distanceToNearestInn returns -1 when
+				// split the same food catchment. distanceToNearestInn returns -1 when
 				// no inn exists yet; the first inn places freely.
 				if (isInn)
 				{
@@ -310,17 +315,17 @@ namespace Cortex
 						continue;
 				}
 
-				// WHEAT-LANE CLEARANCE (non-wheat-fed only): only swarms and inns may
-				// sit close to wheat. Every other building type is pushed back beyond
+				// Food-LANE CLEARANCE (non-food-fed only): only swarms and inns may
+				// sit close to food. Every other building type is pushed back beyond
 				// CORTEX_WHEAT_CLEAR_DIST so its footprint does not block workers'
 				// paths into the field. AI-design rule, no engine analogue.
-				if (occupiesGround && !isWheatFed && anyWheatWithin(map, x, y, w, h, CORTEX_WHEAT_CLEAR_DIST))
+				if (occupiesGround && !usesFood && food.anyWithin(x, y, w, h, CORTEX_WHEAT_CLEAR_DIST))
 					continue;
 
 				// INN SIDE-CLEARANCE (placing an inn): the inn may touch a building on
 				// at most CORTEX_INN_MAX_TOUCH_SIDES of its four sides; the rest keep
 				// CORTEX_INN_SIDE_CLEARANCE empty tiles so workers can reach it and the
-				// wheat behind it. Measured against the GROWN (ew x eh) footprint.
+				// food behind it. Measured against the GROWN (ew x eh) footprint.
 				// innOccupiedSides counts sides already occupied by existing buildings
 				// (no hypothetical candidate here — the inn IS the candidate).
 				if (occupiesGround && isInn &&
@@ -382,11 +387,11 @@ namespace Cortex
 			}
 		}
 
-		// Copy-out: fill the retained candidates' wheatDist using the full scan
+		// Copy-out: fill the retained candidates' foodSourceDistance using the full scan
 		// cap (CORTEX_WHEAT_SCAN_CAP > CORTEX_WHEAT_MAX_DIST) so the signal can
 		// report "just out of haul range" for supply-distance expansion decisions
-		// in the policy. Applies to all building types; harmless for non-wheat ones
-		// (a barracks or school will get -1 if there is no wheat nearby, which the
+		// in the policy. Applies to all building types; harmless for non-food ones
+		// (a barracks or school will get -1 if there is no food nearby, which the
 		// policy ignores).
 		for (int i = 0; i < count; i++)
 		{
@@ -394,7 +399,7 @@ namespace Cortex
 			out[i].x = heap[i].x;
 			out[i].y = heap[i].y;
 			out[i].score = heap[i].score;
-			out[i].wheatDist = nearestWheatDist(map, heap[i].x, heap[i].y,
+			out[i].foodSourceDistance = food.nearestDistance(heap[i].x, heap[i].y,
 			                                   CORTEX_WHEAT_SCAN_CAP);
 		}
 
@@ -413,7 +418,7 @@ namespace Cortex
 	                          BuildCandidate& out, int maxWorkerQualification)
 	{
 		// Same scan, same legality gates (a forward inn still needs harvestable
-		// wheat at the front), restricted to the target-distance window and with
+		// food at the front), restricted to the target-distance window and with
 		// the colony edge-distance cap lifted. The compactness score is unchanged,
 		// so the retained best (slot 0) is the legal forward spot CLOSEST to the
 		// colony — the safest one that does the job.
@@ -421,7 +426,7 @@ namespace Cortex
 		out.x = 0;
 		out.y = 0;
 		out.score = 0;
-		out.wheatDist = -1;
+		out.foodSourceDistance = -1;
 		if (maxTargetDist < minTargetDist)
 			return 0; // degenerate window (range too short for the standoff) — no spot.
 

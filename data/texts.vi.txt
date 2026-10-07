@@ -5564,5 +5564,45 @@ Công nhân có thể lấy vật tư từ kho chung của các chợ. Chợ có
 Nhập định nghĩa địa hình
 [Terrain palette]
 Bảng chọn địa hình
+[Food]
+Thức ăn
+[Paper]
+Giấy
+[Cherries]
+Anh đào
+[Oranges]
+Cam
+[Prunes]
+Mận
+[Gold]
+Vàng
+[Metal]
+Kim loại
+[Glass]
+Thủy tinh
+[Fabric]
+Vải
+[Import Resource Definitions]
+Nhập định nghĩa tài nguyên
+[Resource palette]
+Bảng tài nguyên
+[Trees]
+Cây
+[Rocks]
+Đá tảng
+[Cherry tree]
+Cây anh đào
+[Orange tree]
+Cây cam
+[Prune tree]
+Cây mận
+[Gold ore]
+Quặng vàng
+[Iron ore]
+Quặng sắt
+[Sand]
+Cát
+[Cotton]
+Bông
 [Reroll terrain look]
 Chọn lại ngẫu nhiên diện mạo địa hình

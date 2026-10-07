@@ -91,7 +91,7 @@ namespace
 	//! A worker at (x,y) finishing a harvest against the tile at (x+dx,y+dy).
 	bool harvest(Map& map, int x, int y, int dx, int dy, int resource = WHEAT)
 	{
-		return map.takeHarvest(x, y, dx, dy, resource, TEAM_MASK);
+		return map.takeHarvestMaterialSlot(x, y, dx, dy, resource, TEAM_MASK);
 	}
 
 	// Paint or erase a farm area with the order a player's brush sends.
@@ -204,7 +204,7 @@ namespace
 
 TEST_SUITE("FarmAreas")
 {
-	TEST_CASE("without the experiment the default game's checksums are unchanged [golden]")
+	TEST_CASE("without the experiment the default game has a stable checksum trace [golden]")
 	{
 		glob2test::HeadlessGlobals globals;
 		glob2test::expectGolden("farm-areas/off-path-checksums.txt", offPathTrace());
@@ -236,7 +236,7 @@ TEST_SUITE("FarmAreas")
 					if (Unit* u = world.team->myUnits[i])
 					{
 						u->hungry = Unit::HUNGRY_MAX;
-						carrying += u->carriedResource == WHEAT;
+						carrying += u->carriedMaterial == WHEAT;
 					}
 			}
 			struct { int harvested, left, carrying; } result{
@@ -296,16 +296,21 @@ TEST_SUITE("FarmAreas")
 		CHECK(wheatAt(map, 10, 10) == 5);
 	}
 
-	TEST_CASE("the target emptying during the animation is not a failure while the field is in reach")
+	TEST_CASE("a vanished harvest target requires retargeting before pooling the reachable field")
 	{
 		glob2test::HeadlessGlobals globals;
 		glob2test::HeadlessGame world(options(true));
 		Map& map = world.game.map;
 		paintFarm(map, 0, 0, 31, 31);
-		// (5,5) was aimed at and is now empty; (5,6) is in reach and joins the field.
+		// Revalidate the animated target before giving a material. A vanished
+		// target cannot silently consume a different deposit in the nearby field.
 		setWheat(map, 5, 6, 2);
 		setWheat(map, 6, 6, 4);
-		REQUIRE(harvest(map, 4, 5, 1, 0));
+		CHECK_FALSE(harvest(map, 4, 5, 1, 0));
+		CHECK(wheatAt(map, 5, 6) == 2);
+		CHECK(wheatAt(map, 6, 6) == 4);
+		// Retrying against a living target still pools the connected ripe crop.
+		REQUIRE(harvest(map, 4, 5, 1, 1));
 		CHECK(wheatAt(map, 6, 6) == 3);
 	}
 
@@ -365,7 +370,7 @@ TEST_SUITE("FarmAreas")
 		}
 	}
 
-	TEST_CASE("off a farm, and for another team's farm, the original harvest is unchanged, phantom grain included")
+	TEST_CASE("off a farm and for another team's farm harvesting depletes only the targeted stock")
 	{
 		glob2test::HeadlessGlobals globals;
 		glob2test::HeadlessGame world(options(true));
@@ -375,7 +380,7 @@ TEST_SUITE("FarmAreas")
 		REQUIRE(harvest(map, 4, 5, 1, 0));
 		CHECK(wheatAt(map, 5, 5) == 0);
 		CHECK(wheatAt(map, 7, 5) == 5);
-		CHECK(harvest(map, 4, 5, 1, 0)); // the tile is empty and a grain is still granted
+		CHECK_FALSE(harvest(map, 4, 5, 1, 0)); // empty deposits never grant phantom material
 
 		paintFarm(map, 10, 10, 20, 20, 1);
 		setWheat(map, 15, 15, 1);
@@ -554,7 +559,7 @@ TEST_SUITE("FarmAreas")
 		REQUIRE(harvest(map, 12, 5, 1, 0));
 		CHECK(wheatAt(map, 13, 5) == 0);
 		CHECK(wheatAt(map, 14, 5) == 5);
-		CHECK(harvest(map, 12, 5, 1, 0));
+		CHECK_FALSE(harvest(map, 12, 5, 1, 0));
 		CHECK_FALSE(map.isClearingTarget(map.coordToIndex(15, 8), TEAM_MASK, map.farmAreasEnabled()));
 
 		glob2test::HeadlessGame withExperiment(options(true));

@@ -5564,5 +5564,45 @@ Os trabalhadores podem buscar provisões no estoque compartilhado dos mercados. 
 Importar definições de terreno
 [Terrain palette]
 Paleta de terrenos
+[Food]
+Alimentos
+[Paper]
+Papel
+[Cherries]
+Cerejas
+[Oranges]
+Laranjas
+[Prunes]
+Ameixas
+[Gold]
+Ouro
+[Metal]
+Metal
+[Glass]
+Vidro
+[Fabric]
+Tecido
+[Import Resource Definitions]
+Importar definições de recursos
+[Resource palette]
+Paleta de recursos
+[Trees]
+Árvores
+[Rocks]
+Rochas
+[Cherry tree]
+Cerejeira
+[Orange tree]
+Laranjeira
+[Prune tree]
+Ameixeira
+[Gold ore]
+Minério de ouro
+[Iron ore]
+Minério de ferro
+[Sand]
+Areia
+[Cotton]
+Algodão
 [Reroll terrain look]
 Sortear novamente a aparência do terreno

@@ -33,7 +33,8 @@ dated reports and pull-request artifacts do not belong here.
   [historical architecture overview](development/legacy-architecture.txt).
 - **Features:** [gameplay footage and automatic chapters](features/gameplay-recording.md), [custom-game setup](features/custom-game-setup/README.md),
   [experimental features](features/experimental-features.md),
-  [building catalogs](features/building-catalogs.md) and the
+  [building catalogs](features/building-catalogs.md),
+  [resource catalogs and materials](features/resource-catalogs.md) and the
   [guard-area balancing](features/guard-area-balancing.md) and
   [farm areas](features/farm-areas.md) and [Markets V2](features/markets-v2.md) experiments,
   [map previews](features/pre-game-map-preview.md),

@@ -17,7 +17,7 @@ std::string denseColonySizeFailure(const GenerationRequest &request)
 }
 
 std::string startingAccessFailure(const Map &map, int teams,
-								  const std::vector<ResourceAccessRule> &rules, int minimumSites,
+								  const std::vector<MaterialAccessRule> &rules, int minimumSites,
 								  int buildingRange)
 {
 	if (teams < 1 || teams > Team::MAX_COUNT || minimumSites < 0 || buildingRange < 0)
@@ -25,8 +25,8 @@ std::string startingAccessFailure(const Map &map, int teams,
 	int range = buildingRange;
 	for (const auto &rule : rules)
 	{
-		if (rule.type < 0 || rule.type >= MAX_NB_RESOURCES || rule.range < 1 || !rule.name)
-			throw GenerationFailure("Invalid starting-access resource rule");
+		if (!validMaterial(materialIndex(rule.material)) || rule.range < 1 || !rule.name)
+			throw GenerationFailure("Invalid starting-access material rule");
 		range = std::max(range, rule.range);
 	}
 	const Torus t(map);
@@ -54,7 +54,7 @@ std::string startingAccessFailure(const Map &map, int teams,
 					if (!resource.amount)
 						continue;
 					for (size_t r = 0; r < rules.size(); ++r)
-						if (resource.type == rules[r].type &&
+						if (map.materialAmountAt(map.coordToIndex(x+dx,y+dy),rules[r].material)>0 &&
 							(distances[r] < 0 || distance + 1 < distances[r]))
 							distances[r] = distance + 1;
 				}
@@ -75,7 +75,7 @@ std::string startingAccessFailure(const Map &map, int teams,
 std::string startingFloorFailure(const Map &map, int teams, int wheatRange, int woodRange)
 {
 	return startingAccessFailure(map, teams,
-								 {{WHEAT, wheatRange, "wheat"}, {WOOD, woodRange, "wood"}});
+								 {{MaterialId::Food, wheatRange, "food"}, {MaterialId::Wood, woodRange, "wood"}});
 }
 
 bool reopenCrampedStarts(Game &game, GenerationContext &context, const ResourceAmounts &amounts,
@@ -129,28 +129,30 @@ ColonyWalk walkFromFirstColony(const Map &map, int teams, const std::string &gro
 
 std::string CropsInReach::missing() const
 {
-	if (wheat && wood)
+	if (food && wood)
 		return "";
-	return std::string("cannot walk to ") + (wheat ? "wood." : "wheat.");
+	return std::string("cannot walk to ") + (food ? "wood." : "food.");
 }
 
 CropsInReach cropsBesideReach(const Map &map, const std::vector<int> &reach)
 {
 	CropsInReach crops;
 	const int w = map.getW(), h = map.getH();
-	for (int y = 0; y < h && !(crops.wheat && crops.wood); ++y)
+	for (int y = 0; y < h && !(crops.food && crops.wood); ++y)
 		for (int x = 0; x < w; ++x)
 		{
-			const int type = map.getResource(x, y).type;
-			if (type != WHEAT && type != WOOD)
+			const auto index = map.coordToIndex(x, y);
+			const bool food = map.materialAmountAt(index, MaterialId::Food) > 0;
+			const bool wood = map.materialAmountAt(index, MaterialId::Wood) > 0;
+			if (!food && !wood)
 				continue;
 			bool beside = false;
 			for (int dy = -1; dy <= 1 && !beside; ++dy)
 				for (int dx = -1; dx <= 1 && !beside; ++dx)
 					beside =
 						reach[size_t(map.normalizeY(y + dy)) * w + map.normalizeX(x + dx)] >= 0;
-			(type == WHEAT ? crops.wheat : crops.wood) =
-				(type == WHEAT ? crops.wheat : crops.wood) || beside;
+			crops.food |= food && beside;
+			crops.wood |= wood && beside;
 		}
 	return crops;
 }

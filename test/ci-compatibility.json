@@ -50,7 +50,9 @@
     "BuildingCapabilities/*",
     "SceneExtract/*",
     "BuildingCatalogFixtures/*",
-    "AICustomCatalog/*"
+    "AICustomCatalog/*",
+    "RuntimeResources/*",
+    "TerrainResources/*"
   ],
   "unit_filters": [
     "*"

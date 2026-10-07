@@ -16,20 +16,32 @@ void Map::invalidateResourceSeeds()
 
 void Map::replaceResource(size_t index, const Resource &resource)
 {
-	const bool changedType = tiles[index].resource.type != resource.type;
-	tiles[index].resource = resource;
-	if (changedType) resourceSeedChanged(index, ResourceSeedCache::Resource);
+    const auto before = resourceMaterialMaskAt(index);
+    releaseResourceStock(index);
+    tiles[index].resource = resource;
+    initializeResourceStock(index);
+    materialStockChanged(index, before);
 }
 
 void Map::replaceTile(size_t index, const Tile &tile)
 {
-	const auto &old = tiles[index];
-	unsigned changes = 0;
-	if (old.resource.type != tile.resource.type) changes |= ResourceSeedCache::Resource;
-	if (old.building != tile.building) changes |= ResourceSeedCache::Building;
-	if (old.forbidden != tile.forbidden) changes |= ResourceSeedCache::Forbidden;
-	tiles[index] = tile;
-	if (changes) resourceSeedChanged(index, changes);
+    const Tile old = tiles[index];
+    // Sprite changes do not replace a deposit's independently stored stocks.
+    // Explicit replaceResource retains its reset-to-definition semantics.
+    if (old.resource.type!=tile.resource.type || old.resource.amount!=tile.resource.amount)
+        replaceResource(index,tile.resource);
+    Resource resolved = tiles[index].resource;
+    if (resolved.type!=NO_RES_TYPE)
+    {
+        resolved.variety=tile.resource.variety;
+        resolved.animation=tile.resource.animation;
+    }
+    tiles[index] = tile;
+    tiles[index].resource = resolved;
+    unsigned changes = 0;
+    if (old.building != tile.building) changes |= ResourceSeedCache::Building;
+    if (old.forbidden != tile.forbidden) changes |= ResourceSeedCache::Forbidden;
+    if (changes) resourceSeedChanged(index, changes);
 }
 
 void Map::setAreaMask(size_t index, Uint32 Tile::*field, Uint32 value)

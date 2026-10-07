@@ -27,11 +27,11 @@ TorusView::TorusView()
       originY(0), focusU(0.5f), focusV(0.5f)
 {
 }
-TorusView::~TorusView() { releaseResources(); }
+TorusView::~TorusView() { releaseMaterials(); }
 
 void TorusView::reset()
 {
-    releaseResources();
+    releaseMaterials();
     target = wholeRing = moving = pointerHeld = panHeld = failed = false;
     lastMove = 0;
     amount = travelU = travelV = cameraU = cameraV = 0;

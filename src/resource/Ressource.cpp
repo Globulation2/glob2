@@ -7,23 +7,16 @@
 
 using namespace GAGCore;
 
-std::string getResourceName(int type)
+std::string getMaterialName(int material)
 {
-	if(type == WOOD)
-		return Toolkit::getStringTable()->getString("[Wood]");
-	if(type == WHEAT)
-		return Toolkit::getStringTable()->getString("[Wheat]");
-	if(type == PAPYRUS)
-		return Toolkit::getStringTable()->getString("[Papyrus]");
-	if(type == STONE)
-		return Toolkit::getStringTable()->getString("[Stone]");
-	if(type == ALGA)
-		return Toolkit::getStringTable()->getString("[Alga]");
-	if(type == CHERRY)
-		return Toolkit::getStringTable()->getString("[Cherry]");
-	if(type == ORANGE)
-		return Toolkit::getStringTable()->getString("[Orange]");
-	if(type == PRUNE)
-		return Toolkit::getStringTable()->getString("[Prune]");
-	return "";
+	static constexpr const char* labels[] = {"[Wood]", "[Food]", "[Paper]", "[Stone]", "[Algae]",
+		"[Cherries]", "[Oranges]", "[Prunes]", "[Gold]", "[Metal]", "[Glass]", "[Fabric]"};
+	return material >= 0 && validMaterial(unsigned(material)) ? Toolkit::getStringTable()->getString(labels[material]) : "";
+}
+
+std::string getResourceDisplayName(const std::string& authoredName)
+{
+    const auto token = "[" + authoredName + "]";
+    const auto* strings = Toolkit::getStringTable();
+    return strings && strings->doesStringExist(token) ? strings->getString(token) : authoredName;
 }

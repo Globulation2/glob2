@@ -5564,5 +5564,45 @@ Robotníci môžu brať zásoby zo spoločného skladu trhov. Trhy možno vylep�
 Importovať definície terénu
 [Terrain palette]
 Paleta terénov
+[Food]
+Potraviny
+[Paper]
+Papier
+[Cherries]
+Čerešne
+[Oranges]
+Pomaranče
+[Prunes]
+Slivky
+[Gold]
+Zlato
+[Metal]
+Kov
+[Glass]
+Sklo
+[Fabric]
+Látka
+[Import Resource Definitions]
+Importovať definície zdrojov
+[Resource palette]
+Paleta zdrojov
+[Trees]
+Stromy
+[Rocks]
+Skaly
+[Cherry tree]
+Čerešňa
+[Orange tree]
+Pomarančovník
+[Prune tree]
+Slivka
+[Gold ore]
+Zlatá ruda
+[Iron ore]
+Železná ruda
+[Sand]
+Piesok
+[Cotton]
+Bavlna
 [Reroll terrain look]
 Znova náhodne vybrať vzhľad terénu

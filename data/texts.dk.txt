@@ -5564,5 +5564,45 @@ Arbejdere kan hente forsyninger fra markedernes fælles lager. Markeder kan opgr
 Importér terrændefinitioner
 [Terrain palette]
 Terrænpalet
+[Food]
+Mad
+[Paper]
+Papir
+[Cherries]
+Kirsebær
+[Oranges]
+Appelsiner
+[Prunes]
+Blommer
+[Gold]
+Guld
+[Metal]
+Metal
+[Glass]
+Glas
+[Fabric]
+Stof
+[Import Resource Definitions]
+Importér ressourcedefinitioner
+[Resource palette]
+Ressourcepalet
+[Trees]
+Træer
+[Rocks]
+Klipper
+[Cherry tree]
+Kirsebærtræ
+[Orange tree]
+Appelsintræ
+[Prune tree]
+Blommetræ
+[Gold ore]
+Guldmalm
+[Iron ore]
+Jernmalm
+[Sand]
+Sand
+[Cotton]
+Bomuld
 [Reroll terrain look]
 Vælg terrænets udseende tilfældigt igen

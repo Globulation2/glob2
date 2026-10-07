@@ -130,6 +130,31 @@ TEST_SUITE("TerrainRegistry")
 				CHECK(distinct->presentation(secondId).minimap.r == value[0].get<unsigned>());
 		}
 	}
+	TEST_CASE("farm material names support every material and import legacy crop slots")
+	{
+		const auto base = TerrainRegistry::builtins();
+		const auto registry = base->importJson(source(Json::array({
+			definition("test:fabric", "grass", {{"farmMaterial", "fabric"}, {"allowedResources", 0}}),
+			definition("test:legacy", "grass", {{"farmCrop", 1}}),
+			definition("test:none", "grass", {{"farmMaterial", nullptr}})})));
+		CHECK(registry->properties(*registry->find("test:fabric")).farmMaterial == materialIndex(MaterialId::Fabric));
+		CHECK(registry->properties(*registry->find("test:legacy")).farmMaterial == materialIndex(MaterialId::Food));
+		CHECK(registry->properties(*registry->find("test:none")).farmMaterial == 255);
+		const auto saved = Json::parse(registry->serialize());
+		CHECK(saved["terrains"][0]["properties"]["farmMaterial"] == "fabric");
+		CHECK_FALSE(saved["terrains"][0]["properties"].contains("farmCrop"));
+		CHECK(TerrainRegistry::deserialize(saved.dump())->serialize() == registry->serialize());
+		auto legacySaved = saved;
+		for (auto& terrain : legacySaved["terrains"])
+		{
+			terrain["properties"].erase("farmMaterial");
+			terrain["properties"]["farmCrop"] = 1;
+		}
+		CHECK(TerrainRegistry::deserialize(legacySaved.dump())->properties(*registry->find("test:fabric")).farmMaterial == materialIndex(MaterialId::Food));
+		for (const auto& invalid : {Json{{"farmMaterial", "wheat"}}, Json{{"farmMaterial", 11}},
+			Json{{"farmMaterial", "food"}, {"farmCrop", 1}}})
+			CHECK_THROWS(base->importJson(source(Json::array({definition("test:invalid", "grass", invalid)}))));
+	}
 	TEST_CASE("invalid imports and saved registries are rejected without changing their owner")
 	{
 		const auto registry = TerrainRegistry::builtins();

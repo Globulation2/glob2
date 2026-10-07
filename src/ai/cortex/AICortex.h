@@ -249,14 +249,14 @@ private:
 	                     Accept accept);
 
 	/// Wheat-forbidden executor, run EVERY decision cycle in parallel with
-	/// translateAction (gated by CortexPolicy::wantWheatProtection) — not as a
+	/// translateAction (gated by CortexPolicy::wantFoodSourceProtection) — not as a
 	/// competing action. Rebuilds the full ADD/DEL checkerboard tile masks over our
-	/// wheat (a bounded colony-region scan, RNG-free) at the per-game open-margin
+	/// food (a bounded colony-region scan, RNG-free) at the per-game open-margin
 	/// wheatOpenMargin and appends one area-paint order per non-empty diff
 	/// (DEL before ADD). A single order carries the whole diff, so all newly-revealed
-	/// wheat is fenced in one cycle. Self-correcting: an already-painted diff is empty
+	/// food is fenced in one cycle. Self-correcting: an already-painted diff is empty
 	/// next cycle, so re-running each cycle is free when there is no new work.
-	void enqueueWheatForbidden(const Cortex::CortexObservation& obs, bool liftAll = false);
+	void enqueueFoodSourcesForbidden(const Cortex::CortexObservation& obs, bool liftAll = false);
 
 	/// Resolve a tracked flag gid to its live ALIVE WAR_FLAG building, or NULL if the
 	/// gid is unset (NOGBID) or the flag no longer exists (died / was deleted).
@@ -434,7 +434,7 @@ private:
 	int flagPosture;
 	int offenseHoldUntil;
 
-	/// Per-game wheat open-margin N: the first N rows of wheat nearest the harvest
+	/// Per-game food open-margin N: the first N rows of food nearest the harvest
 	/// source stay unpainted; the checkerboard starts at depth N+1. Drawn ONCE via
 	/// syncRand on the first decision cycle (sentinel -1 = not yet drawn) and then
 	/// persisted (NOT redrawn on load) so same-seed replays stay byte-identical.
@@ -519,8 +519,8 @@ private:
 	/// no Order). When GLOB2_CORTEX_INN_TRACE=<abs prefix> is set, every decision
 	/// cycle appends one CSV row per valid tracked INN to <prefix>.team<N>.csv — the
 	/// inn-side companion to the swarm worker trace, for debugging worker allocation
-	/// to inns (restock demand, wheat gate, the production-mix tiers). Each row is the
-	/// inn's observed state this cycle (wheat buffer, restockTripsNeeded, wheat
+	/// to inns (restock demand, food gate, the production-mix tiers). Each row is the
+	/// inn's observed state this cycle (food buffer, restockTripsNeeded, food
 	/// diagnostics), the worker cap the tune action chose (or the current one when it
 	/// left the inn unchanged), and the colony-level context + tier facts (recomputed
 	/// via the pure CortexPolicy::computeFacts, since getOrder() has no DecideFacts to

@@ -5564,5 +5564,45 @@ CPU %0%
 Εισαγωγή ορισμών εδάφους
 [Terrain palette]
 Παλέτα εδαφών
+[Food]
+Τροφή
+[Paper]
+Χαρτί
+[Cherries]
+Κεράσια
+[Oranges]
+Πορτοκάλια
+[Prunes]
+Δαμάσκηνα
+[Gold]
+Χρυσός
+[Metal]
+Μέταλλο
+[Glass]
+Γυαλί
+[Fabric]
+Ύφασμα
+[Import Resource Definitions]
+Εισαγωγή ορισμών πόρων
+[Resource palette]
+Παλέτα πόρων
+[Trees]
+Δέντρα
+[Rocks]
+Βράχοι
+[Cherry tree]
+Κερασιά
+[Orange tree]
+Πορτοκαλιά
+[Prune tree]
+Δαμασκηνιά
+[Gold ore]
+Χρυσομετάλλευμα
+[Iron ore]
+Σιδηρομετάλλευμα
+[Sand]
+Άμμος
+[Cotton]
+Βαμβάκι
 [Reroll terrain look]
 Νέα τυχαία εμφάνιση εδάφους

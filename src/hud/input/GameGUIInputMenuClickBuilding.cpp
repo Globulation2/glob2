@@ -175,23 +175,22 @@ void GameGUI::handleMenuClickBuildingSelection(int mx, int my, int button)
 	if ((selBuild->owner->allies)&Team::teamNumberToMask(localTeamNo))
 	{
 
-		// cleared resources for clearing flags: one checkbox row per clearable
-		// resource (stone is never cleared, so it has no row)
+		// Match material rows yielded by clearable resource definitions.
 		if (buildingType->zonable[WORKER])
 		{
 			ypos+=YOFFSET_B_SEP+YOFFSET_TEXT_PARA;
-			for (int i=0; i<BASIC_COUNT; i++)
-				if (i!=STONE)
+			for (int i=0; i<MaterialCount; i++)
+				if (drawnScene().clearableMaterial(i))
 				{
 					if (lmx>10 && lmx<22 && my>ypos && my<ypos+YOFFSET_TEXT_PARA)
 					{
-						std::array<bool, BASIC_COUNT> next;
-						for (int k=0; k<BASIC_COUNT; k++)
+						std::array<bool, MaterialCount> next;
+						for (int k=0; k<MaterialCount; k++)
 							next[k] = displayedClearingResource(*selBuild, k);
 						next[i] = !next[i];
 						pendingFor(selBuild->gid).pendingClearingResources = next;
-						bool wire[BASIC_COUNT];
-						for (int k=0; k<BASIC_COUNT; k++) wire[k] = next[k];
+						bool wire[MaterialCount];
+						for (int k=0; k<MaterialCount; k++) wire[k] = next[k];
 						orderQueue.push_back(shared_ptr<Order>(new OrderModifyClearingFlag(selBuild->gid, wire)));
 					}
 
@@ -312,10 +311,10 @@ void GameGUI::handleMenuClickBuildingSelection(int mx, int my, int button)
 	if (buildingType->canExchange && (selBuild->owner->sharedVisionExchange&Team::teamNumberToMask(localTeamNo)))
 		ypos += (1+HAPPINESS_COUNT)*YOFFSET_TEXT_PARA;
 	// resources in
-	for (unsigned i=0; i<globalContainer->resourcesTypes.size(); i++)
+	for (unsigned i=0; i<MaterialCount; i++)
 	{
-		if (buildingType->canExchange && i>=BASIC_COUNT) continue;
-		if (buildingType->maxResource[i])
+		if (buildingType->canExchange && i>=HAPPINESS_BASE && i<HAPPINESS_BASE+HAPPINESS_COUNT) continue;
+		if (buildingType->maxMaterial[i] && drawnScene().materialVisible(i))
 		{
 			ypos += 11;
 		}

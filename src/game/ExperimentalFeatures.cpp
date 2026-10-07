@@ -25,7 +25,7 @@ const std::vector<ExperimentDefinition> &experimentDefinitions()
 		{ExperimentId::TrailTerrain, "road-terrain", "Trail terrain",
 		 "Adds weathered trails to the map editor. Ground units move at double speed. Trails support buildings but no resources. Flying units are unaffected."},
 		{ExperimentId::MarketsV2, "markets-v2", "Markets V2",
-		 "Workers can fetch supplies from shared market stock. Markets can upgrade to store wheat and wood, then every resource. Trading between teams remains fruit-only. Applies to new games; saves keep their original setting."},
+		 "Workers can fetch supplies from shared market stock. Markets can upgrade to store food and wood, then every material. Trading between teams remains fruit-only. Applies to new games; saves keep their original setting."},
 	};
 	return definitions;
 }
@@ -103,6 +103,45 @@ void CatalogExperimentRegistry::install(const std::vector<CatalogExperimentDefin
 void registerCatalogExperiments(const std::vector<CatalogExperimentDefinition> &definitions)
 {
 	catalogRegistry().install(definitions);
+}
+
+void saveCatalogExperimentDefinitions(GAGCore::OutputStream* stream, const std::vector<CatalogExperimentDefinition>& definitions)
+{
+	validateCatalogExperiments(definitions);
+	stream->writeEnterSection("resourceExperimentDefinitions");
+	stream->writeUint32(definitions.size(), "count");
+	for (unsigned i = 0; i < definitions.size(); ++i)
+	{
+		const auto& definition = definitions[i];
+		if (definition.key.size() > 128 || definition.label.size() > 512 || definition.help.size() > 4096)
+			throw std::invalid_argument("Resource experiment metadata exceeds limits");
+		stream->writeEnterSection(i);
+		stream->writeText(definition.key, "key");
+		stream->writeText(definition.label, "label");
+		stream->writeText(definition.help, "help");
+		stream->writeLeaveSection();
+	}
+	stream->writeLeaveSection();
+}
+
+std::vector<CatalogExperimentDefinition> loadCatalogExperimentDefinitions(GAGCore::InputStream* stream)
+{
+	stream->readEnterSection("resourceExperimentDefinitions");
+	const auto count = stream->readUint32("count");
+	if (count > ExperimentSet::MAX_STORED) throw std::invalid_argument("Too many resource experiment definitions");
+	std::vector<CatalogExperimentDefinition> result;
+	for (unsigned i = 0; i < count; ++i)
+	{
+		stream->readEnterSection(i);
+		CatalogExperimentDefinition definition{stream->readText("key"), stream->readText("label"), stream->readText("help")};
+		if (definition.key.size() > 128 || definition.label.size() > 512 || definition.help.size() > 4096)
+			throw std::invalid_argument("Resource experiment metadata exceeds limits");
+		result.push_back(std::move(definition));
+		stream->readLeaveSection();
+	}
+	stream->readLeaveSection();
+	validateCatalogExperiments(result);
+	return result;
 }
 
 std::vector<CatalogExperimentDefinition> registeredExperimentDefinitions()

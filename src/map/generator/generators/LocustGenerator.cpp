@@ -226,7 +226,7 @@ std::string validateWorld(const Game &game, const GenerationContext &context)
 	// Evaluate the completed world, including any trail and room repairs.
 	if (const auto error = startingAccessFailure(
 			map, context.request.nbTeams,
-			{{WHEAT, kWheatReach, "dry wheat"}, {WOOD, kWoodReach, "shoreline wood"}}, kRoomSites,
+			{{MaterialId::Food, kWheatReach, "dry food"}, {MaterialId::Wood, kWoodReach, "shoreline wood"}}, kRoomSites,
 			kRoomRange);
 		!error.empty())
 		return error + " Use a bigger map or fewer colonies.";

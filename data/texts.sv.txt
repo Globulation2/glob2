@@ -5564,5 +5564,45 @@ Arbetare kan hämta förnödenheter från marknadernas gemensamma lager. Marknad
 Importera terrängdefinitioner
 [Terrain palette]
 Terrängpalett
+[Food]
+Mat
+[Paper]
+Papper
+[Cherries]
+Körsbär
+[Oranges]
+Apelsiner
+[Prunes]
+Plommon
+[Gold]
+Guld
+[Metal]
+Metall
+[Glass]
+Glas
+[Fabric]
+Tyg
+[Import Resource Definitions]
+Importera resursdefinitioner
+[Resource palette]
+Resurspalett
+[Trees]
+Träd
+[Rocks]
+Klippor
+[Cherry tree]
+Körsbärsträd
+[Orange tree]
+Apelsinträd
+[Prune tree]
+Plommonträd
+[Gold ore]
+Guldmalm
+[Iron ore]
+Järnmalm
+[Sand]
+Sand
+[Cotton]
+Bomull
 [Reroll terrain look]
 Slumpa terrängens utseende igen

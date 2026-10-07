@@ -3,6 +3,7 @@
 
 #pragma once
 
+#include "Material.h"
 #include <climits>
 #include <list>
 #include <memory>
@@ -11,7 +12,7 @@
 #include "BuildingUtils.h"
 #include "MapInternal.h"
 #include "Ressource.h"
-#include "ResourcePacket.h"
+#include "MaterialPacket.h"
 #include "UnitConsts.h"
 #include "BuildingCatalog.h"
 
@@ -35,14 +36,12 @@ class Order;
 /// Distinct from the wire-format `NB_BUILDING` size sentinel.
 static constexpr int BUILDING_LEVEL_NONE = -1;
 
-/// Sentinel for "no resource type chosen yet" on signed integers
-/// (e.g. `Building::neededResource()` return, `bestResource` in
-/// scoring loops). Distinct from `NO_RES_TYPE` (Uint8 0xFF) used
-/// on the `Resource` value-type field.
-static constexpr int RESOURCE_TYPE_NONE = -1;
+/// Sentinel for "no material chosen yet" in building selection loops.
+/// Distinct from the map resource sentinel `NO_RES_TYPE` (Uint16 0xFFFF).
+static constexpr int MATERIAL_TYPE_NONE = -1;
 
 /// Length of the per-building "no-swim variant" / "can-swim variant"
-/// pair. Every per-building gradient/lock/resource array is indexed
+/// pair. Every per-building gradient/lock/clearing array is indexed
 /// `[canSwim]` where `canSwim == 0` means the no-swim variant and
 /// `canSwim == 1` means the can-swim variant. Used both as the array
 /// dimension and as the loop bound in `for (canSwim=0; canSwim<...; …)`.
@@ -72,16 +71,16 @@ class Building : public BuildingUtils
 	/// not fired yet this game; the field is `Uint32` step counter.
 	static constexpr Uint32 LAST_SHOOT_STEP_NEVER = static_cast<Uint32>(-1);
 
-	/// Initial value for proportion-finding loops in `neededResource`
+	/// Initial value for proportion-finding loops in `neededMaterial`
 	/// and `swarmStep`: every real proportion compares less. Same as
 	/// `INT32_MAX`; named for clarity at the call site.
 	static constexpr Sint32 MIN_PROPORTION_INIT = INT32_MAX;
 
-	/// Wished-resources scaling factor: `wishedResources = (NUM/DEN) *
-	/// missing` ≈ 1.33×, so workers can be subscribed before resources
+	/// Wished-materials scaling factor: `wishedMaterials = (NUM/DEN) *
+	/// missing` ≈ 1.33×, so workers can be subscribed before materials
 	/// are actually depleted.
-	static constexpr int WISHED_RESOURCE_NUM = 4;
-	static constexpr int WISHED_RESOURCE_DEN = 3;
+	static constexpr int WISHED_MATERIAL_NUM = 4;
+	static constexpr int WISHED_MATERIAL_DEN = 3;
 
 	/// `findGroundExit` quality scoring (per-tile bonuses):
 	///  - +1 when the candidate exit is next to a resource
@@ -147,7 +146,7 @@ class Building : public BuildingUtils
 	void loadCrossRef(GAGCore::InputStream *stream, BuildingsTypes *types, Team *owner, Sint32 versionMinor);
 	void saveCrossRef(GAGCore::OutputStream *stream);
 
-	bool isResourceFull(void);
+	bool isMaterialFull(void);
 	///Custom-game "fortress buildings" rule: type->hpMax scaled by the
 	///configured multiplier. Use this instead of reading type->hpMax
 	///directly anywhere the result affects simulation or display.
@@ -158,23 +157,23 @@ class Building : public BuildingUtils
 	///Same rule, for type->hpInc: a site delivered in full must still reach
 	///the scaled hpInit, or every new building would finish badly damaged.
 	int getEffectiveHpInc(void) const;
-	int neededResource(void);
+	int neededMaterial(void);
 	/**
-	 * calls neededResource(int res) for all possible resources.
+	 * Calls neededMaterial(int res) for each material slot.
 	 * @param array of needs that will be filled by this function
 	 */
-	void neededResources(int needs[MAX_NB_RESOURCES]);
+	void neededMaterials(int needs[MaterialSlotCount]);
 	/**
-	 * @param res The resource type
-	 * @return count of resources needed of type res. In case of higher multiplicity
-	 * of the requested resource (fruits have 10) the value is reduced by (multiplicity-1)
+	 * @param res The material slot
+	 * @return count of materials needed in slot res. In case of higher multiplicity
+	 * of the requested material (fruits have 10) the value is reduced by (multiplicity-1)
 	 * and clipped to >= 0
 	 */
-	int neededResource(int res);
-	///Wished resources are any resources that are needed, and not being carried by a unit already.
-	///Fills `needs[]` with the result; pass `wishedResources` to refresh the cached member.
-	void computeWishedResources(int needs[MAX_NB_RESOURCES]);
-	int totalWishedResource();
+	int neededMaterial(int res);
+	///Wished materials are any materials that are needed, and not being carried by a unit already.
+	///Fills `needs[]` with the result; pass `wishedMaterials` to refresh the cached member.
+	void computeWishedMaterials(int needs[MaterialSlotCount]);
+	int totalWishedMaterial();
 
 	///Launches construction. Provided with the number of units that should be working during the construction,
 	///and the number of units that should be working after the construction is finished.
@@ -197,7 +196,7 @@ class Building : public BuildingUtils
 	///resources grow into the space or a building is placed, it becomes impossible
 	///to upgrade and the construction is cancelled.
 	void updateConstructionState(void);
-	///Updates the construction state when undergoing construction. If the resources are full,
+	///Updates the construction state when undergoing construction. If the construction materials are fully funded,
 	///construction has completed.
 	void updateBuildingSite(void);
 	///This function updates the units working at this building. If there are too many units, it
@@ -210,8 +209,8 @@ class Building : public BuildingUtils
 	///Sets the area around the building to be discovered, and visible by the building
 	void setMapDiscovered(void);
 
-	///Gets the amount of resources for each type of resource that are needed to repair the building.
-	void getResourceCountToRepair(int resources[MAX_RESOURCES]);
+	///Gets the amount of each material that are needed to repair the building.
+	void getMaterialCountToRepair(int materials[MaterialCount]);
 
 	///Attempts to find room for a building site. If room is found, the building site is established,
 	///and it returns true.
@@ -226,14 +225,14 @@ class Building : public BuildingUtils
 	///This is called every step. The building updates the desiredMaxUnitWorking variable using
 	///the function desiredNumberOfWorkers
 	void step(void);
-	///This function subscribes any building that needs resources carried to it with units.
+	///This function subscribes any building that needs materials carried to it with units.
 	///It is considered greedy, hiring as many units as it needs in order of its preference
 	///Returns true if a unit was hired
-	bool subscribeToBringResourcesStep(bool borrowUnused = false);
+	bool subscribeToBringMaterialsStep(bool borrowUnused = false);
 	//! Whether the unit's type and level qualify it to work for this building.
 	bool canUnitWorkHere(Unit* unit, bool attraction = false);
-	/// Whether any configured resource uses routed team-stock fetching.
-	/// Consumer-aware Map queries apply per-resource gates and exclude own pools.
+	/// Whether any configured material uses routed team-stock fetching.
+	/// Consumer-aware Map queries apply per-material gates and exclude own pools.
 	bool fetchesFromMarkets() const;
 	/// Game-aware upgrade availability; the static type table is shared by games.
 	bool isUpgradeAvailable() const;
@@ -244,13 +243,13 @@ class Building : public BuildingUtils
 	/// Subscribes a unit to go inside the building.
 	void subscribeUnitForInside(Unit* unit);
 	// Reservations protect shared stock from other services and production.
-	BuildingResourceCost reservedResources{};
-	Sint32 availableResource(int resource) const;
-	bool reserveResources(const BuildingResourceCost& cost);
-	bool restoreResourcesReservation(const BuildingResourceCost& cost);
-	void releaseResources(const BuildingResourceCost& cost);
-	void consumeReservedResources(const BuildingResourceCost& cost, int diagnosticUse);
-	BuildingResourceCost serviceCost(const Unit* unit, int purpose) const;
+	BuildingMaterialCost reservedMaterials{};
+	Sint32 availableMaterial(int resource) const;
+	bool reserveMaterials(const BuildingMaterialCost& cost);
+	bool restoreMaterialsReservation(const BuildingMaterialCost& cost);
+	void releaseMaterials(const BuildingMaterialCost& cost);
+	void consumeReservedMaterials(const BuildingMaterialCost& cost, int diagnosticUse);
+	BuildingMaterialCost serviceCost(const Unit* unit, int purpose) const;
 	bool canOfferService(const Unit* unit, int purpose) const;
 	void reserveService(Unit* unit);
 	void releaseService(Unit* unit);
@@ -294,21 +293,21 @@ class Building : public BuildingUtils
 	/// it does not update the units state.
 	void removeUnitFromInside(Unit* unit);
 
-	/// This function is called when a Unit places a resource into the building.
-	void addResourceIntoBuilding(int resourceType);
-	ResourceDeliveryResult deliverResourcePacket(int resourceType, ResourcePacket packet);
-	ResourcePacket withdrawResourcePacket(int resourceType);
+	/// This function is called when a Unit delivers a material into the building.
+	void addMaterialIntoBuilding(int resourceType);
+	MaterialDeliveryResult deliverMaterialPacket(int resourceType, MaterialPacket packet);
+	MaterialPacket withdrawMaterialPacket(int resourceType);
 	int getConstructionOriginTypeNum() const { return constructionOriginTypeNum; }
 	int getConstructionCompletionTypeNum() const;
-	int constructionResourceNeed(int resource) const;
-	int resourceDeliveryNeed(int resource) const;
-	int resourceDeliveryTarget(int resource) const;
+	int constructionMaterialNeed(int resource) const;
+	int materialDeliveryNeed(int resource) const;
+	int materialDeliveryTarget(int resource) const;
 	void fundConstructionFromInventory();
 	void restoreConstructionReservations();
 	void releaseConstructionReservations();
-	bool canTransferResourcesTo(const BuildingType* destination) const;
-	void transferResourcesPointer(bool wasShared);
-	BuildingResourceCost constructionBudget{}, constructionReserved{};
+	bool canTransferMaterialsTo(const BuildingType* destination) const;
+	void transferMaterialsPointer(bool wasShared);
+	BuildingMaterialCost constructionBudget{}, constructionReserved{};
 	Sint32 constructionOriginTypeNum = -1;
 	std::array<Sint32,NB_UNIT_TYPE> constructionOriginRatios{};
 	void transitionProductionPreferences(const BuildingType* previous, const BuildingType* origin = nullptr, bool restoring = false);
@@ -316,8 +315,8 @@ class Building : public BuildingUtils
 	void applyConstructionHealth(int funded, bool finishRepair = false);
 	void cancelConstructionMaterials();
 
-	/// This function is called when a Unit takes a resource from a building, such as a market
-	void removeResourceFromBuilding(int resourceType);
+	/// This function is called when a Unit takes a material from a building, such as a market
+	void removeMaterialFromBuilding(int resourceType);
 
 	///Gets the middle x coordinate relative to posX
 	int getMidX(void);
@@ -456,12 +455,12 @@ private:
 	///building's current `constructionResultState`.
 	bool isHardSpaceForBuildingSite(void);
 
-	///Designates whether we are full inside. For Inns, takes into account how much wheat is left
-	///and whether there is enough wheat for more units.
+	///Designates whether we are full inside. For Inns, takes into account how much food is left
+	///and whether there is enough food for more units.
 	bool fullInside(void);
 
 	///This function tells the number of workers that should be working at this building.
-	///If, for example, the building doesn't need any resources, then this function will
+	///If, for example, the building doesn't need any materials, then this function will
 	///return 0, because if its already full, it doesn't need any units.
 	int desiredNumberOfWorkers(void);
 
@@ -486,13 +485,13 @@ private:
 	bool considerUnitForWorkerFlag(Unit* unit, int* dist);
 	bool considerUnitForWarriorFlag(Unit* unit, int* dist);
 
-	/// One worker that could be hired to carry resources to this building,
+	/// One worker that could be hired to carry materials to this building,
 	/// with the metrics the selection passes of
-	/// subscribeToBringResourcesStep score on. A null `unit` means the slot
+	/// subscribeToBringMaterialsStep score on. A null `unit` means the slot
 	/// holds no candidate. `distance` is the linear gradient distance to the
-	/// building when the unit already carries the resource being staffed, or
-	/// the round distance by way of the resource when it must fetch one.
-	struct BringResourcesCandidate
+	/// building when the unit already carries the material being staffed, or
+	/// the round distance through a source when it must fetch the material.
+	struct BringMaterialsCandidate
 	{
 		Unit* unit;
 		int distance;
@@ -501,14 +500,14 @@ private:
 	/// Running best-candidate state shared, in order, across the three
 	/// selection passes. Later passes run only while `choosen` is still null.
 	/// Candidates are ranked by `maxLevel` first, then by smallest `minValue`.
-	struct BringResourcesSelection
+	struct BringMaterialsSelection
 	{
 		int maxLevel;
 		int minValue;
 		Unit* choosen;
 	};
 
-	/// Lets src/unit/RoundTripHungerGateHarness.cpp reach considerUnitForResource
+	/// Lets src/unit/RoundTripHungerGateHarness.cpp reach considerUnitForMaterial
 	/// without exposing it to game callers, as GameGUI does for its own harness.
 	friend class RoundTripHungerGateHarness;
 
@@ -518,49 +517,48 @@ private:
 	/// reason in unitsFailingRequirements and returns false.
 	bool considerUnitForBuilding(Unit* unit, int* distBuilding);
 
-	/// Per-unit predicate for one resource: considerUnitForBuilding plus a
-	/// reachable tile of `wantedResource` the unit can fetch from and still
+	/// Per-unit predicate for one material: considerUnitForBuilding plus a
+	/// reachable source of `wantedMaterial` the unit can fetch from and still
 	/// carry to this building before going hungry. Fills *dist with the round
 	/// distance by way of the resource. Callers must pre-filter units lacking
 	/// the HARVEST ability or already filling this building.
-	bool considerUnitForResource(Unit* unit, int wantedResource, int* dist);
+	bool considerUnitForMaterial(Unit* unit, int wantedMaterial, int* dist);
 
-	/// Packs workers hireable to fetch `wantedResource` into candidates in unit
+	/// Packs workers hireable to fetch `wantedMaterial` into candidates in unit
 	/// index order and returns their count. The caller supplies Unit::MAX_COUNT
-	/// slots. Rejection reasons are tallied via considerUnitForResource. The
-	/// tallies are reset per scan, so they describe one resource, never a unit
-	/// counted once per resource the building tried.
-	int gatherBringResourcesCandidates(BringResourcesCandidate* candidates, int wantedResource);
+	/// slots. Rejection reasons are tallied via considerUnitForMaterial. The
+	/// tallies are reset per scan, so they describe one material, never a unit
+	/// counted once per material the building tried.
+	int gatherBringMaterialsCandidates(BringMaterialsCandidate* candidates, int wantedMaterial);
 
-	/// Per-resource delivery targets and how many of each are already accounted
+	/// Per-material delivery targets and how many of each are already accounted
 	/// for by deliveries that landed plus units on their way. Counted in
-	/// deliveries, not resource units: one delivery adds
-	/// multiplierResource[r] to resources[r].
-	void fetchApportionment(int targets[MAX_NB_RESOURCES], int served[MAX_NB_RESOURCES]) const;
+	/// deliveries, not material units: one delivery adds
+	/// materialMultiplier[r] to materials[r].
+	void fetchApportionment(int targets[MaterialSlotCount], int served[MaterialSlotCount]) const;
 
 	/// Whether another fetcher should be sent for r: the building has physical
 	/// room for one more delivery and the deliveries already subscribed do not
 	/// cover the target.
 	bool wantsAnotherDelivery(int r, const int* targets, const int* served);
 
-	/// Hire a unit that already carries a resource this building still wants. It
+	/// Hire a unit that already carries a material this building still wants. It
 	/// delivers without a fetch trip at all, so it is preferred whatever the
 	/// apportionment says; the apportionment only directs units we must send
 	/// out. Assigns destinationPurpose to every carrying candidate it inspects,
 	/// not only the one chosen, and scores on a hunger-discounted distance.
 	/// Both are deliberate and must be preserved.
-	void selectUnitCarryingWantedResource(const int* targets, const int* served, BringResourcesSelection& sel);
+	void selectUnitCarryingWantedMaterial(const int* targets, const int* served, BringMaterialsSelection& sel);
 
-	/// The fetch-out selection pass for one resource. Scans all candidates and
+	/// The fetch-out selection pass for one material. Scans all candidates and
 	/// updates `sel` with the best match, assigning destinationPurpose only to
 	/// the unit it chooses. A candidate holding something else is charged
-	/// CARRIED_RESOURCE_PENALTY_TILES of detour rather than excluded, so it is
+	/// CARRIED_MATERIAL_PENALTY_TILES of detour rather than excluded, so it is
 	/// hired when it is enough closer to be worth the loss.
-	void selectFetcher(const BringResourcesCandidate* candidates, int count, int wantedResource, BringResourcesSelection& sel);
+	void selectFetcher(const BringMaterialsCandidate* candidates, int count, int wantedMaterial, BringMaterialsSelection& sel);
 
-	/// This function updates the resources pointer. The variable resources can either point to local resources
-	/// or team resources, depending on the BuildingType.
-	void updateResourcesPointer();
+	/// Updates the materials pointer to local or team storage, depending on BuildingType.
+	void updateMaterialsPointer();
 
 	/// checkstyle found this block of 26 lines being repeated 4 times.
 	void checkGroundExitQuality(
@@ -621,17 +619,16 @@ public:
 
 	// Flag useful :
 	Sint32 unitStayRange; // (Uint8)
-	bool clearingResources[BASIC_COUNT]; // true if the resource has to be cleared.
+	bool clearingMaterials[MaterialCount]; // Clears resources yielding this material.
 	Sint32 minLevelToFlag;
 	Sint32 minWorkerLevelToFlag = 0;
 	bool explorersRequireBombing = false;
 
 	// Building specific :
-	/// Amount stocked, or used for building building. Local resources stores the resources this particular building contains
-	/// in the event that the building type designates using global resources instead of local resources, the resources pointer
-	/// will be changed to point to the global resources Team::teamResources instead of localResources.
-	Sint32* resources;
-	Sint32 wishedResources[MAX_NB_RESOURCES];
+	/// Material quantities stored here or consumed during construction.
+	/// Shared storage points to Team::teamMaterials; otherwise it points to localMaterials.
+	Sint32* materials;
+	Sint32 wishedMaterials[MaterialSlotCount];
 
 	// quality parameters
 	Sint32 hp; // (Uint16)
@@ -647,8 +644,8 @@ public:
 	Sint32 ratio[NB_UNIT_TYPE];
 
 	// exchange building parameters
-	Uint32 receiveResourceMask;
-	Uint32 sendResourceMask;
+	Uint32 receiveMaterialMask;
+	Uint32 sendMaterialMask;
 
 	// turrets building parameters
 	Sint32 bullets;
@@ -675,13 +672,13 @@ public:
 	// All swimming classes share passability, but keep separate weighted fields.
 	//! Last step a unit asked for the gradient; freeIdleGradients drops it when that is long ago.
 	Uint32 globalGradientUsedStep[BUILDING_GRADIENT_COUNT];
-	//! Round-trip gradients per resource type and swim class (see Map::roundTripGradient),
-	//! NULL until a unit fetching that resource for this building asks for one, freed again
+	//! Round-trip gradients per material and swim class (see Map::roundTripGradient),
+	//! NULL until a unit fetching that material for this building asks for one, freed again
 	//! by freeIdleGradients when unused for a while. Their last rebuild and last
 	//! use, in steps.
-	Uint16 *roundTripGradient[MAX_NB_RESOURCES][SWIM_CLASS_COUNT];
-	Uint32 roundTripGradientStep[MAX_NB_RESOURCES][SWIM_CLASS_COUNT];
-	Uint32 roundTripGradientUsedStep[MAX_NB_RESOURCES][SWIM_CLASS_COUNT];
+	Uint16 *roundTripGradient[MaterialSlotCount][SWIM_CLASS_COUNT];
+	Uint32 roundTripGradientStep[MaterialSlotCount][SWIM_CLASS_COUNT];
+	Uint32 roundTripGradientUsedStep[MaterialSlotCount][SWIM_CLASS_COUNT];
 	//! Drop the building's and the round-trip gradients nobody asked for lately. Only
 	//! buildings with fetchers need one, and each is a full map of Uint16.
 	void freeIdleGradients();
@@ -740,7 +737,7 @@ private:
 	// units: scratch counters for subscription / priority diff
 	Sint32 maxUnitWorkingFuture;
 	Sint32 maxUnitWorkingPrevious;
-	///The subscribeToBringResourcesStep and subscribeForFlagingStep operate every 32 ticks
+	///The subscribeToBringMaterialsStep and subscribeForFlagingStep operate every 32 ticks
 	Sint32 subscriptionWorkingTimer;
 	///This stores the old priority, so that if the priority changes, this building will be updated in Teams
 	Sint32 oldPriority;
@@ -759,7 +756,7 @@ private:
 	Uint8 callListState;
 
 	// Building specific (private):
-	Sint32 localResource[MAX_NB_RESOURCES];
+	Sint32 localMaterials[MaterialSlotCount];
 
 	// swarm building parameters (private):
 	Sint32 totalRatio;

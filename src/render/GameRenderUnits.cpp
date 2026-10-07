@@ -235,8 +235,8 @@ void Game::drawUnit(int x, int y, Uint16 gid, int viewportX, int viewportY, int 
 			drawStatusPip(px+16, py+28, 80, 179, 223, drawnRender, opacity);
 
 		const int carriedAlpha=faded(unsigned(view.render.detail.barAll*255));
-		if ((unit->performance[HARVEST]) && (unit->carriedResource>=0) && carriedAlpha>0)
-			globalContainer->gfx->drawSprite(px+24, py, globalContainer->resourceMini, unit->carriedResource, carriedAlpha);
+		if ((unit->performance[HARVEST]) && (unit->carriedMaterial>=0) && carriedAlpha>0)
+			globalContainer->gfx->drawSprite(px+24, py, globalContainer->resourceMini, unit->carriedMaterial, carriedAlpha);
 		globalContainer->gfx->finishDrawingSprite(globalContainer->resourceMini, 255);
 	}
 

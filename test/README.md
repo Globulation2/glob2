@@ -300,10 +300,16 @@ to compare this platform's rows of `test/map-generator-golden.txt` against fresh
 `--sweep` to roll every playable landscape at the lobby's colony counts and sizes. A platform
 with no rows reports and passes, so a new machine can run the check before its rows exist;
 `--require-rows` makes that a failure instead, which is what CI runs, so the table must carry
-rows for every platform CI builds on (`linux-x86_64` today, next to the maintainers'
-`macos-arm64`). Rows for a platform you cannot build on come from the `--print` output in its
-CI log, which the workflow prints before the check. The framework reference under
-`docs/map-generators/` describes the rules it enforces.
+rows for every platform running that check in CI (`linux-x86_64` today). The current
+table records runtime-resource RNG epoch 1: resource sprite selection no longer consumes
+simulation RNG, so initial stock quantities and full fingerprints can change without
+individual generator recipe revisions. The complete pre-epoch table, including historical
+`macos-arm64` rows, is retained in
+`test/fixtures/map-generators/pre-resource-epoch-golden.txt`. Current macOS full rows are
+unverified and must be measured on macOS before `--require-rows` can pass there; do not copy
+Linux hashes. The five separately verified explicit-design topology comparisons below do
+not establish topology equivalence for every changed golden. The framework reference under
+`docs/map-generators/` describes the remaining rules it enforces.
 
 `MapGeneratorGoldenTest <profile> --telemetry` compares telemetry enabled/disabled and repeated
 attempts for all registered generators at three seeds, including complete serialized worlds and
@@ -1823,3 +1829,45 @@ routing workload reports cold, warm and depletion passes below, at and above the
 cache budget, including retained cell bytes. These custom-catalog measurements
 complement the unchanged-source stock comparison; they have no historical
 baseline equivalent.
+
+### Runtime resource stress components
+
+`ResourceRuntimeBenchmark` is opt-in (`--tag benchmark --filter
+'ResourceRuntimeBenchmark/*'`). It holds map geometry fixed at 256² and 512² with
+eight teams, comparing one resource definition against 512 equivalent definitions
+and a 512-definition variant whose deposits yield three materials. Sparse material
+coverage must allocate fields only for materials present; equivalent definitions
+must preserve the query/field digest. No building recipes are changed.
+
+The `GLOB2_RESOURCE_STRESS` JSON rows separate definition installation, placement,
+field requests, source scans, mutations, seed refresh and growth. Growth uses a
+configured nonzero uniform rate in three batches of 16 passes, after the matched
+query phases, with stock digests verifying equivalent-definition behavior. They include allocated
+material fields, shared absent fields, preparation and consumer cache bytes, and
+stock index/sidecar/free-list capacities. Set `GLOB2_RESOURCE_STRESS_OUTPUT` to an
+ignored artifact directory to save `report.json` and six binary games with eight
+small colonies for additional CLI continuation. Colony creation and serialization
+occur after the measured phases. This is a bounded component benchmark, not a
+statistical gameplay comparison or proof of no regression against the old engine.
+Run it on an otherwise idle host, separately from builds and tournaments.
+
+The five explicit-design generator regressions use
+`test/map-generator-resource-epoch.json` to separate topology from initial stock.
+Resource epoch 1 removes resource-sprite draws from the simulation RNG; historical
+full hashes are retained, while new full hashes include the resulting stock
+quantities. Topology hashes still cover every underlying/render terrain tile,
+resource identity/location, and colony start. A stock-only change cannot silently
+approve a changed route or deposit layout.
+
+To record an epoch row, first generate the five historical explicit designs with
+the archived engine (256², four teams, seed 1: maze `cell-shape=0`, fingerprint
+`pattern=0,barrier=0`, canals `block-shape=0`, caravanserai `desert=1`, honeycomb-isle
+`block-shape=1`). Keep their `.map.gz` files under their generator names in an
+ignored artifact directory. Set `GLOB2_RECORD_RESOURCE_DESIGN_GOLDENS` to that
+absolute directory and run the `MapGeneratorDefaults/Explicit designs*` test.
+Recording verifies the historical full hashes and compares topology before writing
+an `epoch1-<platform>.json` artifact. Review every comparison before copying rows
+into the fixture. Record other platform/compiler variants on those actual builds;
+unavailable full hashes produce an explicit unverified warning. The four designs
+whose historical full hashes matched across platforms retain portable topology
+checks; Fingerprint's known platform variant requires its own recorded topology.

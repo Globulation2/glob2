@@ -41,7 +41,7 @@ bool Unit::isUnitHungry(void)
 	// A saved hungry unit must recover under no hunger rather than keep seeking food.
 	if (owner->game->gameHeader.isHungerDisabled()) return false;
 	int realTrigHungry;
-	if (carriedResource==-1)
+	if (carriedMaterial==-1)
 		realTrigHungry=trigHungry;
 	else
 		realTrigHungry=trigHungryCarrying;

@@ -290,7 +290,7 @@ static void paintTerrain(Game &game, GenerationContext &context,
 					seeded =
 						seeded || int(context.bounded("commons-algae", 300)) < options.algae - 100;
 				if (seeded)
-					game.map.setResource(x, y, ALGA, 1);
+					game.map.setResourceByIndex(x, y, ALGA, 1);
 			}
 		}
 	}
@@ -445,7 +445,7 @@ static void stockCommons(Game &game, GenerationContext &context,
 					chooseRandomPoints(game.map, context, fruitPts,
 									   std::max(2, (int)pts.size() / 8));
 					for (unsigned int i = 0; i < fruitPts.size(); ++i)
-						game.map.setResource(fruitPts[i].x, fruitPts[i].y,
+						game.map.setResourceByIndex(fruitPts[i].x, fruitPts[i].y,
 											 CHERRY + context.bounded("layout", 3), 1);
 				}
 				// else: left open.
@@ -495,7 +495,7 @@ static bool settleHomes(Game &game, GenerationContext &context,
 			if (!pts.empty())
 			{
 				MapGeneratorPoint quarry = pts[context.bounded("layout", pts.size())];
-				game.map.setResource(quarry.x, quarry.y, STONE, 3);
+				game.map.setResourceByIndex(quarry.x, quarry.y, STONE, 3);
 			}
 			homePoints.insert(homePoints.end(), pts.begin(), pts.end());
 			pts.clear();
@@ -523,7 +523,7 @@ static bool settleHomes(Game &game, GenerationContext &context,
 			chooseRandomPoints(game.map, context, woodPts, 4);
 			fillInResource(game.map, context, woodPts, WOOD, 2);
 			MapGeneratorPoint quarry = homePoints[context.bounded("layout", homePoints.size())];
-			game.map.setResource(quarry.x, quarry.y, STONE, 3);
+			game.map.setResourceByIndex(quarry.x, quarry.y, STONE, 3);
 		}
 		if (homePoints.empty())
 			return false;

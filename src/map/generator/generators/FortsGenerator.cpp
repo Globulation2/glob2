@@ -606,7 +606,7 @@ bool generate(Game &game, GenerationContext &context)
 	}
 	for (int i = 0; i < t.size(); ++i)
 		if (L.wall[i])
-			map.setResource(i % t.w, i / t.w, STONE, 1);
+			map.setResourceByIndex(i % t.w, i / t.w, STONE, 1);
 	for (int k = 0; k < context.request.nbTeams; ++k)
 		game.addTeam();
 	const FortDesign &d = L.design;
@@ -646,7 +646,7 @@ bool generate(Game &game, GenerationContext &context)
 		std::uint64_t yield = 0;
 		for (int j = 0; j < placed; ++j)
 		{
-			map.setResource(tiles[j] % t.w, tiles[j] / t.w, p % 2 ? WOOD : WHEAT, 1);
+			map.setResourceByIndex(tiles[j] % t.w, tiles[j] / t.w, p % 2 ? WOOD : WHEAT, 1);
 			yield += fertility.at(tiles[j] % t.w, tiles[j] / t.w);
 		}
 		context.telemetry.measure("forts.plot.target-tiles", wanted, p);
@@ -697,12 +697,12 @@ bool generate(Game &game, GenerationContext &context)
 	// Exposed rocky crowns inside the wooded uplands; roads remain reserved through them.
 	const int rocks = std::min(int(woods.size()), int(scaledCount(woods.size() / 100, o.stone)));
 	for (int j = 0; j < rocks; ++j)
-		map.setResource(woods[j] % t.w, woods[j] / t.w, STONE, 1);
+		map.setResourceByIndex(woods[j] % t.w, woods[j] / t.w, STONE, 1);
 	woods.erase(woods.begin(), woods.begin() + rocks);
 	context.telemetry.measure("forts.uplands.stone-tiles", rocks);
 	const int count = std::min(int(woods.size()), int(scaledCount(woods.size() / 6, o.wood)));
 	for (int j = 0; j < count; ++j)
-		map.setResource(woods[j] % t.w, woods[j] / t.w, WOOD, 1);
+		map.setResourceByIndex(woods[j] % t.w, woods[j] / t.w, WOOD, 1);
 	context.telemetry.measure("forts.forest.planted-tiles", count);
 	furnishGround(
 		map, t, context, fertility,

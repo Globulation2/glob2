@@ -5564,5 +5564,45 @@ Pazarlar V2
 Arazi tanımlarını içe aktar
 [Terrain palette]
 Arazi paleti
+[Food]
+Yiyecek
+[Paper]
+Kâğıt
+[Cherries]
+Kiraz
+[Oranges]
+Portakal
+[Prunes]
+Erik
+[Gold]
+Altın
+[Metal]
+Metal
+[Glass]
+Cam
+[Fabric]
+Kumaş
+[Import Resource Definitions]
+Kaynak tanımlarını içe aktar
+[Resource palette]
+Kaynak paleti
+[Trees]
+Ağaçlar
+[Rocks]
+Kayalar
+[Cherry tree]
+Kiraz ağacı
+[Orange tree]
+Portakal ağacı
+[Prune tree]
+Erik ağacı
+[Gold ore]
+Altın cevheri
+[Iron ore]
+Demir cevheri
+[Sand]
+Kum
+[Cotton]
+Pamuk
 [Reroll terrain look]
 Arazi görünümünü yeniden rastgele seç

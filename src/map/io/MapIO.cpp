@@ -6,15 +6,16 @@
 #include "TerrainCompatibility.h"
 #include "gradient/GradientRuntime.h"
 #include "FileFormatVersions.h"
+#include "Version.h"
 #include "MapInternal.h"
 #include "Game.h"
 #include "Utilities.h"
 #include "Unit.h"
-#include "RessourceType.h"
 
 #include "render/GameAnimations.h"
 
 #include <algorithm>
+#include <bit>
 #include <Stream.h>
 #include <BinaryStream.h>
 #include <PackedArray.h>
@@ -48,6 +49,8 @@ try
 
 	clear();
 	terrainRegistryValue = TerrainRegistry::builtins();
+    resourceRegistryValue = versionMinor >= FILE_FORMAT_VERSION_RUNTIME_RESOURCES
+        ? ResourceRegistry::empty() : ResourceRegistry::legacy();
 	co_await GAGCore::CooperativeTask::checkpoint("[Loading terrain]");
 
 	stream->readEnterSection("Map");
@@ -102,6 +105,28 @@ try
 	terrainSeedValue = versionMinor >= FILE_FORMAT_VERSION_TERRAIN_SEED
 						   ? stream->readUint32("terrainSeed")
 						   : 0;
+    if (versionMinor >= FILE_FORMAT_VERSION_RUNTIME_RESOURCES)
+    {
+        stream->readEnterSection("resourceRegistry");
+        const auto chunks=stream->readUint32("chunks");
+        if (!chunks || chunks>ResourceRegistry::MaximumDefinitionBytes/RegistryChunkBytes) throw std::ios_base::failure("Invalid resource registry size");
+        std::string definitions;
+        for (unsigned i=0;i<chunks;++i)
+        {
+            stream->readEnterSection(i);
+            const auto length=stream->readUint32("length");
+            if (length>RegistryChunkBytes) throw std::ios_base::failure("Invalid resource registry chunk");
+            const auto offset=definitions.size(); definitions.resize(offset+length);
+            stream->read(definitions.data()+offset,length,"definitions");
+            stream->readLeaveSection();
+        }
+        stream->readLeaveSection();
+        try { resourceRegistryValue=ResourceRegistry::deserialize(definitions); }
+        catch (const std::exception& error)
+        {
+            throw std::ios_base::failure(std::string("Invalid resource registry: ")+error.what());
+        }
+    }
 	terrainCounts.assign(terrainRegistry().size(), 0);
 
 	// We allocate memory:
@@ -132,11 +157,15 @@ try
         GAGCore::PackedArray::read<Uint32>(stream,size,[&](size_t i,Uint32 v){mapDiscovered[i]=v;});
         GAGCore::PackedArray::read<Uint16>(stream,size,[&](size_t i,Uint16 v){tiles[i].terrain=v;});
         if (versionMinor >= FILE_FORMAT_VERSION_TERRAIN_PROPERTIES)
-            GAGCore::PackedArray::read<Uint16>(stream,size,[&](size_t i,Uint16 v){ if (!validTerrainType(v)) throw std::runtime_error("Unknown terrain identity"); terrainIds[i]=static_cast<TerrainType>(v); });
+            GAGCore::PackedArray::read<Uint16>(stream,size,[&](size_t i,Uint16 v){ if (!validTerrainType(v)) throw std::ios_base::failure("Unknown terrain identity"); terrainIds[i]=static_cast<TerrainType>(v); });
         GAGCore::PackedArray::read<Uint16>(stream,size,[&](size_t i,Uint16 v){tiles[i].building=v;});
-        GAGCore::PackedArray::read<Uint8>(stream,size,[&](size_t i,Uint8 v){tiles[i].resource.type=v;});
+        if (versionMinor>=FILE_FORMAT_VERSION_RUNTIME_RESOURCES)
+            GAGCore::PackedArray::read<Uint16>(stream,size,[&](size_t i,Uint16 v){tiles[i].resource.type=v;});
+        else GAGCore::PackedArray::read<Uint8>(stream,size,[&](size_t i,Uint8 v){tiles[i].resource.type=v==255 ? NO_RES_TYPE : v;});
         GAGCore::PackedArray::read<Uint8>(stream,size,[&](size_t i,Uint8 v){tiles[i].resource.variety=v;});
-        GAGCore::PackedArray::read<Uint8>(stream,size,[&](size_t i,Uint8 v){tiles[i].resource.amount=v;});
+        if (versionMinor>=FILE_FORMAT_VERSION_RUNTIME_RESOURCES)
+            GAGCore::PackedArray::read<Uint32>(stream,size,[&](size_t i,Uint32 v){tiles[i].resource.amount=v;});
+        else GAGCore::PackedArray::read<Uint8>(stream,size,[&](size_t i,Uint8 v){tiles[i].resource.amount=v;});
         GAGCore::PackedArray::read<Uint8>(stream,size,[&](size_t i,Uint8 v){tiles[i].resource.animation=v;});
         GAGCore::PackedArray::read<Uint16>(stream,size,[&](size_t i,Uint16 v){tiles[i].groundUnit=v;});
         GAGCore::PackedArray::read<Uint16>(stream,size,[&](size_t i,Uint16 v){tiles[i].airUnit=v;});
@@ -176,16 +205,39 @@ try
 		if (tiles[i].building != NOGBID && tiles[i].building >= Building::MAX_COUNT * header.getNumberOfTeams())
 			co_return false;
 
-		if (!packed) stream->read(&(tiles[i].resource), 4, "ressource");
-		if (tiles[i].resource.type != NO_RES_TYPE && tiles[i].resource.type >= MAX_RESOURCES)
-			co_return false;
-		if (tiles[i].resource.type != NO_RES_TYPE)
-		{
-			const auto* type = ResourcesTypes().get(tiles[i].resource.type);
-			const auto& resource = tiles[i].resource;
-			if (resource.variety >= type->varietiesCount || resource.amount > type->sizesCount || (!type->eternal && resource.amount == 0))
-				throw std::runtime_error("Invalid saved resource sprite state: " + std::to_string(resource.type) + "/" + std::to_string(resource.variety) + "/" + std::to_string(resource.amount));
-		}
+        if (!packed)
+        {
+            auto& r=tiles[i].resource;
+            if (versionMinor>=FILE_FORMAT_VERSION_RUNTIME_RESOURCES)
+            {
+                r.type=stream->readUint16("resourceType");
+                r.variety=stream->readUint8("resourceVariety");
+                r.amount=stream->readUint32("resourceStock");
+                r.animation=stream->readUint8("resourceAnimation");
+            }
+            else
+            {
+                Uint8 legacy[4]; stream->read(legacy,4,"ressource");
+                r.type=legacy[0]==255 ? NO_RES_TYPE : legacy[0];
+                r.variety=legacy[1]; r.amount=legacy[2]; r.animation=legacy[3];
+            }
+        }
+        if (tiles[i].resource.type==NO_RES_TYPE)
+        {
+            auto& r=tiles[i].resource;
+            // Historical clearing only changed the type byte. Unused stock and
+            // animation bytes in supported saves are not a surviving deposit.
+            if (versionMinor<FILE_FORMAT_VERSION_RUNTIME_RESOURCES) r.clear();
+            else if (r.amount || r.variety || r.animation) throw std::ios_base::failure("Invalid empty resource state");
+        }
+        else
+        {
+            const auto& r=tiles[i].resource;
+            if (!resourceRegistry().valid(r.type)) throw std::ios_base::failure("Unknown saved resource");
+            Uint32 maximum=0;
+            for (const auto& y:resourceRegistry().yields(static_cast<ResourceId>(r.type))) maximum+=y.capacity;
+            if (r.amount>maximum || (!r.amount && !resourcePropertiesByIndex(r.type).persistsWhenEmpty)) throw std::ios_base::failure("Invalid saved resource stock");
+        }
 		if (!packed) tiles[i].groundUnit = stream->readUint16("groundUnit");
 		if (!packed) tiles[i].airUnit = stream->readUint16("airUnit");
 		if ((tiles[i].groundUnit != NOGUID && tiles[i].groundUnit >= Unit::MAX_COUNT * header.getNumberOfTeams()) ||
@@ -207,6 +259,43 @@ try
 		stream->readLeaveSection();
 	}
 	stream->readLeaveSection();
+
+    std::vector<Uint32> savedMultiTotals;
+    if (versionMinor>=FILE_FORMAT_VERSION_RUNTIME_RESOURCES)
+        for (const auto& tile:tiles)
+            if (tile.resource.type!=NO_RES_TYPE && !std::has_single_bit(resourcePropertiesByIndex(tile.resource.type).materialMask)) savedMultiTotals.push_back(tile.resource.amount);
+    rebuildResourceHabitats();
+    rebuildResourceState();
+    if (versionMinor>=FILE_FORMAT_VERSION_RUNTIME_RESOURCES)
+    {
+        stream->readEnterSection("resourceStocks");
+        const auto count=stream->readUint32("count");
+        if (count>size) throw std::ios_base::failure("Too many multi-material deposits");
+        std::vector<bool> seen(size,false);
+        size_t expected=0; for (auto slot:resourceStockIndices) if (slot) ++expected;
+        if (count!=expected) throw std::ios_base::failure("Missing multi-material stocks");
+        for (unsigned n=0;n<count;++n)
+        {
+            stream->readEnterSection(n);
+            const auto i=stream->readUint32("tile");
+            if (i>=size || seen[i] || resourceStockIndices.empty() || !resourceStockIndices[i]) throw std::ios_base::failure("Invalid material stock tile");
+            seen[i]=true;
+            const auto before=resourceMaterialMaskAt(i);
+            auto& stocks=resourceStocks[resourceStockIndices[i]-1];
+            const auto& yields=resourceRegistry().yields(static_cast<ResourceId>(tiles[i].resource.type));
+            for (unsigned m=0;m<MaterialCount;++m)
+            {
+                stream->readEnterSection(m); stocks[m]=stream->readUint16("stock"); stream->readLeaveSection();
+                if (stocks[m]>yields[m].capacity) throw std::ios_base::failure("Material stock exceeds capacity");
+            }
+            refreshResourceTotal(i);
+            if (tiles[i].resource.amount!=savedMultiTotals[resourceStockIndices[i]-1]) throw std::ios_base::failure("Inconsistent resource total stock");
+            materialStockChanged(i,before);
+            if (!tiles[i].resource.amount && !resourcePropertiesByIndex(tiles[i].resource.type).persistsWhenEmpty) throw std::ios_base::failure("Empty finite resource");
+            stream->readLeaveSection();
+        }
+        stream->readLeaveSection();
+    }
 
 	for(int n=0; n<9; ++n)
 	{
@@ -322,6 +411,20 @@ void Map::save(GAGCore::OutputStream *stream)
 	}
 	stream->writeUint32(terrainSeedValue, "terrainSeed");
 
+    {
+        const auto definitions=resourceRegistry().serialize();
+        stream->writeEnterSection("resourceRegistry");
+        stream->writeUint32((definitions.size()+RegistryChunkBytes-1)/RegistryChunkBytes,"chunks");
+        for (size_t i=0;i<definitions.size();i+=RegistryChunkBytes)
+        {
+            stream->writeEnterSection(i/RegistryChunkBytes);
+            const auto length=std::min(RegistryChunkBytes,definitions.size()-i);
+            stream->writeUint32(length,"length"); stream->write(definitions.data()+i,length,"definitions");
+            stream->writeLeaveSection();
+        }
+        stream->writeLeaveSection();
+    }
+
 	// We write what's inside the map:
 	if(GAGCore::PackedArray::binary(stream)) GAGCore::PackedArray::write<Uint8>(stream,size,[&](size_t i){return undermap[i];});
     else stream->write(undermap, size, "undermap");
@@ -332,9 +435,9 @@ void Map::save(GAGCore::OutputStream *stream)
         GAGCore::PackedArray::write<Uint16>(stream,size,[&](size_t i){return tiles[i].terrain;});
         GAGCore::PackedArray::write<Uint16>(stream,size,[&](size_t i){return static_cast<Uint16>(terrainIds[i]);});
         GAGCore::PackedArray::write<Uint16>(stream,size,[&](size_t i){return tiles[i].building;});
-        GAGCore::PackedArray::write<Uint8>(stream,size,[&](size_t i){return tiles[i].resource.type;});
+        GAGCore::PackedArray::write<Uint16>(stream,size,[&](size_t i){return tiles[i].resource.type;});
         GAGCore::PackedArray::write<Uint8>(stream,size,[&](size_t i){return tiles[i].resource.variety;});
-        GAGCore::PackedArray::write<Uint8>(stream,size,[&](size_t i){return tiles[i].resource.amount;});
+        GAGCore::PackedArray::write<Uint32>(stream,size,[&](size_t i){return tiles[i].resource.amount;});
         GAGCore::PackedArray::write<Uint8>(stream,size,[&](size_t i){return tiles[i].resource.animation;});
         GAGCore::PackedArray::write<Uint16>(stream,size,[&](size_t i){return tiles[i].groundUnit;});
         GAGCore::PackedArray::write<Uint16>(stream,size,[&](size_t i){return tiles[i].airUnit;});
@@ -355,7 +458,10 @@ void Map::save(GAGCore::OutputStream *stream)
 		stream->writeUint16(static_cast<Uint16>(terrainIds[i]), "terrainType");
 		stream->writeUint16(tiles[i].building, "building");
 		
-		stream->write(&(tiles[i].resource), 4, "ressource");
+		stream->writeUint16(tiles[i].resource.type,"resourceType");
+        stream->writeUint8(tiles[i].resource.variety,"resourceVariety");
+        stream->writeUint32(tiles[i].resource.amount,"resourceStock");
+        stream->writeUint8(tiles[i].resource.animation,"resourceAnimation");
 		
 		stream->writeUint16(tiles[i].groundUnit, "groundUnit");
 		stream->writeUint16(tiles[i].airUnit, "airUnit");
@@ -369,6 +475,21 @@ void Map::save(GAGCore::OutputStream *stream)
 		stream->writeLeaveSection();
 	}
 	stream->writeLeaveSection();
+
+    stream->writeEnterSection("resourceStocks");
+    size_t multiCount=0; for (auto slot:resourceStockIndices) if (slot) ++multiCount;
+    stream->writeUint32(multiCount,"count");
+    unsigned entry=0;
+    for (size_t i=0;i<resourceStockIndices.size();++i)
+        if (resourceStockIndices[i])
+        {
+            stream->writeEnterSection(entry++); stream->writeUint32(i,"tile");
+            const auto& stocks=resourceStocks[resourceStockIndices[i]-1];
+            for (unsigned m=0;m<MaterialCount;++m)
+            { stream->writeEnterSection(m); stream->writeUint16(stocks[m],"stock"); stream->writeLeaveSection(); }
+            stream->writeLeaveSection();
+        }
+    stream->writeLeaveSection();
 
 	//Save area names
 	for(int n=0; n<9; ++n)
@@ -411,11 +532,11 @@ GAGCore::CooperativeTask Map::addTeamTask(void)
 	assert(numberOfTeam>0);
 	
 	int t=oldNumberOfTeam;
-	for (int r=0; r<MAX_RESOURCES; r++)
+	for (int r=0; r<MaterialCount; r++)
 		for (int s=0; s<SWIM_CLASS_COUNT; s++)
 		{
-			assert(resourcesGradient[t][r][s]==NULL);
-			assert(marketResourcesGradient[t][r][s]==NULL);
+			assert(materialGradients[t][r][s]==NULL);
+			assert(marketMaterialGradients[t][r][s]==NULL);
 		}
 	
 	assert(exploredArea[t] == NULL);
@@ -436,19 +557,19 @@ void Map::removeTeam(void)
 	assert(numberOfTeam<Team::MAX_COUNT);
 	
 	int t=numberOfTeam;
-	for (auto it=gradientRuntime->resourceFields.begin(); it!=gradientRuntime->resourceFields.end();) {
-		if (it->second.team==t) { gradientRuntime->resourceLru.erase(it->second.lru); it=gradientRuntime->resourceFields.erase(it); }
+	for (auto it=gradientRuntime->materialFields.begin(); it!=gradientRuntime->materialFields.end();) {
+		if (it->second.team==t) { gradientRuntime->materialLru.erase(it->second.lru); it=gradientRuntime->materialFields.erase(it); }
 		else ++it;
 	}
 	gradientRuntime->stockRevision[t]={};
 	for (int s=0; s<SWIM_CLASS_COUNT; s++)
 	{
-		for (int r=0; r<MAX_RESOURCES; r++)
+		for (int r=0; r<MaterialCount; r++)
 		{
-			delete[] resourcesGradient[t][r][s];
-			resourcesGradient[t][r][s]=NULL;
-			delete[] marketResourcesGradient[t][r][s];
-			marketResourcesGradient[t][r][s]=NULL;
+			delete[] materialGradients[t][r][s];
+			materialGradients[t][r][s]=NULL;
+			delete[] marketMaterialGradients[t][r][s];
+			marketMaterialGradients[t][r][s]=NULL;
 			marketGradientDirty[t][r][s]=false;
 			marketGradientUpdated[t][r][s]=false;
 		}
@@ -552,17 +673,17 @@ void Map::saveRuntimeState(GAGCore::OutputStream *stream) const
 		{
 			stream->writeEnterSection(sw);
 			stream->writeEnterSection("resources");
-			for (int r=0; r<MAX_NB_RESOURCES; ++r)
+			for (int r=0; r<MaterialSlotCount; ++r)
 			{
 				stream->writeEnterSection(r);
-				saveGradient(stream, resourcesGradient[t][r][sw], size);
+				saveGradient(stream, materialGradients[t][r][sw], size);
 				stream->writeUint8(gradientUpdated[t][r][sw], "updated");
 				// The "with markets" twin is runtime state like its plain gradient:
 				// a resumed game must walk the same field it left. Its own section:
 				// the text format keys tiles by section name, and the plain
 				// gradient's tiles live in this one.
 				stream->writeEnterSection("markets");
-				saveGradient(stream, marketResourcesGradient[t][r][sw], size);
+				saveGradient(stream, marketMaterialGradients[t][r][sw], size);
 				stream->writeUint8(marketGradientDirty[t][r][sw], "dirty");
 				stream->writeUint8(marketGradientUpdated[t][r][sw], "updated");
 				stream->writeLeaveSection();
@@ -604,7 +725,7 @@ void Map::saveRuntimeState(GAGCore::OutputStream *stream) const
 			{
 				stream->writeEnterSection(sw);
 				stream->writeUint32(building->globalGradientUsedStep[sw], "usedStep");
-				for (int r=0; r<MAX_NB_RESOURCES; ++r)
+				for (int r=0; r<MaterialSlotCount; ++r)
 				{
 					stream->writeEnterSection(r);
 					saveGradient(stream, building->roundTripGradient[r][sw], size);
@@ -658,14 +779,14 @@ void Map::saveRuntimeState(GAGCore::OutputStream *stream) const
 	gradientRuntime->pipeline.visitPendingSnapshots([&](const GradientPipeline::PendingSnapshot &snapshot) {
 		int destination=-1;
 		for (int t=0; t<game->teamsCount(); ++t)
-			for (int kind=0; kind<2*MAX_NB_RESOURCES+2; ++kind)
+			for (int kind=0; kind<2*MaterialSlotCount+2; ++kind)
 				for (int sw=0; sw<SWIM_CLASS_COUNT; ++sw) {
-					auto *slot=kind<MAX_NB_RESOURCES ? &resourcesGradient[t][kind][sw]
-						: kind==MAX_NB_RESOURCES ? &guardAreasGradient[t][sw]
-						: kind==MAX_NB_RESOURCES+1 ? &clearAreasGradient[t][sw] : &marketResourcesGradient[t][kind-MAX_NB_RESOURCES-2][sw];
-					if (slot==snapshot.slot) destination=kind<MAX_NB_RESOURCES+2
-						? (t*(MAX_NB_RESOURCES+2)+kind)*SWIM_CLASS_COUNT+sw
-						: Team::MAX_COUNT*(MAX_NB_RESOURCES+2)*SWIM_CLASS_COUNT+(t*MAX_NB_RESOURCES+kind-MAX_NB_RESOURCES-2)*SWIM_CLASS_COUNT+sw;
+					auto *slot=kind<MaterialSlotCount ? &materialGradients[t][kind][sw]
+						: kind==MaterialSlotCount ? &guardAreasGradient[t][sw]
+						: kind==MaterialSlotCount+1 ? &clearAreasGradient[t][sw] : &marketMaterialGradients[t][kind-MaterialSlotCount-2][sw];
+					if (slot==snapshot.slot) destination=kind<MaterialSlotCount+2
+						? (t*(MaterialSlotCount+2)+kind)*SWIM_CLASS_COUNT+sw
+						: Team::MAX_COUNT*(MaterialSlotCount+2)*SWIM_CLASS_COUNT+(t*MaterialSlotCount+kind-MaterialSlotCount-2)*SWIM_CLASS_COUNT+sw;
 				}
 		if (destination<0) throw std::runtime_error("Unknown pending gradient destination");
 		stream->writeEnterSection(index++);
@@ -676,7 +797,7 @@ void Map::saveRuntimeState(GAGCore::OutputStream *stream) const
 		stream->writeLeaveSection();
 	});
 	stream->writeLeaveSection();
-	saveResourceRoutingCache(stream);
+	saveMaterialRoutingCache(stream);
 	stream->writeLeaveSection();
 }
 
@@ -725,19 +846,19 @@ void Map::loadRuntimeState(GAGCore::InputStream *stream, Sint32 versionMinor)
 		{
 			stream->readEnterSection(sw);
 			stream->readEnterSection("resources");
-			for (int r=0; r<MAX_NB_RESOURCES; ++r)
+			for (int r=0; r<MaterialSlotCount; ++r)
 			{
 				stream->readEnterSection(r);
-				loadGradient(stream, resourcesGradient[t][r][sw], size, packed);
+				loadGradient(stream, materialGradients[t][r][sw], size, packed);
 				gradientUpdated[t][r][sw]=loadFlag(stream,"updated");
 				if (versionMinor >= FILE_FORMAT_VERSION_MARKET_GRADIENTS)
 				{
 					stream->readEnterSection("markets");
-					loadGradient(stream, marketResourcesGradient[t][r][sw], size, packed);
+					loadGradient(stream, marketMaterialGradients[t][r][sw], size, packed);
 					marketGradientDirty[t][r][sw]=loadFlag(stream,"dirty");
 					marketGradientUpdated[t][r][sw]=loadFlag(stream,"updated");
 					stream->readLeaveSection();
-					if (!marketsV2Enabled() && (marketResourcesGradient[t][r][sw] || marketGradientDirty[t][r][sw] || marketGradientUpdated[t][r][sw]))
+					if (!marketsV2Enabled() && (marketMaterialGradients[t][r][sw] || marketGradientDirty[t][r][sw] || marketGradientUpdated[t][r][sw]))
 						throw std::runtime_error("Market routing state requires Markets V2");
 				}
 				stream->readLeaveSection();
@@ -783,7 +904,7 @@ void Map::loadRuntimeState(GAGCore::InputStream *stream, Sint32 versionMinor)
 				{
 					stream->readEnterSection(sw);
 					building->globalGradientUsedStep[building->routeSlot(sw, savedRoute)]=stream->readUint32("usedStep");
-					for (int r=0; r<MAX_NB_RESOURCES; ++r)
+					for (int r=0; r<MaterialSlotCount; ++r)
 					{
 						stream->readEnterSection(r);
 						loadGradient(stream, building->roundTripGradient[r][sw], size, packed);
@@ -844,16 +965,16 @@ void Map::loadRuntimeState(GAGCore::InputStream *stream, Sint32 versionMinor)
 			stream->readEnterSection(index);
 			const unsigned destination=stream->readUint16("destination");
 			const unsigned sw=destination%SWIM_CLASS_COUNT;
-			const unsigned marketBase=Team::MAX_COUNT*(MAX_NB_RESOURCES+2)*SWIM_CLASS_COUNT;
+			const unsigned marketBase=Team::MAX_COUNT*(MaterialSlotCount+2)*SWIM_CLASS_COUNT;
 			const bool market=destination>=marketBase;
 			if (market && (versionMinor<FILE_FORMAT_VERSION_MARKET_GRADIENTS || !marketsV2Enabled())) throw std::runtime_error("Invalid saved gradient destination");
 			const unsigned encoded=market ? destination-marketBase : destination;
-			const unsigned kinds=market ? MAX_NB_RESOURCES : MAX_NB_RESOURCES+2;
+			const unsigned kinds=market ? MaterialSlotCount : MaterialSlotCount+2;
 			const unsigned kind=(encoded/SWIM_CLASS_COUNT)%kinds;
 			const unsigned team=encoded/(SWIM_CLASS_COUNT*kinds);
 			if (team>=static_cast<unsigned>(game->teamsCount())) throw std::runtime_error("Invalid saved gradient team");
-			auto *slot=market ? &marketResourcesGradient[team][kind][sw] : kind<MAX_NB_RESOURCES ? &resourcesGradient[team][kind][sw]
-				: kind==MAX_NB_RESOURCES ? &guardAreasGradient[team][sw] : &clearAreasGradient[team][sw];
+			auto *slot=market ? &marketMaterialGradients[team][kind][sw] : kind<MaterialSlotCount ? &materialGradients[team][kind][sw]
+				: kind==MaterialSlotCount ? &guardAreasGradient[team][sw] : &clearAreasGradient[team][sw];
 			const unsigned remaining=stream->readUint8("remaining");
 			const bool superseded=loadFlag(stream,"superseded");
 			Uint16 *field=nullptr;
@@ -864,7 +985,7 @@ void Map::loadRuntimeState(GAGCore::InputStream *stream, Sint32 versionMinor)
 		}
 		stream->readLeaveSection();
 	}
-	if (versionMinor>=FILE_FORMAT_VERSION_BUILDING_CATALOG) loadResourceRoutingCache(stream,packed);
+	if (versionMinor>=FILE_FORMAT_VERSION_BUILDING_CATALOG) loadMaterialRoutingCache(stream,packed,versionMinor);
 	stream->readLeaveSection();
     if (versionMinor < FILE_FORMAT_VERSION_HAZARD_ROUTING && hasTerrainHealthEffects()) {
         // Consume the complete old state first, then discard only route caches.
@@ -896,28 +1017,28 @@ void Map::loadRuntimeState(GAGCore::InputStream *stream, Sint32 versionMinor)
 }
 
 
-void Map::saveResourceRoutingCache(GAGCore::OutputStream* stream) const
+void Map::saveMaterialRoutingCache(GAGCore::OutputStream* stream) const
 {
     const auto& cache=*gradientRuntime;
     const auto write64=[&](Uint64 value,const char* name) {
         stream->writeEnterSection(name); stream->writeUint32(value>>32,"high"); stream->writeUint32(value,"low"); stream->writeLeaveSection();
     };
     stream->writeEnterSection("resourceRoutingCache");
-    write64(std::max<Uint64>(cache.resourceCacheBudget,Uint64(size)*sizeof(Uint16)),"budget"); write64(cache.resourceCacheClock,"clock");
+    write64(std::max<Uint64>(cache.materialCacheBudget,Uint64(size)*sizeof(Uint16)),"budget"); write64(cache.materialCacheClock,"clock");
     stream->writeEnterSection("revisions");
     for (int team=0; team<Team::MAX_COUNT; ++team) {
         stream->writeEnterSection(team);
-        for (int resource=0; resource<MAX_RESOURCES; ++resource) {
+        for (int resource=0; resource<MaterialCount; ++resource) {
             stream->writeEnterSection(resource); write64(cache.stockRevision[team][resource],"revision"); stream->writeLeaveSection();
         }
         stream->writeLeaveSection();
     }
     stream->writeLeaveSection();
-    stream->writeUint32(cache.resourceFields.size(),"count");
+    stream->writeUint32(cache.materialFields.size(),"count");
     unsigned index=0;
     // Saving least-to-most recently used retains eviction and refresh behavior.
-    for (const auto key : cache.resourceLru) {
-        const auto& entry=cache.resourceFields.at(key);
+    for (const auto key : cache.materialLru) {
+        const auto& entry=cache.materialFields.at(key);
         stream->writeEnterSection(index++);
         stream->writeSint32(entry.consumer,"consumer"); stream->writeSint32(entry.type,"type");
         stream->writeSint32(entry.x,"x"); stream->writeSint32(entry.y,"y");
@@ -931,7 +1052,7 @@ void Map::saveResourceRoutingCache(GAGCore::OutputStream* stream) const
     stream->writeLeaveSection();
 }
 
-void Map::loadResourceRoutingCache(GAGCore::InputStream* stream, bool packed)
+void Map::loadMaterialRoutingCache(GAGCore::InputStream* stream, bool packed, int versionMinor)
 {
     auto& cache=*gradientRuntime;
     const auto read64=[&](const char* name) {
@@ -942,11 +1063,11 @@ void Map::loadResourceRoutingCache(GAGCore::InputStream* stream, bool packed)
     const Uint64 budget=read64("budget"), clock=read64("clock");
     const Uint64 fieldBytes=Uint64(size)*sizeof(Uint16), maxBudget=std::max<Uint64>(fieldBytes,64ull*1024*1024);
     if (budget<fieldBytes || budget>maxBudget || clock==std::numeric_limits<Uint64>::max()) throw std::runtime_error("Invalid resource routing cache budget or clock");
-    cache.resourceFields.clear(); cache.resourceLru.clear(); cache.resourceCacheBudget=budget; cache.resourceCacheClock=clock;
+    cache.materialFields.clear(); cache.materialLru.clear(); cache.materialCacheBudget=budget; cache.materialCacheClock=clock;
     stream->readEnterSection("revisions");
     for (int team=0; team<Team::MAX_COUNT; ++team) {
         stream->readEnterSection(team);
-        for (int resource=0; resource<MAX_RESOURCES; ++resource) {
+        for (int resource=0; resource<(versionMinor>=FILE_FORMAT_VERSION_RUNTIME_RESOURCES ? int(MaterialCount) : 8); ++resource) {
             stream->readEnterSection(resource); cache.stockRevision[team][resource]=read64("revision"); stream->readLeaveSection();
         }
         stream->readLeaveSection();
@@ -957,26 +1078,26 @@ void Map::loadResourceRoutingCache(GAGCore::InputStream* stream, bool packed)
     Uint64 prior=0;
     for (Uint32 index=0; index<count; ++index) {
         stream->readEnterSection(index);
-        GradientRuntime::ResourceField entry;
+        GradientRuntime::MaterialField entry;
         entry.consumer=stream->readSint32("consumer"); entry.type=stream->readSint32("type");
         entry.x=stream->readSint32("x"); entry.y=stream->readSint32("y");
         entry.identity=stream->readUint32("identity"); entry.topology=stream->readUint32("topology");
         entry.builtStep=stream->readUint32("builtStep"); entry.sourceRevision=read64("sourceRevision"); entry.recency=read64("recency");
         entry.team=stream->readUint8("team"); entry.resource=stream->readUint8("resource");
         entry.swim=stream->readUint8("swim"); entry.modes=stream->readUint8("modes");
-        if (entry.modes<1 || entry.modes>3 || entry.team>=game->teamsCount() || entry.resource>=MAX_RESOURCES || entry.swim>=SWIM_CLASS_COUNT
+        if (entry.modes<1 || entry.modes>3 || entry.team>=game->teamsCount() || entry.resource>=MaterialCount || entry.swim>=SWIM_CLASS_COUNT
             || entry.consumer < -1 || entry.consumer>=Team::MAX_COUNT*Building::MAX_COUNT
             || (entry.consumer>=0 && Building::GIDtoTeam(entry.consumer)!=entry.team)
             || entry.type < -1 || entry.type>=int(game->buildingsTypes.size())
             || !entry.recency || entry.recency<=prior || entry.recency>clock)
             throw std::runtime_error("Invalid resource routing cache entry");
         prior=entry.recency;
-        const Uint64 key=((((Uint64(entry.consumer+1)*Team::MAX_COUNT+entry.team)*MAX_RESOURCES+entry.resource)*SWIM_CLASS_COUNT+entry.swim)*4)+entry.modes;
-        if (cache.resourceFields.contains(key)) throw std::runtime_error("Duplicate resource routing cache entry");
+        const Uint64 key=((((Uint64(entry.consumer+1)*Team::MAX_COUNT+entry.team)*MaterialCount+entry.resource)*SWIM_CLASS_COUNT+entry.swim)*4)+entry.modes;
+        if (cache.materialFields.contains(key)) throw std::runtime_error("Duplicate resource routing cache entry");
         Uint16* field=nullptr; loadGradient(stream,field,size,packed); entry.cells.reset(field);
         if (!field) throw std::runtime_error("Missing resource routing cache field");
-        cache.resourceLru.push_back(key); entry.lru=std::prev(cache.resourceLru.end());
-        cache.resourceFields.emplace(key,std::move(entry));
+        cache.materialLru.push_back(key); entry.lru=std::prev(cache.materialLru.end());
+        cache.materialFields.emplace(key,std::move(entry));
         stream->readLeaveSection();
     }
     stream->readLeaveSection();

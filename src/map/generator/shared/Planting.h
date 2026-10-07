@@ -59,7 +59,7 @@ int growPatch(Map &map, const Torus &t, int seed, int type, int count, Eligible 
 		const int i = frontier[head], x = i % t.w, y = i / t.w;
 		if (!eligible(i) || !map.isResourceAllowed(x, y, type))
 			continue;
-		map.setResource(x, y, type, 1);
+		map.setResourceByIndex(x, y, type, 1);
 		++placed;
 		for (const auto &step : steps)
 		{
@@ -261,7 +261,7 @@ void plantFields(Map &map, const Torus &t, std::vector<int> tiles, int wheat, in
 					 [&](int a, int b) { return splitKey(a) < splitKey(b); });
 	const int wheatShare = int(std::int64_t(total) * wheat / std::max(1, wheat + wood));
 	for (int k = 0; k < total; ++k)
-		map.setResource(tiles[k] % t.w, tiles[k] / t.w, k < wheatShare ? WHEAT : WOOD, 1);
+		map.setResourceByIndex(tiles[k] % t.w, tiles[k] / t.w, k < wheatShare ? WHEAT : WOOD, 1);
 }
 
 /// Dense cover: one tile of `type` on every tile of `region` that `eligible(tile)` allows and the engine
@@ -279,7 +279,7 @@ int plantCover(Map &map, const Torus &t, const std::vector<unsigned char> &regio
 		const int x = i % t.w, y = i / t.w;
 		if (!region[i] || !eligible(i) || !map.isResourceAllowed(x, y, type))
 			continue;
-		map.setResource(x, y, type, 1);
+		map.setResourceByIndex(x, y, type, 1);
 		++planted;
 	}
 	return planted;
@@ -311,7 +311,7 @@ int plantCoverShare(Map &map, const Torus &t, const std::vector<int> &candidates
 		const int x = i % t.w, y = i / t.w;
 		if (levelAt(i) < level || !map.isResourceAllowed(x, y, type))
 			continue;
-		map.setResource(x, y, type, 1);
+		map.setResourceByIndex(x, y, type, 1);
 		++planted;
 	}
 	return planted;

@@ -1,9 +1,9 @@
 # Food capacity
 
-The food ledger assigns protected farm supply to buildings with recurring wheat
+The food ledger assigns protected farm supply to buildings with recurring food
 costs, then exposes
 unclaimed capacity to the placement planner. Only protected cells currently
-holding wheat supply recurring capacity. A cell's rate is proportional to exact
+holding food supply recurring capacity. A cell's rate is proportional to exact
 fertility and the fraction of neighbouring cells that can absorb growth:
 
 ```text
@@ -18,7 +18,7 @@ recipe cost divided by complete job duration, including the completion tick.
 The operating farm claim is separate: it reserves the production the requested
 carriers can supply along the provider's sustained supply routes. The existing
 harvesting reach walk yields a cumulative packet/work curve, independent of
-other buildings' claims. Independent wheat demand and production consume that
+other buildings' claims. Independent food demand and production consume that
 same curve once; a nearby low-yield cell cannot price the entire recurring flow
 at its distance. Demand beyond reachable yield receives the existing unreachable
 route penalty, so an isolated producer retains positive demand and poor coverage. Feeding, healing,
@@ -41,7 +41,7 @@ and exclude unlearnable or rule-disabled courses. Stock consumption and carried
 packets are distinct: storage multipliers convert consumption into hauling and
 farm claims. Feeding and production costs remain separate components on hybrids;
 `food.inn_demand_percent` and `food.swarm_demand_percent` scale their respective
-wheat claims, without changing the mechanical recipe rates.
+food claims, without changing the mechanical recipe rates.
 
 Recurring recipient demand uses each saved unit's hunger decrement, hunger
 trigger and movement performance. Its stable nominal workload is travel with
@@ -64,13 +64,13 @@ comparisons; it no longer supplies the live recipient clock.
 ## Claims and placement
 
 The ledger is rebuilt from current buildings, explicit upgrade stages, planned
-orders, population and wheat. Feeding throughput is a ceiling, not a new source
+orders, population and food. Feeding throughput is a ceiling, not a new source
 of demand for every building. Each colony counts its workers, explorers and
 warriors once. Overlapping worker-production catchments form connected colonies;
 units join the nearest representative. The saved recipient properties convert each
 class into a recurring meal budget. Available providers divide that budget according
 to admission and capacity, giving scarce classes and less flexible providers
-priority. A free feeder can take meals without claiming wheat. Production,
+priority. A free feeder can take meals without claiming food. Production,
 healing, training and ammunition costs retain their independent shares on mixed
 buildings.
 
@@ -81,7 +81,7 @@ results. Each candidate's existing exact residual walk also gathers its
 uncontested supply curve. Feasibility, scoring and relocation reuse that query;
 there is no additional route walk or catalog scan. Cumulative prefixes support
 bounded arithmetic queries while solving the common production fraction. Other
-resources use the existing prepared distance fields and unreachable penalty. Profile, requested staffing, output ratios and colony demand state
+materials use the existing prepared distance fields and unreachable penalty. Profile, requested staffing, output ratios and colony demand state
 are included in planner signatures and continuation.
 
 Claimants rank by supply-weighted route-distance quality band, then level,
@@ -90,7 +90,7 @@ claimants to avoid circular ranking. The established rank is retained within two
 reserve their nearest supply first, then discretionary production claims the
 remainder. This explicit precedence prevents births from taking already-needed
 meals when feeding is split across more buildings. Destroyed buildings release capacity, upgrades
-claim their new demand, and lost or regrown wheat changes supply immediately.
+claim their new demand, and lost or regrown food-producing resources change supply immediately.
 
 Candidates reserve independent services from the pre-production supply layer;
 their production component must fit genuinely unclaimed supply after those
@@ -112,14 +112,14 @@ worker producers with sufficient uncontested reachable supply, plus residual
 supply divided by the candidate's runtime-derived peak recipe cost. Existing
 capacity does not disappear from this count merely because feeding takes priority
 in the current allocation; ordinary new sites still need their actual local claim
-funded. Wheat-free worker production is not constrained
-by this wheat count. The existing growth reservation remains in place; local
+funded. Food-free worker production is not constrained
+by this food count. The existing growth reservation remains in place; local
 feasibility is necessary for every ordinary site.
 Birth funding sums their claimed
 production-only packet rates and reachable residual crop yield, then converts
 that rate to acreage using the configured regrowth period. Independent hybrid
 feeding or training costs and buildings without worker production do not create
-birth funding. Free or non-wheat recipes do not invent wheat acreage. Feeding demand also responds to observed hungry and
+birth funding. Free or non-food recipes do not invent food acreage. Feeding demand also responds to observed hungry and
 unserved units: an optimistic nominal throughput forecast must not impose a
 second coarse limit on additional feeders. There is no crop-tiles-per-feeder
 limit, including when the optional food ledger is disabled; policy construction
@@ -146,8 +146,8 @@ that producer will help. A site that cannot reach sufficient supply even without
 competition can still be retired. Non-producing services retain their actual
 allocation-based coverage signal.
 
-This uncontested supply is a decision signal, never another resource budget.
-Production funding, candidate feasibility and resource conservation still use
+This uncontested supply is a decision signal, never another material budget.
+Production funding, candidate feasibility and material conservation still use
 actual claims and residual supply. It is computed during the existing route-quality
 walk without another traversal or catalog scan. Telemetry reports `coverage`,
 `uncontested_coverage` and `retirement_coverage` separately.

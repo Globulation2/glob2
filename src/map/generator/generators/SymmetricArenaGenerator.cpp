@@ -573,12 +573,12 @@ bool furnish(Game &game, GenerationContext &context, const Arena &a, const Layou
 		for (int x = 0; x < w; ++x)
 		{
 			const size_t i = size_t(y) * w + x;
-			grass[i] = (map.terrainSupportsResourceAt(x, y, WHEAT) && map.terrainSupportsResourceAt(x, y, WOOD) &&
-				map.terrainSupportsResourceAt(x, y, STONE) && map.terrainSupportsResourceAt(x, y, CHERRY) &&
-				map.terrainSupportsResourceAt(x, y, ORANGE) && map.terrainSupportsResourceAt(x, y, PRUNE)) &&
+			grass[i] = (map.terrainSupportsResourceAtByIndex(x, y, WHEAT) && map.terrainSupportsResourceAtByIndex(x, y, WOOD) &&
+				map.terrainSupportsResourceAtByIndex(x, y, STONE) && map.terrainSupportsResourceAtByIndex(x, y, CHERRY) &&
+				map.terrainSupportsResourceAtByIndex(x, y, ORANGE) && map.terrainSupportsResourceAtByIndex(x, y, PRUNE)) &&
 				map.getBuilding(x, y) == NOGBID &&
 					   map.getGroundUnit(x, y) == NOGUID;
-			water[i] = map.terrainSupportsResourceAt(x, y, ALGA);
+			water[i] = map.terrainSupportsResourceAtByIndex(x, y, ALGA);
 			land[i] = map.terrainPropertiesAt(x, y).walkable;
 			const Point p = tilePoint(w, h, x, y);
 			// Nothing is planted within 1.5 tiles past the home's clear disc, nor within 3 to 4
@@ -845,7 +845,7 @@ bool furnish(Game &game, GenerationContext &context, const Arena &a, const Layou
 	for (int y = 0; y < h; ++y)
 		for (int x = 0; x < w; ++x)
 			if (plan[size_t(y) * w + x] >= 0)
-				map.setResource(x, y, plan[size_t(y) * w + x], 1);
+				map.setResourceByIndex(x, y, plan[size_t(y) * w + x], 1);
 	// The engine draws each deposit's amount and look from the gameplay RNG; equalising gives every
 	// orbit its lowest-indexed tile's, so deposits are symmetric in size as well as type.
 	if (!MapGeneration::equaliseDeposits(map, s, context.detail))

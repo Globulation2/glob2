@@ -361,7 +361,7 @@ static void unifiedHospitalCapacity() {
 static void proactiveProtection() {
     Fixture f; f.building(10,10,0);auto& a=*f.ai;auto& c=a.context;c.initialize();
     for(int y=0;y<64;++y)f.game.map.setTerrain(0,y,256);
-    f.game.map.setResource(3,11,WOOD,5);f.game.map.setResource(4,11,WOOD,5);f.game.map.setResource(5,11,WOOD,5);
+    f.game.map.setResourceByIndex(3,11,WOOD,5);f.game.map.setResourceByIndex(4,11,WOOD,5);f.game.map.setResourceByIndex(5,11,WOOD,5);
     a.timer=5000;a.budget.farming_enabled=true;a.budget.farming_protection_enabled=true;
     a.budget.farming_minimum_wood_fertility=0;
     a.budget.farming_wood_firebreak_enabled=false;

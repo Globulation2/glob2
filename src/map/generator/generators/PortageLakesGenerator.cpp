@@ -1334,7 +1334,7 @@ bool materialize(Game &game, GenerationContext &c, const Layout &L)
 	}
 	for (int i = 0; i < t.size(); ++i)
 		if ((L.forest[i] || L.rock[i]) && clearGround(game.map, i % t.w, i / t.w))
-			game.map.setResource(i % t.w, i / t.w, L.rock[i] ? STONE : WOOD, 1);
+			game.map.setResourceByIndex(i % t.w, i / t.w, L.rock[i] ? STONE : WOOD, 1);
 	for (size_t k = 0; k < L.countryClumps.size(); ++k)
 	{
 		const int kind = k % 3 == 0 ? STONE : CHERRY + int(k % 3);
@@ -1346,7 +1346,7 @@ bool materialize(Game &game, GenerationContext &c, const Layout &L)
 		auto waterEligible = [&](int i)
 		{
 			return t.dist2(pool % t.w, pool / t.w, i % t.w, i / t.w) <= 36 &&
-				   game.map.terrainSupportsResourceAt(i % t.w, i / t.w, ALGA);
+				   game.map.terrainSupportsResourceAtByIndex(i % t.w, i / t.w, ALGA);
 		};
 		growPatch(game.map, t, pool, ALGA, 8 + scaledCount(8, o.algae), waterEligible);
 	}
@@ -1381,10 +1381,10 @@ bool materialize(Game &game, GenerationContext &c, const Layout &L)
 		return false;
 	}
 	if (auto e = startingAccessFailure(game.map, c.request.nbTeams,
-									   {{WHEAT, 12, "wheat"},
-										{WOOD, 32, "wood"},
-										{STONE, 24, "stone"},
-										{ALGA, L.compact ? 64 : 48, "algae"}});
+									   {{MaterialId::Food, 12, "food"},
+										{MaterialId::Wood, 32, "wood"},
+										{MaterialId::Stone, 24, "stone"},
+										{MaterialId::Algae, L.compact ? 64 : 48, "algae"}});
 		!e.empty())
 	{
 		c.detail = e;
@@ -1477,10 +1477,10 @@ std::string validateWorld(const Game &game, const GenerationContext &c)
 	if (auto e = mechanismFailure(map, L); !e.empty())
 		return e;
 	if (auto e = startingAccessFailure(map, c.request.nbTeams,
-									   {{WHEAT, 12, "wheat"},
-										{WOOD, 32, "wood"},
-										{STONE, 24, "stone"},
-										{ALGA, L.compact ? 64 : 48, "algae"}});
+									   {{MaterialId::Food, 12, "food"},
+										{MaterialId::Wood, 32, "wood"},
+										{MaterialId::Stone, 24, "stone"},
+										{MaterialId::Algae, L.compact ? 64 : 48, "algae"}});
 		!e.empty())
 		return e;
 	return walkFromFirstColony(map, c.request.nbTeams, "the lake country",

@@ -66,6 +66,9 @@ namespace
 	{
 		GrassMap()
 		{
+            // Unit binaries do not initialize Toolkit or an installed asset search path.
+            resourceRegistryValue = ResourceRegistry::loadFile((glob2test::sourceRoot() / "data/resources/registry.json").string());
+            rebuildResourceHabitats();
 			wDec = kMapDec;
 			hDec = kMapDec;
 			w = 1 << kMapDec;

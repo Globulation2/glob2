@@ -329,7 +329,7 @@ bool generate(Game &game, GenerationContext &context)
 	writeUndermap(map, L.terrain);
 	for (int i = 0; i < t.size(); ++i)
 		if (L.protectedTiles[i])
-			map.setResource(i % t.w, i / t.w, L.wood[i] ? WOOD : STONE, 1);
+			map.setResourceByIndex(i % t.w, i / t.w, L.wood[i] ? WOOD : STONE, 1);
 	for (int k = 0; k < context.request.nbTeams; ++k)
 		game.addTeam();
 	context.stage = "breachable colonies";
@@ -475,8 +475,8 @@ std::string validateWorld(const Game &game, const GenerationContext &context)
 	// invade wheat. The north half and both southern quarters must stay separate.
 	std::vector<unsigned char> grass(t.size(), 0);
 	for (int i = 0; i < t.size(); ++i)
-		grass[i] = (map.canResourcesGrow(i % t.w, i / t.w) && (map.terrainSupportsResourceAt(i % t.w, i / t.w, WHEAT) ||
-			map.terrainSupportsResourceAt(i % t.w, i / t.w, WOOD)));
+		grass[i] = (map.canResourcesGrow(i % t.w, i / t.w) && (map.terrainSupportsResourceAtByIndex(i % t.w, i / t.w, WHEAT) ||
+			map.terrainSupportsResourceAtByIndex(i % t.w, i / t.w, WOOD)));
 	const auto cropRegions = connectedRegions(grass, t.w, t.h, true, GridNeighbors::Eight);
 	std::vector<int> cropPlot(t.size(), -1);
 	for (int cell = 0; cell < L.cells.cellCount(); ++cell)

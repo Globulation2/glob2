@@ -341,14 +341,14 @@ TEST_SUITE("TeamStatsSave")
 		glob2test::HeadlessGame world(glob2test::GameOptions{
 			.wDec = 6, .hDec = 6, .clearImmobile = true, .loadDefaultRace = true, .header = true});
 		auto *swarm = world.addBuilding("swarm", 10, 10);
-		swarm->resources[WHEAT] = swarm->type->maxResource[WHEAT];
+		swarm->materials[WHEAT] = swarm->type->maxMaterial[WHEAT];
 		swarm->update();
 		world.addBuilding("inn", 20, 10);
 		for (int i = 0; i < 6; ++i)
 			world.addUnit(i < 4 ? WORKER : WARRIOR, 12 + i, 20);
 		for (int y = 30; y < 34; ++y)
 			for (int x = 10; x < 20; ++x)
-				world.game.map.setResource(x, y, WHEAT, 1);
+				world.game.map.setResourceByIndex(x, y, WHEAT, 1);
 		world.step(1100);
 		const auto &stats = world.team->stats;
 		REQUIRE(stats.measurementHistory.size() >= 2);

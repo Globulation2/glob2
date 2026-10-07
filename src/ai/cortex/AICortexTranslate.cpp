@@ -4,7 +4,7 @@
 #include "AICortex.h"
 #include "AITelemetryFields.h"
 #include "CortexObservation.h"
-#include "CortexWheat.h"
+#include "CortexFoodSources.h"
 
 #include "Order.h"
 #include "Player.h"
@@ -607,21 +607,21 @@ void AICortex::translateActionSetPriority(const Cortex::CortexAction& action, co
 	}
 }
 
-void AICortex::enqueueWheatForbidden(const Cortex::CortexObservation& obs, bool liftAll)
+void AICortex::enqueueFoodSourcesForbidden(const Cortex::CortexObservation& obs, bool liftAll)
 {
-	(void)obs; // reserved: the gate already ran in CortexPolicy::wantWheatProtection /
-	           // wantWheatBlitzLift; liftAll selects the wheat-blitz full-lift mode.
+	(void)obs; // reserved: the gate already ran in CortexPolicy::wantFoodSourceProtection /
+	           // wantFoodBurstLift; liftAll selects the food-blitz full-lift mode.
 
-	// Both area types use the same wheat checkerboard and upkeep. Retire legacy
-	// wheat forbidden paint when using farms, including saves from the prototype.
+	// Both area types use the same food checkerboard and upkeep. Retire legacy
+	// food forbidden paint when using farms, including saves from the prototype.
 	const Map* map = &player->team->game->map;
 	const bool farms = map->farmAreasEnabled() && !player->game->gameHeader.isResourceGrowthDisabled();
-	Cortex::WheatReconcile wr =
-		Cortex::reconcileWheatForbidden(player, wheatOpenMargin, /*buildMasks=*/true, liftAll, farms);
+	Cortex::FoodSourceReconcile wr =
+		Cortex::reconcileFoodSourcesForbidden(player, wheatOpenMargin, /*buildMasks=*/true, liftAll, farms);
 	const Uint8 teamNumber = static_cast<Uint8>(player->team->teamNumber);
 	if (farms)
 	{
-		Cortex::WheatReconcile legacy = Cortex::reconcileWheatForbidden(
+		Cortex::FoodSourceReconcile legacy = Cortex::reconcileFoodSourcesForbidden(
 			player, wheatOpenMargin, /*buildMasks=*/true, /*liftAll=*/true);
 		if (legacy.del.getApplicationCount() > 0)
 			orderQueue.push(shared_ptr<Order>(new OrderAlterForbidden(

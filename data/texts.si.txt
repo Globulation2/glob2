@@ -5564,5 +5564,45 @@ Delavci lahko jemljejo zaloge iz skupnega skladišča tržnic. Tržnice je mogo�
 Uvozi definicije terena
 [Terrain palette]
 Paleta terenov
+[Food]
+Hrana
+[Paper]
+Papir
+[Cherries]
+Češnje
+[Oranges]
+Pomaranče
+[Prunes]
+Slive
+[Gold]
+Zlato
+[Metal]
+Kovina
+[Glass]
+Steklo
+[Fabric]
+Tkanina
+[Import Resource Definitions]
+Uvozi definicije virov
+[Resource palette]
+Paleta virov
+[Trees]
+Drevesa
+[Rocks]
+Skale
+[Cherry tree]
+Češnja
+[Orange tree]
+Pomarančevec
+[Prune tree]
+Sliva
+[Gold ore]
+Zlata ruda
+[Iron ore]
+Železova ruda
+[Sand]
+Pesek
+[Cotton]
+Bombaž
 [Reroll terrain look]
 Znova naključno izberi videz terena

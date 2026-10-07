@@ -940,7 +940,9 @@ For timing and scheduling, start with `src/game/Game_sync.cpp` and `src/engine/E
   pre-134 files also derive canonical IDs from legacy sprite ranges. Save floor 58
   remains unchanged. Building format 137 adds the per-game building catalog; replay
   floor 137 and network protocol 57 introduced those simulation/catalog gates.
-  The current replay floor is 140 for damage-weighted routing and idle safety.
+  The completed-tick observation phase introduced replay floor 139. Runtime resource
+  catalogs now require replay floor 140 and network protocol 59.
+  The current replay floor is 141 for damage-weighted routing and idle safety.
   Loading earlier saves rebuilds cached routes on maps with terrain health effects;
   current saves retain their completed and pending fields for exact continuation.
   Custom registry checksums hash canonical serialized fields, not struct padding.
@@ -2008,8 +2010,13 @@ can leave an older game executable in place. Preserve a baseline with the same
 benchmark instrumentation, build options and dependencies before rebuilding.
 The structured runner accepts `--benchmark-warmup N` when loading a saved game.
 It reports process CPU nanoseconds for setup/loading, execution after the warmup,
-and the final save in `result.json`. The measured execution includes pending
-pipeline completion; save compression is measured separately. `--ticks` remains
+and the final save in `result.json`. Setup CPU stops before session startup;
+measured execution begins after startup and includes session summary/teardown and
+pending pipeline completion. The engine run-wall interval also includes session
+startup (and simulation warmup, when requested), so it differs from measured CPU.
+Whole-process CPU additionally covers process startup and final teardown; these
+phase fields are not an exhaustive partition. Save compression is measured
+separately. `--ticks` remains
 an absolute game tick, and the warmup must leave a nonempty measured window.
 
 ```sh

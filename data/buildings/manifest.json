@@ -2,7 +2,7 @@
   "catalogKey": "stock",
   "experiments": [
     {
-      "help": "Workers fetch shared market stock; upgrades add wheat and wood, then all resources.",
+      "help": "Workers fetch shared market stock; upgrades add food and wood, then all materials.",
       "key": "markets-v2",
       "label": "Markets V2"
     }

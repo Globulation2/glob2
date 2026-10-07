@@ -8,6 +8,17 @@
 #include "TerrainProperties.h"
 namespace MapGeneration
 {
+namespace
+{
+bool spreadingCrop(const Map& map, int type)
+{
+    if (type==NO_RES_TYPE) return false;
+    const auto& properties=map.resourcePropertiesByIndex(type);
+    return properties.spreadRate && (properties.materialMask &
+        (materialBit(MaterialId::Food)|materialBit(MaterialId::Wood)));
+}
+}
+
 int cropSeedsIn(const Map &map, const std::vector<unsigned char> &region)
 {
 	const Torus t(map);
@@ -18,7 +29,7 @@ int cropSeedsIn(const Map &map, const std::vector<unsigned char> &region)
 		if (region[i])
 		{
 			const int type = map.getResource(i % t.w, i / t.w).type;
-			seeds += type == WHEAT || type == WOOD;
+			seeds += spreadingCrop(map, type);
 		}
 	return seeds;
 }
@@ -31,10 +42,10 @@ Flood cropSpreadEnvelope(const Map &map, const Fertility::Field *fertility)
 	{
 		const int x = i % t.w, y = i / t.w;
 		const int type = map.getResource(x, y).type;
-		seeds[i] = (type == WHEAT || type == WOOD) && (!fertility || fertility->at(x, y) > 0);
+		seeds[i] = (spreadingCrop(map, type)) && (!fertility || fertility->at(x, y) > 0);
 		// A tile whose growth flag is off never takes a crop, so the envelope stops at it as
 		// the engine does. No generated map sets the flag; loaded scenario maps may.
-		grass[i] = (map.terrainPropertiesAt(x,y).allowedResources & (1u<<WHEAT)) && map.canResourcesGrow(x, y);
+		grass[i] = map.terrainSupportsMaterialAt(x,y,MaterialId::Food) && map.canResourcesGrow(x, y);
 	}
 	// Reuse the same toroidal eight-neighbour topology as the other region operations.
 	auto result = floodFrom(t, seeds, grass);
@@ -42,7 +53,7 @@ Flood cropSpreadEnvelope(const Map &map, const Fertility::Field *fertility)
 		for (int i = 0; i < t.size(); ++i)
 		{
 			const int type = map.getResource(i % t.w, i / t.w).type;
-			if ((type == WHEAT || type == WOOD) && result.steps[i] < 0)
+			if ((spreadingCrop(map, type)) && result.steps[i] < 0)
 			{
 				result.steps[i] = 0;
 				result.visited.push_back(i);
@@ -59,7 +70,7 @@ std::vector<unsigned char> fertileCropEnvelope(const Map &map, const Fertility::
 	for (int i = 0; i < t.size(); ++i)
 	{
 		const int type = map.getResource(i % t.w, i / t.w).type;
-		if (type == WHEAT || type == WOOD)
+		if (spreadingCrop(map, type))
 		{
 			reached[i] = 1;
 			if (fertility.at(i % t.w, i / t.w) > 0) queue.push_back(i);
@@ -72,7 +83,7 @@ std::vector<unsigned char> fertileCropEnvelope(const Map &map, const Fertility::
 			for (int dx = -1; dx <= 1; ++dx)
 			{
 				const int q = t.at(i % t.w + dx, i / t.w + dy);
-				if (reached[q] || !(map.terrainPropertiesAt(q).allowedResources & (1u<<WHEAT)) ||
+				if (reached[q] || !map.terrainSupportsMaterialAt(q % t.w,q / t.w,MaterialId::Food) ||
 					!map.canResourcesGrow(q % t.w, q / t.w)) continue;
 				reached[q] = 1;
 				if (fertility.at(q % t.w, q / t.w) > 0) queue.push_back(q);

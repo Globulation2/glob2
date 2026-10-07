@@ -14,6 +14,7 @@
 #include "Glob2Style.h"
 #include "GlobalContainer.h"
 #include "TerrainPresentation.h"
+#include "ResourceRegistry.h"
 #include "render/terrain/TerrainCatalogIO.h"
 #include "render/terrain/TerrainCompositor.h"
 #include "ui/ThemeCatalog.h"
@@ -65,6 +66,8 @@ GlobalContainer::GlobalContainer(const char *profileName, const std::string& bui
 	std::vector<CatalogExperimentDefinition> buildingExperiments;
 	for (const auto& definition : buildingsTypes.experiments())
 		buildingExperiments.push_back({definition.key, definition.label, definition.help});
+	for (const auto& definition : ResourceRegistry::availableDefaults()->experiments())
+		buildingExperiments.push_back(definition);
 	registerCatalogExperiments(buildingExperiments);
 
 	// load user preference
@@ -448,8 +451,6 @@ void GlobalContainer::load(void)
 	strings->setLang(strings->getLangCode(settings.language));
 	// load default unit types
 	Race::loadDefault();
-	// Resource types are now a compile-time const table (see
-	// src/resource/Resources.cpp); nothing to load here.
 
 	loadClient();
 }

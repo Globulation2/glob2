@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2006 Bradley Arsenault
 
+#include "Material.h"
 #include "AITelemetryFields.h"
 #include "shared_runtime/Runtime.h"
 #include "Building.h"
@@ -34,7 +35,7 @@ bool Runtime::ensure_production(const std::array<int,3>& desired,int workers,int
     push_order(order);
     auto* ratios=new ChangeSwarm(desired[WORKER],desired[EXPLORER],desired[WARRIOR],id);
     ratios->add_condition(new ParticularBuilding(new NotUnderConstruction,id));add_management_order(ratios);
-    auto* tracker=new AddResourceTracker(AI_SHARED_RUNTIME_RTI_TRACKER_LENGTH,RecurringInputStock,id);
+    auto* tracker=new AddMaterialTracker(AI_SHARED_RUNTIME_RTI_TRACKER_LENGTH,RecurringInputStock,id);
     tracker->add_condition(new ParticularBuilding(new NotUnderConstruction,id));add_management_order(tracker);
     return true;
 }
@@ -151,45 +152,45 @@ void Runtime::update_management_orders()
 
 
 
-void Runtime::add_resource_tracker(Management::ResourceTracker* rt, int building_id)
+void Runtime::add_material_tracker(Management::MaterialTracker* rt, int building_id)
 {
-	resource_trackers[building_id]=std::make_tuple(std::shared_ptr<ResourceTracker>(rt), true);
+	material_trackers[building_id]=std::make_tuple(std::shared_ptr<MaterialTracker>(rt), true);
 }
 
 
 
-std::shared_ptr<Management::ResourceTracker> Runtime::get_resource_tracker(int building_id)
+std::shared_ptr<Management::MaterialTracker> Runtime::get_material_tracker(int building_id)
 {
-	if(resource_trackers.find(building_id)==resource_trackers.end())
-		return std::shared_ptr<Management::ResourceTracker>();
-	return std::get<0>(resource_trackers[building_id]);
+	if(material_trackers.find(building_id)==material_trackers.end())
+		return std::shared_ptr<Management::MaterialTracker>();
+	return std::get<0>(material_trackers[building_id]);
 }
 
 
 
-void Runtime::pause_resource_tracker(int building_id)
+void Runtime::pause_material_tracker(int building_id)
 {
-	std::get<1>(resource_trackers[building_id])=false;
+	std::get<1>(material_trackers[building_id])=false;
 }
 
 
 
-void Runtime::unpause_resource_tracker(int building_id)
+void Runtime::unpause_material_tracker(int building_id)
 {
-	std::get<1>(resource_trackers[building_id])=true;
+	std::get<1>(material_trackers[building_id])=true;
 }
 
 
 
-void Runtime::update_resource_trackers()
+void Runtime::update_material_trackers()
 {
-	for(std::map<int, std::tuple<std::shared_ptr<Management::ResourceTracker>, bool> >::iterator i = resource_trackers.begin(); i!=resource_trackers.end();)
+	for(std::map<int, std::tuple<std::shared_ptr<Management::MaterialTracker>, bool> >::iterator i = material_trackers.begin(); i!=material_trackers.end();)
 	{
 		if(!br.is_building_found(i->first) && !br.is_building_pending(i->first))
 		{
-			std::map<int, std::tuple<std::shared_ptr<Management::ResourceTracker>, bool> >::iterator current=i;
+			std::map<int, std::tuple<std::shared_ptr<Management::MaterialTracker>, bool> >::iterator current=i;
 			++i;
-			resource_trackers.erase(current);
+			material_trackers.erase(current);
 			continue;
 		}
 		else if(br.is_building_found(i->first))
@@ -280,11 +281,11 @@ void Runtime::check_fruit()
 	{
 		for(int y=0; y<mi.get_height(); ++y)
 		{
-			if(mi.is_resource(x, y, CHERRY))
+			if(mi.is_resource(x, y, materialIndex(MaterialId::Cherries)))
 				is_fruit=true;
-			if(mi.is_resource(x, y, ORANGE))
+			if(mi.is_resource(x, y, materialIndex(MaterialId::Oranges)))
 				is_fruit=true;
-			if(mi.is_resource(x, y, PRUNE))
+			if(mi.is_resource(x, y, materialIndex(MaterialId::Prunes)))
 				is_fruit=true;
 			if(is_fruit)
 				return;
@@ -324,7 +325,7 @@ std::shared_ptr<Order> Runtime::getOrder(void)
 	gm->update();
 	br.tick();
     std::erase_if(retired_attractions,[&](const auto& entry){return !br.is_building_found(entry.first) && !br.is_building_pending(entry.first);});
-	update_resource_trackers();
+	update_material_trackers();
 	update_management_orders();
 	runtimeai->telemetry = telemetry;
 	runtimeai->tick(*this);

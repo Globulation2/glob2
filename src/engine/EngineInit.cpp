@@ -1,3 +1,4 @@
+#include "FileFormatVersions.h"
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
@@ -67,14 +68,17 @@ void Engine::applyLocalExperiments(GameHeader& header, const MapHeader& map)
 {
     if (!map.getIsSavedGame())
     {
+		header.setResourceExperiments(map.getVersionMinor() < FILE_FORMAT_VERSION_RUNTIME_RESOURCES
+			? ResourceRegistry::legacy()->experiments() : map.resourceExperimentDefinitions);
         ExperimentSet enabled;
-        const auto& allowed = header.buildingExperimentKeys();
+        const auto allowed = header.catalogExperimentKeys();
         for (const auto& key : globalContainer->settings.experiments.keys())
             if (parseExperimentKey(key) || std::find(allowed.begin(), allowed.end(), key) != allowed.end())
                 enabled.set(key, true, allowed);
         header.setExperiments(enabled);
         for (const auto& definition : experimentDefinitions())
             if (map.requiredTerrainExperiments.has(definition.id)) header.getExperiments().set(definition.id);
+		for (const auto& key : map.requiredResourceExperiments.keys()) header.getExperiments().set(key, true, allowed);
     }
 }
 int Engine::initCustom(MapHeader& map, GameHeader& players, int localTeam, const std::string& sourceFileName)

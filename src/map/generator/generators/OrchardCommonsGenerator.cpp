@@ -516,7 +516,7 @@ bool generate(Game &game, GenerationContext &c)
 		for (int i : tiles)
 			if (placed < wanted && clearGround(game.map, i % t.w, i / t.w))
 			{
-				game.map.setResource(i % t.w, i / t.w, g.kind, 1);
+				game.map.setResourceByIndex(i % t.w, i / t.w, g.kind, 1);
 				++placed;
 			}
 		c.telemetry.measure("orchard.grove.fruit-tiles", placed, int(k));
@@ -531,7 +531,7 @@ bool generate(Game &game, GenerationContext &c)
 	std::vector<std::pair<int, int>> treeSites;
 	for (int i = 0; i < t.size(); ++i)
 		if (L.woodland[i] && fertility.at(i % t.w, i / t.w) == 0 &&
-			game.map.terrainSupportsResourceAt(i % t.w, i / t.w, WOOD) && clearGround(game.map, i % t.w, i / t.w))
+			game.map.terrainSupportsResourceAtByIndex(i % t.w, i / t.w, WOOD) && clearGround(game.map, i % t.w, i / t.w))
 			treeSites.push_back({treeNoise[i], i});
 	std::sort(treeSites.begin(), treeSites.end());
 	const int wantedTrees =
@@ -539,7 +539,7 @@ bool generate(Game &game, GenerationContext &c)
 	for (int n = 0; n < wantedTrees; ++n)
 	{
 		int i = treeSites[n].second;
-		game.map.setResource(i % t.w, i / t.w, WOOD, 1);
+		game.map.setResourceByIndex(i % t.w, i / t.w, WOOD, 1);
 		++trees;
 	}
 	// Fill clean, renewable field sections against the outer lakes and streams.

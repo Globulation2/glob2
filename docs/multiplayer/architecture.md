@@ -610,6 +610,12 @@ same transaction, and stores team statistics and timelines in `match_team_stats`
 It links the record, replay and result blobs in `match_artifacts`, but only blobs
 registered in `blobs`. For a generate-map job, it marks the generated map ready or
 failed, whether a room, an on-demand queue start or the warm pool asked for it.
+Generation and validation results also carry resource experiment display metadata
+and the keys required by resources already present on the map. These are stored
+with generated maps, uploads and catalog versions, then copied into rooms and
+match setups. Required keys remain enabled when room settings change. The engine
+validates this metadata against the embedded resource catalog; the platform never
+uses display metadata as a substitute for the map's definitions.
 
 The aggregate views from migration 0004 cover verified, ended matches of the
 last 90 days:

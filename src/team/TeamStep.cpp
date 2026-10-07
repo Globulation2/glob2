@@ -86,8 +86,8 @@ bool Team::buildingHasHigherPriority(Building* lhs, Building* rhs)
 		int ratio_rhs_unit = (rhs->maxUnitWorking  - rhs->unitsWorking.size()) * lhs->unitsWorking.size();
 		if(ratio_lhs_unit == ratio_rhs_unit)
 		{
-			int ratio_lhs_resource = lhs->totalWishedResource();
-			int ratio_rhs_resource = rhs->totalWishedResource();
+			int ratio_lhs_resource = lhs->totalWishedMaterial();
+			int ratio_rhs_resource = rhs->totalWishedMaterial();
 			if(ratio_lhs_resource != ratio_rhs_resource)
 				return ratio_lhs_resource > ratio_rhs_resource;
 			// Tiebreak on gid: std::sort is unstable, so without a final
@@ -184,14 +184,14 @@ namespace
 		int swimClass = u->swimClass();
 		if (b->globalGradient[swimClass] == NULL)
 			return false;
-		if (u->carriedResource >= 0)
-			return u->carriedResource == resource && map->buildingAvailable(b, swimClass, u->posX, u->posY, cost, BuildingRoute::Footprint);
-		if (map->roundTripDistance(b, resource, swimClass, u->posX, u->posY, cost))
+		if (u->carriedMaterial >= 0)
+			return u->carriedMaterial == resource && map->buildingAvailable(b, swimClass, u->posX, u->posY, cost, BuildingRoute::Footprint);
+		if (map->roundTripDistanceSlot(b, resource, swimClass, u->posX, u->posY, cost))
 			return true;
 		// No round-trip field for this class yet: the plain distances, as hiring uses them.
 		int toBuilding, toResource;
 		if (!map->buildingAvailable(b, swimClass, u->posX, u->posY, &toBuilding, BuildingRoute::Footprint)
-			|| !map->resourceAvailable(b->owner->teamNumber, resource, swimClass, u->posX, u->posY, &toResource, b->fetchesFromMarkets(), b))
+			|| !map->materialAvailableSlot(b->owner->teamNumber, resource, swimClass, u->posX, u->posY, &toResource, b->fetchesFromMarkets(), b))
 			return false;
 		*cost = toBuilding + toResource;
 		return true;
@@ -233,7 +233,7 @@ namespace
 		u->destinationPurpose = resource;
 		b->unitsWorking.push_back(u);
 		b->updateCallLists();
-		if (u->carriedResource == resource)
+		if (u->carriedMaterial == resource)
 		{
 			u->displacement = Unit::DIS_GOING_TO_BUILDING;
 			u->setTargetBuilding(b);
@@ -242,7 +242,7 @@ namespace
 		{
 			u->displacement = Unit::DIS_GOING_TO_RESOURCE;
 			u->setTargetBuilding(NULL);
-			b->owner->map->resourceAvailableUpdate(b->owner->teamNumber, resource, u->swimClass(), u->posX, u->posY, &u->targetX, &u->targetY, NULL, b->fetchesFromMarkets(), b);
+			b->owner->map->materialAvailableUpdateSlot(b->owner->teamNumber, resource, u->swimClass(), u->posX, u->posY, &u->targetX, &u->targetY, NULL, b->fetchesFromMarkets(), b);
 		}
 		u->validTarget = true;
 	}

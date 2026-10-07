@@ -40,7 +40,7 @@ class TorusView
               int height, float flatZoom = 1, float fractionX = 0, float fractionY = 0);
 
   private:
-    void releaseResources();
+    void releaseMaterials();
     bool prepareRenderTarget();
     void updateClouds(int time);
     static constexpr int meshColumns = 160, meshRows = 160;

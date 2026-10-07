@@ -779,3 +779,22 @@ TEST_SUITE("MetricCatalog")
 		CHECK(Stats::markers(Stats::TeamHistory()).empty());
 	}
 }
+
+TEST_CASE("Future material chart bands appear only after recorded use")
+{
+    Recorded team;
+    team.add(0,10);
+    auto& sample=team.add(512,10);
+    sample.harvested[materialIndex(MaterialId::Food)]=8;
+    const auto& gathered=metric("gathered");
+    auto view=Stats::defaultView(gathered);view.split=true;
+    auto chart=Stats::buildChart(gathered,view,{team.history});
+    CHECK(chart.bandKeys.size()==8);
+    REQUIRE(chart.teams.size()==1);
+    CHECK(chart.teams[0].values.size()==8);
+    sample.harvested[materialIndex(MaterialId::Gold)]=2;
+    chart=Stats::buildChart(gathered,view,{team.history});
+    REQUIRE(chart.bandKeys.size()==9);
+    CHECK(chart.bandKeys.back()=="[Gold]");
+    CHECK(chart.teams[0].values.size()==9);
+}

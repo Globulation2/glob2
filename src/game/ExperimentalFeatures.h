@@ -85,6 +85,8 @@ private:
 // Pure validation shared by startup registration and embedded catalog loading.
 void validateCatalogExperiments(const std::vector<CatalogExperimentDefinition> &definitions);
 void registerCatalogExperiments(const std::vector<CatalogExperimentDefinition> &definitions);
+void saveCatalogExperimentDefinitions(GAGCore::OutputStream* stream, const std::vector<CatalogExperimentDefinition>& definitions);
+std::vector<CatalogExperimentDefinition> loadCatalogExperimentDefinitions(GAGCore::InputStream* stream);
 // Built-ins first in their historical order, followed by installed dynamic keys.
 std::vector<CatalogExperimentDefinition> registeredExperimentDefinitions();
 bool knownExperimentKey(const std::string &key, const std::vector<std::string> &allowedKeys = {});

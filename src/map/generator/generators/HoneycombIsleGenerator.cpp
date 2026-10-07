@@ -995,11 +995,11 @@ bool generate(Game &game, GenerationContext &context)
 		const int x = i % t.w, y = i / t.w;
 		if (L.stone[i] && map.isResourceAllowed(x, y, STONE))
 		{
-			map.setResource(x, y, STONE, 1);
+			map.setResourceByIndex(x, y, STONE, 1);
 			++stoneTiles;
 		}
 		else if (L.rubble[i] && map.isResourceAllowed(x, y, WOOD))
-			map.setResource(x, y, WOOD, 1);
+			map.setResourceByIndex(x, y, WOOD, 1);
 	}
 	context.telemetry.measure("honeycomb-isle.stone.tiles", stoneTiles);
 
@@ -1070,7 +1070,7 @@ bool generate(Game &game, GenerationContext &context)
 				if (plantedWheat < wheat && wheatSide(i) && clearGround(map, x, y) &&
 					map.isResourceAllowed(x, y, WHEAT))
 				{
-					map.setResource(x, y, WHEAT, 1);
+					map.setResourceByIndex(x, y, WHEAT, 1);
 					++plantedWheat;
 				}
 			}
@@ -1080,7 +1080,7 @@ bool generate(Game &game, GenerationContext &context)
 				if (plantedWood < wood && !wheatSide(i) && clearGround(map, x, y) &&
 					map.isResourceAllowed(x, y, WOOD))
 				{
-					map.setResource(x, y, WOOD, 1);
+					map.setResourceByIndex(x, y, WOOD, 1);
 					++plantedWood;
 				}
 			}
@@ -1093,12 +1093,12 @@ bool generate(Game &game, GenerationContext &context)
 					continue;
 				if (plantedWood < wood && map.isResourceAllowed(x, y, WOOD))
 				{
-					map.setResource(x, y, WOOD, 1);
+					map.setResourceByIndex(x, y, WOOD, 1);
 					++plantedWood;
 				}
 				else if (plantedWheat < wheat && map.isResourceAllowed(x, y, WHEAT))
 				{
-					map.setResource(x, y, WHEAT, 1);
+					map.setResourceByIndex(x, y, WHEAT, 1);
 					++plantedWheat;
 				}
 			}
@@ -1167,7 +1167,7 @@ std::string validateWorld(const Game &game, const GenerationContext &context)
 			walkFromFirstColony(map, teams, "the city", "along the streets").error;
 		!error.empty())
 		return error;
-	return startingAccessFailure(map, teams, {{WHEAT, 24, "wheat"}, {WOOD, 32, "wood"}}, 16, 24);
+	return startingAccessFailure(map, teams, {{MaterialId::Food, 24, "food"}, {MaterialId::Wood, 32, "wood"}}, 16, 24);
 }
 } // namespace
 

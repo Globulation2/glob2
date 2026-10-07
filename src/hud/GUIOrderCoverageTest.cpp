@@ -76,7 +76,7 @@ TEST_SUITE("GUIOrderCoverage")
         pending.pendingMinWorkerLevelToFlag=1;
         pending.pendingExplorersRequireBombing=true;
         pending.pendingRatio=std::array<Sint32,NB_UNIT_TYPE>{2,1,3};
-        pending.pendingClearingResources=std::array<bool,BASIC_COUNT>{true,false,true};
+        pending.pendingClearingResources=std::array<bool,MaterialCount>{true,false,true};
         auto move=std::make_shared<OrderMoveFlag>(gid,3,6,true);
         move->sender=0; gui.reconcileBuildingGuiState(move);
         CHECK(pending.pendingPosX.has_value()); // Both coordinates must match.
@@ -103,11 +103,11 @@ TEST_SUITE("GUIOrderCoverage")
         CHECK(pending.pendingRatio.has_value());
         ratio->ratio[2]=3; gui.reconcileBuildingGuiState(ratio);
         CHECK_FALSE(pending.pendingRatio.has_value());
-        bool mask[BASIC_COUNT]={true,false,false};
+        bool mask[MaterialCount]={true,false,false};
         auto clearing=std::make_shared<OrderModifyClearingFlag>(gid,mask);
         clearing->sender=0; gui.reconcileBuildingGuiState(clearing);
         CHECK(pending.pendingClearingResources.has_value());
-        clearing->clearingResources[2]=true; gui.reconcileBuildingGuiState(clearing);
+        clearing->clearingMaterials[2]=true; gui.reconcileBuildingGuiState(clearing);
         CHECK_FALSE(pending.pendingClearingResources.has_value());
         // Unknown/missing entries must not create phantom GUI state.
         auto absent=std::make_shared<OrderChangePriority>(999,1);

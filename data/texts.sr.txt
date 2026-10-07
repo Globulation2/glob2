@@ -5564,5 +5564,45 @@ FFmpeg није доступан, па је снимање искључено. �
 Увези дефиниције терена
 [Terrain palette]
 Палета терена
+[Food]
+Храна
+[Paper]
+Папир
+[Cherries]
+Трешње
+[Oranges]
+Поморанџе
+[Prunes]
+Шљиве
+[Gold]
+Злато
+[Metal]
+Метал
+[Glass]
+Стакло
+[Fabric]
+Тканина
+[Import Resource Definitions]
+Увези дефиниције ресурса
+[Resource palette]
+Палета ресурса
+[Trees]
+Дрвеће
+[Rocks]
+Стене
+[Cherry tree]
+Трешњево дрво
+[Orange tree]
+Дрво поморанџе
+[Prune tree]
+Шљивино дрво
+[Gold ore]
+Златна руда
+[Iron ore]
+Гвоздена руда
+[Sand]
+Песак
+[Cotton]
+Памук
 [Reroll terrain look]
 Поново насумично изабери изглед терена

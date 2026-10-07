@@ -24,18 +24,23 @@ using std::shared_ptr;
 void GradientInfo::add_source(Entities::Entity* source)
 {
 	sources.push_back(std::shared_ptr<Entities::Entity>(source));
+    needs_updated=indeterminate;
+    needsUpdatedRegistry.reset();
 }
 
 
 void GradientInfo::add_obstacle(Entities::Entity* obstacle)
 {
 	obstacles.push_back(std::shared_ptr<Entities::Entity>(obstacle));
+    needs_updated=indeterminate;
+    needsUpdatedRegistry.reset();
 }
 
 GradientInfo GradientInfo::clone() const
 {
 	GradientInfo copy;
 	copy.needs_updated=needs_updated;
+    copy.needsUpdatedRegistry=needsUpdatedRegistry;
     copy.terrainTravel=terrainTravel;
 	for(const auto& source : sources)
 		copy.sources.push_back(source->clone());
@@ -83,8 +88,13 @@ bool GradientInfo::operator==(const GradientInfo& rhs) const
 
 
 
-bool GradientInfo::needs_updating() const
+bool GradientInfo::needs_updating(Map* map) const
 {
+    if(needsUpdatedRegistry.get()!=&map->resourceRegistry())
+    {
+        needsUpdatedRegistry=map->frozenResourceRegistry();
+        needs_updated=indeterminate;
+    }
 	if(needs_updated)
 		return true;
 	else if(!needs_updated)
@@ -94,7 +104,7 @@ bool GradientInfo::needs_updating() const
 		needs_updated=false;
 		for(unsigned int i=0; i<sources.size(); ++i)
 		{
-			if(sources[i]->can_change())
+			if(sources[i]->can_change(map))
 			{
 				needs_updated=true;
 				return true;
@@ -103,7 +113,7 @@ bool GradientInfo::needs_updating() const
 
 		for(unsigned int i=0; i<obstacles.size(); ++i)
 		{
-			if(obstacles[i]->can_change())
+			if(obstacles[i]->can_change(map))
 			{
 				needs_updated=true;
 				return true;
@@ -118,6 +128,8 @@ bool GradientInfo::needs_updating() const
 bool GradientInfo::load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor)
 {
 	stream->readEnterSection("GradientInfo");
+    needs_updated=indeterminate;
+    needsUpdatedRegistry.reset();
     const unsigned travel=versionMinor>=FILE_FORMAT_VERSION_TERRAIN_PROPERTIES?stream->readUint8("terrainTravel"):0;
     if(!field::validTerrainTravel(travel)) return false;
     terrainTravel=static_cast<field::TerrainTravel>(travel);
@@ -223,11 +235,20 @@ GradientInfo make_gradient_info_obstacle(Entities::Entity* source1, Entities::En
 
 
 
+bool Gradient::current(Map* map) const
+{
+    return terrainGeneration==map->terrainGeneration() &&
+        staticMaterialSourceGeneration==map->staticMaterialSourceGeneration() &&
+        resourceRegistry.get()==&map->resourceRegistry();
+}
+
 void Gradient::recalculate(Map* map, field::Frontier& frontier)
 {
 	PERF_SCOPE_TIME(AIGradient);
 	width=map->getW();
     terrainGeneration=map->terrainGeneration();
+    staticMaterialSourceGeneration=map->staticMaterialSourceGeneration();
+    resourceRegistry=map->frozenResourceRegistry();
 	gradient.resize(map->getW()*map->getH());
 	std::fill(gradient.begin(), gradient.end(),0);
 
@@ -296,6 +317,8 @@ std::unique_ptr<GradientManager> GradientManager::clone() const
 		auto field=std::make_shared<Gradient>(gradient->gradient_info.clone());
 		field->width=gradient->width;
         field->terrainGeneration=gradient->terrainGeneration;
+        field->staticMaterialSourceGeneration=gradient->staticMaterialSourceGeneration;
+        field->resourceRegistry=gradient->resourceRegistry;
 		field->gradient=gradient->gradient;
 		copy->gradients.push_back(std::move(field));
 	}
@@ -309,7 +332,7 @@ Gradient& GradientManager::get_gradient(const GradientInfo& gi)
 	{
 		if((*i)->get_gradient_info() == gi)
 		{
-			if((*i)->terrainGeneration!=map->terrainGeneration() || ticks_since_update[i-gradients.begin()]>AI_SHARED_RUNTIME_GRADIENT_STALE_TICKS)
+			if(!(*i)->current(map) || ticks_since_update[i-gradients.begin()]>AI_SHARED_RUNTIME_GRADIENT_STALE_TICKS)
 			{
 				ticks_since_update[i-gradients.begin()]=0;
 				(*i)->recalculate(map,frontier);
@@ -332,7 +355,7 @@ void GradientManager::queue_gradient(const GradientInfo& gi)
 	{
 		if(gradients[i]->get_gradient_info() == gi)
 		{
-			if(gradients[i]->terrainGeneration!=map->terrainGeneration() || gi.needs_updating())
+			if(!gradients[i]->current(map) || gi.needs_updating(map))
 			{
 				queuedGradients.push(i);
 			}
@@ -352,7 +375,7 @@ bool GradientManager::is_updated(const GradientInfo& gi)
 	{
 		if((*i)->get_gradient_info() == gi)
 		{
-			if((*i)->terrainGeneration!=map->terrainGeneration() || (ticks_since_update[i-gradients.begin()]>AI_SHARED_RUNTIME_GRADIENT_STALE_TICKS && (*i)->get_gradient_info().needs_updating()))
+			if(!(*i)->current(map) || (ticks_since_update[i-gradients.begin()]>AI_SHARED_RUNTIME_GRADIENT_STALE_TICKS && (*i)->get_gradient_info().needs_updating(map)))
 			{
 				return false;
 			}
@@ -376,7 +399,7 @@ void GradientManager::update()
 	if((timer%1)==0 && !queuedGradients.empty())
 	{
 		int g=queuedGradients.front();
-		if(gradients[g]->terrainGeneration!=map->terrainGeneration() || ticks_since_update[g]>AI_SHARED_RUNTIME_GRADIENT_QUEUE_MIN_AGE_TICKS)
+		if(!gradients[g]->current(map) || ticks_since_update[g]>AI_SHARED_RUNTIME_GRADIENT_QUEUE_MIN_AGE_TICKS)
 		{
 			gradients[g]->recalculate(map,frontier);
 			ticks_since_update[g]=0;
@@ -402,7 +425,8 @@ void GradientManager::save(GAGCore::OutputStream* stream)
 		stream->writeEnterSection(i);
 		Gradient& g=*gradients[i];
 		g.gradient_info.save(stream);
-        stream->writeUint8(g.terrainGeneration==map->terrainGeneration(),"terrainCurrent");
+        // Preserve the existing wire flag while covering all source invalidation.
+        stream->writeUint8(g.current(map),"terrainCurrent");
 		stream->writeSint32(ticks_since_update[i],"age");
 		stream->writeSint32(g.width,"width");
 		stream->writeUint32(g.gradient.size(),"size");
@@ -441,6 +465,8 @@ bool GradientManager::load(GAGCore::InputStream* stream,Player* player,Sint32 ve
 		auto g=std::make_shared<Gradient>(info);
         const bool terrainCurrent=versionMinor<FILE_FORMAT_VERSION_TERRAIN_PROPERTIES || stream->readUint8("terrainCurrent");
         g->terrainGeneration=terrainCurrent?map->terrainGeneration():0;
+        g->staticMaterialSourceGeneration=terrainCurrent?map->staticMaterialSourceGeneration():0;
+        g->resourceRegistry=map->frozenResourceRegistry();
 		ticks_since_update.push_back(stream->readSint32("age"));
 		g->width=stream->readSint32("width");
 		const Uint32 size=stream->readCount("size");

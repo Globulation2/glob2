@@ -99,14 +99,14 @@ TEST_CASE("invalid catalog reports the rejected field and preserves the active c
             [](Json& j) { j["variants"][1]["properties"]["hpMax"] = 0; },
             {"initial health exceeds maximum health"}},
         {"reserved resource capacity",
-            [](Json& j) { j["variants"][0]["properties"]["maxResource"][8] = 1; },
-            {"maxResource", "outside 0..0"}},
+            [](Json& j) { j["variants"][0]["properties"]["maxMaterial"][MaterialCount] = 1; },
+            {"maxMaterial", "outside 0..0"}},
         {"unknown replenishment resource",
-            [](Json& j) { j["variants"][0]["semantics"]["replenishResources"] = {"gold"}; },
-            {"replenishResources", "unknown resource 'gold'"}},
+            [](Json& j) { j["variants"][0]["semantics"]["replenishMaterials"] = {"unobtainium"}; },
+            {"replenishMaterials", "unknown material 'unobtainium'"}},
         {"duplicate supply resource",
-            [](Json& j) { j["variants"][0]["semantics"]["market"]["suppliesStockResources"] = {"wood", "wood"}; },
-            {"suppliesStockResources", "duplicate resource 'wood'"}},
+            [](Json& j) { j["variants"][0]["semantics"]["market"]["suppliesStockMaterials"] = {"wood", "wood"}; },
+            {"suppliesStockMaterials", "duplicate material 'wood'"}},
         {"fractional width",
             [](Json& j) { j["variants"][0]["properties"]["width"] = 1.5; },
             {"width", "expected an integer"}},
@@ -117,11 +117,11 @@ TEST_CASE("invalid catalog reports the rejected field and preserves the active c
             [](Json& j) { j["variants"][1]["semantics"]["production"]["recipes"]["warrior"]["duration"] = 17; },
             {"late-choice production requires equal recipes"}},
         {"unknown service resource",
-            [](Json& j) { j["variants"][3]["semantics"]["feeding"]["cost"]["gold"] = 2; },
-            {"variants[3]", "inn.0.finished", "unknown resource 'gold'"}},
+            [](Json& j) { j["variants"][3]["semantics"]["feeding"]["cost"]["unobtainium"] = 2; },
+            {"variants[3]", "inn.0.finished", "unknown material 'unobtainium'"}},
         {"negative service cost",
-            [](Json& j) { j["variants"][3]["semantics"]["feeding"]["cost"]["wheat"] = -1; },
-            {"wheat", "outside 0..1000000"}},
+            [](Json& j) { j["variants"][3]["semantics"]["feeding"]["cost"]["food"] = -1; },
+            {"food", "outside 0..1000000"}},
         {"obsolete capability field",
             [](Json& j) { j["variants"][3]["properties"]["canFeedUnit"] = 1; },
             {"unknown field 'canFeedUnit'"}},
@@ -180,7 +180,7 @@ TEST_CASE("manifest parsing identifies the broken definition file without publis
         R"({"schemaVersion":1,"catalogKey":"broken-example","files":["broken-building.json"]})");
     auto invalidService = nlohmann::json::parse(glob2test::readFile(
         glob2test::fixture("building-catalog/authoring/field-kitchen.json")));
-    invalidService["variants"][0]["semantics"]["feeding"]["cost"]["gold"] = 1;
+    invalidService["variants"][0]["semantics"]["feeding"]["cost"]["unobtainium"] = 1;
     for (const bool malformedJson : {true, false})
     {
         CAPTURE(malformedJson);
@@ -198,7 +198,7 @@ TEST_CASE("manifest parsing identifies the broken definition file without publis
             else
             {
                 CHECK(message.find("field-kitchen.finished") != std::string::npos);
-                CHECK(message.find("unknown resource 'gold'") != std::string::npos);
+                CHECK(message.find("unknown material 'unobtainium'") != std::string::npos);
             }
         }
         REQUIRE(threw);
@@ -225,9 +225,9 @@ TEST_CASE("documented experimental field kitchen loads from its authored files")
     CHECK(kitchen->semantics.feeding.enabled);
     CHECK(kitchen->semantics.healing.enabled);
     CHECK(kitchen->semantics.feeding.cost[WHEAT] == 1);
-    CHECK(kitchen->semantics.healing.cost == BuildingResourceCost{});
-    CHECK(kitchen->maxResource[WHEAT] == 12);
-    CHECK(kitchen->semantics.replenishResourceMask == (1u << WHEAT));
+    CHECK(kitchen->semantics.healing.cost == BuildingMaterialCost{});
+    CHECK(kitchen->maxMaterial[WHEAT] == 12);
+    CHECK(kitchen->semantics.replenishMaterialMask == (1u << WHEAT));
     CHECK(kitchen->semantics.assignmentLimit == 2);
     catalog.configureExperiments({});
     CHECK_FALSE(catalog.getRuntime(0)->has(BuildingRuntimeTraits::Available));
@@ -395,6 +395,46 @@ TEST_CASE("compact runtime traits preserve validated numeric boundaries")
     CHECK(hot.projectileDamage[WARRIOR]==1000000);
     properties["shootingRange"]=0; properties["shootRhythm"]=1000000;
     catalog.loadSnapshotJson(json.dump()); CHECK(catalog.getRuntime(3)->shootRhythm==0);
+}
+
+TEST_CASE("new materials retain high bits through catalogs and compact runtime rows")
+{
+    BuildingsTypes catalog; catalog.initLegacy();
+    auto json=nlohmann::json::parse(catalog.snapshotJson());
+    auto& variant=json["variants"][3];
+    auto& sem=variant["semantics"];
+    variant["properties"]["maxMaterial"][materialIndex(MaterialId::Fabric)]=40;
+    sem["replenishMaterials"]={"fabric", "gold", "metal", "glass"};
+    sem["feeding"]["cost"]={{"fabric",2}};
+    sem["market"]["fetchesStock"]=true;
+    sem["market"]["fetchesStockExperiment"]="";
+    sem["market"]["fetchesStockMaterials"]={"fabric", "gold"};
+    catalog.loadSnapshotJson(json.dump());
+    catalog.configureExperiments({});
+    CHECK(catalog.getRuntime(3)->replenishMaterialMask==0xF00);
+    CHECK(catalog.getRuntime(3)->fetchesStockMask==0x900);
+    CHECK(catalog.get(3)->semantics.feeding.cost[materialIndex(MaterialId::Fabric)]==2);
+    CHECK(catalog.get(3)->semantics.feeding.costMask==materialBit(MaterialId::Fabric));
+    BuildingsTypes restored; restored.loadSnapshotJson(catalog.snapshotJson());
+    CHECK(restored.snapshotJson()==catalog.snapshotJson());
+}
+
+TEST_CASE("legacy inventory vocabulary imports and ambiguous material aliases fail atomically")
+{
+    BuildingsTypes catalog; catalog.initLegacy();
+    auto json=nlohmann::json::parse(catalog.snapshotJson());
+    auto& variant=json["variants"][3];
+    auto& p=variant["properties"];
+    p["maxResource"]=p["maxMaterial"]; p.erase("maxMaterial");
+    auto& sem=variant["semantics"];
+    sem["replenishResources"]=sem["replenishMaterials"]; sem.erase("replenishMaterials");
+    sem["feeding"]["cost"]={{"wheat",1}};
+    catalog.loadSnapshotJson(json.dump());
+    CHECK(catalog.get(3)->semantics.feeding.cost[materialIndex(MaterialId::Food)]==1);
+    const auto before=catalog.snapshotJson();
+    sem["feeding"]["cost"]["food"]=2;
+    CHECK_THROWS_AS(catalog.loadSnapshotJson(json.dump()),std::exception);
+    CHECK(catalog.snapshotJson()==before);
 }
 
 }

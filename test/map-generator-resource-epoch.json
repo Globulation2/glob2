@@ -1,0 +1,39 @@
+{
+  "resource_epoch": 1,
+  "description": "Full map hashes after resource sprites stopped consuming simulation RNG. Topology hashes exclude stock quantities but include terrain, source identities and colony starts. Historical full hashes retain the pre-epoch reference. Rows require independently verified archived map comparisons.",
+  "platforms": {
+    "linux-x86_64": {
+      "canals": {
+        "historical_full": 16622643961647829752,
+        "topology": 1342704325069643704,
+        "full": 11099226097251723814
+      },
+      "caravanserai": {
+        "historical_full": 6244602504248136250,
+        "topology": 16571860465599968285,
+        "full": 7881860256827117520
+      },
+      "fingerprint": {
+        "historical_full": 5648058033288605271,
+        "topology": 8437600554994148324,
+        "full": 3308641788709647431
+      },
+      "honeycomb-isle": {
+        "historical_full": 5908701397362810997,
+        "topology": 10559024323253052986,
+        "full": 9145829052127692952
+      },
+      "maze": {
+        "historical_full": 6132248727033081699,
+        "topology": 401563344924014212,
+        "full": 5504856400217732380
+      }
+    }
+  },
+  "portable_topology": {
+    "maze": 401563344924014212,
+    "canals": 1342704325069643704,
+    "caravanserai": 16571860465599968285,
+    "honeycomb-isle": 10559024323253052986
+  }
+}

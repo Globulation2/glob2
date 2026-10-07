@@ -385,7 +385,7 @@ bool generate(Game &game, GenerationContext &context)
 	// The blocks are stone, wherever the beaches left pure grass.
 	for (int i = 0; i < n; ++i)
 		if (L.block[i] && map.isResourceAllowed(i % t.w, i / t.w, STONE))
-			map.setResource(i % t.w, i / t.w, STONE, 1);
+			map.setResourceByIndex(i % t.w, i / t.w, STONE, 1);
 
 	context.stage = "old town colonies";
 	const auto homeMask = [&](int team) { return homeGrassMask(map, t, L.homeOf, team); };

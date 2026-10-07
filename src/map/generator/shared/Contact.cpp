@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "Contact.h"
 #include "Map.h"
+#include "ResourceSemantics.h"
 #include <algorithm>
 #include <climits>
 #include <cstdlib>
@@ -11,18 +12,14 @@ namespace MapGeneration
 {
 int stepCost(const Map &map, int x, int y, const StepCosts &costs)
 {
-	const auto& terrain = map.terrainPropertiesAt(x, y);
-	if (!terrain.walkable)
-		return terrain.swimmable ? costs.water : -1;
-	if (map.getBuilding(x, y) != NOGBID)
-		return costs.building;
-	if (map.isResource(x, y))
-	{
-		const int type = map.getResource(x, y).type;
-		return type == STONE || (type >= CHERRY && type <= CHERRY + 2) ? costs.eternal
-																	   : costs.clearable;
-	}
-	return costs.open;
+    const auto index=map.coordToIndex(x,y);
+    const auto& terrain=map.terrainPropertiesAt(index);
+    const int open=terrain.walkable ? costs.open : terrain.swimmable ? costs.water : -1;
+    if (open<0) return open;
+    if (map.getBuilding(x,y)!=NOGBID) return costs.building;
+    if (map.resourceBlocksGround(index))
+        return permanentResourceBarrier(map,index) ? costs.eternal : costs.clearable;
+    return open;
 }
 
 std::vector<int> costsFrom(const Map &map, const Torus &t, const std::vector<int> &sources,

@@ -5564,5 +5564,45 @@ Laboristoj povas preni provizojn el la komuna merkata stoko. Merkatoj povas plia
 Importi terendifinojn
 [Terrain palette]
 Terenpaletro
+[Food]
+Manĝaĵo
+[Paper]
+Papero
+[Cherries]
+Ĉerizoj
+[Oranges]
+Oranĝoj
+[Prunes]
+Prunoj
+[Gold]
+Oro
+[Metal]
+Metalo
+[Glass]
+Vitro
+[Fabric]
+Ŝtofo
+[Import Resource Definitions]
+Importi rimedajn difinojn
+[Resource palette]
+Rimeda paletro
+[Trees]
+Arboj
+[Rocks]
+Rokoj
+[Cherry tree]
+Ĉerizarbo
+[Orange tree]
+Oranĝarbo
+[Prune tree]
+Prunarbo
+[Gold ore]
+Ora erco
+[Iron ore]
+Fera erco
+[Sand]
+Sablo
+[Cotton]
+Kotono
 [Reroll terrain look]
 Denove hazardigi la aspekton de la tereno

@@ -173,6 +173,7 @@ public:
 	std::shared_ptr<Order>getOrder(void);
 	
 private:
+	friend struct CastorResourcePolicyAccess;
 	void init(Player *player);
 	void defineStrategy();
 	

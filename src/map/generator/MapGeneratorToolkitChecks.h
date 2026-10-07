@@ -481,7 +481,7 @@ inline void plantingChecks()
 		   !reserved[t.at(36, 15)]);
 	for (int dy = -3; dy < 7; ++dy)
 		for (int dx = -3; dx < 7; ++dx)
-			map.setResource(30 + dx, 10 + dy, STONE, 1);
+			map.setResourceByIndex(30 + dx, 10 + dy, STONE, 1);
 	std::vector<unsigned char> keep(t.size(), 0);
 	keep[t.at(30, 10)] = 1;
 	clearAroundSwarms(map, context, t, &keep);
@@ -531,8 +531,8 @@ inline void roadChecks()
 	Map &map = game.map;
 	for (int y = 0; y < map.getH(); ++y)
 	{
-		map.setResource(7, y, STONE, 1);
-		map.setResource(15, y, STONE, 1);
+		map.setResourceByIndex(7, y, STONE, 1);
+		map.setResourceByIndex(15, y, STONE, 1);
 	}
 	assert(countResource(map, STONE) == 32);
 	assert(openRoad(map, Torus(map), {t.at(2, 8)}, goal));
@@ -651,11 +651,11 @@ inline void settlementChecks()
 			for (int dx = -3; dx <= 3; ++dx)
 				if (std::max(std::abs(dx), std::abs(dy)) == 3)
 				{
-					pocket.setResource(20 + dx, 20 + dy, STONE, 1);
+					pocket.setResourceByIndex(20 + dx, 20 + dy, STONE, 1);
 					ring[t.at(20 + dx, 20 + dy)] = 1;
 				}
-		pocket.setResource(28, 20, WHEAT, 1);
-		pocket.setResource(12, 20, WOOD, 1);
+		pocket.setResourceByIndex(28, 20, WHEAT, 1);
+		pocket.setResourceByIndex(12, 20, WOOD, 1);
 		guaranteeStartingResources(walled, context, 24, 32);
 		assert(countResource(pocket, STONE) < 24 && countResource(pocket, WHEAT) == 1 &&
 			   countResource(pocket, WOOD) == 1);
@@ -665,9 +665,9 @@ inline void settlementChecks()
 		Map &designed = keep.map;
 		for (int i = 0; i < t.size(); ++i)
 			if (ring[i])
-				designed.setResource(i % t.w, i / t.w, STONE, 1);
-		designed.setResource(28, 20, WHEAT, 1);
-		designed.setResource(12, 20, WOOD, 1);
+				designed.setResourceByIndex(i % t.w, i / t.w, STONE, 1);
+		designed.setResourceByIndex(28, 20, WHEAT, 1);
+		designed.setResourceByIndex(12, 20, WOOD, 1);
 		guaranteeStartingResources(keep, context, 24, 32, 0, &ring);
 		assert(countResource(designed, STONE) == 24 && countResource(designed, WHEAT) > 1 &&
 			   countResource(designed, WOOD) > 1);
@@ -702,7 +702,7 @@ inline void settlementChecks()
 		grassMap(packed, 6, 6);
 		for (int y = 18; y <= 25; ++y)
 			for (int x = 25; x <= 33; ++x)
-				packed.map.setResource(x, y, WHEAT, 1);
+				packed.map.setResourceByIndex(x, y, WHEAT, 1);
 		const int beforeWheat = countResource(packed.map, WHEAT);
 		guaranteeStartingResources(packed, context, 24, 32, 0, nullptr, &allowed);
 		// With no free allowed grass, the opt-in backstop trades a small
@@ -733,7 +733,7 @@ inline void settlementChecks()
 		for (int dy = -12; dy <= 12; ++dy)
 			for (int dx = -12; dx <= 12; ++dx)
 				if (clearGround(map, t.x(30 + dx), t.y(30 + dy)))
-					map.setResource(t.x(30 + dx), t.y(30 + dy), WOOD, 1);
+					map.setResourceByIndex(t.x(30 + dx), t.y(30 + dy), WOOD, 1);
 		const auto sites = [&]
 		{
 			const Flood flood =
@@ -1189,7 +1189,7 @@ inline void wallChecks()
 		if (stone[i])
 		{
 			assert(!margin[i] && map.getTerrainType(i % t.w, i / t.w) == GRASS);
-			map.setResource(i % t.w, i / t.w, STONE, 1);
+			map.setResourceByIndex(i % t.w, i / t.w, STONE, 1);
 		}
 	std::vector<unsigned char> beach(t.size(), 0);
 	for (int i = 0; i < t.size(); ++i)
@@ -1444,10 +1444,10 @@ inline void arenaChecks()
 	assert(game.teams[0]->turrets.size() == towerCount);
 	// Supplying a starting tower is a finite initial stock, not a new refill
 	// rule. Existing calls remain empty; the opt-in uses the actual type's cap.
-	assert(game.teams[0]->turrets.front()->resources[STONE] == 0);
+	assert(game.teams[0]->turrets.front()->materials[STONE] == 0);
 	assert(placeTower(game, 0, 0, 5, 8, 4, allowed, true, {}, true) >= 0);
 	const auto supplied = game.teams[0]->turrets.back();
-	assert(supplied->resources[STONE] == supplied->type->maxResource[STONE]);
+	assert(supplied->materials[STONE] == supplied->type->maxMaterial[STONE]);
 	assert(supplied->desiredMaxUnitWorking == 0);
 	// A stocked starter inn registers feeding service immediately but does not
 	// receive fruit. Its entire footprint must obey the same placement mask.
@@ -1455,9 +1455,9 @@ inline void arenaChecks()
 	const int innSite = placeStartingBuilding(game, 0, "inn", 0, 18, 18, 3, innGround, {WHEAT});
 	assert(innSite >= 0 && !game.teams[0]->canFeedUnit.empty());
 	const auto inn = game.teams[0]->canFeedUnit.front();
-	assert(inn->resources[WHEAT] == inn->type->maxResource[WHEAT]);
-	assert(inn->resources[CHERRY] == 0 && inn->resources[ORANGE] == 0 &&
-		   inn->resources[PRUNE] == 0);
+	assert(inn->materials[WHEAT] == inn->type->maxMaterial[WHEAT]);
+	assert(inn->materials[CHERRY] == 0 && inn->materials[ORANGE] == 0 &&
+		   inn->materials[PRUNE] == 0);
 	assert(placeStartingBuilding(game, 0, "inn", 0, 18, 18, 3, none, {WHEAT}) == -1);
 
 	// seaEntry finds the one grass gap in a walled coast.
@@ -1482,10 +1482,10 @@ inline void arenaChecks()
 			if (gap < 0 && i % t.w == 32)
 				gap = i;
 			else
-				map.setResource(i % t.w, i / t.w, STONE, 1);
+				map.setResourceByIndex(i % t.w, i / t.w, STONE, 1);
 		}
 	assert(gap >= 0 && seaEntry(map, t, margin, island) >= 0);
-	map.setResource(gap % t.w, gap / t.w, STONE, 1);
+	map.setResourceByIndex(gap % t.w, gap / t.w, STONE, 1);
 	assert(seaEntry(map, t, margin, island) == -1);
 	(void)inside;
 }
@@ -2027,7 +2027,7 @@ inline void colonyLeakChecks()
 			homes[k][i] = game.map.isGrass(i % t.w, i / t.w) && (k == 0 ? i % t.w < 30 : i % t.w > 30);
 		assert(placeSettlement(game, context, k, homes[k], MapGeneratorPoint(k ? 44 : 12, 24)));
 	}
-	game.map.setResource(30, 31, WHEAT, 1);
+	game.map.setResourceByIndex(30, 31, WHEAT, 1);
 	assert(colonyLeak(game.map, t, 2, roadTiles(t, causeway)) == (std::array<int, 2>{-1, -1}));
 	const std::array<int, 2> joined =
 		colonyLeak(game.map, t, 2, std::vector<unsigned char>(t.size(), 0));
@@ -2461,9 +2461,9 @@ inline void wallRouteAndStencilChecks()
 		assert(!wallStanding(game.map, t, wall, gate, "test wall").empty());
 		for (int i = 0; i < t.size(); ++i)
 			if (wall[i])
-				game.map.setResource(i % t.w, i / t.w, STONE, 1);
+				game.map.setResourceByIndex(i % t.w, i / t.w, STONE, 1);
 		assert(wallStanding(game.map, t, wall, gate, "test wall").empty());
-		game.map.setResource(37, 32, STONE, 1);
+		game.map.setResourceByIndex(37, 32, STONE, 1);
 		assert(!wallStanding(game.map, t, wall, gate, "test wall").empty());
 	}
 	{
@@ -2669,8 +2669,8 @@ inline void siteOperationChecks()
 
 	Game game(nullptr);
 	grassMap(game, 6, 6);
-	game.map.setResource(63, 0, WHEAT, 1);
-	game.map.setResource(0, 63, WOOD, 1);
+	game.map.setResourceByIndex(63, 0, WHEAT, 1);
+	game.map.setResourceByIndex(0, 63, WOOD, 1);
 	const auto access = floodFrom(t, tileMask(t, {0}), groundUnitTiles(game.map), 0);
 	auto frontage = resourceFrontages(game.map, access, 0);
 	assert(frontage[WHEAT].edges == 1 && frontage[WOOD].edges == 1);
@@ -2687,7 +2687,7 @@ inline void siteOperationChecks()
 	fillRectangle(terrain, t, {-10, -10, 11, 11}, SAND);
 	fillRectangle(terrain, t, {-8, -8, 9, 9}, GRASS);
 	writeUndermap(contained.map, terrain);
-	contained.map.setResource(30, 30, WHEAT, 1);
+	contained.map.setResourceByIndex(30, 30, WHEAT, 1);
 	assert(cropSpreadEnvelope(contained.map).steps[t.at(0, 0)] < 0);
 	// Breach a wide strip through the sand ring: the same proof must now reject it.
 	fillRectangle(terrain, t, {5, -2, 13, 3}, GRASS);
@@ -2700,7 +2700,7 @@ inline void siteOperationChecks()
 		Game dryField(nullptr);
 		grassMap(dryField, 6, 6);
 		const auto dry = cropGrowthField(TerrainSketch(t.size(), GRASS), t);
-		dryField.map.setResource(4, 4, WHEAT, 1);
+		dryField.map.setResourceByIndex(4, 4, WHEAT, 1);
 		const auto envelope = cropSpreadEnvelope(dryField.map, &dry);
 		assert(envelope.visited.size() == 1 && envelope.steps[t.at(4, 4)] == 0);
 		std::vector<int> labels(t.size(), -1);
@@ -2729,7 +2729,7 @@ inline void siteOperationChecks()
 	const auto savedRandom = syncRandEngine();
 	setSyncRandSeed(20001);
 	for (int x = -4; x <= 4; ++x)
-		growing.map.setResource(t.x(x), t.y(-4), WOOD, 1); // brush diameter, not amount
+		growing.map.setResourceByIndex(t.x(x), t.y(-4), WOOD, 1); // brush diameter, not amount
 	for (int i = 0; i < t.size(); ++i)
 		if (inside[i])
 			assert(!growing.map.isResource(i % t.w, i / t.w));

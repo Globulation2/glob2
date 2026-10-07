@@ -8,7 +8,7 @@
 class Player;
 
 // AICortex swim/water assessment. Lives on the observation side of the three-
-// layer split (like CortexPlacement / CortexWheat): Cortex::observe() calls it to
+// layer split (like CortexPlacement / CortexFoodSources): Cortex::observe() calls it to
 // fill the swim-decision fields of a CortexObservation, so the pure policy only
 // ever reads bounded scalars and never touches Game*/Team*/Map*.
 //
@@ -20,7 +20,7 @@ class Player;
 //      flood-fill the colony's vicinity twice — once treating water as an
 //      obstacle (a non-swimmer) and once treating it as passable (a swimmer) —
 //      and compare the two tile counts. A large gap means swimming opens up
-//      water-separated land (fresh wheat patches across a channel, a shorter or
+//      water-separated land (fresh food patches across a channel, a shorter or
 //      only route to a water-locked enemy). This mirrors the INTENT of AICastor's
 //      computeNeedSwim (ai/castor/State.cpp:82-109).
 

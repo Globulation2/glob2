@@ -17,11 +17,12 @@ namespace Script
 namespace
 {
 bool passable(const Observations::Cell &cell, const std::string &mode,
-			  const TerrainRegistry &registry)
+			  const TerrainRegistry &registry, const ResourceRegistry& resources)
 {
 	const auto &terrain = registry.properties(cell.terrainType);
-	if (mode == "fly") return terrain.flyable;
-	return !cell.building && !cell.forbidden && cell.resource == 255 &&
+	const auto* deposit=cell.resource==NO_RES_TYPE ? nullptr : &resources.properties(static_cast<ResourceId>(cell.resource));
+	if (mode == "fly") return terrain.flyable && (!deposit || !deposit->blocksAir);
+	return !cell.building && !cell.forbidden && (!deposit || !deposit->blocksGround) &&
 		(terrain.walkable || (mode == "swim" && terrain.swimmable));
 }
 int number(const Value &v, const char *key, int fallback, int lo = -32768, int hi = 32767)
@@ -41,16 +42,27 @@ bool boolean(const Value &v, const char *key, bool fallback)
 		throw std::runtime_error(std::string(key) + " must be boolean");
 	return value.number != 0;
 }
-int resource(const Value &v)
+int resource(const Value &v, const ResourceRegistry& registry)
 {
 	if (v.kind == Value::Number)
-		return Value::object().set("type", v).integer("type", 0, 7);
+		return Value::object().set("type", v).integer("type", 0, int(registry.size())-1);
+	if (v.kind==Value::String) if(auto id=registry.find(v.text)) return resourceIndex(*id);
+	// Legacy script aliases.
 	const char *names[] = {"wood", "wheat",  "papyrus", "stone",
 						   "alga", "cherry", "orange",  "prune"};
+	const char* keys[] = {"trees", "wheat", "papyrus", "rocks", "algae", "cherry-tree", "orange-tree", "prune-tree"};
 	for (int i = 0; i < 8; ++i)
 		if (v.kind == Value::String && v.text == names[i])
-			return i;
+			if (const auto id = registry.find(keys[i])) return resourceIndex(*id);
 	throw std::runtime_error("Unknown resource name");
+}
+MaterialId requestedMaterial(const Value& value)
+{
+	if (value.kind == Value::String)
+		if (const auto material = parseMaterialKey(value.text)) return *material;
+	if (value.kind == Value::Number)
+		return static_cast<MaterialId>(Value::object().set("material", value).integer("material", 0, MaterialCount - 1));
+	throw std::runtime_error("Unknown material name");
 }
 int unitType(const Value &v)
 {
@@ -127,12 +139,27 @@ std::vector<int> Spatial::sources(const Value &selector, const QueryBudget &budg
 	std::vector<int> out(cells.size());
 	if (selector.get("resource").kind != Value::Null)
 	{
-		int type = resource(selector.get("resource"));
+		int type = resource(selector.get("resource"), game.map.resourceRegistry());
 		bool harvestable = boolean(selector, "harvestable", false);
 		for (std::size_t i = 0; i < cells.size(); ++i)
 			if (cells[i].known && cells[i].resource == type &&
-				(!harvestable || (!cells[i].forbidden && cells[i].amount > 0)))
+				(!harvestable || (!cells[i].forbidden && cells[i].amount > 0 &&
+				 (!game.map.resourcePropertiesByIndex(type).visibleToHarvest || cells[i].visible))))
 				out[i] = text(selector, "weight", "count") == "amount" ? cells[i].amount : 1;
+	}
+	if (selector.get("material").kind != Value::Null)
+	{
+		const auto material = requestedMaterial(selector.get("material"));
+		const bool harvestable = boolean(selector, "harvestable", false);
+		const bool amountWeight = text(selector, "weight", "count") == "amount";
+		for (std::size_t i = 0; i < cells.size(); ++i)
+		{
+			const auto& cell = cells[i];
+			if (!cell.known || cell.resource == NO_RES_TYPE || (harvestable &&
+				(cell.forbidden || (game.map.resourcePropertiesByIndex(cell.resource).visibleToHarvest && !cell.visible)))) continue;
+			const auto amount = observations.materialStock(i % width, i / width, material);
+			if (amount) out[i] = amountWeight ? amount : 1;
+		}
 	}
 	if (selector.get("points").kind != Value::Null)
 	{
@@ -210,7 +237,7 @@ std::shared_ptr<Spatial::Field> Spatial::distanceField(const Value &spec, const 
 		seeds[i] = source[i] > 0;
 		const auto &c = cells[i];
 		passable[i] = metric != "path" ||
-					  (c.known && ::Script::passable(c, mode, game.map.terrainRegistry()));
+					  (c.known && ::Script::passable(c, mode, game.map.terrainRegistry(), game.map.resourceRegistry()));
 		if(metric=="path")
         {
 			const auto &registry = game.map.terrainRegistry();
@@ -394,7 +421,7 @@ Value Spatial::query(const std::string &name, const std::vector<Value> &args,
 		const auto mode = text(a, "movement", "walk");
 		if (mode != "walk" && mode != "swim" && mode != "fly")
 			throw std::runtime_error("Unknown movement mode");
-		return c.known ? Value(passable(c, mode, game.map.terrainRegistry())) : Value();
+		return c.known ? Value(passable(c, mode, game.map.terrainRegistry(), game.map.resourceRegistry())) : Value();
 	}
 	if (name == "summary")
 	{
@@ -402,9 +429,13 @@ Value Spatial::query(const std::string &name, const std::vector<Value> &args,
 		if (b.w > width || b.h > height)
 			throw std::runtime_error("Region exceeds map dimensions");
 		charge(budget, std::size_t(b.w) * b.h);
-		int known = 0, visible = 0, tiles = 0, amount = 0;
+		int known = 0, visible = 0, tiles = 0;
+		std::uint64_t amount = 0;
 		double fertility = 0;
-		int type = a.get("resource").kind == Value::Null ? -1 : resource(a.get("resource"));
+		int type = a.get("resource").kind == Value::Null ? -1 : resource(a.get("resource"), game.map.resourceRegistry());
+		std::optional<MaterialId> material;
+		if (a.get("material").kind != Value::Null) material = requestedMaterial(a.get("material"));
+		const bool harvestable = boolean(a, "harvestable", false);
 		for (int dy = 0; dy < b.h; ++dy)
 			for (int dx = 0; dx < b.w; ++dx)
 			{
@@ -414,18 +445,20 @@ Value Spatial::query(const std::string &name, const std::vector<Value> &args,
 				++known;
 				visible += c.visible;
 				fertility += c.fertility;
-				if ((type < 0 ? c.resource != 255 : c.resource == type) &&
-					(!boolean(a, "harvestable", false) || (!c.forbidden && c.amount > 0)))
+				const auto stock = material ? observations.materialStock(b.x + dx, b.y + dy, *material) : c.amount;
+				if ((type < 0 ? c.resource != NO_RES_TYPE : c.resource == type) && (!material || stock) &&
+					(!harvestable || (!c.forbidden && stock > 0 &&
+					 (!game.map.resourcePropertiesByIndex(c.resource).visibleToHarvest || c.visible))))
 				{
 					++tiles;
-					amount += c.amount;
+					amount += stock;
 				}
 			}
 		return Value::object()
 			.set("knownTiles", known)
 			.set("visibleTiles", visible)
 			.set("resourceTiles", tiles)
-			.set("amount", amount)
+			.set("amount", double(amount))
 			.set("fertility", known ? Value(fertility / known) : Value());
 	}
 	if (name == "hotspots")
@@ -480,7 +513,7 @@ Value Spatial::query(const std::string &name, const std::vector<Value> &args,
 		auto open = [&](int i)
 		{
 			const auto &c = cells[i];
-			return c.known && passable(c, mode, game.map.terrainRegistry());
+			return c.known && passable(c, mode, game.map.terrainRegistry(), game.map.resourceRegistry());
 		};
 		for (unsigned i = 0; i < cells.size(); ++i)
 			if (labels[i] < 0 && open(i))
@@ -724,7 +757,7 @@ Value Spatial::placement(const Value &spec, const Value &staged, const QueryBudg
 						if (!c.known || c.building || reserved[at] ||
 							(inside &&
 							 (!c.visible || !game.map.terrainProperties(c.terrainType).buildable ||
-							  c.resource != 255)))
+							  (c.resource != NO_RES_TYPE && game.map.resourcePropertiesByIndex(c.resource).blocksBuilding))))
 						{
 							valid = false;
 							break;

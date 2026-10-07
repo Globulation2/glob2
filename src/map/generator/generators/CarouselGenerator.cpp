@@ -712,7 +712,7 @@ std::vector<unsigned char> stoneTiles(const Map &map, const Layout &L)
 	std::vector<unsigned char> stone =
 		sealedIslandStone(map, L.t, seaMargin(map, L), L.land, L.wall);
 	for (int i = 0; i < L.t.size(); ++i)
-		if (L.laneBand[i] && map.terrainSupportsResourceAt(i % L.t.w, i / L.t.w, STONE))
+		if (L.laneBand[i] && map.terrainSupportsResourceAtByIndex(i % L.t.w, i / L.t.w, STONE))
 			stone[i] = 1;
 	return stone;
 }
@@ -848,7 +848,7 @@ bool generate(Game &game, GenerationContext &context)
 	const std::vector<unsigned char> stone = stoneTiles(map, L);
 	for (int i = 0; i < n; ++i)
 		if (stone[i])
-			map.setResource(i % t.w, i / t.w, STONE, 1);
+			map.setResourceByIndex(i % t.w, i / t.w, STONE, 1);
 
 	context.stage = "carousel colonies";
 	const auto home = [&](int team)

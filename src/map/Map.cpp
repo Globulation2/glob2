@@ -44,6 +44,7 @@ const int tabClose[8][2]={
 
 Map::Map() : gradientRuntime(std::make_unique<GradientRuntime>())
 {
+    rebuildResourceHabitats();
 	topologyGeneration=1;
 	game=NULL;
 
@@ -51,12 +52,12 @@ Map::Map() : gradientRuntime(std::make_unique<GradientRuntime>())
 	
 	aStarPoints = NULL;
 	for (int t=0; t<Team::MAX_COUNT; t++)
-		for (int r=0; r<MAX_NB_RESOURCES; r++)
+		for (int r=0; r<MaterialSlotCount; r++)
 			for (int s=0; s<SWIM_CLASS_COUNT; s++)
 			{
-				resourcesGradient[t][r][s] = NULL;
+				materialGradients[t][r][s] = NULL;
 				gradientUpdated[t][r][s] = false;
-				marketResourcesGradient[t][r][s] = NULL;
+				marketMaterialGradients[t][r][s] = NULL;
 				marketGradientDirty[t][r][s] = false;
 				marketGradientUpdated[t][r][s] = false;
 			}
@@ -261,6 +262,10 @@ void Map::importTerrainDefinitions(std::string_view json)
 	if (game && !game->edit)
 		throw std::logic_error("Terrain definitions can only change in the map editor");
 	auto next = terrainRegistry().importJson(json);
+	Map staged;
+	staged.terrainRegistryValue = next;
+	staged.resourceRegistryValue = resourceRegistryValue;
+	staged.rebuildResourceHabitats();
 	// Compilation/validation and allocation happen before publishing a replacement.
 	std::vector<std::size_t> counts(next->size());
 	std::vector<Uint16> propertyIndices(terrainIds.size());
@@ -274,6 +279,13 @@ void Map::importTerrainDefinitions(std::string_view json)
 	invalidateResourceSeeds();
 	terrainPropertyIndices = std::move(propertyIndices);
 	terrainPropertyTable = terrainRegistry().propertyProfiles().data();
+    resourceHabitatProfiles=std::move(staged.resourceHabitatProfiles);
+    resourceHabitatPermissions=std::move(staged.resourceHabitatPermissions);
+    resourceHabitatProfileCount=staged.resourceHabitatProfileCount;
+    terrainMaterialPermissions=std::move(staged.terrainMaterialPermissions);
+    terrainResourceAllowLists=std::move(staged.terrainResourceAllowLists);
+    explicitTerrainMaterialPermissions=std::move(staged.explicitTerrainMaterialPermissions);
+    terrainFarmResources=std::move(staged.terrainFarmResources);
 	terrainCounts = std::move(counts);
 	terrainFeatures.fill(0);
 	terrainGroundCostCounts = {};
@@ -300,11 +312,11 @@ void Map::importTerrainDefinitions(std::string_view json)
 	}
 	if (arraysBuilt && marketsV2Enabled())
 		for (int team = 0; team < Team::MAX_COUNT; ++team)
-			for (int resource = 0; resource < MAX_RESOURCES; ++resource)
+			for (int resource = 0; resource < MaterialCount; ++resource)
 				for (int swim = 0; swim < SWIM_CLASS_COUNT; ++swim)
 				{
 					gradientRuntime->pipeline.invalidate(
-						&marketResourcesGradient[team][resource][swim]);
+						&marketMaterialGradients[team][resource][swim]);
 					marketGradientUpdated[team][resource][swim] = false;
 					marketGradientDirty[team][resource][swim] = true;
 				}
@@ -316,6 +328,7 @@ void Map::rebuildTerrainCounts()
 {
 	invalidateResourceSeeds();
 	terrainPropertyTable = terrainRegistry().propertyProfiles().data();
+    rebuildResourceHabitats();
 	terrainPropertyIndices.resize(terrainIds.size());
 	for (std::size_t i = 0; i < terrainIds.size(); ++i)
 		terrainPropertyIndices[i] = terrainRegistry().propertyIndex(terrainIds[i]);
@@ -410,9 +423,9 @@ void Map::finishTerrainEdit()
 				gradientRuntime->pipeline.invalidate(&guardAreasGradient[team][swim]);
 				gradientRuntime->pipeline.invalidate(&clearAreasGradient[team][swim]);
 				guardGradientUpdated[team][swim] = clearGradientUpdated[team][swim] = false;
-				for (int resource = 0; resource < MAX_RESOURCES; ++resource)
+				for (int resource = 0; resource < MaterialCount; ++resource)
 				{
-					gradientRuntime->pipeline.invalidate(&resourcesGradient[team][resource][swim]);
+					gradientRuntime->pipeline.invalidate(&materialGradients[team][resource][swim]);
 					gradientUpdated[team][resource][swim] = false;
 				}
 				// Escape fields have no dirty flag. Their scheduled seed comparison
@@ -490,6 +503,7 @@ void Map::configureCompute(unsigned threads, unsigned experiments)
 
 void Map::clear()
 {
+    bumpStaticMaterialSourceGeneration();
 	static std::atomic<Uint64> nextIdentity{1};
 	identityValue = nextIdentity.fetch_add(1);
 	terrainSeedValue = 0;
@@ -507,6 +521,10 @@ void Map::clear()
 		terrainSnapshot.reset();
 		terrainMovementSnapshots = {};
 	}
+	resourceStockIndices.clear();
+	resourceStocks.clear();
+	freeResourceStocks.clear();
+	materialSourceCounts.fill(0);
 	terrainIds.clear();
 	terrainPropertyIndices.clear();
 	terrainCounts.assign(terrainRegistry().size(), 0);
@@ -524,23 +542,23 @@ void Map::clear()
 	for (auto &counts : growthCoverageCounts) counts.clear();
 	for (auto &buildings : growthCoverageBuildings) buildings.clear();
 	growthCoverageValid = false;
-	gradientRuntime->resourceFields.clear();
-	gradientRuntime->resourceLru.clear();
+	gradientRuntime->materialFields.clear();
+	gradientRuntime->materialLru.clear();
 	gradientRuntime->stockRevision={};
-	gradientRuntime->resourceCacheClock=0;
-	gradientRuntime->resourceCacheBudget=64ull*1024*1024;
+	gradientRuntime->materialCacheClock=0;
+	gradientRuntime->materialCacheBudget=64ull*1024*1024;
 	topologyGeneration=1;
 	// A failed load can own only a subset of these arrays.
 	for (int t=0; t<Team::MAX_COUNT; ++t)
 	{
-		for (int r=0; r<MAX_RESOURCES; ++r)
+		for (int r=0; r<MaterialCount; ++r)
 			for (int swim=0; swim<SWIM_CLASS_COUNT; ++swim)
 			{
-				delete[] resourcesGradient[t][r][swim];
-				resourcesGradient[t][r][swim] = NULL;
+				delete[] materialGradients[t][r][swim];
+				materialGradients[t][r][swim] = NULL;
 				gradientUpdated[t][r][swim] = false;
-				delete[] marketResourcesGradient[t][r][swim];
-				marketResourcesGradient[t][r][swim] = NULL;
+				delete[] marketMaterialGradients[t][r][swim];
+				marketMaterialGradients[t][r][swim] = NULL;
 				marketGradientDirty[t][r][swim] = false;
 				marketGradientUpdated[t][r][swim] = false;
 			}
@@ -581,7 +599,7 @@ void Map::clear()
 	displayedTeam = NO_DISPLAYED_TEAM;
 
 	for (int t=0; t<Team::MAX_COUNT; t++)
-		for (int r=0; r<MAX_RESOURCES; r++)
+		for (int r=0; r<MaterialCount; r++)
 			for (int s=0; s<SWIM_CLASS_COUNT; s++)
 				gradientUpdated[t][r][s]=false;
 }
@@ -589,6 +607,11 @@ void Map::clear()
 
 void Map::setSize(int wDec, int hDec, TerrainType terrainType)
 {
+    if (!resourceRegistryValue->size())
+    {
+        resourceRegistryValue = ResourceRegistry::builtins();
+        rebuildResourceHabitats();
+    }
 	if (!validTerrainType(terrainType)) throw std::invalid_argument("Unknown terrain identity");
 
 	clear();
@@ -616,6 +639,7 @@ void Map::setSize(int wDec, int hDec, TerrainType terrainType)
 	terrainIds.assign(size, GRASS);
 	terrainPropertyIndices.assign(size, terrainRegistry().propertyIndex(GRASS));
 	terrainPropertyTable = terrainRegistry().propertyProfiles().data();
+    rebuildResourceHabitats();
 	terrainCounts[GRASS] = size;
 	adjustTerrainFeatures(GRASS, true);
 

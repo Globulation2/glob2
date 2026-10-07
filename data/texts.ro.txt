@@ -5564,5 +5564,45 @@ Muncitorii pot lua provizii din stocul comun al piețelor. Piețele pot fi îmbu
 Importă definiții de teren
 [Terrain palette]
 Paletă de terenuri
+[Food]
+Hrană
+[Paper]
+Hârtie
+[Cherries]
+Cireșe
+[Oranges]
+Portocale
+[Prunes]
+Prune
+[Gold]
+Aur
+[Metal]
+Metal
+[Glass]
+Sticlă
+[Fabric]
+Țesătură
+[Import Resource Definitions]
+Importă definițiile resurselor
+[Resource palette]
+Paleta de resurse
+[Trees]
+Copaci
+[Rocks]
+Stânci
+[Cherry tree]
+Cireș
+[Orange tree]
+Portocal
+[Prune tree]
+Prun
+[Gold ore]
+Minereu de aur
+[Iron ore]
+Minereu de fier
+[Sand]
+Nisip
+[Cotton]
+Bumbac
 [Reroll terrain look]
 Alege din nou aleatoriu aspectul terenului

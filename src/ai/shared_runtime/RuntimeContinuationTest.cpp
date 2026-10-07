@@ -79,7 +79,7 @@ class RuntimeContinuationTest
         auto& first=runtime(source,0).get_gradient_manager();
         auto& second=runtime(source,1).get_gradient_manager();
         REQUIRE((&first!=&second));
-        first.get_gradient(info(new Entities::Resource(WHEAT)));
+        first.get_gradient(info(new Entities::MaterialSource(WHEAT)));
         first.queue_gradient(info(new Entities::Water));
         REQUIRE(second.gradients.empty());
         for(int i=0;i<2;++i)
@@ -160,7 +160,7 @@ class RuntimeContinuationTest
         const int completed=game.buildingsTypes.get(site)->nextLevel;
         auto snapshot=nlohmann::json::parse(game.buildingsTypes.snapshotJson());
         snapshot["variants"][site]["semantics"]["constructionCost"]={{"stone",5}};
-        auto& storage=snapshot["variants"][site]["properties"]["maxResource"];
+        auto& storage=snapshot["variants"][site]["properties"]["maxMaterial"];
         for(auto& value:storage) value=0;
         storage[WOOD]=9;
         snapshot["variants"][completed]["semantics"]["feeding"]["cost"]=nlohmann::json::object();
@@ -208,9 +208,109 @@ class RuntimeContinuationTest
     }
 
 public:
+    static void staticMaterialSourceContinuation()
+    {
+        using Json=nlohmann::json;
+        Game game(nullptr); game.map.setSize(5,5,GRASS); game.map.setGame(&game);
+        auto& map=game.map;
+        const auto stone=info(new Entities::MaterialSource(STONE));
+        const auto food=info(new Entities::MaterialSource(WHEAT));
+        const auto paper=info(new Entities::MaterialSource(PAPYRUS));
+        CHECK_FALSE(stone.needs_updating(&map));
+        CHECK(food.needs_updating(&map));
+        CHECK(paper.needs_updating(&map));
+        auto combined=info(new Entities::MaterialSources((1u<<STONE)|(1u<<WHEAT)));
+        CHECK(combined.needs_updating(&map));
+        auto amended=stone.clone();
+        CHECK_FALSE(amended.needs_updating(&map));
+        amended.add_obstacle(new Entities::MaterialSource(WHEAT));
+        CHECK(amended.needs_updating(&map));
+
+        // A high resource ID with an arbitrary name has the same static behavior.
+        const auto rocks=*map.resourceRegistry().find("rocks");
+        const auto prototype=Json::parse(map.resourceRegistry().serialize())["resources"][resourceIndex(rocks)];
+        Json additions=Json::array();
+        for(unsigned i=0;i<300;++i)
+        {
+            auto spec=prototype; spec["key"]="test:permanent-"+std::to_string(i);
+            additions.push_back(std::move(spec));
+        }
+        map.installResourceDefinitions(Json{{"schemaVersion",1},{"resources",additions}}.dump());
+        const auto custom=static_cast<ResourceId>(map.resourceRegistry().size()-1);
+        REQUIRE(resourceIndex(custom)>255);
+        CHECK_FALSE(stone.needs_updating(&map));
+        map.setResource(3,4,custom,0);
+        map.setMaterialAmount(map.coordToIndex(3,4),MaterialId::Stone,3);
+        GradientManager original(&map);
+        REQUIRE(original.get_gradient(stone).get_height(3,4)==0);
+        original.ticks_since_update[0]=151;
+        original.queue_gradient(stone);
+        CHECK(original.queuedGradients.empty());
+        CHECK(original.is_updated(stone));
+        const auto generation=map.staticMaterialSourceGeneration();
+        REQUIRE(map.takeHarvest(2,4,1,0,MaterialId::Stone,0));
+        CHECK(map.materialAmountAt(map.coordToIndex(3,4),MaterialId::Stone)==3);
+        CHECK(map.staticMaterialSourceGeneration()==generation);
+        CHECK(original.is_updated(stone));
+        map.setMaterialAmount(map.coordToIndex(3,4),MaterialId::Stone,2);
+        CHECK(map.staticMaterialSourceGeneration()==generation);
+        CHECK(original.is_updated(stone));
+        // Ordinary growing/harvestable stock changes must not invalidate this field.
+        map.setResourceByIndex(8,8,WHEAT,0);
+        map.setMaterialAmount(map.coordToIndex(8,8),MaterialId::Food,2);
+        CHECK(map.staticMaterialSourceGeneration()==generation);
+        CHECK(original.is_updated(stone));
+        map.setMaterialAmount(map.coordToIndex(3,4),MaterialId::Stone,0);
+        CHECK(map.staticMaterialSourceGeneration()!=generation);
+        CHECK_FALSE(original.is_updated(stone));
+        original.queue_gradient(stone);
+        REQUIRE(original.queuedGradients.size()==1);
+        for(bool text:{false,true})
+        {
+            const auto bytes=save(original,text);
+            GradientManager restored(&map);
+            REQUIRE(load(restored,bytes,text));
+            CHECK(save(restored,text)==bytes);
+            CHECK_FALSE(restored.is_updated(stone));
+            auto cloned=original.clone();
+            CHECK(save(*cloned,text)==bytes);
+            CHECK_FALSE(cloned->is_updated(stone));
+            for(int tick=0;tick<3;++tick)
+            {
+                restored.update(); cloned->update();
+                CHECK(save(restored,text)==save(*cloned,text));
+                CHECK(restored.is_updated(stone));
+            }
+            CHECK(restored.get_gradient(stone).get_height(3,4)!=0);
+        }
+        original.update();
+        CHECK(original.is_updated(stone));
+        map.setMaterialAmount(map.coordToIndex(3,4),MaterialId::Stone,1);
+        CHECK_FALSE(original.is_updated(stone));
+        CHECK(original.get_gradient(stone).get_height(3,4)==0);
+        map.setNoResource(3,4,0);
+        CHECK_FALSE(original.is_updated(stone));
+        CHECK(original.get_gradient(stone).get_height(3,4)!=0);
+        map.setResource(10,10,custom,0);
+        CHECK_FALSE(original.is_updated(stone));
+        CHECK(original.get_gradient(stone).get_height(10,10)==0);
+        auto currentClone=original.clone();
+        CHECK(currentClone->is_updated(stone));
+        CHECK(save(*currentClone,false)==save(original,false));
+
+        // An unplaced finite source changes intrinsic mutability immediately.
+        auto finite=prototype; finite["key"]="test:finite-stone";
+        finite["yields"]["stone"]["consumption"]="one";
+        map.installResourceDefinitions(Json{{"schemaVersion",1},{"resources",Json::array({finite})}}.dump());
+        CHECK(stone.needs_updating(&map));
+        CHECK_FALSE(original.is_updated(stone));
+        original.get_gradient(stone);
+        original.queue_gradient(stone);
+        CHECK(original.queuedGradients.size()==1);
+    }
     static void recurringInputsAndProviderLookup()
     {
-        using AISharedRuntime::Management::ResourceTracker;
+        using AISharedRuntime::Management::MaterialTracker;
         using AISharedRuntime::Management::RecurringInputStock;
         using AISharedRuntime::BuildingDemand::Feed;
         using AISharedRuntime::BuildingDemand::ProduceWorker;
@@ -224,13 +324,13 @@ public:
             auto& variant=catalog["variants"][completed];
             auto& semantics=variant["semantics"];
             semantics["feeding"]["enabled"]=paid;
-            semantics["feeding"]["cost"]={{"wheat",2},{"orange",1}};
+            semantics["feeding"]["cost"]={{"food",2},{"oranges",1}};
             semantics["production"]["scheduling"]="weighted_committed_job";
             semantics["production"]["recipes"]={
-                {"worker",{{"enabled",paid},{"duration",0},{"cost",{{"wheat",3},{"prune",1}}}}},
+                {"worker",{{"enabled",paid},{"duration",0},{"cost",{{"food",3},{"prunes",1}}}}},
                 {"explorer",{{"enabled",false},{"duration",0},{"cost",{{"wood",1}}}}},
                 {"warrior",{{"enabled",true},{"duration",0},{"cost",nlohmann::json::object()}}}};
-            for(int resource:{WOOD,WHEAT,ORANGE,PRUNE}) variant["properties"]["maxResource"][resource]=50;
+            for(int resource:{WOOD,WHEAT,ORANGE,PRUNE}) variant["properties"]["maxMaterial"][resource]=50;
             game.buildingsTypes.loadSnapshotJson(catalog.dump());game.configureBuildingCatalog();
             // Parse the authored costs so all masks have the same validated
             // provenance as a real match; do not mutate cold descriptors.
@@ -241,9 +341,9 @@ public:
             auto* ordinary=game.addBuilding(12,4,completed,0);
             auto* construction=game.addBuilding(20,4,site,0);
             REQUIRE(recurring);REQUIRE(ordinary);REQUIRE(construction);
-            recurring->resources[WHEAT]=7;recurring->resources[ORANGE]=5;
-            recurring->resources[PRUNE]=11;recurring->resources[WOOD]=13;
-            ordinary->resources[WOOD]=17;
+            recurring->materials[WHEAT]=7;recurring->materials[ORANGE]=5;
+            recurring->materials[PRUNE]=11;recurring->materials[WOOD]=13;
+            ordinary->materials[WOOD]=17;
             auto& controller=runtime(game,0);
             controller.getOrder(); // initialize the register through its normal path
             auto& registry=controller.get_building_register();
@@ -264,17 +364,17 @@ public:
             REQUIRE(registry.is_building_pending(pending));
             CHECK(registry.get_building(pending)==nullptr);
             CHECK_FALSE(registry.provides(pending,Feed));
-            controller.add_resource_tracker(new ResourceTracker(controller,0,1,RecurringInputStock),0);
-            controller.add_resource_tracker(new ResourceTracker(controller,1,1,WOOD),1);
-            controller.add_resource_tracker(new ResourceTracker(controller,pending,1,RecurringInputStock),pending);
-            auto retained=controller.get_resource_tracker(0);
+            controller.add_material_tracker(new MaterialTracker(controller,0,1,RecurringInputStock),0);
+            controller.add_material_tracker(new MaterialTracker(controller,1,1,WOOD),1);
+            controller.add_material_tracker(new MaterialTracker(controller,pending,1,RecurringInputStock),pending);
+            auto retained=controller.get_material_tracker(0);
             for(int tick=0;tick<AISharedRuntime::AI_SHARED_RUNTIME_TRACKER_SAMPLE_INTERVAL_TICKS;++tick) controller.getOrder();
             // Wheat is shared by feeding and production and counted once.
             // Disabled explorer wood is excluded; prune exercises the highest
             // supported bit. The always-enabled free warrior adds no inputs.
             CHECK(retained->get_total_level()==(paid ? 23 : 0));
-            CHECK(controller.get_resource_tracker(1)->get_total_level()==17);
-            CHECK(controller.get_resource_tracker(pending)->get_total_level()==0);
+            CHECK(controller.get_material_tracker(1)->get_total_level()==17);
+            CHECK(controller.get_material_tracker(pending)->get_total_level()==0);
             REQUIRE(game.removeUnitAndBuildingAndFlags(4,4,unsigned(Game::DEL_BUILDING)));
             // The register still holds its observation until the next tick;
             // a disappeared live slot must safely return null immediately.
@@ -282,7 +382,7 @@ public:
             CHECK(registry.get_building(0)==nullptr);
             CHECK_FALSE(registry.provides(0,Feed));
             controller.getOrder();
-            CHECK_FALSE(controller.get_resource_tracker(0));
+            CHECK_FALSE(controller.get_material_tracker(0));
             CHECK(retained->get_total_level()==(paid ? 23 : 0));
         }
     }
@@ -292,17 +392,23 @@ public:
         Map& map=game.map;
         for(bool text:{false,true})
         {
-            map.setResource(3,4,WHEAT,5);
+            map.setResourceByIndex(3,4,WHEAT,5);
             GradientManager original(&map),restored(&map);
             const auto wheat=info(text ? static_cast<Entities::Entity*>(new Entities::AnyResource)
-                                       : static_cast<Entities::Entity*>(new Entities::Resource(WHEAT)));
+                                       : static_cast<Entities::Entity*>(new Entities::MaterialSource(WHEAT)));
             const auto water=info(new Entities::Water);
             auto avoidsIrrigation=info(new Entities::Position(0,0));
             avoidsIrrigation.add_obstacle(new Entities::Water);
             original.get_gradient(wheat);
             original.get_gradient(avoidsIrrigation);
-            const auto resources=info(new Entities::ResourceSet((1u<<WHEAT)|(1u<<WOOD)));
+            const auto resources=info(new Entities::MaterialSources((1u<<WHEAT)|(1u<<WOOD)));
             original.get_gradient(resources);
+            auto groundObstacles=info(new Entities::Position(0,0));
+            groundObstacles.add_obstacle(new Entities::ResourceGroundObstacle);
+            original.get_gradient(groundObstacles);
+            auto buildingObstacles=info(new Entities::Position(1,1));
+            buildingObstacles.add_obstacle(new Entities::ResourceBuildingObstacle);
+            original.get_gradient(buildingObstacles);
             // Save a stale field, an uncomputed queued field and duplicate
             // queue entries. Reload must retain their age/order, not rebuild.
             original.ticks_since_update[0]=151;
@@ -402,4 +508,11 @@ TEST_CASE("recurring input tracking and provider lookup preserve composite membe
 {
     glob2test::HeadlessGlobals globals;
     RuntimeContinuationTest::recurringInputsAndProviderLookup();
+}
+
+TEST_CASE("static material fields invalidate on source edits and preserve continuation" *
+          doctest::test_suite("RuntimeContinuation"))
+{
+    glob2test::HeadlessGlobals globals;
+    RuntimeContinuationTest::staticMaterialSourceContinuation();
 }

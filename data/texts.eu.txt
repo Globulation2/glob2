@@ -5564,5 +5564,45 @@ Langileek hornigaiak har ditzakete merkatuen biltegi partekatutik. Merkatuak hob
 Inportatu lur-eremuaren definizioak
 [Terrain palette]
 Lur-eremuen paleta
+[Food]
+Janaria
+[Paper]
+Papera
+[Cherries]
+Gereziak
+[Oranges]
+Laranjak
+[Prunes]
+Aranak
+[Gold]
+Urrea
+[Metal]
+Metala
+[Glass]
+Beira
+[Fabric]
+Ehuna
+[Import Resource Definitions]
+Inportatu baliabideen definizioak
+[Resource palette]
+Baliabideen paleta
+[Trees]
+Zuhaitzak
+[Rocks]
+Arrokak
+[Cherry tree]
+Gereziondoa
+[Orange tree]
+Laranjondoa
+[Prune tree]
+Aranondoa
+[Gold ore]
+Urre-mea
+[Iron ore]
+Burdin mea
+[Sand]
+Harea
+[Cotton]
+Kotoia
 [Reroll terrain look]
 Ausaz aukeratu berriro lurraren itxura

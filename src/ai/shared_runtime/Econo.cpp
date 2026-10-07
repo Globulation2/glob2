@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2006 Bradley Arsenault
 
+#include "Material.h"
 #include "AITelemetryFields.h"
 #include "shared_runtime/Runtime.h"
 #include "shared_runtime/BuildingDemands.h"
@@ -107,12 +108,12 @@ void Econo::tick_initial_setup(Runtime& runtime)
 				mo_ratios->add_condition(new ParticularBuilding(new NotUnderConstruction, *i));
 				runtime.add_management_order(mo_ratios);
 
-				ManagementOrder* mo_tracker=new AddResourceTracker(AI_SHARED_RUNTIME_RTI_TRACKER_LENGTH, RecurringInputStock, *i);
+				ManagementOrder* mo_tracker=new AddMaterialTracker(AI_SHARED_RUNTIME_RTI_TRACKER_LENGTH, RecurringInputStock, *i);
 				runtime.add_management_order(mo_tracker);
 			}
 			if(runtime.get_building_register().provides(*i,BuildingDemand::Feed))
 			{
-				ManagementOrder* mo_tracker=new AddResourceTracker(AI_SHARED_RUNTIME_RTI_TRACKER_LENGTH, RecurringInputStock, *i);
+				ManagementOrder* mo_tracker=new AddMaterialTracker(AI_SHARED_RUNTIME_RTI_TRACKER_LENGTH, RecurringInputStock, *i);
 				runtime.add_management_order(mo_tracker);
 			}
 		}
@@ -129,7 +130,7 @@ void Econo::handle_message(Runtime& runtime, const std::string& message)
 
 		//Constraints around the location of wheat
 		AISharedRuntime::Gradients::GradientInfo gi_wheat;
-		gi_wheat.add_source(new AISharedRuntime::Gradients::Entities::Resource(WHEAT));
+		gi_wheat.add_source(new AISharedRuntime::Gradients::Entities::MaterialSource(materialIndex(MaterialId::Food)));
 		//You want to be close to wheat
 		bo->add_constraint(new AISharedRuntime::Construction::MinimizedDistance(gi_wheat, AI_SHARED_RUNTIME_RTI_INN_WHEAT_WEIGHT));
 		//You can't be farther than 10 units from wheat
@@ -139,13 +140,13 @@ void Econo::handle_message(Runtime& runtime, const std::string& message)
 		AISharedRuntime::Gradients::GradientInfo gi_building;
             gi_building.terrainTravel=field::TerrainTravel::Swim;
 		gi_building.add_source(new AISharedRuntime::Gradients::Entities::AnyTeamBuilding(runtime.player->team->teamNumber, false));
-		gi_building.add_obstacle(new AISharedRuntime::Gradients::Entities::AnyResource);
+		gi_building.add_obstacle(new AISharedRuntime::Gradients::Entities::ResourceBuildingObstacle);
 		//You want to be close to other buildings, but wheat is more important
 		bo->add_constraint(new AISharedRuntime::Construction::MinimizedDistance(gi_building, AI_SHARED_RUNTIME_RTI_BUILD_CLUSTER_WEIGHT));
 
 		AISharedRuntime::Gradients::GradientInfo gi_building_construction;
 		gi_building_construction.add_source(new AISharedRuntime::Gradients::Entities::AnyTeamBuilding(runtime.player->team->teamNumber, true));
-		gi_building_construction.add_obstacle(new AISharedRuntime::Gradients::Entities::AnyResource);
+		gi_building_construction.add_obstacle(new AISharedRuntime::Gradients::Entities::ResourceBuildingObstacle);
 		//You don't want to be too close
 		bo->add_constraint(new AISharedRuntime::Construction::MinimumDistance(gi_building_construction, AI_SHARED_RUNTIME_RTI_INN_CONSTRUCTION_MIN_DIST));
 
@@ -153,9 +154,9 @@ void Econo::handle_message(Runtime& runtime, const std::string& message)
 		if(runtime.is_fruit_on_map())
 		{
 			AISharedRuntime::Gradients::GradientInfo gi_fruit;
-			gi_fruit.add_source(new AISharedRuntime::Gradients::Entities::Resource(CHERRY));
-			gi_fruit.add_source(new AISharedRuntime::Gradients::Entities::Resource(ORANGE));
-			gi_fruit.add_source(new AISharedRuntime::Gradients::Entities::Resource(PRUNE));
+			gi_fruit.add_source(new AISharedRuntime::Gradients::Entities::MaterialSource(materialIndex(MaterialId::Cherries)));
+			gi_fruit.add_source(new AISharedRuntime::Gradients::Entities::MaterialSource(materialIndex(MaterialId::Oranges)));
+			gi_fruit.add_source(new AISharedRuntime::Gradients::Entities::MaterialSource(materialIndex(MaterialId::Prunes)));
 			//You want to be reasonably close to fruit, closer if possible
 			bo->add_constraint(new AISharedRuntime::Construction::MinimizedDistance(gi_fruit, AI_SHARED_RUNTIME_RTI_INN_FRUIT_WEIGHT));
 		}
@@ -169,7 +170,7 @@ void Econo::handle_message(Runtime& runtime, const std::string& message)
 		mo_completion->add_condition(new ParticularBuilding(new NotUnderConstruction, id));
 		runtime.add_management_order(mo_completion);
 
-		ManagementOrder* mo_tracker=new AddResourceTracker(AI_SHARED_RUNTIME_RTI_TRACKER_LENGTH, RecurringInputStock, id);
+		ManagementOrder* mo_tracker=new AddMaterialTracker(AI_SHARED_RUNTIME_RTI_TRACKER_LENGTH, RecurringInputStock, id);
 		mo_tracker->add_condition(new ParticularBuilding(new NotUnderConstruction, id));
 		runtime.add_management_order(mo_tracker);
 	}

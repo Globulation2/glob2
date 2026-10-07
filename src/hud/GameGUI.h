@@ -419,7 +419,7 @@ private:
 	void drawRedButton(int x, int y, std::string caption, bool doLanguageLookup=true);
 	void drawTextCenter(int x, int y, std::string caption);
 	void drawValueAlignedRight(int y, int v);
-	void drawCosts(const int resources[MAX_RESOURCES], Font *font, int& ypos);
+	void drawCosts(const int resources[MaterialCount], Font *font, int& ypos);
 	void drawCheckButton(int x, int y, std::string caption, bool isSet);
 	void drawRadioButton(int x, int y, bool isSet);
 
@@ -482,7 +482,7 @@ private:
 		int hp=-1, inside=-1, armor=-1, range=-1, bullets=-1;
 		int damageRows=0;
 		std::array<int,NB_UNIT_TYPE> damage;
-		std::array<int,MAX_RESOURCES> resource;
+		std::array<int,MaterialCount> resource;
 		BuildingPreviewRows() { damage.fill(-1); resource.fill(-1); }
 	};
 	enum class BuildingPreview { None, Repair, Upgrade };
