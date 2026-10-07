@@ -86,6 +86,19 @@ bool Team::buildingHasHigherPriority(Building* lhs, Building* rhs)
 		int ratio_rhs_unit = (rhs->maxUnitWorking  - rhs->unitsWorking.size()) * lhs->unitsWorking.size();
 		if(ratio_lhs_unit == ratio_rhs_unit)
 		{
+			// The construction site further along hires first: a half-built site
+			// has tied up its material and gives nothing back until it is done.
+			// This only orders a hiring round, in which every building still
+			// hires one unit, so a site the units in reach of the older one cannot
+			// serve (on another island, past their hunger range) still gets
+			// started. Anything that is not a site counts as not started.
+			int delivered_lhs, total_lhs, delivered_rhs, total_rhs;
+			lhs->constructionProgress(&delivered_lhs, &total_lhs);
+			rhs->constructionProgress(&delivered_rhs, &total_rhs);
+			const Sint64 progress_lhs = (Sint64)delivered_lhs * std::max(total_rhs, 1);
+			const Sint64 progress_rhs = (Sint64)delivered_rhs * std::max(total_lhs, 1);
+			if(progress_lhs != progress_rhs)
+				return progress_lhs > progress_rhs;
 			int ratio_lhs_resource = lhs->totalWishedMaterial();
 			int ratio_rhs_resource = rhs->totalWishedMaterial();
 			if(ratio_lhs_resource != ratio_rhs_resource)
