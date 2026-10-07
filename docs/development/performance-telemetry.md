@@ -355,3 +355,63 @@ correctness exports out of timing runs, alternate baseline/candidate order, and
 retain commands, source and executable hashes, fixture hashes and raw samples
 under `artifacts/`. Saturated-host latency results cannot establish a production
 speedup even when the seed kernel uses less thread CPU time.
+
+## Resource optimization campaigns
+
+Keep the archived pre-refactor engine, the approved-behavior-fixes control and the
+merged runtime-resource engine as distinct references. Compare optimizations to
+the merged engine; older controls help attribute overhead and intended behavior
+changes. Retain source revision, compiler, flags and dependency provenance with
+each executable rather than inferring them from its filename.
+
+Freeze a manifest of the priority late-game windows and use 16 measured alternating
+pairs plus the runner's automatic discarded warmup pair:
+
+```sh
+python3 test/benchmark_resource_refactor.py MERGED_ENGINE CANDIDATE_ENGINE PRIORITY_WINDOWS.json \
+  --before-root MERGED_CHECKOUT --after-root CANDIDATE_CHECKOUT \
+  --repeats 16 --report-only --output artifacts/resource-priority
+```
+
+Run the full frozen legacy corpus with eight measured pairs, and include large-map,
+eight-team and custom-resource stress windows in separately identified manifests.
+The runner requires distinct frozen data roots and refuses to overwrite an output
+directory. `--report-only` retains historical threshold diagnostics while removing
+their effect on the exit status; execution, integrity and incomplete-window errors
+still fail. See [resource campaign metrics and integrity checks](../features/resource-catalogs.md#regression-testing).
+
+Schedule timing exclusively: keep builds, compression, profilers and other owned
+game runs outside the campaign. Record CPU affinity and frequency/governor evidence
+alongside raw samples. If temporarily stabilizing a governor, record its original
+settings first and verify restoration even after interruption. The runner records
+per-CPU frequency/governor boundary snapshots outside each timed child run, and
+probes `perf` cycles/task-clock permission once outside timing. It retains denied
+counter diagnostics and labels interval effective frequency unavailable: neither a
+successful permission probe nor a scaling/hardware-average boundary sample measures
+the engine's effective frequency over its run. Collect that measurement separately
+when supported. Preserve contaminated runs and repeat into new output directories.
+Instrumented scopes and instruction counts explain costs but do not replace
+end-to-end paired CPU measurements. Report confidence intervals, CPU, wall time and
+peak RSS separately; the runner's memory metric includes the entire process.
+
+After authorization to change the selected CPU policies, use the maintained wrapper
+to record original governors, stabilize them, run an unprivileged command and verify
+restoration (CPUs 0–7 by default):
+
+```sh
+python3 test/run_with_benchmark_governor.py --audit artifacts/governor-priority.json \
+  --cpus 0 1 2 3 4 5 6 7 -- taskset -c 0-7 python3 test/benchmark_resource_refactor.py \
+  MERGED_ENGINE CANDIDATE_ENGINE PRIORITY_WINDOWS.json \
+  --before-root MERGED_CHECKOUT --after-root CANDIDATE_CHECKOUT \
+  --repeats 16 --report-only --output artifacts/resource-priority
+```
+
+Only individual sysfs writes use noninteractive `sudo tee`; the wrapper refuses to
+run as root. Shared policies extending beyond selected CPUs are rejected before any
+write. `--dry-run` records the proposed command and original settings without writing
+governors or starting the command. Timeout, failure and catchable signals stop the
+owned process group and restore every touched policy, including a policy whose write
+succeeded but readback failed. Cleanup/restoration failures remain errors even if
+the command succeeded. Keep the audit beside the results; SIGKILL, power loss or a
+host crash cannot guarantee restoration, so inspect saved originals after an abrupt
+termination. The wrapper does not itself pin CPU affinity.

@@ -32,8 +32,15 @@ def execute(binary, args, output, *, cwd=ROOT):
     started = time.perf_counter()
     with (output / 'engine.log').open('w') as log:
         process = subprocess.Popen(command, cwd=cwd, stdout=log, stderr=subprocess.STDOUT)
-        _, status, usage = os.wait4(process.pid, 0)
-        process.returncode = os.waitstatus_to_exitcode(status)
+        try:
+            _, status, usage = os.wait4(process.pid, 0)
+            process.returncode = os.waitstatus_to_exitcode(status)
+        except BaseException:
+            # An interrupted campaign must not leave a timing workload behind.
+            # Reap the child before propagating the error and auditing inputs.
+            process.kill()
+            process.wait()
+            raise
     wall = time.perf_counter() - started
     if process.returncode:
         raise RuntimeError(f"exit {process.returncode}: {output / 'engine.log'}")

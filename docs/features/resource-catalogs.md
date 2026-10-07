@@ -220,9 +220,17 @@ states, not identical repeated workloads; consumer routing caches are not exerci
 These diagnostics do not establish legacy performance equivalence. Whole-process
 peak RSS likewise does not isolate resource allocations.
 
-The performance gate uses paired confidence intervals: aggregate CPU regression
-above 2%, or any legacy scenario above 5%, blocks acceptance. Results whose intervals
-cross these limits remain inconclusive and require more repetitions or investigation.
+By default the historical performance gate uses paired confidence intervals:
+aggregate CPU regression above 2%, or any scenario above 5%, exits with status 1;
+intervals wholly within these limits exit 0, and inconclusive results exit 2.
+Use `--report-only` for measured optimization work without enforcing these historical
+limits. It preserves `performance_gate` diagnostics and confidence intervals in
+`summary.json`, records `report_only: true`, and returns 0 for a completed, verified
+campaign regardless of the threshold classification. Execution failures, changed
+inputs and incomplete windows still fail. An interrupted runner kills and reaps
+its current engine process before completing the input audit.
+The former percentage gates are not completion requirements for optimization;
+retain changes based on repeatable measured benefit and representative coverage.
 These measurements do not replace same-candidate per-tick determinism across worker
 counts and supported platforms, or exact save/load continuation.
 
