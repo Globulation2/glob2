@@ -162,6 +162,43 @@ Measured reserved busy minus whole-child CPU averages 0.158124 cores (maximum 0.
 
 [Complete raw corpus evidence](gradient-reuse-v2-isolated-legacy.zip) retains all 1764 outputs, commands, measurements, summaries, independently rerunnable audit and source/provenance/restoration data. No frozen engine binary or duplicate input-save tree is embedded; their exact hashes and prior fixture archives identify them.
 
+## Separate 512-square/eight-team campaign: representative CPU cost remains
+
+All three retained eight-team mixed-AI windows completed one warmup plus eight alternating measured pairs: 54 children, 48 measured. The independent audit passed exact commands/order/windows, matching repeat-stable initial/final checksums, all statistics, frozen binary/input identities, and governor/cpuset/affinity restoration without forced kill. This campaign remains separate from the 98-window aggregate.
+
+Aggregate simulation CPU ratio is **1.030879 [1.018304, 1.044077]**, or +3.09% CPU [1.83%,4.41%]. This is a representative cost requiring explanation despite the favorable 98-window aggregate; the candidate remains provisional. Historical threshold classification is only a diagnostic.
+
+| Window | Simulation CPU ratio [95% CI] | Simulation wall ratio [95% CI] | Whole-child CPU ratio [95% CI] | RSS ratio [95% CI] |
+| --- | --- | --- | --- | --- |
+| land-8-1001-mixed-512-initial | 1.040535 [1.015369, 1.068109] | 1.009510 [1.000505, 1.016820] | 1.040162 [1.015487, 1.067255] | 1.055724 [1.045093, 1.066691] |
+| land-8-1001-mixed-512-developing | 1.042667 [1.018490, 1.068267] | 1.000296 [0.993808, 1.007552] | 1.037167 [1.017634, 1.058547] | 1.045484 [1.033954, 1.057105] |
+| land-8-1001-mixed-512-middle | 1.009765 [0.997282, 1.021895] | 1.002647 [0.996940, 1.008098] | 1.007806 [0.996426, 1.019121] | 1.040060 [1.031401, 1.048121] |
+
+Reserved busy minus whole-child CPU averages 0.098500 cores, maximum 0.205822; outside CPUs average 0.515996 busy cores, maximum 1.550505; reserved SMT siblings total 0.04 CPU-seconds. Residuals include wrapper/kernel work and quantization/boundary skew; outside activity is expected under partitioning, with shared power/memory/thermal/IRQ limits unchanged. Simulation CPU excludes setup/save but includes final drain; whole-child CPU includes setup/exit. Final-checksum agreement does not replace full per-tick correctness evidence.
+
+[Full raw eight-team evidence](gradient-reuse-v2-isolated-eight-team.zip) retains every output, commands, summaries, complete input/restoration audits and independently rerunnable auditor. Custom-resource timing and causal cost investigation remain open.
+
+## Custom-resource stress: consistent CPU cost, correctness unchanged
+
+Six idle-AI growth/storage stress windows completed one warmup plus eight alternating measured pairs: 108 children, 96 measured. Independent checks pass exact order/commands/window lengths, repeat-stable equal initial/final checksums, all statistical recomputations, frozen identities and complete governor/cpuset/affinity restoration. No unexplained input or correctness change was found. The fixtures exercise 256²/512² maps with sparse single material, 512 equivalent definitions and mixed stocks; they do not model active-AI economic play.
+
+Aggregate simulation CPU ratio is **1.081995 [1.074372, 1.090188]**: +8.20% [7.44%,9.02%]. All six windows increase CPU, with every individual 95% interval above 1; peak RSS also increases in all six. These are substantive representative costs requiring causal investigation, not an automatic application of the former percentage gates. V2 remains provisional and cannot be described as uniformly faster.
+
+| Scenario | Simulation CPU ratio [95% CI] | Simulation wall ratio [95% CI] | Whole-child CPU ratio [95% CI] | RSS ratio [95% CI] |
+| --- | --- | --- | --- | --- |
+| stress-256-0 | 1.090199 [1.073623, 1.106990] | 1.012544 [0.983942, 1.040614] | 1.073603 [1.058507, 1.089415] | 1.089003 [1.081518, 1.097255] |
+| stress-256-1 | 1.093028 [1.074787, 1.109897] | 1.032090 [0.994182, 1.071597] | 1.079525 [1.064670, 1.093448] | 1.082789 [1.078425, 1.086863] |
+| stress-256-2 | 1.085307 [1.066076, 1.104129] | 1.016404 [0.950768, 1.082708] | 1.076660 [1.058977, 1.093742] | 1.148643 [1.139388, 1.157897] |
+| stress-512-0 | 1.081090 [1.069014, 1.093753] | 1.036478 [1.017310, 1.055618] | 1.077690 [1.065764, 1.090097] | 1.134560 [1.131756, 1.137346] |
+| stress-512-1 | 1.074904 [1.049306, 1.108505] | 0.981924 [0.952892, 1.012558] | 1.070332 [1.045547, 1.102459] | 1.134312 [1.132707, 1.135590] |
+| stress-512-2 | 1.067651 [1.053990, 1.082198] | 1.022035 [0.996572, 1.047795] | 1.065918 [1.052251, 1.080746] | 1.120686 [1.117993, 1.123790] |
+
+Suffix 0 denotes sparse single-definition Food, 1 denotes 512 equivalent definitions, 2 denotes mixed stocks. These are separate scenarios, not a randomized cross-scenario causal experiment; same-size definition-count comparisons are descriptive only. Five wall point ratios rise, but only 512-0 has an interval wholly above 1 (+3.65%,95% interval+1.73% to+5.56%). CPU costs span +6.77–9.30%; RSS +8.28–14.86%.
+
+Reserved busy minus whole-child CPU averages 0.259461 cores, maximum 0.453687; outside CPUs average 0.299020, maximum 1.011914. Reserved SMT siblings register zero CPU-seconds at jiffy resolution. The same quantization, wrapper/kernel, shared power/memory/thermal/IRQ limitations apply. Final checksums are not full per-tick traces; the earlier 36-run stress correctness campaign supplies that separate evidence.
+
+[Full raw custom stress evidence](gradient-reuse-v2-isolated-custom.zip) contains all outputs, commands, audits, statistical summaries and exact scripts. The full 98, eight-team and custom campaigns are now measured; unexplained performance costs and the final retention decision remain open.
+
 ## Ranked remaining investigations and evidence rejections
 
 1. **Indexed-ring candidate rejected with controlled CPU evidence.** Original production code is restored. Preserve the diagnostic reduction in instructions alongside the null aggregate CPU result and Maxima slowdown; do not resurrect this patch from instruction counts alone.
