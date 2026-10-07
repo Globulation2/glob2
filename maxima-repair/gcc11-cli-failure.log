@@ -1,0 +1,635 @@
+﻿2026-10-07T00:46:00.1401147Z Current runner version: '2.337.0'
+2026-10-07T00:46:00.1428706Z ##[group]Runner Image Provisioner
+2026-10-07T00:46:00.1429838Z Hosted Compute Agent
+2026-10-07T00:46:00.1430462Z Version: 20260901.588
+2026-10-07T00:46:00.1431264Z Commit: f88ec8081b781fac6c440065ac7ff9e710ce3d0b
+2026-10-07T00:46:00.1432313Z Build Date: 2026-09-01T19:56:44Z
+2026-10-07T00:46:00.1433058Z Worker ID: {5dddc233-0e68-475f-9c29-06f60fd77d0c}
+2026-10-07T00:46:00.1434327Z Azure Region: eastus
+2026-10-07T00:46:00.1435016Z ##[endgroup]
+2026-10-07T00:46:00.1436764Z ##[group]Operating System
+2026-10-07T00:46:00.1437449Z Ubuntu
+2026-10-07T00:46:00.1438014Z 22.04.5
+2026-10-07T00:46:00.1438612Z LTS
+2026-10-07T00:46:00.1439145Z ##[endgroup]
+2026-10-07T00:46:00.1439729Z ##[group]Runner Image
+2026-10-07T00:46:00.1440456Z Image: ubuntu-22.04
+2026-10-07T00:46:00.1441063Z Version: 20260927.309.1
+2026-10-07T00:46:00.1442456Z Included Software: https://github.com/actions/runner-images/blob/ubuntu22/20260927.309/images/ubuntu/Ubuntu2204-Readme.md
+2026-10-07T00:46:00.1444576Z Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu22%2F20260927.309
+2026-10-07T00:46:00.1445670Z ##[endgroup]
+2026-10-07T00:46:00.1446846Z ##[group]GITHUB_TOKEN Permissions
+2026-10-07T00:46:00.1448881Z Contents: read
+2026-10-07T00:46:00.1449508Z Metadata: read
+2026-10-07T00:46:00.1450213Z ##[endgroup]
+2026-10-07T00:46:00.1452444Z Secret source: Actions
+2026-10-07T00:46:00.1453557Z Cache mode: write
+2026-10-07T00:46:00.1454862Z Prepare workflow directory
+2026-10-07T00:46:00.2021267Z Prepare all required actions
+2026-10-07T00:46:00.2074354Z Getting action download info
+2026-10-07T00:46:00.4459541Z Download action repository 'actions/checkout@v4' (SHA:11d5960a326750d5838078e36cf38b85af677262)
+2026-10-07T00:46:00.6108856Z Download action repository 'actions/download-artifact@v4' (SHA:d3f86a106a0bac45b974a628896c90dbdf5c8093)
+2026-10-07T00:46:00.7773225Z Download action repository 'actions/upload-artifact@v4' (SHA:ea165f8d65b6e75b540449e92b4886f43607fa02)
+2026-10-07T00:46:01.1339719Z Uses: Globulation2/glob2/.github/workflows/ci-linux-build.yml@refs/heads/master (9084ea907a004ec9a2315598256e1631793c00bf)
+2026-10-07T00:46:01.1346285Z ##[group] Inputs
+2026-10-07T00:46:01.1347364Z   revision: 9084ea907a004ec9a2315598256e1631793c00bf
+2026-10-07T00:46:01.1348582Z   image: ubuntu:22.04
+2026-10-07T00:46:01.1349466Z   runner: ubuntu-22.04
+2026-10-07T00:46:01.1350345Z   compiler: g++-11
+2026-10-07T00:46:01.1351181Z   c_compiler: gcc-11
+2026-10-07T00:46:01.1352465Z   build_only: false
+2026-10-07T00:46:01.1353326Z   reuse_build: false
+2026-10-07T00:46:01.1354558Z   web_native: false
+2026-10-07T00:46:01.1355425Z   generator_only: false
+2026-10-07T00:46:01.1356324Z   coverage_profile: full
+2026-10-07T00:46:01.1357220Z   run_tests: true
+2026-10-07T00:46:01.1358095Z   runtime_packages: false
+2026-10-07T00:46:01.1359035Z   map_generators: true
+2026-10-07T00:46:01.1359959Z   validate_runtime: false
+2026-10-07T00:46:01.1360891Z ##[endgroup]
+2026-10-07T00:46:01.1362362Z Complete job name: Linux GCC 11 build and tests / Linux CLI and compatibility evidence (g++-11)
+2026-10-07T00:46:01.2375184Z ##[group]Run actions/checkout@v4
+2026-10-07T00:46:01.2376637Z with:
+2026-10-07T00:46:01.2377453Z   ref: 9084ea907a004ec9a2315598256e1631793c00bf
+2026-10-07T00:46:01.2378547Z   repository: Globulation2/glob2
+2026-10-07T00:46:01.2387591Z   token: ***
+2026-10-07T00:46:01.2388361Z   ssh-strict: true
+2026-10-07T00:46:01.2389122Z   ssh-user: git
+2026-10-07T00:46:01.2389904Z   persist-credentials: true
+2026-10-07T00:46:01.2390779Z   clean: true
+2026-10-07T00:46:01.2391556Z   sparse-checkout-cone-mode: true
+2026-10-07T00:46:01.2392500Z   fetch-depth: 1
+2026-10-07T00:46:01.2393274Z   fetch-tags: false
+2026-10-07T00:46:01.2394261Z   show-progress: true
+2026-10-07T00:46:01.2395055Z   lfs: false
+2026-10-07T00:46:01.2395778Z   submodules: false
+2026-10-07T00:46:01.2396761Z   set-safe-directory: true
+2026-10-07T00:46:01.2397686Z   allow-unsafe-pr-checkout: false
+2026-10-07T00:46:01.2398939Z env:
+2026-10-07T00:46:01.2400040Z   GLOB2_DEV_MODE: isolated
+2026-10-07T00:46:01.2400882Z ##[endgroup]
+2026-10-07T00:46:01.3500355Z Syncing repository: Globulation2/glob2
+2026-10-07T00:46:01.3504706Z ##[group]Getting Git version info
+2026-10-07T00:46:01.3506768Z Working directory is '/home/runner/work/glob2/glob2'
+2026-10-07T00:46:01.3509975Z [command]/usr/bin/git version
+2026-10-07T00:46:01.3560059Z git version 2.55.0
+2026-10-07T00:46:01.3611953Z ##[endgroup]
+2026-10-07T00:46:01.3624220Z Temporarily overriding HOME='/home/runner/work/_temp/dc405d1a-af53-437b-9471-d4e98b6324f1' before making global git config changes
+2026-10-07T00:46:01.3629719Z Adding repository directory to the temporary git global config as a safe directory
+2026-10-07T00:46:01.3633702Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/glob2/glob2
+2026-10-07T00:46:01.3687272Z Deleting the contents of '/home/runner/work/glob2/glob2'
+2026-10-07T00:46:01.3689603Z ##[group]Initializing the repository
+2026-10-07T00:46:01.3691672Z [command]/usr/bin/git init /home/runner/work/glob2/glob2
+2026-10-07T00:46:01.3825361Z hint: Using 'master' as the name for the initial branch. This default branch name
+2026-10-07T00:46:01.3828217Z hint: will change to "main" in Git 3.0. To configure the initial branch name
+2026-10-07T00:46:01.3831197Z hint: to use in all of your new repositories, which will suppress this warning,
+2026-10-07T00:46:01.3832981Z hint: call:
+2026-10-07T00:46:01.3834375Z hint:
+2026-10-07T00:46:01.3835700Z hint: 	git config --global init.defaultBranch <name>
+2026-10-07T00:46:01.3838313Z hint:
+2026-10-07T00:46:01.3839820Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+2026-10-07T00:46:01.3841930Z hint: 'development'. The just-created branch can be renamed via this command:
+2026-10-07T00:46:01.3843643Z hint:
+2026-10-07T00:46:01.3845112Z hint: 	git branch -m <name>
+2026-10-07T00:46:01.3846737Z hint:
+2026-10-07T00:46:01.3849088Z hint: Disable this message with "git config set advice.defaultBranchName false"
+2026-10-07T00:46:01.3852813Z Initialized empty Git repository in /home/runner/work/glob2/glob2/.git/
+2026-10-07T00:46:01.3956728Z [command]/usr/bin/git remote add origin https://github.com/Globulation2/glob2
+2026-10-07T00:46:01.3961183Z ##[endgroup]
+2026-10-07T00:46:01.3963131Z ##[group]Disabling automatic garbage collection
+2026-10-07T00:46:01.3965538Z [command]/usr/bin/git config --local gc.auto 0
+2026-10-07T00:46:01.3970243Z ##[endgroup]
+2026-10-07T00:46:01.3972394Z ##[group]Setting up auth
+2026-10-07T00:46:01.3974606Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-10-07T00:46:01.4012749Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-10-07T00:46:01.4485413Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-10-07T00:46:01.4530279Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-10-07T00:46:01.4802861Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-10-07T00:46:01.4848949Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-10-07T00:46:01.5113333Z [command]/usr/bin/git config --local http.https://github.com/.extraheader AUTHORIZATION: basic ***
+2026-10-07T00:46:01.5161971Z ##[endgroup]
+2026-10-07T00:46:01.5163581Z ##[group]Fetching the repository
+2026-10-07T00:46:01.5173297Z [command]/usr/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin 9084ea907a004ec9a2315598256e1631793c00bf
+2026-10-07T00:46:08.6156389Z From https://github.com/Globulation2/glob2
+2026-10-07T00:46:08.6157174Z  * branch            9084ea907a004ec9a2315598256e1631793c00bf -> FETCH_HEAD
+2026-10-07T00:46:08.6160378Z ##[endgroup]
+2026-10-07T00:46:08.6161012Z ##[group]Determining the checkout info
+2026-10-07T00:46:08.6163120Z ##[endgroup]
+2026-10-07T00:46:08.6169756Z [command]/usr/bin/git sparse-checkout disable
+2026-10-07T00:46:08.6289906Z [command]/usr/bin/git config --local --unset-all extensions.worktreeConfig
+2026-10-07T00:46:08.6330466Z ##[group]Checking out the ref
+2026-10-07T00:46:08.6335920Z [command]/usr/bin/git checkout --progress --force 9084ea907a004ec9a2315598256e1631793c00bf
+2026-10-07T00:46:09.9441790Z Updating files:  50% (8019/16028)
+2026-10-07T00:46:09.9539893Z Updating files:  51% (8175/16028)
+2026-10-07T00:46:09.9640822Z Updating files:  52% (8335/16028)
+2026-10-07T00:46:10.0436631Z Updating files:  53% (8495/16028)
+2026-10-07T00:46:10.0913548Z Updating files:  54% (8656/16028)
+2026-10-07T00:46:10.1056617Z Updating files:  55% (8816/16028)
+2026-10-07T00:46:10.1194664Z Updating files:  56% (8976/16028)
+2026-10-07T00:46:10.1364671Z Updating files:  57% (9136/16028)
+2026-10-07T00:46:10.1491364Z Updating files:  58% (9297/16028)
+2026-10-07T00:46:10.1640648Z Updating files:  59% (9457/16028)
+2026-10-07T00:46:10.1782018Z Updating files:  60% (9617/16028)
+2026-10-07T00:46:10.1906152Z Updating files:  61% (9778/16028)
+2026-10-07T00:46:10.2028713Z Updating files:  62% (9938/16028)
+2026-10-07T00:46:10.2150243Z Updating files:  63% (10098/16028)
+2026-10-07T00:46:10.2280755Z Updating files:  64% (10258/16028)
+2026-10-07T00:46:10.2388816Z Updating files:  65% (10419/16028)
+2026-10-07T00:46:10.2496372Z Updating files:  66% (10579/16028)
+2026-10-07T00:46:10.2607378Z Updating files:  67% (10739/16028)
+2026-10-07T00:46:10.2756704Z Updating files:  68% (10900/16028)
+2026-10-07T00:46:10.2927520Z Updating files:  69% (11060/16028)
+2026-10-07T00:46:10.3041215Z Updating files:  70% (11220/16028)
+2026-10-07T00:46:10.3151653Z Updating files:  71% (11380/16028)
+2026-10-07T00:46:10.3262741Z Updating files:  72% (11541/16028)
+2026-10-07T00:46:10.3392713Z Updating files:  73% (11701/16028)
+2026-10-07T00:46:10.3656547Z Updating files:  74% (11861/16028)
+2026-10-07T00:46:10.4005129Z Updating files:  75% (12021/16028)
+2026-10-07T00:46:10.4210783Z Updating files:  76% (12182/16028)
+2026-10-07T00:46:10.4352103Z Updating files:  77% (12342/16028)
+2026-10-07T00:46:10.4514272Z Updating files:  78% (12502/16028)
+2026-10-07T00:46:10.4647136Z Updating files:  79% (12663/16028)
+2026-10-07T00:46:10.5149754Z Updating files:  80% (12823/16028)
+2026-10-07T00:46:10.6736758Z Updating files:  81% (12983/16028)
+2026-10-07T00:46:11.0420813Z Updating files:  81% (12997/16028)
+2026-10-07T00:46:11.0530737Z Updating files:  82% (13143/16028)
+2026-10-07T00:46:11.0635585Z Updating files:  83% (13304/16028)
+2026-10-07T00:46:11.0710587Z Updating files:  84% (13464/16028)
+2026-10-07T00:46:11.0813174Z Updating files:  85% (13624/16028)
+2026-10-07T00:46:11.0992994Z Updating files:  86% (13785/16028)
+2026-10-07T00:46:11.1133788Z Updating files:  87% (13945/16028)
+2026-10-07T00:46:11.1244822Z Updating files:  88% (14105/16028)
+2026-10-07T00:46:11.1380756Z Updating files:  89% (14265/16028)
+2026-10-07T00:46:11.1541341Z Updating files:  90% (14426/16028)
+2026-10-07T00:46:11.1682579Z Updating files:  91% (14586/16028)
+2026-10-07T00:46:11.1800024Z Updating files:  92% (14746/16028)
+2026-10-07T00:46:11.1915941Z Updating files:  93% (14907/16028)
+2026-10-07T00:46:11.2036452Z Updating files:  94% (15067/16028)
+2026-10-07T00:46:11.2444104Z Updating files:  95% (15227/16028)
+2026-10-07T00:46:11.3142322Z Updating files:  96% (15387/16028)
+2026-10-07T00:46:11.3287091Z Updating files:  97% (15548/16028)
+2026-10-07T00:46:11.3478732Z Updating files:  98% (15708/16028)
+2026-10-07T00:46:11.3636147Z Updating files:  99% (15868/16028)
+2026-10-07T00:46:11.3636588Z Updating files: 100% (16028/16028)
+2026-10-07T00:46:11.3636948Z Updating files: 100% (16028/16028), done.
+2026-10-07T00:46:11.3784917Z Note: switching to '9084ea907a004ec9a2315598256e1631793c00bf'.
+2026-10-07T00:46:11.3804684Z 
+2026-10-07T00:46:11.3805284Z You are in 'detached HEAD' state. You can look around, make experimental
+2026-10-07T00:46:11.3806616Z changes and commit them, and you can discard any commits you make in this
+2026-10-07T00:46:11.3807423Z state without impacting any branches by switching back to a branch.
+2026-10-07T00:46:11.3807903Z 
+2026-10-07T00:46:11.3808208Z If you want to create a new branch to retain commits you create, you may
+2026-10-07T00:46:11.3808954Z do so (now or later) by using -c with the switch command. Example:
+2026-10-07T00:46:11.3809364Z 
+2026-10-07T00:46:11.3809539Z   git switch -c <new-branch-name>
+2026-10-07T00:46:11.3809817Z 
+2026-10-07T00:46:11.3809980Z Or undo this operation with:
+2026-10-07T00:46:11.3810231Z 
+2026-10-07T00:46:11.3810375Z   git switch -
+2026-10-07T00:46:11.3810571Z 
+2026-10-07T00:46:11.3810916Z Turn off this advice by setting config variable advice.detachedHead to false
+2026-10-07T00:46:11.3811436Z 
+2026-10-07T00:46:11.3811814Z HEAD is now at 9084ea9 Separate runtime resource catalogs from fixed materials (#846)
+2026-10-07T00:46:11.3887492Z ##[endgroup]
+2026-10-07T00:46:11.3939039Z [command]/usr/bin/git log -1 --format=%H
+2026-10-07T00:46:11.3979040Z 9084ea907a004ec9a2315598256e1631793c00bf
+2026-10-07T00:46:11.4244155Z ##[group]Run actions/download-artifact@v4
+2026-10-07T00:46:11.4244478Z with:
+2026-10-07T00:46:11.4244709Z   name: linux-test-programs-ubuntu-22.04
+2026-10-07T00:46:11.4245004Z   path: artifacts/ci-native
+2026-10-07T00:46:11.4245253Z   merge-multiple: false
+2026-10-07T00:46:11.4245486Z   repository: Globulation2/glob2
+2026-10-07T00:46:11.4245728Z   run-id: 37551820848
+2026-10-07T00:46:11.4245923Z env:
+2026-10-07T00:46:11.4246105Z   GLOB2_DEV_MODE: isolated
+2026-10-07T00:46:11.4246322Z ##[endgroup]
+2026-10-07T00:46:11.5938954Z Downloading single artifact
+2026-10-07T00:46:11.6124275Z (node:2108) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+2026-10-07T00:46:11.6126212Z (Use `node --trace-deprecation ...` to show where the warning was created)
+2026-10-07T00:46:11.6979203Z Preparing to download the following artifacts:
+2026-10-07T00:46:11.6994163Z - linux-test-programs-ubuntu-22.04 (ID: 11453877426, Size: 271815449, Expected Digest: sha256:8576b189f27f87af58401e4149f7527ff78dfdddc64db8465c22bf46968e0ad2)
+2026-10-07T00:46:11.8229626Z Redirecting to blob download url: https://productionresultssa13.blob.core.windows.net/actions-results/68e00793-298d-84d4-898d-16548a4c74c3/workflow-job-run-05d4f04b-8215-57dd-8df0-ffa1f58e1d69/artifacts/8cb5484f653ad1140329cf3596c350c71fc4728f011578cc6adf85b1058eeab2.zip
+2026-10-07T00:46:11.8231538Z Starting download of artifact to: /home/runner/work/glob2/glob2/artifacts/ci-native
+2026-10-07T00:46:11.9191273Z (node:2108) [DEP0005] DeprecationWarning: Buffer() is deprecated due to security and usability issues. Please use the Buffer.alloc(), Buffer.allocUnsafe(), or Buffer.from() methods instead.
+2026-10-07T00:46:15.0781130Z SHA256 digest of downloaded artifact is 8576b189f27f87af58401e4149f7527ff78dfdddc64db8465c22bf46968e0ad2
+2026-10-07T00:46:15.0782284Z Artifact download completed successfully.
+2026-10-07T00:46:15.0782918Z Total of 1 artifact(s) downloaded
+2026-10-07T00:46:15.0788912Z Download artifact has finished successfully
+2026-10-07T00:46:15.0964693Z ##[group]Run tar -xzf artifacts/ci-native/linux-test-programs.tar.gz
+2026-10-07T00:46:15.0965311Z tar -xzf artifacts/ci-native/linux-test-programs.tar.gz
+2026-10-07T00:46:15.0965928Z echo "LD_LIBRARY_PATH=$PWD/build/sdl3-ci/prefix/lib${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}" >> "$GITHUB_ENV"
+2026-10-07T00:46:15.0966447Z sudo apt-get update -qq
+2026-10-07T00:46:15.0966937Z xargs sudo apt-get install -y --no-install-recommends < artifacts/ci-native/runtime-packages.txt
+2026-10-07T00:46:15.0967527Z sudo apt-get install -y --no-install-recommends python3
+2026-10-07T00:46:15.1538347Z shell: /usr/bin/bash -e {0}
+2026-10-07T00:46:15.1538656Z env:
+2026-10-07T00:46:15.1538872Z   GLOB2_DEV_MODE: isolated
+2026-10-07T00:46:15.1539137Z ##[endgroup]
+2026-10-07T00:46:30.4367648Z Reading package lists...
+2026-10-07T00:46:30.7331814Z Building dependency tree...
+2026-10-07T00:46:30.7343479Z Reading state information...
+2026-10-07T00:46:30.9494837Z libbrotli1 is already the newest version (1.0.9-2build6).
+2026-10-07T00:46:30.9495660Z libbrotli1 set to manually installed.
+2026-10-07T00:46:30.9496247Z libbsd0 is already the newest version (0.11.5-1).
+2026-10-07T00:46:30.9496888Z libbsd0 set to manually installed.
+2026-10-07T00:46:30.9497473Z libdeflate0 is already the newest version (1.10-2).
+2026-10-07T00:46:30.9498087Z libdeflate0 set to manually installed.
+2026-10-07T00:46:30.9498664Z libepoxy0 is already the newest version (1.5.10-1).
+2026-10-07T00:46:30.9499304Z libepoxy0 set to manually installed.
+2026-10-07T00:46:30.9499924Z libgl1 is already the newest version (1.4.0-1).
+2026-10-07T00:46:30.9500555Z libgl1 set to manually installed.
+2026-10-07T00:46:30.9501248Z libglvnd0 is already the newest version (1.4.0-1).
+2026-10-07T00:46:30.9501907Z libglvnd0 set to manually installed.
+2026-10-07T00:46:30.9502476Z libglx0 is already the newest version (1.4.0-1).
+2026-10-07T00:46:30.9502874Z libglx0 set to manually installed.
+2026-10-07T00:46:30.9503317Z libjpeg-turbo8 is already the newest version (2.1.2-0ubuntu1).
+2026-10-07T00:46:30.9504122Z libjpeg-turbo8 set to manually installed.
+2026-10-07T00:46:30.9504543Z libmd0 is already the newest version (1.0.4-1build1).
+2026-10-07T00:46:30.9505014Z libmd0 set to manually installed.
+2026-10-07T00:46:30.9505402Z libogg0 is already the newest version (1.3.5-0ubuntu3).
+2026-10-07T00:46:30.9505820Z libogg0 set to manually installed.
+2026-10-07T00:46:30.9506219Z libxau6 is already the newest version (1:1.0.9-1build5).
+2026-10-07T00:46:30.9506630Z libxau6 set to manually installed.
+2026-10-07T00:46:30.9507006Z libxcb1 is already the newest version (1.14-3ubuntu3).
+2026-10-07T00:46:30.9507408Z libxcb1 set to manually installed.
+2026-10-07T00:46:30.9507820Z libxdmcp6 is already the newest version (1:1.1.3-0ubuntu5).
+2026-10-07T00:46:30.9508255Z libxdmcp6 set to manually installed.
+2026-10-07T00:46:30.9508851Z libzstd1 is already the newest version (1.4.8+dfsg-3build1).
+2026-10-07T00:46:30.9509572Z libzstd1 set to manually installed.
+2026-10-07T00:46:30.9510196Z libc6 is already the newest version (2.35-0ubuntu3.15).
+2026-10-07T00:46:30.9510704Z libdrm2 is already the newest version (2.4.113-2~ubuntu0.22.04.1).
+2026-10-07T00:46:30.9511163Z libdrm2 set to manually installed.
+2026-10-07T00:46:30.9511586Z libfribidi0 is already the newest version (1.0.8-2ubuntu3.1).
+2026-10-07T00:46:30.9512047Z libfribidi0 set to manually installed.
+2026-10-07T00:46:30.9512386Z libgcc-s1 is already the newest version (12.3.0-1ubuntu1~22.04.3).
+2026-10-07T00:46:30.9512801Z libjbig0 is already the newest version (2.1-3.1ubuntu0.22.04.1).
+2026-10-07T00:46:30.9513146Z libjbig0 set to manually installed.
+2026-10-07T00:46:30.9513467Z liblzma5 is already the newest version (5.2.5-2ubuntu1.1).
+2026-10-07T00:46:30.9514136Z liblzma5 set to manually installed.
+2026-10-07T00:46:30.9514503Z libpng16-16 is already the newest version (1.6.37-3ubuntu0.6).
+2026-10-07T00:46:30.9514849Z libpng16-16 set to manually installed.
+2026-10-07T00:46:30.9515574Z libstdc++6 is already the newest version (12.3.0-1ubuntu1~22.04.3).
+2026-10-07T00:46:30.9515990Z libtiff5 is already the newest version (4.3.0-6ubuntu0.13).
+2026-10-07T00:46:30.9516315Z libtiff5 set to manually installed.
+2026-10-07T00:46:30.9516637Z libwebp7 is already the newest version (1.2.2-2ubuntu0.22.04.2).
+2026-10-07T00:46:30.9516980Z libwebp7 set to manually installed.
+2026-10-07T00:46:30.9517291Z libx11-6 is already the newest version (2:1.7.5-1ubuntu0.3).
+2026-10-07T00:46:30.9517617Z libx11-6 set to manually installed.
+2026-10-07T00:46:30.9517933Z zlib1g is already the newest version (1:1.2.11.dfsg-2ubuntu9.2).
+2026-10-07T00:46:30.9518315Z The following additional packages will be installed:
+2026-10-07T00:46:30.9518678Z   libfreetype-dev libfreetype6-dev libssl-dev
+2026-10-07T00:46:30.9518971Z Suggested packages:
+2026-10-07T00:46:30.9519389Z   freetype2-doc opus-tools speex libssl-doc
+2026-10-07T00:46:30.9519680Z Recommended packages:
+2026-10-07T00:46:30.9519909Z   va-driver-all | va-driver
+2026-10-07T00:46:31.0190773Z The following NEW packages will be installed:
+2026-10-07T00:46:31.0197695Z   libopus0 libopusfile0 libspeex1 libva-drm2 libva2
+2026-10-07T00:46:31.0203130Z The following packages will be upgraded:
+2026-10-07T00:46:31.0210464Z   libfreetype-dev libfreetype6 libfreetype6-dev libssl-dev libssl3
+2026-10-07T00:46:31.0394967Z 5 upgraded, 5 newly installed, 0 to remove and 24 not upgraded.
+2026-10-07T00:46:31.0396183Z Need to get 5613 kB of archives.
+2026-10-07T00:46:31.0397167Z After this operation, 939 kB of additional disk space will be used.
+2026-10-07T00:46:31.0397881Z Get:1 file:/etc/apt/apt-mirrors.txt Mirrorlist [144 B]
+2026-10-07T00:46:31.0754746Z Get:2 http://azure.archive.ubuntu.com/ubuntu jammy-updates/main amd64 libssl-dev amd64 3.0.2-0ubuntu1.30 [2377 kB]
+2026-10-07T00:46:31.1051764Z Get:3 http://azure.archive.ubuntu.com/ubuntu jammy-updates/main amd64 libssl3 amd64 3.0.2-0ubuntu1.30 [1907 kB]
+2026-10-07T00:46:31.1312724Z Get:4 http://azure.archive.ubuntu.com/ubuntu jammy-updates/main amd64 libfreetype-dev amd64 2.11.1+dfsg-1ubuntu0.4 [555 kB]
+2026-10-07T00:46:31.1492392Z Get:5 http://azure.archive.ubuntu.com/ubuntu jammy-updates/main amd64 libfreetype6-dev amd64 2.11.1+dfsg-1ubuntu0.4 [8306 B]
+2026-10-07T00:46:31.1647999Z Get:6 http://azure.archive.ubuntu.com/ubuntu jammy-updates/main amd64 libfreetype6 amd64 2.11.1+dfsg-1ubuntu0.4 [388 kB]
+2026-10-07T00:46:31.1816208Z Get:7 http://azure.archive.ubuntu.com/ubuntu jammy/main amd64 libopus0 amd64 1.3.1-0.1build2 [203 kB]
+2026-10-07T00:46:31.1972118Z Get:8 http://azure.archive.ubuntu.com/ubuntu jammy/universe amd64 libopusfile0 amd64 0.9+20170913-1.1build1 [43.2 kB]
+2026-10-07T00:46:31.2119775Z Get:9 http://azure.archive.ubuntu.com/ubuntu jammy/main amd64 libspeex1 amd64 1.2~rc1.2-1.1ubuntu3 [57.9 kB]
+2026-10-07T00:46:31.2264247Z Get:10 http://azure.archive.ubuntu.com/ubuntu jammy/universe amd64 libva2 amd64 2.14.0-1 [65.0 kB]
+2026-10-07T00:46:31.2409708Z Get:11 http://azure.archive.ubuntu.com/ubuntu jammy/universe amd64 libva-drm2 amd64 2.14.0-1 [7502 B]
+2026-10-07T00:46:31.5534886Z Preconfiguring packages ...
+2026-10-07T00:46:31.6258120Z Fetched 5613 kB in 0s (26.1 MB/s)
+2026-10-07T00:46:31.7805496Z (Reading database ... 
+2026-10-07T00:46:31.7806000Z (Reading database ... 5%
+2026-10-07T00:46:31.7806316Z (Reading database ... 10%
+2026-10-07T00:46:31.7806633Z (Reading database ... 15%
+2026-10-07T00:46:31.7806918Z (Reading database ... 20%
+2026-10-07T00:46:31.7807220Z (Reading database ... 25%
+2026-10-07T00:46:31.7807486Z (Reading database ... 30%
+2026-10-07T00:46:31.7807733Z (Reading database ... 35%
+2026-10-07T00:46:31.7808221Z (Reading database ... 40%
+2026-10-07T00:46:31.7808738Z (Reading database ... 45%
+2026-10-07T00:46:31.7809121Z (Reading database ... 50%
+2026-10-07T00:46:32.1890224Z (Reading database ... 55%
+2026-10-07T00:46:32.6680594Z (Reading database ... 60%
+2026-10-07T00:46:33.0340488Z (Reading database ... 65%
+2026-10-07T00:46:33.5003269Z (Reading database ... 70%
+2026-10-07T00:46:34.4088845Z (Reading database ... 75%
+2026-10-07T00:46:35.8003147Z (Reading database ... 80%
+2026-10-07T00:46:37.0685003Z (Reading database ... 85%
+2026-10-07T00:46:38.2461469Z (Reading database ... 90%
+2026-10-07T00:46:39.2601158Z (Reading database ... 95%
+2026-10-07T00:46:39.2601716Z (Reading database ... 100%
+2026-10-07T00:46:39.2602219Z (Reading database ... 260411 files and directories currently installed.)
+2026-10-07T00:46:39.2659431Z Preparing to unpack .../libssl-dev_3.0.2-0ubuntu1.30_amd64.deb ...
+2026-10-07T00:46:39.2709047Z Unpacking libssl-dev:amd64 (3.0.2-0ubuntu1.30) over (3.0.2-0ubuntu1.29) ...
+2026-10-07T00:46:39.5318250Z Preparing to unpack .../libssl3_3.0.2-0ubuntu1.30_amd64.deb ...
+2026-10-07T00:46:39.5405394Z Unpacking libssl3:amd64 (3.0.2-0ubuntu1.30) over (3.0.2-0ubuntu1.29) ...
+2026-10-07T00:46:39.6264592Z Setting up libssl3:amd64 (3.0.2-0ubuntu1.30) ...
+2026-10-07T00:46:39.7772391Z (Reading database ... 
+2026-10-07T00:46:39.7772900Z (Reading database ... 5%
+2026-10-07T00:46:39.7773390Z (Reading database ... 10%
+2026-10-07T00:46:39.7774083Z (Reading database ... 15%
+2026-10-07T00:46:39.7774567Z (Reading database ... 20%
+2026-10-07T00:46:39.7774961Z (Reading database ... 25%
+2026-10-07T00:46:39.7775399Z (Reading database ... 30%
+2026-10-07T00:46:39.7775870Z (Reading database ... 35%
+2026-10-07T00:46:39.7776341Z (Reading database ... 40%
+2026-10-07T00:46:39.7776804Z (Reading database ... 45%
+2026-10-07T00:46:39.7777263Z (Reading database ... 50%
+2026-10-07T00:46:39.7813228Z (Reading database ... 55%
+2026-10-07T00:46:39.7847728Z (Reading database ... 60%
+2026-10-07T00:46:39.7876557Z (Reading database ... 65%
+2026-10-07T00:46:39.7998952Z (Reading database ... 70%
+2026-10-07T00:46:39.8040747Z (Reading database ... 75%
+2026-10-07T00:46:39.8105777Z (Reading database ... 80%
+2026-10-07T00:46:39.8474132Z (Reading database ... 85%
+2026-10-07T00:46:39.8494072Z (Reading database ... 90%
+2026-10-07T00:46:39.8847096Z (Reading database ... 95%
+2026-10-07T00:46:39.8847514Z (Reading database ... 100%
+2026-10-07T00:46:39.8847999Z (Reading database ... 260411 files and directories currently installed.)
+2026-10-07T00:46:39.8901448Z Preparing to unpack .../0-libfreetype-dev_2.11.1+dfsg-1ubuntu0.4_amd64.deb ...
+2026-10-07T00:46:39.8926085Z Unpacking libfreetype-dev:amd64 (2.11.1+dfsg-1ubuntu0.4) over (2.11.1+dfsg-1ubuntu0.3) ...
+2026-10-07T00:46:39.9690618Z Preparing to unpack .../1-libfreetype6-dev_2.11.1+dfsg-1ubuntu0.4_amd64.deb ...
+2026-10-07T00:46:39.9729649Z Unpacking libfreetype6-dev:amd64 (2.11.1+dfsg-1ubuntu0.4) over (2.11.1+dfsg-1ubuntu0.3) ...
+2026-10-07T00:46:40.0264641Z Preparing to unpack .../2-libfreetype6_2.11.1+dfsg-1ubuntu0.4_amd64.deb ...
+2026-10-07T00:46:40.0333991Z Unpacking libfreetype6:amd64 (2.11.1+dfsg-1ubuntu0.4) over (2.11.1+dfsg-1ubuntu0.3) ...
+2026-10-07T00:46:40.0681965Z Selecting previously unselected package libopus0:amd64.
+2026-10-07T00:46:40.0894779Z Preparing to unpack .../3-libopus0_1.3.1-0.1build2_amd64.deb ...
+2026-10-07T00:46:40.0902335Z Unpacking libopus0:amd64 (1.3.1-0.1build2) ...
+2026-10-07T00:46:40.1208807Z Selecting previously unselected package libopusfile0.
+2026-10-07T00:46:40.1415614Z Preparing to unpack .../4-libopusfile0_0.9+20170913-1.1build1_amd64.deb ...
+2026-10-07T00:46:40.1423057Z Unpacking libopusfile0 (0.9+20170913-1.1build1) ...
+2026-10-07T00:46:40.1714384Z Selecting previously unselected package libspeex1:amd64.
+2026-10-07T00:46:40.1926762Z Preparing to unpack .../5-libspeex1_1.2~rc1.2-1.1ubuntu3_amd64.deb ...
+2026-10-07T00:46:40.1938117Z Unpacking libspeex1:amd64 (1.2~rc1.2-1.1ubuntu3) ...
+2026-10-07T00:46:40.2187817Z Selecting previously unselected package libva2:amd64.
+2026-10-07T00:46:40.2398326Z Preparing to unpack .../6-libva2_2.14.0-1_amd64.deb ...
+2026-10-07T00:46:40.2406833Z Unpacking libva2:amd64 (2.14.0-1) ...
+2026-10-07T00:46:40.2675855Z Selecting previously unselected package libva-drm2:amd64.
+2026-10-07T00:46:40.2886558Z Preparing to unpack .../7-libva-drm2_2.14.0-1_amd64.deb ...
+2026-10-07T00:46:40.2897360Z Unpacking libva-drm2:amd64 (2.14.0-1) ...
+2026-10-07T00:46:40.3473098Z Setting up libspeex1:amd64 (1.2~rc1.2-1.1ubuntu3) ...
+2026-10-07T00:46:40.3494363Z Setting up libva2:amd64 (2.14.0-1) ...
+2026-10-07T00:46:40.3515647Z Setting up libfreetype6:amd64 (2.11.1+dfsg-1ubuntu0.4) ...
+2026-10-07T00:46:40.3532466Z Setting up libopus0:amd64 (1.3.1-0.1build2) ...
+2026-10-07T00:46:40.3549283Z Setting up libssl-dev:amd64 (3.0.2-0ubuntu1.30) ...
+2026-10-07T00:46:40.3568363Z Setting up libva-drm2:amd64 (2.14.0-1) ...
+2026-10-07T00:46:40.3586096Z Setting up libopusfile0 (0.9+20170913-1.1build1) ...
+2026-10-07T00:46:40.3603114Z Setting up libfreetype-dev:amd64 (2.11.1+dfsg-1ubuntu0.4) ...
+2026-10-07T00:46:40.3621135Z Setting up libfreetype6-dev:amd64 (2.11.1+dfsg-1ubuntu0.4) ...
+2026-10-07T00:46:40.3649953Z Processing triggers for libc-bin (2.35-0ubuntu3.15) ...
+2026-10-07T00:46:41.7643438Z 
+2026-10-07T00:46:41.7644182Z Running kernel seems to be up-to-date.
+2026-10-07T00:46:41.7645051Z 
+2026-10-07T00:46:41.7650313Z Services to be restarted:
+2026-10-07T00:46:41.7755646Z  systemctl restart packagekit.service
+2026-10-07T00:46:41.7808908Z  systemctl restart php8.1-fpm.service
+2026-10-07T00:46:41.7860832Z  systemctl restart ssh.service
+2026-10-07T00:46:41.7913629Z  systemctl restart systemd-journald.service
+2026-10-07T00:46:41.8020428Z  /etc/needrestart/restart.d/systemd-manager
+2026-10-07T00:46:41.8071705Z  systemctl restart systemd-networkd.service
+2026-10-07T00:46:41.8124169Z  systemctl restart systemd-resolved.service
+2026-10-07T00:46:41.8175839Z  systemctl restart systemd-udevd.service
+2026-10-07T00:46:41.8273904Z 
+2026-10-07T00:46:41.8275949Z Service restarts being deferred:
+2026-10-07T00:46:41.8276711Z  systemctl restart hosted-compute-agent.service
+2026-10-07T00:46:41.8277296Z  systemctl restart systemd-logind.service
+2026-10-07T00:46:41.8277796Z  systemctl restart user@1001.service
+2026-10-07T00:46:41.8278277Z  systemctl restart walinuxagent.service
+2026-10-07T00:46:41.8278632Z 
+2026-10-07T00:46:41.8278811Z No containers need to be restarted.
+2026-10-07T00:46:41.8279111Z 
+2026-10-07T00:46:41.8279326Z No user sessions are running outdated binaries.
+2026-10-07T00:46:41.8279695Z 
+2026-10-07T00:46:41.8280041Z No VM guests are running outdated hypervisor (qemu) binaries on this host.
+2026-10-07T00:46:43.4922237Z Reading package lists...
+2026-10-07T00:46:43.7942357Z Building dependency tree...
+2026-10-07T00:46:43.7954056Z Reading state information...
+2026-10-07T00:46:44.0471622Z python3 is already the newest version (3.10.6-1~22.04.1).
+2026-10-07T00:46:44.0472333Z 0 upgraded, 0 newly installed, 0 to remove and 24 not upgraded.
+2026-10-07T00:46:44.0578157Z ##[group]Run python3 test/test_cli_smoke.py --binary build/linux/client/release/src/glob2 --artifacts artifacts/cli-smoke --junit artifacts/cli-smoke.xml
+2026-10-07T00:46:44.0579290Z python3 test/test_cli_smoke.py --binary build/linux/client/release/src/glob2 --artifacts artifacts/cli-smoke --junit artifacts/cli-smoke.xml
+2026-10-07T00:46:44.0651542Z shell: /usr/bin/bash -e {0}
+2026-10-07T00:46:44.0651830Z env:
+2026-10-07T00:46:44.0652055Z   GLOB2_DEV_MODE: isolated
+2026-10-07T00:46:44.0652448Z   LD_LIBRARY_PATH: /home/runner/work/glob2/glob2/build/sdl3-ci/prefix/lib
+2026-10-07T00:46:44.0652869Z ##[endgroup]
+2026-10-07T00:46:44.3724009Z test_corrupt_saved_game_fails_with_structured_diagnostic (__main__.CliSmoke) ... ok
+2026-10-07T00:46:45.8371474Z test_experimental_catalog_survives_generated_map_and_saved_continuation (__main__.CliSmoke) ... ok
+2026-10-07T00:46:46.1823503Z test_generated_map_image_export_import_and_preview_are_readable (__main__.CliSmoke) ... ok
+2026-10-07T00:46:46.5584208Z test_headless_numeric_and_missing_input_errors_are_structured (__main__.CliSmoke) ... ok
+2026-10-07T00:46:47.6785560Z test_headless_workers_and_saved_continuation_match_complete_tick_records (__main__.CliSmoke) ... ok
+2026-10-07T00:46:47.7673064Z test_help_and_catalog_describe_real_commands (__main__.CliSmoke) ... ok
+2026-10-07T00:46:47.7905343Z test_invalid_map_arguments_fail_before_writing_outputs (__main__.CliSmoke) ... ok
+2026-10-07T00:46:49.3938710Z test_probability_rule_persists_across_save_reload_and_rejects_ambiguous_thresholds (__main__.CliSmoke) ... ok
+2026-10-07T00:46:49.8497300Z test_structured_map_study_writes_report_map_and_manifest (__main__.CliSmoke) ... ok
+2026-10-07T00:46:49.8498162Z 
+2026-10-07T00:46:49.8498576Z ----------------------------------------------------------------------
+2026-10-07T00:46:49.8499136Z Ran 9 tests in 5.696s
+2026-10-07T00:46:49.8499348Z 
+2026-10-07T00:46:49.8499479Z OK
+2026-10-07T00:46:49.8653277Z ##[group]Run actions/upload-artifact@v4
+2026-10-07T00:46:49.8653591Z with:
+2026-10-07T00:46:49.8654106Z   name: cli-linux-g++-11
+2026-10-07T00:46:49.8654404Z   path: artifacts/cli-smoke/
+artifacts/cli-smoke.xml
+
+2026-10-07T00:46:49.8654730Z   if-no-files-found: ignore
+2026-10-07T00:46:49.8654975Z   compression-level: 6
+2026-10-07T00:46:49.8655209Z   overwrite: false
+2026-10-07T00:46:49.8655627Z   include-hidden-files: false
+2026-10-07T00:46:49.8655862Z env:
+2026-10-07T00:46:49.8656048Z   GLOB2_DEV_MODE: isolated
+2026-10-07T00:46:49.8656402Z   LD_LIBRARY_PATH: /home/runner/work/glob2/glob2/build/sdl3-ci/prefix/lib
+2026-10-07T00:46:49.8656793Z ##[endgroup]
+2026-10-07T00:46:50.0514397Z (node:2843) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+2026-10-07T00:46:50.0515486Z (Use `node --trace-deprecation ...` to show where the warning was created)
+2026-10-07T00:46:50.1509869Z Multiple search paths detected. Calculating the least common ancestor of all paths
+2026-10-07T00:46:50.1512890Z The least common ancestor is /home/runner/work/glob2/glob2/artifacts. This will be the root directory of the artifact
+2026-10-07T00:46:50.1514265Z With the provided path, there will be 158 files uploaded
+2026-10-07T00:46:50.1521351Z Artifact name is valid!
+2026-10-07T00:46:50.1522026Z Root directory input is valid!
+2026-10-07T00:46:50.3568112Z Beginning upload of artifact content to blob storage
+2026-10-07T00:46:50.6866190Z (node:2843) [DEP0169] DeprecationWarning: `url.parse()` behavior is not standardized and prone to errors that have security implications. Use the WHATWG URL API instead. CVEs are not issued for `url.parse()` vulnerabilities.
+2026-10-07T00:46:50.7864344Z Uploaded bytes 2908797
+2026-10-07T00:46:50.8013505Z Finished uploading artifact content to blob storage!
+2026-10-07T00:46:50.8014812Z SHA256 digest of uploaded artifact zip is 14a3aa8f4f13192c59d74c35bac4c829a55cbfbe3aef3701cf43dfd68d141366
+2026-10-07T00:46:50.8016321Z Finalizing artifact upload
+2026-10-07T00:46:51.0119559Z Artifact cli-linux-g++-11.zip successfully finalized. Artifact ID 11453693196
+2026-10-07T00:46:51.0121385Z Artifact cli-linux-g++-11 has been successfully uploaded! Final size is 2908797 bytes. Artifact ID is 11453693196
+2026-10-07T00:46:51.0128886Z Artifact download URL: https://github.com/Globulation2/glob2/actions/runs/37551820848/artifacts/11453693196
+2026-10-07T00:46:51.0288489Z ##[group]Run python3 test/check_javascript_corpus.py --build-dir build/linux/client/release --output artifacts/javascript-corpus
+2026-10-07T00:46:51.0289522Z python3 test/check_javascript_corpus.py --build-dir build/linux/client/release --output artifacts/javascript-corpus
+2026-10-07T00:46:51.0362020Z shell: /usr/bin/bash -e {0}
+2026-10-07T00:46:51.0362321Z env:
+2026-10-07T00:46:51.0362542Z   GLOB2_DEV_MODE: isolated
+2026-10-07T00:46:51.0362933Z   LD_LIBRARY_PATH: /home/runner/work/glob2/glob2/build/sdl3-ci/prefix/lib
+2026-10-07T00:46:51.0363360Z ##[endgroup]
+2026-10-07T00:46:51.7571995Z glob2-unit-tests: PASS
+2026-10-07T00:47:17.0348268Z glob2-engine-tests: PASS
+2026-10-07T00:47:17.0478924Z ##[group]Run python3 test/check_javascript.py build/linux/client/release/src/glob2 --output artifacts/javascript-profile
+2026-10-07T00:47:17.0480495Z python3 test/check_javascript.py build/linux/client/release/src/glob2 --output artifacts/javascript-profile
+2026-10-07T00:47:17.0581429Z shell: /usr/bin/bash -e {0}
+2026-10-07T00:47:17.0581880Z env:
+2026-10-07T00:47:17.0582221Z   GLOB2_DEV_MODE: isolated
+2026-10-07T00:47:17.0582838Z   LD_LIBRARY_PATH: /home/runner/work/glob2/glob2/build/sdl3-ci/prefix/lib
+2026-10-07T00:47:17.0583589Z ##[endgroup]
+2026-10-07T00:47:18.3207874Z PASS profile1: complete tick checksums, exact 1/4-worker replay/save output, 1 saved continuations
+2026-10-07T00:47:28.9043237Z PASS realistic-profile1: complete tick checksums, exact 1/4-worker replay/save output, 5 saved continuations
+2026-10-07T00:47:28.9140293Z ##[group]Run python3 test/check_telemetry_simulation.py build/linux/client/release/src/glob2 --output artifacts/released-compatibility
+2026-10-07T00:47:28.9141308Z python3 test/check_telemetry_simulation.py build/linux/client/release/src/glob2 --output artifacts/released-compatibility
+2026-10-07T00:47:28.9211809Z shell: /usr/bin/bash -e {0}
+2026-10-07T00:47:28.9212097Z env:
+2026-10-07T00:47:28.9212314Z   GLOB2_DEV_MODE: isolated
+2026-10-07T00:47:28.9212875Z   LD_LIBRARY_PATH: /home/runner/work/glob2/glob2/build/sdl3-ci/prefix/lib
+2026-10-07T00:47:28.9213299Z ##[endgroup]
+2026-10-07T00:47:34.1338369Z PASS gd-large-4ai.game: 1024 ticks, identical checksum sidecar: b886561b513ccf95d0ff637835ce9b0d8a517dae54409873cef90760600d8619
+2026-10-07T00:47:34.1339905Z PASS gd-bigarena-long.game: 2048 ticks, identical checksum sidecar: dda9c97e8596dc98f735ab19119a71411920ebcc0b9315a762ddd01d1a828512
+2026-10-07T00:47:34.1341258Z PASS numbi-castor-v121.game.gz: 2048 ticks, identical checksum sidecar: 0c90edfaa17e8e2cf56965a795d170fb9b66ad644694760649bcf572c73d51f7
+2026-10-07T00:47:34.1342336Z PASS v108 checkpoint: 256 reloaded ticks, identical complete checksum sidecar
+2026-10-07T00:47:34.1465972Z ##[group]Run actions/upload-artifact@v4
+2026-10-07T00:47:34.1466290Z with:
+2026-10-07T00:47:34.1466521Z   name: javascript-profile-linux-g++-11
+2026-10-07T00:47:34.1467041Z   path: artifacts/javascript-profile
+artifacts/javascript-corpus
+artifacts/released-compatibility
+
+2026-10-07T00:47:34.1467564Z   if-no-files-found: warn
+2026-10-07T00:47:34.1467807Z   compression-level: 6
+2026-10-07T00:47:34.1468042Z   overwrite: false
+2026-10-07T00:47:34.1468268Z   include-hidden-files: false
+2026-10-07T00:47:34.1468524Z env:
+2026-10-07T00:47:34.1468721Z   GLOB2_DEV_MODE: isolated
+2026-10-07T00:47:34.1469069Z   LD_LIBRARY_PATH: /home/runner/work/glob2/glob2/build/sdl3-ci/prefix/lib
+2026-10-07T00:47:34.1469463Z ##[endgroup]
+2026-10-07T00:47:34.3286283Z (node:3210) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+2026-10-07T00:47:34.3287555Z (Use `node --trace-deprecation ...` to show where the warning was created)
+2026-10-07T00:47:34.4409556Z Multiple search paths detected. Calculating the least common ancestor of all paths
+2026-10-07T00:47:34.4413307Z The least common ancestor is /home/runner/work/glob2/glob2/artifacts. This will be the root directory of the artifact
+2026-10-07T00:47:34.4414655Z With the provided path, there will be 281 files uploaded
+2026-10-07T00:47:34.4419686Z Artifact name is valid!
+2026-10-07T00:47:34.4420783Z Root directory input is valid!
+2026-10-07T00:47:34.6587655Z Beginning upload of artifact content to blob storage
+2026-10-07T00:47:35.9646781Z (node:3210) [DEP0169] DeprecationWarning: `url.parse()` behavior is not standardized and prone to errors that have security implications. Use the WHATWG URL API instead. CVEs are not issued for `url.parse()` vulnerabilities.
+2026-10-07T00:47:36.1535286Z Uploaded bytes 8388608
+2026-10-07T00:47:36.1978190Z Uploaded bytes 8854611
+2026-10-07T00:47:36.2137884Z Finished uploading artifact content to blob storage!
+2026-10-07T00:47:36.2138918Z SHA256 digest of uploaded artifact zip is 989490d29814afec2cf7836ca21b7fa50f72b8225c0122d2524728506e8d7bbf
+2026-10-07T00:47:36.2140555Z Finalizing artifact upload
+2026-10-07T00:47:36.4413213Z Artifact javascript-profile-linux-g++-11.zip successfully finalized. Artifact ID 11453367475
+2026-10-07T00:47:36.4415136Z Artifact javascript-profile-linux-g++-11 has been successfully uploaded! Final size is 8854611 bytes. Artifact ID is 11453367475
+2026-10-07T00:47:36.4421465Z Artifact download URL: https://github.com/Globulation2/glob2/actions/runs/37551820848/artifacts/11453367475
+2026-10-07T00:47:36.4608704Z ##[group]Run python3 test/ci_run_commands.py \
+2026-10-07T00:47:36.4609408Z python3 test/ci_run_commands.py \
+2026-10-07T00:47:36.4611247Z   --check 'Maxima strategy config' 'MAXIMA_STRATEGY_DUMP=build/linux/client/release/test/MaximaStrategyDump GLOB2_BUILD_DIR=build/linux/client/release GLOB2_USER_DIR="$(mktemp -d)" python3 src/ai/maxima/MaximaStrategyConfigTest.py' \
+2026-10-07T00:47:36.4613418Z   --check 'Maxima policy tests' 'python3 -m unittest discover -s src/ai/maxima -p "*Test.py"'
+2026-10-07T00:47:36.4688368Z shell: /usr/bin/bash -e {0}
+2026-10-07T00:47:36.4688654Z env:
+2026-10-07T00:47:36.4688870Z   GLOB2_DEV_MODE: isolated
+2026-10-07T00:47:36.4689252Z   LD_LIBRARY_PATH: /home/runner/work/glob2/glob2/build/sdl3-ci/prefix/lib
+2026-10-07T00:47:36.4689870Z ##[endgroup]
+2026-10-07T00:47:36.5035367Z ##[group]Maxima strategy config
+2026-10-07T00:47:40.8627133Z ..............
+2026-10-07T00:47:40.8627841Z ----------------------------------------------------------------------
+2026-10-07T00:47:40.8628404Z Ran 14 tests in 4.308s
+2026-10-07T00:47:40.8628628Z 
+2026-10-07T00:47:40.8628753Z OK
+2026-10-07T00:47:40.8709051Z ##[endgroup]
+2026-10-07T00:47:40.8709728Z ##[group]Maxima policy tests
+2026-10-07T00:47:50.7925027Z ......s..................F.................................................
+2026-10-07T00:47:50.7925706Z ======================================================================
+2026-10-07T00:47:50.7926565Z FAIL: test_firebreak_is_fertility_banded_and_yields_to_farms (MaximaFarmingPolicyTest.MaximaFarmingPolicyTest)
+2026-10-07T00:47:50.7927486Z ----------------------------------------------------------------------
+2026-10-07T00:47:50.7928015Z Traceback (most recent call last):
+2026-10-07T00:47:50.7929018Z   File "/home/runner/work/glob2/glob2/src/ai/maxima/MaximaFarmingPolicyTest.py", line 122, in test_firebreak_is_fertility_banded_and_yields_to_farms
+2026-10-07T00:47:50.7937068Z     self.assertIn("&& (map->materialAmountAt(size_t(&cell-map->getTiles().data()),MaterialId::Wood)>0)", maintenance)
+2026-10-07T00:47:50.7987264Z AssertionError: '&& (map->materialAmountAt(size_t(&cell-map->getTiles().data()),MaterialId::Wood)>0)' not found in 'Maxima::MaintenanceClearingPlan Maxima::build_maintenance_clearing_plan(\n\tContext& runtime)\n{\n\tMap* map=runtime.player->map;\n\tconst int w=map->getW();\n\tconst int h=map->getH();\n\tconst int size=w*h;\n\tMaintenanceClearingPlan plan(size);\n\tconst WoodReserve wood_reserve=select_wood_reserve(runtime);\n\tconst bool enabled=budget.farming_enabled\n\t\t&& budget.farming_maintenance_clearing_enabled;\n\n\t// Snapshot resources only when a circulation contract starts. Once the\n\t// resource is consumed, the applied mask latches that tile clear.\n\tstd::vector<Uint8> grandfathered_resource(size, 0);\n\tstd::vector<int> resource_burden(size, 0);\n\tfor(int index=0; index<size; ++index)\n\t{\n\t\tconst Tile& cell=map->getTile(index%w, index/w);\n\t\tgrandfathered_resource[index]=!applied_maintenance_clearing_mask[index]\n\t\t\t&& ((map->materialAmountAt(size_t(&cell-map->getTiles().data()),MaterialId::Food)>0) || (map->materialAmountAt(size_t(&cell-map->getTiles().data()),MaterialId::Wood)>0));\n\t\tresource_burden[index]=std::max(1, int(cell.resource.amount));\n\t}\n\tauto retain_circulation=[&](const std::vector<int>& tiles)\n\t{\n\t\tfor(size_t i=0; i<tiles.size(); ++i)\n\t\t\tif(tiles[i]>=0 && tiles[i]<size)\n\t\t\t\tplan.circulation[tiles[i]]=1;\n\t};\n\n\tconst std::vector<Uint8> reachable=enabled\n\t\t&& budget.farming_resource_preserving_circulation_enabled\n\t\t? worker_reachable_circulation(runtime) : std::vector<Uint8>(size, 0);\n\n\tif(enabled)\n\t{\n\t\tconst std::map<int,AIMaximaPlacement::Reservation>& reservations=\n\t\t\tdevelopment_planner.reservations();\n\t\tfor(std::map<int,AIMaximaPlacement::Reservation>::const_iterator reservation=\n\t\t\treservations.begin(); reservation!=reservations.end(); ++reservation)\n\t\t{\n\t\t\tconst AIMaximaPlacement::Reservation& contract=reservation->second;\n\t\t\t// Empty transient reservations are backed by a permanent contract.\n\t\t\tif(contract.footprintTiles.empty()&&contract.circulationTiles.empty())\n\t\t\t\tcontinue;\n\t\t\tconst std::vector<std::vector<int> > members=\n\t\t\t\treservation_member_footprints(runtime, contract);\n\t\t\t// Only actual/pending members need their footprint kept clear. Future\n\t\t\t// upgrade land and unused campus slots remain resource-preserving.\n\t\t\tstd::vector<Uint8> memberMask(size,0);\n\t\t\tstd::vector<int> circulation=contract.circulationTiles;\n\t\t\tfor(const auto& member:members)\n\t\t\t{\n\t\t\t\tretain_circulation(member);\n\t\t\t\tfor(int index:member)memberMask[index]=1;\n\t\t\t\t// A small initial building can sit inside its terminal footprint;\n\t\t\t\t// protect an entrance at its current boundary as well as the outer ring.\n\t\t\t\tfor(int index:member)for(int dy=-1;dy<=1;++dy)for(int dx=-1;dx<=1;++dx)\n\t\t\t\t{\n\t\t\t\t\tconst int neighbor=map->normalizeY(index/w+dy)*w+map->normalizeX(index%w+dx);\n\t\t\t\t\tif(std::binary_search(contract.footprintTiles.begin(),\n\t\t\t\t\t\tcontract.footprintTiles.end(),neighbor))circulation.push_back(neighbor);\n\t\t\t\t}\n\t\t\t}\n\t\t\tstd::sort(circulation.begin(),circulation.end());\n\t\t\tcirculation.erase(std::unique(circulation.begin(),circulation.end()),circulation.end());\n\t\t\tcirculation.erase(std::remove_if(circulation.begin(),circulation.end(),\n\t\t\t\t[&](int index){const Tile& cell=map->getTile(index%w,index/w);\n\t\t\t\t\treturn memberMask[index]||cell.building!=NOGBID||!map->terrainPropertiesAt(index).walkable\n\t\t\t\t\t\t||!map->isMapDiscovered(index%w,index/w,runtime.player->team->allies)\n\t\t\t\t\t\t||(map->resourceBlocksGround(index)\n\t\t\t\t\t\t   &&!map->resourcePropertiesByIndex(cell.resource.type).clearable);\n\t\t\t\t}),circulation.end());\n\t\t\tif(budget.farming_resource_preserving_circulation_enabled)\n\t\t\t{\n\t\t\t\tstd::vector<Uint8> preserved=grandfathered_resource;\n\t\t\t\t// Old saves may have maintained the whole future footprint. Do not\n\t\t\t\t// grandfather those destructive clearing obligations into this plan.\n\t\t\t\tfor(int index:contract.footprintTiles)if(!memberMask[index])\n\t\t\t\t{\n\t\t\t\t\tpreserved[index]=(map->materialMaskAt(index)&((1u<<materialIndex(MaterialId::Food))|(1u<<materialIndex(MaterialId::Wood))))!=0;\n\t\t\t\t}\n\t\t\t\tfor(const auto& member:members)\n\t\t\t\t{\n\t\t\t\t\tconst Farming::ReservationClearingSelection selection=\n\t\t\t\t\t\tFarming::selectResourcePreservingCirculation(w,h,member,\n\t\t\t\t\t\t\tcirculation,preserved,resource_burden,reachable);\n\t\t\t\t\tretain_circulation(selection.tiles);\n\t\t\t\t\tfor(int index:selection.tiles)preserved[index]=0;\n\t\t\t\t\tif(selection.fallbackEntranceTile>=0)\n\t\t\t\t\t{\n\t\t\t\t\t\t++plan.reservation_fallback_entrances;\n\t\t\t\t\t}\n\t\t\t\t}\n\t\t\t\tfor(int index:circulation)\n\t\t\t\t\tplan.reservation_resources_preserved+=preserved[index]!=0;\n\t\t\t}\n\t\t\telse\n\t\t\t\tretain_circulation(circulation);\n\t\t}\n\t}\n\n\tconst std::vector<Uint8> managed=farm_management_area(runtime,\n\t\tbudget.farming_management_radius);\n\tfor(int index=0; index<size; ++index)\n\t{\n\t\tconst int x=index%w;\n\t\tconst int y=index/w;\n\t\tconst Tile& cell=map->getTile(x, y);\n\t\tconst bool discovered=map->isMapDiscovered(x, y,\n\t\t\truntime.player->team->me);\n\t\tif(wheat_invasion_clearing_required(runtime, index,\n\t\t\twheat_farm_protection_mask, wood_reserve))\n\t\t{\n\t\t\tplan.circulation[index]=1;\n\t\t\t++plan.wheat_invasion_wood;\n\t\t}\n\t\tconst bool permanent_resource=cell.resource.type!=NO_RES_TYPE\n\t\t\t&& !map->resourcePropertiesByIndex(cell.resource.type).clearable;\n\t\tconst bool wants_firebreak=enabled\n\t\t\t&& !wood_reserve.cells[index]\n\t\t\t&& managed[index]\n\t\t\t&& budget.farming_wood_firebreak_enabled\n\t\t\t&& discovered && map->terrainSupportsMaterialAt(index%w,index/w,MaterialId::Wood)\n\t\t\t&& cell.building==NOGBID\n\t\t\t&& !permanent_resource && !map->materialAmountAt(size_t(index),MaterialId::Food)\n            && map->materialAmountAt(size_t(index),MaterialId::Wood)>0\n            && map->materialExpansionRateAt(size_t(index),MaterialId::Wood)>0\n\t\t\t&& Farming::fertilityWithinPercentBand(fertility_cache.at(x, y),\n\t\t\t\tstrategy.farming.wood_firebreak_fertility_min_percent,\n\t\t\t\tstrategy.farming.wood_firebreak_fertility_max_percent);\n\t\tplan.firebreak[index]=wants_firebreak;\n\t\tif(wants_firebreak)\n\t\t{\n\t\t\t++plan.firebreak_tiles;\n\t\t\tplan.firebreak_wood+=(map->materialAmountAt(size_t(&cell-map->getTiles().data()),MaterialId::Wood)>0);\n\t\t}\n\t}\n\treturn plan;\n}\n\nvoid Maxima::apply_maintenance_clearing_plan(Context& runtime,\n\tconst MaintenanceClearingPlan& plan)\n{\n\tMap* map=runtime.player->map;\n\tconst int w=map->getW();\n\tconst int size=w*map->getH();\n\tmaintenance_circulation_mask=plan.circulation;\n\twood_firebreak_mask=plan.firebreak;\n\tAddArea* additions=new AddArea(ClearingArea);\n\tRemoveArea* removals=new RemoveArea(ClearingArea);\n\tRemoveArea* forbidden_releases=new RemoveArea(ForbiddenArea);\n\tint added=0;\n\tint removed=0;\n\tint released=0;\n\tint retained=0;\n\tfor(int index=0; index<size; ++index)\n\t{\n\t\tconst int x=index%w;\n\t\tconst int y=index/w;\n\t\tconst bool discovered=map->isMapDiscovered(x, y,\n\t\t\truntime.player->team->me);\n\t\tconst bool building_footprint=map->getTile(x, y).building!=NOGBID;\n\t\tconst bool contract_desired=plan.circulation[index]\n\t\t\t&& !building_footprint && discovered;\n\t\tconst bool desired=!building_footprint\n\t\t\t&& (contract_desired || plan.firebreak[index]);\n\t\tconst bool actual=map->isClearArea(x, y, runtime.player->team->me);\n\t\tif(desired)\n\t\t{\n\t\t\t++retained;\n\t\t\tif(!actual)\n\t\t\t{\n\t\t\t\tadditions->add_location(x, y);\n\t\t\t\t++added;\n\t\t\t}\n\t\t\t// Hard circulation contracts outrank farming. A firebreak alone\n\t\t\t// never removes a farm\'s ForbiddenArea protection.\n\t\t\tif(contract_desired && map->isForbidden(x, y,\n\t\t\t\truntime.player->team->me))\n\t\t\t{\n\t\t\t\tforbidden_releases->add_location(x, y);\n\t\t\t\t++released;\n\t\t\t}\n\t\t}\n\t\telse if(applied_maintenance_clearing_mask[index] && actual)\n\t\t{\n\t\t\tremovals->add_location(x, y);\n\t\t\t++removed;\n\t\t}\n\t\tapplied_maintenance_clearing_mask[index]=desired;\n\t}\n\tif(added) runtime.add_management_order(additions); else delete additions;\n\tif(removed) runtime.add_management_order(removals); else delete removals;\n\tif(released) runtime.add_management_order(forbidden_releases);\n\telse delete forbidden_releases;\n\tif(added || removed || released || timer%1000<budget.farming_normal_interval)\n\t\temit_telemetry(runtime, "maintenance_clearing",\n\t\t\t"\\tretained="+telemetryText(retained)\n\t\t\t+"\\tadded="+telemetryText(added)\n\t\t\t+"\\tremoved="+telemetryText(removed)\n\t\t\t+"\\tfirebreak="+telemetryText(plan.firebreak_tiles)\n\t\t\t+"\\tfirebreak_wood="+telemetryText(plan.firebreak_wood)\n\t\t\t+"\\twheat_invasion_wood="+telemetryText(\n\t\t\t\tplan.wheat_invasion_wood)\n\t\t\t+"\\treservation_resources_preserved="\n\t\t\t\t+telemetryText(\n\t\t\t\t\tplan.reservation_resources_preserved)\n\t\t\t+"\\treservation_fallback_entrances="\n\t\t\t\t+telemetryText(\n\t\t\t\t\tplan.reservation_fallback_entrances)\n\t\t\t+"\\tforbidden_released="\n\t\t\t\t+telemetryText(released));\n}\n\nvoid Maxima::update_maintenance_clearing_areas(Context& runtime)\n{\n\tinitialize_farming_cache(runtime);\n\tconst MaintenanceClearingPlan plan=build_maintenance_clearing_plan(runtime);\n\tapply_maintenance_clearing_plan(runtime, plan);\n}\n'
+2026-10-07T00:47:50.8038859Z 
+2026-10-07T00:47:50.8039144Z ----------------------------------------------------------------------
+2026-10-07T00:47:50.8039717Z Ran 75 tests in 9.862s
+2026-10-07T00:47:50.8039961Z 
+2026-10-07T00:47:50.8040130Z FAILED (failures=1, skipped=1)
+2026-10-07T00:47:50.8059594Z ##[endgroup]
+2026-10-07T00:47:50.8078690Z ##[error]Maxima policy tests exited 1
+2026-10-07T00:47:50.8086717Z Failed checks: Maxima policy tests (1)
+2026-10-07T00:47:50.8110911Z ##[error]Process completed with exit code 1.
+2026-10-07T00:47:50.8190104Z ##[group]Run python3 test/ci_step_summary.py
+2026-10-07T00:47:50.8190504Z python3 test/ci_step_summary.py
+2026-10-07T00:47:50.8260792Z shell: /usr/bin/bash -e {0}
+2026-10-07T00:47:50.8261079Z env:
+2026-10-07T00:47:50.8261306Z   GLOB2_DEV_MODE: isolated
+2026-10-07T00:47:50.8261698Z   LD_LIBRARY_PATH: /home/runner/work/glob2/glob2/build/sdl3-ci/prefix/lib
+2026-10-07T00:47:50.8263520Z   CI_STEPS_JSON: {
+  "validate_translations": {
+    "outputs": {},
+    "outcome": "skipped",
+    "conclusion": "skipped"
+  },
+  "execute_shared_javascript_corpus": {
+    "outputs": {},
+    "outcome": "success",
+    "conclusion": "success"
+  },
+  "verify_frozen_javascript_simulation_profile": {
+    "outputs": {},
+    "outcome": "success",
+    "conclusion": "success"
+  },
+  "test_maxima_strategy_configuration_and_policies": {
+    "outputs": {},
+    "outcome": "failure",
+    "conclusion": "success"
+  }
+}
+2026-10-07T00:47:50.8265772Z ##[endgroup]
+2026-10-07T00:47:50.8579290Z ## CI check results
+2026-10-07T00:47:50.8579688Z 
+2026-10-07T00:47:50.8579962Z - Failed: `test_maxima_strategy_configuration_and_policies`
+2026-10-07T00:47:50.8580400Z 
+2026-10-07T00:47:50.8618689Z ##[error]Process completed with exit code 1.
+2026-10-07T00:47:50.8677321Z ##[group]Run actions/upload-artifact@v4
+2026-10-07T00:47:50.8677645Z with:
+2026-10-07T00:47:50.8677881Z   name: ci-observation-regressions-g++-11
+2026-10-07T00:47:50.8678201Z   path: artifacts/ci-observation/
+2026-10-07T00:47:50.8678482Z   if-no-files-found: ignore
+2026-10-07T00:47:50.8678741Z   compression-level: 6
+2026-10-07T00:47:50.8678974Z   overwrite: false
+2026-10-07T00:47:50.8679208Z   include-hidden-files: false
+2026-10-07T00:47:50.8679451Z env:
+2026-10-07T00:47:50.8679654Z   GLOB2_DEV_MODE: isolated
+2026-10-07T00:47:50.8680023Z   LD_LIBRARY_PATH: /home/runner/work/glob2/glob2/build/sdl3-ci/prefix/lib
+2026-10-07T00:47:50.8680417Z ##[endgroup]
+2026-10-07T00:47:51.0598993Z (node:3391) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+2026-10-07T00:47:51.0599873Z (Use `node --trace-deprecation ...` to show where the warning was created)
+2026-10-07T00:47:51.0660042Z With the provided path, there will be 1 file uploaded
+2026-10-07T00:47:51.0667606Z Artifact name is valid!
+2026-10-07T00:47:51.0668317Z Root directory input is valid!
+2026-10-07T00:47:51.2565903Z Beginning upload of artifact content to blob storage
+2026-10-07T00:47:51.2775094Z (node:3391) [DEP0169] DeprecationWarning: `url.parse()` behavior is not standardized and prone to errors that have security implications. Use the WHATWG URL API instead. CVEs are not issued for `url.parse()` vulnerabilities.
+2026-10-07T00:47:51.3050416Z Uploaded bytes 173
+2026-10-07T00:47:51.3209432Z Finished uploading artifact content to blob storage!
+2026-10-07T00:47:51.3210414Z SHA256 digest of uploaded artifact zip is 4ed0676cfe2db0091b7c94c0c927582aad5c52d596a3a05847a0880440da2953
+2026-10-07T00:47:51.3212790Z Finalizing artifact upload
+2026-10-07T00:47:51.5237242Z Artifact ci-observation-regressions-g++-11.zip successfully finalized. Artifact ID 11454315685
+2026-10-07T00:47:51.5239442Z Artifact ci-observation-regressions-g++-11 has been successfully uploaded! Final size is 173 bytes. Artifact ID is 11454315685
+2026-10-07T00:47:51.5246761Z Artifact download URL: https://github.com/Globulation2/glob2/actions/runs/37551820848/artifacts/11454315685
+2026-10-07T00:47:51.5450422Z Post job cleanup.
+2026-10-07T00:47:51.6369165Z [command]/usr/bin/git version
+2026-10-07T00:47:51.6418439Z git version 2.55.0
+2026-10-07T00:47:51.6461756Z Temporarily overriding HOME='/home/runner/work/_temp/84cc4549-00d5-4350-8fe4-f1dcb88a1d8f' before making global git config changes
+2026-10-07T00:47:51.6463549Z Adding repository directory to the temporary git global config as a safe directory
+2026-10-07T00:47:51.6468440Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/glob2/glob2
+2026-10-07T00:47:51.6518308Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-10-07T00:47:51.6565774Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-10-07T00:47:51.6909655Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-10-07T00:47:51.6940796Z http.https://github.com/.extraheader
+2026-10-07T00:47:51.6952331Z [command]/usr/bin/git config --local --unset-all http.https://github.com/.extraheader
+2026-10-07T00:47:51.6995366Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-10-07T00:47:51.7346944Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-10-07T00:47:51.7416496Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-10-07T00:47:51.7967289Z Cleaning up orphan processes
+2026-10-07T00:47:51.8346196Z ##[warning]Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/checkout@v4, actions/download-artifact@v4, actions/upload-artifact@v4. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/

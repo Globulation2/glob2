@@ -41,3 +41,7 @@ Tested source `4b7fa7a37`, base `17bbbcf41`; Linux x86-64/Python3.14.4. `python3
 ## Generator evidence collector
 
 Tested source `0a19ac804`, base `4b7fa7a37`; Linux x86-64/Python3.14.4. `python3 -m unittest discover -s test/build_system -p test_generator_evidence.py`:4passed. Rotated review identified a binary-provenance gap, corrected with before/after binary/source/table audits and explicit limitation that producing build-job evidence binds executable to source. Host compiler is labelled as such. Same-host repeats are not independent-platform evidence, and collected rows remain unapproved. Historical expectations and strict missing-row checks are unchanged. Actual macOS collection awaits hosted execution.
+
+## Introduced Maxima source-contract failure
+
+Merged master job [112574794900](https://github.com/Globulation2/glob2/actions/runs/37551820848/job/112574794900) failed a stale source-string assertion after the indexed material query refactor. Focused repair `3b3d7a8d5036906e9c4b64c80bb9e7a8ff44619b`, base `9084ea907`: update that assertion only. Local before failure reproduced, after61tests passed with1expected unavailable-binary skip; independent focused17tests pass. Exact failed hosted log and before/after outputs are in `maxima-repair/`. No production code, simulation/save/network behavior or gameplay changes. The unavailable local dynamic test is covered by the requested hosted follow-up, not claimed passed locally.
