@@ -2937,3 +2937,5 @@
 [dock resources base]
 [dock fertility stale]
 [dock fertility refresh]
+[Enabled %0 for this map]
+[editor fertility tap refresh]

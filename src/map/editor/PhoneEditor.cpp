@@ -10,6 +10,7 @@
 #include "MobileSafeArea.h"
 #include "GlobalContainer.h"
 #include <TouchText.h>
+#include <ApplicationHost.h>
 #include <Toolkit.h>
 #include <StringTable.h>
 #include <cmath>
@@ -21,13 +22,16 @@ namespace
 // Point-based presentation policy. Gesture tuning must not change editor rules.
 constexpr double headerHeight = 48;
 constexpr double modeHeight = 44;
-constexpr double paletteHeight = 60;
 constexpr double dragThreshold = 8;
 constexpr double previewLift = 40;
 } // namespace
 
 PhoneEditor::PhoneEditor(MapEdit &editor) : editor(editor) {}
-PhoneEditor::~PhoneEditor() = default;
+PhoneEditor::~PhoneEditor()
+{
+	if (!publishedControls.empty())
+		ApplicationHost::controlsChanged(this, nullptr);
+}
 bool PhoneEditor::hasOverlay() const
 {
 	return editor.hasDialog();
@@ -50,71 +54,49 @@ void PhoneEditor::cancel()
 	if (auto *dialog = editor.activeDialog())
 		dialog->cancelInput();
 }
-// All rectangles are independent editor presentation bounds. Palette widgets
-// contribute only their individual artwork and named selection actions.
+// All rectangles are independent editor presentation bounds. Tray cards come
+// from the brush catalogue (PhoneEditorTray.cpp).
 void PhoneEditor::prepare()
 {
 	auto *gfx = globalContainer->gfx;
 	const double unit = gfx->logicalUnitsPerPoint();
 	safe = mobileDialogSafe(gfx);
-	const double dock = (modeHeight + (tools ? paletteHeight : 0)) * unit;
-	content = {safe.x, safe.y + headerHeight * unit, safe.w,
-			   std::max(0., safe.h - headerHeight * unit - dock)};
-	modeBar = {safe.x, safe.y + safe.h - dock, safe.w, modeHeight * unit};
-	tray = {safe.x, modeBar.y + modeBar.h, safe.w, tools ? paletteHeight * unit : 0};
-	rows.clear();
-	if (inspecting())
-	{
-		prepareInspector();
-		return;
-	}
-	if (editor.panelMode == MapEdit::Teams)
-		return;
-	if (!tools)
-		return;
 	// External keyboard/gallery actions can select an editor mode as well.
 	if (editor.panelMode == MapEdit::AddBuildings)
 		paletteMode = 2;
 	else if (editor.panelMode == MapEdit::AddFlagsAndZones)
 		paletteMode = 3;
+	else if (editor.panelMode == MapEdit::Teams)
+		paletteMode = 4;
 	else if (editor.panelMode == MapEdit::Terrain && paletteMode >= 2)
 		paletteMode = 0;
-	std::vector<MapEditorWidget *> items;
-	if (paletteMode == 0)
-    {
-		items = {editor.grass,        editor.sand,         editor.water,
-				 editor.deleteButton, editor.areasButton,  editor.noResourceGrowthButton,
-				 editor.areaNumber,   editor.areaNameLabel};
-        items.insert(items.begin()+3, editor.additionalTerrainSelectors.begin(), editor.additionalTerrainSelectors.end());
-    }
-	else if (paletteMode == 1)
-		items = {editor.wheat,   editor.trees,  editor.stone,  editor.algae,
-				 editor.papyrus, editor.orange, editor.cherry, editor.prune};
-	else if (paletteMode == 2)
-		items.assign(editor.buildingSelectors.begin(),editor.buildingSelectors.end());
+	const bool cards = tools && !inspecting() && paletteMode < 4;
+	if (cards)
+		layoutTray(unit);
 	else
 	{
-		items.assign(editor.flagSelectors.begin(),editor.flagSelectors.end());
-		items.insert(items.end(),{editor.forbiddenZone,editor.guardZone,editor.clearingZone});
-		if (editor.farmingZone)
-			items.push_back(editor.farmingZone);
-		items.insert(items.end(), {editor.worker, editor.explorer, editor.warrior});
+		trayLayoutKey.clear();
+		rows.clear();
+		chips.clear();
 	}
-	double extent = 4 * unit;
-	for (auto *w : items)
+	// Short landscape phones keep more of the map: the strips tighten.
+	const bool tight = safe.h < 480 * unit;
+	const double modes = tight ? 38 : modeHeight, cardsHeight = tight ? cardHeight - 6 : cardHeight;
+	const double chipsHeight = cards && chips.size() > 1 ? (tight ? chipHeight - 4 : chipHeight) : 0;
+	const double dock = (modes + (tools ? cardsHeight + chipsHeight : 0)) * unit;
+	content = {safe.x, safe.y + headerHeight * unit, safe.w,
+			   std::max(0., safe.h - headerHeight * unit - dock)};
+	modeBar = {safe.x, safe.y + safe.h - dock, safe.w, modes * unit};
+	tray = {safe.x, modeBar.y + modeBar.h, safe.w, tools ? (cardsHeight + chipsHeight) * unit : 0};
+	chipBar = {tray.x, tray.y, tray.w, chipsHeight * unit};
+	cardBar = {tray.x, tray.y + chipBar.h, tray.w, tray.h - chipBar.h};
+	if (inspecting())
 	{
-		w->area.updateWindowWidth(gfx->getW());
-		const auto a = w->area;
-		const double width = std::max(56., std::min(200., double(a.width) + 16)) * unit;
-		const double scale = std::min(
-			{unit, (width - 12 * unit) / std::max(1, a.width), 44 * unit / std::max(1, a.height)});
-		rows.push_back({w, {extent, tray.y + 2 * unit, width, 56 * unit}, scale});
-		extent += width + 4 * unit;
+		prepareInspector();
+		return;
 	}
-	maximum = std::max(0., extent - tray.w);
-	syncTray();
-	for (auto &row : rows)
-		row.rect.x += tray.x - offset;
+	if (cards)
+		prepareTray(unit);
 }
 void PhoneEditor::syncTray()
 {
@@ -192,8 +174,9 @@ void PhoneEditor::chooseMode(int mode)
 	paletteMode = mode;
 	offset = 0;
 	tools = true;
-	const char *modes[] = {"switch to terrain view", "switch to terrain view",
-						   "switch to building view", "switch to flag view"};
+	const char *modes[modeCount] = {"switch to terrain view", "switch to terrain view",
+									"switch to building view", "switch to flag view",
+									"switch to teams view"};
 	editor.performAction(modes[mode]);
 }
 int PhoneEditor::hit(ViewPoint p) const
@@ -243,7 +226,14 @@ int PhoneEditor::hit(ViewPoint p) const
 	if (!tools && modeBar.contains(p))
 		return -6;
 	if (tools && modeBar.contains(p))
-		return -10 - std::clamp(int((p.x - modeBar.x) * 4 / modeBar.w), 0, 3);
+		return -10 - std::clamp(int((p.x - modeBar.x) * modeCount / modeBar.w), 0, modeCount - 1);
+	if (tools && chipBar.contains(p))
+	{
+		for (size_t i = 0; i < chips.size(); ++i)
+			if (chips[i].rect.contains(p))
+				return -400 - int(i);
+		return -23; // Between chips: inert.
+	}
 	if (tools && tray.contains(p))
 		for (size_t i = 0; i < rows.size(); ++i)
 			if (rows[i].rect.contains(p))
@@ -591,7 +581,12 @@ void PhoneEditor::act(const TouchAction &action)
 		tools = true;
 		return;
 	}
-	if (held <= -10 && held >= -13)
+	if (held <= -400 && held > -400 - int(chips.size()))
+	{
+		jumpToChip(-400 - held);
+		return;
+	}
+	if (held <= -10 && held > -10 - modeCount)
 	{
 		if (paletteMode == -10 - held)
 		{
@@ -647,21 +642,8 @@ void PhoneEditor::act(const TouchAction &action)
 	}
 	if (held >= 0 && held < int(rows.size()))
 	{
-		auto &row = rows[held];
-		auto *w = row.widget;
-		if (dynamic_cast<ValueScrollBox *>(w))
-		{
-			const double part = (p.x - row.rect.x) / row.rect.w;
-			w->handleClick(part < .25 ? 0 : part > .75 ? 111 : 10 + int(part * 92), 8);
-		}
-		else if (dynamic_cast<NumberCycler *>(w) || dynamic_cast<Checkbox *>(w))
-		{
-			// These small shared widgets own their value change; their click
-			// does not dispatch through a composed desktop sidebar.
-			w->handleClick(0, 0);
-		}
-		else
-			editor.performAction(w->action);
+		const Row row = rows[held]; // Activation may rebuild the tray.
+		activateRow(row, p);
 		pan = false;
 		return;
 	}
@@ -723,7 +705,19 @@ bool PhoneEditor::event(SDL_Event event)
 			}
 		}
 		if (sample->sequence != nativeSequence) return true;
-		if (!nativeSurface) return false;
+		if (!nativeSurface)
+		{
+			// Over the map a trackpad or wheel gesture zooms about the pointer.
+			const ViewPoint at{sample->x, sample->y};
+			if (content.contains(at) && !peekOpen)
+			{
+				const auto wheel = gestureWheelFallback(*sample);
+				const double delta = wheel.wheel.y * (wheel.wheel.direction == SDL_MOUSEWHEEL_FLIPPED ? -1 : 1);
+				if (delta != 0)
+					editor.zoomMap(delta, int(at.x), int(at.y));
+			}
+			return true;
+		}
 		if (nativeScrolling)
 		{
 			nativeScroll.handle(*sample, nativeAxis().axis);
@@ -732,6 +726,11 @@ bool PhoneEditor::event(SDL_Event event)
 		return true;
 	}
 	if (nativeScrolling && (event.type == SDL_EVENT_MOUSE_WHEEL || event.type == SDL_EVENT_MOUSE_BUTTON_DOWN || event.type == SDL_EVENT_KEY_DOWN || event.type == SDL_EVENT_FINGER_DOWN)) stopScrolling();
+	// Pointer positions arrive in window coordinates; the tray works in logical
+	// pixels like the rest of the editor. Fingers are normalized already.
+	if (event.type == SDL_EVENT_MOUSE_BUTTON_DOWN || event.type == SDL_EVENT_MOUSE_BUTTON_UP ||
+		event.type == SDL_EVENT_MOUSE_MOTION || event.type == SDL_EVENT_MOUSE_WHEEL)
+		GraphicContext::translateMouseEvent(&event);
 	ViewPoint p;
 	int phase = -1;
 	SDL_TouchID device = SDL_MOUSE_TOUCHID;
@@ -761,18 +760,27 @@ bool PhoneEditor::event(SDL_Event event)
 		phase = 1;
 		break;
 	case SDL_EVENT_MOUSE_WHEEL:
-		if (inspecting())
+	{
+		// The wheel acts on what the pointer is over: the inspector or tray
+		// scrolls, the map zooms about the pointer as on the desktop.
+		const ViewPoint at{event.wheel.mouse_x, event.wheel.mouse_y};
+		const double u = globalContainer->gfx->logicalUnitsPerPoint();
+		const double flip = event.wheel.direction == SDL_MOUSEWHEEL_FLIPPED ? -1 : 1;
+		const double steps = (event.wheel.y - event.wheel.x) * flip;
+		if (inspecting() && inspector.contains(at))
 		{
-			inspectorScroll = std::clamp(
-				inspectorScroll - event.wheel.y * 72 * globalContainer->gfx->logicalUnitsPerPoint(),
-				0., inspectorMaximum);
+			inspectorScroll = std::clamp(inspectorScroll - event.wheel.y * flip * 72 * u, 0., inspectorMaximum);
 			return true;
 		}
-		if (tools)
-			offset = std::clamp(offset - event.wheel.y * 56 *
-											 globalContainer->gfx->logicalUnitsPerPoint(),
-								0., maximum);
+		if (tools && cardBar.contains(at))
+		{
+			offset = std::clamp(offset - steps * 56 * u, 0., maximum);
+			return true;
+		}
+		if (content.contains(at) && !peekOpen && event.wheel.y != 0)
+			editor.zoomMap(event.wheel.y * flip, int(at.x), int(at.y));
 		return true;
+	}
 	case SDL_EVENT_KEY_DOWN:
 		if (event.key.key == SDLK_ESCAPE)
 		{
@@ -827,7 +835,7 @@ bool PhoneEditor::event(SDL_Event event)
 			if (content.contains(p))
 			{
 				drag->moving = true;
-				editor.performAction(drag->widget->action);
+				editor.performAction(drag->action);
 				pan = false;
 			}
 			else
@@ -853,9 +861,9 @@ bool PhoneEditor::event(SDL_Event event)
 				if (content.contains(p) && content.contains({p.x, p.y - previewLift * unit}))
 					placeAt({p.x, p.y - previewLift * unit});
 			}
-			else if (!drag->browsing && hit(p) >= 0 && rows[hit(p)].widget == drag->widget)
+			else if (!drag->browsing && hit(p) >= 0 && rows[hit(p)].id == drag->id)
 			{
-				editor.performAction(drag->widget->action);
+				editor.performAction(drag->action);
 				pan = false;
 			}
 			if (drag->browsing)
@@ -889,11 +897,9 @@ bool PhoneEditor::event(SDL_Event event)
 			railTouched = held <= -200 && held > -200 - int(BrushTool::BRUSH_COUNT) ? -200 - held : -1;
 			if (railTouched >= 0)
 				editor.brush.setFigure(unsigned(railTouched));
-			if (held >= 0 && held < int(rows.size()) &&
-				(dynamic_cast<BuildingSelectorWidget *>(rows[held].widget) ||
-				 dynamic_cast<UnitSelector *>(rows[held].widget)))
+			if (held >= 0 && held < int(rows.size()) && dragPlaces(rows[held]))
 			{
-				drag = Drag{device, id, rows[held].widget, p};
+				drag = Drag{device, id, rows[held].id, editor.findBrush(rows[held].id)->action, p};
 				return true;
 			}
 			const bool paint = editor.selectionMode == MapEdit::PlaceTerrain ||
@@ -958,16 +964,37 @@ void PhoneEditor::label(ViewRect r, const std::string &text)
 	gfx->setClipRect();
 	font->popStyle();
 }
+void PhoneEditor::centredLabel(ViewRect r, const std::string &text)
+{
+	auto *gfx = globalContainer->gfx;
+	auto *font = globalContainer->standardFont;
+	const double scale = gfx->textUnitsPerPoint();
+	const double width = font->getStringWidth(text) * scale;
+	if (width + 4 * gfx->logicalUnitsPerPoint() > r.w)
+	{
+		label(r, text); // Too long to centre: start at the edge and clip.
+		return;
+	}
+	font->pushStyle(Font::Style(Font::STYLE_NORMAL, Color(255, 249, 229)));
+	SDL_Rect clip{int(r.x), int(r.y), int(r.w), int(r.h)};
+	gfx->setUITransform(scale, r.x + (r.w - width) / 2, r.y + (r.h - font->getStringHeight(text) * scale) / 2, &clip);
+	gfx->drawString(0, 0, font, text);
+	gfx->setUITransform();
+	gfx->setClipRect();
+	font->popStyle();
+}
 void PhoneEditor::draw()
 {
 	if (deferred && SDL_GetTicks() - deferred->ticks >= InGameTouchTheme::doubleTapWindowMs)
 		commitDeferred();
 	if (editor.hasDialog())
 	{
+		publishControls(false);
 		editor.drawDialog();
 		return;
 	}
 	prepare();
+	publishControls(tools && !inspecting());
 	if (inspecting())
 	{
 		drawInspector();
@@ -1050,43 +1077,37 @@ void PhoneEditor::draw()
 		gfx->drawFilledRect(int(modeBar.x), int(modeBar.y), int(modeBar.w), int(modeBar.h),
 							InGameTouchTheme::paper());
 		label(modeBar, GAGCore::Toolkit::getStringTable()->getString("[Show palette]"));
+		drawStatusToast();
 		return;
 	}
-	gfx->drawFilledRect(int(modeBar.x), int(modeBar.y), int(modeBar.w), int(modeBar.h + tray.h),
-						InGameTouchTheme::paper());
-	const std::string modes[] = {Toolkit::getStringTable()->getString("[Terrain]"),
-								 Toolkit::getStringTable()->getString("[Resources]"),
-								 Toolkit::getStringTable()->getString("[Buildings]"),
-								 Toolkit::getStringTable()->getString("[Flags]")};
-	for (int i = 0; i < 4; ++i)
+	// The mode strip and tray are opaque: cards read against one backdrop.
+	Color backdrop = InGameTouchTheme::paper();
+	backdrop.a = 255;
+	gfx->drawFilledRect(int(modeBar.x), int(modeBar.y), int(modeBar.w), int(modeBar.h + tray.h), backdrop);
+	const std::string modes[modeCount] = {Toolkit::getStringTable()->getString("[Terrain]"),
+										  Toolkit::getStringTable()->getString("[Resources]"),
+										  Toolkit::getStringTable()->getString("[Buildings]"),
+										  Toolkit::getStringTable()->getString("[Flags]"),
+										  Toolkit::getStringTable()->getString("[Teams]")};
+	for (int i = 0; i < modeCount; ++i)
 	{
-		ViewRect r{modeBar.x + i * modeBar.w / 4, modeBar.y, modeBar.w / 4 - unit, modeBar.h};
-		if (i == paletteMode && editor.panelMode != MapEdit::Teams)
+		ViewRect r{modeBar.x + i * modeBar.w / modeCount, modeBar.y, modeBar.w / modeCount - unit, modeBar.h};
+		if (i == paletteMode)
 			gfx->drawFilledRect(int(r.x), int(r.y), int(r.w), int(r.h), InGameTouchTheme::selected());
-		label(r, modes[i]);
+		centredLabel(r, modes[i]);
 	}
 	if (editor.panelMode == MapEdit::Teams)
-		label(tray, GAGCore::FormattableString(
-						GAGCore::Toolkit::getStringTable()->getString("[Manage teams (%0)]"))
-						.arg(editor.game.teamsCount()));
-	for (const auto &row : rows)
 	{
-		const auto r = row.rect;
-		const auto a = row.widget->area;
-		const double left = std::max(r.x, tray.x), right = std::min(r.x + r.w, tray.x + tray.w);
-		if (right <= left)
-			continue;
-		SDL_Rect clip{int(left), int(tray.y), int(right - left), int(tray.h)};
-		gfx->setClipRect(clip.x, clip.y, clip.w, clip.h);
-		gfx->drawFilledRect(int(r.x), int(r.y), int(r.w), int(r.h), InGameTouchTheme::field());
-		gfx->setUITransform(row.scale, r.x + (r.w - a.width * row.scale) / 2 - a.x * row.scale,
-							r.y + (r.h - a.height * row.scale) / 2 - a.y * row.scale, &clip);
-		row.widget->draw();
-		gfx->setUITransform();
-		gfx->setClipRect();
+		// One wide card opens the teams editor.
+		const ViewRect card{tray.x + 8 * unit, tray.y + 6 * unit, tray.w - 16 * unit, tray.h - 14 * unit};
+		gfx->drawFilledRect(int(card.x), int(card.y), int(card.w), int(card.h), InGameTouchTheme::field());
+		for (int i = 0; i < editor.game.teamsCount() && i < 16; ++i)
+			gfx->drawFilledRect(int(card.x + (10 + 22 * i) * unit), int(card.y + card.h - 12 * unit), int(16 * unit),
+								int(5 * unit), editor.game.teams[i]->color);
+		centredLabel({card.x, card.y, card.w, card.h - 10 * unit},
+					 GAGCore::FormattableString(GAGCore::Toolkit::getStringTable()->getString("[Manage teams (%0)]"))
+						 .arg(editor.game.teamsCount()));
 	}
-	if (maximum > 0)
-		gfx->drawFilledRect(
-			int(tray.x + offset / (maximum + tray.w) * tray.w), int(tray.y + tray.h - 2 * unit),
-			int(tray.w * tray.w / (maximum + tray.w)), int(2 * unit), InGameTouchTheme::border());
+	drawTray();
+	drawStatusToast();
 }

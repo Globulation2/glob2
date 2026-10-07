@@ -5825,6 +5825,7 @@ Adtresañ neuz an douar
 [editor menu map]
 
 [no resource growth areas]
+
 [dock flags and units]
 
 [dock minimap]
@@ -5874,4 +5875,8 @@ Adtresañ neuz an douar
 [dock fertility stale]
 
 [dock fertility refresh]
+
+[Enabled %0 for this map]
+
+[editor fertility tap refresh]
 

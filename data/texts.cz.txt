@@ -5825,6 +5825,7 @@ Znovu náhodně zvolit vzhled terénu
 [editor menu map]
 
 [no resource growth areas]
+
 [dock flags and units]
 
 [dock minimap]
@@ -5874,4 +5875,8 @@ Znovu náhodně zvolit vzhled terénu
 [dock fertility stale]
 
 [dock fertility refresh]
+
+[Enabled %0 for this map]
+
+[editor fertility tap refresh]
 

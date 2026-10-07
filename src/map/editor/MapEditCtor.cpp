@@ -29,8 +29,8 @@ MapEdit::MapEdit()
             Minimap::HideFOW)
 {
 	Sprite::requestHighResolution(globalContainer->settings.highResolutionArtwork);
-    const bool usePhone=GAGCore::phonePresentationRequested();
-    if(usePhone && globalContainer->gfx->hasPortableRenderer()) phone=std::make_unique<PhoneEditor>(*this);
+    // The initial presentation; viewportResized() switches it live.
+    if(wantedPresentation()==EditorPresentation::Phone) phone=std::make_unique<PhoneEditor>(*this);
 	doQuit=false;
 	doFullQuit=false;
 	doQuitAfterLoadSave=false;

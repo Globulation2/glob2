@@ -5825,6 +5825,7 @@ FFmpeg در دسترس نیست، پس ضبط خاموش است. FFmpeg را ن�
 [editor menu map]
 
 [no resource growth areas]
+
 [dock flags and units]
 
 [dock minimap]
@@ -5874,4 +5875,8 @@ FFmpeg در دسترس نیست، پس ضبط خاموش است. FFmpeg را ن�
 [dock fertility stale]
 
 [dock fertility refresh]
+
+[Enabled %0 for this map]
+
+[editor fertility tap refresh]
 

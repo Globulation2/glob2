@@ -5876,3 +5876,7 @@ Standard resources
 The fertility map is out of date.
 [dock fertility refresh]
 Refresh fertility
+[Enabled %0 for this map]
+Enabled %0 for this map
+[editor fertility tap refresh]
+Fertility map out of date: tap to refresh

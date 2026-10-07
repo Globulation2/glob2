@@ -5825,6 +5825,7 @@ JavaScriptのAIは「設定」→「カスタムAI」で追加します。追加
 [editor menu map]
 
 [no resource growth areas]
+
 [dock flags and units]
 
 [dock minimap]
@@ -5874,4 +5875,8 @@ JavaScriptのAIは「設定」→「カスタムAI」で追加します。追加
 [dock fertility stale]
 
 [dock fertility refresh]
+
+[Enabled %0 for this map]
+
+[editor fertility tap refresh]
 

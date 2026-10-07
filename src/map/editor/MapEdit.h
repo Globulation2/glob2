@@ -11,6 +11,7 @@
 #include "Brush.h"
 #include "BrushCatalog.h"
 #include "BrushSwatches.h"
+#include "MapEditPresentation.h"
 #include "TerrainPresentation.h"
 #include "GAGSys.h"
 #include "LoadSaveDialog.h"
@@ -590,6 +591,25 @@ private:
 	void drawDock(Uint32 tick);
 public:
 	// --- end WS-C dock ---
+	// --- WS-D presentation ---
+	// The phone tray or the dock, chosen live from the window and input
+	// (MapEditPresentation.h).
+	EditorPresentation presentation() const;
+	// Re-chooses the presentation (viewportResized and construction call it). On a
+	// change, unfinished strokes and drags are cancelled and the brush, panel
+	// mode, team and levels kept. Returns whether the presentation changed.
+	bool syncPresentation();
+	// The dock sizes its targets for touch.
+	bool presentationTouchTargets() const;
+	// MapEditorScreen requests a point-sized (responsive) viewport.
+	bool wantsResponsiveViewport() const;
+private:
+	EditorPresentation wantedPresentation() const;
+	// Seam for the EditorDock (WS-C): createDock()/destroyDock().
+	void enterDockPresentation();
+	void leaveDockPresentation();
+public:
+	// --- end WS-D presentation ---
 
 	friend class MapEditorWidget;
 	friend class BuildingSelectorWidget;
