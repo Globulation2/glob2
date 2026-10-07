@@ -1118,7 +1118,7 @@
       "key": "gravel",
       "sprite": "data/gfx/terrain-gravel",
       "profile": "rock",
-      "preview": [135, 127, 116],
+      "preview": [132, 121, 108],
       "variants": [
         {
           "frame": 0,
@@ -1185,7 +1185,8 @@
           "weight": 1
         }
       ],
-      "minimap": [135, 127, 116],
+      "edges": "periodic",
+      "minimap": [132, 121, 108],
       "seam": {
         "height": 2,
         "cast_q8": 40,
@@ -1196,7 +1197,7 @@
       "key": "flower_meadow",
       "sprite": "data/gfx/terrain-flower_meadow",
       "profile": "brush",
-      "preview": [62, 128, 48],
+      "preview": [50, 120, 46],
       "variants": [
         {
           "frame": 0,
@@ -1263,7 +1264,8 @@
           "weight": 1
         }
       ],
-      "minimap": [62, 128, 48],
+      "edges": "periodic",
+      "minimap": [50, 120, 46],
       "seam": {
         "height": 2,
         "cast_q8": 56,
@@ -1350,7 +1352,7 @@
       "key": "marsh",
       "sprite": "data/gfx/terrain-marsh",
       "profile": "soft",
-      "preview": [75, 92, 75],
+      "preview": [105, 120, 64],
       "variants": [
         {
           "frame": 0,
@@ -1417,7 +1419,8 @@
           "weight": 1
         }
       ],
-      "minimap": [75, 92, 75],
+      "edges": "periodic",
+      "minimap": [105, 120, 64],
       "seam": {
         "height": 1
       }

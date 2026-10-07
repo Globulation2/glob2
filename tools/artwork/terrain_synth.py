@@ -325,10 +325,13 @@ def stamp_disc(mask, cx, cy, radius, value=1.0, softness=0.5, mode="max"):
     r = int(math.ceil(radius)) + 1
     inner = radius * (1 - softness)
     for oy in range(-r, r + 1):
-        y = (int(math.floor(cy)) + oy) % N
+        uy = int(math.floor(cy)) + oy
+        y = uy % N
         for ox in range(-r, r + 1):
-            x = (int(math.floor(cx)) + ox) % N
-            d = math.hypot(x + 0.5 - cx, y + 0.5 - cy)
+            ux = int(math.floor(cx)) + ox
+            x = ux % N
+            # Distances use the unwrapped pixel so stamps wrap across edges.
+            d = math.hypot(ux + 0.5 - cx, uy + 0.5 - cy)
             if d >= radius:
                 continue
             weight = 1.0 if d <= inner else 1 - smoothstep(inner, radius, d)
@@ -349,10 +352,12 @@ def disc_profile(cx, cy, radius, lumps=()):
     height = [0.0] * (N * N)
     r = int(math.ceil(radius * 1.4)) + 1
     for oy in range(-r, r + 1):
-        y = (int(math.floor(cy)) + oy) % N
+        uy = int(math.floor(cy)) + oy
+        y = uy % N
         for ox in range(-r, r + 1):
-            x = (int(math.floor(cx)) + ox) % N
-            dx, dy = x + 0.5 - cx, y + 0.5 - cy
+            ux = int(math.floor(cx)) + ox
+            x = ux % N
+            dx, dy = ux + 0.5 - cx, uy + 0.5 - cy
             angle = math.atan2(dy, dx)
             local = radius * (1 + sum(a * math.sin(h * angle + ph) for h, a, ph in lumps))
             d = math.hypot(dx, dy) / local
@@ -387,6 +392,103 @@ def stamp_stroke(mask, x0, y0, angle, length, width, value=1.0):
     for s in range(steps + 1):
         t = s / steps
         stamp_disc(mask, x0 + dx * length * t, y0 + dy * length * t, width / 2 + 0.5, value, 0.6)
+
+
+def wrapped_distance(ax, ay, bx, by):
+    dx = abs(ax - bx) % N
+    dy = abs(ay - by) % N
+    return math.hypot(min(dx, N - dx), min(dy, N - dy))
+
+
+def edge_distance(x, y):
+    return min(x, y, N - x, N - y)
+
+
+def object_field(ctx, count, radius, spacing=0.85, attempts=40):
+    """Round objects for a periodic material: [(x, y, r, rng_value)].
+
+    Objects touching the shared outer band come from the material's base rng
+    and are identical in every variant (they wrap across the tile edge); each
+    variant adds its own objects entirely inside the interior. Variants thus
+    differ everywhere except the band, with whole objects and no ghosting.
+    `count` is the approximate number of objects per tile.
+    """
+    placed = []
+
+    def fits(x, y, r):
+        return all(wrapped_distance(x, y, px, py) > (r + pr) * spacing for px, py, pr, _ in placed)
+
+    base, rng = ctx.base_rng, ctx.rng
+    # Shared band objects: centres near an edge (wrapping), drawn first.
+    # The shared quota follows the band's share of the tile area, so the
+    # band is no denser than the interior and draws no grid.
+    reach = PERIODIC_BAND + sum(radius) / 2
+    quota = count * (1 - ((N - 2 * reach) / N) ** 2)
+    for _ in range(count * attempts):
+        if len(placed) >= quota:
+            break
+        r = base.uniform(*radius)
+        x, y = base.random() * N, base.random() * N
+        if edge_distance(x, y) < PERIODIC_BAND + r and fits(x, y, r):
+            placed.append((x, y, r, base.random()))
+    shared = len(placed)
+    for _ in range(count * attempts):
+        if len(placed) >= count:
+            break
+        r = rng.uniform(*radius)
+        x, y = rng.random() * N, rng.random() * N
+        if edge_distance(x, y) > PERIODIC_FADE + r + 1 and fits(x, y, r):
+            placed.append((x, y, r, rng.random()))
+    return placed[:shared], placed[shared:]
+
+
+def render_domes(objects, tone_of, lumps_of=None, texture=None):
+    """Painter-ordered domes: (height, rgb) fields from objects.
+
+    `texture(u, angle, h)` optionally scales the tone per pixel, from the
+    pixel's angle around the object centre and its dome height."""
+    height = [0.0] * (N * N)
+    rgb = [[0.0] * (N * N) for _ in range(3)]
+    for x, y, r, u in sorted(objects, key=lambda o: o[1]):
+        lumps = lumps_of(u) if lumps_of else ()
+        dome = disc_profile(x, y, r, lumps)
+        tone = tone_of(u)
+        for i, h in enumerate(dome):
+            if h > 0.0:
+                height[i] = h
+                scale = 1.0
+                if texture:
+                    dx = (XS[i] + 0.5 - x + N / 2) % N - N / 2
+                    dy = (YS[i] + 0.5 - y + N / 2) % N - N / 2
+                    scale = texture(u, math.atan2(dy, dx), h)
+                for c in range(3):
+                    rgb[c][i] = tone[c] * scale
+    return height, rgb
+
+
+def shifted(values, dx, dy):
+    """The field moved by (dx, dy) whole render pixels, wrapped."""
+    return [values[((y - dy) % N) * N + (x - dx) % N] for x, y in zip(XS, YS)]
+
+
+def interior_weight(margin, fade=8):
+    """0 within `margin` render px of the edge, rising to 1 over `fade`."""
+    w = band_weight(margin, margin + fade)
+    return [1 - v for v in w]
+
+
+def stamp_flower(masks, cx, cy, radius, petals, angle):
+    """Petals (discs around the centre) into masks["petal"], centre into
+    masks["centre"], a soft drop shadow into masks["shadow"]. Wrapped."""
+    # Overlapping petals make a round rosette: at 32 px it reads as a round
+    # bloom with a centre, never as a stroke.
+    pr = radius * 0.55
+    for k in range(petals):
+        a = angle + TAU * k / petals
+        px, py = cx + math.cos(a) * radius * 0.45, cy + math.sin(a) * radius * 0.45
+        stamp_disc(masks["petal"], px, py, pr, 1.0, 0.3)
+    stamp_disc(masks["shadow"], cx + 1.5, cy + 2.0, radius * 1.05, 0.8, 0.7)
+    stamp_disc(masks["centre"], cx, cy, max(2.0, radius * 0.3), 1.0, 0.3)
 
 
 def band(values, edge, width):
@@ -615,6 +717,11 @@ class Recipe:
     preview: tuple = None
     minimap: tuple = None
     placeholder_only: bool = False
+    # Periodic edges: every variant shares one periodic base whose outer band is
+    # identical across variants, so any two variants continue each other across
+    # a shared edge and the runtime skips its border blend ("edges": "periodic").
+    # Per-variant features stay inside the interior.
+    periodic: bool = False
     note: str = ""
 
     def describe(self):
@@ -642,6 +749,8 @@ class Ctx:
         self.rng = random.Random(fnv1a32(f"{name}:{variant}:0"))
         self.phase_rng = random.Random(fnv1a32(f"{name}:{variant}:{phase}"))
         self.t = phase / phases
+        # Shared by every variant of a periodic material (and every phase).
+        self.base_rng = random.Random(fnv1a32(f"{name}:base"))
 
     def interior_point(self, margin):
         """A position at least `margin` render pixels from every edge."""
@@ -711,44 +820,115 @@ def render_clay(ctx):
 
 @recipe(name="gravel", group="barren", label="Gravel", profile="rock",
         seam={"height": 2, "cast_q8": 40, "cast_width_q8": 448},
-        palette={"dark": (108, 102, 94), "mid": (138, 130, 118), "light": (162, 154, 140)},
-        style=Style(luma=128, std=12, grain_max=11))
+        palette={"fines": (98, 86, 70), "gap": (50, 43, 36),
+                 "stones": [(168, 156, 136), (146, 138, 126), (178, 162, 136), (128, 122, 114),
+                            (160, 140, 118), (132, 133, 134), (200, 188, 162), (156, 128, 104),
+                            (176, 150, 120), (214, 202, 176)]},
+        style=Style(luma=128, std=32, grain_max=26, match=0.8), periodic=True)
 def render_gravel(ctx):
+    """Rounded pebbles, after close-up photographs of pebble beds: a dark bed
+    of fines under packed, overlapping stones of mixed grey and warm tones,
+    each lit from the upper left with a dark contact shadow to the lower
+    right, and a few larger stones on top."""
     p = RECIPES["gravel"].palette
-    rng = ctx.rng
-    f1, f2, ids = worley(rng, 5)
-    grit = fbm(rng, 10, 2)
-    # Rounded pebbles about six native pixels across, each with its own tone.
-    tone = normalize([0.3 * (1 - a) + 0.7 * g for a, g in zip(f1, grit)])
-    rgb = ramp(tone, [(0.0, p["dark"]), (0.5, p["mid"]), (1.0, p["light"])])
-    rgb = apply_cell_jitter(rgb, ids, cell_jitter(rng, 25, 0.11))
-    rgb = shade(rgb, [1 - v for v in f1], 0.15)
-    gaps = band([b - a for a, b in zip(f1, f2)], 0.07, 0.09)
-    rgb = mix(rgb, p["dark"], gaps, 0.6)
-    rgb = grain(rgb, rng, 0.08)
+    base = ctx.base_rng
+    rgb = ramp(normalize(fbm(base, 12, 2)), [(0.0, p["gap"]), (1.0, p["fines"])])
+    speck = lattice_noise(base, 64)
+
+    def tone(u):
+        colour = p["stones"][int(u * 997) % len(p["stones"])]
+        value = 0.86 + 0.26 * ((u * 7919) % 1.0)
+        return [c * value for c in colour]
+
+    def lumps(u):
+        return [(h, (0.05 + 0.06 * ((u * 31 * h) % 1.0)) * 3 / (h + 1), u * TAU * h) for h in (2, 3, 5)]
+
+    # Grit, stones and a few large stones: a size hierarchy with the dark bed
+    # showing between them, which is what separates stones at 32 px.
+    for count, radius, spacing in ((40, (4.0, 6.0), 1.05), (18, (8.0, 11.0), 1.0), (3, (11.0, 14.0), 0.95)):
+        shared, own = object_field(ctx, count, radius, spacing=spacing)
+        height, stones = render_domes(shared + own, tone, lumps)
+        stones = shade(stones, height, 0.5)
+        stones = [[c * (0.92 + 0.16 * v) for c, v in zip(channel, speck)] for channel in stones]
+        cover = [smoothstep(0.0, 0.2, h) for h in height]
+        shadow = shifted(cover, 2, 3)
+        rgb = mix(rgb, p["gap"], [s * (1 - c) for s, c in zip(shadow, cover)], 0.7)
+        rgb = mix(rgb, stones, cover, 1.0)
     return rgb, None
 
 
 @recipe(name="flower_meadow", group="barren", label="Flower meadow", profile="brush",
         seam={"height": 2, "cast_q8": 56, "cast_width_q8": 512},
-        palette={"dark": (52, 122, 46), "mid": (70, 140, 56), "light": (88, 154, 68),
-                 "flowers": [(236, 196, 214), (244, 230, 158), (206, 168, 226), (240, 170, 160)],
-                 "centre": (120, 90, 60)},
-        style=Style(luma=94, std=9, grain_max=9, match=0.7),
-        note="placeholder until the image-generated flower meadow lands")
+        palette={"dark": (26, 98, 28), "mid": (34, 116, 34), "light": (54, 134, 46),
+                 "shadow": (18, 60, 20),
+                 "flowers": [(250, 250, 244), (252, 214, 64), (236, 120, 176), (178, 120, 230),
+                             (240, 92, 72), (120, 160, 246)],
+                 "centres": [(248, 196, 60), (120, 70, 30), (250, 236, 150)]},
+        style=Style(luma=92, std=24, grain_max=18, match=0.3), periodic=True)
 def render_flower_meadow(ctx):
+    """Grass with readable flower heads, after wildflower-meadow photographs:
+    patches of one colour plus scattered singles, each head a ring of
+    saturated petals around a contrasting centre with a soft shadow."""
     p = RECIPES["flower_meadow"].palette
+    base = ctx.base_rng
+    grass = ramp(normalize(fbm(base, 8, 3)), [(0.0, p["dark"]), (0.5, p["mid"]), (1.0, p["light"])])
+    blades = lattice_noise(base, 48)
+    grass = [[c * (0.88 + 0.24 * v) for c, v in zip(channel, blades)] for channel in grass]
+    rgb = grass
+
+    def bloom(rng, rgb, centres, inside):
+        masks = {k: [0.0] * (N * N) for k in ("petal", "centre", "shadow")}
+        petal_rgb = [[0.0] * (N * N) for _ in range(3)]
+        centre_rgb = [[0.0] * (N * N) for _ in range(3)]
+        for cx, cy, colour, centre_colour in centres:
+            radius = rng.uniform(6.5, 8.0)
+            local = {k: [0.0] * (N * N) for k in masks}
+            stamp_flower(local, cx, cy, radius, rng.choice((4, 5, 5, 6)), rng.uniform(0, TAU))
+            for k in masks:
+                masks[k] = [max(a, b) for a, b in zip(masks[k], local[k])]
+            for i, v in enumerate(local["petal"]):
+                if v:
+                    for k in range(3):
+                        petal_rgb[k][i] = colour[k]
+            for i, v in enumerate(local["centre"]):
+                if v:
+                    for k in range(3):
+                        centre_rgb[k][i] = centre_colour[k]
+        if inside is not None:
+            for k in masks:
+                masks[k] = [m * w for m, w in zip(masks[k], inside)]
+        rgb = mix(rgb, p["shadow"], masks["shadow"], 0.55)
+        rgb = mix(rgb, shade(petal_rgb, masks["petal"], 0.25), masks["petal"], 1.0)
+        rgb = mix(rgb, centre_rgb, masks["centre"], 1.0)
+        return rgb
+
+    def patch_centres(rng, patches, singles, area):
+        out = []
+        for _ in range(patches):
+            px, py = area()
+            colour = rng.choice(p["flowers"])
+            centre = rng.choice(p["centres"])
+            # Blooms in a drift keep about one bloom of grass between them, so
+            # at 32 px each stays a separate round dot instead of merging.
+            drift = []
+            for _ in range(rng.randint(3, 6) * 8):
+                if len(drift) >= 6:
+                    break
+                a, d = rng.uniform(0, TAU), rng.uniform(0, 18)
+                x, y = px + math.cos(a) * d, py + math.sin(a) * d
+                if all(math.hypot(x - qx, y - qy) > 15 for qx, qy in drift):
+                    drift.append((x, y))
+            out.extend((x, y, colour, centre) for x, y in drift)
+        for _ in range(singles):
+            x, y = area()
+            out.append((x, y, rng.choice(p["flowers"]), rng.choice(p["centres"])))
+        return out
+
+    # Shared periodic flowers (anywhere; stamps wrap), then per-variant patches.
     rng = ctx.rng
-    rgb, _ = ground(ctx, 8, 3, (p["dark"], p["mid"], p["light"]))
-    colors = rng.sample(p["flowers"], 2)
-    halo, cores, discs = soft_blobs(ctx, rng.randint(6, 10), 6.0, 8.0, core=2.0)
-    for index, color in enumerate(colors):
-        mask = [0.0] * (N * N)
-        for cx, cy, radius, u in discs:
-            if int(u * 2) == index:
-                stamp_disc(mask, cx, cy, radius, 1.0, 0.75)
-        rgb = mix(rgb, color, mask, 0.9)
-    rgb = mix(rgb, p["centre"], cores, 0.7)
+    own = patch_centres(rng, rng.randint(2, 3), rng.randint(1, 2),
+                        lambda: ctx.interior_point(PERIODIC_FADE + 8))
+    rgb = bloom(rng, rgb, own, interior_weight(PERIODIC_BAND, 4))
     return rgb, None
 
 
@@ -769,21 +949,66 @@ def render_mud(ctx):
 
 @recipe(name="marsh", group="rough", label="Marsh", profile="soft",
         seam={"height": 1},
-        palette={"dark": (58, 68, 48), "mid": (80, 96, 70), "light": (106, 120, 88), "pool": (40, 70, 90)},
-        style=Style(luma=86, std=10, grain_max=9))
+        palette={"tussock": (138, 140, 72), "dry": (176, 156, 96), "green": (100, 124, 58),
+                 "moss": (78, 92, 52), "water": (112, 128, 146), "sky": (156, 170, 184),
+                 "rim": (46, 50, 40), "reed": (132, 100, 60)},
+        style=Style(luma=104, std=22, grain_max=16, match=0.45), periodic=True)
 def render_marsh(ctx):
+    """Tussock marsh after photographs of bogs and reed beds: flat tussocks
+    of short straw and olive blades on lighter wet moss, with a few larger
+    pools that reflect the sky (light grey-blue with a thin dark rim) and
+    reed tufts."""
     p = RECIPES["marsh"].palette
+    base = ctx.base_rng
+    rgb = ramp(normalize(fbm(base, 6, 3)), [(0.0, p["moss"]), (0.6, p["green"]), (1.0, p["tussock"])])
     rng = ctx.rng
-    rgb, _ = ground(ctx, 4, 3, (p["dark"], p["mid"], p["light"]), warp=10, grit=0.14)
-    # Pools: rounded patches around some Worley cell centres, edges warped so
-    # they are irregular, with a smoothed threshold.
-    f1, _, ids = worley(rng, 4)
-    wx, wy = fbm(rng, 5, 2), fbm(rng, 5, 2)
-    depth = domain_warp(f1, wx, wy, 6)
-    wet = [1.0 if rng.random() < 0.55 else 0.0 for _ in range(16)]
-    pools = [(1 - smoothstep(0.26, 0.40, d)) * wet[i] for d, i in zip(depth, ids)]
-    rgb = mix(rgb, p["pool"], pools, 0.9)
+    shared, own = object_field(ctx, 22, (6.0, 9.5), spacing=0.9)
+    blades = [0.0] * (N * N)
+    blade_rgb = [[0.0] * (N * N) for _ in range(3)]
+    for x, y, r, u in sorted(shared + own, key=lambda o: o[1]):
+        tone = [mix_channel(p["green"][k], p["tussock"][k], p["dry"][k], (u * 5.3) % 1.0) for k in range(3)]
+        local = [0.0] * (N * N)
+        # Short blades fanning upward and outward from the tussock base.
+        for j in range(9):
+            t = (u * 97 + j * 0.618) % 1.0
+            angle = -math.pi / 2 + (t - 0.5) * 2.6
+            length = r * (0.8 + 0.6 * ((u * 13 + j * 0.37) % 1.0))
+            stamp_stroke(local, x, y + r * 0.35, angle, length, 2.2)
+        shade_ = 0.85 + 0.3 * ((u * 7.7) % 1.0)
+        for i, v in enumerate(local):
+            if v > blades[i]:
+                blades[i] = v
+                for k in range(3):
+                    blade_rgb[k][i] = tone[k] * shade_ * (0.85 + 0.25 * v)
+    rgb = mix(rgb, p["moss"], [b * 0.6 for b in shifted(blades, 2, 2)], 0.5)
+    rgb = mix(rgb, blade_rgb, blades, 1.0)
+    pools = [0.0] * (N * N)
+    for _ in range(rng.randint(1, 2)):
+        radius = rng.uniform(12, 18)
+        cx, cy = ctx.interior_point(PERIODIC_FADE + radius + 2)
+        lumps_ = [(h, rng.uniform(0.08, 0.16), rng.uniform(0, TAU)) for h in (2, 3, 4)]
+        pool = disc_profile(cx, cy, radius, lumps_)
+        pools = [max(a, b) for a, b in zip(pools, pool)]
+    rim = [smoothstep(0.0, 0.12, v) for v in pools]
+    inner = [smoothstep(0.12, 0.3, v) for v in pools]
+    water = mix(flat(p["water"]), p["sky"], normalize(fbm(rng, 4, 2)), 0.6)
+    rgb = mix(rgb, p["rim"], rim, 0.9)
+    rgb = mix(rgb, water, inner, 1.0)
+    reeds = [0.0] * (N * N)
+    for _ in range(rng.randint(1, 2)):
+        cx, cy = ctx.interior_point(PERIODIC_FADE + 10)
+        for _ in range(rng.randint(5, 9)):
+            a = -math.pi / 2 + rng.uniform(-0.6, 0.6)
+            x0, y0 = cx + rng.uniform(-5, 5), cy + rng.uniform(-2, 4)
+            stamp_stroke(reeds, x0, y0, a, rng.uniform(7, 12), 1.8)
+    rgb = mix(rgb, p["rim"], shifted(reeds, 2, 2), 0.35)
+    rgb = mix(rgb, p["reed"], reeds, 0.9)
     return rgb, None
+
+
+def mix_channel(a, b, c, t):
+    """Three-stop ramp for one channel at t in [0, 1]."""
+    return a + (b - a) * (t / 0.5) if t < 0.5 else b + (c - b) * ((t - 0.5) / 0.5)
 
 
 @recipe(name="deep_snow", group="rough", label="Deep snow", profile="soft",
@@ -1265,11 +1490,33 @@ PAIR_TREATMENTS = (
 # --------------------------------------------------------------------------
 
 
+# Periodic materials take variant 0's pixels in the outer band: fully within
+# PERIODIC_BAND render px of the edge, fading to the variant over PERIODIC_FADE.
+PERIODIC_BAND = 4
+PERIODIC_FADE = 6
+
+
 def render_fields(name, variant, phase):
     rec = RECIPES[name]
     ctx = Ctx(name, variant, phase, rec.phases)
     rgb, alpha = rec.render(ctx)
+    if rec.periodic:
+        return rgb, alpha
     return neutral_band(rgb, alpha)
+
+
+def force_periodic_band(renders):
+    """Give every render variant 0's outer band so all variants share edges."""
+    weight = band_weight(PERIODIC_BAND, PERIODIC_FADE)
+    master_rgb, master_alpha = renders[0]
+    out = [renders[0]]
+    for rgb, alpha in renders[1:]:
+        rgb = [[c + (m - c) * w for c, m, w in zip(channel, master, weight)]
+               for channel, master in zip(rgb, master_rgb)]
+        if alpha is not None:
+            alpha = [a + (m - a) * w for a, m, w in zip(alpha, master_alpha, weight)]
+        out.append((rgb, alpha))
+    return out
 
 
 def perimeter_structure(rgb, depth=16):
@@ -1297,12 +1544,16 @@ def render_phase(name, phase):
     """
     rec = RECIPES[name]
     renders = [render_fields(name, variant, phase) for variant in range(VARIANTS)]
-    if rec.phases == 1:
+    if rec.periodic:
+        order = list(range(VARIANTS))
+    elif rec.phases == 1:
         order = sorted(range(VARIANTS), key=lambda v: (perimeter_structure(renders[v][0]), v))
     else:
         # Animated phases must keep one variant order; phase 0 decides it.
         order = sorted(range(VARIANTS), key=lambda v: (perimeter_structure(render_fields(name, v, 0)[0]), v))
     renders = [renders[v] for v in order]
+    if rec.periodic:
+        renders = force_periodic_band(renders)
     small = [box_down_fields(rgb, alpha) for rgb, alpha in renders]
     pooled = [sum((rgb[k] for rgb, _ in small), []) for k in range(3)]
     transform = style_transform(pooled, rec.style.luma, rec.style.std, rec.style.match)
@@ -1334,9 +1585,10 @@ def synthesize_both(names, jobs=None):
     native, hd = {}, {}
     for name, phase, small, small_size, large, large_size in rendered:
         tiles = [Image.frombytes("RGBA", small_size, d) for d in small]
-        native.setdefault(name, {})[phase] = share_perimeter(tiles, 2)
+        periodic = RECIPES[name].periodic
+        native.setdefault(name, {})[phase] = tiles if periodic else share_perimeter(tiles, 2)
         tiles = [Image.frombytes("RGBA", large_size, d) for d in large]
-        hd.setdefault(name, {})[phase] = share_perimeter(tiles, 2 * (N // TILE))
+        hd.setdefault(name, {})[phase] = tiles if periodic else share_perimeter(tiles, 2 * (N // TILE))
     return native, hd
 
 
@@ -1377,6 +1629,8 @@ def material_block(name, phases):
         block["animation_frames"] = rec.phases
         block["animation_stride"] = VARIANTS
         block["animation_ticks"] = rec.animation_ticks
+    if rec.periodic:
+        block["edges"] = "periodic"
     block["minimap"] = list(minimap)
     block["seam"] = dict(rec.seam)
     return block
@@ -1600,7 +1854,8 @@ def contact_sheet(results, root, columns=2):
     block_w = grid_w + 16 + join_w + 16 + field_w + 16
     block_h = 20 + 16 + TILE + 8 + max(2 * TILE * scale, 3 * TILE + 8 + 6 * TILE) + 8
     for name, tiles, group, generated in entries:
-        tiles = runtime_blend(tiles)
+        if not (generated and RECIPES[name].periodic):
+            tiles = runtime_blend(tiles)
         block = Image.new("RGBA", (block_w, block_h), (40, 40, 44, 255))
         draw = ImageDraw.Draw(block)
         stats = style_stats(tiles)

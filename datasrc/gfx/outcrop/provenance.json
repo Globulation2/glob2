@@ -2,7 +2,7 @@
   "generator": "tools/artwork/terrain_synth.py",
   "method": "procedural",
   "generator_sha256": {
-    "tools/artwork/terrain_synth.py": "a713b039fb1159457bea39cc32eebbda6ab2e6d742044ba94b0da0234a185bfc",
+    "tools/artwork/terrain_synth.py": "0827add4f546d03ae75e23ef9e92f499327fb36eccbd787dab62c24b4ec50503",
     "tools/artwork/material_tiles.py": "224e159e0974023797710aa959994f11658c82da8fb80f9701e4abc13c74ed83"
   },
   "material": "outcrop",
@@ -55,6 +55,7 @@
     "preview": null,
     "minimap": null,
     "placeholder_only": false,
+    "periodic": false,
     "note": "placeholder until the image-generated outcrop lands"
   },
   "seed": "fnv1a32(\"outcrop:<variant>:<phase>\")",

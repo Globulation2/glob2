@@ -44,6 +44,9 @@ struct Material
 	std::uint32_t salt = 0;
 	unsigned profile = 0;
 	int animationFrames = 1, animationTicks = 1, animationStride = 0;
+	// Variants share one periodic edge band and join without the runtime's
+	// border blend toward variant 0 ("edges": "periodic").
+	bool periodicEdges = false;
 	std::array<unsigned char, 3> preview{}, minimap{};
 	Seam seam;
 };

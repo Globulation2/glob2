@@ -130,6 +130,8 @@ void Compositor::prepare(bool hd, int time)
 		}
 		if (packaged)
 			continue; // Compiler already prepared the shared variant borders.
+		if (m.periodicEdges)
+			continue; // Variants already share one periodic edge band.
 		// One periodic master boundary per material, not a different edge for
 		// each variant. Blend premultiplied color and alpha together so
 		// translucent variants cannot reintroduce rectangular seams.

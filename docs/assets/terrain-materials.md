@@ -167,6 +167,35 @@ and saturated, fertile ground warm and saturated (umber loam, moss, meadow),
 barren ground muted warm neutrals, rough ground cool and desaturated, paths warm
 and light, void near black with a cast onto every neighbour.
 
+### Periodic edges
+
+The runtime blend above ghosts any texture built from discrete objects (pebbles,
+flower heads, tussocks): within four native pixels of every edge two unrelated
+layouts are averaged. Materials whose look depends on such objects instead set
+`"edges": "periodic"` (recipe flag `periodic=True`). Their variants share one
+periodic outer band, so variant A's right edge continues into variant B's left
+edge exactly as a single tile wraps onto itself, and both the compiler and
+`TerrainCompositor::prepare` skip the border blend for them. In the synthesiser,
+`object_field` places round objects in two sets. Objects that touch the outer
+band come from the material's shared `base_rng`, are identical in every variant
+and wrap across the edge. Each variant adds its own objects entirely inside the
+interior. The shared quota follows the band's share of the tile area, so the
+band is no denser or sparser than the interior and draws no grid.
+`force_periodic_band` copies variant 0's outer four render pixels into every
+variant as a guard. `neutral_band` and `share_perimeter` are skipped. Stamps and
+domes wrap across the canvas edge. Gravel, flower meadow and marsh use this mode.
+Their recipes follow reference photographs of pebble beds, wildflower meadows and
+tussock bogs:
+
+- Gravel is overlapping rounded pebbles of mixed grey and warm tones with contact
+  shadows over a dark bed of fines.
+- Flower meadow has patches of one colour plus singles, each head a ring of
+  saturated petals around a contrasting centre with a soft shadow.
+- Marsh has grass tussocks with radiating blades on dark wet moss, with open
+  pools and reed tufts.
+
+The photographs are only looked at; nothing from them is read into an output.
+
 Lava and ember field are animated: four phases per variant, frame
 `variant + 16 * phase` (frames 0–63), catalogued with `animation_frames 4`,
 `animation_stride 16` and `animation_ticks 8`. The crust layout is shared by the

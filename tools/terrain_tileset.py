@@ -163,6 +163,8 @@ def _validate(document, root):
         ):
             raise ValueError("Invalid material key or profile")
         sprite = data_path(m["sprite"], "Sprite")
+        if m.get("edges", "blend") not in ("blend", "periodic"):
+            raise ValueError("Material edges must be 'blend' or 'periodic'")
         if "ocean" in m or "backdrop" in m:
             # Water is an ordinary animated tile material now.
             raise ValueError("Ocean and backdrop materials are no longer supported")
@@ -257,6 +259,7 @@ def seamless_sources(document, root):
     """Same four-native-pixel shared border used by runtime source preparation."""
     result = {}
     for material in document["materials"]:
+        periodic = material.get("edges") == "periodic"
         for phase in range(material.get("animation_frames", 1)):
             names = [
                 f"{material['sprite']}{v['frame']+phase*material.get('animation_stride',0)}.png"
@@ -265,7 +268,8 @@ def seamless_sources(document, root):
             master = Image.open(root / names[0]).convert("RGBA")
             for name in names:
                 image = Image.open(root / name).convert("RGBA")
-                for y in range(32):
+                # Periodic materials already share one periodic edge band.
+                for y in range(0 if periodic else 32):
                     for x in range(32):
                         distance = min(x, y, 31 - x, 31 - y)
                         if distance >= 4:
