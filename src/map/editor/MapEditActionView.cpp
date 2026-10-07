@@ -64,6 +64,7 @@ bool MapEdit::performViewAction(const std::string& action, float relMouseX, floa
 		placingUnit=NoUnit;
 		selectedUnitGID=NOGUID;
 		view.selectedUnit=NULL;
+        view.selectedBuilding=nullptr;
 		deleteButton->setUnselected();
 		areasButton->setUnselected();
 		noResourceGrowthButton->setUnselected();

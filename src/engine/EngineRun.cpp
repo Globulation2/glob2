@@ -175,8 +175,13 @@ void Engine::gatherAndAdvanceOrders(bool wasReadyLastTick)
             eligible.push_back(unsigned(i));
     // The observation pipeline captures AI and reserved gradient requirements
     // together, then dispatches AI and private gradient work to the shared executor.
-    const auto scheduled=gui.game.prepareAIOrders(eligible,
-        gui.gamePaused || globalContainer->replaying,diagnostics);
+    const bool paused=gui.gamePaused || globalContainer->replaying;
+    const auto presentation=admitPresentation();
+    const auto world=gui.game.captureReadBoundary(eligible,paused,
+        (presentation ? presentationRequirements(*presentation) : 0)
+        | (diagnostics ? diagnostics->observationRequirements(gui.game.stepCounter) : 0));
+    if (presentation) publishPresentation(world.project(presentationRequirements(*presentation)),*presentation);
+    const auto scheduled=gui.game.prepareAIOrders(eligible,paused,diagnostics,&world);
     for(const auto& [actor,order]:scheduled) {
         if(localAI && actor==unsigned(orderPlayer)) localOrder=order;
         else net->pushOrder(order,actor,true);
@@ -290,7 +295,7 @@ void Engine::executeOrdersAndStep(bool readyNow)
 	}
 }
 
-void Engine::drawFrame(MainLoopState& st, bool everyFrame, const Scene* scene)
+void Engine::drawFrame(MainLoopState& st, bool everyFrame, const PresentationFrame* scene)
 {
     GAGCore::ApplicationHost::matchFrame(gui.gamePaused);
 	const bool renderedFrame = everyFrame || st.nextGuiStep == 0;
@@ -310,26 +315,59 @@ void Engine::drawFrame(MainLoopState& st, bool everyFrame, const Scene* scene)
 
 }
 
+std::optional<SceneRequest> Engine::admitPresentation()
+{
+    if (globalContainer->runNoX) return {};
+    auto request=runner ? runner->admitPresentation() : std::optional<SceneRequest>{};
+    if (!runner) {
+        if (!serialPresentation) serialPresentation=std::make_unique<ScenePreparation>(gui.game.map.computeExecutor());
+        if (serialPresentation->readyToCapture()) request=gui.sceneRequest();
+    }
+    if (request) gui.stampPresentationRequest(*request);
+    return request;
+}
+SimulationSnapshot::Requirements Engine::presentationRequirements(const SceneRequest& request) const
+{
+    auto required=SceneExtractor::requirements(request);
+    if (gui.game.gameHeader.hasExperiment(ExperimentId::FarmAreas)) required|=SimulationSnapshot::bit(SimulationSnapshot::Component::Growth);
+    return required;
+}
+void Engine::publishPresentation(const SimulationSnapshot::Handle& world,SceneRequest request)
+{
+    retainedPresentation=std::make_shared<const SceneInputs>(SceneInputs{world,request});
+    if (runner) runner->publishPresentation(world,std::move(request));
+    else serialPresentation->submit(std::make_shared<const SceneInputs>(SceneInputs{world,std::move(request)}));
+}
+
+void Engine::refreshRetainedPresentation()
+{
+    if (!retainedPresentation) return;
+    auto request=admitPresentation();
+    if (!request) return;
+    // A view-only change uses the exact clock and order revision associated
+    // with the retained world, including while the simulation is pacing.
+    request->tickTime=retainedPresentation->request.tickTime;
+    request->tickInterval=retainedPresentation->request.tickInterval;
+    if (*request==retainedPresentation->request) return;
+    const auto required=presentationRequirements(*request);
+    if ((retainedPresentation->world.requirements & required)!=required) return;
+    const auto world=retainedPresentation->world;
+    publishPresentation(world,*request);
+}
+
 void Engine::drawSession(bool everyFrame)
 {
     if (!session) throw std::logic_error("No active engine session");
     if (diagnostics && diagnostics->pending())
     {
-        const auto drain = [&] { diagnostics->drain(); };
-        if (runner) runner->withGame(drain); else drain();
+        diagnostics->drain();
     }
     if (globalContainer->runNoX) return;
     if (!runner)
     {
-        const bool captureRequested=!turn || std::exchange(turnDrawPending, false);
+        refreshRetainedPresentation();
         if (!serialPresentation)
             serialPresentation=std::make_unique<ScenePreparation>(gui.game.map.computeExecutor());
-        if (captureRequested && ((everyFrame && !turn) || session->nextGuiStep==0))
-        {
-            if (serialPresentation->readyToCapture())
-                serialPresentation->submit(gui.captureSceneInputs(gui.sceneRequest()));
-            else if(turn) turnDrawPending=true;
-        }
         bool changed=false;
         const auto* scene=serialPresentation->acquire(&changed);
         if (!scene || (turn && !changed)) return;
@@ -338,7 +376,7 @@ void Engine::drawSession(bool everyFrame)
         return;
     }
     // Threaded: draw the newest scene the simulation published, every frame.
-    const Scene *scene = runner->acquireScene();
+    const PresentationFrame *scene = runner->acquireScene();
     if (!scene)
         return;
     gui.setPublishedScene(scene);
@@ -376,8 +414,9 @@ void Engine::stopSimulationThread()
 {
     serialPresentation.reset();
     gui.setPublishedScene(nullptr);
-    if (!runner) {gui.game.drainAI();return;}
+    if (!runner) {retainedPresentation.reset();gui.game.drainAI();return;}
     runner->stop();
+    retainedPresentation.reset();
     gui.simulationAccess={};
     gui.game.drainAI();
     // The simulation's measurements since the last client frame.
@@ -397,7 +436,7 @@ bool Engine::threadedClientFrame(Uint64 now, const std::vector<SDL_Event>& event
     runner->rethrowFailure();
     for (const auto& event : events) sessionInput.push_back(event);
     // Selection and hit testing need this world's first immutable view. Preserve
-    // early input until it arrives; never fall back to a previous world's Scene.
+    // early input until it arrives; never fall back to a previous world's PresentationFrame.
     if (!runner->sceneReady())
     {
         const auto* scene=runner->acquireScene();
@@ -436,7 +475,7 @@ Uint64 Engine::sessionClock() const
     return static_cast<Uint64>(static_cast<Sint64>(SDL_GetTicks()) + sessionClockOffset.load());
 }
 
-void Engine::extractScene(Scene& scene)
+void Engine::extractScene(PresentationFrame& scene)
 {
     gui.extractScene(scene);
 }
@@ -666,7 +705,7 @@ void Engine::printTeamTimeline()
 		team->stats.printMeasurements(t, true);
 		AITelemetry::capture(team, false, true, true);
 		// Final detailed snapshot: composition + food economy + building mix.
-		TeamStat* fin = team->stats.getLatestStat();
+		const TeamStat* fin = std::as_const(team->stats).getLatestStat();
 		std::cout << "GLOB2_FINAL team=" << t
 			<< " workers=" << fin->numberUnitPerType[WORKER]
 			<< " explorers=" << fin->numberUnitPerType[EXPLORER]
@@ -1029,7 +1068,7 @@ void Engine::absorbSimulationTelemetry()
     const auto frameBudget=globalContainer->runNoX || fps==0 ? 0ULL : (1000000000ULL+fps-1)/fps;
     perf.configure(scene.tick, std::uint64_t(scene.tickInterval)*1000000ULL, frameBudget,
         gui.gamePaused || gui.hardPause ? "paused" : globalContainer->runNoX ? "headless" :
-        globalContainer->replaying ? "replay" : scene.panels.hud.anyPlayerWaited ? "waiting" : "live");
+        globalContainer->replaying ? "replay" : scene.panels.hud.state().anyPlayerWaited ? "waiting" : "live");
     runner->absorbTelemetry(perf);
     perf.capture(scene.tick);
 }
@@ -1052,6 +1091,12 @@ bool Engine::advanceSession(Uint64 now, const std::function<void()>& clientWork,
     pumpTurnSession(now);
     gui.updateCommander(turn && turn->turn().tickIntervalMicros()!=0);
     bool readyNow = st.wasReadyLastTick;
+    if (gui.hardPause) {
+        if (auto request=admitPresentation()) {
+            const auto required=presentationRequirements(*request);
+            publishPresentation(gui.game.captureReadBoundary({},true,required).project(required),*request);
+        }
+    }
     if (!gui.hardPause) {
         gatherAndAdvanceOrders(st.wasReadyLastTick);
         readyNow = net->tickReady();

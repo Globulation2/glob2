@@ -53,7 +53,7 @@ void GameGUI::moveFlag(int mx, int my, bool drop)
 	int posX, posY;
 	auto selBuild=inputBuilding(std::get<BuildingRef>(selection));
 	if (!selBuild) return;
-	game.map.cursorToBuildingPos(mx, my, selBuild->type->width, selBuild->type->height, &posX, &posY, viewportX, viewportY);
+	drawnScene().map.cursorToBuildingPos(mx, my, drawnScene().entities.type(*selBuild)->width, drawnScene().entities.type(*selBuild)->height, &posX, &posY, viewportX, viewportY);
 	if ((displayedPosX(*selBuild)!=posX)
 		||(displayedPosY(*selBuild)!=posY)
 		||(drop && (selectionPushedPosX!=posX || selectionPushedPosY!=posY)))
@@ -63,7 +63,7 @@ void GameGUI::moveFlag(int mx, int my, bool drop)
 void GameGUI::queueFlagMove(Building &flag, int x, int y, bool drop)
 { queueFlagMove(flag.gid,x,y,drop); }
 
-void GameGUI::queueFlagMove(const SceneBuilding &flag, int x, int y, bool drop)
+void GameGUI::queueFlagMove(const SnapshotBuilding &flag, int x, int y, bool drop)
 { queueFlagMove(flag.gid,x,y,drop); }
 
 void GameGUI::queueFlagMove(Uint16 gid, int x, int y, bool drop)
@@ -99,7 +99,7 @@ void GameGUI::dragStep(int mx, int my, int button)
 		if (selectionMode == BUILDING_SELECTION)
 		{
 			auto selBuild=inputBuilding(std::get<BuildingRef>(selection));
-			if (selBuild && selectionPushed && (selBuild->type->semantics.relocatable))
+			if (selBuild && selectionPushed && (drawnScene().entities.type(*selBuild)->semantics.relocatable))
 				moveFlag(mx, my, false);
 		}
 		// Update tool
@@ -135,10 +135,7 @@ void GameGUI::step(const std::vector<SDL_Event>& events, Uint64 now)
         static_cast<LoadSaveDialog*>(gameMenuScreen.get())->pollPersistence())
         closeDialog();
     if (auto *dialog = activeDialog())
-    {
-        const auto update=[&]{dialog->update(Uint32(now));};
-        if (inGameMenu!=IGM_TELEMETRY || !parkForClient(update)) update();
-    }
+        dialog->update(Uint32(now));
     // A dialog can finish without an SDL event (browser-native text editing
     // submits through the host bridge); act on its result every frame.
     if (gameMenuScreen && gameMenuScreen->finished())
@@ -292,8 +289,8 @@ void GameGUI::step(const std::vector<SDL_Event>& events, Uint64 now)
 
 	// TODO: die with SGSL
 	// Check if the text being displayed has changed, and if it has, add it to the history box
-	const auto& legacyText=simulationThreaded ? drawnScene().panels.hud.legacyScriptText : game.sgslScript.textShown;
-    const bool legacyShown=simulationThreaded ? drawnScene().panels.hud.legacyScriptTextShown : game.legacyScriptActive() && game.sgslScript.isTextShown;
+	const auto& legacyText=drawnScene().panels.hud.state().legacyScriptText;
+    const bool legacyShown=drawnScene().panels.hud.state().legacyScriptTextShown;
 	if(legacyShown && legacyText != previousSGSLText)
 	{
 		publishMessageHistoryLines(legacyText, HistoryList::Chat,
@@ -349,7 +346,7 @@ void GameGUI::step(const std::vector<SDL_Event>& events, Uint64 now)
 	// do we have won or lost conditions
 	checkWonConditions();
 
-	if (simulationThreaded ? drawnScene().panels.hud.anyPlayerWaited : game.anyPlayerWaited)
+	if (drawnScene().panels.hud.state().anyPlayerWaited)
 		anyPlayerWaitedTimeFor++;
 	else
 		anyPlayerWaitedTimeFor = 0;
@@ -452,29 +449,28 @@ void GameGUI::checkWonConditions(void)
 {
 	if (hasEndOfGameDialogBeenShown || globalContainer->replaying)
 		return;
-    if (simulationThreaded)
     {
         const auto& scene=drawnScene();
         const auto& hud=scene.panels.hud;
         const char* message=nullptr;
         bool won=false;
-        auto color=scene.panels.local.color;
+        auto color=presentationColor(scene.panels.local.state().color);
         if (globalContainer->liveSpectating)
         {
             if (hud.winningTeam<0) return;
             message=hud.drawn ? "[game draw]" : "[Match finished]";
-            won=!hud.drawn; color=scene.entities.teams[hud.winningTeam].color;
+            won=!hud.drawn; color=presentationColor(scene.entities.teams[hud.winningTeam].color);
         }
-        else if (networkMatch.active && hud.localWon)
+        else if (networkMatch.active && hud.localState().won)
         {
             hasEndOfGameDialogBeenShown=true;
             if (inGameMenu!=IGM_NONE) closeDialog();
             isRunning=false; return;
         }
-        else if (hud.totalPrestigeReached && hud.prestigeWinCondition)
-        { message=hud.localDraw ? "[game draw]" : "[Total prestige reached]"; won=hud.localWon && !hud.localDraw; }
-        else if (hud.localLost) message="[you have lost]";
-        else if (hud.localWon)
+        else if (hud.state().totalPrestigeReached && hud.state().prestigeWinCondition)
+        { message=hud.localDraw ? "[game draw]" : "[Total prestige reached]"; won=hud.localState().won && !hud.localDraw; }
+        else if (hud.localState().lost) message="[you have lost]";
+        else if (hud.localState().won)
         {
             message=hud.localDraw ? "[game draw]" : "[you have won]"; won=!hud.localDraw;
             if (inGameMenu==IGM_NONE && campaign) campaign->setCompleted(missionName);
@@ -487,66 +483,6 @@ void GameGUI::checkWonConditions(void)
         return;
     }
 
-
-    if(globalContainer->liveSpectating) {
-        for(int i=0;i<game.teamsCount();++i) if(game.teams[i]->hasWon && inGameMenu==IGM_NONE) {
-            // A tie at the top across alliances is a draw, not this team's win.
-            // Empty online seats (idle AI::NONE colonies) never share it.
-            const bool drawn = isGameDrawn(&game, contestedTeamsMask(&game));
-            openDialog(IGM_END_OF_GAME, std::make_unique<InGameEndOfGameScreen>(Toolkit::getStringTable()->getString(drawn ? "[game draw]" : "[Match finished]"), true, game.teams[i]->color, !drawn));
-            hasEndOfGameDialogBeenShown=true;
-            miniMapPushed=false;
-            break;
-        }
-        return;
-    }
-
-	// Turn-protocol matches (online and LAN) decided in this colony's favour go
-	// straight to the results, which say why (an opponent left, prestige, victory)
-	// and carry the rating; the classic "You have won!" dialog is for local games.
-	if (networkMatch.active && localTeam->hasWon)
-	{
-		hasEndOfGameDialogBeenShown = true;
-		if (inGameMenu != IGM_NONE)
-			closeDialog();
-		isRunning = false;
-		return;
-	}
-	if (game.totalPrestigeReached && game.isPrestigeWinCondition())
-	{
-		if (inGameMenu==IGM_NONE)
-		{
-			const bool drawn = classifyTeamOutcome(&game, localTeamNo, contestedTeamsMask(&game)) == TeamOutcome::Draw;
-			openDialog(IGM_END_OF_GAME, std::make_unique<InGameEndOfGameScreen>(Toolkit::getStringTable()->getString(drawn ? "[game draw]" : "[Total prestige reached]"), true, localTeam->color, localTeam->hasWon && !drawn));
-			hasEndOfGameDialogBeenShown=true;
-			miniMapPushed=false;
-		}
-	}
-	else if (localTeam->hasLost==true)
-	{
-		if (inGameMenu==IGM_NONE)
-		{
-			openDialog(IGM_END_OF_GAME, std::make_unique<InGameEndOfGameScreen>(Toolkit::getStringTable()->getString("[you have lost]"), true, localTeam->color, false));
-			hasEndOfGameDialogBeenShown=true;
-			miniMapPushed=false;
-		}
-	}
-	else if (localTeam->hasWon==true)
-	{
-		if (inGameMenu==IGM_NONE)
-		{
-			// Campaign progression follows the engine's won flag; a draw only
-			// changes the words the player sees.
-			if(campaign!=NULL)
-			{
-				campaign->setCompleted(missionName);
-			}
-			const bool drawn = classifyTeamOutcome(&game, localTeamNo, contestedTeamsMask(&game)) == TeamOutcome::Draw;
-			openDialog(IGM_END_OF_GAME, std::make_unique<InGameEndOfGameScreen>(Toolkit::getStringTable()->getString(drawn ? "[game draw]" : "[you have won]"), true, localTeam->color, !drawn));
-			hasEndOfGameDialogBeenShown=true;
-			miniMapPushed=false;
-		}
-	}
 }
 
 void GameGUI::showEndOfReplayScreen(bool client)

@@ -37,6 +37,9 @@ public:
 			throw std::overflow_error("snapshot observation revision overflow");
 		++observationRevision;
 	}
+    //! Catalog installation/reconfiguration is an explicit owner mutation.
+    //! Existing leases retain their definitions; only the next publication rebuilds.
+    void invalidateCatalog() { invalidateBoundary(); catalog.reset(); }
 	void setVerification(bool on) { storage.verify = on; }
 	Handle captureBoundary(const Game& game, Requirements required);
 	MemoryMetrics memoryMetrics() const;

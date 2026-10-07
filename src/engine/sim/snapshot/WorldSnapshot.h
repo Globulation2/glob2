@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #pragma once
 #include "WorldRecords.h"
+#include "ObservationRecords.h"
 #include "MapState.h"
 #include "Requirements.h"
 #include "GameHeader.h"
@@ -22,6 +23,7 @@ namespace SimulationSnapshot
 struct Catalogs
 {
 	std::shared_ptr<const std::vector<BuildingKindView>> buildings;
+	std::shared_ptr<const std::vector<BuildingType>> typeDefinitions;
 	std::shared_ptr<const AIPlanning::BuildingCapabilityTables> capabilities;
 	std::array<std::array<UnitType, NB_UNIT_LEVELS>, NB_UNIT_TYPE> unitTypes;
 	// Immutable resource catalog and compiled habitat permissions, shared with the map.
@@ -37,6 +39,7 @@ struct ChunkStamps
 	Uint32 filledTick = 0;
 	std::vector<Uint64> chunks;
 };
+struct Annotations { std::vector<Uint16> scriptAreas; ChunkStamps stamps; };
 struct TerrainCell { TerrainType type = GRASS; Uint16 legacy = 0; };
 struct Terrain
 {
@@ -116,6 +119,13 @@ struct Handle
 	Uint64 observationRevision = 0;
 	int width = 0, height = 0;
 	Requirements requirements = 0;
+	std::shared_ptr<const Session> session;
+	std::shared_ptr<const Effects> effects;
+	std::shared_ptr<const Statistics> statistics;
+	std::shared_ptr<const History> history;
+	std::shared_ptr<const Telemetry> telemetry;
+	std::shared_ptr<const EntityDiagnostics> entityDiagnostics;
+	std::shared_ptr<const Annotations> annotations;
 	std::shared_ptr<const Catalogs> catalogs;
 	std::shared_ptr<const Terrain> terrain;
 	std::shared_ptr<const Resources> resources;

@@ -934,6 +934,7 @@ public:
 	///The following is for script areas, which are named areas for map scripts set in the editor
 	///@{
 	///Returns whether area #n is set for a particular point. n can be from 0 to 8
+	std::span<const Uint16> scriptAreaState() const { return scriptAreaCells; }
 	bool isPointSet(int n, int x, int y) const;
 	///Sets a particular point on area #n
 	void setPoint(int n, int x, int y);

@@ -60,7 +60,7 @@ public:
 	private:
 		std::atomic<Status> state{Status::Pending};
 		std::atomic<bool> canceled{false};
-		std::function<void(std::size_t)> job;
+		std::function<bool(std::size_t)> job;
 		std::size_t next = 0, count = 0;
 		std::exception_ptr error;
 	};
@@ -164,7 +164,7 @@ private:
 		{
 			if (!work->canceled.load(std::memory_order_acquire))
 			{
-				work->job(work->next++);
+				if (work->job(work->next)) ++work->next;
 				ran = true;
 			}
 		}
@@ -380,6 +380,17 @@ public:
 	// The submitting thread owns admission. Replacing pending work releases its
 	// captures immediately; active work finishes its current chunk on its worker.
 	PresentationTicket submitPresentation(std::size_t chunks, std::function<void(std::size_t)> function)
+	{
+		if (!function) throw std::invalid_argument("Presentation needs nonempty work");
+		return submitResumablePresentation(chunks, [function=std::move(function)](std::size_t chunk) {
+			function(chunk);
+			return true;
+		});
+	}
+	// Returning false yields to simulation jobs, then resumes the same chunk.
+	// This keeps data-dependent operations bounded without inspecting the world
+	// or constructing an operation list on the submitting thread.
+	PresentationTicket submitResumablePresentation(std::size_t chunks, std::function<bool(std::size_t)> function)
 	{
 		if (active) throw std::logic_error("Presentation cannot be submitted from inside a job");
 		if (!chunks || !function) throw std::invalid_argument("Presentation needs nonempty work");

@@ -26,7 +26,7 @@ void blank(MapEdit& editor)
         editor.game.map.clearImmobileUnit(x,y);
     editor.viewportX=0; editor.viewportY=0;
     editor.updateCamera();
-    editor.minimap.setGame(editor.game);
+    editor.minimap.setMapSize(editor.game.map.getW(), editor.game.map.getH());
 }
 void cursor(MapEdit& editor,int x,int y)
 {
@@ -103,6 +103,7 @@ TEST_SUITE("EditorActionCoverage")
             building->materials[material]=1; // Existing owned stock makes each configured row relevant.
         cursor(editor,4,4); editor.performAction("select map building");
         REQUIRE(editor.selectedBuildingGID==building->gid);
+        editor.drawMap(0,0,globalContainer->gfx->getW(),globalContainer->gfx->getH());
         CHECK(editor.buildingAssignedScrollBox->maximumValue()==40);
         for (int resource=0; resource<MaterialCount; ++resource)
         {
@@ -227,6 +228,15 @@ TEST_SUITE("EditorActionCoverage")
             CHECK(editor.hasMapBeenModified);
             editor.performAction("select map unit");
             REQUIRE(editor.view.selectedUnit==unit);
+            editor.drawMap(0,0,globalContainer->gfx->getW(),globalContainer->gfx->getH());
+            const auto displayedHp=editor.unitHPScrollBox->currentValue();
+            REQUIRE(displayedHp==unit->hp);
+            REQUIRE(displayedHp>0);
+            editor.unitHPScrollBox->setValue(displayedHp-1);
+            CHECK(unit->hp==displayedHp-1);
+            CHECK(editor.unitHPScrollBox->currentValue()==displayedHp);
+            editor.drawMap(0,0,globalContainer->gfx->getW(),globalContainer->gfx->getH());
+            CHECK(editor.unitHPScrollBox->currentValue()==displayedHp-1);
             for (const auto& update : {std::pair{"update unit walk level",WALK},
                                       std::pair{"update unit swim level",SWIM},
                                       std::pair{"update unit attack speed level",ATTACK_SPEED},
@@ -273,10 +283,16 @@ TEST_SUITE("EditorActionCoverage")
             editor.performAction("select map building");
             CHECK(editor.selectedBuildingGID==building->gid);
             CHECK(editor.selectionMode==MapEdit::EditingBuilding);
+            editor.drawMap(0,0,globalContainer->gfx->getW(),globalContainer->gfx->getH());
+            const auto displayedHp=editor.buildingHPScrollBox->currentValue();
+            CHECK(displayedHp==building->hp);
             building->hp=building->type->hpMax/2;
             editor.hasMapBeenModified=false;
             editor.performAction("update building");
             CHECK(editor.hasMapBeenModified);
+            CHECK(editor.buildingHPScrollBox->currentValue()==displayedHp);
+            editor.drawMap(0,0,globalContainer->gfx->getW(),globalContainer->gfx->getH());
+            CHECK(editor.buildingHPScrollBox->currentValue()==building->hp);
             editor.performAction("unselect");
         }
         glob2test::TempDir scratch;

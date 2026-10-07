@@ -708,6 +708,7 @@ class GameGUITouchHarness
 		const int innType = gui.game.buildingsTypes.getPlaceableTypeNum("inn");
 		require(innType >= 0, "The stock catalog must expose a placeable inn");
 		const std::string innChoice = gui.game.buildingsTypes.get(innType)->key;
+        gui.prepareLocalPresentation();
 		tap(760, 208);
 		require(gui.selectionMode == GameGUI::TOOL_SELECTION &&
 					gui.toolManager.getBuildingName() == innChoice,
@@ -845,10 +846,14 @@ class GameGUITouchHarness
 				"Suspension retains preview but cancels held confirmation");
 		tap(220, 220);
 		gui.localTeam->noMoreBuildingSitesCountdown = 1;
+        gui.game.snapshots().invalidateBoundary();
+        gui.prepareLocalPresentation();
 		tap(100, 576);
 		noOrder();
 		require(gui.touch->hasPreview(), "Failed validation must retain the preview");
 		gui.localTeam->noMoreBuildingSitesCountdown = 0;
+        gui.game.snapshots().invalidateBoundary();
+        gui.prepareLocalPresentation();
 		gui.suspendInput();
 		flag();
 		finger(SDL_EVENT_FINGER_DOWN, 1, 200, 200);
@@ -910,7 +915,7 @@ class GameGUITouchHarness
 		focus.type = SDL_EVENT_WINDOW_FOCUS_GAINED;
 		gui.processEvent(&focus);
 		tap(200, 200);
-		gui.drawAll(0);
+		glob2test::drawGUI(gui,0);
 		globalContainer->gfx->printScreen("touch-placement.bmp");
 		globalContainer->gfx->nextFrame();
 		auto *capture = SDL_LoadBMP(
@@ -1003,7 +1008,7 @@ class GameGUITouchHarness
 				const std::string suffix = std::string(side == Settings::THUMB_RIGHT ? "right-thumb-" : "left-thumb-") +
 					(portrait ? "portrait.bmp" : "landscape.bmp");
 				auto capture = [&](const char *kind) {
-					gui.drawAll(0);
+					glob2test::drawGUI(gui,0);
 					gfx->printScreen((std::string("opposite-") + kind + "-" + suffix).c_str());
 					gfx->nextFrame();
 				};
@@ -1068,7 +1073,7 @@ class GameGUITouchHarness
 			gui.displayMode = GameGUI::FLAG_VIEW;
 			gui.touch->panelOpen = true;
 			gui.touch->panelScroll = 0;
-			gui.drawAll(0);
+			glob2test::drawGUI(gui,0);
 			gfx->printScreen(width < height ? "touch-flags-portrait.bmp"
 											: "touch-flags-landscape.bmp");
 			gfx->nextFrame();
@@ -1077,7 +1082,7 @@ class GameGUITouchHarness
 			require(gui.touch->usesHUD(), "Phone HUD must be active");
 			require(gui.displayMode == GameGUI::CONSTRUCTION_VIEW,
 					"Visible Build control routes to construction");
-			gui.drawAll(0);
+			glob2test::drawGUI(gui,0);
 			gfx->printScreen(width < height ? "touch-hud-portrait.bmp" : "touch-hud-landscape.bmp");
 			gfx->nextFrame();
 			int targetX, targetY, centerX, centerY;
@@ -1164,12 +1169,12 @@ class GameGUITouchHarness
 						gui.touch->stopScrolling();
 					}
 					const auto spot = emptyGround();
-					gui.drawAll(0);
+					glob2test::drawGUI(gui,0);
 					const std::string name = std::string("dismiss-") + std::to_string(menu) + (portrait ? "-portrait" : "-landscape");
 					gfx->printScreen(name + "-before.bmp");
 					gfx->nextFrame();
 					tap(spot.x, spot.y);
-					gui.drawAll(0); // Include deferred inspector restoration.
+					glob2test::drawGUI(gui,0); // Include deferred inspector restoration.
 					require(!gui.touch->panelOpen && !gui.touch->lensOpen && !gui.touch->statsOpen &&
 						!gui.touch->peekOpen && !gui.touch->showStatistics && !gui.touch->restorePalette &&
 						gui.selectionMode == GameGUI::NO_SELECTION, "A blank-map tap dismisses every transient panel");
@@ -1205,9 +1210,10 @@ class GameGUITouchHarness
                         gui.game.map.setMaterialAmount(index, MaterialId::Food, 2);
                         gui.game.map.setMaterialAmount(index, MaterialId::Paper, 4);
                     }
+                    gui.prepareLocalPresentation();
 					tap(spot.x, spot.y);
 					require(gui.touch->inspectingResource(), "Tapping a resource opens its inspector");
-					gui.drawAll(0);
+					glob2test::drawGUI(gui,0);
 					const auto info = gui.touch->resourceInfo();
                     const auto id = static_cast<ResourceId>(type);
                     const auto& catalog = gui.game.map.resourceRegistry();
@@ -1240,12 +1246,12 @@ class GameGUITouchHarness
 				tap(spot.x, spot.y);
 				const auto bar = gui.touch->layout().actions;
 				tap(bar.x + bar.w * 2.5 / 6, bar.y + bar.h / 2);
-				gui.drawAll(0);
+				glob2test::drawGUI(gui,0);
 				require(gui.touch->lensVisible() && !gui.touch->inspectingResource(), "Tools consistently opens the lens strip after resource inspection");
 				tap(bar.x + bar.w * 2.5 / 6, bar.y + bar.h / 2);
 				tap(spot.x, spot.y);
 				gui.game.map.replaceResource(tx, ty, saved);
-				gui.drawAll(0);
+				glob2test::drawGUI(gui,0);
 				require(!gui.touch->inspectingResource(), "A depleted resource stops being inspected");
 				gui.clearSelection();
 				gui.touch->panelOpen = false;
@@ -1283,7 +1289,7 @@ class GameGUITouchHarness
 					const auto anchor = gui.camera.screenToWorld(zoomSpot.x, zoomSpot.y);
 					if (initial == 1.0)
 					{
-						gui.drawAll(0);
+						glob2test::drawGUI(gui,0);
 						gfx->printScreen(width < height ? "touch-double-tap-before-portrait.bmp"
 														: "touch-double-tap-before-landscape.bmp");
 						gfx->nextFrame();
@@ -1301,7 +1307,7 @@ class GameGUITouchHarness
 							  << " -> " << gui.camera.zoom << "; world anchor preserved\n";
 					if (initial == 1.0)
 					{
-						gui.drawAll(0);
+						glob2test::drawGUI(gui,0);
 						gfx->printScreen(width < height ? "touch-double-tap-after-portrait.bmp"
 														: "touch-double-tap-after-landscape.bmp");
 						gfx->nextFrame();
@@ -1332,7 +1338,7 @@ class GameGUITouchHarness
 							"One-finger zoom must show its readout while dragging");
 					if (direction == Settings::ONE_FINGER_ZOOM_UP_IN)
 					{
-						gui.drawAll(0);
+						glob2test::drawGUI(gui,0);
 						gfx->printScreen(width < height ? "touch-zoom-drag-portrait.bmp"
 														: "touch-zoom-drag-landscape.bmp");
 						gfx->nextFrame();
@@ -1390,7 +1396,8 @@ class GameGUITouchHarness
 					gui.toolManager.activateZoneTool(GameGUIToolManager::Forbidden);
 					gui.brush.defaultSelection();
 				};
-				auto forbidden = [&]
+				gui.prepareLocalPresentation();
+			auto forbidden = [&]
 				{ return bool(std::dynamic_pointer_cast<OrderAlterForbidden>(gui.toolManager.getOrder())); };
 				auto drain = [&] { while (gui.toolManager.getOrder()) {} };
 				brush();
@@ -1418,7 +1425,7 @@ class GameGUITouchHarness
 				finger(SDL_EVENT_FINGER_DOWN, 1, spot.x, spot.y);
 				finger(SDL_EVENT_FINGER_MOTION, 1, spot.x + 40 * unit, spot.y);
 				require(gui.touch->stroke.points.size() == 2, "Stroke buffers its points until release");
-				gui.drawAll(0);
+				glob2test::drawGUI(gui,0);
 				gfx->printScreen(width < height ? "touch-stroke-portrait.bmp" : "touch-stroke-landscape.bmp");
 				gfx->nextFrame();
 				noOrder(); // The preview never paints.
@@ -1471,7 +1478,7 @@ class GameGUITouchHarness
 				finger(SDL_EVENT_FINGER_MOTION, 1, to.x, to.y);
 				require(gui.brush.getFigure() == 5 && gui.touch->railTouched == 5,
 						"Scrubbing along the rail changes the size");
-				gui.drawAll(0);
+				glob2test::drawGUI(gui,0);
 				gfx->printScreen(width < height ? "touch-brush-rail-portrait.bmp" : "touch-brush-rail-landscape.bmp");
 				gfx->nextFrame();
 				finger(SDL_EVENT_FINGER_UP, 1, to.x, to.y);
@@ -1526,9 +1533,23 @@ class GameGUITouchHarness
 				for (int dy = -1; dy <= 1; ++dy)
 					for (int dx = -1; dx <= 1; ++dx)
 					{
-						saved.push_back(map.displayedForbiddenView.get(index(dx, dy)));
-						map.displayedForbiddenView.set(index(dx, dy), dy == -1); // Top row already forbidden.
+						saved.push_back(map.isForbidden(cx + dx, cy + dy, gui.localTeam->me));
+						if (dy == -1) map.addForbidden(cx + dx, cy + dy, gui.localTeamNo);
+						else map.removeForbidden(cx + dx, cy + dy, gui.localTeamNo);
 					}
+                // Supersede the unexecuted previews left by earlier rail gestures.
+                Utilities::BitArray seedMask;
+                seedMask.resize(9);
+                for (size_t i = 0; i < 9; ++i) seedMask.set(i, true);
+                gui.toolManager.trackPaint(GameGUIToolManager::makeZoneOrder(
+                    GameGUIToolManager::Forbidden, gui.localTeamNo, BrushTool::MODE_DEL,
+                    cx - 1, cy - 1, 3, 3, seedMask));
+                seedMask.resize(3);
+                for (size_t i = 0; i < 3; ++i) seedMask.set(i, true);
+                gui.toolManager.trackPaint(GameGUIToolManager::makeZoneOrder(
+                    GameGUIToolManager::Forbidden, gui.localTeamNo, BrushTool::MODE_ADD,
+                    cx - 1, cy - 1, 3, 1, seedMask));
+				gui.prepareLocalPresentation();
 				gui.orderQueue.clear();
 				finger(SDL_EVENT_FINGER_DOWN, 1, target.x, target.y);
 				finger(SDL_EVENT_FINGER_MOTION, 1, target.x + 12 * unit, target.y); // A drag commits at once.
@@ -1536,7 +1557,7 @@ class GameGUITouchHarness
 				drain();
 				require(bool(gui.touch->zoneUndo) && gui.touch->brushHUD().undo.w > 0,
 						"A stroke that changed zones offers Undo");
-				gui.drawAll(0);
+				glob2test::drawGUI(gui,0);
 				gfx->printScreen(width < height ? "touch-brush-undo-portrait.bmp" : "touch-brush-undo-landscape.bmp");
 				gfx->nextFrame();
 				p = centre(gui.touch->brushHUD().undo);
@@ -1560,11 +1581,11 @@ class GameGUITouchHarness
 						expected.insert(index(dx, dy));
 				// The drag also covered the next column; those cells count only if they changed.
 				for (auto cell : reverted)
-					require(!map.displayedForbiddenView.get(cell), "Undo restores the displayed zones");
+					require(!gui.toolManager.displayedViewForZone(GameGUIToolManager::Forbidden).get(cell), "Undo restores the displayed zones");
 				for (auto cell : expected)
 					require(reverted.count(cell), "Undo reverts every cell the stroke changed");
 				for (int dx = -1; dx <= 1; ++dx)
-					require(!reverted.count(index(dx, -1)) && map.displayedForbiddenView.get(index(dx, -1)),
+					require(!reverted.count(index(dx, -1)) && gui.toolManager.displayedViewForZone(GameGUIToolManager::Forbidden).get(index(dx, -1)),
 							"Undo leaves cells that were forbidden before the stroke");
 				gui.orderQueue.clear();
 				// A stroke that changes nothing offers no undo; undo expires; a cancelled stroke leaves none.
@@ -1592,7 +1613,9 @@ class GameGUITouchHarness
 				size_t k = 0;
 				for (int dy = -1; dy <= 1; ++dy)
 					for (int dx = -1; dx <= 1; ++dx)
-						map.displayedForbiddenView.set(index(dx, dy), saved[k++]);
+						if (saved[k++]) map.addForbidden(cx + dx, cy + dy, gui.localTeamNo);
+						else map.removeForbidden(cx + dx, cy + dy, gui.localTeamNo);
+				gui.prepareLocalPresentation();
 				gui.brush.defaultSelection();
 				gui.clearSelection();
 				require(!gui.touch->zoneUndo && !gui.touch->brushPan, "Leaving the brush forgets Undo and Pan");
@@ -1634,11 +1657,11 @@ class GameGUITouchHarness
 					for (int j = 0; j < 4; ++j)
 						require(*flags[j] == (j == k), "Overlay lenses are mutually exclusive");
 				}
-				gui.drawAll(0);
+				glob2test::drawGUI(gui,0);
 				gfx->printScreen(width < height ? "touch-lenses-portrait.bmp" : "touch-lenses-landscape.bmp");
 				gfx->nextFrame();
 				gui.touch->lensOpen = false;
-				gui.drawAll(0);
+				glob2test::drawGUI(gui,0);
 				gfx->printScreen(width < height ? "touch-legend-portrait.bmp" : "touch-legend-landscape.bmp");
 				gfx->nextFrame();
 				gui.touch->lensOpen = true;
@@ -1667,7 +1690,7 @@ class GameGUITouchHarness
 				tap(centre(stats.previous).x, centre(stats.previous).y);
 				require(gui.touch->statsMetric == int(Stats::catalog().size()) - 1, "Metrics wrap around");
 				gui.touch->statsMetric = 0;
-				gui.drawAll(0);
+				glob2test::drawGUI(gui,0);
 				gfx->printScreen(width < height ? "touch-stats-portrait.bmp" : "touch-stats-landscape.bmp");
 				gfx->nextFrame();
 				finger(SDL_EVENT_FINGER_DOWN, 1, centre(stats.title).x, centre(stats.title).y);
@@ -1683,7 +1706,7 @@ class GameGUITouchHarness
 				p = at(50);
 				tap(p.x, p.y);
 				require(gui.touch->peekOpen && !gui.touch->lensVisible(), "The map lens opens the map peek");
-				gui.drawAll(0); // Builds the peek's minimap.
+				glob2test::drawGUI(gui,0); // Builds the peek's minimap.
 				const auto peek = gui.touch->peekRect();
 				require(peek.w >= 200 * unit || peek.w >= ui.world.h - 120 * unit, "The map peek is large");
 				const GAGCore::ViewPoint a{peek.x + peek.w * .3, peek.y + peek.h * .3}, b{peek.x + peek.w * .7, peek.y + peek.h * .6};
@@ -1695,7 +1718,7 @@ class GameGUITouchHarness
 				gui.touch->navigatePeek(a);
 				require(gui.viewportX != dragX || gui.viewportY != dragY, "Peek drag fixture moves the camera");
 				finger(SDL_EVENT_FINGER_UP, 1, b.x, b.y);
-				gui.drawAll(0);
+				glob2test::drawGUI(gui,0);
 				gfx->printScreen(width < height ? "touch-peek-portrait.bmp" : "touch-peek-landscape.bmp");
 				gfx->nextFrame();
 				const auto buttons = gui.touch->peekButtons();
@@ -1759,7 +1782,7 @@ class GameGUITouchHarness
 				"This long instruction remains readable after rotating the phone.";
 			gui.swallowSpaceKey = true;
 			gui.setIsSpaceSet(false);
-			gui.drawAll(0);
+			glob2test::drawGUI(gui,0);
 			gfx->printScreen(width < height ? "touch-tutorial-portrait.bmp"
 											: "touch-tutorial-landscape.bmp");
 			gfx->nextFrame();
@@ -1782,7 +1805,7 @@ class GameGUITouchHarness
 		gui.displayMode = GameGUI::FLAG_VIEW;
 		gui.touch->panelOpen = true;
 		gui.touch->panelScroll = 0;
-		gui.drawAll(0);
+		glob2test::drawGUI(gui,0);
 		gfx->nextFrame();
 		const auto icon = gui.touch->paletteItemRect(1);
 		const float iconX = icon.x + icon.w / 2, iconY = icon.y + icon.h / 2;
@@ -1800,7 +1823,7 @@ class GameGUITouchHarness
 		noOrder();
 		require(gui.touch->showsBuildPalette(),
 				"Active placement retains palette composition for persistent layouts");
-		gui.drawAll(0);
+		glob2test::drawGUI(gui,0);
 		gfx->printScreen("touch-drag-preview.bmp");
 		gfx->nextFrame();
 		finger(SDL_EVENT_FINGER_UP, 1, dropX, dropY);
@@ -1842,11 +1865,15 @@ class GameGUITouchHarness
 		require(!gui.touch->placement && gui.touch->panelOpen,
 				"Second finger cancels palette placement without a release tap");
 		gui.localTeam->noMoreBuildingSitesCountdown = 1;
+        gui.game.snapshots().invalidateBoundary();
+        gui.prepareLocalPresentation();
 		finger(SDL_EVENT_FINGER_DOWN, 1, iconX, iconY);
 		finger(SDL_EVENT_FINGER_MOTION, 1, dropX, dropY);
 		finger(SDL_EVENT_FINGER_UP, 1, dropX, dropY);
 		noOrder();
 		gui.localTeam->noMoreBuildingSitesCountdown = 0;
+        gui.game.snapshots().invalidateBoundary();
+        gui.prepareLocalPresentation();
 		gui.clearSelection();
 		for (bool drag : {false, true})
 		{
@@ -1909,13 +1936,14 @@ class GameGUITouchHarness
 		auto *building =
 			new Building(0, 0, 2, type, gui.localTeam, &gui.game.buildingsTypes, 1, 1);
 		gui.localTeam->myBuildings[2] = building;
+        gui.localTeam->attachBuilding(2);
 		require(building->type->maxUnitWorking > 0, "Allocation fixture must accept workers");
 		auto actionPoint = [&](int kind, int value, int side = 0)
 		{
 			if (gui.touch->usesDial())
 			{
 				// The phone dial uses the same action regions as rendering.
-				gui.drawAll(0);
+				glob2test::drawGUI(gui,0);
 				gfx->nextFrame();
 				const auto p = gui.touch->dialActionPoint(kind, value, side);
 				require(p.x >= 0, ("Building action must be on the dial: kind " +
@@ -1925,7 +1953,7 @@ class GameGUITouchHarness
 			}
 			for (int attempt = 0; attempt < 30; ++attempt)
 			{
-				gui.drawAll(0);
+				glob2test::drawGUI(gui,0);
 				gfx->nextFrame();
 				const auto rows = gui.touch->buildingActions();
 				const auto found =
@@ -1959,12 +1987,15 @@ class GameGUITouchHarness
 			new Building(0, 0, 3, gui.game.buildingsTypes.getTypeNum("warflag", 0, false),
 						 gui.localTeam, &gui.game.buildingsTypes, 1, 1);
 		gui.localTeam->myBuildings[3] = rangeFlag;
+        gui.localTeam->attachBuilding(3);
 		{
 			const auto savedCamera = gui.camera;
 			const int savedX = gui.viewportX, savedY = gui.viewportY;
 			const auto savedFlags = gui.localTeam->virtualBuildings;
 			gui.localTeam->virtualBuildings = {rangeFlag};
 			rangeFlag->posX = rangeFlag->posY = 2;
+            gui.game.snapshots().invalidateBoundary();
+            gui.prepareLocalPresentation();
 			gui.view.mouseUnit = UnitRef();
 			{
 				// The reach is 30 points in the middle of the screen and grows to 36
@@ -2011,12 +2042,14 @@ class GameGUITouchHarness
 				gui.handleMouseButtonUp(release);
 				require(gui.orderQueue.empty(), "Forgiving flag selection must not move the flag");
 				gui.game.map.setBuilding(mapX, mapY, 1, 1, building->gid);
+                gui.prepareLocalPresentation();
 				gui.clearSelection();
 				gui.handleMapClick(x, y, SDL_BUTTON_LEFT);
 				require(gui.selectionMode == GameGUI::BUILDING_SELECTION &&
 							gui.selectionBuilding() == building,
 						"Expanded flag hits must not steal direct building selection");
 				gui.game.map.setBuilding(mapX, mapY, 1, 1, NOGBID);
+                gui.prepareLocalPresentation();
 				// 28 points is inside the reach anywhere on screen, 40 beyond it everywhere.
 				gui.clearSelection();
 				gui.handleMapClick(int(center.first + 28 * unit), y, SDL_BUTTON_LEFT);
@@ -2057,6 +2090,8 @@ class GameGUITouchHarness
 			gui.camera.originX = gui.viewportX * 32.;
 			gui.camera.originY = 0;
 			rangeFlag->posX = gui.game.map.getW() - 1;
+            gui.game.snapshots().invalidateBoundary();
+            gui.prepareLocalPresentation();
 			require(gui.game.map.getBuilding(0, 2) == NOGBID, "Seam fixture needs empty ground");
 			gui.clearSelection();
 			gui.handleMapClick(int(gui.camera.offsetX + 69), int(gui.camera.offsetY + 80),
@@ -2168,7 +2203,7 @@ class GameGUITouchHarness
 					"Slider drag previews without intermediate orders");
 			if (gui.touch->usesDial())
 			{
-				gui.drawAll(0);
+				glob2test::drawGUI(gui,0);
 				gfx->printScreen(width < height ? "touch-dial-drag-portrait.bmp" : "touch-dial-drag-landscape.bmp");
 				gfx->nextFrame();
 			}
@@ -2189,11 +2224,13 @@ class GameGUITouchHarness
 			finger(SDL_EVENT_FINGER_UP, 2, slideFrom.x, slideFrom.y);
 			require(!gui.touch->allocation && gui.orderQueue.empty(),
 					"Second finger cancels slider without an order");
-			gui.drawAll(0);
+			glob2test::drawGUI(gui,0);
 			gfx->printScreen(width < height ? "touch-allocation-portrait.bmp"
 											: "touch-allocation-landscape.bmp");
 			gfx->nextFrame();
-			gui.requestWorkerAllocation(*building, MAX_UNIT_WORKING);
+			gui.prepareLocalPresentation();
+            REQUIRE(gui.inputBuildingPanel());
+            gui.requestWorkerAllocation(*gui.inputBuildingPanel(), MAX_UNIT_WORKING);
 			gui.orderQueue.clear();
 			tap(plusX, rowY);
 			require(gui.orderQueue.empty(), "Allocation at maximum must not queue duplicates");
@@ -2202,7 +2239,9 @@ class GameGUITouchHarness
 			finger(SDL_EVENT_FINGER_UP, 1, plusX, rowY);
 			require(gui.orderQueue.empty(), "Selection changes cancel held allocation gestures");
 			gui.setSelection(GameGUI::BUILDING_SELECTION, building);
-			gui.requestWorkerAllocation(*building, 0);
+			gui.prepareLocalPresentation();
+            REQUIRE(gui.inputBuildingPanel());
+            gui.requestWorkerAllocation(*gui.inputBuildingPanel(), 0);
 			gui.orderQueue.clear();
 			pressAction(6, 0, -1);
 			require(gui.orderQueue.empty(), "Allocation at zero must not queue duplicates");
@@ -2219,7 +2258,7 @@ class GameGUITouchHarness
 			}
 			require(gui.game.checkSum() == simulation,
 					"Priority changes stay outside authoritative state");
-			gui.drawAll(0);
+			glob2test::drawGUI(gui,0);
 			gfx->printScreen(width < height ? "touch-priority-portrait.bmp"
 											: "touch-priority-landscape.bmp");
 			gfx->nextFrame();
@@ -2237,15 +2276,19 @@ class GameGUITouchHarness
 							order->range == rangeBefore + delta,
 						"Range uses pending values and shared orders");
 			}
-			gui.drawAll(0);
+			glob2test::drawGUI(gui,0);
 			gfx->printScreen(width < height ? "touch-range-portrait.bmp"
 											: "touch-range-landscape.bmp");
 			gfx->nextFrame();
-			gui.requestFlagRange(*rangeFlag, rangeFlag->type->maxUnitStayRange);
+			gui.prepareLocalPresentation();
+            REQUIRE(gui.inputBuildingPanel());
+            gui.requestFlagRange(*gui.inputBuildingPanel(), rangeFlag->type->maxUnitStayRange);
 			gui.orderQueue.clear();
 			pressAction(8, 0, 1);
 			require(gui.orderQueue.empty(), "Maximum range is a no-op");
-			gui.requestFlagRange(*rangeFlag, 0);
+			gui.prepareLocalPresentation();
+            REQUIRE(gui.inputBuildingPanel());
+            gui.requestFlagRange(*gui.inputBuildingPanel(), 0);
 			gui.orderQueue.clear();
 			pressAction(8, 0, -1);
 			require(gui.orderQueue.empty(), "Zero range is a no-op");
@@ -2258,7 +2301,7 @@ class GameGUITouchHarness
 					"Range controls preserve authoritative state");
 			tap(gfx->getW() * 5.5f / 6, gfx->getH() - 24 * unit);
 			require(gui.inGameMenu == GameGUI::IGM_MAIN, "Toolbar opens the in-game pause menu");
-			gui.drawAll(0);
+			glob2test::drawGUI(gui,0);
 			gfx->printScreen(width < height ? "touch-pause-portrait.bmp"
 											: "touch-pause-landscape.bmp");
 			gfx->nextFrame();
@@ -2280,7 +2323,7 @@ class GameGUITouchHarness
 			gui.processEvent(&mouse);
 			require(!gui.inGameMenu, "Mouse activates the same visible Return control");
 			tap(gfx->getW() * 5.5f / 6, gfx->getH() - 24 * unit);
-			gui.drawAll(0);
+			glob2test::drawGUI(gui,0);
 			finger(SDL_EVENT_FINGER_DOWN, 1, returnX, returnY);
 			finger(SDL_EVENT_FINGER_DOWN, 2, returnX, returnY);
 			finger(SDL_EVENT_FINGER_UP, 2, returnX, returnY);
@@ -2288,7 +2331,7 @@ class GameGUITouchHarness
 			require(
 				gui.inGameMenu == GameGUI::IGM_MAIN,
 				"Switching back to touch consumes the whole gesture before accepting an action");
-			gui.drawAll(0);
+			glob2test::drawGUI(gui,0);
 			gfx->nextFrame();
 			tap(returnX, returnY);
 			require(gui.inGameMenu == GameGUI::IGM_NONE && gui.orderQueue.empty(),
@@ -2303,6 +2346,7 @@ class GameGUITouchHarness
 			++workerSlot;
 		require(workerSlot < Unit::MAX_COUNT, "Repair fixture has a free worker slot");
 		gui.localTeam->myUnits[workerSlot] = new Unit(0, 0, workerSlot, WORKER, gui.localTeam, 3);
+        gui.localTeam->attachUnit(workerSlot);
 		bool constructionSpace = false;
 		for (int y = 0; y < gui.game.map.getH() && !constructionSpace; ++y)
 			for (int x = 0; x < gui.game.map.getW() && !constructionSpace; ++x)
@@ -2320,6 +2364,7 @@ class GameGUITouchHarness
 				new Building(0, 0, slot, gui.game.buildingsTypes.getTypeNum(name, 0, false),
 							 gui.localTeam, &gui.game.buildingsTypes, 1, 1);
 			gui.localTeam->myBuildings[slot] = b;
+        gui.localTeam->attachBuilding(slot);
 			return b;
 		};
 		auto *swarm = fixture("swarm", 4);
@@ -2330,7 +2375,7 @@ class GameGUITouchHarness
 		{
 			gui.setSelection(GameGUI::BUILDING_SELECTION, b);
 			gui.touch->panelOpen = true;
-			gui.drawAll(0);
+			glob2test::drawGUI(gui,0);
 			gui.touch->actionScroll = 0;
 			gui.orderQueue.clear();
 		};
@@ -2367,7 +2412,7 @@ class GameGUITouchHarness
 			if (width == 400)
 			{
 				gui.touch->confirmDestroy = true;
-				gui.drawAll(0);
+				glob2test::drawGUI(gui,0);
 				const auto packed = gui.touch->dialChips(gui.touch->dialLayout(gui.touch->layout()));
 				require(!packed.fits && !gui.touch->usesDial(),
 					"Confirmation chips cannot overlap the production legend; use scrolling rows");
@@ -2398,7 +2443,7 @@ class GameGUITouchHarness
 				const auto content = gui.touch->panelContent();
 				require(content.h > 0 && gui.touch->buildingActionsHeight(content.w / gfx->logicalUnitsPerPoint()) *
 					gfx->logicalUnitsPerPoint() > content.h, "Constrained actions use the existing scrollable rows");
-				gui.drawAll(0);
+				glob2test::drawGUI(gui,0);
 				gfx->printScreen("building-header-safe-fallback.bmp");
 				gfx->nextFrame();
 				tap(fallbackClose.x, fallbackClose.y);
@@ -2454,7 +2499,7 @@ class GameGUITouchHarness
 				}
 				// The Thumb side setting mirrors the dial into the bottom-left corner.
 				globalContainer->settings.thumbSide = Settings::THUMB_LEFT;
-				gui.drawAll(0);
+				glob2test::drawGUI(gui,0);
 				const auto mirrored = gui.touch->dialLayout(gui.touch->layout());
 				require(approx(mirrored.header.x, identity.x) && approx(mirrored.header.y, identity.y) &&
 						approx(mirrored.header.w, identity.w), "Header stays aligned with stats for either thumb side");
@@ -2468,7 +2513,7 @@ class GameGUITouchHarness
 				gfx->printScreen(width < height ? "touch-dial-left-portrait.bmp" : "touch-dial-left-landscape.bmp");
 				gfx->nextFrame();
 				globalContainer->settings.thumbSide = Settings::THUMB_RIGHT;
-				gui.drawAll(0);
+				glob2test::drawGUI(gui,0);
 				const auto priority = gui.touch->dialActionPoint(7, 0, 0);
 				for (auto *other : {building, rangeFlag, clearing, exploring})
 				{
@@ -2496,7 +2541,7 @@ class GameGUITouchHarness
 			for (int thumbSide : {int(Settings::THUMB_RIGHT), int(Settings::THUMB_LEFT)})
 			{
 				globalContainer->settings.thumbSide = thumbSide;
-				gui.drawAll(0);
+				glob2test::drawGUI(gui,0);
 				require(TouchDial::shares({6, 2, 2}, 16) == std::array<int, 3>{10, 3, 3},
 						"Relative weights round to a complete production budget");
 				require(TouchDial::shares({1, 1, 1}, 100) == std::array<int, 3>{34, 33, 33},
@@ -2566,7 +2611,7 @@ class GameGUITouchHarness
 				require(gui.orderQueue.size() == 1, "A paused production arc can resume by dragging");
 				gui.orderQueue.clear();
 				gui.pendingFor(swarm->gid).pendingRatio = std::array<int, 3>{8, 4, 4};
-				gui.drawAll(0);
+				glob2test::drawGUI(gui,0);
 				gfx->printScreen(thumbSide == Settings::THUMB_LEFT
 					? (width < height ? "touch-proportions-left-portrait.bmp" : "touch-proportions-left-landscape.bmp")
 					: (width < height ? "touch-proportions-portrait.bmp" : "touch-proportions-landscape.bmp"));
@@ -2576,7 +2621,7 @@ class GameGUITouchHarness
 			globalContainer->settings.thumbSide = Settings::THUMB_RIGHT;
 
 			require(gui.game.checkSum() == checksum, "Ratio UI does not mutate the simulation");
-			gui.drawAll(0);
+			glob2test::drawGUI(gui,0);
 			gfx->printScreen(width < height ? "touch-actions-portrait.bmp"
 											: "touch-actions-landscape.bmp");
 			gfx->nextFrame();
@@ -2762,10 +2807,10 @@ class GameGUITouchHarness
 		{
 			auto *dialog = gui.activeDialog();
 			require(dialog != nullptr, ("No dialog for action: " + key).c_str());
-			gui.drawAll(0);
+			glob2test::drawGUI(gui,0);
 			gfx->nextFrame();
 			dialog->host().scrollIntoView(key);
-			gui.drawAll(0);
+			glob2test::drawGUI(gui,0);
 			gfx->nextFrame();
 			const auto r = dialog->host().bounds(key);
 			tap(r.x + r.w / 2, r.y + r.h / 2);
@@ -2807,7 +2852,7 @@ class GameGUITouchHarness
 			require(!gui.inGameMenu, "Options footer remains reachable");
 			gui.openDialog(GameGUI::IGM_OBJECTIVES, std::make_unique<InGameObjectivesScreen>(&gui, false));
 			auto checkModal = [&](const char *name) {
-				gui.drawAll(0);
+				glob2test::drawGUI(gui,0);
 				auto *dialog = gui.activeDialog();
 				const auto panel = dialog->panelBounds();
 				const auto &p = dialog->presentation();
@@ -2898,7 +2943,7 @@ class GameGUITouchHarness
 				gui.networkMatch = {true, true, true, false};
 				gui.orderQueue.clear();
 				gui.openMainMenu();
-				gui.drawAll(0);
+				glob2test::drawGUI(gui,0);
 				gfx->nextFrame();
 				require(!gui.gameMenuScreen->host().find("load") && !gui.gameMenuScreen->host().find("save"),
 						"An online match offers neither Load nor Save");
@@ -2920,7 +2965,7 @@ class GameGUITouchHarness
 			}
 			gui.touch->menuAction(1);
 			require(bool(gui.typingInputScreen), "Tactical chat action opens the composer");
-			gui.drawAll(0);
+			glob2test::drawGUI(gui,0);
 			gfx->nextFrame();
 			for (const auto &key : {"send", "close"})
 			{
@@ -3028,7 +3073,7 @@ class GameGUITouchHarness
 		const int originalLanguage = strings->getLang();
 		gui.setSelection(GameGUI::BUILDING_SELECTION, building);
 		gui.touch->panelOpen = true;
-		gui.drawAll(0); // building actions describe the drawn scene
+		glob2test::drawGUI(gui,0); // building actions describe the drawn scene
 		const auto originalActions = gui.touch->buildingActions();
 		const auto originalOrders = gui.orderQueue.size();
 		const auto originalChecksum = gui.game.checkSum();
@@ -3045,7 +3090,7 @@ class GameGUITouchHarness
 				resize.type = SDL_EVENT_WINDOW_PIXEL_SIZE_CHANGED;
 				GAGCore::GraphicContext::translateMouseEvent(&resize);
 				gui.viewportResized(oldWidth, oldHeight, gfx->getW(), gfx->getH());
-				gui.drawAll(0);
+				glob2test::drawGUI(gui,0);
 				const auto actions = gui.touch->buildingActions();
 				require(actions.size() == originalActions.size(),
 						"Localization changed building actions");
@@ -3060,7 +3105,7 @@ class GameGUITouchHarness
 				gui.touch->showStatistics = true;
 				gui.displayMode = GameGUI::STAT_TEXT_VIEW;
 				gui.touch->panelOpen = true;
-				gui.drawAll(0);
+				glob2test::drawGUI(gui,0);
 				gfx->printScreen(("localized-statistics-" + suffix + ".bmp").c_str());
 				gfx->nextFrame();
 				gui.touch->showStatistics = false;
@@ -3115,7 +3160,7 @@ class GameGUITouchHarness
 			resized.type = SDL_EVENT_WINDOW_PIXEL_SIZE_CHANGED;
 			GAGCore::GraphicContext::translateMouseEvent(&resized);
 			gui.viewportResized(800, 600, gfx->getW(), gfx->getH());
-			gui.drawAll(0);
+			glob2test::drawGUI(gui,0);
 			gfx->nextFrame();
 			const auto before = gui.game.checkSum();
 			const double unit = gfx->logicalUnitsPerPoint(), y = gfx->getH() - 24 * unit;
@@ -3153,8 +3198,9 @@ class GameGUITouchHarness
 			for (int dy = -2; dy <= 2; ++dy)
 			{
 				map.addForbidden(cx - 2, cy + dy, gui.localTeamNo);
-				map.displayedForbiddenView.set(size_t(map.coordToIndex(cx - 2, cy + dy)), true);
+
 			}
+			gui.prepareLocalPresentation();
 			auto forbidden = [&]
 			{
 				std::vector<bool> v;
@@ -3228,6 +3274,7 @@ class GameGUITouchHarness
 			}
 		auto *worker = gui.game.addUnit(40,40,0,WORKER,0,255,0,0);
 		require(worker, "Isolated worker exists");
+        gui.prepareLocalPresentation();
 		globalContainer->replaying = true;
 		globalContainer->replayShowFog = false;
 		Uint32 now = 40000;
@@ -3260,7 +3307,7 @@ class GameGUITouchHarness
 				globalContainer->replayShowFog = false;
 				tap(c.first+28*scale,c.second);
 				require(gui.selectionMode == GameGUI::UNIT_SELECTION && gui.selectionUnit() == worker, "Real near-unit touch selects unit");
-				gui.drawAll(0);
+				glob2test::drawGUI(gui,0);
 				require(gui.drawnScene().panels.unit.valid && gui.touch->unitInfoRows().size() >= 7, "Selected unit has scene-backed stats");
 				if (zoom == .5) { gfx->printScreen(width<height ? "unit-portrait.bmp" : "unit-landscape.bmp"); gfx->nextFrame(); }
 				const auto panel = gui.touch->layout().panel;
@@ -3269,7 +3316,7 @@ class GameGUITouchHarness
 				finger(SDL_EVENT_FINGER_DOWN,panel.x+panel.w/2,panel.y+panel.h-10*scale);
 				finger(SDL_EVENT_FINGER_MOTION,panel.x+panel.w/2,panel.y+55*scale);
 				finger(SDL_EVENT_FINGER_UP,panel.x+panel.w/2,panel.y+55*scale);
-				gui.drawAll(0);
+				glob2test::drawGUI(gui,0);
 				if (zoom == .5) { gfx->printScreen(width<height ? "unit-portrait-scrolled.bmp" : "unit-landscape-scrolled.bmp"); gfx->nextFrame(); }
 				tap(panel.x+panel.w-24*scale,panel.y+24*scale);
 				require(gui.selectionMode == GameGUI::NO_SELECTION && !gui.touch->panelOpen, "Close dismisses unit stats");
@@ -3288,14 +3335,16 @@ class GameGUITouchHarness
 		gui.camera.originX = 40 * 32 + 16 - gfx->getW() / 2.;
 		gui.camera.originY = 40 * 32 + 16 - gfx->getH() / 2.;
 		gui.viewportX = gui.camera.tileX(); gui.viewportY = gui.camera.tileY(); gui.updateCamera();
-		gui.drawAll(0);
+		glob2test::drawGUI(gui,0);
 		{
-			Scene displayed = gui.drawnScene();
-			auto shown = std::find_if(displayed.entities.units.begin(), displayed.entities.units.end(),
-				[&](const auto &u) { return u.gid == worker->gid; });
-			require(shown != displayed.entities.units.end(), "Motion fixture has a drawn worker");
-			shown->action = WALK; shown->dx = 1; shown->dy = 0;
-			shown->delta = 0; shown->stepSpeed = 128;
+            PresentationFrame displayed=gui.drawnScene();
+            auto mutableEntities=std::make_shared<SimulationSnapshot::Entities>(*displayed.world.entities);
+            auto shown=std::find_if(mutableEntities->units.begin(),mutableEntities->units.end(),
+                [&](const auto& u){return u.gid==worker->gid;});
+            require(shown!=mutableEntities->units.end(),"Motion fixture has a drawn worker");
+            shown->action=WALK;shown->dx=1;shown->dy=0;shown->delta=0;shown->speed=128;
+            displayed.world.entities=mutableEntities;
+            SceneExtractor().prepare(displayed.world,gui.sceneRequest(),displayed);
 			const auto *previousScene = gui.view.scene;
 			const float previousMotion = gui.view.render.unitMotion;
 			gui.view.scene = &displayed;
@@ -3308,9 +3357,10 @@ class GameGUITouchHarness
 				"Unit halo follows the last rendered smooth-motion centre");
 			require(gui.touch->unitAt({visibleCenter.x - 32 * reachUnit, visibleCenter.y}, 30).empty(),
 				"Smooth motion does not enlarge the 30-point halo");
-			++shown->generation;
-			require(gui.touch->unitAt(visibleCenter, 30).empty(),
-				"A stale displayed identity cannot select a replacement live unit");
+			++shown->scriptIdentity;
+            shown->identity.generation=shown->scriptIdentity;
+			require(gui.touch->unitAt(visibleCenter,30)==shown->identity,
+                "Selection resolves the displayed identity; command admission validates it on the owner");
 			gui.view.scene = previousScene;
 			gui.view.render.unitMotion = previousMotion;
 		}
@@ -3322,19 +3372,20 @@ class GameGUITouchHarness
 		gui.camera.originY = 40*32+16-gfx->getH()/2.;
 		gui.viewportX = gui.camera.tileX(); gui.viewportY = gui.camera.tileY(); gui.updateCamera();
 		const GAGCore::ViewPoint center{gfx->getW()/2.,gfx->getH()/2.};
-		gui.drawAll(0); // Newly created units must be presented before they can be picked.
+		glob2test::drawGUI(gui,0); // Newly created units must be presented before they can be picked.
 		require(gui.touch->unitAt(center,30) == Game::refOf(flyer), "Direct airborne sprite wins draw order over ground unit");
 		auto *nearby = gui.game.addUnit(42,40,0,WORKER,0,255,0,0);
 		require(nearby, "Nearby worker exists");
-		gui.drawAll(0);
+		glob2test::drawGUI(gui,0);
 		require(gui.touch->unitAt({center.x+64,center.y},30) == Game::refOf(nearby), "Exact unit beats neighbouring halo");
 		// A neighbouring resource is a direct target, not empty halo ground.
 		map.setResourceByIndex(41, 40, WHEAT, 0);
 		map.setMapDiscovered(41, 40, gui.localTeam->me);
+        gui.prepareLocalPresentation();
 		gui.touch->select({center.x + 28, center.y});
 		require(gui.selectionMode == GameGUI::RESOURCE_SELECTION,
 			"A unit halo cannot steal a direct discovered-resource tap");
-		gui.drawAll(0);
+		glob2test::drawGUI(gui,0);
 		// Replacing a read-only card with a building is not navigation back to
 		// a toolbox. Its explicit close must leave the map unobstructed too.
 		const int innType = gui.game.buildingsTypes.getTypeNum("inn", 0, false);
@@ -3346,17 +3397,17 @@ class GameGUITouchHarness
 		for (bool resource : {false, true})
 		{
 			gui.touch->select({center.x + (resource ? 28 : 0), center.y});
-			gui.drawAll(0);
+			glob2test::drawGUI(gui,0);
 			require(gui.touch->inspectingReadOnly() && gui.touch->panelOpen,
 				"Transition starts with an open read-only inspector");
 			gui.touch->select({buildingPoint.first, buildingPoint.second});
-			gui.drawAll(0);
+			glob2test::drawGUI(gui,0);
 			require(gui.selectionMode == GameGUI::BUILDING_SELECTION && gui.selectionBuilding() == inspected,
 				"Building selection replaces the read-only inspector");
 			const auto title = gui.touch->allocationRect();
 			const double target = 48 * gfx->logicalUnitsPerPoint();
 			tap(title.x + title.w - target / 2, title.y + title.h / 2);
-			gui.drawAll(0); // Include deferred palette restoration.
+			glob2test::drawGUI(gui,0); // Include deferred palette restoration.
 			require(gui.selectionMode == GameGUI::NO_SELECTION && !gui.touch->panelOpen &&
 				!gui.touch->restorePalette && !gui.touch->lensVisible(),
 				"Closing a building reached from a read-only inspector cannot reopen a toolbox");
@@ -3372,9 +3423,11 @@ class GameGUITouchHarness
 				if (invalidated)
 				{
 					map.setResourceByIndex(41, 40, WHEAT, 0);
+                    gui.prepareLocalPresentation();
 					gui.touch->select({center.x + 28, center.y});
-					gui.drawAll(0);
+					glob2test::drawGUI(gui,0);
 					map.setNoResource(41, 40, 1);
+                    gui.prepareLocalPresentation();
 					gui.checkSelection();
 					require(gui.touch->readOnlyPanelShown && gui.selectionMode == GameGUI::NO_SELECTION,
 						"Client invalidation precedes toolbar navigation");
@@ -3385,11 +3438,11 @@ class GameGUITouchHarness
 					gui.touch->panelOpen = gui.touch->restorePalette = true;
 					gui.touch->previousPanelOpen = false;
 					gui.touch->previousDisplayMode = GameGUI::STAT_TEXT_VIEW;
-					gui.drawAll(0);
+					glob2test::drawGUI(gui,0);
 				}
 				const auto bar = gui.touch->layout().actions;
 				tap(bar.x + bar.w * (button + .5) / 6, bar.y + bar.h / 2);
-				gui.drawAll(0);
+				glob2test::drawGUI(gui,0);
 				require(gui.selectionMode == GameGUI::NO_SELECTION && !gui.touch->restorePalette &&
 					!gui.touch->readOnlyPanelShown, "Navigation consumes inspector lifecycle state");
 				require(button == 2 ? gui.touch->lensVisible() :
@@ -3415,10 +3468,10 @@ class GameGUITouchHarness
 			else
 				gui.setSelection(GameGUI::RESOURCE_SELECTION, unsigned(map.coordToIndex(41, 40)));
 			gui.touch->panelOpen = true;
-			gui.drawAll(0);
+			glob2test::drawGUI(gui,0);
 			const auto bar = gui.touch->layout().actions;
 			tap(bar.x + bar.w * 4.5 / 6, bar.y + bar.h / 2);
-			gui.drawAll(0);
+			glob2test::drawGUI(gui,0);
 			require(gui.selectionMode == GameGUI::NO_SELECTION && gui.touch->panelOpen &&
 				gui.displayMode == GameGUI::STAT_TEXT_VIEW && !gui.touch->restorePalette &&
 				!gui.touch->readOnlyPanelShown,
@@ -3426,21 +3479,27 @@ class GameGUITouchHarness
 		}
 		gui.touch->dismissMapPanels();
 		gui.touch->select({center.x + 28, center.y});
-		gui.drawAll(0);
+		glob2test::drawGUI(gui,0);
 		map.setNoResource(41, 40, 1);
+		gui.prepareLocalPresentation();
 		gui.checkSelection();
 		gui.touch->prepareDraw();
 		require(!gui.touch->panelOpen && !gui.touch->restorePalette,
 			"Pre-draw resource invalidation dismisses its read-only panel");
 		gui.setSelection(GameGUI::UNIT_SELECTION,worker);
 		gui.touch->panelOpen = true;
-		gui.drawAll(0);
+		glob2test::drawGUI(gui,0);
 		const int id = Unit::GIDtoID(worker->gid);
 		gui.localTeam->myUnits[id] = nullptr;
+		gui.localTeam->detachUnit(id);
+		gui.game.snapshots().invalidateBoundary();
+		gui.prepareLocalPresentation();
 		gui.checkSelection(); // Threaded client steps invalidate before prepareDraw.
 		gui.touch->prepareDraw();
 		require(gui.selectionMode == GameGUI::NO_SELECTION && !gui.touch->panelOpen, "Removed unit dismisses its inspector");
 		gui.localTeam->myUnits[id] = worker;
+		gui.localTeam->attachUnit(id);
+		gui.game.snapshots().invalidateBoundary();
 		globalContainer->replaying = false;
 		globalContainer->replayShowFog = true;
 	}
@@ -3546,6 +3605,9 @@ class GameGUITouchHarness
 									  gui.localTeam->virtualBuildings.end(),
 									  flag) != gui.localTeam->virtualBuildings.end(),
 					"The fixture flag is one of the player's flags");
+            if (!gui.drawnScene().world.occupancy)
+                require(!gui.touch->grabbableFlag({area.x+area.w/2,area.y+area.h/2}),"Input before the first frame cannot dereference an absent world");
+            gui.prepareLocalPresentation();
 			const double tile = 32 * gui.camera.zoom;
 			auto centre = [&]()
 			{
@@ -3575,6 +3637,8 @@ class GameGUITouchHarness
 				}
 				gui.orderQueue.clear();
 				gui.buildingGuiState.erase(flag->gid);
+                gui.game.snapshots().invalidateBoundary();
+                gui.prepareLocalPresentation();
 			};
 			auto camera = [&]() { return std::pair{gui.camera.originX, gui.camera.originY}; };
 			const auto checksum = gui.game.checkSum();
@@ -3740,7 +3804,8 @@ class GameGUITouchHarness
 			settle();
 
 			gui.localTeam->virtualBuildings.remove(flag);
-			gui.localTeam->myBuildings[Building::GIDtoID(flag->gid)] = nullptr;
+			gui.localTeam->detachBuilding(Building::GIDtoID(flag->gid));
+            gui.localTeam->myBuildings[Building::GIDtoID(flag->gid)] = nullptr;
 			delete flag;
 		}
 		GAGCore::setProcessEnvironment("GLOB2_MOBILE_UI", "0", 1);
@@ -3809,14 +3874,14 @@ class GameGUITouchHarness
 			const auto released = gui.camera;
 			if (delta.x == 3)
 			{
-				gui.drawAll(0);
+				glob2test::drawGUI(gui,0);
 				gfx->printScreen("momentum-jitter-released.bmp");
 				gfx->nextFrame();
 			}
 			frame(100);
 			if (delta.x == 3)
 			{
-				gui.drawAll(0);
+				glob2test::drawGUI(gui,0);
 				gfx->printScreen("momentum-jitter-later.bmp");
 				gfx->nextFrame();
 			}

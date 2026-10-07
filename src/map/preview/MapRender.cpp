@@ -48,7 +48,7 @@ unsigned char alpha(std::int64_t value, std::int64_t maximum)
 	// input range without signed overflow. Saturate before the byte conversion.
 	return static_cast<unsigned char>(std::min(220.0L, 220.0L * (static_cast<long double>(value) / maximum)));
 }
-void toPng(const Scene& scene, const std::string& path, int maximumPixels, const Field* field)
+void toPng(const PresentationFrame& scene, const std::string& path, int maximumPixels, const Field* field)
 {
 	if (maximumPixels <= 0 || maximumPixels > MaximumPixels)
 		throw std::invalid_argument("Render limit must be 1..8192 pixels");
@@ -66,19 +66,15 @@ void toPng(const Scene& scene, const std::string& path, int maximumPixels, const
 	globalContainer->loadOffscreenGraphics();
 	// Captures may predate graphics initialization, or outlive a graphics context.
 	// Bind fresh artwork on an export-owned copy, never on immutable sim storage.
-	Scene rendered=scene;
+	PresentationFrame rendered=scene;
 	if (scene.buildingTypes)
 	{
 		auto types=std::make_shared<std::vector<BuildingType>>(*scene.buildingTypes);
 		BuildingsTypes::loadSpritesForTypes(*types);
-		const auto remap=[&](BuildingType* type) -> BuildingType* {
+		const auto remap=[&](const BuildingType* type) -> const BuildingType* {
 			return type ? &types->at(type-scene.buildingTypes->data()) : nullptr;
 		};
-		for (auto& building : rendered.entities.buildings)
-		{
-			building.type=remap(building.type);
-			building.lastUpgradeType=remap(building.lastUpgradeType);
-		}
+		rendered.entities.typeDefinitions=types;
 		rendered.panels.building.type=remap(rendered.panels.building.type);
 		rendered.buildingTypes=std::move(types);
 	}

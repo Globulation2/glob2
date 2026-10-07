@@ -5,7 +5,7 @@
 #include <array>
 #include <memory>
 #include <optional>
-struct Scene;
+struct PresentationFrame;
 class FogFade;
 namespace Online { class SkinDownloads; class SkinSprites; struct AuthorizedSkin; }
 namespace GAGCore { class GraphicContext; class DrawableSurface; }
@@ -22,7 +22,7 @@ public:
     void setDownloads(std::unique_ptr<Online::SkinDownloads> downloads);
     void poll();
     void setVisible(bool value) { visible = value; }
-    void prepare(GAGCore::GraphicContext &gfx, const Scene &scene, int left, int top,
+    void prepare(GAGCore::GraphicContext &gfx, const PresentationFrame &scene, int left, int top,
                  int right, int bottom, int viewportX, int viewportY,
                  int localTeam, std::uint32_t visibleTeams, bool wholeMap, float unitMotion, bool drawUnits = true, bool drawBuildings = true, const FogFade *fogFade = nullptr);
     std::optional<std::uint32_t> buildingColor(int team) const;

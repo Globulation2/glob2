@@ -108,10 +108,10 @@ void GameGUI::generateNewParticles(std::set<Uint16> *visibleBuildings)
 	const Uint32 stepCounter = drawnScene().tick;
 	for (Uint16 gid : *visibleBuildings)
 	{
-		const SceneBuilding* building = entities.building(gid);
+		const SnapshotBuilding* building = entities.building(gid);
 		if (!building)
 			continue;
-		BuildingType* type = building->type;
+		const BuildingType* type = entities.type(*building);
 		int x, y;
 		x=::displayedPosX(buildingGuiState, building->gid, building->posX)*32;
 		y=::displayedPosY(buildingGuiState, building->gid, building->posY)*32;
@@ -119,7 +119,7 @@ void GameGUI::generateNewParticles(std::set<Uint16> *visibleBuildings)
 		if (!type->isBuildingSite)
 		{
 			// damaged building smoke
-			float hpRatio = (float)building->hp / (float)building->effectiveMaxHp;
+			float hpRatio = (float)building->hp / (float)building->maxHp;
 			if (
 				(hpRatio < SMOKE_HEAVY_HP_RATIO && ((stepCounter & 0x1) == 0)) ||
 				(hpRatio < SMOKE_LIGHT_HP_RATIO && ((stepCounter & 0x3) == 0))
@@ -144,7 +144,7 @@ void GameGUI::generateNewParticles(std::set<Uint16> *visibleBuildings)
 				p->lifeSpan = SMOKE_LIFESPAN_TICKS;
 				p->startImg = PARTICLE_START_IMG;
 				p->endImg = PARTICLE_END_IMG;
-				p->color = entities.owner(*building).color;
+				p->color = presentationColor(entities.owner(*building).color);
 				particles.insert(p);
 			}
 
@@ -169,7 +169,7 @@ void GameGUI::generateNewParticles(std::set<Uint16> *visibleBuildings)
 					p->lifeSpan = TURRET_FLASH_LIFESPAN_TICKS;
 					p->startImg = PARTICLE_START_IMG;
 					p->endImg = PARTICLE_END_IMG;
-					p->color = entities.owner(*building).color;
+					p->color = presentationColor(entities.owner(*building).color);
 					particles.insert(p);
 				}
 			}

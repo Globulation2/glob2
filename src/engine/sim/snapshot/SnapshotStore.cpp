@@ -8,7 +8,9 @@ Handle Store::captureBoundary(const Game& game, Requirements required)
 {
 	const auto requested = required;
 	if (latest && latest->worldIdentity != game.map.identity()) reset();
-	if (latest && latest->tick == game.stepCounter && latest->observationRevision == observationRevision) {
+	if (latest && latest->tick == game.stepCounter && latest->observationRevision == observationRevision
+        && latest->configurationRevision == game.gameHeader.observationRevision()
+        && latest->mapGenerations == game.map.snapshotGenerations()) {
 		if ((required & latest->requirements) == required) return latest->project(requested);
 		required |= latest->requirements;
 	}
@@ -44,7 +46,8 @@ Handle Store::captureBoundary(const Game& game, Requirements required)
 	}
 	if (next.entities) {
 		metrics.bytesCopied += next.entities->buildings.size() * sizeof(BuildingView) + next.entities->units.size() * sizeof(UnitView)
-			+ next.entities->projects.size() * sizeof(BuildProjectView);
+			+ next.entities->projects.size() * sizeof(BuildProjectView)
+            + (next.entities->buildingSlotIndices.size() + next.entities->unitSlotIndices.size()) * sizeof(Uint32);
 		metrics.bytesCopied += next.entities->relationships.size() * sizeof(UnitRef);
 	}
 	if (next.teams) {
@@ -57,6 +60,37 @@ Handle Store::captureBoundary(const Game& game, Requirements required)
 		if (found && found->values == field.values) ++metrics.reusedComponents;
 		else metrics.bytesCopied += field.values->size() * sizeof(Uint16);
 	}
+    if (next.session) metrics.bytesCopied+=sizeof(Session)+next.session->players.size()*sizeof(Session::Player)
+        +next.session->legacyScriptText.size();
+    if (next.effects) {
+        metrics.bytesCopied+=next.effects->sectors.size()*sizeof(SectorEffects);
+        for (const auto& sector:next.effects->sectors) metrics.bytesCopied+=sector.bullets.size()*sizeof(BulletRecord)
+            +sector.explosions.size()*sizeof(ExplosionRecord)+sector.deaths.size()*sizeof(DeathRecord);
+    }
+    if (next.statistics) {
+        for (size_t i=0;i<next.statistics->teams.size();++i) {
+            const auto& team=next.statistics->teams[i];
+            if (previous.statistics && i<previous.statistics->teams.size() && team==previous.statistics->teams[i]) ++metrics.reusedComponents;
+            else if (team) metrics.bytesCopied+=sizeof(TeamStats)+team->displayCapacityBytes();
+        }
+    }
+    if (next.telemetry) {
+        for (const auto& row:next.telemetry->rows) metrics.bytesCopied+=sizeof(row)
+            +row.fields.size()*sizeof(AITelemetry::Field)+row.values.size()*sizeof(AITelemetry::Value)
+            +row.named.size()*sizeof(AITelemetry::NamedValue);
+    }
+    if (next.history) {
+        for (size_t i = 0; i < next.history->teams.size(); ++i) {
+            const auto& team = next.history->teams[i];
+            if (previous.history && i < previous.history->teams.size() && team == previous.history->teams[i]) ++metrics.reusedComponents;
+            else if (team) metrics.bytesCopied += sizeof(TeamStats) + team->displayCapacityBytes();
+        }
+    }
+    if (next.entityDiagnostics) for (const auto& building:next.entityDiagnostics->buildings) {
+        metrics.bytesCopied+=sizeof(building)+building.gradient.size()*sizeof(Uint16);
+        for (const auto& failed:building.failingUnits) metrics.bytesCopied+=failed.size()*sizeof(Uint16);
+    }
+    account(next.annotations,previous.annotations,0); // Stamped array copies counted by storage.
 	metrics.allocations = storage.allocations;
 	const auto preparation = storage.preparationNs-preparedBefore;
 	metrics.preparationNs += preparation;

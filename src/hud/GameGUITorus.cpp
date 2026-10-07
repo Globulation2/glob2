@@ -39,17 +39,15 @@ bool GameGUI::handleTorusPointer(const SDL_Event &event)
         if (hit)
         {
             // The atlas renderer's mouse hit refers to a previous capture.
-            // Resolve units at the picked map cell, with normal visibility rules.
+            const auto& scene=drawnScene();
             view.mouseUnit = UnitRef();
-            int x = ((mx >> 5) + viewportX) & game.map.getMaskW();
-            int y = ((my >> 5) + viewportY) & game.map.getMaskH();
-            Uint16 gid = game.map.getAirUnit(x, y);
-            if (gid == NOGUID)
-                gid = game.map.getGroundUnit(x, y);
-            if (gid != NOGUID &&
-                (Unit::GIDtoTeam(gid) == localTeamNo || game.map.isFOWDiscovered(x, y, localTeam->me) ||
-                 globalContainer->replaying))
-                view.mouseUnit = Game::refOf(game.teams[Unit::GIDtoTeam(gid)]->myUnits[Unit::GIDtoID(gid)]);
+            const int x=((mx>>5)+viewportX)&scene.map.getMaskW();
+            const int y=((my>>5)+viewportY)&scene.map.getMaskH();
+            auto gid=scene.map.getAirUnit(x,y);
+            if (gid==NOGUID) gid=scene.map.getGroundUnit(x,y);
+            if (const auto* unit=scene.entities.unit(gid); unit &&
+                (unit->team==localTeamNo || scene.map.isFOWDiscovered(x,y,Team::teamNumberToMask(localTeamNo)) || globalContainer->replaying))
+                view.mouseUnit=unit->identity;
             handleMapClick(mx, my, SDL_BUTTON_LEFT);
         }
     }
@@ -57,8 +55,10 @@ bool GameGUI::handleTorusPointer(const SDL_Event &event)
     {
         if (torusPointerDown)
         {
+            const auto* ref=std::get_if<BuildingRef>(&selection);
+            const auto* building=ref ? inputBuilding(*ref) : nullptr;
             if (hit && selectionMode == BUILDING_SELECTION && selectionPushed &&
-                selectedBuildingOrNull() && selectedBuildingOrNull()->type->semantics.relocatable)
+                building && drawnScene().entities.type(*building)->semantics.relocatable)
                 moveFlag(mx, my, true);
             else if (selectionMode == BRUSH_SELECTION || selectionMode == TOOL_SELECTION)
             {
@@ -96,26 +96,26 @@ void GameGUI::drawTorusMap(int originX, int originY, int width, int height, int 
         }
         // The ring replaces the 2D map transform, so the selection markers the flat
         // view paints over the map belong on the surface itself, anchored to it.
-        const Scene &scene = drawnScene();
+        const PresentationFrame &scene = drawnScene();
         if (selectionMode == BUILDING_SELECTION && scene.panels.building.valid)
         {
             const SceneBuildingPanel &b = scene.panels.building;
             int x, y;
             game.map.buildingPosToCursor(displayedPosX(b), displayedPosY(b), b.type->width, b.type->height, &x, &y,
                                          originX, originY);
-            if (b.owner.teamNumber == localTeamNo)
+            if (b.owner().number == localTeamNo)
                 globalContainer->gfx->drawCircle(x, y, b.type->width * 16, 0, 0, 190);
-            else if (scene.panels.local.allies & b.owner.me)
+            else if (scene.panels.local.state().allies & b.owner().mask)
                 globalContainer->gfx->drawCircle(x, y, b.type->width * 16, 255, 196, 0);
             else if (!b.type->isVirtual)
                 globalContainer->gfx->drawCircle(x, y, b.type->width * 16, 190, 0, 0);
 
             // draw a white circle around units that are working at building
-            if (showUnitWorkingToBuilding && (b.owner.allies & (Team::teamNumberToMask(localTeamNo))))
-                for (Uint16 worker : scene.entities.selectedBuilding.unitsWorking)
+            if (showUnitWorkingToBuilding && (b.owner().allies & (Team::teamNumberToMask(localTeamNo))))
+                for (UnitRef worker : scene.entities.selectedBuilding.unitsWorking)
                 {
-                    const SceneUnit *unit = scene.entities.unit(worker);
-                    if (!unit)
+                    const SnapshotUnit *unit = scene.entities.unit(worker.gid);
+                    if (!unit || unit->identity!=worker)
                         continue;
                     int ux, uy;
                     scene.map.mapCaseToDisplayable(unit->posX, unit->posY, &ux, &uy, originX, originY);

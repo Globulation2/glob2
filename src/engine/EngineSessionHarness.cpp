@@ -265,7 +265,7 @@ TEST_SUITE("EngineSession")
 				}
 				finger(SDL_EVENT_FINGER_UP, 420);
 				const auto capture = [&](const char *phase) {
-					engine.gui.drawAll(0);
+					glob2test::drawGUI(engine.gui,0);
 					const std::string name = std::string("resume-") + (threaded ? "threaded-" : "serial-")
 						+ std::to_string(resume) + "-" + phase + ".bmp";
 					globalContainer->gfx->printScreen(name.c_str());
@@ -483,7 +483,7 @@ TEST_SUITE("EngineSession")
 		        require(((view.viewportY + 800/64) & view.game.map.hMask) == ((30 + 600/64) & view.game.map.hMask), "Resize changed center tile vertically");
 		        require(view.game.checkSum() == checksum, "Viewport resize changed simulation state");
 		        Minimap minimap(false, 160, 800, 20, 10, 128, 128, Minimap::ShowFOW);
-		        minimap.setGame(view.game);
+		        minimap.setMapSize(view.game.map.getW(), view.game.map.getH());
 		        minimap.resizeViewport(1200);
 		        require(minimap.insideMinimap(1100, 74) && !minimap.insideMinimap(700, 74), "Minimap hit area did not follow the viewport");
 		        require(view.zoomMap(3, 300, 200), "Could not zoom the desktop camera");

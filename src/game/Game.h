@@ -39,8 +39,8 @@ using namespace GAGCore;
 namespace SimulationSnapshot { class Store; }
 class GameGUI;
 class SceneMap;
-struct Scene;
-struct SceneUnit;
+struct PresentationFrame;
+using SnapshotUnit = SimulationSnapshot::UnitView;
 class MapEdit;
 class ClientCommandSink;
 class ClientRequests;
@@ -229,7 +229,11 @@ public:
 	// Returns whether the existing executor admitted the command, including queued construction.
 	bool executeOrder(std::shared_ptr<Order> order, int localPlayer);
 	std::vector<std::pair<unsigned, std::shared_ptr<Order>>> prepareAIOrders(
-		std::span<const unsigned> eligiblePlayers, bool paused, const std::shared_ptr<GameDiagnostics::Session>& diagnostics = {});
+		std::span<const unsigned> eligiblePlayers, bool paused, const std::shared_ptr<GameDiagnostics::Session>& diagnostics = {},
+		const SimulationSnapshot::Handle* captured = nullptr);
+	//! Declare every reader before publishing this immutable observation boundary.
+	SimulationSnapshot::Handle captureReadBoundary(std::span<const unsigned> eligiblePlayers, bool paused,
+		SimulationSnapshot::Requirements additional = 0) const;
 	std::shared_ptr<Order> validateAIOrder(std::shared_ptr<Order> order, unsigned player);
 	void settleAIOrder(const std::shared_ptr<Order>& order, bool accepted);
 	void cancelAI(unsigned player);
@@ -317,7 +321,7 @@ public:
 	bool checkHardRoomForBuilding(int coordX, int coordY, const BuildingType *bt, int *mapX, int *mapY);
 	bool checkHardRoomForBuilding(int x, int y, const BuildingType *bt);
 
-	static void drawUnit(int x, int y, Uint16 gid, int viewportX, int viewportY, int screenW, int screenH, int localTeam, Uint32 drawOptions, ViewState& view, const Scene& scene);
+	static void drawUnit(int x, int y, Uint16 gid, int viewportX, int viewportY, int screenW, int screenH, int localTeam, Uint32 drawOptions, ViewState& view, const PresentationFrame& scene);
 	/// `view` carries the calling front-end's selection/mouse state (see
 	/// ViewState); render reads selectedUnit/selectedBuilding for highlights and
 	/// writes back mouseUnit from hit-testing. `buildingGuiState` (optional)
@@ -326,10 +330,10 @@ public:
 	/// mutates buildings directly without an orderQueue, so there is no pending
 	/// shadow to consult.
     // Prepare one immutable presentation frame for several offscreen regions.
-    void prepareMapCapture(int team, ViewState &view, Uint32 options, bool paused);
     static void finishMapCapture(ViewState &view, Uint32 options, bool paused);
-	static void drawSceneMap(const Scene& scene, int sx, int sy, int sw, int sh, int rightMargin, int topMargin, int viewportX, int viewportY, int teamSelected, ViewState& view, Uint32 drawOptions = 0, std::set<Uint16> *visibleBuildings = 0, const BuildingGuiStateMap* buildingGuiState = nullptr, bool animationsPaused = false, int cloudGridLimit = 0, bool preparedCapture = false);
-	void drawMap(int sx, int sy, int sw, int sh, int rightMargin, int topMargin, int viewportX, int viewportY, int teamSelected, ViewState& view, Uint32 drawOptions = 0, std::set<Uint16> *visibleBuildings = 0, const BuildingGuiStateMap* buildingGuiState = nullptr, bool animationsPaused = false, int cloudGridLimit = 0, bool preparedCapture = false);
+    static void prepareSceneMapFrame(const PresentationFrame &scene, int team, ViewState &view, Uint32 options, bool paused);
+	static void drawSceneMap(const PresentationFrame& scene, int sx, int sy, int sw, int sh, int rightMargin, int topMargin, int viewportX, int viewportY, int teamSelected, ViewState& view, Uint32 drawOptions = 0, std::set<Uint16> *visibleBuildings = 0, const BuildingGuiStateMap* buildingGuiState = nullptr, bool animationsPaused = false, int cloudGridLimit = 0, bool preparedCapture = false);
+	static void drawMap(int sx, int sy, int sw, int sh, int rightMargin, int topMargin, int viewportX, int viewportY, int teamSelected, ViewState& view, Uint32 drawOptions = 0, std::set<Uint16> *visibleBuildings = 0, const BuildingGuiStateMap* buildingGuiState = nullptr, bool animationsPaused = false, int cloudGridLimit = 0, bool preparedCapture = false);
 
 	///Sets the mask representing which players the game is waiting on
 	void setWaitingOnMask(Uint32 mask);
@@ -422,11 +426,11 @@ private:
 	///draws an HP bar coloured green/yellow/red against the 0.6 / 0.3 hpRatio thresholds
 	static void drawHealthBar(int x, int y, int maxLength, int actLength, float hpRatio, MapRenderState* drawnRender=nullptr, float opacity = 1.f);
 	///draws a building resource bar (food, bullets, ...) auto-shrinking to fit within (height*32)-10 pixels
-	static void drawBuildingResourceBar(int x, int y, BuildingType* type, int maxValue, int currentValue, Uint8 r, Uint8 g, Uint8 b, MapRenderState* drawnRender=nullptr);
+	static void drawBuildingResourceBar(int x, int y, const BuildingType* type, int maxValue, int currentValue, Uint8 r, Uint8 g, Uint8 b, MapRenderState* drawnRender=nullptr);
 	///draws sampled terrain palette colours and tile resource tints when zoomed far out
 	static void drawMapOverview(int left, int top, int right, int bot, int viewportX, int viewportY, int localTeam, Uint32 drawOptions, const SceneMap& sceneMap, MapRenderState& render);
 	///draws a faint wash of each team's colour over the land around its buildings, in the strategic view
-	static void drawMapTerritory(int left, int top, int right, int bot, int viewportX, int viewportY, int localTeam, Uint32 drawOptions, const Scene& scene, float opacity);
+	static void drawMapTerritory(int left, int top, int right, int bot, int viewportX, int viewportY, int localTeam, Uint32 drawOptions, const PresentationFrame& scene, float opacity);
 	///draws the overlay representing water
 	static void drawMapWater(int sw, int sh, int viewportX, int viewportY, int time);
 	///draws the terrain tiles of sand and gras
@@ -434,22 +438,21 @@ private:
 	///draws the resources like algae, wheat or fruit trees
 	static void drawMapResources(int left, int top, int right, int bot, int viewportX, int viewportY, int localTeam, Uint32 drawOptions, const SceneMap& sceneMap);
 	///draws the ground units. up till now those are workers and warriors
-	static void drawMapGroundUnits(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions, ViewState& view, const Scene& scene);
+	static void drawMapGroundUnits(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions, ViewState& view, const PresentationFrame& scene);
 	///draws debug information. switched in the code.
 	static void drawMapDebugAreas(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions, ViewState& view);
-	static void drawMapGroundBuildings(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions, std::set<Uint16> *visibleBuildings, const BuildingGuiStateMap* buildingGuiState, const Scene& scene, MapRenderState* drawnRender, ViewState* view = nullptr);
-	static void drawMapBuilding(int x, int y, int gid, int viewportX, int viewportY, int localTeam, Uint32 drawOptions, const Scene& scene, MapRenderState* drawnRender, ViewState* view = nullptr);
-    static void prepareSceneMapFrame(const Scene &scene, int team, ViewState &view, Uint32 options, bool paused);
+	static void drawMapGroundBuildings(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions, std::set<Uint16> *visibleBuildings, const BuildingGuiStateMap* buildingGuiState, const PresentationFrame& scene, MapRenderState* drawnRender, ViewState* view = nullptr);
+	static void drawMapBuilding(int x, int y, int gid, int viewportX, int viewportY, int localTeam, Uint32 drawOptions, const PresentationFrame& scene, MapRenderState* drawnRender, ViewState* view = nullptr);
 	static void drawMapAreas(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions, ViewState& view, const SceneMap& sceneMap, bool advanceAnimation = true);
 	static void drawMapArea(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions, const SceneMap& map, bool (SceneMap::*mapIs)(int, int) const, int areaAnimationTick, AreaType areaType, const MapRenderState& render, const Utilities::BitArray* preview = nullptr);
-	static void drawMapAirUnits(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions, ViewState& view, const Scene& scene);
+	static void drawMapAirUnits(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions, ViewState& view, const PresentationFrame& scene);
 	static void drawMapScriptAreas(int left, int top, int right, int bot, int viewportX, int viewportY, const SceneMap& map);
-	static void drawMapBulletsExplosionsDeathAnimations(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions, const Scene& scene);
-	static void drawMapFogOfWar(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions, const MapRenderState& render, const Scene& scene);
+	static void drawMapBulletsExplosionsDeathAnimations(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions, const PresentationFrame& scene);
+	static void drawMapFogOfWar(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions, const MapRenderState& render, const PresentationFrame& scene);
 	static void drawMapOverlayMaps(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions, ViewState& view);
-	static void drawUnitPathLines(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions, ViewState& view, const Scene& scene);
-	static void drawUnitPathLine(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions, const SceneUnit& unit, const Scene& scene, float unitMotion = 0);
-	static void drawUnitOffScreen(int sx, int sy, int sw, int sh, int viewportX, int viewportY, const SceneUnit& unit, Uint32 drawOptions, const Scene& scene, float unitMotion = 0);
+	static void drawUnitPathLines(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions, ViewState& view, const PresentationFrame& scene);
+	static void drawUnitPathLine(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions, const SnapshotUnit& unit, const PresentationFrame& scene, float unitMotion = 0);
+	static void drawUnitOffScreen(int sx, int sy, int sw, int sh, int viewportX, int viewportY, const SnapshotUnit& unit, Uint32 drawOptions, const PresentationFrame& scene, float unitMotion = 0);
 	static bool isOnScreen(int left, int top, int right, int bot, int viewportX, int viewportY, int x, int y, const SceneMap& map);
 public:
 	Uint32 checkSum(std::vector<Uint32> *checkSumsVector=NULL, std::vector<Uint32> *checkSumsVectorForBuildings=NULL, std::vector<Uint32> *checkSumsVectorForUnits=NULL, bool heavy=false);
@@ -532,11 +535,11 @@ public:
 		Unit *selectedUnit = nullptr;
 		Building *selectedBuilding = nullptr;
 		MapRenderState render;            //!< This view's animation phases and render caches.
-		//! Scene to draw, published by the simulation; null to extract one from the game.
-		const Scene *scene = nullptr;
+		//! PresentationFrame to draw, published by the simulation; null to extract one from the game.
+		const PresentationFrame *scene = nullptr;
         const std::array<Utilities::BitArray,4>* displayedAreas = nullptr;
 		//! The scene the last drawMap drew: the published one, else the view's own.
-		const Scene &drawnScene() const { return scene ? *scene : render.ownScene; }
+		const PresentationFrame &drawnScene() const { return scene ? *scene : render.ownScene; }
 	};
 
 	Uint32 stepCounter;
@@ -554,12 +557,7 @@ public:
 	int prestigeToReach;
 	bool totalPrestigeReached;
 	bool isGameEnded;
-	///This is the IntBuildingType of a building type to be highlighted. All buildings of this type will be drawn
-	///With an arrow pointed at them. This is primarily for tutorials and is linked through the script system
-	///This is a mask, where 1<<typenum is the buildings to be highlighted
-	Uint32 highlightBuildingType;
-	///Similar to above, but for units
-	Uint32 highlightUnitType;
+
 
 
 	Team *getTeamWithMostPrestige(void);

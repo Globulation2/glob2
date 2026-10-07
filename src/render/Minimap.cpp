@@ -11,7 +11,7 @@
 #include "FixedPoint.h"
 #include "Ressource.h"
 #include "GlobalContainer.h"
-#include "Unit.h"
+#include "scene/Scene.h"
 
 
 using namespace GAGCore;
@@ -45,11 +45,11 @@ Minimap::~Minimap()
 		delete surface;
 }
 
-void Minimap::setGame(Game& ngame)
+void Minimap::setMapSize(int width,int height)
 {
 	if (noX) return;
-	mapW = ngame.map.getW();
-	mapH = ngame.map.getH();
+	mapW = width;
+	mapH = height;
 }
 
 void Minimap::resizeViewport(int width)
@@ -60,7 +60,7 @@ void Minimap::resizeViewport(int width)
 
 
 
-void Minimap::draw(const Scene &drawn, int localteam, int viewportX, int viewportY, int viewportW, int viewportH)
+void Minimap::draw(const PresentationFrame &drawn, int localteam, int viewportX, int viewportY, int viewportW, int viewportH)
 {
 	PERF_SCOPE_TIME(Minimap);
 	if (noX || !drawn.map.getW()) return; // nothing extracted yet
@@ -101,8 +101,8 @@ void Minimap::draw(const Scene &drawn, int localteam, int viewportX, int viewpor
 	// bottom side not needed, because the menu draws up to it
   
   // calculate the offset for the viewport square
-	offset_x = scene->entities.teams[localteam].startPosX - mapW / 2;
-	offset_y = scene->entities.teams[localteam].startPosY - mapH / 2;
+	offset_x = scene->entities.teams[localteam].startX - mapW / 2;
+	offset_y = scene->entities.teams[localteam].startY - mapH / 2;
 
 	//Render the colorMap and blit the surface
 	if(update_row == -1)
@@ -275,7 +275,7 @@ void Minimap::computeColors(int row, int localTeam)
 		TerrainVisual::minimapPalette(globalContainer->terrainCompositor().catalog());
 
 	assert(localTeam>=0);
-	assert(localTeam<Team::MAX_COUNT);
+	assert(localTeam<SceneEntities::Teams);
 
 
 	const int buildingsUnitsColor[6][3] = {
@@ -301,7 +301,7 @@ void Minimap::computeColors(int row, int localTeam)
 	bool useMapDiscovered = (minimapMode == HideFOW);
 
 	const SceneEntities &entities = scene->entities;
-	Uint32 visibleTeams = entities.teams[localTeam].me;
+	Uint32 visibleTeams = entities.teams[localTeam].mask;
 	if (globalContainer->isViewingGame()) visibleTeams = globalContainer->replayVisibleTeams;
 
 	const int dy = row;
@@ -328,7 +328,7 @@ void Minimap::computeColors(int row, int localTeam)
 					gid=scene->map.getBuilding(minidx, minidy);
 					if (gid!=NOGUID)
 					{
-						const SceneBuilding *building = entities.building(gid);
+						const SnapshotBuilding *building = entities.building(gid);
 						if (building && (building->seenByMask & visibleTeams))
 						{
 							seenUnderFOW = true;
@@ -337,7 +337,7 @@ void Minimap::computeColors(int row, int localTeam)
 				}
 				if (gid!=NOGUID)
 				{
-					int teamId=gid/Unit::MAX_COUNT;
+					int teamId=gid/SceneEntities::SlotsPerTeam;
 					if (useMapDiscovered || scene->map.isFOWDiscovered(minidx, minidy, visibleTeams))
 					{
 						if (teamId==localTeam)

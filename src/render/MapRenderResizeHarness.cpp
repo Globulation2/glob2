@@ -28,11 +28,11 @@
 #include "CreditScreen.h"
 #include <iostream>
 
-// GameGUI::drawAll extracts the frame's Scene before drawing overlays; do the
+// GameGUI::drawAll extracts the frame's PresentationFrame before drawing overlays; do the
 // same when drawing them directly.
 static void drawOverlays(GameGUI &gui)
 {
-	Scene scene;
+	PresentationFrame scene;
 	gui.extractScene(scene);
 	gui.setPublishedScene(&scene);
 	gui.drawOverlayInfos();
@@ -108,7 +108,7 @@ void buildingCrossFade(Uint32 flags)
 		auto *building = fixture.addBuilding(type, buildingX, 7);
 		buildingX += 7;
 		REQUIRE(building);
-		const Scene &scene = glob2test::sceneOf(fixture.game, view);
+		const PresentationFrame &scene = glob2test::sceneOf(fixture.game, view);
 		std::uint64_t fullBrightness = 0, previous = 0;
 		// Keep the raster geometry fixed so only opacity changes. These are real
 		// zoom-detail values across the transition, including just before removal.
@@ -272,12 +272,12 @@ void run(bool gpu)
 	unit->validTarget=true;
 	unit->targetX=5; unit->targetY=3;
 	clear();
-	{ const Scene &pathScene = glob2test::sceneOf(game); game.drawUnitPathLine(0,0,52,34,1600,1100,0,0,0,0, *pathScene.entities.unit(unit->gid), pathScene); }
+	{ const PresentationFrame &pathScene = glob2test::sceneOf(game); game.drawUnitPathLine(0,0,52,34,1600,1100,0,0,0,0, *pathScene.entities.unit(unit->gid), pathScene); }
 	copies(110,110,70,5);
 	// A line crossing the map seam follows the short route in every copy.
 	unit->posX=15; unit->targetX=1;
 	clear();
-	{ const Scene &pathScene = glob2test::sceneOf(game); game.drawUnitPathLine(0,0,52,34,1600,1100,0,0,0,0, *pathScene.entities.unit(unit->gid), pathScene); }
+	{ const PresentationFrame &pathScene = glob2test::sceneOf(game); game.drawUnitPathLine(0,0,52,34,1600,1100,0,0,0,0, *pathScene.entities.unit(unit->gid), pathScene); }
 	capturePixels(gfx);
 	REQUIRE(colored(gfx->getSDLSurface(),0,110,48,5)>0);
 	REQUIRE(colored(gfx->getSDLSurface(),100,110,350,5)==0);
@@ -316,7 +316,7 @@ void run(bool gpu)
 				game.map.fogOfWar[game.map.coordToIndex(x,y)] = (fogRight && x>=8) ? 0 : me;
 		};
 		MapRenderState render;
-		Scene fogScene;
+		PresentationFrame fogScene;
 		const auto drawFog = [&]() -> std::vector<Uint8>
 		{
 			gfx->setClipRect();
@@ -477,7 +477,7 @@ void run(bool gpu)
 	unit->validTarget=false;
 	globals->settings.setGraphicsDetail(false);
 	clear();
-	game.drawMap(0,0,1800,1100,160,0,0,0,0,view,Game::DRAW_WHOLE_MAP);
+	glob2test::drawMap(game,0,0,1800,1100,160,0,0,0,0,view,Game::DRAW_WHOLE_MAP);
 	capturePixels(gfx);
 	SDL_Surface *baseline=SDL_ConvertSurface(gfx->getSDLSurface(),gfx->getSDLSurface()->format);
 	REQUIRE(baseline);
@@ -490,7 +490,7 @@ void run(bool gpu)
 			globals->settings.clouds = clouds;
 			globals->settings.cloudShadows = shadows;
 			clear();
-			game.drawMap(0,0,1800,1100,160,0,0,0,0,view,Game::DRAW_WHOLE_MAP, nullptr, nullptr, true);
+			glob2test::drawMap(game,0,0,1800,1100,160,0,0,0,0,view,Game::DRAW_WHOLE_MAP, nullptr, nullptr, true);
 			capturePixels(gfx);
 			auto *pixels = gfx->getSDLSurface();
 			const auto *begin = static_cast<const Uint8*>(pixels->pixels);
@@ -505,7 +505,7 @@ void run(bool gpu)
 	auto *flag=game.addBuilding(3,3,globals->buildingsTypes.getTypeNum("warflag",0,false),0);
 	REQUIRE(flag); flag->unitStayRange=1; view.selectedBuilding=flag;
 	clear();
-	game.drawMap(0,0,1800,1100,160,0,0,0,0,view,Game::DRAW_WHOLE_MAP);
+	glob2test::drawMap(game,0,0,1800,1100,160,0,0,0,0,view,Game::DRAW_WHOLE_MAP);
 	capturePixels(gfx);
 	for(int row=0;row<2;++row) for(int col=0;col<3;++col)
 	{
@@ -585,7 +585,7 @@ void run(bool gpu)
 			walker->targetY=reverse ? mapH-1 : 1;
 			clear();
 			gfx->setClipRect(0,0,width-GAME_GUI_RIGHT_MENU_WIDTH,1100);
-			{ const Scene &pathScene = glob2test::sceneOf(world); world.drawUnitPathLine(0,0,width/32,34,width-GAME_GUI_RIGHT_MENU_WIDTH,1100,0,0,0,0, *pathScene.entities.unit(walker->gid), pathScene); }
+			{ const PresentationFrame &pathScene = glob2test::sceneOf(world); world.drawUnitPathLine(0,0,width/32,34,width-GAME_GUI_RIGHT_MENU_WIDTH,1100,0,0,0,0, *pathScene.entities.unit(walker->gid), pathScene); }
 			capturePixels(gfx);
 			REQUIRE(colored(gfx->getSDLSurface(),0,0,50,50)>0);
 			REQUIRE(colored(gfx->getSDLSurface(),100,100,250,250)==0);

@@ -2,6 +2,7 @@
 #pragma once
 
 #include "ComputeExecutor.h"
+#include <chrono>
 #include "SceneInputs.h"
 #include "render/scene/SceneBuffer.h"
 
@@ -15,7 +16,7 @@ class ScenePreparation
     struct State
     {
         SceneExtractor extractor;
-        SceneBuffer<Scene> scenes;
+        SceneBuffer<PresentationFrame> scenes;
     };
     std::shared_ptr<State> state=std::make_shared<State>();
     ComputeExecutor::PresentationTicket ticket;
@@ -34,15 +35,17 @@ public:
     void submit(std::shared_ptr<const SceneInputs> input)
     {
         const auto chunks = SceneExtractor::preparationChunks(*input);
-        ticket = executor.submitPresentation(chunks, [state = state, input = std::move(input), chunks](size_t chunk) {
-            state->extractor.prepareChunk(*input, state->scenes.back(), chunk);
+        ticket = executor.submitResumablePresentation(chunks, [state = state, input = std::move(input), chunks](size_t chunk) {
+            if (!state->extractor.prepareChunk(*input, state->scenes.back(), chunk)) return false;
             if (chunk + 1 == chunks) state->scenes.publish();
+            return true;
         });
     }
-    const Scene* acquire(bool* changed = nullptr)
+    const PresentationFrame* acquire(bool* changed = nullptr)
     {
         // Explicit fallback for builds/hosts without compute workers.
-        while (executor.pumpPresentation()) {}
+        const auto until=std::chrono::steady_clock::now()+std::chrono::milliseconds(2);
+        while (executor.pumpPresentation() && std::chrono::steady_clock::now()<until) {}
         if (ticket && ticket->finished()) ticket->rethrowFailure();
         const bool acquired=state->scenes.acquire();
         if (changed) *changed=acquired;

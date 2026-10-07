@@ -120,33 +120,6 @@ void GameGUI::setCampaignGame(Campaign &campaign, const std::string &missionName
 	this->missionName = missionName;
 }
 
-void GameGUI::updateHighlightInGame()
-{
-	game.highlightUnitType = 0;
-	if (highlights.find(HighlightWorkers) != highlights.end())
-	{
-		game.highlightUnitType |= 1 << WORKER;
-	}
-	if (highlights.find(HighlightExplorers) != highlights.end())
-	{
-		game.highlightUnitType |= 1 << EXPLORER;
-	}
-	if (highlights.find(HighlightWarriors) != highlights.end())
-	{
-		game.highlightUnitType |= 1 << WARRIOR;
-	}
-
-	game.highlightBuildingType = 0;
-
-	for (int i = 0; i < IntBuildingType::NB_BUILDING; ++i)
-	{
-		if (highlights.find(HighlightBuildingOnMap + i) != highlights.end())
-		{
-			game.highlightBuildingType |= 1 << (i);
-		}
-	}
-}
-
 void GameGUI::startScriptClientChannel()
 {
 	const auto choices = [&](const auto& names, const auto& states) {

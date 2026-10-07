@@ -184,7 +184,7 @@ GAGCore::CooperativeTask GameGUI::loadTask(GAGCore::InputStream *stream, bool ig
 	}
 
 	game.mapscript.restorePresentation(*this);
-	minimap.setGame(game);
+	minimap.setMapSize(game.map.getW(), game.map.getH());
 
 	co_return true;
 }

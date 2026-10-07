@@ -69,31 +69,13 @@ void SimulationRunner::run()
 				park(lock);
 				continue;
 			}
-			// Offline diagnostics retain one tick's owned batch. Wait for the graphics
-			// owner to drain it; park requests still take precedence above.
-			if (engine.diagnosticsPending())
-			{
-				wake.wait(lock, [&] { return stopping || parkRequested || suspended || !engine.diagnosticsPending(); });
-				continue;
-			}
-			const auto request = requestedScene;
 			lock.unlock();
 			const Uint64 now = engine.sessionClock();
 			const Uint32 delay = engine.sessionDelay(now);
 			bool running = true;
 			if (delay == 0)
 				running = engine.simulationStep(now);
-			// Extract at most once per scene the main thread takes.
-			if (presentation && presentation->finished()) presentation->rethrowFailure();
-            if (!scenes.pending() && (!presentation || presentation->finished()))
-            {
-                auto input = engine.gui.captureSceneInputs(request);
-                const auto chunks = SceneExtractor::preparationChunks(*input);
-                presentation = engine.gui.game.map.computeExecutor().submitPresentation(chunks, [this, input, chunks](size_t chunk) {
-                    presentationExtractor.prepareChunk(*input, scenes.back(), chunk);
-                    if (chunk+1 == chunks) { scenes.publish(); wake.notify_all(); }
-                });
-            }
+            else engine.refreshRetainedPresentation();
             {
                 std::lock_guard telemetryLock(telemetryMutex);
                 telemetryMailbox.absorb(telemetry);
@@ -102,8 +84,7 @@ void SimulationRunner::run()
 			if (!running)
 				break;
 			if (delay > 0)
-				wake.wait_for(lock, std::chrono::milliseconds(delay),
-							  [&] { return stopping || parkRequested || suspended || (!scenes.pending() && (!presentation || presentation->finished())); });
+				wake.wait_for(lock, std::chrono::milliseconds(delay));
 		}
 	}
 	catch (...)
@@ -118,11 +99,35 @@ void SimulationRunner::run()
 	parkedChanged.notify_all();
 }
 
+std::optional<SceneRequest> SimulationRunner::admitPresentation()
+{
+    if (presentation && presentation->finished()) presentation->rethrowFailure();
+    if (scenes.pending() || (presentation && !presentation->finished())) return {};
+    std::lock_guard lock(mutex);
+    return requestedScene;
+}
+void SimulationRunner::publishPresentation(const SimulationSnapshot::Handle& world,SceneRequest request)
+{
+    auto input=std::make_shared<const SceneInputs>(SceneInputs{world,std::move(request)});
+    const auto chunks=SceneExtractor::preparationChunks(*input);
+    presentation=engine.gui.game.map.computeExecutor().submitResumablePresentation(chunks,[this,input,chunks](size_t chunk) {
+        if (!presentationExtractor.prepareChunk(*input,scenes.back(),chunk)) return false;
+        if (chunk+1==chunks) {scenes.publish();wake.notify_all();}
+        return true;
+    });
+}
+
 void SimulationRunner::withGame(const std::function<void()> &work)
 {
+    const auto mutate=[&] {
+        // Exceptional owner access may mutate entities without advancing a tick.
+        // Invalidate before invoking it, including when the callback throws.
+        engine.gui.game.snapshots().invalidateBoundary();
+        work();
+    };
 	if (!thread.joinable() || finished)
 	{
-		work();
+		mutate();
 		return;
 	}
 	{
@@ -143,7 +148,7 @@ void SimulationRunner::withGame(const std::function<void()> &work)
 			runner.wake.notify_all();
 		}
 	} release{*this};
-	work();
+	mutate();
 }
 
 void SimulationRunner::suspend()
@@ -164,7 +169,7 @@ void SimulationRunner::resume()
 	wake.notify_all();
 }
 
-const Scene *SimulationRunner::acquireScene()
+const PresentationFrame *SimulationRunner::acquireScene()
 {
 	while (engine.gui.game.map.computeExecutor().pumpPresentation()) {}
 	if (scenes.acquire())

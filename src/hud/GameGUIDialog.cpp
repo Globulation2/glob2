@@ -173,10 +173,10 @@ InGameAllianceScreen::InGameAllianceScreen(GameGUI *gameGUI) : gameGUI(gameGUI)
 		const int otherTeam = game.players[i]->teamNumber;
 		const Uint32 otherTeamMask = Team::teamNumberToMask(otherTeam);
 		teamOf[i] = otherTeam;
-		ownAlliance[i] = (gameGUI->localTeam->allies & otherTeamMask) != 0;
-		ownNormal[i] = (gameGUI->localTeam->sharedVisionOther & otherTeamMask) != 0;
-		ownFood[i] = (gameGUI->localTeam->sharedVisionFood & otherTeamMask) != 0;
-		ownMarket[i] = (gameGUI->localTeam->sharedVisionExchange & otherTeamMask) != 0;
+		ownAlliance[i] = (gameGUI->getLocalTeam()->allies & otherTeamMask) != 0;
+		ownNormal[i] = (gameGUI->getLocalTeam()->sharedVisionOther & otherTeamMask) != 0;
+		ownFood[i] = (gameGUI->getLocalTeam()->sharedVisionFood & otherTeamMask) != 0;
+		ownMarket[i] = (gameGUI->getLocalTeam()->sharedVisionExchange & otherTeamMask) != 0;
 		ownChat[i] = ((gameGUI->chatMask) & (1 << i)) != 0;
 		if (otherTeam == gameGUI->localTeamNo)
 			continue;

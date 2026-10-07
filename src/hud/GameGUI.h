@@ -99,6 +99,7 @@ public:
 	///Moves the local viewport
 	void adjustInitialViewport();
 	void adjustLocalTeam();
+    void selectViewedTeam(int team);
 	//! Handle mouse, keyboard and window resize inputs, and stats
 	void step(void);
     // Host-supplied events and monotonic time; no event polling in this phase.
@@ -138,7 +139,7 @@ public:
 	void waitForAutosave();
     bool savePending();
 	//! return the local team of the player who is running glob2
-	Team *getLocalTeam(void) { return localTeam; }
+	Team *getLocalTeam(void) { return game.teams[localTeamNo]; }
 
 	//! Apply every queued simulation notice (ClientEvents) to the GUI. The
 	//! engine calls this after each tick; executeOrder, step and drawAll call
@@ -237,8 +238,6 @@ public:
 	///proccess, and they are drawn last
 	std::vector<HighlightArrowPosition> arrowPositions;
 	
-	///This sends the highlight values to the Game class, setting Game::highlightBuildingType and Game::highlightUnitType
-	void updateHighlightInGame();
 	
 	KeyboardManager keyboardManager;
 public:
@@ -267,15 +266,27 @@ public:
 	/// The scene this frame draws: the simulation's published scene when the
 	/// simulation runs on its own thread, else the one drawAll extracted.
 	Game *replayTelemetryGame();
-	const Scene& drawnScene() const { return publishedScene ? *publishedScene : frameScene; }
-	/// Draw scenes published by the simulation thread (null: extract in drawAll).
-	void setPublishedScene(const Scene* scene) { publishedScene = scene; }
+	const PresentationFrame& drawnScene() const { return publishedScene ? *publishedScene : frameScene; }
+	/// Draw scenes published by the simulation thread (null: use the explicitly prepared local frame).
+	void setPublishedScene(const PresentationFrame* scene)
+    {
+        publishedScene = scene;
+        view.scene = &drawnScene();
+        toolManager.setDrawnScene(view.scene->world.catalogs ? view.scene : nullptr);
+    }
 	/// What the next scene should show; read by extraction, which runs where the
 	/// game may be read. The main thread publishes it through the runner mailbox.
 	SceneRequest sceneRequest(bool includeTiming = true);
+    void stampPresentationRequest(SceneRequest& request) const { request.tickTime=lastTickTime;request.tickInterval=tickInterval; }
 	/// Extract the next scene from the game (the simulation thread calls this).
-	void extractScene(Scene& scene) { sceneExtractor.extract(game, sceneRequest(), scene); }
-    std::shared_ptr<SceneInputs> captureSceneInputs(SceneRequest request) { request.tickTime = lastTickTime; request.tickInterval = tickInterval; return sceneExtractor.capture(game, request); }
+	void extractScene(PresentationFrame& scene) { const auto request=sceneRequest(); sceneExtractor.prepare(game.captureReadBoundary({},true,SceneExtractor::requirements(request)),request,scene); }
+    // Explicit observation for standalone clients and owner-side tools.
+    void prepareLocalPresentation()
+    {
+        if (!publishedScene) extractScene(frameScene);
+        setPublishedScene(publishedScene);
+    }
+
 	/// Client-owned per-frame work; exceptional live-state paths park explicitly.
 	void threadedClientStep(const std::vector<SDL_Event>& events, Uint64 now);
     // Exceptional live-state access (save, settings, diagnostic and dialogs).
@@ -395,7 +406,6 @@ private:
 	std::unique_ptr<GAGCore::BackgroundFileWriter> autosaveWriter;
 
 	// Helper function for key and menu
-	void repairAndUpgradeBuilding(Building *building, bool repair, bool upgrade);
 	void repairAndUpgradeBuilding(const SceneBuildingPanel *building, bool repair, bool upgrade);
 	
 	bool processGameMenu(SDL_Event *event);
@@ -506,59 +516,59 @@ private:
 	//! Draw the centered title row ("<building> (<player>)") and the
 	//! subtitle ("level N — (building site) — Prestige"). Advances ypos past
 	//! the title block.
-	void drawBuildingHeader(const SceneBuildingPanel* selBuild, BuildingType* buildingType, int& ypos);
+	void drawBuildingHeader(const SceneBuildingPanel* selBuild, const BuildingType* buildingType, int& ypos);
 	//! Draw the building's mini-sprite icon framed by the panel icon backing,
 	//! at the current ypos. Does not advance ypos.
-	void drawBuildingIcon(const SceneBuildingPanel* selBuild, BuildingType* buildingType, int ypos);
+	void drawBuildingIcon(const SceneBuildingPanel* selBuild, const BuildingType* buildingType, int ypos);
 	//! Draw the HP label and current/max value (red below 1/5th max). No
 	//! ypos advance — sits in the icon row next to the icon.
-	void drawBuildingHP(const SceneBuildingPanel* selBuild, BuildingType* buildingType, int ypos, BuildingPreviewRows& rows);
+	void drawBuildingHP(const SceneBuildingPanel* selBuild, const BuildingType* buildingType, int ypos, BuildingPreviewRows& rows);
 	//! Draw the units-inside count ("N/maxUnitInside" when ALIVE, otherwise
 	//! the "still N units" message). Ally-gated. No ypos advance.
-	void drawBuildingInsideStats(const SceneBuildingPanel* selBuild, BuildingType* buildingType, int ypos, BuildingPreviewRows& rows);
+	void drawBuildingInsideStats(const SceneBuildingPanel* selBuild, const BuildingType* buildingType, int ypos, BuildingPreviewRows& rows);
 	//! Draw a flag building's "in way" / "on the spot" unit counts using the
 	//! displayed (optimistic) flag position/range so the numbers track flag
 	//! movement or range edits. Ally-gated. No ypos advance.
-	void drawBuildingFlagInfo(const SceneBuildingPanel* selBuild, BuildingType* buildingType, int ypos);
+	void drawBuildingFlagInfo(const SceneBuildingPanel* selBuild, const BuildingType* buildingType, int ypos);
 	//! Draw the "working" label, count, and the maxUnitWorking scrollbox.
 	//! Queues the tutorial highlight arrow when active. Ally-gated. Advances
 	//! ypos past the working bar when present.
-	void drawBuildingWorkingControls(const SceneBuildingPanel* selBuild, BuildingType* buildingType, int& ypos);
+	void drawBuildingWorkingControls(const SceneBuildingPanel* selBuild, const BuildingType* buildingType, int& ypos);
 	//! Draw the three priority radio buttons (low / medium / high) for
 	//! buildings with maxUnitWorking>0. Ally-gated. Advances ypos.
-	void drawBuildingPriorityControls(const SceneBuildingPanel* selBuild, BuildingType* buildingType, int& ypos);
+	void drawBuildingPriorityControls(const SceneBuildingPanel* selBuild, const BuildingType* buildingType, int& ypos);
 	//! Draw the flag's stay-range scrollbox. Ally-gated. Advances ypos.
-	void drawBuildingRangeControls(const SceneBuildingPanel* selBuild, BuildingType* buildingType, int& ypos);
+	void drawBuildingRangeControls(const SceneBuildingPanel* selBuild, const BuildingType* buildingType, int& ypos);
 	//! Draw the time-to-leave progress bar showing units' insideTimeout (extracted from drawBuildingInfos)
-	void drawBuildingTimeToLeaveBar(const SceneBuildingPanel* selBuild, BuildingType* buildingType, int& ypos, unsigned& unitInsideBarYDec);
+	void drawBuildingTimeToLeaveBar(const SceneBuildingPanel* selBuild, const BuildingType* buildingType, int& ypos, unsigned& unitInsideBarYDec);
 	//! Draw the flag-type-specific controls for clearing/war/exploration flags (extracted from drawBuildingInfos)
-	void drawBuildingFlagControls(const SceneBuildingPanel* selBuild, BuildingType* buildingType, int& ypos);
+	void drawBuildingFlagControls(const SceneBuildingPanel* selBuild, const BuildingType* buildingType, int& ypos);
 	//! Draw armor / shoot damage / shoot range text rows for combat buildings.
 	//! Advances ypos.
-	void drawBuildingCombatStats(const SceneBuildingPanel* selBuild, BuildingType* buildingType, int& ypos, BuildingPreviewRows& rows);
+	void drawBuildingCombatStats(const SceneBuildingPanel* selBuild, const BuildingType* buildingType, int& ypos, BuildingPreviewRows& rows);
 	//! Draw the market exchange panel (per-happyness resource readouts) for
 	//! buildings that can exchange and that the local team has shared-vision
 	//! exchange visibility on. Advances ypos.
-	void drawBuildingExchange(const SceneBuildingPanel* selBuild, BuildingType* buildingType, int& ypos, BuildingPreviewRows& rows);
+	void drawBuildingExchange(const SceneBuildingPanel* selBuild, const BuildingType* buildingType, int& ypos, BuildingPreviewRows& rows);
 	//! Draw non-exchange resource readouts ("name: cur/max") and the bullets
 	//! row for shooters. Ally-gated; skipped for exchange buildings. Advances
 	//! ypos.
-	void drawBuildingResources(const SceneBuildingPanel* selBuild, BuildingType* buildingType, int& ypos, BuildingPreviewRows& rows);
+	void drawBuildingResources(const SceneBuildingPanel* selBuild, const BuildingType* buildingType, int& ypos, BuildingPreviewRows& rows);
 	//! Draw the swarm production progress bar plus the per-unit-type ratio
 	//! scrollboxes (worker / explorer / warrior). Queues the ratio-bar
 	//! tutorial highlight arrow when active. Ally-gated. Advances ypos.
-	void drawBuildingSwarmRatios(const SceneBuildingPanel* selBuild, BuildingType* buildingType, int& ypos);
+	void drawBuildingSwarmRatios(const SceneBuildingPanel* selBuild, const BuildingType* buildingType, int& ypos);
 	//! Draw any "X units can't access resource"-style explanations of why the
 	//! building isn't filling its assigned worker slots. Ally-gated. Advances
 	//! ypos.
-	void drawBuildingFailureReasons(const SceneBuildingPanel* selBuild, BuildingType* buildingType, int& ypos);
+	void drawBuildingFailureReasons(const SceneBuildingPanel* selBuild, const BuildingType* buildingType, int& ypos);
 	//! Draw the repair / upgrade / destroy / cancel action buttons at the
 	//! bottom of the panel, plus the upgrade-preview tooltip on hover. Only
 	//! shown when the local team owns the building. Uses absolute
 	//! bottom-of-screen Y; does not consume ypos.
-	void drawBuildingActionButtons(const SceneBuildingPanel* selBuild, BuildingType* buildingType);
+	void drawBuildingActionButtons(const SceneBuildingPanel* selBuild, const BuildingType* buildingType);
 	//! Draw the upgrade preview tooltip (cost + new abilities) shown on hover over the upgrade button (extracted from drawBuildingInfos)
-	void drawBuildingUpgradePreview(const SceneBuildingPanel* selBuild, BuildingType* buildingType, const BuildingPreviewRows& rows, int& ypos);
+	void drawBuildingUpgradePreview(const SceneBuildingPanel* selBuild, const BuildingType* buildingType, const BuildingPreviewRows& rows, int& ypos);
 	//! Draw the infos about a resource on map (type and number left)
 	void drawResourceInfos(void);
 	//! Draw the replay panel
@@ -577,13 +587,13 @@ private:
 	//! Queues a move of one of the local team's flags to tile (x, y), replacing any
 	//! move of the same flag still in the queue, and shows the flag there at once.
 	void queueFlagMove(Building &flag, int x, int y, bool drop);
-	void queueFlagMove(const SceneBuilding &flag, int x, int y, bool drop);
+	void queueFlagMove(const SnapshotBuilding &flag, int x, int y, bool drop);
 	void queueFlagMove(Uint16 gid, int x, int y, bool drop);
-	std::optional<SceneBuilding> inputBuilding(BuildingRef ref) const;
+	const SnapshotBuilding* inputBuilding(BuildingRef ref) const;
 	//! The local team's flag at a viewport-relative map point: an exact tile hit,
 	//! or else the nearest flag whose tile centre is within `reachPoints` screen
 	//! points (0 for exact hits only).
-	std::optional<SceneBuilding> flagAt(int mx, int my, double reachPoints);
+	const SnapshotBuilding* flagAt(int mx, int my, double reachPoints);
 	//! The touch reach around flags for a contact at a screen point, in points.
 	double flagReachAt(double screenX, double screenY) const;
 	//! One viewport has moved and a flag or a brush is selected, update its position
@@ -716,7 +726,7 @@ private:
 
 	bool showUnitWorkingToBuilding;
 
-	TeamStats *teamStats;
+	const TeamStats *teamStats;
 	int measurementPage = 0;
 	//! Pages of the statistics text view: the colony summary, the metric groups
 	//! and, when spectating, the win chances.
@@ -871,13 +881,12 @@ private:
 	///Game::ViewState. Owned here (not on Game) and passed into game.drawMap.
 	Game::ViewState view;
 	///The scene drawn this frame, extracted from `game` at the start of drawAll.
-	Scene frameScene;
+	PresentationFrame frameScene;
 	Uint64 lastTickTime = 0;
 	Uint32 tickInterval = 0;
-	///Scene published by the simulation thread, or null when drawAll extracts
+	///PresentationFrame published by the simulation thread, or null when drawAll extracts
 	///frameScene itself (serial execution).
-	const Scene* publishedScene = nullptr;
-	ScenePanels serialInputPanels;
+	const PresentationFrame* publishedScene = nullptr;
 	const SceneBuildingPanel* inputBuildingPanel();
 	///Extracts frameScene; keeps the state that spans frames (the overlay map).
 	SceneExtractor sceneExtractor;
@@ -886,15 +895,10 @@ private:
 	Sint32 displayedPosX(const Building& b) const;
 	Sint32 displayedPosY(const Building& b) const;
 	Sint32 displayedMaxUnitWorking(const Building& b) const;
-    void requestBuildingConstruction(Building& building);
     void requestBuildingConstruction(const SceneBuildingPanel& building);
-    void requestBuildingDestruction(Building& building);
     void requestBuildingDestruction(const SceneBuildingPanel& building);
-    bool requestWorkerAllocation(Building& building, int requested);
     bool requestWorkerAllocation(const SceneBuildingPanel& building, int requested);
-    bool requestBuildingPriority(Building& building, int requested);
     bool requestBuildingPriority(const SceneBuildingPanel& building, int requested);
-    bool requestFlagRange(Building& building, int requested);
     bool requestFlagRange(const SceneBuildingPanel& building, int requested);
 	Sint32 displayedUnitStayRange(const Building& b) const;
 	Sint32 displayedPriority(const Building& b) const;
@@ -904,8 +908,8 @@ private:
 	template<class B> bool displayedExplorersRequireBombing(const B& b) const { return ::displayedExplorersRequireBombing(buildingGuiState,b); }
 	std::array<Sint32, NB_UNIT_TYPE> displayedRatio(const Building& b) const;
 	// The same for the selected building's panel model.
-	Sint32 displayedPosX(const SceneBuilding& b) const { return ::displayedPosX(buildingGuiState, b); }
-	Sint32 displayedPosY(const SceneBuilding& b) const { return ::displayedPosY(buildingGuiState, b); }
+	Sint32 displayedPosX(const SnapshotBuilding& b) const { return ::displayedPosX(buildingGuiState, b); }
+	Sint32 displayedPosY(const SnapshotBuilding& b) const { return ::displayedPosY(buildingGuiState, b); }
 	Sint32 displayedPosX(const SceneBuildingPanel& b) const { return ::displayedPosX(buildingGuiState, b); }
 	Sint32 displayedPosY(const SceneBuildingPanel& b) const { return ::displayedPosY(buildingGuiState, b); }
 	Sint32 displayedMaxUnitWorking(const SceneBuildingPanel& b) const { return ::displayedMaxUnitWorking(buildingGuiState, b); }

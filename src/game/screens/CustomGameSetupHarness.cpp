@@ -139,7 +139,7 @@ struct CustomGameSetupHarness
             world.game.players[t]->name = "Long colony name " + std::to_string(t + 1);
             world.game.teams[t]->stats.getLatestStat()->totalUnit = 10 + t;
         }
-        Scene scene;
+        PresentationFrame scene;
         world.gui.extractScene(scene);
         world.gui.setPublishedScene(&scene);
         globalContainer->liveSpectating = true;
@@ -925,7 +925,7 @@ struct CustomGameSetupHarness
 			engine.run();
 			{
 				FrontendScope gameplay(false);
-				engine.gui.drawAll(engine.gui.localTeamNo);
+				glob2test::drawGUI(engine.gui,engine.gui.localTeamNo);
 				globalContainer->gfx->printScreen(output + "/live-control-" +
 												  std::to_string(control) + ".bmp");
 			}

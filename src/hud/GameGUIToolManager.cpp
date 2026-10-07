@@ -4,6 +4,7 @@
 
 #include "GameGUIToolManager.h"
 #include "render/scene/Scene.h"
+#include "render/scene/BuildingCatalogView.h"
 #include "GlobalContainer.h"
 #include "GUIBase.h"
 #include "FormatableString.h"
@@ -28,10 +29,11 @@ GameGUIToolManager::GameGUIToolManager(Game& game, BrushTool& brush, GameGUIDefa
 
 void GameGUIToolManager::activateBuildingTool(const std::string& nbuilding)
 {
-	const int type=game.buildingsTypes.getPlaceableTypeNum(nbuilding);
-	if (!game.isBuildingTypeAvailable(type)) { deactivateTool(); return; }
+    if (!drawnScene) return;
+	const int type=BuildingCatalogView(*drawnScene->buildingTypes).getPlaceableTypeNum(nbuilding);
+	if (type<0 || !drawnScene->world.catalogs->buildings->at(type).available) { deactivateTool(); return; }
 	mode = PlaceBuilding;
-	building = game.buildingsTypes.get(type)->key;
+	building = BuildingCatalogView(*drawnScene->buildingTypes).get(type)->key;
 	firstPlacement.reset();
 }
 
@@ -39,7 +41,7 @@ void GameGUIToolManager::activateBuildingTool(const std::string& nbuilding)
 
 bool GameGUIToolManager::farmAreasAvailable() const
 {
-	return game.gameHeader.hasExperiment(ExperimentId::FarmAreas);
+	return drawnScene && drawnScene->world.rules->configuration->hasExperiment(ExperimentId::FarmAreas);
 }
 
 
@@ -80,13 +82,13 @@ void GameGUIToolManager::drawTool(int mouseX, int mouseY, int localteam, int vie
 	if(mode == PlaceBuilding)
 	{
 		// Get the type and sprite
-		int typeNum = game.buildingsTypes.getFinishedTypeNum(building);
-		BuildingType *bt = game.buildingsTypes.get(typeNum);
+		int typeNum = BuildingCatalogView(*drawnScene->buildingTypes).getFinishedTypeNum(building);
+		const BuildingType *bt = BuildingCatalogView(*drawnScene->buildingTypes).get(typeNum);
 		
 		// Translate the mouse position to a building position, and check if there is room
 		// on the map
 		int mapX, mapY;
-		game.map.cursorToBuildingPos(mouseX, mouseY, bt->width, bt->height, &mapX, &mapY, viewportX, viewportY);
+		drawnScene->map.cursorToBuildingPos(mouseX, mouseY, bt->width, bt->height, &mapX, &mapY, viewportX, viewportY);
 		
 		
 		const int modState = modifiers;
@@ -173,10 +175,10 @@ void GameGUIToolManager::handleMouseDown(int mouseX, int mouseY, int localteam, 
 	if(mode == PlaceBuilding)
 	{
 		// we get the type of building
-		Sint32 typeNum = game.buildingsTypes.getPlaceableTypeNum(building);
-		BuildingType *bt = game.buildingsTypes.get(typeNum);
+		Sint32 typeNum = BuildingCatalogView(*drawnScene->buildingTypes).getPlaceableTypeNum(building);
+		const BuildingType *bt = BuildingCatalogView(*drawnScene->buildingTypes).get(typeNum);
 		int tempX, tempY;
-		game.map.cursorToBuildingPos(mouseX, mouseY, bt->width, bt->height, &tempX, &tempY, viewportX, viewportY);
+		drawnScene->map.cursorToBuildingPos(mouseX, mouseY, bt->width, bt->height, &tempX, &tempY, viewportX, viewportY);
 		firstPlacement = FirstPlacement{tempX, tempY};
 	}
 	if(mode == PlaceZone)
@@ -185,7 +187,8 @@ void GameGUIToolManager::handleMouseDown(int mouseX, int mouseY, int localteam, 
 		//of the zone value, rather than adding/removing (which may have no effect), so that
 		//incorrect areas can be adjusted easily
 		int mapX, mapY;
-		game.map.displayToMapCaseAligned(mouseX, mouseY, &mapX, &mapY,  viewportX, viewportY);
+		mapX=((mouseX>>5)+viewportX)&drawnScene->map.getMaskW();
+        mapY=((mouseY>>5)+viewportY)&drawnScene->map.getMaskH();
 		
 		if(!firstPlacement)
 		{
@@ -209,11 +212,11 @@ void GameGUIToolManager::handleMouseUp(int mouseX, int mouseY, int localteam, in
 	if(mode == PlaceBuilding)
 	{
 		// we get the type of building
-		Sint32 typeNum = game.buildingsTypes.getPlaceableTypeNum(building);
-		BuildingType *bt = game.buildingsTypes.get(typeNum);
+		Sint32 typeNum = BuildingCatalogView(*drawnScene->buildingTypes).getPlaceableTypeNum(building);
+		const BuildingType *bt = BuildingCatalogView(*drawnScene->buildingTypes).get(typeNum);
 
 		int mapX, mapY;
-		game.map.cursorToBuildingPos(mouseX, mouseY, bt->width, bt->height, &mapX, &mapY, viewportX, viewportY);
+		drawnScene->map.cursorToBuildingPos(mouseX, mouseY, bt->width, bt->height, &mapX, &mapY, viewportX, viewportY);
 
 		const int modState = modifiers;
 		if(!(modState & SDL_KMOD_CTRL || modState & SDL_KMOD_SHIFT) || !firstPlacement)
@@ -263,9 +266,10 @@ void GameGUIToolManager::handleZonePlacement(int mouseX, int mouseY, int localte
 {
 	// we add brush to accumulator
 	int mapX, mapY;
-	game.map.displayToMapCaseAligned(mouseX, mouseY, &mapX, &mapY,  viewportX, viewportY);
+	mapX=((mouseX>>5)+viewportX)&drawnScene->map.getMaskW();
+        mapY=((mouseY>>5)+viewportY)&drawnScene->map.getMaskH();
 	int fig = brush.getFigure();
-	brushAccumulator.applyBrush(BrushApplication(mapX, mapY, fig), &game.map);
+	brushAccumulator.applyBrush(BrushApplication(mapX, mapY, fig), drawnScene->map.getW(), drawnScene->map.getH());
 
 	// we get coordinates
 	int startX = mapX-BrushTool::getBrushDimXMinus(fig);
@@ -281,7 +285,6 @@ void GameGUIToolManager::handleZonePlacement(int mouseX, int mouseY, int localte
 	{
 		const bool value = (brushMode == BrushTool::MODE_ADD);
 		const ZoneType zone = getZoneType();
-		Utilities::BitArray& view = displayedViewForZone(zone);
 		// The farm brush does not paint ground nothing can grow on. The order
 		// refuses those tiles anyway; skipping them here too keeps the overlay
 		// the player sees from disagreeing with what actually lands.
@@ -294,9 +297,8 @@ void GameGUIToolManager::handleZonePlacement(int mouseX, int mouseY, int localte
 					continue;
 				if (honourFarmTerrain && !canPaintFarmArea(x, y))
 					continue;
-				const auto index=game.map.coordToIndex(x,y);
-                if(game.gui->simulationThreaded) preview.set(zone,index,value);
-                else view.set(index,value);
+				const auto index=drawnScene->map.coordToIndex(x,y);
+                preview.set(zone,index,value);
 			}
 		}
 	}
@@ -312,20 +314,7 @@ void GameGUIToolManager::handleZonePlacement(int mouseX, int mouseY, int localte
 
 Utilities::BitArray& GameGUIToolManager::displayedViewForZone(ZoneType type)
 {
-    if(game.gui->simulationThreaded) return preview.shown[type];
-	switch (type)
-	{
-	case Forbidden:
-		return game.map.displayedForbiddenView;
-	case Guard:
-		return game.map.displayedGuardAreaView;
-	case Clearing:
-		return game.map.displayedClearAreaView;
-	case Farm:
-		return game.map.displayedFarmAreaView;
-	}
-	assert(false);
-	return game.map.displayedForbiddenView;
+    return preview.shown.at(type);
 }
 
 
@@ -367,8 +356,15 @@ void GameGUIToolManager::flushBrushOrders(int localteam)
 {
 	if (brushAccumulator.getApplicationCount() > 0)
 	{
-		auto order=zoneOrder(getZoneType(), Uint8(localteam), Uint8(brush.getType()), &brushAccumulator, &game.map);
-        if(game.gui->simulationThreaded) preview.track(order,true);
+        BrushAccumulator::AreaDimensions dimensions;
+        Utilities::BitArray mask;
+        brushAccumulator.getBitmap(&mask,&dimensions);
+        auto order=std::static_pointer_cast<OrderAlterArea>(zoneOrder(getZoneType()));
+        order->teamNumber=Uint8(localteam); order->type=Uint8(brush.getType());
+        order->centerX=dimensions.centerX; order->centerY=dimensions.centerY;
+        order->minX=dimensions.minX; order->minY=dimensions.minY;
+        order->maxX=dimensions.maxX; order->maxY=dimensions.maxY; order->mask=std::move(mask);
+        preview.track(order,true);
         orders.push(std::move(order));
 		brushAccumulator.clear();
 	}
@@ -379,47 +375,41 @@ void GameGUIToolManager::flushBrushOrders(int localteam)
 bool GameGUIToolManager::confirmBuilding(int mouseX, int mouseY, int localteam, int viewportX, int viewportY)
 {
     if (mode != PlaceBuilding) return false;
-    const auto* type=game.buildingsTypes.get(game.buildingsTypes.getPlaceableTypeNum(building));
+    const auto* type=BuildingCatalogView(*drawnScene->buildingTypes).get(BuildingCatalogView(*drawnScene->buildingTypes).getPlaceableTypeNum(building));
     int x,y;
-    game.map.cursorToBuildingPos(mouseX,mouseY,type->width,type->height,&x,&y,viewportX,viewportY);
+    drawnScene->map.cursorToBuildingPos(mouseX,mouseY,type->width,type->height,&x,&y,viewportX,viewportY);
     return placeBuildingAt(x,y,localteam);
 }
 
 bool GameGUIToolManager::placeBuildingAt(int mapX, int mapY, int localteam)
 {
 	// Count down whether a building site can be placed
-	if ((game.gui->simulationThreaded ? (drawnScene ? drawnScene->panels.local.noMoreBuildingSitesCountdown : 1) : game.teams[localteam]->noMoreBuildingSitesCountdown)==0)
+	if ((drawnScene ? drawnScene->panels.local.state().noMoreBuildingSitesCountdown : 1)==0)
 	{
 		// we get the type of building
-		Sint32 typeNum = game.buildingsTypes.getPlaceableTypeNum(building);
-		BuildingType *bt = game.buildingsTypes.get(typeNum);
+		Sint32 typeNum = BuildingCatalogView(*drawnScene->buildingTypes).getPlaceableTypeNum(building);
+		const BuildingType *bt = BuildingCatalogView(*drawnScene->buildingTypes).get(typeNum);
 
 		int tempX = mapX, tempY = mapY;
 		bool isRoom;
-        if(game.gui->simulationThreaded)
         {
-            if(!drawnScene || drawnScene->panels.local.teamNumber!=localteam) return false;
+            if(!drawnScene || drawnScene->panels.local.state().number!=localteam) return false;
             const auto& scene=*drawnScene;
             mapX=tempX+bt->decLeft; mapY=tempY+bt->decTop;
             isRoom=true;
             if(bt->isVirtual)
             {
                 for(auto gid:scene.entities.virtualBuildings[localteam])
-                    if(const auto* b=scene.entities.building(gid); b && b->posX==(mapX & scene.map.getMaskW()) && b->posY==(mapY & scene.map.getMaskH())) {isRoom=false;break;}
+                    if(const auto* b=scene.entities.building(gid.gid); b && b->posX==(mapX & scene.map.getMaskW()) && b->posY==(mapY & scene.map.getMaskH())) {isRoom=false;break;}
             }
             else isRoom=scene.map.isHardSpaceForBuilding(mapX,mapY,bt->width,bt->height);
         }
-        else if (bt->isVirtual)
-			isRoom=game.checkRoomForBuilding(tempX, tempY, bt, &mapX, &mapY, localteam);
-		else
-			isRoom=game.checkHardRoomForBuilding(tempX, tempY, bt, &mapX, &mapY);
-			
-	
+
 		if(ghostManager.isGhostBuilding(mapX, mapY, bt->width, bt->height))
 			isRoom = false;
 		
 		int unitWorking = defaultAssign.getDefaultAssignedUnits(typeNum);
-		int unitWorkingFuture = defaultAssign.getDefaultAssignedUnits(game.buildingsTypes.getFinishedTypeNum(building));
+		int unitWorkingFuture = defaultAssign.getDefaultAssignedUnits(BuildingCatalogView(*drawnScene->buildingTypes).getFinishedTypeNum(building));
 		
 		if (isRoom)
 		{
@@ -439,22 +429,22 @@ bool GameGUIToolManager::placeBuildingAt(int mapX, int mapY, int localteam)
 void GameGUIToolManager::drawBuildingAt(int mapX, int mapY, int localteam, int viewportX, int viewportY)
 {
 	// Get the type and sprite
-	int typeNum = game.buildingsTypes.getFinishedTypeNum(building);
-	BuildingType *bt = game.buildingsTypes.get(typeNum);
+	int typeNum = BuildingCatalogView(*drawnScene->buildingTypes).getFinishedTypeNum(building);
+	const BuildingType *bt = BuildingCatalogView(*drawnScene->buildingTypes).get(typeNum);
 	Sprite *sprite = bt->gameSpritePtr;
 		
 	// Room as Game::checkRoomForBuilding / checkHardRoomForBuilding decide it, read
-	// from the drawn Scene: flags need no own flag on the tile, buildings hard space.
+	// from the drawn PresentationFrame: flags need no own flag on the tile, buildings hard space.
 	assert(drawnScene);
-	const Scene &scene = *drawnScene;
+	const PresentationFrame &scene = *drawnScene;
 	int tempX = mapX + bt->decLeft, tempY = mapY + bt->decTop;
 	bool isRoom = true;
 	if (bt->isVirtual)
 	{
 		if (localteam >= 0)
-			for (Uint16 flag : scene.entities.virtualBuildings[localteam])
+			for (BuildingRef flag : scene.entities.virtualBuildings[localteam])
 			{
-				const SceneBuilding *b = scene.entities.building(flag);
+				const SnapshotBuilding *b = scene.entities.building(flag.gid);
 				if (b && b->posX == (tempX & scene.map.getMaskW()) && b->posY == (tempY & scene.map.getMaskH()))
 					isRoom = false;
 			}
@@ -481,7 +471,7 @@ void GameGUIToolManager::drawBuildingAt(int mapX, int mapY, int localteam, int v
 	int rectY = (((tempY-viewportY)&(scene.map.getMaskH())) * 32)-(rectH-(bt->height * 32));
 	
 	// Draw the building
-	sprite->setBaseColor(scene.panels.local.color);
+	sprite->setBaseColor(presentationColor(scene.panels.local.state().color));
 	int spriteIntensity = 127+static_cast<int>(128.0f*splineInterpolation(1.f, 0.f, 1.f, highlightStrength));
 	globalContainer->gfx->drawSprite(rectX, rectY, sprite, bt->gameSpriteImage, spriteIntensity);
 	globalContainer->gfx->finishDrawingSprite(sprite, spriteIntensity);
@@ -489,7 +479,7 @@ void GameGUIToolManager::drawBuildingAt(int mapX, int mapY, int localteam, int v
 	if (!bt->isVirtual)
 	{
 		// Count down whether a building site can be placed
-		const int countdown = scene.panels.local.noMoreBuildingSitesCountdown;
+		const int countdown = scene.panels.local.state().noMoreBuildingSitesCountdown;
 		if (countdown>0)
 		{
 			globalContainer->gfx->drawRect(rectX, rectY, rectW, rectH, 255, 0, 0, 127);
@@ -508,7 +498,7 @@ void GameGUIToolManager::drawBuildingAt(int mapX, int mapY, int localteam, int v
 			else
 				globalContainer->gfx->drawRect(rectX, rectY, rectW, rectH, 255, 0, 0, 127);
 			
-			BuildingType *upgradedType=game.buildingsTypes.getLastLevel(typeNum);
+			const BuildingType *upgradedType=BuildingCatalogView(*drawnScene->buildingTypes).getLastLevel(typeNum);
 			const int upgradedMapX = mapX + upgradedType->decLeft, upgradedMapY = mapY + upgradedType->decTop;
 			bool isUpgradedRoom = scene.map.isHardSpaceForBuilding(upgradedMapX, upgradedMapY, upgradedType->width, upgradedType->height);
 			int upgradedRectX=((upgradedMapX-viewportX)&(scene.map.getMaskW())) * 32;
@@ -527,8 +517,8 @@ void GameGUIToolManager::drawBuildingAt(int mapX, int mapY, int localteam, int v
 void GameGUIToolManager::computeBuildingLine(int sx, int sy, int ex, int ey, int localteam, int viewportX, int viewportY, int mode)
 {
 	// Get the type and sprite
-	int typeNum = game.buildingsTypes.getFinishedTypeNum(building);
-	BuildingType *bt = game.buildingsTypes.get(typeNum);
+	int typeNum = BuildingCatalogView(*drawnScene->buildingTypes).getFinishedTypeNum(building);
+	const BuildingType *bt = BuildingCatalogView(*drawnScene->buildingTypes).get(typeNum);
 		
 	int startx = sx;
 	int endx = ex;
@@ -537,18 +527,18 @@ void GameGUIToolManager::computeBuildingLine(int sx, int sy, int ex, int ey, int
 	
 	int dirx = (endx > startx ? 1 : -1);
 	int distx = std::abs(endx - startx);
-	if(distx > game.map.getW()/2)
+	if(distx > drawnScene->map.getW()/2)
 	{
 		dirx = -dirx;
-		distx = game.map.getW() -  distx;
+		distx = drawnScene->map.getW() -  distx;
 	}
 			
 	int diry = (endy > starty ? 1 : -1);
 	int disty = std::abs(endy - starty);
-	if(disty > game.map.getH()/2)
+	if(disty > drawnScene->map.getH()/2)
 	{
 		diry = -diry;
-		disty = game.map.getH() -  disty;
+		disty = drawnScene->map.getH() -  disty;
 	}
 	
 	int bw = 0;
@@ -579,7 +569,7 @@ void GameGUIToolManager::computeBuildingLine(int sx, int sy, int ex, int ey, int
 			}
 			if(std::abs(px * disty - py * distx) > std::abs(px * disty - (py+1) * distx))
 			{
-				y=game.map.normalizeY(y+diry);
+				y=((y+diry)&drawnScene->map.getMaskH());
 				bh-=1;
 				py+=1;
 				if(bh <= 0)
@@ -593,7 +583,7 @@ void GameGUIToolManager::computeBuildingLine(int sx, int sy, int ex, int ey, int
 					didBuilding=true;
 				}
 			}
-			x=game.map.normalizeX(x+dirx);
+			x=((x+dirx)&drawnScene->map.getMaskW());
 		}
 	}
 	else
@@ -622,7 +612,7 @@ void GameGUIToolManager::computeBuildingLine(int sx, int sy, int ex, int ey, int
 			}
 			if(std::abs(py * distx - px * disty) > std::abs(py * distx - (px+1) * disty))
 			{
-				x=game.map.normalizeX(x+dirx);
+				x=((x+dirx)&drawnScene->map.getMaskW());
 				bw-=1;
 				px+=1;
 				if(bw <= 0)
@@ -636,7 +626,7 @@ void GameGUIToolManager::computeBuildingLine(int sx, int sy, int ex, int ey, int
 					didBuilding=true;
 				}
 			}
-			y=game.map.normalizeY(y+diry);
+			y=((y+diry)&drawnScene->map.getMaskH());
 		}
 	}
 	if(bt->width == 1 && bt->height==1)
@@ -655,8 +645,8 @@ void GameGUIToolManager::computeBuildingLine(int sx, int sy, int ex, int ey, int
 void GameGUIToolManager::computeBuildingBox(int sx, int sy, int ex, int ey, int localteam, int viewportX, int viewportY, int mode)
 {
 	// Get the type and sprite
-	int typeNum = game.buildingsTypes.getFinishedTypeNum(building);
-	BuildingType *bt = game.buildingsTypes.get(typeNum);
+	int typeNum = BuildingCatalogView(*drawnScene->buildingTypes).getFinishedTypeNum(building);
+	const BuildingType *bt = BuildingCatalogView(*drawnScene->buildingTypes).get(typeNum);
 	
 	int startx = sx;
 	int endx = ex;
@@ -665,22 +655,22 @@ void GameGUIToolManager::computeBuildingBox(int sx, int sy, int ex, int ey, int 
 	
 	int dirx = (endx > startx ? 1 : -1);
 	int distx = std::abs(endx - startx);
-	if(distx > game.map.getW()/2)
+	if(distx > drawnScene->map.getW()/2)
 	{
 		dirx = -dirx;
-		distx = game.map.getW() -  distx;
+		distx = drawnScene->map.getW() -  distx;
 	}
 			
 	int diry = (endy > starty ? 1 : -1);
 	int disty = std::abs(endy - starty);
-	if(disty > game.map.getH()/2)
+	if(disty > drawnScene->map.getH()/2)
 	{
 		diry = -diry;
-		disty = game.map.getH() -  disty;
+		disty = drawnScene->map.getH() -  disty;
 	}
 	
-	endx = game.map.normalizeX(endx + (distx % bt->width + 1) * dirx);
-	endy = game.map.normalizeY(endy + (disty % bt->height + 1) * diry);
+	endx = ((endx + (distx % bt->width + 1) * dirx)&drawnScene->map.getMaskW());
+	endy = ((endy + (disty % bt->height + 1) * diry)&drawnScene->map.getMaskH());
 	
 	int bx=0;
 	for(int x=startx; x!=endx;)
@@ -700,11 +690,11 @@ void GameGUIToolManager::computeBuildingBox(int sx, int sy, int ex, int ey, int 
 						placeBuildingAt(x, y, localteam);
 					by = bt->height;
 				}
-				y=game.map.normalizeY(y+diry);
+				y=((y+diry)&drawnScene->map.getMaskH());
 			}
 			bx = bt->width;	
 		}	
-		x=game.map.normalizeX(x+dirx);
+		x=((x+dirx)&drawnScene->map.getMaskW());
 	}
 }
 
@@ -719,12 +709,12 @@ void GameGUIToolManager::cancelDrag(int localteam)
     firstPlacement.reset();
 }
 
-void GameGUIToolManager::setDrawnScene(const Scene* scene)
+void GameGUIToolManager::setDrawnScene(const PresentationFrame* scene)
 {
     drawnScene=scene;
-    if(scene && game.gui->simulationThreaded) preview.refresh(*scene,game.gui->localTeamNo);
+    if(scene) preview.refresh(*scene,game.gui->localTeamNo);
 }
 bool GameGUIToolManager::canPaintFarmArea(int x,int y) const
 {
-    return game.gui->simulationThreaded ? drawnScene && drawnScene->map.canPaintFarmArea(x,y) : game.map.canPaintFarmArea(x,y);
+    return drawnScene && drawnScene->map.canPaintFarmArea(x,y);
 }

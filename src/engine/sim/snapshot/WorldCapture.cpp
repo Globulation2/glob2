@@ -8,6 +8,11 @@
 #include "GlobalContainer.h"
 #include "Unit.h"
 #include "Team.h"
+#include "Player.h"
+#include "Bullet.h"
+#include "Sector.h"
+#include "render/GameAnimations.h"
+#include "sim/ClientEvents.h"
 #include <string>
 #include "Race.h"
 #include <algorithm>
@@ -16,6 +21,7 @@
 #include <chrono>
 #include <cstring>
 #include <bit>
+#include <utility>
 
 namespace SimulationSnapshot
 {
@@ -89,6 +95,7 @@ Handle capture(const Game& game,
 		reuse(Component::Resources, result->resources, previous->resources, sameTerrain && generations[1] == old[1]);
 		reuse(Component::Occupancy, result->occupancy, previous->occupancy, generations[2] == old[2]);
 		reuse(Component::Areas, result->areas, previous->areas, generations[3] == old[3] && previous->configurationRevision == result->configurationRevision);
+		reuse(Component::Annotations, result->annotations, previous->annotations, generations[3] == old[3]);
 		reuse(Component::Visibility, result->visibility, previous->visibility, generations[4] == old[4]);
 		reuse(Component::Growth, result->growth, previous->growth, sameTerrain);
 	}
@@ -153,6 +160,7 @@ Handle capture(const Game& game,
 		catalogs->capabilities = game.buildingCapabilities().frozenTables();
 		for (int type = 0; type < NB_UNIT_TYPE; ++type)
 			std::copy_n(Race::unitTypes[type], NB_UNIT_LEVELS, catalogs->unitTypes[type].begin());
+		catalogs->typeDefinitions = std::make_shared<const std::vector<BuildingType>>(*game.buildingsTypes.retainTypes());
 		catalogs->resources = game.map.frozenResourceRegistry();
 		catalogs->habitats = game.map.frozenResourceHabitats();
 	}
@@ -214,6 +222,14 @@ Handle capture(const Game& game,
 		stamps.worldIdentity = identity; stamps.width = geometry.width; stamps.height = geometry.height;
 		stamps.filledTick = game.stepCounter;
 	};
+    if (needs(requirements, Component::Annotations)) {
+        auto annotations=storage ? storage->annotations.acquire(storage->allocations, [](const Annotations& a) { return a.stamps.filledTick; }) : std::make_shared<Annotations>();
+        const auto source=game.map.scriptAreaState();
+        const bool resized=prepare(annotations->scriptAreas,source.size());
+        refresh(annotations->stamps,game.map.changes(MapState::TrackedArray::Areas),resized,
+            [&](size_t start,size_t length) { copyCells(annotations->scriptAreas,source,start,length); });
+        result->annotations=std::move(annotations);
+    }
 	if (needs(requirements, Component::Terrain))
 	{
 		const auto source = game.map.legacyTerrainState();
@@ -286,8 +302,16 @@ Handle capture(const Game& game,
 		target.foodVision = team->sharedVisionFood;
 		target.exchangeVision = team->sharedVisionExchange;
 		target.otherVision = team->sharedVisionOther;
-		if (storage && target.statistics.buildingCountByVariant.capacity() < team->stats.getLatestStat()->buildingCountByVariant.size()) ++storage->allocations;
-		target.statistics = *team->stats.getLatestStat();
+		if (storage && target.statistics.buildingCountByVariant.capacity() < std::as_const(team->stats).getLatestStat()->buildingCountByVariant.size()) ++storage->allocations;
+        target.color = {team->color.r,team->color.g,team->color.b,team->color.a}; target.won = team->hasWon; target.lost = team->hasLost;
+        target.unitConversionGained = team->unitConversionGained;
+        target.unitConversionLost = team->unitConversionLost;
+        target.noMoreBuildingSitesCountdown = team->noMoreBuildingSitesCountdown;
+        target.firstPlayerName.clear();
+        for (int p=0;p<game.gameHeader.getNumberOfPlayers();++p)
+            if (game.players[p] && game.players[p]->team==team) { target.firstPlayerName=game.players[p]->name; break; }
+        std::copy_n(team->reservedTeamMaterials,MaterialSlotCount,target.reservedMaterials.begin());
+		target.statistics = *std::as_const(team->stats).getLatestStat();
 		// Match the existing smoothed-stat queries, rather than deriving a new
 		// balance from the current sample and changing policy inputs.
 		target.workerBalance = target.statistics.isFree[WORKER] - target.statistics.totalNeeded;
@@ -313,7 +337,6 @@ Handle capture(const Game& game,
 				std::memcpy(static_cast<BuildingStateRecord*>(&v), static_cast<const BuildingStateRecord*>(b), sizeof(BuildingStateRecord));
 				v.identity = Game::refOf(b); v.team = t;
 				v.maxHp = b->getEffectiveMaxHp();
-				v.lastShootStep = b->lastShootStep; v.lastShootSpeedX = b->lastShootSpeedX; v.lastShootSpeedY = b->lastShootSpeedY;
 				v.usesTeamResources = b->materials == team->teamMaterials;
 				for (unsigned supplied=b->runtime->suppliesStockMask; supplied; supplied &= supplied-1) {
 					const unsigned material=std::countr_zero(supplied);
@@ -336,7 +359,6 @@ Handle capture(const Game& game,
 				UnitView v;
 				std::memcpy(static_cast<UnitState*>(&v), static_cast<const UnitState*>(u), sizeof(UnitState));
 				v.identity = Game::refOf(u); v.team = t;
-				v.levelUpAnimation = u->levelUpAnimation; v.magicActionAnimation = u->magicActionAnimation;
 				v.attached = Game::refOf(u->attachedBuilding);
 				v.target = Game::refOf(u->targetBuilding);
 				append(entities->units, std::move(v));
@@ -344,6 +366,77 @@ Handle capture(const Game& game,
 		}
 	}
 
+    if (auto session=acquire(&Storage::session,Component::Session)) {
+        session->editor=game.edit!=nullptr;
+        session->terrainSeed=game.map.terrainSeed(); session->fertilityMaximum=game.map.fertilityMaximum;
+        session->executedOrderRevision=game.clientEvents ? game.clientEvents->executedOrderRevision() : 0;
+        session->totalPrestigeReached=game.totalPrestigeReached;
+        session->prestigeWinCondition=const_cast<Game&>(game).isPrestigeWinCondition();
+        session->prestigeToReach=game.prestigeToReach;
+        session->anyPlayerWaited=game.anyPlayerWaited; session->maskAwayPlayer=game.maskAwayPlayer;
+        session->legacyScriptTextShown=game.legacyScriptActive() && game.sgslScript.isTextShown;
+        session->legacyScriptText=session->legacyScriptTextShown ? game.sgslScript.textShown : std::string();
+        session->legacyScriptTimer=game.legacyScriptTimer();
+        session->players.resize(game.gameHeader.getNumberOfPlayers());
+        for (size_t p=0;p<session->players.size();++p) {
+            const auto* player=game.players[p];
+            session->players[p]=player ? Session::Player{player->name,player->teamNumber,
+                player->type!=BasePlayer::P_NONE && player->type!=BasePlayer::playerTypeFromImplementationID(AI::NONE)} : Session::Player{};
+        }
+        result->session=std::move(session);
+    }
+    if (auto effects=acquire(&Storage::effects,Component::Effects)) {
+        const auto count=game.map.getSectorW()*game.map.getSectorH();
+        effects->sectors.resize(count);
+        for (int i=0;i<count;++i) {
+            auto& sector=effects->sectors[i]; sector.bullets.clear(); sector.explosions.clear(); sector.deaths.clear();
+            for (const auto* b:const_cast<Map&>(game.map).getSector(i)->bullets)
+                sector.bullets.push_back({b->px,b->py,b->speedX,b->speedY,b->ticksLeft,b->ticksInitial});
+            if (game.animations) {
+                for (const auto* e:game.animations->getExplosions(i)) sector.explosions.push_back({e->x,e->y,e->ticksLeft});
+                for (const auto* d:game.animations->getDeathAnimations(i)) sector.deaths.push_back({d->x,d->y,d->ticksLeft,d->team->teamNumber});
+            }
+        }
+        result->effects=std::move(effects);
+    }
+    if (auto diagnostics=acquire(&Storage::entityDiagnostics,Component::EntityDiagnostics)) {
+        diagnostics->buildings.clear();
+        for (int t=0;t<game.teamsCount();++t) for (const auto* b:game.teams[t]->liveBuildings.entries()) {
+            if (!b || (!b->verbose && !b->recordFailingUnits)) continue;
+            EntityDiagnostics::Building value;
+            value.identity=Game::refOf(b); value.verbose=b->verbose; value.recordFailingUnits=b->recordFailingUnits;
+            std::copy_n(b->unitsFailingRequirements,EntityDiagnostics::FailReasons,value.failingCounts.begin());
+            for (unsigned r=0;r<EntityDiagnostics::FailReasons;++r) value.failingUnits[r]=b->unitsFailingByReason[r];
+            if (b->verbose==1 || b->verbose==2) {
+                int swim=b->verbose==1 ? 0 : 1;
+                while (b->verbose==2 && swim<SWIM_CLASS_COUNT-1 && !b->globalGradient[swim]) ++swim;
+                if (b->globalGradient[swim]) value.gradient.assign(b->globalGradient[swim],b->globalGradient[swim]+cellCount);
+            }
+            diagnostics->buildings.push_back(std::move(value));
+        }
+        result->entityDiagnostics=std::move(diagnostics);
+    }
+    if (auto history = acquire(&Storage::history, Component::History)) {
+        history->teams.resize(game.teamsCount());
+        for (int t = 0; t < game.teamsCount(); ++t)
+            history->teams[t] = game.teams[t]->stats.frozenHistory();
+        result->history = std::move(history);
+    }
+    if (auto stats = acquire(&Storage::statistics, Component::Statistics)) {
+        stats->teams.resize(game.teamsCount());
+        for (int t = 0; t < game.teamsCount(); ++t)
+            stats->teams[t] = game.teams[t]->stats.frozenDisplay();
+        result->statistics = std::move(stats);
+    }
+    if (auto telemetry = acquire(&Storage::telemetry, Component::Telemetry)) {
+        telemetry->rows.clear();
+        for (int t = 0; t < game.teamsCount(); ++t)
+            for (const auto& series : game.teams[t]->stats.aiTelemetry)
+                if (series->active)
+                    telemetry->rows.push_back({t, series->player, series->playerName, series->current.available,
+                        series->fields, series->current.values, series->named});
+        result->telemetry = std::move(telemetry);
+    }
 	if (needs(requirements, Component::Entities))
 		for (const auto& p : game.buildProjects) append(entities->projects, {p.posX,p.posY,p.teamNumber,p.typeNum,p.unitWorking,p.unitWorkingFuture});
 	teams->totalPrestige = game.totalPrestige;

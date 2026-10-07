@@ -212,20 +212,28 @@ void GameGUI::adjustLocalTeam()
 	assert(localTeam);
 	teamStats = &localTeam->stats;
 
-	// Mirror the displayed-team identity onto Map so the renderer's overlay caches can
-	// track which team's areas to draw. This is render-only display state, not sim state.
-	game.map.setDisplayedTeam(localTeamNo);
-
-	// Rebuild the render-only forbidden / guard / clear overlay caches for the new view.
-	game.map.computeDisplayedForbidden(localTeamNo);
-	game.map.computeDisplayedGuardArea(localTeamNo);
-	game.map.computeDisplayedClearArea(localTeamNo);
-	game.map.computeDisplayedFarmArea(localTeamNo);
-
 	// set default event position
 	eventGoPosX = localTeam->startPosX;
 	eventGoPosY = localTeam->startPosY;
 	eventGoType = 0;
+}
+
+void GameGUI::selectViewedTeam(int team)
+{
+    const auto& frame = drawnScene();
+    if (!frame.world.teams || !frame.world.session || team < 0 ||
+        size_t(team) >= frame.world.teams->values.size()) return;
+    clearSelection();
+    localTeamNo = team;
+    const auto& shown = frame.world.teams->values[team];
+    eventGoPosX = shown.startX;
+    eventGoPosY = shown.startY;
+    eventGoType = 0;
+    const auto& players = frame.world.session->players;
+    for (size_t i = 0; i < players.size(); ++i)
+        if (players[i].teamNumber == team) { localPlayer = int(i); break; }
+    if (globalContainer->replayVisibleTeams != 0xffffffff)
+        globalContainer->replayVisibleTeams = shown.mask;
 }
 
 void GameGUI::adjustInitialViewport()

@@ -624,7 +624,7 @@ void PhoneEditor::act(const TouchAction &action)
 	{
 		// Brush modes show their size here; the rail changes it.
 		if (objects)
-			editor.selectActiveTeam((editor.team + 1) % editor.game.teamsCount());
+			editor.selectActiveTeam((editor.team + 1) % editor.view.scene->entities.teamCount);
 		return;
 	}
 	if (held == -4)
@@ -1003,7 +1003,7 @@ void PhoneEditor::draw()
 		TerrainSelector::isBaseTerrain(editor.terrainType))
 	{
 		const auto type = TerrainSelector::baseTerrain(editor.terrainType);
-		const auto *label = editor.game.map.terrainPresentation(type).label;
+		const auto *label = editor.view.scene->map.terrainPresentation(type).label;
 		labels[2] = unsigned(type) < TERRAIN_COUNT
 						? GAGCore::Toolkit::getStringTable()->getString(label)
 						: label;
@@ -1026,7 +1026,7 @@ void PhoneEditor::draw()
 		label(r, labels[i]);
 		if (i == 1 && objects)
 			gfx->drawFilledRect(int(r.x + 4 * unit), int(r.y + r.h - 5 * unit), int(r.w - 8 * unit),
-								int(3 * unit), editor.game.teams[editor.team]->color);
+								int(3 * unit), presentationColor(editor.view.scene->entities.teams[editor.team].color));
 	}
 	drawInteractionPreview();
 	if (undo && (!paintMode() || SDL_GetTicks() >= undo->expires))
@@ -1069,7 +1069,7 @@ void PhoneEditor::draw()
 	if (editor.panelMode == MapEdit::Teams)
 		label(tray, GAGCore::FormattableString(
 						GAGCore::Toolkit::getStringTable()->getString("[Manage teams (%0)]"))
-						.arg(editor.game.teamsCount()));
+						.arg(editor.view.scene->entities.teamCount));
 	for (const auto &row : rows)
 	{
 		const auto r = row.rect;

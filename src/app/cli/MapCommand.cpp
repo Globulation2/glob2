@@ -486,8 +486,8 @@ int runMapCommand(int argc, char **argv)
 				if (!(color >> field.red >> a >> field.green >> b >> field.blue) || a != ',' || b != ',' || !(color >> std::ws).eof())
 					throw std::runtime_error("Expected --field-color r,g,b");
 			}
-			Scene scene; SceneRequest request; request.includePanels = false;
-			extractScene(game, request, scene);
+			PresentationFrame scene; SceneRequest request; request.includePanels = false;
+			SceneExtractor().prepare((game).captureReadBoundary({},true,SceneExtractor::requirements(request)), request, scene);
 			MapRender::toPng(scene, output, renderPixels, renderField.empty() ? nullptr : &field);
 			return 0;
 		}

@@ -51,8 +51,8 @@ struct MapRenderState
 	bool zonesEmphasised = false;
 	//! Constant-size overlays queued by this frame's map passes.
 	MapOverlayQueue overlays;
-	//! Scene this view extracts for itself when drawn without a published one.
-	Scene ownScene;
+	//! PresentationFrame this view extracts for itself when drawn without a published one.
+	PresentationFrame ownScene;
 
 	//! The cloud field for this view, created on first use.
 	DynamicClouds &clouds();

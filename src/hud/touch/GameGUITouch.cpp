@@ -42,7 +42,7 @@ GameGUITouch::GameGUITouch(GameGUI &gui) : gui(gui)
 	touchActive = phonePresentationRequested();
 	hudMinimap = std::make_unique<Minimap>(globalContainer->runNoX, 128, 128, 0, 0, 128, 128,
 										   Minimap::ShowFOW);
-	hudMinimap->setGame(gui.game);
+	hudMinimap->setMapSize(gui.game.map.getW(), gui.game.map.getH());
 }
 bool GameGUITouch::usesHUD() const
 {
@@ -318,7 +318,7 @@ ViewRect GameGUITouch::cancelRect() const
 }
 ViewPoint GameGUITouch::previewCursor() const
 {
-	const auto &map = gui.game.map;
+	const auto &map = gui.drawnScene().map;
 	auto wrap = [](double v, double n) { return v - std::floor(v / n) * n; };
 	return {wrap(preview->x - gui.viewportX * 32, map.getW() * 32),
 			wrap(preview->y - gui.viewportY * 32, map.getH() * 32)};
@@ -675,8 +675,8 @@ bool GameGUITouch::process(SDL_Event &event)
 	// Input validates against the live building (authoritative state).
 	const auto* held = inspecting() ? gui.inputBuildingPanel() : nullptr;
 	if (!fingers.empty() && held &&
-		(heldBuildingState != held->buildingState ||
-		 heldConstructionState != held->constructionResultState))
+		(heldBuildingState != held->state().buildingState ||
+		 heldConstructionState != held->state().constructionResultState))
 	{
 		cancel();
 		return true;
@@ -726,8 +726,8 @@ bool GameGUITouch::process(SDL_Event &event)
 			heldActionConfirmation = confirmDestroy;
 			if (const auto* building = inspecting() ? gui.inputBuildingPanel() : nullptr)
 			{
-				heldBuildingState = building->buildingState;
-				heldConstructionState = building->constructionResultState;
+				heldBuildingState = building->state().buildingState;
+				heldConstructionState = building->state().constructionResultState;
 				if (ownerRegion == 3)
 					if (const auto row = actionAt(point))
 					{
@@ -753,7 +753,7 @@ bool GameGUITouch::process(SDL_Event &event)
 																					  : TouchMode::Navigate;
 			// A contact on or near one of the player's flags carries the flag rather
 			// than the map, even straight after a tap.
-			auto grabbed = !interfaceGesture && natural == TouchMode::Navigate ? grabbableFlag(point) : std::optional<SceneBuilding>{};
+			auto grabbed = !interfaceGesture && natural == TouchMode::Navigate ? grabbableFlag(point) : nullptr;
 			if (grabbed)
 				beginFlagDrag(*grabbed, key, point);
 			else
@@ -1065,7 +1065,7 @@ void GameGUITouch::replayStroke(const TouchStrokeSession &completed)
 {
 	// Record which displayed cells this stroke changes, so undo can revert
 	// exactly those and nothing that was already painted before it.
-	auto &map = gui.game.map;
+	const auto &map = gui.drawnScene().map;
 	const bool adding = completed.mode == BrushTool::MODE_ADD;
 	std::vector<BrushCoverage::Cell> centres;
 	for (const auto &p : completed.points)
@@ -1454,8 +1454,8 @@ UnitRef GameGUITouch::unitAt(ViewPoint screenPoint, double reachPoints) const
 	// Hit the positions presented to the player, including optional between-tick
 	// motion. Input runs with the simulation parked; resolve snapshot identities
 	// before returning so a dead/replaced unit can never be selected.
-	const Scene *scene = gui.view.scene;
-	if (!gui.simulationThreaded && scene && scene->map.identity() != gui.game.map.identity()) scene = nullptr;
+	const PresentationFrame *scene = gui.view.scene;
+	if (!scene || !scene->world.occupancy) return {};
 	auto scan = [&](const auto &map)
 	{
 		const int mx = int(point.x) / 32 + gui.viewportX, my = int(point.y) / 32 + gui.viewportY;
@@ -1470,16 +1470,13 @@ UnitRef GameGUITouch::unitAt(ViewPoint screenPoint, double reachPoints) const
 					const Uint16 gid = air ? map.getAirUnit(x, y) : map.getGroundUnit(x, y);
 					if (gid == NOGUID)
 						continue;
-					const SceneUnit *shown = scene ? scene->entities.unit(gid) : nullptr;
+					const SnapshotUnit *shown = scene ? scene->entities.unit(gid) : nullptr;
 					if (scene && !shown) continue;
-					auto *unit = gui.simulationThreaded ? nullptr : shown ? gui.game.resolveUnit({shown->gid, shown->generation})
-						: gui.game.teams[Unit::GIDtoTeam(gid)]->myUnits[Unit::GIDtoID(gid)];
-					if (!unit && !gui.simulationThreaded)
-						continue;
-					const int ux = shown ? shown->posX : unit->posX, uy = shown ? shown->posY : unit->posY;
-					const int moveX = shown ? shown->dx : unit->dx, moveY = shown ? shown->dy : unit->dy;
-					const int action = shown ? shown->action : unit->action;
-					const int delta = shown ? drawnUnitDelta(*shown, gui.view.render.unitMotion) : unit->delta;
+                    if (!shown) continue;
+                    const int ux=shown->posX, uy=shown->posY;
+                    const int moveX=shown->dx, moveY=shown->dy;
+                    const int action=shown->action;
+                    const int delta=drawnUnitDelta(*shown,gui.view.render.unitMotion);
 					if (!wholeMap && !map.isFOWDiscovered(x, y, visible) &&
 						!map.isFOWDiscovered(x - moveX, y - moveY, visible))
 						continue;
@@ -1496,39 +1493,39 @@ UnitRef GameGUITouch::unitAt(ViewPoint screenPoint, double reachPoints) const
 					if ((wholeMap || map.isFOWDiscovered(x, y, visible) || Unit::GIDtoTeam(gid) == gui.localTeamNo) &&
 						(distance < nearestDistance || (distance == nearestDistance && !nearest.empty() && gid < nearest.gid)))
 					{
-						nearest = shown ? UnitRef{shown->gid, shown->generation} : Game::refOf(unit);
+						nearest = shown->identity;
 						nearestDistance = distance;
 					}
 					if (point.x > px && point.x < px + 32 && point.y > py && point.y < py + 32 &&
 						(wholeMap || map.isFOWDiscovered(x, y, visible) ||
 						 Unit::GIDtoTeam(gid) == gui.localTeamNo))
-						found = shown ? UnitRef{shown->gid, shown->generation} : Game::refOf(unit);
+						found = shown->identity;
 				}
 	};
 	if (scene) scan(scene->map);
-	else if (!gui.simulationThreaded) scan(gui.game.map); // Before the first frame, no presentation exists yet.
 	return !found.empty() ? found : nearest;
 }
 
 void GameGUITouch::select(ViewPoint point)
 {
+    const auto& map = gui.drawnScene().map;
+    if (!gui.drawnScene().world.occupancy) return;
 	const auto screenPoint = point;
 	point = {double(gui.mapMouseX(point.x)), double(gui.mapMouseY(point.y))};
 	if (gui.putMark && !globalContainer->isViewingGame())
 	{
 		gui.enqueueOrder(std::make_shared<MapMarkOrder>(
-			gui.localTeamNo, (int(point.x) / 32 + gui.viewportX) & gui.game.map.getMaskW(),
-			(int(point.y) / 32 + gui.viewportY) & gui.game.map.getMaskH()));
+			gui.localTeamNo, (int(point.x) / 32 + gui.viewportX) & map.getMaskW(),
+			(int(point.y) / 32 + gui.viewportY) & map.getMaskH()));
 		gui.putMark = false;
 		return;
 	}
 	auto hitUnit = unitAt(screenPoint);
 	// Exact flags/buildings/resources retain precedence; the halo fills nearby ground.
 	const int tileX = int(point.x) / 32 + gui.viewportX, tileY = int(point.y) / 32 + gui.viewportY;
-	const bool resourceHit = gui.simulationThreaded
-        ? gui.drawnScene().map.getResource(tileX,tileY).type!=NO_RES_TYPE && gui.drawnScene().map.isMapDiscovered(tileX,tileY,Team::teamNumberToMask(gui.localTeamNo))
-        : gui.game.map.isResource(tileX,tileY) && gui.game.map.isMapDiscovered(tileX,tileY,gui.localTeam->me);
-	if (hitUnit.empty() && usesHUD() && !resourceHit && (gui.simulationThreaded ? gui.drawnScene().map.getBuilding(tileX,tileY) : gui.game.map.getBuilding(tileX,tileY)) == NOGBID &&
+    const bool resourceHit = map.getResource(tileX, tileY).type != NO_RES_TYPE &&
+        map.isMapDiscovered(tileX, tileY, Team::teamNumberToMask(gui.localTeamNo));
+	if (hitUnit.empty() && usesHUD() && !resourceHit && gui.drawnScene().map.getBuilding(tileX,tileY) == NOGBID &&
 		!gui.flagAt(int(point.x), int(point.y), gui.flagReachAt(screenPoint.x, screenPoint.y)))
 		hitUnit = unitAt(screenPoint, InGameTouchTheme::flagReach);
 	gui.view.mouseUnit = hitUnit;
@@ -1682,24 +1679,14 @@ void GameGUITouch::menuAction(int action)
 			globalContainer->replayShowFog = !globalContainer->replayShowFog;
 		else if (action == 32)
 			globalContainer->replayVisibleTeams =
-				globalContainer->replayVisibleTeams == 0xffffffff ? gui.localTeam->me : 0xffffffff;
+				globalContainer->replayVisibleTeams == 0xffffffff ? Team::teamNumberToMask(gui.localTeamNo) : 0xffffffff;
 		else if (action == 33)
 			globalContainer->replayShowAreas = !globalContainer->replayShowAreas;
 		else if (action == 34)
 			globalContainer->replayShowFlags = !globalContainer->replayShowFlags;
-		else if (action >= 40 && action - 40 < gui.game.teamsCount())
+		else if (action >= 40 && gui.drawnScene().world.teams && size_t(action - 40) < gui.drawnScene().world.teams->values.size())
 		{
-			gui.clearSelection();
-			gui.localTeamNo = action - 40;
-			gui.adjustLocalTeam();
-			for (int i = 0; i < gui.game.gameHeader.getNumberOfPlayers(); ++i)
-				if (gui.game.players[i]->teamNumber == gui.localTeamNo)
-				{
-					gui.localPlayer = i;
-					break;
-				}
-			if (globalContainer->replayVisibleTeams != 0xffffffff)
-				globalContainer->replayVisibleTeams = gui.localTeam->me;
+            gui.selectViewedTeam(action - 40);
 		}
 		return;
 	}
@@ -1722,7 +1709,7 @@ void GameGUITouch::menuAction(int action)
 	case 3:
 		if (usesHUD() && !layout().persistentPanel && !globalContainer->isViewingGame())
 		{
-			statsCatalog = Stats::catalogForBuildings(gui.game.buildingsTypes);
+			statsCatalog = Stats::catalogForBuildings(*gui.drawnScene().buildingTypes);
 			statsOpen = true; // The compact statistics sheet.
 			break;
 		}
