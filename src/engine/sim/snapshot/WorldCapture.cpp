@@ -85,7 +85,8 @@ Handle capture(const Game& game,
 			{ destination = source; requirements &= ~bit(component); }
 		};
 		const bool sameCatalog = previous->catalogs && previous->catalogs->buildings == catalog && previous->configurationRevision == result->configurationRevision
-			&& previous->catalogs->resources == game.map.frozenResourceRegistry() && previous->catalogs->habitats == game.map.frozenResourceHabitats();
+			&& (!needs(requirements, Component::Session) || !previous->catalogs->buildingFingerprint.empty())
+            && previous->catalogs->resources == game.map.frozenResourceRegistry() && previous->catalogs->habitats == game.map.frozenResourceHabitats();
 		reuse(Component::Catalogs, result->catalogs, previous->catalogs, sameCatalog);
 		reuse(Component::Rules, result->rules, previous->rules, previous->configurationRevision == result->configurationRevision);
 		const auto generations = result->mapGenerations;
@@ -156,7 +157,11 @@ Handle capture(const Game& game,
 	terrain->airConstraints = game.map.hasAirTerrainConstraints();
 	const auto& header = game.gameHeader;
 	if (needs(requirements, Component::Catalogs)) {
-		catalogs->buildingFingerprint = game.buildingsTypes.fingerprint();
+		// Preference identity is needed by session consumers, not standalone AI
+        // observations. Computing it serializes the authored catalog; do that
+        // once when a shared session catalog is admitted, never per AI poll.
+        catalogs->buildingFingerprint = needs(requirements, Component::Session)
+            ? game.buildingsTypes.fingerprint() : std::string();
 		catalogs->buildings = std::move(catalog);
 		catalogs->capabilities = game.buildingCapabilities().frozenTables();
 		for (int type = 0; type < NB_UNIT_TYPE; ++type)
