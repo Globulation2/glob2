@@ -10,6 +10,7 @@
 #include "Game.h"
 #include "GlobalContainer.h"
 #include "MapEdit.h"
+#include "EditorDock.h"
 #include "ScriptEditorScreen.h"
 #include "Unit.h"
 #include "render/UnitAnimation.h"
@@ -23,10 +24,18 @@ void MapEdit::draw(Uint64 frameTick)
 {
 	drawMap(0, 0, globalContainer->gfx->getW(), globalContainer->gfx->getH());
 
-	drawMenu();
-	drawMiniMap();
+	if (!dock)
+	{
+		drawMenu();
+		drawMiniMap();
+	}
+	else
+		drawMenuEyeCandy();
 	wasMinimapRendered=false;
-	drawWidgets();
+	if (dock)
+		drawDock(Uint32(frameTick));
+	else
+		drawWidgets();
 	if (auto *dialog = activeDialog())
 		dialog->update(Uint32(frameTick));
 	drawDialog();
@@ -50,10 +59,13 @@ void MapEdit::drawMap(int sx, int sy, int sw, int sh)
         DynamicClouds::gridLimitForZoom(game.map.getW(), game.map.getH(),
             globalContainer->settings.cloudPatchSize, camera.zoom));
 
-	if(selectionMode==EditingBuilding && camera.contains(mouseX,mouseY) && mouseY>=16)
+	// Previews follow the pointer only over the map itself, never under the
+	// dock or an open dialog.
+	const bool pointerOnMap = camera.contains(mouseX,mouseY) && mouseY>=16 && !pointerOverInterface();
+	if(selectionMode==EditingBuilding && pointerOnMap)
 	{
 		Building* selBuild=game.teams[Building::GIDtoTeam(selectedBuildingGID)]->myBuildings[Building::GIDtoID(selectedBuildingGID)];
-		globalContainer->gfx->setClipRect(0, 0, globalContainer->gfx->getW()-RIGHT_MENU_WIDTH, globalContainer->gfx->getH());
+		globalContainer->gfx->setClipRect(0, 0, globalContainer->gfx->getW()-dockWidth(), globalContainer->gfx->getH());
 		int centerX, centerY;
 		// Map editor mutates buildings directly — no orderQueue, no pending shadow.
 		// Use the authoritative position straight from the Building.
@@ -73,7 +85,7 @@ void MapEdit::drawMap(int sx, int sy, int sw, int sh)
 	}
 
 globalContainer->gfx->drawMapCopies(game.map.getW()*32,game.map.getH()*32,game.map.displayViewportW,game.map.displayViewportH,[&](){
-	if(camera.contains(mouseX,mouseY) && mouseY>=16)
+	if(pointerOnMap)
 	{
 		// BrushTool treats -1 as "no stroke origin" for checkerboard parity alignment
 		const int firstX = firstPlacement ? firstPlacement->x : -1;
@@ -311,10 +323,11 @@ void MapEdit::drawMenuEyeCandy()
 	{
 		globalContainer->gfx->drawSprite(i, 16, globalContainer->gamegui, 16);
 	}
-	for (int i=16; i<globalContainer->gfx->getH(); i+=32)
-	{
-		globalContainer->gfx->drawSprite(pos+28, i, globalContainer->gamegui, 17);
-	}
+	if (!dock)
+		for (int i=16; i<globalContainer->gfx->getH(); i+=32)
+		{
+			globalContainer->gfx->drawSprite(pos+28, i, globalContainer->gamegui, 17);
+		}
 }
 
 
@@ -359,4 +372,26 @@ void MapEdit::drawPlacingUnitOnMap()
 		globalContainer->gfx->drawRect(px, py, pw, ph, 255, 255, 255, 128);
 	else
 		globalContainer->gfx->drawRect(px, py, pw, ph, 255, 0, 0, 128);
+}
+
+
+void MapEdit::drawDock(Uint32 tick)
+{
+	if (!dock || globalContainer->runNoX)
+		return;
+	dock->update(tick);
+	globalContainer->gfx->setClipRect();
+	dock->draw(tick);
+}
+
+void MapEdit::centerViewOnMinimap(int x, int y)
+{
+	if (globalContainer->runNoX || !minimap.insideMinimap(x, y))
+		return;
+	int cellX = 0, cellY = 0;
+	minimap.convertToMap(x, y, cellX, cellY);
+	updateCamera();
+	viewportX = (cellX - int(camera.visibleW() / 64)) & game.map.getMaskW();
+	viewportY = (cellY - int(camera.visibleH() / 64)) & game.map.getMaskH();
+	updateCamera();
 }

@@ -62,20 +62,21 @@ comments can say "because grass may not touch water" and a reader can check it h
 
 ## Authoring additional terrain types
 
-The map editor's menu offers **Import Terrain Definitions** and **Terrain palette**
-on desktop and phone layouts. Place an **uncompressed UTF-8 `.json` file** in the `terrain/` directory
+The map editor's menu offers **Import Terrain Definitions** on desktop and phone
+layouts. Place an **uncompressed UTF-8 `.json` file** in the `terrain/` directory
 of your game profile (the directory selected by `GLOB2_USER_DATA_DIR`, when set).
-Select the file in the import dialog, choose a type from the scrollable palette,
-and paint it like built-in terrain. The palette shows a composed swatch of every
-brush, grouped into sections: classic ground, then each terrain group whose experiment
-is enabled (see [experimental features](../features/experimental-features.md)) with
-the group's rules under its heading, then **Custom** for the map's imported definitions
-in natural name order with their own rules. The side panel shows one brush per enabled
-group: a group with a single enabled type (ice, or trail while path terrain is off)
-paints directly, and a group with several types opens the palette scrolled to that
-group's section. The editor action `open terrain palette <group>` does the same by
-group key; cancelling the palette keeps the brush you had. A group counts as enabled
-when its experiment is on in your settings or already carried by the edited map.
+Select the file in the import dialog; on desktop and tablet layouts the editor dock
+then shows the new types in its **Terrain** tab, and you paint them like built-in
+terrain. The dock shows a composed swatch of every brush, grouped into collapsible
+sections: classic ground, then each terrain group (see
+[experimental features](../features/experimental-features.md)) with the group's rules
+under its heading, then **Custom** for the map's imported definitions in natural name
+order with their own rules. Types whose experiment is off are shown locked, and their
+section offers **Enable for this map**. The editor action `open terrain palette <group>`
+switches the dock to the Terrain tab, expands that group and scrolls it to the top,
+keeping the brush you had; `open resource palette [group]` does the same for
+resources. A group counts as enabled when its experiment is on in your settings or
+already carried by the edited map.
 Every brush also has a stable action, `select terrain <key>` (for example
 `select terrain example:mud`); the short `select <name>` form only names built-in
 types, so an imported type called "stone" or "wheat" never replaces the resource

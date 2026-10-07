@@ -1517,6 +1517,7 @@ The added behavior coverage focuses on the following native boundaries:
 | `GUIOrderCoverage`, `GUIInteractionCoverage` | Queued requests, clamps, deduplication, field reconciliation, replay input, desktop menu interactions and unit information |
 | `EditorActionCoverage` | Action dispatch, unit/building editing, matching controls and save/load persistence |
 | `BrushCatalog` | Editor brush catalogue contents, imported terrain order, experiment locks and map-header enabling, resource placement validity, catalogue action round trips, imported-name collisions and opaque map-matching swatches |
+| `EditorDockLayout` | The editor dock at 1024x480, 1024x600, 1280x720 and 1920x1080: controls inside the dock without overlap, unique keys, the last card reachable by scrolling, clicks at the dock edge, live cards after definition imports, locked experiments enabled from the dock, palette navigation, search and the object inspector |
 | `SurfaceCoverage` | Alpha grids, cropped/scaled blits, clip boundaries and progress-bar pixels |
 
 Use uncovered functions and branch annotations to choose the next scenario by

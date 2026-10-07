@@ -59,11 +59,11 @@ class EditorDock : public Glob2UI::InGameDialog
 	// Dock width in logical pixels for a presentation: clamp(300pt, 240, 40% of
 	// the viewport), so it follows the interface scale.
 	static int widthFor(const Glob2UI::Presentation &p);
-	// Current width (0 before the first attach).
-	int width() const;
+	// Current width (0 while not attached to a surface, as in headless runs).
+	int width();
 	// The dock's rectangle in the editor's logical coordinates.
-	GAGGUI::ui::Rect rect() const;
-	bool contains(int x, int y) const;
+	GAGGUI::ui::Rect rect();
+	bool contains(int x, int y);
 	// A press, drag, popup or scroll gesture owned by the dock is in progress, so
 	// pointer events must keep going to it even outside its rectangle.
 	bool interacting();
@@ -71,7 +71,9 @@ class EditorDock : public Glob2UI::InGameDialog
 	bool editingText();
 
 	Tab tab() const { return currentTab; }
-	void showTab(Tab tab);
+	// Switches tab through the editor's view actions, which drop the active
+	// brush like the legacy sidebar did; `keepBrush` keeps it (navigation).
+	void showTab(Tab tab, bool keepBrush = false);
 	// Switches to the tab holding the group, expands it and scrolls it into view
 	// ("open terrain palette <group>", "open resource palette").
 	void revealGroup(BrushSection section, std::string_view groupKey);
@@ -99,7 +101,7 @@ class EditorDock : public Glob2UI::InGameDialog
 	std::string query;
 	// What the last build saw, to rebuild when the model moves under it.
 	std::uint64_t builtRevision = 0;
-	std::string builtBrush, builtSignature;
+	std::string builtBrush, builtSignature, builtBody;
 	GAGGUI::ui::Rect minimapBounds{};
 	std::string pendingReveal;
 
@@ -124,4 +126,13 @@ class EditorDock : public Glob2UI::InGameDialog
 	Glob2UI::Element teamPicker(const Glob2UI::Presentation &p);
 	Glob2UI::Element brushControls(const Glob2UI::Presentation &p);
 	void select(const BrushEntry &entry);
+	bool inspecting() const;
+	void syncTabFromEditor();
+	// Tab that was active before the editor switched to an inspector.
+	Tab lastTab = Tab::Buildings;
+	bool attached = false;
+
+  public:
+	// Called by MapEdit after attach(); width() is 0 until then.
+	void markAttached() { attached = true; }
 };

@@ -127,33 +127,20 @@ bool MapEdit::performViewAction(const std::string& action, float relMouseX, floa
 		importingTerrain = action == "import terrain definitions";
 		importingResources = !importingTerrain;
 	}
-	else if (action.starts_with("open terrain palette"))
+	else if (action.starts_with("open terrain palette") || action.starts_with("open resource palette"))
 	{
-		// "open terrain palette <group>" opens scrolled to that catalogue group; the
-		// current brush stays highlighted in the palette, and cancelling restores it
-		// (so it is captured before "unselect" clears it).
-		const std::string current = currentBrushId();
-		brushBeforePalette = terrainType;
-		performAction("unselect");
-		const std::string prefix = "open terrain palette";
-		const int focus = action.size() > prefix.size() + 1
-			? TerrainPaletteDialog::groupFor(action.substr(prefix.size() + 1)) : -1;
-		std::vector<BrushGroup> terrainGroups;
-		for (const auto &group : brushCatalog())
-			if (group.section == BrushSection::Terrain)
-				terrainGroups.push_back(group);
-		terrainPalette = std::make_unique<TerrainPaletteDialog>(std::move(terrainGroups), brushSwatches(), current, focus);
-		attachDialog(*terrainPalette);
-		terrainPalette->focusOnOpen();
-	}
-	else if (action == "open resource palette")
-	{
-		performAction("unselect");
-		for (const auto& key : game.map.resourceRegistry().experimentKeys())
-			if (globalContainer->settings.experiments.has(key))
-				game.gameHeader.getExperiments().set(key, true, game.map.resourceRegistry().experimentKeys());
-		resourcePalette = std::make_unique<ResourcePaletteDialog>(game.map.frozenResourceRegistry(), game.gameHeader.getExperiments());
-		attachDialog(*resourcePalette);
+		// The palettes are sections of the dock: "open terrain palette <group>"
+		// switches to its tab, expands the catalogue group and scrolls it into
+		// view; the active brush stays selected. Without a dock (the phone
+		// presentation) it shows the terrain tools.
+		const bool resources = action.starts_with("open resource palette");
+		const std::string prefix = resources ? "open resource palette" : "open terrain palette";
+		const std::string group = action.size() > prefix.size() + 1 ? action.substr(prefix.size() + 1) : "";
+		const auto section = resources ? BrushSection::Resources : BrushSection::Terrain;
+		if (dock)
+			revealBrushGroup(section, group.empty() || findBrushGroup(brushCatalog(), section, group) ? group : "");
+		else if (panelMode != Terrain)
+			performAction("switch to terrain view");
 	}
 	else if (action == "open load screen")
 	{

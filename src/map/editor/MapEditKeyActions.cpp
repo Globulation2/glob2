@@ -33,6 +33,8 @@ namespace MapEditKeyActions
 		table.add(SelectClearingFlag, "select clearingflag");
 		table.add(ToggleMenuScreen, "toggle menu screen");
 		table.add(SelectDeleteTool, "select delete tool");
+		table.add(FocusBrushSearch, "focus brush search");
+		table.add(SwitchToResourcesView, "switch to resources view");
 	}
 
 	const std::string getName(Uint32 action)

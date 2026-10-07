@@ -26,9 +26,12 @@ the building uses that material.
 
 ## Importing resources
 
-Use **Map editor → Menu → Import Resource Definitions** to import a JSON file,
-then **Resource palette** to select its deposits. The palette also offers switches
-for experiments declared by the map's catalog. Installed catalog experiments are
+Use **Map editor → Menu → Import Resource Definitions** to import a JSON file;
+its deposits appear in the **Resources** tab of the editor dock, which opens at
+the imported section. Each resource card names the terrains it may be placed on.
+Resources gated by an experiment the map does not carry are shown locked, and
+their section offers **Enable for this map**, which adds the experiment to the
+map's header. Installed catalog experiments are
 available in **Settings → Experiments**. Imports validate a complete replacement
 before changing the map. Existing keys retain IDs; new keys append in sorted
 order. Definitions remain immutable while a match runs.

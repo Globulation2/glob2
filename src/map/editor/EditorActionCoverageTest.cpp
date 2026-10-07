@@ -4,6 +4,7 @@
 #include "MapEdit.h"
 #include "Race.h"
 #include "MapEditDialog.h"
+#include "EditorDock.h"
 #include "LoadSaveDialog.h"
 #include <FileManager.h>
 #include <Toolkit.h>
@@ -485,7 +486,7 @@ TEST_SUITE("EditorActionCoverage")
         CHECK(editor.terrainType==wheat);
     }
 
-	TEST_CASE("catalogue groups get side-panel selectors that open the palette at their section [display][artifacts]")
+	TEST_CASE("catalogue group selectors and the palette actions navigate the dock [display][artifacts]")
 	{
 		glob2test::HeadlessGlobals globals({.display=true,.width=1024,.height=768,
 			.screenFlags=GAGCore::GraphicContext::PORTABLEGPU});
@@ -493,67 +494,66 @@ TEST_SUITE("EditorActionCoverage")
 		globals->settings.experiments.set(ExperimentId::TrailTerrain,true);
 		globals->settings.experiments.set(ExperimentId::ObstacleTerrain,true);
 		MapEdit editor; blank(editor);
-		// Ice has one member and only Trail is enabled in paths: both keep direct
-		// brushes. Obstacles has three enabled members and gets a group selector.
+		REQUIRE(editor.dock);
+		// The legacy group selectors (kept for the phone tray) still route through
+		// "open terrain palette <group>", which now opens the dock's section.
 		REQUIRE(editor.additionalTerrainSelectors.size()==3);
-		CHECK(dynamic_cast<TerrainSelector*>(editor.additionalTerrainSelectors[0]));
-		CHECK(dynamic_cast<TerrainSelector*>(editor.additionalTerrainSelectors[1]));
 		auto *obstacles = dynamic_cast<TerrainGroupSelector*>(editor.additionalTerrainSelectors[2]);
 		REQUIRE(obstacles);
 		CHECK(obstacles->catalogueGroup==TerrainGroup::Obstacles);
 		editor.performAction("select road");
+		editor.dockCollapsed.insert("terrain/obstacles");
 		obstacles->activate();
-		REQUIRE(editor.terrainPalette);
-		CHECK(editor.terrainPalette->focusedGroup()==int(TerrainGroup::Obstacles));
-		SDL_Event poll{}; poll.type=SDL_EVENT_USER;
-		auto &host = editor.terrainPalette->host();
+		CHECK_FALSE(editor.hasDialog());
+		CHECK(editor.dock->tab()==EditorDock::Tab::Terrain);
+		CHECK_FALSE(editor.dockCollapsed.count("terrain/obstacles"));
+		// Navigation keeps the brush the author had.
+		CHECK(editor.currentBrushId()=="terrain/road");
+		auto &host = editor.dock->host();
 		host.layoutIfNeeded();
-		// Every enabled brush is listed in its group's section; disabled groups are absent.
-		CHECK(host.bounds("terrain/hedge").w > 0);
-		CHECK(host.bounds("terrain/boulders").w > 0);
-		CHECK(host.bounds("terrain/ice").w > 0);
-		CHECK(host.bounds("terrain/water").w > 0);
-		CHECK(host.bounds("terrain/road").w > 0);
-		CHECK_THROWS(host.bounds("terrain/mud")); // rough-terrain is off
+		// The group heading is scrolled to the top of the dock's list.
+		const auto scrollBounds = host.bounds("dock/scroll");
+		const auto heading = host.bounds("dock/section/terrain/obstacles");
+		CHECK(heading.y >= scrollBounds.y);
+		CHECK(heading.y <= scrollBounds.y + 4);
+		// Every enabled brush is listed; disabled experiments are absent.
+		for (const char *key : {"brush/terrain/hedge","brush/terrain/boulders","brush/terrain/ice",
+								"brush/terrain/water","brush/terrain/road"})
+			CHECK(host.find(key));
+		// Rough terrain is off: its brushes are shown locked and cannot be chosen.
+		REQUIRE(host.find("brush/terrain/mud"));
+		host.scrollIntoView("brush/terrain/mud");
+		host.layoutIfNeeded();
+		const auto mud = host.bounds("brush/terrain/mud");
+		host.tapAt({mud.x + mud.w / 2, mud.y + mud.h / 2});
+		CHECK(editor.currentBrushId()=="terrain/road");
+		CHECK(host.find("dock/enable/terrain/rough"));
 		editor.draw(SDL_GetTicks());
-		globals->gfx->printScreen(glob2test::artifactDirFromWorkingDirectory() + "/terrain-palette-obstacles.bmp");
+		globals->gfx->printScreen(glob2test::artifactDirFromWorkingDirectory() + "/dock-terrain-obstacles.bmp");
 		globals->gfx->nextFrame();
-		host.scrollIntoView("terrain/hedge");
+		host.scrollIntoView("brush/terrain/hedge");
 		host.layoutIfNeeded();
-		const auto bounds = host.bounds("terrain/hedge");
+		const auto bounds = host.bounds("brush/terrain/hedge");
 		host.tapAt({bounds.x + bounds.w / 2, bounds.y + bounds.h / 2});
-		CHECK(editor.terrainPalette->finished());
-		editor.delegateMenu(poll);
-		CHECK_FALSE(editor.terrainPalette);
 		CHECK(editor.terrainType==TerrainSelector::selectorFor(HEDGE));
-		editor.draw(SDL_GetTicks()); // the group selector shows the active hedge brush
-		globals->gfx->printScreen(glob2test::artifactDirFromWorkingDirectory() + "/terrain-side-panel-groups.bmp");
-		globals->gfx->nextFrame();
 		cursor(editor,12,12);editor.performAction("terrain drag start");editor.performAction("terrain drag end");
 		CHECK(editor.game.map.terrainTypeAt(12,12)==HEDGE);
-		// The menu action opens at the top with the active brush highlighted.
+		// Without a group the action shows the Terrain tab and keeps the brush;
+		// unknown groups are ignored the same way.
+		editor.dock->showTab(EditorDock::Tab::Buildings);
+		editor.performAction("select terrain hedge");
 		editor.performAction("open terrain palette");
-		REQUIRE(editor.terrainPalette);
-		CHECK(editor.terrainPalette->focusedGroup()==-1);
-		editor.terrainPalette->host().layoutIfNeeded();
-		CHECK(editor.terrainPalette->host().bounds("terrain/thicket").w > 0);
-		CHECK(editor.terrainPalette->host().bounds("terrain/ice").w > 0);
-		editor.terrainPalette->finish(-1);
-		editor.delegateMenu(poll);
-		CHECK_FALSE(editor.terrainPalette);
-		// Cancelling the palette restores the brush the author had before opening it.
-		CHECK(editor.terrainType==TerrainSelector::selectorFor(HEDGE));
-		// Unknown group keys open unfocused; cancelling restores resource brushes too.
+		CHECK(editor.dock->tab()==EditorDock::Tab::Terrain);
 		editor.performAction("select wheat");
 		editor.performAction("open terrain palette nonsense");
-		REQUIRE(editor.terrainPalette);
-		CHECK(editor.terrainPalette->focusedGroup()==-1);
-		CHECK(editor.currentBrushId().empty());
-		editor.terrainPalette->finish(-1);
-		editor.delegateMenu(poll);
 		CHECK(editor.currentBrushId()=="resource/wheat");
+		editor.performAction("open resource palette");
+		CHECK(editor.dock->tab()==EditorDock::Tab::Resources);
+		CHECK(editor.currentBrushId()=="resource/wheat");
+		editor.dock->host().layoutIfNeeded();
+		CHECK(editor.dock->host().find("brush/resource/wheat"));
 	}
-	TEST_CASE("custom terrain imports palettes and saved maps work on desktop and phone "
+	TEST_CASE("custom terrain imports reach the dock and saved maps work on desktop and phone "
 			  "[display][artifacts]")
 	{
 		const char *previous = SDL_getenv_unsafe("GLOB2_MOBILE_UI");
@@ -625,38 +625,37 @@ TEST_SUITE("EditorActionCoverage")
 			CHECK_FALSE(editor.loadSaveScreen);
 			CHECK(editor.game.map.terrainRegistry().size() == 40 + TERRAIN_COUNT);
 			CHECK(editor.hasMapBeenModified);
-			REQUIRE(editor.terrainPalette);
-			editor.draw(SDL_GetTicks());
-			globals->gfx->printScreen(
-				glob2test::artifactDirFromWorkingDirectory() +
-				(phone ? "/terrain-palette-phone.bmp" : "/terrain-palette-desktop.bmp"));
-			globals->gfx->nextFrame();
-
-			// Select a type beyond the first viewport through the real scroll host.
-			const std::string key = "terrain/example:t9";
-			auto &host = editor.terrainPalette->host();
-			host.scrollIntoView(key);
-			host.layoutIfNeeded();
-			const auto bounds = host.bounds(key);
-			REQUIRE(bounds.w > 0);
-			REQUIRE(bounds.h > 0);
-			host.tapAt({bounds.x + bounds.w / 2, bounds.y + bounds.h / 2});
-			CHECK(editor.terrainPalette->finished());
-			editor.delegateMenu(poll);
-			CHECK_FALSE(editor.terrainPalette);
+			// Imported types appear in the dock's "custom" section without a restart.
+			const std::string key = "brush/terrain/example:t9";
 			const auto type = *editor.game.map.terrainRegistry().find("example:t9");
+			if (!phone)
+			{
+				REQUIRE(editor.dock);
+				CHECK(editor.dock->tab() == EditorDock::Tab::Terrain);
+				editor.draw(SDL_GetTicks());
+				globals->gfx->printScreen(glob2test::artifactDirFromWorkingDirectory() + "/dock-terrain-custom.bmp");
+				globals->gfx->nextFrame();
+				// Select a type beyond the first viewport through the real scroll host.
+				auto &host = editor.dock->host();
+				host.layoutIfNeeded();
+				REQUIRE(host.find(key));
+				host.scrollIntoView(key);
+				host.layoutIfNeeded();
+				const auto bounds = host.bounds(key);
+				REQUIRE(bounds.w > 0);
+				REQUIRE(bounds.h > 0);
+				host.tapAt({bounds.x + bounds.w / 2, bounds.y + bounds.h / 2});
+			}
+			else
+			{
+				CHECK_FALSE(editor.dock);
+				editor.performAction("select terrain example:t9");
+			}
 			CHECK(editor.terrainType == TerrainSelector::selectorFor(type));
 			cursor(editor, 8, 8);
 			editor.performAction("terrain drag start");
 			editor.performAction("terrain drag end");
 			REQUIRE(editor.game.map.terrainTypeAt(8, 8) == type);
-
-			editor.performAction("open terrain palette");
-			SDL_Event escape{};
-			escape.type = SDL_EVENT_KEY_DOWN;
-			escape.key.key = SDLK_ESCAPE;
-			editor.processEvent(escape);
-			CHECK_FALSE(editor.terrainPalette);
 			const auto map = (scratch.path / "custom.map").string();
 			REQUIRE(editor.save(map, "Custom terrain"));
 			std::filesystem::remove(file);

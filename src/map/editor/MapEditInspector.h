@@ -9,6 +9,7 @@
 // maximumValue() and edit through setValue().
 
 #include "ui/FrontendUI.h"
+#include <functional>
 #include <string>
 #include <vector>
 
@@ -57,8 +58,9 @@ InspectorModel buildInspectorModel(MapEdit &editor);
 
 // Framework rows for the model: per row a caption and a stepper bound to the
 // row's value, keyed "<prefix>/<row key>". Empty column for Kind::None.
+// `changed` runs after a value was edited (the caller rebuilds its view).
 Glob2UI::Element inspectorRows(const InspectorModel &model, const Glob2UI::Presentation &p,
-							   const std::string &prefix = "dock/inspect");
+							   const std::string &prefix = "dock/inspect", std::function<void()> changed = {});
 
 // Paints the selected object's sprite (team coloured) centred in `bounds`.
 void paintInspectorPicture(GAGGUI::ui::Canvas &canvas, GAGGUI::ui::Rect bounds, const InspectorModel &model);

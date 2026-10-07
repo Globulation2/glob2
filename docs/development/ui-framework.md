@@ -422,6 +422,17 @@ placement (the chat composer sits at the bottom), `maxWidth()`, `fillHeight()`
 and `scrim()`. `resume()` reopens a dialog whose result was consumed but must
 retry (a failed save).
 
+A dialog can also be a permanent docked panel. The map editor's brush browser
+(`src/map/editor/EditorDock.h`) is an `InGameDialog` that never finishes and has
+no scrim: `available()` returns a full-height column at the right edge
+(`clamp(300pt, 240, 40%)` wide, so it follows the interface scale), `place()`
+fills it and `paintPanel()` paints the column. Its owner draws it beneath any
+modal dialog, sends it pointer events inside its rectangle or while
+`host().interacting()`, and keys only while a text field is editing; strokes that
+started on the map keep their events. `onUpdate()` compares the model (catalogue
+revision, selection, panel mode) with what the last `build()` saw and invalidates
+on change. Its controls publish under `dock/...` and `brush/<catalogue id>`.
+
 ### Focus, keyboard and touch
 
 The host keeps one focus ring over interactive elements in tree order. Tab and

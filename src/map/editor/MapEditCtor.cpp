@@ -10,6 +10,7 @@
 #include "MapEdit.h"
 #include "MapEditDialog.h"
 #include "PhoneEditor.h"
+#include "EditorDock.h"
 #include <InterfacePresentation.h>
 #include "ScriptEditorScreen.h"
 #include "Utilities.h"
@@ -310,6 +311,11 @@ MapEdit::MapEdit()
 	isShowingAreaName=false;
 	
 	isFertilityOn=false;
+
+	// Desktop and tablet presentations browse brushes in the dock; the legacy
+	// sidebar widgets above stay constructed for the phone tray (PhoneEditor).
+	if (!phone)
+		createDock();
 }
 
 

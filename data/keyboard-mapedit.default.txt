@@ -18,3 +18,6 @@
 <space>-<e>=select explorationflag
 <space>-<q>=select warflag
 <d>=select delete tool
+</>=focus brush search
+<control><f>=focus brush search
+<e>=switch to resources view
