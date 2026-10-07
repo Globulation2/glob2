@@ -103,7 +103,10 @@ void Map::updateForbiddenGradient(int teamNumber, int swimClass)
 		}
 	}
 
-	propagateGradient(gradient, swimClass);
+	{
+		PERF_SCOPE_TIME(PropagationArea);
+		propagateGradient(gradient, swimClass);
+	}
 }
 
 void Map::updateForbiddenGradient(int teamNumber)
@@ -208,7 +211,10 @@ void Map::updateGuardAreasGradient(int teamNumber, int swimClass)
 	gradientRuntime->pipeline.invalidate(&guardAreasGradient[teamNumber][swimClass]);
 	Uint16 *gradient = guardAreasGradient[teamNumber][swimClass];
 	seedGuardAreasGradient(teamNumber, swimClass, gradient);
-	propagateGradient(gradient, swimClass);
+	{
+		PERF_SCOPE_TIME(PropagationArea);
+		propagateGradient(gradient, swimClass);
+	}
 }
 
 void Map::seedGuardAreasGradient(int teamNumber, int swimClass, Uint16 *gradient)
@@ -240,7 +246,10 @@ void Map::updateClearAreasGradient(int teamNumber, int swimClass)
 	gradientRuntime->pipeline.invalidate(&clearAreasGradient[teamNumber][swimClass]);
 	Uint16 *gradient = clearAreasGradient[teamNumber][swimClass];
 	seedClearAreasGradient(teamNumber, swimClass, gradient);
-	propagateGradient(gradient, swimClass);
+	{
+		PERF_SCOPE_TIME(PropagationArea);
+		propagateGradient(gradient, swimClass);
+	}
 }
 
 void Map::seedClearAreasGradient(int teamNumber, int swimClass, Uint16 *gradient)

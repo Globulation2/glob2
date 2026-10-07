@@ -374,6 +374,7 @@ CLIENT_SOURCES = (
     'map/generator/shared/StartQuality.cpp',
     'map/generator/shared/Terrain.cpp',
     'map/gradient/BuildingGradientSearch.cpp',
+    'map/gradient/BuildingGradientStats.cpp',
     'map/gradient/MapGradientArea.cpp',
     'map/gradient/MapGradientBuilding.cpp',
     'map/gradient/MapGradientChamfer.cpp',

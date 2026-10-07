@@ -8,6 +8,7 @@
 #include "Unit.h"
 #include "MapInternal.h"
 #include "BuildingGradientSearch.h"
+#include "BuildingGradientStats.h"
 #include <algorithm>
 #include <array>
 #include "Team.h"
@@ -41,6 +42,8 @@ void Map::updateGlobalGradient(Building *building, int swimClass, BuildingRoute 
 
 	Uint16 *gradient=building->globalGradient[slot];
 	assert(gradient);
+	// Diagnostics read the replaced field and its search before reinitialization.
+	if (gradientStats) gradientStats->fieldRebuilding(*this, *building, slot, access, game->stepCounter, topologyGeneration);
 	// A rebuild replaces the old search and its frozen terrain snapshot.
 	// Keep bucket capacity when possible; a locked field has no pending search.
 	building->dirtyGradient[slot]=false;
@@ -251,5 +254,6 @@ void Map::updateRoundTripGradientSlot(Building *building, int resourceType, int 
 	// distances instead (the callers fall back when a cell is unreachable
 	// here), which keeps the build small on big maps.
 	constexpr int ROUND_TRIP_RANGE=128*GRADIENT_STEP;
+	PERF_SCOPE_TIME(PropagationRoundTrip);
 	propagateGradient(gradient, swimClass, GRADIENT_AT_GOAL-bestSeed+ROUND_TRIP_RANGE);
 }

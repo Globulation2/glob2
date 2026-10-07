@@ -13,6 +13,9 @@
 #include "Player.h"
 #include "Order.h"
 #include "Brush.h"
+#include "BuildingGradientSearch.h"
+#include "BuildingGradientStats.h"
+#include <sstream>
 #include <PerformanceTelemetry.h>
 #include <memory>
 #include <vector>
@@ -181,5 +184,110 @@ TEST_SUITE("MapGradientInvalidation")
 	  REQUIRE(maxGap>=cycle);
 	  std::cout<<"FOUR_TEAM_WRAP slots="<<slots<<" cycle="<<cycle<<" tested_ticks="<<4*cycle<<" maximum_gap="<<maxGap<<" strict_bound="<<2*cycle<<" builds="<<totalBuilds<<" PASS\n";
 	 }
+	}
+
+	TEST_CASE("gradient stats classify generation rebuilds without changing fields")
+	{
+		glob2test::HeadlessGlobals globals(glob2test::GlobalsOptions{.loadStrings = true});
+		using Stats = BuildingGradientStats;
+		using Verdict = Stats::Verdict;
+		Fixture f(1); auto& m=f.game.map;
+		m.gradientStats=std::make_unique<Stats>();
+		auto& stats=*m.gradientStats;
+		auto* b=f.game.addBuilding(8,8,globals->buildingsTypes.getTypeNum("inn",0,false),0);
+		REQUIRE(b);
+		const int n=m.getW()*m.getH();
+		// Cold build: a Null rebuild row without a previous lifetime.
+		m.buildingGradient(b,0);
+		REQUIRE(stats.rows().size()==1);
+		CHECK(stats.rows().back().reason==Stats::Reason::Null);
+		CHECK(!stats.rows().back().hasPrevious);
+		// Advance past the dirty-rebuild throttle and let the next use rebuild.
+		auto rebuildAfter=[&](auto change) {
+			change();
+			f.game.stepCounter+=200;
+			const auto before=stats.rows().size();
+			int distance=0;
+			// Prepares the field and settles only the layers up to a nearby cell.
+			m.buildingAvailable(b,0,11,11,&distance);
+			REQUIRE(stats.rows().size()==before+1);
+			const auto& row=stats.rows().back();
+			CHECK(row.reason==Stats::Reason::Generation);
+			return row.verdict;
+		};
+		// Another team's forbidden edit: kept by a team mask filter.
+		CHECK(rebuildAfter([&]{ m.addForbidden(30,30,1); })==Verdict::KeepTeamFilter);
+		// The previous lifetime was the completed cold field.
+		CHECK(stats.rows().back().prevComplete);
+		CHECK(stats.rows().back().prevSettledCost>0);
+		// A footprint write that changes no cell still bumps the generation.
+		CHECK(rebuildAfter([&]{ m.setBuilding(40,40,1,1,NOGBID); })==Verdict::KeepNoop);
+		// The new field is partial (settled near the building only); edit far away.
+		REQUIRE(!b->globalGradientSearch[0]->complete());
+		REQUIRE(b->globalGradient[0][m.coordToIndex(40,40)]==GRADIENT_UNREACHABLE);
+		CHECK(rebuildAfter([&]{ m.addForbidden(40,40,0); })==Verdict::KeepUntouched);
+		CHECK(!stats.rows().back().prevComplete);
+		CHECK(stats.rows().back().prevQueries>=1);
+		CHECK(stats.rows().back().prevExtensions>=1);
+		// The same kind of edit next to a settled cell must rebuild.
+		m.finishBuildingGradient(b,0);
+		CHECK(rebuildAfter([&]{ m.addForbidden(12,12,0); })==Verdict::Rebuild);
+		// Mixed changes: one cell-local rebuild decides the verdict.
+		m.finishBuildingGradient(b,0);
+		CHECK(rebuildAfter([&]{ m.addForbidden(31,31,1); m.setBuilding(14,14,1,1,NOGBID); m.addForbidden(13,13,0); })==Verdict::Rebuild);
+		// A bump without cell detail (terrain commit, registry change) is global.
+		CHECK(rebuildAfter([&]{ m.bumpTopologyGeneration(); })==Verdict::Rebuild);
+		// History lost before the field's generation.
+		CHECK(rebuildAfter([&]{ m.addForbidden(32,32,1); stats.resetJournal(m.topologyGeneration); })==Verdict::Overflow);
+		// Ring wrap: more entries than the journal holds since the field's build.
+		CHECK(rebuildAfter([&]{
+			for(std::size_t pass=0; pass*size_t(n)<=Stats::JOURNAL_CAPACITY; ++pass)
+				for(int y=0;y<m.getH();++y)for(int x=0;x<m.getW();++x)
+					if(pass%2==0) m.addForbidden(x,y,1); else m.removeForbidden(x,y,1);
+		})==Verdict::Overflow);
+		CHECK(stats.verdicts(Verdict::KeepTeamFilter)==1);
+		CHECK(stats.verdicts(Verdict::KeepNoop)==1);
+		CHECK(stats.verdicts(Verdict::KeepUntouched)==1);
+		CHECK(stats.verdicts(Verdict::Rebuild)==3);
+		CHECK(stats.verdicts(Verdict::Overflow)==2);
+		CHECK(stats.rebuilds(Stats::Reason::Generation)==8);
+
+		// The depth histogram partitions popped entries; settled cost advances.
+		m.finishBuildingGradient(b,0);
+		const auto& search=*b->globalGradientSearch[0];
+		std::uint64_t binned=0;
+		for(auto v:search.poppedAtDepth) binned+=v;
+		CHECK(binned==search.poppedEntries());
+		CHECK(search.settledCost()>0);
+
+		// Drops and evictions close lifetimes; the end of a run closes the rest.
+		b->resetPathfindGradients();
+		CHECK(stats.rows().back().event==Stats::Event::Drop);
+		m.buildingGradient(b,0);
+		f.game.stepCounter+=1000;
+		b->freeIdleGradients();
+		CHECK(stats.rows().back().event==Stats::Event::Evict);
+		m.buildingGradient(b,0);
+		stats.finish(f.game);
+		CHECK(stats.rows().back().event==Stats::Event::End);
+		std::ostringstream csv, json;
+		stats.writeCsv(csv); stats.writeJson(json);
+		const auto parsed=nlohmann::json::parse(json.str());
+		CHECK(parsed["generation_verdicts"]["keep_team_filter"]==1);
+		CHECK(parsed["rows"]==stats.rows().size());
+		std::istringstream lines(csv.str()); std::string line; size_t rows=0, columns=0;
+		while(std::getline(lines,line)) {
+			const auto commas=size_t(std::count(line.begin(),line.end(),','));
+			if(!rows) columns=commas;
+			CHECK(commas==columns);
+			++rows;
+		}
+		CHECK(rows==stats.rows().size()+1);
+
+		// Statistics never change the field itself.
+		std::vector<Uint16> withStats(b->globalGradient[0],b->globalGradient[0]+n);
+		m.gradientStats.reset();
+		m.updateGlobalGradient(b,0); m.finishBuildingGradient(b,0);
+		CHECK(std::equal(withStats.begin(),withStats.end(),b->globalGradient[0]));
 	}
 }

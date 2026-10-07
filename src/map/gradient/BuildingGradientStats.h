@@ -1,0 +1,147 @@
+// SPDX-License-Identifier: GPL-3.0-or-later
+#pragma once
+
+#include <array>
+#include <cstddef>
+#include <cstdint>
+#include <iosfwd>
+#include <string>
+#include <unordered_map>
+#include <vector>
+
+#include "BuildingGradientSearch.h"
+
+class Building;
+class Game;
+class Map;
+
+// Diagnostics for building walking fields (Building::globalGradient). A Map
+// owns one only when GLOB2_GRADIENT_STATS is set (Headless: --telemetry
+// gradient-stats); every hook is guarded by that null pointer. The stats read
+// simulation state and never write it, so a run's checksums, RNG, saves and
+// replays are identical with or without them.
+//
+// Each field lifetime ends with one row: a rebuild that replaces it, a drop
+// (Building::resetPathfindGradients), an idle eviction or the end of the run.
+// A change journal records what bumped Map::topologyGeneration, so that every
+// Generation rebuild gets a shadow scoped-invalidation verdict: whether a
+// team-masked, no-op-aware, cell-local invalidation could have kept the field.
+class BuildingGradientStats
+{
+  public:
+	enum class Reason : std::uint8_t { Null, Dirty, Generation, Clearing, Stuck, Other, Count };
+	enum class Verdict : std::uint8_t { None, KeepTeamFilter, KeepNoop, KeepUntouched, Rebuild, Overflow, Count };
+	enum class Event : std::uint8_t { Rebuild, Drop, Evict, End, Count };
+	enum class Change : std::uint8_t { Bump, Building, BuildingNoop, Forbidden };
+
+	static constexpr int DEPTH_BINS = BuildingGradientSearch::DEPTH_BINS;
+	static constexpr std::size_t JOURNAL_CAPACITY = std::size_t(1) << 16;
+
+	struct JournalEntry
+	{
+		std::uint32_t generation = 0; // the generation the bump produced
+		std::uint32_t cell = 0;
+		std::uint32_t aux = 0; // Forbidden: team mask; Building: before << 16 | after
+		Change kind = Change::Bump;
+		bool detailed = false; // Bump only: the bump site recorded its cells
+	};
+
+	struct Row
+	{
+		std::uint32_t tick = 0;
+		std::uint16_t gid = 0;
+		std::uint8_t team = 0, route = 0, swim = 0;
+		Event event = Event::Rebuild;
+		Reason reason = Reason::Other; // why the rebuild happened (rebuild rows)
+		Verdict verdict = Verdict::None; // shadow verdict of this rebuild
+		std::uint16_t type = 0; // index into typeNames
+		bool hasPrevious = false, prevComplete = false, prevSearch = false, prevLocked = false;
+		Reason lifetimeReason = Reason::Other; // how the ending lifetime started
+		Verdict lifetimeVerdict = Verdict::None;
+		bool lifetimeKnown = false;
+		std::int64_t age = -1; // ticks since the ending lifetime's build
+		std::int32_t prevSettledCost = -1;
+		std::uint64_t prevPopped = 0, prevQueries = 0, prevExtensions = 0;
+		std::array<std::uint32_t, DEPTH_BINS> poppedAtDepth{};
+	};
+
+	static bool enabledByEnvironment();
+
+	// Journal. Detail entries carry the generation their pending bump will
+	// produce; recordBump closes that generation.
+	void recordBuilding(std::uint32_t generation, std::size_t cell, std::uint16_t before, std::uint16_t after);
+	void recordBuildingNoop(std::uint32_t generation, std::size_t cell);
+	void recordForbidden(std::uint32_t generation, std::size_t cell, std::uint32_t teamMask);
+	void recordBump(std::uint32_t generation);
+	// History before this generation is unknown (map reset or load).
+	void resetJournal(std::uint32_t generation);
+
+	// Movement-relevant changes that do not bump the topology generation.
+	void resourceSeedChanged(unsigned flags);
+	void resourceBlockingChanged() { ++resourceBlockingChanges; }
+	void clearingGoalGone() { ++clearingGoalGoneCount; }
+
+	// The next updateGlobalGradient call is attributed to this reason.
+	void setPendingReason(Reason reason) { pendingReason = reason; }
+
+	// Called by Map::updateGlobalGradient before the field is reinitialized.
+	void fieldRebuilding(const Map &map, const Building &building, int slot, int access, std::uint32_t tick,
+						 std::uint32_t topologyGeneration);
+	// Called before a live field is released.
+	void fieldReleased(const Building &building, int slot, Event event, std::uint32_t tick);
+	// Emits End rows for every live field.
+	void finish(const Game &game);
+
+	// Shadow scoped invalidation for a field built at fieldGeneration.
+	Verdict classify(const Map &map, const Building &building, int slot, int access, const std::uint16_t *field,
+					 std::uint32_t fieldGeneration, std::uint32_t currentGeneration) const;
+
+	void writeCsv(std::ostream &out) const;
+	void writeJson(std::ostream &out) const;
+
+	const std::vector<Row> &rows() const { return rowList; }
+	std::uint64_t rebuilds(Reason reason) const { return rebuildCounts[unsigned(reason)]; }
+	std::uint64_t verdicts(Verdict verdict) const { return verdictCounts[unsigned(verdict)]; }
+
+	static const char *name(Reason reason);
+	static const char *name(Verdict verdict);
+	static const char *name(Event event);
+
+  private:
+	struct Lifetime
+	{
+		std::uint32_t start = 0;
+		Reason reason = Reason::Other;
+		Verdict verdict = Verdict::None;
+	};
+
+	void push(const JournalEntry &entry);
+	Row previousRow(const Building &building, int slot, Event event, std::uint32_t tick, bool hasPrevious, int access);
+	void closeLifetime(Row &row, const Building &building, int slot);
+	std::uint16_t typeIndex(const Building &building);
+	static std::uint64_t key(const Building &building, int slot);
+
+	std::vector<JournalEntry> journal;
+	std::size_t journalHead = 0, journalSize = 0;
+	std::uint32_t lostGeneration = 0;
+	bool pendingDetail = false;
+
+	Reason pendingReason = Reason::Other;
+	std::vector<Row> rowList;
+	std::vector<std::string> typeNames;
+	std::unordered_map<std::string, std::uint16_t> typeIndices;
+	std::unordered_map<std::uint64_t, Lifetime> lifetimes;
+
+	std::array<std::uint64_t, std::size_t(Reason::Count)> rebuildCounts{};
+	std::array<std::uint64_t, std::size_t(Verdict::Count)> verdictCounts{};
+	std::array<std::uint64_t, std::size_t(Event::Count)> eventCounts{};
+	// Popped entries of finished lifetimes, by how each lifetime started.
+	std::array<std::uint64_t, std::size_t(Verdict::Count)> poppedByVerdict{};
+	std::array<std::uint64_t, std::size_t(Reason::Count)> poppedByReason{};
+	std::uint64_t poppedTotal = 0, poppedUnknownLifetime = 0;
+	std::uint64_t dirtyWithGeneration = 0;
+	std::uint64_t bumps = 0, undetailedBumps = 0, buildingCells = 0, buildingNoops = 0, forbiddenCells = 0;
+	std::uint64_t journalResets = 0;
+	std::uint64_t immobileChanges = 0, resourceChanges = 0, resourceBlockingChanges = 0;
+	std::uint64_t clearingGoalGoneCount = 0;
+};

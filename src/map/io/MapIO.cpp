@@ -5,6 +5,7 @@
 #include "Map.h"
 #include "TerrainCompatibility.h"
 #include "gradient/GradientRuntime.h"
+#include "gradient/BuildingGradientStats.h"
 #include "FileFormatVersions.h"
 #include "Version.h"
 #include "MapInternal.h"
@@ -824,6 +825,7 @@ void Map::loadRuntimeState(GAGCore::InputStream *stream, Sint32 versionMinor)
 	const bool fogIsA=loadFlag(stream,"fogIsA");
 	if (versionMinor>=FILE_FORMAT_VERSION_TOPOLOGY_GENERATION)
 		topologyGeneration=stream->readUint32("topologyGeneration");
+	if (gradientStats) gradientStats->resetJournal(topologyGeneration);
 	fogOfWar=fogIsA ? fogOfWarA.data() : fogOfWarB.data();
 	stream->readEnterSection("cells");
     if(packed)

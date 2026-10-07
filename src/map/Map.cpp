@@ -7,6 +7,7 @@
 #include "TerrainLine.h"
 #include <stdexcept>
 #include "gradient/GradientRuntime.h"
+#include "gradient/BuildingGradientStats.h"
 #include "Game.h"
 #include "render/SoftwareTerrainCache.h"
 #include "Utilities.h"
@@ -44,6 +45,8 @@ const int tabClose[8][2]={
 
 Map::Map() : gradientRuntime(std::make_unique<GradientRuntime>())
 {
+	if (BuildingGradientStats::enabledByEnvironment())
+		gradientStats = std::make_unique<BuildingGradientStats>();
     rebuildResourceHabitats();
 	topologyGeneration=1;
 	game=NULL;
@@ -568,6 +571,7 @@ void Map::clear()
 	gradientRuntime->materialCacheClock=0;
 	gradientRuntime->materialCacheBudget=64ull*1024*1024;
 	topologyGeneration=1;
+	if (gradientStats) gradientStats->resetJournal(topologyGeneration);
 	// A failed load can own only a subset of these arrays.
 	for (int t=0; t<Team::MAX_COUNT; ++t)
 	{

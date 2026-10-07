@@ -1,10 +1,18 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "Map.h"
 #include "gradient/GradientRuntime.h"
+#include "gradient/BuildingGradientStats.h"
+
+void Map::bumpTopologyGeneration()
+{
+	topologyGeneration++;
+	if (gradientStats) gradientStats->recordBump(topologyGeneration);
+}
 
 void Map::resourceSeedChanged(size_t index, unsigned flags)
 {
 	gradientRuntime->resourceSeeds.changed(index, flags);
+	if (gradientStats) gradientStats->resourceSeedChanged(flags);
 	// Material availability is not a movement obstacle. Resource replacements
     // invalidate below only when their blocking properties actually change.
     gradientRuntime->safety.invalidate(
@@ -30,6 +38,7 @@ void Map::replaceResource(size_t index, const Resource &resource)
 	materialStockChanged(index, before);
 	gradientRuntime->safety.invalidate(blockedGround != resourceBlocksGround(index),
 	                                   blockedAir != resourceBlocksAir(index));
+	if (gradientStats && blockedGround != resourceBlocksGround(index)) gradientStats->resourceBlockingChanged();
 }
 
 void Map::replaceTile(size_t index, const Tile &tile)
@@ -79,6 +88,7 @@ void Map::addForbidden(int x, int y, Uint32 team)
 	const Uint32 mask = Team::teamNumberToMask(team);
 	if ((areaCells[index].forbidden & mask) == mask) return;
 	setAreaMask(index, &Tile::forbidden, areaCells[index].forbidden | mask);
+	if (gradientStats) gradientStats->recordForbidden(topologyGeneration + 1, index, mask);
 	bumpTopologyGeneration();
 }
 
@@ -88,22 +98,28 @@ void Map::removeForbidden(int x, int y, Uint32 team)
 	const Uint32 mask = Team::teamNumberToMask(team);
 	if (!(areaCells[index].forbidden & mask)) return;
 	setAreaMask(index, &Tile::forbidden, areaCells[index].forbidden & ~mask);
+	if (gradientStats) gradientStats->recordForbidden(topologyGeneration + 1, index, mask);
 	bumpTopologyGeneration();
 }
 
 void Map::setBuilding(int x, int y, int width, int height, Uint16 building)
 {
+	bool changed = false;
 	for (int yi = y; yi < y + height; ++yi)
 		for (int xi = x; xi < x + width; ++xi)
 		{
 			const size_t index = coordToIndex(xi, yi);
 			if (occupancyCells[index].building != building)
 			{
+				if (gradientStats)
+					gradientStats->recordBuilding(topologyGeneration + 1, index, occupancyCells[index].building, building);
+				changed = true;
 				occupancyCells[index].building = building;
 				markOccupancy(index);
 				resourceSeedChanged(index, ResourceSeedCache::Building);
 			}
 		}
 	// Preserve the previous unconditional generation bump, including empty edits.
+	if (gradientStats && !changed) gradientStats->recordBuildingNoop(topologyGeneration + 1, coordToIndex(x, y));
 	bumpTopologyGeneration();
 }

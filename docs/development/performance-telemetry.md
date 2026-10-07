@@ -161,6 +161,44 @@ those nested in round-trip construction or saving. Sum these two scopes to compa
 building-field construction, but do not then add inclusive round-trip/save timings
 to that total. Benchmark evidence belongs under `artifacts/`, not in this guide.
 
+`gradient.propagation.round_trip`, `gradient.propagation.area` and
+`gradient.propagation.resource` wrap the `propagateGradient` calls of round-trip
+children, forbidden/guard/clear area fields and synchronous resource fields
+respectively, so that the shared `gradient.propagation` scope can be split by caller.
+Periodic pipeline fields propagate on workers and are not included.
+
+### Building field statistics
+
+`--telemetry gradient-stats` (environment `GLOB2_GRADIENT_STATS=1`) gives the map a
+diagnostic `BuildingGradientStats` (`src/map/gradient/BuildingGradientStats.h`). It only
+reads simulation state: checksums, RNG, saves and replays are identical with it on or
+off, and without it every hook is a null-pointer test. Each building walking-field
+lifetime ends with one row in `gradient-stats.csv` in the output directory: a rebuild
+(`reason` = `null`, `dirty`, `generation`, `clearing`, `stuck` or `other`), a `drop`
+(`Building::resetPathfindGradients`), an idle `evict` or the run's `end`. A row
+describes the lifetime that just ended (`age`, `prev_complete`, `prev_settled_cost`,
+`prev_settled_tiles`, `prev_popped`, `prev_queries` = resolve calls, `prev_extensions` =
+calls that expanded the search, and `popped_at_depth_0..31`, popped entries per 80-cost
+band of eight land tiles with the last band open-ended) together with how that
+lifetime began (`lifetime_reason`, `lifetime_verdict`).
+
+A change journal (a 65536-entry ring of generation, cell, kind and team mask) records the
+sites that bump `Map::topologyGeneration`: changed footprint cells, `setBuilding` calls
+that change nothing, forbidden-mask edits, and bumps with no cell detail (terrain commits,
+resource registry replacement). Every `generation` rebuild gets a `shadow_verdict` of
+what scoped invalidation would have done: `keep_team_filter` (only other teams'
+forbidden edits), `keep_noop` (only no-op footprint writes), `keep_untouched` (each
+changed cell and its eight neighbours still at their initial obstacle/unreached value in
+the old field, which was not locked), `rebuild`, or `overflow` (the needed history left
+the ring or predates a load). Resource and immobile-unit changes, which never bump the
+generation, are only counted.
+
+`result.json` then has a `building_gradient` object: `rebuilds` by reason,
+`dirty_with_generation`, `generation_verdicts`, `generation_kept`, `events`,
+`popped_total`, `popped_by_lifetime_reason`, `popped_by_lifetime_verdict`,
+`popped_kept`, `clearing_goal_gone`, `journal` counters and the `unbumped` change counts.
+`tools/gradient_depth_fit.py` fits depth-prediction tables from the CSV rows.
+
 ## Scheduled AI decisions and experimental map computation
 
 All shipped controllers borrow immutable engine snapshots for decisions. The simulation
