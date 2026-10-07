@@ -398,14 +398,20 @@ bool Engine::startSimulationThread(Uint64 now)
     // main thread (pollTurnSession), where the connection panel also reads it.
     if (turn) return false;
     publishSessionClock(now);
-    auto started = std::make_unique<SimulationRunner>(*this);
+    // Finish the serial producer's lifecycle before changing owner threads.
+    // Publish runner first: its new thread immediately routes read-boundary
+    // admission through this member and must never create a second producer.
+    gui.setPublishedScene(nullptr);
+    serialPresentation.reset();
+    gui.game.map.computeExecutor().cancelPresentationAndWait();
+    runner = std::make_unique<SimulationRunner>(*this);
     gui.simulationThreaded = true;
-    if (!started->start())
+    if (!runner->start())
     {
+        runner.reset();
         gui.simulationThreaded = false;
         return false;
     }
-    runner = std::move(started);
     gui.simulationAccess=[this](const auto& work){runner->withGame(work);};
     return true;
 }

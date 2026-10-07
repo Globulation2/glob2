@@ -237,7 +237,10 @@ TEST_SUITE("EngineSession")
         REQUIRE(engine.initCampaign("maps/balanced.map")==Engine::EE_NO_ERROR);
         engine.beginSession(SDL_GetTicks());
         engine.gui.gamePaused=true;
+        REQUIRE(engine.admitPresentation());
+        REQUIRE(engine.serialPresentation);
         REQUIRE(engine.startSimulationThread(SDL_GetTicks()));
+        CHECK_FALSE(engine.serialPresentation);
         const auto boundary=engine.gui.simulationAccess;
         unsigned parked=0;
         engine.gui.simulationAccess=[&](const auto& work){++parked;boundary(work);};
