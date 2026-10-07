@@ -412,3 +412,69 @@ render shaded previews for review. To see a shape in a real scene, copy
 previews above then draw team 0's swarm with that shape, painted from the
 atlas's swarm quadrant. `--paint` takes a 256px swarm paint, such as that
 quadrant cut out of a colony-v2 atlas.
+
+## Live walking-worker prototype
+
+The offline `skin-preview` tool can reconstruct the worker surface from animated
+controls instead of loading all baked vertex poses. It does not change gameplay,
+installed assets, online skin content or the GSK1 format. The prototype keeps the
+worker topology, folded paint coordinates, implicit surface rules and material
+shader. Its C++ evaluator uses double precision, then produces immutable single-pose
+GSK meshes for the existing renderer.
+
+The source gait has two eight-frame halves: alternating reference headings use
+different halves. Consequently the rig stores **64 samples of 13 controls**, not
+32 samples. Controls are in model space; eight small translation calibrations
+retain the source timeline's heading offsets. Heading rotation is evaluated live.
+The exporter reconstructs every installed reference pose and refuses an export
+outside 0.05 logical pixels or 0.001 normal-component error. Native verification
+uses the stricter normal-vector error. The runtime phase is a fraction of the full
+16-source-frame cycle; the comparison viewer maps the selected heading's 32
+reference phases into its corresponding half. Continuous rotation holds the
+selected half fixed, while the baked comparison snaps to the nearest heading.
+
+From the repository root (Blender **3.6.23**, with auto-execution disabled):
+
+```sh
+blender --background --factory-startup --disable-autoexec -t 1 --python-exit-code 1 \
+  --python tools/skins/export_live_worker.py -- --output artifacts/live-worker
+python3 tools/skins/prepare_live_worker.py artifacts/live-worker
+scons release=1 server=0 skin-preview tests
+build/linux/client/release/src/skin-preview artifacts/live-worker artifacts/live-worker/check --live-verify
+build/linux/client/release/src/skin-preview artifacts/live-worker artifacts/live-worker/view --live-worker
+build/linux/client/release/src/skin-preview artifacts/live-worker artifacts/live-worker/view --live-capture
+build/linux/client/release/src/skin-preview artifacts/live-worker artifacts/live-worker/crowd --live-benchmark
+python3 test/run_tests.py --filter 'LiveWorkerRig/*' --filter 'SkinMesh/*'
+```
+
+Use the corresponding platform build directory. Export requires Blender's NumPy;
+fixture preparation requires Pillow with WebP support. Generated rig files, paint,
+reference copies, captures and JSON measurements stay under ignored `artifacts/`
+or an external directory. The prototype JSON format is versioned and capped at
+1 MiB; loaders publish state transactionally and reject malformed controls,
+indices, vertex construction descriptors and nonfinite values.
+
+Viewer controls: Space pauses, Left/Right scrub reference phases, Up/Down change
+speed, 1–8 select headings, R toggles continuous rotation, P cycles neutral paint,
+a numbered UV checker and mixed materials, and Escape exits. Both workers appear
+at normal size and enlarged. Capture mode saves all 256 reference poses with all
+three paints, plus fractional phases and the cycle boundary. `--live-verify` runs
+without a display and checks geometry/paint identity, numerical tolerances,
+interpolation, wrapping, socket topology, malformed input and cache eviction.
+
+Crowd mode alternates five baked/live pairs for each of 32 and 128 distinct poses,
+with 512 workers and four paint variants. Each run records the first frame,
+40 warmed frames after five warm-up frames, mean/p95 time, draw counts, control
+preparation/deformation time, cache hits/misses and evaluated geometry bytes.
+A separate forced-cold measurement reconstructs every distinct pose without GPU
+raster work. Geometry is shared between paint variants in a 128-entry LRU; its
+single-pose GSK objects currently each own their topology and UV arrays, so reduced
+file size does not imply reduced resident memory. Compressed byte counts use
+DEFLATE level 6 consistently for the rig and reference, not a platform installer.
+
+Run benchmarks without concurrent builds and retain hardware, driver, toolchain,
+resolution, commands, JSON measurements and captures. Frame timings include
+presentation and are not isolated GPU timings. A broader conversion needs visual
+acceptance and a warmed crowd p95 within 25% of the baked baseline; cold stalls
+and cache memory must be considered separately. Browser/mobile performance and
+other actions/models are outside this prototype.
