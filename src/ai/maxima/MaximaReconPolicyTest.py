@@ -42,14 +42,14 @@ class MaximaReconPolicyTest(unittest.TestCase):
     def test_live_observations_are_fow_gated(self):
         update = self.source[self.source.index("void Maxima::update_reconnaissance"):]
         update = update[:update.index("void Maxima::update_opponent_models")]
-        self.assertIn("isFOWDiscovered", update)
+        self.assertIn("ObservationQueries::visible", update)
         self.assertIn("remembered_footprint_currently_visible", update)
         self.assertIn("confirmBuildingAbsent", update)
         visibility = function(self.world_helpers, "inline bool building_currently_visible")
-        self.assertIn("isFOWDiscovered", visibility)
-        self.assertIn("player->team->me", visibility)
-        self.assertIn("building->type->width", visibility)
-        self.assertIn("building->type->height", visibility)
+        self.assertIn("ObservationQueries::visible", visibility)
+        self.assertIn("teamMask", visibility)
+        self.assertIn("type.width", visibility)
+        self.assertIn("type.height", visibility)
 
     def test_lightweight_force_sampling_is_phased_and_unit_only(self):
         sampler = self.source[
@@ -58,7 +58,7 @@ class MaximaReconPolicyTest(unittest.TestCase):
         ]
         self.assertIn("beginForceObservation", sampler)
         self.assertIn("finishForceObservation", sampler)
-        self.assertIn("isFOWDiscovered", sampler)
+        self.assertIn("ObservationQueries::visible", sampler)
         self.assertIn("replaceThreats", sampler)
         self.assertNotIn("observeBuilding", sampler)
         self.assertNotIn("observeEconomicActivity", sampler)
@@ -104,7 +104,7 @@ class MaximaReconPolicyTest(unittest.TestCase):
         self.assertIn("lastEconomicSeenTick", planner)
         self.assertIn("watch_score, true", planner)
         self.assertIn("observeEconomicActivity", update)
-        self.assertIn("isFOWDiscovered", update)
+        self.assertIn("ObservationQueries::visible", update)
 
     def test_economic_watch_kind_and_memory_are_saved(self):
         self.assertIn('writeUint8(mission.economicWatch,"economic_watch")',

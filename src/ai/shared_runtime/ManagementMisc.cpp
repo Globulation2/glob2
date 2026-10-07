@@ -34,42 +34,42 @@ ChangeAlliances::ChangeAlliances(int team, tribool is_allied, tribool is_enemy, 
 
 void ChangeAlliances::modify(Runtime& runtime)
 {
-	if (team < 0 || team >= runtime.readPlayer()->game->mapHeader.getNumberOfTeams() ||
-		team >= Team::MAX_COUNT || !runtime.readPlayer()->game->teams[team])
+	if (team < 0 || std::size_t(team) >= runtime.observation().teams.size() ||
+		team >= Team::MAX_COUNT)
 		return;
 	Uint32 alliedmask=runtime.allies;
 	Uint32 enemymask=runtime.enemies;
 	Uint32 market_mask=runtime.market_view;
 	Uint32 inn_mask=runtime.inn_view;
 	Uint32 other_mask=runtime.other_view;
-	AISharedRuntime::Read::Team* t=runtime.readPlayer()->game->teams[team];
-	// t->me is always a single bit (Team::teamNumberToMask = 1 << teamNumber),
-	// so &= ~t->me clears it cleanly; the legacy `if(mask&t->me) mask^=t->me;`
+	const auto* t=&runtime.observation().teams[team];
+	// t->mask is always a single bit (Team::teamNumberToMask = 1 << teamNumber),
+	// so &= ~t->mask clears it cleanly; the legacy `if(mask&t->mask) mask^=t->mask;`
 	// pattern was equivalent but obscured the intent.
 	if(is_allied)
-		alliedmask|=t->me;
+		alliedmask|=t->mask;
 	else if(!is_allied)
-		alliedmask&=~t->me;
+		alliedmask&=~t->mask;
 
 	if(is_enemy)
-		enemymask|=t->me;
+		enemymask|=t->mask;
 	else if(!is_enemy)
-		enemymask&=~t->me;
+		enemymask&=~t->mask;
 
 	if(view_market)
-		market_mask|=t->me;
+		market_mask|=t->mask;
 	else if(!view_market)
-		market_mask&=~t->me;
+		market_mask&=~t->mask;
 
 	if(view_inn)
-		inn_mask|=t->me;
+		inn_mask|=t->mask;
 	else if(!view_inn)
-		inn_mask&=~t->me;
+		inn_mask&=~t->mask;
 
 	if(view_other)
-		other_mask|=t->me;
+		other_mask|=t->mask;
 	else if(!view_other)
-		other_mask&=~t->me;
+		other_mask&=~t->mask;
 
 	runtime.allies=alliedmask;
 	runtime.enemies=enemymask;
@@ -77,15 +77,15 @@ void ChangeAlliances::modify(Runtime& runtime)
 	runtime.inn_view=inn_mask;
 	runtime.other_view=other_mask;
 
-	runtime.push_order(shared_ptr<Order>(new SetAllianceOrder(runtime.readPlayer()->team->teamNumber, alliedmask, enemymask, market_mask, inn_mask, other_mask)));
+	runtime.push_order(shared_ptr<Order>(new SetAllianceOrder(runtime.teamNumber(), alliedmask, enemymask, market_mask, inn_mask, other_mask)));
 }
 
 
 
 tribool ChangeAlliances::wait(Runtime& runtime)
 {
-	return team >= 0 && team < runtime.readPlayer()->game->mapHeader.getNumberOfTeams() &&
-		team < Team::MAX_COUNT && runtime.readPlayer()->game->teams[team];
+	return team >= 0 && std::size_t(team) < runtime.observation().teams.size() &&
+		team < Team::MAX_COUNT;
 }
 
 
@@ -168,9 +168,9 @@ void UpgradeRepair::modify(Runtime& runtime)
 	if(!building || runtime.get_building_register().is_building_upgrading(id)) return;
 	// Construction means repair for damaged buildings and upgrade for healthy
 	// ones. Do not register an upgrade wait when authoritative rules reject it.
-	if(building->hp<building->getEffectiveMaxHp()) { if(!building->type->semantics.repairable) return; }
- else if(runtime.readPlayer()->game->gameHeader.isUnitUpgradesDisabled() || !building->isUpgradeAvailable()) return;
-	runtime.push_order(AISharedRuntime::Read::constructionOrder(*runtime.readPlayer()->game, *building,1,1));
+	if(building->hp<building->maxHp) { if(!AIEngine::ObservationQueries::buildingType(runtime.observation(),*building).semantics.repairable) return; }
+ else if(runtime.observation().configuration->isUnitUpgradesDisabled() || !runtime.observation().isUpgradeAvailable(*building)) return;
+	runtime.push_order(AIEngine::ObservationQueries::constructionOrder(runtime.observation(),*building,1,1));
 	runtime.get_building_register().set_upgrading(id,true);
 }
 

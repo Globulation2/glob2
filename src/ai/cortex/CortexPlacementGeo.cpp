@@ -1,4 +1,4 @@
-#include "CortexWorld.h"
+#include "CortexSnapshotQueries.h"
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2026 The Globulation 2 Authors
 
@@ -23,7 +23,7 @@ namespace Cortex
 		// (nx, ny) covered by the footprint (cx, cy) top-left, cw x ch? Footprints
 		// are small (<= a few tiles per side), so the direct scan is cheap and
 		// avoids fragile rectangle-overlap math across the map seam.
-		bool footprintContains(const Cortex::WorldMap& map, int cx, int cy, int cw, int ch,
+		bool footprintContains(const AIEngine::AIWorldView& map, int cx, int cy, int cw, int ch,
 		                       int nx, int ny)
 		{
 			for (int j = 0; j < ch; j++)
@@ -67,15 +67,15 @@ namespace Cortex
 	// Chebyshev distance from the footprint's top-left corner to the nearest
 	// live building owned by `team`. Returns -1 when the team has no
 	// buildings yet (first placement: distance is meaningless).
-	int distanceToNearestBuilding(Cortex::World* game, Cortex::WorldTeam* team, int x, int y)
+	int distanceToNearestBuilding(const AIEngine::AIWorldView* game, const AIEngine::TeamView* team, const PlanningIntent& intents, int x, int y)
 	{
 		int best = -1;
-		for (int i = 0; i < Cortex::WorldBuilding::MAX_COUNT; i++)
+		for (int i = 0; i < ::Building::MAX_COUNT; i++)
 		{
-			Cortex::WorldBuilding* b = team->myBuildings[i];
-			if (b == NULL || b->buildingState == Cortex::WorldBuilding::DEAD)
+			const AIEngine::BuildingView* b = game->buildingSlots(team->number)[i];
+			if (b == NULL || b->buildingState == ::Building::DEAD)
 				continue;
-			int d = game->map.warpDistMax(x, y, b->posX, b->posY);
+			int d = warpDistMax(*game,x, y, plannedX(intents,*b), plannedY(intents,*b));
 			if (best < 0 || d < best)
 				best = d;
 		}
@@ -124,7 +124,7 @@ namespace Cortex
 		    && axisSignedGap(ay, ah, by, bh, mapH) < 0;
 	}
 
-	static unsigned innOccupiedSideMask(const Cortex::WorldMap& map, int innX, int innY, int innW, int innH,
+	static unsigned innOccupiedSideMask(const AIEngine::AIWorldView& map, int innX, int innY, int innW, int innH,
 	                     int candX, int candY, int candW, int candH)
 	{
 		const bool haveCand = (candW > 0 && candH > 0);
@@ -147,7 +147,7 @@ namespace Cortex
 				const int nx = map.normalizeX(innX + dx);
 				const int ny = map.normalizeY(innY + dy);
 
-				bool occupied = (map.getBuilding(nx, ny) != NOGBID);
+				bool occupied = (getBuilding(map,nx, ny) != NOGBID);
 				if (!occupied && haveCand)
 					occupied = footprintContains(map, candX, candY, candW, candH, nx, ny);
 				if (!occupied)
@@ -173,14 +173,14 @@ namespace Cortex
 		return count;
 	}
 
-	int innOccupiedSides(const Cortex::WorldMap& map, int innX, int innY, int innW, int innH,
+	int innOccupiedSides(const AIEngine::AIWorldView& map, int innX, int innY, int innW, int innH,
 	                     int candX, int candY, int candW, int candH)
 	{
 		return sideCount(innOccupiedSideMask(map, innX, innY, innW, innH,
 		                                    candX, candY, candW, candH));
 	}
 
-	void grownFootprint(const Cortex::WorldCatalog& catalog, const BuildingType* bt, int& w, int& h)
+	void grownFootprint(const AIEngine::AIWorldView& catalog, const BuildingType* bt, int& w, int& h)
 	{
 		w = (bt != NULL) ? bt->width : 0;
 		h = (bt != NULL) ? bt->height : 0;
@@ -190,7 +190,7 @@ namespace Cortex
 		const BuildingType* cur = bt;
 		while (cur != NULL && cur->nextLevel >= 0)
 		{
-			cur = catalog.get(cur->nextLevel);
+			cur = catalogType(catalog,cur->nextLevel);
 			if (cur == NULL)
 				break;
 			if (cur->width > w)
@@ -200,7 +200,7 @@ namespace Cortex
 		}
 	}
 
-	void grownFootprintBox(const Cortex::WorldCatalog& catalog, const BuildingType* bt, int& ox, int& oy, int& w, int& h)
+	void grownFootprintBox(const AIEngine::AIWorldView& catalog, const BuildingType* bt, int& ox, int& oy, int& w, int& h)
 	{
 		ox = 0;
 		oy = 0;
@@ -223,7 +223,7 @@ namespace Cortex
 		const BuildingType* cur = bt;
 		while (cur != NULL && cur->nextLevel >= 0)
 		{
-			cur = catalog.get(cur->nextLevel);
+			cur = catalogType(catalog,cur->nextLevel);
 			if (cur == NULL)
 				break;
 			const int relX = cur->decLeft - baseDecLeft;
@@ -240,7 +240,7 @@ namespace Cortex
 		h  = maxY - minY;
 	}
 
-	bool anyWheatWithin(const Cortex::WorldMap& map, int x, int y, int w, int h, int dist)
+	bool anyWheatWithin(const AIEngine::AIWorldView& map, int x, int y, int w, int h, int dist)
 	{
 		// The footprint expanded by `dist` in Chebyshev distance is exactly the
 		// rectangle [x-dist, x+w+dist) x [y-dist, y+h+dist). The footprint interior
@@ -251,13 +251,13 @@ namespace Cortex
 			{
 				const int nx = map.normalizeX(x + dx);
 				const int ny = map.normalizeY(y + dy);
-				if (map.getResource(nx, ny).type == WHEAT)
+				if (getResource(map,nx, ny).type == WHEAT)
 					return true;
 			}
 		return false;
 	}
 
-	int countWheatWithin(const Cortex::WorldMap& map, int x, int y, int w, int h, int dist)
+	int countWheatWithin(const AIEngine::AIWorldView& map, int x, int y, int w, int h, int dist)
 	{
 		// Forbidden-BLIND companion to countHarvestableWheatWithin: counts every WHEAT
 		// tile in the expanded footprint regardless of the forbidden mask. The gap
@@ -269,13 +269,13 @@ namespace Cortex
 			{
 				const int nx = map.normalizeX(x + dx);
 				const int ny = map.normalizeY(y + dy);
-				if (map.getResource(nx, ny).type == WHEAT)
+				if (getResource(map,nx, ny).type == WHEAT)
 					count++;
 			}
 		return count;
 	}
 
-	int countSurvivingWheatWithin(const Cortex::WorldMap& map, int x, int y, int w, int h, int dist)
+	int countSurvivingWheatWithin(const AIEngine::AIWorldView& map, int x, int y, int w, int h, int dist)
 	{
 		// Parity-aware count of the WHEAT tiles that SURVIVE Cortex's wheat-protection
 		// checkerboard — the open half the paint leaves harvestable: WHEAT tiles whose
@@ -296,7 +296,7 @@ namespace Cortex
 			{
 				const int nx = map.normalizeX(x + dx);
 				const int ny = map.normalizeY(y + dy);
-				if (map.getResource(nx, ny).type != WHEAT)
+				if (getResource(map,nx, ny).type != WHEAT)
 					continue;
 				if (((nx + ny) & 1) == WHEAT_PARITY)
 					continue; // the checkerboard-forbidden half: not sustained.
@@ -305,7 +305,7 @@ namespace Cortex
 		return count;
 	}
 
-	int countHarvestableWheatWithin(const Cortex::WorldMap& map, Uint32 teamMask,
+	int countHarvestableWheatWithin(const AIEngine::AIWorldView& map, Uint32 teamMask,
 	                               int x, int y, int w, int h, int dist)
 	{
 		// Same expanded-footprint scan box as anyWheatWithin ([x-dist, x+w+dist) x
@@ -321,28 +321,28 @@ namespace Cortex
 			{
 				const int nx = map.normalizeX(x + dx);
 				const int ny = map.normalizeY(y + dy);
-				if (map.getResource(nx, ny).type != WHEAT)
+				if (getResource(map,nx, ny).type != WHEAT)
 					continue;
-				if (map.isForbidden(nx, ny, teamMask))
+				if (isForbidden(map,nx, ny, teamMask))
 					continue;
 				count++;
 			}
 		return count;
 	}
 
-	bool candidateCrowdsInn(Cortex::World* game, Cortex::WorldTeam* team, const Cortex::WorldMap& map,
+	bool candidateCrowdsInn(const AIEngine::AIWorldView* game, const AIEngine::TeamView* team, const PlanningIntent& intents, const AIEngine::AIWorldView& map,
 	                        int x, int y, int w, int h)
 	{
 		if (game == NULL || team == NULL)
 			return false;
 
-		for (int i = 0; i < Cortex::WorldBuilding::MAX_COUNT; i++)
+		for (int i = 0; i < ::Building::MAX_COUNT; i++)
 		{
-			Cortex::WorldBuilding* b = team->myBuildings[i];
-			if (b == NULL || b->buildingState == Cortex::WorldBuilding::DEAD)
+			const AIEngine::BuildingView* b = game->buildingSlots(team->number)[i];
+			if (b == NULL || b->buildingState == ::Building::DEAD)
 				continue;
-			if (b->type == NULL ||
-			    !Cortex::servesRole(*b->owner->game, *b->type, Cortex::CORTEX_BUILD_FOOD))
+			if (buildingType(*game,*b) == NULL ||
+			    !Cortex::servesRole(*game, *buildingType(*game,*b), Cortex::CORTEX_BUILD_FOOD))
 				continue;
 
 			// Reserve clearance around the footprint the inn can grow INTO (3x3),
@@ -350,17 +350,17 @@ namespace Cortex
 			// in the tiles a 2x2 inn would expand into when it upgrades. Growth is
 			// anchored at the inn's (posX, posY), so the grown footprint shares it.
 			int iw, ih;
-			grownFootprint(team->game->buildingsTypes, b->type, iw, ih);
+			grownFootprint(*game, buildingType(*game,*b), iw, ih);
 
 			// Compare the inn's occupied-side count with and without the candidate.
 			// Reject only when the candidate pushes it past the limit AND actually
 			// makes it worse, so a pre-existing >1 inn (e.g. grandfathered from
 			// before this rule) does not block every placement around it.
-			const int withCand = innOccupiedSides(map, b->posX, b->posY, iw, ih,
+			const int withCand = innOccupiedSides(map, plannedX(intents,*b), plannedY(intents,*b), iw, ih,
 			                                       x, y, w, h);
 			if (withCand <= CORTEX_INN_MAX_TOUCH_SIDES)
 				continue;
-			const int baseline = innOccupiedSides(map, b->posX, b->posY, iw, ih,
+			const int baseline = innOccupiedSides(map, plannedX(intents,*b), plannedY(intents,*b), iw, ih,
 			                                       -1, -1, 0, 0);
 			if (withCand > baseline)
 				return true;
@@ -368,14 +368,14 @@ namespace Cortex
 		return false;
 	}
 
-	bool candidateOverlapsReservedExpansion(Cortex::World* game, Cortex::WorldTeam* team, const Cortex::WorldMap& map,
+	bool candidateOverlapsReservedExpansion(const AIEngine::AIWorldView* game, const AIEngine::TeamView* team, const PlanningIntent& intents, const AIEngine::AIWorldView& map,
 	                                        int cgx, int cgy, int cew, int ceh)
 	{
 		if (game == NULL || team == NULL)
 			return false;
 
-		const int mapW = map.getW();
-		const int mapH = map.getH();
+		const int mapW = map.width;
+		const int mapH = map.height;
 
 		// Today only inns are protected by candidateCrowdsInn (side-clearance). But
 		// racetracks (WALKSPEED) and pools (SWIMSPEED) also reserve a grown box at
@@ -387,46 +387,47 @@ namespace Cortex
 		// type returns the box covering its current footprint plus all remaining upgrade
 		// levels, anchored relative to the current corner (posX, posY), so this works
 		// whether the existing building is level 0 or already partly upgraded.
-		for (int i = 0; i < Cortex::WorldBuilding::MAX_COUNT; i++)
+		for (int i = 0; i < ::Building::MAX_COUNT; i++)
 		{
-			Cortex::WorldBuilding* b = team->myBuildings[i];
-			if (b == NULL || b->buildingState == Cortex::WorldBuilding::DEAD)
+			const AIEngine::BuildingView* b = game->buildingSlots(team->number)[i];
+			if (b == NULL || b->buildingState == ::Building::DEAD)
 				continue;
-			if (b->type == NULL || b->type->nextLevel < 0 || !b->type->semantics.occupiesGround)
+			if (buildingType(*game,*b) == NULL || buildingType(*game,*b)->nextLevel < 0 || !buildingType(*game,*b)->semantics.occupiesGround)
 				continue;
 
 			int bgox, bgoy, bew, beh;
-			grownFootprintBox(team->game->buildingsTypes, b->type, bgox, bgoy, bew, beh);
-			const int bx = b->posX + bgox;
-			const int by = b->posY + bgoy;
+			grownFootprintBox(*game, buildingType(*game,*b), bgox, bgoy, bew, beh);
+			const int bx = plannedX(intents,*b) + bgox;
+			const int by = plannedY(intents,*b) + bgoy;
 			if (rectsOverlap(cgx, cew, cgy, ceh, bx, bew, by, beh, mapW, mapH))
 				return true;
 		}
 		return false;
 	}
-	PlacementGeometry::PlacementGeometry(Cortex::WorldTeam* team, Cortex::WorldMap& map) : map(map)
+	PlacementGeometry::PlacementGeometry(const AIEngine::TeamView* team, const AIEngine::AIWorldView& map, const PlanningIntent& intents) : map(map)
 	{
 		if (!team) return;
-		for (int i = 0; i < Cortex::WorldBuilding::MAX_COUNT; ++i)
+        const auto* game=&map;
+		for (int i = 0; i < ::Building::MAX_COUNT; ++i)
 		{
-			const Cortex::WorldBuilding* b = team->myBuildings[i];
-			if (!b || b->buildingState == Cortex::WorldBuilding::DEAD) continue;
-			buildings.push_back({b->posX, b->posY, 0, 0});
-			if (!b->type) continue;
-			const unsigned roles = buildingRoles(*team->game, *b->type);
-			typedBuildings.push_back({{b->posX, b->posY, b->type->width, b->type->height}, roles});
+			const AIEngine::BuildingView* b = game->buildingSlots(team->number)[i];
+			if (!b || b->buildingState == ::Building::DEAD) continue;
+			buildings.push_back({plannedX(intents,*b), plannedY(intents,*b), 0, 0});
+			if (!buildingType(*game,*b)) continue;
+			const unsigned roles = buildingRoles(*game, *buildingType(*game,*b));
+			typedBuildings.push_back({{plannedX(intents,*b), plannedY(intents,*b), buildingType(*game,*b)->width, buildingType(*game,*b)->height}, roles});
 			if (roles & (1u << CORTEX_BUILD_FOOD))
 			{
 				int w, h;
-				grownFootprint(team->game->buildingsTypes, b->type, w, h);
-				inns.push_back({{b->posX, b->posY, w, h},
-					innOccupiedSideMask(map, b->posX, b->posY, w, h, -1, -1, 0, 0)});
+				grownFootprint(*game, buildingType(*game,*b), w, h);
+				inns.push_back({{plannedX(intents,*b), plannedY(intents,*b), w, h},
+					innOccupiedSideMask(map, plannedX(intents,*b), plannedY(intents,*b), w, h, -1, -1, 0, 0)});
 			}
-			if (b->type->nextLevel >= 0 && b->type->semantics.occupiesGround)
+			if (buildingType(*game,*b)->nextLevel >= 0 && buildingType(*game,*b)->semantics.occupiesGround)
 			{
 				int ox, oy, w, h;
-				grownFootprintBox(team->game->buildingsTypes, b->type, ox, oy, w, h);
-				reservations.push_back({b->posX + ox, b->posY + oy, w, h});
+				grownFootprintBox(*game, buildingType(*game,*b), ox, oy, w, h);
+				reservations.push_back({plannedX(intents,*b) + ox, plannedY(intents,*b) + oy, w, h});
 			}
 		}
 	}
@@ -436,7 +437,7 @@ namespace Cortex
 		int best = -1;
 		for (const Box& b : buildings)
 		{
-			const int distance = map.warpDistMax(x, y, b.x, b.y);
+			const int distance = warpDistMax(map,x, y, b.x, b.y);
 			if (best < 0 || distance < best) best = distance;
 		}
 		return best;
@@ -448,7 +449,7 @@ namespace Cortex
 		for (const BuildingBox& b : typedBuildings)
 		{
 			if (!(b.roles & (1u << type))) continue;
-			const int distance = map.warpDistMax(x, y, b.box.x, b.box.y);
+			const int distance = warpDistMax(map,x, y, b.box.x, b.box.y);
 			if (best < 0 || distance < best) best = distance;
 		}
 		return best;
@@ -460,7 +461,7 @@ namespace Cortex
 		for (const BuildingBox& b : typedBuildings)
 		{
 			const int distance = rectEdgeChebyshev(x, w, y, h,
-				b.box.x, b.box.w, b.box.y, b.box.h, map.getW(), map.getH());
+				b.box.x, b.box.w, b.box.y, b.box.h, map.width, map.height);
 			if (best < 0 || distance < best) best = distance;
 		}
 		return best;
@@ -477,7 +478,7 @@ namespace Cortex
 	                                              std::vector<unsigned char>& mask) const
 	{
 		if (typedBuildings.empty()) { mask.clear(); return; }
-		const int mapW = map.getW(), mapH = map.getH();
+		const int mapW = map.width, mapH = map.height;
 		mask.assign(mapW * mapH, 0);
 		for (const BuildingBox& building : typedBuildings)
 		{
@@ -514,7 +515,7 @@ namespace Cortex
 			for (unsigned i = 0; i < 4; ++i)
 				if (!(sides & (1u << i)) &&
 				    rectsOverlap(x, w, y, h, strips[i].x, strips[i].w,
-				                 strips[i].y, strips[i].h, map.getW(), map.getH()))
+				                 strips[i].y, strips[i].h, map.width, map.height))
 					sides |= 1u << i;
 			const int count = sideCount(sides);
 			if (count > CORTEX_INN_MAX_TOUCH_SIDES && count > sideCount(inn.sides))
@@ -526,7 +527,7 @@ namespace Cortex
 	bool PlacementGeometry::candidateOverlapsReservedExpansion(int x, int y, int w, int h) const
 	{
 		for (const Box& b : reservations)
-			if (rectsOverlap(x, w, y, h, b.x, b.w, b.y, b.h, map.getW(), map.getH()))
+			if (rectsOverlap(x, w, y, h, b.x, b.w, b.y, b.h, map.width, map.height))
 				return true;
 		return false;
 	}

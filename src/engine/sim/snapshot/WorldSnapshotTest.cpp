@@ -15,6 +15,92 @@
 
 TEST_SUITE("WorldSnapshot")
 {
+    TEST_CASE("shared entity indices preserve empty slots and canonical record addresses")
+    {
+        glob2test::HeadlessGlobals globals;
+        glob2test::HeadlessGame fixture{glob2test::GameOptions{.wDec=5, .hDec=5, .teams=2, .discovered=true, .clearImmobile=true, .loadDefaultRace=true}};
+        REQUIRE(fixture.addBuilding("inn",4,4,0,0));
+        REQUIRE(fixture.addUnit(WORKER,12,12,0));
+        REQUIRE(fixture.addUnit(WORKER,14,14,1));
+        const auto captured=SimulationSnapshot::capture(fixture.game,SimulationSnapshot::captureCatalog(fixture.game));
+        AIEngine::AIWorldView world(captured);
+        for(int team=0;team<2;++team) {
+            const auto buildings=world.buildingSlots(team), invalidBuildings=world.buildingSlots(-1);
+            const auto units=world.unitSlots(team);
+            CHECK(buildings.size()==std::size_t(Building::MAX_COUNT)); CHECK(units.size()==std::size_t(Unit::MAX_COUNT));
+            CHECK(invalidBuildings.size()==0); CHECK(world.unitSlots(2).size()==0);
+            std::size_t slot=0;
+            for(const auto* unit:units) {
+                CHECK(unit==world.unitAtSlot(Uint16(team*Unit::MAX_COUNT+slot)));
+                CHECK(bool(unit)==bool(fixture.game.teams[team]->myUnits[slot]));
+                if(unit) {
+                    CHECK(unit==world.unit(unit->identity));
+                    CHECK(world.unit({unit->identity.gid,unit->identity.generation+1})==nullptr);
+                }
+                ++slot;
+            }
+            CHECK(slot==std::size_t(Unit::MAX_COUNT));
+            for(std::size_t i=0;i<buildings.size();++i) {
+                const auto* building=buildings[i];
+                CHECK(building==world.buildingAtSlot(Uint16(team*Building::MAX_COUNT+i)));
+                CHECK(bool(building)==bool(fixture.game.teams[team]->myBuildings[i]));
+                if(building) CHECK(building==world.building(building->identity));
+            }
+        }
+        CHECK(world.buildingAtSlot(0xffff)==nullptr); CHECK(world.unitAtSlot(0xffff)==nullptr);
+    }
+    TEST_CASE("snapshot capability tables share authoritative immutable catalog data")
+    {
+        glob2test::HeadlessGlobals globals;
+        glob2test::HeadlessGame fixture{glob2test::GameOptions{.wDec=5, .hDec=5, .teams=1, .loadDefaultRace=true}};
+        const auto captured=SimulationSnapshot::capture(fixture.game,SimulationSnapshot::captureCatalog(fixture.game));
+        const auto& authoritative=fixture.game.buildingCapabilities();
+        CHECK(captured.catalogs->capabilities==authoritative.frozenTables());
+        AIEngine::AIWorldView world(captured);
+        for(unsigned i=0;i<unsigned(AIPlanning::BuildingIntent::Count);++i) {
+            const auto intent=AIPlanning::BuildingIntent(i);
+            CHECK(&world.capabilities().providers(intent)==&authoritative.providers(intent));
+            CHECK(&world.capabilities().placements(intent)==&authoritative.placements(intent));
+            CHECK(&world.capabilities().placementsByCost(intent)==&authoritative.placementsByCost(intent));
+            for(std::size_t type=0;type<world.catalog->size();++type) {
+                CHECK(world.capabilities().intentMask(type)==authoritative.intentMask(type));
+                CHECK(world.capabilities().lineageRoot(type)==authoritative.lineageRoot(type));
+                CHECK(world.capabilities().lineagePosition(type)==authoritative.lineagePosition(type));
+                for(int unit=-1;unit<NB_UNIT_TYPE;++unit)
+                    CHECK(world.capabilities().matches(type,intent,unit)==authoritative.matches(type,intent,unit));
+            }
+        }
+    }
+    TEST_CASE("on-demand construction feasibility matches live helpers and remains frozen")
+    {
+        glob2test::HeadlessGlobals globals;
+        glob2test::HeadlessGame fixture{glob2test::GameOptions{.wDec=5, .hDec=5, .teams=1, .discovered=true, .clearImmobile=true, .loadDefaultRace=true, .header=true}};
+        REQUIRE(fixture.addBuilding("inn",4,4,1));
+        REQUIRE(fixture.addBuilding("school",14,4));
+        REQUIRE(fixture.addBuilding("warflag",24,24));
+        REQUIRE(fixture.addBuilding("stonewall",26,4));
+        for(int phase=0;phase<3;++phase) {
+            if(phase==1) fixture.game.map.setResource(4,4,STONE,1);
+            if(phase==2) fixture.game.gameHeader.setUnitUpgradesDisabled(true);
+            const auto captured=AIEngine::AIWorldView::capture(fixture.game,AIEngine::AIWorldView::captureCatalog(fixture.game));
+            std::vector<std::array<bool,3>> expected;
+            for(const auto& record:captured->buildings) {
+                auto* live=fixture.game.teams[record.team]->myBuildings[Building::GIDtoID(record.identity.gid)];
+                REQUIRE(live);
+                expected.push_back({live->isUpgradeAvailable(),live->isHardSpaceForBuildingSite(Building::UPGRADE),live->isHardSpaceForBuildingSite(Building::REPAIR)});
+                CHECK(captured->isUpgradeAvailable(record)==expected.back()[0]);
+                CHECK(captured->isHardSpaceForBuildingSite(record,true)==expected.back()[1]);
+                CHECK(captured->isHardSpaceForBuildingSite(record,false)==expected.back()[2]);
+            }
+            fixture.game.gameHeader.setUnitUpgradesDisabled(!fixture.game.gameHeader.isUnitUpgradesDisabled());
+            for(std::size_t i=0;i<captured->buildings.size();++i) {
+                CHECK(captured->isUpgradeAvailable(captured->buildings[i])==expected[i][0]);
+                CHECK(captured->isHardSpaceForBuildingSite(captured->buildings[i],true)==expected[i][1]);
+                CHECK(captured->isHardSpaceForBuildingSite(captured->buildings[i],false)==expected[i][2]);
+            }
+            fixture.game.gameHeader.setUnitUpgradesDisabled(false);
+        }
+    }
     TEST_CASE("unit snapshots share authoritative scalar state and remain frozen")
     {
         glob2test::HeadlessGlobals globals;

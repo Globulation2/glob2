@@ -82,7 +82,6 @@ public:
   Uint64 bytes = 0;
   for (const auto& [key, field] : resourceInitializations)
    if (field.values) bytes += Uint64(field.values->capacity()) * sizeof(Uint16);
-  bytes += Uint64(observedTeams.capacity()) * sizeof(TeamObservation);
   return bytes;
  }
  std::shared_ptr<Order> getOrder(const AIEngine::DecisionContext&) override;
@@ -96,14 +95,8 @@ private:
  std::vector<PendingRequest> pendingRequests;
  bool hasPending(const AIEngine::BuildingView&) const;
  void settleObservedRequests(const AIEngine::DecisionContext&);
- struct TeamObservation {
-  const AIEngine::TeamView* view=nullptr;
-  std::array<const AIEngine::BuildingView*,1024> myBuildings{};
-  std::array<const AIEngine::UnitView*,1024> myUnits{};
- };
- std::vector<TeamObservation> observedTeams;
- TeamObservation* observedTeam=nullptr;
- TeamObservation* teamAt(int index) const;
+ const AIEngine::TeamView* observedTeam=nullptr;
+ const AIEngine::TeamView* teamAt(int index) const;
  int teamNumber=0;
  const AIEngine::AIWorldView* observation=nullptr;
  AIEngine::WorldQueries* queries=nullptr;
@@ -132,7 +125,7 @@ private:
 	std::shared_ptr<Order> placeGuardAreas(void);
 	std::shared_ptr<Order> pruneGuardAreas(void);
 	std::shared_ptr<Order> farm(void);
-	std::shared_ptr<Order> setupExploreFlagForTeam(TeamObservation *enemy_team);
+	std::shared_ptr<Order> setupExploreFlagForTeam(const AIEngine::TeamView *enemy_team);
 	bool locationIsAvailableForBuilding(int x, int y, int width, int height);
 	void initializeGradientWithResource(DynamicGradientMapArray &gradient, Uint8 resource_type);
 	std::shared_ptr<Order> buildBuildingOfType(Intent intent);

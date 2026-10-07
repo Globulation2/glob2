@@ -23,7 +23,7 @@ void AICastor::computeObstacleUnitMap()
 	int w=observation->width;
 	int h=observation->height;
 	size_t size=w*h;
-	Uint32 teamMask=observedTeam->view->mask;
+	Uint32 teamMask=observedTeam->mask;
 	for (size_t i=0; i<size; i++)
 	{
 		if (observation->occupancyAt(i).building!=NOGBID)
@@ -233,7 +233,7 @@ void AICastor::computeBuildingNeighbourMap(int dw, int dh)
 	int hMask=(observation->height-1);
 	
 	Uint8 *gradient=buildingNeighbourMap;
-	Uint32 visionMask=observedTeam->view->mask;
+	Uint32 visionMask=observedTeam->mask;
 	for (int y=0; y<h; y++)
 		for (int x=0; x<w; x++)
 		{
@@ -253,11 +253,11 @@ void AICastor::computeBuildingNeighbourMap(int dw, int dh)
 
 	for (Sint32 ti=0; ti<observation->teams.size(); ti++)
 	{
-		TeamObservation *neighbourTeam=teamAt(ti);
+		const AIEngine::TeamView *neighbourTeam=teamAt(ti);
 		assert(neighbourTeam);
 		if (!neighbourTeam)
 			continue;
-		const auto& myBuildings=neighbourTeam->myBuildings;
+		const auto myBuildings=observation->buildingSlots(neighbourTeam->number);
 		for (int i=0; i<Building::MAX_COUNT; i++)
 		{
 			const AIEngine::BuildingView *b=myBuildings[i];
@@ -302,7 +302,7 @@ void AICastor::computeWorkPowerMap()
 	
 	memset(gradient, 0, size);
 	
-	const auto& myUnits=observedTeam->myUnits;
+	const auto myUnits=observation->unitSlots(observedTeam->number);
 	for (int i=0; i<Unit::MAX_COUNT; i++)
 	{
 		const AIEngine::UnitView *u=myUnits[i];
@@ -376,7 +376,7 @@ void AICastor::computeWorkRangeMap()
 	
 	memcpy(gradient, obstacleUnitMap, size);
 	
-	const auto& myUnits=observedTeam->myUnits;
+	const auto myUnits=observation->unitSlots(observedTeam->number);
 	for (int i=0; i<Unit::MAX_COUNT; i++)
 	{
 		const AIEngine::UnitView *u=myUnits[i];
@@ -595,11 +595,11 @@ void AICastor::computeEnemyPowerMap()
 	
 	for (int ti=0; ti<observation->teams.size(); ti++)
 	{
-		TeamObservation *enemyTeam=teamAt(ti);
-		Uint32 me=observedTeam->view->mask;
-		if ((observedTeam->view->enemies&enemyTeam->view->mask)==0)
+		const AIEngine::TeamView *enemyTeam=teamAt(ti);
+		Uint32 me=observedTeam->mask;
+		if ((observedTeam->enemies&enemyTeam->mask)==0)
 			continue;
-		const auto& enemyBuildings=enemyTeam->myBuildings;
+		const auto enemyBuildings=observation->buildingSlots(enemyTeam->number);
 		for (int bi=0; bi<Building::MAX_COUNT; bi++)
 		{
 			const AIEngine::BuildingView *b=enemyBuildings[bi];
@@ -674,12 +674,12 @@ void AICastor::computeEnemyRangeMap()
 	
 	for (int ti=0; ti<observation->teams.size(); ti++)
 	{
-		TeamObservation *enemyTeam=teamAt(ti);
-		Uint32 me=observedTeam->view->mask;
+		const AIEngine::TeamView *enemyTeam=teamAt(ti);
+		Uint32 me=observedTeam->mask;
 		
-		if ((observedTeam->view->enemies & enemyTeam->view->mask)==0)
+		if ((observedTeam->enemies & enemyTeam->mask)==0)
 			continue;
-		const auto& enemyBuildings=enemyTeam->myBuildings;
+		const auto enemyBuildings=observation->buildingSlots(enemyTeam->number);
 		for (int bi=0; bi<Building::MAX_COUNT; bi++)
 		{
 			const AIEngine::BuildingView *b=enemyBuildings[bi];
@@ -716,13 +716,13 @@ void AICastor::computeEnemyWarriorsMap()
 	memcpy(gradient, obstacleUnitMap, size);
 	for (size_t i=0; i<size; i++)
 	{
-		if ((observation->visibilityAt(i).visible&observedTeam->view->mask)==0)
+		if ((observation->visibilityAt(i).visible&observedTeam->mask)==0)
 			continue;
 		Uint16 guid=observation->occupancyAt(i).groundUnit;
 		if (guid==NOGUID)
 			continue;
 		Uint32 teamMask=(1<<(guid>>AI_CASTOR_GUID_TEAM_SHIFT));
-		if ((teamMask&observedTeam->view->enemies)==0)
+		if ((teamMask&observedTeam->enemies)==0)
 			continue;
 		gradient[i]=AI_CASTOR_ENEMY_WARRIOR_GRADIENT_SEED;
 	}

@@ -173,11 +173,9 @@ TEST_SUITE("AITargetTelemetrySave")
 		auto &ai = *static_cast<AICortex *>(w.ai().aiImplementation);
         auto withDecision = [&](auto invoke) {
             const auto view=AIEngine::AIWorldView::capture(w.game(),AIEngine::AIWorldView::captureCatalog(w.game()));
-            Cortex::World observed(*view);
-            ai.applyQueuedIntent(observed);
-            Cortex::WorldPlayer local{&observed,observed.teams.at(0),0};
-            struct Reset { Cortex::WorldPlayer*& pointer; ~Reset() { pointer=nullptr; } } reset{ai.decisionPlayer};
-            ai.decisionPlayer=&local;
+            struct Reset { AICortex& ai; ~Reset(){ai.observedWorld=nullptr;ai.observedTeam=nullptr;ai.intents.clear();} } reset{ai};
+            ai.observedWorld=view.get();ai.observedTeam=&view->teams[0];ai.observedPlayer=0;
+            ai.intents.clear();ai.applyQueuedIntent(*view);
             invoke();
         };
 		const unsigned index = AITrace::AI6::offense_target_team;
@@ -218,10 +216,7 @@ TEST_SUITE("AITargetTelemetrySave")
             const auto view=AIEngine::AIWorldView::capture(w.game(),AIEngine::AIWorldView::captureCatalog(w.game()));
             AIEngine::WorldQueries queries(*view,numbi.teamNumber,numbi.resourceInitializations);
             numbi.observation=view.get();numbi.queries=&queries;
-            numbi.observedBuildings.fill(nullptr);numbi.observedUnits.fill(nullptr);
-            for(const auto& b:view->buildings) if(b.team==numbi.teamNumber) numbi.observedBuildings[Building::GIDtoID(b.identity.gid)]=&b;
-            for(const auto& u:view->units) if(u.team==numbi.teamNumber) numbi.observedUnits[Unit::GIDtoID(u.identity.gid)]=&u;
-            struct Reset { AINumbi& ai; ~Reset(){ai.observation=nullptr;ai.queries=nullptr;ai.observedBuildings.fill(nullptr);ai.observedUnits.fill(nullptr);} } reset{numbi};
+            struct Reset { AINumbi& ai; ~Reset(){ai.observation=nullptr;ai.queries=nullptr;} } reset{numbi};
             numbi.mayAttack(0,0,1);
         };
 		numbi.attackPhase = 1;

@@ -1,4 +1,4 @@
-#include "CortexWorld.h"
+#include "CortexSnapshotQueries.h"
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2026 The Globulation 2 Authors
 
@@ -21,6 +21,17 @@
 
 namespace Cortex
 {
+ inline int mapWidth(const AIEngine::AIWorldView& m){return m.width;} inline int mapWidth(const ::Map& m){return m.getW();}
+ inline int mapHeight(const AIEngine::AIWorldView& m){return m.height;} inline int mapHeight(const ::Map& m){return m.getH();}
+ inline unsigned mapIndex(const AIEngine::AIWorldView& m,int x,int y){return m.tileIndex(x,y);} inline unsigned mapIndex(const ::Map& m,int x,int y){return m.coordToIndex(x,y);}
+inline auto getResource(const ::Map& m,int x,int y){return m.getResource(x,y);}
+inline auto getBuilding(const ::Map& m,int x,int y){return m.getBuilding(x,y);}
+inline auto isFOWDiscovered(const ::Map& m,int x,int y,Uint32 mask){return m.isFOWDiscovered(x,y,mask);}
+inline auto isFreeForGroundUnitNoForbidden(const ::Map& m,int x,int y,bool swim){return m.isFreeForGroundUnitNoForbidden(x,y,swim);}
+inline auto isFarmArea(const ::Map& m,int x,int y,Uint32 mask){return m.isFarmArea(x,y,mask);}
+inline auto isForbidden(const ::Map& m,int x,int y,Uint32 mask){return m.isForbidden(x,y,mask);}
+inline auto canPaintFarmArea(const ::Map& m,int x,int y){return m.canPaintFarmArea(x,y);}
+
 	namespace
 	{
 
@@ -30,7 +41,7 @@ namespace Cortex
 
 		template<class MapType> bool isWheat(MapType& map, int x, int y)
 		{
-			return map.getResource(x, y).type == WHEAT;
+			return getResource(map,x, y).type == WHEAT;
 		}
 	} // namespace
 
@@ -47,8 +58,8 @@ namespace Cortex
 		// only to keep the observation/action layout and call sites unchanged.
 		(void)openMargin;
 
-		const int w = map.getW();
-		const int h = map.getH();
+		const int w = mapWidth(map);
+		const int h = mapHeight(map);
 		if (w <= 0 || h <= 0)
 			return res;
 
@@ -67,7 +78,7 @@ namespace Cortex
 		// A WHEAT tile counts as field only if the team can see it (unless the
 		// debug caller bypasses fog on a freshly-loaded, fully-fogged map).
 		auto wheatVisible = [&](int x, int y) {
-			return ignoreFOW || map.isFOWDiscovered(x, y, teamMask);
+			return ignoreFOW || isFOWDiscovered(map,x, y, teamMask);
 		};
 		// A tile belongs to our field if it is discovered wheat inside the
 		// territory box; a tile is "land" if a ground unit can stand on it (the
@@ -78,7 +89,7 @@ namespace Cortex
 			return inBox(x, y) && isWheat(map, x, y) && wheatVisible(x, y);
 		};
 		auto isLand = [&](int x, int y) {
-			return inBox(x, y) && map.isFreeForGroundUnitNoForbidden(x, y, false);
+			return inBox(x, y) && isFreeForGroundUnitNoForbidden(map,x, y, false);
 		};
 
 		// --- Gather the field tiles. ---
@@ -87,7 +98,7 @@ namespace Cortex
 		for (int y = boxMinY; y <= boxMaxY; y++)
 			for (int x = boxMinX; x <= boxMaxX; x++)
 				if (isField(x, y))
-					fieldTiles.push_back(static_cast<int>(map.coordToIndex(x, y)));
+					fieldTiles.push_back(static_cast<int>(mapIndex(map,x, y)));
 		res.fieldTileCount = static_cast<Sint32>(fieldTiles.size());
 		if (wantDebug)
 		{
@@ -129,7 +140,7 @@ namespace Cortex
 					const int y = seedY + dy;
 					if (!isLand(x, y))
 						continue;
-					const int idx = static_cast<int>(map.coordToIndex(x, y));
+					const int idx = static_cast<int>(mapIndex(map,x, y));
 					if (depth[idx] == INT_MAX)
 					{
 						depth[idx] = 0; // land exit ring: zero wheat crossed so far.
@@ -148,7 +159,7 @@ namespace Cortex
 				// Neighbours are unwrapped; reject the local territory boundary
 				// before indexing, then skip cells whose first path is settled.
 				if(!inBox(nx,ny))return;
-				const int ni=static_cast<int>(map.coordToIndex(nx,ny));
+				const int ni=static_cast<int>(mapIndex(map,nx,ny));
 				if(depth[ni]!=INT_MAX)return;
 				const bool wheat=isField(nx,ny);
 				if(!wheat && !isLand(nx,ny))return;
@@ -177,7 +188,7 @@ namespace Cortex
 			// and the add/del diff are untouched, so determinism is preserved.
 			Uint8 cls;
 			if (!liftAll && ((x + y) & 1) == WHEAT_PARITY
-			    && (!farmPaint || map.canPaintFarmArea(x, y)))
+			    && (!farmPaint || canPaintFarmArea(map,x, y)))
 			{
 				cls = WC_FORBIDDEN;
 				res.desired.push_back(idx);
@@ -199,7 +210,7 @@ namespace Cortex
 			for (int y = boxMinY; y <= boxMaxY; y++)
 				for (int x = boxMinX; x <= boxMaxX; x++)
 				{
-					const int idx = static_cast<int>(map.coordToIndex(x, y));
+					const int idx = static_cast<int>(mapIndex(map,x, y));
 					if (seen[idx] || !isWheat(map, x, y) || !wheatVisible(x, y)
 					    || depth[idx] == INT_MAX)
 						continue;
@@ -211,7 +222,7 @@ namespace Cortex
 						[&](int c) {
 							field::Grid(w,h).neighbors(c,neighbors,[&](int nx,int ny) {
 								if(!inBox(nx,ny) || !isWheat(map,nx,ny) || !wheatVisible(nx,ny))return;
-								const int ni=static_cast<int>(map.coordToIndex(nx,ny));
+								const int ni=static_cast<int>(mapIndex(map,nx,ny));
 								if(seen[ni] || depth[ni]==INT_MAX)return;
 								seen[ni]=true;stack.push_back(ni);
 							});
@@ -231,12 +242,12 @@ namespace Cortex
 		for (int y = boxMinY; y <= boxMaxY; y++)
 			for (int x = boxMinX; x <= boxMaxX; x++)
 			{
-				if (!(farmPaint ? map.isFarmArea(x, y, teamMask) : map.isForbidden(x, y, teamMask)))
+				if (!(farmPaint ? isFarmArea(map,x, y, teamMask) : isForbidden(map,x, y, teamMask)))
 					continue;
-				const Uint16 gid = map.getBuilding(x, y);
+				const Uint16 gid = getBuilding(map,x, y);
 				if (!farmPaint && gid != NOGBID && BuildingUtils::GIDtoTeam(gid) == teamNumber)
 					continue; // our footprint, not wheat paint.
-				const int idx = static_cast<int>(map.coordToIndex(x, y));
+				const int idx = static_cast<int>(mapIndex(map,x, y));
 				currentBit[idx] = true;
 				current.push_back(idx);
 			}
@@ -270,10 +281,10 @@ namespace Cortex
 			{
 				const int x = idx % w;
 				const int y = idx / w;
-				if (!ignoreFOW && !map.isFOWDiscovered(x, y, teamMask))
+				if (!ignoreFOW && !isFOWDiscovered(map,x, y, teamMask))
 					continue; // in fog: confirmation pending, leave the paint.
 				if (isWheat(map, x, y) && (!farmPaint ||
-				    (((x + y) & 1) == WHEAT_PARITY && map.canPaintFarmArea(x, y))))
+				    (((x + y) & 1) == WHEAT_PARITY && canPaintFarmArea(map,x, y))))
 					continue; // still field wheat: keep protecting it.
 			}
 			res.del.push_back(idx);
@@ -284,23 +295,23 @@ namespace Cortex
 		return res;
 	}
 
-	WheatReconcile reconcileWheatForbiddenWorld(Cortex::WorldPlayer* player, int openMargin, bool buildMasks,
+	WheatReconcile reconcileWheatForbiddenWorld(const AIEngine::AIWorldView* game, const AIEngine::TeamView* team, QueryScratch& scratch, const PlanningIntent& intents, std::ostream* diagnostics, int openMargin, bool buildMasks,
 	                                       bool liftAll, bool farmPaint)
 	{
 		WheatReconcile out;
-		if (player == NULL || player->team == NULL || player->team->game == NULL)
+		if (!game || !team)
 			return out;
 
-		Cortex::WorldTeam* team = player->team;
-		Cortex::World* game = team->game;
-		Cortex::WorldMap& map = game->map;
-		const int w = map.getW();
-		const int h = map.getH();
+
+
+		const auto& map = *game;
+		const int w = mapWidth(map);
+		const int h = mapHeight(map);
 		if (w <= 0 || h <= 0)
 			return out;
 
-		const Uint32 teamMask = team->me;
-		const int teamNumber = team->teamNumber;
+		const Uint32 teamMask = team->mask;
+		const int teamNumber = team->number;
 
 		// Consumer seeds = feeding-building (inn) centre tiles; scanWheatForbidden
 		// expands each to its walkable exit ring. The colony bounding box grows over
@@ -310,26 +321,26 @@ namespace Cortex
 		// Iterate by array index, never a std::set, for lockstep determinism.
 		std::vector<int> seeds;
 		int bbMinX = w, bbMinY = h, bbMaxX = -1, bbMaxY = -1;
-		for (int i = 0; i < Cortex::WorldBuilding::MAX_COUNT; i++)
+		for (int i = 0; i < ::Building::MAX_COUNT; i++)
 		{
-			Cortex::WorldBuilding* b = team->myBuildings[i];
-			if (b == NULL || b->buildingState == Cortex::WorldBuilding::DEAD)
+			const AIEngine::BuildingView* b = game->buildingSlots(team->number)[i];
+			if (b == NULL || b->buildingState == ::Building::DEAD)
 				continue;
-			if (b->type && b->type->isVirtual)
+			if (buildingType(*game,*b) && buildingType(*game,*b)->isVirtual)
 				continue; // war/exploration flag: not part of the colony footprint.
-			if (b->posX < bbMinX) bbMinX = b->posX;
-			if (b->posX > bbMaxX) bbMaxX = b->posX;
-			if (b->posY < bbMinY) bbMinY = b->posY;
-			if (b->posY > bbMaxY) bbMaxY = b->posY;
-			if (b->type && b->type->semantics.feeding.enabled && b->type->semantics.feeding.cost[WHEAT] > 0)
-				seeds.push_back(static_cast<int>(map.coordToIndex(b->posX, b->posY)));
+			if (plannedX(intents,*b) < bbMinX) bbMinX = plannedX(intents,*b);
+			if (plannedX(intents,*b) > bbMaxX) bbMaxX = plannedX(intents,*b);
+			if (plannedY(intents,*b) < bbMinY) bbMinY = plannedY(intents,*b);
+			if (plannedY(intents,*b) > bbMaxY) bbMaxY = plannedY(intents,*b);
+			if (buildingType(*game,*b) && buildingType(*game,*b)->semantics.feeding.enabled && buildingType(*game,*b)->semantics.feeding.cost[WHEAT] > 0)
+				seeds.push_back(static_cast<int>(mapIndex(map,plannedX(intents,*b), plannedY(intents,*b))));
 		}
 
 		// Always fold the team start into the bbox so the region is valid even
 		// before the first building, and seed the start as a fallback consumer when
 		// no inn exists yet (matches the -dump-wheat derivation).
-		const int startX = team->startPosX;
-		const int startY = team->startPosY;
+		const int startX = team->startX;
+		const int startY = team->startY;
 		if (startX < bbMinX) bbMinX = startX;
 		if (startX > bbMaxX) bbMaxX = startX;
 		if (startY < bbMinY) bbMinY = startY;
@@ -337,7 +348,7 @@ namespace Cortex
 		if (bbMaxX < bbMinX || bbMaxY < bbMinY)
 			return out; // no buildings and an unset start: nothing to scan.
 		if (seeds.empty())
-			seeds.push_back(static_cast<int>(map.coordToIndex(startX, startY)));
+			seeds.push_back(static_cast<int>(mapIndex(map,startX, startY)));
 
 		// Colony region = bbox padded by WHEAT_REGION_MARGIN (scanWheatForbidden
 		// clamps to the map, but clamp here too so the values are sane).
@@ -353,7 +364,7 @@ namespace Cortex
 		// Live path: real fog-of-war (only paint wheat we can currently see), and
 		// no debug overlays. buildMasks decides whether we also paint the brushes.
 		WheatScanResult r = scanWheatForbidden(
-			map, teamMask, teamNumber, seeds,
+			map, scratch.wheat, teamMask, teamNumber, seeds,
 			boxMinX, boxMinY, boxMaxX, boxMaxY,
 			openMargin, /*ignoreFOW=*/false, /*wantDebug=*/false, liftAll, farmPaint);
 
@@ -365,17 +376,17 @@ namespace Cortex
 			// two BrushAccumulators, one 1x1 brush per tile (figure 0), exactly as
 			// AIWarrush paints its forbidden checkerboard (AIWarrush.cpp:551-583).
 			for (int idx : r.add)
-				out.add.applyBrush(BrushApplication(idx % w, idx / w, 0), map.getW(), map.getH());
+				out.add.applyBrush(BrushApplication(idx % w, idx / w, 0), mapWidth(map), mapHeight(map));
 			for (int idx : r.del)
-				out.del.applyBrush(BrushApplication(idx % w, idx / w, 0), map.getW(), map.getH());
+				out.del.applyBrush(BrushApplication(idx % w, idx / w, 0), mapWidth(map), mapHeight(map));
 		}
 		return out;
 	}
 
-    WheatScanResult scanWheatForbidden(WorldMap& map, Uint32 mask, int team,
+    WheatScanResult scanWheatForbidden(const AIEngine::AIWorldView& map, WheatScratch& scratch, Uint32 mask, int team,
         const std::vector<int>& seeds, int minX,int minY,int maxX,int maxY,
         int margin,bool ignoreFog,bool debug,bool lift,bool farm)
-    { return scanWheatForbiddenImpl(map,map.queryScratch().wheat,mask,team,seeds,minX,minY,maxX,maxY,margin,ignoreFog,debug,lift,farm); }
+    { return scanWheatForbiddenImpl(map,scratch,mask,team,seeds,minX,minY,maxX,maxY,margin,ignoreFog,debug,lift,farm); }
     WheatScanResult scanWheatForbidden(::Map& map, Uint32 mask, int team,
         const std::vector<int>& seeds, int minX,int minY,int maxX,int maxY,
         int margin,bool ignoreFog,bool debug,bool lift,bool farm)
@@ -388,7 +399,7 @@ WheatReconcile reconcileWheatForbidden(::Player* player,int margin,bool masks,bo
 {
     if(!player || !player->team)return {};
     const auto view=AIEngine::AIWorldView::capture(*player->game, AIEngine::AIWorldView::captureCatalog(*player->game));
-    World world(*view); WorldPlayer local{&world,world.teams[player->teamNumber],player->number};
-    return reconcileWheatForbiddenWorld(&local,margin,masks,lift,farm);
+    QueryScratch scratch; PlanningIntent intents;
+    return reconcileWheatForbiddenWorld(view.get(),&view->teams[player->teamNumber],scratch,intents,nullptr,margin,masks,lift,farm);
 }
 }

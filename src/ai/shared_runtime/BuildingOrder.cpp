@@ -27,8 +27,8 @@ BuildingOrder::BuildingOrder(Runtime& runtime,int demand,int workers) : Building
 unsigned BuildingOrder::input_resource_mask(Runtime& runtime) const
 {
  if(concrete_type<0) return 0;
- const auto* placement=runtime.readPlayer()->game->buildingsTypes.get(concrete_type);
- const auto* completed=placement->isBuildingSite ? runtime.readPlayer()->game->buildingsTypes.get(placement->nextLevel) : placement;
+ const auto* placement=&runtime.observation().catalog->at(concrete_type).resolvedType;
+ const auto* completed=placement->isBuildingSite ? &runtime.observation().catalog->at(placement->nextLevel).resolvedType : placement;
  const auto& spec=completed->semantics;
  unsigned recurring=0,construction=0;
  for(int resource=0;resource<MAX_NB_RESOURCES;++resource) {
@@ -147,34 +147,34 @@ void BuildingOrder::add_condition(Condition* condition)
 
 bool BuildingOrder::bind(Runtime& runtime)
 {
- auto& game=*runtime.readPlayer()->game;
- const auto& index=game.buildingCapabilities();
+ const auto& world=runtime.observation();
+ const auto& index=world.capabilities();
  const auto intent=buildingIntent(building_type);
- if(!AIPlanning::BuildingCapabilityIndex::allowed(intent,game.gameHeader)) return false;
+ if(!AIPlanning::BuildingCapabilityIndex::allowed(intent,*world.configuration)) return false;
  if(concrete_type>=0) {
-  const auto* type=game.buildingsTypes.get(concrete_type);
-  return index.available({concrete_type,type->isBuildingSite ? type->nextLevel : concrete_type},intent,game.gameHeader);
+  const auto& type=world.catalog->at(concrete_type);
+  return AIEngine::ObservationQueries::available(world,AIPlanning::BuildingCandidate{concrete_type,type.site ? type.next : concrete_type},intent);
  }
  int count=0;
  for(const auto& candidate:index.placements(intent))
-  if(index.available(candidate,intent,game.gameHeader) && runtime.random()%++count==0) concrete_type=candidate.placementType;
+  if(AIEngine::ObservationQueries::available(world,candidate,intent) && runtime.random()%++count==0) concrete_type=candidate.placementType;
  return concrete_type>=0;
 }
 
-position BuildingOrder::find_location(Runtime& runtime, Read::Map* map, GradientManager& manager)
+position BuildingOrder::find_location(Runtime& runtime, const AIEngine::AIWorldView& world, GradientManager& manager)
 {
 	position best(-1,-1);
-	Read::Player* player=runtime.readPlayer();
+	const auto& team=runtime.observedTeam();
 	int best_score=std::numeric_limits<int>::min();
  if(!bind(runtime)) return position(-1,-1);
- const auto* type=runtime.readPlayer()->game->buildingsTypes.get(concrete_type);
+ const auto* type=&runtime.observation().catalog->at(concrete_type).resolvedType;
  const bool check_flag=!type->semantics.occupiesGround;
 
-	for(int x=0; x<map->getW(); ++x)
+	for(int x=0; x<world.width; ++x)
 	{
-		for(int y=0; y<map->getH(); ++y)
+		for(int y=0; y<world.height; ++y)
 		{
-			if(!runtime.readPlayer()->game->checkRoomForBuilding(x,y,type,runtime.readPlayer()->team->teamNumber))
+			if(!AIEngine::ObservationQueries::roomForBuilding(world,x,y,*type,runtime.teamNumber()))
 				continue;
 
 			if(check_flag && runtime.get_flag_map().get_flag(x, y)!=NOGBID)
@@ -190,7 +190,7 @@ position BuildingOrder::find_location(Runtime& runtime, Read::Map* map, Gradient
 					for(int y2=0; y2<type->height && passes; ++y2)
 						if((x2==0 || y2==0 || x2==type->width-1 || y2==type->height-1))
 						{
-							if(!(*i)->passes_constraint(runtime, map->normalizeX(x+x2), map->normalizeY(y+y2)))
+							if(!(*i)->passes_constraint(runtime, world.normalizeX(x+x2), world.normalizeY(y+y2)))
 							{
 									passes=false;
 							}
@@ -200,17 +200,17 @@ position BuildingOrder::find_location(Runtime& runtime, Read::Map* map, Gradient
 					break;
 				}
 
-				if(!check_flag && (!map->isMapDiscovered(x, y, player->team->allies) ||
-				   !map->isMapDiscovered(x+type->width-1, y+type->height-1, player->team->allies))
+				if(!check_flag && (!(world.visibilityAt(world.tileIndex(x,y)).discovered&team.allies) ||
+				   !(world.visibilityAt(world.tileIndex(x+type->width-1,y+type->height-1)).discovered&team.allies))
 				    )
 				{
 					passes=false;
 					break;
 				}
-				score+=(*i)->calculate_constraint(runtime, map->normalizeX(x), map->normalizeY(y));
-				score+=(*i)->calculate_constraint(runtime, map->normalizeX(x+type->width-1), map->normalizeY(y+type->height-1));
-				score+=(*i)->calculate_constraint(runtime, map->normalizeX(x), map->normalizeY(y+type->height-1));
-				score+=(*i)->calculate_constraint(runtime, map->normalizeX(x+type->width-1), map->normalizeY(y));
+				score+=(*i)->calculate_constraint(runtime, world.normalizeX(x), world.normalizeY(y));
+				score+=(*i)->calculate_constraint(runtime, world.normalizeX(x+type->width-1), world.normalizeY(y+type->height-1));
+				score+=(*i)->calculate_constraint(runtime, world.normalizeX(x), world.normalizeY(y+type->height-1));
+				score+=(*i)->calculate_constraint(runtime, world.normalizeX(x+type->width-1), world.normalizeY(y));
 			}
 			if(!passes)
 				continue;

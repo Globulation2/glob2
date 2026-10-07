@@ -20,7 +20,7 @@ void AINumbi::nextMainBuilding(Intent intent)
 	for (int offset = 1; offset <= Building::MAX_COUNT; ++offset)
 	{
 		const int id = (anchor + offset) % Building::MAX_COUNT;
-		if (observedBuildings[id]) { anchor = id; return; }
+		if (observation->buildingSlots(teamNumber)[id]) { anchor = id; return; }
 	}
 	anchor = 0;
 }
@@ -200,8 +200,8 @@ bool AINumbi::findNewEmplacement(Intent intent, int typeNum, int *posX, int *pos
 			AITrace::AI1::AINumbi_findNewEmplacement_true, found);
 	};
 	int& anchor = mainBuilding[static_cast<unsigned>(intent)];
-	const AIEngine::BuildingView* origin = observedBuildings[anchor];
-	if (!origin) { nextMainBuilding(intent); origin = observedBuildings[anchor]; }
+	const AIEngine::BuildingView* origin = observation->buildingSlots(teamNumber)[anchor];
+	if (!origin) { nextMainBuilding(intent); origin = observation->buildingSlots(teamNumber)[anchor]; }
 	if (!origin) return result(false);
 	const auto* placement = &queries->kind(typeNum);
 	const auto* completed = placement->site

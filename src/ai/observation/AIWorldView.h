@@ -1,6 +1,9 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #pragma once
 #include "sim/snapshot/WorldSnapshot.h"
+#include "BuildingUtils.h"
+#include "UnitUtils.h"
+#include <iterator>
 
 namespace AIEngine
 {
@@ -11,6 +14,41 @@ using SimulationSnapshot::BuildingKindView;
 using SimulationSnapshot::TileView;
 using SimulationSnapshot::RuleView;
 using SimulationSnapshot::BuildProjectView;
+
+// Borrowed slot traversal over the engine's captured index. Empty legacy slots
+// remain visible, with no allocated pointer arrays or copied entity state.
+template<class Record> class EntitySlots
+{
+	std::span<const Record> records;
+	std::span<const Uint32> indices;
+public:
+	EntitySlots() = default;
+	EntitySlots(std::span<const Record> records, std::span<const Uint32> indices)
+		: records(records), indices(indices) {}
+	std::size_t size() const { return indices.size(); }
+	const Record* operator[](std::size_t slot) const
+	{ const auto index = indices[slot]; return index == SimulationSnapshot::Entities::NoRecord ? nullptr : &records[index]; }
+	class Iterator
+	{
+		const Record* records = nullptr;
+		const Uint32* indices = nullptr;
+		std::size_t position = 0;
+	public:
+		using value_type = const Record*;
+		using difference_type = std::ptrdiff_t;
+		using iterator_category = std::forward_iterator_tag;
+		Iterator() = default;
+		Iterator(const Record* records, const Uint32* indices, std::size_t position)
+			: records(records), indices(indices), position(position) {}
+		const Record* operator*() const
+		{ const auto index = indices[position]; return index == SimulationSnapshot::Entities::NoRecord ? nullptr : &records[index]; }
+		Iterator& operator++() { ++position; return *this; }
+		Iterator operator++(int) { auto previous = *this; ++*this; return previous; }
+		bool operator==(const Iterator&) const = default;
+	};
+	Iterator begin() const { return {records.data(), indices.data(), 0}; }
+	Iterator end() const { return {records.data(), indices.data(), indices.size()}; }
+};
 
 // Controller observations adapt an engine lease. Borrowed spans remain valid
 // for this observation's lifetime; controllers release it after each invocation.
@@ -46,6 +84,7 @@ public:
 		return found == lease.resourceFields->values.end() ? std::span<const Uint16>{} : std::span<const Uint16>(*found->second.values);
 	}
 	const SimulationSnapshot::Handle& components() const { return lease; }
+	const AIPlanning::BuildingCapabilityTables& capabilities() const { return *lease.catalogs->capabilities; }
 	Uint32 tick = 0;
 	const int width, height;
 	int totalPrestige = 0;
@@ -91,6 +130,16 @@ public:
 	const UnitView* unit(UnitRef identity) const;
 	const BuildingView* buildingAtSlot(Uint16 gid) const;
 	const UnitView* unitAtSlot(Uint16 gid) const;
+	EntitySlots<BuildingView> buildingSlots(int team) const
+	{
+		if (!lease.entities || team < 0 || std::size_t(team) >= lease.entities->buildingSlotIndices.size() / BuildingUtils::MAX_COUNT) return {};
+		return {buildings, std::span<const Uint32>(lease.entities->buildingSlotIndices).subspan(std::size_t(team) * BuildingUtils::MAX_COUNT, BuildingUtils::MAX_COUNT)};
+	}
+	EntitySlots<UnitView> unitSlots(int team) const
+	{
+		if (!lease.entities || team < 0 || std::size_t(team) >= lease.entities->unitSlotIndices.size() / UnitUtils::MAX_COUNT) return {};
+		return {units, std::span<const Uint32>(lease.entities->unitSlotIndices).subspan(std::size_t(team) * UnitUtils::MAX_COUNT, UnitUtils::MAX_COUNT)};
+	}
 	TileView tile(int x, int y) const;
 	std::size_t tileIndex(int x, int y) const
 	{
@@ -109,6 +158,8 @@ public:
 	bool canPaintFarmAt(std::size_t index) const;
 	int normalizeX(int x) const { return xMask >= 0 ? unsigned(x) & unsigned(xMask) : wrapGeneral(x, width); }
 	int normalizeY(int y) const { return yMask >= 0 ? unsigned(y) & unsigned(yMask) : wrapGeneral(y, height); }
+	bool isUpgradeAvailable(const BuildingView& building) const;
+	bool isHardSpaceForBuildingSite(const BuildingView& building, bool upgrade) const;
 	int distanceSquared(int x1, int y1, int x2, int y2) const;
 private:
 	static int wrapGeneral(int coordinate, int size)

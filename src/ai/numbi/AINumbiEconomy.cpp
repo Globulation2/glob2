@@ -18,8 +18,16 @@ using std::shared_ptr;
 
 int AINumbi::selectBuilding(Intent intent)
 {
- const auto candidates=queries->placements(intent);
- return candidates.empty()?-1:candidates[candidates.size()==1?0:random()%candidates.size()];
+	const auto& candidates = queries->placements(intent);
+	unsigned eligible = 0;
+	for (const auto& candidate : candidates)
+		if (queries->available(candidate, intent)) ++eligible;
+	if (!eligible) return -1;
+	unsigned chosen = eligible == 1 ? 0 : random() % eligible;
+	for (const auto& candidate : candidates)
+		if (queries->available(candidate, intent) && chosen-- == 0)
+			return candidate.placementType;
+	return -1;
 }
 
 bool AINumbi::provides(const AIEngine::BuildingView& building, Intent intent) const
@@ -198,7 +206,7 @@ std::shared_ptr<Order>AINumbi::adjustBuildings(const int numbers, const int numb
 	telemetry.set(AITrace::AI1::AINumbi_adjustBuildings_input_numbersInc, numbersInc);
 	telemetry.set(AITrace::AI1::AINumbi_adjustBuildings_input_numbers, numbers);
 	telemetry.count(AITrace::AI1::AINumbi_adjustBuildings_calls);
-	const AIEngine::BuildingView* const* myBuildings=observedBuildings.data();
+	const auto myBuildings=observation->buildingSlots(teamNumber);
 	//Unit **myUnits=player->team->myUnits;
 	int fb=0;
 
@@ -256,7 +264,7 @@ std::shared_ptr<Order>AINumbi::checkoutExpands(const int numbers, const int work
 	telemetry.set(AITrace::AI1::AINumbi_checkoutExpands_input_numbers, numbers);
 	telemetry.count(AITrace::AI1::AINumbi_checkoutExpands_calls);
 
-	const AIEngine::BuildingView* const* myBuildings=observedBuildings.data();
+	const auto myBuildings=observation->buildingSlots(teamNumber);
 	int ss=0;
 	for (int i=0; i<Building::MAX_COUNT; i++)
 	{

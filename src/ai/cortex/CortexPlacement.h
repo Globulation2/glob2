@@ -2,7 +2,7 @@
 // Copyright (C) 2026 The Globulation 2 Authors
 
 #pragma once
-#include "CortexWorld.h"
+#include "CortexSnapshotQueries.h"
 class Player;
 
 #include "CortexTypes.h"
@@ -16,7 +16,8 @@ class Player;
 // It lives on the observation side of the three-layer split: Cortex::observeWorld()
 // calls it to fill CortexObservation::buildCandidates, so the policy only ever
 // chooses among surfaced slots (keeping the action space discrete and bounded).
-// It reads Game*/Team*/Map* freely; the policy never sees those types.
+// It reads canonical snapshot records and pure map queries; the policy receives
+// only the resulting bounded feature slots.
 
 namespace Cortex
 {
@@ -32,7 +33,7 @@ namespace Cortex
 	/// Returns 0 (and leaves all slots valid == 0) when no legal placement exists.
 	/// Pass a qualification computed for the current observation to avoid rescanning
 	/// workers for each role. The default computes it for standalone callers.
-	int placeCandidates(Cortex::World* game, Cortex::WorldTeam* team, int buildingType, int level,
+	int placeCandidates(const AIEngine::AIWorldView* game, const AIEngine::TeamView* team, QueryScratch& scratch, const PlanningIntent& intents, int buildingType, int level,
 	                    BuildCandidate out[CORTEX_BUILD_CANDIDATES], int placementType = -1,
 	                    int maxWorkerQualification = -1);
 
@@ -45,7 +46,7 @@ namespace Cortex
 	/// stay-clustered-with-the-colony cap is lifted. Among legal spots the one
 	/// closest to the colony wins (safest that does the job). Returns 1 and fills
 	/// `out`, or 0 (out.valid == 0) when no legal forward spot exists.
-	int placeForwardCandidate(Cortex::World* game, Cortex::WorldTeam* team, int buildingType,
+	int placeForwardCandidate(const AIEngine::AIWorldView* game, const AIEngine::TeamView* team, QueryScratch& scratch, const PlanningIntent& intents, int buildingType,
 	                          int targetX, int targetY,
 	                          int minTargetDist, int maxTargetDist,
 	                          BuildCandidate& out, int maxWorkerQualification = -1);
@@ -58,14 +59,14 @@ namespace Cortex
 	/// `outTeam[i]` receives the team owning slot i (-1 when invalid), for telemetry.
 	///
 	/// FAIRNESS: only buildings the team has legitimately seen are included —
-	/// gate strictly on Building::seenByMask & team->me (the engine's own per-
+	/// gate strictly on Building::seenByMask & team->mask (the engine's own per-
 	/// building discovery record). NEVER read unfogged enemy state. Iterate enemy
 	/// myBuildings[] by index (never an std::set); break ties deterministically by
 	/// scan order / syncRand(), exactly as placeCandidates does.
 	///
 	/// Returns the number of valid targets written (0..CORTEX_FLAG_TARGETS); 0 when
 	/// we have not yet discovered any enemy building.
-	int placeFlagTargetsWorld(Cortex::World* game, Cortex::WorldTeam* team, BuildCandidate out[CORTEX_FLAG_TARGETS], Sint32 outTeam[CORTEX_FLAG_TARGETS]);
+	int placeFlagTargetsWorld(const AIEngine::AIWorldView* game, const AIEngine::TeamView* team, const PlanningIntent& intents, BuildCandidate out[CORTEX_FLAG_TARGETS], Sint32 outTeam[CORTEX_FLAG_TARGETS]);
 
 	/// Chebyshev distance from tile (x, y) to the nearest wheat tile, found
 	/// by an outward radial scan bounded at `cap` rings. Returns the distance in
@@ -75,7 +76,7 @@ namespace Cortex
 	/// Cortex::observe (a tracked swarm/inn's TrackedBuilding::nearestWheatDist), so
 	/// the wheat-distance metric is defined in exactly one place. Pass
 	/// CORTEX_WHEAT_SCAN_CAP for `cap`.
-	int nearestWheatDist(const Cortex::WorldMap& map, int x, int y, int cap);
+	int nearestWheatDist(const AIEngine::AIWorldView& map, int x, int y, int cap);
 }
 
 namespace Cortex {

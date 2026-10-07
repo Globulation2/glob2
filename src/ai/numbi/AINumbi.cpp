@@ -296,12 +296,9 @@ std::shared_ptr<Order> AINumbi::getOrder(const AIEngine::DecisionContext& contex
  for(const auto& request:pendingRequests)
   if(const auto* create=dynamic_cast<const OrderCreate*>(request.order.get())) captured.reserve(create->typeNum,create->posX,create->posY);
  observation=&context.world; queries=&captured;
- observedBuildings.fill(nullptr); observedUnits.fill(nullptr);
- for(const auto& b:context.world.buildings) if(b.team==teamNumber) observedBuildings[Building::GIDtoID(b.identity.gid)]=&b;
- for(const auto& u:context.world.units) if(u.team==teamNumber) observedUnits[Unit::GIDtoID(u.identity.gid)]=&u;
  try {
-  auto result=remember(decide(),context.world.tick,context.pollSequence); observation=nullptr;queries=nullptr;observedBuildings.fill(nullptr);observedUnits.fill(nullptr);return result;
- } catch(...) {observation=nullptr;queries=nullptr;observedBuildings.fill(nullptr);observedUnits.fill(nullptr);throw;}
+  auto result=remember(decide(),context.world.tick,context.pollSequence); observation=nullptr;queries=nullptr;return result;
+ } catch(...) {observation=nullptr;queries=nullptr;throw;}
 }
 
 std::shared_ptr<Order>AINumbi::decide()

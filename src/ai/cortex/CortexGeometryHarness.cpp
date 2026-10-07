@@ -21,9 +21,9 @@ static unsigned compare(Game& game)
     unsigned checks = 0;
     auto* team = game.teams[0];
     const auto captured=AIEngine::AIWorldView::capture(game, AIEngine::AIWorldView::captureCatalog(game));
-    Cortex::World observed(*captured);
-    auto* observedTeam=observed.teams[0];
-    Cortex::PlacementGeometry snapshot(observedTeam, observed.map);
+    Cortex::PlanningIntent intents;
+    const auto* observedTeam=&captured->teams[0];
+    Cortex::PlacementGeometry snapshot(observedTeam,*captured,intents);
     // Compare the mask against the independent per-building distance query,
     // including footprints/radii that wrap or cover the whole map.
     for (int w : {1, 2, 6, 20})
@@ -47,11 +47,11 @@ static unsigned compare(Game& game)
                 for (int h : {0, 1, 2, 3, 4, 6})
                 {
                     require(snapshot.candidateCrowdsInn(x,y,w,h) ==
-                        Cortex::candidateCrowdsInn(&observed,observedTeam,observed.map,x,y,w,h));
+                        Cortex::candidateCrowdsInn(captured.get(),observedTeam,intents,*captured,x,y,w,h));
                     require(snapshot.candidateOverlapsReservedExpansion(x,y,w,h) ==
-                        Cortex::candidateOverlapsReservedExpansion(&observed,observedTeam,observed.map,x,y,w,h));
+                        Cortex::candidateOverlapsReservedExpansion(captured.get(),observedTeam,intents,*captured,x,y,w,h));
                     require(snapshot.distanceToNearestBuilding(x,y) ==
-                        Cortex::distanceToNearestBuilding(&observed,observedTeam,x,y));
+                        Cortex::distanceToNearestBuilding(captured.get(),observedTeam,intents,x,y));
                     int edge = -1, swarm = -1, inn = -1;
                     for (int i=0;i<Building::MAX_COUNT;++i)
                     {
@@ -61,8 +61,8 @@ static unsigned compare(Game& game)
                             b->posY,b->type->height,game.map.getW(),game.map.getH());
                         if (edge<0 || gap<edge) edge=gap;
                         const int distance=game.map.warpDistMax(x,y,b->posX,b->posY);
-                        if (Cortex::servesRole(game,*b->type,Cortex::CORTEX_BUILD_SWARM) && (swarm<0 || distance<swarm)) swarm=distance;
-                        if (Cortex::servesRole(game,*b->type,Cortex::CORTEX_BUILD_FOOD) && (inn<0 || distance<inn)) inn=distance;
+                        if (Cortex::servesRole(*captured,*b->type,Cortex::CORTEX_BUILD_SWARM) && (swarm<0 || distance<swarm)) swarm=distance;
+                        if (Cortex::servesRole(*captured,*b->type,Cortex::CORTEX_BUILD_FOOD) && (inn<0 || distance<inn)) inn=distance;
                     }
                     require(snapshot.nearestBuildingEdgeDist(x,y,w,h)==edge);
                     require(snapshot.distanceToNearestBuildingType(x,y,IntBuildingType::SWARM_BUILDING)==swarm);
@@ -81,21 +81,20 @@ TEST_SUITE("CortexGeometry")
         glob2test::HeadlessGame fixture{glob2test::GameOptions{.wDec=5, .hDec=5, .teams=1, .discovered=true, .clearImmobile=true, .loadDefaultRace=true}};
         auto& game=fixture.game;
         auto captured=AIEngine::AIWorldView::capture(game, AIEngine::AIWorldView::captureCatalog(game));
-        Cortex::World observed(*captured);
+        Cortex::PlanningIntent intents;
         const std::array coordinates{std::numeric_limits<int>::min(),-4097,-33,-1,0,1,31,32,4097,std::numeric_limits<int>::max()};
         const auto axis=[](int a,int b,int period) {
             auto wrap=[&](int v){int r=v%period;return r<0?r+period:r;};
             int delta=std::abs(wrap(a)-wrap(b));return std::min(delta,period-delta);
         };
         for(int x:coordinates)for(int y:coordinates)for(int xx:coordinates)for(int yy:coordinates)
-            CHECK(observed.map.warpDistMax(x,y,xx,yy)==std::max(axis(x,xx,32),axis(y,yy,32)));
+            CHECK(Cortex::warpDistMax(*captured,x,y,xx,yy)==std::max(axis(x,xx,32),axis(y,yy,32)));
         auto type=*game.buildingsTypes.get(game.buildingsTypes.getTypeNum("inn",0,false));
         type.width=2;type.height=2;type.isVirtual=false;
-        CHECK(observed.checkRoomForBuilding(10,10,&type,0));
+        CHECK(Cortex::checkRoomForBuilding(*captured,10,10,&type,0,intents));
         game.map.setBuilding(11,11,1,1,Building::GIDfrom(0,7));
         captured=AIEngine::AIWorldView::capture(game, AIEngine::AIWorldView::captureCatalog(game));
-        Cortex::World blocked(*captured);
-        CHECK_FALSE(blocked.checkRoomForBuilding(10,10,&type,0));
+        CHECK_FALSE(Cortex::checkRoomForBuilding(*captured,10,10,&type,0,intents));
     }
 
 	TEST_CASE("placement geometry matches the tile-scan oracle")

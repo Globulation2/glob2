@@ -42,7 +42,7 @@ std::shared_ptr<Order>AICastor::findGoodBuilding(Sint32 typeNum, bool food, bool
 	int hMask=(observation->height-1);
 	size_t size=w*h;
 
-	Uint32 me=observedTeam->view->mask;
+	Uint32 me=observedTeam->mask;
 
 	// minWork computation:
 	Sint32 bestWorkScore=AI_CASTOR_BEST_WORK_SCORE_FLOOR;

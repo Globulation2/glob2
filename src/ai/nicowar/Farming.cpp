@@ -19,7 +19,7 @@ using namespace AISharedRuntime::SearchTools;
 void NewNicowar::update_farming(Runtime& runtime)
 {
 	// Protecting growth cells would permanently withhold resources without regrowth.
-	if (runtime.readPlayer()->game->gameHeader.isResourceGrowthDisabled()) return;
+	if (runtime.observation().configuration->isResourceGrowthDisabled()) return;
 	telemetry.count(AITrace::AI5::NewNicowar_update_farming_calls);
 	//Farming wheat and wood in areas near water
 	AddArea* mo_farming=new AddArea(ForbiddenArea);
@@ -121,8 +121,8 @@ void NewNicowar::update_farming(Runtime& runtime)
 					for(int dx=-1; dx<=1; ++dx)
 						for(int dy=-1; dy<=1; ++dy)
 						{
-							int gid = runtime.readPlayer()->map->getBuilding(x+dx, y+dy);
-							if(gid!=NOGBID && Building::GIDtoTeam(gid)==runtime.readPlayer()->team->teamNumber)
+							int gid = runtime.observation().occupancyAt(runtime.observation().tileIndex(x+dx,y+dy)).building;
+							if(gid!=NOGBID && Building::GIDtoTeam(gid)==runtime.teamNumber())
 								beside_building = true;
 						}
 					if(!beside_building)
@@ -182,7 +182,7 @@ void NewNicowar::update_fruit_flags(AISharedRuntime::Runtime& runtime)
 	{
 		//Constraints around nearby settlement
 		AISharedRuntime::Gradients::GradientInfo gi_building;
-		gi_building.add_source(new AISharedRuntime::Gradients::Entities::AnyTeamBuilding(runtime.readPlayer()->team->teamNumber, false));
+		gi_building.add_source(new AISharedRuntime::Gradients::Entities::AnyTeamBuilding(runtime.teamNumber(), false));
 
 
 		//The main order for the exploration flag on cherry

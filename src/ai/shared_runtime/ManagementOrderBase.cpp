@@ -88,14 +88,14 @@ void AssignWorkers::modify(Runtime& runtime)
 {
 	auto* building=runtime.get_building_register().get_building(building_id);
  int requested=number_of_workers;
- const auto& spec=building->type->semantics;
- int services=spec.feeding.enabled+spec.healing.enabled+(building->type->shootingRange>0);
+ const auto& spec=AIEngine::ObservationQueries::buildingType(runtime.observation(),*building).semantics;
+ int services=spec.feeding.enabled+spec.healing.enabled+(AIEngine::ObservationQueries::buildingType(runtime.observation(),*building).shootingRange>0);
  services+=std::any_of(spec.production.recipes.begin(),spec.production.recipes.end(),[](const auto& recipe){return recipe.enabled;});
  services+=std::any_of(spec.training.begin(),spec.training.end(),[](const auto& training){return training.enabled;});
  services+=spec.market.interTeamFruitExchange || spec.market.suppliesStock || spec.market.suppliesDirectStock;
- services+=building->type->zonable[WORKER] || building->type->zonable[WARRIOR] || building->type->zonable[EXPLORER];
- if(services>1 && !building->type->isBuildingSite) requested=std::max(requested,building->maxUnitWorking);
- runtime.push_order(std::make_shared<OrderModifyBuilding>(building->gid,std::clamp(requested,0,building->type->semantics.assignmentLimit)));
+ services+=AIEngine::ObservationQueries::buildingType(runtime.observation(),*building).zonable[WORKER] || AIEngine::ObservationQueries::buildingType(runtime.observation(),*building).zonable[WARRIOR] || AIEngine::ObservationQueries::buildingType(runtime.observation(),*building).zonable[EXPLORER];
+ if(services>1 && !AIEngine::ObservationQueries::buildingType(runtime.observation(),*building).isBuildingSite) requested=std::max(requested,building->maxUnitWorking);
+ runtime.push_order(std::make_shared<OrderModifyBuilding>(building->gid,std::clamp(requested,0,AIEngine::ObservationQueries::buildingType(runtime.observation(),*building).semantics.assignmentLimit)));
 }
 
 
@@ -144,7 +144,7 @@ void ChangeSwarm::modify(Runtime& runtime)
 	ratio[2]=warrior_ratio;
 	auto* building=runtime.get_building_register().get_building(building_id);
  for(int unit=0;unit<NB_UNIT_TYPE;++unit)
-  if(!building->type->semantics.production.recipes[unit].enabled || (unit==WARRIOR && runtime.readPlayer()->game->gameHeader.isPeacefulModeEnabled())) ratio[unit]=0;
+  if(!AIEngine::ObservationQueries::buildingType(runtime.observation(),*building).semantics.production.recipes[unit].enabled || (unit==WARRIOR && runtime.observation().configuration->isPeacefulModeEnabled())) ratio[unit]=0;
  runtime.push_order(std::make_shared<OrderModifySwarm>(building->gid,ratio));
 }
 
@@ -203,8 +203,8 @@ void RetireAttraction::modify(Runtime& runtime)
     auto* building=runtime.get_building_register().get_building(building_id);
     if(!building) return;
     const unsigned completedMask=runtime.complete_attraction_retirement(building_id,retiringUnitMask);
-    const auto& spec=building->type->semantics;
-    if(AIPlanning::hasIndependentAttractionUse(*building->type,completedMask)) return;
+    const auto& spec=AIEngine::ObservationQueries::buildingType(runtime.observation(),*building).semantics;
+    if(AIPlanning::hasIndependentAttractionUse(AIEngine::ObservationQueries::buildingType(runtime.observation(),*building),completedMask)) return;
     if(spec.instantPlacement && !spec.occupiesGround) DestroyBuilding::modify(runtime);
     else runtime.push_order(std::make_shared<OrderModifyBuilding>(building->gid,0));
 }
@@ -226,11 +226,11 @@ void RetireFeeding::modify(Runtime& runtime)
 {
     auto* building=runtime.get_building_register().get_building(building_id);
     if(!building) return;
-    const auto& index=runtime.readPlayer()->game->buildingCapabilities();
+    const auto& index=runtime.observation().capabilities();
     constexpr auto feeding=AIPlanning::BuildingIntent::Feed;
     // A free feeding service cannot be starved of input, and a mixed provider
     // must remain available to its other strategic consumers.
-    if(!index.matches(building->typeNum,feeding) || !building->type->semantics.feeding.costMask
+    if(!index.matches(building->typeNum,feeding) || !AIEngine::ObservationQueries::buildingType(runtime.observation(),*building).semantics.feeding.costMask
         || (index.intentMask(building->typeNum)&~(std::uint64_t(1)<<static_cast<unsigned>(feeding)))) return;
     DestroyBuilding::modify(runtime);
 }

@@ -600,17 +600,17 @@ TEST_CASE("runtime owner helpers and decisions release their full observation le
     fixture.addBuilding("swarm",4,4);
     fixture.game.players[0]->makeItAI(AI::ECONO);
     auto& controller=*dynamic_cast<AISharedRuntime::Runtime*>(fixture.game.players[0]->ai->aiImplementation);
-    CHECK_THROWS_AS(controller.readPlayer(),std::logic_error);
+    CHECK_THROWS_AS(controller.observation(),std::logic_error);
     std::weak_ptr<const SimulationSnapshot::Entities> lease;
     {
         AISharedRuntime::Runtime::OwnerObservationScope scope(controller);
-        controller.readPlayer();
+        controller.observation();
         lease=controller.observation().components().entities;
         CHECK_FALSE(lease.expired());
     }
     CHECK(lease.expired());
     controller.getOrder();
-    CHECK_THROWS_AS(controller.readPlayer(),std::logic_error);
+    CHECK_THROWS_AS(controller.observation(),std::logic_error);
     auto world=AIEngine::AIWorldView::capture(fixture.game,AIEngine::AIWorldView::captureCatalog(fixture.game));
     std::weak_ptr<const AIEngine::AIWorldView> borrowed=world;
     {
@@ -619,7 +619,7 @@ TEST_CASE("runtime owner helpers and decisions release their full observation le
     }
     world.reset();
     CHECK(borrowed.expired());
-    CHECK_THROWS_AS(controller.readPlayer(),std::logic_error);
+    CHECK_THROWS_AS(controller.observation(),std::logic_error);
     class FailingAI : public AISharedRuntime::RuntimeAI {
     public:
         bool load(InputStream*,Player*,Sint32) override {return true;}
@@ -637,7 +637,7 @@ TEST_CASE("runtime owner helpers and decisions release their full observation le
     }
     world.reset();
     CHECK(borrowed.expired());
-    CHECK_THROWS_AS(failing.readPlayer(),std::logic_error);
+    CHECK_THROWS_AS(failing.observation(),std::logic_error);
 }
 
 TEST_CASE("flat building relationships resolve captured unit incarnations" *
@@ -653,14 +653,12 @@ TEST_CASE("flat building relationships resolve captured unit incarnations" *
     auto observed=AIEngine::AIWorldView::capture(fixture.game,AIEngine::AIWorldView::captureCatalog(fixture.game));
     // The observation owns relationships independently of the live lists.
     building->unitsWorking.clear();building->unitsInside.clear();
-    auto catalog=std::make_shared<const AISharedRuntime::Read::Catalog>(*observed->catalog);
-    AISharedRuntime::Read::World world(*observed,catalog);
-    auto* captured=world.teams[Building::GIDtoTeam(building->gid)]->myBuildings[Building::GIDtoID(building->gid)];
+    const auto* captured=observed->buildingAtSlot(building->gid);
     REQUIRE(captured);
-    REQUIRE(captured->unitsWorking.size()==1);
-    REQUIRE(captured->unitsInside.size()==1);
-    const auto* readWorker=captured->unitsWorking.front();
-    const auto* readOccupant=captured->unitsInside.front();
+    REQUIRE(observed->workers(*captured).size()==1);
+    REQUIRE(observed->occupants(*captured).size()==1);
+    const auto* readWorker=observed->unit(observed->workers(*captured).front());
+    const auto* readOccupant=observed->unit(observed->occupants(*captured).front());
     REQUIRE(readWorker);REQUIRE(readOccupant);
     CHECK(readWorker->gid==worker->gid);
     CHECK(readOccupant->gid==occupant->gid);

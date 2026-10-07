@@ -2,7 +2,7 @@
 // Copyright (C) 2026 The Globulation 2 Authors
 
 #pragma once
-#include "CortexWorld.h"
+#include "CortexSnapshotQueries.h"
 class Player;
 
 #include <SDL3/SDL_stdinc.h>
@@ -49,7 +49,7 @@ namespace Cortex
 	/// the latter throughout the game). landReach is computed by the ground flood-fill
 	/// used for shore harvesting. The additional swim flood-fill and waterReach count
 	/// are computed only when `wantSwimReach` is true; otherwise waterReach is zero.
-	SwimAssessment assessSwimWorld(Cortex::WorldPlayer* player, bool wantSwimReach);
+	SwimAssessment assessSwimWorld(const AIEngine::AIWorldView* game, const AIEngine::TeamView* team, QueryScratch& scratch, const PlanningIntent& intents, std::ostream* diagnostics, bool wantSwimReach);
 
 	/// Result of the amphibious-campaign assessment for one (rally -> target) push.
 	/// POD; the caller copies it into the observation (obs.campaign*/landingZone*/
@@ -110,7 +110,7 @@ namespace Cortex
 	/// short land campaign costs exactly two BFS. Deterministic and safe inside lockstep.
 	/// Returns all-zero / unreachable when the player/team/game/map is unavailable or the
 	/// team has no anchor.
-	AmphibiousAssessment assessAmphibiousWorld(Cortex::WorldPlayer* player, int targetX, int targetY,
+	AmphibiousAssessment assessAmphibiousWorld(const AIEngine::AIWorldView* game, const AIEngine::TeamView* team, QueryScratch& scratch, const PlanningIntent& intents, std::ostream* diagnostics, int targetX, int targetY,
 	                                      const Sint32* standoffX, const Sint32* standoffY,
 	                                      int standoffCount, int landingStandoffTiles,
 	                                      int forwardRallyPathDist);

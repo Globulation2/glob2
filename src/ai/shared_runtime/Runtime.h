@@ -17,7 +17,7 @@
 #include "ai/observation/OrderSelection.h"
 #include "Player.h"
 #include "TeamStat.h"
-#include "shared_runtime/RuntimeObservation.h"
+#include "ai/observation/ObservationQueries.h"
 #include "ai/engine/AIDecision.h"
 
 #include <list>
@@ -123,9 +123,12 @@ namespace AISharedRuntime
           ~OwnerObservationScope();
           OwnerObservationScope(const OwnerObservationScope&)=delete;
       };
-      Read::Player* readPlayer();
       void refreshOwnerObservation();
+      const AIEngine::AIWorldView& observation();
       const AIEngine::AIWorldView& observation() const {return *currentObservation;}
+      unsigned teamNumber() const {return observedTeamNumber;}
+      unsigned playerNumber() const {return observedPlayerNumber;}
+      const AIEngine::TeamView& observedTeam() {return observation().teams[teamNumber()];}
 	  void orderExecutionCompleted(const Order& order, bool accepted) override;
 
 	  unsigned int add_building_order(Construction::BuildingOrder *bo);
@@ -133,7 +136,7 @@ namespace AISharedRuntime
 	  void add_resource_tracker(Management::ResourceTracker *rt, int building_id);
 	  std::shared_ptr<Management::ResourceTracker> get_resource_tracker(int building_id);
 
-	  TeamStat &get_team_stats();
+	  const TeamStat &get_team_stats();
 	  void flare(int x, int y);
 	  Construction::BuildingRegister &get_building_register();
 	  Construction::FlagMap &get_flag_map();
@@ -193,9 +196,7 @@ namespace AISharedRuntime
 
         std::shared_ptr<const AIEngine::AIWorldView> currentObservation;
         std::shared_ptr<const AIEngine::AIWorldView::Catalog> observationCatalog;
-        std::shared_ptr<const Read::Catalog> readCatalog;
-        std::unique_ptr<Read::World> readWorld;
-        Read::Player observedPlayer;
+        unsigned observedTeamNumber=0,observedPlayerNumber=0;
         bool deciding=false;
         unsigned ownerObservationDepth=0;
         void releaseObservation();
@@ -268,9 +269,9 @@ namespace AISharedRuntime
 
 
 
-inline TeamStat& AISharedRuntime::Runtime::get_team_stats()
+inline const TeamStat& AISharedRuntime::Runtime::get_team_stats()
 {
-	return *readPlayer()->team->stats.getLatestStat();
+	return observedTeam().statistics;
 }
 
 
@@ -278,7 +279,7 @@ inline TeamStat& AISharedRuntime::Runtime::get_team_stats()
 inline void AISharedRuntime::Runtime::flare(int x, int y)
 {
     OwnerObservationScope scope(*this);
-	push_order(std::shared_ptr<Order>(new MapMarkOrder(readPlayer()->team->teamNumber, x, y)));
+	push_order(std::shared_ptr<Order>(new MapMarkOrder(teamNumber(), x, y)));
 }
 
 
@@ -301,7 +302,7 @@ inline void AISharedRuntime::Runtime::push_order(std::shared_ptr<Order> order)
 {
     if(AIEngine::Command::targetGid(*order)) {
         OwnerObservationScope scope(*this);
-        readPlayer();AIEngine::selectTarget(*order,observation());
+        AIEngine::selectTarget(*order,observation());
     }
 	orders.push_back(order);
 }
@@ -310,7 +311,7 @@ inline void AISharedRuntime::Runtime::push_order(std::shared_ptr<Order> order)
 
 inline AISharedRuntime::Gradients::GradientManager& AISharedRuntime::Runtime::get_gradient_manager()
 {
-	readPlayer();
+	observation();
     if(!gm) gm=std::make_unique<Gradients::GradientManager>(observation());
     gm->bindWorld(observation());
 	return *gm;

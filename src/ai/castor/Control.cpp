@@ -35,7 +35,7 @@ std::shared_ptr<Order>AICastor::controlSwarms()
 	int unitSum[NB_UNIT_TYPE];
 	for (int i=0; i<NB_UNIT_TYPE; i++)
 		unitSum[i]=0;
-	const auto& myUnits=observedTeam->myUnits;
+	const auto myUnits=observation->unitSlots(observedTeam->number);
 	for (int i=0; i<Unit::MAX_COUNT; i++)
 	{
 		const AIEngine::UnitView *u=myUnits[i];
@@ -43,7 +43,7 @@ std::shared_ptr<Order>AICastor::controlSwarms()
 			unitSum[u->typeNum]++;
 	}
 	int foodSum=0;
-	const auto& myBuildings=observedTeam->myBuildings;
+	const auto myBuildings=observation->buildingSlots(observedTeam->number);
 	for (int i=0; i<Building::MAX_COUNT; i++)
 	{
 		const AIEngine::BuildingView *b=myBuildings[i];
@@ -62,7 +62,7 @@ std::shared_ptr<Order>AICastor::controlSwarms()
 
 	foodSurplus=observation->rules.hungerDisabled || (unitSumAll+AI_CASTOR_FOODSURPLUS_OFFSET<foodSum);
 
-	starvingWarning=(((unitSumAll>>AI_CASTOR_STARVING_RATIO_SHIFT)+AI_CASTOR_STARVING_OFFSET)<observedTeam->view->starving);
+	starvingWarning=(((unitSumAll>>AI_CASTOR_STARVING_RATIO_SHIFT)+AI_CASTOR_STARVING_OFFSET)<observedTeam->starving);
 	if (observation->rules.hungerDisabled) starvingWarning=false;
 	starvingWarningStats[starvingWarning]++;
 
@@ -76,7 +76,7 @@ std::shared_ptr<Order>AICastor::controlSwarms()
 	if (!observation->rules.hungerDisabled && (timer>AI_CASTOR_FOODLOCK_GRACE_TICKS) && (realFoodLock || starvingWarning || starvingWarningStats[1]>starvingWarningStats[0]))
 	{
 		// Stop making any units!
-		const auto& myBuildings=observedTeam->myBuildings;
+		const auto myBuildings=observation->buildingSlots(observedTeam->number);
 		for (int bi=0; bi<Building::MAX_COUNT; bi++)
 		{
 			const AIEngine::BuildingView *b=myBuildings[bi];
@@ -105,7 +105,7 @@ std::shared_ptr<Order>AICastor::controlSwarms()
 	int seeable=0;
 
 
-	Uint32 me=observedTeam->view->mask;
+	Uint32 me=observedTeam->mask;
 	for (size_t i=0; i<size; i++)
 	{
 		const auto visibility=observation->visibilityAt(i);
@@ -196,7 +196,7 @@ std::shared_ptr<Order>AICastor::controlFood()
 	int wDec=std::countr_zero(unsigned(observation->width));
 	
 	int bi=(controlFoodTimer++)&(Building::MAX_COUNT-1);
-	const auto& myBuildings=observedTeam->myBuildings;
+	const auto myBuildings=observation->buildingSlots(observedTeam->number);
 	const AIEngine::BuildingView *b=myBuildings[bi];
 	for (int i=0; i<AI_CASTOR_CONTROL_FOOD_RETRIES; i++)
 		if (b==NULL)
@@ -318,23 +318,23 @@ std::shared_ptr<Order>AICastor::controlUpgrades()
 		return telemetry.returnedOrder(AITrace::AI2::AICastor_controlUpgrades_result,
 									   shared_ptr<Order>());
 	int bi=((controlUpgradeTimer++)&(Building::MAX_COUNT-1));
-	const auto& myBuildings=observedTeam->myBuildings;
+	const auto myBuildings=observation->buildingSlots(observedTeam->number);
 	const AIEngine::BuildingView *b=myBuildings[bi];
 	if (b==NULL)
 		return telemetry.returnedOrder(AITrace::AI2::AICastor_controlUpgrades_result,
 									   shared_ptr<Order>());
 	const bool repairing=b->hp<b->maxHp && queries->kind(*b).resolvedType.semantics.repairable;
-	if (queries->kind(*b).resolvedType.isBuildingSite || (!repairing && (observation->rules.upgradesDisabled || !b->upgradeAvailable))) return {};
+	if (queries->kind(*b).resolvedType.isBuildingSite || (!repairing && (observation->rules.upgradesDisabled || !observation->isUpgradeAvailable(*b)))) return {};
 	if (requestedWorkers(*b)<1 && queries->kind(*b).resolvedType.semantics.assignmentLimit>0)
 		return telemetry.returnedOrder(AITrace::AI2::AICastor_controlUpgrades_result,
 									   requestWorkers(*b, 1));
-	int numberOfFreeWorkers = observedTeam->view->statistics.isFree[WORKER];
+	int numberOfFreeWorkers = observedTeam->statistics.isFree[WORKER];
 	const int transition=repairing ? queries->kind(*b).resolvedType.prevLevel : queries->kind(*b).resolvedType.nextLevel;
 	const int qualification=transition>=0 ? (&queries->kind(transition).resolvedType)->semantics.requiredWorkerLevel
 		: queries->kind(*b).resolvedType.semantics.requiredWorkerLevel;
 	int numberOfAbleWorkers=0;
 	for(int level=qualification;level<NB_UNIT_LEVELS;++level)
-		numberOfAbleWorkers+=observedTeam->view->statistics.workersByConstructionLevel[level];
+		numberOfAbleWorkers+=observedTeam->statistics.workersByConstructionLevel[level];
 	if (numberOfAbleWorkers <= AI_CASTOR_UPGRADE_MIN_ABLE_WORKERS
 		|| numberOfFreeWorkers <= AI_CASTOR_UPGRADE_MIN_FREE_WORKERS
 		|| numberOfAbleWorkers <= (numberOfFreeWorkers/AI_CASTOR_UPGRADE_ABLE_FREE_RATIO_DIV))
@@ -366,7 +366,7 @@ std::shared_ptr<Order>AICastor::controlUpgrades()
 		}
 	}
 	// Repairs above remain useful even when upgrades are disabled.
-	if (observation->rules.upgradesDisabled || !b->upgradeAvailable) return {};
+	if (observation->rules.upgradesDisabled || !observation->isUpgradeAvailable(*b)) return {};
 	// Do we want to upgrade it:
 	// We compute the number of buildings satifying the strategy:
 	int demand = -1;
@@ -397,10 +397,10 @@ std::shared_ptr<Order>AICastor::controlUpgrades()
 
 	if (demand==AICastor::TrainConstruction)
 	{
-		int buildBase=observedTeam->view->workersLevel[0];
+		int buildBase=observedTeam->workersLevel[0];
 		int buildSum=0;
 		for (int i=0; i<NB_UNIT_LEVELS; i++)
-			buildSum+=observedTeam->view->workersLevel[i];
+			buildSum+=observedTeam->workersLevel[i];
 		if (buildBase>buildSum)
 			return telemetry.returnedOrder(AITrace::AI2::AICastor_controlUpgrades_result,
 										   shared_ptr<Order>());
@@ -434,7 +434,7 @@ std::shared_ptr<Order>AICastor::controlStrikes()
 		return telemetry.returnedOrder(AITrace::AI2::AICastor_controlStrikes_result,
 									   shared_ptr<Order>());
 
-	int warriors=observedTeam->view->statistics.numberUnitPerType[WARRIOR];
+	int warriors=observedTeam->statistics.numberUnitPerType[WARRIOR];
 	int warFlagsGoal=(warriors+AI_CASTOR_WARFLAG_FORMULA_BIAS)/AI_CASTOR_WARRIORS_PER_WARFLAG;
 	int warFlagsReal=buildingSum[AICastor::AttractWarriors][0];
 
@@ -443,11 +443,11 @@ std::shared_ptr<Order>AICastor::controlStrikes()
 		int bestLevel=AI_CASTOR_LEVEL_NONE;
 		for (int ti=0; ti<observation->teams.size(); ti++)
 		{
-			TeamObservation *enemyTeam=teamAt(ti);
-			Uint32 me=observedTeam->view->mask;
-			if ((observedTeam->view->enemies&enemyTeam->view->mask)==0)
+			const AIEngine::TeamView *enemyTeam=teamAt(ti);
+			Uint32 me=observedTeam->mask;
+			if ((observedTeam->enemies&enemyTeam->mask)==0)
 				continue;
-			const auto& enemyBuildings=enemyTeam->myBuildings;
+			const auto enemyBuildings=observation->buildingSlots(enemyTeam->number);
 			for (int bi=0; bi<Building::MAX_COUNT; bi++)
 			{
 				const AIEngine::BuildingView *b=enemyBuildings[bi];
@@ -463,11 +463,11 @@ std::shared_ptr<Order>AICastor::controlStrikes()
 		for (int ti=0; ti<observation->teams.size(); ti++)
 		{
 			int score=0;
-			TeamObservation *enemyTeam=teamAt(ti);
-			Uint32 me=observedTeam->view->mask;
-			if ((observedTeam->view->enemies&enemyTeam->view->mask)==0)
+			const AIEngine::TeamView *enemyTeam=teamAt(ti);
+			Uint32 me=observedTeam->mask;
+			if ((observedTeam->enemies&enemyTeam->mask)==0)
 				continue;
-			const auto& enemyBuildings=enemyTeam->myBuildings;
+			const auto enemyBuildings=observation->buildingSlots(enemyTeam->number);
 			for (int bi=0; bi<Building::MAX_COUNT; bi++)
 			{
 				const AIEngine::BuildingView *b=enemyBuildings[bi];
@@ -496,9 +496,9 @@ std::shared_ptr<Order>AICastor::controlStrikes()
 	
 	Uint32 bestScore=0;
 	const AIEngine::BuildingView *bestBuilding=NULL;
-	TeamObservation *enemyTeam=teamAt(strikeTeam);
-	Uint32 me=observedTeam->view->mask;
-	const auto& enemyBuildings=enemyTeam->myBuildings;
+	const AIEngine::TeamView *enemyTeam=teamAt(strikeTeam);
+	Uint32 me=observedTeam->mask;
+	const auto enemyBuildings=observation->buildingSlots(enemyTeam->number);
 	for (int bi=0; bi<Building::MAX_COUNT; bi++)
 	{
 		const AIEngine::BuildingView *b=enemyBuildings[bi];
@@ -522,7 +522,7 @@ std::shared_ptr<Order>AICastor::controlStrikes()
 	}
 	
 	std::list<const AIEngine::BuildingView *> rallyBuildings;
- for (auto* candidate : observedTeam->myBuildings)
+ for (auto* candidate : observation->buildingSlots(observedTeam->number))
   if (candidate && provides(*candidate,AttractWarriors)) rallyBuildings.push_back(candidate);
  auto* virtualBuildings=&rallyBuildings;
 	if (bestBuilding!=NULL)

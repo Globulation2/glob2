@@ -71,8 +71,6 @@ private:
 	const AIEngine::AIWorldView* observation=nullptr;
 	AIEngine::WorldQueries* queries=nullptr;
 	NumbiObservation::ResourceInitializations resourceInitializations;
-	std::array<const AIEngine::BuildingView*,1024> observedBuildings{};
-	std::array<const AIEngine::UnitView*,1024> observedUnits{};
 	std::shared_ptr<Order> decide();
 	int timer;
 	int phase;

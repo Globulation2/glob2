@@ -1,3 +1,4 @@
+#include "MaximaObservationFixture.h"
 // Link with the game objects (excluding Glob2.cpp) to exercise the real runtime.
 #include "EngineFixtures.h"
 #include "Version.h"
@@ -183,11 +184,11 @@ static void allyPrestige() {
     f.player.team->allies |= f.game.teams[2]->me;
     f.game.teams[2]->prestige=100; f.game.totalPrestige=100;
     a.snapshot=a.collect_snapshot(a.context);
-    a.large_economy_committed=true; a.build_policy_bids();
+    a.large_economy_committed=true; glob2test::withMaximaObservation(a.context,[&]() -> decltype(auto) {return a.build_policy_bids();});
     REQUIRE(a.snapshot.enemy_prestige==0);
     REQUIRE(a.policy_bids[Maxima::PolicyDefense].desired_towers==0);
     f.game.teams[1]->prestige=50; f.game.totalPrestige=150;
-    a.snapshot=a.collect_snapshot(a.context); a.build_policy_bids();
+    a.snapshot=a.collect_snapshot(a.context); glob2test::withMaximaObservation(a.context,[&]() -> decltype(auto) {return a.build_policy_bids();});
     REQUIRE(a.snapshot.enemy_prestige==50);
     REQUIRE(a.policy_bids[Maxima::PolicyDefense].desired_towers>0);
 }
@@ -249,42 +250,44 @@ static void reusedOwnId() {
         auto replacement=f.building(sameLocation?10:40,sameLocation?10:40,0);
         REQUIRE(replacement->gid==oldGid);
         // Check before housekeeping, when deferred management work can execute.
+        auto observation=c.scopeOwnerObservation();
         REQUIRE(!c.buildings.get_building(oldId));
         REQUIRE(Conditions::BuildingDestroyed(oldId).passes(c)==Conditions::Ready);
         Management::AssignWorkers(7,oldId).modify(c);
         REQUIRE(c.orders.empty());
         GAGCore::MemoryStreamBackend* backend=new GAGCore::MemoryStreamBackend;
-        GAGCore::BinaryOutputStream output(backend);c.buildings.save(&output);
+        GAGCore::BinaryOutputStream output(backend);([&]{auto observation=c.scopeOwnerObservation();return c.buildings.save(&output);}());
         std::string bytes(backend->getBuffer(),backend->getPosition());
         GAGCore::BinaryInputStream input(new GAGCore::MemoryStreamBackend(bytes.data(),bytes.size()));
         input.seekFromStart(0);
-        Construction::BuildingRegister loaded(&f.player);loaded.load(&input,VERSION_MINOR);
+        Construction::BuildingRegister loaded(&f.player);loaded.bind(c.observation(),c.playerNumber(),c.teamNumber());loaded.load(&input,VERSION_MINOR);
         REQUIRE(!loaded.is_building_found(oldId));
-        c.buildings.tick(); REQUIRE(c.buildings.found().empty());
+        {auto observation=c.scopeOwnerObservation();c.buildings.tick();} REQUIRE(c.buildings.found().empty());
     }
     // Moving flags and loading live registrations preserve valid identities.
     Fixture f; auto flag=f.building(10,10,0,"warflag");auto& c=f.ai->context;c.initialize();
-    int id=f.id(flag);flag->posX=20;flag->posY=20;c.buildings.tick();
+    int id=f.id(flag);flag->posX=20;flag->posY=20;{auto observation=c.scopeOwnerObservation();c.buildings.tick();}
+    auto observation=c.scopeOwnerObservation();
     REQUIRE((c.buildings.get_building(id) && c.buildings.get_building(id)->gid==flag->gid));
     GAGCore::MemoryStreamBackend* backend=new GAGCore::MemoryStreamBackend;
-    GAGCore::BinaryOutputStream output(backend);c.buildings.save(&output);
+    GAGCore::BinaryOutputStream output(backend);([&]{auto observation=c.scopeOwnerObservation();return c.buildings.save(&output);}());
     std::string bytes(backend->getBuffer(),backend->getPosition());
     GAGCore::BinaryInputStream input(new GAGCore::MemoryStreamBackend(bytes.data(),bytes.size()));
     input.seekFromStart(0);
-    Construction::BuildingRegister loaded(&f.player);loaded.load(&input,VERSION_MINOR);
+    Construction::BuildingRegister loaded(&f.player);loaded.bind(c.observation(),c.playerNumber(),c.teamNumber());loaded.load(&input,VERSION_MINOR);
     REQUIRE((loaded.get_building(id) && loaded.get_building(id)->gid==flag->gid));
 }
 
 static void fortificationUsesOnlySpareLabour()
 {
     Fixture f;auto& a=*f.ai;
-    AIMaximaPlacement::WorldState world;world.reset(16,16);world.profiles=a.collect_building_profiles();
+    AIMaximaPlacement::WorldState world;world.reset(16,16);world.profiles=glob2test::withMaximaObservation(a.context,[&]() -> decltype(auto) {return a.collect_building_profiles();});
     const int towerType=f.game.buildingsTypes.getPlaceableTypeNum("defencetower");
     a.strategy.staffing.construction_large_workers=6;
     a.labour_plan.trainingReserve=2;
     auto count=[&](AIMaximaPlacement::DevelopmentPurpose purpose) {
         int result=0;
-        for(const auto& intent:a.collect_development_intents(world))
+        for(const auto& intent:glob2test::withMaximaObservation(a.context,[&]() -> decltype(auto) {return a.collect_development_intents(world);}))
             if(intent.buildingType==towerType && intent.purpose==purpose)
                 ++result;
         return result;
@@ -306,13 +309,13 @@ static void unifiedHospitalCapacity() {
     Fixture f; auto& a=*f.ai;
     a.snapshot.warriors=20;
     a.strategy.military.hospital_beds_per_warrior_percent=50;
-    WorldState world;world.profiles=a.collect_building_profiles();
+    WorldState world;world.profiles=glob2test::withMaximaObservation(a.context,[&]() -> decltype(auto) {return a.collect_building_profiles();});
     const int hospitalType=f.game.buildingsTypes.getPlaceableTypeNum("hospital");
     WorldBuilding hospital; hospital.id=10;
     hospital.buildingType=hospitalType; hospital.level=1;
     world.buildings.push_back(hospital);
     const auto unmet=[&]() {
-        for(const auto& intent:a.collect_development_intents(world))
+        for(const auto& intent:glob2test::withMaximaObservation(a.context,[&]() -> decltype(auto) {return a.collect_development_intents(world);}))
             if(intent.buildingType==hospitalType) return intent.unmetCount;
         return 0;
     };
@@ -349,7 +352,7 @@ static void unifiedHospitalCapacity() {
     REQUIRE(a.collect_development_limits(a.context).upgradePriority(hospitalType,1)==20);
     int id=-1;
     for(const auto& entry:a.context.get_building_register().found())
-        if(a.context.get_building_register().get_building(entry.first)->typeNum==f.game.buildingsTypes.getTypeNum("hospital",0,false)) id=entry.first;
+        if(entry.second.type==f.game.buildingsTypes.getTypeNum("hospital",0,false)) id=entry.first;
     REQUIRE(id>=0); upgrade.buildingId=id;
     a.development_planner.actionMap[1]=upgrade;
     REQUIRE(a.collect_development_limits(a.context).upgradePriority(hospitalType,1)==0);
@@ -370,7 +373,7 @@ static void proactiveProtection() {
     for(auto o:c.managementOrders) if(auto p=dynamic_cast<Management::AddArea*>(o.get()))
         if(p->areaType==ForbiddenArea) for(auto xy:p->locations) f.game.map.addForbidden(xy.x,xy.y,f.player.team->teamNumber);
     c.managementOrders.clear();a.manage_land_clearing(c);
-    int x=0,y=0;REQUIRE(c.get_building_position(a.proactive_clearing_flag,x,y));
+    int x=0,y=0;REQUIRE(([&]{auto observation=c.scopeOwnerObservation();return c.get_building_position(a.proactive_clearing_flag,x,y);}()));
     int released=0;
     for(auto o:c.managementOrders) if(auto p=dynamic_cast<Management::RemoveArea*>(o.get()))
         if(p->areaType==ForbiddenArea) for(auto xy:p->locations) {
@@ -385,7 +388,7 @@ static void proactiveProtection() {
     }
     REQUIRE(openWood>0);
     // Releasing the flag must allow the ordinary farming policy to resume.
-    c.cancel_or_destroy_building(a.proactive_clearing_flag,1u<<WORKER);
+    ([&]{auto observation=c.scopeOwnerObservation();return c.cancel_or_destroy_building(a.proactive_clearing_flag,1u<<WORKER);}());
     c.managementOrders.clear();a.timer+=64;a.update_farming(c);
     int protectedAgain=0;
     for(int i=0;i<4096;++i) if(f.game.map.getTile(i%64,i/64).resource.type==WOOD

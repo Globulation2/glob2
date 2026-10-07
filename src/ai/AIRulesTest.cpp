@@ -378,12 +378,15 @@ TEST_CASE("restored controller queues discard unavailable work and release prere
     OrderCreate training(0,20,20,school,2,2);
     CHECK(!AIRules::permittedQueuedOrder(g,training));
     AIMaximaRuntime::Context maxima(g.players[0]);
-    auto& register_=maxima.get_building_register();register_.initiate();
-    const auto id=register_.found().begin()->first;
-    AIMaximaRuntime::Management::UpgradeRepair savedUpgrade(id);
-    savedUpgrade.modify(maxima);
-    CHECK(!register_.is_building_upgrading(id));
-    CHECK(maxima.orders.empty());
+    {
+        auto ownerObservation=maxima.scopeOwnerObservation();
+        auto& register_=maxima.get_building_register();register_.initiate();
+        const auto id=register_.found().begin()->first;
+        AIMaximaRuntime::Management::UpgradeRepair savedUpgrade(id);
+        savedUpgrade.modify(maxima);
+        CHECK(!register_.is_building_upgrading(id));
+        CHECK(maxima.orders.empty());
+    }
     AICortex cortex(g.players[0]);
     cortex.orderQueue.push(std::make_shared<OrderConstruction>(inn->gid,2,2));
     CHECK(cortex.getOrder()->getOrderType()==ORDER_NULL);CHECK(cortex.orderQueue.empty());

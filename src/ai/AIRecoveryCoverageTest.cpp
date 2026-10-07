@@ -26,14 +26,10 @@ template<class Operation> decltype(auto) withCastorObservation(AICastor& ai, Gam
     const auto world = AIEngine::AIWorldView::capture(game, AIEngine::AIWorldView::captureCatalog(game));
     AIEngine::WorldQueries queries(*world, ai.teamNumber, ai.resourceInitializations);
     ai.observation = world.get(); ai.queries = &queries;
-    ai.observedTeams.resize(world->teams.size());
-    for (std::size_t i = 0; i < ai.observedTeams.size(); ++i) ai.observedTeams[i].view = &world->teams[i];
-    for (const auto& building : world->buildings) ai.observedTeams[building.team].myBuildings[Building::GIDtoID(building.identity.gid)] = &building;
-    for (const auto& unit : world->units) ai.observedTeams[unit.team].myUnits[Unit::GIDtoID(unit.identity.gid)] = &unit;
     ai.observedTeam = ai.teamAt(ai.teamNumber);
     struct Release {
         AICastor& ai;
-        ~Release() { ai.observation = nullptr; ai.queries = nullptr; ai.observedTeam = nullptr; ai.observedTeams.clear(); }
+        ~Release() { ai.observation = nullptr; ai.queries = nullptr; ai.observedTeam = nullptr; }
     } release{ai};
     return operation();
 }
@@ -241,15 +237,15 @@ TEST_SUITE("AIRecoveryCoverage")
         {
             const auto* flag=runtime.br.get_building(id);
             flagGid=flag->gid;
-            CHECK(flag->type->shortTypeNum==IntBuildingType::WAR_FLAG);
+            CHECK(runtime.br.get_building_type(id)->shortTypeNum==IntBuildingType::WAR_FLAG);
             CHECK(flag->maxUnitWorking==1);
         }
         ai.compute_defense_flag_positioning(runtime); flush();
         REQUIRE(ai.defense_flags.size()==1); CHECK(ai.defense_flags.front()==id);
         w.game.map.setGroundUnit(enemy->posX,enemy->posY,NOGUID);
         threatened->underAttackTimer=0;
-        // Begin the next owner observation after removing the threat. Facade
-        // pointers belong to one borrow; inspect the executed live result by GID.
+        // Begin the next owner observation after removing the threat. Captured
+        // records belong to one borrow; inspect the executed live result by GID.
         runtime.refreshOwnerObservation();
         ai.compute_defense_flag_positioning(runtime); flush();
         const auto* flag=w.team->myBuildings[Building::GIDtoID(flagGid)];

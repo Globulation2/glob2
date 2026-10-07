@@ -129,12 +129,16 @@ inline MemoryMetrics Storage::memoryMetrics() const
 	MemoryMetrics result;
 	const auto vectorBytes = []<class T>(const std::vector<T>& values) { return Uint64(values.capacity()) * sizeof(T); };
 	struct SharedPayload { const void* identity = nullptr; Uint64 object = 0, capacity = 0; bool leased = false; };
-	std::array<SharedPayload, 34> shared{};
+	std::array<SharedPayload, 51> shared{};
 	std::size_t sharedCount = 0;
 	const auto remember = [&](const auto& owner, bool leased) {
 		if (!owner) return;
 		for (std::size_t i = 0; i < sharedCount; ++i) if (shared[i].identity == owner.get()) { shared[i].leased |= leased; return; }
-		shared.at(sharedCount++) = {owner.get(), sizeof(*owner), vectorBytes(*owner), leased};
+		const Uint64 capacity = [&] {
+			if constexpr (requires { owner->capacityBytes(); }) return Uint64(owner->capacityBytes());
+			else return vectorBytes(*owner);
+		}();
+		shared.at(sharedCount++) = {owner.get(), sizeof(*owner), capacity, leased};
 	};
 	const auto account = [&]<class T>(const BufferPool<T>& pool, auto payload) {
 		// Each component/plane pool owns a distinct control-block allocator.
@@ -149,12 +153,12 @@ inline MemoryMetrics Storage::memoryMetrics() const
 			if (leased) result.leasedBytes += sizeof(T) + capacity;
 		});
 	};
-	account(catalogs, [&](const Catalogs& value, bool leased) { remember(value.buildings, leased); return Uint64(0); });
+	account(catalogs, [&](const Catalogs& value, bool leased) { remember(value.buildings, leased); remember(value.capabilities, leased); return Uint64(0); });
 	account(terrain, [&](const Terrain& value, bool leased) { remember(value.identity, leased); return vectorBytes(value.legacy); });
 	const auto cells = [&](const auto& value, bool) { return vectorBytes(value.cells); };
 	account(resources, cells); account(occupancy, cells); account(areas, cells); account(visibility, [&](const Visibility& value, bool) { return vectorBytes(value.discovered) + vectorBytes(value.visible); });
 	account(entities, [&](const Entities& value, bool) {
-		return vectorBytes(value.buildings) + vectorBytes(value.units) + vectorBytes(value.relationships) + vectorBytes(value.projects);
+		return vectorBytes(value.buildings) + vectorBytes(value.units) + vectorBytes(value.buildingSlotIndices) + vectorBytes(value.unitSlotIndices) + vectorBytes(value.relationships) + vectorBytes(value.projects);
 	});
 	account(teams, [&](const Teams& value, bool) {
 		Uint64 bytes = vectorBytes(value.values);

@@ -18,8 +18,8 @@ using std::shared_ptr;
 bool AICastor::enoughFreeWorkers()
 {
 	telemetry.count(AITrace::AI2::AICastor_enoughFreeWorkers_calls);
-	int totalWorkers=observedTeam->view->statistics.numberUnitPerType[WORKER];
-	int workersBalance=observedTeam->view->workerBalance;
+	int totalWorkers=observedTeam->statistics.numberUnitPerType[WORKER];
+	int workersBalance=observedTeam->workerBalance;
 	int partFree=(totalWorkers/strategy.isFreePart);
 	int minBalance;
 	if (buildsAmount<=0)
@@ -47,7 +47,7 @@ void AICastor::computeCanSwim()
 	//printf("computeCanSwim()...\n");
 	// If our population has more healthy-working-units able to swim than healthy-working-units
 	// unable to swim then we choose to be able to go through water:
-	const auto& myUnits=observedTeam->myUnits;
+	const auto myUnits=observation->unitSlots(observedTeam->number);
 	int sumCanSwim=0;
 	int sumCantSwim=0;
 	for (int i=0; i<Unit::MAX_COUNT; i++)
@@ -105,7 +105,7 @@ void AICastor::computeBuildingSum()
 				buildingLevels[bi][si][li]=0;
 	
 	const auto& capabilities=*queries;
-	const auto& myBuildings=observedTeam->myBuildings;
+	const auto myBuildings=observation->buildingSlots(observedTeam->number);
 	for (int i=0; i<Building::MAX_COUNT; i++)
 	{
 		const AIEngine::BuildingView *b=myBuildings[i];
@@ -186,7 +186,7 @@ void AICastor::computeWarLevel()
 		return;
 
 	int warPowerSum=0;
-	const auto& myUnits=observedTeam->myUnits;
+	const auto myUnits=observation->unitSlots(observedTeam->number);
 	// Custom-game "glass cannon" rule: scale the same way
 	// Unit::getRealAttackStrength() does, so this self-assessment of army
 	// strength doesn't ignore a rule that's actively changing how hard these

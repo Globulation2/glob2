@@ -74,7 +74,7 @@ CLIENT_SOURCES = (
     'ai/numbi/AINumbiPlacement.cpp',
     'ai/warrush/AIWarrush.cpp',
     'ai/simple/AICabino.cpp',
-    'ai/cortex/CortexWorld.cpp',
+    'ai/cortex/CortexSnapshotQueries.cpp',
     'ai/cortex/CortexObservation.cpp',
     'ai/cortex/CortexObservationObserve.cpp',
     'ai/cortex/CortexPlacement.cpp',

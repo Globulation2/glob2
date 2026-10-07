@@ -6,10 +6,15 @@
 #include "Game.h"
 #include "Team.h"
 #include "UnitConsts.h"
+#include "ai/observation/ObservationQueries.h"
 #include <algorithm>
 #include <limits>
 namespace AIMaximaBuildings
 {
+inline const BuildingType* completed(const AIEngine::AIWorldView& world,const BuildingType& type)
+{ return type.isBuildingSite && type.nextLevel>=0 ? &world.catalog->at(type.nextLevel).resolvedType : &type; }
+inline int lineageRoot(const AIEngine::AIWorldView& world,int type) {return world.capabilities().lineageRoot(type);}
+inline int lineagePosition(const AIEngine::AIWorldView& world,int type) {return world.capabilities().lineagePosition(type);}
 template<class World>
 inline const BuildingType* completed(const World& game, const BuildingType& type)
 { return type.isBuildingSite && type.nextLevel>=0 ? game.buildingsTypes.get(type.nextLevel) : &type; }
@@ -48,14 +53,13 @@ inline int lineageRoot(const World& game,int type)
 template<class World>
 inline int lineagePosition(const World& game,int type)
 {return game.buildingCapabilities().lineagePosition(type);}
-template<class World,class TeamValue>
-inline AIPlanning::BuildingCandidate choose(World& game,TeamValue& team,int role)
+inline AIPlanning::BuildingCandidate choose(const AIEngine::AIWorldView& game,const AIEngine::TeamView& team,int role)
 {
  using I=AIPlanning::BuildingIntent;AIPlanning::BuildingCandidate best;long long score=std::numeric_limits<long long>::max();
- const int qualification=team.maxBuildLevel();
- auto consider=[&](I intent){for(const auto& c:game.buildingCapabilities().placements(intent)){
-  if(!game.buildingCapabilities().available(c,intent,game.gameHeader))continue;
-  const auto* p=game.buildingsTypes.get(c.placementType);if(p->semantics.requiredWorkerLevel>qualification)continue;
+ const int qualification=AIEngine::ObservationQueries::maxBuildLevel(game,team.number);
+ auto consider=[&](I intent){for(const auto& c:game.capabilities().placements(intent)){
+  if(!AIEngine::ObservationQueries::available(game,c,intent))continue;
+  const auto* p=&game.catalog->at(c.placementType).resolvedType;if(p->semantics.requiredWorkerLevel>qualification)continue;
   long long cost=p->width*p->height;for(int r:p->semantics.constructionCost)if(p->isBuildingSite)cost+=r;
   if(cost<score||(cost==score&&c.placementType<best.placementType)){score=cost;best=c;}
  }};

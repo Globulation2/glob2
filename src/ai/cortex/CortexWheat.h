@@ -2,7 +2,7 @@
 // Copyright (C) 2026 The Globulation 2 Authors
 
 #pragma once
-#include "CortexWorld.h"
+#include "CortexSnapshotQueries.h"
 class Player;
 
 #include "CortexTypes.h" // WHEAT_PARITY and the other wheat tunables.
@@ -59,7 +59,7 @@ namespace Cortex
 		Sint32 openCount = 0;      //!< WC_OPEN_MARGIN tile count
 		Sint32 fieldTileCount = 0; //!< reachable WHEAT tiles (all classes)
 		Sint32 componentCount = 0; //!< connected components among reachable WHEAT
-		// Debug overlays, sized map.getW()*map.getH() (empty unless wantDebug):
+		// Debug overlays, sized map.width*map.height (empty unless wantDebug):
 		std::vector<Uint8>  classOf; //!< WheatClass per map index
 		std::vector<Sint16> depthOf; //!< wheat-depth per map index, -1 = none
 	};
@@ -86,7 +86,7 @@ namespace Cortex
 	//!                   identical, so determinism is preserved. Default false leaves
 	//!                   every existing caller unchanged.
 	WheatScanResult scanWheatForbidden(
-		Cortex::WorldMap& map, Uint32 teamMask, int teamNumber,
+		const AIEngine::AIWorldView& map, WheatScratch& scratch, Uint32 teamMask, int teamNumber,
 		const std::vector<int>& consumerSeeds,
 		int boxMinX, int boxMinY, int boxMaxX, int boxMaxY,
 		int openMargin, bool ignoreFOW, bool wantDebug, bool liftAll = false, bool farmPaint = false);
@@ -114,7 +114,7 @@ namespace Cortex
 	//! `liftAll` (default false) is passed through to scanWheatForbidden: when true
 	//! the whole field is un-forbidden for the wheat-blitz food burst (only the DEL
 	//! mask is non-empty). Default false keeps every existing caller unchanged.
-	WheatReconcile reconcileWheatForbiddenWorld(Cortex::WorldPlayer* player, int openMargin, bool buildMasks,
+	WheatReconcile reconcileWheatForbiddenWorld(const AIEngine::AIWorldView* game, const AIEngine::TeamView* team, QueryScratch& scratch, const PlanningIntent& intents, std::ostream* diagnostics, int openMargin, bool buildMasks,
 	                                       bool liftAll = false, bool farmPaint = false);
 
 }

@@ -3,7 +3,7 @@
 
 #pragma once
 #include "CortexTuning.h"
-#include "CortexWorld.h"
+#include "CortexSnapshotQueries.h"
 
 #include "AIImplementation.h"
 #include "CortexTypes.h"
@@ -57,12 +57,15 @@ public:
 	std::shared_ptr<Order> getOrder(const AIEngine::DecisionContext&) override;
 
 private:
-	Cortex::WorldPlayer* decisionPlayer = nullptr;
+	const AIEngine::AIWorldView* observedWorld = nullptr;
+    const AIEngine::TeamView* observedTeam = nullptr;
+    int observedPlayer = 0;
+    Cortex::PlanningIntent intents;
 	std::shared_ptr<Order> decide();
 	std::shared_ptr<Order> runObservation(const AIEngine::DecisionContext&, bool worker);
 	mutable std::ostringstream diagnosticStream;
     Cortex::QueryScratch queryScratch;
-	void applyQueuedIntent(Cortex::World&) const;
+	void applyQueuedIntent(const AIEngine::AIWorldView&);
     struct PendingCommand {
         std::vector<Uint8> bytes;
         BuildingRef target;
@@ -73,7 +76,7 @@ private:
     };
     std::vector<PendingCommand> issuedCommands,queuedCommands;
     void applyReceipts(const AIEngine::DecisionContext&);
-    void rememberIssued(Order&,const AIEngine::DecisionContext&,const Cortex::World&);
+    void rememberIssued(Order&,const AIEngine::DecisionContext&,const AIEngine::AIWorldView&);
     void rememberFlagCreation(Order&,Sint32&);
     void rememberQueuedBuild(Order&,int);
     void enqueueOrder(std::shared_ptr<Order>);
@@ -258,7 +261,7 @@ private:
 	/// swarm/inn paths, which do not clamp). `accept` is the per-set guard that
 	/// confirms the decoded Building is still the kind we observed (finished swarm,
 	/// finished inn, or live construction site) before issuing the order. On each
-	/// accepted change it mirrors the engine executor locally (b->maxUnitWorking =
+	/// accepted change it mirrors the engine executor locally (plannedWorkers(intents,*b) =
 	/// desired; b->update()) and pushes one OrderModifyBuilding — identical to the
 	/// original three inline loops, in the same index order.
 	template <typename Tracked, typename Accept>
@@ -269,7 +272,7 @@ private:
 	/// requested priority for tracked[i] (CORTEX_PRIORITY_NONE, or any value outside
 	/// -1/0/+1, == leave unchanged). Used by translateActionTuneWorkers to pin
 	/// construction sites to LOW and restore finished inns to NORMAL. Dedups against
-	/// the observed priority, mirrors the engine executor locally (b->priority then
+	/// the observed priority, mirrors the engine executor locally (plannedPriority(intents,*b) then
 	/// b->updateCallLists(), per executeChangePriority) and pushes one
 	/// OrderChangePriority per accepted change. `tracked` may be TrackedBuilding or
 	/// TrackedSite — both expose valid, gid, priority.
@@ -291,7 +294,7 @@ private:
 	/// gid is unset (NOGBID) or the flag no longer exists (died / was deleted).
 	/// Scans team->virtualBuildings (a list, deterministic insertion order — never a
 	/// std::set).
-	Cortex::WorldBuilding* findFlagByGid(Uint16 gid) const;
+	const AIEngine::BuildingView* findFlagByGid(Uint16 gid) const;
 
 	/// True if `gid` is currently owned by ANY tracked flag (any defense flag or any
 	/// offense wave). Used by rediscoverFlag so a newly-landed flag is never double-
@@ -303,7 +306,7 @@ private:
 	/// another tracked flag. Returns the claimed building (and stores its gid in `gid`),
 	/// or NULL if none has appeared yet. Position-matching disambiguates concurrently
 	/// created flags (their targets are far apart).
-	Cortex::WorldBuilding* rediscoverFlag(Uint16& gid, int tx, int ty);
+	const AIEngine::BuildingView* rediscoverFlag(Uint16& gid, int tx, int ty);
 
 	/// Ensure the flag tracked by `gid` sits at (tx, ty) with the given summon count,
 	/// minLevel, and engine priority: create it if absent (respecting `cooldown` and the
@@ -343,7 +346,7 @@ private:
 	/// (every client runs the same AI over the same state), so it is safe to drive phase
 	/// transitions from it. Shared by manageOffenseWaves and the CORTEX_DUMP_OFFENSE
 	/// diagnostic. 0 for a NULL flag.
-	int countArrivedAtFlag(Cortex::WorldBuilding* flag) const;
+	int countArrivedAtFlag(const AIEngine::BuildingView* flag) const;
 
 	/// Home RALLY point for the muster-then-march offense: the colony's heart (its
 	/// first/primary swarm, falling back to the first alive building). A single valid
@@ -373,10 +376,10 @@ private:
 	/// Find the single best finished instance of `buildingType` (an
 	/// Cortex semantic role) to upgrade to its next level, or NULL if no
 	/// instance currently passes the full engine Upgradable predicate. Scans
-	/// team->myBuildings by ARRAY INDEX (never a std::set) and ranks eligible
+	/// game->buildingSlots(team->number) by ARRAY INDEX (never a std::set) and ranks eligible
 	/// instances deterministically — improving on Nicowar's random pick. See the
 	/// .cpp for the predicate and the bottleneck ranking.
-	Cortex::WorldBuilding* findUpgradeTarget(int buildingType) const;
+	const AIEngine::BuildingView* findUpgradeTarget(int buildingType) const;
 
 	Player* player;
 

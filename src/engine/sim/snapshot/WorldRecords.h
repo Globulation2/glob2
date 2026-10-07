@@ -28,7 +28,6 @@ struct BuildingView : BuildingStateRecord
 	int team = 0;
 	int maxHp = 0;
 	bool usesTeamResources = false;
-	bool upgradeAvailable = false, hardSpaceUpgrade = false, hardSpaceRepair = false;
 	UnitRange working, inside;
 };
 

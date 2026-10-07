@@ -71,7 +71,7 @@ TEST_SUITE("WarrushObservation")
   std::vector<AIEngine::ExecutionReceipt> receipts;
   AIEngine::DecisionContext context{*world,0,0,receipts};context.pollSequence=1;
   auto first=std::dynamic_pointer_cast<OrderModifyBuilding>(ai.getOrder(context));REQUIRE(first);
-  CHECK(swarm->maxUnitWorking==0);CHECK(ai.observation==nullptr);CHECK(ai.observedTeams.empty());
+  CHECK(swarm->maxUnitWorking==0);CHECK(ai.observation==nullptr);CHECK(ai.observedTeam==nullptr);
   context.pollSequence=2;
   CHECK(ai.getOrder(context)->getOrderType()==ORDER_NULL);
   AIEngine::ExecutionReceipt rejection;rejection.request.observedTick=world->tick;rejection.request.pollSequence=1;

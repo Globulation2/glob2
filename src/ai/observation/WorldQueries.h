@@ -2,6 +2,7 @@
 #pragma once
 
 #include "ai/observation/AIWorldView.h"
+#include "ai/observation/ObservationQueries.h"
 #include "ResourceInitializationCache.h"
 #include "ai/engine/AIDecision.h"
 #include <set>
@@ -33,9 +34,7 @@ class WorldQueries
  std::vector<Reservation> reservations;
 public:
  WorldQueries(const AIEngine::AIWorldView& world,int team,ResourceInitializations& cache,std::vector<AIEngine::ResourceEnrollmentRequest>* enrollments=nullptr):world(world),team(team),resourceFields(cache),enrollments(enrollments)
- {
-  for(const auto& project:world.buildProjects) if(project.teamNumber==team) reserve(project.typeNum,project.posX,project.posY);
- }
+ {}
  int getW() const { return world.width; }
  int getH() const { return world.height; }
  TileView getTile(int x,int y) const { return world.tile(x,y); }
@@ -102,17 +101,10 @@ public:
  }
  bool provides(const Building& b,Intent intent) const
  { const auto& type=kind(b); return matches(type.site?type.next:b.typeNum,intent); }
- std::vector<int> placements(Intent intent,bool costOrder=false) const
- {
-  std::vector<int> result;
-  for(unsigned i=0;i<world.catalog->size();++i)
-   if(kind(i).semantics.placeable && available(i,intent)) result.push_back(i);
-  if(costOrder) std::sort(result.begin(),result.end(),[&](int a,int b) {
-   const auto cost=[&](int type){const auto& c=kind(type).semantics.constructionCost;return std::accumulate(c.begin(),c.end(),0);};
-   return std::pair{cost(a),a}<std::pair{cost(b),b};
-  });
-  return result;
- }
+ bool available(const AIPlanning::BuildingCandidate& candidate,Intent intent) const
+ { return AIEngine::ObservationQueries::available(world,candidate,intent); }
+ const std::vector<AIPlanning::BuildingCandidate>& placements(Intent intent,bool costOrder=false) const
+ { return costOrder ? world.capabilities().placementsByCost(intent) : world.capabilities().placements(intent); }
  bool isResourceTakeable(int x,int y,int resource) const
  { const auto r=world.resourceAt(world.tileIndex(x,y)).resource; return r.type==resource && r.amount>0; }
  bool isFreeForBuilding(int x,int y,int width=1,int height=1,bool hard=false,Uint16 ignore=0xffff) const
@@ -127,13 +119,17 @@ public:
  bool checkRoomForBuilding(int x,int y,int type,int owner) const
  {
   const auto& k=kind(type);
-  for(const auto& r:reservations) {
-   const auto& pending=kind(r.type);
-   if(k.isVirtual && pending.isVirtual && world.normalizeX(x)==world.normalizeX(r.x) && world.normalizeY(y)==world.normalizeY(r.y)) return false;
+  const auto overlaps=[&](int type,int pendingX,int pendingY) {
+   const auto& pending=kind(type);
+   if(k.isVirtual && pending.isVirtual && world.normalizeX(x)==world.normalizeX(pendingX) && world.normalizeY(y)==world.normalizeY(pendingY)) return true;
    if(!k.isVirtual && !pending.isVirtual)
     for(int dy=0;dy<k.height;++dy) for(int dx=0;dx<k.width;++dx)
-     if(world.normalizeX(x+dx-r.x)<pending.width && world.normalizeY(y+dy-r.y)<pending.height) return false;
-  }
+     if(world.normalizeX(x+dx-pendingX)<pending.width && world.normalizeY(y+dy-pendingY)<pending.height) return true;
+   return false;
+  };
+  for(const auto& r:reservations) if(overlaps(r.type,r.x,r.y)) return false;
+  for(const auto& project:world.buildProjects)
+   if(project.teamNumber==team && overlaps(project.typeNum,project.posX,project.posY)) return false;
   if(k.isVirtual) {
    for(const auto identity:world.teams[owner].virtualBuildings)
     if(const auto* b=world.building(identity);b && b->posX==world.normalizeX(x) && b->posY==world.normalizeY(y)) return false;
@@ -219,8 +215,8 @@ public:
   static constexpr int directions[8][2]={{0,-1},{1,0},{0,1},{-1,0},{-1,-1},{1,-1},{1,1},{-1,1}};
   while(true) {
    int dx=0,dy=0;bool step=false;
-   for(const auto& d:directions) if(gradient[index(px+d[0],py+d[1])]>best) {
-    best=gradient[index(px+d[0],py+d[1])]; dx=d[0];dy=d[1];step=true;
+   for(const auto& d:directions) if(const auto candidate=gradient[index(px+d[0],py+d[1])];candidate>best) {
+    best=candidate; dx=d[0];dy=d[1];step=true;
    }
    px=world.normalizeX(px+dx);py=world.normalizeY(py+dy);
    if(best==GRADIENT_AT_GOAL || !step) break;
@@ -231,18 +227,24 @@ public:
  {
   unsigned required=0,provided=0;const Building* anchor=nullptr;
   for(unsigned unit=0;unit<NB_UNIT_TYPE;++unit) if(desired[unit]>0 && allowed(Intent(unit))) required |= 1u<<unit;
+  if(!required) return {};
   for(const auto& b:world.buildings) if(b.team==team && b.buildingState==::Building::ALIVE) {
    const auto& k=kind(b); const int completed=k.site?(b.constructionResultState==::Building::REPAIR && b.constructionOriginTypeNum>=0?b.constructionOriginTypeNum:k.next):b.typeNum;
    provided |= unsigned(kind(completed).rawCapabilityMask)&7u;
-   if(!anchor || (!k.site && (k.rawCapabilityMask & 7u))) anchor=&b;
+   if(!anchor || (world.capabilities().intentMask(b.typeNum) & 7u)) anchor=&b;
    if((provided & required)==required) return {};
   }
   for(const auto& r:reservations) {
    const auto& k=kind(r.type);provided |= unsigned(kind(k.site?k.next:r.type).rawCapabilityMask)&7u;
   }
+  for(const auto& project:world.buildProjects) if(project.teamNumber==team) {
+   const auto& k=kind(project.typeNum);provided |= unsigned(kind(k.site?k.next:project.typeNum).rawCapabilityMask)&7u;
+  }
   if(!anchor || !required || (provided & required)==required) return {};
   for(unsigned unit=0;unit<NB_UNIT_TYPE;++unit) if((required & (1u<<unit)) && !(provided & (1u<<unit)))
-   for(int type:placements(Intent(unit),true)) {
+   for(const auto& candidate:placements(Intent(unit),true)) {
+    if(!available(candidate,Intent(unit))) continue;
+    const int type=candidate.placementType;
     const auto& k=kind(type); bool eligible=false;
     for(int level=k.semantics.requiredWorkerLevel;level<NB_UNIT_LEVELS;++level)
      if(level>=0 && world.teams[team].statistics.workersByConstructionLevel[level]>0) {eligible=true;break;}

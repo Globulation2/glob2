@@ -155,7 +155,7 @@ namespace Entities
 	{
 	public:
 		virtual ~Entity() {}
-		virtual bool matches(AISharedRuntime::Read::Player* player, int x, int y) const=0;
+		virtual bool matches(const AIEngine::AIWorldView& world, unsigned observerTeam, int x, int y) const=0;
 		virtual bool equals(const Entity& other) const=0;
 		virtual bool can_change() const=0;
 		virtual EntityType type() const=0;
@@ -167,7 +167,7 @@ namespace Entities
 	{
 	public:
 		Building(int buildingType, int team, bool includeConstruction);
-		bool matches(AISharedRuntime::Read::Player*, int, int) const;
+		bool matches(const AIEngine::AIWorldView&, unsigned observerTeam, int, int) const;
 		bool equals(const Entity&) const;
 		bool can_change() const { return true; }
 		EntityType type() const { return EBuilding; }
@@ -182,7 +182,7 @@ namespace Entities
 	{
 	public:
 		AnyTeamBuilding(int team, bool includeConstruction);
-		bool matches(AISharedRuntime::Read::Player*, int, int) const;
+		bool matches(const AIEngine::AIWorldView&, unsigned observerTeam, int, int) const;
 		bool equals(const Entity&) const;
 		bool can_change() const { return true; }
 		EntityType type() const { return EAnyTeamBuilding; }
@@ -196,7 +196,7 @@ namespace Entities
 	{
 	public:
 		explicit Resource(int resourceType);
-		bool matches(AISharedRuntime::Read::Player*, int, int) const;
+		bool matches(const AIEngine::AIWorldView&, unsigned observerTeam, int, int) const;
 		bool equals(const Entity&) const;
 		bool can_change() const;
 		EntityType type() const { return EResource; }
@@ -208,7 +208,7 @@ namespace Entities
 	class AnyResource : public Entity
 	{
 	public:
-		bool matches(AISharedRuntime::Read::Player*, int, int) const;
+		bool matches(const AIEngine::AIWorldView&, unsigned observerTeam, int, int) const;
 		bool equals(const Entity&) const;
 		bool can_change() const { return true; }
 		EntityType type() const { return EAnyResource; }
@@ -218,7 +218,7 @@ namespace Entities
 	class Water : public Entity
 	{
 	public:
-		bool matches(AISharedRuntime::Read::Player*, int, int) const;
+		bool matches(const AIEngine::AIWorldView&, unsigned observerTeam, int, int) const;
 		bool equals(const Entity&) const;
 		bool can_change() const { return false; }
 		EntityType type() const { return EWater; }
@@ -228,7 +228,7 @@ namespace Entities
 	class Unwalkable : public Water
 	{
 	public:
-		bool matches(AISharedRuntime::Read::Player*,int,int) const override;
+		bool matches(const AIEngine::AIWorldView&, unsigned observerTeam,int,int) const override;
 		bool equals(const Entity&) const override;
 		EntityType type() const override { return EUnwalkable; }
 		void save(GAGCore::OutputStream*) const override;
@@ -238,7 +238,7 @@ namespace Entities
 	{
 	public:
 		Position(int x, int y);
-		bool matches(AISharedRuntime::Read::Player*, int, int) const;
+		bool matches(const AIEngine::AIWorldView&, unsigned observerTeam, int, int) const;
 		bool equals(const Entity&) const;
 		bool can_change() const { return false; }
 		EntityType type() const { return EPosition; }
@@ -251,7 +251,7 @@ namespace Entities
 	class Sand : public Entity
 	{
 	public:
-		bool matches(AISharedRuntime::Read::Player*, int, int) const;
+		bool matches(const AIEngine::AIWorldView&, unsigned observerTeam, int, int) const;
 		bool equals(const Entity&) const;
 		bool can_change() const { return false; }
 		EntityType type() const { return ESand; }
@@ -265,8 +265,8 @@ public:
     field::TerrainTravel terrainTravel=field::TerrainTravel::Geometric;
 	void add_source(Entities::Entity* source);
 	void add_obstacle(Entities::Entity* obstacle);
-	bool matches_source(AISharedRuntime::Read::Player*, int, int) const;
-	bool matches_obstacle(AISharedRuntime::Read::Player*, int, int) const;
+	bool matches_source(const AIEngine::AIWorldView&, unsigned observerTeam, int, int) const;
+	bool matches_obstacle(const AIEngine::AIWorldView&, unsigned observerTeam, int, int) const;
 	bool needs_updating() const;
 	bool operator==(const GradientInfo&) const;
 	void save(GAGCore::OutputStream*) const;
@@ -285,7 +285,7 @@ public:
 	bool has_sources() const { return sourceCount!=0; }
 private:
 	friend class GradientManager;
-	void recalculate(AISharedRuntime::Read::Player* player, field::Frontier& frontier);
+	void recalculate(const AIEngine::AIWorldView& world, unsigned observerTeam, field::Frontier& frontier);
 	GradientInfo info;
     std::uint64_t terrainGeneration=0;
 	int width;
@@ -298,7 +298,7 @@ class GradientManager
 public:
 	explicit GradientManager(Player* player);
     Uint64 retainedVectorBytes() const noexcept;
-    void bind(AISharedRuntime::Read::Player* value) {binding.borrow(value);lastTerrainRevision=value->map->terrainGeneration();}
+    void bind(const AIEngine::AIWorldView& world,unsigned player,unsigned team) {binding.borrow(world,player,team);lastTerrainRevision=world.terrainRevision;}
     void unbind() {binding.clear();}
 	Gradient& get_gradient(const GradientInfo& info);
 	void queue_gradient(const GradientInfo& info);
@@ -310,7 +310,10 @@ public:
 private:
 	int find(const GradientInfo& info) const;
 	ObservationBinding binding;
-    AISharedRuntime::Read::Player* readPlayer() const {return binding.get();}
+    const AIEngine::AIWorldView& observation() const {return binding.get();}
+    unsigned teamNumber() const {return binding.teamNumber();}
+    unsigned playerNumber() const {return binding.playerNumber();}
+    const AIEngine::TeamView& observedTeam() const {return observation().teams[teamNumber()];}
     Uint64 lastTerrainRevision=0;
 	std::vector<std::shared_ptr<Gradient> > gradients;
 	std::vector<int> ages;
@@ -429,7 +432,7 @@ namespace Construction
 	{
 	public:
 		explicit BuildingRegister(Player* player);
-    void bind(AISharedRuntime::Read::Player* value) {binding.borrow(value);}
+    void bind(const AIEngine::AIWorldView& world,unsigned player,unsigned team) {binding.borrow(world,player,team);}
     void unbind() {binding.clear();}
 		void initiate();
 		unsigned register_building();
@@ -447,7 +450,7 @@ namespace Construction
 		int get_assigned(unsigned id) const;
 		int get_enrolled(unsigned id) const;
 		int get_on_site(unsigned id) const;
-		AISharedRuntime::Read::Building* get_building(unsigned id) const;
+		const AIEngine::BuildingView* get_building(unsigned id) const;
 		const ::BuildingType* get_building_type(unsigned id) const;
 		const std::map<int, BuildingRecord>& found() const { return foundBuildings; }
 		const std::map<int, BuildingRecord>& pending() const { return pendingBuildings; }
@@ -456,9 +459,12 @@ namespace Construction
     private:
         friend class ::AIMaximaRuntime::Context;
         // Stable incarnation from the simulation, also captured by AIWorldView.
-        Uint64 identity_of(const AISharedRuntime::Read::Building* building) const;
+        Uint64 identity_of(const AIEngine::BuildingView* building) const;
 		ObservationBinding binding;
-    AISharedRuntime::Read::Player* readPlayer() const {return binding.get();}
+    const AIEngine::AIWorldView& observation() const {return binding.get();}
+    unsigned teamNumber() const {return binding.teamNumber();}
+    unsigned playerNumber() const {return binding.playerNumber();}
+    const AIEngine::TeamView& observedTeam() const {return observation().teams[teamNumber()];}
 		std::map<int, BuildingRecord> pendingBuildings;
 		std::map<int, BuildingRecord> foundBuildings;
 		unsigned nextId;
@@ -706,11 +712,11 @@ class Context
 	Construction::BuildingRegister& get_building_register() { return buildings; }
 	Gradients::GradientManager& get_gradient_manager() { return gradients; }
     const Gradients::GradientManager& get_gradient_manager() const { return gradients; }
-	TeamStat& get_team_stats();
+	const TeamStat& get_team_stats();
 	void push_order(std::shared_ptr<Order> order) {
         if(AIEngine::Command::targetGid(*order)) {
             auto ownerObservation=scopeOwnerObservation();
-            AIEngine::selectTarget(*order,readPlayer()->game->source);
+            AIEngine::selectTarget(*order,observation());
         }
         orders.push_back(order);
     }
@@ -723,7 +729,10 @@ class Context
 
 	Player* player;
     mutable ObservationBinding binding;
-    AISharedRuntime::Read::Player* readPlayer() const {return binding.get();}
+    const AIEngine::AIWorldView& observation() const {return binding.get();}
+    unsigned teamNumber() const {return binding.teamNumber();}
+    unsigned playerNumber() const {return binding.playerNumber();}
+    const AIEngine::TeamView& observedTeam() const {return observation().teams[teamNumber()];}
     void bindObservation(const AIEngine::DecisionContext& decision);
     void releaseObservation();
     class OwnerObservationScope {

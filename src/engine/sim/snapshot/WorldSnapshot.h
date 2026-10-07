@@ -6,10 +6,12 @@
 #include "GameHeader.h"
 #include "FertilityField.h"
 #include "UnitType.h"
+#include "BuildingCapabilities.h"
 #include <span>
 #include <map>
 #include <tuple>
 #include <stdexcept>
+#include <limits>
 
 namespace SimulationSnapshot
 {
@@ -17,6 +19,7 @@ namespace SimulationSnapshot
 struct Catalogs
 {
 	std::shared_ptr<const std::vector<BuildingKindView>> buildings;
+	std::shared_ptr<const AIPlanning::BuildingCapabilityTables> capabilities;
 	std::array<std::array<UnitType, NB_UNIT_LEVELS>, NB_UNIT_TYPE> unitTypes;
 	std::array<bool, MAX_NB_RESOURCES> shrinkable{}, visibleToBeCollected{}, eternal{};
 	std::array<int, MAX_NB_RESOURCES> sizesCount{};
@@ -44,8 +47,12 @@ static_assert(std::is_trivially_copyable_v<AreaCell>);
 static_assert(std::is_trivially_copyable_v<VisibilityCell>);
 struct Entities
 {
+	static constexpr Uint32 NoRecord = std::numeric_limits<Uint32>::max();
 	std::vector<BuildingView> buildings;
 	std::vector<UnitView> units;
+	// Global entity slots index the compact records directly. Captured once in
+	// the entity extraction pass and shared by all readers; no controller table.
+	std::vector<Uint32> buildingSlotIndices, unitSlotIndices;
 	std::vector<UnitRef> relationships;
 	std::vector<BuildProjectView> projects;
 };

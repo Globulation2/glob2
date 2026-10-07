@@ -3,7 +3,7 @@
 #include "BuildingCapabilities.h"
 #include "BuildingType.h"
 #include "Game.h"
-#include "shared_runtime/RuntimeObservation.h"
+#include "ai/observation/AIWorldView.h"
 
 namespace AISharedRuntime
 {

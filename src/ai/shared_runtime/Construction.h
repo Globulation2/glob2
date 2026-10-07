@@ -3,7 +3,6 @@
 
 #pragma once
 #include <optional>
-namespace AISharedRuntime::Read { struct Building; struct Map; }
 
 #include "shared_runtime/Gradients.h"
 #include "shared_runtime/Position.h"
@@ -256,7 +255,7 @@ namespace AISharedRuntime
 			bool load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor);
 			void save(GAGCore::OutputStream *stream);
 			///An internal function used to find the location to place the building
-			position find_location(Runtime& runtime, Read::Map* map, Gradients::GradientManager& manager);
+			position find_location(Runtime& runtime, const AIEngine::AIWorldView& world, Gradients::GradientManager& manager);
 			tribool passes_conditions(Runtime& runtime);
 			///An internal function that has all of the constraints register their respective Gradients with the GradientManager
 			void queue_gradients(Gradients::GradientManager& manager);
@@ -323,7 +322,7 @@ namespace AISharedRuntime
    bool provides(unsigned int id,int demand);
 			int get_level(unsigned int id);
 			int get_assigned(unsigned int id);
-			Read::Building* get_building(unsigned int id);
+			const AIEngine::BuildingView* get_building(unsigned int id);
 			const BuildingType* get_building_type(unsigned int id);
 		private:
 			friend class AISharedRuntime::SearchTools::building_search_iterator;

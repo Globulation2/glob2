@@ -1,4 +1,4 @@
-#include "CortexWorld.h"
+#include "CortexSnapshotQueries.h"
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2026 The Globulation 2 Authors
 
@@ -31,7 +31,7 @@ namespace Cortex
 	{
 		// Returns true if any tile of the footprint [x, x+w) x [y, y+h) borders
 		// (8-neighbourhood) a resource tile. Warp-safe via Map's normalization.
-		bool footprintBordersResource(const Cortex::WorldMap& map, int x, int y, int w, int h)
+		bool footprintBordersResource(const AIEngine::AIWorldView& map, int x, int y, int w, int h)
 		{
 			for (int dx = -1; dx <= w; dx++)
 				for (int dy = -1; dy <= h; dy++)
@@ -41,7 +41,7 @@ namespace Cortex
 					const bool insideY = (dy >= 0 && dy < h);
 					if (insideX && insideY)
 						continue;
-					if (map.isResource(map.normalizeX(x + dx), map.normalizeY(y + dy)))
+					if (isResource(map,map.normalizeX(x + dx), map.normalizeY(y + dy)))
 						return true;
 				}
 			return false;
@@ -97,7 +97,7 @@ namespace Cortex
 		};
 	}
 
-	static int placeCandidatesImpl(Cortex::World* game, Cortex::WorldTeam* team, int buildingType, int level,
+	static int placeCandidatesImpl(const AIEngine::AIWorldView* game, const AIEngine::TeamView* team, QueryScratch& scratch, const PlanningIntent& intents, int buildingType, int level,
 	                               BuildCandidate out[CORTEX_BUILD_CANDIDATES],
 	                               const ForwardBias* forward, int placementType = -1, int maxWorkerQualification = -1)
 	{
@@ -122,11 +122,11 @@ namespace Cortex
         if (placementType < 0) choice = selectBuilding(*game, *team, buildingType, WORKER, maxWorkerQualification);
         if (placementType >= 0) {
             choice.placementType = placementType;
-            choice.completedType = game->buildingsTypes.getFinishedTypeNum(game->buildingsTypes.get(placementType)->key);
+            choice.completedType = finishedType(*game,catalogType(*game,placementType)->key);
         }
         if (choice.placementType < 0) return 0;
-        const BuildingType* bt = game->buildingsTypes.get(choice.placementType);
-        const BuildingType* completed = game->buildingsTypes.get(choice.completedType);
+        const BuildingType* bt = catalogType(*game,choice.placementType);
+        const BuildingType* completed = catalogType(*game,choice.completedType);
         const bool occupiesGround = bt->semantics.occupiesGround;
 
 		const int w = bt->width;
@@ -134,11 +134,11 @@ namespace Cortex
 		if (w <= 0 || h <= 0)
 			return 0;
 
-		Cortex::WorldMap& map = game->map;
-		const int mapW = map.getW();
-		const int mapH = map.getH();
+		const auto& map = *game;
+		const int mapW = map.width;
+		const int mapH = map.height;
 
-		const PlacementGeometry geometry(team, map);
+		const PlacementGeometry geometry(team, map, intents);
 
 		ScoredSpot heap[CORTEX_BUILD_CANDIDATES];
 		int count = 0;
@@ -160,12 +160,12 @@ namespace Cortex
 		//     it matches the old grownFootprint. Other types reserve what we place.
 		int gox = 0, goy = 0;
 		int ew = w, eh = h;
-		grownFootprintBox(game->buildingsTypes, bt, gox, goy, ew, eh);
+		grownFootprintBox(*game, bt, gox, goy, ew, eh);
 
 		// Non-food buildings must stay close to an existing building edge;
 		// forward bases and empty colonies are exempt. Precompute that gate once
 		// instead of scanning every building for each candidate, keeping scan order.
-		auto& proximity = game->placementProximityScratch();
+		auto& proximity = scratch.proximity;
 		if (!isWheatFed && forward == NULL)
 			geometry.buildingProximityMask(w, h, CORTEX_MAX_BUILD_EDGE_DIST, proximity);
 		else
@@ -191,7 +191,7 @@ namespace Cortex
 				// raised under enemy fire. Cheapest gate, so it runs first.
 				if (forward != NULL)
 				{
-					const int td = map.warpDistMax(x, y, forward->targetX, forward->targetY);
+					const int td = warpDistMax(map,x, y, forward->targetX, forward->targetY);
 					if (td < forward->minTargetDist || td > forward->maxTargetDist)
 						continue;
 				}
@@ -199,9 +199,9 @@ namespace Cortex
 				// Fog-of-war: the footprint must be discovered (mirrors AISharedRuntime's
 				// find_location). Check both corners of the grown box, like the
 				// engine path does.
-				if (!map.isMapDiscovered(map.normalizeX(gx), map.normalizeY(gy),
+				if (!isMapDiscovered(map,map.normalizeX(gx), map.normalizeY(gy),
 				                         team->allies) ||
-				    !map.isMapDiscovered(map.normalizeX(gx + ew - 1),
+				    !isMapDiscovered(map,map.normalizeX(gx + ew - 1),
 				                         map.normalizeY(gy + eh - 1), team->allies))
 					continue;
 
@@ -210,8 +210,8 @@ namespace Cortex
 				// building, so a resulting OrderCreate will not be rejected. We gate
 				// on the GROWN footprint (gx, gy, ew x eh) so the spot also has room
 				// for the eventual upgrades; the placed footprint is a subset of it.
-				if (occupiesGround ? !map.isHardSpaceForBuilding(gx, gy, ew, eh)
-                    : !game->checkRoomForBuilding(x, y, bt, team->teamNumber))
+				if (occupiesGround ? !isHardSpaceForBuilding(map,gx, gy, ew, eh)
+                    : !checkRoomForBuilding(*game,x, y, bt, team->number,intents))
 					continue;
 
 				// FORWARD-BASE: require an IMMEDIATE construction site, not a deferred
@@ -229,7 +229,7 @@ namespace Cortex
 				// reservation gated above still holds. Only the forward path needs this: the
 				// near-colony path tolerates a one-tick buildProject because it does not use
 				// the same site-position latch.
-				if (forward != NULL && !game->checkRoomForBuilding(x, y, bt, team->teamNumber))
+				if (forward != NULL && !checkRoomForBuilding(*game,x, y, bt, team->number,intents))
 					continue;
 
 				// Geography rejects for wheat-fed buildings.
@@ -402,13 +402,13 @@ namespace Cortex
 		return count;
 	}
 
-	int placeCandidates(Cortex::World* game, Cortex::WorldTeam* team, int buildingType, int level,
+	int placeCandidates(const AIEngine::AIWorldView* game, const AIEngine::TeamView* team, QueryScratch& scratch, const PlanningIntent& intents, int buildingType, int level,
 	                    BuildCandidate out[CORTEX_BUILD_CANDIDATES], int placementType, int maxWorkerQualification)
 	{
-		return placeCandidatesImpl(game, team, buildingType, level, out, NULL, placementType, maxWorkerQualification);
+		return placeCandidatesImpl(game, team, scratch, intents, buildingType, level, out, NULL, placementType, maxWorkerQualification);
 	}
 
-	int placeForwardCandidate(Cortex::World* game, Cortex::WorldTeam* team, int buildingType,
+	int placeForwardCandidate(const AIEngine::AIWorldView* game, const AIEngine::TeamView* team, QueryScratch& scratch, const PlanningIntent& intents, int buildingType,
 	                          int targetX, int targetY,
 	                          int minTargetDist, int maxTargetDist,
 	                          BuildCandidate& out, int maxWorkerQualification)
@@ -433,7 +433,7 @@ namespace Cortex
 		bias.maxTargetDist = maxTargetDist;
 
 		BuildCandidate slots[CORTEX_BUILD_CANDIDATES];
-		const int n = placeCandidatesImpl(game, team, buildingType, 0, slots, &bias, -1, maxWorkerQualification);
+		const int n = placeCandidatesImpl(game, team, scratch, intents, buildingType, 0, slots, &bias, -1, maxWorkerQualification);
 		if (n <= 0)
 			return 0;
 		out = slots[0];

@@ -7,7 +7,7 @@
 static constexpr int AI_CABINO_SAVE_FORMAT_CONTINUATION = 132;
 
 #include "field/Frontier.h"
-#include "ai/shared_runtime/RuntimeObservation.h"
+#include "ai/observation/ObservationQueries.h"
 #include "ai/observation/WorldQueries.h"
 #include <memory>
 #include <sstream>
@@ -37,17 +37,18 @@ class Team;
 ///just how devestating an attack of level 3 warriros can be to a guard half the size of level 1 warriors!
 namespace Cabino
 {
+ inline const AIEngine::TeamView* teamAt(const AIEngine::AIWorldView& world,int number);
  template<class T> Uint64 queryVectorBytes(const std::vector<T>& values) { return Uint64(values.capacity())*sizeof(T); }
- namespace Read = AISharedRuntime::Read;
+
  // Independent strategic demands; each concrete variant can fulfill several.
  enum Demand { ProduceWorkers, FeedUnits, HealUnits, TrainWalking, TrainSwimming,
   TrainAttack, TrainConstruction, DefendWithProjectiles, AttractExplorers,
   AttractWarriors, ClearResources, ExchangeResources, DemandCount };
  AIPlanning::BuildingIntent intentForDemand(unsigned demand);
- bool provides(const Read::World& game,const Read::Building& building,unsigned demand);
+ bool provides(const AIEngine::AIWorldView& game,const AIEngine::BuildingView& building,unsigned demand);
  class AICabino;
  int selectBuilding(AICabino& ai,unsigned demand);
- unsigned upgradeWeight(const Read::World& game,const Read::Building& building);
+ unsigned upgradeWeight(const AIEngine::AIWorldView& game,const AIEngine::BuildingView& building);
 
 	///This constant turns on status output. status is output to the file "CabinoStatus.txt" in the current
 	///working directory. It has plenty of information that explains Cabino's choices, which is good for
@@ -169,9 +170,9 @@ namespace Cabino
 			~AICabino();
 
 			Player *player;
-			Read::Team*team;
-			Read::World*game;
-			Read::Map*map;
+			const AIEngine::TeamView*team;
+			const AIEngine::AIWorldView*game;
+			const AIEngine::AIWorldView*map;
 
 			bool load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor);
 			void save(GAGCore::OutputStream *stream);
@@ -233,7 +234,7 @@ namespace Cabino
 
 			void flare(unsigned x, unsigned y)
 			{
-				enqueueOrder(std::shared_ptr<Order>(new MapMarkOrder(team->teamNumber, x, y)));
+				enqueueOrder(std::shared_ptr<Order>(new MapMarkOrder(team->number, x, y)));
 			}
 			void pause()
 			{
@@ -247,8 +248,6 @@ namespace Cabino
 
 			///Initiates the player
 			void init(Player *player);
-            std::shared_ptr<const Read::Catalog> catalog;
-            std::shared_ptr<const AIEngine::AIWorldView::Catalog> catalogInput;
             std::shared_ptr<Order> decide();
             void applyReceipts(const AIEngine::DecisionContext&);
 
@@ -444,9 +443,9 @@ namespace Cabino
 
 			std::vector<zone> getBestZones(getBestZonesSplit* split_calc);
 		private:
-			Read::Map* map;
-			Read::Team* team;
-			Read::World* game;
+			const AIEngine::AIWorldView* map;
+			const AIEngine::TeamView* team;
+			const AIEngine::AIWorldView* game;
 			unsigned int center_x;
 			unsigned int center_y;
 	};
@@ -455,7 +454,7 @@ namespace Cabino
 	class TeamStatsGenerator
 	{
 		public:
-			TeamStatsGenerator(Read::Team* team);
+			TeamStatsGenerator(const AIEngine::AIWorldView* world,const AIEngine::TeamView* team);
 			///Gets the number of units that follow the criteria. type is the type of unit. medical_state is the medical state of
 			///the unit. activity is what the unit is doing. ability is the ability the unit should have to qualify. level is the
 			///level of skill that unit should have in the ability, and isMinimum states whether the unit has to have exactly level
@@ -470,7 +469,8 @@ namespace Cabino
 			///Returns the highest level that the team has for a particular building type, or 0 for none.
 
 			///The team that this team stats generator is connected to
-			Read::Team* team;
+			const AIEngine::AIWorldView* world;
+			const AIEngine::TeamView* team;
 	};
 
 
@@ -698,7 +698,7 @@ namespace Cabino
 			///Chooses an enemy to attack. Will change to a different enemy if the current enemy has been eradicated.
 			bool targetEnemy();
 			unsigned enemyTeamNumber=255;
-            Read::Team* enemy() const { return enemyTeamNumber==255 ? nullptr : ai.game->teams[enemyTeamNumber]; }
+            const AIEngine::TeamView* enemy() const { return enemyTeamNumber==255 ? nullptr : teamAt(*ai.game,enemyTeamNumber); }
 
 			///If we have enough warriors of the best available skill level, launch an attack!
 			bool attack();
@@ -854,7 +854,7 @@ namespace Cabino
 		///(either repair or upgrade.)
 		struct constructionRecord
 		{
-			///The gid of the building that this record is for. A gid, not a Read::Building*:
+			///The gid of the building that this record is for. A gid, not a const AIEngine::BuildingView*:
 			///the building can be destroyed while the record is still held.
 			unsigned int building;
 			///The number of units assigned to the building (or requested if its still pending)
@@ -1510,25 +1510,19 @@ namespace Cabino
 		return b-a;
 	}
 
-	///Returns the building* of the gid, or NULL
-	inline Read::Building* getBuildingFromGid(Read::World* game, int gid)
-	{
-		if(gid<0 || gid>=Building::MAX_COUNT*Team::MAX_COUNT || !game->teams[Building::GIDtoTeam(gid)])
-			return NULL;
-		return game->teams[Building::GIDtoTeam(gid)]->myBuildings[Building::GIDtoID(gid)];
-	}
-	///Returns a unit* of the gid, or NULL
-	inline Read::Unit* getUnitFromGid(Read::World* game, int gid)
-	{
-		if(gid<0 || gid>=Unit::MAX_COUNT*Team::MAX_COUNT || !game->teams[Unit::GIDtoTeam(gid)])
-			return NULL;
-		return game->teams[Unit::GIDtoTeam(gid)]->myUnits[Unit::GIDtoID(gid)];
-	}
+	inline const AIEngine::TeamView* teamAt(const AIEngine::AIWorldView& world,int number)
+	{ return number>=0 && std::size_t(number)<world.teams.size() ? &world.teams[number] : nullptr; }
+	inline bool resourceTakeable(const Resource& resource,int type)
+	{ return resource.type==type && resource.amount>0; }
+	inline const AIEngine::BuildingView* getBuildingFromGid(const AIEngine::AIWorldView* world,int gid)
+	{ return gid>=0 && gid<Building::MAX_COUNT*Team::MAX_COUNT ? world->buildingAtSlot(gid) : nullptr; }
+	inline const AIEngine::UnitView* getUnitFromGid(const AIEngine::AIWorldView* world,int gid)
+	{ return gid>=0 && gid<Unit::MAX_COUNT*Team::MAX_COUNT ? world->unitAtSlot(gid) : nullptr; }
 
 	///Returns true if the given building hasn't been destroyed
-	bool buildingStillExists(Read::World* team, Read::Building* b);
+	bool buildingStillExists(const AIEngine::AIWorldView* team, const AIEngine::BuildingView* b);
 	///Returns true if the given building hasn't been destroyed
-	bool buildingStillExists(Read::World* game, unsigned int gid);
+	bool buildingStillExists(const AIEngine::AIWorldView* game, unsigned int gid);
 
 	///Implements a selection sort algorithm, which is usefull because it enables predicate sorting, or weighted random sorting etc based
 	///on the predicate. the iter type is any forward iterator, and predicate is a functor that takes in two iter::value_type's and returns

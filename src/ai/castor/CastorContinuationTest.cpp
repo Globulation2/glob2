@@ -259,7 +259,7 @@ TEST_SUITE("CastorContinuation")
             const auto secondOrder=encode(second.getOrder(context));
             CAPTURE(poll);REQUIRE(firstOrder==secondOrder);
             CHECK(first.observation==nullptr);CHECK(second.observation==nullptr);
-            CHECK(first.observedTeams.empty());CHECK(second.observedTeams.empty());
+            CHECK(first.observedTeam==nullptr);CHECK(second.observedTeam==nullptr);
         }
         building->maxUnitWorking=originalWorkers;game.gameHeader.setHungerDisabled(false);
         observation.reset();CHECK(borrowed.expired());

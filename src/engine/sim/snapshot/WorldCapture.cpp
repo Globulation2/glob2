@@ -122,6 +122,13 @@ Handle capture(const Game& game,
 	// Map buffers keep their constructed range when reused. Overwrite selected
 	// arrays directly rather than clearing and growing them one cell at a time.
 	entities->buildings.clear(); entities->units.clear(); entities->relationships.clear(); entities->projects.clear();
+	if (needs(requirements, Component::Entities)) {
+		const auto teams = game.mapHeader.getNumberOfTeams();
+		reserve(entities->buildingSlotIndices, teams * Building::MAX_COUNT);
+		reserve(entities->unitSlotIndices, teams * Unit::MAX_COUNT);
+		entities->buildingSlotIndices.resize(teams * Building::MAX_COUNT);
+		entities->unitSlotIndices.resize(teams * Unit::MAX_COUNT);
+	}
 	if (needs(requirements, Component::Teams)) { reserve(teams->values, game.mapHeader.getNumberOfTeams()); teams->values.resize(game.mapHeader.getNumberOfTeams()); }
 	result->tick = game.stepCounter;
 	result->width = game.map.getW(); result->height = game.map.getH();
@@ -134,6 +141,7 @@ Handle capture(const Game& game,
 	const auto& header = game.gameHeader;
 	if (needs(requirements, Component::Catalogs)) {
 		catalogs->buildings = std::move(catalog);
+		catalogs->capabilities = game.buildingCapabilities().frozenTables();
 		for (int type = 0; type < NB_UNIT_TYPE; ++type)
 			std::copy_n(Race::unitTypes[type], NB_UNIT_LEVELS, catalogs->unitTypes[type].begin());
 		catalogs->sizesCount.fill(0); catalogs->eternal.fill(false);
@@ -179,7 +187,14 @@ Handle capture(const Game& game,
 	for (int t = 0; (needs(requirements, Component::Teams) || needs(requirements, Component::Entities)) && t < game.mapHeader.getNumberOfTeams(); ++t)
 	{
 		const auto* team = game.teams[t];
-		if (!team) { if (needs(requirements, Component::Teams)) teams->values[t] = {}; continue; }
+		if (!team) {
+			if (needs(requirements, Component::Teams)) teams->values[t] = {};
+			if (needs(requirements, Component::Entities)) {
+				std::fill_n(entities->buildingSlotIndices.begin() + t * Building::MAX_COUNT, Building::MAX_COUNT, Entities::NoRecord);
+				std::fill_n(entities->unitSlotIndices.begin() + t * Unit::MAX_COUNT, Unit::MAX_COUNT, Entities::NoRecord);
+			}
+			continue;
+		}
 		if (needs(requirements, Component::Teams)) {
 		auto& target = teams->values[t]; target.number = t;
 		target.virtualBuildings.clear(); target.swarms.clear();
@@ -203,23 +218,31 @@ Handle capture(const Game& game,
 		}
 		if (!needs(requirements, Component::Entities)) continue;
 		for (int i = 0; i < Building::MAX_COUNT; ++i)
+		{
+			auto& slot = entities->buildingSlotIndices[t * Building::MAX_COUNT + i];
+			slot = Entities::NoRecord;
 			if (auto* b = team->myBuildings[i])
 			{
+				slot = Uint32(entities->buildings.size());
 				BuildingView v;
 				std::memcpy(static_cast<BuildingStateRecord*>(&v), static_cast<const BuildingStateRecord*>(b), sizeof(BuildingStateRecord));
 				v.identity = Game::refOf(b); v.team = t;
 				v.maxHp = b->getEffectiveMaxHp();
 				v.usesTeamResources = b->resources == team->teamResources;
-				// Feasibility is prepared below from captured values, not live queries.
 				v.working = {Uint32(entities->relationships.size()), Uint32(b->unitsWorking.size())};
 				for (const auto* u : b->unitsWorking) append(entities->relationships, Game::refOf(u));
 				v.inside = {Uint32(entities->relationships.size()), Uint32(b->unitsInside.size())};
 				for (const auto* u : b->unitsInside) append(entities->relationships, Game::refOf(u));
 				append(entities->buildings, std::move(v));
 			}
+		}
 		for (int i = 0; i < Unit::MAX_COUNT; ++i)
+		{
+			auto& slot = entities->unitSlotIndices[t * Unit::MAX_COUNT + i];
+			slot = Entities::NoRecord;
 			if (const auto* u = team->myUnits[i])
 			{
+				slot = Uint32(entities->units.size());
 				UnitView v;
 				std::memcpy(static_cast<UnitState*>(&v), static_cast<const UnitState*>(u), sizeof(UnitState));
 				v.identity = Game::refOf(u); v.team = t;
@@ -227,6 +250,7 @@ Handle capture(const Game& game,
 				v.target = Game::refOf(u->targetBuilding);
 				append(entities->units, std::move(v));
 			}
+		}
 	}
 
 	if (needs(requirements, Component::Entities))
@@ -241,33 +265,6 @@ Handle capture(const Game& game,
 	if (needs(requirements, Component::Entities)) result->entities = std::move(entitiesOwner);
 	if (needs(requirements, Component::Teams)) result->teams = std::move(teamsOwner);
 	if (needs(requirements, Component::Rules)) result->rules = std::move(rulesOwner);
-	if (needs(requirements, Component::Entities) && result->catalogs && result->terrain && result->resources && result->occupancy && result->rules) {
-		const auto start = std::chrono::steady_clock::now();
-		for (auto& building : entities->buildings) {
-			const auto& kind = result->catalogs->buildings->at(building.typeNum);
-			building.upgradeAvailable = kind.next >= 0 && std::size_t(kind.next) < result->catalogs->buildings->size()
-				&& result->catalogs->buildings->at(kind.next).available;
-			auto space = [&](bool upgrade) {
-				if (upgrade && result->rules->values.upgradesDisabled) return false;
-				if (!upgrade && !kind.semantics.repairable) return false;
-				const int next = upgrade ? kind.next : kind.previous;
-				if (next == BUILDING_LEVEL_NONE) return true;
-				const auto& target = result->catalogs->buildings->at(next);
-				if (target.isVirtual) return true;
-				const int x = building.posX + target.decLeft - kind.decLeft, y = building.posY + target.decTop - kind.decTop;
-				for (int dy=0;dy<target.height;++dy) for (int dx=0;dx<target.width;++dx) {
-					const auto index=std::size_t((y+dy)&(result->height-1))*result->width+((x+dx)&(result->width-1));
-					if (result->resources->cells[index].resource.type != NO_RES_TYPE) return false;
-					const auto occupant = result->occupancy->cells[index].building;
-					if (occupant != NOGBID && occupant != building.identity.gid) return false;
-					if (!result->terrain->registry->properties((*result->terrain->identity)[index]).buildable) return false;
-				}
-				return true;
-			};
-			building.hardSpaceUpgrade=space(true); building.hardSpaceRepair=space(false);
-		}
-		if (storage) storage->preparationNs += std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::steady_clock::now()-start).count();
-	}
 	if (needs(requirements, Component::Growth)) {
 		const auto start=std::chrono::steady_clock::now();
 		const auto& source=game.map.resourceGrowthField();

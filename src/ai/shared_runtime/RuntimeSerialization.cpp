@@ -16,7 +16,7 @@ bool Runtime::load(GAGCore::InputStream *stream, Player *player, Sint32 versionM
 {
 	GAGCore::BinaryInputStream::CheckedReads checked(stream);
 	this->player=player;
-    readWorld.reset();currentObservation.reset();observationCatalog.reset();readCatalog.reset();
+    currentObservation.reset();observationCatalog.reset();
 	gm.reset();
     // Loading helpers read restored map metadata through one owner-scoped borrow.
     // The borrow is released on success, early return and exceptions.

@@ -27,9 +27,9 @@ inline bool trainsWarriorCombat(const BuildingType& type)
     }
     return false;
 }
-template<class Catalog> inline int channel(const Catalog& catalog,const BuildingType& input)
+inline int channelCompleted(const BuildingType& type)
 {
-    const auto& type=completed(catalog,input);const auto& s=type.semantics;
+    const auto& s=type.semantics;
     const bool seats=type.maxUnitInside>0;
     auto training=[&](int ability){return seats && s.training[ability].enabled && (s.training[ability].unitMask&s.admittedUnitMask);};
     if(s.production.enabledUnitMask)return Production;
@@ -47,6 +47,8 @@ template<class Catalog> inline int channel(const Catalog& catalog,const Building
     if((s.market.interTeamFruitExchange || type.runtimeSuppliesDirectStock) || type.runtimeSuppliesStock)return Exchange;
     return s.occupiesGround ? PassiveGround : -1;
 }
+template<class Catalog> inline int channel(const Catalog& catalog,const BuildingType& input)
+{ return channelCompleted(completed(catalog,input)); }
 inline std::vector<int> channels(const BuildingsTypes& catalog)
 {
     std::vector<int> result;result.reserve(catalog.size());

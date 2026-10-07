@@ -25,13 +25,13 @@ int NewNicowar::choose_building_to_attack(Runtime& runtime)
 
 	AISharedRuntime::Gradients::GradientInfo gi_building;
     gi_building.terrainTravel=field::TerrainTravel::Swim;
-	gi_building.add_source(new Entities::AnyTeamBuilding(runtime.readPlayer()->team->teamNumber, false));
+	gi_building.add_source(new Entities::AnyTeamBuilding(runtime.teamNumber(), false));
 	gi_building.add_obstacle(new Entities::AnyResource);
 	Gradient& gradient=runtime.get_gradient_manager().get_gradient(gi_building);
 
 	for(enemy_building_iterator ebi(runtime, target, -1, -1, indeterminate); ebi!=enemy_building_iterator(); ++ebi)
 	{
-		AISharedRuntime::Read::Building* b=runtime.readPlayer()->game->teams[target]->myBuildings[Building::GIDtoID(*ebi)];
+		const AIEngine::BuildingView* b=runtime.observation().buildingSlots(target)[Building::GIDtoID(*ebi)];
 		if(gradient.get_height(b->posX, b->posY) != AI_NICOWAR_GRADIENT_UNREACHABLE)
 			buildings_to_attack.push_back(*ebi);
 	}
@@ -61,7 +61,7 @@ void NewNicowar::attack_building(Runtime& runtime)
 	bo->add_constraint(new CenterOfBuilding(building));
 	unsigned int id=runtime.add_building_order(bo);
 
-	ManagementOrder* mo_minimum=new ChangeFlagMinimumLevel(runtime.readPlayer()->game->gameHeader.isUnitUpgradesDisabled() ? 1 : AI_NICOWAR_WAR_FLAG_MIN_LEVEL,id);
+	ManagementOrder* mo_minimum=new ChangeFlagMinimumLevel(runtime.observation().configuration->isUnitUpgradesDisabled() ? 1 : AI_NICOWAR_WAR_FLAG_MIN_LEVEL,id);
 	runtime.add_management_order(mo_minimum);
 
 	ManagementOrder* mo_destroyed_1=new RetireAttraction(id,1u<<WARRIOR);
@@ -79,7 +79,7 @@ void NewNicowar::attack_building(Runtime& runtime)
 void NewNicowar::control_attacks(Runtime& runtime)
 {
 	// Combat cannot damage opponents here; military work must not reserve economic labour.
-	if (runtime.readPlayer()->game->gameHeader.isPeacefulModeEnabled()) return;
+	if (runtime.observation().configuration->isPeacefulModeEnabled()) return;
 	telemetry.count(AITrace::AI5::NewNicowar_control_attacks_calls);
 	choose_enemy_target(runtime);
 
@@ -103,7 +103,7 @@ void NewNicowar::control_attacks(Runtime& runtime)
 	
 	AISharedRuntime::Gradients::GradientInfo gi_building;
     gi_building.terrainTravel=field::TerrainTravel::Swim;
-	gi_building.add_source(new Entities::AnyTeamBuilding(runtime.readPlayer()->team->teamNumber, false));
+	gi_building.add_source(new Entities::AnyTeamBuilding(runtime.teamNumber(), false));
 	gi_building.add_obstacle(new Entities::AnyResource);
 	if(num_pool == 0)
     {
@@ -116,7 +116,7 @@ void NewNicowar::control_attacks(Runtime& runtime)
 	{
 		if(runtime.get_building_register().is_building_found(attack_flags[i]))
 		{
-			AISharedRuntime::Read::Building* b = runtime.get_building_register().get_building(attack_flags[i]);
+			const AIEngine::BuildingView* b = runtime.get_building_register().get_building(attack_flags[i]);
 			if(b && gradient.get_height(b->posX, b->posY) == AI_NICOWAR_GRADIENT_UNREACHABLE)
 			{
 				ManagementOrder* mo_destroy=new RetireAttraction(attack_flags[i],1u<<WARRIOR);
@@ -133,17 +133,17 @@ void NewNicowar::choose_enemy_target(Runtime& runtime)
 	telemetry.count(AITrace::AI5::NewNicowar_choose_enemy_target_calls);
 	AISharedRuntime::Gradients::GradientInfo gi_building;
     gi_building.terrainTravel=field::TerrainTravel::Swim;
-	gi_building.add_source(new Entities::AnyTeamBuilding(runtime.readPlayer()->team->teamNumber, false));
+	gi_building.add_source(new Entities::AnyTeamBuilding(runtime.teamNumber(), false));
 	gi_building.add_obstacle(new Entities::AnyResource);
 	Gradient& gradient=runtime.get_gradient_manager().get_gradient(gi_building);
 
-	if(target==AI_NICOWAR_NO_TARGET || !runtime.readPlayer()->game->teams[target]->isAlive)
+	if(target==AI_NICOWAR_NO_TARGET || !runtime.observation().teams[target].alive)
 	{
 		std::vector<int> available_reachable_targets;
 		std::vector<int> available_targets;
 		for(enemy_team_iterator i(runtime); i!=enemy_team_iterator(); ++i)
 		{
-			if(runtime.readPlayer()->game->teams[*i]->isAlive)
+			if(runtime.observation().teams[*i].alive)
 			{
 				available_targets.push_back(*i);
 				enemy_building_iterator ebi(runtime, *i, -1, -1, indeterminate);
@@ -156,7 +156,7 @@ void NewNicowar::choose_enemy_target(Runtime& runtime)
 				   cheating and has been fixed. */
 				for(; ebi != enemy_building_iterator(); ++ebi)
 				{
-					AISharedRuntime::Read::Building* b=runtime.readPlayer()->game->teams[*i]->myBuildings[Building::GIDtoID(*ebi)];
+					const AIEngine::BuildingView* b=runtime.observation().buildingSlots(*i)[Building::GIDtoID(*ebi)];
 					if(gradient.get_height(b->posX, b->posY) != AI_NICOWAR_GRADIENT_UNREACHABLE)
 					{
 						available_reachable_targets.push_back(*i);
@@ -187,13 +187,13 @@ bool NewNicowar::dig_out_enemy(Runtime& runtime)
 
 	AISharedRuntime::Gradients::GradientInfo gi_building;
     gi_building.terrainTravel=field::TerrainTravel::Swim;
-	gi_building.add_source(new Entities::AnyTeamBuilding(runtime.readPlayer()->team->teamNumber, false));
+	gi_building.add_source(new Entities::AnyTeamBuilding(runtime.teamNumber(), false));
 	gi_building.add_obstacle(new Entities::AnyResource);
 	Gradient& gradient=runtime.get_gradient_manager().get_gradient(gi_building);
 
 	for(enemy_building_iterator ebi(runtime, target, -1, -1, indeterminate); ebi!=enemy_building_iterator(); ++ebi)
 	{
-		AISharedRuntime::Read::Building* b=runtime.readPlayer()->game->teams[target]->myBuildings[Building::GIDtoID(*ebi)];
+		const AIEngine::BuildingView* b=runtime.observation().buildingSlots(target)[Building::GIDtoID(*ebi)];
 		int bx = (b->posX + mi.get_width()) % mi.get_width();
 		int by = (b->posY + mi.get_height()) % mi.get_height();
 		if(gradient.get_height(bx, by) == AI_NICOWAR_GRADIENT_UNREACHABLE)
@@ -208,8 +208,8 @@ bool NewNicowar::dig_out_enemy(Runtime& runtime)
 
 
 	int building=buildings_to_attack[num];
-	const int bx=(runtime.readPlayer()->game->teams[target]->myBuildings[Building::GIDtoID(building)]->posX) % mi.get_width();
-	const int by=(runtime.readPlayer()->game->teams[target]->myBuildings[Building::GIDtoID(building)]->posY) % mi.get_height();
+	const int bx=(runtime.observation().buildingSlots(target)[Building::GIDtoID(building)]->posX) % mi.get_width();
+	const int by=(runtime.observation().buildingSlots(target)[Building::GIDtoID(building)]->posY) % mi.get_height();
 
 	AISharedRuntime::Gradients::GradientInfo gi_pathfind;
     gi_pathfind.terrainTravel=field::TerrainTravel::Swim;

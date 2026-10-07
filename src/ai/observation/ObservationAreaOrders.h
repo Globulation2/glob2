@@ -4,7 +4,7 @@
 #include "Order.h"
 #include <memory>
 
-namespace AISharedRuntime
+namespace AIEngine
 {
 // Keep the accumulator's wrapped bounding box verbatim. Replacing it with a
 // full-map mask changes packet bytes and can exceed the order codec's side cap.

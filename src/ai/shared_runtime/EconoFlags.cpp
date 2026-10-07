@@ -26,7 +26,7 @@ void Econo::tick_explorer_flags_fruit(Runtime& runtime)
 			{
 				//Constraints around nearby settlement
 				AISharedRuntime::Gradients::GradientInfo gi_building;
-				gi_building.add_source(new AISharedRuntime::Gradients::Entities::AnyTeamBuilding(runtime.readPlayer()->team->teamNumber, false));
+				gi_building.add_source(new AISharedRuntime::Gradients::Entities::AnyTeamBuilding(runtime.teamNumber(), false));
 
 				if(!flag_on_cherry)
 				{
@@ -127,7 +127,7 @@ void Econo::tick_explorer_flags_fruit(Runtime& runtime)
 void Econo::tick_explorer_flags_enemies(Runtime& runtime)
 {
 	// Combat cannot damage opponents here; military work must not reserve economic labour.
-	if (runtime.readPlayer()->game->gameHeader.isPeacefulModeEnabled()) return;
+	if (runtime.observation().configuration->isPeacefulModeEnabled()) return;
 	telemetry.count(AITrace::AI4::Econo_tick_explorer_flags_enemies_calls);
 	if((timer%AI_SHARED_RUNTIME_RTI_ENEMY_SCAN_INTERVAL_TICKS)==0)
 	{
@@ -165,7 +165,7 @@ void Econo::tick_explorer_flags_enemies(Runtime& runtime)
 void Econo::tick_farming_areas(Runtime& runtime)
 {
 	// Protecting growth cells would permanently withhold resources without regrowth.
-	if (runtime.readPlayer()->game->gameHeader.isResourceGrowthDisabled()) return;
+	if (runtime.observation().configuration->isResourceGrowthDisabled()) return;
 	telemetry.count(AITrace::AI4::Econo_tick_farming_areas_calls);
 	if((timer%AI_SHARED_RUNTIME_RTI_FARMING_INTERVAL_TICKS)==0)
 	{

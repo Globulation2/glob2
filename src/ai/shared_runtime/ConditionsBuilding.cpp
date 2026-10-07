@@ -113,9 +113,9 @@ void BuildingDestroyed::save(GAGCore::OutputStream *stream)
 
 EnemyBuildingDestroyed::EnemyBuildingDestroyed(Runtime& runtime, int gbid) : gbid(gbid)
 {
-	AISharedRuntime::Read::Building* b=runtime.readPlayer()->game->teams[Building::GIDtoTeam(gbid)]->myBuildings[Building::GIDtoID(gbid)];
+	const AIEngine::BuildingView* b=runtime.observation().buildingSlots(Building::GIDtoTeam(gbid))[Building::GIDtoID(gbid)];
 	type=b->typeNum;
-	level=b->type->level;
+	level=AIEngine::ObservationQueries::buildingType(runtime.observation(),*b).level;
 	location=position(b->posX, b->posY);
 }
 
@@ -123,7 +123,7 @@ EnemyBuildingDestroyed::EnemyBuildingDestroyed(Runtime& runtime, int gbid) : gbi
 
 tribool EnemyBuildingDestroyed::passes(Runtime& runtime)
 {
-	AISharedRuntime::Read::Building* b=runtime.readPlayer()->game->teams[Building::GIDtoTeam(gbid)]->myBuildings[Building::GIDtoID(gbid)];
+	const AIEngine::BuildingView* b=runtime.observation().buildingSlots(Building::GIDtoTeam(gbid))[Building::GIDtoID(gbid)];
 	if(b==NULL)
 	{
 		return true;
@@ -136,7 +136,7 @@ tribool EnemyBuildingDestroyed::passes(Runtime& runtime)
 	{
 		// A completed upgrade or repair remains the same target. Resolve only
 		// when its concrete variant changes, following explicit transitions.
-		const auto& catalog = runtime.readPlayer()->game->buildingsTypes;
+		const auto& catalog = *runtime.observation().catalog;
 		std::vector<int> pending{type};
 		std::vector<bool> seen(catalog.size(), false);
 		bool related = false;
@@ -146,7 +146,7 @@ tribool EnemyBuildingDestroyed::passes(Runtime& runtime)
 			if (current < 0 || size_t(current) >= catalog.size() || seen[current]) continue;
 			seen[current] = true;
 			if (current == b->typeNum) { related = true; break; }
-			const auto* variant = catalog.get(current);
+			const auto* variant = &catalog.at(current).resolvedType;
 			pending.push_back(variant->nextLevel);
 			pending.push_back(variant->prevLevel);
 		}
@@ -270,11 +270,12 @@ BeingUpgradedTo::BeingUpgradedTo(int level) : level(level)
 
 bool BeingUpgradedTo::passes(Runtime& runtime, int id)
 {
-	AISharedRuntime::Read::Building* b= runtime.get_building_register().get_building(id);
+	const AIEngine::BuildingView* b= runtime.get_building_register().get_building(id);
 	if(!runtime.get_building_register().is_building_upgrading(id))
 		return false;
-    const int target=b->type->isBuildingSite ? b->typeNum : b->type->nextLevel;
-    return target>=0 && runtime.readPlayer()->game->buildingCapabilities().lineagePosition(target)==level;
+    const auto& descriptor=AIEngine::ObservationQueries::buildingType(runtime.observation(),*b);
+    const int target=descriptor.isBuildingSite ? b->typeNum : descriptor.nextLevel;
+    return target>=0 && runtime.observation().catalog->at(target).lineagePosition==level;
 }
 
 
@@ -307,8 +308,8 @@ BuildingLevel::BuildingLevel(int building_level) : building_level(building_level
 
 bool BuildingLevel::passes(Runtime& runtime, int id)
 {
-	AISharedRuntime::Read::Building* building = runtime.get_building_register().get_building(id);
-	if(runtime.readPlayer()->game->buildingCapabilities().lineagePosition(building->typeNum)==building_level)
+	const AIEngine::BuildingView* building = runtime.get_building_register().get_building(id);
+	if(runtime.observation().catalog->at(building->typeNum).lineagePosition==building_level)
 		return true;
 	return false;
 }

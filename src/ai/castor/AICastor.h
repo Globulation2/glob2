@@ -182,24 +182,17 @@ public:
   Uint64 bytes = 0;
   for (const auto& [key, field] : resourceInitializations)
    if (field.values) bytes += Uint64(field.values->capacity()) * sizeof(Uint16);
-  bytes += Uint64(observedTeams.capacity()) * sizeof(TeamObservation);
   return bytes;
  }
  std::shared_ptr<Order> getOrder(const AIEngine::DecisionContext&) override;
 	void orderExecutionCompleted(const Order& order, bool accepted) override;
 
 private:
- struct TeamObservation {
-  const AIEngine::TeamView* view=nullptr;
-  std::array<const AIEngine::BuildingView*,1024> myBuildings{};
-  std::array<const AIEngine::UnitView*,1024> myUnits{};
- };
  struct PendingCreate { Uint32 tick;Uint64 sequence;int type,x,y; };
  std::vector<PendingCreate> pendingCreates;
  Uint64 decisionSequence=0;
- std::vector<TeamObservation> observedTeams;
- TeamObservation* observedTeam=nullptr;
- TeamObservation* teamAt(int index) const;
+ const AIEngine::TeamView* observedTeam=nullptr;
+ const AIEngine::TeamView* teamAt(int index) const;
  int teamNumber=0;
  const AIEngine::AIWorldView* observation=nullptr;
  AIEngine::WorldQueries* queries=nullptr;

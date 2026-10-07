@@ -1,4 +1,4 @@
-#include "CortexWorld.h"
+#include "CortexSnapshotQueries.h"
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2026 The Globulation 2 Authors
 
@@ -26,9 +26,9 @@ void AICortex::dumpAttackState(const Cortex::CortexObservation& obs) const
 {
 	using namespace Cortex;
 	auto& cerr = diagnosticStream;
-	Cortex::WorldTeam* team = decisionPlayer->team;
-	Cortex::World* game = team->game;
-	const int me = team->teamNumber;
+	const AIEngine::TeamView* team = observedTeam;
+
+	const int me = team->number;
 
 	cerr << "CORTEX_DUMP ==== first-under-attack snapshot ====\n";
 	cerr << "CORTEX_DUMP team=" << me << " tick=" << obs.tick
@@ -137,11 +137,11 @@ void AICortex::dumpAttackState(const Cortex::CortexObservation& obs) const
 	}
 
 	// --- ground truth (diagnostic only; never fed to the policy) ---
-	for (int t = 0; t < game->teamsCount(); t++)
+	for (int t = 0; t < observedWorld->teams.size(); t++)
 	{
-		Cortex::WorldTeam* et = game->teams[t];
-		if (!et || et->teamNumber == me) continue;
-		const TeamStat* es = et->stats.getLatestStat();
+		const AIEngine::TeamView* et = &observedWorld->teams[t];
+		if (!et || et->number == me) continue;
+		const TeamStat* es = &et->statistics;
 		if (!es) continue;
 		int as0 = es->upgradeState[ATTACK_STRENGTH][0];
 		int as1 = es->upgradeState[ATTACK_STRENGTH][1];
@@ -151,7 +151,7 @@ void AICortex::dumpAttackState(const Cortex::CortexObservation& obs) const
 		int sp1 = es->upgradeState[ATTACK_SPEED][1];
 		int sp2 = es->upgradeState[ATTACK_SPEED][2];
 		int sp3 = es->upgradeState[ATTACK_SPEED][3];
-		cerr << "CORTEX_DUMP TRUTH enemy team=" << et->teamNumber
+		cerr << "CORTEX_DUMP TRUTH enemy team=" << et->number
 		     << " totalUnit=" << es->totalUnit
 		     << " warriors=" << es->numberUnitPerType[WARRIOR]
 		     << " workers=" << es->numberUnitPerType[WORKER]
@@ -173,7 +173,7 @@ void AICortex::dumpWorkerTrace(const Cortex::CortexObservation& obs,
                                const Cortex::CortexAction& tune)
 {
 	using namespace Cortex;
-	const int me = decisionPlayer->team->teamNumber;
+	const int me = observedTeam->number;
 
 	const char* prefix = getenv("GLOB2_CORTEX_TRACE");
 	if (!prefix || !prefix[0]) return;
@@ -223,7 +223,7 @@ void AICortex::dumpDecideTrace(const Cortex::CortexObservation& obs,
                                const Cortex::DecideTrace& trace)
 {
 	using namespace Cortex;
-	const int me = decisionPlayer->team->teamNumber;
+	const int me = observedTeam->number;
 
 	const char* prefix = getenv("GLOB2_CORTEX_DECIDE_TRACE");
 	if (!prefix || !prefix[0]) return;
@@ -271,7 +271,7 @@ void AICortex::dumpInnTrace(const Cortex::CortexObservation& obs,
                             const Cortex::CortexAction& tune)
 {
 	using namespace Cortex;
-	const int me = decisionPlayer->team->teamNumber;
+	const int me = observedTeam->number;
 
 	const char* prefix = getenv("GLOB2_CORTEX_INN_TRACE");
 	if (!prefix || !prefix[0]) return;

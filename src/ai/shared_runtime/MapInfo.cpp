@@ -9,7 +9,7 @@ using namespace AISharedRuntime::SearchTools;
 
 MapInfo::MapInfo(Runtime& runtime) : runtime(&runtime)
 {
-    teamMask=runtime.readPlayer()->team->me;
+    teamMask=runtime.observedTeam().mask;
     world=&runtime.observation();
 }
 

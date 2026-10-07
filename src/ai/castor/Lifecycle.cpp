@@ -50,7 +50,7 @@ int AICastor::selectBuilding(int demand) const
  const auto intent = intentForDemand(demand);
  int result = -1, count = 0;
  for (const auto& c : index.placements(intent))
-  if (index.available(c,intent) && random() % ++count == 0) result = c;
+  if (index.available(c,intent) && random() % ++count == 0) result = c.placementType;
  return result;
 }
 

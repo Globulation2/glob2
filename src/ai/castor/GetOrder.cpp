@@ -16,10 +16,10 @@
 using std::shared_ptr;
 
 
-AICastor::TeamObservation* AICastor::teamAt(int index) const
+const AIEngine::TeamView* AICastor::teamAt(int index) const
 {
- if(index<0 || index>=int(observedTeams.size()) || !observedTeams[index].view) return nullptr;
- return const_cast<TeamObservation*>(&observedTeams[index]);
+ if(index<0 || index>=int(observation->teams.size())) return nullptr;
+ return &observation->teams[index];
 }
 std::shared_ptr<Order> AICastor::getOrder()
 {
@@ -59,12 +59,9 @@ std::shared_ptr<Order> AICastor::getOrder(const AIEngine::DecisionContext& conte
  AIEngine::WorldQueries captured(context.world,teamNumber,resourceInitializations,context.resourceEnrollments);
  for(const auto& intent:pendingCreates) captured.reserve(intent.type,intent.x,intent.y);
  decisionSequence=context.pollSequence;
- observation=&context.world;queries=&captured;observedTeams.resize(context.world.teams.size());
- for(size_t i=0;i<observedTeams.size();++i) observedTeams[i].view=&context.world.teams[i];
- for(const auto& b:context.world.buildings) observedTeams[b.team].myBuildings[Building::GIDtoID(b.identity.gid)]=&b;
- for(const auto& u:context.world.units) observedTeams[u.team].myUnits[Unit::GIDtoID(u.identity.gid)]=&u;
+ observation=&context.world;queries=&captured;
  observedTeam=teamAt(teamNumber);
- const auto clear=[&]{observation=nullptr;queries=nullptr;observedTeam=nullptr;observedTeams.clear();};
+ const auto clear=[&]{observation=nullptr;queries=nullptr;observedTeam=nullptr;};
  try {
   auto result=decide();
   if(const auto* create=dynamic_cast<const OrderCreate*>(result.get())) pendingCreates.push_back({context.world.tick,context.pollSequence,create->typeNum,create->posX,create->posY});

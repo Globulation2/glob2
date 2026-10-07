@@ -8,7 +8,7 @@
 #include "AIMaximaStrategy.h"
 
 #include "Brush.h"
-#include "shared_runtime/ObservationAreaOrders.h"
+#include "ai/observation/ObservationAreaOrders.h"
 #include "Building.h"
 #include "Game.h"
 #include "AIRuleOrders.h"
@@ -37,23 +37,10 @@ bool telemetry_enabled()
 namespace
 {
 
-	AISharedRuntime::Read::Building* building_from_gid(AISharedRuntime::Read::Player* player, int gid)
-	{
-		if(gid==NOGBID)
-			return NULL;
-		const int team=Building::GIDtoTeam(gid);
-		const int id=Building::GIDtoID(gid);
-		if(team<0 || team>=Team::MAX_COUNT || !player->game->teams[team]
-		   || id<0 || id>=Building::MAX_COUNT)
-			return NULL;
-		return player->game->teams[team]->myBuildings[id];
-	}
-
-	bool visible_to(AISharedRuntime::Read::Player* player, const AISharedRuntime::Read::Building* building)
-	{
-		return building && (Building::GIDtoTeam(building->gid)
-			==player->team->teamNumber || (building->seenByMask&player->team->me));
-	}
+    const AIEngine::BuildingView* building_from_gid(const AIEngine::AIWorldView& world,int gid)
+    {return world.buildingAtSlot(gid);}
+    bool visible_to(const AIEngine::AIWorldView& world,unsigned observerTeam,const AIEngine::BuildingView* building)
+    {return building && (building->team==int(observerTeam) || (building->seenByMask&world.teams[observerTeam].mask));}
 
 	Conditions::Result wait_for_building(Context& context, int id)
 	{
@@ -105,11 +92,11 @@ Entity* Entity::load(GAGCore::InputStream* stream)
 Building::Building(int buildingType, int team, bool includeConstruction)
 	: buildingType(buildingType), team(team), includeConstruction(includeConstruction) {}
 
-bool Building::matches(AISharedRuntime::Read::Player* player, int x, int y) const
+bool Building::matches(const AIEngine::AIWorldView& world,unsigned observerTeam, int x, int y) const
 {
-	const int gid=player->map->getBuilding(x,y);
-	AISharedRuntime::Read::Building* building=building_from_gid(player,gid);
-	if(!building || ::Building::GIDtoTeam(gid)!=team || !visible_to(player,building)
+	const int gid=world.occupancyAt(world.tileIndex(x,y)).building;
+	const AIEngine::BuildingView* building=building_from_gid(world,gid);
+	if(!building || ::Building::GIDtoTeam(gid)!=team || !visible_to(world,observerTeam,building)
 		|| (!includeConstruction && building->constructionResultState!=::Building::NO_CONSTRUCTION)) return false;
 	using I=AIPlanning::BuildingIntent;
 	constexpr auto bit=[](I intent){return std::uint64_t(1)<<static_cast<unsigned>(intent);};
@@ -120,8 +107,8 @@ bool Building::matches(AISharedRuntime::Read::Player* player, int x, int y) cons
 		bit(I::ProjectileDefense),bit(I::AttractExplorers),bit(I::AttractWarriors),
 		bit(I::AttractWorkers),0,bit(I::ExchangeResources)};
 	if(buildingType<0 || size_t(buildingType)>=std::size(demands))return false;
-	const int completed=building->type->isBuildingSite ? building->type->nextLevel : building->typeNum;
-	return (player->game->buildingCapabilities().intentMask(completed)&demands[buildingType])!=0;
+	const int completed=AIEngine::ObservationQueries::buildingType(world,*building).isBuildingSite ? AIEngine::ObservationQueries::buildingType(world,*building).nextLevel : building->typeNum;
+	return (world.capabilities().intentMask(completed)&demands[buildingType])!=0;
 }
 
 bool Building::equals(const Entity& other) const
@@ -136,12 +123,12 @@ void Building::save(GAGCore::OutputStream* stream) const
 AnyTeamBuilding::AnyTeamBuilding(int team, bool includeConstruction)
 	: team(team), includeConstruction(includeConstruction) {}
 
-bool AnyTeamBuilding::matches(AISharedRuntime::Read::Player* player, int x, int y) const
+bool AnyTeamBuilding::matches(const AIEngine::AIWorldView& world,unsigned observerTeam, int x, int y) const
 {
-	const int gid=player->map->getBuilding(x,y);
-	AISharedRuntime::Read::Building* building=building_from_gid(player,gid);
+	const int gid=world.occupancyAt(world.tileIndex(x,y)).building;
+	const AIEngine::BuildingView* building=building_from_gid(world,gid);
 	return building && ::Building::GIDtoTeam(gid)==team
-		&& visible_to(player,building)
+		&& visible_to(world,observerTeam,building)
 		&& (includeConstruction
 			|| building->constructionResultState==::Building::NO_CONSTRUCTION);
 }
@@ -156,8 +143,8 @@ void AnyTeamBuilding::save(GAGCore::OutputStream* stream) const
 {stream->writeUint8(type(),"type");stream->writeSint32(team,"team");stream->writeUint8(includeConstruction,"include_construction");}
 
 Resource::Resource(int resourceType) : resourceType(resourceType) {}
-bool Resource::matches(AISharedRuntime::Read::Player* player,int x,int y) const
-{ return player->map->isResourceTakeable(x,y,resourceType); }
+bool Resource::matches(const AIEngine::AIWorldView& world,unsigned observerTeam,int x,int y) const
+{ return AIEngine::ObservationQueries::resourceTakeable(world,x,y,resourceType); }
 bool Resource::equals(const Entity& other) const
 {
 	const Resource* rhs=dynamic_cast<const Resource*>(&other);
@@ -168,27 +155,27 @@ bool Resource::can_change() const
 void Resource::save(GAGCore::OutputStream* stream) const
 {stream->writeUint8(type(),"type");stream->writeSint32(resourceType,"resource_type");}
 
-bool AnyResource::matches(AISharedRuntime::Read::Player* player,int x,int y) const
-{ return player->map->isResource(x,y); }
+bool AnyResource::matches(const AIEngine::AIWorldView& world,unsigned observerTeam,int x,int y) const
+{ return (world.resourceAt(world.tileIndex(x,y)).resource.type!=NO_RES_TYPE); }
 bool AnyResource::equals(const Entity& other) const
 { return dynamic_cast<const AnyResource*>(&other)!=NULL; }
 void AnyResource::save(GAGCore::OutputStream* stream) const{stream->writeUint8(type(),"type");}
 
-bool Water::matches(AISharedRuntime::Read::Player* player,int x,int y) const
-{ return terrainProvidesFertility(player->map->terrainPropertiesAt(x,y)); }
+bool Water::matches(const AIEngine::AIWorldView& world,unsigned observerTeam,int x,int y) const
+{ return terrainProvidesFertility(AIEngine::ObservationQueries::terrain(world,x,y)); }
 bool Water::equals(const Entity& other) const
 { return other.type()==EWater; }
 void Water::save(GAGCore::OutputStream* stream) const{stream->writeUint8(type(),"type");}
 
-bool Unwalkable::matches(AISharedRuntime::Read::Player* player,int x,int y) const
-{ return !player->map->terrainPropertiesAt(x,y).walkable; }
+bool Unwalkable::matches(const AIEngine::AIWorldView& world,unsigned observerTeam,int x,int y) const
+{ return !AIEngine::ObservationQueries::terrain(world,x,y).walkable; }
 bool Unwalkable::equals(const Entity& other) const
 { return dynamic_cast<const Unwalkable*>(&other)!=nullptr; }
 void Unwalkable::save(GAGCore::OutputStream* stream) const
 { stream->writeUint8(type(),"type"); }
 
 Position::Position(int x,int y) : x(x),y(y) {}
-bool Position::matches(AISharedRuntime::Read::Player*,int px,int py) const { return px==x && py==y; }
+bool Position::matches(const AIEngine::AIWorldView&,unsigned,int px,int py) const { return px==x && py==y; }
 bool Position::equals(const Entity& other) const
 {
 	const Position* rhs=dynamic_cast<const Position*>(&other);
@@ -197,8 +184,8 @@ bool Position::equals(const Entity& other) const
 void Position::save(GAGCore::OutputStream* stream) const
 {stream->writeUint8(type(),"type");stream->writeSint32(x,"x");stream->writeSint32(y,"y");}
 
-bool Sand::matches(AISharedRuntime::Read::Player* player,int x,int y) const
-{ return player->map->terrainPropertiesAt(x,y).inhibitionQ8 != 0; }
+bool Sand::matches(const AIEngine::AIWorldView& world,unsigned observerTeam,int x,int y) const
+{ return AIEngine::ObservationQueries::terrain(world,x,y).inhibitionQ8 != 0; }
 bool Sand::equals(const Entity& other) const
 { return dynamic_cast<const Sand*>(&other)!=NULL; }
 void Sand::save(GAGCore::OutputStream* stream) const{stream->writeUint8(type(),"type");}
@@ -208,16 +195,16 @@ void GradientInfo::add_source(Entities::Entity* source)
 { sources.push_back(shared_ptr<Entities::Entity>(source)); }
 void GradientInfo::add_obstacle(Entities::Entity* obstacle)
 { obstacles.push_back(shared_ptr<Entities::Entity>(obstacle)); }
-bool GradientInfo::matches_source(AISharedRuntime::Read::Player* p,int x,int y) const
+bool GradientInfo::matches_source(const AIEngine::AIWorldView& world,unsigned observerTeam,int x,int y) const
 {
 	for(size_t i=0;i<sources.size();++i)
-		if(sources[i]->matches(p,x,y)) return true;
+		if(sources[i]->matches(world,observerTeam,x,y)) return true;
 	return false;
 }
-bool GradientInfo::matches_obstacle(AISharedRuntime::Read::Player* p,int x,int y) const
+bool GradientInfo::matches_obstacle(const AIEngine::AIWorldView& world,unsigned observerTeam,int x,int y) const
 {
 	for(size_t i=0;i<obstacles.size();++i)
-		if(obstacles[i]->matches(p,x,y)) return true;
+		if(obstacles[i]->matches(world,observerTeam,x,y)) return true;
 	return false;
 }
 bool GradientInfo::needs_updating() const
@@ -260,12 +247,12 @@ bool GradientInfo::load(GAGCore::InputStream* stream,Sint32 versionMinor)
 
 Gradient::Gradient(const GradientInfo& info) : info(info),width(0),sourceCount(0) {}
 
-void Gradient::recalculate(AISharedRuntime::Read::Player* player, field::Frontier& frontier)
+void Gradient::recalculate(const AIEngine::AIWorldView& world,unsigned observerTeam, field::Frontier& frontier)
 {
-	AISharedRuntime::Read::Map* map=player->map;
-	width=map->getW();
-    terrainGeneration=map->terrainGeneration();
-	const int height=map->getH();
+	const AIEngine::AIWorldView* map=&world;
+	width=world.width;
+    terrainGeneration=world.terrainRevision;
+	const int height=world.height;
 	values.assign(width*height,UnreachableCell);
 	sourceCount=0;
 	auto& queue=frontier;
@@ -274,15 +261,15 @@ void Gradient::recalculate(AISharedRuntime::Read::Player* player, field::Frontie
 		for(int y=0;y<height;++y)
 		{
 			const int at=y*width+x;
-			if(info.matches_source(player,x,y)) { values[at]=SourceCell; queue.push_back(at);++sourceCount; }
-			else if(info.matches_obstacle(player,x,y) || !field::terrainTravelAllowed(map->terrainPropertiesAt(x,y),info.terrainTravel)) values[at]=ObstacleCell;
+			if(info.matches_source(world,observerTeam,x,y)) { values[at]=SourceCell; queue.push_back(at);++sourceCount; }
+			else if(info.matches_obstacle(world,observerTeam,x,y) || !field::terrainTravelAllowed(AIEngine::ObservationQueries::terrain(world,x,y),info.terrainTravel)) values[at]=ObstacleCell;
 		}
 	if(info.terrainTravel!=field::TerrainTravel::Geometric &&
-        (info.terrainTravel==field::TerrainTravel::Fly?map->hasAirTerrainConstraints():map->hasTerrainMovementModifiers()))
+        (info.terrainTravel==field::TerrainTravel::Fly?world.airTerrainConstraints:world.terrainMovementModifiers))
     {
 		field::expandTerrainTravel(
 			values, width, height, info.terrainTravel,
-			[&](std::size_t i) { return map->terrainTypeAt(i); }, map->terrainRegistry());
+			[&](std::size_t i) { return map->terrainAt(i).type; }, *map->terrain);
 		queue.clear();
     }
     else field::expandDistances(values,queue,{width,height},field::Surrounding,UnreachableCell);
@@ -314,10 +301,10 @@ Gradient& GradientManager::get_gradient(const GradientInfo& info)
 	{
 		gradients.push_back(shared_ptr<Gradient>(new Gradient(info)));
 		ages.push_back(0); index=int(gradients.size())-1;
-		gradients[index]->recalculate(readPlayer(),frontier);
+		gradients[index]->recalculate(observation(),teamNumber(),frontier);
 	}
-	else if(gradients[index]->terrainGeneration!=readPlayer()->map->terrainGeneration())
-    { gradients[index]->recalculate(readPlayer(),frontier); ages[index]=0; }
+	else if(gradients[index]->terrainGeneration!=observation().terrainRevision)
+    { gradients[index]->recalculate(observation(),teamNumber(),frontier); ages[index]=0; }
     else if(ages[index]>150 && info.needs_updating())
 	{
 		if(queuedIndexes.insert(index).second)
@@ -333,18 +320,18 @@ void GradientManager::queue_gradient(const GradientInfo& info)
 		gradients.push_back(shared_ptr<Gradient>(new Gradient(info)));
 		ages.push_back(200); index=int(gradients.size())-1;
 	}
-	if((gradients[index]->terrainGeneration!=readPlayer()->map->terrainGeneration() || info.needs_updating() || ages[index]>150)
+	if((gradients[index]->terrainGeneration!=observation().terrainRevision || info.needs_updating() || ages[index]>150)
 	   && queuedIndexes.insert(index).second)
 		queued.push(index);
 }
 bool GradientManager::is_updated(const GradientInfo& info) const
 {
 	const int index=find(info);
-	return index<0 || (gradients[index]->terrainGeneration==readPlayer()->map->terrainGeneration() && (!info.needs_updating() || ages[index]<=150));
+	return index<0 || (gradients[index]->terrainGeneration==observation().terrainRevision && (!info.needs_updating() || ages[index]<=150));
 }
 void GradientManager::update(Uint32 step)
 {
-    binding.refreshOwner();lastTerrainRevision=readPlayer()->map->terrainGeneration();
+    lastTerrainRevision=observation().terrainRevision;
 	PERF_SCOPE_TIME(AIGradient);
 	if(lastWorldStep==step) return;
 	lastWorldStep=step;
@@ -352,8 +339,8 @@ void GradientManager::update(Uint32 step)
 	if(!queued.empty())
 	{
 		const int index=queued.front(); queued.pop();queuedIndexes.erase(index);
-		if(index>=0 && index<int(gradients.size()) && (gradients[index]->terrainGeneration!=readPlayer()->map->terrainGeneration() || ages[index]>50))
-		{ gradients[index]->recalculate(readPlayer(),frontier); ages[index]=0; }
+		if(index>=0 && index<int(gradients.size()) && (gradients[index]->terrainGeneration!=observation().terrainRevision || ages[index]>50))
+		{ gradients[index]->recalculate(observation(),teamNumber(),frontier); ages[index]=0; }
 	}
 }
 void GradientManager::saveExecutionState(GAGCore::OutputStream* stream) const
@@ -396,7 +383,7 @@ void GradientManager::loadExecutionState(GAGCore::InputStream* stream,Sint32 ver
         if(!info.load(stream,versionMinor)) throw std::runtime_error("Invalid gradient continuation source");
         shared_ptr<Gradient> gradient(new Gradient(info));
         const bool terrainCurrent=versionMinor<FILE_FORMAT_VERSION_TERRAIN_PROPERTIES || stream->readUint8("terrainCurrent");
-        gradient->terrainGeneration=terrainCurrent?readPlayer()->map->terrainGeneration():0;
+        gradient->terrainGeneration=terrainCurrent?observation().terrainRevision:0;
         archive("width",gradient->width);
         archive("sourceCount",gradient->sourceCount);
         archive("values",gradient->values);
@@ -429,18 +416,17 @@ BuildingRecord::BuildingRecord()
 
 BuildingRegister::BuildingRegister(Player* player)
     : binding(player),nextId(0) {}
-Uint64 BuildingRegister::identity_of(const AISharedRuntime::Read::Building* building) const
+Uint64 BuildingRegister::identity_of(const AIEngine::BuildingView* building) const
 {
-    return building && ::Building::GIDtoTeam(building->gid)==readPlayer()->team->teamNumber
+    return building && ::Building::GIDtoTeam(building->gid)==teamNumber()
         ? building->scriptIdentity : 0;
 }
 void BuildingRegister::initiate()
 {
-    binding.refreshOwner();
 	pendingBuildings.clear(); foundBuildings.clear(); nextId=0;
 	for(int i=0;i<Building::MAX_COUNT;++i)
 	{
-		AISharedRuntime::Read::Building* b=readPlayer()->team->myBuildings[i]; if(!b) continue;
+		const AIEngine::BuildingView* b=observation().buildingSlots(teamNumber())[i]; if(!b) continue;
 		BuildingRecord r; r.x=b->posX; r.y=b->posY; r.type=b->typeNum; r.gid=b->gid;
 		r.runtimeIdentity=identity_of(b);
 		foundBuildings[nextId++]=r;
@@ -494,7 +480,7 @@ Result AttractionRetiredOrDestroyed::passes(Context& context) const
 void AttractionRetiredOrDestroyed::save(GAGCore::OutputStream* stream) const
 {stream->writeEnterSection("Condition");stream->writeSint32(type(),"type");stream->writeSint32(id,"id");stream->writeUint8(unitMask,"unitMask");stream->writeLeaveSection();}
 Result EnemyBuildingDestroyed::passes(Context& context) const
-{ return building_from_gid(context.readPlayer(),gid)?Waiting:Ready; }
+{ return building_from_gid(context.observation(),gid)?Waiting:Ready; }
 void EnemyBuildingDestroyed::save(GAGCore::OutputStream* stream) const
 {stream->writeEnterSection("Condition");stream->writeSint32(type(),"type");stream->writeSint32(gid,"gid");stream->writeLeaveSection();}
 EitherCondition::EitherCondition(Condition* a,Condition* b):first(a),second(b){}
@@ -508,11 +494,11 @@ Result EitherCondition::passes(Context& context) const
 void EitherCondition::save(GAGCore::OutputStream* stream) const
 {stream->writeEnterSection("Condition");stream->writeSint32(type(),"type");first->save(stream);second->save(stream);stream->writeLeaveSection();}
 bool NotUnderConstruction::passes(Context& c,int id) const
-{ AISharedRuntime::Read::Building* b=c.get_building_register().get_building(id);return b&&b->constructionResultState==::Building::NO_CONSTRUCTION&&!c.get_building_register().is_building_upgrading(id); }
+{ const AIEngine::BuildingView* b=c.get_building_register().get_building(id);return b&&b->constructionResultState==::Building::NO_CONSTRUCTION&&!c.get_building_register().is_building_upgrading(id); }
 bool UnderConstruction::passes(Context& c,int id) const
-{ AISharedRuntime::Read::Building* b=c.get_building_register().get_building(id);return b&&b->constructionResultState!=::Building::NO_CONSTRUCTION; }
+{ const AIEngine::BuildingView* b=c.get_building_register().get_building(id);return b&&b->constructionResultState!=::Building::NO_CONSTRUCTION; }
 bool StaffableConstructionSite::passes(Context& c,int id) const
-{ AISharedRuntime::Read::Building* b=c.get_building_register().get_building(id);
+{ const AIEngine::BuildingView* b=c.get_building_register().get_building(id);
   return b&&b->constructionResultState!=::Building::NO_CONSTRUCTION
       &&b->buildingState==::Building::ALIVE; }
 bool BeingUpgraded::passes(Context& c,int id) const {return c.get_building_register().is_building_upgrading(id);}
@@ -520,7 +506,7 @@ bool BeingUpgradedTo::passes(Context& c,int id) const {return c.get_building_reg
 bool SpecificBuildingType::passes(Context& c,int id) const {return c.get_building_register().has_role(id,buildingType);}
 bool BuildingLevel::passes(Context& c,int id) const {return c.get_building_register().get_level(id)==level;}
 bool Upgradable::passes(Context& c,int id) const
-{ AISharedRuntime::Read::Building* b=c.get_building_register().get_building(id);return b&&!c.readPlayer()->game->gameHeader.isUnitUpgradesDisabled()&&b->isUpgradeAvailable(); }
+{ const AIEngine::BuildingView* b=c.get_building_register().get_building(id);return b&&!c.observation().configuration->isUnitUpgradesDisabled()&&c.observation().isUpgradeAvailable(*b); }
 void NotUnderConstruction::save(GAGCore::OutputStream* s)const{s->writeEnterSection("BuildingCondition");s->writeSint32(type(),"type");s->writeLeaveSection();}
 void UnderConstruction::save(GAGCore::OutputStream* s)const{s->writeEnterSection("BuildingCondition");s->writeSint32(type(),"type");s->writeLeaveSection();}
 void BeingUpgraded::save(GAGCore::OutputStream* s)const{s->writeEnterSection("BuildingCondition");s->writeSint32(type(),"type");s->writeLeaveSection();}
@@ -546,18 +532,18 @@ void ResourceTracker::tick()
 	int stock=0;
 	if(resource==RecurringInputStock)
 	{
-		const auto& semantics=building->type->semantics;
+		const auto& semantics=AIEngine::ObservationQueries::buildingType(context.observation(),*building).semantics;
 		for(int r=0;r<MAX_NB_RESOURCES;++r)
 		{
 			bool used=(semantics.feeding.enabled&&semantics.feeding.cost[r]>0)
 				||(semantics.healing.enabled&&semantics.healing.cost[r]>0)
-				||(building->type->shootingRange>0&&semantics.ammunitionResource==r&&semantics.ammunitionCost>0);
+				||(AIEngine::ObservationQueries::buildingType(context.observation(),*building).shootingRange>0&&semantics.ammunitionResource==r&&semantics.ammunitionCost>0);
 			for(const auto& recipe:semantics.production.recipes) used|=recipe.enabled&&recipe.cost[r]>0;
 			for(const auto& training:semantics.training) used|=training.enabled&&training.cost[r]>0;
-			if(used)stock+=building->resources[r];
+			if(used)stock+=context.observation().buildingResources(*building)[r];
 		}
 	}
-	else stock=building->resources[resource];
+	else stock=context.observation().buildingResources(*building)[resource];
 	record[position]=stock;position=(position+1)%record.size();
 }
 int ResourceTracker::get_total_level() const
@@ -612,15 +598,15 @@ ManagementOrder* ManagementOrder::load(GAGCore::InputStream* stream,Sint32 versi
 AssignWorkers::AssignWorkers(int workers,int id)
 	:workers(workers>MAXIMA_MAX_UNIT_WORKING?MAXIMA_MAX_UNIT_WORKING:workers),id(id){}
 Result AssignWorkers::wait(Context& c) const{return wait_for_building(c,id);}
-void AssignWorkers::modify(Context& c){AISharedRuntime::Read::Building* b=c.get_building_register().get_building(id);if(b)c.push_order(shared_ptr<Order>(new OrderModifyBuilding(b->gid,std::clamp(workers,0,b->type->semantics.assignmentLimit))));}
+void AssignWorkers::modify(Context& c){const AIEngine::BuildingView* b=c.get_building_register().get_building(id);if(b)c.push_order(shared_ptr<Order>(new OrderModifyBuilding(b->gid,std::clamp(workers,0,AIEngine::ObservationQueries::buildingType(c.observation(),*b).semantics.assignmentLimit))));}
 void AssignWorkers::save_payload(GAGCore::OutputStream* s)const{s->writeSint32(workers,"workers");s->writeSint32(id,"id");}
 ChangeSwarm::ChangeSwarm(int worker,int explorer,int warrior,int id):worker(worker),explorer(explorer),warrior(warrior),id(id){}
 Result ChangeSwarm::wait(Context& c) const{return wait_for_building(c,id);}
-void ChangeSwarm::modify(Context& c){AISharedRuntime::Read::Building* b=c.get_building_register().get_building(id);if(b){Sint32 ratios[NB_UNIT_TYPE]={worker,explorer,warrior};for(int u=0;u<NB_UNIT_TYPE;++u)if(!b->type->semantics.production.recipes[u].enabled)ratios[u]=0;c.push_order(shared_ptr<Order>(new OrderModifySwarm(b->gid,ratios)));}}
+void ChangeSwarm::modify(Context& c){const AIEngine::BuildingView* b=c.get_building_register().get_building(id);if(b){Sint32 ratios[NB_UNIT_TYPE]={worker,explorer,warrior};for(int u=0;u<NB_UNIT_TYPE;++u)if(!AIEngine::ObservationQueries::buildingType(c.observation(),*b).semantics.production.recipes[u].enabled)ratios[u]=0;c.push_order(shared_ptr<Order>(new OrderModifySwarm(b->gid,ratios)));}}
 void ChangeSwarm::save_payload(GAGCore::OutputStream* s)const{s->writeSint32(worker,"worker");s->writeSint32(explorer,"explorer");s->writeSint32(warrior,"warrior");s->writeSint32(id,"id");}
 DestroyBuilding::DestroyBuilding(int id):id(id){}
 Result DestroyBuilding::wait(Context& c) const{return wait_for_building(c,id);}
-void DestroyBuilding::modify(Context& c){AISharedRuntime::Read::Building* b=c.get_building_register().get_building(id);if(b)c.push_order(shared_ptr<Order>(new OrderDelete(b->gid)));}
+void DestroyBuilding::modify(Context& c){const AIEngine::BuildingView* b=c.get_building_register().get_building(id);if(b)c.push_order(shared_ptr<Order>(new OrderDelete(b->gid)));}
 void DestroyBuilding::save_payload(GAGCore::OutputStream* s)const{s->writeSint32(id,"id");}
 Result RetireAttraction::wait(Context& c) const {return wait_for_building(c,id);}
 void RetireAttraction::modify(Context& c)
@@ -628,8 +614,8 @@ void RetireAttraction::modify(Context& c)
 	const auto* building=c.get_building_register().get_building(id);
 	if(!building)return;
     const unsigned completedMask=c.complete_attraction_retirement(id,unitMask);
-    if(AIPlanning::hasIndependentAttractionUse(*building->type,completedMask)) return;
-    const auto& semantics=building->type->semantics;
+    if(AIPlanning::hasIndependentAttractionUse(AIEngine::ObservationQueries::buildingType(c.observation(),*building),completedMask)) return;
+    const auto& semantics=AIEngine::ObservationQueries::buildingType(c.observation(),*building).semantics;
 	if(semantics.instantPlacement&&!semantics.occupiesGround)
 		c.push_order(std::make_shared<OrderDelete>(building->gid));
 	else c.push_order(std::make_shared<OrderModifyBuilding>(building->gid,0));
@@ -641,22 +627,22 @@ void AddResourceTracker::modify(Context& c){c.add_resource_tracker(new ResourceT
 void AddResourceTracker::save_payload(GAGCore::OutputStream* s)const{s->writeSint32(length,"length");s->writeSint32(resource,"resource");s->writeSint32(id,"id");}
 ChangeFlagSize::ChangeFlagSize(int size,int id):size(size),id(id){}
 Result ChangeFlagSize::wait(Context& c) const{return wait_for_building(c,id);}
-void ChangeFlagSize::modify(Context& c){AISharedRuntime::Read::Building* b=c.get_building_register().get_building(id);if(b)c.push_order(shared_ptr<Order>(new OrderModifyFlag(b->gid,std::clamp(size,0,b->type->maxUnitStayRange))));}
+void ChangeFlagSize::modify(Context& c){const AIEngine::BuildingView* b=c.get_building_register().get_building(id);if(b)c.push_order(shared_ptr<Order>(new OrderModifyFlag(b->gid,std::clamp(size,0,AIEngine::ObservationQueries::buildingType(c.observation(),*b).maxUnitStayRange))));}
 void ChangeFlagSize::save_payload(GAGCore::OutputStream* s)const{s->writeSint32(size,"value");s->writeSint32(id,"id");}
 ChangeFlagMinimumLevel::ChangeFlagMinimumLevel(int level,int id,int targetRole):level(level),id(id),targetRole(targetRole){}
 Result ChangeFlagMinimumLevel::wait(Context& c) const{return wait_for_building(c,id);}
 void ChangeFlagMinimumLevel::modify(Context& c)
 {
 	const auto* b=c.get_building_register().get_building(id);if(!b)return;
-	const bool explorers=targetRole==1 || (targetRole<0 && b->type->zonable[EXPLORER]
-		&& !b->type->zonable[WORKER] && !b->type->zonable[WARRIOR]);
+	const bool explorers=targetRole==1 || (targetRole<0 && AIEngine::ObservationQueries::buildingType(c.observation(),*b).zonable[EXPLORER]
+		&& !AIEngine::ObservationQueries::buildingType(c.observation(),*b).zonable[WORKER] && !AIEngine::ObservationQueries::buildingType(c.observation(),*b).zonable[WARRIOR]);
 	const int requirement=explorers ? (targetRole<0 ? level>1 : level!=0) : level-1;
 	c.push_order(std::make_shared<OrderModifyMinLevelToFlag>(b->gid,requirement,explorers ? 1 : 0));
 }
 void ChangeFlagMinimumLevel::save_payload(GAGCore::OutputStream* s)const{s->writeSint32(level,"value");s->writeSint32(id,"id");s->writeSint32(targetRole,"target_role");}
 ChangeFlagPosition::ChangeFlagPosition(int x,int y,int id):x(x),y(y),id(id){}
 Result ChangeFlagPosition::wait(Context& c) const{return wait_for_building(c,id);}
-void ChangeFlagPosition::modify(Context& c){AISharedRuntime::Read::Building* b=c.get_building_register().get_building(id);if(b&&b->type->semantics.relocatable)c.push_order(shared_ptr<Order>(new OrderMoveFlag(b->gid,x,y,true)));}
+void ChangeFlagPosition::modify(Context& c){const AIEngine::BuildingView* b=c.get_building_register().get_building(id);if(b&&AIEngine::ObservationQueries::buildingType(c.observation(),*b).semantics.relocatable)c.push_order(shared_ptr<Order>(new OrderMoveFlag(b->gid,x,y,true)));}
 void ChangeFlagPosition::save_payload(GAGCore::OutputStream* s)const{s->writeSint32(x,"x");s->writeSint32(y,"y");s->writeSint32(id,"id");}
 
 AddArea::AddArea(AreaType type):areaType(type){}
@@ -664,11 +650,11 @@ void AddArea::add_location(int x,int y){locations.push_back(position(x,y));}
 Result AddArea::wait(Context&) const{return Ready;}
 void AddArea::modify(Context& c)
 {
-	BrushAccumulator acc;for(size_t i=0;i<locations.size();++i)acc.applyBrush(BrushApplication(c.readPlayer()->map->normalizeX(locations[i].x),c.readPlayer()->map->normalizeY(locations[i].y),0),c.readPlayer()->map->getW(),c.readPlayer()->map->getH());if(!acc.getApplicationCount())return;
-	if(areaType==ClearingArea)c.push_order(AISharedRuntime::observationAreaOrder<OrderAlterClearArea>(c.readPlayer()->team->teamNumber,BrushTool::MODE_ADD,acc));
-	else if(areaType==ForbiddenArea)c.push_order(AISharedRuntime::observationAreaOrder<OrderAlterForbidden>(c.readPlayer()->team->teamNumber,BrushTool::MODE_ADD,acc));
-	else if(areaType==FarmArea)c.push_order(AISharedRuntime::observationAreaOrder<OrderAlterFarmArea>(c.readPlayer()->team->teamNumber,BrushTool::MODE_ADD,acc));
-	else c.push_order(AISharedRuntime::observationAreaOrder<OrderAlterGuardArea>(c.readPlayer()->team->teamNumber,BrushTool::MODE_ADD,acc));
+	BrushAccumulator acc;for(size_t i=0;i<locations.size();++i)acc.applyBrush(BrushApplication(c.observation().normalizeX(locations[i].x),c.observation().normalizeY(locations[i].y),0),c.observation().width,c.observation().height);if(!acc.getApplicationCount())return;
+	if(areaType==ClearingArea)c.push_order(AIEngine::observationAreaOrder<OrderAlterClearArea>(c.teamNumber(),BrushTool::MODE_ADD,acc));
+	else if(areaType==ForbiddenArea)c.push_order(AIEngine::observationAreaOrder<OrderAlterForbidden>(c.teamNumber(),BrushTool::MODE_ADD,acc));
+	else if(areaType==FarmArea)c.push_order(AIEngine::observationAreaOrder<OrderAlterFarmArea>(c.teamNumber(),BrushTool::MODE_ADD,acc));
+	else c.push_order(AIEngine::observationAreaOrder<OrderAlterGuardArea>(c.teamNumber(),BrushTool::MODE_ADD,acc));
 }
 void AddArea::save_payload(GAGCore::OutputStream* s)const{s->writeSint32(areaType,"area_type");s->writeUint32(locations.size(),"location_count");for(size_t i=0;i<locations.size();++i){s->writeEnterSection(i);s->writeSint32(locations[i].x,"x");s->writeSint32(locations[i].y,"y");s->writeLeaveSection();}}
 RemoveArea::RemoveArea(AreaType type):areaType(type){}
@@ -676,38 +662,39 @@ void RemoveArea::add_location(int x,int y){locations.push_back(position(x,y));}
 Result RemoveArea::wait(Context&) const{return Ready;}
 void RemoveArea::modify(Context& c)
 {
-	BrushAccumulator acc;for(size_t i=0;i<locations.size();++i)acc.applyBrush(BrushApplication(c.readPlayer()->map->normalizeX(locations[i].x),c.readPlayer()->map->normalizeY(locations[i].y),0),c.readPlayer()->map->getW(),c.readPlayer()->map->getH());if(!acc.getApplicationCount())return;
-	if(areaType==ClearingArea)c.push_order(AISharedRuntime::observationAreaOrder<OrderAlterClearArea>(c.readPlayer()->team->teamNumber,BrushTool::MODE_DEL,acc));
-	else if(areaType==ForbiddenArea)c.push_order(AISharedRuntime::observationAreaOrder<OrderAlterForbidden>(c.readPlayer()->team->teamNumber,BrushTool::MODE_DEL,acc));
-	else if(areaType==FarmArea)c.push_order(AISharedRuntime::observationAreaOrder<OrderAlterFarmArea>(c.readPlayer()->team->teamNumber,BrushTool::MODE_DEL,acc));
-	else c.push_order(AISharedRuntime::observationAreaOrder<OrderAlterGuardArea>(c.readPlayer()->team->teamNumber,BrushTool::MODE_DEL,acc));
+	BrushAccumulator acc;for(size_t i=0;i<locations.size();++i)acc.applyBrush(BrushApplication(c.observation().normalizeX(locations[i].x),c.observation().normalizeY(locations[i].y),0),c.observation().width,c.observation().height);if(!acc.getApplicationCount())return;
+	if(areaType==ClearingArea)c.push_order(AIEngine::observationAreaOrder<OrderAlterClearArea>(c.teamNumber(),BrushTool::MODE_DEL,acc));
+	else if(areaType==ForbiddenArea)c.push_order(AIEngine::observationAreaOrder<OrderAlterForbidden>(c.teamNumber(),BrushTool::MODE_DEL,acc));
+	else if(areaType==FarmArea)c.push_order(AIEngine::observationAreaOrder<OrderAlterFarmArea>(c.teamNumber(),BrushTool::MODE_DEL,acc));
+	else c.push_order(AIEngine::observationAreaOrder<OrderAlterGuardArea>(c.teamNumber(),BrushTool::MODE_DEL,acc));
 }
 void RemoveArea::save_payload(GAGCore::OutputStream* s)const{s->writeSint32(areaType,"area_type");s->writeUint32(locations.size(),"location_count");for(size_t i=0;i<locations.size();++i){s->writeEnterSection(i);s->writeSint32(locations[i].x,"x");s->writeSint32(locations[i].y,"y");s->writeLeaveSection();}}
 ChangeAlliances::ChangeAlliances(int team,OptionalBool allied,OptionalBool enemy,OptionalBool market,OptionalBool inn,OptionalBool other):team(team),allied(allied),enemy(enemy),market(market),inn(inn),other(other){}
 Result ChangeAlliances::wait(Context&) const{return Ready;}
 void ChangeAlliances::modify(Context& c)
 {
-	AISharedRuntime::Read::Team* t=c.readPlayer()->game->teams[team];if(!t)return;
+	if(team<0 || std::size_t(team)>=c.observation().teams.size())return;
+    const auto* t=&c.observation().teams[team];
 	struct Bit { static void apply(Uint32& mask,Uint32 bit,OptionalBool value){if(value==KeepValue)return;if(value==SetValue)mask|=bit;else mask&=~bit;} };
-	Bit::apply(c.allies,t->me,allied);Bit::apply(c.enemies,t->me,enemy);Bit::apply(c.market_view,t->me,market);Bit::apply(c.inn_view,t->me,inn);Bit::apply(c.other_view,t->me,other);
-	c.push_order(shared_ptr<Order>(new SetAllianceOrder(c.readPlayer()->team->teamNumber,c.allies,c.enemies,c.market_view,c.inn_view,c.other_view)));
+	Bit::apply(c.allies,t->mask,allied);Bit::apply(c.enemies,t->mask,enemy);Bit::apply(c.market_view,t->mask,market);Bit::apply(c.inn_view,t->mask,inn);Bit::apply(c.other_view,t->mask,other);
+	c.push_order(shared_ptr<Order>(new SetAllianceOrder(c.teamNumber(),c.allies,c.enemies,c.market_view,c.inn_view,c.other_view)));
 }
 void ChangeAlliances::save_payload(GAGCore::OutputStream* s)const{s->writeSint32(team,"team");s->writeSint32(allied,"allied");s->writeSint32(enemy,"enemy");s->writeSint32(market,"market");s->writeSint32(inn,"inn");s->writeSint32(other,"other");}
 ChangePriority::ChangePriority(int priority,int id):priority(priority),id(id){}
 Result ChangePriority::wait(Context& c) const{return wait_for_building(c,id);}
-void ChangePriority::modify(Context& c){AISharedRuntime::Read::Building* b=c.get_building_register().get_building(id);if(b)c.push_order(shared_ptr<Order>(new OrderChangePriority(b->gid,priority)));}
+void ChangePriority::modify(Context& c){const AIEngine::BuildingView* b=c.get_building_register().get_building(id);if(b)c.push_order(shared_ptr<Order>(new OrderChangePriority(b->gid,priority)));}
 void ChangePriority::save_payload(GAGCore::OutputStream* s)const{s->writeSint32(priority,"value");s->writeSint32(id,"id");}
 UpgradeRepair::UpgradeRepair(int id):id(id){}
 Result UpgradeRepair::wait(Context& c) const{return wait_for_building(c,id);}
 void UpgradeRepair::modify(Context& c)
 {
-	AISharedRuntime::Read::Building* b=c.get_building_register().get_building(id);
+	const AIEngine::BuildingView* b=c.get_building_register().get_building(id);
 	if(!b || c.get_building_register().is_building_upgrading(id)) return;
 	// A restored management request must not register an impossible upgrade
 	// after the planner has removed training investments. Damaged repairs remain.
-	if(b->hp<b->getEffectiveMaxHp()) { if(!b->type->semantics.repairable) return; }
-	else if(c.readPlayer()->game->gameHeader.isUnitUpgradesDisabled() || !b->isUpgradeAvailable()) return;
-	c.push_order(AISharedRuntime::Read::constructionOrder(*c.readPlayer()->game, *b,1,1));
+	if(b->hp<b->maxHp) { if(!AIEngine::ObservationQueries::buildingType(c.observation(),*b).semantics.repairable) return; }
+	else if(c.observation().configuration->isUnitUpgradesDisabled() || !c.observation().isUpgradeAvailable(*b)) return;
+	c.push_order(AIEngine::ObservationQueries::constructionOrder(c.observation(),*b,1,1));
 	c.get_building_register().set_upgrading(id,true);
 }
 void UpgradeRepair::save_payload(GAGCore::OutputStream* s)const{s->writeSint32(id,"id");}
@@ -746,7 +733,6 @@ void BuildingRegister::order_execution_completed(int gid, bool accepted, std::op
 
 void BuildingRegister::tick()
 {
-    binding.refreshOwner();
 	for(std::map<int,BuildingRecord>::iterator i=pendingBuildings.begin();i!=pendingBuildings.end();)
 	{
 		BuildingRecord& r=i->second;
@@ -754,19 +740,19 @@ void BuildingRegister::tick()
 		{
 			if(++r.age>300) { pendingBuildings.erase(i++); continue; }
 			int gid=NOGBID;
-			if(const auto* requested=readPlayer()->game->buildingsTypes.get(r.type); requested && !requested->semantics.occupiesGround)
+			if(const auto* requested=&observation().catalog->at(r.type).resolvedType; requested && !requested->semantics.occupiesGround)
 			{
 				for(int b=0;b<Building::MAX_COUNT;++b)
 				{
-					AISharedRuntime::Read::Building* candidate=readPlayer()->team->myBuildings[b];
+					const AIEngine::BuildingView* candidate=observation().buildingSlots(teamNumber())[b];
 					if(candidate && candidate->posX==r.x && candidate->posY==r.y
-					   && AIMaximaBuildings::lineageRoot(*readPlayer()->game,candidate->typeNum)==AIMaximaBuildings::lineageRoot(*readPlayer()->game,r.type)) { gid=candidate->gid; break; }
+					   && AIMaximaBuildings::lineageRoot(observation(),candidate->typeNum)==AIMaximaBuildings::lineageRoot(observation(),r.type)) { gid=candidate->gid; break; }
 				}
 			}
-			else gid=readPlayer()->map->getBuilding(r.x,r.y);
-			AISharedRuntime::Read::Building* found=building_from_gid(readPlayer(),gid);
-			if(found && Building::GIDtoTeam(gid)==readPlayer()->team->teamNumber
-			   && AIMaximaBuildings::lineageRoot(*readPlayer()->game,found->typeNum)==AIMaximaBuildings::lineageRoot(*readPlayer()->game,r.type))
+			else gid=observation().occupancyAt(observation().tileIndex(r.x,r.y)).building;
+			const AIEngine::BuildingView* found=building_from_gid(observation(),gid);
+			if(found && Building::GIDtoTeam(gid)==teamNumber()
+			   && AIMaximaBuildings::lineageRoot(observation(),found->typeNum)==AIMaximaBuildings::lineageRoot(observation(),r.type))
 			{
 				r.gid=gid; r.runtimeIdentity=identity_of(found);
 				foundBuildings[i->first]=r; pendingBuildings.erase(i++); continue;
@@ -777,7 +763,7 @@ void BuildingRegister::tick()
 	for(std::map<int,BuildingRecord>::iterator i=foundBuildings.begin();i!=foundBuildings.end();)
 	{
 		BuildingRecord& r=i->second;
-		AISharedRuntime::Read::Building* b=get_building(i->first);
+		const AIEngine::BuildingView* b=get_building(i->first);
 		if(!b) { foundBuildings.erase(i++); continue; }
 		r.x=b->posX; r.y=b->posY; r.type=b->typeNum;
 		if(r.upgrading)
@@ -794,33 +780,31 @@ bool BuildingRegister::is_building_pending(unsigned id) const { return pendingBu
 bool BuildingRegister::is_building_found(unsigned id) const { return get_building(id)!=NULL; }
 bool BuildingRegister::is_building_upgrading(unsigned id) const
 { std::map<int,BuildingRecord>::const_iterator i=foundBuildings.find(id); return i!=foundBuildings.end() && i->second.upgrading; }
-AISharedRuntime::Read::Building* BuildingRegister::get_building(unsigned id) const
+const AIEngine::BuildingView* BuildingRegister::get_building(unsigned id) const
 {
 	std::map<int,BuildingRecord>::const_iterator i=foundBuildings.find(id);
 	if(i==foundBuildings.end()) return NULL;
-	AISharedRuntime::Read::Building* building=building_from_gid(readPlayer(),i->second.gid);
+	const AIEngine::BuildingView* building=building_from_gid(observation(),i->second.gid);
 	return building && building->buildingState!=::Building::DEAD
 		&& identity_of(building)==i->second.runtimeIdentity ? building : NULL;
 }
 const ::BuildingType* BuildingRegister::get_building_type(unsigned id) const
-{ AISharedRuntime::Read::Building* b=get_building(id); return b?b->type:NULL; }
+{ const AIEngine::BuildingView* b=get_building(id); return b?&AIEngine::ObservationQueries::buildingType(observation(),*b):NULL; }
 bool BuildingRegister::has_role(unsigned id,int role) const
-{ const auto* b=get_building_type(id);return b&&AIMaximaBuildings::serves(*readPlayer()->game,*b,role); }
+{ const auto* b=get_building_type(id);return b&&AIMaximaBuildings::serves(observation(),*b,role); }
 int BuildingRegister::get_type(unsigned id) const
 { std::map<int,BuildingRecord>::const_iterator i=foundBuildings.find(id); return i==foundBuildings.end()?-1:i->second.type; }
-int BuildingRegister::get_level(unsigned id) const { AISharedRuntime::Read::Building* b=get_building(id); return b?AIMaximaBuildings::lineagePosition(*readPlayer()->game,b->typeNum):0; }
-int BuildingRegister::get_assigned(unsigned id) const { AISharedRuntime::Read::Building* b=get_building(id); return b?b->maxUnitWorking:0; }
-int BuildingRegister::get_enrolled(unsigned id) const { AISharedRuntime::Read::Building* b=get_building(id); return b?static_cast<int>(b->unitsWorking.size()):0; }
+int BuildingRegister::get_level(unsigned id) const { const AIEngine::BuildingView* b=get_building(id); return b?AIMaximaBuildings::lineagePosition(observation(),b->typeNum):0; }
+int BuildingRegister::get_assigned(unsigned id) const { const AIEngine::BuildingView* b=get_building(id); return b?b->maxUnitWorking:0; }
+int BuildingRegister::get_enrolled(unsigned id) const { const AIEngine::BuildingView* b=get_building(id); return b?static_cast<int>(b->working.count):0; }
 int BuildingRegister::get_on_site(unsigned id) const
 {
-	AISharedRuntime::Read::Building* b=get_building(id);
+	const AIEngine::BuildingView* b=get_building(id);
 	if(!b)return 0;
 	const int range=b->unitStayRange+1;
 	int result=0;
-	for(std::list<AISharedRuntime::Read::Unit*>::const_iterator unit=b->unitsWorking.begin();
-		unit!=b->unitsWorking.end();++unit)
-		if(*unit && readPlayer()->map->warpDistSquare(b->posX,b->posY,
-			(*unit)->posX,(*unit)->posY)<range*range)++result;
+    for(const auto& identity:observation().workers(*b))
+        if(const auto* unit=observation().unit(identity);unit && observation().distanceSquared(b->posX,b->posY,unit->posX,unit->posY)<range*range) ++result;
 	return result;
 }
 
@@ -855,9 +839,9 @@ bool BuildingRegister::load(GAGCore::InputStream* stream,Sint32 versionMinor)
 	for(auto& record:foundBuildings)
 	{
 		if(versionMinor>=FILE_FORMAT_VERSION_BUILDING_CATALOG &&
-		   (record.second.type<0 || size_t(record.second.type)>=readPlayer()->game->buildingsTypes.size()))
+		   (record.second.type<0 || size_t(record.second.type)>=observation().catalog->size()))
 			throw std::runtime_error("Invalid saved Maxima building variant");
-		AISharedRuntime::Read::Building* building=building_from_gid(readPlayer(),record.second.gid);
+		const AIEngine::BuildingView* building=building_from_gid(observation(),record.second.gid);
 		if(building) {
             if(versionMinor<FILE_FORMAT_VERSION_AI_PIPELINE) record.second.runtimeIdentity=identity_of(building);
             if(record.second.runtimeIdentity==identity_of(building)) record.second.type=building->typeNum;
@@ -869,9 +853,9 @@ bool BuildingRegister::load(GAGCore::InputStream* stream,Sint32 versionMinor)
 			r.type=binding.getOwner()->game->buildingsTypes.getPlaceableTypeNum(IntBuildingType::typeFromShortNumber(r.type));
 		}
 	for(const auto& [id,r]:pendingBuildings) if(r.issued &&
-		(r.type<0 || size_t(r.type)>=readPlayer()->game->buildingsTypes.size()
-		 || !readPlayer()->game->buildingsTypes.get(r.type)->semantics.placeable
-		 || r.x<0 || r.y<0 || r.x>=readPlayer()->map->getW() || r.y>=readPlayer()->map->getH()))
+		(r.type<0 || size_t(r.type)>=observation().catalog->size()
+		 || !observation().catalog->at(r.type).semantics.placeable
+		 || r.x<0 || r.y<0 || r.x>=observation().width || r.y>=observation().height))
 		throw std::runtime_error("Invalid saved Maxima pending building");
 	stream->readLeaveSection(); return true;
 }
@@ -914,13 +898,13 @@ bool MaximizedDistance::passes(Context& c,int x,int y){if(!cached)cached=&c.get_
 void MaximizedDistance::save(GAGCore::OutputStream* s)const{s->writeEnterSection("Constraint");s->writeSint32(type(),"type");info.save(s);s->writeSint32(weight,"value");s->writeLeaveSection();}
 int CenterOfBuilding::score(Context&,int,int){return 0;}
 bool CenterOfBuilding::passes(Context& c,int x,int y)
-{ AISharedRuntime::Read::Building* b=building_from_gid(c.readPlayer(),gid); return b && c.readPlayer()->map->normalizeX(b->posX+b->type->width/2)==x && c.readPlayer()->map->normalizeY(b->posY+b->type->height/2)==y; }
+{ const AIEngine::BuildingView* b=building_from_gid(c.observation(),gid); return b && c.observation().normalizeX(b->posX+AIEngine::ObservationQueries::buildingType(c.observation(),*b).width/2)==x && c.observation().normalizeY(b->posY+AIEngine::ObservationQueries::buildingType(c.observation(),*b).height/2)==y; }
 bool CenterOfBuilding::exact_position(Context& c,int& x,int& y)
-{ AISharedRuntime::Read::Building* b=building_from_gid(c.readPlayer(),gid);if(!b)return false;x=c.readPlayer()->map->normalizeX(b->posX+b->type->width/2);y=c.readPlayer()->map->normalizeY(b->posY+b->type->height/2);return true; }
+{ const AIEngine::BuildingView* b=building_from_gid(c.observation(),gid);if(!b)return false;x=c.observation().normalizeX(b->posX+AIEngine::ObservationQueries::buildingType(c.observation(),*b).width/2);y=c.observation().normalizeY(b->posY+AIEngine::ObservationQueries::buildingType(c.observation(),*b).height/2);return true; }
 void CenterOfBuilding::save(GAGCore::OutputStream* s)const{s->writeEnterSection("Constraint");s->writeSint32(type(),"type");s->writeSint32(gid,"gid");s->writeLeaveSection();}
 int SinglePosition::score(Context&,int,int){return 0;}
 bool SinglePosition::passes(Context& c,int px,int py)
-{return px==c.readPlayer()->map->normalizeX(x)&&py==c.readPlayer()->map->normalizeY(y);}
+{return px==c.observation().normalizeX(x)&&py==c.observation().normalizeY(y);}
 bool SinglePosition::exact_position(Context&,int& px,int& py){px=x;py=y;return true;}
 void SinglePosition::save(GAGCore::OutputStream* s)const{s->writeEnterSection("Constraint");s->writeSint32(type(),"type");s->writeSint32(x,"x");s->writeSint32(y,"y");s->writeLeaveSection();}
 
@@ -974,12 +958,12 @@ void BuildingOrder::reset_search()
 bool BuildingOrder::score_location(Context& context,const BuildingType* bt,bool flag,
 	int x,int y,int& total)
 {
-	AISharedRuntime::Read::Map* map=context.readPlayer()->map;
-	if(!context.readPlayer()->game->checkRoomForBuilding(x,y,bt,context.readPlayer()->team->teamNumber)) return false;
-	if(!flag&&!map->isHardSpaceForBuilding(x,y,bt->width,bt->height))return false;
+	const AIEngine::AIWorldView* map=&context.observation();
+	if(!AIEngine::ObservationQueries::roomForBuilding(context.observation(),x,y,*bt,context.teamNumber())) return false;
+	if(!flag&&!AIEngine::ObservationQueries::hardBuildingSpace((*map),x,y,bt->width,bt->height))return false;
 	if(flag)
 	{
-		for(int b=0;b<Building::MAX_COUNT;++b){AISharedRuntime::Read::Building* f=context.readPlayer()->team->myBuildings[b];if(f&&!f->type->semantics.occupiesGround&&f->posX==x&&f->posY==y)return false;}
+		for(int b=0;b<Building::MAX_COUNT;++b){const AIEngine::BuildingView* f=context.observation().buildingSlots(context.teamNumber())[b];if(f&&!AIEngine::ObservationQueries::buildingType(context.observation(),*f).semantics.occupiesGround&&f->posX==x&&f->posY==y)return false;}
 	}
 	bool ok=true;total=0;
 	for(size_t ci=0;ci<constraints.size()&&ok;++ci)
@@ -988,23 +972,23 @@ bool BuildingOrder::score_location(Context& context,const BuildingType* bt,bool 
         // Exact coordinates constrain the placement origin. Applying them to
         // every corner rejects every footprint larger than a single tile.
         if(constraints[ci]->exact_position(context,exactX,exactY))
-            ok=constraints[ci]->passes(context,map->normalizeX(x),map->normalizeY(y));
+            ok=constraints[ci]->passes(context,(*map).normalizeX(x),(*map).normalizeY(y));
         else
-            for(int dx=0;dx<bt->width&&ok;++dx)for(int dy=0;dy<bt->height&&ok;++dy)if(dx==0||dy==0||dx==bt->width-1||dy==bt->height-1)ok=constraints[ci]->passes(context,map->normalizeX(x+dx),map->normalizeY(y+dy));
-		if(!flag&&(!map->isMapDiscovered(x,y,context.readPlayer()->team->allies)||!map->isMapDiscovered(x+bt->width-1,y+bt->height-1,context.readPlayer()->team->allies)))ok=false;
-		if(ok){total+=constraints[ci]->score(context,map->normalizeX(x),map->normalizeY(y));total+=constraints[ci]->score(context,map->normalizeX(x+bt->width-1),map->normalizeY(y));total+=constraints[ci]->score(context,map->normalizeX(x),map->normalizeY(y+bt->height-1));total+=constraints[ci]->score(context,map->normalizeX(x+bt->width-1),map->normalizeY(y+bt->height-1));}
+            for(int dx=0;dx<bt->width&&ok;++dx)for(int dy=0;dy<bt->height&&ok;++dy)if(dx==0||dy==0||dx==bt->width-1||dy==bt->height-1)ok=constraints[ci]->passes(context,(*map).normalizeX(x+dx),(*map).normalizeY(y+dy));
+		if(!flag&&(!AIEngine::ObservationQueries::discovered((*map),x,y,context.observedTeam().allies)||!AIEngine::ObservationQueries::discovered((*map),x+bt->width-1,y+bt->height-1,context.observedTeam().allies)))ok=false;
+		if(ok){total+=constraints[ci]->score(context,(*map).normalizeX(x),(*map).normalizeY(y));total+=constraints[ci]->score(context,(*map).normalizeX(x+bt->width-1),(*map).normalizeY(y));total+=constraints[ci]->score(context,(*map).normalizeX(x),(*map).normalizeY(y+bt->height-1));total+=constraints[ci]->score(context,(*map).normalizeX(x+bt->width-1),(*map).normalizeY(y+bt->height-1));}
 	}
 	return ok;
 }
 PlacementResult BuildingOrder::find_location(Context& context,int cellBudget,
 	bool& complete)
 {
-	AISharedRuntime::Read::Map* map=context.readPlayer()->map;
-	if(concreteType<0) concreteType=AIMaximaBuildings::choose(*context.readPlayer()->game,*context.readPlayer()->team,type).placementType;
-	if(concreteType<0 || static_cast<size_t>(concreteType)>=context.readPlayer()->game->buildingsTypes.size())
+	const AIEngine::AIWorldView* map=&context.observation();
+	if(concreteType<0) concreteType=AIMaximaBuildings::choose(context.observation(),context.observedTeam(),type).placementType;
+	if(concreteType<0 || static_cast<size_t>(concreteType)>=context.observation().catalog->size())
 	{complete=true;reset_search();return PlacementResult();}
-	const BuildingType* bt=context.readPlayer()->game->buildingsTypes.get(concreteType);
-	if(!bt || !context.readPlayer()->game->isBuildingTypeAvailable(concreteType)){complete=true;reset_search();return PlacementResult();}
+	const BuildingType* bt=&context.observation().catalog->at(concreteType).resolvedType;
+	if(!bt || !context.observation().catalog->at(concreteType).available){complete=true;reset_search();return PlacementResult();}
 	const bool flag=!bt->semantics.occupiesGround;
 
 	// Most tactical flags already carry an exact coordinate.  Resolving it here
@@ -1015,7 +999,7 @@ PlacementResult BuildingOrder::find_location(Context& context,int cellBudget,
 	{
 		int x=0,y=0;
 		if(!constraints[ci]->exact_position(context,x,y))continue;
-		x=map->normalizeX(x);y=map->normalizeY(y);
+		x=(*map).normalizeX(x);y=(*map).normalizeY(y);
 		if(hasExact&&(exact.x!=x||exact.y!=y))
 		{complete=true;reset_search();return PlacementResult();}
 		exact=position(x,y);hasExact=true;
@@ -1027,7 +1011,7 @@ PlacementResult BuildingOrder::find_location(Context& context,int cellBudget,
 			?PlacementResult(exact):PlacementResult();
 	}
 
-	const int width=map->getW(),height=map->getH();
+	const int width=(*map).width,height=(*map).height;
 	if(!searchActive||searchWidth!=width||searchHeight!=height)
 	{reset_search();searchActive=true;searchWidth=width;searchHeight=height;}
 	const int end=std::min(width*height,searchCursor+std::max(1,cellBudget));
@@ -1082,8 +1066,8 @@ void enemy_team_iterator::advance()
 	if(ended)return;
 	for(++team;team<Team::MAX_COUNT;++team)
 	{
-		AISharedRuntime::Read::Team* candidate=context->readPlayer()->game->teams[team];
-		if(candidate&&(context->readPlayer()->team->attackableTeams()&candidate->me))return;
+		const auto* candidate=std::size_t(team)<context->observation().teams.size() ? &context->observation().teams[team] : nullptr;
+		if(candidate&&(context->observedTeam().enemies&candidate->mask))return;
 	}
 	ended=true;
 }
@@ -1097,14 +1081,14 @@ enemy_building_iterator::enemy_building_iterator(Context& context,int team,int t
 	:context(&context),team(team),type(type),level(level),index(-1),gid(-1),construction(construction),ended(false){advance();}
 void enemy_building_iterator::advance()
 {
-	if(ended)return; AISharedRuntime::Read::Team* owner=(team>=0&&team<Team::MAX_COUNT)?context->readPlayer()->game->teams[team]:NULL;
+	if(ended)return; const auto* owner=(team>=0&&std::size_t(team)<context->observation().teams.size()) ? &context->observation().teams[team] : nullptr;
 	if(!owner){ended=true;return;}
 	for(++index;index<Building::MAX_COUNT;++index)
 	{
-		AISharedRuntime::Read::Building* b=owner->myBuildings[index];if(!b||!(b->seenByMask&context->readPlayer()->team->me))continue;
-		if(type!=-1&&!AIMaximaBuildings::serves(*context->readPlayer()->game,*b->type,type))continue;
-		if(level!=-1&&AIMaximaBuildings::lineagePosition(*context->readPlayer()->game,b->typeNum)!=level)continue;
-		if(construction!=AnyConstruction&&int(construction)!=int(bool(b->type->isBuildingSite)))continue;
+		const AIEngine::BuildingView* b=context->observation().buildingSlots(team)[index];if(!b||!(b->seenByMask&context->observedTeam().mask))continue;
+		if(type!=-1&&!AIMaximaBuildings::serves(context->observation(),AIEngine::ObservationQueries::buildingType(context->observation(),*b),type))continue;
+		if(level!=-1&&AIMaximaBuildings::lineagePosition(context->observation(),b->typeNum)!=level)continue;
+		if(construction!=AnyConstruction&&int(construction)!=int(bool(AIEngine::ObservationQueries::buildingType(context->observation(),*b).isBuildingSite)))continue;
 		gid=b->gid;return;
 	}
 	ended=true;
@@ -1115,29 +1099,29 @@ bool enemy_building_iterator::operator!=(const enemy_building_iterator& rhs) con
 {if(ended||rhs.ended)return ended!=rhs.ended;return context!=rhs.context||team!=rhs.team||index!=rhs.index;}
 
 MapInfo::MapInfo(Context& context):context(context){}
-int MapInfo::get_width()const{return context.readPlayer()->map->getW();}
-int MapInfo::get_height()const{return context.readPlayer()->map->getH();}
-bool MapInfo::is_forbidden_area(int x,int y)const{return context.readPlayer()->map->isForbidden(x,y,context.readPlayer()->team->me);}
-bool MapInfo::is_guard_area(int x,int y)const{return context.readPlayer()->map->isGuardArea(x,y,context.readPlayer()->team->me);}
-bool MapInfo::is_clearing_area(int x,int y)const{return context.readPlayer()->map->isClearArea(x,y,context.readPlayer()->team->me);}
-bool MapInfo::is_discovered(int x,int y)const{return context.readPlayer()->map->isMapDiscovered(x,y,context.readPlayer()->team->me);}
-bool MapInfo::is_resource(int x,int y,int type)const{return context.readPlayer()->map->isResourceTakeable(x,y,type);}
-bool MapInfo::is_resource(int x,int y)const{return context.readPlayer()->map->isResource(x,y);}
-bool MapInfo::is_walkable(int x,int y)const{return context.readPlayer()->map->terrainPropertiesAt(x,y).walkable;}
-bool MapInfo::is_crop_habitat(int x,int y)const{return context.readPlayer()->map->terrainPropertiesAt(x,y).allowedResources & (1u<<WHEAT);}
-bool MapInfo::is_water(int x,int y)const{return context.readPlayer()->map->terrainPropertiesAt(x,y).swimmable;}
-bool MapInfo::is_sand(int x,int y)const{return context.readPlayer()->map->terrainPropertiesAt(x,y).inhibitionQ8 != 0;}
-bool MapInfo::is_grass(int x,int y)const{return context.readPlayer()->map->terrainPropertiesAt(x,y).buildable;}
+int MapInfo::get_width()const{return context.observation().width;}
+int MapInfo::get_height()const{return context.observation().height;}
+bool MapInfo::is_forbidden_area(int x,int y)const{return (context.observation().areasAt(context.observation().tileIndex(x,y)).forbidden&context.observedTeam().mask)!=0;}
+bool MapInfo::is_guard_area(int x,int y)const{return (context.observation().areasAt(context.observation().tileIndex(x,y)).guard&context.observedTeam().mask)!=0;}
+bool MapInfo::is_clearing_area(int x,int y)const{return (context.observation().areasAt(context.observation().tileIndex(x,y)).clear&context.observedTeam().mask)!=0;}
+bool MapInfo::is_discovered(int x,int y)const{return AIEngine::ObservationQueries::discovered(context.observation(),x,y,context.observedTeam().mask);}
+bool MapInfo::is_resource(int x,int y,int type)const{return AIEngine::ObservationQueries::resourceTakeable(context.observation(),x,y,type);}
+bool MapInfo::is_resource(int x,int y)const{return (context.observation().resourceAt(context.observation().tileIndex(x,y)).resource.type!=NO_RES_TYPE);}
+bool MapInfo::is_walkable(int x,int y)const{return AIEngine::ObservationQueries::terrain(context.observation(),x,y).walkable;}
+bool MapInfo::is_crop_habitat(int x,int y)const{return AIEngine::ObservationQueries::terrain(context.observation(),x,y).allowedResources & (1u<<WHEAT);}
+bool MapInfo::is_water(int x,int y)const{return AIEngine::ObservationQueries::terrain(context.observation(),x,y).swimmable;}
+bool MapInfo::is_sand(int x,int y)const{return AIEngine::ObservationQueries::terrain(context.observation(),x,y).inhibitionQ8 != 0;}
+bool MapInfo::is_grass(int x,int y)const{return AIEngine::ObservationQueries::terrain(context.observation(),x,y).buildable;}
 bool MapInfo::backs_onto_sand(int x,int y)const
-{for(int dy=-1;dy<=1;++dy)for(int dx=-1;dx<=1;++dx)if((dx||dy)&&context.readPlayer()->map->terrainPropertiesAt(x+dx,y+dy).shoreline)return true;return false;}
-int MapInfo::get_ammount_resource(int x,int y)const{return context.readPlayer()->map->getResource(x,y).amount;}
+{for(int dy=-1;dy<=1;++dy)for(int dx=-1;dx<=1;++dx)if((dx||dy)&&AIEngine::ObservationQueries::terrain(context.observation(),x+dx,y+dy).shoreline)return true;return false;}
+int MapInfo::get_ammount_resource(int x,int y)const{return context.observation().resourceAt(context.observation().tileIndex(x,y)).resource.amount;}
 }
 
 void Context::bindObservation(const AIEngine::DecisionContext& decision)
 {
     observationBound=true;
     binding.bindOwned(decision.observation ? decision.observation : std::make_shared<AIEngine::AIWorldView>(decision.world.components()),decision.player,decision.team);
-    buildings.bind(readPlayer());gradients.bind(readPlayer());
+    buildings.bind(observation(),playerNumber(),teamNumber());gradients.bind(observation(),playerNumber(),teamNumber());
 }
 void Context::releaseObservation()
 {
@@ -1160,12 +1144,12 @@ Context::Context(Player* player)
 void Context::initialize()
 {
     auto ownerObservation=scopeOwnerObservation();
-	buildings.initiate();detect_fruit();allies=readPlayer()->team->allies;enemies=readPlayer()->team->attackableTeams();
-	market_view=readPlayer()->team->sharedVisionExchange;inn_view=readPlayer()->team->sharedVisionFood;other_view=readPlayer()->team->sharedVisionOther;initialized=true;
+	buildings.initiate();detect_fruit();allies=observedTeam().allies;enemies=observedTeam().enemies;
+	market_view=observedTeam().exchangeVision;inn_view=observedTeam().foodVision;other_view=observedTeam().otherVision;initialized=true;
 }
 void Context::detect_fruit()
 {
-	fruitOnMap=false;for(int x=0;x<readPlayer()->map->getW()&&!fruitOnMap;++x)for(int y=0;y<readPlayer()->map->getH();++y)if(readPlayer()->map->isResourceTakeable(x,y,CHERRY)||readPlayer()->map->isResourceTakeable(x,y,ORANGE)||readPlayer()->map->isResourceTakeable(x,y,PRUNE)){fruitOnMap=true;break;}
+	fruitOnMap=false;for(int x=0;x<observation().width&&!fruitOnMap;++x)for(int y=0;y<observation().height;++y)if(AIEngine::ObservationQueries::resourceTakeable(observation(),x,y,CHERRY)||AIEngine::ObservationQueries::resourceTakeable(observation(),x,y,ORANGE)||AIEngine::ObservationQueries::resourceTakeable(observation(),x,y,PRUNE)){fruitOnMap=true;break;}
 }
 unsigned Context::add_building_order(Construction::BuildingOrder* order)
 {
@@ -1179,7 +1163,7 @@ unsigned Context::add_building_order(Construction::BuildingOrder* order)
 
 bool Context::get_building_position(int id, int& x, int& y)
 {
-	if(AISharedRuntime::Read::Building* building=buildings.get_building(id))
+	if(const AIEngine::BuildingView* building=buildings.get_building(id))
 	{ x=building->posX; y=building->posY; return true; }
 	const auto pending=buildings.pending().find(id);
 	if(pending==buildings.pending().end()) return false;
@@ -1189,7 +1173,7 @@ bool Context::get_building_position(int id, int& x, int& y)
 		if(order->id==id)
 			for(const auto& constraint:order->constraints)
 				if(constraint->exact_position(*this,x,y))
-				{ x=readPlayer()->map->normalizeX(x); y=readPlayer()->map->normalizeY(y); return true; }
+				{ x=observation().normalizeX(x); y=observation().normalizeY(y); return true; }
 	return false;
 }
 
@@ -1250,54 +1234,54 @@ std::vector<int> Context::resource_flags(int resource) const
 		for(auto i=records[group]->begin(); i!=records[group]->end(); ++i)
 		{
 			const Construction::BuildingRecord& record=i->second;
-			if(record.type<0 || static_cast<size_t>(record.type)>=readPlayer()->game->buildingsTypes.size()) continue;
-			const auto* descriptor=readPlayer()->game->buildingsTypes.get(record.type);
-			if(!descriptor||!AIMaximaBuildings::serves(*readPlayer()->game,*descriptor,AIMaximaBuildings::ExploreAttraction)) continue;
-			AISharedRuntime::Read::Building* flag=buildings.get_building(i->first);
+			if(record.type<0 || static_cast<size_t>(record.type)>=observation().catalog->size()) continue;
+			const auto* descriptor=&observation().catalog->at(record.type).resolvedType;
+			if(!descriptor||!AIMaximaBuildings::serves(observation(),*descriptor,AIMaximaBuildings::ExploreAttraction)) continue;
+			const AIEngine::BuildingView* flag=buildings.get_building(i->first);
 			if(group==1 && !flag) continue;
 			const int x=flag ? flag->posX : record.x;
 			const int y=flag ? flag->posY : record.y;
-			if(x>=0 && y>=0 && readPlayer()->map->getResource(x,y).type==resource)
+			if(x>=0 && y>=0 && observation().resourceAt(observation().tileIndex(x,y)).resource.type==resource)
 				ids.insert(i->first);
 		}
 	return std::vector<int>(ids.begin(), ids.end());
 }
 int Context::issue_building_at(int engineType,int workers,int x,int y)
 {
-	if(engineType<0 || static_cast<size_t>(engineType)>=readPlayer()->game->buildingsTypes.size())return -1;
-	const BuildingType* site=readPlayer()->game->buildingsTypes.get(engineType);
-	if(!site || !site->semantics.placeable || !readPlayer()->game->isBuildingTypeAvailable(engineType)
-	   || (site->semantics.occupiesGround && !readPlayer()->map->isHardSpaceForBuilding(x,y,site->width,site->height))
-	   || !readPlayer()->map->isMapDiscovered(x,y,readPlayer()->team->allies)
-	   || !readPlayer()->map->isMapDiscovered(x+site->width-1,y+site->height-1,readPlayer()->team->allies))return -1;
+	if(engineType<0 || static_cast<size_t>(engineType)>=observation().catalog->size())return -1;
+	const BuildingType* site=&observation().catalog->at(engineType).resolvedType;
+	if(!site || !site->semantics.placeable || !observation().catalog->at(engineType).available
+	   || (site->semantics.occupiesGround && !AIEngine::ObservationQueries::hardBuildingSpace(observation(),x,y,site->width,site->height))
+	   || !AIEngine::ObservationQueries::discovered(observation(),x,y,observedTeam().allies)
+	   || !AIEngine::ObservationQueries::discovered(observation(),x+site->width-1,y+site->height-1,observedTeam().allies))return -1;
 	const int id=buildings.register_building();buildings.issue_order(id,x,y,engineType);
 	workers=std::clamp(workers,0,site->semantics.assignmentLimit);
 	Management::AssignWorkers* assignment=new Management::AssignWorkers(workers,id);
 	if(site->isBuildingSite)assignment->add_condition(new Conditions::ParticularBuilding(new Conditions::UnderConstruction,id));
 	add_management_order(assignment);
-	push_order(AISharedRuntime::Read::createOrder(*readPlayer()->game, readPlayer()->team->teamNumber,x,y,engineType,workers,workers));
+	push_order(AIEngine::ObservationQueries::createOrder(observation(), teamNumber(),x,y,engineType,workers,workers));
 	previousBuildingId=id;return id;
 }
 
 bool Context::issue_upgrade_repair(int id,bool repair)
 {
-	AISharedRuntime::Read::Building* building=buildings.get_building(id);
-	if(!building || buildings.is_building_upgrading(id) || building->type->isBuildingSite
+	const AIEngine::BuildingView* building=buildings.get_building(id);
+	if(!building || buildings.is_building_upgrading(id) || AIEngine::ObservationQueries::buildingType(observation(),*building).isBuildingSite
 	   || building->constructionResultState!=::Building::NO_CONSTRUCTION)
 		return false;
 	if(repair)
 	{
-		if(!building->type->semantics.repairable || building->hp>=building->getEffectiveMaxHp()
-		   || !building->isHardSpaceForBuildingSite(::Building::REPAIR))return false;
+		if(!AIEngine::ObservationQueries::buildingType(observation(),*building).semantics.repairable || building->hp>=building->maxHp
+		   || !observation().isHardSpaceForBuildingSite(*building, false))return false;
 	}
 	else
 	{
-		if(readPlayer()->game->gameHeader.isUnitUpgradesDisabled()
-		   || building->hp<building->getEffectiveMaxHp()
-		   || !building->isUpgradeAvailable()
-		   || !building->isHardSpaceForBuildingSite(::Building::UPGRADE))return false;
+		if(observation().configuration->isUnitUpgradesDisabled()
+		   || building->hp<building->maxHp
+		   || !observation().isUpgradeAvailable(*building)
+		   || !observation().isHardSpaceForBuildingSite(*building, true))return false;
 	}
-	push_order(AISharedRuntime::Read::constructionOrder(*readPlayer()->game, *building,1,1));
+	push_order(AIEngine::ObservationQueries::constructionOrder(observation(), *building,1,1));
 	buildings.set_upgrading(id,true);
 	return true;
 }
@@ -1309,7 +1293,7 @@ void Context::add_management_order(Management::ManagementOrder *order)
 void Context::add_resource_tracker(Management::ResourceTracker* tracker,int id){trackers[id]=shared_ptr<Management::ResourceTracker>(tracker);}
 shared_ptr<Management::ResourceTracker> Context::get_resource_tracker(int id)
 {std::map<int,shared_ptr<Management::ResourceTracker> >::iterator i=trackers.find(id);return i==trackers.end()?shared_ptr<Management::ResourceTracker>():i->second;}
-TeamStat& Context::get_team_stats(){return *readPlayer()->team->stats.getLatestStat();}
+const TeamStat& Context::get_team_stats(){return *&observedTeam().statistics;}
 void Context::dispatch_event(const RuntimeEvent& event){if(activeAI)activeAI->handle_event(*this,event);}
 
 void Context::update_trackers()
@@ -1369,13 +1353,13 @@ void Context::update_building_orders()
 		}
 		const position p=placement.value;
 		const int engineType=buildingOrders[i]->concreteType;
-		const auto* descriptor=readPlayer()->game->buildingsTypes.get(engineType);
+		const auto* descriptor=&observation().catalog->at(engineType).resolvedType;
 		const int id=buildingOrders[i]->id;buildings.issue_order(id,p.x,p.y,engineType);
 		const int workers=std::clamp(buildingOrders[i]->workers,0,descriptor->semantics.assignmentLimit);
 		Management::AssignWorkers* assignment=new Management::AssignWorkers(workers,id);
 		if(descriptor->isBuildingSite)assignment->add_condition(new Conditions::ParticularBuilding(new Conditions::UnderConstruction,id));
 		add_management_order(assignment);
-		push_order(AISharedRuntime::Read::createOrder(*readPlayer()->game, readPlayer()->team->teamNumber,p.x,p.y,engineType,workers,workers));
+		push_order(AIEngine::ObservationQueries::createOrder(observation(),teamNumber(),p.x,p.y,engineType,workers,workers));
 		previousBuildingId=id;buildingOrders.erase(buildingOrders.begin()+i);break;
 	}
 }
@@ -1398,7 +1382,7 @@ void Context::record_profile(long long totalMicros,long long aiMicros,
 	const size_t n=sorted.size();
     std::ostringstream text;
 	text<<"MAXIMA_TELEMETRY\t"<<timer<<"\t"
-		<<readPlayer()->team->teamNumber<<"\truntime_performance"
+		<<teamNumber()<<"\truntime_performance"
 		<<"\tsamples="<<n
 		<<"\ttick_p50_us="<<sorted[(n*50)/100]
 		<<"\ttick_p95_us="<<sorted[(n*95)/100]
@@ -1409,7 +1393,7 @@ void Context::record_profile(long long totalMicros,long long aiMicros,
 		<<"\tbuilding_search_total_us="<<profileBuildingSearchMicros
 		<<"\tbuilding_search_max_us="<<profileBuildingSearchMaxMicros
 		<<"\tbuilding_search_calls="<<profileBuildingSearchCalls
-        <<"\tgame_tick="<<readPlayer()->game->stepCounter<<'\n';
+        <<"\tgame_tick="<<observation().tick<<'\n';
     bufferedDiagnostics.push_back({{},{},text.str(),true});
 	profileTickMicros.clear();profileAiMicros=profileHousekeepingMicros=0;
 	profileBuildingSearchMicros=profileBuildingSearchMaxMicros=0;
@@ -1421,9 +1405,9 @@ shared_ptr<Order> Context::getOrder(RuntimeAI& ai)
 	const bool profiling=telemetry_enabled();
 	const std::chrono::steady_clock::time_point totalStarted=profiling
 		?std::chrono::steady_clock::now():std::chrono::steady_clock::time_point();
-	activeAI=&ai;if(!initialized)initialize();gradients.update(readPlayer()->game->stepCounter);
-	while (!orders.empty() && (!AIEngine::selectedTargetExists(*orders.front(),readPlayer()->game->source)
-        || !AISharedRuntime::Read::permittedQueuedOrder(*readPlayer()->game, *orders.front()))) {
+	activeAI=&ai;if(!initialized)initialize();gradients.update(observation().tick);
+	while (!orders.empty() && (!AIEngine::selectedTargetExists(*orders.front(),observation())
+        || !AIEngine::ObservationQueries::permittedQueuedOrder(observation(),*orders.front()))) {
         if(const auto* construction=dynamic_cast<const OrderConstruction*>(orders.front().get()))
             buildings.order_execution_completed(construction->gid,false,
                 orders.front()->aiSelectedTarget ? std::optional<Uint32>(orders.front()->aiSelectedTarget->generation) : std::nullopt);
@@ -1443,7 +1427,7 @@ shared_ptr<Order> Context::getOrder(RuntimeAI& ai)
 	// A stable team phase prevents several Maxima instances from doing their
 	// housekeeping on the same simulation update. Team zero retains the legacy
 	// phase; the remaining teams occupy the other three slots.
-	const bool housekeepingDue=((timer+readPlayer()->team->teamNumber)&3)==0;
+	const bool housekeepingDue=((timer+teamNumber())&3)==0;
 	long long housekeepingMicros=0,buildingSearchMicros=-1;
 	std::chrono::steady_clock::time_point phaseStarted;
 	if(profiling)phaseStarted=std::chrono::steady_clock::now();
@@ -1484,6 +1468,7 @@ shared_ptr<Order> Context::getOrder(RuntimeAI& ai)
 
 void Context::save(GAGCore::OutputStream* stream) const
 {
+    auto ownerObservation=const_cast<Context*>(this)->scopeOwnerObservation();
 	stream->writeEnterSection("V3Runtime");stream->writeSint32(timer,"timer");stream->writeSint32(previousBuildingId,"previous_building_id");stream->writeUint8(initialized,"initialized");stream->writeUint8(fruitOnMap,"fruit_on_map");stream->writeUint32(allies,"allies");stream->writeUint32(enemies,"enemies");stream->writeUint32(inn_view,"inn_view");stream->writeUint32(market_view,"market_view");stream->writeUint32(other_view,"other_view");
 	stream->writeEnterSection("orders");stream->writeUint32(orders.size(),"size");unsigned n=0;for(std::list<shared_ptr<Order> >::const_iterator i=orders.begin();i!=orders.end();++i,++n){stream->writeEnterSection(n);stream->writeUint32((*i)->getDataLength(),"size");stream->writeUint8((*i)->getOrderType(),"type");stream->write((*i)->getData(),(*i)->getDataLength(),"data");AIEngine::saveSelectedTarget(*stream,**i);stream->writeLeaveSection();}stream->writeLeaveSection();
 	buildings.save(stream);
@@ -1498,6 +1483,7 @@ void Context::save(GAGCore::OutputStream* stream) const
 }
 void Context::saveExecutionState(GAGCore::OutputStream* stream) const
 {
+    auto ownerObservation=scopeOwnerObservation();
     stream->writeEnterSection("RuntimeExecution95");
     AIMaximaContinuation::Writer archive(stream,true);
     stream->writeUint32(buildingOrders.size(),"size");
@@ -1527,6 +1513,7 @@ void Context::saveExecutionState(GAGCore::OutputStream* stream) const
 }
 void Context::loadExecutionState(GAGCore::InputStream* stream, Sint32 versionMinor)
 {
+    auto ownerObservation=scopeOwnerObservation();
     stream->readEnterSection("RuntimeExecution95");
     AIMaximaContinuation::Reader archive(stream,versionMinor>=FILE_FORMAT_VERSION_COMPACT_STATE,versionMinor);
     const Uint32 size=stream->readCount("size");
@@ -1558,14 +1545,15 @@ void Context::loadExecutionState(GAGCore::InputStream* stream, Sint32 versionMin
 }
 bool Context::load(GAGCore::InputStream* stream,Sint32 versionMinor)
 {
+    auto ownerObservation=scopeOwnerObservation();
 	stream->readEnterSection("V3Runtime");timer=stream->readSint32("timer");previousBuildingId=stream->readSint32("previous_building_id");initialized=stream->readUint8("initialized");fruitOnMap=stream->readUint8("fruit_on_map");allies=stream->readUint32("allies");enemies=stream->readUint32("enemies");inn_view=stream->readUint32("inn_view");market_view=stream->readUint32("market_view");other_view=stream->readUint32("other_view");
 	orders.clear();stream->readEnterSection("orders");Uint32 size=stream->readCount("size");for(Uint32 n=0;n<size;++n){stream->readEnterSection(n);Uint32 length=stream->readCount("size");std::vector<Uint8> data(length+1);data[0]=stream->readUint8("type");stream->read(data.data()+1,length,"data");auto order=Order::getOrder(data.data(),data.size(),versionMinor);if(!order)throw std::runtime_error("Invalid saved AI order");AIStateSerialization::normalizeLegacyOrderStaffing(*player->game,*order,versionMinor);AIEngine::loadSelectedTarget(*stream,*order,versionMinor);orders.push_back(order);stream->readLeaveSection();}stream->readLeaveSection();
 	buildings.load(stream,versionMinor);gradients.invalidate();
 	buildingOrders.clear();stream->readEnterSection("building_orders");size=stream->readCount("size");for(Uint32 n=0;n<size;++n){stream->readEnterSection(n);shared_ptr<Construction::BuildingOrder> order(Construction::BuildingOrder::load(stream,versionMinor));if(order){
 		if(versionMinor<FILE_FORMAT_VERSION_BUILDING_CATALOG)
 			order->concreteType=binding.getOwner()->game->buildingsTypes.getPlaceableTypeNum(IntBuildingType::typeFromShortNumber(order->type));
-		if(order->concreteType>=0 && (size_t(order->concreteType)>=readPlayer()->game->buildingsTypes.size()
-			|| !readPlayer()->game->buildingsTypes.get(order->concreteType)->semantics.placeable))
+		if(order->concreteType>=0 && (size_t(order->concreteType)>=observation().catalog->size()
+			|| !observation().catalog->at(order->concreteType).semantics.placeable))
 			throw std::runtime_error("Invalid saved Maxima placement variant");
 		order->queue_gradients(gradients);buildingOrders.push_back(order);}stream->readLeaveSection();}stream->readLeaveSection();
 	managementOrders.clear();stream->readEnterSection("management_orders");size=stream->readCount("size");for(Uint32 n=0;n<size;++n){stream->readEnterSection(n);shared_ptr<Management::ManagementOrder> order(Management::ManagementOrder::load(stream,versionMinor));if(order)managementOrders.push_back(order);stream->readLeaveSection();}stream->readLeaveSection();

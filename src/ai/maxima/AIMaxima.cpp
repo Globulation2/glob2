@@ -99,22 +99,20 @@ namespace
 		return value<0 ? value+interval : value;
 	}
 
-	bool remembered_footprint_currently_visible(AISharedRuntime::Read::Player* player,
+	bool remembered_footprint_currently_visible(const AIEngine::AIWorldView& world,unsigned observedTeam,
 		const Recon::BuildingSighting& building)
 	{
-		if(!player || !player->map)
-			return false;
-		for(int dy=0; dy<building.height; ++dy)
+				for(int dy=0; dy<building.height; ++dy)
 			for(int dx=0; dx<building.width; ++dx)
-				if(!player->map->isFOWDiscovered(building.x+dx,
-					building.y+dy, player->team->me))
+				if(!AIEngine::ObservationQueries::visible(world,building.x+dx,
+					building.y+dy, world.teams[observedTeam].mask))
 					return false;
 		return true;
 	}
 
-	int reconnaissance_building_value(const AISharedRuntime::Read::World& game,int type,const MaximaStrategy::Reconnaissance& policy)
+	int reconnaissance_building_value(const AIEngine::AIWorldView& game,int type,const MaximaStrategy::Reconnaissance& policy)
 	{
-	 const auto* b=game.buildingsTypes.get(type);if(!b)return policy.default_building_value;
+	 const auto* b=&game.catalog->at(type).resolvedType;if(!b)return policy.default_building_value;
 	 int value=policy.default_building_value;
 	 for(const auto& entry:std::initializer_list<std::pair<int,int>>{{AIMaximaBuildings::Production,policy.swarm_building_value},{AIMaximaBuildings::Feeding,policy.inn_building_value},{AIMaximaBuildings::CombatTraining,policy.barracks_building_value},{AIMaximaBuildings::ConstructionTraining,policy.school_building_value}})
 	  if(AIMaximaBuildings::serves(game,*b,entry.first))value=std::max(value,entry.second);
@@ -198,20 +196,20 @@ namespace
 		int accessibleStoneTiles;
 	};
 
-	void collect_worker_sources(AISharedRuntime::Read::Player* player, bool swimming,
+	void collect_worker_sources(const AIEngine::AIWorldView& world,unsigned observedTeam, bool swimming,
 		const std::vector<Uint8>& walkable, std::vector<int>& sources)
 	{
-		AISharedRuntime::Read::Map* map=player->map;
-		const int width=map->getW();
-		const int height=map->getH();
+		const AIEngine::AIWorldView* map=&world;
+		const int width=(*map).width;
+		const int height=(*map).height;
 		for(int id=0; id<Unit::MAX_COUNT; ++id)
 		{
-			AISharedRuntime::Read::Unit* worker=player->team->myUnits[id];
+			const AIEngine::UnitView* worker=world.unitSlots(observedTeam)[id];
 			if(!worker || worker->typeNum!=WORKER
 			   || (swimming && worker->performance[SWIM]<=0))
 				continue;
-			const int x=map->normalizeX(worker->posX);
-			const int y=map->normalizeY(worker->posY);
+			const int x=(*map).normalizeX(worker->posX);
+			const int y=(*map).normalizeY(worker->posY);
 			const int index=y*width+x;
 			if(walkable[index])
 			{
@@ -233,26 +231,26 @@ namespace
 		}
 	}
 
-	ResourceAccessObservation observe_resource_access(AISharedRuntime::Read::Player* player,
+	ResourceAccessObservation observe_resource_access(const AIEngine::AIWorldView& world,unsigned observedTeam,
 		const std::vector<Uint8>& localTiles)
 	{
 		ResourceAccessObservation result;
-		AISharedRuntime::Read::Map* map=player->map;
-		const int width=map->getW();
-		const int height=map->getH();
+		const AIEngine::AIWorldView* map=&world;
+		const int width=(*map).width;
+		const int height=(*map).height;
 		std::vector<Uint8> walking(width*height, 0);
 		std::vector<Uint8> swimming(width*height, 0);
 		for(int y=0; y<height; ++y)
 			for(int x=0; x<width; ++x)
 			{
 				const int index=y*width+x;
-				const auto tile=map->getSpatialTile(x, y);
-				const bool clear=(tile.discovered&player->team->me)!=0
-					&& !(tile.forbidden&player->team->me)
+				const auto tile=AIEngine::ObservationQueries::spatialTile((*map),x, y);
+				const bool clear=(tile.discovered&world.teams[observedTeam].mask)!=0
+					&& !(tile.forbidden&world.teams[observedTeam].mask)
 					&& tile.building==NOGBID
 					&& tile.resource.type==NO_RES_TYPE;
 				if(clear) {
-					const auto& terrain=map->terrainPropertiesAt(index);
+					const auto& terrain=AIEngine::ObservationQueries::terrain((*map),index);
 					swimming[index]=terrain.walkable || terrain.swimmable;
 					walking[index]=terrain.walkable;
 				} else swimming[index]=walking[index]=0;
@@ -260,8 +258,8 @@ namespace
 
 		std::vector<int> walkingSources;
 		std::vector<int> swimmingSources;
-		collect_worker_sources(player, false, walking, walkingSources);
-		collect_worker_sources(player, true, swimming, swimmingSources);
+		collect_worker_sources(world,observedTeam, false, walking, walkingSources);
+		collect_worker_sources(world,observedTeam, true, swimming, swimmingSources);
 		std::vector<int> walkingDistance;
 		std::vector<int> swimmingDistance;
 		compute_preemptive_distance_field(width, height, walking, walkingSources,
@@ -273,16 +271,16 @@ namespace
 			for(int x=0; x<width; ++x)
 			{
 				const int index=y*width+x;
-				const auto resource=map->world->resourceAt(index).resource;
+				const auto resource=map->resourceAt(index).resource;
 				if(!localTiles[index]
-				   || !(map->world->visibilityAt(index).discovered&player->team->me)
+				   || !(map->visibilityAt(index).discovered&world.teams[observedTeam].mask)
 				   || resource.amount<=0
 				   || (resource.type!=ALGA && resource.type!=WHEAT
 					   && resource.type!=WOOD && resource.type!=STONE))
 					continue;
 				if(resource.type==ALGA)
 					result.knownAlgaeUnits+=resource.amount;
-				if(map->world->areasAt(index).forbidden&player->team->me)
+				if(map->areasAt(index).forbidden&world.teams[observedTeam].mask)
 					continue;
 				bool walkingReach=false;
 				bool swimmingReach=false;
@@ -519,8 +517,8 @@ void Maxima::emit_telemetry(Context& runtime, const std::string& event,
 		return;
     std::ostringstream text;
 	text<<"MAXIMA_TELEMETRY\t"<<timer<<"\t"
-		<<runtime.readPlayer()->team->teamNumber<<"\t"<<event<<fields
-		<<"\tgame_tick="<<runtime.readPlayer()->game->stepCounter<<'\n';
+		<<runtime.teamNumber()<<"\t"<<event<<fields
+		<<"\tgame_tick="<<runtime.observation().tick<<'\n';
     runtime.bufferedDiagnostics.push_back({{},{},text.str(),true});
 }
 
@@ -541,11 +539,9 @@ void Maxima::emit_ablation_opportunities(Context& runtime) const
 		context^=static_cast<Uint32>(values[i]);
 		context*=16777619u;
 	}
-	const int player=runtime.readPlayer() ? runtime.readPlayer()->number : -1;
-	const int team=runtime.readPlayer() && runtime.readPlayer()->team
-		? runtime.readPlayer()->team->teamNumber : -1;
-	const Uint32 eventTick=runtime.readPlayer() && runtime.readPlayer()->game
-		? runtime.readPlayer()->game->stepCounter : static_cast<Uint32>(timer);
+	const int player=runtime.playerNumber();
+	const int team=runtime.teamNumber();
+	const Uint32 eventTick=runtime.observation().tick;
 	const int population=std::max(1, snapshot.population);
 	const bool rawFood=snapshot.population>1 && (
 		snapshot.unserved_food*100
@@ -639,7 +635,7 @@ Maxima::StrategicSnapshot Maxima::collect_snapshot(Context& runtime)
     collect_building_profiles();
     std::array<long long,3> recurringMeals{};
 	state.tick=timer;
-	TeamStat* stat=runtime.readPlayer()->team->stats.getLatestStat();
+	const TeamStat* stat=&runtime.observedTeam().statistics;
 	state.population=stat->totalUnit;
 	state.workers=stat->numberUnitPerType[WORKER];
 	state.free_warriors=stat->isFree[WARRIOR];
@@ -652,31 +648,31 @@ Maxima::StrategicSnapshot Maxima::collect_snapshot(Context& runtime)
 	state.hungry=stat->needFood;
 	state.critical_food=stat->needFoodCritical;
 	state.unserved_food=stat->needFoodNoInns;
-	if (runtime.readPlayer()->game->gameHeader.isHungerDisabled())
+	if (runtime.observation().configuration->isHungerDisabled())
 		state.hungry=state.critical_food=state.unserved_food=0;
 	state.need_heal=stat->needHeal;
 	state.buildings=stat->totalBuilding;
 	for(int id=0;id<Building::MAX_COUNT;++id) {
-	 const auto* b=runtime.readPlayer()->team->myBuildings[id];if(!b||b->buildingState==Building::DEAD)continue;
-	 const unsigned roles=AIMaximaBuildings::capabilities(*runtime.readPlayer()->game,*b->type);
+	 const auto* b=runtime.observation().buildingSlots(runtime.teamNumber())[id];if(!b||b->buildingState==Building::DEAD)continue;
+	 const unsigned roles=AIMaximaBuildings::capabilities(runtime.observation(),AIEngine::ObservationQueries::buildingType(runtime.observation(),*b));
 	 auto has=[&](int role){return bool(roles&AIMaximaBuildings::roleBit(role));};
 	 state.swarms+=has(AIMaximaBuildings::Production);state.inns+=has(AIMaximaBuildings::Feeding);
 	 state.barracks+=has(AIMaximaBuildings::CombatTraining);state.schools+=has(AIMaximaBuildings::ConstructionTraining);
 	 state.pools+=has(AIMaximaBuildings::SwimTraining);state.hospitals+=has(AIMaximaBuildings::Healing);
 	 state.racetracks+=has(AIMaximaBuildings::WalkTraining);state.towers+=has(AIMaximaBuildings::ProjectileDefense);
-	 if(!b->type->isBuildingSite) {
-	  const int level=std::min(3,AIMaximaBuildings::lineagePosition(*runtime.readPlayer()->game,b->typeNum));
+	 if(!AIEngine::ObservationQueries::buildingType(runtime.observation(),*b).isBuildingSite) {
+	  const int level=std::min(3,AIMaximaBuildings::lineagePosition(runtime.observation(),b->typeNum));
 	  if(has(AIMaximaBuildings::Feeding)){if(level==1)++state.inn_level1;else if(level==2)++state.inn_level2;else ++state.inn_level3;}
 	  if(has(AIMaximaBuildings::ConstructionTraining)){if(level==1)++state.school_level1;else if(level==2)++state.school_level2;else ++state.school_level3;}
 	 }
 	}
 	state.total_hp=stat->totalHP;
 	state.attack_power=stat->totalAttackPower;
-	state.prestige=runtime.readPlayer()->team->prestige;
+	state.prestige=runtime.observedTeam().prestige;
 	for(enemy_team_iterator enemy(runtime); enemy!=enemy_team_iterator(); ++enemy)
 	{
-		const AISharedRuntime::Read::Team* hostile=runtime.readPlayer()->game->teams[*enemy];
-		if(hostile && hostile->isAlive)
+		const AIEngine::TeamView* hostile=(&runtime.observation().teams[*enemy]);
+		if(hostile && hostile->alive)
 			state.enemy_prestige+=hostile->prestige;
 	}
 
@@ -696,7 +692,7 @@ Maxima::StrategicSnapshot Maxima::collect_snapshot(Context& runtime)
 	}
 	for(int i=0; i<Unit::MAX_COUNT; ++i)
 	{
-		AISharedRuntime::Read::Unit* unit=runtime.readPlayer()->team->myUnits[i];
+		const AIEngine::UnitView* unit=runtime.observation().unitSlots(runtime.teamNumber())[i];
         if(unit && !unit->isDead)recurringMeals[unit->typeNum]+=recipient_meal_rate(*unit);
 		if(unit && unit->underAttackTimer)
 			state.own_units_under_attack+=1;
@@ -709,23 +705,23 @@ Maxima::StrategicSnapshot Maxima::collect_snapshot(Context& runtime)
 
 	for(int i=0; i<Building::MAX_COUNT; ++i)
 	{
-		AISharedRuntime::Read::Building* building=runtime.readPlayer()->team->myBuildings[i];
+		const AIEngine::BuildingView* building=runtime.observation().buildingSlots(runtime.teamNumber())[i];
 		if(!building)
 			continue;
 		// Only a level-zero site is new construction. Upgrade sites retain the
 		// building's previous level and are governed by the separate quotas.
-		if(building->type->isBuildingSite&&building->constructionResultState==Building::NEW_BUILDING)
+		if(AIEngine::ObservationQueries::buildingType(runtime.observation(),*building).isBuildingSite&&building->constructionResultState==Building::NEW_BUILDING)
 			state.building_sites+=1;
-		if(AIMaximaBuildings::serves(*context.readPlayer()->game,*building->type,AIMaximaBuildings::Production)
-		   && !building->type->isBuildingSite
+		if(AIMaximaBuildings::serves(context.observation(),AIEngine::ObservationQueries::buildingType(runtime.observation(),*building),AIMaximaBuildings::Production)
+		   && !AIEngine::ObservationQueries::buildingType(runtime.observation(),*building).isBuildingSite
 		   && building->constructionResultState==Building::NO_CONSTRUCTION)
 			++state.completed_swarms;
 		if(building->underAttackTimer)
 			state.own_buildings_under_attack+=1;
-		if(!building->type->isBuildingSite
-		   && AIMaximaBuildings::serves(*context.readPlayer()->game,*building->type,AIMaximaBuildings::ProjectileDefense))
+		if(!AIEngine::ObservationQueries::buildingType(runtime.observation(),*building).isBuildingSite
+		   && AIMaximaBuildings::serves(context.observation(),AIEngine::ObservationQueries::buildingType(runtime.observation(),*building),AIMaximaBuildings::ProjectileDefense))
 		{
-			state.tower_stone+=building->resources[STONE];
+			state.tower_stone+=runtime.observation().buildingResources(*building)[STONE];
 			state.tower_bullets+=building->bullets;
 		}
 	}
@@ -739,7 +735,7 @@ Maxima::StrategicSnapshot Maxima::collect_snapshot(Context& runtime)
 	// In this snapshot trained_warriors measures usable production capacity,
 	// not engine levels. No training means all standing warriors clear the
 	// backlog; actual starting levels stay intact for combat calculations.
-	if (runtime.readPlayer()->game->gameHeader.isUnitUpgradesDisabled()) state.trained_warriors=state.warriors;
+	if (runtime.observation().configuration->isUnitUpgradesDisabled()) state.trained_warriors=state.warriors;
 	return state;
 }
 
@@ -901,8 +897,8 @@ void Maxima::initialize_topology_profile(Context& runtime)
 	int start_label=largest_label;
 	for(int id=0; id<Building::MAX_COUNT; ++id)
 	{
-		AISharedRuntime::Read::Building* building=runtime.readPlayer()->team->myBuildings[id];
-		if(!building || building->type->isVirtual)
+		const AIEngine::BuildingView* building=runtime.observation().buildingSlots(runtime.teamNumber())[id];
+		if(!building || AIEngine::ObservationQueries::buildingType(runtime.observation(),*building).isVirtual)
 			continue;
 		const int bx=(building->posX%width+width)%width;
 		const int by=(building->posY%height+height)%height;
@@ -930,7 +926,7 @@ void Maxima::initialize_topology_profile(Context& runtime)
 	global_algae_tiles=algae;
 	global_fruit_tiles=fruit;
 	const int participants=std::max(1,
-		runtime.readPlayer()->game->gameHeader.getNumberOfPlayers());
+		runtime.observation().configuration->getNumberOfPlayers());
 	const int global_food_per_player=(corn+fruit/2)/participants;
 	const int global_material_per_player=(wood+stone*3+algae*2)/participants;
 	const int global_space_per_player=buildable/participants;
@@ -1023,9 +1019,9 @@ void Maxima::update_environment_model(Context& runtime)
 	observed.water_tiles=0;
     collect_building_profiles();
 	std::array<long long,8> feedingRates{};
-	for(int id=0;id<Building::MAX_COUNT;++id){const auto* b=runtime.readPlayer()->team->myBuildings[id];
-	 if(!b||b->type->isBuildingSite||b->buildingState!=Building::ALIVE||!AIMaximaBuildings::serves(*runtime.readPlayer()->game,*b->type,AIMaximaBuildings::Feeding))continue;
-     const unsigned mask=b->type->semantics.feeding.unitMask&b->type->semantics.admittedUnitMask&7u;
+	for(int id=0;id<Building::MAX_COUNT;++id){const auto* b=runtime.observation().buildingSlots(runtime.teamNumber())[id];
+	 if(!b||AIEngine::ObservationQueries::buildingType(runtime.observation(),*b).isBuildingSite||b->buildingState!=Building::ALIVE||!AIMaximaBuildings::serves(runtime.observation(),AIEngine::ObservationQueries::buildingType(runtime.observation(),*b),AIMaximaBuildings::Feeding))continue;
+     const unsigned mask=AIEngine::ObservationQueries::buildingType(runtime.observation(),*b).semantics.feeding.unitMask&AIEngine::ObservationQueries::buildingType(runtime.observation(),*b).semantics.admittedUnitMask&7u;
      feedingRates[mask]+=development_feeding_visit_rate[b->typeNum];
 	}
     observed.feeding_capacity=aggregate_feeding_capacity(feedingRates);
@@ -1042,8 +1038,8 @@ void Maxima::update_environment_model(Context& runtime)
 	std::vector<Uint8> local_tiles(map_width*map_height,0);
 	for(int id=0;id<Building::MAX_COUNT;++id)
 	{
-		AISharedRuntime::Read::Building* building=runtime.readPlayer()->team->myBuildings[id];
-		if(!building||building->type->isVirtual)continue;
+		const AIEngine::BuildingView* building=runtime.observation().buildingSlots(runtime.teamNumber())[id];
+		if(!building||AIEngine::ObservationQueries::buildingType(runtime.observation(),*building).isVirtual)continue;
 		for(int dy=-policy.local_territory_radius;
 			dy<=policy.local_territory_radius;++dy)
 			for(int dx=-policy.local_territory_radius;
@@ -1051,15 +1047,15 @@ void Maxima::update_environment_model(Context& runtime)
 			if(dx*dx+dy*dy<=policy.local_territory_radius
 				*policy.local_territory_radius)
 			{
-				const int x=runtime.readPlayer()->map->normalizeX(building->posX+dx);
-				const int y=runtime.readPlayer()->map->normalizeY(building->posY+dy);
+				const int x=runtime.observation().normalizeX(building->posX+dx);
+				const int y=runtime.observation().normalizeY(building->posY+dy);
 				local_tiles[y*map_width+x]=1;
 			}
 	}
 	// Use the same worker connectivity for food and materials as for algae.
 	// Nearby deposits across water or behind blocked routes are not live supply.
 	const ResourceAccessObservation resources=
-		observe_resource_access(runtime.readPlayer(), local_tiles);
+		observe_resource_access(runtime.observation(),runtime.teamNumber(),local_tiles);
 	known_algae_units=resources.knownAlgaeUnits;
 	walk_accessible_algae_units=resources.walkingAlgaeUnits;
 	swim_accessible_algae_units=resources.swimmingAlgaeUnits;
@@ -1067,7 +1063,7 @@ void Maxima::update_environment_model(Context& runtime)
 	observed.accessible_algae=resources.accessibleAlgaeTiles;
 	std::set<int> food_tiles;
 	long long food_capacity=0;
-	std::vector<AISharedRuntime::Read::Building*> food_sources;
+	std::vector<const AIEngine::BuildingView*> food_sources;
 	BuildingSearch food_buildings(runtime);
 	food_buildings.add_condition(new NotUnderConstruction);
 	for(building_search_iterator i=food_buildings.begin();i!=food_buildings.end();++i)
@@ -1075,12 +1071,12 @@ void Maxima::update_environment_model(Context& runtime)
 		   || runtime.get_building_register().has_role(*i,AIMaximaBuildings::Production))
 		{
 			food_capacity+=nearby_farm_capacity(runtime,*i,&food_tiles);
-			AISharedRuntime::Read::Building* source=runtime.get_building_register().get_building(*i);
+			const AIEngine::BuildingView* source=runtime.get_building_register().get_building(*i);
 			if(source)food_sources.push_back(source);
 		}
 	if(food_capacity==0 && !food_sources.empty())
-		food_capacity=distantFoodCapacity(runtime.readPlayer()->map,food_sources,
-			runtime.readPlayer()->team->me,budget.can_swim,budget.swarm_supply_radius,
+		food_capacity=distantFoodCapacity(&runtime.observation(),food_sources,
+			runtime.observedTeam().mask,budget.can_swim,budget.swarm_supply_radius,
 			fertility_cache,&applied_farm_protection_mask,
 			strategy.farming.wheat_stock_horizon_ticks);
 	observed.accessible_corn=int(food_capacity/65536);
@@ -1103,7 +1099,7 @@ void Maxima::update_environment_model(Context& runtime)
 		}
 	}
 
-	TeamStat* stat=runtime.readPlayer()->team->stats.getLatestStat();
+	const TeamStat* stat=&runtime.observedTeam().statistics;
 	const int population=std::max(1, snapshot.population);
 	const int food_stress=(snapshot.hungry*policy.hungry_weight
 		+snapshot.critical_food*policy.critical_food_weight
@@ -1270,7 +1266,7 @@ void Maxima::score_demands()
 		+(100-environment.food_headroom)/policy.food_headroom_divisor
 		+food_pressure*policy.food_pressure_weight);
 	// Feeding pressure must disappear before it suppresses growth and military budgets.
-	if (context.readPlayer()->game->gameHeader.isHungerDisabled()) demands.food=0;
+	if (context.observation().configuration->isHungerDisabled()) demands.food=0;
 	demands.survival=clamp_score(std::max(demands.food,
 		environment.threat_pressure)+
 		(snapshot.population<policy.survival_population_threshold
@@ -1334,14 +1330,14 @@ std::vector<unsigned char> Maxima::reconnaissance_discovery_map(
 	Context& runtime) const
 {
     auto ownerObservation=runtime.scopeOwnerObservation();
-	AISharedRuntime::Read::Map* map=runtime.readPlayer()->map;
-	const int width=map->getW();
-	const int height=map->getH();
+	const AIEngine::AIWorldView* map=&runtime.observation();
+	const int width=(*map).width;
+	const int height=(*map).height;
 	std::vector<unsigned char> discovered(width*height, 0);
 	for(int y=0; y<height; ++y)
 		for(int x=0; x<width; ++x)
-			discovered[y*width+x]=map->isMapDiscovered(
-				x, y, runtime.readPlayer()->team->me) ? 1 : 0;
+			discovered[y*width+x]=AIEngine::ObservationQueries::discovered((*map),
+				x, y, runtime.observedTeam().mask) ? 1 : 0;
 	return discovered;
 }
 
@@ -1352,11 +1348,11 @@ void Maxima::remember_cleared_enemy_site(Context& runtime,
     auto ownerObservation=runtime.scopeOwnerObservation();
 	if(sighting.construction)
 		return;
-	AISharedRuntime::Read::Map* map=runtime.readPlayer()->map;
-	const int x=map->normalizeX(sighting.x+sighting.width/2);
-	const int y=map->normalizeY(sighting.y+sighting.height/2);
-	const int width=map->getW();
-	const int height=map->getH();
+	const AIEngine::AIWorldView* map=&runtime.observation();
+	const int x=(*map).normalizeX(sighting.x+sighting.width/2);
+	const int y=(*map).normalizeY(sighting.y+sighting.height/2);
+	const int width=(*map).width;
+	const int height=(*map).height;
 	bool merged=false;
 	for(std::vector<ClearedEnemySite>::iterator site=cleared_enemy_sites.begin();
 		site!=cleared_enemy_sites.end(); ++site)
@@ -1403,28 +1399,28 @@ void Maxima::sample_reconnaissance_forces(Context& runtime)
 	std::vector<int> living;
 	for(enemy_team_iterator enemy(runtime); enemy!=enemy_team_iterator(); ++enemy)
 	{
-		AISharedRuntime::Read::Team* enemy_team=runtime.readPlayer()->game->teams[*enemy];
-		if(enemy_team && enemy_team->isAlive)
+		const AIEngine::TeamView* enemy_team=(&runtime.observation().teams[*enemy]);
+		if(enemy_team && enemy_team->alive)
 			living.push_back(*enemy);
 	}
 	reconnaissance.beginForceObservation(timer, living);
 	std::vector<Tactics::ThreatSighting> threats;
-	std::vector<AISharedRuntime::Read::Building*> own_buildings;
+	std::vector<const AIEngine::BuildingView*> own_buildings;
 	for(int b=0; b<Building::MAX_COUNT; ++b)
 	{
-		AISharedRuntime::Read::Building* building=runtime.readPlayer()->team->myBuildings[b];
-		if(building && !building->type->isVirtual)
+		const AIEngine::BuildingView* building=runtime.observation().buildingSlots(runtime.teamNumber())[b];
+		if(building && !AIEngine::ObservationQueries::buildingType(runtime.observation(),*building).isVirtual)
 			own_buildings.push_back(building);
 	}
 
 	for(std::vector<int>::const_iterator team=living.begin(); team!=living.end(); ++team)
 	{
-		AISharedRuntime::Read::Team* enemy_team=runtime.readPlayer()->game->teams[*team];
+		const AIEngine::TeamView* enemy_team=(&runtime.observation().teams[*team]);
 		for(int i=0; i<Unit::MAX_COUNT; ++i)
 		{
-			AISharedRuntime::Read::Unit* unit=enemy_team->myUnits[i];
-			if(!unit || !runtime.readPlayer()->map->isFOWDiscovered(
-				unit->posX, unit->posY, runtime.readPlayer()->team->me))
+			const AIEngine::UnitView* unit=runtime.observation().unitSlots(enemy_team->number)[i];
+			if(!unit || !AIEngine::ObservationQueries::visible(runtime.observation(),
+				unit->posX, unit->posY, runtime.observedTeam().mask))
 				continue;
 			const bool warrior=unit->typeNum==WARRIOR;
 			const bool explorer=unit->typeNum==EXPLORER;
@@ -1435,7 +1431,7 @@ void Maxima::sample_reconnaissance_forces(Context& runtime)
 			if(warrior)
 				threats.push_back(Tactics::ThreatSighting(unit->gid, *team,
 					unit->posX, unit->posY,
-					std::max(1, unit->getRealAttackStrength()
+					std::max(1, AIEngine::ObservationQueries::realAttackStrength(runtime.observation(),*unit)
 						*unit->performance[ATTACK_SPEED]*unit->hp
 						/std::max(1, unit->performance[HP]))));
 			bool colony_threat=false;
@@ -1443,10 +1439,10 @@ void Maxima::sample_reconnaissance_forces(Context& runtime)
 			if(warrior || attack_explorer)
 			{
 				const int threat_radius=warrior ? 144 : 324;
-				for(std::vector<AISharedRuntime::Read::Building*>::const_iterator building=
+				for(std::vector<const AIEngine::BuildingView*>::const_iterator building=
 					own_buildings.begin(); building!=own_buildings.end(); ++building)
 				{
-					if(runtime.readPlayer()->map->warpDistSquare(unit->posX, unit->posY,
+					if(runtime.observation().distanceSquared(unit->posX, unit->posY,
 						(*building)->posX, (*building)->posY)<=threat_radius)
 					{
 						colony_threat=warrior;
@@ -1485,8 +1481,8 @@ void Maxima::update_reconnaissance(Context& runtime)
 	std::vector<int> living;
 	for(enemy_team_iterator enemy(runtime); enemy!=enemy_team_iterator(); ++enemy)
 	{
-		AISharedRuntime::Read::Team* enemy_team=runtime.readPlayer()->game->teams[*enemy];
-		if(enemy_team && enemy_team->isAlive)
+		const AIEngine::TeamView* enemy_team=(&runtime.observation().teams[*enemy]);
+		if(enemy_team && enemy_team->alive)
 			living.push_back(*enemy);
 	}
 	reconnaissance.beginObservation(timer, living);
@@ -1495,17 +1491,17 @@ void Maxima::update_reconnaissance(Context& runtime)
 
 	for(std::vector<int>::const_iterator team=living.begin(); team!=living.end(); ++team)
 	{
-		AISharedRuntime::Read::Team* enemy_team=runtime.readPlayer()->game->teams[*team];
+		const AIEngine::TeamView* enemy_team=(&runtime.observation().teams[*team]);
 		for(int i=0; i<Unit::MAX_COUNT; ++i)
 		{
-			AISharedRuntime::Read::Unit* unit=enemy_team->myUnits[i];
-			if(!unit || !runtime.readPlayer()->map->isFOWDiscovered(
-				unit->posX, unit->posY, runtime.readPlayer()->team->me))
+			const AIEngine::UnitView* unit=runtime.observation().unitSlots(enemy_team->number)[i];
+			if(!unit || !AIEngine::ObservationQueries::visible(runtime.observation(),
+				unit->posX, unit->posY, runtime.observedTeam().mask))
 				continue;
 			if(!unit->isDead)
 			{
 				if(unit->typeNum==WORKER) ++visible_workers[*team];
-				if(unit->typeNum==WARRIOR) visible_power[*team]+=warrior_power(unit);
+				if(unit->typeNum==WARRIOR) visible_power[*team]+=warrior_power(runtime.observation(),unit);
 			}
 			const bool warrior=unit->typeNum==WARRIOR;
 			const bool explorer=unit->typeNum==EXPLORER;
@@ -1533,7 +1529,7 @@ void Maxima::update_reconnaissance(Context& runtime)
 			if(warrior)
 				tactics.observeThreat(Tactics::ThreatSighting(unit->gid, *team,
 					unit->posX, unit->posY,
-					std::max(1, unit->getRealAttackStrength()
+					std::max(1, AIEngine::ObservationQueries::realAttackStrength(runtime.observation(),*unit)
 						*unit->performance[ATTACK_SPEED]*unit->hp
 						/std::max(1, unit->performance[HP]))));
 			bool colony_threat=false;
@@ -1543,9 +1539,9 @@ void Maxima::update_reconnaissance(Context& runtime)
 				const int threat_radius=warrior ? 144 : 324;
 				for(int b=0; b<Building::MAX_COUNT; ++b)
 				{
-					AISharedRuntime::Read::Building* own=runtime.readPlayer()->team->myBuildings[b];
-					if(own && !own->type->isVirtual
-					   && runtime.readPlayer()->map->warpDistSquare(unit->posX, unit->posY,
+					const AIEngine::BuildingView* own=runtime.observation().buildingSlots(runtime.teamNumber())[b];
+					if(own && !AIEngine::ObservationQueries::buildingType(runtime.observation(),*own).isVirtual
+					   && runtime.observation().distanceSquared(unit->posX, unit->posY,
 						own->posX, own->posY)<=threat_radius)
 					{
 						colony_threat=warrior;
@@ -1560,14 +1556,14 @@ void Maxima::update_reconnaissance(Context& runtime)
 
 		for(int i=0; i<Building::MAX_COUNT; ++i)
 		{
-			AISharedRuntime::Read::Building* building=enemy_team->myBuildings[i];
-			if(!building || building->type->isVirtual
-			   || !building_currently_visible(runtime.readPlayer(), building))
+			const AIEngine::BuildingView* building=runtime.observation().buildingSlots(enemy_team->number)[i];
+			if(!building || AIEngine::ObservationQueries::buildingType(runtime.observation(),*building).isVirtual
+			   || !building_currently_visible(runtime.observation(),runtime.observedTeam().mask,building))
 				continue;
 			reconnaissance.observeBuilding(Recon::BuildingSighting(
 				building->gid, *team, building->typeNum,
-				building->posX, building->posY, building->type->width,
-				building->type->height, building->type->isBuildingSite, timer));
+				building->posX, building->posY, AIEngine::ObservationQueries::buildingType(runtime.observation(),*building).width,
+				AIEngine::ObservationQueries::buildingType(runtime.observation(),*building).height, AIEngine::ObservationQueries::buildingType(runtime.observation(),*building).isBuildingSite, timer));
 		}
 
 		const Recon::OpponentIntel* remembered=reconnaissance.opponent(*team);
@@ -1580,14 +1576,14 @@ void Maxima::update_reconnaissance(Context& runtime)
 			{
 				if(building->second.currentlyVisible
 				   || !remembered_footprint_currently_visible(
-						runtime.readPlayer(), building->second))
+						runtime.observation(),runtime.teamNumber(),building->second))
 					continue;
 				const int id=Building::GIDtoID(building->first);
-				AISharedRuntime::Read::Building* actual=id>=0 && id<Building::MAX_COUNT
-					? enemy_team->myBuildings[id] : NULL;
+				const AIEngine::BuildingView* actual=id>=0 && id<Building::MAX_COUNT
+					? runtime.observation().buildingSlots(enemy_team->number)[id] : NULL;
 				if(!actual || actual->gid!=building->first
-				   || runtime.readPlayer()->map->getBuilding(building->second.x,
-					building->second.y)!=building->first)
+				   || runtime.observation().occupancyAt(runtime.observation().tileIndex(building->second.x,
+					building->second.y)).building!=building->first)
 					absent.push_back(building->first);
 			}
 		}
@@ -1607,8 +1603,8 @@ void Maxima::update_reconnaissance(Context& runtime)
 	}
 	reconnaissance.finishObservation();
 	Tactics::RaidRules raid_rules;
-	raid_rules.width=runtime.readPlayer()->map->getW();
-	raid_rules.height=runtime.readPlayer()->map->getH();
+	raid_rules.width=runtime.observation().width;
+	raid_rules.height=runtime.observation().height;
 	raid_rules.tick=timer;
 	raid_rules.clusterRadius=strategy.raiding.cluster_radius;
 	raid_rules.flagRadius=strategy.raiding.flag_radius;
@@ -1664,7 +1660,7 @@ void Maxima::update_opponent_models(Context& runtime)
 	AIMaximaRuntime::Gradients::GradientInfo home_info;
     home_info.terrainTravel=snapshot.swimming_warriors<6?field::TerrainTravel::Walk:field::TerrainTravel::Swim;
 	home_info.add_source(new Entities::AnyTeamBuilding(
-		runtime.readPlayer()->team->teamNumber, CompletedBuildings));
+		runtime.teamNumber(), CompletedBuildings));
 	home_info.add_obstacle(new Entities::AnyResource);
 	if(snapshot.swimming_warriors<6)
 		home_info.add_obstacle(new Entities::Unwalkable);
@@ -1699,7 +1695,7 @@ void Maxima::update_opponent_models(Context& runtime)
 			const int confidence=Recon::Program::confidenceForAge(
 				timer-building->second.lastSeenTick,
 				strategy.reconnaissance.memory_horizon_ticks);
-			model.strategic_value+=reconnaissance_building_value(*runtime.readPlayer()->game,
+			model.strategic_value+=reconnaissance_building_value(runtime.observation(),
 				building->second.type, strategy.reconnaissance)*confidence/100;
 			const int distance=home.get_height(
 				building->second.x, building->second.y);
@@ -1802,7 +1798,7 @@ void Maxima::update_reconnaissance_missions(Context& runtime)
 		return;
 	last_recon_mission_tick=timer;
 
-	AISharedRuntime::Read::Map* map=runtime.readPlayer()->map;
+	const AIEngine::AIWorldView* map=&runtime.observation();
 	const std::vector<unsigned char> discovered=reconnaissance_discovery_map(runtime);
 	const std::vector<Recon::MissionObjective>& objectives=
 		budget.reconnaissance_objectives;
@@ -1862,11 +1858,11 @@ void Maxima::update_reconnaissance_missions(Context& runtime)
 			|| mission.targetTeam!=objective.targetTeam;
 		const bool location_changed=mission.x!=objective.x || mission.y!=objective.y;
 		const int current_score=Recon::Program::frontierScore(
-			mission.x, mission.y, map->getW(), map->getH(), discovered,
+			mission.x, mission.y, (*map).width, (*map).height, discovered,
 			budget.reconnaissance_flag_radius);
 		const bool saturated=objective.frontier
 			&& Recon::Program::exploredPercentInRadius(
-			mission.x, mission.y, map->getW(), map->getH(), discovered,
+			mission.x, mission.y, (*map).width, (*map).height, discovered,
 				budget.reconnaissance_flag_radius)
 				>=strategy.reconnaissance.saturation_percent;
 		bool newer_building=false;
@@ -1946,10 +1942,10 @@ void Maxima::plan_reconnaissance_objectives(Context& runtime)
 		return;
 	}
 
-	AISharedRuntime::Read::Map* map=runtime.readPlayer()->map;
+	const AIEngine::AIWorldView* map=&runtime.observation();
 	const std::vector<unsigned char> discovered=reconnaissance_discovery_map(runtime);
 	budget.reconnaissance_objectives=Recon::Program::planObjectives(
-		report, contact_desired, map->getW(), map->getH(), discovered,
+		report, contact_desired, (*map).width, (*map).height, discovered,
 		budget.reconnaissance_flag_radius);
 
 	// Explorers are a late-game information service, not a raiding force.  Once
@@ -2018,19 +2014,19 @@ void Maxima::plan_reconnaissance_objectives(Context& runtime)
 							const int distance=dx*dx+dy*dy;
 							if(distance<minimum*minimum || distance>maximum*maximum)
 								continue;
-							const int x=((center_x+dx)%map->getW()
-								+map->getW())%map->getW();
-							const int y=((center_y+dy)%map->getH()
-								+map->getH())%map->getH();
-							const int index=y*map->getW()+x;
-							if(!discovered[index] || !map->terrainPropertiesAt(index).walkable
-							   || map->getResource(x, y).type==NO_RES_TYPE
+							const int x=((center_x+dx)%(*map).width
+								+(*map).width)%(*map).width;
+							const int y=((center_y+dy)%(*map).height
+								+(*map).height)%(*map).height;
+							const int index=y*(*map).width+x;
+							if(!discovered[index] || !AIEngine::ObservationQueries::terrain((*map),index).walkable
+							   || (*map).resourceAt((*map).tileIndex(x, y)).resource.type==NO_RES_TYPE
 							   || !seen_sites.insert(index).second)
 								continue;
 							EconomicWatchSite site;
 							site.x=x;
 							site.y=y;
-							const int resource=map->getResource(x, y).type;
+							const int resource=(*map).resourceAt((*map).tileIndex(x, y)).resource.type;
 							site.score=(resource==CHERRY || resource==ORANGE
 								|| resource==PRUNE)
 								? strategy.raiding.fruit_resource_value
@@ -2637,7 +2633,7 @@ void Maxima::build_policy_bids()
 			largest_enemy_force=std::max(largest_enemy_force,
 				opponents[team].estimated_warriors);
 	defense.desired_warriors=Tactics::desiredArmy(largest_enemy_force,
-		context.readPlayer()->game->stepCounter,strategy.assault.force_growth_ticks,
+		context.observation().tick,strategy.assault.force_growth_ticks,
 		strategy.military.warrior_floor,Unit::MAX_COUNT);
 	defense.defense_reserve=std::max(strategy.military.defense_reserve_floor,
 		std::max(largest_enemy_force*strategy.military.defense_enemy_percent/100
@@ -2719,7 +2715,7 @@ void Maxima::build_policy_bids()
 
 void Maxima::arbitrate_policy_bids()
 {
-	const auto& rules=context.readPlayer()->game->gameHeader;
+	const auto& rules=*context.observation().configuration;
 	// Capability gates precede arbitration: an impossible technology bid would
 	// otherwise win scarce labour and crowd out attainable economic projects.
 	if (rules.isUnitUpgradesDisabled())
@@ -2935,7 +2931,7 @@ void Maxima::finalize_director_plan(Context& runtime)
 	// Copy every executor-facing threshold into the immutable plan. From this
 	// point until the next strategic cadence, tactical code does not reinterpret
 	// configuration or posture.
-	budget.allow_upgrades=!runtime.readPlayer()->game->gameHeader.isUnitUpgradesDisabled() && strategy.upgrades.enabled && budget.allow_upgrades
+	budget.allow_upgrades=!runtime.observation().configuration->isUnitUpgradesDisabled() && strategy.upgrades.enabled && budget.allow_upgrades
 		&& snapshot.schools>=1
 		&& snapshot.population>=strategy.upgrades.level1_population_min;
 	budget.allow_level2_upgrades=budget.allow_upgrades
@@ -3042,12 +3038,12 @@ void Maxima::finalize_director_plan(Context& runtime)
 		const auto& action=entry.second;
 		if(action.purpose!=AIMaximaPlacement::ColonySeed
 		   || action.state!=AIMaximaPlacement::Completed) continue;
-		AISharedRuntime::Read::Building* building=runtime.get_building_register().get_building(action.buildingId);
+		const AIEngine::BuildingView* building=runtime.get_building_register().get_building(action.buildingId);
 		// Completion alone is not success: do not chain empty, unstaffed outposts.
 		// Once provisioned, remember startup so a later pause cannot block expansion.
 		if(building && !operating_colonies.count(action.id))
 		{
-			bool ready=false;for(const auto& recipe:building->type->semantics.production.recipes)if(recipe.enabled){bool stocked=true;for(int r=0;r<MAX_NB_RESOURCES;++r)stocked&=building->resources[r]>=recipe.cost[r];ready|=stocked;}
+			bool ready=false;for(const auto& recipe:AIEngine::ObservationQueries::buildingType(runtime.observation(),*building).semantics.production.recipes)if(recipe.enabled){bool stocked=true;for(int r=0;r<MAX_NB_RESOURCES;++r)stocked&=runtime.observation().buildingResources(*building)[r]>=recipe.cost[r];ready|=stocked;}
 			if(ready)
 			{
 				operating_colonies.insert(action.id);
@@ -3113,7 +3109,7 @@ void Maxima::finalize_director_plan(Context& runtime)
 	budget.tactical_review_interval=strategy.tactics.review_interval_ticks;
 	budget.tactics_enabled=strategy.tactics.enabled;
 	if(tactical_mission.flagId<0)
-		budget.tactical_flag_level=runtime.readPlayer()->game->gameHeader.isUnitUpgradesDisabled() ? 1 : strategy.tactics.flag_minimum_level;
+		budget.tactical_flag_level=runtime.observation().configuration->isUnitUpgradesDisabled() ? 1 : strategy.tactics.flag_minimum_level;
 	budget.tactical_siege_radius=strategy.tactics.siege_flag_radius;
 	budget.raid_flag_radius=strategy.raiding.flag_radius;
 	budget.tactical_stall_ticks=strategy.tactics.stall_ticks;
@@ -3240,12 +3236,12 @@ void Maxima::emit_director_snapshot(Context& runtime) const
 	int military_workers=0;
 	for(int i=0; i<Building::MAX_COUNT; ++i)
 	{
-		AISharedRuntime::Read::Building* building=runtime.readPlayer()->team->myBuildings[i];
-		if(!building || building->type->isBuildingSite)
+		const AIEngine::BuildingView* building=runtime.observation().buildingSlots(runtime.teamNumber())[i];
+		if(!building || AIEngine::ObservationQueries::buildingType(runtime.observation(),*building).isBuildingSite)
 			continue;
 		const int assigned=building->maxUnitWorking;
 		assigned_building_workers+=assigned;
-		const unsigned roles=AIMaximaBuildings::capabilities(*runtime.readPlayer()->game,*building->type);
+		const unsigned roles=AIMaximaBuildings::capabilities(runtime.observation(),AIEngine::ObservationQueries::buildingType(runtime.observation(),*building));
 		// Each assigned worker is charged once even when its building supplies
 		// several services from the same inventory.
 		if(roles&AIMaximaBuildings::roleBit(AIMaximaBuildings::Production))swarm_workers+=assigned;
@@ -3253,7 +3249,7 @@ void Maxima::emit_director_snapshot(Context& runtime) const
 		else if(roles&(AIMaximaBuildings::roleBit(AIMaximaBuildings::ConstructionTraining)|AIMaximaBuildings::roleBit(AIMaximaBuildings::WalkTraining)|AIMaximaBuildings::roleBit(AIMaximaBuildings::SwimTraining)))technology_workers+=assigned;
 		else if(roles)military_workers+=assigned;
 	}
-	TeamStat* stat=runtime.readPlayer()->team->stats.getLatestStat();
+	const TeamStat* stat=&runtime.observedTeam().statistics;
 	const bool endgame=snapshot.alive_enemies<=2;
 	const int campaign_population_required=std::max(endgame ? 45 : 50,
 		(endgame ? 55 : 70)-demands.aggression/5);
@@ -3553,10 +3549,10 @@ void Maxima::evaluate_strategy(Context& runtime)
 			+"\tnear_colony="
 				+telemetryText(snapshot.visible_colony_explorer_threat));
 	update_opponent_models(runtime);
-	if (runtime.readPlayer()->game->gameHeader.isHungerDisabled()) environment.food_headroom=100;
+	if (runtime.observation().configuration->isHungerDisabled()) environment.food_headroom=100;
 	score_demands();
 	// Capability changes must reach posture selection, not only the final executor.
-	const auto& rules=runtime.readPlayer()->game->gameHeader;
+	const auto& rules=*runtime.observation().configuration;
 	if (rules.isUnitUpgradesDisabled()) demands.technology=demands.mobility=0;
 	if (rules.isPeacefulModeEnabled()) demands.military=demands.aggression=0;
 	score_postures();
@@ -3621,8 +3617,7 @@ void Maxima::ensure_strategy()
     // Normal engine setup captures canonical player values. Direct controller
     // construction already resolved its private file-backed defaults on the
     // owner; an empty config must not reopen those files on a worker.
-    const auto* observed=context.readPlayer();
-    if(!observed->game->gameHeader.getAIConfig(observed->number).empty())
+    if(!context.observation().configuration->getAIConfig(context.playerNumber()).empty())
         resolve_strategy(true);
 	strategy_resolved=true;
 }
@@ -3635,11 +3630,12 @@ std::string Maxima::canonicalStrategy() const
 
 void Maxima::resolve_strategy(bool announce)
 {
-	AISharedRuntime::Read::Player* player=context.readPlayer();
+    auto ownerObservation=context.scopeOwnerObservation();
+	const auto& world=context.observation();
 	ResolvedStrategy resolved;
 	std::string error;
-	if(!StrategyResolver::resolveForPlayer(player->game->gameHeader,
-		player->number, resolved, error))
+	if(!StrategyResolver::resolveForPlayer(*world.configuration,
+		context.playerNumber(), resolved, error))
 	{
 		throw std::runtime_error("Maxima strategy error: "+error);
 	}
@@ -3659,7 +3655,7 @@ void Maxima::resolve_strategy(bool announce)
     std::ostringstream text;
 	text<<"Maxima strategy: format="
 		<<StrategyResolver::formatName(resolved.format)
-		<<" player="<<player->number<<" team="<<player->team->teamNumber<<" sources=";
+		<<" player="<<context.playerNumber()<<" team="<<context.teamNumber()<<" sources=";
 	for(size_t source=0; source<resolved.sources.size(); ++source)
 	{
 		if(source) text<<",";
@@ -3673,7 +3669,7 @@ void Maxima::resolve_strategy(bool announce)
 Maxima::Maxima(Player *player)
 	: context(player)
 {
-	assert(player && player->game);
+
 	strategy_resolved=false;
     {
         auto ownerObservation=context.scopeOwnerObservation();
@@ -3790,7 +3786,7 @@ void Maxima::tick(Context& runtime)
     auto ownerObservation=runtime.scopeOwnerObservation();
 	ensure_strategy();
 	timer++;
-	const int team=runtime.readPlayer()->team->teamNumber;
+	const int team=runtime.teamNumber();
 	// A new game and every loaded save start with no executable plan. Likewise,
 	// completion events invalidate director assumptions. Replan before any
 	// scheduled executor observes the plan.
@@ -3967,9 +3963,9 @@ void Maxima::handle_event(Context& runtime, const RuntimeEvent& event)
 			const int team=Building::GIDtoTeam(gid);
 			finished_team=team;
 			const int local=Building::GIDtoID(gid);
-			if(team>=0 && team<Team::MAX_COUNT && runtime.readPlayer()->game->teams[team]
+			if(team>=0 && team<Team::MAX_COUNT && std::size_t(team)<runtime.observation().teams.size()
 			   && local>=0 && local<Building::MAX_COUNT
-			   && runtime.readPlayer()->game->teams[team]->myBuildings[local]==NULL)
+			   && runtime.observation().buildingSlots(team)[local]==NULL)
 			{
 				reason="target_destroyed";
 				campaign.buildings_destroyed+=1;
@@ -4063,26 +4059,26 @@ Maxima::collect_building_profiles() const
 {
  using namespace AIMaximaPlacement;using namespace AIMaximaBuildings;
  if(development_profiles_initialized)return development_building_profiles;
- const auto& game=*context.readPlayer()->game;
- development_profile_index.assign(game.buildingsTypes.size(),-1);
- development_feeding_visit_rate.assign(game.buildingsTypes.size(),0);
+ const auto& game=context.observation();
+ development_profile_index.assign(game.catalog->size(),-1);
+ development_feeding_visit_rate.assign(game.catalog->size(),0);
  development_feeding_pause.fill(INT_MAX);
- std::vector<FeedingEstimate> operations(game.buildingsTypes.size());
- for(size_t id=0;id<game.buildingsTypes.size();++id) {
+ std::vector<FeedingEstimate> operations(game.catalog->size());
+ for(size_t id=0;id<game.catalog->size();++id) {
   // Recipe/seat ceilings describe potential work. A separate shared hauling
   // plan predicts usable feeding throughput; staffing feedback owns actual
   // carrier requests and placement prices the local route independently.
-  operations[id]=operatingEstimate(*game.buildingsTypes.get(id),strategy,game.gameHeader,false);
+  operations[id]=operatingEstimate(*(&game.catalog->at(id).resolvedType),strategy,*game.configuration,false);
   development_feeding_visit_rate[id]=int(std::min<long long>(INT_MAX,
-      operatingEstimate(*game.buildingsTypes.get(id),strategy,game.gameHeader,true).visitsPerTick));
+      operatingEstimate(*(&game.catalog->at(id).resolvedType),strategy,*game.configuration,true).visitsPerTick));
  }
  development_profiles_initialized=true;
- for(size_t root=0;root<game.buildingsTypes.size();++root) {
-  const auto* first=game.buildingsTypes.get(root);
+ for(size_t root=0;root<game.catalog->size();++root) {
+  const auto* first=(&game.catalog->at(root).resolvedType);
   if(!first->semantics.placeable)continue;
   BuildingProfile profile;profile.buildingType=int(root);int current=int(root),position=0;
-  for(size_t visited=0;visited<game.buildingsTypes.size()&&current>=0;++visited) {
-   const auto* placement=game.buildingsTypes.get(current);
+  for(size_t visited=0;visited<game.catalog->size()&&current>=0;++visited) {
+   const auto* placement=(&game.catalog->at(current).resolvedType);
    const auto* complete=completed(game,*placement);if(!complete)break;
    const int completeID=placement->isBuildingSite?placement->nextLevel:current;
    BuildingLevelProfile v;v.level=++position;v.engineType=current;v.completedType=completeID;
@@ -4100,7 +4096,7 @@ Maxima::collect_building_profiles() const
    v.initialCarriers=initialCarrierRequest(*complete,strategy);
    v.productionDemandPercent=strategy.food.swarm_demand_percent;
    for(int unit=0;unit<3;++unit)if(semantic.production.recipes[unit].enabled &&
-       !(unit==WARRIOR && game.gameHeader.isPeacefulModeEnabled())) {
+       !(unit==WARRIOR && game.configuration->isPeacefulModeEnabled())) {
        v.productionRecipes.ticks[unit]=semantic.production.recipes[unit].duration+1;
        std::copy_n(semantic.production.recipes[unit].cost.begin(),8,v.productionRecipes.costs[unit]);
    }
@@ -4135,7 +4131,7 @@ Maxima::collect_building_profiles() const
    }
    int sharedSeats=0;for(int role=Feeding;role<=ConstructionTraining;++role)sharedSeats=std::max(sharedSeats,v.serviceRates[role]);
    v.serviceThroughput=sharedSeats+v.serviceRates[Production]+v.serviceRates[ProjectileDefense];
-   v.durability=complete->hpMax*game.gameHeader.getBuildingHpMultiplier();v.capability=complete->prestige;
+   v.durability=complete->hpMax*game.configuration->getBuildingHpMultiplier();v.capability=complete->prestige;
    for(int role=0;role<RoleCount;++role)v.capability+=bool(v.roles&roleBit(role));
    profile.levels.push_back(v);current=complete->nextLevel;
   }
@@ -4159,13 +4155,13 @@ bool Maxima::profile_serves(int root,int role,int position) const
 int Maxima::feeding_capacity(int root,int position) const
 {
  const auto* v=profile_variant(root,position);if(!v||!(v->roles&AIMaximaBuildings::roleBit(AIMaximaBuildings::Feeding)))return 0;
- const auto* b=context.readPlayer()->game->buildingsTypes.get(v->completedType);if(!b)return 0;
+ const auto* b=&context.observation().catalog->at(v->completedType).resolvedType;if(!b)return 0;
  return feeding_capacity_for_type(v->completedType);
 }
 
-long long Maxima::recipient_meal_rate(const AISharedRuntime::Read::Unit& unit) const
+long long Maxima::recipient_meal_rate(const AIEngine::UnitView& unit) const
 {
- if(context.readPlayer()->game->gameHeader.isHungerDisabled())return 0;
+ if(context.observation().configuration->isHungerDisabled())return 0;
  const int action=unit.performance[FLY]>0?FLY:WALK;
  return recipientMealRate(Unit::HUNGRY_MAX,unit.trigHungry,unit.hungriness,
      unit.performance[action],action,strategy.farming.management_radius,development_feeding_pause[unit.typeNum]);
@@ -4174,7 +4170,7 @@ long long Maxima::recipient_meal_rate(const AISharedRuntime::Read::Unit& unit) c
 int Maxima::feeding_capacity_for_type(int type) const
 {
  collect_building_profiles();
- const auto* definition=context.readPlayer()->game->buildingsTypes.get(type);
+ const auto* definition=&context.observation().catalog->at(type).resolvedType;
  if(!definition || size_t(type)>=development_feeding_visit_rate.size())return 0;
  const unsigned admitted=definition->semantics.feeding.unitMask&definition->semantics.admittedUnitMask;
  const int populations[3]={snapshot.workers,snapshot.explorers,snapshot.warriors};
@@ -4187,7 +4183,7 @@ int Maxima::feeding_capacity_for_type(int type) const
      // Future recipients use the loaded game's race, including historical
      // hunger and movement values; an empty colony is not a zero-cost meal.
      for(int unit=0;unit<3;++unit)if(admitted&(1u<<unit)) {
-         const auto* base=&context.readPlayer()->game->source.unitType(unit,0);
+         const auto* base=&context.observation().unitType(unit,0);
          const int action=base->performance[FLY]>0?FLY:WALK;
          const int trigger=base->performance[ATTACK_SPEED]>0?Unit::HUNGRY_MAX*UNIT_HUNGRY_TRIG_NUM_WARRIOR/UNIT_HUNGRY_TRIG_DEN:Unit::HUNGRY_MAX/UNIT_HUNGRY_TRIG_DIVISOR_DEFAULT;
          const long long rate=recipientMealRate(Unit::HUNGRY_MAX,trigger,Race::hungriness,
@@ -4204,13 +4200,13 @@ int Maxima::feeding_capacity_for_type(int type) const
 int Maxima::aggregate_feeding_capacity(const std::array<long long,8>& rates) const
 {
  std::array<int,3> demand{snapshot.feeding_demand[0],snapshot.feeding_demand[1],snapshot.feeding_demand[2]};
- if(demand==std::array<int,3>{} && !context.readPlayer()->game->gameHeader.isHungerDisabled()) {
+ if(demand==std::array<int,3>{} && !context.observation().configuration->isHungerDisabled()) {
      // Empty or manually constructed planning observations use the loaded race;
      // live observations already contain actual per-recipient recurring rates.
      std::array<int,3> population{snapshot.workers,snapshot.explorers,snapshot.warriors};
      if(population==std::array<int,3>{})population[WORKER]=snapshot.population;
      for(int unit=0;unit<3;++unit)if(population[unit]) {
-         const auto* base=&context.readPlayer()->game->source.unitType(unit,0);
+         const auto* base=&context.observation().unitType(unit,0);
          const int action=base->performance[FLY]>0?FLY:WALK;
          const int trigger=base->performance[ATTACK_SPEED]>0?Unit::HUNGRY_MAX*UNIT_HUNGRY_TRIG_NUM_WARRIOR/UNIT_HUNGRY_TRIG_DEN:Unit::HUNGRY_MAX/UNIT_HUNGRY_TRIG_DIVISOR_DEFAULT;
          const long long rate=recipientMealRate(Unit::HUNGRY_MAX,trigger,Race::hungriness,
@@ -4230,7 +4226,7 @@ long long Maxima::birth_food_acreage() const
 
 int Maxima::preferred_profile(int role) const
 {
- const auto c=AIMaximaBuildings::choose(*context.readPlayer()->game,*context.readPlayer()->team,role);
+ const auto c=AIMaximaBuildings::choose(context.observation(),context.observedTeam(),role);
  return c.placementType;
 }
 
@@ -4342,15 +4338,15 @@ AIMaximaPlacement::WorldState Maxima::collect_development_world(
 {
     auto ownerObservation=runtime.scopeOwnerObservation();
 	using namespace AIMaximaPlacement;
-	AISharedRuntime::Read::Map* map=runtime.readPlayer()->map;WorldState world;
-	world.reset(map->getW(),map->getH());world.tick=timer;
+	const AIEngine::AIWorldView* map=&runtime.observation();WorldState world;
+	world.reset((*map).width,(*map).height);world.tick=timer;
 	Uint32 worldSignature=2166136261u;
 	add_preemptive_hash(worldSignature,Uint32(world.width));
 	add_preemptive_hash(worldSignature,Uint32(world.height));
 	// Final placement validation must see losses since the last strategy tick.
 	for(int id=0; id<Unit::MAX_COUNT; ++id)
 	{
-		const AISharedRuntime::Read::Unit* worker=runtime.readPlayer()->team->myUnits[id];
+		const AIEngine::UnitView* worker=runtime.observation().unitSlots(runtime.teamNumber())[id];
 		if(worker && worker->typeNum==WORKER && worker->performance[SWIM]>0)
 			++world.swimmingBuilders;
 	}
@@ -4365,25 +4361,25 @@ AIMaximaPlacement::WorldState Maxima::collect_development_world(
 	for(int y=0;y<world.height;++y)for(int x=0;x<world.width;++x)
 	{
 		const int index=y*world.width+x;
-		WorldTile& tile=world.tiles[index];const auto cell=map->getSpatialTile(x,y);
-		tile.discovered=(cell.discovered&runtime.readPlayer()->team->allies)!=0;
+		WorldTile& tile=world.tiles[index];const auto cell=AIEngine::ObservationQueries::spatialTile((*map),x,y);
+		tile.discovered=(cell.discovered&runtime.observedTeam().allies)!=0;
 		// Terrain is immutable during a match. Classifying the already-fetched
 		// cell avoids three wrapped MapInfo calls per tile on every planner scan.
-		const auto& terrain=map->terrainPropertiesAt(index);
+		const auto& terrain=AIEngine::ObservationQueries::terrain((*map),index);
 		tile.swimmable=terrain.swimmable;
 		tile.walkable=terrain.walkable;
 		tile.fertilitySource=terrainProvidesFertility(terrain);
 		tile.growthInhibiting=terrain.inhibitionQ8 != 0;
 		tile.buildable=terrain.buildable;tile.occupied=cell.building!=NOGBID;
 		tile.woodReserve=wood_reserve.cells[index]!=0;
-		tile.foodTraversable=!(cell.forbidden&runtime.readPlayer()->team->me)
+		tile.foodTraversable=!(cell.forbidden&runtime.observedTeam().mask)
 			|| applied_farm_protection_mask[index];
 		tile.ownOccupied=tile.occupied
-			&&Building::GIDtoTeam(cell.building)==runtime.readPlayer()->team->teamNumber;
+			&&Building::GIDtoTeam(cell.building)==runtime.teamNumber();
 		if(cell.resource.type!=NO_RES_TYPE)
 		{
 			tile.resourceType=cell.resource.type;tile.resourceAmount=cell.resource.amount;
-			tile.permanentResource=map->world->resourceEternal[cell.resource.type];
+			tile.permanentResource=map->resourceEternal[cell.resource.type];
 			tile.clearableResource=!tile.permanentResource;
 		}
 		const Uint32 flags=(tile.discovered?1u:0u)|(tile.buildable?2u:0u)
@@ -4440,20 +4436,20 @@ AIMaximaPlacement::WorldState Maxima::collect_development_world(
 			tile.protectedYield=(farm ? cell : cell*strategy.farming.wild_wheat_yield_percent/100)
 				+(farm ? 0 : stock);
 		}
-		tile.protectedness=map->isGuardArea(x,y,runtime.readPlayer()->team->me)
+		tile.protectedness=(map->areasAt(map->tileIndex(x,y)).guard&runtime.observedTeam().mask)!=0
 			? strategy.placement.guard_area_protectedness
 			: strategy.placement.baseline_protectedness;
 	}
 
 	for(int team=0;team<Team::MAX_COUNT;++team)
 	{
-		if(!runtime.readPlayer()->game->teams[team]
-		   || !(runtime.readPlayer()->team->attackableTeams()&runtime.readPlayer()->game->teams[team]->me))continue;
+		if(std::size_t(team)>=runtime.observation().teams.size()
+		   || !(runtime.observedTeam().enemies&runtime.observation().teams[team].mask))continue;
 		for(int id=0;id<Building::MAX_COUNT;++id)
 		{
-			AISharedRuntime::Read::Building* enemy=runtime.readPlayer()->game->teams[team]->myBuildings[id];
-			if(!enemy||enemy->type->isVirtual
-			   ||!(enemy->seenByMask&runtime.readPlayer()->team->allies))continue;
+			const AIEngine::BuildingView* enemy=runtime.observation().buildingSlots(team)[id];
+			if(!enemy||AIEngine::ObservationQueries::buildingType(runtime.observation(),*enemy).isVirtual
+			   ||!(enemy->seenByMask&runtime.observedTeam().allies))continue;
 			const int radius=strategy.placement.enemy_threat_radius;
 			for(int dy=-radius;dy<=radius;++dy)
 				for(int dx=-(radius-std::abs(dy));
@@ -4470,20 +4466,20 @@ AIMaximaPlacement::WorldState Maxima::collect_development_world(
 	const std::map<int,BuildingRecord>& found=runtime.get_building_register().found();
 	for(std::map<int,BuildingRecord>::const_iterator i=found.begin();i!=found.end();++i)
 	{
-		AISharedRuntime::Read::Building* building=runtime.get_building_register().get_building(i->first);
-		if(!building||building->type->isVirtual)continue;
+		const AIEngine::BuildingView* building=runtime.get_building_register().get_building(i->first);
+		if(!building||AIEngine::ObservationQueries::buildingType(runtime.observation(),*building).isVirtual)continue;
 		WorldBuilding value;value.id=i->first;value.gid=building->gid;
-		value.buildingType=AIMaximaBuildings::lineageRoot(*runtime.readPlayer()->game,building->typeNum);
-		value.level=AIMaximaBuildings::lineagePosition(*runtime.readPlayer()->game,building->typeNum);
+		value.buildingType=AIMaximaBuildings::lineageRoot(runtime.observation(),building->typeNum);
+		value.level=AIMaximaBuildings::lineagePosition(runtime.observation(),building->typeNum);
 		// A placeable intermediate variant can start its own development chain.
 		// Keep the planner's chosen root when observing that project's building.
 		for(const auto& [actionId,a]:development_planner.actions())if(a.buildingId==value.id)
 		 for(const auto& p:world.profiles)if(p.buildingType==a.buildingType)
 		  for(const auto& v:p.levels)if(v.completedType==building->typeNum||v.engineType==building->typeNum){value.buildingType=p.buildingType;value.level=v.level;}
-		value.centerX=map->normalizeX(building->posX-building->type->decLeft);
-		value.centerY=map->normalizeY(building->posY-building->type->decTop);
-		value.hp=building->hp;value.hpMax=building->getEffectiveMaxHp();
-		value.age=i->second.age;value.site=building->type->isBuildingSite;
+		value.centerX=(*map).normalizeX(building->posX-AIEngine::ObservationQueries::buildingType(runtime.observation(),*building).decLeft);
+		value.centerY=(*map).normalizeY(building->posY-AIEngine::ObservationQueries::buildingType(runtime.observation(),*building).decTop);
+		value.hp=building->hp;value.hpMax=building->maxHp;
+		value.age=i->second.age;value.site=AIEngine::ObservationQueries::buildingType(runtime.observation(),*building).isBuildingSite;
 		value.upgrading=runtime.get_building_register().is_building_upgrading(i->first);
         const auto* operating=profile_variant(value.buildingType,value.level);
         value.plannedCarriers=operating?operating->initialCarriers:0;
@@ -4493,8 +4489,8 @@ AIMaximaPlacement::WorldState Maxima::collect_development_world(
             const auto allowed=swarm_allowance.find(value.id);
             if(allowed!=swarm_allowance.end())value.plannedCarriers=std::min(value.plannedCarriers,allowed->second);
             value.plannedCarriers=std::clamp(value.plannedCarriers,0,
-                std::min(building->type->semantics.assignmentLimit,strategy.staffing.control_maximum_workers));
-            std::copy_n(building->ratio.data(),3,value.productionRatios);
+                std::min(AIEngine::ObservationQueries::buildingType(runtime.observation(),*building).semantics.assignmentLimit,strategy.staffing.control_maximum_workers));
+            std::copy_n(building->ratio,3,value.productionRatios);
         }
 		world.buildings.push_back(value);
 		const int radius=strategy.placement.building_protection_radius;
@@ -4544,7 +4540,7 @@ AIMaximaPlacement::WorldState Maxima::collect_development_world(
         world.feedingColonies.push_back({x,y,{}});
     }
     std::vector<std::array<long long,3>> colonyMeals(world.feedingColonies.size());
-    for(int id=0;id<Unit::MAX_COUNT;++id)if(const auto* u=runtime.readPlayer()->team->myUnits[id];u && !u->isDead)
+    for(int id=0;id<Unit::MAX_COUNT;++id)if(const auto* u=runtime.observation().unitSlots(runtime.teamNumber())[id];u && !u->isDead)
         colonyMeals[world.feedingColonyAt(u->posX,u->posY)][u->typeNum]+=recipient_meal_rate(*u);
     for(size_t colony=0;colony<world.feedingColonies.size();++colony)for(int unit=0;unit<3;++unit)
         world.feedingColonies[colony].demand[unit]=int(std::min<long long>(INT_MAX,(colonyMeals[colony][unit]+MealRatePrecision/2)/MealRatePrecision));
@@ -4562,10 +4558,10 @@ std::pair<int,int> Maxima::barracks_capacity(Context& runtime,int excludedAction
     auto ownerObservation=runtime.scopeOwnerObservation();
  using namespace AIMaximaPlacement;std::map<int,std::pair<int,int>> seats;
  for(const auto& [id,record]:runtime.get_building_register().found()) {
-  const auto* b=runtime.get_building_register().get_building(id);if(!b||!AIMaximaBuildings::serves(*runtime.readPlayer()->game,*b->type,AIMaximaBuildings::CombatTraining))continue;
-  const auto* complete=AIMaximaBuildings::completed(*runtime.readPlayer()->game,*b->type);
+  const auto* b=runtime.get_building_register().get_building(id);if(!b||!AIMaximaBuildings::serves(runtime.observation(),AIEngine::ObservationQueries::buildingType(runtime.observation(),*b),AIMaximaBuildings::CombatTraining))continue;
+  const auto* complete=AIMaximaBuildings::completed(runtime.observation(),AIEngine::ObservationQueries::buildingType(runtime.observation(),*b));
   if(!(complete->semantics.admittedUnitMask&(1u<<WARRIOR)))continue;
-  seats[b->gid]={b->buildingState==Building::ALIVE&&!b->type->isBuildingSite&&b->constructionResultState==Building::NO_CONSTRUCTION?b->maxUnitInside:0,complete->maxUnitInside};
+  seats[b->gid]={b->buildingState==Building::ALIVE&&!AIEngine::ObservationQueries::buildingType(runtime.observation(),*b).isBuildingSite&&b->constructionResultState==Building::NO_CONSTRUCTION?b->maxUnitInside:0,complete->maxUnitInside};
  }
  for(const auto& [id,a]:development_planner.actions()) {
   if(id==excludedAction||a.type!=UpgradeBuilding||(a.state!=CreateIssued&&a.state!=SiteObserved))continue;
@@ -4647,7 +4643,7 @@ Maxima::collect_development_intents(
 				?budget.recovery_active:demands[i].type==AIMaximaBuildings::ProjectileDefense
 				&&explorer_defense_active();
 			for(const auto& p:world.profiles){const auto* v=p.atLevel(1);
-			 if(!v||!v->available||!(v->roles&AIMaximaBuildings::roleBit(demands[i].type))||v->requiredWorkerLevel>context.readPlayer()->team->maxBuildLevel()||(demands[i].productionMask&&(v->productionUnitMask&demands[i].productionMask)!=demands[i].productionMask))continue;
+			 if(!v||!v->available||!(v->roles&AIMaximaBuildings::roleBit(demands[i].type))||v->requiredWorkerLevel>AIEngine::ObservationQueries::maxBuildLevel(context.observation(),context.teamNumber())||(demands[i].productionMask&&(v->productionUnitMask&demands[i].productionMask)!=demands[i].productionMask))continue;
 			 intent.buildingType=p.buildingType;intent.workers=std::min(intent.workers,v->assignmentLimit);
 			 auto old=std::find_if(result.begin(),result.end(),[&](const auto& x){return x.buildingType==intent.buildingType&&x.purpose==intent.purpose;});
 			 if(old==result.end())result.push_back(intent);else {old->priority=std::max(old->priority,intent.priority);old->unmetCount=std::max(old->unmetCount,intent.unmetCount);old->emergency|=intent.emergency;}
@@ -4726,33 +4722,33 @@ AIMaximaPlacement::DevelopmentLimits Maxima::collect_development_limits(Context&
  }
  for(const auto& [id,record]:runtime.get_building_register().found()) {
   const auto* b=runtime.get_building_register().get_building(id);if(!b||b->buildingState!=Building::ALIVE||b->constructionResultState==Building::NEW_BUILDING)continue;
-  const auto roles=capabilities(*runtime.readPlayer()->game,*b->type);
-  const bool running=!b->type->isBuildingSite&&b->constructionResultState==Building::NO_CONSTRUCTION&&!record.upgrading&&!unavailable.count(id);
+  const auto roles=capabilities(runtime.observation(),AIEngine::ObservationQueries::buildingType(runtime.observation(),*b));
+  const bool running=!AIEngine::ObservationQueries::buildingType(runtime.observation(),*b).isBuildingSite&&b->constructionResultState==Building::NO_CONSTRUCTION&&!record.upgrading&&!unavailable.count(id);
   for(int role=0;role<RoleCount;++role)if(roles&roleBit(role)){++total[role];operational[role]+=running;}
  }
  const int roles[]={Feeding,Healing,WalkTraining,SwimTraining,CombatTraining};
  const int first[]={budget.upgrade_level1_inn_weight,budget.upgrade_level1_hospital_weight,budget.upgrade_level1_racetrack_weight,budget.upgrade_level1_pool_weight,budget.upgrade_level1_barracks_weight};
  const int later[]={budget.upgrade_level2_inn_weight,budget.upgrade_level2_hospital_weight,budget.upgrade_level2_racetrack_weight,budget.upgrade_level2_pool_weight,budget.upgrade_level2_barracks_weight};
- const int qualification=runtime.readPlayer()->team->maxBuildLevel();
+ const int qualification=AIEngine::ObservationQueries::maxBuildLevel(runtime.observation(),runtime.teamNumber());
  const int healingWanted=Labour::hospitalBedsWanted(snapshot.warriors,strategy.military.hospital_beds_per_warrior_percent);
  std::vector<WorldBuilding> physical;
  for(const auto& [id,record]:runtime.get_building_register().found()) {
   const auto* b=runtime.get_building_register().get_building(id);if(!b||b->buildingState!=Building::ALIVE)continue;
-  WorldBuilding entry;entry.id=id;entry.buildingType=lineageRoot(*runtime.readPlayer()->game,b->typeNum);entry.level=lineagePosition(*runtime.readPlayer()->game,b->typeNum);physical.push_back(entry);
+  WorldBuilding entry;entry.id=id;entry.buildingType=lineageRoot(runtime.observation(),b->typeNum);entry.level=lineagePosition(runtime.observation(),b->typeNum);physical.push_back(entry);
  }
  const bool healingDeficit=committed_hospital_beds(physical,excludedAction)<healingWanted;
  const bool combatTrainingNeeded=snapshot.trained_warriors<snapshot.warriors;
- const auto* stat=runtime.readPlayer()->team->stats.getLatestStat();
+ const auto* stat=&runtime.observedTeam().statistics;
  bool hasPrestigeProvider=false;
  for(const auto& [id,record]:runtime.get_building_register().found()) {
   const auto* b=runtime.get_building_register().get_building(id);
-  if(b && b->buildingState==Building::ALIVE && completed(*runtime.readPlayer()->game,*b->type)->prestige>0)hasPrestigeProvider=true;
+  if(b && b->buildingState==Building::ALIVE && completed(runtime.observation(),AIEngine::ObservationQueries::buildingType(runtime.observation(),*b))->prestige>0)hasPrestigeProvider=true;
  }
  for(const auto& p:collect_building_profiles())for(const auto& v:p.levels) {
   int priority=-1;for(int r=0;r<5;++r)if(v.roles&roleBit(roles[r]))priority=std::max(priority,roles[r]==Healing&&!healingDeficit?0:v.level==1?first[r]:later[r]);
   const auto* next=p.atLevel(v.level+1);
-  if(next && runtime.readPlayer()->game->buildingsTypes.get(next->completedType)->prestige>
-      runtime.readPlayer()->game->buildingsTypes.get(v.completedType)->prestige) {
+  if(next && runtime.observation().catalog->at(next->completedType).resolvedType.prestige>
+      runtime.observation().catalog->at(v.completedType).resolvedType.prestige) {
    int trained=0;
    for(int level=std::clamp(next->requiredWorkerLevel,0,NB_UNIT_LEVELS-1);level<NB_UNIT_LEVELS;++level)
     trained+=stat->workersByConstructionLevel[level];
@@ -4782,9 +4778,9 @@ bool Maxima::issue_development_action(Context& runtime,
 	if(action.type==BuildCampusMember||action.type==BuildStandalone)
 	{
 		const auto* shape=profile_variant(action.buildingType,action.targetLevel);if(!shape)return false;
-		const auto* placement=runtime.readPlayer()->game->buildingsTypes.get(shape->engineType);if(!placement)return false;
-		const int x=runtime.readPlayer()->map->normalizeX(action.centerX+placement->decLeft);
-		const int y=runtime.readPlayer()->map->normalizeY(action.centerY+placement->decTop);
+		const auto* placement=&runtime.observation().catalog->at(shape->engineType).resolvedType;if(!placement)return false;
+		const int x=runtime.observation().normalizeX(action.centerX+placement->decLeft);
+		const int y=runtime.observation().normalizeY(action.centerY+placement->decTop);
 		buildingId=runtime.issue_building_at(shape->engineType,action.workers,x,y);
 		if(buildingId<0)return false;
 		if(profile_serves(action.buildingType,AIMaximaBuildings::Feeding,action.targetLevel))
@@ -5402,7 +5398,7 @@ std::set<int> Maxima::establishing_colony_buildings() const
 bool Maxima::food_building_pending_deletion(Context& runtime,int id) const
 {
     auto ownerObservation=runtime.scopeOwnerObservation();
-	const AISharedRuntime::Read::Building* building=runtime.get_building_register().get_building(id);
+	const AIEngine::BuildingView* building=runtime.get_building_register().get_building(id);
 	return food_retirement_issued.count(id)||relocation_destroy_issued.count(id)
 		||!building||building->buildingState==Building::WAITING_FOR_DESTRUCTION;
 }
@@ -5631,15 +5627,15 @@ Labour::Observation Maxima::observe_labour(Context& runtime) const
 {
     auto ownerObservation=runtime.scopeOwnerObservation();
 	Labour::Observation result;
-	AISharedRuntime::Read::Team* team=runtime.readPlayer()->team;
+	const AIEngine::TeamView* team=&runtime.observedTeam();
 	const bool swimming=labour_swimming_matters();
-	std::vector<const AISharedRuntime::Read::Building*> schools;
+	std::vector<const AIEngine::BuildingView*> schools;
 	for(int id=0; id<Building::MAX_COUNT; ++id)
 	{
-		const AISharedRuntime::Read::Building* b=team->myBuildings[id];
-		if(!b || !b->type || b->buildingState!=Building::ALIVE) continue;
-		const bool site=b->type->isBuildingSite;
-		const bool swarm=AIMaximaBuildings::serves(*context.readPlayer()->game,*b->type,AIMaximaBuildings::Production);
+		const AIEngine::BuildingView* b=runtime.observation().buildingSlots(team->number)[id];
+		if(!b || b->buildingState!=Building::ALIVE) continue;
+		const bool site=AIEngine::ObservationQueries::buildingType(runtime.observation(),*b).isBuildingSite;
+		const bool swarm=AIMaximaBuildings::serves(context.observation(),AIEngine::ObservationQueries::buildingType(runtime.observation(),*b),AIMaximaBuildings::Production);
 		if(swarm && !site)
 		{
 			++result.swarms;
@@ -5649,18 +5645,18 @@ Labour::Observation Maxima::observe_labour(Context& runtime) const
 			result.siteRequested+=std::max(0, b->desiredMaxUnitWorking);
 		// A barracks being upgraded keeps counting as two seats: its warriors are
 		// still coming, and a pause in births for every upgrade starves the army.
-		if(site && AIMaximaBuildings::serves(*context.readPlayer()->game,*b->type,AIMaximaBuildings::CombatTraining)
+		if(site && AIMaximaBuildings::serves(context.observation(),AIEngine::ObservationQueries::buildingType(runtime.observation(),*b),AIMaximaBuildings::CombatTraining)
 		   && b->constructionResultState==Building::UPGRADE)
-			result.barracksSeats+=std::min(2,AIMaximaBuildings::completed(*runtime.readPlayer()->game,*b->type)->maxUnitInside);
+			result.barracksSeats+=std::min(2,AIMaximaBuildings::completed(runtime.observation(),AIEngine::ObservationQueries::buildingType(runtime.observation(),*b))->maxUnitInside);
 		if(site) continue;
-		if(AIMaximaBuildings::serves(*context.readPlayer()->game,*b->type,AIMaximaBuildings::CombatTraining))
+		if(AIMaximaBuildings::serves(context.observation(),AIEngine::ObservationQueries::buildingType(runtime.observation(),*b),AIMaximaBuildings::CombatTraining))
 			result.barracksSeats+=b->maxUnitInside;
-		if(AIMaximaBuildings::serves(*context.readPlayer()->game,*b->type,AIMaximaBuildings::Healing))
+		if(AIMaximaBuildings::serves(context.observation(),AIEngine::ObservationQueries::buildingType(runtime.observation(),*b),AIMaximaBuildings::Healing))
 		{
 			++result.hospitals;
 			result.hospitalSeats+=b->maxUnitInside;
 		}
-		if(AIMaximaBuildings::serves(*context.readPlayer()->game,*b->type,AIMaximaBuildings::Feeding))
+		if(AIMaximaBuildings::serves(context.observation(),AIEngine::ObservationQueries::buildingType(runtime.observation(),*b),AIMaximaBuildings::Feeding))
 		{
 			++result.inns;
 			result.innSeats+=b->maxUnitInside;
@@ -5668,9 +5664,9 @@ Labour::Observation Maxima::observe_labour(Context& runtime) const
 		// Idle training reserves cannot pay off when units cannot learn. Existing
 		// hospitals and barracks still provide healing, so only training seats go.
 		bool trains=false;
-		if(!runtime.readPlayer()->game->gameHeader.isUnitUpgradesDisabled())for(int ability=0;ability<NB_ABILITY;++ability){
-		 const auto& t=b->type->semantics.training[ability];
-		 if(t.enabled&&(t.unitMask&b->type->semantics.admittedUnitMask&(1u<<WORKER))&&(ability==WALK||ability==BUILD||ability==HARVEST||t.constructionLevel>0||(swimming&&ability==SWIM)))trains=true;
+		if(!runtime.observation().configuration->isUnitUpgradesDisabled())for(int ability=0;ability<NB_ABILITY;++ability){
+		 const auto& t=AIEngine::ObservationQueries::buildingType(runtime.observation(),*b).semantics.training[ability];
+		 if(t.enabled&&(t.unitMask&AIEngine::ObservationQueries::buildingType(runtime.observation(),*b).semantics.admittedUnitMask&(1u<<WORKER))&&(ability==WALK||ability==BUILD||ability==HARVEST||t.constructionLevel>0||(swimming&&ability==SWIM)))trains=true;
 		}
 		if(trains)
 		{
@@ -5680,14 +5676,14 @@ Labour::Observation Maxima::observe_labour(Context& runtime) const
 	}
 	for(int id=0; id<Unit::MAX_COUNT; ++id)
 	{
-		const AISharedRuntime::Read::Unit* u=team->myUnits[id];
+		const AIEngine::UnitView* u=runtime.observation().unitSlots(team->number)[id];
 		if(!u || u->isDead) continue;
 		if(u->medical==Unit::MED_DAMAGED) ++result.hurtUnits;
-		if(!runtime.readPlayer()->game->gameHeader.isHungerDisabled() && u->medical==Unit::MED_HUNGRY) ++result.hungryUnits;
+		if(!runtime.observation().configuration->isHungerDisabled() && u->medical==Unit::MED_HUNGRY) ++result.hungryUnits;
 		if(u->typeNum!=WORKER) continue;
 		++result.workers;
 		if(u->level[WALK]==0) ++result.untrainedWalkers;
-		if(!runtime.readPlayer()->game->gameHeader.isHungerDisabled() && u->medical==Unit::MED_HUNGRY){++result.eating;continue;}
+		if(!runtime.observation().configuration->isHungerDisabled() && u->medical==Unit::MED_HUNGRY){++result.eating;continue;}
 		if(u->medical==Unit::MED_DAMAGED){++result.hurt;continue;}
 		if(u->activity==Unit::ACT_UPGRADING)
 		{
@@ -5695,19 +5691,19 @@ Labour::Observation Maxima::observe_labour(Context& runtime) const
 			continue;
 		}
 		if(u->activity==Unit::ACT_RANDOM) ++result.idle;
-		else if(u->attachedBuilding && u->attachedBuilding->type)
+		else if(const auto* attached=runtime.observation().building(u->attached))
 		{
-			const BuildingType* type=u->attachedBuilding->type;
+			const BuildingType* type=&AIEngine::ObservationQueries::buildingType(runtime.observation(),*attached);
 			if(type->isBuildingSite) ++result.builders;
-			else if(AIMaximaBuildings::serves(*context.readPlayer()->game,*type,AIMaximaBuildings::Production)) ++result.swarmCarriers;
-			else if(AIMaximaBuildings::serves(*context.readPlayer()->game,*type,AIMaximaBuildings::Feeding)) ++result.innCarriers;
+			else if(AIMaximaBuildings::serves(context.observation(),*type,AIMaximaBuildings::Production)) ++result.swarmCarriers;
+			else if(AIMaximaBuildings::serves(context.observation(),*type,AIMaximaBuildings::Feeding)) ++result.innCarriers;
 			else ++result.otherAssigned;
 		}
 		else ++result.otherAssigned;
 		bool canTrain=false;
 		for(size_t b=0;b<schools.size() && !canTrain;++b)
 			for(int ability=0;ability<NB_ABILITY && !canTrain;++ability)
-				if((ability!=SWIM || swimming) && u->needsTraining(schools[b]->type->semantics.training[ability],ability))
+				if((ability!=SWIM || swimming) && AIEngine::ObservationQueries::needsTraining(*u,AIEngine::ObservationQueries::buildingType(runtime.observation(),*schools[b]).semantics.training[ability],ability))
 					canTrain=true;
 		if(canTrain) ++result.trainable;
 	}
@@ -5820,15 +5816,15 @@ int Maxima::staff_building(Context& runtime, int id)
 int Maxima::update_staffing_request(Context& runtime, int id)
 {
     auto ownerObservation=runtime.scopeOwnerObservation();
-	AISharedRuntime::Read::Building* building=runtime.get_building_register().get_building(id);
-	if(!building || !building->type) return 0;
+	const AIEngine::BuildingView* building=runtime.get_building_register().get_building(id);
+	if(!building) return 0;
 	StaffingControl::Policy policy;
 	policy.windowSamples=budget.staffing_window_samples;
 	policy.lowPermille=budget.staffing_low_permille;
 	policy.highPermille=budget.staffing_high_permille;
 	policy.slack=budget.staffing_slack;
 	policy.minimumWorkers=budget.staffing_minimum_workers;
-	policy.maximumWorkers=std::min({MAXIMA_MAX_UNIT_WORKING,budget.staffing_maximum_workers,building->type->semantics.assignmentLimit});
+	policy.maximumWorkers=std::min({MAXIMA_MAX_UNIT_WORKING,budget.staffing_maximum_workers,AIEngine::ObservationQueries::buildingType(runtime.observation(),*building).semantics.assignmentLimit});
 	policy.minimumWorkers=std::min(policy.minimumWorkers,policy.maximumWorkers);
 	policy.cooldownPasses=budget.staffing_cooldown_passes;
 	// A building that has just been built starts where it is useful rather
@@ -5838,15 +5834,15 @@ int Maxima::update_staffing_request(Context& runtime, int id)
 	const bool fresh=staffing_control.find(id)==staffing_control.end();
 	StaffingControl::State& state=staffing_control[id];
 	if(fresh)
-		state.request=AIMaximaBuildings::serves(*context.readPlayer()->game,*building->type,AIMaximaBuildings::Production)
+		state.request=AIMaximaBuildings::serves(context.observation(),AIEngine::ObservationQueries::buildingType(runtime.observation(),*building),AIMaximaBuildings::Production)
 			? budget.staffing_new_swarm_workers : budget.staffing_new_inn_workers;
 	const int previous=state.request;
 	// Shared inventory is sampled once. The limiting required resource controls
 	// staffing, regardless of which combination of services consumes it.
 	int stock=1,capacity=1;bool selected=false;
-	const auto* profile=profile_variant(AIMaximaBuildings::lineageRoot(*runtime.readPlayer()->game,building->typeNum),AIMaximaBuildings::lineagePosition(*runtime.readPlayer()->game,building->typeNum));
-	if(profile)for(int r=0;r<8;++r)if(profile->operatingResources[r]>0&&building->type->maxResource[r]>0){
-	 if(!selected||static_cast<long long>(building->resources[r])*capacity<static_cast<long long>(stock)*building->type->maxResource[r]){stock=building->resources[r];capacity=building->type->maxResource[r];selected=true;}
+	const auto* profile=profile_variant(AIMaximaBuildings::lineageRoot(runtime.observation(),building->typeNum),AIMaximaBuildings::lineagePosition(runtime.observation(),building->typeNum));
+	if(profile)for(int r=0;r<8;++r)if(profile->operatingResources[r]>0&&AIEngine::ObservationQueries::buildingType(runtime.observation(),*building).maxResource[r]>0){
+	 if(!selected||static_cast<long long>(runtime.observation().buildingResources(*building)[r])*capacity<static_cast<long long>(stock)*AIEngine::ObservationQueries::buildingType(runtime.observation(),*building).maxResource[r]){stock=runtime.observation().buildingResources(*building)[r];capacity=AIEngine::ObservationQueries::buildingType(runtime.observation(),*building).maxResource[r];selected=true;}
 	}
 	if(!selected){state.request=0;return 0;}
 	const int request=StaffingControl::update(state, policy,stock,capacity,
@@ -5856,8 +5852,8 @@ int Maxima::update_staffing_request(Context& runtime, int id)
 		std::ostringstream fields;
 		fields<<"\tbuilding_id="<<id<<"\tworkers="<<request
 			<<"\tprevious="<<previous
-			<<"\tcorn="<<building->resources[WHEAT]
-			<<"\tcapacity="<<building->type->maxResource[WHEAT]
+			<<"\tcorn="<<runtime.observation().buildingResources(*building)[WHEAT]
+			<<"\tcapacity="<<AIEngine::ObservationQueries::buildingType(runtime.observation(),*building).maxResource[WHEAT]
 			<<"\tfill_average="<<state.cornAverage
 			<<"\tenrolled_average="<<state.enrolledAverage;
 		emit_telemetry(runtime,"staffing_control",fields.str());
@@ -5877,11 +5873,11 @@ long long Maxima::nearby_farm_capacity(Context& runtime, int id,
 	std::set<int>* shared_tiles)
 {
     auto ownerObservation=runtime.scopeOwnerObservation();
-	AISharedRuntime::Read::Building* building=runtime.get_building_register().get_building(id);
+	const AIEngine::BuildingView* building=runtime.get_building_register().get_building(id);
 	if(!building) return 0;
 	initialize_farming_cache(runtime);
-	AISharedRuntime::Read::Map* map=runtime.readPlayer()->map;
-	return reachableFoodCapacity(map, building, runtime.readPlayer()->team->me,
+	const AIEngine::AIWorldView* map=&runtime.observation();
+	return reachableFoodCapacity(map, building, runtime.observedTeam().mask,
 		budget.can_swim, budget.swarm_supply_radius, fertility_cache,
 		&applied_farm_protection_mask, shared_tiles,
 		strategy.farming.wheat_stock_horizon_ticks);
@@ -5892,7 +5888,7 @@ void Maxima::manage_swarm(Context& runtime, int id)
 {
     auto ownerObservation=runtime.scopeOwnerObservation();
 	//Get some statistics
-	TeamStat* stat=runtime.readPlayer()->team->stats.getLatestStat();
+	const TeamStat* stat=&runtime.observedTeam().statistics;
 	int total_explorers=stat->numberUnitPerType[EXPLORER];
 	if(stat->totalUnit == 0)
 		return;
@@ -5936,21 +5932,21 @@ AIMaximaFruit::Field Maxima::collect_fruit_field(Context& runtime) const
     auto ownerObservation=runtime.scopeOwnerObservation();
 	AIMaximaFruit::Field field;
 	if(!strategy.fruit.enabled || !runtime.is_fruit_on_map())return field;
-	AISharedRuntime::Read::Map* map=runtime.readPlayer()->map;
-	field.width=map->getW();
-	field.height=map->getH();
+	const AIEngine::AIWorldView* map=&runtime.observation();
+	field.width=(*map).width;
+	field.height=(*map).height;
 	field.tiles.resize(field.width*field.height);
 	for(int y=0;y<field.height;++y)for(int x=0;x<field.width;++x)
 	{
 		AIMaximaFruit::Tile& tile=field.tiles[field.index(x,y)];
-		const auto cell=map->getSpatialTile(x,y);
-		const auto& terrain=map->terrainPropertiesAt(y*field.width+x);
+		const auto cell=AIEngine::ObservationQueries::spatialTile((*map),x,y);
+		const auto& terrain=AIEngine::ObservationQueries::terrain((*map),y*field.width+x);
 		tile.passable=cell.building==NOGBID && cell.resource.type==NO_RES_TYPE
-			&& !(cell.forbidden&runtime.readPlayer()->team->me)
+			&& !(cell.forbidden&runtime.observedTeam().mask)
 			&& (terrain.walkable || (budget.can_swim && terrain.swimmable));
-		tile.visible=cell.resource.amount>0 && (cell.visible&runtime.readPlayer()->team->allies)!=0;
+		tile.visible=cell.resource.amount>0 && (cell.visible&runtime.observedTeam().allies)!=0;
 		if(cell.resource.type>=CHERRY && cell.resource.type<=PRUNE
-		   && (cell.discovered&runtime.readPlayer()->team->allies)!=0)
+		   && (cell.discovered&runtime.observedTeam().allies)!=0)
 			tile.variety=cell.resource.type-CHERRY;
 	}
 	bool knownFruit=false;
@@ -5960,11 +5956,11 @@ AIMaximaFruit::Field Maxima::collect_fruit_field(Context& runtime) const
 	// rectangular footprint as Building::setMapDiscovered.
 	for(const auto& entry:runtime.get_building_register().found())
 	{
-		AISharedRuntime::Read::Building* building=runtime.get_building_register().get_building(entry.first);
-		if(!building || building->type->isVirtual || building->type->isBuildingSite)continue;
-		const int radius=building->type->viewingRange;
-		for(int dy=-radius;dy<building->type->height+radius;++dy)
-			for(int dx=-radius;dx<building->type->width+radius;++dx)
+		const AIEngine::BuildingView* building=runtime.get_building_register().get_building(entry.first);
+		if(!building || AIEngine::ObservationQueries::buildingType(runtime.observation(),*building).isVirtual || AIEngine::ObservationQueries::buildingType(runtime.observation(),*building).isBuildingSite)continue;
+		const int radius=AIEngine::ObservationQueries::buildingType(runtime.observation(),*building).viewingRange;
+		for(int dy=-radius;dy<AIEngine::ObservationQueries::buildingType(runtime.observation(),*building).height+radius;++dy)
+			for(int dx=-radius;dx<AIEngine::ObservationQueries::buildingType(runtime.observation(),*building).width+radius;++dx)
 				field.tiles[field.index(building->posX+dx,building->posY+dy)].buildingVision=true;
 	}
 	field.build();
@@ -5985,16 +5981,16 @@ void Maxima::update_fruit_flags(AIMaximaRuntime::Context& runtime)
 	bool supply=false;
 	for(const auto& entry:runtime.get_building_register().found())
 	{
-		AISharedRuntime::Read::Building* inn=runtime.get_building_register().get_building(entry.first);
-		if(!inn || !AIMaximaBuildings::serves(*context.readPlayer()->game,*inn->type,AIMaximaBuildings::Feeding)
-		   || inn->type->isBuildingSite)continue;
+		const AIEngine::BuildingView* inn=runtime.get_building_register().get_building(entry.first);
+		if(!inn || !AIMaximaBuildings::serves(context.observation(),AIEngine::ObservationQueries::buildingType(runtime.observation(),*inn),AIMaximaBuildings::Feeding)
+		   || AIEngine::ObservationQueries::buildingType(runtime.observation(),*inn).isBuildingSite)continue;
 		const auto assessment=field.assessBuilding(inn->posX,inn->posY,
-			inn->type->width,inn->type->height);
+			AIEngine::ObservationQueries::buildingType(runtime.observation(),*inn).width,AIEngine::ObservationQueries::buildingType(runtime.observation(),*inn).height);
 		supply=supply || assessment.collectable || assessment.covered;
 		for(int v=0;v<3;++v)
 		{
 			if(!(assessment.available&(1u<<v)))continue;
-			supply=supply || inn->resources[CHERRY+v]>0;
+			supply=supply || runtime.observation().buildingResources(*inn)[CHERRY+v]>0;
 			if(!(assessment.covered&(1u<<v)) && assessment.varietyCount>varieties[v])
 			{
 				selected[v]=assessment.source[v];

@@ -19,8 +19,8 @@ using namespace AISharedRuntime::SearchTools;
 void NewNicowar::check_phases(Runtime& runtime)
 {
 	telemetry.count(AITrace::AI5::NewNicowar_check_phases_calls);
-	TeamStat* stat=runtime.readPlayer()->team->stats.getLatestStat();
-	const auto& rules=runtime.readPlayer()->game->gameHeader;
+	const TeamStat* stat=&runtime.observedTeam().statistics;
+	const auto& rules=*runtime.observation().configuration;
 
 	///Qualifications for the growth phase:
 	///1) Less than strategy.growth_phase_unit_max units
@@ -192,7 +192,7 @@ void NewNicowar::check_phases(Runtime& runtime)
 	
 	///Qualifications for the defend explorers phase
 	///1) Prestige, not counting this teams prestige, is more than 0, indicating that ground attacking explorers are being created
-	if(!rules.isPeacefulModeEnabled() && runtime.readPlayer()->game->totalPrestige - runtime.readPlayer()->team->prestige > 0)
+	if(!rules.isPeacefulModeEnabled() && runtime.observation().totalPrestige - runtime.observedTeam().prestige > 0)
 	{
 		defend_explorers=true;
 	}
@@ -203,7 +203,7 @@ void NewNicowar::check_phases(Runtime& runtime)
 	
 	///Qualifications for the explorer attack preparation phase
 	//1) This teams prestige greater than 0
-	if(!rules.isPeacefulModeEnabled() && !rules.isUnitUpgradesDisabled() && runtime.readPlayer()->team->prestige > 0)
+	if(!rules.isPeacefulModeEnabled() && !rules.isUnitUpgradesDisabled() && runtime.observedTeam().prestige > 0)
 	{
 		explorer_attack_preparation_phase = true;
 	}

@@ -74,13 +74,13 @@ class MaximaFarmingPolicyTest(unittest.TestCase):
         self.assertIn("contract.footprintTiles", maintenance)
         self.assertIn("contract.circulationTiles", maintenance)
         self.assertIn("selectResourcePreservingCirculation", maintenance)
-        self.assertIn("cell.resource.type==WHEAT", maintenance)
-        self.assertIn("cell.resource.type==WOOD", maintenance)
+        self.assertIn("resource.type==WHEAT", maintenance)
+        self.assertIn("resource.type==WOOD", maintenance)
         self.assertIn("!applied_maintenance_clearing_mask[index]", maintenance)
         self.assertIn('"\\treservation_resources_preserved="', maintenance)
         self.assertIn('"\\treservation_fallback_entrances="', maintenance)
         self.assertIn("applied_maintenance_clearing_mask[index]", maintenance)
-        self.assertIn("building_footprint=map->getTile(x, y).building!=NOGBID", maintenance)
+        self.assertIn("building_footprint=(*map).occupancyAt((*map).tileIndex(x, y)).building!=NOGBID", maintenance)
         self.assertIn("const bool desired=!building_footprint", maintenance)
         self.assertNotIn("RuntimeEvent::UpdateClearing", self.source)
         self.assertNotIn("Planner::clearingTiles", self.placement)
@@ -105,7 +105,7 @@ class MaximaFarmingPolicyTest(unittest.TestCase):
             ):
         ]
         maintenance = maintenance[:maintenance.index("void Maxima::initialize_farming_cache")]
-        self.assertIn("cell.resource.type==WOOD", maintenance)
+        self.assertIn("resource.type==WOOD", maintenance)
         self.assertIn("wheat_invasion_clearing_required", maintenance)
         self.assertIn("plan.circulation[index]=1", maintenance)
         self.assertIn('"\\twheat_invasion_wood="', maintenance)
@@ -120,7 +120,7 @@ class MaximaFarmingPolicyTest(unittest.TestCase):
         self.assertIn("Farming::fertilityWithinPercentBand", maintenance)
         self.assertIn("plan.firebreak[index]=wants_firebreak", maintenance)
         self.assertIn("&& cell.resource.type==WOOD", maintenance)
-        self.assertIn("if(contract_desired && map->isForbidden", maintenance)
+        self.assertIn("if(contract_desired && AIEngine::ObservationQueries::forbidden", maintenance)
         self.assertIn("farming.wood_firebreak_fertility_min_percent = 5", self.base_strategy)
         self.assertIn("farming.wood_firebreak_fertility_max_percent = 14", self.base_strategy)
 
@@ -153,8 +153,8 @@ class MaximaFarmingPolicyTest(unittest.TestCase):
         self.assertIn("bool shoreline_backed", farming)
         helper = self.policy[self.policy.index("std::vector<Uint8> shoreline_backing"):]
         helper = helper[:helper.index("bool is_empty_growth_cell")]
-        self.assertIn("map->terrainPropertiesAt(nx,ny).shoreline", helper)
-        self.assertIn("terrainProvidesFertility(map->terrainPropertiesAt(x, y))", helper)
+        self.assertIn("AIEngine::ObservationQueries::terrain((*map),nx,ny).shoreline", helper)
+        self.assertIn("terrainProvidesFertility(AIEngine::ObservationQueries::terrain((*map),x, y))", helper)
         self.assertNotIn("ressource", helper)
         self.assertNotIn("mi.is_sand(x+dx, y+dy)", farming)
 

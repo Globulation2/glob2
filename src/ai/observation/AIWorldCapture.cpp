@@ -49,6 +49,14 @@ AIWorldView::AIWorldView(SimulationSnapshot::Handle captured) : lease(std::move(
 	if (lease.areas) farmAreasEnabled = lease.areas->farmEnabled;
 	if (lease.teams) { teams = lease.teams->values; totalPrestige = lease.teams->totalPrestige; }
 	if (lease.entities) { buildings = lease.entities->buildings; units = lease.entities->units; buildProjects = lease.entities->projects; }
+	if (lease.entities) {
+		const auto buildingSlots = lease.entities->buildingSlotIndices.size();
+		const auto unitSlots = lease.entities->unitSlotIndices.size();
+		if (buildingSlots % BuildingUtils::MAX_COUNT || unitSlots % UnitUtils::MAX_COUNT
+			|| buildingSlots / BuildingUtils::MAX_COUNT != unitSlots / UnitUtils::MAX_COUNT
+			|| buildings.size() > buildingSlots || units.size() > unitSlots)
+			throw std::logic_error("AI observation entity slot index size mismatch");
+	}
 }
 std::shared_ptr<const AIWorldView::Catalog> AIWorldView::captureCatalog(const Game& game)
 { return SimulationSnapshot::captureCatalog(game); }

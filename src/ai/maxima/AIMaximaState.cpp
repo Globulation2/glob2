@@ -294,8 +294,8 @@ std::string Maxima::auditStrategyJson() const
     auto ownerObservation=context.scopeOwnerObservation();
     ResolvedStrategy actual;
     std::string error;
-    StrategyResolver::resolveForPlayer(context.readPlayer()->game->gameHeader,
-        context.readPlayer()->number, actual, error);
+    StrategyResolver::resolveForPlayer(*context.observation().configuration,
+        context.playerNumber(), actual, error);
     actual.values=strategy;
     return StrategyResolver::resolvedJson(actual);
 }
@@ -456,7 +456,7 @@ bool Maxima::loadDirector(GAGCore::InputStream* stream,
 	const Uint32 count = versionMinor >= FILE_FORMAT_VERSION_COUNTED_TEAM_STATE
 		? stream->readCount("count") : MAXIMA_LEGACY_OPPONENT_COUNT;
 	if (count == 0 || count > Team::MAX_COUNT ||
-		(context.readPlayer() && count < unsigned(context.readPlayer()->game->teamsCount())))
+		count < context.observation().teams.size())
 		throw std::runtime_error("Invalid Maxima opponent record count");
 	std::fill(std::begin(opponents), std::end(opponents), OpponentAssessment{});
 	for (Uint32 i = 0; i < count; ++i)
@@ -536,6 +536,7 @@ bool Maxima::loadDirector(GAGCore::InputStream* stream,
 
 bool Maxima::load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor)
 {
+    auto ownerObservation=context.scopeOwnerObservation();
 	if(versionMinor<115)
 		throw std::runtime_error("This Maxima save uses a retired strategy format");
 	ensure_strategy();
@@ -543,13 +544,13 @@ bool Maxima::load(GAGCore::InputStream *stream, Player *player, Sint32 versionMi
 	context.load(stream, versionMinor);
 	const bool loaded=loadState(stream, player, versionMinor);
 	stream->readLeaveSection();
-    context.releaseObservation();
 	return loaded;
 }
 
 bool Maxima::loadState(GAGCore::InputStream *stream, Player *player,
 	Sint32 versionMinor)
 {
+    auto ownerObservation=context.scopeOwnerObservation();
 	if(versionMinor<115)
 		throw std::runtime_error("This Maxima save uses a retired strategy format");
 	director=StrategyDirector();
@@ -705,6 +706,7 @@ bool Maxima::loadState(GAGCore::InputStream *stream, Player *player,
 
 void Maxima::save(GAGCore::OutputStream *stream)
 {
+    auto ownerObservation=context.scopeOwnerObservation();
 	ensure_strategy();
 	stream->writeEnterSection("AIMaxima");
 	context.save(stream);
@@ -761,7 +763,6 @@ void Maxima::save(GAGCore::OutputStream *stream)
 	saveExecutionState(stream);
 	stream->writeLeaveSection();
 	stream->writeLeaveSection();
-    context.releaseObservation();
 }
 
 

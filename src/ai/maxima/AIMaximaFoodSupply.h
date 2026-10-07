@@ -3,7 +3,7 @@
 #include "field/UniformTraversal.h"
 #include "field/TerrainTravel.h"
 #include "Map.h"
-#include "shared_runtime/RuntimeObservation.h"
+#include "ai/observation/ObservationQueries.h"
 #include <type_traits>
 #include "Game.h"
 #include "Building.h"
@@ -15,22 +15,34 @@
 #include <vector>
 
 namespace AIMaxima {
+template<class MapValue> inline int foodWidth(MapValue* map) {return map->getW();}
+inline int foodWidth(const AIEngine::AIWorldView* world) {return world->width;}
+template<class MapValue> inline int foodHeight(MapValue* map) {return map->getH();}
+inline int foodHeight(const AIEngine::AIWorldView* world) {return world->height;}
+template<class MapValue> inline bool foodMovementModifiers(MapValue* map) {return map->hasTerrainMovementModifiers();}
+inline bool foodMovementModifiers(const AIEngine::AIWorldView* world) {return world->terrainMovementModifiers;}
+template<class MapValue> inline const TerrainProperties& foodTerrain(MapValue* map,std::size_t index) {return map->terrainPropertiesAt(index);}
+inline const TerrainProperties& foodTerrain(const AIEngine::AIWorldView* world,std::size_t index) {return AIEngine::ObservationQueries::terrain(*world,index);}
+template<class MapValue,class BuildingValue> inline const BuildingType& foodBuildingType(MapValue* map,const BuildingValue& building) {return *building.type;}
+inline const BuildingType& foodBuildingType(const AIEngine::AIWorldView* world,const AIEngine::BuildingView& building) {return AIEngine::ObservationQueries::buildingType(*world,building);}
+
 // A shared predicate keeps local and recovery estimates on the same routes.
 template<class MapValue>
 inline bool foodTileAccessible(MapValue* map,int x,int y,Uint32 teamMask,
     bool canSwim,const std::vector<Uint8>* protectedTiles)
 {
-    const auto index=map->coordToIndex(x,y);
-    if constexpr(std::is_same_v<MapValue,AISharedRuntime::Read::Map>)
+    const int index=y*foodWidth(map)+x;
+    if constexpr(std::is_same_v<std::remove_cv_t<MapValue>,AIEngine::AIWorldView>)
     {
-        const auto& world=*map->world;
-        if(!(world.visibilityAt(index).discovered&teamMask)) return false;
-        if((world.areasAt(index).forbidden&teamMask)
+        const auto& world=*map;
+        const auto cellIndex=map->tileIndex(x,y);
+        if(!(world.visibilityAt(cellIndex).discovered&teamMask)) return false;
+        if((world.areasAt(cellIndex).forbidden&teamMask)
             && !(protectedTiles && (*protectedTiles)[index])) return false;
-        if(world.occupancyAt(index).building!=NOGBID) return false;
-        const auto resource=world.resourceAt(index).resource;
+        if(world.occupancyAt(cellIndex).building!=NOGBID) return false;
+        const auto resource=world.resourceAt(cellIndex).resource;
         if(resource.type!=NO_RES_TYPE && resource.type!=WHEAT) return false;
-        const auto& terrain=map->terrainPropertiesAt(index);
+        const auto& terrain=AIEngine::ObservationQueries::terrain(*map,cellIndex);
         return terrain.walkable || (canSwim && terrain.swimmable);
     }
     else
@@ -49,8 +61,8 @@ inline bool foodTileAccessible(MapValue* map,int x,int y,Uint32 teamMask,
 template<class MapValue>
 inline auto foodResourceAt(MapValue* map,int index,int x,int y)
 {
-    if constexpr(std::is_same_v<MapValue,AISharedRuntime::Read::Map>)
-        return map->world->resourceAt(index).resource;
+    if constexpr(std::is_same_v<std::remove_cv_t<MapValue>,AIEngine::AIWorldView>)
+        return map->resourceAt(index).resource;
     else
         return map->getResource(x,y);
 }
@@ -73,7 +85,7 @@ template<class MapValue>
 inline long long effectiveWheatRegrowth(MapValue* map, long long fertility)
 {
     const GameHeader* captured=nullptr;
-    if constexpr(std::is_same_v<MapValue,AISharedRuntime::Read::Map>) captured=map->world->configuration.get();
+    if constexpr(std::is_same_v<std::remove_cv_t<MapValue>,AIEngine::AIWorldView>) captured=map->configuration.get();
     else if(map->game) captured=&map->game->gameHeader;
     if(!captured)return fertility;
     const auto& rules=*captured;
@@ -88,7 +100,7 @@ template<class Visit,class MapValue,class BuildingValue>
 inline void traverseWeightedFoodSupply(MapValue* map,const std::vector<BuildingValue*>& buildings,
     Uint32 teamMask,bool canSwim,const std::vector<Uint8>* protectedTiles,Visit visit)
 {
-    const int width=map->getW(),size=width*map->getH();
+    const int width=foodWidth(map),size=width*foodHeight(map);
     constexpr unsigned infinity=std::numeric_limits<unsigned>::max();
     std::vector<unsigned> distance(size,infinity);
     using Entry=std::pair<unsigned,int>;
@@ -99,9 +111,9 @@ inline void traverseWeightedFoodSupply(MapValue* map,const std::vector<BuildingV
         {distance[index]=cost;queue.emplace(cost,index);}
     };
     for(const auto* building:buildings)
-        for(int dy=-1;dy<=building->type->height;++dy)
-            for(int dx=-1;dx<=building->type->width;++dx)
-                if(dx==-1 || dx==building->type->width || dy==-1 || dy==building->type->height)
+        for(int dy=-1;dy<=foodBuildingType(map,*building).height;++dy)
+            for(int dx=-1;dx<=foodBuildingType(map,*building).width;++dx)
+                if(dx==-1 || dx==foodBuildingType(map,*building).width || dy==-1 || dy==foodBuildingType(map,*building).height)
                     add(building->posX+dx,building->posY+dy,0);
     while(!queue.empty())
     {
@@ -110,7 +122,7 @@ inline void traverseWeightedFoodSupply(MapValue* map,const std::vector<BuildingV
         const auto action=visit(index,int((cost+GRADIENT_STEP-1)/GRADIENT_STEP));
         if(action==field::Visit::Stop)break;
         if(action==field::Visit::Skip)continue;
-        const unsigned candidate=cost+field::terrainTravelCost(map->terrainPropertiesAt(index),
+        const unsigned candidate=cost+field::terrainTravelCost(foodTerrain(map,index),
             canSwim?field::TerrainTravel::Swim:field::TerrainTravel::Walk);
         const int x=index%width,y=index/width;
         for(int dy=-1;dy<=1;++dy)for(int dx=-1;dx<=1;++dx)
@@ -126,9 +138,9 @@ inline long long distantFoodCapacity(MapValue* map,const std::vector<BuildingVal
     Uint32 teamMask,bool canSwim,int radius,const Farming::ExactFertilityCache& fertility,
     const std::vector<Uint8>* protectedTiles, int stockHorizonTicks)
 {
-    if(map->hasTerrainMovementModifiers())
+    if(foodMovementModifiers(map))
     {
-        const int width=map->getW();
+        const int width=foodWidth(map);
         long long capacity=0;int stop=std::numeric_limits<int>::max();
         const int localRadius=std::max(1,radius);
         traverseWeightedFoodSupply(map,buildings,teamMask,canSwim,protectedTiles,
@@ -147,7 +159,7 @@ inline long long distantFoodCapacity(MapValue* map,const std::vector<BuildingVal
             });
         return capacity;
     }
-    const int width=map->getW(),size=width*map->getH();
+    const int width=foodWidth(map),size=width*foodHeight(map);
     std::vector<int> distance(size,-1),queue;
     const auto add=[&](int x,int y,int steps) {
         x=map->normalizeX(x);y=map->normalizeY(y);const int index=y*width+x;
@@ -155,18 +167,18 @@ inline long long distantFoodCapacity(MapValue* map,const std::vector<BuildingVal
         {distance[index]=steps;queue.push_back(index);}
     };
     for(const auto* b:buildings)
-        for(int dy=-1;dy<=b->type->height;++dy)
-            for(int dx=-1;dx<=b->type->width;++dx)
-                if(dx==-1 || dx==b->type->width || dy==-1 || dy==b->type->height)
+        for(int dy=-1;dy<=foodBuildingType(map,*b).height;++dy)
+            for(int dx=-1;dx<=foodBuildingType(map,*b).width;++dx)
+                if(dx==-1 || dx==foodBuildingType(map,*b).width || dy==-1 || dy==foodBuildingType(map,*b).height)
                     add(b->posX+dx,b->posY+dy,0);
     long long capacity=0;int stop=size;
     const int localRadius=std::max(1,radius);
-    field::traverse(queue,{width,map->getH()},field::Surrounding,
+    field::traverse(queue,{width,foodHeight(map)},field::Surrounding,
         [&](int index) {
             const int x=index%width,y=index/width,steps=distance[index];
             if(steps>stop)return field::Visit::Stop;
             const auto resource=foodResourceAt(map,index,x,y);
-            if((map->terrainPropertiesAt(index).allowedResources & (1u<<WHEAT))&&resource.type==WHEAT&&resource.amount>0)
+            if((foodTerrain(map,index).allowedResources & (1u<<WHEAT))&&resource.type==WHEAT&&resource.amount>0)
             {
                 if(stop==size)stop=std::min(size,steps+localRadius);
                 capacity+=(effectiveWheatRegrowth(map,fertility.at(x,y))
@@ -187,9 +199,9 @@ inline long long reachableFoodCapacity(MapValue* map, BuildingValue* building,
     const std::vector<Uint8>* protectedTiles, std::set<int>* shared_tiles,
     int stockHorizonTicks)
 {
-    if(map->hasTerrainMovementModifiers())
+    if(foodMovementModifiers(map))
     {
-        long long capacity=0;const int width=map->getW();
+        long long capacity=0;const int width=foodWidth(map);
         traverseWeightedFoodSupply(map,std::vector<BuildingValue*>{building},teamMask,canSwim,protectedTiles,
             [&](int index,int steps) {
                 if(steps>radius)return field::Visit::Stop;
@@ -203,7 +215,7 @@ inline long long reachableFoodCapacity(MapValue* map, BuildingValue* building,
             });
         return capacity;
     }
-	const int width=map->getW();
+	const int width=foodWidth(map);
 
 	// Empty ground remains traversable, but only existing corn contributes
 	// food capacity. Fertility alone does not imply a food supply.
@@ -212,11 +224,11 @@ inline long long reachableFoodCapacity(MapValue* map, BuildingValue* building,
 	};
 	std::map<int,int> distance;
 	std::vector<int> queue;
-	for(int dy=-1;dy<=building->type->height;++dy)
-		for(int dx=-1;dx<=building->type->width;++dx)
+	for(int dy=-1;dy<=foodBuildingType(map,*building).height;++dy)
+		for(int dx=-1;dx<=foodBuildingType(map,*building).width;++dx)
 		{
-			if(dx!=-1 && dx!=building->type->width
-			   && dy!=-1 && dy!=building->type->height) continue;
+			if(dx!=-1 && dx!=foodBuildingType(map,*building).width
+			   && dy!=-1 && dy!=foodBuildingType(map,*building).height) continue;
 			const int x=map->normalizeX(building->posX+dx);
 			const int y=map->normalizeY(building->posY+dy);
 			const int index=y*width+x;
@@ -224,11 +236,11 @@ inline long long reachableFoodCapacity(MapValue* map, BuildingValue* building,
 				queue.push_back(index);
 		}
 	long long capacity=0;
-	field::traverse(queue,{width,map->getH()},field::Surrounding,
+	field::traverse(queue,{width,foodHeight(map)},field::Surrounding,
 		[&](int index) {
 			const int x=index%width,y=index/width;
 			const auto resource=foodResourceAt(map,index,x,y);
-			if((map->terrainPropertiesAt(index).allowedResources & (1u<<WHEAT))&&resource.type==WHEAT&&resource.amount>0
+			if((foodTerrain(map,index).allowedResources & (1u<<WHEAT))&&resource.type==WHEAT&&resource.amount>0
 			   &&(!shared_tiles||shared_tiles->insert(index).second))
 				capacity+=effectiveWheatRegrowth(map,fertility.at(x,y))+wheatStockFertilityEquivalent(resource.amount,stockHorizonTicks);
 			return distance[index]>=radius?field::Visit::Skip:field::Visit::Expand;

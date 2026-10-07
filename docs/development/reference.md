@@ -40,7 +40,15 @@ per live entity; heap entities are not a contiguous slot pool. Runtime pointers,
 query scratch and GUI state remain outside the records. Building observations
 select private stock or the captured team's stock through an immutable resource
 pool selector; team stock is not duplicated into every building. Ordered
-relationship IDs and derived feasibility remain explicit capture/preparation work.
+relationship IDs remain explicit capture work. Upgrade and repair feasibility
+queries read the frozen map arrays when requested; capture does not scan every
+building footprint to precompute unused decisions.
+Controllers read those canonical records directly. The engine captures one shared
+slot-to-record index so legacy slot scans preserve holes and ordering without
+rebuilding per-controller entity or relationship tables. Immutable capability
+lists are shared with the authoritative catalog index; selection uses their
+existing order without cloning catalogs, rescanning definitions or sorting again.
+Private overlays contain only changed planning fields and pending actions.
 Script adapters preserve existing numeric observation types while records retain
 live simulation types. Save formats continue to serialize fields explicitly,
 not object representations or padding.
@@ -83,6 +91,11 @@ the next admitted decision. Controllers must distinguish an issued intent from
 an observed effect, tolerate stale observations, and reconcile rejection without
 resending or releasing a reservation prematurely. Receipt acceptance establishes
 order execution; it does not imply completion of a building's later work.
+Accepted construction projects count as outstanding work before a building exists.
+Duplicate placement suppression and Numbi's desired-building counts include those
+projects as well as submitted private intent. This corrects earlier duplicate
+requests, including at zero delay; strategy thresholds and selection cadence stay
+unchanged.
 
 JavaScript memory updates run in the same ordered stream as decisions, once per
 logical observation tick. Unpolled replica and replay controllers retain the old

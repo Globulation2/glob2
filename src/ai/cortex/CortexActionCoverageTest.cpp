@@ -28,16 +28,14 @@ class ObservedCortex : public AICortex
     template<class Function> decltype(auto) decision(Function&& function)
     {
         const auto captured=AIEngine::AIWorldView::capture(*owner->game, AIEngine::AIWorldView::captureCatalog(*owner->game));
-        Cortex::World world(*captured);
-        applyQueuedIntent(world);
-        Cortex::WorldPlayer local{&world,world.teams[owner->teamNumber],owner->number};
-        struct Reset { Cortex::WorldPlayer*& pointer; ~Reset(){pointer=nullptr;} } reset{decisionPlayer};
-        decisionPlayer=&local;
+        intents.clear();applyQueuedIntent(*captured);
+        observedWorld=captured.get();observedTeam=&captured->teams[owner->teamNumber];observedPlayer=owner->number;
+        struct Reset { ObservedCortex& ai; ~Reset(){ai.observedWorld=nullptr;ai.observedTeam=nullptr;ai.intents.clear();} } reset{*this};
         return function();
     }
     template<class Function> Building* target(Function&& function)
     {
-        const auto ref=decision([&] { auto* building=function();return building ? building->source->identity : BuildingRef{}; });
+        const auto ref=decision([&] { auto* building=function();return building ? building->identity : BuildingRef{}; });
         return owner->game->resolveBuilding(ref);
     }
 public:
@@ -58,7 +56,7 @@ public:
     { decision([&]{AICortex::reconcileStaleDefenseFlag(observation);}); }
     int countArrivedAtFlag(Building* flag)
     {
-        return decision([&]{return AICortex::countArrivedAtFlag(flag ? decisionPlayer->game->teams[Building::GIDtoTeam(flag->gid)]->myBuildings[Building::GIDtoID(flag->gid)] : nullptr);});
+        return decision([&]{return AICortex::countArrivedAtFlag(flag ? observedWorld->buildingAtSlot(flag->gid) : nullptr);});
     }
 };
 void refreshStats(Team& team)
@@ -101,7 +99,7 @@ TEST_SUITE("CortexActionCoverage")
             CHECK(fast.timer==slow.timer);
             CHECK(randomBefore==randomAfter);
             CHECK(randomAfter==syncRandEngine());
-            CHECK(fast.decisionPlayer==nullptr);
+            CHECK(fast.observedWorld==nullptr);
             CHECK(fast.queryScratch.retainedVectorBytes()==0);
             CHECK(fast.bufferedDiagnostics.empty());
         }
@@ -203,10 +201,10 @@ TEST_SUITE("CortexActionCoverage")
                 SyncRandScope scope(random);
                 const int current=supplied ? world.team->maxBuildLevel() : -1;
                 const auto view=AIEngine::AIWorldView::capture(world.game,AIEngine::AIWorldView::captureCatalog(world.game));
-                Cortex::World observed(*view);
-                auto* observedTeam=observed.teams.at(world.team->teamNumber);
-                ordinaryCount[supplied]=placeCandidates(&observed,observedTeam,CORTEX_BUILD_HEAL,0,ordinary[supplied],-1,current);
-                forwardCount[supplied]=placeForwardCandidate(&observed,observedTeam,CORTEX_BUILD_HEAL,16,16,0,31,forward[supplied],current);
+                Cortex::QueryScratch scratch;Cortex::PlanningIntent intents;
+                const auto* observedTeam=&view->teams[world.team->teamNumber];
+                ordinaryCount[supplied]=placeCandidates(view.get(),observedTeam,scratch,intents,CORTEX_BUILD_HEAL,0,ordinary[supplied],-1,current);
+                forwardCount[supplied]=placeForwardCandidate(view.get(),observedTeam,scratch,intents,CORTEX_BUILD_HEAL,16,16,0,31,forward[supplied],current);
                 randomEnd[supplied]=getSyncRandState();
             }
             CHECK(ordinaryCount[0]==ordinaryCount[1]);
@@ -234,15 +232,14 @@ TEST_SUITE("CortexActionCoverage")
         REQUIRE(swarm); REQUIRE(worker);
         refreshStats(*fixture.team);
         const auto view=AIEngine::AIWorldView::capture(fixture.game,AIEngine::AIWorldView::captureCatalog(fixture.game));
-        Cortex::World observed(*view);
-        Cortex::WorldPlayer player{&observed,observed.teams.at(0),0};
+        Cortex::QueryScratch scratch;Cortex::PlanningIntent intents;
         MersenneTwister random(713); SyncRandScope scope(random);
         const auto state=getSyncRandState();
-        const auto first=Cortex::observeWorld(&player,0,NOGBID);
+        const auto first=Cortex::observeWorld(view.get(),&view->teams[0],scratch,intents,nullptr,0,NOGBID);
         swarm->maxUnitWorking=99; worker->constructionLevel=3; worker->posX=23;
         fixture.game.stepCounter+=8;
         setSyncRandState(state);
-        const auto second=Cortex::observeWorld(&player,0,NOGBID);
+        const auto second=Cortex::observeWorld(view.get(),&view->teams[0],scratch,intents,nullptr,0,NOGBID);
         CHECK(first.tick==second.tick);
         CHECK(first.maxBuildLevel==second.maxBuildLevel);
         CHECK(first.trackedSwarms[0].maxUnitWorking==second.trackedSwarms[0].maxUnitWorking);
@@ -286,7 +283,7 @@ TEST_SUITE("CortexActionCoverage")
             spec["semantics"]["market"]["suppliesDirectStockResources"]={"wheat"};
             world.game.buildingsTypes.loadSnapshotJson(snapshot.dump());world.game.configureBuildingCatalog();
             auto* hybrid=world.addBuilding("inn",4,4);
-            CHECK(Cortex::servesRole(world.game,*hybrid->type,Cortex::CORTEX_BUILD_EXCHANGE)==(purpose==1));
+            CHECK(Cortex::servesRole(*AIEngine::AIWorldView::capture(world.game,AIEngine::AIWorldView::captureCatalog(world.game)),*hybrid->type,Cortex::CORTEX_BUILD_EXCHANGE)==(purpose==1));
             ObservedCortex ai(world.game.players[0]);
             Uint16 gid=hybrid->gid;
             REQUIRE(ai.findFlagByGid(gid)==hybrid);
@@ -701,13 +698,13 @@ TEST_CASE("Cortex delayed staffing overlay respects entity incarnations" * docte
     const std::vector<AIEngine::ExecutionReceipt> receipts;
     AIEngine::DecisionContext context{*view,0,0,receipts};context.scheduledTick=8;
     ai.getOrder(context);
-    Cortex::World projected(*view);ai.applyQueuedIntent(projected);
-    CHECK(projected.teams[0]->myBuildings[Building::GIDtoID(building->gid)]->maxUnitWorking==requested);
+    ai.intents.clear();ai.applyQueuedIntent(*view);
+    CHECK(Cortex::plannedWorkers(ai.intents,*view->buildingAtSlot(building->gid))==requested);
     CHECK(building->maxUnitWorking==oldWorkers);
     building->scriptIdentity=fixture.game.allocateScriptIdentity(true,building->gid);
     const auto replacement=AIEngine::AIWorldView::capture(fixture.game,AIEngine::AIWorldView::captureCatalog(fixture.game));
-    Cortex::World replaced(*replacement);ai.applyQueuedIntent(replaced);
-    CHECK(replaced.teams[0]->myBuildings[Building::GIDtoID(building->gid)]->maxUnitWorking==oldWorkers);
+    ai.intents.clear();ai.applyQueuedIntent(*replacement);
+    CHECK(Cortex::plannedWorkers(ai.intents,*replacement->buildingAtSlot(building->gid))==oldWorkers);
     ai.queueForTest(std::make_shared<OrderModifyBuilding>(building->gid,requested));
     building->scriptIdentity=fixture.game.allocateScriptIdentity(true,building->gid);
     const auto reused=AIEngine::AIWorldView::capture(fixture.game,AIEngine::AIWorldView::captureCatalog(fixture.game));

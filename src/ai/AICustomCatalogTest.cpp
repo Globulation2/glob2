@@ -121,10 +121,8 @@ auto withNumbiObservation(AINumbi& ai,Game& game,Function&& function)
     const auto world=AIEngine::AIWorldView::capture(game,AIEngine::AIWorldView::captureCatalog(game));
     AIEngine::WorldQueries queries(*world,ai.teamNumber,ai.resourceInitializations);
     ai.observation=world.get();ai.queries=&queries;
-    ai.observedBuildings.fill(nullptr);ai.observedUnits.fill(nullptr);
-    for(const auto& b:world->buildings) if(b.team==ai.teamNumber) ai.observedBuildings[Building::GIDtoID(b.identity.gid)]=&b;
-    for(const auto& u:world->units) if(u.team==ai.teamNumber) ai.observedUnits[Unit::GIDtoID(u.identity.gid)]=&u;
-    const auto clear=[&]{ai.observation=nullptr;ai.queries=nullptr;ai.observedBuildings.fill(nullptr);ai.observedUnits.fill(nullptr);};
+
+    const auto clear=[&]{ai.observation=nullptr;ai.queries=nullptr;};
     try {auto result=function();clear();return result;} catch(...) {clear();throw;}
 }
 
@@ -133,12 +131,9 @@ auto withWarrushObservation(AIWarrush& ai,Game& game,Function&& function)
 {
  const auto world=AIEngine::AIWorldView::capture(game,AIEngine::AIWorldView::captureCatalog(game));
  AIEngine::WorldQueries queries(*world,ai.teamNumber,ai.resourceInitializations);
- ai.observation=world.get();ai.queries=&queries;ai.observedTeams.resize(world->teams.size());
- for(size_t i=0;i<world->teams.size();++i) ai.observedTeams[i].view=&world->teams[i];
- for(const auto& b:world->buildings) ai.observedTeams[b.team].myBuildings[Building::GIDtoID(b.identity.gid)]=&b;
- for(const auto& u:world->units) ai.observedTeams[u.team].myUnits[Unit::GIDtoID(u.identity.gid)]=&u;
+ ai.observation=world.get();ai.queries=&queries;
  ai.observedTeam=ai.teamAt(ai.teamNumber);
- const auto clear=[&]{ai.observation=nullptr;ai.queries=nullptr;ai.observedTeam=nullptr;ai.observedTeams.clear();};
+ const auto clear=[&]{ai.observation=nullptr;ai.queries=nullptr;ai.observedTeam=nullptr;};
  try {auto result=function();clear();return result;} catch(...) {clear();throw;}
 }
 
@@ -147,12 +142,9 @@ auto withCastorObservation(AICastor& ai,Game& game,Function&& function)
 {
  const auto world=AIEngine::AIWorldView::capture(game,AIEngine::AIWorldView::captureCatalog(game));
  AIEngine::WorldQueries queries(*world,ai.teamNumber,ai.resourceInitializations);
- ai.observation=world.get();ai.queries=&queries;ai.observedTeams.resize(world->teams.size());
- for(size_t i=0;i<world->teams.size();++i) ai.observedTeams[i].view=&world->teams[i];
- for(const auto& b:world->buildings) ai.observedTeams[b.team].myBuildings[Building::GIDtoID(b.identity.gid)]=&b;
- for(const auto& u:world->units) ai.observedTeams[u.team].myUnits[Unit::GIDtoID(u.identity.gid)]=&u;
+ ai.observation=world.get();ai.queries=&queries;
  ai.observedTeam=ai.teamAt(ai.teamNumber);
- const auto clear=[&]{ai.observation=nullptr;ai.queries=nullptr;ai.observedTeam=nullptr;ai.observedTeams.clear();};
+ const auto clear=[&]{ai.observation=nullptr;ai.queries=nullptr;ai.observedTeam=nullptr;};
  try {
   if constexpr(std::is_void_v<std::invoke_result_t<Function>>) {function();clear();}
   else {auto result=function();clear();return result;}
@@ -202,11 +194,9 @@ int selectThroughController(CatalogWorld& fixture,AI::ImplementationID id,bool m
         auto obs=Cortex::makeEmptyObservation();obs.valid=1;
         auto& slot=obs.buildCandidates[Cortex::CORTEX_BUILD_FOOD][0];slot.valid=1;slot.x=30;slot.y=4;
         const auto view=AIEngine::AIWorldView::capture(game,AIEngine::AIWorldView::captureCatalog(game));
-        Cortex::World observed(*view);
-        ai.applyQueuedIntent(observed);
-        Cortex::WorldPlayer player{&observed,observed.teams.at(0),0};
-        struct Reset { Cortex::WorldPlayer*& value; ~Reset(){value=nullptr;} } reset{ai.decisionPlayer};
-        ai.decisionPlayer=&player;
+        struct Reset { AICortex& ai; ~Reset(){ai.observedWorld=nullptr;ai.observedTeam=nullptr;ai.intents.clear();} } reset{ai};
+        ai.observedWorld=view.get();ai.observedTeam=&view->teams[0];ai.observedPlayer=0;
+        ai.intents.clear();ai.applyQueuedIntent(*view);
         ai.translateAction(Cortex::makeBuildAction(Cortex::CORTEX_BUILD_FOOD,0),obs);
         if(missing){CHECK(ai.orderQueue.empty());return -1;}
         REQUIRE(ai.orderQueue.size()==1);
@@ -580,13 +570,13 @@ TEST_CASE("shared runtime exact anchors support rectangular attractors across th
     using namespace AISharedRuntime::Construction;
     BuildingOrder order(runtime,AISharedRuntime::BuildingDemand::AttractWarriors,2);
     order.add_constraint(new SinglePosition(127,-2));
-    const auto placed=order.find_location(runtime,runtime.readPlayer()->map,runtime.get_gradient_manager());
+    const auto placed=order.find_location(runtime,runtime.observation(),runtime.get_gradient_manager());
     CHECK(order.get_concrete_type()==flag);
     CHECK(placed.x==63);CHECK(placed.y==62);
     BuildingOrder conflicting(runtime,AISharedRuntime::BuildingDemand::AttractWarriors,2);
     conflicting.add_constraint(new SinglePosition(127,-2));
     conflicting.add_constraint(new SinglePosition(2,62));
-    const auto absent=conflicting.find_location(runtime,runtime.readPlayer()->map,runtime.get_gradient_manager());
+    const auto absent=conflicting.find_location(runtime,runtime.observation(),runtime.get_gradient_manager());
     CHECK(absent.x==-1);CHECK(absent.y==-1);
 }
 TEST_CASE("Maxima exact anchors support rectangular footprints across the torus")
@@ -601,6 +591,7 @@ TEST_CASE("Maxima exact anchors support rectangular footprints across the torus"
     const auto* type=game.buildingsTypes.get(fixture.replacement);
     CHECK(game.buildingsTypes.getRuntime(fixture.replacement)->width==4);CHECK(game.buildingsTypes.getRuntime(fixture.replacement)->height==2);
     auto& ai=*dynamic_cast<AIMaxima::Maxima*>(game.players[0]->ai->aiImplementation);
+    auto ownerObservation=ai.context.scopeOwnerObservation();
     REQUIRE(game.checkRoomForBuilding(62,60,type,0));
     AIMaximaRuntime::Construction::BuildingOrder order(AIMaximaBuildings::Feeding,2);
     order.add_constraint(new AIMaximaRuntime::Construction::SinglePosition(126,-4));

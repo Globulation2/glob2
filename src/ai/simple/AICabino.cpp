@@ -8,7 +8,7 @@
 #include "AICabino.h"
 #include "ai/engine/AIDecision.h"
 #include "ai/observation/OrderSelection.h"
-#include "ai/shared_runtime/ObservationAreaOrders.h"
+#include "ai/observation/ObservationAreaOrders.h"
 #include "AIStateSerialization.h"
 #include "OrderMessages.h"
 #include "Game.h"
@@ -42,20 +42,20 @@ AIPlanning::BuildingIntent Cabino::intentForDemand(unsigned demand)
  assert(demand < DemandCount);
  return intents[demand];
 }
-bool Cabino::provides(const Read::World& game,const Read::Building& b,unsigned demand)
+bool Cabino::provides(const AIEngine::AIWorldView& game,const AIEngine::BuildingView& b,unsigned demand)
 {
- return game.buildingCapabilities().matches(b.type->isBuildingSite ? b.type->nextLevel : b.typeNum,intentForDemand(demand));
+ return game.capabilities().matches(AIEngine::ObservationQueries::buildingType(game,b).isBuildingSite ? AIEngine::ObservationQueries::buildingType(game,b).nextLevel : b.typeNum,intentForDemand(demand));
 }
 int Cabino::selectBuilding(AICabino& ai,unsigned demand)
 {
- const auto& index=ai.game->buildingCapabilities();
+ const auto& index=ai.game->capabilities();
  const auto intent=intentForDemand(demand);
  int chosen=-1,count=0;
  for (const auto& c:index.placements(intent))
-  if (index.available(c,intent,ai.game->gameHeader) && ai.random()%++count==0) chosen=c.placementType;
+  if (AIEngine::ObservationQueries::available(*ai.game,c,intent) && ai.random()%++count==0) chosen=c.placementType;
  return chosen;
 }
-unsigned Cabino::upgradeWeight(const Read::World& game,const Read::Building& b)
+unsigned Cabino::upgradeWeight(const AIEngine::AIWorldView& game,const AIEngine::BuildingView& b)
 {
  unsigned weight=0;
  for(unsigned demand=0;demand<DemandCount;++demand)
@@ -69,37 +69,37 @@ template<class X,class Y> bool placeRallyNear(AICabino& ai,int type,X& x,Y& y)
  for(int radius=0;radius<=8;++radius)
   for(int dx=-radius;dx<=radius;++dx)
    for(int dy=-radius;dy<=radius;++dy)
-    if(ai.game->checkRoomForBuilding(originX+dx,originY+dy,ai.game->buildingsTypes.get(type),ai.team->teamNumber)) {
-     x=(originX+dx)&ai.map->wMask; y=(originY+dy)&ai.map->hMask; return true;
+    if(AIEngine::ObservationQueries::roomForBuilding(*ai.game,originX+dx,originY+dy,ai.game->catalog->at(type).resolvedType,ai.team->number)) {
+     x=(originX+dx)&(ai.map->width-1); y=(originY+dy)&(ai.map->height-1); return true;
     }
  return false;
 }
-unsigned feedingStock(const Read::Building& building,bool capacity)
+unsigned feedingStock(const AIEngine::AIWorldView& world,const AIEngine::BuildingView& building,bool capacity)
 {
  unsigned stock=0;
  for(int resource=0;resource<MAX_NB_RESOURCES;++resource)
-  if(building.type->semantics.feeding.cost[resource]>0)
-   stock+=capacity ? building.type->maxResource[resource] : building.resources[resource];
+  if(AIEngine::ObservationQueries::buildingType(world,building).semantics.feeding.cost[resource]>0)
+   stock+=capacity ? AIEngine::ObservationQueries::buildingType(world,building).maxResource[resource] : world.buildingResources(building)[resource];
  return stock;
 }
 void retireRally(AICabino& ai,unsigned gid)
 {
  auto* building=getBuildingFromGid(ai.game,gid);
  if(!building) return;
- const auto& s=building->type->semantics;
- if(s.feeding.enabled || s.healing.enabled || building->type->shootingRange>0
+ const auto& s=AIEngine::ObservationQueries::buildingType(*ai.game,*building).semantics;
+ if(s.feeding.enabled || s.healing.enabled || AIEngine::ObservationQueries::buildingType(*ai.game,*building).shootingRange>0
   || s.market.interTeamFruitExchange || s.market.suppliesStock || s.market.suppliesDirectStock
   || std::any_of(s.production.recipes.begin(),s.production.recipes.end(),[](const auto& r){return r.enabled;})
   || std::any_of(s.training.begin(),s.training.end(),[](const auto& r){return r.enabled;})) return;
  if(s.instantPlacement && !s.occupiesGround) ai.enqueueOrder(std::make_shared<OrderDelete>(gid));
  else ai.enqueueOrder(std::make_shared<OrderModifyBuilding>(gid,0));
 }
-int legacyConcrete(Read::World& game,unsigned family,unsigned level,bool site)
+int legacyConcrete(const AIEngine::AIWorldView& game,unsigned family,unsigned level,bool site)
 {
  static constexpr const char* names[]={"swarm","inn","hospital","racetrack","swimmingpool","barracks","school","defencetower","explorationflag","warflag","clearingflag","stonewall","market"};
  if(family>=std::size(names)) return -1;
- for(size_t i=0;i<game.buildingsTypes.size();++i) {
-  const auto* type=game.buildingsTypes.get(i);
+ for(size_t i=0;i<game.catalog->size();++i) {
+  const auto* type=(&game.catalog->at(i).resolvedType);
   if(type->key==names[family] && type->level==int(level) && type->isBuildingSite==site) return int(i);
  }
  return -1;
@@ -147,10 +147,7 @@ void AICabino::init(Player *player)
 
 	this->player=player;
 	const auto view=AIEngine::AIWorldView::capture(*player->game, AIEngine::AIWorldView::captureCatalog(*player->game));
-    catalogInput=view->catalog;
-    catalog=std::make_shared<const Read::Catalog>(*catalogInput);
-    Read::World observed(*view,catalog);
-    team=observed.teams.at(player->teamNumber); game=&observed; map=&observed.map;
+    team=&view->teams[player->teamNumber]; game=view.get(); map=view.get();
     struct Reset { AICabino& ai; ~Reset(){ ai.team=nullptr; ai.game=nullptr; ai.map=nullptr;} } reset{*this};
 
 	gradient_manager.setTeam(this);
@@ -195,8 +192,7 @@ bool AICabino::load(GAGCore::InputStream *stream, Player *player, Sint32 version
 	while (!orders.empty()) orders.pop();
 	init(player);
     const auto view=AIEngine::AIWorldView::capture(*player->game, AIEngine::AIWorldView::captureCatalog(*player->game));
-    Read::World observed(*view,catalog);
-    team=observed.teams.at(player->teamNumber); game=&observed; map=&observed.map;
+    team=&view->teams[player->teamNumber]; game=view.get(); map=view.get();
     struct Reset { AICabino& ai; ~Reset(){ ai.team=nullptr; ai.game=nullptr; ai.map=nullptr;} } reset{*this};
 	GAGCore::BinaryInputStream::CheckedReads checked(stream);
 
@@ -324,42 +320,39 @@ std::shared_ptr<Order> AICabino::getOrder()
 }
 std::shared_ptr<Order> AICabino::getOrder(const AIEngine::DecisionContext& context)
 {
-    if(catalogInput!=context.world.catalog) {
-        catalogInput=context.world.catalog;
-        catalog=std::make_shared<const Read::Catalog>(*catalogInput);
-    }
-    Read::World observed(context.world,catalog);
-    team=observed.teams.at(context.team);game=&observed;map=&observed.map;
+    team=&context.world.teams[context.team];game=&context.world;map=&context.world;
     struct Reset { AICabino& ai; ~Reset(){
         ai.team=nullptr; ai.game=nullptr; ai.map=nullptr;
-        const auto text=ai.diagnosticStream.str();if(!text.empty())ai.bufferedDiagnostics.push_back({{},{},text});
-        ai.diagnosticStream.str({});ai.diagnosticStream.clear();
     } } reset{*this};
     applyReceipts(context);
-    return decide();
+    auto result=decide();
+    const auto text=diagnosticStream.str();
+    if(!text.empty()) bufferedDiagnostics.push_back({{},{},text});
+    diagnosticStream.str({});diagnosticStream.clear();
+    return result;
 }
 void AICabino::enqueueOrder(std::shared_ptr<Order> order)
 {
     if(!game) throw std::logic_error("Cabino command selected outside observation scope");
-    AIEngine::selectTarget(*order,game->source);
+    AIEngine::selectTarget(*order,*game);
     orders.push(std::move(order));
 }
 void AICabino::discardInvalidQueuedOrders()
 {
     while(!orders.empty()) {
         const auto& order=orders.front();
-        if(Read::permittedQueuedOrder(*game,*order) &&
-            AIEngine::selectedTargetExists(*order,game->source)) break;
+        if(AIEngine::ObservationQueries::permittedQueuedOrder(*game,*order) &&
+            AIEngine::selectedTargetExists(*order,*game)) break;
         // A command canceled before emission never reaches the engine receipt
         // queue. Reconcile its private reservation at this same worker boundary.
         AIEngine::ExecutionReceipt rejection;rejection.status=AIEngine::ExecutionStatus::Canceled;
-        rejection.executionTick=game->source.tick;
+        rejection.executionTick=game->tick;
         rejection.command.push_back(order->getOrderType());
         if(order->getDataLength()) {
             const auto* bytes=order->getData();rejection.command.insert(rejection.command.end(),bytes,bytes+order->getDataLength());
         }
         const std::vector<AIEngine::ExecutionReceipt> receipts{std::move(rejection)};
-        applyReceipts(AIEngine::DecisionContext{game->source,0,unsigned(team->teamNumber),receipts});
+        applyReceipts(AIEngine::DecisionContext{*game,0,unsigned(team->number),receipts});
         orders.pop();
     }
 }
@@ -556,11 +549,11 @@ void AICabino::setCenter()
  	unsigned int x_total=0;
  	unsigned int y_total=0;
  	unsigned int square_total=0;
- 	for(int x=0; x < map->getW(); ++x)
+	for(int x=0; x < map->width; ++x)
  	{
- 		for(int y=0; y<map->getH(); ++y)
+		for(int y=0; y<map->height; ++y)
  		{
- 			if(map->isMapDiscovered(x, y, team->me))
+			if(((map->visibilityAt(map->tileIndex(x,y)).discovered&(team->mask))!=0))
  			{
  				x_total+=x;
  				y_total+=y;
@@ -608,16 +601,16 @@ void AICabino::outputDebugMessages()
 
 
 
-bool Cabino::buildingStillExists(Read::World* game, Read::Building* building)
+bool Cabino::buildingStillExists(const AIEngine::AIWorldView* game, const AIEngine::BuildingView* building)
 {
 	for (int i=0; i<Team::MAX_COUNT; i++)
 	{
-		Read::Team* t = game->teams[i];
+		const AIEngine::TeamView* t = teamAt(*game,i);
 		if(t)
 		{
 			for(int i=0; i<1024; i++)
 			{
-				Read::Building* b = t->myBuildings[i];
+				const AIEngine::BuildingView* b = game->buildingSlots(t->number)[i];
 				if (b)
 				{
 					if(b == building)
@@ -632,7 +625,7 @@ bool Cabino::buildingStillExists(Read::World* game, Read::Building* building)
 
 
 
-bool Cabino::buildingStillExists(Read::World* game, unsigned int gid)
+bool Cabino::buildingStillExists(const AIEngine::AIWorldView* game, unsigned int gid)
 {
 	return getBuildingFromGid(game, gid)!=NULL;
 }
@@ -655,33 +648,33 @@ GridPollingSystem::GridPollingSystem(AICabino& ai)
 unsigned int GridPollingSystem::pollArea(unsigned int x, unsigned int y, unsigned int width, unsigned int height, pollModifier mod, pollType poll_type)
 {
 	unsigned int bound_h=x+width;
-	if(static_cast<int>(bound_h)>map->getW())
-		bound_h-=map->getW();
+	if(static_cast<int>(bound_h)>map->width)
+		bound_h-=map->width;
 
 	unsigned int bound_y=y+height;
-	if(static_cast<int>(bound_y)>map->getH())
-		bound_y-=map->getH();
+	if(static_cast<int>(bound_y)>map->height)
+		bound_y-=map->height;
 
 	unsigned int orig_y=y;
 	unsigned int score=0;
 
 	//This is an optmization, as putting the switch inside the for loop causes it to do log2n checks
 	//For every single square, which has become to cumbersome.
-	Read::Unit* u=NULL;
-	Read::Building* b=NULL;
+	const AIEngine::UnitView* u=NULL;
+	const AIEngine::BuildingView* b=NULL;
 	switch (poll_type)
 	{
 
 		case HIDDEN_SQUARES:
 			for(; x!=bound_h; ++x)
 			{
-				if(static_cast<int>(x) >= map->getW())
+				if(static_cast<int>(x) >= map->width)
 					x=0;
 				for(y=orig_y; y!=bound_y; ++y)
 				{
-					if(static_cast<int>(y) >= map->getH())
+					if(static_cast<int>(y) >= map->height)
 						y=0;
-					if(!map->isMapDiscovered(x, y, team->me))
+					if(!((map->visibilityAt(map->tileIndex(x,y)).discovered&(team->mask))!=0))
 					{
 						score++;
 					}
@@ -692,13 +685,13 @@ unsigned int GridPollingSystem::pollArea(unsigned int x, unsigned int y, unsigne
 		case VISIBLE_SQUARES:
 			for(; x!=bound_h; ++x)
 			{
-				if(static_cast<int>(x) >= map->getW())
+				if(static_cast<int>(x) >= map->width)
 					x=0;
 				for(y=orig_y; y!=bound_y; ++y)
 				{
-					if(static_cast<int>(y) >= map->getH())
+					if(static_cast<int>(y) >= map->height)
 						y=0;
-					if(map->isMapDiscovered(x, y, team->me))
+					if(((map->visibilityAt(map->tileIndex(x,y)).discovered&(team->mask))!=0))
 					{
 						score++;
 					}
@@ -708,16 +701,16 @@ unsigned int GridPollingSystem::pollArea(unsigned int x, unsigned int y, unsigne
 		case ENEMY_BUILDINGS:
 			for(; x!=bound_h; ++x)
 			{
-				if(static_cast<int>(x) >= map->getW())
+				if(static_cast<int>(x) >= map->width)
 					x=0;
 				for(y=orig_y; y!=bound_y; ++y)
 				{
-					if(static_cast<int>(y) >= map->getH())
+					if(static_cast<int>(y) >= map->height)
 						y=0;
-					b = getBuildingFromGid(game, map->getBuilding(x, y));
+					b = getBuildingFromGid(game, map->occupancyAt(map->tileIndex(x,y)).building);
 					if (b)
 					{
-						if((b->team->me & team->attackableTeams()) && b->posX == static_cast<int>(x) && b->posY == static_cast<int>(y))
+						if((game->teams[b->team].mask & team->enemies) && b->posX == static_cast<int>(x) && b->posY == static_cast<int>(y))
 						{
 							score++;
 						}
@@ -728,16 +721,16 @@ unsigned int GridPollingSystem::pollArea(unsigned int x, unsigned int y, unsigne
 		case FRIENDLY_BUILDINGS:
 			for(; x!=bound_h; ++x)
 			{
-				if(static_cast<int>(x) >= map->getW())
+				if(static_cast<int>(x) >= map->width)
 					x=0;
 				for(y=orig_y; y!=bound_y; ++y)
 				{
-					if(static_cast<int>(y) >= map->getH())
+					if(static_cast<int>(y) >= map->height)
 						y=0;
-					b = getBuildingFromGid(game, map->getBuilding(x, y));
+					b = getBuildingFromGid(game, map->occupancyAt(map->tileIndex(x,y)).building);
 					if (b)
 					{
-						if(b->team->me == team->me && b->posX == static_cast<int>(x) && b->posY == static_cast<int>(y))
+						if(game->teams[b->team].mask == team->mask && b->posX == static_cast<int>(x) && b->posY == static_cast<int>(y))
 						{
 							score++;
 						}
@@ -748,16 +741,16 @@ unsigned int GridPollingSystem::pollArea(unsigned int x, unsigned int y, unsigne
 		case ENEMY_UNITS:
 			for(; x!=bound_h; ++x)
 			{
-				if(static_cast<int>(x) >= map->getW())
+				if(static_cast<int>(x) >= map->width)
 					x=0;
 				for(y=orig_y; y!=bound_y; ++y)
 				{
-					if(static_cast<int>(y) >= map->getH())
+					if(static_cast<int>(y) >= map->height)
 						y=0;
-					u = getUnitFromGid(game, map->getGroundUnit(x, y));
+					u = getUnitFromGid(game, map->occupancyAt(map->tileIndex(x,y)).groundUnit);
 					if (u)
 					{
-						if((u->team->me & team->attackableTeams()) && u->posX==static_cast<int>(x) && u->posY == static_cast<int>(y))
+						if((game->teams[u->team].mask & team->enemies) && u->posX==static_cast<int>(x) && u->posY == static_cast<int>(y))
 						{
 							score++;
 						}
@@ -768,16 +761,16 @@ unsigned int GridPollingSystem::pollArea(unsigned int x, unsigned int y, unsigne
 		case ENEMY_WARRIORS:
 			for(; x!=bound_h; ++x)
 			{
-				if(static_cast<int>(x) >= map->getW())
+				if(static_cast<int>(x) >= map->width)
 					x=0;
 				for(y=orig_y; y!=bound_y; ++y)
 				{
-					if(static_cast<int>(y) >= map->getH())
+					if(static_cast<int>(y) >= map->height)
 						y=0;
-					u = getUnitFromGid(game, map->getGroundUnit(x, y));
+					u = getUnitFromGid(game, map->occupancyAt(map->tileIndex(x,y)).groundUnit);
 					if (u)
 					{
-						if((u->team->me & team->attackableTeams()) && u->posX==static_cast<int>(x) && u->posY == static_cast<int>(y) && u->typeNum==WARRIOR)
+						if((game->teams[u->team].mask & team->enemies) && u->posX==static_cast<int>(x) && u->posY == static_cast<int>(y) && u->typeNum==WARRIOR)
 						{
 							score++;
 						}
@@ -788,26 +781,26 @@ unsigned int GridPollingSystem::pollArea(unsigned int x, unsigned int y, unsigne
 		case POLL_CORN:
 			for(; x!=bound_h; ++x)
 			{
-				if(static_cast<int>(x) >= map->getW())
+				if(static_cast<int>(x) >= map->width)
 					x=0;
 				for(y=orig_y; y!=bound_y; ++y)
 				{
-					if(static_cast<int>(y) >= map->getH())
+					if(static_cast<int>(y) >= map->height)
 						y=0;
-					if (map->isResourceTakeable(x, y, WHEAT))
+					if (resourceTakeable(map->resourceAt(map->tileIndex(x,y)).resource,WHEAT))
 						score++;
 				}
 			}
 		case POLL_TREES:
 			for(; x!=bound_h; ++x)
 			{
-				if(static_cast<int>(x) >= map->getW())
+				if(static_cast<int>(x) >= map->width)
 					x=0;
 				for(y=orig_y; y!=bound_y; ++y)
 				{
-					if(static_cast<int>(y) >= map->getH())
+					if(static_cast<int>(y) >= map->height)
 						y=0;
-					if (map->isResourceTakeable(x, y, WOOD))
+					if (resourceTakeable(map->resourceAt(map->tileIndex(x,y)).resource,WOOD))
 						score++;
 				}
 			}
@@ -815,13 +808,13 @@ unsigned int GridPollingSystem::pollArea(unsigned int x, unsigned int y, unsigne
 		case POLL_STONE:
 			for(; x!=bound_h; ++x)
 			{
-				if(static_cast<int>(x) >= map->getW())
+				if(static_cast<int>(x) >= map->width)
 					x=0;
 				for(y=orig_y; y!=bound_y; ++y)
 				{
-					if(static_cast<int>(y) >= map->getH())
+					if(static_cast<int>(y) >= map->height)
 						y=0;
-					if (map->isResourceTakeable(x, y, STONE))
+					if (resourceTakeable(map->resourceAt(map->tileIndex(x,y)).resource,STONE))
 						score++;
 				}
 			}
@@ -829,7 +822,7 @@ unsigned int GridPollingSystem::pollArea(unsigned int x, unsigned int y, unsigne
 		case CENTER_DISTANCE:
 			score=intdistance(x, center_x) + intdistance(y, center_y);
 			if(mod==MINIMUM)
-				score=(map->getW()+map->getH())-score;
+				score=(map->width+map->height)-score;
 			return score;
 			break;
 		case NONE:
@@ -907,16 +900,16 @@ GridPollingSystem::getBestZonesSplit* GridPollingSystem::getBestZones(poll p, un
 	split->b_list=&b_list;
 	split->c_list=&c_list;
 
-	for (unsigned int x=0; x<=static_cast<unsigned int>(map->getW()-horizontal_overlap); x+=width-horizontal_overlap)
+	for (unsigned int x=0; x<=static_cast<unsigned int>(map->width-horizontal_overlap); x+=width-horizontal_overlap)
 	{
-		for (unsigned int y=0; y<=static_cast<unsigned int>(map->getH()-vertical_overlap); y+=height-vertical_overlap)
+		for (unsigned int y=0; y<=static_cast<unsigned int>(map->height-vertical_overlap); y+=height-vertical_overlap)
 		{
 			int full_x=x-extention_width;
 			if(full_x<0)
-				full_x=map->getW()+full_x;
+				full_x=map->width+full_x;
 			int full_y=y-extention_height;
 			if(full_y<0)
-				full_y=map->getH()+full_y;
+				full_y=map->height+full_y;
 
 			int full_w=width+2*extention_width;
 			int full_h=height+2*extention_height;
@@ -959,7 +952,7 @@ GridPollingSystem::getBestZonesSplit* GridPollingSystem::getBestZones(poll p, un
 
 
 
-TeamStatsGenerator::TeamStatsGenerator(Read::Team* team) : team(team)
+TeamStatsGenerator::TeamStatsGenerator(const AIEngine::AIWorldView* world,const AIEngine::TeamView* team) : world(world),team(team)
 {
 
 }
@@ -1051,15 +1044,15 @@ unsigned int TeamStatsGenerator::getUnits(unsigned int type, Unit::Medical medic
 	//would be more appropriette.
 	level-=1;
 	unsigned int free_workers=0;
-	Read::Unit**myUnits=team->myUnits.data();
+	const auto myUnits=world->unitSlots(team->number);
 
 	for (int i=0; i<1024; i++)
 	{
-		Read::Unit* u = myUnits[i];
+		const AIEngine::UnitView* u = myUnits[i];
 		if (u)
 		{
-			if (u->typeNum == static_cast<int>(type) && u->activity==activity && ((!isMinimum && (ability==BUILD ? u->workerLevel() : u->level[ability])==static_cast<int>(level)) ||
-				(isMinimum && (ability==BUILD ? u->workerLevel() : u->level[ability])>=static_cast<int>(level))) && u->medical==medical_state)
+			if (u->typeNum == static_cast<int>(type) && u->activity==activity && ((!isMinimum && (ability==BUILD ? u->constructionLevel : u->level[ability])==static_cast<int>(level)) ||
+				(isMinimum && (ability==BUILD ? u->constructionLevel : u->level[ability])>=static_cast<int>(level))) && u->medical==medical_state)
 			{
 				free_workers+=1;
 			}
@@ -1075,15 +1068,15 @@ unsigned int TeamStatsGenerator::getUnits(unsigned int type, unsigned int abilit
 {
 	level-=1;
 	unsigned int free_workers=0;
-	Read::Unit**myUnits=team->myUnits.data();
+	const auto myUnits=world->unitSlots(team->number);
 
 	for (int i=0; i<1024; i++)
 	{
-		Read::Unit* u = myUnits[i];
+		const AIEngine::UnitView* u = myUnits[i];
 		if (u)
 		{
-			if (u->typeNum == static_cast<int>(type) && 	((!isMinimum && (ability==BUILD ? u->workerLevel() : u->level[ability])==static_cast<int>(level)) ||
-									(  isMinimum && (ability==BUILD ? u->workerLevel() : u->level[ability])>=static_cast<int>(level))))
+			if (u->typeNum == static_cast<int>(type) && 	((!isMinimum && (ability==BUILD ? u->constructionLevel : u->level[ability])==static_cast<int>(level)) ||
+									(  isMinimum && (ability==BUILD ? u->constructionLevel : u->level[ability])>=static_cast<int>(level))))
 			{
 				free_workers+=1;
 			}
@@ -1095,10 +1088,10 @@ unsigned int TeamStatsGenerator::getUnits(unsigned int type, unsigned int abilit
 
 
 
-// width/height read ai.team->map directly rather than the not-yet-initialized
+// width/height read ai.map directly rather than the not-yet-initialized
 // `map` member: member init order follows declaration order (width, height,
-// ..., map), so `map->getW()` here would dereference an uninitialized pointer.
-Gradient::Gradient(AICabino& ai, unsigned sources, unsigned obstacles) : width(ai.team->map->getW()), height(ai.team->map->getH()), sources(sources), obstacles(obstacles), ai(&ai), gradient(width*height)
+// ..., map), so `map->width` here would dereference an uninitialized pointer.
+Gradient::Gradient(AICabino& ai, unsigned sources, unsigned obstacles) : width(ai.map->width), height(ai.map->height), sources(sources), obstacles(obstacles), ai(&ai), gradient(width*height)
 {
 
 }
@@ -1111,8 +1104,8 @@ void Gradient::reset(AICabino& aAi, unsigned aSources, unsigned aObstacles)
 	ai=&aAi;
 	sources=aSources;
 	obstacles=aObstacles;
-	width=ai->map->getW();
-	height=ai->map->getH();
+	width=ai->map->width;
+	height=ai->map->height;
 	gradient.resize(width*height);
 }
 
@@ -1168,8 +1161,8 @@ int Gradient::getHeight(int x, int y) const
 bool Gradient::isSource(unsigned x, unsigned y)
 {
     auto* map=ai->map; auto* team=ai->team;
-	const auto index=map->coordToIndex(x,y);
-	const auto sourceResource=map->world->resourceAt(index).resource;
+	const auto index=map->tileIndex(x,y);
+	const auto sourceResource=map->resourceAt(index).resource;
 	const int resource=sourceResource.type;
 	const auto isTakeable=[&](int type) { return sourceResource.type==type && sourceResource.amount>0; };
  if(resource>=0 && resource<MAX_NB_RESOURCES && (sources&(1u<<(8+resource))) && isTakeable(resource)) return true;
@@ -1183,11 +1176,11 @@ bool Gradient::isSource(unsigned x, unsigned y)
 		return true;
 	if(sources&TeamBuildings)
 	{
-		const auto building=map->world->occupancyAt(index).building;
-		if(building!=NOGBID && getBuildingFromGid(team->game, building)->team==team)
+		const auto building=map->occupancyAt(index).building;
+		if(building!=NOGBID && getBuildingFromGid(map, building)->team==team->number)
 			return true;
 	}
-	if(sources&Water && terrainProvidesFertility(map->world->terrain->properties(map->world->terrainAt(index).type)))
+	if(sources&Water && terrainProvidesFertility(map->terrain->properties(map->terrainAt(index).type)))
 		return true;
 	return false;
 }
@@ -1198,9 +1191,9 @@ bool Gradient::isSource(unsigned x, unsigned y)
 bool Gradient::isObstacle(unsigned x, unsigned y)
 {
     auto* map=ai->map; auto* team=ai->team;
-	if(obstacles&Resource && map->isResource(x, y))
+	if(obstacles&Resource && (map->resourceAt(map->tileIndex(x,y)).resource.type!=NO_RES_TYPE))
 		return true;
-	if(obstacles&Building && map->getBuilding(x, y)!=NOGBID)
+	if(obstacles&Building && map->occupancyAt(map->tileIndex(x,y)).building!=NOGBID)
 		return true;
 	return false;
 }
@@ -1265,7 +1258,7 @@ bool SimpleBuildingDefense::perform(unsigned int time_slice_n)
 {
 	// Peaceful combat cannot injure colonies. Skip before reserving defenders
 	// or creating flags, so economic modules can still use the standing army.
-	if (ai.game->gameHeader.isPeacefulModeEnabled()) return false;
+	if (ai.game->configuration->isPeacefulModeEnabled()) return false;
 	ai.telemetry.set(AITrace::AI8::SimpleBuildingDefense_perform_input_time_slice_n, time_slice_n);
 	ai.telemetry.count(AITrace::AI8::SimpleBuildingDefense_perform_calls);
 	switch(time_slice_n)
@@ -1388,26 +1381,26 @@ bool SimpleBuildingDefense::findDefense()
 	GridPollingSystem gps(ai);
 	for(std::map<unsigned int, unsigned int>::iterator i=building_health.begin(); i!=building_health.end();)
 	{
-		Read::Building* b = getBuildingFromGid(ai.game, i->first);
-		if(b && b->type->semantics.occupiesGround)
+		const AIEngine::BuildingView* b = getBuildingFromGid(ai.game, i->first);
+		if(b && AIEngine::ObservationQueries::buildingType(*ai.game,*b).semantics.occupiesGround)
 		{
-			if(building_health.find(b->gid) != building_health.end())
+			if(building_health.find(b->identity.gid) != building_health.end())
 			{
-				if(b->hp < static_cast<int>(building_health[b->gid]))
+				if(b->hp < static_cast<int>(building_health[b->identity.gid]))
 				{
 					defenseRecord dr;
 					dr.flag=NOGBID;
-					dr.flagx=b->posX+(b->type->width/2);
-					dr.flagy=b->posY+(b->type->height/2);
-					if(static_cast<int>(dr.flagx) > ai.map->getW())
-						dr.flagx-=ai.map->getW();
-					if(static_cast<int>(dr.flagy) > ai.map->getH())
-						dr.flagy-=ai.map->getH();
+					dr.flagx=b->posX+(AIEngine::ObservationQueries::buildingType(*ai.game,*b).width/2);
+					dr.flagy=b->posY+(AIEngine::ObservationQueries::buildingType(*ai.game,*b).height/2);
+					if(static_cast<int>(dr.flagx) > ai.map->width)
+						dr.flagx-=ai.map->width;
+					if(static_cast<int>(dr.flagy) > ai.map->height)
+						dr.flagy-=ai.map->height;
 
 					bool found=false;
 					for(std::vector<defenseRecord>::iterator j = defending_zones.begin(); j != defending_zones.end(); ++j)
 					{
-						if(b->gid == j->building)
+						if(b->identity.gid == j->building)
 						{
 							found=true;
 							break;
@@ -1420,17 +1413,17 @@ bool SimpleBuildingDefense::findDefense()
 					}
 					dr.zonex=b->posX-DEFENSE_ZONE_BUILDING_PADDING;
 					dr.zoney=b->posY-DEFENSE_ZONE_BUILDING_PADDING;
-					dr.width=b->type->width+DEFENSE_ZONE_BUILDING_PADDING*2;
-					dr.height=b->type->height+DEFENSE_ZONE_BUILDING_PADDING*2;
+					dr.width=AIEngine::ObservationQueries::buildingType(*ai.game,*b).width+DEFENSE_ZONE_BUILDING_PADDING*2;
+					dr.height=AIEngine::ObservationQueries::buildingType(*ai.game,*b).height+DEFENSE_ZONE_BUILDING_PADDING*2;
 					dr.assigned=gps.pollArea(dr.zonex, dr.zoney, dr.width, dr.height, GridPollingSystem::MAXIMUM, GridPollingSystem::ENEMY_WARRIORS);
 					dr.assigned= std::min(20u, dr.assigned*2);
-					dr.building=b->gid;
+					dr.building=b->identity.gid;
 					if(!placeRallyNear(ai,typeNum,dr.flagx,dr.flagy)) { ++i; continue; }
      defending_zones.push_back(dr);
 
 					if(AICabino_DEBUG)
-						ai.diagnosticStream<<"AICabino: findDefense: Creating a defense flag at "<<dr.flagx<<", "<<dr.flagy<<", to combat "<<dr.assigned<<" units that are attacking our "<<b->type->key<<" at "<<b->posX<<","<<b->posY<<"."<<std::endl;
-					ai.enqueueOrder(Read::createOrder(*ai.game, ai.team->teamNumber, dr.flagx, dr.flagy, typeNum, 1, 1));
+						ai.diagnosticStream<<"AICabino: findDefense: Creating a defense flag at "<<dr.flagx<<", "<<dr.flagy<<", to combat "<<dr.assigned<<" units that are attacking our "<<AIEngine::ObservationQueries::buildingType(*ai.game,*b).key<<" at "<<b->posX<<","<<b->posY<<"."<<std::endl;
+					ai.enqueueOrder(AIEngine::ObservationQueries::createOrder(*ai.game, ai.team->number, dr.flagx, dr.flagy, typeNum, 1, 1));
 				}
 			}
 			++i;
@@ -1446,12 +1439,12 @@ bool SimpleBuildingDefense::findDefense()
 
 	for(unsigned int i=0; i<1024; ++i)
 	{
-		Read::Building* b = ai.team->myBuildings[i];
+		const AIEngine::BuildingView* b = ai.game->buildingSlots(ai.team->number)[i];
 		if(b)
 		{
-			if(b->type->semantics.occupiesGround)
+			if(AIEngine::ObservationQueries::buildingType(*ai.game,*b).semantics.occupiesGround)
 			{
-				building_health[b->gid]=std::min(b->getEffectiveMaxHp(), b->hp);
+				building_health[b->identity.gid]=std::min(b->maxHp, b->hp);
 			}
 		}
 	}
@@ -1470,7 +1463,7 @@ bool SimpleBuildingDefense::updateFlags()
 	{
 		if(i->flag!=NOGBID)
 		{
-			Read::Building* flag=getBuildingFromGid(ai.game, i->flag);
+			const AIEngine::BuildingView* flag=getBuildingFromGid(ai.game, i->flag);
 			if(!flag)
 			{
 				// The flag is gone: release its units and drop the record.
@@ -1513,7 +1506,7 @@ bool SimpleBuildingDefense::findCreatedDefenseFlags()
 	ai.telemetry.count(AITrace::AI8::SimpleBuildingDefense_findCreatedDefenseFlags_calls);
 	for(unsigned int i=0; i<1024; ++i)
 	{
-		Read::Building* b = ai.team->myBuildings[i];
+		const AIEngine::BuildingView* b = ai.game->buildingSlots(ai.team->number)[i];
 		if(b)
 		{
 			if(provides(*ai.game,*b,AttractWarriors))
@@ -1524,9 +1517,9 @@ bool SimpleBuildingDefense::findCreatedDefenseFlags()
 					{
 						if(AICabino_DEBUG)
 							ai.diagnosticStream<<"AICabino: findCreatedDefenseFlags: Found created flag at "<<i->flagx<<","<<i->flagy<<", adding it to the defense records."<<std::endl;
-						i->flag=b->gid;
-						ai.enqueueOrder(std::shared_ptr<Order>(new OrderModifyFlag(b->gid, std::max(i->width, i->height)/2)));
-						ai.enqueueOrder(std::shared_ptr<Order>(new OrderModifyBuilding(b->gid, i->assigned)));
+						i->flag=b->identity.gid;
+						ai.enqueueOrder(std::shared_ptr<Order>(new OrderModifyFlag(b->identity.gid, std::max(i->width, i->height)/2)));
+						ai.enqueueOrder(std::shared_ptr<Order>(new OrderModifyBuilding(b->identity.gid, i->assigned)));
 						ai.getUnitModule()->request("SimpleBuildingDefense", WARRIOR, ATTACK_STRENGTH, 1, i->assigned, i->flag);
 						break;
 					}
@@ -1554,7 +1547,7 @@ bool GeneralsDefense::perform(unsigned int time_slice_n)
 {
 	// Retaliation flags and their unit reservations have no purpose without
 	// combat; do not let this defense module consume economic planning turns.
-	if (ai.game->gameHeader.isPeacefulModeEnabled()) return false;
+	if (ai.game->configuration->isPeacefulModeEnabled()) return false;
 	ai.telemetry.set(AITrace::AI8::GeneralsDefense_perform_input_time_slice_n, time_slice_n);
 	ai.telemetry.count(AITrace::AI8::GeneralsDefense_perform_calls);
 	switch(time_slice_n)
@@ -1641,14 +1634,14 @@ bool GeneralsDefense::findEnemyFlags()
 	GridPollingSystem gps(ai);
 	for (unsigned int t=0; t<static_cast<unsigned int>(Team::MAX_COUNT); t++)
 	{
-		Read::Team* team = ai.game->teams[t];
+		const AIEngine::TeamView* team = teamAt(*ai.game,t);
 		if(team)
 		{
-			if(team->me & ai.team->attackableTeams())
+			if(team->mask & ai.team->enemies)
 			{
 				for(unsigned int n=0; n<1024; ++n)
 				{
-					Read::Building* b = team->myBuildings[n];
+					const AIEngine::BuildingView* b = ai.game->buildingSlots(team->number)[n];
 					if(b)
 					{
 						if(provides(*ai.game,*b,AttractWarriors))
@@ -1665,7 +1658,7 @@ bool GeneralsDefense::findEnemyFlags()
 								bool found=false;
 								for(std::vector<defenseRecord>::iterator i = defending_flags.begin(); i!= defending_flags.end(); ++i)
 								{
-									if(i->enemy_flag == b->gid)
+									if(i->enemy_flag == b->identity.gid)
 										found=true;
 								}
 								if(found)
@@ -1673,7 +1666,7 @@ bool GeneralsDefense::findEnemyFlags()
 
 								defenseRecord dr;
 								dr.flag=NOGBID;
-								dr.enemy_flag=b->gid;
+								dr.enemy_flag=b->identity.gid;
 								int rallyX=b->posX,rallyY=b->posY;
         if(!placeRallyNear(ai,typeNum,rallyX,rallyY)) continue;
         dr.x=rallyX; dr.y=rallyY;
@@ -1681,7 +1674,7 @@ bool GeneralsDefense::findEnemyFlags()
 								if(AICabino_DEBUG)
 									ai.diagnosticStream<<"AICabino: findEnemyFlags: Creating new flag at "<<b->posX<<","<<b->posY<<" to combat an enemy attack!"<<std::endl;
 
-								ai.enqueueOrder(Read::createOrder(*ai.game, ai.team->teamNumber, rallyX, rallyY, typeNum, 1, 1));
+								ai.enqueueOrder(AIEngine::ObservationQueries::createOrder(*ai.game, ai.team->number, rallyX, rallyY, typeNum, 1, 1));
 							}
 						}
 					}
@@ -1710,18 +1703,18 @@ bool GeneralsDefense::updateDefenseFlags()
 		if(i->flag==NOGBID)
 
 		{
-			Read::Building* eb = getBuildingFromGid(ai.game, i->enemy_flag);
+			const AIEngine::BuildingView* eb = getBuildingFromGid(ai.game, i->enemy_flag);
 			for(unsigned int n=0; n<1024; ++n)
 			{
-				Read::Building* b = ai.team->myBuildings[n];
+				const AIEngine::BuildingView* b = ai.game->buildingSlots(ai.team->number)[n];
 				if(b)
 				{
 					if(provides(*ai.game,*b,AttractWarriors) && b->posX==i->x && b->posY==i->y)
 					{
-						i->flag=b->gid;
-						ai.enqueueOrder(std::shared_ptr<Order>(new OrderModifyFlag(i->flag, std::min(eb->unitStayRange,b->type->maxUnitStayRange))));
-						ai.enqueueOrder(std::shared_ptr<Order>(new OrderModifyBuilding(i->flag, std::min(eb->maxUnitWorking,b->type->semantics.assignmentLimit))));
-						ai.enqueueOrder(std::shared_ptr<Order>(new OrderModifyMinLevelToFlag(i->flag, ai.game->gameHeader.isUnitUpgradesDisabled() ? 0 : eb->minLevelToFlag)));
+						i->flag=b->identity.gid;
+						ai.enqueueOrder(std::shared_ptr<Order>(new OrderModifyFlag(i->flag, std::min(eb->unitStayRange,AIEngine::ObservationQueries::buildingType(*ai.game,*b).maxUnitStayRange))));
+						ai.enqueueOrder(std::shared_ptr<Order>(new OrderModifyBuilding(i->flag, std::min(eb->maxUnitWorking,AIEngine::ObservationQueries::buildingType(*ai.game,*b).semantics.assignmentLimit))));
+						ai.enqueueOrder(std::shared_ptr<Order>(new OrderModifyMinLevelToFlag(i->flag, ai.game->configuration->isUnitUpgradesDisabled() ? 0 : eb->minLevelToFlag)));
 						break;
 					}
 				}
@@ -1749,7 +1742,7 @@ bool PrioritizedBuildingAttack::perform(unsigned int time_slice_n)
 {
 	// Target selection also reserves warriors. Gate the whole attack pipeline
 	// rather than dropping its flag order after those reservations are made.
-	if (ai.game->gameHeader.isPeacefulModeEnabled()) return false;
+	if (ai.game->configuration->isPeacefulModeEnabled()) return false;
 	ai.telemetry.set(AITrace::AI8::PrioritizedBuildingAttack_perform_input_time_slice_n,
 					 time_slice_n);
 	ai.telemetry.count(AITrace::AI8::PrioritizedBuildingAttack_perform_calls);
@@ -1794,7 +1787,7 @@ bool PrioritizedBuildingAttack::load(GAGCore::InputStream *stream, Player *playe
 	// 255 is the "no enemy chosen yet" sentinel written below: it's outside
 	// Team::MAX_COUNT_ON_DISK (32), so it can never collide with a real team.
 	Uint8 enemyTeamNumber = stream->readUint8("teamNumber");
-	if (enemyTeamNumber != 255 && (enemyTeamNumber >= ai.game->mapHeader.getNumberOfTeams() || !ai.game->teams[enemyTeamNumber])) return false;
+	if (enemyTeamNumber != 255 && (enemyTeamNumber >= ai.game->teams.size() || !teamAt(*ai.game,enemyTeamNumber))) return false;
 	this->enemyTeamNumber=enemyTeamNumber;
 	Uint32 attackRecordSize = stream->readCount("size");
 	for (Uint32 attackRecordIndex = 0; attackRecordIndex < attackRecordSize; attackRecordIndex++)
@@ -1868,7 +1861,7 @@ void PrioritizedBuildingAttack::save(GAGCore::OutputStream *stream) const
 
 bool PrioritizedBuildingAttack::targetEnemy()
 {
-	if(enemy()==NULL || !enemy()->isAlive)
+	if(enemy()==NULL || !enemy()->alive)
 	{
 		for(std::vector<attackRecord>::iterator j = attacks.begin(); j!=attacks.end();)
 		{
@@ -1883,13 +1876,13 @@ bool PrioritizedBuildingAttack::targetEnemy()
 			}
 		}
 
-		std::vector<Read::Team*> targets;
+		std::vector<const AIEngine::TeamView*> targets;
 		for(int i=0; i<Team::MAX_COUNT; ++i)
 		{
-			Read::Team* t = ai.game->teams[i];
+			const AIEngine::TeamView* t = teamAt(*ai.game,i);
 			if(t)
 			{
-				if((t->me & ai.team->attackableTeams()) && t->isAlive)
+				if((t->mask & ai.team->enemies) && t->alive)
 				{
 					targets.push_back(t);
 				}
@@ -1900,7 +1893,7 @@ bool PrioritizedBuildingAttack::targetEnemy()
 		{
 			if(AICabino_DEBUG)
 				ai.diagnosticStream<<"AICabino: targetEnemy: A new enemy has been chosen."<<std::endl;
-			enemyTeamNumber=targets[ai.random()%targets.size()]->teamNumber;
+			enemyTeamNumber=targets[ai.random()%targets.size()]->number;
 		}
 	}
 	return false;
@@ -1928,14 +1921,14 @@ bool PrioritizedBuildingAttack::attack()
 	unsigned int found_barracks=0;
 	for(int i=0; i<1024; ++i)
 	{
-		Read::Building* b = ai.team->myBuildings[i];
+		const AIEngine::BuildingView* b = ai.game->buildingSlots(ai.team->number)[i];
 		if(b)
 		{
 			if(provides(*ai.game,*b,TrainAttack))
 			{
 				if(b->constructionResultState==Building::NO_CONSTRUCTION)
 				{
-					max_barracks_level=std::max(max_barracks_level, static_cast<unsigned int>(b->type->semantics.training[ATTACK_STRENGTH].targetLevel));
+					max_barracks_level=std::max(max_barracks_level, static_cast<unsigned int>(AIEngine::ObservationQueries::buildingType(*ai.game,*b).semantics.training[ATTACK_STRENGTH].targetLevel));
 					found_barracks++;
 				}
 			}
@@ -1948,18 +1941,18 @@ bool PrioritizedBuildingAttack::attack()
 	{
 		if(i<MINIMUM_BARRACKS_LEVEL+1)
 			continue;
-		total+=ai.team->stats.getLatestStat()->upgradeState[ATTACK_STRENGTH][i];
-		average_unit_strength_level+=ai.team->stats.getLatestStat()->upgradeState[ATTACK_STRENGTH][i]*(i+1);
+		total+=ai.team->statistics.upgradeState[ATTACK_STRENGTH][i];
+		average_unit_strength_level+=ai.team->statistics.upgradeState[ATTACK_STRENGTH][i]*(i+1);
 	}
 	if(total>0)
 		average_unit_strength_level=static_cast<unsigned int>(average_unit_strength_level/total)-1;
 
 	// The standing army cannot train to the barracks-derived recruitment level.
-	unsigned int strength_level=ai.game->gameHeader.isUnitUpgradesDisabled() ? 0
+	unsigned int strength_level=ai.game->configuration->isUnitUpgradesDisabled() ? 0
 		: (USE_MAX_BARRACKS_LEVEL ? max_barracks_level : average_unit_strength_level);
 
 	//If we don't have enough barracks, don't bother doing anything, otherwise, make sure where producing warriors.
-	if(!ai.game->gameHeader.isUnitUpgradesDisabled() && (max_barracks_level<MINIMUM_BARRACKS_LEVEL+1 || found_barracks==0))
+	if(!ai.game->configuration->isUnitUpgradesDisabled() && (max_barracks_level<MINIMUM_BARRACKS_LEVEL+1 || found_barracks==0))
 		return ai.telemetry.returnedBool(AITrace::AI8::PrioritizedBuildingAttack_attack_result,
 										 AITrace::AI8::PrioritizedBuildingAttack_attack_true,
 										 false);
@@ -1969,7 +1962,7 @@ bool PrioritizedBuildingAttack::attack()
 		{
 			ai.getUnitModule()->changeUnits("PrioritizedBuildingAttack", WARRIOR, 0, ATTACK_STRENGTH, i+1);
 		}
-		unsigned int numWarriors=ai.team->stats.getLatestStat()->numberUnitPerType[WARRIOR];
+		unsigned int numWarriors=ai.team->statistics.numberUnitPerType[WARRIOR];
 		ai.getUnitModule()->changeUnits("PrioritizedBuildingAttack", WARRIOR,
 			std::min(BASE_ATTACK_WARRIORS, round_up(numWarriors, WARRIOR_DEVELOPMENT_CHUNK_SIZE)+WARRIOR_DEVElOPMENT_CONSISTANT_SIZE),
 			ATTACK_STRENGTH, strength_level+1);
@@ -1990,9 +1983,9 @@ bool PrioritizedBuildingAttack::attack()
 			unsigned int needed=0;
 			if(i->flag!=NOGBID)
 			{
-				Read::Building* b = getBuildingFromGid(ai.game, i->flag);
-				if(b && b->unitsWorking.size()<i->assigned_units)
-					needed=i->assigned_units-b->unitsWorking.size();
+				const AIEngine::BuildingView* b = getBuildingFromGid(ai.game, i->flag);
+				if(b && b->working.count<i->assigned_units)
+					needed=i->assigned_units-b->working.count;
 			}
 			else
 			{
@@ -2007,15 +2000,15 @@ bool PrioritizedBuildingAttack::attack()
 
 	//The following goes through each of the buildings in the enemies foothold, and adds them to the appropriette list based on their position in the
 	//ATTACK_PRIORITY variable.
-	std::vector<std::vector<Read::Building*> > buildings(std::size(ATTACK_PRIORITY)+1);
+	std::vector<std::vector<const AIEngine::BuildingView*> > buildings(std::size(ATTACK_PRIORITY)+1);
 	for(int i=0; i<1024; ++i)
 	{
-		Read::Building* b = enemy()->myBuildings[i];
+		const AIEngine::BuildingView* b = ai.game->buildingSlots(enemy()->number)[i];
 		if(b)
 		{
 			if(!b->locked[1])
 			{
-    if(b->type->semantics.occupiesGround) {
+    if(AIEngine::ObservationQueries::buildingType(*ai.game,*b).semantics.occupiesGround) {
      unsigned pos=0;
      while(pos<std::size(ATTACK_PRIORITY) && !provides(*ai.game,*b,ATTACK_PRIORITY[pos])) ++pos;
      buildings[pos].push_back(b);
@@ -2029,25 +2022,25 @@ bool PrioritizedBuildingAttack::attack()
 	{
 		for (size_t count=buildings[i].size();count>1;--count)
    std::swap(buildings[i][count-1],buildings[i][ai.random()%count]);
-  std::stable_partition(buildings[i].begin(),buildings[i].end(),[](const Read::Building* b){return b->constructionResultState==Building::NO_CONSTRUCTION;});
+  std::stable_partition(buildings[i].begin(),buildings[i].end(),[](const AIEngine::BuildingView* b){return b->constructionResultState==Building::NO_CONSTRUCTION;});
 	}
 
 	//Iterate through the buildings, starting attacks as neccecary, and stopping when
 	//we run out of available units, or we have reached the maximum number of attacks
 	//at once.
 	unsigned int attack_count=attacks.size();
-	for(std::vector<std::vector<Read::Building*> >::iterator i = buildings.begin(); i != buildings.end(); ++i)
+	for(std::vector<std::vector<const AIEngine::BuildingView*> >::iterator i = buildings.begin(); i != buildings.end(); ++i)
 	{
-		for(std::vector<Read::Building*>::iterator j = i->begin(); j!=i->end(); ++j)
+		for(std::vector<const AIEngine::BuildingView*>::iterator j = i->begin(); j!=i->end(); ++j)
 		{
-			Read::Building* b = *j;
+			const AIEngine::BuildingView* b = *j;
 			if(attack_count!=MAX_ATTACKS_AT_ONCE && available_units>=ATTACK_WARRIOR_MINIMUM)
 			{
 				//Make sure where not attacking this building already
 				bool found=false;
 				for(std::vector<attackRecord>::iterator i = attacks.begin(); i!=attacks.end(); ++i)
 				{
-					if(b->gid==i->target)
+					if(b->identity.gid==i->target)
 					{
 						found=true;
 						break;
@@ -2058,24 +2051,24 @@ bool PrioritizedBuildingAttack::attack()
 
 				//Ok! Launch an attack
 				attackRecord ar;
-				ar.target=b->gid;
+				ar.target=b->identity.gid;
 				ar.target_x=b->posX;
 				ar.target_y=b->posY;
 				ar.flag=NOGBID;
-				ar.flagx=b->posX+(b->type->width/2);
-				ar.flagy=b->posY+(b->type->height/2);
-				if(static_cast<int>(ar.flagx) >= ai.map->getW())
-					ar.flagx-=ai.map->getW();
-				if(static_cast<int>(ar.flagy) >= ai.map->getH())
-					ar.flagy-=ai.map->getH();
+				ar.flagx=b->posX+(AIEngine::ObservationQueries::buildingType(*ai.game,*b).width/2);
+				ar.flagy=b->posY+(AIEngine::ObservationQueries::buildingType(*ai.game,*b).height/2);
+				if(static_cast<int>(ar.flagx) >= ai.map->width)
+					ar.flagx-=ai.map->width;
+				if(static_cast<int>(ar.flagy) >= ai.map->height)
+					ar.flagy-=ai.map->height;
 				ar.zonex=b->posX-ATTACK_ZONE_BUILDING_PADDING;
 				ar.zoney=b->posY-ATTACK_ZONE_BUILDING_PADDING;
-				ar.width=b->type->width+ATTACK_ZONE_BUILDING_PADDING*2;
-				ar.height=b->type->height+ATTACK_ZONE_BUILDING_PADDING*2;
+				ar.width=AIEngine::ObservationQueries::buildingType(*ai.game,*b).width+ATTACK_ZONE_BUILDING_PADDING*2;
+				ar.height=AIEngine::ObservationQueries::buildingType(*ai.game,*b).height+ATTACK_ZONE_BUILDING_PADDING*2;
 				ar.unitx=b->posX-ATTACK_ZONE_EXAMINATION_PADDING;
 				ar.unity=b->posY-ATTACK_ZONE_EXAMINATION_PADDING;
-				ar.unit_width=b->type->width+ATTACK_ZONE_EXAMINATION_PADDING*2;
-				ar.unit_height=b->type->height+ATTACK_ZONE_EXAMINATION_PADDING*2;
+				ar.unit_width=AIEngine::ObservationQueries::buildingType(*ai.game,*b).width+ATTACK_ZONE_EXAMINATION_PADDING*2;
+				ar.unit_height=AIEngine::ObservationQueries::buildingType(*ai.game,*b).height+ATTACK_ZONE_EXAMINATION_PADDING*2;
 				ar.assigned_units=std::min(std::min(static_cast<unsigned int>(20), available_units), std::max(gps.pollArea(ar.unitx, ar.unity, ar.unit_width, ar.unit_height, GridPollingSystem::MAXIMUM, GridPollingSystem::ENEMY_UNITS), ATTACK_WARRIOR_MINIMUM));
 				ar.assigned_level=strength_level;
 				if(!placeRallyNear(ai,typeNum,ar.flagx,ar.flagy)) continue;
@@ -2083,7 +2076,7 @@ bool PrioritizedBuildingAttack::attack()
 				if(AICabino_DEBUG)
 					ai.diagnosticStream<<"AICabino: attack: Creating a war flag at "<<ar.flagx<<", "<<ar.flagy<<" and assigning "<<ar.assigned_units<<" units to fight and kill the building at "<<b->posX<<","<<b->posY<<"."<<std::endl;
 
-				ai.enqueueOrder(Read::createOrder(*ai.game, ai.team->teamNumber, ar.flagx, ar.flagy, typeNum, 1, 1));
+				ai.enqueueOrder(AIEngine::ObservationQueries::createOrder(*ai.game, ai.team->number, ar.flagx, ar.flagy, typeNum, 1, 1));
 				++attack_count;
 				available_units-=ar.assigned_units;
 			}
@@ -2115,7 +2108,7 @@ bool PrioritizedBuildingAttack::updateAttackFlags()
 	//assigned level
 	for(int i=0; i<1024; ++i)
 	{
-		Read::Building* b = ai.team->myBuildings[i];
+		const AIEngine::BuildingView* b = ai.game->buildingSlots(ai.team->number)[i];
 		if(b)
 		{
 			if(provides(*ai.game,*b,AttractWarriors))
@@ -2124,14 +2117,14 @@ bool PrioritizedBuildingAttack::updateAttackFlags()
 				{
 					if(j->flag==NOGBID && b->posX == static_cast<int>(j->flagx) && b->posY == static_cast<int>(j->flagy))
 					{
-						j->flag=b->gid;
+						j->flag=b->identity.gid;
 						unsigned int radius=std::max(j->width, j->height)/2;
 						if(AICabino_DEBUG)
 							ai.diagnosticStream<<"AICabino: updateAttackFlags: Found a flag that attack() had created. Giving it a "<<radius<<" radius. Assigning "<<j->assigned_units<<" units to it, and setting it to use level "<<j->assigned_level<<" warriors."<<std::endl;
 
-						ai.enqueueOrder(std::shared_ptr<Order>(new OrderModifyFlag(b->gid, radius)));
-						ai.enqueueOrder(std::shared_ptr<Order>(new OrderModifyBuilding(b->gid, j->assigned_units)));
-						ai.enqueueOrder(std::shared_ptr<Order>(new OrderModifyMinLevelToFlag(b->gid, ai.game->gameHeader.isUnitUpgradesDisabled() ? 0 : j->assigned_level)));
+						ai.enqueueOrder(std::shared_ptr<Order>(new OrderModifyFlag(b->identity.gid, radius)));
+						ai.enqueueOrder(std::shared_ptr<Order>(new OrderModifyBuilding(b->identity.gid, j->assigned_units)));
+						ai.enqueueOrder(std::shared_ptr<Order>(new OrderModifyMinLevelToFlag(b->identity.gid, ai.game->configuration->isUnitUpgradesDisabled() ? 0 : j->assigned_level)));
 						ai.getUnitModule()->request("PrioritizedBuildingAttack", WARRIOR, ATTACK_STRENGTH, j->assigned_level+1, j->assigned_units, j->flag);
 						break;
 					}
@@ -2149,7 +2142,7 @@ bool PrioritizedBuildingAttack::updateAttackFlags()
 			//which quickly assumes the same gid before we detect and remove the flag here. If we destroyed a building,
 			//and the ai quickly remakes the same building in the same spot, we don't stop attacking that spot, there
 			//is still a building there.
-			Read::Building* b = getBuildingFromGid(ai.game, j->target);
+			const AIEngine::BuildingView* b = getBuildingFromGid(ai.game, j->target);
 			if((b==NULL || b->posX!=static_cast<int>(j->target_x) || b->posY!=static_cast<int>(j->target_y)))
 			{
 				if(AICabino_DEBUG)
@@ -2168,14 +2161,14 @@ bool PrioritizedBuildingAttack::updateAttackFlags()
 	unsigned int found_barracks=0;
 	for(int i=0; i<1024; ++i)
 	{
-		Read::Building* b = ai.team->myBuildings[i];
+		const AIEngine::BuildingView* b = ai.game->buildingSlots(ai.team->number)[i];
 		if(b)
 		{
 			if(provides(*ai.game,*b,TrainAttack))
 			{
 				if(b->constructionResultState==Building::NO_CONSTRUCTION)
 				{
-					max_barracks_level=std::max(max_barracks_level, static_cast<unsigned int>(b->type->semantics.training[ATTACK_STRENGTH].targetLevel));
+					max_barracks_level=std::max(max_barracks_level, static_cast<unsigned int>(AIEngine::ObservationQueries::buildingType(*ai.game,*b).semantics.training[ATTACK_STRENGTH].targetLevel));
 					found_barracks++;
 				}
 			}
@@ -2188,13 +2181,13 @@ bool PrioritizedBuildingAttack::updateAttackFlags()
 	{
 		if(i<MINIMUM_BARRACKS_LEVEL+1)
 			continue;
-		total+=ai.team->stats.getLatestStat()->upgradeState[ATTACK_STRENGTH][i];
-		average_unit_strength_level+=ai.team->stats.getLatestStat()->upgradeState[ATTACK_STRENGTH][i]*(i+1);
+		total+=ai.team->statistics.upgradeState[ATTACK_STRENGTH][i];
+		average_unit_strength_level+=ai.team->statistics.upgradeState[ATTACK_STRENGTH][i]*(i+1);
 	}
 	if(total>0)
 		average_unit_strength_level=static_cast<unsigned int>(average_unit_strength_level/total)-1;
 	// The standing army cannot train to the barracks-derived recruitment level.
-	unsigned int strength_level=ai.game->gameHeader.isUnitUpgradesDisabled() ? 0
+	unsigned int strength_level=ai.game->configuration->isUnitUpgradesDisabled() ? 0
 		: (USE_MAX_BARRACKS_LEVEL ? max_barracks_level : average_unit_strength_level);
 
 	//Get the number of available units, and go though the record, modifying the number of units assigned to each as
@@ -2204,7 +2197,7 @@ bool PrioritizedBuildingAttack::updateAttackFlags()
 	{
 		if(j->flag != NOGBID)
 		{
-			//			Read::Building* flag=getBuildingFromGid(ai.game, j->flag);
+			//			const AIEngine::BuildingView* flag=getBuildingFromGid(ai.game, j->flag);
 			//Add the number of units that are assigned to this flag to the total number of units available
 			available_units+=j->assigned_units;
 
@@ -2315,7 +2308,7 @@ bool DistributedNewConstructionManager::load(GAGCore::InputStream *stream, Playe
    ncr.concreteType=legacyConcrete(*ai.game,ncr.building_type,0,true);
    if(ncr.building_type==12) ncr.building_type=ExchangeResources;
   } else ncr.concreteType=stream->readSint32("concreteType");
-  if(ncr.building_type>=DemandCount || ncr.concreteType<0 || size_t(ncr.concreteType)>=ai.game->buildingsTypes.size()) return false;
+  if(ncr.building_type>=DemandCount || ncr.concreteType<0 || size_t(ncr.concreteType)>=ai.game->catalog->size()) return false;
 		ncr.no_build_timeout = stream->readUint32("no_build_timeout");
 		new_buildings.push_back(ncr);
 		// FIXME : clear the container before load
@@ -2393,15 +2386,15 @@ void DistributedNewConstructionManager::save(GAGCore::OutputStream *stream) cons
 
 DistributedNewConstructionManager::upgradeData DistributedNewConstructionManager::findMaxSize(unsigned int concreteType)
 {
- if(footprints.size()!=ai.game->buildingsTypes.size()) {
-  footprints.resize(ai.game->buildingsTypes.size());
+ if(footprints.size()!=ai.game->catalog->size()) {
+  footprints.resize(ai.game->catalog->size());
   for(size_t id=0;id<footprints.size();++id) {
-   const auto* current=ai.game->buildingsTypes.get(id);
+   const auto* current=(&ai.game->catalog->at(id).resolvedType);
    unsigned width=current->width,height=current->height;
-   if(!ai.game->gameHeader.isUnitUpgradesDisabled()) {
+   if(!ai.game->configuration->isUnitUpgradesDisabled()) {
     const auto* next=current;
     for(size_t count=0;next->nextLevel>=0 && count<footprints.size();++count) {
-     next=ai.game->buildingsTypes.get(next->nextLevel);
+     next=(&ai.game->catalog->at(next->nextLevel).resolvedType);
      width=std::max<unsigned>(width,next->width); height=std::max<unsigned>(height,next->height);
     }
    }
@@ -2425,13 +2418,13 @@ DistributedNewConstructionManager::point DistributedNewConstructionManager::find
 	top_point.x=NO_POSITION;
 	top_point.y=NO_POSITION;
 	unsigned top_score=0;
-	unsigned width=ai.map->getW();
-	unsigned height=ai.map->getH();
+	unsigned width=ai.map->width;
+	unsigned height=ai.map->height;
 	upgradeData size=findMaxSize(concreteType);
  std::array<GradientPoll,CONSTRUCTOR_FACTORS_COUNT> factors;
  std::copy(std::begin(CONSTRUCTION_FACTORS[building_type]),std::end(CONSTRUCTION_FACTORS[building_type]),factors.begin());
- const auto* placement=ai.game->buildingsTypes.get(concreteType);
- const auto* completed=placement->isBuildingSite ? ai.game->buildingsTypes.get(placement->nextLevel) : placement;
+ const auto* placement=(&ai.game->catalog->at(concreteType).resolvedType);
+ const auto* completed=placement->isBuildingSite ? (&ai.game->catalog->at(placement->nextLevel).resolvedType) : placement;
  unsigned recurring=0,construction=0;
  for(int resource=0;resource<MAX_NB_RESOURCES;++resource) {
   const auto& spec=completed->semantics;
@@ -2595,8 +2588,8 @@ bool DistributedNewConstructionManager::constructBuildings()
 	for(unsigned i = 0; i<DemandCount; ++i)
 	{
 		counts[i]=0;
-  for(auto* building:std::span<Read::Building*>(ai.team->myBuildings.data(),Building::MAX_COUNT))
-   if(building && !building->type->isBuildingSite && provides(*ai.game,*building,i)) ++counts[i];
+  for(auto* building:ai.game->buildingSlots(ai.team->number))
+   if(building && !AIEngine::ObservationQueries::buildingType(*ai.game,*building).isBuildingSite && provides(*ai.game,*building,i)) ++counts[i];
 		under_construction_counts[i]=0;
 	}
 
@@ -2613,7 +2606,7 @@ bool DistributedNewConstructionManager::constructBuildings()
 			total_free_workers=0;
 
 		if(i->building!=NOGBID && getBuildingFromGid(ai.game, i->building)!=NULL)
-			total_free_workers+=getBuildingFromGid(ai.game, i->building)->unitsWorking.size();
+			total_free_workers+=getBuildingFromGid(ai.game, i->building)->working.count;
 	}
 
 	//Develop a list of percentages used for sorting what buildings this ai should develop first, and sort this list
@@ -2636,11 +2629,11 @@ bool DistributedNewConstructionManager::constructBuildings()
 	unsigned int min_failed_height=512;
 	for(std::vector<typePercent>::iterator i = construction_priorities.begin(); i!=construction_priorities.end(); ++i)
 	{
-		if (!AIPlanning::BuildingCapabilityIndex::allowed(intentForDemand(i->building_type),ai.game->gameHeader)
-			|| (ai.game->gameHeader.isHungerDisabled() && i->building_type==FeedUnits)) continue;
+		if (!AIPlanning::BuildingCapabilityIndex::allowed(intentForDemand(i->building_type),*ai.game->configuration)
+			|| (ai.game->configuration->isHungerDisabled() && i->building_type==FeedUnits)) continue;
 		const int concreteType=selectBuilding(ai,i->building_type);
   if(concreteType<0) continue;
-  std::string building_name=ai.game->buildingsTypes.get(concreteType)->key;
+  std::string building_name=(&ai.game->catalog->at(concreteType).resolvedType)->key;
 		if(CabinoStatusUpdate)
 		{
 			ai.clearDebugMessages("DistributedNewConstructionManager", "Construction", building_name);
@@ -2733,7 +2726,7 @@ bool DistributedNewConstructionManager::constructBuildings()
 
 			//Don't assign more units than the total amount of resources needed to construct the building.
 			unsigned int needed_resource_total=0;
-			const BuildingType* t=ai.game->buildingsTypes.get(concreteType);
+			const BuildingType* t=(&ai.game->catalog->at(concreteType).resolvedType);
 			for(unsigned int n=0; n<MAX_NB_RESOURCES; ++n)
 			{
 				needed_resource_total+=t->semantics.constructionCost[n];
@@ -2748,7 +2741,7 @@ bool DistributedNewConstructionManager::constructBuildings()
 			if(AICabino_DEBUG)
 				ai.diagnosticStream<<"AICabino: constructBuildings: Starting construction on a "<<std::to_string(i->building_type)<<", at position "<<p.x<<","<<p.y<<"."<<std::endl;
 			Sint32 type=concreteType;
-			ai.enqueueOrder(Read::createOrder(*ai.game, ai.team->teamNumber, p.x, p.y, type, 1, 1));
+			ai.enqueueOrder(AIEngine::ObservationQueries::createOrder(*ai.game, ai.team->number, p.x, p.y, type, 1, 1));
 			total_construction+=1;
 			total_free_workers-=ncr.assigned;
 			under_construction_counts[i->building_type]++;
@@ -2771,7 +2764,7 @@ bool DistributedNewConstructionManager::updateBuildings()
 	{
 		if(i->building!=NOGBID)
 		{
-			Read::Building* b = getBuildingFromGid(ai.game, i->building);
+			const AIEngine::BuildingView* b = getBuildingFromGid(ai.game, i->building);
 			if(b==NULL || b->constructionResultState == Building::NO_CONSTRUCTION)
 			{
 				///If its been changed since it was finished (perhaps by another module),
@@ -2798,14 +2791,14 @@ bool DistributedNewConstructionManager::updateBuildings()
 	//Update buildings that have just been created.
 	for(int i=0; i<1024; ++i)
 	{
-		Read::Building*b = ai.team->myBuildings[i];
+		const AIEngine::BuildingView*b = ai.game->buildingSlots(ai.team->number)[i];
 		if(b)
 		{
 			for(std::vector<newConstructionRecord>::iterator i = new_buildings.begin(); i != new_buildings.end(); ++i)
 			{
-				if(i->building==NOGBID && (b->typeNum == i->concreteType || b->typeNum == ai.game->buildingsTypes.get(i->concreteType)->nextLevel) && b->posX == static_cast<int>(i->x) && b->posY == static_cast<int>(i->y))
+				if(i->building==NOGBID && (b->typeNum == i->concreteType || b->typeNum == (&ai.game->catalog->at(i->concreteType).resolvedType)->nextLevel) && b->posX == static_cast<int>(i->x) && b->posY == static_cast<int>(i->y))
 				{
-					i->building=b->gid;
+					i->building=b->identity.gid;
 					i->no_build_timeout=-1;
 					ai.enqueueOrder(std::shared_ptr<Order>(new OrderModifyBuilding(i->building, i->assigned)));
 					ai.getUnitModule()->request("DistributedNewConstructionManager", WORKER, BUILD, 1, i->assigned, i->building);
@@ -2831,11 +2824,11 @@ bool DistributedNewConstructionManager::updateBuildings()
 
 bool DistributedNewConstructionManager::calculateBuildings()
 {
-	unsigned int total_units=ai.team->stats.getLatestStat()->totalUnit;
+	unsigned int total_units=ai.team->statistics.totalUnit;
 	for (int i=0; i<DemandCount; ++i)
 	{
-		if(AIPlanning::BuildingCapabilityIndex::allowed(intentForDemand(i),ai.game->gameHeader)
-			&& !(ai.game->gameHeader.isHungerDisabled() && i==FeedUnits)
+		if(AIPlanning::BuildingCapabilityIndex::allowed(intentForDemand(i),*ai.game->configuration)
+			&& !(ai.game->configuration->isHungerDisabled() && i==FeedUnits)
 			&& UNITS_FOR_BUILDING[i]!=0)
 			num_buildings_wanted[i]=total_units/UNITS_FOR_BUILDING[i]+1;
 		else
@@ -2868,8 +2861,8 @@ void DistributedNewConstructionManager::updateNoBuildCache()
 void DistributedNewConstructionManager::updateImap()
 {
 	ai.telemetry.count(AITrace::AI8::DistributedNewConstructionManager_updateImap_calls);
-	const unsigned width=ai.map->getW();
-	const unsigned height=ai.map->getH();
+	const unsigned width=ai.map->width;
+	const unsigned height=ai.map->height;
 	imap.resize(width*height);
 	std::fill(imap.begin(), imap.end(), 0);
 
@@ -2879,7 +2872,7 @@ void DistributedNewConstructionManager::updateImap()
 		for(unsigned int y=0; y<height; ++y)
 		{
 			//Check off hidden or occupied squares
-			if(!ai.map->isHardSpaceForBuilding(x, y) || !ai.map->isMapDiscovered(x, y, ai.team->me))
+			if(!AIEngine::ObservationQueries::hardBuildingSpace(*ai.map,x, y) || !((ai.map->visibilityAt(ai.map->tileIndex(x,y)).discovered&(ai.team->mask))!=0))
 			{
 				imap[x*height+y]=1;
 			}
@@ -2887,9 +2880,9 @@ void DistributedNewConstructionManager::updateImap()
 			//If we find a building here (or a building that is in the list of buildings to be constructed)
 			bool found_building=false;
 			upgradeData bsize;
-			if(ai.map->getBuilding(x, y)!=NOGBID)
+			if(ai.map->occupancyAt(ai.map->tileIndex(x,y)).building!=NOGBID)
 			{
-				Read::Building* b=getBuildingFromGid(ai.game, ai.map->getBuilding(x, y));
+				const AIEngine::BuildingView* b=getBuildingFromGid(ai.game, ai.map->occupancyAt(ai.map->tileIndex(x,y)).building);
 				bsize=findMaxSize(b->typeNum);
 				found_building=true;
 			}
@@ -2945,8 +2938,8 @@ void DistributedNewConstructionManager::updateImap(unsigned x, unsigned y, unsig
 	bsize=findMaxSize(building_type);
 	//Then mark all the squares this building occupies in its largest upgrade with an extra padding
 
-	const unsigned width=ai.map->getW();
-	const unsigned height=ai.map->getH();
+	const unsigned width=ai.map->width;
+	const unsigned height=ai.map->height;
 	int startx=x-bsize.horizontal_offset-BUILDING_PADDING;
 	if(startx<0)
 		startx+=width;;
@@ -3062,7 +3055,7 @@ bool RandomUpgradeRepairModule::load(GAGCore::InputStream *stream, Player *playe
 		cr.is_repair=stream->readUint8("is_repair");
   if(versionMinor>=FILE_FORMAT_VERSION_BUILDING_CATALOG) cr.requiredLevel=stream->readUint32("requiredLevel");
   else if(auto* building=getBuildingFromGid(ai.game,cr.building))
-   cr.requiredLevel=building->type->semantics.requiredWorkerLevel;
+   cr.requiredLevel=AIEngine::ObservationQueries::buildingType(*ai.game,*building).semantics.requiredWorkerLevel;
   if(cr.requiredLevel>=NB_UNIT_LEVELS) return false;
 		active_construction.push_back(cr);
 		// FIXME : clear the container before load
@@ -3083,8 +3076,8 @@ bool RandomUpgradeRepairModule::load(GAGCore::InputStream *stream, Player *playe
   if(versionMinor>=FILE_FORMAT_VERSION_BUILDING_CATALOG) cr.requiredLevel=stream->readUint32("requiredLevel");
   else if(auto* building=getBuildingFromGid(ai.game,cr.building))
    {
-   const int target=cr.is_repair ? building->type->prevLevel : building->type->nextLevel;
-   cr.requiredLevel=(target >= 0 ? ai.game->buildingsTypes.get(target) : building->type)->semantics.requiredWorkerLevel;
+   const int target=cr.is_repair ? AIEngine::ObservationQueries::buildingType(*ai.game,*building).prevLevel : AIEngine::ObservationQueries::buildingType(*ai.game,*building).nextLevel;
+   cr.requiredLevel=(target >= 0 ? (&ai.game->catalog->at(target).resolvedType) : (&AIEngine::ObservationQueries::buildingType(*ai.game,*building)))->semantics.requiredWorkerLevel;
   }
   if(cr.requiredLevel>=NB_UNIT_LEVELS) return false;
 		pending_construction.push_back(cr);
@@ -3141,7 +3134,7 @@ bool RandomUpgradeRepairModule::removeOldConstruction(void)
 {
 	for (std::list<constructionRecord>::iterator i = active_construction.begin(); i!=active_construction.end();)
 	{
-		Read::Building*b=getBuildingFromGid(ai.game, i->building);
+		const AIEngine::BuildingView*b=getBuildingFromGid(ai.game, i->building);
 		if(!b)
 		{
 			i=active_construction.erase(i);
@@ -3152,10 +3145,10 @@ bool RandomUpgradeRepairModule::removeOldConstruction(void)
 		if (b->constructionResultState!=Building::UPGRADE && b->constructionResultState!=Building::REPAIR )
 		{
 			if(AICabino_DEBUG)
-				ai.diagnosticStream<<"AICabino: removeOldConstruction: Removing an old "<<b->type->key<<" from the active construction list, changing assigned number of units back to "<<original<<" from "<<i->assigned<<"."<<std::endl;
-			ai.getUnitModule()->request("RandomUpgradeRepairModule", WORKER, BUILD, i->requiredLevel+1, 0, b->gid);
+				ai.diagnosticStream<<"AICabino: removeOldConstruction: Removing an old "<<AIEngine::ObservationQueries::buildingType(*ai.game,*b).key<<" from the active construction list, changing assigned number of units back to "<<original<<" from "<<i->assigned<<"."<<std::endl;
+			ai.getUnitModule()->request("RandomUpgradeRepairModule", WORKER, BUILD, i->requiredLevel+1, 0, b->identity.gid);
 			i=active_construction.erase(i);
-			ai.enqueueOrder(std::shared_ptr<Order>(new OrderModifyBuilding(b->gid, original)));
+			ai.enqueueOrder(std::shared_ptr<Order>(new OrderModifyBuilding(b->identity.gid, original)));
 			continue;
 		}
 		i++;
@@ -3171,7 +3164,7 @@ bool RandomUpgradeRepairModule::updatePendingConstruction(void)
 	ai.telemetry.count(AITrace::AI8::RandomUpgradeRepairModule_updatePendingConstruction_calls);
 	for (std::list<constructionRecord>::iterator i = pending_construction.begin(); i!=pending_construction.end();)
 	{
-		Read::Building*b=getBuildingFromGid(ai.game, i->building);
+		const AIEngine::BuildingView*b=getBuildingFromGid(ai.game, i->building);
 		if(!b)
 		{
 			// i belongs to pending_construction (this loop's own container),
@@ -3189,12 +3182,12 @@ bool RandomUpgradeRepairModule::updatePendingConstruction(void)
 		{
 			constructionRecord u=*i;
 			if(AICabino_DEBUG)
-				ai.diagnosticStream<<"AICabino: updatePendingConstruction: The "<<b->type->key<<" was found that it is no longer pending construction, I am assigning number of requested units, "<<assigned<<", to it."<<std::endl;
+				ai.diagnosticStream<<"AICabino: updatePendingConstruction: The "<<AIEngine::ObservationQueries::buildingType(*ai.game,*b).key<<" was found that it is no longer pending construction, I am assigning number of requested units, "<<assigned<<", to it."<<std::endl;
 			active_construction.push_back(u);
 			i=pending_construction.erase(i);
-			ai.enqueueOrder(std::shared_ptr<Order>(new OrderModifyBuilding(b->gid, assigned)));
+			ai.enqueueOrder(std::shared_ptr<Order>(new OrderModifyBuilding(b->identity.gid, assigned)));
 			ai.getUnitModule()->unreserve("RandomUpgradeRepairModule", WORKER, BUILD, u.requiredLevel+1, u.assigned);
-			ai.getUnitModule()->request("RandomUpgradeRepairModule", WORKER, BUILD, u.requiredLevel+1, assigned, b->gid);
+			ai.getUnitModule()->request("RandomUpgradeRepairModule", WORKER, BUILD, u.requiredLevel+1, assigned, b->identity.gid);
 			continue;
 		}
 		i++;
@@ -3219,7 +3212,7 @@ bool RandomUpgradeRepairModule::reassignConstruction(void)
 	//Finally, iterate through the shuffled list of records changing the number of units allocated to upgrade the buildings.
 	for (std::list<constructionRecord>::iterator i = active_construction.begin(); i!=active_construction.end(); i++)
 	{
-		Read::Building*b=getBuildingFromGid(ai.game, i->building);
+		const AIEngine::BuildingView*b=getBuildingFromGid(ai.game, i->building);
 		if(!b)
 			continue;
 		// A dying building is still in myBuildings, and cancelling construction on it
@@ -3239,8 +3232,8 @@ bool RandomUpgradeRepairModule::reassignConstruction(void)
 		int available_repair  = 0;
 		for (int j = 0; j<NB_UNIT_LEVELS; j++)
 		{
-			//Important, b->type->level takes on the level number of the building its being upgraded to.
-			//So in this function, b->type->level will be different then in startNewConstruction for
+			//Important, AIEngine::ObservationQueries::buildingType(*ai.game,*b).level takes on the level number of the building its being upgraded to.
+			//So in this function, AIEngine::ObservationQueries::buildingType(*ai.game,*b).level will be different then in startNewConstruction for
 			//buildings being upgraded. I have copy and pasted this section of code a thousand times
 			//between the two when I change it and each time it causes me trouble.
 			if (j >= static_cast<int>(i->requiredLevel))
@@ -3256,18 +3249,18 @@ bool RandomUpgradeRepairModule::reassignConstruction(void)
 		if (!is_repair && available_upgrade==0)
 		{
 			if(AICabino_DEBUG)
-				ai.diagnosticStream<<"AICabino: reassignConstruction: There are not enough available units. Canceling upgrade on the "<<b->type->key<<"."<<std::endl;
-			ai.getUnitModule()->request("RandomUpgradeRepairModule", WORKER, BUILD, i->requiredLevel+1, 0, b->gid);
-			ai.enqueueOrder(std::shared_ptr<Order>(new OrderCancelConstruction(b->gid, 1)));
+				ai.diagnosticStream<<"AICabino: reassignConstruction: There are not enough available units. Canceling upgrade on the "<<AIEngine::ObservationQueries::buildingType(*ai.game,*b).key<<"."<<std::endl;
+			ai.getUnitModule()->request("RandomUpgradeRepairModule", WORKER, BUILD, i->requiredLevel+1, 0, b->identity.gid);
+			ai.enqueueOrder(std::shared_ptr<Order>(new OrderCancelConstruction(b->identity.gid, 1)));
 			continue;
 		}
 
 		else if (is_repair && available_repair==0)
 		{
 			if(AICabino_DEBUG)
-				ai.diagnosticStream<<"AICabino: reassignConstruction: There are not enough available units. Canceling repair on the "<<b->type->key<<"."<<std::endl;
-			ai.getUnitModule()->request("RandomUpgradeRepairModule", WORKER, BUILD, i->requiredLevel+1, 0, b->gid);
-			ai.enqueueOrder(std::shared_ptr<Order>(new OrderCancelConstruction(b->gid, 1)));
+				ai.diagnosticStream<<"AICabino: reassignConstruction: There are not enough available units. Canceling repair on the "<<AIEngine::ObservationQueries::buildingType(*ai.game,*b).key<<"."<<std::endl;
+			ai.getUnitModule()->request("RandomUpgradeRepairModule", WORKER, BUILD, i->requiredLevel+1, 0, b->identity.gid);
+			ai.enqueueOrder(std::shared_ptr<Order>(new OrderCancelConstruction(b->identity.gid, 1)));
 			continue;
 		}
 
@@ -3292,9 +3285,9 @@ bool RandomUpgradeRepairModule::reassignConstruction(void)
 		if (num_to_assign != assigned)
 		{
 			if(AICabino_DEBUG)
-				ai.diagnosticStream<<"AICabino: reassignConstruction: Retasking "<<b->type->key<<" that is under construction. Number of units available: "<<generic_available<< ". Number of units originally assigned: "<<assigned<<". Number of units assigning: "<<num_to_assign<<"."<<std::endl;
-			ai.getUnitModule()->request("RandomUpgradeRepairModule", WORKER, BUILD, i->requiredLevel+1, num_to_assign, b->gid);
-			ai.enqueueOrder(std::shared_ptr<Order>(new OrderModifyBuilding(b->gid, num_to_assign)));
+				ai.diagnosticStream<<"AICabino: reassignConstruction: Retasking "<<AIEngine::ObservationQueries::buildingType(*ai.game,*b).key<<" that is under construction. Number of units available: "<<generic_available<< ". Number of units originally assigned: "<<assigned<<". Number of units assigning: "<<num_to_assign<<"."<<std::endl;
+			ai.getUnitModule()->request("RandomUpgradeRepairModule", WORKER, BUILD, i->requiredLevel+1, num_to_assign, b->identity.gid);
+			ai.enqueueOrder(std::shared_ptr<Order>(new OrderModifyBuilding(b->identity.gid, num_to_assign)));
 			i->assigned=num_to_assign;
 		}
 		reduce(free_workers, i->requiredLevel, num_to_assign);
@@ -3309,11 +3302,11 @@ bool RandomUpgradeRepairModule::startNewConstruction(void)
 {
  std::array<unsigned,NB_UNIT_LEVELS> ratios{};
  std::array<unsigned,DemandCount> constructionCounts{};
- auto requiredLevel=[&](const Read::Building& building,bool repair) {
-  const int next=repair ? building.type->prevLevel : building.type->nextLevel;
-  return next<0 ? building.type->semantics.requiredWorkerLevel : ai.game->buildingsTypes.get(next)->semantics.requiredWorkerLevel;
+ auto requiredLevel=[&](const AIEngine::BuildingView& building,bool repair) {
+  const int next=repair ? AIEngine::ObservationQueries::buildingType(*ai.game,building).prevLevel : AIEngine::ObservationQueries::buildingType(*ai.game,building).nextLevel;
+  return next<0 ? AIEngine::ObservationQueries::buildingType(*ai.game,building).semantics.requiredWorkerLevel : (&ai.game->catalog->at(next).resolvedType)->semantics.requiredWorkerLevel;
  };
- auto countBuilding=[&](const Read::Building& building) {
+ auto countBuilding=[&](const AIEngine::BuildingView& building) {
   for(unsigned demand=0;demand<DemandCount;++demand)
    if(provides(*ai.game,building,demand)) ++constructionCounts[demand];
  };
@@ -3323,14 +3316,14 @@ bool RandomUpgradeRepairModule::startNewConstruction(void)
     ++ratios[requiredLevel(*building,record.is_repair)];
     countBuilding(*building);
    }
- struct Candidate { Read::Building* building; bool repair; unsigned level; unsigned score; };
+ struct Candidate { const AIEngine::BuildingView* building; bool repair; unsigned level; unsigned score; };
  std::vector<Candidate> candidates;
- for(auto* building:std::span<Read::Building*>(ai.team->myBuildings.data(),Building::MAX_COUNT)) {
+ for(auto* building:ai.game->buildingSlots(ai.team->number)) {
   if(!building || building->constructionResultState!=Building::NO_CONSTRUCTION || building->buildingState!=Building::ALIVE) continue;
-  if(std::any_of(pending_construction.begin(),pending_construction.end(),[&](const auto& pending){return pending.building==building->gid;})) continue;
-  const bool repair=building->type->semantics.repairable && building->hp<building->getEffectiveMaxHp();
+  if(std::any_of(pending_construction.begin(),pending_construction.end(),[&](const auto& pending){return pending.building==building->identity.gid;})) continue;
+  const bool repair=AIEngine::ObservationQueries::buildingType(*ai.game,*building).semantics.repairable && building->hp<building->maxHp;
   const unsigned weight=upgradeWeight(*ai.game,*building);
-  if(!repair && (weight==0 || !building->isUpgradeAvailable() || ai.game->gameHeader.isUnitUpgradesDisabled())) continue;
+  if(!repair && (weight==0 || !ai.game->isUpgradeAvailable(*building) || ai.game->configuration->isUnitUpgradesDisabled())) continue;
   bool hasBudget=repair;
   for(unsigned demand=0;demand<DemandCount;++demand)
    if(provides(*ai.game,*building,demand) && constructionCounts[demand]<unsigned(MAX_BUILDING_SPECIFIC_CONSTRUCTION_LIMITS[demand])) hasBudget=true;
@@ -3342,7 +3335,7 @@ bool RandomUpgradeRepairModule::startNewConstruction(void)
  // Sample each candidate once. The comparator is pure and deterministic.
  std::sort(candidates.begin(),candidates.end(),[](const Candidate& a,const Candidate& b) {
   if(a.score!=b.score) return a.score>b.score;
-  return a.building->gid<b.building->gid;
+  return a.building->identity.gid<b.building->identity.gid;
  });
  unsigned totalMaximum=0;
  std::array<int,NB_UNIT_LEVELS> freeWorkers{};
@@ -3360,9 +3353,9 @@ bool RandomUpgradeRepairModule::startNewConstruction(void)
   auto* building=candidate.building;
   const unsigned assigned=std::min(available,candidate.repair ? MAXIMUM_TO_REPAIR : MAXIMUM_TO_UPGRADE);
   constructionRecord record;
-  record.building=building->gid; record.assigned=assigned; record.original=building->maxUnitWorking; record.is_repair=candidate.repair; record.requiredLevel=candidate.level;
+  record.building=building->identity.gid; record.assigned=assigned; record.original=building->maxUnitWorking; record.is_repair=candidate.repair; record.requiredLevel=candidate.level;
   pending_construction.push_back(record);
-  ai.enqueueOrder(Read::constructionOrder(*ai.game, *building,1,1));
+  ai.enqueueOrder(AIEngine::ObservationQueries::constructionOrder(*ai.game, *building,1,1));
   ai.getUnitModule()->reserve("RandomUpgradeRepairModule",WORKER,BUILD,candidate.level+1,assigned);
   reduce(freeWorkers.data(),candidate.level,assigned);
   countBuilding(*building);
@@ -3443,7 +3436,7 @@ bool DistributedUnitManager::load(GAGCore::InputStream *stream, Player *player, 
 		// All live requests now recruit from the base level; migrate the matching
 		// counters too, or releasing an old reservation would subtract from zero
 		// and wrap the unsigned count, permanently withholding the army.
-		if (ai.game->gameHeader.isUnitUpgradesDisabled())
+		if (ai.game->configuration->isUnitUpgradesDisabled())
 			for (int ability=0; ability<NB_ABILITY; ++ability)
 				for (int level=1; level<NB_UNIT_LEVELS; ++level)
 				{
@@ -3482,10 +3475,10 @@ bool DistributedUnitManager::load(GAGCore::InputStream *stream, Player *player, 
 		ur.unit_type=stream->readUint32("unit_type");
 		ur.minimum_level=stream->readUint32("minimum_level");
 		ur.number=stream->readUint32("number");
-		if (ur.unit_type >= NB_UNIT_TYPE || ur.ability >= NB_ABILITY || ur.minimum_level >= NB_UNIT_LEVELS || ur.level >= NB_UNIT_LEVELS || ur.type >= ai.game->buildingsTypes.size()) return false;
+		if (ur.unit_type >= NB_UNIT_TYPE || ur.ability >= NB_ABILITY || ur.minimum_level >= NB_UNIT_LEVELS || ur.level >= NB_UNIT_LEVELS || ur.type >= ai.game->catalog->size()) return false;
 		// Keep each usage record in the same bucket as its migrated usingUnits
 		// counter; reassignment and removal subtract through this stored index.
-		if (ai.game->gameHeader.isUnitUpgradesDisabled() && ur.unit_type==WARRIOR)
+		if (ai.game->configuration->isUnitUpgradesDisabled() && ur.unit_type==WARRIOR)
 			ur.minimum_level=0;
 		buildings[gid]=ur;
 		// FIXME : clear the container before load
@@ -3559,7 +3552,7 @@ void DistributedUnitManager::save(GAGCore::OutputStream *stream) const
 void DistributedUnitManager::changeUnits(std::string moduleName, unsigned int unitType, unsigned int numUnits, unsigned int ability, unsigned int level)
 {
 	// Disabled training can supply a standing army, but cannot satisfy an attack-level request.
-	if (ai.game->gameHeader.isUnitUpgradesDisabled() && unitType==WARRIOR) level=1;
+	if (ai.game->configuration->isUnitUpgradesDisabled() && unitType==WARRIOR) level=1;
 	level-=1;
 	module_records[moduleName].requested[unitType][ability][level]=numUnits;
 }
@@ -3569,8 +3562,8 @@ void DistributedUnitManager::changeUnits(std::string moduleName, unsigned int un
 
 unsigned int DistributedUnitManager::available(std::string module_name, unsigned int unit_type, unsigned int ability, unsigned int level, bool is_minimum)
 {
-	if (ai.game->gameHeader.isUnitUpgradesDisabled() && unit_type==WARRIOR) level=1;
-	TeamStatsGenerator stat(ai.team);
+	if (ai.game->configuration->isUnitUpgradesDisabled() && unit_type==WARRIOR) level=1;
+	TeamStatsGenerator stat(ai.game,ai.team);
 	int num_available=stat.getUnits(unit_type, Unit::MED_FREE, Unit::ACT_RANDOM, ability, level, is_minimum);
 	level-=1;
 	int needed = getNeededUnits(unit_type, ability, level, is_minimum);
@@ -3596,11 +3589,11 @@ unsigned int DistributedUnitManager::available(std::string module_name, unsigned
 
 bool DistributedUnitManager::request(std::string module_name, unsigned int unit_type, unsigned int ability, unsigned int minimum_level, unsigned int number,  int building)
 {
-	if (ai.game->gameHeader.isUnitUpgradesDisabled() && unit_type==WARRIOR) minimum_level=1;
+	if (ai.game->configuration->isUnitUpgradesDisabled() && unit_type==WARRIOR) minimum_level=1;
 	assert(unit_type<NB_UNIT_TYPE && ability<NB_ABILITY && minimum_level>=1 && minimum_level<=NB_UNIT_LEVELS);
 	minimum_level-=1;
 	usageRecord ur;
-	Read::Building* b=getBuildingFromGid(ai.game, building);
+	const AIEngine::BuildingView* b=getBuildingFromGid(ai.game, building);
 	if(buildings.find(building)!=buildings.end())
 	{
 		ur=buildings[building];
@@ -3619,7 +3612,7 @@ bool DistributedUnitManager::request(std::string module_name, unsigned int unit_
 		ur.x=b->posX;
 		ur.y=b->posY;
 		ur.type=b->typeNum;
-		ur.level=b->type->level;
+		ur.level=AIEngine::ObservationQueries::buildingType(*ai.game,*b).level;
 		ur.ability=ability;
 		ur.unit_type=unit_type;
 		ur.minimum_level=minimum_level;
@@ -3635,7 +3628,7 @@ bool DistributedUnitManager::request(std::string module_name, unsigned int unit_
 
 void DistributedUnitManager::reserve(std::string module_name, unsigned int unit_type, unsigned int ability, unsigned int minimum_level, unsigned int number)
 {
-	if (ai.game->gameHeader.isUnitUpgradesDisabled() && unit_type==WARRIOR) minimum_level=1;
+	if (ai.game->configuration->isUnitUpgradesDisabled() && unit_type==WARRIOR) minimum_level=1;
 	assert(unit_type<NB_UNIT_TYPE && ability<NB_ABILITY && minimum_level>=1 && minimum_level<=NB_UNIT_LEVELS);
 	module_records[module_name].reservedUnits[unit_type][ability][minimum_level-1]+=number;
 }
@@ -3645,7 +3638,7 @@ void DistributedUnitManager::reserve(std::string module_name, unsigned int unit_
 
 void DistributedUnitManager::unreserve(std::string module_name, unsigned int unit_type, unsigned int ability, unsigned int minimum_level, unsigned int number)
 {
-	if (ai.game->gameHeader.isUnitUpgradesDisabled() && unit_type==WARRIOR) minimum_level=1;
+	if (ai.game->configuration->isUnitUpgradesDisabled() && unit_type==WARRIOR) minimum_level=1;
 	assert(unit_type<NB_UNIT_TYPE && ability<NB_ABILITY && minimum_level>=1 && minimum_level<=NB_UNIT_LEVELS);
 	module_records[module_name].reservedUnits[unit_type][ability][minimum_level-1]-=number;
 }
@@ -3655,7 +3648,7 @@ void DistributedUnitManager::unreserve(std::string module_name, unsigned int uni
 
 void DistributedUnitManager::writeDebug()
 {
-	TeamStatsGenerator stat(ai.team);
+	TeamStatsGenerator stat(ai.game,ai.team);
 	for(std::map<std::string, moduleRecord>::iterator i=module_records.begin(); i!=module_records.end(); ++i)
 	{
 		ai.clearDebugMessages("DistributedUnitManager", i->first, "Requested Units");
@@ -3751,8 +3744,8 @@ int DistributedUnitManager::getNeededUnits(int unit_type, int ability, int level
 	int needed=0;
 	for(std::map<int, usageRecord>::iterator i=buildings.begin(); i!=buildings.end();)
 	{
-		Read::Building* b = getBuildingFromGid(ai.game, i->first);
-		if(b==NULL ||  b->posX != static_cast<int>(i->second.x) || b->posY != static_cast<int>(i->second.y) || b->typeNum != static_cast<int>(i->second.type) || b->type->level!=static_cast<int>(i->second.level))
+		const AIEngine::BuildingView* b = getBuildingFromGid(ai.game, i->first);
+		if(b==NULL ||  b->posX != static_cast<int>(i->second.x) || b->posY != static_cast<int>(i->second.y) || b->typeNum != static_cast<int>(i->second.type) || AIEngine::ObservationQueries::buildingType(*ai.game,*b).level!=static_cast<int>(i->second.level))
 		{
 			module_records[i->second.owner].usingUnits[i->second.unit_type][i->second.ability][i->second.minimum_level]-=i->second.number;
 			// erase(i) invalidates i; its return value is the next valid
@@ -3765,9 +3758,12 @@ int DistributedUnitManager::getNeededUnits(int unit_type, int ability, int level
 			&& (is_minimum ? static_cast<int>(usage.minimum_level)<=level : static_cast<int>(usage.minimum_level)==level))
 		{
 			int assigned=0;
-			for(const auto* unit:b->unitsWorking)
-				if(unit->typeNum==unit_type
-					&& (ability==BUILD ? unit->workerLevel() : unit->level[ability])>=static_cast<int>(usage.minimum_level))++assigned;
+			for(const auto reference:ai.game->workers(*b))
+			{
+				const auto* unit=ai.game->unit(reference);
+				if(unit && unit->typeNum==unit_type
+					&& (ability==BUILD ? unit->constructionLevel : unit->level[ability])>=static_cast<int>(usage.minimum_level))++assigned;
+			}
 			needed+=std::max(0,static_cast<int>(usage.number)-assigned);
 		}
 		++i;
@@ -3843,7 +3839,7 @@ bool BasicDistributedSwarmManager::moderateSwarms()
 	unsigned int total_available[NB_UNIT_TYPE];
 	for (unsigned int i=0; static_cast<int>(i)<NB_UNIT_TYPE; i++)
 	{
-		total_available[i]=ai.team->stats.getLatestStat()->numberUnitPerType[i];
+		total_available[i]=ai.team->statistics.numberUnitPerType[i];
 		num_wanted[i]=0;
 	}
 
@@ -3876,7 +3872,7 @@ bool BasicDistributedSwarmManager::moderateSwarms()
 		total_wanted_score+=ratios[i];
 	}
 
-	if (ai.game->gameHeader.isPeacefulModeEnabled()) ratios[WARRIOR]=0;
+	if (ai.game->configuration->isPeacefulModeEnabled()) ratios[WARRIOR]=0;
 	int max=*std::max_element(ratios, ratios+NB_UNIT_TYPE);
 	int devisor=1;
 	if(max>16)
@@ -3892,26 +3888,27 @@ bool BasicDistributedSwarmManager::moderateSwarms()
 
 	unsigned int assigned_per_swarm=MAXIMUM_UNITS_FOR_SWARM;
     AIEngine::ResourceInitializations scratch;
-    AIEngine::WorldQueries queries(ai.game->source,ai.team->teamNumber,scratch);
+    AIEngine::WorldQueries queries(*ai.game,ai.team->number,scratch);
     if(auto order=queries.missingProductionOrder({ratios[0],ratios[1],ratios[2]},assigned_per_swarm,assigned_per_swarm)) {
         ai.enqueueOrder(order);return true;
     }
 
 
 	bool need_to_output=true;
-	for (std::list<Read::Building*>::iterator i = ai.team->swarms.begin(); i != ai.team->swarms.end(); ++i)
+	for (const auto reference:ai.team->swarms)
 	{
-		Read::Building* swarm=*i;
+		const auto* swarm=ai.game->building(reference);
+		if (!swarm) continue;
   Sint32 desired[NB_UNIT_TYPE];
-  for(int unit=0;unit<NB_UNIT_TYPE;++unit) desired[unit]=swarm->type->semantics.production.recipes[unit].enabled ? ratios[unit] : 0;
-  const int assigned=std::min<int>(assigned_per_swarm,swarm->type->semantics.assignmentLimit);
+  for(int unit=0;unit<NB_UNIT_TYPE;++unit) desired[unit]=AIEngine::ObservationQueries::buildingType(*ai.game,*swarm).semantics.production.recipes[unit].enabled ? ratios[unit] : 0;
+  const int assigned=std::min<int>(assigned_per_swarm,AIEngine::ObservationQueries::buildingType(*ai.game,*swarm).semantics.assignmentLimit);
   bool changed=false;
 		for (int x = 0; x<NB_UNIT_TYPE; x++)
 			if (swarm->ratio[x]!=desired[x])
 				changed=true;
 
 		if(swarm->maxUnitWorking < assigned)
-			ai.enqueueOrder(std::shared_ptr<Order>(new OrderModifyBuilding(swarm->gid, assigned)));
+			ai.enqueueOrder(std::shared_ptr<Order>(new OrderModifyBuilding(swarm->identity.gid, assigned)));
 
 		if(!changed)
 			continue;
@@ -3919,7 +3916,7 @@ bool BasicDistributedSwarmManager::moderateSwarms()
 		if(AICabino_DEBUG && need_to_output)
 			ai.diagnosticStream<<"AICabino: moderateSpawns: Turning changing production ratios on a swarm from {Worker:"<<swarm->ratio[0]<<", Explorer:"<<swarm->ratio[1]<<", Warrior:"<<swarm->ratio[2]<<"} to {Worker:"<<ratios[0]<<", Explorer:"<<ratios[1]<<", Warrior:"<<ratios[2]<<"}. Assigning "<<assigned_per_swarm<<" workers."<<std::endl;
 		need_to_output=false;
-		ai.enqueueOrder(std::shared_ptr<Order>(new OrderModifySwarm(swarm->gid, desired)));
+		ai.enqueueOrder(std::shared_ptr<Order>(new OrderModifySwarm(swarm->identity.gid, desired)));
 	}
 	return false;
 }
@@ -4110,16 +4107,16 @@ bool InnManager::recordInns()
 {
 	for(int i=0; i<1024; ++i)
 	{
-		Read::Building* b=ai.team->myBuildings[i];
+		const AIEngine::BuildingView* b=ai.game->buildingSlots(ai.team->number)[i];
 		if (b)
 		{
 			if(provides(*ai.game,*b,FeedUnits) && b->constructionResultState==Building::NO_CONSTRUCTION)
 			{
-				innRecord& i = inns[b->gid];
+				innRecord& i = inns[b->identity.gid];
 				if(i.records.size()<INN_RECORD_MAX)
-					i.records.push_back(singleInnRecord(feedingStock(*b,false)));
+					i.records.push_back(singleInnRecord(feedingStock(*ai.game,*b,false)));
 				else
-					i.records[i.pos].food_amount=feedingStock(*b,false);
+					i.records[i.pos].food_amount=feedingStock(*ai.game,*b,false);
 				i.pos+=1;
 				if (i.pos==INN_RECORD_MAX)
 				{
@@ -4140,7 +4137,7 @@ bool InnManager::modifyInns()
 
 	for(std::map<int, innRecord>::iterator i = inns.begin(); i!=inns.end();)
 	{
-		Read::Building* inn=getBuildingFromGid(ai.game, i->first);
+		const AIEngine::BuildingView* inn=getBuildingFromGid(ai.game, i->first);
 		if (inn==NULL || !provides(*ai.game,*inn,FeedUnits))
 		{
 			ai.getUnitModule()->request("InnManager", WORKER, HARVEST, 1, 0, i->first);
@@ -4164,21 +4161,21 @@ bool InnManager::modifyInns()
 		if(i->second.records.empty()) { ++i; continue; }
   average/=i->second.records.size();
 
-		const unsigned capacity=feedingStock(*inn,true);
+		const unsigned capacity=feedingStock(*ai.game,*inn,true);
   const unsigned deficit=capacity>average ? capacity-average : 0;
-  const unsigned level=std::clamp(ai.game->buildingCapabilities().lineagePosition(inn->typeNum)-1,0,2);
+  const unsigned level=std::clamp(ai.game->capabilities().lineagePosition(inn->typeNum)-1,0,2);
   unsigned to_assign=capacity ? std::max(INN_MINIMUM[level],std::min(INN_MAX[level],deficit/WHEAT_NEEDED_FOR_UNIT)) : 0;
   unsigned services=0;
   for(unsigned demand=0;demand<DemandCount;++demand) services+=provides(*ai.game,*inn,demand);
   if(services>1) to_assign=std::max<unsigned>(to_assign,inn->maxUnitWorking);
-  to_assign=std::min<unsigned>(to_assign,inn->type->semantics.assignmentLimit);
+  to_assign=std::min<unsigned>(to_assign,AIEngine::ObservationQueries::buildingType(*ai.game,*inn).semantics.assignmentLimit);
 		total_workers_needed+=to_assign;
 		if(static_cast<int>(to_assign)!=inn->maxUnitWorking)
 		{
 			if(AICabino_DEBUG)
 				ai.diagnosticStream<<"AICabino: modifyInns: Changing the number of units assigned to an inn from "<<inn->maxUnitWorking<<" to "<<to_assign<<"."<<std::endl;
-			ai.enqueueOrder(std::shared_ptr<Order>(new OrderModifyBuilding(inn->gid, to_assign)));
-			ai.getUnitModule()->request("InnManager", WORKER, HARVEST, 1, to_assign, inn->gid);
+			ai.enqueueOrder(std::shared_ptr<Order>(new OrderModifyBuilding(inn->identity.gid, to_assign)));
+			ai.getUnitModule()->request("InnManager", WORKER, HARVEST, 1, to_assign, inn->identity.gid);
 		}
 		++i;
 	}
@@ -4250,7 +4247,7 @@ bool TowerController::controlTowers()
 	int count=0;
 	for(int i=0; i<1024; i++)
 	{
-		Read::Building* b = ai.team->myBuildings[i];
+		const AIEngine::BuildingView* b = ai.game->buildingSlots(ai.team->number)[i];
 		if (b)
 		{
 			if(provides(*ai.game,*b,DefendWithProjectiles) &&
@@ -4258,11 +4255,11 @@ bool TowerController::controlTowers()
 				b->constructionResultState==Building::NO_CONSTRUCTION)
 			{
 				count+=1;
-				if(b->maxUnitWorking < std::min<int>(NUM_PER_TOWER,b->type->semantics.assignmentLimit))
+				if(b->maxUnitWorking < std::min<int>(NUM_PER_TOWER,AIEngine::ObservationQueries::buildingType(*ai.game,*b).semantics.assignmentLimit))
 				{
 					if(AICabino_DEBUG)
 						ai.diagnosticStream<<"AICabino: controlTowers: Changing number of units assigned to a tower, from "<<b->maxUnitWorking<<" to "<<NUM_PER_TOWER<<"."<<std::endl;
-					ai.enqueueOrder(std::shared_ptr<Order>(new OrderModifyBuilding(b->gid, std::min<int>(NUM_PER_TOWER,b->type->semantics.assignmentLimit))));
+					ai.enqueueOrder(std::shared_ptr<Order>(new OrderModifyBuilding(b->identity.gid, std::min<int>(NUM_PER_TOWER,AIEngine::ObservationQueries::buildingType(*ai.game,*b).semantics.assignmentLimit))));
 				}
 			}
 		}
@@ -4366,34 +4363,34 @@ bool BuildingClearer::removeOldPadding()
 {
 	for(std::map<int, clearingRecord>::iterator i=cleared_buildings.begin(); i!=cleared_buildings.end();)
 	{
-		Read::Building* b = getBuildingFromGid(ai.game, i->first);
-		if(b==NULL || b->type->level != static_cast<int>(i->second.level) || i->second.x!=b->posX-CLEARING_AREA_BUILDING_PADDING || i->second.y!=b->posY-CLEARING_AREA_BUILDING_PADDING)
+		const AIEngine::BuildingView* b = getBuildingFromGid(ai.game, i->first);
+		if(b==NULL || AIEngine::ObservationQueries::buildingType(*ai.game,*b).level != static_cast<int>(i->second.level) || i->second.x!=b->posX-CLEARING_AREA_BUILDING_PADDING || i->second.y!=b->posY-CLEARING_AREA_BUILDING_PADDING)
 		{
 
 			unsigned int x_bound=i->second.x+i->second.width;
 			unsigned int y_bound=i->second.y+i->second.height;
-			if(static_cast<int>(x_bound) > ai.map->getW())
-				x_bound-=ai.map->getW();
-			if(static_cast<int>(y_bound) > ai.map->getH())
-				y_bound-=ai.map->getH();
+			if(static_cast<int>(x_bound) > ai.map->width)
+				x_bound-=ai.map->width;
+			if(static_cast<int>(y_bound) > ai.map->height)
+				y_bound-=ai.map->height;
 
 			BrushAccumulator acc;
 			for(unsigned int x=i->second.x; x!=x_bound; ++x)
 			{
-				if(static_cast<int>(x)==ai.map->getW())
+				if(static_cast<int>(x)==ai.map->width)
 					x=0;
 				for(unsigned int y=i->second.y; y!=y_bound; ++y)
 				{
-					if(static_cast<int>(y)==ai.map->getH())
+					if(static_cast<int>(y)==ai.map->height)
 						y=0;
-					if(ai.map->isClearArea(x, y, ai.team->me))
+					if(((ai.map->areasAt(ai.map->tileIndex(x,y)).clear&(ai.team->mask))!=0))
 					{
-						acc.applyBrush(BrushApplication(x,y,0), ai.map->getW(), ai.map->getH());
+						acc.applyBrush(BrushApplication(x,y,0), ai.map->width, ai.map->height);
 					}
 				}
 			}
 			if(acc.getApplicationCount()>0)
-				ai.enqueueOrder(AISharedRuntime::observationAreaOrder<OrderAlterClearArea>(ai.team->teamNumber, BrushTool::MODE_DEL, acc));
+				ai.enqueueOrder(AIEngine::observationAreaOrder<OrderAlterClearArea>(ai.team->number, BrushTool::MODE_DEL, acc));
 			// erase(i) invalidates i; its return value is the next valid
 			// iterator, so skip the (removed) for-loop auto-increment below.
 			i = cleared_buildings.erase(i);
@@ -4414,47 +4411,47 @@ bool BuildingClearer::updateClearingAreas()
 	ai.telemetry.count(AITrace::AI8::BuildingClearer_updateClearingAreas_calls);
 	for(unsigned int i=0; i<1024; ++i)
 	{
-		Read::Building* b = ai.team->myBuildings[i];
+		const AIEngine::BuildingView* b = ai.game->buildingSlots(ai.team->number)[i];
 		if(b)
 		{
-			if( b->type->semantics.occupiesGround &&
-				cleared_buildings.find(b->gid) == cleared_buildings.end() &&
+			if( AIEngine::ObservationQueries::buildingType(*ai.game,*b).semantics.occupiesGround &&
+				cleared_buildings.find(b->identity.gid) == cleared_buildings.end() &&
 				b->constructionResultState==Building::NO_CONSTRUCTION)
 			{
 				clearingRecord cr;
 				cr.x=b->posX-CLEARING_AREA_BUILDING_PADDING;
 				cr.y=b->posY-CLEARING_AREA_BUILDING_PADDING;
-				cr.width=b->type->width+CLEARING_AREA_BUILDING_PADDING*2;
-				cr.height=b->type->height+CLEARING_AREA_BUILDING_PADDING*2;
-				cr.level=b->type->level;
+				cr.width=AIEngine::ObservationQueries::buildingType(*ai.game,*b).width+CLEARING_AREA_BUILDING_PADDING*2;
+				cr.height=AIEngine::ObservationQueries::buildingType(*ai.game,*b).height+CLEARING_AREA_BUILDING_PADDING*2;
+				cr.level=AIEngine::ObservationQueries::buildingType(*ai.game,*b).level;
 
 				unsigned int x_bound=cr.x+cr.width;
 				unsigned int y_bound=cr.y+cr.height;
-				if(static_cast<int>(x_bound) > ai.map->getW())
-					x_bound-=ai.map->getW();
-				if(static_cast<int>(y_bound) > ai.map->getH())
-					y_bound-=ai.map->getH();
+				if(static_cast<int>(x_bound) > ai.map->width)
+					x_bound-=ai.map->width;
+				if(static_cast<int>(y_bound) > ai.map->height)
+					y_bound-=ai.map->height;
 
 				BrushAccumulator acc;
 				for(unsigned int x=cr.x; x!=x_bound; ++x)
 				{
-					if(static_cast<int>(x)==ai.map->getW())
+					if(static_cast<int>(x)==ai.map->width)
 						x=0;
 					for(unsigned int y=cr.y; y!=y_bound; ++y)
 					{
-						if(static_cast<int>(y)==ai.map->getH())
+						if(static_cast<int>(y)==ai.map->height)
 							y=0;
-						if(!ai.map->isClearArea(x,y, ai.team->me))
+						if(!((ai.map->areasAt(ai.map->tileIndex(x,y)).clear&(ai.team->mask))!=0))
 						{
-							acc.applyBrush(BrushApplication(x, y, 0), ai.map->getW(), ai.map->getH());
+							acc.applyBrush(BrushApplication(x, y, 0), ai.map->width, ai.map->height);
 						}
 					}
 				}
 				if(AICabino_DEBUG)
 					ai.diagnosticStream<<"AICabino: updateClearingAreas: Adding clearing area around the building at "<<b->posX<<","<<b->posY<<"."<<std::endl;
 				if(acc.getApplicationCount()>0)
-					ai.enqueueOrder(AISharedRuntime::observationAreaOrder<OrderAlterClearArea>(ai.team->teamNumber, BrushTool::MODE_ADD, acc));
-				cleared_buildings[b->gid]=cr;
+					ai.enqueueOrder(AIEngine::observationAreaOrder<OrderAlterClearArea>(ai.team->number, BrushTool::MODE_ADD, acc));
+				cleared_buildings[b->identity.gid]=cr;
 			}
 		}
 	}
@@ -4522,7 +4519,7 @@ bool HappinessHandler::load(GAGCore::InputStream *stream, Player *player, Sint32
 		stream->readEnterSection("fruit_trees");
 		fruit_trees.clear();
 		const auto fruit_treesCount = stream->readUint32("size");
-		if (fruit_treesCount > Uint32(ai.map->getW()*ai.map->getH())) return false;
+		if (fruit_treesCount > Uint32(ai.map->width*ai.map->height)) return false;
 		for (Uint32 i=0; i<fruit_treesCount; ++i) {
 			stream->readEnterSection(i);
 			fruitTreeRecord record;
@@ -4538,7 +4535,7 @@ bool HappinessHandler::load(GAGCore::InputStream *stream, Player *player, Sint32
 		stream->readEnterSection("exploring_fruit_trees");
 		exploring_fruit_trees.clear();
 		const auto exploring_fruit_treesCount = stream->readUint32("size");
-		if (exploring_fruit_treesCount > Uint32(ai.map->getW()*ai.map->getH())) return false;
+		if (exploring_fruit_treesCount > Uint32(ai.map->width*ai.map->height)) return false;
 		for (Uint32 i=0; i<exploring_fruit_treesCount; ++i) {
 			stream->readEnterSection(i);
 			fruitTreeExplorationRecord record;
@@ -4593,47 +4590,47 @@ void HappinessHandler::save(GAGCore::OutputStream *stream) const
 
 bool HappinessHandler::adjustAlliances()
 {
-	Uint32 food_mask=ai.team->me;
+	Uint32 food_mask=ai.team->mask;
 	unsigned int total_happiness=0;
-	unsigned int total_units=std::max(1, ai.team->stats.getLatestStat()->numberUnitPerType[WORKER]);
+	unsigned int total_units=std::max(1, ai.team->statistics.numberUnitPerType[WORKER]);
 	for(unsigned int i=0; i<HAPPINESS_COUNT+1; ++i)
 	{
-		total_happiness+=ai.team->stats.getLatestStat()->happiness[i]*i;
+		total_happiness+=ai.team->statistics.happiness[i]*i;
 	}
 	int average_happiness=total_happiness/total_units;
 
 	for(unsigned int i=0; i<static_cast<unsigned int>(Team::MAX_COUNT); ++i)
 	{
-		Read::Team* t=ai.game->teams[i];
+		const AIEngine::TeamView* t=teamAt(*ai.game,i);
 		if(t)
 		{
-			if(t->me & ai.team->attackableTeams())
+			if(t->mask & ai.team->enemies)
 			{
-				if(ai.team->me & t->sharedVisionFood)
+				if(ai.team->mask & t->foodVision)
 				{
-					food_mask=food_mask|t->me;
+					food_mask=food_mask|t->mask;
 					continue;
 				}
 				unsigned int enemy_happiness=0;
-				unsigned int enemy_units=std::max(1, t->stats.getLatestStat()->numberUnitPerType[WORKER]);
+				unsigned int enemy_units=std::max(1, t->statistics.numberUnitPerType[WORKER]);
 				for(unsigned int i=0; i<HAPPINESS_COUNT+1; ++i)
 				{
-					enemy_happiness+=t->stats.getLatestStat()->happiness[i]*i;
+					enemy_happiness+=t->statistics.happiness[i]*i;
 				}
 				int enemy_average_happiness=enemy_happiness/enemy_units;
 				if(average_happiness>enemy_average_happiness)
 				{
-					food_mask=food_mask|t->me;
+					food_mask=food_mask|t->mask;
 				}
 			}
 		}
 	}
 
-	if(food_mask!=ai.team->sharedVisionFood)
+	if(food_mask!=ai.team->foodVision)
 	{
 		if(AICabino_DEBUG)
 			ai.diagnosticStream<<"AICabino: adjustAlliances: Adjusting food vision alliance."<<std::endl;
-		ai.enqueueOrder(std::shared_ptr<Order>(new SetAllianceOrder(ai.team->teamNumber, ai.team->allies, ai.team->attackableTeams(), ai.team->sharedVisionExchange, food_mask, ai.team->sharedVisionOther)));
+		ai.enqueueOrder(std::shared_ptr<Order>(new SetAllianceOrder(ai.team->number, ai.team->allies, ai.team->enemies, ai.team->exchangeVision, food_mask, ai.team->otherVision)));
 	}
 
 	return false;
@@ -4656,8 +4653,8 @@ bool HappinessHandler::searchFruitTrees()
 	{
 		unsigned center_x=i->fruit_tree_min_x+(i->fruit_tree_max_x-i->fruit_tree_min_x)/2;
 		unsigned center_y=i->fruit_tree_min_y+(i->fruit_tree_max_y-i->fruit_tree_min_y)/2;
-		int nearness_score = std::min(intdistance(ai.getCenterX(), center_x), ai.map->getW()-intdistance(ai.getCenterX(), center_x))
-					+std::min(intdistance(ai.getCenterY(), center_y), ai.map->getH()-intdistance(ai.getCenterY(), center_y));
+		int nearness_score = std::min(intdistance(ai.getCenterX(), center_x), ai.map->width-intdistance(ai.getCenterX(), center_x))
+					+std::min(intdistance(ai.getCenterY(), center_y), ai.map->height-intdistance(ai.getCenterY(), center_y));
 		if(closest_tree_score[i->fruit_tree_type]==-1 || closest_tree_score[i->fruit_tree_type]>nearness_score)
 		{
 			closest_tree_score[i->fruit_tree_type]=nearness_score;
@@ -4691,7 +4688,7 @@ bool HappinessHandler::searchFruitTrees()
 			if(AICabino_DEBUG)
 				ai.diagnosticStream<<"AICabino: searchFruitTrees: Creating a new exploration flag for a group of trees."<<std::endl;
 
-			ai.enqueueOrder(Read::createOrder(*ai.game, ai.team->teamNumber, flagLocation[n].x, flagLocation[n].y, typeNum, 1, 1));
+			ai.enqueueOrder(AIEngine::ObservationQueries::createOrder(*ai.game, ai.team->number, flagLocation[n].x, flagLocation[n].y, typeNum, 1, 1));
 			fter.flag=NOGBID;
 			fter.pos_x=flagLocation[n].x;
 			fter.pos_y=flagLocation[n].y;
@@ -4707,12 +4704,12 @@ bool HappinessHandler::searchFruitTrees()
 		{
 			for(unsigned int n=0; n<1024; ++n)
 			{
-				Read::Building* b = ai.team->myBuildings[n];
+				const AIEngine::BuildingView* b = ai.game->buildingSlots(ai.team->number)[n];
 				if(b)
 				{
 					if(b->posX == i->pos_x && b->posY == i->pos_y && provides(*ai.game,*b,AttractExplorers))
 					{
-						i->flag=b->gid;
+						i->flag=b->identity.gid;
 						ai.enqueueOrder(std::shared_ptr<Order>(new OrderModifyFlag(i->flag, i->radius)));
 						ai.enqueueOrder(std::shared_ptr<Order>(new OrderModifyBuilding(i->flag, EXPLORERS_PER_GROUP)));
 						ai.getUnitModule()->request("HappinessHandler", EXPLORER, FLY, 1, EXPLORERS_PER_GROUP, i->flag);
@@ -4733,11 +4730,11 @@ void HappinessHandler::computeFruitTrees()
 	{
 		is_fruit_trees_computed=true;
 		std::set<point> examined_points;
-		for(int x=0; x<ai.map->getW(); ++x)
+		for(int x=0; x<ai.map->width; ++x)
 		{
-			for(int y=0; y<ai.map->getH(); ++y)
+			for(int y=0; y<ai.map->height; ++y)
 			{
-				int res_type=ai.map->getResource(x, y).type;
+				int res_type=ai.map->resourceAt(ai.map->tileIndex(x,y)).resource.type;
 				if(res_type>=HAPPINESS_BASE && res_type<MAX_RESOURCES && examined_points.count(point(x, y))==0)
 				{
 					examined_points.insert(point(x, y));
@@ -4766,7 +4763,7 @@ void HappinessHandler::computeFruitTrees()
 							const point neighbors[8]={point(xl,yu),point(x,yu),point(xr,yu),
 								point(xl,y),point(xr,y),point(xl,yd),point(x,yd),point(xr,yd)};
 							for(const point& next:neighbors)
-								if(ai.map->getResource(next.x,next.y).type==res_type && examined_points.count(next)==0)
+								if(ai.map->resourceAt(ai.map->tileIndex(next.x,next.y)).resource.type==res_type && examined_points.count(next)==0)
 								{examined_points.insert(next);points_to_examine.push_back(next);}
 							return field::Visit::Expand;
 						});
@@ -4888,48 +4885,48 @@ bool Farmer::updateFarm()
 	BrushAccumulator add_acc;
 	// With the farm-areas experiment, wheat near water is farmed with a farm
 	// area on the same pattern; forbidden paint continues to protect wood.
-	const bool farms=ai.map->farmAreasEnabled();
+	const bool farms=ai.map->farmAreasEnabled;
 	BrushAccumulator farm_del_acc;
 	BrushAccumulator farm_add_acc;
-	for(unsigned int x=0; static_cast<int>(x)<ai.map->getW(); ++x)
+	for(unsigned int x=0; static_cast<int>(x)<ai.map->width; ++x)
 	{
-		for(unsigned int y=0; static_cast<int>(y)<ai.map->getH(); ++y)
+		for(unsigned int y=0; static_cast<int>(y)<ai.map->height; ++y)
 		{
 			const bool farm_spot = ((x%2!=y%2) && FARMING_METHOD==CheckerBoard) ||
 				((x%2==1 && y%2==1) && FARMING_METHOD==CrossSpacing) ||
 				((x%6<4 && y%3==0) && FARMING_METHOD==Row4) ||
 				((x%3==0 && y%6<4) && FARMING_METHOD==Column4);
-			if(farms && ai.map->isMapDiscovered(x, y, ai.team->me))
+			if(farms && ((ai.map->visibilityAt(ai.map->tileIndex(x,y)).discovered&(ai.team->mask))!=0))
 			{
-				const bool wheat_farm=farm_spot && ai.map->isResourceTakeable(x, y, WHEAT)
-					&& !ai.map->isClearArea(x, y, ai.team->me)
-					&& ai.map->canPaintFarmArea(x, y)
+				const bool wheat_farm=farm_spot && resourceTakeable(ai.map->resourceAt(ai.map->tileIndex(x,y)).resource,WHEAT)
+					&& !((ai.map->areasAt(ai.map->tileIndex(x,y)).clear&(ai.team->mask))!=0)
+					&& ai.map->canPaintFarmAt(ai.map->tileIndex(x,y))
 					&& water_gradient.getHeight(x, y)<=static_cast<int>(MAX_DISTANCE_FROM_WATER+2);
-				const bool farmed=ai.map->isFarmArea(x, y, ai.team->me);
+				const bool farmed=((ai.map->areasAt(ai.map->tileIndex(x,y)).farm&(ai.team->mask))!=0);
 				if(wheat_farm && !farmed)
-					farm_add_acc.applyBrush(BrushApplication(x, y, 0), ai.map->getW(), ai.map->getH());
+					farm_add_acc.applyBrush(BrushApplication(x, y, 0), ai.map->width, ai.map->height);
 				else if(!wheat_farm && farmed)
-					farm_del_acc.applyBrush(BrushApplication(x, y, 0), ai.map->getW(), ai.map->getH());
+					farm_del_acc.applyBrush(BrushApplication(x, y, 0), ai.map->width, ai.map->height);
 			}
 
 			if(farm_spot)
 			{
 				const bool protectable=farms
-					? ai.map->isResourceTakeable(x, y, WOOD)
-					: ai.map->isResourceTakeable(x, y, WOOD) || ai.map->isResourceTakeable(x, y, WHEAT);
-				if(!protectable || ai.map->isClearArea(x, y, ai.team->me))
+					? resourceTakeable(ai.map->resourceAt(ai.map->tileIndex(x,y)).resource,WOOD)
+					: resourceTakeable(ai.map->resourceAt(ai.map->tileIndex(x,y)).resource,WOOD) || resourceTakeable(ai.map->resourceAt(ai.map->tileIndex(x,y)).resource,WHEAT);
+				if(!protectable || ((ai.map->areasAt(ai.map->tileIndex(x,y)).clear&(ai.team->mask))!=0))
 				{
 					if(resources.find(point(x, y))!=resources.end())
 					{
-						del_acc.applyBrush(BrushApplication(x, y, 0), ai.map->getW(), ai.map->getH());
+						del_acc.applyBrush(BrushApplication(x, y, 0), ai.map->width, ai.map->height);
 						resources.erase(resources.find(point(x, y)));
 					}
 				}
 				else
 				{
-					if(resources.find(point(x, y))==resources.end() && ai.map->isMapDiscovered(x, y, ai.team->me) && water_gradient.getHeight(x, y)<=static_cast<int>(MAX_DISTANCE_FROM_WATER+2))
+					if(resources.find(point(x, y))==resources.end() && ((ai.map->visibilityAt(ai.map->tileIndex(x,y)).discovered&(ai.team->mask))!=0) && water_gradient.getHeight(x, y)<=static_cast<int>(MAX_DISTANCE_FROM_WATER+2))
 					{
-						add_acc.applyBrush(BrushApplication(x, y, 0), ai.map->getW(), ai.map->getH());
+						add_acc.applyBrush(BrushApplication(x, y, 0), ai.map->width, ai.map->height);
 						resources.insert(point(x, y));
 					}
 				}
@@ -4938,13 +4935,13 @@ bool Farmer::updateFarm()
 	}
 
 	if(del_acc.getApplicationCount()>0)
-		ai.enqueueOrder(AISharedRuntime::observationAreaOrder<OrderAlterForbidden>(ai.team->teamNumber, BrushTool::MODE_DEL, del_acc));
+		ai.enqueueOrder(AIEngine::observationAreaOrder<OrderAlterForbidden>(ai.team->number, BrushTool::MODE_DEL, del_acc));
 	if(add_acc.getApplicationCount()>0)
-		ai.enqueueOrder(AISharedRuntime::observationAreaOrder<OrderAlterForbidden>(ai.team->teamNumber, BrushTool::MODE_ADD, add_acc));
+		ai.enqueueOrder(AIEngine::observationAreaOrder<OrderAlterForbidden>(ai.team->number, BrushTool::MODE_ADD, add_acc));
 	if(farm_del_acc.getApplicationCount()>0)
-		ai.enqueueOrder(AISharedRuntime::observationAreaOrder<OrderAlterFarmArea>(ai.team->teamNumber, BrushTool::MODE_DEL, farm_del_acc));
+		ai.enqueueOrder(AIEngine::observationAreaOrder<OrderAlterFarmArea>(ai.team->number, BrushTool::MODE_DEL, farm_del_acc));
 	if(farm_add_acc.getApplicationCount()>0)
-		ai.enqueueOrder(AISharedRuntime::observationAreaOrder<OrderAlterFarmArea>(ai.team->teamNumber, BrushTool::MODE_ADD, farm_add_acc));
+		ai.enqueueOrder(AIEngine::observationAreaOrder<OrderAlterFarmArea>(ai.team->number, BrushTool::MODE_ADD, farm_add_acc));
 	return ai.telemetry.returnedBool(AITrace::AI8::Farmer_updateFarm_result,
 									 AITrace::AI8::Farmer_updateFarm_true, false);
 }
@@ -4973,7 +4970,7 @@ bool Gradient::load(GAGCore::InputStream *stream, AICabino& owner)
 	const unsigned validSources = 63u | (((1u << MAX_NB_RESOURCES) - 1u) << 8);
 	if ((savedSources & ~validSources) || savedObstacles > 3) return false;
 	const auto count=stream->readUint32("cells");
-	if (count != Uint32(owner.map->getW()*owner.map->getH())) return false;
+	if (count != Uint32(owner.map->width*owner.map->height)) return false;
 	reset(owner,savedSources,savedObstacles);
 	for (Uint32 i=0; i<count; ++i) {
 		stream->readEnterSection(i);
@@ -5017,7 +5014,7 @@ bool GradientManager::load(GAGCore::InputStream *stream)
 	stream->readEnterSection("GradientManager");
 	const auto count=stream->readUint32("size");
 	// Existing source combinations plus one compiled resource-set mask per demand.
-	if (count > 4u * (64u + team->game->buildingsTypes.size())) return false;
+	if (count > 4u * (64u + team->game->catalog->size())) return false;
 	for (Uint32 i=0; i<count; ++i) {
 		stream->readEnterSection(i);
 		const auto sources=stream->readUint32("sources");
@@ -5082,7 +5079,7 @@ void AICabino::applyReceipts(const AIEngine::DecisionContext& context)
                     for(int x=area.centerX+area.minX;x<area.centerX+area.maxX;++x,++bit)
                         if(area.mask.get(bit)) {
                             const Farmer::point p(map->normalizeX(x),map->normalizeY(y));
-                            if(map->isForbidden(x,y,team->me)) farmer->resources.insert(p);
+                            if(((map->areasAt(map->tileIndex(x,y)).forbidden&(team->mask))!=0)) farmer->resources.insert(p);
                             else farmer->resources.erase(p);
                         }
             }

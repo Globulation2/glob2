@@ -201,33 +201,25 @@ void enemy_team_iterator::set_to_next()
 		team_number++;
 	// A full-capacity match has no spare null slot after its teams. Bound
 	// enumeration by the live match count before touching the array.
-	const auto& game = *runtime->readPlayer()->game;
-	const int count = game.teamsCount();
-	for (; team_number < count && game.teams[team_number] &&
-		!(runtime->readPlayer()->team->attackableTeams() & game.teams[team_number]->me); ++team_number)
-	{
-	}
-
-	if (team_number >= count || game.teams[team_number] == nullptr)
-	{
-		is_end=true;
-		return;
-	}
+    const auto& world=runtime->observation();
+    const int count=world.teams.size();
+    for(; team_number<count && !(runtime->observedTeam().enemies&world.teams[team_number].mask);++team_number) {}
+    if(team_number>=count) is_end=true;
 
 }
 
 
 int SearchTools::is_flag(Runtime& runtime, int x, int y)
 {
-	const auto& buildings=runtime.readPlayer()->team->myBuildings;
+	const auto& buildings=runtime.observation().buildingSlots(runtime.teamNumber());
 	for(int n=0; n<Building::MAX_COUNT; ++n)
 	{
-		AISharedRuntime::Read::Building* b=buildings[n];
+		const AIEngine::BuildingView* b=buildings[n];
 		if(b)
 		{
 			if(b->posX==x && b->posY==y)
 			{
-				if(!b->type->semantics.occupiesGround)
+				if(!AIEngine::ObservationQueries::buildingType(runtime.observation(),*b).semantics.occupiesGround)
 				{
 					return b->gid;
 				}
@@ -298,19 +290,19 @@ void enemy_building_iterator::set_to_next()
 
 	while(current_index<Building::MAX_COUNT)
 	{
-		AISharedRuntime::Read::Building* b=runtime->readPlayer()->game->teams[team]->myBuildings[current_index];
+		const AIEngine::BuildingView* b=runtime->observation().buildingSlots(team)[current_index];
 		if(b)
 		{
-			if( (b->seenByMask&runtime->readPlayer()->team->me
+			if( (b->seenByMask&runtime->observedTeam().mask
                              // Don't allow AIs to cheat!!!!!!
                              // || runtime->get_starting_buildings().find(b->gid)!=runtime->get_starting_buildings().end()
                              ) &&
-				(building_type==AI_SHARED_RUNTIME_WILDCARD_TYPE || buildingProvides(*runtime->readPlayer()->game,b->typeNum,building_type)) &&
-				(level==AI_SHARED_RUNTIME_WILDCARD_LEVEL || runtime->readPlayer()->game->buildingCapabilities().lineagePosition(b->typeNum)==level))
+				(building_type==AI_SHARED_RUNTIME_WILDCARD_TYPE || AIEngine::ObservationQueries::buildingProvides(runtime->observation(),b->typeNum,buildingIntent(building_type))) &&
+				(level==AI_SHARED_RUNTIME_WILDCARD_LEVEL || runtime->observation().catalog->at(b->typeNum).lineagePosition==level))
 			{
 				if(construction_site)
 				{
-					if(b->type->isBuildingSite)
+					if(AIEngine::ObservationQueries::buildingType(runtime->observation(),*b).isBuildingSite)
 					{
 						current_gid=b->gid;
 						break;
@@ -318,7 +310,7 @@ void enemy_building_iterator::set_to_next()
 				}
 				else if(!construction_site)
 				{
-					if(!b->type->isBuildingSite)
+					if(!AIEngine::ObservationQueries::buildingType(runtime->observation(),*b).isBuildingSite)
 					{
 						current_gid=b->gid;
 						break;
