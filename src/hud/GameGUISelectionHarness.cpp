@@ -16,6 +16,42 @@
 class GameGUISelectionHarness
 {
 public:
+    static void frozenInputAdmission()
+    {
+        glob2test::HeadlessGame world;
+        auto& gui = world.gui;
+        auto* building = world.addBuilding("swarm",4,4);
+        gui.setSelection(GameGUI::BUILDING_SELECTION, building);
+        Scene scene;
+        gui.extractScene(scene);
+        gui.setPublishedScene(&scene);
+        gui.simulationThreaded = true;
+        const auto original = Game::refOf(building);
+        gui.checkSelection();
+        REQUIRE(gui.inputBuildingPanel());
+        CHECK(gui.view.selectedBuilding == nullptr);
+        gui.requestBuildingDestruction(*gui.inputBuildingPanel());
+        REQUIRE(gui.orderQueue.size() == 1);
+        CHECK(gui.orderQueue.front()->clientTarget == original);
+        REQUIRE(world.game.removeUnitAndBuildingAndFlags(4,4,Game::DEL_BUILDING));
+        auto* replacement = world.addBuilding("swarm",4,4);
+        REQUIRE(replacement->gid == original.gid);
+        REQUIRE(replacement->scriptIdentity != original.generation);
+        // Both selection and action still use what was actually displayed.
+        gui.checkSelection();
+        REQUIRE(gui.inputBuildingPanel());
+        CHECK(gui.inputBuildingPanel()->generation == original.generation);
+        // The simulation admits no order for the replacement incarnation.
+        CHECK(gui.getOrder()->getOrderType() == ORDER_NULL);
+        gui.enqueueOrder(std::make_shared<NullOrder>());
+        gui.orderQueue.front()->clientWorld = scene.map.identity()+1;
+        CHECK(gui.getOrder()->getOrderType() == ORDER_NULL);
+        gui.extractScene(scene);
+        gui.checkSelection();
+        CHECK(gui.selectionMode != GameGUI::BUILDING_SELECTION);
+        gui.simulationThreaded = false;
+        gui.setPublishedScene(nullptr);
+    }
 	static void destructionClearsSelection()
 	{
 		GameGUI gui;
@@ -203,6 +239,12 @@ public:
 
 TEST_SUITE("GameGUISelection")
 {
+    TEST_CASE("displayed actions cannot target a reused entity or replaced world")
+    {
+        glob2test::HeadlessGlobals globals;
+        GameGUISelectionHarness::frozenInputAdmission();
+    }
+
 	TEST_CASE("selection clears once its entity is destroyed")
 	{
 		glob2test::HeadlessGlobals globals;

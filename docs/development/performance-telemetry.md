@@ -200,7 +200,7 @@ receipts, RNG and controller continuation state. Worker counts remain local exec
 configuration. Changing the match delay can change strategy, replay orders and game feel;
 changing only worker count must preserve execution at the same delay.
 
-Structured `--run-game` accepts `--ai-order-delay D` for a new match, and
+Structured `--run-game` accepts `--ai-order-delay D` for a new match (default 8 ticks), and
 `--compute-threads N` (1–64) with `--compute-experiments MODE`. Modes are `none`,
 `areas`, `initialize`, `hiring`, `ai`, and `all`; `ai` is the default. The default
 count is the smaller of four, available hardware threads, and the larger of three

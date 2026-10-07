@@ -7,6 +7,7 @@
 #include "Types.h"
 #include <GraphicContext.h>
 
+namespace SimulationSnapshot { struct Handle; }
 class Game;
 
 ///This class is used to compute overlay areas, a tool to visualize concentrations
@@ -31,6 +32,7 @@ public:
 	
 	///Compute the overlay area
 	void compute(Game& game, OverlayType type, int localteam);
+	void compute(const SimulationSnapshot::Handle& world, OverlayType type, int localteam, Uint16 fertilityMaximum);
 
 	///Gets the value of the overlay for a given position
 	Uint32 getValue(int x, int y) const;

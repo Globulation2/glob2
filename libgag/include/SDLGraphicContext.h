@@ -483,7 +483,7 @@ namespace GAGCore
 			unsigned program = 0, rigProgram = 0, fragment = 0, framebuffer = 0, depth = 0;
 			struct RigBuffers
 			{
-				unsigned vertices = 0, indices = 0;
+				unsigned vertices = 0, indices = 0, vao = 0;
 			};
 			struct Uniforms
 			{

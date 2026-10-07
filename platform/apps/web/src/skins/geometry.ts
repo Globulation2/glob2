@@ -36,8 +36,16 @@ export type ViewTransform = {
   pivot: number[];
   radius: number;
 };
-export type Camera = { yaw: number; zoom: number; game: boolean; angle: number };
-export const DEFAULT_CAMERA: Camera = { yaw: 0, zoom: 1, game: false, angle: 0 };
+/** `yaw` turns the model about its upright axis; `pitch` raises or lowers the
+ * inspection camera from the exported game elevation (about 45 degrees). */
+export type Camera = { yaw: number; pitch: number; zoom: number; game: boolean; angle: number };
+export const DEFAULT_CAMERA: Camera = { yaw: 0, pitch: 0, zoom: 1, game: false, angle: 0 };
+/** Pitch bounds: from just short of top-down to a little below the horizon. */
+export const MIN_PITCH = (-75 * Math.PI) / 180;
+export const MAX_PITCH = (40 * Math.PI) / 180;
+export function clampPitch(pitch: number): number {
+  return Math.max(MIN_PITCH, Math.min(MAX_PITCH, pitch));
+}
 export const ACTIONS = {
   worker: ['walk', 'swim', 'harvest'],
   warrior: ['walk', 'swim', 'fight'],
@@ -352,6 +360,9 @@ export function projectPose(
   const { center, radius } = inspectionFit(mesh, view);
   const sy = Math.sin(camera.yaw),
     cy = Math.cos(camera.yaw);
+  const pitch = clampPitch(camera.pitch),
+    sp = Math.sin(pitch),
+    cp = Math.cos(pitch);
   const ca = Math.cos((-camera.angle * Math.PI) / 180),
     sa = Math.sin((-camera.angle * Math.PI) / 180);
   const factor = (camera.zoom * INSPECTION_FILL) / radius;
@@ -380,7 +391,10 @@ export function projectPose(
         // camera basis. Rotating projected axes would tilt the model as it turns.
         const x = cy * a[0]! - sy * a[1]!,
           y = sy * a[0]! + cy * a[1]!;
-        return [0, 1, 2].map((k) => n[k]! * x + n[k + 3]! * y + n[k + 6]! * a[2]!);
+        const c = [0, 1, 2].map((k) => n[k]! * x + n[k + 3]! * y + n[k + 6]! * a[2]!);
+        // Pitch swings the camera about the screen's horizontal axis, after the
+        // turn, so the model keeps its heading and the screen stays level.
+        return [c[0]!, cp * c[1]! - sp * c[2]!, sp * c[1]! + cp * c[2]!];
       };
       position = rotate(p.map((v, k) => v - center[k]!));
       position = [

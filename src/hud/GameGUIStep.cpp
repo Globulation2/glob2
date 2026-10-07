@@ -51,7 +51,8 @@ void GameGUI::moveFlag(int mx, int my, bool drop)
 	if (globalContainer->isViewingGame()) return;
 
 	int posX, posY;
-	Building* selBuild=selectionBuilding();
+	auto selBuild=inputBuilding(std::get<BuildingRef>(selection));
+	if (!selBuild) return;
 	game.map.cursorToBuildingPos(mx, my, selBuild->type->width, selBuild->type->height, &posX, &posY, viewportX, viewportY);
 	if ((displayedPosX(*selBuild)!=posX)
 		||(displayedPosY(*selBuild)!=posY)
@@ -60,25 +61,16 @@ void GameGUI::moveFlag(int mx, int my, bool drop)
 }
 
 void GameGUI::queueFlagMove(Building &flag, int x, int y, bool drop)
+{ queueFlagMove(flag.gid,x,y,drop); }
+
+void GameGUI::queueFlagMove(const SceneBuilding &flag, int x, int y, bool drop)
+{ queueFlagMove(flag.gid,x,y,drop); }
+
+void GameGUI::queueFlagMove(Uint16 gid, int x, int y, bool drop)
 {
-	Uint16 gid=flag.gid;
 	shared_ptr<OrderMoveFlag> oms(new OrderMoveFlag(gid, x, y, drop));
-	// First, we check if another move of the same flag is already in the "orderQueue".
-	bool found=false;
-	for (std::list<shared_ptr<Order> >::iterator it=orderQueue.begin(); it!=orderQueue.end(); ++it)
-	{
-		if ( ((*it)->getOrderType()==ORDER_MOVE_FLAG))
-		{
-			if(static_pointer_cast<OrderMoveFlag>(*it)->gid==gid)
-			{
-				(*it) = oms;
-				found=true;
-				break;
-			}
-		}
-	}
-	if (!found)
-		orderQueue.push_back(oms);
+	stampClientOrder(oms);
+	orderQueue.moveFlag(oms);
 	BuildingGuiState& s = pendingFor(gid);
 	s.pendingPosX = x;
 	s.pendingPosY = y;
@@ -106,7 +98,7 @@ void GameGUI::dragStep(int mx, int my, int button)
 		// Update flag
 		if (selectionMode == BUILDING_SELECTION)
 		{
-			Building* selBuild=selectionBuilding();
+			auto selBuild=inputBuilding(std::get<BuildingRef>(selection));
 			if (selBuild && selectionPushed && (selBuild->type->semantics.relocatable))
 				moveFlag(mx, my, false);
 		}
@@ -134,12 +126,19 @@ void GameGUI::step(void)
 void GameGUI::step(const std::vector<SDL_Event>& events, Uint64 now)
 {
     if(autosaveWriter) autosaveWriter->poll();
+    if (simulationThreaded && globalContainer->settings.autosaveGames && autosavePending && (!autosaveWriter || !autosaveWriter->busy()))
+        parkForClient([&] {
+            if (autosavePending.exchange(false)) { lastAutosaveStep=game.stepCounter; autosave(); }
+        });
     consumeClientEvents();
     if (inGameMenu == IGM_SAVE && gameMenuScreen &&
         static_cast<LoadSaveDialog*>(gameMenuScreen.get())->pollPersistence())
         closeDialog();
     if (auto *dialog = activeDialog())
-        dialog->update(Uint32(now));
+    {
+        const auto update=[&]{dialog->update(Uint32(now));};
+        if (inGameMenu!=IGM_TELEMETRY || !parkForClient(update)) update();
+    }
     // A dialog can finish without an SDL event (browser-native text editing
     // submits through the host bridge); act on its result every frame.
     if (gameMenuScreen && gameMenuScreen->finished())
@@ -280,7 +279,7 @@ void GameGUI::step(const std::vector<SDL_Event>& events, Uint64 now)
 	}
 
 	assert(localTeam);
-	const int viewedTeam = localTeam->teamNumber;
+	const int viewedTeam = localTeamNo;
 	stepEventFeed(viewedTeam);
 
 	// voice step
@@ -288,16 +287,18 @@ void GameGUI::step(const std::vector<SDL_Event>& events, Uint64 now)
 	while ((orderVoiceData = globalContainer->voiceRecorder->getNextOrder()) != NULL)
 	{
 		orderVoiceData->recipientsMask = chatMask ^ (chatMask & (Team::teamNumberToMask(localPlayer)));
-		orderQueue.push_back(orderVoiceData);
+		enqueueOrder(orderVoiceData);
 	}
 
 	// TODO: die with SGSL
 	// Check if the text being displayed has changed, and if it has, add it to the history box
-	if(game.legacyScriptActive() && game.sgslScript.isTextShown && game.sgslScript.textShown != previousSGSLText)
+	const auto& legacyText=simulationThreaded ? drawnScene().panels.hud.legacyScriptText : game.sgslScript.textShown;
+    const bool legacyShown=simulationThreaded ? drawnScene().panels.hud.legacyScriptTextShown : game.legacyScriptActive() && game.sgslScript.isTextShown;
+	if(legacyShown && legacyText != previousSGSLText)
 	{
-		publishMessageHistoryLines(game.sgslScript.textShown, HistoryList::Chat,
+		publishMessageHistoryLines(legacyText, HistoryList::Chat,
 			Color(255, 255, 255), kHistoryOnlyTimeoutMs, kScriptTextContinuationIndent);
-		previousSGSLText = game.sgslScript.textShown;
+		previousSGSLText = legacyText;
 	}
 
 	// Check if the text being displayed has changed, and if it has, add it to the history box
@@ -328,16 +329,17 @@ void GameGUI::step(const std::vector<SDL_Event>& events, Uint64 now)
 	std::shared_ptr<Order> order = toolManager.getOrder();
 	while(order)
 	{
-		orderQueue.push_back(order);
+		enqueueOrder(order);
 		order = toolManager.getOrder();
 	}
 
 	///This shows the mission briefing at the beginning of the mission
-	if(game.stepCounter == 12)
+	if((simulationThreaded ? drawnScene().tick : game.stepCounter) == 12)
 	{
 		if(game.missionBriefing != "")
 		{
-			openDialog(IGM_OBJECTIVES, std::make_unique<InGameObjectivesScreen>(this, true));
+			const auto briefing=[&]{openDialog(IGM_OBJECTIVES, std::make_unique<InGameObjectivesScreen>(this, true));};
+            if(!parkForClient(briefing)) briefing();
 		}
 	}
 
@@ -347,7 +349,7 @@ void GameGUI::step(const std::vector<SDL_Event>& events, Uint64 now)
 	// do we have won or lost conditions
 	checkWonConditions();
 
-	if (game.anyPlayerWaited)
+	if (simulationThreaded ? drawnScene().panels.hud.anyPlayerWaited : game.anyPlayerWaited)
 		anyPlayerWaitedTimeFor++;
 	else
 		anyPlayerWaitedTimeFor = 0;
@@ -372,8 +374,11 @@ void GameGUI::stepEventFeed(int viewedTeam)
 		teamEvents.pop_front();
 		const GameEventType type = gevent.getEventType();
 		const bool conversion = type == GEUnitLostConversion || type == GEUnitGainedConversion;
+        std::string message;
+        const auto format=[&]{message=gevent.formatMessage(game);};
+        if(!conversion || !parkForClient(format)) format();
 		eventFeed.ingest({type, conversion ? gevent.getOtherTeamNumber() : gevent.getTypeNum(), gevent.getStep(),
-						  gevent.getX(), gevent.getY(), gevent.formatMessage(game), gevent.formatColor()},
+						  gevent.getX(), gevent.getY(), message, gevent.formatColor()},
 						 nowMs, distanceSquared);
 		eventGoPosX = gevent.getX();
 		eventGoPosY = gevent.getY();
@@ -404,7 +409,7 @@ void GameGUI::syncStep(void)
 		? game.stepCounter % AUTOSAVE_INTERVAL_TICKS == AUTOSAVE_PHASE_TICKS
 		: static_cast<Sint64>(game.stepCounter) - lastAutosaveStep >= autosaveInterval);
 	if(autosaveDue) autosavePending=true;
-	if (autosavePending && globalContainer->settings.autosaveGames && (!autosaveWriter || !autosaveWriter->busy()))
+	if (!simulationThreaded && autosavePending && globalContainer->settings.autosaveGames && (!autosaveWriter || !autosaveWriter->busy()))
 	{
         autosavePending=false;
 		lastAutosaveStep = game.stepCounter;
@@ -447,6 +452,41 @@ void GameGUI::checkWonConditions(void)
 {
 	if (hasEndOfGameDialogBeenShown || globalContainer->replaying)
 		return;
+    if (simulationThreaded)
+    {
+        const auto& scene=drawnScene();
+        const auto& hud=scene.panels.hud;
+        const char* message=nullptr;
+        bool won=false;
+        auto color=scene.panels.local.color;
+        if (globalContainer->liveSpectating)
+        {
+            if (hud.winningTeam<0) return;
+            message=hud.drawn ? "[game draw]" : "[Match finished]";
+            won=!hud.drawn; color=scene.entities.teams[hud.winningTeam].color;
+        }
+        else if (networkMatch.active && hud.localWon)
+        {
+            hasEndOfGameDialogBeenShown=true;
+            if (inGameMenu!=IGM_NONE) closeDialog();
+            isRunning=false; return;
+        }
+        else if (hud.totalPrestigeReached && hud.prestigeWinCondition)
+        { message=hud.localDraw ? "[game draw]" : "[Total prestige reached]"; won=hud.localWon && !hud.localDraw; }
+        else if (hud.localLost) message="[you have lost]";
+        else if (hud.localWon)
+        {
+            message=hud.localDraw ? "[game draw]" : "[you have won]"; won=!hud.localDraw;
+            if (inGameMenu==IGM_NONE && campaign) campaign->setCompleted(missionName);
+        }
+        if (message && inGameMenu==IGM_NONE)
+        {
+            openDialog(IGM_END_OF_GAME,std::make_unique<InGameEndOfGameScreen>(Toolkit::getStringTable()->getString(message),true,color,won));
+            hasEndOfGameDialogBeenShown=true; miniMapPushed=false;
+        }
+        return;
+    }
+
 
     if(globalContainer->liveSpectating) {
         for(int i=0;i<game.teamsCount();++i) if(game.teams[i]->hasWon && inGameMenu==IGM_NONE) {
@@ -509,8 +549,9 @@ void GameGUI::checkWonConditions(void)
 	}
 }
 
-void GameGUI::showEndOfReplayScreen()
+void GameGUI::showEndOfReplayScreen(bool client)
 {
+    if(simulationThreaded && !client) { gamePaused=true; clientEvents.push(ClientEvent::ReplayEnded{}); return; }
 	gamePaused = true;
 
 	if (!hasEndOfGameDialogBeenShown)

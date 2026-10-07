@@ -42,6 +42,7 @@
 #include <chrono>
 #include "Version.h"
 #include "sim/SimulationRunner.h"
+#include "sim/presentation/ScenePreparation.h"
 #include "scripting/javascript/ScriptRuntime.h"
 #include <stdexcept>
 #ifdef __EMSCRIPTEN__
@@ -320,8 +321,20 @@ void Engine::drawSession(bool everyFrame)
     if (globalContainer->runNoX) return;
     if (!runner)
     {
-        if (turn && !std::exchange(turnDrawPending, false)) return;
-        drawFrame(*session, everyFrame && !turn);
+        const bool captureRequested=!turn || std::exchange(turnDrawPending, false);
+        if (!serialPresentation)
+            serialPresentation=std::make_unique<ScenePreparation>(gui.game.map.computeExecutor());
+        if (captureRequested && ((everyFrame && !turn) || session->nextGuiStep==0))
+        {
+            if (serialPresentation->readyToCapture())
+                serialPresentation->submit(gui.captureSceneInputs(gui.sceneRequest()));
+            else if(turn) turnDrawPending=true;
+        }
+        bool changed=false;
+        const auto* scene=serialPresentation->acquire(&changed);
+        if (!scene || (turn && !changed)) return;
+        gui.setPublishedScene(scene);
+        drawFrame(*session, turn || everyFrame, scene);
         return;
     }
     // Threaded: draw the newest scene the simulation published, every frame.
@@ -355,15 +368,20 @@ bool Engine::startSimulationThread(Uint64 now)
         return false;
     }
     runner = std::move(started);
+    gui.simulationAccess=[this](const auto& work){runner->withGame(work);};
     return true;
 }
 
 void Engine::stopSimulationThread()
 {
+    serialPresentation.reset();
+    gui.setPublishedScene(nullptr);
     if (!runner) {gui.game.drainAI();return;}
     runner->stop();
+    gui.simulationAccess={};
     gui.game.drainAI();
     // The simulation's measurements since the last client frame.
+    runner->absorbTelemetry(PerformanceTelemetry::collector());
     PerformanceTelemetry::collector().absorb(runner->telemetry);
     runner.reset();
     gui.simulationThreaded = false;
@@ -377,8 +395,22 @@ bool Engine::threadedClientFrame(Uint64 now, const std::vector<SDL_Event>& event
     if (!runner) throw std::logic_error("Simulation thread not running");
     publishSessionClock(now);
     runner->rethrowFailure();
+    for (const auto& event : events) sessionInput.push_back(event);
+    // Selection and hit testing need this world's first immutable view. Preserve
+    // early input until it arrives; never fall back to a previous world's Scene.
+    if (!runner->sceneReady())
+    {
+        const auto* scene=runner->acquireScene();
+        if (!scene) return gui.isRunning && !runner->ended();
+        gui.setPublishedScene(scene);
+    }
     if (gui.isRunning)
-        runner->withGame([&] { clientStep(events); absorbSimulationTelemetry(); });
+    {
+        clientStep(sessionInput.events());
+        sessionInput.clear();
+        runner->requestScene(gui.sceneRequest(false));
+        absorbSimulationTelemetry();
+    }
     runner->rethrowFailure();
     return gui.isRunning && !runner->ended();
 }
@@ -729,6 +761,8 @@ void Engine::pumpTurnSession(Uint64 now)
 
 void Engine::reloadTurnInitialState()
 {
+    serialPresentation.reset();
+    gui.setPublishedScene(nullptr);
 	assert(turn && turnMatch);
 	TurnMatchState& state = *turnMatch;
 	const auto started = std::chrono::steady_clock::now();
@@ -866,7 +900,13 @@ void Engine::abortSession() noexcept
     try { stopSimulationThread(); } catch (...) {}
     gui.isRunning = false;
     gui.toLoadGameFileName.clear();
-    try { teardownSession(); }
+    try
+    {
+        // The session has failed: join and discard pending AI decisions rather
+        // than draining their results again during teardown or destruction.
+        gui.game.clearAI();
+        teardownSession();
+    }
     catch (...)
     {
         std::cerr << "Failure while closing game resources; session cannot continue\n";
@@ -941,7 +981,11 @@ void Engine::clientStep(const std::vector<SDL_Event>& events)
     else
         // Match SDL input timestamps, not the suspendable simulation clock.
         gui.threadedClientStep(events, SDL_GetTicks());
-    handleExitRequest();
+    if (gui.flushOutgoingAndExit)
+    {
+        const auto exit=[&]{handleExitRequest();};
+        if (!gui.parkForClient(exit)) exit();
+    }
     // Studio reads controller-private status only after its worker stream ends.
 #ifdef __EMSCRIPTEN__
     if (std::getenv("GLOB2_STUDIO_PLAYTEST")) {
@@ -986,9 +1030,14 @@ void Engine::configureSessionTelemetry(MainLoopState& st, PerformanceTelemetry::
 void Engine::absorbSimulationTelemetry()
 {
 	auto &perf = PerformanceTelemetry::collector();
-	perf.absorb(runner->telemetry);
-	configureSessionTelemetry(*session, perf);
-	perf.capture(gui.game.stepCounter);
+    const auto& scene=gui.drawnScene();
+    const auto fps=globalContainer->settings.targetRenderFps;
+    const auto frameBudget=globalContainer->runNoX || fps==0 ? 0ULL : (1000000000ULL+fps-1)/fps;
+    perf.configure(scene.tick, std::uint64_t(scene.tickInterval)*1000000ULL, frameBudget,
+        gui.gamePaused || gui.hardPause ? "paused" : globalContainer->runNoX ? "headless" :
+        globalContainer->replaying ? "replay" : scene.panels.hud.anyPlayerWaited ? "waiting" : "live");
+    runner->absorbTelemetry(perf);
+    perf.capture(scene.tick);
 }
 
 bool Engine::advanceSession(Uint64 now, const std::function<void()>& clientWork, bool handleExit)

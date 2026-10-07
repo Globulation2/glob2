@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import {
   MatchSetup,
+  STANDARD_RULES,
   RealtimeServerMessage,
   engineTaskIdentifier,
   isValid,
@@ -69,4 +70,8 @@ describe('realtime', () => {
     ).toBe(true);
     expect(isValid(RealtimeServerMessage, { type: 'response', id: '1', ok: true })).toBe(false);
   });
+});
+
+it('new matches explicitly default to eight tick AI decisions', () => {
+  expect(STANDARD_RULES.aiOrderDelay).toBe(8);
 });

@@ -5,6 +5,8 @@ import {
   decode,
   projectPose,
   DEFAULT_CAMERA,
+  MAX_PITCH,
+  MIN_PITCH,
   validateView,
   type ViewTransform,
   bakedMesh,
@@ -153,6 +155,37 @@ describe('skin projection', () => {
     const after = projectPose(upright, view, 0, { ...DEFAULT_CAMERA, yaw: Math.PI / 2 }, 1);
     for (let i = 0; i < mesh.count; i++)
       for (let k = 3; k < 6; k++) expect(after[i * 6 + k]).toBeCloseTo(before[i * 6 + k]!, 5);
+  });
+  it('tilts the inspection camera within bounds without turning the model', () => {
+    const { mesh, view } = asset('worker-walk');
+    const level = projectPose(mesh, view, 0, { ...DEFAULT_CAMERA, yaw: 0.7 }, 1);
+    const tilted = projectPose(mesh, view, 0, { ...DEFAULT_CAMERA, yaw: 0.7, pitch: 0.5 }, 1);
+    // Pitch swings about the screen's horizontal axis: screen x never moves.
+    for (let i = 0; i < mesh.count; i++) {
+      expect(tilted[i * 6]).toBeCloseTo(level[i * 6]!, 5);
+      expect(tilted[i * 6 + 3]).toBeCloseTo(level[i * 6 + 3]!, 5);
+    }
+    expect(tilted).not.toEqual(level);
+    // Out-of-range pitch clamps rather than flipping the model over.
+    for (const [beyond, bound] of [
+      [Math.PI, MAX_PITCH],
+      [-Math.PI, MIN_PITCH],
+    ] as const)
+      expect(projectPose(mesh, view, 0, { ...DEFAULT_CAMERA, pitch: beyond }, 1)).toEqual(
+        projectPose(mesh, view, 0, { ...DEFAULT_CAMERA, pitch: bound }, 1),
+      );
+    // The model's upright axis keeps pointing up the screen at every bound.
+    const upright = mesh.pose(0).slice();
+    for (let i = 0; i < mesh.count; i++)
+      upright.set(
+        [view.normalToModel[6]!, view.normalToModel[7]!, view.normalToModel[8]!],
+        i * 6 + 3,
+      );
+    const uprightMesh = bakedMesh(mesh.count, 1, mesh.uv, mesh.indices, upright);
+    for (const pitch of [MIN_PITCH, MAX_PITCH]) {
+      const up = projectPose(uprightMesh, view, 0, { ...DEFAULT_CAMERA, pitch }, 1);
+      expect(up[4]).toBeGreaterThan(0);
+    }
   });
   it('pads only unused texels and never wraps a model edge', () => {
     const mask = new Float32Array(65536),

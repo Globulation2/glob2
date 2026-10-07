@@ -60,7 +60,7 @@ bool GameGUI::requestWorkerAllocation(Building& building, int requested)
     requested=std::clamp(requested,0,building.type->semantics.assignmentLimit);
     if (requested==displayedMaxUnitWorking(building)) return false;
     pendingFor(building.gid).pendingMaxUnitWorking=requested;
-    orderQueue.push_back(std::make_shared<OrderModifyBuilding>(building.gid,requested));
+    enqueueOrder(std::make_shared<OrderModifyBuilding>(building.gid,requested));
     defaultAssign.setDefaultAssignedUnits(building.typeNum,requested);
     return true;
 }
@@ -72,7 +72,7 @@ bool GameGUI::requestBuildingPriority(Building& building, int requested)
     requested=std::clamp(requested,-1,1);
     if (requested==displayedPriority(building)) return false;
     pendingFor(building.gid).pendingPriority=requested;
-    orderQueue.push_back(std::make_shared<OrderChangePriority>(building.gid,requested));
+    enqueueOrder(std::make_shared<OrderChangePriority>(building.gid,requested));
     return true;
 }
 
@@ -83,16 +83,50 @@ bool GameGUI::requestFlagRange(Building& building, int requested)
     requested=std::clamp(requested,0,building.type->maxUnitStayRange);
     if (requested==displayedUnitStayRange(building)) return false;
     pendingFor(building.gid).pendingUnitStayRange=requested;
-    orderQueue.push_back(std::make_shared<OrderModifyFlag>(building.gid,requested));
+    enqueueOrder(std::make_shared<OrderModifyFlag>(building.gid,requested));
+    return true;
+}
+
+bool GameGUI::requestWorkerAllocation(const SceneBuildingPanel& building, int requested)
+{
+    if (globalContainer->isViewingGame() || building.owner.teamNumber!=localTeamNo ||
+        !building.type->maxUnitWorking || building.buildingState!=Building::ALIVE) return false;
+    requested=std::clamp(requested,0,building.type->semantics.assignmentLimit);
+    if (requested==displayedMaxUnitWorking(building)) return false;
+    pendingFor(building.gid).pendingMaxUnitWorking=requested;
+    enqueueOrder(std::make_shared<OrderModifyBuilding>(building.gid,requested));
+    defaultAssign.setDefaultAssignedUnits(building.typeNum,requested);
+    return true;
+}
+
+bool GameGUI::requestBuildingPriority(const SceneBuildingPanel& building, int requested)
+{
+    if (globalContainer->isViewingGame() || building.owner.teamNumber!=localTeamNo ||
+        !building.type->maxUnitWorking || building.buildingState!=Building::ALIVE) return false;
+    requested=std::clamp(requested,-1,1);
+    if (requested==displayedPriority(building)) return false;
+    pendingFor(building.gid).pendingPriority=requested;
+    enqueueOrder(std::make_shared<OrderChangePriority>(building.gid,requested));
+    return true;
+}
+
+bool GameGUI::requestFlagRange(const SceneBuildingPanel& building, int requested)
+{
+    if (globalContainer->isViewingGame() || building.owner.teamNumber!=localTeamNo ||
+        !(building.type->zonable[WORKER] || building.type->zonable[WARRIOR] || building.type->zonable[EXPLORER])) return false;
+    requested=std::clamp(requested,0,building.type->maxUnitStayRange);
+    if (requested==displayedUnitStayRange(building)) return false;
+    pendingFor(building.gid).pendingUnitStayRange=requested;
+    enqueueOrder(std::make_shared<OrderModifyFlag>(building.gid,requested));
     return true;
 }
 
 void GameGUI::handleMenuClickBuildingSelection(int mx, int my, int button)
 {
 	if(globalContainer->liveSpectating) return;
-	Building* selBuild=selectionBuilding();
-	assert (selBuild);
-	if (selBuild->owner->teamNumber!=localTeamNo)
+	const auto* selBuild=inputBuildingPanel();
+	if (!selBuild) return;
+	if (selBuild->owner.teamNumber!=localTeamNo)
 		return;
 	if (my>=globalContainer->gfx->getH()-BOTTOM_BUTTON_PRIMARY_YOFFSET-4)
 	{
@@ -112,7 +146,7 @@ void GameGUI::handleMenuClickBuildingSelection(int mx, int my, int button)
 	// working bar
 	if (selBuild->type->maxUnitWorking)
 	{
-		if (((selBuild->owner->allies)&(Team::teamNumberToMask(localTeamNo)))
+		if (((selBuild->owner.allies)&(Team::teamNumberToMask(localTeamNo)))
 			&& my>ypos+YOFFSET_TEXT_BAR
 			&& my<ypos+YOFFSET_TEXT_BAR+16
 			&& selBuild->buildingState==Building::ALIVE
@@ -131,7 +165,7 @@ void GameGUI::handleMenuClickBuildingSelection(int mx, int my, int button)
 	if(selBuild->type->maxUnitWorking)
 	{
 		ypos += YOFFSET_B_SEP;
-		if (((selBuild->owner->allies)&(Team::teamNumberToMask(localTeamNo)))
+		if (((selBuild->owner.allies)&(Team::teamNumberToMask(localTeamNo)))
 			&& my>ypos+16
 			&& my<ypos+16+12
 			&& selBuild->buildingState==Building::ALIVE)
@@ -157,7 +191,7 @@ void GameGUI::handleMenuClickBuildingSelection(int mx, int my, int button)
 	// flag range bar
 	if (buildingType->maxUnitStayRange>0 && (buildingType->zonable[WORKER] || buildingType->zonable[EXPLORER] || buildingType->zonable[WARRIOR]))
 	{
-		if (((selBuild->owner->allies)&(Team::teamNumberToMask(localTeamNo)))
+		if (((selBuild->owner.allies)&(Team::teamNumberToMask(localTeamNo)))
 			&& (my>ypos+YOFFSET_TEXT_BAR)
 			&& (my<ypos+YOFFSET_TEXT_BAR+16)
 			&& (lmx < SCROLLBOX_BAR_WIDTH))
@@ -172,7 +206,7 @@ void GameGUI::handleMenuClickBuildingSelection(int mx, int my, int button)
 	}
 
 	// flags specific options:
-	if ((selBuild->owner->allies)&Team::teamNumberToMask(localTeamNo))
+	if ((selBuild->owner.allies)&Team::teamNumberToMask(localTeamNo))
 	{
 
 		// Match material rows yielded by clearable resource definitions.
@@ -191,7 +225,7 @@ void GameGUI::handleMenuClickBuildingSelection(int mx, int my, int button)
 						pendingFor(selBuild->gid).pendingClearingResources = next;
 						bool wire[MaterialCount];
 						for (int k=0; k<MaterialCount; k++) wire[k] = next[k];
-						orderQueue.push_back(shared_ptr<Order>(new OrderModifyClearingFlag(selBuild->gid, wire)));
+						enqueueOrder(shared_ptr<Order>(new OrderModifyClearingFlag(selBuild->gid, wire)));
 					}
 
 					ypos+=YOFFSET_TEXT_PARA;
@@ -208,7 +242,7 @@ void GameGUI::handleMenuClickBuildingSelection(int mx, int my, int button)
 				if (lmx>10 && lmx<22 && my>ypos && my<ypos+YOFFSET_TEXT_PARA)
 				{
 					pendingFor(selBuild->gid).pendingMinWorkerLevelToFlag = i;
-					orderQueue.push_back(shared_ptr<Order>(new OrderModifyMinLevelToFlag(selBuild->gid, i, 2)));
+					enqueueOrder(shared_ptr<Order>(new OrderModifyMinLevelToFlag(selBuild->gid, i, 2)));
 				}
 
 				ypos+=YOFFSET_TEXT_PARA;
@@ -226,7 +260,7 @@ void GameGUI::handleMenuClickBuildingSelection(int mx, int my, int button)
 				if (lmx>10 && lmx<22 && my>ypos && my<ypos+YOFFSET_TEXT_PARA)
 				{
 					pendingFor(selBuild->gid).pendingMinLevelToFlag = i;
-					orderQueue.push_back(shared_ptr<Order>(new OrderModifyMinLevelToFlag(selBuild->gid, i)));
+					enqueueOrder(shared_ptr<Order>(new OrderModifyMinLevelToFlag(selBuild->gid, i)));
 				}
 
 				ypos+=YOFFSET_TEXT_PARA;
@@ -244,7 +278,7 @@ void GameGUI::handleMenuClickBuildingSelection(int mx, int my, int button)
 				if (lmx>10 && lmx<22 && my>ypos && my<ypos+YOFFSET_TEXT_PARA)
 				{
 					pendingFor(selBuild->gid).pendingExplorersRequireBombing = bool(i);
-					orderQueue.push_back(shared_ptr<Order>(new OrderModifyMinLevelToFlag(selBuild->gid, i, 1)));
+					enqueueOrder(shared_ptr<Order>(new OrderModifyMinLevelToFlag(selBuild->gid, i, 1)));
 				}
 
 				ypos+=YOFFSET_TEXT_PARA;
@@ -257,7 +291,7 @@ void GameGUI::handleMenuClickBuildingSelection(int mx, int my, int button)
 	if (buildingType->maxUnitInside)
 		ypos += YOFFSET_INFOS;
 	ypos += buildingProjectileStatsHeight(*buildingType);
-	if ((selBuild->owner->allies&Team::teamNumberToMask(localTeamNo)) && buildingServiceProgressTimeout(*buildingType))
+	if ((selBuild->owner.allies&Team::teamNumberToMask(localTeamNo)) && buildingServiceProgressTimeout(*buildingType))
 		ypos += YOFFSET_PROGRESS_BAR;
 	ypos += YOFFSET_B_SEP;
 
@@ -268,7 +302,7 @@ void GameGUI::handleMenuClickBuildingSelection(int mx, int my, int button)
 	// as pending state on BuildingGuiState (add pendingReceiveResourceMask /
 	// pendingSendResourceMask there), then emit the order. Same pattern as
 	// pendingMaxUnitWorking / pendingPriority / pendingRatio.
-	if (selBuild->type->canExchange && ((selBuild->owner->allies)&(Team::teamNumberToMask(localTeamNo))))
+	if (selBuild->type->canExchange && ((selBuild->owner.allies)&(Team::teamNumberToMask(localTeamNo))))
 	{
 		int startY = ypos+YOFFSET_TEXT_PARA;
 		int endY = startY+HAPPINESS_COUNT*YOFFSET_TEXT_PARA;
@@ -288,7 +322,7 @@ void GameGUI::handleMenuClickBuildingSelection(int mx, int my, int button)
 					nextRecv |= (1<<r);
 					nextSend &= ~(1<<r);
 				}
-				orderQueue.push_back(shared_ptr<Order>(new OrderModifyExchange(selBuild->gid, nextRecv, nextSend)));
+				enqueueOrder(shared_ptr<Order>(new OrderModifyExchange(selBuild->gid, nextRecv, nextSend)));
 			}
 
 			if ((lmx>110) && (lmx<122))
@@ -302,13 +336,13 @@ void GameGUI::handleMenuClickBuildingSelection(int mx, int my, int button)
 					nextRecv &= ~(1<<r);
 					nextSend |= (1<<r);
 				}
-				orderQueue.push_back(shared_ptr<Order>(new OrderModifyExchange(selBuild->gid, nextRecv, nextSend)));
+				enqueueOrder(shared_ptr<Order>(new OrderModifyExchange(selBuild->gid, nextRecv, nextSend)));
 			}
 		}
 	}
 	*/
 	// Match visible exchange rows even though its old toggle controls are disabled.
-	if (buildingType->canExchange && (selBuild->owner->sharedVisionExchange&Team::teamNumberToMask(localTeamNo)))
+	if (buildingType->canExchange && (selBuild->owner.sharedVisionExchange&Team::teamNumberToMask(localTeamNo)))
 		ypos += (1+HAPPINESS_COUNT)*YOFFSET_TEXT_PARA;
 	// resources in
 	for (unsigned i=0; i<MaterialCount; i++)
@@ -342,7 +376,7 @@ void GameGUI::handleMenuClickBuildingSelection(int mx, int my, int button)
 					// OrderModifySwarm wants a raw Sint32[NB_UNIT_TYPE]; copy out.
 					Sint32 wire[NB_UNIT_TYPE];
 					for (int k=0; k<NB_UNIT_TYPE; k++) wire[k] = next[k];
-					orderQueue.push_back(shared_ptr<Order>(new OrderModifySwarm(selBuild->gid, wire)));
+					enqueueOrder(shared_ptr<Order>(new OrderModifySwarm(selBuild->gid, wire)));
 				}
 			}
 			ypos+=YOFFSET_SWARM_RATIO_LINE;

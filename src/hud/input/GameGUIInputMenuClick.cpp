@@ -22,6 +22,7 @@ using std::static_pointer_cast;
 
 void GameGUI::handleMenuClick(int mx, int my, int button)
 {
+    if(globalContainer->isViewingGame() && parkForClient([&]{handleMenuClick(mx,my,button);})) return;
 	// handle minimap
 	if (my<128 && mx > (RIGHT_MENU_OFFSET) && mx < RIGHT_MENU_WIDTH - RIGHT_MENU_OFFSET)
 	{
@@ -29,7 +30,7 @@ void GameGUI::handleMenuClick(int mx, int my, int button)
 		{
 			int markx, marky;
 			minimapMouseToPos(globalContainer->gfx->getW() - RIGHT_MENU_WIDTH + mx, my, &markx, &marky, false);
-			orderQueue.push_back(shared_ptr<Order>(new MapMarkOrder(localTeamNo, markx, marky)));
+			enqueueOrder(shared_ptr<Order>(new MapMarkOrder(localTeamNo, markx, marky)));
 			globalContainer->gfx->cursorManager.setNextType(CursorManager::CURSOR_NORMAL);
 			putMark = false;
 		}

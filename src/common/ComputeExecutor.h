@@ -12,6 +12,7 @@
 #include <exception>
 #include <functional>
 #include <mutex>
+#include <memory>
 #include <span>
 #include <stdexcept>
 #include <thread>
@@ -41,6 +42,33 @@
 class ComputeExecutor
 {
 public:
+	// Presentation is best-effort work, never part of a simulation barrier.
+	// One chunk runs at a time; at most one replacement waits behind it.
+	class Presentation
+	{
+		friend class ComputeExecutor;
+	public:
+		enum class Status { Pending, Running, Complete, Canceled, Failed };
+		Status status() const { return state.load(std::memory_order_acquire); }
+		bool finished() const
+		{
+			const auto value = status();
+			return value == Status::Complete || value == Status::Canceled || value == Status::Failed;
+		}
+		void cancel() { canceled.store(true, std::memory_order_release); }
+		void rethrowFailure() const { if (status() == Status::Failed) std::rethrow_exception(error); }
+	private:
+		std::atomic<Status> state{Status::Pending};
+		std::atomic<bool> canceled{false};
+		std::function<void(std::size_t)> job;
+		std::size_t next = 0, count = 0;
+		std::exception_ptr error;
+	};
+	using PresentationTicket = std::shared_ptr<Presentation>;
+	struct PresentationMetrics
+	{
+		std::uint64_t submitted = 0, replaced = 0, chunks = 0, activeNs = 0;
+	};
 	struct Metrics
 	{
 		std::size_t batches = 0, jobs = 0, parallelBatches = 0;
@@ -107,6 +135,61 @@ private:
 	Metrics totals;
 	struct WorkerMetrics { std::uint64_t jobs = 0, activeNs = 0; };
 	std::vector<WorkerMetrics> workerMetrics{1};
+	PresentationTicket presentation, presentationPending;
+	bool presentationRunning = false;
+	// Set before launching workers, never inferred from the vector while it grows.
+	unsigned presentationWorker = 0;
+	PresentationMetrics presentationTotals;
+	std::condition_variable presentationDone;
+
+	bool presentationClaimable(std::size_t worker) const
+	{
+		return worker == presentationWorker && !presentationRunning && (presentation || presentationPending);
+	}
+	PresentationTicket claimPresentation()
+	{
+		if (!presentation) presentation = std::move(presentationPending);
+		presentationRunning = true;
+		presentation->state.store(Presentation::Status::Running, std::memory_order_release);
+		return presentation;
+	}
+	void executePresentation(const PresentationTicket& work, std::size_t thread)
+	{
+		auto* previous = active;
+		const auto previousSlot = activeSlot;
+		active = this; activeSlot = thread;
+		const auto start = Clock::now();
+		bool ran = false;
+		try
+		{
+			if (!work->canceled.load(std::memory_order_acquire))
+			{
+				work->job(work->next++);
+				ran = true;
+			}
+		}
+		catch (...) { work->error = std::current_exception(); }
+		active = previous; activeSlot = previousSlot;
+		// Release captured inputs outside the scheduler lock before publishing
+		// completion. A ticket retained for status must not retain a world.
+		const bool canceled = work->canceled.load(std::memory_order_acquire);
+		const bool done = canceled || work->error || work->next == work->count;
+		if (done) work->job = {};
+		{
+			std::lock_guard<std::mutex> lock(mutex);
+			presentationTotals.chunks += ran;
+			presentationTotals.activeNs += std::chrono::duration_cast<std::chrono::nanoseconds>(Clock::now() - start).count();
+			if (done)
+			{
+				work->state.store(work->error ? Presentation::Status::Failed : canceled ? Presentation::Status::Canceled : Presentation::Status::Complete,
+					std::memory_order_release);
+				presentation.reset();
+			}
+			presentationRunning = false;
+		}
+		presentationDone.notify_all();
+		ready.notify_all();
+	}
 
 	void invoke(std::size_t slot)
 	{
@@ -196,14 +279,27 @@ private:
 	}
 	void worker(std::size_t slot)
 	{
-		std::size_t seen = 0;
+		std::size_t seen = 0, simulationClaims = 0;
 		std::unique_lock<std::mutex> lock(mutex);
 		for (;;)
 		{
-			ready.wait(lock, [&] { return stopping || generation != seen || claimable(false); });
+			ready.wait(lock, [&] { return stopping || generation != seen || claimable(false) || presentationClaimable(slot); });
 			if (stopping) return;
+			// The designated worker lends capacity to simulation, but must not
+			// starve presentation under a continuous deferred backlog. The owner
+			// and other workers remain available to every simulation barrier.
+			if (simulationClaims >= 8 && presentationClaimable(slot))
+			{
+				const auto work = claimPresentation();
+				simulationClaims = 0;
+				lock.unlock();
+				executePresentation(work, slot);
+				lock.lock();
+				continue;
+			}
 			if (generation != seen)
 			{
+				++simulationClaims;
 				seen = generation;
 				++inFlight;
 				lock.unlock();
@@ -213,7 +309,17 @@ private:
 				continue;
 			}
 			const auto claimed = claim(false);
-			if (!claimed.valid) continue;
+			if (!claimed.valid)
+			{
+				if (!presentationClaimable(slot)) continue;
+				const auto work = claimPresentation();
+				simulationClaims = 0;
+				lock.unlock();
+				executePresentation(work, slot);
+				lock.lock();
+				continue;
+			}
+			++simulationClaims;
 			lock.unlock();
 			execute(claimed, slot);
 			lock.lock();
@@ -232,6 +338,7 @@ private:
 	}
 	void stop()
 	{
+		cancelPresentationAndWait();
 		joinAll();
 		{ std::lock_guard<std::mutex> lock(mutex); stopping = true; }
 		ready.notify_all();
@@ -254,6 +361,7 @@ public:
 	{
 		assert(!active && threads >= 1 && threads <= 64);
 		stop();
+		presentationWorker = threads > 1 ? threads - 1 : 0;
 		if constexpr (GAGCore::ThreadSupport::available)
 		{
 			try
@@ -262,11 +370,71 @@ public:
 				for (unsigned i = 1; i < threads; ++i)
 					workers.push_back(launch([this, i] { worker(i); }));
 			}
-			catch (...) { stop(); }
+			catch (...) { stop(); presentationWorker = 0; }
 		}
+		else presentationWorker = 0;
 		workerMetrics.assign(threadCount(), {});
 		totals = {};
+		presentationTotals = {};
 	}
+	// The submitting thread owns admission. Replacing pending work releases its
+	// captures immediately; active work finishes its current chunk on its worker.
+	PresentationTicket submitPresentation(std::size_t chunks, std::function<void(std::size_t)> function)
+	{
+		if (active) throw std::logic_error("Presentation cannot be submitted from inside a job");
+		if (!chunks || !function) throw std::invalid_argument("Presentation needs nonempty work");
+		auto work = std::make_shared<Presentation>();
+		work->count = chunks; work->job = std::move(function);
+		PresentationTicket replaced;
+		{
+			std::lock_guard<std::mutex> lock(mutex);
+			replaced = std::move(presentationPending);
+			presentationPending = work;
+			++presentationTotals.submitted;
+			if (replaced) ++presentationTotals.replaced;
+		}
+		if (replaced)
+		{
+			replaced->job = {};
+			replaced->state.store(Presentation::Status::Canceled, std::memory_order_release);
+		}
+		ready.notify_all();
+		return work;
+	}
+	// Graphics/application thread fallback for an executor with no workers.
+	// This is deliberately not called by run(), join(), or joinAll().
+	bool pumpPresentation()
+	{
+		if (active) throw std::logic_error("Presentation cannot be pumped from inside a job");
+		PresentationTicket work;
+		{
+			std::lock_guard<std::mutex> lock(mutex);
+			if (presentationWorker || !presentationClaimable(0)) return false;
+			work = claimPresentation();
+		}
+		executePresentation(work, 0);
+		return true;
+	}
+	// Lifecycle barrier only: does not run presentation on the caller. A running
+	// chunk retains its inputs until it exits; unstarted chunks are discarded.
+	void cancelPresentationAndWait()
+	{
+		if (active) throw std::logic_error("Presentation lifecycle barrier inside a job");
+		PresentationTicket discarded, pending;
+		{
+			std::unique_lock<std::mutex> lock(mutex);
+			if (presentation) presentation->cancel();
+			pending = std::move(presentationPending);
+			presentationDone.wait(lock, [&] { return !presentationRunning; });
+			discarded = std::move(presentation);
+		}
+		for (auto& work : {discarded, pending}) if (work)
+		{
+			work->job = {};
+			work->state.store(Presentation::Status::Canceled, std::memory_order_release);
+		}
+	}
+	PresentationMetrics presentationMetrics() const { std::lock_guard<std::mutex> lock(mutex); return presentationTotals; }
 	std::size_t threadCount() const { return workers.size() + 1; }
 	std::size_t slot() const { return active == this ? activeSlot : 0; }
 	// A consistent copy; workers update the deferred counters under the mutex.

@@ -13,10 +13,15 @@
 #include "UnitTiming.h"
 #include "TeamStat.h"
 #include "WinProbability.h"
+#include "WinningConditions.h"
 #include "Unit.h"
 #include "AITelemetry.h"
 #include "render/GameAnimations.h"
 #include <unordered_map>
+#include "sim/presentation/SceneInputs.h"
+#include "sim/snapshot/SnapshotStore.h"
+#include "Race.h"
+#include "ai/model/BuildingProjection.h"
 
 static_assert(Team::MAX_COUNT <= SceneEntities::Teams, "SceneEntities::Teams too small");
 static_assert(Unit::MAX_COUNT <= SceneEntities::SlotsPerTeam, "SceneEntities::SlotsPerTeam too small");
@@ -36,13 +41,13 @@ namespace
 		return {};
 	}
 
-	SceneUnit unitOf(const Unit &u)
+	template<class U> SceneUnit unitOf(const U &u, int team, Race* race)
 	{
 		SceneUnit s;
 		s.gid = u.gid;
 		s.generation = u.scriptIdentity;
-		s.team = u.owner->teamNumber;
-		s.race = u.race;
+		s.team = team;
+		s.race = race;
 		s.typeNum = u.typeNum;
 		s.posX = u.posX;
 		s.posY = u.posY;
@@ -66,27 +71,28 @@ namespace
 		return s;
 	}
 
-	SceneBuilding buildingOf(const Building &b)
+	template<class B> SceneBuilding buildingOf(const B &b, int team, BuildingType* type,
+        const BuildingType* lastType, int maxHp, int inside, int working, const Sint32* materials)
 	{
 		SceneBuilding s;
 		s.gid = b.gid;
 		s.generation = b.scriptIdentity;
-		s.team = b.owner->teamNumber;
-		s.type = b.type;
-		s.lastUpgradeType = b.owner->game->buildingsTypes.getLastLevel(
-			b.constructionResultState==Building::REPAIR ? b.getConstructionCompletionTypeNum() : b.typeNum);
+		s.team = team;
+		s.type = type;
+		s.lastUpgradeType = const_cast<BuildingType*>(lastType);
 		s.typeNum = b.typeNum;
 		s.shortTypeNum = b.shortTypeNum;
+		s.buildingState = b.buildingState;
 		s.posX = b.posX;
 		s.posY = b.posY;
 		s.hp = b.hp;
-		s.effectiveMaxHp = b.getEffectiveMaxHp();
+		s.effectiveMaxHp = maxHp;
 		s.maxUnitInside = b.maxUnitInside;
-		s.unitsInside = Sint32(b.unitsInside.size());
+		s.unitsInside = inside;
 		s.maxUnitWorking = b.maxUnitWorking;
-		s.unitsWorking = Sint32(b.unitsWorking.size());
+		s.unitsWorking = working;
 		for (int r = 0; r < MaterialCount; ++r)
-			s.materials[r] = b.materials[r];
+			s.materials[r] = materials[r];
 		s.bullets = b.bullets;
 		s.unitStayRange = b.unitStayRange;
 		s.seenByMask = b.seenByMask;
@@ -96,15 +102,18 @@ namespace
 		return s;
 	}
 
-	void extractEntities(const Game &game, const SceneRequest &request, SceneEntities &e)
+	void extractEntities(const Game &game, const SceneRequest &request, SceneEntities &e, bool records = true)
 	{
 		const int teamCount = game.mapHeader.getNumberOfTeams();
 		e.teamCount = teamCount;
 		e.materialPresence = 0;
 		e.units.clear();
 		e.buildings.clear();
-		e.unitIndex.assign(SceneEntities::Teams * SceneEntities::SlotsPerTeam, -1);
-		e.buildingIndex.assign(SceneEntities::Teams * SceneEntities::SlotsPerTeam, -1);
+		if (records)
+        {
+            e.unitIndex.assign(SceneEntities::Teams * SceneEntities::SlotsPerTeam, -1);
+            e.buildingIndex.assign(SceneEntities::Teams * SceneEntities::SlotsPerTeam, -1);
+        }
 		for (auto &flags : e.virtualBuildings)
 			flags.clear();
 		for (int t = 0; t < teamCount; ++t)
@@ -114,57 +123,26 @@ namespace
 				if (team->teamMaterials[m] || team->reservedTeamMaterials[m]) e.materialPresence |= materialBit(static_cast<MaterialId>(m));
 			e.teams[t] = SceneTeam{team->color, team->teamNumber, team->me, team->allies, team->sharedVisionOther,
 				team->startPosX, team->startPosY, firstPlayerName(game, *team)};
-			for (int i = 0; i < Unit::MAX_COUNT; ++i)
+			for (int i = 0; records && i < Unit::MAX_COUNT; ++i)
 				if (const Unit *u = team->myUnits[i])
 				{
 					e.unitIndex[u->gid] = int(e.units.size());
-					e.units.push_back(unitOf(*u));
+					e.units.push_back(unitOf(*u, t, u->race));
 					if (u->carriedMaterial >= 0 && validMaterial(u->carriedMaterial)) e.materialPresence |= 1u << u->carriedMaterial;
 				}
-			for (int i = 0; i < Building::MAX_COUNT; ++i)
+			for (int i = 0; records && i < Building::MAX_COUNT; ++i)
 				if (const Building *b = team->myBuildings[i])
 				{
 					e.buildingIndex[b->gid] = int(e.buildings.size());
-					e.buildings.push_back(buildingOf(*b));
+					e.buildings.push_back(buildingOf(*b, t, b->type, game.buildingsTypes.get(game.buildingsTypes.get(
+                        b->constructionResultState==Building::REPAIR ? b->getConstructionCompletionTypeNum() : b->typeNum)->terminalTypeNum),
+                        b->getEffectiveMaxHp(), int(b->unitsInside.size()), int(b->unitsWorking.size()), b->materials));
 					for (unsigned m=0; m<MaterialCount; ++m) if (b->materials[m]) e.materialPresence |= 1u << m;
 				}
 			for (const Building *b : team->virtualBuildings)
 				e.virtualBuildings[t].push_back(b->gid);
 		}
 
-        // Resolve segment connections once per extracted frame. Overlay buildings
-        // need a sparse footprint index because they do not occupy the map grid.
-        std::unordered_multimap<int,const SceneBuilding*> overlays;
-        const auto tile=[&](int x,int y) { return game.map.normalizeY(y)*game.map.getW()+game.map.normalizeX(x); };
-        for (const auto& b : e.buildings)
-            if (!b.type->semantics.occupiesGround && b.type->presentation.connectionGroupId>=0)
-                for (int dy=0; dy<b.type->height; ++dy)
-                    for (int dx=0; dx<b.type->width; ++dx) overlays.emplace(tile(b.posX+dx,b.posY+dy),&b);
-        for (auto& b : e.buildings)
-            if (b.type->crossConnectMultiImage)
-            {
-                const auto connects=[&](const SceneBuilding* other) {
-                    return other && other->gid!=b.gid &&
-                        other->type->presentation.connectionGroupId==b.type->presentation.connectionGroupId &&
-                        (b.type->presentation.connectsAcrossTeams || other->team==b.team);
-                };
-                const auto neighbor=[&](int x,int y) {
-                    if (connects(e.building(game.map.getBuilding(x,y)))) return true;
-                    const auto range=overlays.equal_range(tile(x,y));
-                    for (auto it=range.first; it!=range.second; ++it) if (connects(it->second)) return true;
-                    return false;
-                };
-                for (int dx=0; dx<b.type->width; ++dx)
-                {
-                    if (!(b.connectionMask&8) && neighbor(b.posX+dx,b.posY-1)) b.connectionMask|=8;
-                    if (!(b.connectionMask&4) && neighbor(b.posX+dx,b.posY+b.type->height)) b.connectionMask|=4;
-                }
-                for (int dy=0; dy<b.type->height; ++dy)
-                {
-                    if (!(b.connectionMask&2) && neighbor(b.posX-1,b.posY+dy)) b.connectionMask|=2;
-                    if (!(b.connectionMask&1) && neighbor(b.posX+b.type->width,b.posY+dy)) b.connectionMask|=1;
-                }
-            }
 
 		// Bullets and animations, grouped by sector in drawing order.
 		Map &map = const_cast<Map &>(game.map); // Map::getSector has no const overload; read only.
@@ -212,9 +190,49 @@ namespace
 				selected.unitsWorking.push_back(u->gid);
 		}
 		e.selectedUnit = game.resolveUnit(request.selectedUnit) ? request.selectedUnit : UnitRef();
-		e.highlightUnitType = game.highlightUnitType;
-		e.highlightBuildingType = game.highlightBuildingType;
+		e.highlightUnitType = request.highlights ? request.highlights->first : game.highlightUnitType;
+		e.highlightBuildingType = request.highlights ? request.highlights->second : game.highlightBuildingType;
 	}
+}
+
+namespace {
+void prepareConnections(const SceneMap& map, SceneEntities& e)
+{
+        // Resolve segment connections once per extracted frame. Overlay buildings
+        // need a sparse footprint index because they do not occupy the map grid.
+        std::unordered_multimap<int,const SceneBuilding*> overlays;
+        const auto tile=[&](int x,int y) { return int(map.coordToIndex(x,y)); };
+        for (const auto& b : e.buildings)
+            if (!b.type->semantics.occupiesGround && b.type->presentation.connectionGroupId>=0)
+                for (int dy=0; dy<b.type->height; ++dy)
+                    for (int dx=0; dx<b.type->width; ++dx) overlays.emplace(tile(b.posX+dx,b.posY+dy),&b);
+        for (auto& b : e.buildings)
+            if (b.type->crossConnectMultiImage)
+            {
+                const auto connects=[&](const SceneBuilding* other) {
+                    return other && other->gid!=b.gid &&
+                        other->type->presentation.connectionGroupId==b.type->presentation.connectionGroupId &&
+                        (b.type->presentation.connectsAcrossTeams || other->team==b.team);
+                };
+                const auto neighbor=[&](int x,int y) {
+                    if (connects(e.building(map.getBuilding(x,y)))) return true;
+                    const auto range=overlays.equal_range(tile(x,y));
+                    for (auto it=range.first; it!=range.second; ++it) if (connects(it->second)) return true;
+                    return false;
+                };
+                for (int dx=0; dx<b.type->width; ++dx)
+                {
+                    if (!(b.connectionMask&8) && neighbor(b.posX+dx,b.posY-1)) b.connectionMask|=8;
+                    if (!(b.connectionMask&4) && neighbor(b.posX+dx,b.posY+b.type->height)) b.connectionMask|=4;
+                }
+                for (int dy=0; dy<b.type->height; ++dy)
+                {
+                    if (!(b.connectionMask&2) && neighbor(b.posX-1,b.posY+dy)) b.connectionMask|=2;
+                    if (!(b.connectionMask&1) && neighbor(b.posX+b.type->width,b.posY+dy)) b.connectionMask|=1;
+                }
+            }
+
+}
 }
 
 namespace
@@ -228,13 +246,28 @@ namespace
 	// The panels' legacy queries (repair cost, hard space, hunger, max build
 	// level) only read the game but are not const-qualified; they are called here
 	// through const_cast, on the simulation side, as drawing did before.
-	void extractPanels(const Game &game, const SceneRequest &request, ScenePanels &panels)
+	void extractPanels(const Game &game, const SceneRequest &request, ScenePanels &panels, SceneInputs* raw = nullptr)
 	{
 		Team &local = *game.teams[request.localTeam];
-		panels.local = ScenePanelLocal{local.teamNumber, local.allies, local.maxBuildLevel(), local.color,
+		panels.local = ScenePanelLocal{local.teamNumber, local.allies, raw ? 0 : local.maxBuildLevel(), local.color,
 			local.prestige, local.unitConversionGained, local.unitConversionLost, local.noMoreBuildingSitesCountdown};
 
 		SceneHud &hud = panels.hud;
+        hud.totalPrestigeReached=game.totalPrestigeReached;
+        hud.prestigeWinCondition=const_cast<Game&>(game).isPrestigeWinCondition();
+        hud.localWon=local.hasWon; hud.localLost=local.hasLost;
+        hud.winningTeam=-1;
+        for (int t=0;t<game.teamsCount();++t) if (game.teams[t]->hasWon) { hud.winningTeam=t; break; }
+        hud.drawn=false; hud.localDraw=false;
+        if (hud.winningTeam>=0 || hud.totalPrestigeReached)
+        {
+            auto* source=const_cast<Game*>(&game);
+            const auto contested=contestedTeamsMask(source);
+            hud.drawn=isGameDrawn(source,contested);
+            hud.localDraw=classifyTeamOutcome(source,request.localTeam,contested)==TeamOutcome::Draw;
+        }
+		if (!raw)
+		{
 		std::vector<int> allianceOf;
 		const auto slots = WinProbability::slotsOf(game, allianceOf);
 		const auto chances = WinProbability::permille(slots);
@@ -243,6 +276,8 @@ namespace
 			if (const Team *team = game.teams[t])
 				hud.winChances.push_back({firstPlayerName(game, *team), team->color,
 					chances[allianceOf[t]], slots[allianceOf[t]].alive});
+		}
+
 		hud.totalPrestige = game.totalPrestige;
 		hud.prestigeToReach = game.prestigeToReach;
 		hud.anyPlayerWaited = game.anyPlayerWaited;
@@ -281,6 +316,11 @@ namespace
 				row.player = series->player;
 				row.name = series->playerName;
 				row.available = series->current.available;
+                if (raw)
+                {
+                    raw->telemetry.push_back({std::move(row), series->fields, series->current.values, series->named});
+                    continue;
+                }
 				if (row.available)
 				{
 					for (std::size_t i = 0;
@@ -316,6 +356,7 @@ namespace
 			bp.effectiveMaxHp = b->getEffectiveMaxHp();
 			bp.buildingState = b->buildingState;
 			bp.constructionResultState = b->constructionResultState;
+			bp.constructionOriginTypeNum = b->getConstructionOriginTypeNum();
 			bp.maxUnitWorking = b->maxUnitWorking;
 			bp.desiredMaxUnitWorking = b->desiredMaxUnitWorking;
 			bp.priority = b->priority;
@@ -345,14 +386,14 @@ namespace
 			// queries assume a real building and an existing next level.
 			const bool constructible = b->constructionResultState == Building::NO_CONSTRUCTION &&
 				b->buildingState == Building::ALIVE && !b->type->isBuildingSite;
-			if (constructible && b->type->semantics.repairable && b->type->prevLevel>=0 &&
+			if (!raw && constructible && b->type->semantics.repairable && b->type->prevLevel>=0 &&
 				(b->hp < bp.effectiveMaxHp || b->hp < b->type->hpMax))
 			{
 				bp.hardSpaceForRepair = b->isHardSpaceForBuildingSite(Building::REPAIR) && b->owner->maxBuildLevel()>=game.buildingsTypes.get(b->type->prevLevel)->semantics.requiredWorkerLevel;
 				b->getMaterialCountToRepair(bp.repairCost);
 			}
 			bp.showLevel = b->type->presentation.showLevel;
-			if (constructible && b->isUpgradeAvailable())
+			if (!raw && constructible && b->isUpgradeAvailable())
 				bp.hardSpaceForUpgrade = b->isHardSpaceForBuildingSite(Building::UPGRADE) && b->owner->maxBuildLevel()>=game.buildingsTypes.get(b->type->nextLevel)->semantics.requiredWorkerLevel;
 			bp.buildingHpMultiplier = game.gameHeader.getBuildingHpMultiplier();
 		}
@@ -383,9 +424,12 @@ namespace
 				up.performance[a] = u->performance[a];
 				up.level[a] = u->level[a];
 			}
-			up.unitHungry = u->isUnitHungry();
-			up.realArmor = u->getRealArmor(false);
-			up.nextLevelThreshold = u->getNextLevelThreshold();
+			if (!raw)
+            {
+                up.unitHungry = u->isUnitHungry();
+                up.realArmor = u->getRealArmor(false);
+                up.nextLevelThreshold = u->getNextLevelThreshold();
+            }
 			up.glassCannonScale = game.gameHeader.getGlassCannonScale();
 		}
 	}
@@ -396,10 +440,12 @@ void SceneExtractor::extract(const Game &game, const SceneRequest &request, Scen
 	scene.buildingTypes = game.buildingsTypes.retainTypes();
 	scene.editor = game.edit != nullptr;
 	scene.tick = game.stepCounter;
+    scene.executedOrderRevision=game.clientEvents ? game.clientEvents->executedOrderRevision() : 0;
 	scene.tickTime = request.tickTime;
 	scene.tickInterval = request.tickInterval;
 	scene.map.extract(game.map, request.view.displayW, request.view.displayH, request.includeScriptAreas);
 	extractEntities(game, request, scene.entities);
+	prepareConnections(scene.map, scene.entities);
 	if (request.includePanels) extractPanels(game, request, scene.panels);
 	else scene.panels=ScenePanels{};
 
@@ -426,3 +472,226 @@ void extractScene(const Game &game, const SceneRequest &request, Scene &scene)
 {
 	SceneExtractor().extract(game, request, scene);
 }
+
+std::shared_ptr<SceneInputs> SceneExtractor::capture(const Game& game, const SceneRequest& request)
+{
+    using namespace SimulationSnapshot;
+    auto input = std::make_shared<SceneInputs>();
+    input->request = request;
+    // Presentation can observe paused edits between logical ticks. Declare that
+    // boundary explicitly rather than mixing freshly captured metadata with an
+    // older same-tick entity snapshot.
+    auto& store = game.snapshots();
+    store.invalidateBoundary();
+    auto requirements = bit(Component::Catalogs) | bit(Component::Terrain) | bit(Component::Resources)
+        | bit(Component::Occupancy) | bit(Component::Visibility) | bit(Component::Entities)
+        | bit(Component::Teams) | bit(Component::Rules);
+    if (game.gameHeader.hasExperiment(ExperimentId::FarmAreas)) requirements |= bit(Component::Growth);
+    input->world = store.captureBoundary(game, requirements);
+    auto& scene = input->source;
+    scene.buildingTypes = game.buildingsTypes.retainTypes();
+    scene.race = std::make_shared<Race>();
+    scene.editor = game.edit != nullptr;
+    scene.executedOrderRevision=game.clientEvents ? game.clientEvents->executedOrderRevision() : 0;
+    scene.tick = input->world.tick; scene.tickTime = request.tickTime; scene.tickInterval = request.tickInterval;
+    scene.map.captureDisplay(game.map, request.view.displayW, request.view.displayH, request.includeScriptAreas);
+    extractEntities(game, request, scene.entities, false);
+    if (request.includePanels) extractPanels(game, request, scene.panels, input.get());
+    for (int t=0; t<game.teamsCount(); ++t) input->lost[t] = game.teams[t] && game.teams[t]->hasLost;
+    scene.panels.unit.race = scene.race.get();
+    if (game.edit) scene.overlay = std::make_shared<OverlayArea>(game.edit->overlay);
+    input->fertilityMaximum = game.map.fertilityMaximum;
+    return input;
+}
+
+namespace {
+void preparePanels(const SceneInputs& input, Scene& scene)
+{
+    if (!input.request.includePanels) return;
+    const auto& world = input.world;
+    auto& panels = scene.panels;
+    std::array<int, SceneEntities::Teams> buildLevels{};
+    for (const auto& u : world.entities->units)
+        if (u.performance[BUILD]) buildLevels[u.team] = std::max(buildLevels[u.team], int(u.constructionLevel));
+    panels.local.maxBuildLevel = buildLevels[input.request.localTeam];
+    const auto& configuration = *world.rules->configuration;
+    std::vector<int> alliances, allianceOf;
+    for (const auto& team : world.teams->values)
+    {
+        const int alliance = configuration.getAllyTeamNumber(team.number);
+        const auto it = std::find(alliances.begin(), alliances.end(), alliance);
+        allianceOf.push_back(int(it - alliances.begin()));
+        if (it == alliances.end()) alliances.push_back(alliance);
+    }
+    std::vector<int> providers;
+    for (size_t i=0; i<scene.buildingTypes->size(); ++i)
+    {
+        const auto& t = scene.buildingTypes->at(i);
+        const auto& completed = t.isBuildingSite && t.nextLevel>=0 ? scene.buildingTypes->at(t.nextLevel) : t;
+        if (ModelBuildingProjection::trainsWarriorCombat(completed)) providers.push_back(int(i));
+    }
+    std::vector<WinProbability::Slot> slots(alliances.size());
+    for (const auto& t : world.teams->values)
+    {
+        if (!t.alive || input.lost[t.number]) continue;
+        auto& slot = slots[allianceOf[t.number]];
+        const auto& stat = t.statistics;
+        slot.alive = true; slot.units += stat.totalUnit; slot.prestige += t.prestige;
+        for (int id : providers) if (size_t(id) < stat.buildingCountByVariant.size()) slot.barracks += stat.buildingCountByVariant[id];
+        slot.explorers += stat.numberUnitPerType[EXPLORER]; slot.foodCritical += stat.needFoodCritical; slot.attack += stat.totalAttackPower;
+    }
+    const auto chances = WinProbability::permille(slots);
+    panels.hud.winChances.clear();
+    for (int t=0; t<scene.entities.teamCount; ++t)
+    {
+        const auto& team = scene.entities.teams[t];
+        panels.hud.winChances.push_back({team.firstPlayerName,team.color,chances[allianceOf[t]],slots[allianceOf[t]].alive});
+    }
+    panels.aiTelemetry.clear();
+    for (const auto& source : input.telemetry)
+    {
+        auto row = source.row;
+        if (row.available)
+        {
+            for (size_t i=0; i<source.fields.size() && i<source.values.size(); ++i)
+            {
+                const auto& field = source.fields[i]; const auto& value = source.values[i];
+                if (i >= AITelemetry::OrderTypes && i < AITelemetry::Specific && (!value.valid || !value.bits)) continue;
+                row.values.push_back({field.name, AITelemetry::displayValue(field,value),field.unit,field.meaning,value.updated});
+            }
+            row.values.insert(row.values.end(), source.named.begin(), source.named.end());
+        }
+        panels.aiTelemetry.push_back(std::move(row));
+    }
+    auto& bp = panels.building;
+    if (bp.valid)
+    {
+        const auto& type = *bp.type;
+        const bool constructible = bp.constructionResultState == BuildingStateRecord::NO_CONSTRUCTION
+            && bp.buildingState == BuildingStateRecord::ALIVE && !type.isBuildingSite;
+        const auto hardSpace = [&](int next, bool upgrade) {
+            if (upgrade && world.rules->values.upgradesDisabled) return false;
+            if (next < 0) return true;
+            const auto& target = scene.buildingTypes->at(next);
+            if (target.isVirtual) return true;
+            const int x = bp.posX + target.decLeft - type.decLeft, y = bp.posY + target.decTop - type.decTop;
+            for (int dy=0; dy<target.height; ++dy) for (int dx=0; dx<target.width; ++dx)
+            {
+                const auto& map = scene.map;
+                const auto& r = map.getResource(x+dx,y+dy);
+                if (r.type != NO_RES_TYPE && map.resourceRegistry().properties(static_cast<ResourceId>(r.type)).blocksBuilding) return false;
+                const auto occupant = map.getBuilding(x+dx,y+dy);
+                if (occupant != 0xffff && occupant != bp.gid) return false;
+                if (!map.terrainRegistry().properties(map.terrainTypeAt(x+dx,y+dy)).buildable) return false;
+            }
+            return true;
+        };
+        if (constructible && type.semantics.repairable && type.prevLevel>=0 && (bp.hp<bp.effectiveMaxHp || bp.hp<type.hpMax))
+        {
+            bp.hardSpaceForRepair = hardSpace(type.prevLevel,false) && buildLevels[bp.owner.teamNumber]>=scene.buildingTypes->at(type.prevLevel).semantics.requiredWorkerLevel;
+            const Sint64 ratio = (Sint64(bp.hp)<<16)/bp.effectiveMaxHp;
+            Sint32 error=0;
+            for (unsigned m=0; m<MaterialCount; ++m)
+            {
+                const Sint64 value = ratio*type.semantics.repairCost[m];
+                int whole = value>>16; error += value & 0xffff;
+                if (error>=65536) {error-=65536;++whole;}
+                bp.repairCost[m] = type.semantics.repairCost[m]-whole;
+            }
+        }
+        if (constructible && type.nextLevel>=0 && world.catalogs->buildings->at(type.nextLevel).available)
+            bp.hardSpaceForUpgrade = hardSpace(type.nextLevel,true) && buildLevels[bp.owner.teamNumber]>=scene.buildingTypes->at(type.nextLevel).semantics.requiredWorkerLevel;
+    }
+    auto& up = panels.unit;
+    if (up.valid)
+    {
+        const auto index = world.entities->unitSlotIndices.at(up.gid);
+        const auto& u = world.entities->units.at(index);
+        up.unitHungry = !world.rules->values.hungerDisabled && u.hungry <= (u.carriedMaterial==-1 ? u.trigHungry : u.trigHungryCarrying);
+        const auto& types = world.catalogs->unitTypes[u.typeNum];
+        up.realArmor = u.performance[ARMOR]/up.glassCannonScale - u.fruitCount*types[u.level[ARMOR]].armorReductionPerHappyness;
+        up.nextLevelThreshold = (u.experienceLevel+1)*(u.experienceLevel+1)*types[u.level[ATTACK_STRENGTH]].experiencePerLevel;
+    }
+}
+}
+
+size_t SceneExtractor::preparationChunks(const SceneInputs& input)
+{
+    return 3 + (input.world.entities->units.size()+255)/256 + (input.world.entities->buildings.size()+255)/256;
+}
+
+void SceneExtractor::prepare(const SceneInputs& input, Scene& scene)
+{
+    for (size_t chunk=0; chunk<preparationChunks(input); ++chunk) prepareChunk(input,scene,chunk);
+}
+
+void SceneExtractor::prepareChunk(const SceneInputs& input, Scene& scene, size_t chunk)
+{
+    if (chunk == 0)
+    {
+        scene = input.source;
+        scene.map.bindSnapshot(input.world);
+        scene.entities.unitIndex.assign(SceneEntities::Teams * SceneEntities::SlotsPerTeam, -1);
+        scene.entities.buildingIndex.assign(SceneEntities::Teams * SceneEntities::SlotsPerTeam, -1);
+        return;
+    }
+    --chunk;
+    const auto& units = input.world.entities->units;
+    const auto& buildings = input.world.entities->buildings;
+    const size_t unitChunks = (units.size()+255)/256, buildingChunks = (buildings.size()+255)/256;
+    auto& e = scene.entities;
+    const auto type = [&](int index) { return const_cast<BuildingType*>(&scene.buildingTypes->at(index)); };
+    if (chunk < unitChunks)
+    {
+      for (size_t i=chunk*256; i<std::min(units.size(),(chunk+1)*256); ++i)
+      {
+        const auto& u = units[i];
+        e.unitIndex[u.gid] = int(e.units.size());
+        e.units.push_back(unitOf(u, u.team, scene.race.get()));
+        if (u.carriedMaterial >= 0 && validMaterial(u.carriedMaterial)) e.materialPresence |= 1u << u.carriedMaterial;
+    }
+      return;
+    }
+    chunk -= unitChunks;
+    if (chunk < buildingChunks)
+    {
+      for (size_t i=chunk*256; i<std::min(buildings.size(),(chunk+1)*256); ++i)
+      {
+        const auto& b = buildings[i];
+        auto* definition = type(b.typeNum);
+        int completed = b.typeNum;
+        if (b.constructionResultState == BuildingStateRecord::REPAIR)
+            completed = b.constructionOriginTypeNum >= 0 ? b.constructionOriginTypeNum
+                : definition->isBuildingSite ? definition->nextLevel : b.typeNum;
+        const auto* materials = b.usesTeamResources ? input.world.teams->values.at(b.team).materials.data() : b.localMaterials;
+        e.buildingIndex[b.gid] = int(e.buildings.size());
+        e.buildings.push_back(buildingOf(b, b.team, definition, type(type(completed)->terminalTypeNum),
+            b.maxHp, int(b.inside.count), int(b.working.count), materials));
+        for (unsigned m = 0; m < MaterialCount; ++m) if (materials[m]) e.materialPresence |= 1u << m;
+    }
+      return;
+    }
+    chunk -= buildingChunks;
+    if (chunk == 0)
+    {
+        prepareConnections(scene.map, e);
+        preparePanels(input, scene);
+        return;
+    }
+    if (chunk != 1) throw std::out_of_range("Scene preparation chunk");
+    const auto& request = input.request;
+    const Uint8 requested = request.view.overlay;
+    const Uint32 window = scene.tick ? (scene.tick - 1) / 25 : 0;
+    if (requested == OverlayArea::None) overlay.reset();
+    else if (!overlay || requested != overlayType || window != overlayWindow || request.localTeam != overlayTeam)
+    {
+        auto next = std::make_shared<OverlayArea>();
+        next->compute(input.world, OverlayArea::OverlayType(requested), request.localTeam, input.fertilityMaximum);
+        overlay = std::move(next);
+    }
+    overlayType = requested; overlayWindow = window; overlayTeam = request.localTeam;
+    if (overlay || !scene.editor) scene.overlay = overlay;
+}
+
+void SceneExtractor::extractInputPanels(const Game& game, const SceneRequest& request, ScenePanels& panels)
+{ extractPanels(game, request, panels); }

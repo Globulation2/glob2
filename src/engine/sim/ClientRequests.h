@@ -49,8 +49,7 @@ public:
 	};
 
 	// The view is written by the client while drawing and read by the simulation
-	// thread, so it is guarded; the command queue is only used while the
-	// simulation is parked or on the simulation thread.
+	// thread, so it is guarded independently from the lossless command queue.
 	void publishViewport(int x, int y, int w, int h)
 	{
 		std::lock_guard<std::mutex> lock(viewMutex);
