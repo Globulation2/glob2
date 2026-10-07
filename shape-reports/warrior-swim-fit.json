@@ -1,0 +1,14 @@
+{
+  "model": "warrior",
+  "clip": "swim",
+  "shapes": 32,
+  "normalShapes": 24,
+  "frames": {
+    "rms": 0.11241280252170739,
+    "p95": 0.20203236421469822,
+    "max": 2.0755825256042613,
+    "worstFrame": 236,
+    "normalMedianDegrees": 1.5746358597245131,
+    "normalP99Degrees": 20.009263901258528
+  }
+}

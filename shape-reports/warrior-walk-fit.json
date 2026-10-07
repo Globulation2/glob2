@@ -1,0 +1,14 @@
+{
+  "model": "warrior",
+  "clip": "walk",
+  "shapes": 32,
+  "normalShapes": 24,
+  "frames": {
+    "rms": 0.11279948742128383,
+    "p95": 0.21148702027953645,
+    "max": 1.6285705568831597,
+    "worstFrame": 148,
+    "normalMedianDegrees": 1.2875967688146366,
+    "normalP99Degrees": 19.40375776921867
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "model": "worker",
+  "clip": "walk",
+  "shapes": 32,
+  "normalShapes": 24,
+  "frames": {
+    "rms": 0.07065400252163169,
+    "p95": 0.1082246754527376,
+    "max": 1.5152799184723347,
+    "worstFrame": 16,
+    "normalMedianDegrees": 0.612428322984912,
+    "normalP99Degrees": 11.912914908603367
+  }
+}

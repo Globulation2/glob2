@@ -1,0 +1,14 @@
+{
+  "model": "warrior",
+  "clip": "fight",
+  "shapes": 32,
+  "normalShapes": 24,
+  "frames": {
+    "rms": 0.11017900628646664,
+    "p95": 0.2029836135219434,
+    "max": 1.632310510773896,
+    "worstFrame": 143,
+    "normalMedianDegrees": 1.0172309071408354,
+    "normalP99Degrees": 20.44335746774985
+  }
+}

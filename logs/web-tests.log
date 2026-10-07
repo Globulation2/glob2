@@ -3,9 +3,9 @@
 
 <claude-code-hint v="1" type="plugin" value="stripe@claude-plugins-official" />
 
- Test Files  3 passed (3)
-      Tests  72 passed (72)
-   Start at  00:00:03
-   Duration  36.41s (tests 94%, transform 3%, import 3%)
+ Test Files  4 passed (4)
+      Tests  82 passed (82)
+   Start at  07:27:31
+   Duration  36.39s (tests 95%, transform 3%, import 2%)
 
 vitest exit 0

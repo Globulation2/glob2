@@ -1,0 +1,15 @@
+worker-walk render exit 0
+worker-walk silhouette IoU mean 0.9928 p5 0.9841 min 0.9708 (frame 224)
+worker-swim render exit 0
+worker-swim silhouette IoU mean 0.9913 p5 0.9838 min 0.9790 (frame 73)
+worker-harvest render exit 0
+worker-harvest silhouette IoU mean 0.9920 p5 0.9778 min 0.9585 (frame 224)
+warrior-walk render exit 0
+warrior-walk silhouette IoU mean 0.9901 p5 0.9846 min 0.9811 (frame 48)
+warrior-swim render exit 0
+warrior-swim silhouette IoU mean 0.9905 p5 0.9781 min 0.9659 (frame 140)
+warrior-fight render exit 0
+warrior-fight silhouette IoU mean 0.9929 p5 0.9881 min 0.9853 (frame 35)
+compare exit 0
+zooms ok
+done

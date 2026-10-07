@@ -1,0 +1,14 @@
+{
+  "model": "worker",
+  "clip": "swim",
+  "shapes": 32,
+  "normalShapes": 24,
+  "frames": {
+    "rms": 0.06488285310272976,
+    "p95": 0.08289397275668983,
+    "max": 1.990830099810573,
+    "worstFrame": 71,
+    "normalMedianDegrees": 0.6281846655541494,
+    "normalP99Degrees": 10.88351733516114
+  }
+}

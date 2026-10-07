@@ -1,0 +1,26 @@
+{
+  "format": "GSB1",
+  "version": 1,
+  "experimental": true,
+  "file": "warrior-fight.gsb",
+  "sha256": "bae7dda2dae1d8c8842059a55482f48e635ff644f59a0649f219b7cc83163c44",
+  "clips": [
+    {
+      "id": 2,
+      "name": "fight",
+      "frames": 256,
+      "shapes": 32,
+      "normalShapes": 24
+    }
+  ],
+  "sources": {
+    "tools/skins/fit_unit_shapes.py": "b2909dfec3484ce08fab20e89fb88da8673f8c5f5ed18ada054c17956bc9f1da",
+    "tools/skins/rig_scene.py": "63ab0b31fb853235941702de0eddefc19ba8dce21a0aa3704c0cbba72f627641",
+    "data/skins/colony-v1/warrior-walk.gsk": "9162c46c1a6ab662aa00985f2886e472d1a4d0bc940d89b72088f8d4e8d5373c",
+    "data/skins/colony-v1/warrior-walk.view.json": "6c11e912c3bde88ff4f62983fa0cd6b57dbc0afb1bd68c03d4c7a7fee6b6f033",
+    "data/skins/colony-v1/warrior-swim.gsk": "027c4f5ff3a364e8335927ef09e8e32984225a83a1dfa86c4f1a549a534f5d4a",
+    "data/skins/colony-v1/warrior-swim.view.json": "044da3d17ba89d714aa78975ab1930b2b4dab9b4206609b99f499ae4c30b8ca1",
+    "data/skins/colony-v1/warrior-fight.gsk": "68ec86d000cdccc09279239742ec9a478e984e62cde68318c911574882f8792f",
+    "data/skins/colony-v1/warrior-fight.view.json": "102798f33b7775ff170c11eaeef7042a64b893ade58da02868411ebdfc613d9d"
+  }
+}

@@ -1,7 +1,69 @@
-# Fitted unit rigs: local review evidence
+# Fitted unit skins: local review evidence
 
-Evidence for draft PR #821 after replacing the authored tube-and-sphere rigs with
-rigs fitted to the baked metaball clips. Tested commit: `5a8885933` on
+Evidence for draft PR #821. The current head replaces bone skinning for workers
+and warriors with **GSB1 blend-shape clips** fitted to the baked metaball
+frames; the explorer keeps its bone rig. The earlier bone-rig sections below
+are kept for comparison (their worker and warrior assets stay installed as
+`.gsr` files but are no longer selected).
+
+## Blend-shape clips (current, commit `36a139677`)
+
+Why: every bone-rig weighting scheme left a seam across the worker's torso.
+Cross-sections of the baked frames (`slab-14.png`, `slab-lobes.png`,
+`region-map-14.png`) show each limb's first rings swelling into the shoulder or
+hip lobe while the torso sheet retreats to a belly band, a per-frame re-solve a
+fixed-weight skin cannot follow. A shared basis of 32 position shapes and 24
+normal shapes per model (principal components of all 768 baked frames, int16)
+reproduces those frames directly.
+
+Baked clip above, blend-shape clip below, direction 0 every other phase, flat
+material through the production atlas; GIFs animate all 32 phases.
+
+| Clip | Strip | Animation | 5x zoom |
+| --- | --- | --- | --- |
+| worker walk | ![](worker-walk-baked-over-shapes.png) | [gif](worker-walk-baked-vs-shapes.gif) | ![](worker-walk-shapes-zoom.png) |
+| worker swim | ![](worker-swim-baked-over-shapes.png) | [gif](worker-swim-baked-vs-shapes.gif) | |
+| worker harvest | ![](worker-harvest-baked-over-shapes.png) | [gif](worker-harvest-baked-vs-shapes.gif) | |
+| warrior walk | ![](warrior-walk-baked-over-shapes.png) | [gif](warrior-walk-baked-vs-shapes.gif) | |
+| warrior swim | ![](warrior-swim-baked-over-shapes.png) | [gif](warrior-swim-baked-vs-shapes.gif) | ![](warrior-swim-shapes-zoom.png) |
+| warrior fight | ![](warrior-fight-baked-over-shapes.png) | [gif](warrior-fight-baked-vs-shapes.gif) | ![](warrior-fight-shapes-zoom.png) |
+
+Classic sprite above live clip at game scale: [worker walk](compare-rig-worker-walk-phase-0.png),
+[warrior fight](compare-rig-warrior-fight-phase-0.png), [warrior swim](compare-rig-warrior-swim-phase-0.png).
+
+| Clip | RMS | p95 | max | normal median | normal p99 | IoU mean | IoU min | size |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| worker walk | 0.071 | 0.108 | 1.515 | 0.6° | 11.9° | 99.3 % | 97.1 % | 1.17 MB |
+| worker swim | 0.065 | 0.083 | 1.991 | 0.6° | 10.9° | 99.1 % | 97.9 % | 1.17 MB |
+| worker harvest | 0.054 | 0.079 | 1.222 | 0.6° | 7.7° | 99.2 % | 95.9 % | 1.17 MB |
+| warrior walk | 0.113 | 0.211 | 1.629 | 1.3° | 19.4° | 99.0 % | 98.1 % | 1.02 MB |
+| warrior swim | 0.112 | 0.202 | 2.076 | 1.6° | 20.0° | 99.0 % | 96.6 % | 1.02 MB |
+| warrior fight | 0.110 | 0.203 | 1.632 | 1.0° | 20.4° | 99.3 % | 98.5 % | 1.02 MB |
+
+Distances are model units against the baked frames (about 2.4 sprite pixels
+per unit); normal angles compare the rebuilt normals with the baked analytic
+normals; IoU is the alpha overlap of the rendered clip against the rendered
+baked clip; the baked clips are 15–18 MB each. The best bone rig reached 0.47
+RMS and 94 % IoU on worker walk. Reports: `shape-reports/`.
+
+Verification for this head (logs in `logs/`): `SkinShapeModel` fixture, malformed
+and adapter cases plus the existing `Skin*`, `ColonySkinPreview` and
+`RenderBatch` suites (15 suites, 0 failures); web unit tests including the shared
+GSB1 fixture and every installed clip (82 passed); Chromium/Firefox/WebKit rig
+conformance (27 passed); typecheck, eslint and prettier; installed asset
+contract (4 tests); `tools/skins/test_fit_shapes.py` (5 tests: paint topology,
+thresholds, reference evaluation against the baked poses, byte-identical
+regeneration matching the installed assets, installer rejection).
+
+Limitations: no engine regression, other physical platforms, Emscripten or
+performance runs, and the per-pose CPU evaluation cost was not measured (it
+runs once per atlas tile, cached like baked poses); all candidates stay
+`accepted: false`; in-play feel review is the maintainer's.
+
+## Bone rigs (previous heads, kept for comparison)
+
+Evidence for the bone-rig fitter that replaced the authored tube-and-sphere
+rigs. Tested commit: `5a8885933` on
 `codex/worker-rig-pipeline` (previous head `d396f7e09`). Not a merge request;
 all candidates stay `accepted: false`.
 

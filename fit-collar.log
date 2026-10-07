@@ -1,0 +1,13 @@
+== c20-sock collar 0.2 torso sockets
+worker-walk: 2834 vertices, 29 bones, 312912 bytes, rms 0.531 p95 1.183 max 3.608 flipped faces max 358 strayed normals max 476
+silhouette IoU mean 0.9432 p5 0.9038 min 0.8814 (frame 254)
+== c35-sock collar 0.35 torso sockets
+worker-walk: 2834 vertices, 29 bones, 312912 bytes, rms 0.604 p95 1.297 max 3.913 flipped faces max 417 strayed normals max 361
+silhouette IoU mean 0.9408 p5 0.8939 min 0.8784 (frame 254)
+== c35-prox collar 0.35 torso proximal
+worker-walk: 2834 vertices, 29 bones, 312912 bytes, rms 0.554 p95 1.071 max 4.114 flipped faces max 368 strayed normals max 440
+silhouette IoU mean 0.9431 p5 0.8967 min 0.8791 (frame 254)
+== c50-sock collar 0.5 torso sockets
+worker-walk: 2834 vertices, 29 bones, 312912 bytes, rms 0.631 p95 1.319 max 4.069 flipped faces max 449 strayed normals max 218
+silhouette IoU mean 0.9351 p5 0.8855 min 0.8705 (frame 247)
+done

@@ -1,0 +1,26 @@
+{
+  "format": "GSB1",
+  "version": 1,
+  "experimental": true,
+  "file": "worker-swim.gsb",
+  "sha256": "0685f43eb9ff8d90f5727a260b42535dcf77fc85ab991ce610fc08a900cb7991",
+  "clips": [
+    {
+      "id": 1,
+      "name": "swim",
+      "frames": 256,
+      "shapes": 32,
+      "normalShapes": 24
+    }
+  ],
+  "sources": {
+    "tools/skins/fit_unit_shapes.py": "b2909dfec3484ce08fab20e89fb88da8673f8c5f5ed18ada054c17956bc9f1da",
+    "tools/skins/rig_scene.py": "63ab0b31fb853235941702de0eddefc19ba8dce21a0aa3704c0cbba72f627641",
+    "data/skins/colony-v1/worker-walk.gsk": "eeec5b14febea9f134652135af122d113656405aed7faa10b671e3764606555b",
+    "data/skins/colony-v1/worker-walk.view.json": "2a7d9b183cef9b53e5e4f56298669e5088c07511fc91b0ef0f59ac4d524e69fe",
+    "data/skins/colony-v1/worker-swim.gsk": "9069fdb7dc94c2ef334f65d8fcf876d567d713561a190d4659bcb8111f041f96",
+    "data/skins/colony-v1/worker-swim.view.json": "50188f513e89fb684100d41683a2e76df94e802067187f2aff625a8861a2da7b",
+    "data/skins/colony-v1/worker-harvest.gsk": "90d0fb8799c14ba7756092b3893e08db69f4b5a9433cd4b6720f49331e83e4a5",
+    "data/skins/colony-v1/worker-harvest.view.json": "37f35707fe15bf1d3f2afa38a5aebdcf6af60aeffb7b0d095f516df6c533a488"
+  }
+}

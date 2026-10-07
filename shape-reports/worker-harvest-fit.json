@@ -1,0 +1,14 @@
+{
+  "model": "worker",
+  "clip": "harvest",
+  "shapes": 32,
+  "normalShapes": 24,
+  "frames": {
+    "rms": 0.05382065394271475,
+    "p95": 0.07906248590477688,
+    "max": 1.2220137691943314,
+    "worstFrame": 194,
+    "normalMedianDegrees": 0.5876133188617283,
+    "normalP99Degrees": 7.737079820078262
+  }
+}
