@@ -29,14 +29,18 @@
 #include <iostream>
 #include "sim/snapshot/SnapshotStore.h"
 
-// GameGUI::drawAll extracts the frame's PresentationFrame before drawing overlays; do the
-// same when drawing them directly.
+// The host publishes a frame before drawing; do the same in this direct fixture.
 static void drawOverlays(GameGUI &gui)
 {
 	PresentationFrame scene;
     gui.game.snapshots().invalidateBoundary();
 	gui.prepareLocalPresentation(scene);
 	gui.setPublishedScene(&scene);
+	// A real client publishes the resized camera request before its next
+	// presentation. Rebuild from the same lease after initializing that camera.
+	gui.updateCamera();
+	const auto world=scene.world;
+	SceneExtractor().prepare(world,gui.sceneRequest(),scene);
 	gui.drawOverlayInfos();
 	gui.setPublishedScene(nullptr);
 }
@@ -317,6 +321,8 @@ void run(bool gpu)
 		game.map.setMapDiscovered();
 		const auto setFog = [&](bool fogRight)
 		{
+			// Direct fixture writes must participate in snapshot change tracking.
+			game.map.visibilityChanges.markAll();
 			for(int y=0;y<game.map.getH();++y) for(int x=0;x<game.map.getW();++x)
 				game.map.fogOfWar[game.map.coordToIndex(x,y)] = (fogRight && x>=8) ? 0 : me;
 		};
@@ -374,6 +380,7 @@ void run(bool gpu)
 		// and none once it is fully fogged.
 		const auto fogAll = [&](bool fogged)
 		{
+			game.map.visibilityChanges.markAll();
 			for(int y=0;y<game.map.getH();++y) for(int x=0;x<game.map.getW();++x)
 				game.map.fogOfWar[game.map.coordToIndex(x,y)] = fogged ? 0 : me;
 		};
@@ -406,6 +413,7 @@ void run(bool gpu)
 		fadeView.render.overlays.markers.clear();
 		globals->settings.adaptiveZoomDetail=adaptiveZoomDetail;
 
+		game.map.visibilityChanges.markAll();
 		game.map.mapDiscovered=discovered;
 		std::copy(fog.begin(), fog.end(), game.map.fogOfWar);
 	}
@@ -572,6 +580,7 @@ void run(bool gpu)
 	for (const auto dimensions : {std::pair<int,int>{4,5}, {5,4}})
 	{
 		GameGUI rectangular;
+		rectangular.init();
 		auto &world=rectangular.game;
 		world.map.setSize(dimensions.first,dimensions.second,GRASS);
 		world.map.setGame(&world);
