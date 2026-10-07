@@ -55,3 +55,9 @@ Source `7bafc3f15298a1649e807e42909c3fa2fe3bc609`, clean embedded test provenanc
 - Updated native collector:passed, stock + official match traces unchanged; all150resource composition rows match the committed fixture with clean source provenance.
 
 Commands: same prefix environment as prior native build, `scons -j8 release=1 optimized_assets=0 engine-tests maxima-strategy-dump`; `GLOB2_BUILD_DIR=build/linux/client/release python3 -m unittest discover -s src/ai/maxima -p '*Test.py'`; `test/run_tests.py` exact design filter and updated `test/run-browser-determinism.py` invocation retained in summary/logs. Omitted: fresh complete native suite, display/gameplay review, physical ARM/iOS and final hosted platform execution. These test-only changes do not change simulation/save/network behavior.
+
+## Exact legacy input recovery
+
+`recovered-98-windows.zip` contains all98frozen windows, with every required game byte hash matching the archived corpus. The previous worktree was removed by an unrelated archival process; inputs were recovered from published initial saves and by rebuilding the exact original `7e54a3fc5` engine and replaying its archived generation commands.31missing cases regenerated,37existing fixtures reused; before/after source/compiler-library/catalog/binary/input audits unchanged. This recovery is not a new gameplay comparison or performance result.
+
+For reproduction, extract the ZIP and rewrite each scenario's fixture paths from `manifest-original.json` using `fixture-paths.json`, resolving each mapped ZIP-relative path to an absolute path in your extraction directory. Update both `args` entries and `fixture_sha256` keys without changing hashes, start ticks or stop ticks. Save this relocated manifest under a new name, retaining the original. The maintained benchmark re-verifies all fixture bytes and records the relocated manifest hash.

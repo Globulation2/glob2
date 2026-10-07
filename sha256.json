@@ -1,5 +1,5 @@
 {
-  "README.md": "0f1ebb2b8cb84926d3927b37dfe2595f59d0423a3f0d1fb14aaa175d2bf4523a",
+  "README.md": "7c25af88cb0c8bdb3b58520d02e0c1fec7ba67bf55835dede4134f867fa3cb4a",
   "benchmark/benchmark-contracts-final.log": "af213ba9f02876b35a1f21f60689d517bbd18b12292fd0ef0aa4b50903c1cbf5",
   "generators/generator-contracts-final.log": "2fbaeb8994b801649938ac1023f28e96621c73f119dc332646214e1fb6e566b4",
   "maxima-repair/gcc11-cli-failure.log": "40783cfe1c8eeb9a15d1349169ae960faa3c906c58a2544c18b32d3d3db32295",
@@ -13,5 +13,6 @@
   "platform/master-37551820848.json": "5be9ab936b80843947ab6c585ae9c2eb6f627a6854fa146f8779d117650e04ec",
   "platform/pr846-published-evidence.json": "013a0571b2229d36de231fbba032f7b524e97d73380f8205bddfc7c011bb5816",
   "platform/resource-collection-final.log": "f1860ac4cd485327d078851d8f76c9d6e22535de7577c4a472fd72df8bc6b509",
-  "platform/resource-collection.log": "349624defd9671a42e6a6795c11e796f209e5ebb583069650f65d73f0023e139"
+  "platform/resource-collection.log": "349624defd9671a42e6a6795c11e796f209e5ebb583069650f65d73f0023e139",
+  "recovered-98-windows.zip": "77e1e4bba276146809199d67b2b9f6bd6b49d68437a95b375d5e0b28efe945ae"
 }
