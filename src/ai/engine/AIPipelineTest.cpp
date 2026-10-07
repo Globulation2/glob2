@@ -227,6 +227,8 @@ TEST_CASE("replacement cancels an old output without rejecting identical new wir
     glob2test::HeadlessGlobals globals;
     glob2test::HeadlessGame fixture(glob2test::GameOptions{.loadDefaultRace=true,.header=true});
     auto& game=fixture.game;
+    // This identity test intentionally consumes decisions in the same tick.
+    game.gameHeader.setAIOrderDelay(0);
     fixture.addBuilding("swarm",4,4);
     fixture.addUnit(WORKER,12,12);
     game.gameHeader.setAIConfig(0,Script::config(

@@ -269,7 +269,7 @@ private:
 	///The number of ticks between an order issue, and the execution of the order.
 	///Used for net games to hide latency.
 	Sint32 gameLatency;
-	Uint8 aiOrderDelay = 0;
+	Uint8 aiOrderDelay = 8;
 
 	///Sets the order rate
 	Uint8 orderRate;

@@ -2326,10 +2326,13 @@ struct CustomGameSetupHarness
 				   !globalContainer->replayShowFog));
 		}
 		e.gatherAndAdvanceOrders(true);
+		// Delayed decisions may still be running; join before reading the test counters.
+		e.gui.game.drainAI();
 		for (auto ai : counters)
 			REQUIRE(ai->calls == 1);
 		// Repeating a not-ready tick must not ask any AI twice.
 		e.gatherAndAdvanceOrders(false);
+		e.gui.game.drainAI();
 		for (auto ai : counters)
 			REQUIRE(ai->calls == 1);
 		std::cout << "PASS order routing: mode " << control

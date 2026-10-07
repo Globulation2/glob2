@@ -99,7 +99,7 @@ preserve decision order; gradient jobs need no lane. `AIEngine::Pipeline` submit
 tick with one job per controller on that controller's lane, and joins it at the
 deadline, executing remaining jobs itself from the oldest live batch forward. The
 match-wide `GameHeader::aiOrderDelay` is an integer from 0 through 8, defaulting
-to 0. An order observed at logical tick `t` is delivered at `t + delay`. Thread
+to 8 for new games. An order observed at logical tick `t` is delivered at `t + delay`. Thread
 count and completion time never choose that deadline or which decision a
 controller makes; the owner publishes in stable request order. Human orders and
 scenario map scripts retain their existing scheduling.
