@@ -68,11 +68,14 @@ DEFAULT_TRANSLATION_BOUND = 1.0
 # and letting torso vertices follow the proximal limb bones fixed the torso
 # without it).
 REST_SOURCES = {"worker": "source", "warrior": "source"}
-# Which bones may influence torso vertices. In the baked frames the torso
-# surface slides outward over the shoulder and hip lobes as the limbs move;
-# with only the body and socket bones the torso patch stays compact and the
-# limb rings cover the real torso, leaving a fold across its middle.
+# Which bones may influence torso vertices: the body alone, the body and the
+# attachment bones, those plus each limb's first segment, or every bone.
 DEFAULT_TORSO_BONES = "proximal"
+# Attachment bone per limb: a "socket" at the body centre turning with the
+# limb's first segment, or a "lobe" on the limb's first ball keeping the body's
+# orientation. Neither removes the torso seam the baked frames avoid by
+# re-solving their surface per frame; see the blend-shape path.
+DEFAULT_ATTACHMENT = "socket"
 MAXIMUM_INFLUENCES = 4
 # Refined bone scale relative to the bind pose; the format allows far more,
 # this keeps a bone from "explaining" a merge by collapsing.
@@ -121,17 +124,19 @@ def rest_transforms(scene, parts, origin):
     return rest
 
 
-def bone_layout(paths, midpoints=True):
+def bone_layout(paths, midpoints=True, attachment=DEFAULT_ATTACHMENT):
     """(name, parent, kind, limb, component) per bone, parent ordered.
 
     With ``midpoints`` every segment also gets a bone halfway to the next
     component, giving the merge regions between balls their own control; this
     lowers the fit error by roughly a fifth over the bare metaball chain.
+    ``attachment`` picks the per-limb attachment bone kind (see
+    DEFAULT_ATTACHMENT).
     """
     layout = [("body", -1, "body", -1, 0)]
     for limb, path in enumerate(paths):
         limb_name, side = LIMBS[limb]
-        layout.append((f"{limb_name}.socket.{side}", 0, "socket", limb, path[0]))
+        layout.append((f"{limb_name}.{attachment}.{side}", 0, attachment, limb, path[0]))
         parent = len(layout) - 1
         for k, part in enumerate(path):
             if midpoints:
@@ -151,14 +156,18 @@ def chain_bones(layout, paths, transforms, basis, rest, rest_basis, unit_scale=F
 
     The body follows the clip's body basis; each limb bone sits on its
     component with the minimal rotation taking the rest segment direction to
-    the posed one. Socket bones sit at the body centre and turn with the limb's
-    first segment so the attachment region can follow the limb.
+    the posed one. A socket bone sits at the body centre and turns with the
+    limb's first segment; a lobe bone sits on the limb's first ball with the
+    body's orientation so a torso lobe can slide with it.
     """
     result = []
     for _, _, kind, limb, part in layout:
         if kind == "body":
             rotation, centre = basis, transforms[0, :3, 3]
             scale = scale_of(transforms[0]) / scale_of(rest[0])
+        elif kind == "lobe":
+            rotation, centre = basis, transforms[part, :3, 3]
+            scale = scale_of(transforms[part]) / scale_of(rest[part])
         else:
             path = paths[limb]
             k = path.index(part) if kind != "socket" else 0
@@ -340,14 +349,16 @@ def refine_bones(relative, homogeneous, targets, weights, chain, bound):
     return relative
 
 
-def allowed_influences(surface, layout, paths, torso_bones="sockets"):
-    """Which bones may influence each vertex. A limb uses the body, its socket
-    and its own bones. The torso uses the body alone (``"body"``), the body and
-    socket bones (``"sockets"``), those plus each limb's first segment
-    (``"proximal"``), or every bone (``"all"``). Quad centres take the union of
-    their corners."""
+def allowed_influences(surface, layout, paths, torso_bones=DEFAULT_TORSO_BONES, collar=0.0):
+    """Which bones may influence each vertex. A limb uses the body, its
+    attachment bone and its own bones, except that its first rings up to
+    ``collar`` (ring parameter) use only the body and its attachment bone. The
+    torso uses the body alone (``"body"``), the body and attachment bones
+    (``"attachments"``), those plus each limb's first segment (``"proximal"``),
+    or every bone (``"all"``). Quad centres take the union of their corners."""
     limb_of = np.array([limb for _, _, _, limb, _ in layout])
     kind_of = [kind for _, _, kind, _, _ in layout]
+    attachment = np.array([kind in ("socket", "lobe") for kind in kind_of])
     first = [
         kind in ("ball", "mid") and paths[limb].index(part) == 0
         for _, _, kind, limb, part in layout
@@ -355,7 +366,7 @@ def allowed_influences(surface, layout, paths, torso_bones="sockets"):
     torso = np.array(
         [
             kind == "body"
-            or (torso_bones != "body" and kind == "socket")
+            or (torso_bones != "body" and attachment[i])
             or (torso_bones == "proximal" and first[i])
             or torso_bones == "all"
             for i, kind in enumerate(kind_of)
@@ -370,8 +381,47 @@ def allowed_influences(surface, layout, paths, torso_bones="sockets"):
             allowed[v] = torso
         else:
             limb = descriptor[1]
-            allowed[v] = (limb_of == limb) | (np.array(kind_of) == "body")
+            own = limb_of == limb
+            if descriptor[0] == "ring" and descriptor[2] <= collar:
+                own = own & attachment
+            allowed[v] = own | (np.array(kind_of) == "body")
     return allowed
+
+
+def geometric_weights(surface, layout, paths, rest_positions, bind, lobe_radius, collar, inner=0.6, outer=1.4):
+    """Torso and collar weights from rest geometry instead of least squares.
+
+    In the baked frames each limb's first rings swell into the shoulder or hip
+    lobe while the torso sheet retreats to a belly band; both move with the
+    limb's first ball. Fitted weights leave the torso sheet partly behind so it
+    crosses the collar as a visible seam. Here a torso vertex follows a limb's
+    lobe bone by how deep it sits in that lobe (distance to the ball over the
+    ball's radius, from ``inner`` fully inside to ``outer`` outside), the rest
+    stays with the body, and the collar rings follow their lobe bone alone.
+    Returns ``(rows, dense)``: the vertex indices to override and their weights.
+    """
+    lobes = [i for i, (_, _, kind, _, _) in enumerate(layout) if kind in ("socket", "lobe")]
+    limb_of_lobe = {layout[i][3]: i for i in lobes}
+    dense, rows = [], []
+    for v, descriptor in enumerate(surface.vertices):
+        weights = None
+        if descriptor[0] == "body":
+            weights = np.zeros(len(layout))
+            for i in lobes:
+                d = np.linalg.norm(rest_positions[v] - bind[i][:3, 3]) / lobe_radius[layout[i][3]]
+                t = np.clip((outer - d) / (outer - inner), 0, 1)
+                weights[i] = t * t * (3 - 2 * t)
+            total = weights.sum()
+            if total > 1:
+                weights /= total
+            weights[0] = 1 - weights.sum()
+        elif descriptor[0] == "ring" and descriptor[2] <= collar:
+            weights = np.zeros(len(layout))
+            weights[limb_of_lobe[descriptor[1]]] = 1
+        if weights is not None:
+            rows.append(v)
+            dense.append(weights)
+    return np.array(rows), np.array(dense)
 
 
 def mirror_maps(layout, paths, bind, rest_basis, centre):
@@ -447,6 +497,9 @@ def fit(
     torso_smoothness=0.0,
     torso_bones=DEFAULT_TORSO_BONES,
     rest_source=None,
+    collar=0.0,
+    geometric=False,
+    attachment=DEFAULT_ATTACHMENT,
     log=print,
 ):
     definition = json.loads(DEFINITION_PATH.read_text())[model]
@@ -479,7 +532,7 @@ def fit(
         samples[clip] = count
         targets[clip] = groups.mean(axis=0)
         sampled[clip] = (transforms, bases)
-    layout = bone_layout(paths, midpoints)
+    layout = bone_layout(paths, midpoints, attachment)
     bind = chain_bones(layout, paths, rest, rest_basis, rest, rest_basis, unit_scale=True)
     inverse_bind = np.linalg.inv(bind)
     centre = rest[0, :3, 3]
@@ -558,15 +611,39 @@ def fit(
     stacked = lambda: np.concatenate([relative[c] for c in clips])
     mean_targets = np.concatenate([targets[c] for c in clips])
     graph = neighbour_graph(surface.triangles, len(homogeneous))
-    allowed = allowed_influences(surface, layout, paths, torso_bones)
+    allowed = allowed_influences(surface, layout, paths, torso_bones, collar)
     torso = np.array([descriptor[0] == "body" for descriptor in surface.vertices])
     for v, descriptor in enumerate(surface.vertices):
         if descriptor[0] == "average":
             torso[v] = all(torso[list(descriptor[1])])
     pull = np.where(torso, max(smoothness, torso_smoothness), smoothness)
-    solve = lambda prior: solve_weights(
-        stacked(), homogeneous, mean_targets, mirrors, graph, pull, prior, support_passes, allowed
-    )
+    override = None
+    if geometric:
+        scales = np.array([scale_of(t) for t in rest])
+        lobe_radius = {
+            limb: float(radii[path[0]] * scales[path[0]])
+            for limb, path in enumerate(paths)
+        }
+        override = geometric_weights(surface, layout, paths, rest_positions, bind, lobe_radius, collar)
+
+    def solve(prior):
+        weights = solve_weights(
+            stacked(), homogeneous, mean_targets, mirrors, graph, pull, prior, support_passes, allowed
+        )
+        if override is not None:
+            rows, dense = override
+            weights[rows] = dense
+            for v, descriptor in enumerate(surface.vertices):
+                if descriptor[0] == "average":
+                    corners = list(descriptor[1])
+                    if any(c in set(rows.tolist()) for c in corners):
+                        weights[v] = weights[corners].mean(axis=0)
+            keep = np.argsort(-weights, axis=1, kind="stable")[:, :MAXIMUM_INFLUENCES]
+            mask = np.zeros_like(weights)
+            np.put_along_axis(mask, keep, 1, axis=1)
+            weights *= mask
+            weights /= weights.sum(axis=1, keepdims=True)
+        return weights
 
     def error(weights):
         return math.sqrt(
@@ -676,6 +753,9 @@ def author(
     torso_smoothness=0.0,
     torso_bones=DEFAULT_TORSO_BONES,
     rest_source=None,
+    collar=0.0,
+    geometric=False,
+    attachment=DEFAULT_ATTACHMENT,
 ):
     if bpy.app.version[:3] != (3, 6, 23):
         raise ValueError("Use Blender 3.6.23")
@@ -695,6 +775,9 @@ def author(
         torso_smoothness,
         torso_bones,
         rest_source,
+        collar,
+        geometric,
+        attachment,
     )
     layout, bind = result["layout"], result["bind"]
     scene_bones = [(name, parent, Matrix(bind[i])) for i, (name, parent, *_) in enumerate(layout)]
@@ -799,6 +882,15 @@ if __name__ == "__main__":
     )
     parser.add_argument("--torso-smoothness", type=float, default=0.0, help="torso-only weight prior")
     parser.add_argument(
+        "--collar", type=float, default=0.0, help="limb rings up to this parameter follow the torso"
+    )
+    parser.add_argument(
+        "--geometric-torso", action="store_true", help="torso and collar weights from rest geometry"
+    )
+    parser.add_argument(
+        "--attachment", choices=("socket", "lobe"), default=DEFAULT_ATTACHMENT, help="attachment bone kind"
+    )
+    parser.add_argument(
         "--rest",
         choices=("unposed", "source"),
         help="rest mesh: baked frames un-posed through their bones, or the source rest pose "
@@ -806,7 +898,7 @@ if __name__ == "__main__":
     )
     parser.add_argument(
         "--torso-bones",
-        choices=("body", "sockets", "proximal", "all"),
+        choices=("body", "attachments", "proximal", "all"),
         default=DEFAULT_TORSO_BONES,
         help="which bones may influence torso vertices",
     )
@@ -833,4 +925,7 @@ if __name__ == "__main__":
         torso_smoothness=args.torso_smoothness,
         torso_bones=args.torso_bones,
         rest_source=args.rest,
+        collar=args.collar,
+        geometric=args.geometric_torso,
+        attachment=args.attachment,
     )
