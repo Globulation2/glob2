@@ -378,10 +378,10 @@ void Game::drawMapAreas(int left, int top, int right, int bot, int sw, int sh, i
 
 	if ((drawOptions & DRAW_AREA) != 0 && (!globalContainer->isViewingGame() || globalContainer->replayShowAreas))
 	{
-		drawMapArea(left, top, right, bot, sw, sh, viewportX, viewportY, localTeam, drawOptions, sceneMap, &SceneMap::isForbiddenInDisplayedView, areaAnimationTick, ForbiddenArea, view.render);
-		drawMapArea(left, top, right, bot, sw, sh, viewportX, viewportY, localTeam, drawOptions, sceneMap, &SceneMap::isGuardAreaInDisplayedView, areaAnimationTick, GuardArea, view.render);
-		drawMapArea(left, top, right, bot, sw, sh, viewportX, viewportY, localTeam, drawOptions, sceneMap, &SceneMap::isClearAreaInDisplayedView, areaAnimationTick, ClearingArea, view.render);
-		drawMapArea(left, top, right, bot, sw, sh, viewportX, viewportY, localTeam, drawOptions, sceneMap, &SceneMap::isFarmAreaInDisplayedView, areaAnimationTick, FarmArea, view.render);
+		drawMapArea(left, top, right, bot, sw, sh, viewportX, viewportY, localTeam, drawOptions, sceneMap, &SceneMap::isForbiddenInDisplayedView, areaAnimationTick, ForbiddenArea, view.render, view.displayedAreas ? &(*view.displayedAreas)[0] : nullptr);
+		drawMapArea(left, top, right, bot, sw, sh, viewportX, viewportY, localTeam, drawOptions, sceneMap, &SceneMap::isGuardAreaInDisplayedView, areaAnimationTick, GuardArea, view.render, view.displayedAreas ? &(*view.displayedAreas)[1] : nullptr);
+		drawMapArea(left, top, right, bot, sw, sh, viewportX, viewportY, localTeam, drawOptions, sceneMap, &SceneMap::isClearAreaInDisplayedView, areaAnimationTick, ClearingArea, view.render, view.displayedAreas ? &(*view.displayedAreas)[2] : nullptr);
+		drawMapArea(left, top, right, bot, sw, sh, viewportX, viewportY, localTeam, drawOptions, sceneMap, &SceneMap::isFarmAreaInDisplayedView, areaAnimationTick, FarmArea, view.render, view.displayedAreas ? &(*view.displayedAreas)[3] : nullptr);
 		for (int y=top; y<bot; y++)
 			for (int x=left; x<right; x++)
 			{
@@ -415,8 +415,9 @@ void Game::drawMapAreas(int left, int top, int right, int bot, int sw, int sh, i
 void Game::drawMapArea(int left, int top, int right, int bot, int sw,
 		int sh, int viewportX, int viewportY, int localTeam,
 		Uint32 drawOptions, const SceneMap& map, bool (SceneMap::*mapIs)(int, int) const, int areaAnimationTick,
-		AreaType areaType, const MapRenderState& render)
+		AreaType areaType, const MapRenderState& render, const Utilities::BitArray* preview)
 {
+    const auto is=[&](int x,int y){return preview ? preview->get(map.coordToIndex(x,y)) : (map.*mapIs)(x,y);};
 	Sprite* sprite;
 	GAGCore::Color c;
 	switch (areaType)
@@ -440,15 +441,15 @@ void Game::drawMapArea(int left, int top, int right, int bot, int sw,
 	{
 		for (int x=left; x<right; x++)
 		{
-			if ((map.*mapIs)(x+viewportX, y+viewportY))
+			if (is(x+viewportX, y+viewportY))
 			{
 				if (tint.a)
 				{
 					// One fill per horizontal run of zone tiles.
 					int end = x+1;
-					while (end<right && (map.*mapIs)(end+viewportX, y+viewportY))
+					while (end<right && is(end+viewportX, y+viewportY))
 						end++;
-					if (x==left || !(map.*mapIs)(x-1+viewportX, y+viewportY))
+					if (x==left || !is(x-1+viewportX, y+viewportY))
 						globalContainer->gfx->drawMapFill(x*32, y*32, end*32, (y+1)*32, tint);
 				}
 				if (patternAlpha)
@@ -460,14 +461,14 @@ void Game::drawMapArea(int left, int top, int right, int bot, int sw,
 				if (!outline.a)
 					continue;
 
-				if (!(map.*mapIs)(x+viewportX, y+viewportY-1))
+				if (!is(x+viewportX, y+viewportY-1))
 					globalContainer->gfx->drawMapBoundary(x*32, y*32, (x+1)*32, y*32, outline, detail.zoneStrokeMaxPoints);
-				if (!(map.*mapIs)(x+viewportX, y+viewportY+1))
+				if (!is(x+viewportX, y+viewportY+1))
 					globalContainer->gfx->drawMapBoundary(x*32, (y+1)*32, (x+1)*32, (y+1)*32, outline, detail.zoneStrokeMaxPoints);
 
-				if (!(map.*mapIs)(x+viewportX-1, y+viewportY))
+				if (!is(x+viewportX-1, y+viewportY))
 					globalContainer->gfx->drawMapBoundary(x*32, y*32, x*32, (y+1)*32, outline, detail.zoneStrokeMaxPoints);
-				if (!(map.*mapIs)(x+viewportX+1, y+viewportY))
+				if (!is(x+viewportX+1, y+viewportY))
 					globalContainer->gfx->drawMapBoundary((x+1)*32, y*32, (x+1)*32, (y+1)*32, outline, detail.zoneStrokeMaxPoints);
 			}
 		}

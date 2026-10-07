@@ -94,6 +94,10 @@ void SimulationRunner::run()
                     if (chunk+1 == chunks) { scenes.publish(); wake.notify_all(); }
                 });
             }
+            {
+                std::lock_guard telemetryLock(telemetryMutex);
+                telemetryMailbox.absorb(telemetry);
+            }
 			lock.lock();
 			if (!running)
 				break;
@@ -190,4 +194,10 @@ void SimulationRunner::requestScene(SceneRequest request)
 {
     { std::lock_guard lock(mutex); requestedScene = std::move(request); }
     wake.notify_all();
+}
+
+void SimulationRunner::absorbTelemetry(PerformanceTelemetry::Collector& target)
+{
+    std::lock_guard lock(telemetryMutex);
+    target.absorb(telemetryMailbox);
 }

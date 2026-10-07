@@ -104,6 +104,7 @@ int GameGUI::litSpeedChevrons() const
 
 void GameGUI::cycleGameSpeed(bool forwards)
 {
+    if(parkForClient([&]{cycleGameSpeed(forwards);})) return;
 	if(!canChangeGameSpeed())
 		return;
 	// The chevrons replace a replay's fast-forward instead of hiding behind it.
@@ -138,6 +139,7 @@ void GameGUI::changeGameSpeed(int amount)
 
 void GameGUI::setGameSpeed(int speed)
 {
+    if(parkForClient([&]{setGameSpeed(speed);})) return;
 	if(!canChangeGameSpeed())
 		return;
 	const int oldSpeed=globalContainer->settings.gameSpeed;

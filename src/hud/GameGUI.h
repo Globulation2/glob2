@@ -177,7 +177,7 @@ public:
 	void setCampaignGame(Campaign& campaign, const std::string& missionName);
 	
 	/// Show the dialog that says that the replay ended
-	void showEndOfReplayScreen();
+	void showEndOfReplayScreen(bool client = false);
 	
 	///This is an enum for the current highlight object. The highlighted object is shown with a large arrow.
 	///This is primarily for tutorials
@@ -271,14 +271,25 @@ public:
 	/// Draw scenes published by the simulation thread (null: extract in drawAll).
 	void setPublishedScene(const Scene* scene) { publishedScene = scene; }
 	/// What the next scene should show; read by extraction, which runs where the
-	/// game may be read. GUI state it reads changes only while the simulation is parked.
+	/// game may be read. The main thread publishes it through the runner mailbox.
 	SceneRequest sceneRequest(bool includeTiming = true);
 	/// Extract the next scene from the game (the simulation thread calls this).
 	void extractScene(Scene& scene) { sceneExtractor.extract(game, sceneRequest(), scene); }
     std::shared_ptr<SceneInputs> captureSceneInputs(SceneRequest request) { request.tickTime = lastTickTime; request.tickInterval = tickInterval; return sceneExtractor.capture(game, request); }
-	/// Per-frame GUI work that reads or writes the game, for threaded execution:
-	/// the simulation is parked while it runs (SimulationRunner::withGame).
+	/// Client-owned per-frame work; exceptional live-state paths park explicitly.
 	void threadedClientStep(const std::vector<SDL_Event>& events, Uint64 now);
+    // Exceptional live-state access (save, settings, diagnostic and dialogs).
+    std::function<void(const std::function<void()>&)> simulationAccess;
+    bool parkForClient(const std::function<void()>& work)
+    {
+        if (!simulationAccess || simulationAccessActive) return false;
+        simulationAccessActive=true;
+        struct Release { bool& active; ~Release(){active=false;} } release{simulationAccessActive};
+        simulationAccess(work);
+        return true;
+    }
+    bool simulationAccessActive=false;
+
 	/// True while the simulation runs on its own thread.
 	bool simulationThreaded = false;
 	/// When the latest tick finished and the interval to the next (ms; 0 = uncapped),
@@ -300,7 +311,7 @@ public:
 	//! true if user close the glob2 window.
 	bool exitGlobCompletely;
 	//! true if the game needs to flush all outgoing orders and exit
-	bool flushOutgoingAndExit;
+	std::atomic<bool> flushOutgoingAndExit{false};
 	//! if this is not empty, then Engine should load the map with this filename.
 	std::string toLoadGameFileName;
 	bool drawHealthFoodBar, drawPathLines, drawAccessibilityAids;
@@ -378,8 +389,8 @@ private:
 	//! Serializes the game and hands the bytes to autosaveWriter.
 	void autosave();
 	//! Tick of this session's latest autosave, or -1 before the first.
-	Sint64 lastAutosaveStep;
-    bool autosavePending=false;
+	std::atomic<Sint64> lastAutosaveStep{-1};
+    std::atomic<bool> autosavePending{false};
 	//! Writes autosaves off the game thread; created by the first autosave.
 	std::unique_ptr<GAGCore::BackgroundFileWriter> autosaveWriter;
 
