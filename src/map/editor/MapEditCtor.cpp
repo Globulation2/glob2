@@ -156,7 +156,7 @@ MapEdit::MapEdit()
         addWidget(selector);
     }
     const int terrainExtraRow = 38*((int(additionalTerrainSelectors.size())+3)/4);
-	noResourceGrowthButton = new BlueButton(*this, widgetRectangle(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH + 8+decX, 294+terrainExtraRow, 112, 16), "terrain view", "no ressources growth button", "select no ressources growth", "[no ressources growth areas]");
+	noResourceGrowthButton = new BlueButton(*this, widgetRectangle(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH + 8+decX, 294+terrainExtraRow, 112, 16), "terrain view", "no ressources growth button", "select no ressources growth", "[no resource growth areas]");
 	areasButton = new BlueButton(*this, widgetRectangle(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH + 8+decX, 320+terrainExtraRow, 112, 16), "terrain view", "script areas button", "select change areas", "[Script Areas]");
 	areaNumber = new NumberCycler(*this, widgetRectangle(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+8+decX, 336+terrainExtraRow, 8, 16), "terrain view", "script area number selector", "update script area number", 9);
 	areaNameLabel = new TextLabel(*this, widgetRectangle(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+24+decX, 336+terrainExtraRow, 104, 16), "terrain view", "script area name label", "open area name", "", false, Toolkit::getStringTable()->getString("[Unnamed Area]"));

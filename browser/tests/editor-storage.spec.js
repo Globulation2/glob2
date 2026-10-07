@@ -13,8 +13,8 @@ for(const fault of ['quota','aborted transaction']) test(`editor save before qui
   await clickControl(page,'new-map');await screen(page,'NewMapScreen');
   await clickCreateMap(page);await screen(page,'MapEditorScreen');
   await page.locator('#canvas').press('Escape',{delay:80});
-  await clickControl(page,'quit');await screen(page,'MessageScreen');
-  await clickControl(page,'choice/0');await screen(page,'MapEditorScreen'); // Save before quitting.
+  await clickControl(page,'quit');await control(page,'choice/0');await screen(page,'MapEditorScreen');
+  await clickControl(page,'choice/0'); // Save before quitting, from the card over the map.
   await editTextField(page,'Editor durability');
   await page.evaluate(fault=>{
     window.editorStorageFault=true;

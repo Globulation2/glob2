@@ -14,12 +14,17 @@
 
 bool MapEdit::hasDialog() const
 {
-	return bool(terrainPalette) || bool(resourcePalette) || showingMenuScreen || showingLoad || showingSave ||
+	return bool(confirmDialog) || bool(progressDialog) || bool(terrainPalette) || bool(resourcePalette) || showingMenuScreen || showingLoad || showingSave ||
 		   showingScriptEditor || showingTeamsEditor || isShowingAreaName;
 }
 
 Glob2UI::InGameDialog *MapEdit::activeDialog() const
 {
+	// Decisions and progress cards sit above the dialog that started them.
+	if (confirmDialog)
+		return confirmDialog.get();
+	if (progressDialog)
+		return progressDialog.get();
 	if (terrainPalette)
 		return terrainPalette.get();
 	if (resourcePalette)
@@ -78,7 +83,7 @@ void MapEdit::delegateMenu(SDL_Event& event)
 			case MapEditMenuScreen::REROLL_TERRAIN_LOOK:
 			{
 				performAction("close menu screen");
-				performAction("reroll terrain look");
+				performAction("request reroll terrain look");
 			}
 			break;
 			case MapEditMenuScreen::OPEN_SCRIPT_EDITOR:
@@ -100,9 +105,9 @@ void MapEdit::delegateMenu(SDL_Event& event)
 			break;
 			case MapEditMenuScreen::SHARE_MAP:
 			{
-				// Shares the map as last saved (the file the catalog validates).
+				// The catalog validates a saved file: unsaved maps are saved first.
 				performAction("close menu screen");
-				pendingShareFilename = game.mapHeader.getFileName();
+				performAction("share map");
 			}
 			break;
 			case MapEditMenuScreen::IMPORT_TERRAIN:
@@ -163,6 +168,10 @@ void MapEdit::delegateMenu(SDL_Event& event)
 				performAction("close load screen");
 			}
 			break;
+			case LoadSaveDialog::DEVICE:
+				loadSaveScreen->resume();
+				beginDeviceImport();
+				break;
 		}
 	}
 	if (terrainPalette && terrainPalette->finished())
@@ -209,6 +218,7 @@ void MapEdit::delegateMenu(SDL_Event& event)
 			case LoadSaveDialog::CANCEL:
 			{
                 doQuitAfterLoadSave = false;
+				clearSaveFollowUps();
 				performAction("close save screen");
 			}
 		}
@@ -228,6 +238,10 @@ void MapEdit::delegateMenu(SDL_Event& event)
 	{
 		performAction("close area name");
 	}
+	if (progressDialog && progressDialog->finished())
+		finishFertilityProgress();
+	if (confirmDialog && confirmDialog->finished())
+		resolveConfirm(confirmDialog->result());
 }
 
 void MapEdit::handleMapScroll()

@@ -31,37 +31,38 @@ Element MapEditMenuScreen::build(const Presentation &p)
 	{
 		const char *key, *label;
 		int code;
-		bool primary;
 	};
-	const Item items[] = {{"return", "[return to editor]", RETURN_EDITOR, true},
-						  {"save", "[save map]", SAVE_MAP, false},
-						  {"load", "[load map]", LOAD_MAP, false},
-						  {"script", "[open scenario editor]", OPEN_SCRIPT_EDITOR, false},
-						  {"teams", "[open teams editor]", OPEN_TEAMS_EDITOR, false},
-						  {"share", "[maps share online]", SHARE_MAP, false},
-						  {"terrain/import", "[Import Terrain Definitions]", IMPORT_TERRAIN, false},
-						  {"terrain/palette", "[Terrain palette]", TERRAIN_PALETTE, false},
-						  {"resource/import", "[Import Resource Definitions]", IMPORT_RESOURCES, false},
-						  {"resource/palette", "[Resource palette]", RESOURCE_PALETTE, false},
-						  {"terrain/reroll", "[Reroll terrain look]", REROLL_TERRAIN_LOOK, false},
-						  {"quit", "[quit the editor]", QUIT_EDITOR, false}};
-	std::vector<Element> buttons;
-	for (const auto &item : items)
+	// File actions, then actions on this map. Palettes are reached from the
+	// editor's side panel, not from this menu.
+	const Item file[] = {{"save", "[editor menu save]", SAVE_MAP},
+						 {"load", "[editor menu load]", LOAD_MAP},
+						 {"share", "[maps share online]", SHARE_MAP},
+						 {"terrain/import", "[editor menu import terrain]", IMPORT_TERRAIN},
+						 {"resource/import", "[editor menu import resources]", IMPORT_RESOURCES}};
+	const Item map[] = {{"teams", "[editor menu teams]", OPEN_TEAMS_EDITOR},
+						{"script", "[editor menu scenario]", OPEN_SCRIPT_EDITOR},
+						{"terrain/reroll", "[editor menu reroll]", REROLL_TERRAIN_LOOK}};
+	auto section = [&](const char *title, const auto &items)
 	{
-		fe::ButtonOptions options;
-		options.primary = item.primary;
-		options.minHeight = 44;
-		if (item.primary)
-			options.shortcut = SDLK_ESCAPE;
-		const int code = item.code;
-		buttons.push_back(
-			fe::button(item.key, fe::tr(item.label), [this, code] { finish(code); }, options));
-	}
-	fe::WrapOptions grid;
-	grid.minChildWidth = p.pt(260);
-	grid.maxColumns = 2;
+		std::vector<Element> buttons;
+		for (const auto &item : items)
+		{
+			fe::ButtonOptions options;
+			options.minHeight = 44;
+			const int code = item.code;
+			buttons.push_back(fe::button(item.key, fe::tr(item.label), [this, code] { finish(code); }, options));
+		}
+		fe::WrapOptions grid;
+		grid.minChildWidth = p.pt(240);
+		grid.maxColumns = 2;
+		return fe::column({fe::heading(fe::tr(title)), fe::wrap(std::move(buttons), grid)}, {p.pt(6)});
+	};
+	std::vector<fe::MenuAction> actions;
+	actions.push_back({"quit", fe::tr("[quit the editor]"), [this] { finish(QUIT_EDITOR); }});
+	actions.push_back({"return", fe::tr("[return to editor]"), [this] { finish(RETURN_EDITOR); }, true, SDLK_ESCAPE});
 	return fe::column({fe::paragraph(fe::tr("[Menu]"), {fe::FontRole::Heading, false, fe::TextAlign::Center}),
-					   fe::scroll("menu/scroll", fe::wrap(std::move(buttons), grid))},
+					   fe::footer(fe::scroll("menu/scroll", fe::column({section("[editor menu file]", file), section("[editor menu map]", map)}, {p.pt(14)})),
+								  dialogActions(std::move(actions), p))},
 					  {p.pt(12)});
 }
 

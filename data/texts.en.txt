@@ -1041,7 +1041,7 @@ Unlocked At Start
 [unlocked by]
 Unlocked By
 [Unnamed Area]
-{Unnamed Area}
+Unnamed area
 [up]
 up
 [upgrade building]
@@ -5750,3 +5750,63 @@ Pick a brush. Groups share one set of rules; their members differ only in look.
 Algae grow
 [terrain palette experiments hint]
 Pick a brush. More terrain groups appear here once their experiments are enabled under Settings > Experiments.
+[editor unsaved title]
+Unsaved changes
+[editor quit unsaved]
+Save your changes to this map before leaving the editor?
+[editor load unsaved]
+Save your changes to this map before opening another one?
+[editor save]
+Save…
+[editor discard]
+Don't save
+[editor share never saved]
+Maps are shared from their saved file. Save this map first, then share it.
+[editor share unsaved]
+This map has changes that are not saved yet. Sharing uploads the saved file.
+[editor save and share]
+Save and share…
+[editor share saved version]
+Share saved version
+[editor reroll confirm]
+Give every terrain tile a new random look? Terrain types and gameplay stay the same. This cannot be undone.
+[editor reroll]
+Reroll
+[editor map saved]
+Map saved
+[editor map shared]
+Map shared online
+[editor save needs fertility]
+Saving needs the fertility map, so the save was cancelled. Press OK to try again.
+[editor fertility stale]
+Fertility map is out of date · Click to refresh
+[No definition files found in %0]
+No definition files found in %0
+[From device…]
+From device…
+[replace existing file %0?]
+A file named "%0" already exists. Replace it?
+[Replace]
+Replace
+[Keep existing file]
+Keep existing file
+[editor menu save]
+Save map
+[editor menu load]
+Open map…
+[editor menu import terrain]
+Import terrain definitions…
+[editor menu import resources]
+Import resource definitions…
+[editor menu teams]
+Teams…
+[editor menu scenario]
+Scenario…
+[editor menu reroll]
+Reroll terrain look…
+[editor menu file]
+File
+[editor menu map]
+Map
+[no resource growth areas]
+No-growth areas
