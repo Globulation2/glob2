@@ -5746,3 +5746,7 @@ Torna a sortejar l’aspecte del terreny
 
 [terrain palette hint]
 
+[terrain rule algae grow]
+
+[terrain palette experiments hint]
+

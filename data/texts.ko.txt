@@ -5746,3 +5746,7 @@ AI 원격 측정
 
 [terrain palette hint]
 
+[terrain rule algae grow]
+
+[terrain palette experiments hint]
+

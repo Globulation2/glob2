@@ -211,3 +211,5 @@
 [terrain rule hurts walkers]
 [terrain rule hurts fliers]
 [terrain palette hint]
+[terrain rule algae grow]
+[terrain palette experiments hint]

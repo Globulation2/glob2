@@ -5746,3 +5746,7 @@ Znova naključno izberi videz terena
 
 [terrain palette hint]
 
+[terrain rule algae grow]
+
+[terrain palette experiments hint]
+

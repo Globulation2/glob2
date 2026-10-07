@@ -7,11 +7,15 @@
 #include "Team.h"
 #include "map/TerrainRegistry.h"
 #include "resource/ResourceRegistry.h"
-#include "GraphicContext.h"
+namespace GAGCore
+{
+class DrawableSurface;
+}
 #include "ui/FrontendUI.h"
 #include <string>
 #include <string_view>
 #include <optional>
+#include <map>
 #include <memory>
 #include <vector>
 
@@ -118,6 +122,16 @@ class TeamsEditor : public Glob2UI::InGameDialog
 	Glob2UI::Element slotRow(int index, const Glob2UI::Presentation &p, bool compact);
 };
 
+// Classic ground has its own side-panel brushes and palette section.
+constexpr bool terrainGroupIsClassic(TerrainGroup group)
+{
+	return group == TerrainGroup::Water || group == TerrainGroup::Sand || group == TerrainGroup::Grass;
+}
+// Whether the editor offers a type: selectable, and its experiment (if any) enabled.
+bool terrainBrushOffered(const TerrainRegistry &registry, TerrainType type);
+// The offered built-in members of a catalogue group, in table order.
+std::vector<TerrainType> offeredTerrainBrushes(const TerrainRegistry &registry, TerrainGroup group);
+
 // Shared desktop/touch palette: material previews grouped by catalogue group, with
 // each group's rules under its heading. Definitions are fixed for the dialog lifetime.
 class TerrainPaletteDialog : public Glob2UI::InGameDialog
@@ -125,8 +139,9 @@ class TerrainPaletteDialog : public Glob2UI::InGameDialog
 	std::shared_ptr<const TerrainRegistry> registry;
 	std::optional<TerrainType> current;
 	int focus;
-	std::vector<std::unique_ptr<GAGCore::DrawableSurface>> previews;
-	bool offered(TerrainType type) const;
+	// Composed swatches live for the dialog: the registry and catalog are fixed.
+	std::map<TerrainType, std::unique_ptr<GAGCore::DrawableSurface>> previews;
+	GAGCore::DrawableSurface *preview(TerrainType type);
 
   public:
 	// Maps a catalogue group key to its index; anything else means no focus.
@@ -136,6 +151,7 @@ class TerrainPaletteDialog : public Glob2UI::InGameDialog
 		: InGameDialog(Glob2UI::Surface::Editor), registry(std::move(value)), current(currentBrush), focus(focusGroup)
 	{
 	}
+	~TerrainPaletteDialog() override;
 	int focusedGroup() const { return focus; }
 	// Scrolls the focused group's first brush into view; call once after attaching.
 	void focusOnOpen();

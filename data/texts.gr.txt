@@ -5746,3 +5746,7 @@ CPU %0%
 
 [terrain palette hint]
 
+[terrain rule algae grow]
+
+[terrain palette experiments hint]
+

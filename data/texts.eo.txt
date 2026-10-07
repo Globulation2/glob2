@@ -5746,3 +5746,7 @@ Denove hazardigi la aspekton de la tereno
 
 [terrain palette hint]
 
+[terrain rule algae grow]
+
+[terrain palette experiments hint]
+

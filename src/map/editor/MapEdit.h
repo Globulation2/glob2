@@ -827,6 +827,8 @@ private:
 	std::unique_ptr<ResourcePaletteDialog> resourcePalette;
 	bool importingResources = false;
 	void importResourceFile(const std::string& filename);
+	// Brush to restore when the palette is cancelled.
+	TerrainSelector::TerrainType brushBeforePalette = TerrainSelector::NoTerrain;
 	bool importingTerrain = false;
 	void importTerrainFile(const std::string &filename);
 

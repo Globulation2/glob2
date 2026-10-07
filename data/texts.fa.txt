@@ -5746,3 +5746,7 @@ FFmpeg در دسترس نیست، پس ضبط خاموش است. FFmpeg را ن�
 
 [terrain palette hint]
 
+[terrain rule algae grow]
+
+[terrain palette experiments hint]
+

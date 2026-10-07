@@ -5746,3 +5746,7 @@ Slumpa terrängens utseende igen
 
 [terrain palette hint]
 
+[terrain rule algae grow]
+
+[terrain palette experiments hint]
+

@@ -8,6 +8,7 @@
 #include "Game.h"
 #include "GlobalContainer.h"
 #include "MapEdit.h"
+#include "MapEditDialog.h"
 #include "PhoneEditor.h"
 #include <InterfacePresentation.h>
 #include "ScriptEditorScreen.h"
@@ -129,21 +130,13 @@ MapEdit::MapEdit()
 	prune = new TerrainSelector(*this, widgetRectangle(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+64+decX, 248, 32, 32), "terrain view", "prune selector", "select prune tree", TerrainSelector::PruneTree);
     // One side-panel brush per enabled catalogue group: a single enabled member
     // selects directly (ice, or trail while path-terrain is off); several members
-    // open the Terrain palette filtered to that group.
+    // open the Terrain palette at that group's section.
     for (unsigned g = 0; g < TERRAIN_GROUP_COUNT; ++g)
     {
         const auto group = TerrainGroup(g);
         const auto &definition = terrainGroupDefinition(group);
-        if (!definition.paletteVisible || group == TerrainGroup::Water || group == TerrainGroup::Sand || group == TerrainGroup::Grass) continue;
-        std::vector<::TerrainType> enabled;
-        for (unsigned id = 0; id < TERRAIN_COUNT; ++id)
-        {
-            const auto type = static_cast<::TerrainType>(id);
-            if (terrainGroup(type) != group || !game.map.terrainPresentation(type).editorSelectable) continue;
-            const auto requirement = terrainExperiment(type);
-            if (requirement && !globalContainer->settings.experiments.has(*requirement)) continue;
-            enabled.push_back(type);
-        }
+        if (!definition.paletteVisible || terrainGroupIsClassic(group)) continue;
+        const auto enabled = offeredTerrainBrushes(game.map.terrainRegistry(), group);
         if (enabled.empty()) continue;
         const int slot = int(additionalTerrainSelectors.size());
         const widgetRectangle area(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+32*(slot%4)+decX, 286+38*(slot/4), 32, 32);

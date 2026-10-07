@@ -5746,3 +5746,7 @@ Hurts walkers
 Hurts fliers
 [terrain palette hint]
 Pick a brush. Groups share one set of rules; their members differ only in look.
+[terrain rule algae grow]
+Algae grow
+[terrain palette experiments hint]
+Pick a brush. More terrain groups appear here once their experiments are enabled under Settings > Experiments.

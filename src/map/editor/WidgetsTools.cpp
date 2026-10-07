@@ -147,6 +147,12 @@ void TerrainGroupSelector::draw()
 		globalContainer->gfx->drawSprite(area.x, area.y, globalContainer->gamegui, 22);
 		globalContainer->gfx->finishDrawingSprite(globalContainer->gamegui, 255);
 	}
+	// Three stacked bars in the corner: this brush opens the group's palette section.
+	for (int i = 0; i < 3; ++i)
+	{
+		globalContainer->gfx->drawFilledRect(area.x + area.width - 11, area.y + area.height - 10 + i * 3, 8, 2, GAGCore::Color(20, 20, 24));
+		globalContainer->gfx->drawFilledRect(area.x + area.width - 10, area.y + area.height - 11 + i * 3, 8, 2, GAGCore::Color(236, 232, 220));
+	}
 }
 
 

@@ -5746,3 +5746,7 @@ FFmpeg није доступан, па је снимање искључено. �
 
 [terrain palette hint]
 
+[terrain rule algae grow]
+
+[terrain palette experiments hint]
+

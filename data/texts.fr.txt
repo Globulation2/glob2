@@ -5746,3 +5746,7 @@ Tirer à nouveau l’apparence du terrain
 
 [terrain palette hint]
 
+[terrain rule algae grow]
+
+[terrain palette experiments hint]
+

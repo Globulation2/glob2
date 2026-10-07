@@ -14,6 +14,7 @@
 #include "Toolkit.h"
 #include "TerrainExperiments.h"
 #include "render/terrain/TerrainCompositor.h"
+#include "GraphicContext.h"
 #include <cctype>
 #include <iterator>
 #include <algorithm>
@@ -294,7 +295,7 @@ std::string terrainRuleSummary(const TerrainProperties &p)
 	if ((p.walkable || p.swimmable) && p.groundSpeedQ8 != 256)
 		parts.push_back(FormattableString(fe::tr("[terrain rule speed %0]")).arg(int(p.groundSpeedQ8) * 100 / 256));
 	if (p.resourcesGrow && p.allowedResources)
-		parts.push_back(fe::tr("[terrain rule crops grow]"));
+		parts.push_back(fe::tr(p.swimmable ? "[terrain rule algae grow]" : "[terrain rule crops grow]"));
 	if (terrainProvidesFertility(p))
 		parts.push_back(fe::tr("[terrain rule irrigates]"));
 	if (p.inhibitionQ8)
@@ -344,71 +345,95 @@ int TerrainPaletteDialog::groupFor(std::string_view key)
 	return -1;
 }
 
-bool TerrainPaletteDialog::offered(TerrainType type) const
+bool terrainBrushOffered(const TerrainRegistry &registry, TerrainType type)
 {
-	if (!registry->presentation(type).editorSelectable)
+	if (!registry.presentation(type).editorSelectable)
 		return false;
 	const auto experiment = terrainExperiment(type);
 	return !experiment || globalContainer->settings.experiments.has(*experiment);
 }
 
+std::vector<TerrainType> offeredTerrainBrushes(const TerrainRegistry &registry, TerrainGroup group)
+{
+	std::vector<TerrainType> brushes;
+	for (unsigned id = 0; id < TERRAIN_COUNT; ++id)
+		if (terrainGroup(TerrainType(id)) == group && terrainBrushOffered(registry, TerrainType(id)))
+			brushes.push_back(TerrainType(id));
+	return brushes;
+}
+
+TerrainPaletteDialog::~TerrainPaletteDialog() = default;
+
 void TerrainPaletteDialog::focusOnOpen()
 {
-	if (focus < 0)
+	// Headless editors never attach the dialog, so there is nothing to scroll.
+	if (focus < 0 || globalContainer->runNoX)
 		return;
-	for (unsigned id = 0; id < TERRAIN_COUNT; ++id)
-		if (int(terrainGroup(TerrainType(id))) == focus && offered(TerrainType(id)))
-		{
-			host().layoutIfNeeded();
-			host().scrollIntoView("terrain/" + registry->key(TerrainType(id)));
-			return;
-		}
+	const auto brushes = offeredTerrainBrushes(*registry, TerrainGroup(focus));
+	if (brushes.empty())
+		return;
+	// The group's heading is the row above its first brush: aligning that brush's
+	// section column to the top shows the heading, the rules and the cards.
+	host().layoutIfNeeded();
+	host().scrollToTop("terrain/section/" + std::string(terrainGroupDefinition(TerrainGroup(focus)).key));
+}
+
+GAGCore::DrawableSurface *TerrainPaletteDialog::preview(TerrainType type)
+{
+	auto found = previews.find(type);
+	if (found != previews.end())
+		return found->second.get();
+	auto &compositor = globalContainer->terrainCompositor();
+	const auto &catalog = compositor.catalog();
+	const auto appearance = registry->appearance(type);
+	const auto binding = catalog.bindings.find(terrainPresentation(appearance).name);
+	auto surface = std::make_unique<GAGCore::DrawableSurface>(64, 64);
+	// Over the material's preview colour so the transparent ocean and translucent
+	// water still read; runtime types keep their saved colours.
+	const auto &colours = registry->presentation(type);
+	GAGCore::Color fill(colours.preview.r, colours.preview.g, colours.preview.b);
+	if (binding != catalog.bindings.end() && unsigned(type) < TERRAIN_COUNT)
+	{
+		const auto &material = catalog.materials[binding->second];
+		fill = GAGCore::Color(material.preview[0], material.preview[1], material.preview[2]);
+	}
+	surface->drawFilledRect(0, 0, 64, 64, fill);
+	// Swimmable brushes sit on the shared ocean, as they do on the map.
+	if (registry->properties(appearance).swimmable)
+		if (auto *ocean = GAGCore::Toolkit::getSprite(TerrainOceanBackdrop.sprite))
+			surface->drawSprite(0, 0, ocean, TerrainOceanBackdrop.firstFrame);
+	if (binding != catalog.bindings.end() && !catalog.materials[binding->second].ocean)
+	{
+		GAGCore::DrawableSurface texture(64, 64);
+		TerrainVisual::Recipe recipe;
+		recipe.samples.fill(binding->second);
+		recipe.width = recipe.height = 1;
+		compositor.compose(recipe, texture.getSDLSurface(), 0, 0, 2);
+		surface->drawSurface(0, 0, &texture);
+	}
+	auto *result = surface.get();
+	previews.emplace(type, std::move(surface));
+	return result;
 }
 
 Element TerrainPaletteDialog::build(const Presentation &p)
 {
+	// Prepare the same texture set the map renderer uses, so the swatches match
+	// the map and the renderer is not forced to reload its sources afterwards.
 	auto &compositor = globalContainer->terrainCompositor();
-	compositor.prepare(false, 0);
-	previews.clear();
+	const bool gpu = globalContainer->gfx->getOptionFlags() &
+					 (GAGCore::GraphicContext::USEGPU | GAGCore::GraphicContext::PORTABLEGPU);
+	compositor.prepare(gpu, 0);
 	const int tile = p.pt(56);
 	// Uniform brush cards that never stretch, so a one-brush group reads the same
 	// as a full row.
 	const int cardWidth = p.pt(118);
-	// A composed 64x64 swatch of the real material, over the material's preview
-	// colour so the transparent ocean and translucent water still read.
-	auto preview = [&](TerrainType type) -> Element
+	auto swatch = [&](TerrainType type) -> Element
 	{
-		const auto &catalog = compositor.catalog();
-		const auto appearance = registry->appearance(type);
-		const auto binding = catalog.bindings.find(terrainPresentation(appearance).name);
-		auto surface = std::make_unique<GAGCore::DrawableSurface>(64, 64);
-		const auto &colours = registry->presentation(type);
-		GAGCore::Color fill(colours.preview.r, colours.preview.g, colours.preview.b);
-		if (binding != catalog.bindings.end() && unsigned(type) < TERRAIN_COUNT)
-		{
-			const auto &material = catalog.materials[binding->second];
-			fill = GAGCore::Color(material.preview[0], material.preview[1], material.preview[2]);
-		}
-		surface->drawFilledRect(0, 0, 64, 64, fill);
-		// Swimmable brushes sit on the shared ocean, as they do on the map.
-		if (registry->properties(appearance).swimmable)
-			if (auto *ocean = GAGCore::Toolkit::getSprite(TerrainOceanBackdrop.sprite))
-				surface->drawSprite(0, 0, ocean, TerrainOceanBackdrop.firstFrame);
-		if (binding != catalog.bindings.end() && !catalog.materials[binding->second].ocean)
-		{
-			GAGCore::DrawableSurface texture(64, 64);
-			TerrainVisual::Recipe recipe;
-			recipe.samples.fill(binding->second);
-			recipe.width = recipe.height = 1;
-			compositor.compose(recipe, texture.getSDLSurface(), 0, 0, 2);
-			surface->drawSurface(0, 0, &texture);
-		}
 		fe::ImageOptions options;
 		options.fit = true;
 		options.size = fe::Size{tile, tile};
-		Element image = fe::image(surface.get(), options);
-		previews.push_back(std::move(surface));
-		return image;
+		return fe::image(preview(type), options);
 	};
 	auto brush = [&](TerrainType type, const std::string &label, const std::string &caption) -> Element
 	{
@@ -416,7 +441,7 @@ Element TerrainPaletteDialog::build(const Presentation &p)
 		options.selected = current && *current == type;
 		options.minHeight = 1;
 		options.accessibleLabel = label;
-		std::vector<Element> body{fe::center(preview(type)),
+		std::vector<Element> body{fe::center(swatch(type)),
 								  fe::label(label, {fe::FontRole::Support, false, fe::TextAlign::Center})};
 		if (!caption.empty())
 			body.push_back(fe::paragraph(caption, {fe::FontRole::Caption, true, fe::TextAlign::Center}));
@@ -431,11 +456,14 @@ Element TerrainPaletteDialog::build(const Presentation &p)
 	const int available = std::min(p.pt(760), p.safe.w) - p.pt(44);
 	const int columns = std::clamp(available / (cardWidth + gap), 2, 6);
 	std::vector<Element> sections;
-	auto section = [&](const std::string &title, const std::string &rules, std::vector<Element> brushes)
+	auto section = [&](const std::string &key, const std::string &title, const std::string &rules,
+					   std::vector<Element> brushes)
 	{
 		if (brushes.empty())
 			return;
-		std::vector<Element> parts{fe::heading(title)};
+		// The keyed, invisible canvas lets a group brush scroll its heading to the top.
+		std::vector<Element> parts{fe::canvas("terrain/section/" + key, {1, 1}, [](fe::Canvas &, fe::Rect, const fe::Frame &) {}),
+								   fe::heading(title)};
 		if (!rules.empty())
 			parts.push_back(fe::caption(rules));
 		for (std::size_t first = 0; first < brushes.size(); first += std::size_t(columns))
@@ -443,7 +471,7 @@ Element TerrainPaletteDialog::build(const Presentation &p)
 			const auto last = std::min(brushes.size(), first + std::size_t(columns));
 			std::vector<Element> cells(std::make_move_iterator(brushes.begin() + long(first)),
 									   std::make_move_iterator(brushes.begin() + long(last)));
-			parts.push_back(fe::row(std::move(cells), {gap, fe::CrossAlign::Start}));
+			parts.push_back(fe::row(std::move(cells), {gap}));
 		}
 		sections.push_back(fe::column(std::move(parts), {p.pt(4)}));
 	};
@@ -451,41 +479,57 @@ Element TerrainPaletteDialog::build(const Presentation &p)
 	{
 		std::vector<Element> brushes;
 		for (auto type : {WATER, SAND, GRASS})
-			if (offered(type))
+			if (terrainBrushOffered(*registry, type))
 				brushes.push_back(brush(type, fe::tr(registry->presentation(type).label),
 										terrainRuleSummary(registry->properties(type))));
-		section(fe::tr("[terrain group classic]"), "", std::move(brushes));
+		section("classic", fe::tr("[terrain group classic]"), "", std::move(brushes));
 	}
 	// Catalogue groups in table order; every member shares the group's rules.
 	for (unsigned g = 0; g < TERRAIN_GROUP_COUNT; ++g)
 	{
 		const auto group = TerrainGroup(g);
 		const auto &definition = terrainGroupDefinition(group);
-		if (!definition.paletteVisible || group == TerrainGroup::Water || group == TerrainGroup::Sand ||
-			group == TerrainGroup::Grass)
+		if (!definition.paletteVisible || terrainGroupIsClassic(group))
 			continue;
 		std::vector<Element> brushes;
-		for (unsigned id = 0; id < TERRAIN_COUNT; ++id)
-			if (terrainGroup(TerrainType(id)) == group && offered(TerrainType(id)))
-				brushes.push_back(brush(TerrainType(id), fe::tr(registry->presentation(TerrainType(id)).label), ""));
-		section(fe::tr(definition.label), terrainRuleSummary(definition.properties), std::move(brushes));
+		for (auto type : offeredTerrainBrushes(*registry, group))
+			brushes.push_back(brush(type, fe::tr(registry->presentation(type).label), ""));
+		section(definition.key, fe::tr(definition.label), terrainRuleSummary(definition.properties), std::move(brushes));
 	}
 	// The map's imported definitions, in natural name order with their own rules.
 	{
 		std::vector<TerrainType> custom;
 		for (unsigned id = TERRAIN_COUNT; id < registry->size(); ++id)
-			if (offered(TerrainType(id)))
+			if (terrainBrushOffered(*registry, TerrainType(id)))
 				custom.push_back(TerrainType(id));
-		std::sort(custom.begin(), custom.end(), [&](TerrainType a, TerrainType b)
-				  { return naturalLess(registry->presentation(a).label, registry->presentation(b).label); });
+		// Natural name order; equal names fall back to the stable key order.
+		std::stable_sort(custom.begin(), custom.end(), [&](TerrainType a, TerrainType b)
+						 {
+							 const std::string &la = registry->presentation(a).label, &lb = registry->presentation(b).label;
+							 if (naturalLess(la, lb)) return true;
+							 if (naturalLess(lb, la)) return false;
+							 return registry->key(a) < registry->key(b);
+						 });
 		std::vector<Element> brushes;
 		for (auto type : custom)
 			brushes.push_back(brush(type, registry->presentation(type).label, terrainRuleSummary(registry->properties(type))));
-		section(fe::tr("[terrain group custom]"), "", std::move(brushes));
+		section("custom", fe::tr("[terrain group custom]"), "", std::move(brushes));
+	}
+	bool hidden = false;
+	for (unsigned g = 0; g < TERRAIN_GROUP_COUNT && !hidden; ++g)
+	{
+		const auto group = TerrainGroup(g);
+		if (terrainGroupDefinition(group).paletteVisible && !terrainGroupIsClassic(group))
+		{
+			bool any = false;
+			for (unsigned id = 0; id < TERRAIN_COUNT && !any; ++id)
+				any = terrainGroup(TerrainType(id)) == group;
+			hidden = any && offeredTerrainBrushes(*registry, group).empty();
+		}
 	}
 	return fe::footer(
 		fe::column({fe::paragraph(fe::tr("[Terrain palette]"), {fe::FontRole::Heading}),
-					fe::caption(fe::tr("[terrain palette hint]")),
+					fe::caption(fe::tr(hidden ? "[terrain palette experiments hint]" : "[terrain palette hint]")),
 					fe::scroll("terrain/scroll", fe::column(std::move(sections), {p.pt(14)}))},
 				   {p.pt(8)}),
 		dialogActions({{"cancel", fe::tr("[Cancel]"), [this] { finish(-1); }, false, SDLK_ESCAPE}},

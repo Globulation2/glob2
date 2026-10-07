@@ -5746,3 +5746,7 @@ Chọn lại ngẫu nhiên diện mạo địa hình
 
 [terrain palette hint]
 
+[terrain rule algae grow]
+
+[terrain palette experiments hint]
+

@@ -137,6 +137,7 @@ bool MapEdit::performViewAction(const std::string& action, float relMouseX, floa
 		const std::string prefix = "open terrain palette";
 		const int focus = action.size() > prefix.size() + 1
 			? TerrainPaletteDialog::groupFor(action.substr(prefix.size() + 1)) : -1;
+		brushBeforePalette = terrainType;
 		terrainPalette = std::make_unique<TerrainPaletteDialog>(game.map.frozenTerrainRegistry(), brush, focus);
 		attachDialog(*terrainPalette);
 		terrainPalette->focusOnOpen();

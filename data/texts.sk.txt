@@ -5746,3 +5746,7 @@ Znova náhodne vybrať vzhľad terénu
 
 [terrain palette hint]
 
+[terrain rule algae grow]
+
+[terrain palette experiments hint]
+

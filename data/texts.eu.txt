@@ -5746,3 +5746,7 @@ Ausaz aukeratu berriro lurraren itxura
 
 [terrain palette hint]
 
+[terrain rule algae grow]
+
+[terrain palette experiments hint]
+

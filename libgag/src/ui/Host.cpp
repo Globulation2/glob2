@@ -752,6 +752,42 @@ void Host::scrollIntoView(const std::string &key)
 	}
 }
 
+void Host::scrollToTop(const std::string &key)
+{
+	layoutIfNeeded();
+	auto *root = activeRoot();
+	if (!root)
+		return;
+	std::vector<Node *> path;
+	std::function<bool(Node &)> search = [&](Node &node)
+	{
+		path.push_back(&node);
+		if (!key.empty() && node.key == key)
+			return true;
+		for (auto &child : node.children)
+			if (search(*child))
+				return true;
+		path.pop_back();
+		return false;
+	};
+	if (!search(*root))
+		return;
+	Node *target = path.back();
+	for (int i = int(path.size()) - 2; i >= 0; --i)
+	{
+		auto *ancestor = path[std::size_t(i)];
+		if (!ancestor->scrollable())
+			continue;
+		const Rect viewport = ancestor->bounds;
+		const int delta = target->bounds.y - viewport.y;
+		if (delta)
+		{
+			ancestor->scrollBy(delta, *this);
+			layoutIfNeeded();
+		}
+	}
+}
+
 void Host::update(Uint32 tick)
 {
 	lastTick = tick;

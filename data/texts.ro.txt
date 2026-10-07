@@ -5746,3 +5746,7 @@ Alege din nou aleatoriu aspectul terenului
 
 [terrain palette hint]
 
+[terrain rule algae grow]
+
+[terrain palette experiments hint]
+

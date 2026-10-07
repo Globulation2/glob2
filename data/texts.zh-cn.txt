@@ -5746,3 +5746,7 @@ AI 遥测
 
 [terrain palette hint]
 
+[terrain rule algae grow]
+
+[terrain palette experiments hint]
+
