@@ -121,11 +121,12 @@ static void targetTracksTheGradientTheUnitActuallyFollows(bool greedy=false)
 			game.map.clearImmobileUnit(x, y);
 	game.addTeam(0);
 	Team* team = game.teams[0];
-    if(!greedy) {
-        auto experiments=game.gameHeader.getExperiments();
-        experiments.set(ExperimentId::RoundTripResourceFetching);
-        game.gameHeader.setExperiments(experiments);
-    }
+	if (!greedy)
+	{
+		auto experiments = game.gameHeader.getExperiments();
+		experiments.set(ExperimentId::RoundTripResourceFetching);
+		game.gameHeader.setExperiments(experiments);
+	}
 	const int teamNumber = team->teamNumber;
 	const int innType = globalContainer->buildingsTypes.getTypeNum("inn", 0, false);
 	require(innType >= 0, "inn type exists");
@@ -164,7 +165,7 @@ static void targetTracksTheGradientTheUnitActuallyFollows(bool greedy=false)
 	// and the target must follow it, not the plain gradient's nearer tile.
 	unit->stepGoingToResource();
 	require(unit->targetX == (greedy ? nearUnitX : nearBuildingX) && unit->targetY == (greedy ? nearUnitY : nearBuildingY),
-		"target follows the round-trip gradient's cheaper tile, not the nearest one to the unit");
+		"target follows the resource selected by the active fetching mode");
 
 	// Another action while nothing changed: the target must hold steady.
 	unit->stepGoingToResource();
@@ -195,7 +196,7 @@ static void targetTracksTheGradientTheUnitActuallyFollows(bool greedy=false)
 		"fruit-only supplier retains the original natural wheat field");
 	require(game.map.materialRoutingCacheBytes()==0, "impossible wheat supplier creates no cached field");
 	if(greedy) require(inn->roundTripGradient[WHEAT][swimClass]==NULL,"greedy movement never allocates a round-trip field");
-	std::puts("PASS resource-fetch target tracks the round-trip gradient and refreshes when it is rebuilt");
+	std::puts("PASS resource-fetch target tracks the active gradient and refreshes when it is rebuilt");
 }
 }
 
