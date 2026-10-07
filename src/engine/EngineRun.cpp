@@ -173,7 +173,7 @@ void Engine::gatherAndAdvanceOrders(bool wasReadyLastTick)
              (!(globalContainer->liveSpectating && i==orderPlayer) && !net->orderReceived(i))))
             eligible.push_back(unsigned(i));
     // The observation pipeline captures AI and reserved gradient requirements
-    // together, then prepares the gradient at its existing owner-side phase.
+    // together, then dispatches AI and private gradient work to the shared executor.
     const auto scheduled=gui.game.prepareAIOrders(eligible,
         gui.gamePaused || globalContainer->replaying,diagnostics);
     for(const auto& [actor,order]:scheduled) {

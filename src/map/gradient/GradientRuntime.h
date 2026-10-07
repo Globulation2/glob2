@@ -4,6 +4,7 @@
 // Private Map-owned execution state. Keeping this behind a pointer in Map.h
 // prevents queue, thread and scratch-storage details from entering Map's API.
 #include "GradientPipeline.h"
+#include "SnapshotGradient.h"
 #include "ResourceSeedCache.h"
 #include "TerrainSafetyCache.h"
 #include "field/GradientWorkspace.h"
@@ -21,12 +22,7 @@ struct GradientRuntime
 	struct Workspace
 	{
 		GradientWorkspace propagation;
-		struct Crowding
-		{
-			std::vector<std::uint16_t> warriors, paint, rows;
-			std::vector<int> columnSums;
-			std::vector<std::size_t> positions, seeds;
-		} crowding;
+		gradient_preparation::CrowdingScratch crowding;
 	};
     TerrainSafetyCache safety;
 	struct MaterialField
@@ -48,7 +44,7 @@ struct GradientRuntime
 	// One simulation-owned reservation, consumed once during the observation phase.
 	// Scalar identities survive the scheduling barrier without borrowing stack lambdas.
 	struct Preparation {
-		enum class Kind { Materials, Markets, Guard, Clear };
+		using Kind = gradient_preparation::Kind;
 		GradientPipeline::Job *job = nullptr;
 		Kind kind = Kind::Materials;
 		int team = 0, material = 0, swim = 0;

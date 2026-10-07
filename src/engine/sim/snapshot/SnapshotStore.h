@@ -27,6 +27,8 @@ public:
 	// GLOB2_SNAPSHOT_VERIFY=1 turns capture verification on for every store.
 	Store() { if (const char* value = std::getenv("GLOB2_SNAPSHOT_VERIFY")) storage.verify = *value && *value != '0'; }
 	void reset() { const bool verify = storage.verify; latest.reset(); catalog.reset(); catalogConfigurationRevision = 0; storage = {}; storage.verify = verify; metrics = {}; memoryPeaks = {}; }
+	// Direct simulation/editor callers can mutate within the same logical tick.
+	void invalidateBoundary() { latest.reset(); }
 	void setVerification(bool on) { storage.verify = on; }
 	Handle captureBoundary(const Game& game, Requirements required);
 	MemoryMetrics memoryMetrics() const;

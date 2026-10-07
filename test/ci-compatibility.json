@@ -54,6 +54,7 @@
     "AIOrderScheduler/*",
     "AIPipeline/*",
     "WorldSnapshot/*",
+    "SharedWorkerLifecycle/*",
     "AIStateContinuation/*",
     "AIRecoveryCoverage/*",
     "AIDecisionCoverage/*",

@@ -15,6 +15,7 @@
 #include <stdexcept>
 #include <chrono>
 #include <cstring>
+#include <bit>
 
 namespace SimulationSnapshot
 {
@@ -309,6 +310,10 @@ Handle capture(const Game& game,
 				v.identity = Game::refOf(b); v.team = t;
 				v.maxHp = b->getEffectiveMaxHp();
 				v.usesTeamResources = b->materials == team->teamMaterials;
+				for (unsigned supplied=b->runtime->suppliesStockMask; supplied; supplied &= supplied-1) {
+					const unsigned material=std::countr_zero(supplied);
+					if (b->availableMaterial(material)>0) v.availableSupplyMask |= MaterialMask(1u<<material);
+				}
 				v.working = {Uint32(entities->relationships.size()), Uint32(b->unitsWorking.size())};
 				for (const auto* u : b->unitsWorking) append(entities->relationships, Game::refOf(u));
 				v.inside = {Uint32(entities->relationships.size()), Uint32(b->unitsInside.size())};

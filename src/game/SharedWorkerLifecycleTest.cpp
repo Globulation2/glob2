@@ -92,6 +92,7 @@ TEST_CASE("pending gradient work survives a save and continues at the same deadl
     REQUIRE(source.loadFromHeaders(mapHeader, header, true, true));
     auto &map = source.game.map;
     map.getClearAreasGradient(0, 0);
+    map.configureCompute(4,0);
     map.configureGradientPipeline(2, 3);
     map.advanceGradientPipeline();
     map.syncStep(0, false);
@@ -153,9 +154,10 @@ TEST_CASE("direct completed steps match deferred preparation across worker count
             deferred.game.syncStep(0, Game::PreparationCompletion::Deferred);
             REQUIRE(deferred.game.map.hasPendingGradientPreparation());
             ReadOnlyPhase phase;
-            auto prepare = [&](size_t) { deferred.game.map.preparePendingGradient(); };
+            // Submission belongs to the owner; the deferred seed job is itself read-only work.
+            deferred.game.map.preparePendingGradient();
             auto read = [&](size_t) { deferred.game.map.getMaterialGradient(0, MaterialId::Wood, 0); };
-            phase.add(1, prepare); phase.add(1, read);
+            phase.add(1, read);
             phase.run(deferred.game.map.computeExecutor());
             CHECK_FALSE(deferred.game.map.hasPendingGradientPreparation());
             CHECK(direct.game.checkSum(nullptr, nullptr, nullptr, true) == deferred.game.checkSum(nullptr, nullptr, nullptr, true));
@@ -179,4 +181,42 @@ TEST_CASE("direct completed steps match deferred preparation across worker count
     deferred.game.map.clear(); // Reserved jobs must not outlive their destination.
     CHECK_FALSE(deferred.game.map.hasPendingGradientPreparation());
 }
+}
+
+TEST_CASE("no-AI completed ticks agree across shared worker counts [artifacts]" * doctest::test_suite("SharedWorkerLifecycle"))
+{
+    glob2test::HeadlessGlobals globals;
+    GameGUI source;
+    GameHeader header;
+    header.setNumberOfPlayers(1); header.setRandomSeed(123456);
+    header.getWinningConditions().clear(); // Retain a no-AI fixture that runs to the headless tick cap.
+    header.getBasePlayer(0)=BasePlayer(0,"Test",0,BasePlayer::P_LOCAL);
+    auto mapHeader=Engine::loadMapHeader("maps/balanced.map");
+    REQUIRE(source.loadFromHeaders(mapHeader,header,true,true));
+    source.game.map.getMaterialGradient(0,MaterialId::Food,0);
+    source.game.map.getGuardAreasGradient(0,0);
+    source.game.map.getClearAreasGradient(0,0);
+    auto* storage=new GAGCore::MemoryStreamBackend;
+    GAGCore::BinaryOutputStream writer(storage);
+    source.save(&writer,"no-AI gradient fixture"); writer.flush();
+    const std::string checkpoint(storage->getBuffer(),storage->getPosition());
+    const auto fixture=glob2test::artifactDir()/"no-ai.game";
+    std::ofstream(fixture,std::ios::binary).write(checkpoint.data(),checkpoint.size());
+    std::vector<Uint32> expected;
+    for (unsigned threads : {1,2,4,8}) {
+        GameGUI game;
+        GAGCore::BinaryInputStream reader(new GAGCore::MemoryStreamBackend(checkpoint.data(),checkpoint.size()));
+        reader.seekFromStart(0);
+        REQUIRE(game.load(&reader));
+        game.game.map.configureCompute(threads,0);
+        std::vector<Uint32> actual;
+        for (unsigned tick=0; tick<96; ++tick) {
+            game.game.syncStep(0,Game::PreparationCompletion::Deferred);
+            REQUIRE(game.game.prepareAIOrders({},false).empty());
+            actual.push_back(game.game.checkSum(nullptr,nullptr,nullptr));
+        }
+        game.game.map.finishGradientPipeline();
+        REQUIRE(game.game.map.gradientPipelineStatus().published>0);
+        if (threads==1) expected=actual; else CHECK(actual==expected);
+    }
 }

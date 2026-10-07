@@ -7,7 +7,7 @@
 #include <algorithm>
 #include <thread>
 
-// Count the submitting thread too. Keep the default bounded by useful AI jobs
+// Count the submitting thread too. Keep the default bounded by useful AI and gradient jobs
 // and available CPUs; explicit thread-count options can still request 1..64.
 inline unsigned defaultAIThreadCount(const Game& game)
 {
@@ -16,5 +16,5 @@ inline unsigned defaultAIThreadCount(const Game& game)
 		if(game.players[i] && game.players[i]->ai)
 			++controllers;
 	const unsigned hardware=std::thread::hardware_concurrency();
-	return std::clamp(std::min(controllers, hardware ? hardware : 1u), 1u, 4u);
+	return std::clamp(std::min(std::max(3u, controllers), hardware ? hardware : 1u), 1u, 4u);
 }

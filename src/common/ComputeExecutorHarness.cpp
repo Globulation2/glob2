@@ -196,6 +196,22 @@ void gatedJob(void* context, std::size_t)
 	gate->passed.fetch_add(1);
 }
 }
+TEST_CASE("completed lanes can change placement while an unrelated older batch remains")
+{
+    if constexpr (!GAGCore::ThreadSupport::available) return;
+    ComputeExecutor executor; executor.configure(2);
+    Gate held, completed; completed.open = true;
+    ComputeExecutor::Group older{1, {gatedJob, &held}};
+    auto first = executor.submit(std::span(&older, 1), ComputeExecutor::Placement::OwnerOnly);
+    ComputeExecutor::Group lane{1, {gatedJob, &completed}, 2};
+    auto second = executor.submit(std::span(&lane, 1));
+    while (!executor.finished(second)) std::this_thread::yield();
+    REQUIRE(executor.liveBatches() == 2);
+    auto third = executor.submit(std::span(&lane, 1), ComputeExecutor::Placement::OwnerOnly);
+    held.open = true;
+    executor.join(third); executor.join(second); executor.join(first);
+    CHECK(completed.passed == 2);
+}
 TEST_CASE("lane groups run in index order, placements cannot mix on a lane, and the horizon is bounded")
 {
 	for (unsigned threads : {1u, 3u})
