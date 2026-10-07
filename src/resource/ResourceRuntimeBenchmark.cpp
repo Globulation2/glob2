@@ -3,6 +3,7 @@
 #include "EngineFixtures.h"
 #include "ResourceRegistry.h"
 #include "GradientRuntime.h"
+#include "Player.h"
 #include <BinaryStream.h>
 #include <StreamBackend.h>
 #include <nlohmann/json.hpp>
@@ -35,8 +36,39 @@ Json catalog(unsigned count, bool multi) {
     }
     return {{"schemaVersion",1},{"resources",definitions}};
 }
+
+std::string cliSave(glob2test::HeadlessGame& world) {
+    // Every headless slot must supply orders; multiple local humans stall tick 0.
+    for(int player=0;player<world.game.gameHeader.getNumberOfPlayers();++player)
+        world.game.players[player]->makeItAI(AI::NONE);
+    // CLI loading consumes GameGUI's tail even when it ignores presentation.
+    world.gui.init();
+    auto* memory=new GAGCore::MemoryStreamBackend;
+    GAGCore::BinaryOutputStream stream(memory);
+    world.gui.save(&stream,"Runtime resource stress");stream.flush();
+    return memory->takeContents();
+}
 }
 TEST_SUITE("ResourceRuntimeBenchmark") {
+TEST_CASE("exported custom resource fixtures include the CLI save tail [resources]") {
+    glob2test::HeadlessGlobals globals;
+    glob2test::HeadlessGame world({.teams=2,.loadDefaultRace=true,.header=true,.seed=713});
+    world.game.map.installResourceDefinitions(catalog(2,true).dump());
+    const auto crop=world.game.map.resourceRegistry().find("stress:crop-0");
+    REQUIRE(crop.has_value());
+    world.game.map.setResource(12,12,*crop,0);
+    const auto bytes=cliSave(world);
+    GameGUI restored(false);
+    GAGCore::BinaryInputStream input(new GAGCore::MemoryStreamBackend(bytes.data(),bytes.size()));
+    input.seekFromStart(0);
+    REQUIRE(restored.load(&input));
+    CHECK(restored.game.gameHeader.getNumberOfPlayers()==2);
+    for(int player=0;player<2;++player)
+        CHECK(restored.game.gameHeader.getBasePlayer(player).type==BasePlayer::playerTypeFromImplementationID(AI::NONE));
+    CHECK(restored.game.map.materialAmountAt(restored.game.map.coordToIndex(12,12),MaterialId::Food)==5);
+    CHECK(restored.game.map.materialAmountAt(restored.game.map.coordToIndex(12,12),MaterialId::Gold)==5);
+}
+
 TEST_CASE("large eight-team sparse material and runtime catalog stress [benchmark][resources]") {
     glob2test::HeadlessGlobals globals;
     Json report={{"schema",1},{"kind","component-stress"},{"seed",713},
@@ -152,10 +184,7 @@ TEST_CASE("large eight-team sparse material and runtime catalog stress [benchmar
                 world.addUnit(WORKER,colony->posX+4,colony->posY,team);
                 world.game.teams[team]->createLists();
             }
-            auto* memory=new GAGCore::MemoryStreamBackend;
-            GAGCore::BinaryOutputStream stream(memory);
-            world.game.save(&stream,false,"Runtime resource stress");stream.flush();
-            const auto bytes=memory->takeContents();
+            const auto bytes=cliSave(world);
             const auto filename="stress-"+std::to_string(map.getW())+"-"+std::to_string(variant)+".game";
             std::ofstream output(std::filesystem::path(destination)/filename,std::ios::binary);
             output.write(bytes.data(),bytes.size());REQUIRE(output.good());
