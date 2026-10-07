@@ -8,6 +8,7 @@
 #include "BuildingGradientImpact.h"
 #include "BuildingGradientDiagnostics.h"
 #include "BuildingGradientDemand.h"
+#include "BuildingGradientBudgetPolicy.h"
 #include "ResourceSeedCache.h"
 #include "TerrainSafetyCache.h"
 #include "field/GradientWorkspace.h"
@@ -59,6 +60,8 @@ struct GradientRuntime
 	GradientPipeline pipeline{async};
 	BuildingGradientScheduler buildings{async};
 	bool buildingAccessByClass = false;
+    std::string buildingBudgetSource;
+    std::unique_ptr<BuildingGradientBudgetPolicy> buildingBudgetPolicy;
 	std::unique_ptr<BuildingGradientDiagnostics> buildingDiagnostics;
 	std::unique_ptr<BuildingGradientDemand> demand;
 	std::unique_ptr<BuildingGradientImpact> impact;

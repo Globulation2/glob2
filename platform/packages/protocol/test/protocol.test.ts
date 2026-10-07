@@ -33,6 +33,21 @@ describe('sim versions', () => {
 });
 
 describe('MatchSetup', () => {
+  it('preserves optional bounded building budget model data', () => {
+    const buildingGradientBudgetModel = '{"levels":[[],[],[]]}';
+    const setup = parse(MatchSetup, {
+      ...SETUP_SAVE_SHARED,
+      rules: { ...SETUP_SAVE_SHARED.rules, buildingGradientBudgetModel },
+    });
+    expect(setup.rules.buildingGradientBudgetModel).toBe(buildingGradientBudgetModel);
+    for (const invalid of [1, 'x'.repeat(1024 * 1024 + 1)]) {
+      expect(() => parse(MatchSetup, {
+        ...SETUP_SAVE_SHARED,
+        rules: { ...SETUP_SAVE_SHARED.rules, buildingGradientBudgetModel: invalid },
+      })).toThrow(ProtocolValidationError);
+    }
+  });
+
   it('accepts supported building delays and legacy omitted values', () => {
     for (const delay of [2, 4, 8]) {
       expect(() =>

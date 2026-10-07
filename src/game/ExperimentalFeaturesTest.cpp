@@ -193,6 +193,33 @@ TEST_SUITE("ExperimentalFeatures")
 		CHECK(toggled != guard);
 	}
 
+	TEST_CASE("round-trip fetching is opt-in and the retired greedy key stays greedy")
+	{
+		ExperimentSet defaults;
+		CHECK(!defaults.has(ExperimentId::RoundTripResourceFetching));
+		const auto roundTrip = ExperimentSet::fromText("round-trip-resource-fetching");
+		CHECK(roundTrip.has(ExperimentId::RoundTripResourceFetching));
+		CHECK(roundTrip.toText() == "round-trip-resource-fetching");
+		ExperimentSet restored;
+		REQUIRE(loadBytes(bytesOf(roundTrip), VERSION_MINOR, restored));
+		CHECK(restored == roundTrip);
+
+		auto* memory = new MemoryStreamBackend;
+		BinaryOutputStream out(memory);
+		out.writeEnterSection("experiments");
+		out.writeUint32(1, "count");
+		out.writeEnterSection(0u);
+		out.writeText("greedy-resource-fetching", "key");
+		out.writeLeaveSection();
+		out.writeLeaveSection();
+		out.flush();
+		const std::string legacy(memory->getBuffer(), memory->getPosition());
+		glob2test::CapturedStderr stderrText;
+		REQUIRE(loadBytes(legacy, 144, restored));
+		CHECK(restored.empty());
+		CHECK(!restored.has(ExperimentId::RoundTripResourceFetching));
+	}
+
 	TEST_CASE("stream round trip; a pre-124 stream reads nothing; corrupt input is refused")
 	{
 		const ExperimentSet guard = guardOnly();
@@ -295,8 +322,8 @@ TEST_SUITE("ExperimentalFeatures")
             // experiment/catalog/resource-experiment tails nor the format-143 delay
             // byte following the common gameLatency/orderRate prefix.
             const std::string sectionBytes = bytesOf(original.getExperiments());
-            REQUIRE(bytes.size() > sectionBytes.size()+2*sizeof(Uint32)+2*sizeof(Uint8));
-            std::string legacyBytes=bytes.substr(0,bytes.size()-sectionBytes.size()-2*sizeof(Uint32)-sizeof(Uint8));
+            REQUIRE(bytes.size() > sectionBytes.size()+3*sizeof(Uint32)+2*sizeof(Uint8));
+            std::string legacyBytes=bytes.substr(0,bytes.size()-sectionBytes.size()-3*sizeof(Uint32)-sizeof(Uint8));
             legacyBytes.erase(sizeof(Sint32)+sizeof(Uint8),sizeof(Uint8));
             const size_t legacySize=legacyBytes.size();
             auto* legacy = new MemoryStreamBackend(legacyBytes.data(),legacySize);

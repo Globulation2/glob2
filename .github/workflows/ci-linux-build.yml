@@ -583,7 +583,7 @@ jobs:
         if: ${{ steps.shard_plan.outputs.retain_browser_native_simulation_trace == format('{0}', matrix.shard) }}
         id: retain_browser_native_simulation_trace
         continue-on-error: true
-        run: python3 test/run-browser-determinism.py build/linux/client/release/src/glob2 artifacts/browser-determinism/native
+        run: python3 test/run-browser-determinism.py build/linux/client/release/src/glob2 artifacts/browser-determinism/native --engine-binary build/linux/client/release/test/glob2-engine-tests
       - uses: actions/upload-artifact@v4
         if: ${{ steps.shard_plan.outputs.retain_browser_native_simulation_trace == format('{0}', matrix.shard) }}
         id: upload_artifact_1

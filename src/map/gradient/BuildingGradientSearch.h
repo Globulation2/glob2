@@ -52,7 +52,7 @@ class BuildingGradientSearch
 	const Map *sourceMap = nullptr;
 	int buildingId = -1;
 	std::uint32_t snapshotGeneration = 0;
-	void advance(std::size_t target);
+	void advance(std::size_t target, int maximumCost = gradient_kernel::COST_LIMIT);
 
   public:
 	std::uint64_t demandEpoch = 0; // Local observation only; excluded from saves and decisions.
@@ -68,6 +68,8 @@ class BuildingGradientSearch
 	// target == cells finishes the field. A whole cost layer is completed to
 	// preserve equal-distance sidesteps as well as the requested scalar value.
 	void resolve(std::size_t target, const char *caller = "query");
+	// Zero performs no propagation; positive budgets complete whole cost layers.
+    void precompute(int cost) { if (cost > 0) advance(cells, cost); }
 	void finish(const char *caller = "full_api") { resolve(cells, caller); }
 	bool complete() const { return pending == 0 && nextSeed == deferredSeeds.size(); }
 	bool resolved(std::size_t target) const;

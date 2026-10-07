@@ -764,6 +764,10 @@
               "minimum": 0,
               "maximum": 2
             },
+            "buildingGradientBudgetModel": {
+              "type": "string",
+              "maxLength": 1048576
+            },
             "buildingGradientDelay": {
               "anyOf": [
                 {

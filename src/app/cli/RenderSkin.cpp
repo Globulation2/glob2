@@ -291,7 +291,9 @@ int runRenderSkin(int argc, char **argv)
 		{
 			GAGCore::SkinMesh mesh;
 			std::string error;
-			const std::string file = clip < 7 ? std::string(Online::SkinSpriteClips[clip]) + ".gsk"
+			// Published sprites always render the rigs: the recipe digest covers
+			// their bytes and decoders, so GLOB2_SKIN_RIGS is deliberately ignored.
+			const std::string file = clip < 7 ? GAGCore::skinClipFile(Online::SkinSpriteClips[clip])
 											  : std::string(Online::SWARM_MESHES[choice].file);
 			if (!mesh.load("data/skins/colony-v1/" + file, error))
 				throw std::runtime_error(file + ": " + error);

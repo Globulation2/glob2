@@ -3,6 +3,7 @@
 // Copyright (C) 2026 glob2 contributors
 
 #include "MatchSetup.h"
+#include "BuildingGradientBudgetPolicy.h"
 
 #include <FileManager.h>
 #include <StreamBackend.h>
@@ -42,7 +43,7 @@ bool MatchRules::operator==(const MatchRules &o) const
 	       hungerDisabled == o.hungerDisabled && unitUpgradesDisabled == o.unitUpgradesDisabled &&
 	       glassCannonLevel == o.glassCannonLevel && unitsFearless == o.unitsFearless &&
 	       permadeathDisabled == o.permadeathDisabled && peacefulMode == o.peacefulMode &&
-	       buildingHpLevel == o.buildingHpLevel && aiOrderDelay == o.aiOrderDelay && buildingGradientDelay == o.buildingGradientDelay;
+	       buildingHpLevel == o.buildingHpLevel && aiOrderDelay == o.aiOrderDelay && buildingGradientDelay == o.buildingGradientDelay && buildingGradientBudgetModel == o.buildingGradientBudgetModel;
 }
 
 bool GeneratorDescriptor::operator==(const GeneratorDescriptor &o) const
@@ -231,7 +232,7 @@ MatchRules parseRules(const json &value, const std::string &path)
 	             {"prestigeVictory", "suddenDeathMinutes", "mapDiscovered", "allyTeamsFixed", "resourceGrowthDisabled",
 	              "resourceScarcityLevel", "instantConstruction", "stockpileStartLevel", "hungerDisabled",
 	              "unitUpgradesDisabled", "glassCannonLevel", "unitsFearless", "permadeathDisabled", "peacefulMode",
-	              "buildingHpLevel"}, {"aiOrderDelay", "buildingGradientDelay"});
+	              "buildingHpLevel"}, {"aiOrderDelay", "buildingGradientDelay", "buildingGradientBudgetModel"});
 	MatchRules r;
 	auto b = [&](const char *key) { return boolean(value[key], path + "/" + key); };
 	auto i = [&](const char *key, int max)
@@ -252,6 +253,12 @@ MatchRules parseRules(const json &value, const std::string &path)
 	r.permadeathDisabled = b("permadeathDisabled");
 	r.peacefulMode = b("peacefulMode");
 	r.buildingHpLevel = i("buildingHpLevel", 2);
+    if (value.contains("buildingGradientBudgetModel")) {
+        r.buildingGradientBudgetModel = string(value["buildingGradientBudgetModel"], path + "/buildingGradientBudgetModel");
+        if (!r.buildingGradientBudgetModel.empty()) try {
+            const BuildingGradientBudgetPolicy validated(r.buildingGradientBudgetModel);
+        } catch (const std::exception& e) { schemaError(path + "/buildingGradientBudgetModel", e.what()); }
+    }
 	if (value.contains("buildingGradientDelay"))
 	{
 		r.buildingGradientDelay = i("buildingGradientDelay", 8);
@@ -415,6 +422,12 @@ void MatchSetup::validateSemantics() const
 	if (rules.buildingGradientDelay != 2 && rules.buildingGradientDelay != 4 &&
 		rules.buildingGradientDelay != 8)
 		semanticError("/rules/buildingGradientDelay", "must be 2, 4 or 8");
+    if (!rules.buildingGradientBudgetModel.empty()) {
+        if (!has("building-gradient-pipeline") || !has("building-gradient-partial") || has("round-trip-resource-fetching"))
+            semanticError("/rules/buildingGradientBudgetModel", "requires the partial pipeline with greedy fetching");
+        try { const BuildingGradientBudgetPolicy validated(rules.buildingGradientBudgetModel); }
+        catch (const std::exception& e) { semanticError("/rules/buildingGradientBudgetModel", e.what()); }
+    }
 	for (std::size_t i = 0; i < teams.size(); ++i)
 		if (teams[i].team != static_cast<int>(i))
 			semanticError("/teams/" + std::to_string(i) + "/team",
@@ -601,6 +614,7 @@ json MatchSetup::toJson() const
 	                {"permadeathDisabled", r.permadeathDisabled},
 	                {"peacefulMode", r.peacefulMode},
 	                {"buildingHpLevel", r.buildingHpLevel}};
+	if (!r.buildingGradientBudgetModel.empty()) out["rules"]["buildingGradientBudgetModel"] = r.buildingGradientBudgetModel;
 	out["experiments"] = experiments;
 	if (!resourceExperiments.empty())
 	{
@@ -692,6 +706,7 @@ GameHeader MatchSetup::toGameHeader(const MapHeader &mapHeader) const
 	header.setPeacefulModeEnabled(rules.peacefulMode);
 	header.setBuildingHpLevel(static_cast<Uint8>(rules.buildingHpLevel));
 	header.setBuildingGradientDelay(static_cast<Uint8>(rules.buildingGradientDelay));
+    header.setBuildingGradientBudgetModel(rules.buildingGradientBudgetModel);
 	if (!buildingCatalogSnapshot.empty()) header.setBuildingCatalogSnapshot(buildingCatalogSnapshot);
 	const auto& mapExperiments = mapHeader.getVersionMinor() < FILE_FORMAT_VERSION_RUNTIME_RESOURCES
 		? ResourceRegistry::legacy()->experiments() : mapHeader.resourceExperimentDefinitions;
@@ -794,6 +809,7 @@ MatchSetup MatchSetup::fromGameHeader(GameHeader header, const MapHeader &mapHea
 		if (mapHeader.requiredTerrainExperiments.has(definition.id)) header.getExperiments().set(definition.id);
 	for (const auto& key : mapHeader.requiredResourceExperiments.keys()) header.getExperiments().set(key, true, header.catalogExperimentKeys());
 	r.buildingGradientDelay = header.getBuildingGradientDelay();
+    r.buildingGradientBudgetModel = header.getBuildingGradientBudgetModel();
 	setup.experiments = header.getExperiments().keys();
 	setup.validateSemantics();
 	return setup;

@@ -83,6 +83,7 @@ namespace Online
 		bool peacefulMode = false;
 		int buildingHpLevel = 0; ///< 0..2
 		int buildingGradientDelay = 4; ///< 2, 4 or 8 ticks
+        std::string buildingGradientBudgetModel;
 
 		bool operator==(const MatchRules& o) const;
 	};

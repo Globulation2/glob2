@@ -54,7 +54,8 @@ enum class ExperimentId : Uint8
 	FertileTerrain = 11,
 	DeepWaterTerrain = 12,
 	VoidTerrain = 13,
-	BuildingGradientPipeline = 14,
+	RoundTripResourceFetching = 14,
+	BuildingGradientPipeline = 15,
 	BuildingGradientHybrid,
 	BuildingGradientPartial,
 	Count

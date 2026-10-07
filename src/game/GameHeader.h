@@ -145,6 +145,8 @@ public:
 	const std::string& getAIConfig(int player) const { assert(player >= 0 && player < Team::MAX_COUNT); return aiConfig[player]; }
 	void setAIConfig(int player, const std::string& values) { assert(player >= 0 && player < Team::MAX_COUNT); aiConfig[player] = values;  ++observationRevisionValue; }
 
+	const std::string& getBuildingGradientBudgetModel() const { return buildingGradientBudgetModel; }
+    void setBuildingGradientBudgetModel(const std::string& model);
 	Uint8 getBuildingGradientDelay() const { return buildingGradientDelay; }
 	void setBuildingGradientDelay(Uint8 delay)
 	{
@@ -336,4 +338,5 @@ private:
 	///Experimental features enabled for this game; empty is the default game
 	ExperimentSet experiments;
 	Uint8 buildingGradientDelay = 4;
+    std::string buildingGradientBudgetModel;
 };

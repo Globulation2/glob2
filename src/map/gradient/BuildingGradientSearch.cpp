@@ -82,7 +82,7 @@ void BuildingGradientSearch::resolve(std::size_t target, const char *caller)
 	evidence.result(popped - before, complete());
 }
 
-void BuildingGradientSearch::advance(std::size_t target)
+void BuildingGradientSearch::advance(std::size_t target, int maximumCost)
 {
  const field::Grid geometry{widthMask+1,heightMask+1};
  const bool dynamic=bool(profiles); const unsigned count=dynamic ? terrainBuckets : BUCKETS;
@@ -91,6 +91,7 @@ void BuildingGradientSearch::advance(std::size_t target)
   if(!pending && nextSeed<deferredSeeds.size()) currentCost=deferredSeeds[nextSeed].first;
   if(currentCost>costLimit) { pending=0; nextSeed=deferredSeeds.size();
    for(unsigned i=0;i<count;++i) queues[i].clear(); break; }
+  if(currentCost>maximumCost) break;
   while(nextSeed<deferredSeeds.size() && deferredSeeds[nextSeed].first==currentCost) {
    queues[unsigned(currentCost)%count].push(deferredSeeds[nextSeed++].second); ++pending; }
   popped+=queues[unsigned(currentCost)%count].size;

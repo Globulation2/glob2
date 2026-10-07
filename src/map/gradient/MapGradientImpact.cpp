@@ -83,7 +83,7 @@ void Map::beginGradientDecision(const char *kind, int gid, int uid)
 						if (route==BuildingRoute::Clearing)
 							target->anyResourceToClear[buildingPipelineEnabled() ? buildingAccessIndex(sw,route) : int(sw>0)] =
 								fresh.resourceState;
-						for (int r = 0; r < MAX_NB_RESOURCES; ++r)
+						for (int r = 0; r < MaterialSlotCount; ++r)
 							if (!fresh.trips[r].empty())
 							{
 								recycleBuildingGradientSearch(std::move(target->roundTripGradientSearch[r][sw]));
@@ -104,9 +104,9 @@ const Uint16 *Map::freshBuildingDecisionField(Building *b, int sw, int resource,
 	if (!impact.oracle.count(key))
 	{
 		if(!impact.terrain) impact.terrain=building_gradient::captureTerrain(*this);
-		std::array<std::vector<Uint16>,MAX_NB_RESOURCES> parents,goals;
+		std::array<std::vector<Uint16>,MaterialSlotCount> parents,goals;
  if(route==BuildingRoute::Footprint) building_gradient::captureParents(*this,*b,sw,parents,goals,
-  [&](int r){return resourceDecisionField(b->owner->teamNumber,r,sw,resourceSupplyModes(b,r)!=0,b);});
+  [&](int r){return resourceDecisionField(b->owner->teamNumber,r,sw,materialSupplyModesSlot(b,r)!=0,b);});
  impact.oracle[key]=building_gradient::build(*impact.terrain,refreshDescription(*b,sw,0,route),parents,impact.scratch,nullptr,&goals);
 	}
 	const auto &result = impact.oracle.at(key);
@@ -139,9 +139,10 @@ const Uint16 *Map::publishedBuildingDecisionField(Building *building, int swim, 
 bool Map::buildingDecisionDistance(Building *b, int sw, int resource, int x, int y, int *distance,
 								   bool fresh, bool publishedOnly, BuildingRoute route)
 {
+    if (resource >= 0 && !game->gameHeader.hasExperiment(ExperimentId::RoundTripResourceFetching)) return false;
 	if (!fresh && !publishedOnly)
 		return resource < 0 ? buildingAvailable(b, sw, x, y, distance,route)
-							: roundTripDistance(b, resource, sw, x, y, distance);
+							: roundTripDistanceSlot(b, resource, sw, x, y, distance);
 	const auto *field =
 		fresh ? freshBuildingDecisionField(b, sw, resource,route)
 			  : (resource < 0 ? b->globalGradient[b->routeSlot(sw,route)] : b->roundTripGradient[resource][sw]);
@@ -151,7 +152,7 @@ bool Map::buildingDecisionDistance(Building *b, int sw, int resource, int x, int
 	if (!fresh) field = publishedBuildingDecisionField(b, sw, resource, privatePublished,route);
 	if (resource >= 0)
 	{
-		const auto *parent = resourceDecisionField(b->owner->teamNumber,resource,sw,resourceSupplyModes(b,resource)!=0,b);
+		const auto *parent = resourceDecisionField(b->owner->teamNumber,resource,sw,materialSupplyModesSlot(b,resource)!=0,b);
 		if (!parent || parent[coordToIndex(x, y)] <= GRADIENT_UNREACHABLE)
 			return false;
 	}
@@ -245,11 +246,11 @@ void Map::auditBuildingMovement(Unit *unit, Building *b, bool moved, int resourc
 	const auto route=unit->activity==Unit::ACT_FLAG ? (unit->typeNum==WORKER ? BuildingRoute::Clearing : BuildingRoute::Combat) : BuildingRoute::Footprint;
 	const auto here = coordToIndex(x, y);
 	const auto *parent = resource >= 0
-		? resourceDecisionField(b->owner->teamNumber,resource,sw,resourceSupplyModes(b,resource)!=0,b) : nullptr;
+		? resourceDecisionField(b->owner->teamNumber,resource,sw,materialSupplyModesSlot(b,resource)!=0,b) : nullptr;
 	const bool resourceStop = resource >= 0 &&
 		(!parent || parent[here] == GRADIENT_UNREACHABLE || parent[here] == GRADIENT_AT_GOAL);
 	const bool escape = resource >= 0 ? parent && parent[here] == GRADIENT_FORBIDDEN
-		: (tiles[here].forbidden & unit->owner->me) != 0;
+		: (areaCells[here].forbidden & unit->owner->me) != 0;
 	const Uint16 *field = nullptr;
 	GradientDirectionDecision choice;
 	if (escape)
@@ -310,29 +311,29 @@ void Map::auditBuildingMovement(Unit *unit, Building *b, bool moved, int resourc
 const Uint16 *Map::publishedResourceGradient(int team,int resource,int sw,bool withMarkets,const Building *consumer) const
 {
  if(consumer) {
-  const unsigned modes=resourceSupplyModes(consumer,resource); withMarkets=modes&1;
+  const unsigned modes=materialSupplyModesSlot(consumer,resource); withMarkets=modes&1;
   const unsigned supplied=((modes&1)?consumer->runtime->suppliesStockMask:0)|((modes&2)?consumer->runtime->suppliesDirectStockMask:0);
   const bool excluded=consumer->runtime->has(BuildingRuntimeTraits::SharedStock)||(supplied&(1u<<resource));
   if((modes&2)||(withMarkets&&excluded)) {
    const int gid=excluded ? consumer->gid : -1;
-   const Uint64 key=((((Uint64(gid+1)*Team::MAX_COUNT+team)*MAX_RESOURCES+resource)*SWIM_CLASS_COUNT+sw)*4)+modes;
-   const auto it=gradientRuntime->resourceFields.find(key);
-   return it==gradientRuntime->resourceFields.end() ? nullptr : it->second.cells.get();
+   const Uint64 key=((((Uint64(gid+1)*Team::MAX_COUNT+team)*MaterialCount+resource)*SWIM_CLASS_COUNT+sw)*4)+modes;
+   const auto it=gradientRuntime->materialFields.find(key);
+   return it==gradientRuntime->materialFields.end() ? nullptr : it->second.cells.get();
   }
  }
  withMarkets=withMarkets && marketsV2Enabled() && !game->teams[team]->stockSuppliers.empty();
- return withMarkets ? marketResourcesGradient[team][resource][sw] : resourcesGradient[team][resource][sw];
+ return withMarkets ? marketMaterialGradients[team][resource][sw] : materialGradients[team][resource][sw];
 }
 const Uint16 *Map::resourceDecisionField(int team,int resource,int sw,bool withMarkets,const Building *consumer)
 {
  if(const auto *published=publishedResourceGradient(team,resource,sw,withMarkets,consumer)) return published;
  auto &impact=*gradientRuntime->impact;
- const unsigned modes=consumer ? resourceSupplyModes(consumer,resource) : (withMarkets && marketsV2Enabled() ? 1u : 0u);
+ const unsigned modes=consumer ? materialSupplyModesSlot(consumer,resource) : (withMarkets && marketsV2Enabled() ? 1u : 0u);
  auto &values=impact.resourceOracle[{team,resource,sw,consumer ? int(consumer->gid) : -1,modes}];
  if(values.empty()) {
   values.resize(size);
-  if(modes) seedResourcesGradientWithSuppliers(team,resource,sw,values.data(),consumer,modes,false);
-  else seedResourcesGradientDirect(team,resource,sw,values.data(),nullptr);
+  if(modes) seedMaterialGradientWithSuppliers(team,resource,sw,values.data(),consumer,modes,false);
+  else seedMaterialGradientDirect(team,resource,sw,values.data(),nullptr);
   BuildingGradientSearch search;
   if(!impact.terrain) impact.terrain=building_gradient::captureTerrain(*this);
   search.beginFrozen(getW(),getH(),values.data(),sw,impact.terrain->inputs[sw],GRADIENT_COST_LIMIT); search.finish();
@@ -341,7 +342,7 @@ const Uint16 *Map::resourceDecisionField(int team,int resource,int sw,bool withM
 }
 bool Map::resourceDecisionDistance(int team,int resource,int sw,int x,int y,int *distance,bool fresh,bool withMarkets,const Building *consumer)
 {
- if(!fresh) return resourceAvailable(team,resource,sw,x,y,distance,withMarkets,consumer);
+ if(!fresh) return materialAvailableSlot(team,resource,sw,x,y,distance,withMarkets,consumer);
  const auto *field=resourceDecisionField(team,resource,sw,withMarkets,consumer);
  const auto value=field[coordToIndex(x,y)];
  if(value<=GRADIENT_UNREACHABLE) return false;
@@ -366,7 +367,7 @@ void Map::auditResourceDestination(Unit *unit, int liveResource, Building *liveM
 			: publishedBuildingDecisionField(b, sw, resource, scratch);
 		if (!field || field[coordToIndex(unit->posX, unit->posY)] <= GRADIENT_UNREACHABLE)
 			field = resourceDecisionField(b->owner->teamNumber, resource, sw,
-				resourceSupplyModes(b, resource) != 0, b);
+				materialSupplyModesSlot(b, resource) != 0, b);
 		if (!field)
 			return -1;
 		Sint32 x = unit->posX, y = unit->posY;
@@ -382,12 +383,12 @@ void Map::auditResourceDestination(Unit *unit, int liveResource, Building *liveM
 		if (explicitMarket) return int(explicitMarket->gid);
 		if (resource < 0 || site < 0) return -2;
 		const auto &tile = getTile(std::size_t(site));
-		if (tile.resource.type == resource && tile.resource.amount) return -1;
-		const unsigned modes = resourceSupplyModes(b, resource);
+		if (tile.resource.type != NO_RES_TYPE && tile.resource.amount && (resourcePropertiesByIndex(tile.resource.type).materialMask & (1u << resource))) return -1;
+		const unsigned modes = materialSupplyModesSlot(b, resource);
 		const Building *best = nullptr;
 		auto consider = [&](const Building *supplier)
 		{
-			if (!stockSupplierEligible(supplier, b, resource, modes)) return;
+			if (!stockSupplierEligibleSlot(supplier, b, resource, modes)) return;
 			bool covers = false;
 			for (int y = 0; y < supplier->type->height; ++y)
 				for (int x = 0; x < supplier->type->width; ++x)
@@ -478,7 +479,7 @@ void Map::observeGradientImpact()
 						}
 						j.x = u->posX;
 						j.y = u->posY;
-						j.carried = u->carriedResource;
+						j.carried = u->carriedMaterial;
 					}
 				}
 				if (found == impact.journeys.end() && !u->isDead && u->attachedBuilding &&
@@ -497,7 +498,7 @@ void Map::observeGradientImpact()
 											   u->posY,
 											   0,
 											   0,
-											   u->carriedResource,
+											   u->carriedMaterial,
 											   0,
 											   0};
 				}
@@ -534,7 +535,7 @@ void Map::observeGradientImpact()
 		else if (!u || u->scriptIdentity != m.unitIdentity || u->isDead ||
 				 u->activity != Unit::ACT_RANDOM || u->medical != Unit::MED_FREE)
 			censorReason = "candidate_unavailable";
-		else if (m.resource >= 0 && b->neededResource(m.resource) <= 0)
+		else if (m.resource >= 0 && b->neededMaterial(m.resource) <= 0)
 			censorReason = "demand_disappeared";
 		else if (int(b->unitsWorking.size()) >= b->desiredMaxUnitWorking)
 			censorReason = "staffing_demand_filled";

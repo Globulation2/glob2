@@ -158,20 +158,21 @@ void Map::finishRoundTripGradient(Building *building, int resourceType, int swim
 
 const Uint16 *Map::roundTripGradientSlot(Building *building, int resourceType, int swimClass)
 {
-	const auto *field = prepareRoundTripGradient(building, resourceType, swimClass);
+	const auto *field = prepareRoundTripGradientSlot(building, resourceType, swimClass);
 	if (field) finishRoundTripGradient(building, resourceType, swimClass);
 	return field;
 }
 
-const Uint16 *Map::roundTripGradientAt(Building *building, int resourceType, int swimClass, std::size_t cell)
+const Uint16 *Map::roundTripGradientAtSlot(Building *building, int resourceType, int swimClass, std::size_t cell)
 {
-	const auto *field = prepareRoundTripGradient(building, resourceType, swimClass);
+	const auto *field = prepareRoundTripGradientSlot(building, resourceType, swimClass);
 	if (field) resolveBuildingGradientQuery(building,swimClass,BuildingRoute::Footprint,resourceType,cell,"round_trip_query");
 	return field;
 }
 
-const Uint16 *Map::prepareRoundTripGradient(Building *building, int resourceType, int swimClass)
+const Uint16 *Map::prepareRoundTripGradientSlot(Building *building, int resourceType, int swimClass)
 {
+	if (!game->gameHeader.hasExperiment(ExperimentId::RoundTripResourceFetching)) return NULL;
 	if (!prepareBuildingGradient(building, swimClass, BuildingRoute::Footprint))
 		return NULL;
 	Uint32 now=game->stepCounter;
@@ -188,6 +189,7 @@ const Uint16 *Map::prepareRoundTripGradient(Building *building, int resourceType
 
 bool Map::roundTripDistanceSlot(Building *building, int resourceType, int swimClass, int x, int y, int *dist)
 {
+	if (!game->gameHeader.hasExperiment(ExperimentId::RoundTripResourceFetching)) return false;
 	PERF_SCOPE_TIME(PathBuilding);
 	// Only gradients a fetcher keeps alive: hiring looks at every needed
 	// resource of every building, far more than ever get fetched.

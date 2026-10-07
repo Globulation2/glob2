@@ -18,7 +18,7 @@
 Unit::FetchDecision Unit::evaluateFetchDecision(const int *needs,int timeLeft,bool fresh)
 {
  FetchDecision decision; Map *map=owner->map; decision.score=map->getW()+map->getW();
- for(int r=0;r<MAX_RESOURCES;++r) {
+ for(int r=0;r<MaterialCount;++r) {
   const int need=needs[r]; if(need<=0) continue;
   int distance=0;
   bool available=map->buildingDecisionDistance(attachedBuilding,swimClass(),r,posX,posY,&distance,fresh,false,BuildingRoute::Footprint);

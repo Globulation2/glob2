@@ -17,6 +17,7 @@
 #include "ai/cortex/CortexTuning.h"
 #include "Game.h"
 #include "GameRuleOverrides.h"
+#include "BuildingGradientBudgetPolicy.h"
 #include "Player.h"
 #include "TeamStat.h"
 #include "Unit.h"
@@ -232,6 +233,15 @@ void Headless::playersAndTeamsJson(std::ostream &result, Game &game, const std::
 			<< ",\"units\":" << units << ",\"workers\":" << workers << ",\"explorers\":" << explorers
 			<< ",\"warriors\":" << warriors << ",\"warrior_hp\":" << warriorHP << ",\"warrior_attack\":" << warriorAttack
 			<< ",\"buildings\":" << buildings << ",\"sites\":" << sites;
+
+        // Export existing cumulative counters only after simulation finishes.
+        const auto &m=team->stats.measurements;
+        Uint64 starvation=0,completed=0;
+        for(int u=0;u<NB_UNIT_TYPE;++u) starvation+=m.deaths[u][GameplayMeasurements::STARVATION];
+        for(const auto &v:m.variants) completed+=v.completed[GameplayMeasurements::NEW_BUILDING];
+        result << ",\"routing_comparison\":{\"wheat_delivered\":" << m.delivered[materialIndex(MaterialId::Food)]
+            << ",\"wheat_harvested\":" << m.harvested[materialIndex(MaterialId::Food)]
+            << ",\"starvation_deaths\":" << starvation << ",\"construction_completed\":" << completed << '}';
 		const TeamStat &stats=*team->stats.getLatestStat();
 		result << ",\"standard_statistics\":"; standardStatistics(result,stats);
 		result << ",\"statistics\":{\"total_units\":" << stats.totalUnit << ",\"total_buildings\":" << stats.totalBuilding
@@ -445,7 +455,25 @@ struct HeadlessRunner
 				applyGameRule(engine.gui.game.gameHeader, rule);
 			}
 		}
-		const auto &gradientExperiments = engine.gui.game.gameHeader.getExperiments();
+		if (options.count("--building-gradient-budget-model")) {
+            const auto pending = engine.gui.game.map.buildingRefreshStatus();
+            if (pending.pending || pending.queuedRequests) throw std::invalid_argument("cannot change gradient model with pending refreshes");
+            std::ifstream input(one(options, "--building-gradient-budget-model"), std::ios::binary);
+            if (!input) throw std::invalid_argument("cannot read building gradient budget model");
+            std::string model;
+            char buffer[4096];
+            while (input.read(buffer, sizeof(buffer)) || input.gcount()) {
+                model.append(buffer, input.gcount());
+                if (model.size() > BuildingGradientBudgetPolicy::MaximumBytes) throw std::invalid_argument("building gradient budget model is too large");
+            }
+            engine.gui.game.gameHeader.setBuildingGradientBudgetModel(model);
+        }
+        const auto &gradientExperiments = engine.gui.game.gameHeader.getExperiments();
+        if (!engine.gui.game.gameHeader.getBuildingGradientBudgetModel().empty() &&
+            (!gradientExperiments.has(ExperimentId::BuildingGradientPipeline) ||
+             !gradientExperiments.has(ExperimentId::BuildingGradientPartial) ||
+             gradientExperiments.has(ExperimentId::RoundTripResourceFetching)))
+            throw std::invalid_argument("building gradient budget models require the partial pipeline with greedy fetching");
 		if ((gradientExperiments.has(ExperimentId::BuildingGradientHybrid) ||
 			 gradientExperiments.has(ExperimentId::BuildingGradientPartial)) &&
 			!gradientExperiments.has(ExperimentId::BuildingGradientPipeline))
@@ -727,7 +755,7 @@ int runHeadlessCommand(int argc,char **argv)
 			std::cout << "}" << std::endl;return 0;
 		}
 		const std::set<std::string> common={"--output-dir","--profile","--building-catalog"};
-		const std::set<std::string> gameKeys={"--diagnostic-fields","--diagnostic-interval","--diagnostic-png","--benchmark-warmup","--ai-script","--map-script","--map-file","--load-game","--game-seed","--player","--ai-param","--alliance","--win-condition","--win-probability","--experiment","--rule","--ticks","--compute-threads","--compute-experiments","--gradient-workers","--gradient-delay","--ai-order-delay","--fork-rule","--building-gradient-instrumentation","--gradient-counterfactual","--save","--telemetry","--replay","--generator","--map-seed","--param","--candidates"};
+		const std::set<std::string> gameKeys={"--diagnostic-fields","--diagnostic-interval","--diagnostic-png","--benchmark-warmup","--ai-script","--map-script","--map-file","--load-game","--game-seed","--player","--ai-param","--alliance","--win-condition","--win-probability","--experiment","--rule","--ticks","--compute-threads","--compute-experiments","--gradient-workers","--gradient-delay","--ai-order-delay","--fork-rule","--building-gradient-instrumentation","--building-gradient-budget-model","--gradient-counterfactual","--save","--telemetry","--replay","--generator","--map-seed","--param","--candidates"};
 		const std::set<std::string> mapKeys={"--generator","--map-seed","--param","--candidates","--rotations","--write-map","--report","--perturb"};
 		Options options;
 		for(int i=2;i<argc;++i)

@@ -1040,7 +1040,7 @@ public:
 	//! Swim class of a unit with these walk and swim speeds (0 = cannot swim).
 	static int swimClass(int walkSpeed, int swimSpeed);
 	//! Swim class used where no unit is at hand: water costs the same as land.
-	static constexpr int SWIM_CLASS_EVEN = 3;
+	static constexpr int SWIM_CLASS_EVEN = ::SWIM_CLASS_EVEN;
 	//! Cheapest possible step for a class, the A* heuristic unit.
 	int minStepCost(int swimClass) const;
 	//! Highest cost a pathfinding gradient can hold (see GradientConstants.h).

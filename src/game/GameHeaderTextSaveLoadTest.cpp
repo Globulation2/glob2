@@ -56,6 +56,8 @@ GameHeader makeFixtureHeader()
 	header.setGameLatency(12);
 	header.setOrderRate(3);
 	header.setAIOrderDelay(8);
+    header.setBuildingGradientDelay(8);
+    header.setBuildingGradientBudgetModel(R"({"levels":[[],[],[{"features":[0,0,-1],"cost":80}]]})");
 	header.setRandomSeed(0xCAFEBABE);
 	header.setMapDiscovered(true);
 	header.setAllyTeamsFixed(true);
@@ -121,6 +123,8 @@ void testFullRoundTrip()
 	check(loaded.getGameLatency() == 12, "full: gameLatency preserved");
 	check(loaded.getOrderRate() == 3, "full: orderRate preserved");
 	check(loaded.getAIOrderDelay() == 8, "full: AI order delay preserved");
+    check(loaded.getBuildingGradientDelay() == 8, "full: building delay preserved");
+    check(loaded.getBuildingGradientBudgetModel() == original.getBuildingGradientBudgetModel(), "full: predictive budget preserved");
 	for (int team = 0; team < Team::MAX_COUNT; ++team)
 		check(loaded.getAllyTeamNumber(team) == original.getAllyTeamNumber(team),
 		      "full: indexed alliance slots preserved");
@@ -206,8 +210,9 @@ void testBinaryHeaderFormsAndLegacy()
 			experimentBytes=section->getPosition();
 		}
 		const size_t catalogBytes=4; // Empty catalog: zero chunk count (version136).
+        const size_t buildingBytes=1+4+(original.getBuildingGradientBudgetModel().empty() ? 0 : 4+original.getBuildingGradientBudgetModel().size());
         const size_t resourceExperimentBytes=4; // Empty declaration count (version140).
-		if (form!=1) extension+=ruleBytes+experimentBytes+catalogBytes+resourceExperimentBytes+1;
+		if (form!=1) extension+=ruleBytes+experimentBytes+catalogBytes+resourceExperimentBytes+buildingBytes;
         // Version 143 inserted delay after int32 latency and uint8 rate,
         // before the existing payload. Older forms need that byte removed,
         // not a shorter tail; player-info-only records never contain it.
@@ -228,7 +233,7 @@ void testBinaryHeaderFormsAndLegacy()
 		{
 			// Version 101 ended before the custom-game rule bytes: its headers load
 			// exactly, with every rule off.
-			const size_t v101Size=historical.size()-ruleBytes-experimentBytes-catalogBytes-resourceExperimentBytes-1;
+			const size_t v101Size=historical.size()-ruleBytes-experimentBytes-catalogBytes-resourceExperimentBytes-buildingBytes;
 			auto *v101Bytes=new MemoryStreamBackend(historical.data(),v101Size);
 			v101Bytes->seekFromStart(0);
 			BinaryInputStream v101(v101Bytes);
@@ -244,9 +249,9 @@ void testBinaryHeaderFormsAndLegacy()
             // following record stays aligned.
             constexpr Sint32 priorVersion=FILE_FORMAT_VERSION_AI_PIPELINE-1;
             constexpr Uint32 sentinel=0x51A140;
-            auto* v139Bytes=new MemoryStreamBackend;
-            BinaryOutputStream legacyOut(v139Bytes);
-            legacyOut.write(historical.data(),historical.size()-1,"header");
+            auto* priorBytes=new MemoryStreamBackend;
+            BinaryOutputStream legacyOut(priorBytes);
+            legacyOut.write(historical.data(),historical.size()-buildingBytes,"header");
             legacyOut.writeUint32(sentinel,"nextRecord");legacyOut.flush();
             priorBytes->seekFromStart(0);
             BinaryInputStream prior(new MemoryStreamBackend(*priorBytes));
@@ -311,6 +316,7 @@ TEST_SUITE("GameHeaderTextSaveLoad")
 				GameHeader original;
 				original.getExperiments().set(ExperimentId::BuildingGradientPipeline);
 				original.setBuildingGradientDelay(delay);
+                original.setBuildingGradientBudgetModel(R"({"levels":[[],[],[{"features":[0,0,-1],"cost":80}]]})");
 				auto *bytes = new MemoryStreamBackend;
 				BinaryOutputStream out(bytes);
 				if (form == 0)
@@ -325,6 +331,7 @@ TEST_SUITE("GameHeaderTextSaveLoad")
 								   : loaded.loadWithoutPlayerInfo(&in, VERSION_MINOR)));
 				CHECK(loaded.hasExperiment(ExperimentId::BuildingGradientPipeline));
 				CHECK(loaded.getBuildingGradientDelay() == delay);
+                CHECK(loaded.getBuildingGradientBudgetModel() == original.getBuildingGradientBudgetModel());
 			}
 		GameHeader header;
 		CHECK_FALSE(header.hasExperiment(ExperimentId::BuildingGradientPipeline));

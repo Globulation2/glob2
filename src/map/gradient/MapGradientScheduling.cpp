@@ -77,6 +77,14 @@ void Map::submitBuildingRefreshes()
 	if (!buildingPipelineEnabled())
 		return;
 	auto &scheduler = gradientRuntime->buildings;
+    if (scheduler.requests.empty()) return;
+    const auto &model = game->gameHeader.getBuildingGradientBudgetModel();
+    if (model != gradientRuntime->buildingBudgetSource) {
+        gradientRuntime->buildingBudgetPolicy = model.empty() ? nullptr : std::make_unique<BuildingGradientBudgetPolicy>(model);
+        gradientRuntime->buildingBudgetSource = model;
+    }
+    std::array<std::pair<unsigned, unsigned>, Team::MAX_COUNT> colonies{};
+    std::array<bool, Team::MAX_COUNT> counted{};
 	std::shared_ptr<building_gradient::Terrain> terrain;
 	std::shared_ptr<BuildingGradientSpool> spool;
 	for (auto it = scheduler.requests.begin(); it != scheduler.requests.end();)
@@ -96,8 +104,8 @@ void Map::submitBuildingRefreshes()
 			continue;
 		}
 		unsigned children = 0;
-		for (int r = 0; r < MAX_NB_RESOURCES; ++r)
-			if (route == BuildingRoute::Footprint && b->roundTripGradient[r][swim])
+		for (int r = 0; r < MaterialSlotCount; ++r)
+			if (game->gameHeader.hasExperiment(ExperimentId::RoundTripResourceFetching) && route == BuildingRoute::Footprint && b->roundTripGradient[r][swim])
 				++children;
 		const bool partial = game->gameHeader.hasExperiment(ExperimentId::BuildingGradientPartial);
 		const auto fieldBytes = size * sizeof(Uint16) * (1 + 3 * children),
@@ -121,7 +129,17 @@ void Map::submitBuildingRefreshes()
 		job->due = job->captured + game->gameHeader.getBuildingGradientDelay();
 		job->generation = topologyGeneration;
 		job->partial = partial;
-		if (partial)
+        if (partial && gradientRuntime->buildingBudgetPolicy) {
+            const auto team = b->owner->teamNumber;
+            if (!counted[team]) {
+                for (const auto *unit : b->owner->liveUnits.entries()) if (!unit->isDead) ++colonies[team].first;
+                for (const auto *building : b->owner->liveBuildings.entries()) if (!building->type->isVirtual) ++colonies[team].second;
+                counted[team] = true;
+            }
+            const auto [units, buildings] = colonies[team];
+            job->costBudget = gradientRuntime->buildingBudgetPolicy->predict(b->type->key, units, buildings, int(route), swim);
+        }
+		if (partial && job->costBudget < 0)
 		{
 			for (const auto *unit : b->unitsWorking)
 				if (!unit->isDead && unit->swimClass() == swim)
@@ -141,7 +159,7 @@ void Map::submitBuildingRefreshes()
 		job->reservedBytes+=job->targetBytes;
 		synchronous = scheduler.bytes()+needed+job->targetBytes>scheduler.BYTE_LIMIT;
 		if(route==BuildingRoute::Footprint) building_gradient::captureParents(*this,*b,swim,job->parents,job->supplierGoals);
-		for(int r=0;r<MAX_NB_RESOURCES;++r) if(!job->parents[r].empty()) { Uint32 fingerprint=2166136261u; for(auto value:job->parents[r]) fingerprint=(fingerprint^value)*16777619u; job->parentVersions[r]=fingerprint; }
+		for(int r=0;r<MaterialSlotCount;++r) if(!job->parents[r].empty()) { Uint32 fingerprint=2166136261u; for(auto value:job->parents[r]) fingerprint=(fingerprint^value)*16777619u; job->parentVersions[r]=fingerprint; }
 		b->dirtyGradient[key.second] =
 			false; // Later dirty notifications belong to the next snapshot.
 		if (measure)
@@ -160,7 +178,7 @@ void Map::submitBuildingRefreshes()
 					   cpu = measure ? BuildingGradientDiagnostics::threadCpuNow() : 0;
 			job->result =
 				building_gradient::build(*job->terrain, job->destination, job->parents, scratch,
-				job->partial ? &job->targets : nullptr, &job->supplierGoals);
+				job->partial ? &job->targets : nullptr, &job->supplierGoals, job->costBudget);
 			if (measure)
 			{
 				job->buildNs = BuildingGradientDiagnostics::now() - started;
@@ -244,7 +262,7 @@ void Map::publishBuildingRefreshes()
 					b->locked[buildingAccessIndex(sw,route)] = result.locked;
 					if (job.destination.clearing)
 						b->anyResourceToClear[buildingPipelineEnabled() ? buildingAccessIndex(sw,route) : int(sw>0)] = result.resourceState;
-					for (int r = 0; r < MAX_NB_RESOURCES; ++r)
+					for (int r = 0; r < MaterialSlotCount; ++r)
 						if (!result.trips[r].empty() && b->roundTripGradient[r][sw])
 						{
 							std::copy(result.trips[r].begin(), result.trips[r].end(),

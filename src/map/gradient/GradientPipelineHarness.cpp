@@ -7,23 +7,59 @@
 #include <cstdint>
 #include "map/gradient/GradientPipeline.h"
 #include "map/gradient/BuildingGradientBuild.h"
+#include "map/gradient/BuildingGradientBudgetPolicy.h"
 #include <array>
 #include <stdexcept>
 
 TEST_SUITE("GradientPipeline")
 {
+    TEST_CASE("saved budget tables use deterministic hierarchical fallback")
+    {
+        const BuildingGradientBudgetPolicy policy(R"({"levels":[
+            [{"features":["inn",4,3,0,0,-1],"cost":50}],
+            [{"features":["inn",0,0,-1],"cost":80}],
+            [{"features":[0,0,-1],"cost":100}]]})");
+        CHECK(policy.predict("inn", 8, 4, 0, 0) == 50);
+        CHECK(policy.predict("inn", 128, 4, 0, 0) == 80);
+        CHECK(policy.predict("swarm", 128, 4, 0, 0) == 100);
+        CHECK(policy.predict("inn", 8, 4, 1, 0) == 0);
+        CHECK_THROWS(BuildingGradientBudgetPolicy(R"({"levels":[[],[],[{"features":[0,0,-1],"cost":-1}]]})"));
+        CHECK_THROWS(BuildingGradientBudgetPolicy(R"({"levels":[]})"));
+    }
+    TEST_CASE("bounded prebuild resumes to the same complete frozen field")
+    {
+        building_gradient::Terrain terrain;
+        terrain.width = terrain.height = 32;
+        terrain.cells.assign(1024, {0, 65535, NO_RES_TYPE, 255, 0, GRASS});
+        terrain.costs = std::make_shared<const std::vector<TerrainType>>(1024, GRASS);
+        building_gradient::Destination destination;
+        destination.route = 1; destination.x = destination.y = 16;
+        destination.teamMask = destination.allies = 1;
+        std::array<std::vector<std::uint16_t>, MaterialSlotCount> parents;
+        GradientWorkspace scratch;
+        const auto eager = building_gradient::build(terrain, destination, parents, scratch);
+        const std::vector<std::size_t> targets{};
+        for (int cost : {0, 10, 30, 80, 150}) {
+            auto partial = building_gradient::build(terrain, destination, parents, scratch, &targets, nullptr, cost);
+            CHECK(partial.walkingCutoff >= cost);
+            if (!cost) CHECK(partial.walking[terrain.index(17, 16)] == GRADIENT_UNREACHABLE);
+            else CHECK(partial.walking[terrain.index(17, 16)] == eager.walking[terrain.index(17, 16)]);
+            partial.materialize();
+            CHECK(partial.walking == eager.walking);
+        }
+    }
 	TEST_CASE("pure building bundles are identical with slow workers and thread creation failure")
 	{
 		building_gradient::Terrain terrain;
 		terrain.width = terrain.height = 8;
-		terrain.cells.assign(64, {0, 65535, 255, 255, 0, GRASS});
+		terrain.cells.assign(64, {0, 65535, NO_RES_TYPE, 255, 0, GRASS});
 		terrain.costs = std::make_shared<const std::vector<TerrainType>>(64, GRASS);
 		building_gradient::Destination destination;
 		destination.x = destination.y = 3;
 		destination.virtualBuilding = true;
 		destination.radius = 1;
 		destination.teamMask = destination.allies = 1;
-		std::array<std::vector<std::uint16_t>, MAX_NB_RESOURCES> parents;
+		std::array<std::vector<std::uint16_t>, MaterialSlotCount> parents;
 		parents[0].assign(64, GRADIENT_UNREACHABLE);
 		parents[0][0] = GRADIENT_AT_GOAL;
 		GradientWorkspace scratch;

@@ -157,12 +157,12 @@ TEST_SUITE("WorldSnapshot")
 		fixture.game.map.setResourceByIndex(20, 20, WHEAT, 1);
 		fixture.game.map.setResourceAmount(fixture.game.map.coordToIndex(20, 20), 1);
 		const auto before = store->captureBoundary(fixture.game, required);
-		fixture.game.map.setResourceAmount(fixture.game.map.coordToIndex(20, 20), 7);
+		fixture.game.map.setResourceAmount(fixture.game.map.coordToIndex(20, 20), 3);
 		const auto after = store->captureBoundary(fixture.game, required, true);
 		const auto tile = fixture.game.map.coordToIndex(20, 20);
 		CHECK(after.tick == before.tick);
 		CHECK(before.resources->cells[tile].resource.amount == 1);
-		CHECK(after.resources->cells[tile].resource.amount == 7);
+		CHECK(after.resources->cells[tile].resource.amount == 3);
 		CHECK(after.terrain == before.terrain);
 		CHECK_FALSE(after.entities);
 		CHECK_FALSE(after.visibility);
@@ -188,7 +188,7 @@ TEST_SUITE("WorldSnapshot")
 			const auto captured=store.captureBoundary(fixture.game,SimulationSnapshot::bit(SimulationSnapshot::Component::Entities));
 			REQUIRE(captured.entities->buildings.size()==1);
 			for (unsigned route=0;route<3;++route) for (unsigned swim=0;swim<2;++swim)
-				CHECK(captured.entities->buildings[0].locked[route*2+swim]==bool((route+swim)%2));
+				CHECK(captured.entities->buildings[0].accessLocked(bool(swim),route)==bool((route+swim)%2));
 		}
 	}
 

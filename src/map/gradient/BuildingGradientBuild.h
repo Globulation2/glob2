@@ -4,6 +4,7 @@
 #include "BuildingGradientSearch.h"
 #include "MapInternal.h"
 #include "Ressource.h"
+#include "ResourceRegistry.h"
 #include "UnitConsts.h"
 #include "sim/snapshot/WorldSnapshot.h"
 #include <array>
@@ -16,7 +17,8 @@ struct Cell
 {
 	std::uint32_t forbidden;
 	std::uint16_t building;
-	std::uint8_t resource, immobile, team;
+	std::uint16_t resource;
+	std::uint8_t immobile, team;
 	TerrainType terrain = GRASS;
 };
 struct Terrain
@@ -39,6 +41,7 @@ struct Terrain
 	}
 	std::shared_ptr<const std::vector<TerrainType>> costs;
 	std::shared_ptr<const TerrainRegistry> registry = TerrainRegistry::builtins();
+	std::shared_ptr<const ResourceRegistry> resources = ResourceRegistry::legacy();
 	std::array<BuildingGradientInputs, SWIM_CLASS_COUNT> inputs;
 	std::size_t index(int x, int y) const
 	{
@@ -52,17 +55,17 @@ struct Destination
 	bool occupiesGround = true;
 	std::uint32_t identity = 0, epoch = 0, teamMask = 0, allies = 0;
 	bool virtualBuilding = false, clearing = false, war = false;
-	std::array<bool, BASIC_COUNT> clearingResources{};
+	std::array<bool, MaterialCount> clearingMaterials{};
 };
 struct Result
 {
 	std::vector<std::uint16_t> walking;
-	std::array<std::vector<std::uint16_t>, MAX_NB_RESOURCES> trips;
+	std::array<std::vector<std::uint16_t>, MaterialSlotCount> trips;
 	bool locked = false;
 	std::uint8_t resourceState = 0;
 	// A cutoff is the first unsettled cost layer, -1 denotes a complete field.
 	int walkingCutoff = -1, width = 0, height = 0, swim = 0;
-	std::array<int, MAX_NB_RESOURCES> tripCutoff{}, tripLimit{};
+	std::array<int, MaterialSlotCount> tripCutoff{}, tripLimit{};
 	std::shared_ptr<const std::vector<TerrainType>> costs;
 	BuildingGradientInputs inputs;
 	bool modifiedCosts = false;
@@ -78,7 +81,7 @@ struct Result
 			cutoff = -1;
 		};
 		finish(walking, walkingCutoff, gradient_kernel::COST_LIMIT);
-		for (int r = 0; r < MAX_NB_RESOURCES; ++r) finish(trips[r], tripCutoff[r], tripLimit[r]);
+		for (int r = 0; r < MaterialSlotCount; ++r) finish(trips[r], tripCutoff[r], tripLimit[r]);
 		costs.reset();
 		inputs={};
 	}
@@ -96,7 +99,10 @@ inline std::uint8_t paintGoals(const Terrain &map, const Destination &b, std::ui
 					auto i = map.index(b.x + x, b.y + y);
 					const auto c = cellAt(i);
 					if (!b.clearing ||
-						(c.resource < BASIC_COUNT && b.clearingResources[c.resource]))
+						(c.resource != NO_RES_TYPE && map.resources->properties(static_cast<ResourceId>(c.resource)).clearable &&
+                         [&] { const auto mask = map.resources->properties(static_cast<ResourceId>(c.resource)).materialMask;
+                             for (int r = 0; r < MaterialCount; ++r) if (b.clearingMaterials[r] && (mask & (1u << r))) return true;
+                             return false; }()))
 					{
 						field[i] = GRADIENT_AT_GOAL;
 						any = true;
@@ -104,7 +110,7 @@ inline std::uint8_t paintGoals(const Terrain &map, const Destination &b, std::ui
 				}
 	return b.clearing ? (any ? 1 : 2) : 0;
 }
-inline std::uint16_t seedCell(const Cell &c, const Destination &b, std::uint16_t initial, const TerrainRegistry &registry)
+inline std::uint16_t seedCell(const Cell &c, const Destination &b, std::uint16_t initial, const TerrainRegistry &registry, const ResourceRegistry &resources)
 {
 	if (c.building != 0xffff)
 	{
@@ -115,7 +121,7 @@ inline std::uint16_t seedCell(const Cell &c, const Destination &b, std::uint16_t
 		return initial == GRADIENT_AT_GOAL ? initial : GRADIENT_UNREACHABLE;
 	}
 	if ((c.forbidden & b.teamMask) ||
-		(c.resource != NO_RES_TYPE && !(b.clearing && initial == GRADIENT_AT_GOAL)) ||
+		(c.resource != NO_RES_TYPE && resources.properties(static_cast<ResourceId>(c.resource)).blocksGround && !(b.clearing && initial == GRADIENT_AT_GOAL)) ||
 		c.immobile != IMMOBILE_UNIT_NONE ||
 		(!registry.properties(c.terrain).walkable &&
 		 !(b.swim && registry.properties(c.terrain).swimmable) &&
@@ -163,9 +169,9 @@ inline int seedTrip(const Terrain &map, const std::uint16_t *parent, const std::
 }
 // All inputs are immutable; this kernel has no Map, Building, RNG or telemetry access.
 inline Result build(const Terrain &map, const Destination &b,
-					const std::array<std::vector<std::uint16_t>, MAX_NB_RESOURCES> &resources,
+					const std::array<std::vector<std::uint16_t>, MaterialSlotCount> &resources,
 					GradientWorkspace &scratch, const std::vector<std::size_t> *targets = nullptr,
- const std::array<std::vector<std::uint16_t>, MAX_NB_RESOURCES> *supplierGoals = nullptr)
+ const std::array<std::vector<std::uint16_t>, MaterialSlotCount> *supplierGoals = nullptr, int costBudget = -1)
 {
 	Result result;
 	result.width = map.width; result.height = map.height; result.swim = b.swim;
@@ -182,7 +188,7 @@ inline Result build(const Terrain &map, const Destination &b,
 	result.resourceState =
 		paintGoals(map, b, field.data(), [&](std::size_t i) { return map.cellAt(i); });
 	for (std::size_t i = 0; i < field.size(); ++i)
-		field[i] = seedCell(map.cellAt(i), b, field[i], *map.registry);
+		field[i] = seedCell(map.cellAt(i), b, field[i], *map.registry, *map.resources);
 	if(b.route==0 && !b.occupiesGround) for(int y=0;y<b.height;++y) for(int x=0;x<b.width;++x) field[map.index(b.x+x,b.y+y)]=GRADIENT_AT_GOAL;
 	result.locked = isLocked(map, b, field.data());
 	// Eager bundles use the same reusable bucket kernels as live fields. Partial
@@ -211,12 +217,13 @@ inline Result build(const Terrain &map, const Destination &b,
 			bool children = false;
 			for (const auto &parent : resources) children |= !parent.empty();
 			if (children) search.finish("round_trip_parent");
-			else for (auto cell : *targets) search.resolve(cell, "captured_demand");
+			else if (costBudget >= 0) search.precompute(costBudget);
+            else for (auto cell : *targets) search.resolve(cell, "captured_demand");
 			result.walkingCutoff = search.settledCost();
 		}
 		else propagate(field.data(), gradient_kernel::COST_LIMIT);
 	}
-	for (int r = 0; r < MAX_NB_RESOURCES; ++r)
+	for (int r = 0; r < MaterialSlotCount; ++r)
 		if (!resources[r].empty())
 		{
 			auto &trip = result.trips[r];

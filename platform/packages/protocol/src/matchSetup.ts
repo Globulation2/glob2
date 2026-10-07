@@ -188,6 +188,7 @@ export const MatchRules = Strict(
     permadeathDisabled: Type.Boolean(),
     peacefulMode: Type.Boolean(),
     buildingHpLevel: Type.Integer({ minimum: 0, maximum: 2 }),
+    buildingGradientBudgetModel: Type.Optional(Type.String({ maxLength: 1024 * 1024 })),
     buildingGradientDelay: Type.Optional(
       Type.Union([Type.Literal(2), Type.Literal(4), Type.Literal(8)], { default: 4 }),
     ),

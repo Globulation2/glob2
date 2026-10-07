@@ -14,13 +14,19 @@ def configure(env):
               root / 'src/online/SkinSpriteManifest.h',
               root / 'libgag/src/SkinMesh.cpp',
               root / 'libgag/include/SkinMesh.h',
+              root / 'libgag/include/SkinModel.h',
+              root / 'libgag/src/SkinModel.cpp',
+              root / 'libgag/include/SkinShapeModel.h',
+              root / 'libgag/src/SkinShapeModel.cpp',
+              root / 'libgag/include/SkinDeformation.h',
               root / 'src/online/SkinViewTransforms.h',
               root / 'src/online/SwarmMeshCatalog.h',
               root / 'src/unit/render/UnitAnimation.h',
               root / 'src/unit/render/ColonySkinPreview.cpp',
               root / 'libgag/shaders/skin-materials.json',
               root / 'libgag/shaders/skin-material.glsl']
-    inputs += sorted((root / 'data/skins/colony-v1').glob('*.gsk'))
+    for pattern in ('*.gsk', '*.gsr', '*.gsb', '*.view.json'):
+        inputs += sorted((root / 'data/skins/colony-v1').glob(pattern))
 
     def generate(target, source, env):
         recipe = json.loads(inputs[0].read_text())

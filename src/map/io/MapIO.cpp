@@ -1173,7 +1173,7 @@ void Map::saveBuildingRefreshes(GAGCore::OutputStream *stream) const
 				stream->writeUint8(result.locked, "locked");
 				stream->writeUint8(result.resourceState, "resourceState");
 				saveGradient(stream, result.walking.data(), size);
-				for (int r = 0; r < MAX_NB_RESOURCES; ++r)
+				for (int r = 0; r < MaterialSlotCount; ++r)
 				{
 					stream->writeEnterSection(r);
 					stream->writeUint32(job.parentVersions[r], "parentVersion");
@@ -1266,7 +1266,7 @@ void Map::loadBuildingRefreshes(GAGCore::InputStream *stream, Sint32 versionMino
 		readField(job->result.walking);
 		if (job->result.walking.empty())
 			throw std::runtime_error("Missing building refresh walking field");
-		for (int r = 0; r < MAX_NB_RESOURCES; ++r)
+		for (int r = 0; r < MaterialSlotCount; ++r)
 		{
 			stream->readEnterSection(r);
 			job->parentVersions[r] = stream->readUint32("parentVersion");

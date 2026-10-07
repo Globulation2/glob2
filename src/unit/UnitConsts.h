@@ -39,6 +39,7 @@ enum Abilities
 //! land to water being three times dearer (see Map::swimClass). The map keeps
 //! one gradient per class so units share routes at their quantized water cost.
 static constexpr int SWIM_CLASS_COUNT = 7;
+static constexpr int SWIM_CLASS_EVEN = 3;
 const int NB_MOVE=9;
 const int NB_ABILITY=17;
 

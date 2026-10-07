@@ -85,6 +85,26 @@ std::string sha256Hex(const std::string &text)
 
 TEST_SUITE("MatchSetup")
 {
+    TEST_CASE("building budget models survive setup and header conversion and require compatible rules")
+    {
+        glob2test::HeadlessGlobals globals;
+        auto document=json::parse(glob2test::readFile(fixtureRoot()/"valid/MatchSetup/room-closed-seats.json"));
+        const std::string model=R"({"levels":[[],[],[]]})";
+        document["rules"]["buildingGradientBudgetModel"]=model;
+        document["experiments"].push_back("building-gradient-pipeline");
+        document["experiments"].push_back("building-gradient-partial");
+        const auto setup=MatchSetup::fromJson(document);
+        const auto header=setup.toGameHeader(mapWithTeams(4));
+        CHECK(header.getBuildingGradientBudgetModel()==model);
+        const auto restored=MatchSetup::fromGameHeader(header,mapWithTeams(4),setup.map,setup.simVersion);
+        CHECK(MatchSetup::parse(restored.dump()).rules.buildingGradientBudgetModel==model);
+        document["rules"]["buildingGradientBudgetModel"]="invalid";
+        CHECK_THROWS_AS(MatchSetup::fromJson(document),MatchSetupError);
+        document["rules"]["buildingGradientBudgetModel"]=model;
+        document["experiments"]=json::array();
+        CHECK_THROWS_AS(MatchSetup::fromJson(document).toGameHeader(mapWithTeams(4)),MatchSetupError);
+    }
+
     TEST_CASE("AI order delay is optional bounded integer data and round trips through headers")
     {
         glob2test::HeadlessGlobals globals;

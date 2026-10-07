@@ -64,7 +64,7 @@ struct BuildingStateRecord
 	bool gradientAccessByClass = false;
 	bool locked[3 * SWIM_CLASS_COUNT];
 	bool accessLocked(bool canSwim, unsigned route=0) const {
-		return locked[gradientAccessByClass ? route*SWIM_CLASS_COUNT+(canSwim ? 4 : 0)
+		return locked[gradientAccessByClass ? route*SWIM_CLASS_COUNT+(canSwim ? SWIM_CLASS_EVEN : 0)
 		                                  : route*2+unsigned(canSwim)];
 	}
 	bool operator==(const BuildingStateRecord&) const = default;

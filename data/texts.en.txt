@@ -5762,3 +5762,7 @@ Keep lightly staffed building routes lazy and synchronous. Schedule background r
 Partial background building gradients
 [experiment building-gradient-partial help]
 Background route refreshes resolve captured worker positions and retain frozen frontiers for later lazy queries. Requires scheduled building gradients.
+[experiment round-trip-resource-fetching]
+Round-trip resource fetching
+[experiment round-trip-resource-fetching help]
+Choose resources by the whole journey back to the building instead of the nearest source. Used about 14% more late-game simulation CPU in paired tests; food-delivery benefits depend on the map.

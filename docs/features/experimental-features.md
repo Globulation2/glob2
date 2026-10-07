@@ -96,7 +96,7 @@ game's experiments. See [headless replays](../development/headless-replays.md).
 | `guard-area-balancing` | Guard-area balancing | Free warriors spread between painted guard areas by crowding instead of all taking the nearest one. Design and measurements: [guard-area balancing](guard-area-balancing.md). |
 | `building-gradient-pipeline` | Scheduled building gradients | Refreshes cached building routes on private immutable snapshots, then publishes them after a fixed delay. First construction remains synchronous. Scheduling and measurement details: [performance telemetry](../development/performance-telemetry.md#scheduled-building-gradient-experiment). |
 | `building-gradient-hybrid` | Demand-based building gradients | With the pipeline enabled, keep fewer than four assigned workers per movement class synchronous and lazy. Classification uses saved simulation state; pending deadlines do not change when staffing changes. |
-| `building-gradient-partial` | Partial background building gradients | With the pipeline enabled, resolve captured worker positions in the background, then resume private frozen frontiers on demand after publication. Walking parents needed by round trips still finish first. |
+| `building-gradient-partial` | Partial background building gradients | With the pipeline enabled, resolve captured worker positions or a saved predictive cost budget in the background, then resume frozen frontiers on demand after publication. Predictive budgets require greedy fetching; walking parents needed by round trips finish first. |
 | `farm-areas` | Farm areas | A fourth painted area: a harvest inside it draws from the ripest tile of the connected field and keeps one grain on every tile, and wood growing into it is cleared. Design: [farm areas](farm-areas.md). |
 | `ice-terrain` | Ice terrain | Enables the ice editor brush. Ice halves ground movement speed and costs an exposed ground unit one HP per 32 ticks; flying units are unaffected. Ice supports neither buildings nor resources. |
 | `road-terrain` | Trail terrain | Enables the Trail editor brush. Weathered trails double ground movement speed, permit buildings, and support no resources. Flying units are unaffected. |
@@ -177,3 +177,26 @@ For a built-in engine experiment:
    golden match record as required by the simulation-version policy.
 6. In the pull request, describe the feel changes with the experiment on; a
    maintainer playing it is part of review.
+
+### Round-trip resource fetching
+
+Greedy fetching is the default: workers walk to the nearest available resource,
+then return to their building. Hiring and job swaps use existing trip-distance
+estimates and hunger checks; market eligibility and live movement checks still
+apply.
+
+Enable the saved `round-trip-resource-fetching` experiment to restore routing
+and candidate scoring using building-specific round-trip fields. These account
+for the return journey when choosing a resource patch. Across 24 paired seeded
+matches, greedy fetching used about 12% less late-game simulation CPU; enabling
+round-trip fetching therefore costs about 14% relative to greedy in that sample.
+Food delivery and starvation effects vary by layout. Compare both settings in
+real play before choosing a long-term policy.
+
+The experiment is off by default and persists in game saves, replay headers and
+network setup. Replay format 145 and simulation revision 29 distinguish the new
+default from earlier clients. Existing saves remain readable (minimum format
+58); saves without this flag now use greedy fetching. The former experimental
+`greedy-resource-fetching` key is obsolete and is ignored when loading, leaving
+the same greedy behavior. This can change the pacing and economy of older games
+that previously used round-trip routing.

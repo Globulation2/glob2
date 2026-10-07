@@ -76,6 +76,7 @@ struct World
 		game.players[0] = new Player(0, "harness", team, BasePlayer::P_LOCAL);
 		game.players[1] = new Player(1, "rival", game.teams[1], BasePlayer::P_LOCAL);
 		game.gameHeader.setNumberOfPlayers(2);
+        game.gameHeader.getExperiments().set(ExperimentId::RoundTripResourceFetching, true);
 		// Placement through an order needs the site to be on discovered ground.
 		game.map.setMapDiscovered();
 		siteType = globalContainer->buildingsTypes.getTypeNum("inn", 0, true);
@@ -648,11 +649,10 @@ TEST_SUITE("BuildingGradientInvalidation")
 				auto &game = world.game;
 				auto &map = game.map;
 				auto *b = world.place(24, 24);
-				editTile(map, 8, 8, [&](Tile &tile) { tile.resource.type = WOOD; });
-				editTile(map, 8, 8, [&](Tile &tile) { tile.resource.amount = 10; });
+				editTile(map, 8, 8, [&](Tile &tile) { tile.resource.type = WOOD; tile.resource.amount = 10; });
 				map.setCellTerrain(18, 18, TRAIL);
 				map.buildingGradient(b, 0);
-				map.roundTripGradient(b, WOOD, 0);
+				map.roundTripGradientSlot(b, WOOD, 0);
 				game.gameHeader.getExperiments().set(ExperimentId::BuildingGradientPipeline);
 				game.gameHeader.getExperiments().set(ExperimentId::BuildingGradientPartial);
 				map.configureGradientPipeline(workers, 8);
@@ -691,7 +691,7 @@ TEST_SUITE("BuildingGradientInvalidation")
 					int distance = 0;
 					map.buildingAvailable(b, 0, int(cell % map.getW()), int(cell / map.getW()), &distance);
 					require(b->globalGradient[0][cell] == expectedWalking[cell], "resumed walking query matches eager snapshot");
-					require(map.roundTripGradientAt(b, WOOD, 0, cell)[cell] == expectedTrip[cell], "resumed round-trip query matches eager snapshot");
+					require(map.roundTripGradientAtSlot(b, WOOD, 0, cell)[cell] == expectedTrip[cell], "resumed round-trip query matches eager snapshot");
 				}
 				map.finishRoundTripGradient(b, WOOD, 0);
 				require(expectedTrip == std::vector<Uint16>(b->roundTripGradient[WOOD][0], b->roundTripGradient[WOOD][0] + cells),
@@ -935,10 +935,9 @@ TEST_SUITE("BuildingGradientInvalidation")
 				for (int x = 3; x < 24; ++x) map.setCellTerrain(x, 12, TRAIL);
 				map.setCellTerrain(11, 12, ICE);
 			}
-			editTile(map, 8, 8, [&](Tile &tile) { tile.resource.type = WOOD; });
-			editTile(map, 8, 8, [&](Tile &tile) { tile.resource.amount = 10; });
+			editTile(map, 8, 8, [&](Tile &tile) { tile.resource.type = WOOD; tile.resource.amount = 10; });
 			map.buildingGradient(b, sw);
-			map.roundTripGradient(b, WOOD, sw);
+			map.roundTripGradientSlot(b, WOOD, sw);
 			game.gameHeader.getExperiments().set(ExperimentId::BuildingGradientPipeline);
 			map.configureGradientPipeline(4, 8);
 			game.stepCounter = DIRTY_GRACE_TICKS + 1;
@@ -954,7 +953,7 @@ TEST_SUITE("BuildingGradientInvalidation")
 			game.gameHeader.getExperiments().set(ExperimentId::BuildingGradientPipeline, false);
 			map.updateGlobalGradient(b, sw);
 			map.buildingGradient(b, sw);
-			map.updateRoundTripGradient(b, WOOD, sw);
+			map.updateRoundTripGradientSlot(b, WOOD, sw);
 			require(walking ==
 						std::vector<Uint16>(b->globalGradient[sw], b->globalGradient[sw] + cells),
 					"walking field matches synchronous full result");
@@ -973,8 +972,7 @@ TEST_SUITE("BuildingGradientInvalidation")
 		auto *b = world.place(20, 20);
 		for (int x = 3; x < 20; ++x) map.setCellTerrain(x, 15, TRAIL);
 		map.setCellTerrain(8, 15, ICE);
-		editTile(map, 6, 6, [&](Tile &tile) { tile.resource.type = WOOD; });
-		editTile(map, 6, 6, [&](Tile &tile) { tile.resource.amount = 10; });
+		editTile(map, 6, 6, [&](Tile &tile) { tile.resource.type = WOOD; tile.resource.amount = 10; });
 		game.gameHeader.getExperiments().set(ExperimentId::BuildingGradientPipeline);
 		map.configureGradientPipeline(4, 8);
 		map.configureBuildingGradientImpact("terrain-bundle-oracle");
@@ -983,7 +981,7 @@ TEST_SUITE("BuildingGradientInvalidation")
 		for (int sw = 0; sw < SWIM_CLASS_COUNT; ++sw)
 		{
 			map.buildingGradient(b, sw);
-			map.roundTripGradient(b, WOOD, sw);
+			map.roundTripGradientSlot(b, WOOD, sw);
 		}
 		game.stepCounter = 200;
 		map.beginGradientDecision("movement", b->gid, -1);
@@ -1076,10 +1074,9 @@ TEST_SUITE("BuildingGradientInvalidation")
 		auto &game = world.game;
 		auto &map = game.map;
 		auto *b = world.place(24, 24);
-		editTile(map, 8, 8, [&](Tile &tile) { tile.resource.type = WOOD; });
-		editTile(map, 8, 8, [&](Tile &tile) { tile.resource.amount = 10; });
+		editTile(map, 8, 8, [&](Tile &tile) { tile.resource.type = WOOD; tile.resource.amount = 10; });
 		map.buildingGradient(b, 0);
-		map.roundTripGradient(b, WOOD, 0);
+		map.roundTripGradientSlot(b, WOOD, 0);
 		game.gameHeader.getExperiments().set(ExperimentId::BuildingGradientPipeline);
 		map.configureGradientPipeline(4, 8);
 		game.stepCounter = 200;
@@ -1122,15 +1119,14 @@ TEST_SUITE("BuildingGradientInvalidation")
 		auto &game = world.game;
 		auto &map = game.map;
 		auto *b = world.place(24, 24);
-		editTile(map, 8, 8, [&](Tile &tile) { tile.resource.type = WOOD; });
-		editTile(map, 8, 8, [&](Tile &tile) { tile.resource.amount = 10; });
+		editTile(map, 8, 8, [&](Tile &tile) { tile.resource.type = WOOD; tile.resource.amount = 10; });
 		map.buildingGradient(b, 0);
 		game.gameHeader.getExperiments().set(ExperimentId::BuildingGradientPipeline);
 		map.configureGradientPipeline(2, 8);
 		game.stepCounter = 200;
 		map.requestBuildingRefresh(b, 0);
 		map.submitBuildingRefreshes();
-		map.roundTripGradient(b, WOOD, 0);
+		map.roundTripGradientSlot(b, WOOD, 0);
 		require(b->roundTripGradient[WOOD][0] != nullptr,
 				"new field constructed before bundle deadline");
 		const auto cells = std::size_t(map.getW()) * map.getH();
@@ -1241,22 +1237,21 @@ TEST_SUITE("BuildingGradientInvalidation")
 		require(inn && market, "completed inn and market created");
 		map.setBuilding(inn->posX, inn->posY, inn->type->width, inn->type->height, inn->gid);
 		map.setBuilding(market->posX, market->posY, market->type->width, market->type->height, market->gid);
-		market->resources[WHEAT] = 10;
+		market->materials[WHEAT] = 10;
 		int resourceDistance = 0;
-		require(map.resourceAvailable(0, WHEAT, 0, 10, 10, &resourceDistance, true, inn),
+		require(map.materialAvailableSlot(0, WHEAT, 0, 10, 10, &resourceDistance, true, inn),
 				"published stocked-market parent allocated");
 		map.buildingGradient(market, 0);
-		map.roundTripGradient(inn, WHEAT, 0);
-		editTile(map, 24, 18, [&](Tile &tile) { tile.resource.type = WOOD; });
-		editTile(map, 24, 18, [&](Tile &tile) { tile.resource.amount = 10; });
-		require(map.resourceAvailable(0, WOOD, 0, 10, 10, &resourceDistance),
+		map.roundTripGradientSlot(inn, WHEAT, 0);
+		editTile(map, 24, 18, [&](Tile &tile) { tile.resource.type = WOOD; tile.resource.amount = 10; });
+		require(map.materialAvailableSlot(0, WOOD, 0, 10, 10, &resourceDistance),
 				"competing wood patch parent allocated");
-		map.roundTripGradient(inn, WOOD, 0);
+		map.roundTripGradientSlot(inn, WOOD, 0);
 		map.configureBuildingGradientImpact("market-route-impact");
 		DecisionUnit unit(10, 10, Unit::GIDfrom(0, 0), WORKER, world.team, 0);
 		unit.performance[WALK] = 10;
 		unit.attachedBuilding = inn;
-		int needs[MAX_NB_RESOURCES]{};
+		int needs[MaterialSlotCount]{};
 		needs[WHEAT] = 2;
 		needs[WOOD] = 1;
 		map.beginGradientDecision("resource_type", inn->gid, unit.gid);
@@ -1273,7 +1268,7 @@ TEST_SUITE("BuildingGradientInvalidation")
 		require(live.resource == WHEAT && fresh.resource == WOOD,
 				"fresh carrying distance selects the competing wood patch while published route "
 				"selects wheat market");
-		require(rng == syncRandEngine() && market->resources[WHEAT] == 10,
+		require(rng == syncRandEngine() && market->materials[WHEAT] == 10,
 				"evaluators consume neither randomness nor market stock");
 		map.recordGradientDecision(inn, unit.swimClass(), live.resource,
 								   fresh.resource, live.resource,
@@ -1318,14 +1313,14 @@ TEST_SUITE("BuildingGradientInvalidation")
 		unit->activity = Unit::ACT_RANDOM;
 		unit->medical = Unit::MED_FREE;
 		unit->attachedBuilding = nullptr;
-		unit->carriedResource = WOOD;
+		unit->carriedMaterial = WOOD;
 		unit->trigHungry = 100;
 		unit->hungry = 100 + 50 * unit->race->hungriness;
 		b->desiredMaxUnitWorking = 1;
-		require(b->neededResource(WOOD) > 0, "site needs the candidate's cargo");
+		require(b->neededMaterial(WOOD) > 0, "site needs the candidate's cargo");
 		map.configureBuildingGradientImpact("opened-route-hiring");
 		auto rng = syncRandEngine();
-		require(!b->subscribeToBringResourcesStep(), "live stale route still rejects the worker");
+		require(!b->subscribeToBringMaterialsStep(), "live stale route still rejects the worker");
 		map.finishGradientImpact();
 		require(unit->activity == Unit::ACT_RANDOM && b->unitsWorking.empty() &&
 					rng == syncRandEngine(),
@@ -1359,14 +1354,13 @@ TEST_SUITE("BuildingGradientInvalidation")
 		map.auditBuildingMovement(&unit, b, escaped);
 
 		unit.posX = unit.posY = 8;
-		editTile(map, 8, 8, [&](Tile &tile) { tile.resource.type = WOOD; });
-		editTile(map, 8, 8, [&](Tile &tile) { tile.resource.amount = 10; });
-		map.roundTripGradient(b, WOOD, 0);
-		require(map.getResourceGradient(0, WOOD, 0)[map.coordToIndex(8, 8)] == GRADIENT_AT_GOAL,
+		editTile(map, 8, 8, [&](Tile &tile) { tile.resource.type = WOOD; tile.resource.amount = 10; });
+		map.roundTripGradientSlot(b, WOOD, 0);
+		require(map.getMaterialGradientSlot(0, WOOD, 0)[map.coordToIndex(8, 8)] == GRADIENT_AT_GOAL,
 				"published resource parent has a goal at the worker");
 		map.beginGradientDecision("movement", b->gid, unit.gid);
 		bool stop = false;
-		const bool moved = map.pathfindResource(0, WOOD, 0, 8, 8, &unit.dx, &unit.dy, &stop, b);
+		const bool moved = map.pathfindMaterial(0, WOOD, 0, 8, 8, &unit.dx, &unit.dy, &stop, b);
 		require(!moved && !stop, "live resource pathfinder stops on its published goal");
 		map.auditBuildingMovement(&unit, b, moved, WOOD);
 		map.finishGradientImpact();
@@ -1412,20 +1406,19 @@ TEST_SUITE("BuildingGradientInvalidation")
 		unit.destinationPurpose = WOOD;
 		unit.dx = 1;
 		unit.dy = 0;
-		editTile(map, 11, 10, [&](Tile &tile) { tile.resource.type = WOOD; });
-		editTile(map, 11, 10, [&](Tile &tile) { tile.resource.amount = 10; });
+		editTile(map, 11, 10, [&](Tile &tile) { tile.resource.type = WOOD; tile.resource.amount = 10; });
 		unit.handleDisplacement();
-		require(unit.carriedResource == WOOD, "real map harvest grants wood");
-		unit.carriedResource = UNIT_CARRIED_RESOURCE_NONE;
+		require(unit.carriedMaterial == WOOD, "real map harvest grants wood");
+		unit.carriedMaterial = UNIT_CARRIED_RESOURCE_NONE;
 		unit.posX = 13;
 		unit.posY = 10;
 		unit.ownExchangeBuilding = market;
 		unit.setTargetBuilding(market);
 		unit.displacement = Unit::DIS_FILLING_BUILDING;
 		unit.destinationPurpose = CHERRY;
-		market->resources[CHERRY] = 10;
+		market->materials[CHERRY] = 10;
 		unit.handleDisplacement();
-		require(unit.carriedResource == CHERRY, "real exchange grants the requested fruit");
+		require(unit.carriedMaterial == CHERRY, "real exchange grants the requested fruit");
 		map.finishGradientImpact();
 		std::ifstream input("acquisition-sources-outcomes.csv");
 		std::string line;

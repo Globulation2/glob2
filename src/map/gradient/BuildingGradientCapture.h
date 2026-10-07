@@ -37,8 +37,8 @@ inline building_gradient::Destination refreshDescription(const Building &b, int 
 	d.virtualBuilding = b.type->isVirtual;
 	d.clearing = d.route == int(BuildingRoute::Clearing);
 	d.war = d.route == int(BuildingRoute::Combat);
-	for (int r = 0; r < BASIC_COUNT; ++r)
-		d.clearingResources[r] = b.clearingResources[r];
+	for (int r = 0; r < MaterialCount; ++r)
+		d.clearingMaterials[r] = b.clearingMaterials[r];
 	return d;
 }
 inline std::shared_ptr<Terrain> captureTerrain(const Map &map)
@@ -46,6 +46,7 @@ inline std::shared_ptr<Terrain> captureTerrain(const Map &map)
  auto result=std::make_shared<Terrain>();
  result->width=map.getW(); result->height=map.getH(); result->generation=map.topologyGeneration;
  result->modifiedCosts=map.hasTerrainMovementModifiers(); result->registry=map.frozenTerrainRegistry();
+ result->resources=map.frozenResourceRegistry();
  result->costs=map.frozenTerrainSnapshot();
  const auto water=map.frozenWaterSnapshot();
  for(int sw=0;sw<SWIM_CLASS_COUNT;++sw) {
@@ -73,20 +74,21 @@ inline std::shared_ptr<Terrain> captureTerrain(const Map &map)
  return result;
 }
 inline void captureParents(Map &map, Building &b, int swim,
- std::array<std::vector<std::uint16_t>, MAX_NB_RESOURCES> &parents,
- std::array<std::vector<std::uint16_t>, MAX_NB_RESOURCES> &goals,
+ std::array<std::vector<std::uint16_t>, MaterialSlotCount> &parents,
+ std::array<std::vector<std::uint16_t>, MaterialSlotCount> &goals,
  const std::function<const Uint16*(int)> &published={})
 {
+ if (!map.game->gameHeader.hasExperiment(ExperimentId::RoundTripResourceFetching)) return;
  const auto size=std::size_t(map.getW())*map.getH();
- for(int r=0;r<MAX_NB_RESOURCES;++r) if(b.roundTripGradient[r][swim]) {
-  const unsigned modes=map.resourceSupplyModes(&b,r);
-  const auto *parent=published ? published(r) : map.getResourceGradient(b.owner->teamNumber,r,swim,modes!=0,&b);
+ for(int r=0;r<MaterialSlotCount;++r) if(b.roundTripGradient[r][swim]) {
+  const unsigned modes=map.materialSupplyModesSlot(&b,r);
+  const auto *parent=published ? published(r) : map.getMaterialGradientSlot(b.owner->teamNumber,r,swim,modes!=0,&b);
   parents[r].assign(parent,parent+size);
   if(!modes) continue;
   goals[r].assign(size,0);
   for(std::size_t i=0;i<size;++i) if(map.getTile(i).building!=NOGBID && parents[r][i]>GRADIENT_UNREACHABLE) goals[r][i]=1;
   auto visit=[&](const Building *supplier) {
-   if(!supplier->runtime->has(BuildingRuntimeTraits::OccupiesGround) && !map.stockSupplierEligible(supplier,&b,r,modes)) return;
+   if(!supplier->runtime->has(BuildingRuntimeTraits::OccupiesGround) && !map.stockSupplierEligibleSlot(supplier,&b,r,modes)) return;
    const auto penalty=1+supplier->type->semantics.market.pickupPenalty*GRADIENT_STEP;
    for(int y=0;y<supplier->type->height;++y) for(int x=0;x<supplier->type->width;++x) {
     const auto i=map.coordToIndex(supplier->posX+x,supplier->posY+y);

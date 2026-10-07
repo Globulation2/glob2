@@ -45,6 +45,7 @@ def install(staged):
             for path_key, hash_key in (
                 ("tools/skins/export_units.py", "exporterSha256"),
                 ("tools/skins/limb_surface.py", "surfaceBuilderSha256"),
+                ("tools/skins/chart.py", "surfaceChartSha256"),
                 (exported["surfaceDefinition"], "surfaceDefinitionSha256"),
             ):
                 assert (
@@ -73,6 +74,8 @@ def install(staged):
                     "exporterSha256": exported["exporterSha256"],
                     "builder": "tools/skins/limb_surface.py",
                     "builderSha256": exported["surfaceBuilderSha256"],
+                    "chart": "tools/skins/chart.py",
+                    "chartSha256": exported["surfaceChartSha256"],
                     "contract": exported["surfaceContract"],
                     "contractSha256": exported["surfaceContractSha256"],
                 }

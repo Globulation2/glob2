@@ -7,7 +7,7 @@ import {
   DEFAULT_CAMERA,
   validateView,
   type ViewTransform,
-  type Mesh,
+  bakedMesh,
 } from '../src/skins/geometry.ts';
 import {
   buildProjection,
@@ -29,17 +29,17 @@ function asset(name: string) {
 }
 describe('skin projection', () => {
   it('paints a continuous stroke through separate front and hidden UVs', () => {
-    const mesh: Mesh = {
-      count: 6,
-      frames: 1,
-      uv: new Float32Array([0, 0, 0.5, 0, 0, 1, 0.5, 0, 1, 0, 0.5, 1]),
-      indices: new Uint32Array([0, 1, 2, 3, 4, 5]),
-      poses: new Float32Array(36),
-    };
     const pose = new Float32Array([
       -0.8, -0.8, 0, 0, 0, 1, 0.8, -0.8, 0, 0, 0, 1, -0.8, 0.8, 0, 0, 0, 1, -0.8, -0.8, 0.5, 0, 0,
       1, 0.8, -0.8, 0.5, 0, 0, 1, -0.8, 0.8, 0.5, 0, 0, 1,
     ]);
+    const mesh = bakedMesh(
+      6,
+      1,
+      new Float32Array([0, 0, 0.5, 0, 0, 1, 0.5, 0, 1, 0, 0.5, 1]),
+      new Uint32Array([0, 1, 2, 3, 4, 5]),
+      new Float32Array(36),
+    );
     const p = buildProjection(mesh, pose, 400, 400);
     let visible = 0,
       hidden = 0;
@@ -68,13 +68,13 @@ describe('skin projection', () => {
       -0.8, -0.8, -0.4, 0, 0, 1, 0.8, -0.8, 0.4, 0, 0, 1, -0.8, 0.8, -0.4, 0, 0, 1, -0.8, -0.8,
       -0.395, 0, 0, 1, 0.8, -0.8, 0.405, 0, 0, 1, -0.8, 0.8, -0.395, 0, 0, 1,
     ]);
-    const mesh: Mesh = {
-      count: 6,
-      frames: 1,
-      uv: new Float32Array([0, 0, 0.5, 0, 0, 1, 0.5, 0, 1, 0, 0.5, 1]),
-      indices: new Uint32Array([0, 1, 2, 3, 4, 5]),
-      poses: pose,
-    };
+    const mesh = bakedMesh(
+      6,
+      1,
+      new Float32Array([0, 0, 0.5, 0, 0, 1, 0.5, 0, 1, 0, 0.5, 1]),
+      new Uint32Array([0, 1, 2, 3, 4, 5]),
+      pose,
+    );
     // Rear geometry has entirely separate UVs and is wholly occluded. Its depth
     // separation is smaller than one screen pixel's depth slope.
     for (const [width, height] of [
@@ -102,26 +102,26 @@ describe('skin projection', () => {
   });
   it('brushes edge-on texels even when the surface is invisible', () => {
     const pose = new Float32Array([-0.8, 0, 0, 0, 0, 1, 0.8, 0, 0, 0, 0, 1, 0, 0, 0.5, 0, 0, 1]);
-    const mesh: Mesh = {
-      count: 3,
-      frames: 1,
-      poses: pose,
-      uv: new Float32Array([0, 0, 1, 0, 0, 1]),
-      indices: new Uint32Array([0, 1, 2]),
-    };
+    const mesh = bakedMesh(
+      3,
+      1,
+      new Float32Array([0, 0, 1, 0, 0, 1]),
+      new Uint32Array([0, 1, 2]),
+      pose,
+    );
     const projection = buildProjection(mesh, pose, 400, 400);
     expect(projection.used.some(Boolean)).toBe(true);
     expect(projection.visible.some(Boolean)).toBe(false);
     expect(strokeCoverage(projection, [200, 200], [200, 200], 20, 1).some(Boolean)).toBe(true);
   });
   it('paints shared UVs at every projected position without accumulating opacity', () => {
-    const mesh: Mesh = {
-      count: 6,
-      frames: 1,
-      uv: new Float32Array([0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1]),
-      indices: new Uint32Array([0, 1, 2, 3, 4, 5]),
-      poses: new Float32Array(36),
-    };
+    const mesh = bakedMesh(
+      6,
+      1,
+      new Float32Array([0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1]),
+      new Uint32Array([0, 1, 2, 3, 4, 5]),
+      new Float32Array(36),
+    );
     const pose = new Float32Array([
       -0.9, -0.5, 0, 0, 0, 1, -0.1, -0.5, 0, 0, 0, 1, -0.9, 0.5, 0, 0, 0, 1, 0.1, -0.5, 0.5, 0, 0,
       1, 0.9, -0.5, 0.5, 0, 0, 1, 0.1, 0.5, 0.5, 0, 0, 1,
@@ -142,12 +142,13 @@ describe('skin projection', () => {
     const fullTurn = projectPose(mesh, view, 0, { ...DEFAULT_CAMERA, yaw: Math.PI * 2 }, 1);
     for (let i = 0; i < front.length; i++) expect(fullTurn[i]).toBeCloseTo(front[i]!, 5);
     // A vertical normal must not tilt when the model turns, even with an elevated camera.
-    const upright = { ...mesh, poses: mesh.poses.slice() };
+    const uprightPose = mesh.pose(0).slice();
     for (let i = 0; i < mesh.count; i++)
-      upright.poses.set(
+      uprightPose.set(
         [view.normalToModel[6]!, view.normalToModel[7]!, view.normalToModel[8]!],
         i * 6 + 3,
       );
+    const upright = bakedMesh(mesh.count, 1, mesh.uv, mesh.indices, uprightPose);
     const before = projectPose(upright, view, 0, DEFAULT_CAMERA, 1);
     const after = projectPose(upright, view, 0, { ...DEFAULT_CAMERA, yaw: Math.PI / 2 }, 1);
     for (let i = 0; i < mesh.count; i++)
@@ -177,8 +178,8 @@ describe('skin projection', () => {
       validateView(view);
       const game = projectPose(mesh, view, 0, { ...DEFAULT_CAMERA, game: true }, 1);
       for (let i = 0; i < mesh.count; i++) {
-        expect(game[i * 6]).toBeCloseTo((mesh.poses[i * 6] ?? 0) / 1.25, 4);
-        expect(game[i * 6 + 1]).toBeCloseTo((mesh.poses[i * 6 + 1] ?? 0) / 1.25, 4);
+        expect(game[i * 6]).toBeCloseTo((mesh.rest[i * 6] ?? 0) / 1.25, 4);
+        expect(game[i * 6 + 1]).toBeCloseTo((mesh.rest[i * 6 + 1] ?? 0) / 1.25, 4);
       }
       const back = projectPose(mesh, view, 0, { ...DEFAULT_CAMERA, yaw: Math.PI }, 1);
       expect(back.every(Number.isFinite)).toBe(true);

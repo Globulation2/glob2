@@ -14,14 +14,15 @@ struct BuildingGradientScheduler
 		building_gradient::Destination destination;
 		std::uint32_t captured = 0, due = 0, generation = 0;
 		std::shared_ptr<const building_gradient::Terrain> terrain;
-		std::array<std::vector<std::uint16_t>, MAX_NB_RESOURCES> parents;
-		std::array<std::uint32_t, MAX_NB_RESOURCES> parentVersions{};
-		std::array<std::vector<std::uint16_t>, MAX_NB_RESOURCES> supplierGoals;
+		std::array<std::vector<std::uint16_t>, MaterialSlotCount> parents;
+		std::array<std::uint32_t, MaterialSlotCount> parentVersions{};
+		std::array<std::vector<std::uint16_t>, MaterialSlotCount> supplierGoals;
 		AsyncGradientExecutor::Handle task;
 		std::uint64_t buildNs = 0, buildCpuNs = 0;
 		bool metricsCollected = false;
 		std::vector<std::size_t> targets;
-		bool partial = false;
+		int costBudget = -1;
+        bool partial = false;
 		std::size_t reservedBytes = 0, snapshotBytes = 0, targetBytes = 0;
 	};
 	struct Metrics

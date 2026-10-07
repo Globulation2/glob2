@@ -5,6 +5,7 @@
 
 #include "FileFormatVersions.h"
 #include "BuildingType.h"
+#include "BuildingGradientBudgetPolicy.h"
 
 #include <algorithm>
 #include <ctime>
@@ -14,9 +15,9 @@ namespace
 constexpr std::size_t CatalogChunkBytes = 256 * 1024;
 constexpr Uint32 MaxCatalogChunks = 32;
 
-std::string readCatalog(GAGCore::InputStream* stream)
+std::string readCatalog(GAGCore::InputStream* stream, const std::string& section = "buildingCatalog")
 {
-	stream->readEnterSection("buildingCatalog");
+	stream->readEnterSection(section);
 	const auto count = stream->readUint32("chunks");
 	if (count > MaxCatalogChunks) throw std::runtime_error("Building catalog is too large");
 	std::string snapshot;
@@ -35,11 +36,11 @@ std::string readCatalog(GAGCore::InputStream* stream)
 	return snapshot;
 }
 
-void writeCatalog(GAGCore::OutputStream* stream, const std::string& snapshot)
+void writeCatalog(GAGCore::OutputStream* stream, const std::string& snapshot, const std::string& section = "buildingCatalog")
 {
 	const auto count = (snapshot.size() + CatalogChunkBytes - 1) / CatalogChunkBytes;
 	if (count > MaxCatalogChunks) throw std::runtime_error("Building catalog is too large");
-	stream->writeEnterSection("buildingCatalog");
+	stream->writeEnterSection(section);
 	stream->writeUint32(static_cast<Uint32>(count), "chunks");
 	for (Uint32 i=0; i<count; ++i)
 	{
@@ -96,6 +97,7 @@ void GameHeader::reset()
 	buildingHpLevel=0;
 	experiments.clear();
 	buildingGradientDelay = 4;
+    buildingGradientBudgetModel.clear();
 }
 
 void GameHeader::setBuildingCatalogSnapshot(const std::string& snapshot)
@@ -253,8 +255,12 @@ bool GameHeader::load(GAGCore::InputStream *stream, Sint32 versionMinor)
     else resourceCatalogExperiments.clear();
     if (!experiments.load(stream, versionMinor, false, catalogExperimentKeys())) return false;
 	buildingGradientDelay = 4;
+    buildingGradientBudgetModel.clear();
 	if (versionMinor >= FILE_FORMAT_VERSION_BUILDING_GRADIENT_PIPELINE)
-		setBuildingGradientDelay(stream->readUint8("buildingGradientDelay"));
+		{
+        setBuildingGradientDelay(stream->readUint8("buildingGradientDelay"));
+        setBuildingGradientBudgetModel(readCatalog(stream, "buildingGradientBudgetModel"));
+    }
 	else {
 		experiments.set(ExperimentId::BuildingGradientPipeline, false);
 		experiments.set(ExperimentId::BuildingGradientHybrid, false);
@@ -323,6 +329,7 @@ void GameHeader::save(GAGCore::OutputStream *stream) const
 	saveCatalogExperimentDefinitions(stream, resourceCatalogExperiments);
 	experiments.save(stream);
 	stream->writeUint8(buildingGradientDelay, "buildingGradientDelay");
+    writeCatalog(stream, buildingGradientBudgetModel, "buildingGradientBudgetModel");
 	stream->writeLeaveSection();
 }
 
@@ -393,8 +400,12 @@ bool GameHeader::loadWithoutPlayerInfo(GAGCore::InputStream *stream, Sint32 vers
     else resourceCatalogExperiments.clear();
     if (!experiments.load(stream, versionMinor, false, catalogExperimentKeys())) return false;
 	buildingGradientDelay = 4;
+    buildingGradientBudgetModel.clear();
 	if (versionMinor >= FILE_FORMAT_VERSION_BUILDING_GRADIENT_PIPELINE)
-		setBuildingGradientDelay(stream->readUint8("buildingGradientDelay"));
+		{
+        setBuildingGradientDelay(stream->readUint8("buildingGradientDelay"));
+        setBuildingGradientBudgetModel(readCatalog(stream, "buildingGradientBudgetModel"));
+    }
 	else {
 		experiments.set(ExperimentId::BuildingGradientPipeline, false);
 		experiments.set(ExperimentId::BuildingGradientHybrid, false);
@@ -451,6 +462,7 @@ void GameHeader::saveWithoutPlayerInfo(GAGCore::OutputStream *stream) const
 	saveCatalogExperimentDefinitions(stream, resourceCatalogExperiments);
 	experiments.save(stream);
 	stream->writeUint8(buildingGradientDelay, "buildingGradientDelay");
+    writeCatalog(stream, buildingGradientBudgetModel, "buildingGradientBudgetModel");
 	stream->writeLeaveSection();
 }
 
@@ -542,4 +554,11 @@ void GameHeader::saveAIConfig(GAGCore::OutputStream *stream) const
 		stream->writeLeaveSection();
 	}
 	stream->writeLeaveSection();
+}
+
+void GameHeader::setBuildingGradientBudgetModel(const std::string& model)
+{
+    if (!model.empty()) { const BuildingGradientBudgetPolicy validated(model); }
+    buildingGradientBudgetModel = model;
+    ++observationRevisionValue;
 }
