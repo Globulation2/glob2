@@ -383,6 +383,11 @@ TEST_SUITE("SceneExtract")
                 return pixels;
             };
             const auto actual=render(scene,"connected");
+            SceneExtractor workerExtractor;
+            auto inputs = workerExtractor.capture(world.game, request);
+            Scene prepared;
+            workerExtractor.prepare(*inputs, prepared);
+            CHECK_MESSAGE(actual == render(prepared, "snapshot"), "snapshot preparation must preserve every rendered pixel");
             CHECK_MESSAGE(actual==render(scene,"repeat"),"identical frozen scenes must render identically before the mask control");
             // Counterfactual RENDER-ONLY control: same scene and entities, masks forced to zero.
             // Both the ground and overlay renderer must use these extracted masks.
