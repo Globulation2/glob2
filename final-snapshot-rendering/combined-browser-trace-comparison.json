@@ -1,0 +1,32 @@
+[
+  {
+    "variant": "serial-1",
+    "native_equal": true,
+    "trace_sha256": "5570a99e4345b5aa80d1f14928c4a5e5b37a03244b9327310ca1d0760d3df7e4"
+  },
+  {
+    "variant": "threaded-1",
+    "native_equal": true,
+    "trace_sha256": "5570a99e4345b5aa80d1f14928c4a5e5b37a03244b9327310ca1d0760d3df7e4"
+  },
+  {
+    "variant": "threaded-2",
+    "native_equal": true,
+    "trace_sha256": "5570a99e4345b5aa80d1f14928c4a5e5b37a03244b9327310ca1d0760d3df7e4"
+  },
+  {
+    "variant": "threaded-4",
+    "native_equal": true,
+    "trace_sha256": "5570a99e4345b5aa80d1f14928c4a5e5b37a03244b9327310ca1d0760d3df7e4"
+  },
+  {
+    "variant": "artifacts/browser-determinism/wasm/verify-match.checksums.txt",
+    "golden_equal": true,
+    "trace_sha256": "c02adc67dc9e6b9a30b289f78038d72c3b7550c95db84025b28d65f49bf0cd38"
+  },
+  {
+    "variant": "artifacts/browser-determinism/wasm/verify-threaded/verify-match.checksums.txt",
+    "golden_equal": true,
+    "trace_sha256": "c02adc67dc9e6b9a30b289f78038d72c3b7550c95db84025b28d65f49bf0cd38"
+  }
+]

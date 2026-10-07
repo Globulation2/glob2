@@ -1,0 +1,21 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="19" failures="0" errors="0" skipped="0"><testsuite name="ComputeExecutor"><testcase classname="ComputeExecutor" name="supported platforms execute jobs concurrently on distinct threads" time="0.001386" status="run" />
+    <testcase classname="ComputeExecutor" name="exclusive slots; nested batches; reuse; errors; barriers and reconfiguration" time="0.021113" status="run" />
+    <testcase classname="ComputeExecutor" name="deferred batches drain FIFO with owner participation, lanes, isolated errors and placements" time="0.126934" status="run" />
+    <testcase classname="ComputeExecutor" name="completed lanes can change placement while an unrelated older batch remains" time="0.001892" status="run" />
+    <testcase classname="ComputeExecutor" name="lane groups run in index order, placements cannot mix on a lane, and the horizon is bounded" time="0.004981" status="run" />
+    <testcase classname="ComputeExecutor" name="presentation cannot delay simulation barriers or run on the simulation owner" time="0.005079" status="run" />
+    <testcase classname="ComputeExecutor" name="presentation progresses before a continuous simulation backlog drains" time="0.004963" status="run" />
+    <testcase classname="ComputeExecutor" name="presentation replacement, chunk pumping, cancellation and errors retain no captures" time="0" status="run" />
+  </testsuite><testsuite name="FogFade"><testcase classname="FogFade" name="The first update settles every tile without fading" time="0" status="run" />
+    <testcase classname="FogFade" name="Darkening and revealing fade monotonically over their durations" time="0" status="run" />
+    <testcase classname="FogFade" name="Changing back mid-fade continues from the level reached" time="0" status="run" />
+    <testcase classname="FogFade" name="A short gap between ticks keeps fading from the new tick" time="0" status="run" />
+    <testcase classname="FogFade" name="A repeated tick changes nothing" time="0" status="run" />
+    <testcase classname="FogFade" name="A new map, other teams, a jump in time or a reset settle every tile" time="0" status="run" />
+    <testcase classname="FogFade" name="Shade alphas stack to the plain fog shade" time="0" status="run" />
+  </testsuite><testsuite name="PerformanceTelemetry"><testcase classname="PerformanceTelemetry" name="moments; nesting; work/sleep/present separation; budgets; jitter; sampling; identity; capture and disabled control" time="0.000424" status="run" />
+    <testcase classname="PerformanceTelemetry" name="a bound simulation collector is absorbed with thread attribution, actors and budget" time="0.002277" status="run" />
+  </testsuite><testsuite name="SceneBuffer"><testcase classname="SceneBuffer" name="the consumer sees the newest published value and nothing before the first publish" time="0" status="run" />
+    <testcase classname="SceneBuffer" name="concurrent producer and consumer never observe torn or out-of-order values" time="0.03693" status="run" />
+  </testsuite></testsuites>

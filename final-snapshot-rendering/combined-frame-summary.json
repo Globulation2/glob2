@@ -1,0 +1,46 @@
+{
+  "2": {
+    "forced_park": {
+      "frames": 119.0,
+      "ticks": 5354.0,
+      "elapsed_ms": 5008.0,
+      "frame_p50_us": 28784.6,
+      "frame_p95_us": 70170.7,
+      "scene_age_p95_ms": 135.0,
+      "input_p50_us": 457.107,
+      "input_p95_us": 2516.98
+    },
+    "unparked": {
+      "frames": 145.0,
+      "ticks": 5732.0,
+      "elapsed_ms": 5026.0,
+      "frame_p50_us": 28008.5,
+      "frame_p95_us": 69648.2,
+      "scene_age_p95_ms": 134.0,
+      "input_p50_us": 120.199,
+      "input_p95_us": 219.649
+    }
+  },
+  "4": {
+    "forced_park": {
+      "frames": 242.0,
+      "ticks": 8881.0,
+      "elapsed_ms": 5015.0,
+      "frame_p50_us": 16643.8,
+      "frame_p95_us": 25129.2,
+      "scene_age_p95_ms": 47.0,
+      "input_p50_us": 368.448,
+      "input_p95_us": 1013.15
+    },
+    "unparked": {
+      "frames": 258.0,
+      "ticks": 8944.0,
+      "elapsed_ms": 5014.0,
+      "frame_p50_us": 16533.5,
+      "frame_p95_us": 24866.6,
+      "scene_age_p95_ms": 50.0,
+      "input_p50_us": 91.889,
+      "input_p95_us": 160.009
+    }
+  }
+}

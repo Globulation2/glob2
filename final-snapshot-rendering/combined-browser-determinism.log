@@ -1,0 +1,268 @@
+[WebServer] 127.0.0.1 - - [07/Oct/2026 11:42:36] "GET / HTTP/1.1" 200 -
+
+
+Running 6 tests using 1 worker
+
+(node:380851) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+
+[1/6] [chromium] › tests/determinism.spec.js:10:1 › WebAssembly produces a complete per-tick simulation trace (serial/1)
+[WebServer] 127.0.0.1 - - [07/Oct/2026 11:42:38] "GET /test-host-57620303-2135-44d3-a6c1-aaf97310bd1a.html HTTP/1.1" 200 -
+
+[WebServer] 127.0.0.1 - - [07/Oct/2026 11:42:38] "GET /index.js HTTP/1.1" 200 -
+
+[WebServer] 127.0.0.1 - - [07/Oct/2026 11:42:38] "GET /index.wasm HTTP/1.1" 200 -
+
+[WebServer] 127.0.0.1 - - [07/Oct/2026 11:42:38] "GET /assets/core.551006c3e3e4860e.data HTTP/1.1" 200 -
+
+[WebServer] 127.0.0.1 - - [07/Oct/2026 11:42:38] "GET /assets/game.e2d1e967bbe648b8.data HTTP/1.1" 200 -
+
+[2/6] [chromium] › tests/determinism.spec.js:10:1 › WebAssembly produces a complete per-tick simulation trace (threaded/1)
+[WebServer] 127.0.0.1 - - [07/Oct/2026 11:42:45] "GET /test-host-b19af3d9-716e-4ea7-84a4-48bf2958a307.html HTTP/1.1" 200 -
+
+[WebServer] 127.0.0.1 - - [07/Oct/2026 11:42:45] "GET /threaded/index.js HTTP/1.1" 200 -
+
+[WebServer] 127.0.0.1 - - [07/Oct/2026 11:42:45] "GET /threaded/index.js HTTP/1.1" 304 -
+
+[WebServer] 127.0.0.1 - - [07/Oct/2026 11:42:45] "GET /threaded/index.js HTTP/1.1" 304 -
+
+[WebServer] 127.0.0.1 - - [07/Oct/2026 11:42:45] "GET /threaded/index.js HTTP/1.1" 304 -
+
+[WebServer] 127.0.0.1 - - [07/Oct/2026 11:42:45] "GET /threaded/index.js HTTP/1.1" 304 -
+
+[WebServer] 127.0.0.1 - - [07/Oct/2026 11:42:45] "GET /threaded/index.js HTTP/1.1" 304 -
+
+[WebServer] 127.0.0.1 - - [07/Oct/2026 11:42:45] "GET /threaded/index.js HTTP/1.1" 304 -
+
+[WebServer] 127.0.0.1 - - [07/Oct/2026 11:42:45] "GET /threaded/index.js HTTP/1.1" 304 -
+
+[WebServer] 127.0.0.1 - - [07/Oct/2026 11:42:45] "GET /threaded/index.wasm HTTP/1.1" 200 -
+
+[WebServer] 127.0.0.1 - - [07/Oct/2026 11:42:45] "GET /threaded/index.js HTTP/1.1" 304 -
+
+[WebServer] 127.0.0.1 - - [07/Oct/2026 11:42:45] "GET /threaded/index.js HTTP/1.1" 304 -
+
+[WebServer] 127.0.0.1 - - [07/Oct/2026 11:42:45] "GET /threaded/index.js HTTP/1.1" 304 -
+
+[WebServer] 127.0.0.1 - - [07/Oct/2026 11:42:45] "GET /threaded/index.js HTTP/1.1" 304 -
+
+[WebServer] 127.0.0.1 - - [07/Oct/2026 11:42:45] "GET /threaded/index.js HTTP/1.1" 304 -
+
+[WebServer] 127.0.0.1 - - [07/Oct/2026 11:42:45] "GET /threaded/index.js HTTP/1.1" 304 -
+
+[WebServer] 127.0.0.1 - - [07/Oct/2026 11:42:45] "GET /threaded/index.js HTTP/1.1" 304 -
+
+[WebServer] 127.0.0.1 - - [07/Oct/2026 11:42:45] "GET /threaded/index.js HTTP/1.1" 304 -
+
+[WebServer] 127.0.0.1 - - [07/Oct/2026 11:42:45] "GET /threaded/index.js HTTP/1.1" 304 -
+
+[WebServer] 127.0.0.1 - - [07/Oct/2026 11:42:45] "GET /threaded/index.js HTTP/1.1" 304 -
+
+[WebServer] 127.0.0.1 - - [07/Oct/2026 11:42:45] "GET /threaded/index.js HTTP/1.1" 304 -
+
+[WebServer] 127.0.0.1 - - [07/Oct/2026 11:42:45] "GET /threaded/index.js HTTP/1.1" 304 -
+
+[WebServer] 127.0.0.1 - - [07/Oct/2026 11:42:45] "GET /threaded/index.js HTTP/1.1" 304 -
+
+[WebServer] 127.0.0.1 - - [07/Oct/2026 11:42:45] "GET /threaded/index.js HTTP/1.1" 304 -
+
+[WebServer] 127.0.0.1 - - [07/Oct/2026 11:42:45] "GET /threaded/index.js HTTP/1.1" 304 -
+
+[WebServer] 127.0.0.1 - - [07/Oct/2026 11:42:45] "GET /threaded/index.js HTTP/1.1" 304 -
+
+[WebServer] 127.0.0.1 - - [07/Oct/2026 11:42:45] "GET /assets/core.551006c3e3e4860e.data HTTP/1.1" 200 -
+
+[WebServer] 127.0.0.1 - - [07/Oct/2026 11:42:45] "GET /threaded/index.js HTTP/1.1" 304 -
+
+[WebServer] 127.0.0.1 - - [07/Oct/2026 11:42:46] "GET /assets/game.e2d1e967bbe648b8.data HTTP/1.1" 200 -
+
+[3/6] [chromium] › tests/determinism.spec.js:10:1 › WebAssembly produces a complete per-tick simulation trace (threaded/2)
+[WebServer] 127.0.0.1 - - [07/Oct/2026 11:42:54] "GET /test-host-9f7c2547-2d13-4b33-88d4-6702270f0f11.html HTTP/1.1" 200 -
+
+[WebServer] 127.0.0.1 - - [07/Oct/2026 11:42:54] "GET /threaded/index.js HTTP/1.1" 200 -
+
+[WebServer] 127.0.0.1 - - [07/Oct/2026 11:42:54] "GET /threaded/index.js HTTP/1.1" 304 -
+
+[WebServer] 127.0.0.1 - - [07/Oct/2026 11:42:54] "GET /threaded/index.js HTTP/1.1" 304 -
+
+[WebServer] 127.0.0.1 - - [07/Oct/2026 11:42:54] "GET /threaded/index.js HTTP/1.1" 304 -
+
+[WebServer] 127.0.0.1 - - [07/Oct/2026 11:42:54] "GET /threaded/index.js HTTP/1.1" 304 -
+
+[WebServer] 127.0.0.1 - - [07/Oct/2026 11:42:54] "GET /threaded/index.js HTTP/1.1" 304 -
+
+[WebServer] 127.0.0.1 - - [07/Oct/2026 11:42:54] "GET /threaded/index.js HTTP/1.1" 304 -
+
+[WebServer] 127.0.0.1 - - [07/Oct/2026 11:42:54] "GET /threaded/index.js HTTP/1.1" 304 -
+
+[WebServer] 127.0.0.1 - - [07/Oct/2026 11:42:54] "GET /threaded/index.js HTTP/1.1" 304 -
+
+[WebServer] 127.0.0.1 - - [07/Oct/2026 11:42:54] "GET /threaded/index.js HTTP/1.1" 304 -
+
+[WebServer] 127.0.0.1 - - [07/Oct/2026 11:42:54] "GET /threaded/index.wasm HTTP/1.1" 200 -
+
+[WebServer] 127.0.0.1 - - [07/Oct/2026 11:42:54] "GET /threaded/index.js HTTP/1.1" 304 -
+
+[WebServer] 127.0.0.1 - - [07/Oct/2026 11:42:54] "GET /threaded/index.js HTTP/1.1" 304 -
+
+[WebServer] 127.0.0.1 - - [07/Oct/2026 11:42:54] "GET /threaded/index.js HTTP/1.1" 304 -
+
+[WebServer] 127.0.0.1 - - [07/Oct/2026 11:42:54] "GET /threaded/index.js HTTP/1.1" 304 -
+
+[WebServer] 127.0.0.1 - - [07/Oct/2026 11:42:54] "GET /threaded/index.js HTTP/1.1" 304 -
+
+[WebServer] 127.0.0.1 - - [07/Oct/2026 11:42:54] "GET /threaded/index.js HTTP/1.1" 304 -
+
+[WebServer] 127.0.0.1 - - [07/Oct/2026 11:42:54] "GET /threaded/index.js HTTP/1.1" 304 -
+
+[WebServer] 127.0.0.1 - - [07/Oct/2026 11:42:54] "GET /threaded/index.js HTTP/1.1" 304 -
+
+[WebServer] 127.0.0.1 - - [07/Oct/2026 11:42:54] "GET /threaded/index.js HTTP/1.1" 304 -
+
+[WebServer] 127.0.0.1 - - [07/Oct/2026 11:42:54] "GET /threaded/index.js HTTP/1.1" 304 -
+
+[WebServer] 127.0.0.1 - - [07/Oct/2026 11:42:54] "GET /threaded/index.js HTTP/1.1" 304 -
+
+[WebServer] 127.0.0.1 - - [07/Oct/2026 11:42:54] "GET /threaded/index.js HTTP/1.1" 304 -
+
+[WebServer] 127.0.0.1 - - [07/Oct/2026 11:42:54] "GET /threaded/index.js HTTP/1.1" 304 -
+
+[WebServer] 127.0.0.1 - - [07/Oct/2026 11:42:54] "GET /threaded/index.js HTTP/1.1" 304 -
+
+[WebServer] 127.0.0.1 - - [07/Oct/2026 11:42:54] "GET /threaded/index.js HTTP/1.1" 304 -
+
+[WebServer] 127.0.0.1 - - [07/Oct/2026 11:42:54] "GET /assets/core.551006c3e3e4860e.data HTTP/1.1" 200 -
+
+[WebServer] 127.0.0.1 - - [07/Oct/2026 11:42:54] "GET /assets/game.e2d1e967bbe648b8.data HTTP/1.1" 200 -
+
+[4/6] [chromium] › tests/determinism.spec.js:10:1 › WebAssembly produces a complete per-tick simulation trace (threaded/4)
+[WebServer] 127.0.0.1 - - [07/Oct/2026 11:43:05] "GET /test-host-0673f1a2-6a2c-4a5d-a396-60f6416c6a0a.html HTTP/1.1" 200 -
+
+[WebServer] 127.0.0.1 - - [07/Oct/2026 11:43:05] "GET /threaded/index.js HTTP/1.1" 200 -
+
+[WebServer] 127.0.0.1 - - [07/Oct/2026 11:43:05] "GET /threaded/index.js HTTP/1.1" 304 -
+
+[WebServer] 127.0.0.1 - - [07/Oct/2026 11:43:05] "GET /threaded/index.js HTTP/1.1" 304 -
+
+[WebServer] 127.0.0.1 - - [07/Oct/2026 11:43:05] "GET /threaded/index.js HTTP/1.1" 304 -
+
+[WebServer] 127.0.0.1 - - [07/Oct/2026 11:43:05] "GET /threaded/index.js HTTP/1.1" 304 -
+
+[WebServer] 127.0.0.1 - - [07/Oct/2026 11:43:05] "GET /threaded/index.js HTTP/1.1" 304 -
+
+[WebServer] 127.0.0.1 - - [07/Oct/2026 11:43:05] "GET /threaded/index.js HTTP/1.1" 304 -
+
+[WebServer] 127.0.0.1 - - [07/Oct/2026 11:43:05] "GET /threaded/index.js HTTP/1.1" 304 -
+
+[WebServer] 127.0.0.1 - - [07/Oct/2026 11:43:05] "GET /threaded/index.js HTTP/1.1" 304 -
+
+[WebServer] 127.0.0.1 - - [07/Oct/2026 11:43:05] "GET /threaded/index.wasm HTTP/1.1" 200 -
+
+[WebServer] 127.0.0.1 - - [07/Oct/2026 11:43:05] "GET /threaded/index.js HTTP/1.1" 304 -
+
+[WebServer] 127.0.0.1 - - [07/Oct/2026 11:43:05] "GET /threaded/index.js HTTP/1.1" 304 -
+
+[WebServer] 127.0.0.1 - - [07/Oct/2026 11:43:05] "GET /threaded/index.js HTTP/1.1" 304 -
+
+[WebServer] 127.0.0.1 - - [07/Oct/2026 11:43:05] "GET /threaded/index.js HTTP/1.1" 304 -
+
+[WebServer] 127.0.0.1 - - [07/Oct/2026 11:43:05] "GET /threaded/index.js HTTP/1.1" 304 -
+
+[WebServer] 127.0.0.1 - - [07/Oct/2026 11:43:05] "GET /threaded/index.js HTTP/1.1" 304 -
+
+[WebServer] 127.0.0.1 - - [07/Oct/2026 11:43:05] "GET /threaded/index.js HTTP/1.1" 304 -
+
+[WebServer] 127.0.0.1 - - [07/Oct/2026 11:43:05] "GET /threaded/index.js HTTP/1.1" 304 -
+
+[WebServer] 127.0.0.1 - - [07/Oct/2026 11:43:05] "GET /threaded/index.js HTTP/1.1" 304 -
+
+[WebServer] 127.0.0.1 - - [07/Oct/2026 11:43:05] "GET /threaded/index.js HTTP/1.1" 304 -
+
+[WebServer] 127.0.0.1 - - [07/Oct/2026 11:43:05] "GET /threaded/index.js HTTP/1.1" 304 -
+
+[WebServer] 127.0.0.1 - - [07/Oct/2026 11:43:05] "GET /threaded/index.js HTTP/1.1" 304 -
+
+[WebServer] 127.0.0.1 - - [07/Oct/2026 11:43:05] "GET /threaded/index.js HTTP/1.1" 304 -
+
+[WebServer] 127.0.0.1 - - [07/Oct/2026 11:43:05] "GET /threaded/index.js HTTP/1.1" 304 -
+
+[WebServer] 127.0.0.1 - - [07/Oct/2026 11:43:05] "GET /threaded/index.js HTTP/1.1" 304 -
+
+[WebServer] 127.0.0.1 - - [07/Oct/2026 11:43:05] "GET /assets/core.551006c3e3e4860e.data HTTP/1.1" 200 -
+
+[WebServer] 127.0.0.1 - - [07/Oct/2026 11:43:05] "GET /threaded/index.js HTTP/1.1" 304 -
+
+[WebServer] 127.0.0.1 - - [07/Oct/2026 11:43:05] "GET /assets/game.e2d1e967bbe648b8.data HTTP/1.1" 200 -
+
+[5/6] [chromium] › tests/determinism.spec.js:64:1 › WebAssembly verifies the committed match record (serial)
+[WebServer] 127.0.0.1 - - [07/Oct/2026 11:43:19] "GET /test-host-cd19d76a-1594-451a-bc90-5492a681ab76.html HTTP/1.1" 200 -
+
+[WebServer] 127.0.0.1 - - [07/Oct/2026 11:43:19] "GET /index.js HTTP/1.1" 200 -
+
+[WebServer] 127.0.0.1 - - [07/Oct/2026 11:43:19] "GET /index.wasm HTTP/1.1" 200 -
+
+[WebServer] 127.0.0.1 - - [07/Oct/2026 11:43:19] "GET /assets/core.551006c3e3e4860e.data HTTP/1.1" 200 -
+
+[WebServer] 127.0.0.1 - - [07/Oct/2026 11:43:19] "GET /assets/game.e2d1e967bbe648b8.data HTTP/1.1" 200 -
+
+[6/6] [chromium] › tests/determinism.spec.js:64:1 › WebAssembly verifies the committed match record (threaded)
+[WebServer] 127.0.0.1 - - [07/Oct/2026 11:43:26] "GET /test-host-946aaff3-62e9-4eeb-bc66-b35eed31f060.html HTTP/1.1" 200 -
+
+[WebServer] 127.0.0.1 - - [07/Oct/2026 11:43:27] "GET /threaded/index.js HTTP/1.1" 200 -
+
+[WebServer] 127.0.0.1 - - [07/Oct/2026 11:43:27] "GET /threaded/index.js HTTP/1.1" 304 -
+
+[WebServer] 127.0.0.1 - - [07/Oct/2026 11:43:27] "GET /threaded/index.js HTTP/1.1" 304 -
+
+[WebServer] 127.0.0.1 - - [07/Oct/2026 11:43:27] "GET /threaded/index.js HTTP/1.1" 304 -
+
+[WebServer] 127.0.0.1 - - [07/Oct/2026 11:43:27] "GET /threaded/index.js HTTP/1.1" 304 -
+
+[WebServer] 127.0.0.1 - - [07/Oct/2026 11:43:27] "GET /threaded/index.js HTTP/1.1" 304 -
+
+[WebServer] 127.0.0.1 - - [07/Oct/2026 11:43:27] "GET /threaded/index.wasm HTTP/1.1" 200 -
+
+[WebServer] 127.0.0.1 - - [07/Oct/2026 11:43:27] "GET /threaded/index.js HTTP/1.1" 304 -
+
+[WebServer] 127.0.0.1 - - [07/Oct/2026 11:43:27] "GET /threaded/index.js HTTP/1.1" 304 -
+
+[WebServer] 127.0.0.1 - - [07/Oct/2026 11:43:27] "GET /threaded/index.js HTTP/1.1" 304 -
+
+[WebServer] 127.0.0.1 - - [07/Oct/2026 11:43:27] "GET /threaded/index.js HTTP/1.1" 304 -
+
+[WebServer] 127.0.0.1 - - [07/Oct/2026 11:43:27] "GET /threaded/index.js HTTP/1.1" 304 -
+
+[WebServer] 127.0.0.1 - - [07/Oct/2026 11:43:27] "GET /threaded/index.js HTTP/1.1" 304 -
+
+[WebServer] 127.0.0.1 - - [07/Oct/2026 11:43:27] "GET /threaded/index.js HTTP/1.1" 304 -
+
+[WebServer] 127.0.0.1 - - [07/Oct/2026 11:43:27] "GET /assets/core.551006c3e3e4860e.data HTTP/1.1" 200 -
+
+[WebServer] 127.0.0.1 - - [07/Oct/2026 11:43:27] "GET /threaded/index.js HTTP/1.1" 304 -
+
+[WebServer] 127.0.0.1 - - [07/Oct/2026 11:43:27] "GET /threaded/index.js HTTP/1.1" 304 -
+
+[WebServer] 127.0.0.1 - - [07/Oct/2026 11:43:27] "GET /threaded/index.js HTTP/1.1" 304 -
+
+[WebServer] 127.0.0.1 - - [07/Oct/2026 11:43:27] "GET /assets/game.e2d1e967bbe648b8.data HTTP/1.1" 200 -
+
+[WebServer] 127.0.0.1 - - [07/Oct/2026 11:43:27] "GET /threaded/index.js HTTP/1.1" 304 -
+
+[WebServer] 127.0.0.1 - - [07/Oct/2026 11:43:27] "GET /threaded/index.js HTTP/1.1" 304 -
+
+[WebServer] 127.0.0.1 - - [07/Oct/2026 11:43:27] "GET /threaded/index.js HTTP/1.1" 304 -
+
+[WebServer] 127.0.0.1 - - [07/Oct/2026 11:43:27] "GET /threaded/index.js HTTP/1.1" 304 -
+
+[WebServer] 127.0.0.1 - - [07/Oct/2026 11:43:27] "GET /threaded/index.js HTTP/1.1" 304 -
+
+[WebServer] 127.0.0.1 - - [07/Oct/2026 11:43:27] "GET /threaded/index.js HTTP/1.1" 304 -
+
+[WebServer] 127.0.0.1 - - [07/Oct/2026 11:43:27] "GET /threaded/index.js HTTP/1.1" 304 -
+
+[WebServer] 127.0.0.1 - - [07/Oct/2026 11:43:27] "GET /threaded/index.js HTTP/1.1" 304 -
+
+[WebServer] 127.0.0.1 - - [07/Oct/2026 11:43:27] "GET /threaded/index.js HTTP/1.1" 304 -
+
+  6 passed (58.6s)

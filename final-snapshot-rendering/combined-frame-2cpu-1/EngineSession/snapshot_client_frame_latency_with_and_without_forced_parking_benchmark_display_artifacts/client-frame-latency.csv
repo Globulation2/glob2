@@ -1,0 +1,3 @@
+forced_park,frames,ticks,elapsed_ms,frame_p50_us,frame_p95_us,scene_age_p95_ms,input_p50_us,input_p95_us
+1,119,5354,5008,28784.6,72598.7,135,457.107,2516.98
+0,92,4502,5044,45237.4,148063,271,128.789,292.108

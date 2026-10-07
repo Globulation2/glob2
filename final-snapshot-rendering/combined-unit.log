@@ -1,0 +1,7 @@
+PASS glob2-unit-tests PerformanceTelemetry (2 cases) (0.0s)
+PASS glob2-unit-tests FogFade (7 cases) (0.0s)
+PASS glob2-unit-tests SceneBuffer (2 cases) (0.1s)
+PASS glob2-unit-tests ComputeExecutor (8 cases) (0.2s)
+
+4 passed, 0 failed, 0 skipped (0.4s of test time)
+[run_tests] JUnit report: artifacts/presentation/combined-unit.xml (19 cases)

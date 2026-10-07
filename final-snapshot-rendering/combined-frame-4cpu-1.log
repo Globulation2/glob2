@@ -1,0 +1,4 @@
+PASS EngineSession/snapshot client frame latency with and without forced parking [benchmark][display][artifacts] (13.3s)
+
+1 passed, 0 failed, 0 skipped (13.3s of test time)
+[run_tests] JUnit report: artifacts/presentation/combined-frame-4cpu-1.xml (1 cases)

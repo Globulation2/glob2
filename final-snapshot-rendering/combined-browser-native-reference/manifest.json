@@ -1,0 +1,29 @@
+{
+  "fixture": "games/cross-replay.game.gz",
+  "seed": 42,
+  "ticks": 1500,
+  "fixture_sha256": "28e1b5b701b877d13e02547c4d874712e1973c2457210915c83c5f4cf376e09f",
+  "trace_sha256": "5570a99e4345b5aa80d1f14928c4a5e5b37a03244b9327310ca1d0760d3df7e4",
+  "command": [
+    "/home/bradley/.codex/worktrees/38ae2c2c-e230-4f5d-b6dd-2b73137bde88/glob2/build/linux/client/release/src/glob2",
+    "--nox",
+    "/home/bradley/.codex/worktrees/38ae2c2c-e230-4f5d-b6dd-2b73137bde88/glob2/games/cross-replay.game.gz",
+    "1500",
+    "1"
+  ],
+  "verify_match": {
+    "record": "test/fixtures/multiplayer/FourSquares1.g2mr",
+    "record_sha256": "b5f66f18730d1c7a1c5dae3b071a1ed92b0b676bed8d0611eb863a0396064dbf",
+    "trace_sha256": "c02adc67dc9e6b9a30b289f78038d72c3b7550c95db84025b28d65f49bf0cd38",
+    "verdict": "verified",
+    "command": [
+      "/home/bradley/.codex/worktrees/38ae2c2c-e230-4f5d-b6dd-2b73137bde88/glob2/build/linux/client/release/src/glob2",
+      "--verify-match",
+      "/home/bradley/.codex/worktrees/38ae2c2c-e230-4f5d-b6dd-2b73137bde88/glob2/test/fixtures/multiplayer/FourSquares1.g2mr",
+      "--map",
+      "/home/bradley/.codex/worktrees/38ae2c2c-e230-4f5d-b6dd-2b73137bde88/glob2/maps/FourSquares1.map.gz",
+      "--out",
+      "/home/bradley/.codex/worktrees/38ae2c2c-e230-4f5d-b6dd-2b73137bde88/glob2/artifacts/presentation/combined-browser-native-reference/verify-match"
+    ]
+  }
+}

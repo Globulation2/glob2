@@ -1,0 +1,3 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="1" failures="0" errors="0" skipped="0"><testsuite name="EngineSession"><testcase classname="EngineSession" name="snapshot client frame latency with and without forced parking [benchmark][display][artifacts]" time="12.6631" status="run" />
+  </testsuite></testsuites>

@@ -1,0 +1,10 @@
+{
+  "fixture": "games/cross-replay.game.gz",
+  "seed": 42,
+  "ticks": 1500,
+  "variant": "threaded",
+  "threads": 4,
+  "project": "chromium",
+  "fixture_sha256": "28e1b5b701b877d13e02547c4d874712e1973c2457210915c83c5f4cf376e09f",
+  "trace_sha256": "5570a99e4345b5aa80d1f14928c4a5e5b37a03244b9327310ca1d0760d3df7e4"
+}

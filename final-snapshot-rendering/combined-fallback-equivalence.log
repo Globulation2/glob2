@@ -1,0 +1,6 @@
+new-game: ok
+new-game-maxima: ok
+generated-load: ok
+legacy-v121: ok
+resume: ok
+PASS simulation equivalence: checksum sidecars, replay bytes and final saves match

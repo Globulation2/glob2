@@ -1,0 +1,7 @@
+  323 |                 virtual void drawCircle(int x, int y, int radius, Uint8 r, Uint8 g, Uint8 b, Uint8 a = Color::ALPHA_OPAQUE);
+      |                              ^
+src/map/gradient/SnapshotGradient.cpp:41:19: error: 'auto' deduced as 'size_t' (aka 'unsigned long') in declaration of 'limit' and deduced as 'Uint64' (aka 'unsigned long long') in declaration of 'refreshed'
+   41 |             const auto limit=budget, refreshed=refreshedCells;
+      |                   ^          ~~~~~~            ~~~~~~~~~~~~~~
+In file included from src/map/io/MapExploredAreaIO.cpp:3:
+In file included from src/map/Map.h:28:

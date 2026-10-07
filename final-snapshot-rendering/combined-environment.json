@@ -1,0 +1,77 @@
+{
+  "source": "1807fbf8e48cf57f3f211841eb1a2568804070b5",
+  "base": "a60018aa0066d1f4dc5e733cb86d0085b80bd604",
+  "platform": "Linux-7.0.0-31-generic-x86_64-with-glibc2.43",
+  "machine": "x86_64",
+  "compiler": "g++ (Ubuntu 15.2.0-16ubuntu1) 15.2.0",
+  "emscripten": "4.0.15 / Clang 22.0.0git 3388d40684742e950b3c5d1d2dafe5a40695cfc1",
+  "native_flags": "release=1 server=0 optimized_assets=0; -O3; SDL3 prefix /home/bradley/glob2-claude/build/sdl3/prefix",
+  "web_flags": "target=web release=1 web-package; -O2; serial and pthread runtimes",
+  "benchmark_affinity": {
+    "two_physical_cpus": [
+      14,
+      15
+    ],
+    "four_physical_cpus": [
+      12,
+      13,
+      14,
+      15
+    ],
+    "other_task_work": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      16,
+      17,
+      18,
+      19,
+      20,
+      21,
+      22,
+      23,
+      24,
+      25,
+      26,
+      27
+    ]
+  },
+  "exclusive_machine": false,
+  "load_at_manifest": [
+    28.9990234375,
+    22.97509765625,
+    19.45068359375
+  ],
+  "SDL3": "3.4.16",
+  "SDL3_image": "3.4.6",
+  "SDL3_ttf": "3.2.2",
+  "SDL3_net": "3.2.0",
+  "playwright": "1.63.0",
+  "chromium_build": 1243,
+  "firefox_build": 1543,
+  "cpu": {
+    "Architecture": "x86_64",
+    "CPU(s)": "32",
+    "Model name": "AMD Ryzen Threadripper 2950X 16-Core Processor",
+    "Thread(s) per core": "2",
+    "Core(s) per socket": "16",
+    "Socket(s)": "1",
+    "CPU max MHz": "4000.0000",
+    "CPU min MHz": "2200.0000"
+  },
+  "binaries": {
+    "build/linux/client/release/src/glob2": "6381727312050741215c9a65e7f4024b5de3131ef7c6cfb757ca00c7d2c3f378",
+    "build/linux/client/release/test/glob2-engine-tests": "081b3e016d716ced0b6244fd85db9a2b6fa659432a353644ba0074d711e5ac8b",
+    "build/emscripten/client/release/index.wasm": "b0c47dafe902302ec7f535c9de95a769cae4f0943861e0991e479c671f14d336",
+    "build/emscripten/client/release/threaded/index.wasm": "f6b3f2d6aae00bd014533a0a66b45c02a8879f4c34c6d5f91db14c3baf5c6912"
+  }
+}
