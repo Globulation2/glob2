@@ -326,7 +326,7 @@ export function MeshPreview(props: ViewportProps) {
       if (current.camera.game) return;
       current.onCamera?.({
         ...current.camera,
-        zoom: Math.max(0.45, Math.min(4, current.camera.zoom * Math.exp(-event.deltaY * 0.001))),
+        zoom: Math.max(0.225, Math.min(4, current.camera.zoom * Math.exp(-event.deltaY * 0.001))),
       });
     };
     target.addEventListener('wheel', wheel, { passive: false });
@@ -429,7 +429,7 @@ export function MeshPreview(props: ViewportProps) {
             if (!props.camera.game && before > 1)
               props.onCamera?.({
                 ...props.camera,
-                zoom: Math.max(0.45, Math.min(4, (props.camera.zoom * after) / before)),
+                zoom: Math.max(0.225, Math.min(4, (props.camera.zoom * after) / before)),
               });
           } else if (gesture.current) {
             const previous = gesture.current.last;

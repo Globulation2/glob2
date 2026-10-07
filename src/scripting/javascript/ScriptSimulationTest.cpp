@@ -148,6 +148,8 @@ Run execute(const std::filesystem::path &input, const std::filesystem::path &dir
 			if (checkpoints && tick != previous && (tick == 32 || tick == 128))
 				save(engine, directory / ("checkpoint-" + std::to_string(tick) + ".game"));
 		}
+		// Delayed decisions own private controller state until their jobs finish.
+		engine.gui.game.drainAI();
 		REQUIRE(engine.gui.game.stepCounter == 256);
 		if (!playback)
 			for (int p = 0; p < engine.gui.game.gameHeader.getNumberOfPlayers(); ++p)
