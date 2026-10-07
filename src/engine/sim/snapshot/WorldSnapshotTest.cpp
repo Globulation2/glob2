@@ -309,21 +309,9 @@ TEST_SUITE("WorldSnapshot")
 		CHECK(held.resources->cells.size() == 1024);
 		held = {};
 		CHECK(weak.expired());
-		// The alias allocator must still own its resource while this final weak
-		// reference deallocates the control block, after LeaseOwner destruction.
+		// Consumers own the buffer's control block directly; the pool's own
+		// reference died with the store.
 		weak.reset();
-	}
-	TEST_CASE("lease control block storage stops allocating after warmup")
-	{
-		SimulationSnapshot::BufferPool<std::vector<int>> pool;
-		Uint64 allocations = 0;
-		for (unsigned i = 0; i < 32; ++i) { auto lease = pool.acquire(allocations); lease->resize(32); }
-		const auto upstream = pool.leaseUpstreamAllocations();
-		REQUIRE(upstream > 0);
-		CHECK(pool.leaseRetainedBytes() > 0);
-		for (unsigned i = 0; i < 256; ++i) { auto lease = pool.acquire(allocations); CHECK(lease->size() == 32); }
-		CHECK(pool.leaseUpstreamAllocations() == upstream);
-		CHECK(allocations == 1);
 	}
 	TEST_CASE("worker final lease release synchronizes owner buffer reuse")
 	{
@@ -344,7 +332,7 @@ TEST_SUITE("WorldSnapshot")
 					released.store(true, std::memory_order_relaxed);
 				});
 				// Relaxed polling deliberately supplies no read/write barrier. Only
-				// the lease retirement/acquisition mutex protects this next write.
+				// the pool's acquire fence orders the worker's reads before this write.
 				while (!released.load(std::memory_order_relaxed)) std::this_thread::yield();
 				auto reused = pool.acquire(allocations);
 				CHECK(reused.get() == identity);
@@ -488,18 +476,16 @@ TEST_SUITE("WorldSnapshot")
 		};
 		for (int i = 0; i < 6; ++i) mutateAndCapture();
 		const auto warmedAllocations = store.metrics.allocations;
-		const auto warmedLeaseMemory = store.memoryMetrics();
-		REQUIRE(warmedLeaseMemory.leaseControlUpstreamAllocations > 0);
-		REQUIRE(warmedLeaseMemory.leaseControlRetainedBytes > 0);
+		const auto warmedMemory = store.memoryMetrics();
+		REQUIRE(warmedMemory.allocatedBuffers > 0);
 		const auto copied = store.metrics.bytesCopied;
 		for (int i = 0; i < 24; ++i) {
 			auto snapshot = mutateAndCapture();
 			CHECK(snapshot.entities->buildings.front().priority == int(game.stepCounter));
 			CHECK(store.metrics.allocations == warmedAllocations);
 			const auto memory = store.memoryMetrics();
-			CHECK(memory.leaseControlUpstreamAllocations == warmedLeaseMemory.leaseControlUpstreamAllocations);
-			CHECK(memory.leaseControlRetainedBytes == warmedLeaseMemory.leaseControlRetainedBytes);
-			CHECK(memory.peakLeaseControlRetainedBytes == warmedLeaseMemory.peakLeaseControlRetainedBytes);
+			CHECK(memory.allocatedBuffers == warmedMemory.allocatedBuffers);
+			CHECK(memory.capacityBytes == warmedMemory.capacityBytes);
 		}
 		CHECK(store.metrics.bytesCopied > copied);
 	}
@@ -663,10 +649,6 @@ TEST_SUITE("WorldSnapshot")
 		CHECK(released.leasedBytes < retained.leasedBytes);
 		CHECK(released.peakLeasedBytes == retained.peakLeasedBytes);
 		CHECK(released.peakRetainedBytes == retained.retainedBytes);
-		CHECK(released.leaseControlUpstreamAllocations == retained.leaseControlUpstreamAllocations);
-		CHECK(released.leaseControlRetainedBytes == retained.leaseControlRetainedBytes);
-		CHECK(released.peakLeaseControlRetainedBytes == retained.peakLeaseControlRetainedBytes);
-		CHECK(released.peakLeaseControlRetainedBytes >= released.leaseControlRetainedBytes);
 	}
 	TEST_CASE("same tick component expansion preserves narrow leases and captures arrays once")
 	{

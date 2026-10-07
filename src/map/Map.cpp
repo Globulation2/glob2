@@ -517,7 +517,7 @@ void Map::configureCompute(unsigned threads, unsigned experiments)
 void Map::clear()
 {
 	++snapshotTerrain; ++snapshotResources; ++snapshotOccupancy; ++snapshotAreas; ++snapshotVisibility;
-	resourceFieldGenerations.clear();
+	clearPlaneRegistry();
     bumpStaticMaterialSourceGeneration();
 	static std::atomic<Uint64> nextIdentity{1};
 	identityValue = nextIdentity.fetch_add(1);

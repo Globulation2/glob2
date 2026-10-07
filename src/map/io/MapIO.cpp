@@ -591,8 +591,8 @@ void Map::removeTeam(void)
 		delete[] clearAreasGradient[t][s];
 		clearAreasGradient[t][s]=NULL;
 	}
+	rebuildPlaneRegistry();
 
-	
 	assert(exploredArea[t] != NULL);
 	delete[] exploredArea[t];
 	exploredArea[t]=NULL;
@@ -1024,7 +1024,8 @@ void Map::loadRuntimeState(GAGCore::InputStream *stream, Sint32 versionMinor)
                 if (auto* building=game->teams[t]->myBuildings[b]) building->freeGradients();
         }
     }
-
+    // Loaded and discarded slots bypassed publishPlane.
+    rebuildPlaneRegistry();
 }
 
 

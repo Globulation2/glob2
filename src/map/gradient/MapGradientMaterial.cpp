@@ -57,7 +57,7 @@ void Map::updateMaterialGradient(int teamNumber, Uint8 resourceType, int swimCla
 	Uint16 *gradient = slot;
 	seedMaterialGradient(teamNumber, resourceType, swimClass, gradient, withMarkets);
 	propagateGradient(gradient, swimClass);
-	++resourceFieldGenerations[&slot];
+	publishPlane(&slot);
 	if (withMarkets) marketGradientDirty[teamNumber][resourceType][swimClass]=false;
 }
 
@@ -266,5 +266,52 @@ void Map::installObservedResourceField(int team, int resource, int swim, std::sp
 	auto data = std::make_unique<Uint16[]>(size);
 	std::copy(values.begin(), values.end(), data.get());
 	slot = data.release();
-	++resourceFieldGenerations[&slot];
+	publishPlane(&slot);
+}
+
+std::optional<Uint16> Map::planeKeyForSlot(Uint16* const* slot) const
+{
+	constexpr auto perArray = std::size_t(Team::MAX_COUNT) * MaterialSlotCount * SWIM_CLASS_COUNT;
+	const auto decode = [&](Uint16* const* first, bool market) {
+		const auto offset = std::size_t(slot - first);
+		return MapState::planeKey(int(offset / (MaterialSlotCount * SWIM_CLASS_COUNT)),
+			int((offset / SWIM_CLASS_COUNT) % MaterialSlotCount), int(offset % SWIM_CLASS_COUNT), market);
+	};
+	if (const auto* first = &materialGradients[0][0][0]; slot >= first && slot < first + perArray) return decode(first, false);
+	if (const auto* first = &marketMaterialGradients[0][0][0]; slot >= first && slot < first + perArray) return decode(first, true);
+	return std::nullopt;
+}
+
+void Map::publishPlane(Uint16* const* slot)
+{
+	const auto found = planeKeyForSlot(slot);
+	if (!found) return;
+	const auto key = *found;
+	auto& index = publishedPlaneIndex[key];
+	if (!index)
+	{
+		publishedPlanes.push_back({key, 0, slot});
+		index = Uint16(publishedPlanes.size());
+	}
+	publishedPlanes[index - 1].generation = ++planeGenerations[key];
+}
+
+void Map::clearPlaneRegistry()
+{
+	publishedPlanes.clear();
+	publishedPlaneIndex.fill(0);
+	planeGenerations.fill(0);
+}
+
+void Map::rebuildPlaneRegistry()
+{
+	publishedPlanes.clear();
+	publishedPlaneIndex.fill(0);
+	for (int team = 0; team < Team::MAX_COUNT; ++team)
+		for (int resource = 0; resource < MaterialSlotCount; ++resource)
+			for (int swim = 0; swim < SWIM_CLASS_COUNT; ++swim)
+			{
+				if (materialGradients[team][resource][swim]) publishPlane(&materialGradients[team][resource][swim]);
+				if (marketMaterialGradients[team][resource][swim]) publishPlane(&marketMaterialGradients[team][resource][swim]);
+			}
 }

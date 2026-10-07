@@ -1,109 +1,22 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #pragma once
 #include "WorldSnapshot.h"
+#include "BufferPool.h"
 #include <array>
-#include <atomic>
-#include <memory_resource>
-#include <mutex>
 
 namespace SimulationSnapshot
 {
-namespace Detail
-{
-// The allocator owns this state through control-block deallocation, which can
-// happen after both the lease object and the Store have been destroyed.
-struct LeaseMemory : std::pmr::memory_resource
-{
-	std::atomic<Uint64> allocations{0}, retainedBytes{0};
-	void* do_allocate(std::size_t bytes, std::size_t alignment) override
-	{
-		void* result = std::pmr::new_delete_resource()->allocate(bytes, alignment);
-		allocations.fetch_add(1, std::memory_order_relaxed);
-		retainedBytes.fetch_add(bytes, std::memory_order_relaxed);
-		return result;
-	}
-	void do_deallocate(void* pointer, std::size_t bytes, std::size_t alignment) override
-	{
-		std::pmr::new_delete_resource()->deallocate(pointer, bytes, alignment);
-		retainedBytes.fetch_sub(bytes, std::memory_order_relaxed);
-	}
-	bool do_is_equal(const std::pmr::memory_resource& other) const noexcept override { return this == &other; }
-};
-struct LeaseState
-{
-	std::mutex mutex;
-	LeaseMemory upstream;
-	std::pmr::synchronized_pool_resource resource{&upstream};
-};
-template<class T> struct LeaseAllocator
-{
-	using value_type = T;
-	std::shared_ptr<LeaseState> state;
-	explicit LeaseAllocator(std::shared_ptr<LeaseState> state) : state(std::move(state)) {}
-	template<class U> LeaseAllocator(const LeaseAllocator<U>& other) noexcept : state(other.state) {}
-	T* allocate(std::size_t count) { return static_cast<T*>(state->resource.allocate(count * sizeof(T), alignof(T))); }
-	void deallocate(T* pointer, std::size_t count) noexcept { state->resource.deallocate(pointer, count * sizeof(T), alignof(T)); }
-	template<class U> bool operator==(const LeaseAllocator<U>& other) const noexcept { return state == other.state; }
-};
-template<class T> struct LeaseOwner
-{
-	std::shared_ptr<LeaseState> state;
-	std::shared_ptr<T> source;
-	LeaseOwner(std::shared_ptr<LeaseState> state, std::shared_ptr<T> source) noexcept
-		: state(std::move(state)), source(std::move(source)) {}
-	~LeaseOwner()
-	{
-		// All consumer accesses precede this unlock. The next acquisition locks
-		// the same mutex before observing the sole pool reference and reusing it.
-		std::lock_guard<std::mutex> lock(state->mutex);
-		source.reset();
-	}
-};
-}
-// Seventeen slots cover the largest snapshot consumer horizon: delayed map
-// gradients retain up to sixteen ticks, and AI decisions retain up to eight.
-// A separate alias control block gives every acquired buffer a release barrier;
-// use_count alone is a lifetime check, not synchronization for prior readers.
-template<class T> class BufferPool
-{
-	std::array<std::shared_ptr<T>, 17> buffers;
-	std::shared_ptr<Detail::LeaseState> state;
-public:
-	template<class Visit> void inspect(Visit&& visit) const
-	{
-		if (!state) return;
-		std::lock_guard<std::mutex> lock(state->mutex);
-		for (const auto& buffer : buffers) if (buffer) visit(*buffer, buffer.use_count() > 1);
-	}
-	Uint64 leaseUpstreamAllocations() const { return state ? state->upstream.allocations.load(std::memory_order_relaxed) : 0; }
-	Uint64 leaseRetainedBytes() const { return state ? state->upstream.retainedBytes.load(std::memory_order_relaxed) : 0; }
-	std::shared_ptr<T> acquire(Uint64& allocations)
-	{
-		if (!state) state = std::make_shared<Detail::LeaseState>();
-		std::lock_guard<std::mutex> lock(state->mutex);
-		for (auto& buffer : buffers) if (!buffer || buffer.use_count() == 1) {
-			if (!buffer) { buffer = std::make_shared<T>(); ++allocations; }
-			auto lease = std::allocate_shared<Detail::LeaseOwner<T>>(
-				Detail::LeaseAllocator<Detail::LeaseOwner<T>>{state}, state, buffer);
-			return std::shared_ptr<T>(std::move(lease), buffer.get());
-		}
-		throw std::logic_error("snapshot storage exceeded its bounded consumer horizon");
-	}
-};
 // Counts describe component/plane buffer epochs, not whole-world generations.
 // Leases include the latest owner snapshot and references from pooled components.
 // Bytes include pool objects and enumerated vector capacities, deduplicating shared
 // catalog/terrain payloads. Registry/configuration heaps, strings, map nodes,
 // allocator overhead and shared_ptr control blocks are outside payload accounting.
-// Lease control counters separately measure memory-resource upstream calls/bytes;
-// initial LeaseState allocation and its implementation-private heaps are excluded.
 struct MemoryMetrics
 {
 	Uint64 allocatedBuffers = 0, reusableBuffers = 0, leasedBuffers = 0;
 	Uint64 retainedBytes = 0, capacityBytes = 0, leasedBytes = 0;
 	Uint64 peakAllocatedBuffers = 0, peakReusableBuffers = 0, peakLeasedBuffers = 0;
 	Uint64 peakRetainedBytes = 0, peakCapacityBytes = 0, peakLeasedBytes = 0;
-	Uint64 leaseControlUpstreamAllocations = 0, leaseControlRetainedBytes = 0, peakLeaseControlRetainedBytes = 0;
 };
 struct Storage
 {
@@ -118,7 +31,8 @@ struct Storage
 	BufferPool<Rules> rules;
 	BufferPool<ResourceFields> resourceFields;
 	BufferPool<Fertility::GrowthCache> growth;
-	std::map<ResourceFieldKey, BufferPool<std::vector<Uint16>>> resourcePlanes;
+	// Every live plane of every retained capture may be distinct.
+	BufferPool<std::vector<Uint16>, std::size_t(BufferPool<Uint16>::Limit) * MapState::PlaneCount> resourcePlanes;
 	Uint64 allocations = 0;
 	Uint64 preparationNs = 0;
 	MemoryMetrics memoryMetrics() const;
@@ -140,10 +54,7 @@ inline MemoryMetrics Storage::memoryMetrics() const
 		}();
 		shared.at(sharedCount++) = {owner.get(), sizeof(*owner), capacity, leased};
 	};
-	const auto account = [&]<class T>(const BufferPool<T>& pool, auto payload) {
-		// Each component/plane pool owns a distinct control-block allocator.
-		result.leaseControlUpstreamAllocations += pool.leaseUpstreamAllocations();
-		result.leaseControlRetainedBytes += pool.leaseRetainedBytes();
+	const auto account = [&]<class T, std::size_t Limit>(const BufferPool<T, Limit>& pool, auto payload) {
 		pool.inspect([&](const T& buffer, bool leased) {
 			++result.allocatedBuffers;
 			if (leased) ++result.leasedBuffers; else ++result.reusableBuffers;
@@ -167,12 +78,12 @@ inline MemoryMetrics Storage::memoryMetrics() const
 		return bytes;
 	});
 	account(rules, [&](const Rules& value, bool) { return vectorBytes(value.named) + vectorBytes(value.experiments); });
-	account(resourceFields, [](const ResourceFields&, bool) { return Uint64(0); });
+	account(resourceFields, [&](const ResourceFields& value, bool) { return vectorBytes(value.planes); });
 	account(growth, [](const Fertility::GrowthCache& value, bool) {
 		const auto capacities = value.storageCapacities();
 		return Uint64(capacities[0] + capacities[1]) * sizeof(Uint32) + Uint64(capacities[2]) * sizeof(Uint16);
 	});
-	for (const auto& [key, pool] : resourcePlanes) account(pool, [&](const auto& value, bool) { return vectorBytes(value); });
+	account(resourcePlanes, [&](const std::vector<Uint16>& value, bool) { return vectorBytes(value); });
 	for (std::size_t i = 0; i < sharedCount; ++i) {
 		result.capacityBytes += shared[i].capacity;
 		result.retainedBytes += shared[i].object + shared[i].capacity;

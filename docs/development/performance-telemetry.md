@@ -224,7 +224,7 @@ The nested `ai_pipeline` object reports session counters:
 | `preparation_ns` | Owner elapsed time deriving building checks and preparing the growth field. |
 | `bytes_copied` | Accounted component payload copied across captures, including published resource planes. |
 | `component_reuses` | Unchanged component or resource-plane reuse events. |
-| `allocations` | Instrumented component/payload pool-object, vector-growth and resource-field map allocation events; excludes lease control-block allocation. |
+| `allocations` | Instrumented component/payload pool-object, vector-growth and resource-plane allocation events. |
 | `computation_ns` | Summed elapsed time executing decision callbacks, across inline or worker execution. |
 | `submitted`, `delivered` | Admitted polls and deadline publications, including null outputs. |
 | `deadline_misses` | Outputs whose futures were unfinished when their deadlines were checked. |
@@ -232,8 +232,6 @@ The nested `ai_pipeline` object reports session counters:
 | `maximum_pending` | Largest number of queued decision outputs across all controllers. |
 | `snapshot_allocated_buffers`, `snapshot_reusable_buffers`, `snapshot_leased_buffers` | Allocated pool buffers, buffers with only their pool reference, and buffers with other references. These count component/plane epochs, not whole-world generations. |
 | `snapshot_retained_bytes`, `snapshot_capacity_bytes`, `snapshot_leased_bytes` | Accounted pooled objects plus payload capacity, payload capacity alone, and the subset referenced outside its pool. |
-| `snapshot_lease_control_upstream_allocations` | Cumulative upstream allocation calls by pooled alias lease allocators, separately from component/payload allocations. |
-| `snapshot_lease_control_retained_bytes`, `snapshot_peak_lease_control_retained_bytes` | Current and session peak upstream bytes retained by lease allocator pools, including control blocks and their pool overhead. |
 | `snapshot_peak_*` | Session high-water values for the corresponding snapshot buffer/byte counters. |
 | `controller_query_vector_bytes`, `controller_query_vector_peak_bytes` | Current sum of published controller query-vector capacities and its session high-water value. |
 | `controller_query_vector_samples` | Controllers with an available published capacity sample; unavailable controllers contribute no value. |
@@ -263,11 +261,11 @@ demand and retain reusable capacity. Lease counters include the store's latest s
 and references from pooled components, rather than counting only workers. Shared catalog
 and terrain payloads are counted once. Byte accounting includes nested vector and growth
 capacities, but excludes registry/configuration heaps, string heaps, map nodes, allocator
-overhead and shared-pointer control blocks. Separate lease-control counters measure the
-standard memory pool's upstream allocations and retained chunks, including alias control
-blocks and pool overhead without double counting payload capacity. They exclude the
-initial `LeaseState` object/control-block allocation and implementation-private allocator
-heaps. These measurements are not a complete heap census.
+overhead and shared-pointer control blocks. A consumer holds a pooled buffer through its
+plain shared pointer; the pool reuses a buffer once that pointer is the only one left, after
+an acquire fence that orders the consumer's reads before the owner's next write. Memory
+metrics and their session peaks are computed when telemetry is queried, not on the capture
+path. These measurements are not a complete heap census.
 
 Controller capacities are sampled on the controller's decision lane and published with
 its output. They include reported retained query vectors, including private resource

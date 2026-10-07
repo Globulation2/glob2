@@ -278,24 +278,18 @@ Handle capture(const Game& game,
 	if (needs(requirements, Component::ResourceFields))
 	{
 		auto fields = acquire(&Storage::resourceFields, Component::ResourceFields);
-		for (auto& [key, field] : fields->values) field.values.reset();
-		game.map.visitPublishedResourceFields([&](int team, int resource, int swim, bool market, Uint64 generation, const Uint16* data, std::size_t size) {
-			const ResourceFieldKey key{team, resource, swim, market};
-			if (previous && previous->worldIdentity == result->worldIdentity && previous->resourceFields)
-			{
-				const auto found = previous->resourceFields->values.find(key);
-				if (found != previous->resourceFields->values.end() && found->second.generation == generation)
-				{ if (storage && !fields->values.contains(key)) ++storage->allocations;
-					fields->values.insert_or_assign(key, found->second); return; }
-			}
-			if (storage && !storage->resourcePlanes.contains(key)) ++storage->allocations;
-			auto plane = storage ? storage->resourcePlanes[key].acquire(storage->allocations) : std::make_shared<std::vector<Uint16>>();
-			if (storage && plane->capacity() < size) ++storage->allocations;
-			plane->resize(size); std::copy_n(data, size, plane->begin());
-			if (storage && !fields->values.contains(key)) ++storage->allocations;
-			fields->values.insert_or_assign(key, ResourceField{generation, std::move(plane)});
-		});
-		std::erase_if(fields->values, [](const auto& entry) { return !entry.second.values; });
+		fields->clear();
+		const auto planeCells = std::size_t(game.map.getW()) * game.map.getH();
+		const ResourceFields* kept = previous && previous->worldIdentity == result->worldIdentity ? previous->resourceFields.get() : nullptr;
+		for (const auto& plane : game.map.publishedResourceFields())
+		{
+			if (storage && fields->planes.size() == fields->planes.capacity()) ++storage->allocations;
+			if (kept) if (const auto* same = kept->find(plane.key); same && same->generation == plane.generation) { fields->add(*same); continue; }
+			auto values = storage ? storage->resourcePlanes.acquire(storage->allocations) : std::make_shared<std::vector<Uint16>>();
+			if (storage && values->capacity() < planeCells) ++storage->allocations;
+			values->resize(planeCells); std::copy_n(*plane.slot, planeCells, values->begin());
+			fields->add(ResourceField{plane.key, plane.generation, std::move(values)});
+		}
 		result->resourceFields = std::move(fields);
 	}
 	return value;

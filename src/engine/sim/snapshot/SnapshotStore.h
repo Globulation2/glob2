@@ -8,7 +8,8 @@
 namespace SimulationSnapshot
 {
 // Simulation-owner capture cache. Consumers receive projections; the store keeps
-// only the newest generation, while component leases retain older inputs.
+// only the newest generation, while component leases retain older inputs. Memory
+// metrics and their session peaks are computed on query, never during capture.
 class Store
 {
 	std::shared_ptr<const std::vector<BuildingKindView>> catalog;

@@ -48,10 +48,9 @@ Handle Store::captureBoundary(const Game& game, Requirements required)
 		for (const auto& team : next.teams->values) metrics.bytesCopied += team.statistics.buildingCountByVariant.size() * sizeof(int)
 			+ (team.virtualBuildings.size()+team.swarms.size()) * sizeof(BuildingRef);
 	}
-	if (next.resourceFields) for (const auto& [key, field] : next.resourceFields->values) {
-		const auto found = previous.resourceFields ? previous.resourceFields->values.find(key) : next.resourceFields->values.end();
-		if (previous.resourceFields && found != previous.resourceFields->values.end() && found->second.values == field.values)
-			++metrics.reusedComponents;
+	if (next.resourceFields) for (const auto& field : next.resourceFields->planes) {
+		const auto* found = previous.resourceFields ? previous.resourceFields->find(field.key) : nullptr;
+		if (found && found->values == field.values) ++metrics.reusedComponents;
 		else metrics.bytesCopied += field.values->size() * sizeof(Uint16);
 	}
 	metrics.allocations = storage.allocations;
@@ -60,7 +59,6 @@ Handle Store::captureBoundary(const Game& game, Requirements required)
 	++metrics.captures;
 	metrics.captureNs += std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::steady_clock::now() - start).count()-preparation;
 	latest = std::move(next);
-	memoryMetrics();
 	return latest->project(requested);
 }
 
@@ -73,14 +71,12 @@ MemoryMetrics Store::memoryMetrics() const
 	memoryPeaks.peakRetainedBytes = std::max(memoryPeaks.peakRetainedBytes, value.retainedBytes);
 	memoryPeaks.peakCapacityBytes = std::max(memoryPeaks.peakCapacityBytes, value.capacityBytes);
 	memoryPeaks.peakLeasedBytes = std::max(memoryPeaks.peakLeasedBytes, value.leasedBytes);
-	memoryPeaks.peakLeaseControlRetainedBytes = std::max(memoryPeaks.peakLeaseControlRetainedBytes, value.leaseControlRetainedBytes);
 	value.peakAllocatedBuffers = memoryPeaks.peakAllocatedBuffers;
 	value.peakReusableBuffers = memoryPeaks.peakReusableBuffers;
 	value.peakLeasedBuffers = memoryPeaks.peakLeasedBuffers;
 	value.peakRetainedBytes = memoryPeaks.peakRetainedBytes;
 	value.peakCapacityBytes = memoryPeaks.peakCapacityBytes;
 	value.peakLeasedBytes = memoryPeaks.peakLeasedBytes;
-	value.peakLeaseControlRetainedBytes = memoryPeaks.peakLeaseControlRetainedBytes;
 	return value;
 }
 } // namespace SimulationSnapshot

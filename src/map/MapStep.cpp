@@ -283,7 +283,7 @@ void Map::configureGradientPipeline(unsigned workers, unsigned delay)
 {
 	if (workers>16 || delay<1 || delay>16) throw std::invalid_argument("Invalid gradient pipeline configuration");
 	preparePendingGradient();
-	gradientRuntime->pipeline.onPublished = [this](Uint16** slot) { ++resourceFieldGenerations[slot]; };
+	gradientRuntime->pipeline.onPublished = [this](Uint16** slot) { publishPlane(slot); };
 	gradientRuntime->pipeline.configure(workers, delay, size, [this](GradientPipeline::Job &job, GradientWorkspace &scratch) {
 		const field::Grid geometry{getW(), getH()};
 		if (job.water && job.registry && job.registry->size()>TERRAIN_COUNT && !job.modifiedCosts) {

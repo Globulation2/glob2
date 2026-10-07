@@ -2,6 +2,8 @@
 #include "EngineFixtures.h"
 #include "MapInternal.h"
 #include "gradient/GradientRuntime.h"
+#include "engine/sim/snapshot/WorldSnapshot.h"
+#include <map>
 #include <type_traits>
 #include <nlohmann/json.hpp>
 
@@ -1020,4 +1022,61 @@ TEST_CASE("compact clearing traits preserve custom high-ID property combinations
             CHECK(map.forbiddenGradient[0][swim][index]==((n&1) ? GRADIENT_FORBIDDEN : GRADIENT_AT_GOAL));
         }
     }
+}
+
+TEST_CASE("published plane registry matches a sweep of live material fields" * doctest::test_suite("GradientPreparation"))
+{
+	glob2test::HeadlessGlobals globals;
+	glob2test::HeadlessGame world({.wDec=5, .hDec=5, .teams=2, .clearImmobile=true, .header=true});
+	auto& m = world.game.map;
+	const auto sweep = [&] {
+		std::map<Uint16, Uint16* const*> live;
+		for (int t=0; t<Team::MAX_COUNT; ++t) for (int r=0; r<MaterialSlotCount; ++r) for (int s=0; s<SWIM_CLASS_COUNT; ++s)
+		{
+			if (m.materialGradients[t][r][s]) live.emplace(MapState::planeKey(t, r, s, false), &m.materialGradients[t][r][s]);
+			if (m.marketMaterialGradients[t][r][s]) live.emplace(MapState::planeKey(t, r, s, true), &m.marketMaterialGradients[t][r][s]);
+		}
+		return live;
+	};
+	std::map<Uint16, Uint64> seen;
+	const auto check = [&] {
+		const auto live = sweep();
+		const auto planes = m.publishedResourceFields();
+		REQUIRE(planes.size() == live.size());
+		for (const auto& plane : planes)
+		{
+			const auto found = live.find(plane.key);
+			REQUIRE(found != live.end());
+			CHECK(found->second == plane.slot);
+			const auto id = MapState::decodePlaneKey(plane.key);
+			CHECK(MapState::planeKey(id.team, id.resource, id.swim, id.market) == plane.key);
+			CHECK(plane.generation > 0);
+			auto [it, inserted] = seen.try_emplace(plane.key, plane.generation);
+			if (!inserted) { CHECK(plane.generation >= it->second); it->second = plane.generation; }
+		}
+	};
+	for (int resource=0; resource<3; ++resource) m.setResourceByIndex(10 + resource, 10, resource, 0);
+	m.setMapDiscovered();
+	check(); CHECK(m.publishedResourceFields().empty());
+	m.getMaterialGradientSlot(0, WHEAT, 0); check();
+	REQUIRE(m.publishedResourceFields().size() == 1);
+	const auto first = m.publishedResourceFields()[0].generation;
+	m.updateMaterialGradient(0, WHEAT, 0, false); check();
+	CHECK(m.publishedResourceFields()[0].generation > first);
+	m.getMaterialGradientSlot(1, WOOD, 2); check();
+	std::vector<Uint16> observed(m.getW() * m.getH(), 5);
+	m.installObservedResourceField(1, STONE, 1, observed); check();
+	CHECK(m.publishedResourceFields().size() == 3);
+	// Bulk slot changes re-register every live plane with a newer generation.
+	std::map<Uint16, Uint64> before;
+	for (const auto& plane : m.publishedResourceFields()) before[plane.key] = plane.generation;
+	m.rebuildPlaneRegistry(); check();
+	for (const auto& plane : m.publishedResourceFields()) CHECK(plane.generation > before.at(plane.key));
+	// A captured snapshot sees exactly the registry, keyed the same way.
+	const auto handle = SimulationSnapshot::capture(world.game, SimulationSnapshot::captureCatalog(world.game));
+	REQUIRE(handle.resourceFields);
+	CHECK(handle.resourceFields->planes.size() == 3);
+	const auto* stone = handle.resourceFields->find(MapState::planeKey(1, STONE, 1, false));
+	REQUIRE(stone); CHECK(stone->values->at(7) == 5);
+	CHECK_FALSE(handle.resourceFields->find(MapState::planeKey(0, WOOD, 0, false)));
 }

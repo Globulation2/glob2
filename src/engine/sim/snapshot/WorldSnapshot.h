@@ -10,6 +10,7 @@
 #include "ResourceRegistry.h"
 #include "ResourceHabitats.h"
 #include "MapStateView.h"
+#include "ResourcePlaneKey.h"
 #include <span>
 #include <map>
 #include <tuple>
@@ -78,12 +79,23 @@ struct Rules
 	std::vector<std::string> experiments;
 };
 using ResourceFieldKey = std::tuple<int, int, int, bool>;
+// One captured plane, shared with earlier captures while its generation holds.
 struct ResourceField
 {
+	Uint16 key = 0;
 	Uint64 generation = 0;
 	std::shared_ptr<const std::vector<Uint16>> values;
 };
-struct ResourceFields { std::map<ResourceFieldKey, ResourceField> values; };
+// The live planes at capture, in the map's publication order, with a dense
+// key index so consumers look a plane up without hashing.
+struct ResourceFields
+{
+	std::vector<ResourceField> planes;
+	std::array<Uint16, MapState::PlaneCount> index{};
+	const ResourceField* find(Uint16 key) const { const auto i = index[key]; return i ? &planes[i - 1] : nullptr; }
+	void clear() { for (const auto& plane : planes) index[plane.key] = 0; planes.clear(); }
+	void add(ResourceField field) { planes.push_back(std::move(field)); index[planes.back().key] = Uint16(planes.size()); }
+};
 
 
 // A handle owns only components explicitly leased to this consumer. Projection

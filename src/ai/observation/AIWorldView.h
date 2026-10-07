@@ -82,9 +82,9 @@ public:
 	static std::shared_ptr<const AIWorldView> capture(const Game& game, std::shared_ptr<const Catalog> catalog);
 	std::span<const Uint16> resourceGradient(int team, int resource, int swim, bool market = false) const
 	{
-		if (!lease.resourceFields) return {};
-		const auto found = lease.resourceFields->values.find({team, resource, swim, market});
-		return found == lease.resourceFields->values.end() ? std::span<const Uint16>{} : std::span<const Uint16>(*found->second.values);
+		if (!lease.resourceFields || !MapState::validPlane(team, resource, swim)) return {};
+		const auto* found = lease.resourceFields->find(MapState::planeKey(team, resource, swim, market));
+		return found ? std::span<const Uint16>(*found->values) : std::span<const Uint16>{};
 	}
 	const SimulationSnapshot::Handle& components() const { return lease; }
 	const AIPlanning::BuildingCapabilityTables& capabilities() const { return *lease.catalogs->capabilities; }

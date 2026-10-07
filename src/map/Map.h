@@ -25,6 +25,7 @@
 #include "ResourceRegistry.h"
 #include "ResourceHabitats.h"
 #include "MapStateView.h"
+#include "ResourcePlaneKey.h"
 #include "Sector.h"
 #include "Team.h"
 #include "TerrainType.h"
@@ -1162,9 +1163,23 @@ protected:
 	//[int team][int resourceNumber][int swimClass]
 	Uint16 *materialGradients[Team::MAX_COUNT][MaterialSlotCount][SWIM_CLASS_COUNT];
 	mutable std::mutex materialGradientMutex;
-	std::map<Uint16**, Uint64> resourceFieldGenerations;
 	//! Same, with the team's stocked markets as goals (see getResourceGradient).
 	Uint16 *marketMaterialGradients[Team::MAX_COUNT][MaterialSlotCount][SWIM_CLASS_COUNT];
+	// Dense registry of the published planes in both arrays above, maintained
+	// by every publication site so a capture visits only live planes. Plane
+	// generations are kept per key and survive republication, so a consumer
+	// never mistakes a re-added plane for the one it already holds.
+	std::vector<MapState::PublishedPlane> publishedPlanes;
+	std::array<Uint16, MapState::PlaneCount> publishedPlaneIndex{};
+	std::array<Uint64, MapState::PlaneCount> planeGenerations{};
+	//! The plane key of a material gradient slot; nullopt for any other field slot.
+	std::optional<Uint16> planeKeyForSlot(Uint16* const* slot) const;
+	//! Register a publication into slot; other field slots (areas, buildings) are ignored.
+	void publishPlane(Uint16* const* slot);
+	void clearPlaneRegistry();
+	//! Re-register every non-null slot with a fresh generation after bulk slot
+	//! changes (load, team removal) that bypass publishPlane.
+	void rebuildPlaneRegistry();
 	
 	// Used to go out of forbidden areas
 	Uint16 *forbiddenGradient[Team::MAX_COUNT][SWIM_CLASS_COUNT];
@@ -1184,19 +1199,8 @@ protected:
 	
 public:
 	void installObservedResourceField(int team, int resource, int swim, std::span<const Uint16> values);
-	template<class Visitor> void visitPublishedResourceFields(Visitor visit) const
-	{
-		for (int team = 0; team < Team::MAX_COUNT; ++team)
-			for (int resource = 0; resource < MaterialSlotCount; ++resource)
-				for (int swim = 0; swim < SWIM_CLASS_COUNT; ++swim)
-					for (bool market : {false, true})
-					{
-						const auto* slot = market ? &marketMaterialGradients[team][resource][swim] : &materialGradients[team][resource][swim];
-						if (!*slot) continue;
-						const auto generation = resourceFieldGenerations.find(const_cast<Uint16**>(slot));
-						visit(team, resource, swim, market, generation == resourceFieldGenerations.end() ? 0 : generation->second, *slot, size);
-					}
-	}
+	//! Live published material planes in publication order; every plane has size cells.
+	std::span<const MapState::PublishedPlane> publishedResourceFields() const { return publishedPlanes; }
 	// Used to guide explorers
 	//[int team]
 	// 0=unexplored, 255=just explored
