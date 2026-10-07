@@ -166,6 +166,10 @@ to that total. Benchmark evidence belongs under `artifacts/`, not in this guide.
 All shipped controllers borrow immutable engine snapshots for decisions. The simulation
 owner captures the required component union once per poll tick; unchanged components are
 shared, and mutable component buffers are reused only after their consumer leases end.
+Map arrays are tracked per 16x16 chunk, and a reused buffer copies only the chunks that
+changed since it was last filled. `GLOB2_SNAPSHOT_VERIFY=1` makes every capture byte-compare
+its arrays and entity lists with the live game and throw on a mismatch; use it in test runs
+after touching map writers, not in timing runs.
 Unit membership uses flat offset/count ranges. Controllers keep private strategy state and
 bounded query caches, rather than retaining a whole observation between polls. Published
 resource fields preserve the map's existing refresh age. An absent field is initialized
@@ -222,7 +226,7 @@ The nested `ai_pipeline` object reports session counters:
 | `captures` | Distinct snapshot capture boundaries. |
 | `extraction_ns` | Owner elapsed extraction time, excluding the separately measured preparation subset. |
 | `preparation_ns` | Owner elapsed time deriving building checks and preparing the growth field. |
-| `bytes_copied` | Accounted component payload copied across captures, including published resource planes. |
+| `bytes_copied` | Component payload actually copied across captures: for map arrays only the 16x16 chunks changed since the reused buffer was last filled, plus whole entity, team and published resource-plane payloads. |
 | `component_reuses` | Unchanged component or resource-plane reuse events. |
 | `allocations` | Instrumented component/payload pool-object, vector-growth and resource-plane allocation events. |
 | `computation_ns` | Summed elapsed time executing decision callbacks, across inline or worker execution. |

@@ -50,6 +50,7 @@ void Map::tile(int rx, int ry)
 			mapDiscovered[dst] = oldDiscovered[src];
 			undermap[dst] = oldUndermap[src];
 		}
+	markAllChanges();
     rebuildResourceState();
     if (!oldStockIndices.empty())
         for (int y=0;y<h;++y) for (int x=0;x<w;++x)

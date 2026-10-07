@@ -72,8 +72,9 @@ void Map::installResourceDefinitions(const std::string& json)
     resourceStocks=std::move(stocks);
     freeResourceStocks.clear();
     materialSourceCounts=counts;
+    refreshLiveView();
     for (size_t i=0;i<cellCount();++i) resourceCells[i].resource=deposits[i];
-    ++snapshotResources;
+    resourceChanges.markAll();
     growthCache.invalidate();
     invalidateResourceSeeds();
     bumpTopologyGeneration();
@@ -96,7 +97,7 @@ ExperimentSet Map::requiredResourceExperiments() const
 
 std::array<Uint16,MaterialCount> Map::materialStocksAt(size_t index) const
 {
-    return MapState::materialStocksAt(cellView(),index);
+    return MapState::materialStocksAt(liveCells,index);
 }
 
 MaterialMask Map::resourceMaterialMaskAt(size_t index) const
@@ -129,13 +130,13 @@ void Map::releaseResourceStock(size_t index)
     {
         freeResourceStocks.push_back(resourceStockIndices[index]);
         resourceStockIndices[index]=0;
-        ++snapshotResources;
+        markResource(index);
     }
 }
 
 void Map::initializeResourceStock(size_t index)
 {
-    ++snapshotResources;
+    markResource(index);
     auto& r=resourceCells[index].resource;
     if (r.type==NO_RES_TYPE) { r.clear(); return; }
     if (!resourceRegistry().valid(r.type)) throw std::invalid_argument("Unknown resource identity");
@@ -164,7 +165,7 @@ void Map::refreshResourceTotal(size_t index)
     Uint32 total=0;
     for (auto stock : resourceStocks[slot-1]) total+=stock;
     resourceCells[index].resource.amount=total;
-    ++snapshotResources;
+    markResource(index);
 }
 
 void Map::materialStockChanged(size_t index, MaterialMask before)
@@ -186,7 +187,7 @@ void Map::materialStockChanged(size_t index, MaterialMask before)
 
 void Map::rebuildResourceState()
 {
-    ++snapshotResources;
+    resourceChanges.markAll();
     bumpStaticMaterialSourceGeneration();
     resourceStockIndices.clear(); resourceStocks.clear(); freeResourceStocks.clear(); materialSourceCounts.fill(0);
     for (size_t i=0;i<cellCount();++i)
@@ -212,7 +213,7 @@ void Map::setMaterialAmount(size_t index,MaterialId materialId,Uint16 amount)
     // Only availability transitions affect counters; capture renewable membership
     // before mutation, including an empty persistent stock that can regrow.
     const auto before=crossesZero ? resourceMaterialMaskAt(index) : MaterialMask(0);
-    ++snapshotResources;
+    markResource(index);
     if (std::has_single_bit(p.materialMask)) r.amount=amount;
     else { resourceStocks[resourceStockIndices[index]-1][material]=amount; refreshResourceTotal(index); }
     if (crossesZero) materialStockChanged(index,before);
@@ -344,11 +345,12 @@ void Map::rebuildResourceHabitats()
         h.explicitTerrainMaterialPermissions[t]=materials;
     }
     resourceHabitatsValue=std::make_shared<const ResourceHabitats>(std::move(h));
+    refreshLiveView();
 }
 
 bool Map::terrainSupportsMaterialAtSlot(int x,int y,int material) const
 {
-    return MapState::terrainSupportsMaterial(cellView(),coordToIndex(x,y),material);
+    return MapState::terrainSupportsMaterial(liveCells,coordToIndex(x,y),material);
 }
 
 std::uint32_t Map::materialGrowthRateAtSlot(size_t index,int material) const
@@ -368,13 +370,13 @@ std::uint64_t Map::materialExpansionRateAtSlot(size_t index,int material) const
 
 bool Map::terrainSupportsResourceAt(size_t index,ResourceId resourceId) const
 {
-    return MapState::terrainSupportsResource(cellView(),index,resourceId);
+    return MapState::terrainSupportsResource(liveCells,index,resourceId);
 }
 
 
 bool Map::terrainSupportsResourceType(TerrainType terrain, ResourceId resource) const
 {
-    return MapState::terrainSupportsResourceType(cellView(),terrain,resource);
+    return MapState::terrainSupportsResourceType(liveCells,terrain,resource);
 }
 
 int Map::resourceScarcityLevel() const
@@ -382,14 +384,20 @@ int Map::resourceScarcityLevel() const
     return game ? int(game->gameHeader.getResourceScarcityLevel()) : 0;
 }
 
-MapState::View Map::cellView() const
+void Map::refreshLiveView()
 {
     MapState::View view;
     view.width=w; view.height=h; view.wDec=unsigned(wDec); view.wMask=Uint32(wMask); view.hMask=Uint32(hMask);
     view.resources=resourceCells; view.occupancy=occupancyCells; view.areas=areaCells;
     view.terrainIds=terrainIds; view.legacyTerrain=legacyTerrain;
-    view.stockIndices=resourceStockIndices; view.stocks=resourceStocks; view.materialSourceCounts=materialSourceCounts;
+    view.stockIndices=&resourceStockIndices; view.stocks=&resourceStocks; view.materialSourceCounts=materialSourceCounts;
     view.terrainRegistry=terrainRegistryValue.get(); view.resourceRegistry=resourceRegistryValue.get(); view.habitats=resourceHabitatsValue.get();
+    liveCells=view;
+}
+
+MapState::View Map::cellView() const
+{
+    auto view=liveCells;
     view.resourceGrowthDisabled=game && game->gameHeader.isResourceGrowthDisabled();
     view.resourceScarcityLevel=resourceScarcityLevel();
     return view;

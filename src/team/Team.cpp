@@ -89,14 +89,20 @@ void Team::rebuildLiveLists()
 bool Team::integrity(void)
 {
 	checkInvariant(noMoreBuildingSitesCountdown<=noMoreBuildingSitesCountdownMax);
-	checkInvariant(liveUnits.matches(myUnits, Unit::MAX_COUNT));
-	checkInvariant(liveBuildings.matches(myBuildings, Building::MAX_COUNT));
+	// The live lists must name exactly the occupied slots, in slot order. This
+	// runs every tick, so it rides along the existing slot sweeps.
+	std::size_t liveBuilding = 0;
 	for (int id=0; id<Building::MAX_COUNT; id++)
 	{
 		Building *b=myBuildings[id];
 		if (b)
+		{
+			checkInvariant(liveBuilding < liveBuildings.size() && liveBuildings.slots()[liveBuilding] == id && liveBuildings.entries()[liveBuilding] == b);
+			++liveBuilding;
 			checkInvariant(b->integrity());
+		}
 	}
+	checkInvariant(liveBuilding == liveBuildings.size());
 	for (std::list<Building *>::iterator it=virtualBuildings.begin(); it!=virtualBuildings.end(); ++it)
 	{
 		checkInvariant(*it);
@@ -112,12 +118,18 @@ bool Team::integrity(void)
 		checkInvariant(myBuildings[Building::GIDtoID((*it)->gid)]);
 	}
 
+	std::size_t liveUnit = 0;
 	for (int i=0; i<Unit::MAX_COUNT; i++)
 	{
 		Unit *u=myUnits[i];
 		if (u)
+		{
+			checkInvariant(liveUnit < liveUnits.size() && liveUnits.slots()[liveUnit] == i && liveUnits.entries()[liveUnit] == u);
+			++liveUnit;
 			checkInvariant(u->integrity());
+		}
 	}
+	checkInvariant(liveUnit == liveUnits.size());
 	return true;
 }
 

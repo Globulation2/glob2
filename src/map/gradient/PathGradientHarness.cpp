@@ -45,6 +45,7 @@ struct PathMap : Map
 			areaCells.assign(size, {});
 			legacyTerrain.assign(size, 0);
 			scriptAreaCells.assign(size, 0);
+			bindBootstrappedArrays();
 		for (size_t i = 0; i < size; ++i)
 		{
 			auto cell = getTile(i);

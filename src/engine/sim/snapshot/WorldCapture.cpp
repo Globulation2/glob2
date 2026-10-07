@@ -7,6 +7,8 @@
 #include "BuildingCapabilities.h"
 #include "GlobalContainer.h"
 #include "Unit.h"
+#include "Team.h"
+#include <string>
 #include "Race.h"
 #include <algorithm>
 #include <iterator>
@@ -102,17 +104,22 @@ Handle capture(const Game& game,
 		if (!needs(requirements, component)) return std::shared_ptr<T>{};
 		return storage ? (storage->*pool).acquire(storage->allocations) : std::make_shared<T>();
 	};
+	// Chunk-stamped map arrays reuse the free buffer filled most recently.
+	auto acquireStamped = [&]<class T>(BufferPool<T> Storage::* pool, Component component) {
+		if (!needs(requirements, component)) return std::shared_ptr<T>{};
+		return storage ? (storage->*pool).acquire(storage->allocations, [](const T& buffer) { return buffer.stamps.filledTick; }) : std::make_shared<T>();
+	};
 	Catalogs unusedCatalogs; auto catalogsOwner = acquire(&Storage::catalogs, Component::Catalogs);
 	auto* catalogs = catalogsOwner ? catalogsOwner.get() : &unusedCatalogs;
-	Terrain unusedTerrain; auto terrainOwner = acquire(&Storage::terrain, Component::Terrain);
+	Terrain unusedTerrain; auto terrainOwner = acquireStamped(&Storage::terrain, Component::Terrain);
 	auto* terrain = terrainOwner ? terrainOwner.get() : &unusedTerrain;
-	Resources unusedResources; auto resourcesOwner = acquire(&Storage::resources, Component::Resources);
+	Resources unusedResources; auto resourcesOwner = acquireStamped(&Storage::resources, Component::Resources);
 	auto* resources = resourcesOwner ? resourcesOwner.get() : &unusedResources;
-	Occupancy unusedOccupancy; auto occupancyOwner = acquire(&Storage::occupancy, Component::Occupancy);
+	Occupancy unusedOccupancy; auto occupancyOwner = acquireStamped(&Storage::occupancy, Component::Occupancy);
 	auto* occupancy = occupancyOwner ? occupancyOwner.get() : &unusedOccupancy;
-	Areas unusedAreas; auto areasOwner = acquire(&Storage::areas, Component::Areas);
+	Areas unusedAreas; auto areasOwner = acquireStamped(&Storage::areas, Component::Areas);
 	auto* areas = areasOwner ? areasOwner.get() : &unusedAreas;
-	Visibility unusedVisibility; auto visibilityOwner = acquire(&Storage::visibility, Component::Visibility);
+	Visibility unusedVisibility; auto visibilityOwner = acquireStamped(&Storage::visibility, Component::Visibility);
 	auto* visibility = visibilityOwner ? visibilityOwner.get() : &unusedVisibility;
 	Entities unusedEntities; auto entitiesOwner = acquire(&Storage::entities, Component::Entities);
 	auto* entities = entitiesOwner ? entitiesOwner.get() : &unusedEntities;
@@ -169,22 +176,90 @@ Handle capture(const Game& game,
         reserve(destination, source.size()); destination.resize(source.size());
         if (!source.empty()) std::memcpy(destination.data(), source.data(), source.size_bytes());
     };
-    if (needs(requirements,Component::Terrain)) copyArray(terrain->legacy, game.map.legacyTerrainState());
-    if (needs(requirements,Component::Resources)) {
-        copyArray(resources->cells, game.map.resourceState());
-        copyArray(resources->stockIndices, game.map.resourceStockIndexState());
-        copyArray(resources->stocks, game.map.resourceStockState());
-        resources->staticMaterialSourceGeneration = game.map.staticMaterialSourceGeneration();
-        { const auto live = game.map.cellView(); std::copy(live.materialSourceCounts.begin(), live.materialSourceCounts.end(), resources->materialSourceCounts.begin()); }
-    }
-    if (needs(requirements,Component::Occupancy)) copyArray(occupancy->cells, game.map.occupancyState());
-    if (needs(requirements,Component::Areas)) copyArray(areas->cells, game.map.areaState());
-    if (needs(requirements,Component::Visibility)) {
-        copyArray(visibility->discovered, std::span<const Uint32>(game.map.mapDiscovered));
-        if (game.map.fogOfWar) copyArray(visibility->visible, std::span<const Uint32>(game.map.fogOfWar,game.map.cellCount()));
-        else { reserve(visibility->visible,game.map.cellCount()); visibility->visible.resize(game.map.cellCount());
-            std::fill(visibility->visible.begin(),visibility->visible.end(),0); }
-    }
+	// Map arrays: a buffer that already mirrors this world copies only the
+	// chunks whose live stamp moved since its last fill; anything else (a new
+	// buffer, another world, a resize) copies everything. Arrays sharing one
+	// tracker are refreshed from the same dirty set.
+	const auto identity = game.map.identity();
+	const auto& geometry = game.map.chunks();
+	const auto cellCount = game.map.cellCount();
+	const auto prepare = [&](auto& destination, std::size_t count) {
+		const bool resized = destination.size() != count;
+		reserve(destination, count); destination.resize(count);
+		return resized;
+	};
+	const auto copyCells = [&](auto& destination, const auto source, std::size_t start, std::size_t length) {
+		using Element = typename std::remove_reference_t<decltype(destination)>::value_type;
+		static_assert(std::is_trivially_copyable_v<Element>);
+		static_assert(std::is_same_v<Element, std::remove_const_t<typename decltype(source)::element_type>>);
+		if (length) std::memcpy(destination.data() + start, source.data() + start, length * sizeof(Element));
+		if (storage) storage->bytesCopied += length * sizeof(Element);
+	};
+	const auto refresh = [&](ChunkStamps& stamps, const MapState::ChangeTracker& live, bool resized, auto copyRange) {
+		const bool everything = resized || stamps.worldIdentity != identity || stamps.width != geometry.width
+			|| stamps.height != geometry.height || stamps.chunks.size() != live.chunks.size();
+		if (everything)
+		{
+			copyRange(std::size_t(0), cellCount);
+			if (storage && stamps.chunks.capacity() < live.chunks.size()) ++storage->allocations;
+			stamps.chunks.assign(live.chunks.begin(), live.chunks.end());
+		}
+		else for (std::size_t chunk = 0; chunk < live.chunks.size(); ++chunk)
+			if (stamps.chunks[chunk] != live.chunks[chunk])
+			{
+				geometry.forEachRow(chunk, copyRange);
+				stamps.chunks[chunk] = live.chunks[chunk];
+			}
+		stamps.worldIdentity = identity; stamps.width = geometry.width; stamps.height = geometry.height;
+		stamps.filledTick = game.stepCounter;
+	};
+	if (needs(requirements, Component::Terrain))
+	{
+		const auto source = game.map.legacyTerrainState();
+		const bool resized = prepare(terrain->legacy, source.size());
+		refresh(terrain->stamps, game.map.changes(MapState::TrackedArray::Terrain), resized,
+			[&](std::size_t start, std::size_t length) { copyCells(terrain->legacy, source, start, length); });
+	}
+	if (needs(requirements, Component::Resources))
+	{
+		const auto cellsSource = game.map.resourceState();
+		const auto indexSource = game.map.resourceStockIndexState();
+		bool resized = prepare(resources->cells, cellsSource.size());
+		resized |= prepare(resources->stockIndices, indexSource.size());
+		refresh(resources->stamps, game.map.changes(MapState::TrackedArray::Resources), resized, [&](std::size_t start, std::size_t length) {
+			copyCells(resources->cells, cellsSource, start, length);
+			if (!indexSource.empty()) copyCells(resources->stockIndices, indexSource, start, length);
+		});
+		copyArray(resources->stocks, game.map.resourceStockState());
+		resources->staticMaterialSourceGeneration = game.map.staticMaterialSourceGeneration();
+		{ const auto live = game.map.cellView(); std::copy(live.materialSourceCounts.begin(), live.materialSourceCounts.end(), resources->materialSourceCounts.begin()); }
+	}
+	if (needs(requirements, Component::Occupancy))
+	{
+		const auto source = game.map.occupancyState();
+		const bool resized = prepare(occupancy->cells, source.size());
+		refresh(occupancy->stamps, game.map.changes(MapState::TrackedArray::Occupancy), resized,
+			[&](std::size_t start, std::size_t length) { copyCells(occupancy->cells, source, start, length); });
+	}
+	if (needs(requirements, Component::Areas))
+	{
+		const auto source = game.map.areaState();
+		const bool resized = prepare(areas->cells, source.size());
+		refresh(areas->stamps, game.map.changes(MapState::TrackedArray::Areas), resized,
+			[&](std::size_t start, std::size_t length) { copyCells(areas->cells, source, start, length); });
+	}
+	if (needs(requirements, Component::Visibility))
+	{
+		const std::span<const Uint32> discovered(game.map.mapDiscovered);
+		const std::span<const Uint32> visible = game.map.fogOfWar ? std::span<const Uint32>(game.map.fogOfWar, cellCount) : std::span<const Uint32>{};
+		bool resized = prepare(visibility->discovered, discovered.size());
+		resized |= prepare(visibility->visible, cellCount);
+		refresh(visibility->stamps, game.map.changes(MapState::TrackedArray::Visibility), resized, [&](std::size_t start, std::size_t length) {
+			copyCells(visibility->discovered, discovered, start, length);
+			if (!visible.empty()) copyCells(visibility->visible, visible, start, length);
+			else std::fill_n(visibility->visible.begin() + start, length, 0u);
+		});
+	}
 	for (int t = 0; (needs(requirements, Component::Teams) || needs(requirements, Component::Entities)) && t < game.mapHeader.getNumberOfTeams(); ++t)
 	{
 		const auto* team = game.teams[t];
@@ -296,6 +371,43 @@ Handle capture(const Game& game,
 		}
 		result->resourceFields = std::move(fields);
 	}
+	if (storage && storage->verify) verifyCapture(game, value);
 	return value;
+}
+
+// Byte-compare every captured map array with the live arrays and check the
+// team live lists, naming the first mismatch. Catches writes that bypass the
+// change trackers; costs a full read of the map, so it is opt-in.
+void verifyCapture(const Game& game, const Handle& handle)
+{
+	const auto& geometry = game.map.chunks();
+	const auto compare = [&](const char* component, const auto& captured, const auto live) {
+		using Element = typename std::remove_reference_t<decltype(captured)>::value_type;
+		if (captured.size() != live.size()) throw std::logic_error(std::string("snapshot verification: ") + component + " size differs from the live map");
+		if (live.empty()) return; // an absent sidecar has no chunks to compare
+		for (std::size_t chunk = 0; chunk < geometry.count(); ++chunk)
+			geometry.forEachRow(chunk, [&](std::size_t start, std::size_t length) {
+				if (std::memcmp(captured.data() + start, live.data() + start, length * sizeof(Element)))
+					throw std::logic_error(std::string("snapshot verification: ") + component + " chunk " + std::to_string(chunk) + " differs from the live map");
+			});
+	};
+	if (handle.terrain) compare("terrain", handle.terrain->legacy, game.map.legacyTerrainState());
+	if (handle.resources)
+	{
+		compare("resources", handle.resources->cells, game.map.resourceState());
+		compare("resource stock indices", handle.resources->stockIndices, game.map.resourceStockIndexState());
+	}
+	if (handle.occupancy) compare("occupancy", handle.occupancy->cells, game.map.occupancyState());
+	if (handle.areas) compare("areas", handle.areas->cells, game.map.areaState());
+	if (handle.visibility)
+	{
+		compare("discovered", handle.visibility->discovered, std::span<const Uint32>(game.map.mapDiscovered));
+		if (game.map.fogOfWar) compare("visible", handle.visibility->visible, std::span<const Uint32>(game.map.fogOfWar, game.map.cellCount()));
+	}
+	if (handle.entities)
+		for (int t = 0; t < game.mapHeader.getNumberOfTeams(); ++t)
+			if (const auto* team = game.teams[t])
+				if (!team->liveUnits.matches(team->myUnits, Unit::MAX_COUNT) || !team->liveBuildings.matches(team->myBuildings, Building::MAX_COUNT))
+					throw std::logic_error("snapshot verification: team " + std::to_string(t) + " live entity lists differ from its slots");
 }
 } // namespace SimulationSnapshot

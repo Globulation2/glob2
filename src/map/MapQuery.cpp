@@ -353,7 +353,7 @@ void Map::markImmobileUnit(int x, int y, int teamNumber)
 	const auto index = coordToIndex(x, y);
 	if (occupancyCells[index].immobileUnit == teamNumber) return;
 	occupancyCells[index].immobileUnit = teamNumber;
-	++snapshotOccupancy;
+	markOccupancy(index);
 	resourceSeedChanged(index, ResourceSeedCache::Immobile);
 }
 
@@ -363,7 +363,7 @@ void Map::clearImmobileUnit(int x, int y)
 	const auto index = coordToIndex(x, y);
 	if (occupancyCells[index].immobileUnit == IMMOBILE_UNIT_NONE) return;
 	occupancyCells[index].immobileUnit = IMMOBILE_UNIT_NONE;
-	++snapshotOccupancy;
+	markOccupancy(index);
 	resourceSeedChanged(index, ResourceSeedCache::Immobile);
 }
 

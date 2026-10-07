@@ -26,6 +26,7 @@
 #include "ResourceHabitats.h"
 #include "MapStateView.h"
 #include "ResourcePlaneKey.h"
+#include "MapChangeTracking.h"
 #include "Sector.h"
 #include "Team.h"
 #include "TerrainType.h"
@@ -107,7 +108,30 @@ class Map
 	mutable ComputeExecutor compute;
 	mutable std::unique_ptr<GradientRuntime> gradientRuntime;
 	unsigned computeExperiments = 0;
-	Uint64 snapshotResources = 1, snapshotOccupancy = 1, snapshotAreas = 1, snapshotVisibility = 1, snapshotTerrain = 1;
+	// The live cell view minus the game's growth settings, rebound by
+	// refreshLiveView() whenever an input is replaced. Per-cell queries read
+	// it directly instead of assembling a view on every call.
+	MapState::View liveCells;
+	// Per-array change tracking at chunk granularity; see MapChangeTracking.h.
+	MapState::ChunkGeometry chunkGeometry;
+	MapState::ChangeTracker terrainChanges, resourceChanges, occupancyChanges, areaChanges, visibilityChanges;
+	void markTerrain(size_t index) { terrainChanges.mark(chunkGeometry.chunkOf(index)); }
+	void markResource(size_t index) { resourceChanges.mark(chunkGeometry.chunkOf(index)); }
+	void markOccupancy(size_t index) { occupancyChanges.mark(chunkGeometry.chunkOf(index)); }
+	void markArea(size_t index) { areaChanges.mark(chunkGeometry.chunkOf(index)); }
+	void markVisibility(size_t index) { visibilityChanges.mark(chunkGeometry.chunkOf(index)); }
+	void markAllChanges() { terrainChanges.markAll(); resourceChanges.markAll(); occupancyChanges.markAll(); areaChanges.markAll(); visibilityChanges.markAll(); }
+	//! For fixtures that assign the cell arrays directly instead of calling
+	//! setSize: size the change trackers and bind the live view to the arrays.
+	void bindBootstrappedArrays() { resetChangeTracking(); refreshLiveView(); }
+	//! Size the trackers to the current dimensions; every chunk becomes dirty.
+	void resetChangeTracking()
+	{
+		chunkGeometry.reset(w, h, unsigned(wDec), Uint32(wMask));
+		const auto count = chunkGeometry.count();
+		terrainChanges.reset(count); resourceChanges.reset(count); occupancyChanges.reset(count);
+		areaChanges.reset(count); visibilityChanges.reset(count);
+	}
 	mutable std::mutex waterSnapshotMutex;
 	mutable std::shared_ptr<const std::vector<Uint8>> waterSnapshot;
 	mutable std::shared_ptr<const std::vector<TerrainType>> terrainSnapshot;
@@ -165,7 +189,20 @@ class Map
 	std::mutex gradientBufferPoolMutex;
 	void clearGradientBufferPool();
 public:
-	std::array<Uint64, 5> snapshotGenerations() const { return {snapshotTerrain, snapshotResources, snapshotOccupancy, snapshotAreas, snapshotVisibility}; }
+	std::array<Uint64, 5> snapshotGenerations() const
+	{ return {terrainChanges.generation, resourceChanges.generation, occupancyChanges.generation, areaChanges.generation, visibilityChanges.generation}; }
+	const MapState::ChunkGeometry& chunks() const { return chunkGeometry; }
+	const MapState::ChangeTracker& changes(MapState::TrackedArray array) const
+	{
+		switch (array)
+		{
+		case MapState::TrackedArray::Terrain: return terrainChanges;
+		case MapState::TrackedArray::Resources: return resourceChanges;
+		case MapState::TrackedArray::Occupancy: return occupancyChanges;
+		case MapState::TrackedArray::Areas: return areaChanges;
+		default: return visibilityChanges;
+		}
+	}
 	// Immutable terrain costs shared by independent resumed searches.
 	std::shared_ptr<const std::vector<Uint8>> frozenWaterSnapshot() const;
 	Uint16 *acquireBuildingGradientBuffer();
@@ -551,8 +588,12 @@ public:
     int resourceScarcityLevel() const;
     // Borrowed read-only view over the authoritative records; the shared
     // MapState queries read these arrays directly, as do engine snapshots.
+    //! Borrowed read-only view of the live cell arrays and registries plus
+    //! the game's growth settings; stateView() adds the growth field.
     MapState::View cellView() const;
-    MapState::View stateView() const; // includes the growth field
+    MapState::View stateView() const;
+    //! Rebind liveCells after an array, registry or habitat table is replaced.
+    void refreshLiveView();
     //! Expected growth opportunities per visit for a deposit of this type here.
     std::uint32_t resourceGrowthRateAt(size_t index,int resourceType) const;
 	void installResourceDefinitions(const std::string& json);
@@ -561,16 +602,16 @@ public:
 	    return resourceRegistry().properties(type);
 	}
     const ResourceProperties& resourcePropertiesByIndex(int type) const { return resourceProperties(static_cast<ResourceId>(type)); }
-	Uint16 materialAmountAtSlot(size_t index, int material) const { return MapState::materialAmountAt(cellView(), index, material); }
+	Uint16 materialAmountAtSlot(size_t index, int material) const { return MapState::materialAmountAt(liveCells, index, material); }
 	Uint16 materialAmountAt(size_t index, MaterialId material) const { return materialAmountAtSlot(index, static_cast<int>(material)); }
-	MaterialMask materialMaskAt(size_t index) const { return MapState::materialMaskAt(cellView(), index); }
+	MaterialMask materialMaskAt(size_t index) const { return MapState::materialMaskAt(liveCells, index); }
     std::array<Uint16,MaterialCount> materialStocksAt(size_t index) const;
 	MaterialMask resourceMaterialMaskAt(size_t index) const;
-	bool resourceBlocksGround(size_t index) const { return MapState::resourceBlocksGround(cellView(), index); }
-	bool resourceBlocksAir(size_t index) const { return MapState::resourceBlocksAir(cellView(), index); }
-	bool resourceBlocksBuilding(size_t index) const { return MapState::resourceBlocksBuilding(cellView(), index); }
-	bool resourceVisibleToHarvest(size_t index) const { return MapState::resourceVisibleToHarvest(cellView(), index); }
-	bool hasMaterialSourceSlot(int material) const { return MapState::hasMaterialSource(cellView(), material); }
+	bool resourceBlocksGround(size_t index) const { return MapState::resourceBlocksGround(liveCells, index); }
+	bool resourceBlocksAir(size_t index) const { return MapState::resourceBlocksAir(liveCells, index); }
+	bool resourceBlocksBuilding(size_t index) const { return MapState::resourceBlocksBuilding(liveCells, index); }
+	bool resourceVisibleToHarvest(size_t index) const { return MapState::resourceVisibleToHarvest(liveCells, index); }
+	bool hasMaterialSourceSlot(int material) const { return MapState::hasMaterialSource(liveCells, material); }
 	bool hasMaterialSource(MaterialId material) const { return hasMaterialSourceSlot(static_cast<int>(material)); }
 	void setMaterialAmount(size_t index, MaterialId material, Uint16 amount);
     void setMaterialAmountSlot(size_t index,int material,Uint16 amount) { if (validMaterial(material)) setMaterialAmount(index,static_cast<MaterialId>(material),amount); }
@@ -620,18 +661,20 @@ public:
 	void setResourceAmount(size_t index, Uint32 amount);
 	void setFertility(int x, int y, Uint16 value)
 	{
-		auto &stored = resourceCells[coordToIndex(x, y)].fertility;
+		const auto index = coordToIndex(x, y);
+		auto &stored = resourceCells[index].fertility;
 		const bool changed = stored != value;
 		stored = value;
-		if (changed) ++snapshotResources;
+		if (changed) markResource(index);
 	}
 	void setResourcesGrow(int x, int y, Uint8 value)
 	{
-		auto &stored = resourceCells[coordToIndex(x, y)].mayGrow;
+		const auto index = coordToIndex(x, y);
+		auto &stored = resourceCells[index].mayGrow;
 		// Preserve the stored legacy byte in shared live/snapshot records.
 		const bool changed = stored != value;
 		stored = value;
-		if (changed) ++snapshotResources;
+		if (changed) markResource(index);
 	}
 	// Raw mask replacement for order application/import; callers retain their
 	// existing topology-generation and displayed-overlay updates.
@@ -837,17 +880,19 @@ public:
 	
 	void setGroundUnit(int x, int y, Uint16 guid)
 	{
-		auto &stored = occupancyCells[coordToIndex(x, y)].groundUnit;
+		const auto index = coordToIndex(x, y);
+		auto &stored = occupancyCells[index].groundUnit;
 		const bool changed = stored != guid;
 		stored = guid;
-		if (changed) ++snapshotOccupancy;
+		if (changed) markOccupancy(index);
 	}
 	void setAirUnit(int x, int y, Uint16 guid)
 	{
-		auto &stored = occupancyCells[coordToIndex(x, y)].airUnit;
+		const auto index = coordToIndex(x, y);
+		auto &stored = occupancyCells[index].airUnit;
 		const bool changed = stored != guid;
 		stored = guid;
-		if (changed) ++snapshotOccupancy;
+		if (changed) markOccupancy(index);
 	}
 	void setBuilding(int x, int y, int w, int h, Uint16 gbid);
 

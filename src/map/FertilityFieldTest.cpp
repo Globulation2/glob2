@@ -112,6 +112,7 @@ namespace
 			areaCells.assign(size, {});
 			legacyTerrain.assign(size, 0);
 			scriptAreaCells.assign(size, 0);
+			bindBootstrappedArrays();
 			importLegacyTerrain();
 		}
 		~TinyMap() { w = h = wMask = hMask = wDec = hDec = 0; size = 0; }

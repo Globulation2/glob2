@@ -57,6 +57,7 @@ static void aUnitIsJudgedOnTheWalkToTheResource()
 	Building* site = new Building(siteX, siteY, Building::GIDfrom(0, 0), siteType, team,
 	                              &globalContainer->buildingsTypes, 4, 4);
 	team->myBuildings[0] = site;
+	team->rebuildLiveLists();
 	game.map.setBuilding(siteX, siteY, type->width, type->height, site->gid);
 	require(site->neededMaterial(WOOD) > 0, "the site still wants wood");
 
@@ -66,6 +67,7 @@ static void aUnitIsJudgedOnTheWalkToTheResource()
 
 	Unit* unit = new Unit(siteX - 2, siteY, 0, WORKER, team, 0);
 	team->myUnits[0] = unit;
+	team->rebuildLiveLists();
 	unit->performance[WALK] = 10;
 	unit->performance[HARVEST] = 10;
 	unit->activity = Unit::ACT_RANDOM;
@@ -123,6 +125,7 @@ static void theFallbackScoresAWholeRoundTrip()
 	Building* site = new Building(siteX, siteY, Building::GIDfrom(0, 0), siteType, team,
 	                              &globalContainer->buildingsTypes, 4, 4);
 	team->myBuildings[0] = site;
+	team->rebuildLiveLists();
 	game.map.setBuilding(siteX, siteY, type->width, type->height, site->gid);
 
 	require(game.map.incResourceByIndex(siteX + 9, siteY, WOOD, 0), "seed the wood tile");
@@ -131,6 +134,7 @@ static void theFallbackScoresAWholeRoundTrip()
 	// the same length and the whole job is close to twice the walk.
 	Unit* unit = new Unit(siteX - 2, siteY, 0, WORKER, team, 0);
 	team->myUnits[0] = unit;
+	team->rebuildLiveLists();
 	unit->performance[WALK] = 10;
 	unit->performance[HARVEST] = 10;
 	unit->activity = Unit::ACT_RANDOM;

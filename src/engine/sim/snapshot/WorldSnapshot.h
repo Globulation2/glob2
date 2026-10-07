@@ -11,6 +11,7 @@
 #include "ResourceHabitats.h"
 #include "MapStateView.h"
 #include "ResourcePlaneKey.h"
+#include "MapChangeTracking.h"
 #include <span>
 #include <map>
 #include <tuple>
@@ -29,6 +30,15 @@ struct Catalogs
 	std::shared_ptr<const ResourceRegistry> resources;
 	std::shared_ptr<const ResourceHabitats> habitats;
 };
+// Which live chunks a pooled buffer mirrors (MapState::ChangeTracker stamps),
+// so the next fill of the same buffer copies only chunks changed since.
+struct ChunkStamps
+{
+	Uint64 worldIdentity = 0;
+	int width = 0, height = 0;
+	Uint32 filledTick = 0;
+	std::vector<Uint64> chunks;
+};
 struct TerrainCell { TerrainType type = GRASS; Uint16 legacy = 0; };
 struct Terrain
 {
@@ -37,6 +47,7 @@ struct Terrain
 	std::vector<Uint16> legacy;
 	Uint64 revision = 0;
 	bool movementModifiers = false, airConstraints = false;
+	ChunkStamps stamps;
 };
 using ResourceCell = MapState::ResourceCell;
 // Single-yield stock lives inline in each cell; multi-yield deposits index the
@@ -48,13 +59,14 @@ struct Resources
 	std::vector<std::array<Uint16, MaterialCount>> stocks;
 	std::array<Uint32, MaterialCount> materialSourceCounts{};
 	Uint64 staticMaterialSourceGeneration = 0;
+	ChunkStamps stamps; // cells and stockIndices
 };
 using OccupancyCell = MapState::OccupancyCell;
-struct Occupancy { std::vector<OccupancyCell> cells; };
+struct Occupancy { std::vector<OccupancyCell> cells; ChunkStamps stamps; };
 using AreaCell = MapState::AreaCell;
-struct Areas { std::vector<AreaCell> cells; bool farmEnabled = false; };
+struct Areas { std::vector<AreaCell> cells; bool farmEnabled = false; ChunkStamps stamps; };
 struct VisibilityCell { Uint32 discovered = 0, visible = 0; };
-struct Visibility { std::vector<Uint32> discovered, visible; };
+struct Visibility { std::vector<Uint32> discovered, visible; ChunkStamps stamps; };
 static_assert(std::is_trivially_copyable_v<ResourceCell>);
 static_assert(std::is_trivially_copyable_v<OccupancyCell>);
 static_assert(std::is_trivially_copyable_v<AreaCell>);
@@ -145,4 +157,6 @@ std::shared_ptr<const std::vector<BuildingKindView>> captureCatalog(const Game& 
 struct Storage;
 Handle capture(const Game& game, std::shared_ptr<const std::vector<BuildingKindView>> catalog,
 	Requirements requirements = All, const Handle* previous = nullptr, Storage* storage = nullptr);
+//! Throw if a captured map array or entity list differs from the live game.
+void verifyCapture(const Game& game, const Handle& handle);
 } // namespace SimulationSnapshot

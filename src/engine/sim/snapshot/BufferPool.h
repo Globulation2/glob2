@@ -43,6 +43,26 @@ public:
 				return buffer;
 			}
 		}
+		return allocate(allocations);
+	}
+	// Prefer the free buffer with the highest score (its fill tick): the one
+	// whose contents are closest to the live arrays, so a stamped copy moves the
+	// fewest chunks.
+	template<class Score> std::shared_ptr<T> acquire(std::uint64_t& allocations, Score&& score)
+	{
+		const std::shared_ptr<T>* best = nullptr;
+		for (const auto& buffer : buffers)
+			if (buffer.use_count() == 1 && (!best || score(*buffer) > score(**best))) best = &buffer;
+		if (best)
+		{
+			std::atomic_thread_fence(std::memory_order_acquire);
+			return *best;
+		}
+		return allocate(allocations);
+	}
+private:
+	std::shared_ptr<T> allocate(std::uint64_t& allocations)
+	{
 		if (buffers.size() == Limit) throw std::logic_error("snapshot storage exceeded its bounded consumer horizon");
 		++allocations;
 		buffers.push_back(std::make_shared<T>());

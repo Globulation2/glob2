@@ -25,7 +25,7 @@ void Map::replaceResource(size_t index, const Resource &resource)
 	const auto before = resourceMaterialMaskAt(index);
 	releaseResourceStock(index);
 	resourceCells[index].resource = resource;
-	++snapshotResources;
+	markResource(index);
 	initializeResourceStock(index);
 	materialStockChanged(index, before);
 	gradientRuntime->safety.invalidate(blockedGround != resourceBlocksGround(index),
@@ -55,7 +55,7 @@ void Map::replaceTile(size_t index, const Tile &tile)
 	occupancyCells[index].airUnit = tile.airUnit;
 	areaCells[index] = {tile.forbidden, tile.guardArea, tile.clearArea, tile.farmArea};
 	scriptAreaCells[index] = tile.scriptAreas;
-	++snapshotTerrain; ++snapshotResources; ++snapshotOccupancy; ++snapshotAreas;
+	markTerrain(index); markResource(index); markOccupancy(index); markArea(index);
 	if (changes) resourceSeedChanged(index, changes);
 }
 
@@ -69,7 +69,7 @@ void Map::setAreaMask(size_t index, Uint32 Tile::*field, Uint32 value)
 	auto &stored = areaCells[index].*storedField;
 	if (stored == value) return;
 	stored = value;
-	++snapshotAreas;
+	markArea(index);
 	if (field == &Tile::forbidden) resourceSeedChanged(index, ResourceSeedCache::Forbidden);
 }
 
@@ -100,7 +100,7 @@ void Map::setBuilding(int x, int y, int width, int height, Uint16 building)
 			if (occupancyCells[index].building != building)
 			{
 				occupancyCells[index].building = building;
-				++snapshotOccupancy;
+				markOccupancy(index);
 				resourceSeedChanged(index, ResourceSeedCache::Building);
 			}
 		}

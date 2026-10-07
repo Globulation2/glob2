@@ -152,6 +152,8 @@ try
 	for (auto &cell : resourceCells) cell.mayGrow = 1;
 	for (auto &cell : occupancyCells) cell.immobileUnit = 255;
 	terrainIds.assign(size, GRASS);
+	resetChangeTracking();
+	refreshLiveView();
 	undermap = new Uint8[size];
 	listedAddr = new Uint8*[size];
 	aStarPoints=new AStarAlgorithmPoint[size];
@@ -839,6 +841,8 @@ void Map::loadRuntimeState(GAGCore::InputStream *stream, Sint32 versionMinor)
 		stream->readLeaveSection();
 	}
 	stream->readLeaveSection();
+	// Immobile occupancy and both fog planes were replaced wholesale.
+	occupancyChanges.markAll(); visibilityChanges.markAll();
 	stream->readEnterSection("teams");
 	for (int t=0; t<game->teamsCount(); ++t)
 	{

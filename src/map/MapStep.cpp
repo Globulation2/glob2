@@ -454,7 +454,7 @@ void Map::stagePeriodicGradientPreparation()
 
 void Map::switchFogOfWar(void)
 {
-	++snapshotVisibility;
+	visibilityChanges.markAll();
 	PERF_SCOPE_TIME(Fog);
 	memset(fogOfWar, 0, size*sizeof(Uint32));
 	if (fogOfWar == &fogOfWarA[0])
@@ -470,7 +470,7 @@ void Map::setMapDiscovered(int x, int y, Uint32 sharedVision)
 	// the inactive plane becomes visible after switchFogOfWar invalidates it.
 	if ((mapDiscovered[index] & sharedVision) != sharedVision
 		|| (fogOfWar && (fogOfWar[index] & sharedVision) != sharedVision))
-		++snapshotVisibility;
+		markVisibility(index);
 	mapDiscovered[index] |= sharedVision;
 	fogOfWarA[index] |= sharedVision;
 	fogOfWarB[index] |= sharedVision;
@@ -523,6 +523,7 @@ void Map::setMapExploredByBuilding(int x, int y, int w, int h, int team)
 void Map::unsetMapDiscovered(void)
 {
 	fill(mapDiscovered, 0u);
+	visibilityChanges.markAll();
 }
 
 bool Map::isMapPartiallyDiscovered(int x1, int y1, int x2, int y2, Uint32 visionMask) const
@@ -544,6 +545,7 @@ bool Map::isMapPartiallyDiscovered(int x1, int y1, int x2, int y2, Uint32 vision
 void Map::setMapDiscovered(void)
 {
 	fill(mapDiscovered, ~0u);
+	visibilityChanges.markAll();
 }
 
 void Map::computeDisplayedForbidden(int teamNumber)

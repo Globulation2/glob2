@@ -9,6 +9,7 @@
 #include <array>
 #include <bit>
 #include <span>
+#include <vector>
 
 //! No global building identifier (duplicated from Map.h so this header stays light).
 #ifndef NOGBID
@@ -30,8 +31,11 @@ struct View
 	std::span<const AreaCell> areas;
 	std::span<const TerrainType> terrainIds;
 	std::span<const Uint16> legacyTerrain;
-	std::span<const Uint32> stockIndices;
-	std::span<const std::array<Uint16, MaterialCount>> stocks;
+	// Multi-yield stock sidecar, referenced through its vectors: the live
+	// sidecar grows at runtime, and a cached view must follow it.
+	const std::vector<Uint32>* stockIndices = nullptr;
+	const std::vector<std::array<Uint16, MaterialCount>>* stocks = nullptr;
+	Uint32 stockSlot(std::size_t i) const { return stockIndices && !stockIndices->empty() ? (*stockIndices)[i] : 0; }
 	std::span<const Uint32> materialSourceCounts;
 	const TerrainRegistry* terrainRegistry = nullptr;
 	const ResourceRegistry* resourceRegistry = nullptr;
@@ -55,8 +59,8 @@ inline Uint16 materialAmountAt(const View& v, std::size_t i, int material)
 	const auto& p = v.resourceProperties(r.type);
 	if (!(p.materialMask & (1u << material))) return 0;
 	if (std::has_single_bit(p.materialMask)) return static_cast<Uint16>(r.amount);
-	const auto slot = v.stockIndices.empty() ? 0 : v.stockIndices[i];
-	return slot ? v.stocks[slot - 1][material] : 0;
+	const auto slot = v.stockSlot(i);
+	return slot ? (*v.stocks)[slot - 1][material] : 0;
 }
 inline Uint16 materialAmountAt(const View& v, std::size_t i, MaterialId material) { return materialAmountAt(v, i, int(materialIndex(material))); }
 inline bool hasMaterial(const View& v, std::size_t i, MaterialId material) { return materialAmountAt(v, i, material) > 0; }
@@ -67,9 +71,9 @@ inline MaterialMask materialMaskAt(const View& v, std::size_t i)
 	if (r.type == NO_RES_TYPE) return 0;
 	const auto& p = v.resourceProperties(r.type);
 	if (std::has_single_bit(p.materialMask)) return r.amount ? p.materialMask : 0;
-	const auto slot = v.stockIndices.empty() ? 0 : v.stockIndices[i];
+	const auto slot = v.stockSlot(i);
 	if (!slot) return 0;
-	const auto& stocks = v.stocks[slot - 1];
+	const auto& stocks = (*v.stocks)[slot - 1];
 	MaterialMask result = 0;
 	for (unsigned mask = p.materialMask; mask; mask &= mask - 1)
 	{
@@ -85,7 +89,7 @@ inline std::array<Uint16, MaterialCount> materialStocksAt(const View& v, std::si
 	if (r.type == NO_RES_TYPE) return stocks;
 	const auto& p = v.resourceProperties(r.type);
 	if (std::has_single_bit(p.materialMask)) stocks[materialIndex(p.primaryMaterial)] = Uint16(r.amount);
-	else if (!v.stockIndices.empty() && v.stockIndices[i]) stocks = v.stocks[v.stockIndices[i] - 1];
+	else if (const auto slot = v.stockSlot(i)) stocks = (*v.stocks)[slot - 1];
 	return stocks;
 }
 inline bool hasMaterialSource(const View& v, int material)

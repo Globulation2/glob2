@@ -18,7 +18,11 @@ Handle Store::captureBoundary(const Game& game, Requirements required)
 		catalog = captureCatalog(game);
 		catalogConfigurationRevision = game.gameHeader.observationRevision();
 	}
+	const auto copiedBefore = storage.bytesCopied;
 	auto next = capture(game, catalog, required, latest ? &*latest : nullptr, &storage);
+	// Map arrays report the chunks they actually copied; other components are
+	// accounted by size when not shared with the previous capture.
+	metrics.bytesCopied += storage.bytesCopied - copiedBefore;
 	auto account = [&](const auto& current, const auto& previous, Uint64 bytes) {
 		if (!current) return;
 		if (current == previous) ++metrics.reusedComponents;
@@ -26,12 +30,11 @@ Handle Store::captureBoundary(const Game& game, Requirements required)
 	};
 	const Handle empty;
 	const auto& previous = latest ? *latest : empty;
-	const auto cells = Uint64(next.width) * next.height;
-	account(next.terrain, previous.terrain, cells * sizeof(Uint16));
-	account(next.resources, previous.resources, cells * sizeof(ResourceCell));
-	account(next.occupancy, previous.occupancy, cells * sizeof(OccupancyCell));
-	account(next.areas, previous.areas, cells * sizeof(AreaCell));
-	account(next.visibility, previous.visibility, cells * sizeof(VisibilityCell));
+	account(next.terrain, previous.terrain, 0);
+	account(next.resources, previous.resources, 0);
+	account(next.occupancy, previous.occupancy, 0);
+	account(next.areas, previous.areas, 0);
+	account(next.visibility, previous.visibility, 0);
 	account(next.catalogs, previous.catalogs, 0);
 	account(next.rules, previous.rules, 0);
 	if(next.growth) {

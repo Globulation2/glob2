@@ -34,7 +34,7 @@ bool Map::canResourceEverGrowHereByIndex(int x, int y, int resourceType) const
 
 int Map::farmCropAt(int x,int y) const
 {
-    return MapState::farmCropAt(cellView(),x,y);
+    return MapState::farmCropAt(liveCells,x,y);
 }
 
 bool Map::isClearingTarget(size_t index, Uint32 teamMask, bool farmAreas) const
@@ -53,7 +53,7 @@ bool Map::canPaintFarmArea(int x,int y) const
 
 bool Map::isFarmableResourceByIndex(int resourceType) const
 {
-    return MapState::isFarmableResource(cellView(),resourceType);
+    return MapState::isFarmableResource(liveCells,resourceType);
 }
 
 std::optional<size_t> Map::pickFarmHarvestTileSlot(int x, int y, int resourceType, Uint32 teamMask)

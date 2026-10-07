@@ -297,6 +297,7 @@ void Map::importTerrainDefinitions(std::string_view json)
 	terrainPropertyIndices = std::move(propertyIndices);
 	terrainPropertyTable = terrainRegistry().propertyProfiles().data();
     resourceHabitatsValue=staged.resourceHabitatsValue;
+    refreshLiveView();
 	terrainCounts = std::move(counts);
 	terrainFeatures.fill(0);
 	terrainGroundCostCounts = {};
@@ -311,6 +312,7 @@ void Map::importTerrainDefinitions(std::string_view json)
 			legacyTerrain[i] =
 				p.firstFrame + terrainVisualHash(int(i & wMask), int(i >> wDec)) % p.variants;
 	}
+	terrainChanges.markAll();
 	{
 		std::lock_guard<std::mutex> lock(growthCacheMutex);
 		growthCache.invalidate();
@@ -374,6 +376,7 @@ void Map::importLegacyTerrain()
 	if (terrainIds.size()!=cellCount())
 	{
 		terrainIds.assign(cellCount(),GRASS);
+		refreshLiveView();
 		rebuildTerrainCounts();
 	}
 	auto batch = editTerrain();
@@ -459,13 +462,13 @@ void Map::setTerrain(int x, int y, Uint16 sprite)
 	const auto index = coordToIndex(x,y);
 	changeTerrainIdentity(index, legacyTerrainType(sprite));
 	legacyTerrain[index] = sprite;
-	++snapshotTerrain;
+	markTerrain(index);
 }
 
 void Map::setCellTerrain(size_t index, TerrainType type)
 {
-	++snapshotTerrain;
 	if (index >= size) throw std::out_of_range("Terrain cell index");
+	markTerrain(index);
 	changeTerrainIdentity(index, type);
 	const auto &p = terrainRegistry().compatibility(type);
 	legacyTerrain[index] =
@@ -516,7 +519,7 @@ void Map::configureCompute(unsigned threads, unsigned experiments)
 
 void Map::clear()
 {
-	++snapshotTerrain; ++snapshotResources; ++snapshotOccupancy; ++snapshotAreas; ++snapshotVisibility;
+	markAllChanges();
 	clearPlaneRegistry();
     bumpStaticMaterialSourceGeneration();
 	static std::atomic<Uint64> nextIdentity{1};
@@ -541,6 +544,7 @@ void Map::clear()
 	freeResourceStocks.clear();
 	materialSourceCounts.fill(0);
 	terrainIds.clear();
+	refreshLiveView();
 	terrainPropertyIndices.clear();
 	terrainCounts.assign(terrainRegistry().size(), 0);
 	terrainFeatures.fill(0);
@@ -624,6 +628,7 @@ void Map::setSize(int wDec, int hDec, TerrainType terrainType)
     if (!resourceRegistryValue->size())
     {
         resourceRegistryValue = ResourceRegistry::builtins();
+        refreshLiveView();
         rebuildResourceHabitats();
     }
 	if (!validTerrainType(terrainType)) throw std::invalid_argument("Unknown terrain identity");
@@ -657,6 +662,8 @@ void Map::setSize(int wDec, int hDec, TerrainType terrainType)
 	scriptAreaCells.assign(size, 0);
 	terrainIds.assign(size, GRASS);
 	terrainPropertyIndices.assign(size, terrainRegistry().propertyIndex(GRASS));
+	resetChangeTracking();
+	refreshLiveView();
 	terrainPropertyTable = terrainRegistry().propertyProfiles().data();
     rebuildResourceHabitats();
 	terrainCounts[GRASS] = size;

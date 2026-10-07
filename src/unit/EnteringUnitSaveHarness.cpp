@@ -57,9 +57,11 @@ TEST_SUITE("EnteringUnitSave")
 	                const int by = position[1] - (dy < 0 ? type->height - 1 : 0);
 	                auto* inn = new Building(bx, by, 0, innType, team, &globals->buildingsTypes, 0, 0);
 	                team->myBuildings[0] = inn;
+	                team->rebuildLiveLists();
 	                game.map.setBuilding(bx, by, type->width, type->height, inn->gid);
 	                auto* unit = new Unit(position[0], position[1], 0, EXPLORER, team, 0);
 	                team->myUnits[0] = unit;
+	                team->rebuildLiveLists();
 	                unit->attachedBuilding = inn;
 	                unit->activity = Unit::ACT_UPGRADING;
 	                unit->destinationPurpose = FEED;

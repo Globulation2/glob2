@@ -47,6 +47,7 @@ struct Colony
         const int type = globalContainer->buildingsTypes.getTypeNum("inn", 0, false);
         inn = new Building(8, 8, 0, type, team, &globalContainer->buildingsTypes, 0, 0);
         team->myBuildings[0] = inn;
+        team->rebuildLiveLists();
         game.map.setBuilding(8, 8, inn->type->width, inn->type->height, inn->gid);
         inn->materials[WHEAT] = corn;
         inn->maxUnitInside = 1;
@@ -58,6 +59,7 @@ struct Colony
     {
         auto* u = new Unit(6, 8, 0, type, team, 0);
         team->myUnits[0] = u;
+        team->rebuildLiveLists();
         u->action = type == EXPLORER ? FLY : WALK;
         u->hungry = u->trigHungry / 2;
         u->medical = Unit::MED_HUNGRY;

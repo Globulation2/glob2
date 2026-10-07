@@ -33,9 +33,9 @@ TEST_CASE("live slot lists follow every slot assignment and order the snapshot r
 	CHECK(std::is_sorted(team->liveUnits.slots().begin(), team->liveUnits.slots().end()));
 
 	// Editor removal detaches; a slot freed in the middle keeps the order.
-	REQUIRE(game.removeUnitAndBuildingAndFlags(9, 12, Game::DEL_GROUND_UNIT));
+	REQUIRE(game.removeUnitAndBuildingAndFlags(9, 12, unsigned(Game::DEL_GROUND_UNIT)));
 	consistent(); CHECK(team->liveUnits.size() == 6);
-	REQUIRE(game.removeUnitAndBuildingAndFlags(12, 4, Game::DEL_BUILDING));
+	REQUIRE(game.removeUnitAndBuildingAndFlags(12, 4, unsigned(Game::DEL_BUILDING)));
 	consistent(); CHECK(team->liveBuildings.size() == 1);
 	// The freed slot is reused by the next unit and reattached in place.
 	REQUIRE(world.addUnit(WORKER, 9, 12, 0));

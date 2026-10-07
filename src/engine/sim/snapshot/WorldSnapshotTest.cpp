@@ -650,6 +650,94 @@ TEST_SUITE("WorldSnapshot")
 		CHECK(released.peakLeasedBytes == retained.peakLeasedBytes);
 		CHECK(released.peakRetainedBytes == retained.retainedBytes);
 	}
+	// Trivially copyable cells have no operator==; compare their bytes.
+	template<class Cell> bool sameCells(const std::vector<Cell>& captured, std::span<const Cell> live)
+	{ return captured.size() == live.size() && (live.empty() || !std::memcmp(captured.data(), live.data(), live.size_bytes())); }
+	TEST_CASE("a single cell change copies one chunk of one component into a reused buffer")
+	{
+		glob2test::HeadlessGlobals globals;
+		glob2test::HeadlessGame fixture{glob2test::GameOptions{.wDec=5, .hDec=5, .teams=1, .discovered=true, .clearImmobile=true, .loadDefaultRace=true}};
+		auto& game = fixture.game; auto& map = game.map;
+		SimulationSnapshot::Store store;
+		store.setVerification(true);
+		// Map arrays only: entity and team records are copied whole every capture.
+		const auto arrays = SimulationSnapshot::bit(SimulationSnapshot::Component::Resources)
+			| SimulationSnapshot::bit(SimulationSnapshot::Component::Occupancy) | SimulationSnapshot::bit(SimulationSnapshot::Component::Areas);
+		const auto next = [&] { ++game.stepCounter; return store.captureBoundary(game, arrays); };
+		auto first = next();
+		map.setResourceByIndex(5, 5, WHEAT, 1);
+		auto second = next(); // first still holds buffer A, so B is filled completely
+		CHECK(second.resources != first.resources);
+		first = {};
+		const auto before = store.metrics.bytesCopied;
+		map.setResourceByIndex(6, 6, WHEAT, 1); // same chunk as the first change
+		auto third = next(); // reuses A: only the changed chunk moves
+		const auto chunkCells = MapState::ChunkGeometry::Side * MapState::ChunkGeometry::Side;
+		const auto expected = chunkCells * sizeof(SimulationSnapshot::ResourceCell)
+			+ (map.resourceStockIndexState().empty() ? 0 : chunkCells * sizeof(Uint32));
+		CHECK(store.metrics.bytesCopied - before == expected);
+		CHECK(third.occupancy == second.occupancy); CHECK(third.areas == second.areas);
+		CHECK(third.resources != second.resources);
+		CHECK(third.resourceAt(map.coordToIndex(5, 5)).resource.type == WHEAT);
+		CHECK(third.resourceAt(map.coordToIndex(6, 6)).resource.type == WHEAT);
+		CHECK(sameCells(third.resources->cells, map.resourceState()));
+		// Buffer B last saw the world at the second capture, so reusing it moves
+		// the chunk changed at the third capture plus the two changed now.
+		second = {};
+		const auto threeBefore = store.metrics.bytesCopied;
+		map.setResourceByIndex(20, 20, WOOD, 1); map.setResourceByIndex(5, 20, STONE, 1);
+		auto fourth = next();
+		CHECK(store.metrics.bytesCopied - threeBefore == 3 * expected);
+		CHECK(sameCells(fourth.resources->cells, map.resourceState()));
+	}
+	TEST_CASE("a retained consumer leaves the newest free buffer to absorb only later changes")
+	{
+		glob2test::HeadlessGlobals globals;
+		glob2test::HeadlessGame fixture{glob2test::GameOptions{.wDec=5, .hDec=5, .teams=1, .discovered=true, .clearImmobile=true, .loadDefaultRace=true}};
+		auto& game = fixture.game; auto& map = game.map;
+		SimulationSnapshot::Store store;
+		store.setVerification(true);
+		const auto areas = SimulationSnapshot::bit(SimulationSnapshot::Component::Areas);
+		const auto next = [&] { ++game.stepCounter; return store.captureBoundary(game, areas); };
+		auto held = next();                       // buffer A, retained by a slow consumer
+		map.addForbidden(2, 2, 0);
+		auto b = next();                          // buffer B, full fill
+		map.addGuardArea(20, 20, 0);
+		auto c = next();                          // buffer C, full fill (A and B both held)
+		b = {};
+		map.addClearArea(21, 21, 0);              // same chunk as the guard area
+		const auto before = store.metrics.bytesCopied;
+		auto d = next();                          // B is the newest free buffer: one chunk since its fill
+		const auto chunkBytes = MapState::ChunkGeometry::Side * MapState::ChunkGeometry::Side * sizeof(SimulationSnapshot::AreaCell);
+		CHECK(store.metrics.bytesCopied - before == chunkBytes);
+		CHECK(sameCells(d.areas->cells, map.areaState()));
+		CHECK(held.areasAt(map.coordToIndex(2, 2)).forbidden == 0);
+		CHECK(held.areasAt(map.coordToIndex(20, 20)).guard == 0);
+		held = {};
+		const auto reuseBefore = store.metrics.bytesCopied;
+		map.addForbidden(3, 3, 0);
+		auto e = next();                          // C is newer than A: chunks since C's fill only
+		CHECK(store.metrics.bytesCopied - reuseBefore == 2 * chunkBytes);
+		CHECK(sameCells(e.areas->cells, map.areaState()));
+	}
+	TEST_CASE("capture verification rejects writes that bypass the change trackers")
+	{
+		glob2test::HeadlessGlobals globals;
+		glob2test::HeadlessGame fixture{glob2test::GameOptions{.wDec=5, .hDec=5, .teams=1, .discovered=true, .clearImmobile=true, .loadDefaultRace=true}};
+		auto& game = fixture.game; auto& map = game.map;
+		SimulationSnapshot::Store store;
+		store.setVerification(true);
+		const auto next = [&] { ++game.stepCounter; return store.captureBoundary(game, SimulationSnapshot::All); };
+		auto first = next();
+		map.setFertility(4, 4, 9);
+		auto second = next();
+		first = {};
+		map.resourceCells[map.coordToIndex(4, 4)].fertility = 10; // raw write, no mark
+		CHECK_THROWS_WITH_AS(next(), "snapshot verification: resources chunk 0 differs from the live map", std::logic_error);
+		map.markResource(map.coordToIndex(4, 4));
+		CHECK_NOTHROW(next());
+		CHECK(store.captureBoundary(game, SimulationSnapshot::All).resourceAt(map.coordToIndex(4, 4)).fertility == 10);
+	}
 	TEST_CASE("same tick component expansion preserves narrow leases and captures arrays once")
 	{
 		glob2test::HeadlessGlobals globals;

@@ -84,6 +84,7 @@ namespace
 			areaCells.assign(size, {});
 			legacyTerrain.assign(size, 0);
 			scriptAreaCells.assign(size, 0);   // Tile() defaults: terrain=0 (grass), no building, no unit
+			bindBootstrappedArrays();
             importLegacyTerrain();
 		}
 		void enableRouting() { aStarPoints = new AStarAlgorithmPoint[size]; }

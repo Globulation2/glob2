@@ -35,6 +35,11 @@ struct Storage
 	BufferPool<std::vector<Uint16>, std::size_t(BufferPool<Uint16>::Limit) * MapState::PlaneCount> resourcePlanes;
 	Uint64 allocations = 0;
 	Uint64 preparationNs = 0;
+	//! Bytes of map arrays actually copied (changed chunks and full fills).
+	Uint64 bytesCopied = 0;
+	//! After each capture, compare every captured map array and entity list
+	//! with the live state and throw on a mismatch (an unmarked write).
+	bool verify = false;
 	MemoryMetrics memoryMetrics() const;
 };
 

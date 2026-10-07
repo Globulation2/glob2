@@ -30,7 +30,7 @@ MapState::View Handle::view() const
 	v.width = width; v.height = height;
 	v.wDec = width > 0 ? unsigned(std::countr_zero(unsigned(width))) : 0;
 	v.wMask = Uint32(width - 1); v.hMask = Uint32(height - 1);
-	if (resources) { v.resources = resources->cells; v.stockIndices = resources->stockIndices; v.stocks = resources->stocks; v.materialSourceCounts = resources->materialSourceCounts; }
+	if (resources) { v.resources = resources->cells; v.stockIndices = &resources->stockIndices; v.stocks = &resources->stocks; v.materialSourceCounts = resources->materialSourceCounts; }
 	if (occupancy) v.occupancy = occupancy->cells;
 	if (areas) v.areas = areas->cells;
 	if (terrain) { if (terrain->identity) v.terrainIds = *terrain->identity; v.legacyTerrain = terrain->legacy; v.terrainRegistry = terrain->registry.get(); }

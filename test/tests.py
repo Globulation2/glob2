@@ -36,7 +36,7 @@ ENGINE_TESTS = [
     ('#src/ai/warrush/WarrushObservationTest.cpp', dict(cxxflags=['-fno-access-control'])),
     '#src/ai/engine/AIOrderSchedulerTest.cpp',
     '#src/ai/engine/AIPipelineTest.cpp',
-    '#src/engine/sim/snapshot/WorldSnapshotTest.cpp',
+    ('#src/engine/sim/snapshot/WorldSnapshotTest.cpp', dict(cxxflags=['-fno-access-control'])),
     ('#src/ai/LegacyAIStateTest.cpp', dict(cxxflags=['-fno-access-control'])),
     '#src/ai/AIStateContinuationTest.cpp',
     '#src/ai/BuildingCapabilitiesTest.cpp',

@@ -3,6 +3,7 @@
 
 #include <PerformanceTelemetry.h>
 #include "Map.h"
+#include <bit>
 #include "gradient/GradientRuntime.h"
 #include "GlobalContainer.h"
 #include "Unit.h"
@@ -125,6 +126,7 @@ void Map::seedMaterialGradientDirect(int teamNumber, Uint8 resourceType, int swi
 	const auto *areas = areaCells.data();
 	const Uint32 *fog = fogOfWar;
 	const MaterialMask requested = MaterialMask(1u << resourceType);
+	const MapState::View& view = liveCells;
 	gradient_preparation::withTerrain(*this, canSwim, [&](auto terrainAt) {
 		auto seed = [&](auto marketsTag) {
 			initializeGradientCells([&](size_t begin, size_t end) {
@@ -134,7 +136,11 @@ void Map::seedMaterialGradientDirect(int teamNumber, Uint8 resourceType, int swi
 					Uint16 value = GRADIENT_FORBIDDEN;
 					if (!(areas[i].forbidden & teamMask) && occupancy[i].immobileUnit == IMMOBILE_UNIT_NONE)
 					{
-						if (!resourceBlocksGround(i))
+						// One deposit read per cell: its properties decide both the
+						// obstacle and the goal (MapState::materialMaskAt semantics).
+						const auto& deposit = view.resources[i].resource;
+						const ResourceProperties* properties = deposit.type != NO_RES_TYPE ? &view.resourceProperties(deposit.type) : nullptr;
+						if (!properties || !properties->blocksGround)
 						{
 							if (occupancy[i].building == NOGBID) value = terrainAt(i).open;
 							else if constexpr (decltype(marketsTag)::value)
@@ -145,9 +151,13 @@ void Map::seedMaterialGradientDirect(int teamNumber, Uint8 resourceType, int swi
 						}
 						// Passable sources are goals too. Visibility belongs to each
 						// source, not to the requested material.
-						if ((materialMaskAt(i) & requested) &&
-							(!resourceVisibleToHarvest(i) || (fog[i] & teamMask)))
-							value = GRADIENT_AT_GOAL;
+						if (properties && (properties->materialMask & requested))
+						{
+							const bool stocked = std::has_single_bit(properties->materialMask)
+								? deposit.amount != 0 : MapState::materialAmountAt(view, i, int(resourceType)) > 0;
+							if (stocked && (!properties->visibleToHarvest || (fog[i] & teamMask)))
+								value = GRADIENT_AT_GOAL;
+						}
 					}
 					gradient[i] = value;
 				}
