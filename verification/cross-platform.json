@@ -1,9 +1,9 @@
 {
-  "final_source": "640bf561459444bbf31126434e5a94e6f8edd25b",
-  "tested_runtime_source": "640bf561459444bbf31126434e5a94e6f8edd25b",
-  "base": "64406b0826289c94b9a8eadb590ef551cf39efa9",
-  "latest_master": "6831dcfef",
-  "latest_master_change": "Only save-evidence parser; no changed simulation/build inputs.",
+  "final_source": "a7425355eab5d7cf812ac59458ae9c1c6b954895",
+  "tested_runtime_source": "a7425355eab5d7cf812ac59458ae9c1c6b954895",
+  "base": "6831dcfefeaac6255c9a93222d0c567fb9359385",
+  "latest_master": "6831dcfefeaac6255c9a93222d0c567fb9359385",
+  "latest_master_change": "Integrated replay evidence parser fix; final rebase validated on both platforms.",
   "macos_binary_sha256": "16f9f2486e1751fbb1f4556c5eb84a7337fd9b76ba54e456302bc97f3e85d462",
   "linux_binary_sha256": "b37fc7c041cd0eb13c34658cb6e647412485c13d2d848d89ad8180483c2e555a",
   "matching_trace_sha256": "5146f335b758dfaa353c7a108bf76a322fe0be7667ac0e5efe1d430658b9add3",
@@ -25,5 +25,6 @@
   "snapshot_verification": true,
   "save_resume_matching_ticks_each_platform": 512,
   "other_platforms": "Not executed: Windows, Android, browser/WASM. Native browser fixture regeneration is not browser execution.",
-  "native_cases_each_platform": 43
+  "native_cases_each_platform": 43,
+  "evidence_parser_tests_each_platform": 12
 }
