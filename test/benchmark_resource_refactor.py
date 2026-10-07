@@ -13,6 +13,7 @@ import math
 import os
 import platform
 import random
+import shutil
 import statistics
 import subprocess
 import sys
@@ -47,6 +48,42 @@ METRIC_DESCRIPTIONS = {
 }
 RUNNER_INPUTS = (Path(__file__).resolve(), Path(benchmark_parallel_compute.__file__).resolve())
 CATALOG_SUFFIXES = {'.json', '.txt', '.js', '.sgsl'}
+
+
+def frequency_snapshot():
+    """Untimed boundary samples; neither field integrates the measured window."""
+    if platform.system() != 'Linux':
+        return {'status': 'unavailable on this platform'}
+    cpus = {}
+    for cpu in sorted(os.sched_getaffinity(0)):
+        values = {}
+        for name in ('scaling_cur_freq', 'cpuinfo_avg_freq', 'scaling_governor'):
+            path = Path(f'/sys/devices/system/cpu/cpu{cpu}/cpufreq') / name
+            try:
+                values[name] = path.read_text().strip()
+            except OSError as error:
+                values[name] = {'unavailable': str(error)}
+        cpus[str(cpu)] = values
+    return {'cpus': cpus, 'frequency_unit': 'kHz',
+            'scope': 'boundary snapshot only; scaling frequency is a requested/driver value; cpuinfo average is hardware/driver-defined, not the measured engine interval'}
+
+
+def frequency_capability():
+    """Probe permissions outside timing; never label a probe as engine evidence."""
+    result = {'effective_frequency': 'unavailable',
+              'reason': 'This runner does not collect interval cycles/task-clock; boundary snapshots are not effective frequency.'}
+    if platform.system() != 'Linux' or not shutil.which('perf'):
+        result['counter_probe'] = {'status': 'unavailable', 'reason': 'Linux perf unavailable'}
+        return result
+    command = ['perf', 'stat', '-x', ';', '-e', 'cycles,task-clock', '--', 'true']
+    try:
+        probe = subprocess.run(command, text=True, capture_output=True, timeout=10)
+        result['counter_probe'] = {'command': command, 'exit_code': probe.returncode,
+                                   'stdout': probe.stdout, 'stderr': probe.stderr,
+                                   'status': 'available' if probe.returncode == 0 else 'unavailable'}
+    except (OSError, subprocess.TimeoutExpired) as error:
+        result['counter_probe'] = {'command': command, 'status': 'unavailable', 'reason': str(error)}
+    return result
 
 
 def capture_inputs(binaries, roots, manifest_path, fixture_paths):
@@ -164,6 +201,8 @@ def main():
     p.add_argument('--before-root', type=Path, required=True, help='Archived baseline source/data root; baseline must not read candidate catalogs')
     p.add_argument('--after-root', type=Path, default=ROOT, help='Candidate source/data root')
     p.add_argument('--repeats', type=int, default=8)
+    p.add_argument('--report-only', action='store_true',
+                   help='Report historical threshold diagnostics without failing on regression or inconclusive intervals; execution and integrity failures still fail')
     args = p.parse_args()
     if args.repeats < 3:
         p.error('at least three paired repeats required')
@@ -178,10 +217,25 @@ def main():
     manifest = json.loads(manifest_bytes)
     if not manifest.get('scenarios'):
         p.error('manifest has no scenarios')
+    scenario_ids = set()
     for scenario in manifest['scenarios']:
-        if '--load-game' not in scenario['args'] or '--ticks' not in scenario['args'] or 'start_tick' not in scenario:
+        name = scenario.get('id')
+        if not isinstance(name, str) or not name or name in ('.', '..') or '/' in name or '\\' in name or name in scenario_ids:
+            p.error('each scenario requires a unique single-directory id')
+        scenario_ids.add(name)
+        run_args = scenario.get('args')
+        if not isinstance(run_args, list) or not all(isinstance(value, str) for value in run_args):
+            p.error('each scenario requires a list of string arguments')
+        if run_args.count('--load-game') != 1 or run_args.count('--ticks') != 1 or 'start_tick' not in scenario:
             p.error('each scenario requires an absolute frozen save, start_tick and tick limit')
-        save = scenario['args'][scenario['args'].index('--load-game') + 1]
+        try:
+            ticks = int(run_args[run_args.index('--ticks') + 1])
+            save = run_args[run_args.index('--load-game') + 1]
+            start_tick = scenario['start_tick']
+            if type(start_tick) is not int or start_tick < 0 or ticks <= start_tick:
+                raise ValueError('nonpositive window')
+        except (IndexError, ValueError):
+            p.error('each scenario requires nonnegative integer start_tick and a larger integer tick limit')
         if not Path(save).is_absolute() or save not in scenario.get('fixture_sha256', {}):
             p.error('each load-game path must be absolute and hash-verified')
         for path, expected in scenario.get('fixture_sha256', {}).items():
@@ -207,6 +261,7 @@ def main():
                 'parent_disable_flag': 'Headless isolateEnvironment clears GLOB2_PERF_DISABLE; the recorded parent value is not effective.',
                 'scope_output': 'enabled only when --telemetry team-timeline is requested'},
             measurement_descriptions=METRIC_DESCRIPTIONS,
+            frequency_evidence=frequency_capability(),
             warmup={'discarded_pairs_per_scenario': 1, 'simulation_warmup_ticks': 0,
                 'meaning': 'Fresh-process warmup for OS caches; every measured run starts from its save, not a warmed in-process simulation.'},
             ordering={'kind': 'alternating paired order', 'balanced': args.repeats % 2 == 0},
@@ -223,10 +278,13 @@ def main():
                     for variant in order:
                         run_args = list(scenario['args']) + ['--benchmark-warmup', '0']
                         load_before = os.getloadavg()
+                        frequency_before = frequency_snapshot()
                         row = dict(scenario=scenario['id'], repeat=repeat, variant=variant,
                             **execute(binaries[variant], run_args, out/scenario['id']/str(repeat)/variant, cwd=roots[variant]))
                         row['system_load_before'] = load_before
                         row['system_load_after'] = os.getloadavg()
+                        row['frequency_before'] = frequency_before
+                        row['frequency_after'] = frequency_snapshot()
                         result = row['result']
                         expected_ticks = int(run_args[run_args.index('--ticks') + 1]) - scenario['start_tick']
                         if result.get('benchmark_measured_ticks') != expected_ticks:
@@ -257,11 +315,12 @@ def main():
     credible_regression = aggregate['ci95'][0] > 1.02 or any(s['simulation_cpu_s']['ci95'][0] > 1.05 for s in summary.values())
     within_limits = aggregate['ci95'][1] <= 1.02 and all(s['simulation_cpu_s']['ci95'][1] <= 1.05 for s in summary.values())
     result = dict(scenarios=summary, aggregate_cpu=aggregate,
+                  report_only=args.report_only,
                   performance_gate='regression' if credible_regression else 'within_limits' if within_limits else 'inconclusive')
     (out/'summary.json').write_text(json.dumps(result, indent=2)+'\n')
     print(json.dumps(result['aggregate_cpu']), result['performance_gate'])
-    # Inconclusive evidence is not acceptance: repeat with more samples.
-    return 1 if credible_regression else 0 if within_limits else 2
+    # Report-only changes only threshold enforcement, after the complete input audit.
+    return 0 if args.report_only else 1 if credible_regression else 0 if within_limits else 2
 
 if __name__ == '__main__':
     raise SystemExit(main())
