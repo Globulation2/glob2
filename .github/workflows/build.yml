@@ -17,7 +17,7 @@ jobs:
         run: cp .github/scripts/resource_epoch_dependencies.py "$RUNNER_TEMP/resource_epoch_dependencies.py"
       - uses: actions/checkout@v4
         with:
-          ref: 914a1e5088b817a5993b5ffc8f2601aa58e0c642
+          ref: 83f3d35ef20c0a0b755a2ac585647f3c6e204fac
           persist-credentials: false
       - name: Install development dependencies
         run: brew install cmake freetype libpng jpeg-turbo scons pkgconf opusfile opus libogg speex openssl@3 boost fribidi libepoxy
@@ -77,7 +77,7 @@ jobs:
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: accepted-macos-fingerprints-final-integration
+          name: accepted-macos-fingerprints-rebased-integration
           path: |
             artifacts/generator-evidence/
             artifacts/mac-integration-inputs/
