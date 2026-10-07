@@ -914,6 +914,15 @@ public:
 	TerrainType getUMTerrain(int x, int y) const { return (TerrainType)undermap[coordToIndex(x, y)]; }
 	//! Set undermap terrain type at (x,y) (undermap positions) on an area
 	void setUMatPos(int x, int y, TerrainType t, int l);
+	//! Map-editor brush: paints whole cells of a legacy corner terrain (GRASS,
+	//! SAND or WATER). Only the listed cells lose an authored whole-cell
+	//! identity; all four undermap corners of every listed cell become t; the
+	//! grass/water sand-shore rule of setUMatPos is applied only to corners
+	//! outside that written set; tiles are rebuilt over the cells' bounding box
+	//! plus two. Cells are unwrapped map coordinates and wrap on the torus.
+	//! Editor authoring only: no generator, script, order or simulation path
+	//! uses it, so it does not take part in match determinism.
+	void paintLegacyCells(const std::vector<std::pair<int, int>> &cells, TerrainType t);
 
 	//! With l==0, it will remove no resource. (Unaligned coordinates)
 	void setNoResource(int x, int y, int l);

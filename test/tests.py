@@ -60,6 +60,7 @@ ENGINE_TESTS = [
     ('#src/hud/GUIOrderCoverageTest.cpp', dict(cxxflags=['-fno-access-control'])),
     ('#src/map/editor/EditorActionCoverageTest.cpp', dict(cxxflags=['-fno-access-control'])),
     ('#src/map/editor/BrushCatalogTest.cpp', dict(cxxflags=['-fno-access-control'])),
+    ('#src/map/editor/EditorTerrainPaintTest.cpp', dict(cxxflags=['-fno-access-control'])),
     '#src/scripting/sgsl/LegacyAreaWaitTest.cpp',
     ('#src/scripting/sgsl/LegacyScriptCoverageTest.cpp', dict(cxxflags=['-fno-access-control'])),
     '#src/ai/AIDecisionCoverageTest.cpp',

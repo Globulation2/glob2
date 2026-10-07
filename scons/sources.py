@@ -411,6 +411,7 @@ CLIENT_SOURCES = (
     'map/editor/MapEditActionBuilding.cpp',
     'map/editor/MapEditDelegate.cpp',
     'map/editor/MapEditClicks.cpp',
+    'map/editor/MapEditTerrainPaint.cpp',
     'map/editor/MapEditDialog.cpp',
     'map/editor/MapEditKeyActions.cpp',
     'map/editor/MapEditBrushes.cpp',

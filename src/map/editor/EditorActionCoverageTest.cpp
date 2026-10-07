@@ -469,7 +469,8 @@ TEST_SUITE("EditorActionCoverage")
         }
         editor.beginTerrainPlacement(TerrainSelector::Trail,MapEdit::TerrainPlacementMode::Resource);
         CHECK(editor.terrainType==TerrainSelector::Trail);
-        CHECK_FALSE(editor.brush.addRemoveEnabled);
+        // Terrain brushes offer Add/Del like resources.
+        CHECK(editor.brush.addRemoveEnabled);
         editor.beginTerrainPlacement(static_cast<TerrainSelector::TerrainType>(TerrainSelector::RegisteredBegin+GRASS),
             MapEdit::TerrainPlacementMode::BaseTerrain);
         CHECK(editor.terrainType==TerrainSelector::Grass);

@@ -287,10 +287,9 @@ bool PhoneEditor::paintMode() const
 BrushHUD::Layout PhoneEditor::rail() const
 {
 	const double unit = globalContainer->gfx->logicalUnitsPerPoint(), inset = 8 * unit;
-	// Paint/Erase applies to zones, areas, no-growth areas and resources, not
-	// to grass/sand/water or deletion.
-	const bool mode = editor.selectionMode != MapEdit::RemoveObject &&
-					  !(editor.selectionMode == MapEdit::PlaceTerrain && TerrainSelector::isBaseTerrain(editor.terrainType));
+	// Paint/Erase applies to every brush except deletion: zones, areas,
+	// no-growth areas, resources and terrain (Erase reverts it to grass).
+	const bool mode = editor.selectionMode != MapEdit::RemoveObject;
 	return BrushHUD::layout({content.x + inset, content.y + inset, content.w - 2 * inset, content.h - 2 * inset},
 							ThumbSide::left(), unit, mode, true, bool(undo));
 }

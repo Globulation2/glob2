@@ -50,10 +50,10 @@ void MapEdit::beginTerrainPlacement(TerrainSelector::TerrainType type, TerrainPl
 	performAction("unselect");
 	terrainType=type;
 	selectionMode=PlaceTerrain;
-	const bool isResource = mode == TerrainPlacementMode::Resource;
-	if (!isResource || brush.getType() == BrushTool::MODE_NONE)
+	// Every terrain and resource brush starts in Add and offers Del.
+	if (brush.getType() == BrushTool::MODE_NONE)
 		brush.defaultSelection();
-	brush.setAddRemoveEnabledState(isResource);
+	brush.setAddRemoveEnabledState(true);
 }
 
 void MapEdit::resetPlacementTracking()
@@ -237,13 +237,13 @@ bool MapEdit::performTerrainAction(const std::string& action, float relMouseX, f
 	}
 	else if(action=="handle terrain click")
 	{
-		if(terrainType==TerrainSelector::NoTerrain && selectionMode!=RemoveObject && selectionMode!=ChangeAreas && selectionMode!=ChangeNoResourceGrowthAreas)
-			performAction("select grass");
+		// Choosing a shape or mode never picks a terrain; the next brush keeps the shape.
 		brush.handleClick(relMouseX, relMouseY);
 	}
 	else if(action=="terrain drag start")
 	{
 		isDraggingTerrain=true;
+		strokeCoveredCells=strokePlacedResources=0;
 		handleTerrainClick(mapMouseX(mouseX), mapMouseY(mouseY));
 		hasMapBeenModified = true;
 	}
@@ -255,6 +255,7 @@ bool MapEdit::performTerrainAction(const std::string& action, float relMouseX, f
 	else if(action=="terrain drag end")
 	{
 		isDraggingTerrain=false;
+		finishTerrainStroke();
 		resetPlacementTracking();
 	}
 	else if(action=="delete drag start")

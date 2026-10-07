@@ -914,6 +914,34 @@ private:
 	void handleTerrainClick(int mx, int my);
 	///Tells whether the terrain is being dragged, continually placing more
 	bool isDraggingTerrain;
+	// --- WS-B brush painting ---
+public:
+	using BrushCell = std::pair<int, int>;
+	//! Map cell under a map-local pointer position. Every brush, terrain or
+	//! resource, is centred on this cell; preview and commit share it.
+	BrushCell brushCellAt(int mx, int my) const;
+	//! The brush figure's cells centred on a map cell, in unwrapped coordinates
+	//! around it, aligned to the current stroke's checkerboard origin.
+	std::vector<BrushCell> terrainBrushCells(int mapX, int mapY) const;
+	//! Cells whose terrain identity an Add stroke stamped at this cell sets. A
+	//! legacy corner terrain also fills any cell all of whose corners it writes,
+	//! as the checkerboard figures do; otherwise this is terrainBrushCells.
+	std::vector<BrushCell> terrainStrokeCells(int mapX, int mapY) const;
+	//! The cells of a footprint where the selected resource cannot be placed.
+	std::vector<BrushCell> invalidResourceCells(const std::vector<BrushCell> &footprint);
+	//! "<Resource> can only be placed on: <terrains>" for the selected resource.
+	std::string resourcePlacementHint() const;
+	//! A short non-interactive message at the bottom left of the map.
+	void showStatus(std::string text, Uint32 durationMs = 4000);
+	const std::string &lastStatus() const { return statusText; }
+private:
+	std::string statusText;
+	Uint64 statusUntil = 0;
+	int strokeCoveredCells = 0, strokePlacedResources = 0;
+	void finishTerrainStroke();
+	void drawTerrainBrushPreview();
+	void drawStatus();
+	// --- end WS-B brush painting ---
 	///Handles a click or drag of the mouse when removing objects
 	void handleDeleteClick(int mx, int my);
 	///Tells whether the delete tool is being dragged
