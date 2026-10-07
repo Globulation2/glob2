@@ -42,12 +42,6 @@
   font-family: var(--font-display);
   font-size: var(--text-lg);
 }
-.ai-mark {
-  width: 30px;
-  height: 30px;
-  flex: none;
-}
-
 .pager {
   display: flex;
   gap: var(--sp-2);

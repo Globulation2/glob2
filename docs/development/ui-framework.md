@@ -405,6 +405,11 @@ The exporter verifies source hashes and writes 20- and 24-point icons at 1×, 2�
 and 3×. Add new assets deliberately to the manifest and semantic bindings, retain
 upstream notices, and capture desktop and phone views when introducing them.
 
+The online web app (`platform/apps/web/src/icons.tsx`) imports the same SVGs for its
+navigation and other interface glyphs, so the game and the website share one icon set.
+A web-only icon still goes through this manifest; do not add a separate web icon
+library. Game sprites remain the web app's decorative art (`platform/apps/web/art/README.md`).
+
 ### Hosting a dialog
 
 ```cpp

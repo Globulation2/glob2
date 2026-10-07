@@ -112,6 +112,9 @@
   height: 26px;
   flex: none;
 }
+.nav a .icon {
+  margin: 1px;
+}
 .nav a:hover {
   background: var(--surface-3);
 }

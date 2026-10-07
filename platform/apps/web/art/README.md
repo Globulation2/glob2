@@ -18,6 +18,7 @@ source.
 | `colony-loop.mp4`, `colony-960.webp`, `colony-1600.webp`                                                   | UI-free `MenuColonyHarness` recording of `data/menu/colony.bin` (see Colony video below)                                                                                                                                       |
 | `wordmark-letters.webp`, `wordmark-two.webp`                                                               | `data/gfx/menu-wordmark.png`, split into two alpha masks (letters, gold "2") so CSS can colour them per theme                                                                                                                  |
 | `worker-east.webp`, `worker-west.webp`, `warrior-east.webp`, `explorer-west.webp`                          | Unit walk and flight cycles: `data/highres/v1/unit<N>.png` (shadow) under `unit<N>r.png` (body), every other of the 32 poses, at 64 px. Frame layout from `src/unit/render/UnitSkin.cpp` and `src/unit/render/UnitAnimation.h` |
+| `warrior.webp`, `worker.webp`                                                                              | Still poses for page art, cropped to the sprite: a warrior lunging (`unit<1536 + 4·32>`, attack, south-east) and a worker mid-stride (walk, east, pose 8)                                                                      |
 | `swarm`, `inn`, `school`, `racetrack`, `pool`, `hospital`, `exploration-flag`, `war-flag`, `clearing-flag` | Building and flag sprites (`data/highres/v1`, else `data/gfx`), with their team layer                                                                                                                                          |
 | `wood`, `fruit`, `papyrus`, `stone`, `algae`                                                               | Resource sprites `ressource4/14/24/38/44`                                                                                                                                                                                      |
 | `glob-64.png`, `public/favicon-32.png`, `public/apple-touch-icon.png`                                      | `data/icons/`, `mobile/ios/Assets.xcassets/AppIcon.appiconset/icon-180.png`                                                                                                                                                    |
@@ -87,3 +88,15 @@ pass `--keep-frames` to retain all capture frames. Commit the encoded
 video and posters. The public website's `public/brand/` receives identical copies
 of these three assets; its Astro homepage also plays the recording. Run the video
 capture after `build_art.py`, which otherwise restores the original still posters.
+
+## Icons
+
+Navigation and other interface glyphs are not artwork: they are the game's Tabler
+outline icons, imported as SVG from `datasrc/icons/tabler/` by `src/icons.tsx` and
+drawn in the text colour, so they follow the theme. To add one, add it to that
+directory's `manifest.json` and rerun the exporter (see
+[UI framework](../../../../docs/development/ui-framework.md)), then import it in
+`src/icons.tsx`; `test/icons.test.tsx` checks the files against the manifest.
+
+Use game artwork for decoration: page headers, stat tiles and empty states. Pick a
+sprite that fits the page, and avoid giving two pages the same one.

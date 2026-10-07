@@ -586,7 +586,7 @@ export function Match({ id }: { id: string }) {
         return (
           <>
             <div className="page-head match-head">
-              <GameArt name="swarm" size={72} className="head-art" />
+              <GameArt name="warrior" size={72} className="head-art" />
               <div className="grow">
                 <h1 data-testid="match-title">
                   {kind} · {map?.title ?? m.mapTitle ?? 'Custom map'}

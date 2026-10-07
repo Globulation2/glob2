@@ -17,7 +17,9 @@ import school from './art/school.webp';
 import stone from './art/stone.webp';
 import swarm from './art/swarm.webp';
 import warFlag from './art/war-flag.webp';
+import warrior from './art/warrior.webp';
 import wood from './art/wood.webp';
+import worker from './art/worker.webp';
 
 export const ART = {
   algae,
@@ -33,7 +35,9 @@ export const ART = {
   stone,
   swarm,
   warFlag,
+  warrior,
   wood,
+  worker,
 };
 export type ArtName = keyof typeof ART;
 
