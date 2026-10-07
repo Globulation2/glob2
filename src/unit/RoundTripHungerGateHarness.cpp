@@ -104,6 +104,14 @@ static void aUnitIsJudgedOnTheWalkToTheResource()
 	require(RoundTripHungerGateHarness::consider(site, unit, WOOD, &dist),
 		"a unit that can reach the wood is hireable for it");
 
+    auto experiments=game.gameHeader.getExperiments();
+    experiments.set(ExperimentId::GreedyResourceFetching);
+    game.gameHeader.setExperiments(experiments);
+    const auto *cached=site->roundTripGradient[WOOD][swimClass];
+    require(game.map.roundTripGradientSlot(site,WOOD,swimClass)==NULL,"greedy routing ignores a previously cached round-trip field");
+    require(!game.map.roundTripDistanceSlot(site,WOOD,swimClass,unit->posX,unit->posY,&roundTrip),"greedy scoring ignores a previously cached round-trip field");
+    require(site->roundTripGradient[WOOD][swimClass]==cached,"greedy queries do not mutate existing cache storage");
+    require(RoundTripHungerGateHarness::consider(site,unit,WOOD,&dist),"greedy hiring still uses the walk-to-resource hunger gate");
 	std::puts("PASS the hunger check measures the walk to the resource, not the whole trip");
 }
 
@@ -150,6 +158,10 @@ static void theFallbackScoresAWholeRoundTrip()
 		"the site is reachable");
 	require(game.map.materialAvailableSlot(0, WOOD, swimClass, unit->posX, unit->posY, &distResource),
 		"the wood is reachable");
+    auto experiments=game.gameHeader.getExperiments();
+    experiments.set(ExperimentId::GreedyResourceFetching);
+    game.gameHeader.setExperiments(experiments);
+    require(game.map.roundTripGradientSlot(site,WOOD,swimClass)==NULL,"greedy fetching does not construct a round-trip field");
 	require(!game.map.roundTripDistanceSlot(site, WOOD, swimClass, unit->posX, unit->posY, &unused),
 		"no round-trip field exists for a building nothing has fetched for");
 	require(distBuilding < distResource, "the unit is nearer the site than the wood");
