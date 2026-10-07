@@ -412,12 +412,13 @@ previews above then draw team 0's swarm with that shape, painted from the
 atlas's swarm quadrant. `--paint` takes a 256px swarm paint, such as that
 quadrant cut out of a colony-v2 atlas.
 
-### GSR1 rig migration (worker-walk preview)
+### GSR1 rig migration (opt-in unit previews)
 
-GSR1 is a presentation-only alternative to animated GSK1. The initial
-worker-walk candidate is opt-in: `GLOB2_SKIN_RIGS=1` selects it in gameplay,
+GSR1 is a presentation-only alternative to animated GSK1. Worker walk, warrior
+walk/swim/fight, and explorer flight are opt-in candidates: `GLOB2_SKIN_RIGS=1`
+selects them in gameplay,
 `skin-preview`, and `--render-skin`; `VITE_SKIN_RIGS=1` selects it in Colony
-Studio. Native gameplay and Studio fall back to the baked worker if the rig is
+Studio. Native gameplay and Studio fall back to the corresponding baked clip if its rig is
 missing or invalid. Offline sprite generation fails on an invalid rig rather
 than publishing a silently different recipe. `GLOB2_SKIN_DEFORMATION=cpu`
 forces the native CPU deformation fallback for comparison. Software clients
@@ -426,8 +427,8 @@ continue consuming published sprite bundles.
 The installed manifest's `rigs` entries record format, SHA-256, explicit clip
 mapping, exporter/reference hashes, and acceptance status. `accepted: false`
 means a development candidate, not permission to change the default. The
-remaining six clips still use GSK1. Do not remove their assets or enable rigs by
-default until the worker slice and then the complete catalog pass visual,
+remaining worker swim and harvest clips still use GSK1. Do not remove the baked
+assets or enable rigs by default until the complete catalog passes visual,
 publication, performance and platform acceptance. In particular, baseline M3
 and lower-power hardware measurements cannot be inferred from a Linux software
 renderer. Existing sprite bundles remain immutable; the offline rig preview
@@ -441,17 +442,164 @@ blender-3.6.23 --background --factory-startup -t 1 --python-exit-code 1 \
   --python tools/skins/author_worker_rig.py -- --output artifacts/rig/worker
 ```
 
-The authoring script preserves the installed worker's welded rest geometry,
-indices and reflected paint chart. It creates fresh parent-ordered bones and
-retargets body rotation plus limb-center paths with shortest-arc swings instead
-of legacy limb rolls. Weights diffuse over the welded graph to soften sockets, then retain four
-influences. Limb vertices use only their own limb and the torso; torso vertices
-can blend adjacent sockets. The source GSK and source animation are offline migration references;
-neither is evaluated to produce rig poses at runtime. This candidate still
-needs joint/paint review; it is not the final art refresh. Changes to this
-script require regenerating the rig and its manifest provenance. The staged
-`.blend` is an inspection/editing artifact; the script remains the reproducible
-authoring source, so rerunning it replaces manual edits to that staged scene.
+The authoring script creates a symmetric, rounded rest surface with welded
+socket transitions and geometry-derived normals. It preserves the installed
+worker's vertex order, indices and reflected paint UVs, but deliberately replaces
+the old metaball-derived shape. `worker_surface.py` owns the proportions and
+weights; all nonzero contributions fit four influences. A 2.3-unit capsule
+midsection gives the worker its tall torso, separating the upper and lower
+attachment regions without scaling the limbs. Socket weights are evaluated in
+the unextended torso coordinates, and complete lobe controls translate with the
+body during the gait. Short connectors balance the taller torso, with 1.7-unit
+shaft radii and 2.05-unit terminal radii. A waist narrowed in depth shapes the smooth torso
+while preserving both reflection symmetries. This shaping does not alter limb
+geometry or attachment weights. The original
+hands' forward sweep drives a smooth torso curl bounded to 0.14 radians per end:
+chest and hips bow forward through the waist using their existing attachment
+controls. Whole lobes rotate together, so this adds body flex without bending the
+shafts or squashing terminal caps. Each lobe uses a
+straight shaft with equal weights around each cross-section and a rigid terminal
+cap. Its three controls share one orientation and slide axially to change reach;
+the surrounding torso partially follows the attachment. Walk retargeting keeps
+the terminal paths from the previous gait while bounding swing to 0.7875 radians
+and enforcing 60-degree clearance between lobes. These are deformation controls for a continuous blob, not elbow or knee
+joints. The broader sockets and cylindrical shafts avoid pinched, detached-looking
+hands and feet, with some changes to the silhouette and terminal paths.
+The source animation remains an offline motion reference only.
+
+The generated `.blend` contains `WorkerRestSurface`, its `PublishedPaint` UV
+layer, and `WorkerRig`: `body` plus arm and leg chains on both sides, each with `attach`, `upper`,
+and `lower` bones (for example `arm.upper.R`). The final `.R`/`.L` suffixes
+support Blender's mirrored-pose naming convention. The `Walk` action uses quaternion
+channels at 32 fps, frames 1–64, with a closing key at 65. Disable the action or
+select the armature's rest display to inspect the neutral shape. Rotate and translate `attach` to steer a whole lobe. The `upper` and `lower`
+controls have rotation locked and move only along local Y to set reach; keep them
+in radial order. Scale stays locked. Imported actions are checked for shared
+orientation, axial offsets and control order, as well as valid sampled transforms. Blender's between-key quaternion interpolation is not the runtime's
+exact slerp; check exported motion in the production preview.
+
+To prototype another animation, save an edited copy under ignored `artifacts/`,
+create a named quaternion action on the same bones, and author its two-second
+cycle over frames 1–65 (65 repeats 1). Import it into a fresh output directory:
+
+```sh
+blender-3.6.23 --background --factory-startup -t 1 --python-exit-code 1 \
+  --python tools/skins/author_worker_rig.py -- --output artifacts/rig/reach \
+  --action-blend artifacts/rig/edited-worker.blend --action Reach
+```
+
+This samples frames 1–64 onto the reproducible base mesh and skeleton. It exports
+a **worker-walk preview**, not a new gameplay animation identity; adding another
+gameplay clip still requires its frame/clip mapping and catalog integration.
+The action import deliberately ignores mesh, rest-bone, constraint and object
+edits; bake desired motion to quaternion bone TRS channels first. Keep edited
+sources separate: the generator replaces its output `.blend` on every run and
+refuses to overwrite the action source itself. Changes to the authoring scripts
+require regenerating the rig and manifest provenance. The candidate remains
+opt-in pending visual approval, including representative published paints.
+
+Generate warrior and explorer candidates with their editable scenes:
+
+```sh
+blender-3.6.23 --background --factory-startup -t 1 --python-exit-code 1 \
+  --python tools/skins/author_unit_rigs.py -- --model warrior --output artifacts/rig/warrior
+blender-3.6.23 --background --factory-startup -t 1 --python-exit-code 1 \
+  --python tools/skins/author_unit_rigs.py -- --model explorer --output artifacts/rig/explorer
+```
+
+The warrior has nine bones: `body` and two controls for each arm/leg on both
+sides (`arm.upper.R`, `arm.lower.R`, etc.). Walk, Swim and Fight share identical
+rest geometry, weights, skeleton and paint coordinates. These are deformation
+controls for a continuous blob, rather than anatomical joints. The rest surface
+uses a round torso and four identical spherical terminal lobes. Left/right and
+top/bottom reflection symmetry is a base-mesh constraint: all four lobes use the
+same reference control lengths, socket profile and mirrored weights. All four
+socket openings expand together on the torso sphere, with a 2.1-unit minimum
+connector radius and 2.78-unit terminal radius. Partial control influence on the
+surrounding body lets each attachment region move with its lobe. The shafts have
+no torso-bone influence: their two controls share an orientation and blend only
+axial translation, with weights distributed along the full connector so inward
+motion cannot fold the middle rings backwards. Cross-sections retain their shape and the centerline stays
+straight as reach and angle change. Diagonal rest directions accommodate the rolling walk
+and its exchange of upper/lower lobes. Terminal caps follow one control rigidly
+to retain their volume. Animation poses can differ between lobes; their underlying
+shape and deformation rules must not depend on an arm/leg label.
+
+Motion transfer retains the legacy body rotation, translation and timing. Walk
+and fight bound limb direction changes to 0.5 radians at the body and 0.65 at the
+next control. Swim transfers the source lobe centers directly for its outward
+stroke. An initial contact pass keeps terminal centers at least 6.3 model units
+from the torso center for walk/fight, 6.0 for extended swim poses, and 5.7 apart.
+A second pass separates converging shaft directions to at least 60 degrees.
+
+Swim recovery then gathers the lobes toward a compact pose with centers 3.5 units
+from the torso. Retraction follows the source's mean lobe reach, smoothly entering
+below 6.5 units and reaching full tuck at 2.7. The lobe directions return toward
+the symmetric rest arrangement as the shafts shorten, giving the full-sized caps
+room to gather without crossing. Both controls share one orientation; neither the
+body nor the terminal caps scale down. The short connections keep their transverse
+profiles while the attachment regions move with them. This produces a deep inward
+stroke without reproducing the original metaball unions. Quarter-frame intersection
+checks cover the transitions as well as the authored samples.
+Swing and contact limits apply
+to motion transfer; imported actions are not clamped. The upper handle sets each
+lobe's angle and placement; the distal handle changes reach along local Y and
+locks independent rotation and sideways movement in Blender. Action import
+rejects mismatched shaft orientations or a sideways distal offset, preventing
+accidental bending. Scale stays locked in the editor. Recheck new actions for
+intersections and silhouette quality.
+
+The explorer has four bones: `body`, `head`, `wing.R` and `wing.L`, with a Fly
+action. Its ellipsoid proportions live in the rest mesh rather than nonuniform
+bone scales. UV-split vertices are welded for one smoothing iteration and normal
+calculation, then mapped back to their published paint layout. Most of each wing
+follows its bone rigidly; the blend is confined to the root. Both scenes use
+quaternion actions, frames 1–65, and the same alternating gait-half frame mapping
+as the worker.
+
+To sample a new action on either base, use the same action-only import workflow;
+`--clip` selects an existing gameplay slot to preview:
+
+```sh
+blender-3.6.23 --background --factory-startup -t 1 --python-exit-code 1 \
+  --python tools/skins/author_unit_rigs.py -- --model warrior \
+  --output artifacts/rig/warrior-gesture --action-blend artifacts/rig/edited-warrior.blend \
+  --action Gesture --clip fight
+```
+
+Run `tools/skins/test_unit_rigs.py` in pinned Blender for rest-surface, left/right
+and top/bottom geometry/normal/weight/control symmetry, sampled intersections,
+cycle closure, shared-base, rigid terminal shape, reference terminal girth and
+minimum connector girth across all actions, straight centerlines and unchanged
+cross-sections, independent joint posing, action round trips and invalid shaft
+action rejection. The installed asset test also verifies provenance, native/web
+byte identity, and unchanged paint UVs and triangle order for all five candidates.
+
+Capture all 256 gameplay poses through the production 128px atlas, using neutral
+paint under all four materials, checker paint, and a mixed-material checker:
+
+```sh
+scons release=1 server=0 skin-preview
+build/linux/client/release/src/skin-preview \
+  artifacts/rig/worker/worker-walk.gsr artifacts/rig/worker/review --rig-review
+```
+
+This writes six 2048×2048 BMP sheets (`review-0.bmp` through `review-5.bmp`),
+16 frames per row. It also accepts a baked `.gsk`. Set
+`GLOB2_SKIN_DEFORMATION=cpu` for the fallback comparison. Readback is offscreen,
+so a desktop window resize does not alter the captured resolution.
+
+Run the authored-surface checks in pinned Blender:
+
+```sh
+blender-3.6.23 --background --factory-startup -t 1 --python-exit-code 1 \
+  --python tools/skins/test_worker_rig.py
+```
+
+They cover watertight rest topology, reflected shape/weights, paint coordinates,
+non-adjacent triangle intersections through the walk and independent joint bends,
+loop closure, and action-export round trips. These are bounded deformation checks,
+not proof that arbitrary future poses cannot self-intersect.
 
 For production-rendered rig thumbnails, first export a neutral-paint bundle with
 `GLOB2_SKIN_RIGS=1 glob2 --render-skin` using its normal manifest, texture,
@@ -579,3 +727,64 @@ or browser context-loss recovery. Native resource recreation likewise does not
 simulate operating-system context loss. Visual acceptance, those integration
 paths, and the requested ten-pair gameplay performance budgets remain separate
 release gates.
+
+#### Paired rig frame measurements
+
+Build `scons release=1 server=0 skin-rig-benchmark skin-game-preview` for the
+opt-in diagnostics. `tools/skins/benchmark_rigs.py` runs alternating baked/rig
+processes, saves the exact commands, binary/source/asset identities, raw frame
+samples, peak process RSS and host-load snapshots, then reports medians of
+per-run percentiles and paired percentage changes. Its bootstrap intervals
+resample complete run pairs, not individual correlated frames. Use at least ten
+pairs for reported comparisons. Stop competing builds/tests before acceptance
+measurements; samples collected under contention are exploratory.
+
+Prepare an ignored asset directory with the shipped meshes and the reproducible
+paint/material pair from `tools/skins/make_paint.py DIR --material mixed`. Include
+both `worker-walk.gsk` and `worker-walk.gsr`. On Linux with a working hardware X11
+OpenGL display:
+
+```sh
+python3 tools/skins/benchmark_rigs.py \
+  --binary build/linux/client/release/src/skin-rig-benchmark \
+  --assets artifacts/rig/assets --output artifacts/rig/renderer-runs \
+  --pairs 10 --frames 240 --warmup 64 --units 512 2048
+python3 tools/skins/benchmark_rigs.py --kind scene \
+  --binary build/linux/client/release/src/skin-game-preview \
+  --assets artifacts/rig/assets --save artifacts/rig/preview.game \
+  --output artifacts/rig/scene-runs --pairs 10 --frames 240 --warmup 64
+```
+
+The worker-only diagnostic draws an exact count of sprites at 1280×960 across
+four paints. Its default 32 phases per paint give 128 distinct requests per
+frame; `--phases 128` increases that to 512 when enough sprites are present.
+Sprites repeat poses above the working-set size. At 2,048 sprites the display
+shrinks each sprite to fit, so compare baked and rig within each population,
+not pixel cost between populations. The warmed case preloads all 1,024
+pose/paint combinations. The forced-miss case clears only atlas lookup entries
+before each frame, retaining shaders, palette state, rest buffers and paint
+textures. An assertion verifies the exact number of rasterizations. These
+cases bound cache reuse and miss costs; neither estimates a played match's
+actual miss frequency.
+
+Frame samples include CPU submission and presentation with frame limiting and
+swap interval disabled. When `GL_ARB_timer_query` is available, asynchronous
+GPU elapsed queries cover the render commands, excluding presentation; their
+results are read after the measured loop. Geometry/raster scopes measure CPU
+and driver work. First draw and full-atlas population additionally wait for GPU
+completion and are reported separately. Mesh load measures the normal loader
+in a fresh process, without flushing OS file or driver shader caches. The mesh
+byte count estimates owned element storage, not allocator/driver overhead or
+all loader-retained copies; peak RSS measures the whole process.
+
+The Scene case uses the existing mixed-unit saved-game diagnostic at 800×600
+by default (`--scene-size WIDTHxHEIGHT`) and reports its actual added population.
+The window must fit the desktop; a silently resized render target fails validation. It preserves per-frame simulation checksums for
+comparison between paired runs. Animation phases change, but simulation does
+not advance. Its `SKIN_BENCH_FORCE_MISS=1` switch applies the same atlas-only
+invalidation; `SKIN_BENCH_UNCAPPED=1` disables presentation limiting. The runner
+requires the intended rig shader and hardware renderer, and refuses a silent
+CPU/software fallback. Scene measurements do not replace an active-match
+playtest, browser integration, other physical platforms, or appearance review.
+The Python runner currently targets Linux (`/usr/bin/time`, X11 and optional
+NVIDIA telemetry); it is not an automated macOS acceptance runner.

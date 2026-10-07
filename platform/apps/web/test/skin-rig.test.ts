@@ -100,10 +100,16 @@ it('uses the same displayed rig pose for Studio projection and a fixed rest char
   expect(buildFillChart(mesh, view, 'worker')).toEqual(chart);
   expect(mesh.poses.length).toBe(model.count * 6);
 });
-it('decodes the installed worker candidate and preserves the existing paint chart', () => {
-  const buffer = readFileSync(new URL('../public/skins/models/worker-walk.gsr', import.meta.url));
+it.each([
+  ['worker-walk', 2834],
+  ['warrior-walk', 2450],
+  ['warrior-swim', 2450],
+  ['warrior-fight', 2450],
+  ['explorer-fly', 1330],
+] as const)('decodes installed %s and produces finite unit normals', (asset, count) => {
+  const buffer = readFileSync(new URL(`../public/skins/models/${asset}.gsr`, import.meta.url));
   const model = decodeRig(Uint8Array.from(buffer).buffer);
-  expect(model.count).toBe(2834);
+  expect(model.count).toBe(count);
   for (let sample = 0; sample < 256; sample++) {
     const pose = evaluateRig({ model, clip: 0, sample });
     expect(pose.every(Number.isFinite)).toBe(true);

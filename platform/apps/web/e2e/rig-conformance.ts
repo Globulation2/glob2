@@ -29,7 +29,9 @@ const assets = [
     // inside the ordinary mesh agreement budget.
     positionTolerance: 0.00001,
   },
-  { name: 'installed worker', bytes: read('data/skins/colony-v1/worker-walk.gsr') },
+  ...['worker-walk', 'warrior-walk', 'warrior-swim', 'warrior-fight', 'explorer-fly'].map(
+    (name) => ({ name: `installed ${name}`, bytes: read(`data/skins/colony-v1/${name}.gsr`) }),
+  ),
 ];
 
 for (const asset of assets) {

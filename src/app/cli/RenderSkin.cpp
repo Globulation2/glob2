@@ -39,7 +39,7 @@ bool rigPreview()
 std::string renderRevision()
 {
 	// Never publish different pixels under the baked recipe, even in tooling.
-	return rigPreview() ? Online::Sha256::hex(std::string(SKIN_RENDER_REVISION) + ":worker-rig-v1")
+	return rigPreview() ? Online::Sha256::hex(std::string(SKIN_RENDER_REVISION) + ":unit-rigs-v1")
 						: SKIN_RENDER_REVISION;
 }
 std::string read(const std::string &path, std::size_t limit)
@@ -303,8 +303,8 @@ int runRenderSkin(int argc, char **argv)
 			GAGCore::SkinMesh mesh;
 			std::string error;
 			std::string file;
-			if (clip == 0 && rigPreview())
-				file = "worker-walk.gsr";
+			if ((clip == 0 || (clip >= 3 && clip < 7)) && rigPreview())
+				file = std::string(Online::SkinSpriteClips[clip]) + ".gsr";
 			else if (clip < 7)
 				file = std::string(Online::SkinSpriteClips[clip]) + ".gsk";
 			else

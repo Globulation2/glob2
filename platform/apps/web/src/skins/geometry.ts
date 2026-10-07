@@ -81,6 +81,13 @@ const cache = new Map<string, Promise<{ mesh: Mesh; view: ViewTransform }>>();
 // Internal migration switch. Assets that have not passed their acceptance
 // gates continue loading their baked counterpart, including missing rig files.
 const rigPreview = import.meta.env.VITE_SKIN_RIGS === '1';
+const rigCandidates = new Set([
+  'worker-walk',
+  'warrior-walk',
+  'warrior-swim',
+  'warrior-fight',
+  'explorer-fly',
+]);
 export async function loadRigMesh(asset: string, clip = 0) {
   const response = await fetch(`/skins/models/${asset}.gsr`);
   if (!response.ok) throw new Error('Could not load rig');
@@ -182,7 +189,7 @@ export function loadMesh(asset: string) {
           cache.delete(asset);
           throw e;
         });
-    pending = rigPreview && asset === 'worker-walk' ? loadRigMesh(asset).catch(baked) : baked();
+    pending = rigPreview && rigCandidates.has(asset) ? loadRigMesh(asset).catch(baked) : baked();
     cache.set(asset, pending);
   }
   return pending;

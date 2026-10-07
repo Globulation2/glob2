@@ -22,6 +22,9 @@
 #include <vector>
 #include <SDL3/SDL.h>
 #include <PerformanceTelemetry.h>
+#ifdef HAVE_OPENGL
+#include <SDL3/SDL_opengl.h>
+#endif
 
 GlobalContainer *globalContainer = nullptr;
 
@@ -109,6 +112,12 @@ int main(int argc, char **argv)
             }
             if (const char *benchmark = std::getenv("SKIN_PREVIEW_BENCHMARK"))
             {
+                const bool forceMiss = std::getenv("SKIN_BENCH_FORCE_MISS") && std::string(std::getenv("SKIN_BENCH_FORCE_MISS")) == "1";
+                const bool uncapped = std::getenv("SKIN_BENCH_UNCAPPED") && std::string(std::getenv("SKIN_BENCH_UNCAPPED")) == "1";
+                if (uncapped) {
+                    globalContainer->gfx->setTargetRenderFps(0);
+                    if (globalContainer->gfx->context && !SDL_GL_SetSwapInterval(0)) throw std::runtime_error(SDL_GetError());
+                }
                 const char *assets = std::getenv("GLOB2_SKIN_PREVIEW_DIR");
                 if ((!assets || !*assets) && !std::getenv("SKIN_PREVIEW_ASSIGNMENT")) throw std::runtime_error("Benchmark requires preview assets or an authorized assignment");
                 auto &appearance = gui.view.render.skinPreview();
@@ -161,6 +170,7 @@ int main(int argc, char **argv)
                     auto &profile = PerformanceTelemetry::collector();
                     for (unsigned frame=0; frame<frames; ++frame)
                     {
+                        SDL_PumpEvents();
                         for (unsigned i=0; i<crowd.size(); ++i) crowd[i]->delta=(i*13+frame*8)%256;
                         const auto checksum=gui.game.checkSum();
                         if (!skinned) classicChecksums.push_back(checksum);
@@ -171,6 +181,8 @@ int main(int argc, char **argv)
                             if(appearance.sprites)cacheStart=appearance.sprites->counters();
                         }
                         globalContainer->gfx->resetDrawCallCount();
+                        // Preserve uploaded geometry and paint while forcing pose rasterization.
+                        if (skinned && forceMiss) globalContainer->gfx->skinResources.slots = {};
                         const auto start=SDL_GetPerformanceCounter();
                         drawScene();
                         const auto count=globalContainer->gfx->getDrawCallCount();
@@ -193,6 +205,7 @@ int main(int argc, char **argv)
                             {"measuredDecodes",counts.decodes-cacheStart.decodes},{"measuredEvictions",counts.evictions-cacheStart.evictions},
                             {"measuredHits",counts.hits-cacheStart.hits},{"measuredMisses",counts.misses-cacheStart.misses}};
                     }
+                    const auto samples = times;
                     std::sort(times.begin(),times.end());
                     nlohmann::json scopes=nlohmann::json::object();
                     using PerformanceTelemetry::Id;
@@ -207,7 +220,18 @@ int main(int argc, char **argv)
                         for (const char *scope : {"geometry", "raster", "composite"})
                             if (scopes[scope]["calls"].get<unsigned long>() != 0)
                                 throw std::runtime_error("Overview prepared or drew hidden skin meshes");
+                    nlohmann::json backend = {{"videoDriver",SDL_GetCurrentVideoDriver()}};
+#ifdef HAVE_OPENGL
+                    if (globalContainer->gfx->context) {
+                        backend["glRenderer"] = reinterpret_cast<const char *>(glGetString(GL_RENDERER));
+                        backend["glVersion"] = reinterpret_cast<const char *>(glGetString(GL_VERSION));
+                        int interval = -1; SDL_GL_GetSwapInterval(&interval); backend["swapInterval"] = interval;
+                    }
+#endif
                     std::cout << nlohmann::json{{"zoom",gui.camera.zoom},
+                        {"backend",backend},{"forcedMiss",forceMiss},{"uncapped",uncapped},
+                        {"workerRig",bool(appearance.clips[0].model)},{"gpuRig",bool(globalContainer->gfx->skinResources.rigProgram)},
+                        {"frameMs",samples},{"stateChecksums",classicChecksums},
                         {"adaptiveZoom",globalContainer->settings.adaptiveZoomDetail},
                         {"unitSprite",gui.view.render.detail.unitSprite},{"buildingSprite",gui.view.render.detail.buildingSprite},
                         {"profile",scopes},{"coldMs",coldMs},{"warmup",warmup},{"mode",skinned?"skinned":"classic"},{"addedUnits",crowd.size()},
