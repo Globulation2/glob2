@@ -43,6 +43,7 @@ struct Terrain
 	std::shared_ptr<const TerrainRegistry> registry;
 	std::shared_ptr<const std::vector<TerrainType>> identity;
 	std::vector<Uint16> legacy;
+	std::vector<Uint8> undermap;
 	Uint64 revision = 0;
 	bool movementModifiers = false, airConstraints = false;
 	ChunkStamps stamps;

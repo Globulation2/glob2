@@ -1547,20 +1547,28 @@ an extracted Scene directly; `Game::drawMap` supplies extraction for legacy call
 Offline `--render-game` and Maxima field PNGs use the same passes through a scoped,
 bounded software target. Asset loading is shared with normal game startup.
 
-- `SceneExtractor::extract(game, request, scene)` (`src/render/scene/SceneExtract.cpp`) is the
-  only place presentation code reads the game. `GameGUI::drawAll` extracts
-  `frameScene` once per frame and publishes it in `Game::ViewState::scene`; `drawMap`
-  callers without a published scene (menu colony, editor, torus without a GUI, tests)
-  get one extracted into `ViewState::render.ownScene`. `ViewState::drawnScene()`
-  returns whichever was drawn.
-- `SceneMap` copies the per-tile layers whole (terrain, resources, occupancy, discovery
-  and fog, displayed areas); its queries match `Map`'s. `SceneEntities` holds
-  presentation copies of units, buildings and flags with lookup by gid (field names
-  follow `Unit`/`Building`; `team` indexes `SceneEntities::teams`), per-sector
-  bullets and animations, and the selected building's map-view data. Static
-  definitions (`BuildingType`, `Race`) are referenced, not copied.
-- The overlay map is computed during extraction and shared as an immutable snapshot;
-  it refreshes when the requested type or team changes and once per 25-tick window.
+- Native threaded sessions capture immutable inputs at a simulation boundary using
+  `SceneExtractor::capture`. A presentation task on the shared compute executor
+  prepares entity records, connections, panels and overlays, then publishes the
+  complete Scene through a triple buffer. Simulation barriers never join that task.
+  One preparation is in flight; a slow consumer retains its previous complete Scene.
+  Without a compute worker, the graphics owner explicitly pumps preparation.
+- `SceneExtractor::extract(game, request, scene)` remains the synchronous path for
+  serial sessions, the editor and standalone rendering. `Game::ViewState::drawnScene()`
+  returns the Scene supplied by the session or extracted for the current draw.
+- Snapshot-backed `SceneMap` retains terrain, resources, occupancy and visibility
+  component leases instead of copying their full arrays into each Scene. The terrain
+  component includes the map's undermap corner values (one byte per cell); unchanged
+  terrain is shared across frames, while changed versions remain alive until their
+  consumers release them. Displayed areas and optional script areas are captured
+  separately. Queries preserve the synchronous `SceneMap` behavior.
+- `SceneEntities` contains presentation records with lookup by gid and generation,
+  per-sector bullets and animations, and the selected building's map-view data.
+  Scenes retain their building definitions and a stateless Race facade, so preparation
+  does not hold pointers into live teams or entities.
+- Preparation calculates overlay maps from frozen inputs; the cache refreshes when
+  the requested type or team changes and once per 25-tick window. Worker preparation
+  owns a separate cache from synchronous extraction.
 - Adding something drawn on the map: extract what the drawing needs in
   `SceneExtract.cpp` and read it from the `Scene` in the render pass. Never read
   `Game`, `Map`, `Team`, `Unit` or `Building` state from drawing code.

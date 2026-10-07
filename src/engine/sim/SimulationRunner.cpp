@@ -2,6 +2,7 @@
 #include "sim/SimulationRunner.h"
 
 #include "Engine.h"
+#include "sim/presentation/SceneInputs.h"
 #include <SDL3/SDL_stdinc.h>
 
 #include <chrono>
@@ -40,6 +41,7 @@ void SimulationRunner::stop()
 	wake.notify_all();
 	if (thread.joinable())
 		thread.join();
+	engine.gui.game.map.computeExecutor().cancelPresentationAndWait();
 }
 
 void SimulationRunner::park(std::unique_lock<std::mutex> &lock)
@@ -77,17 +79,22 @@ void SimulationRunner::run()
 			if (delay == 0)
 				running = engine.simulationStep(now);
 			// Extract at most once per scene the main thread takes.
-			if (!scenes.pending())
-			{
-				engine.extractScene(scenes.back());
-				scenes.publish();
-			}
+			if (presentation && presentation->finished()) presentation->rethrowFailure();
+            if (!scenes.pending() && (!presentation || presentation->finished()))
+            {
+                auto input = engine.gui.captureSceneInputs();
+                const auto chunks = SceneExtractor::preparationChunks(*input);
+                presentation = engine.gui.game.map.computeExecutor().submitPresentation(chunks, [this, input, chunks](size_t chunk) {
+                    presentationExtractor.prepareChunk(*input, scenes.back(), chunk);
+                    if (chunk+1 == chunks) { scenes.publish(); wake.notify_all(); }
+                });
+            }
 			lock.lock();
 			if (!running)
 				break;
 			if (delay > 0)
 				wake.wait_for(lock, std::chrono::milliseconds(delay),
-							  [&] { return stopping || parkRequested || suspended || !scenes.pending(); });
+							  [&] { return stopping || parkRequested || suspended || (!scenes.pending() && (!presentation || presentation->finished())); });
 		}
 	}
 	catch (...)
@@ -150,6 +157,7 @@ void SimulationRunner::resume()
 
 const Scene *SimulationRunner::acquireScene()
 {
+	while (engine.gui.game.map.computeExecutor().pumpPresentation()) {}
 	if (scenes.acquire())
 	{
 		haveScene = true;

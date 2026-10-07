@@ -11,6 +11,8 @@
 #include <nlohmann/json.hpp>
 #include <SDLGraphicContext.h>
 #include <array>
+#include "sim/presentation/SceneInputs.h"
+#include "sim/snapshot/SnapshotStore.h"
 
 TEST_SUITE("SceneExtract")
 {
@@ -394,4 +396,76 @@ TEST_SUITE("SceneExtract")
         }
     }
 
+}
+
+TEST_SUITE("SceneExtract")
+{
+TEST_CASE("snapshot preparation matches legacy queries and survives later live mutations")
+{
+    glob2test::HeadlessGlobals globals;
+    glob2test::HeadlessGame world{glob2test::GameOptions{.wDec=5, .hDec=5, .teams=1, .discovered=true, .clearImmobile=true, .loadDefaultRace=true}};
+    auto* unit = world.addUnit(WORKER,12,12,0);
+    auto* building = world.addBuilding("inn",4,4,0,0);
+    REQUIRE(unit); REQUIRE(building);
+    unit->levelUpAnimation = 7; unit->magicActionAnimation = 3;
+    unit->medical = Unit::MED_DAMAGED; unit->hp = 1; unit->hungry = 0;
+    building->lastShootStep = 19; building->lastShootSpeedX = 2;
+    SceneRequest request;
+    request.selectedUnit = Game::refOf(unit); request.selectedBuilding = Game::refOf(building);
+    request.view.displayW = 800; request.view.displayH = 600;
+    request.includeScriptAreas = true;
+    world.game.map.setPoint(8,3,4);
+    for (auto overlay : {OverlayArea::None, OverlayArea::Starving, OverlayArea::Damage, OverlayArea::Defence, OverlayArea::Fertility})
+    {
+        CAPTURE(overlay);
+        request.view.overlay = overlay;
+        SceneExtractor legacyExtractor, snapshotExtractor;
+        Scene legacy, actual;
+        legacyExtractor.extract(world.game, request, legacy);
+        auto input = snapshotExtractor.capture(world.game, request);
+        // No later read may reach the live unit or any map layer.
+        const auto hp = unit->hp;
+        unit->hp = 123;
+        world.game.map.setGroundUnit(20,20,42);
+        snapshotExtractor.prepare(*input, actual);
+        unit->hp = hp;
+        world.game.map.setGroundUnit(20,20,legacy.map.getGroundUnit(20,20));
+        CHECK(actual.tick == legacy.tick);
+        CHECK(actual.entities.units.size() == legacy.entities.units.size());
+        CHECK(actual.entities.buildings.size() == legacy.entities.buildings.size());
+        REQUIRE(actual.entities.unit(unit->gid));
+        const auto& u = *actual.entities.unit(unit->gid);
+        CHECK(u.hp == hp); CHECK(u.levelUpAnimation == 7); CHECK(u.magicActionAnimation == 3);
+        CHECK(u.stepSpeed == legacy.entities.unit(unit->gid)->stepSpeed);
+        CHECK(actual.entities.building(building->gid)->lastShootStep == 19);
+        CHECK(actual.entities.building(building->gid)->lastShootSpeedX == 2);
+        CHECK(actual.panels.unit.hp == legacy.panels.unit.hp);
+        CHECK(actual.panels.building.hardSpaceForUpgrade == legacy.panels.building.hardSpaceForUpgrade);
+        CHECK(actual.map.materialPresence() == legacy.map.materialPresence());
+        for (int y=0; y<32; ++y) for (int x=0; x<32; ++x)
+        {
+            CHECK(actual.map.getTerrain(x,y) == legacy.map.getTerrain(x,y));
+            CHECK(actual.map.terrainTypeAt(x,y) == legacy.map.terrainTypeAt(x,y));
+            CHECK(actual.map.appearanceAt(x,y) == legacy.map.appearanceAt(x,y));
+            CHECK(actual.map.getUMTerrain(x,y) == legacy.map.getUMTerrain(x,y));
+            CHECK(actual.map.getGroundUnit(x,y) == legacy.map.getGroundUnit(x,y));
+            CHECK(actual.map.getAirUnit(x,y) == legacy.map.getAirUnit(x,y));
+            CHECK(actual.map.getBuilding(x,y) == legacy.map.getBuilding(x,y));
+            CHECK(actual.map.getResource(x,y).type == legacy.map.getResource(x,y).type);
+            CHECK(actual.map.canResourcesGrow(x,y) == legacy.map.canResourcesGrow(x,y));
+            CHECK(actual.map.isMapDiscovered(x,y,1) == legacy.map.isMapDiscovered(x,y,1));
+            CHECK(actual.map.isFOWDiscovered(x,y,1) == legacy.map.isFOWDiscovered(x,y,1));
+            CHECK(actual.map.isPointSet(8,x,y) == legacy.map.isPointSet(8,x,y));
+            CHECK(actual.map.isHardSpaceForBuilding(x,y,1,1) == legacy.map.isHardSpaceForBuilding(x,y,1,1));
+            for (unsigned m=0; m<MaterialCount; ++m)
+                CHECK(actual.map.materialAmountAt(actual.map.coordToIndex(x,y),m) == legacy.map.materialAmountAt(legacy.map.coordToIndex(x,y),m));
+            if (overlay != OverlayArea::None)
+            {
+                REQUIRE(actual.overlay);
+                CHECK(actual.overlay->getMaximum() == legacy.overlay->getMaximum());
+                CHECK(actual.overlay->getValue(x,y) == legacy.overlay->getValue(x,y));
+            }
+        }
+    }
+}
 }

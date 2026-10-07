@@ -691,7 +691,7 @@ void GameGUI::drawAll(int team)
 	GAGCore::ApplicationHost::overviewDrawn(drewTorus, drewTorus && torusView.overviewSettled());
 	if (!drewTorus)
 	{
-		const int cloudGridLimit = DynamicClouds::gridLimitForZoom(game.map.getW(), game.map.getH(),
+		const int cloudGridLimit = DynamicClouds::gridLimitForZoom(scene.map.getW(), scene.map.getH(),
 			globalContainer->settings.cloudPatchSize, camera.zoom);
 		GAGCore::MapTransformScope mapPass(*globalContainer->gfx, camera.zoom, camera.offsetX-camera.fractionX()*camera.zoom, camera.offsetY-camera.fractionY()*camera.zoom, SDL_Rect{int(camera.offsetX), std::max(16, int(camera.offsetY)), int(camera.visibleW()*camera.zoom), int(camera.visibleH()*camera.zoom)-std::max(0,16-int(camera.offsetY))});
 		std::set<Uint16> visibleBuildings;

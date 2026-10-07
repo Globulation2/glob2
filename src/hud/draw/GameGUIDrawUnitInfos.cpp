@@ -37,7 +37,9 @@ void drawAbilityRow(int xpos, int ypos, const char* labelKey, int displayLevel, 
 void GameGUI::drawUnitInfos(void)
 {
 	const SceneUnitPanel* selUnit = &drawnScene().panels.unit;
-	if (!selUnit->valid)
+	const auto* selected = std::get_if<UnitRef>(&selection);
+    if (!selUnit->valid || !selected || selected->gid != selUnit->gid || selected->generation != selUnit->generation
+        || drawnScene().panels.local.teamNumber != localTeamNo)
 		return;
 	int ypos = YPOS_BASE_UNIT;
 	Uint8 r, g, b;

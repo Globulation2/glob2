@@ -273,6 +273,7 @@ public:
 	SceneRequest sceneRequest();
 	/// Extract the next scene from the game (the simulation thread calls this).
 	void extractScene(Scene& scene) { sceneExtractor.extract(game, sceneRequest(), scene); }
+    std::shared_ptr<SceneInputs> captureSceneInputs() { return sceneExtractor.capture(game, sceneRequest()); }
 	/// Per-frame GUI work that reads or writes the game, for threaded execution:
 	/// the simulation is parked while it runs (SimulationRunner::withGame).
 	void threadedClientStep(const std::vector<SDL_Event>& events, Uint64 now);

@@ -10,6 +10,7 @@
 #include "BuildingType.h"
 #include "Game.h"
 #include "Bullet.h"
+#include "sim/snapshot/WorldSnapshot.h"
 
 // Radius (in tiles) of the bump painted for each unit on the Starving and
 // Damage overlays. Units contribute equally, so this is a fixed footprint.
@@ -117,3 +118,37 @@ void OverlayArea::forceRecompute()
 }
 
 
+
+void OverlayArea::compute(const SimulationSnapshot::Handle& world, OverlayType requested, int localteam, Uint16 fertilityMaximum)
+{
+    type = requested; width = world.width; height = world.height;
+    overlay.assign(size_t(width) * height, 0); overlaymax = 0;
+    if (type == Starving || type == Damage)
+        for (const auto& u : world.entities->units)
+        {
+            if (u.team != localteam || u.activity == UnitState::ACT_UPGRADING) continue;
+            const bool hungry = !world.rules->values.hungerDisabled
+                && u.hungry <= (u.carriedMaterial == -1 ? u.trigHungry : u.trigHungryCarrying);
+            if ((type == Starving && hungry && u.hp < u.performance[HP]) ||
+                (type == Damage && u.medical == UnitState::MED_DAMAGED))
+                OverlayFill::increasePoint(u.posX, u.posY, UNIT_OVERLAY_RADIUS, width, height, overlay, overlaymax);
+        }
+    else if (type == Defence)
+        for (const auto& b : world.entities->buildings)
+        {
+            if (b.team != localteam) continue;
+            const auto& definition = world.catalogs->buildings->at(b.typeNum).resolvedType;
+            if (definition.semantics.projectileDamage[WARRIOR] <= 0) continue;
+            const int power = int(std::min<std::int64_t>(std::numeric_limits<int>::max(),
+                (std::int64_t(definition.semantics.projectileDamage[WARRIOR]) * definition.shootRhythm) >> SHOOTING_COOLDOWN_MAGNITUDE));
+            OverlayFill::spreadPoint(b.posX, b.posY, power, definition.shootingRange, width, height, overlay, overlaymax);
+        }
+    else if (type == Fertility)
+    {
+        for (int x = 0; x < width; ++x)
+            for (int y = 0; y < height; ++y)
+                overlay[size_t(x) * height + y] = world.resources->cells[size_t(y) * width + x].fertility;
+        overlaymax = fertilityMaximum;
+    }
+    lasttype = type;
+}

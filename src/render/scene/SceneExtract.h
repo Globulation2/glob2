@@ -8,6 +8,8 @@
 #include <memory>
 
 class Game;
+namespace SimulationSnapshot { struct Handle; }
+struct SceneInputs;
 
 //! What the client wants drawn this frame: whose view, and what it has selected.
 struct SceneRequest
@@ -35,6 +37,12 @@ class SceneExtractor
 {
 public:
 	void extract(const Game &game, const SceneRequest &request, Scene &scene);
+    //! Capture simulation-owned source values; only called at an owner boundary.
+    std::shared_ptr<SceneInputs> capture(const Game& game, const SceneRequest& request);
+    //! Pure preparation from owned immutable inputs, safe beyond the read phase.
+    void prepare(const SceneInputs& inputs, Scene& scene);
+    static size_t preparationChunks(const SceneInputs& inputs);
+    void prepareChunk(const SceneInputs& inputs, Scene& scene, size_t chunk);
 
 private:
 	std::shared_ptr<const OverlayArea> overlay;

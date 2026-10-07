@@ -909,7 +909,12 @@ public:
 	Sector *getSector(int i) { assert(i>=0); assert(i<sizeSector); return sectors+i; }
 
 	//! Set undermap terrain type at (x,y) (undermap positions)
-	void setUMTerrain(int x, int y, TerrainType t) { undermap[coordToIndex(x, y)] = (Uint8)t; }
+	void setUMTerrain(int x, int y, TerrainType t)
+    {
+        const auto index = coordToIndex(x,y);
+        if (undermap[index] != Uint8(t)) { undermap[index] = Uint8(t); markTerrain(index); }
+    }
+    std::span<const Uint8> undermapState() const { return {undermap, size_t(w)*h}; }
 	//! Return undermap terrain type at (x,y)
 	TerrainType getUMTerrain(int x, int y) const { return (TerrainType)undermap[coordToIndex(x, y)]; }
 	//! Set undermap terrain type at (x,y) (undermap positions) on an area
