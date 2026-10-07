@@ -40,9 +40,9 @@ export type ViewTransform = {
  * inspection camera from the exported game elevation (about 45 degrees). */
 export type Camera = { yaw: number; pitch: number; zoom: number; game: boolean; angle: number };
 export const DEFAULT_CAMERA: Camera = { yaw: 0, pitch: 0, zoom: 1, game: false, angle: 0 };
-/** Pitch bounds: from just short of top-down to a little below the horizon. */
-export const MIN_PITCH = (-75 * Math.PI) / 180;
+/** Inspection tilt stops equally far above and below the exported game view. */
 export const MAX_PITCH = (40 * Math.PI) / 180;
+export const MIN_PITCH = -MAX_PITCH;
 export function clampPitch(pitch: number): number {
   return Math.max(MIN_PITCH, Math.min(MAX_PITCH, pitch));
 }

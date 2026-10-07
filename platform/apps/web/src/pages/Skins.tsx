@@ -223,7 +223,7 @@ function SkinStudio() {
         e.preventDefault();
         setCamera((c) => ({
           ...c,
-          zoom: Math.max(0.45, Math.min(4, c.zoom * (e.key === '-' ? 0.8 : 1.25))),
+          zoom: Math.max(0.225, Math.min(4, c.zoom * (e.key === '-' ? 0.8 : 1.25))),
         }));
       }
     };
@@ -598,7 +598,7 @@ function SkinStudio() {
                         const factor = e.target.value === 'zoom-in' ? 1.25 : 0.8;
                         setCamera((c) => ({
                           ...c,
-                          zoom: Math.max(0.45, Math.min(4, c.zoom * factor)),
+                          zoom: Math.max(0.225, Math.min(4, c.zoom * factor)),
                         }));
                         return;
                       }
