@@ -1883,8 +1883,11 @@ checks; Fingerprint's known platform variant requires its own recorded topology.
 ### Unapproved generator fingerprint observations
 
 `python3 test/collect_generator_evidence.py collect BINARY OUTPUT --platform macos-arm64`
-runs `MapGeneratorGoldenTest --print` twice in fresh profiles, verifies the complete
-current generator/seed/revision inventory against the Linux reference, and retains
+reads `MapGeneratorGoldenTest --inventory` and runs `--print` twice in fresh profiles.
+The request enumeration is shared with generation, including extended team counts
+without accepted fingerprints. Collection requires every committed Linux reference
+key to remain in that inventory and every requested row to be observed exactly once;
+it rejects missing or extra rows and changed revisions. It retains
 raw logs, normalized rows, checkout provenance, host compiler, stable binary hash, and unchanged
 current/historical fixture hashes. Collection does not update expected output or
 replace the strict `--require-rows` gate. The macOS validation job uploads these

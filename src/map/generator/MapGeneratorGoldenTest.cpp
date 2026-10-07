@@ -6,6 +6,7 @@
 //   MapGeneratorGoldenTest <profile-dir> --require-rows the same, failing when this platform
 //                                                      lacks current rows for any generator (CI)
 //   MapGeneratorGoldenTest <profile-dir> --update       regenerate this platform's rows
+//   MapGeneratorGoldenTest <profile-dir> --inventory    print all request keys without generation
 //   MapGeneratorGoldenTest <profile-dir> --print        print this platform's rows to stdout
 //   MapGeneratorGoldenTest <profile-dir> --sweep        every playable landscape at the colony
 //                                                      counts and sizes the lobby offers
@@ -126,7 +127,7 @@ void writeTable(const std::string &path, const std::vector<Row> &rows)
 }
 
 // One roll, as the lobby and editor would ask for it.
-Row roll(int id, int wDec, int hDec, int teams, std::uint32_t seed)
+Row requestRow(int id, int wDec, int hDec, int teams, std::uint32_t seed)
 {
 	Row row;
 	row.platform = platformTag();
@@ -136,6 +137,12 @@ Row roll(int id, int wDec, int hDec, int teams, std::uint32_t seed)
 	row.hDec = hDec;
 	row.teams = teams;
 	row.seed = seed;
+	return row;
+}
+
+Row roll(int id, int wDec, int hDec, int teams, std::uint32_t seed)
+{
+	Row row = requestRow(id, wDec, hDec, teams, seed);
 	GenerationRequest request;
 	request.setMethodDefaults(id);
 	request.wDec = wDec;
@@ -159,7 +166,7 @@ Row roll(int id, int wDec, int hDec, int teams, std::uint32_t seed)
 
 // The rows this platform keeps: every registered generator at its own defaults on the three
 // lobby sizes and on a 512x256 rectangle, and at 256 with two and with eight colonies.
-std::vector<Row> goldenRows(const std::set<int> &selected = {})
+std::vector<Row> goldenRequests(const std::set<int> &selected = {})
 {
 	std::vector<Row> rows;
 	for (int id : GeneratorRegistry::builtins().methods(true))
@@ -168,17 +175,25 @@ std::vector<Row> goldenRows(const std::set<int> &selected = {})
 		GenerationRequest defaults;
 		defaults.setMethodDefaults(id);
 		for (std::uint32_t seed = 1; seed <= 3; ++seed)
-			rows.push_back(roll(id, 8, 8, defaults.nbTeams, seed));
-		rows.push_back(roll(id, 7, 7, defaults.nbTeams, 1));
-		rows.push_back(roll(id, 9, 9, defaults.nbTeams, 1));
-		rows.push_back(roll(id, 9, 8, defaults.nbTeams, 1));
-		rows.push_back(roll(id, 8, 8, 2, 1));
-		rows.push_back(roll(id, 8, 8, 8, 1));
+			rows.push_back(requestRow(id, 8, 8, defaults.nbTeams, seed));
+		rows.push_back(requestRow(id, 7, 7, defaults.nbTeams, 1));
+		rows.push_back(requestRow(id, 9, 9, defaults.nbTeams, 1));
+		rows.push_back(requestRow(id, 9, 8, defaults.nbTeams, 1));
+		rows.push_back(requestRow(id, 8, 8, 2, 1));
+		rows.push_back(requestRow(id, 8, 8, 8, 1));
 		// These five designed maps extend their old twelve-colony envelope.
 		if (id == 59 || id == 63 || id == 64 || id == 65 || id == 69)
 			for (int teams = 13; teams <= Team::MAX_COUNT; ++teams)
-				rows.push_back(roll(id, 9, 9, teams, 1));
+				rows.push_back(requestRow(id, 9, 9, teams, 1));
 	}
+	return rows;
+}
+
+std::vector<Row> goldenRows(const std::set<int> &selected = {})
+{
+	auto rows = goldenRequests(selected);
+	for (auto &row : rows)
+		row = roll(row.id, row.wDec, row.hDec, row.teams, row.seed);
 	return rows;
 }
 
@@ -545,7 +560,7 @@ int main(int argc, char **argv)
 	if (argc < 2)
 	{
 		std::fprintf(stderr,
-					 "usage: %s <profile-dir> [--require-rows|--update [--force|--only=id,...]|--print [--only=id,...]|--sweep "
+					 "usage: %s <profile-dir> [--require-rows|--inventory|--update [--force|--only=id,...]|--print [--only=id,...]|--sweep "
 					 "[K/N]|--telemetry]\n",
 					 argv[0]);
 		return 2;
@@ -568,6 +583,13 @@ int main(int argc, char **argv)
 			return 2;
 		}
 		return sweep(shard, shards);
+	}
+	if (mode == "--inventory")
+	{
+		for (const auto &row : goldenRequests())
+			std::cout << row.platform << ' ' << row.id << ' ' << row.revision << ' '
+				<< row.wDec << ' ' << row.hDec << ' ' << row.teams << ' ' << row.seed << '\n';
+		return 0;
 	}
 	if (mode == "--performance")
 		return performanceCheck();
