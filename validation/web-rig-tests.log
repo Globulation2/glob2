@@ -1,0 +1,35 @@
+
+ RUN  v5.0.3 /home/bradley/.codex/worktrees/ae82/glob2
+
+ ❯ platform/apps/web/test/skin-rig.test.ts (55 tests | 5 failed) 37537ms
+   × decodes installed worker-walk and produces finite unit normals 6311ms
+   × decodes installed warrior-walk and produces finite unit normals 5153ms
+   × decodes installed warrior-swim and produces finite unit normals 8687ms
+   × decodes installed warrior-fight and produces finite unit normals 10874ms
+   × decodes installed explorer-fly and produces finite unit normals 5369ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 5 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  platform/apps/web/test/skin-rig.test.ts > decodes installed worker-walk and produces finite unit normals
+ FAIL  platform/apps/web/test/skin-rig.test.ts > decodes installed warrior-walk and produces finite unit normals
+ FAIL  platform/apps/web/test/skin-rig.test.ts > decodes installed warrior-swim and produces finite unit normals
+ FAIL  platform/apps/web/test/skin-rig.test.ts > decodes installed warrior-fight and produces finite unit normals
+ FAIL  platform/apps/web/test/skin-rig.test.ts > decodes installed explorer-fly and produces finite unit normals
+Error: Test timed out in 5000ms.
+If this is a long-running test, pass a timeout value as the last argument or configure it globally with "testTimeout".
+ ❯ platform/apps/web/test/skin-rig.test.ts:109:12
+    107|   ['warrior-fight', 2450],
+    108|   ['explorer-fly', 1330],
+    109| ] as const)('decodes installed %s and produces finite unit normals', (…
+       |            ^
+    110|   const buffer = readFileSync(new URL(`../public/skins/models/${asset}…
+    111|   const model = decodeRig(Uint8Array.from(buffer).buffer);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/5]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  5 failed | 50 passed (55)
+   Start at  21:12:12
+   Duration  38.36s (tests 99%, transform 1%)
+

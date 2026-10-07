@@ -1,0 +1,104 @@
+Blender 3.6.23 (hash e467db79ca8c built 2025-06-17 01:32:54)
+Read blend: "/home/bradley/.codex/worktrees/ae82/glob2/datasrc/gfx/originals/units/glob-warrior-walk.blend"
+NOTE: ortho render has changed, tweak new Camera 'scale' value.
+Read blend: "/home/bradley/.codex/worktrees/ae82/glob2/datasrc/gfx/originals/units/glob-warrior-walk.blend"
+NOTE: ortho render has changed, tweak new Camera 'scale' value.
+Read blend: "/home/bradley/.codex/worktrees/ae82/glob2/datasrc/gfx/originals/units/glob-warrior-swim.blend"
+NOTE: ortho render has changed, tweak new Camera 'scale' value.
+Read blend: "/home/bradley/.codex/worktrees/ae82/glob2/datasrc/gfx/originals/units/glob-warrior-fight.blend"
+NOTE: ortho render has changed, tweak new Camera 'scale' value.
+Info: Total files 0 | Changed 0 | Failed 0
+Read blend: "/home/bradley/.codex/worktrees/ae82/glob2/datasrc/gfx/originals/units/explorer.blend"
+NOTE: ortho render has changed, tweak new Camera 'scale' value.
+Info: Total files 0 | Changed 0 | Failed 0
+test_action_roundtrip_and_overwrite_guard (__main__.UnitRigTest) ... Read blend: "/home/bradley/.codex/worktrees/ae82/glob2/datasrc/gfx/originals/units/glob-warrior-walk.blend"
+NOTE: ortho render has changed, tweak new Camera 'scale' value.
+Info: Total files 1 | Changed 1 | Failed 0
+Info: Total files 1 | Changed 1 | Failed 0
+ok
+test_actions_have_no_intersections_and_close (__main__.UnitRigTest) ... ok
+test_independent_bones_can_pose_without_reference_motion (__main__.UnitRigTest) ... ok
+test_rest_weights_normals_and_welded_seams (__main__.UnitRigTest) ... ok
+test_swim_follows_the_source_stroke_and_retracts (__main__.UnitRigTest) ... ok
+test_warrior_action_import_rejects_bending_or_sideways_distal_handles (__main__.UnitRigTest) ... Read blend: "/home/bradley/.codex/worktrees/ae82/glob2/datasrc/gfx/originals/units/glob-warrior-walk.blend"
+NOTE: ortho render has changed, tweak new Camera 'scale' value.
+Read blend: "/home/bradley/.codex/worktrees/ae82/glob2/artifacts/unit-rigs-rq76iz__/warrior/warrior.blend"
+Read blend: "/home/bradley/.codex/worktrees/ae82/glob2/artifacts/unit-rigs-rq76iz__/explorer/explorer.blend"
+Read blend: "/home/bradley/.codex/worktrees/ae82/glob2/datasrc/gfx/originals/units/glob-warrior-walk.blend"
+NOTE: ortho render has changed, tweak new Camera 'scale' value.
+Read blend: "/home/bradley/.codex/worktrees/ae82/glob2/artifacts/unit-rigs-rq76iz__/warrior/warrior.blend"
+Read blend: "/home/bradley/.codex/worktrees/ae82/glob2/artifacts/unit-rigs-rq76iz__/explorer/explorer.blend"
+Read blend: "/home/bradley/.codex/worktrees/ae82/glob2/datasrc/gfx/originals/units/glob-warrior-walk.blend"
+NOTE: ortho render has changed, tweak new Camera 'scale' value.
+Read blend: "/home/bradley/.codex/worktrees/ae82/glob2/datasrc/gfx/originals/units/glob-warrior-swim.blend"
+NOTE: ortho render has changed, tweak new Camera 'scale' value.
+Read blend: "/home/bradley/.codex/worktrees/ae82/glob2/datasrc/gfx/originals/units/glob-warrior-walk.blend"
+NOTE: ortho render has changed, tweak new Camera 'scale' value.
+Read blend: "/home/bradley/.codex/worktrees/ae82/glob2/artifacts/unit-rigs-rq76iz__/warrior/warrior.blend"
+Read blend: "/home/bradley/.codex/worktrees/ae82/glob2/datasrc/gfx/originals/units/glob-warrior-walk.blend"
+NOTE: ortho render has changed, tweak new Camera 'scale' value.
+Read blend: "/home/bradley/.codex/worktrees/ae82/glob2/artifacts/unit-rigs-rq76iz__/warrior/warrior.blend"
+Info: Total files 0 | Changed 0 | Failed 0
+Read blend: "/home/bradley/.codex/worktrees/ae82/glob2/datasrc/gfx/originals/units/glob-warrior-walk.blend"
+NOTE: ortho render has changed, tweak new Camera 'scale' value.
+Read blend: "/home/bradley/.codex/worktrees/ae82/glob2/datasrc/gfx/originals/units/glob-warrior-walk.blend"
+NOTE: ortho render has changed, tweak new Camera 'scale' value.
+Read blend: "/home/bradley/.codex/worktrees/ae82/glob2/artifacts/unit-rigs-rq76iz__/warrior/warrior.blend"
+Info: Total files 0 | Changed 0 | Failed 0
+ok
+test_warrior_clips_share_identical_rest_mesh_weights_and_bones (__main__.UnitRigTest) ... ok
+test_warrior_girth_does_not_collapse_into_thin_stalks (__main__.UnitRigTest) ... ok
+test_warrior_is_symmetric_left_right_and_top_bottom (__main__.UnitRigTest) ... ok
+test_warrior_shafts_stay_straight_and_keep_their_cross_sections (__main__.UnitRigTest) ... ok
+test_warrior_terminals_keep_their_shape_through_all_actions (__main__.UnitRigTest) ... ok
+
+----------------------------------------------------------------------
+Ran 11 tests in 35.469s
+
+OK
+Warning: Library file, loading empty scene
+Warning: Library file, loading empty scene
+Warning: Library file, loading empty scene
+Warning: Library file, loading empty scene
+warrior-walk: 2450 vertices, 9 bones, 236800 bytes
+warrior-swim: 2450 vertices, 9 bones, 236800 bytes
+warrior-fight: 2450 vertices, 9 bones, 236800 bytes
+Info: Saved "warrior.blend"
+Warning: Library file, loading empty scene
+explorer-fly: 1330 vertices, 4 bones, 120700 bytes
+Info: Saved "explorer.blend"
+Warning: Library file, loading empty scene
+warrior-walk: 2450 vertices, 9 bones, 236800 bytes
+Info: Saved "warrior.blend"
+explorer-fly: 1330 vertices, 4 bones, 120700 bytes
+Info: Saved "explorer.blend"
+Warning: Library file, loading empty scene
+Warning: Library file, loading empty scene
+Warning: Library file, loading empty scene
+Warning: Library file, loading empty scene
+Warning: Library file, loading empty scene
+Warning: Library file, loading empty scene
+Info: Saved "bent-warrior.blend"
+Warning: Library file, loading empty scene
+Warning: Library file, loading empty scene
+Info: Saved "bent-warrior.blend"
+Warning: Library file, loading empty scene
+Warning: Library file, loading empty scene
+Warning: Library file, loading empty scene
+Warning: Library file, loading empty scene
+Warning: Library file, loading empty scene
+Read blend: "/home/bradley/.codex/worktrees/ae82/glob2/datasrc/gfx/originals/units/glob-warrior-walk.blend"
+NOTE: ortho render has changed, tweak new Camera 'scale' value.
+Read blend: "/home/bradley/.codex/worktrees/ae82/glob2/datasrc/gfx/originals/units/glob-warrior-walk.blend"
+NOTE: ortho render has changed, tweak new Camera 'scale' value.
+Read blend: "/home/bradley/.codex/worktrees/ae82/glob2/artifacts/unit-rigs-rq76iz__/warrior/warrior.blend"
+Read blend: "/home/bradley/.codex/worktrees/ae82/glob2/datasrc/gfx/originals/units/glob-warrior-walk.blend"
+NOTE: ortho render has changed, tweak new Camera 'scale' value.
+Read blend: "/home/bradley/.codex/worktrees/ae82/glob2/datasrc/gfx/originals/units/glob-warrior-walk.blend"
+NOTE: ortho render has changed, tweak new Camera 'scale' value.
+Read blend: "/home/bradley/.codex/worktrees/ae82/glob2/artifacts/unit-rigs-rq76iz__/warrior/warrior.blend"
+Read blend: "/home/bradley/.codex/worktrees/ae82/glob2/datasrc/gfx/originals/units/glob-warrior-walk.blend"
+NOTE: ortho render has changed, tweak new Camera 'scale' value.
+Read blend: "/home/bradley/.codex/worktrees/ae82/glob2/artifacts/unit-rigs-rq76iz__/warrior/warrior.blend"
+
+Blender quit

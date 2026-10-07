@@ -1,0 +1,38 @@
+{
+  "commands": [
+    [
+      "build/linux/client/release/src/skin-rig-benchmark",
+      "artifacts/pr821-final/benchmark-assets",
+      "artifacts/pr821-final/benchmark-baked-miss.json",
+      "baked",
+      "miss",
+      "32",
+      "20",
+      "8",
+      "32"
+    ],
+    [
+      "build/linux/client/release/src/skin-rig-benchmark",
+      "artifacts/pr821-final/benchmark-assets",
+      "artifacts/pr821-final/benchmark-baked-warm.json",
+      "baked",
+      "warm",
+      "32",
+      "20",
+      "8",
+      "32"
+    ],
+    [
+      "build/linux/client/release/src/skin-rig-benchmark",
+      "artifacts/pr821-final/benchmark-assets",
+      "artifacts/pr821-final/benchmark-rig-warm.json",
+      "rig",
+      "warm",
+      "32",
+      "20",
+      "8",
+      "32"
+    ]
+  ],
+  "scope": "Functional smoke only; concurrent build/test activity, too few samples for performance claims"
+}

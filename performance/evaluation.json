@@ -1,0 +1,540 @@
+{
+  "sourceCommit": "43a28506b14692cb91799c07345b8a0c79aaecaf",
+  "baseRevision": "410ce0ff82d14c94463d2840d2591da0bf373210",
+  "instrumentationBranch": "codex/rig-performance-evaluation",
+  "totalRuns": 120,
+  "totalMeasuredFrames": 57600,
+  "datasets": [
+    {
+      "directory": "renderer-runs",
+      "runs": 80,
+      "measuredFrames": 48000,
+      "binarySha256": "20d8b5f44f8225ff1d622bd2bf8087444536872f9f306259ea37e792a75a0bd8",
+      "summary": [
+        {
+          "kind": "renderer",
+          "units": 512,
+          "cache": "miss",
+          "pairs": 10,
+          "metrics": {
+            "p50Ms": {
+              "bakedMedian": 2.1550564765930176,
+              "rigMedian": 1.5052013397216797,
+              "pairedChangePct": -25.494741071454744,
+              "pairedChangePctBootstrap95": [
+                -37.52707631691152,
+                -17.80332596352149
+              ]
+            },
+            "p95Ms": {
+              "bakedMedian": 2.8108279705047607,
+              "rigMedian": 2.2136361598968506,
+              "pairedChangePct": -26.014879052396324,
+              "pairedChangePctBootstrap95": [
+                -37.8999843079692,
+                -9.187101835900735
+              ]
+            },
+            "p99Ms": {
+              "bakedMedian": 3.0521066188812256,
+              "rigMedian": 3.0220065116882324,
+              "pairedChangePct": -18.653693557274543,
+              "pairedChangePctBootstrap95": [
+                -37.53050706167469,
+                21.371427531540952
+              ]
+            },
+            "gpuP95Ms": {
+              "bakedMedian": 2.177584,
+              "rigMedian": 0.304944,
+              "pairedChangePct": -86.50936710664334,
+              "pairedChangePctBootstrap95": [
+                -89.03629123769832,
+                -84.78092349174248
+              ]
+            },
+            "prepareP95Ms": {
+              "bakedMedian": 1.7076895236968994,
+              "rigMedian": 1.0504140853881836,
+              "pairedChangePct": -42.045987982417884,
+              "pairedChangePctBootstrap95": [
+                -49.00157457206837,
+                -25.879528058707784
+              ]
+            },
+            "geometryMeanMs": {
+              "bakedMedian": 0.7213012908333334,
+              "rigMedian": 0.1965895575,
+              "pairedChangePct": -70.63969379152637,
+              "pairedChangePctBootstrap95": [
+                -75.11638622936225,
+                -69.26601233371828
+              ]
+            },
+            "coldFirstDrawMs": {
+              "bakedMedian": 5.678714752197266,
+              "rigMedian": 7.697327375411987,
+              "pairedChangePct": 41.73411493407638,
+              "pairedChangePctBootstrap95": [
+                -2.5479776290873906,
+                73.66117684817108
+              ]
+            },
+            "meshLoadMs": {
+              "bakedMedian": 131.92223644256592,
+              "rigMedian": 3.3564040660858154,
+              "pairedChangePct": -97.46742776628359,
+              "pairedChangePctBootstrap95": [
+                -97.87248556439059,
+                -97.24281634489556
+              ]
+            },
+            "maxRssKiB": {
+              "bakedMedian": 151366.0,
+              "rigMedian": 117902.0,
+              "pairedChangePct": -22.248738582530358,
+              "pairedChangePctBootstrap95": [
+                -26.120414189202947,
+                -16.52640242121751
+              ]
+            },
+            "meshBytes": {
+              "bakedMedian": 17502736.0,
+              "rigMedian": 369692.0,
+              "pairedChangePct": -97.88780451239167,
+              "pairedChangePctBootstrap95": [
+                -97.88780451239167,
+                -97.88780451239167
+              ]
+            }
+          }
+        },
+        {
+          "kind": "renderer",
+          "units": 512,
+          "cache": "warm",
+          "pairs": 10,
+          "metrics": {
+            "p50Ms": {
+              "bakedMedian": 0.7862153053283691,
+              "rigMedian": 0.7413005828857422,
+              "pairedChangePct": -3.978518332021541,
+              "pairedChangePctBootstrap95": [
+                -18.59751014943485,
+                46.176434918679995
+              ]
+            },
+            "p95Ms": {
+              "bakedMedian": 1.0979878902435303,
+              "rigMedian": 1.04158353805542,
+              "pairedChangePct": -12.03164572539463,
+              "pairedChangePctBootstrap95": [
+                -26.757119539993145,
+                53.67687056204292
+              ]
+            },
+            "p99Ms": {
+              "bakedMedian": 1.225252389907837,
+              "rigMedian": 1.2308826446533203,
+              "pairedChangePct": -14.684793639821304,
+              "pairedChangePctBootstrap95": [
+                -29.74220283750894,
+                76.7992479841811
+              ]
+            },
+            "gpuP95Ms": {
+              "bakedMedian": 0.2012,
+              "rigMedian": 0.183696,
+              "pairedChangePct": -0.0009378296195228231,
+              "pairedChangePctBootstrap95": [
+                -36.735337397519444,
+                71.86914669159486
+              ]
+            },
+            "prepareP95Ms": {
+              "bakedMedian": 0.056719303131103516,
+              "rigMedian": 0.05554962158203125,
+              "pairedChangePct": -8.32476997331227,
+              "pairedChangePctBootstrap95": [
+                -26.028718835192784,
+                89.39862352056726
+              ]
+            },
+            "geometryMeanMs": {
+              "bakedMedian": 0.0,
+              "rigMedian": 0.0
+            },
+            "coldFirstDrawMs": {
+              "bakedMedian": 6.214655876159668,
+              "rigMedian": 7.13664174079895,
+              "pairedChangePct": 19.184564786812096,
+              "pairedChangePctBootstrap95": [
+                -6.5189838347654225,
+                67.84695052702716
+              ]
+            },
+            "meshLoadMs": {
+              "bakedMedian": 125.49780082702637,
+              "rigMedian": 3.498612880706787,
+              "pairedChangePct": -97.2219075414663,
+              "pairedChangePctBootstrap95": [
+                -97.730490969375,
+                -97.04934097181686
+              ]
+            },
+            "maxRssKiB": {
+              "bakedMedian": 151520.0,
+              "rigMedian": 125440.0,
+              "pairedChangePct": -23.50108696296733,
+              "pairedChangePctBootstrap95": [
+                -24.00186623347375,
+                -16.430159906809276
+              ]
+            },
+            "meshBytes": {
+              "bakedMedian": 17502736.0,
+              "rigMedian": 369692.0,
+              "pairedChangePct": -97.88780451239167,
+              "pairedChangePctBootstrap95": [
+                -97.88780451239167,
+                -97.88780451239167
+              ]
+            }
+          }
+        },
+        {
+          "kind": "renderer",
+          "units": 2048,
+          "cache": "miss",
+          "pairs": 10,
+          "metrics": {
+            "p50Ms": {
+              "bakedMedian": 3.7537810802459717,
+              "rigMedian": 3.151815176010132,
+              "pairedChangePct": -16.227084602163572,
+              "pairedChangePctBootstrap95": [
+                -20.079478666636604,
+                -5.728138636458656
+              ]
+            },
+            "p95Ms": {
+              "bakedMedian": 4.732921123504639,
+              "rigMedian": 4.037480592727661,
+              "pairedChangePct": -18.244357114550745,
+              "pairedChangePctBootstrap95": [
+                -27.754656954466373,
+                -3.442779814434147
+              ]
+            },
+            "p99Ms": {
+              "bakedMedian": 5.0982279777526855,
+              "rigMedian": 4.391833066940308,
+              "pairedChangePct": -22.36091451477553,
+              "pairedChangePctBootstrap95": [
+                -33.95156610207278,
+                -7.589501993914784
+              ]
+            },
+            "gpuP95Ms": {
+              "bakedMedian": 4.109376,
+              "rigMedian": 2.0468640000000002,
+              "pairedChangePct": -49.307009125970964,
+              "pairedChangePctBootstrap95": [
+                -53.15970177003623,
+                -45.54168899777966
+              ]
+            },
+            "prepareP95Ms": {
+              "bakedMedian": 1.6461901664733887,
+              "rigMedian": 1.0000734329223633,
+              "pairedChangePct": -39.72261735920226,
+              "pairedChangePctBootstrap95": [
+                -47.74844821687824,
+                -33.21430485430784
+              ]
+            },
+            "geometryMeanMs": {
+              "bakedMedian": 0.6664948500000001,
+              "rigMedian": 0.19174162666666666,
+              "pairedChangePct": -71.60555613607514,
+              "pairedChangePctBootstrap95": [
+                -73.60039967523595,
+                -68.05351560025163
+              ]
+            },
+            "coldFirstDrawMs": {
+              "bakedMedian": 5.015203952789307,
+              "rigMedian": 8.424027919769287,
+              "pairedChangePct": 38.73603825912672,
+              "pairedChangePctBootstrap95": [
+                25.059798687125877,
+                112.34266349853843
+              ]
+            },
+            "meshLoadMs": {
+              "bakedMedian": 122.63934326171875,
+              "rigMedian": 3.4726338386535645,
+              "pairedChangePct": -97.23416586609784,
+              "pairedChangePctBootstrap95": [
+                -97.83724355492944,
+                -97.0446202871854
+              ]
+            },
+            "maxRssKiB": {
+              "bakedMedian": 156094.0,
+              "rigMedian": 118840.0,
+              "pairedChangePct": -23.41896320878736,
+              "pairedChangePctBootstrap95": [
+                -26.392946683450216,
+                -21.910910886795634
+              ]
+            },
+            "meshBytes": {
+              "bakedMedian": 17502736.0,
+              "rigMedian": 369692.0,
+              "pairedChangePct": -97.88780451239167,
+              "pairedChangePctBootstrap95": [
+                -97.88780451239167,
+                -97.88780451239167
+              ]
+            }
+          }
+        },
+        {
+          "kind": "renderer",
+          "units": 2048,
+          "cache": "warm",
+          "pairs": 10,
+          "metrics": {
+            "p50Ms": {
+              "bakedMedian": 2.4543447494506836,
+              "rigMedian": 2.405775785446167,
+              "pairedChangePct": -1.4613610471769285,
+              "pairedChangePctBootstrap95": [
+                -6.332215423551772,
+                2.4419223948784246
+              ]
+            },
+            "p95Ms": {
+              "bakedMedian": 3.150385618209839,
+              "rigMedian": 2.956411123275757,
+              "pairedChangePct": -5.547361969104296,
+              "pairedChangePctBootstrap95": [
+                -14.257856110517825,
+                8.985572698686841
+              ]
+            },
+            "p99Ms": {
+              "bakedMedian": 3.4933435916900635,
+              "rigMedian": 3.430819034576416,
+              "pairedChangePct": -11.516383199991619,
+              "pairedChangePctBootstrap95": [
+                -19.012042217838008,
+                11.524305464894645
+              ]
+            },
+            "gpuP95Ms": {
+              "bakedMedian": 2.170992,
+              "rigMedian": 2.17672,
+              "pairedChangePct": -0.0454108481667755,
+              "pairedChangePctBootstrap95": [
+                -1.2096585867077614,
+                2.9237749139954627
+              ]
+            },
+            "prepareP95Ms": {
+              "bakedMedian": 0.1040043830871582,
+              "rigMedian": 0.09822392463684082,
+              "pairedChangePct": -4.21418140058394,
+              "pairedChangePctBootstrap95": [
+                -14.512382100519385,
+                10.497025386731298
+              ]
+            },
+            "geometryMeanMs": {
+              "bakedMedian": 0.0,
+              "rigMedian": 0.0
+            },
+            "coldFirstDrawMs": {
+              "bakedMedian": 5.974173545837402,
+              "rigMedian": 8.093745470046997,
+              "pairedChangePct": 28.198409741751327,
+              "pairedChangePctBootstrap95": [
+                11.77195729330062,
+                50.75103828516034
+              ]
+            },
+            "meshLoadMs": {
+              "bakedMedian": 128.18055939674377,
+              "rigMedian": 3.2997097969055176,
+              "pairedChangePct": -97.41762488302035,
+              "pairedChangePctBootstrap95": [
+                -97.69274851423776,
+                -97.22755769992179
+              ]
+            },
+            "maxRssKiB": {
+              "bakedMedian": 154608.0,
+              "rigMedian": 118916.0,
+              "pairedChangePct": -23.00142293337469,
+              "pairedChangePctBootstrap95": [
+                -23.411734074762336,
+                -19.43215982986521
+              ]
+            },
+            "meshBytes": {
+              "bakedMedian": 17502736.0,
+              "rigMedian": 369692.0,
+              "pairedChangePct": -97.88780451239167,
+              "pairedChangePctBootstrap95": [
+                -97.88780451239167,
+                -97.88780451239167
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "directory": "scene-runs-v2",
+      "runs": 40,
+      "measuredFrames": 9600,
+      "binarySha256": "94656529b8e5f12a7a5bc35223512d75fb27a3e7d047906971dfebfd217857fd",
+      "summary": [
+        {
+          "kind": "scene",
+          "units": 0,
+          "cache": "miss",
+          "pairs": 10,
+          "metrics": {
+            "p50Ms": {
+              "bakedMedian": 15.7152175,
+              "rigMedian": 14.208556999999999,
+              "pairedChangePct": -9.512907095088082,
+              "pairedChangePctBootstrap95": [
+                -14.444833920597745,
+                4.387407007439951
+              ]
+            },
+            "p95Ms": {
+              "bakedMedian": 19.7594085,
+              "rigMedian": 19.790289,
+              "pairedChangePct": -2.002864899051259,
+              "pairedChangePctBootstrap95": [
+                -13.480482757373988,
+                13.109325589574219
+              ]
+            },
+            "p99Ms": {
+              "bakedMedian": 20.897973,
+              "rigMedian": 21.934235,
+              "pairedChangePct": 10.061794377143105,
+              "pairedChangePctBootstrap95": [
+                -15.31049885134242,
+                45.67875143974937
+              ]
+            },
+            "geometryMeanMs": {
+              "bakedMedian": 4.765815302083333,
+              "rigMedian": 3.303122195833333,
+              "pairedChangePct": -31.134530235714077,
+              "pairedChangePctBootstrap95": [
+                -35.747381392052006,
+                -26.041258772351203
+              ]
+            },
+            "coldFirstDrawMs": {
+              "bakedMedian": 22.0276425,
+              "rigMedian": 25.749070500000002,
+              "pairedChangePct": 13.362525876789277,
+              "pairedChangePctBootstrap95": [
+                -6.536747216783184,
+                25.42157760462585
+              ]
+            },
+            "maxRssKiB": {
+              "bakedMedian": 1593172.0,
+              "rigMedian": 1622856.0,
+              "pairedChangePct": 1.2057886989667193,
+              "pairedChangePctBootstrap95": [
+                -2.7414274942890215,
+                4.313920437698466
+              ]
+            }
+          }
+        },
+        {
+          "kind": "scene",
+          "units": 0,
+          "cache": "warm",
+          "pairs": 10,
+          "metrics": {
+            "p50Ms": {
+              "bakedMedian": 11.873307,
+              "rigMedian": 11.364662500000001,
+              "pairedChangePct": -7.754986490507277,
+              "pairedChangePctBootstrap95": [
+                -18.32438478318443,
+                -1.9660770962264353
+              ]
+            },
+            "p95Ms": {
+              "bakedMedian": 16.344009,
+              "rigMedian": 14.912996,
+              "pairedChangePct": -2.9347340254558008,
+              "pairedChangePctBootstrap95": [
+                -28.463980058333583,
+                11.577854690760836
+              ]
+            },
+            "p99Ms": {
+              "bakedMedian": 17.745935,
+              "rigMedian": 15.669275500000001,
+              "pairedChangePct": 0.14687395431295092,
+              "pairedChangePctBootstrap95": [
+                -30.86289332804452,
+                10.992718020378428
+              ]
+            },
+            "geometryMeanMs": {
+              "bakedMedian": 1.56899141875,
+              "rigMedian": 0.8720047479166666,
+              "pairedChangePct": -47.21289890843343,
+              "pairedChangePctBootstrap95": [
+                -53.7758602000835,
+                -43.43009122212056
+              ]
+            },
+            "coldFirstDrawMs": {
+              "bakedMedian": 22.929881,
+              "rigMedian": 19.8982915,
+              "pairedChangePct": -12.794553013946462,
+              "pairedChangePctBootstrap95": [
+                -25.84671951511201,
+                3.1550612638281095
+              ]
+            },
+            "maxRssKiB": {
+              "bakedMedian": 1564668.0,
+              "rigMedian": 1603336.0,
+              "pairedChangePct": 1.6055858411109007,
+              "pairedChangePctBootstrap95": [
+                -2.465187753705545,
+                3.673710525025863
+              ]
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "scope": "Linux x86_64, RTX 2070 SUPER, driver 580.178.04. Ten alternating pairs per case. Experimental shared-host data; concurrent unrelated workloads recorded per run.",
+  "limits": [
+    "Frozen Scene with advancing animation, not an active match",
+    "Worker-only conversion; no full-catalog claim",
+    "OS page cache and shader cache were not flushed",
+    "No quiet-host acceptance run",
+    "No M3, other platforms, browser game, or lower-power GPU measurements"
+  ],
+  "validation": "All 120 successful final runs validated. CPU/GPU backend, cache counts, frame counts, stable Scene resolution and paired Scene checksums passed. Earlier smoke and rejected resized-window results are excluded."
+}

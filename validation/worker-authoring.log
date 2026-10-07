@@ -1,0 +1,47 @@
+Blender 3.6.23 (hash e467db79ca8c built 2025-06-17 01:32:54)
+Read blend: "/home/bradley/.codex/worktrees/ae82/glob2/datasrc/gfx/originals/units/glob-worker-walk.blend"
+NOTE: ortho render has changed, tweak new Camera 'scale' value.
+Info: Total files 0 | Changed 0 | Failed 0
+test_action_import_rejects_independent_joint_bends_and_sideways_offsets (__main__.WorkerRigTest) ... ok
+test_edited_action_exports_against_the_same_base (__main__.WorkerRigTest) ... Read blend: "/home/bradley/.codex/worktrees/ae82/glob2/artifacts/worker-rig-2vxbqwpp/worker-walk.blend"
+Read blend: "/home/bradley/.codex/worktrees/ae82/glob2/artifacts/worker-rig-2vxbqwpp/worker-walk.blend"
+Read blend: "/home/bradley/.codex/worktrees/ae82/glob2/artifacts/worker-rig-2vxbqwpp/worker-walk.blend"
+Read blend: "/home/bradley/.codex/worktrees/ae82/glob2/artifacts/worker-rig-2vxbqwpp/worker-walk.blend"
+Info: Total files 1 | Changed 1 | Failed 0
+ok
+test_rest_surface_is_closed_outward_symmetric_and_keeps_paint (__main__.WorkerRigTest) ... ok
+test_shafts_stay_straight_and_caps_keep_their_shape (__main__.WorkerRigTest) ... ok
+test_torso_curl_bends_both_ends_without_rotating_the_root (__main__.WorkerRigTest) ... Read blend: "/home/bradley/.codex/worktrees/ae82/glob2/artifacts/worker-rig-2vxbqwpp/worker-walk.blend"
+Read blend: "/home/bradley/.codex/worktrees/ae82/glob2/artifacts/worker-rig-2vxbqwpp/worker-walk.blend"
+Read blend: "/home/bradley/.codex/worktrees/ae82/glob2/artifacts/worker-rig-2vxbqwpp/worker-walk.blend"
+Read blend: "/home/bradley/.codex/worktrees/ae82/glob2/datasrc/gfx/originals/units/glob-worker-walk.blend"
+NOTE: ortho render has changed, tweak new Camera 'scale' value.
+Info: Total files 0 | Changed 0 | Failed 0
+ok
+test_torso_is_tall_and_sockets_are_separated (__main__.WorkerRigTest) ... ok
+test_waist_shape_preserves_smooth_chest_and_limb_geometry (__main__.WorkerRigTest) ... ok
+test_walk_has_no_self_intersections_and_closes_without_a_pop (__main__.WorkerRigTest) ... ok
+test_weights_preserve_symmetry_and_do_not_truncate_support (__main__.WorkerRigTest) ... ok
+test_whole_lobe_rotations_keep_the_surface_intact (__main__.WorkerRigTest) ... ok
+
+----------------------------------------------------------------------
+Ran 10 tests in 29.966s
+
+OK
+Warning: Library file, loading empty scene
+Info: Saved "worker-walk.blend"
+Worker rig: 2834 vertices, 13 bones, 279056 bytes
+Info: Saved "invalid.blend"
+Info: Saved "invalid.blend"
+Info: Saved "worker-walk.blend"
+Worker rig: 2834 vertices, 13 bones, 279056 bytes
+Warning: Library file, loading empty scene
+Info: Saved "worker-walk.blend"
+Worker rig: 2834 vertices, 13 bones, 279056 bytes
+Read blend: "/home/bradley/.codex/worktrees/ae82/glob2/artifacts/worker-rig-2vxbqwpp/worker-walk.blend"
+Read blend: "/home/bradley/.codex/worktrees/ae82/glob2/artifacts/worker-rig-2vxbqwpp/worker-walk.blend"
+Read blend: "/home/bradley/.codex/worktrees/ae82/glob2/artifacts/worker-rig-2vxbqwpp/worker-walk.blend"
+Read blend: "/home/bradley/.codex/worktrees/ae82/glob2/artifacts/worker-rig-2vxbqwpp/worker-walk.blend"
+Read blend: "/home/bradley/.codex/worktrees/ae82/glob2/artifacts/worker-rig-2vxbqwpp/worker-walk.blend"
+
+Blender quit

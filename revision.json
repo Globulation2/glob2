@@ -1,0 +1,8 @@
+{
+  "testedCommit": "d396f7e092da764fd13d4d4db3468bf8ab4bd0a9",
+  "baseRevision": "f27e6df8b1c66d9c01f2e710725f851db657cca3",
+  "os": "Linux-7.0.0-31-generic-x86_64-with-glibc2.43",
+  "gitStatus": "",
+  "compiler": "g++ (Ubuntu 15.2.0-16ubuntu1) 15.2.0",
+  "node": "v22.22.1"
+}

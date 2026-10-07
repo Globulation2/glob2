@@ -1,0 +1,49 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="47" failures="0" errors="0" skipped="0"><testsuite name="ColonySkinPreview"><testcase classname="ColonySkinPreview" name="expired and cancelled subscribers cannot affect another owner [display:64x64]" time="0.178072" status="run" />
+  <testcase classname="ColonySkinPreview" name="shared images retain each owner's fresh appearance [display:64x64]" time="0.178171" status="run" />
+  </testsuite><testsuite name="SkinMesh"><testcase classname="SkinMesh" name="material contact sheet [display][artifacts]" time="2.13369" status="run" />
+  <testcase classname="SkinMesh" name="rotated swarms render independently with every material [display][artifacts]" time="1.41934" status="run" />
+  <testcase classname="SkinMesh" name="virtual asset streams use the same bounded decoder" time="0.000219" status="run" />
+    <testcase classname="SkinMesh" name="static swarm pose" time="0.000131" status="run" />
+    <testcase classname="SkinMesh" name="static camera ring preserves UVs, scale and independent cache identities" time="0.173531" status="run" />
+    <testcase classname="SkinMesh" name="bounded transactional decoding" time="0.000643" status="run" />
+  </testsuite><testsuite name="SkinModelRender"><testcase classname="SkinModelRender" name="rig shader matches CPU poses for every heading and restores context resources [display]" time="2.02975" status="run" />
+  <testcase classname="SkinModelRender" name="rig stream loading is transactional and retains fixed geometry" time="0.004834" status="run" />
+  </testsuite><testsuite name="SkinReadback"><testcase classname="SkinReadback" name="export readback matches live compositing for every pose and rotated swarm [display]" time="41.123" status="run" />
+  </testsuite><testsuite name="SkinAtlasCache"><testcase classname="SkinAtlasCache" name="visible hits survive a full atlas eviction batch" time="0.000708" status="run" />
+    <testcase classname="SkinAtlasCache" name="paint and material revisions, lifetimes, region, mesh and pose are independent cache keys" time="0" status="run" />
+  </testsuite><testsuite name="SkinAuthorization"><testcase classname="SkinAuthorization" name="server-format signatures authorize only their bound appearance" time="0.004176" status="run" />
+    <testcase classname="SkinAuthorization" name="the chosen swarm mesh is part of the signed manifest" time="0.001491" status="run" />
+    <testcase classname="SkinAuthorization" name="the final camera angle is signed and legacy angles default to zero" time="0.001094" status="run" />
+    <testcase classname="SkinAuthorization" name="signed optional sprite descriptors bind derivatives and ignore future formats" time="0.001275" status="run" />
+    <testcase classname="SkinAuthorization" name="signed immutable source identity survives live WebP renditions" time="0.001175" status="run" />
+    <testcase classname="SkinAuthorization" name="untrusted key sets and bounded malformed inputs fail closed" time="0.001007" status="run" />
+  </testsuite><testsuite name="SkinDownloads"><testcase classname="SkinDownloads" name="verified texture downloads are cached and reused after fresh authorization" time="0.00301" status="run" />
+    <testcase classname="SkinDownloads" name="corrupt cache and network bytes cannot reach the renderer" time="0.001176" status="run" />
+    <testcase classname="SkinDownloads" name="a skin installs only when both its colour atlas and material map are valid" time="0.005082" status="run" />
+    <testcase classname="SkinDownloads" name="invalid authorization does not download a texture" time="0.000992" status="run" />
+    <testcase classname="SkinDownloads" name="failed key fetch falls back without waiting for a texture" time="0.000848" status="run" />
+    <testcase classname="SkinDownloads" name="download concurrency is bounded and ambiguous teams fail closed" time="0.002196" status="run" />
+    <testcase classname="SkinDownloads" name="cache eviction bounds retained assets while preserving current appearances" time="0.001212" status="run" />
+    <testcase classname="SkinDownloads" name="moderation removes cached appearances and restoration verifies them again" time="0.001147" status="run" />
+    <testcase classname="SkinDownloads" name="failed or malformed refresh keeps valid paint but expiry removes it" time="0.001007" status="run" />
+    <testcase classname="SkinDownloads" name="texture completing after authorization expiry is never installed" time="0.000917" status="run" />
+    <testcase classname="SkinDownloads" name="initial downloads finish before a newer moderation snapshot starts" time="0.000951" status="run" />
+    <testcase classname="SkinDownloads" name="initial key outages recover through the match refresh" time="0.000957" status="run" />
+    <testcase classname="SkinDownloads" name="refreshed additions still require signatures and reject duplicate teams atomically" time="0.001127" status="run" />
+    <testcase classname="SkinDownloads" name="replay context fetches a fresh snapshot immediately without old tickets" time="0.000949" status="run" />
+    <testcase classname="SkinDownloads" name="software authorization does not request mesh paint inputs" time="0.000913" status="run" />
+    <testcase classname="SkinDownloads" name="software appearance refresh delivers a late ready descriptor and observes expiry" time="0.001121" status="run" />
+  </testsuite><testsuite name="SkinMaterialMap"><testcase classname="SkinMaterialMap" name="greyscale material maps decode to exact ids" time="0.007884" status="run" />
+  </testsuite><testsuite name="SkinModel"><testcase classname="SkinModel" name="shared fixture covers hierarchy weights normals interpolation and all legacy frames" time="0.004475" status="run" />
+    <testcase classname="SkinModel" name="affine camera translation is independent of rounded influence sums" time="0.002088" status="run" />
+    <testcase classname="SkinModel" name="serialized float boundaries have identical native and Studio acceptance" time="0.002284" status="run" />
+    <testcase classname="SkinModel" name="malformed assets never publish partial models" time="0.002126" status="run" />
+  </testsuite><testsuite name="SkinSprites"><testcase classname="SkinSprites" name="bundle binds complete frame layout and source identity before decoding" time="0.078592" status="run" />
+    <testcase classname="SkinSprites" name="bundles bind immutable source hashes when live claims name renditions" time="0.056354" status="run" />
+    <testcase classname="SkinSprites" name="software requests demand pages and removes appearance without an OpenGL context" time="0.087426" status="run" />
+    <testcase classname="SkinSprites" name="decoded pages evict at 64 MiB and reload verified disk content" time="0.416231" status="run" />
+    <testcase classname="SkinSprites" name="corrupt disk pages are rejected and replacement downloads are bounded" time="0.061093" status="run" />
+    <testcase classname="SkinSprites" name="offscreen completions release slots before new visible pages are requested" time="0.145974" status="run" />
+    <testcase classname="SkinSprites" name="verified pages remain drawable when persistent storage rejects writes" time="0.065141" status="run" />
+  </testsuite></testsuites>

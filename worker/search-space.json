@@ -1,0 +1,156 @@
+{
+  "baseline": {
+    "body": 2.8,
+    "end": 5.4,
+    "bulb": 2.0,
+    "shaft": 1.5,
+    "depth": 0.85,
+    "extension": 1.4,
+    "midsection": 0.8,
+    "socket": 0.5,
+    "collar": 0.3,
+    "fairing": 24,
+    "waist_depth": 0.08,
+    "waist_width": 0.1,
+    "waist_height": 1.1,
+    "attachment": 0.78,
+    "support_inner": 0.5,
+    "support_outer": 1.3,
+    "anchor_inner": 2.7,
+    "anchor_middle": 4.4,
+    "swing": 0.6,
+    "clearance": 60.0,
+    "curl": 0.08,
+    "curl_response": 0.5
+  },
+  "bounds": {
+    "body": [
+      2.4,
+      3.4
+    ],
+    "end": [
+      4.8,
+      6.6
+    ],
+    "bulb": [
+      1.5,
+      2.4
+    ],
+    "shaft": [
+      1.1,
+      1.9
+    ],
+    "depth": [
+      0.65,
+      1.15
+    ],
+    "extension": [
+      0.8,
+      2.2
+    ],
+    "midsection": [
+      0.4,
+      1.4
+    ],
+    "socket": [
+      0.35,
+      0.75
+    ],
+    "collar": [
+      0.15,
+      0.6
+    ],
+    "fairing": [
+      12,
+      40
+    ],
+    "waist_depth": [
+      0,
+      0.18
+    ],
+    "waist_width": [
+      0,
+      0.2
+    ],
+    "waist_height": [
+      0.7,
+      1.7
+    ],
+    "attachment": [
+      0.65,
+      0.94
+    ],
+    "support_inner": [
+      0.3,
+      0.7
+    ],
+    "support_outer": [
+      1.05,
+      1.5
+    ],
+    "anchor_inner": [
+      2.2,
+      3.2
+    ],
+    "anchor_middle": [
+      3.7,
+      4.6
+    ],
+    "swing": [
+      0.4,
+      0.9
+    ],
+    "clearance": [
+      45,
+      75
+    ],
+    "curl": [
+      0.04,
+      0.14
+    ],
+    "curl_response": [
+      0.25,
+      0.9
+    ]
+  },
+  "initialSteps": {
+    "body": 0.25,
+    "end": 0.4,
+    "bulb": 0.2,
+    "shaft": 0.2,
+    "depth": 0.15,
+    "extension": 0.3,
+    "midsection": 0.3,
+    "socket": 0.12,
+    "collar": 0.15,
+    "fairing": 12,
+    "waist_depth": 0.06,
+    "waist_width": 0.07,
+    "waist_height": 0.35,
+    "attachment": 0.08,
+    "support_inner": 0.15,
+    "support_outer": 0.15,
+    "anchor_inner": 0.3,
+    "anchor_middle": 0.35,
+    "swing": 0.15,
+    "clearance": 10,
+    "curl": 0.04,
+    "curl_response": 0.25
+  },
+  "method": "Three coordinate sweeps with seeded combined-parameter trials, followed by constrained torso refinement and targeted clearance/terminal/socket/shaft combinations. Every trial fully reauthors geometry, skin weights, bind matrices and 64 motion samples. Selection uses mean alpha-mask IoU over all 256 mapped frames. Higher-scoring trials must pass dense geometry validation. Final selection also requires torso height/width > 1.4.",
+  "preserved": [
+    "Published paint topology and UVs",
+    "Left/right, top/bottom and front/back rest symmetries",
+    "Straight shafts with equal ring weights",
+    "Rigid terminal caps",
+    "Smooth chest, no added bumps",
+    "Tall torso",
+    "Gentle forward torso curl"
+  ],
+  "notSearched": [
+    "Mesh topology and bone count",
+    "Frame timing and heading mapping",
+    "Camera alignment and scale",
+    "New deformation architectures"
+  ]
+}

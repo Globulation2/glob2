@@ -1,0 +1,125 @@
+{
+  "trials": 224,
+  "controls": 22,
+  "selection": "trial-209",
+  "parameters": {
+    "body": 2.8,
+    "end": 5.6,
+    "bulb": 2.05,
+    "shaft": 1.7,
+    "depth": 0.8125,
+    "extension": 1.15,
+    "midsection": 1.4,
+    "socket": 0.41,
+    "collar": 0.15,
+    "fairing": 34,
+    "waist_depth": 0.18,
+    "waist_width": 0.0,
+    "waist_height": 1.7,
+    "attachment": 0.87385,
+    "support_inner": 0.7,
+    "support_outer": 1.5,
+    "anchor_inner": 2.2,
+    "anchor_middle": 3.7,
+    "swing": 0.7875,
+    "clearance": 60.0,
+    "curl": 0.14,
+    "curl_response": 0.68199
+  },
+  "meanBefore": 0.7783071646228652,
+  "meanAfter": 0.8251553218610252,
+  "worstBefore": 0.6661350345560871,
+  "worstAfter": 0.7707267144319345,
+  "framesImproved": 226,
+  "headingMeansBefore": [
+    0.7808027311077239,
+    0.7732728423371529,
+    0.7509540511690698,
+    0.800053151538703,
+    0.8002229932515607,
+    0.7903263136510621,
+    0.7760861736467435,
+    0.7547390602809056
+  ],
+  "headingMeansAfter": [
+    0.8301789032116211,
+    0.8115224038978694,
+    0.8027065754157776,
+    0.8547699805052852,
+    0.8415369152462467,
+    0.8203916870769705,
+    0.8264335482045566,
+    0.8137025613298752
+  ],
+  "nativeQuarterValidation": {
+    "id": "final/worker",
+    "samples": 256,
+    "intersections": [],
+    "maxBackwardFaces": 0
+  },
+  "nativeBrowserAgreement": [
+    {
+      "name": "worker-walk",
+      "maxNativeBrowserError": 3.5762786865234375e-07,
+      "maxNormalLengthError": 4.9631656562354465e-08
+    }
+  ],
+  "installation": {
+    "worker-walk": {
+      "sha256": "329c4813e410c20ccf895953447ae1df7206ebffa5d419c4ab7b5c9055a046ec",
+      "bytes": 279056,
+      "unchanged": false
+    },
+    "warrior-walk": {
+      "sha256": "205e9e7a34d40f382fa1aa58bc3936c21ce375a3a09747418c2b4b04cd992214",
+      "bytes": 236800,
+      "unchanged": true
+    },
+    "warrior-swim": {
+      "sha256": "401f355445d05f0637946277f37ab980a17a7251a18f3d462a76ea7d6ea13292",
+      "bytes": 236800,
+      "unchanged": true
+    },
+    "warrior-fight": {
+      "sha256": "33e383f85685c697ed2c49ded7ae8b6f6db799cbea255e225ff1109651c22091",
+      "bytes": 236800,
+      "unchanged": true
+    },
+    "explorer-fly": {
+      "sha256": "d1d19b75cf4f0213372a1d707e050c9844e69de6845fdc047067811cb67454ba",
+      "bytes": 120700,
+      "unchanged": true
+    }
+  },
+  "tests": {
+    "workerAuthoring": 10,
+    "assetContracts": 3
+  },
+  "environment": {
+    "os": "Linux-7.0.0-31-generic-x86_64-with-glibc2.43",
+    "gpu": "NVIDIA RTX 2070 SUPER",
+    "blender": "3.6.23",
+    "workingTreeHead": "43a28506b14692cb91799c07345b8a0c79aaecaf",
+    "fetchedMaster": "f27e6df8b1c66d9c01f2e710725f851db657cca3"
+  },
+  "commands": [
+    "blender --background --factory-startup -t 1 --python-exit-code 1 --python artifacts/unit-rigs/worker-full-ablation/search.py",
+    "blender --background --factory-startup -t 1 --python-exit-code 1 --python artifacts/unit-rigs/worker-full-ablation/constrained_finish.py",
+    "blender --background --factory-startup -t 1 --python-exit-code 1 --python artifacts/unit-rigs/worker-full-ablation/socket_clearance.py",
+    "bash artifacts/unit-rigs/worker-full-ablation/finalize.sh"
+  ],
+  "limitations": [
+    "Best tested constrained fit, not a proven global optimum",
+    "Alpha silhouette agreement does not measure material/shading appearance",
+    "Validation on this Linux working tree; newer master integration, other platforms and M3 not tested",
+    "No new performance benchmark; runtime vertex, index, bone and sample counts unchanged"
+  ],
+  "inputHashes": {
+    "artifacts/unit-rigs/worker-full-ablation/baseline/worker-walk.gsr": "709ceb469716cef111261ef3035c74b4d9abcd67f966911680ffc8adaf064eae",
+    "artifacts/unit-rigs/worker-full-ablation/baseline/worker_surface.py": "bd6e8c25a11876b38e09c59b37530ff028fca5697b7c35e4393ac5e991fd20e7",
+    "artifacts/unit-rigs/worker-full-ablation/baseline/author_worker_rig.py": "d638a39a3083eb0bcf16e4a285f469173d7f8d3bf230fc60c48dd5f7d58e9b22",
+    "artifacts/rig-refinement/captures/baked-1.bmp": "20835544494769255dfb90671df3329850cd9d3731a9e65e34b5844fdc6bf2b2",
+    "build/linux/client/release/src/skin-preview": "9f61f24432b1d21667f1e7d2267496b7a6d52ba1fed5b849f1a57a3182efbb22",
+    "artifacts/rig-refinement/evaluate": "541ba273a28eb16cea9acaec232b1f597cb6225816c53a6ac8c2b184c20959e9"
+  }
+}

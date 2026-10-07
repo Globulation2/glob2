@@ -1,0 +1,32 @@
+
+Running 21 tests using 1 worker
+
+(node:3535390) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   1 [chromium] › platform/apps/web/e2e/rig-conformance.ts:38:3 › analytic hierarchy and weighted normals: every clip and frame agrees with the production shader (1.6s)
+  ✓   2 [chromium] › platform/apps/web/e2e/rig-conformance.ts:38:3 › translated camera with rounded influence sums: every clip and frame agrees with the production shader (1.9s)
+  ✓   3 [chromium] › platform/apps/web/e2e/rig-conformance.ts:38:3 › installed worker-walk: every clip and frame agrees with the production shader (5.6s)
+  ✓   4 [chromium] › platform/apps/web/e2e/rig-conformance.ts:38:3 › installed warrior-walk: every clip and frame agrees with the production shader (4.7s)
+  ✓   5 [chromium] › platform/apps/web/e2e/rig-conformance.ts:38:3 › installed warrior-swim: every clip and frame agrees with the production shader (4.6s)
+  ✓   6 [chromium] › platform/apps/web/e2e/rig-conformance.ts:38:3 › installed warrior-fight: every clip and frame agrees with the production shader (4.0s)
+  ✓   7 [chromium] › platform/apps/web/e2e/rig-conformance.ts:38:3 › installed explorer-fly: every clip and frame agrees with the production shader (2.7s)
+(node:3536891) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   8 [firefox] › platform/apps/web/e2e/rig-conformance.ts:38:3 › analytic hierarchy and weighted normals: every clip and frame agrees with the production shader (3.4s)
+  ✓   9 [firefox] › platform/apps/web/e2e/rig-conformance.ts:38:3 › translated camera with rounded influence sums: every clip and frame agrees with the production shader (1.6s)
+  ✓  10 [firefox] › platform/apps/web/e2e/rig-conformance.ts:38:3 › installed worker-walk: every clip and frame agrees with the production shader (5.0s)
+  ✓  11 [firefox] › platform/apps/web/e2e/rig-conformance.ts:38:3 › installed warrior-walk: every clip and frame agrees with the production shader (4.3s)
+  ✓  12 [firefox] › platform/apps/web/e2e/rig-conformance.ts:38:3 › installed warrior-swim: every clip and frame agrees with the production shader (4.3s)
+  ✓  13 [firefox] › platform/apps/web/e2e/rig-conformance.ts:38:3 › installed warrior-fight: every clip and frame agrees with the production shader (4.3s)
+  ✓  14 [firefox] › platform/apps/web/e2e/rig-conformance.ts:38:3 › installed explorer-fly: every clip and frame agrees with the production shader (2.8s)
+(node:3538616) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  15 [webkit] › platform/apps/web/e2e/rig-conformance.ts:38:3 › analytic hierarchy and weighted normals: every clip and frame agrees with the production shader (1.0s)
+  ✓  16 [webkit] › platform/apps/web/e2e/rig-conformance.ts:38:3 › translated camera with rounded influence sums: every clip and frame agrees with the production shader (784ms)
+  ✓  17 [webkit] › platform/apps/web/e2e/rig-conformance.ts:38:3 › installed worker-walk: every clip and frame agrees with the production shader (5.7s)
+  ✓  18 [webkit] › platform/apps/web/e2e/rig-conformance.ts:38:3 › installed warrior-walk: every clip and frame agrees with the production shader (5.9s)
+  ✓  19 [webkit] › platform/apps/web/e2e/rig-conformance.ts:38:3 › installed warrior-swim: every clip and frame agrees with the production shader (5.4s)
+  ✓  20 [webkit] › platform/apps/web/e2e/rig-conformance.ts:38:3 › installed warrior-fight: every clip and frame agrees with the production shader (5.2s)
+  ✓  21 [webkit] › platform/apps/web/e2e/rig-conformance.ts:38:3 › installed explorer-fly: every clip and frame agrees with the production shader (2.9s)
+
+  21 passed (1.5m)
