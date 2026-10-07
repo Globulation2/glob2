@@ -60,6 +60,24 @@ Candidate Cortex instructions were 143.277 billion versus reference 150.273 bill
 
 The small Cortex improvement does not establish an aggregate benefit and comes with a Maxima regression and increased measured peak memory. **Rejected:** the coordinator restored the original production header. Passing historical percentage diagnostics (`performance_gate: within_limits`) does not justify retention. No full-corpus campaign is warranted for this rejected patch. Raw paired observations, metadata, input verification and summary are retained under `priority-timing/paired-01`, with governor audit `priority-timing/paired-01-governors.json`.
 
+## Exploratory periodic reuse v1 (not retained)
+
+Frozen candidate `7dba5174851dc70775e4c2b865d0b6cd14ef01077860498d567242140e2498a2` used a 32-entry/16 MiB exact-input result cache whose comparisons and copies ran in the exclusive preparation/publication phases. One discarded warmup pair and 16 alternating measured pairs ran per priority window. Governors restored successfully and campaign inputs were unchanged. An external rig-fit Blender workload remained active: this campaign is explicitly contaminated/exploratory and cannot establish retention or a final CPU improvement. Approximate other-host activity averaged 1.35 cores and peaked at 2.94 cores; this estimate includes runner/kernel activity and boundary/jiffy error.
+
+| Observation | Change | 95% paired interval |
+| --- | ---: | ---: |
+| Aggregate simulation CPU | -2.09% | -2.83% to -1.39% |
+| Maxima simulation CPU | -3.25% | -4.52% to -2.01% |
+| Maxima whole-child wall | 3.09% | 2.04% to 4.16% |
+| Maxima peak RSS | 8.30% | 7.20% to 9.41% |
+| Cortex simulation CPU | -0.92% | -1.52% to -0.30% |
+| Cortex whole-child wall | 2.71% | 1.90% to 3.44% |
+| Cortex peak RSS | 13.90% | 13.29% to 14.46% |
+
+**Not retained:** both windows showed increased wall time and memory, and external contamination requires a quiet repeat before interpreting the CPU observation as a repeatable benefit. A worker-owned-lease v2 is under development to move comparisons/copies away from the preparation barrier; it has no performance result yet. Existing v1 correctness evidence includes eight focused pipeline cases, 57 engine cases, eight full 8192-tick comparisons and 16 pending-gradient continuation tails. These checks establish the recorded correctness scope, not performance or broad gameplay equivalence.
+
+[Raw v1 timing and correctness evidence](gradient-reuse-v1-exploratory.zip) includes commands, measurements, governor/input audits, exact patch/provenance and full correctness traces. The frozen binary and duplicated data tree are omitted, with hashes retained.
+
 ## Ranked remaining investigations and evidence rejections
 
 1. **Indexed-ring candidate rejected with controlled CPU evidence.** Original production code is restored. Preserve the diagnostic reduction in instructions alongside the null aggregate CPU result and Maxima slowdown; do not resurrect this patch from instruction counts alone.
