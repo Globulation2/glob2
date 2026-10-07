@@ -1,0 +1,113 @@
+{
+  "head": "0cff8e8ad85c6edf8424d4a5e4280c005ea4b661",
+  "base": "f27e6df8b1c66d9c01f2e710725f851db657cca3",
+  "platform": "Linux-7.0.0-31-generic-x86_64-with-glibc2.43",
+  "compiler": "g++ (Ubuntu 15.2.0-16ubuntu1) 15.2.0",
+  "build": "GLOB2_SDL3_PREFIX=/tmp/glob2-terrain-sdl-patched/prefix CCACHE=1 scons -j12 release=1 optimized_assets=0 tests build/linux/client/release/src/glob2",
+  "dependencies": "LD_LIBRARY_PATH=/tmp/glob2-terrain-sdl-patched/prefix/lib:/tmp/glob2-sdl3/prefix/lib; compile/link commands retained in build logs",
+  "tests": {
+    "focused": {
+      "cases": 51,
+      "failures": 0,
+      "skipped": 0
+    },
+    "quick": {
+      "cases": 1848,
+      "failures": 1,
+      "skipped": 143
+    },
+    "golden": {
+      "cases": 1,
+      "failures": 0,
+      "skipped": 0
+    },
+    "resource-golden": {
+      "cases": 1,
+      "failures": 0,
+      "skipped": 0
+    },
+    "lan-recheck-1": {
+      "cases": 1,
+      "failures": 1,
+      "skipped": 0
+    },
+    "lan-recheck-2": {
+      "cases": 1,
+      "failures": 0,
+      "skipped": 0
+    },
+    "lan-recheck-3": {
+      "cases": 1,
+      "failures": 0,
+      "skipped": 0
+    },
+    "lan-recheck-4": {
+      "cases": 1,
+      "failures": 0,
+      "skipped": 0
+    }
+  },
+  "limits": [
+    "Linux x86_64 only locally; hosted platform checks requested separately.",
+    "Native browser replay fixture recording verified; local browser playback not run.",
+    "143 display cases skipped; --quick excludes slow cases and benchmarks were separately measured. Human gameplay feel review unverified.",
+    "Earlier paired performance results precede the master resource integration; final microbenchmark separately recorded."
+  ],
+  "binaries": {
+    "build/linux/client/release/src/glob2": "fe08f4c2c65e0071957ceaed5a0be3f91f4e55ddf36e554e8fe01b5d71cd712e",
+    "build/linux/client/release/test/glob2-engine-tests": "e59ca493f0191fd2e322ea7ae381bc05c851ac1d88dc9e3447f6afd41e6f7f2b",
+    "build/linux/client/release/test/glob2-unit-tests": "5c8235dcee74c735311e2a8f5335f6d817dcb1bf80192a9c468b4feb8e39f318"
+  },
+  "commands": {
+    "quick": "LD_LIBRARY_PATH=/tmp/glob2-terrain-sdl-patched/prefix/lib:/tmp/glob2-sdl3/prefix/lib python3 test/run_tests.py -j8 --quick --exclude-tag benchmark --no-display --artifacts artifacts/hazard-integrated/quick-artifacts --junit artifacts/hazard-integrated/quick.xml",
+    "micro": "LD_LIBRARY_PATH=/tmp/glob2-terrain-sdl-patched/prefix/lib:/tmp/glob2-sdl3/prefix/lib SDL_VIDEODRIVER=dummy SDL_AUDIODRIVER=dummy GLOB2_TEST_SOURCE_ROOT=$PWD taskset -c 12 build/linux/client/release/test/glob2-engine-tests -ts=TerrainHazardBenchmark -tc=*idle\\ decisions*,*shared\\ terrain\\ fields* --no-breaks=true",
+    "sim_version": "python3 test/check_sim_revision.py --base origin/master"
+  },
+  "timing_failure": "Full quick suite host-to-guest LAN wake measured81ms against50ms; first isolated retry99ms, then three consecutive isolated retries passed. LAN code unchanged; host load was42 on32 logical CPUs. All failure logs retained.",
+  "prior_evidence": "https://github.com/Globulation2/glob2/blob/74409fe655f312cf88e7ae2767a5838840de8ebc/artifacts/hazard-final/evidence.tar.gz",
+  "continuation": {
+    "commands": [
+      [
+        "/home/bradley/.codex/worktrees/4823/glob2/build/linux/client/release/src/glob2",
+        "--run-game",
+        "--load-game",
+        "/home/bradley/.codex/worktrees/4823/glob2/artifacts/hazard-performance/fixtures/patchwork-ice.game",
+        "--ticks",
+        "90256",
+        "--compute-threads",
+        "1",
+        "--replay",
+        "true",
+        "--telemetry",
+        "checksums",
+        "--save",
+        "final",
+        "--output-dir",
+        "/home/bradley/.codex/worktrees/4823/glob2/artifacts/hazard-integrated/continuation-final-1"
+      ],
+      [
+        "/home/bradley/.codex/worktrees/4823/glob2/build/linux/client/release/src/glob2",
+        "--run-game",
+        "--load-game",
+        "/home/bradley/.codex/worktrees/4823/glob2/artifacts/hazard-performance/fixtures/patchwork-ice.game",
+        "--ticks",
+        "90256",
+        "--compute-threads",
+        "4",
+        "--replay",
+        "true",
+        "--telemetry",
+        "checksums",
+        "--save",
+        "final",
+        "--output-dir",
+        "/home/bradley/.codex/worktrees/4823/glob2/artifacts/hazard-integrated/continuation-final-4"
+      ]
+    ],
+    "equal": true,
+    "sha256": "7dcaf2de6a99d2c4a8b05cc496642943afb0b1176b47f876d1a02d48512230c9",
+    "old_save_format": 139,
+    "initial_tick": 90000,
+    "ticks": 256
+  }
+}
