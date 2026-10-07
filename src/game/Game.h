@@ -25,6 +25,7 @@
 #include "BuildingType.h"
 #include "sim/ClientEvents.h"
 #include "sim/EntityRef.h"
+#include "sim/ScriptClientChannel.h"
 #include "render/MapRenderState.h"
 
 namespace GAGCore
@@ -471,6 +472,7 @@ public:
 	Player * players[Team::MAX_COUNT];
 	Map map;
 	MapScriptSGSL sgslScript; ///< SGSL script
+	ScriptClientChannel scriptClient; ///< stable simulation-owned script endpoint
 	MapScript mapscript; ///< new script, currently USL
 	GameObjectives objectives;
 	GameHints gameHints;
