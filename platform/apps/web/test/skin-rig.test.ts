@@ -102,7 +102,13 @@ it('uses the same displayed rig pose for Studio projection and a fixed rest char
   const chart = buildFillChart(mesh, view, 'worker');
   for (const frame of [0, 31, 32, 63, 64, 255]) {
     const cpu = evaluateRig(model, 0, frame);
-    const projected = projectPose(mesh, view, frame, { yaw: 0, zoom: 1, game: true, angle: 0 }, 1);
+    const projected = projectPose(
+      mesh,
+      view,
+      frame,
+      { yaw: 0, pitch: 0, zoom: 1, game: true, angle: 0 },
+      1,
+    );
     let worst = 0;
     for (let v = 0; v < model.count; v++)
       for (let k = 0; k < 6; k++)
@@ -114,7 +120,13 @@ it('uses the same displayed rig pose for Studio projection and a fixed rest char
   }
   expect(buildFillChart(mesh, view, 'worker')).toEqual(chart);
   expect(mesh.rest.length).toBe(model.count * 6);
-  const inspected = projectPose(mesh, view, 40, { yaw: 0.5, zoom: 1, game: false, angle: 0 }, 1);
+  const inspected = projectPose(
+    mesh,
+    view,
+    40,
+    { yaw: 0.5, pitch: 0, zoom: 1, game: false, angle: 0 },
+    1,
+  );
   expect(inspected.every(Number.isFinite)).toBe(true);
 });
 it('installed explorer-fly decodes and produces finite unit normals', () => {
