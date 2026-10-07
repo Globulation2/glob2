@@ -20,6 +20,7 @@ bool SimulationRunner::start()
 	return false;
 #else
 	telemetry.reset();
+	engine.gui.startScriptClientChannel();
 	try
 	{
 		thread = std::thread([this] { run(); });
@@ -27,6 +28,7 @@ bool SimulationRunner::start()
 	}
 	catch (const std::system_error &)
 	{
+		engine.gui.game.scriptClient.stop();
 		return false;
 	}
 #endif
@@ -42,6 +44,7 @@ void SimulationRunner::stop()
 	if (thread.joinable())
 		thread.join();
 	engine.gui.game.map.computeExecutor().cancelPresentationAndWait();
+	engine.gui.game.scriptClient.stop();
 }
 
 void SimulationRunner::park(std::unique_lock<std::mutex> &lock)

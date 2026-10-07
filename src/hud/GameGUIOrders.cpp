@@ -156,7 +156,11 @@ void GameGUI::handleClientEvent(ClientEventVariant&& event)
 	std::visit([this](auto&& e)
 	{
 		using T = std::decay_t<decltype(e)>;
-		if constexpr (std::is_same_v<T, ClientEvent::TeamEvent>)
+		if constexpr (std::is_same_v<T, ScriptPresentation>)
+		{
+			e.apply(*this);
+		}
+		else if constexpr (std::is_same_v<T, ClientEvent::TeamEvent>)
 		{
 			if (e.team >= 0 && e.team < Team::MAX_COUNT)
 				pendingTeamEvents[e.team].push_back(std::move(e.event));
