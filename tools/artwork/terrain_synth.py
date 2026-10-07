@@ -95,6 +95,10 @@ STAMP_MARGIN = 12
 LEGACY_NAMES = list(LEGACY_BINDINGS)
 # Catalogue order of the built-in types, from the engine's generated name list.
 BUILTIN_ORDER = [name for name in json.loads(BUILTIN_NAMES.read_text()) if name not in LEGACY_BINDINGS]
+# Legacy bindings whose material is synthesised here too: regular water is an
+# ordinary animated tile set rather than a scrolling backdrop.
+SYNTHESISED_LEGACY = ["water"]
+SYNTH_ORDER = BUILTIN_ORDER + SYNTHESISED_LEGACY
 
 
 # --------------------------------------------------------------------------
@@ -766,7 +770,7 @@ def render_mud(ctx):
 @recipe(name="marsh", group="rough", label="Marsh", profile="soft",
         seam={"height": 1},
         palette={"dark": (58, 68, 48), "mid": (80, 96, 70), "light": (106, 120, 88), "pool": (40, 70, 90)},
-        style=Style(luma=86, std=10, grain_max=9), alpha_range=(205, 255))
+        style=Style(luma=86, std=10, grain_max=9))
 def render_marsh(ctx):
     p = RECIPES["marsh"].palette
     rng = ctx.rng
@@ -779,8 +783,7 @@ def render_marsh(ctx):
     wet = [1.0 if rng.random() < 0.55 else 0.0 for _ in range(16)]
     pools = [(1 - smoothstep(0.26, 0.40, d)) * wet[i] for d, i in zip(depth, ids)]
     rgb = mix(rgb, p["pool"], pools, 0.9)
-    alpha = [255 - 40 * m for m in pools]
-    return rgb, alpha
+    return rgb, None
 
 
 @recipe(name="deep_snow", group="rough", label="Deep snow", profile="soft",
@@ -921,52 +924,73 @@ def render_spring_meadow(ctx):
     return rgb, None
 
 
-# Deep water: translucent tints of the ocean backdrop colour. The backdrop
-# (data/gfx/water0.png) averages to about (69, 52, 200): the tints keep that
-# hue with lower value and slightly lower saturation so they read as the same
-# liquid, deeper. Statistics only, no pixels read.
+# Water: opaque animated tiles in the colour of the retired scrolling ocean
+# backdrop (data/gfx/water0.png averaged about (69, 52, 200), luma 74, std 3).
+# Gentle swells carry two ripple networks that cross-fade over the loop, so
+# glints rise and fade instead of the whole surface sliding. Deep and dark
+# water are darker opaque variants of the same liquid. Statistics only, no
+# pixels read.
+
+OCEAN = (69, 52, 200)
+
+
+def ripple_loop(ctx, cells, warp, edge, width, networks=2):
+    """Worley-edge ripple networks cross-faded around the animation loop."""
+    rng = ctx.rng
+    nets = []
+    for _ in range(networks):
+        f1, f2, _ = worley(rng, cells)
+        ridge = domain_warp([b - a for a, b in zip(f1, f2)], fbm(rng, 4, 2), fbm(rng, 4, 2), warp)
+        nets.append(band(ridge, edge, width))
+    weights = [max(0.0, math.cos(TAU * (ctx.t - k / networks))) for k in range(networks)]
+    total = sum(weights) or 1.0
+    return [sum(w * net[i] for w, net in zip(weights, nets)) / total for i in range(N * N)]
+
+
+@recipe(name="water", group="water", label="Water", profile="sand",
+        seam={"height": 5, "cast_q8": 72, "cast_width_q8": 640},
+        palette={"deep": (60, 44, 188), "base": OCEAN, "light": (80, 64, 210), "glint": (138, 128, 236)},
+        style=Style(luma=74, std=5, grain_max=5, match=0.6), phases=4, animation_ticks=24,
+        preview=(70, 50, 191), minimap=(0, 40, 120))
+def render_water(ctx):
+    p = RECIPES["water"].palette
+    rng = ctx.rng
+    swell = normalize(fbm(rng, 3, 3))
+    rgb = ramp(swell, [(0.0, p["deep"]), (0.5, p["base"]), (1.0, p["light"])])
+    ripples = ripple_loop(ctx, 5, 10, 0.025, 0.05)
+    rgb = mix(rgb, p["glint"], [r * (0.35 + 0.65 * s) for r, s in zip(ripples, swell)], 0.22)
+    return rgb, None
+
 
 @recipe(name="deep_water", group="deep_water", label="Deep water", profile="soft",
         seam={"height": 6, "cast_q8": 72, "cast_width_q8": 640},
-        palette={"tint": (53, 41, 128), "swell": (62, 50, 142), "thread": (120, 104, 210), "alpha": (150, 172)},
-        style=Style(luma=58, std=6, grain_max=6, match=0.5), alpha_range=(140, 185),
+        palette={"tint": (52, 38, 150), "swell": (60, 46, 166), "thread": (110, 96, 214)},
+        style=Style(luma=56, std=5, grain_max=6, match=0.5), phases=4, animation_ticks=24,
         preview=(44, 34, 120), minimap=(24, 18, 84))
 def render_deep_water(ctx):
     p = RECIPES["deep_water"].palette
     rng = ctx.rng
-    swell = fbm(rng, 4, 2)
+    swell = normalize(fbm(rng, 4, 2))
     rgb = mix(flat(p["tint"]), p["swell"], swell, 0.6)
-    alpha = alpha_from(normalize(fbm(rng, 4, 3)), *p["alpha"])
-    # Sparse soft broken highlight threads instead of a cell network.
-    threads = [0.0] * (N * N)
-    for _ in range(rng.randint(3, 5)):
-        length = 16 + rng.random() * 20
-        x, y = ctx.interior_point(STAMP_MARGIN + length / 2)
-        angle = (rng.random() - 0.5) * 1.2
-        stamp_stroke(threads, x - math.cos(angle) * length / 2, y - math.sin(angle) * length / 2,
-                     angle, length, 6.0 + rng.random() * 3)
-    threads = [t * (0.3 + 0.7 * s) for t, s in zip(threads, swell)]
-    rgb = mix(rgb, p["thread"], threads, 0.16)
-    return rgb, alpha
+    ripples = ripple_loop(ctx, 4, 12, 0.02, 0.04)
+    rgb = mix(rgb, p["thread"], [r * (0.3 + 0.7 * s) for r, s in zip(ripples, swell)], 0.14)
+    return rgb, None
 
 
 @recipe(name="dark_water", group="deep_water", label="Dark water", profile="soft",
         seam={"height": 7, "cast_q8": 80, "cast_width_q8": 704},
-        palette={"tint": (38, 31, 87), "murk": (30, 24, 70), "speck": (18, 14, 44), "alpha": (202, 218)},
-        style=Style(luma=40, std=4, grain_max=5, match=0.5), alpha_range=(192, 228),
+        palette={"tint": (40, 30, 104), "murk": (32, 24, 84), "speck": (20, 15, 52)},
+        style=Style(luma=38, std=4, grain_max=5, match=0.5),
         preview=(32, 26, 76), minimap=(16, 12, 52))
 def render_dark_water(ctx):
     p = RECIPES["dark_water"].palette
     rng = ctx.rng
     murk = normalize(fbm(rng, 3, 2))
     rgb = mix(flat(p["tint"]), p["murk"], murk, 0.6)
-    alpha = alpha_from(normalize(fbm(rng, 3, 2)), *p["alpha"])
     specks, _, _ = soft_blobs(ctx, 8, 3.0, 4.5)
     rgb = mix(rgb, p["speck"], specks, 0.6)
-    return rgb, alpha
+    return rgb, None
 
-
-# Ridges: impassable to walkers and swimmers, but projectiles cross.
 
 @recipe(name="ridge_rock", group="ridges", label="Ridge", profile="rock",
         seam={"height": 4, "cast_q8": 72, "cast_width_q8": 768},
@@ -1213,7 +1237,7 @@ def render_ember_field(ctx):
     return rgb, None
 
 
-assert set(BUILTIN_ORDER) == set(RECIPES), "every built-in needs a recipe and vice versa"
+assert set(SYNTH_ORDER) == set(RECIPES), "every built-in needs a recipe and vice versa"
 
 # Pair treatments (B5): boundary families chosen for specific contacts.
 PAIR_TREATMENTS = (
@@ -1346,7 +1370,6 @@ def material_block(name, phases):
         "key": name,
         "sprite": f"{FRAME_PREFIX}{name}",
         "profile": rec.profile,
-        "ocean": False,
         "preview": list(preview),
         "variants": [{"frame": i, "weight": 1} for i in range(VARIANTS)],
     }
@@ -1360,7 +1383,7 @@ def material_block(name, phases):
 
 
 def catalog_fragment(results):
-    names = [n for n in BUILTIN_ORDER if n in results]
+    names = [n for n in SYNTH_ORDER if n in results]
     return {
         "materials": [material_block(name, results[name]) for name in names],
         "bindings": {name: name for name in names},
@@ -1567,7 +1590,7 @@ def contact_sheet(results, root, columns=2):
     scale = 4
     blocks = []
     legacy = {key: reference_tiles(key, root) for key in STYLE_REFERENCES}
-    entries = [(name, results[name][0], RECIPES[name].group, True) for name in BUILTIN_ORDER if name in results]
+    entries = [(name, results[name][0], RECIPES[name].group, True) for name in SYNTH_ORDER if name in results]
     entries += [(name, tiles, "legacy", False) for name, tiles in legacy.items()]
     font = _font(13)
     small = _font(11)
@@ -1640,10 +1663,10 @@ def main(argv=None):
     parser.add_argument("--root", type=Path, default=ROOT, help="repository root to read and write")
     args = parser.parse_args(argv)
     require_pillow()
-    names = args.material or list(BUILTIN_ORDER)
+    names = args.material or list(SYNTH_ORDER)
     unknown = [n for n in names if n not in RECIPES]
     if unknown:
-        parser.error(f"unknown material(s): {', '.join(unknown)}; known: {', '.join(BUILTIN_ORDER)}")
+        parser.error(f"unknown material(s): {', '.join(unknown)}; known: {', '.join(SYNTH_ORDER)}")
     root = args.root.resolve()
     jobs = args.jobs or None
 

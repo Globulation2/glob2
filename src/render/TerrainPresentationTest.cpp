@@ -202,7 +202,7 @@ void layeredCache(bool gpu, bool hd = false)
 		GAGCore::Sprite::setHighResolution(true);
 		REQUIRE(globals->terrain->baseFrame(0)->getW() == 128);
 	}
-	// Exercise every edge mask, torus neighbors, water backdrop, and mixed layers.
+	// Exercise every edge mask, torus neighbors, water tiles, and mixed layers.
 	for (int y = 0; y < 32; ++y)
 		for (int x = 0; x < 32; ++x)
 		{
@@ -221,7 +221,6 @@ void layeredCache(bool gpu, bool hd = false)
 	{
 		globals->gfx->setClipRect();
 		globals->gfx->drawFilledRect(0, 0, 640, 480, 17, 29, 41);
-		game.drawMapWater(640, 480, 29, 30, 19);
 	};
 	bool memoryRecorded = false;
 	const auto compare = [&]
@@ -406,7 +405,6 @@ TEST_SUITE("TerrainPresentation")
 		const auto evidence = glob2test::artifactDir() / "overview-alignment";
 		std::filesystem::create_directories(evidence);
 		CHECK(IMG_SavePNG(enlarged.getSDLSurface(), (evidence / "overview.png").string().c_str()));
-		Game::drawMapWater(512, 512, 0, 0, 0);
 		Game::drawMapTerrain(0, 0, 15, 15, 0, 0, 0, Game::DRAW_WHOLE_MAP, scene);
 		Game::drawMapResources(0, 0, 15, 15, 0, 0, 0, Game::DRAW_WHOLE_MAP, scene);
 		GAGCore::Sprite::flushBatches(globals->gfx);
@@ -908,7 +906,9 @@ TEST_SUITE("TerrainPresentation")
 						}
 				}
 			CHECK(mismatches == 0);
-			CHECK(partial > 0);
+			// Terrain is opaque since water became an ordinary material, so these
+			// tiles carry no partial coverage; the arithmetic above still covers it.
+			(void)partial;
 			// Equivalent wrapped coordinates reuse the same pages and pixels.
 			const auto pixels = [&]
 			{
@@ -1022,11 +1022,11 @@ TEST_SUITE("TerrainPresentation")
 		}
 	}
 	TEST_CASE(
-		"empty water pages skip software submissions and refresh after terrain edits [display]")
+		"undiscovered pages skip software submissions and refresh after discovery [display]")
 	{
 		glob2test::HeadlessGlobals globals({.display = true});
 		glob2test::HeadlessGame fixture(
-			{.wDec = 5, .hDec = 5, .terrain = WATER, .discovered = true});
+			{.wDec = 5, .hDec = 5, .terrain = WATER, .discovered = false});
 		SceneMap scene;
 		scene.extract(fixture.game.map);
 		SoftwareTerrainCache cache;
@@ -1038,22 +1038,22 @@ TEST_SUITE("TerrainPresentation")
 			pixels.get(), .73f,
 			[&]
 			{
-				const auto draw = [&]
+				const auto draw = [&](bool wholeMap)
 				{
 					REQUIRE(cache.prepare(scene, *globals->terrain, 0, 0, 7, 7, 0, 0,
-										  fixture.team->me, true));
+										  fixture.team->me, wholeMap));
 					const auto before = globals->gfx->renderer->operations();
 					cache.draw(*globals->gfx);
 					const auto after = globals->gfx->renderer->operations();
 					return after.blits - before.blits + after.triangles - before.triangles;
 				};
-				CHECK(draw() == 0);
-				fixture.game.map.setCellTerrain(4, 4, ICE);
+				// Water is an ordinary opaque material; only undiscovered cells
+				// compose to empty tiles and submit nothing.
+				CHECK(draw(false) == 0);
+				fixture.game.map.setMapDiscovered(2, 2, 3, 3, fixture.team->me);
 				scene.extract(fixture.game.map);
-				CHECK(draw() > 0);
-				fixture.game.map.setCellTerrain(4, 4, WATER);
-				scene.extract(fixture.game.map);
-				CHECK(draw() == 0);
+				CHECK(draw(false) > 0);
+				CHECK(draw(true) > 0);
 			});
 	}
 	TEST_CASE("image import keeps whole-cell material edges out of legacy gameplay [artifacts]")
@@ -1219,7 +1219,7 @@ TEST_SUITE("TerrainValidation")
 					map.setCellTerrain(ox + dx, oy + dy, types[n]);
 			map.setCellTerrain(ox + 3, oy + 3, types[n]);
 		}
-		// Water-side samples: deep and dark water meet the ocean and the beach; lava
+		// Water-side samples: deep and dark water meet open water and the beach; lava
 		// and a hole sit on the beach edge.
 		for (int y = 2; y < 6; ++y)
 			for (int x = 2; x < 4; ++x)
@@ -1233,7 +1233,6 @@ TEST_SUITE("TerrainValidation")
 			map.setCellTerrain(4, y, VOID_HOLE);
 		SceneMap scene;
 		scene.extract(map);
-		fixture.game.drawMapWater(1024, 768, 0, 0, 19);
 		fixture.game.drawMapTerrain(0, 0, 31, 23, 0, 0, 0, Game::DRAW_WHOLE_MAP, scene);
 		REQUIRE(IMG_SavePNG(
 			globals->gfx->getSDLSurface(),
@@ -1332,7 +1331,6 @@ TEST_SUITE("TerrainValidation")
 		SceneMap scene;
 		scene.extract(map);
 		auto *gfx = globals->gfx;
-		fixture.game.drawMapWater(1024, 768, 0, 0, 19);
 		fixture.game.drawMapTerrain(0, 0, 31, 23, 0, 0, 0, Game::DRAW_WHOLE_MAP, scene);
 		REQUIRE(IMG_SavePNG(gfx->getSDLSurface(),
 							(glob2test::artifactDir() / "terrain-gallery.png").string().c_str()));

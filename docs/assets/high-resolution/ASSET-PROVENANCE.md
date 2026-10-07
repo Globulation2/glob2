@@ -8,15 +8,15 @@ Generated terrain combines selected generated materials with deterministic masks
 
 | Source category | Frames |
 | --- | ---: |
-| AI upscale with constrained finishing | 116 |
-| Generated material with deterministic tiling | 17 |
+| AI upscale with constrained finishing | 115 |
+| Generated material with deterministic tiling | 16 |
 | Hand-authored vector | 8 |
 | Non-AI mask resampling | 38 |
 | Original-based terrain with deterministic grain and tiling | 256 |
-| Procedural terrain synthesis | 480 |
+| Procedural terrain synthesis | 592 |
 | Recovered original | 1852 |
 
-Total: **2767 frames**. Source/output SHA-256 hashes, native sizes and selected layers are retained in [the pack manifest](../../../data/highres/v1/manifest.json). See [original export recipes](../../../datasrc/gfx/RECOVERED-RUNTIME.md) for limitations.
+Total: **2877 frames**. Source/output SHA-256 hashes, native sizes and selected layers are retained in [the pack manifest](../../../data/highres/v1/manifest.json). See [original export recipes](../../../datasrc/gfx/RECOVERED-RUNTIME.md) for limitations.
 
 | Frame | Source category | Logical canvas | Native canvas/source | Recipe |
 | --- | --- | --- | --- | --- |
@@ -327,11 +327,59 @@ Total: **2767 frames**. Source/output SHA-256 hashes, native sizes and selected 
 | `terrain-deep_water13` | Procedural terrain synthesis | 32×32 | — ([source](../../../tools/artwork/terrain_synth.py)) | procedural terrain synthesis v1: deep_water |
 | `terrain-deep_water14` | Procedural terrain synthesis | 32×32 | — ([source](../../../tools/artwork/terrain_synth.py)) | procedural terrain synthesis v1: deep_water |
 | `terrain-deep_water15` | Procedural terrain synthesis | 32×32 | — ([source](../../../tools/artwork/terrain_synth.py)) | procedural terrain synthesis v1: deep_water |
+| `terrain-deep_water16` | Procedural terrain synthesis | 32×32 | — ([source](../../../tools/artwork/terrain_synth.py)) | procedural terrain synthesis v1: deep_water |
+| `terrain-deep_water17` | Procedural terrain synthesis | 32×32 | — ([source](../../../tools/artwork/terrain_synth.py)) | procedural terrain synthesis v1: deep_water |
+| `terrain-deep_water18` | Procedural terrain synthesis | 32×32 | — ([source](../../../tools/artwork/terrain_synth.py)) | procedural terrain synthesis v1: deep_water |
+| `terrain-deep_water19` | Procedural terrain synthesis | 32×32 | — ([source](../../../tools/artwork/terrain_synth.py)) | procedural terrain synthesis v1: deep_water |
 | `terrain-deep_water2` | Procedural terrain synthesis | 32×32 | — ([source](../../../tools/artwork/terrain_synth.py)) | procedural terrain synthesis v1: deep_water |
+| `terrain-deep_water20` | Procedural terrain synthesis | 32×32 | — ([source](../../../tools/artwork/terrain_synth.py)) | procedural terrain synthesis v1: deep_water |
+| `terrain-deep_water21` | Procedural terrain synthesis | 32×32 | — ([source](../../../tools/artwork/terrain_synth.py)) | procedural terrain synthesis v1: deep_water |
+| `terrain-deep_water22` | Procedural terrain synthesis | 32×32 | — ([source](../../../tools/artwork/terrain_synth.py)) | procedural terrain synthesis v1: deep_water |
+| `terrain-deep_water23` | Procedural terrain synthesis | 32×32 | — ([source](../../../tools/artwork/terrain_synth.py)) | procedural terrain synthesis v1: deep_water |
+| `terrain-deep_water24` | Procedural terrain synthesis | 32×32 | — ([source](../../../tools/artwork/terrain_synth.py)) | procedural terrain synthesis v1: deep_water |
+| `terrain-deep_water25` | Procedural terrain synthesis | 32×32 | — ([source](../../../tools/artwork/terrain_synth.py)) | procedural terrain synthesis v1: deep_water |
+| `terrain-deep_water26` | Procedural terrain synthesis | 32×32 | — ([source](../../../tools/artwork/terrain_synth.py)) | procedural terrain synthesis v1: deep_water |
+| `terrain-deep_water27` | Procedural terrain synthesis | 32×32 | — ([source](../../../tools/artwork/terrain_synth.py)) | procedural terrain synthesis v1: deep_water |
+| `terrain-deep_water28` | Procedural terrain synthesis | 32×32 | — ([source](../../../tools/artwork/terrain_synth.py)) | procedural terrain synthesis v1: deep_water |
+| `terrain-deep_water29` | Procedural terrain synthesis | 32×32 | — ([source](../../../tools/artwork/terrain_synth.py)) | procedural terrain synthesis v1: deep_water |
 | `terrain-deep_water3` | Procedural terrain synthesis | 32×32 | — ([source](../../../tools/artwork/terrain_synth.py)) | procedural terrain synthesis v1: deep_water |
+| `terrain-deep_water30` | Procedural terrain synthesis | 32×32 | — ([source](../../../tools/artwork/terrain_synth.py)) | procedural terrain synthesis v1: deep_water |
+| `terrain-deep_water31` | Procedural terrain synthesis | 32×32 | — ([source](../../../tools/artwork/terrain_synth.py)) | procedural terrain synthesis v1: deep_water |
+| `terrain-deep_water32` | Procedural terrain synthesis | 32×32 | — ([source](../../../tools/artwork/terrain_synth.py)) | procedural terrain synthesis v1: deep_water |
+| `terrain-deep_water33` | Procedural terrain synthesis | 32×32 | — ([source](../../../tools/artwork/terrain_synth.py)) | procedural terrain synthesis v1: deep_water |
+| `terrain-deep_water34` | Procedural terrain synthesis | 32×32 | — ([source](../../../tools/artwork/terrain_synth.py)) | procedural terrain synthesis v1: deep_water |
+| `terrain-deep_water35` | Procedural terrain synthesis | 32×32 | — ([source](../../../tools/artwork/terrain_synth.py)) | procedural terrain synthesis v1: deep_water |
+| `terrain-deep_water36` | Procedural terrain synthesis | 32×32 | — ([source](../../../tools/artwork/terrain_synth.py)) | procedural terrain synthesis v1: deep_water |
+| `terrain-deep_water37` | Procedural terrain synthesis | 32×32 | — ([source](../../../tools/artwork/terrain_synth.py)) | procedural terrain synthesis v1: deep_water |
+| `terrain-deep_water38` | Procedural terrain synthesis | 32×32 | — ([source](../../../tools/artwork/terrain_synth.py)) | procedural terrain synthesis v1: deep_water |
+| `terrain-deep_water39` | Procedural terrain synthesis | 32×32 | — ([source](../../../tools/artwork/terrain_synth.py)) | procedural terrain synthesis v1: deep_water |
 | `terrain-deep_water4` | Procedural terrain synthesis | 32×32 | — ([source](../../../tools/artwork/terrain_synth.py)) | procedural terrain synthesis v1: deep_water |
+| `terrain-deep_water40` | Procedural terrain synthesis | 32×32 | — ([source](../../../tools/artwork/terrain_synth.py)) | procedural terrain synthesis v1: deep_water |
+| `terrain-deep_water41` | Procedural terrain synthesis | 32×32 | — ([source](../../../tools/artwork/terrain_synth.py)) | procedural terrain synthesis v1: deep_water |
+| `terrain-deep_water42` | Procedural terrain synthesis | 32×32 | — ([source](../../../tools/artwork/terrain_synth.py)) | procedural terrain synthesis v1: deep_water |
+| `terrain-deep_water43` | Procedural terrain synthesis | 32×32 | — ([source](../../../tools/artwork/terrain_synth.py)) | procedural terrain synthesis v1: deep_water |
+| `terrain-deep_water44` | Procedural terrain synthesis | 32×32 | — ([source](../../../tools/artwork/terrain_synth.py)) | procedural terrain synthesis v1: deep_water |
+| `terrain-deep_water45` | Procedural terrain synthesis | 32×32 | — ([source](../../../tools/artwork/terrain_synth.py)) | procedural terrain synthesis v1: deep_water |
+| `terrain-deep_water46` | Procedural terrain synthesis | 32×32 | — ([source](../../../tools/artwork/terrain_synth.py)) | procedural terrain synthesis v1: deep_water |
+| `terrain-deep_water47` | Procedural terrain synthesis | 32×32 | — ([source](../../../tools/artwork/terrain_synth.py)) | procedural terrain synthesis v1: deep_water |
+| `terrain-deep_water48` | Procedural terrain synthesis | 32×32 | — ([source](../../../tools/artwork/terrain_synth.py)) | procedural terrain synthesis v1: deep_water |
+| `terrain-deep_water49` | Procedural terrain synthesis | 32×32 | — ([source](../../../tools/artwork/terrain_synth.py)) | procedural terrain synthesis v1: deep_water |
 | `terrain-deep_water5` | Procedural terrain synthesis | 32×32 | — ([source](../../../tools/artwork/terrain_synth.py)) | procedural terrain synthesis v1: deep_water |
+| `terrain-deep_water50` | Procedural terrain synthesis | 32×32 | — ([source](../../../tools/artwork/terrain_synth.py)) | procedural terrain synthesis v1: deep_water |
+| `terrain-deep_water51` | Procedural terrain synthesis | 32×32 | — ([source](../../../tools/artwork/terrain_synth.py)) | procedural terrain synthesis v1: deep_water |
+| `terrain-deep_water52` | Procedural terrain synthesis | 32×32 | — ([source](../../../tools/artwork/terrain_synth.py)) | procedural terrain synthesis v1: deep_water |
+| `terrain-deep_water53` | Procedural terrain synthesis | 32×32 | — ([source](../../../tools/artwork/terrain_synth.py)) | procedural terrain synthesis v1: deep_water |
+| `terrain-deep_water54` | Procedural terrain synthesis | 32×32 | — ([source](../../../tools/artwork/terrain_synth.py)) | procedural terrain synthesis v1: deep_water |
+| `terrain-deep_water55` | Procedural terrain synthesis | 32×32 | — ([source](../../../tools/artwork/terrain_synth.py)) | procedural terrain synthesis v1: deep_water |
+| `terrain-deep_water56` | Procedural terrain synthesis | 32×32 | — ([source](../../../tools/artwork/terrain_synth.py)) | procedural terrain synthesis v1: deep_water |
+| `terrain-deep_water57` | Procedural terrain synthesis | 32×32 | — ([source](../../../tools/artwork/terrain_synth.py)) | procedural terrain synthesis v1: deep_water |
+| `terrain-deep_water58` | Procedural terrain synthesis | 32×32 | — ([source](../../../tools/artwork/terrain_synth.py)) | procedural terrain synthesis v1: deep_water |
+| `terrain-deep_water59` | Procedural terrain synthesis | 32×32 | — ([source](../../../tools/artwork/terrain_synth.py)) | procedural terrain synthesis v1: deep_water |
 | `terrain-deep_water6` | Procedural terrain synthesis | 32×32 | — ([source](../../../tools/artwork/terrain_synth.py)) | procedural terrain synthesis v1: deep_water |
+| `terrain-deep_water60` | Procedural terrain synthesis | 32×32 | — ([source](../../../tools/artwork/terrain_synth.py)) | procedural terrain synthesis v1: deep_water |
+| `terrain-deep_water61` | Procedural terrain synthesis | 32×32 | — ([source](../../../tools/artwork/terrain_synth.py)) | procedural terrain synthesis v1: deep_water |
+| `terrain-deep_water62` | Procedural terrain synthesis | 32×32 | — ([source](../../../tools/artwork/terrain_synth.py)) | procedural terrain synthesis v1: deep_water |
+| `terrain-deep_water63` | Procedural terrain synthesis | 32×32 | — ([source](../../../tools/artwork/terrain_synth.py)) | procedural terrain synthesis v1: deep_water |
 | `terrain-deep_water7` | Procedural terrain synthesis | 32×32 | — ([source](../../../tools/artwork/terrain_synth.py)) | procedural terrain synthesis v1: deep_water |
 | `terrain-deep_water8` | Procedural terrain synthesis | 32×32 | — ([source](../../../tools/artwork/terrain_synth.py)) | procedural terrain synthesis v1: deep_water |
 | `terrain-deep_water9` | Procedural terrain synthesis | 32×32 | — ([source](../../../tools/artwork/terrain_synth.py)) | procedural terrain synthesis v1: deep_water |
@@ -703,6 +751,70 @@ Total: **2767 frames**. Source/output SHA-256 hashes, native sizes and selected 
 | `terrain-void_hole7` | Procedural terrain synthesis | 32×32 | — ([source](../../../tools/artwork/terrain_synth.py)) | procedural terrain synthesis v1: void_hole |
 | `terrain-void_hole8` | Procedural terrain synthesis | 32×32 | — ([source](../../../tools/artwork/terrain_synth.py)) | procedural terrain synthesis v1: void_hole |
 | `terrain-void_hole9` | Procedural terrain synthesis | 32×32 | — ([source](../../../tools/artwork/terrain_synth.py)) | procedural terrain synthesis v1: void_hole |
+| `terrain-water0` | Procedural terrain synthesis | 32×32 | — ([source](../../../tools/artwork/terrain_synth.py)) | procedural terrain synthesis v1: water |
+| `terrain-water1` | Procedural terrain synthesis | 32×32 | — ([source](../../../tools/artwork/terrain_synth.py)) | procedural terrain synthesis v1: water |
+| `terrain-water10` | Procedural terrain synthesis | 32×32 | — ([source](../../../tools/artwork/terrain_synth.py)) | procedural terrain synthesis v1: water |
+| `terrain-water11` | Procedural terrain synthesis | 32×32 | — ([source](../../../tools/artwork/terrain_synth.py)) | procedural terrain synthesis v1: water |
+| `terrain-water12` | Procedural terrain synthesis | 32×32 | — ([source](../../../tools/artwork/terrain_synth.py)) | procedural terrain synthesis v1: water |
+| `terrain-water13` | Procedural terrain synthesis | 32×32 | — ([source](../../../tools/artwork/terrain_synth.py)) | procedural terrain synthesis v1: water |
+| `terrain-water14` | Procedural terrain synthesis | 32×32 | — ([source](../../../tools/artwork/terrain_synth.py)) | procedural terrain synthesis v1: water |
+| `terrain-water15` | Procedural terrain synthesis | 32×32 | — ([source](../../../tools/artwork/terrain_synth.py)) | procedural terrain synthesis v1: water |
+| `terrain-water16` | Procedural terrain synthesis | 32×32 | — ([source](../../../tools/artwork/terrain_synth.py)) | procedural terrain synthesis v1: water |
+| `terrain-water17` | Procedural terrain synthesis | 32×32 | — ([source](../../../tools/artwork/terrain_synth.py)) | procedural terrain synthesis v1: water |
+| `terrain-water18` | Procedural terrain synthesis | 32×32 | — ([source](../../../tools/artwork/terrain_synth.py)) | procedural terrain synthesis v1: water |
+| `terrain-water19` | Procedural terrain synthesis | 32×32 | — ([source](../../../tools/artwork/terrain_synth.py)) | procedural terrain synthesis v1: water |
+| `terrain-water2` | Procedural terrain synthesis | 32×32 | — ([source](../../../tools/artwork/terrain_synth.py)) | procedural terrain synthesis v1: water |
+| `terrain-water20` | Procedural terrain synthesis | 32×32 | — ([source](../../../tools/artwork/terrain_synth.py)) | procedural terrain synthesis v1: water |
+| `terrain-water21` | Procedural terrain synthesis | 32×32 | — ([source](../../../tools/artwork/terrain_synth.py)) | procedural terrain synthesis v1: water |
+| `terrain-water22` | Procedural terrain synthesis | 32×32 | — ([source](../../../tools/artwork/terrain_synth.py)) | procedural terrain synthesis v1: water |
+| `terrain-water23` | Procedural terrain synthesis | 32×32 | — ([source](../../../tools/artwork/terrain_synth.py)) | procedural terrain synthesis v1: water |
+| `terrain-water24` | Procedural terrain synthesis | 32×32 | — ([source](../../../tools/artwork/terrain_synth.py)) | procedural terrain synthesis v1: water |
+| `terrain-water25` | Procedural terrain synthesis | 32×32 | — ([source](../../../tools/artwork/terrain_synth.py)) | procedural terrain synthesis v1: water |
+| `terrain-water26` | Procedural terrain synthesis | 32×32 | — ([source](../../../tools/artwork/terrain_synth.py)) | procedural terrain synthesis v1: water |
+| `terrain-water27` | Procedural terrain synthesis | 32×32 | — ([source](../../../tools/artwork/terrain_synth.py)) | procedural terrain synthesis v1: water |
+| `terrain-water28` | Procedural terrain synthesis | 32×32 | — ([source](../../../tools/artwork/terrain_synth.py)) | procedural terrain synthesis v1: water |
+| `terrain-water29` | Procedural terrain synthesis | 32×32 | — ([source](../../../tools/artwork/terrain_synth.py)) | procedural terrain synthesis v1: water |
+| `terrain-water3` | Procedural terrain synthesis | 32×32 | — ([source](../../../tools/artwork/terrain_synth.py)) | procedural terrain synthesis v1: water |
+| `terrain-water30` | Procedural terrain synthesis | 32×32 | — ([source](../../../tools/artwork/terrain_synth.py)) | procedural terrain synthesis v1: water |
+| `terrain-water31` | Procedural terrain synthesis | 32×32 | — ([source](../../../tools/artwork/terrain_synth.py)) | procedural terrain synthesis v1: water |
+| `terrain-water32` | Procedural terrain synthesis | 32×32 | — ([source](../../../tools/artwork/terrain_synth.py)) | procedural terrain synthesis v1: water |
+| `terrain-water33` | Procedural terrain synthesis | 32×32 | — ([source](../../../tools/artwork/terrain_synth.py)) | procedural terrain synthesis v1: water |
+| `terrain-water34` | Procedural terrain synthesis | 32×32 | — ([source](../../../tools/artwork/terrain_synth.py)) | procedural terrain synthesis v1: water |
+| `terrain-water35` | Procedural terrain synthesis | 32×32 | — ([source](../../../tools/artwork/terrain_synth.py)) | procedural terrain synthesis v1: water |
+| `terrain-water36` | Procedural terrain synthesis | 32×32 | — ([source](../../../tools/artwork/terrain_synth.py)) | procedural terrain synthesis v1: water |
+| `terrain-water37` | Procedural terrain synthesis | 32×32 | — ([source](../../../tools/artwork/terrain_synth.py)) | procedural terrain synthesis v1: water |
+| `terrain-water38` | Procedural terrain synthesis | 32×32 | — ([source](../../../tools/artwork/terrain_synth.py)) | procedural terrain synthesis v1: water |
+| `terrain-water39` | Procedural terrain synthesis | 32×32 | — ([source](../../../tools/artwork/terrain_synth.py)) | procedural terrain synthesis v1: water |
+| `terrain-water4` | Procedural terrain synthesis | 32×32 | — ([source](../../../tools/artwork/terrain_synth.py)) | procedural terrain synthesis v1: water |
+| `terrain-water40` | Procedural terrain synthesis | 32×32 | — ([source](../../../tools/artwork/terrain_synth.py)) | procedural terrain synthesis v1: water |
+| `terrain-water41` | Procedural terrain synthesis | 32×32 | — ([source](../../../tools/artwork/terrain_synth.py)) | procedural terrain synthesis v1: water |
+| `terrain-water42` | Procedural terrain synthesis | 32×32 | — ([source](../../../tools/artwork/terrain_synth.py)) | procedural terrain synthesis v1: water |
+| `terrain-water43` | Procedural terrain synthesis | 32×32 | — ([source](../../../tools/artwork/terrain_synth.py)) | procedural terrain synthesis v1: water |
+| `terrain-water44` | Procedural terrain synthesis | 32×32 | — ([source](../../../tools/artwork/terrain_synth.py)) | procedural terrain synthesis v1: water |
+| `terrain-water45` | Procedural terrain synthesis | 32×32 | — ([source](../../../tools/artwork/terrain_synth.py)) | procedural terrain synthesis v1: water |
+| `terrain-water46` | Procedural terrain synthesis | 32×32 | — ([source](../../../tools/artwork/terrain_synth.py)) | procedural terrain synthesis v1: water |
+| `terrain-water47` | Procedural terrain synthesis | 32×32 | — ([source](../../../tools/artwork/terrain_synth.py)) | procedural terrain synthesis v1: water |
+| `terrain-water48` | Procedural terrain synthesis | 32×32 | — ([source](../../../tools/artwork/terrain_synth.py)) | procedural terrain synthesis v1: water |
+| `terrain-water49` | Procedural terrain synthesis | 32×32 | — ([source](../../../tools/artwork/terrain_synth.py)) | procedural terrain synthesis v1: water |
+| `terrain-water5` | Procedural terrain synthesis | 32×32 | — ([source](../../../tools/artwork/terrain_synth.py)) | procedural terrain synthesis v1: water |
+| `terrain-water50` | Procedural terrain synthesis | 32×32 | — ([source](../../../tools/artwork/terrain_synth.py)) | procedural terrain synthesis v1: water |
+| `terrain-water51` | Procedural terrain synthesis | 32×32 | — ([source](../../../tools/artwork/terrain_synth.py)) | procedural terrain synthesis v1: water |
+| `terrain-water52` | Procedural terrain synthesis | 32×32 | — ([source](../../../tools/artwork/terrain_synth.py)) | procedural terrain synthesis v1: water |
+| `terrain-water53` | Procedural terrain synthesis | 32×32 | — ([source](../../../tools/artwork/terrain_synth.py)) | procedural terrain synthesis v1: water |
+| `terrain-water54` | Procedural terrain synthesis | 32×32 | — ([source](../../../tools/artwork/terrain_synth.py)) | procedural terrain synthesis v1: water |
+| `terrain-water55` | Procedural terrain synthesis | 32×32 | — ([source](../../../tools/artwork/terrain_synth.py)) | procedural terrain synthesis v1: water |
+| `terrain-water56` | Procedural terrain synthesis | 32×32 | — ([source](../../../tools/artwork/terrain_synth.py)) | procedural terrain synthesis v1: water |
+| `terrain-water57` | Procedural terrain synthesis | 32×32 | — ([source](../../../tools/artwork/terrain_synth.py)) | procedural terrain synthesis v1: water |
+| `terrain-water58` | Procedural terrain synthesis | 32×32 | — ([source](../../../tools/artwork/terrain_synth.py)) | procedural terrain synthesis v1: water |
+| `terrain-water59` | Procedural terrain synthesis | 32×32 | — ([source](../../../tools/artwork/terrain_synth.py)) | procedural terrain synthesis v1: water |
+| `terrain-water6` | Procedural terrain synthesis | 32×32 | — ([source](../../../tools/artwork/terrain_synth.py)) | procedural terrain synthesis v1: water |
+| `terrain-water60` | Procedural terrain synthesis | 32×32 | — ([source](../../../tools/artwork/terrain_synth.py)) | procedural terrain synthesis v1: water |
+| `terrain-water61` | Procedural terrain synthesis | 32×32 | — ([source](../../../tools/artwork/terrain_synth.py)) | procedural terrain synthesis v1: water |
+| `terrain-water62` | Procedural terrain synthesis | 32×32 | — ([source](../../../tools/artwork/terrain_synth.py)) | procedural terrain synthesis v1: water |
+| `terrain-water63` | Procedural terrain synthesis | 32×32 | — ([source](../../../tools/artwork/terrain_synth.py)) | procedural terrain synthesis v1: water |
+| `terrain-water7` | Procedural terrain synthesis | 32×32 | — ([source](../../../tools/artwork/terrain_synth.py)) | procedural terrain synthesis v1: water |
+| `terrain-water8` | Procedural terrain synthesis | 32×32 | — ([source](../../../tools/artwork/terrain_synth.py)) | procedural terrain synthesis v1: water |
+| `terrain-water9` | Procedural terrain synthesis | 32×32 | — ([source](../../../tools/artwork/terrain_synth.py)) | procedural terrain synthesis v1: water |
 | `terrain0` | Original-based terrain with deterministic grain and tiling | 32×32 | — ([source](../../../datasrc/gfx/derived/terrain-materials-v1/grass.png)) | original-based grass and sand v1; retained rugged corner masks |
 | `terrain1` | Original-based terrain with deterministic grain and tiling | 32×32 | — ([source](../../../datasrc/gfx/derived/terrain-materials-v1/grass.png)) | original-based grass and sand v1; retained rugged corner masks |
 | `terrain10` | Original-based terrain with deterministic grain and tiling | 32×32 | — ([source](../../../datasrc/gfx/derived/terrain-materials-v1/grass.png)) | original-based grass and sand v1; retained rugged corner masks |
@@ -2785,5 +2897,3 @@ Total: **2767 frames**. Source/output SHA-256 hashes, native sizes and selected 
 | `wall9` | AI upscale with constrained finishing | 32×32 | — | current |
 | `wallc0` | AI upscale with constrained finishing | 32×32 | — | current |
 | `warflag0` | Recovered original | 32×32 | 128×128 ([source](../../../datasrc/gfx/reference-exports/buildings/flags/WarFlag.png)) | recovered original: native white-matte removal; green team / neutral shadow separation |
-| `water0` | Generated material with deterministic tiling | 512×512 | — | quiet ripples; periodic material v3 |
-| `water1` | AI upscale with constrained finishing | 512×512 | — | world constrained |

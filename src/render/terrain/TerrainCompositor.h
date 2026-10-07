@@ -51,8 +51,7 @@ class Compositor
 	std::shared_ptr<CompiledPack> pack;
 	std::map<std::uint64_t, std::uint64_t> cleanSources;
 	std::array<MaterialId, TERRAIN_COUNT> terrainBindings{};
-	std::vector<GAGCore::Sprite *> sprites, backdropSprites;
-	std::vector<Texture> backgrounds;
+	std::vector<GAGCore::Sprite *> sprites;
 	static void readTexture(Texture &, GAGCore::DrawableSurface *);
 	std::vector<std::vector<Texture>> textures;
 	std::vector<std::uint64_t> materialRevisions;

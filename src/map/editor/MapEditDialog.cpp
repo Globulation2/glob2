@@ -388,8 +388,8 @@ GAGCore::DrawableSurface *TerrainPaletteDialog::preview(TerrainType type)
 	const auto appearance = registry->appearance(type);
 	const auto binding = catalog.bindings.find(terrainPresentation(appearance).name);
 	auto surface = std::make_unique<GAGCore::DrawableSurface>(64, 64);
-	// Over the material's preview colour so the transparent ocean and translucent
-	// water still read; runtime types keep their saved colours.
+	// Over the material's preview colour so a missing texture still reads;
+	// runtime types keep their saved colours.
 	const auto &colours = registry->presentation(type);
 	GAGCore::Color fill(colours.preview.r, colours.preview.g, colours.preview.b);
 	if (binding != catalog.bindings.end() && unsigned(type) < TERRAIN_COUNT)
@@ -398,11 +398,7 @@ GAGCore::DrawableSurface *TerrainPaletteDialog::preview(TerrainType type)
 		fill = GAGCore::Color(material.preview[0], material.preview[1], material.preview[2]);
 	}
 	surface->drawFilledRect(0, 0, 64, 64, fill);
-	// Swimmable brushes sit on the shared ocean, as they do on the map.
-	if (registry->properties(appearance).swimmable)
-		if (auto *ocean = GAGCore::Toolkit::getSprite(TerrainOceanBackdrop.sprite))
-			surface->drawSprite(0, 0, ocean, TerrainOceanBackdrop.firstFrame);
-	if (binding != catalog.bindings.end() && !catalog.materials[binding->second].ocean)
+	if (binding != catalog.bindings.end())
 	{
 		GAGCore::DrawableSurface texture(64, 64);
 		TerrainVisual::Recipe recipe;

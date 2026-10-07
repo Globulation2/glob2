@@ -51,7 +51,7 @@ class WebAssetPlanTests(unittest.TestCase):
 
     def test_in_game_sprites_follow_the_main_menu(self):
         # GlobalContainer::loadGameGraphics, including every building's artwork.
-        for path in ('data/gfx/unit0r.png', 'data/gfx/unit1000.png', 'data/gfx/terrain0.png', 'data/gfx/terrain333.png', 'data/gfx/water0.png', 'data/gfx/gamegui0.png',
+        for path in ('data/gfx/unit0r.png', 'data/gfx/unit1000.png', 'data/gfx/terrain0.png', 'data/gfx/terrain333.png', 'data/gfx/terrain-water0.png', 'data/gfx/gamegui0.png',
                      'data/gfx/ressource0.png', 'data/gfx/particle0.png', 'data/gfx/swarm0b0.png',
                      'data/gfx/inn0b0r.png', 'data/gfx/racetrack2b0.png', 'data/gfx/minibuildingsite5.png',
                      'data/gfx/explorationflag0r.png', 'data/gfx/wallc0.png'):

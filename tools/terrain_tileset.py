@@ -163,8 +163,9 @@ def _validate(document, root):
         ):
             raise ValueError("Invalid material key or profile")
         sprite = data_path(m["sprite"], "Sprite")
-        if type(m.get("ocean", False)) is not bool:
-            raise ValueError("Ocean must be a boolean")
+        if "ocean" in m or "backdrop" in m:
+            # Water is an ordinary animated tile material now.
+            raise ValueError("Ocean and backdrop materials are no longer supported")
         if not isinstance(m["preview"], list) or len(m["preview"]) != 3 or any(
             type(n) is not int or not 0 <= n <= 255 for n in m["preview"]
         ):
@@ -224,21 +225,6 @@ def _validate(document, root):
                     if image.size != (32, 32):
                         raise ValueError(f"Invalid logical frame dimensions: {source}")
                 sources[relative] = hashlib.sha256(source.read_bytes()).hexdigest()
-        if "backdrop" in m:
-            b = m["backdrop"]
-            path = data_path(b["sprite"], "Backdrop sprite")
-            first = integer(b.get("first_frame", 0), 0, 65535, "Backdrop first_frame")
-            count = integer(b.get("frames", 1), 1, 256, "Backdrop frames")
-            integer(b.get("ticks", 1), 1, 2147483647, "Backdrop ticks")
-            if m.get("ocean", False) or first + count > 65536:
-                raise ValueError("Invalid backdrop")
-            for frame in range(first, first + count):
-                relative = f"{path.as_posix()}{frame}.png"
-                source = root / relative
-                with Image.open(source) as image:
-                    if image.size != (32, 32):
-                        raise ValueError("Backdrop must have 32x32 logical dimensions")
-                sources[relative] = hashlib.sha256(source.read_bytes()).hexdigest()
         materials[m["key"]] = m
     if not 0 < len(materials) < 65536:
         raise ValueError("Invalid material count")
@@ -250,8 +236,6 @@ def _validate(document, root):
     for name in BINDINGS:
         if document["bindings"][name] not in materials:
             raise ValueError(f"Missing binding: {name}")
-    if not materials[document["bindings"]["water"]].get("ocean", False):
-        raise ValueError("Water requires ocean backdrop")
     pairs = set()
     treatments = document.get("pair_treatments", [])
     if not isinstance(treatments, list):

@@ -163,21 +163,10 @@ Catalog Catalog::parse(const nlohmann::json &j)
 		require(!v.key.empty() && keys.insert(v.key).second, "duplicate material key");
 		v.salt = keyHash(v.key);
 		v.profile = findProfile(m.at("profile"));
-		const auto ocean = m.value("ocean", nlohmann::json(false));
-		require(ocean.is_boolean(), "ocean must be a boolean");
-		v.ocean = ocean.get<bool>();
-		if (m.contains("backdrop"))
-		{
-			const auto &b = m.at("backdrop");
-			v.backdrop = {dataPath(b.at("sprite")),
-						  integerInRange(b.value("first_frame", nlohmann::json(0)), 0, 65535),
-						  integerInRange(b.value("frames", nlohmann::json(1)), 1, 256),
-						  integerInRange(b.value("ticks", nlohmann::json(1)), 1,
-										 std::numeric_limits<int>::max())};
-			require(!v.ocean, "ocean material cannot have a separate backdrop");
-			require(v.backdrop.firstFrame + v.backdrop.frames <= 65536,
-					"backdrop animation exceeds supported frame range");
-		}
+		// Water is an ordinary (animated) tile material; the scrolling ocean
+		// backdrop and per-material backdrops were retired.
+		require(!m.contains("ocean") && !m.contains("backdrop"),
+				"ocean and backdrop materials are no longer supported");
 		v.animationFrames = integerInRange(m.value("animation_frames", nlohmann::json(1)), 1, 256);
 		v.animationTicks = integerInRange(m.value("animation_ticks", nlohmann::json(1)), 1,
 										  std::numeric_limits<int>::max());
@@ -224,7 +213,6 @@ Catalog Catalog::parse(const nlohmann::json &j)
 		if (terrainPaintable(TerrainType(type)))
 			require(c.bindings.contains(terrainPresentation(TerrainType(type)).name),
 					"missing terrain binding");
-	require(c.materials[c.bindings.at("water")].ocean, "water binding must use ocean backdrop");
 	std::set<std::pair<MaterialId, MaterialId>> pairs;
 	const auto treatments = j.value("pair_treatments", nlohmann::json::array());
 	require(treatments.is_array(), "pair treatments must be an array");

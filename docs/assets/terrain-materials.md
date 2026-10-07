@@ -33,10 +33,13 @@ Each material supplies:
 - `profile`, the key of its boundary family, and `preview`, three overview RGB channels;
 - optional `minimap` RGB channels for minimaps and thumbnails (defaults to `preview`);
 - optional `animation_frames`, `animation_ticks`, and `animation_stride`;
-- optional `backdrop` with `sprite`, `first_frame`, `frames`, and `ticks`;
 - optional `seam` (version 3) with `height`, `cast_q8`, `cast_width_q8`, `fringe`,
-  `fringe_q8` and `fringe_width_q8`, see [Seams](#seams);
-- `ocean: true` only for materials that reveal the shared scrolling ocean.
+  `fringe_q8` and `fringe_width_q8`, see [Seams](#seams).
+
+Every material, regular water included, is an ordinary opaque tile set. The
+retired `ocean` and `backdrop` keys are rejected: water used to be a transparent
+hole over a separately scrolled 512×512 image, which kept it from blending with
+its variants.
 
 Logical frames are 32×32. Existing HD frame registration supplies higher resolution
 source textures when available; missing HD artwork uses native pixels. Positive
@@ -94,11 +97,7 @@ remain under `data/`, with forward slashes, canonical segments (no empty, `.` or
 For animation, a variant's effective frame is `frame + phase * animation_stride`.
 `animation_frames` is 1–256, `animation_ticks` is a positive integer duration in the
 renderer's animation clock, and the stride must be positive when there is more
-than one phase. Every effective frame must exist and remain below 65536. Backdrops
-have their own consecutive `first_frame`, `frames` and `ticks` fields and are
-composited beneath the material before border preparation. The water binding must
-use `ocean: true`; ocean materials reveal the shared scrolling ocean instead of
-using a per-material backdrop.
+than one phase. Every effective frame must exist and remain below 65536.
 
 ## Material production
 
@@ -173,14 +172,13 @@ Lava and ember field are animated: four phases per variant, frame
 `animation_stride 16` and `animation_ticks 8`. The crust layout is shared by the
 phases; only the glow ramp moves.
 
-Deep water and dark water are translucent RGBA tints (`ocean: false`, alpha
-about 160 and 210) derived from the ocean backdrop's mean colour
-(`data/gfx/water0.png`, about (69, 52, 200): same hue, lower value, slightly
-lower saturation), so they read as the same liquid, deeper. Ocean materials have
-no texture of their own and every non-ocean material composites with straight
-alpha over the shared scrolling ocean, so a tint darkens that ocean and is
-animated for free; a per-material `backdrop` would need its own 32×32 frames and
-was rejected for that reason. Marsh pools use the same mechanism at alpha 215.
+Regular water (`terrain_synth.py` recipe `water`, sprite `data/gfx/terrain-water`)
+keeps the violet-blue of the retired scrolling ocean image (about (69, 52, 200)):
+gentle swells carry two Worley ripple networks that cross-fade over four phases
+(`animation_ticks 24`), so glints rise and fade rather than the whole surface
+sliding. Deep water uses the same loop in a darker value; dark water is static.
+Both are opaque and blend with regular water through the ordinary soft profile.
+Marsh pools are opaque too.
 
 `--check` re-synthesises every material and compares the pixel hashes with the
 committed PNGs and with `provenance.json`; it also requires the recorded
@@ -370,8 +368,8 @@ outline.
 Shared edge keys include canonical wrapped coordinates, orientation and stable
 material keys. Both sides choose the same contour. Four corner materials resolve
 jointly to normalized coverage, including diagonal, concave and multi-material
-junctions. Ocean coverage becomes transparency; other textures use straight alpha
-only after coverage and source alpha have been combined. Feathering is narrow,
+junctions. Textures use straight alpha only after coverage and source alpha have
+been combined. Feathering is narrow,
 not a broad blur over the square boundary.
 
 By default the rougher boundary profile wins, with a stable key tie break. Optional
@@ -401,7 +399,7 @@ of another variant is untouched. `fringe` (RGB), `fringe_q8` and
 `fringe_width_q8` tint any neighbor toward that color, which ice uses for a
 faint frost rim on grass. The shipped ranks place water highest so sand and
 grass take a wet band at the waterline, then ice, trail and grass, with sand
-lowest. Ocean pixels are transparent and receive nothing. Keep casts short
+lowest. Keep casts short
 (two to three pixels) and under about a third strength; the goal is a sense of
 thickness, not an outline.
 
@@ -482,8 +480,8 @@ GPU pages have a separate 128 MiB budget. HD oversampling falls from 4× to 2× 
 pages still exceed the budget in a zoomed-out GPU view, the cache reduces them by
 powers of two as needed, going no coarser than the nearest level to the display's
 physical pixel density (at most √2 magnification). Reduction averages composed
-native pixels with alpha-weighted colors, preserving fractional coast coverage
-without darkening edges against the ocean.
+native pixels with alpha-weighted colors, so undiscovered (transparent) cells
+do not darken their neighbours.
 This keeps terrain reusable during the detailed-to-overview crossfade, instead of
 recomposing the entire visible map every frame. The reduced detail can soften
 texture grain at distant zooms. Software pages retain native density. Prepared
