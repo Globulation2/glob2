@@ -1,0 +1,36 @@
+
+ RUN  v5.0.3 /home/bradley/.codex/worktrees/repair-tls-rejection-fixture/glob2/platform
+
+ ❯ packages/db/test/reliability.test.ts (7 tests | 1 failed | 6 skipped) 978ms
+   ❯ leader fencing (3)
+     × verify(0) observes a changed lease within the same millisecond 58ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  packages/db/test/reliability.test.ts > leader fencing > verify(0) observes a changed lease within the same millisecond
+AssertionError: promise resolved "undefined" instead of rejecting
+
+- Expected:
+Error {
+  "message": "rejected promise",
+}
+
++ Received:
+undefined
+
+ ❯ packages/db/test/reliability.test.ts:183:37
+    181|       await leader.verify(0);
+    182|       await sql`UPDATE leader_leases SET epoch = epoch + 1 WHERE name …
+    183|       await expect(leader.verify(0)).rejects.toBeInstanceOf(LeaderLost…
+       |                                     ^
+    184|     } finally {
+    185|       clock?.mockRestore();
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 6 skipped (7)
+   Start at  03:24:30
+   Duration  1.64s (tests 71%, import 19%, transform 10%)
+
