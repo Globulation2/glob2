@@ -1,0 +1,22 @@
+{
+  "command": "python3 -m unittest discover -s test -p 'test_*benchmark*.py'",
+  "source": "fc527755147d22c2274a2b42e7cf9d7dbf11de66",
+  "base": "8600c58e698fec976f632bf91cc0a0c5ddd6471f",
+  "git_status": [
+    " M src/ai/cortex/CortexFoodAvailability.h"
+  ],
+  "python": "3.14.4 (main, Aug 20 2026, 10:41:58) [GCC 15.2.0]",
+  "platform": "Linux-7.0.0-31-generic-x86_64-with-glibc2.43",
+  "files": {
+    "test/benchmark_resource_refactor.py": "3119587fd54b34514489dbc284abe1e83561cea79364c9824969d0bf8a79586a",
+    "test/benchmark_parallel_compute.py": "6060134e8b6dd0355dc268169073a75774269bd86c3fb2e048bb8bf095cb11ed",
+    "test/run_with_benchmark_governor.py": "122756ffc7280fb71f8a39ad503c7ecae9e80a648a3ceb913b31ae281a67fa6f",
+    "test/test_benchmark_resource_refactor.py": "9367de58da23b0e67797b39f6a0fc8034d6e508bb5f09c7d0879bce11f6085a3",
+    "test/test_run_with_benchmark_governor.py": "144b3a03457ebf8ec56ba18b2f9b1ff0e7eecf29467477040e899892970d7175"
+  },
+  "note": "Tooling-only fake-child and restoration contracts; no governor changes, native simulation, or performance measurement.",
+  "equivalent_tooling_revisions": {
+    "58f9f2490c10b0b7829df80ca7e907f41157269d": true,
+    "8600c58e6": true
+  }
+}

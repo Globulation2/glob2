@@ -1,0 +1,452 @@
+{
+  "cases": [
+    {
+      "absent_shared_field_bytes": 131072,
+      "allocated_material_fields": 8,
+      "consumer_cache_bytes": 0,
+      "consumer_cache_fields": 0,
+      "definitions": 1,
+      "deposits": 961,
+      "digest": 1652553,
+      "growth": [
+        {
+          "food_sources": 1043,
+          "food_stock": 5548,
+          "food_stock_digest": 9918253854823012583,
+          "ns": 4385423,
+          "passes": 16,
+          "repeat": 0
+        },
+        {
+          "food_sources": 1129,
+          "food_stock": 6281,
+          "food_stock_digest": 3871541658597252276,
+          "ns": 272618,
+          "passes": 16,
+          "repeat": 1
+        },
+        {
+          "food_sources": 1234,
+          "food_stock": 7198,
+          "food_stock_digest": 17510517475240276685,
+          "ns": 258228,
+          "passes": 16,
+          "repeat": 2
+        }
+      ],
+      "growth_coverage_bytes": 3670016,
+      "inline_resource_bytes": 524288,
+      "material_field_bytes": 1048576,
+      "multi_material": false,
+      "placement_ns": 175769,
+      "registry_ns": 983554,
+      "repeats": [
+        {
+          "field_request_ns": 6332591,
+          "mutation_ns": 42519,
+          "query_cells": 262144,
+          "repeat": 0,
+          "seed_refresh_ns": 961404,
+          "source_query_ns": 279329
+        },
+        {
+          "field_request_ns": 10280,
+          "mutation_ns": 41400,
+          "query_cells": 262144,
+          "repeat": 1,
+          "seed_refresh_ns": 869364,
+          "source_query_ns": 214669
+        },
+        {
+          "field_request_ns": 9230,
+          "mutation_ns": 40480,
+          "query_cells": 262144,
+          "repeat": 2,
+          "seed_refresh_ns": 827215,
+          "source_query_ns": 215269
+        }
+      ],
+      "save": "stress-256-0.game",
+      "seed_cache_bytes": 88,
+      "stock_free_list_bytes": 0,
+      "stock_index_bytes": 0,
+      "stock_sidecar_bytes": 0,
+      "teams": 8,
+      "width": 256
+    },
+    {
+      "absent_shared_field_bytes": 131072,
+      "allocated_material_fields": 8,
+      "consumer_cache_bytes": 0,
+      "consumer_cache_fields": 0,
+      "definitions": 512,
+      "deposits": 961,
+      "digest": 1652553,
+      "growth": [
+        {
+          "food_sources": 1043,
+          "food_stock": 5548,
+          "food_stock_digest": 9918253854823012583,
+          "ns": 2481994,
+          "passes": 16,
+          "repeat": 0
+        },
+        {
+          "food_sources": 1129,
+          "food_stock": 6281,
+          "food_stock_digest": 3871541658597252276,
+          "ns": 219369,
+          "passes": 16,
+          "repeat": 1
+        },
+        {
+          "food_sources": 1234,
+          "food_stock": 7198,
+          "food_stock_digest": 17510517475240276685,
+          "ns": 200779,
+          "passes": 16,
+          "repeat": 2
+        }
+      ],
+      "growth_coverage_bytes": 3670016,
+      "inline_resource_bytes": 524288,
+      "material_field_bytes": 1048576,
+      "multi_material": false,
+      "placement_ns": 270678,
+      "registry_ns": 32698449,
+      "repeats": [
+        {
+          "field_request_ns": 5385367,
+          "mutation_ns": 39930,
+          "query_cells": 262144,
+          "repeat": 0,
+          "seed_refresh_ns": 621066,
+          "source_query_ns": 176289
+        },
+        {
+          "field_request_ns": 7940,
+          "mutation_ns": 33000,
+          "query_cells": 262144,
+          "repeat": 1,
+          "seed_refresh_ns": 625746,
+          "source_query_ns": 162529
+        },
+        {
+          "field_request_ns": 7500,
+          "mutation_ns": 32829,
+          "query_cells": 262144,
+          "repeat": 2,
+          "seed_refresh_ns": 593797,
+          "source_query_ns": 163509
+        }
+      ],
+      "save": "stress-256-1.game",
+      "seed_cache_bytes": 88,
+      "stock_free_list_bytes": 0,
+      "stock_index_bytes": 0,
+      "stock_sidecar_bytes": 0,
+      "teams": 8,
+      "width": 256
+    },
+    {
+      "absent_shared_field_bytes": 131072,
+      "allocated_material_fields": 24,
+      "consumer_cache_bytes": 0,
+      "consumer_cache_fields": 0,
+      "definitions": 512,
+      "deposits": 961,
+      "digest": 7793949,
+      "growth": [
+        {
+          "food_sources": 1043,
+          "food_stock": 5548,
+          "food_stock_digest": 9918253854823012583,
+          "ns": 2103617,
+          "passes": 16,
+          "repeat": 0
+        },
+        {
+          "food_sources": 1129,
+          "food_stock": 6281,
+          "food_stock_digest": 3871541658597252276,
+          "ns": 336488,
+          "passes": 16,
+          "repeat": 1
+        },
+        {
+          "food_sources": 1234,
+          "food_stock": 7198,
+          "food_stock_digest": 17510517475240276685,
+          "ns": 342068,
+          "passes": 16,
+          "repeat": 2
+        }
+      ],
+      "growth_coverage_bytes": 3670016,
+      "inline_resource_bytes": 524288,
+      "material_field_bytes": 3145728,
+      "multi_material": true,
+      "placement_ns": 331518,
+      "registry_ns": 41239257,
+      "repeats": [
+        {
+          "field_request_ns": 18912253,
+          "mutation_ns": 110389,
+          "query_cells": 262144,
+          "repeat": 0,
+          "seed_refresh_ns": 141649,
+          "source_query_ns": 529197
+        },
+        {
+          "field_request_ns": 15870,
+          "mutation_ns": 87989,
+          "query_cells": 262144,
+          "repeat": 1,
+          "seed_refresh_ns": 111270,
+          "source_query_ns": 251809
+        },
+        {
+          "field_request_ns": 10830,
+          "mutation_ns": 88269,
+          "query_cells": 262144,
+          "repeat": 2,
+          "seed_refresh_ns": 116629,
+          "source_query_ns": 277819
+        }
+      ],
+      "save": "stress-256-2.game",
+      "seed_cache_bytes": 889760,
+      "stock_free_list_bytes": 0,
+      "stock_index_bytes": 262144,
+      "stock_sidecar_bytes": 24576,
+      "teams": 8,
+      "width": 256
+    },
+    {
+      "absent_shared_field_bytes": 524288,
+      "allocated_material_fields": 8,
+      "consumer_cache_bytes": 0,
+      "consumer_cache_fields": 0,
+      "definitions": 1,
+      "deposits": 3969,
+      "digest": 1904739,
+      "growth": [
+        {
+          "food_sources": 4190,
+          "food_stock": 21765,
+          "food_stock_digest": 15233995171534063914,
+          "ns": 15917672,
+          "passes": 16,
+          "repeat": 0
+        },
+        {
+          "food_sources": 4334,
+          "food_stock": 23076,
+          "food_stock_digest": 11026761847204333267,
+          "ns": 2934783,
+          "passes": 16,
+          "repeat": 1
+        },
+        {
+          "food_sources": 4691,
+          "food_stock": 26302,
+          "food_stock_digest": 13131768869361836939,
+          "ns": 2844472,
+          "passes": 16,
+          "repeat": 2
+        }
+      ],
+      "growth_coverage_bytes": 14680064,
+      "inline_resource_bytes": 2097152,
+      "material_field_bytes": 4194304,
+      "multi_material": false,
+      "placement_ns": 713175,
+      "registry_ns": 3279050,
+      "repeats": [
+        {
+          "field_request_ns": 32998797,
+          "mutation_ns": 181289,
+          "query_cells": 1048576,
+          "repeat": 0,
+          "seed_refresh_ns": 9770520,
+          "source_query_ns": 4391783
+        },
+        {
+          "field_request_ns": 13650,
+          "mutation_ns": 176079,
+          "query_cells": 1048576,
+          "repeat": 1,
+          "seed_refresh_ns": 9677581,
+          "source_query_ns": 3949495
+        },
+        {
+          "field_request_ns": 13530,
+          "mutation_ns": 242959,
+          "query_cells": 1048576,
+          "repeat": 2,
+          "seed_refresh_ns": 10654634,
+          "source_query_ns": 4304503
+        }
+      ],
+      "save": "stress-512-0.game",
+      "seed_cache_bytes": 88,
+      "stock_free_list_bytes": 0,
+      "stock_index_bytes": 0,
+      "stock_sidecar_bytes": 0,
+      "teams": 8,
+      "width": 512
+    },
+    {
+      "absent_shared_field_bytes": 524288,
+      "allocated_material_fields": 8,
+      "consumer_cache_bytes": 0,
+      "consumer_cache_fields": 0,
+      "definitions": 512,
+      "deposits": 3969,
+      "digest": 1904739,
+      "growth": [
+        {
+          "food_sources": 4190,
+          "food_stock": 21765,
+          "food_stock_digest": 15233995171534063914,
+          "ns": 17590241,
+          "passes": 16,
+          "repeat": 0
+        },
+        {
+          "food_sources": 4334,
+          "food_stock": 23076,
+          "food_stock_digest": 11026761847204333267,
+          "ns": 2985241,
+          "passes": 16,
+          "repeat": 1
+        },
+        {
+          "food_sources": 4691,
+          "food_stock": 26302,
+          "food_stock_digest": 13131768869361836939,
+          "ns": 3674617,
+          "passes": 16,
+          "repeat": 2
+        }
+      ],
+      "growth_coverage_bytes": 14680064,
+      "inline_resource_bytes": 2097152,
+      "material_field_bytes": 4194304,
+      "multi_material": false,
+      "placement_ns": 968154,
+      "registry_ns": 33419474,
+      "repeats": [
+        {
+          "field_request_ns": 36386396,
+          "mutation_ns": 196129,
+          "query_cells": 1048576,
+          "repeat": 0,
+          "seed_refresh_ns": 10409076,
+          "source_query_ns": 4557102
+        },
+        {
+          "field_request_ns": 14829,
+          "mutation_ns": 189289,
+          "query_cells": 1048576,
+          "repeat": 1,
+          "seed_refresh_ns": 10345306,
+          "source_query_ns": 4424253
+        },
+        {
+          "field_request_ns": 13030,
+          "mutation_ns": 211528,
+          "query_cells": 1048576,
+          "repeat": 2,
+          "seed_refresh_ns": 10113468,
+          "source_query_ns": 4334354
+        }
+      ],
+      "save": "stress-512-1.game",
+      "seed_cache_bytes": 88,
+      "stock_free_list_bytes": 0,
+      "stock_index_bytes": 0,
+      "stock_sidecar_bytes": 0,
+      "teams": 8,
+      "width": 512
+    },
+    {
+      "absent_shared_field_bytes": 524288,
+      "allocated_material_fields": 24,
+      "consumer_cache_bytes": 0,
+      "consumer_cache_fields": 0,
+      "definitions": 512,
+      "deposits": 3969,
+      "digest": 17430123,
+      "growth": [
+        {
+          "food_sources": 4190,
+          "food_stock": 21765,
+          "food_stock_digest": 15233995171534063914,
+          "ns": 5773505,
+          "passes": 16,
+          "repeat": 0
+        },
+        {
+          "food_sources": 4334,
+          "food_stock": 23076,
+          "food_stock_digest": 11026761847204333267,
+          "ns": 2051268,
+          "passes": 16,
+          "repeat": 1
+        },
+        {
+          "food_sources": 4691,
+          "food_stock": 26302,
+          "food_stock_digest": 13131768869361836939,
+          "ns": 3890505,
+          "passes": 16,
+          "repeat": 2
+        }
+      ],
+      "growth_coverage_bytes": 14680064,
+      "inline_resource_bytes": 2097152,
+      "material_field_bytes": 12582912,
+      "multi_material": true,
+      "placement_ns": 1085224,
+      "registry_ns": 38892810,
+      "repeats": [
+        {
+          "field_request_ns": 96758704,
+          "mutation_ns": 315758,
+          "query_cells": 1048576,
+          "repeat": 0,
+          "seed_refresh_ns": 437458,
+          "source_query_ns": 3904606
+        },
+        {
+          "field_request_ns": 16679,
+          "mutation_ns": 341978,
+          "query_cells": 1048576,
+          "repeat": 1,
+          "seed_refresh_ns": 407917,
+          "source_query_ns": 3931936
+        },
+        {
+          "field_request_ns": 16710,
+          "mutation_ns": 343218,
+          "query_cells": 1048576,
+          "repeat": 2,
+          "seed_refresh_ns": 409828,
+          "source_query_ns": 3796047
+        }
+      ],
+      "save": "stress-512-2.game",
+      "seed_cache_bytes": 3556256,
+      "stock_free_list_bytes": 0,
+      "stock_index_bytes": 1048576,
+      "stock_sidecar_bytes": 98304,
+      "teams": 8,
+      "width": 512
+    }
+  ],
+  "kind": "component-stress",
+  "limitation": "Candidate component measurements only; no legacy performance or behavioral equivalence claim.",
+  "schema": 1,
+  "seed": 713
+}

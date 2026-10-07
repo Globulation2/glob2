@@ -1,29 +1,72 @@
-# Runtime resource optimization evidence audit
+# Runtime resource optimization evidence and remaining backlog
 
-This is temporary follow-up evidence, not source documentation or a performance claim.
+The first optimization candidate was **rejected and reverted** after controlled paired CPU measurements failed to show an aggregate benefit and showed a Maxima slowdown. Frozen binaries and the patch remain as evidence only. The former 2%/5% limits are historical diagnostics, not completion criteria. No speedup is claimed from sampling or instruction counts.
 
-## Recovered inputs
+## Recovered references and workload
 
-- Merged revision: `9084ea907`. Comparing production `src`, `libgag`, `libusl`, `SConstruct`, and `scons` against `b3fab1a48` reveals no production engine changes. Differences are a generator test fixture and translated data text. This does not turn a b3fab build into an exact merged build.
-- Retained b3fab executable: `artifacts/resource-preserved/candidate-b3fab1a48/glob2`, SHA256 `7de08ee1bcbb74b7d711efd29ad84237a499efc4626055d61fb1bab1db0fbbc9`. Full build/runtime provenance sits beside it.
-- Historical f0 pure executable was SHA256 `842ca2aecc71c2cb48f9a26b146cd9c39dec3cab214deb260191719dc1592c00`; preserved symbolized twin is `8296540a82234e060250b1b6d8d445743e239f7049e1bd6c5219c4f6c36accab`.
-- Historical f0 approved-fixes executable was SHA256 `eb48402f6332a0f519b7f6b6e6f908adc359f0c69ed5acc301efabffe3e46dc9`; preserved symbolized twin is `91d3543383785811fc1fbd79ee497d6cdf7c67201464383ba09f471fbf741741`.
-- Both symbolized control provenance records identify only `.note.gnu.build-id` allocated-section differences. They are distinct executable artifacts, not byte-identical restorations.
-- Data-only roots restored with `git archive f0ff8384b7e47d5867ff630ef8f3387591de3baa data` into `artifacts/resource-followup/control-f0-pure` and `control-f0-approved`. All 100 historically recorded runtime data hashes match for each. Original source patches and full historical provenance retained beside each root; recovery report is `artifacts/resource-followup/control-data-recovery.json`.
-- The original 7e54 fixture-generation executable SHA256 is `c5d6d16ed9c3c0ec5c1e0260ba35830d94be3f887c42c3f7e26b62fc9664b84f`. Hash scanning all 51 surviving `glob2` executables under `/home/bradley` and `/tmp` found no match. Do not substitute f0 controls for original fixture generation.
-- Authoritative priority saves: land-2-1002-maxima/checkpoint-24576.game.gz SHA256 `bad81fa2df4be1cbd9446bd6251c55468cc759bd9a25a147dc6e3aa0e2efd91a`; land-2-1001-cortex/checkpoint-24576.game.gz SHA256 `2a7be1f93c10462e5f73bb8c7c4fc2f9697a58a8ce7de9510dec8ee02d9cde0d`.
-- Both exact timing windows load tick 24576 and stop at 32768, with compute threads 4, compute experiments ai, gradient workers 2, gradient delay 8. Original manifests preserved. Fixture regeneration is not recovery unless exact hashes match; any deliberate replacement requires a newly identified corpus and separate results.
+The merged-resource production reference is `9084ea907`. The locally built reference at tooling revision `7bafc3f15298a1649e807e42909c3fa2fe3bc609` has unchanged production engine code and release executable SHA256 `77fb4b9d29432cdfea08734b4eb0b0d3eb7c354862fdc9820ba01c89a76333b6`. Its symbolized twin was relinked from identical objects without stripping: every allocated ELF section matches except build-id. Full object, source, command and runtime-library provenance is retained.
 
-## Ranking and already-rejected candidates
+Historical pre-refactor f0 pure executable: `842ca2aecc71c2cb48f9a26b146cd9c39dec3cab214deb260191719dc1592c00`; approved-fixes control: `eb48402f6332a0f519b7f6b6e6f908adc359f0c69ed5acc301efabffe3e46dc9`. Surviving symbolized twins have distinct binary hashes (`8296540a82234e060250b1b6d8d445743e239f7049e1bd6c5219c4f6c36accab` and `91d3543383785811fc1fbd79ee497d6cdf7c67201464383ba09f471fbf741741`) and recorded allocated-section equivalence except build-id; do not call them byte-identical restorations. Both restored f0 data roots match all 100 historically recorded runtime-data hashes. Older controls attribute intended behavior changes; optimizations compare primarily with the merged reference.
 
-1. Cortex repeated nearest-Food queries merit fresh merged profiling. The pre-hard-space-cache exact09b profile attributes 10.30% flat user-cycle samples to byte-snapshot ordered ring scans. This is not evidence for another material cache: the merged pass already snapshots positive Food stock including secondary yields.
-2. **Do not repeat the complete toroidal Food distance field.** Retained `pr846-retained/food-distance-diagnostics/land-2-1001-cortex-late/README.md` and frozen source show it was implemented, validated with 8192 identical per-tick GCS records, and withdrawn after instructions rose from 172.600B for the byte-snapshot intermediate to 181.968B (+5.43%). This instrumented diagnostic is not controlled end-to-end CPU acceptance, but it establishes construction cost and prevents treating that approach as untried. Only narrower lazy/adaptive query elimination would be a distinct candidate, and still needs profiling and controlled measurements.
-3. The old exact09b profile attributes 17.16% to Map::checkTile, 14.17% placement, 10.69% ground BFS, and about20.66% propagation. Current merged Cortex already contains HardSpaceView. Its retained exact-command pair reduced instructions11.218% (168.331B to149.448B), with separate8192-record checksum equality. Reprofile before attributing those old costs to current engine.
-4. Maxima old diagnostics show candidate/approved instructions ratio1.000433 vs approved/pure1.043034. Proposed discarded expansion-query elimination and donor-index hoisting have less than1% old self attribution; do not claim substantial expected savings.
-5. No existing evidence justifies ecology mutex removal or mixed-stock storage redesign. Old GrowthCache::rate self attribution0.07%; Cortex growResources0.79%. Propagation37.82% in the older Maxima profile is intrinsic shared work without a demonstrated redundant resource query. Sampling percentages overlap inlining/startup limitations and are not predicted speedup.
+The original `7e54a3fc581d22d32e7b97a6aee76dbfeae58e9f` fixture generator was rebuilt after local archival removed the original executable/checkpoints. Both priority saves and the complete 98-window legacy corpus were regenerated **byte-exactly**, with every historical fixture hash verified. This restores the original workload rather than introducing replacement saves. Recovery reports retain source archives, original/executed commands and dependency identities.
 
-No engine code was changed during this audit. Next step is a fresh exact merged-window profile, then a single measurable candidate only if attribution warrants it.
+Priority windows both load tick 24576 and end at 32768: land-2-1002-maxima save SHA256 `bad81fa2df4be1cbd9446bd6251c55468cc759bd9a25a147dc6e3aa0e2efd91a`; land-2-1001-cortex save SHA256 `2a7be1f93c10462e5f73bb8c7c4fc2f9697a58a8ce7de9510dec8ee02d9cde0d`. Diagnostic engine arguments preserve compute threads 4, experiment ai, gradient workers 2 and delay 8.
 
-## Independent tooling review
+## Fresh merged profiles
 
-Initial report-only, cleanup, validation and guide changes reviewed without blocking findings. Independent initial runner suite:12 passed. Governor/frequency additions reviewed;7 governor tests passed. Frequency boundary snapshots and perf permission probe correctly avoid claiming interval-effective frequency, which remains a separate required measurement or explicit omission. No timing campaign or governor mutation was run by this reviewer.
+Each process-scoped profile ran the exact 8192-tick window with affinity 0–7, 499 Hz user-cycle sampling, and no added checksum/telemetry flags. Both lost zero samples. Binary, fixture, catalog and runtime-library hashes remained stable. Startup is included, flat attribution is affected by inlining, and concurrent owned fixture/build work was allowed for diagnostics. These results are not controlled CPU measurements.
+
+| Hotspot | Cortex sampled cycles | Maxima sampled cycles |
+| --- | ---: | ---: |
+| Periodic plus synchronous propagation | 20.81% | 35.91% |
+| Placement body | 18.60% | — |
+| Ground BFS | 12.04% | — |
+| Shared tile predicate | 10.43% | — |
+| Byte-snapshot nearest-food rings | 9.80% | — |
+| Worker circulation | — | 3.82% |
+| Resource growth | 1.30% | 2.77% |
+| Guard seeding | 1.46% | 2.75% |
+| Maxima route preparation | — | 2.26% |
+| Maxima candidate scoring | — | 2.22% |
+| Maxima farming | — | 2.02% |
+| Surviving-food cluster count | 0.62% | — |
+
+Separate exact-window process-counter runs measured effective frequency as cycles divided by task-clock: Cortex 2.5957 GHz and Maxima 3.5079 GHz, with all events running 100%. These cover all engine threads including startup, not a particular simulation phase, and are separate instrumented runs.
+
+## Rejected indexed-ring candidate
+
+Annotated Cortex assembly shows each vertical ring byte lookup wrapping y, multiplying by width, and adding x. The dependent vertical load branches account for 24.44% and 22.65% of nearest's local samples. This supports testing compact indexed traversal; it does not predict savings.
+
+The candidate changes only `FoodAvailabilityView::nearestDistance`: vertical edges advance or retreat the flat index by width and mask by total cells. Original horizontal dx loops, ordered ring edges, torus aliases, caps, immutable snapshot lifetime, allocation footprint and material predicates remain unchanged. No eager distance field, memo table, new schema or gameplay feature was added.
+
+- Base: `7bafc3f15298a1649e807e42909c3fa2fe3bc609` plus retained patch.
+- Patch SHA256: `13777ea2021815ed05aba03648601e9b8d957e787581f6cb6737d0bcfab3053d`.
+- Frozen candidate executable SHA256: `353dcb91758300d9ceb965273cb32bf9821d0cf03462d6cf97ac9dba48c08386`.
+- CortexGeometry: 4 cases pass. RuntimeResources: 25 cases pass, including composition/metamorphic fixtures, secondary/depleted stock, custom obstruction and legacy 138/139 continuation.
+- Forty engine children returned 0. Eight complete 8192-record priority traces agree byte-for-byte across before/after and compute/gradient workers 1/4. Sixteen continuation tails match every detailed simulation record across all eight pending-gradient deadline phases per scenario, saving with worker 4 and resuming with worker 1.
+- The original correctness command session reported shell status **143 after its final PASS log and passed audit**. Cause remains unresolved; the script has no process-group signalling or post-PASS error path. This is not a clean-wrapper-exit claim. A separate independent output audit exited 0 and reread all 40 child statuses, eight full traces, sixteen tails and frozen hashes. Published evidence keeps this distinction explicit.
+
+Candidate Cortex instructions were 143.277 billion versus reference 150.273 billion: **4.656% fewer instructions, not a CPU speedup claim**. Diagnostic cycles increased by a factor of 2.614 and effective frequency was 3.9558 GHz. Execution context differs, and the indexed loop adds a dependency chain; either environmental effects or a real regression is possible. The subsequent controlled run completed one warmup pair and 16 measured alternating pairs per priority window with exclusive owned-work scheduling and stabilized governors. Binary, fixture and runtime inputs verified unchanged. Original governor settings were restored successfully with no restoration errors. Quiet preflight passed; measured background activity was 0.26–1.53 average cores per run (mean 0.549), so the host was not completely idle.
+
+| End-to-end metric | Candidate change | 95% confidence interval |
+| --- | ---: | ---: |
+| Aggregate CPU | +0.0895% | −0.5503% to +0.7575% |
+| Cortex CPU | −0.8306% | −1.6100% to −0.0299% |
+| Maxima CPU | +1.0232% | +0.0675% to +2.0197% |
+| Cortex peak RSS | +2.5308% | +2.0654% to +3.0576% |
+| Maxima peak RSS | +2.3948% | +1.1339% to +3.7229% |
+
+The small Cortex improvement does not establish an aggregate benefit and comes with a Maxima regression and increased measured peak memory. **Rejected:** the coordinator restored the original production header. Passing historical percentage diagnostics (`performance_gate: within_limits`) does not justify retention. No full-corpus campaign is warranted for this rejected patch. Raw paired observations, metadata, input verification and summary are retained under `priority-timing/paired-01`, with governor audit `priority-timing/paired-01-governors.json`.
+
+## Ranked remaining investigations and evidence rejections
+
+1. **Indexed-ring candidate rejected with controlled CPU evidence.** Original production code is restored. Preserve the diagnostic reduction in instructions alongside the null aggregate CPU result and Maxima slowdown; do not resurrect this patch from instruction counts alone.
+2. **Propagation is expensive, but no high-impact duplicate-work elimination is currently demonstrated.** Both windows submit 8192 jobs; only 89 Maxima and 5 Cortex jobs are discarded (1.09% and 0.061%). Cancellation cannot plausibly eliminate most propagation, and saved pending snapshots, fixed publication deadlines and error behavior must survive any such change. Skipping apparently unchanged periodic fields would need actual seed/terrain equality evidence and preserve schedule/save behavior; a speculative output cache is unjustified.
+3. **A second full-map seed enumeration is demonstrable but bounded.** Producers seed every cell; `propagateField` then scans the entire buffer to enqueue seeds. Sampled initial seed-scan instructions account for roughly 5.4% of the 30.02% Maxima periodic kernel, about 1.6% of total samples attributable to that part. This is an approximate cost bound, not a speedup projection. Carrying ordered seed indices from preparation might avoid the scan, but requires extra per-job storage, correct supplier/deferred-cost seeds, parallel-initialization ordering and completed-snapshot save semantics. No implementation is justified before frequency/cost measurement establishes that these costs outweigh new work.
+4. **Do not repeat existing propagation optimizations.** Current kernels already hoist coordinates/terrain costs/destination buckets, specialize uniform swim classes, vectorize relaxation, reserve append capacity by chunks and discard stale queue entries. Historical commits `9e8b378eb` and `05207be36` cover earlier repeated-work reductions; current seed templates already deduplicate dirty cells and patch goals/fog/forbidden state. Growth/seed caches are not unexplored blank slates.
+5. **Complete toroidal Food distance field: rejected by existing diagnostic evidence.** The prior implementation preserved 8192 GCS records but increased instructions from 172.600 billion for the byte snapshot to 181.968 billion (+5.43%). Construction overwhelmed the avoided scans. Retained source/profile evidence prevents treating that approach as untried.
+6. **Per-coordinate nearest memo: reject before implementation.** Each placement pass visits a coordinate at most once for its cap-5 food gate; only four retained candidates repeat at cap 12. Non-food buildings make only those four queries. A map-sized memo would add writes for predominantly unique requests to save at most four small scans.
+7. **Reusing the existing food snapshot in cluster counts is low priority.** The current direct count accounts for 0.62% of Cortex samples. It may remove duplicate material queries but does not presently support a substantial-win claim. Maxima discarded expansion-query/hoisting ideas likewise had less than 1% old self attribution.
+8. **No evidence for ecology mutex removal or mixed-stock layout redesign.** Existing profiles do not attribute meaningful contention/storage cost to those mechanisms. Keep them as unproven investigations, not committed changes.
+
+Cross-platform per-tick verification and final corpus/stress performance remain separate requirements. Expanded gameplay trials, physical ARM/iOS testing and maintainer gameplay review remain deferred with the original documented limits.

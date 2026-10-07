@@ -1,0 +1,20 @@
+{
+  "source": "7bafc3f15298a1649e807e42909c3fa2fe3bc609",
+  "resource_cases_passed": 26,
+  "component_cases_passed": 1,
+  "component_scenarios": 6,
+  "timing_conditions": "Concurrent with original engine recovery; component instrumentation is diagnostic only, not quiet end-to-end CPU or before/after performance evidence.",
+  "coverage": [
+    "growth/depletion/regrowth",
+    "source queries",
+    "gradient requests/invalidation/seed refresh",
+    "cache/stock/memory allocation",
+    "256/512 square eight-team",
+    "1/512 equivalent definitions",
+    "mixed stocks",
+    "metamorphic rename/sprite",
+    "unused definitions/absent gradient work",
+    "legacy format138/139 and fresh-process catalog poisoning"
+  ],
+  "report": "resource-component-stress/report.json"
+}

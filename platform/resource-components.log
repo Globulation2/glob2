@@ -1,0 +1,4 @@
+PASS ResourceRuntimeBenchmark/large eight-team sparse material and runtime catalog stress [benchmark][resources] (1.3s)
+
+1 passed, 0 failed, 0 skipped (1.3s of test time)
+[run_tests] JUnit report: artifacts/resource-followup/platform-closure/resource-components.xml (1 cases)

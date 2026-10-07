@@ -1,0 +1,3 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="1" failures="0" errors="0" skipped="0"><testsuite name="ResourceRuntimeBenchmark"><testcase classname="ResourceRuntimeBenchmark" name="large eight-team sparse material and runtime catalog stress [benchmark][resources]" time="1.27092" status="run" />
+  </testsuite></testsuites>
