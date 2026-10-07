@@ -10,7 +10,6 @@
 #include "EngineTiming.h"
 #include "FixedPoint.h"
 #include "Ressource.h"
-#include "RessourceType.h"
 #include "GlobalContainer.h"
 #include "Unit.h"
 
@@ -288,7 +287,7 @@ void Minimap::computeColors(int row, int localTeam)
 		{ (220*3)/5, (25*3)/5, (30*3)/5 }, // enemy FOW
 	};
 
-	int pcol[TERRAIN_COUNT+MAX_RESOURCES];
+	int pcol[TERRAIN_COUNT];
 
 	// get data
 	int szX = mini_w;
@@ -369,7 +368,9 @@ void Minimap::computeColors(int row, int localTeam)
 					const auto& r = scene->map.getResource(minidx, minidy);
 					if (r.type!=NO_RES_TYPE)
 					{
-						pcolIndex=r.type + TERRAIN_COUNT;
+						const auto& color = scene->map.resourceRegistry().presentation(static_cast<ResourceId>(r.type)).minimap;
+						customColor = TerrainColor{color[0], color[1], color[2]};
+						pcolIndex = -1;
 					}
 					else
 					{
@@ -428,13 +429,7 @@ void Minimap::computeColors(int row, int localTeam)
 				lg += pcol[i]*palette[i].g;
 				lb += pcol[i]*palette[i].b;
 			}
-			for (int i=0; i<MAX_RESOURCES; i++)
-			{
-				const ResourceType *rt = globalContainer->resourcesTypes.get(i);
-				lr += pcol[i+TERRAIN_COUNT]*(rt->minimapR);
-				lg += pcol[i+TERRAIN_COUNT]*(rt->minimapG);
-				lb += pcol[i+TERRAIN_COUNT]*(rt->minimapB);
-			}
+
 
 			r = lr/nCount;
 			g = lg/nCount;

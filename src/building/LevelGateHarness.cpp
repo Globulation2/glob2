@@ -41,14 +41,14 @@ static bool hiringPass(const char* kind, int level, bool site, int carried, int 
 	Building* building = game.addBuilding(8, 8, typeNum, 0);
 	require(building != nullptr, "create building");
 	building->maxUnitWorking = 2;
-	building->resources[carried] = 0;
+	building->materials[carried] = 0;
 	building->updateCallLists();
 	Unit* unit = game.addUnit(12, 12, 0, WORKER, 0, 255, 0, 0);
 	require(unit != nullptr, "create worker");
 	unit->level[HARVEST] = harvestLevel < 0 ? workerLevel : harvestLevel;
 	unit->level[BUILD] = 3-workerLevel; // Deliberately different from qualification.
 	unit->constructionLevel = workerLevel;
-	unit->carriedResource = carried;
+	unit->carriedMaterial = carried;
 	unit->activity = Unit::ACT_RANDOM;
 	unit->medical = Unit::MED_FREE;
 	team->updateAllBuildingTasks();

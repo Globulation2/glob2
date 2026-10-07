@@ -99,9 +99,9 @@ std::vector<GameGUITouch::BuildingAction> GameGUITouch::buildingActions() const
 	}
 	if (b->type->zonable[WORKER])
 	{
-		for (int i = 0; i < BASIC_COUNT; ++i)
-			if (i != STONE)
-				result.push_back({getResourceName(i), 1, i, gui.displayedClearingResource(*b, i)});
+		for (int i = 0; i < MaterialCount; ++i)
+			if (gui.drawnScene().clearableMaterial(i))
+				result.push_back({getMaterialName(i), 1, i, gui.displayedClearingResource(*b, i)});
 	}
 	if (b->type->zonable[WORKER])
 	{
@@ -532,9 +532,9 @@ void GameGUITouch::applyDiscreteAction(Building &building, const BuildingAction 
 	auto *b = &building;
 	if (row.kind == 1)
 	{
-		std::array<bool, BASIC_COUNT> values;
-		bool wire[BASIC_COUNT];
-		for (int k = 0; k < BASIC_COUNT; ++k)
+		std::array<bool, MaterialCount> values;
+		bool wire[MaterialCount];
+		for (int k = 0; k < MaterialCount; ++k)
 			values[k] = wire[k] = gui.displayedClearingResource(*b, k) ^ (k == row.value);
 		gui.pendingFor(b->gid).pendingClearingResources = values;
 		gui.orderQueue.push_back(std::make_shared<OrderModifyClearingFlag>(b->gid, wire));

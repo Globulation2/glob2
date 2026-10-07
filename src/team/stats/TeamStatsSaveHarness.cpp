@@ -72,6 +72,7 @@ struct TeamStatsMeasurementFixture
 	static void magic(Unit *u) { u->handleMagic(); }
 	static void displacement(Unit *u) { u->handleDisplacement(); }
 	static void clear(Unit *u) { u->tryClaimClearingAreaForHarvesting(); }
+	static void clearForBuilding(Unit *u) { u->handleMovementClearingResources(); }
 	static void partial(Unit *u) { u->applyPartialInsideBenefit(); }
 	static void ammunition(Building *b) { b->convertStoneToBullet(); }
 
@@ -345,7 +346,7 @@ static void measurementScenarios()
 		for (int distance : {8,9})
 		{
 			const int x = b->posX + b->type->width - 1 + distance;
-			require(w.game.map.incResource(x,8,WHEAT,0), "fixture resource seeded");
+			require(w.game.map.incResourceByIndex(x,8,WHEAT,0), "fixture resource seeded");
 			w.game.map.recordNaturalGrowth(x,8,WHEAT,NO_RES_TYPE,0);
 		}
 		require(stats.measurements.growthGlobal[0][WHEAT] == 2 &&
@@ -362,7 +363,7 @@ static void measurementScenarios()
 		for (Game *g : {&w.game, &loaded->game})
 		{
 			g->map.rebuildGrowthCoverage();
-			require(g->map.incResource(nextX,8,WHEAT,0), "continuation resource seeded");
+			require(g->map.incResourceByIndex(nextX,8,WHEAT,0), "continuation resource seeded");
 			g->map.recordNaturalGrowth(nextX,8,WHEAT,NO_RES_TYPE,0);
 		}
 		require(stats.measurements == loaded->game.teams[0]->stats.measurements,
@@ -429,49 +430,49 @@ static void measurementScenarios()
 				"starting/editor buildings are not completions");
 		swarm->ratio[0] = 1;
 		swarm->ratio[1] = swarm->ratio[2] = 0;
-		swarm->resources[WHEAT] = swarm->type->resourceForOneUnit;
+		swarm->materials[WHEAT] = swarm->type->foodPerUnit;
 		swarm->productionTimeout = -1;
 		swarm->swarmStep();
 		require(t->stats.measurements.births[WORKER] == 1, "successful swarm birth");
 		require(t->stats.measurements.consumed[Measurements::SPAWNING][WHEAT] ==
-					Uint64(swarm->type->resourceForOneUnit),
+					Uint64(swarm->type->foodPerUnit),
 				"spawning wheat cost");
 		for (int y = 0; y < 32; ++y)
 			for (int x = 0; x < 32; ++x)
 				w.game.map.setGroundUnit(x, y, 0);
-		swarm->resources[WHEAT] = swarm->type->resourceForOneUnit;
+		swarm->materials[WHEAT] = swarm->type->foodPerUnit;
 		swarm->productionTimeout = -1;
 		swarm->swarmStep();
 		require(t->stats.measurements.births[WORKER] == 1, "blocked birth produces no event");
-		require(swarm->resources[WHEAT] == swarm->type->resourceForOneUnit,
+		require(swarm->materials[WHEAT] == swarm->type->foodPerUnit,
 				"blocked birth consumes nothing");
 	}
 	{
 		TeamStatsMeasurementFixture w;
 		auto *inn = w.building("inn");
 		auto &m = w.game.teams[0]->stats.measurements;
-		inn->resources[WHEAT] = inn->type->maxResource[WHEAT] - 1;
-		inn->addResourceIntoBuilding(WHEAT);
-		inn->addResourceIntoBuilding(WHEAT);
+		inn->materials[WHEAT] = inn->type->maxMaterial[WHEAT] - 1;
+		inn->addMaterialIntoBuilding(WHEAT);
+		inn->addMaterialIntoBuilding(WHEAT);
 		require(m.delivered[WHEAT] == 1, "delivery uses accepted capacity-clamped amount");
-		inn->resources[CHERRY] = 1;
+		inn->materials[CHERRY] = 1;
 		inn->eatOnce(nullptr);
 		require(m.meals == 1 && m.consumed[Measurements::MEAL][WHEAT] == 1 &&
 					m.consumed[Measurements::MEAL][CHERRY] == 1,
 				"meal wheat and fruit consumed");
 		auto *market = w.building("market", 14, 8);
 		w.building("market", 20, 8);
-		market->resources[CHERRY] = 7;
+		market->materials[CHERRY] = 7;
 		w.game.teams[0]->stats.refreshMeasurements(w.game.teams[0]);
 		require(m.stock[CHERRY] == 7, "shared storage counted once across two markets");
-		market->removeResourceFromBuilding(CHERRY);
+		market->removeMaterialFromBuilding(CHERRY);
 		require(m.withdrawn[CHERRY] ==
-					Uint64(std::min(7, market->type->multiplierResource[CHERRY])),
+					Uint64(std::min(7, market->type->materialMultiplier[CHERRY])),
 				"market withdrawal in resource units");
 		require(m.withdrawn[CHERRY] == m.transferredOut[CHERRY] && m.harvested[CHERRY] == 0,
 				"withdrawal is transfer, not harvest");
 		auto *tower = w.building("defencetower", 8, 16);
-		tower->resources[STONE] = 1;
+		tower->materials[STONE] = 1;
 		tower->bullets = 0;
 		TeamStatsMeasurementFixture::ammunition(tower);
 		require(m.consumed[Measurements::AMMUNITION][STONE] == 1,
@@ -482,7 +483,7 @@ static void measurementScenarios()
 		auto *worker = w.unit();
 		auto *inn = w.building("inn");
 		auto &m = w.game.teams[0]->stats.measurements;
-		w.game.map.incResource(21, 20, WHEAT, 0);
+		w.game.map.incResourceByIndex(21, 20, WHEAT, 0);
 		worker->attachedBuilding = inn;
 		worker->setTargetBuilding(inn);
 		worker->activity = Unit::ACT_FILLING;
@@ -492,16 +493,17 @@ static void measurementScenarios()
 		worker->dx = 1;
 		worker->dy = 0;
 		TeamStatsMeasurementFixture::displacement(worker);
-		require(m.harvested[WHEAT] == 1 && worker->carriedResource == WHEAT,
+		require(m.harvested[WHEAT] == 1 && worker->carriedMaterial == WHEAT,
 				"harvest completion counts a load");
 		worker->standardRandomActivity();
-		worker->carriedResource = -1;
-		w.game.map.incResource(21, 20, WOOD, 0);
+		worker->carriedMaterial = -1;
+		w.game.map.incResourceByIndex(21, 20, WOOD, 0);
 		worker->movement = Unit::MOV_HARVESTING;
 		worker->medical = Unit::MED_FREE;
-		const int resourceType = w.game.map.getResource(21, 20).type;
+		const auto primaryMaterial = w.game.map.resourcePropertiesByIndex(
+			w.game.map.getResource(21, 20).type).primaryMaterial;
 		TeamStatsMeasurementFixture::clear(worker);
-		require(m.cleared[resourceType] == 1, "clearing completion counts an operation");
+		require(m.cleared[materialIndex(primaryMaterial)] == 1, "clearing completion counts an operation");
 	}
 	{
 		TeamStatsMeasurementFixture w;
@@ -590,7 +592,7 @@ static void measurementScenarios()
 			u->hungry = 0;
 		else if (cause == Measurements::CLEARING)
 		{
-			w.game.map.incResource(21, 20, WOOD, 0);
+			w.game.map.incResourceByIndex(21, 20, WOOD, 0);
 			u->dx = 1;
 			u->dy = 0;
 			u->movement = Unit::MOV_HARVESTING;
@@ -642,8 +644,8 @@ static void measurementScenarios()
 																		   : Building::REPAIR;
         // Seed a fully paid construction ledger. Storage capacity is independent
         // of the construction budget; repair deliveries are reserved as they arrive.
-        for (int r = 0; r < MAX_RESOURCES; ++r) site->resources[r]=site->constructionBudget[r];
-        require(site->reserveResources(site->constructionBudget),"fixture construction resources reserve");
+        for (int r = 0; r < MaterialCount; ++r) site->materials[r]=site->constructionBudget[r];
+        require(site->reserveMaterials(site->constructionBudget),"fixture construction resources reserve");
         site->constructionReserved=site->constructionBudget;
 		int level = site->type->level, shortType = site->type->shortTypeNum;
 		const int wheatCost = site->constructionBudget[WHEAT];
@@ -662,8 +664,8 @@ static void measurementScenarios()
 	{
 		TeamStatsMeasurementFixture w;
 		auto *inn = w.building("inn", 8, 8, 1);
-		inn->resources[WHEAT] = 10;
-		inn->resources[CHERRY] = 10;
+		inn->materials[WHEAT] = 10;
+		inn->materials[CHERRY] = 10;
 		inn->updateCallLists();
 		TeamStatsMeasurementFixture::allowConversion(inn);
 		w.game.teams[1]->sharedVisionFood |= w.game.teams[0]->me;
@@ -747,10 +749,10 @@ static void measurementScenarios()
 		TeamStatsMeasurementFixture w;
 		auto *site = w.building("inn", 8, 8, 0, true);
 		site->constructionResultState = Building::REPAIR;
-		site->resources[WOOD] = 0;
-		site->addResourceIntoBuilding(WOOD);
+		site->materials[WOOD] = 0;
+		site->addMaterialIntoBuilding(WOOD);
 		require(w.game.teams[0]->stats.measurements.repairDelivered[WOOD] ==
-					Uint64(site->type->multiplierResource[WOOD]),
+					Uint64(site->type->materialMultiplier[WOOD]),
 				"repair deliveries recorded separately");
 	}
 	{
@@ -785,7 +787,7 @@ static void measurementScenarios()
 		b->update();
 		const auto &m = w.game.teams[0]->stats.measurements;
 		require(!b->type->isBuildingSite, "instant site completes");
-		for (int r = 0; r < MAX_RESOURCES; ++r)
+		for (int r = 0; r < MaterialCount; ++r)
 			require(m.consumed[Measurements::CONSTRUCTION][r] == 0,
 					"instant construction consumes no undelivered resources");
 	}
@@ -841,11 +843,11 @@ static void measurementReplayBoundaries()
 	// Format 124 introduced experiments; format 125 adds JavaScript identities.
 	// Format 128 changes save encoding, retaining the format-127 replay floor.
 	// Format 130 adds the farm-areas tile mask, still retaining that floor.
-	// Snapshot AI scheduling uses replay floor 140 and network protocol 59;
+	// Engine snapshots and scheduled AI decisions use replay floor 143, protocol 61;
 	// older save compatibility remains independent of these acceptance gates.
-	require(REPLAY_MINIMUM_VERSION_MINOR == 140 && NET_PROTOCOL_VERSION == 59,
+	require(REPLAY_MINIMUM_VERSION_MINOR == FILE_FORMAT_VERSION_AI_PIPELINE && NET_PROTOCOL_VERSION == 61,
 			"integrated simulation uses current replay and network gates");
-	for (int version : {98, 99, 100, 101, 102, 103, 104, 105, 106, 107, 115, 119, 120, 121, 122, 123, 124, 133, 134, 135, FILE_FORMAT_VERSION_RUNTIME_TERRAIN, VERSION_MINOR, VERSION_MINOR+1})
+	for (int version : {98, 99, 100, 101, 102, 103, 104, 105, 106, 107, 115, 119, 120, 121, 122, 123, 124, 133, 134, 135, FILE_FORMAT_VERSION_RUNTIME_TERRAIN, FILE_FORMAT_VERSION_TERRAIN_SEED, 139, FILE_FORMAT_VERSION_RUNTIME_RESOURCES, FILE_FORMAT_VERSION_TERRAIN_CATALOGUE, VERSION_MINOR, VERSION_MINOR+1})
 	{
 		auto *bytes = new GAGCore::MemoryStreamBackend;
 		GAGCore::BinaryOutputStream writer(bytes);
@@ -1229,6 +1231,72 @@ static void measurementScreenshots(const std::string &directory)
 }
 }
 
+TEST_CASE("clearing telemetry counts operations once by configured primary material" * doctest::test_suite("TeamStatsSave"))
+{
+    glob2test::HeadlessGlobals globals;
+    using Json = nlohmann::json;
+    for (const bool buildingClearing : {false, true})
+        for (const bool mixed : {false, true})
+            for (const bool empty : {false, true})
+            {
+                CAPTURE(buildingClearing);
+                CAPTURE(mixed);
+                CAPTURE(empty);
+                TeamStatsMeasurementFixture w;
+                auto &map = w.game.map;
+                auto definition = Json::parse(map.resourceRegistry().serialize())["resources"][0];
+                definition["key"] = "clearing-telemetry";
+                definition["properties"]["primaryMaterial"] = "gold";
+                definition["properties"]["persistsWhenEmpty"] = true;
+                definition["properties"]["clearConsumption"] = "all";
+                definition["yields"] = Json::object();
+                definition["yields"]["gold"] = {{"capacity", 500}, {"initial", 500},
+                    {"consumption", "one"}};
+                if (mixed)
+                    definition["yields"]["wood"] = {{"capacity", 200}, {"initial", 200},
+                        {"consumption", "one"}};
+                map.installResourceDefinitions(Json{{"schemaVersion", 1},
+                    {"resources", Json::array({definition})}}.dump());
+                const auto id = map.resourceRegistry().find("clearing-telemetry");
+                REQUIRE(id.has_value());
+                map.setResource(21, 20, *id, 0);
+                // Keep another eligible tile nearby so building clearing need not
+                // perform any unrelated attachment or route transitions afterward.
+                map.setResource(21, 21, *id, 0);
+                const auto target = map.coordToIndex(21, 20);
+                if (empty)
+                {
+                    map.setMaterialAmount(target, MaterialId::Gold, 0);
+                    if (mixed) map.setMaterialAmount(target, MaterialId::Wood, 0);
+                    REQUIRE(map.getResource(21, 20).amount == 0);
+                    REQUIRE(map.resourceBlocksGround(target));
+                }
+                auto *worker = w.unit();
+                auto *inn = w.building("inn");
+                inn->unitStayRange = 32;
+                inn->clearingMaterials[materialIndex(MaterialId::Gold)] = true;
+                worker->attachedBuilding = inn;
+                worker->medical = Unit::MED_FREE;
+                worker->displacement = Unit::DIS_RANDOM;
+                auto &measurements = w.game.teams[0]->stats.measurements;
+                for (unsigned attempt = 0; attempt < 2; ++attempt)
+                {
+                    worker->movement = Unit::MOV_HARVESTING;
+                    worker->dx = 1;
+                    worker->dy = 0;
+                    if (buildingClearing) TeamStatsMeasurementFixture::clearForBuilding(worker);
+                    else TeamStatsMeasurementFixture::clear(worker);
+                    Uint64 total = 0;
+                    for (unsigned material = 0; material < MaterialCount; ++material)
+                        total += measurements.cleared[material];
+                    CHECK(total == 1);
+                    CHECK(measurements.cleared[materialIndex(MaterialId::Gold)] == 1);
+                    CHECK(measurements.cleared[materialIndex(MaterialId::Wood)] == 0);
+                    CHECK(map.getResource(21, 20).type == NO_RES_TYPE);
+                }
+            }
+}
+
 TEST_SUITE("TeamStatsSave")
 {
 	TEST_CASE("32 sampling phases; ring wrap; repeated loads; text streams and corruption controls [save-format]")
@@ -1375,8 +1443,8 @@ TEST_CASE("Scripting identity survives conversion and save load" * doctest::test
  glob2test::HeadlessGlobals globals;
  TeamStatsMeasurementFixture w;
  auto *inn=w.building("inn",8,8,1);
- inn->resources[WHEAT]=10;
- inn->resources[CHERRY]=10;
+ inn->materials[WHEAT]=10;
+ inn->materials[CHERRY]=10;
  inn->updateCallLists();
  TeamStatsMeasurementFixture::allowConversion(inn);
  w.game.teams[1]->sharedVisionFood |= w.game.teams[0]->me;
@@ -1413,7 +1481,7 @@ TEST_CASE("Scripting conversion allocates fresh identity in a reused destination
  auto previousReference=Script::Value::object().set("id",unsigned(previous->gid)).set("generation",previous->scriptIdentity);
  REQUIRE(w.game.removeUnitAndBuildingAndFlags(20,20,Game::DEL_UNIT));
  auto *inn=w.building("inn",8,8,1);
- inn->resources[WHEAT]=10; inn->resources[CHERRY]=10; inn->updateCallLists();
+ inn->materials[WHEAT]=10; inn->materials[CHERRY]=10; inn->updateCallLists();
  TeamStatsMeasurementFixture::allowConversion(inn);
  w.game.teams[1]->sharedVisionFood |= w.game.teams[0]->me;
  w.game.teams[1]->allies &= ~w.game.teams[0]->me;
@@ -1473,8 +1541,8 @@ TEST_CASE("Scripting building completion upgrade and repair preserve identity" *
   }
   REQUIRE(site->type->isBuildingSite);
   REQUIRE(site->constructionResultState==kind);
-  for(int resource=0;resource<MAX_RESOURCES;++resource)site->resources[resource]=site->constructionBudget[resource];
-  REQUIRE(site->reserveResources(site->constructionBudget));
+  for(int resource=0;resource<MaterialCount;++resource)site->materials[resource]=site->constructionBudget[resource];
+  REQUIRE(site->reserveMaterials(site->constructionBudget));
   site->constructionReserved=site->constructionBudget;
   site->update(); site->update();
   REQUIRE_FALSE(site->type->isBuildingSite);
@@ -1491,7 +1559,7 @@ TEST_CASE("Scripting conversion back never resurrects the original reference" * 
  TeamStatsMeasurementFixture world;
  auto *destination=world.building("inn",8,8,1);
  auto *home=world.building("inn",16,8,0);
- destination->resources[WHEAT]=10; destination->resources[CHERRY]=10; destination->updateCallLists();
+ destination->materials[WHEAT]=10; destination->materials[CHERRY]=10; destination->updateCallLists();
  TeamStatsMeasurementFixture::allowConversion(destination);
  world.game.teams[1]->sharedVisionFood |= world.game.teams[0]->me;
  world.game.teams[1]->allies &= ~world.game.teams[0]->me;
@@ -1501,8 +1569,8 @@ TEST_CASE("Scripting conversion back never resurrects the original reference" * 
  TeamStatsMeasurementFixture::activity(unit);
  REQUIRE(unit->owner==world.game.teams[1]);
  auto converted=Script::Value::object().set("id",unsigned(unit->gid)).set("generation",unit->scriptIdentity);
- destination->resources[WHEAT]=0; destination->resources[CHERRY]=0; destination->updateCallLists();
- home->resources[WHEAT]=10; home->resources[CHERRY]=10; home->updateCallLists();
+ destination->materials[WHEAT]=0; destination->materials[CHERRY]=0; destination->updateCallLists();
+ home->materials[WHEAT]=10; home->materials[CHERRY]=10; home->updateCallLists();
  TeamStatsMeasurementFixture::allowConversion(home);
  world.game.teams[0]->sharedVisionFood |= world.game.teams[1]->me;
  world.game.teams[0]->allies &= ~world.game.teams[1]->me;

@@ -3,6 +3,8 @@
 #include "sim/snapshot/WorldSnapshot.h"
 #include "BuildingUtils.h"
 #include "UnitUtils.h"
+#include "ResourceRegistry.h"
+#include <algorithm>
 #include <iterator>
 
 namespace AIEngine
@@ -67,6 +69,7 @@ class AIWorldView
 	unsigned widthShift = 0;
 	bool maskedGeometry = false, farmInputs = false;
 	std::size_t cellCount = 0;
+	MapState::View view;
 	TileView composeTile(std::size_t index) const;
 public:
 	using Catalog = std::vector<BuildingKindView>;
@@ -94,9 +97,8 @@ public:
 	std::span<const std::pair<std::string, int>> ruleValues;
 	std::span<const std::string> experimentKeys;
 	bool farmAreasEnabled = false;
-	std::array<bool, MAX_NB_RESOURCES> resourceShrinkable{}, resourceVisibleToBeCollected{}, resourceEternal{};
-	std::array<int, MAX_NB_RESOURCES> resourceSizesCount{};
 	std::shared_ptr<const TerrainRegistry> terrain;
+	std::shared_ptr<const ResourceRegistry> resourceRegistry;
 	std::shared_ptr<const Catalog> catalog;
 	std::shared_ptr<const GameHeader> configuration;
 	std::shared_ptr<const Fertility::GrowthCache> growth;
@@ -117,10 +119,10 @@ public:
 	} tiles;
 	// Shared stock queries require a captured Teams component. Local stock is
 	// part of the building's authoritative scalar record.
-	std::span<const Sint32, MAX_NB_RESOURCES> buildingResources(const BuildingView& building) const
+	std::span<const Sint32, MaterialSlotCount> buildingResources(const BuildingView& building) const
 	{
-		if (building.usesTeamResources) return teams[building.team].resources;
-		return building.localResource;
+		if (building.usesTeamResources) return teams[building.team].materials;
+		return building.localMaterials;
 	}
 	std::span<const UnitRef> workers(const BuildingView& building) const
 	{ return std::span<const UnitRef>(lease.entities->relationships).subspan(building.working.offset, building.working.count); }
@@ -156,6 +158,10 @@ public:
 	const SimulationSnapshot::AreaCell& areasAt(std::size_t index) const { return areaCells[index]; }
 	SimulationSnapshot::VisibilityCell visibilityAt(std::size_t index) const { return {discoveredCells[index], visibleCells[index]}; }
 	bool canPaintFarmAt(std::size_t index) const;
+	// The same read-only record view the live Map exposes. Shared MapState
+	// queries read the captured arrays directly through it.
+	const MapState::View& state() const { return view; }
+	Uint64 staticMaterialSourceGeneration() const { return lease.resources ? lease.resources->staticMaterialSourceGeneration : 0; }
 	int normalizeX(int x) const { return xMask >= 0 ? unsigned(x) & unsigned(xMask) : wrapGeneral(x, width); }
 	int normalizeY(int y) const { return yMask >= 0 ? unsigned(y) & unsigned(yMask) : wrapGeneral(y, height); }
 	bool isUpgradeAvailable(const BuildingView& building) const;

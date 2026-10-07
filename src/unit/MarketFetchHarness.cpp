@@ -67,7 +67,7 @@ struct Bed
 		require(inn != nullptr, "inn placed");
 		game.map.setBuilding(6, 6, inn->type->width, inn->type->height, inn->gid);
 		inn->maxUnitWorking = 2;
-		inn->resources[WHEAT] = inn->type->maxResource[WHEAT];
+		inn->materials[WHEAT] = inn->type->maxMaterial[WHEAT];
 		inn->updateCallLists();
 		int marketType = game.buildingsTypes.getTypeNum("market", 0, false);
 		require(marketType >= 0, "market type exists");
@@ -92,10 +92,10 @@ TEST_CASE("MarketFetch/stocked markets are resource goals, depleted markets are 
 	{
 		// No cherries on the map, ten in the market four tiles from the worker.
 		Bed bed(36, 36);
-		bed.market->resources[CHERRY] = 10;
+		bed.market->materials[CHERRY] = 10;
 		int dist = 0;
-		require(bed.game.map.resourceAvailable(0, CHERRY, bed.unit->swimClass(), 36, 36, &dist, true), "the with-markets gradient reaches the stocked market");
-		require(!bed.game.map.resourceAvailable(0, CHERRY, bed.unit->swimClass(), 36, 36, &dist, false), "the plain gradient knows no cherries");
+		require(bed.game.map.materialAvailableSlot(0, CHERRY, bed.unit->swimClass(), 36, 36, &dist, true), "the with-markets gradient reaches the stocked market");
+		require(!bed.game.map.materialAvailableSlot(0, CHERRY, bed.unit->swimClass(), 36, 36, &dist, false), "the plain gradient knows no cherries");
 		bed.hire();
 		require(bed.inn->unitsWorking.size() == 1 && bed.unit->destinationPurpose == CHERRY, "inn hires the worker for cherries held by the market");
 		require(bed.unit->displacement == Unit::DIS_GOING_TO_RESOURCE, "walking the fetch gradient");
@@ -104,14 +104,14 @@ TEST_CASE("MarketFetch/stocked markets are resource goals, depleted markets are 
 	}
 	{
 		// Standing at the market's door: the take happens on arrival. A fruit
-		// delivery is ten units (multiplierResource), so is a take.
+		// delivery is ten units (materialMultiplier), so is a take.
 		Bed bed(39, 39);
-		bed.market->resources[CHERRY] = 20;
+		bed.market->materials[CHERRY] = 20;
 		bed.hire();
 		require(bed.inn->unitsWorking.size() == 1 && bed.unit->displacement == Unit::DIS_GOING_TO_RESOURCE, "hired and walking");
 		bed.unit->arrive();
-		require(bed.unit->carriedResource == CHERRY, "took a cherry out of the market");
-		require(bed.market->resources[CHERRY] == 10, "market stock went down by one take");
+		require(bed.unit->carriedMaterial == CHERRY, "took a cherry out of the market");
+		require(bed.market->materials[CHERRY] == 10, "market stock went down by one take");
 		require(bed.unit->displacement == Unit::DIS_GOING_TO_BUILDING && bed.unit->targetBuilding == bed.inn, "carrying it to the inn");
 		std::puts("market fetch: the resource is taken at the market's door");
 	}
@@ -120,28 +120,28 @@ TEST_CASE("MarketFetch/stocked markets are resource goals, depleted markets are 
 		Bed bed(39, 39);
 		auto *other=bed.game.addBuilding(50,50,bed.market->typeNum,0);
 		REQUIRE(other);
-		bed.market->resources[CHERRY]=20;
-		CHECK(other->resources[CHERRY]==20);
-		other->removeResourceFromBuilding(CHERRY);
-		CHECK(bed.market->resources[CHERRY]==10);
+		bed.market->materials[CHERRY]=20;
+		CHECK(other->materials[CHERRY]==20);
+		other->removeMaterialFromBuilding(CHERRY);
+		CHECK(bed.market->materials[CHERRY]==10);
 		bed.hire();
 		REQUIRE(bed.unit->displacement==Unit::DIS_GOING_TO_RESOURCE);
-		other->removeResourceFromBuilding(CHERRY);
+		other->removeMaterialFromBuilding(CHERRY);
 		bed.unit->arrive();
-		CHECK(bed.market->resources[CHERRY]==0);
-		CHECK(bed.unit->carriedResource==-1);
+		CHECK(bed.market->materials[CHERRY]==0);
+		CHECK(bed.unit->carriedMaterial==-1);
 		CHECK(bed.unit->displacement==Unit::DIS_GOING_TO_RESOURCE);
-		other->addResourceIntoBuilding(CHERRY);
+		other->addMaterialIntoBuilding(CHERRY);
 		bed.unit->arrive();
-		CHECK(bed.unit->carriedResource==CHERRY);
-		CHECK(other->resources[CHERRY]==0);
+		CHECK(bed.unit->carriedMaterial==CHERRY);
+		CHECK(other->materials[CHERRY]==0);
 		CHECK(bed.unit->targetBuilding==bed.inn);
 	}
 	{
 		// Cherries two tiles from the worker beat the market.
 		Bed bed(36, 36);
-		bed.market->resources[CHERRY] = 10;
-		require(bed.game.map.incResource(34, 36, CHERRY, 0), "seed a cherry tile near the worker");
+		bed.market->materials[CHERRY] = 10;
+		require(bed.game.map.incResourceByIndex(34, 36, CHERRY, 0), "seed a cherry tile near the worker");
 		bed.hire();
 		require(bed.inn->unitsWorking.size() == 1 && bed.unit->displacement == Unit::DIS_GOING_TO_RESOURCE, "hired for cherries");
 		require(bed.unit->targetX == 34 && bed.unit->targetY == 36, "the nearer tile is the goal, not the market");
@@ -150,12 +150,12 @@ TEST_CASE("MarketFetch/stocked markets are resource goals, depleted markets are 
 	{
 		// The market runs dry: after the rebuild it is no goal any more.
 		Bed bed(36, 36);
-		bed.market->resources[CHERRY] = 1;
+		bed.market->materials[CHERRY] = 1;
 		int dist = 0;
-		require(bed.game.map.resourceAvailable(0, CHERRY, bed.unit->swimClass(), 36, 36, &dist, true), "stocked market is a goal");
-		bed.market->removeResourceFromBuilding(CHERRY);
-		bed.game.map.updateResourcesGradient(0, CHERRY, bed.unit->swimClass(), true);
-		require(!bed.game.map.resourceAvailable(0, CHERRY, bed.unit->swimClass(), 36, 36, &dist, true), "an empty market is no goal");
+		require(bed.game.map.materialAvailableSlot(0, CHERRY, bed.unit->swimClass(), 36, 36, &dist, true), "stocked market is a goal");
+		bed.market->removeMaterialFromBuilding(CHERRY);
+		bed.game.map.updateMaterialGradient(0, CHERRY, bed.unit->swimClass(), true);
+		require(!bed.game.map.materialAvailableSlot(0, CHERRY, bed.unit->swimClass(), 36, 36, &dist, true), "an empty market is no goal");
 		bed.hire();
 		require(bed.inn->unitsWorking.empty() && bed.inn->unitsFailingRequirements[Building::UnitCantAccessFruit] >= 1, "nobody hired, counted as no fruit reachable");
 		std::puts("market fetch: an empty market is no source");
@@ -165,15 +165,15 @@ TEST_CASE("MarketFetch/stocked markets are resource goals, depleted markets are 
 		// team pool holds some; a level-3 market does.
 		Bed bed(36, 36);
 		require(bed.game.buildingsTypes.getTypeNum("market", 1, false) >= 0 && bed.game.buildingsTypes.getTypeNum("market", 2, false) >= 0, "market levels 2 and 3 exist");
-		bed.market->resources[WOOD] = 20;
+		bed.market->materials[WOOD] = 20;
 		int dist = 0;
-		require(!bed.game.map.resourceAvailable(0, WOOD, bed.unit->swimClass(), 36, 36, &dist, true), "a level-1 market is no wood goal");
+		require(!bed.game.map.materialAvailableSlot(0, WOOD, bed.unit->swimClass(), 36, 36, &dist, true), "a level-1 market is no wood goal");
 		int top = bed.game.buildingsTypes.getTypeNum("market", 2, false);
         auto* supplier=bed.game.addBuilding(50,50,top,0);
         REQUIRE(supplier);
         bed.game.map.setBuilding(50,50,supplier->type->width,supplier->type->height,supplier->gid);
-		bed.game.map.updateResourcesGradient(0, WOOD, bed.unit->swimClass(), true);
-		require(bed.game.map.resourceAvailable(0, WOOD, bed.unit->swimClass(), 36, 36, &dist, true), "a level-3 market hands out wood");
+		bed.game.map.updateMaterialGradient(0, WOOD, bed.unit->swimClass(), true);
+		require(bed.game.map.materialAvailableSlot(0, WOOD, bed.unit->swimClass(), 36, 36, &dist, true), "a level-3 market hands out wood");
 		std::puts("market levels: only a level that takes the resource hands it out");
 	}
 	std::puts("PASS stocked markets are goals of the fetch gradients");
@@ -184,10 +184,10 @@ TEST_CASE("MarketFetch/deliverer stays attached and fetches the next market deli
 	glob2test::HeadlessGlobals globals;
 	globals->settings.rememberUnit = false;
 	Bed bed(39,39);
-	bed.market->resources[CHERRY]=30;
+	bed.market->materials[CHERRY]=30;
 	bed.hire();
 	bed.unit->arrive();
-	require(bed.unit->carriedResource==CHERRY, "first take from market");
+	require(bed.unit->carriedMaterial==CHERRY, "first take from market");
 	bed.game.map.setGroundUnit(39,39,NOGUID);
 	bed.unit->posX=5; bed.unit->posY=5;
 	bed.game.map.setGroundUnit(5,5,bed.unit->gid);
@@ -202,7 +202,7 @@ TEST_CASE("MarketFetch/deliverer stays attached and fetches the next market deli
 		idle->activity=Unit::ACT_RANDOM;
 	}
 	bed.unit->arrive();
-	require(bed.inn->resources[CHERRY]==10, "first delivery deposited");
+	require(bed.inn->materials[CHERRY]==10, "first delivery deposited");
 	require(bed.unit->attachedBuilding==bed.inn && bed.unit->activity==Unit::ACT_FILLING,
 	        "master hiring behavior keeps the worker attached after depositing");
 	require(bed.unit->displacement==Unit::DIS_GOING_TO_RESOURCE,
@@ -229,8 +229,8 @@ TEST_CASE("MarketFetch/market fields and pending publications survive binary and
 		for (auto *bed : {&source, &restored})
 		{
 			bed->game.gameHeader.setResourceGrowthDisabled(true);
-			bed->market->resources[CHERRY]=10;
-			bed->game.map.getResourceGradient(0,CHERRY,0,true);
+			bed->market->materials[CHERRY]=10;
+			bed->game.map.getMaterialGradientSlot(0,CHERRY,0,true);
 		}
 		source.game.map.configureGradientPipeline(2,3);
 		// Capture each queue phase, including a market job's publication deadline.
@@ -248,8 +248,8 @@ TEST_CASE("MarketFetch/market fields and pending publications survive binary and
 			CHECK(saveMap(restored.game.map,text)==bytes);
 			if (tick==6)
 			{
-				source.market->removeResourceFromBuilding(CHERRY);
-				restored.market->removeResourceFromBuilding(CHERRY);
+				source.market->removeMaterialFromBuilding(CHERRY);
+				restored.market->removeMaterialFromBuilding(CHERRY);
 			}
 			source.game.map.advanceGradientPipeline();
 			source.game.map.syncStep(tick+1);
@@ -272,11 +272,11 @@ TEST_CASE("MarketFetch/upgraded market IDs and stock survive binary and text sav
 		REQUIRE(market);
 		CHECK(market->typeNum==(level ? 50+2*level : 50));
 		CHECK(source.game.buildingsTypes.getTypeNum("market",level,true)==(level ? 49+2*level : 49));
-		CHECK((market->type->maxResource[WOOD]>0)==(level>=1));
-		CHECK((market->type->maxResource[WHEAT]>0)==(level>=1));
-		CHECK((market->type->maxResource[STONE]>0)==(level>=2));
-		market->resources[CHERRY]=20;
-		if (level) market->resources[WOOD]=30;
+		CHECK((market->type->maxMaterial[WOOD]>0)==(level>=1));
+		CHECK((market->type->maxMaterial[WHEAT]>0)==(level>=1));
+		CHECK((market->type->maxMaterial[STONE]>0)==(level>=2));
+		market->materials[CHERRY]=20;
+		if (level) market->materials[WOOD]=30;
 		auto *storage=new GAGCore::MemoryStreamBackend;
 		std::unique_ptr<GAGCore::OutputStream> out(text
 			? static_cast<GAGCore::OutputStream *>(new GAGCore::TextOutputStream(storage))
@@ -294,8 +294,8 @@ TEST_CASE("MarketFetch/upgraded market IDs and stock survive binary and text sav
 		REQUIRE(loaded);
 		CHECK(loaded->typeNum==market->typeNum);
 		CHECK(loaded->type->level==level);
-		CHECK(loaded->resources[CHERRY]==20);
-		if (level) CHECK(loaded->resources[WOOD]==30);
+		CHECK(loaded->materials[CHERRY]==20);
+		if (level) CHECK(loaded->materials[WOOD]==30);
 	}
 }
 

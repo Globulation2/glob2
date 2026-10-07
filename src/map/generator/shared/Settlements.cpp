@@ -249,7 +249,7 @@ int placeTower(Game &game, int team, int level, double x, double y, int within,
 		// avoids an immediate delivery job, but combat consumes them normally and
 		// later replenishment still needs miners. Refresh the call lists now so
 		// the initial save does not retain the empty store's worker request.
-		building->resources[STONE] = tower->maxResource[STONE];
+			building->materials[materialIndex(MaterialId::Stone)] = tower->maxMaterial[materialIndex(MaterialId::Stone)];
 		building->updateCallLists();
 	}
 	game.teams[team]->addToStaticAbilitiesLists(building);
@@ -264,7 +264,7 @@ int placeStartingBuilding(Game &game, int team, const char *name, int level, dou
 	// Validate supplies before mutation. Callers choose resource kinds explicitly:
 	// filling an inn's whole table would silently give away the contested fruit.
 	for (int resource : supplies)
-		if (resource < 0 || resource >= MAX_RESOURCES)
+		if (resource < 0 || resource >= MaterialCount)
 			return -1;
 	const int site = startingBuildingSite(game, team, buildingType, x, y, within, allowed);
 	if (site < 0)
@@ -274,7 +274,7 @@ int placeStartingBuilding(Game &game, int team, const char *name, int level, dou
 	if (!building)
 		return -1;
 	for (int resource : supplies)
-		building->resources[resource] = buildingType->maxResource[resource];
+		building->materials[resource] = buildingType->maxMaterial[resource];
 	game.teams[team]->addToStaticAbilitiesLists(building);
 	// Register this building's feeding/work services, leaving existing task
 	// order alone. Normal tick logic resumes deliveries as supplies run out.

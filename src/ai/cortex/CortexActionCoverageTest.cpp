@@ -6,7 +6,7 @@
 #include "ai/model/BuildingProjection.h"
 #include "Order.h"
 #include "CortexPlacement.h"
-#include "CortexWheat.h"
+#include "CortexFoodSources.h"
 #include <algorithm>
 #include "CortexPolicy.h"
 #include <nlohmann/json.hpp>
@@ -111,17 +111,17 @@ TEST_SUITE("CortexActionCoverage")
         auto& map=world.game.map;
         std::fill(map.fogOfWar,map.fogOfWar+32*32,world.team->me);
         for(int x=2;x<=14;++x)map.setTerrain(x,8,GRASS);
-        // A longer land-only detour reaches the far side of the third wheat
-        // cell later; it must not replace the first path's greater wheat depth.
+        // A longer land-only detour reaches the far side of the third food
+        // cell later; it must not replace the first path's greater food depth.
         for(int x=8;x<=11;++x)map.setTerrain(x,7,GRASS);
         for(int x:{6,7,10,12}) {
-            map.setResource(x,8,WHEAT,1);
-            REQUIRE(map.getResource(x,8).type==WHEAT);
+            map.setResourceByIndex(x,8,WHEAT,1);
+            REQUIRE(map.isMaterialTakeableSlot(x,8, WHEAT));
         }
         auto index=[&](int x,int y){return static_cast<int>(map.coordToIndex(x,y));};
         const int seed=index(2,8); // Its land exit ring ends at x=5.
         auto scan=[&](const std::vector<int>& seeds,int right,bool ignoreFog) {
-            return Cortex::scanWheatForbidden(map,world.team->me,0,seeds,
+            return Cortex::scanFoodSourcesForbidden(map,world.team->me,0,seeds,
                 0,0,right,31,0,ignoreFog,true);
         };
         const auto first=scan({seed},31,false);
@@ -161,8 +161,8 @@ TEST_SUITE("CortexActionCoverage")
         // This scan's territory does not wrap, even when it touches the seam.
         for(int x=0;x<=3;++x)map.setTerrain(x,20,GRASS);
         map.setTerrain(31,20,GRASS);
-        map.setResource(31,20,WHEAT,1);
-        REQUIRE(map.getResource(31,20).type==WHEAT);
+        map.setResourceByIndex(31,20,WHEAT,1);
+        REQUIRE(map.isMaterialTakeableSlot(31,20, WHEAT));
         const auto edge=scan({index(0,20)},31,true);
         CHECK(edge.depthOf[index(31,20)]==-1);
         CHECK(edge.desired.empty());
@@ -186,7 +186,7 @@ TEST_SUITE("CortexActionCoverage")
         auto checkCandidate=[](const BuildCandidate& actual,const BuildCandidate& expected) {
             CHECK(actual.valid==expected.valid);
             CHECK(actual.x==expected.x); CHECK(actual.y==expected.y);
-            CHECK(actual.score==expected.score); CHECK(actual.wheatDist==expected.wheatDist);
+            CHECK(actual.score==expected.score); CHECK(actual.foodSourceDistance==expected.foodSourceDistance);
         };
         for(int qualification=0;qualification<=1;++qualification) {
             CAPTURE(qualification);
@@ -280,7 +280,7 @@ TEST_SUITE("CortexActionCoverage")
             spec["semantics"]["market"]["fetchesStock"]=true;
             spec["semantics"]["market"]["fetchesStockExperiment"]="";
             spec["semantics"]["market"]["suppliesDirectStock"]=purpose==1;
-            spec["semantics"]["market"]["suppliesDirectStockResources"]={"wheat"};
+            spec["semantics"]["market"]["suppliesDirectStockMaterials"]={"food"};
             world.game.buildingsTypes.loadSnapshotJson(snapshot.dump());world.game.configureBuildingCatalog();
             auto* hybrid=world.addBuilding("inn",4,4);
             CHECK(Cortex::servesRole(*AIEngine::AIWorldView::capture(world.game,AIEngine::AIWorldView::captureCatalog(world.game)),*hybrid->type,Cortex::CORTEX_BUILD_EXCHANGE)==(purpose==1));
@@ -368,7 +368,7 @@ TEST_SUITE("CortexActionCoverage")
         // No ground footprint can be built: valid producer placement must use
         // the engine's overlay occupancy path rather than a fabricated slot.
         for(int y=0;y<world.game.map.getH();++y)
-            for(int x=0;x<world.game.map.getW();++x)world.game.map.setResource(x,y,STONE,1);
+            for(int x=0;x<world.game.map.getW();++x)world.game.map.setResourceByIndex(x,y,STONE,1);
         ObservedCortex ai(world.game.players[0]);
         Cortex::CortexPolicy policy;
         for(int unit=0;unit<3;++unit) {
@@ -436,12 +436,12 @@ TEST_SUITE("CortexActionCoverage")
         const int first=world.game.buildingsTypes.getPlaceableTypeNum("inn");
         const int second=world.game.buildingsTypes.getPlaceableTypeNum("hospital");
         const int finished=world.game.buildingsTypes.get(second)->nextLevel;
-        snapshot["variants"][first]["properties"]["maxResource"]=std::vector<int>(MAX_NB_RESOURCES,0);
+        snapshot["variants"][first]["properties"]["maxMaterial"]=std::vector<int>(MaterialSlotCount,0);
         snapshot["variants"][first]["semantics"]["constructionCost"]={{"wood",50}};
         snapshot["variants"][finished]["semantics"]["feeding"]["enabled"]=true;
         snapshot["variants"][finished]["semantics"]["feeding"]["unitMask"]=7;
-        snapshot["variants"][second]["properties"]["maxResource"]=std::vector<int>(MAX_NB_RESOURCES,0);
-        snapshot["variants"][second]["properties"]["maxResource"][WHEAT]=100;
+        snapshot["variants"][second]["properties"]["maxMaterial"]=std::vector<int>(MaterialSlotCount,0);
+        snapshot["variants"][second]["properties"]["maxMaterial"][WHEAT]=100;
         snapshot["variants"][second]["semantics"]["constructionCost"]={{"wood",1}};
         world.game.buildingsTypes.loadSnapshotJson(snapshot.dump());world.game.configureBuildingCatalog();
         CHECK(Cortex::selectBuilding(world.game,*world.team,Cortex::CORTEX_BUILD_FOOD).placementType==world.game.buildingsTypes.getPlaceableTypeNum("hospital"));

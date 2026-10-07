@@ -6,7 +6,7 @@ file and variant order. Each variant also has a stable `key`. Keep keys stable w
 editing a catalog, and use them for references. Historical `properties.type` and
 `shortTypeNum` aliases are optional compatibility and presentation metadata.
 
-A catalog composes the existing unit classes, resources and ability primitives.
+A catalog composes the existing unit classes, materials and ability primitives.
 Definitions contain data, not executable scripts. Compilation also creates a dense,
 64-byte-per-variant runtime table for frequently read simulation traits. Buildings
 bind to its immutable rows when their variant changes; strings, artwork and full
@@ -52,25 +52,29 @@ Existing authored maps keep their explicit definitions.
 
 ## Capabilities and units
 
-Resource cost objects use `wood`, `wheat`, `papyrus`, `stone`, `algae`, `cherry`,
-`orange` and `prune`. Costs are stock units. `properties.maxResource` and
-`properties.multiplierResource` are 15-element arrays: the first eight positions
-use that resource order, followed by seven reserved positions. Reserved storage
-capacities must be zero; every delivery multiplier must be at least one. A natural
-resource packet represents one raw unit; a supplier withdrawal
-retains its exact fraction of a raw unit. Delivery converts that fraction using
-the recipient's multiplier, accepts available capacity and reports discarded
+Material cost objects use `wood`, `food`, `paper`, `stone`, `algae`, `cherries`,
+`oranges`, `prunes`, `gold`, `metal`, `glass` and `fabric`. Costs are stock units.
+`properties.maxMaterial` and `properties.materialMultiplier` are 15-element arrays:
+the first twelve positions use that fixed material order, followed by three reserved
+positions. Reserved capacities must be zero; every delivery multiplier must be at
+least one. Harvesting supplies a material packet representing one raw unit; supplier
+withdrawals retain their exact fraction of a raw unit. Delivery converts that fraction
+using the recipient's multiplier, accepts available capacity and reports discarded
 remainder explicitly.
 
-`semantics.replenishResources` names the resources workers should replenish and
-ordinary deliveries may add. Storage capacity does not imply replenishment. The
-four `semantics.market` sets `suppliesStockResources`,
-`suppliesDirectStockResources`, `fetchesStockResources` and
-`fetchesDirectStockResources` independently select resources for each supply or
-fetch mode; the corresponding role and experiment switches still apply. When
-both fetch modes are enabled for a resource, their eligible providers form a union. Each set
-is an array of resource names, rejects duplicates, and defaults to all eight
-resources when omitted. The stock definitions list their permissions explicitly.
+`semantics.replenishMaterials` names materials workers should replenish and ordinary
+deliveries may add. Storage capacity does not imply replenishment. The four
+`semantics.market` sets `suppliesStockMaterials`, `suppliesDirectStockMaterials`,
+`fetchesStockMaterials` and `fetchesDirectStockMaterials` independently select
+materials for each supply or fetch mode; role and experiment switches still apply.
+When both fetch modes are enabled, eligible providers form a union. Each set is an
+array of material keys and rejects duplicates. Default permission masks include all
+fixed materials; existing recipes and capacities still use their historical inputs.
+
+Legacy resource-named fields and the keys `wheat`, `papyrus`, `cherry`, `orange`,
+`prune` remain accepted import aliases. Canonical saved catalogs use material names;
+authoring both aliases for one field or material is an error. See
+[resource catalogs](resource-catalogs.md) for map deposits that supply these materials.
 A configured supplier may expose existing inventory above its nominal capacity.
 Outstanding construction and repair materials remain deliverable regardless of
 the operating replenishment set.
@@ -97,11 +101,11 @@ All paths in this table are relative to one variant:
 | Configuration | Behavior |
 | --- | --- |
 | `semantics.feeding`, `semantics.healing` | Enabled flag, class mask, duration, costs, partial-settlement policy, exit admission and configured outcomes |
-| `semantics.training` | Ability-name object with explicit results, duration, class admission, resource cost and optional independent construction qualification |
+| `semantics.training` | Ability-name object with explicit results, duration, class admission, material cost and optional independent construction qualification |
 | `semantics.trainingInParallel` | One configured visit may grant its eligible training bundle |
 | `semantics.production.recipes` | Unit-name object with independently enabled worker/explorer/warrior recipes, costs and durations |
 | `semantics.projectileDamage`, `semantics.projectileBuildingDamage` | Unit-class damage array and independent building damage |
-| `semantics.ammunitionResource`, `semantics.ammunitionCost` | Resource index and amount per ammunition refill; capacity/cadence/range/speed remain explicit properties |
+| `semantics.ammunitionMaterial`, `semantics.ammunitionCost` | Material index and amount per ammunition refill; capacity/cadence/range/speed remain explicit properties |
 | `semantics.constructionCost`, `semantics.repairCost` | Materials independent of operating storage limits |
 | `semantics.repairable`, `semantics.regenerationPerTick` | Permission to repair and passive regeneration are independent |
 | `semantics.requiredWorkerLevel` | Construction qualification, separate from work speed and presentation tier |
@@ -115,7 +119,7 @@ All paths in this table are relative to one variant:
 | `semantics.workPriorityBias`, `semantics.sightSharing` | Worker task preference and visibility sharing policy |
 
 Interior services share seats and inventory. A unit requests a service, and unpaid
-resource reservations are distinct from occupancy. Completion, cancellation,
+material reservations are distinct from occupancy. Completion, cancellation,
 expulsion and destruction settle each reservation once. Repair materials that
 already restored health are consumed when a repair is canceled. Demolition keeps
 construction commitments until removal is final, so cancellation remains safe;
@@ -134,14 +138,14 @@ Production has two reusable scheduling policies:
   enabled recipes must have identical costs and durations.
 - `weighted_committed_job` selects and reserves a recipe when work begins. Ratio
   changes affect the next job; a blocked exit retains completed work, spawning
-  consumes reserved resources, and cancellation releases them.
+  consumes reserved materials, and cancellation releases them.
 
 Transitions retain production preferences for compatible recipes and initialize
 newly enabled recipes from the target variant. Canceling construction restores the
 original production preferences. Temporary construction jobs retain these values
 in saved state.
 
-A combined building participates in each applicable phase. Resource supply,
+A combined building participates in each applicable phase. Material supply,
 healing, feeding, training, production and attraction are not mutually exclusive.
 Mixed staffing first fills deterministic role quotas, then lends unused assignment
 slots to roles with eligible units on the existing recruitment round.
@@ -157,8 +161,8 @@ Supplier selection excludes the recipient itself and any provider drawing from
 the same shared inventory. Supplier lists contain only alive buildings; demolition
 removes a provider immediately, and canceling demolition restores it. Loading
 rebuilds the same membership. Ordinary routed recipients retain shared asynchronous
-gradients. A fetch permission uses the ordinary natural-resource field when no
-enabled definition can supply that resource or the team has no suppliers of
+gradients. A fetch permission uses the ordinary material-source field when no
+enabled definition can supply that material or the team has no suppliers of
 that mode. Direct recipients share lazy fields; recipients needing supplier
 exclusions use separate fields. These synchronous fields share a bounded cache:
 64 MiB of cell buffers, or one complete field when a map requires more. Entries
@@ -179,7 +183,7 @@ the experiment is off, but is unavailable for placement.
 The retained [example manifest](../../test/fixtures/building-catalog/authoring/manifest.json)
 and [field-kitchen definition](../../test/fixtures/building-catalog/authoring/field-kitchen.json)
 are loaded directly by the `BuildingCatalog` tests. The definition has no historical
-family alias. It composes feeding and healing, three shared seats, wheat storage,
+family alias. It composes feeding and healing, three shared seats, food storage,
 and two delivery-worker slots using the installed inn artwork:
 
 ```json
@@ -190,14 +194,14 @@ and two delivery-worker slots using the installed inn artwork:
     "properties": {
       "width": 2, "height": 2, "hpInit": 200, "hpMax": 200,
       "insideSpeed": 12, "maxUnitInside": 3,
-      "maxResource": [0, 12, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      "maxMaterial": [0, 12, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
       "gameSprite": "data/gfx/inn0b", "miniSprite": "data/gfx/miniinn0b"
     },
     "semantics": {
       "placeable": true, "instantPlacement": true, "repairable": false,
       "assignmentLimit": 2, "admittedUnitMask": 7,
-      "replenishResources": ["wheat"],
-      "feeding": {"enabled": true, "unitMask": 7, "duration": 20, "cost": {"wheat": 1}},
+      "replenishMaterials": ["food"],
+      "feeding": {"enabled": true, "unitMask": 7, "duration": 20, "cost": {"food": 1}},
       "healing": {"enabled": true, "unitMask": 7, "duration": 40, "cost": {}}
     },
     "presentation": {
@@ -211,7 +215,7 @@ and two delivery-worker slots using the installed inn artwork:
 The example deliberately uses free instant placement and free healing to keep the
 configuration small; those are balance choices, not implied by feeding or healing.
 It has no repair or upgrade edge. Wheat capacity alone would not recruit delivery
-workers: `replenishResources`, `assignmentLimit` and staffing also matter. The
+workers: `replenishMaterials`, `assignmentLimit` and staffing also matter. The
 standalone example manifest validates this one definition; it has no starting
 colony and is not a replacement for a playable stock catalog.
 

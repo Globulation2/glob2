@@ -17,7 +17,7 @@
 
 Uint32 Map::checkSum(bool heavy)
 {
-	Uint32 cs = size ^ terrainRegistry().checksum();
+	Uint32 cs = size ^ terrainRegistry().checksum() ^ resourceRegistry().checksum();
 	if (heavy)
 	{
 		for (size_t index = 0; index < cellCount(); ++index)
@@ -33,6 +33,8 @@ Uint32 Map::checkSum(bool heavy)
 				areaCells[index].forbidden +
 				areaCells[index].farm + // zero everywhere unless a farm area was painted
 				scriptAreaCells[index];
+            if (!resourceStockIndices.empty() && resourceStockIndices[index])
+                for (auto stock:resourceStocks[resourceStockIndices[index]-1]) cs=rotl1(cs)^stock;
 			cs=rotl1(cs);
 		}
 	};
@@ -47,11 +49,11 @@ Uint32 Map::checkSum(bool heavy)
 		}
 	// Cache age and eviction order affect subsequent routes and are simulation state.
 	const auto mix64=[&](Uint64 value) { cs=rotl1(cs)^Uint32(value)^Uint32(value>>32); };
-	mix64(std::max<Uint64>(gradientRuntime->resourceCacheBudget,Uint64(size)*sizeof(Uint16))); mix64(gradientRuntime->resourceCacheClock);
+	mix64(std::max<Uint64>(gradientRuntime->materialCacheBudget,Uint64(size)*sizeof(Uint16))); mix64(gradientRuntime->materialCacheClock);
 	for (const auto& team : gradientRuntime->stockRevision) for (Uint64 revision : team) mix64(revision);
-	for (Uint64 key : gradientRuntime->resourceLru)
+	for (Uint64 key : gradientRuntime->materialLru)
 	{
-		const auto& entry=gradientRuntime->resourceFields.at(key);
+		const auto& entry=gradientRuntime->materialFields.at(key);
 		cs=rotl1(cs)^Uint32(key)^Uint32(key>>32)^entry.topology^entry.builtStep;
 		cs=rotl1(cs)^Uint32(entry.recency)^Uint32(entry.recency>>32)^Uint32(entry.sourceRevision)^Uint32(entry.sourceRevision>>32);
 		if (heavy) for (size_t i=0; i<size; ++i) cs=rotl1(cs)^entry.cells[i];

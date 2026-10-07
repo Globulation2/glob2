@@ -64,6 +64,7 @@ void GameHeader::reset()
 	++observationRevisionValue; aiOrderDelay = 0;
 	buildingCatalogSnapshot.clear();
 	buildingCatalogExperimentKeys.clear();
+	resourceCatalogExperiments.clear();
 	//These are the default game options
 	numberOfPlayers = 0;
 	gameLatency = 0;
@@ -112,6 +113,20 @@ void GameHeader::setBuildingCatalogSnapshot(const std::string& snapshot)
 	for (const auto& experiment : catalog.experiments()) keys.push_back(experiment.key);
 	buildingCatalogSnapshot = catalog.snapshotJson();
 	buildingCatalogExperimentKeys = std::move(keys);
+}
+
+void GameHeader::setResourceExperiments(const std::vector<CatalogExperimentDefinition>& definitions)
+{
+	validateCatalogExperiments(definitions);
+	resourceCatalogExperiments = definitions;
+}
+std::vector<std::string> GameHeader::catalogExperimentKeys() const
+{
+	auto keys = buildingCatalogExperimentKeys;
+	for (const auto& definition : resourceCatalogExperiments) keys.push_back(definition.key);
+	std::sort(keys.begin(), keys.end());
+	keys.erase(std::unique(keys.begin(), keys.end()), keys.end());
+	return keys;
 }
 
 
@@ -232,7 +247,10 @@ bool GameHeader::load(GAGCore::InputStream *stream, Sint32 versionMinor)
 		setBuildingCatalogSnapshot(readCatalog(stream));
 	else
 		setBuildingCatalogSnapshot({});
-	if (!experiments.load(stream, versionMinor, false, buildingCatalogExperimentKeys)) return false;
+	if (versionMinor >= FILE_FORMAT_VERSION_RUNTIME_RESOURCES)
+        setResourceExperiments(loadCatalogExperimentDefinitions(stream));
+    else resourceCatalogExperiments.clear();
+    if (!experiments.load(stream, versionMinor, false, catalogExperimentKeys())) return false;
 	stream->readLeaveSection();
 	return true;
 }
@@ -293,6 +311,7 @@ void GameHeader::save(GAGCore::OutputStream *stream) const
 	stream->writeUint8(peacefulMode, "peacefulMode");
 	stream->writeUint8(buildingHpLevel, "buildingHpLevel");
 	writeCatalog(stream, buildingCatalogSnapshot);
+	saveCatalogExperimentDefinitions(stream, resourceCatalogExperiments);
 	experiments.save(stream);
 	stream->writeLeaveSection();
 }
@@ -359,7 +378,10 @@ bool GameHeader::loadWithoutPlayerInfo(GAGCore::InputStream *stream, Sint32 vers
 		setBuildingCatalogSnapshot(readCatalog(stream));
 	else
 		setBuildingCatalogSnapshot({});
-	if (!experiments.load(stream, versionMinor, false, buildingCatalogExperimentKeys)) return false;
+	if (versionMinor >= FILE_FORMAT_VERSION_RUNTIME_RESOURCES)
+        setResourceExperiments(loadCatalogExperimentDefinitions(stream));
+    else resourceCatalogExperiments.clear();
+    if (!experiments.load(stream, versionMinor, false, catalogExperimentKeys())) return false;
 	stream->readLeaveSection();
 	return true;
 }
@@ -408,6 +430,7 @@ void GameHeader::saveWithoutPlayerInfo(GAGCore::OutputStream *stream) const
 	stream->writeUint8(peacefulMode, "peacefulMode");
 	stream->writeUint8(buildingHpLevel, "buildingHpLevel");
 	writeCatalog(stream, buildingCatalogSnapshot);
+	saveCatalogExperimentDefinitions(stream, resourceCatalogExperiments);
 	experiments.save(stream);
 	stream->writeLeaveSection();
 }

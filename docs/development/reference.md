@@ -1010,8 +1010,24 @@ For timing and scheduling, start with `src/game/Game_sync.cpp` and `src/engine/E
   metadata. See [terrain material authoring](../assets/terrain-materials.md) for
   variants, boundary profiles, asset validation and cache behavior. Visual catalog
   changes must not change saved frames or simulation RNG use.
+- Built-in terrain is table-driven. `TerrainGroup.h` defines one property profile per
+  gameplay group; `TerrainTypeTable.h` lists every `TerrainType` with its group, external
+  name, string-table label, semantic colours and frozen saved-frame range, and the
+  `TerrainProperties.h`, `TerrainPresentation.h`, `TerrainCompatibility.h` and
+  `TerrainExperiments.h` tables derive from it. Members of a group are byte-identical
+  profiles, so the registry deduplicates them into one property index; use
+  `terrainGroup(type)` for palette and reporting buckets, never for simulation rules.
+  Adding a type is one enumerator, one row, one label and one material binding;
+  adding a group is one profile and, when gated, one `ExperimentId`.
+- Format 141 raised `TERRAIN_COUNT` from 7 to 31. Custom definitions and tile IDs in
+  older files start at 7, so `Map::loadTask` remaps IDs at or above the file's built-in
+  count (`TERRAIN_COUNT_BEFORE_CATALOGUE`) to follow the current built-ins, and
+  `TerrainRegistry::deserialize` takes that count. Built-in-only files are unchanged
+  byte for byte; custom registries re-serialize with shifted IDs, so their digest
+  changes and replays from formats 136 to 140 that embed one no longer verify.
 - Runtime types inherit a shipped appearance and use full tiles; legacy corner
-  adapters apply only to built-ins. Import definitions through
+  adapters apply only to built-ins. Any paintable built-in is a valid `base` or
+  `appearance`. Import definitions through
   `Map::importTerrainDefinitions` before a match or in the editor. It validates and
   compiles the complete replacement before publishing it, preserves existing IDs,
   and appends new keys in sorted order. Scenes and gradient jobs retain the same
@@ -1022,6 +1038,9 @@ For timing and scheduling, start with `src/game/Game_sync.cpp` and `src/engine/E
   authoritative for previews and minimaps; built-ins use catalog palettes.
   Experimental authoring gates live in `TerrainExperiments.h`; maps carry required
   experiments into matches, while saves retain them independently of user settings.
+  A runtime definition whose properties equal a gated built-in group's profile
+  requires that group's experiment too (`Map::requiredTerrainExperiments` compares
+  property indices); a definition with its own profile stays ungated.
 - Trail retains stable terrain ID `4` (`TRAIL`) and experiment position `3`
   (`TrailTerrain`). Its external name, translation keys and serialized experiment
   key remain `road` / `road-terrain` for scripting, reports, editor actions and
@@ -1054,10 +1073,43 @@ For timing and scheduling, start with `src/game/Game_sync.cpp` and `src/engine/E
   pre-134 files also derive canonical IDs from legacy sprite ranges. Save floor 58
   remains unchanged. Building format 137 adds the per-game building catalog; replay
   floor 137 and network protocol 57 introduced those simulation/catalog gates.
-  The current replay floor is 140 for the immutable AI pipeline.
+  The completed-tick observation phase introduced replay floor 139. Runtime resource
+  catalogs introduced replay floor 140 and network protocol 59.
+  Damage-weighted routing and idle safety introduced replay floor 142 and network protocol 60.
+  The current replay floor is 143 and network protocol is 61 for engine snapshots and
+  scheduled AI decisions.
+  Loading earlier saves rebuilds cached routes on maps with terrain health effects;
+  current saves retain their completed and pending fields for exact continuation.
   Custom registry checksums hash canonical serialized fields, not struct padding.
   Built-in-only maps keep their previous terrain checksum contribution. Existing
   map-content hashes cover the embedded section for LAN, online and verification.
+- Routing values expected terrain damage at **20 ticks per HP**. For damage rate
+  `d` HP/tick, the effective travel cost is `travel * (1 + 20*d)`. Compile the
+  speed-adjusted cardinal cost once, round its weighted value to nearest integer,
+  then derive the diagonal with the existing `cardinal*14/10` integer rule.
+  Ice therefore costs 33 straight and 46 diagonal; grass remains 10/14. Healing
+  gives no discount. Ground profiles remain shared by swim class, independent of
+  unit type, current HP or hospital availability. Strategic travel/influence
+  fields retain travel-only costs; route-derived distance estimates include the
+  preference penalty and can consequently make long hazardous jobs less attractive.
+  Authored extremes saturate at cardinal 181 (diagonal 253), preserving compact
+  fields and readable maps. Finite field range still limits very long costly routes.
+  Idle units on safe ground never wander onto damaging terrain. Idle units already
+  exposed follow a lazily built shared reverse escape field, allowing hazardous
+  intermediate steps. Ground fields are keyed by team, swim class and whether the
+  unit is escaping forbidden paint; flyers share a separate air field across teams.
+  Buildings, terrain and forbidden paint invalidate ground fields. Resource edits
+  invalidate only the movement classes whose blocking properties changed; stock
+  changes alone do not. Air fields react to terrain and air-blocking resources. Occupancy is checked at the next step and
+  does not invalidate either field. Unreachable results are cached too. The cache
+  retains at most 64 MiB of 32-bit field cells (or one field on larger maps), evicting
+  least-recently-used profiles; temporary propagation queues are additional memory.
+  Complete synchronous rebuilds consume no RNG, so
+  cache eviction and save/load discard cannot change directions or timing rules.
+  A cold query can still require a full-map build; subsequent queries inspect eight
+  neighbors. A unit waits if traffic blocks every descending step. Flyers use their
+  separate air damage rate. These rules are preferences for travel, not
+  guarantees against lethal crossings or overrides of explicit local combat moves.
 - Registry compilation calculates movement and air costs once, deduplicates cost
   profiles and caches distinct edge steps. Runtime gradient setup scales with
   distinct profiles, not registered IDs. Uniform, binary swimming and general-cost
@@ -1209,6 +1261,28 @@ For timing and scheduling, start with `src/game/Game_sync.cpp` and `src/engine/E
 
 
 ### Terrain gradient benchmarks
+
+`TerrainHazardBenchmark` provides opt-in CPU and wall-time measurements for idle
+routing at fixed origins and full shared-field propagation. It covers safe ground,
+nearby safety, broad ice patches, unreachable safety, and many custom damage rates.
+It prints CSV rows with per-call nanoseconds. `idle-cold` measures the first query
+after a terrain invalidation; `idle` measures repeated queries with warm caches.
+Adaptive batches exclude setup and have no timing assertions. Run the same harness against both revisions with the
+same compiler, flags, inputs and CPU affinity. Fixed-origin retries intentionally
+measure a worst case; successful units move on in real games.
+
+```sh
+build/linux/client/release/test/glob2-engine-tests -ts=TerrainHazardBenchmark \
+  '-tc=*idle decisions*,*shared terrain fields*'
+```
+
+Its separate `write mature game fixtures` case creates control, sparse-ice and
+patchwork-ice saves. Set `GLOB2_HAZARD_BENCH_SAVE` to a mature save (the default is
+`games/cross-replay.game`) and `GLOB2_TEST_ARTIFACTS` to the output directory. Produce
+fixtures with the older build so both readers accept exactly the same bytes. Use
+`--run-game --benchmark-warmup` to exclude loading and initial cache rebuilding
+from whole-engine CPU time per tick. Alternate revision order across repeats and
+report distributions; changed routes also change the later simulation workload.
 
 Engine movement profiles are prepared once from the compiled terrain table in
 `src/field/PreparedTerrainCosts.h`. Terrain identities with the same cardinal and
@@ -2072,8 +2146,13 @@ can leave an older game executable in place. Preserve a baseline with the same
 benchmark instrumentation, build options and dependencies before rebuilding.
 The structured runner accepts `--benchmark-warmup N` when loading a saved game.
 It reports process CPU nanoseconds for setup/loading, execution after the warmup,
-and the final save in `result.json`. The measured execution includes pending
-pipeline completion; save compression is measured separately. `--ticks` remains
+and the final save in `result.json`. Setup CPU stops before session startup;
+measured execution begins after startup and includes session summary/teardown and
+pending pipeline completion. The engine run-wall interval also includes session
+startup (and simulation warmup, when requested), so it differs from measured CPU.
+Whole-process CPU additionally covers process startup and final teardown; these
+phase fields are not an exhaustive partition. Save compression is measured
+separately. `--ticks` remains
 an absolute game tick, and the warmup must leave a nonempty measured window.
 
 ```sh

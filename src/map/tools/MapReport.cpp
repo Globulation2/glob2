@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "MapReport.h"
 #include "TerrainPresentation.h"
+#include "ResourceRegistry.h"
 #include "Game.h"
 #include "GenerationRequest.h"
 #include "GenerationResult.h"
@@ -12,7 +13,6 @@
 #include "Topology.h"
 #include "FairnessModel.h"
 #include <chrono>
-#include "RessourceType.h"
 #include "Unit.h"
 #include "Building.h"
 #include "Version.h"
@@ -151,8 +151,30 @@ std::string pretty(const std::string &json)
 }
 using J = Json;
 using namespace MapGeneration;
-const std::array<const char *, MAX_RESOURCES> resourceNames = {
-	"wood", "wheat", "papyrus", "stone", "algae", "cherry", "orange", "prune"};
+const std::array<const char *, MaterialCount> legacyMaterialNames = {
+	"wood", "wheat", "papyrus", "stone", "algae", "cherry", "orange", "prune", "gold", "metal", "glass", "fabric"};
+// Version-2 report adapters retain old consumer keys separately from canonical
+// material names and resource authoring keys. Never infer a resource from its ID.
+std::string legacyResourceReportKey(const ResourceRegistry& registry, ResourceId id)
+{
+    static constexpr std::array<const char*, 8> keys = {
+        "trees", "wheat", "papyrus", "rocks", "algae", "cherry-tree", "orange-tree", "prune-tree"};
+    const auto& key = registry.key(id);
+    for (unsigned slot=0; slot<keys.size(); ++slot)
+        if (key==keys[slot]) {
+            const std::string alias=legacyMaterialNames[slot];
+            if (alias==key || !registry.find(alias)) return alias;
+        }
+    return key;
+}
+Json canonicalMaterials(const std::vector<std::pair<std::string, Json>>& legacy)
+{
+    std::vector<std::pair<std::string, Json>> result;
+    for (unsigned material=0; material<legacy.size(); ++material)
+        result.emplace_back(std::string(MaterialKeys[material]), legacy[material].second);
+    return Json::object(result);
+}
+
 J distance(int n)
 {
 	return n < 0 ? J() : J(n);
@@ -240,10 +262,10 @@ J qualityJson(const StartQualityReport &report, const StartQualityScale &scale)
 	{
 		const auto &c = report.colonies[i];
 		std::vector<std::pair<std::string, J>> resources;
-		for (int r = 0; r < MAX_RESOURCES; ++r)
+		for (int r = 0; r < MaterialCount; ++r)
 		{
-			const auto &a = c.resources[r];
-			resources.push_back({resourceNames[r],
+			const auto &a = c.materials[r];
+			resources.push_back({legacyMaterialNames[r],
 				J::object({{"nearest_gather_distance", distance(a.nearestDistance)},
 						   {"catchment_deposit_tiles", a.catchmentDeposits},
 						   {"catchment_stored_amount", a.catchmentAmount},
@@ -256,8 +278,8 @@ J qualityJson(const StartQualityReport &report, const StartQualityScale &scale)
 		for (const auto &band : c.distanceBands)
 		{
 			std::vector<std::pair<std::string, J>> bandResources;
-			for (int r = 0; r < MAX_RESOURCES; ++r)
-				bandResources.push_back({resourceNames[r],
+			for (int r = 0; r < MaterialCount; ++r)
+				bandResources.push_back({legacyMaterialNames[r],
 					J::object({{"deposit_tiles", band.depositTiles[r]},
 							   {"stored_amount", band.storedAmount[r]},
 							   {"exclusive_deposit_tiles", band.exclusiveDepositTiles[r]},
@@ -271,7 +293,7 @@ J qualityJson(const StartQualityReport &report, const StartQualityScale &scale)
 				{"fertile_grass_tiles", band.fertileGrassTiles},
 				{"exclusive_nearest_tiles", band.exclusiveNearestTiles},
 				{"tied_nearest_tiles", band.tiedNearestTiles},
-				{"resources", J::object(bandResources)}}));
+				{"resources", J::object(bandResources)}, {"materials", canonicalMaterials(bandResources)}}));
 		}
 		colonies.push_back(
 			J::object({{"team", i},
@@ -290,7 +312,7 @@ J qualityJson(const StartQualityReport &report, const StartQualityScale &scale)
 										  {"tied_catchment_tiles", c.tiedCatchmentTiles},
 										  {"build_sites_4x4", c.buildSites},
 										  {"wheat_and_wood_amount", c.resourceAmount},
-										  {"resources", J::object(resources)},
+										  {"resources", J::object(resources)}, {"materials", canonicalMaterials(resources)},
 										  {"mean_fertility", c.meanFertility},
 										  {"nearest_rival_distance", distance(c.rivalDistance)},
 										  {"reachable_rivals", c.reachableRivals},
@@ -303,10 +325,10 @@ J qualityJson(const StartQualityReport &report, const StartQualityScale &scale)
 		localRoom.push_back(c.catchmentBuildable);
 		localFertile.push_back(c.catchmentFertileGrass);
 		localExclusive.push_back(c.exclusiveCatchmentTiles);
-		wheatSupply.push_back(c.resources[WHEAT].catchmentAmount);
-		woodSupply.push_back(c.resources[WOOD].catchmentAmount);
-		exclusiveWheat.push_back(c.resources[WHEAT].exclusiveCatchmentAmount);
-		exclusiveWood.push_back(c.resources[WOOD].exclusiveCatchmentAmount);
+		wheatSupply.push_back(c.materials[materialIndex(MaterialId::Food)].catchmentAmount);
+		woodSupply.push_back(c.materials[materialIndex(MaterialId::Wood)].catchmentAmount);
+		exclusiveWheat.push_back(c.materials[materialIndex(MaterialId::Food)].exclusiveCatchmentAmount);
+		exclusiveWood.push_back(c.materials[materialIndex(MaterialId::Wood)].exclusiveCatchmentAmount);
 		if (c.rivalDistance >= 0)
 			nearestRival.push_back(c.rivalDistance);
 	}
@@ -538,8 +560,8 @@ J movementReport(const Game &game, const StepCosts &costs,
 		}
 		rows.push_back(J::array(row));
 		int reached = 0, catchment = 0, sites = 0, closeSites = 0;
-		std::array<int, MAX_RESOURCES> nearest, resourceTiles{}, nearbyTiles{};
-		std::array<std::int64_t, MAX_RESOURCES> resourceAmounts{}, nearbyAmounts{};
+		std::array<int, MaterialCount> nearest, resourceTiles{}, nearbyTiles{};
+		std::array<std::int64_t, MaterialCount> resourceAmounts{}, nearbyAmounts{};
 		nearest.fill(-1);
 		for (int p = 0; p < t.size(); ++p)
 		{
@@ -555,8 +577,7 @@ J movementReport(const Game &game, const StepCosts &costs,
 						++closeSites;
 				}
 			}
-			const auto &r = map.getResource(p);
-			if (r.type >= MAX_RESOURCES || !r.amount)
+			if (!map.materialMaskAt(p))
 				continue;
 			int approach = -1;
 			for (int dy = -1; dy <= 1; ++dy)
@@ -570,20 +591,20 @@ J movementReport(const Game &game, const StepCosts &costs,
 				}
 			if (approach < 0)
 				continue;
-			++resourceTiles[r.type];
-			resourceAmounts[r.type] += r.amount;
-			if (nearest[r.type] < 0 || approach + 1 < nearest[r.type])
-				nearest[r.type] = approach + 1;
-			if (approach <= 24)
+			for (unsigned m = 0; m < MaterialCount; ++m)
 			{
-				++nearbyTiles[r.type];
-				nearbyAmounts[r.type] += r.amount;
+				if (!(map.materialMaskAt(p) & (1u << m))) continue;
+				const auto amount = map.materialAmountAtSlot(p, m);
+				++resourceTiles[m];
+				resourceAmounts[m] += amount;
+				if (nearest[m] < 0 || approach + 1 < nearest[m]) nearest[m] = approach + 1;
+				if (approach <= 24) { ++nearbyTiles[m]; nearbyAmounts[m] += amount; }
 			}
 		}
 		std::vector<std::pair<std::string, J>> resources;
-		for (int r = 0; r < MAX_RESOURCES; ++r)
+		for (int r = 0; r < MaterialCount; ++r)
 			resources.push_back(
-				{resourceNames[r], J::object({{"nearest_gather_cost", distance(nearest[r])},
+				{legacyMaterialNames[r], J::object({{"nearest_gather_cost", distance(nearest[r])},
 											  {"reachable_deposit_tiles", resourceTiles[r]},
 											  {"reachable_stored_amount", resourceAmounts[r]},
 											  {"catchment_deposit_tiles", nearbyTiles[r]},
@@ -596,7 +617,7 @@ J movementReport(const Game &game, const StepCosts &costs,
 									  {"catchment_build_sites_4x4", closeSites},
 									  {"exclusive_nearest_territory_tiles", exclusive[team]},
 									  {"tied_nearest_territory_tiles", contested[team]},
-									  {"resources", J::object(resources)}}));
+									  {"resources", J::object(resources)}, {"materials", canonicalMaterials(resources)}}));
 	}
 	std::vector<J> nearest;
 	for (int n : contact.nearestRival())
@@ -637,11 +658,11 @@ std::string describeMap(Game &game, const GenerationRequest *request,
 	const Torus t(map);
 	std::vector<int> terrain(map.terrainRegistry().size());
 	std::array<int, 4> underlying{};
-	std::array<int, MAX_RESOURCES> resourceTiles{}, harvestable{};
-	std::array<std::int64_t, MAX_RESOURCES> resourceAmounts{};
+	std::vector<int> resourceTiles(map.resourceRegistry().size()), harvestable(map.resourceRegistry().size());
+	std::vector<std::int64_t> resourceAmounts(map.resourceRegistry().size());
 	int resourceOccupied = 0, unknownResources = 0, buildingTiles = 0, noGrowth = 0;
 	std::vector<unsigned char> water(t.size()), land(t.size());
-	std::vector<double> resourceAmountValues[MAX_RESOURCES];
+	std::vector<std::vector<double>> resourceAmountValues(map.resourceRegistry().size());
 	const auto fertility = Fertility::forMap(map);
 	const auto potential = Fertility::forMap(map, false);
 	std::vector<double> fertilityAll, fertilityGrass, potentialGrass;
@@ -660,7 +681,7 @@ std::string describeMap(Game &game, const GenerationRequest *request,
 		{
 			++resourceOccupied;
 		}
-		if (r.type < MAX_RESOURCES)
+		if (map.resourceRegistry().valid(r.type))
 		{
 			++resourceTiles[r.type];
 			resourceAmounts[r.type] += r.amount;
@@ -680,7 +701,7 @@ std::string describeMap(Game &game, const GenerationRequest *request,
 		}
 	}
 	lap(&MapReportTimings::tileScan);
-	std::vector<std::pair<std::string, J>> terrainJson, underlyingJson, resources;
+	std::vector<std::pair<std::string, J>> terrainJson, underlyingJson, resources, resourceDefinitions, legacyResourceAliases;
     const char *underlyingNames[] = {"water", "sand", "grass", "unknown"};
 	for (int i = 0; i < int(terrain.size()); ++i)
 		terrainJson.push_back(
@@ -688,23 +709,25 @@ std::string describeMap(Game &game, const GenerationRequest *request,
 	terrainJson.push_back({"unknown",coverage(0,t.size())});
 	for (int i = 0; i < 4; ++i)
 		underlyingJson.push_back({underlyingNames[i], coverage(underlying[i], t.size())});
-	const ResourcesTypes resourceTypes;
-	for (int r = 0; r < MAX_RESOURCES; ++r)
+	for (unsigned r = 0; r < map.resourceRegistry().size(); ++r)
 	{
 		std::vector<unsigned char> mask(t.size());
 		for (int p = 0; p < t.size(); ++p)
 			mask[p] = map.getResource(p).type == r;
 		resources.push_back(
-			{resourceNames[r],
+			{legacyResourceReportKey(map.resourceRegistry(), static_cast<ResourceId>(r)),
 			 J::object({{"coverage", coverage(resourceTiles[r], t.size())},
 						{"percent_of_resource_tiles",
 						 resourceOccupied ? J(100.0 * resourceTiles[r] / resourceOccupied) : J()},
 						{"stored_amount", resourceAmounts[r]},
 						{"harvestable_tiles", harvestable[r]},
-						{"eternal", bool(resourceTypes.get(r)->eternal)},
-						{"clearable", bool(resourceTypes.get(r)->clearable)},
+						{"eternal", map.resourceRegistry().yields(static_cast<ResourceId>(r))[materialIndex(map.resourcePropertiesByIndex(r).primaryMaterial)].consumption == ResourceConsumption::Infinite},
+						{"clearable", map.resourcePropertiesByIndex(r).clearable},
 						{"amount_per_deposit", distribution(resourceAmountValues[r])},
 						{"patches", components(map, mask, GridNeighbors::Eight)}})});
+        const auto& key=map.resourceRegistry().key(static_cast<ResourceId>(r));
+        resourceDefinitions.emplace_back(key,resources.back().second);
+        if (resources.back().first!=key) legacyResourceAliases.emplace_back(resources.back().first,key);
 	}
 	lap(&MapReportTimings::resourcePatches);
 	const auto buildable = buildableTiles(map);
@@ -758,6 +781,11 @@ std::string describeMap(Game &game, const GenerationRequest *request,
 	lap(&MapReportTimings::swimming);
 	J clearing = movementReport(game, StepCosts::chopping(), anchors);
 	lap(&MapReportTimings::clearing);
+	std::vector<J> resourceExperiments, requiredResourceExperiments;
+	for (const auto& experiment : map.resourceRegistry().experiments())
+		resourceExperiments.push_back(J::object({{"key", experiment.key}, {"label", experiment.label}, {"help", experiment.help}}));
+	for (const auto& key : map.requiredResourceExperiments().keys())
+		requiredResourceExperiments.emplace_back(key);
 	const std::string text = pretty(
 			   J::object(
 				   {{"schema_version", 2},
@@ -775,6 +803,8 @@ std::string describeMap(Game &game, const GenerationRequest *request,
 									   {"saved_game", game.mapHeader.getIsSavedGame()},
 									   {"buildingCatalog", J::object({{"snapshot", game.buildingsTypes.snapshotJson()},
 																	 {"hash", game.buildingsTypes.fingerprint()}})},
+									   {"resourceExperiments", J::array(resourceExperiments)},
+									   {"requiredResourceExperiments", J::array(requiredResourceExperiments)},
 									   {"format_version_minor", game.mapHeader.getVersionMinor()},
 									   {"tick", game.stepCounter},
 									   {"game_seed", game.gameHeader.getRandomSeed()},
@@ -812,7 +842,9 @@ std::string describeMap(Game &game, const GenerationRequest *request,
 					{"underlying_terrain", J::object(underlyingJson)},
 					{"resources", J::object({{"occupied", coverage(resourceOccupied, t.size())},
 											 {"unknown_type_tiles", unknownResources},
-											 {"types", J::object(resources)}})},
+											 {"types", J::object(resources)},
+                                             {"definitions", J::object(resourceDefinitions)},
+                                             {"legacy_type_aliases", J::object(legacyResourceAliases)}})},
 					{"space",
 					 J::object(
 						 {{"building_footprint", coverage(buildingTiles, t.size())},

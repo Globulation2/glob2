@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "WorldSnapshot.h"
 #include "TerrainResourceProperties.h"
+#include <bit>
+#include <algorithm>
 namespace SimulationSnapshot
 {
 Handle Handle::project(Requirements requested) const
@@ -22,27 +24,28 @@ Handle Handle::project(Requirements requested) const
 	if (needs(requested, Component::ResourceFields)) result.resourceFields = resourceFields;
 	return result;
 }
+MapState::View Handle::view() const
+{
+	MapState::View v;
+	v.width = width; v.height = height;
+	v.wDec = width > 0 ? unsigned(std::countr_zero(unsigned(width))) : 0;
+	v.wMask = Uint32(width - 1); v.hMask = Uint32(height - 1);
+	if (resources) { v.resources = resources->cells; v.stockIndices = resources->stockIndices; v.stocks = resources->stocks; v.materialSourceCounts = resources->materialSourceCounts; }
+	if (occupancy) v.occupancy = occupancy->cells;
+	if (areas) v.areas = areas->cells;
+	if (terrain) { if (terrain->identity) v.terrainIds = *terrain->identity; v.legacyTerrain = terrain->legacy; v.terrainRegistry = terrain->registry.get(); }
+	if (catalogs) { v.resourceRegistry = catalogs->resources.get(); v.habitats = catalogs->habitats.get(); }
+	v.growth = growth.get();
+	if (rules) { v.resourceGrowthDisabled = rules->values.resourceGrowthDisabled; v.resourceScarcityLevel = rules->configuration ? int(rules->configuration->getResourceScarcityLevel()) : 0; }
+	return v;
+}
 bool Handle::canPaintFarmAt(std::size_t index) const
 {
 	checkTileIndex(index);
-	if (!resources || !terrain || !catalogs || !growth) return false;
-	const auto& cell = resources->cells.at(index);
-	const auto& properties = terrain->registry->properties(terrain->identity->at(index));
-	return canPaintFarm(cell, properties, catalogs->shrinkable, *growth, index);
+	if (!resources || !terrain || !catalogs || !catalogs->resources || !catalogs->habitats || !growth || !rules) return false;
+	const auto v = view();
+	return MapState::canPaintFarmArea(v, int(index & v.wMask), int(index >> v.wDec));
 }
-bool canPaintFarm(const ResourceCell& cell, const TerrainProperties& properties,
-	const std::array<bool, MAX_NB_RESOURCES>& shrinkable,
-	const Fertility::GrowthCache& growth, std::size_t index)
-{
-	const auto type = cell.resource.type;
-	const int crop = properties.farmCrop;
-	return cell.mayGrow && properties.resourcesGrow
-		&& (type == NO_RES_TYPE || type == WHEAT || type == WOOD || type == ALGA)
-		&& crop >= 0 && crop < MAX_NB_RESOURCES
-		&& terrainSupportsResource(properties, crop, shrinkable[crop])
-		&& growth.rate(index, crop) != 0;
-}
-
 TileView Handle::tileAt(std::size_t index) const
 {
 	if (index >= std::size_t(width) * height) throw std::out_of_range("snapshot tile index");

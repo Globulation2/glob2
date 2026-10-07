@@ -59,6 +59,9 @@ void Map::updateForbiddenGradient(int teamNumber, int swimClass)
 	assert(gradient);
 	Uint32 teamMask = Team::teamNumberToMask(teamNumber);
 	bool canSwim = swimClass > 0;
+	std::array<Uint8, ResourceRegistry::Capacity> blocksGround;
+	const auto& properties=resourceRegistry().propertyTable();
+	for(size_t id=0;id<properties.size();++id) blocksGround[id]=properties[id].blocksGround;
 
 	// Seed: free cells are goals, forbidden interiors are placeholders (promoted
 	// to GRADIENT_FORBIDDEN_BORDER in the second pass if they border a free cell),
@@ -66,8 +69,7 @@ void Map::updateForbiddenGradient(int teamNumber, int swimClass)
 	initializeGradientCells([&](size_t begin, size_t end) {
 	for (size_t i=begin; i<end; i++)
 	{
-
-		if (resourceCells[i].resource.type!=NO_RES_TYPE)
+		if (resourceCells[i].resource.type!=NO_RES_TYPE && blocksGround[resourceCells[i].resource.type])
 			gradient[i] = GRADIENT_FORBIDDEN;
 		else if (occupancyCells[i].building!=NOGBID)
 			gradient[i] = GRADIENT_FORBIDDEN;
@@ -252,6 +254,12 @@ void Map::seedGuardAreasGradient(int teamNumber, int swimClass, Uint16 *gradient
 {
 	assert(gradient);
 	bool canSwim = swimClass > 0;
+	// Populate only registered entries; empty cells never index this table.
+	// One byte per definition avoids repeated registry and wide-property loads.
+	std::array<Uint8, ResourceRegistry::Capacity> blocksGround;
+	const auto& properties=resourceRegistry().propertyTable();
+	for(size_t id=0;id<properties.size();++id) blocksGround[id]=properties[id].blocksGround;
+	const Uint32 allies=game->teams[teamNumber]->allies;
 
 	Uint32 teamMask = Team::teamNumberToMask(teamNumber);
 	std::atomic<size_t> painted{0};
@@ -264,9 +272,9 @@ void Map::seedGuardAreasGradient(int teamNumber, int swimClass, Uint16 *gradient
 			gradient[i] = GRADIENT_FORBIDDEN;
 		else if(occupancyCells[i].immobileUnit != IMMOBILE_UNIT_NONE)
 			gradient[i] = GRADIENT_FORBIDDEN;
-		else if (resourceCells[i].resource.type != NO_RES_TYPE)
+		else if (resourceCells[i].resource.type!=NO_RES_TYPE && blocksGround[resourceCells[i].resource.type])
 			gradient[i] = GRADIENT_FORBIDDEN;
-		else if (occupancyCells[i].building != NOGBID && (1<<Building::GIDtoTeam(occupancyCells[i].building)) & (game->teams[teamNumber]->allies))
+		else if (occupancyCells[i].building != NOGBID && (1<<Building::GIDtoTeam(occupancyCells[i].building)) & allies)
 			gradient[i] = GRADIENT_FORBIDDEN;
 		else if (!terrainPropertiesAt(i).walkable && !(canSwim && terrainPropertiesAt(i).swimmable))
 			gradient[i] = GRADIENT_FORBIDDEN;
@@ -318,11 +326,19 @@ void Map::seedClearAreasGradient(int teamNumber, int swimClass, Uint16 *gradient
 
 	const Uint32 teamMask = Team::teamNumberToMask(teamNumber);
 	const bool farmAreas = farmAreasEnabled();
-	// Mirror isClearingTarget using per-call lookup tables. Clearing goals
-	// override occupancy and terrain blockers; forbidden cells still win.
-	std::array<bool, MAX_RESOURCES> clearable;
-	for (unsigned r = 0; r < clearable.size(); ++r)
-		clearable[r] = globalContainer->resourcesTypes.get(r)->clearable;
+	// One compact lookup supplies both target selection and obstruction. Keep
+	// this derived table local to the immutable preparation snapshot: no cache
+	// invalidation or additional serialized scheduling state is needed.
+	constexpr Uint8 blocked = 1, clearable = 2, farmClearable = 4;
+	std::array<Uint8, ResourceRegistry::Capacity> traits;
+	const auto& properties = resourceRegistry().propertyTable();
+	for (size_t id=0; id<properties.size(); ++id)
+	{
+		const auto& p=properties[id];
+		traits[id]=(p.blocksGround ? blocked : 0)
+			| (p.clearable ? clearable : 0)
+			| (farmAreas && p.clearable && !p.farmable ? farmClearable : 0);
+	}
 	gradient_preparation::withTerrain(*this, canSwim, [&](auto terrainAt) {
 		initializeGradientCells([&](size_t begin, size_t end) {
 			for (size_t i = begin; i < end; ++i)
@@ -331,15 +347,12 @@ void Map::seedClearAreasGradient(int teamNumber, int swimClass, Uint16 *gradient
 				Uint16 value = GRADIENT_FORBIDDEN;
 				if (!(areaCells[i].forbidden & teamMask))
 				{
-					if (resourceCells[i].resource.type != NO_RES_TYPE)
-					{
-						if (clearable[resourceCells[i].resource.type] &&
-							((areaCells[i].clear & teamMask) ||
-							 (farmAreas && (areaCells[i].farm & teamMask) &&
-							  resourceCells[i].resource.type != terrainAt(i).farmCrop)))
-							value = GRADIENT_AT_GOAL;
-					}
-					else if (occupancyCells[i].immobileUnit == IMMOBILE_UNIT_NONE && occupancyCells[i].building == NOGBID)
+					const auto resourceType=resourceCells[i].resource.type;
+					const Uint8 flags=resourceType==NO_RES_TYPE ? 0 : traits[resourceType];
+					if (((flags&clearable) && (areaCells[i].clear&teamMask))
+						|| ((flags&farmClearable) && (areaCells[i].farm&teamMask)))
+						value = GRADIENT_AT_GOAL;
+					else if (!(flags&blocked) && occupancyCells[i].immobileUnit == IMMOBILE_UNIT_NONE && occupancyCells[i].building == NOGBID)
 						value = terrainAt(i).open;
 				}
 				gradient[i] = value;

@@ -170,7 +170,7 @@ inline MemoryMetrics Storage::memoryMetrics() const
 	account(resourceFields, [](const ResourceFields&, bool) { return Uint64(0); });
 	account(growth, [](const Fertility::GrowthCache& value, bool) {
 		const auto capacities = value.storageCapacities();
-		return Uint64(capacities[0] + capacities[1]) * sizeof(Uint32) + Uint64(capacities[2] + capacities[3]) * sizeof(Uint16);
+		return Uint64(capacities[0] + capacities[1]) * sizeof(Uint32) + Uint64(capacities[2]) * sizeof(Uint16);
 	});
 	for (const auto& [key, pool] : resourcePlanes) account(pool, [&](const auto& value, bool) { return vectorBytes(value); });
 	for (std::size_t i = 0; i < sharedCount; ++i) {

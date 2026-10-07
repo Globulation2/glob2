@@ -46,7 +46,19 @@ describe.runIf(binary)('real glob2 binary', () => {
     it(`generates, validates and previews ${generatorId} from the default 1v1 pool`, async () => {
       const entry = defaultMapPool('1v1').find((e) => e.generatorId === generatorId)!;
       const generated = await run('generate-map', { generator: { ...entry, seed: 1234 } });
-      expect(generated['map']).toEqual({ width: 128, height: 128, teamCount: 2 });
+      expect(generated['map']).toMatchObject({
+        width: 128,
+        height: 128,
+        teamCount: 2,
+        buildingCatalog: {
+          hash: expect.stringMatching(/^[0-9a-f]{64}$/),
+          snapshot: expect.any(String),
+        },
+        resourceExperiments: expect.arrayContaining([
+          expect.objectContaining({ key: 'foundation-resources' }),
+        ]),
+        requiredResourceExperiments: [],
+      });
       const mapHash = generated['mapHash'] as string;
 
       // Same descriptor, same bytes: generation is deterministic on one platform.
@@ -60,6 +72,8 @@ describe.runIf(binary)('real glob2 binary', () => {
         map: { width: 128, height: 128, teamCount: 2 },
         versionMinor: (await h.engine.catalog()).versionMinor,
       });
+      // Embedded catalog and resource experiment metadata survive validation.
+      expect(validated['map']).toEqual(generated['map']);
       // A generated map is not a save.
       expect(await run('validate-map', { blobHash: mapHash, format: 'save' })).toEqual({
         valid: false,

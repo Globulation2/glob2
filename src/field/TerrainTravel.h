@@ -63,7 +63,7 @@ void expandTerrainTravel(Values& values,int width,int height,TerrainTravel mode,
             if(cost!=costs[index]) { GLOB2_GRADIENT_BENCH_EVENT(stale, 1); continue; }
             // This is a reverse field: index is the destination of the forward
             // move from next. Charge entry to index, not entry to next.
-            const unsigned candidate=cost+(mode==TerrainTravel::Fly?registry.airCost(terrainAt(index)):registry.movement(3).entries[terrainAt(index)].cardinal);
+            const unsigned candidate=cost+(mode==TerrainTravel::Fly ? registry.airCost(terrainAt(index)) : registry.groundTravelCost(terrainAt(index)));
             const int x=index%width,y=index/width;
             for(int dy=-1;dy<=1;++dy) for(int dx=-1;dx<=1;++dx)
             {
@@ -113,7 +113,7 @@ void expandTerrainInfluence(Value* values,int width,int height,TerrainAt terrain
             const int nx=ux<0?width-1:ux==width?0:ux,ny=uy<0?height-1:uy==height?0:uy;
             const int next=ny*width+nx;
             if(!values[next])continue;
-            const unsigned step=registry.movement(3).entries[terrainAt(next)].cardinal;
+            const unsigned step=registry.groundTravelCost(terrainAt(next));
             if(remaining<=step+GRADIENT_STEP)continue;
             const unsigned candidate=remaining-step;
             if(candidate>strength[next]){strength[next]=candidate;queue.emplace(candidate,next);}

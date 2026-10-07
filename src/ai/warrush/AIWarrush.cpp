@@ -1,3 +1,5 @@
+#include "AIResourcePolicy.h"
+#include "Material.h"
 #include "AIRuleOrders.h"
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
@@ -446,13 +448,13 @@ bool AIWarrush::percentageOfBuildingsAreFullyWorked(int percentage)const
 			else if (b->constructionResultState == Building::NO_CONSTRUCTION
     && [&]() {
      bool consumes = false;
-     for (int resource = 0; resource < MAX_NB_RESOURCES; ++resource) {
+     for (int resource = 0; resource < MaterialSlotCount; ++resource) {
       bool required = queries->kind(*b).resolvedType.semantics.feeding.enabled && queries->kind(*b).resolvedType.semantics.feeding.cost[resource] > 0;
       for (const auto& recipe : queries->kind(*b).resolvedType.semantics.production.recipes)
        required |= recipe.enabled && recipe.cost[resource] > 0;
       if (!required) continue;
       consumes = true;
-      if (observation->buildingResources(*b)[resource] <= b->wishedResources[resource] * AI_WARRUSH_HEAVILY_WORKED_RATIO_NUM / AI_WARRUSH_HEAVILY_WORKED_RATIO_DEN) return false;
+      if (observation->buildingResources(*b)[resource] <= b->wishedMaterials[resource] * AI_WARRUSH_HEAVILY_WORKED_RATIO_NUM / AI_WARRUSH_HEAVILY_WORKED_RATIO_DEN) return false;
      }
      return consumes;
     }())
@@ -728,12 +730,20 @@ std::shared_ptr<Order> AIWarrush::farm()
 	{
 		for(int y=0;y<observation->height;y++)
 		{
-			const bool wheat_spot = x%2==y%2 && queries->isResourceTakeable(x, y, WHEAT)
+			const auto type=observation->resourceAt(observation->tileIndex(x,y)).resource.type;
+			const auto properties=type==NO_RES_TYPE ? ResourceProperties{} : observation->state().resourceProperties(type);
+			const bool reserveFood=AIResourcePolicy::needsSeedReserve(observation->state(),observation->tileIndex(x,y),MaterialId::Food);
+			const bool reserveWood=AIResourcePolicy::needsSeedReserve(observation->state(),observation->tileIndex(x,y),MaterialId::Wood);
+			const bool nearGrowth=properties.ecology!=ResourceEcology::Land
+				|| water_gradient(x, y) > (AI_WARRUSH_GRADIENT_MAX - AI_WARRUSH_WATER_NEAR_OFFSET);
+			const bool wheat_spot = x%2==y%2 && reserveFood
 				&& queries->isMapDiscovered(x, y, observedTeam->mask)
-				&& water_gradient(x, y) > (AI_WARRUSH_GRADIENT_MAX - AI_WARRUSH_WATER_NEAR_OFFSET);
+				&& nearGrowth;
+			const auto foodYield=reserveFood ? (*observation->state().resourceRegistry).yields(static_cast<ResourceId>(observation->resourceAt(observation->tileIndex(x,y)).resource.type))[materialIndex(MaterialId::Food)] : YieldProperties{};
+			const bool wheat_farm = farms && wheat_spot && properties.farmable
+					&& foodYield.consumption==ResourceConsumption::One && !foodYield.destroysDeposit && queries->canPaintFarmArea(x, y);
 			if(farms && queries->isMapDiscovered(x, y, observedTeam->mask))
 			{
-				const bool wheat_farm = wheat_spot && queries->canPaintFarmArea(x, y);
 				const bool farmed = queries->isFarmArea(x, y, observedTeam->mask);
 				if(wheat_farm && !farmed)
 					farm_add_acc.applyBrush(BrushApplication(x, y, 0),observation->width,observation->height);
@@ -741,11 +751,11 @@ std::shared_ptr<Order> AIWarrush::farm()
 					farm_del_acc.applyBrush(BrushApplication(x, y, 0),observation->width,observation->height);
 				// The farm replaces forbidden paint on wheat.
 				if(queries->isForbidden(x, y, observedTeam->mask)
-				   && queries->isResourceTakeable(x, y, WHEAT))
+				   && wheat_farm && !reserveWood)
 					del_acc.applyBrush(BrushApplication(x, y, 0),observation->width,observation->height);
 			}
 
-			if((!queries->isResourceTakeable(x, y, WOOD) && !queries->isResourceTakeable(x, y, WHEAT)))
+			if(!reserveWood && !reserveFood)
 			{
 				if(queries->isForbidden(x, y, observedTeam->mask))
 				{
@@ -756,9 +766,9 @@ std::shared_ptr<Order> AIWarrush::farm()
 						&& !queries->isForbidden (x,y + 1,observedTeam->mask)
 						&& !queries->isForbidden (x,y - 1,observedTeam->mask)
 						//Or fruits'!
-						&& !queries->isResourceTakeable(x, y, CHERRY)
-						&& !queries->isResourceTakeable(x, y, ORANGE)
-						&& !queries->isResourceTakeable(x, y, PRUNE)
+						&& !MapState::hasMaterial(observation->state(),observation->tileIndex(x,y),MaterialId::Cherries)
+						&& !MapState::hasMaterial(observation->state(),observation->tileIndex(x,y),MaterialId::Oranges)
+						&& !MapState::hasMaterial(observation->state(),observation->tileIndex(x,y),MaterialId::Prunes)
 						)
 					{
 						del_acc.applyBrush(BrushApplication(x, y, 0),observation->width,observation->height);
@@ -771,17 +781,23 @@ std::shared_ptr<Order> AIWarrush::farm()
 				del_acc.applyBrush(BrushApplication(x, y, 0),observation->width,observation->height);
 			}
 			
-			//we never clear anything but wood
-			if(!queries->isResourceTakeable(x, y, WOOD))
+			const bool woodThreat=properties.clearable && !MapState::hasMaterial(observation->state(),observation->tileIndex(x,y),MaterialId::Food)
+				&& AIResourcePolicy::canPropagate(observation->state(),observation->tileIndex(x,y),MaterialId::Wood);
+			if(!woodThreat)
 			{
 				if(queries->isClearArea(x, y, observedTeam->mask))
 				{
-					clr_del_acc.applyBrush(BrushApplication(x, y, 0),observation->width,observation->height);
+					bool besideBuilding=false;
+					for(int dx=-1;dx<=1;++dx) for(int dy=-1;dy<=1;++dy) {
+						const auto gid=queries->getBuilding(x+dx,y+dy);
+						besideBuilding|=gid!=NOGBID && Building::GIDtoTeam(gid)==team->teamNumber;
+					}
+					if(!besideBuilding) clr_del_acc.applyBrush(BrushApplication(x, y, 0),observation->width,observation->height);
 				}
 			}
 
-			//we clear wood if it's next to nice stuff like wheat or buildings
-			if(queries->isResourceTakeable(x, y, WOOD))
+			// Clear spreading wood threats without destroying a mixed food source.
+			if(woodThreat)
 			{
 				if(!queries->isClearArea(x, y, observedTeam->mask) && queries->isMapDiscovered(x, y, observedTeam->mask))
 				{
@@ -789,7 +805,7 @@ std::shared_ptr<Order> AIWarrush::farm()
 					{
 						for(int ymod=-1;ymod<=1;ymod++)
 						{
-							if(queries->isResourceTakeable(x+xmod, y+ymod, WHEAT)
+							if(MapState::hasMaterial(observation->state(),observation->tileIndex(x+xmod,y+ymod),MaterialId::Food)
 									|| (queries->getBuilding(x+xmod,y+ymod)!=NOGBID
 									&& (observedTeam->mask & teamAt(Building::GIDtoTeam(queries->getBuilding(x+xmod,y+ymod)))->mask)))
 							{
@@ -806,23 +822,23 @@ std::shared_ptr<Order> AIWarrush::farm()
 
 			if(x%2==1 && ((y%2==1 && x%4==1) || (y%2==0 && x%4==3)))
 			{
-				if(queries->isResourceTakeable(x, y, WOOD))
+				if(reserveWood)
 				{
-					if(!queries->isForbidden(x, y, observedTeam->mask) && !queries->isClearArea(x, y, observedTeam->mask) && queries->isMapDiscovered(x, y, observedTeam->mask) && water_gradient(x, y) > (AI_WARRUSH_GRADIENT_MAX - AI_WARRUSH_WATER_NEAR_OFFSET))
+					if(!queries->isForbidden(x, y, observedTeam->mask) && !queries->isClearArea(x, y, observedTeam->mask) && queries->isMapDiscovered(x, y, observedTeam->mask) && nearGrowth)
 					{
 						add_acc.applyBrush(BrushApplication(x, y, 0),observation->width,observation->height);
 					}
 				}
 			}
 
-			if(!farms && wheat_spot && !queries->isForbidden(x, y, observedTeam->mask))
+			if(!wheat_farm && wheat_spot && !queries->isForbidden(x, y, observedTeam->mask))
 				add_acc.applyBrush(BrushApplication(x, y, 0),observation->width,observation->height);
 
 			//FORBID FRUITS!!! They're horrible for our warriors and we hate converting.
 			if(
-				(	queries->isResourceTakeable(x, y, CHERRY)
-					|| queries->isResourceTakeable(x, y, ORANGE)
-					|| queries->isResourceTakeable(x, y, PRUNE)	)
+				(	MapState::hasMaterial(observation->state(),observation->tileIndex(x,y),MaterialId::Cherries)
+					|| MapState::hasMaterial(observation->state(),observation->tileIndex(x,y),MaterialId::Oranges)
+					|| MapState::hasMaterial(observation->state(),observation->tileIndex(x,y),MaterialId::Prunes)	)
 				&& !queries->isForbidden(x, y, observedTeam->mask)
 				&& queries->isMapDiscovered(x, y, observedTeam->mask)
 					)
@@ -936,12 +952,11 @@ void AIWarrush::initializeGradientWithResource(DynamicGradientMapArray &gradient
 		for(int y=0;y<observation->height;y++)
 		{
 			const auto index=observation->tileIndex(x,y);
-			const auto resource=observation->resourceAt(index).resource;
-			if (resource.type==resource_type)
+			if (MapState::hasMaterialSlot(observation->state(),observation->tileIndex(x,y),resource_type))
 			{
 				gradient(x, y) = AI_WARRUSH_GRADIENT_MAX;
 			}
-			else if (resource.type!=NO_RES_TYPE)
+			else if (MapState::resourceBlocksGround(observation->state(),index))
 			{
 				gradient(x, y) = 0;
 			}
@@ -991,8 +1006,8 @@ std::shared_ptr<Order> AIWarrush::buildBuildingOfType(Intent intent)
 	buildingDelay = AI_WARRUSH_BUILDING_DELAY_TICKS;
 
  // Prefer the dominant recurring input, falling back to construction cost.
- std::array<int, MAX_NB_RESOURCES> demand{};
- for (int r = 0; r < MAX_NB_RESOURCES; ++r) {
+ std::array<int, MaterialSlotCount> demand{};
+ for (int r = 0; r < MaterialSlotCount; ++r) {
   demand[r] += complete->semantics.feeding.enabled ? complete->semantics.feeding.cost[r] : 0;
   demand[r] += complete->semantics.healing.enabled ? complete->semantics.healing.cost[r] : 0;
   for (const auto& recipe : complete->semantics.production.recipes)
@@ -1013,8 +1028,7 @@ std::shared_ptr<Order> AIWarrush::buildBuildingOfType(Intent intent)
 		for(int y=0;y<observation->height;y++)
 		{
 			const auto index=observation->tileIndex(x,y);
-			const auto resource=observation->resourceAt(index).resource;
-			if (resource.type!=NO_RES_TYPE)
+			if (MapState::resourceBlocksBuilding(observation->state(),index))
 			{
 				availability_gradient(x, y) = 0;
 			}

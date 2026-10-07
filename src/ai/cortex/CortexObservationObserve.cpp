@@ -2,12 +2,13 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2026 The Globulation 2 Authors
 
+#include "Material.h"
 #include <PerformanceTelemetry.h>
 #include "CortexObservation.h"
 #include "CortexPlacement.h"
 #include "CortexPolicy.h"
 #include "CortexPlacementGeo.h"
-#include "CortexWheat.h"
+#include "CortexFoodSources.h"
 #include "CortexWater.h"
 
 #include "Player.h"
@@ -258,9 +259,9 @@ namespace Cortex
 			// This is an existence query; row order follows the map storage.
 			for (int y = 0; y < h && obs.fruitOnMap == 0; y++)
 				for (int x = 0; x < w; x++)
-					if (isResourceTakeable(map,x, y, CHERRY)
-					 || isResourceTakeable(map,x, y, ORANGE)
-					 || isResourceTakeable(map,x, y, PRUNE))
+					if (MapState::hasMaterial(map.state(),map.tileIndex(x,y),MaterialId::Cherries)
+					 || MapState::hasMaterial(map.state(),map.tileIndex(x,y),MaterialId::Oranges)
+					 || MapState::hasMaterial(map.state(),map.tileIndex(x,y),MaterialId::Prunes))
 					{
 						obs.fruitOnMap = 1;
 						break;
@@ -536,19 +537,19 @@ namespace Cortex
 			obs.enemyCount = slot;
 		}
 
-		// --- wheat sustainability: counts-only reconcile over the colony region ---
+		// --- food sustainability: counts-only reconcile over the colony region ---
 		// The full per-tile masks are rebuilt in the action layer (which has the
 		// Map to paint into); the observation carries only the cheap diff counts so
-		// the pure policy (CortexPolicy::wantWheatProtection) can tell whether the
+		// the pure policy (CortexPolicy::wantFoodSourceProtection) can tell whether the
 		// per-cycle wheat-forbidden pass has real work to do.
 		const bool farms = game->farmAreasEnabled
 			&& !game->rules.resourceGrowthDisabled;
-		const Cortex::WheatReconcile wr = Cortex::reconcileWheatForbiddenWorld(
+		const Cortex::FoodSourceReconcile wr = Cortex::reconcileFoodSourcesForbiddenWorld(
             game,team,scratch,intents,diagnostics, openMargin, /*buildMasks=*/false, /*liftAll=*/false, farms);
 		obs.wheatProtectAddCount = wr.addCount;
 		obs.wheatProtectDelCount = wr.delCount;
 		if (farms)
-			obs.wheatProtectDelCount += Cortex::reconcileWheatForbiddenWorld(
+			obs.wheatProtectDelCount += Cortex::reconcileFoodSourcesForbiddenWorld(
                 game,team,scratch,intents,diagnostics, openMargin, /*buildMasks=*/false, /*liftAll=*/true).delCount;
 
 		obs.valid = 1;

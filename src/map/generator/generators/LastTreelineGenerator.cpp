@@ -419,7 +419,7 @@ bool generate(Game &game, GenerationContext &c)
 									t.dist2(b.second % t.w, b.second / t.w, root % t.w, root / t.w);
 						 });
 		for (int n = 0; n < kHomeWood; ++n)
-			game.map.setResource(dry[n].second % t.w, dry[n].second / t.w, WOOD, 1);
+			game.map.setResourceByIndex(dry[n].second % t.w, dry[n].second / t.w, WOOD, 1);
 		std::sort(quarry.begin(), quarry.end());
 		const auto firstFree =
 			std::find_if(quarry.begin(), quarry.end(), [&](const auto &entry)
@@ -445,12 +445,12 @@ bool generate(Game &game, GenerationContext &c)
 				continue;
 			if (stones < wantedStone)
 			{
-				game.map.setResource(i % t.w, i / t.w, STONE, 1);
+				game.map.setResourceByIndex(i % t.w, i / t.w, STONE, 1);
 				++stones;
 			}
 			else if (fruits < wantedFruit)
 			{
-				game.map.setResource(i % t.w, i / t.w, CHERRY + fruits % 3, 1);
+				game.map.setResourceByIndex(i % t.w, i / t.w, CHERRY + fruits % 3, 1);
 				++fruits;
 			}
 			else

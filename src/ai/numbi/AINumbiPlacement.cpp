@@ -208,8 +208,8 @@ bool AINumbi::findNewEmplacement(Intent intent, int typeNum, int *posX, int *pos
 		? &queries->kind(placement->next) : placement;
 	const int width = placement->width, height = placement->height;
 	// Compile the relevant operating inputs once, outside the placement scan.
-	std::array<bool, MAX_NB_RESOURCES> needs{};
-	for (int resource = 0; resource < MAX_NB_RESOURCES; ++resource)
+	std::array<bool, MaterialSlotCount> needs{};
+	for (int resource = 0; resource < MaterialSlotCount; ++resource)
 	{
 		const auto& p = completed->semantics;
 		needs[resource] = (p.feeding.enabled && p.feeding.cost[resource] > 0)
@@ -236,7 +236,7 @@ bool AINumbi::findNewEmplacement(Intent intent, int typeNum, int *posX, int *pos
 		if (score <= AI_NUMBI_PLACEMENT_SCORE_MIN || score <= best
 			|| !queries->checkRoomForBuilding(px, py, typeNum, teamNumber)) continue;
 		bool supplied = true;
-		for (int resource = 0; resource < MAX_NB_RESOURCES && supplied; ++resource)
+		for (int resource = 0; resource < MaterialSlotCount && supplied; ++resource)
 			if (needs[resource])
 			{
 				int rx, ry, distance;

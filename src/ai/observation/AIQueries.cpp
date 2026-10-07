@@ -3,6 +3,7 @@
 #include "Building.h"
 #include "Map.h"
 #include <algorithm>
+#include <bit>
 #include <stdexcept>
 
 namespace AIEngine
@@ -36,9 +37,7 @@ TileView AIWorldView::tile(int x, int y) const
 bool AIWorldView::canPaintFarmAt(std::size_t index) const
 {
 	if (!farmInputs) return false;
-	const auto& cell = resourceCells[index];
-	const auto& properties = terrain->properties(terrainCells[index]);
-	return SimulationSnapshot::canPaintFarm(cell, properties, resourceShrinkable, *growth, index);
+	return MapState::canPaintFarmArea(view, int(index & view.wMask), int(index >> view.wDec));
 }
 TileView AIWorldView::composeTile(std::size_t index) const
 {
@@ -80,7 +79,7 @@ bool AIWorldView::isHardSpaceForBuildingSite(const BuildingView& building, bool 
 	const int y = building.posY + target.decTop - kind.decTop;
 	for (int dy = 0; dy < target.height; ++dy) for (int dx = 0; dx < target.width; ++dx) {
 		const auto index = tileIndex(x + dx, y + dy);
-		if (resourceAt(index).resource.type != NO_RES_TYPE) return false;
+		if (MapState::resourceBlocksBuilding(view, index)) return false;
 		const auto occupant = occupancyAt(index).building;
 		if (occupant != NOGBID && occupant != building.identity.gid) return false;
 		if (!terrain->properties(terrainAt(index).type).buildable) return false;

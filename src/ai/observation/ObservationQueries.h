@@ -16,8 +16,8 @@ inline const TerrainProperties& terrain(const AIEngine::AIWorldView& world,std::
 {return world.terrain->properties(world.terrainAt(index).type);}
 inline const TerrainProperties& terrain(const AIEngine::AIWorldView& world,int x,int y)
 {return terrain(world,world.tileIndex(x,y));}
-inline bool resourceTakeable(const AIEngine::AIWorldView& world,int x,int y,int type)
-{const auto& resource=world.resourceAt(world.tileIndex(x,y)).resource;return resource.type==type && resource.amount>0;}
+inline bool resourceTakeable(const AIEngine::AIWorldView& world,int x,int y,int material)
+{return MapState::hasMaterialSlot(world.state(),world.tileIndex(x,y),material);}
 inline bool discovered(const AIEngine::AIWorldView& world,int x,int y,Uint32 mask)
 {return (world.visibilityAt(world.tileIndex(x,y)).discovered&mask)!=0;}
 inline bool visible(const AIEngine::AIWorldView& world,int x,int y,Uint32 mask)

@@ -39,7 +39,13 @@ async function exportedSave(page) {
   expect(file.suggestedFilename()).toBe('Original.game.gz');
   return fs.readFile(await file.path());
 }
-test.beforeEach(async ({page}) => { await page.goto(gameURL()); await screen(page,'MainMenuScreen'); });
+test.beforeEach(async ({page},info) => {
+  const mode=info.title.match(/\((serial|threaded)\)$/)?.[1];
+  const url=new URL(gameURL(),'http://localhost');
+  if(mode) url.searchParams.set('threads',mode);
+  await page.goto(url.pathname+url.search); await screen(page,'MainMenuScreen');
+  if(mode) expect((await state(page)).executionMode).toBe(mode);
+});
 
 test('imports an exported save, preserves duplicate names, rejects corruption and reloads the imported game', async ({page},info) => {
   const errors=[]; page.on('pageerror',error=>errors.push(String(error)));
@@ -89,8 +95,11 @@ test('imports a custom map and starts it through the normal setup screen', async
   await expect.poll(async () => (await state(page)).tick).toBeGreaterThan(25);
 });
 
-test('imports a complete replay and rejects a truncated command stream', async ({page}) => {
+for(const mode of ['serial','threaded']) {
+test(`imports a complete replay and rejects a truncated command stream (${mode})`, async ({page}) => {
   const bytes=await fs.readFile(path.resolve(__dirname,'fixtures/cross-replay.replay'));
+  expect(bytes.subarray(4,16).toString()).toBe('replayHeader');
+  expect(bytes.readUInt32BE(20)).toBe(143);
   await clickMainMenu(page,'load'); await screen(page,'ChooseMapScreen'); await clickControl(page,'switch');
   await select(page,'Broken.replay',bytes.subarray(0,bytes.length-1));
   await expect.poll(async () => (await state(page)).import).toBe('invalid');
@@ -103,6 +112,8 @@ test('imports a complete replay and rejects a truncated command stream', async (
   const loaded=(await state(page)).tick;
   await expect.poll(async () => (await state(page)).tick).toBeGreaterThan(loaded+25);
 });
+
+}
 
 test('failed import persistence offers export and retry without overwriting a save', async ({page,context},info) => {
   const bytes=await exportedSave(page);

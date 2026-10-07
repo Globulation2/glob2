@@ -192,7 +192,13 @@ void MapEdit::handleTerrainClick(int mx, int my)
 			{
 				if (BrushTool::getBrushValue(fig, x-startX, y-startY, mapX, mapY, firstX, firstY))
 				{
-					int resToSet=-1;
+                    if (TerrainSelector::isResource(terrainType))
+                    {
+                        const auto id = TerrainSelector::resourceType(terrainType, game.map.resourceRegistry());
+                        if (game.map.resourceRegistry().valid(id) && game.map.isResourceAllowed(x, y, int(resourceIndex(id))))
+                            game.map.setResourceByIndex(x, y, int(resourceIndex(id)), 1);
+                        continue;
+                    }
                     if (terrainType >= TerrainSelector::RegisteredBegin && TerrainSelector::isBaseTerrain(terrainType))
                     {
                         game.map.setCellTerrain(x,y,TerrainSelector::baseTerrain(terrainType));
@@ -232,38 +238,11 @@ void MapEdit::handleTerrainClick(int mx, int my)
 						game.map.removeUnallowedResources(x-2, y-2, 4, 4);
 						game.removeUnallowedUnitsAndBuildings(x-2, y-2, 4, 4);
 						break;
-					case TerrainSelector::Wheat:
-						resToSet=WHEAT;
-						break;
-					case TerrainSelector::Trees:
-						resToSet=WOOD;
-						break;
-					case TerrainSelector::Stone:
-						resToSet=STONE;
-						break;
-					case TerrainSelector::Algae:
-						resToSet=ALGA;
-						break;
-					case TerrainSelector::Papyrus:
-						resToSet=PAPYRUS;
-						break;
-					case TerrainSelector::CherryTree:
-						resToSet=CHERRY;
-						break;
-					case TerrainSelector::OrangeTree:
-						resToSet=ORANGE;
-						break;
-					case TerrainSelector::PruneTree:
-						resToSet=PRUNE;
-						break;
 					case TerrainSelector::NoTerrain:
                     default:
 						break;
 					}
-					if(resToSet!=-1 && game.map.isResourceAllowed(x, y, resToSet))
-					{
-						game.map.setResource(x, y, resToSet, 1);
-					}
+
 				}
 			}
 		}
@@ -274,6 +253,12 @@ void MapEdit::handleTerrainClick(int mx, int my)
 			for (int x=startX; x<startX+width; x++)
 				if (BrushTool::getBrushValue(fig, x-startX, y-startY, mapX, mapY, firstX, firstY))
 				{
+                    if (TerrainSelector::isResource(terrainType))
+                    {
+                        const auto id = TerrainSelector::resourceType(terrainType, game.map.resourceRegistry());
+                        if (game.map.getResource(x, y).type == resourceIndex(id)) game.map.replaceResource(x, y, Resource{});
+                        continue;
+                    }
 					switch(terrainType)
 					{
 					case TerrainSelector::Sand:
@@ -283,34 +268,6 @@ void MapEdit::handleTerrainClick(int mx, int my)
 						for (int ty=y-1; ty<=y; ty++)
 							for (int tx=x-1; tx<=x; tx++)
 								game.map.replaceResource(tx, ty, Resource{});
-						break;
-					case TerrainSelector::Wheat:
-						if(game.map.isResourceTakeable(x, y, WHEAT))
-							game.map.setNoResource(x, y, 1);
-						break;
-					case TerrainSelector::Trees:
-						if(game.map.isResourceTakeable(x, y, WOOD))
-							game.map.setNoResource(x, y, 1);
-						break;
-					case TerrainSelector::Stone:
-						if(game.map.isResourceTakeable(x, y, STONE))
-							game.map.setNoResource(x, y, 1);
-						break;
-					case TerrainSelector::Algae:
-						if(game.map.isResourceTakeable(x, y, ALGA))
-							game.map.setNoResource(x, y, 1);
-						break;
-					case TerrainSelector::Papyrus:
-						if(game.map.isResourceTakeable(x, y, PAPYRUS))
-							game.map.setNoResource(x, y, 1);
-						break;
-					case TerrainSelector::CherryTree:
-					case TerrainSelector::OrangeTree:
-					case TerrainSelector::PruneTree:
-						if(game.map.isResourceTakeable(x, y, CHERRY)
-						|| game.map.isResourceTakeable(x, y, ORANGE)
-						|| game.map.isResourceTakeable(x, y, PRUNE))
-							game.map.setNoResource(x, y, 1);
 						break;
 					case TerrainSelector::Grass:
 					case TerrainSelector::NoTerrain:

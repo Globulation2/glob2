@@ -14,9 +14,9 @@ TEST_SUITE("WarrushObservation")
   glob2test::HeadlessGame fixture{glob2test::GameOptions{.wDec=5,.hDec=5,.teams=2,.discovered=true,.clearImmobile=true,.loadDefaultRace=true,.header=true}};
   auto& game=fixture.game;
   REQUIRE(fixture.addBuilding("swarm",4,4));
-  game.map.setResource(18,18,WHEAT,1);
+  game.map.setResourceByIndex(18,18,WHEAT,1);
   Sint32 x=0,y=0,distance=0;
-  game.map.resourceAvailableUpdate(0,WHEAT,0,4,4,&x,&y,&distance);
+  game.map.materialAvailableUpdateSlot(0,materialIndex(MaterialId::Food),0,4,4,&x,&y,&distance);
   AIWarrush full(game.players[0]),projected(game.players[0]);
   MersenneTwister fullRandom(713),projectedRandom(713);
   full.setRandomEngine(fullRandom);projected.setRandomEngine(projectedRandom);

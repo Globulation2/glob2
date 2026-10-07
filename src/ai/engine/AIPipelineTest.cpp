@@ -6,7 +6,6 @@
 #include "Version.h"
 #include "Player.h"
 #include "Order.h"
-#include "RessourceType.h"
 #include "Marshaling.h"
 #include <BinaryStream.h>
 #include <StreamBackend.h>
@@ -30,18 +29,18 @@ void populate(glob2test::HeadlessGame& fixture, unsigned delay, unsigned workers
         auto* swarm = fixture.addBuilding("swarm", x+3,y+3,0,player);
         auto* inn = fixture.addBuilding("inn", x+10,y+3,0,player);
         for (auto* building : {swarm, inn}) {
-            building->resources[WHEAT] = building->type->maxResource[WHEAT];
+            building->materials[WHEAT] = building->type->maxMaterial[WHEAT];
             building->update();
         }
         for (int i=0; i<16; ++i) fixture.addUnit(WORKER,x+3+i%12,y+12+i/12,player);
         for (int i=0; i<3; ++i) fixture.addUnit(WARRIOR,x+3+i,y+16,player);
         for (int yy=y+21; yy<y+27; ++yy) for (int xx=x+3; xx<x+29; ++xx) {
-            game.map.setResource(xx,yy,WHEAT,0);
-            game.map.setResourceAmount(game.map.coordToIndex(xx,yy),globalContainer->resourcesTypes.get(WHEAT)->sizesCount);
+            game.map.setResourceByIndex(xx,yy,WHEAT,0);
+            game.map.setResourceAmount(game.map.coordToIndex(xx,yy),65535);
         }
         for (int xx=x+3; xx<x+29; ++xx) for (auto [row,resource] : {std::pair{30,WOOD},std::pair{31,STONE}}) {
-            game.map.setResource(xx,y+row,resource,0);
-            game.map.setResourceAmount(game.map.coordToIndex(xx,y+row),globalContainer->resourcesTypes.get(resource)->sizesCount);
+            game.map.setResourceByIndex(xx,y+row,resource,0);
+            game.map.setResourceAmount(game.map.coordToIndex(xx,y+row),65535);
         }
         auto* team = game.teams[player];
         team->startPosX=x+3; team->startPosY=y+3; team->startPosSet=Team::START_POS_FROM_UNIT;

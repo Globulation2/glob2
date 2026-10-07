@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2006 Bradley Arsenault
 
+#include "Material.h"
 #include "shared_runtime/Runtime.h"
 #include "ai/observation/AIWorldView.h"
 
@@ -82,8 +83,7 @@ bool MapInfo::is_discovered(int x, int y)
 
 bool MapInfo::is_resource(int x, int y, int type)
 {
-    const auto resource=world->resourceAt(world->tileIndex(x,y)).resource;
-    return resource.type==type && resource.amount>0;
+    return MapState::hasMaterialSlot(world->state(),world->tileIndex(x,y),type);
 }
 
 
@@ -111,16 +111,12 @@ bool MapInfo::is_sand(int x, int y)
 
 bool MapInfo::is_resource_habitat(int x, int y, int resource)
 {
-        const auto& terrain=world->terrain->properties(world->terrainAt(world->tileIndex(x,y)).type);
-        return resource>=0 && resource<MAX_RESOURCES
-            && (terrain.allowedResources & (1u<<resource))
-            && (world->resourceShrinkable[resource] || terrain.nonGrowingResources);
-
+    return MapState::terrainSupportsMaterial(world->state(),world->tileIndex(x,y),resource);
 }
 
 bool MapInfo::is_crop_habitat(int x, int y)
 {
-    return world->terrain->properties(world->terrainAt(world->tileIndex(x,y)).type).allowedResources & (1u<<WHEAT);
+    return MapState::terrainSupportsMaterial(world->state(),world->tileIndex(x,y),MaterialId::Food);
 }
 
 bool MapInfo::is_grass(int x, int y)

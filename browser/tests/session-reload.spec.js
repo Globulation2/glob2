@@ -76,15 +76,21 @@ test('a damaged in-game load returns through a scheduled error notice and permit
   expect(errors).toEqual([]);
 });
 
-test('an active replay can be loaded again through the scheduled loader',{tag:'@webgl2-reload-c'},async({page})=>{
+for(const mode of ['serial','threaded']) {
+test(`an active replay can be loaded again through the scheduled loader (${mode})`,{tag:'@webgl2-reload-c'},async({page})=>{
   const loadTimeout=process.env.GLOB2_TEST_RENDERER==='webgl2'?180000:30000;
   if(process.env.GLOB2_TEST_RENDERER==='webgl2') test.setTimeout(420000);
   const errors=[];page.on('pageerror',error=>errors.push(String(error)));
-  await page.goto(gameURL());await screen(page,'MainMenuScreen');
+  const url=new URL(gameURL(),'http://localhost');url.searchParams.set('threads',mode);
+  await page.goto(url.pathname+url.search);await screen(page,'MainMenuScreen');
+  expect((await state(page)).executionMode).toBe(mode);
+  const replay=await require('node:fs/promises').readFile(path.resolve(__dirname,'fixtures/cross-replay.replay'));
+  expect(replay.subarray(4,16).toString()).toBe('replayHeader');
+  expect(replay.readUInt32BE(20)).toBe(143);
   await clickMainMenu(page,'load');await screen(page,'ChooseMapScreen');await clickControl(page,'switch');
   const chooser=page.waitForEvent('filechooser');await clickControl(page,'import');
   await (await chooser).setFiles({name:'AAA Replay.replay',mimeType:'application/octet-stream',
-    buffer:await require('node:fs/promises').readFile(path.resolve(__dirname,'fixtures/cross-replay.replay'))});
+    buffer:replay});
   await expect.poll(async()=>(await state(page)).import).toBe('succeeded');
   await clickListRow(page,'files',/^AAA Replay/);await clickControl(page,'ok');
   await expect.poll(async()=>(await state(page)).screen,{timeout:loadTimeout}).toContain('match');
@@ -96,3 +102,4 @@ test('an active replay can be loaded again through the scheduled loader',{tag:'@
   await expect.poll(async()=>(await state(page)).tick).toBeGreaterThan(loaded+25);
   expect(errors).toEqual([]);
 });
+}

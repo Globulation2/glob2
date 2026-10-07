@@ -127,6 +127,10 @@ void generate(const char *path)
 	// The legacy island generator supplies terrain only. Seed small groves
 	// and grain fields with the existing resource API, leaving walking lanes.
 	const int bx = d.bootX[0], by = d.bootY[0];
+	const auto trees = game.map.resourceRegistry().find("trees");
+	const auto wheat = game.map.resourceRegistry().find("wheat");
+	const auto rocks = game.map.resourceRegistry().find("rocks");
+	require(trees && wheat && rocks, "decorative colony resources exist");
 	for (int y = 0; y < game.map.getH(); ++y)
 		for (int x = 0; x < game.map.getW(); ++x)
 		{
@@ -135,8 +139,8 @@ void generate(const char *path)
 				continue;
 			if ((x % 8 < 4) && (y % 8 < 4))
 			{
-				const int resource =
-					((x / 8 + y / 8) % 5 == 0) ? STONE : ((x / 8 + y / 8) % 2 ? WHEAT : WOOD);
+				const ResourceId resource =
+					((x / 8 + y / 8) % 5 == 0) ? *rocks : ((x / 8 + y / 8) % 2 ? *wheat : *trees);
 				game.map.setResource(x, y, resource, 3);
 			}
 		}
@@ -150,7 +154,7 @@ void generate(const char *path)
 	header.getWinningConditions().clear();
 	game.setGameHeader(header);
 	game.setAlliances();
-	game.map.getResourceGradient(0, WHEAT, 0);
+	game.map.getMaterialGradient(0, MaterialId::Food, 0);
 	game.teams[0]->color = Color(73, 191, 184);
 	for (int i = 0; i < 12000; ++i)
 	{
@@ -594,7 +598,7 @@ int main(int argc, char **argv)
 			require(gui.game.load(&in), "load real-game fixture");
 			std::istringstream state(in.readText("rng") + " ");
 			state >> gui.game.syncRandom;
-			gui.game.map.getResourceGradient(0, WHEAT, 0);
+			gui.game.map.getMaterialGradient(0, MaterialId::Food, 0);
 			gui.localTeamNo = 0;
 			gui.localPlayer = 0;
 			gui.adjustLocalTeam();

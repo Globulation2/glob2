@@ -14,11 +14,16 @@
 //                                            parseVerifyOutputs for the contract
 import type {
   BuildingCatalog,
+  ResourceExperimentDefinitions,
   GeneratorDescriptor,
   SimVersion,
   TeamTimelinePoint,
 } from '@glob2/protocol';
-import { MAX_TIMELINE_SAMPLES, buildingCatalogExperimentKeys } from '@glob2/protocol';
+import {
+  MAX_TIMELINE_SAMPLES,
+  buildingCatalogExperimentKeys,
+  resourceExperimentKeys,
+} from '@glob2/protocol';
 import { checkBuildingCatalogHash } from '@glob2/protocol/node';
 
 /** A failure caused by the job's input: deterministic, so it is reported, not retried. */
@@ -246,6 +251,8 @@ export const GENERATED_MAP_FILE = 'map-r0.map.gz';
 
 export interface MapFacts {
   buildingCatalog?: BuildingCatalog;
+  resourceExperiments?: ResourceExperimentDefinitions;
+  requiredResourceExperiments?: string[];
   width: number;
   height: number;
   teamCount: number;
@@ -277,6 +284,10 @@ export function parseGenerationResult(text: string): GenerationOutcome {
       height: map.height,
       teamCount: map.teamCount,
       ...(map.buildingCatalog ? { buildingCatalog: map.buildingCatalog } : {}),
+      ...(map.resourceExperiments ? { resourceExperiments: map.resourceExperiments } : {}),
+      ...(map.requiredResourceExperiments
+        ? { requiredResourceExperiments: map.requiredResourceExperiments }
+        : {}),
     },
   };
   const quality = doc['quality'];
@@ -342,6 +353,28 @@ function parseControllers(value: unknown): ReportController[] {
 function parseReportMap(report: Json): ReportMap {
   const map = object(report['map'], 'map report map');
   let buildingCatalog: BuildingCatalog | undefined;
+  let resourceExperiments: ResourceExperimentDefinitions | undefined;
+  let requiredResourceExperiments: string[] | undefined;
+  if (map['resourceExperiments'] !== undefined) {
+    resourceExperiments = map['resourceExperiments'] as ResourceExperimentDefinitions;
+    try {
+      resourceExperimentKeys(resourceExperiments);
+    } catch (error) {
+      throw new EngineOutputError(String(error));
+    }
+  }
+  if (map['requiredResourceExperiments'] !== undefined) {
+    const required = map['requiredResourceExperiments'];
+    const allowed = new Set(resourceExperimentKeys(resourceExperiments ?? []));
+    if (
+      !Array.isArray(required) ||
+      required.length > 64 ||
+      required.some((key: unknown) => typeof key !== 'string' || !allowed.has(key)) ||
+      new Set(required).size !== required.length
+    )
+      throw new EngineOutputError('invalid required resource experiments');
+    requiredResourceExperiments = required as string[];
+  }
   if (map['buildingCatalog'] !== undefined) {
     const catalog = object(map['buildingCatalog'], 'building catalog');
     if (typeof catalog['snapshot'] !== 'string' || typeof catalog['hash'] !== 'string')
@@ -356,6 +389,8 @@ function parseReportMap(report: Json): ReportMap {
   }
   return {
     ...(buildingCatalog ? { buildingCatalog } : {}),
+    ...(resourceExperiments ? { resourceExperiments } : {}),
+    ...(requiredResourceExperiments ? { requiredResourceExperiments } : {}),
     name: typeof map['name'] === 'string' ? map['name'] : null,
     width: int(map['width'], 'map width'),
     height: int(map['height'], 'map height'),

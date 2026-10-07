@@ -21,6 +21,7 @@
 #ifndef AI_MAXIMA_FOOD_LEDGER_H
 #define AI_MAXIMA_FOOD_LEDGER_H
 
+#include "Material.h"
 #include <stdint.h>
 #include <array>
 #include <vector>
@@ -52,7 +53,7 @@ struct OperatingPlan
 {
     int carriers=-1;
     int fixedTicks=1,ticksPerTile=0;
-    std::array<int,8> independent{},production{},trips{};
+    std::array<int,MaterialCount> independent{},production{},trips{};
 };
 struct OperatingQuery
 {
@@ -264,7 +265,7 @@ private:
 uint32_t cellYield(uint32_t fertility, int openNeighbors, int growthPeriodTicks);
 
 /// Full-capacity demand of a swarm, in micro-wheat per tick.
-int swarmDemand(int resourceForOneUnit, int unitProductionTime, int percent);
+int swarmDemand(int foodPerUnit, int unitProductionTime, int percent);
 
 /// Full-capacity demand of an inn serving `servedUnits`, in micro-wheat per
 /// tick, where a fed unit eats one wheat every `ticksPerMeal` ticks.

@@ -53,11 +53,11 @@ bool OrderModifyBuilding::setData(const Uint8 *data, int dataLength, Uint32 vers
 
 // OrderModifyExchange' code
 
-OrderModifyExchange::OrderModifyExchange(Uint16 gid, Uint32 receiveResourceMask, Uint32 sendResourceMask)
+OrderModifyExchange::OrderModifyExchange(Uint16 gid, Uint32 receiveMaterialMask, Uint32 sendMaterialMask)
 {
 	this->gid=gid;
-	this->receiveResourceMask=receiveResourceMask;
-	this->sendResourceMask=sendResourceMask;
+	this->receiveMaterialMask=receiveMaterialMask;
+	this->sendMaterialMask=sendMaterialMask;
 }
 
 std::shared_ptr<OrderModifyExchange> OrderModifyExchange::deserialize(const Uint8 *data, int dataLength, Uint32 versionMinor)
@@ -72,8 +72,8 @@ Uint8 *OrderModifyExchange::getData(void)
 {
 	assert(sizeof(data) == getDataLength());
 	addUint16(data, gid, 0);
-	addUint32(data, receiveResourceMask, 2);
-	addUint32(data, sendResourceMask, 6);
+	addUint32(data, receiveMaterialMask, 2);
+	addUint32(data, sendMaterialMask, 6);
 	return data;
 }
 
@@ -82,8 +82,8 @@ bool OrderModifyExchange::setData(const Uint8 *data, int dataLength, Uint32 vers
 	if (dataLength!=getDataLength())
 		return false;
 	gid=getUint16(data, 0);
-	receiveResourceMask=getUint32(data, 2);
-	sendResourceMask=getUint32(data, 6);
+	receiveMaterialMask=getUint32(data, 2);
+	sendMaterialMask=getUint32(data, 6);
 	return true;
 }
 
@@ -157,10 +157,10 @@ bool OrderModifyFlag::setData(const Uint8 *data, int dataLength, Uint32 versionM
 
 // OrderModifyClearingFlags' code
 
-OrderModifyClearingFlag::OrderModifyClearingFlag(Uint16 gid, bool clearingResources[BASIC_COUNT])
+OrderModifyClearingFlag::OrderModifyClearingFlag(Uint16 gid, bool clearingMaterials[MaterialCount])
 {
 	this->gid=gid;
-	memcpy(this->clearingResources, clearingResources, sizeof(bool)*BASIC_COUNT);
+	memcpy(this->clearingMaterials, clearingMaterials, sizeof(bool)*MaterialCount);
 }
 
 std::shared_ptr<OrderModifyClearingFlag> OrderModifyClearingFlag::deserialize(const Uint8 *data, int dataLength, Uint32 versionMinor)
@@ -180,21 +180,24 @@ OrderModifyClearingFlag::~OrderModifyClearingFlag(void)
 Uint8 *OrderModifyClearingFlag::getData(void)
 {
 	if (data==NULL)
-		data=(Uint8 *)malloc(2+BASIC_COUNT);
+		data=(Uint8 *)malloc(2+MaterialCount);
 	addUint16(data, gid, 0);
-	for (int i=0; i<BASIC_COUNT; i++)
-		addUint8(data, (Uint8)clearingResources[i], 2+i);
+	for (int i=0; i<MaterialCount; i++)
+		addUint8(data, (Uint8)clearingMaterials[i], 2+i);
 	return data;
 }
 
 bool OrderModifyClearingFlag::setData(const Uint8 *data, int dataLength, Uint32 versionMinor)
 {
-	if (dataLength!=getDataLength())
-		return false;
-	this->gid=getUint16(data, 0);
-	for (int i=0; i<BASIC_COUNT; i++)
-		clearingResources[i]=(bool)getUint8(data, 2+i);
-
+	const unsigned count = versionMinor < FILE_FORMAT_VERSION_RUNTIME_RESOURCES ? 5 : MaterialCount;
+	if (dataLength != int(2 + count)) return false;
+	this->gid = getUint16(data, 0);
+	for (unsigned i = 0; i < MaterialCount; ++i)
+	{
+		const auto value = i < count ? getUint8(data, 2 + i) : 0;
+		if (value > 1) return false;
+		clearingMaterials[i] = value != 0;
+	}
 	return true;
 }
 

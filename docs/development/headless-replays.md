@@ -17,7 +17,7 @@ bytes, with no dependency on local authoring JSON. The existing map-content hash
 binds distributed matches to the definitions.
 Building format 137 adds configurable services and capability-driven AI; replays
 recorded before version 137 became incompatible and network protocol 57 separated
-clients using those rules. The current replay floor is 140 (immutable AI pipeline).
+clients using those rules. The current replay floor is 143 for engine snapshots and scheduled AI decisions.
 Supported saved games still load and adopt the current simulation;
 the save floor remains 58.
 
@@ -423,7 +423,11 @@ one completed-tick observation phase. `--compute-threads 1` serializes that phas
 at the same boundary. The default worker cap is unchanged. Fixed publication
 cadence and saved pending deadlines are unchanged; saves drain deferred preparation
 before serializing, and old saves still load. Moving the observation point can
-change routes/AI trajectories; that change raised the replay floor to 139; format 140 now sets the current floor. LAN and
+change routes/AI trajectories and introduced replay floor 139. Runtime resource
+catalogs extend the simulation in format 140, with replay
+floor 140 and network protocol 59. Hazard routing raised the floor to 142 and
+network protocol to 60. Engine snapshots and scheduled AI decisions raise the floor to 143 and
+network protocol to 61; supported saves still load back to format 58. LAN and
 online sim-version gates reject clients using the older boundary. See the
 [phase contract](reference.md) before adding new parallel work.
 

@@ -23,7 +23,7 @@ namespace Cortex
 	struct CortexTuning
 	{
 		// --- second-swarm trigger face (when "wants a fresh patch" fires) -----
-		/// WHEAT level below which a cap-pinned swarm counts as DRAINING (the
+		/// Food level below which a cap-pinned swarm counts as DRAINING (the
 		/// expansion-trigger use of CORTEX_SWARM_WHEAT_ADD_LO, split from the
 		/// hauler-tuning use, which stays on the constant). Also the severity
 		/// scale's top: field-depleted severity == this value.
@@ -32,25 +32,25 @@ namespace Cortex
 		/// ceiling AND the "pinned at the cap" test of the capped-draining face
 		/// (one knob on purpose — "capped" always means the operative cap).
 		int swarmWorkerCap = CORTEX_SWARM_WORKER_CAP;
-		/// WHEAT level at which tuneWorkers releases a hauler. Governs the
-		/// cap-latch: on thin-wheat maps the buffer never reaches the release
+		/// Food level at which tuneWorkers releases a hauler. Governs the
+		/// cap-latch: on thin-food maps the buffer never reaches the release
 		/// line, so maxUnitWorking sticks at the cap and the capped-draining face
-		/// fires on every production-cycle wheat dip.
+		/// fires on every production-cycle food dip.
 		int swarmWheatRemHi = CORTEX_SWARM_WHEAT_REM_HI;
-		/// Harvestable-wheat tile count below which a catchment is DEAD: the
-		/// field-depleted trigger face and tuneWorkers' wheat-starved single-
+		/// Harvestable-food tile count below which a catchment is DEAD: the
+		/// field-depleted trigger face and tuneWorkers' food-starved single-
 		/// hauler clamp (shared, as in the committed code).
 		int wheatStarvedTiles = CORTEX_SWARM_WHEAT_STARVED_TILES;
 		/// Wheat-abundance veto on the capped-draining face: when > 0, a swarm
-		/// with harvestableWheatNearby >= this many tiles is NOT capped-draining —
-		/// a low wheat buffer beside plentiful wheat is production-cycle noise, not
-		/// a spent catchment (the Muka seed-1 misfire: wheat=3 with 47 tiles).
+		/// with harvestableFoodSourcesNearby >= this many tiles is NOT capped-draining —
+		/// a low food buffer beside plentiful food is production-cycle noise, not
+		/// a spent catchment (the Muka seed-1 misfire: food=3 with 47 tiles).
 		/// 0 = veto disabled (committed behavior).
 		int expandWheatVeto = 0;
 		/// Consecutive decision cycles (~25 ticks each) anySwarmWantsFreshPatch
 		/// must hold before the second-swarm scorer may fire. 1 = fire on the
 		/// first cycle (committed behavior); higher values debounce transient
-		/// wheat-buffer dips that self-heal within a few cycles.
+		/// food-buffer dips that self-heal within a few cycles.
 		int expandDebounceCycles = 1;
 
 		// --- second-swarm ranking (when it wins the cycle) --------------------

@@ -12,6 +12,7 @@
 bool Map::pathfindPointToPoint(int x, int y, int targetX, int targetY, int *dx, int *dy, int swimClass, Uint32 teamMask, int maximumLength)
 {
 	PERF_SCOPE_TIME(PathPoint);
+	*dx = *dy = 0;
 	//This implements a fairly standard A* algorithm, except that each node does not store the location
 	//of the node that lead to it, thus, you can't trace backwards to the starting point to get the path.
 	//Instead, each node holds the direction that you left from the initial node that lead to it, so you
@@ -48,7 +49,7 @@ bool Map::pathfindPointToPoint(int x, int y, int targetX, int targetY, int *dx, 
         if (pos.isClosed || pos.moveCost != queuedCost) continue;
 		pos.isClosed = true;
 
-		if((pos.x == targetX && pos.y == targetY) || (pos.moveCost > maximumCost))
+		if(pos.x == targetX && pos.y == targetY)
 		{
 			break;
 		}
@@ -68,6 +69,7 @@ bool Map::pathfindPointToPoint(int x, int y, int targetX, int targetY, int *dx, 
 				else
 				{
 					int moveCost = pos.moveCost + stepCost(lx, ly, coordToIndex(nx, ny), swimClass);
+					if (moveCost > maximumCost) continue;
 					int totalCost = moveCost + heuristicStep * warpDistMax(targetX, targetY, nx, ny);
 
 					//If this cell hasn't been examined at all yet
@@ -138,5 +140,5 @@ bool Map::pathfindAirPointToPoint(int x, int y, int targetX, int targetY, int *d
 	return field::airRoute(
 		w, h, x, y, targetX, targetY, minimum, aStarPoints, aStarExaminedPoints,
 		[&](int px, int py) { return isFreeForAirUnit(px, py); },
-		[&](int px, int py) { return terrainRegistry().airCost(terrainTypeAt(px, py)); }, dx, dy);
+		[&](int px, int py) { return terrainRegistry().airRouteCost(terrainTypeAt(px, py)); }, dx, dy);
 }

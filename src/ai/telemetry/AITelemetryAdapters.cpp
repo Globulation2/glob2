@@ -62,10 +62,11 @@ void AICastor::captureTelemetry()
 	telemetry.set(AITrace::AI2::state_buildingSum_9_1, buildingSum[9][1]);
 	telemetry.set(AITrace::AI2::state_buildingSum_10_0, buildingSum[10][0]);
 	telemetry.set(AITrace::AI2::state_buildingSum_10_1, buildingSum[10][1]);
-	telemetry.set(AITrace::AI2::state_buildingSum_11_0, buildingSum[11][0]);
-	telemetry.set(AITrace::AI2::state_buildingSum_11_1, buildingSum[11][1]);
-	telemetry.set(AITrace::AI2::state_buildingSum_12_0, buildingSum[12][0]);
-	telemetry.set(AITrace::AI2::state_buildingSum_12_1, buildingSum[12][1]);
+	// Legacy telemetry slots: 11 was walls (no Castor demand), 12 was exchange.
+	telemetry.set(AITrace::AI2::state_buildingSum_11_0, 0);
+	telemetry.set(AITrace::AI2::state_buildingSum_11_1, 0);
+	telemetry.set(AITrace::AI2::state_buildingSum_12_0, buildingSum[ExchangeResources][0]);
+	telemetry.set(AITrace::AI2::state_buildingSum_12_1, buildingSum[ExchangeResources][1]);
 	telemetry.set(AITrace::AI2::state_timer, timer);
 	telemetry.set(AITrace::AI2::state_canSwim, canSwim);
 	telemetry.set(AITrace::AI2::state_needSwim, needSwim);

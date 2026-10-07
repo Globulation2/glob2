@@ -23,6 +23,14 @@ class MapHeader
 {
 public:
 	ExperimentSet requiredTerrainExperiments;
+	ExperimentSet requiredResourceExperiments;
+	std::vector<CatalogExperimentDefinition> resourceExperimentDefinitions;
+	std::vector<std::string> resourceExperimentKeys() const
+	{
+		std::vector<std::string> result;
+		for (const auto& definition : resourceExperimentDefinitions) result.push_back(definition.key);
+		return result;
+	}
 	/// Gives default values to all entries
 	MapHeader();
 		

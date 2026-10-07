@@ -105,13 +105,12 @@ public:
  { return AIEngine::ObservationQueries::available(world,candidate,intent); }
  const std::vector<AIPlanning::BuildingCandidate>& placements(Intent intent,bool costOrder=false) const
  { return costOrder ? world.capabilities().placementsByCost(intent) : world.capabilities().placements(intent); }
- bool isResourceTakeable(int x,int y,int resource) const
- { const auto r=world.resourceAt(world.tileIndex(x,y)).resource; return r.type==resource && r.amount>0; }
+ bool isResourceTakeable(int x,int y,int material) const { return MapState::hasMaterialSlot(world.state(),world.tileIndex(x,y),material); }
  bool isFreeForBuilding(int x,int y,int width=1,int height=1,bool hard=false,Uint16 ignore=0xffff) const
  {
   for(int dy=0;dy<height;++dy) for(int dx=0;dx<width;++dx) {
    const auto i=world.tileIndex(x+dx,y+dy);const auto r=world.resourceAt(i);const auto o=world.occupancyAt(i);
-   if(r.resource.type!=NO_RES_TYPE || (o.building!=0xffff && o.building!=ignore)
+   if(MapState::resourceBlocksBuilding(world.state(),i) || (o.building!=0xffff && o.building!=ignore)
      || (!hard && o.groundUnit!=0xffff) || !world.terrain->properties(world.terrainAt(i).type).buildable) return false;
   }
   return true;
@@ -167,7 +166,7 @@ public:
  }
  std::span<const Uint16> resourceGradient(int owner,int resource,int swim)
  {
-  const int key=(owner*MAX_NB_RESOURCES+resource)*7+swim;
+  const int key=(owner*MaterialSlotCount+resource)*7+swim;
   auto published=world.resourceGradient(owner,resource,swim);
   std::span<const Uint16> gradient=published;
   if(!published.empty()) resourceFields.erase(key);
@@ -187,9 +186,10 @@ public:
     modified |= terrain.groundSpeedQ8!=256;
     Uint16 value=GRADIENT_FORBIDDEN;
     if(!(world.areasAt(i).forbidden & mask) && occupancy.immobileUnit==255) {
-     if(resourceCell.resource.type==NO_RES_TYPE && occupancy.building==0xffff)
+     if(!MapState::resourceBlocksGround(world.state(),i) && occupancy.building==0xffff)
       value=(terrain.walkable || (swim && terrain.swimmable))?GRADIENT_UNREACHABLE:GRADIENT_FORBIDDEN;
-     else if(resourceCell.resource.type==resource && (!world.resourceVisibleToBeCollected[resource] || (world.visibilityAt(i).visible & mask)))
+     // Passable sources are goals too. Visibility belongs to each source.
+     if((MapState::materialMaskAt(world.state(),i) & MaterialMask(1u<<resource)) && (!MapState::resourceVisibleToHarvest(world.state(),i) || (world.visibilityAt(i).visible & mask)))
       value=GRADIENT_AT_GOAL;
     }
     values[i]=value;

@@ -115,7 +115,7 @@ bool divideUpPlayerLands(Game &game, GenerationContext &context, std::vector<int
 				int h = heightmap[wheatWoodPoints[j].y * game.map.getW() + wheatWoodPoints[j].x];
 				if (h > 50 && resources.wood > 0)
 				{
-					game.map.setResource(wheatWoodPoints[j].x, wheatWoodPoints[j].y, WOOD, 1);
+					game.map.setResourceByIndex(wheatWoodPoints[j].x, wheatWoodPoints[j].y, WOOD, 1);
 				}
 			}
 			wheatWoodPoints.clear();
@@ -131,7 +131,7 @@ bool divideUpPlayerLands(Game &game, GenerationContext &context, std::vector<int
 			{
 				int h = heightmap[wheatWoodPoints[j].y * game.map.getW() + wheatWoodPoints[j].x];
 				if (h > 50 && resources.wheat > 0)
-					game.map.setResource(wheatWoodPoints[j].x, wheatWoodPoints[j].y, WHEAT, 1);
+					game.map.setResourceByIndex(wheatWoodPoints[j].x, wheatWoodPoints[j].y, WHEAT, 1);
 				if (h - wheatRise + 10 > 50)
 					wheatPoints.push_back(wheatWoodPoints[j]);
 			}
@@ -153,7 +153,7 @@ bool divideUpPlayerLands(Game &game, GenerationContext &context, std::vector<int
 			chooseRandomPoints(game.map, context, stoneLocations, numberOfStone);
 			for (unsigned int j = 0; j < stoneLocations.size(); ++j)
 			{
-				game.map.setResource(stoneLocations[j].x, stoneLocations[j].y, STONE, 1);
+				game.map.setResourceByIndex(stoneLocations[j].x, stoneLocations[j].y, STONE, 1);
 			}
 
 			// Concerning starting locations, we also consider points inside the wheat and wood

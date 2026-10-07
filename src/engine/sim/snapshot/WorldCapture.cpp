@@ -26,7 +26,7 @@ std::shared_ptr<const std::vector<BuildingKindView>> captureCatalog(const Game& 
 		BuildingKindView kind;
 		kind.resolvedType = type;
 		kind.resolvedType.gameSpritePtr = nullptr; kind.resolvedType.miniSpritePtr = nullptr;
-		std::copy_n(type.multiplierResource, MAX_NB_RESOURCES, kind.multiplierResource.begin());
+		std::copy_n(type.materialMultiplier, MaterialSlotCount, kind.materialMultiplier.begin());
 		kind.key = type.key;
 		kind.legacyType = type.type;
 		kind.semantics = type.semantics;
@@ -41,7 +41,7 @@ std::shared_ptr<const std::vector<BuildingKindView>> captureCatalog(const Game& 
 		kind.shootSpeed = type.shootSpeed; kind.shootRhythm = type.shootRhythm;
 		kind.decLeft = type.decLeft; kind.decTop = type.decTop;
 		kind.suppliesStock = type.runtimeSuppliesStock; kind.fetchesStock = type.runtimeFetchesStock;
-		std::copy_n(type.maxResource, MAX_NB_RESOURCES, kind.maxResource.begin());
+		std::copy_n(type.maxMaterial, MaterialSlotCount, kind.maxMaterial.begin());
 		std::copy_n(type.zonable, NB_UNIT_TYPE, kind.zonable.begin());
 		const int completed = type.isBuildingSite ? type.nextLevel : int(i);
 		if (completed >= 0)
@@ -75,7 +75,8 @@ Handle capture(const Game& game,
 			if (needs(requirements, component) && source && unchanged)
 			{ destination = source; requirements &= ~bit(component); }
 		};
-		const bool sameCatalog = previous->catalogs && previous->catalogs->buildings == catalog && previous->configurationRevision == result->configurationRevision;
+		const bool sameCatalog = previous->catalogs && previous->catalogs->buildings == catalog && previous->configurationRevision == result->configurationRevision
+			&& previous->catalogs->resources == game.map.frozenResourceRegistry() && previous->catalogs->habitats == game.map.frozenResourceHabitats();
 		reuse(Component::Catalogs, result->catalogs, previous->catalogs, sameCatalog);
 		reuse(Component::Rules, result->rules, previous->rules, previous->configurationRevision == result->configurationRevision);
 		const auto generations = result->mapGenerations;
@@ -144,14 +145,8 @@ Handle capture(const Game& game,
 		catalogs->capabilities = game.buildingCapabilities().frozenTables();
 		for (int type = 0; type < NB_UNIT_TYPE; ++type)
 			std::copy_n(Race::unitTypes[type], NB_UNIT_LEVELS, catalogs->unitTypes[type].begin());
-		catalogs->sizesCount.fill(0); catalogs->eternal.fill(false);
-		catalogs->shrinkable.fill(false); catalogs->visibleToBeCollected.fill(false);
-		for (unsigned r = 0; r < std::min<unsigned>(MAX_NB_RESOURCES, globalContainer->resourcesTypes.size()); ++r) {
-			catalogs->sizesCount[r] = globalContainer->resourcesTypes.get(r)->sizesCount;
-			catalogs->eternal[r] = globalContainer->resourcesTypes.get(r)->eternal;
-			catalogs->shrinkable[r] = globalContainer->resourcesTypes.get(r)->shrinkable;
-			catalogs->visibleToBeCollected[r] = globalContainer->resourcesTypes.get(r)->visibleToBeCollected;
-		}
+		catalogs->resources = game.map.frozenResourceRegistry();
+		catalogs->habitats = game.map.frozenResourceHabitats();
 	}
 	if (needs(requirements, Component::Rules)) {
 		auto config = std::make_shared<GameHeader>(header);
@@ -175,7 +170,13 @@ Handle capture(const Game& game,
         if (!source.empty()) std::memcpy(destination.data(), source.data(), source.size_bytes());
     };
     if (needs(requirements,Component::Terrain)) copyArray(terrain->legacy, game.map.legacyTerrainState());
-    if (needs(requirements,Component::Resources)) copyArray(resources->cells, game.map.resourceState());
+    if (needs(requirements,Component::Resources)) {
+        copyArray(resources->cells, game.map.resourceState());
+        copyArray(resources->stockIndices, game.map.resourceStockIndexState());
+        copyArray(resources->stocks, game.map.resourceStockState());
+        resources->staticMaterialSourceGeneration = game.map.staticMaterialSourceGeneration();
+        { const auto live = game.map.cellView(); std::copy(live.materialSourceCounts.begin(), live.materialSourceCounts.end(), resources->materialSourceCounts.begin()); }
+    }
     if (needs(requirements,Component::Occupancy)) copyArray(occupancy->cells, game.map.occupancyState());
     if (needs(requirements,Component::Areas)) copyArray(areas->cells, game.map.areaState());
     if (needs(requirements,Component::Visibility)) {
@@ -214,7 +215,7 @@ Handle capture(const Game& game,
 		std::copy_n(target.statistics.workersByConstructionLevel, NB_UNIT_LEVELS, target.workersLevel.begin());
 		for (auto* building : team->swarms) append(target.swarms, Game::refOf(building));
 		for (auto* building : team->virtualBuildings) append(target.virtualBuildings, Game::refOf(building));
-		std::copy_n(team->teamResources, MAX_NB_RESOURCES, target.resources.begin());
+		std::copy_n(team->teamMaterials, MaterialSlotCount, target.materials.begin());
 		}
 		if (!needs(requirements, Component::Entities)) continue;
 		for (int i = 0; i < Building::MAX_COUNT; ++i)
@@ -228,7 +229,7 @@ Handle capture(const Game& game,
 				std::memcpy(static_cast<BuildingStateRecord*>(&v), static_cast<const BuildingStateRecord*>(b), sizeof(BuildingStateRecord));
 				v.identity = Game::refOf(b); v.team = t;
 				v.maxHp = b->getEffectiveMaxHp();
-				v.usesTeamResources = b->resources == team->teamResources;
+				v.usesTeamResources = b->materials == team->teamMaterials;
 				v.working = {Uint32(entities->relationships.size()), Uint32(b->unitsWorking.size())};
 				for (const auto* u : b->unitsWorking) append(entities->relationships, Game::refOf(u));
 				v.inside = {Uint32(entities->relationships.size()), Uint32(b->unitsInside.size())};

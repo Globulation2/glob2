@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "CaravanseraiGenerator.h"
+#include "ResourceSemantics.h"
 #include "BuildingType.h"
 #include "Contact.h"
 #include "Drawing.h"
@@ -630,10 +631,10 @@ bool generate(Game &game, GenerationContext &context)
 	{
 		const int x = i % t.w, y = i / t.w;
 		if (walls.stone[i])
-			map.setResource(x, y, STONE, 1);
-		else if (L.mesa[i] && map.terrainSupportsResourceAt(x, y, STONE))
+			map.setResourceByIndex(x, y, STONE, 1);
+		else if (L.mesa[i] && map.terrainSupportsResourceAtByIndex(x, y, STONE))
 		{
-			map.setResource(x, y, STONE, 1);
+			map.setResourceByIndex(x, y, STONE, 1);
 			structural[i] = 1;
 		}
 	}
@@ -661,7 +662,7 @@ bool generate(Game &game, GenerationContext &context)
 		waterTiles[i] = terrainProvidesFertility(map.terrainPropertiesAt(i % t.w, i / t.w));
 	const std::vector<int> fromWater = stepsFrom(t, waterTiles);
 	const auto open = [&](int i, int type)
-	{ return map.terrainSupportsResourceAt(i % t.w, i / t.w, type) && !reserved[i] && clearGround(map, i % t.w, i / t.w); };
+	{ return map.terrainSupportsResourceAtByIndex(i % t.w, i / t.w, type) && !reserved[i] && clearGround(map, i % t.w, i / t.w); };
 	// Plant `count` of `type` on the tiles `where` allows, nearest the water first.
 	const auto plantNearWater = [&](int type, int count, auto where)
 	{
@@ -675,7 +676,7 @@ bool generate(Game &game, GenerationContext &context)
 		{
 			if (placed >= count)
 				break;
-			map.setResource(i % t.w, i / t.w, type, 1);
+			map.setResourceByIndex(i % t.w, i / t.w, type, 1);
 			++placed;
 		}
 		return placed;
@@ -700,7 +701,7 @@ bool generate(Game &game, GenerationContext &context)
 		for (const auto &[d, i] : ring)
 			if (w < wheat)
 			{
-				map.setResource(i % t.w, i / t.w, WHEAT, 1);
+				map.setResourceByIndex(i % t.w, i / t.w, WHEAT, 1);
 				++w;
 			}
 		const int p = plantNearWater(WOOD, palms, [&](int i) { return L.homeOf[i] == k && L.homeKind[i] == kGrove; });
@@ -762,8 +763,8 @@ std::vector<int> grassReach(const Map &map, const Torus &t, const std::vector<un
 	for (int i = 0; i < n; ++i)
 	{
 		const int x = i % t.w, y = i / t.w;
-		open[i] = (map.canResourcesGrow(x, y) && (map.terrainSupportsResourceAt(x, y, WHEAT) ||
-			map.terrainSupportsResourceAt(x, y, WOOD))) && !(map.isResource(x, y) && map.getResource(x, y).type == STONE);
+		open[i] = (map.canResourcesGrow(x, y) && (map.terrainSupportsResourceAtByIndex(x, y, WHEAT) ||
+			map.terrainSupportsResourceAtByIndex(x, y, WOOD))) && !permanentResourceBarrier(map, i);
 		source[i] = from[i] && open[i];
 	}
 	return stepsFrom(t, source, open);
@@ -816,7 +817,7 @@ std::string validateWorld(const Game &game, const GenerationContext &context)
 			!uneven.empty())
 			return uneven;
 	}
-	return startingAccessFailure(map, teams, {{WHEAT, 24, "wheat"}, {WOOD, 32, "wood"}}, 16, 24);
+	return startingAccessFailure(map, teams, {{MaterialId::Food, 24, "food"}, {MaterialId::Wood, 32, "wood"}}, 16, 24);
 }
 } // namespace
 

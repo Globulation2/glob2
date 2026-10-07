@@ -277,3 +277,20 @@ void MapEdit::importTerrainFile(const std::string &filename)
 	hasMapBeenModified = true;
 	fertilityRequested = true;
 }
+
+void MapEdit::importResourceFile(const std::string& filename)
+{
+	std::unique_ptr<GAGCore::StreamBackend> input(Toolkit::getFileManager()->openInputStreamBackend(filename));
+	if (!input || !input->isValid()) throw std::runtime_error("Cannot open resource definitions");
+	input->seekFromEnd(0);
+	const auto bytes = input->getPosition();
+	input->seekFromStart(0);
+	if (bytes > ResourceRegistry::MaximumDefinitionBytes) throw std::runtime_error("Resource definitions exceed 32 MiB");
+	std::string json(bytes, '\0');
+	if (bytes && !input->readExact(json.data(), bytes)) throw std::runtime_error("Cannot read resource definitions");
+	game.map.installResourceDefinitions(json);
+	game.gameHeader.setResourceExperiments(game.map.resourceRegistry().experiments());
+	minimap.resetMinimapDrawing();
+	hasMapBeenModified = true;
+	fertilityRequested = true;
+}

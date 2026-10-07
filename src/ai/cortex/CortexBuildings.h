@@ -46,10 +46,10 @@ inline bool servesRole(const AIEngine::AIWorldView& game, const BuildingType& ty
  return role >= 0 && role < CORTEX_BUILDING_TYPES && (buildingRoles(game, type) & (1u << role));
 }
 
-inline int primaryResource(const BuildingResourceCost& cost)
+inline int primaryMaterialSlot(const BuildingMaterialCost& cost)
 {
  int selected = -1;
- for (int r = 0; r < MAX_NB_RESOURCES; ++r)
+ for (int r = 0; r < MaterialSlotCount; ++r)
   if (cost[r] > 0 && (selected < 0 || cost[r] > cost[selected])) selected = r;
  return selected;
 }

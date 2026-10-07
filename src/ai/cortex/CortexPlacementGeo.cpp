@@ -2,7 +2,9 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2026 The Globulation 2 Authors
 
+#include "Material.h"
 #include "CortexPlacementGeo.h"
+#include "CortexFoodAvailability.h"
 
 #include "CortexTypes.h"
 #include <algorithm>
@@ -240,55 +242,45 @@ namespace Cortex
 		h  = maxY - minY;
 	}
 
-	bool anyWheatWithin(const AIEngine::AIWorldView& map, int x, int y, int w, int h, int dist)
+	bool anyFoodSourceWithin(const AIEngine::AIWorldView& map, int x, int y, int w, int h, int dist)
 	{
-		// The footprint expanded by `dist` in Chebyshev distance is exactly the
-		// rectangle [x-dist, x+w+dist) x [y-dist, y+h+dist). The footprint interior
-		// cannot hold WHEAT (it passed isHardSpaceForBuilding), so scanning it too is
-		// harmless. Early-out on the first wheat tile.
-		for (int dy = -dist; dy < h + dist; dy++)
-			for (int dx = -dist; dx < w + dist; dx++)
-			{
-				const int nx = map.normalizeX(x + dx);
-				const int ny = map.normalizeY(y + dy);
-				if (getResource(map,nx, ny).type == WHEAT)
-					return true;
-			}
-		return false;
+		return food_queries::anyWithin(x,y,w,h,dist,[&](int px,int py) {
+			return MapState::hasMaterial(map.state(),map.tileIndex(px,py),MaterialId::Food);
+		});
 	}
 
-	int countWheatWithin(const AIEngine::AIWorldView& map, int x, int y, int w, int h, int dist)
+	int countFoodSourcesWithin(const AIEngine::AIWorldView& map, int x, int y, int w, int h, int dist)
 	{
-		// Forbidden-BLIND companion to countHarvestableWheatWithin: counts every WHEAT
+		// Forbidden-BLIND companion to countHarvestableFoodSourcesWithin: counts every Food
 		// tile in the expanded footprint regardless of the forbidden mask. The gap
 		// between this and the harvestable count is exactly the forbidden-but-present
-		// wheat — the discriminator between checkerboard-forbidding and field depletion.
+		// food — the discriminator between checkerboard-forbidding and field depletion.
 		int count = 0;
 		for (int dy = -dist; dy < h + dist; dy++)
 			for (int dx = -dist; dx < w + dist; dx++)
 			{
 				const int nx = map.normalizeX(x + dx);
 				const int ny = map.normalizeY(y + dy);
-				if (getResource(map,nx, ny).type == WHEAT)
+				if (MapState::hasMaterial(map.state(),map.tileIndex(nx,ny),MaterialId::Food))
 					count++;
 			}
 		return count;
 	}
 
-	int countSurvivingWheatWithin(const AIEngine::AIWorldView& map, int x, int y, int w, int h, int dist)
+	int countSurvivingFoodSourcesWithin(const AIEngine::AIWorldView& map, int x, int y, int w, int h, int dist)
 	{
-		// Parity-aware count of the WHEAT tiles that SURVIVE Cortex's wheat-protection
-		// checkerboard — the open half the paint leaves harvestable: WHEAT tiles whose
-		// (x+y) parity is NOT the protected WHEAT_PARITY half (CortexWheat.cpp:179).
+		// Parity-aware count of the Food tiles that SURVIVE Cortex's food-protection
+		// checkerboard — the open half the paint leaves harvestable: Food tiles whose
+		// (x+y) parity is NOT the protected FOOD_SOURCE_PARITY half (CortexFoodSources.cpp:179).
 		//
-		// Why not countHarvestableWheatWithin (WHEAT AND !forbidden)? That reads the LIVE
+		// Why not countHarvestableFoodSourcesWithin (Food AND !forbidden)? That reads the LIVE
 		// forbidden mask, so it answers "harvestable RIGHT NOW" — which swings with the
 		// paint's drain/repaint timing and reads ~zero on a freshly-revealed field the
 		// checkerboard reconcile has not yet covered. This counts the SUSTAINED set: the
 		// tiles that remain open once protection settles, independent of paint timing.
 		// That is the durable signal placement and feedCapacity want — "will this field
 		// keep an inn fed", not "is every open tile painted this exact tick". Depleted
-		// tiles are no longer WHEAT, so genuine field exhaustion still zeroes it; only our
+		// tiles are no longer Food, so genuine field exhaustion still zeroes it; only our
 		// own (recoverable) checkerboard no longer does.
 		int count = 0;
 		for (int dy = -dist; dy < h + dist; dy++)
@@ -296,32 +288,32 @@ namespace Cortex
 			{
 				const int nx = map.normalizeX(x + dx);
 				const int ny = map.normalizeY(y + dy);
-				if (getResource(map,nx, ny).type != WHEAT)
+				if (!MapState::hasMaterial(map.state(),map.tileIndex(nx,ny),MaterialId::Food))
 					continue;
-				if (((nx + ny) & 1) == WHEAT_PARITY)
+				if (((nx + ny) & 1) == FOOD_SOURCE_PARITY)
 					continue; // the checkerboard-forbidden half: not sustained.
 				count++;
 			}
 		return count;
 	}
 
-	int countHarvestableWheatWithin(const AIEngine::AIWorldView& map, Uint32 teamMask,
+	int countHarvestableFoodSourcesWithin(const AIEngine::AIWorldView& map, Uint32 teamMask,
 	                               int x, int y, int w, int h, int dist)
 	{
-		// Same expanded-footprint scan box as anyWheatWithin ([x-dist, x+w+dist) x
-		// [y-dist, y+h+dist)), but COUNTS the WHEAT tiles this team may actually
-		// harvest: a tile counts only when it is WHEAT AND not forbidden for teamMask.
-		// Depleted field tiles are no longer WHEAT, and the checkerboard wheat-
+		// Same expanded-footprint scan box as anyFoodSourceWithin ([x-dist, x+w+dist) x
+		// [y-dist, y+h+dist)), but COUNTS the Food tiles this team may actually
+		// harvest: a tile counts only when it is Food AND not forbidden for teamMask.
+		// Depleted field tiles are no longer Food, and the checkerboard food-
 		// protection paint sets `forbidden` on the protected half (which blocks
 		// harvest but not regrowth), so both are excluded — leaving the live,
-		// harvestable wheat the caller's MIN_TILES threshold is measured against.
+		// harvestable food the caller's MIN_TILES threshold is measured against.
 		int count = 0;
 		for (int dy = -dist; dy < h + dist; dy++)
 			for (int dx = -dist; dx < w + dist; dx++)
 			{
 				const int nx = map.normalizeX(x + dx);
 				const int ny = map.normalizeY(y + dy);
-				if (getResource(map,nx, ny).type != WHEAT)
+				if (!MapState::hasMaterial(map.state(),map.tileIndex(nx,ny),MaterialId::Food))
 					continue;
 				if (isForbidden(map,nx, ny, teamMask))
 					continue;

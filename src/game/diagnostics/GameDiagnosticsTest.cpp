@@ -171,7 +171,7 @@ TEST_CASE("capped scene export survives repeated graphics lifetimes and write fa
 		glob2test::HeadlessGlobals globals;
 		glob2test::HeadlessGame world({.wDec=5,.hDec=4,.teams=2,.discovered=true,.loadDefaultRace=true});
 		REQUIRE(world.addBuilding("inn",4,4)); REQUIRE(world.addUnit(WORKER,12,8));
-		world.game.map.setResource(18,10,WHEAT,1);
+		world.game.map.setResourceByIndex(18,10,WHEAT,1);
 		Scene scene; SceneRequest request; request.includePanels=false;
 		extractScene(world.game,request,scene);
 		const auto checksum=world.game.checkSum();
@@ -292,7 +292,7 @@ TEST_CASE("GDS2 embeds the catalog, projects unique model counts and preserves w
     CHECK(file.number(4)==42);CHECK(file.number(1)==0);CHECK(file.number(1)==order.getOrderType());
     DatasetFixtureReader state{file.text(file.number(4))};
     CHECK(state.number(4)==1);state.number(4);state.number(4);
-    for(int i=0;i<MAX_NB_RESOURCES+NB_UNIT_TYPE;++i)state.number(4);
+    for(int i=0;i<MaterialSlotCount+NB_UNIT_TYPE;++i)state.number(4);
     for(int i=0;i<ModelBuildingProjection::Count;++i)
         CHECK(state.number(4)==(i==ModelBuildingProjection::PassiveGround ? 1u : 0u));
     const auto width=state.number(4),height=state.number(4);
@@ -316,7 +316,7 @@ TEST_CASE("reader migration distinguishes the retained GDS1 cell layout")
     // one-byte family values must retain their original meaning.
     const auto u32=[](std::string& out,Uint32 n) {for(int i=0;i<4;++i)out+=char(n>>(8*i));};
     std::string state;u32(state,1);
-    for(int i=0;i<2+MAX_NB_RESOURCES+NB_UNIT_TYPE+13;++i)u32(state,0);
+    for(int i=0;i<2+MaterialSlotCount+NB_UNIT_TYPE+13;++i)u32(state,0);
     u32(state,1);u32(state,1);
     const unsigned char cell[]={2,5,1,0,13,6,2};
     state.append(reinterpret_cast<const char*>(cell),sizeof(cell));
@@ -328,7 +328,7 @@ TEST_CASE("reader migration distinguishes the retained GDS1 cell layout")
     CHECK(old.number(4)==42);CHECK(old.number(1)==0);CHECK(old.number(1)==ORDER_MODIFY_BUILDING);
     DatasetFixtureReader observation{old.text(old.number(4))};
     CHECK(observation.number(4)==1);
-    for(int i=0;i<2+MAX_NB_RESOURCES+NB_UNIT_TYPE+13;++i)observation.number(4);
+    for(int i=0;i<2+MaterialSlotCount+NB_UNIT_TYPE+13;++i)observation.number(4);
     CHECK(observation.number(4)==1);CHECK(observation.number(4)==1);
     for(int i=0;i<4;++i)observation.number(1);
     CHECK(observation.number(1)==13);CHECK(observation.number(1)==6);CHECK(observation.number(1)==2);

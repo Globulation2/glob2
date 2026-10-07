@@ -36,7 +36,7 @@ Handle Store::captureBoundary(const Game& game, Requirements required)
 	account(next.rules, previous.rules, 0);
 	if(next.growth) {
 		const auto sizes=next.growth->storageSizes();
-		account(next.growth,previous.growth,(sizes[0]+sizes[1])*sizeof(Uint32)+(sizes[2]+sizes[3])*sizeof(Uint16));
+		account(next.growth,previous.growth,(sizes[0]+sizes[1])*sizeof(Uint32)+sizes[2]*sizeof(Uint16));
 	}
 	if (next.entities) {
 		metrics.bytesCopied += next.entities->buildings.size() * sizeof(BuildingView) + next.entities->units.size() * sizeof(UnitView)

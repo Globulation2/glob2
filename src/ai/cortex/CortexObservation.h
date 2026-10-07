@@ -21,8 +21,8 @@ namespace Cortex
 {
 	/// Project the player's current game state into a fixed feature vector.
 	/// Returns an observation with version == OBSERVATION_VERSION and valid == 1.
-	/// `openMargin` is the per-game wheat open-margin N (drawn once via syncRand in
-	/// AICortex); it is runtimeed into obs.wheatOpenMargin and drives the wheat scan.
+	/// `openMargin` is the per-game food open-margin N (drawn once via syncRand in
+	/// AICortex); it is runtimeed into obs.wheatOpenMargin and drives the food scan.
 	/// `offenseFlagGid` is AICortex's tracked OFFENSE war-flag gid (NOGBID == none):
 	/// the building scan captures THAT flag's footprint specifically (Cortex runs two
 	/// flags now — offense + defense — so a bare "last WAR_FLAG wins" capture would be

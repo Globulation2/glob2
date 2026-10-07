@@ -115,6 +115,29 @@ class WebAssetPlanTests(unittest.TestCase):
                 ['data/custom/refuge0.png', 'data/gfx/refuge-icon3r.png', 'data/custom/unrelated0.png'], names),
                 {'data/custom/refuge0.png', 'data/gfx/refuge-icon3r.png'})
 
+    def test_resource_catalog_artwork_is_in_game_package(self):
+        for resource in json.loads((ROOT / 'data/resources/registry.json').read_text())['resources']:
+            prefix = resource['presentation']['sprite']
+            self.assertIn(prefix.removeprefix('data/gfx/'), web_assets.game_sprites(ROOT))
+        for key in ('gold-ore', 'iron-ore', 'sand', 'cotton'):
+            self.assertEqual(self.owner['data/gfx/resource-' + key + '0.png'], 'game')
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            (root / 'src/app').mkdir(parents=True)
+            (root / 'src/map').mkdir(parents=True)
+            (root / 'src/app/GlobalContainer.cpp').write_text(
+                'void GlobalContainer::loadGameGraphics() {\n'
+                'sprite("data/gfx/unit"); sprite("data/gfx/terrain");\n'
+                'sprite("data/gfx/gamegui"); sprite("data/gfx/swarm0b");\n}\n')
+            (root / 'src/map/TerrainPresentation.h').write_text('')
+            (root / 'data/resources').mkdir(parents=True)
+            (root / 'data/resources/custom.json').write_text(json.dumps({'resources': [
+                {'presentation': {'sprite': 'data/custom/ore'}}]}))
+            names = web_assets.game_sprites(root)
+            self.assertIn('data/custom/ore', names)
+            self.assertEqual(web_assets.game_files(['data/custom/ore0.png', 'data/custom/ore.sheet'], names),
+                             {'data/custom/ore0.png', 'data/custom/ore.sheet'})
+
     def test_terrain_registry_changes_invalidate_browser_asset_plan(self):
         tree = ast.parse((ROOT / 'scons/web_build.py').read_text())
         inputs = [node.value for node in ast.walk(tree) if isinstance(node, ast.Assign)
@@ -122,6 +145,7 @@ class WebAssetPlanTests(unittest.TestCase):
                           for target in node.targets)]
         self.assertEqual(len(inputs), 1)
         self.assertIn('data/terrain/tileset.json', ast.literal_eval(inputs[0]))
+        self.assertIn('data/resources/registry.json', ast.literal_eval(inputs[0]))
         self.assertEqual(self.owner['data/terrain/tileset.json'], 'core')
 
     def test_core_ships_the_browser_copies_and_font_cjk_the_full_font(self):

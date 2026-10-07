@@ -109,7 +109,7 @@ bool Map::buildingAvailable(Building *building, int swimClass, int x, int y, int
 }
 
 
-const Uint16 *Map::roundTripGradient(Building *building, int resourceType, int swimClass)
+const Uint16 *Map::roundTripGradientSlot(Building *building, int resourceType, int swimClass)
 {
 	if (!prepareBuildingGradient(building, swimClass, BuildingRoute::Footprint))
 		return NULL;
@@ -120,11 +120,11 @@ const Uint16 *Map::roundTripGradient(Building *building, int resourceType, int s
 		return gradient;
 	if (gradient==NULL)
 		gradient=acquireBuildingGradientBuffer();
-	updateRoundTripGradient(building, resourceType, swimClass);
+	updateRoundTripGradientSlot(building, resourceType, swimClass);
 	return gradient;
 }
 
-bool Map::roundTripDistance(Building *building, int resourceType, int swimClass, int x, int y, int *dist)
+bool Map::roundTripDistanceSlot(Building *building, int resourceType, int swimClass, int x, int y, int *dist)
 {
 	PERF_SCOPE_TIME(PathBuilding);
 	// Only gradients a fetcher keeps alive: hiring looks at every needed
@@ -134,7 +134,7 @@ bool Map::roundTripDistance(Building *building, int resourceType, int swimClass,
 		return false;
 	// It may be a few ticks older than the resource gradient the callers walk
 	// by; never report a resource that one says is gone.
-	if (!resourceAvailable(building->owner->teamNumber, resourceType, swimClass, x, y, false, building))
+	if (!materialAvailableSlot(building->owner->teamNumber, resourceType, swimClass, x, y, false, building))
 		return false;
 	building->roundTripGradientUsedStep[resourceType][swimClass]=game->stepCounter;
 	Uint16 g=gradient[coordToIndex(x, y)];

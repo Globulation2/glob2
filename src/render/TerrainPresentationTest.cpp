@@ -14,7 +14,6 @@
 #include "scene/SceneMap.h"
 #include "SoftwareTerrainCache.h"
 #include "MapRenderState.h"
-#include "RessourceType.h"
 #include "MapThumbnail.h"
 #include "MapImage.h"
 #include "GenerationRequest.h"
@@ -376,13 +375,12 @@ TEST_SUITE("TerrainPresentation")
 						  y * customOverview.getSDLSurface()->pitch)[x] == 0xFF111F2Fu);
 		MapRenderState render;
 		render.detail.terrainOverview = .5f;
-		map.setResource(9, 9, WHEAT, 1);
+		map.setResourceByIndex(9, 9, WHEAT, 1);
 		scene.extract(map);
 		Game::drawMapOverview(0, 0, 15, 15, 0, 0, 0, Game::DRAW_WHOLE_MAP, scene, render);
 		REQUIRE(render.overview->getW() == overview.getW());
 		REQUIRE(render.overview->getH() == overview.getH());
-		const auto *resource = globals->resourcesTypes.get(WHEAT);
-		const int tint[] = {resource->minimapR, resource->minimapG, resource->minimapB};
+		const auto& tint = map.resourceRegistry().presentation(static_cast<ResourceId>(WHEAT)).minimap;
 		for (int y = 0; y < 16 * samples; ++y)
 			for (int x = 0; x < 16 * samples; ++x)
 			{
@@ -1074,6 +1072,11 @@ TEST_SUITE("TerrainPresentation")
 		paint(60, 8, 4, 8, WATER);
 		paint(0, 10, 1, 1, ICE);
 		paint(20, 10, 1, 1, TRAIL);
+		// Catalogue terrain only by its exact colour: the dark-water colour itself
+		// imports, while an off-palette dark blue nearest to it still becomes classic
+		// water (a block, so the shore repair leaves its centre as water).
+		paint(30, 30, 1, 1, DARK_WATER);
+		image.drawFilledRect(31, 27, 7, 7, 0, 0, 128);
 		image.drawFilledRect(45, 45, 2, 2, 255, 255, 255);
 		const auto filename = (glob2test::artifactDir() / "terrain-import-edges.png").string();
 		REQUIRE(IMG_SavePNG(image.getSDLSurface(), filename.c_str()));
@@ -1094,6 +1097,9 @@ TEST_SUITE("TerrainPresentation")
 		CHECK(map.terrainTypeAt(20, 10) == TRAIL);
 		CHECK(map.terrainTypeAt(19, 10) == GRASS);
 		CHECK(map.terrainPropertiesAt(19, 10).buildable);
+		CHECK(map.terrainTypeAt(30, 30) == DARK_WATER);
+		CHECK(map.terrainTypeAt(34, 30) == WATER);
+		CHECK(map.requiredTerrainExperiments().has(ExperimentId::DeepWaterTerrain));
 		// An ordinary grass/water boundary still receives the legacy shore repair.
 		CHECK(map.terrainTypeAt(15, 5) != WATER);
 		fixture.game.map.rebuildTerrain();
@@ -1102,6 +1108,50 @@ TEST_SUITE("TerrainPresentation")
 		CHECK(map.terrainTypeAt(7, 7) == WATER);
 		CHECK(map.terrainTypeAt(63, 10) == WATER);
 		CHECK(map.terrainTypeAt(19, 10) == GRASS);
+	}
+	TEST_CASE("every paintable built-in binds a material, has an editor icon and exports its own colour [display][artifacts]")
+	{
+		glob2test::HeadlessGlobals globals({.display = true});
+		auto &compositor = globals->terrainCompositor();
+		const auto minimap = TerrainVisual::minimapPalette(compositor.catalog());
+		glob2test::HeadlessGame fixture({.wDec = 5, .hDec = 5, .teams = 0});
+		auto &map = fixture.game.map;
+		std::vector<TerrainType> painted;
+		for (unsigned i = 0; i < TERRAIN_COUNT; ++i)
+		{
+			const auto type = TerrainType(i);
+			CAPTURE(std::string(TerrainPresentations[i].name));
+			if (!terrainPaintable(type))
+				continue;
+			CHECK(compositor.catalog().bindings.contains(TerrainPresentations[i].name));
+			const auto [sprite, frame] = compositor.editorIcon(type);
+			CHECK(sprite != nullptr);
+			CHECK(frame < 65536);
+			// Classic corner terrain exports through the undermap; whole-cell types
+			// export their registered colour.
+			if (terrainUsesLegacyCorners(type))
+				continue;
+			map.setCellTerrain(int(painted.size()) + 1, 1, type);
+			painted.push_back(type);
+		}
+		(void)minimap;
+		const auto filename = (glob2test::artifactDir() / "terrain-catalogue-colors.png").string();
+		exportMapImage(fixture.game, filename);
+		auto *source = IMG_Load(filename.c_str());
+		REQUIRE(source);
+		auto *image = SDL_ConvertSurface(source, SDL_PIXELFORMAT_RGBA32);
+		SDL_DestroySurface(source);
+		REQUIRE(image);
+		for (std::size_t n = 0; n < painted.size(); ++n)
+		{
+			CAPTURE(std::string(TerrainPresentations[painted[n]].name));
+			const auto c = terrainPresentation(painted[n]).image;
+			const auto *pixel = static_cast<Uint8 *>(image->pixels) + image->pitch + (n + 1) * 4;
+			CHECK(pixel[0] == c.r);
+			CHECK(pixel[1] == c.g);
+			CHECK(pixel[2] == c.b);
+		}
+		SDL_DestroySurface(image);
 	}
 	TEST_CASE("export uses registered whole-cell material colors [artifacts]")
 	{
@@ -1132,6 +1182,70 @@ TEST_SUITE("TerrainPresentation")
 #include <chrono>
 TEST_SUITE("TerrainValidation")
 {
+	TEST_CASE("terrain catalogue gallery renders every group beside grass, sand and water [display][artifacts]")
+	{
+		glob2test::HeadlessGlobals globals(
+			{.display = true, .width = 1024, .height = 768, .seed = 7331});
+		globals->terrainCompositor().prepare(false, 0);
+		glob2test::HeadlessGame fixture({.wDec = 5,
+										 .hDec = 5,
+										 .discovered = true,
+										 .loadDefaultRace = true,
+										 .header = true,
+										 .seed = 7331});
+		auto &map = fixture.game.map;
+		// Ocean and a sand beach on the left, as in the mixed gallery.
+		for (int y = 0; y < 32; ++y)
+			for (int x = 0; x < 32; ++x)
+			{
+				if (x < 5)
+					map.setTerrain(x, y, 128);
+				if (x < 2)
+					map.setTerrain(x, y, 256);
+			}
+		// Every catalogue type as a 3x3 island on grass with a detached diagonal cell,
+		// five per row, so interior variants, boundaries and seams are all visible.
+		std::vector<TerrainType> types;
+		for (unsigned i = TERRAIN_COUNT_BEFORE_CATALOGUE; i < TERRAIN_COUNT; ++i)
+			if (terrainPaintable(TerrainType(i)))
+				types.push_back(TerrainType(i));
+		REQUIRE(types.size() == 24);
+		for (std::size_t n = 0; n < types.size(); ++n)
+		{
+			const int ox = 6 + int(n % 5) * 5, oy = int(n / 5) * 5; // rows 0..23 are rendered
+			for (int dy = 0; dy < 3; ++dy)
+				for (int dx = 0; dx < 3; ++dx)
+					map.setCellTerrain(ox + dx, oy + dy, types[n]);
+			map.setCellTerrain(ox + 3, oy + 3, types[n]);
+		}
+		// Water-side samples: deep and dark water meet the ocean and the beach; lava
+		// and a hole sit on the beach edge.
+		for (int y = 2; y < 6; ++y)
+			for (int x = 2; x < 4; ++x)
+				map.setCellTerrain(x, y, DEEP_WATER);
+		for (int y = 8; y < 12; ++y)
+			for (int x = 2; x < 4; ++x)
+				map.setCellTerrain(x, y, DARK_WATER);
+		for (int y = 14; y < 17; ++y)
+			map.setCellTerrain(4, y, LAVA);
+		for (int y = 19; y < 22; ++y)
+			map.setCellTerrain(4, y, VOID_HOLE);
+		SceneMap scene;
+		scene.extract(map);
+		fixture.game.drawMapWater(1024, 768, 0, 0, 19);
+		fixture.game.drawMapTerrain(0, 0, 31, 23, 0, 0, 0, Game::DRAW_WHOLE_MAP, scene);
+		REQUIRE(IMG_SavePNG(
+			globals->gfx->getSDLSurface(),
+			(glob2test::artifactDir() / "terrain-catalogue-gallery.png").string().c_str()));
+		// Painted islands keep their identity and the map declares every group painted.
+		for (std::size_t n = 0; n < types.size(); ++n)
+			CHECK(map.terrainTypeAt(6 + int(n % 5) * 5, int(n / 5) * 5) == types[n]);
+		const auto required = map.requiredTerrainExperiments();
+		for (auto type : types)
+			if (const auto experiment = terrainExperiment(type))
+				CHECK(required.has(*experiment));
+		CHECK(required.size() == 9);
+	}
 	TEST_CASE("mixed terrain simulation trace and visual gallery [display][artifacts]")
 	{
 		const auto loadingStart = std::chrono::steady_clock::now();

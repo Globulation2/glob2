@@ -1,0 +1,410 @@
+#include "CortexSnapshotQueries.h"
+// SPDX-License-Identifier: GPL-3.0-or-later
+// Copyright (C) 2026 The Globulation 2 Authors
+
+#include "Material.h"
+#include "field/UniformTraversal.h"
+#include "CortexFoodSources.h"
+
+#include "map/Map.h"
+#include "building/BuildingUtils.h"
+#include "building/Building.h"
+#include "BuildingType.h"
+#include "Player.h"
+#include "team/Team.h"
+#include "Game.h"
+#include "Ressource.h"
+
+#include <climits>
+
+// See CortexFoodSources.h for the design rationale. This is the geometry + reconcile
+// core only; it builds tile sets but emits no Orders.
+
+namespace Cortex
+{
+ inline int mapWidth(const AIEngine::AIWorldView& m){return m.width;} inline int mapWidth(const ::Map& m){return m.getW();}
+ inline int mapHeight(const AIEngine::AIWorldView& m){return m.height;} inline int mapHeight(const ::Map& m){return m.getH();}
+ inline unsigned mapIndex(const AIEngine::AIWorldView& m,int x,int y){return m.tileIndex(x,y);} inline unsigned mapIndex(const ::Map& m,int x,int y){return m.coordToIndex(x,y);}
+inline auto getResource(const ::Map& m,int x,int y){return m.getResource(x,y);}
+inline auto getBuilding(const ::Map& m,int x,int y){return m.getBuilding(x,y);}
+inline auto isFOWDiscovered(const ::Map& m,int x,int y,Uint32 mask){return m.isFOWDiscovered(x,y,mask);}
+inline auto isFreeForGroundUnitNoForbidden(const ::Map& m,int x,int y,bool swim){return m.isFreeForGroundUnitNoForbidden(x,y,swim);}
+inline auto isFarmArea(const ::Map& m,int x,int y,Uint32 mask){return m.isFarmArea(x,y,mask);}
+inline auto isForbidden(const ::Map& m,int x,int y,Uint32 mask){return m.isForbidden(x,y,mask);}
+inline auto canPaintFarmArea(const ::Map& m,int x,int y){return m.canPaintFarmArea(x,y);}
+
+	namespace
+	{
+
+		// 4-neighbourhood in a fixed (deterministic) order: N, W, E, S.
+		const int NB_DX[4] = { 0, -1, 1, 0 };
+		const int NB_DY[4] = { -1, 0, 0, 1 };
+
+		bool isFoodSource(const ::Map& map, int x, int y)
+		{
+			return map.isMaterialTakeable(x, y, MaterialId::Food);
+		}
+		bool isFoodSource(const AIEngine::AIWorldView& map, int x, int y)
+		{
+			return MapState::hasMaterial(map.state(), map.tileIndex(x, y), MaterialId::Food);
+		}
+	} // namespace
+
+	template<class MapType> FoodSourceScanResult scanFoodSourcesForbiddenImpl(
+		MapType& map, FoodSourceScratch& wheatScratch, Uint32 teamMask, int teamNumber,
+		const std::vector<int>& consumerSeeds,
+		int boxMinX, int boxMinY, int boxMaxX, int boxMaxY,
+		int openMargin, bool ignoreFOW, bool wantDebug, bool liftAll, bool farmPaint)
+	{
+		FoodSourceScanResult res;
+
+		// The open margin is disabled: every reachable food row is checkerboarded,
+		// so `openMargin` no longer gates classification. The parameter is retained
+		// only to keep the observation/action layout and call sites unchanged.
+		(void)openMargin;
+
+		const int w = mapWidth(map);
+		const int h = mapHeight(map);
+		if (w <= 0 || h <= 0)
+			return res;
+
+		// Clamp the territory region to the map (no wrap across the box edge: the
+		// colony region is local, so a plain clamped rectangle is sufficient).
+		if (boxMinX < 0) boxMinX = 0;
+		if (boxMinY < 0) boxMinY = 0;
+		if (boxMaxX > w - 1) boxMaxX = w - 1;
+		if (boxMaxY > h - 1) boxMaxY = h - 1;
+		if (boxMinX > boxMaxX || boxMinY > boxMaxY)
+			return res;
+
+		auto inBox = [&](int x, int y) {
+			return x >= boxMinX && x <= boxMaxX && y >= boxMinY && y <= boxMaxY;
+		};
+		// A Food tile counts as field only if the team can see it (unless the
+		// debug caller bypasses fog on a freshly-loaded, fully-fogged map).
+		auto foodSourceVisible = [&](int x, int y) {
+			return ignoreFOW || isFOWDiscovered(map,x, y, teamMask);
+		};
+		// A tile belongs to our field if it is discovered food inside the
+		// territory box; a tile is "land" if a ground unit can stand on it (the
+		// BFS floods over land to reach the field, but land never counts toward
+		// depth). Forbidden status is ignored on purpose so our own paint never
+		// changes the measured depth (keeps the reconcile stable).
+		auto isField = [&](int x, int y) {
+			return inBox(x, y) && isFoodSource(map, x, y) && foodSourceVisible(x, y);
+		};
+		auto isLand = [&](int x, int y) {
+			return inBox(x, y) && isFreeForGroundUnitNoForbidden(map,x, y, false);
+		};
+
+		// --- Gather the field tiles. ---
+		std::vector<int>& fieldTiles = wheatScratch.fieldTiles;
+		fieldTiles.clear();
+		for (int y = boxMinY; y <= boxMaxY; y++)
+			for (int x = boxMinX; x <= boxMaxX; x++)
+				if (isField(x, y))
+					fieldTiles.push_back(static_cast<int>(mapIndex(map,x, y)));
+		res.fieldTileCount = static_cast<Sint32>(fieldTiles.size());
+		if (wantDebug)
+		{
+			res.classOf.assign(static_cast<size_t>(w) * h, WC_NONE);
+			res.depthOf.assign(static_cast<size_t>(w) * h, -1);
+		}
+		if (fieldTiles.empty() && !farmPaint)
+			return res;
+
+		// --- Land+food BFS from the consumer's walkable exit ring. ---
+		// Plain breadth-first over walkable terrain, so each tile is first reached
+		// along a shortest WALKING path from the inn. The stored value is not the
+		// walking distance but the number of food tiles crossed along that path:
+		// land steps advance the path without bumping the count, and the first food
+		// tile entered is depth 1. So depth == "food tiles deep from where the inn's
+		// nearest approach enters the field" — the inn<->field land gap and intra-
+		// field land never count toward N, yet the gradient still recedes away from
+		// the inn (a far edge reached only by ploughing through the field stays deep
+		// and protected, while the inn-facing edge stays shallow and open).
+		//
+		// The consumer usually sits on its own building footprint, which is NOT
+		// walkable, so seeding the centre tile alone would trap the search. Seed every
+		// walkable tile within a small exit radius instead — the inn's exit ring.
+		const int SEED_EXIT_RADIUS = 3;
+		std::vector<int>& depth = wheatScratch.depth;
+		depth.assign(static_cast<size_t>(w) * h, INT_MAX);
+		std::vector<int>& q = wheatScratch.queue;
+		q.clear(); // FIFO, drained by index without reallocating deque blocks.
+		for (int seed : consumerSeeds)
+		{
+			if (seed < 0 || seed >= w * h)
+				continue;
+			const int seedX = seed % w;
+			const int seedY = seed / w;
+			for (int dy = -SEED_EXIT_RADIUS; dy <= SEED_EXIT_RADIUS; dy++)
+				for (int dx = -SEED_EXIT_RADIUS; dx <= SEED_EXIT_RADIUS; dx++)
+				{
+					const int x = seedX + dx;
+					const int y = seedY + dy;
+					if (!isLand(x, y))
+						continue;
+					const int idx = static_cast<int>(mapIndex(map,x, y));
+					if (depth[idx] == INT_MAX)
+					{
+						depth[idx] = 0; // land exit ring: zero food crossed so far.
+						q.push_back(idx);
+					}
+				}
+		}
+
+		// First discovery follows the shortest walking path, carrying its food
+		// depth. Do not relax a later path with fewer food tiles: that changes
+		// classification, including ties resolved by seed and neighbour order.
+		std::array<field::Offset,4> neighbors;
+		for(int k=0;k<4;++k)neighbors[k]={NB_DX[k],NB_DY[k]};
+		field::traverse(q,{w,h},neighbors,[](int){return field::Visit::Expand;},
+			[&](int cur,int nx,int ny) {
+				// Neighbours are unwrapped; reject the local territory boundary
+				// before indexing, then skip cells whose first path is settled.
+				if(!inBox(nx,ny))return;
+				const int ni=static_cast<int>(mapIndex(map,nx,ny));
+				if(depth[ni]!=INT_MAX)return;
+				const bool wheat=isField(nx,ny);
+				if(!wheat && !isLand(nx,ny))return;
+				depth[ni]=depth[cur]+(wheat?1:0);q.push_back(ni);
+			});
+
+		// --- Classify field food and collect the desired forbidden set. ---
+		for (int idx : fieldTiles)
+		{
+			const int x = idx % w;
+			const int y = idx / w;
+			const int d = depth[idx];
+			if (d == INT_MAX)
+				continue; // food the consumer cannot reach over land: not harvested.
+			if (wantDebug)
+				res.depthOf[idx] = static_cast<Sint16>(d < 32767 ? d : 32767);
+
+			// Open margin removed: EVERY reachable row of food is checkerboarded,
+			// with no exempt rows nearest the harvest source. Classification is purely
+			// by parity — half the field (the FOOD_SOURCE_PARITY half) is protected, the
+			// other half harvest-open, all the way in to depth 1. (`openMargin` is no
+			// longer consulted; it is retained only for the observation/action layout.)
+			// Food-BLITZ liftAll: classify what WOULD be the protected half as
+			// WC_CHECKER_OPEN instead of WC_FORBIDDEN so `desired` stays empty — the
+			// reconcile then un-forbids the WHOLE field. Iteration order, BFS, depths,
+			// and the add/del diff are untouched, so determinism is preserved.
+			Uint8 cls;
+			if (!liftAll && ((x + y) & 1) == FOOD_SOURCE_PARITY
+			    && (!farmPaint || canPaintFarmArea(map,x, y)))
+			{
+				cls = WC_FORBIDDEN;
+				res.desired.push_back(idx);
+			}
+			else
+			{
+				cls = WC_CHECKER_OPEN;
+			}
+			if (wantDebug)
+				res.classOf[idx] = cls;
+		}
+		res.forbiddenCount = static_cast<Sint32>(res.desired.size());
+
+		// --- Connected components among reachable field food (informational). ---
+		{
+			std::vector<unsigned char>& seen = wheatScratch.seen;
+			seen.assign(static_cast<size_t>(w) * h, 0);
+			std::vector<int>& stack = wheatScratch.stack;
+			for (int y = boxMinY; y <= boxMaxY; y++)
+				for (int x = boxMinX; x <= boxMaxX; x++)
+				{
+					const int idx = static_cast<int>(mapIndex(map,x, y));
+					if (seen[idx] || !isFoodSource(map, x, y) || !foodSourceVisible(x, y)
+					    || depth[idx] == INT_MAX)
+						continue;
+					res.componentCount++;
+					stack.clear();
+					stack.push_back(idx);
+					seen[idx] = true;
+					field::depthFirst(stack,[](int){return field::Visit::Expand;},
+						[&](int c) {
+							field::Grid(w,h).neighbors(c,neighbors,[&](int nx,int ny) {
+								if(!inBox(nx,ny) || !isFoodSource(map,nx,ny) || !foodSourceVisible(nx,ny))return;
+								const int ni=static_cast<int>(mapIndex(map,nx,ny));
+								if(seen[ni] || depth[ni]==INT_MAX)return;
+								seen[ni]=true;stack.push_back(ni);
+							});
+							return field::Visit::Expand;
+						});
+				}
+		}
+
+		// --- Reconcile against the team's CURRENT forbidden paint. ---
+		// Current = forbidden tiles in the box that are OURS to manage, i.e. minus
+		// our own building footprints (auto-forbidden by the engine,
+		// Game_orders.cpp; tearing those down would foul our own colony).
+		std::vector<unsigned char>& currentBit = wheatScratch.currentBit;
+		currentBit.assign(static_cast<size_t>(w) * h, 0);
+		std::vector<int>& current = wheatScratch.current;
+		current.clear();
+		for (int y = boxMinY; y <= boxMaxY; y++)
+			for (int x = boxMinX; x <= boxMaxX; x++)
+			{
+				if (!(farmPaint ? isFarmArea(map,x, y, teamMask) : isForbidden(map,x, y, teamMask)))
+					continue;
+				const Uint16 gid = getBuilding(map,x, y);
+				if (!farmPaint && gid != NOGBID && BuildingUtils::GIDtoTeam(gid) == teamNumber)
+					continue; // our footprint, not wheat paint.
+				const int idx = static_cast<int>(mapIndex(map,x, y));
+				currentBit[idx] = true;
+				current.push_back(idx);
+			}
+
+		// ADD = desired - current; DEL = current - desired. Index order preserved.
+		for (int idx : res.desired)
+			if (!currentBit[idx])
+				res.add.push_back(idx);
+		// A forbidden tile is retired ONLY when we can currently SEE it (no fog of
+		// war) AND the food under it is gone. This is deliberately INDEPENDENT of the
+		// desired checkerboard: the desired pattern drives where we ADD paint, never
+		// where we remove it. Stripping paint from a tile that still has food — just
+		// because it fell in the harvest half, the open margin, or briefly went
+		// unreachable — tears protection off field we are trying to maintain and lets
+		// workers harvest the reseed half, which is exactly what breaks the field.
+		//   - fogged tile          -> keep paint (we cannot confirm depletion);
+		//   - visible, still food -> keep paint (reachable or not, it is still field);
+		//   - visible, food gone  -> retire paint.
+		// The debug/static path (ignoreFOW) treats every tile as visible.
+		//
+		// Food-BLITZ liftAll: the steady-state depletion guards above are SKIPPED —
+		// we retire ALL current paint (DEL = current, ADD empty since `desired` is
+		// empty), un-forbidding the whole field for a one-time harvest burst even
+		// though the food is still standing. This is the deliberate famine override,
+		// distinct from the steady-state "retire only when depleted" invariant; normal
+		// protection re-paints the checkerboard once the famine clears. Iterating
+		// `current` in index order keeps the DEL list deterministic.
+		for (int idx : current)
+		{
+			if (!liftAll)
+			{
+				const int x = idx % w;
+				const int y = idx / w;
+				if (!ignoreFOW && !isFOWDiscovered(map,x, y, teamMask))
+					continue; // in fog: confirmation pending, leave the paint.
+				if (isFoodSource(map, x, y) && (!farmPaint ||
+				    (((x + y) & 1) == FOOD_SOURCE_PARITY && canPaintFarmArea(map,x, y))))
+					continue; // still field wheat: keep protecting it.
+			}
+			res.del.push_back(idx);
+		}
+		res.addCount = static_cast<Sint32>(res.add.size());
+		res.delCount = static_cast<Sint32>(res.del.size());
+
+		return res;
+	}
+
+	FoodSourceReconcile reconcileFoodSourcesForbiddenWorld(const AIEngine::AIWorldView* game, const AIEngine::TeamView* team, QueryScratch& scratch, const PlanningIntent& intents, std::ostream* diagnostics, int openMargin, bool buildMasks,
+	                                       bool liftAll, bool farmPaint)
+	{
+		FoodSourceReconcile out;
+		if (!game || !team)
+			return out;
+
+
+
+		const auto& map = *game;
+		const int w = mapWidth(map);
+		const int h = mapHeight(map);
+		if (w <= 0 || h <= 0)
+			return out;
+
+		const Uint32 teamMask = team->mask;
+		const int teamNumber = team->number;
+
+		// Consumer seeds = feeding-building (inn) centre tiles; scanFoodSourcesForbidden
+		// expands each to its walkable exit ring. The colony bounding box grows over
+		// our REAL buildings only — virtual buildings (war flags) can sit at the
+		// enemy base and would balloon the region, so they are excluded here (the
+		// -dump-food tool didn't need this: a freshly-loaded map has no flags).
+		// Iterate by array index, never a std::set, for lockstep determinism.
+		std::vector<int> seeds;
+		int bbMinX = w, bbMinY = h, bbMaxX = -1, bbMaxY = -1;
+		for (int i = 0; i < ::Building::MAX_COUNT; i++)
+		{
+			const AIEngine::BuildingView* b = game->buildingSlots(team->number)[i];
+			if (b == NULL || b->buildingState == ::Building::DEAD)
+				continue;
+			if (buildingType(*game,*b) && buildingType(*game,*b)->isVirtual)
+				continue; // war/exploration flag: not part of the colony footprint.
+			if (plannedX(intents,*b) < bbMinX) bbMinX = plannedX(intents,*b);
+			if (plannedX(intents,*b) > bbMaxX) bbMaxX = plannedX(intents,*b);
+			if (plannedY(intents,*b) < bbMinY) bbMinY = plannedY(intents,*b);
+			if (plannedY(intents,*b) > bbMaxY) bbMaxY = plannedY(intents,*b);
+			if (buildingType(*game,*b) && buildingType(*game,*b)->semantics.feeding.enabled && buildingType(*game,*b)->semantics.feeding.cost[materialIndex(MaterialId::Food)] > 0)
+				seeds.push_back(static_cast<int>(mapIndex(map,plannedX(intents,*b), plannedY(intents,*b))));
+		}
+
+		// Always fold the team start into the bbox so the region is valid even
+		// before the first building, and seed the start as a fallback consumer when
+		// no inn exists yet (matches the -dump-food derivation).
+		const int startX = team->startX;
+		const int startY = team->startY;
+		if (startX < bbMinX) bbMinX = startX;
+		if (startX > bbMaxX) bbMaxX = startX;
+		if (startY < bbMinY) bbMinY = startY;
+		if (startY > bbMaxY) bbMaxY = startY;
+		if (bbMaxX < bbMinX || bbMaxY < bbMinY)
+			return out; // no buildings and an unset start: nothing to scan.
+		if (seeds.empty())
+			seeds.push_back(static_cast<int>(mapIndex(map,startX, startY)));
+
+		// Colony region = bbox padded by WHEAT_REGION_MARGIN (scanFoodSourcesForbidden
+		// clamps to the map, but clamp here too so the values are sane).
+		int boxMinX = bbMinX - WHEAT_REGION_MARGIN;
+		int boxMinY = bbMinY - WHEAT_REGION_MARGIN;
+		int boxMaxX = bbMaxX + WHEAT_REGION_MARGIN;
+		int boxMaxY = bbMaxY + WHEAT_REGION_MARGIN;
+		if (boxMinX < 0) boxMinX = 0;
+		if (boxMinY < 0) boxMinY = 0;
+		if (boxMaxX > w - 1) boxMaxX = w - 1;
+		if (boxMaxY > h - 1) boxMaxY = h - 1;
+
+		// Live path: real fog-of-war (only paint food we can currently see), and
+		// no debug overlays. buildMasks decides whether we also paint the brushes.
+		FoodSourceScanResult r = scanFoodSourcesForbidden(
+			map, scratch.wheat, teamMask, teamNumber, seeds,
+			boxMinX, boxMinY, boxMaxX, boxMaxY,
+			openMargin, /*ignoreFOW=*/false, /*wantDebug=*/false, liftAll, farmPaint);
+
+		out.addCount = r.addCount;
+		out.delCount = r.delCount;
+		if (buildMasks)
+		{
+			// Accumulate the ADD/DEL tile lists (already in index order) into the
+			// two BrushAccumulators, one 1x1 brush per tile (figure 0), exactly as
+			// AIWarrush paints its forbidden checkerboard (AIWarrush.cpp:551-583).
+			for (int idx : r.add)
+				out.add.applyBrush(BrushApplication(idx % w, idx / w, 0), mapWidth(map), mapHeight(map));
+			for (int idx : r.del)
+				out.del.applyBrush(BrushApplication(idx % w, idx / w, 0), mapWidth(map), mapHeight(map));
+		}
+		return out;
+	}
+
+    FoodSourceScanResult scanFoodSourcesForbidden(const AIEngine::AIWorldView& map, FoodSourceScratch& scratch, Uint32 mask, int team,
+        const std::vector<int>& seeds, int minX,int minY,int maxX,int maxY,
+        int margin,bool ignoreFog,bool debug,bool lift,bool farm)
+    { return scanFoodSourcesForbiddenImpl(map,scratch,mask,team,seeds,minX,minY,maxX,maxY,margin,ignoreFog,debug,lift,farm); }
+    FoodSourceScanResult scanFoodSourcesForbidden(::Map& map, Uint32 mask, int team,
+        const std::vector<int>& seeds, int minX,int minY,int maxX,int maxY,
+        int margin,bool ignoreFog,bool debug,bool lift,bool farm)
+    { FoodSourceScratch scratch; return scanFoodSourcesForbiddenImpl(map,scratch,mask,team,seeds,minX,minY,maxX,maxY,margin,ignoreFog,debug,lift,farm); }
+
+}
+
+namespace Cortex {
+FoodSourceReconcile reconcileWheatForbidden(::Player* player,int margin,bool masks,bool lift,bool farm)
+{
+    if(!player || !player->team)return {};
+    const auto view=AIEngine::AIWorldView::capture(*player->game, AIEngine::AIWorldView::captureCatalog(*player->game));
+    QueryScratch scratch; PlanningIntent intents;
+    return reconcileFoodSourcesForbiddenWorld(view.get(),&view->teams[player->teamNumber],scratch,intents,nullptr,margin,masks,lift,farm);
+}
+}

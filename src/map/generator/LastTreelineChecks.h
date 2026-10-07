@@ -131,7 +131,7 @@ inline void run()
 		if (traced.map.getResource(i % t.w, i / t.w).type == WHEAT)
 		{
 			traced.map.setNoResource(i % t.w, i / t.w, 1);
-			traced.map.setResource(i % t.w, i / t.w, WOOD, 1);
+			traced.map.setResourceByIndex(i % t.w, i / t.w, WOOD, 1);
 			changed = true;
 		}
 	assert(changed && !definition.validateWorld(traced, context).empty());

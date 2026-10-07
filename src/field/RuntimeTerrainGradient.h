@@ -60,7 +60,7 @@ void propagate(std::uint16_t *gradient, int maxCost, field::Grid grid, GradientW
 		// Raw registry views may include unused slow definitions. Only their
 		// passable cells need the extra validation scan. Production snapshots
 		// contain present profiles only and pass the bounded profile check above.
-		std::array<bool, 128> checked{};
+		std::array<bool, 256> checked{};
 		for (std::size_t cell = 0; cell < grid.cells(); ++cell)
 			if (gradient[cell] != GRADIENT_FORBIDDEN)
 			{

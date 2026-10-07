@@ -401,7 +401,7 @@ TEST_CASE("operating supply tails retain positive demand and zero coverage for u
 
 TEST_CASE("operating fractions preserve positive rates beneath a saturated recipe ceiling" * doctest::test_suite("Maxima.FoodLedger"))
 {
-    std::array<int,8> independent{},production{},trips{};
+    std::array<int,MaterialCount> independent{},production{},trips{};
     production[1]=INT_MAX;trips.fill(1000);
     const auto result=AIMaxima::operatingClaimWithWheatWork(independent,production,1,trips,
         [](long long q){return q*1000;});
@@ -593,7 +593,7 @@ TEST_CASE("mixed services use production viability without double funding" * doc
 	CHECK(result.totalClaimed==1000);
 }
 
-TEST_CASE("zero-demand viability needs no wheat" * doctest::test_suite("Maxima.FoodLedger"))
+TEST_CASE("zero-demand viability needs no food" * doctest::test_suite("Maxima.FoodLedger"))
 {
 	Input input=producerAllocationInput();
 	input.consumers[1].demand=0;

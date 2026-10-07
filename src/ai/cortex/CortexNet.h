@@ -80,7 +80,7 @@ namespace Cortex
 
 		/// Run the full WORKER-CAP inference rule from ML_CONTRACT.md and return the
 		/// chosen swarm worker cap (maxUnitWorking target):
-		///   1. wheat-starved hard clamp (bypass the net),
+		///   1. food-starved hard clamp (bypass the net),
 		///   2. integer forward pass -> 20 logits,
 		///   3. mask classes outside [WORKER_MIN .. swarmWorkerCap],
 		///   4. argmax (ties -> lowest index), action = idx + 1.
@@ -89,7 +89,7 @@ namespace Cortex
 		/// explicitly so the rule reads them by name and the caller controls them).
 		int chooseSwarmWorkers(const int features[NUM_FEATURES],
 		                       int maxBuildLevel, int freeWorkers,
-		                       int harvestableWheatNearby) const;
+		                       int harvestableFoodSourcesNearby) const;
 
 		/// Run the DECISION inference rule from DECIDE_CONTRACT.md and return the
 		/// chosen class index (= decide() candidate index):

@@ -12,14 +12,16 @@ namespace MapGeneration
 // played games; the fitting tool can still read them, and did, which is how the duplicates of
 // ColonyQuality fields and of each other were found and removed (FAIRNESS_MODEL.md).
 //
-// Every measurement reuses the walking field and the fertility field scoreStarts builds, so
+// Every measurement reuses walking fields and compiled resource ecology, so
 // computing them costs a few whole-map passes, not a search.
 struct ColonyDiagnostics
 {
 	// --- Economy ---
-	/// Summed growth chance of catchment grass that may take a crop and already touches wheat:
-	/// how fast the field comes BACK, as opposed to how much grain stands on it today.
-	double renewableWheat = 0;
+	/// Summed renewable food frontage: each reachable harvesting tile contributes the best
+	/// adjacent source's expected material renewal per scheduled update under harvesting.
+	/// Infinite positive stocks contribute one full-rate frontage unit. This is not unique
+	/// deposit throughput; multiple harvesting faces may touch the same source.
+	double renewableFood = 0;
 	/// The harvest as a queue: every walkable tile next to a deposit is a place one worker can
 	/// gather from, completing trips at a rate set by the round trip home. Summed 1/(round trip)
 	/// over those tiles within 48 steps. Stock says how long a supply lasts; this says how fast it
@@ -33,7 +35,8 @@ struct ColonyDiagnostics
 	int secondSwarmSites = 0;
 
 	// --- Pressure on the start ---
-	/// The forest's front: summed growth chance of grass that may take a tree and touches one.
+	/// Expected new Wood material units per scheduled source update landing on reachable
+	/// empty eligible cells, including the one-in-eight spread direction and scarcity gates.
 	double encroachingWood = 0;
 	/// 4x4 build sites standing on that front, which the forest can take.
 	int threatenedBuildSites = 0;

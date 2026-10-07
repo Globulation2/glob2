@@ -36,16 +36,16 @@ ManagementOrder* ManagementOrder::load_order(GAGCore::InputStream *stream, Playe
             mo.reset(new RetireFeeding);
             if (!mo->load(stream, player, versionMinor)) throw std::runtime_error("Invalid saved AI object");
             break;
-		case MAddResourceTracker:
-			mo.reset(new AddResourceTracker);
+		case MAddMaterialTracker:
+			mo.reset(new AddMaterialTracker);
 			if (!mo->load(stream, player, versionMinor)) throw std::runtime_error("Invalid saved AI object");
 			break;
-		case MPauseResourceTracker:
-			mo.reset(new PauseResourceTracker);
+		case MPauseMaterialTracker:
+			mo.reset(new PauseMaterialTracker);
 			if (!mo->load(stream, player, versionMinor)) throw std::runtime_error("Invalid saved AI object");
 			break;
-		case MUnPauseResourceTracker:
-			mo.reset(new UnPauseResourceTracker);
+		case MUnPauseMaterialTracker:
+			mo.reset(new UnPauseMaterialTracker);
 			if (!mo->load(stream, player, versionMinor)) throw std::runtime_error("Invalid saved AI object");
 			break;
 		case MChangeFlagSize:

@@ -412,7 +412,7 @@ bool generate(Game &game, GenerationContext &context)
 			context.detail = "A town has no room for its quarry.";
 			return false;
 		}
-		map.setResource(quarry % t.w, quarry / t.w, STONE, 1);
+		map.setResourceByIndex(quarry % t.w, quarry / t.w, STONE, 1);
 	}
 
 	context.stage = "rice terraces crops";

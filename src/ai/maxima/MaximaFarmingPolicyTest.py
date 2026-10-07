@@ -46,8 +46,8 @@ class MaximaFarmingPolicyTest(unittest.TestCase):
     def test_proactive_wood_clearing_never_targets_wheat(self):
         conversion = self.source[self.source.index("struct Maxima::WoodClearingTarget"): ]
         conversion = conversion[:conversion.index("void Maxima::update_maintenance_clearing_areas")]
-        self.assertIn("clearing_resources[WOOD]=true", conversion)
-        self.assertNotIn("clearing_resources[WHEAT]=true", conversion)
+        self.assertIn("clearing_resources[materialIndex(MaterialId::Wood)]=true", conversion)
+        self.assertNotIn("clearing_resources[materialIndex(MaterialId::Food)]=true", conversion)
         self.assertIn("AIMaximaBuildings::WorkerAttraction, 0", conversion)
         self.assertIn("AssignWorkers(\n\t\t\t\tstrategy.staffing.clearing_workers", conversion)
         self.assertIn("if(wood<2 || reserve_overlap)", conversion)
@@ -74,8 +74,8 @@ class MaximaFarmingPolicyTest(unittest.TestCase):
         self.assertIn("contract.footprintTiles", maintenance)
         self.assertIn("contract.circulationTiles", maintenance)
         self.assertIn("selectResourcePreservingCirculation", maintenance)
-        self.assertIn("resource.type==WHEAT", maintenance)
-        self.assertIn("resource.type==WOOD", maintenance)
+        self.assertIn("(MapState::materialAmountAt(map->state(),index,MaterialId::Food)>0)", maintenance)
+        self.assertIn("(MapState::materialAmountAt(map->state(),index,MaterialId::Wood)>0)", maintenance)
         self.assertIn("!applied_maintenance_clearing_mask[index]", maintenance)
         self.assertIn('"\\treservation_resources_preserved="', maintenance)
         self.assertIn('"\\treservation_fallback_entrances="', maintenance)
@@ -105,7 +105,7 @@ class MaximaFarmingPolicyTest(unittest.TestCase):
             ):
         ]
         maintenance = maintenance[:maintenance.index("void Maxima::initialize_farming_cache")]
-        self.assertIn("resource.type==WOOD", maintenance)
+        self.assertIn("(MapState::materialAmountAt(map->state(),index,MaterialId::Wood)>0)", maintenance)
         self.assertIn("wheat_invasion_clearing_required", maintenance)
         self.assertIn("plan.circulation[index]=1", maintenance)
         self.assertIn('"\\twheat_invasion_wood="', maintenance)
@@ -119,8 +119,8 @@ class MaximaFarmingPolicyTest(unittest.TestCase):
         maintenance = maintenance[:maintenance.index("void Maxima::initialize_farming_cache")]
         self.assertIn("Farming::fertilityWithinPercentBand", maintenance)
         self.assertIn("plan.firebreak[index]=wants_firebreak", maintenance)
-        self.assertIn("&& cell.resource.type==WOOD", maintenance)
-        self.assertIn("if(contract_desired && AIEngine::ObservationQueries::forbidden", maintenance)
+        self.assertIn("&& MapState::materialAmountAt(map->state(),size_t(index),MaterialId::Wood)>0", maintenance)
+        self.assertIn("if(contract_desired && AIEngine::ObservationQueries::forbidden(*map", maintenance)
         self.assertIn("farming.wood_firebreak_fertility_min_percent = 5", self.base_strategy)
         self.assertIn("farming.wood_firebreak_fertility_max_percent = 14", self.base_strategy)
 

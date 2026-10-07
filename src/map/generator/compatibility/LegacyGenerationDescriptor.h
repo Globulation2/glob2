@@ -66,7 +66,7 @@ class MapGenerationDescriptor
 	// riverDiameter = river diameter / lake size / channel width / bridge width;
 	// grassRatio = island size for Isles; extraIslands = neutral count for Concrete Islands.
 	Sint32 smooth;
-	Sint32 resource[MAX_NB_RESOURCES];
+	Sint32 resource[MaterialSlotCount];
 	/// n=2^n-times the same landscape. So 0=all random.
 	Uint32 logRepeatAreaTimes;
 
@@ -80,7 +80,7 @@ class MapGenerationDescriptor
   public:
 	enum
 	{
-		DATA_SIZE = 100 + MAX_NB_RESOURCES * 4
+		DATA_SIZE = 100 + MaterialSlotCount * 4
 	};
 
   protected:

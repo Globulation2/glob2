@@ -7,6 +7,9 @@
 #include "FertilityField.h"
 #include "UnitType.h"
 #include "BuildingCapabilities.h"
+#include "ResourceRegistry.h"
+#include "ResourceHabitats.h"
+#include "MapStateView.h"
 #include <span>
 #include <map>
 #include <tuple>
@@ -21,8 +24,9 @@ struct Catalogs
 	std::shared_ptr<const std::vector<BuildingKindView>> buildings;
 	std::shared_ptr<const AIPlanning::BuildingCapabilityTables> capabilities;
 	std::array<std::array<UnitType, NB_UNIT_LEVELS>, NB_UNIT_TYPE> unitTypes;
-	std::array<bool, MAX_NB_RESOURCES> shrinkable{}, visibleToBeCollected{}, eternal{};
-	std::array<int, MAX_NB_RESOURCES> sizesCount{};
+	// Immutable resource catalog and compiled habitat permissions, shared with the map.
+	std::shared_ptr<const ResourceRegistry> resources;
+	std::shared_ptr<const ResourceHabitats> habitats;
 };
 struct TerrainCell { TerrainType type = GRASS; Uint16 legacy = 0; };
 struct Terrain
@@ -34,7 +38,16 @@ struct Terrain
 	bool movementModifiers = false, airConstraints = false;
 };
 using ResourceCell = MapState::ResourceCell;
-struct Resources { std::vector<ResourceCell> cells; };
+// Single-yield stock lives inline in each cell; multi-yield deposits index the
+// stock sidecar. Both are covered by the one Resources generation.
+struct Resources
+{
+	std::vector<ResourceCell> cells;
+	std::vector<Uint32> stockIndices;
+	std::vector<std::array<Uint16, MaterialCount>> stocks;
+	std::array<Uint32, MaterialCount> materialSourceCounts{};
+	Uint64 staticMaterialSourceGeneration = 0;
+};
 using OccupancyCell = MapState::OccupancyCell;
 struct Occupancy { std::vector<OccupancyCell> cells; };
 using AreaCell = MapState::AreaCell;
@@ -72,10 +85,6 @@ struct ResourceField
 };
 struct ResourceFields { std::map<ResourceFieldKey, ResourceField> values; };
 
-// Shared farm semantics for checked handles and validated controller readers.
-bool canPaintFarm(const ResourceCell& cell, const TerrainProperties& properties,
-	const std::array<bool, MAX_NB_RESOURCES>& shrinkable,
-	const Fertility::GrowthCache& growth, std::size_t index);
 
 // A handle owns only components explicitly leased to this consumer. Projection
 // does not keep an umbrella snapshot alive through an incidental parent pointer.
@@ -110,6 +119,9 @@ struct Handle
 	{ checkTileIndex(index); return areas ? areas->cells.at(index) : AreaCell{}; }
 	VisibilityCell visibilityAt(std::size_t index) const
 	{ checkTileIndex(index); return visibility ? VisibilityCell{visibility->discovered.at(index), visibility->visible.at(index)} : VisibilityCell{}; }
+	// Borrowed view over the captured components; the same MapState queries
+	// the live Map uses read these arrays directly. Missing components are empty.
+	MapState::View view() const;
 	bool canPaintFarmAt(std::size_t index) const;
 	TileView tileAt(std::size_t index) const;
 private:

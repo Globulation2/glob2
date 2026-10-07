@@ -87,8 +87,8 @@ void prepareConversion(Engine &engine, const std::filesystem::path &directory)
 			inn = building;
 	}
 	REQUIRE(inn);
-	inn->resources[WHEAT] = 10;
-	inn->resources[CHERRY] = 10;
+	inn->materials[WHEAT] = 10;
+	inn->materials[CHERRY] = 10;
 	inn->updateCallLists();
 	inn->canNotConvertUnitTimer = 0;
 	game.teams[1]->sharedVisionFood |= game.teams[0]->me;
@@ -215,19 +215,19 @@ void fixture(const std::string &name)
 	}
 	const auto directory = glob2test::artifactDir();
 	const auto serial = execute(initial, directory / "workers1", 1, false, true);
-	// The terrain simulation has its own trace; retain released traces above as
-	// historical migration evidence instead of rewriting their old behavior.
-	const auto terrainFixture = "test/fixtures/javascript/" + name + "-256-terrain.checksums.gz";
+	// Runtime resources have their own trace; retain released traces above and
+	// the terrain trace as historical migration evidence.
+	const auto resourceFixture = "test/fixtures/javascript/" + name + "-256-resources.checksums.gz";
 	if (glob2test::updatingFixtures())
 	{
-		gzFile output = gzopen((glob2test::sourceRoot() / terrainFixture).string().c_str(), "wb9");
+		gzFile output = gzopen((glob2test::sourceRoot() / resourceFixture).string().c_str(), "wb9");
 		REQUIRE(output != nullptr);
 		const auto written = gzwrite(output, serial.trace.data(), unsigned(serial.trace.size()));
 		const auto closed = gzclose(output);
 		REQUIRE(written == int(serial.trace.size()));
 		REQUIRE(closed == Z_OK);
 	}
-	const auto expected = glob2test::readFile(glob2test::inflated(terrainFixture));
+	const auto expected = glob2test::readFile(glob2test::inflated(resourceFixture));
 	CHECK(serial.trace == expected);
 	const auto parallel = execute(initial, directory / "workers4", 4, false, true);
 	CHECK(parallel.trace == serial.trace);

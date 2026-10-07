@@ -121,7 +121,7 @@ TEST_SUITE("OrderValidation")
 		const auto inn=f.ownInn->gid;
 		const auto missing=Building::GIDfrom(900,0);
 		Sint32 ratios[NB_UNIT_TYPE]={1,0,0};
-		bool clearing[BASIC_COUNT]={true,false,false,false,false};
+		bool clearing[MaterialCount]={true,false,false,false,false};
 		Building* hospital=f.game.addBuilding("hospital",20,20);
 		expect(f.check(OrderModifyBuilding(hospital->gid,0)),Verdict::Accepted);
 		expect(f.check(OrderModifyBuilding(hospital->gid,1)),Verdict::Rejected,Reason::OutOfRange);
@@ -209,7 +209,7 @@ TEST_SUITE("OrderValidation")
 		expect(f.check(OrderModifyExchange(theirs, 1, 2)), Verdict::Rejected, Reason::ForeignBuilding);
 		expect(f.check(OrderModifyFlag(theirFlag, 1)), Verdict::Rejected, Reason::ForeignBuilding);
 		expect(f.check(OrderMoveFlag(theirFlag, 1, 1, true)), Verdict::Rejected, Reason::ForeignBuilding);
-		bool clear[BASIC_COUNT] = {true};
+		bool clear[MaterialCount] = {true};
 		expect(f.check(OrderModifyClearingFlag(theirFlag, clear)), Verdict::Rejected, Reason::ForeignBuilding);
 		expect(f.check(OrderModifyMinLevelToFlag(theirFlag, 1)), Verdict::Rejected, Reason::ForeignBuilding);
 		// Ids past every team the engine has, and of a team this map lacks.
@@ -300,7 +300,7 @@ TEST_SUITE("OrderValidation")
 			                              ORDER_PAUSE_GAME, ORDER_PLAYER_QUIT_GAME, ORDER_ADJUST_LATENCY};
 			if (random() % 64)
 				bytes[0] = types[random() % (sizeof types)];
-			static const int lengths[] = {28, 2, 2, 10, 6, 4, 10, 2 + 4 * NB_UNIT_TYPE, 6, 2 + BASIC_COUNT, 4, 11, 6};
+			static const int lengths[] = {28, 2, 2, 10, 6, 4, 10, 2 + 4 * NB_UNIT_TYPE, 6, 2 + MaterialCount, 4, 11, 6};
 			if (random() % 2)
 				bytes.resize(1 + lengths[random() % (sizeof lengths / sizeof *lengths)]);
 			// Small values in the team and id fields, so some land on real teams and buildings.
@@ -401,4 +401,21 @@ TEST_SUITE("OrderValidation")
 		CHECK_FALSE(apply(std::make_shared<OrderConstruction>(fixture.ownInn->gid,1,1)));
 	}
 
+}
+
+TEST_CASE("OrderValidation/clearing material wire boundary")
+{
+    const Uint8 legacy[] = {0, 0, 1, 0, 1, 0, 1};
+    auto old = OrderModifyClearingFlag::deserialize(legacy, sizeof(legacy), 137);
+    REQUIRE(old);
+    CHECK(old->clearingMaterials[0]);
+    CHECK(old->clearingMaterials[4]);
+    for (unsigned m = 5; m < MaterialCount; ++m) CHECK_FALSE(old->clearingMaterials[m]);
+    CHECK_FALSE(OrderModifyClearingFlag::deserialize(legacy, sizeof(legacy), VERSION_MINOR));
+    bool choices[MaterialCount]{};
+    choices[materialIndex(MaterialId::Fabric)] = true;
+    OrderModifyClearingFlag current(0, choices);
+    auto decoded = OrderModifyClearingFlag::deserialize(current.getData(), current.getDataLength(), VERSION_MINOR);
+    REQUIRE(decoded);
+    CHECK(decoded->clearingMaterials[materialIndex(MaterialId::Fabric)]);
 }

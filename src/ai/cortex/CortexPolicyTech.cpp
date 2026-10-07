@@ -83,7 +83,7 @@ namespace Cortex
 	}
 
 	// --- Priority 3: school (SCIENCE) — the first tech building. Trains workers'
-	// HARVEST (more WHEAT carried per haul → fuller swarm/inn buffers, easing the
+	// HARVEST (more Food carried per haul → fuller swarm/inn buffers, easing the
 	// very supply pressure the economy lives on) and BUILD (faster construction +
 	// raises team maxBuildLevel, the engine gate that unlocks every building
 	// upgrade). Built once the economy is established and spare labour exists, so
@@ -176,7 +176,7 @@ namespace Cortex
 	// warriors can cross water. Built when an explorer has revealed reachable ALGA
 	// (a food resource that grows only on water, so harvestable only by swimmers)
 	// OR when allowing swim MATERIALLY expands the colony's reachable area — a
-	// water-separated wheat patch / stretch of land, or the only-or-much-shorter
+	// water-separated food patch / stretch of land, or the only-or-much-shorter
 	// route to a water-locked enemy. The reach test compares the bounded land-only
 	// vs land+water flood-fill counts surfaced by CortexWater (swimWaterReach is
 	// always >= swimLandReach; we want a pool when the swim count is more than

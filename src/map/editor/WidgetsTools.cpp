@@ -120,6 +120,41 @@ void TerrainSelector::draw()
 	}
 }
 
+TerrainGroupSelector::TerrainGroupSelector(MapEdit& me, const widgetRectangle& area, const std::string& group, const std::string& name, const std::string& action, TerrainGroup catalogueGroup, ::TerrainType fallback)
+	: MapEditorWidget(me, area, group, name, action), catalogueGroup(catalogueGroup), fallback(fallback)
+{
+}
+
+void TerrainGroupSelector::draw()
+{
+	::TerrainType shown = fallback;
+	bool active = false;
+	if (TerrainSelector::isBaseTerrain(me.terrainType))
+	{
+		const auto type = TerrainSelector::baseTerrain(me.terrainType);
+		if (unsigned(type) < TERRAIN_COUNT && terrainGroup(type) == catalogueGroup)
+		{
+			shown = type;
+			active = true;
+		}
+	}
+	const auto [sprite, frame] = globalContainer->terrainCompositor().editorIcon(
+		me.game.map.terrainRegistry().appearance(shown));
+	globalContainer->gfx->drawSprite(area.x, area.y, sprite, frame);
+	globalContainer->gfx->finishDrawingSprite(sprite, 255);
+	if (active)
+	{
+		globalContainer->gfx->drawSprite(area.x, area.y, globalContainer->gamegui, 22);
+		globalContainer->gfx->finishDrawingSprite(globalContainer->gamegui, 255);
+	}
+	// Three stacked bars in the corner: this brush opens the group's palette section.
+	for (int i = 0; i < 3; ++i)
+	{
+		globalContainer->gfx->drawFilledRect(area.x + area.width - 11, area.y + area.height - 10 + i * 3, 8, 2, GAGCore::Color(20, 20, 24));
+		globalContainer->gfx->drawFilledRect(area.x + area.width - 10, area.y + area.height - 11 + i * 3, 8, 2, GAGCore::Color(236, 232, 220));
+	}
+}
+
 
 
 BlueButton::BlueButton(MapEdit& me, const widgetRectangle& area, const std::string& group, const std::string& name, const std::string& action, const std::string& text)

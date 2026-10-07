@@ -148,7 +148,7 @@ TEST_CASE("growth bands attribute overlapping coverage to all sixteen teams")
     for (int distance : {8, 9, 16, 17, 32, 33})
     {
         const int x = 8 + distance;
-        REQUIRE(game.map.incResource(x, 8, WHEAT, 0));
+        REQUIRE(game.map.incResourceByIndex(x, 8, WHEAT, 0));
         game.map.recordNaturalGrowth(x, 8, WHEAT, NO_RES_TYPE, 0);
     }
     for (int t = 0; t < Team::MAX_COUNT; ++t)

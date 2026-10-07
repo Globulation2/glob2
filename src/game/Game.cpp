@@ -89,7 +89,7 @@ void Game::configureBuildingCatalog()
 			if (routingChanged)
 			{
 				team->dirtyGlobalGradient();
-				for (int resource=0; resource<MAX_RESOURCES; ++resource) map.dirtyMarketGradients(team->teamNumber,resource);
+				for (int resource=0; resource<MaterialCount; ++resource) map.dirtyMarketGradientsSlot(team->teamNumber,resource);
 			}
 		}
 }
@@ -115,6 +115,7 @@ void Game::init(GameGUI *gui, MapEdit* edit)
 	mapHeader.reset();
 	gameHeader.reset();
 	gameHeader.setBuildingCatalogSnapshot(buildingsTypes.snapshotJson());
+	gameHeader.setResourceExperiments(map.resourceRegistry().experiments());
 	configureBuildingCatalog();
 
 	clearGame();
@@ -193,6 +194,7 @@ void Game::setGameHeader(const GameHeader& newGameHeader, bool saveAI)
 		&& resolvedHeader.getBuildingCatalogSnapshot() != buildingsTypes.snapshotJson())
 		throw std::runtime_error("Game setup building catalog does not match the map catalog");
 	resolvedHeader.setBuildingCatalogSnapshot(buildingsTypes.snapshotJson());
+	resolvedHeader.setResourceExperiments(map.resourceRegistry().experiments());
 	for (int p=0; p<Team::MAX_COUNT; ++p)
 	{
 		if (saveAI && gameHeader.getBasePlayer(p).type >= BasePlayer::P_AI)
@@ -239,12 +241,12 @@ void Game::setGameHeader(const GameHeader& newGameHeader, bool saveAI)
 		map.setMapDiscovered();
 
 	// Custom-game "stockpile start" rule: seed each team's shared market/
-	// exchange resource pool. Only feeds buildings with useTeamResources
+	// exchange resource pool. Only feeds buildings with useTeamMaterials
 	// (markets/exchanges) -- a fresh regular building still starts empty.
 	// setGameHeader can run more than once before a match starts (e.g. the
 	// lobby's player list changing) AND when loading an existing save
 	// (GameGUI::loadFromHeaders calls Game::load(), which already restores
-	// each team's real, accumulated teamResources, before calling this).
+	// each team's real, accumulated teamMaterials, before calling this).
 	// Re-seed only when the level actually changes from what gameHeader
 	// (the outgoing header, about to be replaced below) already had: a
 	// plain assignment -- like Team::init's own zeroing -- rather than an
@@ -258,8 +260,8 @@ void Game::setGameHeader(const GameHeader& newGameHeader, bool saveAI)
 		static constexpr Sint32 stockpileAmount[] = {0, 50, 150, 300};
 		const Sint32 stockpile = stockpileAmount[newGameHeader.getStockpileStartLevel()];
 		for (int i=0; i<mapHeader.getNumberOfTeams(); ++i)
-			for (int r=0; r<MAX_NB_RESOURCES; ++r)
-				teams[i]->teamResources[r] = stockpile;
+			for (int r=0; r<MaterialSlotCount; ++r)
+				teams[i]->teamMaterials[r] = stockpile;
 	}
 
 	for (int p=0; p<Team::MAX_COUNT; ++p)
@@ -289,6 +291,8 @@ void Game::setGameHeader(const GameHeader& newGameHeader, bool saveAI)
 		}
 	for (const auto& definition : experimentDefinitions())
 		if (mapHeader.requiredTerrainExperiments.has(definition.id)) resolvedHeader.getExperiments().set(definition.id);
+	for (const auto& key : map.requiredResourceExperiments().keys())
+		resolvedHeader.getExperiments().set(key, true, resolvedHeader.catalogExperimentKeys());
 	gameHeader = resolvedHeader;
 	configureBuildingCatalog();
 	anyPlayerWaited=false;

@@ -35,18 +35,18 @@ template<class Function> void visit(const Bits &bits, Function function)
 struct ResourceSeedCache::Storage
 {
 	std::array<std::vector<Uint16>, 2> base;
-	std::array<Bits, MAX_RESOURCES> resources;
+	std::array<Bits, MaterialCount> resources;
 	Bits buildings;
 	std::array<Bits, Team::MAX_COUNT> forbidden;
 	// Effective natural goal type: occupied resource cells have no goal bit.
-	std::vector<Uint8> resourceTypes, dirty;
+	std::vector<MaterialMask> materialMasks;
+	std::vector<Uint8> dirty;
 	std::vector<Uint32> forbiddenMasks, queue;
 
 	Storage(std::size_t cells, std::size_t dirtyLimit)
-		: resourceTypes(cells, NO_RES_TYPE), dirty(cells), forbiddenMasks(cells)
+		: materialMasks(cells), dirty(cells), forbiddenMasks(cells)
 	{
 		for (auto &field : base) field.resize(cells);
-		for (auto &bits : resources) bits.resize((cells + 63) / 64);
 		buildings.resize((cells + 63) / 64);
 		for (auto &bits : forbidden) bits.resize((cells + 63) / 64);
 		queue.reserve(dirtyLimit);
@@ -54,7 +54,7 @@ struct ResourceSeedCache::Storage
 
 	std::size_t bytes() const
 	{
-		std::size_t bytes = sizeof(*this) + resourceTypes.capacity() + dirty.capacity();
+		std::size_t bytes = sizeof(*this) + materialMasks.capacity() * sizeof(MaterialMask) + dirty.capacity();
 		bytes += (queue.capacity() + forbiddenMasks.capacity()) * sizeof(Uint32);
 		for (const auto &field : base) bytes += field.capacity() * sizeof(Uint16);
 		for (const auto &bits : resources) bytes += bits.capacity() * sizeof(Uint64);
@@ -120,23 +120,24 @@ void ResourceSeedCache::refresh(const Map &map, std::size_t index, unsigned flag
 
 	if (flags & (Resource | Terrain | Building | Immobile))
 	{
-		const Uint8 resource = map.resourceCells[index].resource.type;
+		const auto resource = map.resourceCells[index].resource.type;
 		const bool unoccupied = map.occupancyCells[index].immobileUnit == IMMOBILE_UNIT_NONE;
 		// Occupancy alone cannot change a resource-free cell's goal membership.
 		// Resource notices still handle removals, including coalesced edits.
 		if ((flags & Resource) || ((flags & Immobile) && resource != NO_RES_TYPE))
 		{
-			const Uint8 old = s.resourceTypes[index];
-			const Uint8 next = unoccupied ? resource : NO_RES_TYPE;
-			if (old != next)
+			const MaterialMask old = s.materialMasks[index];
+			const MaterialMask next = unoccupied ? map.materialMaskAt(index) : 0;
+			for (unsigned changed = old ^ next; changed; changed &= changed - 1)
 			{
-				if (old != NO_RES_TYPE) setBit(s.resources[old], index, false);
-				if (next != NO_RES_TYPE) setBit(s.resources[next], index, true);
-				s.resourceTypes[index] = next;
+				const unsigned material = std::countr_zero(changed);
+				if (s.resources[material].empty()) s.resources[material].resize((cells + 63) / 64);
+				setBit(s.resources[material], index, next & (1u << material));
 			}
+			s.materialMasks[index] = next;
 		}
 		const auto &terrain = map.terrainPropertiesAt(index);
-		const bool open = resource == NO_RES_TYPE && map.occupancyCells[index].building == NOGBID && unoccupied;
+		const bool open = !map.resourceBlocksGround(index) && map.occupancyCells[index].building == NOGBID && unoccupied;
 		s.base[0][index] = open && terrain.walkable ? GRADIENT_UNREACHABLE : GRADIENT_FORBIDDEN;
 		s.base[1][index] = open && (terrain.walkable || terrain.swimmable)
 			? GRADIENT_UNREACHABLE : GRADIENT_FORBIDDEN;
@@ -178,6 +179,8 @@ bool ResourceSeedCache::trySeed(const Map &map, int team, int resource, int swim
 				std::fill(storage->dirty.begin(), storage->dirty.end(), 0);
 				storage->queue.clear();
 				for (std::size_t i = 0; i < cells; ++i) refresh(map, i, All);
+				if (allocatedBytes() > MaximumBytes || allocatedBytes() > cells * MaximumBytesPerCell)
+					throw std::bad_alloc();
 				valid = true;
 			}
 			catch (const std::bad_alloc &)
@@ -189,33 +192,44 @@ bool ResourceSeedCache::trySeed(const Map &map, int team, int resource, int swim
 	}
 	changes = 0;
 	if (!valid) return false;
-	auto &s = *storage;
-	for (const auto index : s.queue)
+	try
 	{
-		refresh(map, index, s.dirty[index]);
-		s.dirty[index] = 0;
+		for (const auto index : storage->queue)
+		{
+			refresh(map, index, storage->dirty[index]);
+			storage->dirty[index] = 0;
+		}
+		if (allocatedBytes() > MaximumBytes || allocatedBytes() > cells * MaximumBytesPerCell)
+			throw std::bad_alloc();
 	}
+	catch (const std::bad_alloc &)
+	{
+		storage.reset();
+		allocationFailed = true;
+		valid = false;
+		return false;
+	}
+	auto &s = *storage;
 	s.queue.clear();
 	std::memcpy(output, s.base[swim > 0].data(), cells * sizeof(*output));
 	const Uint32 mask = Team::teamNumberToMask(team);
-	const bool hideFogged = globalContainer->resourcesTypes.get(resource)->visibleToBeCollected;
 	// Goals override terrain/buildings, but not immobile units or forbidden paint.
 	// Fog, market stock and resource policy are live overlays, never cached.
-	visit(s.resources[resource], [&](std::size_t index) {
-		if (!hideFogged || (map.fogOfWar[index] & mask))
-			output[index] = GRADIENT_AT_GOAL;
-	});
+
 	if (supplierSeeds)
 	{
 		const unsigned teamBuildingBase=unsigned(team)*Building::MAX_COUNT;
 		visit(s.buildings, [&](std::size_t index) {
-
 			const unsigned localId=unsigned(map.occupancyCells[index].building)-teamBuildingBase;
-			if (map.resourceCells[index].resource.type == NO_RES_TYPE && map.occupancyCells[index].immobileUnit == IMMOBILE_UNIT_NONE &&
+			if (!map.resourceBlocksGround(index) && map.occupancyCells[index].immobileUnit == IMMOBILE_UNIT_NONE &&
 				localId<Building::MAX_COUNT)
 				output[index] = supplierSeeds[localId];
 		});
 	}
+	visit(s.resources[resource], [&](std::size_t index) {
+		if (!map.resourceVisibleToHarvest(index) || (map.fogOfWar[index] & mask))
+			output[index] = GRADIENT_AT_GOAL;
+	});
 	visit(s.forbidden[team], [&](std::size_t index) { output[index] = GRADIENT_FORBIDDEN; });
 	return true;
 }

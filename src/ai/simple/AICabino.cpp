@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2005-2007 Bradley Arsenault
 
+#include "Material.h"
 #include "field/UniformTraversal.h"
 #include "AITelemetryFields.h"
 #include <Stream.h>
@@ -77,9 +78,9 @@ template<class X,class Y> bool placeRallyNear(AICabino& ai,int type,X& x,Y& y)
 unsigned feedingStock(const AIEngine::AIWorldView& world,const AIEngine::BuildingView& building,bool capacity)
 {
  unsigned stock=0;
- for(int resource=0;resource<MAX_NB_RESOURCES;++resource)
+ for(int resource=0;resource<MaterialSlotCount;++resource)
   if(AIEngine::ObservationQueries::buildingType(world,building).semantics.feeding.cost[resource]>0)
-   stock+=capacity ? AIEngine::ObservationQueries::buildingType(world,building).maxResource[resource] : world.buildingResources(building)[resource];
+   stock+=capacity ? AIEngine::ObservationQueries::buildingType(world,building).maxMaterial[resource] : world.buildingResources(building)[resource];
  return stock;
 }
 void retireRally(AICabino& ai,unsigned gid)
@@ -787,7 +788,7 @@ unsigned int GridPollingSystem::pollArea(unsigned int x, unsigned int y, unsigne
 				{
 					if(static_cast<int>(y) >= map->height)
 						y=0;
-					if (resourceTakeable(map->resourceAt(map->tileIndex(x,y)).resource,WHEAT))
+					if (MapState::hasMaterial(map->state(),map->tileIndex(x,y),MaterialId::Food))
 						score++;
 				}
 			}
@@ -800,7 +801,7 @@ unsigned int GridPollingSystem::pollArea(unsigned int x, unsigned int y, unsigne
 				{
 					if(static_cast<int>(y) >= map->height)
 						y=0;
-					if (resourceTakeable(map->resourceAt(map->tileIndex(x,y)).resource,WOOD))
+					if (MapState::hasMaterial(map->state(),map->tileIndex(x,y),MaterialId::Wood))
 						score++;
 				}
 			}
@@ -814,7 +815,7 @@ unsigned int GridPollingSystem::pollArea(unsigned int x, unsigned int y, unsigne
 				{
 					if(static_cast<int>(y) >= map->height)
 						y=0;
-					if (resourceTakeable(map->resourceAt(map->tileIndex(x,y)).resource,STONE))
+					if (MapState::hasMaterial(map->state(),map->tileIndex(x,y),MaterialId::Stone))
 						score++;
 				}
 			}
@@ -1160,19 +1161,16 @@ int Gradient::getHeight(int x, int y) const
 
 bool Gradient::isSource(unsigned x, unsigned y)
 {
-    auto* map=ai->map; auto* team=ai->team;
+    auto* map=ai->map; auto* team=ai->team; (void)team;
 	const auto index=map->tileIndex(x,y);
-	const auto sourceResource=map->resourceAt(index).resource;
-	const int resource=sourceResource.type;
-	const auto isTakeable=[&](int type) { return sourceResource.type==type && sourceResource.amount>0; };
- if(resource>=0 && resource<MAX_NB_RESOURCES && (sources&(1u<<(8+resource))) && isTakeable(resource)) return true;
+	if ((MapState::materialMaskAt(map->state(),map->tileIndex(x,y)) & (sources>>8))!=0) return true;
  if(sources&VillageCenter && x==ai->getCenterX() && y==ai->getCenterY())
 		return true;
-	if(sources&Wheat && isTakeable(WHEAT))
+	if(sources&Wheat && MapState::hasMaterial(map->state(),map->tileIndex(x,y),MaterialId::Food))
 		return true;
-	if(sources&Wood && isTakeable(WOOD))
+	if(sources&Wood && MapState::hasMaterial(map->state(),map->tileIndex(x,y),MaterialId::Wood))
 		return true;
-	if(sources&Stone && isTakeable(STONE))
+	if(sources&Stone && MapState::hasMaterial(map->state(),map->tileIndex(x,y),MaterialId::Stone))
 		return true;
 	if(sources&TeamBuildings)
 	{
@@ -2426,12 +2424,12 @@ DistributedNewConstructionManager::point DistributedNewConstructionManager::find
  const auto* placement=(&ai.game->catalog->at(concreteType).resolvedType);
  const auto* completed=placement->isBuildingSite ? (&ai.game->catalog->at(placement->nextLevel).resolvedType) : placement;
  unsigned recurring=0,construction=0;
- for(int resource=0;resource<MAX_NB_RESOURCES;++resource) {
+ for(int resource=0;resource<MaterialSlotCount;++resource) {
   const auto& spec=completed->semantics;
   bool consumes=(spec.feeding.enabled && spec.feeding.cost[resource]>0) || (spec.healing.enabled && spec.healing.cost[resource]>0);
   for(const auto& recipe:spec.production.recipes) consumes|=recipe.enabled && recipe.cost[resource]>0;
   for(const auto& training:spec.training) consumes|=training.enabled && training.cost[resource]>0;
-  consumes|=completed->shootingRange>0 && spec.ammunitionResource==resource && spec.ammunitionCost>0;
+  consumes|=completed->shootingRange>0 && spec.ammunitionMaterial==resource && spec.ammunitionCost>0;
   if(consumes) recurring|=1u<<(8+resource);
   if(placement->semantics.constructionCost[resource]>0) construction|=1u<<(8+resource);
  }
@@ -2727,7 +2725,7 @@ bool DistributedNewConstructionManager::constructBuildings()
 			//Don't assign more units than the total amount of resources needed to construct the building.
 			unsigned int needed_resource_total=0;
 			const BuildingType* t=(&ai.game->catalog->at(concreteType).resolvedType);
-			for(unsigned int n=0; n<MAX_NB_RESOURCES; ++n)
+			for(unsigned int n=0; n<MaterialSlotCount; ++n)
 			{
 				needed_resource_total+=t->semantics.constructionCost[n];
 			}
@@ -4734,8 +4732,9 @@ void HappinessHandler::computeFruitTrees()
 		{
 			for(int y=0; y<ai.map->height; ++y)
 			{
-				int res_type=ai.map->resourceAt(ai.map->tileIndex(x,y)).resource.type;
-				if(res_type>=HAPPINESS_BASE && res_type<MAX_RESOURCES && examined_points.count(point(x, y))==0)
+				int res_type=-1;
+                for(int m=HAPPINESS_BASE;m<HAPPINESS_BASE+HAPPINESS_COUNT;++m) if(MapState::hasMaterialSlot(ai.map->state(),ai.map->tileIndex(x,y),m)){res_type=m;break;}
+				if(res_type>=HAPPINESS_BASE && res_type<HAPPINESS_BASE+HAPPINESS_COUNT && examined_points.count(point(x, y))==0)
 				{
 					examined_points.insert(point(x, y));
 					int max_x=x;
@@ -4763,7 +4762,7 @@ void HappinessHandler::computeFruitTrees()
 							const point neighbors[8]={point(xl,yu),point(x,yu),point(xr,yu),
 								point(xl,y),point(xr,y),point(xl,yd),point(x,yd),point(xr,yd)};
 							for(const point& next:neighbors)
-								if(ai.map->resourceAt(ai.map->tileIndex(next.x,next.y)).resource.type==res_type && examined_points.count(next)==0)
+								if(MapState::hasMaterialSlot(ai.map->state(),ai.map->tileIndex(next.x,next.y),res_type) && examined_points.count(next)==0)
 								{examined_points.insert(next);points_to_examine.push_back(next);}
 							return field::Visit::Expand;
 						});
@@ -4898,7 +4897,7 @@ bool Farmer::updateFarm()
 				((x%3==0 && y%6<4) && FARMING_METHOD==Column4);
 			if(farms && ((ai.map->visibilityAt(ai.map->tileIndex(x,y)).discovered&(ai.team->mask))!=0))
 			{
-				const bool wheat_farm=farm_spot && resourceTakeable(ai.map->resourceAt(ai.map->tileIndex(x,y)).resource,WHEAT)
+				const bool wheat_farm=farm_spot && MapState::hasMaterial(ai.map->state(),ai.map->tileIndex(x,y),MaterialId::Food)
 					&& !((ai.map->areasAt(ai.map->tileIndex(x,y)).clear&(ai.team->mask))!=0)
 					&& ai.map->canPaintFarmAt(ai.map->tileIndex(x,y))
 					&& water_gradient.getHeight(x, y)<=static_cast<int>(MAX_DISTANCE_FROM_WATER+2);
@@ -4912,8 +4911,8 @@ bool Farmer::updateFarm()
 			if(farm_spot)
 			{
 				const bool protectable=farms
-					? resourceTakeable(ai.map->resourceAt(ai.map->tileIndex(x,y)).resource,WOOD)
-					: resourceTakeable(ai.map->resourceAt(ai.map->tileIndex(x,y)).resource,WOOD) || resourceTakeable(ai.map->resourceAt(ai.map->tileIndex(x,y)).resource,WHEAT);
+					? MapState::hasMaterial(ai.map->state(),ai.map->tileIndex(x,y),MaterialId::Wood)
+					: MapState::hasMaterial(ai.map->state(),ai.map->tileIndex(x,y),MaterialId::Wood) || MapState::hasMaterial(ai.map->state(),ai.map->tileIndex(x,y),MaterialId::Food);
 				if(!protectable || ((ai.map->areasAt(ai.map->tileIndex(x,y)).clear&(ai.team->mask))!=0))
 				{
 					if(resources.find(point(x, y))!=resources.end())
@@ -4967,7 +4966,7 @@ bool Gradient::load(GAGCore::InputStream *stream, AICabino& owner)
 	stream->readEnterSection("Gradient");
 	const auto savedSources=stream->readUint32("sources");
 	const auto savedObstacles=stream->readUint32("obstacles");
-	const unsigned validSources = 63u | (((1u << MAX_NB_RESOURCES) - 1u) << 8);
+	const unsigned validSources = 63u | (((1u << MaterialSlotCount) - 1u) << 8);
 	if ((savedSources & ~validSources) || savedObstacles > 3) return false;
 	const auto count=stream->readUint32("cells");
 	if (count != Uint32(owner.map->width*owner.map->height)) return false;

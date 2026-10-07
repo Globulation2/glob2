@@ -8,44 +8,50 @@ using namespace AISharedRuntime;
 using namespace AISharedRuntime::Gradients;
 
 
-Entities::Resource::Resource(int resource_type) : resource_type(resource_type)
+Entities::MaterialSource::MaterialSource(int material) : material(material)
 {
 }
 
-bool Entities::Resource::is_entity(Map* map, int posx, int posy)
+bool Entities::MaterialSource::is_entity(Map* map, int posx, int posy)
 {
-	return map->isResourceTakeable(posx, posy, resource_type);
+	return map->isMaterialTakeableSlot(posx,posy,material);
 }
 
-bool Entities::Resource::operator==(const Entity& rhs) const
+bool Entities::MaterialSource::operator==(const Entity& rhs) const
 {
-	if(typeid(rhs)!=typeid(Entities::Resource))
+	if(typeid(rhs)!=typeid(Entities::MaterialSource))
 		return false;
-	return static_cast<const Entities::Resource&>(rhs).resource_type==resource_type;
+	return static_cast<const Entities::MaterialSource&>(rhs).material==material;
 }
 
-bool Entities::Resource::can_change()
+bool Entities::MaterialSource::can_change()
 {
-	return resource_type==WOOD || resource_type==WHEAT || resource_type==ALGA;
+	return true;
 }
 
-Entities::EntityType Entities::Resource::get_type()
+bool Entities::MaterialSource::can_change(const ResourceRegistry& registry)
 {
-	return Entities::EResource;
+    return material>=0 && material<int(MaterialCount) &&
+        (registry.mutableMaterialSources() & (MaterialMask(1)<<material))!=0;
 }
 
-bool Entities::Resource::load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor)
+Entities::EntityType Entities::MaterialSource::get_type()
+{
+	return Entities::EMaterialSource;
+}
+
+bool Entities::MaterialSource::load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor)
 {
 	stream->readEnterSection("Ressource");
-	resource_type = stream->readSint32("ressource_type");
+	material = stream->readSint32("ressource_type");
 	stream->readLeaveSection();
 	return true;
 }
 
-void Entities::Resource::save(GAGCore::OutputStream *stream)
+void Entities::MaterialSource::save(GAGCore::OutputStream *stream)
 {
 	stream->writeEnterSection("Ressource");
-	stream->writeSint32(resource_type, "ressource_type");
+	stream->writeSint32(material, "ressource_type");
 	stream->writeLeaveSection();
 }
 
@@ -87,37 +93,58 @@ void Entities::AnyResource::save(GAGCore::OutputStream *stream)
 	stream->writeLeaveSection();
 }
 
-bool Entities::ResourceSet::is_entity(Map* map,int x,int y)
+bool Entities::MaterialSources::is_entity(Map* map,int x,int y)
 {
  if(mask==0) return map->terrainPropertiesAt(x,y).walkable;
- const int resource=map->getTile(x,y).resource.type;
- return resource>=0 && resource<MAX_NB_RESOURCES && (mask&(1u<<resource)) && map->isResourceTakeable(x,y,resource);
+ return (map->materialMaskAt(map->coordToIndex(x,y)) & mask)!=0;
 }
-bool Entities::ResourceSet::operator==(const Entity& other) const
+bool Entities::MaterialSources::can_change(const ResourceRegistry& registry)
 {
- return typeid(other)==typeid(ResourceSet) && static_cast<const ResourceSet&>(other).mask==mask;
+    // The empty mask matches terrain; terrain generation owns its invalidation.
+    return (registry.mutableMaterialSources() & mask)!=0;
 }
-bool Entities::ResourceSet::load(GAGCore::InputStream* stream,Player*,Sint32)
+bool Entities::MaterialSources::operator==(const Entity& other) const
+{
+ return typeid(other)==typeid(MaterialSources) && static_cast<const MaterialSources&>(other).mask==mask;
+}
+bool Entities::MaterialSources::load(GAGCore::InputStream* stream,Player*,Sint32)
 {
  stream->readEnterSection("ResourceSet"); mask=stream->readUint32("mask"); stream->readLeaveSection();
- return (mask&~((1u<<MAX_NB_RESOURCES)-1))==0;
+ return (mask&~((1u<<MaterialCount)-1))==0;
 }
-void Entities::ResourceSet::save(GAGCore::OutputStream* stream)
+void Entities::MaterialSources::save(GAGCore::OutputStream* stream)
 {
  stream->writeEnterSection("ResourceSet"); stream->writeUint32(mask,"mask"); stream->writeLeaveSection();
 }
 
-bool Entities::Resource::is_entity(const AIEngine::AIWorldView& world,int x,int y)
-{
-    const auto& resource=world.resourceAt(world.tileIndex(x,y)).resource;
-    return resource.type==resource_type && resource.amount>0;
-}
+bool Entities::MaterialSource::is_entity(const AIEngine::AIWorldView& world,int x,int y)
+{ return MapState::hasMaterialSlot(world.state(),world.tileIndex(x,y),material); }
 bool Entities::AnyResource::is_entity(const AIEngine::AIWorldView& world,int x,int y)
 { return world.resourceAt(world.tileIndex(x,y)).resource.type!=NO_RES_TYPE; }
-bool Entities::ResourceSet::is_entity(const AIEngine::AIWorldView& world,int x,int y)
+bool Entities::MaterialSources::is_entity(const AIEngine::AIWorldView& world,int x,int y)
 {
-    if(!mask) return world.terrain->properties(world.terrainAt(world.tileIndex(x,y)).type).walkable;
-    const auto& resource=world.resourceAt(world.tileIndex(x,y)).resource;
-    return resource.type>=0 && resource.type<MAX_NB_RESOURCES
-        && (mask&(1u<<resource.type)) && resource.amount>0;
+    const auto index=world.tileIndex(x,y);
+    if(!mask) return world.state().terrainProperties(index).walkable;
+    return (MapState::materialMaskAt(world.state(),index)&mask)!=0;
 }
+bool Entities::ResourceGroundObstacle::is_entity(Map* map, int x, int y)
+{ return map->resourceBlocksGround(map->coordToIndex(x,y)); }
+bool Entities::ResourceGroundObstacle::operator==(const Entity& other) const
+{ return typeid(other)==typeid(ResourceGroundObstacle); }
+bool Entities::ResourceGroundObstacle::load(GAGCore::InputStream* stream, Player*, Sint32)
+{ stream->readEnterSection("ResourceGroundObstacle"); stream->readLeaveSection(); return true; }
+void Entities::ResourceGroundObstacle::save(GAGCore::OutputStream* stream)
+{ stream->writeEnterSection("ResourceGroundObstacle"); stream->writeLeaveSection(); }
+
+bool Entities::ResourceBuildingObstacle::is_entity(Map* map, int x, int y)
+{ return map->resourceBlocksBuilding(map->coordToIndex(x,y)); }
+bool Entities::ResourceBuildingObstacle::operator==(const Entity& other) const
+{ return typeid(other)==typeid(ResourceBuildingObstacle); }
+bool Entities::ResourceBuildingObstacle::load(GAGCore::InputStream* stream, Player*, Sint32)
+{ stream->readEnterSection("ResourceBuildingObstacle"); stream->readLeaveSection(); return true; }
+void Entities::ResourceBuildingObstacle::save(GAGCore::OutputStream* stream)
+{ stream->writeEnterSection("ResourceBuildingObstacle"); stream->writeLeaveSection(); }
+bool Entities::ResourceGroundObstacle::is_entity(const AIEngine::AIWorldView& world,int x,int y)
+{ return MapState::resourceBlocksGround(world.state(),world.tileIndex(x,y)); }
+bool Entities::ResourceBuildingObstacle::is_entity(const AIEngine::AIWorldView& world,int x,int y)
+{ return MapState::resourceBlocksBuilding(world.state(),world.tileIndex(x,y)); }

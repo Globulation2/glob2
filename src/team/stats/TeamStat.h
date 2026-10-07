@@ -224,15 +224,15 @@ struct GameplayMeasurements
 	Uint64 deaths[NB_UNIT_TYPE][DEATH_CAUSES]{};
 	Uint64 conversionsIn[NB_UNIT_TYPE]{};
 	Uint64 conversionsOut[NB_UNIT_TYPE]{};
-	Uint64 harvested[MAX_NB_RESOURCES]{};
-	Uint64 cleared[MAX_NB_RESOURCES]{};
-	Uint64 delivered[MAX_NB_RESOURCES]{};
-	Uint64 withdrawn[MAX_NB_RESOURCES]{};
-	Uint64 transferredIn[MAX_NB_RESOURCES]{};
-	Uint64 transferredOut[MAX_NB_RESOURCES]{};
-	Uint64 consumed[PURPOSES][MAX_NB_RESOURCES]{};
-	Uint64 repairDelivered[MAX_NB_RESOURCES]{};
-	Uint64 resourceSpillageEvents{};
+	Uint64 harvested[MaterialSlotCount]{};
+	Uint64 cleared[MaterialSlotCount]{};
+	Uint64 delivered[MaterialSlotCount]{};
+	Uint64 withdrawn[MaterialSlotCount]{};
+	Uint64 transferredIn[MaterialSlotCount]{};
+	Uint64 transferredOut[MaterialSlotCount]{};
+	Uint64 consumed[PURPOSES][MaterialSlotCount]{};
+	Uint64 repairDelivered[MaterialSlotCount]{};
+	Uint64 materialSpillageEvents{};
 	Uint64 meals{};
 	Uint64 healingVisits{};
 	Uint64 hpRestored{};
@@ -244,8 +244,8 @@ struct GameplayMeasurements
 	Uint64 removed[REMOVALS][IntBuildingType::NB_BUILDING][NB_BUILDING_LONG_LEVELS]{};
 	Uint64 trainingVisits[NB_UNIT_TYPE]{};
 	Uint64 abilityGains[NB_UNIT_TYPE][NB_ABILITY]{};
-	Uint64 stock[MAX_NB_RESOURCES]{};
-	Uint64 carried[MAX_NB_RESOURCES]{};
+	Uint64 stock[MaterialSlotCount]{};
+	Uint64 carried[MaterialSlotCount]{};
 	Uint64 buildings[IntBuildingType::NB_BUILDING][NB_BUILDING_LONG_LEVELS]{};
 	Uint64 hungry{};
 	Uint64 critical{};
@@ -258,10 +258,10 @@ struct GameplayMeasurements
 	Uint64 lowFood[3][NB_UNIT_TYPE]{};
 	Uint32 trappedTick = 0;
 	// Cumulative natural map growth within 8, 16 and 32 tiles of this team.
-	Uint64 growthTiles[GROWTH_COVERAGE_BANDS][MAX_NB_RESOURCES]{};
-	Uint64 growthAmount[GROWTH_COVERAGE_BANDS][MAX_NB_RESOURCES]{};
-	Uint64 growthReduction[GROWTH_COVERAGE_BANDS][MAX_NB_RESOURCES]{};
-	Uint64 growthGlobal[3][MAX_NB_RESOURCES]{};
+	Uint64 growthTiles[GROWTH_COVERAGE_BANDS][MaterialSlotCount]{};
+	Uint64 growthAmount[GROWTH_COVERAGE_BANDS][MaterialSlotCount]{};
+	Uint64 growthReduction[GROWTH_COVERAGE_BANDS][MaterialSlotCount]{};
+	Uint64 growthGlobal[3][MaterialSlotCount]{};
 	// Format 129 (FILE_FORMAT_VERSION_LABOUR_STATS). Cumulative worker-ticks.
 	Uint64 labour[LABOUR_ACTIVITIES]{};
 	Uint64 filling[LABOUR_JOBS][LABOUR_PHASES]{};

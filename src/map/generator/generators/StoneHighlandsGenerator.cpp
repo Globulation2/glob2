@@ -755,13 +755,13 @@ bool stampTerrain(Map &map, GenerationContext &context, const Layout &L)
 		{
 			if (!L.ridge[size_t(y) * t.w + x])
 				continue;
-			if (!map.terrainSupportsResourceAt(x, y, STONE))
+			if (!map.terrainSupportsResourceAtByIndex(x, y, STONE))
 			{
 				context.detail = "ridge tile (" + std::to_string(x) + ", " + std::to_string(y) +
 								 ") is not solid grass";
 				return false;
 			}
-			map.setResource(x, y, STONE, 1);
+			map.setResourceByIndex(x, y, STONE, 1);
 		}
 	return true;
 }
@@ -802,7 +802,7 @@ void furnishHome(Map &map, const Layout &L, int bootX, int bootY, int homeValley
 				const int x = t.x(ax + dx), y = t.y(ay + dy), i = y * t.w + x;
 				if (L.valley[i] != homeValley || L.passTile[i] || L.ridgeDistance[i] < kRidgeRoad)
 					continue;
-				if (!map.terrainSupportsResourceAt(x, y, side > 0 ? WHEAT : WOOD) || map.isResource(x, y) ||
+				if (!map.terrainSupportsResourceAtByIndex(x, y, side > 0 ? WHEAT : WOOD) || map.isResource(x, y) ||
 					map.getBuilding(x, y) != NOGBID ||
 					map.getGroundUnit(x, y) != NOGUID)
 					continue;
@@ -816,7 +816,7 @@ void furnishHome(Map &map, const Layout &L, int bootX, int bootY, int homeValley
 			}
 		std::sort(tiles.begin(), tiles.end());
 		for (int k = 0; k < kHomeKit && k < int(tiles.size()); ++k)
-			map.setResource(tiles[k].second % t.w, tiles[k].second / t.w, side > 0 ? WHEAT : WOOD,
+			map.setResourceByIndex(tiles[k].second % t.w, tiles[k].second / t.w, side > 0 ? WHEAT : WOOD,
 							1);
 	}
 }
@@ -861,7 +861,7 @@ void scatterFarmland(Map &map, GenerationContext &context, const Layout &L,
 		if (keepClear[i] || L.ridgeDistance[i] < kRidgeRoad || pondDistance[i] < 2 ||
 			pondDistance[i] > 9 || patch[i] < patchLevel || fertility.at(x, y) == 0)
 			continue;
-		if (!(map.terrainSupportsResourceAt(x, y, WHEAT) && map.terrainSupportsResourceAt(x, y, WOOD)) ||
+		if (!(map.terrainSupportsResourceAtByIndex(x, y, WHEAT) && map.terrainSupportsResourceAtByIndex(x, y, WOOD)) ||
 			map.isResource(x, y) || map.getBuilding(x, y) != NOGBID ||
 			map.getGroundUnit(x, y) != NOGUID)
 			continue;
@@ -893,7 +893,7 @@ void scatterFarmland(Map &map, GenerationContext &context, const Layout &L,
 		std::stable_sort(tiles.begin(), tiles.end(),
 						 [&](int a, int b) { return split[a] < split[b]; });
 		for (int k = 0; k < total; ++k)
-			map.setResource(tiles[k] % t.w, tiles[k] / t.w, k < wheat ? WHEAT : WOOD, 1);
+			map.setResourceByIndex(tiles[k] % t.w, tiles[k] / t.w, k < wheat ? WHEAT : WOOD, 1);
 	}
 }
 
@@ -904,7 +904,7 @@ void seedAlgae(Map &map, GenerationContext &context, const Layout &L, int algaeP
 	const std::vector<int> noise = periodicNoise(t.w, t.h, 6, context.stream("highlands-algae"));
 	std::vector<int> water, levels;
 	for (int i = 0; i < t.w * t.h; ++i)
-		if (L.pond[i] && map.terrainSupportsResourceAt(i % t.w, i / t.w, ALGA))
+		if (L.pond[i] && map.terrainSupportsResourceAtByIndex(i % t.w, i / t.w, ALGA))
 		{
 			water.push_back(i);
 			levels.push_back(noise[i]);
@@ -915,7 +915,7 @@ void seedAlgae(Map &map, GenerationContext &context, const Layout &L, int algaeP
 		levels, int(std::min<std::int64_t>(100, scaledCount(kAlgaePercent, algaePercent))));
 	for (int i : water)
 		if (noise[i] <= level)
-			map.setResource(i % t.w, i / t.w, ALGA, 1);
+			map.setResourceByIndex(i % t.w, i / t.w, ALGA, 1);
 }
 
 // Groves at 100% fruit; the amount control scales this count.
@@ -938,8 +938,8 @@ void plantFruit(Map &map, GenerationContext &context, const Layout &L,
 		if (v < 0 || keepClear[i] || L.pond[i] || L.ridgeDistance[i] < kRidgeRoad + 1 ||
 			pondDistance[i] < 3 || pondDistance[i] > 8)
 			continue;
-		if (!(map.terrainSupportsResourceAt(x, y, CHERRY) && map.terrainSupportsResourceAt(x, y, ORANGE) &&
-			map.terrainSupportsResourceAt(x, y, PRUNE)) || map.isResource(x, y) || map.getBuilding(x, y) != NOGBID ||
+		if (!(map.terrainSupportsResourceAtByIndex(x, y, CHERRY) && map.terrainSupportsResourceAtByIndex(x, y, ORANGE) &&
+			map.terrainSupportsResourceAtByIndex(x, y, PRUNE)) || map.isResource(x, y) || map.getBuilding(x, y) != NOGBID ||
 			map.getGroundUnit(x, y) != NOGUID)
 			continue;
 		pool[v].push_back(i);
@@ -972,7 +972,7 @@ void plantFruit(Map &map, GenerationContext &context, const Layout &L,
 		}
 		std::sort(grove.begin(), grove.end());
 		for (int k = 0; k < kFruitGrove && k < int(grove.size()); ++k)
-			map.setResource(grove[k].second % t.w, grove[k].second / t.w,
+			map.setResourceByIndex(grove[k].second % t.w, grove[k].second / t.w,
 							CHERRY + (firstType + g) % 3, 1);
 	}
 }

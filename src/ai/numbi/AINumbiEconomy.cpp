@@ -40,7 +40,7 @@ int AINumbi::estimateFood(const AIEngine::BuildingView *building)
 	PERF_SCOPE_TIME(AIObserve);
 	telemetry.count(AITrace::AI1::AINumbi_estimateFood_calls);
 	int resource = -1;
-	for (int r = 0; r < MAX_NB_RESOURCES && resource < 0; ++r)
+	for (int r = 0; r < MaterialSlotCount && resource < 0; ++r)
 		for (int unit = 0; unit < NB_UNIT_TYPE; ++unit)
 			if (queries->kind(*building).semantics.production.recipes[unit].enabled
 				&& queries->kind(*building).semantics.production.recipes[unit].cost[r] > 0)

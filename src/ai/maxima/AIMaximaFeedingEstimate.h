@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #pragma once
+#include "Material.h"
 #include "AIMaximaBuildings.h"
 #include "AIMaximaFoodLedger.h"
 #include "Race.h"
@@ -27,11 +28,11 @@ struct FeedingEstimate
     long long visitsPerTick=0; // fixed point Scale
     long long haulingWorkerTicks=0; // fixed point Scale workers
     long long projectileRate=0; // fixed point Scale shots/tick
-    std::array<int,8> resources{}; // stock units, not carried packets
-    std::array<int,8> independentResourcePackets{}; // other independent services
-    std::array<int,8> productionResourcePackets{}; // independent production component
-    std::array<int,8> feedingResourcePackets{}; // feeding component of recurring packets
-    std::array<int,8> resourcePackets{}; // natural-source/hauling denominations
+    std::array<int,MaterialCount> materials{}; // stock units, not carried packets
+    std::array<int,MaterialCount> independentResourcePackets{}; // other independent services
+    std::array<int,MaterialCount> productionResourcePackets{}; // independent production component
+    std::array<int,MaterialCount> feedingResourcePackets{}; // feeding component of recurring packets
+    std::array<int,MaterialCount> resourcePackets{}; // natural-source/hauling denominations
     std::array<int,NB_UNIT_TYPE> productionRates{}; // per 1000 ticks
     std::array<int,AIMaximaBuildings::RoleCount> services{}; // per 1000 ticks
 };
@@ -44,7 +45,7 @@ inline FeedingEstimate estimateFeeding(const BuildingType& type,const FeedingPla
     struct Flow {
         unsigned roles=0;
         long long rate=0;
-        std::array<int,8> cost{};
+        std::array<int,MaterialCount> cost{};
         int productionClass=-1;
         int outputMultiplier=1;
         long long seatTicks=0;
@@ -59,7 +60,7 @@ inline FeedingEstimate estimateFeeding(const BuildingType& type,const FeedingPla
         auto& f=flows[flowCount++];f.roles=roles;
         f.seatTicks=serviceTicks(type,spec.duration)+
             static_cast<long long>(std::max(0,plan.oneWayTravelTicks))*(holdExit?2:1);
-        std::copy_n(spec.cost.begin(),8,f.cost.begin());++seatFlows;
+        std::copy_n(spec.cost.begin(),MaterialCount,f.cost.begin());++seatFlows;
     };
     if(plan.feeding)service(roleBit(Feeding),s.feeding,s.feeding.holdAdmissionUntilExit);
     service(roleBit(Healing),s.healing,s.healing.holdAdmissionUntilExit);
@@ -89,11 +90,11 @@ inline FeedingEstimate estimateFeeding(const BuildingType& type,const FeedingPla
             if(s.trainingInParallel) {
                 bundle.roles|=trainingRole(spec,ability,unit);
                 bundle.seatTicks=std::max(bundle.seatTicks,ticks);
-                for(int resource=0;resource<8;++resource)bundle.cost[resource]+=spec.cost[resource];
+                for(int resource=0;resource<MaterialCount;++resource)bundle.cost[resource]+=spec.cost[resource];
             } else {
                 auto& f=flows[flowCount++];f.roles=trainingRole(spec,ability,unit);
                 f.seatTicks=ticks+std::max(0,plan.oneWayTravelTicks);
-                std::copy_n(spec.cost.begin(),8,f.cost.begin());++seatFlows;
+                std::copy_n(spec.cost.begin(),MaterialCount,f.cost.begin());++seatFlows;
             }
         }
         if(s.trainingInParallel && bundle.seatTicks>0) {
@@ -114,23 +115,23 @@ inline FeedingEstimate estimateFeeding(const BuildingType& type,const FeedingPla
     for(int unit=0;unit<NB_UNIT_TYPE;++unit)if((plan.productionMask&(1u<<unit)) && s.production.recipes[unit].enabled) {
         auto& f=flows[flowCount++];f.roles=roleBit(Production);f.productionClass=unit;
         f.rate=FeedingEstimate::Scale/std::max(1LL,productionCycle);
-        std::copy_n(s.production.recipes[unit].cost.begin(),8,f.cost.begin());
+        std::copy_n(s.production.recipes[unit].cost.begin(),MaterialCount,f.cost.begin());
     }
     if(plan.projectiles && type.shootingRange>0 && type.shootRhythm>0) {
         auto& f=flows[flowCount++];f.roles=roleBit(ProjectileDefense);
         f.outputMultiplier=std::max(1,type.multiplierStoneToBullets);
         f.rate=FeedingEstimate::Scale*type.shootRhythm/(65536LL*f.outputMultiplier);
-        if(s.ammunitionResource>=0 && s.ammunitionResource<8)f.cost[s.ammunitionResource]=s.ammunitionCost;
+        if(s.ammunitionMaterial>=0 && s.ammunitionMaterial<MaterialCount)f.cost[s.ammunitionMaterial]=s.ammunitionCost;
     }
     const long long trip=std::max(1LL,2LL*std::max(0,plan.oneWayTravelTicks)+std::max(0,plan.handlingTicks));
     auto product=[](long long a,long long b){return b>0 && a>(LLONG_MAX/4)/b ? LLONG_MAX/4 : a*b;};
     auto sum=[](long long a,long long b){return a>LLONG_MAX/4-b ? LLONG_MAX/4 : a+b;};
     auto hauling=[&](long long demand,int resource) {
-        const int packet=std::max(1,type.multiplierResource[resource]);
+        const int packet=std::max(1,type.materialMultiplier[resource]);
         return sum(product(demand/packet,trip),product(demand%packet,trip)/packet);
     };
     long long requested=0;
-    for(int i=0;i<flowCount;++i)for(int resource=0;resource<8;++resource)
+    for(int i=0;i<flowCount;++i)for(int resource=0;resource<MaterialCount;++resource)
         requested=sum(requested,hauling(flows[i].rate*flows[i].cost[resource],resource));
     const long long budget=FeedingEstimate::Scale*std::max(0,plan.carriers);
     // Scale is always <=1. The common product fits directly; the bounded
@@ -152,7 +153,7 @@ inline FeedingEstimate estimateFeeding(const BuildingType& type,const FeedingPla
         return quotient;
     };
     FeedingEstimate result;
-    std::array<long long,8> feedingStock{},productionStock{},independentStock{},totalStock{};
+    std::array<long long,MaterialCount> feedingStock{},productionStock{},independentStock{},totalStock{};
     for(int i=0;i<flowCount;++i) {
         auto f=flows[i];
         const bool usesCarrier=std::any_of(f.cost.begin(),f.cost.end(),[](int n){return n>0;});
@@ -163,22 +164,22 @@ inline FeedingEstimate estimateFeeding(const BuildingType& type,const FeedingPla
         if(f.productionClass>=0)result.productionRates[f.productionClass]=int(output*1000/FeedingEstimate::Scale);
         for(int role=0;role<RoleCount;++role)if(f.roles&roleBit(role))
             result.services[role]+=int(std::min<long long>(1000000,output*1000/FeedingEstimate::Scale));
-        for(int resource=0;resource<8;++resource) {
+        for(int resource=0;resource<MaterialCount;++resource) {
             const auto demand=f.rate*f.cost[resource];
             totalStock[resource]+=demand;
             if(f.roles&roleBit(Feeding))feedingStock[resource]+=demand;
             if(f.productionClass>=0)productionStock[resource]+=demand;
             if(f.productionClass<0 && !(f.roles&roleBit(Feeding)))independentStock[resource]+=demand;
-            result.resources[resource]=int(std::min<long long>(INT_MAX,static_cast<long long>(result.resources[resource])+demand));
+            result.materials[resource]=int(std::min<long long>(INT_MAX,static_cast<long long>(result.materials[resource])+demand));
             result.haulingWorkerTicks=sum(result.haulingWorkerTicks,hauling(demand,resource));
         }
     }
-    for(int resource=0;resource<8;++resource)
+    for(int resource=0;resource<MaterialCount;++resource)
         {
-        result.resourcePackets[resource]=int(std::min<long long>(INT_MAX,totalStock[resource]/std::max(1,type.multiplierResource[resource])));
-        result.independentResourcePackets[resource]=int(std::min<long long>(INT_MAX,independentStock[resource]/std::max(1,type.multiplierResource[resource])));
-        result.productionResourcePackets[resource]=int(std::min<long long>(INT_MAX,productionStock[resource]/std::max(1,type.multiplierResource[resource])));
-        result.feedingResourcePackets[resource]=int(std::min<long long>(INT_MAX,feedingStock[resource]/std::max(1,type.multiplierResource[resource])));
+        result.resourcePackets[resource]=int(std::min<long long>(INT_MAX,totalStock[resource]/std::max(1,type.materialMultiplier[resource])));
+        result.independentResourcePackets[resource]=int(std::min<long long>(INT_MAX,independentStock[resource]/std::max(1,type.materialMultiplier[resource])));
+        result.productionResourcePackets[resource]=int(std::min<long long>(INT_MAX,productionStock[resource]/std::max(1,type.materialMultiplier[resource])));
+        result.feedingResourcePackets[resource]=int(std::min<long long>(INT_MAX,feedingStock[resource]/std::max(1,type.materialMultiplier[resource])));
     }
     return result;
 }

@@ -405,7 +405,7 @@ bool generate(Game &game, GenerationContext &context)
 		if (type >= 0 && context.bounded("braided-delta-resources", 100) < unsigned(chance) &&
 			map.isResourceAllowed(i % t.w, i / t.w, type))
 		{
-			map.setResource(i % t.w, i / t.w, type, 1);
+			map.setResourceByIndex(i % t.w, i / t.w, type, 1);
 			++planted;
 		}
 	}

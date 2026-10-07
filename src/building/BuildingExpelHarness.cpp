@@ -142,7 +142,7 @@ static void destroyedInnExpelsEveryone()
 	for (Unit* u : units)
 		u->hungry = 0;
 	units[3]->displacement = Unit::DIS_EXITING_BUILDING;  // waiting for a free exit
-	inn->resources[WHEAT] = 10;
+	inn->materials[WHEAT] = 10;
 	// Recreate admission commitments for unpaid visits. The blocked exiting
 	// visitor already settled its meal and must not be charged again.
 	for (int i : {0,1,2,4}) inn->reserveService(units[i]);
@@ -164,7 +164,7 @@ static void destroyedInnExpelsEveryone()
 	}
 	for (int i = 0; i < 3; ++i)
 		require(units[i]->hungry == (Unit::HUNGRY_MAX * (total / 2)) / total, "half a meal is kept");
-	require(inn->resources[WHEAT] == 7, "each started meal cost one wheat, nothing else did");
+	require(inn->materials[WHEAT] == 7, "each started meal cost one wheat, nothing else did");
 	require(units[3]->hungry == 0, "a unit already on its way out gets nothing more");
 	require(units[4]->posX == bx - 1 && units[4]->posY == by && units[4]->dx == -1 && units[4]->dy == 0,
 	        "entering unit steps back onto the tile it came from");
@@ -232,7 +232,7 @@ static void stepsWithoutAnyGradient()
 {
 	World world;
 	world.step(3);
-	world.game.map.getResourceGradient(0, WOOD, 0);
+	world.game.map.getMaterialGradientSlot(0, WOOD, 0);
 	world.step(3);
 	std::puts("PASS a world without gradients keeps stepping");
 }

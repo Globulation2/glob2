@@ -359,8 +359,8 @@ struct HeadlessRunner
 			// not apply here, only --experiment does.
 			for(const auto &key : many(options,"--experiment"))
 			{
-				if(!knownExperimentKey(key, header.buildingExperimentKeys())) throw std::invalid_argument("unknown experiment: " + key);
-				header.getExperiments().set(key, true, header.buildingExperimentKeys());
+				if(!knownExperimentKey(key, header.catalogExperimentKeys())) throw std::invalid_argument("unknown experiment: " + key);
+				header.getExperiments().set(key, true, header.catalogExperimentKeys());
 			}
 			// Added to the list in force rather than replacing it, so a real
 			// elimination or prestige win still ends the game first and only an

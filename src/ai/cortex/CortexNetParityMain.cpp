@@ -9,7 +9,7 @@
 //   Worker-cap (default):
 //     <blob> <inputs.txt> <out.txt>
 //     each input line: 16 features + maxBuildLevel + freeWorkers +
-//     harvestableWheatNearby (19 ints). Output: one chosen action per line.
+//     harvestableFoodSourcesNearby (19 ints). Output: one chosen action per line.
 //
 //   Decision net (--decide):
 //     --decide <blob> <inputs.txt> <out.txt>
@@ -76,10 +76,10 @@ namespace
 				features[i] = vals[i];
 			const int maxBuildLevel = vals[N + 0];
 			const int freeWorkers = vals[N + 1];
-			const int harvestableWheatNearby = vals[N + 2];
+			const int harvestableFoodSourcesNearby = vals[N + 2];
 
 			const int action = net.chooseSwarmWorkers(features, maxBuildLevel,
-			                                           freeWorkers, harvestableWheatNearby);
+			                                           freeWorkers, harvestableFoodSourcesNearby);
 			out << action << "\n";
 			rowCount++;
 		}

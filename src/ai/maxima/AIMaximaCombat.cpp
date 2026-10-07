@@ -17,6 +17,7 @@
  */
 
 // Combat control for Maxima: objectives, waves, and defensive flags.
+#include "Material.h"
 #include "field/UniformTraversal.h"
 #include "AIMaxima.h"
 #include "AIMaximaBuildings.h"
@@ -465,14 +466,14 @@ void Maxima::plan_offense(Context& runtime)
     land_info.terrainTravel=field::TerrainTravel::Walk;
 	land_info.add_source(new Entities::AnyTeamBuilding(
 		runtime.teamNumber(), CompletedBuildings));
-	land_info.add_obstacle(new Entities::AnyResource);
+	land_info.add_obstacle(new Entities::ResourceGroundObstacle);
 	land_info.add_obstacle(new Entities::Unwalkable);
 	Gradient& land_route=runtime.get_gradient_manager().get_gradient(land_info);
 	GradientInfo swim_info;
     swim_info.terrainTravel=field::TerrainTravel::Swim;
 	swim_info.add_source(new Entities::AnyTeamBuilding(
 		runtime.teamNumber(), CompletedBuildings));
-	swim_info.add_obstacle(new Entities::AnyResource);
+	swim_info.add_obstacle(new Entities::ResourceGroundObstacle);
 	Gradient& swim_route=runtime.get_gradient_manager().get_gradient(swim_info);
 
 	// Route length to a point, or -1 when it is unreachable or too few of the
@@ -757,7 +758,7 @@ bool Maxima::control_offense_waves(Context& runtime)
 	GradientInfo routeInfo;
     routeInfo.terrainTravel=field::TerrainTravel::Walk;
 	routeInfo.add_source(new Entities::Position(budget.tactical_target_x,budget.tactical_target_y));
-	routeInfo.add_obstacle(new Entities::AnyResource);
+	routeInfo.add_obstacle(new Entities::ResourceGroundObstacle);
 	routeInfo.add_obstacle(new Entities::Unwalkable);
 	Gradient& route=runtime.get_gradient_manager().get_gradient(routeInfo);
 	const auto& policy=strategy.assault;
@@ -1271,7 +1272,7 @@ bool Maxima::dig_out_enemy(Context& runtime)
 	AIMaximaRuntime::Gradients::GradientInfo gi_building;
     gi_building.terrainTravel=field::TerrainTravel::Swim;
 	gi_building.add_source(new Entities::AnyTeamBuilding(runtime.teamNumber(), CompletedBuildings));
-	gi_building.add_obstacle(new Entities::AnyResource);
+	gi_building.add_obstacle(new Entities::ResourceGroundObstacle);
 	Gradient& gradient=runtime.get_gradient_manager().get_gradient(gi_building);
 
 	for(enemy_building_iterator ebi(runtime, target, -1, -1, AnyConstruction); ebi!=enemy_building_iterator(); ++ebi)
@@ -1296,7 +1297,7 @@ bool Maxima::dig_out_enemy(Context& runtime)
 	AIMaximaRuntime::Gradients::GradientInfo gi_pathfind;
     gi_pathfind.terrainTravel=field::TerrainTravel::Swim;
 	gi_pathfind.add_source(new Entities::Position(bx, by));
-	gi_pathfind.add_obstacle(new Entities::Resource(STONE));
+	gi_pathfind.add_obstacle(new Entities::MaterialSource(materialIndex(MaterialId::Stone)));
 	Gradient& gradient_pathfind=runtime.get_gradient_manager().get_gradient(gi_pathfind);
 
 	///Next, find the closest point manhattan distance wise, to the building that is accessible

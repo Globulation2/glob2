@@ -80,7 +80,7 @@ TEST_SUITE("WorldSnapshot")
         REQUIRE(fixture.addBuilding("warflag",24,24));
         REQUIRE(fixture.addBuilding("stonewall",26,4));
         for(int phase=0;phase<3;++phase) {
-            if(phase==1) fixture.game.map.setResource(4,4,STONE,1);
+            if(phase==1) fixture.game.map.setResourceByIndex(4,4,STONE,1);
             if(phase==2) fixture.game.gameHeader.setUnitUpgradesDisabled(true);
             const auto captured=AIEngine::AIWorldView::capture(fixture.game,AIEngine::AIWorldView::captureCatalog(fixture.game));
             std::vector<std::array<bool,3>> expected;
@@ -151,7 +151,7 @@ TEST_SUITE("WorldSnapshot")
 	{
 		glob2test::HeadlessGlobals globals;
 		glob2test::HeadlessGame fixture{glob2test::GameOptions{.wDec=5, .hDec=5, .teams=1, .discovered=true, .clearImmobile=true, .loadDefaultRace=true}};
-		fixture.game.map.setResource(20, 20, WHEAT, 1);
+		fixture.game.map.setResourceByIndex(20, 20,WHEAT, 1);
 		fixture.game.map.addForbidden(20, 20, 0);
 		SimulationSnapshot::Store store;
 		const auto captured=store.captureBoundary(fixture.game,SimulationSnapshot::All);
@@ -254,7 +254,7 @@ TEST_SUITE("WorldSnapshot")
 		glob2test::HeadlessGlobals globals;
 		glob2test::HeadlessGame fixture{glob2test::GameOptions{.wDec=5,.hDec=5,.teams=1,.clearImmobile=true,.loadDefaultRace=true}};
 		auto& game=fixture.game; auto& map=game.map;
-		map.setResource(20,20,WHEAT,1); map.setResourceAmount(map.coordToIndex(20,20),1); map.setResourcesGrow(20,20,1);
+		map.setResourceByIndex(20,20,WHEAT,1); map.setResourceAmount(map.coordToIndex(20,20),1); map.setResourcesGrow(20,20,1);
 		map.setFertility(20,20,123); map.setGroundUnit(20,20,7); map.setAirUnit(20,20,8);
 		map.addForbidden(20,20,0); map.addGuardArea(20,20,0); map.addClearArea(20,20,0);
 		map.setMapDiscovered(20,20,1u);
@@ -398,7 +398,7 @@ TEST_SUITE("WorldSnapshot")
 		auto unchanged = SimulationSnapshot::capture(game, catalog, SimulationSnapshot::All, &initial);
 		CHECK(unchanged.resources == initial.resources); CHECK(unchanged.occupancy == initial.occupancy);
 		CHECK(unchanged.areas == initial.areas); CHECK(unchanged.visibility == initial.visibility);
-		game.map.setResource(5, 5, WHEAT, 1);
+		game.map.setResourceByIndex(5, 5,WHEAT, 1);
 		auto changed = SimulationSnapshot::capture(game, catalog, SimulationSnapshot::All, &unchanged);
 		CHECK(changed.resources != initial.resources); CHECK(changed.areas == initial.areas);
 		CHECK(initial.tileAt(game.map.coordToIndex(5, 5)).resource.type == NO_RES_TYPE);
@@ -413,7 +413,7 @@ TEST_SUITE("WorldSnapshot")
 		glob2test::HeadlessGame fixture{glob2test::GameOptions{.wDec=5, .hDec=5, .teams=1, .loadDefaultRace=true}};
 		auto& game=fixture.game; auto& map=game.map;
 		const auto index=map.coordToIndex(20,20);
-		map.setResource(20,20,WHEAT,1); map.setResourcesGrow(20,20,1);
+		map.setResourceByIndex(20,20,WHEAT,1); map.setResourcesGrow(20,20,1);
 		map.setMapDiscovered(20,20,1u);
 		SimulationSnapshot::Store store;
 		const auto next=[&] { ++game.stepCounter; return store.captureBoundary(game,SimulationSnapshot::All); };
@@ -473,8 +473,8 @@ TEST_SUITE("WorldSnapshot")
 		auto* worker = fixture.addUnit(WORKER, 12, 12, 0);
 		REQUIRE(building); REQUIRE(worker);
 		building->unitsWorking.push_back(worker);
-		game.map.setResource(20, 20, WHEAT, 1);
-		game.map.getResourceGradient(0, WHEAT, 0);
+		game.map.setResourceByIndex(20, 20,WHEAT, 1);
+		game.map.getMaterialGradientSlot(0, materialIndex(MaterialId::Food), 0);
 		SimulationSnapshot::Store store;
 		auto mutateAndCapture = [&] {
 			++game.stepCounter;
@@ -482,7 +482,7 @@ TEST_SUITE("WorldSnapshot")
 			game.map.setGroundUnit(25, 25, NOGUID);
 			game.map.addGuardArea(20, 20, 0);
 			game.map.setMapDiscovered(20, 20, game.teams[0]->me);
-			game.map.updateResourcesGradient(0, WHEAT, 0);
+			game.map.updateMaterialGradient(0, Uint8(materialIndex(MaterialId::Food)), 0);
 			building->priority = int(game.stepCounter);
 			return store.captureBoundary(game, SimulationSnapshot::All);
 		};
@@ -522,7 +522,7 @@ TEST_SUITE("WorldSnapshot")
 		for (int i = 0; i < 24; ++i) {
 			++game.stepCounter;
 			building->priority = oldPriority + i + 1;
-			game.map.setResource(20, 20, WHEAT, 1);
+			game.map.setResourceByIndex(20, 20,WHEAT, 1);
 			auto latest = store.captureBoundary(game, SimulationSnapshot::All);
 			CHECK(latest.resources != held.resources);
 			CHECK(latest.entities != held.entities);
@@ -538,11 +538,11 @@ TEST_SUITE("WorldSnapshot")
 		auto* local = fixture.addBuilding("inn", 4, 4, 0, 0);
 		auto* shared = fixture.addBuilding("inn", 12, 12, 0, 0);
 		REQUIRE(local); REQUIRE(shared);
-		local->localResource[WOOD] = 17;
-		shared->localResource[WOOD] = 19;
+		local->localMaterials[WOOD] = 17;
+		shared->localMaterials[WOOD] = 19;
 		// Exercise the actual runtime binding independently of the catalog flag.
-		shared->resources = fixture.game.teams[0]->teamResources;
-		fixture.game.teams[0]->teamResources[WOOD] = 23;
+		shared->materials = fixture.game.teams[0]->teamMaterials;
+		fixture.game.teams[0]->teamMaterials[WOOD] = 23;
 		local->priority = -1; local->maxUnitWorking = 3;
 		shared->minWorkerLevelToFlag = 2;
 		shared->explorersRequireBombing = true;
@@ -561,12 +561,12 @@ TEST_SUITE("WorldSnapshot")
 		}
 		CHECK_FALSE(frozenLocal->usesTeamResources);
 		CHECK(frozenShared->usesTeamResources);
-		CHECK(held.buildingResources(*frozenLocal).data() == frozenLocal->localResource);
-		CHECK(held.buildingResources(*frozenShared).data() == held.teams[0].resources.data());
+		CHECK(held.buildingResources(*frozenLocal).data() == frozenLocal->localMaterials);
+		CHECK(held.buildingResources(*frozenShared).data() == held.teams[0].materials.data());
 		CHECK(held.buildingResources(*frozenLocal)[WOOD] == 17);
 		CHECK(held.buildingResources(*frozenShared)[WOOD] == 23);
-		local->localResource[WOOD] = 31;
-		fixture.game.teams[0]->teamResources[WOOD] = 37;
+		local->localMaterials[WOOD] = 31;
+		fixture.game.teams[0]->teamMaterials[WOOD] = 37;
 		local->priority = 1;
 		AIEngine::AIWorldView later(SimulationSnapshot::capture(fixture.game, catalog));
 		CHECK(later.buildingResources(*later.building(Game::refOf(local)))[WOOD] == 31);
@@ -628,11 +628,11 @@ TEST_SUITE("WorldSnapshot")
 		auto held = checkParity();
 		const auto grassIndex = game.map.coordToIndex(19, 10);
 		REQUIRE(held.tileAt(grassIndex).canPaintFarm);
-		game.map.setResource(19, 10, STONE, 3);
+		game.map.setResourceByIndex(19, 10,STONE, 3);
 		auto stone = checkParity();
 		CHECK_FALSE(stone.tileAt(grassIndex).canPaintFarm);
 		CHECK(held.tileAt(grassIndex).canPaintFarm);
-		game.map.setResource(19, 10, WOOD, 3);
+		game.map.setResourceByIndex(19, 10,WOOD, 3);
 		CHECK(checkParity().tileAt(grassIndex).canPaintFarm);
 		game.map.setResourcesGrow(19, 10, 0);
 		CHECK_FALSE(checkParity().tileAt(grassIndex).canPaintFarm);
@@ -651,7 +651,7 @@ TEST_SUITE("WorldSnapshot")
 		initial = {};
 		const auto first = store.memoryMetrics();
 		CHECK(first.allocatedBuffers == 2); CHECK(first.leasedBuffers == 2); CHECK(first.reusableBuffers == 0);
-		++game.stepCounter; game.map.setResource(20, 20, WHEAT, 1);
+		++game.stepCounter; game.map.setResourceByIndex(20, 20,WHEAT, 1);
 		store.captureBoundary(game, resources);
 		const auto retained = store.memoryMetrics();
 		CHECK(retained.allocatedBuffers == 3); CHECK(retained.leasedBuffers == 2); CHECK(retained.reusableBuffers == 1);

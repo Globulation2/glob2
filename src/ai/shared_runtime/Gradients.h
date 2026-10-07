@@ -46,13 +46,15 @@ namespace AISharedRuntime
 				EBuilding,
 				EAnyTeamBuilding,
 				EAnyBuilding,
-				EResource,
+				EMaterialSource,
 				EAnyResource,
 				EWater,
 				EPosition,
 				ESand,
 				EUnwalkable,
-    EResourceSet,
+    EMaterialSources,
+    EResourceGroundObstacle,
+    EResourceBuildingObstacle,
 			};
 
 			///An entity is any observable object on the map. Its entirely generic, not specific to a certain team
@@ -70,6 +72,8 @@ namespace AISharedRuntime
 				///This function says whether the entity can change during runtime. For example, water never changes during
 				///the coarse of the game, however the layout of buildings can.
 				virtual bool can_change()=0;
+                // Catalog-dependent sources refine the ordinary entity policy.
+                virtual bool can_change(const ResourceRegistry&) { return can_change(); }
 
 				virtual EntityType get_type()=0;
 				virtual std::shared_ptr<Entity> clone() const=0;
@@ -79,19 +83,20 @@ namespace AISharedRuntime
 				static void save_entity(Entity* entity, GAGCore::OutputStream *stream);
 			};
 
-   // Cold-compiled resource mask: tile scans never look up building definitions.
-   class ResourceSet : public Entity
+   // Cold-compiled material mask: tile scans never look up building definitions.
+   class MaterialSources : public Entity
    {
    public:
-    explicit ResourceSet(unsigned mask=0):mask(mask) {}
+    explicit MaterialSources(unsigned mask=0):mask(mask) {}
    protected:
     friend class Entity;
     bool is_entity(Map*,int,int) override;
     bool is_entity(const AIEngine::AIWorldView&, int, int) override;
     bool operator==(const Entity&) const override;
     bool can_change() override { return true; }
-    EntityType get_type() override { return EResourceSet; }
-    std::shared_ptr<Entity> clone() const override { return std::make_shared<ResourceSet>(*this); }
+    bool can_change(const ResourceRegistry&) override;
+    EntityType get_type() override { return EMaterialSources; }
+    std::shared_ptr<Entity> clone() const override { return std::make_shared<MaterialSources>(*this); }
     bool load(GAGCore::InputStream*,Player*,Sint32) override;
     void save(GAGCore::OutputStream*) override;
    private:
@@ -161,24 +166,25 @@ namespace AISharedRuntime
 				bool under_construction;
 			};
 
-			///Matches a particular resource type
-			class Resource : public Entity
+			///Matches a resource that supplies a particular material
+			class MaterialSource : public Entity
 			{
 			public:
-				explicit Resource(int resource_type);
+				explicit MaterialSource(int material);
 			protected:
-				Resource() : resource_type(-1) {}
+				MaterialSource() : material(-1) {}
 				friend class Entity;
 				bool is_entity(Map* map, int posx, int posy);
     bool is_entity(const AIEngine::AIWorldView&, int, int) override;
 				bool operator==(const Entity& rhs) const;
 				bool can_change();
+                bool can_change(const ResourceRegistry&) override;
 				EntityType get_type();
-				std::shared_ptr<Entity> clone() const override { return std::make_shared<Resource>(*this); }
+				std::shared_ptr<Entity> clone() const override { return std::make_shared<MaterialSource>(*this); }
 				bool load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor);
 				void save(GAGCore::OutputStream *stream);
 			private:
-				int resource_type;
+				int material;
 			};
 
 			///Matches any resource type
@@ -197,6 +203,36 @@ namespace AISharedRuntime
 				bool load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor);
 				void save(GAGCore::OutputStream *stream);
 			};
+
+            ///Matches a runtime resource with the corresponding obstruction property.
+            class ResourceGroundObstacle : public Entity
+            {
+            protected:
+                friend class Entity;
+                bool is_entity(Map*, int, int) override;
+                bool is_entity(const AIEngine::AIWorldView&, int, int) override;
+                bool operator==(const Entity&) const override;
+                bool can_change() override { return true; }
+                EntityType get_type() override { return EResourceGroundObstacle; }
+                std::shared_ptr<Entity> clone() const override { return std::make_shared<ResourceGroundObstacle>(*this); }
+                bool load(GAGCore::InputStream*, Player*, Sint32) override;
+                void save(GAGCore::OutputStream*) override;
+            };
+
+            ///Matches a runtime resource with the corresponding obstruction property.
+            class ResourceBuildingObstacle : public Entity
+            {
+            protected:
+                friend class Entity;
+                bool is_entity(Map*, int, int) override;
+                bool is_entity(const AIEngine::AIWorldView&, int, int) override;
+                bool operator==(const Entity&) const override;
+                bool can_change() override { return true; }
+                EntityType get_type() override { return EResourceBuildingObstacle; }
+                std::shared_ptr<Entity> clone() const override { return std::make_shared<ResourceBuildingObstacle>(*this); }
+                bool load(GAGCore::InputStream*, Player*, Sint32) override;
+                void save(GAGCore::OutputStream*) override;
+            };
 
 			///Matches water
 			class Water : public Entity
@@ -295,14 +331,17 @@ namespace AISharedRuntime
 			bool match_obstacle(Map* map, int posx, int posy);
 			bool match_obstacle(const AIEngine::AIWorldView&, int, int);
 			///Returns true if this GradientInfo has any entities that can change, causing it to need to be updated.
-			///This is an optimization, as many gradients don't need to be update
-			bool needs_updating() const;
+			///Memoized for the immutable resource catalog owned by this map.
+			bool needs_updating(Map* map) const;
+			bool needs_updating(const AIEngine::AIWorldView& world) const;
+			bool needs_updating(const std::shared_ptr<const ResourceRegistry>& registry) const;
 
 			bool operator==(const GradientInfo& rhs) const;
 			GradientInfo clone() const;
 			std::vector<std::shared_ptr<Entities::Entity> > sources;
 			std::vector<std::shared_ptr<Entities::Entity> > obstacles;
 			mutable tribool needs_updated;
+            mutable std::shared_ptr<const ResourceRegistry> needsUpdatedRegistry;
 		};
 
 		///Heres a few convience functions for creating a Gradient Info
@@ -344,6 +383,10 @@ namespace AISharedRuntime
 			const GradientInfo& get_gradient_info() const { return gradient_info; }
 			int width;
             std::uint64_t terrainGeneration=0;
+            std::uint64_t staticMaterialSourceGeneration=0;
+            std::shared_ptr<const ResourceRegistry> resourceRegistry;
+            bool current(Map* map) const;
+            bool current(const AIEngine::AIWorldView& world) const;
 			int get_pos(int x, int y) const { return y*width + x; }
 			GradientInfo gradient_info;
 			std::vector<Sint16> gradient;
@@ -388,6 +431,9 @@ namespace AISharedRuntime
             std::uint64_t boundTerrainRevision=0;
             int boundWidth=0, boundHeight=0;
             std::uint64_t terrain_revision() const;
+            std::uint64_t static_material_source_generation() const;
+            std::shared_ptr<const ResourceRegistry> frozen_resource_registry() const;
+            bool is_current(const Gradient& gradient) const;
             void recalculate(Gradient& gradient);
 			unsigned int cur_update;
 			int timer;

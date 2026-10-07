@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #pragma once
 
-#include "ResourcePacket.h"
+#include "MaterialPacket.h"
 #include "UnitConsts.h"
 #include <type_traits>
 
@@ -104,8 +104,8 @@ struct UnitState
 	bool canLearn[NB_ABILITY];
 	Sint32 experience, experienceLevel;
 	Sint32 destinationPurpose;
-	int carriedResource;
-	ResourcePacket carriedPacket{};
+	int carriedMaterial;
+	MaterialPacket carriedPacket{};
 	Sint32 jobTimer; // Waits 32 ticks for a job before seeking training or healing.
 };
 static_assert(std::is_trivially_copyable_v<UnitState>);

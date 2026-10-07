@@ -16,11 +16,11 @@
 #include "ai/cortex/CortexQuery.h"
 #include "GameRuleOverrides.h"
 #include "Order.h"
-#include "RessourceType.h"
 #include "ReplayReader.h"
 #include "Version.h"
 #include <FileManager.h>
 #include <cstdlib>
+#include <nlohmann/json.hpp>
 #include "OrderValidation.h"
 #include "Player.h"
 #include "scripting/javascript/ScriptObservations.h"
@@ -39,16 +39,16 @@ void populate(glob2test::HeadlessGame& w)
         auto* swarm=w.addBuilding("swarm",x+3,3,0,team);
         auto* inn=w.addBuilding("inn",x+10,3,0,team);
         for(auto* b:{swarm,inn})
-        { b->resources[WHEAT]=b->type->maxResource[WHEAT]; b->update(); }
+        { b->materials[WHEAT]=b->type->maxMaterial[WHEAT]; b->update(); }
         for(int i=0;i<32;++i) w.addUnit(WORKER,x+2+i%20,12+i/20,team);
         for(int i=0;i<10;++i) w.addUnit(WARRIOR,x+3+i,15,team);
         w.game.teams[team]->startPosX=x+3; w.game.teams[team]->startPosY=3;
         w.game.teams[team]->startPosSet=Team::START_POS_FROM_UNIT;
         for(int y=20;y<28;++y) for(int xx=x+3;xx<x+29;++xx)
-            {w.game.map.setResource(xx,y,WHEAT,0);w.game.map.setResourceAmount(w.game.map.coordToIndex(xx,y), globalContainer->resourcesTypes.get(WHEAT)->sizesCount);}
+            {w.game.map.setResourceByIndex(xx,y,WHEAT,0);w.game.map.setResourceAmount(w.game.map.coordToIndex(xx,y), w.game.map.resourceRegistry().yields(static_cast<ResourceId>(WHEAT))[materialIndex(MaterialId::Food)].capacity);}
         for(int xx=x+3;xx<x+29;++xx) {
-            w.game.map.setResource(xx,30,WOOD,0);w.game.map.setResourceAmount(w.game.map.coordToIndex(xx,30), globalContainer->resourcesTypes.get(WOOD)->sizesCount);
-            w.game.map.setResource(xx,31,STONE,0);w.game.map.setResourceAmount(w.game.map.coordToIndex(xx,31), globalContainer->resourcesTypes.get(STONE)->sizesCount);
+            w.game.map.setResourceByIndex(xx,30,WOOD,0);w.game.map.setResourceAmount(w.game.map.coordToIndex(xx,30), w.game.map.resourceRegistry().yields(static_cast<ResourceId>(WOOD))[materialIndex(MaterialId::Wood)].capacity);
+            w.game.map.setResourceByIndex(xx,31,STONE,0);w.game.map.setResourceAmount(w.game.map.coordToIndex(xx,31), w.game.map.resourceRegistry().yields(static_cast<ResourceId>(STONE))[materialIndex(MaterialId::Stone)].capacity);
         }
         w.game.teams[team]->stats.step(w.game.teams[team]);
     }
@@ -298,7 +298,7 @@ TEST_CASE("native controllers exclude disabled work and continue after reload [s
         auto* school=w.addBuilding("school",3,35,1);school->maxUnitWorking=5;w.addBuilding("racetrack",10,35);
         w.addBuilding("hospital",17,35);w.addUnit(WARRIOR,25,12,0,2);
         if(variant==2) {
-            for(int slot=0;slot<Building::MAX_COUNT;++slot) if(auto* b=g.teams[0]->myBuildings[slot]) {b->resources[WHEAT]=0;b->update();}
+            for(int slot=0;slot<Building::MAX_COUNT;++slot) if(auto* b=g.teams[0]->myBuildings[slot]) {b->materials[WHEAT]=0;b->update();}
             for(int y=20;y<28;++y) for(int x=3;x<29;++x) g.map.setNoResource(x,y,0);
         }
         g.teams[0]->stats.step(g.teams[0]);g.players[0]->makeItAI(id);g.setWaitingOnMask(0);
@@ -479,10 +479,10 @@ TEST_CASE("no growth farms harvest their finite seed rather than waiting forever
     glob2test::HeadlessGlobals globals;
     glob2test::HeadlessGame w(glob2test::GameOptions{.header=true});
     w.game.gameHeader.getExperiments().set(ExperimentId::FarmAreas);
-    w.game.map.setResource(5,5,WHEAT,0);w.game.map.setResourceAmount(w.game.map.coordToIndex(5,5), 1);w.game.map.addFarmArea(5,5,0);
-    CHECK(!w.game.map.takeHarvest(4,5,1,0,WHEAT,w.team->me));
+    w.game.map.setResourceByIndex(5,5,WHEAT,0);w.game.map.setResourceAmount(w.game.map.coordToIndex(5,5), 1);w.game.map.addFarmArea(5,5,0);
+    CHECK(!w.game.map.takeHarvestMaterialSlot(4,5,1,0,WHEAT,w.team->me));
     w.game.gameHeader.setResourceGrowthDisabled(true);
-    CHECK(w.game.map.takeHarvest(4,5,1,0,WHEAT,w.team->me));
+    CHECK(w.game.map.takeHarvestMaterialSlot(4,5,1,0,WHEAT,w.team->me));
     CHECK(w.game.map.getResource(5,5).amount==0);
 }
 TEST_CASE("Maxima removes disabled reserves while retaining finite production supply")
@@ -500,9 +500,10 @@ TEST_CASE("Maxima removes disabled reserves while retaining finite production su
     CHECK(disabled.trainingSlots==0);CHECK(disabled.trainable==0);
     CHECK(AIMaxima::Labour::plan(disabled,maxima.labour_policy(),4).trainingReserve==0);
     CHECK(disabled.hospitals==1);CHECK(disabled.swarms==1);
-    CHECK(AIMaxima::effectiveWheatRegrowth(&g.map,800)==800);
-    g.gameHeader.setResourceScarcityLevel(3);CHECK(AIMaxima::effectiveWheatRegrowth(&g.map,800)==100);
-    g.gameHeader.setResourceGrowthDisabled(true);CHECK(AIMaxima::effectiveWheatRegrowth(&g.map,800)==0);
+    const auto growth=[&]{ const auto observed=AIEngine::AIWorldView::capture(g,AIEngine::AIWorldView::captureCatalog(g)); return AIMaxima::effectiveNaturalGrowth(observed.get(),800); };
+    CHECK(growth()==800);
+    g.gameHeader.setResourceScarcityLevel(3);CHECK(growth()==100);
+    g.gameHeader.setResourceGrowthDisabled(true);CHECK(growth()==0);
 }
 TEST_CASE("Cortex excludes unavailable technology from scoring and feeding prerequisites")
 {
@@ -516,4 +517,143 @@ TEST_CASE("Cortex excludes unavailable technology from scoring and feeding prere
     CHECK(policy.scoreFeedCapacity(obs,facts).score==0);
     CHECK(policy.scoreSchoolUpgrade(obs,facts).score==0);
 }
+}
+
+
+TEST_CASE("renewable material potential survives saturation and honors yield policies" * doctest::test_suite("AIRules"))
+{
+    glob2test::HeadlessGlobals globals;
+    glob2test::HeadlessGame w(glob2test::GameOptions{.header=true});
+    auto& map=w.game.map;
+    const auto index=map.coordToIndex(8,8);
+    const auto food=materialIndex(MaterialId::Food);
+    const auto wheat=*map.resourceRegistry().find("wheat");
+    // All-grass fixture maps have zero land fertility until a water donor exists.
+    map.setCellTerrain(9,8,WATER);
+    map.setResource(8,8,wheat,0);
+    const auto ecology=map.resourceGrowthRateAt(index,resourceIndex(wheat));
+    REQUIRE(ecology>0);
+    for(unsigned stock=1;stock<=5;++stock)
+    {
+        map.setMaterialAmount(index,MaterialId::Food,stock);
+        CHECK(AIResourceSources::renewablePotential(map.stateView(),index,MaterialId::Food)==ecology);
+        if(stock==5) CHECK(map.materialGrowthRateAt(index,MaterialId::Food)==0);
+    }
+    using Json=nlohmann::json;
+    const auto prototype=Json::parse(map.resourceRegistry().serialize())["resources"][resourceIndex(wheat)];
+    auto install=[&](const char* policy,bool destructive,bool mixed,bool persistent,unsigned capacity) {
+        auto definition=prototype;
+        definition["key"]="renewal-fixture";
+        definition["properties"]["primaryMaterial"]="gold";
+        definition["properties"]["persistsWhenEmpty"]=persistent;
+        definition["properties"]["spreadRate"]=0;
+        definition["yields"]=Json::object();
+        definition["yields"]["gold"]={{"capacity",capacity},{"initial",capacity},{"growthRate",ResourceRateScale/2},
+            {"consumption",policy},{"destroysDeposit",destructive},{"seedReserve",capacity}};
+        if(mixed) definition["yields"]["food"]={{"capacity",2},{"initial",2},{"growthRate",ResourceRateScale},
+            {"consumption","one"}};
+        map.setNoResource(8,8,0);
+        map.installResourceDefinitions(Json{{"schemaVersion",1},{"resources",Json::array({definition})}}.dump());
+        const auto id=*map.resourceRegistry().find("renewal-fixture");
+        map.setResource(8,8,id,0);
+        return map.resourceGrowthRateAt(index,resourceIndex(id));
+    };
+    // Combining branch numerators preserves exact calibration even when the
+    // ecological rate does not divide evenly by eight.
+    {
+        auto definition=prototype;
+        definition["properties"]["ecology"]="uniform";
+        definition["properties"]["growthRate"]=ResourceRateScale-3;
+        map.setNoResource(8,8,0);
+        map.installResourceDefinitions(Json{{"schemaVersion",1},{"resources",Json::array({definition})}}.dump());
+        const auto id=*map.resourceRegistry().find("wheat");
+        map.setResource(8,8,id,0);
+        const auto rate=map.resourceGrowthRateAt(index,resourceIndex(id));
+        REQUIRE(rate%8!=0);
+        for(unsigned stock=1;stock<=5;++stock)
+        {
+            map.setMaterialAmount(index,MaterialId::Food,stock);
+            const auto potential=AIResourceSources::renewablePotential(map.stateView(),index,MaterialId::Food);
+            CHECK(potential==rate);
+        }
+    }
+    const auto gold=materialIndex(MaterialId::Gold);
+    const auto base=install("one",false,true,false,2);
+    // Each yield is saturated, but both can renew after harvest. The branching
+    // amount is total stock4, while each yield retains its own growth rate.
+    CHECK(map.materialGrowthRateAt(index,MaterialId::Gold)==0);
+    CHECK(map.materialRenewalPotentialAt(index,MaterialId::Gold)==base/4);
+    CHECK(map.materialRenewalPotentialAt(index,MaterialId::Food)==base/2);
+    CHECK(AIResourceSources::renewablePotential(map.stateView(),index,MaterialId::Gold)==base/4);
+    // A configured reserve equal to capacity does not restrict harvesting outside
+    // an active farm area. The source accessibility policy owns farm eligibility.
+    w.game.gameHeader.setResourceScarcityLevel(2);
+    CHECK(AIResourceSources::renewablePotential(map.stateView(),index,MaterialId::Gold)==base/16);
+    w.game.gameHeader.setResourceGrowthDisabled(true);
+    CHECK(AIResourceSources::renewablePotential(map.stateView(),index,MaterialId::Gold)==0);
+    w.game.gameHeader.setResourceGrowthDisabled(false);
+    for(const char* policy : {"all","one"})
+    {
+        install(policy,true,false,true,2);
+        CHECK(AIResourceSources::renewablePotential(map.stateView(),index,MaterialId::Gold)==0);
+    }
+    CHECK_THROWS(install("infinite",true,false,true,2));
+    w.game.gameHeader.setResourceGrowthDisabled(true);
+    install("infinite",false,false,true,2);
+    CHECK(AIResourceSources::renewablePotential(map.stateView(),index,MaterialId::Gold)==ResourceRateScale);
+    map.setMaterialAmount(index,MaterialId::Gold,0);
+    CHECK(AIResourceSources::renewablePotential(map.stateView(),index,MaterialId::Gold)==0);
+    w.game.gameHeader.setResourceGrowthDisabled(false);
+    w.game.gameHeader.setResourceScarcityLevel(0);
+    install("one",false,false,false,1);
+    CHECK(map.materialRenewalPotentialAt(index,MaterialId::Gold)==0);
+    install("one",false,false,true,1);
+    CHECK(map.materialRenewalPotentialAt(index,MaterialId::Gold)>0);
+    install("one",true,true,true,2);
+    CHECK(map.materialRenewalPotentialAt(index,MaterialId::Gold)==0);
+    CHECK(map.materialRenewalPotentialAt(index,MaterialId::Food)>0);
+}
+
+
+TEST_CASE("prospective material supply combines mixed branch numerators without overflow" * doctest::test_suite("AIRules"))
+{
+    glob2test::HeadlessGlobals globals;
+    glob2test::HeadlessGame w(glob2test::GameOptions{.header=true});
+    auto& map=w.game.map;
+    const auto index=map.coordToIndex(8,8);
+    using Json=nlohmann::json;
+    auto definition=Json::parse(map.resourceRegistry().serialize())["resources"][1];
+    definition["key"]="prospective-mixed";
+    definition["properties"]["ecology"]="uniform";
+    definition["properties"]["primaryMaterial"]="gold";
+    definition["properties"]["growthRate"]=ResourceRateScale-3;
+    definition["properties"]["spreadRate"]=ResourceRateScale/2;
+    definition["yields"]={{"gold",{{"capacity",3},{"initial",3},{"growthRate",ResourceRateScale/2},{"consumption","one"}}},
+        {"food",{{"capacity",2},{"initial",2},{"growthRate",ResourceRateScale},{"consumption","one"}}}};
+    auto install=[&] {
+        map.setNoResource(8,8,0);
+        map.installResourceDefinitions(Json{{"schemaVersion",1},{"resources",Json::array({definition})}}.dump());
+        const auto id=*map.resourceRegistry().find("prospective-mixed");
+        map.setResource(8,8,id,0);
+        return std::uint64_t(map.resourceGrowthRateAt(index,resourceIndex(id)));
+    };
+    const auto rate=install();
+    REQUIRE(rate%8!=0);
+    // Total stock5 controls both branches; Gold and secondary Food retain their
+    // own local rate and offspring quantities3 and2 respectively.
+    CHECK(map.materialRenewalPotentialAt(index,MaterialId::Gold)==((rate/2)*3+(rate/2)*3*5)/8);
+    CHECK(map.materialRenewalPotentialAt(index,MaterialId::Food)==(rate*3+(rate/2)*2*5)/8);
+    definition["properties"]["stockDependentGrowth"]=false;
+    definition["properties"]["growthRate"]=4u*ResourceRateScale;
+    definition["properties"]["spreadRate"]=ResourceRateScale;
+    definition["yields"]["gold"]={{"capacity",65535},{"initial",65535},
+        {"growthRate",ResourceRateScale},{"consumption","one"}};
+    const auto largeRate=install();
+    const auto expected=largeRate+largeRate*65535;
+    REQUIRE(expected>std::numeric_limits<Uint32>::max());
+    CHECK(map.materialRenewalPotentialAt(index,MaterialId::Gold)==expected);
+    CHECK(AIResourceSources::renewablePotential(map.stateView(),index,MaterialId::Gold)==expected);
+    definition["yields"]["gold"]["consumption"]="all";
+    const auto destructiveRate=install();
+    CHECK(map.materialRenewalPotentialAt(index,MaterialId::Gold)==destructiveRate);
 }

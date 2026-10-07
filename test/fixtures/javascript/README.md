@@ -12,7 +12,7 @@ subnormal Math results. These are compatibility fixtures, not benchmarks.
 Changing them requires explaining the intended profile or simulation change.
 
 Run `python3 test/check_javascript.py /absolute/path/to/glob2 --output artifacts/js-check`
-with a fresh output directory. It compares against the current terrain trace, compares
+with a fresh output directory. It compares against the current resource trace, compares
 replays and saves at one and four compute workers, and checks resumed state and
 ticks from several saved checkpoints, including scenario-callback boundaries. The saved payload comparison excludes only
 the existing MapHeader SHA1, which depends on save history; scripts, RNG state,
@@ -112,12 +112,22 @@ building and unit record between the original and expanded traces at all 256 tic
 The expanded traces were captured from Linux execution.
 
 `profile1-256-terrain.checksums.gz` and
-`realistic-profile1-256-terrain.checksums.gz` are the current simulation baselines.
+`realistic-profile1-256-terrain.checksums.gz` retain the terrain-era simulation baselines.
 Canonical terrain IDs now participate in the map checksum, and property-based
 ecology can change subsequent simulation behavior. Both checkers still load the
 original version-125 saves, then compare complete current traces, one/four-worker
 execution and saved continuations; the native suite also checks replay playback.
-The native fixture runner's `--update-fixtures` option rewrites only the terrain
-traces. Historical traces, initial saves and numeric/data goldens remain intact.
+The native fixture runner's `--update-fixtures` option now rewrites only the
+resource traces described below. Historical traces, initial saves and numeric/data goldens remain intact.
 MapHeader version normalization and the final-save SHA1 exclusion described above
 remain unchanged.
+
+`profile1-256-resources.checksums.gz` and
+`realistic-profile1-256-resources.checksums.gz` are the resource-catalog SIM_REVISION 24
+complete-trace baselines. The runtime resource registry and material-gradient
+cache state now participate in the aggregate checksum. Every team, building and
+unit record at all 256 ticks remains byte-identical to the terrain-era traces;
+those historical files and the original version-125 saves remain intact. The
+Python checker compares the complete current checksum, exact one/four-worker
+replay and save output, and every existing saved continuation boundary. It does
+not exclude registry or cache state from either comparison.

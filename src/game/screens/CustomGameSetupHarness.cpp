@@ -2595,7 +2595,7 @@ TEST_SUITE("CustomGameSetup")
 	static_assert(AI::ECONO == 4, "Econo must retain its save ID");
 	REQUIRE(AINames::parseAIName("Econo") == AI::ECONO);
 	REQUIRE(AINames::getAISelectorText(AI::ECONO) == "Econo - Easy (" + std::to_string(AINames::getAIStrength(AI::ECONO)) + ") - No warriors");
-	REQUIRE(AINames::getAIProfile(AI::CORTEX).find("wheat") != std::string::npos);
+	REQUIRE(AINames::getAIProfile(AI::CORTEX).find("food") != std::string::npos);
 	REQUIRE(AINames::getAIProfile(AI::CORTEX).find("\n\nStrengths and weaknesses:") != std::string::npos);
 	const auto dir =
 		std::filesystem::temp_directory_path() / ("glob2-setup-test-" + std::to_string(getpid()));

@@ -176,7 +176,8 @@ public:
 	
 	std::shared_ptr<Order>getOrder(void);
  bool supportsObservation() const override { return true; }
- SimulationSnapshot::Requirements observationRequirements() const override { return SimulationSnapshot::All & ~SimulationSnapshot::bit(SimulationSnapshot::Component::Growth); }
+ // Farm recovery reads material growth rates, so the growth field is required.
+ SimulationSnapshot::Requirements observationRequirements() const override { return SimulationSnapshot::All; }
  std::optional<Uint64> retainedQueryVectorBytes() const override
  {
   Uint64 bytes = 0;
@@ -209,6 +210,7 @@ private:
 	void reconcilePendingAssignments();
 	
 private:
+	friend struct CastorResourcePolicyAccess;
 	void init(Player *player);
 	void defineStrategy();
 	

@@ -10,7 +10,7 @@ struct WaterScratch
     std::vector<char> visited;
     std::vector<int> frontier, land, swim, target;
 };
-struct WheatScratch
+struct FoodSourceScratch
 {
     std::vector<int> fieldTiles, depth, queue, stack;
     std::vector<unsigned char> seen, currentBit;
@@ -20,7 +20,7 @@ struct QueryScratch
 {
     std::vector<unsigned char> proximity;
     WaterScratch water;
-    WheatScratch wheat;
+    FoodSourceScratch wheat;
     std::uint64_t retainedVectorBytes() const
     {
         std::uint64_t bytes=proximity.capacity()+water.visited.capacity()

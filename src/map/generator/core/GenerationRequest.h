@@ -42,7 +42,7 @@ struct GenerationRequest
 	std::uint32_t seed = 0;
 	std::map<std::string, int> options;
 	// Legacy resource quantities remain supported by the compatibility adapter.
-	std::array<int, MAX_NB_RESOURCES> resourceAmounts{};
+	std::array<int, MaterialSlotCount> resourceAmounts{};
 	int option(const std::string &id) const { return options.at(id); }
 	void setMethodDefaults(int method);
 	void setMethodDefaults(int method, const GeneratorRegistry &registry);

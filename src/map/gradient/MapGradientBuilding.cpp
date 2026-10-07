@@ -54,10 +54,9 @@ void Map::updateGlobalGradient(Building *building, int swimClass, BuildingRoute 
 		initializeGradientCells([&](size_t begin, size_t end) {
 		for (size_t i=begin; i<end; ++i)
 		{
-
 			if (occupancyCells[i].building!=NOGBID)
 				gradient[i]=occupancyCells[i].building==bgid ? GRADIENT_AT_GOAL : GRADIENT_FORBIDDEN;
-			else if ((areaCells[i].forbidden&teamMask) || resourceCells[i].resource.type!=NO_RES_TYPE ||
+			else if ((areaCells[i].forbidden&teamMask) || resourceBlocksGround(i) ||
 			         occupancyCells[i].immobileUnit!=IMMOBILE_UNIT_NONE || (!terrainPropertiesAt(i).walkable && !(canSwim && terrainPropertiesAt(i).swimmable)))
 				gradient[i]=GRADIENT_FORBIDDEN;
 			else
@@ -102,7 +101,8 @@ void Map::updateGlobalGradient(Building *building, int swimClass, BuildingRoute 
 					if (yi2+(xi*xi)<=r2)
 					{
 						size_t addr = coordToIndex(posX+w+xi, posY+h+yi);
-						if(resourceCells[addr].resource.type < BASIC_COUNT && building->clearingResources[resourceCells[addr].resource.type])
+						if(resourceCells[addr].resource.type != NO_RES_TYPE && resourcePropertiesByIndex(resourceCells[addr].resource.type).clearable &&
+						   isClearableResourceForMaterials(int(addr & wMask), int(addr >> wDec), building->clearingMaterials))
 						{
 							if(gradient[addr] == GRADIENT_UNREACHABLE)
 								gradient[addr] = GRADIENT_AT_GOAL;
@@ -121,7 +121,7 @@ void Map::updateGlobalGradient(Building *building, int swimClass, BuildingRoute 
 				{
 					if (areaCells[wyx].forbidden&teamMask)
 						gradient[wyx] = GRADIENT_FORBIDDEN;
-					else if (resourceCells[wyx].resource.type!=NO_RES_TYPE && !(isClearingFlag && gradient[wyx]==GRADIENT_AT_GOAL))
+					else if (resourceBlocksGround(wyx) && !(isClearingFlag && gradient[wyx]==GRADIENT_AT_GOAL))
 						gradient[wyx] = GRADIENT_FORBIDDEN;
 					else if(occupancyCells[wyx].immobileUnit != IMMOBILE_UNIT_NONE)
 						gradient[wyx] = GRADIENT_FORBIDDEN;
@@ -174,7 +174,7 @@ void Map::updateGlobalGradient(Building *building, int swimClass, BuildingRoute 
 }
 
 
-void Map::updateRoundTripGradient(Building *building, int resourceType, int swimClass)
+void Map::updateRoundTripGradientSlot(Building *building, int resourceType, int swimClass)
 {
 	PERF_SCOPE_TIME(RoundTripGradient);
 	// Only construction needs the parent in full; reading a cached round-trip
@@ -185,9 +185,9 @@ void Map::updateRoundTripGradient(Building *building, int resourceType, int swim
 	building->roundTripGradientStep[resourceType][swimClass]=game->stepCounter;
 	const Uint16 *toBuilding=building->globalGradient[swimClass];
 	// Markets replenish from natural resource tiles; other buildings may use stock.
-	const unsigned modes=resourceSupplyModes(building,resourceType);
+	const unsigned modes=materialSupplyModesSlot(building,resourceType);
 	const bool withMarkets=modes!=0;
-	const Uint16 *toResource=getResourceGradient(building->owner->teamNumber, resourceType, swimClass, withMarkets, building);
+	const Uint16 *toResource=getMaterialGradientSlot(building->owner->teamNumber, resourceType, swimClass, withMarkets, building);
 	// Same obstacles as the resource gradient. A resource tile is seeded with
 	// the cost of carrying from the cheapest free cell next to it, where the
 	// unit harvests, to the building. A stocked market's tile is a goal as
@@ -229,7 +229,7 @@ void Map::updateRoundTripGradient(Building *building, int resourceType, int swim
 	}
 	if (withMarkets && ((modes&2) || game->buildingsTypes.usesOverlaySuppliers()))
 		visitSuppliers([&](const Building* supplier) {
-			if (supplier->runtime->has(BuildingRuntimeTraits::OccupiesGround) || !stockSupplierEligible(supplier,building,resourceType,modes)) return;
+			if (supplier->runtime->has(BuildingRuntimeTraits::OccupiesGround) || !stockSupplierEligibleSlot(supplier,building,resourceType,modes)) return;
 			for (int y=0; y<supplier->type->height; ++y)
 				for (int x=0; x<supplier->type->width; ++x)
 				{

@@ -466,6 +466,9 @@ export async function mapCatalogRoutes(app: FastifyInstance, identity: Identity)
                 team_count: same.team_count,
                 min_version_minor: same.min_version_minor,
                 file_title: same.file_title,
+                building_catalog: same.building_catalog,
+                resource_experiments: same.resource_experiments,
+                required_resource_experiments: same.required_resource_experiments,
               }
             : checked
               ? {
@@ -475,6 +478,9 @@ export async function mapCatalogRoutes(app: FastifyInstance, identity: Identity)
                   team_count: checked.team_count,
                   min_version_minor: checked.version_minor,
                   file_title: checked.title,
+                  building_catalog: checked.building_catalog,
+                  resource_experiments: checked.resource_experiments,
+                  required_resource_experiments: checked.required_resource_experiments,
                 }
               : {}),
           ...(reusePreview && same.preview_status === 'ready'

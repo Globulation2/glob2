@@ -45,6 +45,10 @@ public:
  const auto& schedulingMetrics() const { return scheduler.metrics; }
  Uint64 computationNs() const { return scheduler.activeNs(); }
  bool wasPolled(unsigned player, Uint32 tick) const;
+ // The tick's shared capture (reused components, cached catalog) for engine
+ // consumers that observe outside a decision poll.
+ SimulationSnapshot::Handle observe(const Game& game, SimulationSnapshot::Requirements requirements)
+ { return snapshots.captureBoundary(game, requirements); }
  std::pair<Uint64,unsigned> queryVectorMemory() const {
   Uint64 bytes=0; unsigned available=0;
   for(const auto& actor:actors)if(actor.retainedQueryVectorBytes){bytes+=*actor.retainedQueryVectorBytes;++available;}

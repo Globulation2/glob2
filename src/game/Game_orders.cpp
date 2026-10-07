@@ -274,8 +274,8 @@ bool Game::executeModifyExchange(const OrderModifyExchange& ome, int localPlayer
 	Building *b=lookupBuilding(ome.gid);
 	if ((b) && (b->buildingState==Building::ALIVE) && b->type->canExchange)
 	{
-		b->receiveResourceMask=ome.receiveResourceMask;
-		b->sendResourceMask=ome.sendResourceMask;
+		b->receiveMaterialMask=ome.receiveMaterialMask;
+		b->sendMaterialMask=ome.sendMaterialMask;
 		b->update();
 		return true;
 	}
@@ -312,8 +312,7 @@ bool Game::executeModifyClearingFlag(const OrderModifyClearingFlag& omcf, int lo
 		&& b->buildingState==Building::ALIVE
 		&& b->type->zonable[WORKER])
 	{
-		if (omcf.clearingResources[STONE]) return false;
-		memcpy(b->clearingResources, omcf.clearingResources, sizeof(bool)*BASIC_COUNT);
+		memcpy(b->clearingMaterials, omcf.clearingMaterials, sizeof(bool)*MaterialCount);
 		return true;
 	}
 
@@ -370,7 +369,7 @@ bool Game::executeMoveFlag(const OrderMoveFlag& omf, int localPlayer)
 		if (b->type->runtimeSuppliesStock || b->type->runtimeSuppliesDirectStock)
 		{
 			map.invalidateSupplierLocations();
-			for (int resource=0; resource<MAX_RESOURCES; ++resource) map.dirtyMarketGradients(b->owner->teamNumber, resource);
+			for (int resource=0; resource<MaterialCount; ++resource) map.dirtyMarketGradientsSlot(b->owner->teamNumber, resource);
 		}
 
 		if (b->type->zonableForbidden)
@@ -403,8 +402,8 @@ bool Game::executeAlterForbidden(const OrderAlterForbidden& oaa, int localPlayer
 			if (bool(tile.forbidden & teamMask) != adding)
 			{
 				changed = true;
-				// Resources already block walking, but can be harvesting/clearing goals.
-				walkingChanged |= tile.resource.type == NO_RES_TYPE;
+				// Passable resources need the same topology refresh as bare terrain.
+				walkingChanged |= !map.resourceBlocksGround(map.coordToIndex(x,y));
 				clearingChanged |= ((tile.clearArea | (tile.farmArea & clearingMask)) & teamMask) != 0;
 				if (adding) map.addForbidden(x, y, oaa.teamNumber);
 				else map.removeForbidden(x, y, oaa.teamNumber);

@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include <Environment.h>
 #include "EngineFixtures.h"
+#include <nlohmann/json.hpp>
 #include <string>
 #include <memory>
 #include <algorithm>
@@ -604,6 +605,22 @@ class GameGUITouchHarness
 		players.setNumberOfPlayers(1);
 		players.getBasePlayer(0) = BasePlayer(0, "Touch", 0, BasePlayer::P_LOCAL);
 		require(gui.loadFromHeaders(map, players, true, true), "Fixture load failed");
+        // Keep IDs above one byte and multi-material missing art in the real UI fixture.
+        using Json = nlohmann::json;
+        Json additions = Json::array();
+        for (unsigned i = 0; i < 300; ++i)
+        {
+            additions.push_back({{"key", "touch:visual-" + std::to_string(i)},
+                {"properties", {{"ecology", "land"}, {"blocksGround", true}}},
+                {"yields", {{"food", {{"capacity", 9}, {"initial", 2}, {"consumption", "one"}}},
+                            {"paper", {{"capacity", 6}, {"initial", 4}, {"consumption", "one"}}}}},
+                {"presentation", {{"name", "Mixed resource without artwork"},
+                    {"sprite", "data/gfx/touch-fixture-missing-resource"}, {"minimap", {255, 0, 255}},
+                    {"levels", Json::array({{{"stock", 0}, {"variants", Json::array({{{"frame", 0}, {"weight", 1}}})}}})}}}});
+        }
+        gui.game.map.installResourceDefinitions(Json{{"schemaVersion", 1}, {"resources", additions}}.dump());
+        const int mixedResource = int(gui.game.map.resourceRegistry().size()) - 1;
+        require(mixedResource > 255, "Custom resource fixture exceeds byte identifiers");
 		gui.localTeamNo = 0;
 		gui.localPlayer = 0;
 		gui.adjustLocalTeam();
@@ -1176,23 +1193,39 @@ class GameGUITouchHarness
 				const int ty = (gui.mapMouseY(int(spot.y)) / 32 + gui.viewportY) & gui.game.map.getMaskH();
 				auto resource = gui.game.map.getResource(tx, ty);
 				const auto saved = resource;
-				for (int type : {WOOD, WHEAT})
+				for (int type : {WOOD, WHEAT, 8, 9, 10, 11, mixedResource})
 				{
 					resource.type = type;
 					resource.variety = 0;
 					resource.amount = 3;
 					gui.game.map.replaceResource(tx, ty, resource);
+                    if (type == mixedResource)
+                    {
+                        const auto index = gui.game.map.coordToIndex(tx, ty);
+                        gui.game.map.setMaterialAmount(index, MaterialId::Food, 2);
+                        gui.game.map.setMaterialAmount(index, MaterialId::Paper, 4);
+                    }
 					tap(spot.x, spot.y);
 					require(gui.touch->inspectingResource(), "Tapping a resource opens its inspector");
 					gui.drawAll(0);
 					const auto info = gui.touch->resourceInfo();
-					require(info && info->name == getResourceName(type) &&
-						info->amount == (globalContainer->resourcesTypes.get(type)->granular
-							? "3/" + std::to_string(globalContainer->resourcesTypes.get(type)->sizesCount) : ""),
-						"Resource inspection shows the selected tile's name and amount");
+                    const auto id = static_cast<ResourceId>(type);
+                    const auto& catalog = gui.game.map.resourceRegistry();
+                    std::string expectedAmount;
+                    for (unsigned material = 0; material < MaterialCount; ++material)
+                    {
+                        const auto& yield = catalog.yields(id)[material];
+                        if (!yield.capacity) continue;
+                        if (!expectedAmount.empty()) expectedAmount += "\n";
+                        expectedAmount += getMaterialName(material) + ": " +
+                            (yield.consumption == ResourceConsumption::Infinite ? std::string("∞") :
+                             std::to_string(gui.game.map.materialAmountAtSlot(gui.game.map.coordToIndex(tx,ty),material)) + "/" + std::to_string(yield.capacity));
+                    }
+                    require(info && info->name == getResourceDisplayName(catalog.presentation(id).name) && info->amount == expectedAmount,
+                        "Resource inspection shows registry name and all material stocks");
 					const auto panel = gui.touch->layout().panel;
 					require(panel.h <= 112 * unit && !gui.touch->lensVisible(), "Resource inspection is a compact card, not Tools");
-					gfx->printScreen(std::string("resource-") + (type == WOOD ? "wood-" : "wheat-") + (portrait ? "portrait.bmp" : "landscape.bmp"));
+					gfx->printScreen(std::string("resource-") + std::to_string(type) + "-" + (portrait ? "portrait.bmp" : "landscape.bmp"));
 					gfx->nextFrame();
 					tap(panel.x + panel.w / 2, panel.y + panel.h * .7);
 					require(!gui.touch->statsOpen && !gui.touch->showStatistics && gui.touch->inspectingResource(),
@@ -2562,7 +2595,7 @@ class GameGUITouchHarness
 							gui.orderQueue.front());
 						gui.orderQueue.pop_front();
 						require(order && order->gid == clearing->gid &&
-									order->clearingResources[resource] == value,
+									order->clearingMaterials[resource] == value,
 								"Clearing toggle uses pending state");
 					}
 				}
@@ -3296,7 +3329,7 @@ class GameGUITouchHarness
 		gui.drawAll(0);
 		require(gui.touch->unitAt({center.x+64,center.y},30) == nearby, "Exact unit beats neighbouring halo");
 		// A neighbouring resource is a direct target, not empty halo ground.
-		map.setResource(41, 40, WHEAT, 0);
+		map.setResourceByIndex(41, 40, WHEAT, 0);
 		map.setMapDiscovered(41, 40, gui.localTeam->me);
 		gui.touch->select({center.x + 28, center.y});
 		require(gui.selectionMode == GameGUI::RESOURCE_SELECTION,
@@ -3338,7 +3371,7 @@ class GameGUITouchHarness
 				gui.touch->dismissMapPanels();
 				if (invalidated)
 				{
-					map.setResource(41, 40, WHEAT, 0);
+					map.setResourceByIndex(41, 40, WHEAT, 0);
 					gui.touch->select({center.x + 28, center.y});
 					gui.drawAll(0);
 					map.setNoResource(41, 40, 1);
@@ -3366,7 +3399,7 @@ class GameGUITouchHarness
 			}
 		gui.touch->dismissMapPanels();
 		globalContainer->replaying = true;
-		map.setResource(41, 40, WHEAT, 0);
+		map.setResourceByIndex(41, 40, WHEAT, 0);
 		for (int inspector = 0; inspector < 3; ++inspector)
 		{
 			gui.touch->dismissMapPanels();

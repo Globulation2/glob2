@@ -102,7 +102,7 @@ TEST_CASE("copies colonies, painted areas and clearing settings [save-format]")
 	require(flagType >= 0, "clearing flag type exists");
 	Building* flag = game.addBuilding(20, 40, flagType, 0);
 	require(flag != nullptr, "place a clearing flag");
-	flag->clearingResources[WOOD] = false;
+	flag->clearingMaterials[WOOD] = false;
 	flag->minWorkerLevelToFlag=2;
 	for (int i=0; i<Unit::MAX_COUNT; ++i)
 		if (auto* unit=game.teams[0]->myUnits[i]; unit && unit->typeNum==WORKER)
@@ -159,7 +159,7 @@ TEST_CASE("copies colonies, painted areas and clearing settings [save-format]")
 						if (copy && copy->typeNum == flagType)
 						{
 							flags++;
-							require(!copy->clearingResources[WOOD] && copy->clearingResources[WHEAT], "the clearing flag keeps its choice");
+							require(!copy->clearingMaterials[WOOD] && copy->clearingMaterials[WHEAT], "the clearing flag keeps its choice");
 							require(copy->minWorkerLevelToFlag==2,"the clearing flag keeps independent worker qualification");
 						}
 					}

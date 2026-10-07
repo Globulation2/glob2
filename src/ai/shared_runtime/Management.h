@@ -25,16 +25,16 @@ namespace AISharedRuntime
 	///This namespace stores anything related to managing you're buildings, flags and areas.
 	namespace Management
 	{
- inline constexpr int RecurringInputStock=MAX_RESOURCES;
+ inline constexpr int RecurringInputStock=MaterialCount;
 
 		enum ManagementOrderType
 		{
 			MAssignWorkers,
 			MChangeSwarm,
 			MDestroyBuilding,
-			MAddResourceTracker,
-			MPauseResourceTracker,
-			MUnPauseResourceTracker,
+			MAddMaterialTracker,
+			MPauseMaterialTracker,
+			MUnPauseMaterialTracker,
 			MChangeFlagSize,
 			MChangeFlagMinimumLevel,
 			MAddArea,
@@ -162,19 +162,19 @@ namespace AISharedRuntime
         };
 
 
-		///A resource tracker is generally used for management, like most other things. A resource trackers job is to keep
-		///track of the number of resources in a particular building, and returning averages over a small period of time.
-		///Its better to use a resource tracker than getting the resource amounts directly, because a resource tracker
+		///A material tracker is generally used for management, like most other things. A material trackers job is to keep
+		///track of the number of materials in a particular building, and returning averages over a small period of time.
+		///Its better to use a material tracker than getting the material amounts directly, because a material tracker
 		///returns trends, and small anomalies like an Inn running out of food for only a second don't impact its result greatly.
-		class ResourceTracker
+		class MaterialTracker
 		{
 		public:
-			ResourceTracker(Runtime& runtime, GAGCore::InputStream* stream, Player* player, Sint32 versionMinor) : runtime(runtime)
+			MaterialTracker(Runtime& runtime, GAGCore::InputStream* stream, Player* player, Sint32 versionMinor) : runtime(runtime)
 				{ load(stream, player, versionMinor);  }
-			ResourceTracker(Runtime& runtime, int building_id, int length, int resource);
-			///Returns the total resources the building possessed within the time frame
+			MaterialTracker(Runtime& runtime, int building_id, int length, int material);
+			///Returns the total materials the building possessed within the time frame
 			int get_total_level();
-			///Returns the number of ticks the resource tracker has been tracking.
+			///Returns the number of ticks the material tracker has been tracking.
 			int get_age();
 		private:
 			friend class AISharedRuntime::Runtime;
@@ -187,15 +187,15 @@ namespace AISharedRuntime
 			int length;
 			Runtime& runtime;
 			int building_id;
-			int resource;
+			int material;
 		};
 
-		///This adds a resource tracker to a building
-		class AddResourceTracker : public ManagementOrder
+		///This adds a material tracker to a building
+		class AddMaterialTracker : public ManagementOrder
 		{
 		public:
-			AddResourceTracker(int length, int resource, int building_id);
-			AddResourceTracker() : length(0), building_id(0), resource(0) {}
+			AddMaterialTracker(int length, int material, int building_id);
+			AddMaterialTracker() : length(0), building_id(0), material(0) {}
 		protected:
 			void modify(Runtime& runtime);
 			tribool wait(Runtime& runtime);
@@ -204,15 +204,15 @@ namespace AISharedRuntime
 			void save(GAGCore::OutputStream *stream);
 			int length;
 			int building_id;
-			int resource;
+			int material;
 		};
 
-		///This pauses a resource tracker. This is mainly done when a building is about to be upgraded.
-		class PauseResourceTracker : public ManagementOrder
+		///This pauses a material tracker. This is mainly done when a building is about to be upgraded.
+		class PauseMaterialTracker : public ManagementOrder
 		{
 		public:
-			PauseResourceTracker() : building_id(0) {}
-			PauseResourceTracker(int building_id);
+			PauseMaterialTracker() : building_id(0) {}
+			PauseMaterialTracker(int building_id);
 		protected:
 			void modify(Runtime& runtime);
 			tribool wait(Runtime& runtime);
@@ -222,12 +222,12 @@ namespace AISharedRuntime
 			int building_id;
 		};
 
-		///This unpauses a resource tracker. This should be done when a building is done being upgraded.
-		class UnPauseResourceTracker : public ManagementOrder
+		///This unpauses a material tracker. This should be done when a building is done being upgraded.
+		class UnPauseMaterialTracker : public ManagementOrder
 		{
 		public:
-			UnPauseResourceTracker() : building_id(0) {}
-			UnPauseResourceTracker(int building_id);
+			UnPauseMaterialTracker() : building_id(0) {}
+			UnPauseMaterialTracker(int building_id);
 		protected:
 			void modify(Runtime& runtime);
 			tribool wait(Runtime& runtime);
@@ -441,30 +441,30 @@ inline AISharedRuntime::Management::ManagementOrderType AISharedRuntime::Managem
 }
 
 
-inline int AISharedRuntime::Management::ResourceTracker::get_age()
+inline int AISharedRuntime::Management::MaterialTracker::get_age()
 {
 	return timer;
 }
 
 
 
-inline AISharedRuntime::Management::ManagementOrderType AISharedRuntime::Management::AddResourceTracker::get_type()
+inline AISharedRuntime::Management::ManagementOrderType AISharedRuntime::Management::AddMaterialTracker::get_type()
 {
-	return MAddResourceTracker;
+	return MAddMaterialTracker;
 }
 
 
 
-inline AISharedRuntime::Management::ManagementOrderType AISharedRuntime::Management::PauseResourceTracker::get_type()
+inline AISharedRuntime::Management::ManagementOrderType AISharedRuntime::Management::PauseMaterialTracker::get_type()
 {
-	return MPauseResourceTracker;
+	return MPauseMaterialTracker;
 }
 
 
 
-inline AISharedRuntime::Management::ManagementOrderType AISharedRuntime::Management::UnPauseResourceTracker::get_type()
+inline AISharedRuntime::Management::ManagementOrderType AISharedRuntime::Management::UnPauseMaterialTracker::get_type()
 {
-	return MUnPauseResourceTracker;
+	return MUnPauseMaterialTracker;
 }
 
 

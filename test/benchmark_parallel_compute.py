@@ -26,12 +26,12 @@ def digest(path):
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
-def execute(binary, args, output):
+def execute(binary, args, output, *, cwd=ROOT):
     output.mkdir(parents=True, exist_ok=False)
     command = [str(binary), '--run-game', *args, '--output-dir', str(output)]
     started = time.perf_counter()
     with (output / 'engine.log').open('w') as log:
-        process = subprocess.Popen(command, cwd=ROOT, stdout=log, stderr=subprocess.STDOUT)
+        process = subprocess.Popen(command, cwd=cwd, stdout=log, stderr=subprocess.STDOUT)
         _, status, usage = os.wait4(process.pid, 0)
         process.returncode = os.waitstatus_to_exitcode(status)
     wall = time.perf_counter() - started

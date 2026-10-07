@@ -139,6 +139,12 @@ TEST_CASE("terrain loaders reject invalid resources occupants and sector dimensi
     auto header = world.game.mapHeader;
     // Exercise semantic validation after decoding, independent of the tile encoding.
     const auto original=world.game.map.getTile(0);
+    auto poke=[&](const Tile& t) {
+        auto& m=world.game.map;
+        m.legacyTerrain[0]=t.terrain;
+        m.resourceCells[0]={t.resource,t.fertility,t.canResourcesGrow};
+        m.occupancyCells[0].building=t.building; m.occupancyCells[0].groundUnit=t.groundUnit; m.occupancyCells[0].airUnit=t.airUnit;
+    };
     for(int field=0;field<5;++field) {
         auto tile=original;
         if(field==0) tile.terrain=272;
@@ -146,7 +152,8 @@ TEST_CASE("terrain loaders reject invalid resources occupants and sector dimensi
         if(field==2) tile.resource.type=254;
         if(field==3) tile.groundUnit=65534;
         if(field==4) tile.airUnit=65534;
-        world.game.map.replaceTile(0,tile);
+        // Deliberately bypass validated mutation to exercise corrupt serialized input.
+        poke(tile);
         auto* storage=new GAGCore::MemoryStreamBackend;
         GAGCore::BinaryOutputStream writer(storage);
         world.game.map.save(&writer);
@@ -154,7 +161,7 @@ TEST_CASE("terrain loaders reject invalid resources occupants and sector dimensi
         Map restored;
         CHECK_FALSE(restored.load(stream.get(),header,&world.game));
     }
-    world.game.map.replaceTile(0,original);
+    poke(original);
 	auto bad = poisoned(bytes, out, "encoding", 254); // First packed array is the undermap.
 	auto stream = input(bad);
 	Map restored;
@@ -225,7 +232,7 @@ TEST_CASE("entity loaders reject malicious indices before using them [save-forma
     for (const auto& [field, value] : std::vector<std::pair<const char*, Uint32>>{
             {"typeNum", 0xffffffff}, {"typeNum", Uint32(globals->buildingsTypes.size())}, {"gid", 0xffff},
             {"unitStayRange", 0xffffffff}, {"minLevelToFlag", 0xffffffff}, {"ratio[0]", 0x7fffffff},
-            {"buildingState", 0xffffffff}, {"constructionResultState", 0xffffffff}, {"clearingRessources[3]", 1}}) {
+            {"buildingState", 0xffffffff}, {"constructionResultState", 0xffffffff}, {"clearingRessources[3]", 2}}) {
         auto stream = input(poisoned(buildingBytes, buildingOut, field, value));
         CHECK_THROWS_AS(Building(stream.get(), &globals->buildingsTypes, world.team, VERSION_MINOR), std::runtime_error);
     }

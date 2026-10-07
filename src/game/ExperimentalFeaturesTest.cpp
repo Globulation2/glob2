@@ -292,11 +292,11 @@ TEST_SUITE("ExperimentalFeatures")
 			CHECK(current->getPosition() == bytes.size());
 
             // Build the older wire layout explicitly: version 123 has neither
-            // experiment/catalog tails nor the format-140 delay byte following
-            // the common gameLatency/orderRate prefix.
+            // experiment/catalog/resource-experiment tails nor the format-143 delay
+            // byte following the common gameLatency/orderRate prefix.
             const std::string sectionBytes = bytesOf(original.getExperiments());
-            REQUIRE(bytes.size() > sectionBytes.size()+sizeof(Uint32)+sizeof(Uint8));
-            std::string legacyBytes=bytes.substr(0,bytes.size()-sectionBytes.size()-sizeof(Uint32));
+            REQUIRE(bytes.size() > sectionBytes.size()+2*sizeof(Uint32)+sizeof(Uint8));
+            std::string legacyBytes=bytes.substr(0,bytes.size()-sectionBytes.size()-2*sizeof(Uint32));
             legacyBytes.erase(sizeof(Sint32)+sizeof(Uint8),sizeof(Uint8));
             const size_t legacySize=legacyBytes.size();
             auto* legacy = new MemoryStreamBackend(legacyBytes.data(),legacySize);
@@ -317,5 +317,29 @@ TEST_SUITE("ExperimentalFeatures")
 		// reset() clears the set like every other option.
 		original.reset();
 		CHECK(original.getExperiments().empty());
+	}
+	TEST_CASE("resource catalog keys and metadata survive both game-header transport forms")
+	{
+		GameHeader original;
+		const std::vector<CatalogExperimentDefinition> definitions{{"test-resource", "Test resource", "Enables a resource."}};
+		original.setResourceExperiments(definitions);
+		original.getExperiments().set("test-resource", true, original.catalogExperimentKeys());
+		for (bool players : {false, true})
+		{
+			auto* memory = new MemoryStreamBackend;
+			BinaryOutputStream out(memory);
+			if (players) original.save(&out); else original.saveWithoutPlayerInfo(&out);
+			out.flush();
+			const std::string bytes(memory->getBuffer(), memory->getPosition());
+			auto* restored = new MemoryStreamBackend(bytes.data(), bytes.size());
+			restored->seekFromStart(0);
+			BinaryInputStream in(restored);
+			GameHeader loaded;
+			REQUIRE((players ? loaded.load(&in, VERSION_MINOR) : loaded.loadWithoutPlayerInfo(&in, VERSION_MINOR)));
+			CHECK(loaded.resourceExperiments() == definitions);
+			CHECK(loaded.getExperiments().has("test-resource"));
+			CHECK(restored->getPosition() == bytes.size());
+		}
+		CHECK_FALSE(knownExperimentKey("test-resource"));
 	}
 }

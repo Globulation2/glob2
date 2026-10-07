@@ -43,6 +43,17 @@ enum class ExperimentId : Uint8
 	IceTerrain = 2,
 	TrailTerrain = 3, // Legacy serialized key: road-terrain.
 	MarketsV2 = 4,
+	// Terrain catalogue groups (src/map/TerrainGroup.h): one switch per mechanic,
+	// shared by every visual variant in the group.
+	ObstacleTerrain = 5,
+	RidgeTerrain = 6,
+	BarrenTerrain = 7,
+	RoughTerrain = 8,
+	PathTerrain = 9,
+	LavaTerrain = 10,
+	FertileTerrain = 11,
+	DeepWaterTerrain = 12,
+	VoidTerrain = 13,
 	Count
 };
 
@@ -85,6 +96,8 @@ private:
 // Pure validation shared by startup registration and embedded catalog loading.
 void validateCatalogExperiments(const std::vector<CatalogExperimentDefinition> &definitions);
 void registerCatalogExperiments(const std::vector<CatalogExperimentDefinition> &definitions);
+void saveCatalogExperimentDefinitions(GAGCore::OutputStream* stream, const std::vector<CatalogExperimentDefinition>& definitions);
+std::vector<CatalogExperimentDefinition> loadCatalogExperimentDefinitions(GAGCore::InputStream* stream);
 // Built-ins first in their historical order, followed by installed dynamic keys.
 std::vector<CatalogExperimentDefinition> registeredExperimentDefinitions();
 bool knownExperimentKey(const std::string &key, const std::vector<std::string> &allowedKeys = {});
@@ -127,9 +140,11 @@ public:
 	// reads nothing from streams older than FILE_FORMAT_VERSION_EXPERIMENTS,
 	// drops unknown keys with one line on stderr each, and returns false only
 	// when the section itself is malformed.
-	void save(GAGCore::OutputStream *stream) const;
+	// Text streams key sibling sections by name, so two sets saved side by side
+	// need distinct section names; binary streams ignore them.
+	void save(GAGCore::OutputStream *stream, const char *section = "experiments") const;
 	bool load(GAGCore::InputStream *stream, Sint32 versionMinor, bool rejectUnknown = false,
-		const std::vector<std::string> &allowedKeys = {});
+		const std::vector<std::string> &allowedKeys = {}, const char *section = "experiments");
 
 private:
 	std::bitset<COUNT> bits;

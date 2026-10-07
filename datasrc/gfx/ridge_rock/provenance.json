@@ -1,0 +1,168 @@
+{
+  "generator": "tools/artwork/terrain_synth.py",
+  "method": "procedural",
+  "generator_sha256": {
+    "tools/artwork/terrain_synth.py": "a8eda69c7b7212d9f9573766da37f1002a984d62327c108fb581e9a9c23830dc",
+    "tools/artwork/material_tiles.py": "224e159e0974023797710aa959994f11658c82da8fb80f9701e4abc13c74ed83"
+  },
+  "material": "ridge_rock",
+  "group": "ridges",
+  "label": "Ridge",
+  "recipe": {
+    "name": "ridge_rock",
+    "group": "ridges",
+    "label": "Ridge",
+    "profile": "rock",
+    "seam": {
+      "height": 4,
+      "cast_q8": 72,
+      "cast_width_q8": 768
+    },
+    "palette": {
+      "dark": [
+        72,
+        72,
+        76
+      ],
+      "mid": [
+        104,
+        104,
+        106
+      ],
+      "light": [
+        138,
+        138,
+        136
+      ],
+      "crack": [
+        46,
+        46,
+        50
+      ]
+    },
+    "style": {
+      "luma": 102,
+      "std": 12,
+      "grain_max": 10,
+      "match": 1.0
+    },
+    "phases": 1,
+    "animation_ticks": 8,
+    "alpha_range": [
+      255,
+      255
+    ],
+    "preview": null,
+    "minimap": null,
+    "placeholder_only": false,
+    "note": ""
+  },
+  "seed": "fnv1a32(\"ridge_rock:<variant>:<phase>\")",
+  "render_size": 128,
+  "tile_size": 32,
+  "variants": 16,
+  "phases": 1,
+  "frame_layout": "variant + 16 * phase",
+  "sprite": "data/gfx/terrain-ridge_rock",
+  "preview": [
+    101,
+    101,
+    103
+  ],
+  "minimap": [
+    101,
+    101,
+    103
+  ],
+  "mean_color": [
+    101,
+    101,
+    103
+  ],
+  "style_stats": {
+    "0": {
+      "luma": 101.5,
+      "std": 14.4,
+      "grain": 7.3,
+      "sat": 0.02,
+      "alpha": 255.0
+    }
+  },
+  "style_references": {
+    "data/gfx/terrain0..15.png": {
+      "use": "statistics only",
+      "stats": {
+        "luma": 79.3,
+        "std": 5.0,
+        "grain": 3.0,
+        "sat": 0.73,
+        "alpha": 255.0
+      }
+    },
+    "data/gfx/terrain128..143.png": {
+      "use": "statistics only",
+      "stats": {
+        "luma": 160.1,
+        "std": 27.0,
+        "grain": 27.9,
+        "sat": 0.74,
+        "alpha": 255.0
+      }
+    },
+    "data/gfx/terrain256..271.png": {
+      "use": "statistics only",
+      "stats": {
+        "luma": 95.2,
+        "std": 8.4,
+        "grain": 5.5,
+        "sat": 0.92,
+        "alpha": 255.0
+      }
+    },
+    "data/gfx/terrain272..287.png": {
+      "use": "statistics only",
+      "stats": {
+        "luma": 215.4,
+        "std": 6.2,
+        "grain": 4.3,
+        "sat": 0.17,
+        "alpha": 255.0
+      }
+    },
+    "data/gfx/terrain288..303.png": {
+      "use": "statistics only",
+      "stats": {
+        "luma": 102.9,
+        "std": 10.3,
+        "grain": 7.9,
+        "sat": 0.37,
+        "alpha": 255.0
+      }
+    }
+  },
+  "python": "3.14.4",
+  "pillow": "12.2.0",
+  "platform": {
+    "system": "linux",
+    "machine": "x86_64",
+    "libc": "glibc 2.43"
+  },
+  "runtime_sha256": {
+    "data/gfx/terrain-ridge_rock0.png": "ac24ad0d0b2b03906213b21dcb1be7f5d78e620cedfa15d40b5d098fc4d1303c",
+    "data/gfx/terrain-ridge_rock1.png": "979ffdab29c879b57d7d543cbe5eadf27ab3c993d4683bd6081ef4bd765246f3",
+    "data/gfx/terrain-ridge_rock2.png": "ffca8bcca08fa911038ec9e499c524eae18a45e4e2e869464a4b04b2d21cba30",
+    "data/gfx/terrain-ridge_rock3.png": "662dac9d597a53131e0b454b9f6532dcd2210c8bbb313d0884ded9b48786a3fe",
+    "data/gfx/terrain-ridge_rock4.png": "c59cb58be019dc8045b3d5006abf4fff4153c90440fcba0ac9f45dc02c00c473",
+    "data/gfx/terrain-ridge_rock5.png": "ba597d0c8c844cca23d46fd4f376c1e34237d69e8c73bf52c3b58a6be785e3be",
+    "data/gfx/terrain-ridge_rock6.png": "0e1a3acd1771f646a52fcf88699a5edf9cfc500fa73c32dbf6079ff0153e8737",
+    "data/gfx/terrain-ridge_rock7.png": "b14efc5b549efe87ef01dba40eb6c1bd3609bd0c520c5fd49f18ec4d62072eaa",
+    "data/gfx/terrain-ridge_rock8.png": "d1a8fd82591bf73354c570c4166eb45317200713a781f131b4b85f6c4efe9777",
+    "data/gfx/terrain-ridge_rock9.png": "189087cdbd09054e0b71becba15a1e2cfc87e7bdd1e72bfbb6901e33880e60bc",
+    "data/gfx/terrain-ridge_rock10.png": "d10968109e114fd93c4e8c9c3837b97bef6c83b9192d4df1386b5f8b5021bc58",
+    "data/gfx/terrain-ridge_rock11.png": "cbaa0bb7b048532cff3a275f001f2e027b55c8d65835b06afa5f8af0f251efe1",
+    "data/gfx/terrain-ridge_rock12.png": "811bc94de058af2137f033b0d084277d0f8ae7f48771a3154d6e742b5ca3683b",
+    "data/gfx/terrain-ridge_rock13.png": "2dc6b36a21bcc7420feee1d36d39b6050d4343d459643e5c6cc4e2ead09167a7",
+    "data/gfx/terrain-ridge_rock14.png": "1d7cd3d62c77e30866a58e76426cfc0e26ca0474f7b9b9b220f7d9851fd5c4f1",
+    "data/gfx/terrain-ridge_rock15.png": "8623995879475299201548e47b0b99e906446d4a1a2dd86c50a3be3dc89f0978"
+  }
+}

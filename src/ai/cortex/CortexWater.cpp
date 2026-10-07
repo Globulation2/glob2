@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2026 The Globulation 2 Authors
 
+#include "Material.h"
 #include "field/UniformTraversal.h"
 #include "CortexWater.h"
 #include "CortexTypes.h"
@@ -81,7 +82,7 @@ namespace Cortex
 					// Probe shore resources before the radius and passability gates:
 					// harvestable algae can sit beside reachable ground.
 					if(algaeAdjacent!=NULL && !*algaeAdjacent
-					   && isResourceTakeable(map,nx,ny,ALGA)
+					   && MapState::hasMaterial(map.state(),map.tileIndex(nx,ny),MaterialId::Algae)
 					   && isMapDiscovered(map,nx,ny,team->allies))*algaeAdjacent=true;
 					if(warpDistMax(map,cx,cy,nx,ny)>R)return;
 					const size_t idx=static_cast<size_t>(ny)*w+nx;
@@ -118,7 +119,7 @@ namespace Cortex
 		// Only existence matters, so visit adjacent tiles in storage order.
 		for (int y = 0; y < h && out.algaeDiscovered == 0; y++)
 			for (int x = 0; x < w; x++)
-				if (isResourceTakeable(map,x, y, ALGA)
+				if (MapState::hasMaterial(map.state(),map.tileIndex(x,y),MaterialId::Algae)
 				 && isMapDiscovered(map,x, y, team->allies))
 				{
 					out.algaeDiscovered = 1;

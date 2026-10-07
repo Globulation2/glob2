@@ -25,7 +25,8 @@
 bool Map::checkTile(int x, int y, TileChecks c, bool canSwim,
                     Uint32 teamMask, Uint16 ignoreGid) const
 {
-	if (c.noResource && isResource(x, y))
+	if (c.noResource && (c.requireBuildable ? resourceBlocksBuilding(coordToIndex(x,y))
+		: resourceBlocksGround(coordToIndex(x,y))))
 		return false;
 	Uint16 buid = getBuilding(x, y);
 	if (buid != NOGBID && buid != ignoreGid)
@@ -141,14 +142,14 @@ std::optional<Offset> Map::doesUnitTouchResource(Unit *unit) const
 	return std::nullopt;
 }
 
-std::optional<Offset> Map::doesUnitTouchResource(Unit *unit, int resourceType) const
+std::optional<Offset> Map::doesUnitTouchMaterialSource(Unit *unit, MaterialId material) const
 {
 	int x=unit->posX;
 	int y=unit->posY;
 	Uint32 me=unit->owner->me;
 	for (int tdx=-1; tdx<=1; tdx++)
 		for (int tdy=-1; tdy<=1; tdy++)
-			if (isResourceTakeable(x+tdx, y+tdy, resourceType) && ((getForbidden(x+tdx, y+tdy)&me)==0))
+			if (isMaterialTakeable(x+tdx, y+tdy, material) && ((getForbidden(x+tdx, y+tdy)&me)==0))
 				return Offset{tdx, tdy};
 	return std::nullopt;
 }
@@ -165,7 +166,7 @@ bool Map::isStockedMarketTile(Uint16 gid, int teamNumber, int resourceType) cons
 	const Building *b = game->teams[teamNumber]->myBuildings[Building::GIDtoID(gid)];
 	// The stock is the team's shared pool; only a market whose level takes the
 	// resource at all hands it out.
-	return stockSupplierEligible(b,nullptr,resourceType,1);
+	return stockSupplierEligibleSlot(b,nullptr,resourceType,1);
 }
 
 void Map::invalidateSupplierLocations()
@@ -174,11 +175,11 @@ void Map::invalidateSupplierLocations()
 	for (auto& team : gradientRuntime->stockRevision) for (auto& revision : team) ++revision;
 }
 
-Building *Map::touchedStockedMarket(Unit *unit, int resourceType) const
+Building *Map::touchedStockedMarketSlot(Unit *unit, int resourceType) const
 {
 	const int teamNumber=unit->owner->teamNumber;
 	const Building* consumer=unit->attachedBuilding;
-	const unsigned modes=resourceSupplyModes(consumer,resourceType);
+	const unsigned modes=materialSupplyModesSlot(consumer,resourceType);
 	const bool overlays=(modes&2) || game->buildingsTypes.usesOverlaySuppliers();
 	if (overlays && gradientRuntime->supplierLocationsDirty)
 	{
@@ -206,7 +207,7 @@ Building *Map::touchedStockedMarket(Unit *unit, int resourceType) const
 	const auto consider = [&](Uint16 gid) {
 		if (gid==NOGBID || Building::GIDtoTeam(gid)!=teamNumber) return;
 		Building* supplier=game->teams[teamNumber]->myBuildings[Building::GIDtoID(gid)];
-		if (!stockSupplierEligible(supplier,consumer,resourceType,modes)) return;
+		if (!stockSupplierEligibleSlot(supplier,consumer,resourceType,modes)) return;
 		if (!best || supplier->type->semantics.market.pickupPenalty < best->type->semantics.market.pickupPenalty ||
 			(supplier->type->semantics.market.pickupPenalty == best->type->semantics.market.pickupPenalty && supplier->gid<best->gid)) best=supplier;
 	};
@@ -218,7 +219,7 @@ Building *Map::touchedStockedMarket(Unit *unit, int resourceType) const
 			{
 				if (isStockedMarketTile(gid,teamNumber,resourceType)) {
 					Building* candidate=game->teams[teamNumber]->myBuildings[Building::GIDtoID(gid)];
-					if (stockSupplierEligible(candidate,consumer,resourceType,1)) return candidate;
+					if (stockSupplierEligibleSlot(candidate,consumer,resourceType,1)) return candidate;
 				}
 				continue;
 			}
@@ -229,11 +230,11 @@ Building *Map::touchedStockedMarket(Unit *unit, int resourceType) const
 	return best;
 }
 
-std::optional<Offset> Map::doesPosTouchResource(int x, int y, int resourceType) const
+std::optional<Offset> Map::doesPosTouchMaterialSource(int x, int y, MaterialId material) const
 {
 	for (int tdx=-1; tdx<=1; tdx++)
 		for (int tdy=-1; tdy<=1; tdy++)
-			if (isResourceTakeable(x+tdx, y+tdy, resourceType))
+			if (isMaterialTakeable(x+tdx, y+tdy, material))
 				return Offset{tdx, tdy};
 	return std::nullopt;
 }

@@ -14,7 +14,7 @@
         "hpInit": 1,
         "hpMax": 675,
         "isBuildingSite": 1,
-        "maxResource": [
+        "maxMaterial": [
           8,
           0,
           0,
@@ -40,7 +40,7 @@
       "semantics": {
         "admittedUnitMask": 7,
         "ammunitionCost": 1,
-        "ammunitionResource": 3,
+        "ammunitionMaterial": 3,
         "feeding": {
           "convertsUnits": false,
           "cost": {},
@@ -72,16 +72,16 @@
           "suppliesStockExperiment": "markets-v2",
           "suppliesDirectStock": false,
           "fetchesDirectStock": false,
-          "suppliesStockResources": [
+          "suppliesStockMaterials": [
             "wood"
           ],
-          "suppliesDirectStockResources": [
+          "suppliesDirectStockMaterials": [
             "wood"
           ],
-          "fetchesStockResources": [
+          "fetchesStockMaterials": [
             "wood"
           ],
-          "fetchesDirectStockResources": [
+          "fetchesDirectStockMaterials": [
             "wood"
           ]
         },
@@ -116,7 +116,7 @@
           "wood": 8
         },
         "repairCost": {},
-        "replenishResources": [
+        "replenishMaterials": [
           "wood"
         ]
       },
@@ -155,7 +155,7 @@
       "semantics": {
         "admittedUnitMask": 7,
         "ammunitionCost": 1,
-        "ammunitionResource": 3,
+        "ammunitionMaterial": 3,
         "feeding": {
           "convertsUnits": false,
           "cost": {},
@@ -187,10 +187,10 @@
           "suppliesStockExperiment": "markets-v2",
           "suppliesDirectStock": false,
           "fetchesDirectStock": false,
-          "suppliesStockResources": [],
-          "suppliesDirectStockResources": [],
-          "fetchesStockResources": [],
-          "fetchesDirectStockResources": []
+          "suppliesStockMaterials": [],
+          "suppliesDirectStockMaterials": [],
+          "fetchesStockMaterials": [],
+          "fetchesDirectStockMaterials": []
         },
         "occupiesGround": true,
         "placeable": false,
@@ -231,7 +231,7 @@
         "repairCost": {
           "wood": 8
         },
-        "replenishResources": []
+        "replenishMaterials": []
       },
       "presentation": {
         "displayName": "swimmingpool",
@@ -262,7 +262,7 @@
         "hpMax": 1000,
         "isBuildingSite": 1,
         "level": 1,
-        "maxResource": [
+        "maxMaterial": [
           12,
           6,
           0,
@@ -289,7 +289,7 @@
       "semantics": {
         "admittedUnitMask": 7,
         "ammunitionCost": 1,
-        "ammunitionResource": 3,
+        "ammunitionMaterial": 3,
         "feeding": {
           "convertsUnits": false,
           "cost": {},
@@ -321,21 +321,21 @@
           "suppliesStockExperiment": "markets-v2",
           "suppliesDirectStock": false,
           "fetchesDirectStock": false,
-          "suppliesStockResources": [
+          "suppliesStockMaterials": [
             "wood",
-            "wheat"
+            "food"
           ],
-          "suppliesDirectStockResources": [
+          "suppliesDirectStockMaterials": [
             "wood",
-            "wheat"
+            "food"
           ],
-          "fetchesStockResources": [
+          "fetchesStockMaterials": [
             "wood",
-            "wheat"
+            "food"
           ],
-          "fetchesDirectStockResources": [
+          "fetchesDirectStockMaterials": [
             "wood",
-            "wheat"
+            "food"
           ]
         },
         "occupiesGround": true,
@@ -367,12 +367,12 @@
         "assignmentLimit": 20,
         "constructionCost": {
           "wood": 12,
-          "wheat": 6
+          "food": 6
         },
         "repairCost": {},
-        "replenishResources": [
+        "replenishMaterials": [
           "wood",
-          "wheat"
+          "food"
         ]
       },
       "presentation": {
@@ -410,7 +410,7 @@
       "semantics": {
         "admittedUnitMask": 7,
         "ammunitionCost": 1,
-        "ammunitionResource": 3,
+        "ammunitionMaterial": 3,
         "feeding": {
           "convertsUnits": false,
           "cost": {},
@@ -442,10 +442,10 @@
           "suppliesStockExperiment": "markets-v2",
           "suppliesDirectStock": false,
           "fetchesDirectStock": false,
-          "suppliesStockResources": [],
-          "suppliesDirectStockResources": [],
-          "fetchesStockResources": [],
-          "fetchesDirectStockResources": []
+          "suppliesStockMaterials": [],
+          "suppliesDirectStockMaterials": [],
+          "fetchesStockMaterials": [],
+          "fetchesDirectStockMaterials": []
         },
         "occupiesGround": true,
         "placeable": false,
@@ -485,9 +485,9 @@
         "constructionCost": {},
         "repairCost": {
           "wood": 12,
-          "wheat": 6
+          "food": 6
         },
-        "replenishResources": []
+        "replenishMaterials": []
       },
       "presentation": {
         "displayName": "swimmingpool",
@@ -518,7 +518,7 @@
         "hpMax": 1500,
         "isBuildingSite": 1,
         "level": 2,
-        "maxResource": [
+        "maxMaterial": [
           8,
           4,
           0,
@@ -545,7 +545,7 @@
       "semantics": {
         "admittedUnitMask": 7,
         "ammunitionCost": 1,
-        "ammunitionResource": 3,
+        "ammunitionMaterial": 3,
         "feeding": {
           "convertsUnits": false,
           "cost": {},
@@ -577,27 +577,27 @@
           "suppliesStockExperiment": "markets-v2",
           "suppliesDirectStock": false,
           "fetchesDirectStock": false,
-          "suppliesStockResources": [
+          "suppliesStockMaterials": [
             "wood",
-            "wheat",
+            "food",
             "stone",
             "algae"
           ],
-          "suppliesDirectStockResources": [
+          "suppliesDirectStockMaterials": [
             "wood",
-            "wheat",
+            "food",
             "stone",
             "algae"
           ],
-          "fetchesStockResources": [
+          "fetchesStockMaterials": [
             "wood",
-            "wheat",
+            "food",
             "stone",
             "algae"
           ],
-          "fetchesDirectStockResources": [
+          "fetchesDirectStockMaterials": [
             "wood",
-            "wheat",
+            "food",
             "stone",
             "algae"
           ]
@@ -631,14 +631,14 @@
         "assignmentLimit": 20,
         "constructionCost": {
           "wood": 8,
-          "wheat": 4,
+          "food": 4,
           "stone": 6,
           "algae": 8
         },
         "repairCost": {},
-        "replenishResources": [
+        "replenishMaterials": [
           "wood",
-          "wheat",
+          "food",
           "stone",
           "algae"
         ]
@@ -678,7 +678,7 @@
       "semantics": {
         "admittedUnitMask": 7,
         "ammunitionCost": 1,
-        "ammunitionResource": 3,
+        "ammunitionMaterial": 3,
         "feeding": {
           "convertsUnits": false,
           "cost": {},
@@ -710,10 +710,10 @@
           "suppliesStockExperiment": "markets-v2",
           "suppliesDirectStock": false,
           "fetchesDirectStock": false,
-          "suppliesStockResources": [],
-          "suppliesDirectStockResources": [],
-          "fetchesStockResources": [],
-          "fetchesDirectStockResources": []
+          "suppliesStockMaterials": [],
+          "suppliesDirectStockMaterials": [],
+          "fetchesStockMaterials": [],
+          "fetchesDirectStockMaterials": []
         },
         "occupiesGround": true,
         "placeable": false,
@@ -753,11 +753,11 @@
         "constructionCost": {},
         "repairCost": {
           "wood": 8,
-          "wheat": 4,
+          "food": 4,
           "stone": 6,
           "algae": 8
         },
-        "replenishResources": []
+        "replenishMaterials": []
       },
       "presentation": {
         "displayName": "swimmingpool",

@@ -19,6 +19,8 @@ void Map::tile(int rx, int ry)
 	const auto oldLegacyTerrain = legacyTerrain;
 	const auto oldScriptAreas = scriptAreaCells;
 	const auto oldTerrain = terrainIds;
+    const auto oldStockIndices=resourceStockIndices;
+    const auto oldStocks=resourceStocks;
 	const std::vector<Uint32> oldDiscovered = mapDiscovered;
 	const std::vector<Uint8> oldUndermap(undermap, undermap + size);
 	std::string names[9];
@@ -48,6 +50,17 @@ void Map::tile(int rx, int ry)
 			mapDiscovered[dst] = oldDiscovered[src];
 			undermap[dst] = oldUndermap[src];
 		}
+    rebuildResourceState();
+    if (!oldStockIndices.empty())
+        for (int y=0;y<h;++y) for (int x=0;x<w;++x)
+        {
+            const size_t src=((y%oldH)<<oldWDec)+(x%oldW);
+            if (!oldStockIndices[src]) continue;
+            const size_t dst=coordToIndex(x,y);
+            const auto before=resourceMaterialMaskAt(dst);
+            resourceStocks[resourceStockIndices[dst]-1]=oldStocks[oldStockIndices[src]-1];
+            refreshResourceTotal(dst); materialStockChanged(dst,before);
+        }
 	rebuildTerrainCounts();
 	finishTerrainEdit();
 	for (int n = 0; n < 9; n++)

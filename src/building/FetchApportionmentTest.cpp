@@ -23,7 +23,7 @@ namespace
 {
 	// Hires `hires` fetchers one at a time, each for whatever rank() puts first,
 	// and returns the resource indices in the order they were staffed. This is
-	// exactly how subscribeToBringResourcesStep consumes the ranking: one unit
+	// exactly how subscribeToBringMaterialsStep consumes the ranking: one unit
 	// per call, with served incremented by the subscription itself.
 	std::vector<int> hireSequence(std::vector<int> targets, std::vector<int> served, int hires)
 	{

@@ -16,7 +16,7 @@ Entities::Building::Building(int building_type, int team, bool under_constructio
 
 bool Entities::Building::is_entity(Map* map, int posx, int posy)
 {
-	int building_id=map->getBuilding(posx, posy);
+	int building_id=map->getBuilding(posx,posy);
 	if(building_id==NOGBID)
 		return false;
 	int team_id=::Building::GIDtoTeam(building_id);
@@ -71,7 +71,7 @@ Entities::AnyTeamBuilding::AnyTeamBuilding(int team, bool under_construction) : 
 
 bool Entities::AnyTeamBuilding::is_entity(Map* map, int posx, int posy)
 {
-	int building_id=map->getBuilding(posx, posy);
+	int building_id=map->getBuilding(posx,posy);
 	if(building_id==NOGBID)
 		return false;
 	int team_id=::Building::GIDtoTeam(building_id);
@@ -123,7 +123,7 @@ Entities::AnyBuilding::AnyBuilding(bool under_construction) : under_construction
 
 bool Entities::AnyBuilding::is_entity(Map* map, int posx, int posy)
 {
-	int building_id=map->getBuilding(posx, posy);
+	int building_id=map->getBuilding(posx,posy);
 	if(building_id==NOGBID)
 		return false;
 	int team_id=::Building::GIDtoTeam(building_id);

@@ -178,7 +178,7 @@ public:
 	Building *targetBuilding;
 	//! no idea what this is. TODO: Explain
 	Building *ownExchangeBuilding;
-	void receiveCarriedResource(int resource, ResourcePacket packet);
+	void receiveCarriedMaterial(int resource, MaterialPacket packet);
 	
 	// gui
 	int levelUpAnimation;

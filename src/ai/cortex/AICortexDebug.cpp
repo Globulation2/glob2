@@ -4,7 +4,11 @@
 
 #include "AICortex.h"
 #include "CortexObservation.h"
-#include "CortexWheat.h"
+#include "CortexFoodSources.h"
+
+// CORTEX_DUMP and CSV column names containing wheat/maxWheat are legacy
+// diagnostic aliases. Values now describe recipe supply stock/capacity or
+// sources of the Food material, as indicated by the canonical C++ fields.
 
 #include "Player.h"
 #include "team/Team.h"
@@ -70,34 +74,34 @@ void AICortex::dumpAttackState(const Cortex::CortexObservation& obs) const
 	     << " maxBuildLevel=" << obs.maxBuildLevel
 	     << " warFlagsActive=" << obs.warFlagsActive << "\n";
 
-	// per-swarm WHEAT buffer / workers — shows whether the economy loop has stalled.
+	// per-swarm Food buffer / workers — shows whether the economy loop has stalled.
 	for (int i = 0; i < obs.swarmCount && i < CORTEX_MAX_TRACKED_SWARMS; i++)
 	{
 		const TrackedBuilding& s = obs.trackedSwarms[i];
 		if (!s.valid) continue;
-		cerr << "CORTEX_DUMP   swarm[" << i << "] wheat=" << s.wheat << "/" << s.maxWheat
+		cerr << "CORTEX_DUMP   swarm[" << i << "] wheat=" << s.supplyStock << "/" << s.supplyCapacity
 		     << " maxUnitWorking=" << s.maxUnitWorking
 		     << " inside=" << s.unitsInside
 		     << " priority=" << s.priority
-		     << " nearestWheat=" << s.nearestWheatDist
-		     << " harvestable=" << s.harvestableWheatNearby << "\n";
+		     << " nearestWheat=" << s.nearestFoodSourceDistance
+		     << " harvestable=" << s.harvestableFoodSourcesNearby << "\n";
 	}
 
-	// per-inn wheat-gate detail (DIAGNOSTIC: feedCap root-cause). feedCapacity sums
+	// per-inn food-gate detail (DIAGNOSTIC: feedCap root-cause). feedCapacity sums
 	// only inns that pass the gate (harvestable >= CORTEX_WHEAT_MIN_TILES). nearestWheat
-	// is forbidden-BLIND; harvestable is the forbidden-AWARE gate count. wheat-present
-	// (nearestWheat small) but gate-fail (harvestable < MIN) => wheat is FORBIDDEN (b);
-	// nearestWheat large/-1 => wheat DEPLETED/ABSENT (c).
+	// is forbidden-BLIND; harvestable is the forbidden-AWARE gate count. food-present
+	// (nearestWheat small) but gate-fail (harvestable < MIN) => food is FORBIDDEN (b);
+	// nearestWheat large/-1 => food DEPLETED/ABSENT (c).
 	for (int i = 0; i < obs.innCount && i < CORTEX_MAX_TRACKED_INNS; i++)
 	{
 		const TrackedBuilding& n = obs.trackedInns[i];
 		if (!n.valid) continue;
-		const bool feeds = (n.harvestableWheatNearby >= CORTEX_WHEAT_MIN_TILES);
-		cerr << "CORTEX_DUMP   inn[" << i << "] wheat=" << n.wheat << "/" << n.maxWheat
+		const bool feeds = (n.harvestableFoodSourcesNearby >= CORTEX_WHEAT_MIN_TILES);
+		cerr << "CORTEX_DUMP   inn[" << i << "] wheat=" << n.supplyStock << "/" << n.supplyCapacity
 		     << " maxUnitWorking=" << n.maxUnitWorking
 		     << " inside=" << n.unitsInside << "/" << n.maxUnitInside
-		     << " nearestWheat=" << n.nearestWheatDist
-		     << " harvestable=" << n.harvestableWheatNearby
+		     << " nearestWheat=" << n.nearestFoodSourceDistance
+		     << " harvestable=" << n.harvestableFoodSourcesNearby
 		     << " feedsGate=" << (feeds ? 1 : 0) << "\n";
 	}
 
@@ -112,7 +116,7 @@ void AICortex::dumpAttackState(const Cortex::CortexObservation& obs) const
 			{
 				const BuildCandidate& cand = obs.buildCandidates[types[ti]][c];
 				if (!cand.valid) continue;
-				if (valid == 0) { bestWheat = cand.wheatDist; bx = cand.x; by = cand.y; }
+				if (valid == 0) { bestWheat = cand.foodSourceDistance; bx = cand.x; by = cand.y; }
 				valid++;
 			}
 			cerr << "CORTEX_DUMP PLACE " << names[ti] << " validCandidates=" << valid
@@ -179,7 +183,7 @@ void AICortex::dumpWorkerTrace(const Cortex::CortexObservation& obs,
 	if (!prefix || !prefix[0]) return;
 	const std::string path = std::string(prefix) + ".team" + std::to_string(me) + ".csv";
 	const std::string header = "tick,team,swarm_index,gid,wheat,maxWheat,maxUnitWorking,"
-			           "unitsInside,maxUnitInside,nearestWheatDist,harvestableWheatNearby,"
+			           "unitsInside,maxUnitInside,nearestFoodSourceDistance,harvestableWheatNearby,"
 			           "freeWorkers,totalFree,totalNeeded,workers,swarmCount,feedCapacity,"
 			           "starvingUnits,needFood,maxBuildLevel,desired\n";
 
@@ -194,9 +198,9 @@ void AICortex::dumpWorkerTrace(const Cortex::CortexObservation& obs,
 		const int desired = (haveTune && tune.swarmWorkers[i] >= 0)
 		                  ? tune.swarmWorkers[i] : t.maxUnitWorking;
 		row << obs.tick << ',' << me << ',' << i << ',' << t.gid << ','
-		    << t.wheat << ',' << t.maxWheat << ',' << t.maxUnitWorking << ','
+		    << t.supplyStock << ',' << t.supplyCapacity << ',' << t.maxUnitWorking << ','
 		    << t.unitsInside << ',' << t.maxUnitInside << ','
-		    << t.nearestWheatDist << ',' << t.harvestableWheatNearby << ','
+		    << t.nearestFoodSourceDistance << ',' << t.harvestableFoodSourcesNearby << ','
 		    << obs.freeWorkers << ',' << obs.totalFree << ',' << obs.totalNeeded << ','
 		    << obs.workers << ',' << obs.swarmCount << ',' << obs.feedCapacity << ','
 		    << obs.starvingUnits << ',' << obs.needFood << ',' << obs.maxBuildLevel << ','
@@ -258,8 +262,8 @@ void AICortex::dumpDecideTrace(const Cortex::CortexObservation& obs,
 // INN DIAGNOSTIC TRACE (docs debugging Cortex-vs-Nicowar worker allocation to inns).
 // The inn-side companion to dumpWorkerTrace: appends one CSV row per valid tracked
 // inn to <prefix>.team<N>.csv, where <prefix> is GLOB2_CORTEX_INN_TRACE. Each row is
-// the inn's observed state this decision cycle (wheat buffer, restock demand, the
-// forbidden-blind/aware wheat diagnostics), the worker cap the tune action chose (the
+// the inn's observed state this decision cycle (food buffer, restock demand, the
+// forbidden-blind/aware food diagnostics), the worker cap the tune action chose (the
 // same `desired` convention as the swarm trace), plus colony-level context and the
 // production-mix tier facts. The tiers are recomputed here via the pure
 // CortexPolicy::computeFacts because getOrder() has no DecideFacts to pass through
@@ -277,7 +281,7 @@ void AICortex::dumpInnTrace(const Cortex::CortexObservation& obs,
 	if (!prefix || !prefix[0]) return;
 	const std::string path = std::string(prefix) + ".team" + std::to_string(me) + ".csv";
 	const std::string header = "tick,team,inn_index,gid,wheat,maxWheat,maxUnitWorking,unitsInside,"
-			           "maxUnitInside,nearestWheatDist,harvestableWheatNearby,"
+			           "maxUnitInside,nearestFoodSourceDistance,harvestableWheatNearby,"
 			           "diagBlindWheatNearby,restockTripsNeeded,priority,ticksSinceFinished,"
 			           "desired,freeWorkers,workers,warriors,totalUnit,feedCapacity,"
 			           "starvingUnits,needFood,growWorker,growWarrior,tierBase,tierMid,"
@@ -304,10 +308,10 @@ void AICortex::dumpInnTrace(const Cortex::CortexObservation& obs,
 		const int desired = (haveTune && tune.innWorkers[i] >= 0)
 		                  ? tune.innWorkers[i] : n.maxUnitWorking;
 		row << obs.tick << ',' << me << ',' << i << ',' << n.gid << ','
-		    << n.wheat << ',' << n.maxWheat << ',' << n.maxUnitWorking << ','
+		    << n.supplyStock << ',' << n.supplyCapacity << ',' << n.maxUnitWorking << ','
 		    << n.unitsInside << ',' << n.maxUnitInside << ','
-		    << n.nearestWheatDist << ',' << n.harvestableWheatNearby << ','
-		    << n.diagBlindWheatNearby << ',' << n.restockTripsNeeded << ','
+		    << n.nearestFoodSourceDistance << ',' << n.harvestableFoodSourcesNearby << ','
+		    << n.unrestrictedFoodSourcesNearby << ',' << n.restockTripsNeeded << ','
 		    << n.priority << ',' << n.ticksSinceFinished << ',' << desired << ','
 		    << obs.freeWorkers << ',' << obs.workers << ',' << obs.warriors << ','
 		    << obs.totalUnit << ',' << obs.feedCapacity << ',' << obs.starvingUnits << ','

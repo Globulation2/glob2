@@ -14,7 +14,7 @@ Entities::Water::Water()
 
 bool Entities::Water::is_entity(Map* map, int posx, int posy)
 {
-	return terrainProvidesFertility(map->terrainPropertiesAt(posx, posy));
+	return terrainProvidesFertility(map->terrainPropertiesAt(posx,posy));
 }
 
 bool Entities::Water::operator==(const Entity& rhs) const
@@ -98,7 +98,7 @@ Entities::Sand::Sand()
 
 bool Entities::Sand::is_entity(Map* map, int posx, int posy)
 {
-	return map->terrainPropertiesAt(posx, posy).shoreline;
+	return map->terrainPropertiesAt(posx,posy).shoreline;
 }
 
 bool Entities::Sand::operator==(const Entity& rhs) const

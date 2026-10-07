@@ -5,6 +5,7 @@
 #include "Game.h"
 #include "GlobalContainer.h"
 #include "MapEdit.h"
+#include <optional>
 #include "PhoneEditor.h"
 #include "ScriptEditorScreen.h"
 #include "Utilities.h"
@@ -114,21 +115,41 @@ bool MapEdit::performViewAction(const std::string& action, float relMouseX, floa
 		menuScreen.reset();
 		showingMenuScreen=false;
 	}
-	else if (action == "import terrain definitions")
+	else if (action == "import terrain definitions" || action == "import resource definitions")
 	{
 		performAction("unselect");
 		loadSaveScreen = std::make_unique<LoadSaveDialog>(
-			"terrain", "json", true, Glob2UI::tr("[Import Terrain Definitions]"), nullptr, nullptr,
+			action == "import terrain definitions" ? "terrain" : "resources", "json", true,
+			Glob2UI::tr(action == "import terrain definitions" ? "[Import Terrain Definitions]" : "[Import Resource Definitions]"), nullptr, nullptr,
 			nullptr, Glob2UI::Surface::Editor, false);
 		attachDialog(*loadSaveScreen);
 		showingLoad = true;
-		importingTerrain = true;
+		importingTerrain = action == "import terrain definitions";
+		importingResources = !importingTerrain;
 	}
-	else if (action == "open terrain palette")
+	else if (action.starts_with("open terrain palette"))
+	{
+		// "open terrain palette <group>" opens scrolled to that catalogue group; the
+		// current brush stays highlighted in the palette.
+		const std::optional<::TerrainType> brush = TerrainSelector::isBaseTerrain(terrainType)
+			? std::optional(TerrainSelector::baseTerrain(terrainType)) : std::nullopt;
+		performAction("unselect");
+		const std::string prefix = "open terrain palette";
+		const int focus = action.size() > prefix.size() + 1
+			? TerrainPaletteDialog::groupFor(action.substr(prefix.size() + 1)) : -1;
+		brushBeforePalette = terrainType;
+		terrainPalette = std::make_unique<TerrainPaletteDialog>(game.map.frozenTerrainRegistry(), brush, focus);
+		attachDialog(*terrainPalette);
+		terrainPalette->focusOnOpen();
+	}
+	else if (action == "open resource palette")
 	{
 		performAction("unselect");
-		terrainPalette = std::make_unique<TerrainPaletteDialog>(game.map.frozenTerrainRegistry());
-		attachDialog(*terrainPalette);
+		for (const auto& key : game.map.resourceRegistry().experimentKeys())
+			if (globalContainer->settings.experiments.has(key))
+				game.gameHeader.getExperiments().set(key, true, game.map.resourceRegistry().experimentKeys());
+		resourcePalette = std::make_unique<ResourcePaletteDialog>(game.map.frozenResourceRegistry(), game.gameHeader.getExperiments());
+		attachDialog(*resourcePalette);
 	}
 	else if (action == "open load screen")
 	{
@@ -144,6 +165,7 @@ bool MapEdit::performViewAction(const std::string& action, float relMouseX, floa
 		loadSaveScreen.reset();
 		showingLoad=false;
 		importingTerrain = false;
+		importingResources = false;
 	}
 	else if(action=="open save screen")
 	{

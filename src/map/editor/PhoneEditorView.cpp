@@ -68,9 +68,9 @@ void PhoneEditor::prepareInspector()
 		add("[Minimum Level To Flag]", editor.buildingMinimumLevelScrollBox);
 		add("[Worker]",editor.buildingWorkerLevelScrollBox);
 		add("[ground attack]",editor.buildingBombingScrollBox);
-		for (int r=0; r<MAX_RESOURCES; ++r)
+		for (int r=0; r<MaterialCount; ++r)
 			if (editor.buildingResourceControls[r]->enabled)
-				properties.push_back({editor.buildingResourceControls[r],getResourceName(r),{}});
+				properties.push_back({editor.buildingResourceControls[r],getMaterialName(r),{}});
 		add("[range]", editor.buildingRadiusScrollBox);
 	}
 	else

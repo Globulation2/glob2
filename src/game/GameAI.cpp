@@ -42,10 +42,13 @@ void Game::observeUnpolledAI() {
  // Replay/inactive replicas still update their historical visibility at the
  // legacy phase. Serialize this exceptional observation against private jobs.
  drainAI();
- constexpr auto requirements=SimulationSnapshot::bit(SimulationSnapshot::Component::Terrain)
+ // Resource memories read the registry's material yields, so the catalogs ride along.
+ constexpr auto requirements=SimulationSnapshot::bit(SimulationSnapshot::Component::Catalogs)
+  |SimulationSnapshot::bit(SimulationSnapshot::Component::Terrain)
   |SimulationSnapshot::bit(SimulationSnapshot::Component::Resources)
   |SimulationSnapshot::bit(SimulationSnapshot::Component::Visibility)
   |SimulationSnapshot::bit(SimulationSnapshot::Component::Teams);
- const AIEngine::AIWorldView world(SimulationSnapshot::capture(*this,{},requirements));
+ const AIEngine::AIWorldView world(aiPipeline ? aiPipeline->observe(*this,requirements)
+  : SimulationSnapshot::capture(*this,AIEngine::AIWorldView::captureCatalog(*this),requirements));
  for(auto* controller:idle)controller->observe(world);
 }

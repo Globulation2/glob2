@@ -5564,5 +5564,189 @@ FFmpeg није доступан, па је снимање искључено. �
 Увези дефиниције терена
 [Terrain palette]
 Палета терена
+[Food]
+Храна
+[Paper]
+Папир
+[Cherries]
+Трешње
+[Oranges]
+Поморанџе
+[Prunes]
+Шљиве
+[Gold]
+Злато
+[Metal]
+Метал
+[Glass]
+Стакло
+[Fabric]
+Тканина
+[Import Resource Definitions]
+Увези дефиниције ресурса
+[Resource palette]
+Палета ресурса
+[Trees]
+Дрвеће
+[Rocks]
+Стене
+[Cherry tree]
+Трешњево дрво
+[Orange tree]
+Дрво поморанџе
+[Prune tree]
+Шљивино дрво
+[Gold ore]
+Златна руда
+[Iron ore]
+Гвоздена руда
+[Sand]
+Песак
+[Cotton]
+Памук
 [Reroll terrain look]
 Поново насумично изабери изглед терена
+[boulders]
+
+[hedge]
+
+[thicket]
+
+[ridge_rock]
+
+[outcrop]
+
+[dirt]
+
+[clay]
+
+[gravel]
+
+[flower_meadow]
+
+[mud]
+
+[marsh]
+
+[deep_snow]
+
+[scree]
+
+[dirt_track]
+
+[boardwalk]
+
+[lava]
+
+[ember_field]
+
+[loam]
+
+[moss]
+
+[spring_meadow]
+
+[deep_water]
+
+[dark_water]
+
+[void_hole]
+
+[chasm]
+
+[terrain group water]
+
+[terrain group sand]
+
+[terrain group grass]
+
+[terrain group ice]
+
+[terrain group paths]
+
+[terrain group obstacles]
+
+[terrain group ridges]
+
+[terrain group barren]
+
+[terrain group rough]
+
+[terrain group lava]
+
+[terrain group fertile]
+
+[terrain group deep-water]
+
+[terrain group void]
+
+[experiment obstacle-terrain]
+
+[experiment obstacle-terrain help]
+
+[experiment ridge-terrain]
+
+[experiment ridge-terrain help]
+
+[experiment barren-terrain]
+
+[experiment barren-terrain help]
+
+[experiment rough-terrain]
+
+[experiment rough-terrain help]
+
+[experiment path-terrain]
+
+[experiment path-terrain help]
+
+[experiment lava-terrain]
+
+[experiment lava-terrain help]
+
+[experiment fertile-terrain]
+
+[experiment fertile-terrain help]
+
+[experiment deep-water-terrain]
+
+[experiment deep-water-terrain help]
+
+[experiment void-terrain]
+
+[experiment void-terrain help]
+
+[terrain group custom]
+
+[terrain group classic]
+
+[terrain rule walkable]
+
+[terrain rule swimmable]
+
+[terrain rule impassable]
+
+[terrain rule no flying]
+
+[terrain rule buildable]
+
+[terrain rule speed %0]
+
+[terrain rule crops grow]
+
+[terrain rule irrigates]
+
+[terrain rule stops nearby growth]
+
+[terrain rule blocks shots]
+
+[terrain rule hurts walkers]
+
+[terrain rule hurts fliers]
+
+[terrain palette hint]
+
+[terrain rule algae grow]
+
+[terrain palette experiments hint]
+

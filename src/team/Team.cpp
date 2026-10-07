@@ -66,8 +66,8 @@ void Team::init(void)
 	prestige=0;
 	unitConversionLost = 0;
 	unitConversionGained = 0;
-	for(int i=0; i<MAX_NB_RESOURCES; ++i)
-		teamResources[i]=0;
+	for(int i=0; i<MaterialSlotCount; ++i)
+		teamMaterials[i]=0;
 
 	for(int i=0; i<GESize; ++i)
 		eventCooldownTimers[i]=0;

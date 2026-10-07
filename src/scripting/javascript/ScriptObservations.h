@@ -1,3 +1,5 @@
+#include "ResourceRegistry.h"
+#include <map>
 // SPDX-License-Identifier: GPL-3.0-or-later
 #pragma once
 #include "ScriptValue.h"
@@ -25,19 +27,25 @@ class Observations
 		unsigned tick = 0;
 		unsigned short terrain = 0, fertility = 0;
 		TerrainType terrainType = GRASS;
-		unsigned char type = 255, variety = 0, amount = 0;
+		unsigned short type = 65535;
+		unsigned char variety = 0;
+		unsigned amount = 0;
 		bool known = false;
 	};
 	Game &game; // Scenario-owner fallback only; bound AI queries never access it.
 	mutable const AIEngine::AIWorldView* view = nullptr;
 	mutable std::shared_ptr<const TerrainRegistry> terrainDefinitionRegistry;
 	mutable Value terrainDefinitions;
+	mutable std::shared_ptr<const ResourceRegistry> terrainResourceDefinitionRegistry;
+	mutable std::shared_ptr<const ResourceRegistry> resourceDefinitionRegistry;
+	mutable Value resourceDefinitions;
 	int team;
 	unsigned profile = 1;
 	// Lazily allocated indexed chunks avoid tree lookups without allocating an
 	// entire map per controller before it has explored any terrain.
 	using Chunk = std::array<RememberedTile, 256>;
 	std::vector<std::unique_ptr<Chunk>> remembered;
+	std::map<unsigned, std::array<Uint16, MaterialCount>> rememberedStocks;
 	unsigned knownTiles = 0;
 	const RememberedTile *lookup(unsigned index) const;
 	RememberedTile &remember(unsigned index);
@@ -59,11 +67,13 @@ class Observations
 		unsigned tick = 0;
 		unsigned short terrain = 0, fertility = 0;
 		TerrainType terrainType = GRASS;
-		unsigned char resource = 255, amount = 0;
+		unsigned short resource = 65535;
+		unsigned amount = 0;
 		bool known = false, visible = false, forbidden = false, building = false;
 		bool operator==(const Cell &) const = default;
 	};
 	Cell cell(int x, int y) const;
+	unsigned materialStock(int x, int y, MaterialId material) const;
 	struct SpatialEntity
 	{
 		int team, type, x, y, hp, attack;

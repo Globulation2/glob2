@@ -332,7 +332,7 @@ bool generate(Game &game, GenerationContext &context)
 	for (int i = 0; i < n; ++i)
 		if (!L.open[i] && map.isResourceAllowed(i % t.w, i / t.w, STONE))
 		{
-			map.setResource(i % t.w, i / t.w, STONE, 1);
+			map.setResourceByIndex(i % t.w, i / t.w, STONE, 1);
 			rock[i] = 1;
 		}
 

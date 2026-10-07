@@ -12,11 +12,18 @@ ROOT = Path(__file__).resolve().parents[2]
 
 # Scene headers may include each other, the client channel types and plain data
 # definitions, but no simulation object headers.
+TERRAIN_HEADERS = (
+    'TerrainType.h', 'TerrainPresentation.h', 'TerrainProperties.h', 'TerrainCompatibility.h',
+    'TerrainTypeTable.h', 'TerrainGroup.h', 'TerrainPropertiesLayout.h',
+)
+
 SCENE_INCLUDES = {
     'Scene.h', 'SceneEntities.h', 'SceneMap.h', 'ScenePanels.h',
     'sim/ClientRequests.h', 'sim/EntityRef.h', 'BitArray.h', 'Ressource.h', 'UnitConsts.h',
     'SDLGraphicContext.h', 'SDL_stdinc.h', 'SDL3/SDL_stdinc.h', 'AITelemetryValue.h',
-    'TerrainType.h', 'TerrainPresentation.h', 'TerrainProperties.h', 'TerrainCompatibility.h',
+    *TERRAIN_HEADERS,
+    'ResourceRegistry.h', 'ResourceProperties.h', 'Material.h', 'resource/Material.h',
+    'ExperimentalFeatures.h', 'Types.h', 'SDL3_net/SDL_net.h',
 }
 
 DRAWING = ('src/render/GameRender*.cpp', 'src/render/Minimap.cpp', 'src/hud/draw/GameGUIDraw*.cpp')
@@ -36,7 +43,12 @@ class SceneBoundaryTests(unittest.TestCase):
         # Terrain tables are immutable value definitions, not live simulation
         # objects. Audit their dependencies too so this exemption stays narrow.
         headers += [ROOT / 'src/map' / name for name in
-                    ('TerrainType.h', 'TerrainPresentation.h', 'TerrainProperties.h', 'TerrainCompatibility.h')]
+                    TERRAIN_HEADERS]
+        # Frozen resource snapshots contain value definitions and experiment keys.
+        # Audit their full local dependency chain, not only the Scene include.
+        headers += [ROOT / 'src/resource' / name for name in
+                    ('ResourceRegistry.h', 'ResourceProperties.h', 'Material.h')]
+        headers += [ROOT / 'src/game/ExperimentalFeatures.h', ROOT / 'libgag/include/Types.h']
         for path in headers:
             for name in include.findall(path.read_text()):
                 if '/' not in name and name.islower():

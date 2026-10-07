@@ -98,6 +98,9 @@ namespace
 	{
 		TinyMap()
 		{
+            // Unit binaries do not initialize Toolkit or an installed asset search path.
+            resourceRegistryValue = ResourceRegistry::loadFile((glob2test::sourceRoot() / "data/resources/registry.json").string());
+            rebuildResourceHabitats();
 			wDec = hDec = kMapDec;
 			w = h = 1 << kMapDec;
 			wMask = hMask = w - 1;
@@ -317,9 +320,9 @@ TEST_CASE("cached ecology changes after canonical terrain mutation")
     const auto watered=map.resourceGrowthField().landField().at(8,8);
     CHECK(watered>initial);
     map.setCellTerrain(8,8,TRAIL);
-    CHECK(map.resourceGrowthField().rate(map.coordToIndex(8,8),WHEAT)==0);
+    CHECK(map.resourceGrowthRateAt(map.coordToIndex(8,8),WHEAT)==0);
     map.setCellTerrain(8,8,GRASS);
-    CHECK(map.resourceGrowthField().rate(map.coordToIndex(8,8),WHEAT)>0);
+    CHECK(map.resourceGrowthRateAt(map.coordToIndex(8,8),WHEAT)>0);
 }
 
 TEST_CASE("habitat and movement edits reuse exact ecology fields")
@@ -329,7 +332,7 @@ TEST_CASE("habitat and movement edits reuse exact ecology fields")
     const auto index=map.coordToIndex(8,8);
     const auto& cache=map.resourceGrowthField();
     const auto land=cache.landField().values(), aquatic=cache.aquaticField();
-    const auto wheat=cache.rate(index,WHEAT);
+    const auto wheat=map.resourceGrowthRateAt(index,WHEAT);
     REQUIRE(wheat>0);
     for(const auto type : {TRAIL,ICE,GRASS_SAND_SHORE,GRASS})
     {
@@ -338,7 +341,7 @@ TEST_CASE("habitat and movement edits reuse exact ecology fields")
         REQUIRE(cache.validFor(map));
         CHECK(map.resourceGrowthField().landField().values()==land);
         CHECK(cache.aquaticField()==aquatic);
-        CHECK(cache.rate(index,WHEAT)==(type==GRASS ? wheat : 0));
+        CHECK(map.resourceGrowthRateAt(index,WHEAT)==(type==GRASS ? wheat : 0));
     }
     map.putResource(8,8,WHEAT);
     map.setResourceAmount(index,8);
@@ -346,7 +349,7 @@ TEST_CASE("habitat and movement edits reuse exact ecology fields")
     CHECK(cache.validFor(map));
     // Occupancy and the scenario override are checked by growth's caller, not
     // dependencies of the cached terrain-only opportunity rate.
-    CHECK(cache.rate(index,WHEAT)==wheat);
+    CHECK(map.resourceGrowthRateAt(index,WHEAT)==wheat);
 }
 
 TEST_CASE("ecology rebuilt inside a terrain batch survives its commit")
@@ -400,7 +403,8 @@ TEST_CASE("future terrain ecology properties invalidate only their effective inp
 
     cache.rebuild(map);
     const auto land=cache.landField().values(), aquatic=cache.aquaticField();
-    const auto wood=cache.rate(index,WOOD);
+    const auto wood=map.resourceGrowthRateAt(index,WOOD);
+    const auto food=map.resourceGrowthRateAt(index,WHEAT);
     auto changed=grass;
     changed.fertilityQ8=1024; // Disabled source: this value contributes nothing.
     changed.allowedResources &= ~(1u<<WHEAT);
@@ -408,8 +412,10 @@ TEST_CASE("future terrain ecology properties invalidate only their effective inp
     changed.groundHealthQ8=-8;
     cache.terrainChanged(index,grass,changed);
     REQUIRE(cache.validFor(map));
-    CHECK(cache.rate(index,WHEAT)==0);
-    CHECK(cache.rate(index,WOOD)==wood);
+    // Notification alone does not publish terrain properties: habitat comes
+    // from the map's compiled catalog, not a duplicate mask inside this cache.
+    CHECK(map.resourceGrowthRateAt(index,WHEAT)==food);
+    CHECK(map.resourceGrowthRateAt(index,WOOD)==wood);
     CHECK(cache.landField().values()==land);
     CHECK(cache.aquaticField()==aquatic);
     auto enabled=changed;
@@ -484,10 +490,10 @@ TEST_CASE("one-point wheat fertility retains exact positive growth potential")
     map.makeWater(15,15);
     const auto& field=map.resourceGrowthField();
     REQUIRE(field.landField().at(0,0)==1);
-    CHECK(field.rate(map.coordToIndex(0,0),WHEAT)==1);
-    CHECK(field.rate(map.coordToIndex(0,0),WOOD)==3);
+    CHECK(map.resourceGrowthRateAt(map.coordToIndex(0,0),WHEAT)==1);
+    CHECK(map.resourceGrowthRateAt(map.coordToIndex(0,0),WOOD)==3);
     unsigned draws=0;
-    CHECK(Fertility::growthOpportunities(field.rate(0,WHEAT),[&]{++draws;return 0u;})==1);
+    CHECK(Fertility::growthOpportunities(map.resourceGrowthRateAt(0,WHEAT),[&]{++draws;return 0u;})==1);
     CHECK(draws==1);
 }
 

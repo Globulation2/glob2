@@ -45,7 +45,7 @@ struct TeamView
 	Uint32 mask = 0, allies = 0, enemies = 0;
 	Uint32 foodVision = 0, exchangeVision = 0, otherVision = 0;
 	TeamStat statistics;
-	std::array<Sint32, MAX_NB_RESOURCES> resources{};
+	std::array<Sint32, MaterialSlotCount> materials{};
 	int workerBalance = 0, starving = 0;
 	std::array<int, NB_UNIT_LEVELS> workersLevel{};
 	std::vector<BuildingRef> virtualBuildings, swarms;
@@ -55,7 +55,7 @@ struct BuildingKindView
 {
 	std::string key, legacyType;
 	BuildingType resolvedType;
-	std::array<Sint32, MAX_NB_RESOURCES> multiplierResource{};
+	std::array<Sint32, MaterialSlotCount> materialMultiplier{};
 	BuildingSemantics semantics;
 	int width = 0, height = 0, level = 0;
 	int previous = -1, next = -1, maximumWorkers = 0, maximumInside = 0;
@@ -63,7 +63,7 @@ struct BuildingKindView
 	bool site = false, available = false;
 	bool isVirtual = false, isCloaked = false, suppliesStock = false, fetchesStock = false;
 	int shortTypeNum = 0, hpMax = 0, shootSpeed = 0, shootRhythm = 0, decLeft = 0, decTop = 0;
-	std::array<Sint32, MAX_NB_RESOURCES> maxResource{};
+	std::array<Sint32, MaterialSlotCount> maxMaterial{};
 	std::array<Sint32, NB_UNIT_TYPE> zonable{};
 	Uint64 capabilityMask = 0, rawCapabilityMask = 0;
 	int lineagePosition = 0;

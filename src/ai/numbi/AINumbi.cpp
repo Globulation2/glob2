@@ -124,14 +124,14 @@ bool AINumbi::load(GAGCore::InputStream *stream, Player *player, Sint32 versionM
 	 stream->readLeaveSection();
 	 stream->readEnterSection("resourceInitializations");
 	 const Uint32 fields=stream->readUint32("count");
-	 if(fields>MAX_NB_RESOURCES*7) {stream->readLeaveSection(2);return false;}
+	 if(fields>MaterialSlotCount*7) {stream->readLeaveSection(2);return false;}
 	 for(Uint32 i=0;i<fields;++i) {
 	  stream->readEnterSection(i);
 	  const int key=stream->readSint32("key");
 	  NumbiObservation::ResourceInitialization field;
 	  field.observedTick=stream->readUint32("tick");
 	  const Uint32 cells=stream->readUint32("cells");
-	  if(key<0 || key/(MAX_NB_RESOURCES*7)!=teamNumber || cells!=Uint32(map->getW()*map->getH())) {stream->readLeaveSection(3);return false;}
+	  if(key<0 || key/(MaterialSlotCount*7)!=teamNumber || cells!=Uint32(map->getW()*map->getH())) {stream->readLeaveSection(3);return false;}
 	  std::vector<Uint8> bytes(size_t(cells)*2);stream->read(bytes.data(),bytes.size(),"values");
 	  auto values=std::make_shared<std::vector<Uint16>>(cells);
 	  for(size_t cell=0;cell<cells;++cell) (*values)[cell]=bytes[cell*2] | (Uint16(bytes[cell*2+1])<<8);

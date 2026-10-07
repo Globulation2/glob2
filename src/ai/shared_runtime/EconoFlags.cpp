@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2006 Bradley Arsenault
 
+#include "Material.h"
 #include "AITelemetryFields.h"
 #include "Game.h"
 #include "shared_runtime/Runtime.h"
@@ -38,7 +39,7 @@ void Econo::tick_explorer_flags_fruit(Runtime& runtime)
 
 					//Constraint around the location of fruit
 					AISharedRuntime::Gradients::GradientInfo gi_cherry;
-					gi_cherry.add_source(new AISharedRuntime::Gradients::Entities::Resource(CHERRY));
+					gi_cherry.add_source(new AISharedRuntime::Gradients::Entities::MaterialSource(materialIndex(MaterialId::Cherries)));
 					//You want to be on top of the cherry trees
 					bo_cherry->add_constraint(new AISharedRuntime::Construction::MaximumDistance(gi_cherry, 0));
 
@@ -69,7 +70,7 @@ void Econo::tick_explorer_flags_fruit(Runtime& runtime)
 
 					//Constraints around the location of fruit
 					AISharedRuntime::Gradients::GradientInfo gi_orange;
-					gi_orange.add_source(new AISharedRuntime::Gradients::Entities::Resource(ORANGE));
+					gi_orange.add_source(new AISharedRuntime::Gradients::Entities::MaterialSource(materialIndex(MaterialId::Oranges)));
 					//You want to be on top of the orange trees
 					bo_orange->add_constraint(new AISharedRuntime::Construction::MaximumDistance(gi_orange, 0));
 
@@ -98,7 +99,7 @@ void Econo::tick_explorer_flags_fruit(Runtime& runtime)
 					bo_prune->add_constraint(new AISharedRuntime::Construction::MinimizedDistance(gi_building, 1));
 
 					AISharedRuntime::Gradients::GradientInfo gi_prune;
-					gi_prune.add_source(new AISharedRuntime::Gradients::Entities::Resource(PRUNE));
+					gi_prune.add_source(new AISharedRuntime::Gradients::Entities::MaterialSource(materialIndex(MaterialId::Prunes)));
 					//You want to be on top of the prune trees
 					bo_prune->add_constraint(new AISharedRuntime::Construction::MaximumDistance(gi_prune, 0));
 
@@ -189,7 +190,7 @@ void Econo::tick_farming_areas(Runtime& runtime)
 				if(farms && mi.is_discovered(x, y))
 				{
 					const bool wheat_farm = farm_spot &&
-						mi.is_resource(x, y, WHEAT) && mi.can_paint_farm(x, y) &&
+						mi.is_resource(x, y, materialIndex(MaterialId::Food)) && mi.can_paint_farm(x, y) &&
 						gradient.within_dist(x, y, AI_SHARED_RUNTIME_RTI_FARMING_WATER_MAX_DIST);
 					if(wheat_farm && !mi.is_farm_area(x, y))
 						mo_farm->add_location(x, y);
@@ -199,8 +200,8 @@ void Econo::tick_farming_areas(Runtime& runtime)
 				if(farm_spot)
 				{
 					const bool protected_resource = farms
-						? mi.is_resource(x, y, WOOD)
-						: mi.is_resource(x, y, WOOD) || mi.is_resource(x, y, WHEAT);
+						? mi.is_resource(x, y, materialIndex(MaterialId::Wood))
+						: mi.is_resource(x, y, materialIndex(MaterialId::Wood)) || mi.is_resource(x, y, materialIndex(MaterialId::Food));
 					if(!protected_resource && mi.is_forbidden_area(x, y))
 					{
 						mo_non_farming->add_location(x, y);

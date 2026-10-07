@@ -9,6 +9,7 @@
 #ifndef AI_MAXIMA_PLACEMENT_H
 #define AI_MAXIMA_PLACEMENT_H
 
+#include "Material.h"
 #include "AIMaximaOperatingDemand.h"
 #include "field/Frontier.h"
 #include "AIMaximaFoodLedger.h"
@@ -178,22 +179,22 @@ struct BuildingLevelProfile
 	int level;
 	int engineType;
 	Footprint footprint;
-	int constructionResources[8];
+	int constructionMaterials[MaterialCount];
 	int completedType=-1;
 	unsigned roles=0;
 	int serviceRates[AIMaximaBuildings::RoleCount]{};
 	unsigned productionUnitMask=0;
 	int productionRates[3]{};
-	int operatingResources[8]{}; // recurring carried packets, FoodLedger::RateScale per tick
+	int operatingMaterials[MaterialCount]{}; // recurring carried packets, FoodLedger::RateScale per tick
 	int feedingRate=0; // visits per tick, FoodLedger::RateScale
     unsigned feedingMask=0;
-    int feedingResources[8]{};
+    int feedingMaterials[MaterialCount]{};
     int operatingAssignmentLimit=1024;
     int initialCarriers=-1; // -1 only for legacy/planner-only unknown staffing
     int productionDemandPercent=100;
     AIMaxima::ProductionRecipeModel productionRecipes;
-    int independentResources[8]{};
-    int productionResources[8]{}; // mechanical production-only packet ceiling // component already included in operatingResources
+    int independentMaterials[MaterialCount]{};
+    int productionMaterials[MaterialCount]{}; // mechanical production-only packet ceiling // component already included in operatingMaterials
 	int seats=0;
 	int assignmentLimit=20;
 	int requiredWorkerLevel=0;
@@ -232,12 +233,15 @@ struct WorldTile
 	bool woodReserve;
 	bool blocksConstruction() const { return permanentResource || woodReserve; }
 	bool clearableResource;
+    bool resourceBlocksGround=false;
 	bool occupied;
 	bool ownOccupied;
-	// Match the engine's byte-sized amount while retaining a signed empty type.
+	// Selected material slot and its stock; -1 denotes no selected supply.
 	// These in-memory widths are independent of the legacy serialized widths.
-	int16_t resourceType;
-	uint8_t resourceAmount;
+	int16_t materialType;
+	uint32_t materialAmount;
+    MaterialMask materialSources=0;
+    MaterialMask sources() const { return materialSources ? materialSources : materialType>=0 && materialType<MaterialCount ? MaterialMask(1u<<materialType) : 0; }
 	uint32_t fertility;
 	uint32_t farmCapacity;
 	uint32_t foodOpportunity;
@@ -294,7 +298,7 @@ struct WorldState
 	int height;
 	int tick;
 	int swimmingBuilders;
-	int accessibleSupplies[8];
+	int accessibleSupplies[MaterialCount];
     std::vector<FeedingColony> feedingColonies;
     int feedingColonyAt(int x,int y) const;
 	std::vector<WorldTile> tiles;
@@ -316,7 +320,7 @@ struct DevelopmentIntent
 	int unmetCount;
 	int priority;
 	int workers;
-	int requiredResourceType;
+	int requiredMaterialType;
 	bool emergency;
 	/// Relocation only: the building this intent replaces.
 	int replacesBuildingId;
@@ -358,7 +362,7 @@ struct UtilityComponents
 	int projectedFarmLoss;
 	int foodZonePressure;
 	int newlyReservedLand;
-	int resourceScarcity;
+	int materialScarcity;
 	int constructionLabor;
 	int serviceDowntime;
 	int threatExposure;
@@ -387,7 +391,7 @@ struct PlacementPolicy
 	int projectedFarmLossWeight;
 	int foodZonePenaltyWeight;
 	int newlyReservedLandWeight;
-	int resourceScarcityWeight;
+	int materialScarcityWeight;
 	int constructionLaborWeight;
 	int serviceDowntimeWeight;
 	int threatExposureWeight;
@@ -404,7 +408,7 @@ struct PlacementPolicy
 	int parallelNoService;
 	int duplicateFirstScore;
 	int duplicateScoreScale;
-	int resourceDistanceWeight;
+	int materialDistanceWeight;
 	int foodZoneRadius;
 	int innerFoodZoneMultiplier;
 	int hospitalFoodZoneMultiplier;
@@ -672,9 +676,9 @@ private:
 	bool waterTierPasses(const WorldState& world,
 		const std::vector<int>& parcel, int minimumDistance) const;
 	void prepareWaterDistanceCache(const WorldState& world) const;
-	void prepareResourceSources(const WorldState& world) const;
+	void prepareMaterialSources(const WorldState& world) const;
 	void prepareScoringCaches(const WorldState& world) const;
-	int resourceDistanceAt(const WorldState& world,int resourceType,
+	int materialDistanceAt(const WorldState& world,int materialType,
 		int index) const;
 	bool requiredSourcePresent(const WorldState& world,
 		const DevelopmentIntent& intent) const;
@@ -687,7 +691,7 @@ private:
 		int excludeBuilding=-1, int candidateType=-1, int candidateLevel=1, int candidateColony=-1) const;
     int prepareFeedingCandidate(const WorldState& world,const DevelopmentAction& action) const;
     void prepareFeedingCandidateSet(const WorldState& world,int type,int level,int excludedAction,int excludedBuilding) const;
-    struct CandidateFoodLedger { AIMaximaFoodLedger::Result result; int demand=0,feeding=0; std::array<int,8> independent{},production{}; };
+    struct CandidateFoodLedger { AIMaximaFoodLedger::Result result; int demand=0,feeding=0; std::array<int,MaterialCount> independent{},production{}; };
     mutable std::vector<CandidateFoodLedger> candidateFoodLedgers;
     mutable int candidateSetType=-1,candidateSetLevel=1,candidateSetExcludedAction=-1,candidateSetExcludedBuilding=-1;
     mutable unsigned foodLedgerEpoch=0,candidateSetEpoch=0;
@@ -718,13 +722,13 @@ private:
 	mutable int foodLedgerExcludedBuilding;
 	mutable bool foodLedgerPrepared;
     mutable int foodCandidateType=-1,foodCandidateLevel=1,foodCandidateColony=-1,foodCandidateDemand=0;
-    mutable std::array<int,8> foodCandidateIndependent{},foodCandidateProduction{};
+    mutable std::array<int,MaterialCount> foodCandidateIndependent{},foodCandidateProduction{};
     mutable bool foodQueryValid=false;
     mutable unsigned foodQueryEpoch=0;
     mutable std::array<int,12> foodQueryKey{};
     mutable AIMaximaFoodLedger::OperatingQuery foodQuery;
-    std::array<int,8> operatingTrips(const WorldState& world,int x,int y,
-        const std::array<int,8>& independent,const std::array<int,8>& production) const;
+    std::array<int,MaterialCount> operatingTrips(const WorldState& world,int x,int y,
+        const std::array<int,MaterialCount>& independent,const std::array<int,MaterialCount>& production) const;
 	/// Consumer results of the last ledger that excluded nothing, so an
 	/// appraisal can read the old building's standing while the prepared
 	/// ledger already excludes it.
@@ -822,9 +826,9 @@ private:
 	mutable field::Frontier distanceFrontiers[3]; // transient scratch
 	mutable DistanceField footprintDistanceCache;
 	mutable uint32_t footprintDistanceCacheSignature;
-	mutable std::vector<int8_t> resourceSourceCache;
-	mutable DistanceField resourceDistanceCache[8];
-	mutable bool resourceDistanceCacheValid[8];
+	mutable std::vector<MaterialMask> materialSourceCache;
+	mutable DistanceField materialDistanceCache[MaterialCount];
+	mutable bool materialDistanceCacheValid[MaterialCount];
 	mutable uint64_t maximumFarmCapacityCache;
 	mutable uint64_t maximumFoodOpportunityCache;
 	mutable std::vector<uint32_t> foodOpportunitySourceCache;

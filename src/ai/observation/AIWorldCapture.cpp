@@ -41,9 +41,10 @@ AIWorldView::AIWorldView(SimulationSnapshot::Handle captured) : lease(std::move(
 	growth = lease.growth;
 	if (growth) for (const auto count : growth->storageSizes())
 		if (count != cells) throw std::logic_error("AI observation growth component size mismatch");
-	farmInputs = resourceCells && terrainCells && lease.catalogs && growth;
 	tick = lease.tick;
-	if (lease.catalogs) { observedUnitTypes = &lease.catalogs->unitTypes; resourceSizesCount = lease.catalogs->sizesCount; resourceEternal = lease.catalogs->eternal; catalog = lease.catalogs->buildings; resourceShrinkable = lease.catalogs->shrinkable; resourceVisibleToBeCollected = lease.catalogs->visibleToBeCollected; }
+	if (lease.catalogs) { observedUnitTypes = &lease.catalogs->unitTypes; catalog = lease.catalogs->buildings; resourceRegistry = lease.catalogs->resources; }
+	view = lease.view();
+	farmInputs = resourceCells && terrainCells && view.resourceRegistry && view.habitats && view.growth && lease.rules;
 	if (lease.terrain) { terrain = lease.terrain->registry; terrainRevision = lease.terrain->revision; terrainMovementModifiers = lease.terrain->movementModifiers; airTerrainConstraints = lease.terrain->airConstraints; }
 	if (lease.rules) { configuration = lease.rules->configuration; rules = lease.rules->values; ruleValues = lease.rules->named; experimentKeys = lease.rules->experiments; }
 	if (lease.areas) farmAreasEnabled = lease.areas->farmEnabled;

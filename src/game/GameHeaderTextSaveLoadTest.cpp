@@ -25,6 +25,7 @@
 #include "BinaryStream.h"
 #include "StreamBackend.h"
 #include "GameHeader.h"
+#include "FileFormatVersions.h"
 #include "Version.h"
 #include "BuildingType.h"
 #include <nlohmann/json.hpp>
@@ -205,8 +206,9 @@ void testBinaryHeaderFormsAndLegacy()
 			experimentBytes=section->getPosition();
 		}
 		const size_t catalogBytes=4; // Empty catalog: zero chunk count (version136).
-		if (form!=1) extension+=ruleBytes+experimentBytes+catalogBytes;
-        // Version 140 inserted delay after int32 latency and uint8 rate,
+        const size_t resourceExperimentBytes=4; // Empty declaration count (version140).
+		if (form!=1) extension+=ruleBytes+experimentBytes+catalogBytes+resourceExperimentBytes;
+        // Version 143 inserted delay after int32 latency and uint8 rate,
         // before the existing payload. Older forms need that byte removed,
         // not a shorter tail; player-info-only records never contain it.
         memory->seekFromEnd(0);
@@ -226,7 +228,7 @@ void testBinaryHeaderFormsAndLegacy()
 		{
 			// Version 101 ended before the custom-game rule bytes: its headers load
 			// exactly, with every rule off.
-			const size_t v101Size=historical.size()-ruleBytes-experimentBytes-catalogBytes;
+			const size_t v101Size=historical.size()-ruleBytes-experimentBytes-catalogBytes-resourceExperimentBytes;
 			auto *v101Bytes=new MemoryStreamBackend(historical.data(),v101Size);
 			v101Bytes->seekFromStart(0);
 			BinaryInputStream v101(v101Bytes);
@@ -237,22 +239,24 @@ void testBinaryHeaderFormsAndLegacy()
 				&& !ruled.isInstantConstructionEnabled() && ruled.getStockpileStartLevel()==0
 				&& !ruled.isHungerDisabled() && ruled.getExperiments().empty() && ruled.getAIOrderDelay()==0,
 				"version 101 header loads without rule bytes, rules off");
-            // Version 139 has every prior extension but neither a delay byte
-            // nor any engine queue section. A following record stays aligned.
+            // The format just before the AI pipeline has every prior extension
+            // but neither a delay byte nor any engine queue section. A
+            // following record stays aligned.
+            constexpr Sint32 priorVersion=FILE_FORMAT_VERSION_AI_PIPELINE-1;
             constexpr Uint32 sentinel=0x51A140;
-            auto* v139Bytes=new MemoryStreamBackend;
-            BinaryOutputStream legacyOut(v139Bytes);
+            auto* priorBytes=new MemoryStreamBackend;
+            BinaryOutputStream legacyOut(priorBytes);
             legacyOut.write(historical.data(),historical.size(),"header");
             legacyOut.writeUint32(sentinel,"nextRecord");legacyOut.flush();
-            v139Bytes->seekFromStart(0);
-            BinaryInputStream v139(new MemoryStreamBackend(*v139Bytes));
+            priorBytes->seekFromStart(0);
+            BinaryInputStream prior(new MemoryStreamBackend(*priorBytes));
             GameHeader older;older.setAIOrderDelay(8);
-            REQUIRE((form==0 ? older.load(&v139,139) : older.loadWithoutPlayerInfo(&v139,139)));
+            REQUIRE((form==0 ? older.load(&prior,priorVersion) : older.loadWithoutPlayerInfo(&prior,priorVersion)));
             CHECK(older.getAIOrderDelay()==0);
             CHECK(older.getAIConfig(0)==original.getAIConfig(0));
             CHECK(older.getRandomSeed()==original.getRandomSeed());
             CHECK(older.getExperiments()==original.getExperiments());
-            CHECK(v139.readUint32("nextRecord")==sentinel);
+            CHECK(prior.readUint32("nextRecord")==sentinel);
 		}
 	}
 }

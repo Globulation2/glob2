@@ -10,8 +10,15 @@ The sand profile traces the original hand-drawn grass/sand transition tiles
 edge yields two 17-point curves, one per 16-pixel patch, with the linear trend
 between the patch endpoints removed so shared edges keep their zero endpoints.
 The fractured and cobblestone profiles use seeded random walks: angular jumps
-for ice, broad plateaus for cobblestone chips. Only the `contours_q12` arrays are
+for ice, broad plateaus for cobblestone chips. The catalogue profiles added for
+the new terrain groups are also seeded random walks: `rock` (angular, strong
+speckle) for boulders, ridges, scree, gravel and chasms; `soft` (gentle, wide
+bridges) for mud, marsh, loam, moss, snow, clay, dirt and deep water; `crisp`
+(short, no speckle) for holes and boardwalks; `brush` (leafy) for hedges,
+thickets and meadows. For shipped profiles only the `contours_q12` arrays are
 replaced; roughness, amplitude, feather, speckle and bridge stay as authored.
+A profile listed in NEW_PROFILES that is missing from the catalog is appended
+with its authored parameters.
 """
 
 import argparse
@@ -81,6 +88,20 @@ def random_walk(rng, points, low, high, kink):
     )
 
 
+# Catalogue profiles: authored parameters and random-walk shapes
+# (seed, curve count, points per curve, step low, step high, kink chance).
+NEW_PROFILES = {
+    "rock": dict(roughness_q8=384, amplitude_q8=896, feather_q8=192, speckle_q8=448, bridge_q8=192,
+                 walk=(12, 16, 9, 200, 520, 0.5)),
+    "soft": dict(roughness_q8=160, amplitude_q8=512, feather_q8=448, speckle_q8=128, bridge_q8=640,
+                 walk=(13, 12, 17, 40, 160, 0.1)),
+    "crisp": dict(roughness_q8=96, amplitude_q8=256, feather_q8=128, speckle_q8=0, bridge_q8=256,
+                  walk=(14, 8, 9, 60, 200, 0.2)),
+    "brush": dict(roughness_q8=320, amplitude_q8=768, feather_q8=320, speckle_q8=384, bridge_q8=512,
+                  walk=(15, 16, 17, 100, 300, 0.4)),
+}
+
+
 def generate(root, sand_count=24):
     rng = random.Random(11)
     fractured = [random_walk(rng, 9, 150, 450, 0.3) for _ in range(12)]
@@ -91,7 +112,23 @@ def generate(root, sand_count=24):
             curve.append(rng.choice((-640, -400, -200, 0, 200, 400, 640)) + rng.randint(-80, 80))
         curve.append(0)
         cobblestone.append(clamp(curve))
-    return {"sand": trace_sand(root, sand_count), "fractured": fractured, "cobblestone": cobblestone}
+    curves = {"sand": trace_sand(root, sand_count), "fractured": fractured, "cobblestone": cobblestone}
+    for key, spec in NEW_PROFILES.items():
+        seed, count, points, low, high, kink = spec["walk"]
+        walk = random.Random(seed)
+        curves[key] = [random_walk(walk, points, low, high, kink) for _ in range(count)]
+    return curves
+
+
+def dump_catalog(document):
+    """Serialise a catalog the way the shipped tileset.json is formatted."""
+    text = json.dumps(document, indent=2)
+    text = re.sub(
+        r"\[\s+((?:-?\d+,\s+)*-?\d+)\s+\]",
+        lambda m: "[" + re.sub(r",\s+", ", ", m.group(1)) + "]",
+        text,
+    )
+    return text + "\n"
 
 
 def main():
@@ -101,20 +138,19 @@ def main():
     args = parser.parse_args()
     document = json.loads(args.manifest.read_text())
     curves = generate(ROOT)
+    present = {profile["key"] for profile in document["profiles"]}
     for profile in document["profiles"]:
         if profile["key"] in curves:
             profile["contours_q12"] = curves[profile["key"]]
+    for key, spec in NEW_PROFILES.items():
+        if key not in present:
+            parameters = {k: v for k, v in spec.items() if k != "walk"}
+            document["profiles"].append({"key": key, **parameters, "contours_q12": curves[key]})
     for key, value in curves.items():
         peak = max(abs(v) for curve in value for v in curve)
         print(f"{key}: {len(value)} curves, peak displacement {peak / 256:.2f} px")
     if args.write:
-        text = json.dumps(document, indent=2)
-        text = re.sub(
-            r"\[\s+((?:-?\d+,\s+)*-?\d+)\s+\]",
-            lambda m: "[" + re.sub(r",\s+", ", ", m.group(1)) + "]",
-            text,
-        )
-        args.manifest.write_text(text + "\n")
+        args.manifest.write_text(dump_catalog(document))
 
 
 if __name__ == "__main__":

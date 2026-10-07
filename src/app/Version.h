@@ -2,11 +2,17 @@
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
 #pragma once
+#include "FileFormatVersions.h"
 
 // This is the version of map and savegame format, and all of the recorded data on the server
 #define VERSION_MAJOR 0
 #define MINIMUM_VERSION_MINOR 58
-#define VERSION_MINOR 140
+#define VERSION_MINOR 143
+// version 143 adds engine snapshots, scheduled AI decision streams and pending command state.
+// version 142 rebuilds pre-penalty terrain route caches; replay trajectories change.
+// version 141 adds the built-in terrain catalogue; older custom terrain IDs are remapped on load.
+// version 140 separates fixed materials from embedded runtime resource definitions.
+// version 139 moves periodic gradient preparation to the completed-tick observation phase.
 // version 138 saves the map's terrain look seed; older maps load with seed 0.
 // version 137 embeds building catalogs and independent capability state.
 // version 136 embeds immutable terrain registries before map tile identities.
@@ -65,7 +71,7 @@
 // version 24 added Building::bullets
 // version 25 added Multiple AI support
 // version 26 added saved type of player (human/ai) in Team
-// version 27 adding clearingResources[] to allow flags to clear specific resources
+// version 27 adding clearingMaterials[] to allow flags to clear specific resources
 // version 28 changed eternal resources way to count the amount.
 // version 29 added Team::startPosSet for easy map editing.
 // version 30 *added version for AI implementations*
@@ -83,7 +89,7 @@
 // version 42 added AIWarrush
 // version 43 added AINicowar
 // version 44 added Bullet:revealX/Y/W/H into the saved file
-// version 45 added teamResources to Team for shared resources among markets
+// version 45 added teamMaterials to Team for shared resources among markets
 // version 46 added Unit::validTarget
 // version 47 added new map generation system
 // version 48 added script state load/save
@@ -172,7 +178,10 @@
 //NetMessage, and the likes, in parallel to change of the VERSION_MINOR above. It is part of
 //the simulation version (src/online/SimVersion.cpp). The YOG lobby that also checked it
 //(YOG_MIN_CLIENT_NET_PROTOCOL_VERSION) was removed at protocol 51.
-#define NET_PROTOCOL_VERSION 59
+#define NET_PROTOCOL_VERSION 61
+// protocol 61 requires format-143 AI decision scheduling and the match-wide AI order delay.
+// protocol 60 requires damage-weighted routing and safe idle movement.
+// protocol 59 requires readers of format-140 runtime resource and material snapshots.
 // protocol 58 requires readers of version-138 map snapshots (terrain look seed).
 // protocol 54 transfers the format-132 AI continuation fields.
 // version 53 supports the optional win-probability winning condition.

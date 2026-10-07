@@ -197,9 +197,9 @@ public:
 	Sint32 unitConversionGained;
 
 	/// Team-wide resource totals, for markets.
-	Sint32 teamResources[MAX_NB_RESOURCES];
+	Sint32 teamMaterials[MaterialSlotCount];
 	// Derived from active service/production commitments when restoring a save.
-	Sint32 reservedTeamResources[MAX_NB_RESOURCES] = {};
+	Sint32 reservedTeamMaterials[MaterialSlotCount] = {};
 
 private:
 	std::queue<GameEvent> events;

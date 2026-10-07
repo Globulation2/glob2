@@ -193,6 +193,12 @@ def game_sprites(root):
                 source = properties.get(field)
                 if source:
                     names.add(source.removeprefix('data/gfx/') if source.startswith('data/gfx/') else source)
+    # Resource sprite prefixes are declarative and may live outside data/gfx.
+    for path in sorted((root / 'data/resources').rglob('*.json')):
+        for resource in json.loads(path.read_text()).get('resources', []):
+            source = resource.get('presentation', {}).get('sprite')
+            if source:
+                names.add(source.removeprefix('data/gfx/') if source.startswith('data/gfx/') else source)
     if not {'unit', 'terrain', 'gamegui', 'swarm0b'} <= names:
         raise ValueError('could not find the game sprites in src/app/GlobalContainer.cpp')
     return names

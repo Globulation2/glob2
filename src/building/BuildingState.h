@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #pragma once
 
-#include "Ressource.h"
+#include "Material.h"
 #include "UnitConsts.h"
 #include <type_traits>
 
@@ -41,14 +41,14 @@ struct BuildingStateRecord
 	Sint32 posX, posY;
 	Uint8 underAttackTimer;
 	Sint32 unitStayRange;
-	bool clearingResources[BASIC_COUNT];
+	bool clearingMaterials[MaterialCount]; // Clears resources yielding this material.
 	Sint32 minLevelToFlag;
 	Sint32 minWorkerLevelToFlag = 0;
 	bool explorersRequireBombing = false;
 	// Canonical private stock. Shared stock is owned by Team; a runtime binding
 	// selects that pool instead, and snapshot queries select the frozen Team pool.
-	Sint32 localResource[MAX_NB_RESOURCES];
-	Sint32 wishedResources[MAX_NB_RESOURCES];
+	Sint32 localMaterials[MaterialSlotCount];
+	Sint32 wishedMaterials[MaterialSlotCount];
 	Sint32 hp;
 	Sint32 productionTimeout;
 	bool siteCompletionPending = false;
@@ -56,7 +56,7 @@ struct BuildingStateRecord
 	// Authoritative order-applied production ratios; pending slider values
 	// live in BuildingGuiState.
 	Sint32 ratio[NB_UNIT_TYPE];
-	Uint32 receiveResourceMask, sendResourceMask;
+	Uint32 receiveMaterialMask, sendMaterialMask;
 	Sint32 bullets;
 	Uint32 seenByMask;
 	// Footprint, clearing and combat access, each without/with swimming.

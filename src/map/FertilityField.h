@@ -8,6 +8,7 @@
 #include <cstddef>
 #include <vector>
 #include <array>
+#include "ResourceProperties.h"
 
 class Map;
 struct TerrainProperties;
@@ -95,18 +96,20 @@ namespace Fertility
 			const TerrainProperties& after);
 		bool validFor(const Map& map) const;
 		void rebuild(const Map& map);
-		/// Expected opportunities per visit divided by kRateScale; bonuses permit up to four.
-		std::uint32_t rate(std::size_t index, int resourceType) const;
+		/// Expected opportunities per visit divided by kRateScale for a deposit of
+		/// this ecology and growth rate; bonuses permit up to four. Habitat and
+		/// terrain gating is the caller's (MapState::resourceGrowthRate), so a
+		/// frozen copy never reads the live map.
+		std::uint32_t rate(std::size_t index, ResourceEcology ecology, std::uint32_t growthRate) const;
 		const Field& landField() const { return land; }
 		const std::vector<std::uint32_t>& aquaticField() const { return aquatic; }
-		std::array<std::size_t,4> storageCapacities() const { return {land.capacity(),aquatic.capacity(),localGrowth.capacity(),growthHabitats.capacity()}; }
-		std::array<std::size_t,4> storageSizes() const { return {land.values().size(),aquatic.size(),localGrowth.size(),growthHabitats.size()}; }
+		std::array<std::size_t,3> storageCapacities() const { return {land.capacity(),aquatic.capacity(),localGrowth.capacity()}; }
+		std::array<std::size_t,3> storageSizes() const { return {land.values().size(),aquatic.size(),localGrowth.size()}; }
 	private:
 		bool ready = false;
 		Field land;
 		std::vector<std::uint32_t> aquatic;
 		std::vector<std::uint16_t> localGrowth;
-		std::vector<std::uint16_t> growthHabitats;
 	};
 
 	/// Uses canonical terrain properties and the shared cached field. Tiles that no wheat

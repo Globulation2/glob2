@@ -54,7 +54,7 @@ namespace
 		s.action = u.action;
 		s.hp = u.hp;
 		s.hungry = u.hungry;
-		s.carriedResource = u.carriedResource;
+		s.carriedMaterial = u.carriedMaterial;
 		s.experienceLevel = u.experienceLevel;
 		s.levelUpAnimation = u.levelUpAnimation;
 		s.magicActionAnimation = u.magicActionAnimation;
@@ -85,8 +85,8 @@ namespace
 		s.unitsInside = Sint32(b.unitsInside.size());
 		s.maxUnitWorking = b.maxUnitWorking;
 		s.unitsWorking = Sint32(b.unitsWorking.size());
-		for (int r = 0; r < MAX_RESOURCES; ++r)
-			s.resources[r] = b.resources[r];
+		for (int r = 0; r < MaterialCount; ++r)
+			s.materials[r] = b.materials[r];
 		s.bullets = b.bullets;
 		s.unitStayRange = b.unitStayRange;
 		s.seenByMask = b.seenByMask;
@@ -100,6 +100,7 @@ namespace
 	{
 		const int teamCount = game.mapHeader.getNumberOfTeams();
 		e.teamCount = teamCount;
+		e.materialPresence = 0;
 		e.units.clear();
 		e.buildings.clear();
 		e.unitIndex.assign(SceneEntities::Teams * SceneEntities::SlotsPerTeam, -1);
@@ -109,6 +110,8 @@ namespace
 		for (int t = 0; t < teamCount; ++t)
 		{
 			const Team *team = game.teams[t];
+			for (unsigned m=0; m<MaterialCount; ++m)
+				if (team->teamMaterials[m] || team->reservedTeamMaterials[m]) e.materialPresence |= materialBit(static_cast<MaterialId>(m));
 			e.teams[t] = SceneTeam{team->color, team->teamNumber, team->me, team->allies, team->sharedVisionOther,
 				team->startPosX, team->startPosY, firstPlayerName(game, *team)};
 			for (int i = 0; i < Unit::MAX_COUNT; ++i)
@@ -116,12 +119,14 @@ namespace
 				{
 					e.unitIndex[u->gid] = int(e.units.size());
 					e.units.push_back(unitOf(*u));
+					if (u->carriedMaterial >= 0 && validMaterial(u->carriedMaterial)) e.materialPresence |= 1u << u->carriedMaterial;
 				}
 			for (int i = 0; i < Building::MAX_COUNT; ++i)
 				if (const Building *b = team->myBuildings[i])
 				{
 					e.buildingIndex[b->gid] = int(e.buildings.size());
 					e.buildings.push_back(buildingOf(*b));
+					for (unsigned m=0; m<MaterialCount; ++m) if (b->materials[m]) e.materialPresence |= 1u << m;
 				}
 			for (const Building *b : team->virtualBuildings)
 				e.virtualBuildings[t].push_back(b->gid);
@@ -319,9 +324,9 @@ namespace
 			bp.minWorkerLevelToFlag=b->minWorkerLevelToFlag;
 			bp.explorersRequireBombing=b->explorersRequireBombing;
 			for (int r = 0; r < BASIC_COUNT; ++r)
-				bp.clearingResources[r] = b->clearingResources[r];
-			for (int r = 0; r < MAX_RESOURCES; ++r)
-				bp.resources[r] = b->resources[r];
+				bp.clearingMaterials[r] = b->clearingMaterials[r];
+			for (int r = 0; r < MaterialCount; ++r)
+				bp.materials[r] = b->materials[r];
 			bp.bullets = b->bullets;
 			bp.productionTimeout = b->productionTimeout;
 			const int recipe=b->productionUnit>=0 ? b->productionUnit : b->selectProductionRecipe();
@@ -344,7 +349,7 @@ namespace
 				(b->hp < bp.effectiveMaxHp || b->hp < b->type->hpMax))
 			{
 				bp.hardSpaceForRepair = b->isHardSpaceForBuildingSite(Building::REPAIR) && b->owner->maxBuildLevel()>=game.buildingsTypes.get(b->type->prevLevel)->semantics.requiredWorkerLevel;
-				b->getResourceCountToRepair(bp.repairCost);
+				b->getMaterialCountToRepair(bp.repairCost);
 			}
 			bp.showLevel = b->type->presentation.showLevel;
 			if (constructible && b->isUpgradeAvailable())
@@ -369,7 +374,7 @@ namespace
 			up.trigHP = u->trigHP;
 			up.hungry = u->hungry;
 			up.speed = u->speed;
-			up.carriedResource = u->carriedResource;
+			up.carriedMaterial = u->carriedMaterial;
 			up.fruitCount = u->fruitCount;
 			up.experience = u->experience;
 			up.experienceLevel = u->experienceLevel;

@@ -142,6 +142,7 @@ const std::vector<std::string>& simDataFiles()
 		"data/maxima/ffa5plus.strategy",
 		"data/nicowar.default.txt",
 		"data/nicowar.txt",
+		"data/resources/registry.json",
 		"data/usl/Glob2/Runtime/Game.usl",
 		"data/usl/Language/Runtime/Classes.usl",
 		"data/usl/Language/Runtime/Control.usl",

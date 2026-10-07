@@ -5,7 +5,7 @@
 #include "AICortex.h"
 #include "AITelemetryFields.h"
 #include "CortexObservation.h"
-#include "CortexWheat.h"
+#include "CortexFoodSources.h"
 
 #include "Order.h"
 #include "Player.h"
@@ -612,21 +612,21 @@ void AICortex::translateActionSetPriority(const Cortex::CortexAction& action, co
 	}
 }
 
-void AICortex::enqueueWheatForbidden(const Cortex::CortexObservation& obs, bool liftAll)
+void AICortex::enqueueFoodSourcesForbidden(const Cortex::CortexObservation& obs, bool liftAll)
 {
-	(void)obs; // reserved: the gate already ran in CortexPolicy::wantWheatProtection /
-	           // wantWheatBlitzLift; liftAll selects the wheat-blitz full-lift mode.
+	(void)obs; // reserved: the gate already ran in CortexPolicy::wantFoodSourceProtection /
+	           // wantFoodBurstLift; liftAll selects the food-blitz full-lift mode.
 
-	// Both area types use the same wheat checkerboard and upkeep. Retire legacy
-	// wheat forbidden paint when using farms, including saves from the prototype.
+	// Both area types use the same food checkerboard and upkeep. Retire legacy
+	// food forbidden paint when using farms, including saves from the prototype.
 	const AIEngine::AIWorldView* map = observedWorld;
 	const bool farms = map->farmAreasEnabled && !observedWorld->rules.resourceGrowthDisabled;
-	Cortex::WheatReconcile wr =
-		Cortex::reconcileWheatForbiddenWorld(observedWorld,observedTeam,queryScratch,intents,&diagnosticStream, wheatOpenMargin, /*buildMasks=*/true, liftAll, farms);
+	Cortex::FoodSourceReconcile wr =
+		Cortex::reconcileFoodSourcesForbiddenWorld(observedWorld,observedTeam,queryScratch,intents,&diagnosticStream, wheatOpenMargin, /*buildMasks=*/true, liftAll, farms);
 	const Uint8 teamNumber = static_cast<Uint8>(observedTeam->number);
 	if (farms)
 	{
-		Cortex::WheatReconcile legacy = Cortex::reconcileWheatForbiddenWorld(
+		Cortex::FoodSourceReconcile legacy = Cortex::reconcileFoodSourcesForbiddenWorld(
 			observedWorld,observedTeam,queryScratch,intents,&diagnosticStream, wheatOpenMargin, /*buildMasks=*/true, /*liftAll=*/true);
 		if (legacy.del.getApplicationCount() > 0)
 			enqueueOrder(Cortex::areaOrder<OrderAlterForbidden>(teamNumber, BrushTool::MODE_DEL, &legacy.del, map));
