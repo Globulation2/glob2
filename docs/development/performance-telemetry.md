@@ -211,8 +211,8 @@ decisions on the owner at the same deadlines (an owner-only batch), as do thread
 failure and platforms without threads.
 A loaded match's configured delay cannot be overridden.
 
-Map computation has a separate executor whose thread count includes the submitting
-thread. Area jobs rebuild allocated forbidden/guard/clear fields at existing structural
+Map computation runs as blocking batches on the same executor, whose thread count
+includes the submitting thread. Area jobs rebuild allocated forbidden/guard/clear fields at existing structural
 refresh boundaries. Initialization jobs use 4096-cell chunks on maps of at least
 16384 cells; goal painting and forbidden-border detection retain their serial ordering.
 Hiring jobs advance frozen building searches in separate swim classes before candidate
@@ -225,8 +225,10 @@ modes use inline scheduled AI decisions. Measure the additional work separately.
 `compute_batches`, `compute_jobs`, `compute_parallel_batches`, `compute_batch_ns`,
 `compute_deferred_batches`, `compute_deferred_jobs`, `compute_owner_jobs`,
 `compute_worker_jobs`, `compute_lane_wait_ns`, `compute_join_wait_ns`,
-`compute_wait_ns`, and `compute_active_elapsed_ns`. They do not describe the separate
-AI worker queue. `hiring_prepasses` counts candidate-scan hooks and
+`compute_wait_ns`, and `compute_active_elapsed_ns`. The deferred, owner, worker and
+lane/join wait figures are the AI decision batches as the executor saw them; the
+`ai_pipeline` object reports the scheduler's own view of the same work.
+`hiring_prepasses` counts candidate-scan hooks and
 `hiring_popped_entries` counts advanced entries, including stale entries.
 `setup_ns` ends before `Engine::run`; `run_ns` includes that call's finalization.
 
@@ -271,8 +273,9 @@ warmup, including AI deadline waits. Stalled calls do not create tick samples.
 Use these separate instrumented runs for tick-time distributions; ordinary
 paired timing runs retain the default loop and do not pay histogram sampling.
 
-Snapshot pools have seventeen slots per component/plane to cover the largest consumer
-horizon: sixteen-tick map-gradient jobs and eight-tick AI decisions. Slots allocate on
+Snapshot pools have seventeen slots per component/plane: the longest consumer horizon
+(sixteen-tick map-gradient jobs; eight-tick AI decisions lease the same captures) plus the
+store's latest capture. Slots allocate on
 demand and retain reusable capacity. Lease counters include the store's latest snapshot
 and references from pooled components, rather than counting only workers. Shared catalog
 and terrain payloads are counted once. Byte accounting includes nested vector and growth

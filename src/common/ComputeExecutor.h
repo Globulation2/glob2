@@ -35,7 +35,9 @@
 // Only one thread submits and joins deferred batches, and never from inside a
 // job. Placement::OwnerOnly batches are invisible to workers: joining executes
 // them serially on the submitter in the same order, so a game without compute
-// threads follows the identical schedule.
+// threads follows the identical schedule. A lane's live batches must share one
+// placement: a worker holding a Shared lane job would otherwise wait on an
+// OwnerOnly predecessor until the submitter joins. submit() enforces this.
 class ComputeExecutor
 {
 public:
@@ -68,8 +70,9 @@ public:
 	public:
 		bool empty() const { return serial == 0; }
 	};
-	// Deferred horizon: delayed map gradients retain up to sixteen ticks and AI
-	// decisions up to eight, plus the batch being joined.
+	// Deferred horizon. AI decisions are the only deferred producer today and
+	// keep at most nine batches live (delay 0..8 plus the one being joined); the
+	// ring is sized for a sixteen-tick producer such as delayed map gradients.
 	static constexpr std::size_t Slots = 18;
 private:
 	using Clock = std::chrono::steady_clock;
@@ -267,7 +270,8 @@ public:
 	}
 	std::size_t threadCount() const { return workers.size() + 1; }
 	std::size_t slot() const { return active == this ? activeSlot : 0; }
-	const Metrics &metrics() const { return totals; }
+	// A consistent copy; workers update the deferred counters under the mutex.
+	Metrics metrics() const { std::lock_guard<std::mutex> lock(mutex); return totals; }
 	// Sum of active elapsed times, NOT CPU time (the benchmark measures process CPU).
 	std::uint64_t activeNs() const
 	{
@@ -328,10 +332,25 @@ public:
 		if (active) throw std::logic_error("Deferred batches cannot be submitted from inside a job");
 		Batch batch;
 		std::size_t total = 0;
-		for (const auto& group : groups) total += group.count;
+		for (const auto& group : groups)
+		{
+			if (group.lane != NoLane && group.lane >= Lanes) throw std::invalid_argument("Compute lane index exceeds the lane count");
+			total += group.count;
+		}
 		if (!total) return batch;
 		std::unique_lock<std::mutex> lock(mutex);
 		if (live == Slots) throw std::logic_error("Compute executor exceeded its deferred batch horizon");
+		// Validate everything before touching executor state: a partial
+		// submission would leave lane sequences nobody completes.
+		for (const auto& group : groups)
+			if (group.lane != NoLane)
+				for (std::size_t n = 0; n < live; ++n)
+				{
+					const auto& other = slots[(oldest + n) % Slots];
+					if (other.placement == placement) continue;
+					for (const auto& candidate : other.groups)
+						if (candidate.lane == group.lane) throw std::logic_error("Compute lane mixes placements across live batches");
+				}
 		const auto index = (oldest + live) % Slots;
 		auto& slot = slots[index];
 		slot.serial = nextSerial++;
@@ -341,7 +360,6 @@ public:
 		std::size_t start = 0;
 		for (const auto& group : slot.groups)
 		{
-			if (group.lane != NoLane && group.lane >= Lanes) { slot.serial = 0; throw std::invalid_argument("Compute lane index exceeds the lane count"); }
 			slot.starts.push_back(start); start += group.count;
 			slot.laneBases.push_back(group.lane == NoLane ? 0 : laneIssued[group.lane]);
 			if (group.lane != NoLane) laneIssued[group.lane] += group.count;

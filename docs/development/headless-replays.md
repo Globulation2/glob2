@@ -29,7 +29,7 @@ when continuing a save. Delay 8 intentionally changes response pacing compared
 with delay 0. Compare the same initial state, seed, delay and orders across worker
 counts and platforms when checking determinism.
 
-Format 140 saves the AI engine's completed pending orders, logical deadlines and
+Format 143 saves the AI engine's completed pending orders, logical deadlines and
 execution feedback. Saving finishes outstanding decisions without executing
 future commands early. Older supported saves load with delay 0 and an empty
 scheduling queue. Delay 0 preserves strategy and polling cadence, with explicit correctness fixes:

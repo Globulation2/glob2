@@ -99,6 +99,16 @@ AI::~AI()
 	aiImplementation=NULL;
 }
 
+namespace
+{
+// The opt-in test guard is read once; decisions run on worker threads.
+bool ruleAuditEnabled()
+{
+	static const bool enabled = std::getenv("GLOB2_TEST_AI_RULE_AUDIT") != nullptr;
+	return enabled;
+}
+}
+
 std::shared_ptr<Order> AI::getOrder(bool paused)
 {
 	assert(player);
@@ -129,7 +139,7 @@ std::shared_ptr<Order> AI::getOrder(bool paused)
 	// after the network queue, when a repair may already have finished, and
 	// cannot reliably distinguish that repair from an unavailable upgrade.
 	// This opt-in test guard reports violations; it never filters an order.
-	if (std::getenv("GLOB2_TEST_AI_RULE_AUDIT") &&
+	if (ruleAuditEnabled() &&
 		!AIRules::permittedQueuedOrder(*player->game, *order))
 		throw std::runtime_error("AI selected work unavailable under the match rules");
 	aiTime.stop();
@@ -214,7 +224,7 @@ AIEngine::Command AI::decide(const AIEngine::DecisionContext& context)
         deferredControllerReceipts.clear();
     }
 	if (!order) throw std::runtime_error("AI returned no order object");
-    if (std::getenv("GLOB2_TEST_AI_RULE_AUDIT") &&
+    if (ruleAuditEnabled() &&
         !AIRules::permittedQueuedOrder(context.world,*order))
         throw std::runtime_error("AI selected work unavailable under the match rules");
 	sink.count(AITelemetry::OrderTypes + order->getOrderType());
@@ -460,6 +470,10 @@ void AI::bindTelemetry()
 	}
 	telemetryTeam = player->team;
 	resumeTelemetry = false;
+	// Once decisions run on the engine's lane the controller's sink belongs to
+	// that lane (decide() binds decisionTelemetry); a rebind on the owner must
+	// not race a decision still in flight.
+	if (decisionTelemetry) return;
 	aiImplementation->telemetry.series = telemetrySeries.get();
 	aiImplementation->telemetry.tick = player->game->stepCounter;
 }

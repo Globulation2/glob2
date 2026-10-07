@@ -175,6 +175,68 @@ TEST_CASE("deferred batches drain FIFO with owner participation, lanes, isolated
 }
 }
 
+TEST_SUITE("ComputeExecutor")
+{
+namespace
+{
+struct Ordered { std::mutex mutex; std::vector<int> order; std::atomic<int> running{0}, overlaps{0}; };
+void orderedJob(void* context, std::size_t index)
+{
+	auto* ordered = static_cast<Ordered*>(context);
+	if (ordered->running.fetch_add(1) != 0) ordered->overlaps.fetch_add(1);
+	std::this_thread::sleep_for(std::chrono::microseconds(50));
+	{ std::lock_guard<std::mutex> lock(ordered->mutex); ordered->order.push_back(int(index)); }
+	ordered->running.fetch_sub(1);
+}
+struct Gate { std::atomic<bool> open{false}; std::atomic<int> passed{0}; };
+void gatedJob(void* context, std::size_t)
+{
+	auto* gate = static_cast<Gate*>(context);
+	while (!gate->open.load()) std::this_thread::yield();
+	gate->passed.fetch_add(1);
+}
+}
+TEST_CASE("lane groups run in index order, placements cannot mix on a lane, and the horizon is bounded")
+{
+	for (unsigned threads : {1u, 3u})
+	{
+		CAPTURE(threads);
+		ComputeExecutor executor;
+		executor.configure(threads);
+		// Several jobs of one lane group are sequenced by their offsets.
+		Ordered ordered;
+		ComputeExecutor::Group group{6, {orderedJob, &ordered}, 1};
+		auto batch = executor.submit(std::span(&group, 1));
+		executor.join(batch);
+		CHECK(ordered.overlaps.load() == 0);
+		CHECK(ordered.order == std::vector<int>{0, 1, 2, 3, 4, 5});
+		// A live Shared lane rejects an OwnerOnly batch on the same lane, and
+		// finished() reports the batch state while it is gated.
+		Gate gate;
+		ComputeExecutor::Group gated{1, {gatedJob, &gate}, 2};
+		auto live = executor.submit(std::span(&gated, 1));
+		CHECK_FALSE(executor.finished(live));
+		ComputeExecutor::Group clash{1, {gatedJob, &gate}, 2};
+		CHECK_THROWS_AS(executor.submit(std::span(&clash, 1), ComputeExecutor::Placement::OwnerOnly), std::logic_error);
+		CHECK(executor.liveBatches() == 1);
+		gate.open = true;
+		executor.join(live);
+		CHECK(executor.finished(live)); CHECK(gate.passed.load() == 1);
+		// The ring holds at most Slots live batches; the overflow leaves state intact.
+		Gate hold;
+		ComputeExecutor::Group held{1, {gatedJob, &hold}};
+		std::vector<ComputeExecutor::Batch> batches;
+		for (std::size_t i = 0; i < ComputeExecutor::Slots; ++i) batches.push_back(executor.submit(std::span(&held, 1), ComputeExecutor::Placement::OwnerOnly));
+		CHECK_THROWS_AS(executor.submit(std::span(&held, 1), ComputeExecutor::Placement::OwnerOnly), std::logic_error);
+		CHECK(executor.liveBatches() == ComputeExecutor::Slots);
+		hold.open = true;
+		for (auto& b : batches) executor.join(b);
+		CHECK(hold.passed.load() == int(ComputeExecutor::Slots));
+		CHECK(executor.liveBatches() == 0);
+	}
+}
+}
+
 #include "ReadOnlyPhase.h"
 TEST_SUITE("ReadOnlyPhase") {
 TEST_CASE("borrowed groups cover serial parallel empty and exception barriers") {

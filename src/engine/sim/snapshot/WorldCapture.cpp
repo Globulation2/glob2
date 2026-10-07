@@ -391,11 +391,25 @@ void verifyCapture(const Game& game, const Handle& handle)
 					throw std::logic_error(std::string("snapshot verification: ") + component + " chunk " + std::to_string(chunk) + " differs from the live map");
 			});
 	};
-	if (handle.terrain) compare("terrain", handle.terrain->legacy, game.map.legacyTerrainState());
+	const auto live = game.map.cellView();
+	if (handle.terrain)
+	{
+		compare("terrain", handle.terrain->legacy, game.map.legacyTerrainState());
+		if (!handle.terrain->identity || handle.terrain->identity->size() != live.terrainIds.size()
+			|| (!live.terrainIds.empty() && std::memcmp(handle.terrain->identity->data(), live.terrainIds.data(), live.terrainIds.size_bytes())))
+			throw std::logic_error("snapshot verification: terrain identity differs from the live map");
+	}
 	if (handle.resources)
 	{
 		compare("resources", handle.resources->cells, game.map.resourceState());
 		compare("resource stock indices", handle.resources->stockIndices, game.map.resourceStockIndexState());
+		// The stock sidecar and source counts ride on the Resources generation too.
+		if (handle.resources->stocks != *live.stocks)
+			throw std::logic_error("snapshot verification: resource stocks differ from the live map");
+		if (!std::equal(handle.resources->materialSourceCounts.begin(), handle.resources->materialSourceCounts.end(), live.materialSourceCounts.begin(), live.materialSourceCounts.end()))
+			throw std::logic_error("snapshot verification: material source counts differ from the live map");
+		if (handle.resources->staticMaterialSourceGeneration != game.map.staticMaterialSourceGeneration())
+			throw std::logic_error("snapshot verification: static material source generation differs from the live map");
 	}
 	if (handle.occupancy) compare("occupancy", handle.occupancy->cells, game.map.occupancyState());
 	if (handle.areas) compare("areas", handle.areas->cells, game.map.areaState());

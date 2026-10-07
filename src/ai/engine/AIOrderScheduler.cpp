@@ -84,7 +84,12 @@ OrderScheduler::~OrderScheduler()
 }
 bool OrderScheduler::liveWork() const
 {
-	for (const auto& batch : batches) for (const auto& entry : batch.entries) if (!entry.completed && !entry.failure) return true;
+	// Judged by batch state only: entry fields belong to the executing thread.
+	for (const auto& batch : batches)
+	{
+		if (!batch.dispatched && !batch.entries.empty()) return true;
+		if (batch.dispatched && executor && !executor->finished(batch.batch)) return true;
+	}
 	return false;
 }
 void OrderScheduler::configure(unsigned delayTicks, ComputeExecutor& target, bool sharedExecution)

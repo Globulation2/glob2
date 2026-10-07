@@ -181,6 +181,61 @@ TEST_SUITE("AIOrderScheduler")
 		for (unsigned tick = 0; tick < 4; ++tick) CHECK(scheduler.takeDue(tick).empty());
 		REQUIRE(scheduler.takeDue(4).size() == 1);
 	}
+	TEST_CASE("placement follows the delay and the measured decision work")
+	{
+		const auto poll = [](TestScheduler& scheduler, Uint32 tick, unsigned players, std::chrono::microseconds work) {
+			for (unsigned player = 0; player < players; ++player)
+				scheduler.submit({player, 1, tick, tick, 0}, observation(tick), [work](const auto&) {
+					if (work.count()) std::this_thread::sleep_for(work);
+					return nullCommand();
+				});
+			scheduler.takeDue(tick);
+		};
+		{
+			// A delayed batch is always shared: the owner is not waiting for it.
+			TestScheduler scheduler; scheduler.configure(2, 2);
+			for (Uint32 tick = 0; tick < 6; ++tick) poll(scheduler, tick, 2, std::chrono::microseconds(0));
+			CHECK(scheduler.metrics.sharedBatches == 6);
+		}
+		{
+			// One decision per tick never repays a worker wake-up.
+			TestScheduler scheduler; scheduler.configure(0, 2);
+			for (Uint32 tick = 0; tick < 6; ++tick) poll(scheduler, tick, 1, std::chrono::microseconds(0));
+			CHECK(scheduler.metrics.sharedBatches == 0);
+		}
+		{
+			// Cheap decisions start shared and settle on the owner once measured.
+			TestScheduler scheduler; scheduler.configure(0, 2);
+			for (Uint32 tick = 0; tick < 40; ++tick) poll(scheduler, tick, 2, std::chrono::microseconds(0));
+			CHECK(scheduler.metrics.sharedBatches >= 1); CHECK(scheduler.metrics.sharedBatches < 40);
+		}
+		{
+			// Decisions worth more than the threshold stay shared.
+			TestScheduler scheduler; scheduler.configure(0, 2);
+			for (Uint32 tick = 0; tick < 12; ++tick) poll(scheduler, tick, 2, std::chrono::microseconds(150));
+			CHECK(scheduler.metrics.sharedBatches == 12);
+		}
+		{
+			// Without shared execution nothing is shared, whatever the work.
+			TestScheduler scheduler; scheduler.configure(0, 0);
+			for (Uint32 tick = 0; tick < 4; ++tick) poll(scheduler, tick, 2, std::chrono::microseconds(150));
+			CHECK(scheduler.metrics.sharedBatches == 0);
+		}
+	}
+	TEST_CASE("configuration rejects live work and submissions after a tick was dispatched")
+	{
+		TestScheduler scheduler; scheduler.configure(4, 1);
+		scheduler.submit({0, 1, 0, 0, 0}, observation(0), [](const auto&) { return nullCommand(); });
+		CHECK_THROWS_AS(scheduler.configure(4, 1), std::logic_error);
+		scheduler.dispatch();
+		CHECK_THROWS_AS(scheduler.submit({1, 1, 0, 0, 0}, observation(0), [](const auto&) { return nullCommand(); }), std::logic_error);
+		CHECK(scheduler.takeDue(0).empty());
+		scheduler.drain();
+		scheduler.cancel(0, 1);
+		CHECK(scheduler.pendingCount() == 0);
+		scheduler.configure(2, 1); // no live work remains
+		CHECK(scheduler.delayTicks() == 2);
+	}
 	TEST_CASE("restore refuses truncated duplicate and out of window pending requests")
 	{
 		TestScheduler scheduler;

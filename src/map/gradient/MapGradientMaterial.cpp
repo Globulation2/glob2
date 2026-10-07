@@ -31,8 +31,9 @@ Uint16 *Map::getMaterialGradientSlot(int teamNumber, int resourceType, int swimC
 	withMarkets = withMarkets && marketsV2Enabled();
 	// Keep colonies without markets on the original field and refresh schedule.
 	if (withMarkets && game->teams[teamNumber]->stockSuppliers.empty()) withMarkets=false;
-	// AI workers may request the same lazy field concurrently. Cover both
-	// allocation and pipeline invalidation before publishing the pointer.
+	// Compute jobs (hiring searches, AI-enrolled fields) may request the same
+	// lazy field concurrently. Cover both allocation and pipeline invalidation
+	// before publishing the pointer.
 	std::lock_guard<std::mutex> lock(materialGradientMutex);
 	if (!withMarkets && !hasMaterialSourceSlot(resourceType))
 	{

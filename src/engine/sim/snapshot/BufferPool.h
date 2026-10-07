@@ -9,9 +9,10 @@
 namespace SimulationSnapshot
 {
 // A bounded pool of reusable component buffers. The owner thread acquires; a
-// buffer is free again once every consumer has dropped its shared_ptr. Slots
-// cover the largest consumer horizon: delayed map gradients retain up to
-// sixteen ticks and AI decisions up to eight, plus the store's latest capture.
+// buffer is free again once every consumer has dropped its shared_ptr. The
+// limit covers the longest consumer horizon plus the store's latest capture:
+// delayed map gradients retain up to sixteen ticks and AI decisions up to
+// eight, both leasing the same per-tick captures, so max(16, 8) + 1 = 17.
 //
 // Synchronization: a consumer's final release is an atomic release-decrement of
 // the use count. The owner reads that count (a relaxed atomic load) and then
