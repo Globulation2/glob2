@@ -51,6 +51,63 @@ class FrequencyEvidenceTest(unittest.TestCase):
         self.assertEqual(result['counter_probe']['status'], 'available')
 
 
+class HostCpuActivityTest(unittest.TestCase):
+    def snapshot(self, counters, seconds):
+        return dict(status='available', monotonic_ns=int(seconds * 1e9),
+                    clock_ticks_per_second=100, busy_jiffies=counters)
+
+    def test_parser_excludes_idle_iowait_and_does_not_double_count_guests(self):
+        result = benchmark.parse_cpu_busy_jiffies(
+            'cpu 100 20 30 500 60 7 8 9 40 10\n'
+            'cpu0 60 10 20 200 30 3 4 5 25 5\n'
+            'cpu1 40 10 10 300 30 4 4 4 15 5\n'
+            'intr 123 456\nbtime 1000\n')
+        self.assertEqual(result, dict(cpu=174, cpu0=102, cpu1=72))
+
+    def test_invalid_or_incomplete_cpu_rows_are_rejected(self):
+        for contents in ('cpu 1 2 3 4\n', 'cpu0 1 2 3 4\n',
+                         'cpu 1 2 3\ncpu0 1 2 3 4',
+                         'cpu 1 2 3 4\ncpu0 1 -2 3 4',
+                         'cpu 1 2 3 4\ncpu0 broken',
+                         'cpu 1 2 3 4\ncpu0 1 2 3 4\ncpu0 1 2 3 4'):
+            with self.subTest(contents=contents), self.assertRaises(ValueError):
+                benchmark.parse_cpu_busy_jiffies(contents)
+
+    def test_estimate_uses_host_total_and_snapshot_wall_interval(self):
+        before = self.snapshot(dict(cpu=1000, cpu0=400, cpu1=600), 10)
+        after = self.snapshot(dict(cpu=1700, cpu0=600, cpu1=1100), 15)
+        result = benchmark.host_cpu_activity(before, after, 3.0)
+        self.assertEqual(result['host_busy_cpu_s'], 7.0)
+        self.assertEqual(result['per_cpu_busy_s'], dict(cpu0=2.0, cpu1=5.0))
+        self.assertEqual(result['approximate_other_busy_cpu_s'], 4.0)
+        self.assertEqual(result['approximate_other_busy_average_cores'], 0.8)
+
+    def test_negative_estimate_is_retained_as_boundary_skew_not_clamped(self):
+        before = self.snapshot(dict(cpu=100, cpu0=100), 0)
+        after = self.snapshot(dict(cpu=199, cpu0=199), 1)
+        result = benchmark.host_cpu_activity(before, after, 1.0)
+        self.assertEqual(result['status'], 'available')
+        self.assertAlmostEqual(result['approximate_other_busy_cpu_s'], -0.01)
+
+    def test_missing_reset_or_changed_topology_does_not_produce_estimate(self):
+        before = self.snapshot(dict(cpu=100, cpu0=100), 1)
+        candidates = [dict(status='unavailable'),
+                      self.snapshot(dict(cpu=99, cpu0=99), 2),
+                      self.snapshot(dict(cpu=200, cpu0=100, cpu1=100), 2),
+                      self.snapshot(dict(cpu=200, cpu0=200), 1),
+                      dict(self.snapshot(dict(cpu=200, cpu0=200), 2), clock_ticks_per_second=250)]
+        for after in candidates:
+            with self.subTest(after=after):
+                result = benchmark.host_cpu_activity(before, after, 0.5)
+                self.assertEqual(result['status'], 'unavailable')
+                self.assertNotIn('approximate_other_busy_cpu_s', result)
+
+    def test_unreadable_proc_stat_is_diagnostic_only(self):
+        with patch.object(benchmark.platform, 'system', return_value='Linux'), \
+                patch.object(benchmark.Path, 'read_text', side_effect=PermissionError('denied')):
+            self.assertEqual(benchmark.host_cpu_snapshot()['status'], 'unavailable')
+
+
 class AggregateIntervalTest(unittest.TestCase):
     def test_independent_repeat_permutations_do_not_create_timing_blocks(self):
         # Opposite repeat ordering must not cancel independent measurement noise.
@@ -158,6 +215,9 @@ class CampaignIntegrityTest(unittest.TestCase):
         rows = [json.loads(line) for line in (self.output / 'measurements.jsonl').read_text().splitlines()]
         self.assertEqual(rows[1]['repeat'], -1)
         self.assertEqual(rows[1]['simulation_cpu_s'], 100.0)
+        self.assertIn('host_cpu_before', rows[1])
+        self.assertIn('host_cpu_after', rows[1])
+        self.assertIn('host_cpu_activity', rows[1])
 
     def test_report_only_preserves_threshold_diagnostics_and_default_exit_codes(self):
         for ratio, gate, default_exit in ((1.0, 'within_limits', 0),
