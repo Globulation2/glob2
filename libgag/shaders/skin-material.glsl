@@ -420,11 +420,23 @@ void skinMaterial_slime(inout SkinSurface s, vec2 uv, float shell) {
   s.emissive = 0.08 * s.albedo;
 }
 
+// Pattern density shared by Studio, the sprite baker and the game. Scale
+// procedural detail only: painted colour and material ids keep their atlas UVs.
+float skinMaterialRepeat(float material) {
+  int m = int(material + 0.5);
+  if (m == 0) return 4.0; // classic glossy
+  if (m == 7) return 3.0; // wood
+  if (m == 10) return 5.0; // leather
+  if (m == 5 || m == 8 || m == 9 || m == 16) return 2.0;
+  return 1.0;
+}
+
 // Shades one texel: the painted albedo, its material id, the camera-space
 // surface normal, the mesh UV and the shell fraction. Unknown ids are matte.
 // Alpha is 0 where a shell pass has no strand, including on back faces, whose
 // pushed-out copies would otherwise fringe the silhouette.
 vec4 skinShade(vec3 albedo, float material, vec3 surfaceNormal, vec2 uv, float shell) {
+  uv *= skinMaterialRepeat(material);
   SkinSurface s = skinDefault(albedo, normalize(surfaceNormal), uv);
   int m = int(material + 0.5);
   if (m == 0) skinMaterial_glossy(s, uv, shell);

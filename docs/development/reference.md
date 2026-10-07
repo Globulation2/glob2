@@ -877,6 +877,12 @@ seeds, binaries, captures and timing data under `artifacts/` for review.
 
 ### Skin materials
 
+Procedural pattern repeats are set in `skinMaterialRepeat` in the shared GLSL:
+classic glossy uses 4×, wood 3×, leather 5×, and woven fabric, stone, scales and
+honeycomb 2×; other materials use 1×. The scale applies to material detail after
+sampling the paint and material atlas, so painted markings retain their placement.
+Studio, native rendering and sprite baking use these same settings.
+
 Colony-skin materials are declared once in `libgag/shaders/skin-materials.json`
 (ids, keys, display names, picker groups, which materials grow fur shells, the
 shell count and the fur length and depth bias every renderer uses) and shaded
