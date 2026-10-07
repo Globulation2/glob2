@@ -900,7 +900,13 @@ void Engine::abortSession() noexcept
     try { stopSimulationThread(); } catch (...) {}
     gui.isRunning = false;
     gui.toLoadGameFileName.clear();
-    try { teardownSession(); }
+    try
+    {
+        // The session has failed: join and discard pending AI decisions rather
+        // than draining their results again during teardown or destruction.
+        gui.game.clearAI();
+        teardownSession();
+    }
     catch (...)
     {
         std::cerr << "Failure while closing game resources; session cannot continue\n";
