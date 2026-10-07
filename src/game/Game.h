@@ -35,6 +35,7 @@ namespace GAGCore
 	class ChunkedBuffer;
 }
 using namespace GAGCore;
+namespace SimulationSnapshot { class Store; }
 class GameGUI;
 class SceneMap;
 struct Scene;
@@ -232,14 +233,16 @@ public:
 	void settleAIOrder(const std::shared_ptr<Order>& order, bool accepted);
 	void cancelAI(unsigned player);
 	void drainAI();
+	//! Simulation-owner service shared by AI, gradients and presentation.
+	SimulationSnapshot::Store& snapshots() const { return worldSnapshots; }
 	void clearAI();
 	void saveAI(GAGCore::OutputStream* stream);
 	bool loadAI(GAGCore::InputStream* stream);
 	void observeUnpolledAI();
-	SimulationSnapshot::Store& snapshotStore() { return snapshots; }
+	SimulationSnapshot::Store& snapshotStore() { return worldSnapshots; }
 	std::vector<std::pair<std::string, Uint64>> aiMetrics() const;
 private:
-	SimulationSnapshot::Store snapshots;
+	mutable SimulationSnapshot::Store worldSnapshots;
 	std::unique_ptr<AIEngine::Pipeline> aiPipeline;
 public:
 

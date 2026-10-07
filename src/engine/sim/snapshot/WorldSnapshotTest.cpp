@@ -757,3 +757,37 @@ TEST_SUITE("WorldSnapshot")
 	}
 
 }
+
+TEST_SUITE("WorldSnapshot")
+{
+TEST_CASE("explicit observation boundaries refresh paused state and retain old leases")
+{
+    glob2test::HeadlessGlobals globals;
+    glob2test::HeadlessGame fixture{glob2test::GameOptions{.wDec=5, .hDec=5, .teams=1, .discovered=true, .clearImmobile=true, .loadDefaultRace=true}};
+    auto* unit = fixture.addUnit(WORKER,12,12,0);
+    REQUIRE(unit);
+    auto& store = fixture.game.snapshots();
+    constexpr auto needed = SimulationSnapshot::bit(SimulationSnapshot::Component::Entities)
+        | SimulationSnapshot::bit(SimulationSnapshot::Component::Terrain);
+    const auto before = store.captureBoundary(fixture.game, needed);
+    const auto previousHp = before.entities->units.front().hp;
+    unit->hp -= 1;
+    // Captures within a declared boundary stay coherent, even if a caller
+    // prematurely writes. Only the owner's explicit boundary makes it visible.
+    CHECK(store.captureBoundary(fixture.game, needed).entities == before.entities);
+    store.invalidateBoundary();
+    const auto after = store.captureBoundary(fixture.game, needed);
+    CHECK(after.tick == before.tick);
+    CHECK(after.observationRevision == before.observationRevision + 1);
+    CHECK(after.entities->units.front().hp == previousHp - 1);
+    CHECK(before.entities->units.front().hp == previousHp);
+    CHECK(after.terrain == before.terrain);
+    const auto projected = after.project(SimulationSnapshot::bit(SimulationSnapshot::Component::Entities));
+    CHECK(projected.observationRevision == after.observationRevision);
+    CHECK_FALSE(projected.terrain);
+    fixture.game.clearAI();
+    // Store reset does not invalidate handles already owned by consumers.
+    CHECK(before.entities->units.front().hp == previousHp);
+    CHECK(fixture.game.snapshots().captureBoundary(fixture.game, needed).entities->units.front().hp == previousHp - 1);
+}
+}
