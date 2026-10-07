@@ -14,15 +14,47 @@ from pathlib import Path
 from PIL import Image
 
 ROOT = Path(__file__).resolve().parents[1]
-# Every paintable built-in terrain name from src/map/TerrainTypeTable.h; the engine's
-# Catalog::parse requires the same set.
-BINDINGS = ("water", "sand", "grass", "ice", "road",
-            "boulders", "hedge", "thicket", "ridge_rock", "outcrop",
-            "dirt", "clay", "gravel", "flower_meadow",
-            "mud", "marsh", "deep_snow", "scree",
-            "dirt_track", "boardwalk", "lava", "ember_field",
-            "loam", "moss", "spring_meadow", "deep_water", "dark_water",
-            "void_hole", "chasm")
+LEGACY_BINDINGS = ("water", "sand", "grass", "ice", "road")
+BUILTIN_NAMES = ROOT / "tools/terrain_builtin_names.json"
+
+
+def required_bindings(root=ROOT):
+    """The five legacy names plus every paintable built-in presentation name.
+
+    tools/terrain_builtin_names.json lists the engine's paintable built-in
+    types; the engine's TerrainMaterials test compares this list with its tables.
+    """
+    names = list(LEGACY_BINDINGS)
+    path = Path(root) / BUILTIN_NAMES.relative_to(ROOT)
+    if path.is_file():
+        for name in json.loads(path.read_text()):
+            if name not in names:
+                names.append(name)
+    return tuple(names)
+
+
+BINDINGS = required_bindings()
+
+
+def material_provenance(document, root=ROOT):
+    """Per-material provenance summaries from datasrc/gfx/<key>/provenance.json.
+
+    Materials without a provenance file are existing terrain artwork with
+    shared periodic variant borders and no AI-generated imagery.
+    """
+    result = {}
+    for material in document["materials"]:
+        path = Path(root) / "datasrc/gfx" / material["key"] / "provenance.json"
+        if not path.is_file():
+            result[material["key"]] = dict(method="existing", source="Existing terrain artwork")
+            continue
+        record = json.loads(path.read_text())
+        summary = dict(method=record.get("method", "unknown"), source=path.relative_to(root).as_posix())
+        for field in ("generator", "generator_sha256", "source_sha256", "pillow", "replaces"):
+            if field in record:
+                summary[field] = record[field]
+        result[material["key"]] = summary
+    return result
 
 
 def pixel_fingerprint(image):
@@ -370,7 +402,10 @@ def compile_tileset(document, output, root=ROOT, page_size=1024, runtime_fingerp
             json.dumps(document, sort_keys=True, separators=(",", ":")).encode()
         ).hexdigest(),
         compiler_sha256=hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),
-        provenance="Existing terrain artwork; shared periodic variant borders and deterministic reusable contour masks. No AI-generated imagery.",
+        provenance=dict(
+            note="Shared periodic variant borders and deterministic reusable contour masks; per-material sources below.",
+            materials=material_provenance(document, root),
+        ),
     )
     (output / "atlas.json").write_text(json.dumps(manifest, indent=2) + "\n")
     return manifest

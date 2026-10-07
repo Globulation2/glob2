@@ -1,0 +1,166 @@
+{
+  "generator": "tools/artwork/terrain_synth.py",
+  "method": "procedural",
+  "generator_sha256": {
+    "tools/artwork/terrain_synth.py": "a8eda69c7b7212d9f9573766da37f1002a984d62327c108fb581e9a9c23830dc",
+    "tools/artwork/material_tiles.py": "224e159e0974023797710aa959994f11658c82da8fb80f9701e4abc13c74ed83"
+  },
+  "material": "scree",
+  "group": "rough",
+  "label": "Scree",
+  "recipe": {
+    "name": "scree",
+    "group": "rough",
+    "label": "Scree",
+    "profile": "rock",
+    "seam": {
+      "height": 1
+    },
+    "palette": {
+      "dark": [
+        84,
+        86,
+        92
+      ],
+      "mid": [
+        118,
+        120,
+        124
+      ],
+      "light": [
+        152,
+        154,
+        156
+      ],
+      "dirt": [
+        62,
+        56,
+        50
+      ]
+    },
+    "style": {
+      "luma": 118,
+      "std": 14,
+      "grain_max": 12,
+      "match": 1.0
+    },
+    "phases": 1,
+    "animation_ticks": 8,
+    "alpha_range": [
+      255,
+      255
+    ],
+    "preview": null,
+    "minimap": null,
+    "placeholder_only": false,
+    "note": ""
+  },
+  "seed": "fnv1a32(\"scree:<variant>:<phase>\")",
+  "render_size": 128,
+  "tile_size": 32,
+  "variants": 16,
+  "phases": 1,
+  "frame_layout": "variant + 16 * phase",
+  "sprite": "data/gfx/terrain-scree",
+  "preview": [
+    117,
+    117,
+    119
+  ],
+  "minimap": [
+    117,
+    117,
+    119
+  ],
+  "mean_color": [
+    117,
+    117,
+    119
+  ],
+  "style_stats": {
+    "0": {
+      "luma": 117.4,
+      "std": 14.3,
+      "grain": 9.0,
+      "sat": 0.03,
+      "alpha": 255.0
+    }
+  },
+  "style_references": {
+    "data/gfx/terrain0..15.png": {
+      "use": "statistics only",
+      "stats": {
+        "luma": 79.3,
+        "std": 5.0,
+        "grain": 3.0,
+        "sat": 0.73,
+        "alpha": 255.0
+      }
+    },
+    "data/gfx/terrain128..143.png": {
+      "use": "statistics only",
+      "stats": {
+        "luma": 160.1,
+        "std": 27.0,
+        "grain": 27.9,
+        "sat": 0.74,
+        "alpha": 255.0
+      }
+    },
+    "data/gfx/terrain256..271.png": {
+      "use": "statistics only",
+      "stats": {
+        "luma": 95.2,
+        "std": 8.4,
+        "grain": 5.5,
+        "sat": 0.92,
+        "alpha": 255.0
+      }
+    },
+    "data/gfx/terrain272..287.png": {
+      "use": "statistics only",
+      "stats": {
+        "luma": 215.4,
+        "std": 6.2,
+        "grain": 4.3,
+        "sat": 0.17,
+        "alpha": 255.0
+      }
+    },
+    "data/gfx/terrain288..303.png": {
+      "use": "statistics only",
+      "stats": {
+        "luma": 102.9,
+        "std": 10.3,
+        "grain": 7.9,
+        "sat": 0.37,
+        "alpha": 255.0
+      }
+    }
+  },
+  "python": "3.14.4",
+  "pillow": "12.2.0",
+  "platform": {
+    "system": "linux",
+    "machine": "x86_64",
+    "libc": "glibc 2.43"
+  },
+  "runtime_sha256": {
+    "data/gfx/terrain-scree0.png": "474661ee8379ae7a2abe4f0c0394cfee2fbc5c0276e924923fc5049b09b217be",
+    "data/gfx/terrain-scree1.png": "929b1f791872ee3807b28c19329268dbab86e0c220c3edb7c357d28b6b14f89b",
+    "data/gfx/terrain-scree2.png": "4672dacf0a2a3cf2bb5742c3231a012c2b934520fb030c619761e7f4a783f66e",
+    "data/gfx/terrain-scree3.png": "8167d1a521bf36e18199afcd1e94bc37d38a802447bc4c0a170e59a867404f60",
+    "data/gfx/terrain-scree4.png": "7cfe8d00f832ddf6223551489104088eac0712e20865abdd303a837c7457085f",
+    "data/gfx/terrain-scree5.png": "f5e7df2ed37f3e6bc6b25c0e868a923dd36ec224c49c5162de939a66df37339d",
+    "data/gfx/terrain-scree6.png": "3e8fc0d2483c55d1f1acd27419e6d16cebb7c122af0551da25e3a2358965a722",
+    "data/gfx/terrain-scree7.png": "3a0f50cd86bf1f4534afa0b68c642ade2bc0304e8c230203abede578946b8ad8",
+    "data/gfx/terrain-scree8.png": "835a7dea456c5c5e76c5222915ab36f5c3e76883f073a0c6d16ddf64f800723b",
+    "data/gfx/terrain-scree9.png": "d0fcba0eb7a7177be6ecfa84d73c326700daa92236d31bb6ef7d594093f669f9",
+    "data/gfx/terrain-scree10.png": "9602af0c89548dd15fccff4a18fd9a188655ac9e6c3690e1a21fafde42c94d38",
+    "data/gfx/terrain-scree11.png": "684b873eba865db6ca8eabe05d1cdac00ac3cb4f2bc128ff6a70cd0447558f33",
+    "data/gfx/terrain-scree12.png": "89ac37dcdbecc53e18b8841df6480b2049cdd27eda7b0419da60a05885e65c99",
+    "data/gfx/terrain-scree13.png": "f0b209cd3f1638e92003b118ec4bad4be91cc2e90fd0a2413d7be63196d8b376",
+    "data/gfx/terrain-scree14.png": "602c1e3bd8cb0f93606f696813618463e7d13ae4378f5ec0b16ab07aafb00134",
+    "data/gfx/terrain-scree15.png": "d248a8c0de8c3bce84845ac7c7cee788f2a5a38e4ac81e37cd0840a401120163"
+  }
+}
