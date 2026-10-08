@@ -1,0 +1,13 @@
+[WebServer] (node:47313) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 2 tests using 1 worker
+
+(node:47327) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  1 [desktop] › e2e/terrain-studio.spec.ts:8:1 › terrain creation workspace fits desktop and phone and submits one revision-bound turn (10.6s)
+(node:47395) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  2 [phone] › e2e/terrain-studio.spec.ts:8:1 › terrain creation workspace fits desktop and phone and submits one revision-bound turn (10.9s)
+
+  2 passed (26.2s)

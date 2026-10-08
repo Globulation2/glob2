@@ -1,0 +1,96 @@
+{
+  "commit": "791ff6ebd9343df6d8c977b05c19d288631b0fed",
+  "base": "0507700f1dcb4ff444ad2483b3320e9d16ec4ed0",
+  "platform": "macOS Darwin 25.6.0 arm64",
+  "compiler": "Apple clang 21.0.0",
+  "node": "26.0.0",
+  "nativeFlags": "release=1 server=0 -j8",
+  "python": "3.13 for SCons; pinned Pillow 12.2.0 for artwork",
+  "checks": {
+    "platform": {
+      "files": 11,
+      "tests": 66,
+      "result": "passed",
+      "log": "tests.log"
+    },
+    "native": {
+      "cases": 68,
+      "failed": 0,
+      "skipped": 0,
+      "result": "passed",
+      "log": "native-tests.log",
+      "junit": "native-tests.xml"
+    },
+    "artwork": {
+      "tests": 4,
+      "result": "passed",
+      "log": "artwork-tests.log"
+    },
+    "web": {
+      "projects": [
+        "desktop",
+        "phone"
+      ],
+      "themes": [
+        "light",
+        "dark"
+      ],
+      "accessibility": "No critical or serious WCAG 2 A/AA violations",
+      "log": "e2e.log"
+    },
+    "typecheck": "passed",
+    "focusedLint": "passed",
+    "formatting": "passed",
+    "productionWebBuild": "passed",
+    "composeConfiguration": "passed",
+    "actualNativeWorkerPipeline": "passed"
+  },
+  "commands": [
+    "npm run typecheck",
+    "TERRAIN_NATIVE_BINARY=../build/darwin/client/release/src/glob2 TERRAIN_PYTHON=../artifacts/terrain-studio/python/bin/python node_modules/.bin/vitest run packages/terrain-studio/test apps/ai-terrain-worker/test apps/api/test/terrainStudio.test.ts packages/db/test/schema.test.ts apps/api/test/accountExport.test.ts apps/api/test/sets.test.ts apps/api/test/buildingDrafts.test.ts packages/billing/test/products.test.ts apps/worker/test/worker.test.ts packages/protocol/test/fixtures.test.ts",
+    "artifacts/terrain-studio/build-python/bin/scons --site-dir=artifacts/terrain-studio/site-scons release=1 server=0 -j8 build/darwin/client/release/src/glob2 tests",
+    "python3 test/run_tests.py --binary engine --filter 'BrushCatalog/*' --filter 'MapSets/*' --filter 'TerrainMaterials/*' --filter 'TerrainPresentation/*' --filter 'TerrainValidation/*' --filter 'MapTiling/*' --filter 'SoftwareRenderer/*' --verbose --junit artifacts/terrain-studio/native-tests.xml",
+    "artifacts/terrain-studio/python/bin/python -m unittest discover -s tools/artwork -p test_terrain_studio.py",
+    "../../node_modules/.bin/vite build",
+    "../../node_modules/.bin/playwright test -c e2e/playwright.config.ts terrain-studio.spec.ts"
+  ],
+  "coverage": [
+    "Revision-bound requests, immutable validated candidates, exact-once credits, cancellation, ambiguous provider outcomes, repair scope and image reuse",
+    "Private references and remixes, attribution, ordinary publication, account export, blob retention, migrations and protocol fixtures",
+    "Native boundary/stock gallery, phases and variants, unchanged display checksums, portable pack import and offline save/load",
+    "Desktop and phone layouts in light/dark themes"
+  ],
+  "assetReuse": {
+    "inputs": 9256,
+    "auditedOutputs": 6454,
+    "checks": "Fresh export from integrated source using unchanged image encoder cache; source/tool and every exported output hash rechecked before native build",
+    "exportLog": "asset-refresh.log",
+    "audit": "runtime-assets.json.gz",
+    "localSConsOverride": "site-scons/site_init.py",
+    "purpose": "Reuse freshly exported, fully verified artwork outputs during native build; native source and binaries rebuilt for tested revision"
+  },
+  "omitted": [
+    "Live paid text/image provider calls and real-model artwork/cost qualification",
+    "Linux/Windows/Android native compilation and cross-platform checksums",
+    "WebAssembly game renderer build/runtime integration",
+    "Docker image build and deployment",
+    "Hosted CI"
+  ],
+  "artifacts": [
+    "native-pack.json",
+    "native-report.json",
+    "native-gallery.png",
+    "native-phase-gallery.png",
+    "native-contact.png",
+    "screenshots/desktop-light.png",
+    "screenshots/desktop-dark.png",
+    "screenshots/phone-light.png",
+    "screenshots/phone-dark.png"
+  ],
+  "nativeBinaries": {
+    "build/darwin/client/release/src/glob2": "848fc8d21a5e9a2679f3854c620fb632b463bb15d46da5b8517963e6b6b882ff",
+    "build/darwin/client/release/test/glob2-engine-tests": "2835670493fa1e598203b99bf98195c5333673afe493bed787d7a230eeedf73a"
+  },
+  "review": "review-summary.json",
+  "hostedChecks": "Cheap contracts pending when local verification completed; expensive hosted checks not requested"
+}

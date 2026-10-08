@@ -1,0 +1,24 @@
+{
+  "reviewers": [
+    "Backend correctness, billing, privacy and recovery",
+    "UX, responsive interface and accessibility",
+    "Architecture, native integration, deployment and documentation"
+  ],
+  "findingsAddressed": [
+    "Prevent active draft/set deletion from stranding credit reservations and provider journals",
+    "Use terrain wallet-first account-deletion lock ordering",
+    "Preserve unsaved inspector edits during concurrent saves with explicit conflict recovery",
+    "Keep definitively rejected prompts editable while retaining immutable retries for uncertain failures",
+    "Deduplicate uploaded references and freeze retry inputs",
+    "Show terrain health as signed HP per tick",
+    "Follow new chat messages while preserving history reading position",
+    "Clear stale preview URLs and fence phase/variation results with fresh run IDs",
+    "Use current four-corner terrain recipes, matching decor selection and atlas CPU pixels",
+    "Correct export and blob deletion documentation and expose worker credentials in deployment example"
+  ],
+  "independentFollowup": "Architecture reviewer inspected lifecycle and native fixes and found no blocking regressions",
+  "remainingLimitations": [
+    "Live paid providers and real-model art/cost qualification not tested",
+    "Cross-platform native builds/checksums, browser WASM runtime and Docker image deployment not tested"
+  ]
+}

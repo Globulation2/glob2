@@ -1,0 +1,9 @@
+
+ RUN  v5.0.3 /Users/bradley/.codex/worktrees/terrain-studio/glob2/platform
+
+
+ Test Files  11 passed (11)
+      Tests  66 passed (66)
+   Start at  06:31:42
+   Duration  5.20s (tests 70%, import 18%, transform 11%)
+
