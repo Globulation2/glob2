@@ -1,19 +1,21 @@
 # Reviewed admin dashboard verification
 
-PRs #949, #950, #952 and #953 deliver the four phases. Two independent sub-agents reviewed backend correctness and admin usability; their fixes are included in phase 4.
+Merged PRs #949, #950, #952 and #953 deliver the four phases. Master squash revision `e3e0b035245f0d1e76c7a1b57adb71bc2d1aa931` has exactly the validated final PR file tree. Two independent sub-agents reviewed backend correctness and admin usability; their fixes are included in phase 4.
 
-Final revision: `a40f3b32700b62c61b31a6ef4a9f465e1b5d2501`. Platform code tested at `9a17c549ea5095ba36f1efd5e3b405f67b1feaa0`; the final commit changes hosting documentation only. Current master `943bc48d43ed7537ea9c6688aaf8ac7f4c78160a` was fetched and integrated before final validation. Its shared studio services and additive draft-history migration overlapped this work; these were integrated rather than bypassed. No admin change touches simulation source or its version.
+Final PR revision: `5f371d85de84ff657fcd59c3b4acc044160ad06c`. Platform code tested at `9a17c549ea5095ba36f1efd5e3b405f67b1feaa0`; later documentation clarified closure timestamps. Master `6a1d2e588b6a026e6caa3bb649c82f6ae752298b` was integrated before the full platform run, including overlapping shared studio services and the additive draft-history migration.
+
+During merging, master gained `943bc48d4`, changing only CI classification of a native fixture harness. That update was integrated and 90 CI policy tests passed. Repository rules require squash merges: the remaining stacked branches were refreshed after each squash, with their platform/documentation file trees verified unchanged. No admin change touches simulation source or its version.
 
 Updated phase revisions:
 
 - Phase 1: `4099c22e8351d5e8961ad8f80fd27e9e3a980dfe`
-- Phase 2: `19d2593f56992c576f4624715559f318a8b2b4a1`
-- Phase 3: `2181640b50b359a3a5e49139d3b171d85116a4ab`
-- Phase 4: `a40f3b32700b62c61b31a6ef4a9f465e1b5d2501`
+- Phase 2: `3a9c9e8b34e989897dd3306913c3eef4b981e550`
+- Phase 3: `e49c629c4b70e8afa196cdb3e059b59962702809`
+- Phase 4: `5f371d85de84ff657fcd59c3b4acc044160ad06c`
 
 ## Verification
 
-Ubuntu 26.04.1 Linux x86_64; Node24.19.0 bundled runtime; lockfile dependencies; PostgreSQL16.15 in Docker; TypeScript6.0.3, Vitest5.0.3 and Playwright Chromium. Production runtime uses the repository Node22 image.
+Ubuntu 26.04.1 Linux x86_64; Node 24.19.0 bundled runtime; lockfile dependencies; PostgreSQL 16.15 in Docker; TypeScript 6.0.3, Vitest 5.0.3 and Playwright Chromium. Production runtime uses the repository Node 22 image.
 
 Commands run in platform/:
 
@@ -26,11 +28,11 @@ VITE_WEBSITE_URL=https://glob2online.com/ VITE_DOWNLOAD_URL=https://glob2online.
 SCREENSHOT_DIR=<evidence>/review-screenshots AXE_REPORT=<evidence>/review-axe-final.json npm run --workspace @glob2/web e2e -- --grep 'moderation pages for administrators only'
 ```
 
-Full final run: **1025 tests passed,13 existing opt-in tests skipped;138 suites passed,3 skipped**. Lint, formatting, all backend/web/e2e types and protocol fixture generation passed. Logs: review-full-tests.log, review-final-lint.log, review-final-typecheck.log, review-final-fixtures.log.
+Full final run: **1025 tests passed, 13 existing opt-in tests skipped;138 suites passed, 3 skipped**. Lint, formatting, all backend/web/e2e types and protocol fixture generation passed. Logs: review-full-tests.log, review-final-lint.log, review-final-typecheck.log, review-final-fixtures.log.
 
-Independent review regression runs:67 backend/API/billing/history/protocol tests and23 UI/chart/page tests passed. Refreshed phase1/2/3 smoke runs passed14/16/21 tests respectively, with full types and fixture generation. Final full-suite coverage includes upstream shared studio services and all reporting workers.
+Independent review regression runs: 67 backend/API/billing/history/protocol tests and 23 UI/chart/page tests passed. Refreshed phase 1/2/3 smoke runs passed 14/16/21 tests respectively, with full types and fixture generation. Final full-suite coverage includes upstream shared studio services and all reporting workers.
 
-Desktop1280x860 and Pixel7 phone smoke checks visit all8 sections in light/dark themes. Final production-build screenshots and axe results are review-screenshots/ and review-axe-final.json. There are no axe violations; some automated color-contrast checks remain incomplete and the reviewers inspected both themes manually. Screenshots use disposable synthetic records, including sparse daily points, USD/JPY cash and metered uncertain recovery.
+Desktop 1280x860 and Pixel 7 phone smoke checks visit all 8 sections in light/dark themes. Final production-build screenshots and axe results are review-screenshots/ and review-axe-final.json. There are no axe violations; some automated color-contrast checks remain incomplete and the reviewers inspected both themes manually. Screenshots use disposable synthetic records, including sparse daily points, USD/JPY cash and metered uncertain recovery.
 
 ## Review defects fixed
 
@@ -47,7 +49,7 @@ Coverage also includes all six report libraries, concurrent resolution/recovery,
 
 ## Performance
 
-performance-review.ts seeds10000 private maps/reports,60000 credit ledger rows,10000 payment events and10000 uncertain requests in an isolated database. It samples each admin endpoint20 times and prints cold,median,p95 times. Analytics/finance medians include warm cache hits. review-performance.log includes EXPLAIN ANALYZE showing the bounded credit-period query using map_ledger_admin_period_idx. Full tests were running concurrently; these are representative local measurements, not a before/after benchmark or a production latency guarantee.
+performance-review.ts seeds 10,000 private maps/reports, 60,000 credit ledger rows, 10,000 payment events and 10,000 uncertain requests in an isolated database. It samples each admin endpoint 20 times and prints cold,median,p95 times. Analytics/finance medians include warm cache hits. review-performance.log includes EXPLAIN ANALYZE showing the bounded credit-period query using map_ledger_admin_period_idx. Full tests were running concurrently; these are representative local measurements, not a before/after benchmark or a production latency guarantee.
 
 ## Rollout and limits
 
@@ -56,3 +58,14 @@ Additive migrations and backend precede dependent UI, with a private database ba
 No native simulation verification is required for this platform-only diff. Browser coverage is Chromium; Firefox/WebKit are not claimed. Existing large web chunk warnings remain. Expensive hosted checks were not requested; the repository accepts local evidence. Superseded PR workflow cancellations are not evidence of source failure; running master CI is left alone.
 
 Historical gaps remain visible. Active users are never reconstructed from last_seen_at. Monetary provider rates are not configured on the live host: costs remain unavailable until verified immutable rates are configured. Credits are never treated as cash or summed across products.
+
+
+## Live verification
+
+Merged master `e3e0b035245f0d1e76c7a1b57adb71bc2d1aa931` is deployed. Pending migrations 0053_studio_draft_history and 0056_admin_rollup_state both succeeded. API/worker and AI map/music services passed rollout health checks before Caddy; public HTML matches the tested production index byte-for-byte.
+
+All six admin read endpoints returned 200 and valid typed contracts. Open report, uncertain request and failed-job totals match source tables (0, 0, 4 existing failed jobs). Confirmed cash matched the reporting journal separately for each currency. The genixpro account is an active admin. The verification session was removed afterward. Zero provider monetary rate versions are configured, so estimates remain explicitly unavailable.
+
+Preserved native engine-agent, relay, music-worker and skin-render-worker container/image IDs match before and after. Source and deployed revision pointers match merged master. The public instance endpoint returned 200. Logs: review-live-verification.log, review-live-health.log, review-deployment.log. Private database/image backup remains `/opt/glob2/backups/admin-dashboard-20261008T181951Z`; no backup credentials or contents are published.
+
+An initial rollout attempt stopped at fetch because GitHub automatically removed the merged phase branch; it changed no running services. The completed rollout fetched master. No destructive live tests or provider calls were made.

@@ -1,0 +1,356 @@
+WARNING: 
+
+To increase the performance of the tunnel, consider installing NumPy. For instructions,
+please see https://cloud.google.com/iap/docs/using-tcp-forwarding#increasing_the_tcp_upload_bandwidth
+
+From https://github.com/Globulation2/glob2
+ * branch                  master     -> FETCH_HEAD
+   6a1d2e588b..e3e0b03524  master     -> origin/master
+Previous HEAD position was 6a1d2e588b Compute resource growth from snapshots with delayed publication (#897)
+HEAD is now at e3e0b03524 Add revenue and cost reporting with reviewed admin refinements (4/4) (#953)
+ Image glob2-platform:admin-e3e0b035245f0d1e76c7a1b57adb71bc2d1aa931 Building 
+#1 [internal] load local bake definitions
+#1 reading from stdin 1.14kB done
+#1 DONE 0.0s
+
+#2 [internal] load build definition from Dockerfile
+#2 transferring dockerfile: 18.94kB done
+#2 DONE 0.0s
+
+#3 resolve image config for docker-image://docker.io/docker/dockerfile:1.7
+#3 DONE 0.4s
+
+#4 docker-image://docker.io/docker/dockerfile:1.7@sha256:a57df69d0ea827fb7266491f2813635de6f17269be881f696fbfdf2d83dda33e
+#4 resolve docker.io/docker/dockerfile:1.7@sha256:a57df69d0ea827fb7266491f2813635de6f17269be881f696fbfdf2d83dda33e 0.0s done
+#4 CACHED
+
+#5 [internal] load metadata for docker.io/library/node:22-bookworm-slim
+#5 DONE 0.2s
+
+#6 [internal] load .dockerignore
+#6 transferring context: 290B done
+#6 DONE 0.0s
+
+#7 [platform 1/9] FROM docker.io/library/node:22-bookworm-slim@sha256:c3de60bf2f9dd0ac6370e6117950ff62d6e339527e7472301c9c78a017978392
+#7 resolve docker.io/library/node:22-bookworm-slim@sha256:c3de60bf2f9dd0ac6370e6117950ff62d6e339527e7472301c9c78a017978392 0.0s done
+#7 DONE 0.0s
+
+#8 [internal] load build context
+#8 transferring context: 1.32MB 1.7s done
+#8 DONE 2.0s
+
+#9 [node-deps  3/26] COPY platform/package.json platform/package-lock.json ./
+#9 CACHED
+
+#10 [platform-runtime-deps  1/13] RUN --mount=type=cache,id=glob2-npm,target=/root/.npm npm ci --omit=dev --no-audit --no-fund
+#10 CACHED
+
+#11 [node-deps 16/26] COPY platform/apps/ai-building-worker/package.json apps/ai-building-worker/
+#11 CACHED
+
+#12 [node-deps 25/26] COPY platform/apps/web/package.json apps/web/
+#12 CACHED
+
+#13 [node-deps  4/26] COPY platform/packages/protocol/package.json packages/protocol/
+#13 CACHED
+
+#14 [node-deps 23/26] COPY platform/apps/worker/package.json apps/worker/
+#14 CACHED
+
+#15 [node-deps  7/26] COPY platform/packages/play/package.json packages/play/
+#15 CACHED
+
+#16 [node-deps  5/26] COPY platform/packages/db/package.json packages/db/
+#16 CACHED
+
+#17 [node-deps 20/26] COPY platform/apps/skin-render-worker/package.json apps/skin-render-worker/
+#17 CACHED
+
+#18 [node-deps 18/26] COPY platform/apps/ai-music-worker/package.json apps/ai-music-worker/
+#18 CACHED
+
+#19 [node-deps 15/26] COPY platform/packages/building-studio/package.json packages/building-studio/
+#19 CACHED
+
+#20 [node-deps  2/26] WORKDIR /app/platform
+#20 CACHED
+
+#21 [node-deps 26/26] RUN --mount=type=cache,id=glob2-npm,target=/root/.npm npm ci --no-audit --no-fund
+#21 CACHED
+
+#22 [node-deps  6/26] COPY platform/packages/core/package.json packages/core/
+#22 CACHED
+
+#23 [node-deps  8/26] COPY platform/packages/engine/package.json packages/engine/
+#23 CACHED
+
+#24 [node-deps 11/26] COPY platform/packages/map-studio/package.json packages/map-studio/
+#24 CACHED
+
+#25 [node-deps 12/26] COPY platform/packages/music/package.json packages/music/
+#25 CACHED
+
+#26 [node-deps 19/26] COPY platform/apps/music-worker/package.json apps/music-worker/
+#26 CACHED
+
+#27 [node-deps 21/26] COPY platform/apps/ai-map-worker/package.json apps/ai-map-worker/
+#27 CACHED
+
+#28 [node-deps 13/26] COPY platform/packages/music-studio/package.json packages/music-studio/
+#28 CACHED
+
+#29 [node-deps 14/26] COPY platform/packages/terrain-studio/package.json packages/terrain-studio/
+#29 CACHED
+
+#30 [node-deps 10/26] COPY platform/packages/billing/package.json packages/billing/
+#30 CACHED
+
+#31 [node-deps 24/26] COPY platform/apps/engine-agent/package.json apps/engine-agent/
+#31 CACHED
+
+#32 [node-deps  9/26] COPY platform/packages/hive/package.json packages/hive/
+#32 CACHED
+
+#33 [node-deps 17/26] COPY platform/apps/ai-terrain-worker/package.json apps/ai-terrain-worker/
+#33 CACHED
+
+#34 [node-deps 22/26] COPY platform/apps/api/package.json apps/api/
+#34 CACHED
+
+#35 [platform-runtime-deps  2/13] COPY platform/tsconfig.base.json platform/tsconfig.json ./
+#35 CACHED
+
+#36 [platform-runtime-deps  3/13] COPY platform/packages packages
+#36 DONE 0.9s
+
+#37 [platform-runtime-deps  4/13] COPY platform/apps/api apps/api
+#37 DONE 0.2s
+
+#38 [platform-runtime-deps  5/13] COPY platform/apps/worker apps/worker
+#38 DONE 0.1s
+
+#39 [platform-runtime-deps  6/13] COPY platform/apps/music-worker apps/music-worker
+#39 DONE 0.0s
+
+#40 [platform-runtime-deps  7/13] COPY platform/apps/skin-render-worker apps/skin-render-worker
+#40 DONE 0.0s
+
+#41 [platform-runtime-deps  8/13] COPY platform/apps/engine-agent apps/engine-agent
+#41 DONE 0.1s
+
+#42 [platform-runtime-deps  9/13] COPY platform/apps/ai-map-worker apps/ai-map-worker
+#42 DONE 0.0s
+
+#43 [platform-runtime-deps 10/13] COPY platform/apps/ai-music-worker apps/ai-music-worker
+#43 DONE 0.0s
+
+#44 [platform-runtime-deps 11/13] COPY platform/apps/ai-terrain-worker apps/ai-terrain-worker
+#44 DONE 0.0s
+
+#45 [platform-runtime-deps 12/13] COPY platform/apps/ai-building-worker apps/ai-building-worker
+#45 DONE 0.0s
+
+#46 [platform-runtime-deps 13/13] RUN rm -rf packages/*/test apps/*/test &&     find packages apps -name '*.test.ts' -delete
+#46 DONE 0.9s
+
+#47 [platform 2/9] RUN groupadd --gid 10001 glob2 && useradd --uid 10001 --gid 10001 --no-create-home --home-dir /nonexistent glob2 &&     mkdir -p /var/lib/glob2/blobs /var/lib/glob2/keys /var/lib/glob2/relay /var/lib/glob2/engine-agent       /var/lib/glob2/db/migrator /var/lib/glob2/db/api /var/lib/glob2/db/worker /etc/glob2 &&     chown -R 10001:10001 /var/lib/glob2 &&     chmod 700 /var/lib/glob2/keys /var/lib/glob2/relay /var/lib/glob2/engine-agent /var/lib/glob2/db/*
+#47 CACHED
+
+#48 [platform 3/9] COPY --from=platform-runtime-deps /app/platform /app/platform
+#48 DONE 6.3s
+
+#49 [platform 4/9] COPY examples/javascript /app/examples/javascript
+#49 DONE 0.4s
+
+#50 [platform 5/9] COPY data/resources/registry.json /app/data/resources/registry.json
+#50 DONE 0.0s
+
+#51 [platform 6/9] COPY docs/development/javascript.md docs/development/javascript-api.md /app/docs/development/
+#51 DONE 0.0s
+
+#52 [platform 7/9] COPY deploy/platform-init.sh /usr/local/bin/glob2-platform-init
+#52 DONE 0.0s
+
+#53 [platform 8/9] RUN printf '#!/bin/sh\nexec node /app/platform/apps/api/src/cli.ts "$@"\n' > /usr/local/bin/platform &&     chmod 755 /usr/local/bin/platform /usr/local/bin/glob2-platform-init
+#53 DONE 0.5s
+
+#54 [platform 9/9] WORKDIR /app/platform
+#54 DONE 0.1s
+
+#55 exporting to image
+#55 exporting layers
+#55 exporting layers 15.5s done
+#55 exporting manifest sha256:8bec5c49e4f2a1c7e391a4f4027d86e50dedb0f46380bdfdf04234d93a6f8b87
+#55 exporting manifest sha256:8bec5c49e4f2a1c7e391a4f4027d86e50dedb0f46380bdfdf04234d93a6f8b87 0.0s done
+#55 exporting config sha256:cf9a59859dfe798b99c6a2621aab74e7c00374e8af4f42021047a8fcd2a44bc8 0.0s done
+#55 exporting attestation manifest sha256:ba8b737dc24bda2e4111dbadf8dcb58c769c3fcddcbb16e614edef879f38f35f 0.0s done
+#55 exporting manifest list sha256:94b90edac6f4c4d985788436180e7422111373c08edd793397fb3694d95b5579 0.0s done
+#55 naming to docker.io/library/glob2-platform:admin-e3e0b035245f0d1e76c7a1b57adb71bc2d1aa931 done
+#55 unpacking to docker.io/library/glob2-platform:admin-e3e0b035245f0d1e76c7a1b57adb71bc2d1aa931
+#55 unpacking to docker.io/library/glob2-platform:admin-e3e0b035245f0d1e76c7a1b57adb71bc2d1aa931 10.0s done
+#55 DONE 25.6s
+
+#56 resolving provenance for metadata file
+#56 DONE 0.0s
+ Image glob2-platform:admin-e3e0b035245f0d1e76c7a1b57adb71bc2d1aa931 Built 
+#0 building with "default" instance using docker driver
+
+#1 [internal] load build definition from Dockerfile
+#1 transferring dockerfile: 121B done
+#1 DONE 0.0s
+
+#2 [internal] load metadata for docker.io/library/glob2-caddy:admin-previous-admin-dashboard-20261008T181951Z
+#2 DONE 0.0s
+
+#3 [internal] load .dockerignore
+#3 transferring context: 2B done
+#3 DONE 0.0s
+
+#4 [internal] load build context
+#4 ...
+
+#5 [1/2] FROM docker.io/library/glob2-caddy:admin-previous-admin-dashboard-20261008T181951Z@sha256:724736b1ffc7dffcecd050d5285ff9e4c791d245ca319c3bb49e1a407393f053
+#5 resolve docker.io/library/glob2-caddy:admin-previous-admin-dashboard-20261008T181951Z@sha256:724736b1ffc7dffcecd050d5285ff9e4c791d245ca319c3bb49e1a407393f053 0.0s done
+#5 DONE 0.2s
+
+#4 [internal] load build context
+#4 transferring context: 186.29MB 1.9s done
+#4 DONE 2.0s
+
+#6 [2/2] COPY dist /srv/web
+#6 DONE 5.4s
+
+#7 exporting to image
+#7 exporting layers
+#7 exporting layers 12.2s done
+#7 exporting manifest sha256:027eb6fbda62b464c0f8e70764241553a118943e11605f740550a329f1b35f41 0.0s done
+#7 exporting config sha256:c19c8e5ece2b693b1e50fba40264766689623cda95202de2dc69d9999455c35e 0.0s done
+#7 exporting attestation manifest sha256:a28d858494933a0d39bd714459ee1683f4cac1ed0b37045e722bc1fb7cbc22b4 0.0s done
+#7 exporting manifest list sha256:9843710b3a8d0bf977acc52c0d4e761c5f87a469e4bd33e491c384f1abf56c47 0.0s done
+#7 naming to docker.io/library/glob2-caddy:admin-e3e0b035245f0d1e76c7a1b57adb71bc2d1aa931 done
+#7 unpacking to docker.io/library/glob2-caddy:admin-e3e0b035245f0d1e76c7a1b57adb71bc2d1aa931
+#7 unpacking to docker.io/library/glob2-caddy:admin-e3e0b035245f0d1e76c7a1b57adb71bc2d1aa931 3.5s done
+#7 DONE 15.8s
+#0 building with "default" instance using docker driver
+
+#1 [internal] load build definition from ai-map-worker.Dockerfile
+#1 transferring dockerfile: 228B done
+#1 DONE 0.0s
+
+#2 [internal] load metadata for docker.io/library/glob2-ai-map-worker:admin-previous-admin-dashboard-20261008T181951Z
+#2 DONE 0.0s
+
+#3 [internal] load metadata for docker.io/library/glob2-platform:admin-e3e0b035245f0d1e76c7a1b57adb71bc2d1aa931
+#3 DONE 0.0s
+
+#4 [internal] load .dockerignore
+#4 transferring context: 42B done
+#4 DONE 0.0s
+
+#5 FROM docker.io/library/glob2-platform:admin-e3e0b035245f0d1e76c7a1b57adb71bc2d1aa931@sha256:94b90edac6f4c4d985788436180e7422111373c08edd793397fb3694d95b5579
+#5 resolve docker.io/library/glob2-platform:admin-e3e0b035245f0d1e76c7a1b57adb71bc2d1aa931@sha256:94b90edac6f4c4d985788436180e7422111373c08edd793397fb3694d95b5579 0.0s done
+#5 DONE 0.1s
+
+#6 [stage-0 1/2] FROM docker.io/library/glob2-ai-map-worker:admin-previous-admin-dashboard-20261008T181951Z@sha256:c414d2cd75261a0d2f6d13d2c7d8dcbe2ab1398217fadc687c532c98675b3b2b
+#6 resolve docker.io/library/glob2-ai-map-worker:admin-previous-admin-dashboard-20261008T181951Z@sha256:c414d2cd75261a0d2f6d13d2c7d8dcbe2ab1398217fadc687c532c98675b3b2b 0.0s done
+#6 DONE 0.2s
+
+#7 [stage-0 2/2] COPY --from=glob2-platform:admin-e3e0b035245f0d1e76c7a1b57adb71bc2d1aa931 /app/platform /app/platform
+#7 DONE 11.4s
+
+#8 exporting to image
+#8 exporting layers
+#8 exporting layers 2.0s done
+#8 exporting manifest sha256:cb45222b30b3e1a91589b79a837bbeb6379bc25bb1d8c2e6f244a4ceefe731fe 0.0s done
+#8 exporting config sha256:0098d11852685633e72614024bc60905c0d729ddd3e31a9e3ac8f82aaea3e3c9 0.0s done
+#8 exporting attestation manifest sha256:919c7797d9dca7cef23d3357346dc76c728cf2f14bd78bd7c9d6b961009c5d73 0.0s done
+#8 exporting manifest list sha256:dadf7cbfd51defeeeb35255fbe2e0a637e6ff491a747b1a54a9f3740d1f3478d 0.0s done
+#8 naming to docker.io/library/glob2-ai-map-worker:admin-e3e0b035245f0d1e76c7a1b57adb71bc2d1aa931 done
+#8 unpacking to docker.io/library/glob2-ai-map-worker:admin-e3e0b035245f0d1e76c7a1b57adb71bc2d1aa931 0.1s done
+#8 DONE 2.3s
+#0 building with "default" instance using docker driver
+
+#1 [internal] load build definition from ai-music-worker.Dockerfile
+#1 transferring dockerfile: 232B done
+#1 DONE 0.0s
+
+#2 [internal] load metadata for docker.io/library/glob2-platform:admin-e3e0b035245f0d1e76c7a1b57adb71bc2d1aa931
+#2 DONE 0.0s
+
+#3 [internal] load metadata for docker.io/library/glob2-ai-music-worker:admin-previous-admin-dashboard-20261008T181951Z
+#3 DONE 0.0s
+
+#4 [internal] load .dockerignore
+#4 transferring context: 42B done
+#4 DONE 0.0s
+
+#5 [stage-0 1/2] FROM docker.io/library/glob2-ai-music-worker:admin-previous-admin-dashboard-20261008T181951Z@sha256:a3488f5212bc134d03c2277a59e6933905cf11c61eac1182991cc0e2d7b25f85
+#5 resolve docker.io/library/glob2-ai-music-worker:admin-previous-admin-dashboard-20261008T181951Z@sha256:a3488f5212bc134d03c2277a59e6933905cf11c61eac1182991cc0e2d7b25f85 0.0s done
+#5 DONE 0.1s
+
+#6 FROM docker.io/library/glob2-platform:admin-e3e0b035245f0d1e76c7a1b57adb71bc2d1aa931@sha256:94b90edac6f4c4d985788436180e7422111373c08edd793397fb3694d95b5579
+#6 resolve docker.io/library/glob2-platform:admin-e3e0b035245f0d1e76c7a1b57adb71bc2d1aa931@sha256:94b90edac6f4c4d985788436180e7422111373c08edd793397fb3694d95b5579 0.0s done
+#6 CACHED
+
+#7 [stage-0 2/2] COPY --from=glob2-platform:admin-e3e0b035245f0d1e76c7a1b57adb71bc2d1aa931 /app/platform /app/platform
+#7 DONE 10.0s
+
+#8 exporting to image
+#8 exporting layers
+#8 exporting layers 1.9s done
+#8 exporting manifest sha256:622ffbe3c3219d1a1d753584232f70f3f9d19645e37f3ec7c4910280bcc3f27b
+#8 exporting manifest sha256:622ffbe3c3219d1a1d753584232f70f3f9d19645e37f3ec7c4910280bcc3f27b 0.0s done
+#8 exporting config sha256:9b901007a07f82ae2eea8e6c0cdcf4d770af0db09d96fa38b1a4020c2732c41f 0.0s done
+#8 exporting attestation manifest sha256:a8d31533593b55d81311e3c9edd4ea89b28f2faeb54df1e7d3a263f39044b78c 0.0s done
+#8 exporting manifest list sha256:89b6105c20dea96e56d28811ea6d05fc50d9d27c467d1fc9e080de07d2ce5ecc 0.0s done
+#8 naming to docker.io/library/glob2-ai-music-worker:admin-e3e0b035245f0d1e76c7a1b57adb71bc2d1aa931 done
+#8 unpacking to docker.io/library/glob2-ai-music-worker:admin-e3e0b035245f0d1e76c7a1b57adb71bc2d1aa931 0.1s done
+#8 DONE 2.1s
+ Container glob2-platform-init-run-b7838c23a2a8 Creating 
+ Container glob2-platform-init-run-b7838c23a2a8 Created 
+signing keys present: k20261002.pem 
+roles ready: glob2_migrator, glob2_api, glob2_worker (passwords set: migrator, api, worker)
+Success     0053_studio_draft_history
+Success     0056_admin_rollup_state
+ Container glob2-platform-ai-map-worker-1 Recreate 
+ Container glob2-platform-ai-music-worker-1 Recreate 
+ Container glob2-platform-platform-api-1 Recreate 
+ Container glob2-platform-platform-worker-1 Recreate 
+ Container glob2-platform-platform-worker-1 Recreated 
+ Container glob2-platform-ai-music-worker-1 Recreated 
+ Container glob2-platform-ai-map-worker-1 Recreated 
+ Container glob2-platform-platform-api-1 Recreated 
+ Container glob2-platform-platform-worker-1 Starting 
+ Container glob2-platform-ai-map-worker-1 Starting 
+ Container glob2-platform-ai-music-worker-1 Starting 
+ Container glob2-platform-platform-api-1 Starting 
+ Container glob2-platform-platform-worker-1 Started 
+ Container glob2-platform-ai-map-worker-1 Started 
+ Container glob2-platform-ai-music-worker-1 Started 
+ Container glob2-platform-platform-api-1 Started 
+ Container glob2-platform-ai-map-worker-1 Waiting 
+ Container glob2-platform-ai-music-worker-1 Waiting 
+ Container glob2-platform-platform-api-1 Waiting 
+ Container glob2-platform-platform-worker-1 Waiting 
+ Container glob2-platform-ai-map-worker-1 Healthy 
+ Container glob2-platform-platform-worker-1 Healthy 
+ Container glob2-platform-platform-api-1 Healthy 
+ Container glob2-platform-ai-music-worker-1 Healthy 
+ Container glob2-platform-caddy-1 Recreate 
+ Container glob2-platform-caddy-1 Recreated 
+ Container glob2-platform-caddy-1 Starting 
+ Container glob2-platform-caddy-1 Started 
+ Container glob2-platform-caddy-1 Waiting 
+ Container glob2-platform-caddy-1 Healthy 
+Deployment complete. Backup: /opt/glob2/backups/admin-dashboard-20261008T181951Z
+glob2-platform-caddy-1 glob2-caddy:admin-e3e0b035245f0d1e76c7a1b57adb71bc2d1aa931 Up 11 seconds (healthy)
+glob2-platform-platform-api-1 glob2-platform:admin-e3e0b035245f0d1e76c7a1b57adb71bc2d1aa931 Up 34 seconds (healthy)
+glob2-platform-ai-map-worker-1 glob2-ai-map-worker:admin-e3e0b035245f0d1e76c7a1b57adb71bc2d1aa931 Up 35 seconds
+glob2-platform-ai-music-worker-1 glob2-ai-music-worker:admin-e3e0b035245f0d1e76c7a1b57adb71bc2d1aa931 Up 35 seconds (healthy)
+glob2-platform-platform-worker-1 glob2-platform:admin-e3e0b035245f0d1e76c7a1b57adb71bc2d1aa931 Up 36 seconds
+strange_euclid ubuntu:24.04 Up 14 minutes
+glob2-platform-relay-1 glob2-relay:development Up 55 minutes (healthy)
+glob2-platform-engine-agent-1 glob2-engine-agent:development Up 55 minutes
+glob2-platform-music-worker-1 glob2-music-worker:development Up 55 minutes (healthy)
+glob2-platform-skin-render-worker-1 glob2-skin-render-worker:development Up 55 minutes (healthy)
+glob2-platform-postgres-1 postgres:16-alpine Up 55 minutes (healthy)
