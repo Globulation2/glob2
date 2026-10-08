@@ -285,8 +285,17 @@ export class BuildingAiStudio {
         label: r.label,
         url: `/api/v1/ai-building-studio/threads/${thread}/artifacts/${r.id}`,
       })),
+      draftHistory: (
+        await sql<{
+          revision: string;
+          title: string;
+          created_at: string;
+        }>`SELECT revision,title,created_at FROM building_studio_draft_history WHERE thread_id=${thread} ORDER BY created_at DESC`.execute(
+          db,
+        )
+      ).rows,
       revisions: (
-        await sql<BuildingAiStudioRevision>`SELECT request_id AS "requestId",title,applied,base_revision AS "baseRevision",report,document AS package FROM building_studio_revisions WHERE thread_id=${thread} ORDER BY created_at DESC LIMIT 100`.execute(
+        await sql<BuildingAiStudioRevision>`SELECT request_id AS "requestId",title,applied,base_revision AS "baseRevision",report,document AS package,(SELECT checkpoints->>'appliedRevision' FROM building_studio_requests WHERE id=request_id) AS "appliedRevision" FROM building_studio_revisions WHERE thread_id=${thread} ORDER BY created_at DESC LIMIT 100`.execute(
           db,
         )
       ).rows,
@@ -821,7 +830,12 @@ export class BuildingAiStudio {
         await sql`INSERT INTO building_studio_revisions(request_id,thread_id,base_revision,title,document,archive,hash,report,sim_version,applied) VALUES(${row.id},${row.thread_id},${row.input.submission.expectedRevision},${result.title},${JSON.stringify(result.package)}::jsonb,${result.archive},${result.hash},${JSON.stringify(result.report)}::jsonb,${result.simVersion},${applied})`.execute(
           db,
         );
-        if (applied) await this.apply(db, t.draftId, result);
+        if (applied) {
+          const revision = await this.apply(db, t.draftId, result, row.thread_id);
+          await sql`UPDATE building_studio_requests SET checkpoints=checkpoints || ${JSON.stringify({ appliedRevision: revision })}::jsonb WHERE id=${row.id}`.execute(
+            db,
+          );
+        }
       }
       if (result) {
         const text =
@@ -888,7 +902,12 @@ export class BuildingAiStudio {
       );
     });
   }
-  private async apply(db: Db, draftId: string, result: Pick<Delivery, 'archive' | 'title'>) {
+  private async apply(
+    db: Db,
+    draftId: string,
+    result: Pick<Delivery, 'archive' | 'title'>,
+    thread: string,
+  ) {
     const draft = (
       await sql<{
         owner_account_id: string;
@@ -910,9 +929,81 @@ export class BuildingAiStudio {
         'conflict',
         'Your building workspace is limited to 64 MiB. Export and delete an old draft first.',
       );
-    await sql`UPDATE building_drafts SET archive=${result.archive},name=${result.title},revision=${randomUUID()},updated_at=now() WHERE id=${draftId}`.execute(
+    await this.backup(db, thread, draftId);
+    const revision = randomUUID();
+    await sql`UPDATE building_drafts SET archive=${result.archive},name=${result.title},revision=${revision},updated_at=now() WHERE id=${draftId}`.execute(
       db,
     );
+    return revision;
+  }
+  private async backup(db: Db, thread: string, draftId: string) {
+    const size = (
+      await sql<{
+        bytes: string;
+      }>`SELECT coalesce(sum(octet_length(h.archive)),0)::bigint AS bytes FROM building_studio_draft_history h JOIN building_studio_threads t ON t.id=h.thread_id WHERE t.account_id=(SELECT account_id FROM building_studio_threads WHERE id=${thread})`.execute(
+        db,
+      )
+    ).rows[0];
+    const draft = (
+      await sql<{
+        bytes: number;
+        exists: boolean;
+      }>`SELECT octet_length(archive)::int AS bytes,EXISTS(SELECT 1 FROM building_studio_draft_history h WHERE h.thread_id=${thread} AND h.revision=d.revision) AS exists FROM building_drafts d WHERE id=${draftId}`.execute(
+        db,
+      )
+    ).rows[0];
+    if (draft && !draft.exists && Number(size?.bytes ?? 0) + draft.bytes > 64 * 1024 * 1024)
+      throw new HiveError(
+        'conflict',
+        'Private draft history is limited to 64 MiB. Export an old project before deleting its history.',
+      );
+    await sql`INSERT INTO building_studio_draft_history(thread_id,revision,title,archive) SELECT ${thread},revision,name,archive FROM building_drafts WHERE id=${draftId} ON CONFLICT DO NOTHING`.execute(
+      db,
+    );
+  }
+  async draftBackup(account: string, thread: string, revision: string) {
+    await this.own(account, thread);
+    const row = (
+      await sql<{
+        archive: Buffer;
+        title: string;
+      }>`SELECT archive,title FROM building_studio_draft_history WHERE thread_id=${thread} AND revision=${revision}`.execute(
+        this.db,
+      )
+    ).rows[0];
+    if (!row) throw new HiveError('not_found', 'Saved draft unavailable.');
+    return row;
+  }
+  async restoreDraft(account: string, thread: string, revision: string, expectedRevision: string) {
+    await this.db.transaction().execute(async (db) => {
+      await this.lockWallet(db, account);
+      const t = await this.own(account, thread, db);
+      const current = (
+        await sql<{
+          revision: string;
+        }>`SELECT revision FROM building_drafts WHERE id=${t.draftId} FOR UPDATE`.execute(db)
+      ).rows[0];
+      if (!current || current.revision !== expectedRevision)
+        throw new HiveError('conflict', 'Draft changed.');
+      const active = (
+        await sql`SELECT id FROM building_studio_requests WHERE account_id=${account} AND status NOT IN ('ready','failed')`.execute(
+          db,
+        )
+      ).rows;
+      if (active.length)
+        throw new HiveError('conflict', 'Wait for active studio work before restoring.');
+      const saved = (
+        await sql<{
+          archive: Buffer;
+          title: string;
+        }>`SELECT archive,title FROM building_studio_draft_history WHERE thread_id=${thread} AND revision=${revision}`.execute(
+          db,
+        )
+      ).rows[0];
+      if (!saved) throw new HiveError('not_found', 'Saved draft unavailable.');
+      await this.apply(db, t.draftId, saved, thread);
+      await notify(db, account, thread);
+    });
   }
   async adopt(
     account: string,
@@ -958,7 +1049,15 @@ export class BuildingAiStudio {
           readBuildingArchive(archive).package.namespace
       )
         throw new HiveError('conflict', 'Candidate archive does not match this draft.');
-      await this.apply(db, t.draftId, { archive, title: result.title });
+      const appliedRevision = await this.apply(
+        db,
+        t.draftId,
+        { archive, title: result.title },
+        thread,
+      );
+      await sql`UPDATE building_studio_requests SET checkpoints=checkpoints || ${JSON.stringify({ appliedRevision })}::jsonb WHERE id=${request}`.execute(
+        db,
+      );
       await sql`UPDATE building_studio_revisions SET applied=true WHERE request_id=${request}`.execute(
         db,
       );

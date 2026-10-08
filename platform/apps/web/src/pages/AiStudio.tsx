@@ -1,3 +1,16 @@
+import { projectConversation } from './aiStudio/conversation.ts';
+import {
+  StudioShell,
+  StudioHeader,
+  StudioWorkspace,
+  ChatComposer,
+  ConversationPane,
+  StudioTabs,
+  ReleaseDialog,
+  NewStudio,
+} from '../components/studio/Studio.tsx';
+import { studioSession, useStudioValue } from '../components/studio/storage.ts';
+import { Icon } from '../icons.tsx';
 import { lazy, Suspense, useCallback, useEffect, useRef, useState } from 'react';
 import type {
   AiStudioAccount,
@@ -34,31 +47,44 @@ function download(source: string) {
   setTimeout(() => URL.revokeObjectURL(url), 1000);
 }
 export function AiStudio({ id }: { id?: string }) {
+  const { account } = useSession();
+  return <AiWorkspace key={`${account?.id ?? 'anonymous'}:${id ?? 'new'}`} id={id} />;
+}
+function AiWorkspace({ id }: { id?: string }) {
   const { account } = useSession(),
     { location, navigate } = useRouter();
   const [wallet, setWallet] = useState<AiStudioAccount>(),
     [projects, setProjects] = useState<AiStudioProject[]>([]);
-  const [prompt, setPrompt] = useState(''),
+  const [prompt, setPrompt] = useStudioValue(`ai-studio-prompt:${account?.id}:${id ?? 'new'}`, ''),
     [title, setTitle] = useState('My Colony'),
     [error, setError] = useState(''),
     [busy, setBusy] = useState(false);
   const [tab, setTab] = useState<'code' | 'changes' | 'playtest'>('code'),
-    [split, setSplit] = useState(36),
     [selected, setSelected] = useState(0),
     [baseline, setBaseline] = useState(''),
-    [budget, setBudget] = useState(0),
+    [budget, setBudget] = useStudioValue(`ai-studio-cap:${account?.id}:${id ?? 'new'}`, 0),
     [checks, setChecks] = useState<Check[]>([]),
     [run, setRun] = useState<Run>(),
     [seed, setSeed] = useState(19),
     [opponent, setOpponent] = useState('numbi'),
     [runResult, setRunResult] = useState(''),
-    [diagnostics, setDiagnostics] = useState(''),
+    [diagnostics, setDiagnostics] = useStudioValue(
+      `ai-studio-diagnostics:${account?.id}:${id ?? 'new'}`,
+      '',
+    ),
     [publishing, setPublishing] = useState(false),
     [release, setRelease] = useState('1.0'),
     [description, setDescription] = useState(''),
     [visibility, setVisibility] = useState<'private' | 'unlisted' | 'public'>('private'),
     [published, setPublished] = useState<AiInfo>();
   const [small, setSmall] = useState(() => window.matchMedia('(max-width: 760px)').matches);
+  const [creditsOpen, setCreditsOpen] = useState(false);
+  const [focusChat, setFocusChat] = useState(0);
+  const [releaseRevision, setReleaseRevision] = useState<number>();
+  const [generatedUndo, setGeneratedUndo] = useStudioValue<{ base: number; id: string } | null>(
+    `ai-studio-undo:${account?.id}:${id}`,
+    null,
+  );
   const form = useRef<HTMLTextAreaElement>(null);
   const url = id ? ROOT + '/projects/' + id : '';
   const recoveryKey = account && id ? `ai-studio-draft:${account.id}:${id}` : '';
@@ -86,14 +112,19 @@ export function AiStudio({ id }: { id?: string }) {
     if (!known.current) throw Error('Project has not loaded.');
     return known.current.revision;
   };
-  const active = project?.requests.find((r) => r.status === 'queued' || r.status === 'running');
+  const {
+    messages: conversation,
+    terminal,
+    pending,
+  } = projectConversation(project?.requests ?? []);
+  const active = pending?.status === 'uncertain' ? undefined : pending;
   const locked = busy || !!active || conflict;
   const loadWallet = useCallback(async () => {
     const w = await request<AiStudioAccount>('GET', ROOT + '/account');
     setWallet(w);
     setBudget((b) => b || w.maxRequestCredits);
     return w;
-  }, []);
+  }, [setBudget]);
   const refresh = useCallback(async () => {
     if (!id) return;
     const value = await refreshDraft();
@@ -102,7 +133,7 @@ export function AiStudio({ id }: { id?: string }) {
       recoveryLoaded.current = true;
       try {
         const pending = JSON.parse(
-          sessionStorage.getItem(recoveryKey + ':request') ?? 'null',
+          studioSession.getItem(recoveryKey + ':request') ?? 'null',
         ) as AiStudioCommand | null;
         if (pending && !value.requests.some((r) => r.id === pending.id)) {
           submission.current = pending;
@@ -112,7 +143,7 @@ export function AiStudio({ id }: { id?: string }) {
           setError(
             'A previous submission was not acknowledged. Sending it again safely retries the same request.',
           );
-        } else sessionStorage.removeItem(recoveryKey + ':request');
+        } else studioSession.removeItem(recoveryKey + ':request');
       } catch {
         /* Private browsing may disable local recovery. */
       }
@@ -123,7 +154,7 @@ export function AiStudio({ id }: { id?: string }) {
       setPrompt((text) => (text === sent.text ? '' : text));
       setDiagnostics((text) => (text === (sent.diagnostics ?? '') ? '' : text));
       try {
-        sessionStorage.removeItem(recoveryKey + ':request');
+        studioSession.removeItem(recoveryKey + ':request');
       } catch {
         /* Optional recovery. */
       }
@@ -134,7 +165,7 @@ export function AiStudio({ id }: { id?: string }) {
       previousTitle === undefined || local === previousTitle ? value.title : local,
     );
     setChecks((await request<{ items: Check[] }>('GET', url + '/checks')).items);
-  }, [id, url, recoveryKey, refreshDraft]);
+  }, [id, url, recoveryKey, refreshDraft, setBudget, setDiagnostics, setPrompt]);
   useEffect(() => {
     if (
       !account ||
@@ -148,7 +179,7 @@ export function AiStudio({ id }: { id?: string }) {
     purchases.current.clear();
     for (const pack of wallet.packs) {
       try {
-        sessionStorage.removeItem(checkoutKey(account.id, pack.id));
+        studioSession.removeItem(checkoutKey(account.id, pack.id));
       } catch {
         /* Optional persistence. */
       }
@@ -162,8 +193,8 @@ export function AiStudio({ id }: { id?: string }) {
     void (async () => {
       if (!account) return;
       try {
-        const w = await loadWallet();
-        if (!mounted || !w.enabled) return;
+        await loadWallet();
+        if (!mounted) return;
         if (id) await refresh();
         else
           setProjects(
@@ -197,7 +228,9 @@ export function AiStudio({ id }: { id?: string }) {
           if (stopped) return;
           if (
             v.events.length ||
-            known.current?.requests.some((r) => ['queued', 'running'].includes(r.status))
+            known.current?.requests.some((r) =>
+              ['queued', 'running', 'uncertain'].includes(r.status),
+            )
           ) {
             await refresh();
             await loadWallet();
@@ -247,7 +280,24 @@ export function AiStudio({ id }: { id?: string }) {
               : {}),
         },
       });
-      navigate('/ai-studio/' + p.id);
+      if (prompt.trim() && !file) {
+        const command = {
+          id: crypto.randomUUID(),
+          expectedRevision: p.revision,
+          text: prompt,
+          budget,
+        };
+        studioSession.setItem(
+          `ai-studio-draft:${account?.id}:${p.id}:request`,
+          JSON.stringify(command),
+        );
+        try {
+          await request('POST', `${ROOT}/projects/${p.id}/requests`, { body: command });
+          studioSession.removeItem(`ai-studio-draft:${account?.id}:${p.id}:request`);
+        } finally {
+          navigate('/ai-studio/' + p.id);
+        }
+      } else navigate('/ai-studio/' + p.id);
     });
   const revision = async (n: number) => {
     const generation = ++comparisonRequest.current;
@@ -259,23 +309,27 @@ export function AiStudio({ id }: { id?: string }) {
     setSelected(n);
     setBaseline(source);
   };
-  const restore = async (n: number) =>
+  const restore = async (n: number, confirm = true) =>
     action(async () => {
+      if (
+        confirm &&
+        n !== project?.revision &&
+        !window.confirm(
+          'Restore this version as the current draft? The current version stays in history.',
+        )
+      )
+        return;
       await save();
       await request('PATCH', url, {
         body: { expectedRevision: currentRevision(), restoreRevision: n },
       });
       await refresh();
+      setFocusChat((n) => n + 1);
     });
   const send = async () =>
     action(async () => {
       let command = submission.current;
-      if (
-        !command ||
-        command.text !== prompt ||
-        command.budget !== budget ||
-        (command.diagnostics ?? '') !== diagnostics
-      ) {
+      if (!command) {
         await save();
         command = {
           id: crypto.randomUUID(),
@@ -284,17 +338,26 @@ export function AiStudio({ id }: { id?: string }) {
           budget,
           ...(diagnostics ? { diagnostics } : {}),
         };
+        setGeneratedUndo({ base: command.expectedRevision, id: command.id });
         submission.current = command;
         try {
-          sessionStorage.setItem(recoveryKey + ':request', JSON.stringify(command));
+          studioSession.setItem(recoveryKey + ':request', JSON.stringify(command));
         } catch {
           /* In-memory retries remain idempotent. */
         }
       }
-      await request('POST', url + '/requests', { body: command });
+      try {
+        await request('POST', url + '/requests', { body: command });
+      } catch (e) {
+        if (e instanceof ApiError && e.status >= 400 && e.status < 500 && e.status !== 408) {
+          submission.current = undefined;
+          studioSession.removeItem(recoveryKey + ':request');
+        }
+        throw e;
+      }
       submission.current = undefined;
       try {
-        sessionStorage.removeItem(recoveryKey + ':request');
+        studioSession.removeItem(recoveryKey + ':request');
       } catch {
         /* Optional recovery. */
       }
@@ -322,11 +385,13 @@ export function AiStudio({ id }: { id?: string }) {
   const fix = (text: string) => {
     setDiagnostics(text.slice(0, 16000));
     setPrompt('Please fix the issues in the attached test diagnostics.');
+    setFocusChat((n) => n + 1);
     form.current?.focus();
   };
   const publish = async () =>
     action(async () => {
       if (
+        project?.revision !== releaseRevision ||
         !currentCheck?.upload_id ||
         currentCheck.status !== 'valid' ||
         source !== project?.current.source
@@ -355,25 +420,28 @@ export function AiStudio({ id }: { id?: string }) {
         </a>
       </div>
     );
-  if (wallet && !wallet.enabled)
-    return (
-      <div className="notice">
-        <h1>AI Studio</h1>
-        <p>This service is not enabled on this instance.</p>
-      </div>
-    );
   return (
-    <div className="as-page">
-      <header className="page-head">
-        <div className="grow">
-          <p className="caption">AI STUDIO · PRIVATE PROJECT</p>
-          <h1>{id ? (project?.title ?? 'Loading project…') : 'Build a mind for your colony'}</h1>
-          <p className="sub">Describe a strategy. Shape the code. Watch it play.</p>
-        </div>
-        <Link to="/ai-studio" className="btn">
-          Projects
+    <StudioShell className="as-page">
+      <StudioHeader title={project?.title ?? 'AI Colony Studio'} icon="robot">
+        <Link to="/ai-studio">
+          <Icon name="folder-open" size={18} /> Projects
         </Link>
-      </header>
+        <span role="status">
+          {id ? `${saved} · revision ${project?.revision ?? '…'}` : 'Private project'}
+        </span>
+        <button onClick={() => setCreditsOpen(true)}>
+          <Icon name="coins" size={18} /> {wallet?.available ?? '…'} Colony AI credits
+        </button>
+      </StudioHeader>
+      {project && !source.trim() && (
+        <p role="status">Draft is temporarily empty. Add source to save.</p>
+      )}
+      {wallet && !wallet.enabled && (
+        <p role="status">
+          Generation is unavailable. Saved code, export and local tools remain accessible.
+        </p>
+      )}
+
       {error && (
         <div role="alert" className="notice">
           {error}
@@ -395,107 +463,87 @@ export function AiStudio({ id }: { id?: string }) {
         </div>
       )}
       {!id ? (
-        <>
-          <section className="card">
-            <h2>Start a project</h2>
-            <label>
-              Project name{' '}
-              <input value={title} maxLength={128} onChange={(e) => setTitle(e.target.value)} />
-            </label>
-            <button
-              className="primary"
-              disabled={busy || !title.trim() || !wallet?.enabled}
-              onClick={() => void create()}
-            >
-              {location.search.has('version') ? 'Copy my library version' : 'Use working starter'}
-            </button>
-            <label className="btn">
-              Import .js
-              <input
-                aria-label="Import JavaScript"
-                type="file"
-                accept=".js"
-                disabled={busy || !wallet?.enabled}
-                onChange={(e) => {
-                  const file = e.target.files?.[0];
-                  if (file) void create(file);
-                  e.target.value = '';
-                }}
-              />
-            </label>
-            <p>One JavaScript file. Manual editing and local playtests use no credits.</p>
-          </section>
-          <div className="as-projects">
-            {projects.map((p) => (
-              <Link className="card" key={p.id} to={'/ai-studio/' + p.id}>
-                <h2>{p.title}</h2>
-                <p>Revision {p.revision}</p>
-              </Link>
-            ))}
-          </div>
-        </>
+        <NewStudio
+          title="Your colony AI"
+          value={prompt}
+          onChange={setPrompt}
+          onSend={() => void create()}
+          disabledReason={
+            busy
+              ? 'Saving your project…'
+              : !wallet?.enabled
+                ? 'Generation is unavailable.'
+                : !wallet.available
+                  ? 'An available Colony AI credit is needed.'
+                  : undefined
+          }
+          onBlocked={
+            !busy && wallet?.enabled && !wallet.available ? () => setCreditsOpen(true) : undefined
+          }
+          pricing={`Coding requests use up to ${budget} Colony AI credits. Manual editing and local playtests are free.`}
+          projects={
+            <>
+              {' '}
+              <div className="as-projects">
+                {projects.map((p) => (
+                  <Link className="card" key={p.id} to={'/ai-studio/' + p.id}>
+                    <h2>{p.title}</h2>
+                    <p>Revision {p.revision}</p>
+                  </Link>
+                ))}
+              </div>
+            </>
+          }
+          tools={
+            <>
+              {' '}
+              <section className="card">
+                <h2>Start a project</h2>
+                <label>
+                  Project name{' '}
+                  <input value={title} maxLength={128} onChange={(e) => setTitle(e.target.value)} />
+                </label>
+                <button
+                  className="primary"
+                  disabled={busy || !title.trim() || !wallet?.enabled}
+                  onClick={() => void create()}
+                >
+                  {location.search.has('version')
+                    ? 'Copy my library version'
+                    : 'Use working starter'}
+                </button>
+                <label className="btn">
+                  Import .js
+                  <input
+                    aria-label="Import JavaScript"
+                    type="file"
+                    accept=".js"
+                    disabled={busy || !wallet?.enabled}
+                    onChange={(e) => {
+                      const file = e.target.files?.[0];
+                      if (file) void create(file);
+                      e.target.value = '';
+                    }}
+                  />
+                </label>
+                <p>One JavaScript file. Manual editing and local playtests use no credits.</p>
+              </section>
+            </>
+          }
+        />
       ) : (
         project && (
           <>
-            <div className="as-toolbar">
-              <label>
-                Project{' '}
-                <input
-                  value={title}
-                  maxLength={128}
-                  disabled={locked}
-                  onChange={(e) => setTitle(e.target.value)}
-                  onBlur={() => {
-                    if (title.trim() && title !== project.title)
-                      void action(async () => {
-                        await save();
-                        await request('PATCH', url, {
-                          body: { expectedRevision: currentRevision(), title },
-                        });
-                        await refresh();
-                      });
-                  }}
-                />
-              </label>
-              <span role="status">
-                {saved} · revision {project.revision}
-              </span>
-              <button
-                disabled={locked}
-                onClick={() =>
-                  void action(async () => {
-                    await save();
-                    await request('POST', url + '/check', {
-                      body: { revision: currentRevision() },
-                    });
-                    await refresh();
-                  })
-                }
-              >
-                Run checks
-              </button>
-              <button disabled={locked} onClick={() => void play()}>
-                Playtest
-              </button>
-              <button onClick={() => download(source)}>Download</button>
-              <button
-                disabled={
-                  locked ||
-                  source !== project.current.source ||
-                  currentCheck?.status !== 'valid' ||
-                  !currentCheck.upload_id
-                }
-                onClick={() => setPublishing(!publishing)}
-              >
-                Publish
-              </button>
-            </div>
             {published && (
               <p className="notice">
                 Published <Link to={'/ais/' + published.id}>{published.name}</Link>.
               </p>
             )}
-            {publishing && (
+            <ReleaseDialog
+              open={publishing}
+              onClose={() => setPublishing(false)}
+              title={`Publish revision ${releaseRevision}`}
+            >
               <form
                 className="card"
                 onSubmit={(e) => {
@@ -503,7 +551,7 @@ export function AiStudio({ id }: { id?: string }) {
                   void publish();
                 }}
               >
-                <h2>Publish revision {project.revision}</h2>
+                <h2>Publish revision {releaseRevision}</h2>
                 <label>
                   Version{' '}
                   <input
@@ -532,373 +580,530 @@ export function AiStudio({ id }: { id?: string }) {
                     <option value="public">Public</option>
                   </select>
                 </label>
-                <button disabled={busy}>Create library release</button>
-              </form>
-            )}
-            <div
-              className="as-workspace"
-              style={{ gridTemplateColumns: small ? '1fr' : `${split}% 12px minmax(0,1fr)` }}
-            >
-              <section className="as-chat" aria-label="AI coding conversation">
-                <div className="as-chat-history">
-                  {project.requests.length === 0 && (
-                    <div className="as-welcome">
-                      <h2>What kind of colony will you build?</h2>
-                      <p>Try “focus on food before expansion” or ask how the current code works.</p>
-                      <p>The assistant edits your file. You decide when to test.</p>
-                    </div>
-                  )}
-                  {project.requests.map((r) => (
-                    <article key={r.id}>
-                      <p className="as-user">{r.prompt}</p>
-                      {r.diagnostics && (
-                        <details>
-                          <summary>Attached diagnostics</summary>
-                          <pre>{r.diagnostics}</pre>
-                        </details>
-                      )}
-                      <p className="as-response">
-                        {r.response ||
-                          ({ queued: 'Waiting to start…', running: 'Working on your AI…' }[
-                            r.status
-                          ] ??
-                            r.status)}
-                      </p>
-                      {r.error && <p role="status">{r.error}</p>}
-                      <small>
-                        {r.status} · {r.charged === null ? 'usage pending' : r.charged + ' credits'}
-                      </small>
-                    </article>
-                  ))}
-                </div>
-                <form
-                  onSubmit={(e) => {
-                    e.preventDefault();
-                    void send();
-                  }}
-                >
-                  <label htmlFor="as-prompt">Describe a change or ask a question</label>
-                  <textarea
-                    id="as-prompt"
-                    ref={form}
-                    value={prompt}
-                    maxLength={16000}
-                    onChange={(e) => setPrompt(e.target.value)}
-                    placeholder="Make my colony more defensive…"
-                  />
-                  {diagnostics && (
-                    <p>
-                      Test diagnostics attached.{' '}
-                      <button type="button" onClick={() => setDiagnostics('')}>
-                        Remove
-                      </button>
-                    </p>
-                  )}
-                  <div className="as-toolbar">
-                    <label>
-                      Request cap{' '}
-                      <input
-                        type="number"
-                        min={1}
-                        max={wallet?.maxRequestCredits}
-                        value={budget}
-                        onChange={(e) => setBudget(Number(e.target.value))}
-                      />
-                    </label>
-                    <button
-                      className="primary"
-                      disabled={
-                        locked ||
-                        !prompt.trim() ||
-                        !wallet?.available ||
-                        !Number.isInteger(budget) ||
-                        budget < 1
-                      }
-                    >
-                      Send
-                    </button>
-                    {active && (
-                      <button
-                        type="button"
-                        onClick={() =>
-                          void action(async () => {
-                            await request('POST', url + '/stop');
-                            await refresh();
-                          })
-                        }
-                      >
-                        Stop
-                      </button>
-                    )}
-                  </div>
-                </form>
-                <details>
-                  <summary>
-                    {wallet?.available ?? 0} credits available · {wallet?.reserved ?? 0} reserved
-                  </summary>
-                  <p>
-                    {wallet?.model} · per million tokens: {wallet?.rate?.input} input /{' '}
-                    {wallet?.rate?.cachedInput} cached / {wallet?.rate?.output} output credits.
+                <p>
+                  Destination: Colony AI library. Source acceptance alone is not an engine-test
+                  pass.
+                </p>
+                {project.revision !== releaseRevision && (
+                  <p role="alert">
+                    The current draft changed. Close this panel and review the new revision.
                   </p>
-                  <p>Measured model usage is charged, including code that later fails tests.</p>
-                  {wallet?.packs.map((p) => (
-                    <button
-                      key={p.id}
-                      onClick={() =>
-                        void action(async () => {
-                          const key = checkoutKey(account.id, p.id);
-                          const attempt =
-                            purchases.current.get(key) ?? checkoutAttempt(account.id, p.id);
-                          purchases.current.set(key, attempt);
-                          try {
-                            const v = await request<{ url: string }>('POST', ROOT + '/checkout', {
-                              body: attempt,
-                            });
-                            window.location.assign(v.url);
-                          } catch (e) {
-                            if (e instanceof ApiError && e.status === 409) {
-                              purchases.current.delete(key);
-                              try {
-                                sessionStorage.removeItem(key);
-                              } catch {
-                                /* Optional persistence. */
-                              }
-                            }
-                            throw e;
+                )}
+                <button disabled={busy || project.revision !== releaseRevision}>Publish</button>
+              </form>{' '}
+            </ReleaseDialog>
+            {generatedUndo &&
+              project.requests.some((r) => r.id === generatedUndo.id && r.status === 'completed') &&
+              project.revisions.some(
+                (r) => r.revision === generatedUndo.base + 1 && r.reason === 'assistant',
+              ) && (
+                <div className="studio-revisions" role="status">
+                  <span>
+                    Generated source accepted as revision {generatedUndo.base + 1}. Run engine
+                    checks before publication.
+                  </span>
+                  <button
+                    aria-disabled={
+                      locked ||
+                      project.revision !== generatedUndo.base + 1 ||
+                      source !== project.current.source
+                    }
+                    onClick={() => {
+                      if (
+                        locked ||
+                        project.revision !== generatedUndo.base + 1 ||
+                        source !== project.current.source
+                      )
+                        return;
+                      void restore(generatedUndo.base, false);
+                    }}
+                  >
+                    Undo
+                  </button>
+                  {project.revision !== generatedUndo.base + 1 && (
+                    <span>A newer revision prevents undo. Restore a version in Changes.</span>
+                  )}
+                </div>
+              )}
+            <StudioWorkspace
+              focusChat={focusChat}
+              attention={
+                pending?.status === 'uncertain'
+                  ? 'Needs reconciliation'
+                  : pending
+                    ? 'Working'
+                    : undefined
+              }
+              result={
+                !pending && terminal
+                  ? {
+                      id: `${terminal.id}:${terminal.status}`,
+                      status: terminal.status === 'completed' ? 'ready' : 'failed',
+                      text:
+                        terminal.status === 'completed'
+                          ? 'Colony AI response ready in Preview.'
+                          : 'Colony AI request needs attention in Preview.',
+                    }
+                  : undefined
+              }
+              conversation={
+                <section className="as-chat" aria-label="AI coding conversation">
+                  <ConversationPane
+                    label="AI coding conversation"
+                    count={project.requests.length}
+                    firstMessageId={conversation[0]?.id}
+                    completion={
+                      terminal
+                        ? {
+                            id: `${terminal.id}:${terminal.status}`,
+                            text:
+                              terminal.status === 'completed'
+                                ? 'AI response ready.'
+                                : 'AI request needs attention.',
                           }
+                        : undefined
+                    }
+                  >
+                    {project.requests.length === 0 && (
+                      <div className="as-welcome">
+                        <h2>What kind of colony will you build?</h2>
+                        <p>
+                          Try “focus on food before expansion” or ask how the current code works.
+                        </p>
+                        <p>The assistant edits your file. You decide when to test.</p>
+                      </div>
+                    )}
+                    {conversation.map((r) => (
+                      <article key={r.id}>
+                        <p className="as-user">{r.prompt}</p>
+                        {r.diagnostics && (
+                          <details>
+                            <summary>Attached diagnostics</summary>
+                            <pre>{r.diagnostics}</pre>
+                          </details>
+                        )}
+                        <p className="as-response">
+                          {r.response ||
+                            ({ queued: 'Waiting to start…', running: 'Working on your AI…' }[
+                              r.status
+                            ] ??
+                              r.status)}
+                        </p>
+                        {r.error && <p role="status">{r.error}</p>}
+                        <small>
+                          {r.status} ·{' '}
+                          {r.charged === null ? 'usage pending' : r.charged + ' credits'}
+                        </small>
+                      </article>
+                    ))}
+                  </ConversationPane>
+                  <ChatComposer
+                    value={prompt}
+                    onChange={setPrompt}
+                    onSend={() => void send()}
+                    inputRef={form}
+                    maxLength={16000}
+                    label="Describe a change or ask a question"
+                    placeholder="Make my colony more defensive…"
+                    target={`Editing saved revision ${project.revision}`}
+                    disabledReason={
+                      pending?.status === 'uncertain'
+                        ? 'The provider outcome needs reconciliation. Your reserved Colony AI credits remain held; new requests are paused. Manual editing and export remain available.'
+                        : locked
+                          ? 'Finish active work or resolve the revision conflict first.'
+                          : !wallet?.enabled
+                            ? 'Generation is unavailable.'
+                            : !wallet.available
+                              ? 'An available Colony AI credit is needed.'
+                              : !Number.isInteger(budget) ||
+                                  budget < 1 ||
+                                  budget > wallet.maxRequestCredits
+                                ? 'Choose a valid request cap.'
+                                : undefined
+                    }
+                    onBlocked={
+                      !locked && !pending && wallet?.enabled && !wallet.available
+                        ? () => setCreditsOpen(true)
+                        : undefined
+                    }
+                    pricing={`Coding requests use up to ${budget} Colony AI credits. Source acceptance does not mean engine checks passed.`}
+                    tools={
+                      <>
+                        <label>
+                          Request cap{' '}
+                          <input
+                            type="number"
+                            min={1}
+                            max={wallet?.maxRequestCredits}
+                            value={budget}
+                            onChange={(e) => setBudget(Number(e.target.value))}
+                          />
+                        </label>
+                        {diagnostics && (
+                          <p>
+                            Test diagnostics attached.{' '}
+                            <button type="button" onClick={() => setDiagnostics('')}>
+                              Remove
+                            </button>
+                          </p>
+                        )}
+                      </>
+                    }
+                  />
+                  {pending && (
+                    <button
+                      aria-disabled={pending.status === 'uncertain'}
+                      onClick={() =>
+                        pending.status !== 'uncertain' &&
+                        void action(async () => {
+                          await request('POST', url + '/stop');
+                          await refresh();
                         })
                       }
                     >
-                      {p.credits} credits · {(p.amount / 100).toFixed(2)} {p.currency.toUpperCase()}
+                      Stop request
                     </button>
-                  ))}
-                </details>
-              </section>
-              {!small && (
-                <div
-                  className="as-divider"
-                  role="separator"
-                  aria-label="Resize conversation"
-                  aria-orientation="vertical"
-                  aria-valuemin={25}
-                  aria-valuemax={60}
-                  aria-valuenow={split}
-                  tabIndex={0}
-                  onKeyDown={(e) => {
-                    if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') {
-                      e.preventDefault();
-                      setSplit((v) =>
-                        Math.max(25, Math.min(60, v + (e.key === 'ArrowLeft' ? -2 : 2))),
-                      );
-                    }
-                  }}
-                  onPointerDown={(e) => e.currentTarget.setPointerCapture(e.pointerId)}
-                  onPointerMove={(e) => {
-                    if (e.currentTarget.hasPointerCapture(e.pointerId)) {
-                      const rect = e.currentTarget.parentElement?.getBoundingClientRect();
-                      if (!rect) return;
-                      setSplit(
-                        Math.max(25, Math.min(60, ((e.clientX - rect.left) / rect.width) * 100)),
-                      );
-                    }
-                  }}
-                  onPointerUp={(e) => e.currentTarget.releasePointerCapture(e.pointerId)}
-                />
-              )}
-              <section className="as-code-pane">
-                <nav className="seg" aria-label="Workspace view">
-                  {(['code', 'changes', 'playtest'] as const).map((t) => (
-                    <button
-                      key={t}
-                      aria-pressed={tab === t}
-                      onClick={() => {
-                        setTab(t);
-                        if (t === 'changes' && !selected)
-                          void action(() =>
-                            revision(project.revisions[1]?.revision ?? project.revision),
-                          );
-                      }}
-                    >
-                      {t === 'code' ? 'Code' : t === 'changes' ? 'Changes' : 'Playtest'}
-                    </button>
-                  ))}
-                </nav>
-                <div className="as-toolbar">
-                  <strong>ai.js</strong>
-                  <label>
-                    History{' '}
-                    <select
-                      value={selected}
-                      onChange={(e) => void action(() => revision(Number(e.target.value)))}
-                    >
-                      <option value={0}>Choose revision</option>
-                      {project.revisions.map((r) => (
-                        <option key={r.revision} value={r.revision}>
-                          r{r.revision} · {r.reason}
-                        </option>
-                      ))}
-                    </select>
-                  </label>
-                  <button disabled={locked || !selected} onClick={() => void restore(selected)}>
-                    Restore
-                  </button>
-                  <button
-                    disabled={locked || project.revisions.length < 2}
-                    onClick={() => void restore(project.revisions[1]?.revision ?? project.revision)}
-                  >
-                    Undo revision
-                  </button>
-                  <label className="btn">
-                    Import
-                    <input
-                      aria-label="Replace source with JavaScript file"
-                      type="file"
-                      accept=".js"
-                      disabled={locked}
-                      onChange={(e) => {
-                        const file = e.target.files?.[0];
-                        if (file)
-                          void action(async () => {
-                            if (file.size > 131072) throw Error('Maximum source size is 128 KiB.');
-                            await save();
-                            const source = new TextDecoder('utf-8', { fatal: true }).decode(
-                              await file.arrayBuffer(),
-                            );
-                            await request('PATCH', url, {
-                              body: {
-                                expectedRevision: currentRevision(),
-                                source,
-                                reason: 'import',
-                              },
-                            });
-                            await refresh();
-                          });
-                        e.target.value = '';
-                      }}
-                    />
-                  </label>
-                </div>
-                <div hidden={tab !== 'code'}>
-                  {small ? (
-                    <textarea
-                      className="as-source"
-                      aria-label="AI JavaScript source"
-                      spellCheck={false}
-                      readOnly={locked}
-                      value={source}
-                      onChange={(e) => change(e.target.value)}
-                    />
-                  ) : (
-                    <Suspense fallback={<p>Loading code editor…</p>}>
-                      <Editor
-                        source={source}
-                        readOnly={locked}
-                        onChange={(text) => {
-                          if (text !== draft.current) change(text);
-                        }}
-                      />
-                    </Suspense>
                   )}
-                </div>
-                {tab === 'changes' &&
-                  (small ? (
-                    <>
-                      <textarea
-                        className="as-source"
-                        aria-label="Current AI JavaScript source"
-                        spellCheck={false}
-                        readOnly
-                        value={source}
-                      />
-                      <details>
-                        <summary>Compared revision {selected}</summary>
-                        <pre>{baseline}</pre>
-                      </details>
-                    </>
-                  ) : (
-                    <Suspense fallback={<p>Loading revision comparison…</p>}>
-                      <Editor source={source} baseline={baseline} readOnly onChange={() => {}} />
-                    </Suspense>
-                  ))}
-                <div hidden={tab !== 'playtest'}>
-                  <div className="as-toolbar">
-                    <label>
-                      Seed{' '}
-                      <input
-                        type="number"
-                        min={0}
-                        max={4294967295}
-                        value={seed}
-                        onChange={(e) => setSeed(Number(e.target.value))}
-                      />
-                    </label>
-                    <label>
-                      Opponent{' '}
-                      <select value={opponent} onChange={(e) => setOpponent(e.target.value)}>
-                        <option value="numbi">Numbi</option>
-                        <option value="nicowar">Nicowar</option>
-                      </select>
-                    </label>
-                    <button disabled={locked} onClick={() => void play()}>
-                      {run ? 'Run current revision' : 'Start live game'}
-                    </button>
-                    {run && (
-                      <>
-                        <button
-                          disabled={busy}
-                          onClick={() =>
-                            void action(async () => {
-                              const next = await request<Run>('POST', url + '/runs', {
-                                body: {
-                                  id: crypto.randomUUID(),
-                                  expectedRevision: run.revision,
-                                  seed: run.seed,
-                                  opponent: run.opponent,
-                                },
-                              });
-                              setRun(next);
-                            })
-                          }
-                        >
-                          Restart same setup
-                        </button>
-                        <button onClick={() => setRun(undefined)}>Stop game</button>
-                      </>
-                    )}
-                  </div>
-                  {run ? (
-                    <Playtest
-                      key={run.runId}
-                      run={run}
-                      onResult={(text) => {
-                        setRunResult(text);
-                        void request('POST', url + '/run-result', {
-                          body: { runId: run.runId, summary: text },
-                        }).catch((e) => setError(String(e)));
-                      }}
-                    />
-                  ) : (
-                    <p className="as-welcome">
-                      Watch your AI against a built-in opponent on the fixed test map. The game runs
-                      on this computer and ends when you close it.
+                  {pending?.status === 'uncertain' && (
+                    <p role="status">
+                      Cancellation is unavailable while the provider outcome and reserved credits
+                      are reconciled. You can keep editing the saved source or export it.
                     </p>
                   )}
-                  {runResult && <button onClick={() => fix(runResult)}>Fix this</button>}
-                </div>
-                {currentCheck && (
-                  <details className="as-checks" open={currentCheck.status === 'invalid'}>
-                    <summary>
-                      Revision {project.revision} checks: {currentCheck.status}
-                    </summary>
-                    <AiChecklist report={currentCheck.report} />
-                    {currentCheck.error && <p>{currentCheck.error}</p>}
-                    <button onClick={() => fix(JSON.stringify(currentCheck.report))}>
-                      Fix this
+                </section>
+              }
+              artifact={
+                <section className="as-code-pane">
+                  {' '}
+                  <div className="as-toolbar">
+                    <label>
+                      Project{' '}
+                      <input
+                        value={title}
+                        maxLength={128}
+                        disabled={locked}
+                        onChange={(e) => setTitle(e.target.value)}
+                        onBlur={() => {
+                          if (title.trim() && title !== project.title)
+                            void action(async () => {
+                              await save();
+                              await request('PATCH', url, {
+                                body: { expectedRevision: currentRevision(), title },
+                              });
+                              await refresh();
+                            });
+                        }}
+                      />
+                    </label>
+                    <span role="status">
+                      {saved} · revision {project.revision}
+                    </span>
+                    <button
+                      disabled={locked}
+                      onClick={() =>
+                        void action(async () => {
+                          await save();
+                          await request('POST', url + '/check', {
+                            body: { revision: currentRevision() },
+                          });
+                          await refresh();
+                        })
+                      }
+                    >
+                      Run checks
                     </button>
-                  </details>
-                )}
-              </section>
-            </div>
+                    <button disabled={locked} onClick={() => void play()}>
+                      Playtest
+                    </button>
+                    <button onClick={() => download(source)}>Download</button>
+                    <button
+                      disabled={
+                        locked ||
+                        source !== project.current.source ||
+                        currentCheck?.status !== 'valid' ||
+                        !currentCheck.upload_id
+                      }
+                      onClick={() => {
+                        setReleaseRevision(project.revision);
+                        setPublishing(!publishing);
+                      }}
+                    >
+                      Publish
+                    </button>
+                  </div>
+                  <StudioTabs
+                    label="Workspace view"
+                    panels={{
+                      code: 'studio-panel-workspace-view-code',
+                      changes: 'studio-panel-workspace-view-changes',
+                      playtest: 'studio-panel-workspace-view-playtest',
+                    }}
+                    value={tab}
+                    onChange={(next) => {
+                      setTab(next as typeof tab);
+                      if (next === 'playtest' && !run && !locked) void play();
+                      if (next === 'changes' && !selected)
+                        void action(() =>
+                          revision(project.revisions[1]?.revision ?? project.revision),
+                        );
+                    }}
+                    items={[
+                      { id: 'code', label: 'Code', icon: 'pencil' },
+                      { id: 'changes', label: 'Changes', icon: 'restore' },
+                      { id: 'playtest', label: 'Playtest', icon: 'flask' },
+                    ]}
+                  />
+                  <div className="as-toolbar">
+                    <strong>ai.js</strong>
+                    <label>
+                      History{' '}
+                      <select
+                        value={selected}
+                        onChange={(e) => void action(() => revision(Number(e.target.value)))}
+                      >
+                        <option value={0}>Choose revision</option>
+                        {project.revisions.map((r) => (
+                          <option key={r.revision} value={r.revision}>
+                            r{r.revision} · {r.reason}
+                          </option>
+                        ))}
+                      </select>
+                    </label>
+                    <button disabled={locked || !selected} onClick={() => void restore(selected)}>
+                      Restore
+                    </button>
+                    <button
+                      disabled={locked || project.revisions.length < 2}
+                      onClick={() =>
+                        void restore(project.revisions[1]?.revision ?? project.revision)
+                      }
+                    >
+                      Undo revision
+                    </button>
+                    <label className="btn">
+                      Import
+                      <input
+                        aria-label="Replace source with JavaScript file"
+                        type="file"
+                        accept=".js"
+                        disabled={locked}
+                        onChange={(e) => {
+                          const file = e.target.files?.[0];
+                          if (file)
+                            void action(async () => {
+                              if (file.size > 131072)
+                                throw Error('Maximum source size is 128 KiB.');
+                              await save();
+                              const source = new TextDecoder('utf-8', { fatal: true }).decode(
+                                await file.arrayBuffer(),
+                              );
+                              await request('PATCH', url, {
+                                body: {
+                                  expectedRevision: currentRevision(),
+                                  source,
+                                  reason: 'import',
+                                },
+                              });
+                              await refresh();
+                            });
+                          e.target.value = '';
+                        }}
+                      />
+                    </label>
+                  </div>
+                  <div
+                    id="studio-panel-workspace-view-code"
+                    role="tabpanel"
+                    aria-labelledby="studio-tab-workspace-view-code"
+                    hidden={tab !== 'code'}
+                  >
+                    {small ? (
+                      <textarea
+                        className="as-source"
+                        aria-label="AI JavaScript source"
+                        spellCheck={false}
+                        readOnly={locked}
+                        value={source}
+                        onChange={(e) => change(e.target.value)}
+                      />
+                    ) : (
+                      <Suspense fallback={<p>Loading code editor…</p>}>
+                        <Editor
+                          source={source}
+                          readOnly={locked}
+                          onChange={(text) => {
+                            if (text !== draft.current) change(text);
+                          }}
+                        />
+                      </Suspense>
+                    )}
+                  </div>
+                  <div
+                    id="studio-panel-workspace-view-changes"
+                    role="tabpanel"
+                    aria-labelledby="studio-tab-workspace-view-changes"
+                    hidden={tab !== 'changes'}
+                  >
+                    {tab === 'changes' &&
+                      (small ? (
+                        <>
+                          <textarea
+                            className="as-source"
+                            aria-label="Current AI JavaScript source"
+                            spellCheck={false}
+                            readOnly
+                            value={source}
+                          />
+                          <details>
+                            <summary>Compared revision {selected}</summary>
+                            <pre>{baseline}</pre>
+                          </details>
+                        </>
+                      ) : (
+                        <Suspense fallback={<p>Loading revision comparison…</p>}>
+                          <Editor
+                            source={source}
+                            baseline={baseline}
+                            readOnly
+                            onChange={() => {}}
+                          />
+                        </Suspense>
+                      ))}
+                  </div>
+                  <div
+                    id="studio-panel-workspace-view-playtest"
+                    role="tabpanel"
+                    aria-labelledby="studio-tab-workspace-view-playtest"
+                    hidden={tab !== 'playtest'}
+                  >
+                    <div className="as-toolbar">
+                      <label>
+                        Seed{' '}
+                        <input
+                          type="number"
+                          min={0}
+                          max={4294967295}
+                          value={seed}
+                          onChange={(e) => setSeed(Number(e.target.value))}
+                        />
+                      </label>
+                      <label>
+                        Opponent{' '}
+                        <select value={opponent} onChange={(e) => setOpponent(e.target.value)}>
+                          <option value="numbi">Numbi</option>
+                          <option value="nicowar">Nicowar</option>
+                        </select>
+                      </label>
+                      <button disabled={locked} onClick={() => void play()}>
+                        {run ? 'Run current revision' : 'Start live game'}
+                      </button>
+                      {run && (
+                        <>
+                          <button
+                            disabled={busy}
+                            onClick={() =>
+                              void action(async () => {
+                                const next = await request<Run>('POST', url + '/runs', {
+                                  body: {
+                                    id: crypto.randomUUID(),
+                                    expectedRevision: run.revision,
+                                    seed: run.seed,
+                                    opponent: run.opponent,
+                                  },
+                                });
+                                setRun(next);
+                              })
+                            }
+                          >
+                            Restart same setup
+                          </button>
+                          <button onClick={() => setRun(undefined)}>Stop game</button>
+                        </>
+                      )}
+                    </div>
+                    {run ? (
+                      <Playtest
+                        key={run.runId}
+                        run={run}
+                        onResult={(text) => {
+                          setRunResult(text);
+                          void request('POST', url + '/run-result', {
+                            body: { runId: run.runId, summary: text },
+                          }).catch((e) => setError(String(e)));
+                        }}
+                      />
+                    ) : (
+                      <p className="as-welcome">
+                        Watch your AI against a built-in opponent on the fixed test map. The game
+                        runs on this computer and ends when you close it.
+                      </p>
+                    )}
+                    {runResult && <button onClick={() => fix(runResult)}>Fix this</button>}
+                  </div>
+                  {currentCheck && (
+                    <details className="as-checks" open={currentCheck.status === 'invalid'}>
+                      <summary>
+                        Revision {project.revision} checks: {currentCheck.status}
+                      </summary>
+                      <AiChecklist report={currentCheck.report} />
+                      {currentCheck.error && <p>{currentCheck.error}</p>}
+                      <button onClick={() => fix(JSON.stringify(currentCheck.report))}>
+                        Fix this
+                      </button>
+                    </details>
+                  )}
+                </section>
+              }
+            />
+            <ReleaseDialog
+              open={creditsOpen}
+              onClose={() => setCreditsOpen(false)}
+              title="Colony AI credits"
+            >
+              {' '}
+              <details>
+                <summary>
+                  {wallet?.available ?? 0} credits available · {wallet?.reserved ?? 0} reserved
+                </summary>
+                <p>
+                  {wallet?.model} · per million tokens: {wallet?.rate?.input} input /{' '}
+                  {wallet?.rate?.cachedInput} cached / {wallet?.rate?.output} output credits.
+                </p>
+                <p>Measured model usage is charged, including code that later fails tests.</p>
+                {wallet?.packs.map((p) => (
+                  <button
+                    key={p.id}
+                    onClick={() =>
+                      void action(async () => {
+                        const key = checkoutKey(account.id, p.id);
+                        const attempt =
+                          purchases.current.get(key) ?? checkoutAttempt(account.id, p.id);
+                        purchases.current.set(key, attempt);
+                        try {
+                          const v = await request<{ url: string }>('POST', ROOT + '/checkout', {
+                            body: attempt,
+                          });
+                          window.location.assign(v.url);
+                        } catch (e) {
+                          if (e instanceof ApiError && e.status === 409) {
+                            purchases.current.delete(key);
+                            try {
+                              studioSession.removeItem(key);
+                            } catch {
+                              /* Optional persistence. */
+                            }
+                          }
+                          throw e;
+                        }
+                      })
+                    }
+                  >
+                    {p.credits} credits · {(p.amount / 100).toFixed(2)} {p.currency.toUpperCase()}
+                  </button>
+                ))}
+              </details>
+            </ReleaseDialog>
+
             <details>
               <summary>Project actions</summary>
               <button
@@ -917,6 +1122,6 @@ export function AiStudio({ id }: { id?: string }) {
           </>
         )
       )}
-    </div>
+    </StudioShell>
   );
 }
