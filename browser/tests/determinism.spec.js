@@ -24,7 +24,7 @@ test(`WebAssembly produces a complete per-tick simulation trace (${variant}/${th
           FS.writeFile('/tmp/initial.game.gz', Uint8Array.from(atob('${fixture.toString('base64')}'), c => c.charCodeAt(0)));
         }],
         async onRuntimeInitialized() {
-          const code = await Module.start(['--nox', '/tmp/initial.game.gz', '1500', '1', '--ai-threads', '${threads}']);
+          const code = await Module.start(['--nox', '/tmp/initial.game.gz', '1500', '1', '--compute-threads', '${threads}']);
           if (code !== 0) throw new Error('Engine exited: ' + code);
           // Avoid millions of individually serialized Playwright values.
           // Chunk the conversion so large traces do not overflow the call stack.

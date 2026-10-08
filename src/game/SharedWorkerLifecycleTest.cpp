@@ -93,7 +93,7 @@ TEST_CASE("pending gradient work survives a save and continues at the same deadl
     REQUIRE(source.loadFromHeaders(mapHeader, header, true, true));
     auto &map = source.game.map;
     map.getClearAreasGradient(0, 0);
-    map.configureCompute(4,0);
+    map.configureCompute(4);
     map.configureGradientPipeline(2, 3);
     map.advanceGradientPipeline();
     map.syncStep(0, false);
@@ -148,7 +148,7 @@ TEST_CASE("direct completed steps match deferred preparation across worker count
         game->map.configureGradientPipeline(0, 8);
     }
     for (unsigned threads : {1, 4}) {
-        deferred.game.map.configureCompute(threads, Map::ComputeAI);
+        deferred.game.map.configureCompute(threads);
         for (unsigned tick = 0; tick < 64; ++tick) {
             direct.game.syncStep(0);
             CHECK_FALSE(direct.game.map.hasPendingGradientPreparation());
@@ -166,7 +166,7 @@ TEST_CASE("direct completed steps match deferred preparation across worker count
     }
     deferred.game.syncStep(0, Game::PreparationCompletion::Deferred);
     REQUIRE(deferred.game.map.hasPendingGradientPreparation());
-    deferred.game.map.configureCompute(1, 0);
+    deferred.game.map.configureCompute(1);
     CHECK_FALSE(deferred.game.map.hasPendingGradientPreparation());
     deferred.game.syncStep(0, Game::PreparationCompletion::Deferred);
     deferred.game.map.setGradientWorkerCount(2);
@@ -209,7 +209,7 @@ TEST_CASE("no-AI completed ticks agree across shared worker counts [artifacts]" 
         GAGCore::BinaryInputStream reader(new GAGCore::MemoryStreamBackend(checkpoint.data(),checkpoint.size()));
         reader.seekFromStart(0);
         REQUIRE(game.load(&reader));
-        game.game.map.configureCompute(threads,0);
+        game.game.map.configureCompute(threads);
         std::vector<Uint32> actual;
         for (unsigned tick=0; tick<96; ++tick) {
             game.game.syncStep(0,Game::PreparationCompletion::Deferred);
@@ -289,7 +289,7 @@ TEST_CASE("AI and pending gradients consume the presentation union without anoth
     auto* observer=new BoundaryObserver;
     delete game.players[0]->ai->aiImplementation;
     game.players[0]->ai->aiImplementation=observer;
-    game.map.configureCompute(2,Map::ComputeAI);
+    game.map.configureCompute(2);
     game.map.configureGradientPipeline(0,8);
     game.map.getClearAreasGradient(0,0);
     game.syncStep(0,Game::PreparationCompletion::Deferred);

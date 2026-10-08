@@ -16,7 +16,7 @@
 #include "Sha256.h"
 #include "AINames.h"
 #include "AIJavaScript.h"
-#include "AIThreading.h"
+#include "ComputeThreads.h"
 #include "AIMaximaStrategy.h"
 #include "ai/cortex/CortexTuning.h"
 #include "Game.h"
@@ -36,6 +36,7 @@
 #include <Toolkit.h>
 #include <algorithm>
 #include <chrono>
+#include <cstdlib>
 #include <ctime>
 #ifdef WIN32
 #ifndef NOMINMAX
@@ -279,7 +280,6 @@ struct HeadlessRunner
 			setHeadlessEnvironment("SDL_VIDEODRIVER","dummy");
 			setHeadlessEnvironment("SDL_AUDIODRIVER","dummy");
 		}
-		const unsigned gradientWorkers = integer(one(options, "--gradient-workers", "2"), 0, 16);
 		const unsigned gradientDelay = integer(one(options, "--gradient-delay", "8"), 1, 16);
 		GlobalContainer globals(one(options, "--profile", "glob2-tournament").c_str(), one(options, "--building-catalog"));
 		globalContainer=&globals;
@@ -448,28 +448,19 @@ struct HeadlessRunner
 			auto& script=engine.gui.game.mapscript;script.setMapScriptMode(MapScript::JavaScript);script.setMapScript(Script::readSource(one(options,"--map-script")));if(!script.compileCode())throw std::invalid_argument(script.getError().getMessage());
 		}
 		if (!fields.empty()) engine.diagnostics = std::make_shared<GameDiagnostics::Session>(engine.gui.game,(output/"diagnostics").string(),diagnosticInterval,diagnosticPng=="true");
-		const unsigned computeThreads = integer(one(options, "--compute-threads",
-			std::to_string(options.count("--gradient-workers") && gradientWorkers
-                ? gradientWorkers+1 : defaultAIThreadCount(engine.gui.game))), 1, 64);
-		const std::string computeExperiments = one(options, "--compute-experiments", "ai");
-		unsigned experimentMask = 0;
-		if (computeExperiments == "all") experimentMask = 15;
-		else if (computeExperiments == "areas") experimentMask = Map::ComputeAreas;
-		else if (computeExperiments == "initialize") experimentMask = Map::ComputeInitialize;
-		else if (computeExperiments == "hiring") experimentMask = Map::ComputeHiring;
-		else if (computeExperiments == "ai") experimentMask = Map::ComputeAI;
-		else if (computeExperiments != "none") throw std::invalid_argument("unknown compute experiment: " + computeExperiments);
-		engine.gui.game.map.configureCompute(computeThreads, experimentMask);
+		const std::string requestedSizing = one(options, "--compute-threads", "auto");
+		const unsigned computeThreads = resolveComputeThreadCount(parseComputeThreadCount(requestedSizing));
+		engine.gui.game.map.configureCompute(computeThreads);
         engine.gui.game.map.setResourceGrowthDelay(integer(
             one(options, "--resource-growth-delay", std::to_string(engine.gui.game.map.resourceGrowthDelay())), 1, 16));
 		const auto pipeline = engine.gui.game.map.gradientPipelineStatus();
-		if (!pipeline.enabled) engine.gui.game.map.configureGradientPipeline(gradientWorkers, gradientDelay);
+		if (!pipeline.enabled) engine.gui.game.map.configureGradientPipeline(1, gradientDelay);
 		else {
 			if (options.count("--gradient-delay") && gradientDelay != pipeline.delay) {
 				if (pipeline.pending) throw std::invalid_argument("cannot change the delay with pending gradients");
-				engine.gui.game.map.configureGradientPipeline(gradientWorkers, gradientDelay);
+				engine.gui.game.map.configureGradientPipeline(1, gradientDelay);
 			}
-			engine.gui.game.map.setGradientWorkerCount(gradientWorkers);
+			engine.gui.game.map.setGradientWorkerCount(1);
 		}
 		globals.headlessReplay=recordReplay;
 		if(recordReplay) {
@@ -595,9 +586,7 @@ struct HeadlessRunner
 		for (std::size_t reason = 0; reason < buildingResult.synchronousByReason.size(); ++reason)
 			result << (reason ? "," : "") << quote(Map::buildingSyncReasonName(Map::BuildingSyncReason(reason)))
 				<< ':' << buildingResult.synchronousByReason[reason];
-		result << '}'
-			<< ",\"hiring_prepasses\":" << game.map.hiringPrepasses
-			<< ",\"hiring_popped_entries\":" << game.map.hiringPoppedEntries;
+		result << '}';
 		if (auto *stats = game.map.gradientStats.get())
 		{
 			// Diagnostics only: close the live field lifetimes and export them.
@@ -610,7 +599,9 @@ struct HeadlessRunner
 		}
 		result
 			<< ",\"compute_threads\":" << game.map.computeExecutor().threadCount()
-			<< ",\"compute_experiments\":" << quote(computeExperiments)
+			<< ",\"compute_requested_threads\":" << quote(requestedSizing)
+			<< ",\"compute_resolved_threads\":" << computeThreads
+			<< ",\"compute_workers\":" << game.map.computeExecutor().threadCount() - 1
 			<< ",\"compute_batches\":" << game.map.computeExecutor().metrics().batches
 			<< ",\"compute_jobs\":" << game.map.computeExecutor().metrics().jobs
 			<< ",\"compute_parallel_batches\":" << game.map.computeExecutor().metrics().parallelBatches
@@ -801,12 +792,13 @@ int runHeadlessCommand(int argc,char **argv)
 			std::cout << "}" << std::endl;return 0;
 		}
 		const std::set<std::string> common={"--output-dir","--profile","--building-catalog","--building-artwork"};
-		const std::set<std::string> gameKeys={"--diagnostic-fields","--diagnostic-interval","--diagnostic-png","--benchmark-warmup","--ai-script","--map-script","--map-file","--load-game","--game-seed","--player","--ai-param","--alliance","--win-condition","--win-probability","--experiment","--rule","--fork-rule","--ticks","--compute-threads","--compute-experiments","--gradient-workers","--gradient-delay","--resource-growth-delay","--ai-order-delay","--save","--telemetry","--replay","--generator","--map-seed","--param","--candidates"};
+		const std::set<std::string> gameKeys={"--diagnostic-fields","--diagnostic-interval","--diagnostic-png","--benchmark-warmup","--ai-script","--map-script","--map-file","--load-game","--game-seed","--player","--ai-param","--alliance","--win-condition","--win-probability","--experiment","--rule","--fork-rule","--ticks","--compute-threads","--gradient-delay","--resource-growth-delay","--ai-order-delay","--save","--telemetry","--replay","--generator","--map-seed","--param","--candidates"};
 		const std::set<std::string> mapKeys={"--generator","--map-seed","--param","--candidates","--rotations","--write-map","--report","--perturb"};
 		Options options;
 		for(int i=2;i<argc;++i)
 		{
 			std::string key=argv[i];
+			if (isRemovedComputeOption(key)) throw std::invalid_argument(key + " has been removed; use --compute-threads auto|N");
 			if(!common.count(key) && !(command=="--run-game"?gameKeys:mapKeys).count(key)) throw std::invalid_argument("unknown option: " + key);
 			if(++i>=argc)throw std::invalid_argument("missing value for " + key);
 			options[key].push_back(argv[i]);

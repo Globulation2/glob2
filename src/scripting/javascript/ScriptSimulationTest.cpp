@@ -124,7 +124,7 @@ Run execute(const std::filesystem::path &input, const std::filesystem::path &dir
         // Normalize that metadata after the real loader has validated the input:
         // a new save version must not masquerade as simulation divergence.
         engine.gui.game.mapHeader.versionMinor = 125;
-		engine.gui.game.map.configureCompute(workers, Map::ComputeAI);
+		engine.gui.game.map.configureCompute(workers);
 		if (conversion)
 			prepareConversion(engine, directory);
 		if (!playback)

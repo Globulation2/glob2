@@ -141,8 +141,7 @@ Game options:
 | `--experiment KEY` | Repeatable [experimental feature](../features/experimental-features.md) baked into a new game, e.g. `guard-area-balancing`; the profile's settings never apply to structured runs; forbidden when loading a save. Listed in `result.json` under `resolved.experiments` |
 | `--rule name=value` | Repeatable custom rules, using the names and ranges in [headless rules](../development/headless-replays.md#glob2_test_rules). New games only; effective values are recorded in `resolved.rules`. Tournament game configurations accept the equivalent `rules` object, e.g. `{"noUpgrades": 1, "peaceful": 1}` |
 | `--ticks N` | Absolute tick limit, default 90000; must exceed saved tick |
-| `--compute-threads N` | Execution threads, 1–64 including main; default minimum of AI controllers, available hardware threads and 4 (at least 1) |
-| `--compute-experiments MODE` | `none`, `areas`, `initialize`, `hiring`, `ai`, `all`; default `ai`; map modes remain experimental |
+| `--compute-threads auto\|N` | Shared executor participants including the owner; default `auto` uses reported logical CPUs; explicit N is a positive unsigned integer |
 | `--replay true/false` | false |
 | `--save initial/final/every:N` | Repeatable opt-in saves; checkpoints are diagnostics, not automatic recovery |
 | `--telemetry NAME` | Repeatable checksums, team-timeline, maxima, gradient-stats ([building field statistics](../development/performance-telemetry.md#building-field-statistics)); default none |
@@ -701,14 +700,13 @@ ticks, workload size, platform, and all commands rather than extrapolating one r
 to every tournament.
 
 
-Periodic gradient propagation uses two background workers and an eight-tick
-publication delay by default, including normal games. `--gradient-workers N`
-selects 0–16 background workers for headless runs; zero is the serial control
-with identical simulation behavior. `--gradient-delay D` selects 1–16 ticks for
-experiments before work is pending. A loaded game preserves its saved delay;
-worker count may change without altering decisions. Save and replay exports
-retain pending fields and deadlines. See
-[performance experiments](../development/performance-telemetry.md) for the
+Periodic gradient propagation shares the session's compute executor and uses an
+eight-tick publication delay by default. `--compute-threads auto|N` selects the
+whole pool; one participant is the serial control with identical simulation
+behavior. `--gradient-delay D` selects 1–16 ticks for experiments before work is
+pending. A loaded game preserves its saved delay; worker count may change without
+altering decisions. Save and replay exports retain pending fields and deadlines.
+See [performance experiments](../development/performance-telemetry.md) for the
 benchmark procedure and interpretation of CPU and wall time.
 
 

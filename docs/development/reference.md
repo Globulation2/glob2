@@ -109,8 +109,7 @@ worker also runs presentation, which that worker interleaves with simulation job
 (so a join may wait out one presentation chunk). Only an executor with no workers
 runs deferred jobs on the owner, at the join, because nothing else can. This keeps
 owner time split cleanly into owner work and owner wait (`compute_owner_jobs` is
-zero whenever workers exist). A producer that opts out of sharing (`--compute-experiments`
-without `ai`, `--gradient-workers 0`, or a cheap AI batch at delay 0) computes
+zero whenever workers exist). A cheap AI batch at delay 0 computes
 inline when it submits, outside the executor, and still publishes at the deadline.
 AI controller lanes preserve decision order;
 gradient and growth jobs need no lane.
@@ -1273,7 +1272,7 @@ For timing and scheduling, start with `src/game/Game_sync.cpp` and `src/engine/E
   64 waiting requests) and maps without a game build synchronously.
   `Map::predictBuildingDepth` reads the generated
   [depth model](../building-gradient-depth-model.md) from the field's own past
-  depths (its serving search's settled cost and `settledCostHint`). It only moves
+  reader demand (its serving search's required cost and `settledCostHint`). It only moves
   search work between worker and owner; `GLOB2_BUILDING_DEPTH=full|table|lazy`
   or an operating point name overrides it for timing.
 - The executor ring holds 65 batches: each deferred producer holds at most its

@@ -21,6 +21,7 @@
 #include "Environment.h"
 #include "Game.h"
 #include "GlobalContainer.h"
+#include "ComputeThreads.h"
 #include "Headless.h"
 #include "ReplayWriter.h"
 #include "Sha256.h"
@@ -275,6 +276,11 @@ MatchVerifier::Verdict MatchVerifier::verify(const Turn::MatchRecord& record, co
 	result << ",\"verification\":" << verification.dump()
 	       << ",\"network\":" << Turn::recordNetworkSummary(record).dump() << '}';
 	Headless::writeJson((output / "result.json").string(), result.str());
+	Headless::writeJson((output / "compute.json").string(), json{
+	    {"compute_requested_threads", globals.computeThreads ? std::to_string(globals.computeThreads) : "auto"},
+	    {"compute_resolved_threads", resolveComputeThreadCount(globals.computeThreads)},
+	    {"compute_threads", game.map.computeExecutor().threadCount()},
+	    {"compute_workers", game.map.computeExecutor().threadCount() - 1}}.dump());
 
 	json teams = json::array();
 	for (int t = 0; t < game.mapHeader.getNumberOfTeams(); ++t)
@@ -329,7 +335,7 @@ MatchVerifier::Verdict MatchVerifier::verify(const Turn::MatchRecord& record, co
 }
 
 int MatchVerifier::run(const std::string& recordPath, const std::string& mapPath, const fs::path& output,
-                       const std::string& profile)
+                       const std::string& profile, unsigned computeThreads)
 {
 	// Record and setup first: a defect here is a bad request, not a verdict.
 	Turn::MatchRecord record;
@@ -357,6 +363,7 @@ int MatchVerifier::run(const std::string& recordPath, const std::string& mapPath
 
 	GlobalContainer globals(profile.c_str());
 	globalContainer = &globals;
+	globals.computeThreads = computeThreads;
 	globals.runNoX = true;
 	globals.structuredHeadless = true;
 	globals.load();
@@ -370,18 +377,22 @@ int runVerifyMatch(int argc, char** argv)
 	try
 	{
 		if (argc < 3)
-			throw Usage("usage: --verify-match <record> --map <file> --out <dir> [--profile <name>]");
+			throw Usage("usage: --verify-match <record> --map <file> --out <dir> [--profile <name>] [--compute-threads auto|N]");
 		const std::string record = argv[2];
 		std::string map, out, profile = "glob2-verify";
+		unsigned computeThreads = 0;
 		for (int i = 3; i < argc; i += 2)
 		{
 			const std::string key = argv[i];
+			if (isRemovedComputeOption(key)) throw Usage(key + " has been removed; use --compute-threads auto|N");
 			if (i + 1 >= argc)
 				throw Usage("missing value for " + key);
 			if (key == "--map")
 				map = argv[i + 1];
 			else if (key == "--out" || key == "--output-dir")
 				out = argv[i + 1];
+			else if (key == "--compute-threads")
+				computeThreads = parseComputeThreadCount(argv[i + 1]);
 			else if (key == "--profile")
 				profile = argv[i + 1];
 			else
@@ -397,7 +408,7 @@ int runVerifyMatch(int argc, char** argv)
 		GAGCore::setProcessEnvironment("GLOB2_USER_DATA_DIR", profileDir.c_str(), 1);
 		if (fs::exists(output / "result.json"))
 			throw Usage("output directory already contains a result");
-		return MatchVerifier::run(fs::absolute(record).string(), fs::absolute(map).string(), output, profile);
+		return MatchVerifier::run(fs::absolute(record).string(), fs::absolute(map).string(), output, profile, computeThreads);
 	}
 	catch (const std::exception& error)
 	{

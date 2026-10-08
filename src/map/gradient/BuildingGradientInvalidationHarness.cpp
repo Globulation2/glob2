@@ -312,65 +312,6 @@ static void publicReadsResolveTheirInputs()
 	std::puts("PASS public distance, movement and full-field lazy API boundaries");
 }
 
-static void parallelFields()
-{
-	World world(7);
-	Map &map = world.game.map;
-	Building *building = world.place(20, 20);
-	Building *flag = world.placeFlag(40, 40, 5);
-	for (int x = 50; x < 65; ++x)
-	{
-		map.paintCell(x, 60, WATER);
-		map.addForbidden(x, 62, 0);
-		map.addGuardArea(x, 64, 0);
-		map.addClearArea(x, 66, 0);
-	}
-	const size_t cells = map.getW() * map.getH();
-	std::vector<std::vector<Uint16>> expected;
-	auto capture = [&] {
-		std::vector<std::vector<Uint16>> fields;
-		for (int swim = 0; swim < SWIM_CLASS_COUNT; ++swim)
-		{
-			for (auto *b : {building, flag})
-			{
-				map.buildingGradient(b, swim);
-				map.updateGlobalGradient(b, swim);
-				const auto *field = map.buildingGradient(b, swim);
-				require(field != nullptr, "parallel test building reachable");
-				fields.emplace_back(field, field + cells);
-			}
-			for (const auto *field : {map.getForbiddenGradient(0, swim), map.getGuardAreasGradient(0, swim), map.getClearAreasGradient(0, swim)})
-				fields.emplace_back(field, field + cells);
-		}
-		return fields;
-	};
-	expected = capture();
-	for (unsigned threads : {1, 2, 4, 8})
-	{
-		map.configureCompute(threads, 7);
-		map.updateTeamAreaGradients(0);
-		require(capture() == expected, "parallel area/building initialization preserves all fields");
-	}
-	// Exercise the hiring prepass with two independently owned weighted fields.
-	Unit *a = world.game.addUnit(10, 10, 0, WORKER, 0, 0, 0, 0);
-	Unit *b = world.game.addUnit(12, 10, 0, WORKER, 0, 0, 0, 0);
-	require(a && b, "hiring test units created");
-	for (auto *unit : {a, b}) { unit->activity = Unit::ACT_RANDOM; unit->medical = Unit::MED_FREE; unit->performance[HARVEST] = 1; unit->performance[WALK] = 10; }
-	a->performance[SWIM] = 0; b->performance[SWIM] = 20;
-	map.updateGlobalGradient(building, a->swimClass());
-	map.updateGlobalGradient(building, b->swimClass());
-	const auto used = building->globalGradientUsedStep[a->swimClass()];
-	map.advanceHiringGradients(building);
-	require(building->globalGradientUsedStep[a->swimClass()] == used, "prepass does not touch use timestamps");
-	for (auto *unit : {a, b})
-	{
-		const int swim = unit->swimClass();
-		const auto *field = map.buildingGradient(building, swim);
-		require(std::vector<Uint16>(field, field + cells) == expected[swim * 5], "hiring advancement preserves frozen fields");
-	}
-	std::puts("PASS parallel area batches, seed initialization, frozen hiring advancement");
-}
-
 static void delayedFields()
 {
 	for (unsigned workers : {0, 1, 2, 4, 8}) for (int kind=0; kind<3; ++kind)
@@ -573,7 +514,7 @@ struct Scheduler
 	Scheduler(World& world, unsigned workers, unsigned delay) : game(world.game), map(world.game.map)
 	{
 		game.gameHeader.setBuildingGradientDelay(delay);
-		map.configureCompute(workers + 1, 0);
+		map.configureCompute(workers + 1);
 		map.configureGradientPipeline(workers, 8);
 	}
 	template <class Teams> void tick(Teams&& teams)
@@ -1123,11 +1064,6 @@ TEST_SUITE("BuildingGradientInvalidation")
 	{
 		glob2test::HeadlessGlobals globals;
 		publicReadsResolveTheirInputs();
-	}
-	TEST_CASE("parallel fields")
-	{
-		glob2test::HeadlessGlobals globals;
-		parallelFields();
 	}
 	TEST_CASE("delayed fields")
 	{

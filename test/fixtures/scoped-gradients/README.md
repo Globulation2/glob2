@@ -33,7 +33,8 @@ verify without that flag using both the default and `--parallel-ai` modes.
 Generate from the legacy saves named by that script with `--run-game --load-game`
 and `--telemetry checksums`, using the stop ticks encoded in the filenames.
 For `v108-reload-256`, load the retained v108 checkpoint at tick 1024 and stop at
-1280. Serial (`--gradient-workers 0`) and single-worker (`--gradient-workers 1`)
+1280. Serial and single-worker
+controls (currently `--compute-threads 1` and `--compute-threads 2`)
 outputs were independently compared byte for byte. Both use the default
 eight-tick publication delay. Compress sidecars with gzip mtime zero.
 

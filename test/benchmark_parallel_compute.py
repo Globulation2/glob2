@@ -1,4 +1,4 @@
-"""Retained paired wall/CPU benchmarks for the opt-in compute experiments.
+"""Retained paired wall/CPU benchmarks for the shared compute executor.
 
 A manifest contains scenarios with id, args (headless arguments without output),
 optional group, and fixture_sha256 (absolute paths to input hashes). Run one
@@ -68,12 +68,18 @@ def summarize(rows):
                 value['wall_speedup'] = baseline['wall_s'] / value['wall_s']
                 value['cpu_ratio'] = value['cpu_s'] / baseline['cpu_s']
         for name, value in variants.items():
+            if name.startswith('compute-'):
+                count = name.removeprefix('compute-')
+                paired = variants.get('baseline' if count == '1' else f'baseline-{count}')
+                if paired:
+                    value['wall_speedup_over_base_same_threads'] = paired['wall_s'] / value['wall_s']
+                    value['cpu_ratio_over_base_same_threads'] = value['cpu_s'] / paired['cpu_s']
             if name != 'baseline':
                 serial = variants.get(name.rsplit('-', 1)[0] + '-1')
                 if serial:
-                    value['speedup_over_prototype_serial'] = serial['wall_s'] / value['wall_s']
+                    value['speedup_over_serial'] = serial['wall_s'] / value['wall_s']
                     if 'run_s' in serial and 'run_s' in value:
-                        value['runtime_speedup_over_prototype_serial'] = serial['run_s'] / value['run_s']
+                        value['runtime_speedup_over_serial'] = serial['run_s'] / value['run_s']
         summaries[scenario] = variants
     return summaries
 
@@ -97,7 +103,6 @@ def aggregate_summary(summary, scenarios):
             result[key] = math.exp(statistics.mean(statistics.mean(v) for v in by_group.values()))
         result['worst_cpu_ratio'] = max(v['cpu_ratio'] for v in heavy)
         result['worst_control_speedup'] = min((v['wall_speedup'] for v in small), default=None)
-        result['meets_target_on_measured_suite'] = result['wall_speedup'] >= 1.5 and all(v['cpu_ratio'] <= 1.10 for v in heavy) and all(v['wall_speedup'] >= 1 / 1.05 for v in small)
         aggregate[variant] = result
     return aggregate
 
@@ -109,13 +114,12 @@ def main():
     parser.add_argument('manifest', type=Path)
     parser.add_argument('--output', type=Path, required=True)
     parser.add_argument('--repeats', type=int, default=5)
-    parser.add_argument('--threads', type=int, nargs='+', default=[1, 2, 4, 8])
-    parser.add_argument('--experiments', nargs='+', choices=['none', 'areas', 'initialize', 'hiring', 'ai', 'all'], default=['areas', 'initialize', 'hiring', 'ai', 'all'])
+    parser.add_argument('--threads', nargs='+', default=['1', '2', '4', '8', 'auto'])
     parser.add_argument('--verify', action='store_true', help='Compare per-tick traces, replay orders and final saves, without timing repeats')
     args = parser.parse_args()
     before, after, output = args.before.resolve(), args.after.resolve(), args.output.resolve()
-    if args.repeats < 1 or any(n < 1 or n > 64 for n in args.threads):
-        parser.error('positive repeats and threads in 1..64 required')
+    if args.repeats < 1 or any(n != 'auto' and (not n.isascii() or not n.isdecimal() or int(n) < 1 or int(n) > 2**32 - 1) for n in args.threads):
+        parser.error('positive repeats and auto or positive unsigned thread counts required')
     manifest = json.loads(args.manifest.read_text())
     for scenario in manifest['scenarios']:
         for path, expected in scenario.get('fixture_sha256', {}).items():
@@ -126,10 +130,11 @@ def main():
                     arguments=vars(args) | {'before': str(before), 'after': str(after), 'output': str(output), 'manifest': str(args.manifest.resolve())},
                     memory_note='wait4 peak resident bytes, measured separately for each child')
     (output / 'metadata.json').write_text(json.dumps(metadata, indent=2))
-    variants = [('baseline', before, [])]
-    for experiment in args.experiments:
-        for threads in args.threads:
-            variants.append((f'{experiment}-{threads}', after, ['--compute-threads', str(threads), '--compute-experiments', experiment]))
+    variants = [('baseline', before, ['--compute-threads', '1'])]
+    for threads in args.threads:
+        if threads not in ('1', 'auto'):
+            variants.append((f'baseline-{threads}', before, ['--compute-threads', threads]))
+        variants.append((f'compute-{threads}', after, ['--compute-threads', threads]))
     rows = []
     with (output / 'measurements.jsonl').open('w') as stream:
         for scenario in manifest['scenarios']:
