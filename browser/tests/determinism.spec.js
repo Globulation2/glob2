@@ -380,6 +380,7 @@ for (const variant of ['serial', 'threaded']) {
     test.setTimeout(300000);
     const root=path.resolve(__dirname,'../..');
     const output=path.join(root,'artifacts/generator-library/determinism',variant,info.project.name);
+    fs.rmSync(output,{recursive:true,force:true});
     fs.mkdirSync(output,{recursive:true});
     const progress=[];page.on('console',m=>progress.push(m.text()));
     await openRuntimeHost(page, `<!doctype html><canvas id="canvas"></canvas><script>
@@ -413,7 +414,18 @@ for (const variant of ['serial', 'threaded']) {
     const expected=fs.readFileSync(path.join(root,'test/fixtures/generators/shared-generator-trace.sha256'),'utf8').trim();
     expect(crypto.createHash('sha256').update(traces[0][1]).digest('hex')).toBe(expected);
     if(fs.existsSync(native))expect(traces[0][1]).toBe(fs.readFileSync(native,'utf8'));
-    fs.writeFileSync(path.join(output,'manifest.json'),JSON.stringify({variant,browser:info.project.name,
-      browserVersion:page.context().browser().version(),traceHash:crypto.createHash('sha256').update(traces[0][1]).digest('hex')},null,2)+'\n');
+    const source=JSON.parse(require('node:child_process').execFileSync('python3',
+      [path.join(root,'test/build_provenance.py')],{cwd:root,encoding:'utf8'}));
+    const build=JSON.parse(result.files['cases/build-provenance.json']);
+    const issues=['revision','dirty','sourceTreeSha256'].filter(key=>build[key]!==source[key]);
+    const packageRoot=path.join(root,'build/emscripten/client/release');
+    const binaryRoot=variant==='threaded'?path.join(packageRoot,'threaded'):packageRoot;
+    const hash=file=>crypto.createHash('sha256').update(fs.readFileSync(file)).digest('hex');
+    fs.writeFileSync(path.join(output,'manifest.json'),JSON.stringify({...source,build,provenanceIssues:issues,
+      variant,browser:info.project.name,browserVersion:page.context().browser().version(),
+      binaries:Object.fromEntries(['script-tests.js','script-tests.wasm','script-tests.data']
+        .map(file=>[file,hash(path.join(file.endsWith('.data')?packageRoot:binaryRoot,file))])),
+      traceHash:crypto.createHash('sha256').update(traces[0][1]).digest('hex')},null,2)+'\n');
+    expect(issues).toEqual([]);
   });
 }
