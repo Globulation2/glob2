@@ -1,6 +1,6 @@
 import { readFileSync } from 'node:fs';
 import { sql } from 'kysely';
-import { Credits, HiveError, price, type RateCard } from '@glob2/billing';
+import { Credits, HiveError, price, recordAttemptUsage, type RateCard } from '@glob2/billing';
 import {
   type StudioStore,
   sourceHash,
@@ -253,6 +253,7 @@ export class StudioRunner {
           });
         },
       );
+      await recordAttemptUsage(db, 'aiStudio', r.id, 'usage', result.usage);
       if (result.source !== undefined) {
         try {
           sourceHash(result.source);

@@ -32,6 +32,10 @@
         "output": {
           "type": "integer",
           "minimum": 0
+        },
+        "cacheWrite": {
+          "type": "integer",
+          "minimum": 0
         }
       },
       "additionalProperties": false

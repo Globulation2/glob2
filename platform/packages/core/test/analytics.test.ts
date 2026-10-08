@@ -136,4 +136,103 @@ it('can disable activity recording independently', async () => {
       .where('metric', '=', 'accounts.created')
       .execute(),
   ).toHaveLength(0);
+  await sql`UPDATE admin_analytics_settings SET collection=true WHERE id`.execute(db.db);
+});
+
+it('replaces the last counted state after collection pauses and preserves totals after cleanup', async () => {
+  const day = '2026-10-12';
+  const job = await db.db
+    .insertInto('engine_jobs')
+    .values({
+      kind: 'render-preview',
+      sim_version: '125-49-' + 'ab'.repeat(32),
+      payload: {},
+      created_at: new Date(day + 'T00:00:00Z'),
+    })
+    .returning('id')
+    .executeTakeFirstOrThrow();
+  const totals = () =>
+    db.db.selectFrom('admin_daily_metrics').selectAll().where('day', '=', day).execute();
+  await sql`UPDATE admin_analytics_settings SET collection=false WHERE id`.execute(db.db);
+  try {
+    await db.db
+      .updateTable('engine_jobs')
+      .set({ status: 'failed' })
+      .where('id', '=', job.id)
+      .execute();
+    const paused = await db.db
+      .insertInto('engine_jobs')
+      .values({
+        kind: 'render-preview',
+        sim_version: '125-49-' + 'ab'.repeat(32),
+        payload: {},
+        created_at: new Date(day + 'T00:00:00Z'),
+      })
+      .returning('id')
+      .executeTakeFirstOrThrow();
+    expect(
+      await db.db
+        .selectFrom('admin_metric_sources')
+        .selectAll()
+        .where('source_id', '=', paused.id)
+        .execute(),
+    ).toHaveLength(0);
+    await sql`UPDATE admin_analytics_settings SET collection=true WHERE id`.execute(db.db);
+    await db.db
+      .updateTable('engine_jobs')
+      .set({ status: 'succeeded', completed_at: new Date(day + 'T00:01:00Z') })
+      .where('id', '=', job.id)
+      .execute();
+    await db.db
+      .updateTable('engine_jobs')
+      .set({ status: 'failed' })
+      .where('id', '=', paused.id)
+      .execute();
+    let rows = await totals();
+    expect(
+      rows.filter((r) => r.metric === 'status.engine').reduce((sum, r) => sum + r.value, 0),
+    ).toBe(2);
+    expect(rows.find((r) => r.metric === 'status.engine' && r.dimension === 'queued')?.value).toBe(
+      0,
+    );
+    expect(
+      rows.find((r) => r.metric === 'duration.engine' && r.dimension === 'seconds')?.value,
+    ).toBe(60);
+    await sql`UPDATE admin_analytics_settings SET collection=false WHERE id`.execute(db.db);
+    await db.db
+      .updateTable('engine_jobs')
+      .set({ completed_at: new Date(day + 'T00:02:00Z') })
+      .where('id', '=', job.id)
+      .execute();
+    await sql`UPDATE admin_analytics_settings SET collection=true WHERE id`.execute(db.db);
+    // Even an unrelated update reconciles the previously counted duration.
+    await db.db
+      .updateTable('engine_jobs')
+      .set({ payload: { refreshed: true } })
+      .where('id', '=', job.id)
+      .execute();
+    await db.db
+      .updateTable('engine_jobs')
+      .set({ payload: { refreshed: true } })
+      .where('id', '=', job.id)
+      .execute();
+    rows = await totals();
+    expect(
+      rows.find((r) => r.metric === 'duration.engine' && r.dimension === 'seconds')?.value,
+    ).toBe(120);
+    expect(
+      rows.find((r) => r.metric === 'duration.engine' && r.dimension === 'samples')?.value,
+    ).toBe(1);
+    await db.db.deleteFrom('engine_jobs').where('id', 'in', [job.id, paused.id]).execute();
+    expect(
+      await db.db
+        .selectFrom('admin_metric_sources')
+        .selectAll()
+        .where('source_id', 'in', [job.id, paused.id])
+        .execute(),
+    ).toHaveLength(0);
+    expect(await totals()).toEqual(rows);
+  } finally {
+    await sql`UPDATE admin_analytics_settings SET collection=true WHERE id`.execute(db.db);
+  }
 });

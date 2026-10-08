@@ -5,6 +5,7 @@ import { AdminUsageReconcile, type AdminOperation } from '@glob2/protocol';
 import { requireRole, type Identity } from '../identity.ts';
 import { body } from '../http/validate.ts';
 import { apiError } from '../errors.ts';
+import { cursorTimeSql } from '../http/cursorTime.ts';
 import { decodeCursor, encodeCursor, pageSize } from './cursor.ts';
 
 const REQUESTS = [
@@ -26,10 +27,12 @@ export async function operationsRoutes(app: FastifyInstance, identity: Identity)
           sql`SELECT id::text,${product}::text AS product,account_id AS "accountId",status,created_at AS "createdAt",CASE WHEN kind='generate' THEN 1 ELSE 0 END::int AS reserved,kind,'Provider outcome needs review'::text AS error FROM ${sql.table(table)} WHERE status='uncertain'`,
       );
       const rows = (
-        await sql<AdminOperation>`SELECT * FROM (${sql.join(requests, sql` UNION ALL `)} UNION ALL
+        await sql<
+          AdminOperation & { cursorAt: string }
+        >`SELECT *,${cursorTimeSql(sql<Date>`"createdAt"`)} AS "cursorAt" FROM (${sql.join(requests, sql` UNION ALL `)} UNION ALL
    SELECT c.id::text,'aiStudio',c.account_id,c.status,c.created_at,c.reserved::int,'usage','Provider usage needs review' FROM ai_studio_calls c WHERE c.status='uncertain' UNION ALL
    SELECT c.id::text,'hive',c.account_id,c.status,c.created_at,c.reserved::int,'usage','Provider usage needs review' FROM hive_calls c WHERE c.status='uncertain' UNION ALL
-   SELECT id::text,'engine',NULL::uuid,status,created_at,0,kind,CASE WHEN status='failed' THEN 'Engine job failed; inspect verification or library validation' ELSE NULL END FROM engine_jobs WHERE status IN ('queued','failed')) x WHERE TRUE ${r.query.product ? sql`AND product=${r.query.product}` : sql``} ${before ? sql`AND ("createdAt",product || ':' || id::text)>(${before.at},${before.id})` : sql``} ORDER BY "createdAt" ASC,product || ':' || id::text ASC LIMIT ${limit + 1}`.execute(
+   SELECT id::text,'engine',NULL::uuid,status,created_at,0,kind,CASE WHEN status='failed' THEN 'Engine job failed; inspect verification or library validation' ELSE NULL END FROM engine_jobs WHERE status IN ('queued','failed')) x WHERE TRUE ${r.query.product ? sql`AND product=${r.query.product}` : sql``} ${before ? sql`AND ("createdAt",product || ':' || id::text)>(${before.exactAt},${before.id})` : sql``} ORDER BY "createdAt" ASC,product || ':' || id::text ASC LIMIT ${limit + 1}`.execute(
           db,
         )
       ).rows;
@@ -74,9 +77,12 @@ export async function operationsRoutes(app: FastifyInstance, identity: Identity)
         reservedCredits,
         workers,
         ...(rows.length > limit && last
-          ? { nextCursor: encodeCursor(last.createdAt, last.product + ':' + last.id) }
+          ? { nextCursor: encodeCursor(last.cursorAt, last.product + ':' + last.id) }
           : {}),
-        items: page.map((row) => ({ ...row, createdAt: new Date(row.createdAt).toISOString() })),
+        items: page.map(({ cursorAt, ...row }) => ({
+          ...row,
+          createdAt: new Date(cursorAt).toISOString(),
+        })),
         agents,
         queueAgeSeconds: age === null ? null : Math.max(0, age),
       };
@@ -111,11 +117,12 @@ export async function operationsRoutes(app: FastifyInstance, identity: Identity)
           reserved: number;
           charged: number | null;
           usage: unknown;
-        }>`SELECT id::text,status,created_at AS "createdAt",${metered ? sql`NULL::timestamptz` : sql`completed_at`} AS "completedAt",${metered ? sql`reserved::float8` : spec ? sql`CASE WHEN kind='generate' AND status NOT IN ('ready','failed') THEN 1 ELSE 0 END::float8` : sql`0::float8`} AS reserved,${metered ? sql`charged::float8` : sql`NULL::float8`} AS charged,${metered ? sql`usage` : sql`NULL::jsonb`} AS usage FROM ${sql.table(table)} WHERE id::text=${r.params.id}`.execute(
+        }>`SELECT id::text,status,created_at AS "createdAt",completed_at AS "completedAt",${metered ? sql`reserved::float8` : spec ? sql`CASE WHEN kind='generate' AND status NOT IN ('ready','failed') THEN 1 ELSE 0 END::float8` : sql`0::float8`} AS reserved,${metered ? sql`charged::float8` : sql`NULL::float8`} AS charged,${metered ? sql`coalesce(nullif(usage,'null'::jsonb),(SELECT a.usage FROM admin_provider_attempts a WHERE a.product=${r.params.product} AND a.attempt_id=id::text))` : sql`NULL::jsonb`} AS usage FROM ${sql.table(table)} WHERE id::text=${r.params.id}`.execute(
           db,
         )
       ).rows[0];
       if (!row) throw apiError('not_found', 'Request not found.');
+      // Failed/late responses retain metering independently from their private output.
       const evidence = spec
         ? (
             await sql<{
@@ -124,7 +131,7 @@ export async function operationsRoutes(app: FastifyInstance, identity: Identity)
               status: string;
               usage: unknown;
               createdAt: Date;
-            }>`SELECT model,stage,status,output->'usage' AS usage,created_at AS "createdAt" FROM ${sql.table(spec[1].replace('requests', 'attempts'))} WHERE request_id::text=${r.params.id} ORDER BY created_at DESC LIMIT 50`.execute(
+            }>`SELECT a.model,a.stage,a.status,coalesce(nullif(a.output->'usage','null'::jsonb),j.usage) AS usage,a.created_at AS "createdAt" FROM ${sql.table(spec[1].replace('requests', 'attempts'))} a LEFT JOIN admin_provider_attempts j ON j.product=${spec[0]} AND j.attempt_id=a.id::text WHERE a.request_id::text=${r.params.id} ORDER BY a.created_at DESC,a.id DESC LIMIT 50`.execute(
               db,
             )
           ).rows
@@ -136,7 +143,7 @@ export async function operationsRoutes(app: FastifyInstance, identity: Identity)
                 status: string;
                 usage: unknown;
                 createdAt: Date;
-              }>`SELECT coalesce(rate->>'model','unknown') AS model,'usage'::text AS stage,status,usage,created_at AS "createdAt" FROM ${sql.table(table)} WHERE id::text=${r.params.id}`.execute(
+              }>`SELECT coalesce(c.rate->>'model','unknown') AS model,'usage'::text AS stage,c.status,coalesce(nullif(c.usage,'null'::jsonb),j.usage) AS usage,c.created_at AS "createdAt" FROM ${sql.table(table)} c LEFT JOIN admin_provider_attempts j ON j.product=${r.params.product} AND j.attempt_id=c.id::text WHERE c.id::text=${r.params.id}`.execute(
                 db,
               )
             ).rows

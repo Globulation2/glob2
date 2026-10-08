@@ -50,7 +50,7 @@ export async function adminRoutes(app: FastifyInstance, identity: Identity): Pro
       return {
         items,
         ...(rows.length > PAGE_SIZE && last
-          ? { nextCursor: encodeCursor(last.created_at, last.id) }
+          ? { nextCursor: encodeCursor(last.cursorAt, last.id) }
           : {}),
       };
     },

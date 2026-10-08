@@ -1,24 +1,116 @@
 import { useState } from 'react';
-import type { AdminOperation, AdminOperations } from '@glob2/protocol';
+import type { AdminOperation, AdminOperations, AdminOperationDetail } from '@glob2/protocol';
 import { request } from '../api.ts';
 import { useLoad } from '../state.tsx';
 import { Loaded } from '../components/common.tsx';
-import { PageControls, useAdminFilters } from './Moderation.tsx';
+import { PageControls, useAdminFilters } from './filters.tsx';
 import { dateTime } from '../format.ts';
+import { Link } from '../router.tsx';
+import { productName } from './presentation.ts';
 
+function RecoveryDetails({ details }: { details: AdminOperationDetail }) {
+  return (
+    <section aria-label={`Recovery evidence for ${details.id}`}>
+      <p>
+        Status: {details.status} · Created {dateTime(details.createdAt)}
+        {details.completedAt ? ' · Completed ' + dateTime(details.completedAt) : ''}
+      </p>
+      <p>
+        Reserved: {details.reserved} product credits
+        {details.charged === null ? '' : ' · Charged: ' + details.charged}
+      </p>
+      <p>{details.creditConsequence}</p>
+      {details.usage && (
+        <p>
+          Recorded usage: {details.usage.input} input tokens · {details.usage.cached} cached input ·{' '}
+          {details.usage.cacheWrite ?? 0} cache write · {details.usage.output} output tokens
+        </p>
+      )}
+      {details.attempts.length === 0 ? (
+        <p>No attempt usage evidence is available.</p>
+      ) : (
+        <div
+          tabIndex={0}
+          role="region"
+          aria-label={`Provider attempt evidence for ${details.id}`}
+          style={{ overflowX: 'auto' }}
+        >
+          <table>
+            <caption>
+              Most recent provider attempts; unavailable usage is not zero. These numbers need
+              verification against provider evidence.
+            </caption>
+            <thead>
+              <tr>
+                <th>Created</th>
+                <th>Model / stage</th>
+                <th>Status</th>
+                <th>Input tokens</th>
+                <th>Cached input</th>
+                <th>Cache write tokens</th>
+                <th>Output tokens</th>
+              </tr>
+            </thead>
+            <tbody>
+              {details.attempts.map((attempt, i) => (
+                <tr key={i}>
+                  <td>{dateTime(attempt.createdAt)}</td>
+                  <th>
+                    {attempt.model} / {attempt.stage}
+                  </th>
+                  <td>{attempt.status}</td>
+                  <td>{attempt.usage?.input ?? 'Unavailable'}</td>
+                  <td>{attempt.usage?.cached ?? 'Unavailable'}</td>
+                  <td>{attempt.usage ? (attempt.usage.cacheWrite ?? 0) : 'Unavailable'}</td>
+                  <td>{attempt.usage?.output ?? 'Unavailable'}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
+    </section>
+  );
+}
 function Recovery({ row, reload }: { row: AdminOperation; reload: () => void }) {
   const [reason, setReason] = useState(''),
     [busy, setBusy] = useState(false),
     [error, setError] = useState('');
-  const [usage, setUsage] = useState({ input: 0, cachedInput: 0, output: 0 }),
-    [details, setDetails] = useState<unknown>();
+  // Blank fields require an explicit usage decision, including a genuine zero.
+  const [usage, setUsage] = useState({ input: '', cachedInput: '', cacheWrite: '0', output: '' });
+  const [verified, setVerified] = useState(false);
+  const [details, setDetails] = useState<AdminOperationDetail>();
   const metered = row.product === 'hive' || row.product === 'aiStudio';
+  const validUsage =
+    Object.values(usage).every(
+      (value) => /^\d+$/.test(value) && Number.isSafeInteger(Number(value)),
+    ) && Number(usage.cachedInput) + Number(usage.cacheWrite) <= Number(usage.input);
+  const ready =
+    details?.status === 'uncertain' && (metered ? validUsage && verified : true) && !!reason.trim();
+  async function inspect() {
+    setBusy(true);
+    setError('');
+    try {
+      setDetails(
+        await request<AdminOperationDetail>(
+          'GET',
+          `/api/v1/admin/operations/${row.product}/${row.id}`,
+        ),
+      );
+    } catch (e) {
+      setError(e instanceof Error ? e.message : String(e));
+    } finally {
+      setBusy(false);
+    }
+  }
   async function recover() {
     if (
+      busy ||
+      !ready ||
       !window.confirm(
         metered
-          ? 'Charge the verified usage and release the remaining reservation?'
-          : 'Confirm this generation cannot be recovered and return its reserved credit?',
+          ? `Reconcile ${usage.input} input (${usage.cachedInput} cached; ${usage.cacheWrite} cache write) and ${usage.output} output tokens? Verified usage is charged up to the ${row.reserved}-credit reservation and the remainder is released.`
+          : `Mark this generation failed and return ${row.reserved} reserved product credit(s)? Confirm that its delivery cannot be recovered.`,
       )
     )
       return;
@@ -35,7 +127,12 @@ function Recovery({ row, reload }: { row: AdminOperation; reload: () => void }) 
         body: metered
           ? {
               ...(row.product === 'aiStudio' ? { requestId: row.id } : {}),
-              usage,
+              usage: {
+                input: Number(usage.input),
+                cachedInput: Number(usage.cachedInput),
+                output: Number(usage.output),
+                ...(Number(usage.cacheWrite) > 0 ? { cacheWrite: Number(usage.cacheWrite) } : {}),
+              },
               evidence: reason,
             }
           : { reason },
@@ -48,55 +145,105 @@ function Recovery({ row, reload }: { row: AdminOperation; reload: () => void }) 
     }
   }
   return (
-    <article className="card">
+    <article className="card" style={{ overflowWrap: 'anywhere' }}>
       <h3>
-        {row.product} · {row.kind}
+        {productName(row.product)} · {row.kind}
       </h3>
       <p>
         {row.id} · {row.status} · {dateTime(row.createdAt)}
       </p>
       {row.error && <p>{row.error}</p>}
+      {row.accountId && (
+        <p>
+          <Link to={`/admin/accounts?q=${row.accountId}`}>Inspect requesting account</Link>
+        </p>
+      )}
       <p>Reserved: {row.reserved} product credits</p>
-      {row.product !== 'engine' && (
+      {row.product === 'engine' ? (
+        <p>
+          <Link to="/admin/matches?verification=failed">Inspect match verification</Link> or inspect
+          the reported library item’s validation.
+        </p>
+      ) : (
         <>
-          <button
-            onClick={() =>
-              void request('GET', `/api/v1/admin/operations/${row.product}/${row.id}`)
-                .then(setDetails)
-                .catch((e) => setError(String(e)))
-            }
-          >
+          <button disabled={busy} onClick={() => void inspect()}>
             Inspect recovery details
           </button>
-          {details !== undefined && (
-            <pre style={{ whiteSpace: 'pre-wrap' }}>{JSON.stringify(details, null, 2)}</pre>
-          )}
+          {details && <RecoveryDetails details={details} />}
           <p>
             {metered
-              ? 'Measured usage is charged up to the reservation; the rest is released. Enter usage verified against provider evidence.'
-              : 'Returning the reservation marks this generation failed. Confirm the provider outcome cannot be recovered first.'}
+              ? 'Enter usage verified against provider evidence. Input totals include cache creation/write tokens. Unknown usage must not be entered as zero.'
+              : 'Returning the reservation marks this generation failed. Inspect its details and confirm delivery cannot be recovered first.'}
           </p>
-          <label>
-            Reason and evidence{' '}
-            <textarea value={reason} maxLength={2000} onChange={(e) => setReason(e.target.value)} />
-          </label>
-          {metered &&
-            Object.entries(usage).map(([key, value]) => (
-              <label key={key}>
-                {key} tokens{' '}
-                <input
-                  type="number"
-                  min={0}
-                  value={value}
-                  onChange={(e) => setUsage({ ...usage, [key]: Number(e.target.value) })}
-                />
-              </label>
-            ))}
-          <button disabled={busy || !reason.trim()} onClick={() => void recover()}>
-            {metered ? 'Reconcile usage' : 'Return reserved credit'}
-          </button>
+          <fieldset disabled={busy}>
+            <label className="field">
+              Reason and evidence
+              <textarea
+                value={reason}
+                maxLength={2000}
+                onChange={(e) => setReason(e.target.value)}
+              />
+            </label>
+            {metered && (
+              <>
+                {(['input', 'cachedInput', 'cacheWrite', 'output'] as const).map((key) => (
+                  <label className="field" key={key}>
+                    {
+                      {
+                        input: 'Input tokens (including cached)',
+                        cachedInput: 'Cached input tokens',
+                        cacheWrite: 'Cache creation/write tokens',
+                        output: 'Output tokens',
+                      }[key]
+                    }
+                    <input
+                      type="number"
+                      min={0}
+                      step={1}
+                      value={usage[key]}
+                      onChange={(e) => {
+                        setUsage({ ...usage, [key]: e.target.value });
+                        setVerified(false);
+                      }}
+                    />
+                  </label>
+                ))}
+                {details?.usage && (
+                  <button
+                    onClick={() => {
+                      const measured = details.usage;
+                      if (measured) {
+                        setUsage({
+                          input: String(measured.input),
+                          cachedInput: String(measured.cached),
+                          cacheWrite: String(measured.cacheWrite ?? 0),
+                          output: String(measured.output),
+                        });
+                        setVerified(false);
+                      }
+                    }}
+                  >
+                    Copy recorded usage
+                  </button>
+                )}
+                <label>
+                  <input
+                    type="checkbox"
+                    checked={verified}
+                    onChange={(e) => setVerified(e.target.checked)}
+                  />{' '}
+                  I checked these token counts against provider evidence, including any explicitly
+                  entered zeros.
+                </label>
+              </>
+            )}
+            <button disabled={!ready} onClick={() => void recover()}>
+              {metered ? 'Reconcile verified usage' : 'Return reserved credit'}
+            </button>
+          </fieldset>
         </>
       )}
+      {busy && <p role="status">Working…</p>}
       {error && <p role="alert">{error}</p>}
     </article>
   );
@@ -116,7 +263,9 @@ export function Operations() {
         <select value={values['product'] ?? ''} onChange={(e) => set({ product: e.target.value })}>
           <option value="">All</option>
           {['maps', 'music', 'terrain', 'buildings', 'aiStudio', 'hive', 'engine'].map((p) => (
-            <option key={p}>{p}</option>
+            <option key={p} value={p}>
+              {productName(p)}
+            </option>
           ))}
         </select>
       </label>
@@ -133,10 +282,11 @@ export function Operations() {
             <h3>Reserved product credits</h3>
             {data.reservedCredits.map((r) => (
               <p key={r.product}>
-                {r.product}: {r.reserved}
+                {productName(r.product)}: {r.reserved}
               </p>
             ))}
             <h3>Engine agents</h3>
+            {data.agents.length === 0 && <p>No engine agents are registered.</p>}
             {data.agents.map((a) => (
               <p key={a.id}>
                 {a.id} · last seen {dateTime(a.lastSeenAt)}
@@ -144,6 +294,7 @@ export function Operations() {
               </p>
             ))}
             <h3>Worker leases</h3>
+            {data.workers.length === 0 && <p>No worker leases are recorded.</p>}
             {data.workers.map((w) => (
               <p key={w.name}>
                 {w.name} · {w.holder} · last renewed {dateTime(w.renewedAt)}

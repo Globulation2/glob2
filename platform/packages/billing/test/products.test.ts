@@ -32,6 +32,8 @@ it('fulfills and reverses map purchases without modifying Hive or its entitlemen
   const session = {
     id: 'cs_' + id,
     mode: 'payment',
+    created: Math.floor(Date.now() / 1000),
+    livemode: false,
     payment_status: 'paid',
     client_reference_id: id,
     payment_intent: 'pi_' + id,
@@ -82,6 +84,8 @@ it('isolates Studio purchases, retry settlement and reversals from the other pro
   const session = {
     id: 'cs_' + id,
     mode: 'payment',
+    created: Math.floor(Date.now() / 1000),
+    livemode: false,
     payment_status: 'paid',
     client_reference_id: id,
     payment_intent: 'pi_' + id,
@@ -273,6 +277,8 @@ it('fulfills and reverses music purchases without modifying Hive or its entitlem
   const session = {
     id: 'cs_' + id,
     mode: 'payment',
+    created: Math.floor(Date.now() / 1000),
+    livemode: false,
     payment_status: 'paid',
     client_reference_id: id,
     payment_intent: 'pi_' + id,
@@ -323,6 +329,8 @@ it('settles terrain purchases and reversals independently of music and map credi
   const session = {
     id: 'cs_' + id,
     mode: 'payment',
+    created: Math.floor(Date.now() / 1000),
+    livemode: false,
     payment_status: 'paid',
     client_reference_id: id,
     payment_intent: 'pi_' + id,
@@ -338,4 +346,72 @@ it('settles terrain purchases and reversals independently of music and map credi
   expect((await credits.balance(account)).balance).toBe(5);
   expect((await new Credits(database.db, 'music').balance(account)).balance).toBe(0);
   expect((await new Credits(database.db, 'maps').balance(account)).balance).toBe(0);
+});
+
+it('attributes verified payments to the successful charge time rather than checkout creation', async () => {
+  const account = await database.db
+    .insertInto('accounts')
+    .values({ kind: 'registered', display_name: 'Payment midnight' })
+    .returning('id')
+    .executeTakeFirstOrThrow();
+  const id = randomUUID(),
+    payment = 'pi_' + id,
+    pack = { id: 'time', priceId: 'price_time', credits: 10, amount: 1000, currency: 'usd' };
+  await database.db
+    .insertInto('map_purchases')
+    .values({ id, account_id: account.id, pack })
+    .execute();
+  const checkout = new Checkout(
+    database.db,
+    'sk_test_fake',
+    'whsec_fake',
+    'https://test.invalid',
+    [pack],
+    'maps',
+  );
+  const checkoutAt = Date.parse('2026-10-01T23:55:00Z') / 1000,
+    chargeAt = Date.parse('2026-10-02T00:05:00Z') / 1000;
+  const session = {
+    id: 'cs_' + id,
+    mode: 'payment',
+    created: checkoutAt,
+    livemode: false,
+    payment_status: 'paid',
+    client_reference_id: id,
+    payment_intent: payment,
+    amount_total: 1000,
+    currency: 'usd',
+    metadata: { purchaseId: id, creditProduct: 'maps' },
+  } as unknown as Stripe.Checkout.Session;
+  const mocks = [
+    vi.spyOn(checkout.stripe.webhooks, 'constructEvent').mockReturnValue({
+      type: 'checkout.session.completed',
+      id: 'evt_midnight',
+      created: chargeAt,
+      data: { object: { id: session.id } },
+    } as never),
+    vi.spyOn(checkout.stripe.checkout.sessions, 'retrieve').mockResolvedValue(session as never),
+    vi
+      .spyOn(checkout.stripe.paymentIntents, 'retrieve')
+      .mockResolvedValue({ metadata: { purchaseId: id, creditProduct: 'maps' } } as never),
+    vi.spyOn(checkout.stripe.charges, 'list').mockResolvedValue({
+      has_more: false,
+      data: [{ paid: true, created: chargeAt, amount_refunded: 0 }],
+    } as never),
+    vi
+      .spyOn(checkout.stripe.disputes, 'list')
+      .mockResolvedValue({ has_more: false, data: [] } as never),
+  ];
+  try {
+    await checkout.webhook(Buffer.from('{}'), 'mock verified event');
+    const event = await database.db
+      .selectFrom('admin_financial_events')
+      .select('occurred_at')
+      .where('purchase_id', '=', id)
+      .where('kind', '=', 'payment')
+      .executeTakeFirstOrThrow();
+    expect(event.occurred_at.toISOString()).toBe('2026-10-02T00:05:00.000Z');
+  } finally {
+    for (const mock of mocks) mock.mockRestore();
+  }
 });

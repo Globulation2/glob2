@@ -18,46 +18,38 @@ export async function analyticsRoutes(app: FastifyInstance, identity: Identity) 
     const cached = cache.get(days);
     if (cached && Date.now() - cached.at < 60000) return cached.value;
     const value = (async (): Promise<AdminAnalytics> => {
+      const today = sql`(now() AT TIME ZONE 'UTC')::date`;
+      const currentStart = sql`(${today}-${days - 1}::int)::timestamp AT TIME ZONE 'UTC'`;
+      const previousStart = sql`(${today}-${2 * days - 1}::int)::timestamp AT TIME ZONE 'UTC'`;
+      const tomorrow = sql`(${today}+1)::timestamp AT TIME ZONE 'UTC'`;
       const metrics = (
         await sql<
           AdminAnalytics['metrics'][number]
-        >`SELECT day::text,metric,dimension,value FROM admin_daily_metrics WHERE day >= (now() AT TIME ZONE 'UTC')::date-${2 * days - 1}::int ORDER BY day,metric,dimension`.execute(
-          db,
-        )
+        >`SELECT day::text,metric,dimension,value FROM admin_daily_metrics
+          WHERE day BETWEEN ${today}-${2 * days - 1}::int AND ${today}
+          ORDER BY day,metric,dimension`.execute(db)
       ).rows;
-      const active = (
-        await sql<
-          AdminAnalytics['active']
-        >`SELECT count(DISTINCT account_id) FILTER(WHERE day=(now() AT TIME ZONE 'UTC')::date)::int AS daily,count(DISTINCT account_id) FILTER(WHERE day>=(now() AT TIME ZONE 'UTC')::date-6)::int AS weekly,count(DISTINCT account_id)::int AS monthly FROM account_activity_days WHERE day>=(now() AT TIME ZONE 'UTC')::date-29`.execute(
-          db,
-        )
-      ).rows[0] ?? {
-        daily: 0,
-        weekly: 0,
-        monthly: 0,
-        registered: { daily: 0, weekly: 0, monthly: 0 },
-        guests: { daily: 0, weekly: 0, monthly: 0 },
-      };
-      for (const [key, kind] of [
-        ['registered', 'registered'],
-        ['guests', 'guest'],
-      ] as const) {
-        active[key] = (
-          await sql<{
-            daily: number;
-            weekly: number;
-            monthly: number;
-          }>`SELECT count(DISTINCT account_id) FILTER(WHERE day=(now() AT TIME ZONE 'UTC')::date)::int AS daily,count(DISTINCT account_id) FILTER(WHERE day>=(now() AT TIME ZONE 'UTC')::date-6)::int AS weekly,count(DISTINCT account_id)::int AS monthly FROM account_activity_days WHERE day>=(now() AT TIME ZONE 'UTC')::date-29 AND kind=${kind}`.execute(
-            db,
-          )
+      const countActivity = async (kind?: 'registered' | 'guest') =>
+        (
+          await sql<{ daily: number; weekly: number; monthly: number }>`
+          SELECT count(DISTINCT account_id) FILTER (WHERE day=${today})::int AS daily,
+            count(DISTINCT account_id) FILTER (WHERE day>=${today}-6)::int AS weekly,
+            count(DISTINCT account_id)::int AS monthly
+          FROM account_activity_days WHERE day BETWEEN ${today}-29 AND ${today}
+            ${kind ? sql`AND kind=${kind}` : sql``}`.execute(db)
         ).rows[0] ?? { daily: 0, weekly: 0, monthly: 0 };
-      }
+      const [total, registered, guests] = await Promise.all([
+        countActivity(),
+        countActivity('registered'),
+        countActivity('guest'),
+      ]);
+      const active = { ...total, registered, guests };
       const participants = (
-        await sql<
-          AdminAnalytics['participants']
-        >`SELECT count(DISTINCT p.account_id) FILTER(WHERE m.created_at>=((now() AT TIME ZONE 'UTC')::date-${days - 1}::int)::timestamp AT TIME ZONE 'UTC')::int AS current,count(DISTINCT p.account_id) FILTER(WHERE m.created_at<((now() AT TIME ZONE 'UTC')::date-${days - 1}::int)::timestamp AT TIME ZONE 'UTC')::int AS previous FROM match_participants p JOIN matches m ON m.id=p.match_id WHERE m.created_at>=((now() AT TIME ZONE 'UTC')::date-${2 * days - 1}::int)::timestamp AT TIME ZONE 'UTC'`.execute(
-          db,
-        )
+        await sql<AdminAnalytics['participants']>`SELECT
+            count(DISTINCT p.account_id) FILTER (WHERE m.created_at>=${currentStart})::int AS current,
+            count(DISTINCT p.account_id) FILTER (WHERE m.created_at<${currentStart})::int AS previous
+          FROM match_participants p JOIN matches m ON m.id=p.match_id
+          WHERE m.created_at>=${previousStart} AND m.created_at<${tomorrow}`.execute(db)
       ).rows[0] ?? { current: 0, previous: 0 };
       const coverage = await db
         .selectFrom('admin_metric_coverage')
@@ -90,7 +82,9 @@ export async function analyticsRoutes(app: FastifyInstance, identity: Identity) 
       };
     })();
     cache.set(days, { at: Date.now(), value });
-    value.catch(() => cache.delete(days));
+    value.catch(() => {
+      if (cache.get(days)?.value === value) cache.delete(days);
+    });
     return value;
   });
 }

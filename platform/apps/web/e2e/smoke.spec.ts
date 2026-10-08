@@ -319,10 +319,35 @@ test('moderation pages for administrators only', async ({ page }, info) => {
   await page.goto('/admin/reports');
   await expect(page.getByTestId('admin-report')).toContainText('north colony');
   await check(page, info, 'admin-reports');
-  for (const section of ['overview', 'content', 'operations', 'audit']) {
+  for (const section of ['overview', 'content', 'operations', 'audit', 'finances']) {
     await page.goto('/admin/' + section);
     await expect(page.getByRole('heading', { level: 2 }).first()).toBeVisible();
     await expect(page.locator('main')).not.toContainText('Internal server error');
+    if (section === 'overview') {
+      await expect(
+        page
+          .getByRole('figure', { name: 'Daily active accounts · Accounts per day' })
+          .locator('circle'),
+      ).toHaveCount(5);
+      await expect(
+        page.getByRole('region', { name: 'Completion time comparison table' }),
+      ).toBeVisible();
+    }
+    if (section === 'operations') {
+      const reconcile = page.getByRole('button', { name: 'Reconcile verified usage' });
+      await expect(reconcile).toBeDisabled();
+      await page.getByRole('button', { name: 'Inspect recovery details' }).click();
+      await expect(
+        page.getByRole('region', { name: /Provider attempt evidence for/ }),
+      ).toBeVisible();
+    }
+    if (section === 'finances') {
+      await expect(page.getByRole('region', { name: 'Confirmed cash table' })).toContainText('USD');
+      await expect(page.getByRole('region', { name: 'Confirmed cash table' })).toContainText(
+        '123.45',
+      );
+      await expect(page.getByRole('region', { name: 'Confirmed cash table' })).toContainText('500');
+    }
     await check(page, info, 'admin-' + section);
   }
   await page.goto('/admin/matches');

@@ -103,7 +103,12 @@ export const AdminOperationDetail = Open({
   reserved: Type.Number(),
   charged: Type.Union([Type.Number(), Type.Null()]),
   usage: Type.Union([
-    Open({ input: Type.Number(), cached: Type.Number(), output: Type.Number() }),
+    Open({
+      input: Type.Number(),
+      cached: Type.Number(),
+      output: Type.Number(),
+      cacheWrite: Type.Optional(Type.Integer({ minimum: 0 })),
+    }),
     Type.Null(),
   ]),
   creditConsequence: Type.String(),
@@ -113,7 +118,12 @@ export const AdminOperationDetail = Open({
       stage: Type.String(),
       status: Type.String(),
       usage: Type.Union([
-        Open({ input: Type.Number(), cached: Type.Number(), output: Type.Number() }),
+        Open({
+          input: Type.Number(),
+          cached: Type.Number(),
+          output: Type.Number(),
+          cacheWrite: Type.Optional(Type.Integer({ minimum: 0 })),
+        }),
         Type.Null(),
       ]),
       createdAt: Timestamp,
@@ -127,6 +137,7 @@ export const AdminUsageReconcile = Strict({
     input: Type.Integer({ minimum: 0 }),
     cachedInput: Type.Integer({ minimum: 0 }),
     output: Type.Integer({ minimum: 0 }),
+    cacheWrite: Type.Optional(Type.Integer({ minimum: 0 })),
   }),
 });
 export const AdminMetric = Open({
@@ -156,7 +167,53 @@ export const AdminAnalytics = Open({
   collection: Type.Boolean(),
 });
 export type AdminAnalytics = Static<typeof AdminAnalytics>;
+export const AdminFinanceCash = Open({
+  product: Type.String(),
+  currency: Type.String(),
+  mode: Type.String(),
+  period: Type.String(),
+  kind: Type.String(),
+  amount: Type.Number(),
+  events: Type.Integer(),
+});
+export const AdminFinanceCredit = Open({
+  product: Type.String(),
+  kind: Type.String(),
+  amount: Type.Number(),
+});
+export const AdminFinanceCost = Open({
+  product: Type.String(),
+  model: Type.String(),
+  period: Type.String(),
+  currency: Type.Union([Type.String(), Type.Null()]),
+  rateVersion: Type.Union([Type.String(), Type.Null()]),
+  attempts: Type.Integer(),
+  metered: Type.Integer(),
+  priced: Type.Integer(),
+  estimatedMicros: Type.Union([Type.Number(), Type.Null()]),
+});
+export const AdminFinances = Open({
+  days: Type.Integer(),
+  mode: Type.String(),
+  generatedAt: Timestamp,
+  cash: Type.Array(AdminFinanceCash),
+  credits: Type.Array(AdminFinanceCredit),
+  costs: Type.Array(AdminFinanceCost),
+  unknownPurchases: Type.Integer(),
+  historicalIncomplete: Type.Boolean(),
+});
+export type AdminFinances = Static<typeof AdminFinances>;
 export const adminConsoleSchemas = {
+  AdminFinanceCash,
+  AdminFinanceCredit,
+  AdminFinanceCost,
+  AdminFinances,
+  AdminMetric,
+  AdminAnalytics,
+  AdminOperation,
+  AdminOperations,
+  AdminOperationDetail,
+  AdminUsageReconcile,
   AdminLibrary,
   AdminContent,
   AdminContentList,
@@ -166,10 +223,4 @@ export const adminConsoleSchemas = {
   AdminModerateContent,
   AdminAuditEntry,
   AdminAuditList,
-  AdminOperation,
-  AdminOperations,
-  AdminOperationDetail,
-  AdminUsageReconcile,
-  AdminMetric,
-  AdminAnalytics,
 };

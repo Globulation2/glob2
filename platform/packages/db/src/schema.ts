@@ -1184,8 +1184,60 @@ interface SetReportsTable {
   created_at: Timestamp;
 }
 export interface Database {
+  admin_payment_totals: {
+    product: string;
+    purchase_id: string;
+    provider_id: string | null;
+    mode: string;
+    currency: string | null;
+    paid_amount: number | null;
+    refunded_amount: number;
+    disputed: boolean;
+    revision: number;
+    historical: boolean;
+  };
+  admin_financial_events: {
+    id: string;
+    product: string;
+    purchase_id: string;
+    provider_id: string | null;
+    mode: string;
+    currency: string;
+    kind: string;
+    amount: number;
+    occurred_at: Timestamp;
+    recorded_at: Timestamp;
+    historical: boolean;
+  };
+  admin_provider_attempts: {
+    product: string;
+    attempt_id: string;
+    request_id: string;
+    model: string;
+    stage: string;
+    status: string;
+    usage: NullableJson<JsonValue>;
+    created_at: Timestamp;
+  };
+  admin_provider_rates: {
+    version: string;
+    model: string;
+    currency: string;
+    effective_at: Timestamp;
+    input_micros: number;
+    cached_input_micros: number;
+    output_micros: number;
+    call_micros: number;
+  };
   admin_library_publications: { library: string; version_id: string; day: string };
   account_activity_days: { account_id: string; day: string; kind: 'guest' | 'registered' };
+  admin_metric_sources: {
+    product: string;
+    source_id: string;
+    created_at: Timestamp;
+    status: string;
+    duration_seconds: number | null;
+  };
   admin_daily_metrics: { day: string; metric: string; dimension: string; value: number };
   admin_metric_coverage: { metric: string; since: string; historical_incomplete: boolean };
   admin_analytics_settings: { id: boolean; collection: boolean; started_at: Timestamp };

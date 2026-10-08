@@ -245,6 +245,27 @@ export async function authenticate(
 }
 
 export const authenticatedAccounts = new WeakMap<FastifyRequest, Account>();
+const administrativeRequests = new WeakSet<FastifyRequest>();
+
+/** Staff endpoints also live outside /admin; guards identify them structurally.
+ * Ancillary reads from the dashboard (such as the session lookup) are polling,
+ * while the same staff account using the game still counts as account activity. */
+export function isAdministrativeRequest(identity: Identity, request: FastifyRequest): boolean {
+  if (administrativeRequests.has(request) || request.url.startsWith('/api/v1/admin/')) return true;
+  const account = authenticatedAccounts.get(request),
+    referer = request.headers.referer;
+  if (!account || !hasRole(account, 'moderator') || request.method !== 'GET' || !referer)
+    return false;
+  try {
+    const url = new URL(referer);
+    return (
+      identity.allowedOrigins.has(url.origin) &&
+      (url.pathname === '/admin' || url.pathname.startsWith('/admin/'))
+    );
+  } catch {
+    return false;
+  }
+}
 
 export async function requireAccount(identity: Identity, request: FastifyRequest) {
   const caller = await authenticate(identity, request);
@@ -255,5 +276,6 @@ export async function requireAccount(identity: Identity, request: FastifyRequest
 export async function requireRole(identity: Identity, request: FastifyRequest, role: Role) {
   const caller = await requireAccount(identity, request);
   if (!hasRole(caller.account, role)) throw apiError('forbidden', `Requires the ${role} role.`);
+  if (role !== 'user') administrativeRequests.add(request);
   return caller;
 }

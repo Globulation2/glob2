@@ -969,3 +969,29 @@ table.data th.num {
 .map-preview figcaption button {
   flex-shrink: 0;
 }
+
+/* Admin reporting keeps numeric units aligned and wide tables scrollable. */
+.admin-console table {
+  width: 100%;
+  border-collapse: collapse;
+}
+.admin-console caption {
+  text-align: left;
+  padding-bottom: var(--sp-2);
+}
+.admin-console th,
+.admin-console td {
+  padding: var(--sp-2) var(--sp-3);
+  text-align: left;
+  vertical-align: top;
+  border-bottom: 1px solid var(--line);
+}
+.admin-console thead th {
+  background: var(--surface-2);
+  border-bottom: 2px solid var(--line-strong);
+}
+.admin-console .numeric {
+  text-align: right;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}

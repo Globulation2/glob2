@@ -4,59 +4,10 @@ import { LineChart } from '../components/LineChart.tsx';
 import { Loaded } from '../components/common.tsx';
 import { useLoad } from '../state.tsx';
 import { Link } from '../router.tsx';
-import { useAdminFilters } from './Moderation.tsx';
+import { useAdminFilters } from './filters.tsx';
 import { dateTime } from '../format.ts';
+import { downloadCsv, measureName, productName, completionStats } from './presentation.ts';
 
-export function downloadCsv(name: string, rows: readonly (readonly (string | number)[])[]) {
-  const csv = rows
-    .map((row) =>
-      row
-        .map(
-          (value) =>
-            '"' +
-            (typeof value === 'string'
-              ? value.replace(/^[=+@-]/, "'$&")
-              : String(value)
-            ).replaceAll('"', '""') +
-            '"',
-        )
-        .join(','),
-    )
-    .join('\r\n');
-  const url = URL.createObjectURL(new Blob([csv], { type: 'text/csv;charset=utf-8' })),
-    a = document.createElement('a');
-  a.href = url;
-  a.download = name;
-  a.click();
-  URL.revokeObjectURL(url);
-}
-function measureName(metric: string, dimension: string) {
-  const products: Record<string, string> = {
-    maps: 'Map Studio',
-    music: 'Music Studio',
-    terrain: 'Terrain Studio',
-    buildings: 'Building Studio',
-    aiStudio: 'AI Studio',
-    hive: 'Hive',
-    engine: 'Engine jobs',
-    ais: 'AIs',
-    sets: 'Terrain/resource sets',
-    skins: 'Skins',
-  };
-  if (metric === 'accounts.created')
-    return dimension === 'guest' ? 'Guest accounts created' : 'Registered signups';
-  if (metric === 'activity')
-    return dimension === 'guest' ? 'Guest active accounts' : 'Registered active accounts';
-  if (metric.startsWith('matches.')) return 'Matches ' + metric.slice(8);
-  if (metric === 'library.published') return (products[dimension] ?? dimension) + ' publications';
-  if (metric === 'library.downloads')
-    return (products[dimension] ?? dimension) + ' recorded downloads';
-  if (metric.startsWith('status.'))
-    return (products[metric.slice(7)] ?? metric.slice(7)) + ' · ' + dimension;
-  if (metric.startsWith('duration.'))
-    return (products[metric.slice(9)] ?? metric.slice(9)) + ' completion ' + dimension;
-  return metric + ' ' + dimension;
-}
 export function Overview() {
   const { values, set } = useAdminFilters({ days: '30' });
   const load = useLoad(
@@ -88,7 +39,18 @@ export function Overview() {
           const start = new Date(data.generatedAt);
           start.setUTCDate(start.getUTCDate() - data.days + 1);
           const cutoff = start.toISOString().slice(0, 10);
-          const keys = [...new Set(data.metrics.map((m) => m.metric + ' · ' + m.dimension))];
+          const today = data.generatedAt.slice(0, 10);
+          const xDomain = [
+            Date.parse(cutoff + 'T00:00:00Z'),
+            Date.parse(today + 'T00:00:00Z'),
+          ] as const;
+          const keys = [
+            ...new Set(
+              data.metrics
+                .filter((m) => !m.metric.startsWith('duration.'))
+                .map((m) => m.metric + ' · ' + m.dimension),
+            ),
+          ];
           const current = data.metrics.filter((m) => m.day >= cutoff),
             previous = data.metrics.filter((m) => m.day < cutoff);
           return (
@@ -96,6 +58,11 @@ export function Overview() {
               <p>
                 Updated {dateTime(data.generatedAt)} · UTC days ·{' '}
                 {data.collection ? 'Collection enabled' : 'Collection disabled'}
+              </p>
+              <p className="notice">
+                Reporting range: {cutoff} through {today} (UTC). Today is still in progress; the
+                previous {data.days} days are complete calendar days. History may be incomplete;
+                comparisons use recorded observations only.
               </p>
               <div
                 style={{
@@ -155,11 +122,22 @@ export function Overview() {
                 uncertain requests · {data.attention['failedJobs'] ?? 0} failed engine jobs
               </p>
               <h3>Activity trends</h3>
+              <p>
+                Each point is a recorded UTC day. Gaps have no recorded measurement and are not
+                interpolated or treated as zero. Hover or touch a point for its value; the daily
+                table below provides the same values.
+              </p>
               <LineChart
-                title="Daily account activity"
+                title="Daily active accounts"
+                xDomain={xDomain}
+                maxGap={86400000}
+                dots
+                xLabel="UTC day"
+                yLabel="Accounts per day"
                 series={['guest', 'registered'].map((kind, i) => ({
                   name: kind === 'guest' ? 'Guest accounts' : 'Registered accounts',
-                  color: i ? '#41ad83' : '#6d9ee8',
+                  color: i ? 'var(--success)' : 'var(--gold-ink)',
+                  dashed: kind === 'guest',
                   points: current
                     .filter((m) => m.metric === 'activity' && m.dimension === kind)
                     .map((m) => ({ x: Date.parse(m.day + 'T00:00:00Z'), y: m.value })),
@@ -168,35 +146,73 @@ export function Overview() {
               />
               <LineChart
                 title="Match activity"
+                xDomain={xDomain}
+                maxGap={86400000}
+                dots
+                xLabel="UTC day"
+                yLabel="Matches per day"
                 series={['started', 'completed', 'cancelled'].map((kind, i) => ({
-                  name: kind,
-                  color: ['#41ad83', '#6d9ee8', '#e2a76b'][i] ?? '#41ad83',
+                  name: kind[0]?.toUpperCase() + kind.slice(1),
+                  dashed: kind === 'cancelled',
+                  color: ['var(--success)', 'var(--ink)', 'var(--warn)'][i] ?? 'var(--ink)',
                   points: current
                     .filter((m) => m.metric === 'matches.' + kind)
                     .map((m) => ({ x: Date.parse(m.day + 'T00:00:00Z'), y: m.value })),
                 }))}
                 xFormat={(x) => new Date(x).toISOString().slice(5, 10)}
               />
-              <h3>Average completion time</h3>
-              {[
-                ...new Set(
-                  current.filter((m) => m.metric.startsWith('duration.')).map((m) => m.metric),
-                ),
-              ].map((metric) => {
-                const seconds = current
-                    .filter((m) => m.metric === metric && m.dimension === 'seconds')
-                    .reduce((n, m) => n + m.value, 0),
-                  samples = current
-                    .filter((m) => m.metric === metric && m.dimension === 'samples')
-                    .reduce((n, m) => n + m.value, 0);
-                return (
-                  <p key={metric}>
-                    {measureName(metric, '').replace(' completion ', '')}:{' '}
-                    {samples ? Math.round(seconds / samples) + ' seconds' : 'Unavailable'} ·{' '}
-                    {samples} completed requests/jobs
-                  </p>
-                );
-              })}
+              <h3>Average successful completion time</h3>
+              <p>
+                Measured from creation to completion, grouped by request creation day. Only
+                successful requests/jobs with a known completion time contribute; late completions
+                update their original period.
+              </p>
+              <div
+                tabIndex={0}
+                role="region"
+                aria-label="Completion time comparison table"
+                style={{ overflowX: 'auto' }}
+              >
+                <table>
+                  <caption>
+                    Mean seconds per successful delivery, with the number of measured completions.
+                  </caption>
+                  <thead>
+                    <tr>
+                      <th>Product</th>
+                      <th className="numeric">Current mean</th>
+                      <th className="numeric">Current samples</th>
+                      <th className="numeric">Previous mean</th>
+                      <th className="numeric">Previous samples</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {[
+                      ...new Set(
+                        data.metrics
+                          .filter((m) => m.metric.startsWith('duration.'))
+                          .map((m) => m.metric),
+                      ),
+                    ].map((metric) => {
+                      const a = completionStats(current, metric),
+                        b = completionStats(previous, metric);
+                      const meanText = (mean: number | null) =>
+                        mean === null
+                          ? 'Unavailable'
+                          : mean.toLocaleString(undefined, { maximumFractionDigits: 1 }) + ' s';
+                      return (
+                        <tr key={metric}>
+                          <th>{productName(metric.slice(9))}</th>
+                          <td className="numeric">{meanText(a.mean)}</td>
+                          <td className="numeric">{a.samples}</td>
+                          <td className="numeric">{meanText(b.mean)}</td>
+                          <td className="numeric">{b.samples}</td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              </div>
               <button
                 onClick={() =>
                   downloadCsv('glob2-activity.csv', [
@@ -205,7 +221,7 @@ export function Overview() {
                   ])
                 }
               >
-                Export CSV
+                Export activity CSV
               </button>
               <div
                 tabIndex={0}
@@ -215,16 +231,17 @@ export function Overview() {
               >
                 <table>
                   <caption>
-                    Current {data.days} days and previous {data.days} days. Studio/job statuses use
-                    request creation dates. Publications count versions; recorded downloads use each
-                    library’s existing counting rules.
+                    Current {data.days} days and previous {data.days} days. Activity totals count
+                    account-days; the active-account cards count distinct accounts. Studio/job
+                    statuses use request creation dates. Publications count versions; recorded
+                    downloads use each library’s existing counting rules.
                   </caption>
                   <thead>
                     <tr>
                       <th>Measure</th>
-                      <th>Current</th>
-                      <th>Previous</th>
-                      <th>Change</th>
+                      <th className="numeric">Current recorded</th>
+                      <th className="numeric">Previous recorded</th>
+                      <th className="numeric">Change</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -240,9 +257,9 @@ export function Overview() {
                           <th>
                             {measureName(key.split(' · ')[0] ?? key, key.split(' · ')[1] ?? '')}
                           </th>
-                          <td>{a.toLocaleString()}</td>
-                          <td>{b.toLocaleString()}</td>
-                          <td>{(a - b).toLocaleString()}</td>
+                          <td className="numeric">{a.toLocaleString()}</td>
+                          <td className="numeric">{b.toLocaleString()}</td>
+                          <td className="numeric">{(a - b).toLocaleString()}</td>
                         </tr>
                       );
                     })}
@@ -263,7 +280,7 @@ export function Overview() {
                         <th>UTC day</th>
                         <th>Metric</th>
                         <th>Dimension</th>
-                        <th>Value</th>
+                        <th className="numeric">Value</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -272,14 +289,18 @@ export function Overview() {
                           <td>{m.day}</td>
                           <td>{measureName(m.metric, m.dimension)}</td>
                           <td>{m.dimension}</td>
-                          <td>{m.value.toLocaleString()}</td>
+                          <td className="numeric">{m.value.toLocaleString()}</td>
                         </tr>
                       ))}
                     </tbody>
                   </table>
                 </div>
               </details>
-              <h3>Top library content by recorded downloads</h3>
+              <h3>Top library content by lifetime recorded downloads</h3>
+              <p>
+                All-time library totals; this ranking does not change with the selected reporting
+                range. Counts follow each library’s rules and do not represent unique people.
+              </p>
               {data.topContent.map((c) => (
                 <p key={c.library + c.id}>
                   <Link to={c.href}>{c.name}</Link> · {c.library} · {c.downloads ?? 'Unavailable'}{' '}
