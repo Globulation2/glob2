@@ -27,3 +27,5 @@ The archive preserves paths relative to the project root. Extract into a separat
 - No human gameplay review was performed in this session. The user requested merge; automated checks do not establish pacing or visual feel.
 
 `performance.tar.gz` contains the completed raw runs, exact invocations, source/instrumentation identities, reservation/governor audits, summaries and chart. `fixtures.tar.gz` contains the three reproducible saves. Their manifests and `SHA256SUMS` identify every artifact. See [performance tables](performance-tables.md). Candidate benchmark runtime is 0a7ffde9; final e8e6320bf adds only a phone-editor snapshot read and documentation, outside measured paths.
+
+Final fetch: master 07611c196 contains two further test-only fixes after a0a59e4a6. Merge-tree is clean (0fac89ef3cac394ed6f6efb0e341e173d59d59c5). The two updated Maxima contract modules pass 22 tests against the candidate with `PYTHONPATH=src/ai/maxima python3 -m unittest <module-path>`. The scheduler test-only timing fix was inspected, not rebuilt. No production code changed in these two master commits.
