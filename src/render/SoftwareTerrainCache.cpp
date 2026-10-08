@@ -6,6 +6,7 @@
 #include <PerformanceTelemetry.h>
 #include <algorithm>
 #include <cmath>
+#include <optional>
 #include <stdexcept>
 namespace
 {
@@ -379,6 +380,32 @@ bool SoftwareTerrainCache::prepareAtResolution(const SceneMap &map, GAGCore::Spr
 								 std::none_of(tiles[i].recipe.corners.begin(),
 											  tiles[i].recipe.corners.end(), materialChanged)))
 								continue;
+							auto &held = entry->masks[i];
+							const auto &recipe = tiles[i].recipe;
+							const int maskScale = downsample > 1 ? 1 : resolution;
+							if (held && (!tiles[i].discovered || held->mask.recipe != recipe ||
+										 held->mask.scale != maskScale))
+								held.reset();
+							std::optional<TerrainVisual::Compositor::CellMask> passing;
+							const TerrainVisual::Compositor::CellMask *cellMask =
+								held ? &held->mask : nullptr;
+							const auto &corners = recipe.corners;
+							if (tiles[i].discovered && !cellMask &&
+								std::any_of(corners.begin(), corners.end(),
+											[&](auto id) { return id != corners[0]; }) &&
+								std::any_of(corners.begin(), corners.end(),
+											[&](auto id) { return compositor.animated(id); }))
+							{
+								passing = compositor.mask(recipe, maskScale);
+								if (*maskTotal + passing->bytes() <= (gpu ? GPUMaskBudget : MaskBudget))
+								{
+									held = std::make_unique<HeldMask>(std::move(*passing), maskTotal);
+									passing.reset();
+									cellMask = &held->mask;
+								}
+								else
+									cellMask = &*passing;
+							}
 							if (tiles[i].discovered)
 							{
 								if (downsample > 1)
@@ -391,12 +418,12 @@ bool SoftwareTerrainCache::prepareAtResolution(const SceneMap &map, GAGCore::Spr
 										if (!scratch)
 											throw std::bad_alloc();
 									}
-									compositor.compose(tiles[i].recipe, scratch.get(), 0, 0, 1);
+									compositor.compose(recipe, scratch.get(), 0, 0, 1, cellMask);
 									reduceTile(scratch.get(), target, x * n, y * n, downsample);
 								}
 								else
-									compositor.compose(tiles[i].recipe, target, x * n, y * n,
-													   resolution);
+									compositor.compose(recipe, target, x * n, y * n, resolution,
+													   cellMask);
 							}
 							else
 							{

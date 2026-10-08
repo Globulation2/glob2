@@ -33,6 +33,8 @@ Each material supplies:
 - `profile`, the key of its boundary family, and `preview`, three overview RGB channels;
 - optional `minimap` RGB channels for minimaps and thumbnails (defaults to `preview`);
 - optional `animation_frames`, `animation_ticks`, and `animation_stride`;
+- optional `edges` (`blend` or `periodic`, see [Periodic edges](#periodic-edges))
+  and `variant_grid`, see [Positional variants](#positional-variants);
 - optional `seam` (version 3) with `height`, `cast_q8`, `cast_width_q8`, `fringe`,
   `fringe_q8` and `fringe_width_q8`, see [Seams](#seams).
 
@@ -98,6 +100,8 @@ For animation, a variant's effective frame is `frame + phase * animation_stride`
 `animation_frames` is 1–256, `animation_ticks` is a positive integer duration in the
 renderer's animation clock, and the stride must be positive when there is more
 than one phase. Every effective frame must exist and remain below 65536.
+All cells of a material share the phase, so a texture that moves must move the
+same way in every variant.
 
 ## Material production
 
@@ -242,13 +246,37 @@ Lava and ember field are animated: four phases per variant, frame
 `animation_stride 16` and `animation_ticks 8`. The crust layout is shared by the
 phases; only the glow ramp moves.
 
+### Positional variants
+
+`"variant_grid": G` (a power of two up to 16, with `"edges": "periodic"` and
+exactly G×G variants) picks a cell's variant from its position instead of the
+hash: cell (x, y) shows variant `(y mod G) * G + (x mod G)`. The variants are
+then one periodic block G cells across that repeats over the map; map sizes are
+powers of two, so the block also wraps across the torus seams. The map seed does
+not move the block. Each variant only ever meets its block neighbours, so its
+edges continue theirs rather than a shared band, and the border blend is skipped
+as for periodic edges. Use it for a field that must be larger than one cell, such
+as travelling waves. Map artwork bundles do not accept the key, so maps that
+carry custom art still load in older clients.
+
 Regular water (`terrain_synth.py` recipe `water`, sprite `data/gfx/terrain-water`)
-keeps the violet-blue of the retired scrolling ocean image (about (69, 52, 200)):
-gentle swells carry two Worley ripple networks that cross-fade over four phases
-(`animation_ticks 24`), so glints rise and fade rather than the whole surface
-sliding. Deep water uses the same loop in a darker value; dark water is static.
-Both are opaque and blend with regular water through the ordinary soft profile.
+keeps the violet-blue of the retired scrolling ocean image (about (69, 52, 200)).
+Water and deep water are `variant_grid 4` materials with sixteen phases
+(`animation_ticks 6`, the same 96-tick loop as the four-phase water before). The
+recipe renders one 512×512 periodic block, a sum of plane waves whose wave
+numbers are whole cycles per block and whose phases advance a whole number of
+cycles per loop, and slices it into the sixteen variants. Every cell animates
+locally on the shared clock and the field is continuous across all cell edges,
+so the swell's crests roll toward the lower right across open water, and finer
+cross chop breaks them into moving glints. Deep water reads the same field in a
+darker value with less chop, so crests carry on across the shallow/deep blend.
+The visible pattern repeats every four cells instead of every cell. Dark water
+is static. All three are opaque and blend through the ordinary soft profile.
 Marsh pools are opaque too.
+
+Each sixteen-phase material is 256 native and 256 HD frames. A material whose
+phase changes every few ticks also recomposes the terrain pages that show it at
+that rate, so check the terrain cache cost when adding faster or wider animation.
 
 `--check` re-synthesises every material and compares the pixel hashes with the
 committed PNGs and with `provenance.json`; it also requires the recorded

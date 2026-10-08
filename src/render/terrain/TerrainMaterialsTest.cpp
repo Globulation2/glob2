@@ -683,6 +683,36 @@ TEST_SUITE("TerrainMaterials")
 		}
 	}
 
+	TEST_CASE("grid variants repeat one positional block independent of the map seed")
+	{
+		glob2test::HeadlessGlobals globals;
+		const auto c = catalog();
+		const auto water = c.find("water");
+		REQUIRE(c.materials[water].variantGrid == 4);
+		for (std::uint32_t seed : {0u, 1u, 0xdeadbeefu})
+			for (int y = -4; y < 12; ++y)
+				for (int x = -4; x < 12; ++x)
+				{
+					INFO(seed << " " << x << " " << y);
+					CHECK(c.variantIndex(water, x, y, seed) == unsigned((y & 3) * 4 + (x & 3)));
+				}
+
+		std::ifstream input(glob2test::sourceRoot() / "data/terrain/tileset.json");
+		const auto j = nlohmann::json::parse(input);
+		std::size_t index = 0;
+		while (j["materials"][index]["key"] != "water")
+			++index;
+		auto invalid = j;
+		invalid["materials"][index]["variant_grid"] = 3;
+		CHECK_THROWS(TerrainVisual::Catalog::parse(invalid));
+		invalid = j;
+		invalid["materials"][index]["variant_grid"] = 8; // 16 variants, not 64.
+		CHECK_THROWS(TerrainVisual::Catalog::parse(invalid));
+		invalid = j;
+		invalid["materials"][index].erase("edges");
+		CHECK_THROWS(TerrainVisual::Catalog::parse(invalid));
+	}
+
 	TEST_CASE("catalog rejects corrupt references and grows independently of gameplay IDs")
 	{
 		glob2test::HeadlessGlobals globals;
