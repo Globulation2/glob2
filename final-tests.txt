@@ -1,0 +1,7 @@
+TerrainMaterials/*: 21 passed, 0 failed, 0 skipped (39.9s of test time) 
+SoftwareRenderer/*: 11 passed, 0 failed, 0 skipped (15.1s of test time) 
+TerrainPresentation/*: 18 passed, 0 failed, 0 skipped (118.8s of test time) 
+TerrainValidation/*: 3 passed, 0 failed, 0 skipped (22.2s of test time) 
+TerrainRegistry/*: 1 passed, 0 failed, 0 skipped (7.4s of test time) 
+MapTiling/*: 7 passed, 0 failed, 0 skipped (3.8s of test time) 
+HighResolutionIntegration/*: 2 passed, 0 failed, 0 skipped (57.0s of test time) 
