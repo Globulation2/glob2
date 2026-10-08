@@ -162,7 +162,7 @@ TEST_CASE("deferred batches complete with lanes and isolated errors")
 		// Every deferred job so far has been joined and counted once.
 		CHECK(executor.metrics().deferredBatches == 12 + 120); CHECK(executor.metrics().deferredJobs == 30 + 120);
 		CHECK(executor.metrics().ownerJobs + executor.metrics().workerJobs == 30 + 120);
-		CHECK(executor.metrics().ownerJobs == (threads == 1 ? 30u + 120u : 0u));
+		CHECK(executor.metrics().ownerJobs == (executor.threadCount() == 1 ? 30u + 120u : 0u));
 		// Empty submissions are empty batches; reconfiguration joins live work
 		// and starts the metrics over.
 		CHECK(executor.submit({}).empty());
