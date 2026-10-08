@@ -1,0 +1,12 @@
+dense 0 d1t1 wall=0.386s cpu=0.385s
+dense 0 d1t2 wall=0.349s cpu=0.371s
+dense 0 d1t4 wall=0.332s cpu=0.392s
+dense 0 d1t8 wall=0.383s cpu=0.460s
+dense 0 d3t1 wall=0.363s cpu=0.363s
+dense 0 d3t2 wall=0.345s cpu=0.364s
+dense 0 d3t4 wall=0.323s cpu=0.392s
+dense 0 d3t8 wall=0.328s cpu=0.426s
+dense 0 d8t1 wall=0.443s cpu=0.440s
+dense 0 d8t2 wall=0.374s cpu=0.380s
+dense 0 d8t4 wall=0.352s cpu=0.396s
+dense 0 d8t8 wall=0.336s cpu=0.417s

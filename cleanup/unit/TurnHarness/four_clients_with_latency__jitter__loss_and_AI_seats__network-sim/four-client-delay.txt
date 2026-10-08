@@ -1,0 +1,5 @@
+client one_way_ms jitter_ms loss target_ticks measured_jitter_ms rtt_ms mean_input_delay_ms orders
+0 15 0 0 0 0 30 80 74
+1 60 80 0 3 70 220 361.75 80
+2 120 20 0.03 6 135 265 555.959 73
+3 40 10 0.01 5 80 95 330.211 71

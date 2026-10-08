@@ -1,0 +1,22 @@
+{
+  "command": [
+    "python3",
+    "test/benchmark_resource_growth.py",
+    "build/linux/client/release/src/glob2",
+    "artifacts/resource-growth/cleanup/runner-smoke-manifest.json",
+    "--output",
+    "artifacts/resource-growth/cleanup/runner-smoke",
+    "--delays",
+    "1",
+    "3",
+    "8",
+    "--threads",
+    "1",
+    "2",
+    "4",
+    "8",
+    "--verify"
+  ],
+  "exit_code": 0,
+  "cases": 12
+}

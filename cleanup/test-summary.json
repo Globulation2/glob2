@@ -1,0 +1,22 @@
+{
+  "engine": {
+    "passed": 602,
+    "failed": [],
+    "skipped": 45
+  },
+  "golden": {
+    "passed": 13,
+    "failed": [],
+    "skipped": 0
+  },
+  "unit": {
+    "passed": 889,
+    "failed": [
+      [
+        "ImageAssets",
+        "16-bit RGBA rounds normalized channels to the exporter reference"
+      ]
+    ],
+    "skipped": 20
+  }
+}

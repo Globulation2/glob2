@@ -1,0 +1,19 @@
+{
+  "revision": "7d35a0c812eb3be783e340c292e548969fa23cff",
+  "dirty": false,
+  "platform": "Linux-7.0.0-31-generic-x86_64-with-glibc2.43",
+  "parallelAI": false,
+  "binarySha256": "7f90aff7cd36ebb3ad2eb08b5788b9e006df48c4bedd0e4a2528cf486dab8027",
+  "fixtureHashes": {
+    "games/gd-large-4ai.game.gz": "e2b1ba36d6ab0a2f6c3c4aebd7178a6df5f39f39fb1100fb52bd18e8f9f73d11",
+    "test/fixtures/scoped-gradients/gd-large-4ai-1024.resources.checksums.gz": "73702b0835c4466d0a805f34936cc8585171b887bdfe848059329854e8c537cc",
+    "games/gd-bigarena-long.game.gz": "542c151e914440c4d501ca7019888103a1c52dd98f522a0837412fc00ae9bedf",
+    "test/fixtures/scoped-gradients/gd-bigarena-2048.resources.checksums.gz": "40cb3ace975e4aeea6cc29ca2dbbcef2b1a6d28d1af214e4c1861db330c80ddc",
+    "test/fixtures/ai-random-streams/numbi-castor-v121.game.gz": "5c80f02ec6b37b2b8b49e181366949bd1f0812039a53fbbe9f755f1e32659307",
+    "test/fixtures/scoped-gradients/numbi-castor-2048.resources.checksums.gz": "ecf60f03ed26424f4e86238ec3acc425602a14aac623c2af053894632561cde0",
+    "test/fixtures/team-stats/telemetry-expansion-validation/checkpoint-1024-v108.game.gz": "eeefbbe29f3b8e08a1b15fed408378530bf963858d970706091e85cd33aab4f4",
+    "test/fixtures/scoped-gradients/v108-reload-256.resources.checksums.gz": "205fb2ae0271b6f11537e7634a917f8b1f390fd97b7dc61dbfa14d8992953f4c"
+  },
+  "updatedFixtures": false,
+  "checksumCoverage": "Complete checksum sidecars, including aggregate, for all legacy fresh loads and the retained v108 checkpoint."
+}

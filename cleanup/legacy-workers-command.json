@@ -1,0 +1,14 @@
+{
+  "cwd": "/home/bradley/.codex/worktrees/114f19f3-7248-4ab6-a516-3ff0849d0a96/glob2",
+  "command": [
+    "python3",
+    "test/check_telemetry_simulation.py",
+    "/home/bradley/.codex/worktrees/114f19f3-7248-4ab6-a516-3ff0849d0a96/glob2/build/linux/client/release/src/glob2",
+    "--output",
+    "/home/bradley/.codex/worktrees/114f19f3-7248-4ab6-a516-3ff0849d0a96/glob2/artifacts/resource-growth/cleanup/legacy-workers",
+    "--parallel-ai"
+  ],
+  "environment": {
+    "LD_LIBRARY_PATH": "/tmp/glob2-sdl3/prefix/lib"
+  }
+}

@@ -1,0 +1,30 @@
+[
+  {
+    "name": "engine",
+    "exit_code": 0
+  },
+  {
+    "name": "golden",
+    "exit_code": 0
+  },
+  {
+    "name": "unit",
+    "exit_code": 1
+  },
+  {
+    "name": "legacy-zero-workers",
+    "exit_code": 0
+  },
+  {
+    "name": "legacy-workers",
+    "exit_code": 0
+  },
+  {
+    "name": "sim-version",
+    "exit_code": 0
+  },
+  {
+    "name": "removed-option",
+    "exit_code": 2
+  }
+]

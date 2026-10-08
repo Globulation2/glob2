@@ -1,0 +1,5 @@
+Traceback (most recent call last):
+  File "/home/bradley/.codex/worktrees/114f19f3-7248-4ab6-a516-3ff0849d0a96/glob2/docs/.work/verify-growth-cleanup.py", line 8, in <module>
+    if any('scons: building terminated because of errors.' in l.lower() for l in lines):raise RuntimeError('Build failed')
+                                                                                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: Build failed

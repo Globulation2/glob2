@@ -1,0 +1,14 @@
+[
+  {
+    "finished": false,
+    "launched": false,
+    "name": "Host",
+    "stopped": false
+  },
+  {
+    "finished": false,
+    "launched": false,
+    "name": "Crashed guest",
+    "stopped": false
+  }
+]

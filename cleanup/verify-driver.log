@@ -1,0 +1,24 @@
+engine 0
+golden 0
+unit 1
+legacy-zero-workers 0
+legacy-workers 0
+sim-version 0
+dense 1 matches pre-cleanup
+dense 4 matches pre-cleanup
+multi 1 matches pre-cleanup
+multi 4 matches pre-cleanup
+ai512 1 matches pre-cleanup
+ai512 4 matches pre-cleanup
+disabled512 1 matches pre-cleanup
+disabled512 4 matches pre-cleanup
+sparse 1 matches pre-cleanup
+sparse 4 matches pre-cleanup
+saturated 1 matches pre-cleanup
+saturated 4 matches pre-cleanup
+harvested 1 matches pre-cleanup
+harvested 4 matches pre-cleanup
+fragmented 1 matches pre-cleanup
+fragmented 4 matches pre-cleanup
+removed-option 2
+continuation comparisons complete

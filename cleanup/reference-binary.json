@@ -1,0 +1,5 @@
+{
+  "revision": "61b6ff7402d986ed364ac4484a97090d482c7a14",
+  "sha256": "0a866337798ccfc5a5ddf906050419f34ea546d4e4ed10c684d11f12f62e7da9",
+  "purpose": "Regenerate legacy-load SIM34 references using the pre-cleanup binary, then verify cleanup against these unchanged outcomes."
+}
