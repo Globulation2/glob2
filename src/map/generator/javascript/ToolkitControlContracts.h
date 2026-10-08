@@ -16,7 +16,12 @@ inline void prepareGeneratorControl(Binding &e, const GeneratorControl &control)
 									 (std::int64_t(c.maximum) - c.minimum) / c.step + 1 > 4096)) ||
 		c.allowedValues.size() > 4096 || c.valueLabels.size() > 256)
 		throw TypeMismatch("Invalid or unbounded generator control domain");
-	e.chargeNative(4096 + c.allowedValues.size() + c.valueLabels.size());
+	// Both the precheck and requested method can scan legal grids and binary-search
+	// each member. Reserve their bounded worst case before any native allocation.
+	e.chargeNative(64 * 4096 + c.allowedValues.size() + c.valueLabels.size());
+	// Two validations can each create three grids; allow geometric vector growth
+	// in the cumulative allocation envelope, including grids freed during the call.
+	e.allocate(12 * 4096 * sizeof(int));
 	if (!c.allowedValues.empty() &&
 		(c.allowedValues.front() != c.minimum || c.allowedValues.back() != c.maximum ||
 		 !std::is_sorted(c.allowedValues.begin(), c.allowedValues.end()) ||
@@ -42,8 +47,6 @@ inline void prepareGeneratorControl(Binding &e, const GeneratorControl &control)
 	}
 	if (c.normalize(c.defaultValue) != c.defaultValue)
 		throw TypeMismatch("Invalid generator control default");
-	// values()/searchValues()/validSearchDomain() allocate bounded temporary grids.
-	e.allocate(3 * 4096 * sizeof(int));
 	// A partially constructed control can omit its search declaration. When
 	// supplied, both bounded alternatives must satisfy the native legal domain.
 	if (c.searchRange || c.searchAllowedValues)
