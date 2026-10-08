@@ -56,7 +56,7 @@ BuildingGradientStats::Context BuildingGradientStats::context(const Building &bu
 	const Uint16 hint = building.settledCostHint[slot];
 	value.previousHint = hint == Building::UNKNOWN_SETTLED_COST ? -1 : hint;
 	if (const auto &search = building.globalGradientSearch[slot])
-		value.servingSettled = search->settledCost();
+		value.servingSettled = search->requiredCost();
 	if (const BuildingType *type = building.type)
 	{
 		value.level = std::int16_t(type->level);

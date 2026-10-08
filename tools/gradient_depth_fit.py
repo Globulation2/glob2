@@ -8,8 +8,8 @@ moves CPU and never changes a result. Each gradient-stats.csv row ends one field
 lifetime, and its `prev_settled_cost` is the depth that lifetime actually needed.
 
 The model predicts a field's next depth from its own past depths, read when the
-refresh is staged: how deep the field still serving had been settled so far
-(`serving`), and the final depth of the lifetime it replaced (`hint`,
+refresh is staged: how deep readers of the field still serving required it
+(`serving`), and the final reader-required depth of the lifetime it replaced (`hint`,
 settledCostHint). With m the deeper of the two,
 
     D = offset + (slope256 * m) >> 8,  clamped to [MIN_DEPTH, MAX_DEPTH].
@@ -592,9 +592,9 @@ def emit_header(summary, provenance=()):
         f'inline constexpr int POINT_COUNT = {len(points)};',
         f'inline constexpr int DEFAULT_POINT = {default}; // {points[default]["name"]}',
         '',
-        '/// The cost to settle up front for a field whose serving search has settled',
-        '/// `serving` and whose last replaced lifetime settled `previous` (each -1 if',
-        '/// unknown). Without either, as after loading a save, only the seeds: the',
+        '/// The cost to settle up front from reader demand on the serving field',
+        '/// `serving` and its last replaced lifetime `previous` (each -1 if',
+        '/// unknown). Without either, as after loading a save, minimum depth lets the',
         '/// readers decide. Never affects results, only who pays.',
         'constexpr int target(int serving, int previous, int point = DEFAULT_POINT)',
         '{',

@@ -598,8 +598,8 @@ public:
 	//! supersession instead. refreshEpoch[slot] changes whenever the slot is
 	//! rebuilt synchronously or dropped, so an older pending result cannot
 	//! replace it; refreshRequested marks a queued or pending refresh of the
-	//! slot; settledCostHint is the cost its previous search had settled when it
-	//! was replaced (Map::predictBuildingDepth).
+	//! slot; settledCostHint is the previous search's reader-required cost
+	//! when it was replaced (Map::predictBuildingDepth).
 	Uint32 refreshEpoch[BUILDING_GRADIENT_COUNT] {};
 	std::bitset<BUILDING_GRADIENT_COUNT> refreshRequested;
 	static constexpr Uint16 UNKNOWN_SETTLED_COST = 0xFFFF;

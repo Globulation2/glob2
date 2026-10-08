@@ -8,8 +8,8 @@
 // and needs no SIM_REVISION bump.
 //
 // Fitted on 1472 games, 3408777 scheduled field lifetimes.
-// Default l0500 (lambda 0.5).
-// Default, held out by game: hit rate 0.8598, coverage 0.9117, extra CPU 1.1659, owner saving 0.9021.
+// Default l0100 (lambda 0.1).
+// Default, held out by game: hit rate 0.9686, coverage 0.9702, extra CPU 1.3641, owner saving 0.9415.
 #pragma once
 
 #include <string_view>
@@ -35,11 +35,11 @@ inline constexpr Point POINTS[] = {
 	{"l0500", 38, 257},
 };
 inline constexpr int POINT_COUNT = 4;
-inline constexpr int DEFAULT_POINT = 3; // l0500
+inline constexpr int DEFAULT_POINT = 0; // l0100
 
-/// The cost to settle up front for a field whose serving search has settled
-/// `serving` and whose last replaced lifetime settled `previous` (each -1 if
-/// unknown). Without either, as after loading a save, only the seeds: the
+/// The cost to settle up front from reader demand on the serving field
+/// `serving` and its last replaced lifetime `previous` (each -1 if
+/// unknown). Without either, as after loading a save, minimum depth lets the
 /// readers decide. Never affects results, only who pays.
 constexpr int target(int serving, int previous, int point = DEFAULT_POINT)
 {

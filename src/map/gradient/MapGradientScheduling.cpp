@@ -156,7 +156,7 @@ void Map::ensureBuildingGradientPipeline()
 		// partial field resumes from its own buckets with no rescan.
 		auto& search = b->globalGradientSearch[slot];
 		// The depth model reads the replaced lifetime; a locked one leaves the older value.
-		if (search) b->settledCostHint[slot] = Uint16(std::min(search->settledCost(), 0xFFFE));
+		if (search) b->settledCostHint[slot] = Uint16(std::min(search->requiredCost(), 0xFFFE));
 		recycleBuildingGradientSearch(std::move(search));
 		recycleBuildingGradientBuffer(b->globalGradient[slot]);
 		b->globalGradient[slot] = p.data.release();
@@ -265,10 +265,10 @@ int Map::predictBuildingDepth(const Building* building, int slot) const
 	case GradientRuntime::BuildingDepth::Table: break;
 	}
 	// The field's own past depths, as BuildingGradientStats records them when a
-	// job is staged: how deep the serving field has been settled so far, and
-	// how deep the lifetime it replaced settled.
+	// job is staged: how deep readers of the serving field have needed it so far, and
+	// the final reader demand of the lifetime it replaced.
 	int serving = -1;
-	if (const auto& search = building->globalGradientSearch[slot]) serving = search->settledCost();
+	if (const auto& search = building->globalGradientSearch[slot]) serving = search->requiredCost();
 	const Uint16 hint = building->settledCostHint[slot];
 	const int previous = hint == Building::UNKNOWN_SETTLED_COST ? -1 : hint;
 	return std::min(BuildingGradientDepth::target(serving, previous, gradientRuntime->buildingDepthPoint), COST_LIMIT);

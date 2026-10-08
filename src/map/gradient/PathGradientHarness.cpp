@@ -5,6 +5,7 @@
 #include "GlobalContainer.h"
 #include "Map.h"
 #include "BuildingGradientSearch.h"
+#include "BuildingGradientDepthPolicy.h"
 #include "GradientPipeline.h"
 #include "field/TerrainGradient.h"
 #include "field/TerrainTravel.h"
@@ -303,6 +304,76 @@ void analyticOracleCheck()
 
 TEST_SUITE("PathGradient")
 {
+TEST_CASE("building depth history follows readers rather than preparation [pathfinding]")
+{
+	const int side = 128;
+	std::vector<Uint16> terrain(side * side, 0), field(side * side, Unreached);
+	PathMap map(7, 7, terrain);
+	int serving = 301, previous = 301;
+	for (int lifetime = 0; lifetime < 40; ++lifetime)
+	{
+		std::fill(field.begin(), field.end(), Unreached);
+		field[0] = Goal;
+		BuildingGradientSearch search;
+		search.begin(map, field.data(), 0);
+		const int depth = BuildingGradientDepth::target(serving, previous);
+		search.resolveToCost(depth);
+		CHECK(search.requiredCost() == 0);
+		const auto prepared = search.poppedEntries();
+		const int cell = lifetime < 10 ? 30 : 5;
+		search.resolve(cell);
+		CHECK(field[cell] == Goal - cell * GRADIENT_STEP);
+		CHECK(search.poppedEntries() == prepared);
+		CHECK(search.requiredCost() == cell * GRADIENT_STEP + 1);
+		CHECK(depth == (lifetime < 12 ? 509 : 224));
+		previous = serving;
+		serving = search.requiredCost();
+		search.finish();
+		CHECK(search.requiredCost() == cell * GRADIENT_STEP + 1);
+		search.clearForReuse();
+		CHECK(search.requiredCost() == 0);
+	}
+	// Unreachable queries require exhaustion; seeded blocked/goal queries do not.
+	std::fill(field.begin(), field.end(), Blocked);
+	field[0] = Goal; field[30] = Unreached;
+	BuildingGradientSearch search;
+	search.begin(map, field.data(), 0);
+	search.resolveToCost(CostLimit);
+	search.resolve(0); search.resolve(1);
+	CHECK(search.requiredCost() == 0);
+	search.resolve(30);
+	CHECK(search.requiredCost() == search.settledCost());
+}
+
+TEST_CASE("reader depth agrees for lazy and fully prepared weighted fields [pathfinding]")
+{
+	std::mt19937 random(0xD3A4Du);
+	for (int swim = 0; swim < 7; ++swim)
+	{
+		std::vector<Uint16> terrain(4096), seeds(4096, Unreached);
+		for (size_t i = 0; i < seeds.size(); ++i)
+		{
+			terrain[i] = random() % 2 ? 256 : 0;
+			if (random() % 4 == 0) seeds[i] = Blocked;
+		}
+		seeds[0] = Goal;
+		PathMap map(6, 6, terrain);
+		auto lazyField = seeds, preparedField = seeds;
+		BuildingGradientSearch lazy, prepared;
+		lazy.begin(map, lazyField.data(), swim);
+		prepared.begin(map, preparedField.data(), swim);
+		prepared.resolveToCost(CostLimit);
+		CHECK(prepared.requiredCost() == 0);
+		for (size_t i = 0; i < seeds.size(); ++i)
+		{
+			const size_t cell = (i * 73 + 19) & (seeds.size() - 1);
+			lazy.resolve(cell); prepared.resolve(cell);
+			CHECK(lazyField[cell] == preparedField[cell]);
+			CHECK(lazy.requiredCost() == prepared.requiredCost());
+		}
+	}
+}
+
 TEST_CASE("immutable water snapshots share storage and retain their captured terrain [pathfinding]")
 {
 	std::vector<Uint16> terrain(16*16,0); terrain[0]=terrain[1]=terrain[16]=terrain[17]=256;

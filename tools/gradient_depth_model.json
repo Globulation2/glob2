@@ -2,7 +2,7 @@
  "version": 5,
  "games": 1472,
  "lifetimes": 3408777,
- "default": "l0500",
+ "default": "l0100",
  "points": [
   {
    "name": "l0100",
@@ -31,9 +31,9 @@
  ],
  "cross_validated": {
   "lifetimes": 3408777,
-  "hit_rate": 0.8598,
-  "query_weighted_coverage": 0.9117,
-  "extra_cpu": 1.1659,
-  "owner_saving": 0.9021
+  "hit_rate": 0.9686,
+  "query_weighted_coverage": 0.9702,
+  "extra_cpu": 1.3641,
+  "owner_saving": 0.9415
  }
 }

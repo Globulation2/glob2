@@ -47,7 +47,7 @@ class BuildingGradientStats
 		std::int8_t progress = -1; // delivered/needed material quartile 0..3 on sites
 		std::uint16_t units = 0, buildings = 0;
 		// The depth model's inputs: settledCostHint, the depth the last replaced
-		// lifetime settled, and the serving field's settled depth so far; -1 if
+		// lifetime's readers required, and the serving field's reader demand; -1 if
 		// unknown.
 		std::int32_t previousHint = -1, servingSettled = -1;
 	};
