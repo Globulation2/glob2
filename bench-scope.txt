@@ -1,0 +1,6 @@
+nomasks: draw mean_ms=4.0224 median_ms=0.6015 p95_ms=20.3400 cache_mean_ns=3440893.9083333365 cache_max_ns=49507167 
+masks: draw mean_ms=2.2543 median_ms=1.1401 p95_ms=8.8358 cache_mean_ns=1301229.2958333339 cache_max_ns=13508000 
+nomasks: draw mean_ms=3.9013 median_ms=0.5827 p95_ms=19.8672 cache_mean_ns=3355626.4791666651 cache_max_ns=71061458 
+masks: draw mean_ms=2.2751 median_ms=1.3413 p95_ms=7.8272 cache_mean_ns=1184228.0937499979 cache_max_ns=12154750 
+nomasks: draw mean_ms=3.8148 median_ms=0.5839 p95_ms=19.7883 cache_mean_ns=3263294.440625004 cache_max_ns=22187667 
+masks: draw mean_ms=2.4304 median_ms=1.3800 p95_ms=7.8100 cache_mean_ns=1206004.8510416676 cache_max_ns=58628625 
