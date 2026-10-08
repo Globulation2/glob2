@@ -1,0 +1,19 @@
+GLOB2_TEST_BUILD compiler=15.2.0 platform=Linux pointer_bits=64
+GLOB2_TEST_PROVENANCE {"compiler": "g++", "dirty": true, "flags": {"CCFLAGS": "", "CPPDEFINES": "GLOB2_OFFICIAL_INSTANCE_ORIGIN \\\"https://app.glob2online.com\\\" GLOB2_OFFICIAL_INSTANCE_FORMER_ORIGINS \\\"https://glob2online.com\\\" HAVE_CONFIG_H SDL_MAIN_HANDLED", "CXXFLAGS": "-g -std=gnu++20 -Wall -fPIC", "LINKFLAGS": "-g -Wl,-rpath,$ORIGIN/../lib/glob2 -Wall -Wl,-rpath,/home/bradley/.codex/worktrees/repair-tls-rejection-fixture/glob2/build/sdl3-ci/prefix/lib -Wl,--enable-new-dtags"}, "revision": "6facd0736860de067b78b0c5b27b5e3b2529658e", "sourceStatus": ["?? build-software-terrain/"], "sourceTreeSha256": "0642757e91fbd9f380d38ed96239d4576aeb3a12bb4f706ed2ece5863abc4e6c"}
+[doctest] doctest version is "2.4.11"
+[doctest] run with "--help" for options
+===============================================================================
+src/game/ExperimentalFeaturesTest.cpp:266:
+TEST SUITE: ExperimentalFeatures
+TEST CASE:  GameHeader carries the set in its full and player-less forms and a version 123 header reads none
+
+src/game/ExperimentalFeaturesTest.cpp:312: ERROR: CHECK( legacy->getPosition() == legacySize ) is NOT correct!
+  values: CHECK( 1397 == 1401 )
+
+src/game/ExperimentalFeaturesTest.cpp:312: ERROR: CHECK( legacy->getPosition() == legacySize ) is NOT correct!
+  values: CHECK( 131 == 135 )
+
+===============================================================================
+[doctest] test cases:  1 |  0 passed | 1 failed | 901 skipped
+[doctest] assertions: 21 | 19 passed | 2 failed |
+[doctest] Status: FAILURE!
