@@ -746,6 +746,30 @@ continue a save unchanged builds the setup with `fromGameHeader` from the save's
 header. If the seed equals the saved one, the saved random state is kept; otherwise
 the simulation is reseeded.
 
+### Shared scripted generator sources
+
+Schema 1 also accepts `map.kind = "scripted"`. It carries the resulting ordinary map's
+`hash`, the worker's `chosenSeed`, and a separate `ScriptGeneratorDescriptor`: immutable
+`libraryId`/`versionId`, `fileHash`/`packageHash`, namespaced `generatorId`/`revision`,
+requested `seed`, complete `params`, `candidates`, and `startingUnitLevel = 0`.
+The native generator descriptor remains unchanged. The scripted descriptor's `teams`
+must match the setup teams. Clients load the resulting map by hash; joining a match
+never executes or requires installing the package.
+
+Clients advertise `client.generatorSharing = true` in `hello`. Creating, joining or
+reconnecting to a scripted room or match requires this support; older clients
+receive an update-required response before a scripted contract is delivered. Hosts pin an
+exact release, and the platform checks visibility, moderation, playable status and
+validation for the room's exact simulation version on selection and before starting.
+Changing settings clears readiness and starts or reuses generation for the complete
+request. Pending results apply only to the currently selected generation job.
+
+Generated maps and previews use existing room/match access checks, including cache
+hits. Match history retains the release descriptor and chosen seed, and blob cleanup
+retains packages referenced by match setups after catalogue deletion. See the
+[JavaScript generator guide](../map-generators/JAVASCRIPT.md) for publication and
+validation coverage.
+
 ### Simulation version
 
 A sim version identifies builds that produce identical games. Its JSON form is

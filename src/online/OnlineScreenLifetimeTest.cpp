@@ -15,6 +15,10 @@
 #include "OnlineFakes.h"
 #include "OnlineHubScreen.h"
 #include "OnlineMapsScreen.h"
+#include "OnlineGeneratorsScreen.h"
+#include "GeneratorControls.h"
+#include "OnlineHandoff.h"
+#include "SimVersion.h"
 #include "OnlineProfileScreen.h"
 #include "OnlineServices.h"
 #include "PlatformClient.h"
@@ -111,6 +115,84 @@ void closeInFlight(ScriptedPlatform &platform, const std::string &name,
 
 TEST_SUITE("OnlineScreenLifetime")
 {
+	TEST_CASE("generator examples with omitted controls use engine defaults when selecting a room")
+	{
+		glob2test::HeadlessGlobals globals({.loadStrings = true});
+		ScriptedPlatform platform;
+		GAGGUI::ScreenStack stack(*globalContainer->gfx);
+		OnlineGeneratorsScreen screen(stack);
+		const auto previous = Online::takePendingRoomMap();
+		screen.detail = Json{
+			{"generator", {{"id", "11111111-1111-4111-8111-111111111111"}, {"name", "Example"}}},
+			{"versions",
+			 Json::array(
+				 {Json{{"id", "22222222-2222-4222-8222-222222222222"},
+					   {"hash", std::string(64, 'a')},
+					   {"packageHash", std::string(64, 'a')},
+					   {"example",
+						{{"seed", 19},
+						 {"params", {{"workers", 3}}},
+						 {"candidates", 1},
+						 {"startingUnitLevel", 0}}},
+					   {"metadata",
+						{{"id", "test:generator"},
+						 {"revision", 1},
+						 {"editorOnly", false},
+						 {"controls", Json::array({{{"id", "layout"}, {"default", 2}}})}}},
+					   {"validations",
+						Json::array({{{"valid", true},
+									  {"suite", 1},
+									  {"simVersion", Online::SimVersion::local().key()}}})}}})}};
+		screen.selectRelease(0);
+		for (const auto &control : sharedGeneratorControls())
+			CHECK(screen.settings["params"][control.id] ==
+				  (control.id == "workers" ? 3 : control.defaultValue));
+		CHECK(screen.settings["params"]["layout"] == 2);
+		CHECK_NOTHROW(screen.useInRoom());
+		const auto selected = Online::takePendingRoomMap();
+		REQUIRE(selected);
+		REQUIRE(selected->scriptDescriptor);
+		CHECK(Json::parse(*selected->scriptDescriptor).at("params") ==
+			  screen.settings.at("params"));
+		CHECK(selected->teamCount == screen.settings.at("params").at("teams").get<int>());
+		if (previous)
+			Online::useMapInRoom(*previous);
+	}
+
+	TEST_CASE("generator installation clears pending state when restoring the library throws")
+	{
+		glob2test::HeadlessGlobals globals({.loadStrings = true});
+		ScriptedPlatform platform;
+		GAGGUI::ScreenStack stack(*globalContainer->gfx);
+		OnlineGeneratorsScreen screen(stack);
+		struct Failed : GAGCore::ApplicationHost::Persistence
+		{
+			GAGCore::ApplicationHost::PersistenceState state() const override
+			{
+				return GAGCore::ApplicationHost::PersistenceState::Failed;
+			}
+		};
+		// An unreadable checkpoint forces rollback to throw before touching storage.
+		// ScriptGenerator separately covers writes failing during rollback.
+		screen.before = "unreadable checkpoint";
+		screen.replacing = "test:generator";
+		screen.persistence = std::make_unique<Failed>();
+		CHECK_NOTHROW(screen.onTimer(0));
+		CHECK_FALSE(screen.persistence);
+		CHECK(screen.before.empty());
+		CHECK(screen.replacing.empty());
+		CHECK(screen.status.find("Could not restore") != std::string::npos);
+		CHECK(screen.status.find("previous library is retained") == std::string::npos);
+		const auto previous = screen.status;
+		CHECK_NOTHROW(screen.onTimer(0));
+		CHECK(screen.status == previous);
+		screen.before = "unreadable checkpoint";
+		CHECK_NOTHROW(screen.failInstallation("Download failed."));
+		CHECK(screen.before.empty());
+		CHECK(screen.status.find("Download failed.") == 0);
+		CHECK(screen.status.find("Could not restore") != std::string::npos);
+	}
+
 	TEST_CASE("online screens closed with platform calls in flight are never called back")
 	{
 		glob2test::HeadlessGlobals globals({.loadStrings = true});
@@ -131,6 +213,8 @@ TEST_SUITE("OnlineScreenLifetime")
 			screen->onTimer(0);
 			return screen;
 		});
+		closeInFlight(platform, "generators",
+					  [&] { return std::make_unique<OnlineGeneratorsScreen>(stack); });
 		closeInFlight(platform, "settings: online", [&]
 		{
 			auto screen = std::make_unique<SettingsScreen>();

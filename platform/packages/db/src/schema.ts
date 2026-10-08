@@ -1,3 +1,9 @@
+import type {
+  ScriptGeneratorDescriptor,
+  GeneratorValidationReport,
+  GeneratorMetadata,
+  GeneratorSettings,
+} from '@glob2/protocol';
 // Typed view of the schema in migrations/*.sql, for Kysely. Keep it in step
 // with the migrations: test/schema.test.ts writes and reads every table through
 // these types and compares the column lists with information_schema.
@@ -194,6 +200,8 @@ export interface EngineAgentsTable {
 export interface EngineJobsTable {
   id: Generated<string>;
   kind:
+    | 'validate-generator'
+    | 'generate-script-map'
     | 'validate-ai'
     | 'validate-buildings'
     | 'validate-set'
@@ -257,6 +265,11 @@ export interface MapsTable {
 }
 
 export interface MapVersionsTable {
+  generator_provenance: NullableJson<{
+    verified: boolean;
+    generator: ScriptGeneratorDescriptor;
+    chosenSeed?: number;
+  }>;
   set_credits: DefaultedJson<MapSetCredits>;
   building_catalog: NullableJson<JsonValue>;
   resource_experiments: DefaultedJson<ResourceExperimentDefinitions>;
@@ -337,6 +350,7 @@ export interface RoomKicksTable {
 }
 
 export interface RoomMembersTable {
+  generator_support: Defaulted<boolean>;
   room_id: string;
   account_id: string;
   connected: Defaulted<boolean>;
@@ -423,6 +437,7 @@ export interface MapUploadsTable {
 }
 
 export interface GeneratedMapsTable {
+  chosen_seed: Nullable<number>;
   building_catalog: NullableJson<JsonValue>;
   resource_experiments: DefaultedJson<ResourceExperimentDefinitions>;
   required_resource_experiments: DefaultedJson<string[]>;
@@ -1023,6 +1038,74 @@ export interface AiReportsTable {
   resolution_note: Nullable<string>;
 }
 
+export interface GeneratorsTable {
+  deleted_at: Nullable<Date>;
+  id: Generated<string>;
+  owner_account_id: string;
+  name: string;
+  description: Defaulted<string>;
+  tags: Defaulted<string[]>;
+  visibility: Defaulted<'public' | 'unlisted' | 'private'>;
+  hidden: Defaulted<boolean>;
+  hidden_reason: Nullable<string>;
+  created_at: Timestamp;
+  updated_at: Timestamp;
+}
+export interface GeneratorValidationsTable {
+  request_hash: string;
+  example: Json<GeneratorSettings>;
+  id: Generated<string>;
+  hash: string;
+  sim_version: string;
+  suite: number;
+  job_id: Nullable<string>;
+  status: Defaulted<'pending' | 'valid' | 'invalid' | 'error'>;
+  report: Json<GeneratorValidationReport>;
+  error: Nullable<string>;
+  created_at: Timestamp;
+}
+export interface GeneratorUploadsTable {
+  id: Generated<string>;
+  owner_account_id: string;
+  validation_id: string;
+  expires_at: Timestamp;
+  published_generator_id: Nullable<string>;
+  published_version_id: Nullable<string>;
+}
+export interface GeneratorVersionsTable {
+  source_hash: string;
+  package_hash: string;
+  metadata: Json<GeneratorMetadata>;
+  example: Json<GeneratorSettings>;
+  revision: number;
+  id: Generated<string>;
+  generator_id: string;
+  hash: string;
+  label: string;
+  notes: Defaulted<string>;
+  profile: number;
+  created_at: Timestamp;
+}
+export interface GeneratorSocialTable {
+  generator_id: string;
+  account_id: string;
+}
+export interface GeneratorDownloadsTable {
+  version_id: string;
+  downloader: string;
+  day: Defaulted<string>;
+}
+export interface GeneratorReportsTable {
+  id: Generated<string>;
+  generator_id: string;
+  reporter_account_id: string;
+  reason: string;
+  details: string;
+  status: Defaulted<'open' | 'resolved' | 'dismissed'>;
+  created_at: Timestamp;
+  resolution_note: Nullable<string>;
+}
+
 export interface MusicReleasesTable {
   authoring: Generated<Record<string, unknown> | null>;
   id: string;
@@ -1270,6 +1353,15 @@ export interface Database {
   ai_studio_ledger: HiveLedgerTable;
   ai_studio_calls: HiveCallsTable;
   ai_studio_purchases: HivePurchasesTable;
+  generators: GeneratorsTable;
+  generator_ids: { manifest_id: string; generator_id: Nullable<string> };
+  generator_versions: GeneratorVersionsTable;
+  generator_validations: GeneratorValidationsTable;
+  generator_uploads: GeneratorUploadsTable;
+  generator_likes: GeneratorSocialTable;
+  generator_favourites: GeneratorSocialTable;
+  generator_downloads: GeneratorDownloadsTable;
+  generator_reports: GeneratorReportsTable;
   ais: AisTable;
   ai_versions: AiVersionsTable;
   ai_validations: AiValidationsTable;

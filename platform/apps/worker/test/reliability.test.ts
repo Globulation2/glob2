@@ -452,6 +452,20 @@ describe('blob garbage collection', () => {
         .where('id', '=', matchId)
         .execute();
 
+      const playedGenerator = await put('a generator release removed from its catalogue', 'old');
+      await database.db
+        .updateTable('matches')
+        .set({
+          setup: {
+            map: {
+              kind: 'scripted',
+              descriptor: { fileHash: playedGenerator.sha256, packageHash: playedGenerator.sha256 },
+            },
+          },
+        })
+        .where('id', '=', matchId)
+        .execute();
+
       const paint = await put('a published colony paint', 'old');
       const wirePaint = await put('its persistent WebP rendition', 'old');
       await database.db
@@ -547,6 +561,7 @@ describe('blob garbage collection', () => {
         fresh,
         artifact,
         playedMap,
+        playedGenerator,
         paint,
         wirePaint,
         paintMaterial,

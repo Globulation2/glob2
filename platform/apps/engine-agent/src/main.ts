@@ -1,3 +1,4 @@
+import { createGeneratorExecutor } from './generatorValidation.ts';
 import { createAssetSandbox, createSetValidator } from './setValidation.ts';
 import { createAiValidator } from './aiValidation.ts';
 // engine-agent: one image per sim version (the glob2 headless binary of that
@@ -132,6 +133,15 @@ try {
         'AI publishing unavailable: isolated validator failed its startup probe',
       );
     }
+    let generatorExecutor;
+    try {
+      generatorExecutor = await createGeneratorExecutor(engine.options, simVersion);
+    } catch (error) {
+      logger.warn(
+        { err: error },
+        'Generator sharing unavailable: isolated executor failed its startup probe',
+      );
+    }
     let setValidator;
     if (catalog.versionMinor >= 144 || catalog.commands.includes('validate_set')) {
       // Format 144 maps embed uploaded PNGs too. Publishing's opt-in only gates
@@ -148,6 +158,7 @@ try {
       }
     }
     runner = new HeadlessEngineRunner({
+      ...(generatorExecutor ? { generatorExecutor } : {}),
       ...(setValidator ? { setValidator } : {}),
       ...(aiValidator ? { aiValidator } : {}),
       engine,

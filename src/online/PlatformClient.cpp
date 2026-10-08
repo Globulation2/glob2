@@ -330,6 +330,7 @@ void PlatformClient::sendHello()
 	Json params = {{"protocol", REALTIME_PROTOCOL_VERSION},
 				   {"client",
 					{{"platform", options.platform},
+					 {"generatorSharing", true},
 					 {"version", options.clientVersion.substr(0, 64)},
 					 {"simVersion", options.simVersion.toJson()}}}};
 	const bool withToken = !tokens.accessToken.empty();

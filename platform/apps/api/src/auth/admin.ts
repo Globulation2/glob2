@@ -443,6 +443,11 @@ export class AdminService {
         .execute();
       await tx.deleteFrom('ai_uploads').where('owner_account_id', '=', id).execute();
       await tx.deleteFrom('ais').where('owner_account_id', '=', id).execute();
+      await tx.deleteFrom('generator_uploads').where('owner_account_id', '=', id).execute();
+      await tx.deleteFrom('generators').where('owner_account_id', '=', id).execute();
+      await tx.deleteFrom('generator_likes').where('account_id', '=', id).execute();
+      await tx.deleteFrom('generator_favourites').where('account_id', '=', id).execute();
+      await tx.deleteFrom('generator_reports').where('reporter_account_id', '=', id).execute();
       await tx.deleteFrom('ai_likes').where('account_id', '=', id).execute();
       await tx.deleteFrom('ai_favourites').where('account_id', '=', id).execute();
       await tx.deleteFrom('ai_reports').where('reporter_account_id', '=', id).execute();
@@ -451,6 +456,7 @@ export class AdminService {
       await tx.deleteFrom('set_reports').where('reporter_account_id', '=', id).execute();
       await tx.deleteFrom('set_downloads').where('downloader', '=', `a:${id}`).execute();
       await tx.deleteFrom('ai_downloads').where('downloader', '=', `a:${id}`).execute();
+      await tx.deleteFrom('generator_downloads').where('downloader', '=', `a:${id}`).execute();
       // Music has no match-history dependency. Removing releases cascades their
       // assets/likes/reports; private source blobs expire within 24 hours.
       await tx.deleteFrom('music_releases').where('owner_id', '=', id).execute();

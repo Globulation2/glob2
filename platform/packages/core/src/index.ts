@@ -13,3 +13,6 @@ export * from './engineAgents.ts';
 
 export * from './aiLibrary.ts';
 export * from './skinSprites.ts';
+
+export * from './generatorLibrary.ts';
+export * from './generatorAccess.ts';

@@ -1,0 +1,68 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "glob2-protocol:GeneratorControlInfo",
+  "title": "GeneratorControlInfo",
+  "type": "object",
+  "required": [
+    "id",
+    "label",
+    "group",
+    "kind",
+    "default"
+  ],
+  "properties": {
+    "id": {
+      "type": "string"
+    },
+    "label": {
+      "type": "string"
+    },
+    "group": {
+      "type": "string"
+    },
+    "kind": {
+      "anyOf": [
+        {
+          "type": "string",
+          "const": "range"
+        },
+        {
+          "type": "string",
+          "const": "toggle"
+        },
+        {
+          "type": "string",
+          "const": "choice"
+        }
+      ]
+    },
+    "minimum": {
+      "type": "integer"
+    },
+    "maximum": {
+      "type": "integer"
+    },
+    "step": {
+      "type": "integer"
+    },
+    "default": {
+      "type": "integer"
+    },
+    "values": {
+      "type": "array",
+      "items": {
+        "type": "integer"
+      },
+      "maxItems": 4096
+    },
+    "powerOfTwo": {
+      "type": "boolean"
+    },
+    "choices": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  }
+}

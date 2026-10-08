@@ -30,6 +30,7 @@ struct RoomMapChoice
 {
 	std::string mapId, hash, title;
 	std::optional<int> width, height, teamCount;
+	std::optional<std::string> scriptDescriptor;
 };
 using RoomMapHandler = std::function<void(const RoomMapChoice &)>;
 void setRoomMapHandler(RoomMapHandler handler);

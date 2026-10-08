@@ -1,3 +1,4 @@
+#include "OnlineHandoff.h"
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2026 glob2 contributors
 #pragma once
@@ -68,7 +69,7 @@ class RoomScreen : public Glob2UI::Screen
 	std::shared_ptr<RoomBackend> room;
 	// A catalog map from "Use in a room" (OnlineMapsScreen), applied once the room
 	// is ready and only by its host: {hash, mapId}.
-	std::optional<std::pair<std::string, std::string>> pendingCatalogMap;
+	std::optional<Online::RoomMapChoice> pendingCatalogMap;
 	std::deque<ChatLine> chat;
 	std::string chatDraft, notice;
 	int currentTab = PlayersTab;

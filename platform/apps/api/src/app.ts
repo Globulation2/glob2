@@ -1,3 +1,4 @@
+import { generatorLibraryRoutes } from './generators/routes.ts';
 import { buildingLibraryRoutes } from './buildings/library.ts';
 import { buildingDraftRoutes } from './buildings/drafts.ts';
 import { buildingStudioRoutes } from './buildings/studio.ts';
@@ -293,6 +294,7 @@ export async function buildApp(
   await playRoutes(app, identity, rooms);
   await mapCatalogRoutes(app, identity);
   await aiLibraryRoutes(app, identity);
+  await generatorLibraryRoutes(app, identity);
   await buildingDraftRoutes(app, identity);
   await buildingLibraryRoutes(app, identity);
   await setLibraryRoutes(app, identity);

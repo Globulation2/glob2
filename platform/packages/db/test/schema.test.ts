@@ -398,6 +398,68 @@ const typedColumns: ColumnLists = {
     'reversed',
     'created_at',
   ],
+  generator_ids: ['manifest_id', 'generator_id'],
+  generators: [
+    'id',
+    'owner_account_id',
+    'name',
+    'description',
+    'tags',
+    'visibility',
+    'hidden',
+    'hidden_reason',
+    'created_at',
+    'updated_at',
+    'deleted_at',
+  ],
+  generator_versions: [
+    'source_hash',
+    'package_hash',
+    'metadata',
+    'example',
+    'revision',
+    'id',
+    'generator_id',
+    'hash',
+    'label',
+    'notes',
+    'profile',
+    'created_at',
+  ],
+  generator_validations: [
+    'request_hash',
+    'example',
+    'id',
+    'hash',
+    'sim_version',
+    'suite',
+    'job_id',
+    'status',
+    'report',
+    'error',
+    'created_at',
+  ],
+  generator_uploads: [
+    'id',
+    'owner_account_id',
+    'validation_id',
+    'expires_at',
+    'published_generator_id',
+    'published_version_id',
+  ],
+  generator_likes: ['generator_id', 'account_id'],
+  generator_favourites: ['generator_id', 'account_id'],
+  generator_downloads: ['version_id', 'downloader', 'day'],
+  generator_reports: [
+    'id',
+    'generator_id',
+    'reporter_account_id',
+    'reason',
+    'details',
+    'status',
+    'created_at',
+    'resolution_note',
+  ],
   ais: [
     'id',
     'owner_account_id',
@@ -952,6 +1014,7 @@ const typedColumns: ColumnLists = {
     'hidden_by_account_id',
   ],
   map_versions: [
+    'generator_provenance',
     'set_credits',
     'building_catalog',
     'resource_experiments',
@@ -1010,7 +1073,15 @@ const typedColumns: ColumnLists = {
   ],
   room_kicks: ['room_id', 'account_id', 'kicked_by_account_id', 'until', 'created_at'],
   map_downloads: ['map_id', 'downloader', 'day'],
-  room_members: ['room_id', 'account_id', 'connected', 'joined_at', 'last_seen_at', 'region_rtts'],
+  room_members: [
+    'generator_support',
+    'room_id',
+    'account_id',
+    'connected',
+    'joined_at',
+    'last_seen_at',
+    'region_rtts',
+  ],
   room_seats: [
     'room_id',
     'seat',
@@ -1175,6 +1246,7 @@ const typedColumns: ColumnLists = {
     'completed_at',
   ],
   generated_maps: [
+    'chosen_seed',
     'building_catalog',
     'resource_experiments',
     'required_resource_experiments',
@@ -1411,6 +1483,7 @@ describe('migrations', () => {
         '0054_admin_analytics',
         '0055_admin_finances',
         '0056_admin_rollup_state',
+        '0057_generator_library',
       ]);
       expect(
         (
@@ -1480,7 +1553,7 @@ describe('migrations', () => {
         existing.db,
       );
       const upgraded = await migrateToLatest(existing.db);
-      expect(upgraded).toHaveLength(35);
+      expect(upgraded).toHaveLength(36);
       expect(upgraded.every((migration) => migration.status === 'Success')).toBe(true);
       expect(
         await existing.db
@@ -1631,6 +1704,7 @@ describe('migrations', () => {
         ['0054_admin_analytics', 'Success'],
         ['0055_admin_finances', 'Success'],
         ['0056_admin_rollup_state', 'Success'],
+        ['0057_generator_library', 'Success'],
       ]);
       for (const table of [
         'colony_skin_versions',
@@ -1778,6 +1852,7 @@ describe('migrations', () => {
         ['0054_admin_analytics', 'Success'],
         ['0055_admin_finances', 'Success'],
         ['0056_admin_rollup_state', 'Success'],
+        ['0057_generator_library', 'Success'],
       ]);
       expect(
         await db

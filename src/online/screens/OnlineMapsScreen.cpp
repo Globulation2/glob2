@@ -1,3 +1,4 @@
+#include "OnlineGeneratorsScreen.h"
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "OnlineMapsScreen.h"
 #include "QuickMatch.h"
@@ -806,7 +807,21 @@ Element OnlineMapsScreen::mineBody(const Presentation &p, bool phone)
 Element OnlineMapsScreen::build(const Presentation &p)
 {
 	const bool phone = p.touch && p.compact();
-	std::vector<Element> body{tab == Tab::Browse ? browseBody(p, phone) : mineBody(p, phone)};
+	std::vector<Element> body{
+		row({button("library/maps", "Maps", [] {}),
+			 button("library/generators", "Generators",
+					[this]
+					{
+						screens.push(std::make_unique<OnlineGeneratorsScreen>(screens),
+									 [this](GAGGUI::Screen &, int result)
+									 {
+										 if (result == 2)
+											 endExecute(origin == Origin::Room ? USED_IN_ROOM
+																			   : OPEN_ROOM);
+									 });
+					})},
+			{p.pt(8)}),
+		tab == Tab::Browse ? browseBody(p, phone) : mineBody(p, phone)};
 	if (!status.empty())
 		body.push_back(caption(status, false));
 	const std::string mineLabel = data.mine.empty() ? tr("[maps my maps]")

@@ -1,0 +1,39 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "glob2-protocol:GeneratorSettings",
+  "title": "GeneratorSettings",
+  "type": "object",
+  "required": [
+    "seed",
+    "params",
+    "candidates",
+    "startingUnitLevel"
+  ],
+  "properties": {
+    "seed": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 4294967295
+    },
+    "params": {
+      "type": "object",
+      "patternProperties": {
+        "^[A-Za-z0-9_-]{1,64}$": {
+          "type": "integer"
+        }
+      },
+      "maxProperties": 72
+    },
+    "candidates": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 5,
+      "default": 1
+    },
+    "startingUnitLevel": {
+      "type": "number",
+      "const": 0
+    }
+  },
+  "additionalProperties": false
+}

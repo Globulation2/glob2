@@ -1,3 +1,4 @@
+import type { GeneratorExecutor } from './generatorValidation.ts';
 import {
   readBuildingArchive,
   writeBuildingArtworkBundle,
@@ -52,6 +53,7 @@ export const DEFAULT_RUNNER_LIMITS: RunnerLimits = {
 export interface HeadlessRunnerOptions {
   engine: GlobEngine;
   aiValidator?: AiValidator;
+  generatorExecutor?: GeneratorExecutor;
   setValidator?: SetValidator;
   catalog: EngineCatalog;
   simVersion: SimVersion;
@@ -93,6 +95,7 @@ export class HeadlessEngineRunner implements EngineRunner {
       this.kinds.push('validate-buildings');
     if (options.setValidator && options.catalog.commands.includes('validate_set'))
       this.kinds.push('validate-set');
+    if (options.generatorExecutor) this.kinds.push('validate-generator', 'generate-script-map');
     if (options.aiValidator) this.kinds.push('validate-ai');
     this.limits = { ...DEFAULT_RUNNER_LIMITS, ...options.limits };
   }
@@ -163,6 +166,52 @@ export class HeadlessEngineRunner implements EngineRunner {
             ...(validation.png
               ? { previewHash: await blobs.write(validation.png, CONTENT_TYPES.png) }
               : {}),
+          };
+          break;
+        }
+        case 'validate-generator': {
+          if (!this.options.generatorExecutor)
+            throw new EngineJobError('unavailable', 'Isolated generator validation unavailable');
+          const validation = await this.options.generatorExecutor.validate(
+            await blobs.read(job.payload.blobHash, 4 * 1024 * 1024),
+            job.payload.example,
+            signal,
+          );
+          if (validation.report.sourceHash !== job.payload.blobHash)
+            throw new EngineOutputError('Generator source hash mismatch');
+          result = {
+            ...validation.report,
+            ...(validation.canonical
+              ? {
+                  fileHash: await blobs.write(
+                    validation.canonical,
+                    'application/x-glob2-generator',
+                  ),
+                }
+              : {}),
+            ...(validation.png
+              ? { previewHash: await blobs.write(validation.png, CONTENT_TYPES.png) }
+              : {}),
+          };
+          break;
+        }
+        case 'generate-script-map': {
+          if (!this.options.generatorExecutor)
+            throw new EngineJobError('unavailable', 'Isolated generator generation unavailable');
+          const generated = await this.options.generatorExecutor.generate(
+            await blobs.read(job.payload.generator.fileHash, 4 * 1024 * 1024),
+            job.payload.generator,
+            signal,
+          );
+          const problem = this.checkFacts(generated.map);
+          if (problem) throw new EngineInputError(problem);
+          result = {
+            mapHash: await blobs.write(generated.bytes, CONTENT_TYPES.map),
+            size: generated.bytes.byteLength,
+            map: generated.map,
+            chosenSeed: generated.chosenSeed,
+            packageHash: generated.packageHash,
+            ...(generated.startQuality ? { startQuality: generated.startQuality } : {}),
           };
           break;
         }
