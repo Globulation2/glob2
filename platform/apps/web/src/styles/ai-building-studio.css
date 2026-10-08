@@ -7,7 +7,7 @@
 }
 .building-ai-cost {
   font-size: 0.9rem;
-  color: var(--text-muted);
+  color: var(--ink-2);
 }
 .building-ai-controls,
 .building-ai-actions {
@@ -26,7 +26,7 @@
   margin: 0.4rem 0;
 }
 .building-ai-variant {
-  border: 1px solid var(--border, #485746);
+  border: 1px solid var(--line);
   border-radius: 12px;
   padding: 1rem;
   margin: 1rem 0;
@@ -77,7 +77,7 @@
 }
 .building-ai-diff {
   display: block;
-  color: var(--text-muted);
+  color: var(--ink-2);
 }
 @media (max-width: 800px) {
   .building-ai-tabs {
@@ -119,7 +119,7 @@
 .bas-start {
   padding: 1rem;
   margin: 1rem 0;
-  border: 1px solid var(--border, #485746);
+  border: 1px solid var(--line);
   border-radius: 12px;
 }
 .bas-layout {
@@ -173,7 +173,7 @@
 }
 .bas-stages li {
   padding: 0.6rem;
-  border: 1px solid var(--border, #485746);
+  border: 1px solid var(--line);
   border-radius: 8px;
   flex: 1;
 }
@@ -225,7 +225,7 @@
   margin: 0.3rem 0.5rem 0.3rem 0;
 }
 .building-ai-history article {
-  border-top: 1px solid var(--border);
+  border-top: 1px solid var(--line);
   padding: 1rem 0;
 }
 .building-ai-history h3 {
@@ -235,11 +235,11 @@
   margin: 0.5rem;
 }
 .building-ai-action-hint {
-  color: var(--text-muted);
+  color: var(--ink-2);
   margin-bottom: 0;
 }
 .building-ai-empty {
-  color: var(--text-muted);
+  color: var(--ink-2);
 }
 .building-ai-ground img {
   image-rendering: pixelated;

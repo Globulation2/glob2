@@ -179,7 +179,7 @@ test('music workspace exposes revision checks and keeps publication explicit', a
   const narrow = (page.viewportSize()?.width ?? 1280) < 850;
   await page.goto(`/music-studio/${id}`);
   await expect(page.getByRole('heading', { name: 'AI Music Studio' })).toBeVisible();
-  if (narrow) await page.getByRole('button', { name: 'Listen & inspect' }).click();
+  if (narrow) await page.getByRole('tab', { name: 'Preview', exact: true }).first().click();
   await expect(page.getByRole('button', { name: 'Play', exact: true })).toBeInViewport();
   const seek = page.getByRole('slider', { name: 'Playback position' });
   await seek.scrollIntoViewIfNeeded();
@@ -241,7 +241,7 @@ test('music workspace exposes revision checks and keeps publication explicit', a
     'Keep the melody and soften the drums.',
   );
   await expect(page.getByRole('heading', { name: 'Refine your soundtrack' })).toBeVisible();
-  if (narrow) await page.getByRole('button', { name: 'Listen & inspect' }).click();
+  if (narrow) await page.getByRole('tab', { name: 'Preview', exact: true }).first().click();
   expect(writes).toHaveLength(0);
   await expect(page.getByRole('button', { name: 'Publish to music library' })).toBeVisible();
   expect(await page.evaluate('document.documentElement.scrollWidth <= window.innerWidth')).toBe(

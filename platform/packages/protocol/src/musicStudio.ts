@@ -16,6 +16,13 @@ export const MusicStudioGenerate = Strict({
   parent: Type.Optional(Uuid),
 });
 export type MusicStudioGenerate = Static<typeof MusicStudioGenerate>;
+export const MusicStudioTurn = Strict({
+  id: Uuid,
+  text: Type.String({ minLength: 1, maxLength: 8000 }),
+  settings: MusicStudioSettings,
+  parent: Type.Optional(Uuid),
+});
+export type MusicStudioTurn = Static<typeof MusicStudioTurn>;
 export const MusicStudioConfig = Strict({
   enabled: Type.Boolean(),
   salesEnabled: Type.Boolean(),
@@ -46,6 +53,8 @@ export interface MusicStudioRequest {
     | 'failed'
     | 'uncertain';
   input: {
+    turn?: boolean;
+    sourceTurnId?: string;
     settings?: MusicStudioSettings;
     parent?: string;
     brief: string;
@@ -168,6 +177,7 @@ export const musicStudioSchemas = {
   MusicStudioMessage,
   MusicStudioSettings,
   MusicStudioGenerate,
+  MusicStudioTurn,
   MusicStudioConfig,
   MusicStudioStageProgress,
   MusicStudioCheck,

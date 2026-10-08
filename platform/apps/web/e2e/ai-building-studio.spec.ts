@@ -133,12 +133,13 @@ test('building workspace supports revision-bound chat, previews, restoration and
   await expect(
     page.getByRole('heading', { name: 'Mushroom hospital', exact: true }).first(),
   ).toBeVisible();
-  await expect(page.getByText('3 credits available')).toBeVisible();
+  await expect(page.getByRole('button', { name: /3 (Building|Terrain) credits/ })).toBeVisible();
   const prompt = page.getByLabel('Describe your creation or ask a question');
   await prompt.fill('Make only the hospital cheaper.');
   await page.getByRole('button', { name: 'Send', exact: true }).click();
   await expect(page.getByRole('alert')).toContainText('Draft revision changed.');
   await expect(prompt).toHaveValue('Make only the hospital cheaper.');
+  await page.getByText('Reference images', { exact: true }).first().click();
   await page
     .getByLabel('Reference images', { exact: true })
     .setInputFiles({ name: 'reference.png', mimeType: 'image/png', buffer: image });
@@ -146,12 +147,8 @@ test('building workspace supports revision-bound chat, previews, restoration and
   await page.getByRole('button', { name: 'Send', exact: true }).click();
   expect(writes[1]).toMatchObject({ expectedRevision: revision, references: ['b'.repeat(64)] });
   if (info.project.name === 'phone')
-    await page.getByRole('button', { name: 'Building preview', exact: true }).click();
+    await page.getByRole('tab', { name: 'Preview', exact: true }).first().click();
   await expect(page.getByText('Interior seats')).toBeVisible();
-  await expect(page.getByRole('link', { name: 'Open in Building Studio' })).toHaveAttribute(
-    'href',
-    '/building-studio/' + draftId,
-  );
   await page.getByLabel('Compare with').selectOption('old');
   await expect(page.getByText('Current saved draft: 300')).toBeVisible();
   await page.getByRole('combobox', { name: 'View revision' }).selectOption('old');
@@ -159,9 +156,12 @@ test('building workspace supports revision-bound chat, previews, restoration and
     'href',
     `/api/v1/ai-building-studio/threads/${id}/revisions/old/file`,
   );
-  await expect(page.getByText('Edit, export or publish the current saved draft:')).toBeVisible();
+  if (info.project.name !== 'phone')
+    await expect(page.getByText(/Editing current saved draft/).first()).toBeVisible();
   await page.getByRole('combobox', { name: 'View revision' }).selectOption('');
+  await page.getByRole('tab', { name: 'History', exact: true }).click();
   await page.getByText('Generated revisions', { exact: true }).click();
+  page.once('dialog', (d) => d.accept());
   await page.getByRole('button', { name: 'Restore this revision' }).click();
   expect(writes.at(-1)).toEqual({ expectedRevision: revision });
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1)).toBe(
@@ -190,7 +190,7 @@ test('building workspace supports revision-bound chat, previews, restoration and
     });
   }
   if (info.project.name === 'phone')
-    await page.getByRole('button', { name: 'Conversation', exact: true }).click();
+    await page.getByRole('tab', { name: 'Chat', exact: true }).first().click();
   await page.getByText('Project options', { exact: true }).click();
   await page.getByRole('button', { name: 'Delete project history', exact: true }).click();
   expect(deleted).toBe(false);

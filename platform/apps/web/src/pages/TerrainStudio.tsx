@@ -1,3 +1,20 @@
+import { cancellationReason } from '../components/studio/adapters.ts';
+import { useRevisionUndo } from '../components/studio/useRevisionUndo.ts';
+import {
+  StudioShell,
+  StudioHeader,
+  StudioWorkspace,
+  StudioTabs,
+  ChatInput,
+  ConversationPane,
+  ReleaseDialog,
+  CreditPanel,
+  NewStudio,
+  RevisionControls,
+  ValidationSummary,
+} from '../components/studio/Studio.tsx';
+import { studioSession, useStudioValue } from '../components/studio/storage.ts';
+import { Icon } from '../icons.tsx';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import type {
   SetDraft,
@@ -9,7 +26,7 @@ import type {
 import { ApiError, request } from '../api.ts';
 import { Link, useRouter } from '../router.tsx';
 import { useSession } from '../state.tsx';
-import { SetWorkspace } from '../sets/Workspace.tsx';
+import { SetEditor } from '../sets/Workspace.tsx';
 import { SetPreview } from '../sets/Preview.tsx';
 import '../styles/terrain-studio.css';
 const ROOT = '/api/v1/terrain-studio';
@@ -20,6 +37,10 @@ type Wallet = {
   packs: { id: string; credits: number; amount: number; currency: string }[];
 };
 export function TerrainStudio({ id }: { id?: string }) {
+  const { account } = useSession();
+  return <TerrainWorkspace key={`${account?.id ?? 'anonymous'}:${id ?? 'new'}`} id={id} />;
+}
+function TerrainWorkspace({ id }: { id?: string }) {
   const { account } = useSession(),
     { navigate, location } = useRouter();
   const [wallet, setWallet] = useState<Wallet>(),
@@ -27,24 +48,56 @@ export function TerrainStudio({ id }: { id?: string }) {
     [thread, setThread] = useState<TerrainStudioThread>(),
     [draft, setDraft] = useState<SetDraft>(),
     [progress, setProgress] = useState<TerrainStudioProgress>(),
-    [text, setText] = useState(''),
     [title, setTitle] = useState('New terrain set'),
     [error, setError] = useState(''),
     [connection, setConnection] = useState(''),
     [busy, setBusy] = useState(false),
-    [dirty, setDirty] = useState(false),
-    [selectedRefs, setSelectedRefs] = useState<string[]>([]);
+    [dirty, setDirty] = useState(false);
+  const [text, setText] = useStudioValue(`terrain-studio-prompt:${account?.id}:${id ?? 'new'}`, '');
   const [retrying, setRetrying] = useState(false);
   const [inspectorRevision, setInspectorRevision] = useState<number>();
-  const dirtyRef = useRef(false),
-    messages = useRef<HTMLDivElement>(null),
-    followMessages = useRef(true);
+  const [selectedRefs, setSelectedRefs] = useStudioValue<string[]>(
+    `terrain-studio-references:${account?.id}:${id ?? 'new'}`,
+    [],
+  );
+  const [view, setView] = useState('preview');
+  const [creditsOpen, setCreditsOpen] = useState(false);
+  const [focusChat, setFocusChat] = useState(0);
+  const [inspected, setInspected] = useStudioValue(`terrain-view:${account?.id}:${id}`, '');
+  const [historical, setHistorical] = useState<{
+    id: string;
+    pack: SetPackage;
+    progress: TerrainStudioProgress;
+  }>();
+  useEffect(() => {
+    if (!inspected || !id) return;
+    const abort = new AbortController();
+    void Promise.all([
+      request<SetPackage>('GET', `${ROOT}/threads/${id}/revisions/${inspected}/file`, {
+        signal: abort.signal,
+      }),
+      request<TerrainStudioProgress>(
+        'GET',
+        `${ROOT}/threads/${id}/requests/${inspected}/progress`,
+        { signal: abort.signal },
+      ),
+    ])
+      .then(([pack, progress]) => {
+        if (!abort.signal.aborted) setHistorical({ id: inspected, pack, progress });
+      })
+      .catch((e) => {
+        if (!abort.signal.aborted) setError(e.message);
+      });
+    return () => abort.abort();
+  }, [id, inspected]);
+  const dirtyRef = useRef(false);
   const manualDirty = useCallback((value: boolean) => {
     dirtyRef.current = value;
     setDirty(value);
   }, []);
+  const [creationId] = useStudioValue(`terrain-studio-create:${account?.id}`, crypto.randomUUID());
   const submission = useRef<TerrainStudioTurn | null>(null),
-    creation = useRef(crypto.randomUUID()),
+    creation = useRef(creationId),
     serial = useRef(0);
   const pending = thread?.requests.findLast((r) => !['ready', 'failed'].includes(r.status));
   const refresh = useCallback(
@@ -81,11 +134,11 @@ export function TerrainStudio({ id }: { id?: string }) {
       if (submission.current && t.requests.some((r) => r.id === submission.current?.id)) {
         submission.current = null;
         setRetrying(false);
-        sessionStorage.removeItem(key);
+        studioSession.removeItem(key);
         setText('');
       }
     },
-    [id, account],
+    [id, account, setText],
   );
   useEffect(() => {
     if (!account) return;
@@ -118,7 +171,7 @@ export function TerrainStudio({ id }: { id?: string }) {
     if (!account || !id) return;
     const key = `terrain-studio-turn:${account.id}:${id}`;
     try {
-      const value = sessionStorage.getItem(key);
+      const value = studioSession.getItem(key);
       if (value) {
         const saved = JSON.parse(value) as TerrainStudioTurn;
         submission.current = saved;
@@ -129,13 +182,9 @@ export function TerrainStudio({ id }: { id?: string }) {
         });
       }
     } catch {
-      sessionStorage.removeItem(key);
+      studioSession.removeItem(key);
     }
-  }, [account, id]);
-  useEffect(() => {
-    if (followMessages.current && messages.current)
-      messages.current.scrollTop = messages.current.scrollHeight;
-  }, [thread?.messages]);
+  }, [account, id, setSelectedRefs, setText]);
   async function action(fn: () => Promise<void>) {
     setBusy(true);
     setError('');
@@ -148,6 +197,16 @@ export function TerrainStudio({ id }: { id?: string }) {
       setBusy(false);
     }
   }
+  const undo = useRevisionUndo(
+    `terrain-undo:${account?.id}:${id}`,
+    draft,
+    thread?.revisions.filter(
+      (r) =>
+        r.applied &&
+        draft?.revision === r.baseRevision + 1 &&
+        r.report.hash === draft.validation?.hash,
+    ) ?? [],
+  );
   async function create() {
     const result = await request<{ id: string }>('POST', ROOT + '/threads', {
       body: {
@@ -157,7 +216,28 @@ export function TerrainStudio({ id }: { id?: string }) {
         ...(location.search.get('version') ? { versionId: location.search.get('version') } : {}),
       },
     });
-    navigate('/terrain-studio/' + result.id);
+    studioSession.removeItem(`terrain-studio-create:${account?.id}`);
+    if (text.trim() && account) {
+      const thread = await request<{ draftId: string }>('GET', `${ROOT}/threads/${result.id}`);
+      const initial = await request<{ revision: number }>(
+        'GET',
+        '/api/v1/set-drafts/' + thread.draftId,
+      );
+      const turn = {
+        id: crypto.randomUUID(),
+        text,
+        references: selectedRefs,
+        expectedRevision: initial.revision,
+      };
+      studioSession.setItem(`terrain-studio-turn:${account.id}:${result.id}`, JSON.stringify(turn));
+      try {
+        await request('POST', `${ROOT}/threads/${result.id}/turns`, { body: turn });
+        studioSession.removeItem(`terrain-studio-turn:${account.id}:${result.id}`);
+      } finally {
+        setText('');
+        navigate('/terrain-studio/' + result.id);
+      }
+    } else navigate('/terrain-studio/' + result.id);
   }
   async function send() {
     if (!draft || !account || !id) return;
@@ -167,10 +247,10 @@ export function TerrainStudio({ id }: { id?: string }) {
       expectedRevision: draft.revision,
       references: selectedRefs,
     };
+    if (!submission.current) undo.remember();
     submission.current = value;
     setRetrying(true);
-    sessionStorage.setItem(`terrain-studio-turn:${account.id}:${id}`, JSON.stringify(value));
-    followMessages.current = true;
+    studioSession.setItem(`terrain-studio-turn:${account.id}:${id}`, JSON.stringify(value));
     try {
       await request('POST', `${ROOT}/threads/${id}/turns`, { body: value });
     } catch (e) {
@@ -179,15 +259,26 @@ export function TerrainStudio({ id }: { id?: string }) {
       if (e instanceof ApiError && e.status >= 400 && e.status < 500 && e.status !== 408) {
         submission.current = null;
         setRetrying(false);
-        sessionStorage.removeItem(`terrain-studio-turn:${account.id}:${id}`);
+        studioSession.removeItem(`terrain-studio-turn:${account.id}:${id}`);
       }
       throw e;
     }
     submission.current = null;
     setRetrying(false);
-    sessionStorage.removeItem(`terrain-studio-turn:${account.id}:${id}`);
+    studioSession.removeItem(`terrain-studio-turn:${account.id}:${id}`);
     setText('');
   }
+  const viewedRevision = thread?.revisions.find((r) => r.requestId === inspected);
+  const shownProgress = inspected
+    ? historical?.id === inspected
+      ? historical.progress
+      : undefined
+    : progress;
+  const shownDraft = inspected
+    ? historical?.id === inspected && draft
+      ? { ...draft, package: historical.pack }
+      : undefined
+    : draft;
   if (!account)
     return (
       <section>
@@ -197,18 +288,15 @@ export function TerrainStudio({ id }: { id?: string }) {
       </section>
     );
   return (
-    <section className="terrain-studio">
-      <header className="ts-header">
-        <div>
-          <Link to="/sets">Terrain & resources</Link>
-          <h1>{thread?.title ?? 'AI Terrain Studio'}</h1>
-          <p>Create a world’s terrain, resources, and the way they behave.</p>
-        </div>
-        <div>
-          <strong>{wallet?.available ?? 0} credits available</strong>
-          <p>{wallet?.reserved ?? 0} reserved · 1 credit per delivered generation</p>
-        </div>
-      </header>
+    <StudioShell className="terrain-studio">
+      <StudioHeader title={thread?.title ?? 'AI Terrain Studio'} icon="mountain">
+        <Link to="/terrain-studio">
+          <Icon name="folder-open" size={18} /> Projects
+        </Link>
+        <button onClick={() => setCreditsOpen(true)}>
+          <Icon name="coins" size={18} /> {wallet?.available ?? '…'} Terrain credits
+        </button>
+      </StudioHeader>
       {error && <p role="alert">{error}</p>}
       {connection && <p role="status">{connection}</p>}
       {wallet && !wallet.enabled && (
@@ -216,321 +304,421 @@ export function TerrainStudio({ id }: { id?: string }) {
           Terrain Studio is disabled on this instance. Your saved projects remain available.
         </p>
       )}
-      <details className="ts-credits">
-        <summary>Terrain credits</summary>
-        <p>
-          Questions and brainstorming are free and require an available credit. A creation or
-          revision request starts one build of up to 12 entries. Failed generations return their
-          reservation.
-        </p>
-        {wallet?.packs.map((p) => (
-          <button
-            key={p.id}
-            disabled={busy || !wallet.enabled}
-            onClick={() =>
-              void action(async () => {
-                const r = await request<{ url: string }>('POST', ROOT + '/checkout', {
-                  body: { pack: p.id },
-                });
-                window.location.assign(r.url);
-              })
-            }
-          >
-            Buy {p.credits} credits ·{' '}
-            {new Intl.NumberFormat(undefined, { style: 'currency', currency: p.currency }).format(
-              p.amount / 100,
-            )}
-          </button>
-        ))}
-      </details>
-      {!id ? (
-        <>
-          <div className="ts-start">
-            <h2>
-              {location.search.has('draft')
-                ? 'Edit your set with AI'
-                : location.search.has('version')
-                  ? 'Remix this set'
-                  : 'What world will you create?'}
-            </h2>
-            <p>
-              Try a fungal swamp, a windswept desert, or a winter orchard. Describe how the ground
-              and resources should work as well as how they look.
-            </p>
-            <label>
-              Project title
-              <input maxLength={128} value={title} onChange={(e) => setTitle(e.target.value)} />
-            </label>
+      <ReleaseDialog
+        open={creditsOpen}
+        onClose={() => setCreditsOpen(false)}
+        title="Terrain credits"
+      >
+        <CreditPanel domain="Terrain" available={wallet?.available} reserved={wallet?.reserved}>
+          {' '}
+          <p>
+            Questions and brainstorming are free and require an available credit. A creation or
+            revision request starts one build of up to 12 entries. Failed generations return their
+            reservation.
+          </p>
+          {wallet?.packs.map((p) => (
             <button
-              className="primary"
-              disabled={busy || !wallet?.enabled || !title.trim()}
-              onClick={() => void action(create)}
+              key={p.id}
+              disabled={busy || !wallet.enabled}
+              onClick={() =>
+                void action(async () => {
+                  const r = await request<{ url: string }>('POST', ROOT + '/checkout', {
+                    body: { pack: p.id },
+                  });
+                  window.location.assign(r.url);
+                })
+              }
             >
-              Start creating
-            </button>
-          </div>
-          <h2>Your projects</h2>
-          <div className="ts-projects">
-            {projects.map((p) => (
-              <Link className="card" key={p.id} to={'/terrain-studio/' + p.id}>
-                {p.title}
-              </Link>
-            ))}
-          </div>
-        </>
-      ) : (
-        <div className="ts-layout">
-          <aside className="ts-chat">
-            <h2>Design conversation</h2>
-            <div
-              className="ts-messages"
-              aria-live="polite"
-              ref={messages}
-              onScroll={() => {
-                const box = messages.current;
-                if (box)
-                  followMessages.current = box.scrollHeight - box.scrollTop - box.clientHeight < 48;
-              }}
-            >
-              {thread?.messages.map((m) => (
-                <article key={m.id} className={'ts-message ' + m.role}>
-                  <strong>{m.role === 'user' ? 'You' : 'Terrain designer'}</strong>
-                  <p>{m.text}</p>
-                </article>
-              ))}
-            </div>
-            <form
-              onSubmit={(e) => {
-                e.preventDefault();
-                void action(send);
-              }}
-            >
-              <label>
-                Describe your creation or ask a question
-                <textarea
-                  rows={5}
-                  maxLength={8000}
-                  value={text}
-                  disabled={retrying}
-                  onChange={(e) => setText(e.target.value)}
-                  placeholder="Create a fungal swamp with slow marsh, glowing wood trees, and renewable mushroom food."
-                />
-              </label>
-              <label>
-                Reference images
-                <input
-                  type="file"
-                  accept="image/png,image/jpeg,image/webp"
-                  disabled={busy || retrying || !wallet?.enabled}
-                  onChange={(e) => {
-                    const file = e.target.files?.[0];
-                    if (file)
-                      void action(async () => {
-                        const ref = await request<{ hash: string }>(
-                          'POST',
-                          `${ROOT}/threads/${id}/references`,
-                          { body: file },
-                        );
-                        setSelectedRefs((v) => [...new Set([...v, ref.hash])].slice(-4));
-                      });
-                    e.target.value = '';
-                  }}
-                />
-              </label>
-              <small>
-                Upload artwork you may use as a reference. Up to four selected images guide the
-                visual style.
-              </small>
-              <div className="ts-references">
-                {thread?.references.map((r) => (
-                  <label key={r.hash}>
-                    <img src={r.url} alt={r.label} />
-                    <input
-                      type="checkbox"
-                      checked={selectedRefs.includes(r.hash)}
-                      disabled={
-                        retrying || (!selectedRefs.includes(r.hash) && selectedRefs.length >= 4)
-                      }
-                      onChange={(e) =>
-                        setSelectedRefs((v) =>
-                          e.target.checked ? [...v, r.hash] : v.filter((h) => h !== r.hash),
-                        )
-                      }
-                    />
-                    Use reference
-                  </label>
-                ))}
-              </div>
-              <button
-                className="primary"
-                disabled={
-                  busy ||
-                  !!pending ||
-                  dirty ||
-                  !wallet?.enabled ||
-                  !wallet.available ||
-                  !text.trim() ||
-                  !draft
-                }
-              >
-                {retrying ? 'Retry saved request' : 'Send'}
-              </button>
-              {retrying && (
-                <button
-                  type="button"
-                  disabled={busy}
-                  onClick={() => {
-                    submission.current = null;
-                    setRetrying(false);
-                    sessionStorage.removeItem(`terrain-studio-turn:${account.id}:${id}`);
-                  }}
-                >
-                  Discard local retry
-                </button>
+              Buy {p.credits} credits ·{' '}
+              {new Intl.NumberFormat(undefined, { style: 'currency', currency: p.currency }).format(
+                p.amount / 100,
               )}
-              {dirty && <p>Save your manual edits before asking AI to revise the set.</p>}
-            </form>
-            {pending && (
-              <div role="status">
-                <p>
-                  {pending.status === 'uncertain'
-                    ? 'The provider outcome needs reconciliation. No duplicate call will be sent.'
-                    : 'Working on your request…'}
-                </p>
+            </button>
+          ))}
+        </CreditPanel>
+      </ReleaseDialog>
+      {!id ? (
+        <NewStudio
+          title="Your terrain"
+          value={text}
+          onChange={setText}
+          onSend={() => void action(create)}
+          disabledReason={
+            busy
+              ? 'Saving your project…'
+              : !wallet?.enabled
+                ? 'Generation is unavailable.'
+                : !wallet.available
+                  ? 'An available Terrain credit is needed to chat or build.'
+                  : undefined
+          }
+          pricing="Messages are free. Creation requests build automatically · 1 credit on delivery."
+          projects={
+            <nav aria-label="Terrain projects">
+              {projects.map((p) => (
+                <Link key={p.id} to={'/terrain-studio/' + p.id}>
+                  {p.title}
+                </Link>
+              ))}
+            </nav>
+          }
+          tools={
+            <label>
+              Project title{' '}
+              <input value={title} onChange={(e) => setTitle(e.target.value)} maxLength={128} />
+            </label>
+          }
+        />
+      ) : (
+        <StudioWorkspace
+          focusChat={focusChat}
+          attention={pending ? 'Working' : undefined}
+          conversation={
+            <aside className="ts-chat">
+              <h2>Design conversation</h2>
+              <ConversationPane
+                label="Terrain design conversation"
+                count={thread?.messages.length ?? 0}
+                firstMessageId={thread?.messages[0]?.id}
+              >
+                {thread?.messages.map((m) => (
+                  <article key={m.id} className={'ts-message ' + m.role}>
+                    <strong>{m.role === 'user' ? 'You' : 'Terrain designer'}</strong>
+                    <p>{m.text}</p>
+                  </article>
+                ))}
+              </ConversationPane>
+              <form
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  void action(send);
+                }}
+              >
+                <label>
+                  Describe your creation or ask a question
+                  <p className="studio-edit-target">
+                    Editing current saved draft · {draft?.revision}
+                  </p>
+                  <ChatInput
+                    rows={5}
+                    maxLength={8000}
+                    value={text}
+                    disabled={retrying}
+                    onChange={(e) => setText(e.target.value)}
+                    placeholder="Create a fungal swamp with slow marsh, glowing wood trees, and renewable mushroom food."
+                    onSend={() => {
+                      if (!busy && !pending && wallet?.enabled && text.trim() && draft && !dirty)
+                        void action(send);
+                    }}
+                  />
+                </label>
+                <details className="studio-attachments">
+                  <summary>
+                    <Icon name="upload" size={18} /> Reference images
+                  </summary>{' '}
+                  <label>
+                    Reference images
+                    <input
+                      type="file"
+                      accept="image/png,image/jpeg,image/webp"
+                      disabled={busy || retrying || !wallet?.enabled}
+                      onChange={(e) => {
+                        const file = e.target.files?.[0];
+                        if (file)
+                          void action(async () => {
+                            const ref = await request<{ hash: string }>(
+                              'POST',
+                              `${ROOT}/threads/${id}/references`,
+                              { body: file },
+                            );
+                            setSelectedRefs((v) => [...new Set([...v, ref.hash])].slice(-4));
+                          });
+                        e.target.value = '';
+                      }}
+                    />
+                  </label>
+                  <small>
+                    Upload artwork you may use as a reference. Up to four selected images guide the
+                    visual style.
+                  </small>
+                  <div className="ts-references">
+                    {thread?.references.map((r) => (
+                      <label key={r.hash}>
+                        <img src={r.url} alt={r.label} />
+                        <input
+                          type="checkbox"
+                          checked={selectedRefs.includes(r.hash)}
+                          disabled={
+                            retrying || (!selectedRefs.includes(r.hash) && selectedRefs.length >= 4)
+                          }
+                          onChange={(e) =>
+                            setSelectedRefs((v) =>
+                              e.target.checked ? [...v, r.hash] : v.filter((h) => h !== r.hash),
+                            )
+                          }
+                        />
+                        Use reference
+                      </label>
+                    ))}
+                  </div>
+                </details>{' '}
                 <button
-                  disabled={busy || ['dispatched', 'uncertain'].includes(pending.status)}
-                  onClick={() =>
-                    void action(async () => {
-                      await request('POST', `${ROOT}/threads/${id}/requests/${pending.id}/cancel`, {
-                        body: {},
-                      });
-                    })
+                  className="primary"
+                  disabled={
+                    busy ||
+                    !!pending ||
+                    dirty ||
+                    !wallet?.enabled ||
+                    !wallet.available ||
+                    !text.trim() ||
+                    !draft
                   }
                 >
-                  Cancel
+                  <Icon name={retrying ? 'refresh' : 'send'} size={18} />{' '}
+                  {retrying ? 'Retry saved request' : 'Send'}
                 </button>
-              </div>
-            )}
-          </aside>
-          <div className="ts-preview">
-            <h2>Your set</h2>
-            {progress && (
-              <>
-                <ol className="ts-stages">
-                  {progress.stages.map((s) => (
-                    <li key={s.id} data-status={s.status}>
-                      <strong>{s.label}</strong>
-                      <span>{s.status}</span>
-                      {s.detail && <small>{s.detail}</small>}
-                    </li>
-                  ))}
-                </ol>
-                {progress.notes.slice(-3).map((n, i) => (
-                  <p role="status" key={i}>
-                    {n.text}
-                  </p>
-                ))}
-                {progress.checks.map((c) => (
-                  <p key={c.id}>
-                    {c.label}: {c.status} · {c.detail}
-                  </p>
-                ))}
-              </>
-            )}
-            {thread?.requests.at(-1)?.error && <p role="alert">{thread.requests.at(-1)?.error}</p>}
-            {draft && (
-              <>
-                <p>
-                  {draft.package.terrains.length} terrains · {draft.package.resources.length}{' '}
-                  resources · revision {draft.revision}
+                {retrying && (
+                  <button
+                    type="button"
+                    disabled={busy}
+                    onClick={() => {
+                      submission.current = null;
+                      setRetrying(false);
+                      studioSession.removeItem(`terrain-studio-turn:${account.id}:${id}`);
+                    }}
+                  >
+                    Discard local retry
+                  </button>
+                )}
+                {dirty && <p>Save your manual edits before asking AI to revise the set.</p>}
+                <p className="studio-compose-help">
+                  Enter to send · Shift + Enter for a new line. Creation requests build
+                  automatically · 1 credit on delivery.
                 </p>
-                <p>
-                  Validated definitions are importable. Review gameplay on your own maps before
-                  relying on balance.
-                </p>
-                {progress?.artifacts
-                  .filter((a) => a.kind === 'preview')
-                  .map((a) => (
-                    <figure key={a.id}>
-                      <img className="set-contact" src={a.url} alt={a.label} />
-                      <figcaption>{a.label} · saved generation preview</figcaption>
-                    </figure>
-                  ))}
-                <SetPreview pack={draft.package} gallery />
-                <div className="ts-entries">
-                  {[...draft.package.terrains, ...draft.package.resources].map((e) => (
-                    <article key={String(e['key'])}>
-                      <h3>
-                        {String(
-                          e['name'] ?? (e['presentation'] as { name?: string })?.name ?? e['key'],
-                        )}
-                      </h3>
-                      <dl>
-                        {Object.entries((e['properties'] as object) ?? {}).map(([k, v]) => (
-                          <div key={k}>
-                            <dt>{propertyLabel(k)}</dt>
-                            <dd>
-                              {typeof v === 'number' && k.endsWith('HealthQ8')
-                                ? `${v / 256} HP per exposed tick`
-                                : typeof v === 'number' && k.endsWith('Q8')
-                                  ? `${v / 256}×`
-                                  : typeof v === 'number' &&
-                                      ['growthRate', 'spreadRate'].includes(k)
-                                    ? `${(v / (k === 'growthRate' ? 65536 : 196608)).toFixed(2)}× wheat`
-                                    : typeof v === 'boolean'
-                                      ? v
-                                        ? 'Yes'
-                                        : 'No'
-                                      : String(v)}
-                            </dd>
-                          </div>
-                        ))}
-                      </dl>
-                      {!!e['yields'] && (
-                        <ul>
-                          {Object.entries(
-                            e['yields'] as Record<
-                              string,
-                              { capacity: number; initial: number; consumption: string }
-                            >,
-                          ).map(([material, yielding]) => (
-                            <li key={material}>
-                              {propertyLabel(material)}: starts at {yielding.initial}, holds{' '}
-                              {yielding.capacity};{' '}
-                              {yielding.consumption === 'one'
-                                ? 'one unit per harvest'
-                                : yielding.consumption === 'infinite'
-                                  ? 'stock remains available after harvesting'
-                                  : 'the whole stock per harvest'}
-                            </li>
-                          ))}
-                        </ul>
-                      )}
-                    </article>
-                  ))}
-                </div>
-                <details className="ts-inspector">
-                  <summary>Manually edit entries, artwork, and release settings</summary>
-                  {dirty && inspectorRevision !== draft.revision && (
-                    <div role="alert">
-                      <p>
-                        Another session saved revision {draft.revision}. Your unsaved edits are
-                        preserved, but saving them may conflict. Copy any edits you want to keep
-                        before loading the saved revision.
-                      </p>
-                      <button
-                        type="button"
-                        onClick={() => {
-                          manualDirty(false);
-                          setInspectorRevision(draft.revision);
-                        }}
-                      >
-                        Discard manual edits and load saved revision
-                      </button>
-                    </div>
+                {!wallet?.available && (
+                  <p>An available Terrain credit is needed to chat or build.</p>
+                )}
+              </form>
+              {pending && (
+                <div role="status">
+                  <p>
+                    {pending.status === 'uncertain'
+                      ? 'The provider outcome needs reconciliation. No duplicate call will be sent.'
+                      : 'Working on your request…'}
+                  </p>
+                  <button
+                    disabled={busy || ['dispatched', 'uncertain'].includes(pending.status)}
+                    onClick={() =>
+                      void action(async () => {
+                        await request(
+                          'POST',
+                          `${ROOT}/threads/${id}/requests/${pending.id}/cancel`,
+                          {
+                            body: {},
+                          },
+                        );
+                      })
+                    }
+                  >
+                    Cancel
+                  </button>
+                  {cancellationReason(pending.status) && (
+                    <p>{cancellationReason(pending.status)}</p>
                   )}
-                  <fieldset disabled={!!pending}>
-                    <SetWorkspace
+                </div>
+              )}
+            </aside>
+          }
+          artifact={
+            <>
+              {undo.delivered !== undefined && (
+                <div className="studio-revisions" role="status">
+                  <span>Generated edits applied to revision {undo.delivered}.</span>
+                  <button
+                    aria-disabled={!undo.canUndo || dirty || !!pending}
+                    onClick={() => {
+                      if (!undo.canUndo || dirty || pending || !undo.before || !draft) return;
+                      const previous = undo.before;
+                      void action(async () => {
+                        await request(
+                          'POST',
+                          `${ROOT}/threads/${id}/drafts/${previous.revision}/restore`,
+                          { body: { expectedRevision: draft.revision } },
+                        );
+                        undo.clear();
+                      });
+                    }}
+                  >
+                    <Icon name="restore" size={18} /> Undo
+                  </button>
+                  {!undo.canUndo && (
+                    <span>A newer draft prevents undo. Use history to restore it.</span>
+                  )}
+                </div>
+              )}
+              <StudioTabs
+                label="Artifact view"
+                value={view}
+                onChange={(next) => {
+                  if (
+                    dirty &&
+                    next !== 'edit' &&
+                    !window.confirm('Leave the editor with unsaved changes?')
+                  )
+                    return;
+                  setView(next);
+                }}
+                items={[
+                  { id: 'preview', label: 'Preview', icon: 'eye' },
+                  { id: 'edit', label: 'Edit', icon: 'pencil' },
+                  { id: 'history', label: 'History', icon: 'restore' },
+                ]}
+              />
+              <div
+                id="studio-panel-artifact-view-preview"
+                role="tabpanel"
+                aria-labelledby="studio-tab-artifact-view-preview"
+                hidden={view !== 'preview'}
+              >
+                {' '}
+                <div className="ts-preview">
+                  <h2>Your set</h2>
+                  <RevisionControls
+                    viewed={viewedRevision?.title ?? 'current saved draft'}
+                    target="current saved draft"
+                    follow={inspected ? () => setInspected('') : undefined}
+                  />
+                  {inspected && !shownDraft && <p role="status">Loading the inspected version…</p>}
+                  {viewedRevision && (
+                    <ValidationSummary version={viewedRevision.title}>
+                      <p>
+                        {viewedRevision.report.valid
+                          ? 'Definition validation passed.'
+                          : 'Definition validation failed.'}
+                      </p>
+                    </ValidationSummary>
+                  )}
+                  {shownProgress && (
+                    <>
+                      <ol className="ts-stages">
+                        {shownProgress.stages.map((s) => (
+                          <li key={s.id} data-status={s.status}>
+                            <strong>{s.label}</strong>
+                            <span>{s.status}</span>
+                            {s.detail && <small>{s.detail}</small>}
+                          </li>
+                        ))}
+                      </ol>
+                      {shownProgress.notes.slice(-3).map((n, i) => (
+                        <p role="status" key={i}>
+                          {n.text}
+                        </p>
+                      ))}
+                      {shownProgress.checks.map((c) => (
+                        <p key={c.id}>
+                          {c.label}: {c.status} · {c.detail}
+                        </p>
+                      ))}
+                    </>
+                  )}
+                  {thread?.requests.find((r) => r.id === shownProgress?.requestId)?.error && (
+                    <p role="alert">
+                      {thread.requests.find((r) => r.id === shownProgress?.requestId)?.error}
+                    </p>
+                  )}
+                  {shownDraft && (
+                    <>
+                      <p>
+                        {shownDraft.package.terrains.length} terrains ·{' '}
+                        {shownDraft.package.resources.length} resources · revision{' '}
+                        {shownDraft.revision}
+                      </p>
+                      <p>
+                        Validated definitions are importable. Review gameplay on your own maps
+                        before relying on balance.
+                      </p>
+                      {shownProgress?.artifacts
+                        .filter((a) => a.kind === 'preview')
+                        .map((a) => (
+                          <figure key={a.id}>
+                            <img className="set-contact" src={a.url} alt={a.label} />
+                            <figcaption>{a.label} · saved generation preview</figcaption>
+                          </figure>
+                        ))}
+                      <SetPreview pack={shownDraft.package} gallery />
+                      <div className="ts-entries">
+                        {[...shownDraft.package.terrains, ...shownDraft.package.resources].map(
+                          (e) => (
+                            <article key={String(e['key'])}>
+                              <h3>
+                                {String(
+                                  e['name'] ??
+                                    (e['presentation'] as { name?: string })?.name ??
+                                    e['key'],
+                                )}
+                              </h3>
+                              <dl>
+                                {Object.entries((e['properties'] as object) ?? {}).map(([k, v]) => (
+                                  <div key={k}>
+                                    <dt>{propertyLabel(k)}</dt>
+                                    <dd>
+                                      {typeof v === 'number' && k.endsWith('HealthQ8')
+                                        ? `${v / 256} HP per exposed tick`
+                                        : typeof v === 'number' && k.endsWith('Q8')
+                                          ? `${v / 256}×`
+                                          : typeof v === 'number' &&
+                                              ['growthRate', 'spreadRate'].includes(k)
+                                            ? `${(v / (k === 'growthRate' ? 65536 : 196608)).toFixed(2)}× wheat`
+                                            : typeof v === 'boolean'
+                                              ? v
+                                                ? 'Yes'
+                                                : 'No'
+                                              : String(v)}
+                                    </dd>
+                                  </div>
+                                ))}
+                              </dl>
+                              {!!e['yields'] && (
+                                <ul>
+                                  {Object.entries(
+                                    e['yields'] as Record<
+                                      string,
+                                      { capacity: number; initial: number; consumption: string }
+                                    >,
+                                  ).map(([material, yielding]) => (
+                                    <li key={material}>
+                                      {propertyLabel(material)}: starts at {yielding.initial}, holds{' '}
+                                      {yielding.capacity};{' '}
+                                      {yielding.consumption === 'one'
+                                        ? 'one unit per harvest'
+                                        : yielding.consumption === 'infinite'
+                                          ? 'stock remains available after harvesting'
+                                          : 'the whole stock per harvest'}
+                                    </li>
+                                  ))}
+                                </ul>
+                              )}
+                            </article>
+                          ),
+                        )}
+                      </div>
+                      <button onClick={() => setView('edit')}>
+                        <Icon name="pencil" size={18} /> Edit & release settings
+                      </button>
+                    </>
+                  )}
+                </div>
+              </div>
+              <div
+                id="studio-panel-artifact-view-edit"
+                role="tabpanel"
+                aria-labelledby="studio-tab-artifact-view-edit"
+                hidden={view !== 'edit'}
+              >
+                <fieldset disabled={!!pending}>
+                  {draft && (
+                    <SetEditor
+                      serverRevision={draft.revision}
                       id={draft.id}
                       key={inspectorRevision}
                       onDirtyChange={manualDirty}
@@ -539,51 +727,108 @@ export function TerrainStudio({ id }: { id?: string }) {
                         void refresh();
                       }}
                     />
-                  </fieldset>
-                </details>
-                <Link className="btn" to={'/sets/drafts/' + draft.id}>
-                  Open set workspace & publish
-                </Link>
-              </>
-            )}
-            {thread?.revisions.length !== 0 && (
-              <details>
-                <summary>Generated revisions</summary>
-                {thread?.revisions.map((r) => (
-                  <article key={r.requestId}>
-                    <h3>{r.title}</h3>
-                    <p>
-                      {r.applied ? 'Applied to the draft' : 'Saved candidate'} · based on revision{' '}
-                      {r.baseRevision}
-                    </p>
-                    <a href={`${ROOT}/threads/${id}/revisions/${r.requestId}/file`}>
-                      Download candidate
-                    </a>
-                    <CandidatePreview url={`${ROOT}/threads/${id}/revisions/${r.requestId}/file`} />
-                    {draft && (
+                  )}
+                </fieldset>
+              </div>
+              <div
+                id="studio-panel-artifact-view-history"
+                role="tabpanel"
+                aria-labelledby="studio-tab-artifact-view-history"
+                hidden={view !== 'history'}
+              >
+                <section aria-label="Saved draft history">
+                  <h2>Previous saved drafts</h2>
+                  {thread?.draftHistory?.map((d) => (
+                    <article key={d.revision}>
+                      <h3>{d.title}</h3>
+                      <p>Saved draft · validation remains version-specific.</p>
+                      <a href={`${ROOT}/threads/${id}/drafts/${d.revision}/file`}>
+                        Download saved draft
+                      </a>
                       <button
-                        disabled={busy || !!pending || dirty || !!draft.publishedVersionId}
+                        disabled={busy || !!pending || dirty}
                         onClick={() =>
                           void action(async () => {
+                            if (
+                              !draft ||
+                              !window.confirm(
+                                'Restore this saved draft? The current draft will remain in history.',
+                              )
+                            )
+                              return;
                             await request(
                               'POST',
-                              `${ROOT}/threads/${id}/requests/${r.requestId}/adopt`,
+                              `${ROOT}/threads/${id}/drafts/${d.revision}/restore`,
                               { body: { expectedRevision: draft.revision } },
                             );
+                            setInspected('');
+                            setFocusChat((n) => n + 1);
                           })
                         }
                       >
-                        Adopt this revision
+                        Edit this saved draft
                       </button>
-                    )}
-                  </article>
-                ))}
-              </details>
-            )}
-          </div>
-        </div>
+                    </article>
+                  ))}
+                </section>{' '}
+                {thread?.revisions.length !== 0 && (
+                  <details>
+                    <summary>Generated revisions</summary>
+                    {thread?.revisions.map((r) => (
+                      <article key={r.requestId}>
+                        <h3>{r.title}</h3>
+                        <button
+                          onClick={() => {
+                            setInspected(r.requestId);
+                            setView('preview');
+                          }}
+                        >
+                          Inspect this version
+                        </button>
+                        <p>
+                          {r.applied ? 'Applied to the draft' : 'Saved candidate'} · based on
+                          revision {r.baseRevision}
+                        </p>
+                        <a href={`${ROOT}/threads/${id}/revisions/${r.requestId}/file`}>
+                          Download candidate
+                        </a>
+                        <CandidatePreview
+                          url={`${ROOT}/threads/${id}/revisions/${r.requestId}/file`}
+                        />
+                        {draft && (
+                          <button
+                            disabled={busy || !!pending || dirty || !!draft.publishedVersionId}
+                            onClick={() =>
+                              void action(async () => {
+                                if (
+                                  !window.confirm(
+                                    'Restore this version as the current draft? The current draft stays in history.',
+                                  )
+                                )
+                                  return;
+                                await request(
+                                  'POST',
+                                  `${ROOT}/threads/${id}/requests/${r.requestId}/adopt`,
+                                  { body: { expectedRevision: draft.revision } },
+                                );
+                                setInspected('');
+                                setFocusChat((n) => n + 1);
+                              })
+                            }
+                          >
+                            Edit this version
+                          </button>
+                        )}
+                      </article>
+                    ))}
+                  </details>
+                )}
+              </div>
+            </>
+          }
+        />
       )}
-    </section>
+    </StudioShell>
   );
 }
 

@@ -1337,7 +1337,7 @@ operational limits.
 `/music-studio` provides CPU-only conversational soundtrack authoring, reached
 through **Build in AI Music Studio** in the Music library. The persistent main sidebar groups
 the studio under Music. REST under
-`/api/v1/music-studio` owns account state, projects, messages, explicit generation,
+`/api/v1/music-studio` owns account state, projects, durable turns, legacy messages/generation,
 cancellation, private artifacts and checkout. `packages/music-studio` owns the
 transactional journal and delivery; `apps/ai-music-worker` owns provider calls,
 bounded agent tools and isolated Python execution. The score/rendering contracts
@@ -1353,6 +1353,17 @@ This prevents repeated source rewrites from consuming the action budget before
 a candidate is ever validated. The three-render limit still applies.
 Common project/message and credit-pack schemas live in `protocol/src/studioCommon.ts`;
 studio-specific settings, products and balances remain separate.
+
+The web client submits `MusicStudioTurn` to `POST /api/v1/music-studio/threads/:id/turns`.
+A turn freezes its UUID, text, settings and optional parent version. The strict
+provider response chooses `discuss` for questions, brainstorming and clarification,
+or `build` for an explicit creation/edit request. Completing a build turn and
+reserving/enqueueing its one generation commit in the same wallet-locked transaction.
+The generation UUID is persisted with the turn before dispatch; retries and replayed
+completions cannot create a second generation. Browser events only refresh saved
+state. Legacy `/messages` and `/generate` retain their contracts and queued work.
+Deploy migration `0053_studio_draft_history.sql`, additive API support and the
+updated workers before deploying the updated web client.
 
 Music uses its own wallets, ledger and Stripe purchases. A generation reserves one
 credit; creating its private immutable music release and consuming the credit

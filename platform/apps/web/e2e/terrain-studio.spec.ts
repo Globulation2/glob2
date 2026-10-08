@@ -159,8 +159,12 @@ test('terrain creation workspace fits desktop and phone and submits one revision
   );
   await page.goto('/terrain-studio/' + id);
   await expect(page.getByRole('heading', { name: 'Fungal swamp', exact: true })).toBeVisible();
+  if (info.project.name === 'phone')
+    await page.getByRole('tab', { name: 'Preview', exact: true }).first().click();
   await expect(page.getByRole('heading', { name: 'Scene and resource gallery' })).toBeVisible();
-  await expect(page.getByText('3 credits available')).toBeVisible();
+  if (info.project.name === 'phone')
+    await page.getByRole('tab', { name: 'Chat', exact: true }).click();
+  await expect(page.getByRole('button', { name: /3 (Building|Terrain) credits/ })).toBeVisible();
   const width = await page.evaluate(() => ({
     content: document.documentElement.scrollWidth,
     viewport: innerWidth,
@@ -181,6 +185,7 @@ test('terrain creation workspace fits desktop and phone and submits one revision
     mimeType: 'image/png',
     buffer: Buffer.from('fixture'),
   };
+  await page.getByText('Reference images', { exact: true }).first().click();
   await page.getByLabel('Reference images', { exact: true }).setInputFiles(reference);
   await expect(page.getByLabel('Use reference')).toBeChecked();
   await page.getByLabel('Reference images', { exact: true }).setInputFiles(reference);
@@ -218,9 +223,9 @@ test('terrain creation workspace fits desktop and phone and submits one revision
   }
   await page.screenshot({ path: resolve(directory, `${info.project.name}.png`), fullPage: true });
   // A background refresh must preserve unsaved inspector values from this tab.
-  await page
-    .getByText('Manually edit entries, artwork, and release settings', { exact: true })
-    .click();
+  if (info.project.name === 'phone')
+    await page.getByRole('tab', { name: 'Preview', exact: true }).first().click();
+  await page.getByRole('tab', { name: 'Edit', exact: true }).click();
   const titleInput = page.getByLabel('Title', { exact: true });
   await titleInput.fill('My unsaved terrain title');
   draftRevision = 2;
