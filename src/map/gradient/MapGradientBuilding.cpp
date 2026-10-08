@@ -7,6 +7,7 @@
 #include "Game.h"
 #include "Unit.h"
 #include "MapInternal.h"
+#include "gradient/GradientRuntime.h"
 #include "BuildingGradientSearch.h"
 #include "BuildingGradientStats.h"
 #include <algorithm>
@@ -42,6 +43,11 @@ void Map::updateGlobalGradient(Building *building, int swimClass, BuildingRoute 
 	assert(gradient);
 	// Diagnostics read the replaced field and its search before reinitialization.
 	if (gradientStats) gradientStats->fieldRebuilding(*this, *building, slot, access, game->stepCounter, topologyGeneration);
+	// A synchronous build supersedes any queued or pending scheduled refresh.
+	building->supersedeGradient(slot);
+	gradientRuntime->countSynchronous();
+	if (const auto &previous = building->globalGradientSearch[slot])
+		building->settledCostHint[slot] = Uint16(std::min(previous->settledCost(), 0xFFFE));
 	// A rebuild replaces the old search and its frozen terrain snapshot.
 	// Keep bucket capacity when possible; a locked field has no pending search.
 	building->dirtyGradient[slot]=false;

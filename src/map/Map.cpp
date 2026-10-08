@@ -540,6 +540,10 @@ void Map::clear()
 	terrainSeedValue = 0;
 	gradientRuntime->preparation={};
 	gradientRuntime->pipeline.reset();
+	// Retires into the buffer pool, so before the pool is cleared below.
+	resetBuildingGradientPipeline();
+	gradientRuntime->buildingSynchronous=0;
+	gradientRuntime->synchronousByReason={};
 	gradientRuntime->overlaySupplierLocations.clear();
 	gradientRuntime->supplierLocationsDirty=true;
 	gradientRuntime->resourceSeeds.reset();

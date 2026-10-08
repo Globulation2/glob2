@@ -15,6 +15,7 @@
 #include <memory>
 #include <mutex>
 #include <optional>
+#include <string_view>
 #include <span>
 #include <vector>
 #include <assert.h>
@@ -109,6 +110,14 @@ class Map
 	mutable ComputeExecutor compute;
 	mutable std::unique_ptr<GradientRuntime> gradientRuntime;
 	unsigned computeExperiments = 0;
+	// Scheduled building gradients (MapGradientScheduling.cpp).
+	void stageBuildingGradientPreparation();
+	SimulationSnapshot::Requirements pendingBuildingRequirements() const;
+	void prepareStagedBuildingGradients(const SimulationSnapshot::Handle& foundation);
+	void resetBuildingGradientPipeline() noexcept;
+	Building *buildingGradientDestination(int team, int id, Uint32 identity) const;
+	void saveBuildingGradientPipeline(GAGCore::OutputStream *stream) const;
+	void loadBuildingGradientPipeline(GAGCore::InputStream *stream, bool packed);
 	// The live cell view minus the game's growth settings, rebound by
 	// refreshLiveView() whenever an input is replaced. Per-cell queries read
 	// it directly instead of assembling a view on every call.
@@ -264,6 +273,48 @@ public:
 	void resetGradientPipeline() noexcept;
 	void setGradientWorkerCount(unsigned workers);
 	void configureGradientPipeline(unsigned workers, unsigned delay);
+	// Scheduled building gradients (MapGradientScheduling.cpp). Team stepping
+	// requests refreshes of existing fields and keeps serving the old ones;
+	// after the tick up to MaxJobsPerTick requests are staged, captured at the
+	// observation boundary, built on workers and published
+	// buildingGradientDelay ticks later. Cold fields stay synchronous; area and
+	// team-wide resets keep old walking fields serving instead of making them
+	// cold (Building::keepsStaleGradients).
+	//! Why a building walking field was built on the owner. cold_* name what
+	//! last dropped the field (never built, idle eviction, the building's own
+	//! reset, a team-wide reset, an area edit).
+	enum class BuildingSyncReason : unsigned char
+	{
+		Inactive, ColdNew, ColdIdle, ColdOwn, ColdTeam, ColdArea, Overflow, Other, Count
+	};
+	static const char *buildingSyncReasonName(BuildingSyncReason reason);
+	struct BuildingGradientPipelineStatus
+	{
+		bool enabled = false;
+		unsigned delay = 0;
+		std::size_t pending = 0, queued = 0;
+		std::uint64_t jobs = 0, published = 0, discarded = 0, synchronous = 0, maxPending = 0, waitNs = 0;
+		std::array<std::uint64_t, std::size_t(BuildingSyncReason::Count)> synchronousByReason{};
+	};
+	//! Tags the next synchronous building build for the counters above.
+	void noteBuildingSyncReason(BuildingSyncReason reason);
+	//! A team-local edit moves current fields to the new topology generation;
+	//! pending results captured at the old one move with them.
+	void carryPendingBuildingGenerations(Uint32 from, Uint32 to);
+	BuildingGradientPipelineStatus buildingGradientPipelineStatus() const;
+	//! Follow the header's buildingGradientDelay now; throws with pending work.
+	void ensureBuildingGradientPipeline();
+	bool buildingGradientPipelineActive() const;
+	//! Queue a refresh of an existing walking field (slot = routeSlot). False
+	//! when the caller must rebuild synchronously (no pipeline: a map without
+	//! a game, or no existing field).
+	bool requestBuildingRefresh(Building *building, int slot);
+	//! Worker depth for a scheduled walking field: every reader still resolves
+	//! its cell first, so the prediction moves CPU, never values.
+	int predictBuildingDepth(const Building *building, int slot) const;
+	//! "table" (default), "full" or "lazy" (seeds only): CPU placement for
+	//! timing comparisons, never results. GLOB2_BUILDING_DEPTH sets it too.
+	void setBuildingGradientDepth(std::string_view mode);
 	void updateTeamAreaGradients(int teamNumber);
 	void seedMaterialGradient(int team, Uint8 resource, int swim, Uint16 *gradient, bool withMarkets = false, const Building* consumer = nullptr, unsigned modes = 0);
 	void seedGuardAreasGradient(int team, int swim, Uint16 *gradient);

@@ -32,13 +32,13 @@ bool Map::prepareBuildingGradient(Building *building, int swimClass, BuildingRou
 	Uint32 lastUpdate=building->lastGlobalGradientUpdateStepCounter[slot];
 	Uint32 now=game->stepCounter;
 	building->globalGradientUsedStep[slot]=now;
-	bool rebuild=false;
+	bool rebuild=false, cold=false;
 	using Reason = BuildingGradientStats::Reason;
 	Reason reason = Reason::Other;
 	if (gradient==NULL)
 	{
 		gradient=acquireBuildingGradientBuffer();
-		rebuild=true;
+		rebuild=cold=true;
 		reason=Reason::Null;
 	}
 	else if ((building->dirtyGradient[slot] || building->gradientGeneration[slot]!=topologyGeneration)
@@ -53,8 +53,21 @@ bool Map::prepareBuildingGradient(Building *building, int swimClass, BuildingRou
 		rebuild=true;
 		reason=Reason::Clearing;
 	}
-	if (rebuild)
+	// With scheduled building gradients a refresh is requested and the old
+	// field keeps serving until its publication; a cold field has none.
+	if (rebuild && (cold || !requestBuildingRefresh(building, slot)))
 	{
+		using Sync = BuildingSyncReason;
+		if (cold)
+			switch (building->gradientDrop[slot])
+			{
+			case Building::GradientDrop::New: noteBuildingSyncReason(Sync::ColdNew); break;
+			case Building::GradientDrop::Idle: noteBuildingSyncReason(Sync::ColdIdle); break;
+			case Building::GradientDrop::Own: noteBuildingSyncReason(Sync::ColdOwn); break;
+			case Building::GradientDrop::Team: noteBuildingSyncReason(Sync::ColdTeam); break;
+			case Building::GradientDrop::Area: noteBuildingSyncReason(Sync::ColdArea); break;
+			}
+		else noteBuildingSyncReason(Sync::Other);
 		if (gradientStats) gradientStats->setPendingReason(reason);
 		updateGlobalGradient(building, swimClass, route);
 	}
@@ -138,7 +151,11 @@ bool Map::pathfindBuilding(Building *building, int swimClass, int x, int y, int 
 	if (building->lastGlobalGradientUpdateStepCounter[slot]+STUCK_REBUILD_TICKS>game->stepCounter)
 		return buildingGradientDirection(building, swimClass, x, y, dx, dy, false, route);
 
-	// Stuck for a while: the gradient may be stale, rebuild it now.
+	// Stuck for a while: the gradient may be stale. A scheduled refresh keeps
+	// sidestepping on the old field until it publishes; otherwise rebuild now.
+	if (requestBuildingRefresh(building, slot))
+		return buildingGradientDirection(building, swimClass, x, y, dx, dy, false, route);
+	noteBuildingSyncReason(BuildingSyncReason::Other);
 	if (gradientStats) gradientStats->setPendingReason(BuildingGradientStats::Reason::Stuck);
 	updateGlobalGradient(building, swimClass, route);
 	if (building->locked[building->routeAccess(swimClass, route)])

@@ -33,6 +33,7 @@ const char *BuildingGradientStats::name(Reason reason)
 	case Reason::Generation: return "generation";
 	case Reason::Clearing: return "clearing";
 	case Reason::Stuck: return "stuck";
+	case Reason::Scheduled: return "scheduled";
 	default: return "other";
 	}
 }

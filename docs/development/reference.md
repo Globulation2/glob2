@@ -98,7 +98,8 @@ presentation does not lease resource-gradient fields.
 
 All parallel simulation work shares the map's `ComputeExecutor`
 (`src/common/ComputeExecutor.h`): blocking `run()` batches for map computation and
-deferred batches for AI decisions and periodic gradients. Each deferred batch carries the tick it is due. Workers run deferred
+deferred batches for AI decisions, periodic gradients and scheduled building
+gradients. Each deferred batch carries the tick it is due. Workers run deferred
 jobs earliest due first, in submission order within a lane. The owner never runs
 deferred work while a worker exists: at a join it only waits, even when the only
 worker also runs presentation, which that worker interleaves with simulation jobs
@@ -1251,8 +1252,26 @@ For timing and scheduling, start with `src/game/Game_sync.cpp` and `src/engine/E
   the existing field/deadline representation. Reconfiguration drains work before
   resizing scratch; teardown drains callbacks and discards reservations. Job-owned
   errors survive executor batch retirement and surface at save/publication.
-- The executor ring holds 36 batches for the combined AI/gradient horizon.
-  Gradient jobs use no AI controller lane and submit no nested deferred work.
+- Stale building walking fields are refreshed by `BuildingGradientPipeline`
+  (`src/map/gradient/`, `MapGradientScheduling.cpp`). Team stepping requests a
+  refresh and keeps serving the old field; after the tick up to four requests are
+  staged, captured at the observation boundary with the periodic job, built on
+  workers and published `buildingGradientDelay` ticks later (the match rule, 1–8,
+  default 8), before team stepping. Publication swaps the field and its search on
+  the owner; it is discarded if a synchronous rebuild or a reset superseded it.
+  Access metadata (`locked`, and a clearing flag's `anyResourceToClear`) follows
+  the newest capture, so it, and the AI's view of it, may lag up to the delay. Team-wide resets and forbidden-area paints keep the old
+  walking fields serving until the refresh publishes, so units may follow a
+  pre-edit field for up to the delay. Fields a building has never had (or lost to
+  idle eviction or its own move, type or range change), queue overflow (more than
+  64 waiting requests) and maps without a game build synchronously.
+  `Map::predictBuildingDepth`, the generated
+  [depth model](../building-gradient-depth-model.md), only moves search work between
+  worker and owner; `GLOB2_BUILDING_DEPTH=full|table|lazy` overrides it for timing.
+- The executor ring holds 48 batches: each deferred producer holds at most its
+  horizon plus one (AI decisions 8, periodic gradients 16, building gradients 8),
+  plus headroom. Gradient jobs use no AI controller lane and submit no nested
+  deferred work.
   Thread counts change execution only. Review scratch ownership, input lifetimes,
   RNG and shared caches before adding another producer.
 - Periodic snapshot seeding uses `SnapshotGradient` and shared `SeedCells`

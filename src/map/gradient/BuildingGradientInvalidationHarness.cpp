@@ -21,7 +21,20 @@
 #include "Unit.h"
 #include "BasePlayer.h"
 #include "Order.h"
+#include "Brush.h"
+#include "SnapshotGradient.h"
+#include "engine/sim/snapshot/WorldSnapshot.h"
+#include <nlohmann/json.hpp>
+#include <string>
 #include <memory>
+#include <chrono>
+#include <stdexcept>
+#include <thread>
+#include "BuildingGradientJob.h"
+#include "Version.h"
+#include <BinaryStream.h>
+#include <TextStream.h>
+#include <StreamBackend.h>
 #include <vector>
 #include <cstdio>
 #include <cstdlib>
@@ -403,6 +416,680 @@ static void delayedFields()
 	}
 	std::puts("PASS delayed resource/guard/clear publication, synchronous supersession, teardown");
 }
+
+// Scheduled kernel equivalence: the worker's building seeder and captured-input
+// search reproduce the synchronous Map path cell for cell, for every route and
+// swim class, across each terrain-cost branch of Map::propagateGradient.
+// Partial searches resume to the same full field.
+enum class KernelTerrain { BuiltinPlain, BuiltinModified, CustomPlain, CustomModified };
+
+void requireSameCells(const std::vector<Uint16>& actual, const Uint16* expected, const std::string& what)
+{
+	for (size_t i = 0; i < actual.size(); ++i)
+		if (actual[i] != expected[i])
+		{
+			INFO(what << " cell " << i << " actual " << actual[i] << " expected " << expected[i]);
+			REQUIRE(actual[i] == expected[i]);
+		}
+}
+
+void scheduledKernelsMatchSynchronous(KernelTerrain config)
+{
+	glob2test::HeadlessGame world({.wDec=6, .hDec=6, .teams=3, .discovered=true, .clearImmobile=true, .loadDefaultRace=true, .header=true});
+	auto& game = world.game;
+	auto& m = game.map;
+	using namespace gradient_preparation;
+	const bool custom = config == KernelTerrain::CustomPlain || config == KernelTerrain::CustomModified;
+	const bool modified = config == KernelTerrain::BuiltinModified || config == KernelTerrain::CustomModified;
+	std::vector<TerrainType> palette = {GRASS, GRASS, GRASS, SAND, WATER};
+	if (config == KernelTerrain::BuiltinModified) { palette.push_back(ICE); palette.push_back(TRAIL); }
+	if (custom)
+	{
+		const char* plain = R"({"schemaVersion":1,"terrains":[
+			{"key":"wp1:deep","name":"Deep","base":"water","appearance":"sand","properties":{"walkable":false,"swimmable":true}},
+			{"key":"wp1:moor","name":"Moor","base":"grass","appearance":"sand","properties":{"walkable":true}}]})";
+		const char* costly = R"({"schemaVersion":1,"terrains":[
+			{"key":"wp1:deep","name":"Deep","base":"water","appearance":"sand","properties":{"walkable":false,"swimmable":true,"groundSpeedQ8":64}},
+			{"key":"wp1:moor","name":"Moor","base":"grass","appearance":"sand","properties":{"groundSpeedQ8":192}}]})";
+		m.game = nullptr;
+		m.importTerrainDefinitions(config == KernelTerrain::CustomModified ? costly : plain);
+		m.setGame(&game);
+		palette.push_back(*m.terrainRegistry().find("wp1:deep"));
+		palette.push_back(*m.terrainRegistry().find("wp1:moor"));
+	}
+	// An overlay building (no ground footprint) seeds its own cells as goals,
+	// and a non-square footprint takes the perimeter reachability branch.
+	auto catalog = nlohmann::json::parse(game.buildingsTypes.snapshotJson());
+	catalog["variants"][game.buildingsTypes.getFinishedTypeNum("hospital")]["semantics"]["occupiesGround"] = false;
+	catalog["variants"][game.buildingsTypes.getFinishedTypeNum("school")]["properties"]["width"] = 3;
+	game.buildingsTypes.loadSnapshotJson(catalog.dump());
+	game.configureBuildingCatalog();
+
+	for (int y = 0; y < 64; ++y)
+		for (int x = 0; x < 64; ++x)
+		{
+			const unsigned h = unsigned(x * 7 + y * 13 + (x * y) % 5);
+			m.setVertexTerrain(x, y, palette[h % palette.size()]);
+			switch ((x * 3 + y * 5 + x * y) % 23)
+			{
+			case 0: m.replaceResource(x, y, Resource{WOOD, 0, 1, 0}); break;
+			case 1: m.replaceResource(x, y, Resource{WHEAT, 0, 1, 0}); break;
+			case 2: m.replaceResource(x, y, Resource{STONE, 0, 1, 0}); break;
+			case 3: m.replaceResource(x, y, Resource{ALGA, 0, 1, 0}); break;
+			case 4: m.addForbidden(x, y, 0); break;
+			case 5: m.addForbidden(x, y, 1); break;
+			case 6: m.markImmobileUnit(x, y, 1); break;
+			default: break;
+			}
+		}
+	REQUIRE(m.hasTerrainMovementModifiers() == modified);
+	REQUIRE((m.terrainRegistry().size() > TERRAIN_COUNT) == custom);
+
+	std::vector<Building*> buildings;
+	auto add = [&](const char* type, int x, int y, int team = 0) {
+		Building* b = world.addBuilding(type, x, y, 0, team);
+		b->unitStayRange = 5;
+		std::fill_n(b->clearingMaterials, MaterialCount, false);
+		b->clearingMaterials[WOOD] = b->clearingMaterials[ALGA] = true;
+		buildings.push_back(b);
+		return b;
+	};
+	add("inn", 4, 4); add("hospital", 14, 4); add("racetrack", 24, 4); add("swimmingpool", 36, 4);
+	add("school", 4, 20); add("explorationflag", 20, 20); add("warflag", 30, 22); add("clearingflag", 40, 24);
+	add("clearingflag", 50, 50)->clearingMaterials[ALGA] = false;
+	add("warflag", 10, 40)->unitStayRange = 0;
+	// A footprint fenced in by forbidden paint is locked for its owner.
+	Building* fenced = add("inn", 50, 34);
+	for (int y = -1; y <= fenced->type->height; ++y)
+		for (int x = -1; x <= fenced->type->width; ++x)
+			m.addForbidden(50 + x, 34 + y, 0);
+	add("inn", 33, 26, 1); add("inn", 26, 28, 2); // an enemy and an ally next to a war flag
+	game.teams[0]->allies |= game.teams[2]->me;
+	REQUIRE(buildings[4]->type->width != buildings[4]->type->height);
+
+	const auto snapshot = SimulationSnapshot::capture(game, SimulationSnapshot::captureCatalog(game),
+		buildingRequirements());
+	const size_t cells = size_t(m.getW()) * m.getH();
+	std::vector<Uint16> actual(cells), partial(cells);
+	int locked = 0, clearing = 0, partials = 0;
+	for (Building* b : buildings)
+		for (BuildingRoute route : {BuildingRoute::Footprint, BuildingRoute::Clearing, BuildingRoute::Combat})
+			for (int swim = 0; swim < SWIM_CLASS_COUNT; ++swim)
+			{
+				const std::string what = std::string(b->type->type) + " route " + std::to_string(int(route)) + " swim " + std::to_string(swim);
+				const int slot = b->routeSlot(swim, route), access = b->routeAccess(swim, route);
+				if (!b->globalGradient[slot]) b->globalGradient[slot] = m.acquireBuildingGradientBuffer();
+				m.updateGlobalGradient(b, swim, route);
+				m.finishBuildingGradient(b, swim, route);
+				const Uint16* expected = b->globalGradient[slot];
+				const auto seed = captureBuildingSeed(*b, swim, route);
+				const auto inputs = BuildingGradientSearch::Inputs::of(m, swim);
+				BuildingGradientSearch search;
+				const auto result = buildBuilding(seed, snapshot, inputs, actual.data(), search, gradient_kernel::COST_LIMIT);
+				INFO(what);
+				REQUIRE(result.locked == b->locked[access]);
+				if (route == BuildingRoute::Clearing) { REQUIRE(int(result.resourceState) == b->anyResourceToClear[swim > 0]); ++clearing; }
+				requireSameCells(actual, expected, what + " full");
+				if (result.locked) { ++locked; continue; }
+				REQUIRE(search.complete());
+				// Partial: settle a few layers, check them, then resume by cell and finish.
+				seedBuilding(seed, snapshot, partial.data());
+				BuildingGradientSearch resumed;
+				resumed.begin(inputs, partial.data(), swim, m.getW(), m.getH());
+				for (int depth : {0, 7, 40, 160})
+				{
+					resumed.resolveToCost(depth);
+					REQUIRE((resumed.complete() || resumed.settledCost() > depth));
+					for (size_t i = 0; i < cells; ++i)
+						if (expected[i] == GRADIENT_FORBIDDEN || (expected[i] > GRADIENT_UNREACHABLE && GRADIENT_AT_GOAL - expected[i] <= depth))
+							REQUIRE(partial[i] == expected[i]);
+				}
+				partials += !resumed.complete();
+				for (size_t i = 0; i < cells; i += 211)
+				{
+					resumed.resolve(i);
+					REQUIRE(partial[i] == expected[i]);
+				}
+				resumed.finish();
+				requireSameCells(partial, expected, what + " resumed");
+				REQUIRE(resumed.poppedEntries() == search.poppedEntries());
+			}
+	REQUIRE(locked > 0);
+	REQUIRE(clearing > 0);
+	REQUIRE(partials > 0);
+
+	std::printf("PASS kernel equivalence terrain=%d: %d locked, %d clearing, %d partial\n",
+		int(config), locked, clearing, partials);
+}
+
+// ── Scheduled building gradients ──
+// Each tick mirrors Game::syncStep: publication, team stepping (where units
+// ask for fields and so request refreshes), the step counter, staging, and the
+// observation boundary that captures and submits the staged jobs.
+struct Scheduler
+{
+	Game& game;
+	Map& map;
+	Scheduler(World& world, unsigned workers, unsigned delay) : game(world.game), map(world.game.map)
+	{
+		game.gameHeader.setBuildingGradientDelay(delay);
+		map.configureCompute(workers + 1, 0);
+		map.configureGradientPipeline(workers, 8);
+	}
+	template <class Teams> void tick(Teams&& teams)
+	{
+		map.advanceGradientPipeline();
+		teams();
+		++game.stepCounter;
+		map.stagePeriodicGradientPreparation();
+		map.preparePendingGradient();
+	}
+	void tick() { tick([] {}); }
+	Map::BuildingGradientPipelineStatus status() const { return map.buildingGradientPipelineStatus(); }
+	size_t cells() const { return size_t(map.getW()) * map.getH(); }
+	std::vector<Uint16> field(const Uint16* values) const { return values ? std::vector<Uint16>(values, values + cells()) : std::vector<Uint16>(); }
+	// A full field equal to what one synchronous build would leave.
+	std::vector<Uint16> finished(Building* b, int swim, BuildingRoute route = BuildingRoute::Footprint)
+	{
+		map.finishBuildingGradient(b, swim, route);
+		return field(b->globalGradient[b->routeSlot(swim, route)]);
+	}
+	Uint16 at(Building* b, int x, int y, int slot = 0) const { return b->globalGradient[slot][map.coordToIndex(x, y)]; }
+};
+
+std::string saveRuntime(Map& map, bool text = false)
+{
+	auto* backend = new GAGCore::MemoryStreamBackend;
+	std::unique_ptr<GAGCore::OutputStream> out(text
+		? static_cast<GAGCore::OutputStream*>(new GAGCore::TextOutputStream(backend))
+		: static_cast<GAGCore::OutputStream*>(new GAGCore::BinaryOutputStream(backend)));
+	map.saveRuntimeState(out.get());
+	out->flush();
+	return backend->takeContents();
+}
+
+void loadRuntime(Map& map, const std::string& bytes, bool text = false)
+{
+	auto* backend = new GAGCore::MemoryStreamBackend;
+	backend->write(bytes.data(), bytes.size());
+	backend->seekFromStart(0);
+	std::unique_ptr<GAGCore::InputStream> in(text
+		? static_cast<GAGCore::InputStream*>(new GAGCore::TextInputStream(backend))
+		: static_cast<GAGCore::InputStream*>(new GAGCore::BinaryInputStream(backend)));
+	map.loadRuntimeState(in.get(), VERSION_MINOR);
+}
+
+// 1. Fixed-deadline publication across worker counts and delays.
+void scheduledFixedDeadlines()
+{
+	for (unsigned workers : {0u, 1u, 2u, 4u, 8u})
+		for (unsigned delay : {1u, 4u, 8u})
+		{
+			World world;
+			Scheduler s(world, workers, delay);
+			Building* b = world.place(24, 24);
+			int dist = 0;
+			require(world.available(b, 2, 2), "cold field is built synchronously");
+			const auto synchronous = s.status().synchronous;
+			s.game.stepCounter = DIRTY_GRACE_TICKS + 1;
+			s.map.addForbidden(10, 10, 0);
+			s.tick([&] {
+				s.map.buildingAvailable(b, 0, 2, 2, &dist);
+				require(s.status().queued == 1, "a stale field requests a refresh");
+			});
+			const Uint32 captured = s.game.stepCounter;
+			require(s.status().pending == 1 && s.status().jobs == 1, "the request is staged after the tick");
+			for (unsigned i = 1; i < delay; ++i)
+				s.tick([&] {
+					require(s.at(b, 10, 10) != GRADIENT_FORBIDDEN && s.status().published == 0, "old field until the deadline");
+					s.map.buildingAvailable(b, 0, 2, 2, &dist);
+				});
+			s.map.advanceGradientPipeline();
+			const auto status = s.status();
+			require(status.published == 1 && status.jobs == 1 && status.discarded == 0, "one publication despite repeated requests");
+			require(s.at(b, 10, 10) == GRADIENT_FORBIDDEN, "replacement visible on the deadline");
+			require(b->lastGlobalGradientUpdateStepCounter[0] == captured, "the field's age is its capture tick");
+			require(status.synchronous == synchronous, "no owner rebuild");
+			const auto published = s.finished(b, 0);
+			s.map.updateGlobalGradient(b, 0);
+			require(published == s.finished(b, 0), "published field equals a synchronous build of the captured world");
+		}
+	std::puts("PASS scheduled building fields publish at fixed deadlines across workers 0/1/2/4/8 and delays 1/4/8");
+}
+
+// 2. A request made during team stepping is captured at the boundary.
+void scheduledCaptureAtBoundary()
+{
+	World world;
+	Scheduler s(world, 2, 4);
+	Building* b = world.place(24, 24);
+	require(world.available(b, 2, 2), "cold field");
+	s.game.stepCounter = DIRTY_GRACE_TICKS + 1;
+	s.map.addForbidden(10, 10, 0);
+	s.tick([&] {
+		require(world.available(b, 2, 2), "old field still serves");
+		require(s.status().queued == 1 && s.status().pending == 0, "queued, not captured, during team stepping");
+		s.map.addForbidden(11, 10, 0); // Later in the same tick: part of the capture.
+	});
+	s.map.addForbidden(12, 10, 0); // After the boundary: not part of it.
+	for (int i = 1; i < 4; ++i) s.tick();
+	s.map.advanceGradientPipeline();
+	require(s.status().published == 1, "published");
+	require(s.at(b, 10, 10) == GRADIENT_FORBIDDEN && s.at(b, 11, 10) == GRADIENT_FORBIDDEN, "the capture follows the whole tick");
+	require(s.at(b, 12, 10) != GRADIENT_FORBIDDEN, "the capture precedes later edits");
+	require(b->gradientGeneration[0] != s.map.topologyGeneration, "a later edit leaves the published field stale");
+	std::puts("PASS requests during team stepping are captured at the observation boundary");
+}
+
+// 3. Partial fields resume on the owner from transferred buckets. The depth
+// setting moves work between worker and owner, never values.
+void scheduledPartialResume()
+{
+	enum class Depth { Table, Full, Lazy };
+	std::vector<Uint16> reference;
+	for (unsigned workers : {0u, 2u})
+	for (Depth mode : {Depth::Table, Depth::Full, Depth::Lazy})
+	{
+		World world(8);
+		Scheduler s(world, workers, 4);
+		s.map.setBuildingGradientDepth(mode == Depth::Full ? "full" : mode == Depth::Lazy ? "lazy" : "table");
+		const int pool = globalContainer->buildingsTypes.getTypeNum("swimmingpool", 0, true);
+		require(pool >= 0, "swimming pool site type");
+		Building* b = s.game.addBuilding(100, 100, pool, 0, 1, 1);
+		require(b != nullptr, "pool site placed");
+		int dist = 0;
+		require(s.map.buildingAvailable(b, 0, 98, 98, &dist), "cold field");
+		const int depth = s.map.predictBuildingDepth(b, 0);
+		require((mode == Depth::Full) == (depth == gradient_kernel::COST_LIMIT), "only full depth settles everything");
+		s.game.stepCounter = DIRTY_GRACE_TICKS + 1;
+		s.map.addForbidden(10, 10, 0);
+		s.tick([&] { s.map.buildingAvailable(b, 0, 98, 98, &dist); });
+		for (int i = 1; i < 4; ++i) s.tick();
+		s.map.advanceGradientPipeline();
+		require(s.status().published == 1, "published");
+		auto* search = b->globalGradientSearch[0].get();
+		// The table may settle a small map entirely; lazy publishes seeds only.
+		const bool partial = !search || !search->complete();
+		require(search && (mode == Depth::Full ? !partial : mode == Depth::Lazy ? partial : true)
+			&& (!partial || search->settledCost() > depth), "the published field carries its frontier");
+		const auto workerPopped = search->poppedEntries();
+		require(s.map.buildingAvailable(b, 0, 230, 230, &dist), "far query resolves on the owner");
+		require(!partial || search->poppedEntries() > workerPopped, "the owner continues the transferred search");
+		const auto resumed = s.finished(b, 0);
+		const auto resumedPopped = b->globalGradientSearch[0]->poppedEntries();
+		s.map.updateGlobalGradient(b, 0);
+		const auto full = s.finished(b, 0);
+		require(resumed == full, "resumed values equal a full build");
+		require(resumedPopped == b->globalGradientSearch[0]->poppedEntries(), "no rescan: the same entries as one full build");
+		if (reference.empty()) reference = resumed;
+		require(resumed == reference, "every depth setting publishes the same values");
+		std::printf("PASS scheduled field depth mode %d (depth %d, worker popped %llu of %llu) resumes from transferred buckets\n",
+			int(mode), depth, (unsigned long long)workerPopped, (unsigned long long)resumedPopped);
+	}
+}
+
+// 4. Synchronous rebuilds and lifecycle hooks supersede; jobs share a deadline.
+void scheduledSupersession()
+{
+	World world;
+	Scheduler s(world, 4, 4);
+	Building* a = world.place(24, 24);
+	Building* b = world.place(40, 40);
+	Building* c = world.place(8, 40);
+	Building* d = world.place(40, 8);
+	for (Building* x : {a, b, c, d}) require(world.available(x, 2, 2), "cold field");
+	s.game.stepCounter = 600; // Past the idle eviction age as well.
+	s.map.addForbidden(10, 10, 0);
+	s.tick([&] { for (Building* x : {a, b, c, d}) world.available(x, 2, 2); });
+	require(s.status().pending == 4 && s.status().jobs == 4, "four jobs admitted in one tick");
+	s.tick([&] {
+		s.map.updateGlobalGradient(a, 0);    // synchronous rebuild
+		c->resetPathfindGradients();         // lifecycle reset
+		d->globalGradientUsedStep[0] = 0;
+		d->freeIdleGradients();              // idle eviction
+		b->dirtyGradients();                 // a later notification, after capture
+	});
+	require(!c->globalGradient[0] && !d->globalGradient[0], "dropped fields");
+	const auto expectedA = s.finished(a, 0);
+	for (int i = 2; i < 4; ++i) s.tick();
+	s.map.advanceGradientPipeline();
+	const auto status = s.status();
+	require(status.published == 1 && status.discarded == 3, "only the unsuperseded job publishes at the shared deadline");
+	require(s.finished(a, 0) == expectedA, "a stale result cannot overwrite a synchronous rebuild");
+	require(!c->globalGradient[0] && !d->globalGradient[0], "dropped fields stay dropped");
+	require(s.at(b, 10, 10) == GRADIENT_FORBIDDEN && b->dirtyGradient[0], "publication keeps notifications after the capture");
+	require(!b->refreshRequested.any() && !a->refreshRequested.any(), "no request outlives its job");
+	std::puts("PASS synchronous rebuilds, resets and evictions supersede; several jobs share a deadline");
+}
+
+// 5. Pending results survive save boundaries and cannot resurrect evicted fields.
+void scheduledSaveBoundaries()
+{
+	for (unsigned workers : {0u, 1u, 2u})
+		for (unsigned phase = 0; phase < 4; ++phase)
+			for (bool text : {false, true})
+			{
+				if (text && workers) continue;
+				World source, restored;
+				Scheduler s(source, workers, 4), r(restored, workers, 4);
+				std::vector<Building*> buildings[2];
+				for (auto* x : {&s, &r})
+				{
+					World& w = x == &s ? source : restored;
+					auto& list = buildings[x == &s ? 0 : 1];
+					list = {w.place(24, 24), w.place(40, 40)};
+					for (Building* b : list) require(w.available(b, 2, 2), "cold field");
+					x->game.stepCounter = 600;
+					x->map.addForbidden(10, 10, 0);
+					x->tick([&] { for (Building* b : list) w.available(b, 2, 2); });
+					list[1]->globalGradientUsedStep[0] = 0;
+					list[1]->freeIdleGradients(); // evicted while its job is pending
+				}
+				for (unsigned p = 0; p < phase; ++p) { s.tick(); r.tick(); }
+				const auto bytes = saveRuntime(s.map, text);
+				require(s.status().pending == 2, "saving keeps both jobs pending");
+				loadRuntime(r.map, bytes, text);
+				require(r.status().pending == 2, "loading restores the pending jobs");
+				require(saveRuntime(r.map, text) == bytes, "a restored pipeline saves the same bytes");
+				for (unsigned p = phase; p < 3; ++p)
+				{
+					require(r.at(buildings[1][0], 10, 10) != GRADIENT_FORBIDDEN, "no early publication after loading");
+					s.tick(); r.tick();
+				}
+				s.map.advanceGradientPipeline(); r.map.advanceGradientPipeline();
+				for (int i : {0, 1})
+				{
+					Scheduler& x = i ? r : s;
+					Building* b = buildings[i][0];
+					require(x.status().published == 1, "restored result publishes at its original deadline");
+					require(x.at(b, 10, 10) == GRADIENT_FORBIDDEN && b->lastGlobalGradientUpdateStepCounter[0] == 601, "same capture");
+					require(!buildings[i][1]->globalGradient[0], "an evicted destination stays absent");
+				}
+				require(s.finished(buildings[0][0], 0) == r.finished(buildings[1][0], 0), "same published field");
+				require(saveRuntime(s.map, text) == saveRuntime(r.map, text), "continuation and resumed runs agree");
+			}
+	std::puts("PASS pending building results survive saves at phases 0..3 (workers 0/1/2, binary and text) without resurrection");
+}
+
+// A header delay changed with an empty pipeline (a fork, or a new header before
+// the first tick) saves the new delay, and an empty saved section of another
+// delay still loads: it carries no deadlines to remap.
+void scheduledEmptyPipelineFollowsHeaderDelay()
+{
+	World source, restored;
+	Scheduler s(source, 1, 4), r(restored, 1, 2);
+	s.tick(); r.tick();
+	require(s.status().pending == 0 && s.status().queued == 0, "nothing in flight");
+	const auto before = saveRuntime(s.map);
+	loadRuntime(r.map, before); // saved delay 4, match rules 2, nothing pending
+	require(r.status().delay == 2, "the loaded pipeline follows the header");
+	s.game.gameHeader.setBuildingGradientDelay(2);
+	const auto after = saveRuntime(s.map);
+	require(s.status().delay == 2, "saving applies the changed header first");
+	loadRuntime(r.map, after);
+	require(saveRuntime(r.map) == after, "the re-headered save round trips");
+	std::puts("PASS an empty building pipeline follows a changed header delay through save and load");
+}
+
+// 6. A deleted building's pending result cannot replace a reused destination.
+void scheduledReusedDestination()
+{
+	for (unsigned workers : {0u, 4u})
+	{
+		World world;
+		Scheduler s(world, workers, 4);
+		Building* old = world.place(24, 24);
+		require(world.available(old, 2, 2), "cold field");
+		const auto gid = old->gid;
+		const auto identity = old->scriptIdentity;
+		s.game.stepCounter = 200;
+		s.map.addForbidden(10, 10, 0);
+		s.tick([&] { world.available(old, 2, 2); });
+		require(s.status().pending == 1, "pending");
+		world.remove({old});
+		s.map.setMapDiscovered();
+		Building* replacement = s.game.addBuilding(40, 40, world.siteType, 0, 1, 1);
+		require(replacement && replacement->gid == gid && replacement->scriptIdentity != identity, "destination reused with a new lifetime");
+		require(world.available(replacement, 2, 2), "replacement's cold field");
+		const auto field = s.finished(replacement, 0);
+		for (int i = 1; i < 4; ++i) s.tick();
+		s.map.advanceGradientPipeline();
+		require(s.status().discarded == 1 && s.finished(replacement, 0) == field, "the old result is discarded untouched");
+	}
+	std::puts("PASS a deleted building's pending result cannot replace a reused destination");
+}
+
+// 7. Access metadata follows the newest capture across swim classes and saves.
+void scheduledAccessMetadata()
+{
+	World world;
+	Scheduler s(world, 2, 4);
+	Building* b = world.place(24, 24);
+	int dist = 0;
+	for (int swim : {1, 3}) require(s.map.buildingAvailable(b, swim, 2, 2, &dist), "cold field");
+	const int access = b->routeAccess(1, BuildingRoute::Footprint);
+	require(access == b->routeAccess(3, BuildingRoute::Footprint), "classes 1 and 3 share one access variant");
+	std::vector<std::pair<int, int>> fence;
+	for (int y = 23; y <= 24 + world.siteH; ++y)
+		for (int x = 23; x <= 24 + world.siteW; ++x)
+			if (x == 23 || y == 23 || x == 24 + world.siteW || y == 24 + world.siteH) fence.push_back({x, y});
+	auto paint = [&](bool on) { for (auto [x, y] : fence) on ? s.map.addForbidden(x, y, 0) : s.map.removeForbidden(x, y, 0); };
+	s.game.stepCounter = DIRTY_GRACE_TICKS + 1;
+	paint(true);
+	s.tick([&] { s.map.buildingAvailable(b, 1, 2, 2, &dist); }); // captures the fence: locked
+	s.tick([&] {
+		paint(false);
+		s.map.updateGlobalGradient(b, 3); // stamped with the capture's tick, but newer
+		require(!b->locked[access], "synchronous build sees the open fence");
+	});
+	for (int i = 2; i < 4; ++i) s.tick();
+	s.map.advanceGradientPipeline();
+	require(s.status().published == 1 && !b->locked[access], "an older capture cannot overwrite newer access metadata");
+	s.game.stepCounter += DIRTY_GRACE_TICKS;
+	paint(true);
+	s.tick([&] { s.map.buildingAvailable(b, 1, 2, 2, &dist); });
+	for (int i = 1; i < 4; ++i) s.tick();
+	s.map.advanceGradientPipeline();
+	require(s.status().published == 2 && b->locked[access], "the newest capture writes access metadata");
+	const auto bytes = saveRuntime(s.map);
+	loadRuntime(s.map, bytes);
+	require(b->locked[access], "saves keep the published metadata");
+	std::puts("PASS access metadata follows the newest capture across swim classes and saves");
+}
+
+// 8. With the pipeline on, a team-wide reset or a forbidden-area paint keeps
+// the building's walking field serving and refreshes it on schedule, at once
+// and with no owner build. A building's own change still drops it, and with
+// the pipeline off every reset drops it.
+void scheduledResetsKeepStaleFields()
+{
+	for (auto cause : {Building::GradientDrop::Area, Building::GradientDrop::Team})
+	for (unsigned workers : {0u, 2u})
+	{
+		World world;
+		Scheduler s(world, workers, 4);
+		Building* b = world.place(24, 24);
+		require(world.available(b, 2, 2), "cold walking field");
+		s.tick(); // Configures the pipeline.
+		s.game.stepCounter += 300;
+		s.map.updateGlobalGradient(b, 0);
+		const Uint16* walking = b->globalGradient[0];
+		const auto values = s.finished(b, 0);
+		s.game.stepCounter += 10; // Inside the dirty throttle: a kept field is due anyway.
+		s.map.addForbidden(10, 10, 0);
+		b->resetPathfindGradients(cause);
+		require(b->globalGradient[0] == walking && s.finished(b, 0) == values, "the stale field keeps serving");
+		const auto before = s.status();
+		Uint32 captured = 0;
+		s.tick([&] {
+			require(world.available(b, 2, 2) && s.status().queued == 1, "served while a refresh is requested");
+			captured = s.game.stepCounter + 1;
+		});
+		require(s.status().pending == 1 && s.status().synchronous == before.synchronous, "one scheduled refresh, no owner build");
+		for (int i = 1; i < 4; ++i) s.tick([&] { world.available(b, 2, 2); });
+		s.map.advanceGradientPipeline();
+		const auto after = s.status();
+		require(after.published == before.published + 1 && after.synchronous == before.synchronous, "published on schedule");
+		require(s.at(b, 10, 10) == GRADIENT_FORBIDDEN && b->lastGlobalGradientUpdateStepCounter[0] == captured,
+			"refreshed from the capture");
+		const auto published = s.finished(b, 0);
+		s.map.updateGlobalGradient(b, 0);
+		require(published == s.finished(b, 0), "the published field equals a synchronous build");
+		b->resetPathfindGradients(Building::GradientDrop::Own);
+		require(!b->globalGradient[0], "an own reset drops the field");
+		require(world.available(b, 2, 2), "rebuilt cold");
+		const auto reasons = s.status().synchronousByReason;
+		require(reasons[size_t(Map::BuildingSyncReason::ColdOwn)] == 1, "the cold rebuild is counted by its drop cause");
+	}
+	{
+		World world;
+		Building* b = world.place(24, 24);
+		require(world.available(b, 2, 2), "cold field");
+		b->resetPathfindGradients(Building::GradientDrop::Area);
+		require(!b->globalGradient[0], "with the pipeline off an area reset drops the field");
+	}
+	std::puts("PASS area and team-wide resets keep stale walking fields serving and refresh them on schedule");
+}
+
+// 9. Slow and failing workers never move the publication tick.
+void slowWorker(const building_gradient::Job&) { std::this_thread::sleep_for(std::chrono::milliseconds(30)); }
+void failingWorker(const building_gradient::Job&) { throw std::runtime_error("injected building gradient failure"); }
+
+void scheduledSlowAndFailingWorkers()
+{
+	std::vector<Uint16> reference;
+	for (auto hook : {(void (*)(const building_gradient::Job&))nullptr, &slowWorker})
+		for (unsigned workers : {0u, 2u})
+		{
+			building_gradient::workHook = hook;
+			World world;
+			Scheduler s(world, workers, 4);
+			Building* b = world.place(24, 24);
+			require(world.available(b, 2, 2), "cold field");
+			s.game.stepCounter = DIRTY_GRACE_TICKS + 1;
+			s.map.addForbidden(10, 10, 0);
+			s.tick([&] { world.available(b, 2, 2); });
+			for (int i = 1; i < 4; ++i) s.tick([&] { require(s.status().published == 0, "never early"); });
+			s.map.advanceGradientPipeline();
+			require(s.status().published == 1, "never late");
+			const auto field = s.finished(b, 0);
+			if (reference.empty()) reference = field;
+			require(field == reference, "same result whatever the worker's timing");
+		}
+	for (bool atSave : {false, true})
+		for (unsigned workers : {0u, 2u})
+		{
+			building_gradient::workHook = &failingWorker;
+			World world;
+			Scheduler s(world, workers, 4);
+			Building* b = world.place(24, 24);
+			require(world.available(b, 2, 2), "cold field");
+			s.game.stepCounter = DIRTY_GRACE_TICKS + 1;
+			s.map.addForbidden(10, 10, 0);
+			s.tick([&] { world.available(b, 2, 2); });
+			for (int i = 1; i < 4; ++i) s.tick();
+			bool thrown = false;
+			try { atSave ? (void)saveRuntime(s.map) : s.map.advanceGradientPipeline(); }
+			catch (const std::runtime_error&) { thrown = true; }
+			require(thrown, atSave ? "a failure surfaces at save" : "a failure surfaces at publication");
+			require(s.at(b, 10, 10) != GRADIENT_FORBIDDEN, "a failed result never publishes");
+			building_gradient::workHook = nullptr;
+		}
+	building_gradient::workHook = nullptr;
+	std::puts("PASS slow and failing workers never change the publication tick; failures surface at publication or save");
+}
+// 10. A team-local forbidden edit carries other teams' current fields forward
+// to the new topology generation (Game::executeAlterForbidden). A pending
+// result captured before the edit moves with them, so it is not stale on
+// arrival, as the synchronous path's field is not.
+void scheduledForbiddenEditCarriesPendingGeneration()
+{
+	auto paint = [](World& w) {
+		Utilities::BitArray mask(1);
+		mask.set(0, true);
+		std::shared_ptr<Order> order(new OrderAlterForbidden(0, BrushTool::MODE_ADD, 5, 5, 1, 1, mask));
+		order->sender = 0;
+		w.game.executeOrder(order, 0);
+	};
+	{
+		World world; // synchronous reference
+		Building* rival = world.place(40, 40, 1);
+		require(world.available(rival, 2, 2), "cold field");
+		world.game.stepCounter = DIRTY_GRACE_TICKS + 1;
+		world.game.map.addForbidden(10, 10, 0);
+		require(world.available(rival, 2, 2), "synchronous refresh");
+		paint(world);
+		require(rival->gradientGeneration[0] == world.game.map.topologyGeneration,
+			"synchronous: the team-local edit keeps the rival's field current");
+	}
+	World world;
+	Scheduler s(world, 2, 4);
+	Building* rival = world.place(40, 40, 1);
+	require(world.available(rival, 2, 2), "cold field");
+	s.game.stepCounter = DIRTY_GRACE_TICKS + 1;
+	s.map.addForbidden(10, 10, 0);
+	s.tick([&] { world.available(rival, 2, 2); });
+	require(s.status().pending == 1, "the rival's refresh is pending");
+	paint(world);
+	for (int i = 1; i < 4; ++i) s.tick();
+	s.map.advanceGradientPipeline();
+	require(s.status().published == 1, "published");
+	require(rival->gradientGeneration[0] == s.map.topologyGeneration,
+		"scheduled: the published field is current like the synchronous one");
+	std::puts("PASS a pending result keeps the generation a team-local edit carries forward");
+}
+
+// 11. Two swim classes of one access variant captured at the same
+// boundary publish in request order, and the later one writes the shared
+// access metadata, as the later synchronous build does. A boundary repeated
+// within one tick (direct map stepping) gives the two captures different
+// worlds, so the order is observable.
+void scheduledSameTickSwimClassesKeepRequestOrder()
+{
+	auto fence = [](World& world, bool on) {
+		for (int y = 23; y <= 24 + world.siteH; ++y)
+			for (int x = 23; x <= 24 + world.siteW; ++x)
+				if (x == 23 || y == 23 || x == 24 + world.siteW || y == 24 + world.siteH)
+					on ? world.game.map.addForbidden(x, y, 0) : world.game.map.removeForbidden(x, y, 0);
+	};
+	int dist = 0;
+	{
+		World world; // synchronous reference
+		Building* b = world.place(24, 24);
+		for (int swim : {1, 3}) require(world.game.map.buildingAvailable(b, swim, 2, 2, &dist), "cold field");
+		const int access = b->routeAccess(1, BuildingRoute::Footprint);
+		auto paint = [&](bool on) { fence(world, on); };
+		world.game.stepCounter = DIRTY_GRACE_TICKS + 1;
+		paint(true);
+		world.game.map.buildingAvailable(b, 1, 2, 2, &dist);
+		require(b->locked[access], "synchronous: the fenced build locks");
+		paint(false);
+		world.game.map.buildingAvailable(b, 3, 2, 2, &dist);
+		require(!b->locked[access], "synchronous: the later build of the same tick wins");
+	}
+	World world;
+	Scheduler s(world, 2, 4);
+	Building* b = world.place(24, 24);
+	for (int swim : {1, 3}) require(s.map.buildingAvailable(b, swim, 2, 2, &dist), "cold field");
+	const int access = b->routeAccess(1, BuildingRoute::Footprint);
+	require(access == b->routeAccess(3, BuildingRoute::Footprint), "classes 1 and 3 share one access variant");
+	auto paint = [&](bool on) { fence(world, on); };
+	s.game.stepCounter = DIRTY_GRACE_TICKS + 1;
+	paint(true);
+	s.tick([&] { s.map.buildingAvailable(b, 1, 2, 2, &dist); }); // captures the fence
+	paint(false);
+	s.map.buildingAvailable(b, 3, 2, 2, &dist); // same tick, open fence
+	s.map.stagePeriodicGradientPreparation();
+	s.map.preparePendingGradient();
+	require(s.status().pending == 2, "both swim classes are pending with one capture tick");
+	require(b->lastGlobalGradientUpdateStepCounter[b->routeSlot(1, BuildingRoute::Footprint)] < s.game.stepCounter, "nothing published yet");
+	for (int i = 1; i < 4; ++i) s.tick();
+	s.map.advanceGradientPipeline();
+	require(s.status().published == 2, "both published at one deadline");
+	require(!b->locked[access], "scheduled: the later capture of the same tick wins, like the synchronous build");
+	std::puts("PASS same-tick swim classes write access metadata in request order");
+}
+
 }
 
 TEST_SUITE("BuildingGradientInvalidation")
@@ -451,5 +1138,74 @@ TEST_SUITE("BuildingGradientInvalidation")
 	{
 		glob2test::HeadlessGlobals globals;
 		idleFieldStorageIsReusedWithoutStaleRoutes();
+	}
+	TEST_CASE("snapshot building seeds and captured-input searches match the synchronous kernels for every route and swim class")
+	{
+		for (auto config : {KernelTerrain::BuiltinPlain, KernelTerrain::BuiltinModified,
+				KernelTerrain::CustomPlain, KernelTerrain::CustomModified})
+		{
+			glob2test::HeadlessGlobals globals;
+			scheduledKernelsMatchSynchronous(config);
+		}
+	}
+	TEST_CASE("scheduled building fields publish at fixed deadlines across worker counts and delays")
+	{
+		glob2test::HeadlessGlobals globals;
+		scheduledFixedDeadlines();
+	}
+	TEST_CASE("requests during team stepping are captured at the observation boundary")
+	{
+		glob2test::HeadlessGlobals globals;
+		scheduledCaptureAtBoundary();
+	}
+	TEST_CASE("partial scheduled fields resume on the owner from transferred buckets")
+	{
+		glob2test::HeadlessGlobals globals;
+		scheduledPartialResume();
+	}
+	TEST_CASE("synchronous rebuilds and lifecycle hooks supersede pending jobs that share a deadline")
+	{
+		glob2test::HeadlessGlobals globals;
+		scheduledSupersession();
+	}
+	TEST_CASE("pending building results survive save boundaries and cannot resurrect evicted fields")
+	{
+		glob2test::HeadlessGlobals globals;
+		scheduledSaveBoundaries();
+	}
+	TEST_CASE("a deleted building's pending result cannot replace a reused destination")
+	{
+		glob2test::HeadlessGlobals globals;
+		scheduledReusedDestination();
+	}
+	TEST_CASE("access metadata follows the newest capture across swim classes and saves")
+	{
+		glob2test::HeadlessGlobals globals;
+		scheduledAccessMetadata();
+	}
+	TEST_CASE("area and team-wide resets keep stale walking fields serving with the pipeline on")
+	{
+		glob2test::HeadlessGlobals globals;
+		scheduledResetsKeepStaleFields();
+	}
+	TEST_CASE("slow and failing workers never change the publication tick")
+	{
+		glob2test::HeadlessGlobals globals;
+		scheduledSlowAndFailingWorkers();
+	}
+	TEST_CASE("a pending result keeps the generation a team-local edit carries forward")
+	{
+		glob2test::HeadlessGlobals globals;
+		scheduledForbiddenEditCarriesPendingGeneration();
+	}
+	TEST_CASE("same-tick swim classes write access metadata in request order")
+	{
+		glob2test::HeadlessGlobals globals;
+		scheduledSameTickSwimClassesKeepRequestOrder();
+	}
+	TEST_CASE("an empty building pipeline follows a changed header delay through save and load")
+	{
+		glob2test::HeadlessGlobals globals;
+		scheduledEmptyPipelineFollowsHeaderDelay();
 	}
 }

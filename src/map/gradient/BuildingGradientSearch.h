@@ -21,6 +21,20 @@ class Map;
 // full-field API and save representation without refreshing the field's age.
 class BuildingGradientSearch
 {
+  public:
+	// The immutable cost planes a search reads. The owner takes them from the
+	// Map's frozen snapshots in O(1); a worker search never touches the Map.
+	struct Inputs
+	{
+		std::shared_ptr<const TerrainRegistry> registry;
+		std::shared_ptr<const TerrainMovementSnapshot> profiles;
+		std::shared_ptr<const std::vector<std::uint8_t>> water;
+		bool modifiedCosts = false;
+		unsigned buckets = 64;
+		static Inputs of(const Map &map, int swim);
+	};
+
+  private:
 	std::array<GradientBucket, GradientBucket::COUNT> buckets;
 	std::shared_ptr<const TerrainRegistry> registry;
 	std::shared_ptr<const TerrainMovementSnapshot> profiles;
@@ -33,6 +47,7 @@ class BuildingGradientSearch
 	int currentCost = 0, swimClass = 0;
 	std::uint64_t popped = 0;
 	int widthMask = 0, heightMask = 0;
+	template <class Done> void advance(Done done);
 
   public:
 	// Diagnostic depth histogram: popped entries per DEPTH_BIN_COST cost band,
@@ -50,15 +65,20 @@ class BuildingGradientSearch
 	std::array<std::uint64_t, DEPTH_BINS> poppedAtDepth{};
 
 	void begin(const Map &map, std::uint16_t *seeded, int swim);
+	// Same search from captured inputs; width and height are powers of two.
+	void begin(const Inputs &inputs, std::uint16_t *seeded, int swim, int width, int height);
 	// target == cells finishes the field. A whole cost layer is completed to
 	// preserve equal-distance sidesteps as well as the requested scalar value.
 	void resolve(std::size_t target);
 	void finish() { resolve(cells); }
+	// Settles whole cost layers up to and including cost. Settled values equal
+	// a full build's, and later resolve() calls continue from the same queues.
+	void resolveToCost(int cost);
+	// The first cost layer not yet expanded: every cheaper cell is final.
+	int settledCost() const { return currentCost; }
 	bool complete() const { return pending == 0; }
 	bool resolved(std::size_t target) const;
 	std::uint64_t poppedEntries() const { return popped; }
-	// Every cost below this value is settled; the next layer to expand.
-	int settledCost() const { return currentCost; }
 	std::size_t retainedBytes() const;
 	void clearForReuse();
 };

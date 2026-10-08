@@ -169,6 +169,27 @@ TEST_SUITE("ExperimentalFeatures")
 		CHECK(!parseExperimentKey("Guard-Area-Balancing").has_value());
 	}
 
+	TEST_CASE("the building gradient delay defaults to eight and round trips through headers")
+	{
+		GameHeader header;
+		CHECK(header.getBuildingGradientDelay() == GameHeader::DEFAULT_BUILDING_GRADIENT_DELAY);
+		CHECK(GameHeader::DEFAULT_BUILDING_GRADIENT_DELAY == 8);
+		header.setBuildingGradientDelay(2);
+		for (int form = 0; form < 2; ++form)
+		{
+			auto* memory = new MemoryStreamBackend;
+			BinaryOutputStream out(memory);
+			if (form == 0) header.save(&out); else header.saveWithoutPlayerInfo(&out);
+			out.flush();
+			auto* copy = new MemoryStreamBackend(memory->getBuffer(), memory->getPosition());
+			copy->seekFromStart(0);
+			BinaryInputStream in(copy);
+			GameHeader loaded;
+			REQUIRE((form == 0 ? loaded.load(&in, VERSION_MINOR) : loaded.loadWithoutPlayerInfo(&in, VERSION_MINOR)));
+			CHECK(loaded.getBuildingGradientDelay() == 2);
+		}
+	}
+
 	TEST_CASE("text form round trips and ignores keys this build does not know")
 	{
 		ExperimentSet empty;
@@ -292,13 +313,13 @@ TEST_SUITE("ExperimentalFeatures")
 			CHECK(current->getPosition() == bytes.size());
 
             // Build the older wire layout explicitly: version 123 has neither
-            // experiment/catalog/artwork/resource-experiment tails nor the format-143 delay
-            // byte following the common gameLatency/orderRate prefix.
+            // experiment/catalog/artwork/resource-experiment tails nor the format-143 and
+            // format-148 delay bytes following the common gameLatency/orderRate prefix.
             const std::string sectionBytes = bytesOf(original.getExperiments());
             const size_t emptyCatalogTails = 3*sizeof(Uint32); // building catalog, artwork, resource experiments
-            REQUIRE(bytes.size() > sectionBytes.size()+emptyCatalogTails+sizeof(Uint8));
+            REQUIRE(bytes.size() > sectionBytes.size()+emptyCatalogTails+2*sizeof(Uint8));
             std::string legacyBytes=bytes.substr(0,bytes.size()-sectionBytes.size()-emptyCatalogTails);
-            legacyBytes.erase(sizeof(Sint32)+sizeof(Uint8),sizeof(Uint8));
+            legacyBytes.erase(sizeof(Sint32)+sizeof(Uint8),2*sizeof(Uint8));
             const size_t legacySize=legacyBytes.size();
             auto* legacy = new MemoryStreamBackend(legacyBytes.data(),legacySize);
 			legacy->seekFromStart(0);
@@ -310,6 +331,7 @@ TEST_SUITE("ExperimentalFeatures")
 			GLOB2_REQUIRE(read, "version 123 form loads");
 			CHECK(older.getExperiments().empty());
             CHECK(older.getAIOrderDelay()==0);
+            CHECK(older.getBuildingGradientDelay()==GameHeader::DEFAULT_BUILDING_GRADIENT_DELAY);
 			CHECK(legacy->getPosition() == legacySize);
 			if (form == 0)
 				CHECK(older.getNumberOfPlayers() == original.getNumberOfPlayers());

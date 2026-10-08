@@ -7,7 +7,9 @@
 // This is the version of map and savegame format, and all of the recorded data on the server
 #define VERSION_MAJOR 0
 #define MINIMUM_VERSION_MINOR 58
-#define VERSION_MINOR 147
+#define VERSION_MINOR 148
+// version 148 adds the match-wide building gradient delay rule and pending scheduled
+//             building gradient state.
 // version 147 removes round-trip resource fetching: workers always fetch greedily, and
 //             saves drop the round-trip fields that earlier formats carry and the loader discards.
 // version 146 stores terrain once per map vertex.

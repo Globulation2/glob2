@@ -21,12 +21,15 @@ class Map;
 // simulation state and never write it, so a run's checksums, RNG, saves and
 // replays are identical with or without them.
 //
-// Each field lifetime ends with one row: a rebuild that replaces it, a drop
-// (Building::resetPathfindGradients), an idle eviction or the end of the run.
+// Each field lifetime ends with one row: a rebuild or scheduled publication that
+// replaces it, a drop (Building::resetPathfindGradients), an idle eviction or
+// the end of the run. With the stats on, scheduled fields are published with
+// only their seeds settled, so a lifetime's settled depth is what its readers
+// needed, as the depth model is fitted on; the depth never changes a result.
 class BuildingGradientStats
 {
   public:
-	enum class Reason : std::uint8_t { Null, Dirty, Generation, Clearing, Stuck, Other, Count };
+	enum class Reason : std::uint8_t { Null, Dirty, Generation, Clearing, Stuck, Scheduled, Other, Count };
 	enum class Event : std::uint8_t { Rebuild, Drop, Evict, End, Count };
 
 	static constexpr int DEPTH_BINS = BuildingGradientSearch::DEPTH_BINS;

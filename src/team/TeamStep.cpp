@@ -494,7 +494,7 @@ void Team::dirtyGlobalGradient()
 	{
 		Building *b=myBuildings[id];
 		if (b)
-			b->resetPathfindGradients();
+			b->resetPathfindGradients(Building::GradientDrop::Team);
 	}
 }
 

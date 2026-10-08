@@ -173,9 +173,12 @@ diagnostic `BuildingGradientStats` (`src/map/gradient/BuildingGradientStats.h`).
 reads simulation state: checksums, RNG, saves and replays are identical with it on or
 off, and without it every hook is a null-pointer test. Each building walking-field
 lifetime ends with one row in `gradient-stats.csv` in the output directory: a rebuild
-(`reason` = `null`, `dirty`, `generation`, `clearing`, `stuck` or `other`), a `drop`
-(`Building::resetPathfindGradients`), an idle `evict` or the run's `end`. A row
-describes the lifetime that just ended (`age`, `prev_complete`, `prev_settled_cost`,
+(`reason` = `null`, `dirty`, `generation`, `clearing`, `stuck`, `scheduled` for a
+scheduled field's publication, or `other`), a `drop` (`Building::resetPathfindGradients`),
+an idle `evict` or the run's `end`. Unless `GLOB2_BUILDING_DEPTH` says otherwise, the
+statistics publish scheduled fields with only their seeds settled (`lazy` depth), so each
+lifetime's settled depth is what its readers needed; the depth moves CPU, never results.
+A row describes the lifetime that just ended (`age`, `prev_complete`, `prev_settled_cost`,
 `prev_settled_tiles`, `prev_popped`, `prev_queries` = resolve calls, `prev_extensions` =
 calls that expanded the search, and `popped_at_depth_0..31`, popped entries per 80-cost
 band of eight land tiles with the last band open-ended) together with how that
@@ -269,12 +272,25 @@ modes use inline scheduled AI decisions. Measure the additional work separately.
 `compute_deferred_batches`, `compute_deferred_jobs`, `compute_owner_jobs`,
 `compute_worker_jobs`, `compute_join_wait_ns`, `compute_wait_ns`, and
 `compute_active_elapsed_ns`. The deferred, owner, worker and join wait figures cover
-every deferred batch (AI decisions and periodic gradients) as the executor
+every deferred batch (AI decisions, periodic and building gradients) as the executor
 saw them. `compute_owner_jobs` is zero whenever the executor has workers, since the
 owner only waits at joins; `compute_join_wait_ns` is that waiting. The
 `ai_pipeline` object reports the AI scheduler's own view of its work.
 `hiring_prepasses` counts candidate-scan hooks and
 `hiring_popped_entries` counts advanced entries, including stale entries.
+`building_gradient_jobs`, `building_gradient_published` and
+`building_gradient_discarded` count scheduled building walking fields admitted,
+installed at their deadline and dropped (superseded or destination gone);
+`building_gradient_max_pending` is the deepest queue and `building_gradient_wait_ns`
+the owner's time joining jobs at their deadlines; `building_gradient_pending` is the
+number still in flight when the run ended. `building_gradient_synchronous` counts
+building walking fields built on the owner: cold fields, queue overflow and stuck
+units' rebuilds when no refresh can be queued. An area paint or a team-wide reset
+keeps a building's walking fields serving and refreshes them on schedule instead
+of dropping them. `building_gradient_synchronous_by_reason` splits that count:
+`cold_*` by what last dropped the field (`new`, `idle` eviction, the building's
+`own` reset, a `team`-wide reset, an `area` paint), then `overflow`, `inactive`
+(a map without a game, as in the editor) and `other`.
 `setup_ns` ends before `Engine::run`; `run_ns` includes that call's finalization.
 
 The nested `ai_pipeline` object reports session counters:
@@ -319,7 +335,8 @@ Use these separate instrumented runs for tick-time distributions; ordinary
 paired timing runs retain the default loop and do not pay histogram sampling.
 
 Snapshot pools have seventeen slots per component/plane: the longest consumer horizon
-(sixteen-tick map-gradient jobs; eight-tick AI decisions lease the same captures) plus the
+(sixteen-tick map-gradient jobs; eight-tick AI decisions and building gradients lease the
+same captures) plus the
 store's latest capture. Slots allocate on
 demand and retain reusable capacity. Lease counters include the store's latest snapshot
 and references from pooled components, rather than counting only workers. Shared catalog
@@ -404,8 +421,8 @@ in performance comparisons; moving work off the owner does not itself establish 
 
 `--compute-threads` sizes the shared executor, including the owner. The deprecated
 `--gradient-workers 0` selects owner-only gradient jobs: the owner computes each
-periodic job inline when it submits it, outside the executor, and publication keeps
-its deadline. A positive value selects
+periodic and building job inline when it submits it, outside the executor, and
+publication keeps its deadline. A positive value selects
 shared jobs and, unless `--compute-threads` is explicit, requests that value plus
 one total threads. It no longer creates a separate pool or imposes a per-gradient
 concurrency cap. `gradient_workers` reports available shared background threads

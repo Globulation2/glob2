@@ -234,7 +234,10 @@ Map::GradientPipelineStatus Map::gradientPipelineStatus() const
 		metrics.maxPending, metrics.waitNs, pipeline.activeElapsedNs(), metrics.preparationNs};
 }
 
-bool Map::hasPendingGradientPreparation() const { return gradientRuntime->preparation.job != nullptr; }
+bool Map::hasPendingGradientPreparation() const
+{
+	return gradientRuntime->preparation.job != nullptr || !gradientRuntime->stagedBuildings.empty();
+}
 namespace {
 gradient_preparation::Request gradientRequest(const GradientRuntime::Preparation& p, const Map& map)
 {
@@ -250,7 +253,9 @@ gradient_preparation::Request gradientRequest(const GradientRuntime::Preparation
 }
 SimulationSnapshot::Requirements Map::pendingGradientRequirements() const
 {
-    return hasPendingGradientPreparation() ? gradientRequest(gradientRuntime->preparation, *this).requirements() : 0;
+    // One capture serves the periodic job and every staged building job.
+    const auto periodic=gradientRuntime->preparation.job ? gradientRequest(gradientRuntime->preparation, *this).requirements() : 0;
+    return periodic | pendingBuildingRequirements();
 }
 void Map::preparePendingGradient()
 {
@@ -263,11 +268,13 @@ void Map::preparePendingGradient()
 void Map::preparePendingGradient(const SimulationSnapshot::Handle& foundation)
 {
     if (!hasPendingGradientPreparation()) return;
-    const auto request=gradientRequest(gradientRuntime->preparation, *this);
     if (!foundation.terrain || foundation.terrain->revision != terrainGeneration() ||
         foundation.worldIdentity != identity() || foundation.tick != game->stepCounter ||
         foundation.width != getW() || foundation.height != getH())
         throw std::invalid_argument("Gradient preparation requires the current observation boundary");
+    prepareStagedBuildingGradients(foundation);
+    if (!gradientRuntime->preparation.job) return;
+    const auto request=gradientRequest(gradientRuntime->preparation, *this);
     auto projected=foundation.project(request.requirements());
     auto* job=std::exchange(gradientRuntime->preparation, {}).job;
     job->request=request;
@@ -277,15 +284,41 @@ void Map::preparePendingGradient(const SimulationSnapshot::Handle& foundation)
     });
 }
 
-void Map::advanceGradientPipeline() { preparePendingGradient(); gradientRuntime->pipeline.advance(); }
-void Map::finishGradientPipeline() { preparePendingGradient(); gradientRuntime->pipeline.finish(); }
-void Map::resetGradientPipeline() noexcept { gradientRuntime->preparation={}; gradientRuntime->pipeline.reset(); }
-void Map::setGradientWorkerCount(unsigned workers) { preparePendingGradient(); gradientRuntime->pipeline.setWorkerCount(workers); }
+void Map::advanceGradientPipeline()
+{
+	preparePendingGradient();
+	ensureBuildingGradientPipeline();
+	gradientRuntime->pipeline.advance();
+	// Building fields publish after the periodic planes, before teams step.
+	if (gradientRuntime->buildings.enabled()) gradientRuntime->buildings.advance();
+}
+void Map::finishGradientPipeline()
+{
+	preparePendingGradient();
+	gradientRuntime->pipeline.finish();
+	gradientRuntime->buildings.finish();
+}
+void Map::resetGradientPipeline() noexcept
+{
+	gradientRuntime->preparation={};
+	gradientRuntime->pipeline.reset();
+	resetBuildingGradientPipeline();
+}
+void Map::setGradientWorkerCount(unsigned workers)
+{
+	preparePendingGradient();
+	gradientRuntime->pipeline.setWorkerCount(workers);
+	gradientRuntime->buildingShared = workers != 0;
+	gradientRuntime->buildings.setWorkerCount(workers);
+}
 
 void Map::configureGradientPipeline(unsigned workers, unsigned delay)
 {
 	if (workers>16 || delay<1 || delay>16) throw std::invalid_argument("Invalid gradient pipeline configuration");
 	preparePendingGradient();
+	gradientRuntime->buildingShared = workers != 0;
+	if (gradientRuntime->buildings.enabled()) gradientRuntime->buildings.setWorkerCount(workers);
+	ensureBuildingGradientPipeline();
 	gradientRuntime->pipeline.onPublished = [this](Uint16** slot) { publishPlane(slot); };
 	// Staged after tick c-1's step counter advanced to c, a job published
 	// `remaining` advances later is joined at the start of step c+remaining-1.
@@ -367,6 +400,8 @@ void Map::syncStep(Uint32 stepCounter, bool preparePeriodic)
 void Map::stagePeriodicGradientPreparation()
 {
 	preparePendingGradient();
+	// Building requests are admitted first; the periodic job below may return early.
+	stageBuildingGradientPreparation();
 	using Kind = GradientRuntime::Preparation::Kind;
 	// Queue membership and round-robin flags belong to the simulation owner.
 	// Reserve before AI lazy refreshes so invalidation can supersede this job

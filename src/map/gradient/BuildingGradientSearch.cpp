@@ -17,12 +17,34 @@ using gradient_kernel::LAND_STEPS;
 using gradient_kernel::WATER_STEP;
 using gradient_kernel::weightedClass;
 
+BuildingGradientSearch::Inputs BuildingGradientSearch::Inputs::of(const Map &map, int swim)
+{
+	Inputs inputs;
+	inputs.modifiedCosts = map.hasTerrainMovementModifiers();
+	inputs.registry = map.frozenTerrainRegistry();
+	inputs.buckets = map.terrainQueueBuckets();
+	// Modified costs follow the map's compact cell profiles; otherwise only
+	// weighted swimmers need to know which cells are water.
+	if (inputs.modifiedCosts)
+		inputs.profiles = map.frozenTerrainMovementSnapshot(swim);
+	else if (weightedClass(swim))
+		inputs.water = map.frozenWaterSnapshot();
+	return inputs;
+}
+
 void BuildingGradientSearch::begin(const Map &map, std::uint16_t *seeded, int swim)
 {
+	begin(Inputs::of(map, swim), seeded, swim, map.getW(), map.getH());
+}
+
+void BuildingGradientSearch::begin(const Inputs &inputs, std::uint16_t *seeded, int swim,
+								   int width, int height)
+{
+	assert(width > 0 && height > 0 && !(width & (width - 1)) && !(height & (height - 1)));
 	gradient = seeded;
-	cells = std::size_t(map.getW()) * map.getH();
-	widthMask = map.getMaskW();
-	heightMask = map.getMaskH();
+	cells = std::size_t(width) * height;
+	widthMask = width - 1;
+	heightMask = height - 1;
 	swimClass = swim;
 	currentCost = 0;
 	popped = 0;
@@ -31,13 +53,11 @@ void BuildingGradientSearch::begin(const Map &map, std::uint16_t *seeded, int sw
 	poppedAtDepth.fill(0);
 	for (auto &bucket : buckets)
 		bucket.clear();
-	modifiedCosts = map.hasTerrainMovementModifiers();
-	registry = map.frozenTerrainRegistry();
-	terrainBuckets = map.terrainQueueBuckets();
-	// Modified costs follow the map's compact cell profiles; otherwise only
-	// weighted swimmers need to know which cells are water.
+	modifiedCosts = inputs.modifiedCosts;
+	registry = inputs.registry;
+	terrainBuckets = inputs.buckets;
 	const bool dynamic = modifiedCosts;
-	profiles = dynamic ? map.frozenTerrainMovementSnapshot(swim) : nullptr;
+	profiles = dynamic ? inputs.profiles : nullptr;
 	if (dynamic)
 	{
 		gradient_kernel::runtime_terrain::validateQueue(profiles->movement, terrainBuckets);
@@ -48,7 +68,9 @@ void BuildingGradientSearch::begin(const Map &map, std::uint16_t *seeded, int sw
 			b.clear();
 	}
 	auto *queues = dynamic ? custom->buckets.data() : buckets.data();
-	water = !modifiedCosts && weightedClass(swim) ? map.frozenWaterSnapshot() : nullptr;
+	water = !modifiedCosts && weightedClass(swim) ? inputs.water : nullptr;
+	assert(!dynamic || profiles);
+	assert(dynamic || !weightedClass(swim) || water);
 	// Building fields have only zero-cost seeds, so no deferred seeds are needed.
 	for (std::size_t i = 0; i < cells; ++i)
 	{
@@ -83,9 +105,23 @@ void BuildingGradientSearch::resolve(std::size_t target)
 		return;
 	++extensions;
 	PERF_SCOPE_TIME(BuildingGradientResume);
+	advance([&] { return target != cells && resolved(target); });
+}
+
+void BuildingGradientSearch::resolveToCost(int cost)
+{
+	// Owner-free: workers call this, so it records no telemetry scope.
+	if (complete() || currentCost > cost)
+		return;
+	advance([&] { return currentCost > cost; });
+}
+
+// Expands one whole cost layer per iteration until done() or the queues drain.
+template <class Done> void BuildingGradientSearch::advance(Done done)
+{
 	auto sweep = [&](auto weighted, EntrySteps waterSteps, auto waterAt)
 	{
-		while (pending && (target == cells || !resolved(target)))
+		while (pending && !done())
 		{
 			assert(currentCost <= COST_LIMIT);
 			popped += buckets[currentCost % BUCKETS].size;
@@ -100,7 +136,7 @@ void BuildingGradientSearch::resolve(std::size_t target)
 	{
 		auto run = [&]<unsigned N>()
 		{
-			while (pending && (target == cells || !resolved(target)))
+			while (pending && !done())
 			{
 				popped += custom->buckets[unsigned(currentCost) % N].size;
 				poppedAtDepth[depthBin(currentCost)] += custom->buckets[unsigned(currentCost) % N].size;

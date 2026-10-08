@@ -313,6 +313,9 @@ struct HeadlessRunner
 			else throw std::invalid_argument("unknown save request: " + save);
 		}
 		auto mapFile=one(options,"--map-file"); auto saved=one(options,"--load-game");
+		std::vector<std::string> forkSettings;
+		if(saved.empty() && options.count("--fork-rule"))
+			throw std::invalid_argument("--fork-rule requires --load-game");
 		if(mapFile.empty() == saved.empty()) throw std::invalid_argument("choose exactly one of --map-file and --load-game");
 		auto &requested = mapFile.empty() ? saved : mapFile;
 		// A bare ".map"/".game" path prefers an existing ".gz" sibling, matching how
@@ -325,6 +328,22 @@ struct HeadlessRunner
 				if(options.count(key)) throw std::invalid_argument(std::string(key)+" cannot override a saved game");
 			if(engine.initCustom(saved)!=Engine::EE_NO_ERROR) throw std::invalid_argument("cannot load saved game");
 			if(globals.automaticEndingSteps <= int(engine.gui.game.stepCounter)) throw std::invalid_argument("tick limit must exceed the saved tick");
+			// An explicit fork, never a silent continuation: the loaded match's
+			// rules change before its first tick, the recorded replay starts
+			// here and result.json lists the fork. Only settings whose change
+			// needs no pending work to be remapped are accepted.
+			auto& header=engine.gui.game.gameHeader;
+			for(const auto &rule : many(options,"--fork-rule"))
+			{
+				if(rule.rfind("buildingGradientDelay=",0)!=0) throw std::invalid_argument("--fork-rule accepts only buildingGradientDelay=N");
+				applyGameRule(header, rule);
+				forkSettings.push_back("rule:"+rule);
+			}
+			const auto buildings=engine.gui.game.map.buildingGradientPipelineStatus();
+			if(!forkSettings.empty() && (buildings.pending || buildings.queued))
+				throw std::invalid_argument("cannot fork a saved game with pending building gradients");
+			// Apply the forked delay now, so a save before the first tick records it.
+			engine.gui.game.map.ensureBuildingGradientPipeline();
 		}
 		else
 		{
@@ -501,6 +520,7 @@ struct HeadlessRunner
 		PerformanceTelemetry::collector().reset();
 		Game &game=engine.gui.game;
 		const auto pipelineResult = game.map.gradientPipelineStatus();
+		const auto buildingResult = game.map.buildingGradientPipelineStatus();
 		engine.trackTeamEliminations();
 		std::ostringstream result;
 		// A game the win probability model called is reported distinctly from one
@@ -535,6 +555,18 @@ struct HeadlessRunner
 			<< ",\"gradient_preparation_ns\":" << pipelineResult.preparationNs
 			<< ",\"gradient_active_elapsed_ns\":" << pipelineResult.activeElapsedNs
 			<< ",\"compute_active_elapsed_ns\":" << game.map.computeExecutor().activeNs()
+			<< ",\"building_gradient_jobs\":" << buildingResult.jobs
+			<< ",\"building_gradient_published\":" << buildingResult.published
+			<< ",\"building_gradient_discarded\":" << buildingResult.discarded
+			<< ",\"building_gradient_synchronous\":" << buildingResult.synchronous
+			<< ",\"building_gradient_max_pending\":" << buildingResult.maxPending
+			<< ",\"building_gradient_wait_ns\":" << buildingResult.waitNs
+			<< ",\"building_gradient_pending\":" << buildingResult.pending
+			<< ",\"building_gradient_synchronous_by_reason\":{";
+		for (std::size_t reason = 0; reason < buildingResult.synchronousByReason.size(); ++reason)
+			result << (reason ? "," : "") << quote(Map::buildingSyncReasonName(Map::BuildingSyncReason(reason)))
+				<< ':' << buildingResult.synchronousByReason[reason];
+		result << '}'
 			<< ",\"hiring_prepasses\":" << game.map.hiringPrepasses
 			<< ",\"hiring_popped_entries\":" << game.map.hiringPoppedEntries;
 		if (auto *stats = game.map.gradientStats.get())
@@ -586,7 +618,15 @@ struct HeadlessRunner
 		comma=false;
 		for(const auto& [name,value]:gameRuleValues(game.gameHeader))
 		{ if(comma)result<<','; comma=true; result<<quote(name)<<':'<<value; }
-		result << "}},";
+		result << "}";
+		if(!saved.empty())
+		{
+			result << ",\"fork\":[";
+			comma=false;
+			for(const auto& setting:forkSettings) { if(comma)result<<','; comma=true; result<<quote(setting); }
+			result << ']';
+		}
+		result << "},";
 		Headless::playersAndTeamsJson(result, game, engine.teamEliminatedTick);
 		result << ",\"javascriptControllers\":[";
 		bool scriptComma = false;
@@ -732,7 +772,7 @@ int runHeadlessCommand(int argc,char **argv)
 			std::cout << "}" << std::endl;return 0;
 		}
 		const std::set<std::string> common={"--output-dir","--profile","--building-catalog","--building-artwork"};
-		const std::set<std::string> gameKeys={"--diagnostic-fields","--diagnostic-interval","--diagnostic-png","--benchmark-warmup","--ai-script","--map-script","--map-file","--load-game","--game-seed","--player","--ai-param","--alliance","--win-condition","--win-probability","--experiment","--rule","--ticks","--compute-threads","--compute-experiments","--gradient-workers","--gradient-delay","--ai-order-delay","--save","--telemetry","--replay","--generator","--map-seed","--param","--candidates"};
+		const std::set<std::string> gameKeys={"--diagnostic-fields","--diagnostic-interval","--diagnostic-png","--benchmark-warmup","--ai-script","--map-script","--map-file","--load-game","--game-seed","--player","--ai-param","--alliance","--win-condition","--win-probability","--experiment","--rule","--fork-rule","--ticks","--compute-threads","--compute-experiments","--gradient-workers","--gradient-delay","--ai-order-delay","--save","--telemetry","--replay","--generator","--map-seed","--param","--candidates"};
 		const std::set<std::string> mapKeys={"--generator","--map-seed","--param","--candidates","--rotations","--write-map","--report","--perturb"};
 		Options options;
 		for(int i=2;i<argc;++i)

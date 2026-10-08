@@ -665,6 +665,20 @@ elapse before it can judge a field, and takes the constant from that header rath
 than copying it — when the interval was raised from 25 to 100, a local copy here
 silently stopped covering it and the regression passed stale fields.
 
+The scheduled cases run the suite's worlds with the default scheduled building
+pipeline: worker kernels match the synchronous seeding and search for every route,
+swim class and terrain-cost branch; fields publish at fixed deadlines across workers
+0/1/2/4/8 and delays 1/4/8; requests are captured at the observation boundary;
+partial fields resume from transferred buckets with every depth setting; synchronous
+rebuilds, resets, evictions and reused destinations supersede; pending results
+survive saves at every phase; access metadata follows the newest capture, in request
+order within one tick; area and team-wide resets keep stale fields serving; a
+team-local forbidden edit carries pending generations forward; and slow or failing
+workers never move publication. `GradientPipeline/*` covers the pipeline template
+alone, and `python3 test/check_gradient_pipeline.py BINARY` adds a building pass
+forked with `--fork-rule buildingGradientDelay=N` (delays 1/4/8, workers 0/1/2/4/8,
+save/resume at every phase, full/table/lazy depth, rejected delays 0 and 9).
+
 To see the harness fail, drop `gradientGeneration[swimClass] != topologyGeneration`
 from `Map::buildingGradient`: `ring-after`, `ring-other-team` and `ring-flag` all
 fail. `ring-before` passes either way by construction — nothing is cached before

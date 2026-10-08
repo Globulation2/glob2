@@ -163,13 +163,37 @@ void Building::dirtyGradients()
 		locked[i] = false;
 }
 
-void Building::resetPathfindGradients()
+// With scheduled building gradients, an edit elsewhere (a team-wide reset or a
+// forbidden-area paint) leaves this building's goals in place: its walking
+// fields keep serving, stale, and the next use requests a scheduled refresh at
+// once (the dirty throttle counts as spent). Only a field without a usable old
+// value (none, or locked) is dropped and rebuilt cold. The building's own
+// changes (moves, types, ranges) still drop everything.
+bool Building::keepsStaleGradients(GradientDrop cause) const
 {
+	return (cause == GradientDrop::Area || cause == GradientDrop::Team) && owner->game->map.buildingGradientPipelineActive();
+}
+
+void Building::resetPathfindGradients(GradientDrop cause)
+{
+	const bool keep = keepsStaleGradients(cause);
+	const Uint32 now = owner->game->stepCounter;
+	const Uint32 due = now >= GRADIENT_DIRTY_REBUILD_TICKS ? now - GRADIENT_DIRTY_REBUILD_TICKS : 0;
+	std::bitset<BUILDING_GRADIENT_COUNT> kept;
+	for (int i=0; i<BUILDING_GRADIENT_COUNT; i++)
+		kept[i] = keep && globalGradient[i] && !locked[routeAccess(i % SWIM_CLASS_COUNT, BuildingRoute(i / SWIM_CLASS_COUNT))];
 	dirtyGradients();
 	auto *stats = owner->game->map.gradientStats.get();
 	for (int i=0; i<BUILDING_GRADIENT_COUNT; i++)
 	{
+		if (kept[i])
+		{
+			supersedeGradient(i);
+			lastGlobalGradientUpdateStepCounter[i] = std::min(lastGlobalGradientUpdateStepCounter[i], due);
+			continue;
+		}
 		if (stats) stats->fieldReleased(*this, i, BuildingGradientStats::Event::Drop, owner->game->stepCounter);
+		dropGradientSlot(i, cause);
 		recycleBuildingGradientSearch(std::move(globalGradientSearch[i]));
 		owner->game->map.recycleBuildingGradientBuffer(globalGradient[i]);
 		globalGradient[i] = NULL;
@@ -188,6 +212,7 @@ void Building::freeIdleGradients()
 		{
 			if (auto *stats = owner->game->map.gradientStats.get())
 				stats->fieldReleased(*this, c, BuildingGradientStats::Event::Evict, now);
+			dropGradientSlot(c, GradientDrop::Idle);
 			recycleBuildingGradientSearch(std::move(globalGradientSearch[c]));
 			owner->game->map.recycleBuildingGradientBuffer(globalGradient[c]);
 			globalGradient[c] = NULL;
@@ -202,6 +227,7 @@ void Building::freeGradients()
 	dirtyGradients();
 	for (int i=0; i<BUILDING_GRADIENT_COUNT; i++)
 	{
+		dropGradientSlot(i, GradientDrop::New);
 		globalGradientSearch[i].reset();
 		delete[] globalGradient[i];
 		globalGradient[i] = NULL;

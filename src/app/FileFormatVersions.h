@@ -237,3 +237,7 @@ static constexpr int FILE_FORMAT_VERSION_VERTEX_TERRAIN = 146;
 //! Resource fetching is greedy only: buildings save their walking fields' last-use
 //! steps without the retired round-trip fields that formats 95-146 carried.
 static constexpr int FILE_FORMAT_VERSION_GREEDY_FETCHING = 147;
+
+//! Scheduled building gradients: the match-wide delay (GameHeader::buildingGradientDelay)
+//! and the pending building gradient pipeline state.
+static constexpr int FILE_FORMAT_VERSION_BUILDING_GRADIENT_PIPELINE = 148;

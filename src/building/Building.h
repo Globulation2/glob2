@@ -4,6 +4,7 @@
 #pragma once
 
 #include "Material.h"
+#include <bitset>
 #include <climits>
 #include <list>
 #include <memory>
@@ -118,7 +119,10 @@ class Building : public BuildingUtils, public BuildingStateRecord
 	virtual ~Building(void);
 	void freeGradients();
 	// Drop the pathfinding gradients (call after the building moves or its range changes).
-	void resetPathfindGradients();
+	// Why a field was last dropped; diagnostics only (synchronous rebuild reasons).
+	enum class GradientDrop : Uint8 { New, Idle, Own, Team, Area };
+	void resetPathfindGradients(GradientDrop cause = GradientDrop::Own);
+	bool keepsStaleGradients(GradientDrop cause) const;
 	// Request a rebuild on use once the refresh throttle permits (map changed nearby).
 	void dirtyGradients();
 
@@ -589,6 +593,23 @@ public:
 	//! Drop the building's gradients nobody asked for lately. Each is a full map
 	//! of Uint16.
 	void freeIdleGradients();
+	//! Scheduled building gradients (MapGradientScheduling.cpp).
+	//! Owner-only and never serialized: a save records each pending result's
+	//! supersession instead. refreshEpoch[slot] changes whenever the slot is
+	//! rebuilt synchronously or dropped, so an older pending result cannot
+	//! replace it; refreshRequested marks a queued or pending refresh of the
+	//! slot; settledCostHint is the cost its previous search had settled when it
+	//! was replaced (Map::predictBuildingDepth).
+	Uint32 refreshEpoch[BUILDING_GRADIENT_COUNT] {};
+	std::bitset<BUILDING_GRADIENT_COUNT> refreshRequested;
+	static constexpr Uint16 UNKNOWN_SETTLED_COST = 0xFFFF;
+	Uint16 settledCostHint[BUILDING_GRADIENT_COUNT] {};
+	void supersedeGradient(int slot) { ++refreshEpoch[slot]; refreshRequested.reset(slot); }
+	//! A dropped field starts its next lifetime with no depth history.
+	void dropGradientSlot(int slot, GradientDrop cause)
+	{ supersedeGradient(slot); settledCostHint[slot] = UNKNOWN_SETTLED_COST; gradientDrop[slot] = cause; }
+	//! Owner-only diagnostics, never serialized or read by the simulation.
+	GradientDrop gradientDrop[BUILDING_GRADIENT_COUNT] {};
 	BuildingRoute resolveRoute(BuildingRoute route) const;
 	int routeSlot(int swimClass, BuildingRoute route) const
 	{ return int(route == BuildingRoute::Automatic ? resolveRoute(route) : route) * SWIM_CLASS_COUNT + swimClass; }

@@ -65,7 +65,7 @@ GameHeader::GameHeader()
 
 void GameHeader::reset()
 {
-	++observationRevisionValue; aiOrderDelay = 8;
+	++observationRevisionValue; aiOrderDelay = 8; buildingGradientDelay = DEFAULT_BUILDING_GRADIENT_DELAY;
 	buildingCatalogSnapshot.clear();
 	buildingArtwork.reset();
 	buildingCatalogExperimentKeys.clear();
@@ -180,6 +180,8 @@ bool GameHeader::load(GAGCore::InputStream *stream, Sint32 versionMinor)
 	orderRate = stream->readUint8("orderRate");
 	aiOrderDelay = versionMinor >= FILE_FORMAT_VERSION_AI_PIPELINE ? stream->readUint8("aiOrderDelay") : 0;
 	if (aiOrderDelay > 8) throw std::runtime_error("Invalid saved AI order delay");
+	buildingGradientDelay = versionMinor >= FILE_FORMAT_VERSION_BUILDING_GRADIENT_PIPELINE ? stream->readUint8("buildingGradientDelay") : DEFAULT_BUILDING_GRADIENT_DELAY;
+	if (buildingGradientDelay < 1 || buildingGradientDelay > 8) throw std::runtime_error("Invalid saved building gradient delay");
 	if (gameLatency < 0 || gameLatency > 65535 || orderRate == 0) throw std::runtime_error("Invalid saved network rate or latency");
 	numberOfPlayers = stream->readSint32("numberOfPlayers");
 	if (numberOfPlayers < 0 || numberOfPlayers > Team::MAX_COUNT)
@@ -288,6 +290,7 @@ void GameHeader::save(GAGCore::OutputStream *stream) const
 	stream->writeSint32(gameLatency, "gameLatency");
 	stream->writeUint8(orderRate, "orderRate");
 	stream->writeUint8(aiOrderDelay, "aiOrderDelay");
+	stream->writeUint8(buildingGradientDelay, "buildingGradientDelay");
 	stream->writeSint32(numberOfPlayers, "numberOfPlayers");
 	stream->writeEnterSection("players");
 	for(int i=0; i<Team::MAX_COUNT_ON_DISK; ++i)
@@ -351,6 +354,8 @@ bool GameHeader::loadWithoutPlayerInfo(GAGCore::InputStream *stream, Sint32 vers
 	orderRate = stream->readUint8("orderRate");
 	aiOrderDelay = versionMinor >= FILE_FORMAT_VERSION_AI_PIPELINE ? stream->readUint8("aiOrderDelay") : 0;
 	if (aiOrderDelay > 8) throw std::runtime_error("Invalid saved AI order delay");
+	buildingGradientDelay = versionMinor >= FILE_FORMAT_VERSION_BUILDING_GRADIENT_PIPELINE ? stream->readUint8("buildingGradientDelay") : DEFAULT_BUILDING_GRADIENT_DELAY;
+	if (buildingGradientDelay < 1 || buildingGradientDelay > 8) throw std::runtime_error("Invalid saved building gradient delay");
 	if (gameLatency < 0 || gameLatency > 65535 || orderRate == 0) throw std::runtime_error("Invalid saved network rate or latency");
 	if(versionMinor >= FILE_FORMAT_VERSION_ALLIES_AND_WIN_CONDITIONS)
 	{
@@ -425,6 +430,7 @@ void GameHeader::saveWithoutPlayerInfo(GAGCore::OutputStream *stream) const
 	stream->writeSint32(gameLatency, "gameLatency");
 	stream->writeUint8(orderRate, "orderRate");
 	stream->writeUint8(aiOrderDelay, "aiOrderDelay");
+	stream->writeUint8(buildingGradientDelay, "buildingGradientDelay");
 	stream->writeEnterSection("allyTeamNumbers");
 	for(int i=0; i<Team::MAX_COUNT_ON_DISK; ++i)
 	{

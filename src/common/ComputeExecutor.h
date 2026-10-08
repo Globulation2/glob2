@@ -100,11 +100,11 @@ public:
 	static constexpr std::uint64_t advanceDue(std::uint64_t tick) { return 2 * tick + 1; }
 	// A batch occupies a slot from submission until its join. Each deferred
 	// producer submits at most one batch per tick and joins it at its horizon,
-	// so it holds at most horizon + 1 slots: AI decisions (8) and periodic
-	// gradients (16), plus headroom for tests and teardown. The producers
-	// static_assert their horizons against these; a new producer adds its own.
-	static constexpr std::size_t AIHorizon = 8, GradientHorizon = 16;
-	static constexpr std::size_t Slots = (AIHorizon + 1) + (GradientHorizon + 1) + 10;
+	// so it holds at most horizon + 1 slots: AI decisions (8), periodic
+	// gradients (16) and building gradients (8), plus headroom for tests and
+	// teardown. The producers static_assert their horizons against these.
+	static constexpr std::size_t AIHorizon = 8, GradientHorizon = 16, BuildingHorizon = 8;
+	static constexpr std::size_t Slots = (AIHorizon + 1) + (GradientHorizon + 1) + (BuildingHorizon + 1) + 13;
 private:
 	using Clock = std::chrono::steady_clock;
 	inline static thread_local ComputeExecutor *active = nullptr;

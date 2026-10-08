@@ -483,8 +483,9 @@ unsupported combinations remain reported failures rather than being filtered out
   list restricts it. `formats` defaults to 1v1, 2v2 and ffa, `ais` to every active
   AI, `generators` to every playable generator and `ticks` to 18048. The planner
   pins the `aiOrderDelay` rule to 8 and adds `gradient-stats` to
-  `outputs.telemetry`, and workers then require `gradient-stats.csv` in each
-  game's artifacts. Preflight the generator list against the sizes and colony
+  `outputs.telemetry` (which publishes scheduled building fields at lazy depth, so
+  rows record what readers needed), and workers then require `gradient-stats.csv`
+  in each game's artifacts. Preflight the generator list against the sizes and colony
   counts, and publish exclusions. `reanalyze` is not the analysis here; read the
   results with `tools/gradient_depth_fit.py dataset RESULTS`.
 
