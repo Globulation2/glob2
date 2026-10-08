@@ -12,6 +12,13 @@
 
 namespace
 {
+// Terrain is stored on vertices: a cell is wholly of one terrain only when all
+// four of its corners are.
+void paintCell(Map& map,int x,int y,TerrainType type)
+{
+    map.paintVertices({{x,y},{x+1,y},{x,y+1},{x+1,y+1}},type,false);
+}
+
 template<class Work>
 void measure(const char* kind, const char* layout, int width, Work work)
 {
@@ -49,17 +56,25 @@ TEST_CASE("idle decisions at fixed origins across safe and trapped terrain [benc
         const int x=map.getW()/4,y=map.getH()/4;
         {
             auto edit=map.editTerrain();
-            if(layout=="safe-near-ice") map.setCellTerrain(x+1,y,ICE);
-            if(layout=="ice-edge") map.setCellTerrain(x,y,ICE);
+            // The ice cell is two cells away: the cell between mixes grass and
+            // ice corners and is therefore hazardous.
+            if(layout=="safe-near-ice") paintCell(map,x+2,y,ICE);
+            if(layout=="ice-edge") paintCell(map,x,y,ICE);
             if(layout=="ice-patch") {
                 const int radius=map.getW()/8;
-                for(int dy=-radius;dy<=radius;++dy) for(int dx=-radius;dx<=radius;++dx)
-                    map.setCellTerrain(x+dx,y+dy,ICE);
+                std::vector<std::pair<int,int>> vertices;
+                for(int dy=-radius;dy<=radius+1;++dy) for(int dx=-radius;dx<=radius+1;++dx)
+                    vertices.push_back({x+dx,y+dy});
+                map.paintVertices(vertices,ICE,false);
             }
             if(layout=="unreachable-safety") {
+                // Grass corners make a safe cell; the mixed grass/water cells
+                // around it stay walkable and safe, and a ring of all-water
+                // cells separates them from the ice.
                 const int safe=map.getW()*3/4;
-                for(int dy=-1;dy<=1;++dy) for(int dx=-1;dx<=1;++dx)
-                    map.setCellTerrain(safe+dx,safe+dy,dx || dy?WATER:GRASS);
+                for(int dy=-2;dy<=3;++dy) for(int dx=-2;dx<=3;++dx)
+                    map.setVertexTerrain(safe+dx,safe+dy,
+                        dx>=0 && dx<=1 && dy>=0 && dy<=1?GRASS:WATER);
             }
         }
         auto* unit=world.addUnit(WORKER,x,y);
@@ -69,9 +84,9 @@ TEST_CASE("idle decisions at fixed origins across safe and trapped terrain [benc
         // escape changes its next origin; this intentionally stresses retries.
         // Invalidate outside the timer, then measure first-query rebuild separately.
         for(int repeat=0;repeat<7;++repeat) {
-            const auto original=map.terrainTypeAt(x,y);
-            map.setCellTerrain(x,y,original==GRASS?ICE:GRASS);
-            map.setCellTerrain(x,y,original);
+            const auto original=map.vertexTerrainAt(x,y);
+            map.setVertexTerrain(x,y,original==GRASS?ICE:GRASS);
+            map.setVertexTerrain(x,y,original);
             const auto cpu=std::clock();
             const auto wall=std::chrono::steady_clock::now();
             map.pathfindRandom(unit);
@@ -99,14 +114,21 @@ TEST_CASE("shared terrain fields across ice coverage and custom profiles [benchm
             map.importTerrainDefinitions(nlohmann::json{{"schemaVersion",1},{"terrains",definitions}}.dump());
         }
         {
-            auto edit=map.editTerrain();
+            // Coverage counts vertices. Custom damage rates come in 8x8 vertex
+            // blocks, which keeps the distinct corner combinations well inside
+            // the cell rule table's capacity.
+            std::vector<TerrainType> vertices(map.vertexTerrainState().begin(),map.vertexTerrainState().end());
             for(int y=0;y<map.getH();++y) for(int x=0;x<map.getW();++x) {
                 const unsigned hash=unsigned(x)*73856093u ^ unsigned(y)*19349663u;
+                auto& vertex=vertices[size_t(y)*map.getW()+x];
                 if(layout=="all-ice" || (layout=="ice-10pct" && hash%10==0)
-                    || (layout=="ice-50pct" && hash%2==0)) map.setCellTerrain(x,y,ICE);
-                if(layout=="custom-damage") map.setCellTerrain(x,y,
-                    *map.terrainRegistry().find("bench:damage"+std::to_string(hash%240)));
+                    || (layout=="ice-50pct" && hash%2==0)) vertex=ICE;
+                if(layout=="custom-damage") {
+                    const unsigned block=unsigned(x/8)*73856093u ^ unsigned(y/8)*19349663u;
+                    vertex=*map.terrainRegistry().find("bench:damage"+std::to_string(block%240));
+                }
             }
+            map.assignVertexTerrain(vertices);
         }
         std::vector<Uint16> cells(map.getW()*map.getH());
         measure("field",layout.c_str(),map.getW(),[&]{
@@ -131,6 +153,8 @@ TEST_CASE("write mature game fixtures with controlled ice coverage [benchmark][a
         unsigned changed=0,eligible=0;
         {
             auto edit=map.editTerrain();
+            // Ice replaces grass vertices whose cell (the one they are the
+            // top-left corner of) is open grass.
             for(int y=0;y<map.getH();++y) for(int x=0;x<map.getW();++x) {
                 if(map.terrainTypeAt(x,y)!=GRASS || map.getBuilding(x,y)!=NOGUID
                     || map.getResource(x,y).type!=NO_RES_TYPE) continue;
@@ -138,7 +162,7 @@ TEST_CASE("write mature game fixtures with controlled ice coverage [benchmark][a
                 const unsigned hash=unsigned(x)*73856093u ^ unsigned(y)*19349663u;
                 if((layout=="sparse-ice" && hash%10==0)
                     || (layout=="patchwork-ice" && ((x/12+y/12)%4==0))) {
-                    map.setCellTerrain(x,y,ICE); ++changed;
+                    map.setVertexTerrain(x,y,ICE); ++changed;
                 }
             }
         }
