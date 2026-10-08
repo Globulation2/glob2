@@ -2,47 +2,58 @@
 """Fit the building-field depth model from --telemetry gradient-stats games.
 
 A building walking field is a lazy multi-source search: it settles cost layers
-only as far as readers need. A scheduled build settles a predicted depth D on a
-worker instead; readers past D still resolve the rest synchronously, so D moves
-CPU and never changes a result. Each gradient-stats.csv row ends one field
+only as far as readers need. A scheduled refresh settles a predicted depth D on
+a worker instead; readers past D still resolve the rest synchronously, so D
+moves CPU and never changes a result. Each gradient-stats.csv row ends one field
 lifetime, and its `prev_settled_cost` is the depth that lifetime actually needed.
 
-The model is a quantile table. Lifetimes are grouped by selected keys (see
-KEYS); D is the group's quantile of actual depth, optionally per tile of map
-size (w + h). Groups thinner than MIN_GROUP back off to a shorter key prefix.
+The model predicts a field's next depth from its own past depths, read when the
+refresh is staged: how deep the field still serving had been settled so far
+(`serving`), and the final depth of the lifetime it replaced (`hint`,
+settledCostHint). With m the deeper of the two,
 
-Subcommands, mirroring tools/win_probability_model.py:
+    D = offset + (slope256 * m) >> 8,  clamped to [MIN_DEPTH, MAX_DEPTH].
 
-* ``dataset``: tournament results or plain run directories -> dataset.json.gz;
-* ``screen``: what each key buys alone and in forward selection, cross-validated
-  with whole games held out;
-* ``fit``: select keys, write the summary (tools/gradient_depth_model.json) and
-  regenerate src/map/gradient/BuildingGradientDepthPolicy.h;
-* ``evaluate``: the committed model's metrics, overall and per map size.
+A field with neither depth (in practice, only after a save is loaded, since the
+past depths are not saved) settles MIN_DEPTH: its readers decide, and it has a
+history from its next refresh. Each operating point has its own two integers,
+chosen to maximise owner saving minus lambda times worker search CPU over the
+training lifetimes: one lambda for every field, so worker CPU goes where it
+moves the most owner work. The engine evaluates the same integer expression
+(BuildingGradientDepthPolicy.h).
 
-Metrics, over held-out lifetimes:
+Subcommands:
 
-* hit rate: share with actual <= D;
+* ``dataset``: tournament results or plain run directories -> dataset.npz;
+* ``fit``: write the summary (tools/gradient_depth_model.json) and regenerate
+  src/map/gradient/BuildingGradientDepthPolicy.h;
+* ``evaluate``: the committed model's metrics, overall and per map size, and
+  with ``--curve`` owner saving against CPU per lambda.
+
+Metrics, over held-out games (5 folds):
+
+* hit rate: share of lifetimes with actual <= D;
 * query-weighted coverage: the same, weighted by resolve calls;
 * extra CPU: sum popped(max(D, actual)) / sum popped(actual);
 * owner saving: sum popped(min(D, actual)) / sum popped(actual), the share of the
-  lazy search that a scheduled build would move off the simulation owner.
+  lazy search that a scheduled build moves off the simulation owner.
 
-popped(c) interpolates the 80-cost depth histogram. Beyond a partial lifetime's
-reach, the mean profile of complete lifetimes of the same route and map size
-estimates the work.
+popped(c) integrates the 80-cost depth histogram. Beyond a partial lifetime's
+reach, the mean profile of complete lifetimes of the same map size estimates
+the work. Depths are scored on a 16-cost grid up to GRID_LIMIT, beyond which a
+depth counts as eager; fitting groups lifetimes by m on the same 16-cost grid.
 
-The pipeline needs only the standard library. Every emitted constant is an
-integer.
+Only scheduled footprint builds use the model (flag routes settle fully and
+cold fields build synchronously), so only those lifetimes are read.
+
+The dataset, fit and evaluate commands need numpy. Regenerating the header from
+the committed summary (emit_header) needs only the standard library, and every
+emitted constant is an integer.
 """
 import argparse
-import csv
-import gzip
 import hashlib
 import json
-import math
 import sys
-from collections import Counter, defaultdict
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -54,98 +65,91 @@ BINS = 32
 LAST_BIN_WIDTH = 8 * BIN_COST  # extrapolation width of the open-ended last bin
 MIN_DEPTH = 32
 MAX_DEPTH = 65535
-MIN_GROUP = 40
-BUCKET = 16  # target histogram resolution
-PER_SIZE_SCALE = 256  # per-size targets are Q8 cost per tile of (w + h)
+STEP = 16  # depth grid resolution
+GRID_LIMIT = 4096  # deepest finite grid depth; anything deeper is eager
+GRID = GRID_LIMIT // STEP
+EAGER = GRID + 1  # grid index of MAX_DEPTH
+SIZE = GRID + 2
+MIN_INDEX = MIN_DEPTH // STEP
 FOLDS = 5
-ROUTES = ('footprint', 'clearing', 'combat')
-CONSTRUCTION = ('none', 'new', 'upgrade', 'repair')
-# Forward selection keeps adding keys while the held-out owner saving at the CPU
-# budget rises by at least this much.
-MIN_GAIN = 0.01
-MAX_KEYS = 4
+LAMBDAS = (0.02, 0.05, 0.1, 0.15, 0.2, 0.3, 0.4, 0.5, 0.7, 1.0, 1.5, 2.0, 3.0)
+DEFAULT_BUDGET = 1.25
+# Coarse search grid for (offset, slope256), refined around each lambda's best.
+OFFSETS = range(-200, 801, 40)
+SLOPES = range(128, 1281, 16)
+REFINE = ((8, 4), (2, 1))  # (offset step, slope step), five steps either side
+# The formula depends on a lifetime only through m, so lifetimes are grouped by
+# m on the 16-cost grid: group g holds m in [16g, 16g + 16) and is scored at
+# its centre. Past 2 * GRID_LIMIT every slope on the search grid is eager, so
+# deeper m share the last group; the extra group LAST_GROUP + 1 holds lifetimes
+# without history.
+LAST_GROUP = 2 * GRID_LIMIT // STEP
+UNKNOWN = LAST_GROUP + 1
+GROUPS = UNKNOWN + 1
+# Search (gradient.building_resume) share of process CPU with greedy fetching,
+# measured with the flag off (docs/building-gradient-depth-model.md). Search work
+# scales with popped entries, so a field extra-CPU ratio r costs about
+# 1 + share * (r - 1) of process CPU.
+SEARCH_SHARE = {'busy_oazis': 0.026, 'tournament': 0.007, 'all': 0.026}
+
+# The per-lifetime columns a dataset holds; serving and hint are -1 when unknown.
+COLUMNS = ('game', 'w', 'h', 'actual', 'complete', 'popped', 'queries', 'serving', 'hint')
 
 
-def log2_bucket(value):
-    """floor(log2(value + 1)) for value >= 0, else -1; the C++ helper matches."""
-    return -1 if value is None or value < 0 else int(value + 1).bit_length() - 1
+def depth(point, m):
+    """The engine's integer formula (BuildingGradientDepth::target) for one m."""
+    if m is None or m < 0:
+        return MIN_DEPTH
+    return max(MIN_DEPTH, min(MAX_DEPTH, point['offset'] + ((point['slope256'] * m) >> 8)))
 
 
-# Candidate keys. Each maps a lifetime to the integer (or type string) the C++
-# query computes from the same O(1) owner inputs.
-KEYS = {
-    'route': lambda l: l.route,
-    'swim': lambda l: l.swim,
-    'type': lambda l: l.type,
-    'level': lambda l: l.level,
-    'is_site': lambda l: l.site,
-    'construction': lambda l: l.construction,
-    'progress': lambda l: l.progress,
-    'size': lambda l: l.w + l.h,
-    'units': lambda l: log2_bucket(l.units),
-    'buildings': lambda l: log2_bucket(l.buildings),
-    'previous': lambda l: log2_bucket(None if l.previous is None else l.previous // BIN_COST),
-}
-CPP_KEY = {'route': 'Route', 'swim': 'Swim', 'type': 'Type', 'level': 'Level', 'is_site': 'Site',
-           'construction': 'Construction', 'progress': 'Progress', 'size': 'Size', 'units': 'Units',
-           'buildings': 'Buildings', 'previous': 'Previous'}
+def grid_depth(k):
+    return MAX_DEPTH if k >= EAGER else max(MIN_DEPTH, k * STEP)
 
 
-class Lifetime:
-    __slots__ = ('game', 'route', 'swim', 'type', 'level', 'site', 'construction', 'progress', 'w', 'h',
-                 'units', 'buildings', 'previous', 'actual', 'complete', 'popped', 'queries', 'bins', 'cum',
-                 'prefix')
-    DERIVED = ('cum', 'prefix')
-
-    def __init__(self, **values):
-        for key in self.__slots__:
-            setattr(self, key, values.get(key))
-
-    def record(self):
-        return [getattr(self, k) for k in self.__slots__ if k not in self.DERIVED]
-
-    @classmethod
-    def from_record(cls, values):
-        return cls(**dict(zip([k for k in cls.__slots__ if k not in cls.DERIVED], values)))
+def grid_index(d):
+    return EAGER if d > GRID_LIMIT else max(MIN_INDEX, -(-d // STEP))
 
 
-def integer(text, default=-1):
-    return int(text) if text not in (None, '') else default
+def fold_of(game, folds):
+    return int(hashlib.sha1(game.encode()).hexdigest(), 16) % folds
 
 
-def read_csv(lines, game):
-    """Lifetimes with a search, each linked to the same field's previous lifetime."""
-    rows = sorted(csv.DictReader(lines), key=lambda r: int(r['tick']))
-    previous = {}
-    lifetimes = []
-    for row in rows:
-        key = (row['team'], row['gid'], row['route'], row['swim'])
-        if row['event'] == 'rebuild' and row['reason'] == 'null':
-            previous.pop(key, None)
-        if row.get('prev_search') != '1' or row.get('prev_locked') == '1':
-            if row['event'] != 'rebuild':
-                previous.pop(key, None)
+def np():
+    import numpy
+    return numpy
+
+
+# Dataset ----------------------------------------------------------------------
+
+def parse_csv(text):
+    """Scheduled footprint lifetimes with a search, as rows of ints:
+    (w, h, actual, complete, popped, queries, serving, hint, bin 0..31)."""
+    lines = text.splitlines()
+    if not lines:
+        return []
+    index = {name: i for i, name in enumerate(lines[0].split(','))}
+    route, staged = index['route'], index['staged']
+    search, locked, complete = index['prev_search'], index['prev_locked'], index['prev_complete']
+    numbers = [index[c] for c in ('width', 'height', 'prev_settled_cost')]
+    popped, queries = index['prev_popped'], index['prev_queries']
+    serving, hint = index['serving_settled'], index['previous_hint']
+    first_bin = index['popped_at_depth_0']
+    rows = []
+    for line in lines[1:]:
+        if ',footprint,' not in line:
             continue
-        actual = int(row['prev_settled_cost'])
-        construction = row.get('construction_state') or ''
-        lifetimes.append(Lifetime(
-            game=game, route=ROUTES.index(row['route']), swim=int(row['swim']), type=row['type'],
-            level=integer(row.get('level')), site=integer(row.get('is_site')),
-            construction=CONSTRUCTION.index(construction) if construction in CONSTRUCTION else -1,
-            progress=integer(row.get('progress')), w=integer(row.get('width'), 0), h=integer(row.get('height'), 0),
-            units=integer(row.get('team_units')), buildings=integer(row.get('team_buildings')),
-            previous=previous.get(key), actual=actual, complete=row['prev_complete'] == '1',
-            popped=int(row['prev_popped']), queries=int(row['prev_queries']),
-            bins=[int(row[f'popped_at_depth_{i}']) for i in range(BINS)]))
-        if row['event'] == 'rebuild':
-            previous[key] = actual
-        else:
-            previous.pop(key, None)
-    return lifetimes
+        f = line.split(',')
+        if f[route] != 'footprint' or f[staged] != '1' or f[search] != '1' or f[locked] == '1':
+            continue
+        rows.append([int(f[numbers[0]]), int(f[numbers[1]]), int(f[numbers[2]]), int(f[complete] == '1'),
+                     int(f[popped]), int(f[queries]), int(f[serving] or -1), int(f[hint] or -1),
+                     *map(int, f[first_bin:first_bin + BINS])])
+    return rows
 
 
 def sources(root):
-    """(game id, labels, CSV line iterator) for a tournament or a directory of runs."""
+    """(game id, labels, CSV text) for a tournament or a directory of runs."""
     root = Path(root)
     if (root / 'experiment.json').exists():
         sys.path.insert(0, str(ROOT))
@@ -158,7 +162,7 @@ def sources(root):
             labels = dict(record['job'].get('labels', {}))
             labels['players'] = len(record['job']['config'].get('players', []))
             with results.open_artifact(record, 'gradient-stats.csv') as lines:
-                yield record['job']['id'], labels, lines
+                yield record['job']['id'], labels, ''.join(lines)
     else:
         for path in sorted(root.glob('*/gradient-stats.csv')):
             result = path.parent / 'result.json'
@@ -166,327 +170,402 @@ def sources(root):
             if result.exists():
                 value = json.loads(result.read_text())
                 labels.update(map=value.get('resolved', {}).get('map'), players=len(value.get('players', [])))
-            with open(path, newline='') as lines:
-                yield f'{root.name}/{path.parent.name}', labels, lines
+            yield f'{root.name}/{path.parent.name}', labels, path.read_text()
 
 
-def build_dataset(roots):
-    games, lifetimes = {}, []
-    for root in roots:
-        for game, labels, lines in sources(root):
-            games[game] = labels
-            lifetimes.extend(read_csv(lines, game))
-    return {'version': 1, 'games': games, 'fields': [k for k in Lifetime.__slots__ if k not in Lifetime.DERIVED],
-            'lifetimes': [l.record() for l in lifetimes]}
+def _parse(item):
+    game, labels, text = item
+    return game, labels, parse_csv(text)
+
+
+def build_dataset(roots, jobs=1):
+    """{column: array} for every lifetime plus `bins` (n, BINS), `games` and `labels`."""
+    numpy = np()
+    games, labels, parts, owners = [], [], [], []
+    items = (item for root in roots for item in sources(root))
+    if jobs > 1:
+        import multiprocessing
+        pool = multiprocessing.get_context('fork').Pool(jobs)
+        parsed = pool.imap(_parse, items, chunksize=4)
+    else:
+        pool, parsed = None, map(_parse, items)
+    try:
+        for game, game_labels, rows in parsed:
+            index = len(games)
+            games.append(game)
+            labels.append(game_labels)
+            if rows:
+                parts.append(numpy.asarray(rows, dtype=numpy.int64))
+                owners.append(numpy.full(len(rows), index, dtype=numpy.int32))
+    finally:
+        if pool:
+            pool.close()
+    table = numpy.concatenate(parts) if parts else numpy.zeros((0, 8 + BINS), dtype=numpy.int64)
+    data = {'game': numpy.concatenate(owners) if owners else numpy.zeros(0, dtype=numpy.int32)}
+    for i, name in enumerate(('w', 'h', 'actual', 'complete', 'popped', 'queries', 'serving', 'hint')):
+        data[name] = table[:, i]
+    data['complete'] = data['complete'].astype(bool)
+    data['bins'] = table[:, 8:].astype(numpy.int64)
+    data['games'] = numpy.array(games, dtype=str)
+    data['labels'] = numpy.array([json.dumps(l, sort_keys=True) for l in labels], dtype=str)
+    return data
+
+
+def save_dataset(data, path):
+    np().savez_compressed(path, version=4, **data)
 
 
 def load_dataset(path):
-    with gzip.open(path, 'rt') as source:
-        data = json.load(source)
-    lifetimes = [Lifetime.from_record(values) for values in data['lifetimes']]
-    prepare(lifetimes)
-    return data['games'], lifetimes
+    numpy = np()
+    with numpy.load(path) as stored:
+        if int(stored.get('version', 0)) != 4:
+            raise SystemExit(f'{path}: not a version 4 dataset; rebuild it with `dataset`')
+        data = {k: stored[k] for k in stored.files if k != 'version'}
+    data['games'] = [str(g) for g in data['games']]
+    data['labels'] = [json.loads(str(l)) for l in data['labels']]
+    return prepare(data)
 
 
-# Work integration -----------------------------------------------------------
+def from_lifetimes(lifetimes, games=None):
+    """A prepared dataset from dicts with the COLUMNS (game as a name) and bins."""
+    numpy = np()
+    names = sorted({l['game'] for l in lifetimes}) if games is None else list(games)
+    position = {g: i for i, g in enumerate(names)}
+    data = {'game': numpy.array([position[l['game']] for l in lifetimes], dtype=numpy.int32)}
+    for c in COLUMNS[1:]:
+        data[c] = numpy.array([-1 if l.get(c) is None else l[c] for l in lifetimes], dtype=numpy.int64)
+    data['complete'] = numpy.array([bool(l.get('complete')) for l in lifetimes], dtype=bool)
+    data['bins'] = numpy.array([l['bins'] for l in lifetimes], dtype=numpy.int64).reshape(-1, BINS)
+    data['games'] = names
+    data['labels'] = [{} for _ in names]
+    return prepare(data)
 
-def edges():
-    return [i * BIN_COST for i in range(BINS)]
 
-
-def profiles(lifetimes):
-    """Mean popped per bin of complete lifetimes, by (route, size) and by route."""
-    sums, counts = defaultdict(lambda: [0.0] * BINS), Counter()
-    for life in lifetimes:
-        if life.complete:
-            for key in ((life.route, life.w + life.h), (life.route,), ()):
-                counts[key] += 1
-                values = sums[key]
-                for i, v in enumerate(life.bins):
-                    values[i] += v
-    result = {}
-    for key, values in sums.items():
-        cumulative, total = [0.0], 0.0
-        for v in values:
-            total += v / counts[key]
-            cumulative.append(total)
-        result[key] = cumulative
-    return result
-
+# Work curves -----------------------------------------------------------------
+#
+# Every metric is a sum over lifetimes of a function of D, so lifetimes are
+# reduced to per-cell arrays over the depth grid (D_k = STEP * k):
+#   hits(k)  = #{actual <= D_k}, and coverage the same weighted by queries;
+#   saved(k) = popped work below D_k: each 80-cost band's mass spread evenly over
+#              the grid steps it covers, then integrated;
+#   cpu(k)   = work + the sum over partial lifetimes with actual < D_k of
+#              profile(D_k) - profile(actual), per extrapolation profile.
 
 def profile_at(cumulative, cost):
-    i = min(cost // BIN_COST, BINS - 1)
-    width = BIN_COST if i < BINS - 1 else LAST_BIN_WIDTH
-    fraction = min(1.0, (cost - i * BIN_COST) / width)
-    return cumulative[i] + (cumulative[i + 1] - cumulative[i]) * fraction
+    """Interpolated cumulative mean popped: every profile row of `cumulative`
+    (profiles, BINS + 1) at every cost, or, with `cost` one per row, each row
+    at its own cost."""
+    numpy = np()
+    i = numpy.minimum(cost // BIN_COST, BINS - 1)
+    width = numpy.where(i < BINS - 1, BIN_COST, LAST_BIN_WIDTH)
+    fraction = numpy.minimum(1.0, (cost - i * BIN_COST) / width)
+    if cumulative.ndim == 2 and numpy.ndim(cost) == 1 and len(cost) == len(cumulative):
+        rows = numpy.arange(len(cost))
+        low, high = cumulative[rows, i], cumulative[rows, i + 1]
+    else:
+        low, high = cumulative[..., i], cumulative[..., i + 1]
+    return low + (high - low) * fraction
 
 
-def prepare(lifetimes):
-    table = profiles(lifetimes)
-    for life in lifetimes:
-        life.cum = table.get((life.route, life.w + life.h)) or table.get((life.route,)) or table.get(())
-        running, life.prefix = 0, [0]
-        for v in life.bins:
-            running += v
-            life.prefix.append(running)
-
-
-def popped_to(life, cost):
-    """Entries popped settling every cost below `cost`."""
-    if cost >= life.actual:
-        if life.complete or cost == life.actual or not life.cum:
-            return float(life.popped)
-        return life.popped + max(0.0, profile_at(life.cum, cost) - profile_at(life.cum, life.actual))
-    i = min(cost // BIN_COST, BINS - 1)
-    low = i * BIN_COST
-    high = min((i + 1) * BIN_COST if i < BINS - 1 else life.actual, life.actual)
-    below = life.prefix[i] if life.prefix else sum(life.bins[:i])
-    span = high - low
-    return below + (life.bins[i] * (cost - low) / span if span > 0 else 0.0)
-
-
-def metrics(pairs):
-    """pairs: (lifetime, predicted depth)."""
-    hits = queries = covered = 0
-    actual_work = cpu_work = saved_work = 0.0
-    for life, depth in pairs:
-        hit = life.actual <= depth
-        hits += hit
-        queries += life.queries
-        covered += life.queries if hit else 0
-        actual_work += life.popped
-        cpu_work += popped_to(life, max(depth, life.actual))
-        saved_work += popped_to(life, min(depth, life.actual))
-    count = len(pairs)
-    return {'lifetimes': count, 'hit_rate': round(hits / count, 4) if count else 0.0,
-            'query_weighted_coverage': round(covered / queries, 4) if queries else 0.0,
-            'extra_cpu': round(cpu_work / actual_work, 4) if actual_work else 1.0,
-            'owner_saving': round(saved_work / actual_work, 4) if actual_work else 0.0}
-
-
-# Model ----------------------------------------------------------------------
-
-def target(life, per_size):
-    if not per_size:
-        return life.actual
-    return life.actual * PER_SIZE_SCALE // max(1, life.w + life.h)
-
-
-def depth_of(value, life, per_size):
-    if per_size:
-        value = value * (life.w + life.h) // PER_SIZE_SCALE
-    return max(MIN_DEPTH, min(MAX_DEPTH, value))
-
-
-def histograms(lifetimes, keys, per_size):
-    """Target histograms for every prefix cell of the selected keys."""
-    cells = defaultdict(Counter)
-    for life in lifetimes:
-        bucket = min(target(life, per_size), MAX_DEPTH) // BUCKET
-        values = tuple(KEYS[k](life) for k in keys)
-        for n in range(len(keys) + 1):
-            cells[values[:n]][bucket] += 1
-    return cells
-
-
-def quantile_value(histogram, q):
-    total = sum(histogram.values())
-    need = max(1, math.ceil(q * total))
-    running = 0
-    for bucket in sorted(histogram):
-        running += histogram[bucket]
-        if running >= need:
-            return (bucket + 1) * BUCKET
-    return MAX_DEPTH
-
-
-def table_from(cells, q, minimum=MIN_GROUP):
-    """Cells with enough evidence, each its quantile; the empty prefix always."""
-    table = {}
-    for cell, histogram in cells.items():
-        if sum(histogram.values()) >= minimum or not cell:
-            table[cell] = quantile_value(histogram, q)
-    return table
-
-
-def predict(table, keys, per_size, life):
-    values = tuple(KEYS[k](life) for k in keys)
-    for n in range(len(keys), -1, -1):
-        value = table.get(values[:n])
-        if value is not None:
-            return depth_of(value, life, per_size)
-    return MAX_DEPTH
-
-
-def fold_of(game, folds):
-    return int(hashlib.sha1(game.encode()).hexdigest(), 16) % folds
-
-
-QUANTILES = (0.3, 0.5, 0.6, 0.7, 0.8, 0.85, 0.9, 0.95)
-# Operating points the evaluate curve reports, plus eager (full depth).
-CURVE = (0.5, 0.6, 0.7, 0.8, 0.85, 0.9, 0.95)
-# Search (gradient.building_resume) share of process CPU with greedy fetching,
-# measured with the flag off (docs/building-gradient-depth-model.md#operating-points).
-# Search work scales with popped entries, so a field extra-CPU ratio r costs
-# about 1 + share * (r - 1) of process CPU.
-SEARCH_SHARE = {'busy_oazis': 0.026, 'tournament': 0.007, 'all': 0.026}
-DEFAULT_BUDGET = 1.25
-
-
-def cross_validate(lifetimes, keys, per_size, quantiles, folds=FOLDS, by=None):
-    """Held-out metrics for each quantile, with whole games held out together."""
-    single = isinstance(quantiles, float)
-    quantiles = [quantiles] if single else list(quantiles)
-    games = sorted({l.game for l in lifetimes})
-    folds = max(2, min(folds, len(games)))
-    assignment = {g: fold_of(g, folds) for g in games}
-    pairs = {q: [] for q in quantiles}
-    for fold in range(folds):
-        training = [l for l in lifetimes if assignment[l.game] != fold]
-        held = [l for l in lifetimes if assignment[l.game] == fold]
-        if not training or not held:
+def prepare(data):
+    """Adds the derived per-lifetime arrays the curves and the fit read."""
+    numpy = np()
+    a = data['actual']
+    serving, hint = data['serving'], data['hint']
+    data['m'] = numpy.maximum(serving, hint)  # -1 when neither is known
+    data['group'] = numpy.where(data['m'] < 0, UNKNOWN, numpy.minimum(data['m'] // STEP, LAST_GROUP))
+    data['hit'] = numpy.where(a > GRID_LIMIT, EAGER, numpy.maximum(MIN_INDEX, -(-a // STEP)))
+    # Extrapolation profiles: the mean band profile of complete lifetimes per map
+    # size, falling back to all complete lifetimes.
+    size = data['w'] + data['h']
+    complete = data['complete']
+    sizes = sorted(set(size[complete].tolist()))
+    cumulative, profile = [], numpy.full(len(a), -1, dtype=numpy.int64)
+    for key in sizes + [None]:
+        members = complete if key is None else complete & (size == key)
+        if not members.any():
             continue
-        cells = histograms(training, keys, per_size)
-        for q in quantiles:
-            table = table_from(cells, q)
-            pairs[q].extend((l, predict(table, keys, per_size, l)) for l in held)
-    results = {}
-    for q in quantiles:
-        result = metrics(pairs[q])
-        result['quantile'] = q
-        if by:
-            groups = defaultdict(list)
-            for life, depth in pairs[q]:
-                groups[by(life)].append((life, depth))
-            result['by'] = {str(k): metrics(v) for k, v in sorted(groups.items())}
-        results[q] = result
-    return results[quantiles[0]] if single else results
+        mean = data['bins'][members].mean(axis=0)
+        cumulative.append(numpy.concatenate([[0.0], numpy.cumsum(mean)]))
+        target = (profile < 0) if key is None else (size == key)
+        profile[target & ~complete] = len(cumulative) - 1
+    data['profiles'] = numpy.array(cumulative).reshape(-1, BINS + 1)
+    data['profile'] = numpy.where(complete, -1, profile)
+    grid = numpy.array([grid_depth(k) for k in range(SIZE)])
+    data['profile_grid'] = (numpy.stack([profile_at(row, grid) for row in data['profiles']])
+                            if len(cumulative) else numpy.zeros((0, SIZE)))
+    partial = data['profile'] >= 0
+    data['extra_start'] = numpy.where(a >= GRID_LIMIT, EAGER, a // STEP + 1)
+    at = numpy.zeros(len(a))
+    if partial.any():
+        at[partial] = profile_at(data['profiles'][data['profile'][partial]], a[partial])
+    data['extra_at'] = at
+    return data
+
+
+def cell_curves(data, cell, cells, members=None):
+    """Per-cell grid arrays for the lifetimes `members` (all by default), each
+    assigned to cell[i] in range(cells): n, work, queries, hits, covered,
+    saved and cpu, the last four shaped (cells, SIZE)."""
+    numpy = np()
+    if members is not None:
+        cell = cell[members]
+    pick = (lambda x: x) if members is None else (lambda x: x[members])
+    a, bins = pick(data['actual']), pick(data['bins']).astype(float)
+    popped, queries = pick(data['popped']).astype(float), pick(data['queries']).astype(float)
+    n = numpy.bincount(cell, minlength=cells).astype(float)
+    work = numpy.bincount(cell, popped, cells)
+    total_queries = numpy.bincount(cell, queries, cells)
+    hit = cell * SIZE + pick(data['hit'])
+    hits = numpy.bincount(hit, minlength=cells * SIZE).reshape(cells, SIZE).cumsum(1).astype(float)
+    covered = numpy.bincount(hit, queries, cells * SIZE).reshape(cells, SIZE).cumsum(1)
+    # saved: band i spans [80 i, min(80 (i + 1), actual)), the last band up to
+    # actual; its mass is spread evenly over the grid steps from its start to
+    # its rounded end.
+    i = numpy.arange(BINS)
+    low = i * BIN_COST
+    high = numpy.minimum(numpy.where(i < BINS - 1, (i + 1) * BIN_COST, a[:, None]), a[:, None])
+    start = numpy.broadcast_to(low // STEP, bins.shape)
+    end = numpy.minimum(SIZE - 1, numpy.maximum(start + 1, numpy.round(high / STEP).astype(numpy.int64)))
+    nonzero = bins > 0
+    per_step = (bins / (end - start))[nonzero]
+    base = (cell * SIZE)[:, None]
+    slope = (numpy.bincount((base + start)[nonzero], per_step, cells * SIZE)
+             - numpy.bincount((base + end)[nonzero], per_step, cells * SIZE)).reshape(cells, SIZE).cumsum(1)
+    saved = numpy.zeros((cells, SIZE))
+    saved[:, 1:GRID + 1] = slope[:, :GRID].cumsum(1)
+    saved[:, EAGER] = work
+    saved = numpy.minimum(saved, work[:, None])
+    # cpu: work, plus the extrapolated search past each partial lifetime's reach.
+    cpu = numpy.repeat(work[:, None], SIZE, axis=1)
+    profile = pick(data['profile'])
+    partial = profile >= 0
+    profiles = len(data['profile_grid'])
+    if partial.any():
+        index = (cell[partial] * profiles + profile[partial]) * SIZE + pick(data['extra_start'])[partial]
+        count = numpy.bincount(index, minlength=cells * profiles * SIZE).reshape(cells, profiles, SIZE).cumsum(2)
+        total = numpy.bincount(index, pick(data['extra_at'])[partial],
+                               cells * profiles * SIZE).reshape(cells, profiles, SIZE).cumsum(2)
+        cpu += (count * data['profile_grid'][None, :, :] - total).sum(axis=1)
+    return {'n': n, 'work': work, 'queries': total_queries, 'hits': hits, 'covered': covered, 'saved': saved,
+            'cpu': cpu}
+
+
+def subtract(whole, part):
+    return {k: whole[k] - part[k] for k in whole}
+
+
+def read(curves, index):
+    """Totals over cells of hits, covered, saved and cpu at each cell's grid index."""
+    numpy = np()
+    rows = numpy.arange(len(index))
+    return {'n': curves['n'].sum(), 'work': curves['work'].sum(), 'queries': curves['queries'].sum(),
+            **{k: curves[k][rows, index].sum() for k in ('hits', 'covered', 'saved', 'cpu')}}
+
+
+def metric_values(t):
+    return {'lifetimes': int(round(t['n'])), 'hit_rate': round(t['hits'] / t['n'], 4) if t['n'] else 0.0,
+            'query_weighted_coverage': round(t['covered'] / t['queries'], 4) if t['queries'] else 0.0,
+            'extra_cpu': round(t['cpu'] / t['work'], 4) if t['work'] else 1.0,
+            'owner_saving': round(t['saved'] / t['work'], 4) if t['work'] else 0.0}
+
+
+def add(a, b):
+    return {k: a.get(k, 0) + b[k] for k in b}
+
+
+# Fitting ----------------------------------------------------------------------
+
+def centres():
+    numpy = np()
+    return numpy.arange(LAST_GROUP + 1) * STEP + STEP // 2
+
+
+def group_indices(offsets, slopes):
+    """Grid index per (parameter, group) for parameter arrays offsets, slopes;
+    the unknown group settles MIN_DEPTH."""
+    numpy = np()
+    m = centres()
+    d = offsets[:, None] + ((slopes[:, None] * m[None, :]) >> 8)
+    d = numpy.clip(d, MIN_DEPTH, MAX_DEPTH)
+    index = numpy.where(d > GRID_LIMIT, EAGER, numpy.maximum(MIN_INDEX, -(-d // STEP)))
+    return numpy.concatenate([index, numpy.full((len(offsets), 1), MIN_INDEX)], axis=1)
+
+
+def sums(curves, offsets, slopes, chunk=4096):
+    """Total saved and cpu over groups for each (offset, slope) pair."""
+    numpy = np()
+    saved, cpu = numpy.empty(len(offsets)), numpy.empty(len(offsets))
+    rows = numpy.arange(GROUPS)[None, :]
+    for s in range(0, len(offsets), chunk):
+        index = group_indices(offsets[s:s + chunk], slopes[s:s + chunk])
+        saved[s:s + chunk] = curves['saved'][rows, index].sum(axis=1)
+        cpu[s:s + chunk] = curves['cpu'][rows, index].sum(axis=1)
+    return saved, cpu
+
+
+def best(saved, cpu, offsets, slopes, lam):
+    """The pair maximising saved - lambda * cpu; ties go to the larger offset,
+    then the larger slope."""
+    numpy = np()
+    score = saved - lam * cpu
+    order = numpy.lexsort((slopes, offsets, score))
+    i = order[-1]
+    return float(score[i]), int(offsets[i]), int(slopes[i])
+
+
+def fit_points(curves, lambdas):
+    """Integer offset and slope256 per lambda maximising the objective over
+    {group: grid arrays}: one coarse grid shared by every lambda, then unit-step
+    refinement around each lambda's best."""
+    numpy = np()
+    grid_o, grid_s = numpy.meshgrid(numpy.array(OFFSETS), numpy.array(SLOPES), indexing='ij')
+    grid_o, grid_s = grid_o.ravel(), grid_s.ravel()
+    coarse = sums(curves, grid_o, grid_s)
+    points = []
+    for lam in lambdas:
+        score, offset, slope = best(*coarse, grid_o, grid_s, lam)
+        for step_o, step_s in REFINE:
+            o, s = numpy.meshgrid(numpy.arange(offset - 5 * step_o, offset + 5 * step_o + 1, step_o),
+                                  numpy.arange(max(1, slope - 5 * step_s), slope + 5 * step_s + 1, step_s),
+                                  indexing='ij')
+            o, s = o.ravel(), s.ravel()
+            score, offset, slope = best(*sums(curves, o, s), o, s, lam)
+        points.append({'offset': offset, 'slope256': slope})
+    return points
+
+
+def point_indices(point):
+    numpy = np()
+    return group_indices(numpy.array([point['offset']]), numpy.array([point['slope256']]))[0]
+
+
+def cross_validate(data, lambdas=LAMBDAS, folds=FOLDS, by=None):
+    """Held-out metrics per lambda, with whole games held out together. `by`
+    maps the dataset to an integer label array (and its names) for a
+    per-label breakdown."""
+    numpy = np()
+    lambdas = list(lambdas)
+    games = data['games']
+    folds = max(2, min(folds, len(games)))
+    fold = numpy.array([fold_of(g, folds) for g in games])[data['game']]
+    labels, names = by(data) if by else (numpy.zeros(len(fold), dtype=numpy.int64), None)
+    count = len(names) if names else 1
+    cells = folds * count * GROUPS
+    cell = (fold * count + labels) * GROUPS + data['group']
+    curves = cell_curves(data, cell, cells)
+    shaped = {k: v.reshape((folds, count, GROUPS) + v.shape[1:]) for k, v in curves.items()}
+    whole = {k: v.sum(axis=(0, 1)) for k, v in shaped.items()}
+    totals = [dict(n=0) for _ in lambdas]
+    groups = [[dict(n=0) for _ in lambdas] for _ in range(count)]
+    points = []
+    for f in range(folds):
+        held = {k: v[f].sum(axis=0) for k, v in shaped.items()}
+        if held['n'].sum() == 0:
+            continue
+        training = subtract(whole, held)
+        if training['n'].sum() == 0:
+            continue  # every game is in this fold: nothing to train on
+        fitted = fit_points(training, lambdas)
+        points.append(fitted)
+        for i, point in enumerate(fitted):
+            index = point_indices(point)
+            totals[i] = add(totals[i], read(held, index))
+            for label in range(count):
+                groups[label][i] = add(groups[label][i], read({k: v[f, label] for k, v in shaped.items()}, index))
+    results = []
+    for i, lam in enumerate(lambdas):
+        result = metric_values(totals[i])
+        result['lambda'] = lam
+        result['fold_points'] = [p[i] for p in points]
+        if names:
+            result['by'] = {names[label]: metric_values(groups[label][i]) for label in range(count)}
+        results.append(result)
+    return results
 
 
 def under_budget(curve, budget):
-    """The quantile with the largest owner saving whose extra CPU fits the budget.
-
-    Score = that saving, linearly interpolated to the budget between the
-    neighbouring quantiles, so key sets are compared at equal CPU cost."""
-    points = sorted(curve.values(), key=lambda m: m['quantile'])
-    best, score = None, 0.0
-    for i, point in enumerate(points):
-        if point['extra_cpu'] <= budget:
-            best, score = point, point['owner_saving']
-            nxt = points[i + 1] if i + 1 < len(points) else None
-            if nxt and nxt['extra_cpu'] > budget > point['extra_cpu']:
-                f = (budget - point['extra_cpu']) / (nxt['extra_cpu'] - point['extra_cpu'])
-                score = point['owner_saving'] + f * (nxt['owner_saving'] - point['owner_saving'])
-    return {'score': round(score, 4), 'quantile': best['quantile'] if best else None,
-            'at_quantile': {k: v for k, v in (best or {}).items() if k != 'by'}}
+    """Owner saving at `budget` extra CPU, interpolated between the best point
+    within the budget and the next cheapest point beyond it that saves more."""
+    within = [p for p in curve if p['extra_cpu'] <= budget]
+    if not within:
+        return {'score': 0.0, 'lambda': None}
+    best_point = max(within, key=lambda p: (p['owner_saving'], p['extra_cpu']))
+    score = best_point['owner_saving']
+    beyond = [p for p in curve if p['extra_cpu'] > budget and p['owner_saving'] > score]
+    if beyond:
+        nxt = min(beyond, key=lambda p: p['extra_cpu'])
+        f = (budget - best_point['extra_cpu']) / (nxt['extra_cpu'] - best_point['extra_cpu'])
+        score += f * (nxt['owner_saving'] - score)
+    return {'score': round(score, 4), 'lambda': best_point['lambda']}
 
 
-_SHARED = {}
+def metrics(data, depths, by=None, members=None):
+    """Metrics of predicting depths[i] for lifetime i, optionally per label and
+    over `members` only (depths then one per member)."""
+    numpy = np()
+    index = numpy.where(depths > GRID_LIMIT, EAGER, numpy.maximum(MIN_INDEX, -(-depths // STEP)))
+    labels, names = by(data) if by else (numpy.zeros(len(data['actual']), dtype=numpy.int64), None)
+    if members is not None:
+        labels = labels[members]
+    count = len(names) if names else 1
+    cell = numpy.zeros(len(data['actual']), dtype=numpy.int64)
+    cell[members if members is not None else slice(None)] = labels * SIZE + index
+    curves = cell_curves(data, cell, count * SIZE, members)
+    shaped = {k: v.reshape((count, SIZE) + v.shape[1:]) for k, v in curves.items()}
+    columns = numpy.arange(SIZE)
+    per = [read({k: v[label] for k, v in shaped.items()}, columns) for label in range(count)]
+    total = dict(n=0)
+    for part in per:
+        total = add(total, part)
+    overall = metric_values(total)
+    if names:
+        return overall, {names[label]: metric_values(per[label]) for label in range(count)}
+    return overall
 
 
-def _evaluate(task):
-    keys, per_size = task
-    return under_budget(cross_validate(_SHARED['lifetimes'], keys, per_size, QUANTILES), _SHARED['budget'])
-
-
-def evaluate_all(lifetimes, budget, tasks, jobs):
-    """Score (keys, per_size) tasks, in parallel where fork is available."""
-    _SHARED.update(lifetimes=lifetimes, budget=budget)
-    if jobs > 1 and len(tasks) > 1:
-        import multiprocessing
-        try:
-            context = multiprocessing.get_context('fork')
-        except ValueError:
-            context = None
-        if context:
-            with context.Pool(min(jobs, len(tasks))) as pool:
-                return pool.map(_evaluate, tasks)
-    return [_evaluate(t) for t in tasks]
-
-
-def screen(lifetimes, budget=DEFAULT_BUDGET, candidates=None, max_keys=MAX_KEYS, jobs=1):
-    """Owner saving at the CPU budget for each key alone and in forward selection."""
-    candidates = list(candidates or KEYS)
-    report = {'budget': budget, 'baseline': {}, 'alone': {}, 'selection': []}
-    tasks = [(keys, per_size) for per_size in (False, True) for keys in [[]] + [[k] for k in candidates]]
-    scores = dict(zip(((tuple(k), p) for k, p in tasks), evaluate_all(lifetimes, budget, tasks, jobs)))
-    for per_size in (False, True):
-        name = 'per_size' if per_size else 'raw'
-        report['baseline'][name] = scores[((), per_size)]
-        report['alone'][name] = {k: scores[((k,), per_size)] for k in candidates}
-    per_size = report['baseline']['per_size']['score'] > report['baseline']['raw']['score']
-    selected, current = [], report['baseline']['per_size' if per_size else 'raw']
-    report['selection'].append({'keys': [], 'per_size': per_size, **current})
-    while len(selected) < max_keys:
-        options = [(selected + [key], normalise) for key in candidates if key not in selected
-                   for normalise in ((per_size,) if selected else (False, True))]
-        if not options:
-            break
-        trials = [(score, keys[-1], normalise) for score, (keys, normalise)
-                  in zip(evaluate_all(lifetimes, budget, options, jobs), options)]
-        score, key, normalise = max(trials, key=lambda t: t[0]['score'])
-        if score['score'] - current['score'] < MIN_GAIN:
-            report['rejected_next'] = {'key': key, 'per_size': normalise, **score}
-            break
-        selected.append(key)
-        per_size, current = normalise, score
-        report['selection'].append({'keys': list(selected), 'per_size': per_size, **score})
-    report['selected'] = {'keys': selected, 'per_size': per_size, 'quantile': current['quantile']}
-    return report
+def predict(data, point):
+    """The engine's depth for every lifetime."""
+    numpy = np()
+    m = data['m']
+    d = numpy.clip(point['offset'] + ((point['slope256'] * numpy.maximum(m, 0)) >> 8), MIN_DEPTH, MAX_DEPTH)
+    return numpy.where(m < 0, MIN_DEPTH, d)
 
 
 # Summary and header ---------------------------------------------------------
 
-def point_name(q):
-    return f'p{round(q * 100):02d}'
+def point_name(lam):
+    return f'l{round(lam * 1000):04d}'
 
 
-def summarise(lifetimes, games, keys, per_size, q, points=None):
-    """Everything fit needs to regenerate the header, without the raw lifetimes:
-    each prefix cell's lifetime count and its target at every grid quantile.
-    `points` are the operating points the header carries; `q` is the default."""
-    cells = histograms(lifetimes, keys, per_size)
-    points = sorted(set(points or []) | {q})
-    ladder = sorted(set(QUANTILES) | set(CURVE) | set(points))
-    return {'version': 2, 'keys': keys, 'per_size': per_size, 'quantile': q,
-            'points': [{'name': point_name(v), 'quantile': v} for v in points], 'default': point_name(q),
-            'min_group': MIN_GROUP,
-            'bucket': BUCKET, 'games': len(games), 'lifetimes': len(lifetimes),
-            'cells': [{'cell': list(cell), 'count': sum(h.values()),
-                       'quantiles': {str(level): quantile_value(h, level) for level in ladder}}
-                      for cell, h in sorted(cells.items(), key=lambda item: (len(item[0]), [str(v) for v in item[0]]))]}
+def summarise(data, points, default):
+    """The fitted operating points: `points` are the lambdas the header
+    carries, and `default` is one of them."""
+    lambdas = sorted(set(points) | {default})
+    curves = cell_curves(data, data['group'], GROUPS)
+    fitted = fit_points(curves, lambdas)
+    return {'version': 5, 'games': len(data['games']), 'lifetimes': int(len(data['actual'])),
+            'default': point_name(default),
+            'points': [{'name': point_name(lam), 'lambda': lam, **p} for lam, p in zip(lambdas, fitted)]}
 
 
-def table_from_summary(summary, quantile=None):
-    level = str(summary['quantile'] if quantile is None else quantile)
-    return {tuple(entry['cell']): entry['quantiles'][level] for entry in summary['cells']
-            if entry['count'] >= summary['min_group'] or not entry['cell']}
-
-
-def cpp_value(key, value):
-    return f'"{value}"' if key == 'type' else str(int(value))
-
-
-def summary_points(summary):
-    return summary.get('points') or [{'name': point_name(summary['quantile']), 'quantile': summary['quantile']}]
+def point_of(summary, name=None):
+    name = name or summary['default']
+    return next(p for p in summary['points'] if p['name'] == name)
 
 
 def emit_header(summary, provenance=()):
-    keys, per_size = summary['keys'], summary['per_size']
-    points = summary_points(summary)
-    tables = [table_from_summary(summary, point['quantile']) for point in points]
-    default = next(i for i, point in enumerate(points)
-                   if point['name'] == summary.get('default', point_name(summary['quantile'])))
-    rules = sorted(tables[0], key=lambda cell: (-len(cell), [str(v) for v in cell]))
-    width = max(1, len(keys))
+    points = summary['points']
+    default = next(i for i, p in enumerate(points) if p['name'] == summary['default'])
     lines = [
         '// SPDX-License-Identifier: GPL-3.0-or-later',
         '// Generated by tools/gradient_depth_fit.py -- do not edit by hand.',
         '//',
-        '// Predicted settle depth for a building walking field (see',
-        '// docs/building-gradient-depth-model.md). The depth only moves worker CPU:',
-        '// readers still resolve unsettled cells synchronously, so a different table',
-        '// never changes a simulation result and needs no SIM_REVISION bump.',
+        '// Predicted settle depth for a scheduled building walking field (see',
+        '// docs/building-gradient-depth-model.md), from the field\'s own past depths.',
+        '// The depth only moves worker CPU: readers still resolve unsettled cells',
+        '// synchronously, so a different depth never changes a simulation result',
+        '// and needs no SIM_REVISION bump.',
         '//',
         *[f'// {line}' for line in provenance],
         '#pragma once',
@@ -495,117 +574,45 @@ def emit_header(summary, provenance=()):
         '',
         'namespace BuildingGradientDepth',
         '{',
-        '/// The owner inputs a prediction may read, each O(1) at rebuild time.',
-        'struct Query',
-        '{',
-        '\tint route = 0; // 0 footprint, 1 clearing, 2 combat',
-        '\tint swim = 0;',
-        '\tstd::string_view type; // BuildingType::type',
-        '\tint level = 0, site = 0;',
-        '\tint construction = 0; // BuildingStateRecord::ConstructionResultState',
-        '\tint progress = -1; // delivered/needed material quartile on sites, else -1',
-        '\tint width = 0, height = 0; // map tiles',
-        '\tint units = 0, buildings = 0; // the team\'s live counts',
-        '\tint previous = -1; // the field\'s previous settled cost, -1 if none',
-        '};',
-        '',
-        'enum class Key { Route, Swim, Type, Level, Site, Construction, Progress, Size, Units, Buildings, Previous };',
-        '',
-        '/// floor(log2(value + 1)) for value >= 0, else -1.',
-        'constexpr int log2Bucket(int value)',
-        '{',
-        '\tif (value < 0)',
-        '\t\treturn -1;',
-        '\tint bucket = 0;',
-        '\tfor (unsigned v = unsigned(value) + 1; v > 1; v >>= 1)',
-        '\t\t++bucket;',
-        '\treturn bucket;',
-        '}',
-        '',
-        'constexpr int keyValue(Key key, const Query &q)',
-        '{',
-        '\tswitch (key)',
-        '\t{',
-        '\tcase Key::Route: return q.route;',
-        '\tcase Key::Swim: return q.swim;',
-        '\tcase Key::Level: return q.level;',
-        '\tcase Key::Site: return q.site;',
-        '\tcase Key::Construction: return q.construction;',
-        '\tcase Key::Progress: return q.progress;',
-        '\tcase Key::Size: return q.width + q.height;',
-        '\tcase Key::Units: return log2Bucket(q.units);',
-        '\tcase Key::Buildings: return log2Bucket(q.buildings);',
-        f'\tcase Key::Previous: return q.previous < 0 ? -1 : log2Bucket(q.previous / {BIN_COST});',
-        '\tdefault: return 0;',
-        '\t}',
-        '}',
-        '',
         f'inline constexpr int MIN_DEPTH = {MIN_DEPTH};',
         f'inline constexpr int MAX_DEPTH = {MAX_DEPTH};',
-        '/// When true, a rule\'s value is Q8 cost per tile of (width + height).',
-        f'inline constexpr bool PER_SIZE = {"true" if per_size else "false"};',
-        f'inline constexpr int PER_SIZE_SCALE = {PER_SIZE_SCALE};',
-        f'inline constexpr int KEY_COUNT = {len(keys)};',
-        f'inline constexpr Key KEYS[{width}] = {{{", ".join("Key::" + CPP_KEY[k] for k in keys) or "Key::Route"}}};',
         '',
-        '/// Operating points: the same cells at different quantiles of the depth',
-        '/// their lifetimes needed. A higher quantile moves more search off the owner',
-        '/// for more total CPU. Define GLOB2_BUILDING_GRADIENT_DEPTH_POINT to an index',
-        '/// to choose another point at build time.',
+        '/// One operating point: depth = offset + (slope256 * m) >> 8 for m, the',
+        '/// deeper of the two past depths. A lower lambda moves more search off the',
+        '/// owner for more worker CPU.',
+        'struct Point',
+        '{',
+        '\tstd::string_view name;',
+        '\tint offset, slope256;',
+        '};',
+        '',
+        'inline constexpr Point POINTS[] = {',
+        *[f'\t{{"{p["name"]}", {p["offset"]}, {p["slope256"]}}},' for p in points],
+        '};',
         f'inline constexpr int POINT_COUNT = {len(points)};',
-        f'inline constexpr std::string_view POINT_NAMES[POINT_COUNT] = {{{", ".join(chr(34) + p["name"] + chr(34) for p in points)}}};',
-        f'inline constexpr int POINT_QUANTILE_PERMILLE[POINT_COUNT] = {{{", ".join(str(round(p["quantile"] * 1000)) for p in points)}}};',
         f'inline constexpr int DEFAULT_POINT = {default}; // {points[default]["name"]}',
-        '#ifdef GLOB2_BUILDING_GRADIENT_DEPTH_POINT',
-        'inline constexpr int ACTIVE_POINT = GLOB2_BUILDING_GRADIENT_DEPTH_POINT;',
-        '#else',
-        'inline constexpr int ACTIVE_POINT = DEFAULT_POINT;',
-        '#endif',
-        'static_assert(ACTIVE_POINT >= 0 && ACTIVE_POINT < POINT_COUNT);',
         '',
-        '/// Matches when the first `matched` selected keys equal `values` (and `type`',
-        '/// when Type is among them). Rules are most specific first; the last one',
-        '/// matches everything.',
-        'struct Rule',
+        '/// The cost to settle up front for a field whose serving search has settled',
+        '/// `serving` and whose last replaced lifetime settled `previous` (each -1 if',
+        '/// unknown). Without either, as after loading a save, only the seeds: the',
+        '/// readers decide. Never affects results, only who pays.',
+        'constexpr int target(int serving, int previous, int point = DEFAULT_POINT)',
         '{',
-        '\tint matched;',
-        f'\tint values[{width}];',
-        '\tstd::string_view type;',
-        '\tint depth[POINT_COUNT];',
-        '};',
-        '',
-        'inline constexpr Rule RULES[] = {',
-    ]
-    for cell in rules:
-        ints = [0 if k == 'type' else int(v) for k, v in zip(keys, cell)] + [0] * (width - len(cell))
-        kind = next((v for k, v in zip(keys, cell) if k == 'type'), '')
-        depths = ', '.join(str(table[cell]) for table in tables)
-        lines.append(f'\t{{{len(cell)}, {{{", ".join(map(str, ints))}}}, "{kind}", {{{depths}}}}},')
-    lines += [
-        '};',
-        '',
-        'constexpr bool matches(const Rule &rule, const Query &q)',
-        '{',
-        '\tfor (int i = 0; i < rule.matched; ++i)',
-        '\t{',
-        '\t\tif (KEYS[i] == Key::Type ? rule.type != q.type : rule.values[i] != keyValue(KEYS[i], q))',
-        '\t\t\treturn false;',
-        '\t}',
-        '\treturn true;',
+        '\tconst Point &p = POINTS[point];',
+        '\tconst int m = serving > previous ? serving : previous;',
+        '\tif (m < 0)',
+        '\t\treturn MIN_DEPTH;',
+        '\tconst long long d = p.offset + ((long long)p.slope256 * m >> 8);',
+        '\treturn int(d < MIN_DEPTH ? MIN_DEPTH : d > MAX_DEPTH ? MAX_DEPTH : d);',
         '}',
         '',
-        '/// The cost to settle up front. Never affects results, only who pays.',
-        'constexpr int target(const Query &q, int point = ACTIVE_POINT)',
+        '/// The index of the point named `name`, or -1.',
+        'constexpr int pointIndex(std::string_view name)',
         '{',
-        '\tfor (const Rule &rule : RULES)',
-        '\t\tif (matches(rule, q))',
-        '\t\t{',
-        '\t\t\tlong long depth = rule.depth[point];',
-        '\t\t\tif (PER_SIZE)',
-        '\t\t\t\tdepth = depth * (q.width + q.height) / PER_SIZE_SCALE;',
-        '\t\t\treturn int(depth < MIN_DEPTH ? MIN_DEPTH : depth > MAX_DEPTH ? MAX_DEPTH : depth);',
-        '\t\t}',
-        '\treturn MAX_DEPTH;',
+        '\tfor (int i = 0; i < POINT_COUNT; ++i)',
+        '\t\tif (POINTS[i].name == name)',
+        '\t\t\treturn i;',
+        '\treturn -1;',
         '}',
         '} // namespace BuildingGradientDepth',
     ]
@@ -613,46 +620,58 @@ def emit_header(summary, provenance=()):
 
 
 def provenance(summary, report=None):
-    names = ', '.join(f'{p["name"]} (q {p["quantile"]})' for p in summary_points(summary))
-    lines = [f'Fitted on {summary["games"]} games, {summary["lifetimes"]} field lifetimes;',
-             f'keys {", ".join(summary["keys"]) or "(none)"}, per_size {summary["per_size"]}.',
-             f'Operating points {names}; default {summary.get("default", point_name(summary["quantile"]))}.']
+    default = point_of(summary)
+    lines = [f'Fitted on {summary["games"]} games, {summary["lifetimes"]} scheduled field lifetimes.',
+             f'Default {default["name"]} (lambda {default["lambda"]}).']
     if report:
-        lines.append(f'Default, held out by game: hit rate {report["hit_rate"]}, coverage {report["query_weighted_coverage"]}, '
-                     f'extra CPU {report["extra_cpu"]}, owner saving {report["owner_saving"]}.')
+        lines.append(f'Default, held out by game: hit rate {report["hit_rate"]}, coverage '
+                     f'{report["query_weighted_coverage"]}, extra CPU {report["extra_cpu"]}, '
+                     f'owner saving {report["owner_saving"]}.')
     return lines
 
 
-def by_size(life):
-    return f'{life.w}x{life.h}'
+def by_size(data):
+    """Map-size labels: (integer label per lifetime, label names)."""
+    numpy = np()
+    keys = [f'{w}x{h}' for w, h in zip(data['w'].tolist(), data['h'].tolist())]
+    names = sorted(set(keys))
+    position = {k: i for i, k in enumerate(names)}
+    return numpy.array([position[k] for k in keys], dtype=numpy.int64), names
 
 
-def scenario_of(games):
+def by_scenario(data):
     """busy_oazis for the Oazis runs, tournament for everything else."""
-    names = {game: 'busy_oazis' if labels.get('map') == 'Oazis' else 'tournament' for game, labels in games.items()}
-    return lambda life: names.get(life.game, 'tournament')
+    numpy = np()
+    names = ['busy_oazis', 'tournament']
+    per_game = numpy.array([0 if labels.get('map') == 'Oazis' else 1 for labels in data['labels']], dtype=numpy.int64)
+    return per_game[data['game']], names
 
 
-def curve(lifetimes, games, keys, per_size, shares=SEARCH_SHARE, quantiles=CURVE):
-    """Held-out owner saving against field extra CPU per operating point, plus eager."""
-    scenario = scenario_of(games)
-    held = cross_validate(lifetimes, keys, per_size, quantiles, by=scenario)
-    groups = defaultdict(list)
-    for life in lifetimes:
-        groups[scenario(life)].append(life)
+def strip(m):
+    return {k: v for k, v in m.items() if k not in ('by', 'lambda', 'fold_points')}
+
+
+def curve(data, lambdas, shares=SEARCH_SHARE):
+    """Held-out owner saving against field extra CPU per lambda, plus eager."""
+    numpy = np()
+    held = cross_validate(data, lambdas, by=by_scenario)
     rows = []
+
     def row(point, name, m):
-        value = {'point': point, 'scenario': name, **{k: v for k, v in m.items() if k not in ('by', 'quantile')}}
+        value = {'point': point, 'scenario': name, **strip(m)}
         if name in shares:
             value['process_cpu_ratio'] = round(1 + shares[name] * (m['extra_cpu'] - 1), 4)
         rows.append(value)
-    for q in quantiles:
-        row(point_name(q), 'all', held[q])
-        for name, m in held[q]['by'].items():
-            row(point_name(q), name, m)
-    row('eager', 'all', metrics([(l, MAX_DEPTH) for l in lifetimes]))
-    for name, members in sorted(groups.items()):
-        row('eager', name, metrics([(l, MAX_DEPTH) for l in members]))
+    for m in held:
+        row(point_name(m['lambda']), 'all', m)
+        for name, values in m['by'].items():
+            if values['lifetimes']:
+                row(point_name(m['lambda']), name, values)
+    eager, scenarios = metrics(data, numpy.full(len(data['actual']), MAX_DEPTH), by=by_scenario)
+    row('eager', 'all', eager)
+    for name, values in scenarios.items():
+        if values['lifetimes']:
+            row('eager', name, values)
     return rows
 
 
@@ -672,71 +691,45 @@ def main(argv=None):
     p = sub.add_parser('dataset', help='tournament results or run directories -> dataset')
     p.add_argument('roots', nargs='+', type=Path)
     p.add_argument('--output', type=Path, required=True)
-    for name in ('screen', 'fit', 'evaluate'):
+    p.add_argument('--jobs', type=int, default=1, help='processes parsing statistics files')
+    for name in ('fit', 'evaluate'):
         p = sub.add_parser(name)
         p.add_argument('dataset', type=Path)
         p.add_argument('--report', type=Path)
-        if name in ('screen', 'fit'):
-            p.add_argument('--jobs', type=int, default=1, help='parallel candidate evaluations')
-            p.add_argument('--budget', type=float, default=DEFAULT_BUDGET,
-                           help='extra-CPU ratio the owner saving is compared at')
-            p.add_argument('--keys', nargs='*', choices=sorted(KEYS),
-                           help='screen: candidates; fit: skip selection and use these keys, in order')
+        p.add_argument('--summary', type=Path, default=SUMMARY)
         if name == 'fit':
-            p.add_argument('--per-size', action='store_true')
-            p.add_argument('--quantile', '--operating-point', dest='quantile', type=float,
-                           help='with --keys: the default operating point (default: best under budget)')
+            p.add_argument('--budget', type=float, default=DEFAULT_BUDGET,
+                           help='extra-CPU ratio that picks the default point when --operating-point is absent')
+            p.add_argument('--operating-point', dest='lam', type=float,
+                           help='the default point\'s lambda (default: the best held-out point within --budget)')
             p.add_argument('--points', nargs='*', type=float, default=[],
-                           help='further operating points (quantiles) the header carries')
+                           help='further operating points (lambdas) the header carries')
             p.add_argument('--header', type=Path, default=HEADER)
-            p.add_argument('--summary', type=Path, default=SUMMARY)
-        if name == 'evaluate':
-            p.add_argument('--summary', type=Path, default=SUMMARY)
-            p.add_argument('--curve', action='store_true', help='owner saving vs CPU per operating point')
+        else:
+            p.add_argument('--curve', action='store_true', help='owner saving vs CPU per lambda')
             p.add_argument('--share', action='append', default=[], metavar='SCENARIO=SHARE',
                            help='search share of process CPU (default: the measured SEARCH_SHARE)')
     args = parser.parse_args(argv)
 
     if args.command == 'dataset':
-        data = build_dataset(args.roots)
-        with gzip.open(args.output, 'wt') as out:
-            json.dump(data, out, separators=(',', ':'))
-        print(f'{len(data["games"])} games, {len(data["lifetimes"])} lifetimes -> {args.output}')
+        data = build_dataset(args.roots, args.jobs)
+        save_dataset(data, args.output)
+        print(f'{len(data["games"])} games, {len(data["actual"])} lifetimes -> {args.output}')
         return 0
 
-    games, lifetimes = load_dataset(args.dataset)
-
-    def line(label, m):
-        a = m['at_quantile']
-        return (f'{label:34s} saving@budget={m["score"]:.3f} q={m["quantile"]} hit={a.get("hit_rate", 0):.3f} '
-                f'cov={a.get("query_weighted_coverage", 0):.3f} extra={a.get("extra_cpu", 0):.3f}')
-    if args.command == 'screen':
-        report = screen(lifetimes, args.budget, args.keys, jobs=args.jobs)
-        for name in ('raw', 'per_size'):
-            print(line(f'baseline {name}', report['baseline'][name]))
-            for key, m in sorted(report['alone'][name].items(), key=lambda item: -item[1]['score']):
-                print(line(f'  alone {name} {key}', m))
-        for step in report['selection']:
-            print(line(f'select {"+".join(step["keys"]) or "-"} per_size={step["per_size"]}', step))
-        if 'rejected_next' in report:
-            print(line(f'stop: next {report["rejected_next"]["key"]}', report['rejected_next']))
-    elif args.command == 'fit':
-        if args.keys is None:
-            selection = screen(lifetimes, args.budget, jobs=args.jobs)['selected']
-            keys, per_size, quantile = selection['keys'], selection['per_size'], selection['quantile']
-        else:
-            keys, per_size = args.keys, args.per_size
-            quantile = args.quantile or under_budget(
-                cross_validate(lifetimes, keys, per_size, QUANTILES), args.budget)['quantile']
-        if quantile is None:
-            raise SystemExit('no quantile meets the CPU budget')
-        held_out = cross_validate(lifetimes, keys, per_size, quantile, by=by_size)
-        summary = summarise(lifetimes, games, keys, per_size, quantile, args.points)
-        summary['budget'] = args.budget
+    data = load_dataset(args.dataset)
+    if args.command == 'fit':
+        lam = args.lam
+        if lam is None:
+            lam = under_budget(cross_validate(data), args.budget)['lambda']
+        if lam is None:
+            raise SystemExit('no operating point meets the CPU budget')
+        held_out = strip(cross_validate(data, [lam])[0])
+        summary = summarise(data, args.points, lam)
         summary['cross_validated'] = held_out
         args.summary.write_text(json.dumps(summary, indent=1) + '\n')
         args.header.write_text(emit_header(summary, provenance(summary, held_out)))
-        report = {'keys': keys, 'per_size': per_size, 'quantile': quantile, 'cross_validated': held_out}
+        report = {'points': summary['points'], 'default': summary['default'], 'cross_validated': held_out}
         print(json.dumps(report, indent=2))
     elif args.curve:
         summary = json.loads(args.summary.read_text())
@@ -744,21 +737,17 @@ def main(argv=None):
         for item in args.share:
             name, value = item.split('=', 1)
             shares[name] = float(value)
-        rows = curve(lifetimes, games, summary['keys'], summary['per_size'], shares,
-                     sorted(set(CURVE) | {p['quantile'] for p in summary_points(summary)}))
+        lambdas = sorted(set(LAMBDAS) | {p['lambda'] for p in summary['points']})
+        rows = curve(data, lambdas, shares)
         print_curve(rows)
-        report = {'keys': summary['keys'], 'shares': shares, 'curve': rows}
+        report = {'shares': shares, 'curve': rows}
     else:
         summary = json.loads(args.summary.read_text())
-        table = table_from_summary(summary)
-        keys, per_size = summary['keys'], summary['per_size']
-        pairs = [(l, predict(table, keys, per_size, l)) for l in lifetimes]
-        groups = defaultdict(list)
-        for pair in pairs:
-            groups[by_size(pair[0])].append(pair)
-        held_out = cross_validate(lifetimes, keys, per_size, summary['quantile'], by=by_size)
-        report = {'in_sample': metrics(pairs), 'in_sample_by_size': {k: metrics(v) for k, v in sorted(groups.items())},
-                  'cross_validated': held_out}
+        point = point_of(summary)
+        overall, sizes = metrics(data, predict(data, point), by=by_size)
+        held = cross_validate(data, [point['lambda']], by=by_size)[0]
+        report = {'point': point, 'in_sample': overall, 'in_sample_by_size': sizes,
+                  'cross_validated': {k: v for k, v in held.items() if k not in ('lambda', 'fold_points')}}
         print(json.dumps(report, indent=2))
     if args.report:
         args.report.write_text(json.dumps(report, indent=2) + '\n')

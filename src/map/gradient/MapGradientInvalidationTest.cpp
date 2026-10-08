@@ -258,7 +258,7 @@ TEST_SUITE("MapGradientInvalidation")
 		}
 		CHECK(rows==stats.rows().size()+1);
 		// Owner inputs of the lifetime a row closes, captured when it started.
-		CHECK(csv.str().find(",width,height,level,is_site,construction_state,progress,team_units,team_buildings\n")!=std::string::npos);
+		CHECK(csv.str().find(",width,height,level,is_site,construction_state,progress,team_units,team_buildings,staged,previous_hint,serving_settled\n")!=std::string::npos);
 		const auto& closed=stats.rows().back();
 		CHECK(closed.context.known);
 		CHECK(closed.context.buildings==f.game.teams[0]->liveBuildings.size());

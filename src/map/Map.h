@@ -325,8 +325,9 @@ public:
 	//! Worker depth for a scheduled walking field: every reader still resolves
 	//! its cell first, so the prediction moves CPU, never values.
 	int predictBuildingDepth(const Building *building, int slot) const;
-	//! "table" (default), "full" or "lazy" (seeds only): CPU placement for
-	//! timing comparisons, never results. GLOB2_BUILDING_DEPTH sets it too.
+	//! "table" (the model's default point), a point name such as "l0300",
+	//! "full" or "lazy" (seeds only): CPU placement for timing comparisons,
+	//! never results. GLOB2_BUILDING_DEPTH sets it too.
 	void setBuildingGradientDepth(std::string_view mode);
 	void updateTeamAreaGradients(int teamNumber);
 	void seedMaterialGradient(int team, Uint8 resource, int swim, Uint16 *gradient, bool withMarkets = false, const Building* consumer = nullptr, unsigned modes = 0);
