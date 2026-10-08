@@ -25,6 +25,7 @@ class OnlineGeneratorsScreen : public Glob2UI::Screen
 	void fetch(bool more = false);
 	void select(const std::string &id);
 	void install();
+	void failInstallation(const std::string &message);
 	void useInRoom();
 
   public:

@@ -15,6 +15,7 @@
 #include "OnlineFakes.h"
 #include "OnlineHubScreen.h"
 #include "OnlineMapsScreen.h"
+#include "OnlineGeneratorsScreen.h"
 #include "OnlineProfileScreen.h"
 #include "OnlineServices.h"
 #include "PlatformClient.h"
@@ -111,6 +112,40 @@ void closeInFlight(ScriptedPlatform &platform, const std::string &name,
 
 TEST_SUITE("OnlineScreenLifetime")
 {
+	TEST_CASE("generator installation clears pending state when restoring the library throws")
+	{
+		glob2test::HeadlessGlobals globals({.loadStrings = true});
+		ScriptedPlatform platform;
+		GAGGUI::ScreenStack stack(*globalContainer->gfx);
+		OnlineGeneratorsScreen screen(stack);
+		struct Failed : GAGCore::ApplicationHost::Persistence
+		{
+			GAGCore::ApplicationHost::PersistenceState state() const override
+			{
+				return GAGCore::ApplicationHost::PersistenceState::Failed;
+			}
+		};
+		// An unreadable checkpoint forces rollback to throw before touching storage.
+		// ScriptGenerator separately covers writes failing during rollback.
+		screen.before = "unreadable checkpoint";
+		screen.replacing = "test:generator";
+		screen.persistence = std::make_unique<Failed>();
+		CHECK_NOTHROW(screen.onTimer(0));
+		CHECK_FALSE(screen.persistence);
+		CHECK(screen.before.empty());
+		CHECK(screen.replacing.empty());
+		CHECK(screen.status.find("Could not restore") != std::string::npos);
+		CHECK(screen.status.find("previous library is retained") == std::string::npos);
+		const auto previous = screen.status;
+		CHECK_NOTHROW(screen.onTimer(0));
+		CHECK(screen.status == previous);
+		screen.before = "unreadable checkpoint";
+		CHECK_NOTHROW(screen.failInstallation("Download failed."));
+		CHECK(screen.before.empty());
+		CHECK(screen.status.find("Download failed.") == 0);
+		CHECK(screen.status.find("Could not restore") != std::string::npos);
+	}
+
 	TEST_CASE("online screens closed with platform calls in flight are never called back")
 	{
 		glob2test::HeadlessGlobals globals({.loadStrings = true});
@@ -131,6 +166,8 @@ TEST_SUITE("OnlineScreenLifetime")
 			screen->onTimer(0);
 			return screen;
 		});
+		closeInFlight(platform, "generators",
+					  [&] { return std::make_unique<OnlineGeneratorsScreen>(stack); });
 		closeInFlight(platform, "settings: online", [&]
 		{
 			auto screen = std::make_unique<SettingsScreen>();

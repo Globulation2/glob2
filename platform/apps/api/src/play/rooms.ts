@@ -1787,14 +1787,22 @@ export class RoomService {
         sql<Date>`now() - make_interval(secs => ${ROOM_RULES.memberGraceSeconds})`,
       )
       .execute();
+    let removed = 0;
     for (const member of gone) {
       await this.db.transaction().execute(async (trx) => {
         const deleted = await trx
           .deleteFrom('room_members')
           .where('room_id', '=', member.room_id)
           .where('account_id', '=', member.account_id)
+          .where('connected', '=', false)
+          .where(
+            'last_seen_at',
+            '<',
+            sql<Date>`now() - make_interval(secs => ${ROOM_RULES.memberGraceSeconds})`,
+          )
           .executeTakeFirst();
         if (deleted.numDeletedRows === 0n) return;
+        removed++;
         await trx
           .updateTable('room_seats')
           .set({ occupant: 'open', account_id: null, ready: false })
@@ -1814,7 +1822,7 @@ export class RoomService {
       .deleteFrom('room_kicks')
       .where('until', '<=', sql<Date>`now()`)
       .execute();
-    return { closed, removed: gone.length, recovered };
+    return { closed, removed, recovered };
   }
 
   /**

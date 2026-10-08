@@ -163,14 +163,32 @@ void OnlineGeneratorsScreen::install()
 			}
 			catch (const std::exception &e)
 			{
-				if (!before.empty())
-					library.rollback(before);
-				status = e.what();
+				failInstallation(e.what());
 			}
 			invalidate();
 		},
 		4 * 1024 * 1024);
 	invalidate();
+}
+void OnlineGeneratorsScreen::failInstallation(const std::string &message)
+{
+	status = message;
+	if (!before.empty())
+	{
+		try
+		{
+			library.rollback(before);
+			status += " The previous library is retained.";
+		}
+		catch (const std::exception &error)
+		{
+			status += " Could not restore the previous library: ";
+			status += error.what();
+		}
+	}
+	persistence.reset();
+	before.clear();
+	replacing.clear();
 }
 void OnlineGeneratorsScreen::onTimer(Uint32)
 {
@@ -183,8 +201,7 @@ void OnlineGeneratorsScreen::onTimer(Uint32)
 	}
 	else
 	{
-		library.rollback(before);
-		status = "Storage failed. The previous library is retained.";
+		failInstallation("Storage failed.");
 	}
 	persistence.reset();
 	before.clear();
