@@ -292,11 +292,12 @@ TEST_SUITE("ExperimentalFeatures")
 			CHECK(current->getPosition() == bytes.size());
 
             // Build the older wire layout explicitly: version 123 has neither
-            // experiment/catalog/resource-experiment tails nor the format-143 delay
+            // experiment/catalog/artwork/resource-experiment tails nor the format-143 delay
             // byte following the common gameLatency/orderRate prefix.
             const std::string sectionBytes = bytesOf(original.getExperiments());
-            REQUIRE(bytes.size() > sectionBytes.size()+2*sizeof(Uint32)+sizeof(Uint8));
-            std::string legacyBytes=bytes.substr(0,bytes.size()-sectionBytes.size()-2*sizeof(Uint32));
+            const size_t emptyCatalogTails = 3*sizeof(Uint32); // building catalog, artwork, resource experiments
+            REQUIRE(bytes.size() > sectionBytes.size()+emptyCatalogTails+sizeof(Uint8));
+            std::string legacyBytes=bytes.substr(0,bytes.size()-sectionBytes.size()-emptyCatalogTails);
             legacyBytes.erase(sizeof(Sint32)+sizeof(Uint8),sizeof(Uint8));
             const size_t legacySize=legacyBytes.size();
             auto* legacy = new MemoryStreamBackend(legacyBytes.data(),legacySize);
