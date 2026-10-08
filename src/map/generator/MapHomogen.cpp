@@ -1,29 +1,18 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
-// The whole-map passes the generators share: a uniform terrain to start from, the sand rule that
-// keeps water off grass, and the resource-fraying pass. Kept out of MapTerrain.cpp on purpose:
-// smoothResources needs globalContainer's resource types, and the test build links MapTerrain.cpp
-// against a stripped server-mode libgag that has no globalContainer (test/SConstruct).
+// The resource-fraying pass the random generators share, and the transitional in-place sand pass
+// that map tools still call (generators use the order-independent Map::layBeaches). Kept out of
+// MapTerrain.cpp on purpose: smoothResources needs globalContainer's resource types, and the test
+// build links MapTerrain.cpp against a stripped server-mode libgag that has no globalContainer
+// (test/SConstruct).
 #include "GlobalContainer.h"
 #include "Map.h"
 #include "MapInternal.h"
 #include "Unit.h"
 #include "Utilities.h"
 
-///generates a map that is of one terrain type only
-void Map::makeHomogenMap(TerrainType terrainType)
-{
-    fillTerrain(terrainType);
-}
-GAGCore::CooperativeTask Map::makeHomogenMapTask(TerrainType terrainType)
-{
-    co_await GAGCore::CooperativeTask::checkpoint("[Generating map]");
-    fillTerrain(terrainType);
-    co_return true;
-}
-
-///cares for the sand so water is never next to grass
+///Transitional: cares for the sand so water is never next to grass, in raster order.
 void Map::controlSand(void)
 {
 	auto batch = editTerrain();

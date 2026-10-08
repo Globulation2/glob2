@@ -88,7 +88,7 @@ inline void emojiContracts()
 				assert(service.generate(alone, solo));
 				for (int y = 0; y < (1 << request.hDec); ++y)
 					for (int x = 0; x < (1 << request.wDec); ++x)
-						assert(world.map.getUMTerrain(x, y) == alone.map.getUMTerrain(x, y));
+						assert(world.map.vertexTerrainAt(x, y) == alone.map.vertexTerrainAt(x, y));
 			}
 	assert(variants.size() == 92);
 	// Playtest regression: dense deposits consumed the remaining construction room
@@ -342,11 +342,11 @@ inline void breachableHighlandsContracts()
 	MapGeneration::TerrainSketch terrain(farmTorus.size());
 	for (int i = 0; i < farmTorus.size(); ++i)
 	{
-		const int value = uncontained.map.getUMTerrain(i % farmTorus.w, i / farmTorus.w);
+		const int value = uncontained.map.vertexTerrainAt(i % farmTorus.w, i / farmTorus.w);
 		terrain[i] = value == SAND ? GRASS : value;
 	}
 	MapGeneration::layBeaches(terrain, farmTorus);
-	MapGeneration::writeUndermap(uncontained.map, terrain);
+	MapGeneration::writeVertices(uncontained.map, terrain);
 	assert(definition.validateWorld(uncontained, context).find("farm access lane") !=
 		   std::string::npos);
 	// Abundance changes the farms, never the stone or saddle geometry. Both extremes
@@ -1633,7 +1633,7 @@ inline void faultedCityContracts()
 		Game low(nullptr), high(nullptr);
 		assert(service.generate(low, scarce) && service.generate(high, rich));
 		for (int y = 0; y < low.map.getH(); ++y) for (int x = 0; x < low.map.getW(); ++x)
-			assert(low.map.getUMTerrain(x, y) == high.map.getUMTerrain(x, y));
+			assert(low.map.vertexTerrainAt(x, y) == high.map.vertexTerrainAt(x, y));
 	}
 	{
 		Game world(nullptr);
@@ -1691,7 +1691,7 @@ inline void eatenMapContracts()
 		assert(service.generate(sparse, zero));
 		for (int y = 0; y < 128; ++y)
 			for (int x = 0; x < 128; ++x)
-				assert(world.map.getUMTerrain(x, y) == sparse.map.getUMTerrain(x, y));
+				assert(world.map.vertexTerrainAt(x, y) == sparse.map.vertexTerrainAt(x, y));
 		GenerationContext check(request);
 		assert(definition.validateWorld(world, check).empty());
 		// Depleting the opening crops must be rejected even when the coastline survives.
@@ -1700,7 +1700,7 @@ inline void eatenMapContracts()
 				if (repeated.map.getResource(x, y).type == WHEAT)
 					repeated.map.setNoResource(x, y, 0);
 		assert(!definition.validateWorld(repeated, check).empty());
-		world.map.setUMTerrain(0, 0, GRASS);
+		world.map.setVertexTerrain(0, 0, GRASS);
 		assert(!definition.validateWorld(world, check).empty());
 	}
 	// A single greedy spread used to reject this usable crescent. Retry sites, not terrain.
@@ -1846,9 +1846,8 @@ inline void portageLakesContracts()
 		assert(result);
 	}
 	// A change to the lake/road terrain cannot silently validate as the original design.
-	const auto originalTerrain = compactGame.map.getUMTerrain(0, 0);
-	compactGame.map.setUMTerrain(0, 0, originalTerrain == WATER ? GRASS : WATER);
-	compactGame.map.rebuildTerrain();
+	const auto originalTerrain = compactGame.map.vertexTerrainAt(0, 0);
+	compactGame.map.setVertexTerrain(0, 0, originalTerrain == WATER ? GRASS : WATER);
 	GenerationContext compactContext(compact);
 	assert(!definition.validateWorld(compactGame, compactContext).empty());
 	// Failed neutral bays restore a working layout; that must not invalidate its candidate scan.
@@ -2182,10 +2181,10 @@ inline void bastionKeysContracts()
 	TerrainSketch landBridge(t.size());
 	for (int i = 0; i < t.size(); ++i)
 	{
-		const int corner = bridged.map.getUMTerrain(i % t.w, i / t.w);
+		const int corner = bridged.map.vertexTerrainAt(i % t.w, i / t.w);
 		landBridge[i] = corner == WATER ? SAND : corner;
 	}
-	writeUndermap(bridged.map, landBridge);
+	writeVertices(bridged.map, landBridge);
 	GenerationContext check(request);
 	assert(definition.validateWorld(bridged, check).find("walking connection") !=
 		   std::string::npos);

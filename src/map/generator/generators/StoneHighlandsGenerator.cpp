@@ -127,7 +127,7 @@ struct Layout
 	std::vector<std::vector<int>> tilesOf; // each valley's tiles outside pass boxes
 	std::vector<int> pole;                 // each valley's tile deepest inside it
 	std::vector<Home> homes;
-	std::vector<unsigned char> pond; // undermap water
+	std::vector<unsigned char> pond; // water vertices
 	std::string failure;
 };
 
@@ -725,18 +725,19 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 
 // Terrain straight from the design: pond water inside a two-tile sand beach, grass everywhere
 // else, and stone on every ridge tile. Algae only regrows beside a tile of pure sand, which a
-// one-tile beach never makes: every tile takes its terrain from four undermap corners.
+// one-tile beach never makes: every tile takes its terrain from its four corner vertices.
 bool stampTerrain(Map &map, GenerationContext &context, const Layout &L)
 {
 	const Torus &t = L.t;
 	constexpr int kBeach = 2;
+	TerrainSketch terrain(size_t(t.size()), GRASS);
 	for (int y = 0; y < t.h; ++y)
 		for (int x = 0; x < t.w; ++x)
 		{
 			const int i = y * t.w + x;
 			if (L.pond[i])
 			{
-				map.setUMTerrain(x, y, WATER);
+				terrain[i] = WATER;
 				continue;
 			}
 			bool shore = false;
@@ -747,9 +748,9 @@ bool stampTerrain(Map &map, GenerationContext &context, const Layout &L)
 						shore = true;
 						break;
 					}
-			map.setUMTerrain(x, y, shore ? SAND : GRASS);
+			terrain[i] = shore ? SAND : GRASS;
 		}
-	map.rebuildTerrain();
+	writeVertices(map, terrain);
 	for (int y = 0; y < t.h; ++y)
 		for (int x = 0; x < t.w; ++x)
 		{
@@ -983,7 +984,7 @@ bool generate(Game &game, GenerationContext &context)
 	const StoneHighlandsOptions o(context.request);
 	Map &map = game.map;
 	const int teams = context.request.nbTeams;
-	map.makeHomogenMap(GRASS);
+	map.fillTerrain(GRASS);
 	for (int i = 0; i < teams; ++i)
 		game.addTeam();
 	const Layout L = design(context.request, context);

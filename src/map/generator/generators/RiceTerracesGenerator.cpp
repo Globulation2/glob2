@@ -382,7 +382,7 @@ bool generate(Game &game, GenerationContext &context)
 	const int n = t.size(), teams = context.request.nbTeams;
 	for (int k = 0; k < teams; ++k)
 		game.addTeam();
-	writeUndermap(map, L.terrain);
+	writeVertices(map, L.terrain);
 
 	context.stage = "rice terraces towns";
 	if (!settleRoundColonies(game, context, "rice-starts", L.homeOf, L.homes, L.homeRadius))

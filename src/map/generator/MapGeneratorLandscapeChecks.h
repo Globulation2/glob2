@@ -52,7 +52,7 @@ inline void landscapeGrass(Game &game, int wDec, int hDec)
 {
 	game.map.setSize(wDec, hDec);
 	game.map.setGame(&game);
-	game.map.makeHomogenMap(GRASS);
+	game.map.fillTerrain(GRASS);
 }
 
 // Orbits: the point symmetries are the arena's; translation groups exist only for orders dividing the
@@ -207,7 +207,7 @@ inline void growthChecks()
 	// The finished-map overload must agree with sketch corner arithmetic, including beaches.
 	Game written(nullptr);
 	landscapeGrass(written, 6, 6);
-	writeUndermap(written.map, sketch);
+	writeVertices(written.map, sketch);
 	for (const auto type : {GRASS, SAND, WATER})
 		assert(pureTiles(written.map, type) == pureTiles(sketch, t, type));
 	Fertility::Field field = cropGrowthField(sketch, t);
@@ -236,7 +236,7 @@ inline void growthChecks()
 		for (int x = 20; x <= 40; ++x)
 			if (x <= 22 || x >= 38 || y <= 22 || y >= 38)
 				enclosed[t.at(x, y)] = SAND;
-	writeUndermap(game.map, enclosed);
+	writeVertices(game.map, enclosed);
 	game.map.setResourceByIndex(5, 5, STONE, 1);
 	assert(cropSpreadEnvelope(game.map).visited.empty());
 	game.map.setResourceByIndex(0, 0, WHEAT, 1);
@@ -287,7 +287,7 @@ inline void contactChecks()
 			if ((x >= 20 && x < 26) || (x >= 52 && x < 58))
 				sketch[s.at(x, y)] = WATER;
 	layBeaches(sketch, s);
-	writeUndermap(strait.map, sketch);
+	writeVertices(strait.map, sketch);
 	GenerationRequest request;
 	request.nbTeams = 2;
 	GenerationContext context(request);
@@ -570,7 +570,7 @@ inline void biomeChecks()
 		for (int i = 0; i < t.size(); ++i)
 			assert(!terrain.wall[i] || !doors[i]);
 		layBeaches(sketch, t);
-		writeUndermap(game.map, sketch);
+		writeVertices(game.map, sketch);
 		furnishBiome(game.map, t, context, region, terrain, kit, keep, "biome");
 		int stone = 0, wood = 0, fruit = 0, outside = 0;
 		for (int i = 0; i < t.size(); ++i)
@@ -886,7 +886,7 @@ inline void lavaPrimitiveChecks()
 	assert(syncRandEngine() == engine);
 	const auto build = [](Game &world, GenerationContext &c, const std::vector<int> &proposal)
 	{
-		world.map.makeHomogenMap(GRASS);
+		world.map.fillTerrain(GRASS);
 		world.addTeam();
 		std::vector<unsigned char> home(world.map.getW() * world.map.getH(), 1);
 		const int x = proposal[0];

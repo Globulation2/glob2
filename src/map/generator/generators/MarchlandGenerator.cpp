@@ -125,7 +125,7 @@ constexpr int kFrayPeriod = 9;
 /// enough that every candidate is scored outright rather than annealed - a search over fourteen
 /// things is a search that should have been a loop.
 constexpr int kRiverBeds = 14;
-/// The bed itself, in undermap corners: wide enough that no unit steps over it, even diagonally.
+/// The bed itself, in terrain vertices: wide enough that no unit steps over it, even diagonally.
 /// The wander is a share of the side the bed crosses, and it has to be read against that side: at
 /// 0.17 over 256 tiles the beds came out as canals, which is the ruled line the head of Rivers.h
 /// argues a positional constraint would give. A fourth harmonic wrinkles the long bends.
@@ -851,7 +851,7 @@ bool generate(Game &game, GenerationContext &context)
 		game.addTeam();
 
 	context.stage = "marchland terrain";
-	writeUndermap(map, L.terrain);
+	writeVertices(map, L.terrain);
 
 	context.stage = "marchland colonies";
 	const auto homeMask = [&](int team)
@@ -1028,7 +1028,7 @@ bool generate(Game &game, GenerationContext &context)
 			++sanded;
 		}
 	layBeaches(dry, t);
-	writeUndermap(map, dry);
+	writeVertices(map, dry);
 	context.telemetry.measure("marchland.march.sand-tiles", sanded);
 
 	// Every prize is the same prize: a grove of one fruit with a quarry beside it, on the one patch

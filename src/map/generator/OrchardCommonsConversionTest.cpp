@@ -85,8 +85,7 @@ void contracts(unsigned seed)
 			require(first.game.map.getResource(x, y).getUint32() ==
 						restored.game.map.getResource(x, y).getUint32(),
 					"save preserves every resource kind, amount, variety and animation");
-			require(first.game.map.getTerrain(x, y) == restored.game.map.getTerrain(x, y) &&
-						first.game.map.getUMTerrain(x, y) == restored.game.map.getUMTerrain(x, y),
+			require(first.game.map.vertexTerrainAt(x, y) == restored.game.map.vertexTerrainAt(x, y),
 					"save preserves generated terrain");
 		}
 	// Unsupported user requests must fail explicitly, before placing colonies.

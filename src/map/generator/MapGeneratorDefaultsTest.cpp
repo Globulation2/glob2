@@ -296,7 +296,7 @@ class MapGeneratorDefaultsTest
 				 const int elevation = context.request.option("test-elevation");
 				 REQUIRE(elevation == 8);
 				 REQUIRE(context.request.option("test-switch") == 1);
-				 game.map.makeHomogenMap(GRASS);
+				 game.map.fillTerrain(GRASS);
 				 for (int team = 0; team < context.request.nbTeams; ++team)
 				 {
 					 context.bootX[team] = elevation + (team % 2) * 40;
@@ -510,15 +510,17 @@ class MapGeneratorDefaultsTest
 		Game game(nullptr);
 		game.map.setSize(6, 6);
 		game.map.setGame(&game);
-		game.map.makeHomogenMap(WATER);
-		for (int y = 12; y < 52; ++y)
-			for (int x = 12; x < 52; ++x)
-				game.map.setUMTerrain(x, y, GRASS);
-		for (int y = 24; y < 40; ++y)
-			for (int x = 24; x < 40; ++x)
-				game.map.setUMTerrain(x, y, WATER);
-		game.map.controlSand();
-		game.map.rebuildTerrain();
+		game.map.fillTerrain(WATER);
+		{
+			auto batch = game.map.editTerrain();
+			for (int y = 12; y < 52; ++y)
+				for (int x = 12; x < 52; ++x)
+					game.map.setVertexTerrain(x, y, GRASS);
+			for (int y = 24; y < 40; ++y)
+				for (int x = 24; x < 40; ++x)
+					game.map.setVertexTerrain(x, y, WATER);
+		}
+		game.map.layBeaches();
 		D request;
 		request.seed = 7;
 		GenerationContext context(request);
@@ -850,9 +852,9 @@ TEST_SUITE("MapGeneratorDefaults")
 		glob2test::HeadlessGlobals globals;
 		glob2test::HeadlessGame world;
 		auto& map = world.game.map;
-		map.setCellTerrain(8, 8, TRAIL);
-		map.setCellTerrain(9, 8, ICE);
-		map.setCellTerrain(10, 8, WATER);
+		MapGeneration::paintTile(map, 8, 8, TRAIL);
+		MapGeneration::paintTile(map, 9, 8, ICE);
+		MapGeneration::paintTile(map, 10, 8, WATER);
 		CHECK(map.terrainPropertiesAt(8, 8).buildable);
 		CHECK_FALSE(map.terrainSupportsResourceAtByIndex(8, 8, WHEAT));
 		CHECK_FALSE(map.terrainSupportsResourceAtByIndex(9, 8, STONE));
@@ -877,10 +879,10 @@ TEST_SUITE("MapGeneratorDefaults")
         glob2test::HeadlessGame world;
         auto& map = world.game.map;
         const MapGeneration::Torus torus(map);
-        map.setCellTerrain(8,8,TRAIL);
-        map.setCellTerrain(9,8,ICE);
-        map.setCellTerrain(10,8,WATER);
-        map.setCellTerrain(11,8,SAND);
+        MapGeneration::paintTile(map,8,8,TRAIL);
+        MapGeneration::paintTile(map,9,8,ICE);
+        MapGeneration::paintTile(map,10,8,WATER);
+        MapGeneration::paintTile(map,11,8,SAND);
         const auto open = MapGeneration::walkableTiles(map);
         const auto beach = MapGeneration::beachTiles(map,torus);
         CHECK(open[torus.at(8,8)]);
@@ -900,10 +902,10 @@ TEST_SUITE("MapGeneratorDefaults")
         CHECK_FALSE(stone.stone[torus.at(9,8)]);
         CHECK_EQ(stone.gaps,2);
 		const MapGeneration::SandFord ford{20, 20, 0, 1, 1, 0, 3, 1};
-		map.setCellTerrain(20, 20, ICE);
-		map.setCellTerrain(21, 20, TRAIL);
+		MapGeneration::paintTile(map, 20, 20, ICE);
+		MapGeneration::paintTile(map, 21, 20, TRAIL);
 		CHECK(MapGeneration::fordWalkabilityFault(map, torus, ford).empty());
-		map.setCellTerrain(20, 20, WATER);
+		MapGeneration::paintTile(map, 20, 20, WATER);
 		CHECK_FALSE(MapGeneration::fordWalkabilityFault(map, torus, ford).empty());
     }
 	TEST_CASE("toolkit geometry; raster; resource and home contracts")
@@ -989,7 +991,7 @@ TEST_SUITE("MapGeneratorDefaults")
             auto add=[&](unsigned value) { hash=(hash^value)*1099511628211ull; };
             add(game.map.getW());add(game.map.getH());
             for(int y=0;y<game.map.getH();++y) for(int x=0;x<game.map.getW();++x) {
-                add(game.map.getUMTerrain(x,y));add(game.map.getTerrain(x,y));
+                add(game.map.vertexTerrainAt(x,y));
                 const auto type=game.map.getResource(x,y).type;
                 add(type==NO_RES_TYPE?255u:type);
             }
@@ -1352,7 +1354,7 @@ TEST_CASE("contact costs follow custom deposit obstruction and removal propertie
         for (auto terrain : {GRASS,WATER})
         {
             map.replaceResource(12,12,Resource{});
-            map.setCellTerrain(12,12,terrain);
+            MapGeneration::paintTile(map,12,12,terrain);
             map.setResource(12,12,id,0);
             REQUIRE(map.getResource(12,12).type==resourceIndex(id));
             const int open=terrain==GRASS ? costs.open : costs.water;

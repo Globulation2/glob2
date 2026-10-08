@@ -198,7 +198,7 @@ int tileAt(const Layout &L, int along, int cross)
 	return L.alongX ? L.t.at(along, cross) : L.t.at(cross, along);
 }
 
-// Whether all four undermap corners of tile `i` hold `type`: what the game will draw as a pure tile.
+// Whether all four terrain vertices of tile `i` hold `type`: what the game will draw as a pure tile.
 bool pureTile(const TerrainSketch &terrain, const Torus &t, int i, TerrainType type)
 {
 	const int x = i % t.w, y = i / t.w;
@@ -1068,7 +1068,7 @@ bool generate(Game &game, GenerationContext &context)
 		game.addTeam();
 
 	context.stage = "karst terrain";
-	writeUndermap(map, L.terrain);
+	writeVertices(map, L.terrain);
 	int towers = 0;
 	for (int i = 0; i < n; ++i)
 		if (L.tower[i] && map.isResourceAllowed(i % t.w, i / t.w, STONE))

@@ -252,7 +252,7 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 		// Three quarters for wheat is a throughput heuristic, not a promised carrying capacity.
 		strokePath(L.road, t, {{c.x, c.y, 1.0}, {c.x, c.y + kFarmRing, 1.0}});
 	}
-	// Undermap corners beside a deposit must remain grass; otherwise a sand approach could
+	// Terrain vertices beside a deposit must remain grass; otherwise a sand approach could
 	// erode a ridge or open a diagonal bypass around its wood plug.
 	L.protectedTiles.resize(n);
 	for (int i = 0; i < n; ++i)
@@ -326,7 +326,7 @@ bool generate(Game &game, GenerationContext &context)
 	Map &map = game.map;
 	const Torus &t = L.t;
 	context.stage = "breachable terrain";
-	writeUndermap(map, L.terrain);
+	writeVertices(map, L.terrain);
 	for (int i = 0; i < t.size(); ++i)
 		if (L.protectedTiles[i])
 			map.setResourceByIndex(i % t.w, i / t.w, L.wood[i] ? WOOD : STONE, 1);

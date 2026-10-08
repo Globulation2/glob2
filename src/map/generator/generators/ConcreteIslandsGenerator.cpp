@@ -50,7 +50,7 @@ using namespace MapGeneration;
 //   enemy units to its inns.
 // - Wheat and wood regrow near water, so divideUpPlayerLands puts every colony's fields on the
 //   zones nearest the coast.
-// - Grass may not touch water: the 45-55 band is the beach; with Sandy beaches off, controlSand
+// - Grass may not touch water: the 45-55 band is the beach; with Sandy beaches off, layBeaches
 //   still leaves the one-tile ring the engine requires.
 //
 // Colonies get equal-weight islands but not equal shapes; fairness is statistical (the lobby keeps
@@ -61,7 +61,7 @@ static bool generate(Game &game, GenerationContext &context)
 	context.stage = "layout";
 	const ConcreteIslandsOptions options(context.request);
 	const int channelWidth = options.channel_width;
-	game.map.makeHomogenMap(context.request.terrainType);
+	game.map.fillTerrain(context.request.terrainType);
 	for (int i = 0; i < context.request.nbTeams; ++i)
 		game.addTeam();
 
@@ -155,14 +155,14 @@ static bool generate(Game &game, GenerationContext &context)
 			// Water under 45, a 10-high band of sand for the beach, grass above 55.
 			int total_height = heights[y * game.map.getW() + x];
 			if (total_height < 45)
-				game.map.setUMatPos(x, y, WATER, 1);
+				game.map.paintVertexSquare(x, y, WATER, 1);
 			else if (options.sandy_beaches && total_height >= 45 && total_height <= 55)
-				game.map.setUMatPos(x, y, SAND, 1);
+				game.map.paintVertexSquare(x, y, SAND, 1);
 			else
-				game.map.setUMatPos(x, y, GRASS, 1);
+				game.map.paintVertexSquare(x, y, GRASS, 1);
 		}
 	}
-	game.map.controlSand();
+	game.map.layBeaches();
 
 	// Go through the map again and place alga, down the deepest middle of every channel; the algae
 	// amount moves how deep that is.

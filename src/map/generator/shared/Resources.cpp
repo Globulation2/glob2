@@ -434,7 +434,7 @@ ReachResult floodReach(Map &map, int bootX, int bootY, int exploreLimit, int clo
 	for (int p : flood.visited)
 	{
 		const int x = p % t.w, y = p / t.w;
-		if (map.getUMTerrain(x, y) == GRASS && r.dist[p] >= clearRadius &&
+		if (map.vertexTerrainAt(x, y) == GRASS && r.dist[p] >= clearRadius &&
 			r.dist[p] <= exploreLimit)
 			(r.dist[p] <= closeRange ? r.closeGrass : r.farGrass)
 				.push_back(MapGeneratorPoint(x, y));
