@@ -1,0 +1,45 @@
+
+Running 1 test using 1 worker
+
+(node:2382761) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+BEFORE {"version":1,"executionMode":"serial","threadFallback":"serial requested","workerCount":0,"renderer":"webgl2","renderContext":{"width":1200,"height":900,"error":0},"contextLost":false,"contextRestores":0,"screen":"match","screenClass":"17GameSessionScreen","roomCanStart":false,"customGameReady":false,"tick":43,"frames":33,"loop":167,"paused":false,"torus":false,"torusSettled":false,"width":1200,"height":900,"restore":"ready","watchReplay":"none","import":"idle","persisting":false,"persistence":"persisted","audio":"inactive","assets":{"core":"ready","game":"ready","skins":"ready","font-cjk":"ready","menu-music":"ready","translations":"ready","music":"ready","music-sets":"ready","hd":"ready"},"opened":[],"controls":{}}
+AFTER {"version":1,"executionMode":"serial","threadFallback":"serial requested","workerCount":0,"renderer":"webgl2","renderContext":{"width":1200,"height":900,"error":0},"contextLost":false,"contextRestores":1,"screen":"match","screenClass":"17GameSessionScreen","roomCanStart":false,"customGameReady":false,"tick":104,"frames":109,"loop":248,"paused":false,"torus":false,"torusSettled":false,"width":1200,"height":900,"restore":"ready","watchReplay":"none","import":"idle","persisting":true,"persistence":"writing","audio":"inactive","assets":{"core":"ready","game":"ready","skins":"ready","font-cjk":"ready","menu-music":"ready","translations":"ready","music":"ready","music-sets":"ready","hd":"ready"},"opened":[],"controls":{}}
+  ✘  1 [chromium] › browser/tests/colony-debug.spec.js:9:1 › live colony meshes render through WebGL2 and survive context restoration (1.2m)
+
+
+  1) [chromium] › browser/tests/colony-debug.spec.js:9:1 › live colony meshes render through WebGL2 and survive context restoration 
+
+    Error: expect(received).toBeGreaterThan(expected)
+
+    Expected: > 35859
+    Received:   35854
+
+    Call Log:
+    - Timeout 30000ms exceeded while waiting on the predicate
+
+      132 |   await expect.poll(async () => (await state()).contextRestores, {timeout:30000}).toBeGreaterThan(0);
+      133 |   await page.waitForTimeout(2000); console.log('AFTER', JSON.stringify(await state()));
+    > 134 |   await expect.poll(() => page.evaluate(() => globalThis.skinComposites), {timeout:30000}).toBeGreaterThan(before + 5);
+          |                                                                                            ^
+      135 |   expect((await state()).renderContext.error).toBe(0);
+      136 |   await page.screenshot({path:info.outputPath('colony-skins-restored.png')});
+      137 |   await page.locator('#canvas').press('Escape', {delay:80});
+        at /home/bradley/.codex/worktrees/repair-tls-rejection-fixture/glob2/browser/tests/colony-debug.spec.js:134:92
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    artifacts/colony-center-debug/colony-debug-live-colony-m-cd0c7-survive-context-restoration-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: artifacts/colony-center-debug/colony-debug-live-colony-m-cd0c7-survive-context-restoration-chromium/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    artifacts/colony-center-debug/colony-debug-live-colony-m-cd0c7-survive-context-restoration-chromium/trace.zip
+    Usage:
+
+        npx playwright show-trace artifacts/colony-center-debug/colony-debug-live-colony-m-cd0c7-survive-context-restoration-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  1 failed
+    [chromium] › browser/tests/colony-debug.spec.js:9:1 › live colony meshes render through WebGL2 and survive context restoration 

@@ -1,0 +1,26 @@
+GLOB2_TEST_BUILD compiler=15.2.0 platform=Linux pointer_bits=64
+GLOB2_TEST_PROVENANCE {"compiler": "g++", "dirty": true, "flags": {"CCFLAGS": "", "CPPDEFINES": "GLOB2_OFFICIAL_INSTANCE_ORIGIN \\\"https://app.glob2online.com\\\" GLOB2_OFFICIAL_INSTANCE_FORMER_ORIGINS \\\"https://glob2online.com\\\" HAVE_CONFIG_H SDL_MAIN_HANDLED", "CXXFLAGS": "-g -std=gnu++20 -Wall -fPIC", "LINKFLAGS": "-g -Wl,-rpath,$ORIGIN/../lib/glob2 -Wall -Wl,-rpath,/home/bradley/.codex/worktrees/repair-tls-rejection-fixture/glob2/build/sdl3-ci/prefix/lib -Wl,--enable-new-dtags"}, "revision": "607d2d06fc6abd1756acc5f0761fc78fecd9058a", "sourceStatus": [" M src/hud/GUIInteractionCoverageTest.cpp", "?? browser/tests/colony-debug.spec.js", "?? build-software-terrain/"], "sourceTreeSha256": "6c93eecfe6ad349ddb6c237fda35c305aa8af2846db486233a91416d69a2c75d"}
+[doctest] doctest version is "2.4.11"
+[doctest] run with "--help" for options
+Settings::load("preferences.txt") : error, can't open file.
+===============================================================================
+src/hud/GUIInteractionCoverageTest.cpp:455:
+TEST SUITE: GUIInteractionCoverage
+TEST CASE:  initial camera survives waiting for the first presentation [display]
+
+src/hud/GUIInteractionCoverageTest.cpp:469: ERROR: CHECK( gui.camera.tileX()==x ) is NOT correct!
+  values: CHECK( 0 == 24 )
+
+src/hud/GUIInteractionCoverageTest.cpp:470: ERROR: CHECK( gui.camera.tileY()==y ) is NOT correct!
+  values: CHECK( 0 == 24 )
+
+src/hud/GUIInteractionCoverageTest.cpp:475: ERROR: CHECK( gui.viewportX==x ) is NOT correct!
+  values: CHECK( 0 == 24 )
+
+src/hud/GUIInteractionCoverageTest.cpp:476: ERROR: CHECK( gui.viewportY==y ) is NOT correct!
+  values: CHECK( 0 == 24 )
+
+===============================================================================
+[doctest] test cases: 1 | 0 passed | 1 failed | 1263 skipped
+[doctest] assertions: 6 | 2 passed | 4 failed |
+[doctest] Status: FAILURE!
