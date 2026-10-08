@@ -15,7 +15,7 @@
 
 bool MapEdit::hasDialog() const
 {
-	return bool(confirmDialog) || bool(progressDialog) || showingMenuScreen || showingLoad || showingSave ||
+	return bool(setLibraryDialog) || bool(confirmDialog) || bool(progressDialog) || showingMenuScreen || showingLoad || showingSave ||
 		   showingScriptEditor || showingTeamsEditor || isShowingAreaName;
 }
 
@@ -26,6 +26,7 @@ Glob2UI::InGameDialog *MapEdit::activeDialog() const
 		return confirmDialog.get();
 	if (progressDialog)
 		return progressDialog.get();
+	if (setLibraryDialog) return setLibraryDialog.get();
 	if (showingMenuScreen)
 		return menuScreen.get();
 	if (showingLoad || showingSave)
@@ -115,6 +116,10 @@ void MapEdit::delegateMenu(SDL_Event& event)
 				performAction("close menu screen");
 				performAction("import resource definitions");
 				break;
+			case MapEditMenuScreen::IMPORT_SET:
+                performAction("close menu screen"); performAction("import set"); break;
+            case MapEditMenuScreen::SET_LIBRARY:
+                performAction("close menu screen"); performAction("open set library"); break;
 			case MapEditMenuScreen::QUIT_EDITOR:
 			{
 				performAction("close menu screen");
@@ -123,18 +128,20 @@ void MapEdit::delegateMenu(SDL_Event& event)
 			break;
 		}
 	}
+	if (setLibraryDialog && setLibraryDialog->finished()) setLibraryDialog.reset();
 	if(showingLoad && loadSaveScreen->finished())
 	{
 		switch (loadSaveScreen->result())
 		{
 			case LoadSaveDialog::OK:
 			{
-				if (importingTerrain || importingResources)
+				if (importingTerrain || importingResources || importingSet)
 				{
 					const bool resources = importingResources;
 					try
 					{
-						if (resources) importResourceFile(loadSaveScreen->getFileName());
+						if (importingSet) importSetFile(loadSaveScreen->getFileName());
+                        else if (resources) importResourceFile(loadSaveScreen->getFileName());
 						else importTerrainFile(loadSaveScreen->getFileName());
 					}
 					catch (const std::exception &e)

@@ -266,6 +266,7 @@ var Module = {
   },
   glob2AssetError(error) {
     globalThis.glob2Studio?.send('error', {text:String(error?.message || error).slice(0,2000)});
+    globalThis.glob2SetPreview?.send('error', {text:String(error?.message || error).slice(0,2000)});
     download.failed = true;
     loadingStatus.textContent = 'The game could not be downloaded.';
     loadingDetail.textContent = 'Check the connection, then try again. (' + String(error?.message || error) + ')';
@@ -288,7 +289,14 @@ var Module = {
     if (new URLSearchParams(location.search).get('gl-errors') === '1')
       ENV.GLOB2_WEBGL_ERRORS = '1';
     FS.mkdirTree('/home/web_user');
-    if (globalThis.glob2Studio) {
+    if (globalThis.glob2SetPreview) {
+      Module.storage = new Glob2Storage(callback => callback(null));
+      Module.storageRestore = 'ready'; Module.storage.restored(null);
+      addRunDependency('set-preview-launch');
+      globalThis.glob2SetPreview.launch.then(run => {
+        FS.writeFile('/tmp/set.json',run.source);removeRunDependency('set-preview-launch');
+      }).catch(error=>Module.glob2AssetError(error));
+    } else if (globalThis.glob2Studio) {
       // Never mount the user's persistent profile in an embedded test.
       Module.storage = new Glob2Storage(callback => callback(null));
       Module.storageRestore = 'ready';
@@ -371,6 +379,15 @@ var Module = {
     }
     // Startup packages were in place before main(); only later ones are news.
     Module.glob2Assets?.takeInstalled();
+    if(globalThis.glob2SetPreview) {
+      Module.start(['--validate-set','/tmp/set.json','--json','/tmp/report.json','--preview','/tmp/preview.png']).then(code=>{
+        if(code!==0)throw Error('Preview engine exited with code '+code);
+        const report=JSON.parse(FS.readFile('/tmp/report.json',{encoding:'utf8'}));
+        const png=report.valid?FS.readFile('/tmp/preview.png'):null;
+        globalThis.glob2SetPreview.send('complete',{report,png});
+      }).catch(error=>globalThis.glob2SetPreview.send('error',{text:String(error).slice(0,2000)}));
+      return;
+    }
     Module.start(args).catch(error => Module.onAbort(String(error)));
   },
   onApplicationStarted() {
@@ -379,6 +396,7 @@ var Module = {
     loadStagedAssets(Module.renderer === 'webgl2');
   },
   onGameExit(code) {
+    if(globalThis.glob2SetPreview)return;
     // The hosted client lives under /play/ on the online application's origin.
     // Completion follows the shutdown screen's final save (or explicit discard).
     if (code === 0 && /^\/play(?:\/|$)/.test(location.pathname)) {
@@ -387,7 +405,7 @@ var Module = {
     }
     Module.print('Game exited with code ' + code + '. Reload the page to restart.');
   },
-  onAbort(reason) { Module.printErr('Game stopped: ' + reason); globalThis.glob2Studio?.send('error', {text:String(reason).slice(0,2000)}); }
+  onAbort(reason) { globalThis.glob2SetPreview?.send('error',{text:String(reason).slice(0,2000)}); Module.printErr('Game stopped: ' + reason); globalThis.glob2Studio?.send('error', {text:String(reason).slice(0,2000)}); }
 };
 const preferencesPath = '/home/web_user/.glob2/preferences.txt';
 function savedPreference(name) {

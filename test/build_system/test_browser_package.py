@@ -60,6 +60,7 @@ class BrowserPackageTests(unittest.TestCase):
         version = module.package(self.source, self.output)
         module.verify(self.output)
         self.assertEqual((self.output / "studio.html").read_bytes(), (self.output / "index.html").read_bytes())
+        self.assertEqual((self.output / "set-preview.html").read_bytes(), (self.output / "index.html").read_bytes())
         js = (self.output / f"index-{version}.js").read_text()
         self.assertIn(f"index-{version}.wasm", js)
         self.assertIn("assets/core.0123456789abcdef.data", js)

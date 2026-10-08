@@ -293,7 +293,7 @@ void Minimap::computeColors(int row, int localTeam)
 {
 	if (noX) return;
 	const auto palette =
-		TerrainVisual::minimapPalette(globalContainer->terrainCompositor().catalog());
+		TerrainVisual::minimapPalette(globalContainer->terrainCompositor(scene->map.frozenAssetBundle()).catalog());
 
 	assert(localTeam>=0);
 	assert(localTeam<SceneEntities::Teams);
@@ -401,6 +401,12 @@ void Minimap::computeColors(int row, int localTeam)
 						{
 							customColor =
 								scene->map.terrainPresentation(TerrainType(pcolIndex)).minimap;
+                            const auto& key = scene->map.terrainRegistry().key(TerrainType(pcolIndex));
+                            const auto& visuals = globalContainer->terrainCompositor(scene->map.frozenAssetBundle()).catalog();
+                            if (auto binding = visuals.bindings.find(key); binding != visuals.bindings.end()) {
+                                const auto& color = visuals.materials[binding->second].minimap;
+                                customColor = TerrainColor{color[0], color[1], color[2]};
+                            }
 							pcolIndex = -1;
 						}
 					}

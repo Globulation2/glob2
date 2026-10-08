@@ -14,14 +14,15 @@ BrushSwatches::BrushSwatches() = default;
 BrushSwatches::~BrushSwatches() = default;
 
 void BrushSwatches::bind(std::shared_ptr<const TerrainRegistry> terrain,
-						 std::shared_ptr<const ResourceRegistry> resources)
+						 std::shared_ptr<const ResourceRegistry> resources, std::shared_ptr<const MapAssetBundle> bundle)
 {
 	std::string next = (terrain ? terrain->digest() : std::string()) + "/" + (resources ? resources->digest() : std::string());
 	terrainRegistry = std::move(terrain);
 	resourceRegistry = std::move(resources);
-	if (next != digest)
+	if (next != digest || assets != bundle)
 	{
 		digest = std::move(next);
+        assets = std::move(bundle);
 		clear();
 	}
 }
@@ -29,12 +30,11 @@ void BrushSwatches::bind(std::shared_ptr<const TerrainRegistry> terrain,
 void BrushSwatches::clear()
 {
 	cache.clear();
-	prepared = false;
 }
 
 bool BrushSwatches::usable()
 {
-	if (!globalContainer || globalContainer->runNoX || !globalContainer->gfx || !terrainRegistry)
+	if (!globalContainer || !globalContainer->gfx || !terrainRegistry)
 		return false;
 	// Composed pixels outlive a device reset, but drop them anyway so a lost
 	// context never leaves stale textures bound to cached swatches.
@@ -43,15 +43,6 @@ bool BrushSwatches::usable()
 	{
 		resetGeneration = generation;
 		clear();
-	}
-	if (!prepared)
-	{
-		// The same texture set the map renderer uses, so swatches match the map
-		// and the renderer is not forced to reload its sources afterwards.
-		const bool gpu = globalContainer->gfx->getOptionFlags() &
-						 (GAGCore::GraphicContext::USEGPU | GAGCore::GraphicContext::PORTABLEGPU);
-		globalContainer->terrainCompositor().prepare(gpu, 0);
-		prepared = true;
 	}
 	return true;
 }
@@ -122,12 +113,19 @@ void drawFrame(DrawableSurface &target, int x, int y, int w, int h, DrawableSurf
 
 std::unique_ptr<DrawableSurface> BrushSwatches::composeTerrain(TerrainType type, int px)
 {
-	auto &compositor = globalContainer->terrainCompositor();
+	auto &compositor = globalContainer->terrainCompositor(assets);
+	// Inspecting another set can replace the global custom compositor. Prepare
+	// the current instance for each new swatch, rather than retaining a flag
+	// tied to the previous instance. Cached swatches need no texture work.
+	const bool gpu = globalContainer->gfx->getOptionFlags() &
+		(GAGCore::GraphicContext::USEGPU | GAGCore::GraphicContext::PORTABLEGPU);
+	compositor.prepare(gpu, 0);
 	const auto &catalog = compositor.catalog();
-	// Imported types draw with the built-in look they name.
+	// A custom material binding takes precedence over the imported base look.
 	const auto appearance = terrainRegistry->appearance(type);
 	const bool builtinLook = unsigned(appearance) < TERRAIN_COUNT;
-	const auto binding = builtinLook ? catalog.bindings.find(terrainPresentation(appearance).name) : catalog.bindings.end();
+	auto binding = catalog.bindings.find(terrainRegistry->key(type));
+    if (binding == catalog.bindings.end() && builtinLook) binding = catalog.bindings.find(terrainPresentation(appearance).name);
 	// Two by two map cells, as the map shows them at 100% zoom, at an integer
 	// scale at least as large as the swatch: neighbouring cells pick their own
 	// texture variants.
@@ -161,7 +159,7 @@ std::unique_ptr<DrawableSurface> BrushSwatches::composeTerrain(TerrainType type,
 		base.drawSurface(0, 0, &texture);
 		// Raised decor (boulders, hedges, rock) over each cell, as the map draws
 		// it for cells surrounded by the same material.
-		if (auto *sprite = compositor.decorSprite())
+		if (auto *sprite = compositor.decorSprite(binding->second))
 			for (int y = 0; y < 2; ++y)
 				for (int x = 0; x < 2; ++x)
 				{
@@ -189,7 +187,7 @@ std::unique_ptr<DrawableSurface> BrushSwatches::composeResource(ResourceId id, T
 	if (auto *ground = terrain(backdrop, px))
 		result->drawSurface(0, 0, ground);
 	const auto &presentation = resourceRegistry->presentation(id);
-	const auto &sprites = ResourceSprites::resolve(resourceRegistry);
+	const auto &sprites = ResourceSprites::resolve(resourceRegistry, assets);
 	auto *sprite = resourceIndex(id) < sprites.sprites.size() ? sprites.sprites[resourceIndex(id)] : nullptr;
 	if (sprite && !presentation.levels.empty())
 	{

@@ -28,6 +28,7 @@
 #include "OverlayAreas.h"
 #include "ScriptEditorScreen.h"
 #include "EditorDialogs.h"
+#include "SetLibraryDialog.h"
 #include <string>
 #include <vector>
 
@@ -912,6 +913,8 @@ private:
 	///Tells whether the menu screen is being drawn right now
 	bool showingMenuScreen;
 	std::unique_ptr<MapEditMenuScreen> menuScreen;
+    std::unique_ptr<SetLibraryDialog> setLibraryDialog;
+    bool importingSet = false;
 
 	///Tells whether the load-game menu screen is being drawn right now
 	bool showingLoad;
@@ -1110,6 +1113,8 @@ private:
 	void beginDeviceImport();
 	void pollDeviceImport();
 	void importTerrainJson(const std::string &json);
+    void importSetJson(const std::string& json, const std::vector<std::string>& selected = {});
+    void importSetFile(const std::string& filename);
 	void importResourceJson(const std::string &json);
 	// Snapshots taken when the teams or scenario editor opens; OK marks the map
 	// modified only when the result differs.

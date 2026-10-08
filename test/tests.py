@@ -26,6 +26,7 @@ ENGINE_SUPPORT = [
 
 # glob2-engine-tests: every client object except the entry point, plus these.
 ENGINE_TESTS = [
+    ('#src/map/MapSetTest.cpp', dict(cxxflags=['-fno-access-control'])),
     ('#src/unit/render/ColonySkinPreviewTest.cpp', dict(cxxflags=['-fno-access-control'])),
     '#src/audio/MusicSetTest.cpp',
     '#src/audio/MusicStreamTest.cpp',
@@ -341,6 +342,9 @@ UNIT_TESTS = [
 UNIT_PRODUCTION_SOURCES = [
     '#src/map/TerrainRegistry.cpp',
     '#src/map/CellRules.cpp',
+    '#src/map/MapAssetBundle.cpp',
+    '#src/render/terrain/TerrainCatalogIO.cpp',
+    '#src/render/terrain/TerrainMaterials.cpp',
     '#src/scripting/javascript/ScriptValue.cpp',
     '#src/scripting/javascript/ScriptRuntime.cpp',
     '#src/hive/HiveWorker.cpp',
@@ -390,6 +394,7 @@ UNIT_PRODUCTION_SOURCES = [
     '#src/game/Bullet.cpp',
     '#src/game/ExperimentalFeatures.cpp',
     '#src/game/GameHeader.cpp',
+    '#src/building/BuildingArtwork.cpp',
     '#src/building/types/BuildingCatalog.cpp',
     '#src/building/types/Buildings.cpp',
     '#src/building/types/BuildingTypesColony.cpp',

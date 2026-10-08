@@ -713,6 +713,35 @@ export function MapPage({ id }: { id: string }) {
                 </tbody>
               </table>
             </TableWrap>
+            {detail.versions.some((version) => version.setCredits?.length) && (
+              <section aria-label="Custom content credits" style={{ overflowWrap: 'anywhere' }}>
+                <h2>Custom content credits</h2>
+                {detail.versions.map((version) =>
+                  version.setCredits?.length ? (
+                    <details key={version.hash}>
+                      <summary>Map version uploaded {date(version.createdAt)}</summary>
+                      {version.setCredits.map((credit) => (
+                        <article key={credit.versionId}>
+                          <h3>
+                            {credit.title} · {credit.license}
+                          </h3>
+                          <p>Imported release {credit.versionId}.</p>
+                          <ul>
+                            {credit.authors.map((author, index) => (
+                              <li key={index}>
+                                {author.author} · {author.license}
+                                {author.source && <span> · {author.source}</span>}
+                              </li>
+                            ))}
+                          </ul>
+                          <Link to={'/sets/' + credit.setId}>Source set</Link>
+                        </article>
+                      ))}
+                    </details>
+                  ) : null,
+                )}
+              </section>
+            )}
             {viewer.owner && <OwnerTools detail={detail} reload={load.reload} />}
           </>
         );

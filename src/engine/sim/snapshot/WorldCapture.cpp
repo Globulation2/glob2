@@ -86,6 +86,7 @@ Handle capture(const Game& game,
 		};
 		const bool sameCatalog = previous->catalogs && previous->catalogs->buildings == catalog && previous->configurationRevision == result->configurationRevision
 			&& (!needs(requirements, Component::Session) || !previous->catalogs->buildingFingerprint.empty())
+            && previous->catalogs->assets == game.map.frozenAssetBundle()
             && previous->catalogs->resources == game.map.frozenResourceRegistry();
 		reuse(Component::Catalogs, result->catalogs, previous->catalogs, sameCatalog);
 		reuse(Component::Rules, result->rules, previous->rules, previous->configurationRevision == result->configurationRevision);
@@ -169,6 +170,7 @@ Handle capture(const Game& game,
 			std::copy_n(Race::unitTypes[type], NB_UNIT_LEVELS, catalogs->unitTypes[type].begin());
 		catalogs->typeDefinitions = std::make_shared<const std::vector<BuildingType>>(*game.buildingsTypes.retainTypes());
 		catalogs->resources = game.map.frozenResourceRegistry();
+        catalogs->assets = game.map.frozenAssetBundle();
 	}
 	if (needs(requirements, Component::Rules)) {
 		auto config = std::make_shared<GameHeader>(header);

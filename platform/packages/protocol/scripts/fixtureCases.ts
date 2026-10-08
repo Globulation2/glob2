@@ -796,6 +796,42 @@ export const fixtureCases: FixtureCase[] = [
     value: { id: JOB_ID, sourceHash: HASH_A, status: 'valid', report: AI_REPORT, expiresAt: NOW },
   },
   {
+    schema: 'ValidateSetPayload',
+    name: 'exact-package',
+    valid: true,
+    note: 'Validate exactly these immutable package bytes.',
+    value: { blobHash: HASH_A, suite: 1 },
+  },
+  {
+    schema: 'ValidateSetResult',
+    name: 'checked-release',
+    valid: true,
+    note: 'Engine validation binds artwork and properties to the package hash.',
+    value: {
+      hash: HASH_A,
+      suite: 1,
+      valid: true,
+      minVersionMinor: 144,
+      terrainCount: 2,
+      resourceCount: 1,
+    },
+  },
+  {
+    schema: 'PublishSetRequest',
+    name: 'public-release',
+    valid: true,
+    note: 'Publication requires a checked draft revision.',
+    value: { revision: 2, visibility: 'public', label: '1.0', notes: '' },
+  },
+  {
+    schema: 'PublishSetRequest',
+    name: 'unsaved-draft',
+    valid: false,
+    stage: 'schema',
+    note: 'An unsaved revision cannot be published.',
+    value: { revision: 0, visibility: 'public', label: '1.0', notes: '' },
+  },
+  {
     schema: 'AiValidationReport',
     name: 'partial-checks',
     valid: false,
@@ -2880,3 +2916,123 @@ export const fixtureCases: FixtureCase[] = [
     },
   },
 ];
+
+const BUILDING_PACKAGE_FIXTURE = {
+  schemaVersion: 1,
+  namespace: '11111111-1111-4111-8111-111111111111',
+  experiments: [],
+  sprites: [],
+  variants: [
+    {
+      key: 'b-11111111-1111-4111-8111-111111111111-kitchen',
+      properties: { width: 2, height: 2, gameSprite: 'data/gfx/inn0b' },
+      semantics: { placeable: true, instantPlacement: true },
+    },
+  ],
+};
+fixtureCases.push(
+  {
+    schema: 'UpdateBuildingFamilyRequest',
+    name: 'withdraw-from-public-listing',
+    valid: true,
+    note: 'Visibility can change independently of release validation.',
+    value: { visibility: 'private' },
+  },
+  {
+    schema: 'UpdateBuildingFamilyRequest',
+    name: 'empty-update',
+    valid: false,
+    stage: 'schema',
+    note: 'A metadata update changes at least one field.',
+    value: {},
+  },
+  {
+    schema: 'UpdateBuildingFamilyRequest',
+    name: 'cannot-clear-moderation',
+    valid: false,
+    stage: 'schema',
+    note: 'Authors cannot change moderation state.',
+    value: { hidden: false },
+  },
+  {
+    schema: 'PublishBuildingRequest',
+    name: 'saved-family',
+    valid: true,
+    note: 'Publish the saved immutable package.',
+    value: { revision: ACCOUNT_1, description: 'A shared family', visibility: 'public' },
+  },
+  {
+    schema: 'PublishBuildingRequest',
+    name: 'bad-visibility',
+    valid: false,
+    stage: 'schema',
+    note: 'Only catalog visibility choices are accepted.',
+    value: { revision: ACCOUNT_1, description: '', visibility: 'everyone' },
+  },
+  {
+    schema: 'BuildingPackage',
+    name: 'field-kitchen',
+    valid: true,
+    note: 'An additive building family using installed artwork.',
+    value: BUILDING_PACKAGE_FIXTURE,
+  },
+  {
+    schema: 'BuildingPackage',
+    name: 'stock-override',
+    valid: false,
+    stage: 'semantic',
+    note: 'Packages cannot override stock keys.',
+    value: {
+      ...BUILDING_PACKAGE_FIXTURE,
+      variants: [{ ...BUILDING_PACKAGE_FIXTURE.variants[0], key: 'inn.0.finished' }],
+    },
+  },
+  {
+    schema: 'BuildingPackage',
+    name: 'runtime-id',
+    valid: false,
+    stage: 'schema',
+    note: 'Runtime IDs belong to resolved catalogs, not authored packages.',
+    value: {
+      ...BUILDING_PACKAGE_FIXTURE,
+      variants: [{ ...BUILDING_PACKAGE_FIXTURE.variants[0], id: 0 }],
+    },
+  },
+);
+
+fixtureCases.push(
+  {
+    schema: 'SaveBuildingDraftRequest',
+    name: 'family-draft',
+    valid: true,
+    note: 'A revision-bound family draft save.',
+    value: {
+      revision: '22222222-2222-4222-8222-222222222222',
+      name: 'Field kitchen',
+      package: BUILDING_PACKAGE_FIXTURE,
+    },
+  },
+  {
+    schema: 'SaveBuildingDraftRequest',
+    name: 'missing-revision',
+    valid: false,
+    stage: 'schema',
+    note: 'Draft saves must bind a revision.',
+    value: { name: 'Field kitchen', package: BUILDING_PACKAGE_FIXTURE },
+  },
+  {
+    schema: 'SaveBuildingDraftRequest',
+    name: 'stock-override',
+    valid: false,
+    stage: 'semantic',
+    note: 'Draft manifests cannot override stock building keys.',
+    value: {
+      revision: '22222222-2222-4222-8222-222222222222',
+      name: 'Field kitchen',
+      package: {
+        ...BUILDING_PACKAGE_FIXTURE,
+        variants: [{ ...BUILDING_PACKAGE_FIXTURE.variants[0], key: 'inn.0.finished' }],
+      },
+    },
+  },
+);

@@ -298,6 +298,29 @@ build/darwin/client/release/src/OnlinePlayHarness guest https://app.glob2online.
 build/darwin/client/release/src/OnlinePlayHarness quick https://app.glob2online.com artifacts/e2e-quick
 ```
 
+## Building-family installation
+
+**Building families** on local new-game and editor new-map screens opens
+`src/online/screens/BuildingLibraryScreen.cpp`. It browses the selected instance's
+public library, installs compatible validated releases and lets the player choose
+which families to add to stock buildings. **Family link or ID** also opens an
+unlisted family directly; page links must use the selected instance's origin.
+Private families require that owner's sign-in through Online. Online browsing needs that instance;
+already installed families remain available offline. Selection is stored in the
+local profile and applies to subsequent new maps in both flows.
+
+`src/building/BuildingLibrary.cpp` writes pinned releases and the selection index
+under `online/buildings/` through `OnlineStorage`. Installation verifies the exact
+package, artwork, stock catalog, simulation version and resolved catalog hashes
+before publishing the new index. Updates preserve the previous release on failure;
+damaged cache entries are reported rather than silently substituted.
+
+Loaded maps, saves and replays use their embedded catalog and frames. Local
+selection does not alter those files or server-side room generation. To use a
+family online, generate and share a map through the map library, then choose that
+map in the room. See [building catalogs](../features/building-catalogs.md#online-library-and-installed-families)
+for the website editor, package format and limits.
+
 ## Map cache
 
 `MapCache` stores platform maps by the SHA-256 of their decompressed bytes as
@@ -441,3 +464,18 @@ reported complete until the host persistence request succeeds. A failed flush
 retains recovery bytes and offers retry/export. Local removal cannot delete
 bundled sets. Changes affect local music and presentation only; they do not alter
 simulation, saved games, replays or the match protocol.
+
+## Custom terrain and resource sets
+
+The map editor's **Set Library** uses the configured instance and signed-in account.
+It downloads an exact release with a bounded response and verifies its hash before
+import. The dialog previews its terrain/resources, allows selecting individual
+entries, and shows license and creator credit. Disk import accepts the same JSON
+package offline. The map owns all custom images and definitions after import;
+built-in graphics are referenced from installed game data.
+
+The same dialog exposes copied map content and attribution, local edits and an
+explicit replacement action for a newer release. Updates are never automatic.
+See [resource catalogs](../features/resource-catalogs.md#themed-terrain-and-resource-sets)
+for package bounds, compatibility and update behavior. Maps and replays do not
+contact the set library during play.

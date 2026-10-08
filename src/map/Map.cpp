@@ -3,6 +3,7 @@
 
 #include <atomic>
 #include "Map.h"
+#include "MapAssetBundle.h"
 #include "TerrainLine.h"
 #include <stdexcept>
 #include "gradient/GradientRuntime.h"
@@ -41,7 +42,7 @@ const int tabClose[8][2]={
 	{-1,  1},
 	{-1,  0}};
 
-Map::Map() : gradientRuntime(std::make_unique<GradientRuntime>())
+Map::Map() : gradientRuntime(std::make_unique<GradientRuntime>()), assetBundleValue(MapAssetBundle::empty())
 {
     rebuildTerrainCounts();
 	topologyGeneration=1;
@@ -282,25 +283,7 @@ void Map::importTerrainDefinitions(std::string_view json)
 {
 	if (game && !game->edit)
 		throw std::logic_error("Terrain definitions can only change in the map editor");
-	auto next = terrainRegistry().importJson(json);
-	// Compilation and validation happen before publishing a replacement. Import
-	// keeps existing IDs, so the vertices stay valid.
-	auto table = std::make_shared<CellRuleTable>(next, resourceRegistryValue);
-	finishGradientPipeline();
-	terrainRegistryValue = std::move(next);
-	rebuildTerrainCounts(std::move(table));
-	if (arraysBuilt && marketsV2Enabled())
-		for (int team = 0; team < Team::MAX_COUNT; ++team)
-			for (int resource = 0; resource < MaterialCount; ++resource)
-				for (int swim = 0; swim < SWIM_CLASS_COUNT; ++swim)
-				{
-					gradientRuntime->pipeline.invalidate(
-						&marketMaterialGradients[team][resource][swim]);
-					marketGradientUpdated[team][resource][swim] = false;
-					marketGradientDirty[team][resource][swim] = true;
-				}
-	terrainEditChanged = terrainRoutesChanged = true;
-	finishTerrainEdit();
+    installCatalogs(terrainRegistry().importJson(json), resourceRegistryValue, assetBundleValue);
 }
 
 void Map::bindCellRules()

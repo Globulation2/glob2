@@ -1,4 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
+#include "MapAssetBundle.h"
 #include "MapReport.h"
 #include "TerrainPresentation.h"
 #include "ResourceRegistry.h"
@@ -787,6 +788,7 @@ std::string describeMap(Game &game, const GenerationRequest *request,
 		resourceExperiments.push_back(J::object({{"key", experiment.key}, {"label", experiment.label}, {"help", experiment.help}}));
 	for (const auto& key : map.requiredResourceExperiments().keys())
 		requiredResourceExperiments.emplace_back(key);
+	J setCredits; setCredits.text = map.frozenAssetBundle()->credits.dump();
 	const std::string text = pretty(
 			   J::object(
 				   {{"schema_version", 2},
@@ -805,6 +807,7 @@ std::string describeMap(Game &game, const GenerationRequest *request,
 									   {"buildingCatalog", J::object({{"snapshot", game.buildingsTypes.snapshotJson()},
 																	 {"hash", game.buildingsTypes.fingerprint()}})},
 									   {"resourceExperiments", J::array(resourceExperiments)},
+                                       {"setCredits", setCredits},
 									   {"requiredResourceExperiments", J::array(requiredResourceExperiments)},
 									   {"format_version_minor", game.mapHeader.getVersionMinor()},
 									   {"tick", game.stepCounter},

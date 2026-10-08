@@ -45,6 +45,9 @@
     "MarketFetch/*",
     "MarketsV2/*",
     "BuildingCatalog/*",
+    "BuildingPackages/*",
+    "BuildingArtwork/*",
+    "BuildingLibrary/*",
     "BuildingServices/*",
     "BuildingProductionCombat/*",
     "BuildingCapabilities/*",
@@ -65,7 +68,8 @@
     "CastorContinuation/*",
     "Maxima.Continuation/*",
     "RuntimeResources/*",
-    "TerrainResources/*"
+    "TerrainResources/*",
+    "MapSets/*"
   ],
   "unit_filters": [
     "*"

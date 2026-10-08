@@ -22,7 +22,15 @@
           "anyOf": [
             {
               "type": "string",
+              "const": "validate-buildings"
+            },
+            {
+              "type": "string",
               "const": "validate-ai"
+            },
+            {
+              "type": "string",
+              "const": "validate-set"
             },
             {
               "type": "string",
@@ -79,7 +87,15 @@
           "anyOf": [
             {
               "type": "string",
+              "const": "validate-buildings"
+            },
+            {
+              "type": "string",
               "const": "validate-ai"
+            },
+            {
+              "type": "string",
+              "const": "validate-set"
             },
             {
               "type": "string",

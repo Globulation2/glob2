@@ -12,6 +12,7 @@
 #include "FairnessModel.h"
 #include "GeneratorRegistry.h"
 #include "GlobalContainer.h"
+#include "BuildingArtwork.h"
 #include "IntBuildingType.h"
 #include "MapGenerator.h"
 #include "Race.h"
@@ -599,9 +600,13 @@ int runMapStudy(int argc, char **argv)
 	const unsigned seed = std::strtoul(argv[2], nullptr, 10);
 
 	SDL_SetMainReady();
-	std::string buildingCatalog;
+	std::string buildingCatalog, buildingArtwork;
 	for (int i=4; i<argc; ++i)
-		if (std::string(argv[i]).starts_with("building-catalog=")) buildingCatalog=std::string(argv[i]).substr(17);
+		{
+        const std::string arg=argv[i];
+        if(arg.starts_with("building-catalog=")) buildingCatalog=arg.substr(17);
+        if(arg.starts_with("building-artwork=")) buildingArtwork=arg.substr(17);
+    }
 	GlobalContainer globals(argv[3], buildingCatalog);
 	globalContainer = &globals;
 	globals.runNoX = true;
@@ -658,7 +663,7 @@ int runMapStudy(int argc, char **argv)
 				return 2;
 			std::string id = arg.substr(0, eq);
 			// Consumed before GlobalContainer construction, not a numeric generator control.
-			if (id == "building-catalog") continue;
+			if (id == "building-catalog" || id == "building-artwork") continue;
 			if (id == "dump" || id == "save" || id == "name" || id == "overlay" || id == "result")
 			{
 				(id == "dump"   ? dump
@@ -703,6 +708,13 @@ int runMapStudy(int argc, char **argv)
 	const auto start = std::chrono::steady_clock::now();
 	const auto result = GenerationService().generate(game, descriptor, !resultPath.empty());
 	const bool success = bool(result);
+    if(success && !buildingArtwork.empty()) {
+        std::ifstream input(buildingArtwork,std::ios::binary|std::ios::ate);
+        if(!input || input.tellg()<0 || static_cast<std::size_t>(input.tellg())>BuildingArtwork::MaxBytes) throw std::runtime_error("Cannot read bounded building artwork bundle");
+        std::string bytes(static_cast<std::size_t>(input.tellg()),'\0'); input.seekg(0);
+        if(!input.read(bytes.data(),bytes.size())) throw std::runtime_error("Cannot read building artwork bundle");
+        game.gameHeader.setBuildingArtwork(bytes);
+    }
 	if (!success)
 		std::fprintf(stderr, "%s\n", result.diagnostic().c_str());
 	const double seconds =

@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "TerrainCompositor.h"
+#include "map/TerrainRegistry.h"
 #include "TerrainCompiledPack.h"
 #include "TerrainPresentation.h"
 #include "render/scene/SceneMap.h"
@@ -10,7 +11,8 @@
 
 namespace TerrainVisual
 {
-Compositor::Compositor(Catalog catalog) : definitions(std::move(catalog))
+Compositor::Compositor(Catalog catalog, std::shared_ptr<const MapAssetBundle> assets)
+    : definitions(std::move(catalog)), customSprites(std::move(assets))
 {
 	pack = CompiledPack::load(definitions);
 	for (unsigned type = 0; type < TERRAIN_COUNT; ++type)
@@ -23,7 +25,7 @@ Compositor::Compositor(Catalog catalog) : definitions(std::move(catalog))
 	}
 	for (const auto &m : definitions.materials)
 	{
-		auto *sprite = GAGCore::Toolkit::getSprite(m.sprite);
+		auto *sprite = customSprites.resolve(m.sprite);
 		if (!sprite)
 			throw std::runtime_error("Missing terrain material sprite: " + m.sprite);
 		for (const auto &v : m.variants)
@@ -39,21 +41,24 @@ Compositor::Compositor(Catalog catalog) : definitions(std::move(catalog))
 			}
 		if (!m.decor.sprite.empty())
 		{
-			auto *decor = GAGCore::Toolkit::getSprite(m.decor.sprite);
-			if (!decor || (decorSprite_ && decor != decorSprite_))
-				throw std::runtime_error("Terrain decor must share one loadable sprite: " + m.key);
+			auto *decor = customSprites.resolve(m.decor.sprite);
+			if (!decor)
+				throw std::runtime_error("Missing terrain decor sprite: " + m.key);
 			for (const auto &frames : {m.decor.full, m.decor.edge})
 				for (int frame : frames)
 					if (frame >= decor->getFrameCount() || decor->getW(frame) > 64 ||
 						decor->getH(frame) > 64)
 						throw std::runtime_error("Terrain decor frame missing or larger than 64x64: " +
 												 m.key);
-			decorSprite_ = decor;
+			if (sharedDecorSprite && sharedDecorSprite != decor) mixedDecorSprites = true;
+            sharedDecorSprite = decor;
 		}
-		sprites.push_back(sprite);
+		decorSprites.push_back(m.decor.sprite.empty() ? nullptr : customSprites.resolve(m.decor.sprite));
+        sprites.push_back(sprite);
 		textures.emplace_back(m.variants.size());
 		materialRevisions.push_back(0);
 	}
+    if (mixedDecorSprites) sharedDecorSprite = nullptr;
 }
 void Compositor::readTexture(Texture &t, GAGCore::DrawableSurface *source)
 {
@@ -173,28 +178,45 @@ void Compositor::prepare(bool hd, int time)
 	}
 	resolution = nextResolution;
 }
-int Compositor::decorFrame(const SceneMap &map, int x, int y) const
+MaterialId Compositor::materialFor(const SceneMap& map, TerrainType type) const {
+    // Custom terrain with its own artwork binds by key; anything else draws its appearance.
+    if (unsigned(type) >= TERRAIN_COUNT)
+        if (const auto found = definitions.bindings.find(map.terrainRegistry().key(type)); found != definitions.bindings.end())
+            return found->second;
+    return terrainBindings[unsigned(map.terrainRegistry().appearance(type))];
+}
+std::pair<MaterialId, unsigned> Compositor::decorMaterial(const SceneMap &map, int x, int y) const
 {
-	x &= map.getMaskW();
-	y &= map.getMaskH();
 	// The decorated material most corners share: all four draw its full decor,
 	// two or three its edge decor, a single corner none.
-	unsigned best = 0, count = 0;
-	const auto corners = map.cellCorners(x, y);
-	for (const auto corner : corners)
+	MaterialId best = 0;
+	unsigned count = 0;
+	const auto corners = map.cellCorners(x & map.getMaskW(), y & map.getMaskH());
+	std::array<MaterialId, 4> materials;
+	for (unsigned k = 0; k < corners.size(); ++k)
+		materials[k] = materialFor(map, corners[k]);
+	for (const auto id : materials)
 	{
-		const auto type = map.terrainRegistry().appearance(corner);
-		const auto id = terrainBindings[unsigned(type)];
 		if (definitions.materials[id].decor.full.empty())
 			continue;
-		const auto same = unsigned(std::count_if(corners.begin(), corners.end(), [&](TerrainType other)
-			{ return map.terrainRegistry().appearance(other) == type; }));
+		const auto same = unsigned(std::count(materials.begin(), materials.end(), id));
 		if (same > count)
 		{
 			best = id;
 			count = same;
 		}
 	}
+	return {best, count};
+}
+GAGCore::Sprite *Compositor::decorSprite(const SceneMap &map, int x, int y) const
+{
+    return decorSprites[decorMaterial(map, x, y).first];
+}
+int Compositor::decorFrame(const SceneMap &map, int x, int y) const
+{
+	x &= map.getMaskW();
+	y &= map.getMaskH();
+	const auto [best, count] = decorMaterial(map, x, y);
 	if (count < 2)
 		return -1;
 	return definitions.decorFrame(best, x, y, count < 4, map.terrainSeed());
@@ -209,7 +231,7 @@ Recipe Compositor::describe(const SceneMap &map, int x, int y) const
 	r.seed = map.terrainSeed();
 	const auto corners = map.cellCorners(r.x, r.y);
 	for (unsigned k = 0; k < corners.size(); ++k)
-		r.corners[k] = terrainBindings[unsigned(map.terrainRegistry().appearance(corners[k]))];
+		r.corners[k] = materialFor(map, corners[k]);
 	return r;
 }
 void Compositor::compose(const Recipe &r, SDL_Surface *target, int ox, int oy, int scale) const

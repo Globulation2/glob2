@@ -118,19 +118,24 @@ bool MapEdit::performViewAction(const std::string& action, float relMouseX, floa
 		menuScreen.reset();
 		showingMenuScreen=false;
 	}
-	else if (action == "import terrain definitions" || action == "import resource definitions")
+	else if (action == "open set library") {
+        setLibraryDialog = std::make_unique<SetLibraryDialog>(game.map,[this](std::string bytes, std::vector<std::string> selected) { importSetJson(bytes, selected); },[this]{game.gameHeader.setResourceExperiments(game.map.resourceRegistry().experiments());minimap.resetMinimapDrawing();hasMapBeenModified=true;fertilityRequested=true;});
+        attachDialog(*setLibraryDialog);
+    }
+    else if (action == "import terrain definitions" || action == "import resource definitions" || action == "import set")
 	{
 		performAction("unselect");
 		loadSaveScreen = std::make_unique<LoadSaveDialog>(
-			action == "import terrain definitions" ? "terrain" : "resources", "json", true,
-			Glob2UI::tr(action == "import terrain definitions" ? "[Import Terrain Definitions]" : "[Import Resource Definitions]"), nullptr, nullptr,
+			action == "import set" ? "sets" : action == "import terrain definitions" ? "terrain" : "resources", "json", true,
+			Glob2UI::tr(action == "import set" ? "[editor menu import set]" : action == "import terrain definitions" ? "[Import Terrain Definitions]" : "[Import Resource Definitions]"), nullptr, nullptr,
 			nullptr, Glob2UI::Surface::Editor, false);
 		importingTerrain = action == "import terrain definitions";
-		importingResources = !importingTerrain;
+		importingSet = action == "import set";
+        importingResources = action == "import resource definitions";
 		// The list shows definitions already in the user's folder; "From device…"
 		// opens the host picker for a file anywhere else.
 		loadSaveScreen->setEmptyText(FormattableString(Toolkit::getStringTable()->getString("[No definition files found in %0]"))
-										 .arg(importingTerrain ? "terrain/" : "resources/"));
+										 .arg(importingSet ? "sets/" : importingTerrain ? "terrain/" : "resources/"));
 		if (GAGCore::ApplicationHost::canImportFiles())
 			loadSaveScreen->enableDeviceImport();
 		attachDialog(*loadSaveScreen);
@@ -174,6 +179,7 @@ bool MapEdit::performViewAction(const std::string& action, float relMouseX, floa
 		showingLoad=false;
 		importingTerrain = false;
 		importingResources = false;
+        importingSet = false;
 	}
 	else if(action=="open save screen")
 	{

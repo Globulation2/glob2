@@ -122,6 +122,16 @@ struct CustomGameSetupHarness
         REQUIRE(screen.setup.premadeMap == screen.sourceFile());
         REQUIRE(screen.getMapHeader().getNumberOfTeams() == 4);
         REQUIRE(!screen.generatedSnapshot);
+        const auto catalogBefore=screen.getGameHeader().getBuildingCatalogSnapshot();
+        screen.buildingSelectionChanged();
+        CHECK(screen.validMap);
+        CHECK_FALSE(screen.previewPending);
+        CHECK(screen.getGameHeader().getBuildingCatalogSnapshot()==catalogBefore);
+        screen.setup.random=true;
+        screen.buildingSelectionChanged();
+        CHECK_FALSE(screen.validMap);
+        CHECK(screen.previewPending);
+        screen.setup.random=false;
         const auto brokenHash = Online::Sha256::hex("not a map");
         REQUIRE(services.maps.insert(brokenHash, "not a map"));
         screen.loadCatalogMap({{"5f6a7b8c-9d0e-4f1a-8b2c-3d4e5f6a7b8c", brokenHash, "Broken map"}, Online::OFFICIAL_INSTANCE_ORIGIN, Online::MapPlayRequest::Mode::Local});

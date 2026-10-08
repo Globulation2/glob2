@@ -12,6 +12,7 @@ import {
   checkDocument,
   simVersionKey,
   type EngineJobKind,
+  type MapSetCredits,
   type GeneratorDescriptor,
   type ResourceExperimentDefinitions,
   type SimVersion,
@@ -89,6 +90,7 @@ export class FakeEngine {
   private running = false;
   /** Generation fails while set. */
   failGeneration = false;
+  setCredits: MapSetCredits = [];
   resourceExperiments: ResourceExperimentDefinitions = [];
   requiredResourceExperiments: string[] = [];
   readonly ran: { kind: EngineJobKind; jobId: string }[] = [];
@@ -198,7 +200,7 @@ export class FakeEngine {
         result: {
           valid: true,
           mapHash: blobHash,
-          map: { width: 64, height: 64, teamCount: Number(map[1]) },
+          map: { width: 64, height: 64, teamCount: Number(map[1]), setCredits: this.setCredits },
           versionMinor: SIM.versionMinor,
           title: 'Uploaded map',
         },

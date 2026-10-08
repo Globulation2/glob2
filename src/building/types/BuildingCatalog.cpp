@@ -15,6 +15,7 @@
 #include <unordered_set>
 #include <type_traits>
 #include <tuple>
+#include <regex>
 
 namespace
 {
@@ -417,6 +418,11 @@ Json parseFile(const std::string& path)
 void BuildingsTypes::loadManifest(const std::string& path)
 {
     Json manifest = parseFile(path);
+    if (manifest.contains("variants"))
+    {
+        loadSnapshotJson(manifest.dump());
+        return;
+    }
     keys(manifest, {"schemaVersion", "catalogKey", "startingBuilding", "experiments", "files"}, "manifest");
     Json snapshot = manifest;
     snapshot.erase("files"); snapshot["variants"] = Json::array();
@@ -446,6 +452,154 @@ void BuildingsTypes::loadManifest(const std::string& path)
         if (snapshot["variants"].size() > MAX_CATALOG_VARIANTS) fail(path, "too many variants");
     }
     withContext(path, [&] { loadSnapshotJson(snapshot.dump(), variantSources); });
+}
+
+void BuildingsTypes::composePackages(const std::vector<std::string>& packages)
+{
+    if (packages.empty()) return;
+    if (packages.size() > MAX_CATALOG_VARIANTS) fail("packages", "too many packages");
+    std::map<std::string, Json> ordered;
+    const std::regex uuid("^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$");
+    const std::regex localKey("^[a-z0-9][a-z0-9._-]{0,63}$");
+    const std::regex hash("^[0-9a-f]{64}$");
+    const std::regex installed("^data/gfx/[a-zA-Z0-9_-]+$");
+    std::size_t decodedBytes = 0, inputBytes = 0;
+    for (const auto& text : packages)
+    {
+        inputBytes += text.size();
+        if (inputBytes > MAX_CATALOG_BYTES) fail("packages", "combined manifests exceed 8 MiB");
+        auto package = parse(text);
+        keys(package, {"schemaVersion", "namespace", "variants", "experiments", "sprites"}, "package");
+        if (integer(package.at("schemaVersion"), "package.schemaVersion") != 1)
+            fail("package", "unsupported schemaVersion");
+        const auto name = string(package.at("namespace"), "package.namespace");
+        if (!std::regex_match(name, uuid)) fail("package.namespace", "must be a lowercase UUID");
+        if (!ordered.emplace(name, std::move(package)).second) fail("packages", "duplicate namespace");
+    }
+    Json snapshot = Json::parse(snapshotJson());
+    Json identity = {{"base", fingerprint()}, {"packages", Json::array()}};
+    for (const auto& [name, package] : ordered)
+    {
+        const auto prefix = "b-" + name + "-";
+        for (const auto& existing : *entries_)
+            if (existing.key.starts_with(prefix)) fail("packages", "namespace is already present in the base catalog");
+        const auto scoped = [&](const std::string& key) {
+            stableKey(key, "package.key");
+            if (!key.starts_with(prefix)) fail("package.key", "must use namespace " + prefix);
+        };
+        const auto& variants = package.at("variants");
+        const auto& experiments = package.at("experiments");
+        const auto& sprites = package.at("sprites");
+        if (!variants.is_array() || variants.empty() || variants.size() > MAX_CATALOG_VARIANTS)
+            fail("package.variants", "invalid variant count");
+        if (!experiments.is_array() || experiments.size() > 64) fail("package.experiments", "invalid count");
+        if (!sprites.is_array() || sprites.size() > 256) fail("package.sprites", "invalid count");
+        std::set<std::string> variantKeys, experimentKeys;
+        std::map<std::string, std::pair<std::string, std::size_t>> spritePaths;
+        for (const auto& v : variants)
+        {
+            const auto key = string(v.at("key"), "package.variant.key");
+            scoped(key);
+            if (!variantKeys.insert(key).second) fail("package.variants", "duplicate key");
+        }
+        for (const auto& e : experiments)
+        {
+            keys(e, {"key", "label", "help"}, "package.experiment");
+            const auto key = string(e.at("key"), "package.experiment.key");
+            scoped(key);
+            if (!experimentKeys.insert(key).second) fail("package.experiments", "duplicate key");
+            snapshot["experiments"].push_back(e);
+        }
+        std::size_t images = 0;
+        for (const auto& sprite : sprites)
+        {
+            keys(sprite, {"key", "frames"}, "package.sprite");
+            const auto key = string(sprite.at("key"), "package.sprite.key");
+            if (!std::regex_match(key, localKey)) fail("package.sprite.key", "invalid local key");
+            const auto& frames = sprite.at("frames");
+            if (!frames.is_array() || frames.empty() || frames.size() > 256) fail("package.sprite.frames", "invalid count");
+            for (const auto& frame : frames)
+            {
+                keys(frame, {"imageHash", "width", "height", "teamColorHash"}, "package.frame");
+                if (!std::regex_match(string(frame.at("imageHash"), "imageHash"), hash)) fail("imageHash", "invalid hash");
+                const auto w = integer(frame.at("width"), "width"), h = integer(frame.at("height"), "height");
+                if (w < 1 || h < 1 || w > 512 || h > 512) fail("package.frame", "dimensions outside 1..512");
+                std::size_t layers = 1;
+                if (frame.contains("teamColorHash"))
+                {
+                    if (!std::regex_match(string(frame.at("teamColorHash"), "teamColorHash"), hash)) fail("teamColorHash", "invalid hash");
+                    layers = 2;
+                }
+                images += layers;
+                decodedBytes += std::size_t(w) * h * 4 * layers;
+                if (images > 256) fail("package.frames", "too many images");
+                if (decodedBytes > 64u * 1024u * 1024u) fail("packages", "artwork exceeds 64 MiB decoded");
+            }
+            const auto path = "community/buildings/" + Online::Sha256::hex(sprite.dump()) + "/sprite";
+            if (!spritePaths.emplace(key, std::pair{path, frames.size()}).second) fail("package.sprites", "duplicate key");
+        }
+        for (auto v : variants)
+        {
+            keys(v, {"key", "previous", "next", "requiredExperiment", "properties", "semantics", "presentation"}, "package.variant");
+            for (const auto* field : {"previous", "next"}) if (v.contains(field))
+            {
+                const auto key = string(v.at(field), field);
+                if (!key.empty() && !variantKeys.contains(key)) fail(field, "unresolved package building reference");
+            }
+            if (v.contains("requiredExperiment"))
+            {
+                const auto key = string(v.at("requiredExperiment"), "requiredExperiment");
+                if (!key.empty() && !experimentKeys.contains(key)) fail("requiredExperiment", "unresolved package experiment");
+            }
+            const auto& semantics = v.at("semantics");
+            if (semantics.contains("market") && semantics["market"].is_object())
+                for (const auto* field : {"suppliesStockExperiment", "fetchesStockExperiment"})
+                    if (semantics["market"].contains(field))
+                    {
+                        const auto key = string(semantics["market"][field], field);
+                        if (key.starts_with("b-") && !experimentKeys.contains(key))
+                            fail(field, "unresolved package experiment");
+                    }
+            if (v.contains("presentation") && v["presentation"].contains("connectionGroup"))
+            {
+                const auto group = string(v["presentation"]["connectionGroup"], "connectionGroup");
+                if (!group.empty()) scoped(group);
+            }
+            // Resolved catalog defaults deliberately support headless authoring;
+            // a published package must instead have artwork that can be rendered.
+            if (!v.at("properties").contains("gameSprite")) fail("gameSprite", "a building package requires game artwork");
+            if (v.at("properties").value("miniSpriteImage", 0) >= 0 && !v.at("properties").contains("miniSprite"))
+                fail("miniSprite", "provide mini artwork or disable it with miniSpriteImage=-1");
+            for (const auto* field : {"gameSprite", "miniSprite"}) if (v.at("properties").contains(field))
+            {
+                const auto ref = string(v["properties"][field], field);
+                if (ref.starts_with("package:"))
+                {
+                    const auto found = spritePaths.find(ref.substr(8));
+                    if (found == spritePaths.end()) fail(field, "unresolved package sprite");
+                    const auto& [path, count] = found->second;
+                    if (std::string(field) == "gameSprite")
+                    {
+                        const auto first = v["properties"].value("gameSpriteImage", 0);
+                        const auto needed = v["properties"].value("crossConnectMultiImage", 0) ? 16 : v["properties"].value("gameSpriteCount", 1);
+                        if (first < 0 || needed < 1 || std::size_t(first) + needed > count) fail(field, "sprite frame range is unavailable");
+                    }
+                    else
+                    {
+                        const auto frame = v["properties"].value("miniSpriteImage", 0);
+                        if (frame >= 0 && std::size_t(frame) >= count) fail(field, "sprite frame is unavailable");
+                    }
+                    v["properties"][field] = path;
+                }
+                else if (!std::regex_match(ref, installed)) fail(field, "use installed artwork or a package sprite");
+            }
+            v["id"] = snapshot["variants"].size();
+            snapshot["variants"].push_back(std::move(v));
+        }
+        identity["packages"].push_back(package);
+    }
+    snapshot["catalogKey"] = "composed-" + Online::Sha256::hex(identity.dump());
+    loadSnapshotJson(snapshot.dump()); // Atomic validation and installation.
 }
 
 void BuildingsTypes::loadSnapshotJson(const std::string& text)

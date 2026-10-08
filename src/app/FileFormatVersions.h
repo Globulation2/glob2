@@ -221,8 +221,14 @@ static constexpr int FILE_FORMAT_VERSION_HAZARD_ROUTING = 142;
 //! Shared AI scheduling and pending command execution state.
 static constexpr int FILE_FORMAT_VERSION_AI_PIPELINE = 143;
 
+//! Map-owned custom artwork and attribution.
+static constexpr int FILE_FORMAT_VERSION_MAP_ASSETS = 144;
+
+//! Portable, content-addressed building sprite frames in maps, saves and replays.
+static constexpr int FILE_FORMAT_VERSION_BUILDING_ARTWORK = 145;
+
 //! Terrain is stored once per map vertex; cells derive their rules from their
 //! four corners. Earlier files carry an undermap, per-cell sprites and (from 134)
 //! per-cell terrain IDs, converted to vertices on load. The two shore types are
 //! retired and the catalogue IDs behind TRAIL move down by two.
-static constexpr int FILE_FORMAT_VERSION_VERTEX_TERRAIN = 144;
+static constexpr int FILE_FORMAT_VERSION_VERTEX_TERRAIN = 146;

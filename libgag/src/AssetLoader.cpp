@@ -12,6 +12,7 @@
 #include <stdexcept>
 #include <thread>
 #include <unordered_map>
+#include <regex>
 
 namespace GAGCore {
 namespace {
@@ -154,6 +155,7 @@ AssetLoader::Options AssetLoader::Options::environment() {
 }
 struct DeferredAssetRead {};
 struct AssetLoader::Impl {
+    CommunityFiles communityFiles;
     struct Job {
         std::shared_ptr<Result> result;
         std::vector<Dependency> dependencies;
@@ -378,7 +380,30 @@ std::shared_ptr<AssetLoader::Result> AssetLoader::submit(const std::string& key,
     (read ? impl->ioWake : *impl->cpuWake).notify_one();
     return result;
 }
+void AssetLoader::setCommunityFiles(CommunityFiles files) {
+    impl->checkOwner();
+    static const std::regex path("^community/buildings/[0-9a-f]{64}/sprite[0-9]+r?\\.webp$");
+    size_t bytes=0;
+    for(const auto& [name, content] : files) {
+        if(!std::regex_match(name,path) || !content) throw std::invalid_argument("Invalid community asset path");
+        bytes+=content->size();
+        if(bytes>64u*1024u*1024u) throw std::invalid_argument("Community assets exceed 64 MiB");
+        const auto old=impl->communityFiles.find(name);
+        if(old!=impl->communityFiles.end() && *old->second!=*content) throw std::invalid_argument("Community asset identity changed");
+    }
+    impl->communityFiles=std::move(files);
+    invalidate();
+}
 AssetLoader::Handle<AssetLoader::Directory> AssetLoader::requestDirectory(const std::string& folder) {
+    impl->checkOwner();
+    if(folder.starts_with("community/buildings/")) {
+        auto result=std::make_shared<Directory>();
+        const auto prefix=folder+'/';
+        for(const auto& [name,content] : impl->communityFiles)
+            if(name.starts_with(prefix) && name.find('/',prefix.size())==std::string::npos)
+                result->names.push_back(name.substr(prefix.size()));
+        return requestRead<Directory>("directory:"+folder,[result] { return result; });
+    }
     impl->refreshDirectories();
     const auto directories = impl->directories;
     return requestRead<Directory>("directory:" + folder, [directories, folder] {
@@ -397,6 +422,15 @@ AssetLoader::Handle<AssetLoader::Bytes> AssetLoader::requestBytes(const std::str
     return requestBytesImpl(path, priority, false);
 }
 AssetLoader::Handle<AssetLoader::Bytes> AssetLoader::requestBytesImpl(const std::string& path, Priority priority, bool transient) {
+    impl->checkOwner();
+    if(path.starts_with("community/buildings/")) {
+        const auto found=impl->communityFiles.find(path);
+        const auto content=found==impl->communityFiles.end() ? std::shared_ptr<const Bytes>() : found->second;
+        return requestRead<Bytes>(path,[content,path] {
+            if(!content) throw std::runtime_error("Missing verified community asset: "+path);
+            return content;
+        },priority);
+    }
     impl->refreshDirectories();
     const auto directories = impl->directories;
     auto work = [this, directories, path, transient]() -> std::shared_ptr<const void> {

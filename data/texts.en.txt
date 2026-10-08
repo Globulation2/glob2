@@ -5880,3 +5880,65 @@ Refresh fertility
 Enabled %0 for this map
 [editor fertility tap refresh]
 Fertility map out of date: tap to refresh
+[editor menu import set]
+Import Terrain & Resource Set
+[editor menu set library]
+Set Library
+[set library loading]
+Loading sets…
+[set library downloading]
+Downloading exact release…
+[set library connection error]
+Cannot load sets. Check your connection and try again.
+[set library hash error]
+Downloaded set failed its hash check.
+[set library package error]
+Invalid set package.
+[set library listing error]
+Invalid set listing.
+[set library release error]
+Invalid set release.
+[set library selection help]
+Select entries to import. Required custom resources are included automatically.
+[set library empty]
+No sets found.
+[set library release help]
+Choose an exact release to inspect and import.
+[set library heading]
+Terrain & resource sets
+[set library browse]
+Browse online library
+[set library local]
+Map content, credits & local edits
+[set library local help]
+Edit this map's copy. Original release credits remain attached. Changes do not update other maps or the online release.
+[set library apply]
+Apply local changes
+[set library updated]
+Local content updated.
+[set library search hint]
+Search themes and creators
+[set library search]
+Search
+[set library set]
+Set
+[set library update help]
+This explicitly replaces matching placed terrain and resources, including local edits. Removed entries remain on the old release. Existing material amounts are capped to the new capacities.
+[set library import]
+Import selected entries
+[set library next]
+Next page
+[set library back]
+Back to results
+[set library license %0]
+License: %0
+[set library release %0]
+release %0
+[set library replace %0]
+Replace placed entries from release %0
+[set library preview limit]
+Previews are shown for the first 64 entries. All entries remain selectable.
+[set library definition]
+Properties definition (JSON)
+[set library artwork]
+Terrain artwork mapping (JSON)

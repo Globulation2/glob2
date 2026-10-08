@@ -2,6 +2,7 @@
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
 #include "Map.h"
+#include "MapAssetBundle.h"
 #include "gradient/ResourceSeedCache.h"
 #include "gradient/GradientRuntime.h"
 #include "Utilities.h"
@@ -24,11 +25,17 @@ void Map::installResourceDefinitions(const std::string& json)
 {
     if (game && !game->edit && game->stepCounter != 0)
         throw std::logic_error("Resource definitions are frozen during a match");
-    const auto next=resourceRegistry().importJson(json);
+    installCatalogs(terrainRegistryValue, resourceRegistry().importJson(json), assetBundleValue);
+}
+
+void Map::installCatalogs(std::shared_ptr<const TerrainRegistry> terrain,
+    std::shared_ptr<const ResourceRegistry> next, std::shared_ptr<const MapAssetBundle> assets)
+{
+    assets->validate(*terrain, *next);
     // Stage every allocating operation against the replacement catalog before
     // publishing it. A malformed import or allocation failure leaves the map
     // and its running readers on the original immutable snapshot.
-    auto rules=std::make_shared<CellRuleTable>(terrainRegistryValue,next);
+    auto rules=std::make_shared<CellRuleTable>(terrain,next);
     std::vector<Resource> deposits(cellCount());
     std::vector<Uint32> stockIndices;
     std::vector<std::array<Uint16,MaterialCount>> stocks;
@@ -62,6 +69,8 @@ void Map::installResourceDefinitions(const std::string& json)
         deposits[i]=r;
     }
     finishGradientPipeline();
+    terrainRegistryValue = std::move(terrain);
+    assetBundleValue = std::move(assets);
     resourceRegistryValue=next;
     bumpStaticMaterialSourceGeneration();
     resourceStockIndices=std::move(stockIndices);
@@ -69,11 +78,21 @@ void Map::installResourceDefinitions(const std::string& json)
     freeResourceStocks.clear();
     materialSourceCounts=counts;
     for (size_t i=0;i<cellCount();++i) resourceCells[i].resource=deposits[i];
+    // The vertices keep their IDs; every cell is re-derived against the new catalogs.
     rebuildTerrainCounts(std::move(rules));
     resourceChanges.markAll();
-    growthCache.invalidate();
     invalidateResourceSeeds();
     bumpTopologyGeneration();
+    if (arraysBuilt && marketsV2Enabled())
+        for (int team = 0; team < Team::MAX_COUNT; ++team)
+            for (int material = 0; material < MaterialCount; ++material)
+                for (int swim = 0; swim < SWIM_CLASS_COUNT; ++swim) {
+                    gradientRuntime->pipeline.invalidate(&marketMaterialGradients[team][material][swim]);
+                    marketGradientUpdated[team][material][swim] = false;
+                    marketGradientDirty[team][material][swim] = true;
+                }
+    terrainEditChanged = terrainRoutesChanged = true;
+    finishTerrainEdit();
 }
 
 ExperimentSet Map::requiredResourceExperiments() const

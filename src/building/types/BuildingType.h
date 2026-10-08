@@ -152,6 +152,9 @@ public:
 	void initLegacy();
 	void loadManifest(const std::string& path);
 	void loadSnapshotJson(const std::string& json);
+	// Add portable families to this immutable base; input order does not affect identity.
+	// Package sprites resolve to content-addressed paths, without doing file I/O.
+	void composePackages(const std::vector<std::string>& packages);
 	// Canonical authored/resolved data only: artwork handles and effective match
 	// gates are excluded. Enabled experiments are persisted separately by GameHeader.
 	std::string snapshotJson() const;

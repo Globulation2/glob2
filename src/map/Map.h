@@ -33,6 +33,7 @@
 #include "FertilityField.h"
 #include "TerrainProperties.h"
 #include "TerrainRegistry.h"
+class MapAssetBundle;
 #include "TerrainExperiments.h"
 #include "BitArray.h"
 
@@ -138,6 +139,8 @@ class Map
 	std::shared_ptr<const ResourceRegistry> resourceRegistryValue = ResourceRegistry::availableDefaults();
 	// Single-yield tiles keep stock inline. The index plane is allocated only
 	// when a multi-yield deposit is first placed; zero means no sidecar slot.
+    void installCatalogs(std::shared_ptr<const TerrainRegistry> terrain,
+        std::shared_ptr<const ResourceRegistry> resources, std::shared_ptr<const MapAssetBundle> assets);
 	std::vector<Uint32> resourceStockIndices;
 	std::vector<std::array<Uint16, MaterialCount>> resourceStocks;
 	std::vector<Uint32> freeResourceStocks;
@@ -154,6 +157,7 @@ class Map
 	std::vector<TerrainType> vertexTerrain;
 	std::vector<Uint16> cellRules;
 	std::shared_ptr<const TerrainRegistry> terrainRegistryValue = TerrainRegistry::builtins();
+    std::shared_ptr<const MapAssetBundle> assetBundleValue;
 	std::shared_ptr<CellRuleTable> cellRuleTable;
 	const CellRule *cellRuleData = nullptr;
 	// Vertices per terrain type, and cells per cell rule.
@@ -505,6 +509,10 @@ public:
 
 
 	//! Canonical gameplay identity; never inferred from art in a simulation query.
+	std::shared_ptr<const MapAssetBundle> frozenAssetBundle() const { return assetBundleValue; }
+    void editCustomEntry(std::string_view key, std::string_view definition, std::string_view artwork);
+    void updateSet(std::string_view source, std::string_view oldVersion, const std::vector<std::string>& selected = {});
+    void importSet(std::string_view json, const std::vector<std::string>& selected = {});
 	const TerrainRegistry &terrainRegistry() const { return *terrainRegistryValue; }
 	std::shared_ptr<const TerrainRegistry> frozenTerrainRegistry() const
 	{

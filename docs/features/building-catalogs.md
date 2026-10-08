@@ -29,7 +29,8 @@ unresolved references, transition cycles and inconsistent recipes with contextua
 diagnostics. The resolved canonical snapshot must fit the 8 MiB transport bound,
 including defaults expanded by the loader. Initial health cannot exceed maximum
 health. Installed sprite references use the existing artwork pipeline.
-Transferring definitions does not download artwork.
+Standalone catalog definitions do not transfer installed artwork. Portable
+building-family packages can include custom frames, as described below.
 
 Variant fields are:
 
@@ -49,6 +50,67 @@ imply the next variant. Only one outgoing upgrade is supported. `startingBuildin
 in the manifest optionally names a concrete starting variant. Setup rejects an
 unavailable required starting variant instead of substituting another building.
 Existing authored maps keep their explicit definitions.
+
+## Portable building families
+
+The `BuildingPackage` contract in `platform/packages/protocol/src/buildings.ts`
+represents an additive family, including its construction, repair and upgrade
+variants. A package has `schemaVersion: 1`, a lowercase UUID `namespace`, and
+`variants`, `experiments` and `sprites` arrays. Variant, experiment and connection
+group keys use the prefix `b-<namespace>-`. Variant references and experiment
+requirements stay within the package; packages cannot replace stock definitions
+or change the base catalog's starting building. Runtime `id` fields are rejected.
+The platform's fork helper assigns a new namespace and rewrites those references.
+Every package variant needs a `properties.gameSprite`. It also needs
+`properties.miniSprite` unless `miniSpriteImage` is explicitly `-1` to suppress
+that image. Omitting these paths leaves unusable engine defaults and is rejected
+during native validation.
+
+Compose authored manifests with the capability-advertised command:
+
+```sh
+glob2 --compose-buildings --package first-family.json --package second-family.json
+```
+
+An optional `--base PATH` selects a base catalog manifest.
+`--artwork-bundle PATH` also verifies a portable artwork bundle against the composed
+catalog and returns its checked `artworkHash`. Output is one JSON
+object with `schemaVersion`, `baseHash` and `catalog: {snapshot, hash}`. Packages
+are sorted by namespace, then appended in their authored variant order. Existing
+base IDs remain stable. Duplicate namespaces and invalid compositions are
+rejected atomically. With no packages the base snapshot and fingerprint remain
+unchanged. `GlobEngine.composeBuildings` checks the binary's advertised capability
+and base fingerprint and retains its exact canonical output.
+
+Sprites have a local `key` and ordered `frames`. Each frame declares `imageHash`,
+`width`, `height`, and optionally `teamColorHash` for the existing rotated-color
+layer. A variant uses `package:<sprite-key>` in `gameSprite` or `miniSprite`, or
+references installed `data/gfx/` artwork. Composition replaces package references
+with content-addressed sprite paths. Damage frame ranges, miniature indices and
+all sixteen connected-segment frames must fit the declared sprite. Artwork hashes
+contribute to catalog identity. Composition validates declarations; it does not
+read, install or render the declared image bytes.
+
+The platform ZIP helpers export deterministic archives containing `manifest.json`
+and `assets/<sha256>.png` or `.webp`. Imports accept stored or deflated ZIP32
+members, check hashes and CRCs, and reject traversal, symlinks, duplicate members,
+undeclared images, ambiguous JSON and decompression beyond the upload bound.
+Image normalization accepts still PNG/WebP frames, verifies declared dimensions,
+then retains lossless sRGB WebP with transparency and no source metadata.
+
+Shared limits are 32 MiB for the archive and its expanded contents, 8 MiB for
+manifests, 512 pixels per frame side, 256 image/layer entries per package, and
+64 MiB of decoded custom pixels per composition. The existing 4,096-variant,
+experiment and resolved-snapshot bounds also apply.
+
+The standalone `G2BA0001` artwork bundle contains a canonical sprite manifest and
+hash-addressed normalized WebP bytes. The native decoder verifies hashes, image
+headers, decoded pixels, dimensions, catalog references and frame bounds before producing an
+in-memory community asset mount. Community mounts cannot shadow installed
+artwork or fall through to filesystem assets. Format 145 embeds the bundle after the resolved catalog in map, save and replay
+headers. Older files load without a bundle. The native loader verifies the
+embedded bytes before mounting sprites, including in headless validation.
+Composing packages alone does not publish a release.
 
 ## Capabilities and units
 
@@ -290,3 +352,137 @@ current master using identical inputs and dependencies, including gradient
 preparation and whole-game workloads. Retain raw timing, allocation/memory and
 continuation evidence. A repeatable slowdown above 3% fails the building-refactor
 performance gate. See [verification guidance](../development/reference.md#local-and-vm-pr-verification).
+
+### Private authoring workspace
+
+To create and share a family:
+
+1. Sign in to the website with a registered account, open **Buildings**, then
+   **Create a building family**. Give the draft a descriptive name.
+2. Edit the initial variant's properties and capabilities. Keep its key stable;
+   display names can change without rewriting references. Add stages for explicit
+   construction and upgrade transitions, and link them using `next` and `previous`.
+3. Reuse an installed stock sprite or add custom sprite frames in the artwork
+   controls. Team-color layers are optional and must match the base image's size.
+4. Save the draft. Fix validation errors before publication. JSON editing is useful
+   for advanced capabilities; the engine validates the saved package as a whole.
+5. Choose a description and visibility, then publish the saved revision. Wait for
+   native validation; rejected releases explain the error. Further draft changes
+   need another publication to appear in the library.
+6. In the game, open **Building families** on a local new-game or editor new-map
+   screen, browse public families or paste the family's page link into **Family
+   link or ID** and choose **Open family**. Private families need sign-in to the
+   same instance. Install the compatible release and enable it. Selection applies to new
+   maps in that profile. To play it online, share the resulting map and select it
+   in the room. Downloading a ZIP on the website exports the authored package.
+
+Common authoring controls include:
+
+| Control | Meaning |
+| --- | --- |
+| `hpInit`, `hpMax` | Health on creation and maximum health; initial health cannot exceed the maximum |
+| `isBuildingSite` | Construction/repair stage; its `next` must name a completed variant |
+| `level` | Display tier, 0–3; it does not infer an upgrade link |
+| `placeable`, `instantPlacement` | Whether players can place the variant; a completed placeable variant needs instant placement, otherwise use a construction site |
+| `repairable`, `previous` | Repair capability and explicit site reference; repairable variants need a positive maximum health and a previous construction site |
+| `constructionCost` | Costs attached to a construction site; completed variants cannot carry them |
+| `requiredExperiment` | Package-local experiment gate; an unavailable gate keeps the variant out of the new game's choices |
+
+The service and presentation sections earlier in this guide describe the remaining
+capabilities. Definitions compose existing primitives; publication does not add
+new executable game behavior.
+
+The web app's `/building-studio` page creates private building-family drafts for
+registered accounts. It provides scalar property controls, nested JSON controls,
+complete manifest editing, upgrade-stage links, experiment definitions and sprite
+frame previews. Authors can upload a base frame or an optional team-color layer,
+import a package, and export the last saved package. Exporting preserves the
+family namespace; importing a package replaces the selected draft's content.
+
+`/api/v1/building-drafts` lists and creates drafts. The draft resource supports
+reading, saving and deleting; `/archive` imports and exports ZIP packages;
+`/frame` replaces or appends a frame; and `/assets/<hash>` serves an owned draft's
+normalized artwork. Saves and uploads require the current revision UUID and
+reject stale updates. Changing a manifest cannot invent missing assets. Uploads
+retain only normalized, still, lossless WebP bytes, and team-color layers must
+match their base frame dimensions. Account exports include the saved ZIP bytes;
+account deletion removes private drafts.
+
+The workspace limits each account to 100 drafts, 64 MiB of saved packages, and
+60 saves or uploads per hour.
+Device recovery copies supplement account drafts; authors explicitly restore a
+copy instead of silently replacing a newer account revision. These are authoring
+interfaces. Publishing a saved revision submits an immutable release for native
+validation; later edits do not rewrite that release.
+### Online library and installed families
+
+`/buildings` browses the public library; each family page lists pinned releases,
+validation state, simulation version, downloads, likes, favourites, reports and
+forking into a private Studio draft. Publication defaults to unlisted. Only an
+active registered account can publish, and the namespace remains owned by its
+first publisher. Public, unlisted and private visibility follow the same access
+rules as the map library. Hidden families cannot be downloaded or installed.
+Moderators can hide/restore families and resolve their reports. Account export
+includes drafts, published families, release metadata and the account's social
+activity; account deletion removes that authored library content.
+
+Owners can edit a family's published name, description and visibility without
+revalidating its releases, or withdraw the family after confirmation. Withdrawal
+removes its library releases and social activity; it leaves the Studio draft and
+maps, saves and replays that already embed the family's data intact. These
+metadata changes do not change catalog identity. Moderation and owner changes
+are recorded in the administration audit log.
+
+Moderators retrieve the unresolved report queue with
+`GET /api/v1/building-reports`, hide or restore a family with
+`PUT /api/v1/buildings/:id/moderation` (`hidden` and `reason`; hiding requires a
+nonempty reason), and mark a report resolved with
+`PUT /api/v1/building-reports/:id` and `{"resolved": true}`. Hiding a family does
+not itself resolve its reports. The website exposes hide/restore on a family
+page; the report queue and resolution workflow currently use these API endpoints.
+
+`POST /api/v1/building-drafts/:id/publish` freezes the exact saved archive and
+submits `validate-buildings` to a fresh engine agent that advertises
+`compose_buildings`. Suite 1 checks package closure, deterministic composition,
+stock identity, sprite references and bounded full artwork decoding. A validated
+release is bound to its archive hash, stock hash, simulation version and suite.
+Unavailable engines leave publication unavailable; pending/rejected releases
+cannot be downloaded. Families retain at most 50 releases and publishing/forking
+is limited to 20 requests per account per hour. Reports are limited to 10/hour.
+
+The native new-game and new-map screens open **Building families**. The picker
+installs a chosen compatible release, verifies its package and artwork hashes
+and resolved catalog, and lets players explicitly enable or remove families.
+Unlisted families open by their page link or ID; links must belong to the
+selected instance. Private family lookup uses that instance's signed-in account.
+Installed releases stay pinned until another release is chosen. The cache is
+limited to 100 families and 64 MiB; combined manifests and decoded pixels retain
+the composition bounds above. Selection is applied before new-map generation.
+Loaded maps and ongoing/saved games retain their own definitions and artwork.
+Share a newly created map through the existing map library to use those families
+in an online room; every participant and verifier receives the map's embedded
+catalog and frames. No family cache or original library availability is needed
+to load a shared map, save or replay.
+
+Existing map-sharing limits still apply: uploads default to 16 MiB of transferred
+bytes, and the native map cache and engine agent accept at most 64 MiB of raw map
+data. A valid local package or combined artwork bundle can exceed those limits;
+use smaller frames or fewer families when preparing an online map. The bundle's
+wire format is limited to 72 MiB, and each mount is limited to 64 MiB of encoded
+frame bytes. The 64 MiB decoded-pixel bound applies to each composition. The
+Toolkit also retains
+previously loaded sprite objects for the session, so repeated loading of distinct
+custom artwork can accumulate decoded residency beyond the current bundle's
+bound; replacing the mounted bundle does not free those retained sprites.
+
+The native installation API uses a validated release's `/runtime` descriptor
+and `/artwork` bundle, while `/archive` exports its portable ZIP. The runtime
+descriptor carries the exact canonical package JSON as a string and its hash,
+avoiding numeric-serialization differences between JavaScript and C++. All
+release resources recheck visibility and moderation on every request.
+
+For command-line new maps, write the composed catalog snapshot to a JSON file
+and pass `--building-catalog` with `--building-artwork` to `--generate-map`.
+The latter accepts the verified `G2BA0001` bundle, which is embedded in the output.
+Format 145 and network protocol 62 separate clients using the new header layout;
+the save-support floor remains 58 and replay acceptance remains at 143.

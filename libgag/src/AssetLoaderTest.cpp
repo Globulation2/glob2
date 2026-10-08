@@ -196,3 +196,30 @@ TEST_CASE("failures cancellation invalidation and shutdown leave usable handles"
     CHECK(fresh.get() != nullptr);
 }
 }
+
+TEST_SUITE("CommunityAssets") {
+TEST_CASE("verified memory assets use the ordinary loader without shadowing installed files") {
+    glob2test::TempDir temp("community-assets");
+    const auto diskFolder=temp.path / "community/buildings" / std::string(64,'a');
+    std::filesystem::create_directories(diskFolder);
+    write(diskFolder / "sprite0.webp",webp,sizeof(webp));
+    GAGCore::FileManager files("community-assets"); files.addDir(temp.path.string());
+    for(unsigned workers:{0u,2u}) {
+        GAGCore::AssetLoader loader(files,{workers,workers,1024*1024});
+        const auto folder="community/buildings/"+std::string(64,'a');
+        const auto path=folder+"/sprite0.webp";
+        auto bytes=std::make_shared<const GAGCore::AssetLoader::Bytes>(webp,webp+sizeof(webp));
+        CHECK_FALSE(loader.wait(loader.requestImage(path))); // never fall through to disk
+        loader.setCommunityFiles({{path,bytes}});
+        const auto directory=loader.wait(loader.requestDirectory(folder));
+        REQUIRE(directory); REQUIRE(directory->names.size()==1); CHECK(directory->names.front()=="sprite0.webp");
+        auto image=loader.wait(loader.requestImage(path)); REQUIRE(image);
+        CHECK(image->surface->w==2); CHECK(image->surface->h==2);
+        auto missing=loader.requestImage(folder+"/sprite1.webp"); CHECK_FALSE(loader.wait(missing));
+        CHECK_THROWS(loader.setCommunityFiles({{"data/gfx/stock0.webp",bytes}}));
+        auto changed=std::make_shared<const GAGCore::AssetLoader::Bytes>(1,0);
+        CHECK_THROWS(loader.setCommunityFiles({{path,changed}}));
+        CHECK(loader.wait(loader.requestBytes(path))==bytes);
+    }
+}
+}

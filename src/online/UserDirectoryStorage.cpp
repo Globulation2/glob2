@@ -24,6 +24,7 @@ class UserDirectoryStorage final : public OnlineStorage
 	{
 		files.addWriteSubdir("online");
 		files.addWriteSubdir("online/maps");
+		files.addWriteSubdir("online/buildings");
 		files.addWriteSubdir("online/skins");
         files.addWriteSubdir("online/skin-sprites");
 		files.addWriteSubdir("ais");

@@ -132,7 +132,7 @@ SamplingPlan viewSamplingPlan(const SceneMap &map, int left, int top, int right,
 void drawEmergencyTiles(const SceneMap &map, int left, int top, int right, int bottom, int vx,
 						int vy, Uint32 visibleTeams, bool wholeMap, int preferredResolution)
 {
-	auto &compositor = globalContainer->terrainCompositor();
+	auto &compositor = globalContainer->terrainCompositor(map.frozenAssetBundle());
 	auto &target = *globalContainer->gfx;
 	const int limit = target.maximumTextureSize();
 	int scale = preferredResolution;
@@ -217,10 +217,11 @@ bool SoftwareTerrainCache::prepareAtResolution(const SceneMap &map, GAGCore::Spr
 											   int preferredResolution, bool tiledCapture,
 											   int preferredDownsample)
 {
-	if (registry.get() != &map.terrainRegistry())
+	if (registry.get() != &map.terrainRegistry() || assets != map.frozenAssetBundle())
 	{
 		chunks.clear();
 		registry = map.frozenTerrainRegistry();
+        assets = map.frozenAssetBundle();
 	}
 
 	PERF_SCOPE_TIME(TerrainCache);
@@ -229,7 +230,7 @@ bool SoftwareTerrainCache::prepareAtResolution(const SceneMap &map, GAGCore::Spr
 	if (!enabled)
 		return false;
 	paintBounds = {left * 32, top * 32, (right - left + 1) * 32, (bottom - top + 1) * 32};
-	auto &compositor = globalContainer->terrainCompositor();
+	auto &compositor = globalContainer->terrainCompositor(map.frozenAssetBundle());
 	const bool nextGPU = globalContainer->gfx->getOptionFlags() &
 						 (GAGCore::GraphicContext::USEGPU | GAGCore::GraphicContext::PORTABLEGPU);
 	compositor.prepare(nextGPU, time);
@@ -455,7 +456,7 @@ void SoftwareTerrainCache::drawUncached(const SceneMap &map, GAGCore::Sprite &sp
 										Uint32 visibleTeams, bool wholeMap, int time,
 										FallbackMode mode, bool tiledCapture)
 {
-	auto &compositor = globalContainer->terrainCompositor();
+	auto &compositor = globalContainer->terrainCompositor(map.frozenAssetBundle());
 	const bool gpu = globalContainer->gfx->getOptionFlags() &
 					 (GAGCore::GraphicContext::USEGPU | GAGCore::GraphicContext::PORTABLEGPU);
 	compositor.prepare(gpu, time);

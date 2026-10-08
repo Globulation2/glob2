@@ -1,3 +1,4 @@
+import { MapSetCredits } from './sets.ts';
 import { ResourceExperimentDefinitions, BuildingCatalog } from './matchSetup.ts';
 // REST resource shapes for /api/v1. Accounts and auth are complete for M3;
 // rooms, matches, maps and leaderboards define the shapes later milestones
@@ -241,6 +242,26 @@ export const AccountExport = Open(
         attempts: ExportRows,
         events: Type.Optional(ExportRows),
         artifacts: Type.Optional(ExportRows),
+      }),
+    ),
+    buildings: Type.Optional(
+      Open({
+        drafts: ExportRows,
+        families: Type.Optional(ExportRows),
+        releases: Type.Optional(ExportRows),
+        likes: Type.Optional(ExportRows),
+        favourites: Type.Optional(ExportRows),
+        reports: Type.Optional(ExportRows),
+      }),
+    ),
+    sets: Type.Optional(
+      Open({
+        published: ExportRows,
+        drafts: ExportRows,
+        versions: ExportRows,
+        likes: ExportRows,
+        reports: ExportRows,
+        downloads: ExportRows,
       }),
     ),
     ais: Type.Optional(
@@ -702,6 +723,7 @@ const ValidationState = Type.Union([
  * engine agent validated it. Rooms choose it as {kind: "catalog", hash}.
  */
 export const MapVersionInfo = Open({
+  setCredits: Type.Optional(MapSetCredits),
   hash: Sha256Hex,
   size: Type.Integer({ minimum: 0 }),
   width: Type.Optional(Type.Integer({ minimum: 1 })),

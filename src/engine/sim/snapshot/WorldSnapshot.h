@@ -10,6 +10,7 @@
 #include "BuildingCapabilities.h"
 #include "ResourceRegistry.h"
 #include "CellRules.h"
+#include "MapAssetBundle.h"
 #include "MapStateView.h"
 #include "ResourcePlaneKey.h"
 #include "MapChangeTracking.h"
@@ -30,6 +31,7 @@ struct Catalogs
 	// Immutable resource catalog, shared with the map. Habitats are compiled
 	// into the terrain's cell rules.
 	std::shared_ptr<const ResourceRegistry> resources;
+    std::shared_ptr<const MapAssetBundle> assets;
 };
 // Which live chunks a pooled buffer mirrors (MapState::ChangeTracker stamps),
 // so the next fill of the same buffer copies only chunks changed since.

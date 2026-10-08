@@ -1,3 +1,6 @@
+import { buildingLibraryRoutes } from './buildings/library.ts';
+import { buildingDraftRoutes } from './buildings/drafts.ts';
+import { setLibraryRoutes } from './sets/routes.ts';
 import { musicStudioRoutes } from './music/studio.ts';
 import { aiStudioRoutes } from './ai-studio/routes.ts';
 import { aiLibraryRoutes } from './ais/routes.ts';
@@ -121,7 +124,7 @@ export async function buildApp(
   app.setErrorHandler((error: FastifyError, request, reply) => {
     const { status, body } = errorBodyFor(
       error,
-      services.config.uploadMaxBytes ?? 16 * 1024 * 1024,
+      services.config.uploadMaxBytes ?? 64 * 1024 * 1024,
     );
     if (status >= 500) request.log.error({ err: error }, 'request failed');
     void reply.status(status).send(body);
@@ -151,7 +154,7 @@ export async function buildApp(
     {
       parseAs: 'buffer',
       bodyLimit: Math.max(
-        services.config.uploadMaxBytes ?? 16 * 1024 * 1024,
+        services.config.uploadMaxBytes ?? 64 * 1024 * 1024,
         services.config.recordMaxBytes ?? 64 * 1024 * 1024,
       ),
     },
@@ -257,6 +260,9 @@ export async function buildApp(
   await playRoutes(app, identity, rooms);
   await mapCatalogRoutes(app, identity);
   await aiLibraryRoutes(app, identity);
+  await buildingDraftRoutes(app, identity);
+  await buildingLibraryRoutes(app, identity);
+  await setLibraryRoutes(app, identity);
   await musicRoutes(app, identity);
   await skinRoutes(app, identity);
   await skinBillingRoutes(app, identity);

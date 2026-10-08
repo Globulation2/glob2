@@ -627,10 +627,11 @@ int main(int argc, char *argv[])
 	setvbuf(stdout, NULL, _IOLBF, 0);
 
 #if defined(__APPLE__) && !defined(GLOB2_MOBILE)
-	// Map tools resolve input and output paths relative to the caller.
+	// Content tools resolve input and output paths relative to the caller.
 	if (!(argc > 1 &&
 		  (isMapCommand(argv[1]) || std::string(argv[1]) == "--check-script" ||
-		   std::string(argv[1]) == "--check-ai" || std::string(argv[1]) == "--check-ai-json" || std::string(argv[1]) == "--attach-map-script")))
+		   std::string(argv[1]) == "--check-ai" || std::string(argv[1]) == "--check-ai-json" || std::string(argv[1]) == "--attach-map-script" ||
+		   std::string(argv[1]) == "--compose-buildings")))
 	{
 		/* SDL has this annoying "feature" of setting working directory to parent
 		   of bundle during static initialization.  We want to set it back to the
