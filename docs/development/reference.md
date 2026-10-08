@@ -1645,15 +1645,20 @@ creating the simulation thread fails, run the same session serially (`Engine::st
 also remains the headless default and the equivalence reference.
 
 - The simulation thread paces itself with the speed presets and runs ticks
-  (`Engine::simulationStep`: orders, network, `Game::syncStep`). After a tick, if the main
-  thread has taken the previous Scene, it captures frozen inputs and submits
-  preparation. A compute worker publishes the result into a `SceneBuffer`
-  (lock-free triple buffer); only one preparation is in flight.
-- The main thread draws the newest Scene when the render ceiling permits a frame.
-  Routine input, selection, client events and script highlights use the Scene and
+  (`Engine::simulationStep`: orders, network, `Game::syncStep`). Before pacing,
+  the engine publishes the completed world's shared read boundary with the union
+  of AI, gradient and admitted presentation requirements. Presentation preparation
+  borrows that publication and runs on the compute executor. A worker publishes
+  the completed `PresentationFrame` into a `SceneBuffer` (lock-free triple buffer);
+  only one preparation is in flight, and a newer complete frame can supersede an
+  unconsumed one. Neither capture nor presentation admission depends on drawing
+  completing first.
+- The main thread draws the newest complete frame when the render ceiling permits.
+  Routine input, selection, client events and script highlights use the frame and
   client-owned state without parking the simulation. Exceptional live-state work
-  (save capture, dialogs, settings, viewpoint changes and diagnostic dumps) uses
+  (save capture, owner-backed settings, viewpoint changes and diagnostic dumps) uses
   `GameGUI::parkForClient` / `SimulationRunner::withGame` at a tick boundary.
+  Alliance, objective and hint dialogs read immutable snapshot payloads.
   Autosave scheduling publishes an atomic pending request; the client owns the
   writer and captures the save at that explicit boundary. Telemetry windows cross
   a locked mailbox after simulation work finishes.
@@ -1680,7 +1685,7 @@ also remains the headless default and the equivalence reference.
   background is therefore not caught up after resuming, as in serial execution.
   GUI updates use `SDL_GetTicks()` instead: touch event timestamps and momentum
   must share the SDL clock, including after the session clock has been suspended.
-- Values the client sets while drawing and extraction reads (viewport, drawn map size,
+- Values the client sets while drawing and preparation reads (viewport, drawn map size,
   overlay, observed building) go through `ClientRequests`, never through `Game` or `Map`
   fields. To check for races, build with `CXXFLAGS="-g -fsanitize=thread"
   LINKFLAGS="-fsanitize=thread"` and run a windowed `-test-games` session or a headless
