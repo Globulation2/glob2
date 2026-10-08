@@ -199,6 +199,12 @@ export class AdminService {
         .where('account_id', '=', id)
         .forUpdate()
         .execute();
+      await tx
+        .selectFrom('terrain_wallets')
+        .select('account_id')
+        .where('account_id', '=', id)
+        .forUpdate()
+        .execute();
       // Skin publication and draft saves lock this account before committing.
       const current = await tx
         .selectFrom('accounts')
@@ -239,6 +245,36 @@ export class AdminService {
           )
           .execute();
       }
+      const terrainStudioRequests = await tx
+        .selectFrom('terrain_studio_requests')
+        .select(['id', 'kind', 'status'])
+        .where('account_id', '=', id)
+        .orderBy('id')
+        .forUpdate()
+        .execute();
+      const reservedTerrain = terrainStudioRequests.filter(
+        (r) => r.kind === 'generate' && !['ready', 'failed'].includes(r.status),
+      );
+      if (reservedTerrain.length) {
+        await tx
+          .updateTable('terrain_wallets')
+          .set({ reserved: sql`reserved - ${reservedTerrain.length}` })
+          .where('account_id', '=', id)
+          .execute();
+        await tx
+          .insertInto('terrain_ledger')
+          .values(
+            reservedTerrain.map((r) => ({
+              id: `generation:${r.id}`,
+              account_id: id,
+              amount: 0,
+              kind: 'usage' as const,
+              details: { requestId: r.id, delivered: false, returned: true, accountDeleted: true },
+            })),
+          )
+          .execute();
+      }
+      await tx.deleteFrom('terrain_studio_threads').where('account_id', '=', id).execute();
       const musicStudioRequests = await tx
         .selectFrom('music_studio_requests')
         .select(['id', 'kind', 'status'])

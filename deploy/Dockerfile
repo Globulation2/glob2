@@ -97,6 +97,8 @@ COPY platform/packages/billing/package.json packages/billing/
 COPY platform/packages/map-studio/package.json packages/map-studio/
 COPY platform/packages/music/package.json packages/music/
 COPY platform/packages/music-studio/package.json packages/music-studio/
+COPY platform/packages/terrain-studio/package.json packages/terrain-studio/
+COPY platform/apps/ai-terrain-worker/package.json apps/ai-terrain-worker/
 COPY platform/apps/ai-music-worker/package.json apps/ai-music-worker/
 COPY platform/apps/music-worker/package.json apps/music-worker/
 COPY platform/apps/skin-render-worker/package.json apps/skin-render-worker/
@@ -122,7 +124,7 @@ COPY examples/javascript /app/examples/javascript
 COPY libgag/shaders /app/libgag/shaders
 # The navigation shares the game's Tabler icon sources (src/icons.tsx).
 COPY datasrc/icons/tabler /app/datasrc/icons/tabler
-# Colony Studio's set editor imports the shared resource registry (sets/model.ts).
+# Set authoring and Terrain Studio import the shared resource registry.
 COPY data/resources/registry.json /app/data/resources/registry.json
 COPY --from=music-web-build /source/platform/apps/web/public/music/decoder.js apps/web/public/music/decoder.js
 COPY --from=music-web-build /source/platform/apps/web/public/music/decoder.wasm apps/web/public/music/decoder.wasm
@@ -140,6 +142,7 @@ COPY platform/apps/skin-render-worker apps/skin-render-worker
 COPY platform/apps/engine-agent apps/engine-agent
 COPY platform/apps/ai-map-worker apps/ai-map-worker
 COPY platform/apps/ai-music-worker apps/ai-music-worker
+COPY platform/apps/ai-terrain-worker apps/ai-terrain-worker
 # Node strips types at run time; tests and the web sources are not needed.
 RUN rm -rf packages/*/test apps/*/test && \
     find packages apps -name '*.test.ts' -delete
@@ -156,6 +159,7 @@ RUN groupadd --gid 10001 glob2 && useradd --uid 10001 --gid 10001 --no-create-ho
     chmod 700 /var/lib/glob2/keys /var/lib/glob2/relay /var/lib/glob2/engine-agent /var/lib/glob2/db/*
 COPY --from=platform-runtime-deps /app/platform /app/platform
 COPY examples/javascript /app/examples/javascript
+COPY data/resources/registry.json /app/data/resources/registry.json
 COPY docs/development/javascript.md docs/development/javascript-api.md /app/docs/development/
 COPY deploy/platform-init.sh /usr/local/bin/glob2-platform-init
 RUN printf '#!/bin/sh\nexec node /app/platform/apps/api/src/cli.ts "$@"\n' > /usr/local/bin/platform && \
@@ -201,6 +205,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends ca-certificates
 COPY --from=node-binary /usr/local/bin/node /usr/local/bin/node
 COPY --from=platform-runtime-deps /app/platform /app/platform
 COPY examples/javascript /app/examples/javascript
+COPY data/resources/registry.json /app/data/resources/registry.json
 COPY docs/development/javascript.md docs/development/javascript-api.md /app/docs/development/
 COPY --from=engine-build /output/bin/glob2 /opt/glob2/bin/glob2
 COPY --from=engine-build /output/lib/glob2 /opt/glob2/lib/glob2
@@ -228,6 +233,20 @@ COPY --from=engine-source /.agents/skills/glob2-map-design/references /opt/glob2
 ENV GLOB2_SOURCE_DIR=/opt/glob2/share
 USER 10001:10001
 CMD ["node", "apps/ai-map-worker/src/main.ts"]
+
+# Terrain Studio shares the engine validator and pinned material production helpers.
+FROM engine-agent AS ai-terrain-worker
+USER root
+RUN apt-get update && apt-get install -y --no-install-recommends python3 python3-venv \
+    && rm -rf /var/lib/apt/lists/* \
+    && python3 -m venv /opt/terrain
+COPY tools/asset-requirements.txt /tmp/terrain-requirements.txt
+RUN /opt/terrain/bin/pip install --no-cache-dir -r /tmp/terrain-requirements.txt
+COPY tools/artwork/material_tiles.py tools/artwork/terrain_studio.py /opt/glob2/share/tools/artwork/
+ENV GLOB2_SOURCE_DIR=/opt/glob2/share TERRAIN_PYTHON=/opt/terrain/bin/python
+USER 10001:10001
+HEALTHCHECK --interval=30s --timeout=5s --start-period=60s CMD node -e "const t=Number(require('fs').readFileSync('/tmp/glob2-ai-terrain-health','utf8'));process.exit(Date.now()-t<90000?0:1)"
+CMD ["node", "apps/ai-terrain-worker/src/main.ts"]
 
 FROM ${CADDY_IMAGE} AS caddy
 RUN setcap -r /usr/bin/caddy && chown -R 10001:10001 /data /config

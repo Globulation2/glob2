@@ -352,3 +352,45 @@ paths, property bounds and effective animation/decor frame indices are checked.
 Invalid imports leave the map's catalogs and bundle unchanged. Existing saves remain
 readable at the durable compatibility floor; maps with new bundles require format
 144. Simulation revision 30 identifies this loading behavior for online matches.
+
+### AI Terrain Studio
+
+**Create with AI** opens `/terrain-studio`. Describe the terrain, resource deposits,
+visual theme, and gameplay you want. A clear creation or revision request starts
+one build affecting up to twelve entries; questions and brainstorming remain
+conversational. An available terrain credit is required for discussion. Each
+validated delivery costs one credit, including property-only revisions; confirmed
+failures return the reserved credit. Publishing is a separate action.
+
+Start fresh, choose **Edit with AI** on an owned unpublished draft, or choose
+**Remix with AI** on a released set. Remixes preserve source credits and licenses.
+Upload up to four selected PNG, JPEG, or WebP references to guide appearance;
+references and generation artifacts stay private to the project owner. Use
+artwork you have permission to reference.
+
+The designer uses existing terrain capabilities and inventory materials. It can
+change movement, construction, hazards, ecology, growth, clearing, and material
+yields, but cannot invent engine mechanics or inventory materials. Ground gets
+four texture variants; generated resources get three stock stages and two variants
+per stage. Requested animation uses a gentle glow pulse, not articulated movement.
+The default style follows the game's painterly artwork; explicit alternate styles
+are supported subject to readability and technical asset limits.
+
+The scene gallery uses the game compositor for isolated cells, narrow paths,
+mixed boundaries, raised decor, resource stock stages, and selected animation
+phases. Terrain variation selects another deterministic visual seed; resource
+variation selects a frame within the stock level. Review the properties alongside
+the artwork: passing import checks does not establish balance for every map.
+The equivalent native preview is:
+
+```sh
+glob2 --validate-set package.json --json report.json --preview gallery.png \
+  --gallery 1 --phase 0 --variation 0
+```
+
+Deliveries update the ordinary private set draft. Manual controls remain available
+in the studio inspector and in the set workspace. Save manual edits before sending
+a new AI request. If another client changes or publishes the draft during a build,
+the validated result becomes a saved candidate; adopting it explicitly replaces
+the current draft content. Candidates can also be downloaded. Complete normal set
+publication to share a release or import the downloaded package into the map editor.

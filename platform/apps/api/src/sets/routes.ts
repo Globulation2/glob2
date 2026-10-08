@@ -26,6 +26,8 @@ import { authenticate, requireAccount, requireRole, type Identity } from '../ide
 import { body } from '../http/validate.ts';
 import { SharedLimit, enforce } from '../http/rateLimits.ts';
 import { apiError } from '../errors.ts';
+import { TerrainStudio } from '@glob2/terrain-studio';
+import { HiveError } from '@glob2/billing';
 import { UUID, canModerate } from '../maps/catalog.ts';
 
 export async function setLibraryRoutes(app: FastifyInstance, identity: Identity) {
@@ -613,14 +615,24 @@ export async function setLibraryRoutes(app: FastifyInstance, identity: Identity)
   app.delete<{ Params: { id: string } }>('/api/v1/sets/:id', async (r, reply) => {
     const a = await signed(r),
       row = await visible(r.params.id, a, true);
-    await db.deleteFrom('asset_sets').where('id', '=', row.id).execute();
+    await removeSet(a.id, row.id);
     return reply.status(204).send();
   });
   app.delete<{ Params: { id: string } }>('/api/v1/set-drafts/:id', async (r, reply) => {
-    const draft = await ownedDraft(r.params.id, await signed(r));
-    await db.deleteFrom('set_drafts').where('id', '=', draft.id).execute();
+    const account = await signed(r),
+      draft = await ownedDraft(r.params.id, account);
+    await removeSet(account.id, draft.set_id, draft.id);
     return reply.status(204).send();
   });
+  async function removeSet(account: string, set: string, draft?: string) {
+    try {
+      await new TerrainStudio(db).removeSet(account, set, draft);
+    } catch (error) {
+      if (error instanceof HiveError)
+        throw apiError(error.code === 'not_found' ? 'not_found' : 'conflict', error.message);
+      throw error;
+    }
+  }
   async function file(hash: string, reply: FastifyReply, type: string) {
     const stream = await blobs.get(contentKey(hash));
     if (!stream) throw apiError('not_found', 'Set file not found.');

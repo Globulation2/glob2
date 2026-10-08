@@ -190,7 +190,15 @@ function Variants({
     </div>
   );
 }
-export function SetWorkspace({ id }: { id?: string }) {
+export function SetWorkspace({
+  id,
+  onDirtyChange,
+  onSaved,
+}: {
+  id?: string;
+  onDirtyChange?: (dirty: boolean) => void;
+  onSaved?: () => void;
+}) {
   const { account } = useSession(),
     { navigate } = useRouter();
   const [pack, setPack] = useState<SetPackage | null>(null),
@@ -271,6 +279,9 @@ export function SetWorkspace({ id }: { id?: string }) {
       window.removeEventListener('glob2-before-navigate', navigate);
     };
   }, [dirty]);
+  useEffect(() => {
+    onDirtyChange?.(dirty);
+  }, [dirty, onDirtyChange]);
   function change(next: SetPackage) {
     setPack(next);
     setDirty(true);
@@ -297,6 +308,7 @@ export function SetWorkspace({ id }: { id?: string }) {
       : await request<SetDraft>('POST', '/api/v1/set-drafts', { body: pack });
     setDraft(current);
     setDirty(false);
+    onSaved?.();
     return current;
   }
   if (!account)
@@ -369,6 +381,11 @@ export function SetWorkspace({ id }: { id?: string }) {
       <section className="set-workspace">
         <header className="set-heading">
           <div>
+            {draft && !published && (
+              <Link to={`/terrain-studio?draft=${draft.id}`} className="button">
+                Edit with AI
+              </Link>
+            )}
             <h1>{pack.title}</h1>
             <p>
               {published

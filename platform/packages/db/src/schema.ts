@@ -1235,6 +1235,31 @@ export interface Database {
   colony_skin_equipment: ColonySkinEquipmentTable;
   match_colony_skins: MatchColonySkinsTable;
 
+  terrain_wallets: HiveWalletsTable;
+  terrain_ledger: HiveLedgerTable;
+  terrain_calls: HiveCallsTable;
+  terrain_purchases: HivePurchasesTable;
+  terrain_studio_threads: StudioThreadsTable & {
+    draft_id: string;
+    source_version_id: Nullable<string>;
+  };
+  terrain_studio_messages: StudioMessagesTable;
+  terrain_studio_requests: Omit<StudioRequestsTable, 'map_id' | 'map_hash'>;
+  terrain_studio_attempts: StudioAttemptsTable;
+  terrain_studio_events: StudioEventsTable;
+  terrain_studio_artifacts: Omit<StudioArtifactsTable, 'width' | 'height'>;
+  terrain_studio_provider_usage: StudioProviderUsageTable;
+  terrain_studio_revisions: {
+    request_id: string;
+    thread_id: string;
+    base_revision: number;
+    document: Json<SetPackage>;
+    hash: string;
+    report: Json<ValidateSetResult>;
+    sim_version: string;
+    applied: Generated<boolean>;
+    created_at: Generated<Date>;
+  };
   music_wallets: HiveWalletsTable;
   music_ledger: HiveLedgerTable;
   music_calls: HiveCallsTable;

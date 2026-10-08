@@ -56,6 +56,11 @@ export const CREDIT_PRODUCTS = {
     insufficient: 'Your commander needs more credits. Standing orders remain active.',
   },
   maps: { prefix: 'map', path: 'map-studio', insufficient: 'Your map studio needs more credits.' },
+  terrain: {
+    prefix: 'terrain',
+    path: 'terrain-studio',
+    insufficient: 'Your terrain studio needs more credits.',
+  },
   music: {
     prefix: 'music',
     path: 'music-studio',

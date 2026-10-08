@@ -123,6 +123,8 @@ services:
       HIVE_STRIPE_WEBHOOK_SECRET: ${HIVE_STRIPE_WEBHOOK_SECRET:-}
       MAP_STRIPE_SECRET_KEY: ${MAP_STRIPE_SECRET_KEY:-}
       MAP_STRIPE_WEBHOOK_SECRET: ${MAP_STRIPE_WEBHOOK_SECRET:-}
+      TERRAIN_STRIPE_SECRET_KEY: ${TERRAIN_STRIPE_SECRET_KEY:-}
+      TERRAIN_STRIPE_WEBHOOK_SECRET: ${TERRAIN_STRIPE_WEBHOOK_SECRET:-}
       MUSIC_STRIPE_SECRET_KEY: ${MUSIC_STRIPE_SECRET_KEY:-}
       MUSIC_STRIPE_WEBHOOK_SECRET: ${MUSIC_STRIPE_WEBHOOK_SECRET:-}
     # Provider secrets named in instance.yaml (`clientSecretEnv: …`) come from .env.
@@ -281,6 +283,34 @@ services:
       DATABASE_PASSWORD_FILE: /var/lib/glob2/db/worker/password
       ENGINE_AGENT_KEYS_FILE: ''
       MAP_OPENAI_API_KEY: ${MAP_OPENAI_API_KEY:-}
+      RELAY_KEYS_FILE: ''
+      SHUTDOWN_GRACE_SECONDS: 290
+    tmpfs: ['/tmp:size=1024m,mode=1777']
+    volumes:
+      - db-worker-secret:/var/lib/glob2/db/worker:ro
+      - blobs:/var/lib/glob2/blobs
+      - *instance-config
+    networks: [backend, egress]
+    depends_on:
+      init: {condition: service_completed_successfully}
+    stop_grace_period: 5m
+
+  ai-terrain-worker:
+    <<: *hardening
+    profiles: [ai-terrain]
+    image: ${GLOB2_AI_TERRAIN_IMAGE:-glob2-ai-terrain-worker:development}
+    build:
+      context: ..
+      dockerfile: deploy/Dockerfile
+      target: ai-terrain-worker
+      args: {JOBS: '${GLOB2_BUILD_JOBS:-4}'}
+    command: [node, apps/ai-terrain-worker/src/main.ts]
+    environment:
+      <<: *platform-environment
+      DATABASE_URL: postgres://glob2_worker@postgres:5432/glob2
+      DATABASE_PASSWORD_FILE: /var/lib/glob2/db/worker/password
+      ENGINE_AGENT_KEYS_FILE: ''
+      TERRAIN_OPENAI_API_KEY: ${TERRAIN_OPENAI_API_KEY:-}
       RELAY_KEYS_FILE: ''
       SHUTDOWN_GRACE_SECONDS: 290
     tmpfs: ['/tmp:size=1024m,mode=1777']

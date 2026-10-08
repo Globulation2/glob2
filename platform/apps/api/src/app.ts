@@ -1,5 +1,6 @@
 import { buildingLibraryRoutes } from './buildings/library.ts';
 import { buildingDraftRoutes } from './buildings/drafts.ts';
+import { terrainStudioRoutes } from './terrain/studio.ts';
 import { setLibraryRoutes } from './sets/routes.ts';
 import { musicStudioRoutes } from './music/studio.ts';
 import { aiStudioRoutes } from './ai-studio/routes.ts';
@@ -254,6 +255,7 @@ export async function buildApp(
   await aiStudioRoutes(app);
   await studioRoutes(app, rooms);
   await musicStudioRoutes(app);
+  await terrainStudioRoutes(app);
   await adminRoutes(app, identity);
   await pageAssetRoutes(app);
   await signinRoutes(app, identity);

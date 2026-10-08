@@ -205,6 +205,10 @@
     "StudioSettings": "schemas/StudioSettings.schema.json",
     "StudioStageProgress": "schemas/StudioStageProgress.schema.json",
     "StudioTurn": "schemas/StudioTurn.schema.json",
+    "TerrainStudioAdopt": "schemas/TerrainStudioAdopt.schema.json",
+    "TerrainStudioConfig": "schemas/TerrainStudioConfig.schema.json",
+    "TerrainStudioCreate": "schemas/TerrainStudioCreate.schema.json",
+    "TerrainStudioTurn": "schemas/TerrainStudioTurn.schema.json",
     "UpdateAccountRequest": "schemas/UpdateAccountRequest.schema.json",
     "UpdateAiRequest": "schemas/UpdateAiRequest.schema.json",
     "UpdateBuildingFamilyRequest": "schemas/UpdateBuildingFamilyRequest.schema.json",
@@ -1304,6 +1308,37 @@
       "valid": false,
       "stage": "schema",
       "note": "The client cannot supply an agent build decision."
+    },
+    {
+      "file": "valid/TerrainStudioCreate/new-project.json",
+      "schema": "TerrainStudioCreate",
+      "valid": true,
+      "note": "Create an idempotent terrain project."
+    },
+    {
+      "file": "valid/TerrainStudioTurn/focused-revision.json",
+      "schema": "TerrainStudioTurn",
+      "valid": true,
+      "note": "A turn freezes the base revision and selected references."
+    },
+    {
+      "file": "invalid/TerrainStudioTurn/no-client-build-decision.json",
+      "schema": "TerrainStudioTurn",
+      "valid": false,
+      "stage": "schema",
+      "note": "The server selects discussion or one build."
+    },
+    {
+      "file": "valid/TerrainStudioAdopt/current-revision.json",
+      "schema": "TerrainStudioAdopt",
+      "valid": true,
+      "note": "Adoption explicitly replaces current draft content."
+    },
+    {
+      "file": "valid/TerrainStudioConfig/disabled.json",
+      "schema": "TerrainStudioConfig",
+      "valid": true,
+      "note": "Terrain generation is opt-in."
     },
     {
       "file": "valid/MusicStudioGenerate/acoustic-revision.json",

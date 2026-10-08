@@ -22,3 +22,5 @@ export * from './musicStudio.ts';
 export * from './aiStudio.ts';
 export * from './buildings.ts';
 export * from './sets.ts';
+export * from './terrainStudio.ts';
+export * from './setAuthoring.ts';
