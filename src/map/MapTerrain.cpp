@@ -2,126 +2,63 @@
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
 #include "Map.h"
-#include "TerrainCompatibility.h"
+#include "TerrainCornerPresentation.h"
 #include "Utilities.h"
 #include <algorithm>
 #include <stdexcept>
 
-// Terrain editing & rendering: setUMatPos, regenerateMap, lookup
+// Transitional terrain adapters over the vertex store: the classic corner
+// brushes and the sprite frames the legacy renderer still reads.
+
+Uint16 Map::getTerrain(size_t pos) const
+{
+	const int x = int(pos & wMask), y = int(pos >> wDec);
+	return legacyCellFrame(terrainRegistry(), cellCorners(x, y), x, y);
+}
+
+TerrainType Map::presentationTypeAt(size_t index) const
+{
+	return dominantCornerTerrain(cellCorners(index));
+}
+
+void Map::setTerrain(int x, int y, Uint16 sprite)
+{
+	if (const auto corners = legacyFrameCorners(sprite))
+	{
+		auto batch = editTerrain();
+		setVertexTerrain(x, y, (*corners)[0]);
+		setVertexTerrain(x + 1, y, (*corners)[1]);
+		setVertexTerrain(x, y + 1, (*corners)[2]);
+		setVertexTerrain(x + 1, y + 1, (*corners)[3]);
+		return;
+	}
+	for (unsigned t = 0; t < terrainRegistry().size(); ++t)
+	{
+		const auto &frames = terrainRegistry().compatibility(TerrainType(t));
+		if (sprite >= frames.firstFrame && sprite < frames.firstFrame + frames.variants)
+		{
+			setCellTerrain(x, y, TerrainType(t));
+			return;
+		}
+	}
+	throw std::invalid_argument("Unknown terrain sprite");
+}
 
 void Map::setUMatPos(int x, int y, TerrainType t, int l)
 {
 	auto terrainBatch = editTerrain();
-	assert(t <= GRASS);
-	// A corner brush replaces the four incident cells. Neighbor shore repair
-	// must not erase authored whole-cell materials outside that footprint.
-	for (int cx = x-(l>>1)-1; cx <= x+(l>>1); ++cx)
-		for (int cy = y-(l>>1)-1; cy <= y+(l>>1); ++cy)
-			if (!terrainUsesLegacyCorners(terrainTypeAt(cx,cy)))
-				changeTerrainIdentity(coordToIndex(cx,cy), GRASS);
-	for (int dx=x-(l>>1); dx<x+(l>>1)+1; dx++)
-		for (int dy=y-(l>>1); dy<y+(l>>1)+1; dy++)
+	const TerrainType clash = t == GRASS ? WATER : t == WATER ? GRASS : t;
+	for (int dx = x - (l >> 1); dx < x + (l >> 1) + 1; dx++)
+		for (int dy = y - (l >> 1); dy < y + (l >> 1) + 1; dy++)
 		{
-			if (t==GRASS)
-			{
-				if (getUMTerrain(dx,dy-1)==WATER)
-				{
-// 					setNoResource(dx, dy-1, 1);
-					setUMTerrain(dx,dy-1,SAND);
-				}
-				if (getUMTerrain(dx,dy+1)==WATER)
-				{
-// 					setNoResource(dx, dy+1, 1);
-					setUMTerrain(dx,dy+1,SAND);
-				}
-
-				if (getUMTerrain(dx-1,dy)==WATER)
-				{
-// 					setNoResource(dx-1, dy, 1);
-					setUMTerrain(dx-1,dy,SAND);
-				}
-				if (getUMTerrain(dx+1,dy)==WATER)
-				{
-// 					setNoResource(dx+1, dy, 1);
-					setUMTerrain(dx+1,dy,SAND);
-				}
-
-				if (getUMTerrain(dx-1,dy-1)==WATER)
-				{
-// 					setNoResource(dx-1, dy-1, 1);
-					setUMTerrain(dx-1,dy-1,SAND);
-				}
-				if (getUMTerrain(dx+1,dy-1)==WATER)
-				{
-// 					setNoResource(dx+1, dy-1, 1);
-					setUMTerrain(dx+1,dy-1,SAND);
-				}
-
-				if (getUMTerrain(dx+1,dy+1)==WATER)
-				{
-// 					setNoResource(dx+1, dy+1, 1);
-					setUMTerrain(dx+1,dy+1,SAND);
-				}
-				if (getUMTerrain(dx-1,dy+1)==WATER)
-				{
-// 					setNoResource(dx-1, dy+1, 1);
-					setUMTerrain(dx-1,dy+1,SAND);
-				}
-			}
-			else if (t==WATER)
-			{
-				if (getUMTerrain(dx,dy-1)==GRASS)
-				{
-// 					setNoResource(dx, dy-1, 1);
-					setUMTerrain(dx,dy-1,SAND);
-				}
-				if (getUMTerrain(dx,dy+1)==GRASS)
-				{
-// 					setNoResource(dx, dy+1, 1);
-					setUMTerrain(dx,dy+1,SAND);
-				}
-
-				if (getUMTerrain(dx-1,dy)==GRASS)
-				{
-// 					setNoResource(dx-1, dy, 1);
-					setUMTerrain(dx-1,dy,SAND);
-				}
-				if (getUMTerrain(dx+1,dy)==GRASS)
-				{
-// 					setNoResource(dx+1, dy, 1);
-					setUMTerrain(dx+1,dy,SAND);
-				}
-
-				if (getUMTerrain(dx-1,dy-1)==GRASS)
-				{
-// 					setNoResource(dx-1, dy-1, 1);
-					setUMTerrain(dx-1,dy-1,SAND);
-				}
-				if (getUMTerrain(dx+1,dy-1)==GRASS)
-				{
-// 					setNoResource(dx+1, dy-1, 1);
-					setUMTerrain(dx+1,dy-1,SAND);
-				}
-
-				if (getUMTerrain(dx+1,dy+1)==GRASS)
-				{
-// 					setNoResource(dx+1, dy+1, 1);
-					setUMTerrain(dx+1,dy+1,SAND);
-				}
-				if (getUMTerrain(dx-1,dy+1)==GRASS)
-				{
-// 					setNoResource(dx-1, dy+1, 1);
-					setUMTerrain(dx-1,dy+1,SAND);
-				}
-			}
-			setUMTerrain(dx,dy,t);
+			if (clash != t)
+				for (int ny = -1; ny <= 1; ++ny)
+					for (int nx = -1; nx <= 1; ++nx)
+						if ((nx || ny) && vertexTerrainAt(dx + nx, dy + ny) == clash)
+							setVertexTerrain(dx + nx, dy + ny, SAND);
+			setVertexTerrain(dx, dy, t);
 		}
-	if (t==SAND)
-		regenerateMap(x-(l>>1)-1,y-(l>>1)-1,l+1,l+1);
-	else
-		regenerateMap(x-(l>>1)-2,y-(l>>1)-2,l+3,l+3);
 }
-
 
 void Map::paintLegacyCells(const std::vector<std::pair<int, int>> &cells, TerrainType t)
 {
@@ -133,26 +70,16 @@ void Map::paintLegacyCells(const std::vector<std::pair<int, int>> &cells, Terrai
 	// The corners written: all four of every listed cell, sorted for lookup.
 	std::vector<size_t> written;
 	written.reserve(cells.size() * 4);
-	int minX = cells.front().first, maxX = minX, minY = cells.front().second, maxY = minY;
 	for (const auto &[x, y] : cells)
-	{
-		minX = std::min(minX, x); maxX = std::max(maxX, x);
-		minY = std::min(minY, y); maxY = std::max(maxY, y);
-		// Only the painted cells give up an authored whole-cell material.
-		const auto index = coordToIndex(x, y);
-		if (!terrainUsesLegacyCorners(terrainTypeAt(index)))
-			changeTerrainIdentity(index, GRASS);
 		for (int dy = 0; dy <= 1; ++dy)
 			for (int dx = 0; dx <= 1; ++dx)
 				written.push_back(coordToIndex(x + dx, y + dy));
-	}
 	std::sort(written.begin(), written.end());
 	written.erase(std::unique(written.begin(), written.end()), written.end());
 	for (const auto corner : written)
-		undermap[corner] = Uint8(t);
-	// setUMatPos's shore rule: grass and water corners never touch, so an
-	// opposite-kind corner next to the written set becomes sand. Corners inside
-	// the set keep the painted terrain; sand needs no shore.
+		setVertexTerrain(corner, t);
+	// Grass and water corners never touch, so an opposite-kind corner next to
+	// the written set becomes sand. Sand needs no shore.
 	if (t != SAND)
 	{
 		const TerrainType clash = t == GRASS ? WATER : GRASS;
@@ -162,159 +89,11 @@ void Map::paintLegacyCells(const std::vector<std::pair<int, int>> &cells, Terrai
 			for (int dy = -1; dy <= 1; ++dy)
 				for (int dx = -1; dx <= 1; ++dx)
 				{
-					const auto neighbour = coordToIndex(x + dx, y + dy);
-					if (undermap[neighbour] == Uint8(clash) &&
+					const auto neighbour = size_t(coordToIndex(x + dx, y + dy));
+					if (vertexTerrain[neighbour] == clash &&
 						!std::binary_search(written.begin(), written.end(), neighbour))
-						undermap[neighbour] = Uint8(SAND);
+						setVertexTerrain(neighbour, SAND);
 				}
 		}
 	}
-	// Corners from minX-1 to maxX+2 changed; a cell reads its corners at +0/+1.
-	regenerateMap(minX - 2, minY - 2, maxX - minX + 5, maxY - minY + 5);
-}
-
-void Map::regenerateMap(int x, int y, int w, int h)
-{
-	auto terrainBatch = editTerrain();
-	for (int dx=x; dx<x+w; dx++)
-		for (int dy=y; dy<y+h; dy++)
-			if (terrainUsesLegacyCorners(terrainTypeAt(dx,dy)))
-			{
-				Uint8 corners[4];
-				bool authored[4];
-				int uniform = -1;
-				bool mixed = false;
-				for (int corner=0;corner<4;++corner)
-				{
-					const int cx=dx+(corner&1), cy=dy+(corner>>1);
-					corners[corner]=getUMTerrain(cx,cy);
-					authored[corner]=!terrainUsesLegacyCorners(terrainTypeAt(cx,cy));
-					if (!authored[corner])
-					{
-						if (uniform<0) uniform=corners[corner];
-						else if (uniform!=corners[corner]) mixed=true;
-					}
-				}
-				// Whole-cell materials do not contribute a sand corner to their
-				// otherwise uniform neighbors. Keep this true after import and
-				// every later presentation rebuild, including across the torus.
-				if (!mixed && uniform>=0)
-					for (int corner=0;corner<4;++corner)
-						if (authored[corner]) corners[corner]=uniform;
-				setTerrain(dx,dy,lookup(corners[0],corners[1],corners[2],corners[3]));
-			}
-}
-
-Uint16 Map::lookup(Uint8 tl, Uint8 tr, Uint8 bl, Uint8 br) const
-{
-	/*
-		Value of vertice's order in square :
-
-		3 -- 2
-		|    |
-		|    |
-		1 -- 0
-
-		The index in the following table is :
-		val[0] + val[1]*k + val[2]*k^2 + val[3]*k^3
-		where k is the number of different possibilities.
-
-		H = grass
-		S = sand
-		E = water
-	*/
-	const Uint16 terrainLookupTable[81][2] =
-	{
-		{ 0, 16 },		// H, H, H, H
-		{ 80, 8 },		// H, H, H, S
-		{ 0, 16 },		// H, H, H, E
-		{ 88, 8 },		// H, H, S, H
-		{ 48, 8 },		// H, H, S, S
-		{ 0, 16 },		// H, H, S, E
-		{ 0, 16 },		// H, H, E, H
-		{ 0, 16 },		// H, H, E, S
-		{ 0, 16 },		// H, H, E, E
-		{ 104, 8 },		// H, S, H, H
-		{ 64, 8 },		// H, S, H, S
-		{ 0, 16 },		// H, S, H, E
-		{ 120, 8 },		// H, S, S, H
-		{ 32, 8 },		// H, S, S, S
-		{ 0, 16 },		// H, S, S, E
-		{ 0, 16 },		// H, S, E, H
-		{ 0, 16 },		// H, S, E, S
-		{ 0, 16 },		// H, S, E, E
-		{ 0, 16 },		// H, E, H, H
-		{ 0, 16 },		// H, E, H, S
-		{ 0, 16 },		// H, E, H, E
-		{ 0, 16 },		// H, E, S, H
-		{ 0, 16 },		// H, E, S, S
-		{ 0, 16 },		// H, E, S, E
-		{ 0, 16 },		// H, E, E, H
-		{ 0, 16 },		// H, E, E, S
-		{ 0, 16 },		// H, E, E, E
-
-		{ 96, 8 },		// S, H, H, H
-		{ 112, 8 },		// S, H, H, S
-		{ 0, 16 },		// S, H, H, E
-		{ 72, 8 },		// S, H, S, H
-		{ 40, 8 },		// S, H, S, S
-		{ 0, 16 },		// S, H, S, E
-		{ 0, 16 },		// S, H, E, H
-		{ 0, 16 },		// S, H, E, S
-		{ 0, 16 },		// S, H, E, E
-		{ 56, 8 },		// S, S, H, H
-		{ 24, 8 },		// S, S, H, S
-		{ 0, 16 },		// S, S, H, E
-		{ 16, 8 },		// S, S, S, H
-		{ 128, 16 },	// S, S, S, S
-		{ 208, 8 },		// S, S, S, E
-		{ 0, 16 },		// S, S, E, H
-		{ 216, 8 },		// S, S, E, S
-		{ 176, 8 },		// S, S, E, E
-		{ 0, 16 },		// S, E, H, H
-		{ 0, 16 },		// S, E, H, S
-		{ 0, 16 },		// S, E, H, E
-		{ 0, 16 },		// S, E, S, H
-		{ 232, 8 },		// S, E, S, S
-		{ 192, 8 },		// S, E, S, E
-		{ 0, 16 },		// S, E, E, H
-		{ 240, 8 },		// S, E, E, S
-		{ 160, 8 },		// S, E, E, E
-
-		{ 0, 16 },		// E, H, H, H
-		{ 0, 16 },		// E, H, H, S
-		{ 0, 16 },		// E, H, H, E
-		{ 0, 16 },		// E, H, S, H
-		{ 0, 16 },		// E, H, S, S
-		{ 0, 16 },		// E, H, S, E
-		{ 0, 16 },		// E, H, E, H
-		{ 0, 16 },		// E, H, E, S
-		{ 0, 16 },		// E, H, E, E
-		{ 0, 16 },		// E, S, H, H
-		{ 0, 16 },		// E, S, H, S
-		{ 0, 16 },		// E, S, H, E
-		{ 0, 16 },		// E, S, S, H
-		{ 224, 8 },		// E, S, S, S
-		{ 248, 8 },		// E, S, S, E
-		{ 0, 16 },		// E, S, E, H
-		{ 200, 8 },		// E, S, E, S
-		{ 168, 8 },		// E, S, E, E
-		{ 0, 16 },		// E, E, H, H
-		{ 0, 16 },		// E, E, H, S
-		{ 0, 16 },		// E, E, H, E
-		{ 0, 16 },		// E, E, S, H
-		{ 184, 8 },		// E, E, S, S
-		{ 152, 8 },		// E, E, S, E
-		{ 0, 16 },		// E, E, E, H
-		{ 144, 8 },		// E, E, E, S
-		{ 256, 16 },	// E, E, E, E
-	};
-
-	tl=2-tl;
-	tr=2-tr;
-	bl=2-bl;
-	br=2-br;
-	int index=tl*27+tr*9+bl*3+br;
-
-	return terrainLookupTable[index][0]+(syncRand()%terrainLookupTable[index][1]);
 }

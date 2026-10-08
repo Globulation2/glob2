@@ -1417,7 +1417,7 @@ TEST_CASE("JavaScript terrain registry exposes immutable property capabilities i
         auto result=makeRuntime()->invoke(
             "export function step(ctx,s) {"
             "const all=ctx.game.terrainTypes(); const tile=ctx.game.map.tile(5,5);"
-            "const ice=all[tile.terrainType],road=all.find(t=>t.name==='road');"
+            "const ice=all[tile.corners[0]],road=all.find(t=>t.name==='road');"
             "s.name=ice.name;s.walk=ice.walkable;s.swim=ice.swimmable;s.air=ice.flyable;"
             "s.speed=ice.groundSpeedQ8;s.health=ice.groundHealthQ8;s.experiment=ice.experiment;"
             "s.road=road.buildable && road.groundSpeedQ8===512 && !road.resourcesGrow;"
@@ -1425,7 +1425,7 @@ TEST_CASE("JavaScript terrain registry exposes immutable property capabilities i
             "s.internal=all.some(t=>!t.editorSelectable);"
             "s.frozen=Object.isFrozen(all)&&Object.isFrozen(ice)&&Object.isFrozen(ice.allowedResources);"
             "try{ice.groundSpeedQ8=99;}catch(e){}"
-            "s.unchanged=ctx.game.terrainTypes()[tile.terrainType].groundSpeedQ8===128;"
+            "s.unchanged=tile.corners.every(c=>c===tile.corners[0])&&ctx.game.terrainTypes()[tile.corners[0]].groundSpeedQ8===128;"
             "}",Value::object(),false,host);
         const auto& state=result.state;
         CHECK(state.get("name").text=="ice");CHECK(state.get("walk").number==1);

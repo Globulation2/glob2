@@ -14,45 +14,31 @@
 ///generates a map that is of one terrain type only
 void Map::makeHomogenMap(TerrainType terrainType)
 {
-    makeHomogenMapTask(terrainType).run();
+    fillTerrain(terrainType);
 }
 GAGCore::CooperativeTask Map::makeHomogenMapTask(TerrainType terrainType)
 {
-    for (int y = 0; y < h; ++y) {
-        for (int x = 0; x < w; ++x) undermap[y*w+x] = terrainType;
-        if (y % 8 == 0) co_await GAGCore::CooperativeTask::checkpoint("[Generating map]");
-    }
-    for (int x = 0; x < w; ++x) {
-        regenerateMap(x, 0, 1, h);
-        if (x % 8 == 0) co_await GAGCore::CooperativeTask::checkpoint();
-    }
+    co_await GAGCore::CooperativeTask::checkpoint("[Generating map]");
+    fillTerrain(terrainType);
     co_return true;
 }
 
 ///cares for the sand so water is never next to grass
 void Map::controlSand(void)
 {
+	auto batch = editTerrain();
 	for (int y=0; y<h; y++)
 		for (int x=0; x<w; x++)
 		{
-			int tt=(int)undermap[y*w+x];
-			switch (tt)
-			{
-				case WATER: //the direct neighbours get checked for GRASS
-					for (int dy=-1; dy<=1; dy++)
-						for (int dx=-1; dx<=1; dx++)
-							if (getUMTerrain(x+dx, y+dy)==GRASS)
-								undermap[y*w+x]=SAND;
-					break;
-				case SAND:
-					break;
-				case GRASS: //the direct neighbours get checked for WATER
-					for (int dy=-1; dy<=1; dy++)
-						for (int dx=-1; dx<=1; dx++)
-							if (getUMTerrain(x+dx, y+dy)==WATER)
-								undermap[y*w+x]=SAND;
-					break;
-			}
+			const auto tt=vertexTerrainAt(x, y);
+			if (tt!=WATER && tt!=GRASS)
+				continue;
+			// Water next to grass, or grass next to water, becomes sand.
+			const auto clash = tt==WATER ? GRASS : WATER;
+			for (int dy=-1; dy<=1; dy++)
+				for (int dx=-1; dx<=1; dx++)
+					if (vertexTerrainAt(x+dx, y+dy)==clash)
+						setVertexTerrain(x, y, SAND);
 		}
 }
 

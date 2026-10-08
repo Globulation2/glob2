@@ -172,11 +172,8 @@ void MapEdit::handleTerrainClick(int mx, int my)
 		// terrain, the corner-drawn cells with any corner of it.
 		for (const auto &[x, y] : cells)
 		{
-			const auto type = map.terrainTypeAt(x, y);
-			bool matches = type == material;
-			if (legacy && map.terrainUsesLegacyCorners(type))
-				for (int corner = 0; corner < 4 && !matches; ++corner)
-					matches = map.getUMTerrain(x + (corner & 1), y + (corner >> 1)) == material;
+			const auto corners = map.cellCorners(x, y);
+			const bool matches = std::find(corners.begin(), corners.end(), material) != corners.end();
 			if (matches)
 				changed.push_back({x, y});
 		}

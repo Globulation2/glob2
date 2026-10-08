@@ -72,20 +72,20 @@ inline bool isMapDiscovered(const AIEngine::AIWorldView& map,int x,int y,Uint32 
 inline bool isForbidden(const AIEngine::AIWorldView& map,int x,int y,Uint32 mask){return map.areasAt(map.tileIndex(x,y)).forbidden&mask;}
 inline bool isFarmArea(const AIEngine::AIWorldView& map,int x,int y,Uint32 mask){return map.areasAt(map.tileIndex(x,y)).farm&mask;}
 inline bool canPaintFarmArea(const AIEngine::AIWorldView& map,int x,int y){return map.canPaintFarmAt(map.tileIndex(x,y));}
-inline const TerrainProperties& terrainPropertiesAt(const AIEngine::AIWorldView& map,int x,int y){return map.terrain->properties(map.terrainAt(map.tileIndex(x,y)).type);}
+inline const TerrainProperties& terrainPropertiesAt(const AIEngine::AIWorldView& map,int x,int y){return map.terrainPropertiesAt(map.tileIndex(x,y));}
 inline bool isHardSpaceForGroundUnitAt(const AIEngine::AIWorldView& map,std::size_t index,bool swim,Uint32 mask,bool free=false)
 {
  if(MapState::resourceBlocksGround(map.state(),index))return false;
  const auto& o=map.occupancyAt(index);
  if(o.building!=0xffff||(free&&o.groundUnit!=0xffff)||(map.areasAt(index).forbidden&mask))return false;
- const auto& p=map.terrain->properties(map.terrainAt(index).type);return p.walkable||(swim&&p.swimmable);
+ const auto& p=map.terrainPropertiesAt(index);return p.walkable||(swim&&p.swimmable);
 }
 inline bool isHardSpaceForGroundUnit(const AIEngine::AIWorldView& map,int x,int y,bool swim,Uint32 mask){return isHardSpaceForGroundUnitAt(map,map.tileIndex(x,y),swim,mask);}
 inline bool isFreeForGroundUnitNoForbidden(const AIEngine::AIWorldView& map,int x,int y,bool swim){return isHardSpaceForGroundUnitAt(map,map.tileIndex(x,y),swim,0,true);}
 inline bool isHardSpaceForBuildingAt(const AIEngine::AIWorldView& map,std::size_t index,Uint16 ignore=0xffff,bool free=false)
 {
  if(MapState::resourceBlocksBuilding(map.state(),index))return false;
- const auto& o=map.occupancyAt(index);return (o.building==0xffff||o.building==ignore)&&(!free||o.groundUnit==0xffff)&&map.terrain->properties(map.terrainAt(index).type).buildable;
+ const auto& o=map.occupancyAt(index);return (o.building==0xffff||o.building==ignore)&&(!free||o.groundUnit==0xffff)&&map.terrainPropertiesAt(index).buildable;
 }
 inline bool isHardSpaceForBuilding(const AIEngine::AIWorldView& map,int x,int y,int width=1,int height=1,Uint16 ignore=0xffff)
 {for(int dy=0;dy<height;++dy)for(int dx=0;dx<width;++dx)if(!isHardSpaceForBuildingAt(map,map.tileIndex(x+dx,y+dy),ignore))return false;return true;}

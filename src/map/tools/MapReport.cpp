@@ -669,7 +669,8 @@ std::string describeMap(Game &game, const GenerationRequest *request,
 	int fertileGrass = 0;
 	for (int p = 0; p < t.size(); ++p)
 	{
-        const auto material = map.terrainTypeAt(p);
+        // Terrain composition counts vertices: each cell's top-left corner.
+        const auto material = map.vertexTerrainAt(size_t(p));
         const auto &properties = map.terrainPropertiesAt(p);
         ++terrain[material];
 		const int um = map.getUMTerrain(p % t.w, p / t.w);

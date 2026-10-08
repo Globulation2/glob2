@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "SceneMap.h"
+#include "TerrainCornerPresentation.h"
 
 #include "Map.h"
 #include "Game.h"
@@ -28,9 +29,11 @@ void SceneMap::extract(const Map &map, int displayW, int displayH, bool includeS
 	sourceKey = &map;
 	terrainSeedValue = map.terrainSeed();
 	const size_t size = size_t(w) * h;
-	terrain.resize(size);
-	terrainTypes = map.terrainTypes();
-	terrainAppearances.resize(size);
+	const auto mapVertices = map.vertexTerrainState();
+	vertices.assign(mapVertices.begin(), mapVertices.end());
+	const auto mapRules = map.cellRuleState();
+	cellRules.assign(mapRules.begin(), mapRules.end());
+	rules = map.frozenCellRules();
 	resources.resize(size);
 	multiStocks.clear();
 	if (!multiStockIndices.empty()) multiStockIndices.assign(size, UINT32_MAX);
@@ -43,8 +46,6 @@ void SceneMap::extract(const Map &map, int displayW, int displayH, bool includeS
 	for (size_t i = 0; i < size; ++i)
 	{
 		const Tile &tile = map.getTile(i);
-		terrainAppearances[i] = registry->appearance(terrainTypes[i]);
-		terrain[i] = tile.terrain;
 		resources[i] = tile.resource;
 		if (tile.resource.type != NO_RES_TYPE)
 		{
@@ -70,9 +71,6 @@ void SceneMap::extract(const Map &map, int displayW, int displayH, bool includeS
 					scriptAreas[i] |= 1 << n;
 		}
 	}
-	undermap.resize(size);
-	for (size_t i = 0; i < size; ++i)
-		undermap[i] = Uint8(map.getUMTerrain(int(i) & wMask, int(i >> wDec)));
 	displayViewportW = displayW;
 	displayViewportH = displayH;
 	discovered.assign(map.mapDiscovered.begin(), map.mapDiscovered.end());
@@ -137,7 +135,7 @@ bool SceneMap::isHardSpaceForBuilding(int x, int y, int w, int h) const
 		{
 			const size_t i = coordToIndex(xi, yi);
 			if ((getResource(i).type != NO_RES_TYPE && resourceDefinitions->properties(static_cast<ResourceId>(getResource(i).type)).blocksBuilding) || getBuilding(xi, yi) != 0xFFFF ||
-				!registry->properties(terrainTypeAt(xi, yi)).buildable)
+				!terrainPropertiesAt(xi, yi).buildable)
 				return false;
 		}
 	return true;
@@ -191,11 +189,18 @@ void SceneMap::bindSnapshot(const SimulationSnapshot::Handle& world)
 }
 
 Uint16 SceneMap::getTerrain(int x, int y) const
-{ const auto i = coordToIndex(x,y); return snapshot ? snapshot->terrain->legacy[i] : terrain[i]; }
+{ return legacyCellFrame(*registry, cellCorners(x, y), x & wMask, y & hMask); }
+TerrainType SceneMap::vertexTerrainAt(int x, int y) const
+{ const auto i = coordToIndex(x,y); return snapshot ? (*snapshot->terrain->vertices)[i] : vertices[i]; }
 TerrainType SceneMap::terrainTypeAt(int x, int y) const
-{ const auto i = coordToIndex(x,y); return snapshot ? (*snapshot->terrain->identity)[i] : terrainTypes[i]; }
-TerrainType SceneMap::appearanceAt(int x, int y) const
-{ return snapshot ? registry->appearance(terrainTypeAt(x,y)) : terrainAppearances[coordToIndex(x,y)]; }
+{ const auto c = cellCorners(x, y); return c[0] == c[1] && c[0] == c[2] && c[0] == c[3] ? c[0] : MIXED_TERRAIN; }
+const TerrainProperties& SceneMap::terrainPropertiesAt(int x, int y) const
+{
+	const auto i = coordToIndex(x,y);
+	return snapshot ? (*snapshot->terrain->rules)[snapshot->terrain->cellRules[i]].properties : (*rules)[cellRules[i]].properties;
+}
+TerrainType SceneMap::presentationTypeAt(int x, int y) const { return dominantCornerTerrain(cellCorners(x, y)); }
+TerrainType SceneMap::appearanceAt(int x, int y) const { return registry->appearance(presentationTypeAt(x, y)); }
 const Resource& SceneMap::getResource(int x, int y) const { return getResource(coordToIndex(x,y)); }
 const Resource& SceneMap::getResource(size_t i) const
 { return snapshot ? snapshot->resources->cells[i].resource : resources[i]; }
@@ -212,8 +217,6 @@ Uint16 SceneMap::getAirUnit(int x, int y) const
 Uint16 SceneMap::getBuilding(int x, int y) const
 { const auto i = coordToIndex(x,y); return snapshot ? snapshot->occupancy->cells[i].building : buildings[i]; }
 
-int SceneMap::getUMTerrain(int x, int y) const
-{ const auto i = coordToIndex(x,y); return snapshot ? snapshot->terrain->undermap[i] : undermap[i]; }
 
 bool SceneMap::canPaintFarmArea(int x,int y) const
 { return snapshot && snapshot->canPaintFarmAt(coordToIndex(x,y)); }

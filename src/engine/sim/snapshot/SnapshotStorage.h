@@ -48,7 +48,7 @@ inline MemoryMetrics Storage::memoryMetrics() const
 	MemoryMetrics result;
 	const auto vectorBytes = []<class T>(const std::vector<T>& values) { return Uint64(values.capacity()) * sizeof(T); };
 	struct SharedPayload { const void* identity = nullptr; Uint64 object = 0, capacity = 0; bool leased = false; };
-	std::array<SharedPayload, 3 * BufferPool<Catalogs>::Limit> shared{};
+	std::array<SharedPayload, 4 * BufferPool<Catalogs>::Limit> shared{};
 	std::size_t sharedCount = 0;
 	const auto remember = [&](const auto& owner, bool leased) {
 		if (!owner) return;
@@ -70,7 +70,7 @@ inline MemoryMetrics Storage::memoryMetrics() const
 		});
 	};
 	account(catalogs, [&](const Catalogs& value, bool leased) { remember(value.buildings, leased); remember(value.capabilities, leased); return Uint64(0); });
-	account(terrain, [&](const Terrain& value, bool leased) { remember(value.identity, leased); return vectorBytes(value.legacy) + vectorBytes(value.undermap); });
+	account(terrain, [&](const Terrain& value, bool leased) { remember(value.vertices, leased); remember(value.rules, leased); return vectorBytes(value.cellRules); });
 	const auto cells = [&](const auto& value, bool) { return vectorBytes(value.cells); };
 	account(resources, cells); account(occupancy, cells); account(areas, cells); account(visibility, [&](const Visibility& value, bool) { return vectorBytes(value.discovered) + vectorBytes(value.visible); });
 	account(entities, [&](const Entities& value, bool) {

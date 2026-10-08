@@ -36,7 +36,7 @@ void AICastor::computeObstacleUnitMap()
 			obstacleUnitMap[i]=0;
 		else
 		{
-			const auto& terrain=observation->terrain->properties(observation->terrainAt(i).type);
+			const auto& terrain=observation->terrainPropertiesAt(i);
 			if (!terrain.walkable && !(canSwim && terrain.swimmable))
 				obstacleUnitMap[i]=0;
 			else
@@ -56,7 +56,7 @@ void AICastor::computeObstacleBuildingMap()
 	{
 		if (observation->occupancyAt(i).building!=NOGBID)
 			obstacleBuildingMap[i]=0;
-		else  if (!observation->terrain->properties(observation->terrainAt(i).type).buildable)
+		else  if (!observation->terrainPropertiesAt(i).buildable)
 			obstacleBuildingMap[i]=0;
 		else if (MapState::resourceBlocksBuilding(observation->state(),i))
 			obstacleBuildingMap[i]=0;

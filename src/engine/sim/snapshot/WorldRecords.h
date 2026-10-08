@@ -75,8 +75,8 @@ struct BuildingKindView
 
 struct TileView
 {
-	TerrainType terrain = GRASS;
-	Uint16 legacyTerrain = 0;
+	// Index into the snapshot's cell rules; rule GRASS is a uniform grass cell.
+	Uint16 cellRule = GRASS;
 	Uint8 immobileUnit = 255;
 	Resource resource;
 	Uint16 building = 0xffff, groundUnit = 0xffff, airUnit = 0xffff;

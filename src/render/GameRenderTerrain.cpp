@@ -230,7 +230,7 @@ void Game::drawMapOverview(int left, int top, int right, int bot, int viewportX,
 		for (int x=left; x<=right; x++)
 		{
 			const int ox = (x-left)*samples, oy = (y-top)*samples;
-			const auto type = sceneMap.terrainTypeAt(x+viewportX, y+viewportY);
+			const auto type = sceneMap.presentationTypeAt(x+viewportX, y+viewportY);
 			const auto color = sceneMap.terrainPresentation(type).overview;
 			const std::array<unsigned char, 3> cellColor{color.r, color.g, color.b};
 			compositor.composeOverview(compositor.describe(sceneMap, x+viewportX, y+viewportY),

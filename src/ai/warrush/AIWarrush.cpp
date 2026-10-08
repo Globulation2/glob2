@@ -964,7 +964,7 @@ void AIWarrush::initializeGradientWithResource(DynamicGradientMapArray &gradient
 			{
 				gradient(x, y) = 0;
 			}
-			else if (!observation->terrain->properties(observation->terrainAt(index).type).walkable)
+			else if (!observation->terrainPropertiesAt(index).walkable)
 			{
 				gradient(x, y) = 0;
 			}
@@ -1036,7 +1036,7 @@ std::shared_ptr<Order> AIWarrush::buildBuildingOfType(Intent intent)
 			{
 				availability_gradient(x, y) = 0;
 			}
-			else if (!observation->terrain->properties(observation->terrainAt(index).type).walkable)
+			else if (!observation->terrainPropertiesAt(index).walkable)
 			{
 				availability_gradient(x, y) = 0;
 			}

@@ -57,21 +57,21 @@ TEST_CASE("Trail retains legacy identities and terrain behavior")
     CHECK_EQ(properties.airHealthQ8,0);
 }
 
-TEST_CASE("canonical terrain survives presentation regeneration and batches snapshot invalidation")
+TEST_CASE("vertex terrain survives tiling and batches snapshot invalidation")
 {
     glob2test::HeadlessGlobals globals;
     Map map;
     map.setSize(5,5,WATER);
-    const auto old = map.frozenTerrainSnapshot();
+    const auto old = map.frozenVertexSnapshot();
     const auto generation = map.terrainGeneration();
     {
         auto batch = map.editTerrain();
         map.setCellTerrain(8,8,TRAIL);
-        const auto partial=map.frozenTerrainSnapshot();
+        const auto partial=map.frozenVertexSnapshot();
         map.resourceGrowthField();
-        map.setCellTerrain(9,8,ICE);
-        CHECK_EQ((*partial)[map.coordToIndex(9,8)],WATER);
-        CHECK_EQ((*map.frozenTerrainSnapshot())[map.coordToIndex(9,8)],ICE);
+        map.setCellTerrain(11,8,ICE);
+        CHECK_EQ((*partial)[map.coordToIndex(11,8)],WATER);
+        CHECK_EQ((*map.frozenVertexSnapshot())[map.coordToIndex(11,8)],ICE);
         CHECK_FALSE(map.growthCache.validFor(map));
         map.resourceGrowthField();
     }
@@ -81,19 +81,17 @@ TEST_CASE("canonical terrain survives presentation regeneration and batches snap
     CHECK(map.growthCache.validFor(map));
     CHECK_EQ((*old)[map.coordToIndex(8,8)],WATER);
     CHECK_EQ(map.terrainTypeAt(8,8),TRAIL);
-    CHECK_EQ(map.terrainTypeAt(9,8),ICE);
-    map.rebuildTerrain();
-    CHECK_EQ(map.terrainTypeAt(8,8),TRAIL);
-    CHECK_EQ(map.terrainTypeAt(9,8),ICE);
-    CHECK_EQ(map.terrainTypeAt(7,8),WATER);
+    CHECK_EQ(map.terrainTypeAt(11,8),ICE);
+    CHECK_EQ(map.terrainTypeAt(7,8),MIXED_TERRAIN);
+    CHECK_EQ(map.terrainTypeAt(6,8),WATER);
     CHECK(map.requiredTerrainExperiments().has(ExperimentId::IceTerrain));
     CHECK(map.requiredTerrainExperiments().has(ExperimentId::TrailTerrain));
     map.tile(2,1);
     CHECK_EQ(map.terrainTypeAt(40,8),TRAIL);
-    CHECK_EQ(map.terrainTypeAt(41,8),ICE);
+    CHECK_EQ(map.terrainTypeAt(43,8),ICE);
 }
 
-TEST_CASE("same-size map replacement and legacy import refresh ecology")
+TEST_CASE("same-size map replacement and terrain edits refresh ecology")
 {
     glob2test::HeadlessGlobals globals;
     Map map;
@@ -102,8 +100,7 @@ TEST_CASE("same-size map replacement and legacy import refresh ecology")
     map.setSize(5,5,GRASS);
     CHECK_FALSE(map.growthCache.validFor(map));
     CHECK(map.resourceGrowthField().landField().at(8,8)==0);
-    auto tile=map.getTile(9,8);tile.terrain=256;map.replaceTile(9,8,tile);
-    map.importLegacyTerrain();
+    map.setCellTerrain(9,8,WATER);
     CHECK_FALSE(map.growthCache.validFor(map));
     CHECK(map.resourceGrowthField().landField().at(8,8)>0);
     map.tile(2,1);
@@ -451,11 +448,10 @@ TEST_SUITE("TerrainRuntime")
 			pipeline.configure(executor, true, 2, 1024,
 							   [](auto &job, auto &scratch)
 							   {
-								   gradient_kernel::propagateTerrainField(
+								   gradient_kernel::propagateTerrainProfiles(
 									   job.data.get(), job.swim, gradient_kernel::COST_LIMIT,
-									   {32, 32}, scratch,
-									   [&](size_t i) { return (*job.terrain)[i]; },
-									   job.modifiedCosts, *job.registry, job.terrainBuckets);
+									   {32, 32}, scratch, job.profiles->data(),
+									   job.profiles->movement, job.terrainBuckets);
 							   });
 			auto owned = std::make_unique<Uint16[]>(1024);
 			std::copy(pipelined.begin(), pipelined.end(), owned.get());
@@ -466,7 +462,7 @@ TEST_SUITE("TerrainRuntime")
 							{
 								std::copy(pipelined.begin(), pipelined.end(), job.data.get());
 								job.registry = map.frozenTerrainRegistry();
-								job.terrain = map.frozenTerrainSnapshot();
+								job.profiles = map.frozenTerrainMovementSnapshot(swim);
 								job.terrainBuckets = map.terrainQueueBuckets();
 								job.modifiedCosts = true;
 							});
@@ -827,7 +823,7 @@ TEST_SUITE("TerrainRuntime")
 		plain.setSize(5, 5, GRASS);
 		plain.setCellTerrain(1, 1, SAND);
 		plain.setUMTerrain(3, 3, WATER);
-		plain.regenerateMap(0, 0, 5, 5);
+		plain.rebuildTerrain();
 		CHECK(plain.requiredTerrainExperiments().empty());
 		// Group mechanics the catalogue promises.
 		CHECK_FALSE(terrainProperties(BOULDERS).walkable);
@@ -879,18 +875,18 @@ TEST_SUITE("TerrainRuntime")
 				map.importTerrainDefinitions(
 					Json{{"schemaVersion", 1}, {"terrains", definitions}}.dump());
 				std::array<std::vector<TerrainType>, 5> equivalents;
-				for (unsigned i = 7; i < map.terrainRegistry().size(); ++i)
+				for (unsigned i = TERRAIN_COUNT; i < map.terrainRegistry().size(); ++i)
 					equivalents[map.terrainRegistry().appearance(TerrainType(i))].push_back(
 						TerrainType(i));
 				auto batch = map.editTerrain();
 				for (int y = 0; y < map.getH(); ++y)
 					for (int x = 0; x < map.getW(); ++x)
 					{
-						auto original = map.terrainTypeAt(x, y);
-						if (original < GRASS_SAND_SHORE)
+						auto original = map.vertexTerrainAt(x, y);
+						if (original <= TRAIL)
 						{
 							const auto &choices = equivalents[original];
-							map.setCellTerrain(x, y,
+							map.setVertexTerrain(x, y,
 											   choices[terrainVisualHash(x, y) % choices.size()]);
 						}
 					}

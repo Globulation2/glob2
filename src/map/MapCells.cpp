@@ -48,7 +48,6 @@ void Map::replaceTile(size_t index, const Tile &tile)
 	unsigned changes = 0;
 	if (old.building != tile.building) changes |= ResourceSeedCache::Building;
 	if (old.forbidden != tile.forbidden) changes |= ResourceSeedCache::Forbidden;
-	legacyTerrain[index] = tile.terrain;
 	resourceCells[index] = {resolved, tile.fertility, tile.canResourcesGrow};
 	occupancyCells[index].building = tile.building;
 	occupancyCells[index].groundUnit = tile.groundUnit;

@@ -30,7 +30,6 @@ struct MaterialSeedCache
     std::array<std::vector<Uint16>, 2> base;
     std::vector<Uint16> signatures;
     std::vector<Uint32> resourceTraits;
-    std::vector<Uint8> terrainTraits;
     std::vector<Uint32> forbiddenMasks;
     std::array<Bits, MaterialCount> goals;
     std::array<Bits, Team::MAX_COUNT> forbidden;

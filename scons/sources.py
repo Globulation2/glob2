@@ -251,6 +251,7 @@ CLIENT_SOURCES = (
     'ui/screens/MainMenuScreen.cpp',
     'map/Map.cpp',
     'map/TerrainRegistry.cpp',
+    'map/CellRules.cpp',
     'map/MapTile.cpp',
     'map/generator/compatibility/LegacyGenerationDescriptor.cpp',
     'map/generator/MapHomogen.cpp',

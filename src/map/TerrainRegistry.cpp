@@ -368,12 +368,28 @@ std::string TerrainRegistry::serialize() const
 unsigned TerrainRegistry::savedBuiltinCount(int versionMinor)
 {
 	return versionMinor < FILE_FORMAT_VERSION_TERRAIN_CATALOGUE ? TERRAIN_COUNT_BEFORE_CATALOGUE
-																		: unsigned(TERRAIN_COUNT);
+		 : versionMinor < FILE_FORMAT_VERSION_VERTEX_TERRAIN	   ? TERRAIN_COUNT_BEFORE_VERTEX
+																   : unsigned(TERRAIN_COUNT);
+}
+std::optional<unsigned> TerrainRegistry::currentTerrainId(unsigned savedBuiltins, unsigned saved)
+{
+	if (savedBuiltins == TERRAIN_COUNT)
+		return saved;
+	// Older files: the classic five keep their IDs; 5 and 6 were the shores.
+	if (saved <= TRAIL)
+		return saved;
+	if (saved < TERRAIN_COUNT_BEFORE_CATALOGUE)
+		return std::nullopt;
+	// Catalogue built-ins (formats 141 to 143) sit behind the retired shores.
+	if (saved < savedBuiltins)
+		return saved - (TERRAIN_COUNT_BEFORE_CATALOGUE - BOULDERS);
+	return saved - savedBuiltins + TERRAIN_COUNT;
 }
 std::shared_ptr<const TerrainRegistry> TerrainRegistry::deserialize(std::string_view source,
 																			  unsigned savedBuiltinCount)
 {
-	if (savedBuiltinCount < TERRAIN_COUNT_BEFORE_CATALOGUE || savedBuiltinCount > TERRAIN_COUNT)
+	if (savedBuiltinCount != TERRAIN_COUNT_BEFORE_CATALOGUE && savedBuiltinCount != TERRAIN_COUNT_BEFORE_VERTEX &&
+		savedBuiltinCount != TERRAIN_COUNT)
 		throw std::invalid_argument("Unsupported saved terrain built-in count");
 	auto j = parse(source);
 	if (j.at("terrains").empty())
@@ -514,9 +530,7 @@ void TerrainRegistry::compile()
 		std::array<bool, 256> used{};
 		for (const auto &p : properties_)
 		{
-			auto cost = gradient_kernel::entrySteps(gradient_kernel::hazardRouteCost(gradient_kernel::scaledTerrainStep(
-				p.swimmable && sw ? gradient_kernel::WATER_STEP[sw] : GRADIENT_STEP,
-				p.groundSpeedQ8), p.groundHealthQ8));
+			auto cost = gradient_kernel::terrainEntrySteps(p, sw);
 			if (cost.cardinal == 0 || cost.diagonal >= 256)
 				throw std::invalid_argument("Terrain edge exceeds supported gradient queue");
 			m.entries.push_back(cost);

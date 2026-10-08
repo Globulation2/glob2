@@ -229,7 +229,7 @@ std::uint64_t worldHash(const Game &game)
 	for (std::size_t index=0; index<game.map.cellCount(); ++index)
 	{
         const auto tile=game.map.getTile(index);
-		hash = fnv(hash, tile.terrain);
+		hash = fnv(hash, game.map.vertexTerrainAt(index));
 		hash = fnv(hash, tile.resource.getUint64());
 		for (const auto stock : game.map.materialStocksAt(index))
 			hash = fnv(hash, stock);
@@ -733,7 +733,9 @@ int runMapStudy(int argc, char **argv)
 		for (int x = 0; x < map.getW(); ++x)
 		{
 			const auto material = map.terrainTypeAt(x,y);
-            ++materialCounts[material];
+            // Terrain counts are per vertex; the buckets below are per cell, with
+            // mixed cells (shores among them) counted as shore.
+            ++materialCounts[map.vertexTerrainAt(x,y)];
             // Classic buckets by group: catalogue types report through materialCounts.
             const auto group = unsigned(material) < TERRAIN_COUNT ? std::optional(terrainGroup(material)) : std::nullopt;
             if (group == TerrainGroup::Grass)
@@ -742,7 +744,7 @@ int runMapStudy(int argc, char **argv)
 				++sand;
 			else if (group == TerrainGroup::Water)
 				++water;
-			else if (group == TerrainGroup::Shore)
+			else if (material == MIXED_TERRAIN)
 				++shore;
 			if (map.isFreeForBuilding(x, y))
 				++free;
@@ -766,7 +768,7 @@ int runMapStudy(int argc, char **argv)
 				++umWater;
 				break;
 			}
-			hash ^= map.getTerrain(x, y);
+			hash ^= map.vertexTerrainAt(x, y);
 			hash *= 1099511628211ULL;
 			hash ^= map.getResource(x, y).getUint64();
 			hash *= 1099511628211ULL;
@@ -1044,7 +1046,7 @@ int runMapStudy(int argc, char **argv)
 				int c = group == TerrainGroup::Grass ? 0
 						: group == TerrainGroup::Sand  ? 1
 						: group == TerrainGroup::Water ? 2
-						: group == TerrainGroup::Shore ? 3
+						: type == MIXED_TERRAIN ? 3
 													   : 10 + int(type);
 				if (map.materialMaskAt(y * map.getW() + x) & materialBit(MaterialId::Food))
 					c = 4;

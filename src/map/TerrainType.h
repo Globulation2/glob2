@@ -5,9 +5,10 @@
 
 #include <cstdint>
 
-// Stable serialized identities. Sprite frames are deliberately not terrain IDs.
-// Behaviour, names, colours and saved-frame contracts live in TerrainTypeTable.h;
-// append new identities before TERRAIN_COUNT and never renumber existing ones.
+// Stable serialized identities, stored once per map vertex. Behaviour, names and
+// colours live in TerrainTypeTable.h; append new identities before TERRAIN_COUNT.
+// Format 144 retired the two shore profiles (5 and 6) and renumbered the
+// catalogue behind TRAIL; files written earlier are remapped on load.
 enum TerrainType : std::uint16_t
 {
 	WATER=0,
@@ -15,36 +16,40 @@ enum TerrainType : std::uint16_t
 	GRASS=2,
 	ICE=3,
 	TRAIL=4,
-	// Compatibility profiles for old corner-based shores, not paintable types.
-	GRASS_SAND_SHORE=5,
-	SAND_WATER_SHORE=6,
-	// Terrain catalogue (format 141). Groups are defined in TerrainGroup.h.
-	BOULDERS=7,
-	HEDGE=8,
-	THICKET=9,
-	RIDGE_ROCK=10,
-	OUTCROP=11,
-	DIRT=12,
-	CLAY=13,
-	GRAVEL=14,
-	FLOWER_MEADOW=15,
-	MUD=16,
-	MARSH=17,
-	DEEP_SNOW=18,
-	SCREE=19,
-	DIRT_TRACK=20,
-	BOARDWALK=21,
-	LAVA=22,
-	EMBER_FIELD=23,
-	LOAM=24,
-	MOSS=25,
-	SPRING_MEADOW=26,
-	DEEP_WATER=27,
-	DARK_WATER=28,
-	VOID_HOLE=29,
-	CHASM=30,
-	TERRAIN_COUNT=31,
+	// Terrain catalogue. Groups are defined in TerrainGroup.h.
+	BOULDERS=5,
+	HEDGE=6,
+	THICKET=7,
+	RIDGE_ROCK=8,
+	OUTCROP=9,
+	DIRT=10,
+	CLAY=11,
+	GRAVEL=12,
+	FLOWER_MEADOW=13,
+	MUD=14,
+	MARSH=15,
+	DEEP_SNOW=16,
+	SCREE=17,
+	DIRT_TRACK=18,
+	BOARDWALK=19,
+	LAVA=20,
+	EMBER_FIELD=21,
+	LOAM=22,
+	MOSS=23,
+	SPRING_MEADOW=24,
+	DEEP_WATER=25,
+	DARK_WATER=26,
+	VOID_HOLE=27,
+	CHASM=28,
+	TERRAIN_COUNT=29,
 };
-// Files older than format 141 were written when seven built-ins existed; their
-// custom definitions and tile identities start at this count and are remapped on load.
+// Built-in counts of older files. Their custom definitions and terrain IDs start
+// at the count they were written with and are remapped on load
+// (savedTerrainId in TerrainRegistry.h).
+// Before format 141 there were seven built-ins, two of them shore profiles.
 inline constexpr unsigned TERRAIN_COUNT_BEFORE_CATALOGUE = 7;
+// Formats 141 to 143 still numbered the two shore profiles as 5 and 6.
+inline constexpr unsigned TERRAIN_COUNT_BEFORE_VERTEX = 31;
+// Not an identity: the answer of per-cell type queries for a cell whose four
+// corners hold different terrains. It is never stored.
+inline constexpr TerrainType MIXED_TERRAIN = TerrainType(0xFFFF);

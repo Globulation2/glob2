@@ -464,7 +464,7 @@ TEST_SUITE("EditorActionCoverage")
         editor.performAction("select road");
         for (auto invalid : {static_cast<TerrainSelector::TerrainType>(-1),
                 static_cast<TerrainSelector::TerrainType>(TerrainSelector::RegisteredBegin+TERRAIN_COUNT),
-                TerrainSelector::selectorFor(GRASS_SAND_SHORE),TerrainSelector::NoTerrain}) {
+                TerrainSelector::NoTerrain}) {
             editor.beginTerrainPlacement(invalid,MapEdit::TerrainPlacementMode::BaseTerrain);
             CHECK(editor.terrainType==TerrainSelector::Trail);
         }

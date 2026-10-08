@@ -22,7 +22,6 @@ class Map;
 class BuildingGradientSearch
 {
 	std::array<GradientBucket, GradientBucket::COUNT> buckets;
-	std::shared_ptr<const std::vector<TerrainType>> terrain;
 	std::shared_ptr<const TerrainRegistry> registry;
 	std::shared_ptr<const TerrainMovementSnapshot> profiles;
 	std::shared_ptr<const std::vector<std::uint8_t>> water;

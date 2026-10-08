@@ -55,10 +55,10 @@ namespace
 			for (auto &cell : resourceCells) cell.mayGrow = 1;
 			occupancyCells.assign(size, {});
 			areaCells.assign(size, {});
-			legacyTerrain.assign(size, 0);
 			scriptAreaCells.assign(size, 0);
+			vertexTerrain.assign(size, GRASS);
 			bindBootstrappedArrays();
-            importLegacyTerrain();
+            rebuildTerrainCounts();
 		}
 		~GrassMap()
 		{

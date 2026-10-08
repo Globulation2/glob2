@@ -8,7 +8,7 @@
 #include "UnitType.h"
 #include "BuildingCapabilities.h"
 #include "ResourceRegistry.h"
-#include "ResourceHabitats.h"
+#include "CellRules.h"
 #include "MapStateView.h"
 #include "ResourcePlaneKey.h"
 #include "MapChangeTracking.h"
@@ -24,9 +24,9 @@ struct Catalogs
 	std::shared_ptr<const std::vector<BuildingKindView>> buildings;
 	std::shared_ptr<const AIPlanning::BuildingCapabilityTables> capabilities;
 	std::array<std::array<UnitType, NB_UNIT_LEVELS>, NB_UNIT_TYPE> unitTypes;
-	// Immutable resource catalog and compiled habitat permissions, shared with the map.
+	// Immutable resource catalog, shared with the map. Habitats are compiled
+	// into the terrain's cell rules.
 	std::shared_ptr<const ResourceRegistry> resources;
-	std::shared_ptr<const ResourceHabitats> habitats;
 };
 // Which live chunks a pooled buffer mirrors (MapState::ChangeTracker stamps),
 // so the next fill of the same buffer copies only chunks changed since.
@@ -37,13 +37,13 @@ struct ChunkStamps
 	Uint32 filledTick = 0;
 	std::vector<Uint64> chunks;
 };
-struct TerrainCell { TerrainType type = GRASS; Uint16 legacy = 0; };
 struct Terrain
 {
 	std::shared_ptr<const TerrainRegistry> registry;
-	std::shared_ptr<const std::vector<TerrainType>> identity;
-	std::vector<Uint16> legacy;
-	std::vector<Uint8> undermap;
+	// The rules every captured cell rule indexes; later captures may share it.
+	std::shared_ptr<const CellRuleTable> rules;
+	std::shared_ptr<const std::vector<TerrainType>> vertices;
+	std::vector<Uint16> cellRules;
 	Uint64 revision = 0;
 	bool movementModifiers = false, airConstraints = false;
 	ChunkStamps stamps;
@@ -132,8 +132,10 @@ struct Handle
 	Handle project(Requirements requested) const;
 	// Scalar readers touch only their requested immutable component. Defaults
 	// match a combined tile whose corresponding component was not captured.
-	TerrainCell terrainAt(std::size_t index) const
-	{ checkTileIndex(index); return terrain ? TerrainCell{terrain->identity->at(index), terrain->legacy.at(index)} : TerrainCell{}; }
+	Uint16 cellRuleAt(std::size_t index) const
+	{ checkTileIndex(index); return terrain ? terrain->cellRules.at(index) : Uint16(GRASS); }
+	const TerrainProperties& terrainPropertiesAt(std::size_t index) const
+	{ checkTileIndex(index); return terrain ? (*terrain->rules)[terrain->cellRules.at(index)].properties : terrainProperties(GRASS); }
 	ResourceCell resourceAt(std::size_t index) const
 	{ checkTileIndex(index); return resources ? resources->cells.at(index) : ResourceCell{}; }
 	OccupancyCell occupancyAt(std::size_t index) const

@@ -82,21 +82,25 @@ namespace
 			for (auto &cell : resourceCells) cell.mayGrow = 1;
 			occupancyCells.assign(size, {});
 			areaCells.assign(size, {});
-			legacyTerrain.assign(size, 0);
-			scriptAreaCells.assign(size, 0);   // Tile() defaults: terrain=0 (grass), no building, no unit
+			scriptAreaCells.assign(size, 0);   // Tile() defaults: no building, no unit
+			vertexTerrain.assign(size, GRASS);
 			bindBootstrappedArrays();
-            importLegacyTerrain();
+            rebuildTerrainCounts();
 		}
 		void enableRouting() { aStarPoints = new AStarAlgorithmPoint[size]; }
         bool airRouteWithProperties(int x,int y,int tx,int ty,
             const std::array<TerrainProperties,TERRAIN_COUNT>& properties,int* dx,int* dy)
         {
+            const auto combined=[&](int px,int py) {
+                const auto c=cellCorners(px,py);
+                return combineCornerRules(properties[c[0]],properties[c[1]],properties[c[2]],properties[c[3]]);
+            };
             unsigned minimum=GRADIENT_STEP;
             for (const auto& p : properties) if (p.flyable)
                 minimum=std::min(minimum,gradient_kernel::scaledTerrainStep(GRADIENT_STEP,p.airSpeedQ8));
             return field::airRoute(w,h,x,y,tx,ty,minimum,aStarPoints,aStarExaminedPoints,
-                [&](int px,int py) { return properties[terrainTypeAt(px,py)].flyable && getAirUnit(px,py)==NOGUID; },
-                [&](int px,int py) { return gradient_kernel::scaledTerrainStep(GRADIENT_STEP,properties[terrainTypeAt(px,py)].airSpeedQ8); },dx,dy);
+                [&](int px,int py) { return combined(px,py).flyable && getAirUnit(px,py)==NOGUID; },
+                [&](int px,int py) { return gradient_kernel::scaledTerrainStep(GRADIENT_STEP,combined(px,py).airSpeedQ8); },dx,dy);
         }
 		~GrassMap()
 		{
@@ -431,9 +435,11 @@ TEST_CASE("air property profiles honor no-fly barriers and weighted travel witho
     GrassMap map; map.enableRouting();
     auto properties=TERRAIN_PROPERTIES;
     properties[ICE].flyable=false;
-    for(int y=0;y<8;++y) if(y!=5) map.setCellTerrain(2,y,ICE);
+    // A no-fly vertex column at x=2 closes every cell touching it but those
+    // between the grass vertices (2,5) and (2,6).
+    for(int y=0;y<8;++y) if(y!=5 && y!=6) map.setVertexTerrain(2,y,ICE);
     int dx=0,dy=0;
-    REQUIRE(map.airRouteWithProperties(1,3,3,3,properties,&dx,&dy));
+    REQUIRE(map.airRouteWithProperties(0,3,3,3,properties,&dx,&dy));
     CHECK_EQ(dx,0); CHECK_EQ(dy,1);
     // A forbidden target is approached, never entered, and an enclosed unit
     // cannot route through the forbidden cells to reach it.
@@ -447,7 +453,7 @@ TEST_CASE("air property profiles honor no-fly barriers and weighted travel witho
     properties[ICE].flyable=true;
     properties[ICE].airSpeedQ8=64;
     properties[TRAIL].airSpeedQ8=1024;
-    for(int x=0;x<8;++x) map.setCellTerrain(x,2,TRAIL);
+    for(int x=0;x<8;++x) map.setCellTerrain(x,1,TRAIL);
     for(int x=2;x<=4;++x) map.setCellTerrain(x,3,ICE);
     REQUIRE(map.airRouteWithProperties(1,3,5,3,properties,&dx,&dy));
     CHECK_EQ(dy,-1); CHECK_EQ(std::abs(dx),1);

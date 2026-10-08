@@ -280,7 +280,7 @@ void Gradient::recalculate(Map* map, field::Frontier& frontier)
     {
 		field::expandTerrainTravel(
 			gradient, width, map->getH(), gradient_info.terrainTravel,
-			[&](std::size_t i) { return map->terrainTypeAt(i); }, map->terrainRegistry());
+			[&](std::size_t i) { return map->cellRuleAt(i); }, map->cellRuleTableRef());
 		frontier.clear();
     }
     else expand_bfs(frontier);
@@ -307,7 +307,7 @@ void Gradient::recalculate(const AIEngine::AIWorldView& world, field::Frontier& 
 				gradient[get_pos(x, y)]=AI_SHARED_RUNTIME_GRADIENT_SOURCE_SEED;
 				frontier.push_back(get_pos(x,y));
 			}
-			else if(gradient_info.match_obstacle(world, x, y) || !field::terrainTravelAllowed(world.terrain->properties(world.terrainAt(world.tileIndex(x,y)).type),gradient_info.terrainTravel))
+			else if(gradient_info.match_obstacle(world, x, y) || !field::terrainTravelAllowed(world.terrainPropertiesAt(world.tileIndex(x,y)),gradient_info.terrainTravel))
 				gradient[get_pos(x, y)]=AI_SHARED_RUNTIME_GRADIENT_OBSTACLE_MARKER;
 		}
 	}
@@ -316,7 +316,7 @@ void Gradient::recalculate(const AIEngine::AIWorldView& world, field::Frontier& 
     {
 		field::expandTerrainTravel(
 			gradient, width, world.height, gradient_info.terrainTravel,
-			[&](std::size_t i) { return world.terrainAt(i).type; }, *world.terrain);
+			[&](std::size_t i) { return world.cellRuleAt(i); }, *world.cellRules);
 		frontier.clear();
     }
     else expand_bfs(frontier);

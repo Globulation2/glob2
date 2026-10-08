@@ -32,6 +32,7 @@ static_assert(Map::GRADIENT_COST_LIMIT == CostLimit, "Update the oracle contract
 // Geometry and terrain are enough; avoid game state, Sector allocation, and data files.
 struct PathMap : Map
 {
+	// terrain holds a classic sprite value per vertex: 256 to 271 is water, else grass.
 	PathMap(int widthShift, int heightShift, const std::vector<Uint16>& terrain)
 	{
 		wDec = widthShift; hDec = heightShift;
@@ -43,18 +44,19 @@ struct PathMap : Map
 			for (auto &cell : resourceCells) cell.mayGrow = 1;
 			occupancyCells.assign(size, {});
 			areaCells.assign(size, {});
-			legacyTerrain.assign(size, 0);
 			scriptAreaCells.assign(size, 0);
+			vertexTerrain.resize(size);
+			for (size_t i = 0; i < size; ++i) vertexTerrain[i] = isWater(terrain[i]) ? WATER : GRASS;
 			bindBootstrappedArrays();
-		for (size_t i = 0; i < size; ++i)
-		{
-			auto cell = getTile(i);
-			cell.terrain = terrain[i];
-			replaceTile(i, cell);
-		}
-        importLegacyTerrain();
+        rebuildTerrainCounts();
 	}
-	void changeTerrain() { for (size_t i=0; i<size; ++i) setTerrain(i & wMask, i >> wDec, getTile(i).terrain == 256 ? 0 : 256); }
+	static bool isWater(Uint16 value) { return value >= 256 && value <= 271; }
+	void changeTerrain()
+	{
+		std::vector<TerrainType> flipped(vertexTerrain.size());
+		for (size_t i = 0; i < size; ++i) flipped[i] = vertexTerrain[i] == WATER ? GRASS : WATER;
+		assignVertexTerrain(flipped);
+	}
 	~PathMap()
 	{
 		// Map::clear expects zero geometry when setSize has not built its arrays.
@@ -69,8 +71,11 @@ void require(bool condition, const char* message)
 	GLOB2_REQUIRE(condition, message);
 }
 
+// terrain and semantic are per vertex, as PathMap stores them; each cell takes
+// the rules its four corners combine to.
 std::vector<Uint16> oracle(const std::vector<Uint16>& seeds,
-	const std::vector<Uint16>& terrain, int width, int height, int swimClass, int maxCost, const std::vector<TerrainType>* semantic = nullptr)
+	const std::vector<Uint16>& terrain, int width, int height, int swimClass, int maxCost, const std::vector<TerrainType>* semantic = nullptr,
+	bool semanticPerCell = false)
 {
 	constexpr int waterSteps[] = {10, 5, 7, 10, 13, 20, 30};
 	constexpr int Infinity = INT_MAX / 2;
@@ -91,11 +96,18 @@ std::vector<Uint16> oracle(const std::vector<Uint16>& seeds,
 		if (cost != distance[i]) continue;
 		const int x = static_cast<int>(i % width), y = static_cast<int>(i / width);
 		// Reverse traversal enters this settled cell in the forward path.
-		const bool water = terrain[i] >= 256 && terrain[i] <= 271;
+		const size_t corners[4] = {i, size_t(y) * width + (x + 1) % width, size_t((y + 1) % height) * width + x,
+			size_t((y + 1) % height) * width + (x + 1) % width};
+		bool water = true;
+		for (const auto corner : corners) water = water && PathMap::isWater(terrain[corner]);
 		int cardinal = water ? waterSteps[swimClass] : 10;
         if (semantic)
         {
-            const auto &p = terrainProperties((*semantic)[i]);
+            // The type-indexed kernels read one terrain per cell.
+            const auto &s = *semantic;
+            const auto p = semanticPerCell ? terrainProperties(s[i])
+                : combineCornerRules(terrainProperties(s[corners[0]]), terrainProperties(s[corners[1]]),
+                    terrainProperties(s[corners[2]]), terrainProperties(s[corners[3]]));
             const int base = p.swimmable ? waterSteps[swimClass] : 10;
             cardinal = std::max(1, (base*256 + p.groundSpeedQ8/2)/p.groundSpeedQ8);
             cardinal = std::min(181, (cardinal*(256+20*std::max(0,-int(p.groundHealthQ8)))+128)/256);
@@ -293,7 +305,7 @@ TEST_SUITE("PathGradient")
 {
 TEST_CASE("immutable water snapshots share storage and retain their captured terrain [pathfinding]")
 {
-	std::vector<Uint16> terrain(16*16,0); terrain[0]=256;
+	std::vector<Uint16> terrain(16*16,0); terrain[0]=terrain[1]=terrain[16]=terrain[17]=256;
 	PathMap map(4,4,terrain);
 	auto first=map.frozenWaterSnapshot();
 	auto second=map.frozenWaterSnapshot();
@@ -383,7 +395,7 @@ TEST_CASE("mixed terrain costs match heap oracle and immutable lazy searches [pa
         for (size_t i=0;i<count;++i)
         {
             terrain[i]=static_cast<TerrainType>(random()%TERRAIN_COUNT);
-            map.setCellTerrain(i,terrain[i]);
+            map.setVertexTerrain(i,terrain[i]);
             seeds[i]=random()%6?Unreached:Blocked;
             if(random()%37==0)seeds[i]=Goal;
         }
@@ -396,7 +408,7 @@ TEST_CASE("mixed terrain costs match heap oracle and immutable lazy searches [pa
         BuildingGradientSearch search;
         search.begin(map,actual.data(),sw);
         search.resolve(1);
-        for(size_t i=0;i<count;++i)map.setCellTerrain(i,GRASS);
+        map.fillTerrain(GRASS);
         search.finish();
         REQUIRE(actual==expected);
     }
@@ -417,7 +429,7 @@ TEST_CASE("general terrain queue supports colliding costs and wrapped thin grids
                 if(random()%13==0) seeds[i]=Goal-(random()%90);
             }
             seeds[0]=Goal;
-            auto expected=oracle(seeds,oldTerrain,w,h,sw,60,&terrain);
+            auto expected=oracle(seeds,oldTerrain,w,h,sw,60,&terrain,true);
             auto actual=seeds;
             GradientWorkspace workspace;
             gradient_kernel::propagateTerrainField(actual.data(),sw,60,{w,h},workspace,
@@ -438,17 +450,11 @@ TEST_CASE("general terrain queue supports colliding costs and wrapped thin grids
         }
 }
 
-TEST_CASE("legacy terrain import rejects unregistered sprite IDs [pathfinding]")
+TEST_CASE("vertex terrain rejects unregistered terrain IDs [pathfinding]")
 {
-    for (Uint16 sprite : {Uint16(272),Uint16(65535)})
-    {
-        bool rejected=false;
-        PathMap map(4,4,std::vector<Uint16>(256,0));
-        auto tile=map.getTile(0,0);tile.terrain=sprite;map.replaceTile(0,0,tile);
-        try { map.importLegacyTerrain(); }
-        catch(const std::invalid_argument&) { rejected=true; }
-        CHECK(rejected);
-    }
+    PathMap map(4,4,std::vector<Uint16>(256,0));
+    CHECK_THROWS_AS(map.setVertexTerrain(0,0,TerrainType(TERRAIN_COUNT)),std::invalid_argument);
+    CHECK_THROWS_AS(map.setVertexTerrain(0,0,TerrainType(65535)),std::invalid_argument);
 }
 
 TEST_CASE("strategic terrain distances retain wide costs until publishing tile estimates [pathfinding]")
@@ -505,9 +511,10 @@ TEST_CASE("terrain snapshots survive paused searches and release obsolete genera
     {
         PathMap map(5, 5, std::vector<Uint16>(1024, 0));
         map.setCellTerrain(0, TRAIL);
-        auto captured = map.frozenTerrainSnapshot();
-        REQUIRE(captured == map.frozenTerrainSnapshot());
-        std::weak_ptr<const std::vector<TerrainType>> old = captured;
+        auto captured = map.frozenVertexSnapshot();
+        REQUIRE(captured == map.frozenVertexSnapshot());
+        // Searches retain the compact movement profiles of their generation.
+        std::weak_ptr<const TerrainMovementSnapshot> old = map.frozenTerrainMovementSnapshot(swim);
         std::vector<Uint16> first(1024, Unreached), second(1024, Unreached);
         first[0] = second[0] = Goal;
         const auto expected = oracle(first, std::vector<Uint16>(1024, 0), 32, 32,
@@ -518,7 +525,7 @@ TEST_CASE("terrain snapshots survive paused searches and release obsolete genera
         a.resolve(1);
         REQUIRE_FALSE(a.complete());
         map.setCellTerrain(0, ICE);
-        auto replacement = map.frozenTerrainSnapshot();
+        auto replacement = map.frozenVertexSnapshot();
         REQUIRE(replacement != captured);
         REQUIRE((*captured)[0] == TRAIL);
         REQUIRE((*replacement)[0] == ICE);
@@ -559,7 +566,7 @@ TEST_CASE("production lazy gradient phases [benchmark][pathfinding]")
                 : layout == 3 ? TRAIL : layout == 4 ? ICE
                 : static_cast<TerrainType>((i * 37 + i / width * 19) % TERRAIN_COUNT));
         const auto captureStart = Clock::now();
-        auto snapshot = map.frozenTerrainSnapshot();
+        auto snapshot = map.frozenVertexSnapshot();
         const auto captureNs = elapsed(captureStart);
         for (int swim = 0; swim < 7; ++swim) for (int query = 0; query < 3; ++query)
         {
@@ -605,16 +612,18 @@ TEST_CASE("queued mixed gradients retain terrain costs until fixed publication [
     {
         constexpr unsigned width = 32, count = width * width;
         PathMap map(5, 5, std::vector<Uint16>(count, 0));
+        // The kernel under test reads terrain types directly.
+        std::vector<TerrainType> types(count);
         for (unsigned i = 0; i < count; ++i)
-            map.setCellTerrain(i, static_cast<TerrainType>(i % TERRAIN_COUNT));
-        auto snapshot = map.frozenTerrainSnapshot();
+            types[i] = static_cast<TerrainType>(i % TERRAIN_COUNT);
+        auto snapshot = std::make_shared<const std::vector<TerrainType>>(types);
         std::vector<Uint16> seeds(count, Unreached); seeds[0] = Goal - seedCost;
         for (unsigned i = 7; i < count; i += 17) seeds[i] = Blocked;
         // Market sources start at cost 50; round-trip sources can also be
         // deferred beyond a complete bucket-ring revolution.
         if (seedCost) seeds[count / 2] = Goal - (gradient_kernel::BUCKETS + seedCost);
         const auto expected = oracle(seeds, std::vector<Uint16>(count, 0), width,
-            width, swim, CostLimit, snapshot.get());
+            width, swim, CostLimit, snapshot.get(), true);
         auto *published = new Uint16[count]{};
         ComputeExecutor executor; executor.configure(workers+1);
         GradientPipeline pipeline;
@@ -729,7 +738,7 @@ TEST_CASE("lazy terrain costs preserve uniform materials and source costs [pathf
                 terrain[count - 1] = TRAIL; seeds[count - 1] = Blocked;
                 if (differentGoal) terrain[0] = material == ICE ? TRAIL : ICE;
                 seeds[0] = Goal;
-                for (int i = 0; i < count; ++i) map.setCellTerrain(i, terrain[i]);
+                for (int i = 0; i < count; ++i) map.setVertexTerrain(size_t(i), terrain[i]);
                 const auto expected = oracle(seeds, std::vector<Uint16>(count, 0),
                     width, width, swim, CostLimit, &terrain);
                 // Map dispatch and resumable searches are separate entry points;
@@ -742,7 +751,7 @@ TEST_CASE("lazy terrain costs preserve uniform materials and source costs [pathf
                 search.begin(map, actual.data(), swim);
                 search.resolve(1);
                 REQUIRE(actual[1] == expected[1]);
-                map.setCellTerrain(0, material == ICE ? TRAIL : ICE);
+                map.setVertexTerrain(size_t(0), material == ICE ? TRAIL : ICE);
                 search.finish();
                 REQUIRE(actual == expected);
             }

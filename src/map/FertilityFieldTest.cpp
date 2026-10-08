@@ -110,10 +110,10 @@ namespace
 			for (auto &cell : resourceCells) cell.mayGrow = 1;
 			occupancyCells.assign(size, {});
 			areaCells.assign(size, {});
-			legacyTerrain.assign(size, 0);
 			scriptAreaCells.assign(size, 0);
+			vertexTerrain.assign(size, GRASS);
 			bindBootstrappedArrays();
-			importLegacyTerrain();
+			rebuildTerrainCounts();
 		}
 		~TinyMap() { w = h = wMask = hMask = wDec = hDec = 0; size = 0; }
 
@@ -330,14 +330,17 @@ TEST_CASE("habitat and movement edits reuse exact ecology fields")
 {
     TinyMap map;
     map.makeWater(9,8);
-    const auto index=map.coordToIndex(8,8);
+    // Two cells away, so this cell's corners never touch the water's.
+    const auto index=map.coordToIndex(7,8);
     const auto& cache=map.resourceGrowthField();
     const auto land=cache.landField().values(), aquatic=cache.aquaticField();
     const auto wheat=map.resourceGrowthRateAt(index,WHEAT);
     REQUIRE(wheat>0);
-    for(const auto type : {TRAIL,ICE,GRASS_SAND_SHORE,GRASS})
+    // A lone sand vertex makes the four cells around it shore, without sand's inhibition.
+    for(const auto type : {TRAIL,ICE,SAND,GRASS})
     {
-        map.setCellTerrain(index,type);
+        if (type==SAND) { map.setCellTerrain(index,GRASS); map.setVertexTerrain(7,8,SAND); }
+        else map.setCellTerrain(index,type);
         // This also checks validity after each edit's terrain-generation bump.
         REQUIRE(cache.validFor(map));
         CHECK(map.resourceGrowthField().landField().values()==land);

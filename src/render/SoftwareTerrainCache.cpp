@@ -272,14 +272,12 @@ bool SoftwareTerrainCache::prepareAtResolution(const SceneMap &map, GAGCore::Spr
 						entry = c.get();
 						break;
 					}
-				// Compare the source neighborhood once per page, rather than
-				// decoding sixteen overlapping lattice samples for every tile.
-				std::array<Uint32, (ChunkTiles + 2) * (ChunkTiles + 2)> sources{};
-				for (int y = -1; y <= ChunkTiles; ++y)
-					for (int x = -1; x <= ChunkTiles; ++x)
-						sources[(y + 1) * (ChunkTiles + 2) + x + 1] =
-							map.getTerrain(wx + x, wy + y) |
-							(Uint32(map.terrainTypeAt(wx + x, wy + y)) << 16);
+				// Compare the page's vertex window once, with a one-vertex halo,
+				// rather than the four vertices of every tile.
+				std::array<Uint32, (ChunkTiles + 3) * (ChunkTiles + 3)> sources{};
+				for (int y = -1; y <= ChunkTiles + 1; ++y)
+					for (int x = -1; x <= ChunkTiles + 1; ++x)
+						sources[(y + 1) * (ChunkTiles + 3) + x + 1] = map.vertexTerrainAt(wx + x, wy + y);
 				const auto revisionChanged = [&](const auto &revision)
 				{ return compositor.materialRevision(revision.first) != revision.second; };
 				bool unchanged = entry && entry->valid && entry->sources == sources &&

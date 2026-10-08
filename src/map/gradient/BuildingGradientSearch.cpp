@@ -32,7 +32,9 @@ void BuildingGradientSearch::begin(const Map &map, std::uint16_t *seeded, int sw
 	modifiedCosts = map.hasTerrainMovementModifiers();
 	registry = map.frozenTerrainRegistry();
 	terrainBuckets = map.terrainQueueBuckets();
-	const bool dynamic = modifiedCosts && registry->size() > TERRAIN_COUNT;
+	// Modified costs follow the map's compact cell profiles; otherwise only
+	// weighted swimmers need to know which cells are water.
+	const bool dynamic = modifiedCosts;
 	profiles = dynamic ? map.frozenTerrainMovementSnapshot(swim) : nullptr;
 	if (dynamic)
 	{
@@ -44,11 +46,7 @@ void BuildingGradientSearch::begin(const Map &map, std::uint16_t *seeded, int sw
 			b.clear();
 	}
 	auto *queues = dynamic ? custom->buckets.data() : buckets.data();
-	const bool weighted = weightedClass(swim) || modifiedCosts;
-	water = !modifiedCosts && weighted && registry->size() > TERRAIN_COUNT
-				? map.frozenWaterSnapshot()
-				: nullptr;
-	terrain = weighted && !dynamic && !water ? map.frozenTerrainSnapshot() : nullptr;
+	water = !modifiedCosts && weightedClass(swim) ? map.frozenWaterSnapshot() : nullptr;
 	// Building fields have only zero-cost seeds, so no deferred seeds are needed.
 	for (std::size_t i = 0; i < cells; ++i)
 	{
@@ -93,7 +91,7 @@ void BuildingGradientSearch::resolve(std::size_t target)
 			++currentCost;
 		}
 	};
-	if (modifiedCosts && registry->size() > TERRAIN_COUNT)
+	if (modifiedCosts)
 	{
 		auto run = [&]<unsigned N>()
 		{
@@ -114,36 +112,13 @@ void BuildingGradientSearch::resolve(std::size_t target)
 		else
 			run.template operator()<256>();
 	}
-	else if (modifiedCosts)
-	{
-		const auto *types = terrain->data();
-		while (pending && (target == cells || !resolved(target)))
-		{
-			popped += buckets[currentCost % BUCKETS].size;
-			gradient_kernel::expandTerrainBucket(gradient, buckets.data(), pending, currentCost,
-												 COST_LIMIT, {widthMask + 1, heightMask + 1},
-												 gradient_kernel::PREPARED_TERRAIN_COSTS[swimClass],
-												 [types](size_t i) { return types[i]; });
-			++currentCost;
-		}
-	}
 	else if (water)
 		sweep(std::true_type(), entrySteps(WATER_STEP[swimClass]),
 			  [water = water->data()](size_t i) { return water[i] != 0; });
-	else if (!terrain)
-		sweep(std::false_type(), LAND_STEPS, [](size_t) { return false; });
 	else
-	{
-		const auto *const terrainCells = terrain->data();
-		// Custom weighted searches captured the water plane in begin(). Only
-		// built-in terrain IDs can reach this legacy binary specialization.
-		assert(registry->size() == TERRAIN_COUNT);
-		sweep(std::true_type(), entrySteps(WATER_STEP[swimClass]), [terrainCells](size_t i)
-			  { return gradient_kernel::terrainUsesSwimming(terrainCells[i]); });
-	}
+		sweep(std::false_type(), LAND_STEPS, [](size_t) { return false; });
 	if (complete())
 	{
-		terrain.reset();
 		profiles.reset();
 		water.reset();
 	}
@@ -167,7 +142,6 @@ void BuildingGradientSearch::clearForReuse()
 {
 	gradient = nullptr;
 	cells = pending = 0;
-	terrain.reset();
 	registry.reset();
 	profiles.reset();
 	water.reset();

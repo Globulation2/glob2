@@ -40,6 +40,10 @@ class TerrainRegistry
 	// The TERRAIN_COUNT a file of the given format version was written with: its
 	// custom IDs start there and are renumbered to follow the current built-ins.
 	static unsigned savedBuiltinCount(int versionMinor);
+	// The current ID of a terrain ID a file with that built-in count wrote, or
+	// nullopt for the retired shore profiles (5 and 6 before format 144). The
+	// result still needs validating against the loaded registry.
+	static std::optional<unsigned> currentTerrainId(unsigned savedBuiltinCount, unsigned saved);
 	static std::shared_ptr<const TerrainRegistry> deserialize(std::string_view source,
 																	  unsigned savedBuiltinCount = TERRAIN_COUNT);
 	// Saved definitions are resolved and authoritative: no authoring inheritance

@@ -178,16 +178,27 @@ int Compositor::decorFrame(const SceneMap &map, int x, int y) const
 {
 	x &= map.getMaskW();
 	y &= map.getMaskH();
-	const auto type = map.appearanceAt(x, y);
-	if (unsigned(type) >= TERRAIN_COUNT || terrainUsesLegacyCorners(type))
+	// The decorated material most corners share: all four draw its full decor,
+	// two or three its edge decor, a single corner none.
+	unsigned best = 0, count = 0;
+	const auto corners = map.cellCorners(x, y);
+	for (const auto corner : corners)
+	{
+		const auto type = map.terrainRegistry().appearance(corner);
+		const auto id = terrainBindings[unsigned(type)];
+		if (definitions.materials[id].decor.full.empty())
+			continue;
+		const auto same = unsigned(std::count_if(corners.begin(), corners.end(), [&](TerrainType other)
+			{ return map.terrainRegistry().appearance(other) == type; }));
+		if (same > count)
+		{
+			best = id;
+			count = same;
+		}
+	}
+	if (count < 2)
 		return -1;
-	const auto id = terrainBindings[unsigned(type)];
-	if (definitions.materials[id].decor.full.empty())
-		return -1;
-	bool edge = false;
-	for (const auto [dx, dy] : {std::pair{-1, 0}, {1, 0}, {0, -1}, {0, 1}})
-		edge |= map.appearanceAt((x + dx) & map.getMaskW(), (y + dy) & map.getMaskH()) != type;
-	return definitions.decorFrame(id, x, y, edge, map.terrainSeed());
+	return definitions.decorFrame(best, x, y, count < 4, map.terrainSeed());
 }
 Recipe Compositor::describe(const SceneMap &map, int x, int y) const
 {
@@ -200,14 +211,10 @@ Recipe Compositor::describe(const SceneMap &map, int x, int y) const
 	for (int j = 0; j < 4; ++j)
 		for (int i = 0; i < 4; ++i)
 		{
-			const int qx = (r.x * 2 + i - 1) & (r.width * 2 - 1),
-					  qy = (r.y * 2 + j - 1) & (r.height * 2 - 1);
-			const int cx = qx / 2, cy = qy / 2;
-			auto type = map.terrainTypeAt(cx, cy);
-			unsigned material = unsigned(map.appearanceAt(cx, cy));
-			if (unsigned(type) < TERRAIN_COUNT && terrainUsesLegacyCorners(type))
-				material = legacyCorners(map.getTerrain(cx, cy))[(qx & 1) + 2 * (qy & 1)];
-			r.samples[j * 4 + i] = terrainBindings[material];
+			// Half-cell samples around the cell: the outer two columns and rows
+			// belong to the neighbours, but each half cell takes its nearest vertex.
+			const auto type = map.vertexTerrainAt(r.x + (i < 2 ? 0 : 1), r.y + (j < 2 ? 0 : 1));
+			r.samples[j * 4 + i] = terrainBindings[unsigned(map.terrainRegistry().appearance(type))];
 		}
 	return r;
 }

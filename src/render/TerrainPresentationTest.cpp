@@ -323,7 +323,7 @@ TEST_SUITE("TerrainPresentation")
 		for (int y = 0; y < 16; ++y)
 			for (int x = 0; x < 16; ++x)
 				map.setUMTerrain(x, y, x < 4 || y < 4 ? WATER : x < 7 || y < 7 ? SAND : GRASS);
-		map.regenerateMap(0, 0, 16, 16);
+		map.rebuildTerrain();
 		map.setCellTerrain(10, 10, ICE);
 		SceneMap scene;
 		scene.extract(map);
@@ -468,11 +468,6 @@ TEST_SUITE("TerrainPresentation")
 		check(overview[WATER], {4, 5, 6});
 		check(minimap[GRASS], minimap[ICE]);
 		check(overview[GRASS], overview[ICE]);
-		for (auto shore : {GRASS_SAND_SHORE, SAND_WATER_SHORE})
-		{
-			check(minimap[shore], terrainPresentation(shore).minimap);
-			check(overview[shore], terrainPresentation(shore).overview);
-		}
 	}
 	TEST_CASE("custom aliases share material recipes and keep whole-cell identity [display]")
 	{

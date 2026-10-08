@@ -180,9 +180,8 @@ void MapThumbnail::render(const Map &map, const MapHeader *header)
 			for (int sy = y * mh / result->height; sy < (y + 1) * mh / result->height; ++sy)
 				for (int sx = x * mw / result->width; sx < (x + 1) * mw / result->width; ++sx)
 				{
-					const auto type = map.terrainTypeAt(sx,sy);
-					const auto terrain =
-						map.terrainUsesLegacyCorners(type) ? map.getUMTerrain(sx, sy) : type;
+					// One sample per vertex: the terrain stored at (sx,sy).
+					const auto terrain = map.vertexTerrainAt(sx, sy);
 					const auto color = unsigned(terrain) < TERRAIN_COUNT
 										   ? palette[terrain]
 										   : map.terrainPresentation(terrain).preview;

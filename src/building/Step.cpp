@@ -492,7 +492,7 @@ bool Building::subscribeForFlagingStep()
 		const Map& map = *owner->map;
 		field::AirDistanceField airRoutes(map.getW(),map.getH(),posX,posY,
 			[&map](int x,int y) { return map.terrainPropertiesAt(x,y).flyable; },
-			[&map](int x,int y) { return map.terrainRegistry().airCost(map.terrainTypeAt(x,y)); },
+			[&map](int x,int y) { return map.cellRule(map.coordToIndex(x,y)).airCost; },
 			runtime->attracts(EXPLORER) && Sint32(unitsWorking.size())<desiredMaxUnitWorking && map.hasAirTerrainConstraints(),
 			field::AirDistanceDirection::ToDestination);
 		while (((Sint32)unitsWorking.size()<desiredMaxUnitWorking))

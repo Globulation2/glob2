@@ -1,4 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
+#include "LegacyTerrainFrames.h"
 #include "EngineFixtures.h"
 #include "TerrainMaterials.h"
 #include "TerrainCompositor.h"
@@ -369,24 +370,18 @@ TEST_SUITE("TerrainMaterials")
 				}
 			}
 	}
-	TEST_CASE("legacy decoder inverts the engine lookup for both compatibility profiles")
+	TEST_CASE("legacy decoder inverts the classic frame table for both shore profiles")
 	{
-		glob2test::HeadlessGlobals globals;
-		struct LegacyMap : Map
-		{
-			using Map::lookup;
-		} map;
 		for (unsigned low : {0u, 1u})
 			for (unsigned mask = 0; mask < 16; ++mask)
 			{
 				std::array<unsigned, 4> corners{};
 				for (int k = 0; k < 4; ++k)
 					corners[k] = low + ((mask >> k) & 1);
-				for (int variation = 0; variation < 16; ++variation)
-				{
-					const auto frame = map.lookup(corners[0], corners[1], corners[2], corners[3]);
-					CHECK(TerrainVisual::legacyCorners(frame) == corners);
-				}
+				const auto &range = legacyClassicFrames(TerrainType(corners[0]), TerrainType(corners[1]),
+														TerrainType(corners[2]), TerrainType(corners[3]));
+				for (unsigned variation = 0; variation < 16; ++variation)
+					CHECK(TerrainVisual::legacyCorners(range[0] + variation % range[1]) == corners);
 			}
 	}
 	TEST_CASE("prepared coverage preserves native and HD contour geometry")

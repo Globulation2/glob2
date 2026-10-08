@@ -36,11 +36,9 @@ void layBeaches(TerrainSketch &terrain, const Torus &t)
 
 void writeUndermap(Map &map, const TerrainSketch &terrain)
 {
-	const int w = map.getW(), h = map.getH();
-	for (int y = 0; y < h; ++y)
-		for (int x = 0; x < w; ++x)
-			map.setUMTerrain(x, y, TerrainType(terrain[size_t(y) * w + x]));
-	map.rebuildTerrain();
+	std::vector<TerrainType> vertices(terrain.size());
+	std::transform(terrain.begin(), terrain.end(), vertices.begin(), [](unsigned char t) { return TerrainType(t); });
+	map.assignVertexTerrain(vertices);
 }
 
 int countTiles(const TerrainSketch &terrain, TerrainType type)

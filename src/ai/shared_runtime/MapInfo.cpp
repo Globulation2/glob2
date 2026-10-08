@@ -97,14 +97,14 @@ bool MapInfo::is_resource(int x, int y)
 
 bool MapInfo::is_water(int x, int y)
 {
-    return world->terrain->properties(world->terrainAt(world->tileIndex(x,y)).type).swimmable;
+    return world->terrainPropertiesAt(world->tileIndex(x,y)).swimmable;
 }
 
 
 
 bool MapInfo::is_sand(int x, int y)
 {
-    return world->terrain->properties(world->terrainAt(world->tileIndex(x,y)).type).inhibitionQ8!=0;
+    return world->terrainPropertiesAt(world->tileIndex(x,y)).inhibitionQ8!=0;
 }
 
 
@@ -121,7 +121,7 @@ bool MapInfo::is_crop_habitat(int x, int y)
 
 bool MapInfo::is_grass(int x, int y)
 {
-    return world->terrain->properties(world->terrainAt(world->tileIndex(x,y)).type).buildable;
+    return world->terrainPropertiesAt(world->tileIndex(x,y)).buildable;
 }
 
 
@@ -129,7 +129,7 @@ bool MapInfo::is_grass(int x, int y)
 bool MapInfo::backs_onto_sand(int x, int y)
 {
         for(int dy=-1;dy<=1;++dy) for(int dx=-1;dx<=1;++dx)
-            if((dx || dy) && world->terrain->properties(world->terrainAt(world->tileIndex(x+dx,y+dy)).type).shoreline)
+            if((dx || dy) && world->terrainPropertiesAt(world->tileIndex(x+dx,y+dy)).shoreline)
                 return true;
         return false;
 

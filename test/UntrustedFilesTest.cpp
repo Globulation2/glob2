@@ -139,9 +139,11 @@ TEST_CASE("terrain loaders reject invalid resources occupants and sector dimensi
     auto header = world.game.mapHeader;
     // Exercise semantic validation after decoding, independent of the tile encoding.
     const auto original=world.game.map.getTile(0);
+    const auto originalVertex=world.game.map.vertexTerrainAt(size_t(0));
     auto poke=[&](const Tile& t) {
         auto& m=world.game.map;
-        m.legacyTerrain[0]=t.terrain;
+        // An unregistered terrain ID stands in for a corrupt vertex.
+        m.vertexTerrain[0]=t.terrain==272 ? TerrainType(TERRAIN_COUNT) : originalVertex;
         m.resourceCells[0]={t.resource,t.fertility,t.canResourcesGrow};
         m.occupancyCells[0].building=t.building; m.occupancyCells[0].groundUnit=t.groundUnit; m.occupancyCells[0].airUnit=t.airUnit;
     };

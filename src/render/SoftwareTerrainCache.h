@@ -31,7 +31,7 @@ class SoftwareTerrainCache
 	{
 		int x = 0, y = 0, scale = 1;
 		Uint32 seed = 0; // Map terrain seed the page was composed with.
-		std::array<Uint32, (ChunkTiles + 2) * (ChunkTiles + 2)> sources{};
+		std::array<Uint32, (ChunkTiles + 3) * (ChunkTiles + 3)> sources{};
 		std::array<Tile, ChunkTiles * ChunkTiles> tiles{};
 		// Empty cells expose only the separately drawn ocean and submit no software blit.
 		std::array<bool, ChunkTiles * ChunkTiles> opaque{}, empty{};
