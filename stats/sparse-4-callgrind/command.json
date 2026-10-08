@@ -1,0 +1,23 @@
+[
+  "valgrind",
+  "--tool=callgrind",
+  "--instr-atstart=no",
+  "--separate-threads=yes",
+  "--callgrind-out-file=/home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/stats/profiles/sparse-4-callgrind/callgrind.out.%p",
+  "/home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/stats/glob2",
+  "--run-game",
+  "--load-game",
+  "/home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-audit/peaceful/initial.game.gz",
+  "--ticks",
+  "512",
+  "--compute-threads",
+  "4",
+  "--compute-experiments",
+  "ai",
+  "--benchmark-warmup",
+  "0",
+  "--output-dir",
+  "/home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/stats/profiles/sparse-4-callgrind",
+  "--profile",
+  "serial-opt"
+]

@@ -1,0 +1,1803 @@
+reading file "artifacts/serial-opt/queues/profiles/sparse-1-heaptrack/heaptrack.zst" - please wait, this might take some time...
+Debuggee command was: /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2 --run-game --load-game /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-audit/peaceful/initial.game.gz --ticks 4096 --compute-threads 1 --compute-experiments ai --benchmark-warmup 0 --output-dir /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/profiles/sparse-1-heaptrack --profile serial-opt
+finished reading file, now analyzing data:
+
+MOST CALLS TO ALLOCATION FUNCTIONS
+99665 calls to allocation functions with 480B peak consumption from
+std::__new_allocator<>::allocate(unsigned long, void const*)
+  at /usr/include/c++/15/bits/new_allocator.h:151
+  in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+std::allocator<>::allocate(unsigned long)
+  at /usr/include/c++/15/bits/allocator.h:203
+std::allocator_traits<>::allocate(std::allocator<>&, unsigned long)
+  at /usr/include/c++/15/bits/alloc_traits.h:614
+std::_Rb_tree<>::_M_get_node()
+  at /usr/include/c++/15/bits/stl_tree.h:1170
+std::_Rb_tree_node<>* std::_Rb_tree<>::_M_create_node<>(std::piecewise_construct_t const&, std::tuple<>&&, std::tuple<>&&)
+  at /usr/include/c++/15/bits/stl_tree.h:1253
+std::_Rb_tree<>::_Auto_node::_Auto_node<>(std::_Rb_tree<>&, std::piecewise_construct_t const&, std::tuple<>&&, std::tuple<>&&)
+  at /usr/include/c++/15/bits/stl_tree.h:2285
+std::_Rb_tree_iterator<> std::_Rb_tree<>::_M_emplace_hint_unique<>(std::_Rb_tree_const_iterator<>, std::piecewise_construct_t const&, std::tuple<>&&, std::tuple<>&&)
+  at /usr/include/c++/15/bits/stl_tree.h:3084
+50109 calls with 0B peak consumption from:
+    std::_Rb_tree_iterator<> std::map<>::emplace_hint<>(std::_Rb_tree_const_iterator<>, std::pair<>&&)
+      at /usr/include/c++/15/bits/stl_map.h:663
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    std::enable_if<>::type std::map<>::insert<>(std::pair<>&&)
+      at /usr/include/c++/15/bits/stl_map.h:882
+    AIMaxima::reachableFoodCapacity(AIEngine::AIWorldView const*, SimulationSnapshot::BuildingView const*, unsigned int, bool, int, AIMaxima::Farming::ExactFertilityCache const&, std::vector<> const*, std::set<>*, int)::{lambda(int, int, int)#1}::operator()(int, int, int) const
+      at /home/bradley/.codex/worktrees/b625/glob2/src/ai/maxima/AIMaximaFoodSupply.h:211
+    field::traverse<>(std::vector<>&, field::Grid const&, std::array<> const&, field::traverse<>(std::vector<>&, field::Grid const&, std::array<> const&, AIMaxima::reachableFoodCapacity(AIEngine::AIWorldView const*, SimulationSnapshot::BuildingView const*, unsigned int, bool, int, AIMaxima::Farming::ExactFertilityCache const&, std::vector<> const*, std::set<>*, int)::{lambda(int)#1}, AIMaxima::reachableFoodCapacity(AIEngine::AIWorldView const*, SimulationSnapshot::BuildingView const*, unsigned int, bool, int, AIMaxima::Farming::ExactFertilityCache const&, std::vector<> const*, std::set<>*, int)::{lambda(int, int, int)#1})::{lambda(int)#1}, AIMaxima::reachableFoodCapacity(AIEngine::AIWorldView const*, SimulationSnapshot::BuildingView const*, unsigned int, bool, int, AIMaxima::Farming::ExactFertilityCache const&, std::vector<> const*, std::set<>*, int)::{lambda(int)#1}, AIMaxima::reachableFoodCapacity(AIEngine::AIWorldView const*, SimulationSnapshot::BuildingView const*, unsigned int, bool, int, AIMaxima::Farming::ExactFertilityCache const&, std::vector<> const*, std::set<>*, int)::{lambda(int, int, int)#1})::{lambda(auto:1 const&)#1}::operator()<>(int const&) const::{lambda(int, int)#1}::operator()(int, int) const
+      at /home/bradley/.codex/worktrees/b625/glob2/src/field/UniformTraversal.h:92
+    void field::Grid::neighbors<>(int, std::array<> const&, field::traverse<>(std::vector<>&, field::Grid const&, std::array<> const&, field::traverse<>(std::vector<>&, field::Grid const&, std::array<> const&, AIMaxima::reachableFoodCapacity(AIEngine::AIWorldView const*, SimulationSnapshot::BuildingView const*, unsigned int, bool, int, AIMaxima::Farming::ExactFertilityCache const&, std::vector<> const*, std::set<>*, int)::{lambda(int)#1}, AIMaxima::reachableFoodCapacity(AIEngine::AIWorldView const*, SimulationSnapshot::BuildingView const*, unsigned int, bool, int, AIMaxima::Farming::ExactFertilityCache const&, std::vector<> const*, std::set<>*, int)::{lambda(int, int, int)#1})::{lambda(int)#1}, AIMaxima::reachableFoodCapacity(AIEngine::AIWorldView const*, SimulationSnapshot::BuildingView const*, unsigned int, bool, int, AIMaxima::Farming::ExactFertilityCache const&, std::vector<> const*, std::set<>*, int)::{lambda(int)#1}, AIMaxima::reachableFoodCapacity(AIEngine::AIWorldView const*, SimulationSnapshot::BuildingView const*, unsigned int, bool, int, AIMaxima::Farming::ExactFertilityCache const&, std::vector<> const*, std::set<>*, int)::{lambda(int, int, int)#1})::{lambda(auto:1 const&)#1}::operator()<>(int const&) const::{lambda(int, int)#1}) const
+      at /home/bradley/.codex/worktrees/b625/glob2/src/field/Grid.h:76
+    auto field::traverse<>(std::vector<>&, field::Grid const&, std::array<> const&, field::traverse<>(std::vector<>&, field::Grid const&, std::array<> const&, AIMaxima::reachableFoodCapacity(AIEngine::AIWorldView const*, SimulationSnapshot::BuildingView const*, unsigned int, bool, int, AIMaxima::Farming::ExactFertilityCache const&, std::vector<> const*, std::set<>*, int)::{lambda(int)#1}, AIMaxima::reachableFoodCapacity(AIEngine::AIWorldView const*, SimulationSnapshot::BuildingView const*, unsigned int, bool, int, AIMaxima::Farming::ExactFertilityCache const&, std::vector<> const*, std::set<>*, int)::{lambda(int, int, int)#1})::{lambda(int)#1}, AIMaxima::reachableFoodCapacity(AIEngine::AIWorldView const*, SimulationSnapshot::BuildingView const*, unsigned int, bool, int, AIMaxima::Farming::ExactFertilityCache const&, std::vector<> const*, std::set<>*, int)::{lambda(int)#1}, AIMaxima::reachableFoodCapacity(AIEngine::AIWorldView const*, SimulationSnapshot::BuildingView const*, unsigned int, bool, int, AIMaxima::Farming::ExactFertilityCache const&, std::vector<> const*, std::set<>*, int)::{lambda(int, int, int)#1})::{lambda(auto:1 const&)#1}::operator()<>(int const&) const
+      at /home/bradley/.codex/worktrees/b625/glob2/src/field/UniformTraversal.h:91
+    _ZN5field12breadthFirstISt6vectorIiSaIiEEZN8AIMaxima21reachableFoodCapacityEPKN8AIEngine11AIWorldViewEPKN18SimulationSnapshot12BuildingViewEjbiRKNS4_7Farming19ExactFertilityCacheEPKS1_IhSaIhEEPSt3setIiSt4lessIiES2_EiEUliE_ZNS_8traverseIS3_St5arrayINS_6OffsetELm8EEZNS_8traverseIS3_SU_SQ_ZNS4_21reachableFoodCapacityES8_SC_jbiSG_SK_SP_iEUliiiE_EEvRT_RKNS_4GridERKT0_T1_T2_EUliE_SQ_SW_EEvSY_S11_S14_S15_S16_T3_EUlRKSX_E_EEvSY_S12_S15_
+      at /home/bradley/.codex/worktrees/b625/glob2/src/field/UniformTraversal.h:35
+    void field::traverse<>(std::vector<>&, field::Grid const&, std::array<> const&, field::traverse<>(std::vector<>&, field::Grid const&, std::array<> const&, AIMaxima::reachableFoodCapacity(AIEngine::AIWorldView const*, SimulationSnapshot::BuildingView const*, unsigned int, bool, int, AIMaxima::Farming::ExactFertilityCache const&, std::vector<> const*, std::set<>*, int)::{lambda(int)#1}, AIMaxima::reachableFoodCapacity(AIEngine::AIWorldView const*, SimulationSnapshot::BuildingView const*, unsigned int, bool, int, AIMaxima::Farming::ExactFertilityCache const&, std::vector<> const*, std::set<>*, int)::{lambda(int, int, int)#1})::{lambda(int)#1}, AIMaxima::reachableFoodCapacity(AIEngine::AIWorldView const*, SimulationSnapshot::BuildingView const*, unsigned int, bool, int, AIMaxima::Farming::ExactFertilityCache const&, std::vector<> const*, std::set<>*, int)::{lambda(int)#1}, AIMaxima::reachableFoodCapacity(AIEngine::AIWorldView const*, SimulationSnapshot::BuildingView const*, unsigned int, bool, int, AIMaxima::Farming::ExactFertilityCache const&, std::vector<> const*, std::set<>*, int)::{lambda(int, int, int)#1})
+      at src/field/UniformTraversal.h:88
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    void field::traverse<>(std::vector<>&, field::Grid const&, std::array<> const&, AIMaxima::reachableFoodCapacity(AIEngine::AIWorldView const*, SimulationSnapshot::BuildingView const*, unsigned int, bool, int, AIMaxima::Farming::ExactFertilityCache const&, std::vector<> const*, std::set<>*, int)::{lambda(int)#1}, AIMaxima::reachableFoodCapacity(AIEngine::AIWorldView const*, SimulationSnapshot::BuildingView const*, unsigned int, bool, int, AIMaxima::Farming::ExactFertilityCache const&, std::vector<> const*, std::set<>*, int)::{lambda(int, int, int)#1})
+      at /home/bradley/.codex/worktrees/b625/glob2/src/field/UniformTraversal.h:101
+    AIMaxima::reachableFoodCapacity(AIEngine::AIWorldView const*, SimulationSnapshot::BuildingView const*, unsigned int, bool, int, AIMaxima::Farming::ExactFertilityCache const&, std::vector<> const*, std::set<>*, int)
+      at /home/bradley/.codex/worktrees/b625/glob2/src/ai/maxima/AIMaximaFoodSupply.h:201
+    AIMaxima::Maxima::nearby_farm_capacity(AIMaximaRuntime::Context&, int, std::set<>*)
+      at src/ai/maxima/AIMaxima.cpp:5917
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    AIMaxima::Maxima::update_environment_model(AIMaximaRuntime::Context&)
+      at src/ai/maxima/AIMaxima.cpp:1083
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    AIMaxima::Maxima::evaluate_strategy(AIMaximaRuntime::Context&)
+      at src/ai/maxima/AIMaxima.cpp:3535
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    AIMaxima::Maxima::StrategyDirector::evaluate(AIMaxima::Maxima&, AIMaximaRuntime::Context&)
+      at src/ai/maxima/AIMaxima.cpp:508
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    AIMaxima::Maxima::check_phases(AIMaximaRuntime::Context&)
+      at src/ai/maxima/AIMaxima.cpp:4062
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    AIMaxima::Maxima::tick(AIMaximaRuntime::Context&)
+      at src/ai/maxima/AIMaxima.cpp:3823
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    AIMaximaRuntime::Context::getOrder(AIMaximaRuntime::RuntimeAI&)
+      at src/ai/maxima/AIMaximaRuntime.cpp:1486
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    AIMaxima::Maxima::getOrder(AIEngine::DecisionContext const&)
+      at src/ai/maxima/AIMaximaState.cpp:329
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    AI::decide(AIEngine::DecisionContext const&)
+      at src/ai/AI.cpp:223
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    std::__invoke_impl<>::operator()
+      at src/ai/engine/AIPipeline.cpp:111
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    std::
+      at /usr/include/c++/15/bits/invoke.h:63
+    std::__invoke_r<>
+      at /usr/include/c++/15/bits/invoke.h:118
+    std::_Function_handler<>::_M_invoke
+      at /usr/include/c++/15/bits/std_function.h:293
+    std::function<>::operator()(AIEngine::AIWorldView const&) const
+      at /usr/include/c++/15/bits/std_function.h:593
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    AIEngine::OrderScheduler::Pending::run(void*, unsigned long)
+      at /home/bradley/.codex/worktrees/b625/glob2/src/ai/engine/AIOrderScheduler.cpp:74
+    ComputeExecutor::execute(ComputeExecutor::Claim const&, unsigned long)
+      at src/common/ComputeExecutor.h:295
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    ComputeExecutor::join(ComputeExecutor::Batch&)
+      at /home/bradley/.codex/worktrees/b625/glob2/src/common/ComputeExecutor.h:589
+    AIEngine::OrderScheduler::joinBatch(AIEngine::OrderScheduler::TickBatch&)
+      at src/ai/engine/AIOrderScheduler.cpp:152
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    AIEngine::OrderScheduler::takeDue(unsigned int)
+      at src/ai/engine/AIOrderScheduler.cpp:208
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    AIEngine::Pipeline::prepare(Game&, std::span<>, bool, std::shared_ptr<> const&, SimulationSnapshot::Handle const&)
+      at src/ai/engine/AIPipeline.cpp:116
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    Game::prepareAIOrders(std::span<>, bool, std::shared_ptr<> const&, SimulationSnapshot::Handle const*)
+      at src/game/GameAI.cpp:27
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    Engine::gatherAndAdvanceOrders(bool)
+      at src/engine/EngineRun.cpp:175
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    Engine::advanceSession(unsigned long, std::function<> const&, bool)
+      at src/engine/EngineRun.cpp:1129
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    Engine::stepSessionImpl(unsigned long, std::vector<> const&)
+      at src/engine/EngineRun.cpp:997
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    guardedSessionStep<>::operator()
+      at src/engine/EngineRun.cpp:959
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    
+      at /home/bradley/.codex/worktrees/b625/glob2/src/engine/EngineRun.cpp:61
+    Engine::stepSession(unsigned long, std::vector<> const&)
+      at /home/bradley/.codex/worktrees/b625/glob2/src/engine/EngineRun.cpp:959
+    Engine::stepSession(unsigned long)
+      at src/engine/EngineRun.cpp:954
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    HeadlessRunner::game(std::map<> const&, std::filesystem::__cxx11::path const&)
+      at src/app/cli/Headless.cpp:560
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    runHeadlessCommand(int, char**)
+      at src/app/cli/Headless.cpp:918
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    Glob2::run(int, char**)
+      at src/app/Glob2.cpp:497
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    main
+      at src/app/Glob2.cpp:657
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+46652 calls with 0B peak consumption from:
+    std::_Rb_tree_iterator<> std::map<>::emplace_hint<>(std::_Rb_tree_const_iterator<>, std::pair<>&&)
+      at /usr/include/c++/15/bits/stl_map.h:663
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    std::enable_if<>::type std::map<>::insert<>(std::pair<>&&)
+      at /usr/include/c++/15/bits/stl_map.h:882
+    AIMaxima::reachableFoodCapacity(AIEngine::AIWorldView const*, SimulationSnapshot::BuildingView const*, unsigned int, bool, int, AIMaxima::Farming::ExactFertilityCache const&, std::vector<> const*, std::set<>*, int)::{lambda(int, int, int)#1}::operator()(int, int, int) const
+      at /home/bradley/.codex/worktrees/b625/glob2/src/ai/maxima/AIMaximaFoodSupply.h:211
+    field::traverse<>(std::vector<>&, field::Grid const&, std::array<> const&, field::traverse<>(std::vector<>&, field::Grid const&, std::array<> const&, AIMaxima::reachableFoodCapacity(AIEngine::AIWorldView const*, SimulationSnapshot::BuildingView const*, unsigned int, bool, int, AIMaxima::Farming::ExactFertilityCache const&, std::vector<> const*, std::set<>*, int)::{lambda(int)#1}, AIMaxima::reachableFoodCapacity(AIEngine::AIWorldView const*, SimulationSnapshot::BuildingView const*, unsigned int, bool, int, AIMaxima::Farming::ExactFertilityCache const&, std::vector<> const*, std::set<>*, int)::{lambda(int, int, int)#1})::{lambda(int)#1}, AIMaxima::reachableFoodCapacity(AIEngine::AIWorldView const*, SimulationSnapshot::BuildingView const*, unsigned int, bool, int, AIMaxima::Farming::ExactFertilityCache const&, std::vector<> const*, std::set<>*, int)::{lambda(int)#1}, AIMaxima::reachableFoodCapacity(AIEngine::AIWorldView const*, SimulationSnapshot::BuildingView const*, unsigned int, bool, int, AIMaxima::Farming::ExactFertilityCache const&, std::vector<> const*, std::set<>*, int)::{lambda(int, int, int)#1})::{lambda(auto:1 const&)#1}::operator()<>(int const&) const::{lambda(int, int)#1}::operator()(int, int) const
+      at /home/bradley/.codex/worktrees/b625/glob2/src/field/UniformTraversal.h:92
+    void field::Grid::neighbors<>(int, std::array<> const&, field::traverse<>(std::vector<>&, field::Grid const&, std::array<> const&, field::traverse<>(std::vector<>&, field::Grid const&, std::array<> const&, AIMaxima::reachableFoodCapacity(AIEngine::AIWorldView const*, SimulationSnapshot::BuildingView const*, unsigned int, bool, int, AIMaxima::Farming::ExactFertilityCache const&, std::vector<> const*, std::set<>*, int)::{lambda(int)#1}, AIMaxima::reachableFoodCapacity(AIEngine::AIWorldView const*, SimulationSnapshot::BuildingView const*, unsigned int, bool, int, AIMaxima::Farming::ExactFertilityCache const&, std::vector<> const*, std::set<>*, int)::{lambda(int, int, int)#1})::{lambda(int)#1}, AIMaxima::reachableFoodCapacity(AIEngine::AIWorldView const*, SimulationSnapshot::BuildingView const*, unsigned int, bool, int, AIMaxima::Farming::ExactFertilityCache const&, std::vector<> const*, std::set<>*, int)::{lambda(int)#1}, AIMaxima::reachableFoodCapacity(AIEngine::AIWorldView const*, SimulationSnapshot::BuildingView const*, unsigned int, bool, int, AIMaxima::Farming::ExactFertilityCache const&, std::vector<> const*, std::set<>*, int)::{lambda(int, int, int)#1})::{lambda(auto:1 const&)#1}::operator()<>(int const&) const::{lambda(int, int)#1}) const
+      at /home/bradley/.codex/worktrees/b625/glob2/src/field/Grid.h:76
+    auto field::traverse<>(std::vector<>&, field::Grid const&, std::array<> const&, field::traverse<>(std::vector<>&, field::Grid const&, std::array<> const&, AIMaxima::reachableFoodCapacity(AIEngine::AIWorldView const*, SimulationSnapshot::BuildingView const*, unsigned int, bool, int, AIMaxima::Farming::ExactFertilityCache const&, std::vector<> const*, std::set<>*, int)::{lambda(int)#1}, AIMaxima::reachableFoodCapacity(AIEngine::AIWorldView const*, SimulationSnapshot::BuildingView const*, unsigned int, bool, int, AIMaxima::Farming::ExactFertilityCache const&, std::vector<> const*, std::set<>*, int)::{lambda(int, int, int)#1})::{lambda(int)#1}, AIMaxima::reachableFoodCapacity(AIEngine::AIWorldView const*, SimulationSnapshot::BuildingView const*, unsigned int, bool, int, AIMaxima::Farming::ExactFertilityCache const&, std::vector<> const*, std::set<>*, int)::{lambda(int)#1}, AIMaxima::reachableFoodCapacity(AIEngine::AIWorldView const*, SimulationSnapshot::BuildingView const*, unsigned int, bool, int, AIMaxima::Farming::ExactFertilityCache const&, std::vector<> const*, std::set<>*, int)::{lambda(int, int, int)#1})::{lambda(auto:1 const&)#1}::operator()<>(int const&) const
+      at /home/bradley/.codex/worktrees/b625/glob2/src/field/UniformTraversal.h:91
+    _ZN5field12breadthFirstISt6vectorIiSaIiEEZN8AIMaxima21reachableFoodCapacityEPKN8AIEngine11AIWorldViewEPKN18SimulationSnapshot12BuildingViewEjbiRKNS4_7Farming19ExactFertilityCacheEPKS1_IhSaIhEEPSt3setIiSt4lessIiES2_EiEUliE_ZNS_8traverseIS3_St5arrayINS_6OffsetELm8EEZNS_8traverseIS3_SU_SQ_ZNS4_21reachableFoodCapacityES8_SC_jbiSG_SK_SP_iEUliiiE_EEvRT_RKNS_4GridERKT0_T1_T2_EUliE_SQ_SW_EEvSY_S11_S14_S15_S16_T3_EUlRKSX_E_EEvSY_S12_S15_
+      at /home/bradley/.codex/worktrees/b625/glob2/src/field/UniformTraversal.h:35
+    void field::traverse<>(std::vector<>&, field::Grid const&, std::array<> const&, field::traverse<>(std::vector<>&, field::Grid const&, std::array<> const&, AIMaxima::reachableFoodCapacity(AIEngine::AIWorldView const*, SimulationSnapshot::BuildingView const*, unsigned int, bool, int, AIMaxima::Farming::ExactFertilityCache const&, std::vector<> const*, std::set<>*, int)::{lambda(int)#1}, AIMaxima::reachableFoodCapacity(AIEngine::AIWorldView const*, SimulationSnapshot::BuildingView const*, unsigned int, bool, int, AIMaxima::Farming::ExactFertilityCache const&, std::vector<> const*, std::set<>*, int)::{lambda(int, int, int)#1})::{lambda(int)#1}, AIMaxima::reachableFoodCapacity(AIEngine::AIWorldView const*, SimulationSnapshot::BuildingView const*, unsigned int, bool, int, AIMaxima::Farming::ExactFertilityCache const&, std::vector<> const*, std::set<>*, int)::{lambda(int)#1}, AIMaxima::reachableFoodCapacity(AIEngine::AIWorldView const*, SimulationSnapshot::BuildingView const*, unsigned int, bool, int, AIMaxima::Farming::ExactFertilityCache const&, std::vector<> const*, std::set<>*, int)::{lambda(int, int, int)#1})
+      at src/field/UniformTraversal.h:88
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    void field::traverse<>(std::vector<>&, field::Grid const&, std::array<> const&, AIMaxima::reachableFoodCapacity(AIEngine::AIWorldView const*, SimulationSnapshot::BuildingView const*, unsigned int, bool, int, AIMaxima::Farming::ExactFertilityCache const&, std::vector<> const*, std::set<>*, int)::{lambda(int)#1}, AIMaxima::reachableFoodCapacity(AIEngine::AIWorldView const*, SimulationSnapshot::BuildingView const*, unsigned int, bool, int, AIMaxima::Farming::ExactFertilityCache const&, std::vector<> const*, std::set<>*, int)::{lambda(int, int, int)#1})
+      at /home/bradley/.codex/worktrees/b625/glob2/src/field/UniformTraversal.h:101
+    AIMaxima::reachableFoodCapacity(AIEngine::AIWorldView const*, SimulationSnapshot::BuildingView const*, unsigned int, bool, int, AIMaxima::Farming::ExactFertilityCache const&, std::vector<> const*, std::set<>*, int)
+      at /home/bradley/.codex/worktrees/b625/glob2/src/ai/maxima/AIMaximaFoodSupply.h:201
+    AIMaxima::Maxima::nearby_farm_capacity(AIMaximaRuntime::Context&, int, std::set<>*)
+      at src/ai/maxima/AIMaxima.cpp:5917
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    AIMaxima::Maxima::update_environment_model(AIMaximaRuntime::Context&)
+      at src/ai/maxima/AIMaxima.cpp:1083
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    AIMaxima::Maxima::evaluate_strategy(AIMaximaRuntime::Context&)
+      at src/ai/maxima/AIMaxima.cpp:3535
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    AIMaxima::Maxima::StrategyDirector::evaluate(AIMaxima::Maxima&, AIMaximaRuntime::Context&)
+      at src/ai/maxima/AIMaxima.cpp:508
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    AIMaxima::Maxima::check_phases(AIMaximaRuntime::Context&)
+      at src/ai/maxima/AIMaxima.cpp:4062
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    AIMaxima::Maxima::tick(AIMaximaRuntime::Context&)
+      at src/ai/maxima/AIMaxima.cpp:3823
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    AIMaximaRuntime::Context::getOrder(AIMaximaRuntime::RuntimeAI&)
+      at src/ai/maxima/AIMaximaRuntime.cpp:1486
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    AIMaxima::Maxima::getOrder(AIEngine::DecisionContext const&)
+      at src/ai/maxima/AIMaximaState.cpp:329
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    AI::decide(AIEngine::DecisionContext const&)
+      at src/ai/AI.cpp:223
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    std::__invoke_impl<>::operator()
+      at src/ai/engine/AIPipeline.cpp:111
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    std::
+      at /usr/include/c++/15/bits/invoke.h:63
+    std::__invoke_r<>
+      at /usr/include/c++/15/bits/invoke.h:118
+    std::_Function_handler<>::_M_invoke
+      at /usr/include/c++/15/bits/std_function.h:293
+    std::function<>::operator()(AIEngine::AIWorldView const&) const
+      at /usr/include/c++/15/bits/std_function.h:593
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    AIEngine::OrderScheduler::Pending::run(void*, unsigned long)
+      at /home/bradley/.codex/worktrees/b625/glob2/src/ai/engine/AIOrderScheduler.cpp:74
+    ComputeExecutor::execute(ComputeExecutor::Claim const&, unsigned long)
+      at src/common/ComputeExecutor.h:295
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    ComputeExecutor::join(ComputeExecutor::Batch&)
+      at /home/bradley/.codex/worktrees/b625/glob2/src/common/ComputeExecutor.h:589
+    AIEngine::OrderScheduler::joinBatch(AIEngine::OrderScheduler::TickBatch&)
+      at src/ai/engine/AIOrderScheduler.cpp:152
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    AIEngine::OrderScheduler::takeDue(unsigned int)
+      at src/ai/engine/AIOrderScheduler.cpp:208
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    AIEngine::Pipeline::prepare(Game&, std::span<>, bool, std::shared_ptr<> const&, SimulationSnapshot::Handle const&)
+      at src/ai/engine/AIPipeline.cpp:116
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    Game::prepareAIOrders(std::span<>, bool, std::shared_ptr<> const&, SimulationSnapshot::Handle const*)
+      at src/game/GameAI.cpp:27
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    Engine::gatherAndAdvanceOrders(bool)
+      at src/engine/EngineRun.cpp:175
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    Engine::advanceSession(unsigned long, std::function<> const&, bool)
+      at src/engine/EngineRun.cpp:1129
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    Engine::stepSessionImpl(unsigned long, std::vector<> const&)
+      at src/engine/EngineRun.cpp:997
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    guardedSessionStep<>::operator()
+      at src/engine/EngineRun.cpp:959
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    
+      at /home/bradley/.codex/worktrees/b625/glob2/src/engine/EngineRun.cpp:61
+    Engine::stepSession(unsigned long, std::vector<> const&)
+      at /home/bradley/.codex/worktrees/b625/glob2/src/engine/EngineRun.cpp:959
+    Engine::stepSession(unsigned long)
+      at src/engine/EngineRun.cpp:954
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    HeadlessRunner::game(std::map<> const&, std::filesystem::__cxx11::path const&)
+      at src/app/cli/Headless.cpp:560
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    runHeadlessCommand(int, char**)
+      at src/app/cli/Headless.cpp:918
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    Glob2::run(int, char**)
+      at src/app/Glob2.cpp:497
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    main
+      at src/app/Glob2.cpp:657
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+  and 2904 from 8 other places
+
+59988 calls to allocation functions with 3.18M peak consumption from
+std::__new_allocator<>::allocate(unsigned long, void const*)
+  at /usr/include/c++/15/bits/new_allocator.h:151
+  in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+std::allocator<>::allocate(unsigned long)
+  at /usr/include/c++/15/bits/allocator.h:203
+std::allocator_traits<>::allocate(std::allocator<>&, unsigned long)
+  at /usr/include/c++/15/bits/alloc_traits.h:614
+std::_Vector_base<>::_M_allocate(unsigned long)
+  at /usr/include/c++/15/bits/stl_vector.h:387
+std::_Vector_base<>::_M_create_storage(unsigned long)
+  at /usr/include/c++/15/bits/stl_vector.h:405
+std::_Vector_base<>::_Vector_base(unsigned long, std::allocator<> const&)
+  at /usr/include/c++/15/bits/stl_vector.h:341
+std::vector<>::vector(unsigned long, int const&, std::allocator<> const&)
+  at /usr/include/c++/15/bits/stl_vector.h:601
+std::vector<>::_M_fill_assign(unsigned long, int const&)
+  at /usr/include/c++/15/bits/vector.tcc:278
+std::vector<>::_M_fill_assign(unsigned long, int const&)
+  at /usr/include/c++/15/bits/vector.tcc:270
+std::vector<>::assign(unsigned long, int const&)
+  at /usr/include/c++/15/bits/stl_vector.h:876
+Engine::trackTeamEliminations()
+  at /home/bradley/.codex/worktrees/b625/glob2/src/engine/EngineRun.cpp:629
+15818 calls with 0B peak consumption from:
+    AIMaxima::Maxima::update_farming(AIMaximaRuntime::Context&)
+      at src/ai/maxima/AIMaximaFarmingPolicy.cpp:1397
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    AIMaxima::Maxima::tick(AIMaximaRuntime::Context&)
+      at src/ai/maxima/AIMaxima.cpp:3903
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    AIMaximaRuntime::Context::getOrder(AIMaximaRuntime::RuntimeAI&)
+      at src/ai/maxima/AIMaximaRuntime.cpp:1486
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    AIMaxima::Maxima::getOrder(AIEngine::DecisionContext const&)
+      at src/ai/maxima/AIMaximaState.cpp:329
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    AI::decide(AIEngine::DecisionContext const&)
+      at src/ai/AI.cpp:223
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    std::__invoke_impl<>::operator()
+      at src/ai/engine/AIPipeline.cpp:111
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    std::
+      at /usr/include/c++/15/bits/invoke.h:63
+    std::__invoke_r<>
+      at /usr/include/c++/15/bits/invoke.h:118
+    std::_Function_handler<>::_M_invoke
+      at /usr/include/c++/15/bits/std_function.h:293
+    std::function<>::operator()(AIEngine::AIWorldView const&) const
+      at /usr/include/c++/15/bits/std_function.h:593
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    AIEngine::OrderScheduler::Pending::run(void*, unsigned long)
+      at /home/bradley/.codex/worktrees/b625/glob2/src/ai/engine/AIOrderScheduler.cpp:74
+    ComputeExecutor::execute(ComputeExecutor::Claim const&, unsigned long)
+      at src/common/ComputeExecutor.h:295
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    ComputeExecutor::join(ComputeExecutor::Batch&)
+      at /home/bradley/.codex/worktrees/b625/glob2/src/common/ComputeExecutor.h:589
+    AIEngine::OrderScheduler::joinBatch(AIEngine::OrderScheduler::TickBatch&)
+      at src/ai/engine/AIOrderScheduler.cpp:152
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    AIEngine::OrderScheduler::takeDue(unsigned int)
+      at src/ai/engine/AIOrderScheduler.cpp:208
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    AIEngine::Pipeline::prepare(Game&, std::span<>, bool, std::shared_ptr<> const&, SimulationSnapshot::Handle const&)
+      at src/ai/engine/AIPipeline.cpp:116
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    Game::prepareAIOrders(std::span<>, bool, std::shared_ptr<> const&, SimulationSnapshot::Handle const*)
+      at src/game/GameAI.cpp:27
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    Engine::gatherAndAdvanceOrders(bool)
+      at src/engine/EngineRun.cpp:175
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    Engine::advanceSession(unsigned long, std::function<> const&, bool)
+      at src/engine/EngineRun.cpp:1129
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    Engine::stepSessionImpl(unsigned long, std::vector<> const&)
+      at src/engine/EngineRun.cpp:997
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    guardedSessionStep<>::operator()
+      at src/engine/EngineRun.cpp:959
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    
+      at /home/bradley/.codex/worktrees/b625/glob2/src/engine/EngineRun.cpp:61
+    Engine::stepSession(unsigned long, std::vector<> const&)
+      at /home/bradley/.codex/worktrees/b625/glob2/src/engine/EngineRun.cpp:959
+    Engine::stepSession(unsigned long)
+      at src/engine/EngineRun.cpp:954
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    HeadlessRunner::game(std::map<> const&, std::filesystem::__cxx11::path const&)
+      at src/app/cli/Headless.cpp:560
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    runHeadlessCommand(int, char**)
+      at src/app/cli/Headless.cpp:918
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    Glob2::run(int, char**)
+      at src/app/Glob2.cpp:497
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    main
+      at src/app/Glob2.cpp:657
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+4924 calls with 0B peak consumption from:
+    AIMaximaPlacement::Planner::addBuildCandidatesRange(AIMaximaPlacement::WorldState const&, AIMaximaPlacement::DevelopmentIntent const&, unsigned int, bool, std::vector<>&, unsigned long&, unsigned long, AIMaximaPlacement::DevelopmentAction&, bool&, unsigned long&, AIMaximaPlacement::DevelopmentAction&, bool&, unsigned long&)
+      at src/ai/maxima/AIMaximaPlacement.cpp:1990
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    AIMaximaPlacement::Planner::selectActionIncremental(AIMaximaPlacement::WorldState const&, std::vector<> const&, AIMaximaPlacement::DevelopmentLimits const&, AIMaximaPlacement::DevelopmentAction&, unsigned int, int)
+      at src/ai/maxima/AIMaximaPlacement.cpp:2956
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    AIMaxima::Maxima::development_cycle(AIMaximaRuntime::Context&)
+      at src/ai/maxima/AIMaxima.cpp:5113
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    AIMaxima::Maxima::tick(AIMaximaRuntime::Context&)
+      at src/ai/maxima/AIMaxima.cpp:3913
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    AIMaximaRuntime::Context::getOrder(AIMaximaRuntime::RuntimeAI&)
+      at src/ai/maxima/AIMaximaRuntime.cpp:1486
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    AIMaxima::Maxima::getOrder(AIEngine::DecisionContext const&)
+      at src/ai/maxima/AIMaximaState.cpp:329
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    AI::decide(AIEngine::DecisionContext const&)
+      at src/ai/AI.cpp:223
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    std::__invoke_impl<>::operator()
+      at src/ai/engine/AIPipeline.cpp:111
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    std::
+      at /usr/include/c++/15/bits/invoke.h:63
+    std::__invoke_r<>
+      at /usr/include/c++/15/bits/invoke.h:118
+    std::_Function_handler<>::_M_invoke
+      at /usr/include/c++/15/bits/std_function.h:293
+    std::function<>::operator()(AIEngine::AIWorldView const&) const
+      at /usr/include/c++/15/bits/std_function.h:593
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    AIEngine::OrderScheduler::Pending::run(void*, unsigned long)
+      at /home/bradley/.codex/worktrees/b625/glob2/src/ai/engine/AIOrderScheduler.cpp:74
+    ComputeExecutor::execute(ComputeExecutor::Claim const&, unsigned long)
+      at src/common/ComputeExecutor.h:295
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    ComputeExecutor::join(ComputeExecutor::Batch&)
+      at /home/bradley/.codex/worktrees/b625/glob2/src/common/ComputeExecutor.h:589
+    AIEngine::OrderScheduler::joinBatch(AIEngine::OrderScheduler::TickBatch&)
+      at src/ai/engine/AIOrderScheduler.cpp:152
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    AIEngine::OrderScheduler::takeDue(unsigned int)
+      at src/ai/engine/AIOrderScheduler.cpp:208
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    AIEngine::Pipeline::prepare(Game&, std::span<>, bool, std::shared_ptr<> const&, SimulationSnapshot::Handle const&)
+      at src/ai/engine/AIPipeline.cpp:116
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    Game::prepareAIOrders(std::span<>, bool, std::shared_ptr<> const&, SimulationSnapshot::Handle const*)
+      at src/game/GameAI.cpp:27
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    Engine::gatherAndAdvanceOrders(bool)
+      at src/engine/EngineRun.cpp:175
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    Engine::advanceSession(unsigned long, std::function<> const&, bool)
+      at src/engine/EngineRun.cpp:1129
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    Engine::stepSessionImpl(unsigned long, std::vector<> const&)
+      at src/engine/EngineRun.cpp:997
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    guardedSessionStep<>::operator()
+      at src/engine/EngineRun.cpp:959
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    
+      at /home/bradley/.codex/worktrees/b625/glob2/src/engine/EngineRun.cpp:61
+    Engine::stepSession(unsigned long, std::vector<> const&)
+      at /home/bradley/.codex/worktrees/b625/glob2/src/engine/EngineRun.cpp:959
+    Engine::stepSession(unsigned long)
+      at src/engine/EngineRun.cpp:954
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    HeadlessRunner::game(std::map<> const&, std::filesystem::__cxx11::path const&)
+      at src/app/cli/Headless.cpp:560
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    runHeadlessCommand(int, char**)
+      at src/app/cli/Headless.cpp:918
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    Glob2::run(int, char**)
+      at src/app/Glob2.cpp:497
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    main
+      at src/app/Glob2.cpp:657
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+  and 39246 from 387 other places
+
+37369 calls to allocation functions with 362.22K peak consumption from
+std::__new_allocator<>::allocate(unsigned long, void const*)
+  at /usr/include/c++/15/bits/new_allocator.h:151
+  in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+std::allocator<>::allocate(unsigned long)
+  at /usr/include/c++/15/bits/allocator.h:203
+std::allocator_traits<>::allocate(std::allocator<>&, unsigned long)
+  at /usr/include/c++/15/bits/alloc_traits.h:614
+std::_Vector_base<>::_M_allocate(unsigned long)
+  at /usr/include/c++/15/bits/stl_vector.h:387
+std::_Vector_base<>::_M_create_storage(unsigned long)
+  at /usr/include/c++/15/bits/stl_vector.h:405
+std::_Vector_base<>::_Vector_base(unsigned long, std::allocator<> const&)
+  at /usr/include/c++/15/bits/stl_vector.h:341
+std::vector<>::vector(unsigned long, std::allocator<> const&)
+  at /usr/include/c++/15/bits/stl_vector.h:587
+void std::_Construct<>(std::vector<>*, unsigned long const&)
+  at /usr/include/c++/15/bits/stl_construct.h:133
+void std::allocator_traits<>::construct<>(std::allocator<>&, std::vector<>*, unsigned long const&)
+  at /usr/include/c++/15/bits/alloc_traits.h:805
+std::_Sp_counted_ptr_inplace<>::_Sp_counted_ptr_inplace<>(std::allocator<>, unsigned long const&)
+  at /usr/include/c++/15/bits/shared_ptr_base.h:606
+std::__shared_count<>::__shared_count<>(std::vector<>*&, std::_Sp_alloc_shared_tag<>, unsigned long const&)
+  at /usr/include/c++/15/bits/shared_ptr_base.h:969
+std::__shared_ptr<>::__shared_ptr<>(std::_Sp_alloc_shared_tag<>, unsigned long const&)
+  at /usr/include/c++/15/bits/shared_ptr_base.h:1719
+std::shared_ptr<>::shared_ptr<>(std::_Sp_alloc_shared_tag<>, unsigned long const&)
+  at /usr/include/c++/15/bits/shared_ptr.h:463
+std::shared_ptr<> std::make_shared<>(unsigned long const&)
+  at /usr/include/c++/15/bits/shared_ptr.h:1008
+Map::frozenWaterSnapshot() const
+  at /home/bradley/.codex/worktrees/b625/glob2/src/map/Map.cpp:113
+16352 calls with 3B peak consumption from:
+    AI::decide(AIEngine::DecisionContext const&)
+      at src/ai/AI.cpp:234
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    std::__invoke_impl<>::operator()
+      at src/ai/engine/AIPipeline.cpp:111
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    std::
+      at /usr/include/c++/15/bits/invoke.h:63
+    std::__invoke_r<>
+      at /usr/include/c++/15/bits/invoke.h:118
+    std::_Function_handler<>::_M_invoke
+      at /usr/include/c++/15/bits/std_function.h:293
+    std::function<>::operator()(AIEngine::AIWorldView const&) const
+      at /usr/include/c++/15/bits/std_function.h:593
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    AIEngine::OrderScheduler::Pending::run(void*, unsigned long)
+      at /home/bradley/.codex/worktrees/b625/glob2/src/ai/engine/AIOrderScheduler.cpp:74
+    ComputeExecutor::execute(ComputeExecutor::Claim const&, unsigned long)
+      at src/common/ComputeExecutor.h:295
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    ComputeExecutor::join(ComputeExecutor::Batch&)
+      at /home/bradley/.codex/worktrees/b625/glob2/src/common/ComputeExecutor.h:589
+    AIEngine::OrderScheduler::joinBatch(AIEngine::OrderScheduler::TickBatch&)
+      at src/ai/engine/AIOrderScheduler.cpp:152
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    AIEngine::OrderScheduler::takeDue(unsigned int)
+      at src/ai/engine/AIOrderScheduler.cpp:208
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    AIEngine::Pipeline::prepare(Game&, std::span<>, bool, std::shared_ptr<> const&, SimulationSnapshot::Handle const&)
+      at src/ai/engine/AIPipeline.cpp:116
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    Game::prepareAIOrders(std::span<>, bool, std::shared_ptr<> const&, SimulationSnapshot::Handle const*)
+      at src/game/GameAI.cpp:27
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    Engine::gatherAndAdvanceOrders(bool)
+      at src/engine/EngineRun.cpp:175
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    Engine::advanceSession(unsigned long, std::function<> const&, bool)
+      at src/engine/EngineRun.cpp:1129
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    Engine::stepSessionImpl(unsigned long, std::vector<> const&)
+      at src/engine/EngineRun.cpp:997
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    guardedSessionStep<>::operator()
+      at src/engine/EngineRun.cpp:959
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    
+      at /home/bradley/.codex/worktrees/b625/glob2/src/engine/EngineRun.cpp:61
+    Engine::stepSession(unsigned long, std::vector<> const&)
+      at /home/bradley/.codex/worktrees/b625/glob2/src/engine/EngineRun.cpp:959
+    Engine::stepSession(unsigned long)
+      at src/engine/EngineRun.cpp:954
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    HeadlessRunner::game(std::map<> const&, std::filesystem::__cxx11::path const&)
+      at src/app/cli/Headless.cpp:560
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    runHeadlessCommand(int, char**)
+      at src/app/cli/Headless.cpp:918
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    Glob2::run(int, char**)
+      at src/app/Glob2.cpp:497
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    main
+      at src/app/Glob2.cpp:657
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+16070 calls with 32B peak consumption from:
+    Game::prepareAIOrders(std::span<>, bool, std::shared_ptr<> const&, SimulationSnapshot::Handle const*)
+      at src/game/GameAI.cpp:27
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    Engine::gatherAndAdvanceOrders(bool)
+      at src/engine/EngineRun.cpp:175
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    Engine::advanceSession(unsigned long, std::function<> const&, bool)
+      at src/engine/EngineRun.cpp:1129
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    Engine::stepSessionImpl(unsigned long, std::vector<> const&)
+      at src/engine/EngineRun.cpp:997
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    guardedSessionStep<>::operator()
+      at src/engine/EngineRun.cpp:959
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    
+      at /home/bradley/.codex/worktrees/b625/glob2/src/engine/EngineRun.cpp:61
+    Engine::stepSession(unsigned long, std::vector<> const&)
+      at /home/bradley/.codex/worktrees/b625/glob2/src/engine/EngineRun.cpp:959
+    Engine::stepSession(unsigned long)
+      at src/engine/EngineRun.cpp:954
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    HeadlessRunner::game(std::map<> const&, std::filesystem::__cxx11::path const&)
+      at src/app/cli/Headless.cpp:560
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    runHeadlessCommand(int, char**)
+      at src/app/cli/Headless.cpp:918
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    Glob2::run(int, char**)
+      at src/app/Glob2.cpp:497
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    main
+      at src/app/Glob2.cpp:657
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+  and 4947 from 130 other places
+
+20098 calls to allocation functions with 0B peak consumption from
+std::__shared_count<>::__shared_count<>(NullOrder*)
+  at /usr/include/c++/15/bits/shared_ptr_base.h:914
+  in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+std::__shared_count<>::__shared_count<>(NullOrder*, std::integral_constant<>)
+  at /usr/include/c++/15/bits/shared_ptr_base.h:925
+std::__shared_ptr<>::__shared_ptr<>(NullOrder*)
+  at /usr/include/c++/15/bits/shared_ptr_base.h:1476
+std::shared_ptr<>::shared_ptr<>(NullOrder*)
+  at /usr/include/c++/15/bits/shared_ptr.h:213
+NetEngine::advanceStep(unsigned int)
+  at /home/bradley/.codex/worktrees/b625/glob2/src/net/NetEngine.cpp:28
+16070 calls with 0B peak consumption from:
+    AIEngine::Command::decode() const
+      at src/ai/engine/AIOrderScheduler.cpp:59
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    AIEngine::Pipeline::prepare(Game&, std::span<>, bool, std::shared_ptr<> const&, SimulationSnapshot::Handle const&)
+      at src/ai/engine/AIPipeline.cpp:128
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    Game::prepareAIOrders(std::span<>, bool, std::shared_ptr<> const&, SimulationSnapshot::Handle const*)
+      at src/game/GameAI.cpp:27
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    Engine::gatherAndAdvanceOrders(bool)
+      at src/engine/EngineRun.cpp:175
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    Engine::advanceSession(unsigned long, std::function<> const&, bool)
+      at src/engine/EngineRun.cpp:1129
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    Engine::stepSessionImpl(unsigned long, std::vector<> const&)
+      at src/engine/EngineRun.cpp:997
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    guardedSessionStep<>::operator()
+      at src/engine/EngineRun.cpp:959
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    
+      at /home/bradley/.codex/worktrees/b625/glob2/src/engine/EngineRun.cpp:61
+    Engine::stepSession(unsigned long, std::vector<> const&)
+      at /home/bradley/.codex/worktrees/b625/glob2/src/engine/EngineRun.cpp:959
+    Engine::stepSession(unsigned long)
+      at src/engine/EngineRun.cpp:954
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    HeadlessRunner::game(std::map<> const&, std::filesystem::__cxx11::path const&)
+      at src/app/cli/Headless.cpp:560
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    runHeadlessCommand(int, char**)
+      at src/app/cli/Headless.cpp:918
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    Glob2::run(int, char**)
+      at src/app/Glob2.cpp:497
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    main
+      at src/app/Glob2.cpp:657
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+4028 calls with 0B peak consumption from:
+    Engine::gatherAndAdvanceOrders(bool)
+      at src/engine/EngineRun.cpp:186
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    Engine::advanceSession(unsigned long, std::function<> const&, bool)
+      at src/engine/EngineRun.cpp:1129
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    Engine::stepSessionImpl(unsigned long, std::vector<> const&)
+      at src/engine/EngineRun.cpp:997
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    guardedSessionStep<>::operator()
+      at src/engine/EngineRun.cpp:959
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    
+      at /home/bradley/.codex/worktrees/b625/glob2/src/engine/EngineRun.cpp:61
+    Engine::stepSession(unsigned long, std::vector<> const&)
+      at /home/bradley/.codex/worktrees/b625/glob2/src/engine/EngineRun.cpp:959
+    Engine::stepSession(unsigned long)
+      at src/engine/EngineRun.cpp:954
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    HeadlessRunner::game(std::map<> const&, std::filesystem::__cxx11::path const&)
+      at src/app/cli/Headless.cpp:560
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    runHeadlessCommand(int, char**)
+      at src/app/cli/Headless.cpp:918
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    Glob2::run(int, char**)
+      at src/app/Glob2.cpp:497
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    main
+      at src/app/Glob2.cpp:657
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+
+
+PEAK MEMORY CONSUMERS
+6.10M peak memory consumed over 18023 calls from
+std::__new_allocator<>::allocate(unsigned long, void const*)
+  at /usr/include/c++/15/bits/new_allocator.h:151
+  in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+std::allocator<>::allocate(unsigned long)
+  at /usr/include/c++/15/bits/allocator.h:203
+std::allocator_traits<>::allocate(std::allocator<>&, unsigned long)
+  at /usr/include/c++/15/bits/alloc_traits.h:614
+std::_Vector_base<>::_M_allocate(unsigned long)
+  at /usr/include/c++/15/bits/stl_vector.h:387
+void std::vector<>::_M_realloc_append<>(unsigned int&&)
+  at /usr/include/c++/15/bits/vector.tcc:572
+unsigned int& std::vector<>::emplace_back<>(unsigned int&&)
+  at /usr/include/c++/15/bits/vector.tcc:123
+std::vector<>::push_back(unsigned int&&)
+  at /usr/include/c++/15/bits/stl_vector.h:1434
+Engine::observationPlayers(bool) const
+  at /home/bradley/.codex/worktrees/b625/glob2/src/engine/EngineRun.cpp:326
+775.17K consumed over 506 calls from:
+    GradientBucket::reserveExtra(unsigned long)
+      at src/field/GradientBucket.h:41
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    gradient_kernel::expandBucketAddressed<>
+      at /home/bradley/.codex/worktrees/b625/glob2/src/field/GradientRelaxation.h:129
+    gradient_kernel::expandBucket<>
+      at /home/bradley/.codex/worktrees/b625/glob2/src/field/GradientRelaxation.h:289
+    BuildingGradientSearch::advance<>::operator()<>
+      at /home/bradley/.codex/worktrees/b625/glob2/src/map/gradient/BuildingGradientSearch.cpp:129
+    BuildingGradientSearch::
+      at /home/bradley/.codex/worktrees/b625/glob2/src/map/gradient/BuildingGradientSearch.cpp:161
+    BuildingGradientSearch::resolveToCost(int)
+      at src/map/gradient/BuildingGradientSearch.cpp:116
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    gradient_preparation::buildBuilding(gradient_preparation::BuildingSeed const&, SimulationSnapshot::Handle const&, BuildingGradientSearch::Inputs const&, unsigned short*, BuildingGradientSearch&, int)
+      at src/map/gradient/SnapshotGradient.cpp:302
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    buildScheduled
+      at src/map/gradient/MapGradientScheduling.cpp:79
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    std::function<>::operator()(BuildingGradientPipeline<>::Job&) const
+      at /usr/include/c++/15/bits/std_function.h:593
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    BuildingGradientPipeline<>::execute(BuildingGradientPipeline<>::Job&)
+      at /home/bradley/.codex/worktrees/b625/glob2/src/map/gradient/BuildingGradientPipeline.h:80
+    BuildingGradientPipeline<>::run(void*, unsigned long)
+      at /home/bradley/.codex/worktrees/b625/glob2/src/map/gradient/BuildingGradientPipeline.h:87
+    ComputeExecutor::execute(ComputeExecutor::Claim const&, unsigned long)
+      at src/common/ComputeExecutor.h:295
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    ComputeExecutor::join(ComputeExecutor::Batch&)
+      at /home/bradley/.codex/worktrees/b625/glob2/src/common/ComputeExecutor.h:589
+    GradientPipeline::wait(GradientPipeline::Job&)
+      at src/map/gradient/GradientPipeline.h:118
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    GradientPipeline::advance()
+      at /home/bradley/.codex/worktrees/b625/glob2/src/map/gradient/GradientPipeline.h:177
+    Map::advanceGradientPipeline()
+      at /home/bradley/.codex/worktrees/b625/glob2/src/map/MapStep.cpp:293
+    Game::syncStep(int, Game::PreparationCompletion)
+      at src/game/Game_sync.cpp:231
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    Engine::executeOrdersAndStep(bool)
+      at src/engine/EngineRun.cpp:287
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    Engine::advanceSession(unsigned long, std::function<> const&, bool)
+      at src/engine/EngineRun.cpp:1132
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    Engine::stepSessionImpl(unsigned long, std::vector<> const&)
+      at src/engine/EngineRun.cpp:997
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    guardedSessionStep<>::operator()
+      at src/engine/EngineRun.cpp:959
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    
+      at /home/bradley/.codex/worktrees/b625/glob2/src/engine/EngineRun.cpp:61
+    Engine::stepSession(unsigned long, std::vector<> const&)
+      at /home/bradley/.codex/worktrees/b625/glob2/src/engine/EngineRun.cpp:959
+    Engine::stepSession(unsigned long)
+      at src/engine/EngineRun.cpp:954
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    HeadlessRunner::game(std::map<> const&, std::filesystem::__cxx11::path const&)
+      at src/app/cli/Headless.cpp:560
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    runHeadlessCommand(int, char**)
+      at src/app/cli/Headless.cpp:918
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    Glob2::run(int, char**)
+      at src/app/Glob2.cpp:497
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    main
+      at src/app/Glob2.cpp:657
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+589.82K consumed over 9 calls from:
+    SimulationSnapshot::capture(Game const&, std::shared_ptr<>, unsigned int, SimulationSnapshot::Handle const*, SimulationSnapshot::Storage*)::operator()<>
+      at src/engine/sim/snapshot/WorldCapture.cpp:207
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    SimulationSnapshot::capture(Game const&, std::shared_ptr<>, unsigned int, SimulationSnapshot::Handle const*, SimulationSnapshot::Storage*)
+      at /home/bradley/.codex/worktrees/b625/glob2/src/engine/sim/snapshot/WorldCapture.cpp:289
+    SimulationSnapshot::Store::captureBoundary(Game const&, unsigned int)
+      at src/engine/sim/snapshot/SnapshotStore.cpp:24
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    Game::captureReadBoundary(std::span<>, bool, unsigned int) const
+      at src/game/GameAI.cpp:18
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    Engine::openReadBoundary(std::span<>, bool, bool)
+      at src/engine/EngineRun.cpp:335
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    Engine::gatherAndAdvanceOrders(bool)
+      at src/engine/EngineRun.cpp:174
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    Engine::advanceSession(unsigned long, std::function<> const&, bool)
+      at src/engine/EngineRun.cpp:1129
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    Engine::stepSessionImpl(unsigned long, std::vector<> const&)
+      at src/engine/EngineRun.cpp:997
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    guardedSessionStep<>::operator()
+      at src/engine/EngineRun.cpp:959
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    
+      at /home/bradley/.codex/worktrees/b625/glob2/src/engine/EngineRun.cpp:61
+    Engine::stepSession(unsigned long, std::vector<> const&)
+      at /home/bradley/.codex/worktrees/b625/glob2/src/engine/EngineRun.cpp:959
+    Engine::stepSession(unsigned long)
+      at src/engine/EngineRun.cpp:954
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    HeadlessRunner::game(std::map<> const&, std::filesystem::__cxx11::path const&)
+      at src/app/cli/Headless.cpp:560
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    runHeadlessCommand(int, char**)
+      at src/app/cli/Headless.cpp:918
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    Glob2::run(int, char**)
+      at src/app/Glob2.cpp:497
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    main
+      at src/app/Glob2.cpp:657
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+  and 4.74M from 79 other places
+
+4.26M peak memory consumed over 71 calls from
+std::__new_allocator<>::allocate(unsigned long, void const*)
+  at /usr/include/c++/15/bits/new_allocator.h:151
+  in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+std::allocator<>::allocate(unsigned long)
+  at /usr/include/c++/15/bits/allocator.h:203
+std::allocator_traits<>::allocate(std::allocator<>&, unsigned long)
+  at /usr/include/c++/15/bits/alloc_traits.h:614
+std::_Vector_base<>::_M_allocate(unsigned long)
+  at /usr/include/c++/15/bits/stl_vector.h:387
+std::_Vector_base<>::_M_create_storage(unsigned long)
+  at /usr/include/c++/15/bits/stl_vector.h:405
+std::_Vector_base<>::_Vector_base(unsigned long, std::allocator<> const&)
+  at /usr/include/c++/15/bits/stl_vector.h:341
+std::vector<>::vector(unsigned long, AIMaximaPlacement::WorldTile const&, std::allocator<> const&)
+  at /usr/include/c++/15/bits/stl_vector.h:601
+std::vector<>::_M_fill_assign(unsigned long, AIMaximaPlacement::WorldTile const&)
+  at /usr/include/c++/15/bits/vector.tcc:278
+std::vector<>::_M_fill_assign(unsigned long, AIMaximaPlacement::WorldTile const&)
+  at /usr/include/c++/15/bits/vector.tcc:270
+std::vector<>::assign(unsigned long, AIMaximaPlacement::WorldTile const&)
+  at /usr/include/c++/15/bits/stl_vector.h:876
+AIMaximaPlacement::WorldState::reset(int, int)
+  at /home/bradley/.codex/worktrees/b625/glob2/src/ai/maxima/AIMaximaPlacement.cpp:269
+2.56M consumed over 3 calls from:
+    AIMaxima::Maxima::development_cycle(AIMaximaRuntime::Context&)
+      at src/ai/maxima/AIMaxima.cpp:5113
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    AIMaxima::Maxima::tick(AIMaximaRuntime::Context&)
+      at src/ai/maxima/AIMaxima.cpp:3913
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    AIMaximaRuntime::Context::getOrder(AIMaximaRuntime::RuntimeAI&)
+      at src/ai/maxima/AIMaximaRuntime.cpp:1486
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    AIMaxima::Maxima::getOrder(AIEngine::DecisionContext const&)
+      at src/ai/maxima/AIMaximaState.cpp:329
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    AI::decide(AIEngine::DecisionContext const&)
+      at src/ai/AI.cpp:223
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    std::__invoke_impl<>::operator()
+      at src/ai/engine/AIPipeline.cpp:111
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    std::
+      at /usr/include/c++/15/bits/invoke.h:63
+    std::__invoke_r<>
+      at /usr/include/c++/15/bits/invoke.h:118
+    std::_Function_handler<>::_M_invoke
+      at /usr/include/c++/15/bits/std_function.h:293
+    std::function<>::operator()(AIEngine::AIWorldView const&) const
+      at /usr/include/c++/15/bits/std_function.h:593
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    AIEngine::OrderScheduler::Pending::run(void*, unsigned long)
+      at /home/bradley/.codex/worktrees/b625/glob2/src/ai/engine/AIOrderScheduler.cpp:74
+    ComputeExecutor::execute(ComputeExecutor::Claim const&, unsigned long)
+      at src/common/ComputeExecutor.h:295
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    ComputeExecutor::join(ComputeExecutor::Batch&)
+      at /home/bradley/.codex/worktrees/b625/glob2/src/common/ComputeExecutor.h:589
+    AIEngine::OrderScheduler::joinBatch(AIEngine::OrderScheduler::TickBatch&)
+      at src/ai/engine/AIOrderScheduler.cpp:152
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    AIEngine::OrderScheduler::takeDue(unsigned int)
+      at src/ai/engine/AIOrderScheduler.cpp:208
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    AIEngine::Pipeline::prepare(Game&, std::span<>, bool, std::shared_ptr<> const&, SimulationSnapshot::Handle const&)
+      at src/ai/engine/AIPipeline.cpp:116
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    Game::prepareAIOrders(std::span<>, bool, std::shared_ptr<> const&, SimulationSnapshot::Handle const*)
+      at src/game/GameAI.cpp:27
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    Engine::gatherAndAdvanceOrders(bool)
+      at src/engine/EngineRun.cpp:175
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    Engine::advanceSession(unsigned long, std::function<> const&, bool)
+      at src/engine/EngineRun.cpp:1129
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    Engine::stepSessionImpl(unsigned long, std::vector<> const&)
+      at src/engine/EngineRun.cpp:997
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    guardedSessionStep<>::operator()
+      at src/engine/EngineRun.cpp:959
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    
+      at /home/bradley/.codex/worktrees/b625/glob2/src/engine/EngineRun.cpp:61
+    Engine::stepSession(unsigned long, std::vector<> const&)
+      at /home/bradley/.codex/worktrees/b625/glob2/src/engine/EngineRun.cpp:959
+    Engine::stepSession(unsigned long)
+      at src/engine/EngineRun.cpp:954
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    HeadlessRunner::game(std::map<> const&, std::filesystem::__cxx11::path const&)
+      at src/app/cli/Headless.cpp:560
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    runHeadlessCommand(int, char**)
+      at src/app/cli/Headless.cpp:918
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    Glob2::run(int, char**)
+      at src/app/Glob2.cpp:497
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    main
+      at src/app/Glob2.cpp:657
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+851.97K consumed over 3 calls from:
+    AIMaxima::Maxima::collect_development_world(AIMaximaRuntime::Context&, unsigned int*) const
+      at src/ai/maxima/AIMaxima.cpp:4351
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    AIMaxima::Maxima::development_cycle(AIMaximaRuntime::Context&)
+      at src/ai/maxima/AIMaxima.cpp:4967
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    AIMaxima::Maxima::tick(AIMaximaRuntime::Context&)
+      at src/ai/maxima/AIMaxima.cpp:3913
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    AIMaximaRuntime::Context::getOrder(AIMaximaRuntime::RuntimeAI&)
+      at src/ai/maxima/AIMaximaRuntime.cpp:1486
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    AIMaxima::Maxima::getOrder(AIEngine::DecisionContext const&)
+      at src/ai/maxima/AIMaximaState.cpp:329
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    AI::decide(AIEngine::DecisionContext const&)
+      at src/ai/AI.cpp:223
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    std::__invoke_impl<>::operator()
+      at src/ai/engine/AIPipeline.cpp:111
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    std::
+      at /usr/include/c++/15/bits/invoke.h:63
+    std::__invoke_r<>
+      at /usr/include/c++/15/bits/invoke.h:118
+    std::_Function_handler<>::_M_invoke
+      at /usr/include/c++/15/bits/std_function.h:293
+    std::function<>::operator()(AIEngine::AIWorldView const&) const
+      at /usr/include/c++/15/bits/std_function.h:593
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    AIEngine::OrderScheduler::Pending::run(void*, unsigned long)
+      at /home/bradley/.codex/worktrees/b625/glob2/src/ai/engine/AIOrderScheduler.cpp:74
+    ComputeExecutor::execute(ComputeExecutor::Claim const&, unsigned long)
+      at src/common/ComputeExecutor.h:295
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    ComputeExecutor::join(ComputeExecutor::Batch&)
+      at /home/bradley/.codex/worktrees/b625/glob2/src/common/ComputeExecutor.h:589
+    AIEngine::OrderScheduler::joinBatch(AIEngine::OrderScheduler::TickBatch&)
+      at src/ai/engine/AIOrderScheduler.cpp:152
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    AIEngine::OrderScheduler::takeDue(unsigned int)
+      at src/ai/engine/AIOrderScheduler.cpp:208
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    AIEngine::Pipeline::prepare(Game&, std::span<>, bool, std::shared_ptr<> const&, SimulationSnapshot::Handle const&)
+      at src/ai/engine/AIPipeline.cpp:116
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    Game::prepareAIOrders(std::span<>, bool, std::shared_ptr<> const&, SimulationSnapshot::Handle const*)
+      at src/game/GameAI.cpp:27
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    Engine::gatherAndAdvanceOrders(bool)
+      at src/engine/EngineRun.cpp:175
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    Engine::advanceSession(unsigned long, std::function<> const&, bool)
+      at src/engine/EngineRun.cpp:1129
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    Engine::stepSessionImpl(unsigned long, std::vector<> const&)
+      at src/engine/EngineRun.cpp:997
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    guardedSessionStep<>::operator()
+      at src/engine/EngineRun.cpp:959
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    
+      at /home/bradley/.codex/worktrees/b625/glob2/src/engine/EngineRun.cpp:61
+    Engine::stepSession(unsigned long, std::vector<> const&)
+      at /home/bradley/.codex/worktrees/b625/glob2/src/engine/EngineRun.cpp:959
+    Engine::stepSession(unsigned long)
+      at src/engine/EngineRun.cpp:954
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    HeadlessRunner::game(std::map<> const&, std::filesystem::__cxx11::path const&)
+      at src/app/cli/Headless.cpp:560
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    runHeadlessCommand(int, char**)
+      at src/app/cli/Headless.cpp:918
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    Glob2::run(int, char**)
+      at src/app/Glob2.cpp:497
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    main
+      at src/app/Glob2.cpp:657
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+  and 851.97K from 6 other places
+
+3.28M peak memory consumed over 1187 calls from
+std::__new_allocator<>::allocate(unsigned long, void const*)
+  at /usr/include/c++/15/bits/new_allocator.h:151
+  in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+std::allocator<>::allocate(unsigned long)
+  at /usr/include/c++/15/bits/allocator.h:203
+std::allocator_traits<>::allocate(std::allocator<>&, unsigned long)
+  at /usr/include/c++/15/bits/alloc_traits.h:614
+std::_Vector_base<>::_M_allocate(unsigned long)
+  at /usr/include/c++/15/bits/stl_vector.h:387
+std::vector<>::reserve(unsigned long)
+  at /usr/include/c++/15/bits/vector.tcc:79
+SimulationSnapshot::capture(Game const&, std::shared_ptr<>, unsigned int, SimulationSnapshot::Handle const*, SimulationSnapshot::Storage*)::operator()<>::operator()<>
+  at /home/bradley/.codex/worktrees/b625/glob2/src/engine/sim/snapshot/WorldCapture.cpp:111
+SimulationSnapshot::capture(Game const&, std::shared_ptr<>, unsigned int, SimulationSnapshot::Handle const*, SimulationSnapshot::Storage*)::operator()<>
+  at /home/bradley/.codex/worktrees/b625/glob2/src/engine/sim/snapshot/WorldCapture.cpp:207
+SimulationSnapshot::capture(Game const&, std::shared_ptr<>, unsigned int, SimulationSnapshot::Handle const*, SimulationSnapshot::Storage*)
+  at /home/bradley/.codex/worktrees/b625/glob2/src/engine/sim/snapshot/WorldCapture.cpp:253
+917.50K consumed over 28 calls from:
+    SimulationSnapshot::capture(Game const&, std::shared_ptr<>, unsigned int, SimulationSnapshot::Handle const*, SimulationSnapshot::Storage*)
+      at src/engine/sim/snapshot/WorldCapture.cpp:492
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    SimulationSnapshot::Store::captureBoundary(Game const&, unsigned int)
+      at src/engine/sim/snapshot/SnapshotStore.cpp:24
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    Game::captureReadBoundary(std::span<>, bool, unsigned int) const
+      at src/game/GameAI.cpp:18
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    Engine::openReadBoundary(std::span<>, bool, bool)
+      at src/engine/EngineRun.cpp:335
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    Engine::gatherAndAdvanceOrders(bool)
+      at src/engine/EngineRun.cpp:174
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    Engine::advanceSession(unsigned long, std::function<> const&, bool)
+      at src/engine/EngineRun.cpp:1129
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    Engine::stepSessionImpl(unsigned long, std::vector<> const&)
+      at src/engine/EngineRun.cpp:997
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    guardedSessionStep<>::operator()
+      at src/engine/EngineRun.cpp:959
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    
+      at /home/bradley/.codex/worktrees/b625/glob2/src/engine/EngineRun.cpp:61
+    Engine::stepSession(unsigned long, std::vector<> const&)
+      at /home/bradley/.codex/worktrees/b625/glob2/src/engine/EngineRun.cpp:959
+    Engine::stepSession(unsigned long)
+      at src/engine/EngineRun.cpp:954
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    HeadlessRunner::game(std::map<> const&, std::filesystem::__cxx11::path const&)
+      at src/app/cli/Headless.cpp:560
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    runHeadlessCommand(int, char**)
+      at src/app/cli/Headless.cpp:918
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    Glob2::run(int, char**)
+      at src/app/Glob2.cpp:497
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    main
+      at src/app/Glob2.cpp:657
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+393.22K consumed over 3 calls from:
+    TeamStats::sampleDefence(Team*)
+      at src/team/stats/TeamStat.cpp:1402
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    TeamStats::step(Team*, bool)
+      at src/team/stats/TeamStat.cpp:460
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    Team::syncStep()
+      at src/team/TeamStep.cpp:483
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    Game::syncStep(int, Game::PreparationCompletion)
+      at src/game/Game_sync.cpp:234
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    Engine::executeOrdersAndStep(bool)
+      at src/engine/EngineRun.cpp:287
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    Engine::advanceSession(unsigned long, std::function<> const&, bool)
+      at src/engine/EngineRun.cpp:1132
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    Engine::stepSessionImpl(unsigned long, std::vector<> const&)
+      at src/engine/EngineRun.cpp:997
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    guardedSessionStep<>::operator()
+      at src/engine/EngineRun.cpp:959
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    
+      at /home/bradley/.codex/worktrees/b625/glob2/src/engine/EngineRun.cpp:61
+    Engine::stepSession(unsigned long, std::vector<> const&)
+      at /home/bradley/.codex/worktrees/b625/glob2/src/engine/EngineRun.cpp:959
+    Engine::stepSession(unsigned long)
+      at src/engine/EngineRun.cpp:954
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    HeadlessRunner::game(std::map<> const&, std::filesystem::__cxx11::path const&)
+      at src/app/cli/Headless.cpp:560
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    runHeadlessCommand(int, char**)
+      at src/app/cli/Headless.cpp:918
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    Glob2::run(int, char**)
+      at src/app/Glob2.cpp:497
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    main
+      at src/app/Glob2.cpp:657
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+  and 1.97M from 40 other places
+
+3.18M peak memory consumed over 59988 calls from
+std::__new_allocator<>::allocate(unsigned long, void const*)
+  at /usr/include/c++/15/bits/new_allocator.h:151
+  in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+std::allocator<>::allocate(unsigned long)
+  at /usr/include/c++/15/bits/allocator.h:203
+std::allocator_traits<>::allocate(std::allocator<>&, unsigned long)
+  at /usr/include/c++/15/bits/alloc_traits.h:614
+std::_Vector_base<>::_M_allocate(unsigned long)
+  at /usr/include/c++/15/bits/stl_vector.h:387
+std::_Vector_base<>::_M_create_storage(unsigned long)
+  at /usr/include/c++/15/bits/stl_vector.h:405
+std::_Vector_base<>::_Vector_base(unsigned long, std::allocator<> const&)
+  at /usr/include/c++/15/bits/stl_vector.h:341
+std::vector<>::vector(unsigned long, int const&, std::allocator<> const&)
+  at /usr/include/c++/15/bits/stl_vector.h:601
+std::vector<>::_M_fill_assign(unsigned long, int const&)
+  at /usr/include/c++/15/bits/vector.tcc:278
+std::vector<>::_M_fill_assign(unsigned long, int const&)
+  at /usr/include/c++/15/bits/vector.tcc:270
+std::vector<>::assign(unsigned long, int const&)
+  at /usr/include/c++/15/bits/stl_vector.h:876
+Engine::trackTeamEliminations()
+  at /home/bradley/.codex/worktrees/b625/glob2/src/engine/EngineRun.cpp:629
+589.82K consumed over 1 calls from:
+    AIMaximaPlacement::Planner::prepareScoringCaches(AIMaximaPlacement::WorldState const&) const
+      at src/ai/maxima/AIMaximaPlacement.cpp:871
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    AIMaximaPlacement::Planner::selectActionIncremental(AIMaximaPlacement::WorldState const&, std::vector<> const&, AIMaximaPlacement::DevelopmentLimits const&, AIMaximaPlacement::DevelopmentAction&, unsigned int, int)
+      at src/ai/maxima/AIMaximaPlacement.cpp:2907
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    AIMaxima::Maxima::development_cycle(AIMaximaRuntime::Context&)
+      at src/ai/maxima/AIMaxima.cpp:5113
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    AIMaxima::Maxima::tick(AIMaximaRuntime::Context&)
+      at src/ai/maxima/AIMaxima.cpp:3913
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    AIMaximaRuntime::Context::getOrder(AIMaximaRuntime::RuntimeAI&)
+      at src/ai/maxima/AIMaximaRuntime.cpp:1486
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    AIMaxima::Maxima::getOrder(AIEngine::DecisionContext const&)
+      at src/ai/maxima/AIMaximaState.cpp:329
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    AI::decide(AIEngine::DecisionContext const&)
+      at src/ai/AI.cpp:223
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    std::__invoke_impl<>::operator()
+      at src/ai/engine/AIPipeline.cpp:111
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    std::
+      at /usr/include/c++/15/bits/invoke.h:63
+    std::__invoke_r<>
+      at /usr/include/c++/15/bits/invoke.h:118
+    std::_Function_handler<>::_M_invoke
+      at /usr/include/c++/15/bits/std_function.h:293
+    std::function<>::operator()(AIEngine::AIWorldView const&) const
+      at /usr/include/c++/15/bits/std_function.h:593
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    AIEngine::OrderScheduler::Pending::run(void*, unsigned long)
+      at /home/bradley/.codex/worktrees/b625/glob2/src/ai/engine/AIOrderScheduler.cpp:74
+    ComputeExecutor::execute(ComputeExecutor::Claim const&, unsigned long)
+      at src/common/ComputeExecutor.h:295
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    ComputeExecutor::join(ComputeExecutor::Batch&)
+      at /home/bradley/.codex/worktrees/b625/glob2/src/common/ComputeExecutor.h:589
+    AIEngine::OrderScheduler::joinBatch(AIEngine::OrderScheduler::TickBatch&)
+      at src/ai/engine/AIOrderScheduler.cpp:152
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    AIEngine::OrderScheduler::takeDue(unsigned int)
+      at src/ai/engine/AIOrderScheduler.cpp:208
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    AIEngine::Pipeline::prepare(Game&, std::span<>, bool, std::shared_ptr<> const&, SimulationSnapshot::Handle const&)
+      at src/ai/engine/AIPipeline.cpp:116
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    Game::prepareAIOrders(std::span<>, bool, std::shared_ptr<> const&, SimulationSnapshot::Handle const*)
+      at src/game/GameAI.cpp:27
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    Engine::gatherAndAdvanceOrders(bool)
+      at src/engine/EngineRun.cpp:175
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    Engine::advanceSession(unsigned long, std::function<> const&, bool)
+      at src/engine/EngineRun.cpp:1129
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    Engine::stepSessionImpl(unsigned long, std::vector<> const&)
+      at src/engine/EngineRun.cpp:997
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    guardedSessionStep<>::operator()
+      at src/engine/EngineRun.cpp:959
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    
+      at /home/bradley/.codex/worktrees/b625/glob2/src/engine/EngineRun.cpp:61
+    Engine::stepSession(unsigned long, std::vector<> const&)
+      at /home/bradley/.codex/worktrees/b625/glob2/src/engine/EngineRun.cpp:959
+    Engine::stepSession(unsigned long)
+      at src/engine/EngineRun.cpp:954
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    HeadlessRunner::game(std::map<> const&, std::filesystem::__cxx11::path const&)
+      at src/app/cli/Headless.cpp:560
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    runHeadlessCommand(int, char**)
+      at src/app/cli/Headless.cpp:918
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    Glob2::run(int, char**)
+      at src/app/Glob2.cpp:497
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    main
+      at src/app/Glob2.cpp:657
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+393.22K consumed over 3 calls from:
+    AIMaximaPlacement::Planner::prepareScoringCaches(AIMaximaPlacement::WorldState const&) const
+      at src/ai/maxima/AIMaximaPlacement.cpp:1017
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    AIMaximaPlacement::Planner::selectActionIncremental(AIMaximaPlacement::WorldState const&, std::vector<> const&, AIMaximaPlacement::DevelopmentLimits const&, AIMaximaPlacement::DevelopmentAction&, unsigned int, int)
+      at src/ai/maxima/AIMaximaPlacement.cpp:2907
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    AIMaxima::Maxima::development_cycle(AIMaximaRuntime::Context&)
+      at src/ai/maxima/AIMaxima.cpp:5113
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    AIMaxima::Maxima::tick(AIMaximaRuntime::Context&)
+      at src/ai/maxima/AIMaxima.cpp:3913
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    AIMaximaRuntime::Context::getOrder(AIMaximaRuntime::RuntimeAI&)
+      at src/ai/maxima/AIMaximaRuntime.cpp:1486
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    AIMaxima::Maxima::getOrder(AIEngine::DecisionContext const&)
+      at src/ai/maxima/AIMaximaState.cpp:329
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    AI::decide(AIEngine::DecisionContext const&)
+      at src/ai/AI.cpp:223
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    std::__invoke_impl<>::operator()
+      at src/ai/engine/AIPipeline.cpp:111
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    std::
+      at /usr/include/c++/15/bits/invoke.h:63
+    std::__invoke_r<>
+      at /usr/include/c++/15/bits/invoke.h:118
+    std::_Function_handler<>::_M_invoke
+      at /usr/include/c++/15/bits/std_function.h:293
+    std::function<>::operator()(AIEngine::AIWorldView const&) const
+      at /usr/include/c++/15/bits/std_function.h:593
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    AIEngine::OrderScheduler::Pending::run(void*, unsigned long)
+      at /home/bradley/.codex/worktrees/b625/glob2/src/ai/engine/AIOrderScheduler.cpp:74
+    ComputeExecutor::execute(ComputeExecutor::Claim const&, unsigned long)
+      at src/common/ComputeExecutor.h:295
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    ComputeExecutor::join(ComputeExecutor::Batch&)
+      at /home/bradley/.codex/worktrees/b625/glob2/src/common/ComputeExecutor.h:589
+    AIEngine::OrderScheduler::joinBatch(AIEngine::OrderScheduler::TickBatch&)
+      at src/ai/engine/AIOrderScheduler.cpp:152
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    AIEngine::OrderScheduler::takeDue(unsigned int)
+      at src/ai/engine/AIOrderScheduler.cpp:208
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    AIEngine::Pipeline::prepare(Game&, std::span<>, bool, std::shared_ptr<> const&, SimulationSnapshot::Handle const&)
+      at src/ai/engine/AIPipeline.cpp:116
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    Game::prepareAIOrders(std::span<>, bool, std::shared_ptr<> const&, SimulationSnapshot::Handle const*)
+      at src/game/GameAI.cpp:27
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    Engine::gatherAndAdvanceOrders(bool)
+      at src/engine/EngineRun.cpp:175
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    Engine::advanceSession(unsigned long, std::function<> const&, bool)
+      at src/engine/EngineRun.cpp:1129
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    Engine::stepSessionImpl(unsigned long, std::vector<> const&)
+      at src/engine/EngineRun.cpp:997
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    guardedSessionStep<>::operator()
+      at src/engine/EngineRun.cpp:959
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    
+      at /home/bradley/.codex/worktrees/b625/glob2/src/engine/EngineRun.cpp:61
+    Engine::stepSession(unsigned long, std::vector<> const&)
+      at /home/bradley/.codex/worktrees/b625/glob2/src/engine/EngineRun.cpp:959
+    Engine::stepSession(unsigned long)
+      at src/engine/EngineRun.cpp:954
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    HeadlessRunner::game(std::map<> const&, std::filesystem::__cxx11::path const&)
+      at src/app/cli/Headless.cpp:560
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    runHeadlessCommand(int, char**)
+      at src/app/cli/Headless.cpp:918
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    Glob2::run(int, char**)
+      at src/app/Glob2.cpp:497
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    main
+      at src/app/Glob2.cpp:657
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+  and 2.20M from 387 other places
+
+
+MOST TEMPORARY ALLOCATIONS
+16375 temporary allocations of 16392 allocations in total (99.90%) from
+std::__new_allocator<>::allocate(unsigned long, void const*)
+  at /usr/include/c++/15/bits/new_allocator.h:151
+  in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+std::allocator<>::allocate(unsigned long)
+  at /usr/include/c++/15/bits/allocator.h:203
+std::allocator_traits<>::allocate(std::allocator<>&, unsigned long)
+  at /usr/include/c++/15/bits/alloc_traits.h:614
+std::_Deque_base<>::_M_allocate_node()
+  at /usr/include/c++/15/bits/stl_deque.h:586
+std::_Deque_base<>::_M_create_nodes(std::variant<>**, std::variant<>**)
+  at /usr/include/c++/15/bits/stl_deque.h:687
+std::_Deque_base<>::_M_initialize_map(unsigned long)
+  at /usr/include/c++/15/bits/stl_deque.h:661
+std::_Deque_base<>::_Deque_base()
+  at /usr/include/c++/15/bits/stl_deque.h:463
+std::deque<>::deque()
+  at /usr/include/c++/15/bits/stl_deque.h:858
+void std::_Construct<>(std::deque<>*)
+  at /usr/include/c++/15/bits/stl_construct.h:133
+void std::_Optional_payload_base<>::_M_construct<>()
+  at /usr/include/c++/15/optional:298
+void std::_Optional_base<>::_M_construct<>()
+  at /usr/include/c++/15/optional:550
+std::enable_if<>::type std::optional<>::emplace<>()
+  at /usr/include/c++/15/optional:1120
+LosslessQueue<>::drain<>
+  at /home/bradley/.codex/worktrees/b625/glob2/src/engine/sim/ClientEvents.h:46
+ClientEvents::drain<>
+  at /home/bradley/.codex/worktrees/b625/glob2/src/engine/sim/ClientEvents.h:132
+GameGUI::consumeClientEvents()
+  at /home/bradley/.codex/worktrees/b625/glob2/src/hud/GameGUISelection.cpp:179
+16375 temporary allocations of 16384 allocations in total (99.95%) from:
+    Engine::executeOrdersAndStep(bool)
+      at src/engine/EngineRun.cpp:237
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    Engine::advanceSession(unsigned long, std::function<> const&, bool)
+      at src/engine/EngineRun.cpp:1132
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    Engine::stepSessionImpl(unsigned long, std::vector<> const&)
+      at src/engine/EngineRun.cpp:997
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    guardedSessionStep<>::operator()
+      at src/engine/EngineRun.cpp:959
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    
+      at /home/bradley/.codex/worktrees/b625/glob2/src/engine/EngineRun.cpp:61
+    Engine::stepSession(unsigned long, std::vector<> const&)
+      at /home/bradley/.codex/worktrees/b625/glob2/src/engine/EngineRun.cpp:959
+    Engine::stepSession(unsigned long)
+      at src/engine/EngineRun.cpp:954
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    HeadlessRunner::game(std::map<> const&, std::filesystem::__cxx11::path const&)
+      at src/app/cli/Headless.cpp:560
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    runHeadlessCommand(int, char**)
+      at src/app/cli/Headless.cpp:918
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    Glob2::run(int, char**)
+      at src/app/Glob2.cpp:497
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    main
+      at src/app/Glob2.cpp:657
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+
+15595 temporary allocations of 16483 allocations in total (94.61%) from
+std::__new_allocator<>::allocate(unsigned long, void const*)
+  at /usr/include/c++/15/bits/new_allocator.h:151
+  in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+std::allocator<>::allocate(unsigned long)
+  at /usr/include/c++/15/bits/allocator.h:203
+std::allocator_traits<>::allocate(std::allocator<>&, unsigned long)
+  at /usr/include/c++/15/bits/alloc_traits.h:614
+std::_Vector_base<>::_M_allocate(unsigned long)
+  at /usr/include/c++/15/bits/stl_vector.h:387
+void std::vector<>::_M_range_initialize_n<>(__gnu_cxx::__normal_iterator<>, __gnu_cxx::__normal_iterator<>, unsigned long)
+  at /usr/include/c++/15/bits/stl_vector.h:1985
+std::vector<>::vector<>(__gnu_cxx::__normal_iterator<>, __gnu_cxx::__normal_iterator<>, std::allocator<> const&)
+  at /usr/include/c++/15/bits/stl_vector.h:746
+Team::updateAllBuildingTasks()
+  at /home/bradley/.codex/worktrees/b625/glob2/src/team/TeamStep.cpp:145
+15585 temporary allocations of 16015 allocations in total (97.32%) from:
+    Team::syncStep()
+      at src/team/TeamStep.cpp:447
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    Game::syncStep(int, Game::PreparationCompletion)
+      at src/game/Game_sync.cpp:234
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    Engine::executeOrdersAndStep(bool)
+      at src/engine/EngineRun.cpp:287
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    Engine::advanceSession(unsigned long, std::function<> const&, bool)
+      at src/engine/EngineRun.cpp:1132
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    Engine::stepSessionImpl(unsigned long, std::vector<> const&)
+      at src/engine/EngineRun.cpp:997
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    guardedSessionStep<>::operator()
+      at src/engine/EngineRun.cpp:959
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    
+      at /home/bradley/.codex/worktrees/b625/glob2/src/engine/EngineRun.cpp:61
+    Engine::stepSession(unsigned long, std::vector<> const&)
+      at /home/bradley/.codex/worktrees/b625/glob2/src/engine/EngineRun.cpp:959
+    Engine::stepSession(unsigned long)
+      at src/engine/EngineRun.cpp:954
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    HeadlessRunner::game(std::map<> const&, std::filesystem::__cxx11::path const&)
+      at src/app/cli/Headless.cpp:560
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    runHeadlessCommand(int, char**)
+      at src/app/cli/Headless.cpp:918
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    Glob2::run(int, char**)
+      at src/app/Glob2.cpp:497
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    main
+      at src/app/Glob2.cpp:657
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+10 temporary allocations of 446 allocations in total (2.24%) from:
+    Team::syncStep()
+      at src/team/TeamStep.cpp:447
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    Game::syncStep(int, Game::PreparationCompletion)
+      at src/game/Game_sync.cpp:234
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    Engine::executeOrdersAndStep(bool)
+      at src/engine/EngineRun.cpp:287
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    Engine::advanceSession(unsigned long, std::function<> const&, bool)
+      at src/engine/EngineRun.cpp:1132
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    Engine::stepSessionImpl(unsigned long, std::vector<> const&)
+      at src/engine/EngineRun.cpp:997
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    guardedSessionStep<>::operator()
+      at src/engine/EngineRun.cpp:959
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    
+      at /home/bradley/.codex/worktrees/b625/glob2/src/engine/EngineRun.cpp:61
+    Engine::stepSession(unsigned long, std::vector<> const&)
+      at /home/bradley/.codex/worktrees/b625/glob2/src/engine/EngineRun.cpp:959
+    Engine::stepSession(unsigned long)
+      at src/engine/EngineRun.cpp:954
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    HeadlessRunner::game(std::map<> const&, std::filesystem::__cxx11::path const&)
+      at src/app/cli/Headless.cpp:560
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    runHeadlessCommand(int, char**)
+      at src/app/cli/Headless.cpp:918
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    Glob2::run(int, char**)
+      at src/app/Glob2.cpp:497
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    main
+      at src/app/Glob2.cpp:657
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+  and 0B from 7 other places
+
+6137 temporary allocations of 59988 allocations in total (10.23%) from
+std::__new_allocator<>::allocate(unsigned long, void const*)
+  at /usr/include/c++/15/bits/new_allocator.h:151
+  in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+std::allocator<>::allocate(unsigned long)
+  at /usr/include/c++/15/bits/allocator.h:203
+std::allocator_traits<>::allocate(std::allocator<>&, unsigned long)
+  at /usr/include/c++/15/bits/alloc_traits.h:614
+std::_Vector_base<>::_M_allocate(unsigned long)
+  at /usr/include/c++/15/bits/stl_vector.h:387
+std::_Vector_base<>::_M_create_storage(unsigned long)
+  at /usr/include/c++/15/bits/stl_vector.h:405
+std::_Vector_base<>::_Vector_base(unsigned long, std::allocator<> const&)
+  at /usr/include/c++/15/bits/stl_vector.h:341
+std::vector<>::vector(unsigned long, int const&, std::allocator<> const&)
+  at /usr/include/c++/15/bits/stl_vector.h:601
+std::vector<>::_M_fill_assign(unsigned long, int const&)
+  at /usr/include/c++/15/bits/vector.tcc:278
+std::vector<>::_M_fill_assign(unsigned long, int const&)
+  at /usr/include/c++/15/bits/vector.tcc:270
+std::vector<>::assign(unsigned long, int const&)
+  at /usr/include/c++/15/bits/stl_vector.h:876
+Engine::trackTeamEliminations()
+  at /home/bradley/.codex/worktrees/b625/glob2/src/engine/EngineRun.cpp:629
+2962 temporary allocations of 4924 allocations in total (60.15%) from:
+    AIMaximaPlacement::Planner::addBuildCandidatesRange(AIMaximaPlacement::WorldState const&, AIMaximaPlacement::DevelopmentIntent const&, unsigned int, bool, std::vector<>&, unsigned long&, unsigned long, AIMaximaPlacement::DevelopmentAction&, bool&, unsigned long&, AIMaximaPlacement::DevelopmentAction&, bool&, unsigned long&)
+      at src/ai/maxima/AIMaximaPlacement.cpp:1990
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    AIMaximaPlacement::Planner::selectActionIncremental(AIMaximaPlacement::WorldState const&, std::vector<> const&, AIMaximaPlacement::DevelopmentLimits const&, AIMaximaPlacement::DevelopmentAction&, unsigned int, int)
+      at src/ai/maxima/AIMaximaPlacement.cpp:2956
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    AIMaxima::Maxima::development_cycle(AIMaximaRuntime::Context&)
+      at src/ai/maxima/AIMaxima.cpp:5113
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    AIMaxima::Maxima::tick(AIMaximaRuntime::Context&)
+      at src/ai/maxima/AIMaxima.cpp:3913
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    AIMaximaRuntime::Context::getOrder(AIMaximaRuntime::RuntimeAI&)
+      at src/ai/maxima/AIMaximaRuntime.cpp:1486
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    AIMaxima::Maxima::getOrder(AIEngine::DecisionContext const&)
+      at src/ai/maxima/AIMaximaState.cpp:329
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    AI::decide(AIEngine::DecisionContext const&)
+      at src/ai/AI.cpp:223
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    std::__invoke_impl<>::operator()
+      at src/ai/engine/AIPipeline.cpp:111
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    std::
+      at /usr/include/c++/15/bits/invoke.h:63
+    std::__invoke_r<>
+      at /usr/include/c++/15/bits/invoke.h:118
+    std::_Function_handler<>::_M_invoke
+      at /usr/include/c++/15/bits/std_function.h:293
+    std::function<>::operator()(AIEngine::AIWorldView const&) const
+      at /usr/include/c++/15/bits/std_function.h:593
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    AIEngine::OrderScheduler::Pending::run(void*, unsigned long)
+      at /home/bradley/.codex/worktrees/b625/glob2/src/ai/engine/AIOrderScheduler.cpp:74
+    ComputeExecutor::execute(ComputeExecutor::Claim const&, unsigned long)
+      at src/common/ComputeExecutor.h:295
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    ComputeExecutor::join(ComputeExecutor::Batch&)
+      at /home/bradley/.codex/worktrees/b625/glob2/src/common/ComputeExecutor.h:589
+    AIEngine::OrderScheduler::joinBatch(AIEngine::OrderScheduler::TickBatch&)
+      at src/ai/engine/AIOrderScheduler.cpp:152
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    AIEngine::OrderScheduler::takeDue(unsigned int)
+      at src/ai/engine/AIOrderScheduler.cpp:208
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    AIEngine::Pipeline::prepare(Game&, std::span<>, bool, std::shared_ptr<> const&, SimulationSnapshot::Handle const&)
+      at src/ai/engine/AIPipeline.cpp:116
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    Game::prepareAIOrders(std::span<>, bool, std::shared_ptr<> const&, SimulationSnapshot::Handle const*)
+      at src/game/GameAI.cpp:27
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    Engine::gatherAndAdvanceOrders(bool)
+      at src/engine/EngineRun.cpp:175
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    Engine::advanceSession(unsigned long, std::function<> const&, bool)
+      at src/engine/EngineRun.cpp:1129
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    Engine::stepSessionImpl(unsigned long, std::vector<> const&)
+      at src/engine/EngineRun.cpp:997
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    guardedSessionStep<>::operator()
+      at src/engine/EngineRun.cpp:959
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    
+      at /home/bradley/.codex/worktrees/b625/glob2/src/engine/EngineRun.cpp:61
+    Engine::stepSession(unsigned long, std::vector<> const&)
+      at /home/bradley/.codex/worktrees/b625/glob2/src/engine/EngineRun.cpp:959
+    Engine::stepSession(unsigned long)
+      at src/engine/EngineRun.cpp:954
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    HeadlessRunner::game(std::map<> const&, std::filesystem::__cxx11::path const&)
+      at src/app/cli/Headless.cpp:560
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    runHeadlessCommand(int, char**)
+      at src/app/cli/Headless.cpp:918
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    Glob2::run(int, char**)
+      at src/app/Glob2.cpp:497
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    main
+      at src/app/Glob2.cpp:657
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+1148 temporary allocations of 4662 allocations in total (24.62%) from:
+    AIMaxima::Maxima::update_farming(AIMaximaRuntime::Context&)
+      at src/ai/maxima/AIMaximaFarmingPolicy.cpp:1397
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    AIMaxima::Maxima::tick(AIMaximaRuntime::Context&)
+      at src/ai/maxima/AIMaxima.cpp:3903
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    AIMaximaRuntime::Context::getOrder(AIMaximaRuntime::RuntimeAI&)
+      at src/ai/maxima/AIMaximaRuntime.cpp:1486
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    AIMaxima::Maxima::getOrder(AIEngine::DecisionContext const&)
+      at src/ai/maxima/AIMaximaState.cpp:329
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    AI::decide(AIEngine::DecisionContext const&)
+      at src/ai/AI.cpp:223
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    std::__invoke_impl<>::operator()
+      at src/ai/engine/AIPipeline.cpp:111
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    std::
+      at /usr/include/c++/15/bits/invoke.h:63
+    std::__invoke_r<>
+      at /usr/include/c++/15/bits/invoke.h:118
+    std::_Function_handler<>::_M_invoke
+      at /usr/include/c++/15/bits/std_function.h:293
+    std::function<>::operator()(AIEngine::AIWorldView const&) const
+      at /usr/include/c++/15/bits/std_function.h:593
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    AIEngine::OrderScheduler::Pending::run(void*, unsigned long)
+      at /home/bradley/.codex/worktrees/b625/glob2/src/ai/engine/AIOrderScheduler.cpp:74
+    ComputeExecutor::execute(ComputeExecutor::Claim const&, unsigned long)
+      at src/common/ComputeExecutor.h:295
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    ComputeExecutor::join(ComputeExecutor::Batch&)
+      at /home/bradley/.codex/worktrees/b625/glob2/src/common/ComputeExecutor.h:589
+    AIEngine::OrderScheduler::joinBatch(AIEngine::OrderScheduler::TickBatch&)
+      at src/ai/engine/AIOrderScheduler.cpp:152
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    AIEngine::OrderScheduler::takeDue(unsigned int)
+      at src/ai/engine/AIOrderScheduler.cpp:208
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    AIEngine::Pipeline::prepare(Game&, std::span<>, bool, std::shared_ptr<> const&, SimulationSnapshot::Handle const&)
+      at src/ai/engine/AIPipeline.cpp:116
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    Game::prepareAIOrders(std::span<>, bool, std::shared_ptr<> const&, SimulationSnapshot::Handle const*)
+      at src/game/GameAI.cpp:27
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    Engine::gatherAndAdvanceOrders(bool)
+      at src/engine/EngineRun.cpp:175
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    Engine::advanceSession(unsigned long, std::function<> const&, bool)
+      at src/engine/EngineRun.cpp:1129
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    Engine::stepSessionImpl(unsigned long, std::vector<> const&)
+      at src/engine/EngineRun.cpp:997
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    guardedSessionStep<>::operator()
+      at src/engine/EngineRun.cpp:959
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    
+      at /home/bradley/.codex/worktrees/b625/glob2/src/engine/EngineRun.cpp:61
+    Engine::stepSession(unsigned long, std::vector<> const&)
+      at /home/bradley/.codex/worktrees/b625/glob2/src/engine/EngineRun.cpp:959
+    Engine::stepSession(unsigned long)
+      at src/engine/EngineRun.cpp:954
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    HeadlessRunner::game(std::map<> const&, std::filesystem::__cxx11::path const&)
+      at src/app/cli/Headless.cpp:560
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    runHeadlessCommand(int, char**)
+      at src/app/cli/Headless.cpp:918
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    Glob2::run(int, char**)
+      at src/app/Glob2.cpp:497
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    main
+      at src/app/Glob2.cpp:657
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+  and 2.03K from 387 other places
+
+4421 temporary allocations of 4421 allocations in total (100.00%) from
+operator new(unsigned long, std::nothrow_t const&)
+  in /usr/lib/x86_64-linux-gnu/libstdc++.so.6
+4088 temporary allocations of 4088 allocations in total (100.00%) from:
+    AIEngine::Delivery* std::__detail::__get_temporary_buffer<>(long)
+      at /usr/include/c++/15/bits/stl_tempbuf.h:94
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    std::pair<> std::get_temporary_buffer<>(long)
+      at /usr/include/c++/15/bits/stl_tempbuf.h:152
+    std::_Temporary_buffer<>::_Impl::_Impl(long)
+      at /usr/include/c++/15/bits/stl_tempbuf.h:209
+    std::_Temporary_buffer<>::_Temporary_buffer(__gnu_cxx::__normal_iterator<>, long)
+      at /usr/include/c++/15/bits/stl_tempbuf.h:324
+    std::__stable_sort<>
+      at /usr/include/c++/15/bits/stl_algo.h:5025
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    std::stable_sort<>
+      at /usr/include/c++/15/bits/stl_algo.h:5108
+    AIEngine::OrderScheduler::takeDue(unsigned int)
+      at /home/bradley/.codex/worktrees/b625/glob2/src/ai/engine/AIOrderScheduler.cpp:216
+    AIEngine::Pipeline::prepare(Game&, std::span<>, bool, std::shared_ptr<> const&, SimulationSnapshot::Handle const&)
+      at src/ai/engine/AIPipeline.cpp:116
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    Game::prepareAIOrders(std::span<>, bool, std::shared_ptr<> const&, SimulationSnapshot::Handle const*)
+      at src/game/GameAI.cpp:27
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    Engine::gatherAndAdvanceOrders(bool)
+      at src/engine/EngineRun.cpp:175
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    Engine::advanceSession(unsigned long, std::function<> const&, bool)
+      at src/engine/EngineRun.cpp:1129
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    Engine::stepSessionImpl(unsigned long, std::vector<> const&)
+      at src/engine/EngineRun.cpp:997
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    guardedSessionStep<>::operator()
+      at src/engine/EngineRun.cpp:959
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    
+      at /home/bradley/.codex/worktrees/b625/glob2/src/engine/EngineRun.cpp:61
+    Engine::stepSession(unsigned long, std::vector<> const&)
+      at /home/bradley/.codex/worktrees/b625/glob2/src/engine/EngineRun.cpp:959
+    Engine::stepSession(unsigned long)
+      at src/engine/EngineRun.cpp:954
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    HeadlessRunner::game(std::map<> const&, std::filesystem::__cxx11::path const&)
+      at src/app/cli/Headless.cpp:560
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    runHeadlessCommand(int, char**)
+      at src/app/cli/Headless.cpp:918
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    Glob2::run(int, char**)
+      at src/app/Glob2.cpp:497
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    main
+      at src/app/Glob2.cpp:657
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+44 temporary allocations of 44 allocations in total (100.00%) from:
+    int* std::__detail::__get_temporary_buffer<>(long)
+      at /usr/include/c++/15/bits/stl_tempbuf.h:94
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    std::pair<> std::get_temporary_buffer<>(long)
+      at /usr/include/c++/15/bits/stl_tempbuf.h:152
+    std::_Temporary_buffer<>::_Impl::_Impl(long)
+      at /usr/include/c++/15/bits/stl_tempbuf.h:209
+    std::_Temporary_buffer<>::_Temporary_buffer(int*, long)
+      at /usr/include/c++/15/bits/stl_tempbuf.h:324
+    void std::__stable_sort<>(int*, int*, __gnu_cxx::__ops::_Iter_comp_iter<>)
+      at /usr/include/c++/15/bits/stl_algo.h:5025
+    void std::stable_sort<>(int*, int*, AIMaxima::allocateFeedingDemand(std::vector<> const&, std::vector<> const&)::{lambda(int, int)#1})
+      at /usr/include/c++/15/bits/stl_algo.h:5108
+    AIMaxima::allocateFeedingDemand(std::vector<> const&, std::vector<> const&)
+      at /home/bradley/.codex/worktrees/b625/glob2/src/ai/maxima/AIMaximaFeedingDemand.h:75
+    AIMaximaPlacement::Planner::prepareFoodLedger(AIMaximaPlacement::WorldState const&, int, int, int, int, int) const
+      at src/ai/maxima/AIMaximaPlacement.cpp:1373
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    AIMaximaPlacement::Planner::evaluateFoodLedger(AIMaximaPlacement::WorldState const&) const
+      at src/ai/maxima/AIMaximaPlacement.cpp:1515
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    AIMaxima::Maxima::update_food_relocation(AIMaximaRuntime::Context&, AIMaximaPlacement::WorldState const&)
+      at src/ai/maxima/AIMaxima.cpp:5477
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    AIMaxima::Maxima::development_cycle(AIMaximaRuntime::Context&)
+      at src/ai/maxima/AIMaxima.cpp:4976
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    AIMaxima::Maxima::tick(AIMaximaRuntime::Context&)
+      at src/ai/maxima/AIMaxima.cpp:3913
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    AIMaximaRuntime::Context::getOrder(AIMaximaRuntime::RuntimeAI&)
+      at src/ai/maxima/AIMaximaRuntime.cpp:1486
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    AIMaxima::Maxima::getOrder(AIEngine::DecisionContext const&)
+      at src/ai/maxima/AIMaximaState.cpp:329
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    AI::decide(AIEngine::DecisionContext const&)
+      at src/ai/AI.cpp:223
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    std::__invoke_impl<>::operator()
+      at src/ai/engine/AIPipeline.cpp:111
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    std::
+      at /usr/include/c++/15/bits/invoke.h:63
+    std::__invoke_r<>
+      at /usr/include/c++/15/bits/invoke.h:118
+    std::_Function_handler<>::_M_invoke
+      at /usr/include/c++/15/bits/std_function.h:293
+    std::function<>::operator()(AIEngine::AIWorldView const&) const
+      at /usr/include/c++/15/bits/std_function.h:593
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    AIEngine::OrderScheduler::Pending::run(void*, unsigned long)
+      at /home/bradley/.codex/worktrees/b625/glob2/src/ai/engine/AIOrderScheduler.cpp:74
+    ComputeExecutor::execute(ComputeExecutor::Claim const&, unsigned long)
+      at src/common/ComputeExecutor.h:295
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    ComputeExecutor::join(ComputeExecutor::Batch&)
+      at /home/bradley/.codex/worktrees/b625/glob2/src/common/ComputeExecutor.h:589
+    AIEngine::OrderScheduler::joinBatch(AIEngine::OrderScheduler::TickBatch&)
+      at src/ai/engine/AIOrderScheduler.cpp:152
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    AIEngine::OrderScheduler::takeDue(unsigned int)
+      at src/ai/engine/AIOrderScheduler.cpp:208
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    AIEngine::Pipeline::prepare(Game&, std::span<>, bool, std::shared_ptr<> const&, SimulationSnapshot::Handle const&)
+      at src/ai/engine/AIPipeline.cpp:116
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    Game::prepareAIOrders(std::span<>, bool, std::shared_ptr<> const&, SimulationSnapshot::Handle const*)
+      at src/game/GameAI.cpp:27
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    Engine::gatherAndAdvanceOrders(bool)
+      at src/engine/EngineRun.cpp:175
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    Engine::advanceSession(unsigned long, std::function<> const&, bool)
+      at src/engine/EngineRun.cpp:1129
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    Engine::stepSessionImpl(unsigned long, std::vector<> const&)
+      at src/engine/EngineRun.cpp:997
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    guardedSessionStep<>::operator()
+      at src/engine/EngineRun.cpp:959
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    
+      at /home/bradley/.codex/worktrees/b625/glob2/src/engine/EngineRun.cpp:61
+    Engine::stepSession(unsigned long, std::vector<> const&)
+      at /home/bradley/.codex/worktrees/b625/glob2/src/engine/EngineRun.cpp:959
+    Engine::stepSession(unsigned long)
+      at src/engine/EngineRun.cpp:954
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    HeadlessRunner::game(std::map<> const&, std::filesystem::__cxx11::path const&)
+      at src/app/cli/Headless.cpp:560
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    runHeadlessCommand(int, char**)
+      at src/app/cli/Headless.cpp:918
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    Glob2::run(int, char**)
+      at src/app/Glob2.cpp:497
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+    main
+      at src/app/Glob2.cpp:657
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2
+  and 289B from 42 other places
+
+
+total runtime: 11.65s.
+calls to allocation functions: 509478 (43713/s)
+temporary memory allocations: 47388 (4065/s)
+peak heap memory consumption: 30.52M
+peak RSS (including heaptrack overhead): 75.98M
+total memory leaked: 29.65M
+suppressed leaks: 1.04K

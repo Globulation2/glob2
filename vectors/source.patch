@@ -1,0 +1,25 @@
+diff --git a/src/team/TeamStep.cpp b/src/team/TeamStep.cpp
+index be517822b..4ab23e654 100644
+--- a/src/team/TeamStep.cpp
++++ b/src/team/TeamStep.cpp
+@@ -134,6 +134,7 @@ void Team::removeBuildingNeedingWork(Building* b, Sint32 priority)
+ void Team::updateAllBuildingTasks()
+ {
+ 	PERF_SCOPE_TIME(Tasks);
++	std::vector<Building*> pending, hiring;
+ 	for(std::map<int, std::vector<Building*>, std::greater<int> >::iterator i = buildingsNeedingUnits.begin(); i!=buildingsNeedingUnits.end(); ++i)
+ 	{
+ 		std::sort(i->second.begin(), i->second.end(), Team::buildingHasHigherPriority);
+@@ -142,10 +143,10 @@ void Team::updateAllBuildingTasks()
+ 		// reordered and resized while it is being walked. Keep "hired last round,
+ 		// so ask again" attached to the building instead of to a position in a
+ 		// vector that does not hold still.
+-		std::vector<Building*> pending(i->second.begin(), i->second.end());
++		pending.assign(i->second.begin(), i->second.end());
+ 		while(!pending.empty())
+ 		{
+-			std::vector<Building*> hiring;
++			hiring.clear();
+ 			for(std::vector<Building*>::iterator b=pending.begin(); b!=pending.end(); ++b)
+ 			{
+ 				bool thisFound = (*b)->subscribeWorkStep();

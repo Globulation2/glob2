@@ -1,0 +1,142 @@
+{
+  "baseline": {
+    "binary_sha256": "73853ce09b8387f8e682759980de5839590e8054f41579f1168b38b989418cd7",
+    "source_patch_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "base": "da57b459f1eb20b9b4a08d25eb502711dd81986b",
+    "commit": "da57b459f1eb20b9b4a08d25eb502711dd81986b",
+    "build_command": [
+      "scons",
+      "-j12",
+      "release=1",
+      "profile=0",
+      "serial_audit_skip_assets=1",
+      "CC=gcc-15",
+      "CXX=/home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-audit/tooling/g++-15-symbols",
+      "CXXFLAGS=-g2",
+      "LINKFLAGS=-g2",
+      "--build=build/serial-audit-gcc15",
+      "build/serial-audit-gcc15/src/glob2",
+      "tests"
+    ]
+  },
+  "hiring": {
+    "binary_sha256": "f854e235f10d304c160f68bbedc66b248f145a446f8e2768b960410fcdf69352",
+    "source_patch_sha256": "331de3586f63cf3c9016671b8faeb7b4b66b0ab57f75f25b74adbbac6e637d57",
+    "base": "da57b459f1eb20b9b4a08d25eb502711dd81986b",
+    "commit": "eb2171665139ac08210eebfb8e83a9d6bd35a11a",
+    "build_command": [
+      "scons",
+      "-j12",
+      "release=1",
+      "profile=0",
+      "serial_audit_skip_assets=1",
+      "CC=gcc-15",
+      "CXX=/home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-audit/tooling/g++-15-symbols",
+      "CXXFLAGS=-g2",
+      "LINKFLAGS=-g2",
+      "--build=build/serial-audit-gcc15",
+      "build/serial-audit-gcc15/src/glob2",
+      "tests"
+    ]
+  },
+  "stats": {
+    "binary_sha256": "f714d776bbe950c8dc3a934c4b135b1935178d9d9adee19a366c54cc2fcc77eb",
+    "source_patch_sha256": "788da7be59774505b2d23dec97de80d558a580e94911e3139d63012a34c3a46d",
+    "base": "da57b459f1eb20b9b4a08d25eb502711dd81986b",
+    "commit": "d320e051afaba83a6952faa9295fda834cf431af",
+    "build_command": [
+      "scons",
+      "-j12",
+      "release=1",
+      "profile=0",
+      "serial_audit_skip_assets=1",
+      "CC=gcc-15",
+      "CXX=/home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-audit/tooling/g++-15-symbols",
+      "CXXFLAGS=-g2",
+      "LINKFLAGS=-g2",
+      "--build=build/serial-audit-gcc15",
+      "build/serial-audit-gcc15/src/glob2",
+      "tests"
+    ]
+  },
+  "queues": {
+    "binary_sha256": "df2c7c5f572aefcd9b16e007ef38a8a39449927a0167c0c9dce1d5672d89a4ee",
+    "source_patch_sha256": "6bd4e6b2f4951caeebe94e57b4013a113821a84293d4c21137271df17a730254",
+    "base": "da57b459f1eb20b9b4a08d25eb502711dd81986b",
+    "commit": "07c2add2b1c0282f657babe295a6089f30db54b4",
+    "build_command": [
+      "scons",
+      "-j12",
+      "release=1",
+      "profile=0",
+      "serial_audit_skip_assets=1",
+      "CC=gcc-15",
+      "CXX=/home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-audit/tooling/g++-15-symbols",
+      "CXXFLAGS=-g2",
+      "LINKFLAGS=-g2",
+      "--build=build/serial-audit-gcc15",
+      "build/serial-audit-gcc15/src/glob2",
+      "tests"
+    ]
+  },
+  "combined": {
+    "binary_sha256": "f99b84a942dbb63b5a2215b85cae56bb989d87f3cbd23f2d1ea930b0cd267efc",
+    "source_patch_sha256": "06a47c7e6245e2d71f6fb67d7c89d3a9b4b36808fb6b65531c2d7b24ced890b4",
+    "base": "da57b459f1eb20b9b4a08d25eb502711dd81986b",
+    "commit": "a66b4342e876e9f4e9293c934822e88907da9b06",
+    "build_command": [
+      "scons",
+      "-j12",
+      "release=1",
+      "profile=0",
+      "serial_audit_skip_assets=1",
+      "CC=gcc-15",
+      "CXX=/home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-audit/tooling/g++-15-symbols",
+      "CXXFLAGS=-g2",
+      "LINKFLAGS=-g2",
+      "--build=build/serial-audit-gcc15",
+      "build/serial-audit-gcc15/src/glob2",
+      "tests"
+    ]
+  },
+  "players": {
+    "binary_sha256": "29c5509881449eff69d44228566b5d725e33b507dce01c63e58ba4eeb53f0b9e",
+    "source_patch_sha256": "8ca718a38bf753c50eccfdc11725760177af9ff1f09fbe9afe13d0fd199c5dfe",
+    "base": "da57b459f1eb20b9b4a08d25eb502711dd81986b",
+    "commit": "5465a95772ea03092e3e70d8ecfab596cd85033b",
+    "build_command": [
+      "scons",
+      "-j12",
+      "release=1",
+      "profile=0",
+      "serial_audit_skip_assets=1",
+      "CC=gcc-15",
+      "CXX=/home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-audit/tooling/g++-15-symbols",
+      "CXXFLAGS=-g2",
+      "LINKFLAGS=-g2",
+      "--build=build/serial-audit-gcc15",
+      "build/serial-audit-gcc15/src/glob2",
+      "tests"
+    ]
+  },
+  "vectors": {
+    "binary_sha256": "d0ca5eff3a010a7cbc7999069c1e24d3ed41f3076e4907d818b942681ca4e644",
+    "source_patch_sha256": "d2bbfb8506006cbc4339a460baaac7b3d88f48fd15457253655eca1ea90d2b36",
+    "base": "da57b459f1eb20b9b4a08d25eb502711dd81986b",
+    "commit": "055c1fe77ced10d7b12a7ff117df8799ad7f2061",
+    "build_command": [
+      "scons",
+      "-j12",
+      "release=1",
+      "profile=0",
+      "serial_audit_skip_assets=1",
+      "CC=gcc-15",
+      "CXX=/home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-audit/tooling/g++-15-symbols",
+      "CXXFLAGS=-g2",
+      "LINKFLAGS=-g2",
+      "--build=build/serial-audit-gcc15",
+      "build/serial-audit-gcc15/src/glob2",
+      "tests"
+    ]
+  }
+}

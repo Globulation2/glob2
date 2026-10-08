@@ -1,0 +1,194 @@
+[
+  {
+    "patch": "hiring",
+    "fixture": "sparse",
+    "participants": 4,
+    "baseline_owner_instructions": 333300537,
+    "candidate_owner_instructions": 303856575,
+    "delta_percent": -8.834057774110338
+  },
+  {
+    "patch": "hiring",
+    "fixture": "hiring",
+    "participants": 4,
+    "baseline_owner_instructions": 586960877,
+    "candidate_owner_instructions": 429931421,
+    "delta_percent": -26.752968068773008
+  },
+  {
+    "patch": "hiring",
+    "fixture": "established",
+    "participants": 4,
+    "baseline_owner_instructions": 1298504829,
+    "candidate_owner_instructions": 1152170979,
+    "delta_percent": -11.269411305362187
+  },
+  {
+    "patch": "hiring",
+    "fixture": "dense",
+    "participants": 4,
+    "baseline_owner_instructions": 4552241893,
+    "candidate_owner_instructions": 4302613406,
+    "delta_percent": -5.483638454798601
+  },
+  {
+    "patch": "hiring",
+    "fixture": "combat",
+    "participants": 4,
+    "baseline_owner_instructions": 1109483066,
+    "candidate_owner_instructions": 1042443646,
+    "delta_percent": -6.042401371811479
+  },
+  {
+    "patch": "stats",
+    "fixture": "sparse",
+    "participants": 4,
+    "baseline_owner_instructions": 333300537,
+    "candidate_owner_instructions": 249963254,
+    "delta_percent": -25.003644983626295
+  },
+  {
+    "patch": "stats",
+    "fixture": "hiring",
+    "participants": 4,
+    "baseline_owner_instructions": 586960877,
+    "candidate_owner_instructions": 497832815,
+    "delta_percent": -15.184668261970035
+  },
+  {
+    "patch": "stats",
+    "fixture": "established",
+    "participants": 4,
+    "baseline_owner_instructions": 1298504829,
+    "candidate_owner_instructions": 1212414939,
+    "delta_percent": -6.629924516052766
+  },
+  {
+    "patch": "stats",
+    "fixture": "dense",
+    "participants": 4,
+    "baseline_owner_instructions": 4552241893,
+    "candidate_owner_instructions": 4485983701,
+    "delta_percent": -1.4555068372330005
+  },
+  {
+    "patch": "stats",
+    "fixture": "combat",
+    "participants": 4,
+    "baseline_owner_instructions": 1109483066,
+    "candidate_owner_instructions": 1033198059,
+    "delta_percent": -6.875725221749351
+  },
+  {
+    "patch": "queues",
+    "fixture": "sparse",
+    "participants": 4,
+    "baseline_owner_instructions": 333300537,
+    "candidate_owner_instructions": 331466131,
+    "delta_percent": -0.5503759509394412
+  },
+  {
+    "patch": "queues",
+    "fixture": "hiring",
+    "participants": 4,
+    "baseline_owner_instructions": 586960877,
+    "candidate_owner_instructions": 575498130,
+    "delta_percent": -1.9528979612043251
+  },
+  {
+    "patch": "queues",
+    "fixture": "established",
+    "participants": 4,
+    "baseline_owner_instructions": 1298504829,
+    "candidate_owner_instructions": 1290777428,
+    "delta_percent": -0.5950999047073968
+  },
+  {
+    "patch": "queues",
+    "fixture": "dense",
+    "participants": 4,
+    "baseline_owner_instructions": 4552241893,
+    "candidate_owner_instructions": 4551936686,
+    "delta_percent": -0.006704542666535751
+  },
+  {
+    "patch": "queues",
+    "fixture": "combat",
+    "participants": 4,
+    "baseline_owner_instructions": 1109483066,
+    "candidate_owner_instructions": 1111547111,
+    "delta_percent": 0.18603663843572704
+  },
+  {
+    "patch": "players",
+    "fixture": "sparse",
+    "participants": 4,
+    "baseline_owner_instructions": 333300537,
+    "candidate_owner_instructions": 333636434,
+    "delta_percent": 0.10077901554657043
+  },
+  {
+    "patch": "players",
+    "fixture": "hiring",
+    "participants": 4,
+    "baseline_owner_instructions": 586960877,
+    "candidate_owner_instructions": 586697757,
+    "delta_percent": -0.04482751922834094
+  },
+  {
+    "patch": "players",
+    "fixture": "established",
+    "participants": 4,
+    "baseline_owner_instructions": 1298504829,
+    "candidate_owner_instructions": 1312307990,
+    "delta_percent": 1.0630042100521209
+  },
+  {
+    "patch": "players",
+    "fixture": "dense",
+    "participants": 4,
+    "baseline_owner_instructions": 4552241893,
+    "candidate_owner_instructions": 4551969873,
+    "delta_percent": -0.005975517259271257
+  },
+  {
+    "patch": "players",
+    "fixture": "combat",
+    "participants": 4,
+    "baseline_owner_instructions": 1109483066,
+    "candidate_owner_instructions": 1110421053,
+    "delta_percent": 0.08454270540438902
+  },
+  {
+    "patch": "vectors",
+    "fixture": "sparse",
+    "participants": 4,
+    "baseline_owner_instructions": 333300537,
+    "candidate_owner_instructions": 330863512,
+    "delta_percent": -0.7311794400139182
+  },
+  {
+    "patch": "vectors",
+    "fixture": "hiring",
+    "participants": 4,
+    "baseline_owner_instructions": 586960877,
+    "candidate_owner_instructions": 575725880,
+    "delta_percent": -1.9140963972629432
+  },
+  {
+    "patch": "vectors",
+    "fixture": "established",
+    "participants": 4,
+    "baseline_owner_instructions": 1298504829,
+    "candidate_owner_instructions": 1290883095,
+    "delta_percent": -0.5869623146391834
+  },
+  {
+    "patch": "vectors",
+    "fixture": "dense",
+    "participants": 4,
+    "baseline_owner_instructions": 4552241893,
+    "candidate_owner_instructions": 4553258763,
+    "delta_percent": 0.022337784851989007
+  }
+]

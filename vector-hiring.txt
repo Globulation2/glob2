@@ -1,0 +1,1352 @@
+reading file "artifacts/serial-opt/vectors/profiles/hiring-4-heaptrack/heaptrack.zst" - please wait, this might take some time...
+Debuggee command was: /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2 --run-game --load-game /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-audit/peaceful/checkpoint-4096.game.gz --ticks 8192 --compute-threads 4 --compute-experiments ai --benchmark-warmup 0 --output-dir /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/profiles/hiring-4-heaptrack --profile serial-opt
+finished reading file, now analyzing data:
+
+MOST CALLS TO ALLOCATION FUNCTIONS
+17246 calls to allocation functions with 0B peak consumption from
+std::__new_allocator<>::allocate(unsigned long, void const*)
+  at /usr/include/c++/15/bits/new_allocator.h:151
+  in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+std::allocator<>::allocate(unsigned long)
+  at /usr/include/c++/15/bits/allocator.h:203
+std::allocator_traits<>::allocate(std::allocator<>&, unsigned long)
+  at /usr/include/c++/15/bits/alloc_traits.h:614
+std::_Vector_base<>::_M_allocate(unsigned long)
+  at /usr/include/c++/15/bits/stl_vector.h:387
+Building** std::vector<>::_M_allocate_and_copy<>(unsigned long, __gnu_cxx::__normal_iterator<>, __gnu_cxx::__normal_iterator<>)
+  at /usr/include/c++/15/bits/stl_vector.h:1910
+void std::vector<>::_M_assign_aux<>(__gnu_cxx::__normal_iterator<>, __gnu_cxx::__normal_iterator<>, std::forward_iterator_tag)
+  at /usr/include/c++/15/bits/vector.tcc:331
+void std::vector<>::assign<>(__gnu_cxx::__normal_iterator<>, __gnu_cxx::__normal_iterator<>)
+  at /usr/include/c++/15/bits/stl_vector.h:896
+Team::updateAllBuildingTasks()
+  at /home/bradley/.codex/worktrees/b625/glob2/src/team/TeamStep.cpp:146
+16384 calls with 0B peak consumption from:
+    Team::syncStep()
+      at src/team/TeamStep.cpp:448
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    Game::syncStep(int, Game::PreparationCompletion)
+      at src/game/Game_sync.cpp:234
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    Engine::executeOrdersAndStep(bool)
+      at src/engine/EngineRun.cpp:287
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    Engine::advanceSession(unsigned long, std::function<> const&, bool)
+      at src/engine/EngineRun.cpp:1132
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    Engine::stepSessionImpl(unsigned long, std::vector<> const&)
+      at src/engine/EngineRun.cpp:997
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    guardedSessionStep<>::operator()
+      at src/engine/EngineRun.cpp:959
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    
+      at /home/bradley/.codex/worktrees/b625/glob2/src/engine/EngineRun.cpp:61
+    Engine::stepSession(unsigned long, std::vector<> const&)
+      at /home/bradley/.codex/worktrees/b625/glob2/src/engine/EngineRun.cpp:959
+    Engine::stepSession(unsigned long)
+      at src/engine/EngineRun.cpp:954
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    HeadlessRunner::game(std::map<> const&, std::filesystem::__cxx11::path const&)
+      at src/app/cli/Headless.cpp:560
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    runHeadlessCommand(int, char**)
+      at src/app/cli/Headless.cpp:918
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    Glob2::run(int, char**)
+      at src/app/Glob2.cpp:497
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    main
+      at src/app/Glob2.cpp:657
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+862 calls with 0B peak consumption from:
+    Team::syncStep()
+      at src/team/TeamStep.cpp:448
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    Game::syncStep(int, Game::PreparationCompletion)
+      at src/game/Game_sync.cpp:234
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    Engine::executeOrdersAndStep(bool)
+      at src/engine/EngineRun.cpp:287
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    Engine::advanceSession(unsigned long, std::function<> const&, bool)
+      at src/engine/EngineRun.cpp:1132
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    Engine::stepSessionImpl(unsigned long, std::vector<> const&)
+      at src/engine/EngineRun.cpp:997
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    guardedSessionStep<>::operator()
+      at src/engine/EngineRun.cpp:959
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    
+      at /home/bradley/.codex/worktrees/b625/glob2/src/engine/EngineRun.cpp:61
+    Engine::stepSession(unsigned long, std::vector<> const&)
+      at /home/bradley/.codex/worktrees/b625/glob2/src/engine/EngineRun.cpp:959
+    Engine::stepSession(unsigned long)
+      at src/engine/EngineRun.cpp:954
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    HeadlessRunner::game(std::map<> const&, std::filesystem::__cxx11::path const&)
+      at src/app/cli/Headless.cpp:560
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    runHeadlessCommand(int, char**)
+      at src/app/cli/Headless.cpp:918
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    Glob2::run(int, char**)
+      at src/app/Glob2.cpp:497
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    main
+      at src/app/Glob2.cpp:657
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+
+1081 calls to allocation functions with 1.80K peak consumption from
+std::__new_allocator<>::allocate(unsigned long, void const*)
+  at /usr/include/c++/15/bits/new_allocator.h:151
+  in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+std::allocator<>::allocate(unsigned long)
+  at /usr/include/c++/15/bits/allocator.h:203
+std::allocator_traits<>::allocate(std::allocator<>&, unsigned long)
+  at /usr/include/c++/15/bits/alloc_traits.h:614
+std::__allocated_ptr<> std::__allocate_guarded<>(std::allocator<>&)
+  at /usr/include/c++/15/bits/allocated_ptr.h:102
+std::__allocated_obj<> std::__allocate_guarded_obj<>(std::allocator<>&)
+  at /usr/include/c++/15/bits/allocated_ptr.h:136
+std::_List_node<>* std::__cxx11::list<>::_M_create_node<>(Unit* const&)
+  at /usr/include/c++/15/bits/stl_list.h:1105
+void std::__cxx11::list<>::_M_insert<>(std::_List_iterator<>, Unit* const&)
+  at /usr/include/c++/15/bits/stl_list.h:2472
+std::__cxx11::list<>::push_back(Unit* const&)
+  at /usr/include/c++/15/bits/stl_list.h:1804
+Building::subscribeToBringMaterialsStep(bool)
+  at /home/bradley/.codex/worktrees/b625/glob2/src/building/Step.cpp:339
+874 calls with 1.37K peak consumption from:
+    Team::updateAllBuildingTasks()
+      at src/team/TeamStep.cpp:152
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    Team::syncStep()
+      at src/team/TeamStep.cpp:448
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    Game::syncStep(int, Game::PreparationCompletion)
+      at src/game/Game_sync.cpp:234
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    Engine::executeOrdersAndStep(bool)
+      at src/engine/EngineRun.cpp:287
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    Engine::advanceSession(unsigned long, std::function<> const&, bool)
+      at src/engine/EngineRun.cpp:1132
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    Engine::stepSessionImpl(unsigned long, std::vector<> const&)
+      at src/engine/EngineRun.cpp:997
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    guardedSessionStep<>::operator()
+      at src/engine/EngineRun.cpp:959
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    
+      at /home/bradley/.codex/worktrees/b625/glob2/src/engine/EngineRun.cpp:61
+    Engine::stepSession(unsigned long, std::vector<> const&)
+      at /home/bradley/.codex/worktrees/b625/glob2/src/engine/EngineRun.cpp:959
+    Engine::stepSession(unsigned long)
+      at src/engine/EngineRun.cpp:954
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    HeadlessRunner::game(std::map<> const&, std::filesystem::__cxx11::path const&)
+      at src/app/cli/Headless.cpp:560
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    runHeadlessCommand(int, char**)
+      at src/app/cli/Headless.cpp:918
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    Glob2::run(int, char**)
+      at src/app/Glob2.cpp:497
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    main
+      at src/app/Glob2.cpp:657
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+93 calls with 48B peak consumption from:
+    Team::swapTask(Unit*)
+      at src/team/TeamStep.cpp:287
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    Building::subscribeToBringMaterialsStep(bool)
+      at src/building/Step.cpp:341
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    Team::updateAllBuildingTasks()
+      at src/team/TeamStep.cpp:152
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    Team::syncStep()
+      at src/team/TeamStep.cpp:448
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    Game::syncStep(int, Game::PreparationCompletion)
+      at src/game/Game_sync.cpp:234
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    Engine::executeOrdersAndStep(bool)
+      at src/engine/EngineRun.cpp:287
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    Engine::advanceSession(unsigned long, std::function<> const&, bool)
+      at src/engine/EngineRun.cpp:1132
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    Engine::stepSessionImpl(unsigned long, std::vector<> const&)
+      at src/engine/EngineRun.cpp:997
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    guardedSessionStep<>::operator()
+      at src/engine/EngineRun.cpp:959
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    
+      at /home/bradley/.codex/worktrees/b625/glob2/src/engine/EngineRun.cpp:61
+    Engine::stepSession(unsigned long, std::vector<> const&)
+      at /home/bradley/.codex/worktrees/b625/glob2/src/engine/EngineRun.cpp:959
+    Engine::stepSession(unsigned long)
+      at src/engine/EngineRun.cpp:954
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    HeadlessRunner::game(std::map<> const&, std::filesystem::__cxx11::path const&)
+      at src/app/cli/Headless.cpp:560
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    runHeadlessCommand(int, char**)
+      at src/app/cli/Headless.cpp:918
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    Glob2::run(int, char**)
+      at src/app/Glob2.cpp:497
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    main
+      at src/app/Glob2.cpp:657
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+  and 114 from 2 other places
+
+758 calls to allocation functions with 553.98K peak consumption from
+std::__new_allocator<>::allocate(unsigned long, void const*)
+  at /usr/include/c++/15/bits/new_allocator.h:151
+  in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+std::allocator<>::allocate(unsigned long)
+  at /usr/include/c++/15/bits/allocator.h:203
+std::allocator_traits<>::allocate(std::allocator<>&, unsigned long)
+  at /usr/include/c++/15/bits/alloc_traits.h:614
+std::_Vector_base<>::_M_allocate(unsigned long)
+  at /usr/include/c++/15/bits/stl_vector.h:387
+std::vector<>::_M_default_append(unsigned long)
+  at /usr/include/c++/15/bits/vector.tcc:845
+std::vector<>::resize(unsigned long)
+  at /usr/include/c++/15/bits/stl_vector.h:1146
+GradientBucket::grow(unsigned long)
+  at /home/bradley/.codex/worktrees/b625/glob2/src/field/GradientBucket.h:53
+202 calls with 179.20K peak consumption from:
+    GradientBucket::reserveExtra(unsigned long)
+      at src/field/GradientBucket.h:41
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    gradient_kernel::expandBucketAddressed<>
+      at /home/bradley/.codex/worktrees/b625/glob2/src/field/GradientRelaxation.h:133
+    gradient_kernel::expandBucket<>
+      at /home/bradley/.codex/worktrees/b625/glob2/src/field/GradientRelaxation.h:289
+    BuildingGradientSearch::::operator()<>
+      at /home/bradley/.codex/worktrees/b625/glob2/src/map/gradient/BuildingGradientSearch.cpp:129
+    BuildingGradientSearch::
+      at /home/bradley/.codex/worktrees/b625/glob2/src/map/gradient/BuildingGradientSearch.cpp:158
+    BuildingGradientSearch::resolve(unsigned long)
+      at src/map/gradient/BuildingGradientSearch.cpp:108
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    Map::buildingGradientValue(Building*, int, unsigned long, BuildingRoute) const
+      at src/map/pathfind/MapPathfindBuilding.cpp:90
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    Map::buildingAvailable(Building*, int, int, int, int*, BuildingRoute)
+      at src/map/pathfind/MapPathfindBuilding.cpp:114
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    Building::considerUnitForBuilding(Unit*, int*)
+      at src/building/Step.cpp:98
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    Building::considerUnitForMaterial(Unit*, int, int*)
+      at src/building/Step.cpp:115
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    Building::gatherBringMaterialsCandidates(Building::BringMaterialsCandidate*, int)
+      at src/building/Step.cpp:167
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    Building::subscribeToBringMaterialsStep(bool)
+      at src/building/Step.cpp:332
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    Team::updateAllBuildingTasks()
+      at src/team/TeamStep.cpp:152
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    Team::syncStep()
+      at src/team/TeamStep.cpp:448
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    Game::syncStep(int, Game::PreparationCompletion)
+      at src/game/Game_sync.cpp:234
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    Engine::executeOrdersAndStep(bool)
+      at src/engine/EngineRun.cpp:287
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    Engine::advanceSession(unsigned long, std::function<> const&, bool)
+      at src/engine/EngineRun.cpp:1132
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    Engine::stepSessionImpl(unsigned long, std::vector<> const&)
+      at src/engine/EngineRun.cpp:997
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    guardedSessionStep<>::operator()
+      at src/engine/EngineRun.cpp:959
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    
+      at /home/bradley/.codex/worktrees/b625/glob2/src/engine/EngineRun.cpp:61
+    Engine::stepSession(unsigned long, std::vector<> const&)
+      at /home/bradley/.codex/worktrees/b625/glob2/src/engine/EngineRun.cpp:959
+    Engine::stepSession(unsigned long)
+      at src/engine/EngineRun.cpp:954
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    HeadlessRunner::game(std::map<> const&, std::filesystem::__cxx11::path const&)
+      at src/app/cli/Headless.cpp:560
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    runHeadlessCommand(int, char**)
+      at src/app/cli/Headless.cpp:918
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    Glob2::run(int, char**)
+      at src/app/Glob2.cpp:497
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    main
+      at src/app/Glob2.cpp:657
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+140 calls with 58.37K peak consumption from:
+    GradientBucket::reserveExtra(unsigned long)
+      at src/field/GradientBucket.h:41
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    gradient_kernel::expandBucketAddressed<>
+      at /home/bradley/.codex/worktrees/b625/glob2/src/field/GradientRelaxation.h:130
+    gradient_kernel::expandBucket<>
+      at /home/bradley/.codex/worktrees/b625/glob2/src/field/GradientRelaxation.h:289
+    BuildingGradientSearch::advance<>::operator()<>
+      at /home/bradley/.codex/worktrees/b625/glob2/src/map/gradient/BuildingGradientSearch.cpp:129
+    BuildingGradientSearch::
+      at /home/bradley/.codex/worktrees/b625/glob2/src/map/gradient/BuildingGradientSearch.cpp:161
+    BuildingGradientSearch::resolve(unsigned long)
+      at src/map/gradient/BuildingGradientSearch.cpp:108
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    Map::buildingGradientValue(Building*, int, unsigned long, BuildingRoute) const
+      at src/map/pathfind/MapPathfindBuilding.cpp:90
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    Map::buildingAvailable(Building*, int, int, int, int*, BuildingRoute)
+      at src/map/pathfind/MapPathfindBuilding.cpp:114
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    Building::considerUnitForBuilding(Unit*, int*)
+      at src/building/Step.cpp:98
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    Building::considerUnitForMaterial(Unit*, int, int*)
+      at src/building/Step.cpp:115
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    Building::gatherBringMaterialsCandidates(Building::BringMaterialsCandidate*, int)
+      at src/building/Step.cpp:167
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    Building::subscribeToBringMaterialsStep(bool)
+      at src/building/Step.cpp:332
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    Team::updateAllBuildingTasks()
+      at src/team/TeamStep.cpp:152
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    Team::syncStep()
+      at src/team/TeamStep.cpp:448
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    Game::syncStep(int, Game::PreparationCompletion)
+      at src/game/Game_sync.cpp:234
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    Engine::executeOrdersAndStep(bool)
+      at src/engine/EngineRun.cpp:287
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    Engine::advanceSession(unsigned long, std::function<> const&, bool)
+      at src/engine/EngineRun.cpp:1132
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    Engine::stepSessionImpl(unsigned long, std::vector<> const&)
+      at src/engine/EngineRun.cpp:997
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    guardedSessionStep<>::operator()
+      at src/engine/EngineRun.cpp:959
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    
+      at /home/bradley/.codex/worktrees/b625/glob2/src/engine/EngineRun.cpp:61
+    Engine::stepSession(unsigned long, std::vector<> const&)
+      at /home/bradley/.codex/worktrees/b625/glob2/src/engine/EngineRun.cpp:959
+    Engine::stepSession(unsigned long)
+      at src/engine/EngineRun.cpp:954
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    HeadlessRunner::game(std::map<> const&, std::filesystem::__cxx11::path const&)
+      at src/app/cli/Headless.cpp:560
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    runHeadlessCommand(int, char**)
+      at src/app/cli/Headless.cpp:918
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    Glob2::run(int, char**)
+      at src/app/Glob2.cpp:497
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    main
+      at src/app/Glob2.cpp:657
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+  and 416 from 24 other places
+
+12 calls to allocation functions with 504B peak consumption from
+std::__new_allocator<>::allocate(unsigned long, void const*)
+  at /usr/include/c++/15/bits/new_allocator.h:151
+  in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+std::allocator<>::allocate(unsigned long)
+  at /usr/include/c++/15/bits/allocator.h:203
+std::allocator_traits<>::allocate(std::allocator<>&, unsigned long)
+  at /usr/include/c++/15/bits/alloc_traits.h:614
+std::_Deque_base<>::_M_allocate_node()
+  at /usr/include/c++/15/bits/stl_deque.h:586
+void std::deque<>::_M_push_back_aux<>(GradientRuntime::BuildingRequest&&)
+  at /usr/include/c++/15/bits/deque.tcc:497
+GradientRuntime::BuildingRequest& std::deque<>::emplace_back<>(GradientRuntime::BuildingRequest&&)
+  at /usr/include/c++/15/bits/deque.tcc:176
+std::deque<>::push_back(GradientRuntime::BuildingRequest&&)
+  at /usr/include/c++/15/bits/stl_deque.h:1621
+Map::requestBuildingRefresh(Building*, int)
+  at /home/bradley/.codex/worktrees/b625/glob2/src/map/gradient/MapGradientScheduling.cpp:232
+4 calls with 504B peak consumption from:
+    Map::prepareBuildingGradient(Building*, int, BuildingRoute)
+      at src/map/pathfind/MapPathfindBuilding.cpp:58
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    Map::buildingAvailable(Building*, int, int, int, int*, BuildingRoute)
+      at src/map/pathfind/MapPathfindBuilding.cpp:109
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    Building::considerUnitForBuilding(Unit*, int*)
+      at src/building/Step.cpp:98
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    Building::considerUnitForMaterial(Unit*, int, int*)
+      at src/building/Step.cpp:115
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    Building::gatherBringMaterialsCandidates(Building::BringMaterialsCandidate*, int)
+      at src/building/Step.cpp:167
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    Building::subscribeToBringMaterialsStep(bool)
+      at src/building/Step.cpp:332
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    Team::updateAllBuildingTasks()
+      at src/team/TeamStep.cpp:152
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    Team::syncStep()
+      at src/team/TeamStep.cpp:448
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    Game::syncStep(int, Game::PreparationCompletion)
+      at src/game/Game_sync.cpp:234
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    Engine::executeOrdersAndStep(bool)
+      at src/engine/EngineRun.cpp:287
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    Engine::advanceSession(unsigned long, std::function<> const&, bool)
+      at src/engine/EngineRun.cpp:1132
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    Engine::stepSessionImpl(unsigned long, std::vector<> const&)
+      at src/engine/EngineRun.cpp:997
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    guardedSessionStep<>::operator()
+      at src/engine/EngineRun.cpp:959
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    
+      at /home/bradley/.codex/worktrees/b625/glob2/src/engine/EngineRun.cpp:61
+    Engine::stepSession(unsigned long, std::vector<> const&)
+      at /home/bradley/.codex/worktrees/b625/glob2/src/engine/EngineRun.cpp:959
+    Engine::stepSession(unsigned long)
+      at src/engine/EngineRun.cpp:954
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    HeadlessRunner::game(std::map<> const&, std::filesystem::__cxx11::path const&)
+      at src/app/cli/Headless.cpp:560
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    runHeadlessCommand(int, char**)
+      at src/app/cli/Headless.cpp:918
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    Glob2::run(int, char**)
+      at src/app/Glob2.cpp:497
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    main
+      at src/app/Glob2.cpp:657
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+4 calls with 0B peak consumption from:
+    Map::prepareBuildingGradient(Building*, int, BuildingRoute)
+      at src/map/pathfind/MapPathfindBuilding.cpp:58
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    Map::buildingAvailable(Building*, int, int, int, int*, BuildingRoute)
+      at src/map/pathfind/MapPathfindBuilding.cpp:109
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    jobCost
+      at src/team/TeamStep.cpp:189
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    Team::swapTask(Unit*)
+      at src/team/TeamStep.cpp:272
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    Building::subscribeToBringMaterialsStep(bool)
+      at src/building/Step.cpp:341
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    Team::updateAllBuildingTasks()
+      at src/team/TeamStep.cpp:152
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    Team::syncStep()
+      at src/team/TeamStep.cpp:448
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    Game::syncStep(int, Game::PreparationCompletion)
+      at src/game/Game_sync.cpp:234
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    Engine::executeOrdersAndStep(bool)
+      at src/engine/EngineRun.cpp:287
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    Engine::advanceSession(unsigned long, std::function<> const&, bool)
+      at src/engine/EngineRun.cpp:1132
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    Engine::stepSessionImpl(unsigned long, std::vector<> const&)
+      at src/engine/EngineRun.cpp:997
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    guardedSessionStep<>::operator()
+      at src/engine/EngineRun.cpp:959
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    
+      at /home/bradley/.codex/worktrees/b625/glob2/src/engine/EngineRun.cpp:61
+    Engine::stepSession(unsigned long, std::vector<> const&)
+      at /home/bradley/.codex/worktrees/b625/glob2/src/engine/EngineRun.cpp:959
+    Engine::stepSession(unsigned long)
+      at src/engine/EngineRun.cpp:954
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    HeadlessRunner::game(std::map<> const&, std::filesystem::__cxx11::path const&)
+      at src/app/cli/Headless.cpp:560
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    runHeadlessCommand(int, char**)
+      at src/app/cli/Headless.cpp:918
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    Glob2::run(int, char**)
+      at src/app/Glob2.cpp:497
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    main
+      at src/app/Glob2.cpp:657
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+  and 4 from 2 other places
+
+4 calls to allocation functions with 0B peak consumption from
+std::__new_allocator<>::allocate(unsigned long, void const*)
+  at /usr/include/c++/15/bits/new_allocator.h:151
+  in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+std::allocator<>::allocate(unsigned long)
+  at /usr/include/c++/15/bits/allocator.h:203
+std::allocator_traits<>::allocate(std::allocator<>&, unsigned long)
+  at /usr/include/c++/15/bits/alloc_traits.h:614
+std::_Vector_base<>::_M_allocate(unsigned long)
+  at /usr/include/c++/15/bits/stl_vector.h:387
+std::_Vector_base<>::_M_create_storage(unsigned long)
+  at /usr/include/c++/15/bits/stl_vector.h:405
+std::_Vector_base<>::_Vector_base(unsigned long, std::allocator<> const&)
+  at /usr/include/c++/15/bits/stl_vector.h:341
+std::vector<>::vector(unsigned long, std::allocator<> const&)
+  at /usr/include/c++/15/bits/stl_vector.h:587
+gradient_preparation::withOpenTerrain<>
+  at /home/bradley/.codex/worktrees/b625/glob2/src/map/gradient/SeedTerrain.h:13
+gradient_preparation::materialCells<>
+  at /home/bradley/.codex/worktrees/b625/glob2/src/map/gradient/SeedCells.h:23
+Map::seedMaterialGradientDirect(int, unsigned char, int, unsigned short*, unsigned short const*)
+  at /home/bradley/.codex/worktrees/b625/glob2/src/map/gradient/MapGradientMaterial.cpp:123
+4 calls with 0B peak consumption from:
+    Map::updateMaterialGradient(int, unsigned char, int, bool)
+      at src/map/gradient/MapGradientMaterial.cpp:60
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    Map::getMaterialGradientSlot(int, int, int, bool, Building const*)
+      at src/map/gradient/MapGradientMaterial.cpp:48
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    Map::getGradient(int, unsigned char, int, int, int, bool, Building const*)
+      at src/map/Map.h:1141
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    Map::materialAvailableSlot(int, int, int, int, int, int*, bool, Building const*)
+      at /home/bradley/.codex/worktrees/b625/glob2/src/map/MapResources.cpp:300
+    Building::considerUnitForMaterial(Unit*, int, int*)
+      at src/building/Step.cpp:120
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    Building::gatherBringMaterialsCandidates(Building::BringMaterialsCandidate*, int)
+      at src/building/Step.cpp:167
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    Building::subscribeToBringMaterialsStep(bool)
+      at src/building/Step.cpp:332
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    Team::updateAllBuildingTasks()
+      at src/team/TeamStep.cpp:152
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    Team::syncStep()
+      at src/team/TeamStep.cpp:448
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    Game::syncStep(int, Game::PreparationCompletion)
+      at src/game/Game_sync.cpp:234
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    Engine::executeOrdersAndStep(bool)
+      at src/engine/EngineRun.cpp:287
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    Engine::advanceSession(unsigned long, std::function<> const&, bool)
+      at src/engine/EngineRun.cpp:1132
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    Engine::stepSessionImpl(unsigned long, std::vector<> const&)
+      at src/engine/EngineRun.cpp:997
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    guardedSessionStep<>::operator()
+      at src/engine/EngineRun.cpp:959
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    
+      at /home/bradley/.codex/worktrees/b625/glob2/src/engine/EngineRun.cpp:61
+    Engine::stepSession(unsigned long, std::vector<> const&)
+      at /home/bradley/.codex/worktrees/b625/glob2/src/engine/EngineRun.cpp:959
+    Engine::stepSession(unsigned long)
+      at src/engine/EngineRun.cpp:954
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    HeadlessRunner::game(std::map<> const&, std::filesystem::__cxx11::path const&)
+      at src/app/cli/Headless.cpp:560
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    runHeadlessCommand(int, char**)
+      at src/app/cli/Headless.cpp:918
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    Glob2::run(int, char**)
+      at src/app/Glob2.cpp:497
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    main
+      at src/app/Glob2.cpp:657
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+
+
+PEAK MEMORY CONSUMERS
+553.98K peak memory consumed over 758 calls from
+std::__new_allocator<>::allocate(unsigned long, void const*)
+  at /usr/include/c++/15/bits/new_allocator.h:151
+  in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+std::allocator<>::allocate(unsigned long)
+  at /usr/include/c++/15/bits/allocator.h:203
+std::allocator_traits<>::allocate(std::allocator<>&, unsigned long)
+  at /usr/include/c++/15/bits/alloc_traits.h:614
+std::_Vector_base<>::_M_allocate(unsigned long)
+  at /usr/include/c++/15/bits/stl_vector.h:387
+std::vector<>::_M_default_append(unsigned long)
+  at /usr/include/c++/15/bits/vector.tcc:845
+std::vector<>::resize(unsigned long)
+  at /usr/include/c++/15/bits/stl_vector.h:1146
+GradientBucket::grow(unsigned long)
+  at /home/bradley/.codex/worktrees/b625/glob2/src/field/GradientBucket.h:53
+179.20K consumed over 202 calls from:
+    GradientBucket::reserveExtra(unsigned long)
+      at src/field/GradientBucket.h:41
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    gradient_kernel::expandBucketAddressed<>
+      at /home/bradley/.codex/worktrees/b625/glob2/src/field/GradientRelaxation.h:133
+    gradient_kernel::expandBucket<>
+      at /home/bradley/.codex/worktrees/b625/glob2/src/field/GradientRelaxation.h:289
+    BuildingGradientSearch::::operator()<>
+      at /home/bradley/.codex/worktrees/b625/glob2/src/map/gradient/BuildingGradientSearch.cpp:129
+    BuildingGradientSearch::
+      at /home/bradley/.codex/worktrees/b625/glob2/src/map/gradient/BuildingGradientSearch.cpp:158
+    BuildingGradientSearch::resolve(unsigned long)
+      at src/map/gradient/BuildingGradientSearch.cpp:108
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    Map::buildingGradientValue(Building*, int, unsigned long, BuildingRoute) const
+      at src/map/pathfind/MapPathfindBuilding.cpp:90
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    Map::buildingAvailable(Building*, int, int, int, int*, BuildingRoute)
+      at src/map/pathfind/MapPathfindBuilding.cpp:114
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    Building::considerUnitForBuilding(Unit*, int*)
+      at src/building/Step.cpp:98
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    Building::considerUnitForMaterial(Unit*, int, int*)
+      at src/building/Step.cpp:115
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    Building::gatherBringMaterialsCandidates(Building::BringMaterialsCandidate*, int)
+      at src/building/Step.cpp:167
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    Building::subscribeToBringMaterialsStep(bool)
+      at src/building/Step.cpp:332
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    Team::updateAllBuildingTasks()
+      at src/team/TeamStep.cpp:152
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    Team::syncStep()
+      at src/team/TeamStep.cpp:448
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    Game::syncStep(int, Game::PreparationCompletion)
+      at src/game/Game_sync.cpp:234
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    Engine::executeOrdersAndStep(bool)
+      at src/engine/EngineRun.cpp:287
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    Engine::advanceSession(unsigned long, std::function<> const&, bool)
+      at src/engine/EngineRun.cpp:1132
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    Engine::stepSessionImpl(unsigned long, std::vector<> const&)
+      at src/engine/EngineRun.cpp:997
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    guardedSessionStep<>::operator()
+      at src/engine/EngineRun.cpp:959
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    
+      at /home/bradley/.codex/worktrees/b625/glob2/src/engine/EngineRun.cpp:61
+    Engine::stepSession(unsigned long, std::vector<> const&)
+      at /home/bradley/.codex/worktrees/b625/glob2/src/engine/EngineRun.cpp:959
+    Engine::stepSession(unsigned long)
+      at src/engine/EngineRun.cpp:954
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    HeadlessRunner::game(std::map<> const&, std::filesystem::__cxx11::path const&)
+      at src/app/cli/Headless.cpp:560
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    runHeadlessCommand(int, char**)
+      at src/app/cli/Headless.cpp:918
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    Glob2::run(int, char**)
+      at src/app/Glob2.cpp:497
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    main
+      at src/app/Glob2.cpp:657
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+64.51K consumed over 126 calls from:
+    GradientBucket::reserveExtra(unsigned long)
+      at src/field/GradientBucket.h:41
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    gradient_kernel::expandBucketAddressed<>
+      at /home/bradley/.codex/worktrees/b625/glob2/src/field/GradientRelaxation.h:130
+    gradient_kernel::expandBucket<>
+      at /home/bradley/.codex/worktrees/b625/glob2/src/field/GradientRelaxation.h:289
+    BuildingGradientSearch::advance<>::operator()<>
+      at /home/bradley/.codex/worktrees/b625/glob2/src/map/gradient/BuildingGradientSearch.cpp:129
+    BuildingGradientSearch::
+      at /home/bradley/.codex/worktrees/b625/glob2/src/map/gradient/BuildingGradientSearch.cpp:161
+    BuildingGradientSearch::resolve(unsigned long)
+      at src/map/gradient/BuildingGradientSearch.cpp:108
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    Map::buildingGradientValue(Building*, int, unsigned long, BuildingRoute) const
+      at src/map/pathfind/MapPathfindBuilding.cpp:90
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    Map::buildingAvailable(Building*, int, int, int, int*, BuildingRoute)
+      at src/map/pathfind/MapPathfindBuilding.cpp:114
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    jobCost
+      at src/team/TeamStep.cpp:192
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    Team::swapTask(Unit*)
+      at src/team/TeamStep.cpp:272
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    Building::subscribeToBringMaterialsStep(bool)
+      at src/building/Step.cpp:341
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    Team::updateAllBuildingTasks()
+      at src/team/TeamStep.cpp:152
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    Team::syncStep()
+      at src/team/TeamStep.cpp:448
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    Game::syncStep(int, Game::PreparationCompletion)
+      at src/game/Game_sync.cpp:234
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    Engine::executeOrdersAndStep(bool)
+      at src/engine/EngineRun.cpp:287
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    Engine::advanceSession(unsigned long, std::function<> const&, bool)
+      at src/engine/EngineRun.cpp:1132
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    Engine::stepSessionImpl(unsigned long, std::vector<> const&)
+      at src/engine/EngineRun.cpp:997
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    guardedSessionStep<>::operator()
+      at src/engine/EngineRun.cpp:959
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    
+      at /home/bradley/.codex/worktrees/b625/glob2/src/engine/EngineRun.cpp:61
+    Engine::stepSession(unsigned long, std::vector<> const&)
+      at /home/bradley/.codex/worktrees/b625/glob2/src/engine/EngineRun.cpp:959
+    Engine::stepSession(unsigned long)
+      at src/engine/EngineRun.cpp:954
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    HeadlessRunner::game(std::map<> const&, std::filesystem::__cxx11::path const&)
+      at src/app/cli/Headless.cpp:560
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    runHeadlessCommand(int, char**)
+      at src/app/cli/Headless.cpp:918
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    Glob2::run(int, char**)
+      at src/app/Glob2.cpp:497
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    main
+      at src/app/Glob2.cpp:657
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+  and 310.27K from 24 other places
+
+131.07K peak memory consumed over 4 calls from
+Map::getMaterialGradientSlot(int, int, int, bool, Building const*)
+  at src/map/gradient/MapGradientMaterial.cpp:47
+  in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+131.07K consumed over 4 calls from:
+    Map::getGradient(int, unsigned char, int, int, int, bool, Building const*)
+      at src/map/Map.h:1141
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    Map::materialAvailableSlot(int, int, int, int, int, int*, bool, Building const*)
+      at /home/bradley/.codex/worktrees/b625/glob2/src/map/MapResources.cpp:300
+    Building::considerUnitForMaterial(Unit*, int, int*)
+      at src/building/Step.cpp:120
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    Building::gatherBringMaterialsCandidates(Building::BringMaterialsCandidate*, int)
+      at src/building/Step.cpp:167
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    Building::subscribeToBringMaterialsStep(bool)
+      at src/building/Step.cpp:332
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    Team::updateAllBuildingTasks()
+      at src/team/TeamStep.cpp:152
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    Team::syncStep()
+      at src/team/TeamStep.cpp:448
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    Game::syncStep(int, Game::PreparationCompletion)
+      at src/game/Game_sync.cpp:234
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    Engine::executeOrdersAndStep(bool)
+      at src/engine/EngineRun.cpp:287
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    Engine::advanceSession(unsigned long, std::function<> const&, bool)
+      at src/engine/EngineRun.cpp:1132
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    Engine::stepSessionImpl(unsigned long, std::vector<> const&)
+      at src/engine/EngineRun.cpp:997
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    guardedSessionStep<>::operator()
+      at src/engine/EngineRun.cpp:959
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    
+      at /home/bradley/.codex/worktrees/b625/glob2/src/engine/EngineRun.cpp:61
+    Engine::stepSession(unsigned long, std::vector<> const&)
+      at /home/bradley/.codex/worktrees/b625/glob2/src/engine/EngineRun.cpp:959
+    Engine::stepSession(unsigned long)
+      at src/engine/EngineRun.cpp:954
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    HeadlessRunner::game(std::map<> const&, std::filesystem::__cxx11::path const&)
+      at src/app/cli/Headless.cpp:560
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    runHeadlessCommand(int, char**)
+      at src/app/cli/Headless.cpp:918
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    Glob2::run(int, char**)
+      at src/app/Glob2.cpp:497
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    main
+      at src/app/Glob2.cpp:657
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+
+32.77K peak memory consumed over 1 calls from
+Map::prepareBuildingGradient(Building*, int, BuildingRoute)
+  at src/map/pathfind/MapPathfindBuilding.cpp:40
+  in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+32.77K consumed over 1 calls from:
+    Map::buildingAvailable(Building*, int, int, int, int*, BuildingRoute)
+      at src/map/pathfind/MapPathfindBuilding.cpp:109
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    Building::considerUnitForBuilding(Unit*, int*)
+      at src/building/Step.cpp:98
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    Building::considerUnitForMaterial(Unit*, int, int*)
+      at src/building/Step.cpp:115
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    Building::gatherBringMaterialsCandidates(Building::BringMaterialsCandidate*, int)
+      at src/building/Step.cpp:167
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    Building::subscribeToBringMaterialsStep(bool)
+      at src/building/Step.cpp:332
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    Team::updateAllBuildingTasks()
+      at src/team/TeamStep.cpp:152
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    Team::syncStep()
+      at src/team/TeamStep.cpp:448
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    Game::syncStep(int, Game::PreparationCompletion)
+      at src/game/Game_sync.cpp:234
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    Engine::executeOrdersAndStep(bool)
+      at src/engine/EngineRun.cpp:287
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    Engine::advanceSession(unsigned long, std::function<> const&, bool)
+      at src/engine/EngineRun.cpp:1132
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    Engine::stepSessionImpl(unsigned long, std::vector<> const&)
+      at src/engine/EngineRun.cpp:997
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    guardedSessionStep<>::operator()
+      at src/engine/EngineRun.cpp:959
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    
+      at /home/bradley/.codex/worktrees/b625/glob2/src/engine/EngineRun.cpp:61
+    Engine::stepSession(unsigned long, std::vector<> const&)
+      at /home/bradley/.codex/worktrees/b625/glob2/src/engine/EngineRun.cpp:959
+    Engine::stepSession(unsigned long)
+      at src/engine/EngineRun.cpp:954
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    HeadlessRunner::game(std::map<> const&, std::filesystem::__cxx11::path const&)
+      at src/app/cli/Headless.cpp:560
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    runHeadlessCommand(int, char**)
+      at src/app/cli/Headless.cpp:918
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    Glob2::run(int, char**)
+      at src/app/Glob2.cpp:497
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    main
+      at src/app/Glob2.cpp:657
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+
+2.43K peak memory consumed over 1 calls from
+std::__detail::_MakeUniq<>::__single_object std::make_unique<>()
+  at /usr/include/c++/15/bits/unique_ptr.h:1084
+  in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+acquireBuildingGradientSearch()
+  at /home/bradley/.codex/worktrees/b625/glob2/src/map/gradient/BuildingGradientSearch.cpp:232
+2.43K consumed over 1 calls from:
+    Map::updateGlobalGradient(Building*, int, BuildingRoute)
+      at src/map/gradient/MapGradientBuilding.cpp:179
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    Map::prepareBuildingGradient(Building*, int, BuildingRoute)
+      at src/map/pathfind/MapPathfindBuilding.cpp:72
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    Map::buildingAvailable(Building*, int, int, int, int*, BuildingRoute)
+      at src/map/pathfind/MapPathfindBuilding.cpp:109
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    Building::considerUnitForBuilding(Unit*, int*)
+      at src/building/Step.cpp:98
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    Building::considerUnitForMaterial(Unit*, int, int*)
+      at src/building/Step.cpp:115
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    Building::gatherBringMaterialsCandidates(Building::BringMaterialsCandidate*, int)
+      at src/building/Step.cpp:167
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    Building::subscribeToBringMaterialsStep(bool)
+      at src/building/Step.cpp:332
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    Team::updateAllBuildingTasks()
+      at src/team/TeamStep.cpp:152
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    Team::syncStep()
+      at src/team/TeamStep.cpp:448
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    Game::syncStep(int, Game::PreparationCompletion)
+      at src/game/Game_sync.cpp:234
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    Engine::executeOrdersAndStep(bool)
+      at src/engine/EngineRun.cpp:287
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    Engine::advanceSession(unsigned long, std::function<> const&, bool)
+      at src/engine/EngineRun.cpp:1132
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    Engine::stepSessionImpl(unsigned long, std::vector<> const&)
+      at src/engine/EngineRun.cpp:997
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    guardedSessionStep<>::operator()
+      at src/engine/EngineRun.cpp:959
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    
+      at /home/bradley/.codex/worktrees/b625/glob2/src/engine/EngineRun.cpp:61
+    Engine::stepSession(unsigned long, std::vector<> const&)
+      at /home/bradley/.codex/worktrees/b625/glob2/src/engine/EngineRun.cpp:959
+    Engine::stepSession(unsigned long)
+      at src/engine/EngineRun.cpp:954
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    HeadlessRunner::game(std::map<> const&, std::filesystem::__cxx11::path const&)
+      at src/app/cli/Headless.cpp:560
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    runHeadlessCommand(int, char**)
+      at src/app/cli/Headless.cpp:918
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    Glob2::run(int, char**)
+      at src/app/Glob2.cpp:497
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    main
+      at src/app/Glob2.cpp:657
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+
+1.80K peak memory consumed over 1081 calls from
+std::__new_allocator<>::allocate(unsigned long, void const*)
+  at /usr/include/c++/15/bits/new_allocator.h:151
+  in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+std::allocator<>::allocate(unsigned long)
+  at /usr/include/c++/15/bits/allocator.h:203
+std::allocator_traits<>::allocate(std::allocator<>&, unsigned long)
+  at /usr/include/c++/15/bits/alloc_traits.h:614
+std::__allocated_ptr<> std::__allocate_guarded<>(std::allocator<>&)
+  at /usr/include/c++/15/bits/allocated_ptr.h:102
+std::__allocated_obj<> std::__allocate_guarded_obj<>(std::allocator<>&)
+  at /usr/include/c++/15/bits/allocated_ptr.h:136
+std::_List_node<>* std::__cxx11::list<>::_M_create_node<>(Unit* const&)
+  at /usr/include/c++/15/bits/stl_list.h:1105
+void std::__cxx11::list<>::_M_insert<>(std::_List_iterator<>, Unit* const&)
+  at /usr/include/c++/15/bits/stl_list.h:2472
+std::__cxx11::list<>::push_back(Unit* const&)
+  at /usr/include/c++/15/bits/stl_list.h:1804
+Building::subscribeToBringMaterialsStep(bool)
+  at /home/bradley/.codex/worktrees/b625/glob2/src/building/Step.cpp:339
+1.37K consumed over 874 calls from:
+    Team::updateAllBuildingTasks()
+      at src/team/TeamStep.cpp:152
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    Team::syncStep()
+      at src/team/TeamStep.cpp:448
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    Game::syncStep(int, Game::PreparationCompletion)
+      at src/game/Game_sync.cpp:234
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    Engine::executeOrdersAndStep(bool)
+      at src/engine/EngineRun.cpp:287
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    Engine::advanceSession(unsigned long, std::function<> const&, bool)
+      at src/engine/EngineRun.cpp:1132
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    Engine::stepSessionImpl(unsigned long, std::vector<> const&)
+      at src/engine/EngineRun.cpp:997
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    guardedSessionStep<>::operator()
+      at src/engine/EngineRun.cpp:959
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    
+      at /home/bradley/.codex/worktrees/b625/glob2/src/engine/EngineRun.cpp:61
+    Engine::stepSession(unsigned long, std::vector<> const&)
+      at /home/bradley/.codex/worktrees/b625/glob2/src/engine/EngineRun.cpp:959
+    Engine::stepSession(unsigned long)
+      at src/engine/EngineRun.cpp:954
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    HeadlessRunner::game(std::map<> const&, std::filesystem::__cxx11::path const&)
+      at src/app/cli/Headless.cpp:560
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    runHeadlessCommand(int, char**)
+      at src/app/cli/Headless.cpp:918
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    Glob2::run(int, char**)
+      at src/app/Glob2.cpp:497
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    main
+      at src/app/Glob2.cpp:657
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+312B consumed over 21 calls from:
+    Building::subscribeWorkStep()
+      at src/building/Step.cpp:285
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    Team::updateAllBuildingTasks()
+      at src/team/TeamStep.cpp:152
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    Team::syncStep()
+      at src/team/TeamStep.cpp:448
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    Game::syncStep(int, Game::PreparationCompletion)
+      at src/game/Game_sync.cpp:234
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    Engine::executeOrdersAndStep(bool)
+      at src/engine/EngineRun.cpp:287
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    Engine::advanceSession(unsigned long, std::function<> const&, bool)
+      at src/engine/EngineRun.cpp:1132
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    Engine::stepSessionImpl(unsigned long, std::vector<> const&)
+      at src/engine/EngineRun.cpp:997
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    guardedSessionStep<>::operator()
+      at src/engine/EngineRun.cpp:959
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    
+      at /home/bradley/.codex/worktrees/b625/glob2/src/engine/EngineRun.cpp:61
+    Engine::stepSession(unsigned long, std::vector<> const&)
+      at /home/bradley/.codex/worktrees/b625/glob2/src/engine/EngineRun.cpp:959
+    Engine::stepSession(unsigned long)
+      at src/engine/EngineRun.cpp:954
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    HeadlessRunner::game(std::map<> const&, std::filesystem::__cxx11::path const&)
+      at src/app/cli/Headless.cpp:560
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    runHeadlessCommand(int, char**)
+      at src/app/cli/Headless.cpp:918
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    Glob2::run(int, char**)
+      at src/app/Glob2.cpp:497
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    main
+      at src/app/Glob2.cpp:657
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+  and 120B from 2 other places
+
+
+MOST TEMPORARY ALLOCATIONS
+15654 temporary allocations of 17246 allocations in total (90.77%) from
+std::__new_allocator<>::allocate(unsigned long, void const*)
+  at /usr/include/c++/15/bits/new_allocator.h:151
+  in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+std::allocator<>::allocate(unsigned long)
+  at /usr/include/c++/15/bits/allocator.h:203
+std::allocator_traits<>::allocate(std::allocator<>&, unsigned long)
+  at /usr/include/c++/15/bits/alloc_traits.h:614
+std::_Vector_base<>::_M_allocate(unsigned long)
+  at /usr/include/c++/15/bits/stl_vector.h:387
+Building** std::vector<>::_M_allocate_and_copy<>(unsigned long, __gnu_cxx::__normal_iterator<>, __gnu_cxx::__normal_iterator<>)
+  at /usr/include/c++/15/bits/stl_vector.h:1910
+void std::vector<>::_M_assign_aux<>(__gnu_cxx::__normal_iterator<>, __gnu_cxx::__normal_iterator<>, std::forward_iterator_tag)
+  at /usr/include/c++/15/bits/vector.tcc:331
+void std::vector<>::assign<>(__gnu_cxx::__normal_iterator<>, __gnu_cxx::__normal_iterator<>)
+  at /usr/include/c++/15/bits/stl_vector.h:896
+Team::updateAllBuildingTasks()
+  at /home/bradley/.codex/worktrees/b625/glob2/src/team/TeamStep.cpp:146
+14872 temporary allocations of 16384 allocations in total (90.77%) from:
+    Team::syncStep()
+      at src/team/TeamStep.cpp:448
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    Game::syncStep(int, Game::PreparationCompletion)
+      at src/game/Game_sync.cpp:234
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    Engine::executeOrdersAndStep(bool)
+      at src/engine/EngineRun.cpp:287
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    Engine::advanceSession(unsigned long, std::function<> const&, bool)
+      at src/engine/EngineRun.cpp:1132
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    Engine::stepSessionImpl(unsigned long, std::vector<> const&)
+      at src/engine/EngineRun.cpp:997
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    guardedSessionStep<>::operator()
+      at src/engine/EngineRun.cpp:959
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    
+      at /home/bradley/.codex/worktrees/b625/glob2/src/engine/EngineRun.cpp:61
+    Engine::stepSession(unsigned long, std::vector<> const&)
+      at /home/bradley/.codex/worktrees/b625/glob2/src/engine/EngineRun.cpp:959
+    Engine::stepSession(unsigned long)
+      at src/engine/EngineRun.cpp:954
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    HeadlessRunner::game(std::map<> const&, std::filesystem::__cxx11::path const&)
+      at src/app/cli/Headless.cpp:560
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    runHeadlessCommand(int, char**)
+      at src/app/cli/Headless.cpp:918
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    Glob2::run(int, char**)
+      at src/app/Glob2.cpp:497
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    main
+      at src/app/Glob2.cpp:657
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+782 temporary allocations of 862 allocations in total (90.72%) from:
+    Team::syncStep()
+      at src/team/TeamStep.cpp:448
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    Game::syncStep(int, Game::PreparationCompletion)
+      at src/game/Game_sync.cpp:234
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    Engine::executeOrdersAndStep(bool)
+      at src/engine/EngineRun.cpp:287
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    Engine::advanceSession(unsigned long, std::function<> const&, bool)
+      at src/engine/EngineRun.cpp:1132
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    Engine::stepSessionImpl(unsigned long, std::vector<> const&)
+      at src/engine/EngineRun.cpp:997
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    guardedSessionStep<>::operator()
+      at src/engine/EngineRun.cpp:959
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    
+      at /home/bradley/.codex/worktrees/b625/glob2/src/engine/EngineRun.cpp:61
+    Engine::stepSession(unsigned long, std::vector<> const&)
+      at /home/bradley/.codex/worktrees/b625/glob2/src/engine/EngineRun.cpp:959
+    Engine::stepSession(unsigned long)
+      at src/engine/EngineRun.cpp:954
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    HeadlessRunner::game(std::map<> const&, std::filesystem::__cxx11::path const&)
+      at src/app/cli/Headless.cpp:560
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    runHeadlessCommand(int, char**)
+      at src/app/cli/Headless.cpp:918
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    Glob2::run(int, char**)
+      at src/app/Glob2.cpp:497
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    main
+      at src/app/Glob2.cpp:657
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+
+108 temporary allocations of 1081 allocations in total (9.99%) from
+std::__new_allocator<>::allocate(unsigned long, void const*)
+  at /usr/include/c++/15/bits/new_allocator.h:151
+  in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+std::allocator<>::allocate(unsigned long)
+  at /usr/include/c++/15/bits/allocator.h:203
+std::allocator_traits<>::allocate(std::allocator<>&, unsigned long)
+  at /usr/include/c++/15/bits/alloc_traits.h:614
+std::__allocated_ptr<> std::__allocate_guarded<>(std::allocator<>&)
+  at /usr/include/c++/15/bits/allocated_ptr.h:102
+std::__allocated_obj<> std::__allocate_guarded_obj<>(std::allocator<>&)
+  at /usr/include/c++/15/bits/allocated_ptr.h:136
+std::_List_node<>* std::__cxx11::list<>::_M_create_node<>(Unit* const&)
+  at /usr/include/c++/15/bits/stl_list.h:1105
+void std::__cxx11::list<>::_M_insert<>(std::_List_iterator<>, Unit* const&)
+  at /usr/include/c++/15/bits/stl_list.h:2472
+std::__cxx11::list<>::push_back(Unit* const&)
+  at /usr/include/c++/15/bits/stl_list.h:1804
+Building::subscribeToBringMaterialsStep(bool)
+  at /home/bradley/.codex/worktrees/b625/glob2/src/building/Step.cpp:339
+84 temporary allocations of 874 allocations in total (9.61%) from:
+    Team::updateAllBuildingTasks()
+      at src/team/TeamStep.cpp:152
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    Team::syncStep()
+      at src/team/TeamStep.cpp:448
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    Game::syncStep(int, Game::PreparationCompletion)
+      at src/game/Game_sync.cpp:234
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    Engine::executeOrdersAndStep(bool)
+      at src/engine/EngineRun.cpp:287
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    Engine::advanceSession(unsigned long, std::function<> const&, bool)
+      at src/engine/EngineRun.cpp:1132
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    Engine::stepSessionImpl(unsigned long, std::vector<> const&)
+      at src/engine/EngineRun.cpp:997
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    guardedSessionStep<>::operator()
+      at src/engine/EngineRun.cpp:959
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    
+      at /home/bradley/.codex/worktrees/b625/glob2/src/engine/EngineRun.cpp:61
+    Engine::stepSession(unsigned long, std::vector<> const&)
+      at /home/bradley/.codex/worktrees/b625/glob2/src/engine/EngineRun.cpp:959
+    Engine::stepSession(unsigned long)
+      at src/engine/EngineRun.cpp:954
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    HeadlessRunner::game(std::map<> const&, std::filesystem::__cxx11::path const&)
+      at src/app/cli/Headless.cpp:560
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    runHeadlessCommand(int, char**)
+      at src/app/cli/Headless.cpp:918
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    Glob2::run(int, char**)
+      at src/app/Glob2.cpp:497
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    main
+      at src/app/Glob2.cpp:657
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+24 temporary allocations of 93 allocations in total (25.81%) from:
+    Team::swapTask(Unit*)
+      at src/team/TeamStep.cpp:287
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    Building::subscribeToBringMaterialsStep(bool)
+      at src/building/Step.cpp:341
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    Team::updateAllBuildingTasks()
+      at src/team/TeamStep.cpp:152
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    Team::syncStep()
+      at src/team/TeamStep.cpp:448
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    Game::syncStep(int, Game::PreparationCompletion)
+      at src/game/Game_sync.cpp:234
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    Engine::executeOrdersAndStep(bool)
+      at src/engine/EngineRun.cpp:287
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    Engine::advanceSession(unsigned long, std::function<> const&, bool)
+      at src/engine/EngineRun.cpp:1132
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    Engine::stepSessionImpl(unsigned long, std::vector<> const&)
+      at src/engine/EngineRun.cpp:997
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    guardedSessionStep<>::operator()
+      at src/engine/EngineRun.cpp:959
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    
+      at /home/bradley/.codex/worktrees/b625/glob2/src/engine/EngineRun.cpp:61
+    Engine::stepSession(unsigned long, std::vector<> const&)
+      at /home/bradley/.codex/worktrees/b625/glob2/src/engine/EngineRun.cpp:959
+    Engine::stepSession(unsigned long)
+      at src/engine/EngineRun.cpp:954
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    HeadlessRunner::game(std::map<> const&, std::filesystem::__cxx11::path const&)
+      at src/app/cli/Headless.cpp:560
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    runHeadlessCommand(int, char**)
+      at src/app/cli/Headless.cpp:918
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    Glob2::run(int, char**)
+      at src/app/Glob2.cpp:497
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    main
+      at src/app/Glob2.cpp:657
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+  and 0B from 2 other places
+
+3 temporary allocations of 4 allocations in total (75.00%) from
+std::__new_allocator<>::allocate(unsigned long, void const*)
+  at /usr/include/c++/15/bits/new_allocator.h:151
+  in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+std::allocator<>::allocate(unsigned long)
+  at /usr/include/c++/15/bits/allocator.h:203
+std::allocator_traits<>::allocate(std::allocator<>&, unsigned long)
+  at /usr/include/c++/15/bits/alloc_traits.h:614
+std::_Vector_base<>::_M_allocate(unsigned long)
+  at /usr/include/c++/15/bits/stl_vector.h:387
+std::_Vector_base<>::_M_create_storage(unsigned long)
+  at /usr/include/c++/15/bits/stl_vector.h:405
+std::_Vector_base<>::_Vector_base(unsigned long, std::allocator<> const&)
+  at /usr/include/c++/15/bits/stl_vector.h:341
+std::vector<>::vector(unsigned long, std::allocator<> const&)
+  at /usr/include/c++/15/bits/stl_vector.h:587
+gradient_preparation::withOpenTerrain<>
+  at /home/bradley/.codex/worktrees/b625/glob2/src/map/gradient/SeedTerrain.h:13
+gradient_preparation::materialCells<>
+  at /home/bradley/.codex/worktrees/b625/glob2/src/map/gradient/SeedCells.h:23
+Map::seedMaterialGradientDirect(int, unsigned char, int, unsigned short*, unsigned short const*)
+  at /home/bradley/.codex/worktrees/b625/glob2/src/map/gradient/MapGradientMaterial.cpp:123
+3 temporary allocations of 4 allocations in total (75.00%) from:
+    Map::updateMaterialGradient(int, unsigned char, int, bool)
+      at src/map/gradient/MapGradientMaterial.cpp:60
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    Map::getMaterialGradientSlot(int, int, int, bool, Building const*)
+      at src/map/gradient/MapGradientMaterial.cpp:48
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    Map::getGradient(int, unsigned char, int, int, int, bool, Building const*)
+      at src/map/Map.h:1141
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    Map::materialAvailableSlot(int, int, int, int, int, int*, bool, Building const*)
+      at /home/bradley/.codex/worktrees/b625/glob2/src/map/MapResources.cpp:300
+    Building::considerUnitForMaterial(Unit*, int, int*)
+      at src/building/Step.cpp:120
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    Building::gatherBringMaterialsCandidates(Building::BringMaterialsCandidate*, int)
+      at src/building/Step.cpp:167
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    Building::subscribeToBringMaterialsStep(bool)
+      at src/building/Step.cpp:332
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    Team::updateAllBuildingTasks()
+      at src/team/TeamStep.cpp:152
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    Team::syncStep()
+      at src/team/TeamStep.cpp:448
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    Game::syncStep(int, Game::PreparationCompletion)
+      at src/game/Game_sync.cpp:234
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    Engine::executeOrdersAndStep(bool)
+      at src/engine/EngineRun.cpp:287
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    Engine::advanceSession(unsigned long, std::function<> const&, bool)
+      at src/engine/EngineRun.cpp:1132
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    Engine::stepSessionImpl(unsigned long, std::vector<> const&)
+      at src/engine/EngineRun.cpp:997
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    guardedSessionStep<>::operator()
+      at src/engine/EngineRun.cpp:959
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    
+      at /home/bradley/.codex/worktrees/b625/glob2/src/engine/EngineRun.cpp:61
+    Engine::stepSession(unsigned long, std::vector<> const&)
+      at /home/bradley/.codex/worktrees/b625/glob2/src/engine/EngineRun.cpp:959
+    Engine::stepSession(unsigned long)
+      at src/engine/EngineRun.cpp:954
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    HeadlessRunner::game(std::map<> const&, std::filesystem::__cxx11::path const&)
+      at src/app/cli/Headless.cpp:560
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    runHeadlessCommand(int, char**)
+      at src/app/cli/Headless.cpp:918
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    Glob2::run(int, char**)
+      at src/app/Glob2.cpp:497
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+    main
+      at src/app/Glob2.cpp:657
+      in /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/vectors/glob2
+
+
+total runtime: 11.96s.
+calls to allocation functions: 635806 (53152/s)
+temporary memory allocations: 45961 (3842/s)
+peak heap memory consumption: 22.55M
+peak RSS (including heaptrack overhead): 86.97M
+total memory leaked: 21.80M
+suppressed leaks: 1.04K

@@ -1,0 +1,30 @@
+diff --git a/src/building/Step.cpp b/src/building/Step.cpp
+index 9a69baed3..9f993057e 100644
+--- a/src/building/Step.cpp
++++ b/src/building/Step.cpp
+@@ -153,11 +153,8 @@ int Building::gatherBringMaterialsCandidates(BringMaterialsCandidate* candidates
+ 	resetFailureTallies();
+ 
+ 	int count=0;
+-	for(int n=0; n<Unit::MAX_COUNT; ++n)
++	for(Unit* unit : owner->liveUnits.entries())
+ 	{
+-		Unit* unit=owner->myUnits[n];
+-		if(!unit)
+-			continue;
+ 		if(!unit->performance[HARVEST])
+ 			continue;
+ 		if(unit->attachedBuilding == this && unit->activity == Unit::ACT_FILLING)
+@@ -202,11 +199,8 @@ bool Building::wantsAnotherDelivery(int r, const int* targets, const int* served
+ 
+ void Building::selectUnitCarryingWantedMaterial(const int* targets, const int* served, BringMaterialsSelection& sel)
+ {
+-	for(int n=0; n<Unit::MAX_COUNT; ++n)
++	for(Unit* unit : owner->liveUnits.entries())
+ 	{
+-		Unit* unit=owner->myUnits[n];
+-		if(!unit)
+-			continue;
+ 		if(!unit->performance[HARVEST])
+ 			continue;
+ 		if(unit->attachedBuilding == this && unit->activity == Unit::ACT_FILLING)

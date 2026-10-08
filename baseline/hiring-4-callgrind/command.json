@@ -1,0 +1,23 @@
+[
+  "valgrind",
+  "--tool=callgrind",
+  "--instr-atstart=no",
+  "--separate-threads=yes",
+  "--callgrind-out-file=/home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/baseline/profiles/hiring-4-callgrind/callgrind.out.%p",
+  "/home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/baseline/glob2",
+  "--run-game",
+  "--load-game",
+  "/home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-audit/peaceful/checkpoint-4096.game.gz",
+  "--ticks",
+  "4608",
+  "--compute-threads",
+  "4",
+  "--compute-experiments",
+  "ai",
+  "--benchmark-warmup",
+  "0",
+  "--output-dir",
+  "/home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/baseline/profiles/hiring-4-callgrind",
+  "--profile",
+  "serial-opt"
+]

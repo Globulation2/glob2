@@ -1,0 +1,22 @@
+# callgrind format
+version: 1
+creator: callgrind-3.26.0
+pid: 2961915
+cmd:  /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/baseline/glob2 --run-game --load-game /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-audit/peaceful/checkpoint-4096.game.gz --ticks 4608 --compute-threads 4 --compute-experiments ai --benchmark-warmup 0 --output-dir /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/baseline/profiles/hiring-4-callgrind --profile serial-opt
+part: 2
+thread: 1
+
+
+desc: I1 cache: 
+desc: D1 cache: 
+desc: LL cache: 
+
+desc: Timerange: Basic block 438604153 - 438604154
+desc: Trigger: Program termination
+
+positions: line
+events: Ir
+summary: 0
+
+
+totals: 0

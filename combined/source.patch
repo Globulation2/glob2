@@ -1,0 +1,175 @@
+diff --git a/src/building/Step.cpp b/src/building/Step.cpp
+index 9a69baed3..9f993057e 100644
+--- a/src/building/Step.cpp
++++ b/src/building/Step.cpp
+@@ -153,11 +153,8 @@ int Building::gatherBringMaterialsCandidates(BringMaterialsCandidate* candidates
+ 	resetFailureTallies();
+ 
+ 	int count=0;
+-	for(int n=0; n<Unit::MAX_COUNT; ++n)
++	for(Unit* unit : owner->liveUnits.entries())
+ 	{
+-		Unit* unit=owner->myUnits[n];
+-		if(!unit)
+-			continue;
+ 		if(!unit->performance[HARVEST])
+ 			continue;
+ 		if(unit->attachedBuilding == this && unit->activity == Unit::ACT_FILLING)
+@@ -202,11 +199,8 @@ bool Building::wantsAnotherDelivery(int r, const int* targets, const int* served
+ 
+ void Building::selectUnitCarryingWantedMaterial(const int* targets, const int* served, BringMaterialsSelection& sel)
+ {
+-	for(int n=0; n<Unit::MAX_COUNT; ++n)
++	for(Unit* unit : owner->liveUnits.entries())
+ 	{
+-		Unit* unit=owner->myUnits[n];
+-		if(!unit)
+-			continue;
+ 		if(!unit->performance[HARVEST])
+ 			continue;
+ 		if(unit->attachedBuilding == this && unit->activity == Unit::ACT_FILLING)
+diff --git a/src/engine/EngineRun.cpp b/src/engine/EngineRun.cpp
+index 85c5a40b5..1dc951227 100644
+--- a/src/engine/EngineRun.cpp
++++ b/src/engine/EngineRun.cpp
+@@ -323,7 +323,10 @@ std::vector<unsigned> Engine::observationPlayers(bool wasReadyLastTick) const
+     for(int i=0;i<gui.game.gameHeader.getNumberOfPlayers();++i)
+         if(gui.game.players[i]->ai && ((localAI && i==orderPlayer) ||
+             (!(globalContainer->liveSpectating && i==orderPlayer) && !net->orderReceived(i))))
++        {
++            if (eligible.empty()) eligible.reserve(gui.game.gameHeader.getNumberOfPlayers());
+             eligible.push_back(unsigned(i));
++        }
+     return eligible;
+ }
+ 
+diff --git a/src/engine/sim/ClientEvents.h b/src/engine/sim/ClientEvents.h
+index 64e7a9cf8..e018a0198 100644
+--- a/src/engine/sim/ClientEvents.h
++++ b/src/engine/sim/ClientEvents.h
+@@ -6,6 +6,7 @@
+ #include <deque>
+ #include <memory>
+ #include <mutex>
++#include <optional>
+ #include <string>
+ #include <utility>
+ #include <variant>
+@@ -38,12 +39,13 @@ public:
+ 	template <typename F>
+ 	void drain(F &&consume)
+ 	{
+-		std::deque<T> batch;
++		std::optional<std::deque<T>> batch;
+ 		{
+ 			std::lock_guard<std::mutex> lock(mutex);
+-			batch.swap(items);
++			if (items.empty()) return;
++			batch.emplace().swap(items);
+ 		}
+-		for (auto &value : batch) consume(std::move(value));
++		for (auto &value : *batch) consume(std::move(value));
+ 	}
+ 	bool empty() const { std::lock_guard<std::mutex> lock(mutex); return items.empty(); }
+ 	size_t size() const { std::lock_guard<std::mutex> lock(mutex); return items.size(); }
+diff --git a/src/team/TeamSerialization.cpp b/src/team/TeamSerialization.cpp
+index 25e401663..448a7ff14 100644
+--- a/src/team/TeamSerialization.cpp
++++ b/src/team/TeamSerialization.cpp
+@@ -415,19 +415,17 @@ Uint32 Team::checkSum(std::vector<Uint32> *checkSumsVector, std::vector<Uint32>
+ 	if (checkSumsVector)
+ 		checkSumsVector->push_back(cs); // [1+t*20]
+ 
+-	for (int i=0; i<Unit::MAX_COUNT; i++)
+-		if (myUnits[i])
++	for (Unit *unit : liveUnits.entries())
+ 	{
+-		cs^=myUnits[i]->checkSum(checkSumsVectorForUnits);
++		cs^=unit->checkSum(checkSumsVectorForUnits);
+ 		cs=rotr1(cs);
+ 	}
+ 	if (checkSumsVector)
+ 		checkSumsVector->push_back(cs); // [2+t*20]
+ 
+-	for (int i=0; i<Building::MAX_COUNT; i++)
+-		if (myBuildings[i])
++	for (Building *building : liveBuildings.entries())
+ 	{
+-		cs^=myBuildings[i]->checkSum(checkSumsVectorForBuildings);
++		cs^=building->checkSum(checkSumsVectorForBuildings);
+ 		cs=rotr1(cs);
+ 	}
+ 	if (checkSumsVector)
+diff --git a/src/team/TeamStep.cpp b/src/team/TeamStep.cpp
+index be517822b..4ab23e654 100644
+--- a/src/team/TeamStep.cpp
++++ b/src/team/TeamStep.cpp
+@@ -134,6 +134,7 @@ void Team::removeBuildingNeedingWork(Building* b, Sint32 priority)
+ void Team::updateAllBuildingTasks()
+ {
+ 	PERF_SCOPE_TIME(Tasks);
++	std::vector<Building*> pending, hiring;
+ 	for(std::map<int, std::vector<Building*>, std::greater<int> >::iterator i = buildingsNeedingUnits.begin(); i!=buildingsNeedingUnits.end(); ++i)
+ 	{
+ 		std::sort(i->second.begin(), i->second.end(), Team::buildingHasHigherPriority);
+@@ -142,10 +143,10 @@ void Team::updateAllBuildingTasks()
+ 		// reordered and resized while it is being walked. Keep "hired last round,
+ 		// so ask again" attached to the building instead of to a position in a
+ 		// vector that does not hold still.
+-		std::vector<Building*> pending(i->second.begin(), i->second.end());
++		pending.assign(i->second.begin(), i->second.end());
+ 		while(!pending.empty())
+ 		{
+-			std::vector<Building*> hiring;
++			hiring.clear();
+ 			for(std::vector<Building*>::iterator b=pending.begin(); b!=pending.end(); ++b)
+ 			{
+ 				bool thisFound = (*b)->subscribeWorkStep();
+diff --git a/src/team/stats/TeamStat.cpp b/src/team/stats/TeamStat.cpp
+index 7437d10ed..73488dd27 100644
+--- a/src/team/stats/TeamStat.cpp
++++ b/src/team/stats/TeamStat.cpp
+@@ -424,9 +424,8 @@ void TeamStats::step(Team *team, bool reloaded)
+ 	// handle in game stat step
+ 	TeamSmoothedStat &smoothedStat=smoothedStats[smoothedIndex];
+ 	smoothedStat.reset();
+-	for (int i=0; i<Unit::MAX_COUNT; i++)
++	for (Unit *u : team->liveUnits.entries())
+ 	{
+-		Unit *u=team->myUnits[i];
+ 		observeMeasurementUnit(u);
+ 		// Filter here: most of the 1024 slots hold no worker.
+ 		if (!reloaded && u && u->typeNum == WORKER)
+@@ -438,9 +437,8 @@ void TeamStats::step(Team *team, bool reloaded)
+ 		}
+ 	}
+ 	
+-	for (int i=0; i<Building::MAX_COUNT; i++)
++	for (Building *b : team->liveBuildings.entries())
+ 	{
+-		Building *b = team->myBuildings[i];
+ 		if (b)
+ 		{
+ 			observeMeasurementBuilding(b);
+@@ -499,9 +497,8 @@ void TeamStats::step(Team *team, bool reloaded)
+ 	stat.reset();
+ 	stat.buildingCountByVariant.resize(team->game->buildingsTypes.size(),0);
+ 
+-	for (int i=0; i<Unit::MAX_COUNT; i++)
++	for (Unit *u : team->liveUnits.entries())
+ 	{
+-		Unit *u=team->myUnits[i];
+ 		if (u)
+ 		{
+ 			stat.totalUnit++;
+@@ -558,9 +555,8 @@ void TeamStats::step(Team *team, bool reloaded)
+ 		}
+ 	}
+ 
+-	for (int i=0; i<Building::MAX_COUNT; i++)
++	for (Building *b : team->liveBuildings.entries())
+ 	{
+-		Building *b = team->myBuildings[i];
+ 		if (b)
+ 		{
+ 			++stat.buildingCountByVariant[b->typeNum];

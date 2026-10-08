@@ -1,0 +1,36 @@
+[
+  {
+    "commit": "86bb9f89ab12a767851c7be4c218609f4572f26f",
+    "paths": [
+      "src/building/Step.cpp",
+      "src/unit/FetchHiringScoreHarness.cpp"
+    ]
+  },
+  {
+    "commit": "7a456edf86ed590594d09bb88bebd8fead5608a8",
+    "paths": [
+      "src/team/stats/TeamStat.cpp",
+      "src/team/TeamSerialization.cpp",
+      "src/team/LiveSlotListTest.cpp"
+    ]
+  },
+  {
+    "commit": "ce4857965ccba7d334e6e014126a6c1cbe4a6192",
+    "paths": [
+      "src/engine/sim/ClientEvents.h"
+    ]
+  },
+  {
+    "commit": "27c5d9de0988f105546d61a60f72f87c2431b27e",
+    "paths": [
+      "src/engine/EngineRun.cpp",
+      "src/engine/EngineSessionHarness.cpp"
+    ]
+  },
+  {
+    "commit": "a66b4342e876e9f4e9293c934822e88907da9b06",
+    "paths": [
+      "src/team/TeamStep.cpp"
+    ]
+  }
+]

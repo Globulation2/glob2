@@ -1,0 +1,26 @@
+[
+  {
+    "fixture": "sparse",
+    "participants": 4,
+    "baseline": 17274,
+    "vectors": 17264
+  },
+  {
+    "fixture": "hiring",
+    "participants": 4,
+    "baseline": 19137,
+    "vectors": 19107
+  },
+  {
+    "fixture": "established",
+    "participants": 4,
+    "baseline": 32157,
+    "vectors": 30746
+  },
+  {
+    "fixture": "dense",
+    "participants": 1,
+    "baseline": 54049,
+    "vectors": 49658
+  }
+]

@@ -1,0 +1,15 @@
+diff --git a/src/engine/EngineRun.cpp b/src/engine/EngineRun.cpp
+index 85c5a40b5..1dc951227 100644
+--- a/src/engine/EngineRun.cpp
++++ b/src/engine/EngineRun.cpp
+@@ -323,7 +323,10 @@ std::vector<unsigned> Engine::observationPlayers(bool wasReadyLastTick) const
+     for(int i=0;i<gui.game.gameHeader.getNumberOfPlayers();++i)
+         if(gui.game.players[i]->ai && ((localAI && i==orderPlayer) ||
+             (!(globalContainer->liveSpectating && i==orderPlayer) && !net->orderReceived(i))))
++        {
++            if (eligible.empty()) eligible.reserve(gui.game.gameHeader.getNumberOfPlayers());
+             eligible.push_back(unsigned(i));
++        }
+     return eligible;
+ }
+ 
