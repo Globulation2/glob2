@@ -1,13 +1,13 @@
 [
   {
-    "commit": "ed37b6e3c35611ab30135ee79a89d99369d04b9e",
+    "commit": "264b836d8d26c5151b5700af9bde1ae659ce98ea",
     "paths": [
       "src/building/Step.cpp",
       "src/unit/FetchHiringScoreHarness.cpp"
     ]
   },
   {
-    "commit": "f58943ea08b82ff616e7e28bba3392d5652d688a",
+    "commit": "135092fc31619548ef61db3a65bb70097404123d",
     "paths": [
       "src/team/stats/TeamStat.cpp",
       "src/team/TeamSerialization.cpp",
@@ -15,21 +15,21 @@
     ]
   },
   {
-    "commit": "6f45437cd4d0069cceb6081b2a59bd7cac90db8f",
+    "commit": "7f4f776f2293983b780809a6086cb9db161b9b71",
     "paths": [
       "src/engine/sim/ClientEvents.h",
       "src/engine/sim/ClientChannelsTest.cpp"
     ]
   },
   {
-    "commit": "26c5570357b4200361c8ef81017101be75fd6e6b",
+    "commit": "2324b2bb196894ebc375ab84ea1a1f8e014eaa92",
     "paths": [
       "src/engine/EngineRun.cpp",
       "src/engine/EngineSessionHarness.cpp"
     ]
   },
   {
-    "commit": "d679204182bace87d896e0d815717b990281440a",
+    "commit": "7954cff48a2d5b6ec3b363197f8d4a343ee8b4d4",
     "paths": [
       "src/team/TeamStep.cpp"
     ]

@@ -1,0 +1,18 @@
+[
+  "/home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/glob2",
+  "--run-game",
+  "--load-game",
+  "/home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-audit/peaceful/initial.game.gz",
+  "--ticks",
+  "4096",
+  "--compute-threads",
+  "4",
+  "--compute-experiments",
+  "ai",
+  "--benchmark-warmup",
+  "0",
+  "--output-dir",
+  "/home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/queues/priority-timings/queues/sparse-4-8",
+  "--profile",
+  "serial-opt"
+]
