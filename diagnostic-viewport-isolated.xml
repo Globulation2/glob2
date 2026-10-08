@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites>
+  <testsuite name="build/native-coverage-torus/test/glob2-engine-tests" errors="0" failures="1" tests="44" time="2.06047" timestamp="2026-10-08T09:16:26Z" doctest_version="2.4.11">
+    <testcase classname="src/engine/EngineSessionHarness.cpp" name="incremental sessions; editor decisions; fertility equivalence and cancellation [writes-preferences]" time="2.06047" status="run">
+      <failure message="false" type="REQUIRE">
+src/engine/EngineSessionHarness.cpp:68:
+REQUIRE( static_cast&lt;bool>(value) ) is NOT correct!
+  values: REQUIRE( false )
+  logged: Logical resolution did not follow viewport
+
+      </failure>
+    </testcase>
+  </testsuite>
+</testsuites>
