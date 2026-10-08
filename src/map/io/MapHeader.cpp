@@ -8,6 +8,7 @@
 #include "TerrainRegistry.h"
 #include "ResourceRegistry.h"
 #include <algorithm>
+#include <array>
 #include <map>
 #include <cassert>
 #include <cstring>
@@ -450,48 +451,90 @@ std::vector<std::string> glob2ListMapOrSaveFiles(GAGCore::FileManager& files, co
 // valid encodings (including delta blocks); require exactly one valid decoding.
 void MapHeader::resolveGrowthLayout(GAGCore::InputStream *stream)
 {
- GAGCore::BinaryInputStream::CheckedReads checked(stream);
- historicalGrowthLayout = false;
- if (versionMinor < 146 || versionMinor > 148) return;
- if (auto *text = dynamic_cast<GAGCore::TextInputStream *>(stream)) {
-  historicalGrowthLayout = text->hasField("Map.undermap");
-  return;
- }
- if (!stream->canSeek() || !mapOffset) throw std::runtime_error("Missing map offset for historical layout resolution");
- const auto saved = stream->getPosition();
- struct Restore { GAGCore::InputStream *s; size_t at; ~Restore() { s->seekFromStart(at); } } restore{stream,saved};
- stream->seekFromStart(mapOffset);
- char magic[4];stream->read(magic,4,"signatureStart");
- if (std::memcmp(magic,"MapB",4)) throw std::runtime_error("Invalid map layout signature");
- const auto wd=stream->readSint32("wDec"), hd=stream->readSint32("hDec");
- if(!Map::supportedDimensions(wd,hd)) throw std::runtime_error("Invalid map dimensions in layout probe");
- const auto chunks=[&](size_t maximum) {
-  auto count=stream->readUint32("chunks");
-  if(!count || count>maximum/65536) throw std::runtime_error("Invalid layout catalog chunks");
-  std::string data;
-  while(count--) {auto bytes=stream->readUint32("length");if(bytes>65536) throw std::runtime_error("Invalid layout catalog size");auto at=data.size();data.resize(at+bytes);stream->read(data.data()+at,bytes,"definitions");}
-  return data;
- };
- const auto terrains=nlohmann::json::parse(chunks(TerrainRegistry::MaximumDefinitionBytes)).at("terrains");
- stream->readUint32("terrainSeed"); chunks(ResourceRegistry::MaximumDefinitionBytes);
- if(!terrains.empty()) {
-  const auto first=terrains.at(0).at("id").get<unsigned>();
-  if(first!=29 && first!=31) throw std::runtime_error("Unknown historical terrain catalog");
-  historicalGrowthLayout=first==31;return;
- }
- const auto artwork=stream->readUint32("length");
- if(artwork>16*1024*1024) throw std::runtime_error("Invalid layout artwork size");
- // Read rather than unchecked seek so truncated artwork is rejected.
- std::array<char,4096> buffer{};
- for(size_t left=artwork;left;) {auto n=std::min(left,buffer.size());stream->read(buffer.data(),n,"bytes");left-=n;}
- const auto terrainStart=stream->getPosition();
- const auto count=std::min(size_t(1)<<(wd+hd),GAGCore::PackedArray::blockSize);
- const auto valid=[&]<class U>(U limit) {
-  stream->seekFromStart(terrainStart);
-  try {GAGCore::PackedArray::read<U>(stream,count,[&](size_t,U value){if(value>limit)throw std::runtime_error("Terrain outside layout range");});return true;}
-  catch(const std::exception&) {return false;}
- };
- const bool old=valid(Uint8(2)), modern=valid(Uint16(28));
- if(old==modern) throw std::runtime_error("Ambiguous or corrupt historical terrain layout");
- historicalGrowthLayout=old;
+	GAGCore::BinaryInputStream::CheckedReads checked(stream);
+	historicalGrowthLayout = false;
+	if (versionMinor < 146 || versionMinor > 148) return;
+	if (auto *text = dynamic_cast<GAGCore::TextInputStream *>(stream))
+	{
+		historicalGrowthLayout = text->hasField("Map.undermap");
+		return;
+	}
+	if (!stream->canSeek() || !mapOffset)
+		throw std::runtime_error("Missing map offset for historical layout resolution");
+	const auto saved = stream->getPosition();
+	struct Restore
+	{
+		GAGCore::InputStream *stream;
+		size_t position;
+		~Restore() { stream->seekFromStart(position); }
+	} restore{stream, saved};
+	stream->seekFromStart(mapOffset);
+	char magic[4];
+	stream->read(magic, 4, "signatureStart");
+	if (std::memcmp(magic, "MapB", 4))
+		throw std::runtime_error("Invalid map layout signature");
+	const auto wd = stream->readSint32("wDec"), hd = stream->readSint32("hDec");
+	if (!Map::supportedDimensions(wd, hd))
+		throw std::runtime_error("Invalid map dimensions in layout probe");
+	const auto chunks = [&](size_t maximum)
+	{
+		auto count = stream->readUint32("chunks");
+		if (!count || count > maximum / 65536)
+			throw std::runtime_error("Invalid layout catalog chunks");
+		std::string data;
+		while (count--)
+		{
+			const auto bytes = stream->readUint32("length");
+			if (bytes > 65536) throw std::runtime_error("Invalid layout catalog size");
+			const auto at = data.size();
+			data.resize(at + bytes);
+			stream->read(data.data() + at, bytes, "definitions");
+		}
+		return data;
+	};
+	const auto terrains = nlohmann::json::parse(chunks(TerrainRegistry::MaximumDefinitionBytes)).at("terrains");
+	stream->readUint32("terrainSeed");
+	chunks(ResourceRegistry::MaximumDefinitionBytes);
+	if (!terrains.empty())
+	{
+		// Vertex terrain removed two built-in shore types. Custom IDs therefore
+		// start at 29 in released saves and at 31 in the historical growth branch.
+		const auto first = terrains.at(0).at("id").get<unsigned>();
+		if (first != 29 && first != 31)
+			throw std::runtime_error("Unknown historical terrain catalog");
+		historicalGrowthLayout = first == 31;
+		return;
+	}
+	const auto artwork = stream->readUint32("length");
+	if (artwork > 16 * 1024 * 1024)
+		throw std::runtime_error("Invalid layout artwork size");
+	// Read rather than unchecked seek so truncated artwork is rejected.
+	std::array<char, 4096> buffer{};
+	for (size_t left = artwork; left;)
+	{
+		const auto n = std::min(left, buffer.size());
+		stream->read(buffer.data(), n, "bytes");
+		left -= n;
+	}
+	const auto terrainStart = stream->getPosition();
+	const auto count = std::min(size_t(1) << (wd + hd), GAGCore::PackedArray::blockSize);
+	const auto valid = [&]<class U>(U limit)
+	{
+		stream->seekFromStart(terrainStart);
+		try
+		{
+			GAGCore::PackedArray::read<U>(stream, count, [&](size_t, U value)
+			{
+				if (value > limit) throw std::runtime_error("Terrain outside layout range");
+			});
+			return true;
+		}
+		catch (const std::exception&)
+		{
+			return false;
+		}
+	};
+	const bool old = valid(Uint8(2)), modern = valid(Uint16(28));
+	if (old == modern) throw std::runtime_error("Ambiguous or corrupt historical terrain layout");
+	historicalGrowthLayout = old;
 }

@@ -1481,6 +1481,10 @@ their raw proposal version while older terrain, routing and AI-memory readers
 use the pre-vertex layout. Format 149 stores scheduled building-gradient state
 followed by pending growth outputs; loading never publishes either queue early.
 
+Historical growth gates in `FileFormatVersions.h` intentionally overlap released
+artwork/terrain versions. Resolve the layout before interpreting those gates;
+`FILE_FORMAT_VERSION_INTEGRATED_RESOURCE_GROWTH` identifies the unambiguous format 149.
+
 The historical growth draft format 148 added typed proposals and restored configured natural seed stocks.
 Pending unit proposals from formats 144–147 retain their old mutation semantics until
 their existing deadlines, including through resave; new batches use the restored rules.

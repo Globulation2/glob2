@@ -1247,7 +1247,7 @@ void Map::loadRuntimeState(GAGCore::InputStream *stream, Sint32 versionMinor)
 	if (versionMinor>=FILE_FORMAT_VERSION_BUILDING_CATALOG) loadMaterialRoutingCache(stream,packed,versionMinor);
 	// Older saves restore no scheduled building work.
 	if (versionMinor>=FILE_FORMAT_VERSION_BUILDING_GRADIENT_PIPELINE) loadBuildingGradientPipeline(stream,packed);
-    if(versionMinor>=149 || loadedHistoricalGrowthVersion || loadedLegacyGrowth144 || loadedLegacyGrowth145)
+    if(versionMinor>=FILE_FORMAT_VERSION_INTEGRATED_RESOURCE_GROWTH || loadedHistoricalGrowthVersion || loadedLegacyGrowth144 || loadedLegacyGrowth145)
         gradientRuntime->growth.load(stream,*this,game->stepCounter,loadedHistoricalGrowthVersion ? loadedHistoricalGrowthVersion : versionMinor);
 	stream->readLeaveSection();
     if (versionMinor < FILE_FORMAT_VERSION_HAZARD_ROUTING && hasTerrainHealthEffects()) {

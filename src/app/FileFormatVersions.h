@@ -222,6 +222,8 @@ static constexpr int FILE_FORMAT_VERSION_HAZARD_ROUTING = 142;
 //! Shared AI scheduling and pending command execution state.
 static constexpr int FILE_FORMAT_VERSION_AI_PIPELINE = 143;
 
+// Historical growth-draft gates below overlap released artwork/terrain versions.
+// Resolve the save lineage before using these gates; integrated saves start at 149.
 // Immutable growth batches and per-deposit incarnation counters.
 static constexpr int FILE_FORMAT_VERSION_RESOURCE_GROWTH = 144;
 
@@ -253,3 +255,6 @@ static constexpr int FILE_FORMAT_VERSION_ALL_ARTWORK_AND_RESOURCE_GROWTH = 147;
 
 // Typed delayed growth proposals preserve configured seed stocks and variety.
 static constexpr int FILE_FORMAT_VERSION_CONFIGURED_GROWTH_SEEDS = 148;
+
+//! Integrated vertex terrain, scheduled building gradients and delayed resource growth.
+static constexpr int FILE_FORMAT_VERSION_INTEGRATED_RESOURCE_GROWTH = 149;
