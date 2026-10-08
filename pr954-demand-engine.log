@@ -1,0 +1,69 @@
+GLOB2_TEST_BUILD compiler=15.2.0 platform=Linux pointer_bits=64
+GLOB2_TEST_PROVENANCE {"compiler": "g++", "dirty": true, "flags": {"CCFLAGS": "", "CPPDEFINES": "GLOB2_OFFICIAL_INSTANCE_ORIGIN \\\"https://app.glob2online.com\\\" GLOB2_OFFICIAL_INSTANCE_FORMER_ORIGINS \\\"https://glob2online.com\\\" HAVE_CONFIG_H SDL_MAIN_HANDLED", "CXXFLAGS": "-g -std=gnu++20 -Wall -fPIC", "LINKFLAGS": "-g -Wl,-rpath,$ORIGIN/../lib/glob2 -Wall -Wl,-rpath,/home/bradley/.codex/worktrees/repair-tls-rejection-fixture/glob2/build/sdl3-ci/prefix/lib -Wl,--enable-new-dtags"}, "revision": "b2f7f6f3a35dbcf1bc3f9b3fda6b85faf313c66b", "sourceStatus": ["?? build-software-terrain/"], "sourceTreeSha256": "47bacd037e00aac8a01b0505d69e8305b34558da42fd2e60ac0fb28c6bcbbc6d"}
+[doctest] doctest version is "2.4.11"
+[doctest] run with "--help" for options
+Settings::load("preferences.txt") : error, can't open file.
+Settings::load("preferences.txt") : error, can't open file.
+Settings::load("preferences.txt") : error, can't open file.
+Settings::load("preferences.txt") : error, can't open file.
+Settings::load("preferences.txt") : error, can't open file.
+Settings::load("preferences.txt") : error, can't open file.
+Settings::load("preferences.txt") : error, can't open file.
+Settings::load("preferences.txt") : error, can't open file.
+Settings::load("preferences.txt") : error, can't open file.
+PASS a site placed inside a ring is unreachable until the ring is cleared
+Settings::load("preferences.txt") : error, can't open file.
+PASS a ring placed around a cached field cuts it off, and clearing the ring restores it
+Settings::load("preferences.txt") : error, can't open file.
+PASS a ring built by another team cuts off a cached field, and clearing it restores the field
+Settings::load("preferences.txt") : error, can't open file.
+PASS a ring around a virtual flag cuts off its field, though no flag is in the building tile grid
+Settings::load("preferences.txt") : error, can't open file.
+PASS a paused field freezes obstacles until the existing refresh deadline
+Settings::load("preferences.txt") : error, can't open file.
+PASS public distance, movement and full-field lazy API boundaries
+Settings::load("preferences.txt") : error, can't open file.
+PASS delayed resource/guard/clear publication, synchronous supersession, teardown
+Settings::load("preferences.txt") : error, can't open file.
+PASS idle and invalidated field storage is reused without stale routes
+Settings::load("preferences.txt") : error, can't open file.
+PASS kernel equivalence terrain=0: 7 locked, 91 clearing, 259 partial
+Settings::load("preferences.txt") : error, can't open file.
+PASS kernel equivalence terrain=1: 7 locked, 91 clearing, 259 partial
+Settings::load("preferences.txt") : error, can't open file.
+PASS kernel equivalence terrain=2: 7 locked, 91 clearing, 259 partial
+Settings::load("preferences.txt") : error, can't open file.
+PASS kernel equivalence terrain=3: 7 locked, 91 clearing, 259 partial
+Settings::load("preferences.txt") : error, can't open file.
+PASS scheduled building fields publish at fixed deadlines across workers 0/1/2/4/8 and delays 1/4/8
+Settings::load("preferences.txt") : error, can't open file.
+PASS requests during team stepping are captured at the observation boundary
+Settings::load("preferences.txt") : error, can't open file.
+PASS scheduled field depth mode 0 (depth 199, worker popped 1604 of 67047) resumes from transferred buckets
+PASS scheduled field depth mode 1 (depth 65491, worker popped 67047 of 67047) resumes from transferred buckets
+PASS scheduled field depth mode 2 (depth 0, worker popped 16 of 67047) resumes from transferred buckets
+PASS scheduled field depth mode 0 (depth 199, worker popped 1604 of 67047) resumes from transferred buckets
+PASS scheduled field depth mode 1 (depth 65491, worker popped 67047 of 67047) resumes from transferred buckets
+PASS scheduled field depth mode 2 (depth 0, worker popped 16 of 67047) resumes from transferred buckets
+Settings::load("preferences.txt") : error, can't open file.
+PASS synchronous rebuilds, resets and evictions supersede; several jobs share a deadline
+Settings::load("preferences.txt") : error, can't open file.
+PASS pending building results survive saves at phases 0..3 (workers 0/1/2, binary and text) without resurrection
+Settings::load("preferences.txt") : error, can't open file.
+PASS a deleted building's pending result cannot replace a reused destination
+Settings::load("preferences.txt") : error, can't open file.
+PASS access metadata follows the newest capture across swim classes and saves
+Settings::load("preferences.txt") : error, can't open file.
+PASS area and team-wide resets keep stale walking fields serving and refresh them on schedule
+Settings::load("preferences.txt") : error, can't open file.
+PASS slow and failing workers never change the publication tick; failures surface at publication or save
+Settings::load("preferences.txt") : error, can't open file.
+PASS a pending result keeps the generation a team-local edit carries forward
+Settings::load("preferences.txt") : error, can't open file.
+PASS same-tick swim classes write access metadata in request order
+Settings::load("preferences.txt") : error, can't open file.
+PASS an empty building pipeline follows a changed header delay through save and load
+===============================================================================
+[doctest] test cases:      29 |      29 passed | 0 failed | 1313 skipped
+[doctest] assertions: 5427659 | 5427659 passed | 0 failed |
+[doctest] Status: SUCCESS!
