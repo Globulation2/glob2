@@ -1,0 +1,4 @@
+PASS gd-large-4ai.game: 1024 ticks, identical checksum sidecar: a795a820741ede1e87e59d52b8066ea7a37026fff3109c9ff27a9de25066c85b
+PASS gd-bigarena-long.game: 2048 ticks, identical checksum sidecar: 5e92d12b79c7bb65a1c53ef8b29d2156510d0dd150cdd87e402a6ae0f19e98f2
+PASS numbi-castor-v121.game.gz: 2048 ticks, identical checksum sidecar: 51af539d8fc8ec090e46cf4e63a06cc938dd6979cf00d9eacb6380f197fe0285
+PASS v108 checkpoint: 256 reloaded ticks, identical complete checksum sidecar
