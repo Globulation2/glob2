@@ -1,0 +1,17 @@
+[
+  {
+    "path": "artifacts/render-master-benchmark/fixture-balanced/initial.game.gz",
+    "bytes": 87851,
+    "sha256": "e24fc703af85426dbcbe24a575c3e30dcd3c222dac28433d1a6224110d900b68"
+  },
+  {
+    "path": "artifacts/render-master-benchmark/fixture-512/final.game.gz",
+    "bytes": 5653418,
+    "sha256": "8810b89482613532ebea871b02fabec83ed3ee7d26092bdb0da504e42b8db40e"
+  },
+  {
+    "path": "artifacts/direct-snapshot/dense-fixture-candidate/final.game.gz",
+    "bytes": 39136279,
+    "sha256": "75de2ae67ddb563960111d08548b04ad8c0b2e8e98e1120803732227e0216601"
+  }
+]
