@@ -1,218 +1,123 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "SceneExtract.h"
-
-#include "Building.h"
-#include "MapEdit.h"
-#include "BuildingType.h"
-#include "Bullet.h"
-#include "Game.h"
-#include "Sector.h"
-#include "Team.h"
-#include "OverlayAreas.h"
-#include "Player.h"
-#include "UnitTiming.h"
-#include "TeamStat.h"
-#include "WinProbability.h"
-#include "WinningConditions.h"
-#include "Unit.h"
-#include "AITelemetry.h"
-#include "render/GameAnimations.h"
-#include <unordered_map>
 #include "sim/presentation/SceneInputs.h"
-#include "sim/snapshot/SnapshotStore.h"
-#include "Race.h"
+#include "OverlayAreas.h"
+#include "UnitTiming.h"
+#include "WinProbability.h"
 #include "ai/model/BuildingProjection.h"
-
-static_assert(Team::MAX_COUNT <= SceneEntities::Teams, "SceneEntities::Teams too small");
-static_assert(Unit::MAX_COUNT <= SceneEntities::SlotsPerTeam, "SceneEntities::SlotsPerTeam too small");
-static_assert(Building::MAX_COUNT <= SceneEntities::SlotsPerTeam, "SceneEntities::SlotsPerTeam too small");
-static_assert(Building::UnitCantWorkReasonSize == SceneSelectedBuilding::FailReasons,
-			  "SceneSelectedBuilding::FailReasons must match Building::UnitCantWorkReasonSize");
-
-namespace
-{
-	//! Team::getFirstPlayerName, tolerating empty player slots: extraction runs for
-	//! every team on every frame, including in games that leave slots unset.
-	std::string firstPlayerName(const Game &game, const Team &team)
-	{
-		for (int i = 0; i < game.gameHeader.getNumberOfPlayers(); i++)
-			if (game.players[i] && game.players[i]->team == &team)
-				return game.players[i]->name;
-		return {};
-	}
-
-	template<class U> SceneUnit unitOf(const U &u, int team, Race* race)
-	{
-		SceneUnit s;
-		s.gid = u.gid;
-		s.generation = u.scriptIdentity;
-		s.team = team;
-		s.race = race;
-		s.typeNum = u.typeNum;
-		s.posX = u.posX;
-		s.posY = u.posY;
-		s.dx = u.dx;
-		s.dy = u.dy;
-		s.direction = u.direction;
-		s.delta = u.delta;
-		s.stepSpeed = unitActionStepSpeed(u.speed, u.action, u.dx, u.dy);
-		s.action = u.action;
-		s.hp = u.hp;
-		s.hungry = u.hungry;
-		s.carriedMaterial = u.carriedMaterial;
-		s.experienceLevel = u.experienceLevel;
-		s.levelUpAnimation = u.levelUpAnimation;
-		s.magicActionAnimation = u.magicActionAnimation;
-		s.validTarget = u.validTarget;
-		s.targetX = u.targetX;
-		s.targetY = u.targetY;
-		for (int a = 0; a < NB_ABILITY; ++a)
-			s.performance[a] = u.performance[a];
-		return s;
-	}
-
-	template<class B> SceneBuilding buildingOf(const B &b, int team, BuildingType* type,
-        const BuildingType* lastType, int maxHp, int inside, int working, const Sint32* materials)
-	{
-		SceneBuilding s;
-		s.gid = b.gid;
-		s.generation = b.scriptIdentity;
-		s.team = team;
-		s.type = type;
-		s.lastUpgradeType = const_cast<BuildingType*>(lastType);
-		s.typeNum = b.typeNum;
-		s.shortTypeNum = b.shortTypeNum;
-		s.buildingState = b.buildingState;
-		s.posX = b.posX;
-		s.posY = b.posY;
-		s.hp = b.hp;
-		s.effectiveMaxHp = maxHp;
-		s.maxUnitInside = b.maxUnitInside;
-		s.unitsInside = inside;
-		s.maxUnitWorking = b.maxUnitWorking;
-		s.unitsWorking = working;
-		for (int r = 0; r < MaterialCount; ++r)
-			s.materials[r] = materials[r];
-		s.bullets = b.bullets;
-		s.unitStayRange = b.unitStayRange;
-		s.seenByMask = b.seenByMask;
-		s.lastShootStep = b.lastShootStep;
-		s.lastShootSpeedX = b.lastShootSpeedX;
-		s.lastShootSpeedY = b.lastShootSpeedY;
-		return s;
-	}
-
-	void extractEntities(const Game &game, const SceneRequest &request, SceneEntities &e, bool records = true)
-	{
-		const int teamCount = game.mapHeader.getNumberOfTeams();
-		e.teamCount = teamCount;
-		e.materialPresence = 0;
-		e.units.clear();
-		e.buildings.clear();
-		if (records)
-        {
-            e.unitIndex.assign(SceneEntities::Teams * SceneEntities::SlotsPerTeam, -1);
-            e.buildingIndex.assign(SceneEntities::Teams * SceneEntities::SlotsPerTeam, -1);
-        }
-		for (auto &flags : e.virtualBuildings)
-			flags.clear();
-		for (int t = 0; t < teamCount; ++t)
-		{
-			const Team *team = game.teams[t];
-			for (unsigned m=0; m<MaterialCount; ++m)
-				if (team->teamMaterials[m] || team->reservedTeamMaterials[m]) e.materialPresence |= materialBit(static_cast<MaterialId>(m));
-			e.teams[t] = SceneTeam{team->color, team->teamNumber, team->me, team->allies, team->sharedVisionOther,
-				team->startPosX, team->startPosY, firstPlayerName(game, *team)};
-			for (int i = 0; records && i < Unit::MAX_COUNT; ++i)
-				if (const Unit *u = team->myUnits[i])
-				{
-					e.unitIndex[u->gid] = int(e.units.size());
-					e.units.push_back(unitOf(*u, t, u->race));
-					if (u->carriedMaterial >= 0 && validMaterial(u->carriedMaterial)) e.materialPresence |= 1u << u->carriedMaterial;
-				}
-			for (int i = 0; records && i < Building::MAX_COUNT; ++i)
-				if (const Building *b = team->myBuildings[i])
-				{
-					e.buildingIndex[b->gid] = int(e.buildings.size());
-					e.buildings.push_back(buildingOf(*b, t, b->type, game.buildingsTypes.get(game.buildingsTypes.get(
-                        b->constructionResultState==Building::REPAIR ? b->getConstructionCompletionTypeNum() : b->typeNum)->terminalTypeNum),
-                        b->getEffectiveMaxHp(), int(b->unitsInside.size()), int(b->unitsWorking.size()), b->materials));
-					for (unsigned m=0; m<MaterialCount; ++m) if (b->materials[m]) e.materialPresence |= 1u << m;
-				}
-			for (const Building *b : team->virtualBuildings)
-				e.virtualBuildings[t].push_back(b->gid);
-		}
-
-
-		// Bullets and animations, grouped by sector in drawing order.
-		Map &map = const_cast<Map &>(game.map); // Map::getSector has no const overload; read only.
-		const int sectorCount = map.getSectorW() * map.getSectorH();
-		e.sectors.resize(sectorCount);
-		for (int i = 0; i < sectorCount; ++i)
-		{
-			SceneSectorEffects &sector = e.sectors[i];
-			sector.bullets.clear();
-			sector.explosions.clear();
-			sector.deaths.clear();
-			for (const Bullet *b : map.getSector(i)->bullets)
-				sector.bullets.push_back({b->px, b->py, b->speedX, b->speedY, b->ticksLeft, b->ticksInitial});
-			if (game.animations)
-			{
-				for (const BulletExplosion *x : game.animations->getExplosions(i))
-					sector.explosions.push_back({x->x, x->y, x->ticksLeft});
-				for (const UnitDeathAnimation *d : game.animations->getDeathAnimations(i))
-					sector.deaths.push_back({d->x, d->y, d->ticksLeft, d->team->teamNumber});
-			}
-		}
-
-		// The selection's contribution to the map view.
-		SceneSelectedBuilding &selected = e.selectedBuilding;
-		selected = SceneSelectedBuilding();
-		if (const Building *b = game.resolveBuilding(request.selectedBuilding))
-		{
-			selected.ref = request.selectedBuilding;
-			selected.verbose = b->verbose;
-			if (b->verbose == 1 || b->verbose == 2)
-			{
-				int swim = b->verbose == 1 ? 0 : 1;
-				while (b->verbose == 2 && swim < SWIM_CLASS_COUNT-1 && !b->globalGradient[swim]) ++swim;
-				if (b->globalGradient[swim])
-					selected.debugGradient.assign(b->globalGradient[swim], b->globalGradient[swim] + size_t(game.map.getW())*game.map.getH());
-			}
-			selected.recordFailingUnits = b->recordFailingUnits;
-			selected.desiredMaxUnitWorking = b->desiredMaxUnitWorking;
-			for (int r = 0; r < SceneSelectedBuilding::FailReasons; ++r)
-			{
-				selected.unitsFailingRequirements[r] = b->unitsFailingRequirements[r];
-				selected.unitsFailingByReason[r] = b->unitsFailingByReason[r];
-			}
-			for (const Unit *u : b->unitsWorking)
-				selected.unitsWorking.push_back(u->gid);
-		}
-		e.selectedUnit = game.resolveUnit(request.selectedUnit) ? request.selectedUnit : UnitRef();
-		e.highlightUnitType = request.highlights ? request.highlights->first : game.highlightUnitType;
-		e.highlightBuildingType = request.highlights ? request.highlights->second : game.highlightBuildingType;
-	}
-}
-
+#include <unordered_map>
+#include <utility>
 namespace {
-void prepareConnections(const SceneMap& map, SceneEntities& e)
+void prepareSource(const SceneInputs& input,PresentationFrame& scene)
 {
-        // Resolve segment connections once per extracted frame. Overlay buildings
-        // need a sparse footprint index because they do not occupy the map grid.
-        std::unordered_multimap<int,const SceneBuilding*> overlays;
-        const auto tile=[&](int x,int y) { return int(map.coordToIndex(x,y)); };
-        for (const auto& b : e.buildings)
-            if (!b.type->semantics.occupiesGround && b.type->presentation.connectionGroupId>=0)
-                for (int dy=0; dy<b.type->height; ++dy)
-                    for (int dx=0; dx<b.type->width; ++dx) overlays.emplace(tile(b.posX+dx,b.posY+dy),&b);
-        for (auto& b : e.buildings)
-            if (b.type->crossConnectMultiImage)
+    const auto& world=input.world;
+    scene.world=world;scene.request=input.request;
+    const auto& request=input.request;
+    const auto& state=*world.session;
+    scene.buildingTypes=world.catalogs->typeDefinitions;
+    scene.editor=state.editor; scene.tick=world.tick;
+    scene.tickTime=request.tickTime; scene.tickInterval=request.tickInterval;
+    scene.executedOrderRevision=state.executedOrderRevision;
+    scene.map.bindSnapshot(world,request.view.displayW,request.view.displayH,request.localTeam);
+    auto& e=scene.entities;
+    e.world=world; e.typeDefinitions=world.catalogs->typeDefinitions; e.units=world.entities->units;e.unitIndex=world.entities->unitSlotIndices;
+    e.buildings=world.entities->buildings;e.buildingIndex=world.entities->buildingSlotIndices;
+    e.connectionMasks.assign(e.buildings.size(),0);
+    e.teamCount=world.teams->values.size();e.teams=world.teams->values;
+    for (const auto& t:world.teams->values) {
+        for (unsigned m=0;m<MaterialCount;++m) if (t.materials[m] || t.reservedMaterials[m]) e.materialPresence|=materialBit(static_cast<MaterialId>(m));
+        e.virtualBuildings[t.number]=t.virtualBuildings;
+    }
+    if (world.effects) e.sectors=world.effects->sectors;
+    const auto unit=[&](UnitRef ref)->const SimulationSnapshot::UnitView* {
+        if (ref.gid>=world.entities->unitSlotIndices.size()) return nullptr;
+        const auto index=world.entities->unitSlotIndices[ref.gid];
+        if (index>=world.entities->units.size()) return nullptr;
+        const auto& u=world.entities->units[index]; return u.identity==ref ? &u : nullptr;
+    };
+    const auto building=[&](BuildingRef ref)->const SimulationSnapshot::BuildingView* {
+        if (ref.gid>=world.entities->buildingSlotIndices.size()) return nullptr;
+        const auto index=world.entities->buildingSlotIndices[ref.gid];
+        if (index>=world.entities->buildings.size()) return nullptr;
+        const auto& b=world.entities->buildings[index]; return b.identity==ref ? &b : nullptr;
+    };
+    const auto* selected=building(request.selectedBuilding);
+    const auto* selectedUnit=unit(request.selectedUnit);
+    if (selected) {
+        auto& value=e.selectedBuilding;
+        value.ref=selected->identity; value.desiredMaxUnitWorking=selected->desiredMaxUnitWorking;
+        value.unitsFailingRequirements=selected->unitsFailingRequirements;
+        value.unitsWorking=std::span<const UnitRef>(world.entities->relationships).subspan(selected->working.offset,selected->working.count);
+        if (world.entityDiagnostics) for (const auto& d:world.entityDiagnostics->buildings) if (d.identity==selected->identity) {
+            value.verbose=d.verbose; value.recordFailingUnits=d.recordFailingUnits;
+            value.debugGradient=d.gradient; value.unitsFailingRequirements=d.failingCounts; for (size_t i=0;i<value.unitsFailingByReason.size();++i) value.unitsFailingByReason[i]=d.failingUnits[i];
+            break;
+        }
+    }
+    e.selectedUnit=selectedUnit ? selectedUnit->identity : UnitRef{};
+    e.highlightUnitType=request.highlights ? request.highlights->first : 0;
+    e.highlightBuildingType=request.highlights ? request.highlights->second : 0;
+    if (!request.includePanels || request.localTeam < 0 || size_t(request.localTeam) >= world.teams->values.size()) return;
+    const auto& local=world.teams->values.at(request.localTeam);
+    auto& panels=scene.panels;
+    panels.world=world;
+    panels.local.record=&local;
+    if (world.statistics) panels.localStats=world.statistics->teams.at(request.localTeam);
+    auto& hud=panels.hud;
+    hud.session=&state; hud.teams=world.teams.get(); hud.local=&local;
+    Uint32 contested=0;
+    for (const auto& p:state.players) {
+        if (p.competing && p.teamNumber>=0 && size_t(p.teamNumber)<world.teams->values.size()) contested|=Uint32(1)<<p.teamNumber;
+    }
+    if (!contested) contested=~Uint32(0);
+    for (const auto& t:world.teams->values) if (t.won) {hud.winningTeam=t.number;break;}
+    if (hud.winningTeam>=0 || hud.state().totalPrestigeReached) {
+        for (const auto& a:world.teams->values) if (a.won && !a.lost)
+            for (const auto& b:world.teams->values) if (a.number!=b.number && b.won && (contested & b.mask)
+                && !((a.allies & b.mask) && (b.allies & a.mask))) {
+                if (contested & a.mask) hud.drawn=true;
+                if (a.number==request.localTeam) hud.localDraw=true;
+            }
+    }
+    if (selected) {
+        const auto& b=*selected;auto& bp=panels.building;
+        bp.record=selected;bp.valid=true;bp.ownerRecord=&world.teams->values.at(b.team);
+        bp.type=&scene.buildingTypes->at(b.typeNum);
+        bp.materials=b.usesTeamResources ? world.teams->values.at(b.team).materials.data() : b.localMaterials;
+        int recipe=b.productionUnit;
+        if (recipe<0) {
+            Sint64 best=std::numeric_limits<Sint64>::max();
+            for (int i=0;i<NB_UNIT_TYPE;++i) if (bp.type->semantics.production.recipes[i].enabled && b.ratio[i]>0) {
+                const Sint64 proportion=(Sint64(b.percentUsed[i])<<16)/b.ratio[i];
+                if (proportion<=best) {best=proportion;recipe=i;}
+            }
+        }
+        if (recipe>=0 && size_t(recipe)<bp.type->semantics.production.recipes.size()) bp.productionDuration=bp.type->semantics.production.recipes[recipe].duration;
+        const auto relationships=std::span<const UnitRef>(world.entities->relationships);
+        bp.insideUnits=relationships.subspan(b.inside.offset,b.inside.count);
+        bp.workingUnits=relationships.subspan(b.working.offset,b.working.count);
+        bp.showLevel=bp.type->presentation.showLevel;bp.buildingHpMultiplier=world.rules->configuration->getBuildingHpMultiplier();
+    }
+    if (selectedUnit) {
+        auto& up=panels.unit;up.record=selectedUnit;up.valid=true;
+        up.ownerRecord=&world.teams->values.at(selectedUnit->team);up.unitTypes=world.catalogs->unitTypes[selectedUnit->typeNum];
+        up.glassCannonScale=world.rules->configuration->getGlassCannonScale();
+    }
+}
+}
+namespace {
+void prepareConnections(const SceneMap& map,SceneEntities& e,
+    const std::unordered_multimap<int,const SnapshotBuilding*>& overlays,size_t first,size_t count)
+{
+        const auto tile=[&](int x,int y) {return int(map.coordToIndex(x,y));};
+        for (size_t i=first;i<std::min(e.buildings.size(),first+count);++i) {
+            const auto& b=e.buildings[i];
+            if (e.type(b)->crossConnectMultiImage)
             {
-                const auto connects=[&](const SceneBuilding* other) {
+                const auto connects=[&](const SnapshotBuilding* other) {
                     return other && other->gid!=b.gid &&
-                        other->type->presentation.connectionGroupId==b.type->presentation.connectionGroupId &&
-                        (b.type->presentation.connectsAcrossTeams || other->team==b.team);
+                        e.type(*other)->presentation.connectionGroupId==e.type(b)->presentation.connectionGroupId &&
+                        (e.type(b)->presentation.connectsAcrossTeams || other->team==b.team);
                 };
                 const auto neighbor=[&](int x,int y) {
                     if (connects(e.building(map.getBuilding(x,y)))) return true;
@@ -220,299 +125,27 @@ void prepareConnections(const SceneMap& map, SceneEntities& e)
                     for (auto it=range.first; it!=range.second; ++it) if (connects(it->second)) return true;
                     return false;
                 };
-                for (int dx=0; dx<b.type->width; ++dx)
+                for (int dx=0; dx<e.type(b)->width; ++dx)
                 {
-                    if (!(b.connectionMask&8) && neighbor(b.posX+dx,b.posY-1)) b.connectionMask|=8;
-                    if (!(b.connectionMask&4) && neighbor(b.posX+dx,b.posY+b.type->height)) b.connectionMask|=4;
+                    if (!(e.connectionMasks[e.buildingIndex[b.gid]]&8) && neighbor(b.posX+dx,b.posY-1)) e.connectionMasks[e.buildingIndex[b.gid]]|=8;
+                    if (!(e.connectionMasks[e.buildingIndex[b.gid]]&4) && neighbor(b.posX+dx,b.posY+e.type(b)->height)) e.connectionMasks[e.buildingIndex[b.gid]]|=4;
                 }
-                for (int dy=0; dy<b.type->height; ++dy)
+                for (int dy=0; dy<e.type(b)->height; ++dy)
                 {
-                    if (!(b.connectionMask&2) && neighbor(b.posX-1,b.posY+dy)) b.connectionMask|=2;
-                    if (!(b.connectionMask&1) && neighbor(b.posX+b.type->width,b.posY+dy)) b.connectionMask|=1;
+                    if (!(e.connectionMasks[e.buildingIndex[b.gid]]&2) && neighbor(b.posX-1,b.posY+dy)) e.connectionMasks[e.buildingIndex[b.gid]]|=2;
+                    if (!(e.connectionMasks[e.buildingIndex[b.gid]]&1) && neighbor(b.posX+e.type(b)->width,b.posY+dy)) e.connectionMasks[e.buildingIndex[b.gid]]|=1;
                 }
             }
 
-}
-}
-
-namespace
-{
-	ScenePanelOwner ownerOf(const Game &game, const Team &team)
-	{
-		return ScenePanelOwner{team.teamNumber, team.me, team.allies, team.sharedVisionExchange, team.color,
-			firstPlayerName(game, team)};
-	}
-
-	// The panels' legacy queries (repair cost, hard space, hunger, max build
-	// level) only read the game but are not const-qualified; they are called here
-	// through const_cast, on the simulation side, as drawing did before.
-	void extractPanels(const Game &game, const SceneRequest &request, ScenePanels &panels, SceneInputs* raw = nullptr)
-	{
-		Team &local = *game.teams[request.localTeam];
-		panels.local = ScenePanelLocal{local.teamNumber, local.allies, raw ? 0 : local.maxBuildLevel(), local.color,
-			local.prestige, local.unitConversionGained, local.unitConversionLost, local.noMoreBuildingSitesCountdown};
-
-		SceneHud &hud = panels.hud;
-        hud.totalPrestigeReached=game.totalPrestigeReached;
-        hud.prestigeWinCondition=const_cast<Game&>(game).isPrestigeWinCondition();
-        hud.localWon=local.hasWon; hud.localLost=local.hasLost;
-        hud.winningTeam=-1;
-        for (int t=0;t<game.teamsCount();++t) if (game.teams[t]->hasWon) { hud.winningTeam=t; break; }
-        hud.drawn=false; hud.localDraw=false;
-        if (hud.winningTeam>=0 || hud.totalPrestigeReached)
-        {
-            auto* source=const_cast<Game*>(&game);
-            const auto contested=contestedTeamsMask(source);
-            hud.drawn=isGameDrawn(source,contested);
-            hud.localDraw=classifyTeamOutcome(source,request.localTeam,contested)==TeamOutcome::Draw;
         }
-		if (!raw)
-		{
-		std::vector<int> allianceOf;
-		const auto slots = WinProbability::slotsOf(game, allianceOf);
-		const auto chances = WinProbability::permille(slots);
-		hud.winChances.clear();
-		for (int t = 0; t < game.teamsCount(); ++t)
-			if (const Team *team = game.teams[t])
-				hud.winChances.push_back({firstPlayerName(game, *team), team->color,
-					chances[allianceOf[t]], slots[allianceOf[t]].alive});
-		}
-
-		hud.totalPrestige = game.totalPrestige;
-		hud.prestigeToReach = game.prestigeToReach;
-		hud.anyPlayerWaited = game.anyPlayerWaited;
-		hud.maskAwayPlayer = game.maskAwayPlayer;
-		hud.players.clear();
-		for (int p = 0; p < game.gameHeader.getNumberOfPlayers(); ++p)
-			if (const Player *player = game.players[p])
-				hud.players.push_back({player->name, player->teamNumber});
-			else
-				hud.players.push_back({});
-		hud.legacyScriptTextShown = game.legacyScriptActive() && game.sgslScript.isTextShown;
-		hud.legacyScriptText = hud.legacyScriptTextShown ? game.sgslScript.textShown : std::string();
-		hud.legacyScriptTimer = game.legacyScriptTimer();
-
-		// Copy into the scene's own TeamStats, reusing its storage when unshared.
-		if (!panels.localStats || panels.localStats.use_count() > 1)
-			panels.localStats = std::make_shared<TeamStats>(local.stats);
-		else
-			*panels.localStats = local.stats;
-		panels.localStats->aiTelemetry.clear();
-
-		panels.aiTelemetry.clear();
-		for (int t = 0; t < game.mapHeader.getNumberOfTeams(); ++t)
-		{
-			// A unilateral diplomacy toggle must not reveal an opponent's plans.
-			const bool allied = (local.allies & (1u << t)) &&
-				(game.teams[t]->allies & local.me);
-			if (!request.spectating && t != request.localTeam && !allied)
-				continue;
-			for (const auto &series : game.teams[t]->stats.aiTelemetry)
-			{
-				if (!series->active)
-					continue;
-				SceneAITelemetry row;
-				row.team = t;
-				row.player = series->player;
-				row.name = series->playerName;
-				row.available = series->current.available;
-                if (raw)
-                {
-                    raw->telemetry.push_back({std::move(row), series->fields, series->current.values, series->named});
-                    continue;
-                }
-				if (row.available)
-				{
-					for (std::size_t i = 0;
-						 i < series->fields.size() && i < series->current.values.size(); ++i)
-					{
-						const auto &field = series->fields[i];
-						const auto &value = series->current.values[i];
-						if (i >= AITelemetry::OrderTypes && i < AITelemetry::Specific &&
-							(!value.valid || !value.bits))
-							continue;
-						row.values.push_back({field.name, AITelemetry::displayValue(field, value),
-											  field.unit, field.meaning, value.updated});
-					}
-					row.values.insert(row.values.end(), series->named.begin(), series->named.end());
-				}
-				panels.aiTelemetry.push_back(std::move(row));
-			}
-		}
-
-		SceneBuildingPanel &bp = panels.building;
-		bp = SceneBuildingPanel();
-		if (Building *b = game.resolveBuilding(request.selectedBuilding))
-		{
-			bp.valid = true;
-			bp.gid = b->gid;
-			bp.generation = b->scriptIdentity;
-			bp.owner = ownerOf(game, *b->owner);
-			bp.type = b->type;
-			bp.typeNum = b->typeNum;
-			bp.posX = b->posX;
-			bp.posY = b->posY;
-			bp.hp = b->hp;
-			bp.effectiveMaxHp = b->getEffectiveMaxHp();
-			bp.buildingState = b->buildingState;
-			bp.constructionResultState = b->constructionResultState;
-			bp.constructionOriginTypeNum = b->getConstructionOriginTypeNum();
-			bp.maxUnitWorking = b->maxUnitWorking;
-			bp.desiredMaxUnitWorking = b->desiredMaxUnitWorking;
-			bp.priority = b->priority;
-			bp.unitStayRange = b->unitStayRange;
-			bp.minLevelToFlag = b->minLevelToFlag;
-			bp.minWorkerLevelToFlag=b->minWorkerLevelToFlag;
-			bp.explorersRequireBombing=b->explorersRequireBombing;
-			for (int r = 0; r < BASIC_COUNT; ++r)
-				bp.clearingMaterials[r] = b->clearingMaterials[r];
-			for (int r = 0; r < MaterialCount; ++r)
-				bp.materials[r] = b->materials[r];
-			bp.bullets = b->bullets;
-			bp.productionTimeout = b->productionTimeout;
-			const int recipe=b->productionUnit>=0 ? b->productionUnit : b->selectProductionRecipe();
-			if (recipe>=0) bp.productionDuration=b->type->semantics.production.recipes[recipe].duration;
-			for (int t = 0; t < NB_UNIT_TYPE; ++t)
-				bp.ratio[t] = b->ratio[t];
-			for (int r = 0; r < SceneSelectedBuilding::FailReasons; ++r)
-				bp.unitsFailingRequirements[r] = b->unitsFailingRequirements[r];
-			bp.unitsInside = Sint32(b->unitsInside.size());
-			bp.unitsWorking = Sint32(b->unitsWorking.size());
-			for (const Unit *u : b->unitsInside)
-				bp.insideUnits.push_back({u->displacement == Unit::DIS_INSIDE, u->insideTimeout, u->delta});
-			for (const Unit *u : b->unitsWorking)
-				bp.workerPositions.push_back({u->posX, u->posY});
-			// Ask only where the panels offer repair or upgrade, as drawing did: these
-			// queries assume a real building and an existing next level.
-			const bool constructible = b->constructionResultState == Building::NO_CONSTRUCTION &&
-				b->buildingState == Building::ALIVE && !b->type->isBuildingSite;
-			if (!raw && constructible && b->type->semantics.repairable && b->type->prevLevel>=0 &&
-				(b->hp < bp.effectiveMaxHp || b->hp < b->type->hpMax))
-			{
-				bp.hardSpaceForRepair = b->isHardSpaceForBuildingSite(Building::REPAIR) && b->owner->maxBuildLevel()>=game.buildingsTypes.get(b->type->prevLevel)->semantics.requiredWorkerLevel;
-				b->getMaterialCountToRepair(bp.repairCost);
-			}
-			bp.showLevel = b->type->presentation.showLevel;
-			if (!raw && constructible && b->isUpgradeAvailable())
-				bp.hardSpaceForUpgrade = b->isHardSpaceForBuildingSite(Building::UPGRADE) && b->owner->maxBuildLevel()>=game.buildingsTypes.get(b->type->nextLevel)->semantics.requiredWorkerLevel;
-			bp.buildingHpMultiplier = game.gameHeader.getBuildingHpMultiplier();
-		}
-
-		SceneUnitPanel &up = panels.unit;
-		up = SceneUnitPanel();
-		if (Unit *u = game.resolveUnit(request.selectedUnit))
-		{
-			up.valid = true;
-			up.gid = u->gid;
-			up.generation = u->scriptIdentity;
-			up.owner = ownerOf(game, *u->owner);
-			up.race = u->race;
-			up.typeNum = u->typeNum;
-			up.action = u->action;
-			up.direction = u->direction;
-			up.delta = u->delta;
-			up.hp = u->hp;
-			up.trigHP = u->trigHP;
-			up.hungry = u->hungry;
-			up.speed = u->speed;
-			up.carriedMaterial = u->carriedMaterial;
-			up.fruitCount = u->fruitCount;
-			up.experience = u->experience;
-			up.experienceLevel = u->experienceLevel;
-			for (int a = 0; a < NB_ABILITY; ++a)
-			{
-				up.performance[a] = u->performance[a];
-				up.level[a] = u->level[a];
-			}
-			if (!raw)
-            {
-                up.unitHungry = u->isUnitHungry();
-                up.realArmor = u->getRealArmor(false);
-                up.nextLevelThreshold = u->getNextLevelThreshold();
-            }
-			up.glassCannonScale = game.gameHeader.getGlassCannonScale();
-		}
-	}
 }
-
-void SceneExtractor::extract(const Game &game, const SceneRequest &request, Scene &scene)
-{
-	scene.buildingTypes = game.buildingsTypes.retainTypes();
-	scene.editor = game.edit != nullptr;
-	scene.tick = game.stepCounter;
-    scene.executedOrderRevision=game.clientEvents ? game.clientEvents->executedOrderRevision() : 0;
-	scene.tickTime = request.tickTime;
-	scene.tickInterval = request.tickInterval;
-	scene.map.extract(game.map, request.view.displayW, request.view.displayH, request.includeScriptAreas);
-	extractEntities(game, request, scene.entities);
-	prepareConnections(scene.map, scene.entities);
-	if (request.includePanels) extractPanels(game, request, scene.panels);
-	else scene.panels=ScenePanels{};
-
-	// Overlay maps refresh every 25 ticks (windows start at ticks 25k+1), and at once
-	// when the client switches overlay or team.
-	const Uint8 type = request.view.overlay;
-	const Uint32 window = game.stepCounter ? (game.stepCounter - 1) / 25 : 0;
-	if (type == OverlayArea::None)
-		overlay.reset();
-	else if (!overlay || type != overlayType || window != overlayWindow || request.localTeam != overlayTeam)
-	{
-		auto next = std::make_shared<OverlayArea>();
-		// OverlayArea::compute only reads the game; it takes Game& for legacy accessors.
-		next->compute(const_cast<Game &>(game), OverlayArea::OverlayType(type), request.localTeam);
-		overlay = std::move(next);
-	}
-	overlayType = type;
-	overlayWindow = window;
-	overlayTeam = request.localTeam;
-	scene.overlay = game.edit && !overlay ? std::make_shared<OverlayArea>(game.edit->overlay) : overlay;
 }
-
-void extractScene(const Game &game, const SceneRequest &request, Scene &scene)
-{
-	SceneExtractor().extract(game, request, scene);
-}
-
-std::shared_ptr<SceneInputs> SceneExtractor::capture(const Game& game, const SceneRequest& request)
-{
-    using namespace SimulationSnapshot;
-    auto input = std::make_shared<SceneInputs>();
-    input->request = request;
-    // Presentation can observe paused edits between logical ticks. Declare that
-    // boundary explicitly rather than mixing freshly captured metadata with an
-    // older same-tick entity snapshot.
-    auto& store = game.snapshots();
-    store.invalidateBoundary();
-    auto requirements = bit(Component::Catalogs) | bit(Component::Terrain) | bit(Component::Resources)
-        | bit(Component::Occupancy) | bit(Component::Visibility) | bit(Component::Entities)
-        | bit(Component::Teams) | bit(Component::Rules);
-    if (game.gameHeader.hasExperiment(ExperimentId::FarmAreas)) requirements |= bit(Component::Growth);
-    input->world = store.captureBoundary(game, requirements);
-    auto& scene = input->source;
-    scene.buildingTypes = game.buildingsTypes.retainTypes();
-    scene.race = std::make_shared<Race>();
-    scene.editor = game.edit != nullptr;
-    scene.executedOrderRevision=game.clientEvents ? game.clientEvents->executedOrderRevision() : 0;
-    scene.tick = input->world.tick; scene.tickTime = request.tickTime; scene.tickInterval = request.tickInterval;
-    scene.map.captureDisplay(game.map, request.view.displayW, request.view.displayH, request.includeScriptAreas);
-    extractEntities(game, request, scene.entities, false);
-    if (request.includePanels) extractPanels(game, request, scene.panels, input.get());
-    for (int t=0; t<game.teamsCount(); ++t) input->lost[t] = game.teams[t] && game.teams[t]->hasLost;
-    scene.panels.unit.race = scene.race.get();
-    if (game.edit) scene.overlay = std::make_shared<OverlayArea>(game.edit->overlay);
-    input->fertilityMaximum = game.map.fertilityMaximum;
-    return input;
-}
-
 namespace {
-void preparePanels(const SceneInputs& input, Scene& scene)
+void preparePanels(const SceneInputs& input, PresentationFrame& scene, const std::array<int,SceneEntities::Teams>& buildLevels)
 {
-    if (!input.request.includePanels) return;
+    if (!input.request.includePanels || !scene.panels.local.record) return;
     const auto& world = input.world;
     auto& panels = scene.panels;
-    std::array<int, SceneEntities::Teams> buildLevels{};
-    for (const auto& u : world.entities->units)
-        if (u.performance[BUILD]) buildLevels[u.team] = std::max(buildLevels[u.team], int(u.constructionLevel));
     panels.local.maxBuildLevel = buildLevels[input.request.localTeam];
     const auto& configuration = *world.rules->configuration;
     std::vector<int> alliances, allianceOf;
@@ -533,7 +166,7 @@ void preparePanels(const SceneInputs& input, Scene& scene)
     std::vector<WinProbability::Slot> slots(alliances.size());
     for (const auto& t : world.teams->values)
     {
-        if (!t.alive || input.lost[t.number]) continue;
+        if (!t.alive || t.lost) continue;
         auto& slot = slots[allianceOf[t.number]];
         const auto& stat = t.statistics;
         slot.alive = true; slot.units += stat.totalUnit; slot.prestige += t.prestige;
@@ -545,12 +178,17 @@ void preparePanels(const SceneInputs& input, Scene& scene)
     for (int t=0; t<scene.entities.teamCount; ++t)
     {
         const auto& team = scene.entities.teams[t];
-        panels.hud.winChances.push_back({team.firstPlayerName,team.color,chances[allianceOf[t]],slots[allianceOf[t]].alive});
+        panels.hud.winChances.push_back({team.firstPlayerName,presentationColor(team.color),chances[allianceOf[t]],slots[allianceOf[t]].alive});
     }
     panels.aiTelemetry.clear();
-    for (const auto& source : input.telemetry)
+    if (world.telemetry) for (const auto& source : world.telemetry->rows)
     {
-        auto row = source.row;
+        const auto& local = world.teams->values.at(input.request.localTeam);
+        const auto& team = world.teams->values.at(source.team);
+        if (!input.request.spectating && source.team != input.request.localTeam
+            && !((local.allies & team.mask) && (team.allies & local.mask))) continue;
+        SceneAITelemetry row; row.team=source.team; row.player=source.player;
+        row.name=source.name; row.available=source.available;
         if (row.available)
         {
             for (size_t i=0; i<source.fields.size() && i<source.values.size(); ++i)
@@ -567,29 +205,29 @@ void preparePanels(const SceneInputs& input, Scene& scene)
     if (bp.valid)
     {
         const auto& type = *bp.type;
-        const bool constructible = bp.constructionResultState == BuildingStateRecord::NO_CONSTRUCTION
-            && bp.buildingState == BuildingStateRecord::ALIVE && !type.isBuildingSite;
+        const bool constructible = bp.state().constructionResultState == BuildingStateRecord::NO_CONSTRUCTION
+            && bp.state().buildingState == BuildingStateRecord::ALIVE && !type.isBuildingSite;
         const auto hardSpace = [&](int next, bool upgrade) {
             if (upgrade && world.rules->values.upgradesDisabled) return false;
             if (next < 0) return true;
             const auto& target = scene.buildingTypes->at(next);
             if (target.isVirtual) return true;
-            const int x = bp.posX + target.decLeft - type.decLeft, y = bp.posY + target.decTop - type.decTop;
+            const int x = bp.state().posX + target.decLeft - type.decLeft, y = bp.state().posY + target.decTop - type.decTop;
             for (int dy=0; dy<target.height; ++dy) for (int dx=0; dx<target.width; ++dx)
             {
                 const auto& map = scene.map;
                 const auto& r = map.getResource(x+dx,y+dy);
                 if (r.type != NO_RES_TYPE && map.resourceRegistry().properties(static_cast<ResourceId>(r.type)).blocksBuilding) return false;
                 const auto occupant = map.getBuilding(x+dx,y+dy);
-                if (occupant != 0xffff && occupant != bp.gid) return false;
+                if (occupant != 0xffff && occupant != bp.state().gid) return false;
                 if (!map.terrainRegistry().properties(map.terrainTypeAt(x+dx,y+dy)).buildable) return false;
             }
             return true;
         };
-        if (constructible && type.semantics.repairable && type.prevLevel>=0 && (bp.hp<bp.effectiveMaxHp || bp.hp<type.hpMax))
+        if (constructible && type.semantics.repairable && type.prevLevel>=0 && (bp.state().hp<bp.state().maxHp || bp.state().hp<type.hpMax))
         {
-            bp.hardSpaceForRepair = hardSpace(type.prevLevel,false) && buildLevels[bp.owner.teamNumber]>=scene.buildingTypes->at(type.prevLevel).semantics.requiredWorkerLevel;
-            const Sint64 ratio = (Sint64(bp.hp)<<16)/bp.effectiveMaxHp;
+            bp.hardSpaceForRepair = hardSpace(type.prevLevel,false) && buildLevels[bp.owner().number]>=scene.buildingTypes->at(type.prevLevel).semantics.requiredWorkerLevel;
+            const Sint64 ratio = (Sint64(bp.state().hp)<<16)/bp.state().maxHp;
             Sint32 error=0;
             for (unsigned m=0; m<MaterialCount; ++m)
             {
@@ -600,12 +238,12 @@ void preparePanels(const SceneInputs& input, Scene& scene)
             }
         }
         if (constructible && type.nextLevel>=0 && world.catalogs->buildings->at(type.nextLevel).available)
-            bp.hardSpaceForUpgrade = hardSpace(type.nextLevel,true) && buildLevels[bp.owner.teamNumber]>=scene.buildingTypes->at(type.nextLevel).semantics.requiredWorkerLevel;
+            bp.hardSpaceForUpgrade = hardSpace(type.nextLevel,true) && buildLevels[bp.owner().number]>=scene.buildingTypes->at(type.nextLevel).semantics.requiredWorkerLevel;
     }
     auto& up = panels.unit;
     if (up.valid)
     {
-        const auto index = world.entities->unitSlotIndices.at(up.gid);
+        const auto index = world.entities->unitSlotIndices.at(up.state().gid);
         const auto& u = world.entities->units.at(index);
         up.unitHungry = !world.rules->values.hungerDisabled && u.hungry <= (u.carriedMaterial==-1 ? u.trigHungry : u.trigHungryCarrying);
         const auto& types = world.catalogs->unitTypes[u.typeNum];
@@ -617,81 +255,140 @@ void preparePanels(const SceneInputs& input, Scene& scene)
 
 size_t SceneExtractor::preparationChunks(const SceneInputs& input)
 {
-    return 3 + (input.world.entities->units.size()+255)/256 + (input.world.entities->buildings.size()+255)/256;
+    return 2 + OverlayArea::chunks(input.world,OverlayArea::OverlayType(input.request.view.overlay)) + (size_t(input.world.width)*input.world.height+1023)/1024 + (input.world.entities->units.size()+255)/256 + 2*((input.world.entities->buildings.size()+255)/256);
 }
 
-void SceneExtractor::prepare(const SceneInputs& input, Scene& scene)
+void SceneExtractor::prepare(const SceneInputs& input, PresentationFrame& scene)
 {
-    for (size_t chunk=0; chunk<preparationChunks(input); ++chunk) prepareChunk(input,scene,chunk);
+    for (size_t chunk=0; chunk<preparationChunks(input); ++chunk) while (!prepareChunk(input,scene,chunk)) {}
 }
 
-void SceneExtractor::prepareChunk(const SceneInputs& input, Scene& scene, size_t chunk)
+bool SceneExtractor::prepareChunk(const SceneInputs& input, PresentationFrame& scene, size_t chunk)
 {
     if (chunk == 0)
     {
-        scene = input.source;
-        scene.map.bindSnapshot(input.world);
-        scene.entities.unitIndex.assign(SceneEntities::Teams * SceneEntities::SlotsPerTeam, -1);
-        scene.entities.buildingIndex.assign(SceneEntities::Teams * SceneEntities::SlotsPerTeam, -1);
-        return;
+        // A cancelled large footprint preparation may leave many entries.
+        // Retire them within the same bounded claims used to build the index.
+        for (size_t budget = 1024; budget && !connectionCandidates.empty(); --budget)
+            connectionCandidates.erase(connectionCandidates.begin());
+        if (!connectionCandidates.empty()) return false;
+        candidateBuilding = candidateCell = connectionBuilding = 0;
+        // An interrupted overlay has updated its request key but has not
+        // replaced the completed cache. Do not reuse that cache under the new key.
+        if (pendingOverlay) { pendingOverlay.reset(); overlay.reset(); }
+        buildLevels.fill(0);
+        auto map=std::move(scene.map);
+        auto connections=std::move(scene.entities.connectionMasks);
+        scene = PresentationFrame{};
+        scene.map=std::move(map);
+        scene.entities.connectionMasks=std::move(connections);
+        prepareSource(input,scene);
+        return true;
     }
     --chunk;
+    const size_t mapChunks=(size_t(input.world.width)*input.world.height+1023)/1024;
+    if (chunk<mapChunks) {scene.map.prepareChunk(chunk*1024,1024);return true;}
+    chunk-=mapChunks;
     const auto& units = input.world.entities->units;
     const auto& buildings = input.world.entities->buildings;
     const size_t unitChunks = (units.size()+255)/256, buildingChunks = (buildings.size()+255)/256;
     auto& e = scene.entities;
-    const auto type = [&](int index) { return const_cast<BuildingType*>(&scene.buildingTypes->at(index)); };
     if (chunk < unitChunks)
     {
       for (size_t i=chunk*256; i<std::min(units.size(),(chunk+1)*256); ++i)
       {
         const auto& u = units[i];
-        e.unitIndex[u.gid] = int(e.units.size());
-        e.units.push_back(unitOf(u, u.team, scene.race.get()));
+        if (u.performance[BUILD]) buildLevels[u.team]=std::max(buildLevels[u.team],int(u.constructionLevel));
         if (u.carriedMaterial >= 0 && validMaterial(u.carriedMaterial)) e.materialPresence |= 1u << u.carriedMaterial;
     }
-      return;
+      return true;
     }
     chunk -= unitChunks;
     if (chunk < buildingChunks)
     {
-      for (size_t i=chunk*256; i<std::min(buildings.size(),(chunk+1)*256); ++i)
-      {
-        const auto& b = buildings[i];
-        auto* definition = type(b.typeNum);
-        int completed = b.typeNum;
-        if (b.constructionResultState == BuildingStateRecord::REPAIR)
-            completed = b.constructionOriginTypeNum >= 0 ? b.constructionOriginTypeNum
-                : definition->isBuildingSite ? definition->nextLevel : b.typeNum;
-        const auto* materials = b.usesTeamResources ? input.world.teams->values.at(b.team).materials.data() : b.localMaterials;
-        e.buildingIndex[b.gid] = int(e.buildings.size());
-        e.buildings.push_back(buildingOf(b, b.team, definition, type(type(completed)->terminalTypeNum),
-            b.maxHp, int(b.inside.count), int(b.working.count), materials));
-        for (unsigned m = 0; m < MaterialCount; ++m) if (materials[m]) e.materialPresence |= 1u << m;
-    }
-      return;
+        const size_t end = std::min(buildings.size(), (chunk + 1) * 256);
+        size_t budget = 1024;
+        while (candidateBuilding < end && budget) {
+            const auto& b = buildings[candidateBuilding];
+            const auto* type = e.type(b);
+            if (!type->semantics.occupiesGround && type->presentation.connectionGroupId >= 0) {
+                const size_t cells = size_t(type->width) * type->height;
+                while (candidateCell < cells && budget) {
+                    const int dx = candidateCell % type->width, dy = candidateCell / type->width;
+                    connectionCandidates.emplace(int(scene.map.coordToIndex(b.posX + dx, b.posY + dy)), &b);
+                    ++candidateCell;
+                    --budget;
+                }
+                if (candidateCell < cells) return false;
+            }
+            const auto* materials = e.materials(b);
+            for (unsigned m = 0; m < MaterialCount; ++m)
+                if (materials[m]) e.materialPresence |= 1u << m;
+            ++candidateBuilding;
+            candidateCell = 0;
+            if (budget) --budget;
+        }
+        return candidateBuilding == end;
     }
     chunk -= buildingChunks;
+    if (chunk<buildingChunks) {
+        const size_t end = std::min(buildings.size(), (chunk + 1) * 256);
+        const size_t count = std::min(size_t(8), end - connectionBuilding);
+        prepareConnections(scene.map, e, connectionCandidates, connectionBuilding, count);
+        connectionBuilding += count;
+        return connectionBuilding == end;
+    }
+    chunk-=buildingChunks;
     if (chunk == 0)
     {
-        prepareConnections(scene.map, e);
-        preparePanels(input, scene);
-        return;
+        for (size_t budget = 1024; budget && !connectionCandidates.empty(); --budget)
+            connectionCandidates.erase(connectionCandidates.begin());
+        if (!connectionCandidates.empty()) return false;
+        preparePanels(input, scene, buildLevels);
+        return true;
     }
-    if (chunk != 1) throw std::out_of_range("Scene preparation chunk");
-    const auto& request = input.request;
-    const Uint8 requested = request.view.overlay;
-    const Uint32 window = scene.tick ? (scene.tick - 1) / 25 : 0;
-    if (requested == OverlayArea::None) overlay.reset();
-    else if (!overlay || requested != overlayType || window != overlayWindow || request.localTeam != overlayTeam)
-    {
-        auto next = std::make_shared<OverlayArea>();
-        next->compute(input.world, OverlayArea::OverlayType(requested), request.localTeam, input.fertilityMaximum);
-        overlay = std::move(next);
+    --chunk;
+    const auto& request=input.request;
+    const auto requested=OverlayArea::OverlayType(request.view.overlay);
+    const auto count=OverlayArea::chunks(input.world,requested);
+    if (chunk>=count) throw std::out_of_range("Presentation preparation chunk");
+    if (chunk==0 && !pendingOverlay) {
+        const Uint32 window=scene.tick ? (scene.tick-1)/25 : 0;
+        if (requested==OverlayArea::None) overlay.reset();
+        else if (!overlay || requested!=overlayType || window!=overlayWindow || request.localTeam!=overlayTeam
+            || input.world.worldIdentity!=overlayWorld || input.world.configurationRevision!=overlayConfiguration
+            || (input.world.tick==overlayTick && (input.world.observationRevision!=overlayObservation
+                || input.world.mapGenerations!=overlayMapGenerations)))
+            pendingOverlay=std::make_shared<OverlayArea>();
+        overlayWorld=input.world.worldIdentity;overlayConfiguration=input.world.configurationRevision;
+        overlayObservation=input.world.observationRevision;overlayTick=input.world.tick;
+        overlayMapGenerations=input.world.mapGenerations;
+        overlayType=requested;overlayWindow=window;overlayTeam=request.localTeam;
     }
-    overlayType = requested; overlayWindow = window; overlayTeam = request.localTeam;
-    if (overlay || !scene.editor) scene.overlay = overlay;
+    if (pendingOverlay && !pendingOverlay->computeChunk(input.world,requested,request.localTeam,input.world.session->fertilityMaximum,chunk))
+        return false;
+    if (chunk+1==count) {
+        if (pendingOverlay) overlay=std::exchange(pendingOverlay,{});
+        if (overlay || !scene.editor) scene.overlay=overlay;
+    }
+    return true;
 }
 
-void SceneExtractor::extractInputPanels(const Game& game, const SceneRequest& request, ScenePanels& panels)
-{ extractPanels(game, request, panels); }
+SimulationSnapshot::Requirements SceneExtractor::requirements(const SceneRequest& request)
+{
+    using namespace SimulationSnapshot;
+    auto required=bit(Component::Catalogs)|bit(Component::Terrain)|bit(Component::Resources)
+        |bit(Component::Occupancy)|bit(Component::Areas)|bit(Component::Visibility)
+        |bit(Component::Entities)|bit(Component::Teams)|bit(Component::Rules)|bit(Component::Session)|bit(Component::Effects);
+    if (request.includePanels) required|=bit(Component::Statistics);
+    if (request.includeHistory) required|=bit(Component::History);
+    if (request.includeTelemetry) required|=bit(Component::Telemetry);
+    if (!request.selectedBuilding.empty() || request.view.debugLayers) required|=bit(Component::EntityDiagnostics);
+    if (request.includeScriptAreas) required|=bit(Component::Annotations);
+    return required;
+}
+
+std::shared_ptr<SceneInputs> SceneExtractor::inputs(const SimulationSnapshot::Handle& world,const SceneRequest& request)
+{ return std::make_shared<SceneInputs>(SceneInputs{world,request}); }
+void SceneExtractor::prepare(const SimulationSnapshot::Handle& world,const SceneRequest& request,PresentationFrame& scene)
+{ prepare(SceneInputs{world,request},scene); }

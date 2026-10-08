@@ -31,6 +31,7 @@ class Order;
 class GameGUITouch
 {
   public:
+    bool needsStatisticsHistory() const { return statsOpen; }
 	explicit GameGUITouch(GameGUI &gui);
 	~GameGUITouch();
 	bool process(SDL_Event &event);
@@ -114,9 +115,9 @@ class GameGUITouch
 	bool processPalettePointer(const SDL_Event &event, GAGCore::ViewPoint point);
 	// Flags move by dragging them; a drag anywhere else still pans the map.
 	std::optional<TouchFlagSession> flagDrag;
-	std::optional<SceneBuilding> grabbableFlag(GAGCore::ViewPoint point);
-	std::optional<SceneBuilding> draggedFlag() const;
-	void beginFlagDrag(const SceneBuilding &flag, TouchPlacementSession::Pointer pointer, GAGCore::ViewPoint point);
+	const SnapshotBuilding* grabbableFlag(GAGCore::ViewPoint point);
+	const SnapshotBuilding* draggedFlag() const;
+	void beginFlagDrag(const SnapshotBuilding &flag, TouchPlacementSession::Pointer pointer, GAGCore::ViewPoint point);
 	void advanceFlagDrag();
 	void releaseFlagDrag(bool restore);
 	UnitRef unitAt(GAGCore::ViewPoint point, double reachPoints = 0) const;
@@ -194,7 +195,7 @@ class GameGUITouch
 	};
 	//! Whether a building is selected for inspection (GUI state; for layout and input).
 	bool inspecting() const;
-	//! The inspected building as last drawn (the frame's Scene); null when none or not
+	//! The inspected building as last drawn (the frame's PresentationFrame); null when none or not
 	//! extracted yet. For drawing its fields.
 	const SceneBuildingPanel *inspectedBuilding() const;
 	std::vector<BuildingAction> buildingActions() const;

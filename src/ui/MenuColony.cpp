@@ -6,6 +6,7 @@
 #include "DatasetWriter.h"
 #include "Order.h"
 #include "Player.h"
+#include "sim/presentation/ScenePreparation.h"
 #include <sstream>
 #include <BinaryStream.h>
 #include <FileManager.h>
@@ -16,6 +17,15 @@
 
 namespace
 {
+SceneRequest colonyRequest(Uint64 tickTime)
+{
+	SceneRequest request;
+	request.includePanels = false;
+	request.spectating = true;
+	request.tickTime = tickTime;
+	request.tickInterval = GAME_TICK_MS;
+	return request;
+}
 // The colony game owns its synchronized random stream. Detach optional recording
 // sinks only while the menu game is executing, including during construction/loading.
 struct ColonyContext
@@ -34,10 +44,15 @@ struct ColonyContext
 };
 }
 
+MenuColony::MenuColony() = default;
+MenuColony::~MenuColony() = default;
+
 bool MenuColony::load(const std::string& path)
 {
 	ColonyContext context;
 	pause();
+	presentation.reset();
+	view = Game::ViewState();
 	game.reset();
 	try
 	{
@@ -58,11 +73,23 @@ bool MenuColony::load(const std::string& path)
 		centerY = loaded->teams[0]->startPosY;
 
 		game = std::move(loaded);
-		view = Game::ViewState();
+		worldTickTime = SDL_GetTicks();
+		if (!globalContainer->runNoX)
+		{
+			presentation = std::make_unique<ScenePreparation>(game->map.computeExecutor());
+			const auto request = colonyRequest(worldTickTime);
+			const auto required = SceneExtractor::requirements(request);
+			const std::array<unsigned, 1> actors{0};
+			const auto world = game->captureReadBoundary(actors, false, required);
+			presentation->submit(SceneExtractor::inputs(world.project(required), request));
+		}
 		return true;
 	}
 	catch (const std::exception& error)
 	{
+		presentation.reset();
+		view = Game::ViewState();
+		game.reset();
 		std::cerr << "Menu colony unavailable: " << error.what() << '\n';
 		return false;
 	}
@@ -85,19 +112,27 @@ void MenuColony::update(Uint64 now, bool visible)
 	while (pending >= GAME_TICK_MS)
 	{
         const std::array<unsigned,1> actors{0};
-        for(const auto& [actor,scheduled]:game->prepareAIOrders(actors,false)) {
+        const bool admitted = presentation && presentation->readyToCapture();
+        const auto request = colonyRequest(worldTickTime);
+        const auto required = admitted ? SceneExtractor::requirements(request) : 0;
+        const auto world = game->captureReadBoundary(actors, false, required);
+        if (admitted) presentation->submit(SceneExtractor::inputs(world.project(required), request));
+        for(const auto& [actor,scheduled]:game->prepareAIOrders(actors,false,nullptr,&world)) {
             scheduled->sender=actor;
             auto order=game->validateAIOrder(scheduled,actor);
             game->executeOrder(order,0);
         }
 		game->syncStep(0);
+		worldTickTime = SDL_GetTicks();
 		pending -= GAME_TICK_MS;
 	}
 }
 
 void MenuColony::draw(int width, int height, bool showStatus)
 {
-	if (!game) return;
+	if (!presentation) return;
+	view.scene = presentation->acquire();
+	if (!view.scene) return;
 	ColonyContext context;
 	struct ViewContext
 	{
@@ -117,9 +152,9 @@ void MenuColony::draw(int width, int height, bool showStatus)
 		}
 	} viewContext;
 	// Place the starting settlement to the right of the front-page panel.
-	const int x = (centerX - width * 2 / 3 / 32) & game->map.getMaskW();
-	const int y = (centerY - height / 2 / 32) & game->map.getMaskH();
-	game->drawMap(0, 0, width, height, 0, 0, x, y, 0, view,
+	const int x = (centerX - width * 2 / 3 / 32) & view.scene->map.getMaskW();
+	const int y = (centerY - height / 2 / 32) & view.scene->map.getMaskH();
+	Game::drawMap(0, 0, width, height, 0, 0, x, y, 0, view,
 		Game::DRAW_WHOLE_MAP | (showStatus ? Game::DRAW_HEALTH_FOOD_BAR : 0));
 }
 

@@ -266,12 +266,16 @@ bool Map::isPointSet(int n, int x, int y) const
 
 void Map::setPoint(int n, int x, int y)
 {
-	scriptAreaCells[coordToIndex(x, y)] |= 1<<n;
+	const auto i = coordToIndex(x,y);
+	const auto value = Uint16(scriptAreaCells[i] | (1<<n));
+	if (value != scriptAreaCells[i]) { scriptAreaCells[i] = value; markArea(i); }
 }
 
 void Map::unsetPoint(int n, int x, int y)
 {
-	scriptAreaCells[coordToIndex(x, y)] ^= scriptAreaCells[coordToIndex(x, y)] & (1<<n);
+	const auto i = coordToIndex(x,y);
+	const auto value = Uint16(scriptAreaCells[i] & ~(1<<n));
+	if (value != scriptAreaCells[i]) { scriptAreaCells[i] = value; markArea(i); }
 }
 
 std::string Map::getAreaName(int n) const
@@ -281,7 +285,7 @@ std::string Map::getAreaName(int n) const
 
 void Map::setAreaName(int n, std::string name)
 {
-	areaNames[n]=name;
+	if (areaNames[n] != name) { areaNames[n] = std::move(name); areaChanges.markAll(); }
 }
 
 

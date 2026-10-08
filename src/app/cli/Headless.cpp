@@ -1,3 +1,4 @@
+#include <utility>
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include <Environment.h>
 #include "Headless.h"
@@ -234,7 +235,7 @@ void Headless::playersAndTeamsJson(std::ostream &result, Game &game, const std::
 			<< ",\"units\":" << units << ",\"workers\":" << workers << ",\"explorers\":" << explorers
 			<< ",\"warriors\":" << warriors << ",\"warrior_hp\":" << warriorHP << ",\"warrior_attack\":" << warriorAttack
 			<< ",\"buildings\":" << buildings << ",\"sites\":" << sites;
-		const TeamStat &stats=*team->stats.getLatestStat();
+		const TeamStat &stats=*std::as_const(team->stats).getLatestStat();
 		result << ",\"standard_statistics\":"; standardStatistics(result,stats);
 		result << ",\"statistics\":{\"total_units\":" << stats.totalUnit << ",\"total_buildings\":" << stats.totalBuilding
 			<< ",\"total_hp\":" << stats.totalHP << ",\"total_attack_power\":" << stats.totalAttackPower

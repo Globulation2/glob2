@@ -42,7 +42,7 @@ public:
 	
 	std::shared_ptr<Order>getOrder(void);
 	bool supportsObservation() const override { return true; }
- SimulationSnapshot::Requirements observationRequirements() const override { return SimulationSnapshot::All & ~SimulationSnapshot::bit(SimulationSnapshot::Component::Growth); }
+ SimulationSnapshot::Requirements observationRequirements() const override { return SimulationSnapshot::Simulation & ~SimulationSnapshot::bit(SimulationSnapshot::Component::Growth); }
  std::optional<Uint64> retainedQueryVectorBytes() const override
  {
   Uint64 bytes = 0;

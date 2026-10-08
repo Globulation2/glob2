@@ -1,3 +1,4 @@
+#include <utility>
 #include "DatasetWriter.h"
 
 #include <algorithm>
@@ -141,7 +142,7 @@ void DatasetWriter::writeRecord(Uint32 tick, Order& order, Game& game)
 void DatasetWriter::writeStateBlob(int senderTeamNum, Game& game)
 {
 	Team* senderTeam = game.teams[senderTeamNum];
-	const TeamStat* stat = const_cast<TeamStats&>(senderTeam->stats).getLatestStat();
+	const TeamStat* stat = std::as_const(senderTeam->stats).getLatestStat();
 
 	// num_teams = 1 — bot-team-only by design (kyle approved). Enemy
 	// internal state would leak omniscient info; the spatial grid encodes

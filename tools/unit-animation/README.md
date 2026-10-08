@@ -228,47 +228,48 @@ pink registration stripe. `--material mixed` cycles every material for shader ch
 are constructed from the retained definition in
 `datasrc/gfx/authored/skins/limb-surfaces.json`, `tools/skins/limb_surface.py`
 and `tools/skins/chart.py`.
-A spherical torso has four shared socket rims; each limb follows an explicit
-path through its named source components (indices follow sorted `Mball` names).
-Section rings follow their own limb path with a minimum neck radius, a smooth
-transition from the exact socket rim and a spherical terminal cap. Small socket
-openings retain the surrounding torso shell. Each clip aligns the body axes to
-its source rig; swimming sources use a different rest orientation. Parallel
-transport keeps ring orientation continuous when a fighting arm bends along the
-body's front axis. Vertices then fit the shared torso/proximal-component field
-and their own distal limb field, with analytic field normals to smooth connections.
-Other limbs' joints and tips never influence that limb's surface. This
-keeps distinct feet from acquiring a welded bridge and prevents a warrior arm
-from being pulled toward another limb. Topology and vertex identity stay fixed
-across all actions; source centers, scales, cameras and gait samples are retained.
-These surfaces approximate the original metaballs, so silhouette and motion
-review remain necessary alongside structural checks.
+The established socket/ring topology and its paint chart are retained. The
+builder fits its welded front/top quarter to one connected rest panel using a
+shared convex disk parameterization, then reflects it across both body folds.
+The implicit rest panel takes the maximum of the core plus each separate limb's
+field, rather than adding neighbouring distal balls together; distinct feet do
+not acquire a bridge. Each clip aligns the body axes to its source rig, including
+the different swimming orientation.
 
-Workers and warriors share a folded chart: counterpart front/back and
-top/bottom surfaces sample identical UVs, including the upper/lower limbs exchanged
-by a flip. Reflection-invariant center fans avoid different interpolation on
-opposite sides of a quad. Painting either the texture or the preview therefore
-preserves symmetry without a symmetry switch, duplicate stamps or server-side
-texture rewriting. This also applies to fill, erase and arbitrary uploaded paint.
-The retained surface contracts record reflection partners, limb regions and the
-seam welds. Layout v2 (`tools/skins/chart.py`) unwraps one quarter of the rest
-surface with Blender's angle-based unwrapper, as three islands: the torso
-quarter and the two half limbs, cut from the torso at their socket rims (the
-rim vertices are duplicated for the limb islands and welded to the torso's).
-Every vertex then takes its quarter representative's coordinates. Texel density
-is near uniform (the 95th/5th percentile ratio across triangles is 1.7 for both
-models, against 5 and 8 for the planar v1 chart), so checker paint reads as
-squares; the only seams are the socket rims. v2 paint does not line up with v1
-paint.
+`connected_surface.py` carries that rest mesh through each pose by integrating a
+smooth spatial velocity field that fits local translation and angular velocity
+to the named component motion. This keeps the larger bulbs rounded, with a small
+compliant contribution to relax tightly bent necks.
+Source scale changes apply as local dilation. Gaussian weights are recomputed as the components move, with midpoint steps
+instead of independently snapping vertices to a folded implicit surface. Normals
+come from the actual connected triangles and are averaged across welded paint
+seams. Warriors also apply one nonshrinking fairing pair to the welded torso
+shell to relax closely bent swimming poses; limb rings and caps remain fixed. Source centers, scales, cameras and gait samples are retained; silhouettes
+and motion still need visual review because this approximates the legacy
+metaballs.
 
-Vertex correspondence across frames is tracked rather than re-solved
-(`limb_surface.py` `Tracker`): the rest surface, symmetrised under both
-reflections, is carried by one similarity transform per metaball component,
-blended by each vertex's share of the components' field at rest, and every
-vertex is then snapped onto the posed implicit surface along its gradient. The
-surface is still the metaball union, but a vertex stays on the same part of
-the body, so paint no longer swims during a gait and the collars no longer
-grow over the torso in overlapping layers.
+Workers and warriors share folded front/back and top/bottom paint coordinates,
+including the upper/lower limbs exchanged by a flip. Reflection-invariant center
+fans keep triangle interpolation symmetric. The authored
+`limb-paint-charts.json` freezes the established colony-v2 atlas coordinates, so
+rebuilding the mesh does not reinterpret existing paint, fills or material masks.
+The surface contracts retain reflection partners, limb regions and seam welds.
+
+Procedural material detail has its own angle-based unwrap of the rebuilt rest
+surface (`chart.py`), in each clip's `.guv` sidecar. GUV1 is an 8-byte header
+(`GUV1`, little-endian vertex count), followed by two little-endian float32
+coordinates per vertex. Native and Studio loaders bound the count to 8192, check
+the exact length and reject non-finite/out-of-range coordinates. Missing sidecars
+use the paint UVs, preserving older assets. The shaders sample paint/material ids
+with the established atlas UVs and shade procedural patterns with the detail UVs;
+both coordinate streams fold across the same reflection partners. Sidecar bytes
+feed the sprite-render revision, so published derivatives regenerate with them.
+
+Run the full intersection audit under pinned Blender after regeneration:
+`blender -b --python-exit-code 1 --python tools/skins/test_surface_geometry.py -- --root artifacts/skins/units`.
+It checks every worker/warrior pose, welded normals and non-adjacent triangle
+intersections; structural/paint contracts remain in `test_export.py`.
+
 The explorer retains its original geometry, normal calculation and four-influence
 transfer, including ellipsoid orientations; only its UVs change to a body-space
 front/back and top/bottom folded chart. Swarm geometry and UVs are unchanged.

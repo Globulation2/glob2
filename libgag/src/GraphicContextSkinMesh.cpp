@@ -109,7 +109,7 @@ GLuint compileShader(GLenum type, const std::string &text)
     return shader;
 }
 // Packed rest vertex: position, normal, UV, four joint indices, four weights.
-constexpr unsigned RigVertexFloats = 16;
+constexpr unsigned RigVertexFloats = 18;
 template <std::size_t N>
 std::array<float, N * N> transpose(const std::array<float, N * N> &rowMajor)
 {
@@ -272,13 +272,13 @@ void GraphicContext::SkinResources::prepareRigShader()
 #ifdef GLOB2_WEBGL2
 	const std::string header =
 		"#version 300 es\nprecision highp float;\n"
-		"in vec3 position;in vec3 surfaceNormal;in vec2 texcoord;in vec4 joints;in vec4 weights;"
-		"out vec2 uv;out vec3 normal;\n";
+		"in vec3 position;in vec3 surfaceNormal;in vec4 texcoord;in vec4 joints;in vec4 weights;"
+		"out vec2 uv;out vec2 detailUV;out vec3 normal;\n";
 #else
 	const std::string header =
-		"#version 120\nvarying vec2 uv;varying vec3 normal;\n"
+		"#version 120\nvarying vec2 uv;varying vec2 detailUV;varying vec3 normal;\n"
 		"#define position gl_Vertex.xyz\n#define surfaceNormal gl_Normal\n"
-		"#define texcoord gl_MultiTexCoord0.xy\n#define joints gl_MultiTexCoord1\n"
+		"#define texcoord gl_MultiTexCoord0\n#define joints gl_MultiTexCoord1\n"
 		"#define weights gl_MultiTexCoord2\n";
 #endif
 	const auto vertex = compileShader(GL_VERTEX_SHADER, header + SkinDeformationGLSL);
@@ -323,10 +323,11 @@ GraphicContext::SkinResources::restBuffers(const SkinMesh &mesh)
 		auto *dest = uploadScratch.data() + v * RigVertexFloats;
 		std::copy_n(model.rest().data() + v * 6, 6, dest);
 		std::copy_n(model.uv().data() + v * 2, 2, dest + 6);
+        std::copy_n((mesh.detailUV.empty() ? mesh.uv : mesh.detailUV).data() + v * 2, 2, dest + 8);
 		for (unsigned j = 0; j < 4; ++j)
 		{
-			dest[8 + j] = model.influences()[v].bones[j];
-			dest[12 + j] = model.influences()[v].weights[j];
+			dest[10 + j] = model.influences()[v].bones[j];
+			dest[14 + j] = model.influences()[v].weights[j];
 		}
 	}
 	glBindBuffer(GL_ARRAY_BUFFER, buffers.vertices);
@@ -346,8 +347,8 @@ void GraphicContext::SkinResources::bindRigGeometry(const RigBuffers &buffers)
 	glBindBuffer(GL_ARRAY_BUFFER, buffers.vertices);
 	constexpr unsigned stride = RigVertexFloats * sizeof(float);
 #ifdef GLOB2_WEBGL2
-	constexpr unsigned sizes[] = {3, 3, 2, 4, 4};
-	constexpr unsigned offsets[] = {0, 3, 6, 8, 12};
+	constexpr unsigned sizes[] = {3, 3, 4, 4, 4};
+	constexpr unsigned offsets[] = {0, 3, 6, 10, 14};
 	for (unsigned i = 0; i < 5; ++i)
 	{
 		glEnableVertexAttribArray(i);
@@ -360,12 +361,12 @@ void GraphicContext::SkinResources::bindRigGeometry(const RigBuffers &buffers)
 	glVertexPointer(3, GL_FLOAT, stride, nullptr);
 	glNormalPointer(GL_FLOAT, stride, reinterpret_cast<void *>(3 * sizeof(float)));
 	// Compatibility GL consumes UV, joints and weights as texture coordinates.
-	constexpr unsigned offsets[] = {6, 8, 12};
+	constexpr unsigned offsets[] = {6, 10, 14};
 	for (unsigned i = 0; i < 3; ++i)
 	{
 		glClientActiveTexture(GL_TEXTURE0 + i);
 		glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-		glTexCoordPointer(i ? 4 : 2, GL_FLOAT, stride,
+		glTexCoordPointer(4, GL_FLOAT, stride,
 						  reinterpret_cast<void *>(offsets[i] * sizeof(float)));
 	}
 	glClientActiveTexture(GL_TEXTURE0);
@@ -424,8 +425,12 @@ void GraphicContext::SkinResources::bindCpuGeometry(const SkinMesh &mesh, unsign
 					 mesh.indices.data(), GL_STATIC_DRAW);
 #ifndef GLOB2_WEBGL2
 		glBindBuffer(GL_ARRAY_BUFFER, uv);
-		glBufferData(GL_ARRAY_BUFFER, mesh.uv.size() * sizeof(float), mesh.uv.data(),
-					 GL_STATIC_DRAW);
+		uploadScratch.resize(mesh.vertices * 4);
+        for (unsigned v = 0; v < mesh.vertices; ++v) {
+            std::copy_n(mesh.uv.data() + v * 2, 2, uploadScratch.data() + v * 4);
+            std::copy_n((mesh.detailUV.empty() ? mesh.uv : mesh.detailUV).data() + v * 2, 2, uploadScratch.data() + v * 4 + 2);
+        }
+        glBufferData(GL_ARRAY_BUFFER, uploadScratch.size() * sizeof(float), uploadScratch.data(), GL_STATIC_DRAW);
 #endif
 		meshIdentity = mesh.identity;
 		frame = ~0u;
@@ -443,12 +448,13 @@ void GraphicContext::SkinResources::bindCpuGeometry(const SkinMesh &mesh, unsign
 			pose = mesh.poses.data() + std::size_t(sample) * mesh.vertices * 6;
 #ifdef GLOB2_WEBGL2
 		// Emscripten's legacy VAO implementation supports a single vertex buffer.
-		uploadScratch.resize(std::size_t(mesh.vertices) * 8);
+		uploadScratch.resize(std::size_t(mesh.vertices) * 10);
 		auto &vertices = uploadScratch;
 		for (std::size_t v = 0; v < mesh.vertices; ++v)
 		{
-			std::copy_n(pose + v * 6, 6, vertices.data() + v * 8);
-			std::copy_n(mesh.uv.data() + v * 2, 2, vertices.data() + v * 8 + 6);
+			std::copy_n(pose + v * 6, 6, vertices.data() + v * 10);
+			std::copy_n(mesh.uv.data() + v * 2, 2, vertices.data() + v * 10 + 6);
+            std::copy_n((mesh.detailUV.empty() ? mesh.uv : mesh.detailUV).data() + v * 2, 2, vertices.data() + v * 10 + 8);
 		}
 		glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(float), vertices.data(),
 					 GL_STREAM_DRAW);
@@ -459,12 +465,12 @@ void GraphicContext::SkinResources::bindCpuGeometry(const SkinMesh &mesh, unsign
 	}
 #ifdef GLOB2_WEBGL2
 	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), nullptr);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 10 * sizeof(float), nullptr);
 	glEnableVertexAttribArray(1);
-	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float),
+	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 10 * sizeof(float),
 						  reinterpret_cast<void *>(3 * sizeof(float)));
 	glEnableVertexAttribArray(2);
-	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float),
+	glVertexAttribPointer(2, 4, GL_FLOAT, GL_FALSE, 10 * sizeof(float),
 						  reinterpret_cast<void *>(6 * sizeof(float)));
 #else
 	glEnableClientState(GL_VERTEX_ARRAY);
@@ -473,7 +479,7 @@ void GraphicContext::SkinResources::bindCpuGeometry(const SkinMesh &mesh, unsign
 	glNormalPointer(GL_FLOAT, 6 * sizeof(float), reinterpret_cast<void *>(3 * sizeof(float)));
 	glBindBuffer(GL_ARRAY_BUFFER, uv);
 	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-	glTexCoordPointer(2, GL_FLOAT, 0, nullptr);
+	glTexCoordPointer(4, GL_FLOAT, 0, nullptr);
 #endif
 }
 
@@ -551,25 +557,25 @@ void GraphicContext::prepareSkinMeshes(const std::vector<SkinMeshRequest> &reque
         const std::string place =
             "gl_Position=vec4(position.xy/1.25+normalize(surfaceNormal).xy*shell*furLength,position.z-shell*shellDepth,1.0);";
         // Shell passes keep only strands; the body pass never discards.
-        const std::string shade = "vec4 shaded=skinShadeAtlas(paint,material,region,normal,uv,shell);if(shaded.a<0.5)discard;";
+        const std::string shade = "vec4 shaded=skinShadeAtlas(paint,material,region,normal,uv,detailUV,shell);if(shaded.a<0.5)discard;";
 #ifdef GLOB2_WEBGL2
         const auto vertex = compileShader(GL_VERTEX_SHADER,
             "#version 300 es\nprecision highp float;\n"
-            "layout(location=0) in vec3 position;layout(location=1) in vec3 surfaceNormal;layout(location=2) in vec2 texcoord;\n"
+            "layout(location=0) in vec3 position;layout(location=1) in vec3 surfaceNormal;layout(location=2) in vec4 texcoord;\n"
             "uniform float shell;uniform float furLength;uniform float shellDepth;\n"
-            "out vec2 uv;out vec3 normal;void main(){uv=texcoord;normal=surfaceNormal;" + place + "}\n");
+            "out vec2 uv;out vec2 detailUV;out vec3 normal;void main(){uv=texcoord.xy;detailUV=texcoord.zw;normal=surfaceNormal;" + place + "}\n");
         const auto fragment = compileShader(GL_FRAGMENT_SHADER,
             std::string("#version 300 es\nprecision highp float;\n#define SKIN_TEXTURE texture\n")+
-            "uniform sampler2D paint;uniform sampler2D material;uniform vec2 region;uniform float shell;in vec2 uv;in vec3 normal;out vec4 color;\n"
+            "uniform sampler2D paint;uniform sampler2D material;uniform vec2 region;uniform float shell;in vec2 uv;in vec2 detailUV;in vec3 normal;out vec4 color;\n"
             + std::string(SkinMaterialGLSL) +
             "void main(){" + shade + "color=vec4(shaded.rgb,1.0);}\n");
 #else
         const auto vertex = compileShader(GL_VERTEX_SHADER,
-            "#version 120\nuniform float shell;uniform float furLength;uniform float shellDepth;varying vec2 uv;varying vec3 normal;\n"
-            "void main(){uv=gl_MultiTexCoord0.xy;normal=gl_Normal;vec3 position=gl_Vertex.xyz;vec3 surfaceNormal=gl_Normal;" + place + "}\n");
+            "#version 120\nuniform float shell;uniform float furLength;uniform float shellDepth;varying vec2 uv;varying vec2 detailUV;varying vec3 normal;\n"
+            "void main(){uv=gl_MultiTexCoord0.xy;detailUV=gl_MultiTexCoord0.zw;normal=gl_Normal;vec3 position=gl_Vertex.xyz;vec3 surfaceNormal=gl_Normal;" + place + "}\n");
         const auto fragment = compileShader(GL_FRAGMENT_SHADER,
             std::string("#version 120\n#define SKIN_TEXTURE texture2D\n")+
-            "uniform sampler2D paint;uniform sampler2D material;uniform vec2 region;uniform float shell;varying vec2 uv;varying vec3 normal;\n"
+            "uniform sampler2D paint;uniform sampler2D material;uniform vec2 region;uniform float shell;varying vec2 uv;varying vec2 detailUV;varying vec3 normal;\n"
             + std::string(SkinMaterialGLSL) +
             "void main(){" + shade + "gl_FragColor=vec4(shaded.rgb,1.0);}\n");
 #endif

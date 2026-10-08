@@ -195,7 +195,7 @@ void GameGUITouch::drawPeek()
 	{
 		peekMinimap = std::make_unique<Minimap>(globalContainer->runNoX, size, size, 0, 0, size, size,
 												Minimap::ShowFOW);
-		peekMinimap->setGame(gui.game);
+		peekMinimap->setMapSize(gui.drawnScene().map.getW(), gui.drawnScene().map.getH());
 	}
 	const auto ui = layout();
 	const double unit = gfx->logicalUnitsPerPoint();
@@ -262,6 +262,8 @@ GameGUITouch::StatsLayout GameGUITouch::statsLayout() const
 
 void GameGUITouch::drawStats()
 {
+    const auto& frame = gui.drawnScene();
+    if (!frame.world.history) return;
 	auto *gfx = globalContainer->gfx;
 	const double unit = gfx->logicalUnitsPerPoint();
 	const auto l = statsLayout();
@@ -274,13 +276,13 @@ void GameGUITouch::drawStats()
 		gfx->drawFilledRect(int(r.x), int(r.y), int(r.w), int(r.h), InGameTouchTheme::field());
 		drawPointLabel(r, text, 1.3);
 	}
-	if (statsCatalog.empty()) statsCatalog = Stats::catalogForBuildings(gui.game.buildingsTypes);
+	if (statsCatalog.empty()) statsCatalog = Stats::catalogForBuildings(*gui.drawnScene().buildingTypes);
 	const auto &metrics = statsCatalog;
 	const Stats::Metric &metric = metrics[std::size_t(std::clamp(statsMetric, 0, int(metrics.size()) - 1))];
 	auto tr = [](const char *key) { return std::string(Toolkit::getStringTable()->getString(key)); };
 	drawPointLabel(l.title, tr(Stats::groupKey(metric.group)) + " · " + TeamStatChart::title(metric), 1.0);
 	// The colony now, read from the same catalog as the chart below.
-	const auto history = Stats::historyOf(gui.localTeamNo, *gui.teamStats);
+	const auto history = Stats::historyOf(gui.localTeamNo, *frame.world.history->teams.at(gui.localTeamNo));
 	std::string counters;
 	for (const char *id : {"population", "buildings", "hunger", "health", "wheat harvested"})
 	{
@@ -298,8 +300,8 @@ void GameGUITouch::drawStats()
 	options.metric = &metric;
 	options.view = Stats::defaultView(metric);
 	const int own = gui.localTeamNo;
-	options.teams.push_back({own, gui.game.teams[own]->color, ""});
-	TeamStatChart::paint(gui.game, *gfx, 0, 0, int(l.chart.w / unit), int(l.chart.h / unit), options);
+	options.teams.push_back({own, presentationColor(frame.world.teams->values.at(own).color), ""});
+	TeamStatChart::paint(std::vector<Stats::TeamHistory>{history}, frame.tick, *gfx, 0, 0, int(l.chart.w / unit), int(l.chart.h / unit), options);
 	gfx->setUITransform();
 	gfx->setClipRect();
 }

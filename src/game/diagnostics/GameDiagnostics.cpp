@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "GameDiagnostics.h"
+#include "sim/presentation/SceneInputs.h"
 #include "Game.h"
 #include "AIStateSerialization.h"
 #include <bit>
@@ -34,17 +35,20 @@ constexpr Named names[] = {
 	{"farmCapacity", "micro-wheat per tick", 220,200,40},
 	{"protectedYield", "micro-wheat per tick", 220,120,220}
 };
-// Upper bound for a fresh Scene, including vector growth during extraction.
+// Upper bound for a fresh PresentationFrame, including vector growth during extraction.
 // Panels and selected-building diagnostics are not requested by this tool.
 size_t sceneBytes(const Game& game)
 {
-	size_t bytes = sizeof(Scene) + size_t(game.map.getW())*game.map.getH()*32
+	constexpr size_t cellBytes=sizeof(SimulationSnapshot::ResourceCell)+sizeof(SimulationSnapshot::OccupancyCell)
+        +sizeof(SimulationSnapshot::AreaCell)+2*sizeof(Uint32)+sizeof(TerrainType)+sizeof(Uint16)+sizeof(Uint8)+1;
+    size_t bytes = sizeof(PresentationFrame) + size_t(game.map.getW())*game.map.getH()*cellBytes
+        +game.map.resourceStockState().size()*sizeof(std::array<Uint16,MaterialCount>)
 		+ 2*SceneEntities::Teams*SceneEntities::SlotsPerTeam*sizeof(int);
 	for (int t=0; t<game.teamsCount(); ++t)
 	{
 		const Team& team = *game.teams[t];
-		for (int i=0; i<Unit::MAX_COUNT; ++i) if (team.myUnits[i]) bytes += 4*sizeof(SceneUnit);
-		for (int i=0; i<Building::MAX_COUNT; ++i) if (team.myBuildings[i]) bytes += 4*sizeof(SceneBuilding);
+		bytes += 4*team.liveUnits.size()*sizeof(SnapshotUnit);
+		bytes += 4*team.liveBuildings.size()*sizeof(SnapshotBuilding);
 		bytes += 4*team.virtualBuildings.size()*sizeof(Uint16);
 	}
 	Map& map = const_cast<Map&>(game.map);
@@ -163,7 +167,9 @@ std::shared_ptr<FieldSink> Session::reserveCapture(int player, std::uint64_t obs
             // The owner prepared these buffers within its deterministic budget.
             // Transfer their storage; no worker shares the stable Session sink.
             result->fields=std::move(sink->fields);
-            sink->enabled=false;sink->nextTick=observedTick+sink->interval;
+            // Offer every eligible observation until a completed capture arrives.
+            // Waiting a full interval here can phase-lock away from planner refreshes.
+            sink->enabled=false;sink->nextTick=observedTick+1;
             return result;
         } catch(...) {sink->enabled=false;sink->failed=true;sink->nextTick=observedTick+sink->interval;}
         return {};
@@ -173,6 +179,7 @@ std::shared_ptr<FieldSink> Session::reserveCapture(int player, std::uint64_t obs
 bool Session::adoptCapture(const FieldSink& completed) noexcept
 {
     try {
+        if (pending()) { ++skipped; issue(completed,"Diagnostic publication occupied"); return false; }
         auto found=std::find_if(sinks.begin(),sinks.end(),[&](const auto& sink) {
             return sink->player==completed.player && sink->team==completed.team;
         });
@@ -226,45 +233,82 @@ void Session::publishCapture(const FieldSink& completed) noexcept
     } release{*this,{completed.player,completed.tick}};
     for(auto& sink:sinks) if(sink->player==completed.player && sink->team==completed.team) {
         if(!completed.captured && !completed.failed && !completed.skipped) {
-            sink->nextTick=completed.nextTick;return;
+            return;
+        }
+        if (completed.captured) {
+            auto& next=publishedNextTicks[completed.player];
+            if (completed.tick < next) return;
+            next=completed.nextTick;
         }
         try {
             const auto scheduled=sink->nextTick;
+            if (sink->captured || sink->failed || sink->skipped) {
+                ++skipped; issue(*sink,"Diagnostic output superseded before publication");
+            }
             *sink=completed;
             sink->enabled=false;sink->nextTick=std::max(scheduled,completed.nextTick);
         } catch(...) {sink->enabled=false;sink->failed=true;}
         return;
     }
 }
-void Session::completeTick(const Game& game) noexcept
+SimulationSnapshot::Requirements Session::observationRequirements(Uint32 tick) const
 {
-	if (pending()) return;
-	bool any = false;
-	for (const auto& sink : sinks) any |= sink->captured || sink->failed || sink->skipped;
-	if (!any) return;
-	bool captured = false;
-	for (const auto& sink : sinks) captured |= sink->captured;
-	if (png && captured)
-	{
-		try
-		{
-			scene = std::make_unique<Scene>(); SceneRequest request; request.includePanels = false;
-			extractScene(game, request, *scene);
-		}
-		catch (...) { scene.reset(); for (auto& sink : sinks) if (sink->captured) sink->failed = true; }
-	}
-	ready.store(true);
+    if (!png || pending()) return 0;
+    bool needed=!reservations.empty();
+    for (const auto& sink:sinks) needed|=sink->captured || tick>=sink->nextTick;
+    SceneRequest request;request.includePanels=false;
+    return needed ? SceneExtractor::requirements(request) : 0;
+}
+void Session::completeTick(const SimulationSnapshot::Handle& world) noexcept
+{
+    if (pending()) return;
+    bool any=false, captured=false;
+    for (const auto& sink:sinks) {
+        any|=sink->captured || sink->failed || sink->skipped;
+        captured|=sink->captured;
+    }
+    if (!any) return;
+    try {
+        auto batch=std::make_shared<Publication>();
+        batch->sinks.reserve(sinks.size());
+        if (png && captured) {
+            SceneRequest request; request.includePanels=false;
+            auto required=SceneExtractor::requirements(request);
+            if (world.growth) required|=SimulationSnapshot::bit(SimulationSnapshot::Component::Growth);
+            batch->inputs=SceneExtractor::inputs(world.project(required),request);
+        }
+        for (auto& sink:sinks) if (sink->captured || sink->failed || sink->skipped) {
+            batch->sinks.push_back(std::move(*sink));
+            sink->enabled=sink->captured=sink->failed=sink->skipped=false;
+        }
+        publication=std::move(batch); ready.store(true);
+    } catch (...) {
+        ++failures;
+        for (auto& sink:sinks) if (sink->captured) sink->failed=true;
+    }
 }
 void Session::issue(const FieldSink& sink, const std::string& reason)
 {
+    std::lock_guard lock(issueMutex);
 	// Keep failure reporting bounded even if a long run cannot write its directory.
 	if (issues.size() < 32) issues.push_back({sink.tick, sink.player, reason.substr(0,512)});
 }
 void Session::drain() noexcept
 {
-	if (!pending()) return;
-	for (auto& sink : sinks)
+    if (!pending()) return;
+    const auto batch=publication;
+    std::unique_ptr<PresentationFrame> scene;
+    if (batch->inputs) {
+        try {
+            scene=std::make_unique<PresentationFrame>();
+            SceneExtractor().prepare(*batch->inputs,*scene);
+        } catch (...) {
+            scene.reset();for (auto& sink:batch->sinks) if(sink.captured) sink.failed=true;
+        }
+    }
+	for (auto& value : batch->sinks)
 	{
+        auto* sink=&value;
 		try
 		{
 			if (sink->skipped) { ++skipped; issue(*sink,"Capture budget exceeded"); std::cerr << "Diagnostics: capture budget exceeded for player " << sink->player << '\n'; }
@@ -298,7 +342,7 @@ void Session::drain() noexcept
 		sink->enabled = sink->captured = sink->failed = sink->skipped = false;
 		for (auto& field : sink->fields) std::vector<std::int64_t>().swap(field.values);
 	}
-	scene.reset(); ready.store(false);
+	scene.reset(); publication.reset(); ready.store(false);
 }
 void Session::finish() noexcept
 {
@@ -306,7 +350,7 @@ void Session::finish() noexcept
 	try
 	{
 		fs::create_directories(directory);
-		nlohmann::json summary={{"schema_version",1},{"completed",completed},{"failed",failures},{"skipped",skipped},{"issue_samples",nlohmann::json::array()}};
+		nlohmann::json summary={{"schema_version",1},{"completed",completed.load()},{"failed",failures.load()},{"skipped",skipped.load()},{"issue_samples",nlohmann::json::array()}};
 		for (const auto& issue : issues) summary["issue_samples"].push_back({{"simulation_tick",issue.tick},{"player",issue.player},{"reason",issue.reason}});
 		if (!GAGCore::Toolkit::getFileManager()->writeFileAtomic((fs::path(directory)/"summary.json").string(),summary.dump(2)+"\n"))
 			throw std::runtime_error("Cannot write diagnostic summary");

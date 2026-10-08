@@ -4,6 +4,18 @@
 #include "BuildingGuiState.h"
 #include <memory>
 
+namespace {
+const SceneBuildingPanel& presentedBuilding(GameGUI& gui, const Building& building)
+{
+    gui.prepareLocalPresentation();
+    gui.setSelection(GameGUI::BUILDING_SELECTION, unsigned(building.gid));
+    gui.prepareLocalPresentation();
+    const auto* panel = gui.inputBuildingPanel();
+    REQUIRE(panel);
+    return *panel;
+}
+}
+
 TEST_SUITE("GUIOrderCoverage")
 {
     TEST_CASE("worker requests clamp deduplicate and retain newer pending changes")
@@ -14,13 +26,13 @@ TEST_SUITE("GUIOrderCoverage")
         gui.localPlayer=0; gui.localTeamNo=0;
         auto* building=world.addBuilding("swarm",4,4);
         auto* enemy=world.addBuilding("swarm",20,20,0,1);
-        CHECK_FALSE(gui.requestWorkerAllocation(*enemy,5));
+        CHECK_FALSE(gui.requestWorkerAllocation(presentedBuilding(gui, *enemy),5));
         const int original=building->maxUnitWorking;
-        REQUIRE(gui.requestWorkerAllocation(*building,MAX_UNIT_WORKING+20));
+        REQUIRE(gui.requestWorkerAllocation(presentedBuilding(gui, *building),MAX_UNIT_WORKING+20));
         CHECK(gui.displayedMaxUnitWorking(*building)==MAX_UNIT_WORKING);
         CHECK(building->maxUnitWorking==original);
-        CHECK_FALSE(gui.requestWorkerAllocation(*building,MAX_UNIT_WORKING+1));
-        REQUIRE(gui.requestWorkerAllocation(*building,-1));
+        CHECK_FALSE(gui.requestWorkerAllocation(presentedBuilding(gui, *building),MAX_UNIT_WORKING+1));
+        REQUIRE(gui.requestWorkerAllocation(presentedBuilding(gui, *building),-1));
         CHECK(gui.orderQueue.size()==2);
         auto older=gui.orderQueue.front(); gui.orderQueue.pop_front(); older->sender=0;
         gui.executeOrder(older);
@@ -30,7 +42,7 @@ TEST_SUITE("GUIOrderCoverage")
         gui.executeOrder(latest);
         CHECK(building->maxUnitWorking==0);
         CHECK_FALSE(gui.pendingFor(building->gid).pendingMaxUnitWorking.has_value());
-        CHECK_FALSE(gui.requestWorkerAllocation(*building,0));
+        CHECK_FALSE(gui.requestWorkerAllocation(presentedBuilding(gui, *building),0));
     }
 
     TEST_CASE("priority and radius requests clamp and reconcile against real orders")
@@ -40,12 +52,12 @@ TEST_SUITE("GUIOrderCoverage")
         auto& gui=world.gui;
         gui.localPlayer=0; gui.localTeamNo=0;
         auto* flag=world.addBuilding("warflag",4,4);
-        REQUIRE(gui.requestBuildingPriority(*flag,99));
+        REQUIRE(gui.requestBuildingPriority(presentedBuilding(gui, *flag),99));
         CHECK(gui.displayedPriority(*flag)==1);
-        CHECK_FALSE(gui.requestBuildingPriority(*flag,2));
-        REQUIRE(gui.requestFlagRange(*flag,999));
+        CHECK_FALSE(gui.requestBuildingPriority(presentedBuilding(gui, *flag),2));
+        REQUIRE(gui.requestFlagRange(presentedBuilding(gui, *flag),999));
         CHECK(gui.displayedUnitStayRange(*flag)==flag->type->maxUnitStayRange);
-        CHECK_FALSE(gui.requestFlagRange(*flag,999));
+        CHECK_FALSE(gui.requestFlagRange(presentedBuilding(gui, *flag),999));
         while (!gui.orderQueue.empty())
         {
             auto order=gui.orderQueue.front(); gui.orderQueue.pop_front(); order->sender=0;
@@ -56,9 +68,9 @@ TEST_SUITE("GUIOrderCoverage")
         CHECK_FALSE(gui.pendingFor(flag->gid).pendingPriority.has_value());
         CHECK_FALSE(gui.pendingFor(flag->gid).pendingUnitStayRange.has_value());
         globals->replaying=true;
-        CHECK_FALSE(gui.requestBuildingPriority(*flag,-1));
-        CHECK_FALSE(gui.requestFlagRange(*flag,0));
-        CHECK_FALSE(gui.requestWorkerAllocation(*flag,0));
+        CHECK_FALSE(gui.requestBuildingPriority(presentedBuilding(gui, *flag),-1));
+        CHECK_FALSE(gui.requestFlagRange(presentedBuilding(gui, *flag),0));
+        CHECK_FALSE(gui.requestWorkerAllocation(presentedBuilding(gui, *flag),0));
         CHECK(gui.orderQueue.empty());
         globals->replaying=false;
     }

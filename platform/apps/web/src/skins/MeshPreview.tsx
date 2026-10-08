@@ -136,11 +136,11 @@ export function MeshPreview(props: ViewportProps) {
           gl.VERTEX_SHADER,
           // Fur shells push the body outward along the normal and slightly
           // nearer, as the game's tile renderer does.
-          `#version 300 es\nin vec3 position;in vec3 normal;in vec2 uv;out vec3 n;out vec2 tex;uniform float shell;uniform vec2 fur;uniform float shellDepth;void main(){gl_Position=vec4(position.xy+normalize(normal).xy*shell*fur,position.z-shell*shellDepth,1.);n=normal;tex=uv;}`,
+          `#version 300 es\nin vec3 position;in vec3 normal;in vec2 uv;in vec2 detailUV;out vec3 n;out vec2 tex;out vec2 detail;uniform float shell;uniform vec2 fur;uniform float shellDepth;void main(){gl_Position=vec4(position.xy+normalize(normal).xy*shell*fur,position.z-shell*shellDepth,1.);n=normal;tex=uv;detail=detailUV;}`,
         ],
         [
           gl.FRAGMENT_SHADER,
-          `#version 300 es\nprecision highp float;\n#define SKIN_TEXTURE texture\nin vec3 n;in vec2 tex;out vec4 color;uniform sampler2D paint;uniform sampler2D material;uniform vec2 region;uniform float shell;\n${SKIN_MATERIAL_GLSL}\nvoid main(){vec4 shaded=skinShadeAtlas(paint,material,region,n,tex,shell);if(shaded.a<.5)discard;color=vec4(shaded.rgb,1.);}`,
+          `#version 300 es\nprecision highp float;\n#define SKIN_TEXTURE texture\nin vec3 n;in vec2 tex;in vec2 detail;out vec4 color;uniform sampler2D paint;uniform sampler2D material;uniform vec2 region;uniform float shell;\n${SKIN_MATERIAL_GLSL}\nvoid main(){vec4 shaded=skinShadeAtlas(paint,material,region,n,tex,detail,shell);if(shaded.a<.5)discard;color=vec4(shaded.rgb,1.);}`,
         ],
       ] as const) {
         const shader = gl.createShader(kind)!;
@@ -175,6 +175,10 @@ export function MeshPreview(props: ViewportProps) {
       const loc = gl.getAttribLocation(program, 'uv');
       gl.enableVertexAttribArray(loc);
       gl.vertexAttribPointer(loc, 2, gl.FLOAT, false, 0, 0);
+      buffer(gl.ARRAY_BUFFER, mesh.detailUV ?? mesh.uv);
+      const detailLoc = gl.getAttribLocation(program, 'detailUV');
+      gl.enableVertexAttribArray(detailLoc);
+      gl.vertexAttribPointer(detailLoc, 2, gl.FLOAT, false, 0, 0);
       buffer(gl.ELEMENT_ARRAY_BUFFER, mesh.indices);
       const textures = [0, 1].map((unit) => {
         const t = gl.createTexture()!;
@@ -326,7 +330,7 @@ export function MeshPreview(props: ViewportProps) {
       if (current.camera.game) return;
       current.onCamera?.({
         ...current.camera,
-        zoom: Math.max(0.45, Math.min(4, current.camera.zoom * Math.exp(-event.deltaY * 0.001))),
+        zoom: Math.max(0.225, Math.min(4, current.camera.zoom * Math.exp(-event.deltaY * 0.001))),
       });
     };
     target.addEventListener('wheel', wheel, { passive: false });
@@ -429,7 +433,7 @@ export function MeshPreview(props: ViewportProps) {
             if (!props.camera.game && before > 1)
               props.onCamera?.({
                 ...props.camera,
-                zoom: Math.max(0.45, Math.min(4, (props.camera.zoom * after) / before)),
+                zoom: Math.max(0.225, Math.min(4, (props.camera.zoom * after) / before)),
               });
           } else if (gesture.current) {
             const previous = gesture.current.last;

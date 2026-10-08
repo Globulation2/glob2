@@ -122,7 +122,7 @@ public:
 	void setDefaultAlliances(std::optional<int> humanColor, const std::vector<int>& aiColors);
 	
 	///Returns whether allying and de-allying are allowed mid-game
-	inline bool areAllyTeamsFixed() { return allyTeamsFixed; }
+	inline bool areAllyTeamsFixed() const { return allyTeamsFixed; }
 	
 	///Sets whether ally-teams are fixed during the game
 	inline void setAllyTeamsFixed(bool fixed) { allyTeamsFixed = fixed;  ++observationRevisionValue; }

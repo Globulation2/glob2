@@ -8,7 +8,6 @@
 #include "InGameTouchTheme.h"
 #include "MapEdit.h"
 #include "PhoneEditor.h"
-#include "Unit.h"
 #include "render/UnitAnimation.h"
 #include "render/UnitSkin.h"
 #include "resource/ResourceRegistry.h"
@@ -41,7 +40,7 @@ std::string experimentLabel(MapEdit &editor, const std::string &key)
 	for (const auto &definition : registeredExperimentDefinitions())
 		if (definition.key == key)
 			return definition.label;
-	for (const auto &definition : editor.game.map.resourceRegistry().experiments())
+	for (const auto &definition : editor.view.scene->map.resourceRegistry().experiments())
 		if (definition.key == key)
 			return definition.label;
 	return key;
@@ -116,7 +115,7 @@ void PhoneEditor::layoutTray(double unit)
 	const std::string key = std::to_string(editor.catalogRevision()) + '|' + std::to_string(paletteMode) + '|' +
 							std::to_string(unit) + '|' + std::to_string(textScale) + '|' + std::to_string(scriptAreas) + std::to_string(editor.fertilityOverlayStale()) +
 							'|' + (scriptAreas && editor.areaNumber ? std::to_string(editor.areaNumber->getIndex()) +
-																		  editor.game.map.getAreaName(editor.areaNumber->getIndex())
+																		  (editor.view.scene ? editor.view.scene->map.getAreaName(editor.areaNumber->getIndex()) : std::string{})
 																	: std::string());
 	if (key == trayLayoutKey && !rows.empty())
 		return;
@@ -202,7 +201,7 @@ void PhoneEditor::layoutTray(double unit)
 					name.kind = Row::Kind::Widget;
 					name.id = "area/name";
 					name.widget = editor.areaNameLabel;
-					const std::string areaName = editor.game.map.getAreaName(area);
+					const std::string areaName = (editor.view.scene ? editor.view.scene->map.getAreaName(area) : std::string{});
 					addCard(std::move(name), areaName.empty() ? tr("[Unnamed Area]") : areaName);
 				}
 			}
@@ -358,14 +357,14 @@ void PhoneEditor::drawSwatch(const BrushEntry &entry, ViewRect box)
 		break;
 	case BrushSwatch::Kind::Building:
 	{
-		const int type = editor.buildingSelectionType(swatch.key);
-		if (auto *bt = type >= 0 ? editor.game.buildingsTypes.get(type) : nullptr)
+		const int type = editor.displayedBuildingSelectionType(swatch.key);
+		if (auto *bt = type >= 0 ? &(*editor.view.scene->buildingTypes)[type] : nullptr)
 		{
 			Sprite *sprite = bt->miniSpriteImage >= 0 ? bt->miniSpritePtr : bt->gameSpritePtr;
 			const int frame = bt->miniSpriteImage >= 0 ? bt->miniSpriteImage : bt->gameSpriteImage;
 			if (sprite)
 			{
-				sprite->setBaseColor(editor.game.teams[editor.team]->color);
+				sprite->setBaseColor(presentationColor(editor.view.scene->entities.teams[editor.team].color));
 				drawSpriteFit(sprite, frame, {box.x + 2 * u, box.y + 2 * u, box.w - 4 * u, box.h - 4 * u}, clip);
 			}
 		}
@@ -375,7 +374,7 @@ void PhoneEditor::drawSwatch(const BrushEntry &entry, ViewRect box)
 	{
 		const int type = swatch.key == "explorer" ? EXPLORER : swatch.key == "warrior" ? WARRIOR : WORKER;
 		Sprite *sprite = globalContainer->units;
-		sprite->setBaseColor(editor.game.teams[editor.team]->color);
+		sprite->setBaseColor(presentationColor(editor.view.scene->entities.teams[editor.team].color));
 		drawSpriteFit(sprite, unitAnimationFrame(g_unitSkins[type].startImage[STOP_WALK], 0, 0),
 					  {box.x + 4 * u, box.y + 4 * u, box.w - 8 * u, box.h - 8 * u}, clip);
 		break;

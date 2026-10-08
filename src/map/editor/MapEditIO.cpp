@@ -49,6 +49,9 @@ GAGCore::CooperativeTask MapEdit::loadTask(std::string filename)
     hasMapBeenModified = false;
     savedFilename = filename;
     fertilityStale = false;
+    view.selectedBuilding = nullptr; view.selectedUnit = nullptr;
+    selectedBuildingGID = NOGBID; selectedUnitGID = NOGUID;
+    preparePresentation();
     co_return true;
 }
 
@@ -75,7 +78,7 @@ bool MapEdit::save(const std::string filename, const std::string name)
 void MapEdit::beginEditing()
 {
 	FrontendScope editor(false);
-	minimap.setGame(game);
+	minimap.setMapSize(game.map.getW(), game.map.getH());
 	globalContainer->gfx->setClipRect();
 	drawMap(0, 0, globalContainer->gfx->getW()-RIGHT_MENU_WIDTH, globalContainer->gfx->getH());
 	drawMiniMap();
@@ -251,7 +254,7 @@ bool MapEdit::finishFertility(bool completed)
         pendingSaveFilename.clear(); pendingSaveName.clear();
     } else if (completed) {
         overlay.forceRecompute();
-        overlay.compute(game, OverlayArea::Fertility, team);
+        overlay.compute(game.captureReadBoundary({},true,SimulationSnapshot::bit(SimulationSnapshot::Component::Resources)), OverlayArea::Fertility, team,game.map.fertilityMaximum);
         fertilityStale = false;
     } else if (!fertilityStale) isFertilityOn = false;
     return true;

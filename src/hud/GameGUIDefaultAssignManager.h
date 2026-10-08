@@ -16,6 +16,8 @@ namespace GAGCore
 
 
 class Game;
+struct PresentationFrame;
+class BuildingType;
 
 ///This class manages the default number of units to be assigned when constructing a new buildings
 class GameGUIDefaultAssignManager
@@ -30,6 +32,10 @@ public:
 	
 	///Sets the default assigned units for a given building typenum
 	void setDefaultAssignedUnits(int typenum, int value);
+	/// Runtime input uses the displayed catalog. The overloads above are owner
+	/// helpers for standalone setup and save-format compatibility tools.
+	int getDefaultAssignedUnits(const PresentationFrame& scene, int typenum);
+	void setDefaultAssignedUnits(const PresentationFrame& scene, int typenum, int value);
 
 	////Saves the default assign information
 	void save(GAGCore::OutputStream* stream) const;
@@ -38,8 +44,9 @@ public:
 	void load(GAGCore::InputStream* stream, Sint32 versionMinor);
 	
 private:
+	int defaultFor(const BuildingType& type, const std::string& fingerprint) const;
+	void remember(const BuildingType& type, const std::string& fingerprint, int value);
 	Game& game;
 	std::map<std::string, int> unitCount;
 };
-
 

@@ -130,7 +130,7 @@ class EnteringUnitDrawHarness
 		{
 			unit->delta = delta;
 			gfx->drawFilledRect(0, 0, gfx->getW(), gfx->getH(), 0, 0, 0);
-			{ SceneMap layers; layers.extract(game.map); game.drawMapTerrain(0, 0, DRAW_W >> 5, DRAW_H >> 5, 0, 0, 0, Game::DRAW_WHOLE_MAP, layers); }
+			{ SceneMap layers; glob2test::observeMap(game.map,layers); game.drawMapTerrain(0, 0, DRAW_W >> 5, DRAW_H >> 5, 0, 0, 0, Game::DRAW_WHOLE_MAP, layers); }
 			game.drawMapGroundUnits(0, 0, DRAW_W >> 5, DRAW_H >> 5, DRAW_W, DRAW_H,
 				0, 0, 0, Game::DRAW_WHOLE_MAP, view, glob2test::sceneOf(game, view));
 			game.drawMapGroundBuildings(0, 0, DRAW_W >> 5, DRAW_H >> 5, DRAW_W, DRAW_H,

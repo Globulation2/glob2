@@ -26,7 +26,7 @@ test('editor imports terrain definitions from a device file',async({page},info)=
   await expect.poll(async()=>(await state(page)).import,{timeout:60000}).toBe('succeeded');
   await screen(page,'MapEditorScreen');
   // The imported type is offered as a brush once fertility has been recomputed.
-  await control(page,'terrain/example:device',{timeout:60000});
+  await control(page,'brush/terrain/example:device',{timeout:60000});
   await page.screenshot({path:info.outputPath('editor-device-import.png')});
 });
 

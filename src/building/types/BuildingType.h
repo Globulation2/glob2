@@ -143,7 +143,7 @@ public:
 	BuildingsTypes& operator=(const BuildingsTypes& other);
 	BuildingsTypes(BuildingsTypes&&) noexcept = default;
 	BuildingsTypes& operator=(BuildingsTypes&&) noexcept = default;
-	// Keeps descriptors alive across catalog replacement while a Scene uses them.
+	// Keeps descriptors alive across catalog replacement while a PresentationFrame uses them.
 	// This is lifetime retention, not a deep copy or synchronization mechanism.
 	std::shared_ptr<const std::vector<BuildingType>> retainTypes() const { return entries_; }
 	void init();

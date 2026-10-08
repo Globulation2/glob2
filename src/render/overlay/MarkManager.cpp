@@ -6,9 +6,8 @@
 #include "MarkManager.h"
 #include <MapCamera.h>
 #include "Utilities.h"
-#include "GameUtilities.h"
 #include "GlobalContainer.h"
-#include "Game.h"
+#include "render/scene/Scene.h"
 #include <cmath>
 #include <numbers>
 
@@ -50,15 +49,21 @@ void Mark::draw(int x, int y, float scale) const
 
 
 
-void Mark::drawInMinimap(int s, int local, int x, int y, Game& game) const
+void Mark::drawInMinimap(int s, int local, int x, int y, const PresentationFrame& scene) const
 {
 	int mMax;
 	int szX, szY;
 	int decX, decY;
 	int nx, ny;
 	
-	Utilities::computeMinimapData(s, game.map.getW(), game.map.getH(), &mMax, &szX, &szY, &decX, &decY);
-	GameUtilities::globalCoordToLocalView(&game, local, px, py, &nx, &ny);
+	Utilities::computeMinimapData(s, scene.map.getW(), scene.map.getH(), &mMax, &szX, &szY, &decX, &decY);
+	nx = px;
+	ny = py;
+	if (local >= 0 && local < scene.entities.teamCount)
+	{
+		nx = (px - scene.entities.teams[local].startX + (scene.map.getW() >> 1)) & scene.map.getMaskW();
+		ny = (py - scene.entities.teams[local].startY + (scene.map.getH() >> 1)) & scene.map.getMaskH();
+	}
 
 	nx = (nx*s)/mMax;
 	ny = (ny*s)/mMax;
@@ -70,10 +75,10 @@ void Mark::drawInMinimap(int s, int local, int x, int y, Game& game) const
 
 
 
-void Mark::drawInMainView(int viewportX, int viewportY, Game& game, const MapCamera *camera) const
+void Mark::drawInMainView(int viewportX, int viewportY, const PresentationFrame& scene, const MapCamera *camera) const
 {
 	int nx, ny;
-	game.map.mapCaseToDisplayable(px, py, &nx, &ny, viewportX, viewportY);
+	scene.map.mapCaseToDisplayable(px, py, &nx, &ny, viewportX, viewportY);
 	
 	auto *gfx = globalContainer->gfx;
 	int clipX, clipY, clipW, clipH;
@@ -86,7 +91,7 @@ void Mark::drawInMainView(int viewportX, int viewportY, Game& game, const MapCam
 	gfx->setClipRect(0, 0, width, gfx->getH());
 	const int radius = totalTime + 2*MARK_LINE_LENGTH_PX;
 	forEachMapCopy(nx-radius, ny-radius, nx+radius, ny+radius,
-		game.map.getW()*32, game.map.getH()*32, width, height, [&](int dx, int dy) {
+		scene.map.getW()*32, scene.map.getH()*32, width, height, [&](int dx, int dy) {
 			draw(nx+dx, ny+dy, 2.0);
 		});
 	if (camera) gfx->endMapTransform();
@@ -102,7 +107,7 @@ MarkManager::MarkManager()
 
 
 
-void MarkManager::drawAll(int localTeam, int minimapX, int minimapY, int minimapSize, int viewportX, int viewportY, Game& game, const MapCamera *camera)
+void MarkManager::drawAll(int localTeam, int minimapX, int minimapY, int minimapSize, int viewportX, int viewportY, const PresentationFrame& scene, const MapCamera *camera)
 {
 	for(std::vector<Mark>::iterator i=marks.begin(); i!=marks.end();)
 	{
@@ -112,8 +117,8 @@ void MarkManager::drawAll(int localTeam, int minimapX, int minimapY, int minimap
 			i = marks.erase(i);
 			continue;
 		}
-		i->drawInMinimap(minimapSize, localTeam, minimapX, minimapY, game);
-		i->drawInMainView(viewportX, viewportY, game, camera);
+		i->drawInMinimap(minimapSize, localTeam, minimapX, minimapY, scene);
+		i->drawInMainView(viewportX, viewportY, scene, camera);
 		++i;
 	}
 }

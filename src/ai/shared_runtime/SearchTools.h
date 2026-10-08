@@ -168,6 +168,7 @@ namespace AISharedRuntime
 			bool backs_onto_sand(int x, int y);
 			int get_amount_resource(int x, int y);
 		private:
+			const AIEngine::AIWorldView& observation() const;
 			Runtime* runtime=nullptr;
 			const AIEngine::AIWorldView* world=nullptr;
 			Uint32 teamMask=0;

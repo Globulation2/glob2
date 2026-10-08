@@ -33,7 +33,8 @@ void blank(MapEdit &editor, TerrainType background = GRASS)
 	editor.viewportX = 0;
 	editor.viewportY = 0;
 	editor.updateCamera();
-	editor.minimap.setGame(editor.game);
+	editor.minimap.setMapSize(editor.game.map.getW(), editor.game.map.getH());
+    editor.preparePresentation();
 }
 
 void cursor(MapEdit &editor, int x, int y)

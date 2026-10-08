@@ -65,6 +65,7 @@ const AIPlanning::BuildingCapabilityIndex& Game::buildingCapabilities() const
 
 void Game::configureBuildingCatalog()
 {
+    worldSnapshots.invalidateCatalog();
 	const auto routingFlags=[](const BuildingType* type) {
 		return Uint8(type->runtimeSuppliesStock | (type->runtimeFetchesStock<<1) |
 			(type->runtimeSuppliesDirectStock<<2) | (type->runtimeFetchesDirectStock<<3));
@@ -169,8 +170,6 @@ void Game::clearGame()
 	totalPrestigeReached=false;
 	isGameEnded=false;
 
-	highlightBuildingType=0;
-	highlightUnitType=0;
 }
 
 
@@ -359,6 +358,7 @@ void Game::applyStartingRules(void)
 
 void Game::setWaitingOnMask(Uint32 mask)
 {
+    if (maskAwayPlayer!=mask || anyPlayerWaited!=(mask!=0)) snapshots().invalidateBoundary();
 	maskAwayPlayer = mask;
 	anyPlayerWaited = (mask != 0);
 }
@@ -458,8 +458,11 @@ Unit *Game::resolveUnit(UnitRef ref) const
 
 void Game::publishClientEvent(ClientEventVariant event)
 {
-	if (clientEvents)
-		clientEvents->push(std::move(event));
+    if (clientEvents) {
+        const bool acknowledgement=std::holds_alternative<ClientEvent::OrderExecuted>(event);
+        clientEvents->push(std::move(event));
+        if (acknowledgement) snapshots().invalidateBoundary();
+    }
 }
 
 Uint32 Game::allocateScriptIdentity(bool building, Uint16 gid)
