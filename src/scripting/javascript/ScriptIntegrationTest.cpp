@@ -741,6 +741,7 @@ TEST_CASE("JavaScript telemetry scene permissions and replay diagnostic roundtri
 	game.teams[0]->allies = 1;
 	SceneRequest request;
 	request.localTeam = 0;
+	request.includeTelemetry = true;
 	PresentationFrame scene;
 	SceneExtractor extractor;
 	auto observe = [&] {
