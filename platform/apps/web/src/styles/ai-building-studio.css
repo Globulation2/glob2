@@ -1,0 +1,246 @@
+.ai-building-studio {
+  max-width: 1440px;
+  margin: auto;
+}
+.building-ai-tabs {
+  display: none;
+}
+.building-ai-cost {
+  font-size: 0.9rem;
+  color: var(--text-muted);
+}
+.building-ai-controls,
+.building-ai-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin: 1rem 0;
+}
+.building-ai-controls label,
+.bas-preview > label {
+  display: block;
+}
+.building-ai-controls select,
+.bas-preview > label select {
+  display: block;
+  margin: 0.4rem 0;
+}
+.building-ai-variant {
+  border: 1px solid var(--border, #485746);
+  border-radius: 12px;
+  padding: 1rem;
+  margin: 1rem 0;
+}
+.building-ai-ground {
+  position: relative;
+  display: flex;
+  align-items: end;
+  justify-content: center;
+  overflow: auto;
+  padding: 16px;
+  border-radius: 8px;
+}
+.building-ai-ground.grass {
+  background: repeating-linear-gradient(15deg, #526447, #526447 5px, #506145 6px, #506145 12px);
+}
+.building-ai-ground.sand {
+  background: repeating-linear-gradient(15deg, #b49d71, #b49d71 5px, #b8a277 6px, #b8a277 12px);
+}
+.building-ai-ground.water {
+  background: repeating-linear-gradient(15deg, #345e70, #345e70 5px, #396a7a 6px, #396a7a 12px);
+}
+.building-ai-ground img {
+  position: relative;
+  max-width: none;
+  object-fit: contain;
+}
+.building-ai-footprint {
+  position: absolute;
+  bottom: 16px;
+  border: 1px dashed #fff8;
+  background: repeating-linear-gradient(90deg, transparent, transparent 31px, #fff2 32px);
+}
+.building-ai-variant dl > div {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.25rem 0;
+}
+.building-ai-variant dd {
+  margin: 0;
+  text-align: right;
+}
+.building-ai-variant pre {
+  max-height: 360px;
+  overflow: auto;
+  font-size: 0.8rem;
+}
+.building-ai-diff {
+  display: block;
+  color: var(--text-muted);
+}
+@media (max-width: 800px) {
+  .building-ai-tabs {
+    display: flex;
+    gap: 0.75rem;
+    margin: 1rem 0;
+  }
+  .bas-layout[data-pane='chat'] > .bas-preview,
+  .bas-layout[data-pane='preview'] > .bas-chat {
+    display: none;
+  }
+  .building-ai-actions {
+    gap: 0.5rem;
+  }
+}
+
+.building-ai-sprite {
+  position: relative;
+  display: inline-block;
+  flex-shrink: 0;
+}
+.building-ai-sprite .building-ai-team {
+  position: absolute;
+  left: 0;
+  top: 0;
+}
+
+/* Workspace layout is scoped to this studio; Terrain Studio owns its own styles. */
+.bas-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 1.5rem;
+  align-items: start;
+}
+.bas-header h1 {
+  margin: 0.5rem 0;
+}
+.bas-credits,
+.bas-start {
+  padding: 1rem;
+  margin: 1rem 0;
+  border: 1px solid var(--border, #485746);
+  border-radius: 12px;
+}
+.bas-layout {
+  display: grid;
+  grid-template-columns: minmax(280px, 380px) minmax(0, 1fr);
+  gap: 1.5rem;
+}
+.bas-chat,
+.bas-preview {
+  min-width: 0;
+}
+.bas-chat {
+  position: sticky;
+  top: 1rem;
+  align-self: start;
+}
+.bas-messages {
+  max-height: 52vh;
+  overflow: auto;
+  overscroll-behavior: contain;
+}
+.bas-message {
+  padding: 0.8rem 1rem;
+  border-radius: 10px;
+  margin-bottom: 0.6rem;
+  background: var(--surface-2);
+}
+.bas-message.user {
+  margin-left: 1rem;
+  background: var(--surface, #344435);
+}
+.bas-message p {
+  white-space: pre-wrap;
+}
+.bas-chat label,
+.bas-start label {
+  display: block;
+  margin: 0.7rem 0;
+}
+.bas-chat textarea,
+.bas-start input {
+  width: 100%;
+  box-sizing: border-box;
+}
+.bas-stages {
+  display: flex;
+  flex-wrap: wrap;
+  padding: 0;
+  gap: 0.5rem;
+  list-style: none;
+}
+.bas-stages li {
+  padding: 0.6rem;
+  border: 1px solid var(--border, #485746);
+  border-radius: 8px;
+  flex: 1;
+}
+.bas-stages span,
+.bas-stages small {
+  display: block;
+}
+.bas-stages [data-status='running'] {
+  border-color: #d7b36a;
+}
+.bas-stages [data-status='complete'] {
+  border-color: #83ad74;
+}
+.bas-references {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+.bas-references img {
+  display: block;
+  width: 76px;
+  height: 76px;
+  object-fit: contain;
+}
+.bas-projects {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+}
+@media (max-width: 800px) {
+  .bas-layout {
+    grid-template-columns: 1fr;
+  }
+  .bas-chat {
+    position: static;
+  }
+  .bas-header {
+    display: block;
+  }
+  .bas-messages {
+    max-height: 40vh;
+  }
+}
+
+.building-ai-project-options {
+  margin-bottom: 1rem;
+}
+.building-ai-project-options button {
+  margin: 0.3rem 0.5rem 0.3rem 0;
+}
+.building-ai-history article {
+  border-top: 1px solid var(--border);
+  padding: 1rem 0;
+}
+.building-ai-history h3 {
+  margin-top: 0;
+}
+.building-ai-history button {
+  margin: 0.5rem;
+}
+.building-ai-action-hint {
+  color: var(--text-muted);
+  margin-bottom: 0;
+}
+.building-ai-empty {
+  color: var(--text-muted);
+}
+.building-ai-ground img {
+  image-rendering: pixelated;
+}

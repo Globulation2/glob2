@@ -98,6 +98,8 @@ COPY platform/packages/map-studio/package.json packages/map-studio/
 COPY platform/packages/music/package.json packages/music/
 COPY platform/packages/music-studio/package.json packages/music-studio/
 COPY platform/packages/terrain-studio/package.json packages/terrain-studio/
+COPY platform/packages/building-studio/package.json packages/building-studio/
+COPY platform/apps/ai-building-worker/package.json apps/ai-building-worker/
 COPY platform/apps/ai-terrain-worker/package.json apps/ai-terrain-worker/
 COPY platform/apps/ai-music-worker/package.json apps/ai-music-worker/
 COPY platform/apps/music-worker/package.json apps/music-worker/
@@ -143,6 +145,7 @@ COPY platform/apps/engine-agent apps/engine-agent
 COPY platform/apps/ai-map-worker apps/ai-map-worker
 COPY platform/apps/ai-music-worker apps/ai-music-worker
 COPY platform/apps/ai-terrain-worker apps/ai-terrain-worker
+COPY platform/apps/ai-building-worker apps/ai-building-worker
 # Node strips types at run time; tests and the web sources are not needed.
 RUN rm -rf packages/*/test apps/*/test && \
     find packages apps -name '*.test.ts' -delete
@@ -247,6 +250,16 @@ ENV GLOB2_SOURCE_DIR=/opt/glob2/share TERRAIN_PYTHON=/opt/terrain/bin/python
 USER 10001:10001
 HEALTHCHECK --interval=30s --timeout=5s --start-period=60s CMD node -e "const t=Number(require('fs').readFileSync('/tmp/glob2-ai-terrain-health','utf8'));process.exit(Date.now()-t<90000?0:1)"
 CMD ["node", "apps/ai-terrain-worker/src/main.ts"]
+
+# Building authoring uses the matching native catalog validator and source examples.
+FROM engine-agent AS ai-building-worker
+USER root
+COPY docs/features/building-catalogs.md /opt/glob2/share/docs/features/building-catalogs.md
+COPY data/gfx/inn0b0.png data/gfx/inn0b0r.png data/gfx/hosp0b0.png data/gfx/hosp0b0r.png data/gfx/defencetower0b0.png data/gfx/defencetower0b0r.png /opt/glob2/share/studio/building-references/
+ENV GLOB2_SOURCE_DIR=/opt/glob2/share
+USER 10001:10001
+HEALTHCHECK --interval=30s --timeout=5s --start-period=60s CMD node -e "const t=Number(require('fs').readFileSync('/tmp/glob2-ai-building-health','utf8'));process.exit(Date.now()-t<90000?0:1)"
+CMD ["node", "apps/ai-building-worker/src/main.ts"]
 
 FROM ${CADDY_IMAGE} AS caddy
 RUN setcap -r /usr/bin/caddy && chown -R 10001:10001 /data /config

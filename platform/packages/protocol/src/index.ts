@@ -24,3 +24,5 @@ export * from './buildings.ts';
 export * from './sets.ts';
 export * from './terrainStudio.ts';
 export * from './setAuthoring.ts';
+
+export * from './buildingStudio.ts';

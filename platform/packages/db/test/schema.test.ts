@@ -138,6 +138,97 @@ const typedColumns: ColumnLists = {
     'applied',
     'created_at',
   ],
+  building_studio_threads: [
+    'id',
+    'account_id',
+    'title',
+    'brief',
+    'created_at',
+    'updated_at',
+    'event_cursor',
+    'draft_id',
+  ],
+  building_studio_events: [
+    'thread_id',
+    'cursor',
+    'request_id',
+    'dedup',
+    'type',
+    'payload',
+    'created_at',
+  ],
+  building_studio_provider_usage: ['day', 'calls'],
+  building_studio_artifacts: [
+    'id',
+    'thread_id',
+    'request_id',
+    'stage',
+    'kind',
+    'label',
+    'hash',
+    'created_at',
+  ],
+  building_studio_messages: ['id', 'thread_id', 'role', 'text', 'created_at'],
+  building_studio_requests: [
+    'id',
+    'thread_id',
+    'account_id',
+    'kind',
+    'status',
+    'input',
+    'checkpoints',
+    'lease_until',
+    'lease',
+    'error',
+    'charged',
+    'created_at',
+    'completed_at',
+  ],
+  building_studio_attempts: [
+    'id',
+    'request_id',
+    'stage',
+    'model',
+    'status',
+    'input',
+    'output',
+    'created_at',
+  ],
+  building_wallets: ['account_id', 'balance', 'reserved'],
+  building_ledger: ['id', 'account_id', 'amount', 'kind', 'details', 'created_at'],
+  building_calls: [
+    'id',
+    'account_id',
+    'reserved',
+    'status',
+    'charged',
+    'rate',
+    'usage',
+    'created_at',
+  ],
+  building_purchases: [
+    'id',
+    'account_id',
+    'checkout_id',
+    'payment_id',
+    'pack',
+    'paid',
+    'reversed',
+    'created_at',
+  ],
+  building_studio_revisions: [
+    'request_id',
+    'thread_id',
+    'base_revision',
+    'title',
+    'document',
+    'archive',
+    'hash',
+    'report',
+    'sim_version',
+    'applied',
+    'created_at',
+  ],
   asset_sets: [
     'id',
     'owner_account_id',
@@ -1209,6 +1300,7 @@ describe('migrations', () => {
         '0049_building_drafts',
         '0050_building_library',
         '0051_terrain_studio',
+        '0052_building_studio',
       ]);
       expect(
         (
@@ -1278,7 +1370,7 @@ describe('migrations', () => {
         existing.db,
       );
       const upgraded = await migrateToLatest(existing.db);
-      expect(upgraded).toHaveLength(29);
+      expect(upgraded).toHaveLength(30);
       expect(upgraded.every((migration) => migration.status === 'Success')).toBe(true);
       expect(
         await existing.db
@@ -1423,6 +1515,7 @@ describe('migrations', () => {
         ['0049_building_drafts', 'Success'],
         ['0050_building_library', 'Success'],
         ['0051_terrain_studio', 'Success'],
+        ['0052_building_studio', 'Success'],
       ]);
       for (const table of [
         'colony_skin_versions',
@@ -1564,6 +1657,7 @@ describe('migrations', () => {
         ['0049_building_drafts', 'Success'],
         ['0050_building_library', 'Success'],
         ['0051_terrain_studio', 'Success'],
+        ['0052_building_studio', 'Success'],
       ]);
       expect(
         await db

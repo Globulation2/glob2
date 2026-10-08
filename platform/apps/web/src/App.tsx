@@ -18,6 +18,9 @@ import { SessionProvider, isModerator, useSession } from './state.tsx';
 import { ThemeProvider, ThemeToggle } from './theme.tsx';
 
 // Pages most visitors never open load on demand.
+const AiBuildingStudio = lazy(() =>
+  import('./pages/AiBuildingStudio.tsx').then((m) => ({ default: m.AiBuildingStudio })),
+);
 const TerrainStudio = lazy(() =>
   import('./pages/TerrainStudio.tsx').then((m) => ({ default: m.TerrainStudio })),
 );
@@ -88,6 +91,18 @@ export const ROUTES: Route[] = [
     section: 'buildings',
     title: 'Building family',
     render: (p) => <BuildingLibrary key={p['id']} id={p['id']} />,
+  },
+  {
+    pattern: '/ai-building-studio',
+    section: 'buildings',
+    title: 'AI Building Studio',
+    render: () => <AiBuildingStudio />,
+  },
+  {
+    pattern: '/ai-building-studio/:id',
+    section: 'buildings',
+    title: 'AI Building Studio',
+    render: (p) => <AiBuildingStudio key={p['id']} id={p['id']} />,
   },
   {
     pattern: '/building-studio',

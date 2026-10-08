@@ -346,6 +346,7 @@ function Editor({ initial }: { initial: BuildingDraft }) {
     <div className="building-studio">
       <Link to="/building-studio">Your building drafts</Link>
       <h1>Building family editor</h1>
+      {draft && <Link to={'/ai-building-studio?draft=' + draft.id}>Edit with AI</Link>}
       <p>
         Start with one building, add stages for upgrades, then save and publish. Artwork uploads are
         saved immediately; choose their sprite keys in gameSprite and miniSprite.

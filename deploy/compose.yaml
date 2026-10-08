@@ -323,6 +323,34 @@ services:
       init: {condition: service_completed_successfully}
     stop_grace_period: 5m
 
+  ai-building-worker:
+    <<: *hardening
+    profiles: [ai-building]
+    image: ${GLOB2_AI_BUILDING_IMAGE:-glob2-ai-building-worker:development}
+    build:
+      context: ..
+      dockerfile: deploy/Dockerfile
+      target: ai-building-worker
+      args: {JOBS: '${GLOB2_BUILD_JOBS:-4}'}
+    command: [node, apps/ai-building-worker/src/main.ts]
+    environment:
+      <<: *platform-environment
+      DATABASE_URL: postgres://glob2_worker@postgres:5432/glob2
+      DATABASE_PASSWORD_FILE: /var/lib/glob2/db/worker/password
+      ENGINE_AGENT_KEYS_FILE: ''
+      BUILDING_OPENAI_API_KEY: ${BUILDING_OPENAI_API_KEY:-}
+      RELAY_KEYS_FILE: ''
+      SHUTDOWN_GRACE_SECONDS: 290
+    tmpfs: ['/tmp:size=1024m,mode=1777']
+    volumes:
+      - db-worker-secret:/var/lib/glob2/db/worker:ro
+      - blobs:/var/lib/glob2/blobs
+      - *instance-config
+    networks: [backend, egress]
+    depends_on:
+      init: {condition: service_completed_successfully}
+    stop_grace_period: 5m
+
   engine-agent:
     <<: *hardening
     # Asset-capable engines require nested Bubblewrap namespaces. Reuse the

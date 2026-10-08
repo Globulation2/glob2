@@ -1,3 +1,5 @@
+import { BuildingAiStudio } from '@glob2/building-studio';
+import { HiveError } from '@glob2/billing';
 import { randomUUID } from 'node:crypto';
 import { sql } from 'kysely';
 import type { FastifyInstance } from 'fastify';
@@ -348,11 +350,13 @@ export async function buildingDraftRoutes(app: FastifyInstance, identity: Identi
   );
   app.delete<{ Params: { id: string } }>('/api/v1/building-drafts/:id', async (r, reply) => {
     const row = await owned(r.params.id, (await signed(r)).id);
-    await db
-      .deleteFrom('building_drafts')
-      .where('id', '=', row.id)
-      .where('owner_account_id', '=', row.owner_account_id)
-      .execute();
+    try {
+      await new BuildingAiStudio(db).removeDraft(row.owner_account_id, row.id);
+    } catch (error) {
+      if (error instanceof HiveError)
+        throw apiError(error.code === 'conflict' ? 'conflict' : 'not_found', error.message);
+      throw error;
+    }
     return reply.status(204).send();
   });
 }
