@@ -12,6 +12,8 @@
 #include <cstdint>
 #include <iterator>
 #include "Engine.h"
+#include "NetEngine.h"
+#include "Player.h"
 #include "sim/SimulationRunner.h"
 #include "sim/presentation/SceneInputs.h"
 #include "MenuColony.h"
@@ -75,6 +77,34 @@ GAGCore::CooperativeSlice fixedSlice()
 
 TEST_SUITE("EngineSession")
 {
+    TEST_CASE("observation players preserve seat order and spectator readiness")
+    {
+        glob2test::HeadlessGlobals globals;
+        Engine engine;
+        auto& game = engine.gui.game;
+        game.map.setSize(5, 5, GRASS);
+        game.map.setGame(&game);
+        game.addTeam();
+        game.teams[0]->race.loadDefault();
+        game.gameHeader.setNumberOfPlayers(3);
+        for (int i=0; i<3; ++i)
+            game.players[i] = new Player(i, "observation", game.teams[0], BasePlayer::P_AI);
+        engine.gui.localPlayer = 0;
+        engine.net = std::make_unique<NetEngine>(3, 0);
+        const bool spectating = globalContainer->liveSpectating;
+        struct Restore { bool value; ~Restore() { globalContainer->liveSpectating=value; } } restore{spectating};
+        globalContainer->liveSpectating = false;
+        CHECK(engine.observationPlayers(false) == std::vector<unsigned>{0,1,2});
+        engine.net->pushOrder(std::make_shared<NullOrder>(), 1, true);
+        CHECK(engine.observationPlayers(true) == std::vector<unsigned>{0,2});
+        globalContainer->liveSpectating = true;
+        CHECK(engine.observationPlayers(false) == std::vector<unsigned>{2});
+        CHECK(engine.observationPlayers(true) == std::vector<unsigned>{0,2});
+        engine.net->pushOrder(std::make_shared<NullOrder>(), 2, true);
+        CHECK(engine.observationPlayers(false).empty());
+        CHECK(engine.observationPlayers(true) == std::vector<unsigned>{0});
+    }
+
     TEST_CASE("paced sessions publish completed worlds before waiting and AI reuses them [display]")
     {
         glob2test::ScopedEnvironment desktop("GLOB2_MOBILE_UI","0");
