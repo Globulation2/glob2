@@ -1,10 +1,11 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-// Map editor terrain and resource brushes: every brush is centred on the cell
-// under the pointer, the hover preview names exactly the cells a stroke
-// changes, legacy corner terrain no longer erases neighbouring authored cells
-// or the units, buildings and resources it allows, Del reverts only the
-// selected terrain, and a resource stroke that places nothing explains why.
+// Map editor terrain and resource brushes: a terrain brush is centred on the
+// vertex nearest the pointer and paints exactly the vertices its hover preview
+// shows (down to a single vertex), grass and water get a sand beach where they
+// would meet, a stroke keeps the units, buildings and resources the new terrain
+// allows, Del reverts only the selected terrain, and a resource stroke (still
+// on cells) that places nothing explains why.
 
 #include "BrushCoverage.h"
 #include "BuildingType.h"
@@ -42,9 +43,23 @@ void cursor(MapEdit &editor, int x, int y)
 	editor.mouseY = y * 32 + 16;
 }
 
+//! The pointer exactly on vertex (x,y), the top-left corner of cell (x,y).
+void cursorVertex(MapEdit &editor, int x, int y)
+{
+	editor.mouseX = x * 32;
+	editor.mouseY = y * 32;
+}
+
 void stroke(MapEdit &editor, int x, int y)
 {
 	cursor(editor, x, y);
+	editor.performAction("terrain drag start");
+	editor.performAction("terrain drag end");
+}
+
+void vertexStroke(MapEdit &editor, int x, int y)
+{
+	cursorVertex(editor, x, y);
 	editor.performAction("terrain drag start");
 	editor.performAction("terrain drag end");
 }
@@ -62,21 +77,21 @@ std::set<Cell> wrappedSet(const std::vector<Cell> &cells)
 	return out;
 }
 
-std::set<Cell> cellsOf(MapEdit &editor, TerrainType type)
+std::set<Cell> verticesOf(MapEdit &editor, TerrainType type)
 {
 	std::set<Cell> out;
 	for (int y = 0; y < MapSide; ++y)
 		for (int x = 0; x < MapSide; ++x)
-			if (editor.game.map.terrainTypeAt(x, y) == type)
+			if (editor.game.map.vertexTerrainAt(x, y) == type)
 				out.insert({x, y});
 	return out;
 }
 
 std::vector<Cell> hoverPreview(MapEdit &editor, int x, int y)
 {
-	cursor(editor, x, y);
+	cursorVertex(editor, x, y);
 	const auto [cx, cy] = editor.brushCellAt(editor.mapMouseX(editor.mouseX), editor.mapMouseY(editor.mouseY));
-	return editor.terrainStrokeCells(cx, cy);
+	return editor.terrainBrushCells(cx, cy);
 }
 
 TerrainType importCustom(MapEdit &editor)
@@ -100,7 +115,7 @@ glob2test::GlobalsOptions displayOptions()
 
 TEST_SUITE("EditorTerrainPaint")
 {
-	TEST_CASE("every terrain brush paints exactly the cells its hover preview shows [display]")
+	TEST_CASE("every terrain brush paints exactly the vertices its hover preview shows [display]")
 	{
 		glob2test::HeadlessGlobals globals(displayOptions());
 		globals->settings.experiments.set(ExperimentId::IceTerrain, true);
@@ -110,7 +125,7 @@ TEST_SUITE("EditorTerrainPaint")
 				{
 					INFO("figure " << figure << " " << kind << " at " << centre.first << "," << centre.second);
 					MapEdit editor;
-					// Grass is painted over water so its own cells stand out.
+					// Grass is painted over water so its own vertices stand out.
 					blank(editor, std::string(kind) == "grass" ? WATER : GRASS);
 					TerrainType type = GRASS;
 					if (std::string(kind) == "sand") type = SAND;
@@ -118,49 +133,47 @@ TEST_SUITE("EditorTerrainPaint")
 					else if (std::string(kind) == "catalogue") type = ICE;
 					else if (std::string(kind) == "custom") type = importCustom(editor);
 					select(editor, type);
+					CHECK(editor.brushOnVertices());
 					CHECK(editor.brush.getType() == BrushTool::MODE_ADD);
 					CHECK(editor.brush.addRemoveEnabled);
 					editor.brush.setFigure(figure);
 					const auto preview = hoverPreview(editor, centre.first, centre.second);
-					const auto figureCells = BrushCoverage::stamp(figure, centre, centre);
-					// Only a corner terrain fills the gaps of the checkerboard figures.
-					const bool legacy = type == GRASS || type == SAND || type == WATER;
-					CHECK(std::set<Cell>(preview.begin(), preview.end()) ==
-						  (legacy ? BrushCoverage::cornerClosure(figureCells) : figureCells));
+					CHECK(std::set<Cell>(preview.begin(), preview.end()) == BrushCoverage::stamp(figure, centre, centre));
 					editor.performAction("terrain drag start");
 					editor.performAction("terrain drag end");
-					CHECK(cellsOf(editor, type) == wrappedSet(preview));
+					CHECK(verticesOf(editor, type) == wrappedSet(preview));
 					CHECK(editor.hasMapBeenModified);
 				}
 	}
 
-	TEST_CASE("a corner terrain stroke leaves neighbouring authored cells and their contents [display]")
+	TEST_CASE("the smallest brush paints one vertex and lays a beach around water [display]")
 	{
 		glob2test::HeadlessGlobals globals(displayOptions());
 		MapEdit editor;
 		blank(editor);
 		auto &map = editor.game.map;
-		// Authored whole-cell materials beside, below and diagonal to the stroke.
-		for (const Cell cell : {Cell{17, 16}, Cell{16, 17}, Cell{17, 17}, Cell{15, 15}})
-			map.setCellTerrain(cell.first, cell.second, HEDGE);
-		map.setCellTerrain(14, 16, ICE);
-		for (const auto type : {WATER, SAND, GRASS})
-		{
-			INFO(int(type));
-			select(editor, type);
-			editor.brush.setFigure(0);
-			stroke(editor, 16, 16);
-			CHECK(map.terrainTypeAt(16, 16) == type);
-			for (const Cell cell : {Cell{17, 16}, Cell{16, 17}, Cell{17, 17}, Cell{15, 15}})
-				CHECK(map.terrainTypeAt(cell.first, cell.second) == HEDGE);
-			CHECK(map.terrainTypeAt(14, 16) == ICE);
-		}
-		// Painting over an authored cell replaces it, and only it.
+		// Authored terrain two vertices away is out of the beach's reach.
+		map.setVertexTerrain(18, 16, HEDGE);
+		map.setVertexTerrain(14, 16, ICE);
 		select(editor, WATER);
-		stroke(editor, 17, 16);
-		CHECK(map.terrainTypeAt(17, 16) == WATER);
-		CHECK(map.terrainTypeAt(17, 17) == HEDGE);
-		CHECK(map.terrainTypeAt(16, 17) == HEDGE);
+		editor.brush.setFigure(0);
+		vertexStroke(editor, 16, 16);
+		CHECK(map.vertexTerrainAt(16, 16) == WATER);
+		for (int y = 15; y <= 17; ++y)
+			for (int x = 15; x <= 17; ++x)
+				if (x != 16 || y != 16)
+					CHECK(map.vertexTerrainAt(x, y) == SAND);
+		CHECK(map.vertexTerrainAt(18, 16) == HEDGE);
+		CHECK(map.vertexTerrainAt(14, 16) == ICE);
+		CHECK(map.vertexTerrainAt(16, 18) == GRASS);
+		// One vertex reaches the four cells around it.
+		CHECK(map.cellCorners(15, 15) == std::array{SAND, SAND, SAND, WATER});
+		CHECK(map.terrainTypeAt(16, 16) == MIXED_TERRAIN);
+		// Sand needs no beach, and painting over authored terrain replaces just it.
+		select(editor, SAND);
+		vertexStroke(editor, 18, 16);
+		CHECK(map.vertexTerrainAt(18, 16) == SAND);
+		CHECK(map.vertexTerrainAt(19, 16) == GRASS);
 	}
 
 	TEST_CASE("terrain strokes remove only what the new terrain disallows [display]")
@@ -193,7 +206,7 @@ TEST_SUITE("EditorTerrainPaint")
 		select(editor, GRASS);
 		editor.brush.setFigure(7);
 		for (const Cell at : {Cell{16, 16}, Cell{14, 14}, Cell{18, 18}})
-			stroke(editor, at.first, at.second);
+			vertexStroke(editor, at.first, at.second);
 		CHECK(game.teams[0]->myBuildings[Building::GIDtoID(buildingGid)] != nullptr);
 		CHECK(game.teams[0]->myUnits[Unit::GIDtoID(workerGid)] != nullptr);
 		CHECK(game.teams[0]->myUnits[Unit::GIDtoID(explorerGid)] != nullptr);
@@ -204,21 +217,23 @@ TEST_SUITE("EditorTerrainPaint")
 		CHECK(wheatAfter == wheatBefore);
 
 		// Water removes wheat and the walker it floods, but not algae or the flyer.
-		for (int y = 24; y <= 28; ++y)
-			for (int x = 24; x <= 28; ++x)
-				map.paintLegacyCells({{x, y}}, WATER);
+		std::vector<Cell> pond;
+		for (int y = 24; y <= 29; ++y)
+			for (int x = 24; x <= 29; ++x)
+				pond.push_back({x, y});
+		map.paintVertices(pond, WATER);
 		REQUIRE(map.isResourceAllowed(26, 26, ALGA));
 		map.setResourceByIndex(26, 26, ALGA, 1);
 		select(editor, WATER);
 		editor.brush.setFigure(7);
-		stroke(editor, 18, 18);
-		stroke(editor, 13, 18);
-		stroke(editor, 26, 26);
+		vertexStroke(editor, 18, 18);
+		vertexStroke(editor, 13, 18);
+		vertexStroke(editor, 26, 26);
 		CHECK(map.getResource(18, 18).type == NO_RES_TYPE);
 		CHECK(map.getResource(26, 26).type == ALGA);
 		CHECK(game.teams[0]->myUnits[Unit::GIDtoID(workerGid)] == nullptr);
 		CHECK(game.teams[0]->myUnits[Unit::GIDtoID(explorerGid)] != nullptr);
-		// The shore ring around the stroke loses the wheat it no longer allows.
+		// The beach around the stroke loses the wheat it no longer allows.
 		for (int y = 0; y < MapSide; ++y)
 			for (int x = 0; x < MapSide; ++x)
 				if (map.getResource(x, y).type != NO_RES_TYPE)
@@ -228,54 +243,43 @@ TEST_SUITE("EditorTerrainPaint")
 				}
 	}
 
-	TEST_CASE("Del reverts only cells of the selected terrain to grass [display]")
+	TEST_CASE("Del reverts only vertices of the selected terrain to grass [display]")
 	{
 		glob2test::HeadlessGlobals globals(displayOptions());
 		globals->settings.experiments.set(ExperimentId::IceTerrain, true);
 		MapEdit editor;
 		blank(editor);
 		auto &map = editor.game.map;
-		// A pond, an ice patch and a hedge, all under one 5x5 Del brush.
-		map.paintLegacyCells({{14, 14}, {15, 14}, {14, 15}, {15, 15}}, WATER);
-		map.setCellTerrain(17, 17, ICE);
-		map.setCellTerrain(18, 17, ICE);
-		map.setCellTerrain(17, 18, HEDGE);
-		const auto before = cellsOf(editor, GRASS);
+		// A pond, an ice patch and a hedge, all under one Del brush.
+		map.paintVertices({{14, 14}, {15, 14}, {16, 14}, {14, 15}, {15, 15}, {16, 15}, {14, 16}, {15, 16}, {16, 16}}, WATER);
+		map.setVertexTerrain(17, 17, ICE);
+		map.setVertexTerrain(18, 17, ICE);
+		map.setVertexTerrain(17, 18, HEDGE);
 
 		select(editor, ICE);
 		editor.brush.setFigure(7);
 		editor.brush.mode = BrushTool::MODE_DEL;
-		stroke(editor, 17, 17);
-		CHECK(map.terrainTypeAt(17, 17) == GRASS);
-		CHECK(map.terrainTypeAt(18, 17) == GRASS);
-		CHECK(map.terrainTypeAt(17, 18) == HEDGE);
-		CHECK(map.terrainTypeAt(14, 14) == WATER);
+		vertexStroke(editor, 17, 17);
+		CHECK(map.vertexTerrainAt(17, 17) == GRASS);
+		CHECK(map.vertexTerrainAt(18, 17) == GRASS);
+		CHECK(map.vertexTerrainAt(17, 18) == HEDGE);
+		CHECK(map.vertexTerrainAt(15, 15) == WATER);
 
-		// Water Del clears the pond and its sand shore; the hedge stays.
-		// A new selection starts in Add.
+		// Water Del clears the pond; the hedge stays. A new selection starts in Add.
 		select(editor, WATER);
 		CHECK(editor.brush.getType() == BrushTool::MODE_ADD);
 		editor.brush.mode = BrushTool::MODE_DEL;
-		stroke(editor, 15, 15);
-		for (int y = 12; y <= 18; ++y)
-			for (int x = 12; x <= 18; ++x)
-			{
-				INFO(x << "," << y);
-				if (x == 17 && y == 18)
-					CHECK(map.terrainTypeAt(x, y) == HEDGE);
-				else
-					CHECK(map.terrainTypeAt(x, y) != WATER);
-			}
-		CHECK(map.terrainTypeAt(15, 15) == GRASS);
-		CHECK(map.terrainTypeAt(14, 14) == GRASS);
-		CHECK(before.size() <= cellsOf(editor, GRASS).size());
+		vertexStroke(editor, 15, 15);
+		CHECK(verticesOf(editor, WATER).empty());
+		CHECK(map.vertexTerrainAt(17, 18) == HEDGE);
+		CHECK(map.vertexTerrainAt(15, 15) == GRASS);
 
 		// Del of grass changes nothing.
-		const auto grass = cellsOf(editor, GRASS);
+		const auto grass = verticesOf(editor, GRASS);
 		select(editor, GRASS);
 		editor.brush.mode = BrushTool::MODE_DEL;
-		stroke(editor, 3, 3);
-		CHECK(cellsOf(editor, GRASS) == grass);
+		vertexStroke(editor, 3, 3);
+		CHECK(verticesOf(editor, GRASS) == grass);
 	}
 
 	TEST_CASE("a resource stroke that places nothing explains where the resource grows [display]")
@@ -304,7 +308,7 @@ TEST_SUITE("EditorTerrainPaint")
 
 		// Wheat beside a pond places where it may, and a partly valid stroke stays quiet.
 		editor.showStatus("");
-		map.paintLegacyCells({{22, 22}}, WATER);
+		map.paintVertices({{22, 22}, {23, 22}, {22, 23}, {23, 23}}, WATER);
 		editor.performAction("select wheat");
 		editor.brush.setFigure(7);
 		const auto mixed = editor.terrainBrushCells(18, 18);
