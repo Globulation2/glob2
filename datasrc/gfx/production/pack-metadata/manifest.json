@@ -113206,6 +113206,102 @@
           "sha256": "3ab63b27973d7970dac461783ba1b6ef966b1c9db82b0a767f30dcebc8a1281b"
         }
       ]
+    },
+    {
+      "id": "resource-gold-ore0",
+      "width": 32,
+      "height": 32,
+      "scale": 4,
+      "recipe": "procedural resource painter v1: gold-ore",
+      "layers": [
+        {
+          "file": "resource-gold-ore0.png",
+          "role": "base",
+          "sha256": "763a864ce4cc846b11e9c769a11a53ec5326b0a361c75d9d879932cc37822f5b",
+          "source_sha256": "763a864ce4cc846b11e9c769a11a53ec5326b0a361c75d9d879932cc37822f5b",
+          "logical_width": 32,
+          "logical_height": 32,
+          "original_sha256": "adedf18038eba079205f2c010e65fb6ff9d464a31ea7b015bcd3ce1d0ff5d77e"
+        }
+      ],
+      "sources": [
+        {
+          "path": "tools/artwork/paint_resources.py",
+          "sha256": "965cf78f22555ddb88f1e21d1063a172de8c501dc35f3eff77259213cfda4e1f"
+        }
+      ]
+    },
+    {
+      "id": "resource-iron-ore0",
+      "width": 32,
+      "height": 32,
+      "scale": 4,
+      "recipe": "procedural resource painter v1: iron-ore",
+      "layers": [
+        {
+          "file": "resource-iron-ore0.png",
+          "role": "base",
+          "sha256": "1a2ddb6a250261c94bf59abbb9f2f68003b98dcac5baf8635afc1f2ca9e15601",
+          "source_sha256": "1a2ddb6a250261c94bf59abbb9f2f68003b98dcac5baf8635afc1f2ca9e15601",
+          "logical_width": 32,
+          "logical_height": 32,
+          "original_sha256": "edbb3c91279f1c4d13b34136cfbde72e28407be8ec5ff72785ebac3363c69398"
+        }
+      ],
+      "sources": [
+        {
+          "path": "tools/artwork/paint_resources.py",
+          "sha256": "965cf78f22555ddb88f1e21d1063a172de8c501dc35f3eff77259213cfda4e1f"
+        }
+      ]
+    },
+    {
+      "id": "resource-silica0",
+      "width": 32,
+      "height": 32,
+      "scale": 4,
+      "recipe": "procedural resource painter v1: silica",
+      "layers": [
+        {
+          "file": "resource-silica0.png",
+          "role": "base",
+          "sha256": "1cea41a0e1267335b161c506773fb464b7acc6060505592960014a0bcdf17482",
+          "source_sha256": "1cea41a0e1267335b161c506773fb464b7acc6060505592960014a0bcdf17482",
+          "logical_width": 32,
+          "logical_height": 32,
+          "original_sha256": "7cb5b7e0a4d2ed303801e5a3c019bc766c52a0a1c7cf395e2e71216013615c3e"
+        }
+      ],
+      "sources": [
+        {
+          "path": "tools/artwork/paint_resources.py",
+          "sha256": "965cf78f22555ddb88f1e21d1063a172de8c501dc35f3eff77259213cfda4e1f"
+        }
+      ]
+    },
+    {
+      "id": "resource-cotton0",
+      "width": 32,
+      "height": 32,
+      "scale": 4,
+      "recipe": "procedural resource painter v1: cotton",
+      "layers": [
+        {
+          "file": "resource-cotton0.png",
+          "role": "base",
+          "sha256": "39215c84af822cfc7a021e3314809fb3dd8357db3c1bf8e0c65707fa66b26a42",
+          "source_sha256": "39215c84af822cfc7a021e3314809fb3dd8357db3c1bf8e0c65707fa66b26a42",
+          "logical_width": 32,
+          "logical_height": 32,
+          "original_sha256": "24c1fa63f893d46ffd0a72a55bee5c051d9cae6bb06f7a44120c6bebfaf77aa4"
+        }
+      ],
+      "sources": [
+        {
+          "path": "tools/artwork/paint_resources.py",
+          "sha256": "965cf78f22555ddb88f1e21d1063a172de8c501dc35f3eff77259213cfda4e1f"
+        }
+      ]
     }
   ],
   "terrain_atlas": {

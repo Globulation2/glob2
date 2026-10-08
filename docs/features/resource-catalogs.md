@@ -160,8 +160,10 @@ the normal asset system. Themed set sheets use map-owned artwork bundles instead
 so transferring those maps includes their custom sprite files.
 Missing installed artwork referenced by manually imported legacy definitions uses
 the visible magenta fallback. A missing spritesheet belonging to a credited set
-bundle is rejected during import or load. The generated foundation
-artwork and provenance are recorded in `datasrc/gfx/resources/manifest.json`.
+bundle is rejected during import or load. The gold ore, iron ore, silica and
+cotton deposit sprites and their HD frames are painted by
+`tools/artwork/paint_resources.py`; the material icons are generated artwork. Both
+are recorded in `datasrc/gfx/resources/manifest.json`.
 
 Save format 140 embeds resolved resource definitions, material stocks and required
 experiment metadata. Startup permits an unavailable or malformed default resource catalog so embedded

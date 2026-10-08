@@ -2936,3 +2936,7 @@ terrain-decor56 64 64 4 terrain-decor56.png -
 terrain-decor57 64 64 4 terrain-decor57.png -
 terrain-decor58 64 64 4 terrain-decor58.png -
 terrain-decor59 64 64 4 terrain-decor59.png -
+resource-gold-ore0 32 32 4 resource-gold-ore0.png -
+resource-iron-ore0 32 32 4 resource-iron-ore0.png -
+resource-silica0 32 32 4 resource-silica0.png -
+resource-cotton0 32 32 4 resource-cotton0.png -
