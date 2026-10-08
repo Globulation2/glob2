@@ -276,7 +276,7 @@ it('persists revision settings through a reload and resets the parent when size 
   fireEvent.change(screen.getByLabelText('Players'), { target: { value: '6' } });
   expect(screen.queryByText(/Editing version 1/)).toBeNull();
 });
-it('shows the separate landing without credits while explicit project links retain maps', async () => {
+it('keeps saved maps accessible without credits and opens credits without losing the prompt', async () => {
   available = 0;
   const view = render(<MapStudio />);
   await screen.findByRole('textbox', { name: 'Describe your map or discuss changes' });
@@ -290,6 +290,15 @@ it('shows the separate landing without credits while explicit project links reta
   expect(
     screen.getByRole('button', { name: 'Send' }).getAttribute('aria-disabled') === 'true',
   ).toBe(true);
+  HTMLDialogElement.prototype.showModal = function () {
+    this.open = true;
+  };
+  const prompt = screen.getByRole('textbox', { name: 'Describe your map or discuss changes' });
+  fireEvent.change(prompt, { target: { value: 'Make the map greener.' } });
+  fireEvent.keyDown(prompt, { key: 'Enter' });
+  expect(screen.getByRole('dialog', { name: 'Map credits' })).toBeTruthy();
+  expect((prompt as HTMLTextAreaElement).value).toBe('Make the map greener.');
+  expect(writes).toEqual([]);
 });
 it('recovers an active last-credit project on the entry page', async () => {
   available = 0;

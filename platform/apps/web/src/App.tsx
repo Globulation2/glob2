@@ -363,13 +363,24 @@ function Layout() {
   const home = section === 'home';
   const studio = section === 'skins' || !!found?.route.workspace;
   const main = useRef<HTMLElement>(null);
-  const [navigationCollapsed, setNavigationCollapsed] = useState(
-    () => studioLocal.getItem('studio-navigation') !== 'expanded',
-  );
-  const collapsed = studio ? navigationCollapsed : false;
+  const navigationKey = `studio-navigation:${account?.id ?? 'anonymous'}`;
+  const [navigationPreference, setNavigationPreference] = useState(() => ({
+    key: navigationKey,
+    collapsed: studioLocal.getItem(navigationKey) !== 'expanded',
+  }));
+  if (navigationPreference.key !== navigationKey)
+    setNavigationPreference({
+      key: navigationKey,
+      collapsed: studioLocal.getItem(navigationKey) !== 'expanded',
+    });
+  const collapsed =
+    studio &&
+    (navigationPreference.key === navigationKey
+      ? navigationPreference.collapsed
+      : studioLocal.getItem(navigationKey) !== 'expanded');
   const setCollapsed = (value: boolean) => {
-    setNavigationCollapsed(value);
-    studioLocal.setItem('studio-navigation', value ? 'collapsed' : 'expanded');
+    setNavigationPreference({ key: navigationKey, collapsed: value });
+    studioLocal.setItem(navigationKey, value ? 'collapsed' : 'expanded');
   };
   const drawer = useRef<HTMLDialogElement>(null);
   const [drawerOpen, setDrawerOpen] = useState(false);
@@ -380,15 +391,10 @@ function Layout() {
   useEffect(() => {
     if (typeof window.matchMedia !== 'function') return;
     const close = () => drawer.current?.close();
-    const expanded = window.matchMedia('(min-width: 1100px)');
-    const mobile = window.matchMedia('(max-width: 899px)');
-    expanded.addEventListener('change', close);
-    mobile.addEventListener('change', close);
-    return () => {
-      expanded.removeEventListener('change', close);
-      mobile.removeEventListener('change', close);
-    };
-  }, []);
+    const rail = window.matchMedia(studio ? '(min-width: 600px)' : '(min-width: 900px)');
+    rail.addEventListener('change', close);
+    return () => rail.removeEventListener('change', close);
+  }, [studio]);
   useEffect(() => {
     if (drawer.current?.open) drawer.current.close();
   }, [location.path]);

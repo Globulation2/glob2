@@ -129,6 +129,66 @@ test('conversation and canvas fit desktop and phone', async ({ page, request }, 
   ).toBeLessThanOrEqual(110);
   const versionsTab = page.getByRole('tab', { name: /^Preview/ }).first();
   if (await versionsTab.isVisible()) await versionsTab.click();
+  if (info.project.name === 'phone') {
+    const chat = page.getByRole('tab', { name: 'Chat', exact: true }).first();
+    const preview = page.getByRole('tab', { name: 'Preview', exact: true }).first();
+    await preview.focus();
+    await page.keyboard.press('ArrowLeft');
+    await expect(chat).toBeFocused();
+    await expect(preview).toHaveAttribute('aria-selected', 'true');
+    await page.keyboard.press('Space');
+    await expect(chat).toHaveAttribute('aria-selected', 'true');
+    await expect(page.locator('.studio-artifact')).toBeHidden();
+    await page.keyboard.press('ArrowRight');
+    await page.keyboard.press('Enter');
+    await expect(preview).toHaveAttribute('aria-selected', 'true');
+    await expect(page.locator('.studio-conversation')).toBeHidden();
+  }
+  if (info.project.name === 'desktop') {
+    const separator = page.getByRole('separator', { name: 'Resize conversation' });
+    await separator.focus();
+    await page.keyboard.press('End');
+    await expect(separator).toHaveAttribute(
+      'aria-valuenow',
+      (await separator.getAttribute('aria-valuemax')) ?? '',
+    );
+    await page.locator('.studio-width > summary').click();
+    await page.getByRole('button', { name: 'Reset · 40% chat' }).click();
+    await page.locator('.studio-width > summary').click();
+    const compare = page.getByLabel('Compare with version');
+    await compare.focus();
+    await page.setViewportSize({ width: 700, height: 720 });
+    await expect(page.getByRole('tab', { name: 'Preview', exact: true }).first()).toHaveAttribute(
+      'aria-selected',
+      'true',
+    );
+    await expect(compare).toBeVisible();
+    await expect(compare).toBeFocused();
+    await page.setViewportSize({ width: 1280, height: 860 });
+    const prompt = page.getByRole('textbox', { name: 'Describe your map or discuss changes' });
+    await prompt.focus();
+    await page.setViewportSize({ width: 700, height: 720 });
+    await expect(page.getByRole('tab', { name: 'Chat', exact: true }).first()).toHaveAttribute(
+      'aria-selected',
+      'true',
+    );
+    await expect(prompt).toBeVisible();
+    await expect(prompt).toBeFocused();
+    await page.setViewportSize({ width: 1280, height: 860 });
+  }
+  const credits = page.getByRole('button', { name: /Map credits/ });
+  await credits.click();
+  const creditDialog = page.getByRole('dialog');
+  await expect(creditDialog).toBeVisible();
+  for (let step = 0; step < 5; step++) {
+    await page.keyboard.press('Tab');
+    await expect
+      .poll(() => creditDialog.evaluate((dialog) => dialog.contains(document.activeElement)))
+      .toBe(true);
+  }
+  await page.keyboard.press('Escape');
+  await expect(creditDialog).toBeHidden();
+  await expect(credits).toBeFocused();
   const screenshotDir = process.env['SCREENSHOT_DIR'];
   if (screenshotDir && info.project.name === 'desktop') {
     mkdirSync(screenshotDir, { recursive: true });
@@ -215,7 +275,12 @@ test('conversation and canvas fit desktop and phone', async ({ page, request }, 
     .getByRole('textbox', { name: 'Describe your map or discuss changes' })
     .fill('Add a second walking bridge.');
   await expect(page.getByRole('button', { name: 'Send' })).toBeEnabled();
-  await page.getByRole('button', { name: 'Send' }).click();
+  const prompt = page.getByRole('textbox', { name: 'Describe your map or discuss changes' });
+  await prompt.press('Shift+Enter');
+  expect(writes).toHaveLength(0);
+  await expect(prompt).toHaveValue('Add a second walking bridge.\n');
+  await prompt.fill('Add a second walking bridge.');
+  await prompt.press('Enter');
   await expect.poll(() => writes.length).toBe(1);
   expect(writes[0]).toMatchObject({
     text: 'Add a second walking bridge.',

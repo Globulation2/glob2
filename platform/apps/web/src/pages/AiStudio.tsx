@@ -1,3 +1,4 @@
+import { projectConversation } from './aiStudio/conversation.ts';
 import {
   StudioShell,
   StudioHeader,
@@ -111,7 +112,12 @@ function AiWorkspace({ id }: { id?: string }) {
     if (!known.current) throw Error('Project has not loaded.');
     return known.current.revision;
   };
-  const active = project?.requests.find((r) => r.status === 'queued' || r.status === 'running');
+  const {
+    messages: conversation,
+    terminal,
+    pending,
+  } = projectConversation(project?.requests ?? []);
+  const active = pending?.status === 'uncertain' ? undefined : pending;
   const locked = busy || !!active || conflict;
   const loadWallet = useCallback(async () => {
     const w = await request<AiStudioAccount>('GET', ROOT + '/account');
@@ -222,7 +228,9 @@ function AiWorkspace({ id }: { id?: string }) {
           if (stopped) return;
           if (
             v.events.length ||
-            known.current?.requests.some((r) => ['queued', 'running'].includes(r.status))
+            known.current?.requests.some((r) =>
+              ['queued', 'running', 'uncertain'].includes(r.status),
+            )
           ) {
             await refresh();
             await loadWallet();
@@ -469,6 +477,9 @@ function AiWorkspace({ id }: { id?: string }) {
                   ? 'An available Colony AI credit is needed.'
                   : undefined
           }
+          onBlocked={
+            !busy && wallet?.enabled && !wallet.available ? () => setCreditsOpen(true) : undefined
+          }
           pricing={`Coding requests use up to ${budget} Colony AI credits. Manual editing and local playtests are free.`}
           projects={
             <>
@@ -616,10 +627,43 @@ function AiWorkspace({ id }: { id?: string }) {
               )}
             <StudioWorkspace
               focusChat={focusChat}
-              attention={active ? 'Working' : undefined}
+              attention={
+                pending?.status === 'uncertain'
+                  ? 'Needs reconciliation'
+                  : pending
+                    ? 'Working'
+                    : undefined
+              }
+              result={
+                !pending && terminal
+                  ? {
+                      id: `${terminal.id}:${terminal.status}`,
+                      status: terminal.status === 'completed' ? 'ready' : 'failed',
+                      text:
+                        terminal.status === 'completed'
+                          ? 'Colony AI response ready in Preview.'
+                          : 'Colony AI request needs attention in Preview.',
+                    }
+                  : undefined
+              }
               conversation={
                 <section className="as-chat" aria-label="AI coding conversation">
-                  <ConversationPane label="AI coding conversation" count={project.requests.length}>
+                  <ConversationPane
+                    label="AI coding conversation"
+                    count={project.requests.length}
+                    firstMessageId={conversation[0]?.id}
+                    completion={
+                      terminal
+                        ? {
+                            id: `${terminal.id}:${terminal.status}`,
+                            text:
+                              terminal.status === 'completed'
+                                ? 'AI response ready.'
+                                : 'AI request needs attention.',
+                          }
+                        : undefined
+                    }
+                  >
                     {project.requests.length === 0 && (
                       <div className="as-welcome">
                         <h2>What kind of colony will you build?</h2>
@@ -629,7 +673,7 @@ function AiWorkspace({ id }: { id?: string }) {
                         <p>The assistant edits your file. You decide when to test.</p>
                       </div>
                     )}
-                    {project.requests.map((r) => (
+                    {conversation.map((r) => (
                       <article key={r.id}>
                         <p className="as-user">{r.prompt}</p>
                         {r.diagnostics && (
@@ -663,17 +707,24 @@ function AiWorkspace({ id }: { id?: string }) {
                     placeholder="Make my colony more defensive…"
                     target={`Editing saved revision ${project.revision}`}
                     disabledReason={
-                      locked
-                        ? 'Finish active work or resolve the revision conflict first.'
-                        : !wallet?.enabled
-                          ? 'Generation is unavailable.'
-                          : !wallet.available
-                            ? 'An available Colony AI credit is needed.'
-                            : !Number.isInteger(budget) ||
-                                budget < 1 ||
-                                budget > wallet.maxRequestCredits
-                              ? 'Choose a valid request cap.'
-                              : undefined
+                      pending?.status === 'uncertain'
+                        ? 'The provider outcome needs reconciliation. Your reserved Colony AI credits remain held; new requests are paused. Manual editing and export remain available.'
+                        : locked
+                          ? 'Finish active work or resolve the revision conflict first.'
+                          : !wallet?.enabled
+                            ? 'Generation is unavailable.'
+                            : !wallet.available
+                              ? 'An available Colony AI credit is needed.'
+                              : !Number.isInteger(budget) ||
+                                  budget < 1 ||
+                                  budget > wallet.maxRequestCredits
+                                ? 'Choose a valid request cap.'
+                                : undefined
+                    }
+                    onBlocked={
+                      !locked && !pending && wallet?.enabled && !wallet.available
+                        ? () => setCreditsOpen(true)
+                        : undefined
                     }
                     pricing={`Coding requests use up to ${budget} Colony AI credits. Source acceptance does not mean engine checks passed.`}
                     tools={
@@ -699,9 +750,11 @@ function AiWorkspace({ id }: { id?: string }) {
                       </>
                     }
                   />
-                  {active && (
+                  {pending && (
                     <button
+                      aria-disabled={pending.status === 'uncertain'}
                       onClick={() =>
+                        pending.status !== 'uncertain' &&
                         void action(async () => {
                           await request('POST', url + '/stop');
                           await refresh();
@@ -710,6 +763,12 @@ function AiWorkspace({ id }: { id?: string }) {
                     >
                       Stop request
                     </button>
+                  )}
+                  {pending?.status === 'uncertain' && (
+                    <p role="status">
+                      Cancellation is unavailable while the provider outcome and reserved credits
+                      are reconciled. You can keep editing the saved source or export it.
+                    </p>
                   )}
                 </section>
               }
@@ -774,6 +833,11 @@ function AiWorkspace({ id }: { id?: string }) {
                   </div>
                   <StudioTabs
                     label="Workspace view"
+                    panels={{
+                      code: 'studio-panel-workspace-view-code',
+                      changes: 'studio-panel-workspace-view-changes',
+                      playtest: 'studio-panel-workspace-view-playtest',
+                    }}
                     value={tab}
                     onChange={(next) => {
                       setTab(next as typeof tab);

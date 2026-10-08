@@ -106,6 +106,15 @@ it('preserves concurrent manual edits, then restores a candidate with compare-an
     studio.adopt(f.account, f.thread, f.row.id, f.input.expectedRevision, f.delivery.archive),
   ).rejects.toThrow('changed');
   await studio.adopt(f.account, f.thread, f.row.id, manual, f.delivery.archive);
+  const adopted = await database.db
+    .selectFrom('building_drafts')
+    .select('revision')
+    .where('id', '=', f.draftId)
+    .executeTakeFirstOrThrow();
+  expect((await studio.get(f.account, f.thread)).revisions[0]?.appliedRevision).toBe(
+    adopted.revision,
+  );
+  expect(adopted.revision).not.toBe(manual);
   expect((await studio.credits.balance(f.account)).balance).toBe(2);
 });
 it('keeps discussion free and refunds failed builds', async () => {

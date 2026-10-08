@@ -507,3 +507,21 @@
   font-size: 17px;
   margin: 0;
 }
+
+.studio-announcement {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+.studio-header a {
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+}
+.studio-page button,
+.studio-dialog button {
+  min-width: 44px;
+}

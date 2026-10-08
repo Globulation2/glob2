@@ -125,6 +125,7 @@ test('studio edits, restores, explicitly checks, watches a pinned revision and p
           error: null,
           charged: 1,
         },
+        ...requests,
       ];
       return r.fulfill({ json: { accepted: true } });
     }
@@ -328,6 +329,49 @@ test('studio edits, restores, explicitly checks, watches a pinned revision and p
   page.once('dialog', (d) => d.accept());
   await page.getByRole('button', { name: 'Undo revision', exact: true }).click();
   await expect(page.getByText(`Saved · revision ${restoredRevision}`).first()).toBeVisible();
+  // Detail snapshots use the API's descending request order. An uncertain newest
+  // request must not expose the older completed result as ready or send another call.
+  requests.unshift({
+    id: 'uncertain-latest',
+    base_revision: revision,
+    prompt: 'A pending provider request',
+    diagnostics: '',
+    budget: 100,
+    status: 'uncertain',
+    response: '',
+    error: 'Provider delivery outcome is unknown.',
+    charged: null,
+  });
+  const stoppedRequests: string[] = [];
+  page.on('request', (request) => {
+    if (new URL(request.url()).pathname.endsWith('/stop')) stoppedRequests.push(request.url());
+  });
+  await page.reload();
+  await expect(
+    page.getByText(/Cancellation is unavailable while the provider outcome/),
+  ).toBeVisible();
+  const uncertainPrompt = page.getByRole('textbox', {
+    name: 'Describe a change or ask a question',
+  });
+  await uncertainPrompt.fill('A second paid request must wait.');
+  await uncertainPrompt.press('Enter');
+  await page.getByRole('button', { name: 'Send', exact: true }).click();
+  await expect(page.getByRole('button', { name: 'Stop request' })).toHaveAttribute(
+    'aria-disabled',
+    'true',
+  );
+  await page.getByRole('button', { name: 'Stop request' }).click();
+  expect(submissions).toHaveLength(3);
+  expect(stoppedRequests).toEqual([]);
+  if (info.project.name === 'phone')
+    await page
+      .getByRole('tab', { name: /Preview/ })
+      .first()
+      .click();
+  await expect(page.getByRole('button', { name: 'Download', exact: true })).toBeEnabled();
+  if (info.project.name === 'phone')
+    await expect(page.getByRole('textbox', { name: 'AI JavaScript source' })).toBeEditable();
+  requests.shift();
   enabled = false;
   await page.reload();
   await expect(

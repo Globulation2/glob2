@@ -272,6 +272,7 @@ function RegisteredStudio({ id, accountId }: { id?: string; accountId: string })
       setParent(v?.id);
       if (v?.input.settings) setSettings(v.input.settings);
     },
+    setParent,
   );
   return (
     <StudioShell className="map-studio ms-root ms-workspace-root">
@@ -360,6 +361,7 @@ function RegisteredStudio({ id, accountId }: { id?: string; accountId: string })
       ) : (
         <StudioWorkspace
           id={id}
+          openCredits={() => setCredits(true)}
           thread={thread}
           wallet={wallet}
           busy={busy || !!pending}

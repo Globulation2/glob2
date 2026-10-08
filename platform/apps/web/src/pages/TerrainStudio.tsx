@@ -100,6 +100,7 @@ function TerrainWorkspace({ id }: { id?: string }) {
     creation = useRef(creationId),
     serial = useRef(0);
   const pending = thread?.requests.findLast((r) => !['ready', 'failed'].includes(r.status));
+  const latestGeneration = thread?.requests.filter((r) => r.kind === 'generate').at(-1);
   const refresh = useCallback(
     async (signal?: AbortSignal) => {
       const ticket = ++serial.current;
@@ -240,7 +241,12 @@ function TerrainWorkspace({ id }: { id?: string }) {
     } else navigate('/terrain-studio/' + result.id);
   }
   async function send() {
-    if (!draft || !account || !id) return;
+    if (!draft || !account || !id || pending || dirty || !wallet?.enabled) return;
+    if (!wallet.available) {
+      setCreditsOpen(true);
+      return;
+    }
+    if (!submission.current && !text.trim()) return;
     const value = submission.current ?? {
       id: crypto.randomUUID(),
       text,
@@ -352,7 +358,10 @@ function TerrainWorkspace({ id }: { id?: string }) {
                   ? 'An available Terrain credit is needed to chat or build.'
                   : undefined
           }
-          pricing="Messages are free. Creation requests build automatically · 1 credit on delivery."
+          onBlocked={
+            !busy && wallet?.enabled && !wallet.available ? () => setCreditsOpen(true) : undefined
+          }
+          pricing="Discussion spends no credits; 1 available Terrain credit is required. Creation requests build automatically · 1 credit on delivery."
           projects={
             <nav aria-label="Terrain projects">
               {projects.map((p) => (
@@ -373,6 +382,20 @@ function TerrainWorkspace({ id }: { id?: string }) {
         <StudioWorkspace
           focusChat={focusChat}
           attention={pending ? 'Working' : undefined}
+          result={
+            !pending &&
+            latestGeneration &&
+            (latestGeneration.status === 'ready' || latestGeneration.status === 'failed')
+              ? {
+                  id: `${latestGeneration.id}:${latestGeneration.status}`,
+                  status: latestGeneration.status,
+                  text:
+                    latestGeneration.status === 'ready'
+                      ? 'Terrain creation ready in Preview.'
+                      : 'Terrain creation needs attention in Preview.',
+                }
+              : undefined
+          }
           conversation={
             <aside className="ts-chat">
               <h2>Design conversation</h2>
@@ -465,13 +488,7 @@ function TerrainWorkspace({ id }: { id?: string }) {
                 <button
                   className="primary"
                   disabled={
-                    busy ||
-                    !!pending ||
-                    dirty ||
-                    !wallet?.enabled ||
-                    !wallet.available ||
-                    !text.trim() ||
-                    !draft
+                    busy || !!pending || dirty || !wallet?.enabled || !text.trim() || !draft
                   }
                 >
                   <Icon name={retrying ? 'refresh' : 'send'} size={18} />{' '}
@@ -531,6 +548,12 @@ function TerrainWorkspace({ id }: { id?: string }) {
           }
           artifact={
             <>
+              {dirty && (
+                <p role="status">
+                  Save your manual terrain edits in Edit before generating, restoring a version, or
+                  undoing.
+                </p>
+              )}
               {undo.delivered !== undefined && (
                 <div className="studio-revisions" role="status">
                   <span>Generated edits applied to revision {undo.delivered}.</span>
@@ -558,6 +581,11 @@ function TerrainWorkspace({ id }: { id?: string }) {
               )}
               <StudioTabs
                 label="Artifact view"
+                panels={{
+                  preview: 'studio-panel-artifact-view-preview',
+                  edit: 'studio-panel-artifact-view-edit',
+                  history: 'studio-panel-artifact-view-history',
+                }}
                 value={view}
                 onChange={(next) => {
                   if (

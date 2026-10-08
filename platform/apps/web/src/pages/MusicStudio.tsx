@@ -258,6 +258,7 @@ function RegisteredStudio({ id, accountId }: { id?: string; accountId: string })
       setParent(v?.id);
       if (v?.input.settings) setSettings(v.input.settings);
     },
+    setParent,
   );
   return (
     <StudioShell className="music-studio ms-root ms-workspace-root">
@@ -366,6 +367,7 @@ function RegisteredStudio({ id, accountId }: { id?: string; accountId: string })
       ) : (
         <MusicWorkspace
           id={id}
+          openCredits={() => setCredits(true)}
           thread={thread}
           wallet={wallet}
           busy={busy || !!pending}
@@ -396,8 +398,8 @@ function RegisteredStudio({ id, accountId }: { id?: string; accountId: string })
         {release && (
           <>
             <p>
-              Publish this saved soundtrack to the public Music library. Only this version is
-              shared.
+              Publish saved soundtrack {release.release_id?.slice(0, 12)} to the public Music
+              library. Only this exact version is shared.
             </p>
             <p>
               License: {release.input.settings.license ?? 'CC-BY-4.0'} · AI composition is

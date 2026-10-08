@@ -1049,7 +1049,15 @@ export class BuildingAiStudio {
           readBuildingArchive(archive).package.namespace
       )
         throw new HiveError('conflict', 'Candidate archive does not match this draft.');
-      await this.apply(db, t.draftId, { archive, title: result.title }, thread);
+      const appliedRevision = await this.apply(
+        db,
+        t.draftId,
+        { archive, title: result.title },
+        thread,
+      );
+      await sql`UPDATE building_studio_requests SET checkpoints=checkpoints || ${JSON.stringify({ appliedRevision })}::jsonb WHERE id=${request}`.execute(
+        db,
+      );
       await sql`UPDATE building_studio_revisions SET applied=true WHERE request_id=${request}`.execute(
         db,
       );

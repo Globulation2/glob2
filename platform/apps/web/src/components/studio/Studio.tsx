@@ -66,12 +66,14 @@ export function StudioTabs({
   onChange,
   items,
   panels,
+  idPrefix,
 }: {
   label: string;
   value: string;
   onChange: (value: string) => void;
   items: { id: string; label: string; icon?: IconName }[];
   panels?: Record<string, string>;
+  idPrefix?: string;
 }) {
   const ref = useRef<HTMLDivElement>(null);
   return (
@@ -81,11 +83,8 @@ export function StudioTabs({
           key={item.id}
           type="button"
           role="tab"
-          id={`studio-tab-${label.toLowerCase().replaceAll(' ', '-')}-${item.id}`}
-          aria-controls={
-            panels?.[item.id] ??
-            `studio-panel-${label.toLowerCase().replaceAll(' ', '-')}-${item.id}`
-          }
+          id={`${idPrefix ?? `studio-tab-${label.toLowerCase().replaceAll(' ', '-')}`}-${item.id}`}
+          aria-controls={panels?.[item.id]}
           aria-selected={value === item.id}
           tabIndex={value === item.id ? 0 : -1}
           onClick={() => onChange(item.id)}
@@ -114,11 +113,13 @@ export function StudioWorkspace({
   artifact,
   attention,
   focusChat,
+  result,
 }: {
   conversation: ReactNode;
   artifact: ReactNode;
   attention?: string;
   focusChat?: number;
+  result?: { id: string; status: 'ready' | 'failed'; text?: string };
 }) {
   const { account } = useSession();
   const key = `studio-split:${account?.id ?? 'anonymous'}`;
@@ -127,13 +128,25 @@ export function StudioWorkspace({
     return Number.isFinite(n) ? Math.max(25, Math.min(65, n)) : 40;
   });
   const [pane, setPane] = useState('chat');
+  const [seenResult, setSeenResult] = useState(result?.id);
+  const [lastResult, setLastResult] = useState(result?.id);
+  const [resultAnnouncement, setResultAnnouncement] = useState<{ id: string; text: string }>();
   const [width, setWidth] = useState(() => window.innerWidth);
   const ref = useRef<HTMLDivElement>(null);
   const id = useId();
   useEffect(() => {
     const element = ref.current;
     if (!element) return;
-    const resize = () => setWidth(element.clientWidth || window.innerWidth);
+    const resize = () => {
+      const nextWidth = element.clientWidth || window.innerWidth;
+      // Keep the currently focused pane visible when zoom or navigation changes the layout.
+      if (nextWidth < 760) {
+        const focused = document.activeElement;
+        if (element.querySelector('.studio-artifact')?.contains(focused)) setPane('preview');
+        else if (element.querySelector('.studio-conversation')?.contains(focused)) setPane('chat');
+      }
+      setWidth(nextWidth);
+    };
     resize();
     if (typeof ResizeObserver === 'undefined') return;
     const observer = new ResizeObserver(resize);
@@ -151,6 +164,30 @@ export function StudioWorkspace({
     }
   }, [focusChat]);
   const narrow = width < 760;
+  if ((!narrow || pane === 'preview') && seenResult !== result?.id) {
+    setSeenResult(result?.id);
+  }
+  const resultAttention =
+    result && result.id !== seenResult && pane !== 'preview'
+      ? result.status === 'ready'
+        ? 'Ready'
+        : 'Needs attention'
+      : undefined;
+  const previewAttention = attention ?? resultAttention;
+  const resultId = result?.id,
+    resultStatus = result?.status,
+    resultText = result?.text;
+  if (resultId && resultId !== lastResult) {
+    setLastResult(resultId);
+    // The hidden conversation's live regions cannot announce on the Preview tab.
+    if (narrow && pane === 'preview')
+      setResultAnnouncement({
+        id: resultId,
+        text:
+          resultText ??
+          (resultStatus === 'ready' ? 'Creation ready.' : 'Creation needs attention.'),
+      });
+  }
   const minimum = width ? Math.max(25, (320 / width) * 100) : 25;
   const maximum = width ? Math.min(65, ((width - 368) / width) * 100) : 65;
   const actual = narrow ? split : Math.max(minimum, Math.min(maximum, split));
@@ -167,15 +204,23 @@ export function StudioWorkspace({
       data-pane={pane}
       style={{ '--studio-split': `${actual}%` } as CSSProperties}
     >
+      <span className="studio-announcement" role="status" aria-atomic="true">
+        {resultAnnouncement && <span key={resultAnnouncement.id}>{resultAnnouncement.text}</span>}
+      </span>
       {narrow && (
         <StudioTabs
           label="Studio view"
+          idPrefix={`${id}-view`}
           panels={{ chat: `${id}-chat`, preview: `${id}-artifact` }}
           value={pane}
           onChange={setPane}
           items={[
             { id: 'chat', label: 'Chat', icon: 'message' },
-            { id: 'preview', label: attention ? `Preview · ${attention}` : 'Preview', icon: 'eye' },
+            {
+              id: 'preview',
+              label: previewAttention ? `Preview · ${previewAttention}` : 'Preview',
+              icon: 'eye',
+            },
           ]}
         />
       )}
@@ -184,6 +229,7 @@ export function StudioWorkspace({
         className="studio-conversation"
         role={narrow ? 'tabpanel' : undefined}
         aria-label="Conversation"
+        aria-labelledby={narrow ? `${id}-view-chat` : undefined}
         hidden={narrow && pane !== 'chat'}
       >
         {conversation}
@@ -224,6 +270,7 @@ export function StudioWorkspace({
         className="studio-artifact"
         role={narrow ? 'tabpanel' : undefined}
         aria-label="Creation workspace"
+        aria-labelledby={narrow ? `${id}-view-preview` : undefined}
         hidden={narrow && pane !== 'preview'}
       >
         {!narrow && (
@@ -251,11 +298,13 @@ export function ConversationPane({
   label,
   count,
   firstMessageId,
+  completion,
 }: {
   children: ReactNode;
   label: string;
   count: number;
   firstMessageId?: string;
+  completion?: { id: string; text: string };
 }) {
   const ref = useRef<HTMLDivElement>(null),
     following = useRef(true),
@@ -265,18 +314,31 @@ export function ConversationPane({
       first: '',
     });
   const [unread, setUnread] = useState(false);
+  const announcedCompletion = useRef(completion?.id);
+  const [announcement, setAnnouncement] = useState<{ id: string; text: string }>();
   useEffect(() => {
     const box = ref.current;
     if (!box) return;
-    const first = firstMessageId ?? box.firstElementChild?.textContent ?? '';
+    const first = firstMessageId ?? '';
     if (previous.current.first && first !== previous.current.first)
       box.scrollTop = previous.current.top + box.scrollHeight - previous.current.height;
     else if (following.current) box.scrollTop = box.scrollHeight;
     else setUnread(true);
     previous.current = { first, height: box.scrollHeight, top: box.scrollTop };
-  }, [count, firstMessageId]);
+  }, [count, firstMessageId, completion?.id]);
+  const completionId = completion?.id,
+    completionText = completion?.text;
+  useEffect(() => {
+    if (completionId && completionId !== announcedCompletion.current) {
+      announcedCompletion.current = completionId;
+      setAnnouncement({ id: completionId, text: completionText ?? 'Response ready.' });
+    }
+  }, [completionId, completionText]);
   return (
     <div className="studio-log-wrap">
+      <span className="studio-announcement" role="status" aria-atomic="true">
+        {announcement && <span key={announcement.id}>{announcement.text}</span>}
+      </span>
       <div
         className="studio-log"
         ref={ref}
@@ -320,15 +382,25 @@ export function ChatInput({
   inputRef?: RefObject<HTMLTextAreaElement | null>;
   onSend: () => void;
 }) {
+  const ref = useRef<HTMLTextAreaElement | null>(null);
+  const grow = (input: HTMLTextAreaElement) => {
+    input.style.height = 'auto';
+    input.style.height = `${Math.min(150, input.scrollHeight)}px`;
+  };
+  useEffect(() => {
+    if (ref.current) grow(ref.current);
+  }, [props.value]);
   return (
     <textarea
       {...props}
-      ref={inputRef}
+      ref={(input) => {
+        ref.current = input;
+        if (inputRef) inputRef.current = input;
+      }}
       rows={2}
       onChange={(e) => {
         onChange?.(e);
-        e.currentTarget.style.height = 'auto';
-        e.currentTarget.style.height = `${Math.min(150, e.currentTarget.scrollHeight)}px`;
+        grow(e.currentTarget);
       }}
       onKeyDown={(e) => {
         onKeyDown?.(e);
@@ -353,6 +425,7 @@ export function ChatComposer({
   label,
   placeholder,
   disabledReason,
+  onBlocked,
   pricing,
   target,
   tools,
@@ -365,6 +438,7 @@ export function ChatComposer({
   label: string;
   placeholder?: string;
   disabledReason?: string;
+  onBlocked?: () => void;
   pricing: string;
   target?: string;
   tools?: ReactNode;
@@ -373,7 +447,11 @@ export function ChatComposer({
 }) {
   const id = useId();
   const send = () => {
-    if (value.trim() && !disabledReason) onSend();
+    if (disabledReason) {
+      onBlocked?.();
+      return;
+    }
+    if (value.trim()) onSend();
   };
   return (
     <form
@@ -413,8 +491,12 @@ export function ChatComposer({
         <button
           className="primary"
           aria-disabled={!!disabledReason || !value.trim()}
+          aria-describedby={`${id}-help`}
           onClick={(e) => {
-            if (disabledReason || !value.trim()) e.preventDefault();
+            if (disabledReason || !value.trim()) {
+              e.preventDefault();
+              if (disabledReason) onBlocked?.();
+            }
           }}
         >
           <Icon name="send" size={18} /> Send
@@ -510,6 +592,35 @@ export function ReleaseDialog({
       className="studio-dialog"
       ref={ref}
       aria-labelledby={id}
+      tabIndex={-1}
+      onKeyDown={(event) => {
+        if (event.key !== 'Tab') return;
+        const dialog = event.currentTarget;
+        const stops = Array.from(
+          dialog.querySelectorAll<HTMLElement>(
+            'a[href], button, input, select, textarea, summary, [tabindex]',
+          ),
+        ).filter(
+          (element) =>
+            element.tabIndex >= 0 &&
+            !element.matches(':disabled') &&
+            !element.closest('[hidden], [inert]') &&
+            element.getClientRects().length > 0 &&
+            getComputedStyle(element).visibility !== 'hidden',
+        );
+        const first = stops[0],
+          last = stops.at(-1);
+        const active = document.activeElement;
+        if (
+          !first ||
+          (event.shiftKey ? active === first : active === last) ||
+          !stops.some((element) => element === active)
+        ) {
+          event.preventDefault();
+          (event.shiftKey ? last : first)?.focus();
+          if (!first) dialog.focus();
+        }
+      }}
       onCancel={onClose}
       onClose={() => {
         onClose();
@@ -560,6 +671,7 @@ export function NewStudio({
   onChange,
   onSend,
   disabledReason,
+  onBlocked,
   pricing,
   projects,
   tools,
@@ -569,6 +681,7 @@ export function NewStudio({
   onChange: (value: string) => void;
   onSend: () => void;
   disabledReason?: string;
+  onBlocked?: () => void;
   pricing: string;
   projects: ReactNode;
   tools?: ReactNode;
@@ -592,6 +705,7 @@ export function NewStudio({
             onSend={onSend}
             label="Your first idea"
             disabledReason={disabledReason}
+            onBlocked={onBlocked}
             pricing={pricing}
             tools={tools}
           />

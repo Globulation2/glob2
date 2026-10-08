@@ -389,3 +389,31 @@ it('ignores a stale release response after switching versions', async () => {
   );
   await waitFor(() => expect(screen.getByTestId('music-player').textContent).toContain('music1'));
 });
+
+it.each(['click', 'Enter'])(
+  'opens Music credits on zero-balance %s and retains the prompt',
+  (method) => {
+    const openCredits = vi.fn();
+    const send = vi.fn();
+    render(
+      <MusicWorkspace
+        {...props}
+        wallet={{ ...props.wallet, available: 0 }}
+        draft="Make this melody calmer."
+        send={send}
+        openCredits={openCredits}
+      />,
+    );
+    if (method === 'click') fireEvent.click(screen.getByRole('button', { name: /^Send$/ }));
+    else
+      fireEvent.keyDown(screen.getByRole('textbox', { name: 'Your idea or next change' }), {
+        key: 'Enter',
+      });
+    expect(openCredits).toHaveBeenCalledOnce();
+    expect(send).not.toHaveBeenCalled();
+    expect(
+      (screen.getByRole('textbox', { name: 'Your idea or next change' }) as HTMLTextAreaElement)
+        .value,
+    ).toBe('Make this melody calmer.');
+  },
+);

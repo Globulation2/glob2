@@ -78,6 +78,7 @@ function BuildingWorkspace({ id }: { id?: string }) {
   const { wallet, projects, thread, draft, progress, loading, loadError, connection, refresh } =
     useStudioSnapshot(account?.id, id, reconcileSubmission);
   const pending = thread?.requests.findLast((r) => !['ready', 'failed'].includes(r.status));
+  const latestGeneration = thread?.requests.filter((r) => r.kind === 'generate').at(-1);
   useEffect(() => {
     if (!account || !id) return;
     const key = `ai-building-studio-turn:${account.id}:${id}`;
@@ -150,7 +151,12 @@ function BuildingWorkspace({ id }: { id?: string }) {
     } else navigate('/ai-building-studio/' + result.id);
   }
   async function send() {
-    if (!draft || !account || !id) return;
+    if (!draft || !account || !id || pending || manualDirty || !wallet?.enabled) return;
+    if (!wallet.available) {
+      setCreditsOpen(true);
+      return;
+    }
+    if (!submission.current && !text.trim()) return;
     const value = submission.current ?? {
       id: crypto.randomUUID(),
       text,
@@ -274,7 +280,10 @@ function BuildingWorkspace({ id }: { id?: string }) {
                   ? 'An available Building credit is needed to chat or build.'
                   : undefined
           }
-          pricing="Messages are free. Creation requests build automatically · 1 credit on delivery."
+          onBlocked={
+            !busy && wallet?.enabled && !wallet.available ? () => setCreditsOpen(true) : undefined
+          }
+          pricing="Discussion spends no credits; 1 available Building credit is required. Creation requests build automatically · 1 credit on delivery."
           projects={
             <nav aria-label="Building projects">
               {projects.map((p) => (
@@ -295,6 +304,20 @@ function BuildingWorkspace({ id }: { id?: string }) {
         <StudioWorkspace
           focusChat={focusChat}
           attention={pending ? 'Working' : undefined}
+          result={
+            !pending &&
+            latestGeneration &&
+            (latestGeneration.status === 'ready' || latestGeneration.status === 'failed')
+              ? {
+                  id: `${latestGeneration.id}:${latestGeneration.status}`,
+                  status: latestGeneration.status,
+                  text:
+                    latestGeneration.status === 'ready'
+                      ? 'Building creation ready in Preview.'
+                      : 'Building creation needs attention in Preview.',
+                }
+              : undefined
+          }
           conversation={
             <aside className="bas-chat">
               <h2>Design conversation</h2>
@@ -378,8 +401,8 @@ function BuildingWorkspace({ id }: { id?: string }) {
                   />
                 </label>
                 <p className="building-ai-cost">
-                  Questions are free. Creation and edit requests start automatically and cost 1
-                  credit on delivery.
+                  Discussion spends no credits; 1 available Building credit is required. Creation
+                  and edit requests start automatically and cost 1 credit on delivery.
                 </p>
                 <details className="studio-attachments">
                   <summary>
@@ -457,6 +480,9 @@ function BuildingWorkspace({ id }: { id?: string }) {
                   Enter to send · Shift + Enter for a new line. Creation requests build
                   automatically · 1 credit on delivery.
                 </p>
+                {manualDirty && (
+                  <p>Save your manual edits before asking AI to revise the building.</p>
+                )}
                 {!wallet?.available && (
                   <p>An available Building credit is needed to chat or build.</p>
                 )}
@@ -493,6 +519,12 @@ function BuildingWorkspace({ id }: { id?: string }) {
           }
           artifact={
             <>
+              {manualDirty && (
+                <p role="status">
+                  Save your manual building edits in Edit before generating, restoring a version, or
+                  undoing.
+                </p>
+              )}
               {undo.delivered !== undefined && (
                 <div className="studio-revisions" role="status">
                   <span>Generated edits applied to revision {undo.delivered}.</span>
@@ -520,6 +552,11 @@ function BuildingWorkspace({ id }: { id?: string }) {
               )}
               <StudioTabs
                 label="Artifact view"
+                panels={{
+                  preview: 'studio-panel-artifact-view-preview',
+                  edit: 'studio-panel-artifact-view-edit',
+                  history: 'studio-panel-artifact-view-history',
+                }}
                 value={view}
                 onChange={(next) => {
                   if (
@@ -658,6 +695,7 @@ function BuildingWorkspace({ id }: { id?: string }) {
                             </a>
                             <button
                               disabled={busy || !!pending}
+                              aria-disabled={manualDirty}
                               onClick={() =>
                                 void action(() => restoreRevision(selectedRevision.requestId))
                               }
@@ -748,6 +786,7 @@ function BuildingWorkspace({ id }: { id?: string }) {
                         </a>
                         <button
                           disabled={busy || !!pending || !draft}
+                          aria-disabled={manualDirty}
                           onClick={() => void action(() => restoreRevision(r.requestId))}
                         >
                           Restore this revision

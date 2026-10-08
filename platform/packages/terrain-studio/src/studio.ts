@@ -904,6 +904,10 @@ export class TerrainStudio {
     await this.db.transaction().execute(async (db) => {
       await this.lockWallet(db, account);
       const t = await this.own(account, thread, db);
+      // Match the set-before-draft lock order used by generation and publication.
+      await sql`SELECT id FROM asset_sets WHERE id=(SELECT set_id FROM set_drafts WHERE id=${t.draftId}) FOR UPDATE`.execute(
+        db,
+      );
       const current = (
         await sql<{
           revision: number;
@@ -930,6 +934,9 @@ export class TerrainStudio {
       if (!saved) throw new HiveError('not_found', 'Saved draft unavailable.');
       await this.backup(db, thread, t.draftId);
       await sql`UPDATE set_drafts d SET document=h.document,revision=d.revision+1,hash=h.hash,report=h.report,sim_version=h.sim_version,status=CASE WHEN h.status='pending' THEN NULL ELSE h.status END,error=NULL,validation_job_id=NULL,updated_at=now() FROM terrain_studio_draft_history h WHERE d.id=${t.draftId} AND h.thread_id=${thread} AND h.revision=${revision}`.execute(
+        db,
+      );
+      await sql`UPDATE asset_sets s SET title=d.document->>'title',description=d.document->>'description',tags=ARRAY(SELECT jsonb_array_elements_text(d.document->'tags')),updated_at=now() FROM set_drafts d WHERE d.id=${t.draftId} AND s.id=d.set_id`.execute(
         db,
       );
       await notify(db, account, thread);

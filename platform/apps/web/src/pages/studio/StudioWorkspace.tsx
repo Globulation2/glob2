@@ -39,6 +39,7 @@ interface Props {
   revision: number;
   celebrate?: string;
   loadEarlier: () => void;
+  openCredits?: () => void;
   versionAction: (action: 'host' | 'publish', v: Delivered) => void;
 }
 export function StudioWorkspace(p: Props) {
@@ -58,6 +59,7 @@ export function StudioWorkspace(p: Props) {
   const [decodedUrl, setDecodedUrl] = useState<string>();
   const active = p.thread?.requests.find((r) => !['ready', 'failed'].includes(r.status));
   const generations = p.thread?.requests.filter((r) => r.kind === 'generate') ?? [];
+  const latestGeneration = generations.at(-1);
   const versions = generations.filter(
     (r): r is Delivered => r.status === 'ready' && !!r.map_id && !!r.map_hash && !!r.input.settings,
   );
@@ -145,6 +147,19 @@ export function StudioWorkspace(p: Props) {
   return (
     <SharedWorkspace
       focusChat={focusChat}
+      result={
+        latestGeneration &&
+        (latestGeneration.status === 'ready' || latestGeneration.status === 'failed')
+          ? {
+              id: `${latestGeneration.id}:${latestGeneration.status}`,
+              status: latestGeneration.status,
+              text:
+                latestGeneration.status === 'ready'
+                  ? 'Map creation ready in Preview.'
+                  : 'Map creation needs attention in Preview.',
+            }
+          : undefined
+      }
       attention={active ? 'Working' : current?.status === 'failed' ? 'Needs attention' : undefined}
       conversation={
         <>
@@ -236,6 +251,11 @@ export function StudioWorkspace(p: Props) {
               value={p.draft}
               onChange={p.setDraft}
               onSend={p.send}
+              onBlocked={
+                !p.busy && !active && p.wallet?.enabled && !p.wallet.available
+                  ? p.openCredits
+                  : undefined
+              }
               inputRef={composerRef}
               label="Describe your map or discuss changes"
               placeholder="Describe your landscape, or dream up a change…"
@@ -251,7 +271,7 @@ export function StudioWorkspace(p: Props) {
                       ? 'An available Map credit is needed to chat or build.'
                       : undefined
               }
-              pricing="Messages are free. Creation requests build automatically · 1 credit on delivery."
+              pricing="Discussion spends no credits; 1 available Map credit is required. Creation requests build automatically · 1 credit on delivery."
             />
           </div>
         </>
@@ -260,6 +280,11 @@ export function StudioWorkspace(p: Props) {
         <>
           <StudioTabs
             label="Artifact view"
+            panels={{
+              preview: 'studio-panel-artifact-view-preview',
+              edit: 'studio-panel-artifact-view-edit',
+              history: 'studio-panel-artifact-view-history',
+            }}
             value={view}
             onChange={setView}
             items={[

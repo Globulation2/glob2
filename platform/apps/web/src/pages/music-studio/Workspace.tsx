@@ -31,6 +31,7 @@ interface Props {
   revision: number;
   celebrate?: string;
   loadEarlier: () => void;
+  openCredits?: () => void;
   versionAction: (v: Delivered, license: string) => void;
 }
 export function MusicWorkspace(p: Props) {
@@ -60,6 +61,7 @@ export function MusicWorkspace(p: Props) {
     previousTimeline = useRef<string | undefined>(undefined);
   const active = p.thread?.requests.find((r) => !['ready', 'failed'].includes(r.status));
   const generations = p.thread?.requests.filter((r) => r.kind === 'generate') ?? [];
+  const latestGeneration = generations.at(-1);
   const versions = generations.filter(
     (r): r is Delivered => r.status === 'ready' && !!r.release_id && !!r.input.settings,
   );
@@ -153,6 +155,19 @@ export function MusicWorkspace(p: Props) {
   return (
     <SharedWorkspace
       focusChat={focusChat}
+      result={
+        latestGeneration &&
+        (latestGeneration.status === 'ready' || latestGeneration.status === 'failed')
+          ? {
+              id: `${latestGeneration.id}:${latestGeneration.status}`,
+              status: latestGeneration.status,
+              text:
+                latestGeneration.status === 'ready'
+                  ? 'Music creation ready in Preview.'
+                  : 'Music creation needs attention in Preview.',
+            }
+          : undefined
+      }
       attention={
         active ? 'Working' : inspected?.status === 'failed' ? 'Needs attention' : undefined
       }
@@ -203,6 +218,11 @@ export function MusicWorkspace(p: Props) {
             value={p.draft}
             onChange={p.setDraft}
             onSend={p.send}
+            onBlocked={
+              !p.busy && !active && p.wallet?.enabled && !p.wallet.available
+                ? p.openCredits
+                : undefined
+            }
             label="Your idea or next change"
             placeholder="Keep the melody, but make calm more spacious…"
             target={
@@ -219,7 +239,7 @@ export function MusicWorkspace(p: Props) {
                     : 'An available Music credit is needed to chat or build.'
                 : undefined
             }
-            pricing="Messages are free. Creation requests build automatically · 1 credit on delivery. Includes all three moods."
+            pricing="Discussion spends no credits; 1 available Music credit is required. Creation requests build automatically · 1 credit on delivery. Includes all three moods."
             tools={
               <>
                 {p.parent && (
@@ -287,6 +307,11 @@ export function MusicWorkspace(p: Props) {
         <>
           <StudioTabs
             label="Artifact view"
+            panels={{
+              preview: 'studio-panel-artifact-view-preview',
+              edit: 'studio-panel-artifact-view-edit',
+              history: 'studio-panel-artifact-view-history',
+            }}
             value={view}
             onChange={setView}
             items={[
