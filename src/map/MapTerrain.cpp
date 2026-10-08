@@ -46,54 +46,86 @@ void Map::setTerrain(int x, int y, Uint16 sprite)
 
 void Map::setUMatPos(int x, int y, TerrainType t, int l)
 {
-	auto terrainBatch = editTerrain();
-	const TerrainType clash = t == GRASS ? WATER : t == WATER ? GRASS : t;
-	for (int dx = x - (l >> 1); dx < x + (l >> 1) + 1; dx++)
-		for (int dy = y - (l >> 1); dy < y + (l >> 1) + 1; dy++)
-		{
-			if (clash != t)
-				for (int ny = -1; ny <= 1; ++ny)
-					for (int nx = -1; nx <= 1; ++nx)
-						if ((nx || ny) && vertexTerrainAt(dx + nx, dy + ny) == clash)
-							setVertexTerrain(dx + nx, dy + ny, SAND);
-			setVertexTerrain(dx, dy, t);
-		}
+	paintVertexSquare(x, y, t, l);
 }
 
 void Map::paintLegacyCells(const std::vector<std::pair<int, int>> &cells, TerrainType t)
 {
-	if (t != GRASS && t != SAND && t != WATER)
-		throw std::invalid_argument("paintLegacyCells requires a legacy corner terrain");
-	if (cells.empty())
-		return;
-	auto terrainBatch = editTerrain();
-	// The corners written: all four of every listed cell, sorted for lookup.
-	std::vector<size_t> written;
-	written.reserve(cells.size() * 4);
+	std::vector<std::pair<int, int>> corners;
 	for (const auto &[x, y] : cells)
 		for (int dy = 0; dy <= 1; ++dy)
 			for (int dx = 0; dx <= 1; ++dx)
-				written.push_back(coordToIndex(x + dx, y + dy));
+				corners.push_back({x + dx, y + dy});
+	paintVertices(corners, t);
+}
+
+std::vector<size_t> Map::paintVertices(const std::vector<std::pair<int, int>> &vertices, TerrainType type,
+									   bool beaches)
+{
+	if (!validTerrainType(type)) throw std::invalid_argument("Unknown terrain identity");
+	std::vector<size_t> written, changed;
+	written.reserve(vertices.size());
+	for (const auto &[x, y] : vertices)
+		written.push_back(size_t(coordToIndex(x, y)));
 	std::sort(written.begin(), written.end());
 	written.erase(std::unique(written.begin(), written.end()), written.end());
-	for (const auto corner : written)
-		setVertexTerrain(corner, t);
-	// Grass and water corners never touch, so an opposite-kind corner next to
-	// the written set becomes sand. Sand needs no shore.
-	if (t != SAND)
-	{
-		const TerrainType clash = t == GRASS ? WATER : GRASS;
-		for (const auto corner : written)
+	auto batch = editTerrain();
+	for (const auto vertex : written)
+		if (vertexTerrain[vertex] != type)
 		{
-			const int x = int(corner & wMask), y = int(corner >> wDec);
+			setVertexTerrain(vertex, type);
+			changed.push_back(vertex);
+		}
+	if (beaches && (type == GRASS || type == WATER))
+	{
+		const TerrainType clash = type == GRASS ? WATER : GRASS;
+		for (const auto vertex : written)
+		{
+			const int x = int(vertex & wMask), y = int(vertex >> wDec);
 			for (int dy = -1; dy <= 1; ++dy)
 				for (int dx = -1; dx <= 1; ++dx)
 				{
 					const auto neighbour = size_t(coordToIndex(x + dx, y + dy));
 					if (vertexTerrain[neighbour] == clash &&
 						!std::binary_search(written.begin(), written.end(), neighbour))
+					{
 						setVertexTerrain(neighbour, SAND);
+						changed.push_back(neighbour);
+					}
 				}
 		}
 	}
+	return changed;
+}
+
+void Map::paintVertexSquare(int x, int y, TerrainType type, int l)
+{
+	std::vector<std::pair<int, int>> vertices;
+	for (int dy = y - (l >> 1); dy <= y + (l >> 1); ++dy)
+		for (int dx = x - (l >> 1); dx <= x + (l >> 1); ++dx)
+			vertices.push_back({dx, dy});
+	paintVertices(vertices, type);
+}
+
+void Map::layBeaches()
+{
+	std::vector<TerrainType> next(vertexTerrain);
+	bool changed = false;
+	for (int y = 0; y < h; ++y)
+		for (int x = 0; x < w; ++x)
+		{
+			const auto type = vertexTerrainAt(x, y);
+			if (type != GRASS && type != WATER) continue;
+			const auto clash = type == GRASS ? WATER : GRASS;
+			bool shore = false;
+			for (int dy = -1; dy <= 1 && !shore; ++dy)
+				for (int dx = -1; dx <= 1 && !shore; ++dx)
+					shore = vertexTerrainAt(x + dx, y + dy) == clash;
+			if (shore)
+			{
+				next[coordToIndex(x, y)] = SAND;
+				changed = true;
+			}
+		}
+	if (changed) assignVertexTerrain(next);
 }

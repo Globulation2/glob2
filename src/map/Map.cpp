@@ -324,8 +324,9 @@ void Map::rebuildTerrainCounts(std::shared_ptr<CellRuleTable> table)
 	// Uniform rules come first, by terrain ID; mixed ones follow in row-major order.
 	cellRuleTable = table ? std::move(table) : std::make_shared<CellRuleTable>(terrainRegistryValue, resourceRegistryValue);
 	cellRuleCounts.assign(cellRuleTable->size(), 0);
-	bindCellRules();
+	// Size the cells before binding: the live view spans this array.
 	cellRules.resize(vertexTerrain.size());
+	bindCellRules();
 	for (std::size_t i = 0; i < cellRules.size(); ++i)
 	{
 		const auto corners = cellCorners(i);

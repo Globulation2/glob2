@@ -56,7 +56,8 @@ TEST_CASE("grass directly against water is walkable and unbuildable")
 	CHECK_FALSE(p.swimmable);
 	CHECK_FALSE(p.buildable);
 	CHECK_FALSE(p.shoreline);
-	CHECK_FALSE(p.resourcesGrow);
+	// Both corners grow resources, but they share none.
+	CHECK_EQ(p.allowedResources, 0);
 	CHECK_EQ(p.farmMaterial, 255);
 }
 
@@ -100,6 +101,7 @@ TEST_CASE("ground costs follow the walkable corners and hazards take the worst")
 
 TEST_CASE("the rule table numbers uniform rules by terrain and interns mixed ones in order")
 {
+	glob2test::HeadlessGlobals globals;
 	CellRuleTable table(TerrainRegistry::builtins(), ResourceRegistry::builtins());
 	REQUIRE(table.size() == TERRAIN_COUNT);
 	for (unsigned t = 0; t < TERRAIN_COUNT; ++t)
@@ -124,6 +126,7 @@ TEST_CASE("the rule table numbers uniform rules by terrain and interns mixed one
 
 TEST_CASE("mixed cells take the shore habitat and intersect explicit resource lists")
 {
+	glob2test::HeadlessGlobals globals;
 	const auto resources = ResourceRegistry::builtins();
 	CellRuleTable table(TerrainRegistry::builtins(), resources);
 	const auto shore = table.intern(GRASS, SAND, SAND, SAND);

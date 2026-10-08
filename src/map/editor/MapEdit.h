@@ -975,17 +975,20 @@ private:
 	bool isDraggingTerrain;
 	// --- WS-B brush painting ---
 public:
+	//! A point of the brush lattice: a map cell, or a vertex for terrain brushes.
 	using BrushCell = std::pair<int, int>;
-	//! Map cell under a map-local pointer position. Every brush, terrain or
-	//! resource, is centred on this cell; preview and commit share it.
+	//! Terrain is stored per vertex, so base-terrain brushes stamp vertices
+	//! (the smallest figure is a single vertex); resource brushes stamp cells.
+	bool brushOnVertices() const;
+	//! Lattice point under a map-local pointer position: the cell under it, or
+	//! for a vertex brush the nearest vertex. Preview and commit share it.
 	BrushCell brushCellAt(int mx, int my) const;
-	//! The brush figure's cells centred on a map cell, in unwrapped coordinates
+	//! Pixels a lattice point's square starts at, relative to its cell's origin:
+	//! a vertex's square is centred on the vertex.
+	int brushSquareOffset() const { return brushOnVertices() ? -16 : 0; }
+	//! The brush figure's lattice points centred on one, in unwrapped coordinates
 	//! around it, aligned to the current stroke's checkerboard origin.
 	std::vector<BrushCell> terrainBrushCells(int mapX, int mapY) const;
-	//! Cells whose terrain identity an Add stroke stamped at this cell sets. A
-	//! legacy corner terrain also fills any cell all of whose corners it writes,
-	//! as the checkerboard figures do; otherwise this is terrainBrushCells.
-	std::vector<BrushCell> terrainStrokeCells(int mapX, int mapY) const;
 	//! The cells of a footprint where the selected resource cannot be placed.
 	std::vector<BrushCell> invalidResourceCells(const std::vector<BrushCell> &footprint);
 	//! "<Resource> can only be placed on: <terrains>" for the selected resource.

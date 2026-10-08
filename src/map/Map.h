@@ -556,6 +556,18 @@ public:
 	//! Replace every vertex at once.
 	void assignVertexTerrain(std::span<const TerrainType> vertices);
 	void fillTerrain(TerrainType type);
+	//! Paints the listed vertices (unwrapped coordinates allowed) with type.
+	//! With beaches, grass and water never meet: an opposite vertex next to a
+	//! painted grass or water vertex, outside the painted set, becomes sand.
+	//! Returns every vertex index that changed, beaches included.
+	std::vector<size_t> paintVertices(const std::vector<std::pair<int, int>> &vertices, TerrainType type,
+									  bool beaches = true);
+	//! Paints the square of side l+1 of vertices centred on (x,y), with beaches.
+	void paintVertexSquare(int x, int y, TerrainType type, int l);
+	//! Turns every grass vertex next to water, and every water vertex next to
+	//! grass, into sand. Reads the terrain as it was, so the order of the scan
+	//! does not matter.
+	void layBeaches();
 	// === Cell rules ===
 	std::uint16_t cellRuleAt(size_t index) const { return cellRules[index]; }
 	const CellRule &cellRule(size_t index) const { return cellRuleData[cellRules[index]]; }
