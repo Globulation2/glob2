@@ -1,0 +1,11 @@
+
+Running 4 tests using 1 worker
+
+(node:2358507) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  1 [chromium] › tests/import.spec.js:99:1 › imports a complete replay and rejects a truncated command stream (serial) (16.4s)
+  ✓  2 [chromium] › tests/import.spec.js:99:1 › imports a complete replay and rejects a truncated command stream (threaded) (17.4s)
+  ✓  3 [chromium] › tests/session-reload.spec.js:83:1 › an active replay can be loaded again through the scheduled loader (serial) @webgl2-reload-c (18.8s)
+  ✓  4 [chromium] › tests/session-reload.spec.js:83:1 › an active replay can be loaded again through the scheduled loader (threaded) @webgl2-reload-c (20.1s)
+
+  4 passed (1.2m)
