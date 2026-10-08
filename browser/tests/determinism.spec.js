@@ -379,7 +379,7 @@ for (const variant of ['serial', 'threaded']) {
   test(`WebAssembly preserves shared generator worlds and save continuation (${variant})`, async ({page}, info) => {
     test.setTimeout(300000);
     const root=path.resolve(__dirname,'../..');
-    const output=path.join(root,'artifacts/generator-library/determinism',variant,info.project.name);
+    const output=path.join(root,'artifacts/browser-determinism/shared-generators',variant,info.project.name);
     fs.rmSync(output,{recursive:true,force:true});
     fs.mkdirSync(output,{recursive:true});
     const progress=[];page.on('console',m=>progress.push(m.text()));
