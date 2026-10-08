@@ -1,0 +1,55 @@
+{
+  "base_commit": "0039b69e5b85c539ee43cd00682fafeaea95dd8d",
+  "delays": [
+    1,
+    2,
+    3,
+    4,
+    8,
+    12,
+    16
+  ],
+  "seeds": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20
+  ],
+  "ticks": 512,
+  "map_side": 64,
+  "scenarios": [
+    "dense",
+    "sparse",
+    "multi",
+    "saturated",
+    "blocked",
+    "disabled"
+  ],
+  "variants": [
+    "immediate-reference",
+    "owner",
+    "shared"
+  ],
+  "design": "Same generated inputs/seeds; only delay changes. Owner/shared exact per-tick checksums/statistics. Reference repeated for fixture stability, not extra independent replicates. Diagnostic terminal flush separately applies pending proposals, no new computation. No timing claim.",
+  "binary_sha256": "413c581dd7542ddd3b655859b404258580470dec83d1650efe9471adeae50e0b",
+  "source_patch_sha256": "49d0c886e87f2b7b123cb4bea12ef8e593ed9f2e252dfffd50a911b5b3ef5bef",
+  "tested_commit": "a4cf15104d437b2d4ef86aa60c200e4b3c30f458",
+  "fetched_master": "607d2d06fc6abd1756acc5f0761fc78fecd9058a",
+  "integrated_base": "67fd5b935c98c3d6d0c5ba9d25754ce7df0f83f9"
+}

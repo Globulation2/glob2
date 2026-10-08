@@ -1,0 +1,3 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="1" failures="0" errors="0" skipped="0"><testsuite name="ResourceGrowthBenchmark"><testcase classname="ResourceGrowthBenchmark" name="player-free growth reconciles world stocks and team statistics" time="28.1446" status="run" />
+  </testsuite></testsuites>

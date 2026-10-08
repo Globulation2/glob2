@@ -1,0 +1,2981 @@
+{
+  "method": "20 matched seed pairs;30000 percentile bootstrap resamples, RNG713; percentage=ratio of mean final stocks minus1. Intervals are pointwise. Primary exact two-sided sign tests use Holm across36 delay-vs8 contrasts, testing directional consistency. Flush/reference contrasts exploratory. Owner/shared are not independent replicates.",
+  "results": [
+    {
+      "scenario": "dense",
+      "delay": 1,
+      "mean_stock": 6716,
+      "mean_flushed_stock": 6735.15,
+      "mean_deposits": 2135.8,
+      "vs_delay8": {
+        "percent": 2.249457618087014,
+        "ci95_percent": [
+          1.8709972552607423,
+          2.6378549713127475
+        ],
+        "absolute": 147.75,
+        "sign_p": 1.9073486328125e-06,
+        "lower_pairs": 0,
+        "higher_pairs": 20,
+        "ties": 0,
+        "holm_p": 6.866455078125e-05
+      },
+      "vs_immediate": {
+        "percent": -0.7221150505923979,
+        "ci95_percent": [
+          -2.1201073021801298,
+          0.7258784991066136
+        ],
+        "absolute": -48.85,
+        "sign_p": 0.5034446716308594,
+        "lower_pairs": 12,
+        "higher_pairs": 8,
+        "ties": 0
+      },
+      "flushed_vs_delay8": {
+        "percent": 1.1929534612928672,
+        "ci95_percent": [
+          0.8245674584715035,
+          1.5612007161746044
+        ],
+        "absolute": 79.4,
+        "sign_p": 4.00543212890625e-05,
+        "lower_pairs": 1,
+        "higher_pairs": 19,
+        "ties": 0
+      },
+      "flushed_vs_immediate": {
+        "percent": -0.4390341249251639,
+        "ci95_percent": [
+          -1.8360612168058288,
+          1.0163087308461938
+        ],
+        "absolute": -29.7,
+        "sign_p": 0.5034446716308594,
+        "lower_pairs": 12,
+        "higher_pairs": 8,
+        "ties": 0
+      },
+      "pipeline_means": {
+        "accepted": 4145.75,
+        "clamped": 4.5,
+        "pending_batches": 2,
+        "pending_proposals": 19.15,
+        "proposals": 4169.4,
+        "published": 510,
+        "rejected": 4.5
+      },
+      "checkpoint_mean_stocks": {
+        "128": 3375.3,
+        "256": 4316.45,
+        "384": 5453.6,
+        "512": 6716
+      }
+    },
+    {
+      "scenario": "dense",
+      "delay": 2,
+      "mean_stock": 6693.25,
+      "mean_flushed_stock": 6721.7,
+      "mean_deposits": 2131.2,
+      "vs_delay8": {
+        "percent": 1.9030944315457043,
+        "ci95_percent": [
+          1.5076019870540414,
+          2.3112980044613263
+        ],
+        "absolute": 125,
+        "sign_p": 1.9073486328125e-06,
+        "lower_pairs": 0,
+        "higher_pairs": 20,
+        "ties": 0,
+        "holm_p": 6.866455078125e-05
+      },
+      "vs_immediate": {
+        "percent": -1.0584122338263224,
+        "ci95_percent": [
+          -2.4412509570646113,
+          0.3843723281662381
+        ],
+        "absolute": -71.6,
+        "sign_p": 0.04138946533203125,
+        "lower_pairs": 15,
+        "higher_pairs": 5,
+        "ties": 0
+      },
+      "flushed_vs_delay8": {
+        "percent": 0.9908725538068541,
+        "ci95_percent": [
+          0.6073992269464368,
+          1.3788914882130632
+        ],
+        "absolute": 65.95,
+        "sign_p": 0.0025768280029296875,
+        "lower_pairs": 3,
+        "higher_pairs": 17,
+        "ties": 0
+      },
+      "flushed_vs_immediate": {
+        "percent": -0.6378559761118119,
+        "ci95_percent": [
+          -2.0328502700628692,
+          0.8136100150284653
+        ],
+        "absolute": -43.15,
+        "sign_p": 0.26317596435546875,
+        "lower_pairs": 13,
+        "higher_pairs": 7,
+        "ties": 0
+      },
+      "pipeline_means": {
+        "accepted": 4123,
+        "clamped": 6.9,
+        "pending_batches": 3,
+        "pending_proposals": 28.45,
+        "proposals": 4158.35,
+        "published": 509,
+        "rejected": 6.9
+      },
+      "checkpoint_mean_stocks": {
+        "128": 3367.65,
+        "256": 4307.6,
+        "384": 5444.45,
+        "512": 6693.25
+      }
+    },
+    {
+      "scenario": "dense",
+      "delay": 3,
+      "mean_stock": 6665.25,
+      "mean_flushed_stock": 6704.7,
+      "mean_deposits": 2124.2,
+      "vs_delay8": {
+        "percent": 1.4768012788794582,
+        "ci95_percent": [
+          1.0876325409947984,
+          1.8793880491768
+        ],
+        "absolute": 97,
+        "sign_p": 4.00543212890625e-05,
+        "lower_pairs": 1,
+        "higher_pairs": 19,
+        "ties": 0,
+        "holm_p": 0.000881195068359375
+      },
+      "vs_immediate": {
+        "percent": -1.4723164593449911,
+        "ci95_percent": [
+          -2.775199280967744,
+          -0.15876565295169787
+        ],
+        "absolute": -99.6,
+        "sign_p": 0.01181793212890625,
+        "lower_pairs": 16,
+        "higher_pairs": 4,
+        "ties": 0
+      },
+      "flushed_vs_delay8": {
+        "percent": 0.7354543064267638,
+        "ci95_percent": [
+          0.36656559713987846,
+          1.1118407644754358
+        ],
+        "absolute": 48.95,
+        "sign_p": 0.0025768280029296875,
+        "lower_pairs": 3,
+        "higher_pairs": 17,
+        "ties": 0
+      },
+      "flushed_vs_immediate": {
+        "percent": -0.8891549701767198,
+        "ci95_percent": [
+          -2.2079761571034417,
+          0.4364672872221975
+        ],
+        "absolute": -60.15,
+        "sign_p": 0.26317596435546875,
+        "lower_pairs": 13,
+        "higher_pairs": 7,
+        "ties": 0
+      },
+      "pipeline_means": {
+        "accepted": 4095,
+        "clamped": 8.55,
+        "pending_batches": 4,
+        "pending_proposals": 39.45,
+        "proposals": 4143,
+        "published": 508,
+        "rejected": 8.55
+      },
+      "checkpoint_mean_stocks": {
+        "128": 3358.2,
+        "256": 4293.75,
+        "384": 5424.2,
+        "512": 6665.25
+      }
+    },
+    {
+      "scenario": "dense",
+      "delay": 4,
+      "mean_stock": 6656.25,
+      "mean_flushed_stock": 6706.7,
+      "mean_deposits": 2119.95,
+      "vs_delay8": {
+        "percent": 1.3397784798081736,
+        "ci95_percent": [
+          0.9893933994950643,
+          1.6981103275635734
+        ],
+        "absolute": 88,
+        "sign_p": 4.00543212890625e-05,
+        "lower_pairs": 1,
+        "higher_pairs": 19,
+        "ties": 0,
+        "holm_p": 0.000881195068359375
+      },
+      "vs_immediate": {
+        "percent": -1.6053571032617175,
+        "ci95_percent": [
+          -2.924281218132596,
+          -0.2390932388915079
+        ],
+        "absolute": -108.6,
+        "sign_p": 0.04138946533203125,
+        "lower_pairs": 15,
+        "higher_pairs": 5,
+        "ties": 0
+      },
+      "flushed_vs_delay8": {
+        "percent": 0.765503512000909,
+        "ci95_percent": [
+          0.4294766131837324,
+          1.1033429645043835
+        ],
+        "absolute": 50.95,
+        "sign_p": 0.000728607177734375,
+        "lower_pairs": 2,
+        "higher_pairs": 17,
+        "ties": 1
+      },
+      "flushed_vs_immediate": {
+        "percent": -0.8595903826396745,
+        "ci95_percent": [
+          -2.211249779242952,
+          0.5344731462553431
+        ],
+        "absolute": -58.15,
+        "sign_p": 0.11531829833984375,
+        "lower_pairs": 14,
+        "higher_pairs": 6,
+        "ties": 0
+      },
+      "pipeline_means": {
+        "accepted": 4086,
+        "clamped": 10.35,
+        "pending_batches": 5,
+        "pending_proposals": 50.55,
+        "proposals": 4146.9,
+        "published": 507,
+        "rejected": 10.35
+      },
+      "checkpoint_mean_stocks": {
+        "128": 3350.3,
+        "256": 4282.65,
+        "384": 5408.3,
+        "512": 6656.25
+      }
+    },
+    {
+      "scenario": "dense",
+      "delay": 8,
+      "mean_stock": 6568.25,
+      "mean_flushed_stock": 6655.75,
+      "mean_deposits": 2101.9,
+      "vs_delay8": {
+        "percent": 0.0,
+        "ci95_percent": [
+          0.0,
+          0.0
+        ],
+        "absolute": 0,
+        "sign_p": 1,
+        "lower_pairs": 0,
+        "higher_pairs": 0,
+        "ties": 20
+      },
+      "vs_immediate": {
+        "percent": -2.9061989548918254,
+        "ci95_percent": [
+          -4.325703498318678,
+          -1.4667951378594668
+        ],
+        "absolute": -196.6,
+        "sign_p": 0.01181793212890625,
+        "lower_pairs": 16,
+        "higher_pairs": 4,
+        "ties": 0
+      },
+      "flushed_vs_delay8": {
+        "percent": 0.0,
+        "ci95_percent": [
+          0.0,
+          0.0
+        ],
+        "absolute": 0,
+        "sign_p": 1,
+        "lower_pairs": 0,
+        "higher_pairs": 0,
+        "ties": 20
+      },
+      "flushed_vs_immediate": {
+        "percent": -1.612748250145979,
+        "ci95_percent": [
+          -3.044032805849284,
+          -0.1649579098427334
+        ],
+        "absolute": -109.1,
+        "sign_p": 0.11531829833984375,
+        "lower_pairs": 14,
+        "higher_pairs": 6,
+        "ties": 0
+      },
+      "pipeline_means": {
+        "accepted": 3998,
+        "clamped": 17.35,
+        "pending_batches": 9,
+        "pending_proposals": 87.7,
+        "proposals": 4103.05,
+        "published": 503,
+        "rejected": 17.35
+      },
+      "checkpoint_mean_stocks": {
+        "128": 3316.6,
+        "256": 4233.55,
+        "384": 5344.55,
+        "512": 6568.25
+      }
+    },
+    {
+      "scenario": "dense",
+      "delay": 12,
+      "mean_stock": 6505.75,
+      "mean_flushed_stock": 6635.45,
+      "mean_deposits": 2091.55,
+      "vs_delay8": {
+        "percent": -0.9515472157728522,
+        "ci95_percent": [
+          -1.2561023681736838,
+          -0.7113929042729117
+        ],
+        "absolute": -62.5,
+        "sign_p": 1.9073486328125e-06,
+        "lower_pairs": 20,
+        "higher_pairs": 0,
+        "ties": 0,
+        "holm_p": 6.866455078125e-05
+      },
+      "vs_immediate": {
+        "percent": -3.8300923154245825,
+        "ci95_percent": [
+          -5.25172012434989,
+          -2.366534574112833
+        ],
+        "absolute": -259.1,
+        "sign_p": 0.0025768280029296875,
+        "lower_pairs": 17,
+        "higher_pairs": 3,
+        "ties": 0
+      },
+      "flushed_vs_delay8": {
+        "percent": -0.30499943657739115,
+        "ci95_percent": [
+          -0.6142626956449404,
+          -0.05650568823928337
+        ],
+        "absolute": -20.3,
+        "sign_p": 0.8145294189453125,
+        "lower_pairs": 10,
+        "higher_pairs": 8,
+        "ties": 2
+      },
+      "flushed_vs_immediate": {
+        "percent": -1.9128288136470162,
+        "ci95_percent": [
+          -3.3438550946958467,
+          -0.4274298457535797
+        ],
+        "absolute": -129.4,
+        "sign_p": 0.01181793212890625,
+        "lower_pairs": 16,
+        "higher_pairs": 4,
+        "ties": 0
+      },
+      "pipeline_means": {
+        "accepted": 3935.5,
+        "clamped": 21.6,
+        "pending_batches": 13,
+        "pending_proposals": 130.35,
+        "proposals": 4087.45,
+        "published": 499,
+        "rejected": 21.6
+      },
+      "checkpoint_mean_stocks": {
+        "128": 3281.45,
+        "256": 4193.6,
+        "384": 5282.75,
+        "512": 6505.75
+      }
+    },
+    {
+      "scenario": "dense",
+      "delay": 16,
+      "mean_stock": 6433.05,
+      "mean_flushed_stock": 6596.25,
+      "mean_deposits": 2074.45,
+      "vs_delay8": {
+        "percent": -2.0583869371598174,
+        "ci95_percent": [
+          -2.4984208884119896,
+          -1.60185518249516
+        ],
+        "absolute": -135.2,
+        "sign_p": 4.00543212890625e-05,
+        "lower_pairs": 19,
+        "higher_pairs": 1,
+        "ties": 0,
+        "holm_p": 0.000881195068359375
+      },
+      "vs_immediate": {
+        "percent": -4.904765072396289,
+        "ci95_percent": [
+          -6.263399920154955,
+          -3.5347936620551024
+        ],
+        "absolute": -331.8,
+        "sign_p": 0.0004024505615234375,
+        "lower_pairs": 18,
+        "higher_pairs": 2,
+        "ties": 0
+      },
+      "flushed_vs_delay8": {
+        "percent": -0.893963865830294,
+        "ci95_percent": [
+          -1.349973951844885,
+          -0.4166666666666652
+        ],
+        "absolute": -59.5,
+        "sign_p": 0.01181793212890625,
+        "lower_pairs": 16,
+        "higher_pairs": 4,
+        "ties": 0
+      },
+      "flushed_vs_immediate": {
+        "percent": -2.4922947293731568,
+        "ci95_percent": [
+          -3.8649045521292225,
+          -1.0947309126216442
+        ],
+        "absolute": -168.6,
+        "sign_p": 0.01181793212890625,
+        "lower_pairs": 16,
+        "higher_pairs": 4,
+        "ties": 0
+      },
+      "pipeline_means": {
+        "accepted": 3862.8,
+        "clamped": 29.9,
+        "pending_batches": 17,
+        "pending_proposals": 164.55,
+        "proposals": 4057.25,
+        "published": 495,
+        "rejected": 29.9
+      },
+      "checkpoint_mean_stocks": {
+        "128": 3245.5,
+        "256": 4153.3,
+        "384": 5227.9,
+        "512": 6433.05
+      }
+    },
+    {
+      "scenario": "sparse",
+      "delay": 1,
+      "mean_stock": 420.1,
+      "mean_flushed_stock": 422.1,
+      "mean_deposits": 145.5,
+      "vs_delay8": {
+        "percent": 2.5259304453935316,
+        "ci95_percent": [
+          2.0623559383719625,
+          3.0063480656365993
+        ],
+        "absolute": 10.35,
+        "sign_p": 1.9073486328125e-06,
+        "lower_pairs": 0,
+        "higher_pairs": 20,
+        "ties": 0,
+        "holm_p": 6.866455078125e-05
+      },
+      "vs_immediate": {
+        "percent": -3.4585775020107956,
+        "ci95_percent": [
+          -8.443473511742216,
+          1.5770609318996431
+        ],
+        "absolute": -15.05,
+        "sign_p": 0.5034446716308594,
+        "lower_pairs": 12,
+        "higher_pairs": 8,
+        "ties": 0
+      },
+      "flushed_vs_delay8": {
+        "percent": 1.0896898575020852,
+        "ci95_percent": [
+          0.7118683627027611,
+          1.47291539866099
+        ],
+        "absolute": 4.55,
+        "sign_p": 0.000728607177734375,
+        "lower_pairs": 2,
+        "higher_pairs": 17,
+        "ties": 1
+      },
+      "flushed_vs_immediate": {
+        "percent": -2.998965873836612,
+        "ci95_percent": [
+          -8.059062218214608,
+          2.1120943952802396
+        ],
+        "absolute": -13.05,
+        "sign_p": 0.5034446716308594,
+        "lower_pairs": 12,
+        "higher_pairs": 8,
+        "ties": 0
+      },
+      "pipeline_means": {
+        "accepted": 259.7,
+        "clamped": 0.3,
+        "pending_batches": 2,
+        "pending_proposals": 2,
+        "proposals": 262,
+        "published": 510,
+        "rejected": 0.3
+      },
+      "checkpoint_mean_stocks": {
+        "128": 207.55,
+        "256": 263.3,
+        "384": 335.6,
+        "512": 420.1
+      }
+    },
+    {
+      "scenario": "sparse",
+      "delay": 2,
+      "mean_stock": 418.3,
+      "mean_flushed_stock": 421.4,
+      "mean_deposits": 145.05,
+      "vs_delay8": {
+        "percent": 2.0866381940207512,
+        "ci95_percent": [
+          1.602136181575431,
+          2.579743296479853
+        ],
+        "absolute": 8.55,
+        "sign_p": 3.814697265625e-06,
+        "lower_pairs": 0,
+        "higher_pairs": 19,
+        "ties": 1,
+        "holm_p": 0.000102996826171875
+      },
+      "vs_immediate": {
+        "percent": -3.8722279673675697,
+        "ci95_percent": [
+          -8.836061897286385,
+          1.1411411411411443
+        ],
+        "absolute": -16.85,
+        "sign_p": 0.5034446716308594,
+        "lower_pairs": 12,
+        "higher_pairs": 8,
+        "ties": 0
+      },
+      "flushed_vs_delay8": {
+        "percent": 0.9220452640402277,
+        "ci95_percent": [
+          0.5448300367168146,
+          1.309212092358969
+        ],
+        "absolute": 3.85,
+        "sign_p": 0.002349853515625,
+        "lower_pairs": 2,
+        "higher_pairs": 15,
+        "ties": 3
+      },
+      "flushed_vs_immediate": {
+        "percent": -3.1598299436975785,
+        "ci95_percent": [
+          -8.224155014862934,
+          1.9451605343332456
+        ],
+        "absolute": -13.75,
+        "sign_p": 0.5034446716308594,
+        "lower_pairs": 12,
+        "higher_pairs": 8,
+        "ties": 0
+      },
+      "pipeline_means": {
+        "accepted": 257.9,
+        "clamped": 0.35,
+        "pending_batches": 3,
+        "pending_proposals": 3.1,
+        "proposals": 261.35,
+        "published": 509,
+        "rejected": 0.35
+      },
+      "checkpoint_mean_stocks": {
+        "128": 207.05,
+        "256": 262.6,
+        "384": 333.6,
+        "512": 418.3
+      }
+    },
+    {
+      "scenario": "sparse",
+      "delay": 3,
+      "mean_stock": 416.8,
+      "mean_flushed_stock": 420.95,
+      "mean_deposits": 144.65,
+      "vs_delay8": {
+        "percent": 1.7205613178767454,
+        "ci95_percent": [
+          1.282965074839626,
+          2.1639668603932183
+        ],
+        "absolute": 7.05,
+        "sign_p": 3.814697265625e-06,
+        "lower_pairs": 0,
+        "higher_pairs": 19,
+        "ties": 1,
+        "holm_p": 0.000102996826171875
+      },
+      "vs_immediate": {
+        "percent": -4.216936688498219,
+        "ci95_percent": [
+          -9.191633691351042,
+          0.8181171448897295
+        ],
+        "absolute": -18.35,
+        "sign_p": 0.5034446716308594,
+        "lower_pairs": 12,
+        "higher_pairs": 8,
+        "ties": 0
+      },
+      "flushed_vs_delay8": {
+        "percent": 0.8142737396718891,
+        "ci95_percent": [
+          0.47472110135295953,
+          1.1651651651651607
+        ],
+        "absolute": 3.4,
+        "sign_p": 0.002349853515625,
+        "lower_pairs": 2,
+        "higher_pairs": 15,
+        "ties": 3
+      },
+      "flushed_vs_immediate": {
+        "percent": -3.263242560036772,
+        "ci95_percent": [
+          -8.341787848044191,
+          1.8498880640980264
+        ],
+        "absolute": -14.2,
+        "sign_p": 0.5034446716308594,
+        "lower_pairs": 12,
+        "higher_pairs": 8,
+        "ties": 0
+      },
+      "pipeline_means": {
+        "accepted": 256.4,
+        "clamped": 0.4,
+        "pending_batches": 4,
+        "pending_proposals": 4.15,
+        "proposals": 260.95,
+        "published": 508,
+        "rejected": 0.4
+      },
+      "checkpoint_mean_stocks": {
+        "128": 206.45,
+        "256": 261.65,
+        "384": 333,
+        "512": 416.8
+      }
+    },
+    {
+      "scenario": "sparse",
+      "delay": 4,
+      "mean_stock": 415.35,
+      "mean_flushed_stock": 419.8,
+      "mean_deposits": 144.25,
+      "vs_delay8": {
+        "percent": 1.3666870042708945,
+        "ci95_percent": [
+          0.9917552873700552,
+          1.762061003767168
+        ],
+        "absolute": 5.6,
+        "sign_p": 7.62939453125e-06,
+        "lower_pairs": 0,
+        "higher_pairs": 18,
+        "ties": 2,
+        "holm_p": 0.00018310546875
+      },
+      "vs_immediate": {
+        "percent": -4.550155118924504,
+        "ci95_percent": [
+          -9.519553072625698,
+          0.45629202689720927
+        ],
+        "absolute": -19.8,
+        "sign_p": 0.5034446716308594,
+        "lower_pairs": 12,
+        "higher_pairs": 8,
+        "ties": 0
+      },
+      "flushed_vs_delay8": {
+        "percent": 0.538857621841693,
+        "ci95_percent": [
+          0.25779523692610606,
+          0.8373786407767092
+        ],
+        "absolute": 2.25,
+        "sign_p": 0.021270751953125,
+        "lower_pairs": 3,
+        "higher_pairs": 13,
+        "ties": 4
+      },
+      "flushed_vs_immediate": {
+        "percent": -3.527519246236932,
+        "ci95_percent": [
+          -8.607059347511415,
+          1.5788224121557448
+        ],
+        "absolute": -15.35,
+        "sign_p": 0.5034446716308594,
+        "lower_pairs": 12,
+        "higher_pairs": 8,
+        "ties": 0
+      },
+      "pipeline_means": {
+        "accepted": 254.95,
+        "clamped": 0.4,
+        "pending_batches": 5,
+        "pending_proposals": 4.45,
+        "proposals": 259.8,
+        "published": 507,
+        "rejected": 0.4
+      },
+      "checkpoint_mean_stocks": {
+        "128": 205.35,
+        "256": 261.05,
+        "384": 331.9,
+        "512": 415.35
+      }
+    },
+    {
+      "scenario": "sparse",
+      "delay": 8,
+      "mean_stock": 409.75,
+      "mean_flushed_stock": 417.55,
+      "mean_deposits": 142.2,
+      "vs_delay8": {
+        "percent": 0.0,
+        "ci95_percent": [
+          0.0,
+          0.0
+        ],
+        "absolute": 0,
+        "sign_p": 1,
+        "lower_pairs": 0,
+        "higher_pairs": 0,
+        "ties": 20
+      },
+      "vs_immediate": {
+        "percent": -5.837067677812247,
+        "ci95_percent": [
+          -10.878661087866103,
+          -0.7601351351351315
+        ],
+        "absolute": -25.4,
+        "sign_p": 0.26317596435546875,
+        "lower_pairs": 13,
+        "higher_pairs": 7,
+        "ties": 0
+      },
+      "flushed_vs_delay8": {
+        "percent": 0.0,
+        "ci95_percent": [
+          0.0,
+          0.0
+        ],
+        "absolute": 0,
+        "sign_p": 1,
+        "lower_pairs": 0,
+        "higher_pairs": 0,
+        "ties": 20
+      },
+      "flushed_vs_immediate": {
+        "percent": -4.0445823279329,
+        "ci95_percent": [
+          -9.169626998223801,
+          1.1048425011753737
+        ],
+        "absolute": -17.6,
+        "sign_p": 0.5034446716308594,
+        "lower_pairs": 12,
+        "higher_pairs": 8,
+        "ties": 0
+      },
+      "pipeline_means": {
+        "accepted": 249.35,
+        "clamped": 0.7,
+        "pending_batches": 9,
+        "pending_proposals": 7.8,
+        "proposals": 257.85,
+        "published": 503,
+        "rejected": 0.7
+      },
+      "checkpoint_mean_stocks": {
+        "128": 203.15,
+        "256": 258.85,
+        "384": 328.5,
+        "512": 409.75
+      }
+    },
+    {
+      "scenario": "sparse",
+      "delay": 12,
+      "mean_stock": 403.8,
+      "mean_flushed_stock": 413.75,
+      "mean_deposits": 140.15,
+      "vs_delay8": {
+        "percent": -1.452104942037824,
+        "ci95_percent": [
+          -1.9680653546230942,
+          -0.9698145229724786
+        ],
+        "absolute": -5.95,
+        "sign_p": 7.62939453125e-06,
+        "lower_pairs": 18,
+        "higher_pairs": 0,
+        "ties": 2,
+        "holm_p": 0.00018310546875
+      },
+      "vs_immediate": {
+        "percent": -7.204412271630467,
+        "ci95_percent": [
+          -12.172122263169305,
+          -2.2171891763023033
+        ],
+        "absolute": -31.35,
+        "sign_p": 0.063568115234375,
+        "lower_pairs": 14,
+        "higher_pairs": 5,
+        "ties": 1
+      },
+      "flushed_vs_delay8": {
+        "percent": -0.9100706502215283,
+        "ci95_percent": [
+          -1.3621699127733256,
+          -0.4684684684684637
+        ],
+        "absolute": -3.8,
+        "sign_p": 0.0308837890625,
+        "lower_pairs": 14,
+        "higher_pairs": 4,
+        "ties": 2
+      },
+      "flushed_vs_immediate": {
+        "percent": -4.917844421463869,
+        "ci95_percent": [
+          -9.978189749182121,
+          0.17785155323690738
+        ],
+        "absolute": -21.4,
+        "sign_p": 0.5034446716308594,
+        "lower_pairs": 12,
+        "higher_pairs": 8,
+        "ties": 0
+      },
+      "pipeline_means": {
+        "accepted": 243.4,
+        "clamped": 0.9,
+        "pending_batches": 13,
+        "pending_proposals": 9.95,
+        "proposals": 254.25,
+        "published": 499,
+        "rejected": 0.9
+      },
+      "checkpoint_mean_stocks": {
+        "128": 201.75,
+        "256": 255.5,
+        "384": 323.6,
+        "512": 403.8
+      }
+    },
+    {
+      "scenario": "sparse",
+      "delay": 16,
+      "mean_stock": 399.75,
+      "mean_flushed_stock": 412.35,
+      "mean_deposits": 139,
+      "vs_delay8": {
+        "percent": -2.440512507626602,
+        "ci95_percent": [
+          -2.929230769230773,
+          -1.9544779811974222
+        ],
+        "absolute": -10,
+        "sign_p": 3.814697265625e-06,
+        "lower_pairs": 19,
+        "higher_pairs": 0,
+        "ties": 1,
+        "holm_p": 0.000102996826171875
+      },
+      "vs_immediate": {
+        "percent": -8.135125818683209,
+        "ci95_percent": [
+          -12.953887280017817,
+          -3.2987971894724355
+        ],
+        "absolute": -35.4,
+        "sign_p": 0.04138946533203125,
+        "lower_pairs": 15,
+        "higher_pairs": 5,
+        "ties": 0
+      },
+      "flushed_vs_delay8": {
+        "percent": -1.2453598371452546,
+        "ci95_percent": [
+          -1.6786279041479113,
+          -0.8275365795154754
+        ],
+        "absolute": -5.2,
+        "sign_p": 0.00014495849609375,
+        "lower_pairs": 17,
+        "higher_pairs": 1,
+        "ties": 2
+      },
+      "flushed_vs_immediate": {
+        "percent": -5.239572561185801,
+        "ci95_percent": [
+          -10.220373285360917,
+          -0.23736055067647976
+        ],
+        "absolute": -22.8,
+        "sign_p": 0.5034446716308594,
+        "lower_pairs": 12,
+        "higher_pairs": 8,
+        "ties": 0
+      },
+      "pipeline_means": {
+        "accepted": 239.35,
+        "clamped": 1.2,
+        "pending_batches": 17,
+        "pending_proposals": 12.6,
+        "proposals": 253.15,
+        "published": 495,
+        "rejected": 1.2
+      },
+      "checkpoint_mean_stocks": {
+        "128": 200.3,
+        "256": 252.9,
+        "384": 320.65,
+        "512": 399.75
+      }
+    },
+    {
+      "scenario": "multi",
+      "delay": 1,
+      "mean_stock": 12829.85,
+      "mean_flushed_stock": 12882.85,
+      "mean_deposits": 2533.65,
+      "vs_delay8": {
+        "percent": 3.3994060307622975,
+        "ci95_percent": [
+          2.8016553951751177,
+          3.9953077003700654
+        ],
+        "absolute": 421.8,
+        "sign_p": 1.9073486328125e-06,
+        "lower_pairs": 0,
+        "higher_pairs": 20,
+        "ties": 0,
+        "holm_p": 6.866455078125e-05
+      },
+      "vs_immediate": {
+        "percent": -13.85662297899769,
+        "ci95_percent": [
+          -15.295149134195485,
+          -12.444491042469219
+        ],
+        "absolute": -2063.75,
+        "sign_p": 1.9073486328125e-06,
+        "lower_pairs": 20,
+        "higher_pairs": 0,
+        "ties": 0
+      },
+      "flushed_vs_delay8": {
+        "percent": 1.8121396762173392,
+        "ci95_percent": [
+          1.2152437487749523,
+          2.4112533014715165
+        ],
+        "absolute": 229.3,
+        "sign_p": 0.0004024505615234375,
+        "lower_pairs": 2,
+        "higher_pairs": 18,
+        "ties": 0
+      },
+      "flushed_vs_immediate": {
+        "percent": -13.500765429446204,
+        "ci95_percent": [
+          -14.943521527691427,
+          -12.082878514937011
+        ],
+        "absolute": -2010.75,
+        "sign_p": 1.9073486328125e-06,
+        "lower_pairs": 20,
+        "higher_pairs": 0,
+        "ties": 0
+      },
+      "pipeline_means": {
+        "accepted": 9757.85,
+        "clamped": 1.35,
+        "pending_batches": 2,
+        "pending_proposals": 53,
+        "proposals": 9812.2,
+        "published": 510,
+        "rejected": 1.35
+      },
+      "checkpoint_mean_stocks": {
+        "128": 4651,
+        "256": 6816.6,
+        "384": 9529.55,
+        "512": 12829.85
+      }
+    },
+    {
+      "scenario": "multi",
+      "delay": 2,
+      "mean_stock": 12772.8,
+      "mean_flushed_stock": 12851.5,
+      "mean_deposits": 2529.2,
+      "vs_delay8": {
+        "percent": 2.939623873211339,
+        "ci95_percent": [
+          2.2835303571214327,
+          3.5993049396637833
+        ],
+        "absolute": 364.75,
+        "sign_p": 1.9073486328125e-06,
+        "lower_pairs": 0,
+        "higher_pairs": 20,
+        "ties": 0,
+        "holm_p": 6.866455078125e-05
+      },
+      "vs_immediate": {
+        "percent": -14.239673416769616,
+        "ci95_percent": [
+          -15.657766763926084,
+          -12.849794724175357
+        ],
+        "absolute": -2120.8,
+        "sign_p": 1.9073486328125e-06,
+        "lower_pairs": 20,
+        "higher_pairs": 0,
+        "ties": 0
+      },
+      "flushed_vs_delay8": {
+        "percent": 1.5643831177811762,
+        "ci95_percent": [
+          0.9104446366713592,
+          2.226814050996051
+        ],
+        "absolute": 197.95,
+        "sign_p": 0.0025768280029296875,
+        "lower_pairs": 3,
+        "higher_pairs": 17,
+        "ties": 0
+      },
+      "flushed_vs_immediate": {
+        "percent": -13.711258527152603,
+        "ci95_percent": [
+          -15.134721125931472,
+          -12.315970203733995
+        ],
+        "absolute": -2042.1,
+        "sign_p": 1.9073486328125e-06,
+        "lower_pairs": 20,
+        "higher_pairs": 0,
+        "ties": 0
+      },
+      "pipeline_means": {
+        "accepted": 9700.8,
+        "clamped": 2.45,
+        "pending_batches": 3,
+        "pending_proposals": 78.7,
+        "proposals": 9781.95,
+        "published": 509,
+        "rejected": 2.45
+      },
+      "checkpoint_mean_stocks": {
+        "128": 4630.9,
+        "256": 6781.35,
+        "384": 9471.35,
+        "512": 12772.8
+      }
+    },
+    {
+      "scenario": "multi",
+      "delay": 3,
+      "mean_stock": 12703.95,
+      "mean_flushed_stock": 12809.9,
+      "mean_deposits": 2520.5,
+      "vs_delay8": {
+        "percent": 2.384742163353626,
+        "ci95_percent": [
+          1.944819921891927,
+          2.8302191241488472
+        ],
+        "absolute": 295.9,
+        "sign_p": 1.9073486328125e-06,
+        "lower_pairs": 0,
+        "higher_pairs": 20,
+        "ties": 0,
+        "holm_p": 6.866455078125e-05
+      },
+      "vs_immediate": {
+        "percent": -14.701952516517158,
+        "ci95_percent": [
+          -16.144457616082008,
+          -13.291409978746405
+        ],
+        "absolute": -2189.65,
+        "sign_p": 1.9073486328125e-06,
+        "lower_pairs": 20,
+        "higher_pairs": 0,
+        "ties": 0
+      },
+      "flushed_vs_delay8": {
+        "percent": 1.2356216239711282,
+        "ci95_percent": [
+          0.7792716100119446,
+          1.700122900450629
+        ],
+        "absolute": 156.35,
+        "sign_p": 0.0004024505615234375,
+        "lower_pairs": 2,
+        "higher_pairs": 18,
+        "ties": 0
+      },
+      "flushed_vs_immediate": {
+        "percent": -13.990573132083583,
+        "ci95_percent": [
+          -15.432414650193726,
+          -12.577985401065362
+        ],
+        "absolute": -2083.7,
+        "sign_p": 1.9073486328125e-06,
+        "lower_pairs": 20,
+        "higher_pairs": 0,
+        "ties": 0
+      },
+      "pipeline_means": {
+        "accepted": 9631.95,
+        "clamped": 2.5,
+        "pending_batches": 4,
+        "pending_proposals": 106.15,
+        "proposals": 9740.6,
+        "published": 508,
+        "rejected": 2.5
+      },
+      "checkpoint_mean_stocks": {
+        "128": 4607.9,
+        "256": 6754.65,
+        "384": 9429.35,
+        "512": 12703.95
+      }
+    },
+    {
+      "scenario": "multi",
+      "delay": 4,
+      "mean_stock": 12670.7,
+      "mean_flushed_stock": 12810.35,
+      "mean_deposits": 2518.2,
+      "vs_delay8": {
+        "percent": 2.116770967234971,
+        "ci95_percent": [
+          1.6953258425151718,
+          2.5378394854879582
+        ],
+        "absolute": 262.65,
+        "sign_p": 1.9073486328125e-06,
+        "lower_pairs": 0,
+        "higher_pairs": 20,
+        "ties": 0,
+        "holm_p": 6.866455078125e-05
+      },
+      "vs_immediate": {
+        "percent": -14.925202771660306,
+        "ci95_percent": [
+          -16.262969978376386,
+          -13.590227862548742
+        ],
+        "absolute": -2222.9,
+        "sign_p": 1.9073486328125e-06,
+        "lower_pairs": 20,
+        "higher_pairs": 0,
+        "ties": 0
+      },
+      "flushed_vs_delay8": {
+        "percent": 1.23917793820707,
+        "ci95_percent": [
+          0.8254087813451383,
+          1.6569104077785557
+        ],
+        "absolute": 156.8,
+        "sign_p": 0.0004024505615234375,
+        "lower_pairs": 2,
+        "higher_pairs": 18,
+        "ties": 0
+      },
+      "flushed_vs_immediate": {
+        "percent": -13.987551700059086,
+        "ci95_percent": [
+          -15.337680406322807,
+          -12.639180645533498
+        ],
+        "absolute": -2083.25,
+        "sign_p": 1.9073486328125e-06,
+        "lower_pairs": 20,
+        "higher_pairs": 0,
+        "ties": 0
+      },
+      "pipeline_means": {
+        "accepted": 9598.7,
+        "clamped": 3.55,
+        "pending_batches": 5,
+        "pending_proposals": 139.75,
+        "proposals": 9742,
+        "published": 507,
+        "rejected": 3.55
+      },
+      "checkpoint_mean_stocks": {
+        "128": 4594.5,
+        "256": 6731.3,
+        "384": 9390.75,
+        "512": 12670.7
+      }
+    },
+    {
+      "scenario": "multi",
+      "delay": 8,
+      "mean_stock": 12408.05,
+      "mean_flushed_stock": 12653.55,
+      "mean_deposits": 2486.8,
+      "vs_delay8": {
+        "percent": 0.0,
+        "ci95_percent": [
+          0.0,
+          0.0
+        ],
+        "absolute": 0,
+        "sign_p": 1,
+        "lower_pairs": 0,
+        "higher_pairs": 0,
+        "ties": 20
+      },
+      "vs_immediate": {
+        "percent": -16.68871192995649,
+        "ci95_percent": [
+          -18.183918901268925,
+          -15.21226454880077
+        ],
+        "absolute": -2485.55,
+        "sign_p": 1.9073486328125e-06,
+        "lower_pairs": 20,
+        "higher_pairs": 0,
+        "ties": 0
+      },
+      "flushed_vs_delay8": {
+        "percent": 0.0,
+        "ci95_percent": [
+          0.0,
+          0.0
+        ],
+        "absolute": 0,
+        "sign_p": 1,
+        "lower_pairs": 0,
+        "higher_pairs": 0,
+        "ties": 20
+      },
+      "flushed_vs_immediate": {
+        "percent": -15.040352903260457,
+        "ci95_percent": [
+          -16.538102344069372,
+          -13.555368690812264
+        ],
+        "absolute": -2240.05,
+        "sign_p": 1.9073486328125e-06,
+        "lower_pairs": 20,
+        "higher_pairs": 0,
+        "ties": 0
+      },
+      "pipeline_means": {
+        "accepted": 9336.05,
+        "clamped": 6.2,
+        "pending_batches": 9,
+        "pending_proposals": 246.05,
+        "proposals": 9588.3,
+        "published": 503,
+        "rejected": 6.2
+      },
+      "checkpoint_mean_stocks": {
+        "128": 4518.65,
+        "256": 6605.05,
+        "384": 9209,
+        "512": 12408.05
+      }
+    },
+    {
+      "scenario": "multi",
+      "delay": 12,
+      "mean_stock": 12236.35,
+      "mean_flushed_stock": 12586.2,
+      "mean_deposits": 2466.7,
+      "vs_delay8": {
+        "percent": -1.3837790789044235,
+        "ci95_percent": [
+          -1.8980187066277798,
+          -0.9054643438013321
+        ],
+        "absolute": -171.7,
+        "sign_p": 0.000728607177734375,
+        "lower_pairs": 17,
+        "higher_pairs": 2,
+        "ties": 1,
+        "holm_p": 0.0087432861328125
+      },
+      "vs_immediate": {
+        "percent": -17.841556104635547,
+        "ci95_percent": [
+          -19.43092163276443,
+          -16.28669565658788
+        ],
+        "absolute": -2657.25,
+        "sign_p": 1.9073486328125e-06,
+        "lower_pairs": 20,
+        "higher_pairs": 0,
+        "ties": 0
+      },
+      "flushed_vs_delay8": {
+        "percent": -0.5322616973102434,
+        "ci95_percent": [
+          -1.0662791202802335,
+          -0.03307089124059415
+        ],
+        "absolute": -67.35,
+        "sign_p": 0.26317596435546875,
+        "lower_pairs": 13,
+        "higher_pairs": 7,
+        "ties": 0
+      },
+      "flushed_vs_immediate": {
+        "percent": -15.49256056292636,
+        "ci95_percent": [
+          -17.113306842797716,
+          -13.912739277514364
+        ],
+        "absolute": -2307.4,
+        "sign_p": 1.9073486328125e-06,
+        "lower_pairs": 20,
+        "higher_pairs": 0,
+        "ties": 0
+      },
+      "pipeline_means": {
+        "accepted": 9164.35,
+        "clamped": 6.65,
+        "pending_batches": 13,
+        "pending_proposals": 350.8,
+        "proposals": 9521.8,
+        "published": 499,
+        "rejected": 6.65
+      },
+      "checkpoint_mean_stocks": {
+        "128": 4442.75,
+        "256": 6494.45,
+        "384": 9065.8,
+        "512": 12236.35
+      }
+    },
+    {
+      "scenario": "multi",
+      "delay": 16,
+      "mean_stock": 12001.55,
+      "mean_flushed_stock": 12448.2,
+      "mean_deposits": 2431.15,
+      "vs_delay8": {
+        "percent": -3.2760989841272403,
+        "ci95_percent": [
+          -3.754134220671712,
+          -2.8600715925921394
+        ],
+        "absolute": -406.5,
+        "sign_p": 1.9073486328125e-06,
+        "lower_pairs": 20,
+        "higher_pairs": 0,
+        "ties": 0,
+        "holm_p": 6.866455078125e-05
+      },
+      "vs_immediate": {
+        "percent": -19.4180721920825,
+        "ci95_percent": [
+          -20.93097055434002,
+          -17.899611076698108
+        ],
+        "absolute": -2892.05,
+        "sign_p": 1.9073486328125e-06,
+        "lower_pairs": 20,
+        "higher_pairs": 0,
+        "ties": 0
+      },
+      "flushed_vs_delay8": {
+        "percent": -1.6228647296608445,
+        "ci95_percent": [
+          -2.091812812501226,
+          -1.202541780417976
+        ],
+        "absolute": -205.35,
+        "sign_p": 4.00543212890625e-05,
+        "lower_pairs": 19,
+        "higher_pairs": 1,
+        "ties": 0
+      },
+      "flushed_vs_immediate": {
+        "percent": -16.41913305043777,
+        "ci95_percent": [
+          -17.985794522657137,
+          -14.85257852090729
+        ],
+        "absolute": -2445.4,
+        "sign_p": 1.9073486328125e-06,
+        "lower_pairs": 20,
+        "higher_pairs": 0,
+        "ties": 0
+      },
+      "pipeline_means": {
+        "accepted": 8929.55,
+        "clamped": 10.3,
+        "pending_batches": 17,
+        "pending_proposals": 447.65,
+        "proposals": 9387.5,
+        "published": 495,
+        "rejected": 10.3
+      },
+      "checkpoint_mean_stocks": {
+        "128": 4377.65,
+        "256": 6389.65,
+        "384": 8898.15,
+        "512": 12001.55
+      }
+    },
+    {
+      "scenario": "saturated",
+      "delay": 1,
+      "mean_stock": 8930.4,
+      "mean_flushed_stock": 8951.55,
+      "mean_deposits": 2535.8,
+      "vs_delay8": {
+        "percent": 1.2172730363821938,
+        "ci95_percent": [
+          0.8466915583504209,
+          1.6107581750829159
+        ],
+        "absolute": 107.4,
+        "sign_p": 4.00543212890625e-05,
+        "lower_pairs": 1,
+        "higher_pairs": 19,
+        "ties": 0,
+        "holm_p": 0.000881195068359375
+      },
+      "vs_immediate": {
+        "percent": -1.127626006808935,
+        "ci95_percent": [
+          -2.0623575490695045,
+          -0.1846143611123452
+        ],
+        "absolute": -101.85,
+        "sign_p": 0.11531829833984375,
+        "lower_pairs": 14,
+        "higher_pairs": 6,
+        "ties": 0
+      },
+      "flushed_vs_delay8": {
+        "percent": 0.4325143049478397,
+        "ci95_percent": [
+          0.055325189167443334,
+          0.8339655511534483
+        ],
+        "absolute": 38.55,
+        "sign_p": 0.26317596435546875,
+        "lower_pairs": 7,
+        "higher_pairs": 13,
+        "ties": 0
+      },
+      "flushed_vs_immediate": {
+        "percent": -0.8934650834509728,
+        "ci95_percent": [
+          -1.8304330253082535,
+          0.05971881924173861
+        ],
+        "absolute": -80.7,
+        "sign_p": 0.11531829833984375,
+        "lower_pairs": 14,
+        "higher_pairs": 6,
+        "ties": 0
+      },
+      "pipeline_means": {
+        "accepted": 3810.4,
+        "clamped": 1.45,
+        "pending_batches": 2,
+        "pending_proposals": 21.2,
+        "proposals": 3833.05,
+        "published": 510,
+        "rejected": 1.45
+      },
+      "checkpoint_mean_stocks": {
+        "128": 5708.7,
+        "256": 6561.9,
+        "384": 7660.6,
+        "512": 8930.4
+      }
+    },
+    {
+      "scenario": "saturated",
+      "delay": 2,
+      "mean_stock": 8918.65,
+      "mean_flushed_stock": 8949.25,
+      "mean_deposits": 2532.1,
+      "vs_delay8": {
+        "percent": 1.084098379236087,
+        "ci95_percent": [
+          0.7666932604550425,
+          1.4225783589767005
+        ],
+        "absolute": 95.65,
+        "sign_p": 4.00543212890625e-05,
+        "lower_pairs": 1,
+        "higher_pairs": 19,
+        "ties": 0,
+        "holm_p": 0.000881195068359375
+      },
+      "vs_immediate": {
+        "percent": -1.2577154086744757,
+        "ci95_percent": [
+          -2.188411492204412,
+          -0.3172090036426489
+        ],
+        "absolute": -113.6,
+        "sign_p": 0.04138946533203125,
+        "lower_pairs": 15,
+        "higher_pairs": 5,
+        "ties": 0
+      },
+      "flushed_vs_delay8": {
+        "percent": 0.4067093010209799,
+        "ci95_percent": [
+          0.09070067663816683,
+          0.7360253507357362
+        ],
+        "absolute": 36.25,
+        "sign_p": 0.359283447265625,
+        "lower_pairs": 7,
+        "higher_pairs": 12,
+        "ties": 1
+      },
+      "flushed_vs_immediate": {
+        "percent": -0.9189293919012465,
+        "ci95_percent": [
+          -1.8573277167478919,
+          0.026209542504074257
+        ],
+        "absolute": -83,
+        "sign_p": 0.04138946533203125,
+        "lower_pairs": 15,
+        "higher_pairs": 5,
+        "ties": 0
+      },
+      "pipeline_means": {
+        "accepted": 3798.65,
+        "clamped": 1.95,
+        "pending_batches": 3,
+        "pending_proposals": 30.65,
+        "proposals": 3831.25,
+        "published": 509,
+        "rejected": 1.95
+      },
+      "checkpoint_mean_stocks": {
+        "128": 5701.3,
+        "256": 6555.6,
+        "384": 7654.25,
+        "512": 8918.65
+      }
+    },
+    {
+      "scenario": "saturated",
+      "delay": 3,
+      "mean_stock": 8898.7,
+      "mean_flushed_stock": 8939.6,
+      "mean_deposits": 2524.1,
+      "vs_delay8": {
+        "percent": 0.8579848124220746,
+        "ci95_percent": [
+          0.5422864428389351,
+          1.1911259693889065
+        ],
+        "absolute": 75.7,
+        "sign_p": 0.0004024505615234375,
+        "lower_pairs": 2,
+        "higher_pairs": 18,
+        "ties": 0,
+        "holm_p": 0.005634307861328125
+      },
+      "vs_immediate": {
+        "percent": -1.4785906058844667,
+        "ci95_percent": [
+          -2.4316832559657886,
+          -0.5065788373764923
+        ],
+        "absolute": -133.55,
+        "sign_p": 0.0192108154296875,
+        "lower_pairs": 15,
+        "higher_pairs": 4,
+        "ties": 1
+      },
+      "flushed_vs_delay8": {
+        "percent": 0.2984404801974705,
+        "ci95_percent": [
+          -0.011221392462590352,
+          0.6276363554118092
+        ],
+        "absolute": 26.6,
+        "sign_p": 0.359283447265625,
+        "lower_pairs": 7,
+        "higher_pairs": 12,
+        "ties": 1
+      },
+      "flushed_vs_immediate": {
+        "percent": -1.025768773007829,
+        "ci95_percent": [
+          -1.9769955608363476,
+          -0.053207998935844714
+        ],
+        "absolute": -92.65,
+        "sign_p": 0.04138946533203125,
+        "lower_pairs": 15,
+        "higher_pairs": 5,
+        "ties": 0
+      },
+      "pipeline_means": {
+        "accepted": 3778.7,
+        "clamped": 3.1,
+        "pending_batches": 4,
+        "pending_proposals": 41.05,
+        "proposals": 3822.85,
+        "published": 508,
+        "rejected": 3.1
+      },
+      "checkpoint_mean_stocks": {
+        "128": 5694.6,
+        "256": 6545.65,
+        "384": 7636.5,
+        "512": 8898.7
+      }
+    },
+    {
+      "scenario": "saturated",
+      "delay": 4,
+      "mean_stock": 8871.4,
+      "mean_flushed_stock": 8921.55,
+      "mean_deposits": 2519.4,
+      "vs_delay8": {
+        "percent": 0.5485662473081687,
+        "ci95_percent": [
+          0.18131908228966598,
+          0.9147333740642916
+        ],
+        "absolute": 48.4,
+        "sign_p": 0.26317596435546875,
+        "lower_pairs": 7,
+        "higher_pairs": 13,
+        "ties": 0,
+        "holm_p": 1
+      },
+      "vs_immediate": {
+        "percent": -1.7808408757507777,
+        "ci95_percent": [
+          -2.732856412314899,
+          -0.8305083802303326
+        ],
+        "absolute": -160.85,
+        "sign_p": 0.0025768280029296875,
+        "lower_pairs": 17,
+        "higher_pairs": 3,
+        "ties": 0
+      },
+      "flushed_vs_delay8": {
+        "percent": 0.09592729720633297,
+        "ci95_percent": [
+          -0.2672496212100084,
+          0.44989889912379066
+        ],
+        "absolute": 8.55,
+        "sign_p": 0.8238029479980469,
+        "lower_pairs": 9,
+        "higher_pairs": 11,
+        "ties": 0
+      },
+      "flushed_vs_immediate": {
+        "percent": -1.2256082371502108,
+        "ci95_percent": [
+          -2.1869422470969346,
+          -0.26859894784843075
+        ],
+        "absolute": -110.7,
+        "sign_p": 0.01181793212890625,
+        "lower_pairs": 16,
+        "higher_pairs": 4,
+        "ties": 0
+      },
+      "pipeline_means": {
+        "accepted": 3751.4,
+        "clamped": 4.2,
+        "pending_batches": 5,
+        "pending_proposals": 50.25,
+        "proposals": 3805.85,
+        "published": 507,
+        "rejected": 4.2
+      },
+      "checkpoint_mean_stocks": {
+        "128": 5688.3,
+        "256": 6533.4,
+        "384": 7614.5,
+        "512": 8871.4
+      }
+    },
+    {
+      "scenario": "saturated",
+      "delay": 8,
+      "mean_stock": 8823,
+      "mean_flushed_stock": 8913,
+      "mean_deposits": 2514.25,
+      "vs_delay8": {
+        "percent": 0.0,
+        "ci95_percent": [
+          0.0,
+          0.0
+        ],
+        "absolute": 0,
+        "sign_p": 1,
+        "lower_pairs": 0,
+        "higher_pairs": 0,
+        "ties": 20
+      },
+      "vs_immediate": {
+        "percent": -2.3166984970522275,
+        "ci95_percent": [
+          -3.3639446248880267,
+          -1.3100678576374425
+        ],
+        "absolute": -209.25,
+        "sign_p": 0.0025768280029296875,
+        "lower_pairs": 17,
+        "higher_pairs": 3,
+        "ties": 0
+      },
+      "flushed_vs_delay8": {
+        "percent": 0.0,
+        "ci95_percent": [
+          0.0,
+          0.0
+        ],
+        "absolute": 0,
+        "sign_p": 1,
+        "lower_pairs": 0,
+        "higher_pairs": 0,
+        "ties": 20
+      },
+      "flushed_vs_immediate": {
+        "percent": -1.320269035954491,
+        "ci95_percent": [
+          -2.3873524739304153,
+          -0.2989935366267127
+        ],
+        "absolute": -119.25,
+        "sign_p": 0.11531829833984375,
+        "lower_pairs": 14,
+        "higher_pairs": 6,
+        "ties": 0
+      },
+      "pipeline_means": {
+        "accepted": 3703,
+        "clamped": 6.4,
+        "pending_batches": 9,
+        "pending_proposals": 90.25,
+        "proposals": 3799.65,
+        "published": 503,
+        "rejected": 6.4
+      },
+      "checkpoint_mean_stocks": {
+        "128": 5661.55,
+        "256": 6491.55,
+        "384": 7566.95,
+        "512": 8823
+      }
+    },
+    {
+      "scenario": "saturated",
+      "delay": 12,
+      "mean_stock": 8747.45,
+      "mean_flushed_stock": 8883.4,
+      "mean_deposits": 2498.25,
+      "vs_delay8": {
+        "percent": -0.8562847104159554,
+        "ci95_percent": [
+          -1.0922466821387533,
+          -0.6244135460206413
+        ],
+        "absolute": -75.55,
+        "sign_p": 4.00543212890625e-05,
+        "lower_pairs": 19,
+        "higher_pairs": 1,
+        "ties": 0,
+        "holm_p": 0.000881195068359375
+      },
+      "vs_immediate": {
+        "percent": -3.153145672451496,
+        "ci95_percent": [
+          -4.219546469016066,
+          -2.1373305927374187
+        ],
+        "absolute": -284.8,
+        "sign_p": 4.00543212890625e-05,
+        "lower_pairs": 19,
+        "higher_pairs": 1,
+        "ties": 0
+      },
+      "flushed_vs_delay8": {
+        "percent": -0.3320991809716123,
+        "ci95_percent": [
+          -0.5711767691698455,
+          -0.08646803508454148
+        ],
+        "absolute": -29.6,
+        "sign_p": 0.11531829833984375,
+        "lower_pairs": 14,
+        "higher_pairs": 6,
+        "ties": 0
+      },
+      "flushed_vs_immediate": {
+        "percent": -1.6479836142710869,
+        "ci95_percent": [
+          -2.741197862141165,
+          -0.6104334688617818
+        ],
+        "absolute": -148.85,
+        "sign_p": 0.04138946533203125,
+        "lower_pairs": 15,
+        "higher_pairs": 5,
+        "ties": 0
+      },
+      "pipeline_means": {
+        "accepted": 3627.45,
+        "clamped": 9.35,
+        "pending_batches": 13,
+        "pending_proposals": 137,
+        "proposals": 3773.8,
+        "published": 499,
+        "rejected": 9.35
+      },
+      "checkpoint_mean_stocks": {
+        "128": 5629.7,
+        "256": 6448.5,
+        "384": 7513.7,
+        "512": 8747.45
+      }
+    },
+    {
+      "scenario": "saturated",
+      "delay": 16,
+      "mean_stock": 8687.9,
+      "mean_flushed_stock": 8862.65,
+      "mean_deposits": 2488.4,
+      "vs_delay8": {
+        "percent": -1.5312252068457433,
+        "ci95_percent": [
+          -1.8862700112452835,
+          -1.1603322000642735
+        ],
+        "absolute": -135.1,
+        "sign_p": 0.0004024505615234375,
+        "lower_pairs": 18,
+        "higher_pairs": 2,
+        "ties": 0,
+        "holm_p": 0.005634307861328125
+      },
+      "vs_immediate": {
+        "percent": -3.8124498325444955,
+        "ci95_percent": [
+          -4.8809099629984924,
+          -2.786269494732052
+        ],
+        "absolute": -344.35,
+        "sign_p": 4.00543212890625e-05,
+        "lower_pairs": 19,
+        "higher_pairs": 1,
+        "ties": 0
+      },
+      "flushed_vs_delay8": {
+        "percent": -0.5649051946594819,
+        "ci95_percent": [
+          -0.9173952467843582,
+          -0.19859905623013097
+        ],
+        "absolute": -50.35,
+        "sign_p": 0.01181793212890625,
+        "lower_pairs": 16,
+        "higher_pairs": 4,
+        "ties": 0
+      },
+      "flushed_vs_immediate": {
+        "percent": -1.8777159622463957,
+        "ci95_percent": [
+          -2.9818065786795356,
+          -0.8308291597106332
+        ],
+        "absolute": -169.6,
+        "sign_p": 0.01181793212890625,
+        "lower_pairs": 16,
+        "higher_pairs": 4,
+        "ties": 0
+      },
+      "pipeline_means": {
+        "accepted": 3567.9,
+        "clamped": 12.45,
+        "pending_batches": 17,
+        "pending_proposals": 176.2,
+        "proposals": 3756.55,
+        "published": 495,
+        "rejected": 12.45
+      },
+      "checkpoint_mean_stocks": {
+        "128": 5601.1,
+        "256": 6407.8,
+        "384": 7458.45,
+        "512": 8687.9
+      }
+    },
+    {
+      "scenario": "blocked",
+      "delay": 1,
+      "mean_stock": 4041.35,
+      "mean_flushed_stock": 4044.1,
+      "mean_deposits": 1024,
+      "vs_delay8": {
+        "percent": 0.23811000186022557,
+        "ci95_percent": [
+          0.14993618418606136,
+          0.3314382184264719
+        ],
+        "absolute": 9.6,
+        "sign_p": 0.004425048828125,
+        "lower_pairs": 3,
+        "higher_pairs": 16,
+        "ties": 1,
+        "holm_p": 0.039825439453125
+      },
+      "vs_immediate": {
+        "percent": -0.007422711021487505,
+        "ci95_percent": [
+          -0.8297320656871165,
+          0.7743006516514273
+        ],
+        "absolute": -0.3,
+        "sign_p": 0.8238029479980469,
+        "lower_pairs": 11,
+        "higher_pairs": 9,
+        "ties": 0
+      },
+      "flushed_vs_delay8": {
+        "percent": -0.07659616525005353,
+        "ci95_percent": [
+          -0.1416744690287297,
+          -0.007434023045471694
+        ],
+        "absolute": -3.1,
+        "sign_p": 0.11531829833984375,
+        "lower_pairs": 14,
+        "higher_pairs": 6,
+        "ties": 0
+      },
+      "flushed_vs_immediate": {
+        "percent": 0.06061880667549424,
+        "ci95_percent": [
+          -0.7596966146636297,
+          0.8399399511172412
+        ],
+        "absolute": 2.45,
+        "sign_p": 0.8238029479980469,
+        "lower_pairs": 11,
+        "higher_pairs": 9,
+        "ties": 0
+      },
+      "pipeline_means": {
+        "accepted": 1471.1,
+        "clamped": 3.4,
+        "pending_batches": 2,
+        "pending_proposals": 2.75,
+        "proposals": 1477.25,
+        "published": 510,
+        "rejected": 3.4
+      },
+      "checkpoint_mean_stocks": {
+        "128": 3042.25,
+        "256": 3428.6,
+        "384": 3773.7,
+        "512": 4041.35
+      }
+    },
+    {
+      "scenario": "blocked",
+      "delay": 2,
+      "mean_stock": 4039.7,
+      "mean_flushed_stock": 4044.25,
+      "mean_deposits": 1024,
+      "vs_delay8": {
+        "percent": 0.19718484529049896,
+        "ci95_percent": [
+          0.1161339741293066,
+          0.28557238639186355
+        ],
+        "absolute": 7.95,
+        "sign_p": 0.001312255859375,
+        "lower_pairs": 2,
+        "higher_pairs": 16,
+        "ties": 2,
+        "holm_p": 0.014434814453125
+      },
+      "vs_immediate": {
+        "percent": -0.04824762163967433,
+        "ci95_percent": [
+          -0.8543943815223276,
+          0.7210046908738832
+        ],
+        "absolute": -1.95,
+        "sign_p": 0.8238029479980469,
+        "lower_pairs": 11,
+        "higher_pairs": 9,
+        "ties": 0
+      },
+      "flushed_vs_delay8": {
+        "percent": -0.07288989918956545,
+        "ci95_percent": [
+          -0.13321656325936404,
+          -0.007456658174365138
+        ],
+        "absolute": -2.95,
+        "sign_p": 0.0308837890625,
+        "lower_pairs": 14,
+        "higher_pairs": 4,
+        "ties": 2
+      },
+      "flushed_vs_immediate": {
+        "percent": 0.06433016218623244,
+        "ci95_percent": [
+          -0.7424427726099192,
+          0.8323115223126454
+        ],
+        "absolute": 2.6,
+        "sign_p": 0.8238029479980469,
+        "lower_pairs": 11,
+        "higher_pairs": 9,
+        "ties": 0
+      },
+      "pipeline_means": {
+        "accepted": 1469.45,
+        "clamped": 4.3,
+        "pending_batches": 3,
+        "pending_proposals": 4.55,
+        "proposals": 1478.3,
+        "published": 509,
+        "rejected": 4.3
+      },
+      "checkpoint_mean_stocks": {
+        "128": 3038.4,
+        "256": 3426.5,
+        "384": 3772.65,
+        "512": 4039.7
+      }
+    },
+    {
+      "scenario": "blocked",
+      "delay": 3,
+      "mean_stock": 4038.2,
+      "mean_flushed_stock": 4044.45,
+      "mean_deposits": 1024,
+      "vs_delay8": {
+        "percent": 0.1599801574998505,
+        "ci95_percent": [
+          0.08165285166399361,
+          0.23946597846047357
+        ],
+        "absolute": 6.45,
+        "sign_p": 0.004425048828125,
+        "lower_pairs": 3,
+        "higher_pairs": 16,
+        "ties": 1,
+        "holm_p": 0.039825439453125
+      },
+      "vs_immediate": {
+        "percent": -0.08536117674712296,
+        "ci95_percent": [
+          -0.8857975884562164,
+          0.6833486569092662
+        ],
+        "absolute": -3.45,
+        "sign_p": 0.8238029479980469,
+        "lower_pairs": 11,
+        "higher_pairs": 9,
+        "ties": 0
+      },
+      "flushed_vs_delay8": {
+        "percent": -0.06794821110891469,
+        "ci95_percent": [
+          -0.12331976815883605,
+          -0.007433194167416612
+        ],
+        "absolute": -2.75,
+        "sign_p": 0.012725830078125,
+        "lower_pairs": 14,
+        "higher_pairs": 3,
+        "ties": 3
+      },
+      "flushed_vs_immediate": {
+        "percent": 0.06927863620056485,
+        "ci95_percent": [
+          -0.7415175817396702,
+          0.8393582252154141
+        ],
+        "absolute": 2.8,
+        "sign_p": 0.8238029479980469,
+        "lower_pairs": 11,
+        "higher_pairs": 9,
+        "ties": 0
+      },
+      "pipeline_means": {
+        "accepted": 1467.95,
+        "clamped": 5.8,
+        "pending_batches": 4,
+        "pending_proposals": 6.3,
+        "proposals": 1480.05,
+        "published": 508,
+        "rejected": 5.8
+      },
+      "checkpoint_mean_stocks": {
+        "128": 3034.45,
+        "256": 3422.9,
+        "384": 3770.3,
+        "512": 4038.2
+      }
+    },
+    {
+      "scenario": "blocked",
+      "delay": 4,
+      "mean_stock": 4036.9,
+      "mean_flushed_stock": 4045.1,
+      "mean_deposits": 1024,
+      "vs_delay8": {
+        "percent": 0.12773609474794334,
+        "ci95_percent": [
+          0.05568686656189925,
+          0.20125973687152854
+        ],
+        "absolute": 5.15,
+        "sign_p": 0.001312255859375,
+        "lower_pairs": 2,
+        "higher_pairs": 16,
+        "ties": 2,
+        "holm_p": 0.014434814453125
+      },
+      "vs_immediate": {
+        "percent": -0.11752625784023918,
+        "ci95_percent": [
+          -0.9256292060048854,
+          0.6564633039499723
+        ],
+        "absolute": -4.75,
+        "sign_p": 0.8238029479980469,
+        "lower_pairs": 11,
+        "higher_pairs": 9,
+        "ties": 0
+      },
+      "flushed_vs_delay8": {
+        "percent": -0.05188772484681081,
+        "ci95_percent": [
+          -0.10713098301912138,
+          0.009880324568656285
+        ],
+        "absolute": -2.1,
+        "sign_p": 0.049041748046875,
+        "lower_pairs": 13,
+        "higher_pairs": 4,
+        "ties": 3
+      },
+      "flushed_vs_immediate": {
+        "percent": 0.08536117674711186,
+        "ci95_percent": [
+          -0.7288917392269556,
+          0.8619404838789757
+        ],
+        "absolute": 3.45,
+        "sign_p": 0.8238029479980469,
+        "lower_pairs": 11,
+        "higher_pairs": 9,
+        "ties": 0
+      },
+      "pipeline_means": {
+        "accepted": 1466.65,
+        "clamped": 6.8,
+        "pending_batches": 5,
+        "pending_proposals": 8.3,
+        "proposals": 1481.75,
+        "published": 507,
+        "rejected": 6.8
+      },
+      "checkpoint_mean_stocks": {
+        "128": 3030.6,
+        "256": 3419.95,
+        "384": 3768.35,
+        "512": 4036.9
+      }
+    },
+    {
+      "scenario": "blocked",
+      "delay": 8,
+      "mean_stock": 4031.75,
+      "mean_flushed_stock": 4047.2,
+      "mean_deposits": 1024,
+      "vs_delay8": {
+        "percent": 0.0,
+        "ci95_percent": [
+          0.0,
+          0.0
+        ],
+        "absolute": 0,
+        "sign_p": 1,
+        "lower_pairs": 0,
+        "higher_pairs": 0,
+        "ties": 20
+      },
+      "vs_immediate": {
+        "percent": -0.24494946370913206,
+        "ci95_percent": [
+          -1.0785026685237509,
+          0.5616587490102853
+        ],
+        "absolute": -9.9,
+        "sign_p": 0.8238029479980469,
+        "lower_pairs": 11,
+        "higher_pairs": 9,
+        "ties": 0
+      },
+      "flushed_vs_delay8": {
+        "percent": 0.0,
+        "ci95_percent": [
+          0.0,
+          0.0
+        ],
+        "absolute": 0,
+        "sign_p": 1,
+        "lower_pairs": 0,
+        "higher_pairs": 0,
+        "ties": 20
+      },
+      "flushed_vs_immediate": {
+        "percent": 0.1373201538975355,
+        "ci95_percent": [
+          -0.6869769328138986,
+          0.932189714881515
+        ],
+        "absolute": 5.55,
+        "sign_p": 1,
+        "lower_pairs": 10,
+        "higher_pairs": 9,
+        "ties": 1
+      },
+      "pipeline_means": {
+        "accepted": 1461.5,
+        "clamped": 12.45,
+        "pending_batches": 9,
+        "pending_proposals": 15.8,
+        "proposals": 1489.75,
+        "published": 503,
+        "rejected": 12.45
+      },
+      "checkpoint_mean_stocks": {
+        "128": 3016.65,
+        "256": 3411.4,
+        "384": 3762.55,
+        "512": 4031.75
+      }
+    },
+    {
+      "scenario": "blocked",
+      "delay": 12,
+      "mean_stock": 4022.65,
+      "mean_flushed_stock": 4048.25,
+      "mean_deposits": 1024,
+      "vs_delay8": {
+        "percent": -0.22570843926335016,
+        "ci95_percent": [
+          -0.30350146153367286,
+          -0.15404683520715556
+        ],
+        "absolute": -9.1,
+        "sign_p": 7.62939453125e-05,
+        "lower_pairs": 18,
+        "higher_pairs": 1,
+        "ties": 1,
+        "holm_p": 0.001220703125
+      },
+      "vs_immediate": {
+        "percent": -0.4701050313609567,
+        "ci95_percent": [
+          -1.3147518359702293,
+          0.34499447760638624
+        ],
+        "absolute": -19,
+        "sign_p": 0.5034446716308594,
+        "lower_pairs": 12,
+        "higher_pairs": 8,
+        "ties": 0
+      },
+      "flushed_vs_delay8": {
+        "percent": 0.025943862423405406,
+        "ci95_percent": [
+          -0.003719453984152299,
+          0.05666769325531895
+        ],
+        "absolute": 1.05,
+        "sign_p": 0.332305908203125,
+        "lower_pairs": 6,
+        "higher_pairs": 11,
+        "ties": 3
+      },
+      "flushed_vs_immediate": {
+        "percent": 0.1632996424727473,
+        "ci95_percent": [
+          -0.6621618288983666,
+          0.9578876839466899
+        ],
+        "absolute": 6.6,
+        "sign_p": 1,
+        "lower_pairs": 10,
+        "higher_pairs": 9,
+        "ties": 1
+      },
+      "pipeline_means": {
+        "accepted": 1452.4,
+        "clamped": 16.8,
+        "pending_batches": 13,
+        "pending_proposals": 26.25,
+        "proposals": 1495.45,
+        "published": 499,
+        "rejected": 16.8
+      },
+      "checkpoint_mean_stocks": {
+        "128": 3001.65,
+        "256": 3405.4,
+        "384": 3754.8,
+        "512": 4022.65
+      }
+    },
+    {
+      "scenario": "blocked",
+      "delay": 16,
+      "mean_stock": 4019.55,
+      "mean_flushed_stock": 4050.65,
+      "mean_deposits": 1024,
+      "vs_delay8": {
+        "percent": -0.302598127364051,
+        "ci95_percent": [
+          -0.41014168530947304,
+          -0.19969983006908887
+        ],
+        "absolute": -12.2,
+        "sign_p": 7.62939453125e-05,
+        "lower_pairs": 18,
+        "higher_pairs": 1,
+        "ties": 1,
+        "holm_p": 0.001220703125
+      },
+      "vs_immediate": {
+        "percent": -0.5468063785830091,
+        "ci95_percent": [
+          -1.395492435937018,
+          0.28110151993829824
+        ],
+        "absolute": -22.1,
+        "sign_p": 0.5034446716308594,
+        "lower_pairs": 12,
+        "higher_pairs": 8,
+        "ties": 0
+      },
+      "flushed_vs_delay8": {
+        "percent": 0.08524411939119236,
+        "ci95_percent": [
+          0.024612052522110517,
+          0.15321315161924698
+        ],
+        "absolute": 3.45,
+        "sign_p": 0.1670684814453125,
+        "lower_pairs": 6,
+        "higher_pairs": 13,
+        "ties": 1
+      },
+      "flushed_vs_immediate": {
+        "percent": 0.22268133064466955,
+        "ci95_percent": [
+          -0.6137610390888337,
+          1.0319135725816553
+        ],
+        "absolute": 9,
+        "sign_p": 1,
+        "lower_pairs": 10,
+        "higher_pairs": 9,
+        "ties": 1
+      },
+      "pipeline_means": {
+        "accepted": 1449.3,
+        "clamped": 21.15,
+        "pending_batches": 17,
+        "pending_proposals": 31.75,
+        "proposals": 1502.2,
+        "published": 495,
+        "rejected": 21.15
+      },
+      "checkpoint_mean_stocks": {
+        "128": 2983.85,
+        "256": 3395.95,
+        "384": 3747.2,
+        "512": 4019.55
+      }
+    },
+    {
+      "scenario": "disabled",
+      "delay": 1,
+      "mean_stock": 2570.25,
+      "mean_flushed_stock": 2570.25,
+      "mean_deposits": 1024,
+      "vs_delay8": {
+        "percent": 0.0,
+        "ci95_percent": [
+          0.0,
+          0.0
+        ],
+        "absolute": 0,
+        "sign_p": 1,
+        "lower_pairs": 0,
+        "higher_pairs": 0,
+        "ties": 20,
+        "holm_p": 1
+      },
+      "vs_immediate": {
+        "percent": 0.0,
+        "ci95_percent": [
+          0.0,
+          0.0
+        ],
+        "absolute": 0,
+        "sign_p": 1,
+        "lower_pairs": 0,
+        "higher_pairs": 0,
+        "ties": 20
+      },
+      "flushed_vs_delay8": {
+        "percent": 0.0,
+        "ci95_percent": [
+          0.0,
+          0.0
+        ],
+        "absolute": 0,
+        "sign_p": 1,
+        "lower_pairs": 0,
+        "higher_pairs": 0,
+        "ties": 20
+      },
+      "flushed_vs_immediate": {
+        "percent": 0.0,
+        "ci95_percent": [
+          0.0,
+          0.0
+        ],
+        "absolute": 0,
+        "sign_p": 1,
+        "lower_pairs": 0,
+        "higher_pairs": 0,
+        "ties": 20
+      },
+      "pipeline_means": {
+        "accepted": 0,
+        "clamped": 0,
+        "pending_batches": 0,
+        "pending_proposals": 0,
+        "proposals": 0,
+        "published": 0,
+        "rejected": 0
+      },
+      "checkpoint_mean_stocks": {
+        "128": 2570.25,
+        "256": 2570.25,
+        "384": 2570.25,
+        "512": 2570.25
+      }
+    },
+    {
+      "scenario": "disabled",
+      "delay": 2,
+      "mean_stock": 2570.25,
+      "mean_flushed_stock": 2570.25,
+      "mean_deposits": 1024,
+      "vs_delay8": {
+        "percent": 0.0,
+        "ci95_percent": [
+          0.0,
+          0.0
+        ],
+        "absolute": 0,
+        "sign_p": 1,
+        "lower_pairs": 0,
+        "higher_pairs": 0,
+        "ties": 20,
+        "holm_p": 1
+      },
+      "vs_immediate": {
+        "percent": 0.0,
+        "ci95_percent": [
+          0.0,
+          0.0
+        ],
+        "absolute": 0,
+        "sign_p": 1,
+        "lower_pairs": 0,
+        "higher_pairs": 0,
+        "ties": 20
+      },
+      "flushed_vs_delay8": {
+        "percent": 0.0,
+        "ci95_percent": [
+          0.0,
+          0.0
+        ],
+        "absolute": 0,
+        "sign_p": 1,
+        "lower_pairs": 0,
+        "higher_pairs": 0,
+        "ties": 20
+      },
+      "flushed_vs_immediate": {
+        "percent": 0.0,
+        "ci95_percent": [
+          0.0,
+          0.0
+        ],
+        "absolute": 0,
+        "sign_p": 1,
+        "lower_pairs": 0,
+        "higher_pairs": 0,
+        "ties": 20
+      },
+      "pipeline_means": {
+        "accepted": 0,
+        "clamped": 0,
+        "pending_batches": 0,
+        "pending_proposals": 0,
+        "proposals": 0,
+        "published": 0,
+        "rejected": 0
+      },
+      "checkpoint_mean_stocks": {
+        "128": 2570.25,
+        "256": 2570.25,
+        "384": 2570.25,
+        "512": 2570.25
+      }
+    },
+    {
+      "scenario": "disabled",
+      "delay": 3,
+      "mean_stock": 2570.25,
+      "mean_flushed_stock": 2570.25,
+      "mean_deposits": 1024,
+      "vs_delay8": {
+        "percent": 0.0,
+        "ci95_percent": [
+          0.0,
+          0.0
+        ],
+        "absolute": 0,
+        "sign_p": 1,
+        "lower_pairs": 0,
+        "higher_pairs": 0,
+        "ties": 20,
+        "holm_p": 1
+      },
+      "vs_immediate": {
+        "percent": 0.0,
+        "ci95_percent": [
+          0.0,
+          0.0
+        ],
+        "absolute": 0,
+        "sign_p": 1,
+        "lower_pairs": 0,
+        "higher_pairs": 0,
+        "ties": 20
+      },
+      "flushed_vs_delay8": {
+        "percent": 0.0,
+        "ci95_percent": [
+          0.0,
+          0.0
+        ],
+        "absolute": 0,
+        "sign_p": 1,
+        "lower_pairs": 0,
+        "higher_pairs": 0,
+        "ties": 20
+      },
+      "flushed_vs_immediate": {
+        "percent": 0.0,
+        "ci95_percent": [
+          0.0,
+          0.0
+        ],
+        "absolute": 0,
+        "sign_p": 1,
+        "lower_pairs": 0,
+        "higher_pairs": 0,
+        "ties": 20
+      },
+      "pipeline_means": {
+        "accepted": 0,
+        "clamped": 0,
+        "pending_batches": 0,
+        "pending_proposals": 0,
+        "proposals": 0,
+        "published": 0,
+        "rejected": 0
+      },
+      "checkpoint_mean_stocks": {
+        "128": 2570.25,
+        "256": 2570.25,
+        "384": 2570.25,
+        "512": 2570.25
+      }
+    },
+    {
+      "scenario": "disabled",
+      "delay": 4,
+      "mean_stock": 2570.25,
+      "mean_flushed_stock": 2570.25,
+      "mean_deposits": 1024,
+      "vs_delay8": {
+        "percent": 0.0,
+        "ci95_percent": [
+          0.0,
+          0.0
+        ],
+        "absolute": 0,
+        "sign_p": 1,
+        "lower_pairs": 0,
+        "higher_pairs": 0,
+        "ties": 20,
+        "holm_p": 1
+      },
+      "vs_immediate": {
+        "percent": 0.0,
+        "ci95_percent": [
+          0.0,
+          0.0
+        ],
+        "absolute": 0,
+        "sign_p": 1,
+        "lower_pairs": 0,
+        "higher_pairs": 0,
+        "ties": 20
+      },
+      "flushed_vs_delay8": {
+        "percent": 0.0,
+        "ci95_percent": [
+          0.0,
+          0.0
+        ],
+        "absolute": 0,
+        "sign_p": 1,
+        "lower_pairs": 0,
+        "higher_pairs": 0,
+        "ties": 20
+      },
+      "flushed_vs_immediate": {
+        "percent": 0.0,
+        "ci95_percent": [
+          0.0,
+          0.0
+        ],
+        "absolute": 0,
+        "sign_p": 1,
+        "lower_pairs": 0,
+        "higher_pairs": 0,
+        "ties": 20
+      },
+      "pipeline_means": {
+        "accepted": 0,
+        "clamped": 0,
+        "pending_batches": 0,
+        "pending_proposals": 0,
+        "proposals": 0,
+        "published": 0,
+        "rejected": 0
+      },
+      "checkpoint_mean_stocks": {
+        "128": 2570.25,
+        "256": 2570.25,
+        "384": 2570.25,
+        "512": 2570.25
+      }
+    },
+    {
+      "scenario": "disabled",
+      "delay": 8,
+      "mean_stock": 2570.25,
+      "mean_flushed_stock": 2570.25,
+      "mean_deposits": 1024,
+      "vs_delay8": {
+        "percent": 0.0,
+        "ci95_percent": [
+          0.0,
+          0.0
+        ],
+        "absolute": 0,
+        "sign_p": 1,
+        "lower_pairs": 0,
+        "higher_pairs": 0,
+        "ties": 20
+      },
+      "vs_immediate": {
+        "percent": 0.0,
+        "ci95_percent": [
+          0.0,
+          0.0
+        ],
+        "absolute": 0,
+        "sign_p": 1,
+        "lower_pairs": 0,
+        "higher_pairs": 0,
+        "ties": 20
+      },
+      "flushed_vs_delay8": {
+        "percent": 0.0,
+        "ci95_percent": [
+          0.0,
+          0.0
+        ],
+        "absolute": 0,
+        "sign_p": 1,
+        "lower_pairs": 0,
+        "higher_pairs": 0,
+        "ties": 20
+      },
+      "flushed_vs_immediate": {
+        "percent": 0.0,
+        "ci95_percent": [
+          0.0,
+          0.0
+        ],
+        "absolute": 0,
+        "sign_p": 1,
+        "lower_pairs": 0,
+        "higher_pairs": 0,
+        "ties": 20
+      },
+      "pipeline_means": {
+        "accepted": 0,
+        "clamped": 0,
+        "pending_batches": 0,
+        "pending_proposals": 0,
+        "proposals": 0,
+        "published": 0,
+        "rejected": 0
+      },
+      "checkpoint_mean_stocks": {
+        "128": 2570.25,
+        "256": 2570.25,
+        "384": 2570.25,
+        "512": 2570.25
+      }
+    },
+    {
+      "scenario": "disabled",
+      "delay": 12,
+      "mean_stock": 2570.25,
+      "mean_flushed_stock": 2570.25,
+      "mean_deposits": 1024,
+      "vs_delay8": {
+        "percent": 0.0,
+        "ci95_percent": [
+          0.0,
+          0.0
+        ],
+        "absolute": 0,
+        "sign_p": 1,
+        "lower_pairs": 0,
+        "higher_pairs": 0,
+        "ties": 20,
+        "holm_p": 1
+      },
+      "vs_immediate": {
+        "percent": 0.0,
+        "ci95_percent": [
+          0.0,
+          0.0
+        ],
+        "absolute": 0,
+        "sign_p": 1,
+        "lower_pairs": 0,
+        "higher_pairs": 0,
+        "ties": 20
+      },
+      "flushed_vs_delay8": {
+        "percent": 0.0,
+        "ci95_percent": [
+          0.0,
+          0.0
+        ],
+        "absolute": 0,
+        "sign_p": 1,
+        "lower_pairs": 0,
+        "higher_pairs": 0,
+        "ties": 20
+      },
+      "flushed_vs_immediate": {
+        "percent": 0.0,
+        "ci95_percent": [
+          0.0,
+          0.0
+        ],
+        "absolute": 0,
+        "sign_p": 1,
+        "lower_pairs": 0,
+        "higher_pairs": 0,
+        "ties": 20
+      },
+      "pipeline_means": {
+        "accepted": 0,
+        "clamped": 0,
+        "pending_batches": 0,
+        "pending_proposals": 0,
+        "proposals": 0,
+        "published": 0,
+        "rejected": 0
+      },
+      "checkpoint_mean_stocks": {
+        "128": 2570.25,
+        "256": 2570.25,
+        "384": 2570.25,
+        "512": 2570.25
+      }
+    },
+    {
+      "scenario": "disabled",
+      "delay": 16,
+      "mean_stock": 2570.25,
+      "mean_flushed_stock": 2570.25,
+      "mean_deposits": 1024,
+      "vs_delay8": {
+        "percent": 0.0,
+        "ci95_percent": [
+          0.0,
+          0.0
+        ],
+        "absolute": 0,
+        "sign_p": 1,
+        "lower_pairs": 0,
+        "higher_pairs": 0,
+        "ties": 20,
+        "holm_p": 1
+      },
+      "vs_immediate": {
+        "percent": 0.0,
+        "ci95_percent": [
+          0.0,
+          0.0
+        ],
+        "absolute": 0,
+        "sign_p": 1,
+        "lower_pairs": 0,
+        "higher_pairs": 0,
+        "ties": 20
+      },
+      "flushed_vs_delay8": {
+        "percent": 0.0,
+        "ci95_percent": [
+          0.0,
+          0.0
+        ],
+        "absolute": 0,
+        "sign_p": 1,
+        "lower_pairs": 0,
+        "higher_pairs": 0,
+        "ties": 20
+      },
+      "flushed_vs_immediate": {
+        "percent": 0.0,
+        "ci95_percent": [
+          0.0,
+          0.0
+        ],
+        "absolute": 0,
+        "sign_p": 1,
+        "lower_pairs": 0,
+        "higher_pairs": 0,
+        "ties": 20
+      },
+      "pipeline_means": {
+        "accepted": 0,
+        "clamped": 0,
+        "pending_batches": 0,
+        "pending_proposals": 0,
+        "proposals": 0,
+        "published": 0,
+        "rejected": 0
+      },
+      "checkpoint_mean_stocks": {
+        "128": 2570.25,
+        "256": 2570.25,
+        "384": 2570.25,
+        "512": 2570.25
+      }
+    }
+  ]
+}

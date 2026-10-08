@@ -1,0 +1,87 @@
+diff --git a/docs/development/reference.md b/docs/development/reference.md
+index d3bb63d81..68b026472 100644
+--- a/docs/development/reference.md
++++ b/docs/development/reference.md
+@@ -1362,6 +1362,10 @@ statistics on every tick, with two passive teams and no player seats, units,
+ buildings or harvesting. Owner/shared states and statistics must match exactly.
+ Setting `GLOB2_GROWTH_PLAYER_FREE_OUTPUT` to a JSON output path expands the check
+ from two seeds/64 ticks/32² maps to 20 seeds/512 ticks/64² maps across six scenarios.
++`GLOB2_GROWTH_PLAYER_FREE_DELAY` selects a delay from 1–16 (default 8) for this
++test only. Reports include 128-tick checkpoints, proposal outcomes and a diagnostic
++terminal flush: apply the remaining queue without generating new batches. This
++flush is separate from the normal endpoint and is not a production tick sequence.
+ The immediate reference calls the retained old growth pass, not the master engine;
+ its RNG schedule and seeding rules differ. Heavy checksums join pending work, so
+ these runs establish accounting and ecology, not parallel performance.
+diff --git a/src/map/ResourceGrowthBenchmark.cpp b/src/map/ResourceGrowthBenchmark.cpp
+index 31644910f..911dbfa74 100644
+--- a/src/map/ResourceGrowthBenchmark.cpp
++++ b/src/map/ResourceGrowthBenchmark.cpp
+@@ -58,10 +58,14 @@ TEST_SUITE("ResourceGrowthBenchmark")
+ 		glob2test::HeadlessGlobals globals;
+ 		const char *output = std::getenv("GLOB2_GROWTH_PLAYER_FREE_OUTPUT");
+ 		const unsigned seeds = output ? 20 : 2, ticks = output ? 512 : 64;
++		const char *delaySetting = std::getenv("GLOB2_GROWTH_PLAYER_FREE_DELAY");
++		const unsigned delay = delaySetting ? std::stoul(delaySetting) : 8;
++		REQUIRE(delay >= 1);
++		REQUIRE(delay <= 16);
+ 		// Heavy checksums join pending work: this is correctness evidence, not timing.
+ 		// The immediate reference uses its own RNG schedule and no full game ticks.
+ 		Json report = {{"kind", "player-free-growth"}, {"ticks", ticks},
+-			{"map_side", output ? 64 : 32}, {"samples", Json::array()}};
++			{"map_side", output ? 64 : 32}, {"delay", delay}, {"samples", Json::array()}};
+ 		for (const std::string scenario : {"dense", "sparse", "multi", "saturated", "blocked", "disabled"})
+ 			for (unsigned randomSeed = 1; randomSeed <= seeds; ++randomSeed)
+ 			{
+@@ -82,7 +86,7 @@ TEST_SUITE("ResourceGrowthBenchmark")
+ 					auto &map = world.game.map;
+ 					setup(map, scenario);
+ 					map.configureCompute(variant == "shared" ? 4 : 1, 0);
+-					map.configureResourceGrowth(8, variant == "shared");
++					map.configureResourceGrowth(delay, variant == "shared");
+ 					auto scan = [&]()
+ 					{
+ 						std::array<Uint64, MaterialCount + 1> totals{};
+@@ -95,7 +99,7 @@ TEST_SUITE("ResourceGrowthBenchmark")
+ 						return totals;
+ 					};
+ 					const auto initial = scan();
+-					Json statistics = Json::array();
++					Json statistics = Json::array(), checkpoints = Json::array();
+ 					for (unsigned tick = 0; tick < ticks; ++tick)
+ 					{
+ 						CAPTURE(tick);
+@@ -107,6 +111,8 @@ TEST_SUITE("ResourceGrowthBenchmark")
+ 						else
+ 							world.step();
+ 						const auto totals = scan();
++						if ((tick + 1) % 128 == 0)
++							checkpoints.push_back({{"tick", tick + 1}, {"stocks", totals}});
+ 						const auto &a = world.game.teams[0]->stats.measurements;
+ 						const auto &b = world.game.teams[1]->stats.measurements;
+ 						Uint64 added = 0, newTiles = 0;
+@@ -151,7 +157,23 @@ TEST_SUITE("ResourceGrowthBenchmark")
+ 					if (variant == "shared") REQUIRE(statistics == ownerStatistics);
+ 					report["samples"].push_back({{"scenario", scenario}, {"seed", randomSeed},
+ 						{"variant", variant}, {"initial", initial}, {"final", scan()},
+-						{"statistics", statistics.back()}});
++						{"statistics", statistics.back()}, {"checkpoints", checkpoints}});
++					if (variant != "immediate-reference")
++					{
++						const auto metrics = map.resourceGrowthMetrics();
++						auto &sample = report["samples"].back();
++						sample["pipeline"] = {{"published", metrics.published},
++							{"accepted", metrics.accepted}, {"rejected", metrics.rejected},
++							{"clamped", metrics.clamped}, {"proposals", metrics.proposals},
++							{"pending_batches", map.gradientRuntime->growth.count()},
++							{"pending_proposals", metrics.proposals - metrics.publishedProposals}};
++						// Diagnostic only: release all remaining batches in order without
++						// calculating further growth. Normal endpoint stocks above remain
++						// unchanged; this separates the final queue tail from lasting effects.
++						map.gradientRuntime->growth.publish(map, world.game.stepCounter + delay);
++						sample["terminal_flush"] = scan();
++						REQUIRE(map.gradientRuntime->growth.count() == 0);
++					}
+ 				}
+ 			}
+ 		if (output)

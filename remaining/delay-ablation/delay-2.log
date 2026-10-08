@@ -1,0 +1,4 @@
+PASS ResourceGrowthBenchmark/player-free growth reconciles world stocks and team statistics (28.6s)
+
+1 passed, 0 failed, 0 skipped (28.6s of test time)
+[run_tests] JUnit report: /home/bradley/.codex/worktrees/114f19f3-7248-4ab6-a516-3ff0849d0a96/glob2/artifacts/resource-growth/remaining/delay-ablation/delay-2.xml (1 cases)
