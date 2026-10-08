@@ -463,6 +463,27 @@ class AnalysisTests(unittest.TestCase):
         elo_update(ratings,['a','b'],[1.5,1.5])
         self.assertEqual(ratings,{'a':1500,'b':1500})
 
+    def test_gradient_depth_samples_sizes_and_requests_field_statistics(self):
+        from tools.tournaments.experiments import Planner
+        bundle={'id':'a'*64,'capabilities':{'ais':[{'id':1,'name':'numbi'},{'id':2,'name':'castor'}],
+                'generators':[{'method':15,'editorOnly':False},{'method':21,'editorOnly':False},{'method':99,'editorOnly':True}]}}
+        manifest=Planner('gradient_depth',{'id':'depth','sample_games':60},[bundle]).plan()
+        games=[j for j in manifest['jobs'] if j['type']=='game']
+        self.assertEqual(len(games),60)
+        sizes={(j['config']['params']['width'],j['config']['params']['height']) for j in games}
+        self.assertEqual(sizes,{(6,6),(7,7),(8,8)})
+        self.assertEqual({j['config']['generator'] for j in games},{15,21})
+        for j in games:
+            self.assertIn('gradient-stats',j['outputs']['telemetry'])
+            self.assertEqual(j['config']['rules']['aiOrderDelay'],8)
+            self.assertEqual(j['config']['ticks'],18048)
+            if j['config']['params']['width']==6: self.assertEqual(j['labels']['format'],'1v1')
+        self.assertEqual({j['labels']['format'] for j in games},{'1v1','2v2','ffa'})
+        again=Planner('gradient_depth',{'id':'depth','sample_games':60},[bundle]).plan()
+        self.assertEqual(manifest['jobs'],again['jobs'])
+        with self.assertRaises(ValueError):
+            Planner('gradient_depth',{'id':'depth','formats':['2v2'],'sizes':[{'width':6,'height':6,'formats':['1v1']}]},[bundle]).plan()
+
     def test_planning_balance_and_ablations(self):
         from tools.tournaments.experiments import Planner
         bundle={'id':'a'*64,'capabilities':{'ais':[{'id':1,'name':'numbi'},{'id':2,'name':'castor'}], 'generators':[{'method':15,'editorOnly':False}]}}

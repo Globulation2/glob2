@@ -374,7 +374,8 @@ plausible computation errors from faulty RAM. pharaoh-dev-1 is a normal pilot ho
 
 ## Experiment designs and reanalysis
 
-All four modules support `plan CONFIG --bundle DIR --output FILE`,
+All experiment modules (`ai_comparison`, `fairness`, `generator_stress`, `ablations`,
+`gradient_depth`) support `plan CONFIG --bundle DIR --output FILE`,
 `submit CONFIG --bundle DIR --output RESULTS`, and
 `reanalyze RESULTS [--policy prestige|survivor_draw|military] [--seed 1] [--draws 1000]
 [--k 32] [--output DIR]`. Reports are JSON, CSV and Markdown; no rerun is required.
@@ -472,6 +473,18 @@ unsupported combinations remain reported failures rather than being filtered out
   exact map artifacts. format defaults to 1v1 for two players, otherwise ffa;
   alliances is optional. Paired effects, raw pairs, intervals, configurations and
   failure rates are exported. No automatic best-variant selection occurs.
+* `gradient_depth`: data for the [building-field depth model](../building-gradient-depth-model.md).
+  `sample_games` (default 48) independently drawn games; each draws a map size
+  first, then a format that size admits, then AIs and a generator, all from
+  `sample_seed`. `sizes` defaults to 64x64 (duels only, since four colonies do not
+  fit every generator there), 128x128 and 256x256; an entry's optional `formats`
+  list restricts it. `formats` defaults to 1v1, 2v2 and ffa, `ais` to every active
+  AI, `generators` to every playable generator and `ticks` to 18048. The planner
+  pins the `aiOrderDelay` rule to 8 and adds `gradient-stats` to
+  `outputs.telemetry`, and workers then require `gradient-stats.csv` in each
+  game's artifacts. Preflight the generator list against the sizes and colony
+  counts, and publish exclusions. `reanalyze` is not the analysis here; read the
+  results with `tools/gradient_depth_fit.py dataset RESULTS`.
 
 Engine-declared winners are authoritative under every policy. Capped games rank
 survivors by prestige, unit count, then finished buildings; exact ties stay tied.
