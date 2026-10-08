@@ -840,7 +840,7 @@ TEST_CASE("eager terrain specialization proves uniform costs across the whole fi
                         break;
                     }
                     const auto expected = oracle(seeds, legacy, width, height,
-                        swim, cap, &terrain);
+                        swim, cap, &terrain, true);
                     auto actual = seeds;
                     gradient_kernel::propagateTerrainField(actual.data(), swim, cap,
                         {width, height}, workspace,
@@ -852,7 +852,7 @@ TEST_CASE("eager terrain specialization proves uniform costs across the whole fi
                         // Prove that this fixture actually exposes a missed road,
                         // rather than merely including an irrelevant outlier.
                         REQUIRE(expected != oracle(seeds, legacy, width, height,
-                            swim, cap, &uniform));
+                            swim, cap, &uniform, true));
                     }
                 }
 }

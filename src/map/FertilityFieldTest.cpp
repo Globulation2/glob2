@@ -317,7 +317,8 @@ TEST_CASE("cached ecology changes after canonical terrain mutation")
     TinyMap map;
     const auto initial=map.resourceGrowthField().landField().at(8,8);
     CHECK(initial==0);
-    map.makeWater(9,8);
+    // Cell (10,8) shares no vertex with (8,8), so repainting (8,8) keeps the water.
+    map.makeWater(10,8);
     const auto watered=map.resourceGrowthField().landField().at(8,8);
     CHECK(watered>initial);
     map.paintCell(8,8,TRAIL);

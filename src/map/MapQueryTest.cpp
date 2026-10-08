@@ -436,8 +436,10 @@ TEST_CASE("air property profiles honor no-fly barriers and weighted travel witho
     auto properties=TERRAIN_PROPERTIES;
     properties[ICE].flyable=false;
     // A no-fly vertex column at x=2 closes every cell touching it but those
-    // between the grass vertices (2,5) and (2,6).
+    // between the grass vertices (2,5) and (2,6). A closed column at x=6 keeps
+    // the route from wrapping around the small map instead.
     for(int y=0;y<8;++y) if(y!=5 && y!=6) map.setVertexTerrain(2,y,ICE);
+    for(int y=0;y<8;++y) map.setVertexTerrain(6,y,ICE);
     int dx=0,dy=0;
     REQUIRE(map.airRouteWithProperties(0,3,3,3,properties,&dx,&dy));
     CHECK_EQ(dx,0); CHECK_EQ(dy,1);
@@ -455,6 +457,9 @@ TEST_CASE("air property profiles honor no-fly barriers and weighted travel witho
     properties[TRAIL].airSpeedQ8=1024;
     for(int x=0;x<8;++x) map.paintCell(x,1,TRAIL);
     for(int x=2;x<=4;++x) map.paintCell(x,3,ICE);
+    // A no-fly water column at x=7 again rules out wrapping around the map.
+    properties[WATER].flyable=false;
+    for(int y=0;y<8;++y) map.setVertexTerrain(7,y,WATER);
     REQUIRE(map.airRouteWithProperties(1,3,5,3,properties,&dx,&dy));
     CHECK_EQ(dy,-1); CHECK_EQ(std::abs(dx),1);
 }
