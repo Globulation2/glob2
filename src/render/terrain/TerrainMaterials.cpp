@@ -351,9 +351,11 @@ PreparedCoverage::PreparedCoverage(const Catalog &c, const Recipe &r)
 		for (int sx = 0; sx < 3; ++sx)
 		{
 			auto &patch = patches[sy * 3 + sx];
-			const MaterialId ids[] = {r.samples[sy * 4 + sx], r.samples[sy * 4 + sx + 1],
-									  r.samples[(sy + 1) * 4 + sx],
-									  r.samples[(sy + 1) * 4 + sx + 1]};
+			// Lattice columns sx and sx + 1 take corner columns sx / 2 and
+			// (sx + 1) / 2: the outer patches hold one corner column or row.
+			const int left = sx / 2, right = (sx + 1) / 2, top = sy / 2, bottom = (sy + 1) / 2;
+			const MaterialId ids[] = {r.corners[top * 2 + left], r.corners[top * 2 + right],
+									  r.corners[bottom * 2 + left], r.corners[bottom * 2 + right]};
 			if (ids[0] == ids[1] && ids[0] == ids[2] && ids[0] == ids[3])
 			{
 				patch.materials[0] = ids[0];

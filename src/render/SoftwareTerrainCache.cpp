@@ -272,12 +272,13 @@ bool SoftwareTerrainCache::prepareAtResolution(const SceneMap &map, GAGCore::Spr
 						entry = c.get();
 						break;
 					}
-				// Compare the page's vertex window once, with a one-vertex halo,
-				// rather than the four vertices of every tile.
-				std::array<Uint32, (ChunkTiles + 3) * (ChunkTiles + 3)> sources{};
-				for (int y = -1; y <= ChunkTiles + 1; ++y)
-					for (int x = -1; x <= ChunkTiles + 1; ++x)
-						sources[(y + 1) * (ChunkTiles + 3) + x + 1] = map.vertexTerrainAt(wx + x, wy + y);
+				// Compare the page's vertex window once, rather than the four
+				// corners of every tile: tiles 0..ChunkTiles-1 read vertices
+				// 0..ChunkTiles.
+				std::array<Uint32, (ChunkTiles + 1) * (ChunkTiles + 1)> sources{};
+				for (int y = 0; y <= ChunkTiles; ++y)
+					for (int x = 0; x <= ChunkTiles; ++x)
+						sources[y * (ChunkTiles + 1) + x] = map.vertexTerrainAt(wx + x, wy + y);
 				const auto revisionChanged = [&](const auto &revision)
 				{ return compositor.materialRevision(revision.first) != revision.second; };
 				bool unchanged = entry && entry->valid && entry->sources == sources &&
@@ -374,8 +375,8 @@ bool SoftwareTerrainCache::prepareAtResolution(const SceneMap &map, GAGCore::Spr
 							const int i = y * ChunkTiles + x, n = 32 * resolution / downsample;
 							if (wasValid && entry->tiles[i] == tiles[i] &&
 								(!tiles[i].discovered ||
-								 std::none_of(tiles[i].recipe.samples.begin(),
-											  tiles[i].recipe.samples.end(), materialChanged)))
+								 std::none_of(tiles[i].recipe.corners.begin(),
+											  tiles[i].recipe.corners.end(), materialChanged)))
 								continue;
 							if (tiles[i].discovered)
 							{
@@ -422,7 +423,7 @@ bool SoftwareTerrainCache::prepareAtResolution(const SceneMap &map, GAGCore::Spr
 					entry->materialRevisions.clear();
 					for (const auto &tile : tiles)
 						if (tile.discovered)
-							for (auto id : tile.recipe.samples)
+							for (auto id : tile.recipe.corners)
 								if (std::none_of(entry->materialRevisions.begin(),
 												 entry->materialRevisions.end(),
 												 [id](const auto &revision)

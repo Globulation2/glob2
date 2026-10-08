@@ -88,8 +88,9 @@ class Catalog
 std::uint32_t hash(std::uint32_t x, std::uint32_t y, std::uint32_t salt = 0);
 struct Recipe
 {
-	// Lattice samples at -8,8,24,40 logical pixels relative to a 32px cell.
-	std::array<MaterialId, 16> samples{};
+	// Materials of the cell's corner vertices: top-left, top-right, bottom-left,
+	// bottom-right. Every half cell of the map shows its nearest vertex.
+	std::array<MaterialId, 4> corners{};
 	// Canonical gameplay-cell coordinates and positive wrapped map dimensions.
 	int x = 0, y = 0, width = 0, height = 0;
 	// The map's terrain look seed: every hash of coordinates is salted with it,
@@ -107,7 +108,10 @@ struct Coverage
 	unsigned margin = 65535;
 };
 // A tile's nine transition patches share immutable topology and contour choices
-// across all native/HD samples. Catalog must outlive this prepared view.
+// across all native/HD samples. Patches are centred on the half-cell lattice at
+// -8, 8, 24 and 40 logical pixels; each lattice point takes the nearest corner,
+// so the outer patches repeat the tile's own corners and match the patches the
+// neighbouring tiles prepare. Catalog must outlive this prepared view.
 class PreparedCoverage
 {
   public:

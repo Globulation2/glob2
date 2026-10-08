@@ -148,7 +148,7 @@ std::unique_ptr<DrawableSurface> BrushSwatches::composeTerrain(TerrainType type,
 	{
 		DrawableSurface texture(size, size);
 		TerrainVisual::Recipe recipe;
-		recipe.samples.fill(binding->second);
+		recipe.corners.fill(binding->second);
 		recipe.width = recipe.height = 2;
 		for (int y = 0; y < 2; ++y)
 			for (int x = 0; x < 2; ++x)

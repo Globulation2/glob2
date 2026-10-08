@@ -207,14 +207,9 @@ Recipe Compositor::describe(const SceneMap &map, int x, int y) const
 	r.width = map.getW();
 	r.height = map.getH();
 	r.seed = map.terrainSeed();
-	for (int j = 0; j < 4; ++j)
-		for (int i = 0; i < 4; ++i)
-		{
-			// Half-cell samples around the cell: the outer two columns and rows
-			// belong to the neighbours, but each half cell takes its nearest vertex.
-			const auto type = map.vertexTerrainAt(r.x + (i < 2 ? 0 : 1), r.y + (j < 2 ? 0 : 1));
-			r.samples[j * 4 + i] = terrainBindings[unsigned(map.terrainRegistry().appearance(type))];
-		}
+	const auto corners = map.cellCorners(r.x, r.y);
+	for (unsigned k = 0; k < corners.size(); ++k)
+		r.corners[k] = terrainBindings[unsigned(map.terrainRegistry().appearance(corners[k]))];
 	return r;
 }
 void Compositor::compose(const Recipe &r, SDL_Surface *target, int ox, int oy, int scale) const
@@ -231,17 +226,17 @@ void Compositor::compose(const Recipe &r, SDL_Surface *target, int ox, int oy, i
 	};
 	std::vector<Source> selected(definitions.materials.size());
 	auto *sources = selected.data();
-	for (auto id : r.samples)
+	for (auto id : r.corners)
 		if (!sources[id].pixels)
 		{
 			const auto &texture = textures[id][definitions.variantIndex(id, r.x, r.y, r.seed)];
 			sources[id] = {texture.pixels.data(), texture.size};
 		}
-	const bool uniform = std::all_of(r.samples.begin(), r.samples.end(),
-									 [&](auto id) { return id == r.samples[0]; });
+	const bool uniform = std::all_of(r.corners.begin(), r.corners.end(),
+									 [&](auto id) { return id == r.corners[0]; });
 	if (uniform)
 	{
-		const auto &texture = sources[r.samples[0]];
+		const auto &texture = sources[r.corners[0]];
 		for (int y = 0; y < size; ++y)
 		{
 			auto *row = reinterpret_cast<Uint32 *>(static_cast<unsigned char *>(target->pixels) +
@@ -311,20 +306,27 @@ void Compositor::compose(const Recipe &r, SDL_Surface *target, int ox, int oy, i
 		}
 }
 void Compositor::composeOverview(const Recipe &r, SDL_Surface *target, int ox, int oy,
-								 const std::array<unsigned char, 3> *cellColor) const
+								 const CornerColors *cornerColors) const
 {
 	if (target->format != SDL_PIXELFORMAT_ARGB8888)
 		throw std::runtime_error("Terrain overview requires ARGB8888");
 	const auto packed = [](const auto &color)
 	{ return 0xFF000000u | (unsigned(color[0]) << 16) | (unsigned(color[1]) << 8) | color[2]; };
-	// Saved custom whole-cell aliases may carry their own overview palette.
+	// Saved custom terrain may carry its own overview palette: a material takes
+	// the colour of the first corner drawn with it that names one.
 	const auto colorOf = [&](MaterialId id) -> const std::array<unsigned char, 3> &
-	{ return cellColor && id == r.samples[5] ? *cellColor : definitions.materials[id].preview; };
-	if (std::all_of(r.samples.begin(), r.samples.end(),
-					[&](auto id) { return id == r.samples[0]; }))
+	{
+		if (cornerColors)
+			for (unsigned k = 0; k < r.corners.size(); ++k)
+				if (r.corners[k] == id && (*cornerColors)[k])
+					return *(*cornerColors)[k];
+		return definitions.materials[id].preview;
+	};
+	if (std::all_of(r.corners.begin(), r.corners.end(),
+					[&](auto id) { return id == r.corners[0]; }))
 	{
 		SDL_Rect area{ox, oy, OverviewSamples, OverviewSamples};
-		SDL_FillSurfaceRect(target, &area, packed(colorOf(r.samples[0])));
+		SDL_FillSurfaceRect(target, &area, packed(colorOf(r.corners[0])));
 		return;
 	}
 	const PreparedCoverage prepared(definitions, r);

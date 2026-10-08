@@ -33,8 +33,11 @@ class Compositor
 	void compose(const Recipe &, SDL_Surface *target, int x, int y, int scale) const;
 	// Subtile palette samples share the detailed renderer's material partition.
 	static constexpr int OverviewSamples = 4;
+	// Per corner (Recipe::corners order), an overview colour replacing the
+	// material's preview, or null; saved custom terrain carries its own.
+	using CornerColors = std::array<const std::array<unsigned char, 3> *, 4>;
 	void composeOverview(const Recipe &, SDL_Surface *target, int x, int y,
-						 const std::array<unsigned char, 3> *cellColor = nullptr) const;
+						 const CornerColors *cornerColors = nullptr) const;
 	// The shared decor sprite (every decor block names the same one), or null
 	// when the catalog has no decor; the renderer batches decor like resources.
 	GAGCore::Sprite *decorSprite() const { return decorSprite_; }

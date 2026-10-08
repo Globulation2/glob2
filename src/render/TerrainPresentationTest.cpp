@@ -363,12 +363,14 @@ TEST_SUITE("TerrainPresentation")
 							CHECK(((pixel >> (16 - 8 * k)) & 255) == (expected[k] + 32768) / 65536);
 					}
 			}
-		// Custom saved whole-cell palettes still override their appearance colour.
+		// Custom saved terrain palettes still override their appearance colour.
 		auto custom = compositor.describe(scene, 10, 10);
-		custom.samples.fill(compositor.catalog().bindings.at("ice"));
+		custom.corners.fill(compositor.catalog().bindings.at("ice"));
 		const std::array<unsigned char, 3> customColor{17, 31, 47};
+		const TerrainVisual::Compositor::CornerColors customCorners{&customColor, &customColor,
+																   &customColor, &customColor};
 		GAGCore::DrawableSurface customOverview(samples, samples);
-		compositor.composeOverview(custom, customOverview.getSDLSurface(), 0, 0, &customColor);
+		compositor.composeOverview(custom, customOverview.getSDLSurface(), 0, 0, &customCorners);
 		for (int y = 0; y < samples; ++y)
 			for (int x = 0; x < samples; ++x)
 				CHECK(reinterpret_cast<const Uint32 *>(
@@ -513,8 +515,8 @@ TEST_SUITE("TerrainPresentation")
 		CHECK(scene.presentationTypeAt(0, 0) == sand);
 		CHECK(scene.appearanceAt(0, 0) == SAND);
 		const auto material = compositor.catalog().bindings.at("sand");
-		for (const auto sample : compositor.describe(scene, 0, 0).samples)
-			CHECK(sample == material);
+		for (const auto corner : compositor.describe(scene, 0, 0).corners)
+			CHECK(corner == material);
 	}
 	TEST_CASE("custom thumbnail palettes retain embedded colors alongside catalog builtins")
 	{
@@ -1306,7 +1308,7 @@ TEST_SUITE("TerrainValidation")
 				CHECK(hd->getH() == 128);
 			}
 			TerrainVisual::Recipe recipe;
-			recipe.samples.fill(id);
+			recipe.corners.fill(id);
 			recipe.width = recipe.height = 1;
 			compositor.compose(recipe, sheet.getSDLSurface(), int(n % 6) * 128, int(n / 6) * 128, 4);
 		}
