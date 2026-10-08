@@ -13,6 +13,14 @@ type ColumnLists = { [T in keyof Database]: readonly (keyof Database[T] & string
 
 /** Every column of every table, as typed in src/schema.ts. */
 const typedColumns: ColumnLists = {
+  admin_report_resolutions: [
+    'library',
+    'report_id',
+    'resolution',
+    'reason',
+    'actor_id',
+    'resolved_at',
+  ],
   building_families: [
     'download_count',
     'id',
@@ -1312,6 +1320,7 @@ describe('migrations', () => {
         '0050_building_library',
         '0051_terrain_studio',
         '0052_building_studio',
+        '0053_admin_console',
         '0053_studio_draft_history',
       ]);
       expect(
@@ -1382,7 +1391,7 @@ describe('migrations', () => {
         existing.db,
       );
       const upgraded = await migrateToLatest(existing.db);
-      expect(upgraded).toHaveLength(31);
+      expect(upgraded).toHaveLength(32);
       expect(upgraded.every((migration) => migration.status === 'Success')).toBe(true);
       expect(
         await existing.db
@@ -1528,6 +1537,7 @@ describe('migrations', () => {
         ['0050_building_library', 'Success'],
         ['0051_terrain_studio', 'Success'],
         ['0052_building_studio', 'Success'],
+        ['0053_admin_console', 'Success'],
         ['0053_studio_draft_history', 'Success'],
       ]);
       for (const table of [
@@ -1671,6 +1681,7 @@ describe('migrations', () => {
         ['0050_building_library', 'Success'],
         ['0051_terrain_studio', 'Success'],
         ['0052_building_studio', 'Success'],
+        ['0053_admin_console', 'Success'],
         ['0053_studio_draft_history', 'Success'],
       ]);
       expect(

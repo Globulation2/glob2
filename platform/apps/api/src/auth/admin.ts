@@ -63,7 +63,11 @@ export class AdminService {
   }
 
   /** Accounts whose name contains `query` (or whose id or linked email equals it), newest first. */
-  async search(query: string, limit: number, before?: Date): Promise<Account[]> {
+  async search(
+    query: string,
+    limit: number,
+    before?: Date | { at: Date; id: string },
+  ): Promise<Account[]> {
     let select = this.db.selectFrom('accounts').selectAll('accounts');
     const q = query.trim();
     if (q) {
@@ -82,8 +86,16 @@ export class AdminService {
         ]),
       );
     }
-    if (before) select = select.where('accounts.created_at', '<', before);
-    return select.orderBy('accounts.created_at', 'desc').limit(limit).execute();
+    if (before instanceof Date) select = select.where('accounts.created_at', '<', before);
+    else if (before)
+      select = select.where(
+        sql<boolean>`(accounts.created_at, accounts.id) < (${before.at}, ${before.id}::uuid)`,
+      );
+    return select
+      .orderBy('accounts.created_at', 'desc')
+      .orderBy('accounts.id', 'desc')
+      .limit(limit)
+      .execute();
   }
 
   async setRole(actor: Account | undefined, target: Account, role: Role): Promise<Account> {
@@ -213,6 +225,11 @@ export class AdminService {
         .forUpdate()
         .executeTakeFirstOrThrow();
       if (current.status === 'deleted') throw apiError('not_found', 'No such account.');
+      await tx
+        .updateTable('admin_report_resolutions')
+        .set({ actor_id: null })
+        .where('actor_id', '=', id)
+        .execute();
       // Fence leased workers before removing their private state. A completion
       // that already holds the wallet finishes first; later completions can no
       // longer find a request or publish a map. Keep financial audit rows.

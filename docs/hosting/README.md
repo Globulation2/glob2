@@ -1660,3 +1660,10 @@ mock-provider test alone does not establish provider compatibility or art qualit
 The native-decoder test can also consume previously generated PNGs with
 `BUILDING_VALIDATION_IMAGE` and `BUILDING_VALIDATION_SITE_IMAGE`; this checks sprite
 conversion and team-color layers without making provider calls.
+
+## Admin reporting
+
+`/admin/reports` unifies reports across maps, AIs, buildings, sets, skins and music.
+Moderators can hide/disable content, resolve or dismiss reports, and independently
+restore content through `/admin/content`. Existing moderation URLs remain available.
+Accounts, matches, reports and content use stable cursors and retain URL filters.

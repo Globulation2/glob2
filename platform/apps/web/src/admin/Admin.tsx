@@ -1,30 +1,21 @@
 import { MusicReports } from '../music/Moderation.tsx';
 import { SkinReports } from '../skins/Moderation.tsx';
-// Minimal moderation (plan M8): accounts (search, rename, mute, ban), match
-// lookup and map/skin report queues. Moderators may rename and mute;
-// administrators may also ban. The API enforces the same rules.
+import { UnifiedReports, Content, PageControls, useAdminFilters } from './Moderation.tsx';
+// Central administration; legacy music and skin report URLs remain supported.
 import { useState, type FormEvent } from 'react';
-import type { AdminAccount, MapReportInfo } from '@glob2/protocol';
+import type { AdminAccount } from '@glob2/protocol';
 import { api } from '../api.ts';
 import { GameArt } from '../art.tsx';
-import {
-  Empty,
-  ErrorNotice,
-  Loaded,
-  MapImage,
-  MatchListView,
-  PlayerLink,
-} from '../components/common.tsx';
+import { Empty, ErrorNotice, Loaded, MatchListView, PlayerLink } from '../components/common.tsx';
 import { date, dateTime } from '../format.ts';
-import { Link, useRouter } from '../router.tsx';
+import { Link } from '../router.tsx';
 import { isModerator, useLoad, useSession } from '../state.tsx';
 
 const TABS = [
-  { id: 'music', name: 'Music reports' },
   { id: 'accounts', name: 'Accounts' },
   { id: 'matches', name: 'Matches' },
-  { id: 'reports', name: 'Map reports' },
-  { id: 'skins', name: 'Skin reports' },
+  { id: 'reports', name: 'Reports' },
+  { id: 'content', name: 'Content' },
 ];
 
 const MUTES = [
@@ -141,10 +132,9 @@ function AccountRow({ initial, isAdmin }: { initial: AdminAccount; isAdmin: bool
 }
 
 function Accounts({ isAdmin }: { isAdmin: boolean }) {
-  const { location } = useRouter();
-  const [q, setQ] = useState(location.search.get('q') ?? '');
-  const [query, setQuery] = useState(q);
-  const load = useLoad((signal) => api.adminAccounts({ q: query }, signal), [query]);
+  const { values, set } = useAdminFilters();
+  const [q, setQ] = useState(values['q'] ?? '');
+  const load = useLoad((signal) => api.adminAccounts(values, signal), [JSON.stringify(values)]);
   return (
     <>
       <form
@@ -152,7 +142,7 @@ function Accounts({ isAdmin }: { isAdmin: boolean }) {
         role="search"
         onSubmit={(e) => {
           e.preventDefault();
-          setQuery(q.trim());
+          set({ q: q.trim() });
         }}
       >
         <input
@@ -164,30 +154,29 @@ function Accounts({ isAdmin }: { isAdmin: boolean }) {
         <button type="submit">Search</button>
       </form>
       <Loaded load={load}>
-        {(page) =>
-          page.items.length === 0 ? (
-            <Empty>No accounts match.</Empty>
-          ) : (
-            <div className="list">
-              {page.items.map((a) => (
-                <AccountRow key={`${a.id}-${a.updatedAt}`} initial={a} isAdmin={isAdmin} />
-              ))}
-            </div>
-          )
-        }
+        {(page) => (
+          <>
+            {page.items.length === 0 ? (
+              <Empty>No accounts match.</Empty>
+            ) : (
+              <div className="list">
+                {page.items.map((a) => (
+                  <AccountRow key={`${a.id}-${a.updatedAt}`} initial={a} isAdmin={isAdmin} />
+                ))}
+              </div>
+            )}
+            <PageControls nextCursor={page.nextCursor} />
+          </>
+        )}
       </Loaded>
     </>
   );
 }
 
 function Matches() {
-  const [q, setQ] = useState('');
-  const [query, setQuery] = useState('');
-  const [status, setStatus] = useState('');
-  const load = useLoad(
-    (signal) => api.adminMatches({ q: query, status, limit: 50 }, signal),
-    [query, status],
-  );
+  const { values, set } = useAdminFilters();
+  const [q, setQ] = useState(values['q'] ?? '');
+  const load = useLoad((signal) => api.adminMatches(values, signal), [JSON.stringify(values)]);
   return (
     <>
       <form
@@ -195,7 +184,7 @@ function Matches() {
         role="search"
         onSubmit={(e) => {
           e.preventDefault();
-          setQuery(q.trim());
+          set({ q: q.trim() });
         }}
       >
         <input
@@ -205,141 +194,40 @@ function Matches() {
           onChange={(e) => setQ(e.target.value)}
           style={{ flex: '1 1 260px' }}
         />
-        <select aria-label="Status" value={status} onChange={(e) => setStatus(e.target.value)}>
+        <select
+          aria-label="Status"
+          value={values['status'] ?? ''}
+          onChange={(e) => set({ status: e.target.value })}
+        >
           <option value="">Any status</option>
           <option value="starting">Starting</option>
           <option value="running">Running</option>
           <option value="ended">Ended</option>
           <option value="cancelled">Cancelled</option>
         </select>
+        <label>
+          Verification{' '}
+          <select
+            value={values['verification'] ?? ''}
+            onChange={(e) => set({ verification: e.target.value })}
+          >
+            <option value="">Any</option>
+            {['pending', 'failed', 'verified', 'diverged', 'unverifiable', 'not_applicable'].map(
+              (v) => (
+                <option key={v}>{v}</option>
+              ),
+            )}
+          </select>
+        </label>
         <button type="submit">Search</button>
       </form>
       <Loaded load={load}>
-        {(page) => <MatchListView matches={page.items} empty="No matches found." />}
-      </Loaded>
-    </>
-  );
-}
-
-function Report({ report, onChange }: { report: MapReportInfo; onChange: () => void }) {
-  const [note, setNote] = useState('');
-  const [error, setError] = useState<Error>();
-  const act = async (action: () => Promise<unknown>) => {
-    setError(undefined);
-    try {
-      await action();
-      onChange();
-    } catch (e) {
-      setError(e as Error);
-    }
-  };
-  const map = report.map;
-  return (
-    <div className="it" style={{ alignItems: 'flex-start' }} data-testid="admin-report">
-      <MapImage src={map.latestVersion?.previewUrl} alt={map.title} size={64} />
-      <div className="grow">
-        <div>
-          <Link to={`/maps/${map.id}`}>{map.title}</Link> by <PlayerLink account={map.owner} />{' '}
-          {map.hidden && <span className="badge bad">hidden</span>}{' '}
-          <span className="badge">{report.status}</span>
-        </div>
-        <div className="caption">
-          {report.reason} · reported by <PlayerLink account={report.reporter} /> ·{' '}
-          {dateTime(report.createdAt)}
-        </div>
-        {report.details && <p style={{ margin: '4px 0' }}>{report.details}</p>}
-        {report.note && <p className="caption">Resolution: {report.note}</p>}
-        {report.status === 'open' && (
-          <div className="toolbar" style={{ marginTop: 6 }}>
-            <input
-              aria-label="Note"
-              placeholder="Note (optional)"
-              value={note}
-              maxLength={2000}
-              onChange={(e) => setNote(e.target.value)}
-            />
-            <button
-              className="small danger"
-              onClick={() =>
-                void act(() =>
-                  api.resolveReport(report.id, {
-                    status: 'resolved',
-                    hideMap: true,
-                    hideReason: note || `Reported as ${report.reason}`,
-                    ...(note ? { note } : {}),
-                  }),
-                )
-              }
-            >
-              Hide map and resolve
-            </button>
-            <button
-              className="small"
-              onClick={() =>
-                void act(() =>
-                  api.resolveReport(report.id, { status: 'resolved', ...(note ? { note } : {}) }),
-                )
-              }
-            >
-              Resolve
-            </button>
-            <button
-              className="small"
-              onClick={() =>
-                void act(() =>
-                  api.resolveReport(report.id, { status: 'dismissed', ...(note ? { note } : {}) }),
-                )
-              }
-            >
-              Dismiss
-            </button>
-          </div>
+        {(page) => (
+          <>
+            <MatchListView matches={page.items} empty="No matches found." />
+            <PageControls nextCursor={page.nextCursor} />
+          </>
         )}
-        {map.hidden && (
-          <button className="small" onClick={() => void act(() => api.unhideMap(map.id))}>
-            Unhide map
-          </button>
-        )}
-        {error && <ErrorNotice error={error} />}
-      </div>
-    </div>
-  );
-}
-
-function Reports() {
-  const [status, setStatus] = useState('open');
-  const load = useLoad((signal) => api.adminReports({ status }, signal), [status]);
-  return (
-    <>
-      <div
-        className="seg"
-        role="group"
-        aria-label="Report status"
-        style={{ marginBottom: 'var(--sp-4)' }}
-      >
-        {['open', 'resolved', 'dismissed', 'all'].map((s) => (
-          <button
-            key={s}
-            className={status === s ? 'on' : ''}
-            aria-pressed={status === s}
-            onClick={() => setStatus(s)}
-          >
-            {s.charAt(0).toUpperCase() + s.slice(1)}
-          </button>
-        ))}
-      </div>
-      <Loaded load={load}>
-        {(page) =>
-          page.items.length === 0 ? (
-            <Empty art="clearingFlag">No reports.</Empty>
-          ) : (
-            <div className="list">
-              {page.items.map((r) => (
-                <Report key={r.id} report={r} onChange={load.reload} />
-              ))}
-            </div>
-          )
-        }
       </Loaded>
     </>
   );
@@ -358,20 +246,24 @@ export function Admin({ tab }: { tab: string | undefined }) {
   if (!isModerator(account)) {
     return <div className="notice error">This page is for moderators.</div>;
   }
-  const current = TABS.find((t) => t.id === tab)?.id ?? 'accounts';
+  const current =
+    (['music', 'skins'].includes(tab ?? '') ? tab : TABS.find((t) => t.id === tab)?.id) ??
+    'reports';
   return (
     <>
       <div className="page-head">
         <GameArt name="clearingFlag" size={72} className="head-art" />
         <div className="grow">
-          <h1>Moderation</h1>
+          <h1>Administration</h1>
           <p className="sub">
             Signed in as {account.displayName} ({account.role}). Every action is recorded.
           </p>
         </div>
       </div>
       <nav className="seg" aria-label="Moderation sections" style={{ marginBottom: 'var(--sp-4)' }}>
-        {TABS.map((t) => (
+        {TABS.filter(
+          (t) => !['overview', 'operations', 'finances'].includes(t.id) || account.role === 'admin',
+        ).map((t) => (
           <Link
             key={t.id}
             to={`/admin/${t.id}`}
@@ -384,9 +276,10 @@ export function Admin({ tab }: { tab: string | undefined }) {
       </nav>
       {current === 'accounts' && <Accounts isAdmin={account.role === 'admin'} />}
       {current === 'matches' && <Matches />}
-      {current === 'reports' && <Reports />}
+      {current === 'reports' && <UnifiedReports />}
       {current === 'skins' && <SkinReports />}
       {current === 'music' && <MusicReports />}
+      {current === 'content' && <Content />}
     </>
   );
 }

@@ -38,6 +38,7 @@ import type { ApiServices } from './services.ts';
 import { skinRoutes } from './skins/routes.ts';
 import { accountRoutes } from './routes/accounts.ts';
 import { adminRoutes } from './routes/admin.ts';
+import { adminConsoleRoutes } from './admin/routes.ts';
 import { authRoutes } from './routes/auth.ts';
 import { signinRoutes } from './routes/signin.ts';
 import { internalRoutes } from './routes/internal.ts';
@@ -259,6 +260,7 @@ export async function buildApp(
   await terrainStudioRoutes(app);
   await buildingStudioRoutes(app);
   await adminRoutes(app, identity);
+  await adminConsoleRoutes(app, identity);
   await pageAssetRoutes(app);
   await signinRoutes(app, identity);
   await playRoutes(app, identity, rooms);
