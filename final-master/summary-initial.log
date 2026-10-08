@@ -1,0 +1,151 @@
+master-vs-shared8
+  dense 10 TPS 1.32 -1.0 5.12 CPU 11.68 10.28 13.76
+  multi 10 TPS 45.07 39.82 55.62 CPU 4.74 1.05 8.61
+  ai512 10 TPS -0.99 -2.79 0.48 CPU 2.73 0.54 4.72
+  disabled512 10 TPS 1.62 -0.43 4.52 CPU 2.47 0.91 5.38
+  sparse 10 TPS -2.03 -7.46 5.73 CPU 1.48 -4.1 5.45
+  saturated 10 TPS 0.37 -2.92 4.81 CPU 11.13 7.27 13.69
+  harvested 10 TPS 5.97 4.55 6.84 CPU 0.83 0.44 1.95
+  fragmented 10 TPS 6.68 3.94 7.75 CPU 3.79 2.21 4.56
+owner-vs-shared8
+  dense 10 TPS -2.23 -4.05 -0.98 CPU 3.09 1.38 5.52
+  multi 10 TPS 0.26 -8.26 14.05 CPU -5.37 -12.69 -3.59
+  ai512 10 TPS -0.06 -3.21 1.11 CPU -0.03 -2.61 2.23
+  disabled512 10 TPS 0.89 -1.29 3.64 CPU 0.42 -0.89 3.38
+{
+  "master-vs-shared8": {
+    "same_behavior": false,
+    "wins": [
+      [
+        "dense",
+        "cpu_reduction"
+      ],
+      [
+        "multi",
+        "tps_gain"
+      ],
+      [
+        "multi",
+        "cpu_reduction"
+      ],
+      [
+        "ai512",
+        "cpu_reduction"
+      ],
+      [
+        "disabled512",
+        "cpu_reduction"
+      ],
+      [
+        "saturated",
+        "cpu_reduction"
+      ],
+      [
+        "harvested",
+        "tps_gain"
+      ],
+      [
+        "fragmented",
+        "tps_gain"
+      ],
+      [
+        "fragmented",
+        "cpu_reduction"
+      ]
+    ],
+    "rules_out_primary_regressions": false,
+    "blockers": [
+      [
+        "ai512",
+        "tps_gain",
+        10
+      ]
+    ],
+    "demonstrated_regressions": [],
+    "investigate": [
+      [
+        "dense",
+        "p99_change"
+      ],
+      [
+        "multi",
+        "rss_change"
+      ],
+      [
+        "ai512",
+        "p99_change"
+      ],
+      [
+        "saturated",
+        "p99_change"
+      ],
+      [
+        "harvested",
+        "p99_change"
+      ],
+      [
+        "fragmented",
+        "p99_change"
+      ],
+      [
+        "fragmented",
+        "rss_change"
+      ]
+    ],
+    "qualifies_numerically": false
+  },
+  "owner-vs-shared8": {
+    "same_behavior": true,
+    "wins": [
+      [
+        "dense",
+        "cpu_reduction"
+      ]
+    ],
+    "rules_out_primary_regressions": false,
+    "blockers": [
+      [
+        "dense",
+        "tps_gain",
+        10
+      ],
+      [
+        "multi",
+        "tps_gain",
+        10
+      ],
+      [
+        "multi",
+        "cpu_reduction",
+        10
+      ],
+      [
+        "ai512",
+        "tps_gain",
+        10
+      ],
+      [
+        "ai512",
+        "cpu_reduction",
+        10
+      ]
+    ],
+    "demonstrated_regressions": [
+      [
+        "multi",
+        "cpu_reduction"
+      ]
+    ],
+    "investigate": [
+      [
+        "dense",
+        "p99_change"
+      ],
+      [
+        "ai512",
+        "p99_change"
+      ]
+    ],
+    "qualifies_numerically": false
+  }
+}

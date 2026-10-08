@@ -1,0 +1,11 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="1" failures="1" errors="0" skipped="0"><testsuite name="ResourceGrowth"><testcase classname="ResourceGrowth" name="engine preflight opens both historical growth and released vertex saves" time="0.330891" status="run">
+      <failure message="3 == 1" type="REQUIRE">
+src/map/ResourceGrowthTest.cpp:705:
+REQUIRE( engine.initCustom(path.string())==Engine::EE_NO_ERROR ) is NOT correct!
+  values: REQUIRE( 3 == 1 )
+  logged: name := 0x57f495261e08
+
+      </failure>
+    </testcase>
+  </testsuite></testsuites>

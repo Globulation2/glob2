@@ -1,0 +1,91 @@
+{
+  "output": "paired",
+  "repeats": 10,
+  "purpose": "Rebased production shared growth,delay8,versus exact master68aa1075; one warmup and ten alternating pairs per fixed fixture.",
+  "cases": [
+    {
+      "id": "master-vs-shared8",
+      "same_behavior": false,
+      "scenarios": [
+        "dense",
+        "multi",
+        "ai512",
+        "disabled512",
+        "sparse",
+        "saturated",
+        "harvested",
+        "fragmented"
+      ],
+      "reference": {
+        "name": "master",
+        "binary": "/home/bradley/.codex/worktrees/114f19f3-7248-4ab6-a516-3ff0849d0a96/glob2/artifacts/resource-growth/final-master/master-src/build/linux/client/release/src/glob2",
+        "cwd": "/home/bradley/.codex/worktrees/114f19f3-7248-4ab6-a516-3ff0849d0a96/glob2/artifacts/resource-growth/final-master/master-src",
+        "args": [
+          "--compute-threads",
+          "4"
+        ]
+      },
+      "candidate": {
+        "name": "rebased-shared8",
+        "binary": "/home/bradley/.codex/worktrees/114f19f3-7248-4ab6-a516-3ff0849d0a96/glob2/build/linux/client/release/src/glob2",
+        "cwd": "/home/bradley/.codex/worktrees/114f19f3-7248-4ab6-a516-3ff0849d0a96/glob2",
+        "args": [
+          "--compute-threads",
+          "4",
+          "--resource-growth-delay",
+          "8",
+          "--resource-growth-execution",
+          "shared"
+        ]
+      }
+    },
+    {
+      "id": "owner-vs-shared8",
+      "same_behavior": true,
+      "scenarios": [
+        "dense",
+        "multi",
+        "ai512",
+        "disabled512"
+      ],
+      "reference": {
+        "name": "rebased-owner8",
+        "binary": "/home/bradley/.codex/worktrees/114f19f3-7248-4ab6-a516-3ff0849d0a96/glob2/build/linux/client/release/src/glob2",
+        "cwd": "/home/bradley/.codex/worktrees/114f19f3-7248-4ab6-a516-3ff0849d0a96/glob2",
+        "args": [
+          "--compute-threads",
+          "4",
+          "--resource-growth-delay",
+          "8",
+          "--resource-growth-execution",
+          "owner"
+        ]
+      },
+      "candidate": {
+        "name": "rebased-shared8",
+        "binary": "/home/bradley/.codex/worktrees/114f19f3-7248-4ab6-a516-3ff0849d0a96/glob2/build/linux/client/release/src/glob2",
+        "cwd": "/home/bradley/.codex/worktrees/114f19f3-7248-4ab6-a516-3ff0849d0a96/glob2",
+        "args": [
+          "--compute-threads",
+          "4",
+          "--resource-growth-delay",
+          "8",
+          "--resource-growth-execution",
+          "shared"
+        ]
+      }
+    }
+  ],
+  "extra_repeats": {
+    "master-vs-shared8/dense": 30,
+    "master-vs-shared8/ai512": 30,
+    "master-vs-shared8/disabled512": 30,
+    "master-vs-shared8/sparse": 30,
+    "master-vs-shared8/saturated": 30,
+    "owner-vs-shared8/dense": 30,
+    "owner-vs-shared8/multi": 30,
+    "owner-vs-shared8/ai512": 30,
+    "owner-vs-shared8/disabled512": 30
+  },
+  "extension_reason": "Preplanned single extension to 30 pairs for unresolved throughput and attribution, after inspecting ten-pair intervals. Dense owner control is extended to clarify the observed small regression."
+}

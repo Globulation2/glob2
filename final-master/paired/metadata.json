@@ -1,0 +1,243 @@
+{
+  "plan": {
+    "output": "paired",
+    "repeats": 10,
+    "purpose": "Rebased production shared growth,delay8,versus exact master68aa1075; one warmup and ten alternating pairs per fixed fixture.",
+    "cases": [
+      {
+        "id": "master-vs-shared8",
+        "same_behavior": false,
+        "scenarios": [
+          "dense",
+          "multi",
+          "ai512",
+          "disabled512",
+          "sparse",
+          "saturated",
+          "harvested",
+          "fragmented"
+        ],
+        "reference": {
+          "name": "master",
+          "binary": "/home/bradley/.codex/worktrees/114f19f3-7248-4ab6-a516-3ff0849d0a96/glob2/artifacts/resource-growth/final-master/master-src/build/linux/client/release/src/glob2",
+          "cwd": "/home/bradley/.codex/worktrees/114f19f3-7248-4ab6-a516-3ff0849d0a96/glob2/artifacts/resource-growth/final-master/master-src",
+          "args": [
+            "--compute-threads",
+            "4"
+          ]
+        },
+        "candidate": {
+          "name": "rebased-shared8",
+          "binary": "/home/bradley/.codex/worktrees/114f19f3-7248-4ab6-a516-3ff0849d0a96/glob2/build/linux/client/release/src/glob2",
+          "cwd": "/home/bradley/.codex/worktrees/114f19f3-7248-4ab6-a516-3ff0849d0a96/glob2",
+          "args": [
+            "--compute-threads",
+            "4",
+            "--resource-growth-delay",
+            "8",
+            "--resource-growth-execution",
+            "shared"
+          ]
+        }
+      },
+      {
+        "id": "owner-vs-shared8",
+        "same_behavior": true,
+        "scenarios": [
+          "dense",
+          "multi",
+          "ai512",
+          "disabled512"
+        ],
+        "reference": {
+          "name": "rebased-owner8",
+          "binary": "/home/bradley/.codex/worktrees/114f19f3-7248-4ab6-a516-3ff0849d0a96/glob2/build/linux/client/release/src/glob2",
+          "cwd": "/home/bradley/.codex/worktrees/114f19f3-7248-4ab6-a516-3ff0849d0a96/glob2",
+          "args": [
+            "--compute-threads",
+            "4",
+            "--resource-growth-delay",
+            "8",
+            "--resource-growth-execution",
+            "owner"
+          ]
+        },
+        "candidate": {
+          "name": "rebased-shared8",
+          "binary": "/home/bradley/.codex/worktrees/114f19f3-7248-4ab6-a516-3ff0849d0a96/glob2/build/linux/client/release/src/glob2",
+          "cwd": "/home/bradley/.codex/worktrees/114f19f3-7248-4ab6-a516-3ff0849d0a96/glob2",
+          "args": [
+            "--compute-threads",
+            "4",
+            "--resource-growth-delay",
+            "8",
+            "--resource-growth-execution",
+            "shared"
+          ]
+        }
+      }
+    ],
+    "extra_repeats": {
+      "master-vs-shared8/dense": 30,
+      "master-vs-shared8/ai512": 30,
+      "master-vs-shared8/disabled512": 30,
+      "master-vs-shared8/sparse": 30,
+      "master-vs-shared8/saturated": 30,
+      "owner-vs-shared8/dense": 30,
+      "owner-vs-shared8/multi": 30,
+      "owner-vs-shared8/ai512": 30,
+      "owner-vs-shared8/disabled512": 30
+    },
+    "extension_reason": "Preplanned single extension to 30 pairs for unresolved throughput and attribution, after inspecting ten-pair intervals. Dense owner control is extended to clarify the observed small regression."
+  },
+  "scenarios": [
+    {
+      "id": "dense",
+      "group": "controlled",
+      "args": [
+        "--load-game",
+        "/home/bradley/.codex/worktrees/114f19f3-7248-4ab6-a516-3ff0849d0a96/glob2/artifacts/resource-growth/controlled-fixtures/dense/initial.game.gz",
+        "--ticks",
+        "1024",
+        "--gradient-workers",
+        "2",
+        "--compute-experiments",
+        "ai"
+      ],
+      "fixture_sha256": {
+        "/home/bradley/.codex/worktrees/114f19f3-7248-4ab6-a516-3ff0849d0a96/glob2/artifacts/resource-growth/controlled-fixtures/dense/initial.game.gz": "792c46160b91a805625e7e9a13eece611fd75728e472e5578741c718fa0027b8"
+      }
+    },
+    {
+      "id": "multi",
+      "group": "controlled",
+      "args": [
+        "--load-game",
+        "/home/bradley/.codex/worktrees/114f19f3-7248-4ab6-a516-3ff0849d0a96/glob2/artifacts/resource-growth/controlled-fixtures/multi/initial.game.gz",
+        "--ticks",
+        "1024",
+        "--gradient-workers",
+        "2",
+        "--compute-experiments",
+        "ai"
+      ],
+      "fixture_sha256": {
+        "/home/bradley/.codex/worktrees/114f19f3-7248-4ab6-a516-3ff0849d0a96/glob2/artifacts/resource-growth/controlled-fixtures/multi/initial.game.gz": "d7ed56ff27421eacda4f35e5102041b67d6bc76c333fc8aa0668708a886dece7"
+      }
+    },
+    {
+      "id": "ai512",
+      "group": "ai",
+      "args": [
+        "--load-game",
+        "/home/bradley/.codex/worktrees/114f19f3-7248-4ab6-a516-3ff0849d0a96/glob2/artifacts/resource-growth/fixtures/ai512/initial.game.gz",
+        "--ticks",
+        "1024",
+        "--gradient-workers",
+        "2",
+        "--compute-experiments",
+        "ai"
+      ],
+      "fixture_sha256": {
+        "/home/bradley/.codex/worktrees/114f19f3-7248-4ab6-a516-3ff0849d0a96/glob2/artifacts/resource-growth/fixtures/ai512/initial.game.gz": "a32e576292df8a7975eb703f50fe42dfe95493cf3b9303c1e758c35296952ede"
+      }
+    },
+    {
+      "id": "disabled512",
+      "group": "control",
+      "args": [
+        "--load-game",
+        "/home/bradley/.codex/worktrees/114f19f3-7248-4ab6-a516-3ff0849d0a96/glob2/artifacts/resource-growth/fixtures/disabled512/initial.game.gz",
+        "--ticks",
+        "1024",
+        "--gradient-workers",
+        "2",
+        "--compute-experiments",
+        "ai"
+      ],
+      "fixture_sha256": {
+        "/home/bradley/.codex/worktrees/114f19f3-7248-4ab6-a516-3ff0849d0a96/glob2/artifacts/resource-growth/fixtures/disabled512/initial.game.gz": "c35196cc4d114f1c0f4296f89bac6344f63a1d31d1f1271c25174a6dbfcebed2"
+      }
+    },
+    {
+      "id": "sparse",
+      "group": "focused",
+      "args": [
+        "--load-game",
+        "/home/bradley/.codex/worktrees/114f19f3-7248-4ab6-a516-3ff0849d0a96/glob2/artifacts/resource-growth/remaining/fixtures/sparse/initial.game.gz",
+        "--ticks",
+        "1024",
+        "--gradient-workers",
+        "2",
+        "--compute-experiments",
+        "ai"
+      ],
+      "fixture_sha256": {
+        "/home/bradley/.codex/worktrees/114f19f3-7248-4ab6-a516-3ff0849d0a96/glob2/artifacts/resource-growth/remaining/fixtures/sparse/initial.game.gz": "16fdc189a889cdd0e6537597db618c038b688ddd920238f22adca604c54cbd3c"
+      }
+    },
+    {
+      "id": "saturated",
+      "group": "focused",
+      "args": [
+        "--load-game",
+        "/home/bradley/.codex/worktrees/114f19f3-7248-4ab6-a516-3ff0849d0a96/glob2/artifacts/resource-growth/remaining/fixtures/saturated/initial.game.gz",
+        "--ticks",
+        "1024",
+        "--gradient-workers",
+        "2",
+        "--compute-experiments",
+        "ai"
+      ],
+      "fixture_sha256": {
+        "/home/bradley/.codex/worktrees/114f19f3-7248-4ab6-a516-3ff0849d0a96/glob2/artifacts/resource-growth/remaining/fixtures/saturated/initial.game.gz": "ae4e2c671149ac8fea88b0e74124a111dd6a9f618af6c9eb49f86848d8f92f66"
+      }
+    },
+    {
+      "id": "harvested",
+      "group": "focused",
+      "args": [
+        "--load-game",
+        "/home/bradley/.codex/worktrees/114f19f3-7248-4ab6-a516-3ff0849d0a96/glob2/artifacts/resource-growth/remaining/fixtures/harvested/initial.game.gz",
+        "--ticks",
+        "1024",
+        "--gradient-workers",
+        "2",
+        "--compute-experiments",
+        "ai"
+      ],
+      "fixture_sha256": {
+        "/home/bradley/.codex/worktrees/114f19f3-7248-4ab6-a516-3ff0849d0a96/glob2/artifacts/resource-growth/remaining/fixtures/harvested/initial.game.gz": "ef41f11518f36651b82464525803b976406d3beefd1f29151c28f467ad5a0210"
+      }
+    },
+    {
+      "id": "fragmented",
+      "group": "focused",
+      "args": [
+        "--load-game",
+        "/home/bradley/.codex/worktrees/114f19f3-7248-4ab6-a516-3ff0849d0a96/glob2/artifacts/resource-growth/remaining/fixtures/fragmented/initial.game.gz",
+        "--ticks",
+        "1024",
+        "--gradient-workers",
+        "2",
+        "--compute-experiments",
+        "ai"
+      ],
+      "fixture_sha256": {
+        "/home/bradley/.codex/worktrees/114f19f3-7248-4ab6-a516-3ff0849d0a96/glob2/artifacts/resource-growth/remaining/fixtures/fragmented/initial.game.gz": "61853087e3ca22f66bec17766b4c4ba6df7cbc249b5d95d4131ac0a015f62866"
+      }
+    }
+  ],
+  "affinity": [
+    0,
+    1,
+    2,
+    3
+  ],
+  "binaries": {
+    "/home/bradley/.codex/worktrees/114f19f3-7248-4ab6-a516-3ff0849d0a96/glob2/artifacts/resource-growth/final-master/master-src/build/linux/client/release/src/glob2": "4da861fc651b4bff0e1cedd80556b310068e65cd578e846820bf481f2c917513",
+    "/home/bradley/.codex/worktrees/114f19f3-7248-4ab6-a516-3ff0849d0a96/glob2/build/linux/client/release/src/glob2": "0a866337798ccfc5a5ddf906050419f34ea546d4e4ed10c684d11f12f62e7da9"
+  },
+  "completed": true,
+  "matching_same_behavior_cases": true
+}

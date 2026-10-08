@@ -1,0 +1,7 @@
+PASS JavaScriptSimulation/JavaScript original fixture executes, resumes and replays 256 ticks (2.4s)
+PASS JavaScriptSimulation/JavaScript conversion boundary resumes globals RNG references and complete tick records (2.1s)
+PASS JavaScriptSimulation/JavaScript profile two actions fields telemetry and construction survive save resume and worker counts (2.7s)
+PASS JavaScriptSimulation/JavaScript economic planners and map survey execute, resume and replay 256 ticks (9.5s)
+
+4 passed, 0 failed, 0 skipped (16.7s of test time)
+[run_tests] JUnit report: artifacts/resource-growth/final-master/javascript-update.xml (4 cases)

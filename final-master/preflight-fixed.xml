@@ -1,0 +1,3 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="1" failures="0" errors="0" skipped="0"><testsuite name="ResourceGrowth"><testcase classname="ResourceGrowth" name="engine preflight opens both historical growth and released vertex saves" time="0.454734" status="run" />
+  </testsuite></testsuites>

@@ -1,0 +1,4 @@
+PASS ResourceGrowth/engine preflight opens both historical growth and released vertex saves (0.5s)
+
+1 passed, 0 failed, 0 skipped (0.5s of test time)
+[run_tests] JUnit report: artifacts/resource-growth/final-master/preflight-fixed.xml (1 cases)

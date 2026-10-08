@@ -1,0 +1,4 @@
+decoder=SDL_image row=0 match=1
+decoder=SDL_image row=1 match=1
+decoder=SDL native row=0 match=0
+decoder=SDL native row=1 match=0

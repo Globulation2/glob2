@@ -1,0 +1,5 @@
+PASS glob2-unit-tests ComputeExecutor (14 cases) (0.2s)
+PASS glob2-unit-tests GameHeaderTextSaveLoad (10 cases) (0.7s)
+
+2 passed, 0 failed, 0 skipped (0.9s of test time)
+[run_tests] JUnit report: artifacts/resource-growth/final-master/unit-final.xml (24 cases)

@@ -1,0 +1,39 @@
+diff --git a/src/app/cli/Headless.cpp b/src/app/cli/Headless.cpp
+index e0aba8522..5d3bd4203 100644
+--- a/src/app/cli/Headless.cpp
++++ b/src/app/cli/Headless.cpp
+@@ -485,6 +485,7 @@ struct HeadlessRunner
+ 		uint64_t setupCpu=0,runCpu=0,measureStart=0;
+ 		unsigned measuredTicks=0;
+         std::array<Uint64,64> tickHistogram{};
++        std::vector<Uint64> tickDurations;
+ 		if(benchmark)
+ 		{
+ 			const uint64_t first=engine.gui.game.stepCounter;
+@@ -501,6 +502,7 @@ struct HeadlessRunner
+                 if(beforeTick>=start && engine.gui.game.stepCounter>beforeTick) {
+                     const auto duration=Uint64(std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::steady_clock::now()-tickStart).count());
+                     ++tickHistogram[std::min<unsigned>(std::bit_width(duration),63)];
++                    tickDurations.push_back(duration);
+                 }
+ 				if(!measureStart && engine.gui.game.stepCounter>=start) measureStart=processCpuNs();
+ 			}
+@@ -521,6 +523,8 @@ struct HeadlessRunner
+ 		Game &game=engine.gui.game;
+ 		const auto pipelineResult = game.map.gradientPipelineStatus();
+ 		const auto buildingResult = game.map.buildingGradientPipelineStatus();
++        std::sort(tickDurations.begin(),tickDurations.end());
++        const auto percentile=[&](unsigned p)->Uint64 {return tickDurations.empty()?0:tickDurations[(tickDurations.size()-1)*p/100];};
+ 		engine.trackTeamEliminations();
+ 		std::ostringstream result;
+ 		// A game the win probability model called is reported distinctly from one
+@@ -544,6 +548,9 @@ struct HeadlessRunner
+ 			<< ",\"benchmark_measured_ticks\":" << measuredTicks
+ 			<< ",\"setup_ns\":" << std::chrono::duration_cast<std::chrono::nanoseconds>(runStart - setupStart).count()
+ 			<< ",\"run_ns\":" << std::chrono::duration_cast<std::chrono::nanoseconds>(runEnd - runStart).count()
++            << ",\"tick_p50_ns\":" << percentile(50)
++            << ",\"tick_p95_ns\":" << percentile(95)
++            << ",\"tick_p99_ns\":" << percentile(99)
+ 			<< ",\"gradient_pipeline\":" << "true"
+ 			<< ",\"gradient_workers\":" << pipelineResult.workers
+ 			<< ",\"gradient_delay\":" << pipelineResult.delay
