@@ -1,0 +1,22 @@
+GLOB2_TEST_BUILD compiler=15.2.0 platform=Linux pointer_bits=64
+GLOB2_TEST_PROVENANCE {"compiler": "g++", "dirty": true, "flags": {"CCFLAGS": "", "CPPDEFINES": "GLOB2_OFFICIAL_INSTANCE_ORIGIN \\\"https://app.glob2online.com\\\" GLOB2_OFFICIAL_INSTANCE_FORMER_ORIGINS \\\"https://glob2online.com\\\" HAVE_CONFIG_H SDL_MAIN_HANDLED", "CXXFLAGS": "-g -std=gnu++20 -Wall -fPIC", "LINKFLAGS": "-g -Wl,-rpath,$ORIGIN/../lib/glob2 -Wall -Wl,-rpath,/home/bradley/.codex/worktrees/repair-tls-rejection-fixture/glob2/build/sdl3-ci/prefix/lib -Wl,--enable-new-dtags"}, "revision": "e2c96e30a00ce9c7b66a5c17a696a40c48564855", "sourceStatus": ["?? build-software-terrain/"], "sourceTreeSha256": "9982f18c309985f45bcdc397c57e21be0a50e4495e4ae8a8bd7ca0d2f72f3e2e"}
+[doctest] doctest version is "2.4.11"
+[doctest] run with "--help" for options
+===============================================================================
+src/common/ComputeExecutorHarness.cpp:40:
+TEST SUITE: ComputeExecutor
+TEST CASE:  exclusive slots; nested batches; reuse; errors; barriers and reconfiguration
+
+src/common/ComputeExecutorHarness.cpp:77: MESSAGE: PASS executor: exclusive slots, nested batches, reuse, errors, barriers, reconfiguration
+
+===============================================================================
+src/map/gradient/GradientPipelineHarness.cpp:34:
+TEST SUITE: GradientPipeline
+TEST CASE:  fixed publication; supersession; bounded buffers; scheduling stress; fallback; exceptions and teardown
+
+src/map/gradient/GradientPipelineHarness.cpp:100: MESSAGE: PASS fixed publication, supersession, bounded buffers, scheduling stress, fallback, exceptions and teardown
+
+===============================================================================
+[doctest] test cases:     21 |     21 passed | 0 failed | 890 skipped
+[doctest] assertions: 348402 | 348402 passed | 0 failed |
+[doctest] Status: SUCCESS!

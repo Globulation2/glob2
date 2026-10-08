@@ -1,0 +1,29 @@
+
+Running 1 test using 1 worker
+
+(node:2714078) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  1 [chromium] › browser/tests/compute-debug.spec.js:8:1 › serial runtime executes shared compute, gradients and save lifecycle tests (5.2m)
+
+
+  1) [chromium] › browser/tests/compute-debug.spec.js:8:1 › serial runtime executes shared compute, gradients and save lifecycle tests 
+
+    Test timeout of 300000ms exceeded.
+
+    Error: page.waitForFunction: Test timeout of 300000ms exceeded.
+        at /home/bradley/.codex/worktrees/repair-tls-rejection-fixture/glob2/browser/tests/compute-debug.spec.js:39:14
+
+    Error Context: artifacts/sim33-compute-duration/compute-debug-serial-runti-ed6e6-ts-and-save-lifecycle-tests-chromium/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    artifacts/sim33-compute-duration/compute-debug-serial-runti-ed6e6-ts-and-save-lifecycle-tests-chromium/trace.zip
+    Usage:
+
+        npx playwright show-trace artifacts/sim33-compute-duration/compute-debug-serial-runti-ed6e6-ts-and-save-lifecycle-tests-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  Slow test file: [chromium] › browser/tests/compute-debug.spec.js (5.2m)
+  Consider running tests from slow files in parallel. See: https://playwright.dev/docs/test-parallel
+  1 failed
+    [chromium] › browser/tests/compute-debug.spec.js:8:1 › serial runtime executes shared compute, gradients and save lifecycle tests 
