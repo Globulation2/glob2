@@ -1,0 +1,13 @@
+chromium: dark 1440x900 pointer, keyboard and hex passed
+chromium: light 1440x900 pointer, keyboard and hex passed
+chromium: dark 412x839 pointer, keyboard and hex passed
+chromium: dark 320x568 pointer, keyboard and hex passed
+firefox: dark 1440x900 pointer, keyboard and hex passed
+firefox: light 1440x900 pointer, keyboard and hex passed
+firefox: dark 412x839 pointer, keyboard and hex passed
+firefox: dark 320x568 pointer, keyboard and hex passed
+webkit: dark 1440x900 pointer, keyboard and hex passed
+webkit: light 1440x900 pointer, keyboard and hex passed
+webkit: dark 412x839 pointer, keyboard and hex passed
+webkit: dark 320x568 pointer, keyboard and hex passed
+Firefox: building and pattern palettes passed
