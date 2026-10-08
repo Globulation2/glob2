@@ -13,9 +13,11 @@ ROOT = Path(__file__).resolve().parents[2]
 # Scene headers may include each other, the client channel types and plain data
 # definitions, but no simulation object headers.
 TERRAIN_HEADERS = (
-    'TerrainType.h', 'TerrainPresentation.h', 'TerrainProperties.h', 'TerrainCompatibility.h',
+    'TerrainType.h', 'TerrainPresentation.h', 'TerrainProperties.h', 'CellRules.h', 'TerrainRegistry.h',
     'TerrainTypeTable.h', 'TerrainGroup.h', 'TerrainPropertiesLayout.h',
 )
+
+FIELD_HEADERS = ('TerrainMovementCosts.h', 'PreparedTerrainCosts.h', 'GradientCosts.h', 'TerrainHazardCost.h', 'GradientBucket.h', 'GradientConstants.h')
 
 SCENE_INCLUDES = {
     'Scene.h', 'SceneEntities.h', 'SceneMap.h', 'ScenePanels.h',
@@ -23,7 +25,8 @@ SCENE_INCLUDES = {
     'sim/snapshot/Requirements.h',
     'sim/ClientRequests.h', 'sim/EntityRef.h', 'BitArray.h', 'Ressource.h', 'UnitConsts.h',
     'SDLGraphicContext.h', 'SDL_stdinc.h', 'SDL3/SDL_stdinc.h', 'AITelemetryValue.h',
-    *TERRAIN_HEADERS,
+    *TERRAIN_HEADERS, *FIELD_HEADERS,
+    *(f'field/{name}' for name in FIELD_HEADERS), 'map/TerrainProperties.h',
     'ResourceRegistry.h', 'ResourceProperties.h', 'Material.h', 'resource/Material.h', 'BuildingType.h',
     'ExperimentalFeatures.h', 'Types.h', 'SDL3_net/SDL_net.h',
 }
@@ -52,6 +55,7 @@ class SceneBoundaryTests(unittest.TestCase):
         # objects. Audit their dependencies too so this exemption stays narrow.
         headers += [ROOT / 'src/map' / name for name in
                     TERRAIN_HEADERS]
+        headers += [ROOT / 'src/field' / name for name in FIELD_HEADERS]
         # Frozen resource snapshots contain value definitions and experiment keys.
         # Audit their full local dependency chain, not only the Scene include.
         headers += [ROOT / 'src/resource' / name for name in
