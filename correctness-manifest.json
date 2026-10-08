@@ -1,0 +1,1153 @@
+{
+  "candidate_revision": "e8e6320bf71576142bf2e4d546953af755d947f1",
+  "integrated_base": "52e4d3dc0440e12ff65494ad3eb1681e9c2c0af3",
+  "native_delivery_identity": "artifacts/direct-snapshot/delivery-native-10.json",
+  "limitations": [
+    "Performance acceptance and worker tuning are pending and excluded from this archive.",
+    "Threaded Firefox torus screenshot check is unresolved; serial WebGL passes.",
+    "No Windows or Android native execution was performed for this candidate.",
+    "Human gameplay review is still required."
+  ],
+  "files": [
+    {
+      "path": "artifacts/direct-snapshot/browser-native-traces-8.json",
+      "bytes": 4839,
+      "sha256": "6ebb153f65aedbbd0717501076b689e3730b2ffd4fb710abb7d05bea251f23b3"
+    },
+    {
+      "path": "artifacts/direct-snapshot/browser-runtime-8/.last-run.json",
+      "bytes": 45,
+      "sha256": "91d1c43004802cd49950d78eb11c8fa7d05da8ffffe219a8b13b2f561bc00903"
+    },
+    {
+      "path": "artifacts/direct-snapshot/browser-runtime-8.log",
+      "bytes": 22400,
+      "sha256": "9de07624a093b0cb3ad1fdd4f72005592d57af41a6424ef7100933c879f65a00"
+    },
+    {
+      "path": "artifacts/direct-snapshot/browser-traces-8/.last-run.json",
+      "bytes": 45,
+      "sha256": "91d1c43004802cd49950d78eb11c8fa7d05da8ffffe219a8b13b2f561bc00903"
+    },
+    {
+      "path": "artifacts/direct-snapshot/browser-traces-8/determinism-WebAssembly-pr-165a4-imulation-trace-threaded-2--chromium/wasm.replay.checksums",
+      "bytes": 3472650,
+      "sha256": "5570a99e4345b5aa80d1f14928c4a5e5b37a03244b9327310ca1d0760d3df7e4"
+    },
+    {
+      "path": "artifacts/direct-snapshot/browser-traces-8/determinism-WebAssembly-pr-165a4-imulation-trace-threaded-2--firefox/wasm.replay.checksums",
+      "bytes": 3472650,
+      "sha256": "5570a99e4345b5aa80d1f14928c4a5e5b37a03244b9327310ca1d0760d3df7e4"
+    },
+    {
+      "path": "artifacts/direct-snapshot/browser-traces-8/determinism-WebAssembly-pr-165a4-imulation-trace-threaded-2--webkit/wasm.replay.checksums",
+      "bytes": 3472650,
+      "sha256": "5570a99e4345b5aa80d1f14928c4a5e5b37a03244b9327310ca1d0760d3df7e4"
+    },
+    {
+      "path": "artifacts/direct-snapshot/browser-traces-8/determinism-WebAssembly-pr-34f1c-imulation-trace-threaded-1--chromium/wasm.replay.checksums",
+      "bytes": 3472650,
+      "sha256": "5570a99e4345b5aa80d1f14928c4a5e5b37a03244b9327310ca1d0760d3df7e4"
+    },
+    {
+      "path": "artifacts/direct-snapshot/browser-traces-8/determinism-WebAssembly-pr-34f1c-imulation-trace-threaded-1--firefox/wasm.replay.checksums",
+      "bytes": 3472650,
+      "sha256": "5570a99e4345b5aa80d1f14928c4a5e5b37a03244b9327310ca1d0760d3df7e4"
+    },
+    {
+      "path": "artifacts/direct-snapshot/browser-traces-8/determinism-WebAssembly-pr-34f1c-imulation-trace-threaded-1--webkit/wasm.replay.checksums",
+      "bytes": 3472650,
+      "sha256": "5570a99e4345b5aa80d1f14928c4a5e5b37a03244b9327310ca1d0760d3df7e4"
+    },
+    {
+      "path": "artifacts/direct-snapshot/browser-traces-8/determinism-WebAssembly-pr-7b5ce--simulation-trace-serial-1--chromium/wasm.replay.checksums",
+      "bytes": 3472650,
+      "sha256": "5570a99e4345b5aa80d1f14928c4a5e5b37a03244b9327310ca1d0760d3df7e4"
+    },
+    {
+      "path": "artifacts/direct-snapshot/browser-traces-8/determinism-WebAssembly-pr-7b5ce--simulation-trace-serial-1--firefox/wasm.replay.checksums",
+      "bytes": 3472650,
+      "sha256": "5570a99e4345b5aa80d1f14928c4a5e5b37a03244b9327310ca1d0760d3df7e4"
+    },
+    {
+      "path": "artifacts/direct-snapshot/browser-traces-8/determinism-WebAssembly-pr-7b5ce--simulation-trace-serial-1--webkit/wasm.replay.checksums",
+      "bytes": 3472650,
+      "sha256": "5570a99e4345b5aa80d1f14928c4a5e5b37a03244b9327310ca1d0760d3df7e4"
+    },
+    {
+      "path": "artifacts/direct-snapshot/browser-traces-8/determinism-WebAssembly-pr-96d45-imulation-trace-threaded-4--chromium/wasm.replay.checksums",
+      "bytes": 3472650,
+      "sha256": "5570a99e4345b5aa80d1f14928c4a5e5b37a03244b9327310ca1d0760d3df7e4"
+    },
+    {
+      "path": "artifacts/direct-snapshot/browser-traces-8/determinism-WebAssembly-pr-96d45-imulation-trace-threaded-4--firefox/wasm.replay.checksums",
+      "bytes": 3472650,
+      "sha256": "5570a99e4345b5aa80d1f14928c4a5e5b37a03244b9327310ca1d0760d3df7e4"
+    },
+    {
+      "path": "artifacts/direct-snapshot/browser-traces-8/determinism-WebAssembly-pr-96d45-imulation-trace-threaded-4--webkit/wasm.replay.checksums",
+      "bytes": 3472650,
+      "sha256": "5570a99e4345b5aa80d1f14928c4a5e5b37a03244b9327310ca1d0760d3df7e4"
+    },
+    {
+      "path": "artifacts/direct-snapshot/browser-traces-8/determinism-WebAssembly-ve-69764-mitted-match-record-serial--chromium/verify-match.checksums.txt",
+      "bytes": 9094,
+      "sha256": "27027d2961089452bfb3c8a46e46fe552ad95cb3eefd04a6c18e642d32396717"
+    },
+    {
+      "path": "artifacts/direct-snapshot/browser-traces-8/determinism-WebAssembly-ve-69764-mitted-match-record-serial--firefox/verify-match.checksums.txt",
+      "bytes": 9094,
+      "sha256": "27027d2961089452bfb3c8a46e46fe552ad95cb3eefd04a6c18e642d32396717"
+    },
+    {
+      "path": "artifacts/direct-snapshot/browser-traces-8/determinism-WebAssembly-ve-69764-mitted-match-record-serial--webkit/verify-match.checksums.txt",
+      "bytes": 9094,
+      "sha256": "27027d2961089452bfb3c8a46e46fe552ad95cb3eefd04a6c18e642d32396717"
+    },
+    {
+      "path": "artifacts/direct-snapshot/browser-traces-8/determinism-WebAssembly-ve-9f6c1-tted-match-record-threaded--chromium/verify-match.checksums.txt",
+      "bytes": 9094,
+      "sha256": "27027d2961089452bfb3c8a46e46fe552ad95cb3eefd04a6c18e642d32396717"
+    },
+    {
+      "path": "artifacts/direct-snapshot/browser-traces-8/determinism-WebAssembly-ve-9f6c1-tted-match-record-threaded--firefox/verify-match.checksums.txt",
+      "bytes": 9094,
+      "sha256": "27027d2961089452bfb3c8a46e46fe552ad95cb3eefd04a6c18e642d32396717"
+    },
+    {
+      "path": "artifacts/direct-snapshot/browser-traces-8/determinism-WebAssembly-ve-9f6c1-tted-match-record-threaded--webkit/verify-match.checksums.txt",
+      "bytes": 9094,
+      "sha256": "27027d2961089452bfb3c8a46e46fe552ad95cb3eefd04a6c18e642d32396717"
+    },
+    {
+      "path": "artifacts/direct-snapshot/browser-traces-8.log",
+      "bytes": 33558,
+      "sha256": "e79912aeb71a450223ba91db56bfa3b71f203567b223180a8c1d9cdb425b504b"
+    },
+    {
+      "path": "artifacts/direct-snapshot/cpu-topology.json",
+      "bytes": 4812,
+      "sha256": "ff0e958112735ad7d72f325490ee05c3913408575b947bbc885b1a647eaa20f2"
+    },
+    {
+      "path": "artifacts/direct-snapshot/delivery-boundary-10.log",
+      "bytes": 101,
+      "sha256": "a72d0875bfbc166413919b7303af54b310cde777b5167ff766b49881af49bcb0"
+    },
+    {
+      "path": "artifacts/direct-snapshot/delivery-display-10/EditorPresentation/decision_cards_fit_the_phone_tray_presentation_in_both_orientations_display_artifacts/editor-card-load-390x844.bmp",
+      "bytes": 1313402,
+      "sha256": "0c5084e6aa4170e98c85c1d00d97a7fa8ef4ec710a06737b017690d675c118a7"
+    },
+    {
+      "path": "artifacts/direct-snapshot/delivery-display-10/EditorPresentation/decision_cards_fit_the_phone_tray_presentation_in_both_orientations_display_artifacts/editor-card-load-844x390.bmp",
+      "bytes": 1313402,
+      "sha256": "0b91f3a141ef43cc0af77c8b2ff00382fc331d327e5bba48b1be48b2d813b867"
+    },
+    {
+      "path": "artifacts/direct-snapshot/delivery-display-10/EditorPresentation/decision_cards_fit_the_phone_tray_presentation_in_both_orientations_display_artifacts/editor-card-quit-390x844.bmp",
+      "bytes": 1313402,
+      "sha256": "32b503b76857e9a19464ca8c3faa3ac2ba7d88c3a80bffff0c22d2d48f566386"
+    },
+    {
+      "path": "artifacts/direct-snapshot/delivery-display-10/EditorPresentation/decision_cards_fit_the_phone_tray_presentation_in_both_orientations_display_artifacts/editor-card-quit-844x390.bmp",
+      "bytes": 1313402,
+      "sha256": "102f5021c54916cc685b5bc7496c6c23d8be709fe6ddc13793e8010d7f96ec87"
+    },
+    {
+      "path": "artifacts/direct-snapshot/delivery-display-10/EngineSession/render_ceilings_preserve_per_tick_simulation_checksums_display_artifacts/fps-0.checksums",
+      "bytes": 1781,
+      "sha256": "090e581b76edd094dbce495c99be206ecfa13c6af817efed02223d3b9baf82c8"
+    },
+    {
+      "path": "artifacts/direct-snapshot/delivery-display-10/EngineSession/render_ceilings_preserve_per_tick_simulation_checksums_display_artifacts/fps-120.checksums",
+      "bytes": 1781,
+      "sha256": "090e581b76edd094dbce495c99be206ecfa13c6af817efed02223d3b9baf82c8"
+    },
+    {
+      "path": "artifacts/direct-snapshot/delivery-display-10/EngineSession/render_ceilings_preserve_per_tick_simulation_checksums_display_artifacts/fps-25.checksums",
+      "bytes": 1781,
+      "sha256": "090e581b76edd094dbce495c99be206ecfa13c6af817efed02223d3b9baf82c8"
+    },
+    {
+      "path": "artifacts/direct-snapshot/delivery-display-10/EngineSession/render_ceilings_preserve_per_tick_simulation_checksums_display_artifacts/fps-60.checksums",
+      "bytes": 1781,
+      "sha256": "090e581b76edd094dbce495c99be206ecfa13c6af817efed02223d3b9baf82c8"
+    },
+    {
+      "path": "artifacts/direct-snapshot/delivery-display-10/TerrainMaterials/compositor_preserves_native_artwork_overridden_before_startup_display_artifacts/data/terrain/startup-override/atlas.json",
+      "bytes": 26970,
+      "sha256": "3ff45e251f2fc723471dee917394cb8627ae4a842b74e01749a0e58705bc515a"
+    },
+    {
+      "path": "artifacts/direct-snapshot/delivery-display-10/TerrainMaterials/compositor_preserves_native_artwork_overridden_before_startup_display_artifacts/data/terrain/startup-override/page.webp",
+      "bytes": 44,
+      "sha256": "0896e81fe68c2a65254fa6895093e86a789de78d6e215000f44e52b11548a36d"
+    },
+    {
+      "path": "artifacts/direct-snapshot/delivery-display-10/TerrainPresentation/HD_material_pages_and_fractional_zoom_preserve_cached_pixels_with_missing_optional_atlas_display_artifacts/cache-memory.txt",
+      "bytes": 101,
+      "sha256": "4d6a00cf2147b7ca33685b65ba5eb562556f7f42c8ce38b5a391edef8933f20c"
+    },
+    {
+      "path": "artifacts/direct-snapshot/delivery-display-10/TerrainPresentation/HD_material_pages_and_fractional_zoom_preserve_cached_pixels_with_missing_optional_atlas_display_artifacts/synthetic-hd/frames.txt",
+      "bytes": 502,
+      "sha256": "41978fefc8a58964b1a64f09d57aeb086b98b395903caadedf2f21077619ae08"
+    },
+    {
+      "path": "artifacts/direct-snapshot/delivery-display-10/TerrainPresentation/HD_material_pages_and_fractional_zoom_preserve_cached_pixels_with_missing_optional_atlas_display_artifacts/synthetic-hd/grass.webp",
+      "bytes": 44,
+      "sha256": "0896e81fe68c2a65254fa6895093e86a789de78d6e215000f44e52b11548a36d"
+    },
+    {
+      "path": "artifacts/direct-snapshot/delivery-display-10/TerrainPresentation/emergency_tiles_remain_deterministic_and_cover_opaque_fractional_terrain_display/synthetic-hd/frames.txt",
+      "bytes": 502,
+      "sha256": "41978fefc8a58964b1a64f09d57aeb086b98b395903caadedf2f21077619ae08"
+    },
+    {
+      "path": "artifacts/direct-snapshot/delivery-display-10/TerrainPresentation/emergency_tiles_remain_deterministic_and_cover_opaque_fractional_terrain_display/synthetic-hd/grass.webp",
+      "bytes": 44,
+      "sha256": "0896e81fe68c2a65254fa6895093e86a789de78d6e215000f44e52b11548a36d"
+    },
+    {
+      "path": "artifacts/direct-snapshot/delivery-display-10/TerrainPresentation/every_paintable_built-in_binds_a_material_has_an_editor_icon_and_exports_its_own_colour_display_artifacts/terrain-catalogue-colors.png",
+      "bytes": 234,
+      "sha256": "5e835b952f40581a49f87b0cb5aa81891f753705274ba0f55ce247d5c2c8fd9e"
+    },
+    {
+      "path": "artifacts/direct-snapshot/delivery-display-10/TerrainPresentation/overview_palette_follows_detailed_shore_coverage_across_both_wrapped_axes_display_artifacts/overview-alignment/crossfade.png",
+      "bytes": 304882,
+      "sha256": "39752de3bfb61c9c524cbc122ff42fbad58c1363c996735482cac718630acd79"
+    },
+    {
+      "path": "artifacts/direct-snapshot/delivery-display-10/TerrainPresentation/overview_palette_follows_detailed_shore_coverage_across_both_wrapped_axes_display_artifacts/overview-alignment/detailed.png",
+      "bytes": 362426,
+      "sha256": "25477210b084b2154028096707e371c11944863a4cfe7366c41bc155647f4787"
+    },
+    {
+      "path": "artifacts/direct-snapshot/delivery-display-10/TerrainPresentation/overview_palette_follows_detailed_shore_coverage_across_both_wrapped_axes_display_artifacts/overview-alignment/overview.png",
+      "bytes": 2826,
+      "sha256": "afd4c4470d0ea7f07db6c70a6ba3a9c40254d0ae7539125b2bdb59800d9aac8e"
+    },
+    {
+      "path": "artifacts/direct-snapshot/delivery-display-10/TerrainPresentation/portable_texture_limits_reduce_HD_pages_and_admit_only_fitting_fallback_tiles_display/synthetic-hd/frames.txt",
+      "bytes": 502,
+      "sha256": "41978fefc8a58964b1a64f09d57aeb086b98b395903caadedf2f21077619ae08"
+    },
+    {
+      "path": "artifacts/direct-snapshot/delivery-display-10/TerrainPresentation/portable_texture_limits_reduce_HD_pages_and_admit_only_fitting_fallback_tiles_display/synthetic-hd/grass.webp",
+      "bytes": 44,
+      "sha256": "0896e81fe68c2a65254fa6895093e86a789de78d6e215000f44e52b11548a36d"
+    },
+    {
+      "path": "artifacts/direct-snapshot/delivery-display-10/TerrainPresentation/streaming_pages_match_cached_fractional_pixels_across_wraps_and_small_maps_display/synthetic-hd/frames.txt",
+      "bytes": 502,
+      "sha256": "41978fefc8a58964b1a64f09d57aeb086b98b395903caadedf2f21077619ae08"
+    },
+    {
+      "path": "artifacts/direct-snapshot/delivery-display-10/TerrainPresentation/streaming_pages_match_cached_fractional_pixels_across_wraps_and_small_maps_display/synthetic-hd/grass.webp",
+      "bytes": 44,
+      "sha256": "0896e81fe68c2a65254fa6895093e86a789de78d6e215000f44e52b11548a36d"
+    },
+    {
+      "path": "artifacts/direct-snapshot/delivery-display-10/TerrainPresentation/tiled_capture_keeps_whole-map_density_and_warm_pages_at_narrow_edges_display/synthetic-hd/frames.txt",
+      "bytes": 502,
+      "sha256": "41978fefc8a58964b1a64f09d57aeb086b98b395903caadedf2f21077619ae08"
+    },
+    {
+      "path": "artifacts/direct-snapshot/delivery-display-10/TerrainPresentation/tiled_capture_keeps_whole-map_density_and_warm_pages_at_narrow_edges_display/synthetic-hd/grass.webp",
+      "bytes": 44,
+      "sha256": "0896e81fe68c2a65254fa6895093e86a789de78d6e215000f44e52b11548a36d"
+    },
+    {
+      "path": "artifacts/direct-snapshot/delivery-display-10/TerrainPresentation/whole-cell_layers_preserve_OpenGL_terrain_caching_display/cache-memory.txt",
+      "bytes": 100,
+      "sha256": "400550e566da2e11afc561b8c9fcaa2119321de92df679d047ed8f7fcf288cf1"
+    },
+    {
+      "path": "artifacts/direct-snapshot/delivery-display-10/TerrainPresentation/whole-cell_layers_preserve_software_terrain_caching_display_artifacts/cache-memory.txt",
+      "bytes": 94,
+      "sha256": "b15a72bba7a212f7b2e3fe952c4b6120a09ea77dfaa6e3ccf9d639c116369aec"
+    },
+    {
+      "path": "artifacts/direct-snapshot/delivery-display-10/TerrainPresentation/whole-cell_layers_preserve_software_terrain_caching_display_artifacts/terrain-layers.png",
+      "bytes": 419804,
+      "sha256": "173c55944ed6995afefe79f5702c3ab41f503a90781f2769b1094ac0d720d1d4"
+    },
+    {
+      "path": "artifacts/direct-snapshot/delivery-display-10/TerrainPresentation/zoomed-out_GPU_terrain_retains_pages_across_frames_and_wrapped_views_display_artifacts/zoom-opengl.png",
+      "bytes": 877051,
+      "sha256": "e6715488baad37282d450baa72aee4b3ac4c7427880e4af2d84890fcbb241b77"
+    },
+    {
+      "path": "artifacts/direct-snapshot/delivery-display-10/TerrainPresentation/zoomed-out_GPU_terrain_retains_pages_across_frames_and_wrapped_views_display_artifacts/zoom-opengl.txt",
+      "bytes": 68,
+      "sha256": "20be99c6c39c96e4c35b3432b07214bd4861c4a51e4030b43a8cc7e3cc891ff2"
+    },
+    {
+      "path": "artifacts/direct-snapshot/delivery-display-10/TerrainPresentation/zoomed-out_GPU_terrain_retains_pages_across_frames_and_wrapped_views_display_artifacts/zoom-portable.png",
+      "bytes": 684343,
+      "sha256": "3aa686fc817b680b9e5614806173677a789a4bc049ee3bbd7e9cfc03f90c63e9"
+    },
+    {
+      "path": "artifacts/direct-snapshot/delivery-display-10/TerrainPresentation/zoomed-out_GPU_terrain_retains_pages_across_frames_and_wrapped_views_display_artifacts/zoom-portable.txt",
+      "bytes": 68,
+      "sha256": "413fde54bb37b3c07c183b8a6916b6120dd62f55c8137db52721c88a43046387"
+    },
+    {
+      "path": "artifacts/direct-snapshot/delivery-display-10/TerrainValidation/catalogue_materials_load_4x_HD_frames_and_compose_at_4x_display_artifacts/terrain-catalogue-hd.png",
+      "bytes": 454207,
+      "sha256": "fade38c7c3d2d8c9d7e55a7aefb2c074ba2c15a313617730ab36ffe93ad1ef06"
+    },
+    {
+      "path": "artifacts/direct-snapshot/delivery-display-10/TerrainValidation/mixed_terrain_simulation_trace_and_visual_gallery_display_artifacts/checksums.txt",
+      "bytes": 3676,
+      "sha256": "3175fe7f9dcdc557c071985f5ba07fa895898fe8a5c635fd94ef7637fe2ce07a"
+    },
+    {
+      "path": "artifacts/direct-snapshot/delivery-display-10/TerrainValidation/mixed_terrain_simulation_trace_and_visual_gallery_display_artifacts/terrain-gallery.png",
+      "bytes": 1067732,
+      "sha256": "13cdbd0344148df08a72005e0e89c0a39c1f950e34254ecb85928d4269673107"
+    },
+    {
+      "path": "artifacts/direct-snapshot/delivery-display-10/TerrainValidation/mixed_terrain_simulation_trace_and_visual_gallery_display_artifacts/timing.txt",
+      "bytes": 617,
+      "sha256": "4cf2ea60809a27d5354ad9092b44db2ca1643f467a33674f57fc9c476114dcb4"
+    },
+    {
+      "path": "artifacts/direct-snapshot/delivery-display-10/TerrainValidation/terrain_catalogue_gallery_renders_every_group_beside_grass_sand_and_water_display_artifacts/terrain-catalogue-gallery.png",
+      "bytes": 1065075,
+      "sha256": "8282e42a07b49031842f84d18b6f2379e0182d5ef640373893beda510bc0af4b"
+    },
+    {
+      "path": "artifacts/direct-snapshot/delivery-display-10-inventory.json",
+      "bytes": 186712,
+      "sha256": "5c182b6e597b03b89385815e3236ae5ce46ff8ed5974a695db647241c8031a2c"
+    },
+    {
+      "path": "artifacts/direct-snapshot/delivery-display-10.log",
+      "bytes": 3395,
+      "sha256": "4078bd30413ae31d1cf0f7c23cbb1554c609edf6da05aa5c1465a2b62d1d7cce"
+    },
+    {
+      "path": "artifacts/direct-snapshot/delivery-display-10.xml",
+      "bytes": 4937,
+      "sha256": "5e0e3827889009dd95f1a8b9d7891f9caa151fc4a0b297f5ed5639ef60806651"
+    },
+    {
+      "path": "artifacts/direct-snapshot/delivery-fetch-master.log",
+      "bytes": 85,
+      "sha256": "9702bfbd7f37304c706c65f85f771859913f5dcd360fb52ff74bca9a5d0fe6ca"
+    },
+    {
+      "path": "artifacts/direct-snapshot/delivery-headless-10/SharedWorkerLifecycle/no-AI_completed_ticks_agree_across_shared_worker_counts_artifacts/no-ai.game",
+      "bytes": 1520861,
+      "sha256": "a7a256518963ea308645cf7f1443e43327f5ae004bad32427739a9ab61eb8208"
+    },
+    {
+      "path": "artifacts/direct-snapshot/delivery-headless-10/TurnEngineHarness/a_10_s_flag_drag_and_a_held_key_keep_the_input_delay_bounded_without_a_flood_network-sim_artifacts/drag-paced/match.g2mr",
+      "bytes": 6848,
+      "sha256": "67d64302d4174cc86c59c0e3a3166f74e3437808916da09ff0aedb2cd7e3e964"
+    },
+    {
+      "path": "artifacts/direct-snapshot/delivery-headless-10/TurnEngineHarness/a_10_s_flag_drag_and_a_held_key_keep_the_input_delay_bounded_without_a_flood_network-sim_artifacts/drag-paced/verify/artifacts.json",
+      "bytes": 185,
+      "sha256": "6cc1e9f270d8846dcf412872f611c9803d9f72fbb30893c5243ff555134f24c2"
+    },
+    {
+      "path": "artifacts/direct-snapshot/delivery-headless-10/TurnEngineHarness/a_10_s_flag_drag_and_a_held_key_keep_the_input_delay_bounded_without_a_flood_network-sim_artifacts/drag-paced/verify/checksums.txt",
+      "bytes": 6494,
+      "sha256": "1f4fd5417e667d0262034347de19b80fdd3b166921c2fd3eb704ddf124e8ede7"
+    },
+    {
+      "path": "artifacts/direct-snapshot/delivery-headless-10/TurnEngineHarness/a_10_s_flag_drag_and_a_held_key_keep_the_input_delay_bounded_without_a_flood_network-sim_artifacts/drag-paced/verify/match.replay",
+      "bytes": 1710657,
+      "sha256": "be05e3fe91a3fb57d0ed309eed43a990e965b7f12abf3f738541d78f20993e89"
+    },
+    {
+      "path": "artifacts/direct-snapshot/delivery-headless-10/TurnEngineHarness/a_10_s_flag_drag_and_a_held_key_keep_the_input_delay_bounded_without_a_flood_network-sim_artifacts/drag-paced/verify/result.json",
+      "bytes": 9467,
+      "sha256": "5de9b221bcd28506b5c567ac8747699599f9fbf2767c7e52bd081c1af6d245b5"
+    },
+    {
+      "path": "artifacts/direct-snapshot/delivery-headless-10/TurnEngineHarness/a_10_s_flag_drag_and_a_held_key_keep_the_input_delay_bounded_without_a_flood_network-sim_artifacts/drag-paced/verify/verdict.json",
+      "bytes": 443,
+      "sha256": "748705393e1ada10120c4c226d4e8b1b2d32a8a60b4b5ad99b24f0b24727dd1f"
+    },
+    {
+      "path": "artifacts/direct-snapshot/delivery-headless-10/TurnEngineHarness/a_10_s_flag_drag_and_a_held_key_keep_the_input_delay_bounded_without_a_flood_network-sim_artifacts/turn-engine-drag.txt",
+      "bytes": 556,
+      "sha256": "b2feae0e00bb9aad2954a4f9f8ed2f239888542b7179fbca18088b0b5ccb468c"
+    },
+    {
+      "path": "artifacts/direct-snapshot/delivery-headless-10/TurnEngineHarness/a_client_sending_hostile_orders_of_every_type_crashes_no_one_and_is_refused_identically_everywhere_network-sim_fuzz_artifacts/hostile-orders-101/match.g2mr",
+      "bytes": 42131,
+      "sha256": "e183b1fcf795cbef61f46a3fea43f8380066b78c3ba5c4f82fffa21e53c16752"
+    },
+    {
+      "path": "artifacts/direct-snapshot/delivery-headless-10/TurnEngineHarness/a_client_sending_hostile_orders_of_every_type_crashes_no_one_and_is_refused_identically_everywhere_network-sim_fuzz_artifacts/hostile-orders-101/verify/artifacts.json",
+      "bytes": 187,
+      "sha256": "34b1eb639483c4153ba3a28dd689f92a2812ec2fa54361a7d17ff36703f4fca3"
+    },
+    {
+      "path": "artifacts/direct-snapshot/delivery-headless-10/TurnEngineHarness/a_client_sending_hostile_orders_of_every_type_crashes_no_one_and_is_refused_identically_everywhere_network-sim_fuzz_artifacts/hostile-orders-101/verify/checksums.txt",
+      "bytes": 31546,
+      "sha256": "c12a3390021b2772d4bddd3506de7e17ae021caecd315399f33e543d14b9eeef"
+    },
+    {
+      "path": "artifacts/direct-snapshot/delivery-headless-10/TurnEngineHarness/a_client_sending_hostile_orders_of_every_type_crashes_no_one_and_is_refused_identically_everywhere_network-sim_fuzz_artifacts/hostile-orders-101/verify/match.replay",
+      "bytes": 3083536,
+      "sha256": "732b8c47d8b17a610012031511ca6857854ab598b1d752218133979d16cf7db3"
+    },
+    {
+      "path": "artifacts/direct-snapshot/delivery-headless-10/TurnEngineHarness/a_client_sending_hostile_orders_of_every_type_crashes_no_one_and_is_refused_identically_everywhere_network-sim_fuzz_artifacts/hostile-orders-101/verify/result.json",
+      "bytes": 10251,
+      "sha256": "a5078935bab40200a190e41ed09623032e1020086099dd86f7265fc86e341e0b"
+    },
+    {
+      "path": "artifacts/direct-snapshot/delivery-headless-10/TurnEngineHarness/a_client_sending_hostile_orders_of_every_type_crashes_no_one_and_is_refused_identically_everywhere_network-sim_fuzz_artifacts/hostile-orders-101/verify/verdict.json",
+      "bytes": 631,
+      "sha256": "7a217358255a727e753e708ee363b5d83e69be2321fe4a1f138990a3680bf9f1"
+    },
+    {
+      "path": "artifacts/direct-snapshot/delivery-headless-10/TurnEngineHarness/a_client_sending_hostile_orders_of_every_type_crashes_no_one_and_is_refused_identically_everywhere_network-sim_fuzz_artifacts/hostile-orders-202/match.g2mr",
+      "bytes": 42288,
+      "sha256": "d85e71820e01e1a302fc0160595fc2669541094c2462117116f94877f0ccf8e5"
+    },
+    {
+      "path": "artifacts/direct-snapshot/delivery-headless-10/TurnEngineHarness/a_client_sending_hostile_orders_of_every_type_crashes_no_one_and_is_refused_identically_everywhere_network-sim_fuzz_artifacts/hostile-orders-202/verify/artifacts.json",
+      "bytes": 187,
+      "sha256": "ba887cc492c97e07d86a131e8cfee51df16930ed611eb164018c70fff0c251f3"
+    },
+    {
+      "path": "artifacts/direct-snapshot/delivery-headless-10/TurnEngineHarness/a_client_sending_hostile_orders_of_every_type_crashes_no_one_and_is_refused_identically_everywhere_network-sim_fuzz_artifacts/hostile-orders-202/verify/checksums.txt",
+      "bytes": 31546,
+      "sha256": "4aeda5bb2d44d62d94fdc1fbf4395f3083075225d446f3821801d7da307a4607"
+    },
+    {
+      "path": "artifacts/direct-snapshot/delivery-headless-10/TurnEngineHarness/a_client_sending_hostile_orders_of_every_type_crashes_no_one_and_is_refused_identically_everywhere_network-sim_fuzz_artifacts/hostile-orders-202/verify/match.replay",
+      "bytes": 3083165,
+      "sha256": "0e2fa29b7a114d4934c32a2d7c74c4a6956ab121ccd171973bc5b2abe2aaf400"
+    },
+    {
+      "path": "artifacts/direct-snapshot/delivery-headless-10/TurnEngineHarness/a_client_sending_hostile_orders_of_every_type_crashes_no_one_and_is_refused_identically_everywhere_network-sim_fuzz_artifacts/hostile-orders-202/verify/result.json",
+      "bytes": 10277,
+      "sha256": "91b89c2c31e249bfe725d80ae63beb1854651fd3ceadaba57fe078eaf7da4c7b"
+    },
+    {
+      "path": "artifacts/direct-snapshot/delivery-headless-10/TurnEngineHarness/a_client_sending_hostile_orders_of_every_type_crashes_no_one_and_is_refused_identically_everywhere_network-sim_fuzz_artifacts/hostile-orders-202/verify/verdict.json",
+      "bytes": 631,
+      "sha256": "b7298efb8454b9ee050cb1e0dbf519677959b51444a110fe4acfa0d2b864143b"
+    },
+    {
+      "path": "artifacts/direct-snapshot/delivery-headless-10/TurnEngineHarness/a_client_sending_hostile_orders_of_every_type_crashes_no_one_and_is_refused_identically_everywhere_network-sim_fuzz_artifacts/hostile-orders-303/match.g2mr",
+      "bytes": 41942,
+      "sha256": "51bb3c18b531a402a322c7f2f6a0cb9caf37f9e80f654e271f635c62d9a83b5e"
+    },
+    {
+      "path": "artifacts/direct-snapshot/delivery-headless-10/TurnEngineHarness/a_client_sending_hostile_orders_of_every_type_crashes_no_one_and_is_refused_identically_everywhere_network-sim_fuzz_artifacts/hostile-orders-303/verify/artifacts.json",
+      "bytes": 187,
+      "sha256": "85b3e5ada6850bd24bf9370ab9032ef9a910ff98102e1ecb45ca3839b35f1074"
+    },
+    {
+      "path": "artifacts/direct-snapshot/delivery-headless-10/TurnEngineHarness/a_client_sending_hostile_orders_of_every_type_crashes_no_one_and_is_refused_identically_everywhere_network-sim_fuzz_artifacts/hostile-orders-303/verify/checksums.txt",
+      "bytes": 31546,
+      "sha256": "97bd093f770f0f85db9a66743b2e07ddc51a39a12bf635857b304088d6911d9d"
+    },
+    {
+      "path": "artifacts/direct-snapshot/delivery-headless-10/TurnEngineHarness/a_client_sending_hostile_orders_of_every_type_crashes_no_one_and_is_refused_identically_everywhere_network-sim_fuzz_artifacts/hostile-orders-303/verify/match.replay",
+      "bytes": 3082456,
+      "sha256": "7655a2f4d2c4f4cfce6ea081102cb6d129140ce1bd3a56ccaa3d2dabc392e04d"
+    },
+    {
+      "path": "artifacts/direct-snapshot/delivery-headless-10/TurnEngineHarness/a_client_sending_hostile_orders_of_every_type_crashes_no_one_and_is_refused_identically_everywhere_network-sim_fuzz_artifacts/hostile-orders-303/verify/result.json",
+      "bytes": 10253,
+      "sha256": "d46f231d903c4861f42e96c797bb45b7a60736a0fcc24e2b5110d7eca1f89cdf"
+    },
+    {
+      "path": "artifacts/direct-snapshot/delivery-headless-10/TurnEngineHarness/a_client_sending_hostile_orders_of_every_type_crashes_no_one_and_is_refused_identically_everywhere_network-sim_fuzz_artifacts/hostile-orders-303/verify/verdict.json",
+      "bytes": 631,
+      "sha256": "93263852e595b21e5e7e489e47c48b0674cfb042cb73c2f57423fd7a626582cc"
+    },
+    {
+      "path": "artifacts/direct-snapshot/delivery-headless-10/TurnEngineHarness/a_client_sending_hostile_orders_of_every_type_crashes_no_one_and_is_refused_identically_everywhere_network-sim_fuzz_artifacts/hostile-orders-summary.txt",
+      "bytes": 1403,
+      "sha256": "0e593cacf9e71f0bcf1ec0ef6272ad5f1de325c307a32fe305b065451047d002"
+    },
+    {
+      "path": "artifacts/direct-snapshot/delivery-headless-10/TurnEngineHarness/a_client_that_executes_a_tampered_order_is_repaired_by_an_in-place_reload_and_named_by_the_verifier_network-sim_artifacts/tampered-order/match.g2mr",
+      "bytes": 6323,
+      "sha256": "98cfbd233656e982791bf9d5e9bc4d84710217167659062cd1a41545f69121c6"
+    },
+    {
+      "path": "artifacts/direct-snapshot/delivery-headless-10/TurnEngineHarness/a_client_that_executes_a_tampered_order_is_repaired_by_an_in-place_reload_and_named_by_the_verifier_network-sim_artifacts/tampered-order/summary.txt",
+      "bytes": 230,
+      "sha256": "3977789e3c976515761212f08cae09edd3e25bc6a73b7fc7cd64cee898814c27"
+    },
+    {
+      "path": "artifacts/direct-snapshot/delivery-headless-10/TurnEngineHarness/a_client_that_executes_a_tampered_order_is_repaired_by_an_in-place_reload_and_named_by_the_verifier_network-sim_artifacts/tampered-order/verify/artifacts.json",
+      "bytes": 186,
+      "sha256": "3fed787d5320c2409a445af5ba1ab473a317836a92265ef40e9bdf191c8a7470"
+    },
+    {
+      "path": "artifacts/direct-snapshot/delivery-headless-10/TurnEngineHarness/a_client_that_executes_a_tampered_order_is_repaired_by_an_in-place_reload_and_named_by_the_verifier_network-sim_artifacts/tampered-order/verify/checksums.txt",
+      "bytes": 15796,
+      "sha256": "a7ec9e34a14fd9015ae754db8b39e64aee5bad552de957033f6c7a72126c8cee"
+    },
+    {
+      "path": "artifacts/direct-snapshot/delivery-headless-10/TurnEngineHarness/a_client_that_executes_a_tampered_order_is_repaired_by_an_in-place_reload_and_named_by_the_verifier_network-sim_artifacts/tampered-order/verify/match.replay",
+      "bytes": 2568659,
+      "sha256": "60d10bbb14e39614043d2d310102e65a1f606202c708ab21e97564d835549700"
+    },
+    {
+      "path": "artifacts/direct-snapshot/delivery-headless-10/TurnEngineHarness/a_client_that_executes_a_tampered_order_is_repaired_by_an_in-place_reload_and_named_by_the_verifier_network-sim_artifacts/tampered-order/verify/result.json",
+      "bytes": 9937,
+      "sha256": "5762a1a9aa2b6f2226fa2d7e78d714e1b71eb5b46c1b6ea0a0b4f600b0bc5bec"
+    },
+    {
+      "path": "artifacts/direct-snapshot/delivery-headless-10/TurnEngineHarness/a_client_that_executes_a_tampered_order_is_repaired_by_an_in-place_reload_and_named_by_the_verifier_network-sim_artifacts/tampered-order/verify/verdict.json",
+      "bytes": 457,
+      "sha256": "c54f46971896071a3b78c12265291e35695188e684738ab0be339f3acf16fcad"
+    },
+    {
+      "path": "artifacts/direct-snapshot/delivery-headless-10/TurnEngineHarness/a_pause_limit_is_enforced_identically_everywhere_and_the_record_verifies_network-sim_artifacts/pause-limit/match.g2mr",
+      "bytes": 2572,
+      "sha256": "9e3d53326c6e6fe3698229c412b0fb064c66c65a19964d829ea162c0d8f50905"
+    },
+    {
+      "path": "artifacts/direct-snapshot/delivery-headless-10/TurnEngineHarness/a_pause_limit_is_enforced_identically_everywhere_and_the_record_verifies_network-sim_artifacts/pause-limit/summary.txt",
+      "bytes": 189,
+      "sha256": "79d165bf1891cefa3f6f4000888d1862ef78504529f6867b2aa5abf8d398fecc"
+    },
+    {
+      "path": "artifacts/direct-snapshot/delivery-headless-10/TurnEngineHarness/a_pause_limit_is_enforced_identically_everywhere_and_the_record_verifies_network-sim_artifacts/pause-limit/verify/artifacts.json",
+      "bytes": 185,
+      "sha256": "aca939d832ff54e8684f6ce2dc7bb06cb6f8447db01aecd53e3175e2acc05e4e"
+    },
+    {
+      "path": "artifacts/direct-snapshot/delivery-headless-10/TurnEngineHarness/a_pause_limit_is_enforced_identically_everywhere_and_the_record_verifies_network-sim_artifacts/pause-limit/verify/checksums.txt",
+      "bytes": 6559,
+      "sha256": "4f3f28d1694ea97ba72b7e2eefdfc6679c7f838cd02fcd45824376d2d3c615e9"
+    },
+    {
+      "path": "artifacts/direct-snapshot/delivery-headless-10/TurnEngineHarness/a_pause_limit_is_enforced_identically_everywhere_and_the_record_verifies_network-sim_artifacts/pause-limit/verify/match.replay",
+      "bytes": 1562000,
+      "sha256": "4f2444c54634b23400d881bea070b4892b4ca784637a738615edb6ca5ce17b05"
+    },
+    {
+      "path": "artifacts/direct-snapshot/delivery-headless-10/TurnEngineHarness/a_pause_limit_is_enforced_identically_everywhere_and_the_record_verifies_network-sim_artifacts/pause-limit/verify/result.json",
+      "bytes": 9486,
+      "sha256": "fdacc8b23e42d7788dad86ac58552f1c3b47322ac8abfe2c088c34d3ce9ddf71"
+    },
+    {
+      "path": "artifacts/direct-snapshot/delivery-headless-10/TurnEngineHarness/a_pause_limit_is_enforced_identically_everywhere_and_the_record_verifies_network-sim_artifacts/pause-limit/verify/verdict.json",
+      "bytes": 504,
+      "sha256": "6ee5565a16b9f6283c47cce3a3248a19f96befc20fc9cee85105109e6935803d"
+    },
+    {
+      "path": "artifacts/direct-snapshot/delivery-headless-10/TurnEngineHarness/a_player_who_quits_leaves_through_the_relay_s_quit_order_and_the_rest_play_on_network-sim/quit/match.g2mr",
+      "bytes": 2974,
+      "sha256": "4681766d07ddf43cd6bd258450bb1270a4ce60004b52dc20548d5e7c75427405"
+    },
+    {
+      "path": "artifacts/direct-snapshot/delivery-headless-10/TurnEngineHarness/a_player_who_quits_leaves_through_the_relay_s_quit_order_and_the_rest_play_on_network-sim/quit/verify/artifacts.json",
+      "bytes": 185,
+      "sha256": "e786db9b3e2d63e0235272ff0adeedd8965b0c4e758615b17816c1cda0b2d349"
+    },
+    {
+      "path": "artifacts/direct-snapshot/delivery-headless-10/TurnEngineHarness/a_player_who_quits_leaves_through_the_relay_s_quit_order_and_the_rest_play_on_network-sim/quit/verify/checksums.txt",
+      "bytes": 6819,
+      "sha256": "d8fffde001e28cd1f988c347301538eca062ae333b50518fd9b637e98579a535"
+    },
+    {
+      "path": "artifacts/direct-snapshot/delivery-headless-10/TurnEngineHarness/a_player_who_quits_leaves_through_the_relay_s_quit_order_and_the_rest_play_on_network-sim/quit/verify/match.replay",
+      "bytes": 1603440,
+      "sha256": "5ee1a5531f8a18f5544ae5bbc2a9ca43de6d4b0fdaf1ef2861a8c249e7935f9a"
+    },
+    {
+      "path": "artifacts/direct-snapshot/delivery-headless-10/TurnEngineHarness/a_player_who_quits_leaves_through_the_relay_s_quit_order_and_the_rest_play_on_network-sim/quit/verify/result.json",
+      "bytes": 9857,
+      "sha256": "d7f9ef80ac1955de99d4bc665f80c00c494e51999240bcd90aea24492d02b37c"
+    },
+    {
+      "path": "artifacts/direct-snapshot/delivery-headless-10/TurnEngineHarness/a_player_who_quits_leaves_through_the_relay_s_quit_order_and_the_rest_play_on_network-sim/quit/verify/verdict.json",
+      "bytes": 445,
+      "sha256": "9e05dd57fd200fdf5b0c83f22636918a8d51db1b5d0dee7c76e38b20f8e92006"
+    },
+    {
+      "path": "artifacts/direct-snapshot/delivery-headless-10/TurnEngineHarness/a_save_with_closed_seats_reteamed_players_keep_their_colonies_closed_ones_are_cleared_network-sim/closed-save/match.g2mr",
+      "bytes": 1966,
+      "sha256": "364003b9b13b92bbaaca362b926635abe098dcc7eb0b02e436ae123aaa9d6d90"
+    },
+    {
+      "path": "artifacts/direct-snapshot/delivery-headless-10/TurnEngineHarness/a_save_with_closed_seats_reteamed_players_keep_their_colonies_closed_ones_are_cleared_network-sim/closed-save/source.game",
+      "bytes": 1892058,
+      "sha256": "189373026dedfeed496faf3f0bff442de2d22fb8e17ebd9d51635b41f1c4c3c1"
+    },
+    {
+      "path": "artifacts/direct-snapshot/delivery-headless-10/TurnEngineHarness/a_save_with_closed_seats_reteamed_players_keep_their_colonies_closed_ones_are_cleared_network-sim/closed-save/verify/artifacts.json",
+      "bytes": 185,
+      "sha256": "b1aaca9448900abb34f620fb5ce83a432c35010a7ae4e41a5887649ca316570f"
+    },
+    {
+      "path": "artifacts/direct-snapshot/delivery-headless-10/TurnEngineHarness/a_save_with_closed_seats_reteamed_players_keep_their_colonies_closed_ones_are_cleared_network-sim/closed-save/verify/checksums.txt",
+      "bytes": 4219,
+      "sha256": "6708064ca30f333ab9096bbfc19b018a5e4497f8050599e3420cb63f293f3bb4"
+    },
+    {
+      "path": "artifacts/direct-snapshot/delivery-headless-10/TurnEngineHarness/a_save_with_closed_seats_reteamed_players_keep_their_colonies_closed_ones_are_cleared_network-sim/closed-save/verify/match.replay",
+      "bytes": 1707194,
+      "sha256": "6e56149ce4614e8d8f1d2eae53f763b21c0242d6eb492c66050871af697dce34"
+    },
+    {
+      "path": "artifacts/direct-snapshot/delivery-headless-10/TurnEngineHarness/a_save_with_closed_seats_reteamed_players_keep_their_colonies_closed_ones_are_cleared_network-sim/closed-save/verify/result.json",
+      "bytes": 9471,
+      "sha256": "e2cd4137be8d2b1adb847749f71bb7b55e2a2249a31717ea71ef792aca26752e"
+    },
+    {
+      "path": "artifacts/direct-snapshot/delivery-headless-10/TurnEngineHarness/a_save_with_closed_seats_reteamed_players_keep_their_colonies_closed_ones_are_cleared_network-sim/closed-save/verify/verdict.json",
+      "bytes": 460,
+      "sha256": "9880a2841c1c7b616737c48194ead2cc2a709bbfd7785c8ec17917313a4409be"
+    },
+    {
+      "path": "artifacts/direct-snapshot/delivery-headless-10/TurnEngineHarness/closed_seats_are_closed_colonies_the_last_player_standing_wins_everywhere_and_the_record_verifies_network-sim/closed-seats/match.g2mr",
+      "bytes": 4011,
+      "sha256": "a1ccf919030f7d2ed188056c996a0a68718611a80b473bcdca85e8be09f4875d"
+    },
+    {
+      "path": "artifacts/direct-snapshot/delivery-headless-10/TurnEngineHarness/closed_seats_are_closed_colonies_the_last_player_standing_wins_everywhere_and_the_record_verifies_network-sim/closed-seats/verify/artifacts.json",
+      "bytes": 186,
+      "sha256": "88e6914fb8a6309ef7eb26b83fe566c2a6210d9df82337b7dc062a33ec4f33e2"
+    },
+    {
+      "path": "artifacts/direct-snapshot/delivery-headless-10/TurnEngineHarness/closed_seats_are_closed_colonies_the_last_player_standing_wins_everywhere_and_the_record_verifies_network-sim/closed-seats/verify/checksums.txt",
+      "bytes": 54296,
+      "sha256": "52c601d620c9e75b313a17e96cb4dc036a3fe366d61d3995c547d4674bee7a8a"
+    },
+    {
+      "path": "artifacts/direct-snapshot/delivery-headless-10/TurnEngineHarness/closed_seats_are_closed_colonies_the_last_player_standing_wins_everywhere_and_the_record_verifies_network-sim/closed-seats/verify/match.replay",
+      "bytes": 1241488,
+      "sha256": "12c7f6fe0795a06ef4ffc99a7d2ebfcbab4367a5f0aad8df151885eeae9a8cbd"
+    },
+    {
+      "path": "artifacts/direct-snapshot/delivery-headless-10/TurnEngineHarness/closed_seats_are_closed_colonies_the_last_player_standing_wins_everywhere_and_the_record_verifies_network-sim/closed-seats/verify/result.json",
+      "bytes": 9846,
+      "sha256": "8f503c68b561e4827ab2a513bae514ff7ec70f58443e7df13051572bfb89c11b"
+    },
+    {
+      "path": "artifacts/direct-snapshot/delivery-headless-10/TurnEngineHarness/closed_seats_are_closed_colonies_the_last_player_standing_wins_everywhere_and_the_record_verifies_network-sim/closed-seats/verify/verdict.json",
+      "bytes": 466,
+      "sha256": "beb91847fe65c9546df8b9e7c27adfa513412aaac40bf261249ebf909c88c4bf"
+    },
+    {
+      "path": "artifacts/direct-snapshot/delivery-headless-10/TurnEngineHarness/embedded_terrain_definitions_travel_with_shared_matches_and_verifier_replays_network-sim_artifacts/custom.map",
+      "bytes": 1253424,
+      "sha256": "678c0be1e566a2fb71fd951159dd9382c2db166ceb2b0984aaf2a570229f7d30"
+    },
+    {
+      "path": "artifacts/direct-snapshot/delivery-headless-10/TurnEngineHarness/embedded_terrain_definitions_travel_with_shared_matches_and_verifier_replays_network-sim_artifacts/match.g2mr",
+      "bytes": 3045,
+      "sha256": "7e377ca820517172b98a5a6fa19cf48340d147509c5f68f78b74c2ec44e5cef3"
+    },
+    {
+      "path": "artifacts/direct-snapshot/delivery-headless-10/TurnEngineHarness/embedded_terrain_definitions_travel_with_shared_matches_and_verifier_replays_network-sim_artifacts/verify/artifacts.json",
+      "bytes": 185,
+      "sha256": "260e5d6cd9092c6c8937f5326ac5e09b47d97747eb7a2c394d2a5615e0bfc088"
+    },
+    {
+      "path": "artifacts/direct-snapshot/delivery-headless-10/TurnEngineHarness/embedded_terrain_definitions_travel_with_shared_matches_and_verifier_replays_network-sim_artifacts/verify/checksums.txt",
+      "bytes": 9094,
+      "sha256": "10e369c13b923229b85f0a128b9066aae6eeda689cd6bafc862216e5d8ce946e"
+    },
+    {
+      "path": "artifacts/direct-snapshot/delivery-headless-10/TurnEngineHarness/embedded_terrain_definitions_travel_with_shared_matches_and_verifier_replays_network-sim_artifacts/verify/match.replay",
+      "bytes": 2364494,
+      "sha256": "6c53284094d3a906a5148f93727bfd35cc9189c071ae47f287763f483e75dccc"
+    },
+    {
+      "path": "artifacts/direct-snapshot/delivery-headless-10/TurnEngineHarness/embedded_terrain_definitions_travel_with_shared_matches_and_verifier_replays_network-sim_artifacts/verify/result.json",
+      "bytes": 9622,
+      "sha256": "77e0f60aeec45dfde55df4b042c474760a1a48cb0c548710fe93fe3347550da7"
+    },
+    {
+      "path": "artifacts/direct-snapshot/delivery-headless-10/TurnEngineHarness/embedded_terrain_definitions_travel_with_shared_matches_and_verifier_replays_network-sim_artifacts/verify/verdict.json",
+      "bytes": 430,
+      "sha256": "d9adc4e9ca453438771595cf37fa2d7c587140e161d527d72abd7911c5752185"
+    },
+    {
+      "path": "artifacts/direct-snapshot/delivery-headless-10/TurnEngineHarness/engines_report_network_telemetry_and_its_output_changes_nothing_they_execute_network-sim_artifacts/network-telemetry/client0.network.json",
+      "bytes": 11202,
+      "sha256": "0d169c8a267a4f4903a7a25ed53332d6ae6e490fa9264c4daf0f6bca2cdfed5a"
+    },
+    {
+      "path": "artifacts/direct-snapshot/delivery-headless-10/TurnEngineHarness/engines_report_network_telemetry_and_its_output_changes_nothing_they_execute_network-sim_artifacts/network-telemetry/client1.network.json",
+      "bytes": 11499,
+      "sha256": "313e9341b22860bc89150d0dcac5d825dec76c01e9afa903d3cb060ed4c05e25"
+    },
+    {
+      "path": "artifacts/direct-snapshot/delivery-headless-10/TurnEngineHarness/engines_report_network_telemetry_and_its_output_changes_nothing_they_execute_network-sim_artifacts/network-telemetry/relay.network.json",
+      "bytes": 2555,
+      "sha256": "e07232bd15fcb51f44a8a9f29c31ca163f67c82188b2b2c705d318d56fad81a5"
+    },
+    {
+      "path": "artifacts/direct-snapshot/delivery-headless-10/TurnEngineHarness/engines_report_network_telemetry_and_its_output_changes_nothing_they_execute_network-sim_artifacts/network-telemetry/timeline-records.txt",
+      "bytes": 1236818,
+      "sha256": "e7f19a5fae0f472a420155ef228418d78775f24a29ddb66f0a4dd479c3f7c1c0"
+    },
+    {
+      "path": "artifacts/direct-snapshot/delivery-headless-10/TurnEngineHarness/four_engines_survive_a_stall_and_a_restart_the_restarted_client_reloads_and_fast-forwards_network-sim_artifacts/four-engines/match.g2mr",
+      "bytes": 8216,
+      "sha256": "592e03ce9598b54b773a21837461637fb98e522da89bb708c9e0e9ce1bf9cbee"
+    },
+    {
+      "path": "artifacts/direct-snapshot/delivery-headless-10/TurnEngineHarness/four_engines_survive_a_stall_and_a_restart_the_restarted_client_reloads_and_fast-forwards_network-sim_artifacts/four-engines/summary.txt",
+      "bytes": 274,
+      "sha256": "44471e4924a8c6179a0a4d37da8a370d13f0fce17184792109ff01f798bf4b2c"
+    },
+    {
+      "path": "artifacts/direct-snapshot/delivery-headless-10/TurnEngineHarness/four_engines_survive_a_stall_and_a_restart_the_restarted_client_reloads_and_fast-forwards_network-sim_artifacts/four-engines/verify/artifacts.json",
+      "bytes": 187,
+      "sha256": "2f0e0dba771426c5eebfbd47060a3ef1e001b5535f262fff99a3bf64d3f3c48b"
+    },
+    {
+      "path": "artifacts/direct-snapshot/delivery-headless-10/TurnEngineHarness/four_engines_survive_a_stall_and_a_restart_the_restarted_client_reloads_and_fast-forwards_network-sim_artifacts/four-engines/verify/checksums.txt",
+      "bytes": 15796,
+      "sha256": "0b57af22610d1a4e2554683a3b2272b0f8c41fedf11e31e03257fb45d5b49447"
+    },
+    {
+      "path": "artifacts/direct-snapshot/delivery-headless-10/TurnEngineHarness/four_engines_survive_a_stall_and_a_restart_the_restarted_client_reloads_and_fast-forwards_network-sim_artifacts/four-engines/verify/match.replay",
+      "bytes": 1257594,
+      "sha256": "c42dbe36c69ba6da6bedc470a8d9a98655e6a9da7be6d773f0b43d08e2f4d9de"
+    },
+    {
+      "path": "artifacts/direct-snapshot/delivery-headless-10/TurnEngineHarness/four_engines_survive_a_stall_and_a_restart_the_restarted_client_reloads_and_fast-forwards_network-sim_artifacts/four-engines/verify/result.json",
+      "bytes": 10151,
+      "sha256": "6e6898cc2cd2bdd046ad4c1386c0542f906756c4ae440bd5dc4e8ca177421a89"
+    },
+    {
+      "path": "artifacts/direct-snapshot/delivery-headless-10/TurnEngineHarness/four_engines_survive_a_stall_and_a_restart_the_restarted_client_reloads_and_fast-forwards_network-sim_artifacts/four-engines/verify/verdict.json",
+      "bytes": 431,
+      "sha256": "5a3939bfb8bcb05860b9e3b4ca44a63c05fccd20795718df14fc15e3509edbf5"
+    },
+    {
+      "path": "artifacts/direct-snapshot/delivery-headless-10/TurnEngineHarness/one_client_claiming_the_game_finished_does_not_end_it_for_a_player_who_is_reconnecting_network-sim/lying-finish/match.g2mr",
+      "bytes": 1925,
+      "sha256": "9dbb09351422d5ff0f03c135e24b859d15432726a89668672886e27cea45a5e1"
+    },
+    {
+      "path": "artifacts/direct-snapshot/delivery-headless-10/TurnEngineHarness/one_client_claiming_the_game_finished_does_not_end_it_for_a_player_who_is_reconnecting_network-sim/lying-finish/verify/artifacts.json",
+      "bytes": 185,
+      "sha256": "5a4c43f10c5504283e78fb873da88be9736a32ec06af4f3dd45ea21073a508df"
+    },
+    {
+      "path": "artifacts/direct-snapshot/delivery-headless-10/TurnEngineHarness/one_client_claiming_the_game_finished_does_not_end_it_for_a_player_who_is_reconnecting_network-sim/lying-finish/verify/checksums.txt",
+      "bytes": 7950,
+      "sha256": "aee4a2083d0cb0236160f7de1da40283c1179658f995f04d68ca7a608ee9267a"
+    },
+    {
+      "path": "artifacts/direct-snapshot/delivery-headless-10/TurnEngineHarness/one_client_claiming_the_game_finished_does_not_end_it_for_a_player_who_is_reconnecting_network-sim/lying-finish/verify/match.replay",
+      "bytes": 1799571,
+      "sha256": "875abcd9cb2b81b437ac924c8f78a809b28ae76bbadeb5c129d3ef3af354536b"
+    },
+    {
+      "path": "artifacts/direct-snapshot/delivery-headless-10/TurnEngineHarness/one_client_claiming_the_game_finished_does_not_end_it_for_a_player_who_is_reconnecting_network-sim/lying-finish/verify/result.json",
+      "bytes": 9562,
+      "sha256": "51712660d365068b90a49e44b80f605bee7033bbd38ae37782995e43a69189c2"
+    },
+    {
+      "path": "artifacts/direct-snapshot/delivery-headless-10/TurnEngineHarness/one_client_claiming_the_game_finished_does_not_end_it_for_a_player_who_is_reconnecting_network-sim/lying-finish/verify/verdict.json",
+      "bytes": 458,
+      "sha256": "5231e4e09f2a3908029bccb0416eab5bdb413176f9a18fc7f3447974ec9ea0a0"
+    },
+    {
+      "path": "artifacts/direct-snapshot/delivery-headless-10/TurnEngineHarness/orders_a_hostile_relay_forges_for_a_seat_are_refused_by_the_verifier_which_still_verifies_network-sim/forged-orders/match.g2mr",
+      "bytes": 2071,
+      "sha256": "3b2e4db03801f0e7637f6ba393a6743b2c62ad6175c69d912be0e2314dadb7d1"
+    },
+    {
+      "path": "artifacts/direct-snapshot/delivery-headless-10/TurnEngineHarness/orders_a_hostile_relay_forges_for_a_seat_are_refused_by_the_verifier_which_still_verifies_network-sim/forged-orders/verify/artifacts.json",
+      "bytes": 185,
+      "sha256": "e40ef68282f1f2593455e250d754353aa4f604e06ff83035e0e0c7662f5a897b"
+    },
+    {
+      "path": "artifacts/direct-snapshot/delivery-headless-10/TurnEngineHarness/orders_a_hostile_relay_forges_for_a_seat_are_refused_by_the_verifier_which_still_verifies_network-sim/forged-orders/verify/checksums.txt",
+      "bytes": 4219,
+      "sha256": "979cad75899e66b231dc352a7b69a6cd12667c8e4110f496616c36f65fa073c0"
+    },
+    {
+      "path": "artifacts/direct-snapshot/delivery-headless-10/TurnEngineHarness/orders_a_hostile_relay_forges_for_a_seat_are_refused_by_the_verifier_which_still_verifies_network-sim/forged-orders/verify/match.replay",
+      "bytes": 1499012,
+      "sha256": "340290da5ef13e6edaf167fdd552cebf045b5dc18a601f77a3415ef63e223bc7"
+    },
+    {
+      "path": "artifacts/direct-snapshot/delivery-headless-10/TurnEngineHarness/orders_a_hostile_relay_forges_for_a_seat_are_refused_by_the_verifier_which_still_verifies_network-sim/forged-orders/verify/result.json",
+      "bytes": 9560,
+      "sha256": "70ce6f90a4cd490b555d594ecd70a71d36396921ea340da66bd93fbb0f990366"
+    },
+    {
+      "path": "artifacts/direct-snapshot/delivery-headless-10/TurnEngineHarness/orders_a_hostile_relay_forges_for_a_seat_are_refused_by_the_verifier_which_still_verifies_network-sim/forged-orders/verify/verdict.json",
+      "bytes": 578,
+      "sha256": "39c4a9b8739989d83d29e85acc68d3bcac4f5010f5da9cdf63eab054950db9d5"
+    },
+    {
+      "path": "artifacts/direct-snapshot/delivery-headless-10/TurnEngineHarness/two_engines_with_AI_seats_under_latency_jitter_and_loss_agree_at_every_tick_and_the_record_verifies_network-sim_artifacts/two-engines/forged-turns/match.g2mr",
+      "bytes": 3451,
+      "sha256": "5a956b799aa9a1f9b9ee7f05e62be099a01d508b65b4f96e0e89a1a409219c77"
+    },
+    {
+      "path": "artifacts/direct-snapshot/delivery-headless-10/TurnEngineHarness/two_engines_with_AI_seats_under_latency_jitter_and_loss_agree_at_every_tick_and_the_record_verifies_network-sim_artifacts/two-engines/forged-turns/verify/artifacts.json",
+      "bytes": 186,
+      "sha256": "13a207334f608b8d6bba182a1ff796a069526371605adeac1b9517a4d49e048c"
+    },
+    {
+      "path": "artifacts/direct-snapshot/delivery-headless-10/TurnEngineHarness/two_engines_with_AI_seats_under_latency_jitter_and_loss_agree_at_every_tick_and_the_record_verifies_network-sim_artifacts/two-engines/forged-turns/verify/checksums.txt",
+      "bytes": 14046,
+      "sha256": "4dae7f2ad6d20776e0bd1086216ecc1623a9b37a09cc29ea6b0be576d97e5caf"
+    },
+    {
+      "path": "artifacts/direct-snapshot/delivery-headless-10/TurnEngineHarness/two_engines_with_AI_seats_under_latency_jitter_and_loss_agree_at_every_tick_and_the_record_verifies_network-sim_artifacts/two-engines/forged-turns/verify/match.replay",
+      "bytes": 2900492,
+      "sha256": "bf6a31a919f223e88dfe914cd102d9f9ea9732f5d542ff30068acd628696dd65"
+    },
+    {
+      "path": "artifacts/direct-snapshot/delivery-headless-10/TurnEngineHarness/two_engines_with_AI_seats_under_latency_jitter_and_loss_agree_at_every_tick_and_the_record_verifies_network-sim_artifacts/two-engines/forged-turns/verify/result.json",
+      "bytes": 9827,
+      "sha256": "c4d4a282b0df1519ef89a49c087d8401f5742ecd157d74ee2a57fcc3ce7ed211"
+    },
+    {
+      "path": "artifacts/direct-snapshot/delivery-headless-10/TurnEngineHarness/two_engines_with_AI_seats_under_latency_jitter_and_loss_agree_at_every_tick_and_the_record_verifies_network-sim_artifacts/two-engines/forged-turns/verify/verdict.json",
+      "bytes": 169,
+      "sha256": "5e2acee4691b9d6e2cdecb737f0bbd742064510477b8fc86861353a70a61be21"
+    },
+    {
+      "path": "artifacts/direct-snapshot/delivery-headless-10/TurnEngineHarness/two_engines_with_AI_seats_under_latency_jitter_and_loss_agree_at_every_tick_and_the_record_verifies_network-sim_artifacts/two-engines/lying-seat/match.g2mr",
+      "bytes": 4273,
+      "sha256": "26efab878ac4e16f4e57a57c5790e587d58c405a298b47a038120e43d196b58e"
+    },
+    {
+      "path": "artifacts/direct-snapshot/delivery-headless-10/TurnEngineHarness/two_engines_with_AI_seats_under_latency_jitter_and_loss_agree_at_every_tick_and_the_record_verifies_network-sim_artifacts/two-engines/lying-seat/verify/artifacts.json",
+      "bytes": 186,
+      "sha256": "901d09191b580862b1d62117f3fc8346c01e21dfbdf0e32608615453cfbbf2d1"
+    },
+    {
+      "path": "artifacts/direct-snapshot/delivery-headless-10/TurnEngineHarness/two_engines_with_AI_seats_under_latency_jitter_and_loss_agree_at_every_tick_and_the_record_verifies_network-sim_artifacts/two-engines/lying-seat/verify/checksums.txt",
+      "bytes": 14046,
+      "sha256": "1447e37a9b1b6d33ded18514470b03827e364f2cf001a588d45f2faff5bf5d66"
+    },
+    {
+      "path": "artifacts/direct-snapshot/delivery-headless-10/TurnEngineHarness/two_engines_with_AI_seats_under_latency_jitter_and_loss_agree_at_every_tick_and_the_record_verifies_network-sim_artifacts/two-engines/lying-seat/verify/match.replay",
+      "bytes": 2901949,
+      "sha256": "15e033e8282c1cec6b945db76494c0b69ade68efddb34fca1e0d6bfda7ecbb7a"
+    },
+    {
+      "path": "artifacts/direct-snapshot/delivery-headless-10/TurnEngineHarness/two_engines_with_AI_seats_under_latency_jitter_and_loss_agree_at_every_tick_and_the_record_verifies_network-sim_artifacts/two-engines/lying-seat/verify/result.json",
+      "bytes": 9706,
+      "sha256": "b5f062d92fa001e6529da815fbe3cd13be7e2066df08b7817824538151b71855"
+    },
+    {
+      "path": "artifacts/direct-snapshot/delivery-headless-10/TurnEngineHarness/two_engines_with_AI_seats_under_latency_jitter_and_loss_agree_at_every_tick_and_the_record_verifies_network-sim_artifacts/two-engines/lying-seat/verify/verdict.json",
+      "bytes": 457,
+      "sha256": "5344cd75af4785a9526614d3b991ad8156f6cac4317aae8b7c0d7a95b464f413"
+    },
+    {
+      "path": "artifacts/direct-snapshot/delivery-headless-10/TurnEngineHarness/two_engines_with_AI_seats_under_latency_jitter_and_loss_agree_at_every_tick_and_the_record_verifies_network-sim_artifacts/two-engines/match.g2mr",
+      "bytes": 4273,
+      "sha256": "4688b93b66f3378eef9339197c2052fcb68389d01494c75ac6538e9bf52cd192"
+    },
+    {
+      "path": "artifacts/direct-snapshot/delivery-headless-10/TurnEngineHarness/two_engines_with_AI_seats_under_latency_jitter_and_loss_agree_at_every_tick_and_the_record_verifies_network-sim_artifacts/two-engines/summary.txt",
+      "bytes": 154,
+      "sha256": "ba566b6279f5d7a0d161bb14f0f9c90748fc57509c2c27dc9ca801e4027ed2e1"
+    },
+    {
+      "path": "artifacts/direct-snapshot/delivery-headless-10/TurnEngineHarness/two_engines_with_AI_seats_under_latency_jitter_and_loss_agree_at_every_tick_and_the_record_verifies_network-sim_artifacts/two-engines/verify/artifacts.json",
+      "bytes": 186,
+      "sha256": "070755fce4a5ce7f5a57fab31ebc5d38134561d312336781708ecba6ac685180"
+    },
+    {
+      "path": "artifacts/direct-snapshot/delivery-headless-10/TurnEngineHarness/two_engines_with_AI_seats_under_latency_jitter_and_loss_agree_at_every_tick_and_the_record_verifies_network-sim_artifacts/two-engines/verify/checksums.txt",
+      "bytes": 14046,
+      "sha256": "1447e37a9b1b6d33ded18514470b03827e364f2cf001a588d45f2faff5bf5d66"
+    },
+    {
+      "path": "artifacts/direct-snapshot/delivery-headless-10/TurnEngineHarness/two_engines_with_AI_seats_under_latency_jitter_and_loss_agree_at_every_tick_and_the_record_verifies_network-sim_artifacts/two-engines/verify/match.replay",
+      "bytes": 2901949,
+      "sha256": "15e033e8282c1cec6b945db76494c0b69ade68efddb34fca1e0d6bfda7ecbb7a"
+    },
+    {
+      "path": "artifacts/direct-snapshot/delivery-headless-10/TurnEngineHarness/two_engines_with_AI_seats_under_latency_jitter_and_loss_agree_at_every_tick_and_the_record_verifies_network-sim_artifacts/two-engines/verify/result.json",
+      "bytes": 9687,
+      "sha256": "69ebc9da88f6884e6d60312b72cce73934caf2e6bf8df34973c2bf30bc039221"
+    },
+    {
+      "path": "artifacts/direct-snapshot/delivery-headless-10/TurnEngineHarness/two_engines_with_AI_seats_under_latency_jitter_and_loss_agree_at_every_tick_and_the_record_verifies_network-sim_artifacts/two-engines/verify/verdict.json",
+      "bytes": 431,
+      "sha256": "e71086b05495d963167aff62f9ade317b97d7b13001efdf5757c12ad91a09c97"
+    },
+    {
+      "path": "artifacts/direct-snapshot/delivery-headless-10/TurnEngineHarness/voice_packets_do_not_hold_up_a_player_s_orders_network-sim_artifacts/turn-engine-voice.txt",
+      "bytes": 264,
+      "sha256": "cb6ac2c451fa42be60477c778efb5ede21fa14908219da508b3ea2071739d3c0"
+    },
+    {
+      "path": "artifacts/direct-snapshot/delivery-headless-10/build-provenance.json",
+      "bytes": 616,
+      "sha256": "979af407870d06b551ad7fb8c4e31aca4e991387cc063d40548a090b96551271"
+    },
+    {
+      "path": "artifacts/direct-snapshot/delivery-headless-10-inventory.json",
+      "bytes": 202347,
+      "sha256": "bbf7dd16105953516653aa128441eade697dc6fa1ca079af10ad31d791b38c82"
+    },
+    {
+      "path": "artifacts/direct-snapshot/delivery-headless-10.log",
+      "bytes": 10832,
+      "sha256": "e18d9b4ca5b4891b262cfa986e00720e4beaa5a3b27836bfe43bbcfc28851bd2"
+    },
+    {
+      "path": "artifacts/direct-snapshot/delivery-headless-10.xml",
+      "bytes": 19990,
+      "sha256": "f76d96fecad2b33814ccfb59f4526b28ede7f4f90e1c32f21e50da5962685318"
+    },
+    {
+      "path": "artifacts/direct-snapshot/delivery-native-10.json",
+      "bytes": 3158,
+      "sha256": "282d6c29e806e3514707928d0155e40235baf9a2a3d852c36f3cb0bc84fa2bfe"
+    },
+    {
+      "path": "artifacts/direct-snapshot/delivery-native-driver.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "artifacts/direct-snapshot/delivery-visual-comparison-10.json",
+      "bytes": 4476,
+      "sha256": "af9111a48a0fb8742cbd25eaac16e3575255ef1eaee1404c1cd72e458e56a0e5"
+    },
+    {
+      "path": "artifacts/direct-snapshot/evidence-native-build.log",
+      "bytes": 72974,
+      "sha256": "92681fffbbf8ac1efb1486d5a7b9ce74a40c8d0ee523a94ea604dc2a65542b30"
+    },
+    {
+      "path": "artifacts/direct-snapshot/firefox-threaded-screencast-evidence/1-trace.trace",
+      "bytes": 754269,
+      "sha256": "ec9cc3ed24a3cb8bdea9c14bf9330894de701ee01389d777e661e6fab13edd29"
+    },
+    {
+      "path": "artifacts/direct-snapshot/firefox-threaded-screencast-evidence/frame-0.jpeg",
+      "bytes": 9178,
+      "sha256": "ce79f8bf2ac00dcf17cfa6a22983bdc6d2fb074ee22a4af5e2cb00ea1aa8562a"
+    },
+    {
+      "path": "artifacts/direct-snapshot/firefox-threaded-screencast-evidence/frame-1.jpeg",
+      "bytes": 22141,
+      "sha256": "cd93c679e424e3147d7fc8e9ddb367c7592858e2b98cfc82e19c3bc91f8658c1"
+    },
+    {
+      "path": "artifacts/direct-snapshot/firefox-threaded-screencast-evidence/frame-2.jpeg",
+      "bytes": 29681,
+      "sha256": "fcda99cda3f96a9c7603eafdde456c0f7db391a1172b72845bcd1367d67df077"
+    },
+    {
+      "path": "artifacts/direct-snapshot/firefox-threaded-screencast-evidence/frame-3.jpeg",
+      "bytes": 29710,
+      "sha256": "d7879d7b01f44f67b8a8a92a43640408dad1bd8de002514984840f5ebbb0d98b"
+    },
+    {
+      "path": "artifacts/direct-snapshot/firefox-threaded-screencast-evidence/frame-4.jpeg",
+      "bytes": 29739,
+      "sha256": "c3dbeb413fb1c58e5d2452a96a9cdbee4762977c5f1ac08021412034845bef39"
+    },
+    {
+      "path": "artifacts/direct-snapshot/firefox-threaded-screencast-evidence/manifest.json",
+      "bytes": 876,
+      "sha256": "3b960607db611cc7e78d47c5d45c78a445314e6033b9294584e22f315dea0729"
+    },
+    {
+      "path": "artifacts/direct-snapshot/firefox-threaded-screencast-evidence/test.trace",
+      "bytes": 151650,
+      "sha256": "5316f64de801d7db64ca999e9cca03ec20d4fe9132f316d963c673c1b1843bf9"
+    },
+    {
+      "path": "artifacts/direct-snapshot/firefox-torus-serial/.last-run.json",
+      "bytes": 45,
+      "sha256": "91d1c43004802cd49950d78eb11c8fa7d05da8ffffe219a8b13b2f561bc00903"
+    },
+    {
+      "path": "artifacts/direct-snapshot/firefox-torus-serial/torus-WebGL2-switches-betw-0f7b3--map-and-the-torus-overview-firefox/torus-overview.png",
+      "bytes": 83877,
+      "sha256": "17dd7ed66d60bffcec14a8d0d985df2964fb5e6acd9902ea986b4cc61b9f5c04"
+    },
+    {
+      "path": "artifacts/direct-snapshot/firefox-torus-serial-recovery/.last-run.json",
+      "bytes": 45,
+      "sha256": "91d1c43004802cd49950d78eb11c8fa7d05da8ffffe219a8b13b2f561bc00903"
+    },
+    {
+      "path": "artifacts/direct-snapshot/firefox-torus-serial-recovery.log",
+      "bytes": 3581,
+      "sha256": "0570292440ea27a6b26e6b3e4c3a00f1dbd5b498d0f287badcebf81cd4ded4d0"
+    },
+    {
+      "path": "artifacts/direct-snapshot/firefox-torus-serial.log",
+      "bytes": 3588,
+      "sha256": "2306cca16571560067add29cf6fc5697588bce107d9c738e323579d5cf84259c"
+    },
+    {
+      "path": "artifacts/direct-snapshot/gpu-inventory.csv",
+      "bytes": 145,
+      "sha256": "c2a5351d03774e89ec32bdf639b5ef216ac2902cd4077f046eb8abfef54b1e53"
+    },
+    {
+      "path": "artifacts/direct-snapshot/gradient-valgrind-fixed/memcheck.log",
+      "bytes": 890,
+      "sha256": "4baafdf65d2aed4e6efadfbeeb49f1672a94d7713057c1e4565a64d319a6c1ef"
+    },
+    {
+      "path": "artifacts/direct-snapshot/gradient-valgrind-fixed/test.log",
+      "bytes": 1346,
+      "sha256": "a56b3f9144375990eb54e7145842fdee85f3cfa12700a1f1ecf26a8ce02e1f15"
+    },
+    {
+      "path": "artifacts/direct-snapshot/kernel.txt",
+      "bytes": 107,
+      "sha256": "2e928a53827886b9baf5536d461349b756311a04c20e3009515be89b86a26446"
+    },
+    {
+      "path": "artifacts/direct-snapshot/master-control-1/TerrainPresentation/every_paintable_built-in_binds_a_material_has_an_editor_icon_and_exports_its_own_colour_display_artifacts/terrain-catalogue-colors.png",
+      "bytes": 234,
+      "sha256": "5e835b952f40581a49f87b0cb5aa81891f753705274ba0f55ce247d5c2c8fd9e"
+    },
+    {
+      "path": "artifacts/direct-snapshot/master-control-1/TerrainPresentation/overview_palette_follows_detailed_shore_coverage_across_both_wrapped_axes_display_artifacts/overview-alignment/crossfade.png",
+      "bytes": 304882,
+      "sha256": "39752de3bfb61c9c524cbc122ff42fbad58c1363c996735482cac718630acd79"
+    },
+    {
+      "path": "artifacts/direct-snapshot/master-control-1/TerrainPresentation/overview_palette_follows_detailed_shore_coverage_across_both_wrapped_axes_display_artifacts/overview-alignment/detailed.png",
+      "bytes": 362426,
+      "sha256": "25477210b084b2154028096707e371c11944863a4cfe7366c41bc155647f4787"
+    },
+    {
+      "path": "artifacts/direct-snapshot/master-control-1/TerrainPresentation/overview_palette_follows_detailed_shore_coverage_across_both_wrapped_axes_display_artifacts/overview-alignment/overview.png",
+      "bytes": 2826,
+      "sha256": "afd4c4470d0ea7f07db6c70a6ba3a9c40254d0ae7539125b2bdb59800d9aac8e"
+    },
+    {
+      "path": "artifacts/direct-snapshot/master-control-1/TerrainPresentation/whole-cell_layers_preserve_software_terrain_caching_display_artifacts/terrain-layers.png",
+      "bytes": 419804,
+      "sha256": "173c55944ed6995afefe79f5702c3ab41f503a90781f2769b1094ac0d720d1d4"
+    },
+    {
+      "path": "artifacts/direct-snapshot/master-control-1/TerrainPresentation/zoomed-out_GPU_terrain_retains_pages_across_frames_and_wrapped_views_display_artifacts/zoom-opengl.png",
+      "bytes": 877051,
+      "sha256": "e6715488baad37282d450baa72aee4b3ac4c7427880e4af2d84890fcbb241b77"
+    },
+    {
+      "path": "artifacts/direct-snapshot/master-control-1/TerrainPresentation/zoomed-out_GPU_terrain_retains_pages_across_frames_and_wrapped_views_display_artifacts/zoom-portable.png",
+      "bytes": 684343,
+      "sha256": "3aa686fc817b680b9e5614806173677a789a4bc049ee3bbd7e9cfc03f90c63e9"
+    },
+    {
+      "path": "artifacts/direct-snapshot/native-determinism-7/manifest.json",
+      "bytes": 1394,
+      "sha256": "74d0924ecb9bdf30488e26f5e5e9c3a5d081c77be71b2a12fd949eed5cacf7ec"
+    },
+    {
+      "path": "artifacts/direct-snapshot/native-determinism-7/native.replay",
+      "bytes": 2815308,
+      "sha256": "c86df38f974914603ba3eb89c3b5a9277626d2aec1fa08e31eccbfb1f6ac1601"
+    },
+    {
+      "path": "artifacts/direct-snapshot/native-determinism-7/native.replay.checksums",
+      "bytes": 3472650,
+      "sha256": "5570a99e4345b5aa80d1f14928c4a5e5b37a03244b9327310ca1d0760d3df7e4"
+    },
+    {
+      "path": "artifacts/direct-snapshot/native-determinism-7/resources/native/cases/RuntimeResources/frozen_seeded_resource_compositions_preserve_invariants_and_exact_simulation_continuation__golden/seeded-compositions.trace",
+      "bytes": 13368,
+      "sha256": "3eda7458bf2900259606b9f0d0d48567da248cc294798e5525a0228e35986f59"
+    },
+    {
+      "path": "artifacts/direct-snapshot/native-determinism-7/resources/native/cases/build-provenance.json",
+      "bytes": 616,
+      "sha256": "7cbc1a3c398d546513f59cf23691fd6d9ed8a4ce5be4d4dc0e2565be356e8f64"
+    },
+    {
+      "path": "artifacts/direct-snapshot/native-determinism-7/resources/native/manifest.json",
+      "bytes": 1296,
+      "sha256": "d99ccb806fb33ef386095822cc6a5e1037b7678487ee1f7091ac023860147177"
+    },
+    {
+      "path": "artifacts/direct-snapshot/native-determinism-7/resources/native/run.log",
+      "bytes": 762,
+      "sha256": "6461438268624d48726e8ee09102d22120f3228834cabcef5af222d028d32ec7"
+    },
+    {
+      "path": "artifacts/direct-snapshot/native-determinism-7/resources/native/tests.xml",
+      "bytes": 540,
+      "sha256": "afc7e09404994e7f77053f3ff597edceb52369a9112bb1623d193c0e4f54aeb4"
+    },
+    {
+      "path": "artifacts/direct-snapshot/native-determinism-7/run.log",
+      "bytes": 330,
+      "sha256": "ed525b4f333f9b0e005b3d361bfe788250c883b0c270f1a3c03ab2ae24ea8c9f"
+    },
+    {
+      "path": "artifacts/direct-snapshot/native-determinism-7/verify-match/artifacts.json",
+      "bytes": 185,
+      "sha256": "658c63498045d1e2c3bad4cbdae7a0070d8a8e77be37828e1c311239b248af08"
+    },
+    {
+      "path": "artifacts/direct-snapshot/native-determinism-7/verify-match/checksums.txt",
+      "bytes": 9094,
+      "sha256": "27027d2961089452bfb3c8a46e46fe552ad95cb3eefd04a6c18e642d32396717"
+    },
+    {
+      "path": "artifacts/direct-snapshot/native-determinism-7/verify-match/result.json",
+      "bytes": 9622,
+      "sha256": "fcc073475a0d9d33f2f0d959b84946a3ceaf964add0bfcaec8718da42066a847"
+    },
+    {
+      "path": "artifacts/direct-snapshot/native-determinism-7/verify-match/verdict.json",
+      "bytes": 430,
+      "sha256": "b5bd0a04b976ad6bf9330b98497d7eceed6cd6fe4a1dbfd978633f6950e22267"
+    },
+    {
+      "path": "artifacts/direct-snapshot/native-determinism-7/verify-match.checksums.txt",
+      "bytes": 9094,
+      "sha256": "27027d2961089452bfb3c8a46e46fe552ad95cb3eefd04a6c18e642d32396717"
+    },
+    {
+      "path": "artifacts/direct-snapshot/native-determinism-7/verify-match.log",
+      "bytes": 108,
+      "sha256": "ca3ce0a5c758b4137804974af03ab858a903faeddbb835bc43e2b5852e058d2b"
+    },
+    {
+      "path": "artifacts/direct-snapshot/native-determinism-7.log",
+      "bytes": 65,
+      "sha256": "248de57f65b7e72fc483c60cc29b0f9b2f699a2b2a2ea997956efe786014ffc0"
+    },
+    {
+      "path": "artifacts/direct-snapshot/run-delivery-validation.py",
+      "bytes": 1859,
+      "sha256": "1c84f1f5c2f82f2b7adef2d6c75cc2e6ad15c15df987c679b4c714d5e7c8a44d"
+    },
+    {
+      "path": "artifacts/direct-snapshot/snapshot-boundary-9.log",
+      "bytes": 101,
+      "sha256": "c1dffbd83c81c7bd747ded00a073f5da3aed152d7742830998a6a179f352ca0d"
+    },
+    {
+      "path": "artifacts/direct-snapshot/webkit-runtime-9/.last-run.json",
+      "bytes": 45,
+      "sha256": "91d1c43004802cd49950d78eb11c8fa7d05da8ffffe219a8b13b2f561bc00903"
+    },
+    {
+      "path": "artifacts/direct-snapshot/webkit-runtime-9.log",
+      "bytes": 7165,
+      "sha256": "68d663ff1e388ca7c958cdfd38bbc226463203f65c07bc82b1e6812fb52b8083"
+    }
+  ]
+}
