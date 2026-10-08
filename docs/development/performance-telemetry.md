@@ -190,10 +190,13 @@ quartile 0-3 on construction sites, empty otherwise), and its team's live
 `team_units` and `team_buildings`. The last three columns are the depth model's
 inputs at the moment the lifetime's depth was decided: `staged` is 1 when a
 scheduled refresh was staged for it (the context is then read at staging, not at
-publication), `previous_hint` is the depth the lifetime before it settled
-(`settledCostHint`) and `serving_settled` is how deep the field it replaced had
-been settled by then, each -1 when unknown. All are empty when the start was not
-seen, for example for a field restored from a save.
+publication), `previous_hint` is the reader-required depth of the lifetime before it
+(`settledCostHint`) and `serving_settled` is how deep readers of the field it
+replaced required it by then, each -1 when unknown. All are empty when the start was not
+seen, for example for a field restored from a save. The historical column names
+`serving_settled` and `previous_hint` now record reader-required depth, excluding
+worker preparation and serialization completion. `prev_settled_cost` still
+records the actual prepared search frontier.
 
 `result.json` then has a `building_gradient` object: `rebuilds` by reason,
 `dirty_with_generation` (dirty rebuilds whose topology generation had also moved),
@@ -209,7 +212,7 @@ Pinned to four reserved cores on an x86_64 host, busy Oazis (11 Maxima, seed 19)
 measured no difference beyond run-to-run noise (about 1%), at 4096 and at 12288
 ticks, between master, the branch with the flag off, and the branch with it on.
 
-## Scheduled AI decisions and experimental map computation
+## Scheduled AI decisions and shared computation
 
 All shipped controllers borrow immutable engine snapshots for decisions. The simulation
 owner captures the required component union once per poll tick; unchanged components are
@@ -248,31 +251,31 @@ receipts, RNG and controller continuation state. Worker counts remain local exec
 configuration. Changing the match delay can change strategy, replay orders and game feel;
 changing only worker count must preserve execution at the same delay.
 
-Structured `--run-game` accepts `--ai-order-delay D` for a new match (default 8 ticks), and
-`--compute-threads N` (1–64) with `--compute-experiments MODE`. Modes are `none`,
-`areas`, `initialize`, `hiring`, `ai`, and `all`; `ai` is the default. The default
-count is the smaller of four, available hardware threads, and the larger of three
-and the AI controller count, with a minimum of one. This leaves background capacity
-for periodic gradients even in games without AI. Ordinary GUI and legacy `--nox` runs accept `--ai-threads N`.
-The count is the compute executor's thread count including the simulation owner; periodic gradients share this executor, and with
-`ai` enabled, AI decisions share those threads too. The legacy name `--ai-threads`
-therefore sizes all shared compute work. `--compute-experiments none` has the owner
-decide inline when each batch is dispatched, delivering at the same deadlines. Thread
-creation failure and platforms without threads leave an executor with no workers,
-whose owner runs each batch at its join.
-A loaded match's configured delay cannot be overridden.
+All sessions use `--compute-threads auto|N`, where N is a positive unsigned
+integer counting total executor participants, including the simulation owner.
+`auto` (the default) uses all reported logical CPU threads, falling back to one
+if detection returns zero. There is no separate limit of 64 for explicit counts.
+The background pool has N−1 workers. AI, periodic/building gradients, resource
+growth and presentation share this pool. `--compute-threads 1` is the serial
+compute control. Thread creation failure and platforms without threads also leave
+no workers; the owner runs deferred batches at their joins.
 
-Map computation runs as blocking batches on the same executor, whose thread count
-includes the submitting thread. Area jobs rebuild allocated forbidden/guard/clear fields at existing structural
-refresh boundaries. Initialization jobs use 4096-cell chunks on maps of at least
-16384 cells; goal painting and forbidden-border detection retain their serial ordering.
-Hiring jobs advance frozen building searches in separate swim classes before candidate
-evaluation, without refreshing caches or changing use timestamps. These jobs use
-blocking batches and may perform unnecessary work. Periodic one-field-per-tick refresh
-remains unchanged. `all` includes AI scheduling and these map experiments; other map
-modes use inline scheduled AI decisions. Measure the additional work separately.
+`--ai-threads`, `--gradient-workers` and `--compute-experiments` have been removed;
+use `--compute-threads auto|N`. The optional area, initialization and hiring compute
+paths and their environment selector have also been removed. Structural area
+refreshes and live field initialization retain their serial production order.
 
-`result.json` retains the map executor's `compute_threads`, `compute_experiments`,
+Structured `--run-game` accepts `--ai-order-delay D` for a new match (default 8
+ticks). Delays are simulation rules, separate from local thread configuration.
+A loaded match's configured AI delay cannot be overridden.
+
+`compute_requested_threads` records the CLI sizing as a string (`auto` or the
+explicit count), `compute_resolved_threads` records the resolved participant count,
+`compute_threads` records the actual count including serial fallback, and
+`compute_workers` records actual background workers. Automatic sizing should be
+measured separately from fixed counts; using every logical CPU is not a speedup claim.
+
+`result.json` retains the map executor's `compute_threads`,
 `compute_batches`, `compute_jobs`, `compute_parallel_batches`, `compute_batch_ns`,
 `compute_deferred_batches`, `compute_deferred_jobs`, `compute_owner_jobs`,
 `compute_worker_jobs`, `compute_join_wait_ns`, `compute_wait_ns`, and
@@ -281,8 +284,6 @@ every deferred batch (AI decisions, periodic and building gradients) as the exec
 saw them. `compute_owner_jobs` is zero whenever the executor has workers, since the
 owner only waits at joins; `compute_join_wait_ns` is that waiting. The
 `ai_pipeline` object reports the AI scheduler's own view of its work.
-`hiring_prepasses` counts candidate-scan hooks and
-`hiring_popped_entries` counts advanced entries, including stale entries.
 `building_gradient_jobs`, `building_gradient_published` and
 `building_gradient_discarded` count scheduled building walking fields admitted,
 installed at their deadline and dropped (superseded or destination gone);
@@ -330,7 +331,8 @@ The asynchronous AI migration requires at least ten paired zero-delay runs again
 master, with uncertainty reported for full-match CPU and elapsed-time ratios. Both
 regressions must remain within 5%. Separate deadline misses and waits from average
 tick time, and compare gameplay at delays 0, 1, 4 and 8 independently of throughput.
-The production delay remains zero until those experiments justify a change.
+The current production delay is eight ticks; retain that value when comparing
+thread counts for this configuration cleanup.
 
 Headless benchmark mode also exports `benchmark_tick_histogram`: fixed
 logarithmic nanosecond buckets with exclusive upper bounds (the final `null`
@@ -387,8 +389,10 @@ delay and format separately; cross-version byte equality is not the acceptance t
 The runner retains commands, executable/input hashes, logs, results, per-process
 peak resident memory, wall time, and user-plus-system CPU time from `wait4`.
 It runs one warm-up and five measured repetitions by default, with rotated/reversed
-ordering; use `--repeats 10` for ten paired measurement rounds.
-Compare owner-only scheduled AI (`none`), one and several compute threads,
+ordering; use `--repeats 10` for ten paired measurement rounds. Explicit counts
+run on both binaries; `auto` runs separately on the candidate. The summary includes
+wall and CPU ratios against the base at the same explicit count.
+Compare one and several compute threads, automatic sizing,
 and the baseline at the same delay. Aggregate ratios do not replace per-scenario CPU and small-map
 regression checks. Timing thresholds are deliberately not CI assertions.
 
@@ -397,8 +401,8 @@ regression checks. Timing thresholds are deliberately not CI assertions.
 
 All games use the shared compute executor and an eight-tick publication delay by
 default. Structured headless runs accept `--gradient-delay D` (1–16 ticks, default
-8) and the deprecated `--gradient-workers N` (0–16), described below. Owner-only
-computation retains exactly the same publication schedule, providing the
+8). `--compute-threads 1` provides owner-only
+computation with exactly the same publication schedule, providing the
 determinism and timing control for each delay. Different delays may produce
 different games. A loaded game's delay cannot change while jobs are pending.
 
@@ -424,15 +428,11 @@ reconfiguration discards them. Guard seeding uses compact terrain lookups.
 Include warmed-cache baselines, snapshot capture/copying, peak memory and total CPU
 in performance comparisons; moving work off the owner does not itself establish a speedup.
 
-`--compute-threads` sizes the shared executor, including the owner. The deprecated
-`--gradient-workers 0` selects owner-only gradient jobs: the owner computes each
-periodic and building job inline when it submits it, outside the executor, and
-publication keeps its deadline. A positive value selects
-shared jobs and, unless `--compute-threads` is explicit, requests that value plus
-one total threads. It no longer creates a separate pool or imposes a per-gradient
-concurrency cap. `gradient_workers` reports available shared background threads
-(or zero for owner-only placement); `compute_threads` reports total executor size.
-Gradient placement is independent of the AI compute-experiment flag.
+`--compute-threads` sizes the shared executor, including the owner. Periodic and
+building jobs always submit to it in normal sessions. With no workers, the owner
+computes at the join; publication retains its deadline. `gradient_workers`
+reports available shared background threads and `compute_threads` reports total
+executor size.
 A synchronous refresh supersedes older pending results for that field. Increasing
 worker count does not increase the number of scheduled fields. Buffers are bounded
 by the delay; workers block on condition variables when idle.
@@ -478,10 +478,8 @@ Field preparation runs synchronously at submission; only propagation runs on
 these background workers. Preparation includes reading current resources, terrain,
 occupancy, team areas, fog and market availability into the job-owned seed buffer.
 Do not attribute the entire resource/area-gradient scope to background CPU, or
-add its inclusive time to propagation time. The `initialize` compute experiment
-can split the seeding loop into blocking chunks; compare it against one-thread
-`initialize` with identical AI settings. Comparing it directly against default
-`ai` mode also changes where AI work runs.
+add its inclusive time to propagation time. Live seeding retains its serial order;
+private snapshot jobs prepare their buffers on the shared executor.
 
 Resource preparation shares two derived base fields for walking and swimming.
 Each request copies a base into its owned buffer and patches resource goals,

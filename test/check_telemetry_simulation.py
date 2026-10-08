@@ -79,8 +79,8 @@ def main(binary: str, parallel_ai: bool = False, evidence: Path | None = None, u
         }
         (evidence / "manifest.json").write_text(json.dumps(manifest, indent=2) + "\n")
 
-    compute = (["--compute-threads", "4", "--compute-experiments", "ai"] if parallel_ai
-               else ["--compute-threads", "1", "--compute-experiments", "ai"])
+    compute = (["--compute-threads", "4"] if parallel_ai
+               else ["--compute-threads", "1"])
     for save, ticks, fixture in SCENARIOS:
         with run_directory(evidence, save.stem) as directory:
             output = Path(directory)

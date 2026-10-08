@@ -88,7 +88,7 @@ def main():
         if '--save' in s['args'] or '--replay' in s['args']:
             p.error('pipeline scenarios must omit save/replay exports')
     output.mkdir(parents=True, exist_ok=False)
-    variants = [(f'd{d}-w{w}', binary, ['--gradient-workers', str(w), '--gradient-delay', str(d)]) for d in a.delays for w in a.workers]
+    variants = [(f'd{d}-w{w}', binary, ['--compute-threads', str(w + 1), '--gradient-delay', str(d)]) for d in a.delays for w in a.workers]
     if a.baseline and not a.verify:
         variants.insert(0, ('legacy', a.baseline.resolve(), []))
     metadata = {'platform': platform.platform(), 'manifest': manifest, 'binaries': {str(exe): digest(exe) for _, exe, _ in variants},

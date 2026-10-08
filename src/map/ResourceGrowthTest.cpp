@@ -259,7 +259,7 @@ TEST_SUITE("ResourceGrowth")
 			glob2test::HeadlessGame fallback({.loadDefaultRace = true, .header = true, .seed = 48});
 			auto &m = fallback.game.map;
 			seed(m, crop(m));
-			m.configureCompute(1, 0);
+			m.configureCompute(1);
 			m.setResourceGrowthDelay(delay);
 			fallback.step(12);
 			auto *bytes = new GAGCore::MemoryStreamBackend;
@@ -271,7 +271,7 @@ TEST_SUITE("ResourceGrowth")
 			GAGCore::BinaryInputStream input(copy);
 			glob2test::HeadlessGame shared({.loadDefaultRace = true, .header = true});
 			REQUIRE(shared.game.load(&input));
-			shared.game.map.configureCompute(4, 0);
+			shared.game.map.configureCompute(4);
 			shared.game.map.setResourceGrowthDelay(delay);
 			REQUIRE(shared.game.checkSum(nullptr, nullptr, nullptr, true) ==
 					fallback.game.checkSum(nullptr, nullptr, nullptr, true));
@@ -306,7 +306,7 @@ TEST_SUITE("ResourceGrowth")
 		glob2test::HeadlessGame world({.header = true});
 		auto &map = world.game.map;
 		seed(map, crop(map));
-		map.configureCompute(1, 0); // No worker threads.
+		map.configureCompute(1); // No worker threads.
 		auto &pipeline = map.gradientRuntime->growth;
 		pipeline.stage(0, 48);
 		map.setResourceGrowthDelay(8);
@@ -380,7 +380,7 @@ TEST_SUITE("ResourceGrowth")
 		glob2test::HeadlessGame world({.header = true});
 		auto &m = world.game.map;
 		seed(m, crop(m));
-		m.configureCompute(1, 0);
+		m.configureCompute(1);
 		m.setResourceGrowthDelay(8);
 		world.step();
 		REQUIRE(m.gradientRuntime->growth.count() == 1);
@@ -423,7 +423,7 @@ TEST_SUITE("ResourceGrowth")
 		glob2test::HeadlessGame world({.header = true});
 		auto &map = world.game.map;
 		seed(map, crop(map));
-		map.configureCompute(3, 0);
+		map.configureCompute(3);
 		auto &executor = map.computeExecutor();
 		ResourceGrowth::Pipeline pipeline;
 		auto first = world.game.snapshotStore().captureBoundary(
@@ -540,9 +540,9 @@ TEST_CASE("both format 144 and 145 lineages and compact growth saves retain cont
         // Save version is the only intentional header checksum difference.
         const auto headerDelta = std::rotr(original.game.mapHeader.checkSum() ^ restored.game.mapHeader.checkSum(),
             4 + original.game.mapHeader.getNumberOfTeams() + original.game.gameHeader.getNumberOfPlayers());
-        original.game.map.configureCompute(1, 0);
+        original.game.map.configureCompute(1);
         original.game.map.setResourceGrowthDelay(8);
-        restored.game.map.configureCompute(4, 0);
+        restored.game.map.configureCompute(4);
         restored.game.map.setResourceGrowthDelay(8);
         for (unsigned tick = 0; tick < 24; ++tick)
         {

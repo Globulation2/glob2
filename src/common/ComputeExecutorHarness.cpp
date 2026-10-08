@@ -7,14 +7,38 @@
 #include <thread>
 #include <atomic>
 #include "ComputeExecutor.h"
+#include "ComputeThreads.h"
 #include <array>
 #include <stdexcept>
 #include <chrono>
 #include <span>
 #include <mutex>
+#include <limits>
+#include <string>
 
 TEST_SUITE("ComputeExecutor")
 {
+TEST_CASE("automatic sizing follows hardware and supports unknown CPU counts")
+{
+    CHECK(defaultComputeThreadCount(0) == 1);
+    CHECK(defaultComputeThreadCount(1) == 1);
+    CHECK(defaultComputeThreadCount(12) == 12);
+    CHECK(defaultComputeThreadCount(128) == 128);
+}
+TEST_CASE("thread configuration accepts auto and rejects malformed or overflowing overrides")
+{
+    CHECK(parseComputeThreadCount("auto") == 0);
+    CHECK(parseComputeThreadCount("1") == 1);
+    CHECK(parseComputeThreadCount("64") == 64);
+    CHECK(parseComputeThreadCount("65") == 65);
+    CHECK(parseComputeThreadCount("128") == 128);
+    CHECK(parseComputeThreadCount(std::to_string(std::numeric_limits<unsigned>::max())) == std::numeric_limits<unsigned>::max());
+    CHECK(resolveComputeThreadCount(0, 0) == 1);
+    CHECK(resolveComputeThreadCount(0, 128) == 128);
+    CHECK(resolveComputeThreadCount(65, 8) == 65);
+    for (const auto value : {"", "0", "-1", "+1", " 1", "1 ", "1x", "1.5", "999999999999999999999"})
+        CHECK_THROWS_AS(parseComputeThreadCount(value), std::invalid_argument);
+}
 TEST_CASE("supported platforms execute jobs concurrently on distinct threads")
 {
     if constexpr (GAGCore::ThreadSupport::available)

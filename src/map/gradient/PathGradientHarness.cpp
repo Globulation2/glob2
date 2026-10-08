@@ -263,7 +263,7 @@ void parallelChecks()
 	for (int swim = 0; swim < 7; ++swim) expected[swim] = oracle(seeds, terrain, 128, 128, swim, CostLimit);
 	for (unsigned threads : {1, 2, 4, 8})
 	{
-		map.configureCompute(threads, 7);
+		map.configureCompute(threads);
 		for (int repeat = 0; repeat < 5; ++repeat)
 		{
 			std::array<std::vector<Uint16>, 7> actual;
@@ -271,7 +271,7 @@ void parallelChecks()
 			map.computeExecutor().run(7, [&](size_t swim) { map.propagateGradient(actual[swim].data(), swim); });
 			for (int swim = 0; swim < 7; ++swim) require(actual[swim] == expected[swim], "parallel propagation differs from oracle");
 		}
-		// Concurrent independent lazy searches, including nested water initialization.
+		// Concurrent independent lazy searches, including serial water initialization.
 		std::array<std::vector<Uint16>, 7> actual;
 		for (auto &field : actual) { field.assign(terrain.size(), Unreached); field[0] = Goal; }
 		map.computeExecutor().run(7, [&](size_t swim) {

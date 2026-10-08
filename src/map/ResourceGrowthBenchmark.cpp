@@ -91,7 +91,7 @@ TEST_SUITE("ResourceGrowthBenchmark")
 					REQUIRE(world.game.gameHeader.getNumberOfPlayers() == 0);
 					auto &map = world.game.map;
 					setup(map, scenario);
-					map.configureCompute(variant == "shared" ? 4 : 1, 0);
+					map.configureCompute(variant == "shared" ? 4 : 1);
 					map.setResourceGrowthDelay(delay);
 					auto scan = [&]()
 					{
@@ -402,7 +402,7 @@ TEST_SUITE("ResourceGrowthBenchmark")
 					if (variant == runs.front().first && delay == runs.front().second) initialChecksum = loadedChecksum;
 					else REQUIRE(loadedChecksum == initialChecksum);
 					auto &map = game.map;
-					map.configureCompute(variant == "shared" ? 4 : 1, 0);
+					map.configureCompute(variant == "shared" ? 4 : 1);
 					map.setResourceGrowthDelay(delay ? delay : 8);
 					auto scan = [&]()
 					{
@@ -584,7 +584,7 @@ TEST_SUITE("ResourceGrowthBenchmark")
 							{.wDec = shift, .hDec = shift, .header = true, .seed = 713});
 						auto &map = world.game.map;
 						setup(map, scenario);
-						map.configureCompute(variant == 3 ? 4 : 1, 0);
+						map.configureCompute(variant == 3 ? 4 : 1);
 						map.setResourceGrowthDelay(8);
 						// Warm ecology before timing; snapshot capture remains inside timing.
 						map.resourceGrowthField();

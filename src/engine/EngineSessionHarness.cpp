@@ -83,7 +83,7 @@ TEST_SUITE("EngineSession")
         struct NetworkScope { ~NetworkScope(){NET_Quit();} } network;
         globalContainer->automaticEndingGame=false;
         globalContainer->settings.autosaveGames=false;
-        globalContainer->aiThreads=1;
+        globalContainer->computeThreads=1;
         Engine engine;
         REQUIRE(engine.initCampaign("maps/balanced.map")==Engine::EE_NO_ERROR);
         globalContainer->settings.gameSpeed=Settings::GAME_SPEED_NORMAL;
@@ -252,7 +252,7 @@ TEST_SUITE("EngineSession")
         globalContainer->automaticEndingGame=false;
         globalContainer->settings.autosaveGames=false;
         globalContainer->settings.gameSpeed=Settings::GAME_SPEED_MAXIMUM;
-        globalContainer->aiThreads=2;
+        globalContainer->computeThreads=2;
         std::ofstream evidence(glob2test::artifactDir()/"client-frame-latency.csv");
         evidence << "forced_park,frames,ticks,elapsed_ms,frame_p50_us,frame_p95_us,scene_age_p95_ms,input_p50_us,input_p95_us\n";
         for(bool forced : {true,false})

@@ -27,14 +27,18 @@ def main():
     initial = str(fixture / 'initial.game')
     common = ['--load-game', initial, '--ticks', '1024', '--telemetry', 'checksums', '--replay', 'true', '--save', 'final']
     references = {}
-    for label, exe, extra in [('baseline', baseline, ['--compute-threads', '1', '--compute-experiments', 'none']),
+    counts = (1, 2, 4, 8, 'auto')
+    for label, exe, extra in [('baseline', baseline, ['--compute-threads', '1']),
                               ('default', binary, []),
-                              *[(f'{experiment}-{n}', binary, ['--compute-threads', str(n), '--compute-experiments', experiment]) for experiment in ('none', 'areas', 'initialize', 'hiring', 'ai', 'all') for n in (1, 2, 4, 8)]]:
+                              *[(f'compute-{n}', binary, ['--compute-threads', str(n)]) for n in counts]]:
         run = output / label
         execution = execute(exe, common + extra, run)
         if label == 'default':
-            assert execution['result']['compute_experiments'] == 'ai'
-            assert 1 <= execution['result']['compute_threads'] <= 4
+            report = execution['result']
+            assert report['compute_requested_threads'] == 'auto'
+            assert report['compute_threads'] in (1, report['compute_resolved_threads'])
+            assert report['compute_workers'] == report['compute_threads'] - 1
+            assert 'compute_experiments' not in report
         hashes = {name: digest(run / name) for name in ('game.replay.checksums', 'game.replay', 'final.game')}
         if not references: references = hashes
         assert hashes == references, (label, hashes, references)
@@ -42,13 +46,13 @@ def main():
     tail_args = ['--load-game', str(output / 'baseline/final.game'), '--ticks', '1280', '--telemetry', 'checksums', '--save', 'final']
     full_args = ['--load-game', initial, '--ticks', '1280', '--telemetry', 'checksums', '--save', 'final']
     full = output / 'uninterrupted'
-    execute(baseline, full_args + ['--compute-threads', '1', '--compute-experiments', 'none'], full)
+    execute(baseline, full_args + ['--compute-threads', '1'], full)
     full_ticks = detailed_ticks((full / 'game.replay.checksums').read_bytes())
     resumed = output / 'baseline-continuation'
-    execute(baseline, tail_args + ['--compute-threads', '1', '--compute-experiments', 'none'], resumed)
-    for n in (1, 2, 4, 8):
+    execute(baseline, tail_args + ['--compute-threads', '1'], resumed)
+    for n in counts:
         run = output / f'continuation-{n}'
-        execute(binary, tail_args + ['--compute-threads', str(n), '--compute-experiments', 'all'], run)
+        execute(binary, tail_args + ['--compute-threads', str(n)], run)
         ticks = detailed_ticks((run / 'game.replay.checksums').read_bytes())
         assert ticks and all(full_ticks[tick] == value for tick, value in ticks.items()), f'continuation differs: {n}'
         assert digest(run / 'final.game') == digest(resumed / 'final.game'), f'final continuation save differs from serial reload: {n}'
@@ -58,10 +62,9 @@ def main():
     legacy_args = ['--load-game', str(legacy), '--ticks', '512',
                    '--telemetry', 'checksums', '--save', 'final']
     legacy_reference = None
-    for n in (1, 2, 4, 8):
+    for n in counts:
         run = output / f'echo-v121-{n}'
-        execute(binary, legacy_args + ['--compute-threads', str(n),
-                                      '--compute-experiments', 'ai'], run)
+        execute(binary, legacy_args + ['--compute-threads', str(n)], run)
         hashes = {name: digest(run / name) for name in ('game.replay.checksums', 'final.game')}
         if legacy_reference is None: legacy_reference = hashes
         assert hashes == legacy_reference, f'v121 shared-runtime continuation differs: {n}'
@@ -77,15 +80,14 @@ def main():
                   '--ticks', '1024', '--telemetry', 'checksums', '--replay', 'true',
                   '--save', 'final']
         reference = None
-        for n in (1, 2, 4, 8):
+        for n in counts:
             run = output / f'{label}-{n}'
-            execute(binary, common + ['--compute-threads', str(n),
-                                      '--compute-experiments', 'ai'], run)
+            execute(binary, common + ['--compute-threads', str(n)], run)
             hashes = {name: digest(run / name) for name in
                       ('game.replay.checksums', 'game.replay', 'final.game')}
             if reference is None: reference = hashes
             assert hashes == reference, f'{label} game differs: {n}'
-    print('PASS compute experiments: exact traces, replay bytes, final saves, and runtime/Castor/Numbi continuation at 1/2/4/8 threads')
+    print('PASS shared compute: exact traces, replay bytes, final saves, and runtime/Castor/Numbi continuation at 1/2/4/8/auto threads')
 
 
 if __name__ == '__main__':

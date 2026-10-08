@@ -56,9 +56,9 @@ std::vector<std::pair<unsigned,std::shared_ptr<Order>>> Pipeline::prepare(Game& 
   if(requested[p])throw std::invalid_argument("Duplicate AI poll player");
   requested[p]=true;
  }
- // Decisions run on the map's compute executor; with the AI experiment on,
- // its workers share them and the owner joins at the deadline.
- const bool shared=game.map.computeEnabled(Map::ComputeAI);
+ // Decisions use the shared executor; the owner joins at the deadline.
+ // Without workers, the executor runs deferred work on the owner at its join.
+ constexpr bool shared=true;
  if(!configured) {scheduler.configure(game.gameHeader.getAIOrderDelay(),game.map.computeExecutor(),shared);configured=true;}
  else if(scheduler.delayTicks()!=game.gameHeader.getAIOrderDelay()) throw std::logic_error("AI delay cannot change during a match");
  else if(!scheduler.hasExecutor()||scheduler.sharedExecution()!=shared) scheduler.configureExecution(game.map.computeExecutor(),shared);
