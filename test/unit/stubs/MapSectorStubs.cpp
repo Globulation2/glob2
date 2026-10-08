@@ -66,5 +66,9 @@ void Map::finishResourceGrowth() {
 }
 void ResourceGrowth::Pipeline::reset() noexcept {
     if (!pending.empty() || reservation) std::abort();
-    spare.clear(); executor=nullptr; metrics={}; delay=8; shared=true;
+    spare.clear();
+    executor = nullptr;
+    proposalReserve = 0;
+    metrics = {};
+    delay = 8;
 }
