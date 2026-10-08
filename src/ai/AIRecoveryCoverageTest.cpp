@@ -87,7 +87,8 @@ TEST_SUITE("AIRecoveryCoverage")
         w.game.map.setMapDiscovered();
         auto distant=Cortex::assessSwim(player,true);
         CHECK(distant.algaeDiscovered==1); CHECK(distant.algaeReachable==0);
-        w.game.map.setResourceByIndex(12,6,ALGA,1);
+        // The island's grass vertices end at x=12; cell (13,6) is the first all-water one.
+        w.game.map.setResourceByIndex(13,6,ALGA,1);
         auto shore=Cortex::assessSwim(player,false);
         CHECK(shore.algaeDiscovered==1); CHECK(shore.algaeReachable==1);
         CHECK(shore.landReach==empty.landReach); CHECK(shore.waterReach==0);

@@ -1832,10 +1832,15 @@ TEST_CASE("Maxima food catchments and carrier discounts follow trail and ice tra
     };
     CHECK(capacity(3)==0);
     const auto neutral=distant();REQUIRE(neutral>0);
-    for(int dx=0;dx<4;++dx)map.setCellTerrain(sx+dx,sy,TRAIL);
-    CHECK(capacity(2)>0);
+    // Paint vertices, not cells, so the wheat cell keeps four grass corners:
+    // three uniform cells and one transition lead to it.
+    const auto paintRoute=[&](TerrainType type) {
+        for(int dx=0;dx<4;++dx) for(int dy=0;dy<2;++dy) map.setVertexTerrain(sx+dx,sy+dy,type);
+    };
+    paintRoute(TRAIL);
+    CHECK(capacity(3)>0);
     CHECK(distant()>neutral);
-    for(int dx=0;dx<4;++dx)map.setCellTerrain(sx+dx,sy,ICE);
+    paintRoute(ICE);
     CHECK(capacity(3)==0);
     CHECK(capacity(8)>0);
     CHECK(distant()<neutral);

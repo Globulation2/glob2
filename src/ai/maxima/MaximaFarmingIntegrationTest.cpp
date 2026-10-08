@@ -279,8 +279,6 @@ void expansionLeavesHarvestLanesOpen()
         {int i=index(x,y);map.setCellTerrain(i%64,i/64,WATER);}
         const int seed=index(19,19),support=index(20,19);
         const int target=index(20,20),other=index(20,18);
-        // The donor sits on a narrow shoreline; access remains on the east.
-        for(int y:{18,20}){int i=index(19,y);map.setCellTerrain(i%64,i/64,WATER);}
         setYoungResource(map,seed%64,seed/64,WHEAT);
         for(int y:{25,27,29,31})
         {

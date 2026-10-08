@@ -843,9 +843,9 @@ static void measurementReplayBoundaries()
 	// Format 124 introduced experiments; format 125 adds JavaScript identities.
 	// Format 128 changes save encoding, retaining the format-127 replay floor.
 	// Format 130 adds the farm-areas tile mask, still retaining that floor.
-	// Engine snapshots and scheduled AI decisions use replay floor 143, protocol 61;
+	// Vertex terrain sets replay floor 144, protocol 61;
 	// older save compatibility remains independent of these acceptance gates.
-	require(REPLAY_MINIMUM_VERSION_MINOR == FILE_FORMAT_VERSION_AI_PIPELINE && NET_PROTOCOL_VERSION == 61,
+	require(REPLAY_MINIMUM_VERSION_MINOR == FILE_FORMAT_VERSION_VERTEX_TERRAIN && NET_PROTOCOL_VERSION == 61,
 			"integrated simulation uses current replay and network gates");
 	for (int version : {98, 99, 100, 101, 102, 103, 104, 105, 106, 107, 115, 119, 120, 121, 122, 123, 124, 133, 134, 135, FILE_FORMAT_VERSION_RUNTIME_TERRAIN, FILE_FORMAT_VERSION_TERRAIN_SEED, 139, FILE_FORMAT_VERSION_RUNTIME_RESOURCES, FILE_FORMAT_VERSION_TERRAIN_CATALOGUE, VERSION_MINOR, VERSION_MINOR+1})
 	{

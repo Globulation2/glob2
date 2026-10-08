@@ -1197,7 +1197,7 @@ TEST_CASE("snapshot material templates refresh changed chunks and accept older s
     CHECK(initial==size_t(map.size));
     check(before); CHECK(scratch.materials.refreshedCells==initial);
     map.replaceResource(0,Resource{});
-    map.setCellTerrain(1,WATER);
+    map.setVertexTerrain(1,1,WATER); // cells (0..1,0..1), all in the first chunk
     map.areaCells[2].forbidden=3; map.markArea(2);
     map.areaCells[5].guard=1; map.markArea(5);
     map.areaCells[6].clear=1; map.markArea(6);

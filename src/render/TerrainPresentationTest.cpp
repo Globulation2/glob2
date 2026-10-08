@@ -325,7 +325,8 @@ TEST_SUITE("TerrainPresentation")
 			for (int x = 0; x < 16; ++x)
 				map.setUMTerrain(x, y, x < 4 || y < 4 ? WATER : x < 7 || y < 7 ? SAND : GRASS);
 		map.rebuildTerrain();
-		map.setCellTerrain(10, 10, ICE);
+		// Away from (9,9), where wheat needs pure grass.
+		map.setCellTerrain(12, 12, ICE);
 		SceneMap scene;
 		scene.extract(map);
 		auto &compositor = globals->terrainCompositor();
@@ -503,8 +504,10 @@ TEST_SUITE("TerrainPresentation")
 			for (int y = -1; y <= 1; ++y)
 				for (int x = -1; x <= 1; ++x)
 					CHECK(compositor.describe(actual, x, y) == compositor.describe(expected, x, y));
+			// A vertex only the side's own cell writes: later sides share the others.
+			constexpr int vx[4] = {0, 2, 0, -1}, vy[4] = {-1, 0, 2, 0};
 			for (int side = 0; side < 4; ++side)
-				CHECK(actual.terrainTypeAt(dx[side], dy[side]) ==
+				CHECK(actual.vertexTerrainAt(vx[side], vy[side]) ==
 					  (mask & (1u << side) ? aliases[side] : TRAIL));
 		}
 		for (int y = 0; y < 16; ++y)
@@ -1054,7 +1057,7 @@ TEST_SUITE("TerrainPresentation")
 				CHECK(draw(true) > 0);
 			});
 	}
-	TEST_CASE("image import keeps whole-cell material edges out of legacy gameplay [artifacts]")
+	TEST_CASE("image import reads each pixel as a terrain vertex [artifacts]")
 	{
 		glob2test::HeadlessGlobals globals;
 		glob2test::HeadlessGame fixture({.wDec = 6, .hDec = 6, .teams = 0});
@@ -1086,27 +1089,25 @@ TEST_SUITE("TerrainPresentation")
 		MapImageImportReport report;
 		importMapImage(fixture.game, filename, request, 1, report, 0);
 		const auto &map = fixture.game.map;
-		CHECK(map.terrainTypeAt(8, 8) == TRAIL);
-		CHECK(map.terrainTypeAt(7, 8) == WATER);
-		CHECK(map.terrainTypeAt(8, 7) == WATER);
-		CHECK(map.terrainTypeAt(7, 7) == WATER);
-		CHECK_FALSE(map.terrainPropertiesAt(7, 8).walkable);
-		CHECK(map.terrainTypeAt(0, 10) == ICE);
-		CHECK(map.terrainTypeAt(63, 10) == WATER);
-		CHECK(map.terrainTypeAt(20, 10) == TRAIL);
-		CHECK(map.terrainTypeAt(19, 10) == GRASS);
-		CHECK(map.terrainPropertiesAt(19, 10).buildable);
-		CHECK(map.terrainTypeAt(30, 30) == DARK_WATER);
-		CHECK(map.terrainTypeAt(34, 30) == WATER);
+		// Each pixel is a vertex; a lone pixel colours the four cells around it.
+		CHECK(map.vertexTerrainAt(8, 8) == TRAIL);
+		CHECK(map.vertexTerrainAt(7, 8) == WATER);
+		CHECK(map.vertexTerrainAt(8, 7) == WATER);
+		CHECK(map.vertexTerrainAt(7, 7) == WATER);
+		CHECK(map.terrainPropertiesAt(7, 7).walkable);
+		CHECK_FALSE(map.terrainPropertiesAt(6, 6).walkable);
+		CHECK(map.vertexTerrainAt(0, 10) == ICE);
+		CHECK(map.vertexTerrainAt(63, 10) == WATER);
+		CHECK(map.vertexTerrainAt(20, 10) == TRAIL);
+		CHECK(map.vertexTerrainAt(19, 10) == GRASS);
+		CHECK(map.terrainPropertiesAt(18, 10).buildable);
+		CHECK_FALSE(map.terrainPropertiesAt(19, 10).buildable);
+		CHECK(map.vertexTerrainAt(30, 30) == DARK_WATER);
+		CHECK(map.vertexTerrainAt(34, 30) == WATER);
 		CHECK(map.requiredTerrainExperiments().has(ExperimentId::DeepWaterTerrain));
-		// An ordinary grass/water boundary still receives the legacy shore repair.
-		CHECK(map.terrainTypeAt(15, 5) != WATER);
-		fixture.game.map.rebuildTerrain();
-		CHECK(map.terrainTypeAt(7, 8) == WATER);
-		CHECK(map.terrainTypeAt(8, 7) == WATER);
-		CHECK(map.terrainTypeAt(7, 7) == WATER);
-		CHECK(map.terrainTypeAt(63, 10) == WATER);
-		CHECK(map.terrainTypeAt(19, 10) == GRASS);
+		// An ordinary grass/water boundary still receives a sand beach.
+		CHECK(map.vertexTerrainAt(15, 5) == SAND);
+		CHECK(map.vertexTerrainAt(16, 5) == SAND);
 	}
 	TEST_CASE("every paintable built-in binds a material, has an editor icon and exports its own colour [display][artifacts]")
 	{
@@ -1205,7 +1206,7 @@ TEST_SUITE("TerrainValidation")
 		// Every catalogue type as a 3x3 island on grass with a detached diagonal cell,
 		// five per row, so interior variants, boundaries and seams are all visible.
 		std::vector<TerrainType> types;
-		for (unsigned i = TERRAIN_COUNT_BEFORE_CATALOGUE; i < TERRAIN_COUNT; ++i)
+		for (unsigned i = BOULDERS; i < TERRAIN_COUNT; ++i)
 			if (terrainPaintable(TerrainType(i)))
 				types.push_back(TerrainType(i));
 		REQUIRE(types.size() == 24);
@@ -1257,8 +1258,10 @@ TEST_SUITE("TerrainValidation")
 				continue;
 			}
 			CHECK(contains(decor.full, compositor.decorFrame(scene, ox + 1, oy + 1)));
-			CHECK(contains(decor.edge, compositor.decorFrame(scene, ox, oy + 1)));
-			CHECK(contains(decor.edge, compositor.decorFrame(scene, ox + 3, oy + 3)));
+			// Painted cells cover vertices ox..ox+3, so the cells just outside
+			// the island have two of its corners.
+			CHECK(contains(decor.edge, compositor.decorFrame(scene, ox - 1, oy + 1)));
+			CHECK(contains(decor.edge, compositor.decorFrame(scene, ox + 3, oy + 1)));
 		}
 		CHECK(compositor.decorFrame(scene, 5, 30) == -1);
 		// Painted islands keep their identity and the map declares every group painted.
@@ -1287,7 +1290,7 @@ TEST_SUITE("TerrainValidation")
 		compositor.prepare(true, 0);
 		const auto &catalog = compositor.catalog();
 		std::vector<std::string> keys;
-		for (unsigned i = TERRAIN_COUNT_BEFORE_CATALOGUE; i < TERRAIN_COUNT; ++i)
+		for (unsigned i = BOULDERS; i < TERRAIN_COUNT; ++i)
 			if (terrainPaintable(TerrainType(i)))
 				keys.push_back(terrainPresentation(TerrainType(i)).name);
 		REQUIRE(keys.size() == 24);

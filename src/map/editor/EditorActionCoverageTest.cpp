@@ -32,7 +32,9 @@ void blank(MapEdit& editor)
 void cursor(MapEdit& editor,int x,int y)
 {
     // MapEdit's action layer consumes the last event position in logical pixels.
-    editor.mouseX=x*32+16; editor.mouseY=y*32+16;
+    // The upper-left quarter of cell (x,y) is nearest its top-left vertex (x,y),
+    // which terrain brushes paint; resource brushes take the cell itself.
+    editor.mouseX=x*32+8; editor.mouseY=y*32+8;
 }
 }
 
@@ -419,20 +421,20 @@ TEST_SUITE("EditorActionCoverage")
         REQUIRE(editor.additionalTerrainSelectors.size()==1);
         editor.performAction("select ice");editor.brush.setFigure(0);
         cursor(editor,8,8);editor.performAction("terrain drag start");editor.performAction("terrain drag end");
-        CHECK(editor.game.map.terrainTypeAt(8,8)==ICE);
-        CHECK(editor.game.map.terrainTypeAt(7,8)==GRASS);
+        CHECK(editor.game.map.vertexTerrainAt(8,8)==ICE);
+        CHECK(editor.game.map.vertexTerrainAt(7,8)==GRASS);
         editor.performAction("select road");
         CHECK(editor.terrainType==TerrainSelector::Ice);
         globals->settings.experiments.set(ExperimentId::TrailTerrain,true);
         editor.performAction("select road");
         cursor(editor,8,8);editor.performAction("terrain drag start");editor.performAction("terrain drag end");
-        CHECK(editor.game.map.terrainTypeAt(8,8)==TRAIL);
-        CHECK(editor.game.map.terrainTypeAt(7,8)==GRASS);
+        CHECK(editor.game.map.vertexTerrainAt(8,8)==TRAIL);
+        CHECK(editor.game.map.vertexTerrainAt(7,8)==GRASS);
         glob2test::TempDir scratch;const auto filename=(scratch.path/"whole-cell-terrain.map").string();
         REQUIRE(editor.save(filename,"whole-cell terrain"));
         globals->settings.experiments.clear();
         MapEdit restored;REQUIRE(restored.load(filename));
-        CHECK(restored.game.map.terrainTypeAt(8,8)==TRAIL);
+        CHECK(restored.game.map.vertexTerrainAt(8,8)==TRAIL);
     }
 
     TEST_CASE("registered terrain stamps batch invalidation and reject invalid selector IDs [display]")
@@ -447,8 +449,8 @@ TEST_SUITE("EditorActionCoverage")
         const auto generation=editor.game.map.topologyGeneration;
         cursor(editor,8,8);editor.performAction("terrain drag start");editor.performAction("terrain drag end");
         CHECK(editor.game.map.topologyGeneration==generation+1);
-        CHECK(editor.game.map.terrainTypeAt(8,8)==TRAIL);
-        CHECK(editor.game.map.terrainTypeAt(7,8)==TRAIL);
+        CHECK(editor.game.map.vertexTerrainAt(8,8)==TRAIL);
+        CHECK(editor.game.map.vertexTerrainAt(7,8)==TRAIL);
         // Catalogue brushes are gated by their group's experiment, not listed in the side panel.
         editor.performAction("select boulders");
         CHECK(editor.terrainType==TerrainSelector::Trail);
@@ -458,7 +460,7 @@ TEST_SUITE("EditorActionCoverage")
         editor.performAction("select hedge");
         CHECK(editor.terrainType==TerrainSelector::selectorFor(HEDGE));
         cursor(editor,20,20);editor.performAction("terrain drag start");editor.performAction("terrain drag end");
-        CHECK(editor.game.map.terrainTypeAt(20,20)==HEDGE);
+        CHECK(editor.game.map.vertexTerrainAt(20,20)==HEDGE);
         CHECK(editor.game.map.requiredTerrainExperiments().has(ExperimentId::ObstacleTerrain));
         globals->settings.experiments.set(ExperimentId::ObstacleTerrain,false);
         editor.performAction("select road");
@@ -537,7 +539,7 @@ TEST_SUITE("EditorActionCoverage")
 		host.tapAt({bounds.x + bounds.w / 2, bounds.y + bounds.h / 2});
 		CHECK(editor.terrainType==TerrainSelector::selectorFor(HEDGE));
 		cursor(editor,12,12);editor.performAction("terrain drag start");editor.performAction("terrain drag end");
-		CHECK(editor.game.map.terrainTypeAt(12,12)==HEDGE);
+		CHECK(editor.game.map.vertexTerrainAt(12,12)==HEDGE);
 		// Without a group the action shows the Terrain tab and keeps the brush;
 		// unknown groups are ignored the same way.
 		editor.dock->showTab(EditorDock::Tab::Buildings);
@@ -655,13 +657,13 @@ TEST_SUITE("EditorActionCoverage")
 			cursor(editor, 8, 8);
 			editor.performAction("terrain drag start");
 			editor.performAction("terrain drag end");
-			REQUIRE(editor.game.map.terrainTypeAt(8, 8) == type);
+			REQUIRE(editor.game.map.vertexTerrainAt(8, 8) == type);
 			const auto map = (scratch.path / "custom.map").string();
 			REQUIRE(editor.save(map, "Custom terrain"));
 			std::filesystem::remove(file);
 			MapEdit loaded;
 			REQUIRE(loaded.load(map));
-			CHECK(loaded.game.map.terrainTypeAt(8, 8) == type);
+			CHECK(loaded.game.map.vertexTerrainAt(8, 8) == type);
 			CHECK(loaded.game.map.terrainProperties(type).groundSpeedQ8 == 192);
 			loaded.draw(SDL_GetTicks());
 			globals->gfx->printScreen(

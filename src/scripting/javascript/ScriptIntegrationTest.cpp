@@ -1433,7 +1433,7 @@ TEST_CASE("JavaScript terrain registry exposes immutable property capabilities i
         CHECK(state.get("speed").number==128);CHECK(state.get("health").number==-8);
         CHECK(state.get("experiment").text=="ice-terrain");
         CHECK(state.get("road").number==1);CHECK(state.get("grass").number==1);
-        CHECK(state.get("internal").number==1);CHECK(state.get("frozen").number==1);
+        CHECK(state.get("internal").number==0);CHECK(state.get("frozen").number==1);
         CHECK(state.get("unchanged").number==1);
     }
 }

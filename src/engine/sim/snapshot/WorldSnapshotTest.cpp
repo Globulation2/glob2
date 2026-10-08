@@ -205,6 +205,7 @@ TEST_SUITE("WorldSnapshot")
 	}
 	TEST_CASE("AI boundary validates each captured map array before fast reads")
 	{
+		glob2test::HeadlessGlobals globals;
 		using namespace SimulationSnapshot;
 		const auto geometry=[] { Handle h; h.width=32; h.height=32; return h; };
 		const auto checkCells=[&]<class Layer>(Component component, std::shared_ptr<const Layer> Handle::*member)
@@ -450,7 +451,7 @@ TEST_SUITE("WorldSnapshot")
 		SimulationSnapshot::Store store;
 		auto terrain = store.captureBoundary(fixture.game, SimulationSnapshot::bit(SimulationSnapshot::Component::Terrain));
 		REQUIRE(terrain.terrain); CHECK_FALSE(terrain.entities); CHECK_FALSE(terrain.resources); CHECK_FALSE(terrain.growth);
-		CHECK(store.metrics.captures == 1); CHECK(store.metrics.bytesCopied == 1024 * (sizeof(Uint16) + sizeof(Uint8)));
+		CHECK(store.metrics.captures == 1); CHECK(store.metrics.bytesCopied == 1024 * sizeof(Uint16));
 		store.captureBoundary(fixture.game, SimulationSnapshot::bit(SimulationSnapshot::Component::Terrain));
 		CHECK(store.metrics.captures == 1);
 	}

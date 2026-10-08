@@ -163,7 +163,24 @@ try
 	{
 		const auto id = TerrainRegistry::currentTerrainId(savedBuiltins, saved);
 		if (id && !validTerrainType(*id)) throw std::ios_base::failure("Unknown terrain identity");
-		if (id && *id != WATER && *id != SAND && *id != GRASS) legacyCellTerrain[i] = static_cast<TerrainType>(*id);
+		if (!id) return; // a shore: drawn from its corners
+		const auto type = static_cast<TerrainType>(*id);
+		if (type != WATER && type != SAND && type != GRASS)
+		{
+			legacyCellTerrain[i] = type;
+			return;
+		}
+		// A classic ID normally matches its corners: uniform corners, or grass
+		// beside water, which drew grass. One set directly on the cell (an older
+		// whole-cell edit) disagrees, and the game ruled it by the ID.
+		const int x = int(i & wMask), y = int(i >> wDec);
+		const TerrainType corners[4] = {vertexTerrain[coordToIndex(x, y)], vertexTerrain[coordToIndex(x + 1, y)],
+										vertexTerrain[coordToIndex(x, y + 1)], vertexTerrain[coordToIndex(x + 1, y + 1)]};
+		const bool uniform = corners[0] == corners[1] && corners[0] == corners[2] && corners[0] == corners[3];
+		const bool grassWater = std::find(std::begin(corners), std::end(corners), GRASS) != std::end(corners) &&
+								std::find(std::begin(corners), std::end(corners), WATER) != std::end(corners);
+		const bool drawn = uniform ? corners[0] == type : grassWater && type == GRASS;
+		if (!drawn) legacyCellTerrain[i] = type;
 	};
 
 	// We read what's inside the map: the terrain of every vertex, then the cells.
