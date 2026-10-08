@@ -518,10 +518,12 @@ jobs:
         continue-on-error: true
         run: |
           sudo apt-get update -qq
-          sudo apt-get install -y --no-install-recommends libclang-18-dev python3-venv
+          sudo apt-get install -y --no-install-recommends libclang-18-dev python3-venv nodejs npm
           python3 -m venv artifacts/map-generator-tools-venv
           artifacts/map-generator-tools-venv/bin/python -m pip install clang==18.1.8
+          npm install --prefix artifacts/map-generator-typescript --no-save --ignore-scripts typescript@7.0.2
           python3 test/ci_run_commands.py \
+            --check 'toolkit authoring declarations' 'artifacts/map-generator-typescript/node_modules/.bin/tsc --strict --noEmit test/map_generator_toolkit_contract.ts' \
             --check 'generator package tooling' 'python3 test/test_generator_package_tool.py' \
             --check 'toolkit instrumentation' 'artifacts/map-generator-tools-venv/bin/python test/test_toolkit_instrumentation.py' \
             --check tournaments 'python3 test/test_tournaments.py' \
