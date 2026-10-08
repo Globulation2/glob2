@@ -1,6 +1,9 @@
+import { cursorTime } from '../http/cursorTime.ts';
 import { apiError } from '../errors.ts';
 
-export function decodeCursor(value?: string): { at: Date; id: string } | undefined {
+export function decodeCursor(
+  value?: string,
+): { at: Date; exactAt: string; id: string } | undefined {
   if (!value) return undefined;
   try {
     if (value.length > 512) throw new Error();
@@ -15,14 +18,14 @@ export function decodeCursor(value?: string): { at: Date; id: string } | undefin
     const at = new Date(pair[0]);
     if (!Number.isFinite(at.getTime()) || !/^[a-zA-Z0-9:-]{1,100}$/.test(pair[1]))
       throw new Error();
-    return { at, id: pair[1] };
+    return { at, exactAt: cursorTime(pair[0]), id: pair[1] };
   } catch {
     throw apiError('bad_request', 'Invalid cursor.');
   }
 }
 
 export function encodeCursor(at: Date | string, id: string): string {
-  return Buffer.from(JSON.stringify([new Date(at).toISOString(), id])).toString('base64url');
+  return Buffer.from(JSON.stringify([cursorTime(at), id])).toString('base64url');
 }
 
 export function pageSize(value?: string): number {

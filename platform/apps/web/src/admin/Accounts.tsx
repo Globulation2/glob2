@@ -1,0 +1,233 @@
+import { useState, type FormEvent } from 'react';
+import type { AdminAccount } from '@glob2/protocol';
+import { request, api } from '../api.ts';
+import { Empty, ErrorNotice, Loaded, PlayerLink } from '../components/common.tsx';
+import { date, dateTime } from '../format.ts';
+import { useLoad, useSession } from '../state.tsx';
+import { PageControls, useAdminFilters, useFilterDraft } from './filters.tsx';
+
+const MUTES = [
+  { minutes: 60, name: '1 hour' },
+  { minutes: 1440, name: '1 day' },
+  { minutes: 10080, name: '1 week' },
+  { minutes: 43200, name: '30 days' },
+];
+
+function AccountRow({ initial, isAdmin }: { initial: AdminAccount; isAdmin: boolean }) {
+  const [account, setAccount] = useState(initial);
+  const [open, setOpen] = useState(false);
+  const [name, setName] = useState(initial.displayName);
+  const [reason, setReason] = useState('');
+  const [error, setError] = useState<Error>();
+  const [busy, setBusy] = useState(false);
+  const [now] = useState(() => Date.now());
+  const { account: actor } = useSession();
+  const [role, setRole] = useState(account.role);
+  const [confirmation, setConfirmation] = useState('');
+  const act = async (action: () => Promise<AdminAccount>) => {
+    if (busy) return;
+    setBusy(true);
+    setError(undefined);
+    try {
+      setAccount(await action());
+    } catch (e) {
+      setError(e as Error);
+    } finally {
+      setBusy(false);
+    }
+  };
+  const canRestrict =
+    actor?.id !== account.id &&
+    (actor?.role === 'admin' ? account.role !== 'admin' : account.role === 'user');
+  const muted = account.mutedUntil && Date.parse(account.mutedUntil) > now;
+  return (
+    <div className="it" style={{ display: 'block' }} data-testid="admin-account">
+      <div style={{ display: 'flex', gap: 10, alignItems: 'center', flexWrap: 'wrap' }}>
+        <div className="grow">
+          <PlayerLink account={account} /> <span className="badge">{account.kind}</span>{' '}
+          {account.role !== 'user' && <span className="badge gold">{account.role}</span>}{' '}
+          {account.status === 'banned' && <span className="badge bad">banned</span>}{' '}
+          {muted && <span className="badge warn">muted until {dateTime(account.mutedUntil)}</span>}
+          <div className="caption">
+            joined {date(account.createdAt)} · last seen {dateTime(account.lastSeenAt)} ·{' '}
+            {account.identities.map((i) => i.provider).join(', ') || 'no sign-in methods'}
+          </div>
+        </div>
+        <button
+          className="small"
+          disabled={account.status === 'deleted'}
+          onClick={() => setOpen(!open)}
+          aria-expanded={open}
+        >
+          {account.status === 'deleted' ? 'Deleted' : open ? 'Close' : 'Moderate'}
+        </button>
+      </div>
+      {open && account.status !== 'deleted' && (
+        <fieldset disabled={busy} className="card" style={{ marginTop: 8 }}>
+          <label className="field">
+            Reason (recorded in the audit log)
+            <input value={reason} maxLength={500} onChange={(e) => setReason(e.target.value)} />
+          </label>
+          <form
+            className="toolbar"
+            onSubmit={(e: FormEvent) => {
+              e.preventDefault();
+              void act(() => api.adminRename(account.id, name, reason || undefined));
+            }}
+          >
+            <input
+              aria-label="New display name"
+              value={name}
+              maxLength={32}
+              onChange={(e) => setName(e.target.value)}
+            />
+            <button
+              className="small"
+              type="submit"
+              disabled={!name || name === account.displayName}
+            >
+              Rename
+            </button>
+          </form>
+          {!canRestrict && <p>Restrictions and deletion require a lower-role account.</p>}
+          <div className="toolbar">
+            {canRestrict &&
+              MUTES.map((m) => (
+                <button
+                  key={m.minutes}
+                  className="small"
+                  onClick={() =>
+                    void act(() => api.adminMute(account.id, m.minutes, reason || undefined))
+                  }
+                >
+                  Mute {m.name}
+                </button>
+              ))}
+            {muted && (
+              <button
+                className="small"
+                onClick={() => void act(() => api.adminMute(account.id, 0, reason || undefined))}
+              >
+                Unmute
+              </button>
+            )}
+          </div>
+          {isAdmin && (canRestrict || account.status === 'banned') && (
+            <div className="toolbar">
+              <button
+                className="small danger"
+                onClick={() => {
+                  const banned = account.status !== 'banned';
+                  if (
+                    !banned ||
+                    window.confirm(`Ban ${account.displayName}? This signs them out everywhere.`)
+                  ) {
+                    void act(() => api.adminBan(account.id, banned, reason || undefined));
+                  }
+                }}
+              >
+                {account.status === 'banned' ? 'Lift ban' : 'Ban'}
+              </button>
+            </div>
+          )}
+          {isAdmin && actor?.id !== account.id && account.kind === 'registered' && (
+            <div className="toolbar">
+              <label>
+                Role{' '}
+                <select value={role} onChange={(e) => setRole(e.target.value as typeof role)}>
+                  {['user', 'moderator', 'admin'].map((r) => (
+                    <option key={r}>{r}</option>
+                  ))}
+                </select>
+              </label>
+              <button
+                disabled={role === account.role || !reason.trim()}
+                onClick={() =>
+                  void act(() =>
+                    request<AdminAccount>('POST', `/api/v1/admin/accounts/${account.id}/role`, {
+                      body: { role, reason },
+                    }),
+                  )
+                }
+              >
+                Change role
+              </button>
+            </div>
+          )}
+          {isAdmin && canRestrict && (
+            <details>
+              <summary>Delete account</summary>
+              <p>
+                Deletes sign-in identities, sessions, personal information and owned content. Match
+                history remains anonymized. This cannot be undone.
+              </p>
+              <label>
+                Type {account.displayName} to confirm{' '}
+                <input value={confirmation} onChange={(e) => setConfirmation(e.target.value)} />
+              </label>
+              <button
+                className="danger"
+                disabled={confirmation !== account.displayName || !reason.trim()}
+                onClick={() =>
+                  void act(async () => {
+                    await request('DELETE', `/api/v1/admin/accounts/${account.id}`, {
+                      query: { reason },
+                    });
+                    setOpen(false);
+                    return { ...account, status: 'deleted', displayName: 'Deleted player' };
+                  })
+                }
+              >
+                Delete account
+              </button>
+            </details>
+          )}
+          {busy && <p role="status">Saving account changes…</p>}
+          {error && <ErrorNotice error={error} />}
+        </fieldset>
+      )}
+    </div>
+  );
+}
+
+export function Accounts({ isAdmin }: { isAdmin: boolean }) {
+  const { values, set } = useAdminFilters();
+  const [q, setQ] = useFilterDraft(values['q'] ?? '');
+  const load = useLoad((signal) => api.adminAccounts(values, signal), [JSON.stringify(values)]);
+  return (
+    <>
+      <form
+        className="toolbar"
+        role="search"
+        onSubmit={(e) => {
+          e.preventDefault();
+          set({ q: q.trim() });
+        }}
+      >
+        <input
+          aria-label="Search accounts"
+          placeholder="Name, account id or email"
+          value={q}
+          onChange={(e) => setQ(e.target.value)}
+        />
+        <button type="submit">Search</button>
+      </form>
+      <Loaded load={load}>
+        {(page) => (
+          <>
+            {page.items.length === 0 ? (
+              <Empty>No accounts match.</Empty>
+            ) : (
+              <div className="list">
+                {page.items.map((a) => (
+                  <AccountRow key={`${a.id}-${a.updatedAt}`} initial={a} isAdmin={isAdmin} />
+                ))}
+              </div>
+            )}
+            <PageControls nextCursor={page.nextCursor} />
+          </>
+        )}
+      </Loaded>
+    </>
+  );
+}

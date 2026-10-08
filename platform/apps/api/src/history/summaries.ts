@@ -10,6 +10,7 @@ import {
   storedSimVersion,
   tryReadStored,
 } from '@glob2/play';
+import { cursorTime } from '../http/cursorTime.ts';
 import { apiError } from '../errors.ts';
 
 type Db = Kysely<Database>;
@@ -19,12 +20,12 @@ export type MatchRow = Selectable<Database['matches']>;
 export const MATCH_TIME = sql<Date>`COALESCE(m.ended_at, m.started_at, m.created_at)`;
 
 export interface MatchCursor {
-  at: Date;
+  at: Date | string;
   id: string;
 }
 
 export function encodeCursor(cursor: MatchCursor): string {
-  return Buffer.from(`${cursor.at.toISOString()}|${cursor.id}`).toString('base64url');
+  return Buffer.from(`${cursorTime(cursor.at)}|${cursor.id}`).toString('base64url');
 }
 
 export function decodeCursor(value: string | undefined): MatchCursor | undefined {
@@ -34,7 +35,7 @@ export function decodeCursor(value: string | undefined): MatchCursor | undefined
   if (!id || !UUID.test(id) || Number.isNaN(date.getTime())) {
     throw apiError('bad_request', 'Invalid cursor.');
   }
-  return { at: date, id };
+  return { at: cursorTime(at ?? ''), id };
 }
 
 export const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/;

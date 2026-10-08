@@ -2,6 +2,7 @@ import { sql, type Kysely, type Transaction } from 'kysely';
 import type { Database } from '@glob2/db';
 import type { AdminContent, AdminLibrary, AdminReport } from '@glob2/protocol';
 import { apiError } from '../errors.ts';
+import { cursorTimeSql } from '../http/cursorTime.ts';
 import { decodeCursor, encodeCursor, pageSize } from './cursor.ts';
 
 type Db = Kysely<Database> | Transaction<Database>;
@@ -58,7 +59,7 @@ function contentQuery(library: AdminLibrary) {
   return sql`SELECT c.id, ${library}::text AS library, ${contentName(library)} AS name,
  ${sql.ref(`c.${owner}`)} AS "ownerId", ${hidden(library)} AS hidden,
  ${library === 'skins' || library === 'music' ? sql`NULL::text` : sql`c.hidden_reason`} AS reason,
- c.created_at AS "createdAt", ${library === 'skins' ? sql`(SELECT '/api/v1/admin/skins/versions/' || v.id::text || '/texture' FROM colony_skin_versions v WHERE v.skin_id=c.id ORDER BY v.created_at DESC,v.id DESC LIMIT 1)` : sql`NULL::text`} AS "previewHref", ${downloads} AS downloads FROM ${sql.table(table)} c`;
+ c.created_at AS "createdAt", ${cursorTimeSql(sql<Date>`c.created_at`)} AS "cursorAt", ${library === 'skins' ? sql`(SELECT '/api/v1/admin/skins/versions/' || v.id::text || '/texture' FROM colony_skin_versions v WHERE v.skin_id=c.id ORDER BY v.created_at DESC,v.id DESC LIMIT 1)` : sql`NULL::text`} AS "previewHref", ${downloads} AS downloads FROM ${sql.table(table)} c`;
 }
 function reportQuery(library: AdminLibrary) {
   const [table, , , reports, fk, reporter] = specs[library];
@@ -79,7 +80,7 @@ function reportQuery(library: AdminLibrary) {
   return sql`SELECT r.id, ${library}::text AS library, c.id AS "contentId", ${contentName(library)} AS name,
  ${hidden(library)} AS hidden, ${sql.ref(`r.${reporter}`)} AS "reporterId", coalesce(a.display_name,'Deleted player') AS "reporterName",
  ${library === 'skins' ? sql`'/api/v1/admin/skins/versions/' || r.version_id::text || '/texture'` : sql`NULL::text`} AS "previewHref", r.reason, ${library === 'maps' || library === 'ais' || library === 'sets' ? sql`r.details` : sql`''::text`} AS details,
- r.created_at AS "createdAt", ${status} AS status, ${resolution} AS resolution,
+ r.created_at AS "createdAt", ${cursorTimeSql(sql<Date>`r.created_at`)} AS "cursorAt", ${status} AS status, ${resolution} AS resolution,
  ${library === 'maps' || library === 'skins' ? sql`r.resolved_at` : sql`m.resolved_at`} AS "resolvedAt"
  FROM ${sql.table(reports)} r
  ${library === 'skins' ? sql`JOIN colony_skin_versions v ON v.id=r.version_id JOIN colony_skins c ON c.id=v.skin_id` : sql`JOIN ${sql.table(table)} c ON c.id=${sql.ref(`r.${fk}`)}`}
@@ -89,7 +90,7 @@ function reportQuery(library: AdminLibrary) {
 function pageClause(cursor?: string) {
   const before = decodeCursor(cursor);
   return before
-    ? sql`AND ("createdAt",library || ':' || id::text) < (${before.at},${before.id})`
+    ? sql`AND ("createdAt",library || ':' || id::text) < (${before.exactAt},${before.id})`
     : sql``;
 }
 export async function listContent(
@@ -109,7 +110,7 @@ export async function listContent(
   const limit = pageSize(query.limit);
   const rows = (
     await sql<
-      Omit<AdminContent, 'href'>
+      Omit<AdminContent, 'href'> & { cursorAt: string }
     >`WITH contents AS (${sql.join(libraries.map(contentQuery), sql` UNION ALL `)}) SELECT * FROM contents WHERE TRUE
  ${query.hidden === 'true' ? sql`AND hidden` : query.hidden === 'false' ? sql`AND NOT hidden` : sql``}
  ${query.q ? sql`AND (name ILIKE ${'%' + query.q.slice(0, 200).replace(/[\\%_]/g, '\\$&') + '%'} OR id::text=${query.q})` : sql``}
@@ -117,16 +118,17 @@ export async function listContent(
       db,
     )
   ).rows;
-  const items = rows.slice(0, limit).map((r) => ({
+  const page = rows.slice(0, limit);
+  const items = page.map(({ cursorAt, ...r }) => ({
     ...r,
-    createdAt: new Date(r.createdAt).toISOString(),
+    createdAt: new Date(cursorAt).toISOString(),
     href: href(r.library, r.id),
   }));
-  const last = items.at(-1);
+  const last = page.at(-1);
   return {
     items,
     ...(rows.length > limit && last
-      ? { nextCursor: encodeCursor(last.createdAt, `${last.library}:${last.id}`) }
+      ? { nextCursor: encodeCursor(last.cursorAt, `${last.library}:${last.id}`) }
       : {}),
   };
 }
@@ -142,7 +144,7 @@ export async function listReports(
     limit = pageSize(query.limit);
   const rows = (
     await sql<
-      Omit<AdminReport, 'href'>
+      Omit<AdminReport, 'href'> & { cursorAt: string }
     >`WITH reports AS (${union}) SELECT * FROM reports WHERE TRUE ${status === 'all' ? sql`` : sql`AND status=${status}`} ${pageClause(query.cursor)} ORDER BY "createdAt" DESC,library || ':' || id::text DESC LIMIT ${limit + 1}`.execute(
       db,
     )
@@ -155,20 +157,21 @@ export async function listReports(
       db,
     )
   ).rows;
-  const items = rows.slice(0, limit).map((r) => ({
+  const page = rows.slice(0, limit);
+  const items = page.map(({ cursorAt, ...r }) => ({
     ...r,
-    createdAt: new Date(r.createdAt).toISOString(),
+    createdAt: new Date(cursorAt).toISOString(),
     resolvedAt: r.resolvedAt ? new Date(r.resolvedAt).toISOString() : null,
     href: href(r.library, r.contentId),
   }));
-  const last = items.at(-1);
+  const last = page.at(-1);
   return {
     items,
     counts: Object.fromEntries(
       LIBRARIES.map((l) => [l, counts.find((c) => c.library === l)?.count ?? 0]),
     ),
     ...(rows.length > limit && last
-      ? { nextCursor: encodeCursor(last.createdAt, `${last.library}:${last.id}`) }
+      ? { nextCursor: encodeCursor(last.cursorAt, `${last.library}:${last.id}`) }
       : {}),
   };
 }
@@ -181,6 +184,8 @@ export async function moderateContent(
   reason: string,
   actor: string,
 ) {
+  if (!reason.trim() || reason.length > 2000 || reason.includes('\0'))
+    throw apiError('bad_request', 'Give a bounded moderation reason without NUL characters.');
   const [table] = specs[library];
   const before = (
     await sql<{

@@ -110,7 +110,11 @@ export class Checkout {
     if (!session.url) throw new HiveError('conflict', 'This checkout has ended.');
     return { url: session.url };
   }
-  async fulfill(session: Stripe.Checkout.Session, connection?: Transaction<Database>) {
+  async fulfill(
+    session: Stripe.Checkout.Session,
+    connection?: Transaction<Database>,
+    paymentAt?: Date,
+  ) {
     if (
       session.mode !== 'payment' ||
       session.payment_status !== 'paid' ||
@@ -147,7 +151,7 @@ export class Checkout {
         paid: session.amount_total ?? p.pack.amount,
         refunded: 0,
         disputed: false,
-        occurredAt: new Date(session.created * 1000),
+        occurredAt: paymentAt ?? new Date(session.created * 1000),
       });
       await sql`INSERT INTO ${this.table('wallets')}(account_id) VALUES(${p.account_id}) ON CONFLICT DO NOTHING`.execute(
         db,
@@ -258,12 +262,18 @@ export class Checkout {
         session = list.data[0];
       }
       if (!session) throw new Error('Purchase checkout is not yet available.');
-      await this.fulfill(session, lock);
       if (session.payment_status !== 'paid') return;
       const charges = await this.stripe.charges.list({ payment_intent: paymentId, limit: 100 });
       if (charges.has_more) throw new Error('Purchase requires manual reconciliation.');
+      const successful = charges.data.filter((c) => c.paid);
+      const paymentAt = successful.length
+        ? new Date(Math.min(...successful.map((c) => c.created)) * 1000)
+        : new Date(event.created * 1000);
+      await this.fulfill(session, lock, paymentAt);
       const disputes = await this.stripe.disputes.list({ payment_intent: paymentId, limit: 100 });
       if (disputes.has_more) throw new Error('Purchase requires manual reconciliation.');
+      if (disputes.data.some((d) => d.currency !== session?.currency))
+        throw new Error('Dispute currency does not match the purchase.');
       const disputed = disputes.data.some(
         (d) => d.status !== 'won' && d.status !== 'warning_closed',
       );
@@ -283,6 +293,7 @@ export class Checkout {
           .filter((r) => r.status === 'succeeded')
           .map((r) => ({ id: r.id, amount: r.amount, at: new Date(r.created * 1000) }));
       }
+      const closedEvent = event.type === 'charge.dispute.closed' ? event.data.object : undefined;
       await recordPaymentFact(lock, {
         product: this.product,
         purchaseId,
@@ -292,9 +303,16 @@ export class Checkout {
         paid: session.amount_total ?? 0,
         refunded,
         refunds,
-        paymentAt: new Date(session.created * 1000),
+        disputes: disputes.data.map((d) => ({
+          id: d.id,
+          amount: d.amount,
+          at: new Date(d.created * 1000),
+          active: d.status !== 'won' && d.status !== 'warning_closed',
+          ...(closedEvent?.id === d.id ? { closedAt: new Date(event.created * 1000) } : {}),
+        })),
+        paymentAt,
         disputed,
-        occurredAt: new Date(event.created * 1000),
+        occurredAt: new Date(),
       });
     });
   }

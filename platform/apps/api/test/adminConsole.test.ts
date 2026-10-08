@@ -1,5 +1,5 @@
 import { AccountActivity } from '@glob2/core';
-import { Credits, recordPaymentFact } from '@glob2/billing';
+import { Credits, recordPaymentFact, recordAttemptUsage } from '@glob2/billing';
 import { AdminOperationDetail } from '@glob2/protocol';
 import { randomUUID } from 'node:crypto';
 import { afterAll, beforeAll, expect, it } from 'vitest';
@@ -44,6 +44,12 @@ beforeAll(async () => {
         created_at: new Date('2026-10-01T00:00:00Z'),
       })
       .execute();
+  await sql`UPDATE map_reports SET created_at='2026-10-01T00:00:00.123456Z'::timestamptz`.execute(
+    h.database.db,
+  );
+  await sql`UPDATE maps SET created_at='2026-10-01T00:00:00.123456Z'::timestamptz`.execute(
+    h.database.db,
+  );
 });
 afterAll(async () => {
   await h?.close();
@@ -407,4 +413,292 @@ it('exports retained activity and erases markers even when recording races with 
       .where('account_id', '=', victim.id)
       .execute(),
   ).toHaveLength(0);
+});
+
+it('includes the whole selected UTC audit day and hides non-moderation library actions', async () => {
+  const target = randomUUID();
+  for (const [action, at] of [
+    ['content.hide', '2026-10-08T23:59:59.999Z'],
+    ['content.restore', '2026-10-09T00:00:00Z'],
+    ['music.credentials.rotate', '2026-10-08T12:00:00Z'],
+    ['building.update', '2026-10-08T12:00:00Z'],
+  ])
+    await h.database.db
+      .insertInto('admin_audit_log')
+      .values({
+        actor_account_id: ids['admin']!,
+        action: action!,
+        target_type: 'maps',
+        target_id: target,
+        details: {},
+        created_at: new Date(at!),
+      })
+      .execute();
+  const path = '/api/v1/admin/audit?target=' + target + '&from=2026-10-08&to=2026-10-08';
+  const mod = (await (await call(path, 'moderator')).json()) as { items: { action: string }[] };
+  expect(mod.items.map((r) => r.action)).toEqual(['content.hide']);
+  const admin = (await (await call(path)).json()) as { items: { action: string }[] };
+  expect(admin.items).toHaveLength(3);
+  expect((await call('/api/v1/admin/audit?to=2026-02-30')).status).toBe(400);
+});
+
+it('rejects NUL moderation reasons before any mutation', async () => {
+  const map = await h.database.db
+    .selectFrom('maps')
+    .select(['id', 'hidden'])
+    .limit(1)
+    .executeTakeFirstOrThrow();
+  expect(
+    (
+      await call('/api/v1/admin/content/maps/' + map.id + '/moderation', 'moderator', {
+        hidden: !map.hidden,
+        reason: 'Review\0reason',
+      })
+    ).status,
+  ).toBe(400);
+  expect(
+    (
+      await h.database.db
+        .selectFrom('maps')
+        .select('hidden')
+        .where('id', '=', map.id)
+        .executeTakeFirstOrThrow()
+    ).hidden,
+  ).toBe(map.hidden);
+});
+
+it('commits role changes and accurate audit values together even with stale account rows', async () => {
+  const actor = await h.database.db
+    .selectFrom('accounts')
+    .selectAll()
+    .where('id', '=', ids['admin']!)
+    .executeTakeFirstOrThrow();
+  const target = await h.database.db
+    .insertInto('accounts')
+    .values({ kind: 'registered', display_name: 'Role transaction' })
+    .returningAll()
+    .executeTakeFirstOrThrow();
+  await api.app.identity.admin.setRole(actor, target, 'moderator', 'Promoted');
+  await api.app.identity.admin.setRole(actor, target, 'user', 'Demoted from stale list');
+  const audits = await h.database.db
+    .selectFrom('admin_audit_log')
+    .select('details')
+    .where('target_id', '=', target.id)
+    .where('action', '=', 'account.role')
+    .orderBy('id')
+    .execute();
+  expect(audits.map((a) => a.details)).toEqual([
+    { from: 'user', to: 'moderator', reason: 'Promoted' },
+    { from: 'moderator', to: 'user', reason: 'Demoted from stale list' },
+  ]);
+  // A missing actor makes the audit FK fail after the account UPDATE. The role
+  // must still roll back; this catches a separately committed audit write.
+  await expect(
+    api.app.identity.admin.setRole({ ...actor, id: randomUUID() }, target, 'admin', 'Audit fails'),
+  ).rejects.toThrow();
+  expect(
+    (
+      await h.database.db
+        .selectFrom('accounts')
+        .select('role')
+        .where('id', '=', target.id)
+        .executeTakeFirstOrThrow()
+    ).role,
+  ).toBe('user');
+  await api.app.identity.admin.deleteAccount(actor, target, 'Role deletion test');
+  await expect(api.app.identity.admin.setRole(actor, target, 'admin')).rejects.toThrow(
+    'No such account',
+  );
+});
+
+it('shows retained metering when the provider result was never journaled to private output', async () => {
+  const thread = await h.database.db
+    .insertInto('studio_threads')
+    .values({ account_id: ids['user']!, title: 'Lost provider reply' })
+    .returning('id')
+    .executeTakeFirstOrThrow();
+  const requestId = randomUUID(),
+    attemptId = randomUUID(),
+    usage = { input_tokens: 20, output_tokens: 5 };
+  await h.database.db
+    .insertInto('studio_requests')
+    .values({
+      id: requestId,
+      thread_id: thread.id,
+      account_id: ids['user']!,
+      kind: 'generate',
+      status: 'uncertain',
+      input: {},
+    })
+    .execute();
+  await h.database.db
+    .insertInto('studio_attempts')
+    .values({
+      id: attemptId,
+      request_id: requestId,
+      model: 'review-model',
+      stage: 'image',
+      status: 'uncertain',
+      input: { privatePrompt: 'Must remain private' },
+    })
+    .execute();
+  await recordAttemptUsage(h.database.db, 'maps', requestId, 'image', usage);
+  const detail = (await (
+    await call('/api/v1/admin/operations/maps/' + requestId)
+  ).json()) as AdminOperationDetail;
+  expect(detail.attempts[0]?.usage).toEqual({ input: 20, cached: 0, output: 5 });
+  expect(JSON.stringify(detail)).not.toContain('privatePrompt');
+  expect(schemaIssues(AdminOperationDetail, detail)).toEqual([]);
+});
+
+it('excludes preserved staff endpoints and dashboard session reads from activity', async () => {
+  const staff = await h.database.db
+    .insertInto('accounts')
+    .values({ kind: 'registered', display_name: 'Dashboard observer', role: 'moderator' })
+    .returningAll()
+    .executeTakeFirstOrThrow();
+  sessions['observer'] = await api.app.identity.webSessions.create(staff.id);
+  expect((await call('/api/v1/building-reports', 'observer')).status).toBe(200);
+  expect(
+    (
+      await fetch(api.url + '/api/v1/accounts/me', {
+        headers: {
+          cookie: 'glob2_session=' + sessions['observer'],
+          referer: api.url + '/admin/reports',
+        },
+      })
+    ).status,
+  ).toBe(200);
+  await new Promise((resolve) => setTimeout(resolve, 20));
+  const markers = () =>
+    h.database.db
+      .selectFrom('account_activity_days')
+      .selectAll()
+      .where('account_id', '=', staff.id)
+      .execute();
+  expect(await markers()).toHaveLength(0);
+  // Ordinary game/account use by a moderator still contributes activity.
+  await call('/api/v1/accounts/me', 'observer');
+  await new Promise((resolve) => setTimeout(resolve, 20));
+  expect(await markers()).toHaveLength(1);
+});
+
+it('preserves microsecond cursors for content, audit, accounts and operations', async () => {
+  const timestamp = sql<Date>`'2026-10-01T00:00:00.123456Z'::timestamptz`,
+    target = randomUUID();
+  for (let i = 0; i < 51; i++)
+    await h.database.db
+      .insertInto('accounts')
+      .values({ kind: 'registered', display_name: 'Precision account ' + i, created_at: timestamp })
+      .execute();
+  for (let i = 0; i < 3; i++) {
+    await h.database.db
+      .insertInto('admin_audit_log')
+      .values({
+        actor_account_id: ids['admin']!,
+        action: 'content.hide',
+        target_type: 'maps',
+        target_id: target,
+        details: {},
+        created_at: timestamp,
+      })
+      .execute();
+    await h.database.db
+      .insertInto('engine_jobs')
+      .values({
+        kind: 'render-preview',
+        sim_version: '125-49-' + 'ab'.repeat(32),
+        payload: {},
+        created_at: timestamp,
+      })
+      .execute();
+  }
+  for (let i = 0; i < 3; i++)
+    await h.database.db
+      .insertInto('matches')
+      .values({
+        origin: 'queue',
+        queue_id: 'precision',
+        sim_version: '125-49-' + 'ab'.repeat(32),
+        setup: {},
+        seed: 1,
+        map_hash: 'ab'.repeat(32),
+        created_at: timestamp,
+      })
+      .execute();
+  for (const [base, expected] of [
+    ['/api/v1/admin/content?library=maps&q=Map&limit=1', 3],
+    ['/api/v1/admin/audit?target=' + target + '&limit=1', 3],
+    ['/api/v1/admin/accounts?q=Precision%20account', 51],
+    ['/api/v1/admin/operations?product=engine&limit=1', 3],
+    ['/api/v1/admin/matches?queue=precision&limit=1', 3],
+  ] as const) {
+    const ids: string[] = [];
+    let cursor = '';
+    do {
+      const page = (await (await call(base + '&cursor=' + cursor)).json()) as {
+        items: { id: string }[];
+        nextCursor?: string;
+      };
+      ids.push(...page.items.map((row) => row.id));
+      cursor = page.nextCursor ?? '';
+    } while (cursor);
+    expect(ids, base).toHaveLength(expected);
+    expect(new Set(ids).size, base).toBe(expected);
+  }
+});
+
+it('preserves cache-write evidence and charges its distinct credit rate during Hive recovery', async () => {
+  const account = await h.database.db
+    .insertInto('accounts')
+    .values({ kind: 'registered', display_name: 'Cache write recovery' })
+    .returning('id')
+    .executeTakeFirstOrThrow();
+  const credits = new Credits(h.database.db),
+    id = randomUUID();
+  await credits.adjust(account.id, randomUUID(), 100, 'grant');
+  await credits.reserve(account.id, id, 50, {
+    version: 'cache-test',
+    model: 'cache-model',
+    input: 1000000,
+    cachedInput: 0,
+    cacheWrite: 2000000,
+    output: 1000000,
+  });
+  await credits.dispatch(id);
+  await credits.uncertain(id);
+  const usage = { input: 10, cachedInput: 3, cacheWrite: 4, output: 2 };
+  await recordAttemptUsage(h.database.db, 'hive', id, 'usage', usage);
+  const detail = (await (
+    await call('/api/v1/admin/operations/hive/' + id)
+  ).json()) as AdminOperationDetail;
+  expect(detail.usage).toEqual({ input: 10, cached: 3, cacheWrite: 4, output: 2 });
+  const response = await call('/api/v1/admin/hive/calls/' + id + '/reconcile', 'admin', {
+    usage,
+    evidence: 'Provider confirmed cache writes',
+  });
+  expect(response.status).toBe(200);
+  expect(await response.json()).toEqual({ charged: 13 });
+  expect(await credits.balance(account.id)).toEqual({ balance: 87, reserved: 0, available: 87 });
+  await h.database.db
+    .insertInto('admin_provider_rates')
+    .values({
+      version: 'cache-cost',
+      model: 'cache-model',
+      currency: 'usd',
+      effective_at: new Date('2025-01-01T00:00:00Z'),
+      input_micros: 1000000,
+      cached_input_micros: 0,
+      output_micros: 1000000,
+      call_micros: 0,
+    })
+    .execute();
+  const finances = (await (
+    await call('/api/v1/admin/finances?days=90&mode=unclassified')
+  ).json()) as AdminFinances;
+  expect(finances.costs.find((r) => r.model === 'cache-model')).toMatchObject({
+    metered: 1,
+    priced: 0,
+    estimatedMicros: null,
+  });
 });

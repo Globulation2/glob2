@@ -73,6 +73,10 @@
             },
             "output": {
               "type": "number"
+            },
+            "cacheWrite": {
+              "type": "integer",
+              "minimum": 0
             }
           }
         },
@@ -123,6 +127,10 @@
                   },
                   "output": {
                     "type": "number"
+                  },
+                  "cacheWrite": {
+                    "type": "integer",
+                    "minimum": 0
                   }
                 }
               },

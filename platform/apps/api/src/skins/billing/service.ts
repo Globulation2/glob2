@@ -1,6 +1,6 @@
 import { sql, type Kysely } from 'kysely';
 import type { Database } from '@glob2/db';
-import { recordPaymentFact } from '@glob2/billing';
+import { recordPaymentFact, type ProviderDisputeFact } from '@glob2/billing';
 import { apiError } from '../../errors.ts';
 
 export const PRODUCTS = {
@@ -19,6 +19,7 @@ export interface PaymentSnapshot {
     live: boolean;
     createdAt: number;
     refunds?: { id: string; amount: number; at: Date }[];
+    disputes?: ProviderDisputeFact[];
   };
   purchaseId: string;
   accountId: string;
@@ -231,6 +232,7 @@ export class SkinBilling {
           occurredAt: new Date(),
           paymentAt: new Date(m.createdAt * 1000),
           refunds: m.refunds,
+          disputes: m.disputes,
         });
       }
       if (current.state === 'paid' && !grantId) {

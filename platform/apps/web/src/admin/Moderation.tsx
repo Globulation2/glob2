@@ -9,32 +9,11 @@ import type {
 import { request } from '../api.ts';
 import { Loaded, Empty } from '../components/common.tsx';
 import { useLoad } from '../state.tsx';
-import { Link, useRouter } from '../router.tsx';
+import { Link } from '../router.tsx';
 import { dateTime } from '../format.ts';
+import { PageControls, useAdminFilters, useFilterDraft } from './filters.tsx';
+import { libraryName } from './presentation.ts';
 
-export function useAdminFilters(defaults: Record<string, string> = {}) {
-  const { location, navigate } = useRouter();
-  const values = { ...defaults, ...Object.fromEntries(location.search) };
-  const set = (patch: Record<string, string | undefined>) => {
-    const params = new URLSearchParams(location.search);
-    if (!Object.hasOwn(patch, 'cursor')) params.delete('cursor');
-    for (const [key, value] of Object.entries(patch)) {
-      if (value) params.set(key, value);
-      else params.delete(key);
-    }
-    navigate(location.path + (params.size ? '?' + params.toString() : ''));
-  };
-  return { values, set };
-}
-export function PageControls({ nextCursor }: { nextCursor?: string }) {
-  const { values, set } = useAdminFilters();
-  return (
-    <div className="toolbar">
-      {values['cursor'] && <button onClick={() => set({ cursor: undefined })}>First page</button>}
-      {nextCursor && <button onClick={() => set({ cursor: nextCursor })}>Next page</button>}
-    </div>
-  );
-}
 const LIBRARIES = ['maps', 'ais', 'buildings', 'sets', 'skins', 'music'];
 function LibraryFilter({ value, onChange }: { value: string; onChange: (v: string) => void }) {
   return (
@@ -44,7 +23,7 @@ function LibraryFilter({ value, onChange }: { value: string; onChange: (v: strin
         <option value="">All libraries</option>
         {LIBRARIES.map((l) => (
           <option key={l} value={l}>
-            {l}
+            {libraryName(l)}
           </option>
         ))}
       </select>
@@ -72,7 +51,8 @@ function ReportRow({ report, reload }: { report: AdminReport; reload: () => void
   return (
     <article className="card" data-testid="admin-report">
       <h3>
-        <Link to={report.href}>{report.name}</Link> <span className="badge">{report.library}</span>
+        <Link to={report.href}>{report.name}</Link>{' '}
+        <span className="badge">{libraryName(report.library)}</span>
       </h3>
       <p>
         {report.reporterName} · {dateTime(report.createdAt)} · {report.status}
@@ -95,7 +75,11 @@ function ReportRow({ report, reload }: { report: AdminReport; reload: () => void
         <fieldset disabled={busy}>
           <label>
             Moderation reason{' '}
-            <textarea value={reason} maxLength={2000} onChange={(e) => setReason(e.target.value)} />
+            <textarea
+              value={reason}
+              maxLength={report.library === 'skins' ? 1000 : 2000}
+              onChange={(e) => setReason(e.target.value)}
+            />
           </label>
           <div className="toolbar">
             <button disabled={!reason.trim()} onClick={() => void resolve('resolved', true)}>
@@ -139,7 +123,9 @@ export function UnifiedReports({ library }: { library?: string }) {
       <Loaded load={load}>
         {(page) => (
           <>
-            <p>{LIBRARIES.map((l) => `${l}: ${page.counts[l] ?? 0} open`).join(' · ')}</p>
+            <p>
+              {LIBRARIES.map((l) => `${libraryName(l)}: ${page.counts[l] ?? 0} open`).join(' · ')}
+            </p>
             {page.items.length === 0 ? (
               <Empty>No reports.</Empty>
             ) : (
@@ -176,10 +162,10 @@ function ContentRow({ content, reload }: { content: AdminContent; reload: () => 
     <article className="card">
       <h3>
         <Link to={content.href}>{content.name}</Link>{' '}
-        <span className="badge">{content.library}</span>
+        <span className="badge">{libraryName(content.library)}</span>
       </h3>
       <p>
-        {content.hidden ? 'Hidden' : 'Available'} · {dateTime(content.createdAt)}
+        {content.hidden ? 'Hidden' : 'Not hidden'} · {dateTime(content.createdAt)}
         {content.downloads !== null ? ` · ${content.downloads} recorded downloads` : ''}
       </p>
       {content.reason && <p>{content.reason}</p>}
@@ -188,7 +174,11 @@ function ContentRow({ content, reload }: { content: AdminContent; reload: () => 
       )}
       <label>
         Moderation reason{' '}
-        <input value={reason} maxLength={2000} onChange={(e) => setReason(e.target.value)} />
+        <input
+          value={reason}
+          maxLength={content.library === 'skins' ? 1000 : 2000}
+          onChange={(e) => setReason(e.target.value)}
+        />
       </label>
       <button disabled={busy || !reason.trim()} onClick={() => void act()}>
         {content.hidden ? 'Restore' : 'Hide'}
@@ -199,7 +189,7 @@ function ContentRow({ content, reload }: { content: AdminContent; reload: () => 
 }
 export function Content() {
   const { values, set } = useAdminFilters({ hidden: 'true' }),
-    [q, setQ] = useState(values['q'] ?? '');
+    [q, setQ] = useFilterDraft(values['q'] ?? '');
   const load = useLoad(
     (signal) =>
       request<AdminContentList>('GET', '/api/v1/admin/content', { query: values, signal }),
@@ -208,6 +198,10 @@ export function Content() {
   return (
     <section>
       <h2>Content</h2>
+      <p>
+        Restoring content removes its moderation restriction; each library’s publication rules still
+        apply.
+      </p>
       <form
         className="toolbar"
         onSubmit={(e) => {
@@ -217,10 +211,10 @@ export function Content() {
       >
         <LibraryFilter value={values['library'] ?? ''} onChange={(v) => set({ library: v })} />
         <label>
-          Visibility{' '}
+          Moderation visibility{' '}
           <select value={values['hidden']} onChange={(e) => set({ hidden: e.target.value })}>
             <option value="true">Hidden</option>
-            <option value="false">Available</option>
+            <option value="false">Not hidden</option>
             <option value="all">All</option>
           </select>
         </label>
@@ -251,7 +245,7 @@ export function Content() {
 }
 export function Audit() {
   const { values, set } = useAdminFilters(),
-    [draft, setDraft] = useState(values);
+    [draft, setDraft] = useFilterDraft(values);
   const load = useLoad(
     (signal) => request<AdminAuditList>('GET', '/api/v1/admin/audit', { query: values, signal }),
     [JSON.stringify(values)],
@@ -263,12 +257,22 @@ export function Audit() {
         className="toolbar"
         onSubmit={(e) => {
           e.preventDefault();
-          set(draft);
+          set({ ...draft, cursor: undefined });
         }}
       >
         {['actor', 'action', 'target', 'from', 'to'].map((key) => (
           <label key={key}>
-            {key}
+            {
+              (
+                {
+                  actor: 'Actor account ID',
+                  action: 'Action',
+                  target: 'Target ID or type',
+                  from: 'From (UTC)',
+                  to: 'Through (UTC)',
+                } as Record<string, string>
+              )[key]
+            }
             <input
               type={key === 'from' || key === 'to' ? 'date' : 'text'}
               value={draft[key] ?? ''}

@@ -200,7 +200,11 @@ available. Reports and content can be filtered by library; accounts, matches,
 reports, content, operations and audit retain filters/cursors in their URLs.
 Lists use timestamp plus identifier ordering. Reports display the reporter,
 reason, status and recorded resolution; content restoration does not require an
-open report. Mutations are checked on the server and recorded with reasons.
+open report. “Not hidden” describes moderation status and does not imply that
+private or unpublished content is publicly available. Restoring content preserves
+each library’s publication rules. Audit date filters use UTC: a date-only “through”
+value includes that whole day, while API timestamp upper bounds remain exclusive.
+Mutations are checked on the server and recorded with reasons.
 Resolution holds a report row lock, including through the legacy endpoints.
 
 Read endpoints under `/api/v1/admin` include `/reports`, `/content`, `/audit`,

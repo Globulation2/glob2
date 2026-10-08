@@ -103,7 +103,12 @@ export const AdminOperationDetail = Open({
   reserved: Type.Number(),
   charged: Type.Union([Type.Number(), Type.Null()]),
   usage: Type.Union([
-    Open({ input: Type.Number(), cached: Type.Number(), output: Type.Number() }),
+    Open({
+      input: Type.Number(),
+      cached: Type.Number(),
+      output: Type.Number(),
+      cacheWrite: Type.Optional(Type.Integer({ minimum: 0 })),
+    }),
     Type.Null(),
   ]),
   creditConsequence: Type.String(),
@@ -113,7 +118,12 @@ export const AdminOperationDetail = Open({
       stage: Type.String(),
       status: Type.String(),
       usage: Type.Union([
-        Open({ input: Type.Number(), cached: Type.Number(), output: Type.Number() }),
+        Open({
+          input: Type.Number(),
+          cached: Type.Number(),
+          output: Type.Number(),
+          cacheWrite: Type.Optional(Type.Integer({ minimum: 0 })),
+        }),
         Type.Null(),
       ]),
       createdAt: Timestamp,
@@ -127,6 +137,7 @@ export const AdminUsageReconcile = Strict({
     input: Type.Integer({ minimum: 0 }),
     cachedInput: Type.Integer({ minimum: 0 }),
     output: Type.Integer({ minimum: 0 }),
+    cacheWrite: Type.Optional(Type.Integer({ minimum: 0 })),
   }),
 });
 export const AdminMetric = Open({

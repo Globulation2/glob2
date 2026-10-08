@@ -65,15 +65,16 @@ export async function financeRoutes(app: FastifyInstance, identity: Identity) {
     SELECT a.*,CASE WHEN a.created_at>=${cutoff} THEN 'current' ELSE 'previous' END AS period,
     CASE WHEN jsonb_typeof(coalesce(usage->'input',usage->'input_tokens'))='number' THEN (coalesce(usage->>'input',usage->>'input_tokens'))::numeric END AS input,
     CASE WHEN jsonb_typeof(coalesce(usage->'output',usage->'output_tokens'))='number' THEN (coalesce(usage->>'output',usage->>'output_tokens'))::numeric END AS output,
-    CASE WHEN jsonb_typeof(coalesce(usage->'cachedInput',usage->'input_tokens_details'->'cached_tokens','0'::jsonb))='number' THEN coalesce(usage->>'cachedInput',usage->'input_tokens_details'->>'cached_tokens','0')::numeric END AS cached
+    CASE WHEN jsonb_typeof(coalesce(usage->'cachedInput',usage->'input_tokens_details'->'cached_tokens','0'::jsonb))='number' THEN coalesce(usage->>'cachedInput',usage->'input_tokens_details'->>'cached_tokens','0')::numeric END AS cached,
+    CASE WHEN jsonb_typeof(coalesce(usage->'cacheWrite','0'::jsonb))='number' THEN coalesce(usage->>'cacheWrite','0')::numeric END AS cache_write
     FROM admin_provider_attempts a WHERE a.created_at>=${start}
    ), priced AS (
     SELECT u.*,r.version,r.currency,
-    (input>=0 AND output>=0 AND cached>=0 AND cached<=input AND input=trunc(input) AND output=trunc(output) AND cached=trunc(cached)) IS TRUE AS measured,
+    (input>=0 AND output>=0 AND cached>=0 AND cache_write>=0 AND cached+cache_write<=input AND cache_write=trunc(cache_write) AND input=trunc(input) AND output=trunc(output) AND cached=trunc(cached)) IS TRUE AS measured,
     r.input_micros,r.cached_input_micros,r.output_micros,r.call_micros
     FROM usage u LEFT JOIN LATERAL (SELECT * FROM admin_provider_rates WHERE model=u.model AND effective_at<=u.created_at ORDER BY effective_at DESC,version DESC LIMIT 1) r ON TRUE
-   ) SELECT product,model,period,currency,version AS "rateVersion",count(*)::int AS attempts,count(*) FILTER(WHERE measured)::int AS metered,count(*) FILTER(WHERE measured AND version IS NOT NULL)::int AS priced,
-   sum(CASE WHEN measured AND version IS NOT NULL THEN ceil(((input-cached)*input_micros+cached*cached_input_micros+output*output_micros)/1000000)+call_micros END)::float8 AS "estimatedMicros"
+   ) SELECT product,model,period,currency,version AS "rateVersion",count(*)::int AS attempts,count(*) FILTER(WHERE measured)::int AS metered,count(*) FILTER(WHERE measured AND version IS NOT NULL AND cache_write=0)::int AS priced,
+   sum(CASE WHEN measured AND version IS NOT NULL AND cache_write=0 THEN ceil(((input-cached)*input_micros+cached*cached_input_micros+output*output_micros)/1000000)+call_micros END)::float8 AS "estimatedMicros"
    FROM priced GROUP BY product,model,period,currency,version ORDER BY product,model,period`.execute(
             db,
           )
@@ -98,7 +99,9 @@ export async function financeRoutes(app: FastifyInstance, identity: Identity) {
         };
       })();
       cache.set(key, { at: Date.now(), value });
-      value.catch(() => cache.delete(key));
+      value.catch(() => {
+        if (cache.get(key)?.value === value) cache.delete(key);
+      });
       return value;
     },
   );
