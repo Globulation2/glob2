@@ -2,7 +2,7 @@ import { afterAll, beforeAll, it, expect, vi } from 'vitest';
 import { createHarness, type Harness, type Instance } from './support.ts';
 import { registeredPlayer, serveSim, type Player } from './playSupport.ts';
 import { Credits } from '@glob2/billing';
-import { sourceHash } from '../src/ai-studio/store.ts';
+import { sourceHash, StudioStore } from '../src/ai-studio/store.ts';
 import type { AiStudioDetail, AiStudioProject } from '@glob2/protocol';
 let harness: Harness, app: Instance, owner: Player, other: Player;
 beforeAll(async () => {
@@ -189,4 +189,47 @@ it('reconciles simultaneous operator submissions with one durable event', async 
     .execute();
   expect(events).toHaveLength(1);
   expect(await credits.balance(owner.accountId)).toEqual({ balance: 5, reserved: 0, available: 5 });
+});
+
+it('keeps owned saved projects and manual editing available when generation is disabled', async () => {
+  const disabled = await harness.start({
+    instance: {
+      auth: { providers: [], local: { enabled: true } },
+      aiStudio: { enabled: false, maxOutputTokens: 2048, maxRequestCredits: 100 },
+    },
+  });
+  const author = await registeredPlayer(disabled, 'DisabledStudioOwner');
+  try {
+    const p = await new StudioStore(harness.database.db).create(
+      author.accountId,
+      'Saved colony',
+      'function step() {}',
+    );
+    const headers = {
+      authorization: 'Bearer ' + author.accessToken,
+      'content-type': 'application/json',
+    };
+    const url = disabled.url + '/api/v1/ai-studio/projects/' + p.id;
+    const read = await fetch(url, { headers });
+    expect(read.status).toBe(200);
+    const saved = await fetch(url, {
+      method: 'PATCH',
+      headers,
+      body: JSON.stringify({ expectedRevision: 1, source: 'function step() {}\n// manual edit' }),
+    });
+    expect(saved.status).toBe(200);
+    const generation = await fetch(url + '/requests', {
+      method: 'POST',
+      headers,
+      body: JSON.stringify({
+        id: crypto.randomUUID(),
+        expectedRevision: 2,
+        text: 'Create an AI',
+        budget: 1,
+      }),
+    });
+    expect(generation.status).toBe(404);
+  } finally {
+    author.client.close();
+  }
 });

@@ -1,9 +1,10 @@
+import { studioSession } from '../../components/studio/storage.ts';
 /** A lost checkout response must retry the same purchase, including after reload.
  * Attempts are scoped by account and pack so changing packs cannot reuse an ID. */
 export function checkoutAttempt(
   accountId: string,
   pack: string,
-  storage: Pick<Storage, 'getItem' | 'setItem'> = sessionStorage,
+  storage: Pick<Storage, 'getItem' | 'setItem'> = studioSession,
 ): { id: string; pack: string } {
   const key = checkoutKey(accountId, pack);
   try {

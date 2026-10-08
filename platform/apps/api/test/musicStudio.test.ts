@@ -194,3 +194,31 @@ it('deleting an account refunds uncertain work and fences its worker without res
     creator.client.close();
   }
 });
+
+it('accepts durable turns and retains legacy discussion and generation endpoints', async () => {
+  const thread = (await studio.create(owner.accountId, 'Turn API')).id;
+  const root = `/api/v1/music-studio/threads/${thread}`;
+  const input = {
+    id: randomUUID(),
+    text: 'What instrument should lead?',
+    settings: { pipeline: 'acoustic-v1', seed: 4 },
+  };
+  expect((await call('POST', root + '/turns', undefined, input)).status).toBe(401);
+  expect(
+    (await call('POST', root + '/turns', owner, { ...input, settings: undefined })).status,
+  ).toBe(400);
+  expect((await call('POST', root + '/turns', owner, input)).status).toBe(200);
+  expect((await call('POST', root + '/turns', owner, input)).status).toBe(200);
+  const row = (await studio.request(input.id))!;
+  expect(row.input.turn).toBe(true);
+  await studio.finish(row, { text: 'Try flute.', brief: 'Flute', action: 'discuss' });
+  const legacy = { id: randomUUID(), text: 'A soft flute melody' };
+  expect((await call('POST', root + '/messages', owner, legacy)).status).toBe(200);
+  await studio.finish((await studio.request(legacy.id))!, {
+    text: 'A gentle melody.',
+    brief: 'Flute',
+  });
+  const build = { id: randomUUID(), settings: input.settings };
+  expect((await call('POST', root + '/generate', owner, build)).status).toBe(200);
+  await studio.cancel(owner.accountId, thread, build.id);
+});

@@ -96,6 +96,7 @@ export interface TerrainStudioRevision {
   report: ValidateSetResult;
 }
 export interface TerrainStudioThread {
+  draftHistory?: { revision: number; title: string; created_at: string }[];
   id: string;
   title: string;
   draftId: string;

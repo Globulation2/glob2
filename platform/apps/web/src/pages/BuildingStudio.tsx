@@ -1,3 +1,5 @@
+import { ReleaseDialog } from '../components/studio/Studio.tsx';
+import { Icon } from '../icons.tsx';
 import { useEffect, useRef, useState } from 'react';
 import {
   buildingNamespacePrefix,
@@ -226,9 +228,22 @@ export function BuildingStudio({ id }: { id?: string }) {
 }
 function BuildingWorkspace({ id }: { id: string }) {
   const load = useLoad((signal) => request<BuildingDraft>('GET', path(id), { signal }), [id]);
-  return <Loaded load={load}>{(draft) => <Editor key={draft.id} initial={draft} />}</Loaded>;
+  return (
+    <Loaded load={load}>{(draft) => <BuildingEditor key={draft.id} initial={draft} />}</Loaded>
+  );
 }
-function Editor({ initial }: { initial: BuildingDraft }) {
+export function BuildingEditor({
+  initial,
+  embedded = false,
+  onDirtyChange,
+  onSaved,
+}: {
+  initial: BuildingDraft;
+  embedded?: boolean;
+  onDirtyChange?: (dirty: boolean) => void;
+  onSaved?: () => void;
+}) {
+  const [releaseOpen, setReleaseOpen] = useState(false);
   const form = useRef<HTMLFormElement>(null);
   const allowNavigation = useRef(false);
   const { navigate } = useRouter();
@@ -263,6 +278,9 @@ function Editor({ initial }: { initial: BuildingDraft }) {
     json(pkg) !== json(draft.package) ||
     (tab === 'json' && raw !== json(pkg)) ||
     Object.keys(fieldEdits).length > 0;
+  useEffect(() => {
+    onDirtyChange?.(dirty);
+  }, [dirty, onDirtyChange]);
   const variant = pkg.variants[selected];
   useEffect(() => {
     if (!dirty) return;
@@ -314,6 +332,7 @@ function Editor({ initial }: { initial: BuildingDraft }) {
     try {
       accept(await work());
       setMessage(success);
+      onSaved?.();
     } catch (e) {
       setError(fail(e));
     } finally {
@@ -344,9 +363,14 @@ function Editor({ initial }: { initial: BuildingDraft }) {
   };
   return (
     <div className="building-studio">
-      <Link to="/building-studio">Your building drafts</Link>
-      <h1>Building family editor</h1>
-      {draft && <Link to={'/ai-building-studio?draft=' + draft.id}>Edit with AI</Link>}
+      {!embedded && (
+        <>
+          <Link to="/building-studio">Your building drafts</Link>
+          <h1>Building family editor</h1>
+          <Link to={'/ai-building-studio?draft=' + draft.id}>Edit with AI</Link>
+        </>
+      )}
+      {embedded && <h2>Building family editor</h2>}
       <p>
         Start with one building, add stages for upgrades, then save and publish. Artwork uploads are
         saved immediately; choose their sprite keys in gameSprite and miniSprite.
@@ -376,8 +400,16 @@ function Editor({ initial }: { initial: BuildingDraft }) {
           </button>
         </div>
       )}
-      <details>
-        <summary>Publish saved family</summary>
+      <button onClick={() => setReleaseOpen(true)}>
+        <Icon name="share" size={18} /> Review release settings
+      </button>
+      {dirty && <p>Save your changes before publishing.</p>}
+      <ReleaseDialog
+        open={releaseOpen}
+        onClose={() => setReleaseOpen(false)}
+        title={`Publish saved revision ${draft.revision}`}
+      >
+        <p>This release uses the current saved draft. Unsaved edits are not included.</p>
         <form
           onSubmit={(e) => {
             e.preventDefault();
@@ -418,7 +450,7 @@ function Editor({ initial }: { initial: BuildingDraft }) {
             unlisted releases can be opened with their link.
           </p>
         </form>
-      </details>
+      </ReleaseDialog>
       <form ref={form} onSubmit={(e) => e.preventDefault()}>
         <fieldset disabled={busy}>
           <label>
