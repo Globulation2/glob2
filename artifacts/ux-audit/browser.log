@@ -1,0 +1,1052 @@
+[
+  {
+    "kind": "map-studio",
+    "theme": "light",
+    "viewport": {
+      "width": 1440,
+      "height": 900
+    },
+    "document": {
+      "width": 1440,
+      "height": 900
+    },
+    "composer": {
+      "x": 104,
+      "y": 739,
+      "width": 483,
+      "height": 64,
+      "bottom": 803
+    },
+    "errors": [],
+    "violations": []
+  },
+  {
+    "kind": "music-studio",
+    "theme": "light",
+    "viewport": {
+      "width": 1440,
+      "height": 900
+    },
+    "document": {
+      "width": 1440,
+      "height": 900
+    },
+    "composer": {
+      "x": 88,
+      "y": 730,
+      "width": 515,
+      "height": 64,
+      "bottom": 793
+    },
+    "errors": [],
+    "violations": []
+  },
+  {
+    "kind": "ai-studio",
+    "theme": "light",
+    "viewport": {
+      "width": 1440,
+      "height": 900
+    },
+    "document": {
+      "width": 1440,
+      "height": 900
+    },
+    "composer": {
+      "x": 88,
+      "y": 641,
+      "width": 515,
+      "height": 100,
+      "bottom": 741
+    },
+    "errors": [],
+    "violations": []
+  },
+  {
+    "kind": "ai-building-studio",
+    "theme": "light",
+    "viewport": {
+      "width": 1440,
+      "height": 900
+    },
+    "document": {
+      "width": 1440,
+      "height": 900
+    },
+    "composer": {
+      "x": 88,
+      "y": 622,
+      "width": 515,
+      "height": 64,
+      "bottom": 686
+    },
+    "errors": [],
+    "violations": []
+  },
+  {
+    "kind": "terrain-studio",
+    "theme": "light",
+    "viewport": {
+      "width": 1440,
+      "height": 900
+    },
+    "document": {
+      "width": 1440,
+      "height": 900
+    },
+    "composer": {
+      "x": 88,
+      "y": 679,
+      "width": 515,
+      "height": 64,
+      "bottom": 742
+    },
+    "errors": [],
+    "violations": []
+  },
+  {
+    "kind": "map-studio",
+    "theme": "light",
+    "viewport": {
+      "width": 1280,
+      "height": 720
+    },
+    "document": {
+      "width": 1280,
+      "height": 720
+    },
+    "composer": {
+      "x": 104,
+      "y": 540,
+      "width": 419,
+      "height": 64,
+      "bottom": 603
+    },
+    "errors": [],
+    "violations": []
+  },
+  {
+    "kind": "music-studio",
+    "theme": "light",
+    "viewport": {
+      "width": 1280,
+      "height": 720
+    },
+    "document": {
+      "width": 1280,
+      "height": 720
+    },
+    "composer": {
+      "x": 88,
+      "y": 550,
+      "width": 451,
+      "height": 64,
+      "bottom": 613
+    },
+    "errors": [],
+    "violations": []
+  },
+  {
+    "kind": "ai-studio",
+    "theme": "light",
+    "viewport": {
+      "width": 1280,
+      "height": 720
+    },
+    "document": {
+      "width": 1280,
+      "height": 720
+    },
+    "composer": {
+      "x": 88,
+      "y": 465,
+      "width": 451,
+      "height": 100,
+      "bottom": 565
+    },
+    "errors": [],
+    "violations": []
+  },
+  {
+    "kind": "ai-building-studio",
+    "theme": "light",
+    "viewport": {
+      "width": 1280,
+      "height": 720
+    },
+    "document": {
+      "width": 1280,
+      "height": 720
+    },
+    "composer": {
+      "x": 88,
+      "y": 442,
+      "width": 451,
+      "height": 64,
+      "bottom": 506
+    },
+    "errors": [],
+    "violations": []
+  },
+  {
+    "kind": "terrain-studio",
+    "theme": "light",
+    "viewport": {
+      "width": 1280,
+      "height": 720
+    },
+    "document": {
+      "width": 1280,
+      "height": 720
+    },
+    "composer": {
+      "x": 88,
+      "y": 499,
+      "width": 451,
+      "height": 64,
+      "bottom": 562
+    },
+    "errors": [],
+    "violations": []
+  },
+  {
+    "kind": "map-studio",
+    "theme": "light",
+    "viewport": {
+      "width": 412,
+      "height": 840
+    },
+    "document": {
+      "width": 412,
+      "height": 840
+    },
+    "composer": {
+      "x": 32,
+      "y": 660,
+      "width": 348,
+      "height": 64,
+      "bottom": 723
+    },
+    "errors": [],
+    "violations": []
+  },
+  {
+    "kind": "music-studio",
+    "theme": "light",
+    "viewport": {
+      "width": 412,
+      "height": 840
+    },
+    "document": {
+      "width": 412,
+      "height": 840
+    },
+    "composer": {
+      "x": 16,
+      "y": 670,
+      "width": 380,
+      "height": 64,
+      "bottom": 733
+    },
+    "errors": [],
+    "violations": []
+  },
+  {
+    "kind": "ai-studio",
+    "theme": "light",
+    "viewport": {
+      "width": 412,
+      "height": 840
+    },
+    "document": {
+      "width": 412,
+      "height": 840
+    },
+    "composer": {
+      "x": 16,
+      "y": 599,
+      "width": 380,
+      "height": 100,
+      "bottom": 699
+    },
+    "errors": [],
+    "violations": []
+  },
+  {
+    "kind": "ai-building-studio",
+    "theme": "light",
+    "viewport": {
+      "width": 412,
+      "height": 840
+    },
+    "document": {
+      "width": 412,
+      "height": 840
+    },
+    "composer": {
+      "x": 16,
+      "y": 562,
+      "width": 380,
+      "height": 64,
+      "bottom": 626
+    },
+    "errors": [],
+    "violations": []
+  },
+  {
+    "kind": "terrain-studio",
+    "theme": "light",
+    "viewport": {
+      "width": 412,
+      "height": 840
+    },
+    "document": {
+      "width": 412,
+      "height": 840
+    },
+    "composer": {
+      "x": 16,
+      "y": 619,
+      "width": 380,
+      "height": 64,
+      "bottom": 682
+    },
+    "errors": [],
+    "violations": []
+  },
+  {
+    "kind": "map-studio",
+    "theme": "light",
+    "viewport": {
+      "width": 320,
+      "height": 640
+    },
+    "document": {
+      "width": 320,
+      "height": 640
+    },
+    "composer": {
+      "x": 32,
+      "y": 498,
+      "width": 256,
+      "height": 64,
+      "bottom": 561
+    },
+    "errors": [],
+    "violations": []
+  },
+  {
+    "kind": "music-studio",
+    "theme": "light",
+    "viewport": {
+      "width": 320,
+      "height": 640
+    },
+    "document": {
+      "width": 320,
+      "height": 640
+    },
+    "composer": {
+      "x": 16,
+      "y": 479,
+      "width": 288,
+      "height": 54,
+      "bottom": 533
+    },
+    "errors": [],
+    "violations": []
+  },
+  {
+    "kind": "ai-studio",
+    "theme": "light",
+    "viewport": {
+      "width": 320,
+      "height": 640
+    },
+    "document": {
+      "width": 320,
+      "height": 640
+    },
+    "composer": {
+      "x": 16,
+      "y": 509,
+      "width": 288,
+      "height": 100,
+      "bottom": 609
+    },
+    "errors": [],
+    "violations": []
+  },
+  {
+    "kind": "ai-building-studio",
+    "theme": "light",
+    "viewport": {
+      "width": 320,
+      "height": 640
+    },
+    "document": {
+      "width": 320,
+      "height": 640
+    },
+    "composer": {
+      "x": 16,
+      "y": 487,
+      "width": 288,
+      "height": 64,
+      "bottom": 550
+    },
+    "errors": [],
+    "violations": []
+  },
+  {
+    "kind": "terrain-studio",
+    "theme": "light",
+    "viewport": {
+      "width": 320,
+      "height": 640
+    },
+    "document": {
+      "width": 320,
+      "height": 640
+    },
+    "composer": {
+      "x": 16,
+      "y": 467,
+      "width": 288,
+      "height": 64,
+      "bottom": 531
+    },
+    "errors": [],
+    "violations": []
+  },
+  {
+    "kind": "map-studio",
+    "theme": "light",
+    "viewport": {
+      "width": 1280,
+      "height": 450
+    },
+    "document": {
+      "width": 1280,
+      "height": 450
+    },
+    "composer": {
+      "x": 104,
+      "y": 330,
+      "width": 419,
+      "height": 64,
+      "bottom": 393
+    },
+    "errors": [],
+    "violations": []
+  },
+  {
+    "kind": "music-studio",
+    "theme": "light",
+    "viewport": {
+      "width": 1280,
+      "height": 450
+    },
+    "document": {
+      "width": 1280,
+      "height": 450
+    },
+    "composer": {
+      "x": 88,
+      "y": 336,
+      "width": 451,
+      "height": 54,
+      "bottom": 390
+    },
+    "errors": [],
+    "violations": []
+  },
+  {
+    "kind": "ai-studio",
+    "theme": "light",
+    "viewport": {
+      "width": 1280,
+      "height": 450
+    },
+    "document": {
+      "width": 1280,
+      "height": 450
+    },
+    "composer": {
+      "x": 88,
+      "y": 343,
+      "width": 451,
+      "height": 100,
+      "bottom": 443
+    },
+    "errors": [],
+    "violations": []
+  },
+  {
+    "kind": "ai-building-studio",
+    "theme": "light",
+    "viewport": {
+      "width": 1280,
+      "height": 450
+    },
+    "document": {
+      "width": 1280,
+      "height": 450
+    },
+    "composer": {
+      "x": 88,
+      "y": 304,
+      "width": 451,
+      "height": 64,
+      "bottom": 368
+    },
+    "errors": [],
+    "violations": []
+  },
+  {
+    "kind": "terrain-studio",
+    "theme": "light",
+    "viewport": {
+      "width": 1280,
+      "height": 450
+    },
+    "document": {
+      "width": 1280,
+      "height": 450
+    },
+    "composer": {
+      "x": 88,
+      "y": 304,
+      "width": 451,
+      "height": 64,
+      "bottom": 368
+    },
+    "errors": [],
+    "violations": []
+  },
+  {
+    "kind": "map-studio",
+    "theme": "dark",
+    "viewport": {
+      "width": 1440,
+      "height": 900
+    },
+    "document": {
+      "width": 1440,
+      "height": 900
+    },
+    "composer": {
+      "x": 104,
+      "y": 739,
+      "width": 483,
+      "height": 64,
+      "bottom": 803
+    },
+    "errors": [],
+    "violations": []
+  },
+  {
+    "kind": "music-studio",
+    "theme": "dark",
+    "viewport": {
+      "width": 1440,
+      "height": 900
+    },
+    "document": {
+      "width": 1440,
+      "height": 900
+    },
+    "composer": {
+      "x": 88,
+      "y": 730,
+      "width": 515,
+      "height": 64,
+      "bottom": 793
+    },
+    "errors": [],
+    "violations": []
+  },
+  {
+    "kind": "ai-studio",
+    "theme": "dark",
+    "viewport": {
+      "width": 1440,
+      "height": 900
+    },
+    "document": {
+      "width": 1440,
+      "height": 900
+    },
+    "composer": {
+      "x": 88,
+      "y": 641,
+      "width": 515,
+      "height": 100,
+      "bottom": 741
+    },
+    "errors": [],
+    "violations": []
+  },
+  {
+    "kind": "ai-building-studio",
+    "theme": "dark",
+    "viewport": {
+      "width": 1440,
+      "height": 900
+    },
+    "document": {
+      "width": 1440,
+      "height": 900
+    },
+    "composer": {
+      "x": 88,
+      "y": 622,
+      "width": 515,
+      "height": 64,
+      "bottom": 686
+    },
+    "errors": [],
+    "violations": []
+  },
+  {
+    "kind": "terrain-studio",
+    "theme": "dark",
+    "viewport": {
+      "width": 1440,
+      "height": 900
+    },
+    "document": {
+      "width": 1440,
+      "height": 900
+    },
+    "composer": {
+      "x": 88,
+      "y": 679,
+      "width": 515,
+      "height": 64,
+      "bottom": 742
+    },
+    "errors": [],
+    "violations": []
+  },
+  {
+    "kind": "map-studio",
+    "theme": "dark",
+    "viewport": {
+      "width": 1280,
+      "height": 720
+    },
+    "document": {
+      "width": 1280,
+      "height": 720
+    },
+    "composer": {
+      "x": 104,
+      "y": 540,
+      "width": 419,
+      "height": 64,
+      "bottom": 603
+    },
+    "errors": [],
+    "violations": []
+  },
+  {
+    "kind": "music-studio",
+    "theme": "dark",
+    "viewport": {
+      "width": 1280,
+      "height": 720
+    },
+    "document": {
+      "width": 1280,
+      "height": 720
+    },
+    "composer": {
+      "x": 88,
+      "y": 550,
+      "width": 451,
+      "height": 64,
+      "bottom": 613
+    },
+    "errors": [],
+    "violations": []
+  },
+  {
+    "kind": "ai-studio",
+    "theme": "dark",
+    "viewport": {
+      "width": 1280,
+      "height": 720
+    },
+    "document": {
+      "width": 1280,
+      "height": 720
+    },
+    "composer": {
+      "x": 88,
+      "y": 465,
+      "width": 451,
+      "height": 100,
+      "bottom": 565
+    },
+    "errors": [],
+    "violations": []
+  },
+  {
+    "kind": "ai-building-studio",
+    "theme": "dark",
+    "viewport": {
+      "width": 1280,
+      "height": 720
+    },
+    "document": {
+      "width": 1280,
+      "height": 720
+    },
+    "composer": {
+      "x": 88,
+      "y": 442,
+      "width": 451,
+      "height": 64,
+      "bottom": 506
+    },
+    "errors": [],
+    "violations": []
+  },
+  {
+    "kind": "terrain-studio",
+    "theme": "dark",
+    "viewport": {
+      "width": 1280,
+      "height": 720
+    },
+    "document": {
+      "width": 1280,
+      "height": 720
+    },
+    "composer": {
+      "x": 88,
+      "y": 499,
+      "width": 451,
+      "height": 64,
+      "bottom": 562
+    },
+    "errors": [],
+    "violations": []
+  },
+  {
+    "kind": "map-studio",
+    "theme": "dark",
+    "viewport": {
+      "width": 412,
+      "height": 840
+    },
+    "document": {
+      "width": 412,
+      "height": 840
+    },
+    "composer": {
+      "x": 32,
+      "y": 660,
+      "width": 348,
+      "height": 64,
+      "bottom": 723
+    },
+    "errors": [],
+    "violations": []
+  },
+  {
+    "kind": "music-studio",
+    "theme": "dark",
+    "viewport": {
+      "width": 412,
+      "height": 840
+    },
+    "document": {
+      "width": 412,
+      "height": 840
+    },
+    "composer": {
+      "x": 16,
+      "y": 670,
+      "width": 380,
+      "height": 64,
+      "bottom": 733
+    },
+    "errors": [],
+    "violations": []
+  },
+  {
+    "kind": "ai-studio",
+    "theme": "dark",
+    "viewport": {
+      "width": 412,
+      "height": 840
+    },
+    "document": {
+      "width": 412,
+      "height": 840
+    },
+    "composer": {
+      "x": 16,
+      "y": 599,
+      "width": 380,
+      "height": 100,
+      "bottom": 699
+    },
+    "errors": [],
+    "violations": []
+  },
+  {
+    "kind": "ai-building-studio",
+    "theme": "dark",
+    "viewport": {
+      "width": 412,
+      "height": 840
+    },
+    "document": {
+      "width": 412,
+      "height": 840
+    },
+    "composer": {
+      "x": 16,
+      "y": 562,
+      "width": 380,
+      "height": 64,
+      "bottom": 626
+    },
+    "errors": [],
+    "violations": []
+  },
+  {
+    "kind": "terrain-studio",
+    "theme": "dark",
+    "viewport": {
+      "width": 412,
+      "height": 840
+    },
+    "document": {
+      "width": 412,
+      "height": 840
+    },
+    "composer": {
+      "x": 16,
+      "y": 619,
+      "width": 380,
+      "height": 64,
+      "bottom": 682
+    },
+    "errors": [],
+    "violations": []
+  },
+  {
+    "kind": "map-studio",
+    "theme": "dark",
+    "viewport": {
+      "width": 320,
+      "height": 640
+    },
+    "document": {
+      "width": 320,
+      "height": 640
+    },
+    "composer": {
+      "x": 32,
+      "y": 498,
+      "width": 256,
+      "height": 64,
+      "bottom": 561
+    },
+    "errors": [],
+    "violations": []
+  },
+  {
+    "kind": "music-studio",
+    "theme": "dark",
+    "viewport": {
+      "width": 320,
+      "height": 640
+    },
+    "document": {
+      "width": 320,
+      "height": 640
+    },
+    "composer": {
+      "x": 16,
+      "y": 479,
+      "width": 288,
+      "height": 54,
+      "bottom": 533
+    },
+    "errors": [],
+    "violations": []
+  },
+  {
+    "kind": "ai-studio",
+    "theme": "dark",
+    "viewport": {
+      "width": 320,
+      "height": 640
+    },
+    "document": {
+      "width": 320,
+      "height": 640
+    },
+    "composer": {
+      "x": 16,
+      "y": 509,
+      "width": 288,
+      "height": 100,
+      "bottom": 609
+    },
+    "errors": [],
+    "violations": []
+  },
+  {
+    "kind": "ai-building-studio",
+    "theme": "dark",
+    "viewport": {
+      "width": 320,
+      "height": 640
+    },
+    "document": {
+      "width": 320,
+      "height": 640
+    },
+    "composer": {
+      "x": 16,
+      "y": 487,
+      "width": 288,
+      "height": 64,
+      "bottom": 550
+    },
+    "errors": [],
+    "violations": []
+  },
+  {
+    "kind": "terrain-studio",
+    "theme": "dark",
+    "viewport": {
+      "width": 320,
+      "height": 640
+    },
+    "document": {
+      "width": 320,
+      "height": 640
+    },
+    "composer": {
+      "x": 16,
+      "y": 467,
+      "width": 288,
+      "height": 64,
+      "bottom": 531
+    },
+    "errors": [],
+    "violations": []
+  },
+  {
+    "kind": "map-studio",
+    "theme": "dark",
+    "viewport": {
+      "width": 1280,
+      "height": 450
+    },
+    "document": {
+      "width": 1280,
+      "height": 450
+    },
+    "composer": {
+      "x": 104,
+      "y": 330,
+      "width": 419,
+      "height": 64,
+      "bottom": 393
+    },
+    "errors": [],
+    "violations": []
+  },
+  {
+    "kind": "music-studio",
+    "theme": "dark",
+    "viewport": {
+      "width": 1280,
+      "height": 450
+    },
+    "document": {
+      "width": 1280,
+      "height": 450
+    },
+    "composer": {
+      "x": 88,
+      "y": 336,
+      "width": 451,
+      "height": 54,
+      "bottom": 390
+    },
+    "errors": [],
+    "violations": []
+  },
+  {
+    "kind": "ai-studio",
+    "theme": "dark",
+    "viewport": {
+      "width": 1280,
+      "height": 450
+    },
+    "document": {
+      "width": 1280,
+      "height": 450
+    },
+    "composer": {
+      "x": 88,
+      "y": 343,
+      "width": 451,
+      "height": 100,
+      "bottom": 443
+    },
+    "errors": [],
+    "violations": []
+  },
+  {
+    "kind": "ai-building-studio",
+    "theme": "dark",
+    "viewport": {
+      "width": 1280,
+      "height": 450
+    },
+    "document": {
+      "width": 1280,
+      "height": 450
+    },
+    "composer": {
+      "x": 88,
+      "y": 304,
+      "width": 451,
+      "height": 64,
+      "bottom": 368
+    },
+    "errors": [],
+    "violations": []
+  },
+  {
+    "kind": "terrain-studio",
+    "theme": "dark",
+    "viewport": {
+      "width": 1280,
+      "height": 450
+    },
+    "document": {
+      "width": 1280,
+      "height": 450
+    },
+    "composer": {
+      "x": 88,
+      "y": 304,
+      "width": 451,
+      "height": 64,
+      "bottom": 368
+    },
+    "errors": [],
+    "violations": []
+  }
+]

@@ -1,0 +1,172 @@
+
+> test
+> vitest run
+
+
+ RUN  v5.0.3 /Users/bradley/.codex/worktrees/1a9f/glob2/platform
+
+ ❯ packages/db/test/schema.test.ts (10 tests | 1 failed) 7613ms
+   ❯ migrations (8)
+     × upgrades an existing platform database through all skin migrations 1390ms
+ ❯ apps/api/test/music.test.ts (13 tests | 2 failed) 5497ms
+   × processes real uploads, retains sources for inspection, cleans them after conversion, and retries idempotently 908ms
+   × retains sources across transient processing failures and cleans only a final failed attempt 163ms
+ ❯ apps/engine-agent/test/aiValidation.test.ts (5 tests | 3 failed) 35ms
+   × keeps script-authored bwrap text as a compatibility diagnostic 15ms
+   × still treats an actual Bubblewrap failure as retryable infrastructure failure 2ms
+   × reports malformed UTF-8 as a failed file check with dependent checks skipped 2ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 6 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  apps/engine-agent/test/aiValidation.test.ts > keeps script-authored bwrap text as a compatibility diagnostic
+Error: AI validation requires Linux namespace isolation
+ ❯ Module.createAiValidator apps/engine-agent/src/aiValidation.ts:80:43
+     78|   sim: SimVersion,
+     79| ): Promise<AiValidator> {
+     80|   if (process.platform !== 'linux') throw Error('AI validation require…
+       |                                           ^
+     81|   // A filesystem quota is mandatory: per-file limits cannot bound tot…
+     82|   const scratchFs = await statfs(options.scratchRoot ?? tmpdir());
+ ❯ validator apps/engine-agent/test/aiValidation.test.ts:65:10
+ ❯ apps/engine-agent/test/aiValidation.test.ts:77:26
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/6]⎯
+
+ FAIL  apps/engine-agent/test/aiValidation.test.ts > still treats an actual Bubblewrap failure as retryable infrastructure failure
+Error: AI validation requires Linux namespace isolation
+ ❯ Module.createAiValidator apps/engine-agent/src/aiValidation.ts:80:43
+     78|   sim: SimVersion,
+     79| ): Promise<AiValidator> {
+     80|   if (process.platform !== 'linux') throw Error('AI validation require…
+       |                                           ^
+     81|   // A filesystem quota is mandatory: per-file limits cannot bound tot…
+     82|   const scratchFs = await statfs(options.scratchRoot ?? tmpdir());
+ ❯ validator apps/engine-agent/test/aiValidation.test.ts:65:10
+ ❯ apps/engine-agent/test/aiValidation.test.ts:88:26
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/6]⎯
+
+ FAIL  apps/engine-agent/test/aiValidation.test.ts > reports malformed UTF-8 as a failed file check with dependent checks skipped
+Error: AI validation requires Linux namespace isolation
+ ❯ Module.createAiValidator apps/engine-agent/src/aiValidation.ts:80:43
+     78|   sim: SimVersion,
+     79| ): Promise<AiValidator> {
+     80|   if (process.platform !== 'linux') throw Error('AI validation require…
+       |                                           ^
+     81|   // A filesystem quota is mandatory: per-file limits cannot bound tot…
+     82|   const scratchFs = await statfs(options.scratchRoot ?? tmpdir());
+ ❯ validator apps/engine-agent/test/aiValidation.test.ts:65:10
+ ❯ apps/engine-agent/test/aiValidation.test.ts:95:26
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/6]⎯
+
+ FAIL  apps/api/test/music.test.ts > processes real uploads, retains sources for inspection, cleans them after conversion, and retries idempotently
+Error: Traceback (most recent call last):
+  File "<frozen runpy>", line 203, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "/Users/bradley/.codex/worktrees/1a9f/glob2/tools/music/glob2music/community.py", line 463, in <module>
+    main()
+    ~~~~^^
+  File "/Users/bradley/.codex/worktrees/1a9f/glob2/tools/music/glob2music/community.py", line 450, in main
+    result = inspect(request["sources"], Path(tmp))
+  File "/Users/bradley/.codex/worktrees/1a9f/glob2/tools/music/glob2music/community.py", line 117, in inspect
+    lengths = [decode(Path(sources[mood]), directory / f"{mood}.pcm") for mood in MOODS]
+               ~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/bradley/.codex/worktrees/1a9f/glob2/tools/music/glob2music/community.py", line 56, in decode
+    run(
+    ~~~^
+        [
+        ^
+    ...<11 lines>...
+        ]
+        ^
+    )
+    ^
+  File "/Users/bradley/.codex/worktrees/1a9f/glob2/tools/music/glob2music/community.py", line 45, in run
+    raise ValueError(
+    ...<2 lines>...
+    )
+ValueError: Audio could not be decoded or converted: dyld[75320]: Library not loaded: /opt/homebrew/opt/jpeg-xl/lib/libjxl.0.11.dylib
+  Referenced from: <585F4A6A-11E9-3CB4-A0EA-837118582CC0> /opt/homebrew/Cellar/ffmpeg/8.0_1/bin/ffprobe
+  Reason: tried: '/opt/homebrew/opt/jpeg-xl/lib/libjxl.0.11.dylib' (no such file), '/System/Volumes/Preboot/Cryptexes/OS/opt/homebrew/opt/jpeg-xl/lib/libjxl.0.11.dylib' (no such file), '/opt/homebrew/opt/jpeg-xl/lib/libjxl.0.11.dylib' (no such file), '/opt/homebrew/Cellar/jpeg-xl/0.12.0_1/lib/libjxl.0.11.dylib' (no such file), '/System/Volumes/Preboot/Cryptexes/OS/opt/homebrew/Cellar/jpeg-xl/0.12.0_1/lib/libjxl.0.11.dylib' (no such file), '/opt/homebrew/Cellar/jpeg-xl/0.12.0_1/lib/libjxl.0.11.dylib' (no such file)
+
+
+ ❯ ChildProcess.<anonymous> apps/music-worker/src/process.ts:79:11
+     77|       else
+     78|         reject(
+     79|           new Error(
+       |           ^
+     80|             error || (exitSignal ? 'Music processor was interrupted.' …
+     81|           ),
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/6]⎯
+
+ FAIL  apps/api/test/music.test.ts > retains sources across transient processing failures and cleans only a final failed attempt
+Error: Traceback (most recent call last):
+  File "<frozen runpy>", line 203, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "/Users/bradley/.codex/worktrees/1a9f/glob2/tools/music/glob2music/community.py", line 463, in <module>
+    main()
+    ~~~~^^
+  File "/Users/bradley/.codex/worktrees/1a9f/glob2/tools/music/glob2music/community.py", line 450, in main
+    result = inspect(request["sources"], Path(tmp))
+  File "/Users/bradley/.codex/worktrees/1a9f/glob2/tools/music/glob2music/community.py", line 117, in inspect
+    lengths = [decode(Path(sources[mood]), directory / f"{mood}.pcm") for mood in MOODS]
+               ~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/bradley/.codex/worktrees/1a9f/glob2/tools/music/glob2music/community.py", line 56, in decode
+    run(
+    ~~~^
+        [
+        ^
+    ...<11 lines>...
+        ]
+        ^
+    )
+    ^
+  File "/Users/bradley/.codex/worktrees/1a9f/glob2/tools/music/glob2music/community.py", line 45, in run
+    raise ValueError(
+    ...<2 lines>...
+    )
+ValueError: Audio could not be decoded or converted: dyld[75387]: Library not loaded: /opt/homebrew/opt/jpeg-xl/lib/libjxl.0.11.dylib
+  Referenced from: <585F4A6A-11E9-3CB4-A0EA-837118582CC0> /opt/homebrew/Cellar/ffmpeg/8.0_1/bin/ffprobe
+  Reason: tried: '/opt/homebrew/opt/jpeg-xl/lib/libjxl.0.11.dylib' (no such file), '/System/Volumes/Preboot/Cryptexes/OS/opt/homebrew/opt/jpeg-xl/lib/libjxl.0.11.dylib' (no such file), '/opt/homebrew/opt/jpeg-xl/lib/libjxl.0.11.dylib' (no such file), '/opt/homebrew/Cellar/jpeg-xl/0.12.0_1/lib/libjxl.0.11.dylib' (no such file), '/System/Volumes/Preboot/Cryptexes/OS/opt/homebrew/Cellar/jpeg-xl/0.12.0_1/lib/libjxl.0.11.dylib' (no such file), '/opt/homebrew/Cellar/jpeg-xl/0.12.0_1/lib/libjxl.0.11.dylib' (no such file)
+
+
+ ❯ ChildProcess.<anonymous> apps/music-worker/src/process.ts:79:11
+     77|       else
+     78|         reject(
+     79|           new Error(
+       |           ^
+     80|             error || (exitSignal ? 'Music processor was interrupted.' …
+     81|           ),
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/6]⎯
+
+ FAIL  packages/db/test/schema.test.ts > migrations > upgrades an existing platform database through all skin migrations
+AssertionError: expected [ { …(3) }, { …(3) }, { …(3) }, …(28) ] to have a length of 30 but got 31
+
+- Expected
++ Received
+
+- 30
++ 31
+
+ ❯ packages/db/test/schema.test.ts:1385:24
+    1383|       );
+    1384|       const upgraded = await migrateToLatest(existing.db);
+    1385|       expect(upgraded).toHaveLength(30);
+       |                        ^
+    1386|       expect(upgraded.every((migration) => migration.status === 'Succe…
+    1387|       expect(
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/6]⎯
+
+
+ Test Files  3 failed | 128 passed | 3 skipped (134)
+      Tests  6 failed | 963 passed | 13 skipped (982)
+   Start at  11:48:00
+   Duration  73.29s (tests 67%, import 23%, environment 6%, transform 3%)
+
+    Isolate  134 workers spawned · ~361ms startup each (spawn + environment, per file)
+             at least ~6.56s faster with isolate: false — reuses workers across files instead of one per file
+

@@ -1,0 +1,412 @@
+
+ RUN  v5.0.3 /Users/bradley/.codex/worktrees/1a9f/glob2/platform
+
+ ❯ apps/web/test/forms.test.tsx (11 tests | 1 failed) 6551ms
+   ❯ map play choices (2)
+     × opens a modal with browser and installed-app links for both choices 1925ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  apps/web/test/forms.test.tsx > map play choices > opens a modal with browser and installed-app links for both choices
+TestingLibraryElementError: Unable to find role="button" and name "Play this map"
+
+Ignored nodes: comments, script, style
+[36m<body>[39m
+  [36m<div>[39m
+    [36m<div[39m
+      [33mclass[39m=[32m"site app-shell"[39m
+    [36m>[39m
+      [36m<a[39m
+        [33mclass[39m=[32m"skip-link"[39m
+        [33mhref[39m=[32m"#main"[39m
+      [36m>[39m
+        [0mSkip to content[0m
+      [36m</a>[39m
+      [36m<aside[39m
+        [33mclass[39m=[32m"app-sidebar"[39m
+      [36m>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"sidebar-brand"[39m
+        [36m>[39m
+          [36m<a[39m
+            [33maria-label[39m=[32m"Test Instance, home"[39m
+            [33mclass[39m=[32m"brand"[39m
+            [33mhref[39m=[32m"/"[39m
+          [36m>[39m
+            [36m<img[39m
+              [33malt[39m=[32m""[39m
+              [33mheight[39m=[32m"34"[39m
+              [33msrc[39m=[32m"/apps/web/src/art/glob-64.png"[39m
+              [33mwidth[39m=[32m"34"[39m
+            [36m/>[39m
+            [36m<span[39m
+              [33maria-hidden[39m=[32m"true"[39m
+              [33mclass[39m=[32m"wordmark "[39m
+            [36m/>[39m
+          [36m</a>[39m
+          [36m<button[39m
+            [33maria-expanded[39m=[32m"true"[39m
+            [33maria-label[39m=[32m"Collapse sidebar"[39m
+            [33mclass[39m=[32m"sidebar-toggle"[39m
+          [36m>[39m
+            [36m<svg[39m
+              [33maria-hidden[39m=[32m"true"[39m
+              [33mclass[39m=[32m"icon"[39m
+              [33mfill[39m=[32m"none"[39m
+              [33mfocusable[39m=[32m"false"[39m
+              [33mheight[39m=[32m"24"[39m
+              [33mstroke[39m=[32m"currentColor"[39m
+              [33mstroke-linecap[39m=[32m"round"[39m
+              [33mstroke-linejoin[39m=[32m"round"[39m
+              [33mstroke-width[39m=[32m"2"[39m
+              [33mviewBox[39m=[32m"0 0 24 24"[39m
+              [33mwidth[39m=[32m"24"[39m
+            [36m>[39m
+              [36m<path[39m
+                [33md[39m=[32m"M13 5h8"[39m
+              [36m/>[39m
+              [0m
+  [0m
+              [36m<path[39m
+                [33md[39m=[32m"M13 9h5"[39m
+              [36m/>[39m
+              [0m
+  [0m
+              [36m<path[39m
+                [33md[39m=[32m"M13 15h8"[39m
+              [36m/>[39m
+              [0m
+  [0m
+              [36m<path[39m
+                [33md[39m=[32m"M13 19h5"[39m
+              [36m/>[39m
+              [0m
+  [0m
+              [36m<path[39m
+                [33md[39m=[32m"M3 5a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v4a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1l0 -4"[39m
+              [36m/>[39m
+              [0m
+  [0m
+              [36m<path[39m
+                [33md[39m=[32m"M3 15a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v4a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1l0 -4"[39m
+              [36m/>[39m
+            [36m</svg>[39m
+          [36m</button>[39m
+        [36m</div>[39m
+        [36m<a[39m
+          [33maria-label[39m=[32m"Play in browser"[39m
+          [33mclass[39m=[32m"btn primary sidebar-play"[39m
+          [33mhref[39m=[32m"/play/"[39m
+        [36m>[39m
+          [36m<svg[39m
+            [33maria-hidden[39m=[32m"true"[39m
+            [33mclass[39m=[32m"icon"[39m
+            [33mfill[39m=[32m"none"[39m
+            [33mfocusable[39m=[32m"false"[39m
+            [33mheight[39m=[32m"20"[39m
+            [33mstroke[39m=[32m"currentColor"[39m
+            [33mstroke-linecap[39m=[32m"round"[39m
+            [33mstroke-linejoin[39m=[32m"round"[39m
+            [33mstroke-width[39m=[32m"2"[39m
+            [33mviewBox[39m=[32m"0 0 24 24"[39m
+            [33mwidth[39m=[32m"20"[39m
+          [36m>[39m
+            [36m<path[39m
+              [33md[39m=[32m"M7 4v16l13 -8l-13 -8"[39m
+            [36m/>[39m
+          [36m</svg>[39m
+          [36m<span[39m
+            [33mclass[39m=[32m"nav-label"[39m
+          [36m>[39m
+            [0mPlay in browser[0m
+          [36m</span>[39m
+        [36m</a>[39m
+        [36m<nav[39m
+          [33maria-label[39m=[32m"Main"[39m
+          [33mclass[39m=[32m"nav"[39m
+        [36m>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"nav-group"[39m
+          [36m>[39m
+            [36m<div[39m
+              [33mclass[39m=[32m"nav-group-label"[39m
+            [36m>[39m
+              [0mPlay[0m
+            [36m</div>[39m
+            [36m<a[39m
+              [33maria-label[39m=[32m"Home"[39m
+              [33mclass[39m=[32m""[39m
+              [33mhref[39m=[32m"/"[39m
+            [36m>[39m
+              [36m<img[39m
+                [33malt[39m=[32m""[39m
+                [33mheight[39m=[32m"26"[39m
+                [33msrc[39m=[32m"/apps/web/src/art/glob-64.png"[39m
+                [33mwidth[39m=[32m"26"[39m
+              [36m/>[39m
+              [36m<span[39m
+                [33mclass[39m=[32m"nav-label"[39m
+              [36m>[39m
+                [0mHome[0m
+              [36m</span>[39m
+              [36m<span[39m
+                [33maria-hidden[39m=[32m"true"[39m
+                [33mclass[39m=[32m"rail-tooltip"[39m
+              [36m>[39m
+                [0mHome[0m
+              [36m</span>[39m
+            [36m</a>[39m
+            [36m<a[39m
+              [33maria-label[39m=[32m"Leaderboard"[39m
+              [33mclass[39m=[32m""[39m
+              [33mhref[39m=[32m"/leaderboard"[39m
+            [36m>[39m
+              [36m<span[39m
+                [33mclass[39m=[32m"nav-chip nav-chip-leaderboard"[39m
+              [36m>[39m
+                [36m<svg[39m
+                  [33maria-hidden[39m=[32m"true"[39m
+                  [33mclass[39m=[32m"icon"[39m
+                  [33mfill[39m=[32m"none"[39m
+                  [33mfocusable[39m=[32m"false"[39m
+                  [33mheight[39m=[32m"20"[39m
+                  [33mstroke[39m=[32m"currentColor"[39m
+                  [33mstroke-linecap[39m=[32m"round"[39m
+                  [33mstroke-linejoin[39m=[32m"round"[39m
+                  [33mstroke-width[39m=[32m"2"[39m
+                  [33mviewBox[39m=[32m"0 0 24 24"[39m
+                  [33mwidth[39m=[32m"20"[39m
+                [36m>[39m
+                  [36m<path[39m
+                    [33md[39m=[32m"M8 21l8 0"[39m
+                  [36m/>[39m
+                  [0m
+  [0m
+                  [36m<path[39m
+                    [33md[39m=[32m"M12 17l0 4"[39m
+                  [36m/>[39m
+                  [0m
+  [0m
+                  [36m<path[39m
+                    [33md[39m=[32m"M7 4l10 0"[39m
+                  [36m/>[39m
+                  [0m
+  [0m
+                  [36m<path[39m
+                    [33md[39m=[32m"M17 4v8a5 5 0 0 1 -10 0v-8"[39m
+                  [36m/>[39m
+                  [0m
+  [0m
+                  [36m<path[39m
+                  ...
+
+Ignored nodes: comments, script, style
+[36m<body>[39m
+  [36m<div>[39m
+    [36m<div[39m
+      [33mclass[39m=[32m"site app-shell"[39m
+    [36m>[39m
+      [36m<a[39m
+        [33mclass[39m=[32m"skip-link"[39m
+        [33mhref[39m=[32m"#main"[39m
+      [36m>[39m
+        [0mSkip to content[0m
+      [36m</a>[39m
+      [36m<aside[39m
+        [33mclass[39m=[32m"app-sidebar"[39m
+      [36m>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"sidebar-brand"[39m
+        [36m>[39m
+          [36m<a[39m
+            [33maria-label[39m=[32m"Test Instance, home"[39m
+            [33mclass[39m=[32m"brand"[39m
+            [33mhref[39m=[32m"/"[39m
+          [36m>[39m
+            [36m<img[39m
+              [33malt[39m=[32m""[39m
+              [33mheight[39m=[32m"34"[39m
+              [33msrc[39m=[32m"/apps/web/src/art/glob-64.png"[39m
+              [33mwidth[39m=[32m"34"[39m
+            [36m/>[39m
+            [36m<span[39m
+              [33maria-hidden[39m=[32m"true"[39m
+              [33mclass[39m=[32m"wordmark "[39m
+            [36m/>[39m
+          [36m</a>[39m
+          [36m<button[39m
+            [33maria-expanded[39m=[32m"true"[39m
+            [33maria-label[39m=[32m"Collapse sidebar"[39m
+            [33mclass[39m=[32m"sidebar-toggle"[39m
+          [36m>[39m
+            [36m<svg[39m
+              [33maria-hidden[39m=[32m"true"[39m
+              [33mclass[39m=[32m"icon"[39m
+              [33mfill[39m=[32m"none"[39m
+              [33mfocusable[39m=[32m"false"[39m
+              [33mheight[39m=[32m"24"[39m
+              [33mstroke[39m=[32m"currentColor"[39m
+              [33mstroke-linecap[39m=[32m"round"[39m
+              [33mstroke-linejoin[39m=[32m"round"[39m
+              [33mstroke-width[39m=[32m"2"[39m
+              [33mviewBox[39m=[32m"0 0 24 24"[39m
+              [33mwidth[39m=[32m"24"[39m
+            [36m>[39m
+              [36m<path[39m
+                [33md[39m=[32m"M13 5h8"[39m
+              [36m/>[39m
+              [0m
+  [0m
+              [36m<path[39m
+                [33md[39m=[32m"M13 9h5"[39m
+              [36m/>[39m
+              [0m
+  [0m
+              [36m<path[39m
+                [33md[39m=[32m"M13 15h8"[39m
+              [36m/>[39m
+              [0m
+  [0m
+              [36m<path[39m
+                [33md[39m=[32m"M13 19h5"[39m
+              [36m/>[39m
+              [0m
+  [0m
+              [36m<path[39m
+                [33md[39m=[32m"M3 5a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v4a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1l0 -4"[39m
+              [36m/>[39m
+              [0m
+  [0m
+              [36m<path[39m
+                [33md[39m=[32m"M3 15a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v4a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1l0 -4"[39m
+              [36m/>[39m
+            [36m</svg>[39m
+          [36m</button>[39m
+        [36m</div>[39m
+        [36m<a[39m
+          [33maria-label[39m=[32m"Play in browser"[39m
+          [33mclass[39m=[32m"btn primary sidebar-play"[39m
+          [33mhref[39m=[32m"/play/"[39m
+        [36m>[39m
+          [36m<svg[39m
+            [33maria-hidden[39m=[32m"true"[39m
+            [33mclass[39m=[32m"icon"[39m
+            [33mfill[39m=[32m"none"[39m
+            [33mfocusable[39m=[32m"false"[39m
+            [33mheight[39m=[32m"20"[39m
+            [33mstroke[39m=[32m"currentColor"[39m
+            [33mstroke-linecap[39m=[32m"round"[39m
+            [33mstroke-linejoin[39m=[32m"round"[39m
+            [33mstroke-width[39m=[32m"2"[39m
+            [33mviewBox[39m=[32m"0 0 24 24"[39m
+            [33mwidth[39m=[32m"20"[39m
+          [36m>[39m
+            [36m<path[39m
+              [33md[39m=[32m"M7 4v16l13 -8l-13 -8"[39m
+            [36m/>[39m
+          [36m</svg>[39m
+          [36m<span[39m
+            [33mclass[39m=[32m"nav-label"[39m
+          [36m>[39m
+            [0mPlay in browser[0m
+          [36m</span>[39m
+        [36m</a>[39m
+        [36m<nav[39m
+          [33maria-label[39m=[32m"Main"[39m
+          [33mclass[39m=[32m"nav"[39m
+        [36m>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"nav-group"[39m
+          [36m>[39m
+            [36m<div[39m
+              [33mclass[39m=[32m"nav-group-label"[39m
+            [36m>[39m
+              [0mPlay[0m
+            [36m</div>[39m
+            [36m<a[39m
+              [33maria-label[39m=[32m"Home"[39m
+              [33mclass[39m=[32m""[39m
+              [33mhref[39m=[32m"/"[39m
+            [36m>[39m
+              [36m<img[39m
+                [33malt[39m=[32m""[39m
+                [33mheight[39m=[32m"26"[39m
+                [33msrc[39m=[32m"/apps/web/src/art/glob-64.png"[39m
+                [33mwidth[39m=[32m"26"[39m
+              [36m/>[39m
+              [36m<span[39m
+                [33mclass[39m=[32m"nav-label"[39m
+              [36m>[39m
+                [0mHome[0m
+              [36m</span>[39m
+              [36m<span[39m
+                [33maria-hidden[39m=[32m"true"[39m
+                [33mclass[39m=[32m"rail-tooltip"[39m
+              [36m>[39m
+                [0mHome[0m
+              [36m</span>[39m
+            [36m</a>[39m
+            [36m<a[39m
+              [33maria-label[39m=[32m"Leaderboard"[39m
+              [33mclass[39m=[32m""[39m
+              [33mhref[39m=[32m"/leaderboard"[39m
+            [36m>[39m
+              [36m<span[39m
+                [33mclass[39m=[32m"nav-chip nav-chip-leaderboard"[39m
+              [36m>[39m
+                [36m<svg[39m
+                  [33maria-hidden[39m=[32m"true"[39m
+                  [33mclass[39m=[32m"icon"[39m
+                  [33mfill[39m=[32m"none"[39m
+                  [33mfocusable[39m=[32m"false"[39m
+                  [33mheight[39m=[32m"20"[39m
+                  [33mstroke[39m=[32m"currentColor"[39m
+                  [33mstroke-linecap[39m=[32m"round"[39m
+                  [33mstroke-linejoin[39m=[32m"round"[39m
+                  [33mstroke-width[39m=[32m"2"[39m
+                  [33mviewBox[39m=[32m"0 0 24 24"[39m
+                  [33mwidth[39m=[32m"20"[39m
+                [36m>[39m
+                  [36m<path[39m
+                    [33md[39m=[32m"M8 21l8 0"[39m
+                  [36m/>[39m
+                  [0m
+  [0m
+                  [36m<path[39m
+                    [33md[39m=[32m"M12 17l0 4"[39m
+                  [36m/>[39m
+                  [0m
+  [0m
+                  [36m<path[39m
+                    [33md[39m=[32m"M7 4l10 0"[39m
+                  [36m/>[39m
+                  [0m
+  [0m
+                  [36m<path[39m
+                    [33md[39m=[32m"M17 4v8a5 5 0 0 1 -10 0v-8"[39m
+                  [36m/>[39m
+                  [0m
+  [0m
+                  [36m<path[39m
+                  ...
+ ❯ waitForWrapper node_modules/@testing-library/dom/dist/wait-for.js:163:27
+ ❯ node_modules/@testing-library/dom/dist/query-helpers.js:86:33
+ ❯ apps/web/test/forms.test.tsx:169:33
+    167|       });
+    168|     open(`/maps/${MAP_ID}`);
+    169|     const button = await screen.findByRole('button', { name: 'Play thi…
+       |                                 ^
+    170|     fireEvent.click(button);
+    171|     const modal = screen.getByRole('dialog', { name: 'How would you li…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed | 53 passed (54)
+      Tests  1 failed | 394 passed | 2 skipped (397)
+   Start at  11:55:30
+   Duration  63.77s (tests 58%, import 17%, environment 16%, transform 9%)
+
+    Isolate  54 workers spawned · ~1.63s startup each (spawn + environment, per file)
+             at least ~10.97s faster with isolate: false — reuses workers across files instead of one per file
+

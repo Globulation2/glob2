@@ -1,0 +1,1242 @@
+[
+  {
+    "scenario": "enlarged-text",
+    "kind": "map-studio",
+    "theme": "light",
+    "file": "enlarged-text-map-studio-light.png",
+    "viewport": {
+      "width": 1280,
+      "height": 720
+    },
+    "document": {
+      "width": 1280,
+      "height": 720
+    },
+    "workspace": {
+      "x": 72,
+      "y": 61,
+      "width": 1208,
+      "height": 659,
+      "bottom": 720
+    },
+    "composer": {
+      "x": 104,
+      "y": 531,
+      "width": 419,
+      "height": 113,
+      "bottom": 645
+    },
+    "bodyText": "sting gameplay behavior. Tell me which part you would like to change.\n\n◉\nYou\n08:00 AM\n\nCreate a woodland colony with mushroom buildings and broad paths.\n\n✧\nMap designer\n08:00 AM\n\nI can refine the design and keep the existing gameplay behavior. Tell me which part you would like to change.\n\n◉\nYou\n08:00 AM\n\nCreate a woodland colony with mushroom buildings and broad paths.\n\n✧\nMap designer\n08:00 AM\n\nI can refine the design and keep the existing gameplay behavior. Tell me which part you would like to change.\n\nNew map\n256 × 256 · 4 players\n\nNew map\n\nDescribe your map or discuss changes\nEnter to send · Shift + Enter for a new line\nSend\n\nMessages are free. Creation requests build automatically · 1 credit on delivery.\n\nPane widths\nPreview\nEdit\nHistory\nMap canvas\nA world of possibilities\nIMAGINATION, MEET POSSIBILITY\nYour next battlefield starts here.\n\nDescribe the landscape you have in mind. Watch its journey from first idea to a world you can play.\n\n256 × 256\n✧\nUNCHARTED TERRITORY\nBuild details",
+    "errors": [],
+    "violations": []
+  },
+  {
+    "scenario": "enlarged-text",
+    "kind": "music-studio",
+    "theme": "light",
+    "file": "enlarged-text-music-studio-light.png",
+    "viewport": {
+      "width": 1280,
+      "height": 720
+    },
+    "document": {
+      "width": 1280,
+      "height": 720
+    },
+    "workspace": {
+      "x": 72,
+      "y": 61,
+      "width": 1208,
+      "height": 659,
+      "bottom": 720
+    },
+    "composer": {
+      "x": 88,
+      "y": 493,
+      "width": 451,
+      "height": 54,
+      "bottom": 547
+    },
+    "bodyText": "th mushroom buildings and broad paths.\n\nCOMPOSER\n\nI can refine the design and keep the existing gameplay behavior. Tell me which part you would like to change.\n\nYOU\n\nCreate a woodland colony with mushroom buildings and broad paths.\n\nCOMPOSER\n\nI can refine the design and keep the existing gameplay behavior. Tell me which part you would like to change.\n\nYOU\n\nCreate a woodland colony with mushroom buildings and broad paths.\n\nCOMPOSER\n\nI can refine the design and keep the existing gameplay behavior. Tell me which part you would like to change.\n\nNew soundtrack\n\n Settings & references\nYour idea or next change\nEnter to send · Shift + Enter for a new line\nSend\n\nMessages are free. Creation requests build automatically · 1 credit on delivery. Includes all three moods.\n\nPane widths\nPreview\nEdit\nHistory\nTHE LISTENING ROOM\nYour music takes shape here\nFollowing latest generation\nOne melody. Three moods.\n\nFollow the composition, hear each candidate, and see what the checks find.\n\nCALM\nBUILDING\nCOMBAT",
+    "errors": [],
+    "violations": []
+  },
+  {
+    "scenario": "enlarged-text",
+    "kind": "ai-studio",
+    "theme": "light",
+    "file": "enlarged-text-ai-studio-light.png",
+    "viewport": {
+      "width": 1280,
+      "height": 720
+    },
+    "document": {
+      "width": 1280,
+      "height": 720
+    },
+    "workspace": {
+      "x": 72,
+      "y": 67,
+      "width": 1208,
+      "height": 604,
+      "bottom": 670
+    },
+    "composer": {
+      "x": 88,
+      "y": 567,
+      "width": 451,
+      "height": 100,
+      "bottom": 667
+    },
+    "bodyText": "s.\n\nI can refine the design and keep the existing gameplay behavior. Tell me which part you would like to change.\n\ncompleted · 1 credits\n\nCreate a woodland colony with mushroom buildings and broad paths.\n\nI can refine the design and keep the existing gameplay behavior. Tell me which part you would like to change.\n\ncompleted · 1 credits\n\nEditing saved revision 1\n\n Settings & references\nDescribe a change or ask a question\nEnter to send · Shift + Enter for a new line\nSend\n\nCoding requests use up to 100 Colony AI credits. Source acceptance does not mean engine checks passed.\n\nPane widths\nProject\nSaved · revision 1\nRun checks\nPlaytest\nDownload\nPublish\nCode\nChanges\nPlaytest\nai.js\nHistory\nChoose revision\nr1 · initial\nRestore\nUndo revision\nImport\n1\n2\n3\n4\n5\n6\nexport function metadata() { return { apiVersion: 2, name: \"My Colony\" }; }\nexport function step(ctx) {\n  const buildings = ctx.game.buildings({team: ctx.myTeam});\n  for (const building of buildings) building.workers = 2;\n}\nProject actions",
+    "errors": [],
+    "violations": []
+  },
+  {
+    "scenario": "enlarged-text",
+    "kind": "ai-building-studio",
+    "theme": "light",
+    "file": "enlarged-text-ai-building-studio-light.png",
+    "viewport": {
+      "width": 1280,
+      "height": 720
+    },
+    "document": {
+      "width": 1280,
+      "height": 720
+    },
+    "workspace": {
+      "x": 72,
+      "y": 67,
+      "width": 1208,
+      "height": 653,
+      "bottom": 720
+    },
+    "composer": {
+      "x": 88,
+      "y": 573,
+      "width": 451,
+      "height": 113,
+      "bottom": 686
+    },
+    "bodyText": "ad paths.\n\nBuilding designer\n\nI can refine the design and keep the existing gameplay behavior. Tell me which part you would like to change.\n\nDescribe your creation or ask a question\n\nEditing current saved draft · 11111111-1111-4111-8111-111111111111\n\nQuestions are free. Creation and edit requests start automatically and cost 1 credit on delivery.\n\n Reference images\nSend\n\nEnter to send · Shift + Enter for a new line. Creation requests build automatically · 1 credit on delivery.\n\nPane widths\nPreview\nEdit\nHistory\nYour building\nViewing Current saved draft\nEditing current saved draft\nView revision\nCurrent saved draft\nGround\nGrass\nSand\nWater\nScale\nGame scale\nEnlarged 3×\nMushroom hospital\nFootprint width (tiles)\n2\nFootprint height (tiles)\n2\nInitial health\n300\nMaximum health\n300\nInterior seats\n4\nConstruction Cost\nWood: 10\nAssignment Limit\n4\nHealing: Duration (steps): 20 · Applies to: workers, explorers, warriors\nAll properties and capabilities\nCompare with\nNo comparison\nEdit & release settings",
+    "errors": [],
+    "violations": []
+  },
+  {
+    "scenario": "enlarged-text",
+    "kind": "terrain-studio",
+    "theme": "light",
+    "file": "enlarged-text-terrain-studio-light.png",
+    "viewport": {
+      "width": 1280,
+      "height": 720
+    },
+    "document": {
+      "width": 1280,
+      "height": 720
+    },
+    "workspace": {
+      "x": 72,
+      "y": 67,
+      "width": 1208,
+      "height": 653,
+      "bottom": 720
+    },
+    "composer": {
+      "x": 88,
+      "y": 534,
+      "width": 451,
+      "height": 113,
+      "bottom": 647
+    },
+    "bodyText": "hich part you would like to change.\n\nYou\n\nCreate a woodland colony with mushroom buildings and broad paths.\n\nTerrain designer\n\nI can refine the design and keep the existing gameplay behavior. Tell me which part you would like to change.\n\nDescribe your creation or ask a question\n\nEditing current saved draft · 1\n\n Reference images\nSend\n\nEnter to send · Shift + Enter for a new line. Creation requests build automatically · 1 credit on delivery.\n\nPane widths\nPreview\nEdit\nHistory\nYour set\nViewing current saved draft\nEditing current saved draft\n\n1 terrains · 1 resources · revision 1\n\nValidated definitions are importable. Review gameplay on your own maps before relying on balance.\n\nScene and resource gallery\nAnimation phase\n1\n2\n3\n4\nVariation\n1\n2\n3\n4\nPreview current changes\n\nFungal marsh\nGround movement\n0.5×\nResource growth\n1.25×\nMushrooms\nMain material\nfood\nGrowth rate\n3.00× wheat\nSpread rate\n0.33× wheat\nCan be farmed\nYes\nFood: starts at 1, holds 5; one unit per harvest\nEdit & release settings",
+    "errors": [],
+    "violations": []
+  },
+  {
+    "scenario": "enlarged-text",
+    "kind": "map-studio",
+    "theme": "dark",
+    "file": "enlarged-text-map-studio-dark.png",
+    "viewport": {
+      "width": 1280,
+      "height": 720
+    },
+    "document": {
+      "width": 1280,
+      "height": 720
+    },
+    "workspace": {
+      "x": 72,
+      "y": 61,
+      "width": 1208,
+      "height": 659,
+      "bottom": 720
+    },
+    "composer": {
+      "x": 104,
+      "y": 531,
+      "width": 419,
+      "height": 113,
+      "bottom": 645
+    },
+    "bodyText": "sting gameplay behavior. Tell me which part you would like to change.\n\n◉\nYou\n08:00 AM\n\nCreate a woodland colony with mushroom buildings and broad paths.\n\n✧\nMap designer\n08:00 AM\n\nI can refine the design and keep the existing gameplay behavior. Tell me which part you would like to change.\n\n◉\nYou\n08:00 AM\n\nCreate a woodland colony with mushroom buildings and broad paths.\n\n✧\nMap designer\n08:00 AM\n\nI can refine the design and keep the existing gameplay behavior. Tell me which part you would like to change.\n\nNew map\n256 × 256 · 4 players\n\nNew map\n\nDescribe your map or discuss changes\nEnter to send · Shift + Enter for a new line\nSend\n\nMessages are free. Creation requests build automatically · 1 credit on delivery.\n\nPane widths\nPreview\nEdit\nHistory\nMap canvas\nA world of possibilities\nIMAGINATION, MEET POSSIBILITY\nYour next battlefield starts here.\n\nDescribe the landscape you have in mind. Watch its journey from first idea to a world you can play.\n\n256 × 256\n✧\nUNCHARTED TERRITORY\nBuild details",
+    "errors": [],
+    "violations": []
+  },
+  {
+    "scenario": "enlarged-text",
+    "kind": "music-studio",
+    "theme": "dark",
+    "file": "enlarged-text-music-studio-dark.png",
+    "viewport": {
+      "width": 1280,
+      "height": 720
+    },
+    "document": {
+      "width": 1280,
+      "height": 720
+    },
+    "workspace": {
+      "x": 72,
+      "y": 61,
+      "width": 1208,
+      "height": 659,
+      "bottom": 720
+    },
+    "composer": {
+      "x": 88,
+      "y": 493,
+      "width": 451,
+      "height": 54,
+      "bottom": 547
+    },
+    "bodyText": "th mushroom buildings and broad paths.\n\nCOMPOSER\n\nI can refine the design and keep the existing gameplay behavior. Tell me which part you would like to change.\n\nYOU\n\nCreate a woodland colony with mushroom buildings and broad paths.\n\nCOMPOSER\n\nI can refine the design and keep the existing gameplay behavior. Tell me which part you would like to change.\n\nYOU\n\nCreate a woodland colony with mushroom buildings and broad paths.\n\nCOMPOSER\n\nI can refine the design and keep the existing gameplay behavior. Tell me which part you would like to change.\n\nNew soundtrack\n\n Settings & references\nYour idea or next change\nEnter to send · Shift + Enter for a new line\nSend\n\nMessages are free. Creation requests build automatically · 1 credit on delivery. Includes all three moods.\n\nPane widths\nPreview\nEdit\nHistory\nTHE LISTENING ROOM\nYour music takes shape here\nFollowing latest generation\nOne melody. Three moods.\n\nFollow the composition, hear each candidate, and see what the checks find.\n\nCALM\nBUILDING\nCOMBAT",
+    "errors": [],
+    "violations": []
+  },
+  {
+    "scenario": "enlarged-text",
+    "kind": "ai-studio",
+    "theme": "dark",
+    "file": "enlarged-text-ai-studio-dark.png",
+    "viewport": {
+      "width": 1280,
+      "height": 720
+    },
+    "document": {
+      "width": 1280,
+      "height": 720
+    },
+    "workspace": {
+      "x": 72,
+      "y": 67,
+      "width": 1208,
+      "height": 604,
+      "bottom": 670
+    },
+    "composer": {
+      "x": 88,
+      "y": 567,
+      "width": 451,
+      "height": 100,
+      "bottom": 667
+    },
+    "bodyText": "s.\n\nI can refine the design and keep the existing gameplay behavior. Tell me which part you would like to change.\n\ncompleted · 1 credits\n\nCreate a woodland colony with mushroom buildings and broad paths.\n\nI can refine the design and keep the existing gameplay behavior. Tell me which part you would like to change.\n\ncompleted · 1 credits\n\nEditing saved revision 1\n\n Settings & references\nDescribe a change or ask a question\nEnter to send · Shift + Enter for a new line\nSend\n\nCoding requests use up to 100 Colony AI credits. Source acceptance does not mean engine checks passed.\n\nPane widths\nProject\nSaved · revision 1\nRun checks\nPlaytest\nDownload\nPublish\nCode\nChanges\nPlaytest\nai.js\nHistory\nChoose revision\nr1 · initial\nRestore\nUndo revision\nImport\n1\n2\n3\n4\n5\n6\nexport function metadata() { return { apiVersion: 2, name: \"My Colony\" }; }\nexport function step(ctx) {\n  const buildings = ctx.game.buildings({team: ctx.myTeam});\n  for (const building of buildings) building.workers = 2;\n}\nProject actions",
+    "errors": [],
+    "violations": []
+  },
+  {
+    "scenario": "enlarged-text",
+    "kind": "ai-building-studio",
+    "theme": "dark",
+    "file": "enlarged-text-ai-building-studio-dark.png",
+    "viewport": {
+      "width": 1280,
+      "height": 720
+    },
+    "document": {
+      "width": 1280,
+      "height": 720
+    },
+    "workspace": {
+      "x": 72,
+      "y": 67,
+      "width": 1208,
+      "height": 653,
+      "bottom": 720
+    },
+    "composer": {
+      "x": 88,
+      "y": 573,
+      "width": 451,
+      "height": 113,
+      "bottom": 686
+    },
+    "bodyText": "ad paths.\n\nBuilding designer\n\nI can refine the design and keep the existing gameplay behavior. Tell me which part you would like to change.\n\nDescribe your creation or ask a question\n\nEditing current saved draft · 11111111-1111-4111-8111-111111111111\n\nQuestions are free. Creation and edit requests start automatically and cost 1 credit on delivery.\n\n Reference images\nSend\n\nEnter to send · Shift + Enter for a new line. Creation requests build automatically · 1 credit on delivery.\n\nPane widths\nPreview\nEdit\nHistory\nYour building\nViewing Current saved draft\nEditing current saved draft\nView revision\nCurrent saved draft\nGround\nGrass\nSand\nWater\nScale\nGame scale\nEnlarged 3×\nMushroom hospital\nFootprint width (tiles)\n2\nFootprint height (tiles)\n2\nInitial health\n300\nMaximum health\n300\nInterior seats\n4\nConstruction Cost\nWood: 10\nAssignment Limit\n4\nHealing: Duration (steps): 20 · Applies to: workers, explorers, warriors\nAll properties and capabilities\nCompare with\nNo comparison\nEdit & release settings",
+    "errors": [],
+    "violations": []
+  },
+  {
+    "scenario": "enlarged-text",
+    "kind": "terrain-studio",
+    "theme": "dark",
+    "file": "enlarged-text-terrain-studio-dark.png",
+    "viewport": {
+      "width": 1280,
+      "height": 720
+    },
+    "document": {
+      "width": 1280,
+      "height": 720
+    },
+    "workspace": {
+      "x": 72,
+      "y": 67,
+      "width": 1208,
+      "height": 653,
+      "bottom": 720
+    },
+    "composer": {
+      "x": 88,
+      "y": 534,
+      "width": 451,
+      "height": 113,
+      "bottom": 647
+    },
+    "bodyText": "hich part you would like to change.\n\nYou\n\nCreate a woodland colony with mushroom buildings and broad paths.\n\nTerrain designer\n\nI can refine the design and keep the existing gameplay behavior. Tell me which part you would like to change.\n\nDescribe your creation or ask a question\n\nEditing current saved draft · 1\n\n Reference images\nSend\n\nEnter to send · Shift + Enter for a new line. Creation requests build automatically · 1 credit on delivery.\n\nPane widths\nPreview\nEdit\nHistory\nYour set\nViewing current saved draft\nEditing current saved draft\n\n1 terrains · 1 resources · revision 1\n\nValidated definitions are importable. Review gameplay on your own maps before relying on balance.\n\nScene and resource gallery\nAnimation phase\n1\n2\n3\n4\nVariation\n1\n2\n3\n4\nPreview current changes\n\nFungal marsh\nGround movement\n0.5×\nResource growth\n1.25×\nMushrooms\nMain material\nfood\nGrowth rate\n3.00× wheat\nSpread rate\n0.33× wheat\nCan be farmed\nYes\nFood: starts at 1, holds 5; one unit per harvest\nEdit & release settings",
+    "errors": [],
+    "violations": []
+  },
+  {
+    "scenario": "forced-colors",
+    "kind": "map-studio",
+    "theme": "light",
+    "file": "forced-colors-map-studio-light.png",
+    "viewport": {
+      "width": 1280,
+      "height": 720
+    },
+    "document": {
+      "width": 1280,
+      "height": 720
+    },
+    "workspace": {
+      "x": 72,
+      "y": 61,
+      "width": 1208,
+      "height": 659,
+      "bottom": 720
+    },
+    "composer": {
+      "x": 104,
+      "y": 540,
+      "width": 419,
+      "height": 64,
+      "bottom": 603
+    },
+    "bodyText": "sting gameplay behavior. Tell me which part you would like to change.\n\n◉\nYou\n08:00 AM\n\nCreate a woodland colony with mushroom buildings and broad paths.\n\n✧\nMap designer\n08:00 AM\n\nI can refine the design and keep the existing gameplay behavior. Tell me which part you would like to change.\n\n◉\nYou\n08:00 AM\n\nCreate a woodland colony with mushroom buildings and broad paths.\n\n✧\nMap designer\n08:00 AM\n\nI can refine the design and keep the existing gameplay behavior. Tell me which part you would like to change.\n\nNew map\n256 × 256 · 4 players\n\nNew map\n\nDescribe your map or discuss changes\nEnter to send · Shift + Enter for a new line\nSend\n\nMessages are free. Creation requests build automatically · 1 credit on delivery.\n\nPane widths\nPreview\nEdit\nHistory\nMap canvas\nA world of possibilities\nIMAGINATION, MEET POSSIBILITY\nYour next battlefield starts here.\n\nDescribe the landscape you have in mind. Watch its journey from first idea to a world you can play.\n\n256 × 256\n✧\nUNCHARTED TERRITORY\nBuild details",
+    "errors": [],
+    "violations": []
+  },
+  {
+    "scenario": "forced-colors",
+    "kind": "music-studio",
+    "theme": "light",
+    "file": "forced-colors-music-studio-light.png",
+    "viewport": {
+      "width": 1280,
+      "height": 720
+    },
+    "document": {
+      "width": 1280,
+      "height": 720
+    },
+    "workspace": {
+      "x": 72,
+      "y": 61,
+      "width": 1208,
+      "height": 659,
+      "bottom": 720
+    },
+    "composer": {
+      "x": 88,
+      "y": 550,
+      "width": 451,
+      "height": 64,
+      "bottom": 613
+    },
+    "bodyText": "th mushroom buildings and broad paths.\n\nCOMPOSER\n\nI can refine the design and keep the existing gameplay behavior. Tell me which part you would like to change.\n\nYOU\n\nCreate a woodland colony with mushroom buildings and broad paths.\n\nCOMPOSER\n\nI can refine the design and keep the existing gameplay behavior. Tell me which part you would like to change.\n\nYOU\n\nCreate a woodland colony with mushroom buildings and broad paths.\n\nCOMPOSER\n\nI can refine the design and keep the existing gameplay behavior. Tell me which part you would like to change.\n\nNew soundtrack\n\n Settings & references\nYour idea or next change\nEnter to send · Shift + Enter for a new line\nSend\n\nMessages are free. Creation requests build automatically · 1 credit on delivery. Includes all three moods.\n\nPane widths\nPreview\nEdit\nHistory\nTHE LISTENING ROOM\nYour music takes shape here\nFollowing latest generation\nOne melody. Three moods.\n\nFollow the composition, hear each candidate, and see what the checks find.\n\nCALM\nBUILDING\nCOMBAT",
+    "errors": [],
+    "violations": []
+  },
+  {
+    "scenario": "forced-colors",
+    "kind": "ai-studio",
+    "theme": "light",
+    "file": "forced-colors-ai-studio-light.png",
+    "viewport": {
+      "width": 1280,
+      "height": 720
+    },
+    "document": {
+      "width": 1280,
+      "height": 720
+    },
+    "workspace": {
+      "x": 72,
+      "y": 61,
+      "width": 1208,
+      "height": 615,
+      "bottom": 676
+    },
+    "composer": {
+      "x": 88,
+      "y": 465,
+      "width": 451,
+      "height": 100,
+      "bottom": 565
+    },
+    "bodyText": "s.\n\nI can refine the design and keep the existing gameplay behavior. Tell me which part you would like to change.\n\ncompleted · 1 credits\n\nCreate a woodland colony with mushroom buildings and broad paths.\n\nI can refine the design and keep the existing gameplay behavior. Tell me which part you would like to change.\n\ncompleted · 1 credits\n\nEditing saved revision 1\n\n Settings & references\nDescribe a change or ask a question\nEnter to send · Shift + Enter for a new line\nSend\n\nCoding requests use up to 100 Colony AI credits. Source acceptance does not mean engine checks passed.\n\nPane widths\nProject\nSaved · revision 1\nRun checks\nPlaytest\nDownload\nPublish\nCode\nChanges\nPlaytest\nai.js\nHistory\nChoose revision\nr1 · initial\nRestore\nUndo revision\nImport\n1\n2\n3\n4\n5\n6\nexport function metadata() { return { apiVersion: 2, name: \"My Colony\" }; }\nexport function step(ctx) {\n  const buildings = ctx.game.buildings({team: ctx.myTeam});\n  for (const building of buildings) building.workers = 2;\n}\nProject actions",
+    "errors": [],
+    "violations": []
+  },
+  {
+    "scenario": "forced-colors",
+    "kind": "ai-building-studio",
+    "theme": "light",
+    "file": "forced-colors-ai-building-studio-light.png",
+    "viewport": {
+      "width": 1280,
+      "height": 720
+    },
+    "document": {
+      "width": 1280,
+      "height": 720
+    },
+    "workspace": {
+      "x": 72,
+      "y": 61,
+      "width": 1208,
+      "height": 659,
+      "bottom": 720
+    },
+    "composer": {
+      "x": 88,
+      "y": 442,
+      "width": 451,
+      "height": 64,
+      "bottom": 506
+    },
+    "bodyText": "ad paths.\n\nBuilding designer\n\nI can refine the design and keep the existing gameplay behavior. Tell me which part you would like to change.\n\nDescribe your creation or ask a question\n\nEditing current saved draft · 11111111-1111-4111-8111-111111111111\n\nQuestions are free. Creation and edit requests start automatically and cost 1 credit on delivery.\n\n Reference images\nSend\n\nEnter to send · Shift + Enter for a new line. Creation requests build automatically · 1 credit on delivery.\n\nPane widths\nPreview\nEdit\nHistory\nYour building\nViewing Current saved draft\nEditing current saved draft\nView revision\nCurrent saved draft\nGround\nGrass\nSand\nWater\nScale\nGame scale\nEnlarged 3×\nMushroom hospital\nFootprint width (tiles)\n2\nFootprint height (tiles)\n2\nInitial health\n300\nMaximum health\n300\nInterior seats\n4\nConstruction Cost\nWood: 10\nAssignment Limit\n4\nHealing: Duration (steps): 20 · Applies to: workers, explorers, warriors\nAll properties and capabilities\nCompare with\nNo comparison\nEdit & release settings",
+    "errors": [],
+    "violations": []
+  },
+  {
+    "scenario": "forced-colors",
+    "kind": "terrain-studio",
+    "theme": "light",
+    "file": "forced-colors-terrain-studio-light.png",
+    "viewport": {
+      "width": 1280,
+      "height": 720
+    },
+    "document": {
+      "width": 1280,
+      "height": 720
+    },
+    "workspace": {
+      "x": 72,
+      "y": 61,
+      "width": 1208,
+      "height": 659,
+      "bottom": 720
+    },
+    "composer": {
+      "x": 88,
+      "y": 499,
+      "width": 451,
+      "height": 64,
+      "bottom": 562
+    },
+    "bodyText": "hich part you would like to change.\n\nYou\n\nCreate a woodland colony with mushroom buildings and broad paths.\n\nTerrain designer\n\nI can refine the design and keep the existing gameplay behavior. Tell me which part you would like to change.\n\nDescribe your creation or ask a question\n\nEditing current saved draft · 1\n\n Reference images\nSend\n\nEnter to send · Shift + Enter for a new line. Creation requests build automatically · 1 credit on delivery.\n\nPane widths\nPreview\nEdit\nHistory\nYour set\nViewing current saved draft\nEditing current saved draft\n\n1 terrains · 1 resources · revision 1\n\nValidated definitions are importable. Review gameplay on your own maps before relying on balance.\n\nScene and resource gallery\nAnimation phase\n1\n2\n3\n4\nVariation\n1\n2\n3\n4\nPreview current changes\n\nFungal marsh\nGround movement\n0.5×\nResource growth\n1.25×\nMushrooms\nMain material\nfood\nGrowth rate\n3.00× wheat\nSpread rate\n0.33× wheat\nCan be farmed\nYes\nFood: starts at 1, holds 5; one unit per harvest\nEdit & release settings",
+    "errors": [],
+    "violations": []
+  },
+  {
+    "scenario": "forced-colors",
+    "kind": "map-studio",
+    "theme": "dark",
+    "file": "forced-colors-map-studio-dark.png",
+    "viewport": {
+      "width": 1280,
+      "height": 720
+    },
+    "document": {
+      "width": 1280,
+      "height": 720
+    },
+    "workspace": {
+      "x": 72,
+      "y": 61,
+      "width": 1208,
+      "height": 659,
+      "bottom": 720
+    },
+    "composer": {
+      "x": 104,
+      "y": 540,
+      "width": 419,
+      "height": 64,
+      "bottom": 603
+    },
+    "bodyText": "sting gameplay behavior. Tell me which part you would like to change.\n\n◉\nYou\n08:00 AM\n\nCreate a woodland colony with mushroom buildings and broad paths.\n\n✧\nMap designer\n08:00 AM\n\nI can refine the design and keep the existing gameplay behavior. Tell me which part you would like to change.\n\n◉\nYou\n08:00 AM\n\nCreate a woodland colony with mushroom buildings and broad paths.\n\n✧\nMap designer\n08:00 AM\n\nI can refine the design and keep the existing gameplay behavior. Tell me which part you would like to change.\n\nNew map\n256 × 256 · 4 players\n\nNew map\n\nDescribe your map or discuss changes\nEnter to send · Shift + Enter for a new line\nSend\n\nMessages are free. Creation requests build automatically · 1 credit on delivery.\n\nPane widths\nPreview\nEdit\nHistory\nMap canvas\nA world of possibilities\nIMAGINATION, MEET POSSIBILITY\nYour next battlefield starts here.\n\nDescribe the landscape you have in mind. Watch its journey from first idea to a world you can play.\n\n256 × 256\n✧\nUNCHARTED TERRITORY\nBuild details",
+    "errors": [],
+    "violations": []
+  },
+  {
+    "scenario": "forced-colors",
+    "kind": "music-studio",
+    "theme": "dark",
+    "file": "forced-colors-music-studio-dark.png",
+    "viewport": {
+      "width": 1280,
+      "height": 720
+    },
+    "document": {
+      "width": 1280,
+      "height": 720
+    },
+    "workspace": {
+      "x": 72,
+      "y": 61,
+      "width": 1208,
+      "height": 659,
+      "bottom": 720
+    },
+    "composer": {
+      "x": 88,
+      "y": 550,
+      "width": 451,
+      "height": 64,
+      "bottom": 613
+    },
+    "bodyText": "th mushroom buildings and broad paths.\n\nCOMPOSER\n\nI can refine the design and keep the existing gameplay behavior. Tell me which part you would like to change.\n\nYOU\n\nCreate a woodland colony with mushroom buildings and broad paths.\n\nCOMPOSER\n\nI can refine the design and keep the existing gameplay behavior. Tell me which part you would like to change.\n\nYOU\n\nCreate a woodland colony with mushroom buildings and broad paths.\n\nCOMPOSER\n\nI can refine the design and keep the existing gameplay behavior. Tell me which part you would like to change.\n\nNew soundtrack\n\n Settings & references\nYour idea or next change\nEnter to send · Shift + Enter for a new line\nSend\n\nMessages are free. Creation requests build automatically · 1 credit on delivery. Includes all three moods.\n\nPane widths\nPreview\nEdit\nHistory\nTHE LISTENING ROOM\nYour music takes shape here\nFollowing latest generation\nOne melody. Three moods.\n\nFollow the composition, hear each candidate, and see what the checks find.\n\nCALM\nBUILDING\nCOMBAT",
+    "errors": [],
+    "violations": []
+  },
+  {
+    "scenario": "forced-colors",
+    "kind": "ai-studio",
+    "theme": "dark",
+    "file": "forced-colors-ai-studio-dark.png",
+    "viewport": {
+      "width": 1280,
+      "height": 720
+    },
+    "document": {
+      "width": 1280,
+      "height": 720
+    },
+    "workspace": {
+      "x": 72,
+      "y": 61,
+      "width": 1208,
+      "height": 615,
+      "bottom": 676
+    },
+    "composer": {
+      "x": 88,
+      "y": 465,
+      "width": 451,
+      "height": 100,
+      "bottom": 565
+    },
+    "bodyText": "s.\n\nI can refine the design and keep the existing gameplay behavior. Tell me which part you would like to change.\n\ncompleted · 1 credits\n\nCreate a woodland colony with mushroom buildings and broad paths.\n\nI can refine the design and keep the existing gameplay behavior. Tell me which part you would like to change.\n\ncompleted · 1 credits\n\nEditing saved revision 1\n\n Settings & references\nDescribe a change or ask a question\nEnter to send · Shift + Enter for a new line\nSend\n\nCoding requests use up to 100 Colony AI credits. Source acceptance does not mean engine checks passed.\n\nPane widths\nProject\nSaved · revision 1\nRun checks\nPlaytest\nDownload\nPublish\nCode\nChanges\nPlaytest\nai.js\nHistory\nChoose revision\nr1 · initial\nRestore\nUndo revision\nImport\n1\n2\n3\n4\n5\n6\nexport function metadata() { return { apiVersion: 2, name: \"My Colony\" }; }\nexport function step(ctx) {\n  const buildings = ctx.game.buildings({team: ctx.myTeam});\n  for (const building of buildings) building.workers = 2;\n}\nProject actions",
+    "errors": [],
+    "violations": []
+  },
+  {
+    "scenario": "forced-colors",
+    "kind": "ai-building-studio",
+    "theme": "dark",
+    "file": "forced-colors-ai-building-studio-dark.png",
+    "viewport": {
+      "width": 1280,
+      "height": 720
+    },
+    "document": {
+      "width": 1280,
+      "height": 720
+    },
+    "workspace": {
+      "x": 72,
+      "y": 61,
+      "width": 1208,
+      "height": 659,
+      "bottom": 720
+    },
+    "composer": {
+      "x": 88,
+      "y": 442,
+      "width": 451,
+      "height": 64,
+      "bottom": 506
+    },
+    "bodyText": "ad paths.\n\nBuilding designer\n\nI can refine the design and keep the existing gameplay behavior. Tell me which part you would like to change.\n\nDescribe your creation or ask a question\n\nEditing current saved draft · 11111111-1111-4111-8111-111111111111\n\nQuestions are free. Creation and edit requests start automatically and cost 1 credit on delivery.\n\n Reference images\nSend\n\nEnter to send · Shift + Enter for a new line. Creation requests build automatically · 1 credit on delivery.\n\nPane widths\nPreview\nEdit\nHistory\nYour building\nViewing Current saved draft\nEditing current saved draft\nView revision\nCurrent saved draft\nGround\nGrass\nSand\nWater\nScale\nGame scale\nEnlarged 3×\nMushroom hospital\nFootprint width (tiles)\n2\nFootprint height (tiles)\n2\nInitial health\n300\nMaximum health\n300\nInterior seats\n4\nConstruction Cost\nWood: 10\nAssignment Limit\n4\nHealing: Duration (steps): 20 · Applies to: workers, explorers, warriors\nAll properties and capabilities\nCompare with\nNo comparison\nEdit & release settings",
+    "errors": [],
+    "violations": []
+  },
+  {
+    "scenario": "forced-colors",
+    "kind": "terrain-studio",
+    "theme": "dark",
+    "file": "forced-colors-terrain-studio-dark.png",
+    "viewport": {
+      "width": 1280,
+      "height": 720
+    },
+    "document": {
+      "width": 1280,
+      "height": 720
+    },
+    "workspace": {
+      "x": 72,
+      "y": 61,
+      "width": 1208,
+      "height": 659,
+      "bottom": 720
+    },
+    "composer": {
+      "x": 88,
+      "y": 499,
+      "width": 451,
+      "height": 64,
+      "bottom": 562
+    },
+    "bodyText": "hich part you would like to change.\n\nYou\n\nCreate a woodland colony with mushroom buildings and broad paths.\n\nTerrain designer\n\nI can refine the design and keep the existing gameplay behavior. Tell me which part you would like to change.\n\nDescribe your creation or ask a question\n\nEditing current saved draft · 1\n\n Reference images\nSend\n\nEnter to send · Shift + Enter for a new line. Creation requests build automatically · 1 credit on delivery.\n\nPane widths\nPreview\nEdit\nHistory\nYour set\nViewing current saved draft\nEditing current saved draft\n\n1 terrains · 1 resources · revision 1\n\nValidated definitions are importable. Review gameplay on your own maps before relying on balance.\n\nScene and resource gallery\nAnimation phase\n1\n2\n3\n4\nVariation\n1\n2\n3\n4\nPreview current changes\n\nFungal marsh\nGround movement\n0.5×\nResource growth\n1.25×\nMushrooms\nMain material\nfood\nGrowth rate\n3.00× wheat\nSpread rate\n0.33× wheat\nCan be farmed\nYes\nFood: starts at 1, holds 5; one unit per harvest\nEdit & release settings",
+    "errors": [],
+    "violations": []
+  },
+  {
+    "scenario": "disabled-zero",
+    "kind": "map-studio",
+    "theme": "light",
+    "file": "disabled-zero-map-studio-light.png",
+    "viewport": {
+      "width": 1280,
+      "height": 720
+    },
+    "document": {
+      "width": 1280,
+      "height": 720
+    },
+    "workspace": {
+      "x": 72,
+      "y": 102,
+      "width": 1208,
+      "height": 618,
+      "bottom": 720
+    },
+    "composer": {
+      "x": 104,
+      "y": 540,
+      "width": 419,
+      "height": 64,
+      "bottom": 603
+    },
+    "bodyText": " change.\n\n◉\nYou\n08:00 AM\n\nCreate a woodland colony with mushroom buildings and broad paths.\n\n✧\nMap designer\n08:00 AM\n\nI can refine the design and keep the existing gameplay behavior. Tell me which part you would like to change.\n\n◉\nYou\n08:00 AM\n\nCreate a woodland colony with mushroom buildings and broad paths.\n\n✧\nMap designer\n08:00 AM\n\nI can refine the design and keep the existing gameplay behavior. Tell me which part you would like to change.\n\nNew map\n256 × 256 · 4 players\n\nNew map\n\nDescribe your map or discuss changes\nEnter to send · Shift + Enter for a new line\nSend\n\nMessages are free. Creation requests build automatically · 1 credit on delivery. Generation is unavailable. Saved projects remain accessible.\n\nPane widths\nPreview\nEdit\nHistory\nMap canvas\nA world of possibilities\nIMAGINATION, MEET POSSIBILITY\nYour next battlefield starts here.\n\nDescribe the landscape you have in mind. Watch its journey from first idea to a world you can play.\n\n256 × 256\n✧\nUNCHARTED TERRITORY\nBuild details",
+    "errors": [],
+    "violations": []
+  },
+  {
+    "scenario": "disabled-zero",
+    "kind": "music-studio",
+    "theme": "light",
+    "file": "disabled-zero-music-studio-light.png",
+    "viewport": {
+      "width": 1280,
+      "height": 720
+    },
+    "document": {
+      "width": 1280,
+      "height": 720
+    },
+    "workspace": {
+      "x": 72,
+      "y": 102,
+      "width": 1208,
+      "height": 618,
+      "bottom": 720
+    },
+    "composer": {
+      "x": 88,
+      "y": 530,
+      "width": 451,
+      "height": 64,
+      "bottom": 594
+    },
+    "bodyText": "ine the design and keep the existing gameplay behavior. Tell me which part you would like to change.\n\nYOU\n\nCreate a woodland colony with mushroom buildings and broad paths.\n\nCOMPOSER\n\nI can refine the design and keep the existing gameplay behavior. Tell me which part you would like to change.\n\nYOU\n\nCreate a woodland colony with mushroom buildings and broad paths.\n\nCOMPOSER\n\nI can refine the design and keep the existing gameplay behavior. Tell me which part you would like to change.\n\nNew soundtrack\n\n Settings & references\nYour idea or next change\nEnter to send · Shift + Enter for a new line\nSend\n\nMessages are free. Creation requests build automatically · 1 credit on delivery. Includes all three moods. Generation is unavailable. Saved music remains accessible.\n\nPane widths\nPreview\nEdit\nHistory\nTHE LISTENING ROOM\nYour music takes shape here\nFollowing latest generation\nOne melody. Three moods.\n\nFollow the composition, hear each candidate, and see what the checks find.\n\nCALM\nBUILDING\nCOMBAT",
+    "errors": [],
+    "violations": []
+  },
+  {
+    "scenario": "disabled-zero",
+    "kind": "ai-studio",
+    "theme": "light",
+    "file": "disabled-zero-ai-studio-light.png",
+    "viewport": {
+      "width": 1280,
+      "height": 720
+    },
+    "document": {
+      "width": 1280,
+      "height": 720
+    },
+    "workspace": {
+      "x": 72,
+      "y": 98,
+      "width": 1208,
+      "height": 578,
+      "bottom": 676
+    },
+    "composer": {
+      "x": 88,
+      "y": 485,
+      "width": 451,
+      "height": 100,
+      "bottom": 585
+    },
+    "bodyText": " and keep the existing gameplay behavior. Tell me which part you would like to change.\n\ncompleted · 1 credits\n\nCreate a woodland colony with mushroom buildings and broad paths.\n\nI can refine the design and keep the existing gameplay behavior. Tell me which part you would like to change.\n\ncompleted · 1 credits\n\nEditing saved revision 1\n\n Settings & references\nDescribe a change or ask a question\nEnter to send · Shift + Enter for a new line\nSend\n\nCoding requests use up to 100 Colony AI credits. Source acceptance does not mean engine checks passed. Generation is unavailable.\n\nPane widths\nProject\nSaved · revision 1\nRun checks\nPlaytest\nDownload\nPublish\nCode\nChanges\nPlaytest\nai.js\nHistory\nChoose revision\nr1 · initial\nRestore\nUndo revision\nImport\n1\n2\n3\n4\n5\n6\nexport function metadata() { return { apiVersion: 2, name: \"My Colony\" }; }\nexport function step(ctx) {\n  const buildings = ctx.game.buildings({team: ctx.myTeam});\n  for (const building of buildings) building.workers = 2;\n}\nProject actions",
+    "errors": [],
+    "violations": []
+  },
+  {
+    "scenario": "disabled-zero",
+    "kind": "ai-building-studio",
+    "theme": "light",
+    "file": "disabled-zero-ai-building-studio-light.png",
+    "viewport": {
+      "width": 1280,
+      "height": 720
+    },
+    "document": {
+      "width": 1280,
+      "height": 720
+    },
+    "workspace": {
+      "x": 72,
+      "y": 98,
+      "width": 1208,
+      "height": 622,
+      "bottom": 720
+    },
+    "composer": {
+      "x": 88,
+      "y": 446,
+      "width": 451,
+      "height": 64,
+      "bottom": 510
+    },
+    "bodyText": "keep the existing gameplay behavior. Tell me which part you would like to change.\n\nDescribe your creation or ask a question\n\nEditing current saved draft · 11111111-1111-4111-8111-111111111111\n\nQuestions are free. Creation and edit requests start automatically and cost 1 credit on delivery.\n\n Reference images\nSend\n\nEnter to send · Shift + Enter for a new line. Creation requests build automatically · 1 credit on delivery.\n\nAn available Building credit is needed to chat or build.\n\nPane widths\nPreview\nEdit\nHistory\nYour building\nViewing Current saved draft\nEditing current saved draft\nView revision\nCurrent saved draft\nGround\nGrass\nSand\nWater\nScale\nGame scale\nEnlarged 3×\nMushroom hospital\nFootprint width (tiles)\n2\nFootprint height (tiles)\n2\nInitial health\n300\nMaximum health\n300\nInterior seats\n4\nConstruction Cost\nWood: 10\nAssignment Limit\n4\nHealing: Duration (steps): 20 · Applies to: workers, explorers, warriors\nAll properties and capabilities\nCompare with\nNo comparison\nEdit & release settings",
+    "errors": [],
+    "violations": []
+  },
+  {
+    "scenario": "disabled-zero",
+    "kind": "terrain-studio",
+    "theme": "light",
+    "file": "disabled-zero-terrain-studio-light.png",
+    "viewport": {
+      "width": 1280,
+      "height": 720
+    },
+    "document": {
+      "width": 1280,
+      "height": 720
+    },
+    "workspace": {
+      "x": 72,
+      "y": 98,
+      "width": 1208,
+      "height": 622,
+      "bottom": 720
+    },
+    "composer": {
+      "x": 88,
+      "y": 462,
+      "width": 451,
+      "height": 64,
+      "bottom": 526
+    },
+    "bodyText": "nd colony with mushroom buildings and broad paths.\n\nTerrain designer\n\nI can refine the design and keep the existing gameplay behavior. Tell me which part you would like to change.\n\nDescribe your creation or ask a question\n\nEditing current saved draft · 1\n\n Reference images\nSend\n\nEnter to send · Shift + Enter for a new line. Creation requests build automatically · 1 credit on delivery.\n\nAn available Terrain credit is needed to chat or build.\n\nPane widths\nPreview\nEdit\nHistory\nYour set\nViewing current saved draft\nEditing current saved draft\n\n1 terrains · 1 resources · revision 1\n\nValidated definitions are importable. Review gameplay on your own maps before relying on balance.\n\nScene and resource gallery\nAnimation phase\n1\n2\n3\n4\nVariation\n1\n2\n3\n4\nPreview current changes\n\nFungal marsh\nGround movement\n0.5×\nResource growth\n1.25×\nMushrooms\nMain material\nfood\nGrowth rate\n3.00× wheat\nSpread rate\n0.33× wheat\nCan be farmed\nYes\nFood: starts at 1, holds 5; one unit per harvest\nEdit & release settings",
+    "errors": [],
+    "violations": []
+  },
+  {
+    "scenario": "disabled-zero",
+    "kind": "map-studio",
+    "theme": "dark",
+    "file": "disabled-zero-map-studio-dark.png",
+    "viewport": {
+      "width": 1280,
+      "height": 720
+    },
+    "document": {
+      "width": 1280,
+      "height": 720
+    },
+    "workspace": {
+      "x": 72,
+      "y": 102,
+      "width": 1208,
+      "height": 618,
+      "bottom": 720
+    },
+    "composer": {
+      "x": 104,
+      "y": 540,
+      "width": 419,
+      "height": 64,
+      "bottom": 603
+    },
+    "bodyText": " change.\n\n◉\nYou\n08:00 AM\n\nCreate a woodland colony with mushroom buildings and broad paths.\n\n✧\nMap designer\n08:00 AM\n\nI can refine the design and keep the existing gameplay behavior. Tell me which part you would like to change.\n\n◉\nYou\n08:00 AM\n\nCreate a woodland colony with mushroom buildings and broad paths.\n\n✧\nMap designer\n08:00 AM\n\nI can refine the design and keep the existing gameplay behavior. Tell me which part you would like to change.\n\nNew map\n256 × 256 · 4 players\n\nNew map\n\nDescribe your map or discuss changes\nEnter to send · Shift + Enter for a new line\nSend\n\nMessages are free. Creation requests build automatically · 1 credit on delivery. Generation is unavailable. Saved projects remain accessible.\n\nPane widths\nPreview\nEdit\nHistory\nMap canvas\nA world of possibilities\nIMAGINATION, MEET POSSIBILITY\nYour next battlefield starts here.\n\nDescribe the landscape you have in mind. Watch its journey from first idea to a world you can play.\n\n256 × 256\n✧\nUNCHARTED TERRITORY\nBuild details",
+    "errors": [],
+    "violations": []
+  },
+  {
+    "scenario": "disabled-zero",
+    "kind": "music-studio",
+    "theme": "dark",
+    "file": "disabled-zero-music-studio-dark.png",
+    "viewport": {
+      "width": 1280,
+      "height": 720
+    },
+    "document": {
+      "width": 1280,
+      "height": 720
+    },
+    "workspace": {
+      "x": 72,
+      "y": 102,
+      "width": 1208,
+      "height": 618,
+      "bottom": 720
+    },
+    "composer": {
+      "x": 88,
+      "y": 530,
+      "width": 451,
+      "height": 64,
+      "bottom": 594
+    },
+    "bodyText": "ine the design and keep the existing gameplay behavior. Tell me which part you would like to change.\n\nYOU\n\nCreate a woodland colony with mushroom buildings and broad paths.\n\nCOMPOSER\n\nI can refine the design and keep the existing gameplay behavior. Tell me which part you would like to change.\n\nYOU\n\nCreate a woodland colony with mushroom buildings and broad paths.\n\nCOMPOSER\n\nI can refine the design and keep the existing gameplay behavior. Tell me which part you would like to change.\n\nNew soundtrack\n\n Settings & references\nYour idea or next change\nEnter to send · Shift + Enter for a new line\nSend\n\nMessages are free. Creation requests build automatically · 1 credit on delivery. Includes all three moods. Generation is unavailable. Saved music remains accessible.\n\nPane widths\nPreview\nEdit\nHistory\nTHE LISTENING ROOM\nYour music takes shape here\nFollowing latest generation\nOne melody. Three moods.\n\nFollow the composition, hear each candidate, and see what the checks find.\n\nCALM\nBUILDING\nCOMBAT",
+    "errors": [],
+    "violations": []
+  },
+  {
+    "scenario": "disabled-zero",
+    "kind": "ai-studio",
+    "theme": "dark",
+    "file": "disabled-zero-ai-studio-dark.png",
+    "viewport": {
+      "width": 1280,
+      "height": 720
+    },
+    "document": {
+      "width": 1280,
+      "height": 720
+    },
+    "workspace": {
+      "x": 72,
+      "y": 98,
+      "width": 1208,
+      "height": 578,
+      "bottom": 676
+    },
+    "composer": {
+      "x": 88,
+      "y": 485,
+      "width": 451,
+      "height": 100,
+      "bottom": 585
+    },
+    "bodyText": " and keep the existing gameplay behavior. Tell me which part you would like to change.\n\ncompleted · 1 credits\n\nCreate a woodland colony with mushroom buildings and broad paths.\n\nI can refine the design and keep the existing gameplay behavior. Tell me which part you would like to change.\n\ncompleted · 1 credits\n\nEditing saved revision 1\n\n Settings & references\nDescribe a change or ask a question\nEnter to send · Shift + Enter for a new line\nSend\n\nCoding requests use up to 100 Colony AI credits. Source acceptance does not mean engine checks passed. Generation is unavailable.\n\nPane widths\nProject\nSaved · revision 1\nRun checks\nPlaytest\nDownload\nPublish\nCode\nChanges\nPlaytest\nai.js\nHistory\nChoose revision\nr1 · initial\nRestore\nUndo revision\nImport\n1\n2\n3\n4\n5\n6\nexport function metadata() { return { apiVersion: 2, name: \"My Colony\" }; }\nexport function step(ctx) {\n  const buildings = ctx.game.buildings({team: ctx.myTeam});\n  for (const building of buildings) building.workers = 2;\n}\nProject actions",
+    "errors": [],
+    "violations": []
+  },
+  {
+    "scenario": "disabled-zero",
+    "kind": "ai-building-studio",
+    "theme": "dark",
+    "file": "disabled-zero-ai-building-studio-dark.png",
+    "viewport": {
+      "width": 1280,
+      "height": 720
+    },
+    "document": {
+      "width": 1280,
+      "height": 720
+    },
+    "workspace": {
+      "x": 72,
+      "y": 98,
+      "width": 1208,
+      "height": 622,
+      "bottom": 720
+    },
+    "composer": {
+      "x": 88,
+      "y": 446,
+      "width": 451,
+      "height": 64,
+      "bottom": 510
+    },
+    "bodyText": "keep the existing gameplay behavior. Tell me which part you would like to change.\n\nDescribe your creation or ask a question\n\nEditing current saved draft · 11111111-1111-4111-8111-111111111111\n\nQuestions are free. Creation and edit requests start automatically and cost 1 credit on delivery.\n\n Reference images\nSend\n\nEnter to send · Shift + Enter for a new line. Creation requests build automatically · 1 credit on delivery.\n\nAn available Building credit is needed to chat or build.\n\nPane widths\nPreview\nEdit\nHistory\nYour building\nViewing Current saved draft\nEditing current saved draft\nView revision\nCurrent saved draft\nGround\nGrass\nSand\nWater\nScale\nGame scale\nEnlarged 3×\nMushroom hospital\nFootprint width (tiles)\n2\nFootprint height (tiles)\n2\nInitial health\n300\nMaximum health\n300\nInterior seats\n4\nConstruction Cost\nWood: 10\nAssignment Limit\n4\nHealing: Duration (steps): 20 · Applies to: workers, explorers, warriors\nAll properties and capabilities\nCompare with\nNo comparison\nEdit & release settings",
+    "errors": [],
+    "violations": []
+  },
+  {
+    "scenario": "disabled-zero",
+    "kind": "terrain-studio",
+    "theme": "dark",
+    "file": "disabled-zero-terrain-studio-dark.png",
+    "viewport": {
+      "width": 1280,
+      "height": 720
+    },
+    "document": {
+      "width": 1280,
+      "height": 720
+    },
+    "workspace": {
+      "x": 72,
+      "y": 98,
+      "width": 1208,
+      "height": 622,
+      "bottom": 720
+    },
+    "composer": {
+      "x": 88,
+      "y": 462,
+      "width": 451,
+      "height": 64,
+      "bottom": 526
+    },
+    "bodyText": "nd colony with mushroom buildings and broad paths.\n\nTerrain designer\n\nI can refine the design and keep the existing gameplay behavior. Tell me which part you would like to change.\n\nDescribe your creation or ask a question\n\nEditing current saved draft · 1\n\n Reference images\nSend\n\nEnter to send · Shift + Enter for a new line. Creation requests build automatically · 1 credit on delivery.\n\nAn available Terrain credit is needed to chat or build.\n\nPane widths\nPreview\nEdit\nHistory\nYour set\nViewing current saved draft\nEditing current saved draft\n\n1 terrains · 1 resources · revision 1\n\nValidated definitions are importable. Review gameplay on your own maps before relying on balance.\n\nScene and resource gallery\nAnimation phase\n1\n2\n3\n4\nVariation\n1\n2\n3\n4\nPreview current changes\n\nFungal marsh\nGround movement\n0.5×\nResource growth\n1.25×\nMushrooms\nMain material\nfood\nGrowth rate\n3.00× wheat\nSpread rate\n0.33× wheat\nCan be farmed\nYes\nFood: starts at 1, holds 5; one unit per harvest\nEdit & release settings",
+    "errors": [],
+    "violations": []
+  },
+  {
+    "scenario": "short-keyboard",
+    "kind": "map-studio",
+    "theme": "light",
+    "file": "short-keyboard-map-studio-light.png",
+    "viewport": {
+      "width": 412,
+      "height": 420
+    },
+    "document": {
+      "width": 412,
+      "height": 420
+    },
+    "workspace": {
+      "x": 0,
+      "y": 61,
+      "width": 412,
+      "height": 359,
+      "bottom": 420
+    },
+    "composer": {
+      "x": 32,
+      "y": 363,
+      "width": 348,
+      "height": 64,
+      "bottom": 427
+    },
+    "bodyText": "\nMap designer\n08:00 AM\n\nI can refine the design and keep the existing gameplay behavior. Tell me which part you would like to change.\n\n◉\nYou\n08:00 AM\n\nCreate a woodland colony with mushroom buildings and broad paths.\n\n✧\nMap designer\n08:00 AM\n\nI can refine the design and keep the existing gameplay behavior. Tell me which part you would like to change.\n\n◉\nYou\n08:00 AM\n\nCreate a woodland colony with mushroom buildings and broad paths.\n\n✧\nMap designer\n08:00 AM\n\nI can refine the design and keep the existing gameplay behavior. Tell me which part you would like to change.\n\n◉\nYou\n08:00 AM\n\nCreate a woodland colony with mushroom buildings and broad paths.\n\n✧\nMap designer\n08:00 AM\n\nI can refine the design and keep the existing gameplay behavior. Tell me which part you would like to change.\n\nNew map\n256 × 256 · 4 players\n\nNew map\n\nDescribe your map or discuss changes\nEnter to send · Shift + Enter for a new line\nSend\n\nMessages are free. Creation requests build automatically · 1 credit on delivery.",
+    "errors": [],
+    "violations": []
+  },
+  {
+    "scenario": "short-keyboard",
+    "kind": "music-studio",
+    "theme": "light",
+    "file": "short-keyboard-music-studio-light.png",
+    "viewport": {
+      "width": 412,
+      "height": 420
+    },
+    "document": {
+      "width": 412,
+      "height": 420
+    },
+    "workspace": {
+      "x": 0,
+      "y": 61,
+      "width": 412,
+      "height": 359,
+      "bottom": 420
+    },
+    "composer": {
+      "x": 16,
+      "y": 369,
+      "width": 380,
+      "height": 54,
+      "bottom": 423
+    },
+    "bodyText": "ange.\n\nYOU\n\nCreate a woodland colony with mushroom buildings and broad paths.\n\nCOMPOSER\n\nI can refine the design and keep the existing gameplay behavior. Tell me which part you would like to change.\n\nYOU\n\nCreate a woodland colony with mushroom buildings and broad paths.\n\nCOMPOSER\n\nI can refine the design and keep the existing gameplay behavior. Tell me which part you would like to change.\n\nYOU\n\nCreate a woodland colony with mushroom buildings and broad paths.\n\nCOMPOSER\n\nI can refine the design and keep the existing gameplay behavior. Tell me which part you would like to change.\n\nYOU\n\nCreate a woodland colony with mushroom buildings and broad paths.\n\nCOMPOSER\n\nI can refine the design and keep the existing gameplay behavior. Tell me which part you would like to change.\n\nNew soundtrack\n\n Settings & references\nYour idea or next change\nEnter to send · Shift + Enter for a new line\nSend\n\nMessages are free. Creation requests build automatically · 1 credit on delivery. Includes all three moods.",
+    "errors": [],
+    "violations": []
+  },
+  {
+    "scenario": "short-keyboard",
+    "kind": "ai-studio",
+    "theme": "light",
+    "file": "short-keyboard-ai-studio-light.png",
+    "viewport": {
+      "width": 412,
+      "height": 420
+    },
+    "document": {
+      "width": 412,
+      "height": 420
+    },
+    "workspace": {
+      "x": 0,
+      "y": 131,
+      "width": 412,
+      "height": 245,
+      "bottom": 376
+    },
+    "composer": {
+      "x": 16,
+      "y": 410,
+      "width": 380,
+      "height": 100,
+      "bottom": 510
+    },
+    "bodyText": "paths.\n\nI can refine the design and keep the existing gameplay behavior. Tell me which part you would like to change.\n\ncompleted · 1 credits\n\nCreate a woodland colony with mushroom buildings and broad paths.\n\nI can refine the design and keep the existing gameplay behavior. Tell me which part you would like to change.\n\ncompleted · 1 credits\n\nCreate a woodland colony with mushroom buildings and broad paths.\n\nI can refine the design and keep the existing gameplay behavior. Tell me which part you would like to change.\n\ncompleted · 1 credits\n\nCreate a woodland colony with mushroom buildings and broad paths.\n\nI can refine the design and keep the existing gameplay behavior. Tell me which part you would like to change.\n\ncompleted · 1 credits\n\nEditing saved revision 1\n\n Settings & references\nDescribe a change or ask a question\nEnter to send · Shift + Enter for a new line\nSend\n\nCoding requests use up to 100 Colony AI credits. Source acceptance does not mean engine checks passed.\n\nProject actions",
+    "errors": [],
+    "violations": []
+  },
+  {
+    "scenario": "short-keyboard",
+    "kind": "ai-building-studio",
+    "theme": "light",
+    "file": "short-keyboard-ai-building-studio-light.png",
+    "viewport": {
+      "width": 412,
+      "height": 420
+    },
+    "document": {
+      "width": 412,
+      "height": 420
+    },
+    "workspace": {
+      "x": 0,
+      "y": 97,
+      "width": 412,
+      "height": 323,
+      "bottom": 420
+    },
+    "composer": {
+      "x": 16,
+      "y": 372,
+      "width": 380,
+      "height": 64,
+      "bottom": 435
+    },
+    "bodyText": "havior. Tell me which part you would like to change.\n\nYou\n\nCreate a woodland colony with mushroom buildings and broad paths.\n\nBuilding designer\n\nI can refine the design and keep the existing gameplay behavior. Tell me which part you would like to change.\n\nYou\n\nCreate a woodland colony with mushroom buildings and broad paths.\n\nBuilding designer\n\nI can refine the design and keep the existing gameplay behavior. Tell me which part you would like to change.\n\nYou\n\nCreate a woodland colony with mushroom buildings and broad paths.\n\nBuilding designer\n\nI can refine the design and keep the existing gameplay behavior. Tell me which part you would like to change.\n\nDescribe your creation or ask a question\n\nEditing current saved draft · 11111111-1111-4111-8111-111111111111\n\nQuestions are free. Creation and edit requests start automatically and cost 1 credit on delivery.\n\n Reference images\nSend\n\nEnter to send · Shift + Enter for a new line. Creation requests build automatically · 1 credit on delivery.",
+    "errors": [],
+    "violations": []
+  },
+  {
+    "scenario": "short-keyboard",
+    "kind": "terrain-studio",
+    "theme": "light",
+    "file": "short-keyboard-terrain-studio-light.png",
+    "viewport": {
+      "width": 412,
+      "height": 420
+    },
+    "document": {
+      "width": 412,
+      "height": 420
+    },
+    "workspace": {
+      "x": 0,
+      "y": 97,
+      "width": 412,
+      "height": 323,
+      "bottom": 420
+    },
+    "composer": {
+      "x": 16,
+      "y": 352,
+      "width": 380,
+      "height": 64,
+      "bottom": 416
+    },
+    "bodyText": "e a woodland colony with mushroom buildings and broad paths.\n\nTerrain designer\n\nI can refine the design and keep the existing gameplay behavior. Tell me which part you would like to change.\n\nYou\n\nCreate a woodland colony with mushroom buildings and broad paths.\n\nTerrain designer\n\nI can refine the design and keep the existing gameplay behavior. Tell me which part you would like to change.\n\nYou\n\nCreate a woodland colony with mushroom buildings and broad paths.\n\nTerrain designer\n\nI can refine the design and keep the existing gameplay behavior. Tell me which part you would like to change.\n\nYou\n\nCreate a woodland colony with mushroom buildings and broad paths.\n\nTerrain designer\n\nI can refine the design and keep the existing gameplay behavior. Tell me which part you would like to change.\n\nDescribe your creation or ask a question\n\nEditing current saved draft · 1\n\n Reference images\nSend\n\nEnter to send · Shift + Enter for a new line. Creation requests build automatically · 1 credit on delivery.",
+    "errors": [],
+    "violations": []
+  },
+  {
+    "scenario": "short-keyboard",
+    "kind": "map-studio",
+    "theme": "dark",
+    "file": "short-keyboard-map-studio-dark.png",
+    "viewport": {
+      "width": 412,
+      "height": 420
+    },
+    "document": {
+      "width": 412,
+      "height": 420
+    },
+    "workspace": {
+      "x": 0,
+      "y": 61,
+      "width": 412,
+      "height": 359,
+      "bottom": 420
+    },
+    "composer": {
+      "x": 32,
+      "y": 363,
+      "width": 348,
+      "height": 64,
+      "bottom": 427
+    },
+    "bodyText": "\nMap designer\n08:00 AM\n\nI can refine the design and keep the existing gameplay behavior. Tell me which part you would like to change.\n\n◉\nYou\n08:00 AM\n\nCreate a woodland colony with mushroom buildings and broad paths.\n\n✧\nMap designer\n08:00 AM\n\nI can refine the design and keep the existing gameplay behavior. Tell me which part you would like to change.\n\n◉\nYou\n08:00 AM\n\nCreate a woodland colony with mushroom buildings and broad paths.\n\n✧\nMap designer\n08:00 AM\n\nI can refine the design and keep the existing gameplay behavior. Tell me which part you would like to change.\n\n◉\nYou\n08:00 AM\n\nCreate a woodland colony with mushroom buildings and broad paths.\n\n✧\nMap designer\n08:00 AM\n\nI can refine the design and keep the existing gameplay behavior. Tell me which part you would like to change.\n\nNew map\n256 × 256 · 4 players\n\nNew map\n\nDescribe your map or discuss changes\nEnter to send · Shift + Enter for a new line\nSend\n\nMessages are free. Creation requests build automatically · 1 credit on delivery.",
+    "errors": [],
+    "violations": []
+  },
+  {
+    "scenario": "short-keyboard",
+    "kind": "music-studio",
+    "theme": "dark",
+    "file": "short-keyboard-music-studio-dark.png",
+    "viewport": {
+      "width": 412,
+      "height": 420
+    },
+    "document": {
+      "width": 412,
+      "height": 420
+    },
+    "workspace": {
+      "x": 0,
+      "y": 61,
+      "width": 412,
+      "height": 359,
+      "bottom": 420
+    },
+    "composer": {
+      "x": 16,
+      "y": 369,
+      "width": 380,
+      "height": 54,
+      "bottom": 423
+    },
+    "bodyText": "ange.\n\nYOU\n\nCreate a woodland colony with mushroom buildings and broad paths.\n\nCOMPOSER\n\nI can refine the design and keep the existing gameplay behavior. Tell me which part you would like to change.\n\nYOU\n\nCreate a woodland colony with mushroom buildings and broad paths.\n\nCOMPOSER\n\nI can refine the design and keep the existing gameplay behavior. Tell me which part you would like to change.\n\nYOU\n\nCreate a woodland colony with mushroom buildings and broad paths.\n\nCOMPOSER\n\nI can refine the design and keep the existing gameplay behavior. Tell me which part you would like to change.\n\nYOU\n\nCreate a woodland colony with mushroom buildings and broad paths.\n\nCOMPOSER\n\nI can refine the design and keep the existing gameplay behavior. Tell me which part you would like to change.\n\nNew soundtrack\n\n Settings & references\nYour idea or next change\nEnter to send · Shift + Enter for a new line\nSend\n\nMessages are free. Creation requests build automatically · 1 credit on delivery. Includes all three moods.",
+    "errors": [],
+    "violations": []
+  },
+  {
+    "scenario": "short-keyboard",
+    "kind": "ai-studio",
+    "theme": "dark",
+    "file": "short-keyboard-ai-studio-dark.png",
+    "viewport": {
+      "width": 412,
+      "height": 420
+    },
+    "document": {
+      "width": 412,
+      "height": 420
+    },
+    "workspace": {
+      "x": 0,
+      "y": 131,
+      "width": 412,
+      "height": 245,
+      "bottom": 376
+    },
+    "composer": {
+      "x": 16,
+      "y": 410,
+      "width": 380,
+      "height": 100,
+      "bottom": 510
+    },
+    "bodyText": "paths.\n\nI can refine the design and keep the existing gameplay behavior. Tell me which part you would like to change.\n\ncompleted · 1 credits\n\nCreate a woodland colony with mushroom buildings and broad paths.\n\nI can refine the design and keep the existing gameplay behavior. Tell me which part you would like to change.\n\ncompleted · 1 credits\n\nCreate a woodland colony with mushroom buildings and broad paths.\n\nI can refine the design and keep the existing gameplay behavior. Tell me which part you would like to change.\n\ncompleted · 1 credits\n\nCreate a woodland colony with mushroom buildings and broad paths.\n\nI can refine the design and keep the existing gameplay behavior. Tell me which part you would like to change.\n\ncompleted · 1 credits\n\nEditing saved revision 1\n\n Settings & references\nDescribe a change or ask a question\nEnter to send · Shift + Enter for a new line\nSend\n\nCoding requests use up to 100 Colony AI credits. Source acceptance does not mean engine checks passed.\n\nProject actions",
+    "errors": [],
+    "violations": []
+  },
+  {
+    "scenario": "short-keyboard",
+    "kind": "ai-building-studio",
+    "theme": "dark",
+    "file": "short-keyboard-ai-building-studio-dark.png",
+    "viewport": {
+      "width": 412,
+      "height": 420
+    },
+    "document": {
+      "width": 412,
+      "height": 420
+    },
+    "workspace": {
+      "x": 0,
+      "y": 97,
+      "width": 412,
+      "height": 323,
+      "bottom": 420
+    },
+    "composer": {
+      "x": 16,
+      "y": 372,
+      "width": 380,
+      "height": 64,
+      "bottom": 435
+    },
+    "bodyText": "havior. Tell me which part you would like to change.\n\nYou\n\nCreate a woodland colony with mushroom buildings and broad paths.\n\nBuilding designer\n\nI can refine the design and keep the existing gameplay behavior. Tell me which part you would like to change.\n\nYou\n\nCreate a woodland colony with mushroom buildings and broad paths.\n\nBuilding designer\n\nI can refine the design and keep the existing gameplay behavior. Tell me which part you would like to change.\n\nYou\n\nCreate a woodland colony with mushroom buildings and broad paths.\n\nBuilding designer\n\nI can refine the design and keep the existing gameplay behavior. Tell me which part you would like to change.\n\nDescribe your creation or ask a question\n\nEditing current saved draft · 11111111-1111-4111-8111-111111111111\n\nQuestions are free. Creation and edit requests start automatically and cost 1 credit on delivery.\n\n Reference images\nSend\n\nEnter to send · Shift + Enter for a new line. Creation requests build automatically · 1 credit on delivery.",
+    "errors": [],
+    "violations": []
+  },
+  {
+    "scenario": "short-keyboard",
+    "kind": "terrain-studio",
+    "theme": "dark",
+    "file": "short-keyboard-terrain-studio-dark.png",
+    "viewport": {
+      "width": 412,
+      "height": 420
+    },
+    "document": {
+      "width": 412,
+      "height": 420
+    },
+    "workspace": {
+      "x": 0,
+      "y": 97,
+      "width": 412,
+      "height": 323,
+      "bottom": 420
+    },
+    "composer": {
+      "x": 16,
+      "y": 352,
+      "width": 380,
+      "height": 64,
+      "bottom": 416
+    },
+    "bodyText": "e a woodland colony with mushroom buildings and broad paths.\n\nTerrain designer\n\nI can refine the design and keep the existing gameplay behavior. Tell me which part you would like to change.\n\nYou\n\nCreate a woodland colony with mushroom buildings and broad paths.\n\nTerrain designer\n\nI can refine the design and keep the existing gameplay behavior. Tell me which part you would like to change.\n\nYou\n\nCreate a woodland colony with mushroom buildings and broad paths.\n\nTerrain designer\n\nI can refine the design and keep the existing gameplay behavior. Tell me which part you would like to change.\n\nYou\n\nCreate a woodland colony with mushroom buildings and broad paths.\n\nTerrain designer\n\nI can refine the design and keep the existing gameplay behavior. Tell me which part you would like to change.\n\nDescribe your creation or ask a question\n\nEditing current saved draft · 1\n\n Reference images\nSend\n\nEnter to send · Shift + Enter for a new line. Creation requests build automatically · 1 credit on delivery.",
+    "errors": [],
+    "violations": []
+  }
+]
