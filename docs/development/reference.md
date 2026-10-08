@@ -1271,9 +1271,11 @@ For timing and scheduling, start with `src/game/Game_sync.cpp` and `src/engine/E
   pre-edit field for up to the delay. Fields a building has never had (or lost to
   idle eviction or its own move, type or range change), queue overflow (more than
   64 waiting requests) and maps without a game build synchronously.
-  `Map::predictBuildingDepth`, the generated
-  [depth model](../building-gradient-depth-model.md), only moves search work between
-  worker and owner; `GLOB2_BUILDING_DEPTH=full|table|lazy` overrides it for timing.
+  `Map::predictBuildingDepth` reads the generated
+  [depth model](../building-gradient-depth-model.md) from the field's own past
+  depths (its serving search's settled cost and `settledCostHint`). It only moves
+  search work between worker and owner; `GLOB2_BUILDING_DEPTH=full|table|lazy`
+  or an operating point name overrides it for timing.
 - The executor ring holds 65 batches: each deferred producer holds at most its
   horizon plus one (AI decisions 8, periodic gradients 16, building gradients 8, resource growth 16),
   plus headroom. Gradient jobs use no AI controller lane and submit no nested

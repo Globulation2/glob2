@@ -2,6 +2,7 @@
 #pragma once
 #include "BuildingGradientPipeline.h"
 #include "BuildingGradientSearch.h"
+#include "BuildingGradientStats.h"
 #include "SeedCells.h"
 #include <cstdint>
 #include <memory>
@@ -26,6 +27,8 @@ struct Job
 	// workers never read either.
 	std::uint32_t epoch = 0, captureTick = 0, generation = 0;
 	int depthTarget = 0;
+	// Diagnostics only (BuildingGradientStats): the depth inputs at staging.
+	BuildingGradientStats::Context statsContext;
 	// Owner scalars and immutable cost planes, taken at the observation boundary
 	// together with the snapshot lease the seeder reads.
 	gradient_preparation::BuildingSeed seed;

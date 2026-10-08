@@ -34,17 +34,26 @@ class BuildingGradientStats
 
 	static constexpr int DEPTH_BINS = BuildingGradientSearch::DEPTH_BINS;
 
-	// The building and its team when a lifetime starts: the inputs a depth
-	// prediction made at rebuild time could read, each in O(1).
+	// The building and its team when a lifetime's depth was decided: at staging
+	// for a scheduled field, at the build itself otherwise. These are the inputs
+	// a depth prediction could read, each in O(1).
 	struct Context
 	{
 		bool known = false;
+		bool staged = false; // taken when a scheduled job was staged
 		std::int16_t level = 0;
 		bool site = false;
 		std::uint8_t construction = 0; // BuildingStateRecord::ConstructionResultState
 		std::int8_t progress = -1; // delivered/needed material quartile 0..3 on sites
 		std::uint16_t units = 0, buildings = 0;
+		// The depth model's inputs: settledCostHint, the depth the last replaced
+		// lifetime settled, and the serving field's settled depth so far; -1 if
+		// unknown.
+		std::int32_t previousHint = -1, servingSettled = -1;
 	};
+	static Context context(const Building &building, int slot);
+	// The next fieldRebuilding call uses this context, taken at staging.
+	void setPendingContext(const Context &value) { pendingContext = value; }
 
 	struct Row
 	{
@@ -95,7 +104,6 @@ class BuildingGradientStats
 		Reason reason = Reason::Other;
 		Context context;
 	};
-	static Context context(const Building &building);
 
 	Row previousRow(const Building &building, int slot, Event event, std::uint32_t tick, bool hasPrevious, int access);
 	void closeLifetime(Row &row, const Building &building, int slot);
@@ -105,6 +113,7 @@ class BuildingGradientStats
 	int mapWidth = 0, mapHeight = 0;
 
 	Reason pendingReason = Reason::Other;
+	Context pendingContext;
 	std::vector<Row> rowList;
 	std::vector<std::string> typeNames;
 	std::unordered_map<std::string, std::uint16_t> typeIndices;
