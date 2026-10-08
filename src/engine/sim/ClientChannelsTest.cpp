@@ -116,6 +116,48 @@ TEST_SUITE("ClientChannels")
 		CHECK(queue.empty());
 	}
 
+	TEST_CASE("cleared queues discard pending events and accept a fresh batch")
+	{
+		LosslessQueue<int> queue;
+		queue.push(1);
+		queue.push(2);
+		queue.clear();
+		CHECK(queue.empty());
+		std::vector<int> seen;
+		queue.drain([&](int value) { seen.push_back(value); });
+		CHECK(seen.empty());
+		queue.clear();
+		queue.push(3);
+		queue.drain([&](int value) { seen.push_back(value); });
+		CHECK(seen == std::vector<int>{3});
+		CHECK(queue.empty());
+	}
+
+	TEST_CASE("simultaneous producers retain their order without lost or duplicate events")
+	{
+		if constexpr (!GAGCore::ThreadSupport::available) return;
+		LosslessQueue<std::pair<unsigned, unsigned>> queue;
+		std::atomic<unsigned> finished{0};
+		constexpr unsigned count = 10000;
+		auto produce = [&](unsigned producer) {
+			for (unsigned i = 0; i < count; ++i) queue.push({producer, i});
+			finished.fetch_add(1, std::memory_order_release);
+		};
+		std::thread first(produce, 0), second(produce, 1);
+		std::array<unsigned, 2> received{};
+		bool ordered = true;
+		do {
+			queue.drain([&](const auto &value) {
+				ordered &= value.second == received[value.first]++;
+			});
+			std::this_thread::yield();
+		} while (finished.load(std::memory_order_acquire) != 2 || !queue.empty());
+		first.join();
+		second.join();
+		CHECK(ordered);
+		CHECK(received == std::array<unsigned, 2>{count, count});
+	}
+
 	TEST_CASE("concurrent event delivery preserves every value and coherent pulses")
 	{
 		if constexpr (!GAGCore::ThreadSupport::available) return;
