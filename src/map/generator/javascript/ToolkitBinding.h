@@ -6,6 +6,7 @@
 #include "Grid.h"
 #include "scripting/javascript/QuickJSOwnership.h"
 #include <cmath>
+#include "Glob2Math.h"
 #include <functional>
 #include <limits>
 #include <map>
@@ -534,13 +535,13 @@ template <class T> T Binding::read(JSValueConst value)
 		if constexpr (std::is_enum_v<T>)
 		{
 			using U = std::underlying_type_t<T>;
-			if (std::trunc(n) != n || n < double(std::numeric_limits<U>::lowest()) ||
+			if (glob2_math_trunc(n) != n || n < double(std::numeric_limits<U>::lowest()) ||
 				n > double(std::numeric_limits<U>::max()))
 				throw TypeMismatch("Enum outside range");
 		}
 		else if constexpr (std::is_integral_v<T>)
 		{
-			if (std::trunc(n) != n || n < double(std::numeric_limits<T>::lowest()) ||
+			if (glob2_math_trunc(n) != n || n < double(std::numeric_limits<T>::lowest()) ||
 				n > double(std::numeric_limits<T>::max()) || std::abs(n) > 9007199254740991.0)
 				throw TypeMismatch("Integer outside exact range");
 		}
