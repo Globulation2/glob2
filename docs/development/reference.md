@@ -98,10 +98,19 @@ presentation does not lease resource-gradient fields.
 
 All parallel simulation work shares the map's `ComputeExecutor`
 (`src/common/ComputeExecutor.h`): blocking `run()` batches for map computation and
-deferred batches for AI decisions and periodic gradients. AI controller lanes
-preserve decision order; gradient jobs need no lane. `AIEngine::Pipeline` submits one batch per
-tick with one job per controller on that controller's lane, and joins it at the
-deadline, executing remaining jobs itself from the oldest live batch forward. The
+deferred batches for AI decisions and periodic gradients. Each deferred batch carries the tick it is due. Workers run deferred
+jobs earliest due first, in submission order within a lane. The owner never runs
+deferred work while a worker exists: at a join it only waits, even when the only
+worker also runs presentation, which that worker interleaves with simulation jobs
+(so a join may wait out one presentation chunk). Only an executor with no workers
+runs deferred jobs on the owner, at the join, because nothing else can. This keeps
+owner time split cleanly into owner work and owner wait (`compute_owner_jobs` is
+zero whenever workers exist). A producer that opts out of sharing (`--compute-experiments`
+without `ai`, `--gradient-workers 0`, or a cheap AI batch at delay 0) computes
+inline when it submits, outside the executor, and still publishes at the deadline.
+AI controller lanes preserve decision order; gradient jobs need no lane.
+`AIEngine::Pipeline` submits one batch per tick with one job per controller on
+that controller's lane, and joins it at the deadline. The
 match-wide `GameHeader::aiOrderDelay` is an integer from 0 through 8, defaulting
 to 8 for new games. An order observed at logical tick `t` is delivered at `t + delay`. Thread
 count and completion time never choose that deadline or which decision a

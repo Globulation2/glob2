@@ -64,6 +64,12 @@ public:
 	using Work = std::function<void(Job &, GradientWorkspace &)>;
 	// Simulation-owner callback observes publication, never computation.
 	std::function<void(std::uint16_t**)> onPublished;
+	// Executor due key of a job published `remaining` advances from now. The
+	// Map maps it onto simulation ticks; standalone use orders by this
+	// pipeline's own ticks.
+	std::function<std::uint64_t(unsigned remaining)> deadline;
+	static constexpr unsigned MaxDelay = 16;
+	static_assert(MaxDelay <= ComputeExecutor::GradientHorizon);
 	struct Metrics { std::uint64_t jobs=0, published=0, discarded=0, waitNs=0, maxPending=0, preparationNs=0; } metrics;
 private:
 	std::deque<std::unique_ptr<Job>> pending;
@@ -200,8 +206,12 @@ public:
 	template<class Seed> void prepare(Job *ptr, Seed &&seed) {
 		try {
 			ptr->seed = std::forward<Seed>(seed);
+			// Owner-only execution computes now; publication keeps its deadline.
+			if (!shared) { execute(*ptr, workspaces[0]); return; }
 			const ComputeExecutor::Group group{1, {&run, ptr}, ComputeExecutor::NoLane};
-			ptr->batch = executor->submit(std::span(&group, 1), shared ? ComputeExecutor::Placement::Shared : ComputeExecutor::Placement::OwnerOnly);
+			const unsigned remaining = unsigned(ptr->due - tick);
+			ptr->batch = executor->submit(std::span(&group, 1),
+				deadline ? deadline(remaining) : ComputeExecutor::advanceDue(ptr->due));
 		} catch (...) {
 			ptr->seed = {}; ptr->snapshotLease.reset(); ptr->water.reset();
 			ptr->terrain.reset(); ptr->registry.reset(); ptr->profiles.reset();

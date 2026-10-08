@@ -182,7 +182,7 @@ TEST_SUITE("AIOrderScheduler")
 		for (unsigned tick = 0; tick < 4; ++tick) CHECK(scheduler.takeDue(tick).empty());
 		REQUIRE(scheduler.takeDue(4).size() == 1);
 	}
-	TEST_CASE("placement follows the delay and the measured decision work")
+	TEST_CASE("sharing follows the delay and the measured decision work")
 	{
 		const auto poll = [](TestScheduler& scheduler, Uint32 tick, unsigned players, std::chrono::microseconds work) {
 			for (unsigned player = 0; player < players; ++player)

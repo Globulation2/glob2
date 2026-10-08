@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "Glob2Test.h"
+#include <algorithm>
 #include <memory>
 #include <utility>
 #include <chrono>
@@ -159,15 +160,21 @@ TEST_CASE("gradient and AI batches share the maximum deferred horizon" * doctest
         pipeline.configure(executor,true,16,1,[](auto& job,auto&) { ++job.data[0]; });
         struct AIJob { unsigned value=0; ComputeExecutor::Batch batch; };
         std::array<AIJob,100> ai;
+        std::size_t peak=0;
         for (unsigned tick=1; tick<ai.size(); ++tick) {
             pipeline.advance();
             if (tick>16) CHECK(field[0]==tick-16);
             const ComputeExecutor::Group group{1,{[](void* p,size_t) { ++static_cast<AIJob*>(p)->value; }, &ai[tick]},0};
-            ai[tick].batch=executor.submit(std::span(&group,1));
+            ai[tick].batch=executor.submit(std::span(&group,1),ComputeExecutor::boundaryDue(tick+8));
             pipeline.submit(&field,0,[tick](auto& job) { job.data[0]=tick-1; });
             if (tick>8) { executor.join(ai[tick-8].batch); CHECK(ai[tick-8].value==1); }
             CHECK(executor.liveBatches()<=ComputeExecutor::Slots);
+            peak=std::max(peak,executor.liveBatches());
         }
+        // A batch holds its slot from submission to its join, so the peak is
+        // each producer's horizon plus one (17 + 9), within Slots.
+        CHECK(peak<=(16+1)+(8+1));
+        CHECK(peak<ComputeExecutor::Slots);
         pipeline.finish();
         for(auto& job:ai) executor.join(job.batch);
         CHECK(field[0]==83); // Finishing private work does not publish it.
@@ -175,20 +182,18 @@ TEST_CASE("gradient and AI batches share the maximum deferred horizon" * doctest
     }
 }
 
-TEST_CASE("owner-only preparation remains deferred and errors survive unrelated joins" * doctest::test_suite("GradientPipeline"))
+TEST_CASE("owner-only preparation computes at submission and errors surface at the deadline" * doctest::test_suite("GradientPipeline"))
 {
-    ComputeExecutor executor; executor.configure(1);
+    ComputeExecutor executor; executor.configure(2);
     GradientPipeline pipeline;
     auto* field=new std::uint16_t[1]{};
     pipeline.configure(executor,false,2,1,[](auto&,auto&) { FAIL("failed seed must not propagate"); });
     pipeline.advance();
     bool seeded=false;
     pipeline.submit(&field,0,[&](auto&) { seeded=true; throw std::runtime_error("seed failure"); });
-    CHECK_FALSE(seeded);
-    const ComputeExecutor::Group unrelated{1,{[](void*,size_t){},nullptr}};
-    auto batch=executor.submit(std::span(&unrelated,1));
-    executor.join(batch); // Retires the finished gradient batch too.
+    // Computed inline by the owner; the executor never saw it.
     CHECK(seeded);
+    CHECK(executor.metrics().deferredBatches==0);
     CHECK_THROWS_AS(pipeline.finish(),std::runtime_error);
     pipeline.advance();
     CHECK_THROWS_AS(pipeline.advance(),std::runtime_error);

@@ -546,7 +546,6 @@ struct HeadlessRunner
 			<< ",\"compute_deferred_jobs\":" << game.map.computeExecutor().metrics().deferredJobs
 			<< ",\"compute_owner_jobs\":" << game.map.computeExecutor().metrics().ownerJobs
 			<< ",\"compute_worker_jobs\":" << game.map.computeExecutor().metrics().workerJobs
-			<< ",\"compute_lane_wait_ns\":" << game.map.computeExecutor().metrics().laneWaitNs
 			<< ",\"compute_join_wait_ns\":" << game.map.computeExecutor().metrics().joinWaitNs
 			<< ",\"ai_pipeline\":{";
 		bool metricComma=false;

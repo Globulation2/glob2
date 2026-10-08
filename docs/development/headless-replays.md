@@ -416,7 +416,7 @@ that replay floor. Network protocol 51 requires compact-map readers and rejects
 older and newer clients. Background save finalization owns a captured state and
 does not advance simulation; continuation checks must still compare the same
 captured tick, seed and orders. Routing worker availability affects wall time only:
-the serial fallback publishes on the same ticks. Headless `--gradient-workers 0` is the deterministic owner-only seeding and propagation control.
+the serial fallback publishes on the same ticks. Headless `--gradient-workers 0` is the deterministic owner-only seeding and propagation control: the owner computes each periodic gradient job when it submits it, and publication keeps its deadline.
 
 Periodic material, market, guard and clear gradients use the same executor as AI.
 Their immutable inputs are captured at the completed-tick boundary; seeding and

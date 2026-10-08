@@ -1271,8 +1271,14 @@ icon opacity. It catches an opaque building disappearing abruptly at the fade's 
 Build `scons release=1 server=0 unit-tests path-gradient-test
 building-gradient-invalidation-test`. The `ComputeExecutor` unit suite checks exclusive
 slots, barriers, nested batches, exception propagation, reuse and reconfiguration.
-It also gates presentation work while simulation batches and deadline joins finish,
-and verifies pending replacement, cancellation, serial pumping and capture release.
+For deferred batches it checks earliest-due ordering (ties and lane order by
+submission), that the owner only waits at a join whenever a worker exists, that an
+executor with no workers runs the jobs due no later than the join inline, and that
+with one worker shared with presentation a join waits out the running chunk and then
+completes in due order with no owner jobs. Producers that opt out of sharing compute
+inline at submission (`GradientPipeline` owner-only case). It also gates presentation
+work while simulation batches and deadline joins finish, and verifies pending
+replacement, cancellation, serial pumping and capture release.
 The path oracle also exercises independent eager/lazy searches at 1/2/4/8 threads;
 the building invalidation harness compares real area/building seed fields and
 frozen hiring advancement. Linux/Windows CI run the executor and path oracle.

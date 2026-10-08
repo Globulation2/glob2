@@ -178,17 +178,17 @@ The engine polls each eligible controller at most once per logical tick. A tick'
 decisions form one deferred batch on the map's compute executor, one job per controller
 on that controller's lane: a controller's jobs run in FIFO order without overlap, while
 different controllers may run concurrently with each other and with map computation.
-One match-wide delay of 0–8 ticks sets the order's deadline. At the deadline the owner
-joins the batch, executing remaining jobs itself from the oldest live batch forward, then
-publishes the complete batch in player order. A slow worker cannot postpone an order's
+One match-wide delay of 0–8 ticks sets the order's deadline, which is also the
+batch's due tick: workers run deferred batches earliest due first. At the deadline
+the owner waits for the batch (it runs no shared jobs itself), then publishes the
+complete batch in player order. A slow worker cannot postpone an order's
 logical execution tick. Paused games submit no decisions and advance no deadline clock.
 Delay zero still uses captured inputs and the same scheduler: its batch is submitted and
-joined inside the tick, so the owner works alongside the compute threads rather than
-waiting on a separate pool. Waking a worker costs more than a few microseconds of
+joined inside the tick. Waking a worker costs more than a few microseconds of
 decision work, so a delay-zero batch is shared with the workers only when it has more
 than one decision and the smoothed decision work of recent batches is at least 100 µs;
-otherwise the owner runs it alone. The placement changes which thread runs a decision,
-never its result.
+otherwise the owner decides it inline when it dispatches, outside the executor. That
+choice changes which thread runs a decision, never its result.
 
 Orders carry observed target incarnations. The execution boundary rejects a missing or
 replaced target and queues immutable accepted/rejected feedback for a later decision.
@@ -206,9 +206,10 @@ and the AI controller count, with a minimum of one. This leaves background capac
 for periodic gradients even in games without AI. Ordinary GUI and legacy `--nox` runs accept `--ai-threads N`.
 The count is the compute executor's thread count including the simulation owner; periodic gradients share this executor, and with
 `ai` enabled, AI decisions share those threads too. The legacy name `--ai-threads`
-therefore sizes all shared compute work. `--compute-experiments none` keeps the
-decisions on the owner at the same deadlines (an owner-only batch), as do thread creation
-failure and platforms without threads.
+therefore sizes all shared compute work. `--compute-experiments none` has the owner
+decide inline when each batch is dispatched, delivering at the same deadlines. Thread
+creation failure and platforms without threads leave an executor with no workers,
+whose owner runs each batch at its join.
 A loaded match's configured delay cannot be overridden.
 
 Map computation runs as blocking batches on the same executor, whose thread count
@@ -224,10 +225,12 @@ modes use inline scheduled AI decisions. Measure the additional work separately.
 `result.json` retains the map executor's `compute_threads`, `compute_experiments`,
 `compute_batches`, `compute_jobs`, `compute_parallel_batches`, `compute_batch_ns`,
 `compute_deferred_batches`, `compute_deferred_jobs`, `compute_owner_jobs`,
-`compute_worker_jobs`, `compute_lane_wait_ns`, `compute_join_wait_ns`,
-`compute_wait_ns`, and `compute_active_elapsed_ns`. The deferred, owner, worker and
-lane/join wait figures are the AI decision batches as the executor saw them; the
-`ai_pipeline` object reports the scheduler's own view of the same work.
+`compute_worker_jobs`, `compute_join_wait_ns`, `compute_wait_ns`, and
+`compute_active_elapsed_ns`. The deferred, owner, worker and join wait figures cover
+every deferred batch (AI decisions and periodic gradients) as the executor
+saw them. `compute_owner_jobs` is zero whenever the executor has workers, since the
+owner only waits at joins; `compute_join_wait_ns` is that waiting. The
+`ai_pipeline` object reports the AI scheduler's own view of its work.
 `hiring_prepasses` counts candidate-scan hooks and
 `hiring_popped_entries` counts advanced entries, including stale entries.
 `setup_ns` ends before `Engine::run`; `run_ns` includes that call's finalization.
@@ -331,7 +334,7 @@ regression checks. Timing thresholds are deliberately not CI assertions.
 All games use the shared compute executor and an eight-tick publication delay by
 default. Structured headless runs accept `--gradient-delay D` (1–16 ticks, default
 8) and the deprecated `--gradient-workers N` (0–16), described below. Owner-only
-execution retains exactly the same publication schedule, providing the
+computation retains exactly the same publication schedule, providing the
 determinism and timing control for each delay. Different delays may produce
 different games. A loaded game's delay cannot change while jobs are pending.
 
@@ -358,7 +361,9 @@ Include warmed-cache baselines, snapshot capture/copying, peak memory and total 
 in performance comparisons; moving work off the owner does not itself establish a speedup.
 
 `--compute-threads` sizes the shared executor, including the owner. The deprecated
-`--gradient-workers 0` selects owner-only gradient jobs. A positive value selects
+`--gradient-workers 0` selects owner-only gradient jobs: the owner computes each
+periodic job inline when it submits it, outside the executor, and publication keeps
+its deadline. A positive value selects
 shared jobs and, unless `--compute-threads` is explicit, requests that value plus
 one total threads. It no longer creates a separate pool or imposes a per-gradient
 concurrency cap. `gradient_workers` reports available shared background threads

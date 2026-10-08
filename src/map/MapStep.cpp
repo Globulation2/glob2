@@ -287,6 +287,11 @@ void Map::configureGradientPipeline(unsigned workers, unsigned delay)
 	if (workers>16 || delay<1 || delay>16) throw std::invalid_argument("Invalid gradient pipeline configuration");
 	preparePendingGradient();
 	gradientRuntime->pipeline.onPublished = [this](Uint16** slot) { publishPlane(slot); };
+	// Staged after tick c-1's step counter advanced to c, a job published
+	// `remaining` advances later is joined at the start of step c+remaining-1.
+	gradientRuntime->pipeline.deadline = [this](unsigned remaining) {
+		return ComputeExecutor::advanceDue(std::uint64_t(game ? game->stepCounter : 0) + remaining - 1);
+	};
 	gradientRuntime->pipeline.configure(compute, workers != 0, delay, size,
         [](GradientPipeline::Job &job, GradientWorkspace &scratch) {
             gradient_preparation::propagate(job.request, *job.snapshotLease, job.data.get(), scratch);
