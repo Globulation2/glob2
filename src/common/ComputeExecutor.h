@@ -78,6 +78,7 @@ public:
 		void (*invoke)(void*, std::size_t) = nullptr;
 		void* context = nullptr;
 	};
+	enum class Placement { Shared, OwnerOnly };
 	static constexpr unsigned NoLane = ~0u;
 	static constexpr unsigned Lanes = 32;
 	struct Group
@@ -103,8 +104,8 @@ public:
 	// so it holds at most horizon + 1 slots: AI decisions (8), periodic
 	// gradients (16) and building gradients (8), plus headroom for tests and
 	// teardown. The producers static_assert their horizons against these.
-	static constexpr std::size_t AIHorizon = 8, GradientHorizon = 16, BuildingHorizon = 8;
-	static constexpr std::size_t Slots = (AIHorizon + 1) + (GradientHorizon + 1) + (BuildingHorizon + 1) + 13;
+	static constexpr std::size_t AIHorizon = 8, GradientHorizon = 16, BuildingHorizon = 8, GrowthHorizon = 16;
+	static constexpr std::size_t Slots = (AIHorizon + 1) + (GradientHorizon + 1) + (BuildingHorizon + 1) + (GrowthHorizon + 1) + 13;
 private:
 	using Clock = std::chrono::steady_clock;
 	inline static thread_local ComputeExecutor *active = nullptr;
@@ -113,6 +114,7 @@ private:
 	{
 		std::uint64_t serial = 0; // zero: free
 		std::uint64_t due = 0;
+		Placement placement = Placement::Shared;
 		std::vector<Group> groups;
 		std::vector<std::size_t> starts; // first job index of each group
 		std::vector<std::uint64_t> laneBases; // lane sequence of each group's first job
@@ -252,6 +254,7 @@ private:
 		{
 			const auto& slot = slots[i];
 			if (!slot.serial || !slot.unclaimed) continue;
+			if (owner ? (!ownerRunsDeferred() && slot.placement != Placement::OwnerOnly) : slot.placement == Placement::OwnerOnly) continue;
 			if (owner && limit && before(*limit, slot)) continue;
 			if (best.valid && !before(slot, slots[best.slot])) continue;
 			const auto index = firstClaimable(slot, owner);
@@ -262,7 +265,7 @@ private:
 	bool claimable(bool owner, const Slot* limit = nullptr) const { return pick(owner, limit).valid; }
 	Claim claim(bool owner, const Slot* limit = nullptr)
 	{
-		assert(owner == ownerRunsDeferred());
+		// Explicit owner-only batches have no controller lanes. Shared work stays on workers.
 		const auto best = pick(owner, limit);
 		if (!best.valid) return best;
 		auto& slot = slots[best.slot];
@@ -523,13 +526,14 @@ public:
 	}
 	// Queue a batch of groups, due at the given tick key; groups are copied.
 	// Returns an empty batch when nothing was submitted. Never call from inside a job.
-	Batch submit(std::span<const Group> groups, std::uint64_t due = 0)
+	Batch submit(std::span<const Group> groups, std::uint64_t due = 0, Placement placement = Placement::Shared)
 	{
 		if (active) throw std::logic_error("Deferred batches cannot be submitted from inside a job");
 		Batch batch;
 		std::size_t total = 0;
 		for (const auto& group : groups)
 		{
+			if (placement == Placement::OwnerOnly && group.lane != NoLane) throw std::invalid_argument("Owner-only batches cannot use controller lanes");
 			if (group.lane != NoLane && group.lane >= Lanes) throw std::invalid_argument("Compute lane index exceeds the lane count");
 			total += group.count;
 		}
@@ -547,6 +551,7 @@ public:
 		auto& slot = slots[index];
 		slot.serial = nextSerial++;
 		slot.due = due;
+		slot.placement = placement;
 		slot.groups.assign(groups.begin(), groups.end());
 		slot.starts.clear(); slot.laneBases.clear();
 		std::size_t start = 0;
@@ -583,7 +588,7 @@ public:
 		std::unique_lock<std::mutex> lock(mutex);
 		auto& slot = slots[batch.slot];
 		if (slot.serial != batch.serial) { batch = {}; return; }
-		for (Claim claimed; ownerRunsDeferred() && (claimed = claim(true, &slot)).valid; lock.lock())
+		for (Claim claimed; (claimed = claim(true, &slot)).valid; lock.lock())
 		{
 			lock.unlock();
 			execute(claimed, 0);
@@ -606,7 +611,7 @@ public:
 	{
 		if (active) return;
 		std::unique_lock<std::mutex> lock(mutex);
-		for (Claim claimed; ownerRunsDeferred() && (claimed = claim(true)).valid; lock.lock())
+		for (Claim claimed; (claimed = claim(true)).valid; lock.lock())
 		{
 			lock.unlock();
 			execute(claimed, 0);

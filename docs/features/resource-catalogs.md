@@ -96,6 +96,12 @@ when the optional experiment translation keys are unavailable.
 | `smoothPlacement` | Allows generator smoothing to mature and extend author-placed patches |
 
 Rates use exact integer units: **196608 means one opportunity/probability one**.
+Growth opportunities are calculated from a completed-tick snapshot and published
+eight ticks later by default. Replenishment applies only to the original deposit;
+spread can survive removal of its source. Destinations are revalidated at publication,
+and accepted increments preserve intervening harvesting. See
+[delayed growth](../development/reference.md#delayed-resource-growth).
+
 `growthRate` may be 0–786432; `spreadRate` and yield growth probabilities are
 0–196608. This represents wheat's one-third opportunity rate exactly. Runtime
 queries use compiled tables and terrain ecology fields, not JSON or floating-point
@@ -373,7 +379,8 @@ decor can use frames up to 64×64. Hashes, PNG decoding, duplicate JSON keys, de
 paths, property bounds and effective animation/decor frame indices are checked.
 Invalid imports leave the map's catalogs and bundle unchanged. Existing saves remain
 readable at the durable compatibility floor; maps with new bundles require format
-144. Simulation revision 30 identifies this loading behavior for online matches.
+144. Format 149 also stores pending resource-growth work alongside vertex terrain
+and scheduled building gradients; the durable save compatibility floor is unchanged.
 
 ### AI Terrain Studio
 

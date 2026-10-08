@@ -54,6 +54,7 @@ class SessionGame;
 class MapHeader;
 struct GradientRuntime;
 class BuildingGradientStats;
+namespace ResourceGrowth { struct Metrics; }
 
 //! 2D grid offset returned by Map's 3x3-neighborhood "doesTouch" queries.
 //! dx and dy are each in {-1, 0, +1}.
@@ -155,7 +156,7 @@ class Map
 	std::vector<std::array<Uint16, MaterialCount>> resourceStocks;
 	std::vector<Uint32> freeResourceStocks;
 	std::array<Uint32, MaterialCount> materialSourceCounts{};
-	void initializeResourceStock(size_t index);
+	void initializeResourceStock(size_t index, const std::array<Uint16, MaterialCount> *stocks = nullptr);
 	void releaseResourceStock(size_t index);
 	void refreshResourceTotal(size_t index);
 	void rebuildResourceState();
@@ -206,6 +207,10 @@ class Map
 	bool terrainEditChanged = false, terrainRoutesChanged = false;
 	bool terrainHealthEffects = false;
 	bool terrainMovementModifiers = false, airTerrainConstraints = false, projectileBlockingTerrain = false;
+	// Load-only discriminator, grouped with flags to preserve hot storage offsets.
+	Sint32 loadedHistoricalGrowthVersion = 0;
+	bool loadedLegacyGrowth144 = false;
+	bool loadedLegacyGrowth145 = false;
 	void updateTerrainSummary();
 	void finishTerrainEdit();
 	// Storage only: an idle building still drops its field and saved null state.
@@ -264,6 +269,14 @@ public:
 	// Owner selects/reserves and captures inputs before dispatch. Deferred jobs
 	// seed and propagate private data from immutable leases; join before save/reconfigure.
 	void stagePeriodicGradientPreparation();
+    SimulationSnapshot::Requirements pendingWorldRequirements() const;
+    void preparePendingWorld();
+    void preparePendingWorld(const SimulationSnapshot::Handle&);
+    void stageResourceGrowth();
+    void finishResourceGrowth();
+    void configureResourceGrowth(unsigned delay, bool shared);
+    unsigned resourceGrowthDelay() const;
+    const ResourceGrowth::Metrics& resourceGrowthMetrics() const;
 	bool hasPendingGradientPreparation() const;
 	SimulationSnapshot::Requirements pendingGradientRequirements() const;
 	void preparePendingGradient();
@@ -748,7 +761,8 @@ public:
 	// Restores stored cell data. Terrain lives on vertices and is not part of a Tile.
 	void replaceTile(size_t index, const Tile &tile);
 	void replaceTile(int x, int y, const Tile &tile) { replaceTile(coordToIndex(x, y), tile); }
-	void replaceResource(size_t index, const Resource &resource);
+	// Optional initial stocks seed explicit material units instead of catalog initial stocks.
+	void replaceResource(size_t index, const Resource &resource, const std::array<Uint16, MaterialCount> *stocks = nullptr);
 	void replaceResource(int x, int y, const Resource &resource) { replaceResource(coordToIndex(x, y), resource); }
 	void setResourceAmount(size_t index, Uint32 amount);
 	void setFertility(int x, int y, Uint16 value)
@@ -1386,7 +1400,7 @@ protected:
 	std::vector<int> aStarExaminedPoints;
 
 public:
-	Uint32 checkSum(bool heavy);
+	Uint32 checkSum(bool heavy, bool includePending = true);
 	Sint32 warpDist1d(int p, int q, int l);///distance of coordinates p and q on a loop of length l
 	Sint32 warpDistSquare(int px, int py, int qx, int qy); //!< The distance^2 between (px, py) and (qx, qy), warp-safe.
 	Sint32 warpDistMax(int px, int py, int qx, int qy); //!< The max distance on x or y axis, between (px, py) and (qx, qy), warp-safe.

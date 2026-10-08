@@ -20,7 +20,7 @@ recorded before version 137 became incompatible and network protocol 57 separate
 clients using those rules. Format 146 stores terrain per map vertex and derives each
 cell's rules from its corners. Format 147 makes resource fetching greedy only, without
 round-trip routing, and format 148 schedules building walking fields; the current
-replay floor is 148.
+replay floor is 149, combining these with delayed resource growth.
 Supported saved games still load and adopt the current simulation;
 the save floor remains 58.
 
@@ -84,6 +84,15 @@ suffix) keep loading unchanged. Replays are unaffected and stay uncompressed.
 
 For optional JavaScript controllers and map scripts, see
 [JavaScript scripting](javascript.md).
+
+Format 149 preserves embedded artwork, vertex terrain, scheduled building fields
+and typed delayed growth proposals. The loader also distinguishes released
+formats 144–148 from the older growth-draft layouts that reused those version
+numbers, converting legacy pending work on load. Use
+`--resource-growth-delay 1..16` (default 8) and
+`--resource-growth-execution shared|owner` (default shared) for comparisons.
+Both execution modes publish at the same deadlines; changing the delay changes
+simulation behavior and is rejected while a loaded queue is pending.
 
 ## CLI Flags
 

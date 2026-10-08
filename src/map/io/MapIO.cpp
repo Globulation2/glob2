@@ -8,6 +8,7 @@
 #include "FileFormatVersions.h"
 #include "Version.h"
 #include "MapInternal.h"
+#include "MapSaveLayout.h"
 #include "Game.h"
 #include "Utilities.h"
 #include "Unit.h"
@@ -18,6 +19,7 @@
 #include <bit>
 #include <Stream.h>
 #include <BinaryStream.h>
+#include <TextStream.h>
 #include <PackedArray.h>
 #include <limits>
 #include <memory>
@@ -31,6 +33,30 @@ namespace
 constexpr std::size_t RegistryChunkBytes = 64 * 1024;
 constexpr std::size_t MaximumRegistryChunks =
 	TerrainRegistry::MaximumDefinitionBytes / RegistryChunkBytes;
+
+// Released formats 144/145 begin this region with an artwork byte count. The earlier
+// growth prototype instead begins with the packed Uint8 undermap. Its first block
+// is unambiguous: maps have at least 256 cells, raw lengths are powers of two,
+// constant blocks have length 1, and delta tags exceed the 16 MiB artwork limit.
+// Peek only the bounded header; the ordinary readers still validate the payload.
+bool legacyGrowthMapLayout(GAGCore::InputStream *stream, size_t cells)
+{
+	static_assert(MapAssetBundle::MaximumBytes == 16 * 1024 * 1024);
+	if (auto *text = dynamic_cast<GAGCore::TextInputStream *>(stream))
+	{
+		if (text->hasField("customAssets.length")) return false;
+		if (text->hasField("resourceIncarnations.0.incarnation") || text->hasField("undermap")) return true;
+		throw std::ios_base::failure("Missing format-144/145 map layout fields");
+	}
+	if (!GAGCore::PackedArray::binary(stream) || !stream->canSeek())
+		throw std::ios_base::failure("Cannot identify format-144/145 map layout");
+	const auto position = stream->getPosition();
+	const auto tag = stream->readUint8("encoding");
+	const auto bytes = stream->readUint32("bytes");
+	stream->seekFromStart(position);
+	static_assert(GAGCore::PackedArray::blockSize == 4096);
+	return MapSaveLayout::legacyGrowthMapHeader(tag, bytes, cells);
+}
 }
 
 bool Map::load(GAGCore::InputStream *stream, MapHeader& header, Game *game)
@@ -44,11 +70,13 @@ try
 	GAGCore::BinaryInputStream::CheckedReads checked(stream);
 	assert(header.getVersionMinor()>=16);
 
-	Sint32 versionMinor = header.getVersionMinor();
+	header.resolveGrowthLayout(stream);
+	Sint32 versionMinor = header.loadingVersion();
     const bool packed=versionMinor>=FILE_FORMAT_VERSION_COMPACT_STATE && GAGCore::PackedArray::binary(stream);
 
     assetBundleValue = MapAssetBundle::empty();
 	clear();
+	loadedHistoricalGrowthVersion = header.historicalGrowthLayout ? header.getVersionMinor() : 0;
 	terrainRegistryValue = TerrainRegistry::builtins();
     resourceRegistryValue = versionMinor >= FILE_FORMAT_VERSION_RUNTIME_RESOURCES
         ? ResourceRegistry::empty() : ResourceRegistry::legacy();
@@ -132,7 +160,11 @@ try
             throw std::ios_base::failure(std::string("Invalid resource registry: ")+error.what());
         }
     }
-    if (versionMinor >= FILE_FORMAT_VERSION_MAP_ASSETS) {
+    loadedLegacyGrowth144 = versionMinor == FILE_FORMAT_VERSION_RESOURCE_GROWTH && legacyGrowthMapLayout(stream, size);
+    loadedLegacyGrowth145 = !loadedHistoricalGrowthVersion && versionMinor == FILE_FORMAT_VERSION_SIMPLE_RESOURCE_GROWTH && legacyGrowthMapLayout(stream, size);
+    if (versionMinor >= FILE_FORMAT_VERSION_ASSETS_AND_RESOURCE_GROWTH ||
+        (versionMinor == FILE_FORMAT_VERSION_MAP_ASSETS && !loadedLegacyGrowth144) ||
+        (versionMinor == FILE_FORMAT_VERSION_BUILDING_ARTWORK && !loadedLegacyGrowth145)) {
         stream->readEnterSection("customAssets");
         const auto length = stream->readUint32("length");
         if (length > MapAssetBundle::MaximumBytes) throw std::ios_base::failure("Custom artwork exceeds 16 MiB");
@@ -157,7 +189,7 @@ try
 	displayedGuardAreaView.resize(size, false);
 	displayedClearAreaView.resize(size, false);
 	displayedFarmAreaView.resize(size, false);
-	resourceCells.resize(size);
+	resourceCells.assign(size, {});
 	occupancyCells.resize(size);
 	areaCells.resize(size);
 	scriptAreaCells.resize(size);
@@ -363,6 +395,12 @@ try
         stream->readLeaveSection();
     }
 
+    if(loadedLegacyGrowth144) {
+        stream->readEnterSection("resourceIncarnations");
+        if(packed) GAGCore::PackedArray::read<Uint32>(stream,size,[&](size_t i,Uint32 value){(void)i; (void)value;});
+        else for(size_t i=0;i<size;++i) { stream->readEnterSection(i); stream->readUint32("incarnation"); stream->readLeaveSection(); }
+        stream->readLeaveSection();
+    }
 	for(int n=0; n<9; ++n)
 	{
 		stream->readEnterSection(n);
@@ -452,7 +490,7 @@ catch (const std::ios_base::failure& error)
 
 void Map::save(GAGCore::OutputStream *stream)
 {
-	preparePendingGradient();
+	preparePendingWorld();
 	stream->writeEnterSection("Map");
 	stream->write("MapB", 4, "signatureStart");
 	
@@ -839,7 +877,7 @@ void Map::saveRuntimeState(GAGCore::OutputStream *stream) const
 {
 	// A header changed since the last tick (a fork) reconfigures an empty pipeline first.
 	const_cast<Map*>(this)->ensureBuildingGradientPipeline();
-	const_cast<Map*>(this)->preparePendingGradient();
+	const_cast<Map*>(this)->preparePendingWorld();
 	stream->writeEnterSection("mapRuntime");
 	stream->writeUint8(fogOfWar == fogOfWarA.data(), "fogIsA");
 	stream->writeUint32(topologyGeneration, "topologyGeneration");
@@ -996,6 +1034,7 @@ void Map::saveRuntimeState(GAGCore::OutputStream *stream) const
 	saveMaterialRoutingCache(stream);
 	// Last, so streams of older layouts (and tests replaying them) read unchanged.
 	saveBuildingGradientPipeline(stream);
+    gradientRuntime->growth.save(stream,game->stepCounter);
 	stream->writeLeaveSection();
 }
 
@@ -1208,6 +1247,8 @@ void Map::loadRuntimeState(GAGCore::InputStream *stream, Sint32 versionMinor)
 	if (versionMinor>=FILE_FORMAT_VERSION_BUILDING_CATALOG) loadMaterialRoutingCache(stream,packed,versionMinor);
 	// Older saves restore no scheduled building work.
 	if (versionMinor>=FILE_FORMAT_VERSION_BUILDING_GRADIENT_PIPELINE) loadBuildingGradientPipeline(stream,packed);
+    if(versionMinor>=149 || loadedHistoricalGrowthVersion || loadedLegacyGrowth144 || loadedLegacyGrowth145)
+        gradientRuntime->growth.load(stream,*this,game->stepCounter,loadedHistoricalGrowthVersion ? loadedHistoricalGrowthVersion : versionMinor);
 	stream->readLeaveSection();
     if (versionMinor < FILE_FORMAT_VERSION_HAZARD_ROUTING && hasTerrainHealthEffects()) {
         // Consume the complete old state first, then discard only route caches.

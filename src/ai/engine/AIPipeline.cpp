@@ -63,8 +63,8 @@ std::vector<std::pair<unsigned,std::shared_ptr<Order>>> Pipeline::prepare(Game& 
  else if(scheduler.delayTicks()!=game.gameHeader.getAIOrderDelay()) throw std::logic_error("AI delay cannot change during a match");
  else if(!scheduler.hasExecutor()||scheduler.sharedExecution()!=shared) scheduler.configureExecution(game.map.computeExecutor(),shared);
  if(paused) {
-  const auto gradientRequirements=game.map.pendingGradientRequirements();
-  if(gradientRequirements) game.map.preparePendingGradient(captured.project(gradientRequirements));
+  const auto worldRequirements=game.map.pendingWorldRequirements();
+  if(worldRequirements) game.map.preparePendingWorld(captured.project(worldRequirements));
   for(auto p:eligible) result.emplace_back(p,std::make_shared<NullOrder>());
   return result;
  }
@@ -95,7 +95,7 @@ std::vector<std::pair<unsigned,std::shared_ptr<Order>>> Pipeline::prepare(Game& 
   std::vector<unsigned> polls(eligible.begin(),eligible.end());
   std::sort(polls.begin(),polls.end());
   if(std::adjacent_find(polls.begin(),polls.end())!=polls.end()) throw std::invalid_argument("Duplicate AI poll");
-  const auto gradientRequirements=game.map.pendingGradientRequirements();
+  const auto worldRequirements=game.map.pendingWorldRequirements();
   for(auto p:polls) {
    auto* player=game.players[p]; auto& actor=actors[p]; actor.published.reset();
    if(!player||!player->ai||!player->team->isAlive) continue;
@@ -112,7 +112,7 @@ std::vector<std::pair<unsigned,std::shared_ptr<Order>>> Pipeline::prepare(Game& 
    });
   }
   scheduler.dispatch();
-  if(gradientRequirements)game.map.preparePendingGradient(captured.project(gradientRequirements));
+  if(worldRequirements)game.map.preparePendingWorld(captured.project(worldRequirements));
   for(auto& delivery:scheduler.takeDue(game.stepCounter)) {
    newlyDelivered[delivery.request.player]=true;
    auto& actor=actors[delivery.request.player];

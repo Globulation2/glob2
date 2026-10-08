@@ -222,9 +222,16 @@ static constexpr int FILE_FORMAT_VERSION_HAZARD_ROUTING = 142;
 //! Shared AI scheduling and pending command execution state.
 static constexpr int FILE_FORMAT_VERSION_AI_PIPELINE = 143;
 
+// Immutable growth batches and per-deposit incarnation counters.
+static constexpr int FILE_FORMAT_VERSION_RESOURCE_GROWTH = 144;
+
+// Compact signed resource deltas; no per-cell incarnation plane.
+static constexpr int FILE_FORMAT_VERSION_SIMPLE_RESOURCE_GROWTH = 145;
 //! Map-owned custom artwork and attribution.
 static constexpr int FILE_FORMAT_VERSION_MAP_ASSETS = 144;
 
+// Combined artwork and compact growth. Formats 144/145 predate integration.
+static constexpr int FILE_FORMAT_VERSION_ASSETS_AND_RESOURCE_GROWTH = 146;
 //! Portable, content-addressed building sprite frames in maps, saves and replays.
 static constexpr int FILE_FORMAT_VERSION_BUILDING_ARTWORK = 145;
 
@@ -241,3 +248,8 @@ static constexpr int FILE_FORMAT_VERSION_GREEDY_FETCHING = 147;
 //! Scheduled building gradients: the match-wide delay (GameHeader::buildingGradientDelay)
 //! and the pending building gradient pipeline state.
 static constexpr int FILE_FORMAT_VERSION_BUILDING_GRADIENT_PIPELINE = 148;
+// Building artwork and both resource-growth save lineages.
+static constexpr int FILE_FORMAT_VERSION_ALL_ARTWORK_AND_RESOURCE_GROWTH = 147;
+
+// Typed delayed growth proposals preserve configured seed stocks and variety.
+static constexpr int FILE_FORMAT_VERSION_CONFIGURED_GROWTH_SEEDS = 148;

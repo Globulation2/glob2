@@ -562,4 +562,27 @@ TEST_CASE("resumable presentation yields without advancing or retaining canceled
     CHECK(visited.size()==4);
 }
 
+TEST_CASE("explicit owner-only growth work keeps shared jobs on workers")
+{
+    if constexpr (!GAGCore::ThreadSupport::available) return;
+    ComputeExecutor executor; executor.configure(2);
+    std::thread::id ownerThread, sharedThread;
+    const auto record=[](void *p,size_t) { *static_cast<std::thread::id*>(p)=std::this_thread::get_id(); };
+    ComputeExecutor::Group owner{1,{record,&ownerThread},ComputeExecutor::NoLane};
+    ComputeExecutor::Group shared{1,{record,&sharedThread},ComputeExecutor::NoLane};
+    auto a=executor.submit(std::span(&owner,1),1,ComputeExecutor::Placement::OwnerOnly);
+    auto b=executor.submit(std::span(&shared,1),2);
+    executor.join(b);
+    CHECK(ownerThread==std::thread::id{});
+    CHECK(sharedThread!=std::this_thread::get_id());
+    executor.join(a);
+    CHECK(ownerThread==std::this_thread::get_id());
+    owner.lane=0;
+    CHECK_THROWS_AS(executor.submit(std::span(&owner,1),3,ComputeExecutor::Placement::OwnerOnly),std::invalid_argument);
+    owner.lane=ComputeExecutor::NoLane;ownerThread={};
+    executor.submit(std::span(&owner,1),4,ComputeExecutor::Placement::OwnerOnly);
+    executor.joinAll();
+    CHECK(ownerThread==std::this_thread::get_id());
+}
+
 }

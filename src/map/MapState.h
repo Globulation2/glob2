@@ -8,6 +8,7 @@
 namespace MapState
 {
 struct ResourceCell { Resource resource; Uint16 fertility = 0; Uint8 mayGrow = 0; };
+static_assert(sizeof(ResourceCell) == 12);
 struct OccupancyCell { Uint16 building = 0xffff, groundUnit = 0xffff, airUnit = 0xffff; Uint8 immobileUnit = 255; };
 struct AreaCell { Uint32 forbidden = 0, guard = 0, clear = 0, farm = 0; };
 static_assert(std::is_trivially_copyable_v<ResourceCell>);

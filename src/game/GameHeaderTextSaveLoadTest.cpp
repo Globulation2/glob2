@@ -220,7 +220,7 @@ void testBinaryHeaderFormsAndLegacy()
         if(form!=1) historical.erase(6,1);
         // Format 145 adds an empty artwork chunk count before resource declarations.
         if(form!=1) historical.erase(historical.size()-experimentBytes-resourceExperimentBytes-4,4);
-		if (form != 1)
+		if (form != 1) for (const auto headerVersion : {144, 145, 146})
 		{
 			// Published format 144 has map artwork but no GameHeader building
 			// artwork. A following record must remain aligned at this boundary.
@@ -233,9 +233,9 @@ void testBinaryHeaderFormsAndLegacy()
 			v144Bytes->seekFromStart(0);
 			BinaryInputStream v144(new MemoryStreamBackend(*v144Bytes));
 			GameHeader beforeBuildingArtwork;
-			REQUIRE((form == 0 ? beforeBuildingArtwork.load(&v144, FILE_FORMAT_VERSION_MAP_ASSETS)
+			REQUIRE((form == 0 ? beforeBuildingArtwork.load(&v144, headerVersion)
 							   : beforeBuildingArtwork.loadWithoutPlayerInfo(
-									 &v144, FILE_FORMAT_VERSION_MAP_ASSETS)));
+									 &v144, headerVersion)));
 			CHECK_FALSE(beforeBuildingArtwork.getBuildingArtwork());
 			CHECK(beforeBuildingArtwork.getAIOrderDelay() == original.getAIOrderDelay());
 			CHECK(v144.readUint32("nextRecord") == sentinel144);
@@ -444,4 +444,64 @@ TEST_CASE("New games and reset headers default to an eight tick building gradien
     header.setBuildingGradientDelay(2);
     header.reset();
     CHECK(header.getBuildingGradientDelay() == 8);
+}
+
+TEST_CASE("released format 145 header detects empty artwork without consuming the next record" *
+          doctest::test_suite("GameHeaderTextSaveLoad"))
+{
+    for (bool text : {false, true}) for (bool players : {false, true}) for (bool definitions : {false, true}) {
+        auto original = makeFixtureHeader();
+        if (definitions) original.setResourceExperiments({{"fixture-key", "Fixture label", "Fixture help"}});
+        auto* memory = new MemoryStreamBackend;
+        std::unique_ptr<OutputStream> output(text ? static_cast<OutputStream*>(new TextOutputStream(memory))
+            : static_cast<OutputStream*>(new BinaryOutputStream(memory)));
+        if (players) original.save(output.get()); else original.saveWithoutPlayerInfo(output.get());
+        output->writeUint32(0x47614265, "sentinel"); output->flush();
+        std::unique_ptr<InputStream> input;
+        if (text) input = makeInputStream(*memory);
+        else { std::string bytes(memory->getBuffer(), memory->getPosition()); bytes.erase(6,1); auto* copy = new MemoryStreamBackend(bytes.data(),bytes.size()); copy->seekFromStart(0); input = std::make_unique<BinaryInputStream>(copy); }
+        GameHeader restored;
+        REQUIRE((players ? restored.load(input.get(), 145) : restored.loadWithoutPlayerInfo(input.get(), 145)));
+        CHECK(restored.resourceExperiments() == original.resourceExperiments());
+        CHECK(restored.getExperiments() == original.getExperiments());
+        CHECK(input->readUint32("sentinel") == 0x47614265);
+    }
+}
+
+TEST_CASE("compact-growth format 145 headers preserve definitions and enabled keys" *
+          doctest::test_suite("GameHeaderTextSaveLoad"))
+{
+    for (bool players : {false, true}) for (bool definitions : {false, true}) for (bool enabled : {false, true}) {
+        auto original = makeFixtureHeader();
+        if (definitions) original.setResourceExperiments({{"fixture-key", "Fixture label", "Fixture help"}});
+        if (!enabled) original.getExperiments().clear();
+        auto* memory = new MemoryStreamBackend;
+        BinaryOutputStream output(memory);
+        if (players) original.save(&output); else original.saveWithoutPlayerInfo(&output);
+        output.flush();
+        std::string historical(memory->getBuffer(), memory->getPosition());
+        historical.erase(6,1); // Building gradient delay was introduced after format145.
+        auto* tail = new MemoryStreamBackend;
+        BinaryOutputStream tailOutput(tail);
+        saveCatalogExperimentDefinitions(&tailOutput, original.resourceExperiments());
+        original.getExperiments().save(&tailOutput);
+        tailOutput.flush();
+        // Earlier compact-growth 145 has no artwork chunk count.
+        historical.erase(historical.size() - tail->getPosition() - 4, 4);
+        for (bool followed : {false, true}) {
+            auto* saved = new MemoryStreamBackend;
+            BinaryOutputStream writer(saved);
+            writer.write(historical.data(), historical.size(), "header");
+            if (followed) writer.writeUint32(0x47614265, "sentinel");
+            writer.flush();
+            auto* copy = new MemoryStreamBackend(*saved); copy->seekFromStart(0);
+            BinaryInputStream input(copy);
+            GameHeader restored;
+            REQUIRE((players ? restored.load(&input, 145) : restored.loadWithoutPlayerInfo(&input, 145)));
+            CHECK(restored.resourceExperiments() == original.resourceExperiments());
+            CHECK(restored.getExperiments() == original.getExperiments());
+            CHECK(input.getPosition() == historical.size());
+            if (followed) CHECK(input.readUint32("sentinel") == 0x47614265);
+        }
+    }
 }

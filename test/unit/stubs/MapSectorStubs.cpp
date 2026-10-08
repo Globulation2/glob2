@@ -57,3 +57,14 @@ void Map::resetBuildingGradientPipeline() noexcept {
     gradientRuntime->buildingRequests.clear();
     gradientRuntime->buildings.reset();
 }
+
+
+// Growth scheduling belongs to engine fixtures. Lightweight maps never submit
+// jobs; reject accidental use rather than silently simulating a fake pipeline.
+void Map::finishResourceGrowth() {
+    if (gradientRuntime->growth.count() || gradientRuntime->growth.needsPreparation()) std::abort();
+}
+void ResourceGrowth::Pipeline::reset() noexcept {
+    if (!pending.empty() || reservation) std::abort();
+    spare.clear(); executor=nullptr; metrics={}; delay=8; shared=true;
+}
