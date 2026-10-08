@@ -33,10 +33,13 @@ Each material supplies:
 - `profile`, the key of its boundary family, and `preview`, three overview RGB channels;
 - optional `minimap` RGB channels for minimaps and thumbnails (defaults to `preview`);
 - optional `animation_frames`, `animation_ticks`, and `animation_stride`;
-- optional `backdrop` with `sprite`, `first_frame`, `frames`, and `ticks`;
 - optional `seam` (version 3) with `height`, `cast_q8`, `cast_width_q8`, `fringe`,
-  `fringe_q8` and `fringe_width_q8`, see [Seams](#seams);
-- `ocean: true` only for materials that reveal the shared scrolling ocean.
+  `fringe_q8` and `fringe_width_q8`, see [Seams](#seams).
+
+Every material, regular water included, is an ordinary opaque tile set. The
+retired `ocean` and `backdrop` keys are rejected: water used to be a transparent
+hole over a separately scrolled 512×512 image, which kept it from blending with
+its variants.
 
 Logical frames are 32×32. Existing HD frame registration supplies higher resolution
 source textures when available; missing HD artwork uses native pixels. Positive
@@ -94,11 +97,7 @@ remain under `data/`, with forward slashes, canonical segments (no empty, `.` or
 For animation, a variant's effective frame is `frame + phase * animation_stride`.
 `animation_frames` is 1–256, `animation_ticks` is a positive integer duration in the
 renderer's animation clock, and the stride must be positive when there is more
-than one phase. Every effective frame must exist and remain below 65536. Backdrops
-have their own consecutive `first_frame`, `frames` and `ticks` fields and are
-composited beneath the material before border preparation. The water binding must
-use `ocean: true`; ocean materials reveal the shared scrolling ocean instead of
-using a per-material backdrop.
+than one phase. Every effective frame must exist and remain below 65536.
 
 ## Material production
 
@@ -168,19 +167,87 @@ and saturated, fertile ground warm and saturated (umber loam, moss, meadow),
 barren ground muted warm neutrals, rough ground cool and desaturated, paths warm
 and light, void near black with a cast onto every neighbour.
 
+### Raised obstacle decor
+
+Obstacle terrain is drawn in two layers, as forest is. The ground material is
+composed like any other terrain: dusty earth for boulders, leaf litter for hedge,
+undergrowth for thicket, and rock for ridge rock and outcrop. A decor sprite per
+cell is then drawn with the resources, row by row, so objects stand up, overlap
+neighbouring cells and occlude each other.
+
+A material opts in with a `decor` block:
+
+```json
+"decor": {"sprite": "data/gfx/terrain-decor", "full": [0, 1, 2], "edge": [8, 9]}
+```
+
+- `full` frames are used for cells whose four neighbours share the cell's
+  appearance.
+- `edge` frames are smaller and pulled toward the cell centre, for cells with an
+  open neighbour, so clusters do not spill far onto open ground.
+- The frame is chosen by a coordinate hash salted with the map's terrain seed.
+- All decor blocks share one sprite, so the cached GPU path batches decor rows
+  like resource rows.
+- Frames are at most 64×64; they are centred on the cell, and the shipped 48×48
+  frames overhang neighbours by 8 px.
+
+`tools/artwork/terrain_decor.py` synthesises the frames in the game's soft
+three-quarter view:
+
+- Each object stands on a base point and rises into the cell above.
+- The body has a lit top and a darker front face, with edge shading only on the
+  side away from the light.
+- One soft ground shadow falls to the lower right.
+
+The sets are rounded boulders, a continuous hedge mass that joins its
+neighbours, scrubby bushes with twigs, tilted ridge slabs and shards, and
+bedrock massifs with sparse lichen. The tool writes `data/gfx/terrain-decorN.png`
+(set k at frames 12k–12k+11), the HD frames, provenance and, with
+`--write-catalog`, the `decor` blocks. `--check` reproduces them, and `--sheet`
+writes a review sheet. Decor is presentation only: the minimap, the overview and
+the simulation ignore it.
+
+### Periodic edges
+
+The runtime blend above ghosts any texture built from discrete objects (pebbles,
+flower heads, tussocks): within four native pixels of every edge two unrelated
+layouts are averaged. Materials whose look depends on such objects instead set
+`"edges": "periodic"` (recipe flag `periodic=True`). Their variants share one
+periodic outer band, so variant A's right edge continues into variant B's left
+edge exactly as a single tile wraps onto itself, and both the compiler and
+`TerrainCompositor::prepare` skip the border blend for them. In the synthesiser,
+`object_field` places round objects in two sets. Objects that touch the outer
+band come from the material's shared `base_rng`, are identical in every variant
+and wrap across the edge. Each variant adds its own objects entirely inside the
+interior. The shared quota follows the band's share of the tile area, so the
+band is no denser or sparser than the interior and draws no grid.
+`force_periodic_band` copies variant 0's outer four render pixels into every
+variant as a guard. `neutral_band` and `share_perimeter` are skipped. Stamps and
+domes wrap across the canvas edge. Gravel, flower meadow and marsh use this mode.
+Their recipes follow reference photographs of pebble beds, wildflower meadows and
+tussock bogs:
+
+- Gravel is overlapping rounded pebbles of mixed grey and warm tones with contact
+  shadows over a dark bed of fines.
+- Flower meadow has patches of one colour plus singles, each head a ring of
+  saturated petals around a contrasting centre with a soft shadow.
+- Marsh has grass tussocks with radiating blades on dark wet moss, with open
+  pools and reed tufts.
+
+The photographs are only looked at; nothing from them is read into an output.
+
 Lava and ember field are animated: four phases per variant, frame
 `variant + 16 * phase` (frames 0–63), catalogued with `animation_frames 4`,
 `animation_stride 16` and `animation_ticks 8`. The crust layout is shared by the
 phases; only the glow ramp moves.
 
-Deep water and dark water are translucent RGBA tints (`ocean: false`, alpha
-about 160 and 210) derived from the ocean backdrop's mean colour
-(`data/gfx/water0.png`, about (69, 52, 200): same hue, lower value, slightly
-lower saturation), so they read as the same liquid, deeper. Ocean materials have
-no texture of their own and every non-ocean material composites with straight
-alpha over the shared scrolling ocean, so a tint darkens that ocean and is
-animated for free; a per-material `backdrop` would need its own 32×32 frames and
-was rejected for that reason. Marsh pools use the same mechanism at alpha 215.
+Regular water (`terrain_synth.py` recipe `water`, sprite `data/gfx/terrain-water`)
+keeps the violet-blue of the retired scrolling ocean image (about (69, 52, 200)):
+gentle swells carry two Worley ripple networks that cross-fade over four phases
+(`animation_ticks 24`), so glints rise and fade rather than the whole surface
+sliding. Deep water uses the same loop in a darker value; dark water is static.
+Both are opaque and blend with regular water through the ordinary soft profile.
+Marsh pools are opaque too.
 
 `--check` re-synthesises every material and compares the pixel hashes with the
 committed PNGs and with `provenance.json`; it also requires the recorded
@@ -192,8 +259,12 @@ Pillow's kernels the renders depend on the C library's `sin`/`atan2`/`hypot` and
 on `round()` boundaries, so the provenance records the platform and a mismatch
 on another platform is reported with that note. Recipes swapped to
 image-generated art are marked `placeholder_only=True` and skipped by `--check`.
-`--hd` writes the 128×128 renders under `artifacts/terrain/hd/` for review only
-and writes no frames.
+Writing frames also writes each variant's 128×128 render, the exact source the
+classic tile is downsampled from, as its HD frame (`data/highres/v1/terrain-<name>N.png`
+and `datasrc/gfx/production/procedural-materials/`), registers it in the pack
+manifest and `frames.txt` through `tools/artwork/highres_pack.py`, and records its
+hash in the provenance; `--check` compares both resolutions. `--hd` alone writes
+the renders under `artifacts/terrain/hd/` for review and changes nothing else.
 Preview and minimap colours derive from the rendered mean unless a recipe
 overrides them for legibility (void, hazards, deep water).
 
@@ -366,8 +437,8 @@ outline.
 Shared edge keys include canonical wrapped coordinates, orientation and stable
 material keys. Both sides choose the same contour. Four corner materials resolve
 jointly to normalized coverage, including diagonal, concave and multi-material
-junctions. Ocean coverage becomes transparency; other textures use straight alpha
-only after coverage and source alpha have been combined. Feathering is narrow,
+junctions. Textures use straight alpha only after coverage and source alpha have
+been combined. Feathering is narrow,
 not a broad blur over the square boundary.
 
 By default the rougher boundary profile wins, with a stable key tie break. Optional
@@ -397,7 +468,7 @@ of another variant is untouched. `fringe` (RGB), `fringe_q8` and
 `fringe_width_q8` tint any neighbor toward that color, which ice uses for a
 faint frost rim on grass. The shipped ranks place water highest so sand and
 grass take a wet band at the waterline, then ice, trail and grass, with sand
-lowest. Ocean pixels are transparent and receive nothing. Keep casts short
+lowest. Keep casts short
 (two to three pixels) and under about a third strength; the goal is a sense of
 thickness, not an outline.
 
@@ -478,8 +549,8 @@ GPU pages have a separate 128 MiB budget. HD oversampling falls from 4× to 2× 
 pages still exceed the budget in a zoomed-out GPU view, the cache reduces them by
 powers of two as needed, going no coarser than the nearest level to the display's
 physical pixel density (at most √2 magnification). Reduction averages composed
-native pixels with alpha-weighted colors, preserving fractional coast coverage
-without darkening edges against the ocean.
+native pixels with alpha-weighted colors, so undiscovered (transparent) cells
+do not darken their neighbours.
 This keeps terrain reusable during the detailed-to-overview crossfade, instead of
 recomposing the entire visible map every frame. The reduced detail can soften
 texture grain at distant zooms. Software pages retain native density. Prepared

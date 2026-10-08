@@ -511,8 +511,9 @@ void Map::clearGradientBufferPool()
 
 void Map::configureCompute(unsigned threads, unsigned experiments)
 {
-	preparePendingGradient();
+	finishGradientPipeline();
 	compute.configure(threads);
+	gradientRuntime->pipeline.resizeWorkspaces();
 	gradientRuntime->workspaces.resize(compute.threadCount());
 	computeExperiments = experiments;
 }
@@ -710,4 +711,11 @@ void Map::setGame(Game *game)
 	for (int i=0; i<sizeSector; i++)
 		sectors[i].setGame(game);
 	game->animations->resize(sizeSector);
+}
+
+void Map::setTerrainSeed(Uint32 seed)
+{
+    if (terrainSeedValue == seed) return;
+    terrainSeedValue = seed;
+    if (game) game->snapshots().invalidateBoundary();
 }

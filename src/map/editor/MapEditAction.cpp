@@ -13,6 +13,15 @@ void MapEdit::performAction(const std::string& action, float relMouseX, float re
 		performAction(action.substr(0, pos));
 		performAction(action.substr(pos+1, action.size()-pos-1));
 	}
+	// Terrain and resource strokes change what fertility the overlay shows.
+	if (isFertilityOn && (action == "terrain drag start" || action == "terrain drag motion"))
+		fertilityStale = true;
+	if (action == "select no resource growth")
+	{
+		// Corrected spelling; the original action name stays an alias.
+		performAction("select no ressources growth", relMouseX, relMouseY);
+		return;
+	}
 	if(performViewAction(action, relMouseX, relMouseY))
 		return;
 	if(performTerrainAction(action, relMouseX, relMouseY))

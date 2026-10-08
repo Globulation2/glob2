@@ -15,7 +15,7 @@ import { api } from '../api.ts';
 import { GameArt } from '../art.tsx';
 import { seriesInk } from '../colors.ts';
 import { LineChart } from '../components/LineChart.tsx';
-import { Avatar, ErrorNotice, Loaded, MatchListView } from '../components/common.tsx';
+import { AiMark, Avatar, ErrorNotice, Loaded, MatchListView } from '../components/common.tsx';
 import { date, duration, percent, queueName, rating, tickTime } from '../format.ts';
 import { Link, useRouter } from '../router.tsx';
 import { isModerator, useLoad, useSession } from '../state.tsx';
@@ -172,7 +172,7 @@ function Tiles({
       ))}
       {a && a.games > 0 && (
         <div className="tile">
-          <GameArt name="fruit" className="art" size={64} />
+          <GameArt name="warrior" className="art" size={64} />
           <div className="caption">Win rate, {a.windowDays} days</div>
           <div className="v">{percent(a.wins / a.games)}</div>
           <div className="caption">
@@ -369,7 +369,7 @@ export function AiPlayer({ id }: { id: string }) {
       {(profile) => (
         <>
           <div className="profile-head">
-            <GameArt name="school" size={80} />
+            <AiMark size="large" />
             <div className="grow">
               <h1>
                 {profile.displayName} <span className="badge">AI</span>

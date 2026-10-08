@@ -177,7 +177,7 @@ public:
 	std::shared_ptr<Order>getOrder(void);
  bool supportsObservation() const override { return true; }
  // Farm recovery reads material growth rates, so the growth field is required.
- SimulationSnapshot::Requirements observationRequirements() const override { return SimulationSnapshot::All; }
+ SimulationSnapshot::Requirements observationRequirements() const override { return SimulationSnapshot::Simulation; }
  std::optional<Uint64> retainedQueryVectorBytes() const override
  {
   Uint64 bytes = 0;

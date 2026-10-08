@@ -12,6 +12,9 @@
 #include <cstdint>
 #include <iterator>
 #include "Engine.h"
+#include "sim/SimulationRunner.h"
+#include "sim/presentation/SceneInputs.h"
+#include "MenuColony.h"
 #include "GameGUITouch.h"
 #include <GraphicContext.h>
 #include "Unit.h"
@@ -32,7 +35,7 @@
 #include "LoadSaveDialog.h"
 #include "GameGUIDialog.h"
 #include "FertilityCalculator.h"
-#include "FertilityScreen.h"
+#include "EditorDialogs.h"
 #include "EditorLoadScreen.h"
 #include "EditorGenerateScreen.h"
 #include "GameLoadScreen.h"
@@ -72,6 +75,119 @@ GAGCore::CooperativeSlice fixedSlice()
 
 TEST_SUITE("EngineSession")
 {
+    TEST_CASE("paced sessions publish completed worlds before waiting and AI reuses them [display]")
+    {
+        glob2test::ScopedEnvironment desktop("GLOB2_MOBILE_UI","0");
+        glob2test::HeadlessGlobals globals({.display=true,.loadStrings=true,.width=800,.height=600});
+        REQUIRE(NET_Init());
+        struct NetworkScope { ~NetworkScope(){NET_Quit();} } network;
+        globalContainer->automaticEndingGame=false;
+        globalContainer->settings.autosaveGames=false;
+        globalContainer->aiThreads=1;
+        Engine engine;
+        REQUIRE(engine.initCampaign("maps/balanced.map")==Engine::EE_NO_ERROR);
+        globalContainer->settings.gameSpeed=Settings::GAME_SPEED_NORMAL;
+        engine.beginSession(1000);
+        REQUIRE(engine.stepSession(1000,{}));
+        // Complete the startup publication before the next boundary.
+        while(engine.gui.game.map.computeExecutor().pumpPresentation()) {}
+        engine.drawSession();
+        REQUIRE(engine.stepSession(1040,{}));
+        REQUIRE(engine.retainedPresentation);
+        const auto published=engine.retainedPresentation->world;
+        CHECK(published.tick==engine.gui.game.stepCounter);
+        CHECK(engine.retainedPresentation->request.tickTime==engine.gui.lastTickTime);
+        const auto captures=engine.gui.game.snapshots().metrics.captures;
+        engine.gatherAndAdvanceOrders(true);
+        CHECK(engine.gui.game.snapshots().metrics.captures==captures);
+        const auto reused=engine.gui.game.captureReadBoundary({},true,published.requirements);
+        CHECK(reused.entities==published.entities);
+        CHECK(reused.resources==published.resources);
+        CHECK(engine.gui.game.snapshots().metrics.captures==captures);
+        engine.gui.isRunning=false;
+        CHECK_FALSE(engine.finishSession());
+    }
+
+    TEST_CASE("new client requests replace completed pending frames without recapture")
+    {
+        glob2test::HeadlessGlobals globals;
+        Engine engine;
+        auto& game=engine.gui.game;
+        game.map.setSize(4,4,GRASS);
+        game.map.setGame(&game);
+        game.addTeam();
+        game.teams[0]->race.loadDefault();
+        auto& executor=game.map.computeExecutor();
+        executor.configure(1);
+        SimulationRunner runner(engine);
+        SceneRequest request;
+        request.view.displayW=128; request.view.displayH=128;
+        runner.requestScene(request);
+        const auto world=game.captureReadBoundary({},true,SceneExtractor::requirements(request));
+        const auto captures=game.snapshots().metrics.captures;
+        REQUIRE(runner.admitPresentation());
+        runner.publishPresentation(world,request);
+        while(executor.pumpPresentation()) {}
+        CHECK_FALSE(runner.admitPresentation()); // One preparation per client request.
+        request.view.displayW=256;
+        runner.requestScene(request);
+        REQUIRE(runner.admitPresentation()); // The first completed frame is still pending.
+        runner.publishPresentation(world,request);
+        while(executor.pumpPresentation()) {}
+        const auto* latest=runner.acquireScene();
+        REQUIRE(latest);
+        CHECK(latest->map.viewportWidth()==256);
+        CHECK(latest->world.entities==world.entities);
+        CHECK(game.snapshots().metrics.captures==captures);
+        CHECK_FALSE(runner.admitPresentation());
+    }
+
+    TEST_CASE("menu colony rendering consumes its shared boundary without recapture [display]")
+    {
+        glob2test::HeadlessGlobals globals({.display=true, .width=800, .height=600});
+        MenuColony colony;
+        REQUIRE(colony.load());
+        const auto initialTick = colony.tick();
+        const auto captures = colony.game->snapshots().metrics.captures;
+        const auto readyBy = SDL_GetTicks() + 5000;
+        do {
+            colony.draw(800, 600);
+            SDL_Delay(1);
+        } while (!colony.view.scene && SDL_GetTicks() < readyBy);
+        REQUIRE(colony.view.scene);
+        CHECK(colony.view.scene->tick == initialTick);
+        CHECK(colony.game->snapshots().metrics.captures == captures);
+        colony.update(1000);
+        colony.update(1040);
+        CHECK(colony.tick() == initialTick + 1);
+        const auto afterStep = colony.game->snapshots().metrics.captures;
+        colony.draw(800, 600);
+        CHECK(colony.game->snapshots().metrics.captures == afterStep);
+        CHECK(colony.view.scene->tick == initialTick);
+        colony.pause();
+        colony.draw(800, 600);
+        CHECK(colony.game->snapshots().metrics.captures == afterStep);
+    }
+
+    TEST_CASE("native presentation fallback yields between expensive chunks")
+    {
+        glob2test::HeadlessGlobals globals;
+        Engine engine;
+        auto& executor = engine.gui.game.map.computeExecutor();
+        executor.configure(1);
+        SimulationRunner runner(engine);
+        unsigned completed = 0;
+        auto work = executor.submitPresentation(100, [&](size_t) {
+            std::this_thread::sleep_for(std::chrono::milliseconds(3));
+            ++completed;
+        });
+        CHECK(runner.acquireScene() == nullptr);
+        CHECK(completed == 1);
+        CHECK_FALSE(work->finished());
+        runner.stop();
+        CHECK(work->status() == ComputeExecutor::Presentation::Status::Canceled);
+    }
+
     TEST_CASE("external replay retains recorded simulation checksums [benchmark][artifacts]")
     {
         const char* path=SDL_getenv_unsafe("GLOB2_REFERENCE_REPLAY");REQUIRE(path);
@@ -127,6 +243,101 @@ TEST_SUITE("EngineSession")
         }
     }
 
+    TEST_CASE("snapshot client frame latency with and without forced parking [benchmark][display][artifacts]")
+    {
+        glob2test::ScopedEnvironment desktop("GLOB2_MOBILE_UI","0");
+        glob2test::HeadlessGlobals globals({.display=true,.loadStrings=true,.width=800,.height=600,.screenFlags=GAGCore::GraphicContext::PORTABLEGPU});
+        REQUIRE(NET_Init());
+        struct NetworkScope { ~NetworkScope(){NET_Quit();} } network;
+        globalContainer->automaticEndingGame=false;
+        globalContainer->settings.autosaveGames=false;
+        globalContainer->settings.gameSpeed=Settings::GAME_SPEED_MAXIMUM;
+        globalContainer->aiThreads=2;
+        std::ofstream evidence(glob2test::artifactDir()/"client-frame-latency.csv");
+        evidence << "forced_park,frames,ticks,elapsed_ms,frame_p50_us,frame_p95_us,scene_age_p95_ms,input_p50_us,input_p95_us\n";
+        for(bool forced : {true,false})
+        {
+            setSyncRandSeed(123);
+            Engine engine;
+            REQUIRE(engine.initCampaign("maps/balanced.map")==Engine::EE_NO_ERROR);
+            engine.beginSession(SDL_GetTicks());
+            REQUIRE(engine.startSimulationThread(SDL_GetTicks()));
+            std::vector<double> frames,ages,inputs;
+            const auto start=SDL_GetTicks();
+            while(SDL_GetTicks()-start<5000)
+            {
+                const auto frameStart=std::chrono::steady_clock::now();
+                SDL_Event motion{}; motion.type=SDL_EVENT_MOUSE_MOTION;
+                motion.motion.x=200+(frames.size()%100); motion.motion.y=250;
+                const auto input=[&]{REQUIRE(engine.threadedClientFrame(SDL_GetTicks(),{motion}));};
+                if(forced) engine.gui.parkForClient(input); else input();
+                const auto inputEnd=std::chrono::steady_clock::now();
+                engine.drawSession();
+                if(engine.gui.drawnScene().tickTime)
+                {
+                    inputs.push_back(std::chrono::duration<double,std::micro>(inputEnd-frameStart).count());
+                    frames.push_back(std::chrono::duration<double,std::micro>(std::chrono::steady_clock::now()-frameStart).count());
+                    ages.push_back(double(SDL_GetTicks()-engine.gui.drawnScene().tickTime));
+                }
+                SDL_Delay(1);
+            }
+            engine.stopSimulationThread();
+            const auto elapsed=SDL_GetTicks()-start;
+            REQUIRE(!frames.empty());
+            std::sort(frames.begin(),frames.end()); std::sort(ages.begin(),ages.end()); std::sort(inputs.begin(),inputs.end());
+            evidence << forced << ',' << frames.size() << ',' << engine.gui.game.stepCounter << ',' << elapsed << ','
+                << frames[frames.size()/2] << ',' << frames[frames.size()*95/100] << ',' << ages[ages.size()*95/100]
+                << ',' << inputs[inputs.size()/2] << ',' << inputs[inputs.size()*95/100] << '\n';
+            engine.gui.isRunning=false;
+            CHECK_FALSE(engine.finishSession());
+        }
+    }
+
+    TEST_CASE("routine snapshot input needs no simulation boundary [display][artifacts][writes-preferences]")
+    {
+        glob2test::ScopedEnvironment desktop("GLOB2_MOBILE_UI","0");
+        glob2test::HeadlessGlobals globals({.display=true,.loadStrings=true,.width=800,.height=600,.screenFlags=GAGCore::GraphicContext::PORTABLEGPU});
+        REQUIRE(NET_Init());
+        struct NetworkScope { ~NetworkScope(){NET_Quit();} } network;
+        globalContainer->automaticEndingGame=false;
+        globalContainer->settings.autosaveGames=false;
+        Engine engine;
+        REQUIRE(engine.initCampaign("maps/balanced.map")==Engine::EE_NO_ERROR);
+        engine.beginSession(SDL_GetTicks());
+        engine.gui.gamePaused=true;
+        REQUIRE(engine.admitPresentation());
+        REQUIRE(engine.serialPresentation);
+        REQUIRE(engine.startSimulationThread(SDL_GetTicks()));
+        CHECK_FALSE(engine.serialPresentation);
+        const auto boundary=engine.gui.simulationAccess;
+        unsigned parked=0;
+        engine.gui.simulationAccess=[&](const auto& work){++parked;boundary(work);};
+        for(unsigned i=0;i<80;++i)
+        {
+            SDL_Event motion{}; motion.type=SDL_EVENT_MOUSE_MOTION;
+            motion.motion.x=200+i; motion.motion.y=250;
+            REQUIRE(engine.threadedClientFrame(SDL_GetTicks(),{motion}));
+            engine.drawSession();
+            SDL_Delay(1);
+        }
+        REQUIRE(engine.gui.drawnScene().map.getW()>0);
+        CHECK(parked==0);
+        engine.gui.openChat();
+        for(unsigned i=0;i<5;++i)
+        {
+            SDL_Event motion{}; motion.type=SDL_EVENT_MOUSE_MOTION;
+            motion.motion.x=200+i; motion.motion.y=250;
+            REQUIRE(engine.threadedClientFrame(SDL_GetTicks(),{motion}));
+        }
+        CHECK(parked==0); // Chat updates and pointer motion remain client-only.
+        engine.gui.closeChat();
+        engine.gui.cycleGameSpeed();
+        CHECK(parked==1); // Explicit settings boundary, including nested setGameSpeed.
+        engine.gui.isRunning=false;
+        engine.stopSimulationThread();
+        CHECK_FALSE(engine.finishSession());
+    }
+
 	TEST_CASE("momentum uses the SDL clock after session suspension [display][artifacts]")
 	{
 		glob2test::ScopedEnvironment desktopUI("GLOB2_MOBILE_UI", "0");
@@ -148,6 +359,16 @@ TEST_SUITE("EngineSession")
 			auto frame = [&](const std::vector<SDL_Event> &events = {}) {
 				REQUIRE(threaded ? engine.threadedClientFrame(0, events) : engine.stepSession(0, events));
 			};
+			// Input targets the displayed immutable world, including on the first
+			// threaded frame. Wait for initial publication before sending gestures.
+			const auto readyBy = SDL_GetTicks() + 5000;
+			while (!engine.gui.drawnScene().world.entities && SDL_GetTicks() < readyBy)
+			{
+				frame();
+				engine.drawSession(true);
+				SDL_Delay(1);
+			}
+			REQUIRE(engine.gui.drawnScene().world.entities);
 			auto finger = [&](Uint32 type, float x) {
 				SDL_Event event{};
 				event.type = type;
@@ -173,7 +394,7 @@ TEST_SUITE("EngineSession")
 				}
 				finger(SDL_EVENT_FINGER_UP, 420);
 				const auto capture = [&](const char *phase) {
-					engine.gui.drawAll(0);
+					glob2test::drawGUI(engine.gui,0);
 					const std::string name = std::string("resume-") + (threaded ? "threaded-" : "serial-")
 						+ std::to_string(resume) + "-" + phase + ".bmp";
 					globalContainer->gfx->printScreen(name.c_str());
@@ -391,9 +612,10 @@ TEST_SUITE("EngineSession")
 		        require(((view.viewportY + 800/64) & view.game.map.hMask) == ((30 + 600/64) & view.game.map.hMask), "Resize changed center tile vertically");
 		        require(view.game.checkSum() == checksum, "Viewport resize changed simulation state");
 		        Minimap minimap(false, 160, 800, 20, 10, 128, 128, Minimap::ShowFOW);
-		        minimap.setGame(view.game);
+		        minimap.setMapSize(view.game.map.getW(), view.game.map.getH());
 		        minimap.resizeViewport(1200);
 		        require(minimap.insideMinimap(1100, 74) && !minimap.insideMinimap(700, 74), "Minimap hit area did not follow the viewport");
+		        view.prepareLocalPresentation();
 		        require(view.zoomMap(3, 300, 200), "Could not zoom the desktop camera");
 		        const auto center = view.camera.screenToWorld(view.camera.offsetX + view.camera.width / 2,
 		                                                      view.camera.offsetY + view.camera.height / 2);
@@ -952,15 +1174,18 @@ TEST_SUITE("EngineSession")
 		        }
 		        {
 		            const auto beforeCancel = snapshot();
-		            GAGGUI::ScreenStack screens(*globalContainer->gfx);
-		            screens.push(std::make_unique<FertilityScreen>(editor.game.map));
+		            EditorProgressDialog progress(editor.game.map, "Fertility");
+		            progress.attach(*globalContainer->gfx);
+		            progress.update(1000);
+		            progress.draw(1000);
 		            SDL_Event escape{};
 		            escape.type = SDL_EVENT_KEY_DOWN;
 		            escape.key.key = SDLK_ESCAPE;
-		            screens.frame(1000, {escape});
-		            screens.frame(1001, {});
-		            require(!screens.running() && screens.result() == 0, "Fertility screen must accept cancellation");
-		            require(snapshot() == beforeCancel, "Cancelling the progress screen changed the map");
+		            escape.key.scancode = SDL_SCANCODE_ESCAPE;
+		            progress.event(escape);
+		            require(progress.finished() && progress.result() == EditorProgressDialog::CANCELLED,
+		                    "Fertility progress must accept cancellation");
+		            require(snapshot() == beforeCancel, "Cancelling the progress dialog changed the map");
 		        }
 		        editor.beginEditing();
 		        editor.mapHasBeenModified();

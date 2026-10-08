@@ -365,6 +365,7 @@ void TeamStats::step(Team *team, bool reloaded)
 	// handle end of game stat step
 	if (((team->game->stepCounter & END_OF_GAME_STAT_INTERVAL_MASK) == 0) && !reloaded)
 	{
+		historySnapshot.reset();
 		endOfGameStats.push_back(EndOfGameStat(stats[statsIndex].totalUnit, stats[statsIndex].totalBuilding, team->prestige,
 			stats[statsIndex].totalHP, stats[statsIndex].totalAttackPower, stats[statsIndex].totalDefensePower));
 
@@ -457,6 +458,7 @@ void TeamStats::step(Team *team, bool reloaded)
 	{
 		sampleTraps(team);
 		sampleDefence(team);
+		historySnapshot.reset();
 		measurementHistory.push_back(measurements);
 		AITelemetry::capture(team, true, getenv("GLOB2_TEAM_TIMELINE") != nullptr);
 		if (getenv("GLOB2_TEAM_TIMELINE"))
@@ -488,6 +490,7 @@ void TeamStats::step(Team *team, bool reloaded)
 		}
 	}
 
+	displaySnapshot.reset();
 	// We change current stats:
 	statsIndex++;
 	statsIndex%=STATS_SIZE;
@@ -589,7 +592,42 @@ void TeamStats::step(Team *team, bool reloaded)
 		stat.totalNeededPerLevel[k]=maxStat.totalNeededPerLevel[k];
 }
 
-void TeamStats::drawText(int posx, int posy)
+size_t TeamStats::displayCapacityBytes() const
+{
+    size_t bytes=0;
+    for (const auto& sample:stats) bytes+=sample.buildingCountByVariant.capacity()*sizeof(int);
+    bytes += endOfGameStats.capacity() * sizeof(EndOfGameStat);
+    bytes += measurementHistory.capacity() * sizeof(GameplayMeasurements);
+    for (const auto& sample : measurementHistory) bytes += sample.variants.capacity() * sizeof(sample.variants[0]);
+    return bytes;
+}
+
+std::shared_ptr<const TeamStats> TeamStats::frozenHistory() const
+{
+    if (auto previous = historySnapshot.lock()) return previous;
+    auto result = std::make_shared<TeamStats>();
+    result->endOfGameStats = endOfGameStats;
+    result->measurementHistory = measurementHistory;
+    result->coverageStartTick = coverageStartTick;
+    result->extendedCoverageStartTick = extendedCoverageStartTick;
+    result->labourCoverageStartTick = labourCoverageStartTick;
+    historySnapshot = result;
+    return result;
+}
+
+std::shared_ptr<const TeamStats> TeamStats::frozenDisplay() const
+{
+    if (auto previous=displaySnapshot.lock()) return previous;
+    auto result=std::make_shared<TeamStats>();
+    result->statsIndex=statsIndex;
+    std::copy_n(stats,STATS_SIZE,result->stats);
+    // HUD readers do not need live measurement collectors, AI series, or their
+    // growing histories. Retain only the samples consumed by text and graphs.
+    displaySnapshot=result;
+    return result;
+}
+
+void TeamStats::drawText(int posx, int posy) const
 {
 	// local variable to speed up access
 	GraphicContext *gfx=globalContainer->gfx;
@@ -598,7 +636,7 @@ void TeamStats::drawText(int posx, int posy)
 	int textStartPosX=posx+4;
 	int textStartPosY=posy;
 	
-	TeamStat &newStats=stats[statsIndex];
+	const TeamStat &newStats=stats[statsIndex];
 	
 	// general
 	textStartPosY -= 5;
@@ -652,7 +690,7 @@ void TeamStats::drawText(int posx, int posy)
 	}
 }
 
-void TeamStats::drawStat(int posx, int posy)
+void TeamStats::drawStat(int posx, int posy) const
 {
 	assert(STATS_SIZE==128);// We have graphical constraints
 	
@@ -790,38 +828,40 @@ void TeamStats::drawStat(int posx, int posy)
 	}
 }
 
-int TeamStats::getFreeUnits(int type)
+int TeamStats::getFreeUnits(int type) const
 {
 	return (stats[statsIndex].isFree[type]);
 }
 
-int TeamStats::getTotalUnits(int type)
+int TeamStats::getTotalUnits(int type) const
 {
 	return (stats[statsIndex].numberUnitPerType[type]);
 }
 
-int TeamStats::getWorkersNeeded()
+int TeamStats::getWorkersNeeded() const
 {
 	return (stats[statsIndex].totalNeeded);
 }
 
-int TeamStats::getWorkersBalance()
+int TeamStats::getWorkersBalance() const
 {
 	return (stats[statsIndex].isFree[WORKER]-stats[statsIndex].totalNeeded);
 }
 
-int TeamStats::getWorkersLevel(int level)
+int TeamStats::getWorkersLevel(int level) const
 {
 	return (stats[statsIndex].workersByConstructionLevel[level]);
 }
 
-int TeamStats::getStarvingUnits()
+int TeamStats::getStarvingUnits() const
 {
 	return (stats[statsIndex].needFoodCritical);
 }
 
 bool TeamStats::load(GAGCore::InputStream *stream, Sint32 versionMinor)
 {
+    displaySnapshot.reset();
+    historySnapshot.reset();
 	stream->readEnterSection("TeamStats");
 	Uint32 size=0;
 	size=stream->readCount("size");
@@ -1073,6 +1113,7 @@ void TeamStats::save(GAGCore::OutputStream *stream)
 
 void TeamStats::initializeMeasurements(Uint32 tick)
 {
+    historySnapshot.reset();
 	measurements = GameplayMeasurements{};
 	measurementCountTouched.clear();
 	measurementCountCatalogSize = 0;

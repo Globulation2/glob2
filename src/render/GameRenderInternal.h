@@ -16,8 +16,6 @@ struct GameRenderFrame
 {
     GAGCore::GraphicContext& target;
     GAGCore::Sprite& terrain;
-    GAGCore::Sprite& water;
     int left, top, right, bottom, width, height, viewportX, viewportY, localTeam;
     Uint32 options, visibleTeams;
-    bool software;
 };

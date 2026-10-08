@@ -30,8 +30,13 @@ def main():
     subprocess.run([sys.executable,str(Path(__file__).with_name('benchmark_gradient_pipeline.py')),str(binary),str(manifest),
                     '--output',str(output/'verification'),'--workers','0','1','2','4','8','--delays','1','3','8','--verify'],check=True)
     default = execute(binary, ['--load-game',str(initial),'--ticks','32'], output/'default')
+    assert default['result']['resolved']['rules']['aiOrderDelay'] == 8
     assert default['result']['gradient_delay'] == 8
-    assert default['result']['gradient_workers'] == 2
+    assert default['result']['gradient_workers'] == default['result']['compute_threads'] - 1
+    explicit = execute(binary, ['--load-game',str(initial),'--ticks','32',
+        '--compute-threads','2','--gradient-workers','8'], output/'explicit-shared-size')
+    assert explicit['result']['compute_threads'] in (1, 2)  # Threadless fallback is supported.
+    assert explicit['result']['gradient_workers'] == explicit['result']['compute_threads'] - 1
     # Save with work pending at every offset of the eight-tick pipeline. Compare
     # resumed tick/entity traces against the uninterrupted run, across worker counts.
     whole = output/'whole'

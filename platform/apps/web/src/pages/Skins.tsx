@@ -223,7 +223,7 @@ function SkinStudio() {
         e.preventDefault();
         setCamera((c) => ({
           ...c,
-          zoom: Math.max(0.45, Math.min(4, c.zoom * (e.key === '-' ? 0.8 : 1.25))),
+          zoom: Math.max(0.225, Math.min(4, c.zoom * (e.key === '-' ? 0.8 : 1.25))),
         }));
       }
     };
@@ -598,7 +598,7 @@ function SkinStudio() {
                         const factor = e.target.value === 'zoom-in' ? 1.25 : 0.8;
                         setCamera((c) => ({
                           ...c,
-                          zoom: Math.max(0.45, Math.min(4, c.zoom * factor)),
+                          zoom: Math.max(0.225, Math.min(4, c.zoom * factor)),
                         }));
                         return;
                       }
@@ -609,7 +609,7 @@ function SkinStudio() {
                         right: Math.PI / 2,
                       };
                       const yaw = views[e.target.value];
-                      if (yaw !== undefined) setCamera({ ...camera, yaw, game: false });
+                      if (yaw !== undefined) setCamera({ ...camera, yaw, pitch: 0, game: false });
                     }}
                   >
                     <option value="" disabled>
@@ -780,7 +780,7 @@ function SkinStudio() {
               {finalView
                 ? 'Drag to turn · fixed height and scale'
                 : tool === 'orbit'
-                  ? 'Drag horizontally to rotate · scroll or pinch to zoom'
+                  ? 'Drag to rotate and tilt · scroll or pinch to zoom'
                   : 'Drag to paint · Rotate tool to turn · scroll or pinch to zoom'}
             </div>
             {doc.message && (

@@ -10,6 +10,9 @@
 #include "Game.h"
 #include "GlobalContainer.h"
 #include "MapEdit.h"
+#include "render/scene/SceneExtract.h"
+#include "render/scene/BuildingCatalogView.h"
+#include "EditorDock.h"
 #include "ScriptEditorScreen.h"
 #include "Unit.h"
 #include "render/UnitAnimation.h"
@@ -23,13 +26,33 @@ void MapEdit::draw(Uint64 frameTick)
 {
 	drawMap(0, 0, globalContainer->gfx->getW(), globalContainer->gfx->getH());
 
-	drawMenu();
-	drawMiniMap();
+	if (!dock)
+	{
+		drawMenu();
+		drawMiniMap();
+	}
+	else
+		drawMenuEyeCandy();
 	wasMinimapRendered=false;
-	drawWidgets();
+	if (dock)
+		drawDock(Uint32(frameTick));
+	else
+		drawWidgets();
 	if (auto *dialog = activeDialog())
 		dialog->update(Uint32(frameTick));
 	drawDialog();
+}
+
+void MapEdit::preparePresentation()
+{
+    SceneRequest request;
+    request.localTeam=team;request.includePanels=false;request.includeScriptAreas=true;
+    request.view.overlay=isFertilityOn ? OverlayArea::Fertility : OverlayArea::None;
+    request.selectedBuilding=Game::refOf(view.selectedBuilding);
+    request.selectedUnit=Game::refOf(view.selectedUnit);
+    request.view.displayW=int(camera.visibleW());request.view.displayH=int(camera.visibleH());
+    SceneExtractor().prepare(game.captureReadBoundary({},true,SceneExtractor::requirements(request)),request,view.render.ownScene);
+    view.scene=&view.render.ownScene;
 }
 
 void MapEdit::drawMap(int sx, int sy, int sw, int sh)
@@ -46,34 +69,41 @@ void MapEdit::drawMap(int sx, int sy, int sw, int sh)
 		drawOptions |= Game::DRAW_OVERLAY;
 	}
 
+    preparePresentation();
 	game.drawMap(0, 0, int(std::ceil(camera.visibleW()+camera.fractionX())), int(std::ceil(camera.visibleH()+camera.fractionY())), 0, 0, viewportX, viewportY, team, view, drawOptions, nullptr, nullptr, false,
-        DynamicClouds::gridLimitForZoom(game.map.getW(), game.map.getH(),
+        DynamicClouds::gridLimitForZoom(view.scene->map.getW(), view.scene->map.getH(),
             globalContainer->settings.cloudPatchSize, camera.zoom));
 
-	if(selectionMode==EditingBuilding && camera.contains(mouseX,mouseY) && mouseY>=16)
+	// Previews follow the pointer only over the map itself, never under the
+	// dock or an open dialog.
+	const bool pointerOnMap = camera.contains(mouseX,mouseY) && mouseY>=16 && !pointerOverInterface();
+	if(selectionMode==EditingBuilding && pointerOnMap)
 	{
-		Building* selBuild=game.teams[Building::GIDtoTeam(selectedBuildingGID)]->myBuildings[Building::GIDtoID(selectedBuildingGID)];
-		globalContainer->gfx->setClipRect(0, 0, globalContainer->gfx->getW()-RIGHT_MENU_WIDTH, globalContainer->gfx->getH());
+		const auto& frame=*view.scene;
+        const auto* selBuild=frame.entities.building(selectedBuildingGID);
+        const auto* type=selBuild ? frame.entities.type(*selBuild) : nullptr;
+        if (selBuild && type) {
+		globalContainer->gfx->setClipRect(0, 0, globalContainer->gfx->getW()-dockWidth(), globalContainer->gfx->getH());
 		int centerX, centerY;
-		// Map editor mutates buildings directly — no orderQueue, no pending shadow.
-		// Use the authoritative position straight from the Building.
-		game.map.buildingPosToCursor(selBuild->posX, selBuild->posY,  selBuild->type->width, selBuild->type->height, &centerX, &centerY, viewportX, viewportY);
-		const int radius = selBuild->type->width*16;
+        // Selection decoration uses the exact world already drawn.
+		frame.map.buildingPosToCursor(selBuild->posX, selBuild->posY,  type->width, type->height, &centerX, &centerY, viewportX, viewportY);
+		const int radius = type->width*16;
 		forEachMapCopy(centerX-radius, centerY-radius, centerX+radius, centerY+radius,
-			game.map.getW()*32, game.map.getH()*32, game.map.displayViewportW,
-			game.map.displayViewportH, [&](int dx, int dy) {
-			if (selBuild->owner->teamNumber==team)
-				globalContainer->gfx->drawCircle(centerX+dx, centerY+dy, selBuild->type->width*16, 0, 0, 190);
-			else if ((game.teams[team]->allies) & (selBuild->owner->me))
-				globalContainer->gfx->drawCircle(centerX+dx, centerY+dy, selBuild->type->width*16, 255, 196, 0);
-			else if (!selBuild->type->isVirtual)
-				globalContainer->gfx->drawCircle(centerX+dx, centerY+dy, selBuild->type->width*16, 190, 0, 0);
+			frame.map.getW()*32, frame.map.getH()*32, frame.map.viewportWidth(),
+			frame.map.viewportHeight(), [&](int dx, int dy) {
+			if (selBuild->team==team)
+				globalContainer->gfx->drawCircle(centerX+dx, centerY+dy, type->width*16, 0, 0, 190);
+			else if ((frame.entities.teams[team].allies) & (frame.entities.teams[selBuild->team].mask))
+				globalContainer->gfx->drawCircle(centerX+dx, centerY+dy, type->width*16, 255, 196, 0);
+			else if (!type->isVirtual)
+				globalContainer->gfx->drawCircle(centerX+dx, centerY+dy, type->width*16, 190, 0, 0);
 		});
 		globalContainer->gfx->setClipRect();
+        }
 	}
 
-globalContainer->gfx->drawMapCopies(game.map.getW()*32,game.map.getH()*32,game.map.displayViewportW,game.map.displayViewportH,[&](){
-	if(camera.contains(mouseX,mouseY) && mouseY>=16)
+globalContainer->gfx->drawMapCopies(view.scene->map.getW()*32,view.scene->map.getH()*32,view.scene->map.viewportWidth(),view.scene->map.viewportHeight(),[&](){
+	if(pointerOnMap)
 	{
 		// BrushTool treats -1 as "no stroke origin" for checkerboard parity alignment
 		const int firstX = firstPlacement ? firstPlacement->x : -1;
@@ -81,26 +111,27 @@ globalContainer->gfx->drawMapCopies(game.map.getW()*32,game.map.getH()*32,game.m
 		if(selectionMode==PlaceBuilding)
 			drawBuildingSelectionOnMap();
 		if(selectionMode==PlaceZone)
-			brush.drawBrush(int(MapCamera::wrap(mapMouseX(mouseX),game.map.getW()*32)), int(MapCamera::wrap(mapMouseY(mouseY),game.map.getH()*32)), viewportX, viewportY, firstX, firstY);
+			brush.drawBrush(int(MapCamera::wrap(mapMouseX(mouseX),view.scene->map.getW()*32)), int(MapCamera::wrap(mapMouseY(mouseY),view.scene->map.getH()*32)), viewportX, viewportY, firstX, firstY);
 		if(selectionMode==PlaceTerrain)
-			brush.drawBrush(int(MapCamera::wrap(mapMouseX(mouseX),game.map.getW()*32)), int(MapCamera::wrap(mapMouseY(mouseY),game.map.getH()*32)), viewportX, viewportY, firstX, firstY, (terrainType>TerrainSelector::Water ? 0 : 1));
+			drawTerrainBrushPreview();
 		if(selectionMode==PlaceUnit)
 			drawPlacingUnitOnMap();
 		if(selectionMode==RemoveObject)
-			brush.drawBrush(int(MapCamera::wrap(mapMouseX(mouseX),game.map.getW()*32)), int(MapCamera::wrap(mapMouseY(mouseY),game.map.getH()*32)), viewportX, viewportY, firstX, firstY);
+			brush.drawBrush(int(MapCamera::wrap(mapMouseX(mouseX),view.scene->map.getW()*32)), int(MapCamera::wrap(mapMouseY(mouseY),view.scene->map.getH()*32)), viewportX, viewportY, firstX, firstY);
 
 		if(selectionMode==ChangeAreas)
 		{
-			brush.drawBrush(int(MapCamera::wrap(mapMouseX(mouseX),game.map.getW()*32)), int(MapCamera::wrap(mapMouseY(mouseY),game.map.getH()*32)), viewportX, viewportY, firstX, firstY);
+			brush.drawBrush(int(MapCamera::wrap(mapMouseX(mouseX),view.scene->map.getW()*32)), int(MapCamera::wrap(mapMouseY(mouseY),view.scene->map.getH()*32)), viewportX, viewportY, firstX, firstY);
 		}
 		if(selectionMode==ChangeNoResourceGrowthAreas)
-			brush.drawBrush(int(MapCamera::wrap(mapMouseX(mouseX),game.map.getW()*32)), int(MapCamera::wrap(mapMouseY(mouseY),game.map.getH()*32)), viewportX, viewportY, firstX, firstY);
+			brush.drawBrush(int(MapCamera::wrap(mapMouseX(mouseX),view.scene->map.getW()*32)), int(MapCamera::wrap(mapMouseY(mouseY),view.scene->map.getH()*32)), viewportX, viewportY, firstX, firstY);
 	}
 
 });
 	globalContainer->gfx->endMapTransform();
 	drawMapZoomControls(camera);
 	globalContainer->gfx->setClipRect(0, 0, globalContainer->gfx->getW(), globalContainer->gfx->getH());
+	drawStatus();
 }
 
 
@@ -114,13 +145,13 @@ void MapEdit::drawMiniMap(void)
 
 void MapEdit::drawMenu(void)
 {
-	int menuStartW=globalContainer->gfx->getW()-menuWidth();
+	int menuStartW=globalContainer->gfx->getW()-dockWidth();
 	int yposition=133;
 
 	if (!globalContainer->settings.translucentPanels)
-		globalContainer->gfx->drawFilledRect(menuStartW, yposition, menuWidth(), globalContainer->gfx->getH()-128, 0, 0, 0);
+		globalContainer->gfx->drawFilledRect(menuStartW, yposition, dockWidth(), globalContainer->gfx->getH()-128, 0, 0, 0);
 	else
-		globalContainer->gfx->drawFilledRect(menuStartW, yposition, menuWidth(), globalContainer->gfx->getH()-128, 0, 0, 40, 180);
+		globalContainer->gfx->drawFilledRect(menuStartW, yposition, dockWidth(), globalContainer->gfx->getH()-128, 0, 0, 40, 180);
 
 	drawMenuEyeCandy();
 }
@@ -132,43 +163,49 @@ void MapEdit::drawBuildingSelectionOnMap()
 	if (selectionName!="")
 	{
 		// we get the type of building
-		int typeNum=buildingSelectionType(selectionName);
+		int typeNum=displayedBuildingSelectionType(selectionName);
 		if (typeNum<0) return;
-		BuildingType *bt = game.buildingsTypes.get(typeNum);
+		const auto& frame=*view.scene;
+        const auto& map=frame.map;
+        const auto& owner=frame.entities.teams[team];
+        const BuildingCatalogView catalog(*frame.buildingTypes);
+        const auto* bt=catalog.get(typeNum);
 		Sprite *sprite = bt->gameSpritePtr;
 
 		// we translate dimensions and situation
 		int tempX, tempY;
 		int mapX, mapY;
 		bool isRoom;
-		game.map.cursorToBuildingPos(mapMouseX(mouseX), mapMouseY(mouseY), bt->width, bt->height, &tempX, &tempY, viewportX, viewportY);
-		if (bt->isVirtual)
-			isRoom = game.checkRoomForBuilding(tempX, tempY, bt, &mapX, &mapY, team);
-		else
-			isRoom = game.checkHardRoomForBuilding(tempX, tempY, bt, &mapX, &mapY);
+		map.cursorToBuildingPos(mapMouseX(mouseX), mapMouseY(mouseY), bt->width, bt->height, &tempX, &tempY, viewportX, viewportY);
+        mapX=tempX+bt->decLeft;mapY=tempY+bt->decTop;
+        isRoom=bt->isVirtual || map.isHardSpaceForBuilding(mapX,mapY,bt->width,bt->height);
+        if (bt->isVirtual) for (const auto ref:owner.virtualBuildings) {
+            const auto* other=frame.entities.building(ref);
+            if (other && other->posX==(mapX&map.getMaskW()) && other->posY==(mapY&map.getMaskH())) isRoom=false;
+        }
 
 		// we get the screen dimensions of the building
 		int rectW = (bt->width)<<5;
 		int rectH = sprite->getH(bt->gameSpriteImage);
-		int rectX = (((mapX-viewportX)&(game.map.wMask))<<5);
-		int rectY = (((mapY-viewportY)&(game.map.hMask))<<5)-(rectH-(bt->height<<5));
+		int rectX = (((mapX-viewportX)&(map.getMaskW()))<<5);
+		int rectY = (((mapY-viewportY)&(map.getMaskH()))<<5)-(rectH-(bt->height<<5));
 
 		// we draw the building
-		sprite->setBaseColor(game.teams[team]->color);
-		globalContainer->gfx->setClipRect(0, 0, globalContainer->gfx->getW()-menuWidth(), globalContainer->gfx->getH());
+		sprite->setBaseColor(presentationColor(owner.color));
+		globalContainer->gfx->setClipRect(0, 0, globalContainer->gfx->getW()-dockWidth(), globalContainer->gfx->getH());
 		int spriteIntensity = 127;
 		globalContainer->gfx->drawSprite(rectX, rectY, sprite, bt->gameSpriteImage, spriteIntensity);
 
 		if (!bt->isVirtual)
 		{
-			if (game.teams[team]->noMoreBuildingSitesCountdown>0)
+			if (owner.noMoreBuildingSitesCountdown>0)
 			{
 				globalContainer->gfx->drawRect(rectX, rectY, rectW, rectH, 255, 0, 0, 127);
 				globalContainer->gfx->drawLine(rectX, rectY, rectX+rectW-1, rectY+rectH-1, 255, 0, 0, 127);
 				globalContainer->gfx->drawLine(rectX+rectW-1, rectY, rectX, rectY+rectH-1, 255, 0, 0, 127);
 
 				globalContainer->littleFont->pushStyle(Font::Style(Font::STYLE_NORMAL, 255, 0, 0, 127));
-				globalContainer->gfx->drawString(rectX, rectY-12, globalContainer->littleFont, FormattableString("%0.%1").arg(game.teams[team]->noMoreBuildingSitesCountdown/40).arg((game.teams[team]->noMoreBuildingSitesCountdown%40)/4).c_str());
+				globalContainer->gfx->drawString(rectX, rectY-12, globalContainer->littleFont, FormattableString("%0.%1").arg(owner.noMoreBuildingSitesCountdown/40).arg((owner.noMoreBuildingSitesCountdown%40)/4).c_str());
 				globalContainer->littleFont->popStyle();
 			}
 			else
@@ -178,11 +215,11 @@ void MapEdit::drawBuildingSelectionOnMap()
 				else
 					globalContainer->gfx->drawRect(rectX, rectY, rectW, rectH, 255, 0, 0, 127);
 
-				BuildingType *upgradedType=game.buildingsTypes.getLastLevel(typeNum);
-				int upgradedMapX, upgradedMapY;
-				bool isUpgradedRoom = game.checkHardRoomForBuilding(tempX, tempY, upgradedType, &upgradedMapX, &upgradedMapY);
-				int upgradedRectX=((upgradedMapX-viewportX)&(game.map.wMask))<<5;
-				int upgradedRectY=((upgradedMapY-viewportY)&(game.map.hMask))<<5;
+				const auto* upgradedType=catalog.getLastLevel(typeNum);
+				int upgradedMapX=tempX+upgradedType->decLeft, upgradedMapY=tempY+upgradedType->decTop;
+				bool isUpgradedRoom = map.isHardSpaceForBuilding(upgradedMapX,upgradedMapY,upgradedType->width,upgradedType->height);
+				int upgradedRectX=((upgradedMapX-viewportX)&(map.getMaskW()))<<5;
+				int upgradedRectY=((upgradedMapY-viewportY)&(map.getMaskH()))<<5;
 				int upgradedRectW=(upgradedType->width)<<5;
 				int upgradedRectH=(upgradedType->height)<<5;
 
@@ -218,6 +255,29 @@ int MapEdit::buildingSelectionType(const std::string& key)
     return id;
 }
 
+int MapEdit::displayedBuildingSelectionType(const std::string& key) const
+{
+    if (!view.scene) return -1;
+    const BuildingCatalogView catalog(*view.scene->buildingTypes);
+    const auto available=[&](int id) { return id>=0 && size_t(id)<view.scene->world.catalogs->buildings->size()
+        && view.scene->world.catalogs->buildings->at(id).available; };
+    int id=catalog.getFinishedTypeNum(key);
+    if (!available(id)) return -1;
+    for (int depth=0; depth<buildingLevel; ++depth)
+    {
+        const auto* current=catalog.get(id);
+        int next=current->nextLevel;
+        if (!available(next)) break;
+        while (catalog.get(next)->isBuildingSite)
+        {
+            next=catalog.get(next)->nextLevel;
+            if (!available(next)) return id;
+        }
+        id=next;
+    }
+    return id;
+}
+
 void MapEdit::layoutBuildingSelectors()
 {
     if (buildingLevelNextPage) buildingLevelNextPage->enabled=panelMode==AddBuildings && buildingLevelCount>3;
@@ -238,7 +298,7 @@ void MapEdit::layoutBuildingSelectors()
 
 bool MapEdit::scrollBuildingSelectors(double delta)
 {
-    if (mouseX<globalContainer->gfx->getW()-menuWidth() || mouseY<166) return false;
+    if (mouseX<globalContainer->gfx->getW()-dockWidth() || mouseY<166) return false;
     if (panelMode==BuildingEditor && mouseY>=252)
     {
         buildingEditFirstRow+=delta>0 ? -1 : delta<0 ? 1 : 0;
@@ -300,27 +360,30 @@ void MapEdit::drawMenuEyeCandy()
 
 	// bar background
 	if (!globalContainer->settings.translucentPanels)
-		globalContainer->gfx->drawFilledRect(0, 0, globalContainer->gfx->getW()-menuWidth(), 16, 0, 0, 0);
+		globalContainer->gfx->drawFilledRect(0, 0, globalContainer->gfx->getW()-dockWidth(), 16, 0, 0, 0);
 	else
-		globalContainer->gfx->drawFilledRect(0, 0, globalContainer->gfx->getW()-menuWidth(), 16, 0, 0, 40, 180);
+		globalContainer->gfx->drawFilledRect(0, 0, globalContainer->gfx->getW()-dockWidth(), 16, 0, 0, 40, 180);
 
 	// draw window bar
-	int pos=globalContainer->gfx->getW()-menuWidth()-32;
+	int pos=globalContainer->gfx->getW()-dockWidth()-32;
 	for (int i=0; i<=pos; i+=32)
 	{
 		globalContainer->gfx->drawSprite(i, 16, globalContainer->gamegui, 16);
 	}
-	for (int i=16; i<globalContainer->gfx->getH(); i+=32)
-	{
-		globalContainer->gfx->drawSprite(pos+28, i, globalContainer->gamegui, 17);
-	}
+	if (!dock)
+		for (int i=16; i<globalContainer->gfx->getH(); i+=32)
+		{
+			globalContainer->gfx->drawSprite(pos+28, i, globalContainer->gamegui, 17);
+		}
 }
 
 
 
 void MapEdit::drawPlacingUnitOnMap()
 {
-	int type=0;
+	const auto& frame=*view.scene;
+    const auto& map=frame.map;
+    int type=0;
 	if(placingUnit==Worker)
 		type=WORKER;
 	else if(placingUnit==Warrior)
@@ -330,27 +393,27 @@ void MapEdit::drawPlacingUnitOnMap()
 
 	int level=placingUnitLevel;
 
-	int cx=((mapMouseX(mouseX)>>5)+viewportX)&game.map.getMaskW();
-	int cy=((mapMouseY(mouseY)>>5)+viewportY)&game.map.getMaskH();
+	int cx=((mapMouseX(mouseX)>>5)+viewportX)&map.getMaskW();
+	int cy=((mapMouseY(mouseY)>>5)+viewportY)&map.getMaskH();
 
-	int px=int(MapCamera::wrap(mapMouseX(mouseX),game.map.getW()*32))&0xFFFFFFE0;
-	int py=int(MapCamera::wrap(mapMouseY(mouseY),game.map.getH()*32))&0xFFFFFFE0;
+	int px=int(MapCamera::wrap(mapMouseX(mouseX),map.getW()*32))&0xFFFFFFE0;
+	int py=int(MapCamera::wrap(mapMouseY(mouseY),map.getH()*32))&0xFFFFFFE0;
 	int pw=32;
 	int ph=32;
 
 	bool isRoom;
 	if (type==EXPLORER)
-		isRoom=game.map.isFreeForAirUnit(cx, cy);
+		isRoom=map.isFreeForAirUnit(cx, cy);
 	else
 	{
-		UnitType *ut=game.teams[team]->race.getUnitType(type, level);
-		isRoom=game.map.isFreeForGroundUnit(cx, cy, ut->performance[SWIM], Team::teamNumberToMask(team));
+		const auto* ut=&frame.world.catalogs->unitTypes[type][level];
+		isRoom=map.isFreeForGroundUnit(cx, cy, ut->performance[SWIM], Team::teamNumberToMask(team));
 	}
 
 	const int imgid=unitAnimationFrame(g_unitSkins[type].startImage[STOP_WALK], 0, 0);
 
 	Sprite *unitSprite=globalContainer->units;
-	unitSprite->setBaseColor(game.teams[team]->color);
+	unitSprite->setBaseColor(presentationColor(frame.entities.teams[team].color));
 
 	globalContainer->gfx->drawSprite(px, py, unitSprite, imgid);
 
@@ -358,4 +421,26 @@ void MapEdit::drawPlacingUnitOnMap()
 		globalContainer->gfx->drawRect(px, py, pw, ph, 255, 255, 255, 128);
 	else
 		globalContainer->gfx->drawRect(px, py, pw, ph, 255, 0, 0, 128);
+}
+
+
+void MapEdit::drawDock(Uint32 tick)
+{
+	if (!dock || globalContainer->runNoX)
+		return;
+	dock->update(tick);
+	globalContainer->gfx->setClipRect();
+	dock->draw(tick);
+}
+
+void MapEdit::centerViewOnMinimap(int x, int y)
+{
+	if (globalContainer->runNoX || !minimap.insideMinimap(x, y))
+		return;
+	int cellX = 0, cellY = 0;
+	minimap.convertToMap(x, y, cellX, cellY);
+	updateCamera();
+	viewportX = (cellX - int(camera.visibleW() / 64)) & game.map.getMaskW();
+	viewportY = (cellY - int(camera.visibleH() / 64)) & game.map.getMaskH();
+	updateCamera();
 }

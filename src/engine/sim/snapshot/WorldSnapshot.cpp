@@ -10,7 +10,15 @@ Handle Handle::project(Requirements requested) const
 	if ((requested & requirements) != requested) throw std::invalid_argument("snapshot component was not captured");
 	Handle result;
 	result.tick = tick; result.width = width; result.height = height; result.requirements = requested;
+	result.observationRevision = observationRevision;
 	result.configurationRevision = configurationRevision; result.worldIdentity = worldIdentity; result.mapGenerations = mapGenerations;
+	if (needs(requested, Component::Session)) result.session = session;
+	if (needs(requested, Component::Effects)) result.effects = effects;
+	if (needs(requested, Component::Statistics)) result.statistics = statistics;
+	if (needs(requested, Component::History)) result.history = history;
+	if (needs(requested, Component::Telemetry)) result.telemetry = telemetry;
+	if (needs(requested, Component::EntityDiagnostics)) result.entityDiagnostics = entityDiagnostics;
+	if (needs(requested, Component::Annotations)) result.annotations = annotations;
 	if (needs(requested, Component::Catalogs)) result.catalogs = catalogs;
 	if (needs(requested, Component::Terrain)) result.terrain = terrain;
 	if (needs(requested, Component::Resources)) result.resources = resources;

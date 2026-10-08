@@ -355,7 +355,7 @@ TEST_SUITE("SoftwareRenderer")
 		Game::ViewState view;
 		const auto cache = [&]() -> SoftwareTerrainCache & { return view.render.terrainCache(game.map.identity()); };
 		SceneMap extracted;
-		const auto sceneOf = [&](const Map &map) -> const SceneMap & { extracted.extract(map); return extracted; };
+		const auto sceneOf = [&](const Map &map) -> const SceneMap & { glob2test::observeMap(map,extracted); return extracted; };
 		for (int y = 0; y < 32; ++y)
 			for (int x = 0; x < 32; ++x)
 				game.map.setTerrain(x, y, (x + y * 32) % 272);
@@ -369,7 +369,7 @@ TEST_SUITE("SoftwareRenderer")
 				globals->gfx->setClipRect();
 				globals->gfx->drawFilledRect(0, 0, 640, 480, Color(11, 22, 33));
 				globals->gfx->beginMapTransform(1, 1, 1, 0, 0, 640, 480);
-				game.drawMap(0, 0, 640, 480, 0, 0, vx, vy, team, view, Game::DRAW_NO_CLOUD_LAYER,
+				glob2test::drawMap(game,0, 0, 640, 480, 0, 0, vx, vy, team, view, Game::DRAW_NO_CLOUD_LAYER,
 							 nullptr, nullptr, true);
 				globals->gfx->endMapTransform();
 				auto image = snapshot(globals->gfx->getSDLSurface());
@@ -418,38 +418,9 @@ TEST_SUITE("SoftwareRenderer")
 				game.map.setTerrain(x, y, 256);
 		REQUIRE(cache().prepare(sceneOf(game.map), *globals->terrain, 0, 0, 159, 159, 0,
 												   0, game.teams[0]->me, true));
-		const auto coverage = cache().waterRegions(SDL_Rect{0, 0, 5120, 5120});
-		REQUIRE(coverage.size() == 1);
-		CHECK(coverage[0].w == 5120);
-		CHECK(coverage[0].h == 5120);
-		// Material variants are independent of saved frame IDs. Restore the
-		// deliberately translucent variant before asserting opaque coverage.
+		// Water is an ordinary opaque tile material; restore the deliberately
+		// translucent legacy pixel before the transformed capture below.
 		asset->drawPixel(0, 0, Color(17, 33, 51, 255));
-		// Fragmented opaque islands exercise the 64-region bookkeeping cap.
-		// One canonical chunk is repeated, so the pixel budget stays bounded.
-		int opaqueId = -1;
-		for (int id = 0; id < 256; ++id)
-			if (globals->terrain->nativeFrame(id)->hasOpaquePixels())
-			{
-				opaqueId = id;
-				break;
-			}
-		REQUIRE(opaqueId >= 0);
-		for (int y = 0; y < 16; ++y)
-			for (int x = 0; x < 16; ++x)
-				game.map.setTerrain(x, y, (x % 2 == 0 && y % 2 == 0) ? opaqueId : 256);
-		REQUIRE(cache().prepare(sceneOf(game.map), *globals->terrain, 0, 0, 159, 159, 0,
-												   0, game.teams[0]->me, true));
-		const auto fragmented = cache().waterRegions(SDL_Rect{0, 0, 5120, 5120});
-		REQUIRE(fragmented.size() == 1);
-		CHECK(fragmented[0].w == 5120);
-		CHECK(fragmented[0].h == 5120);
-		for (int y = 0; y < 16; ++y)
-			for (int x = 0; x < 16; ++x)
-				game.map.setTerrain(x, y, opaqueId);
-		REQUIRE(cache().prepare(sceneOf(game.map), *globals->terrain, 0, 0, 15, 15, 0, 0,
-												   game.teams[0]->me, true));
-		CHECK(cache().waterRegions(SDL_Rect{0, 0, 512, 512}).empty());
 
 		const auto capture =
 			glob2test::artifactDirFromWorkingDirectory() + "/transformed-software.bmp";

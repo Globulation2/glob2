@@ -174,10 +174,10 @@ class MaximaStrategyPolicyTest(unittest.TestCase):
             "world.accessibleSupplies[materialIndex(MaterialId::Algae)]=accessible_algae_units;", self.maxima
         )
         self.assertIn(
-            "result.accessibleAlgaeUnits+=map->materialAmountAt(index,MaterialId::Algae);", self.maxima
+            "result.accessibleAlgaeUnits+=MapState::materialAmountAt(map->state(),index,MaterialId::Algae);", self.maxima
         )
         self.assertIn(
-            "walking[index]=clear && map->terrainPropertiesAt(index).walkable;", self.maxima
+            "walking[index]=clear && map->state().terrainProperties(index).walkable;", self.maxima
         )
         self.assertNotIn("intent.requiredMaterialType=materialIndex(MaterialId::Algae);", self.maxima)
         self.assertNotIn(
@@ -217,12 +217,12 @@ class MaximaStrategyPolicyTest(unittest.TestCase):
         self.assertIn(
             "static constexpr int MAX_BUILDING_WORKER_REQUEST = 20;", game_header
         )
-        modify_building = function(orders, "void Game::executeModifyBuilding")
+        modify_building = function(orders, "bool Game::executeModifyBuilding")
         # Orders reject oversized requests before assignment; pin the guard to
         # this executor so another order handler cannot satisfy the contract.
         rejection = re.search(
             r"if\s*\(\s*omb\.numberRequested\s*>\s*b->type->semantics\.assignmentLimit\s*\)"
-            r"\s*(?:\{\s*)?return\s*;",
+            r"\s*(?:\{\s*)?return\s+false\s*;",
             modify_building,
         )
         self.assertIsNotNone(rejection)

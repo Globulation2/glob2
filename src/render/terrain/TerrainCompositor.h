@@ -35,6 +35,12 @@ class Compositor
 	static constexpr int OverviewSamples = 4;
 	void composeOverview(const Recipe &, SDL_Surface *target, int x, int y,
 						 const std::array<unsigned char, 3> *cellColor = nullptr) const;
+	// The shared decor sprite (every decor block names the same one), or null
+	// when the catalog has no decor; the renderer batches decor like resources.
+	GAGCore::Sprite *decorSprite() const { return decorSprite_; }
+	// Decor frame drawn over cell (x, y), or -1. Cells with a neighbour of a
+	// different appearance use the smaller edge frames.
+	int decorFrame(const SceneMap &, int x, int y) const;
 	std::uint64_t materialRevision(MaterialId id) const { return materialRevisions[id]; }
 	int scale() const { return resolution; }
 	std::size_t sourceBytes() const;
@@ -51,8 +57,8 @@ class Compositor
 	std::shared_ptr<CompiledPack> pack;
 	std::map<std::uint64_t, std::uint64_t> cleanSources;
 	std::array<MaterialId, TERRAIN_COUNT> terrainBindings{};
-	std::vector<GAGCore::Sprite *> sprites, backdropSprites;
-	std::vector<Texture> backgrounds;
+	std::vector<GAGCore::Sprite *> sprites;
+	GAGCore::Sprite *decorSprite_ = nullptr;
 	static void readTexture(Texture &, GAGCore::DrawableSurface *);
 	std::vector<std::vector<Texture>> textures;
 	std::vector<std::uint64_t> materialRevisions;

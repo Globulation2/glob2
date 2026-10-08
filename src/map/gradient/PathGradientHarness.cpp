@@ -616,15 +616,16 @@ TEST_CASE("queued mixed gradients retain terrain costs until fixed publication [
         const auto expected = oracle(seeds, std::vector<Uint16>(count, 0), width,
             width, swim, CostLimit, snapshot.get());
         auto *published = new Uint16[count]{};
+        ComputeExecutor executor; executor.configure(workers+1);
         GradientPipeline pipeline;
-        pipeline.configure(workers, 2, count, [](auto &job, auto &workspace) {
+        pipeline.configure(executor,workers!=0, 2, count, [](auto &job, auto &workspace) {
             const auto *types = job.terrain->data();
             gradient_kernel::propagateTerrainField(job.data.get(), job.swim,
                 CostLimit, {width, width}, workspace,
                 [types](std::size_t i) { return types[i]; }, job.modifiedCosts);
         });
         pipeline.advance();
-        pipeline.submit(&published, swim, [&](auto &job) {
+        pipeline.submit(&published, swim, [seeds,snapshot](auto &job) {
             std::copy(seeds.begin(), seeds.end(), job.data.get());
             job.terrain = snapshot; job.modifiedCosts = true;
         });

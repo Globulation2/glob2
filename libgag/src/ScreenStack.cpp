@@ -59,6 +59,14 @@ void ScreenStack::configureViewport(Screen& screen)
     }
 }
 
+bool ScreenStack::quitIntercepted() const
+{
+	// Only a running top screen with nothing queued above it can answer a quit
+	// request; otherwise the request stops the stack as before.
+	return !stopped && pending.empty() && !screens.empty() &&
+		   screens.back().screen->isExecutionRunning() && screens.back().screen->interceptsQuit();
+}
+
 void ScreenStack::stop()
 {
 	stopped = true;
@@ -129,13 +137,13 @@ void ScreenStack::frame(Uint32 tick, const std::vector<SDL_Event> &events, bool 
             backgrounded=false; suspendExecution();
         }
         if (event.type==SDL_EVENT_RENDER_DEVICE_RESET || event.type==SDL_EVENT_RENDER_TARGETS_RESET || event.type==SDL_EVENT_LOW_MEMORY) resetGraphics=true;
-        if (event.type==SDL_EVENT_TERMINATING || event.type==SDL_EVENT_QUIT) stop();
+        if (event.type==SDL_EVENT_TERMINATING || (event.type==SDL_EVENT_QUIT && !quitIntercepted())) stop();
     }
     if (backgrounded) { if(stopped) boundary(); return; }
     if (resetGraphics) {
         if (auto *context = dynamic_cast<GAGCore::GraphicContext *>(&surface)) context->resetRenderPacing();
         SDL_Event reset{};reset.type=SDL_EVENT_RENDER_DEVICE_RESET;GAGCore::GraphicContext::translateMouseEvent(&reset);resetGraphics=false; }
-	if (std::any_of(events.begin(), events.end(),
+	if (!quitIntercepted() && std::any_of(events.begin(), events.end(),
 					[](const SDL_Event &e) { return e.type == SDL_EVENT_QUIT; }))
 		stop();
     const int frameWidth=surface.getW(), frameHeight=surface.getH();
@@ -163,7 +171,7 @@ void ScreenStack::frame(Uint32 tick, const std::vector<SDL_Event> &events, bool 
 	// Pending child transitions suspend the parent immediately.
 	for (const auto &event : events)
 	{
-		if (event.type == SDL_EVENT_QUIT)
+		if (event.type == SDL_EVENT_QUIT && !screen.interceptsQuit())
 		{
 			stop();
 			break;

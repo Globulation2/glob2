@@ -30,6 +30,7 @@ struct TouchFlagSession
 {
 	TouchPlacementSession::Pointer pointer;
 	int gid = -1, team = -1;
+	std::uint32_t generation = 0;
 	GAGCore::ViewPoint start, position;
 	double offsetX = 0, offsetY = 0; // World pixels from the finger to the flag's centre.
 	int originX = 0, originY = 0;     // The flag's tile when it was grabbed.
@@ -69,4 +70,5 @@ struct TouchAllocationSession
 	bool moved = false;
 	double sweepFrom = 0, sweepTo = 0;
 	GAGCore::ViewPoint position;
+	std::uint32_t generation = 0;
 };

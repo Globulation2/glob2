@@ -39,11 +39,14 @@
 
 namespace
 {
-// Resource images overlap neighboring tiles. Cache ONE complete canonical row,
-// retain source traversal order inside texture runs, and select the exact source
-// tile range with binary searches. Splitting rectangles vertically would change
-// the painter order. Partial discovery uses the ordinary path below instead.
-bool drawCachedResources(const void *mapIdentity, const SceneMap& map, int left, int top,
+// Obstacle decor (boulders, hedges, rock) and resource images overlap
+// neighboring tiles. Each canonical row draws its decor first, then its
+// resources, so lower rows stay in front of higher ones across both layers.
+// Cache ONE complete canonical row per layer, retain source traversal order
+// inside texture runs, and select the exact source tile range with binary
+// searches. Splitting rectangles vertically would change the painter order.
+// Partial discovery uses the ordinary path below instead.
+bool drawCachedResources(Uint64 mapIdentity, const SceneMap& map, int left, int top,
     int right, int bottom, int viewportX, int viewportY)
 {
     const auto& presentation = ResourceSprites::resolve(map.frozenResourceRegistry());
@@ -51,9 +54,11 @@ bool drawCachedResources(const void *mapIdentity, const SceneMap& map, int left,
     auto *batch = gfx->getRenderBatch();
     if (!batch) return false;
     auto *sprite = globalContainer->resources;
-    std::vector<int> frames;
+    const auto &compositor = globalContainer->terrainCompositor();
+    auto *decorSprite = compositor.decorSprite();
+    std::vector<int> frames, decorFrames;
     GAGCore::MapGeometryCache *cache;
-    try { frames.resize(map.getW()); cache = &batch->geometryCache(); }
+    try { frames.resize(map.getW()); decorFrames.resize(map.getW()); cache = &batch->geometryCache(); }
     catch (const std::bad_alloc&) { return false; }
     // Decide before emitting geometry: fallback must never redraw earlier rows.
     for (int y = top; y <= bottom; ++y)
@@ -69,6 +74,7 @@ bool drawCachedResources(const void *mapIdentity, const SceneMap& map, int left,
     for (int y = top; y <= bottom; ++y)
     {
         int mapY = (y + viewportY) & map.getMaskH();
+        bool anyDecor = false;
         for (int mapX = 0; mapX < map.getW(); ++mapX)
         {
             const auto& resource = map.getResource(mapX, mapY);
@@ -78,41 +84,49 @@ bool drawCachedResources(const void *mapIdentity, const SceneMap& map, int left,
                 const auto& type = map.resourceRegistry().presentation(static_cast<ResourceId>(resource.type));
                 frames[mapX] = type.frame(resource.amount, mapX, mapY, map.tick);
             }
+            decorFrames[mapX] = decorSprite ? compositor.decorFrame(map, mapX, mapY) : -1;
+            anyDecor |= decorFrames[mapX] >= 0;
         }
-        auto draw = [&](int first, int last, int originX, int originY)
+        auto drawLayer = [&](GAGCore::Sprite *layerSprite, const std::vector<int> &layerFrames, int layerKey)
         {
-            for (int mapX = first; mapX <= last; ++mapX)
+            auto draw = [&](int first, int last, int originX, int originY)
             {
-                int frame = frames[mapX];
-                if (frame < 0) continue;
-                int dx = (sprite->getW(frame) - 32) >> 1;
-                int dy = (sprite->getH(frame) - 32) >> 1;
-                gfx->drawSprite((originX + mapX) * 32 - dx, originY * 32 - dy, sprite, frame);
+                for (int mapX = first; mapX <= last; ++mapX)
+                {
+                    int frame = layerFrames[mapX];
+                    if (frame < 0) continue;
+                    int dx = (layerSprite->getW(frame) - 32) >> 1;
+                    int dy = (layerSprite->getH(frame) - 32) >> 1;
+                    gfx->drawSprite((originX + mapX) * 32 - dx, originY * 32 - dy, layerSprite, frame);
+                }
+                gfx->finishDrawingSprite(layerSprite, 255);
+            };
+            for (int x = left; x <= right;)
+            {
+                int mapX = (x + viewportX) & map.getMaskW();
+                int width = std::min(right - x + 1, map.getW() - mapX);
+                bool drawn = false;
+                try
+                {
+                    drawn = cache->draw({mapIdentity, layerKey, 0, mapY, map.getW(), 1}, layerFrames,
+                        [&] { draw(0, map.getW() - 1, 0, 0); }, mapX, mapX + width - 1,
+                        float((x - mapX) * 32), float(y * 32));
+                }
+                catch (const std::bad_alloc&) {}
+                if (!drawn)
+                {
+                    layer.prepareFallback();
+                    // Cold-cache budget exhaustion must retain the family
+                    // batching path instead of reverting to one HD bind per sprite.
+                    GAGCore::SpriteDrawBatch fallback(gfx, layerSprite);
+                    draw(mapX, mapX + width - 1, x - mapX, y);
+                }
+                x += width;
             }
-            gfx->finishDrawingSprite(sprite, 255);
         };
-        for (int x = left; x <= right;)
-        {
-            int mapX = (x + viewportX) & map.getMaskW();
-            int width = std::min(right - x + 1, map.getW() - mapX);
-            bool drawn = false;
-            try
-            {
-                drawn = cache->draw({mapIdentity, 1, 0, mapY, map.getW(), 1}, frames,
-                    [&] { draw(0, map.getW() - 1, 0, 0); }, mapX, mapX + width - 1,
-                    float((x - mapX) * 32), float(y * 32));
-            }
-            catch (const std::bad_alloc&) {}
-            if (!drawn)
-            {
-                layer.prepareFallback();
-                // Cold-cache budget exhaustion must retain the resource-family
-                // batching path instead of reverting to one HD bind per sprite.
-                GAGCore::SpriteDrawBatch fallback(gfx, sprite);
-                draw(mapX, mapX + width - 1, x - mapX, y);
-            }
-            x += width;
-        }
+        if (anyDecor)
+            drawLayer(decorSprite, decorFrames, 2);
+        drawLayer(sprite, frames, 1);
     }
     return true;
 }
@@ -120,21 +134,6 @@ bool drawCachedResources(const void *mapIdentity, const SceneMap& map, int left,
 
 // Terrain, resource, and area rendering. Split from Game_render.cpp.
 
-
-void Game::drawMapWater(int sw, int sh, int viewportX, int viewportY, int time)
-{
-	PERF_SCOPE_TIME(Water);
-    const auto &p=TerrainOceanBackdrop;
-    const int frame=terrainAnimatedFrame(p.firstFrame,p.frames,p.ticksPerFrame,time);
-    const int width=globalContainer->terrainWater->getW(frame),height=globalContainer->terrainWater->getH(frame);
-    const int waterStartX=-(((viewportX<<5)+terrainScrollOffset(time,p.scrollDivisorX))%width);
-    const int waterStartY=-(((viewportY<<5)+terrainScrollOffset(time,p.scrollDivisorY))%height);
-    for(int y=waterStartY;y<sh;y+=height) {
-        for(int x=waterStartX;x<sw;x+=width)
-            globalContainer->gfx->drawSprite(x,y,globalContainer->terrainWater,frame);
-    }
-    globalContainer->gfx->finishDrawingSprite(globalContainer->terrainWater,255);
-}
 
 void Game::drawMapTerrain(int left, int top, int right, int bot, int viewportX, int viewportY, int localTeam, Uint32 drawOptions, const SceneMap& sceneMap, int animationTime)
 {
@@ -158,6 +157,8 @@ void Game::drawMapResources(int left, int top, int right, int bot, int viewportX
     if ((drawOptions & DRAW_WHOLE_MAP) && drawCachedResources(sceneMap.cacheKey(), sceneMap, left, top,
             right, bot, viewportX, viewportY)) return;
     const auto& catalog = ResourceSprites::resolve(sceneMap.frozenResourceRegistry());
+    const auto &compositor = globalContainer->terrainCompositor();
+    Sprite *decorSprite = compositor.decorSprite();
     Sprite* pendingSprite = nullptr;
     const auto flush = [&] {
         if (pendingSprite) globalContainer->gfx->finishDrawingSprite(pendingSprite, 255);
@@ -174,6 +175,16 @@ void Game::drawMapResources(int left, int top, int right, int bot, int viewportX
 						y+viewportY+1,
 						visibleTeams))
 			{
+				if (decorSprite)
+				{
+					const int decor = compositor.decorFrame(sceneMap, x + viewportX, y + viewportY);
+					if (decor >= 0)
+					{
+						if (pendingSprite != decorSprite) { flush(); pendingSprite = decorSprite; }
+						globalContainer->gfx->drawSprite((x << 5) - ((decorSprite->getW(decor) - 32) >> 1),
+							(y << 5) - ((decorSprite->getH(decor) - 32) >> 1), decorSprite, decor);
+					}
+				}
 				const auto& r = sceneMap.getResource(x+viewportX, y+viewportY);
 				if (r.type!=NO_RES_TYPE)
 				{
@@ -248,7 +259,7 @@ void Game::drawMapOverview(int left, int top, int right, int bot, int viewportX,
 	globalContainer->gfx->drawSurface(left*32, top*32, columns*32, rows*32, render.overview.get(), alpha);
 }
 
-void Game::drawMapTerritory(int left, int top, int right, int bot, int viewportX, int viewportY, int localTeam, Uint32 drawOptions, const Scene& scene, float opacity)
+void Game::drawMapTerritory(int left, int top, int right, int bot, int viewportX, int viewportY, int localTeam, Uint32 drawOptions, const PresentationFrame& scene, float opacity)
 {
 	// A wash strong enough to read over the terrain colours, inside a solid
 	// border: the edge of a colour shows where a faint tint of it does not.
@@ -259,7 +270,7 @@ void Game::drawMapTerritory(int left, int top, int right, int bot, int viewportX
 	PERF_SCOPE_TIME(Overlay);
 	const SceneEntities &entities = scene.entities;
 	const SceneMap &sceneMap = scene.map;
-	Uint32 visibleTeams = entities.teams[localTeam].me;
+	Uint32 visibleTeams = entities.teams[localTeam].mask;
 	if (globalContainer->isViewingGame()) visibleTeams = globalContainer->replayVisibleTeams;
 	// Each cell of a coarse grid belongs to the team with the nearest building
 	// within reach. Rebuilt per frame: a few hundred buildings stamp a few
@@ -268,17 +279,17 @@ void Game::drawMapTerritory(int left, int top, int right, int bot, int viewportX
 	const int gridW = std::max(1, sceneMap.getW()/Cell), gridH = std::max(1, sceneMap.getH()/Cell);
 	static std::vector<Uint16> owner; // team in the high byte, squared distance in the low
 	owner.assign(size_t(gridW)*gridH, 0xFFFF);
-	for (const SceneBuilding &sceneBuilding : entities.buildings)
+	for (const SnapshotBuilding &sceneBuilding : entities.buildings)
 		{
-			const SceneBuilding *building = &sceneBuilding;
+			const SnapshotBuilding *building = &sceneBuilding;
 			const int teamNumber = building->team;
-			if (!building->type || building->type->isVirtual)
+			if (!entities.type(*building) || entities.type(*building)->isVirtual)
 				continue;
-			if (!(drawOptions & DRAW_WHOLE_MAP) && !(entities.teams[teamNumber].me & visibleTeams)
+			if (!(drawOptions & DRAW_WHOLE_MAP) && !(entities.teams[teamNumber].mask & visibleTeams)
 				&& !(building->seenByMask & visibleTeams))
 				continue;
-			const int centerX = (building->posX + building->type->width/2)/Cell;
-			const int centerY = (building->posY + building->type->height/2)/Cell;
+			const int centerX = (building->posX + entities.type(*building)->width/2)/Cell;
+			const int centerY = (building->posY + entities.type(*building)->height/2)/Cell;
 			const int reach = Reach/Cell;
 			for (int dy=-reach; dy<=reach; dy++)
 				for (int dx=-reach; dx<=reach; dx++)
@@ -302,7 +313,7 @@ void Game::drawMapTerritory(int left, int top, int right, int bot, int viewportX
 	// brought up to the same brightness, keeping its hue.
 	const auto washColor = [&](int team, Uint8 a)
 	{
-		const GAGCore::Color &color = entities.teams[team].color;
+		const GAGCore::Color &color = presentationColor(entities.teams[team].color);
 		const int brightest = std::max({int(color.r), int(color.g), int(color.b), 1});
 		const auto lift = [&](Uint8 channel) { return Uint8(std::min(255, 40 + channel * 215 / brightest)); };
 		return GAGCore::Color(lift(color.r), lift(color.g), lift(color.b), a);
@@ -351,7 +362,7 @@ void Game::drawMapTerritory(int left, int top, int right, int bot, int viewportX
 
 void Game::drawMapDebugAreas(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions, ViewState& view)
 {
-	const Scene& scene = view.drawnScene();
+	const PresentationFrame& scene = view.drawnScene();
 	const SceneMap& map = scene.map;
 	const auto& selected = scene.entities.selectedBuilding;
 	if (!selected.verbose) return;
@@ -378,10 +389,10 @@ void Game::drawMapAreas(int left, int top, int right, int bot, int sw, int sh, i
 
 	if ((drawOptions & DRAW_AREA) != 0 && (!globalContainer->isViewingGame() || globalContainer->replayShowAreas))
 	{
-		drawMapArea(left, top, right, bot, sw, sh, viewportX, viewportY, localTeam, drawOptions, sceneMap, &SceneMap::isForbiddenInDisplayedView, areaAnimationTick, ForbiddenArea, view.render);
-		drawMapArea(left, top, right, bot, sw, sh, viewportX, viewportY, localTeam, drawOptions, sceneMap, &SceneMap::isGuardAreaInDisplayedView, areaAnimationTick, GuardArea, view.render);
-		drawMapArea(left, top, right, bot, sw, sh, viewportX, viewportY, localTeam, drawOptions, sceneMap, &SceneMap::isClearAreaInDisplayedView, areaAnimationTick, ClearingArea, view.render);
-		drawMapArea(left, top, right, bot, sw, sh, viewportX, viewportY, localTeam, drawOptions, sceneMap, &SceneMap::isFarmAreaInDisplayedView, areaAnimationTick, FarmArea, view.render);
+		drawMapArea(left, top, right, bot, sw, sh, viewportX, viewportY, localTeam, drawOptions, sceneMap, &SceneMap::isForbiddenInDisplayedView, areaAnimationTick, ForbiddenArea, view.render, view.displayedAreas ? &(*view.displayedAreas)[0] : nullptr);
+		drawMapArea(left, top, right, bot, sw, sh, viewportX, viewportY, localTeam, drawOptions, sceneMap, &SceneMap::isGuardAreaInDisplayedView, areaAnimationTick, GuardArea, view.render, view.displayedAreas ? &(*view.displayedAreas)[1] : nullptr);
+		drawMapArea(left, top, right, bot, sw, sh, viewportX, viewportY, localTeam, drawOptions, sceneMap, &SceneMap::isClearAreaInDisplayedView, areaAnimationTick, ClearingArea, view.render, view.displayedAreas ? &(*view.displayedAreas)[2] : nullptr);
+		drawMapArea(left, top, right, bot, sw, sh, viewportX, viewportY, localTeam, drawOptions, sceneMap, &SceneMap::isFarmAreaInDisplayedView, areaAnimationTick, FarmArea, view.render, view.displayedAreas ? &(*view.displayedAreas)[3] : nullptr);
 		for (int y=top; y<bot; y++)
 			for (int x=left; x<right; x++)
 			{
@@ -415,8 +426,9 @@ void Game::drawMapAreas(int left, int top, int right, int bot, int sw, int sh, i
 void Game::drawMapArea(int left, int top, int right, int bot, int sw,
 		int sh, int viewportX, int viewportY, int localTeam,
 		Uint32 drawOptions, const SceneMap& map, bool (SceneMap::*mapIs)(int, int) const, int areaAnimationTick,
-		AreaType areaType, const MapRenderState& render)
+		AreaType areaType, const MapRenderState& render, const Utilities::BitArray* preview)
 {
+    const auto is=[&](int x,int y){return preview ? preview->get(map.coordToIndex(x,y)) : (map.*mapIs)(x,y);};
 	Sprite* sprite;
 	GAGCore::Color c;
 	switch (areaType)
@@ -440,15 +452,15 @@ void Game::drawMapArea(int left, int top, int right, int bot, int sw,
 	{
 		for (int x=left; x<right; x++)
 		{
-			if ((map.*mapIs)(x+viewportX, y+viewportY))
+			if (is(x+viewportX, y+viewportY))
 			{
 				if (tint.a)
 				{
 					// One fill per horizontal run of zone tiles.
 					int end = x+1;
-					while (end<right && (map.*mapIs)(end+viewportX, y+viewportY))
+					while (end<right && is(end+viewportX, y+viewportY))
 						end++;
-					if (x==left || !(map.*mapIs)(x-1+viewportX, y+viewportY))
+					if (x==left || !is(x-1+viewportX, y+viewportY))
 						globalContainer->gfx->drawMapFill(x*32, y*32, end*32, (y+1)*32, tint);
 				}
 				if (patternAlpha)
@@ -460,14 +472,14 @@ void Game::drawMapArea(int left, int top, int right, int bot, int sw,
 				if (!outline.a)
 					continue;
 
-				if (!(map.*mapIs)(x+viewportX, y+viewportY-1))
+				if (!is(x+viewportX, y+viewportY-1))
 					globalContainer->gfx->drawMapBoundary(x*32, y*32, (x+1)*32, y*32, outline, detail.zoneStrokeMaxPoints);
-				if (!(map.*mapIs)(x+viewportX, y+viewportY+1))
+				if (!is(x+viewportX, y+viewportY+1))
 					globalContainer->gfx->drawMapBoundary(x*32, (y+1)*32, (x+1)*32, (y+1)*32, outline, detail.zoneStrokeMaxPoints);
 
-				if (!(map.*mapIs)(x+viewportX-1, y+viewportY))
+				if (!is(x+viewportX-1, y+viewportY))
 					globalContainer->gfx->drawMapBoundary(x*32, y*32, x*32, (y+1)*32, outline, detail.zoneStrokeMaxPoints);
-				if (!(map.*mapIs)(x+viewportX+1, y+viewportY))
+				if (!is(x+viewportX+1, y+viewportY))
 					globalContainer->gfx->drawMapBoundary((x+1)*32, y*32, (x+1)*32, (y+1)*32, outline, detail.zoneStrokeMaxPoints);
 			}
 		}

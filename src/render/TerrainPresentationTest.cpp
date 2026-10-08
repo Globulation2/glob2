@@ -13,6 +13,7 @@
 #include "terrain/TerrainCatalogIO.h"
 #include "scene/SceneMap.h"
 #include "SoftwareTerrainCache.h"
+#include <Toolkit.h>
 #include "MapRenderState.h"
 #include "MapThumbnail.h"
 #include "MapImage.h"
@@ -201,7 +202,7 @@ void layeredCache(bool gpu, bool hd = false)
 		GAGCore::Sprite::setHighResolution(true);
 		REQUIRE(globals->terrain->baseFrame(0)->getW() == 128);
 	}
-	// Exercise every edge mask, torus neighbors, water backdrop, and mixed layers.
+	// Exercise every edge mask, torus neighbors, water tiles, and mixed layers.
 	for (int y = 0; y < 32; ++y)
 		for (int x = 0; x < 32; ++x)
 		{
@@ -213,14 +214,13 @@ void layeredCache(bool gpu, bool hd = false)
 				map.setCellTerrain(x, y, TRAIL);
 		}
 	SceneMap scene;
-	scene.extract(map);
+	glob2test::observeMap(map,scene);
 
 	SoftwareTerrainCache cache;
 	auto clear = [&]
 	{
 		globals->gfx->setClipRect();
 		globals->gfx->drawFilledRect(0, 0, 640, 480, 17, 29, 41);
-		game.drawMapWater(640, 480, 29, 30, 19);
 	};
 	bool memoryRecorded = false;
 	const auto compare = [&]
@@ -269,7 +269,7 @@ void layeredCache(bool gpu, bool hd = false)
 	const auto before = compositor.describe(scene, 0, 0);
 	map.setCellTerrain(0, 0, TRAIL);
 	CHECK(compositor.describe(scene, 0, 0) == before);
-	scene.extract(map);
+	glob2test::observeMap(map,scene);
 	compare();
 	// A scene retains its registry snapshot. Reimport changes material bindings
 	// only on extraction, and invalidates both software and GPU composed pages.
@@ -278,7 +278,7 @@ void layeredCache(bool gpu, bool hd = false)
 		R"({"schemaVersion":1,"terrains":[{"key":"test:custom","name":"Custom ice","base":"grass","properties":{},"appearance":"ice"}]})");
 	const auto custom = *map.terrainRegistry().find("test:custom");
 	map.setCellTerrain(0, 0, custom);
-	scene.extract(map);
+	glob2test::observeMap(map,scene);
 	compare();
 	compare();
 	const auto previousRegistry = scene.frozenTerrainRegistry();
@@ -288,7 +288,7 @@ void layeredCache(bool gpu, bool hd = false)
 		R"({"schemaVersion":1,"terrains":[{"key":"test:custom","name":"Custom trail","base":"grass","properties":{},"appearance":"road"}]})");
 	CHECK(scene.frozenTerrainRegistry() == previousRegistry);
 	CHECK(compositor.describe(scene, 0, 0) == previousRecipe);
-	scene.extract(map);
+	glob2test::observeMap(map,scene);
 	CHECK(scene.appearanceAt(0, 0) == TRAIL);
 	CHECK_FALSE(compositor.describe(scene, 0, 0) == previousRecipe);
 	compare();
@@ -297,7 +297,7 @@ void layeredCache(bool gpu, bool hd = false)
 	const auto seededRecipe = compositor.describe(scene, 0, 0);
 	map.setTerrainSeed(map.terrainSeed() + 1);
 	CHECK(compositor.describe(scene, 0, 0) == seededRecipe);
-	scene.extract(map);
+	glob2test::observeMap(map,scene);
 	CHECK(compositor.describe(scene, 0, 0).seed == map.terrainSeed());
 	CHECK_FALSE(compositor.describe(scene, 0, 0) == seededRecipe);
 	compare();
@@ -326,7 +326,7 @@ TEST_SUITE("TerrainPresentation")
 		map.regenerateMap(0, 0, 16, 16);
 		map.setCellTerrain(10, 10, ICE);
 		SceneMap scene;
-		scene.extract(map);
+		glob2test::observeMap(map,scene);
 		auto &compositor = globals->terrainCompositor();
 		compositor.prepare(false, 0);
 		constexpr int samples = TerrainVisual::Compositor::OverviewSamples;
@@ -376,7 +376,7 @@ TEST_SUITE("TerrainPresentation")
 		MapRenderState render;
 		render.detail.terrainOverview = .5f;
 		map.setResourceByIndex(9, 9, WHEAT, 1);
-		scene.extract(map);
+		glob2test::observeMap(map,scene);
 		Game::drawMapOverview(0, 0, 15, 15, 0, 0, 0, Game::DRAW_WHOLE_MAP, scene, render);
 		REQUIRE(render.overview->getW() == overview.getW());
 		REQUIRE(render.overview->getH() == overview.getH());
@@ -405,7 +405,6 @@ TEST_SUITE("TerrainPresentation")
 		const auto evidence = glob2test::artifactDir() / "overview-alignment";
 		std::filesystem::create_directories(evidence);
 		CHECK(IMG_SavePNG(enlarged.getSDLSurface(), (evidence / "overview.png").string().c_str()));
-		Game::drawMapWater(512, 512, 0, 0, 0);
 		Game::drawMapTerrain(0, 0, 15, 15, 0, 0, 0, Game::DRAW_WHOLE_MAP, scene);
 		Game::drawMapResources(0, 0, 15, 15, 0, 0, 0, Game::DRAW_WHOLE_MAP, scene);
 		GAGCore::Sprite::flushBatches(globals->gfx);
@@ -446,7 +445,7 @@ TEST_SUITE("TerrainPresentation")
 		REQUIRE(restored.game.load(&input));
 		CHECK(restored.game.map.terrainSeed() == 0x1234abcdu);
 		SceneMap scene;
-		scene.extract(restored.game.map);
+		glob2test::observeMap(restored.game.map,scene);
 		CHECK(scene.terrainSeed() == 0x1234abcdu);
 	}
 	TEST_CASE("catalog palettes preserve distinct legacy shores and independent preview colors")
@@ -498,11 +497,11 @@ TEST_SUITE("TerrainPresentation")
 			for (int side = 0; side < 4; ++side)
 				map.setCellTerrain(dx[side], dy[side], mask & (1u << side) ? ICE : TRAIL);
 			SceneMap expected;
-			expected.extract(map);
+			glob2test::observeMap(map,expected);
 			for (int side = 0; side < 4; ++side)
 				map.setCellTerrain(dx[side], dy[side], mask & (1u << side) ? aliases[side] : TRAIL);
 			SceneMap actual;
-			actual.extract(map);
+			glob2test::observeMap(map,actual);
 			for (int y = -1; y <= 1; ++y)
 				for (int x = -1; x <= 1; ++x)
 					CHECK(compositor.describe(actual, x, y) == compositor.describe(expected, x, y));
@@ -514,7 +513,7 @@ TEST_SUITE("TerrainPresentation")
 			for (int x = 0; x < 16; ++x)
 				map.setCellTerrain(x, y, sand);
 		SceneMap scene;
-		scene.extract(map);
+		glob2test::observeMap(map,scene);
 		CHECK(scene.presentationTypeAt(0, 0) == sand);
 		CHECK(scene.appearanceAt(0, 0) == SAND);
 		const auto material = compositor.catalog().bindings.at("sand");
@@ -595,7 +594,7 @@ TEST_SUITE("TerrainPresentation")
 								x < 3 ? WATER : (y == 4 ? TRAIL : ((x + y) % 3 ? ICE : GRASS)));
 					GAGCore::Sprite::setHighResolution(hd);
 					SceneMap scene;
-					scene.extract(map);
+					glob2test::observeMap(map,scene);
 					const int vx = map.getW() - 3, vy = map.getH() - 2;
 					const auto begin = [&]
 					{
@@ -646,7 +645,7 @@ TEST_SUITE("TerrainPresentation")
 							x, y, y == 4 ? TRAIL : ((x + y) % 3 ? ICE : GRASS));
 				GAGCore::Sprite::setHighResolution(hd);
 				SceneMap scene;
-				scene.extract(fixture.game.map);
+				glob2test::observeMap(fixture.game.map,scene);
 				const auto checksum = fixture.checksum();
 				const auto draw = [&](float zoom, bool emergency)
 				{
@@ -699,7 +698,7 @@ TEST_SUITE("TerrainPresentation")
 		glob2test::HeadlessGame fixture({.wDec = 6, .hDec = 6, .discovered = true});
 		GAGCore::Sprite::setHighResolution(true);
 		SceneMap scene;
-		scene.extract(fixture.game.map);
+		glob2test::observeMap(fixture.game.map,scene);
 		// An independently sized strip fits HD pages, unlike its whole capture.
 		SoftwareTerrainCache independent;
 		REQUIRE(independent.prepare(scene, *globals->terrain, 0, 0, 6, 63, 0, 0, fixture.team->me,
@@ -733,7 +732,7 @@ TEST_SUITE("TerrainPresentation")
 		glob2test::HeadlessGame fixture({.wDec = 5, .hDec = 5, .discovered = true});
 		GAGCore::Sprite::setHighResolution(true);
 		SceneMap scene;
-		scene.extract(fixture.game.map);
+		glob2test::observeMap(fixture.game.map,scene);
 		ScopedTerrainDeviceLimit device(*globals->gfx);
 		auto &backend = device.backend();
 		for (int limit : {1024, 512, 128, 32})
@@ -795,7 +794,7 @@ TEST_SUITE("TerrainPresentation")
 							map.setCellTerrain(x, y, ICE);
 			}
 			SceneMap scene;
-			scene.extract(map);
+			glob2test::observeMap(map,scene);
 			const auto checksum = fixture.checksum();
 			auto &gfx = *globals->gfx;
 			SoftwareTerrainCache cache;
@@ -907,7 +906,9 @@ TEST_SUITE("TerrainPresentation")
 						}
 				}
 			CHECK(mismatches == 0);
-			CHECK(partial > 0);
+			// Terrain is opaque since water became an ordinary material, so these
+			// tiles carry no partial coverage; the arithmetic above still covers it.
+			(void)partial;
 			// Equivalent wrapped coordinates reuse the same pages and pixels.
 			const auto pixels = [&]
 			{
@@ -928,7 +929,7 @@ TEST_SUITE("TerrainPresentation")
 			CHECK(pixels() == expected);
 			cache.enabled = true;
 			map.setCellTerrain(0, 0, TRAIL);
-			scene.extract(map);
+			glob2test::observeMap(map,scene);
 			draw(-7, -6);
 			CHECK(cache.cacheRebuilds() > rebuilds);
 			CHECK(pixels() != expected);
@@ -972,7 +973,7 @@ TEST_SUITE("TerrainPresentation")
 			 .screenFlags = Uint32(GAGCore::GraphicContext::PORTABLEGPU)});
 		glob2test::HeadlessGame fixture({.wDec = 8, .hDec = 8, .discovered = true});
 		SceneMap scene;
-		scene.extract(fixture.game.map);
+		glob2test::observeMap(fixture.game.map,scene);
 		auto &gfx = *globals->gfx;
 		// Restore all process-wide drawing state even if a REQUIRE aborts.
 		struct RestoreTarget
@@ -1021,13 +1022,13 @@ TEST_SUITE("TerrainPresentation")
 		}
 	}
 	TEST_CASE(
-		"empty water pages skip software submissions and refresh after terrain edits [display]")
+		"undiscovered pages skip software submissions and refresh after discovery [display]")
 	{
 		glob2test::HeadlessGlobals globals({.display = true});
 		glob2test::HeadlessGame fixture(
-			{.wDec = 5, .hDec = 5, .terrain = WATER, .discovered = true});
+			{.wDec = 5, .hDec = 5, .terrain = WATER, .discovered = false});
 		SceneMap scene;
-		scene.extract(fixture.game.map);
+		glob2test::observeMap(fixture.game.map,scene);
 		SoftwareTerrainCache cache;
 		std::unique_ptr<SDL_Surface, decltype(&SDL_DestroySurface)> pixels(
 			SDL_CreateSurface(256, 256, SDL_PIXELFORMAT_ARGB8888), SDL_DestroySurface);
@@ -1037,22 +1038,22 @@ TEST_SUITE("TerrainPresentation")
 			pixels.get(), .73f,
 			[&]
 			{
-				const auto draw = [&]
+				const auto draw = [&](bool wholeMap)
 				{
 					REQUIRE(cache.prepare(scene, *globals->terrain, 0, 0, 7, 7, 0, 0,
-										  fixture.team->me, true));
+										  fixture.team->me, wholeMap));
 					const auto before = globals->gfx->renderer->operations();
 					cache.draw(*globals->gfx);
 					const auto after = globals->gfx->renderer->operations();
 					return after.blits - before.blits + after.triangles - before.triangles;
 				};
-				CHECK(draw() == 0);
-				fixture.game.map.setCellTerrain(4, 4, ICE);
-				scene.extract(fixture.game.map);
-				CHECK(draw() > 0);
-				fixture.game.map.setCellTerrain(4, 4, WATER);
-				scene.extract(fixture.game.map);
-				CHECK(draw() == 0);
+				// Water is an ordinary opaque material; only undiscovered cells
+				// compose to empty tiles and submit nothing.
+				CHECK(draw(false) == 0);
+				fixture.game.map.setMapDiscovered(2, 2, 3, 3, fixture.team->me);
+				glob2test::observeMap(fixture.game.map,scene);
+				CHECK(draw(false) > 0);
+				CHECK(draw(true) > 0);
 			});
 	}
 	TEST_CASE("image import keeps whole-cell material edges out of legacy gameplay [artifacts]")
@@ -1218,7 +1219,7 @@ TEST_SUITE("TerrainValidation")
 					map.setCellTerrain(ox + dx, oy + dy, types[n]);
 			map.setCellTerrain(ox + 3, oy + 3, types[n]);
 		}
-		// Water-side samples: deep and dark water meet the ocean and the beach; lava
+		// Water-side samples: deep and dark water meet open water and the beach; lava
 		// and a hole sit on the beach edge.
 		for (int y = 2; y < 6; ++y)
 			for (int x = 2; x < 4; ++x)
@@ -1231,12 +1232,37 @@ TEST_SUITE("TerrainValidation")
 		for (int y = 19; y < 22; ++y)
 			map.setCellTerrain(4, y, VOID_HOLE);
 		SceneMap scene;
-		scene.extract(map);
-		fixture.game.drawMapWater(1024, 768, 0, 0, 19);
+		glob2test::observeMap(map,scene);
 		fixture.game.drawMapTerrain(0, 0, 31, 23, 0, 0, 0, Game::DRAW_WHOLE_MAP, scene);
+		// Raised obstacle decor is drawn with the resources, row by row.
+		fixture.game.drawMapResources(0, 0, 31, 23, 0, 0, 0, Game::DRAW_WHOLE_MAP, scene);
+		GAGCore::Sprite::flushBatches(globals->gfx);
 		REQUIRE(IMG_SavePNG(
 			globals->gfx->getSDLSurface(),
 			(glob2test::artifactDir() / "terrain-catalogue-gallery.png").string().c_str()));
+		// Obstacle islands carry decor: interior cells use full frames, cells
+		// with an open neighbour the smaller edge frames; open ground has none.
+		auto &compositor = globals->terrainCompositor();
+		REQUIRE(compositor.decorSprite());
+		const auto &catalog = compositor.catalog();
+		const auto contains = [](const std::vector<int> &frames, int frame)
+		{ return std::find(frames.begin(), frames.end(), frame) != frames.end(); };
+		for (std::size_t n = 0; n < types.size(); ++n)
+		{
+			const int ox = 6 + int(n % 5) * 5, oy = int(n / 5) * 5;
+			const auto &decor =
+				catalog.materials[catalog.bindings.at(terrainPresentation(types[n]).name)].decor;
+			INFO(terrainPresentation(types[n]).name);
+			if (decor.full.empty())
+			{
+				CHECK(compositor.decorFrame(scene, ox + 1, oy + 1) == -1);
+				continue;
+			}
+			CHECK(contains(decor.full, compositor.decorFrame(scene, ox + 1, oy + 1)));
+			CHECK(contains(decor.edge, compositor.decorFrame(scene, ox, oy + 1)));
+			CHECK(contains(decor.edge, compositor.decorFrame(scene, ox + 3, oy + 3)));
+		}
+		CHECK(compositor.decorFrame(scene, 5, 30) == -1);
 		// Painted islands keep their identity and the map declares every group painted.
 		for (std::size_t n = 0; n < types.size(); ++n)
 			CHECK(map.terrainTypeAt(6 + int(n % 5) * 5, int(n / 5) * 5) == types[n]);
@@ -1245,6 +1271,51 @@ TEST_SUITE("TerrainValidation")
 			if (const auto experiment = terrainExperiment(type))
 				CHECK(required.has(*experiment));
 		CHECK(required.size() == 9);
+	}
+	TEST_CASE("catalogue materials load 4x HD frames and compose at 4x [display][artifacts]")
+	{
+		// HD frames load only on the GPU renderers.
+		glob2test::HeadlessGlobals globals(
+			{.display = true,
+			 .width = 640,
+			 .height = 480,
+			 .screenFlags = Uint32(GAGCore::GraphicContext::USEGPU)});
+		GAGCore::Sprite::setHighResolution(true);
+		struct Restore
+		{
+			~Restore() { GAGCore::Sprite::setHighResolution(false); }
+		} restore;
+		auto &compositor = globals->terrainCompositor();
+		compositor.prepare(true, 0);
+		const auto &catalog = compositor.catalog();
+		std::vector<std::string> keys;
+		for (unsigned i = TERRAIN_COUNT_BEFORE_CATALOGUE; i < TERRAIN_COUNT; ++i)
+			if (terrainPaintable(TerrainType(i)))
+				keys.push_back(terrainPresentation(TerrainType(i)).name);
+		REQUIRE(keys.size() == 24);
+		// One 4x composed tile per catalogue material, six per row.
+		GAGCore::DrawableSurface sheet(6 * 128, 4 * 128);
+		for (std::size_t n = 0; n < keys.size(); ++n)
+		{
+			INFO(keys[n]);
+			const auto id = catalog.bindings.at(keys[n]);
+			const auto &material = catalog.materials[id];
+			auto *sprite = GAGCore::Toolkit::getSprite(material.sprite);
+			REQUIRE(sprite);
+			for (const auto &variant : material.variants)
+			{
+				auto *hd = sprite->baseFrame(variant.frame);
+				REQUIRE(hd);
+				CHECK(hd->getW() == 128);
+				CHECK(hd->getH() == 128);
+			}
+			TerrainVisual::Recipe recipe;
+			recipe.samples.fill(id);
+			recipe.width = recipe.height = 1;
+			compositor.compose(recipe, sheet.getSDLSurface(), int(n % 6) * 128, int(n / 6) * 128, 4);
+		}
+		CHECK(IMG_SavePNG(sheet.getSDLSurface(),
+						  (glob2test::artifactDir() / "terrain-catalogue-hd.png").string().c_str()));
 	}
 	TEST_CASE("mixed terrain simulation trace and visual gallery [display][artifacts]")
 	{
@@ -1284,9 +1355,8 @@ TEST_SUITE("TerrainValidation")
 			fixture.step();
 		}
 		SceneMap scene;
-		scene.extract(map);
+		glob2test::observeMap(map,scene);
 		auto *gfx = globals->gfx;
-		fixture.game.drawMapWater(1024, 768, 0, 0, 19);
 		fixture.game.drawMapTerrain(0, 0, 31, 23, 0, 0, 0, Game::DRAW_WHOLE_MAP, scene);
 		REQUIRE(IMG_SavePNG(gfx->getSDLSurface(),
 							(glob2test::artifactDir() / "terrain-gallery.png").string().c_str()));
@@ -1323,7 +1393,7 @@ TEST_SUITE("TerrainValidation")
 						pattern ? ((x + y) % 3 == 0 ? ICE : ((x * 3 + y) % 5 == 0 ? TRAIL : GRASS))
 								: GRASS);
 				}
-			scene.extract(map);
+			glob2test::observeMap(map,scene);
 			SoftwareTerrainCache measured;
 			auto begin = std::chrono::steady_clock::now();
 			REQUIRE(measured.prepare(scene, *globals->terrain, 0, 0, 31, 23, 0, 0, fixture.team->me,

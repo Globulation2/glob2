@@ -5,6 +5,7 @@
 #include "GameGUIDefaultAssignManager.h"
 #include "BuildingType.h"
 #include "Game.h"
+#include "render/scene/Scene.h"
 #include "Unit.h"
 #include <algorithm>
 #include "FileFormatVersions.h"
@@ -18,21 +19,41 @@ int GameGUIDefaultAssignManager::getDefaultAssignedUnits(int typenum)
 {
 	if (typenum < 0 || static_cast<std::size_t>(typenum) >= game.buildingsTypes.size()) return 0;
 	const auto* type = game.buildingsTypes.get(typenum);
-	if (const auto saved = unitCount.find(type->key); saved != unitCount.end())
-        return std::clamp(saved->second,0,type->semantics.assignmentLimit);
-    return globalContainer->settings.buildingAssignment(game.buildingsTypes.fingerprint(),*type);
+	return defaultFor(*type, game.buildingsTypes.fingerprint());
 }
 
+int GameGUIDefaultAssignManager::getDefaultAssignedUnits(const PresentationFrame& scene, int typenum)
+{
+	if (!scene.buildingTypes || typenum < 0 || size_t(typenum) >= scene.buildingTypes->size()) return 0;
+	return defaultFor(scene.buildingTypes->at(typenum), scene.world.catalogs->buildingFingerprint);
+}
 
+int GameGUIDefaultAssignManager::defaultFor(const BuildingType& type, const std::string& fingerprint) const
+{
+	if (const auto saved = unitCount.find(type.key); saved != unitCount.end())
+		return std::clamp(saved->second, 0, type.semantics.assignmentLimit);
+	return globalContainer->settings.buildingAssignment(fingerprint, type);
+}
 
 void GameGUIDefaultAssignManager::setDefaultAssignedUnits(int typenum, int value)
 {
     if(typenum<0 || std::size_t(typenum)>=game.buildingsTypes.size()) return;
     const auto& type=*game.buildingsTypes.get(typenum);
+	remember(type, game.buildingsTypes.fingerprint(), value);
+}
+
+void GameGUIDefaultAssignManager::setDefaultAssignedUnits(const PresentationFrame& scene, int typenum, int value)
+{
+	if (!scene.buildingTypes || typenum < 0 || size_t(typenum) >= scene.buildingTypes->size()) return;
+	remember(scene.buildingTypes->at(typenum), scene.world.catalogs->buildingFingerprint, value);
+}
+
+void GameGUIDefaultAssignManager::remember(const BuildingType& type, const std::string& fingerprint, int value)
+{
     value=std::clamp(value,0,type.semantics.assignmentLimit);
     unitCount[type.key]=value;
     if(globalContainer->settings.rememberUnit)
-        globalContainer->settings.setBuildingAssignment(game.buildingsTypes.fingerprint(),type,value);
+        globalContainer->settings.setBuildingAssignment(fingerprint,type,value);
 }
 
 
@@ -81,4 +102,3 @@ void GameGUIDefaultAssignManager::load(GAGCore::InputStream* stream, Sint32 vers
 	stream->readLeaveSection();
 	stream->readLeaveSection();
 }
-

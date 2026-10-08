@@ -24,7 +24,9 @@ opaque bytes. The only exceptions are the few order type ids in the
 ## AI order scheduling
 
 MatchSetup's optional `rules.aiOrderDelay` is an integer from 0 through 8;
-omitting it means 0. The engine stores it in GameHeader and uses the same delay
+omitting it means 0 for backward compatibility. New match defaults explicitly set
+it to 8 (320 ms at the normal 40 ms tick interval). This delays AI responses to
+observed changes and allows decisions to overlap subsequent simulation ticks. The engine stores it in GameHeader and uses the same delay
 for every AI seat. A decision at tick `t` yields an order for `t + delay`, with
 due computation completed before delivery. This logical AI delay is independent
 of the transport's jitter buffer and does not delay human commands. Match setup,

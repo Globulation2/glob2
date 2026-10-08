@@ -42,7 +42,6 @@ GameGUITouch::GameGUITouch(GameGUI &gui) : gui(gui)
 	touchActive = phonePresentationRequested();
 	hudMinimap = std::make_unique<Minimap>(globalContainer->runNoX, 128, 128, 0, 0, 128, 128,
 										   Minimap::ShowFOW);
-	hudMinimap->setGame(gui.game);
 }
 bool GameGUITouch::usesHUD() const
 {
@@ -318,7 +317,7 @@ ViewRect GameGUITouch::cancelRect() const
 }
 ViewPoint GameGUITouch::previewCursor() const
 {
-	const auto &map = gui.game.map;
+	const auto &map = gui.drawnScene().map;
 	auto wrap = [](double v, double n) { return v - std::floor(v / n) * n; };
 	return {wrap(preview->x - gui.viewportX * 32, map.getW() * 32),
 			wrap(preview->y - gui.viewportY * 32, map.getH() * 32)};
@@ -664,8 +663,8 @@ bool GameGUITouch::process(SDL_Event &event)
 	if (!fingers.empty() &&
 		(ownerSelection != gui.selectionMode || ownerMenu != gui.inGameMenu ||
 		 ownerBuilding != (gui.selectionMode == GameGUI::BUILDING_SELECTION
-							   ? gui.selectionBuilding()
-							   : nullptr) ||
+							   ? std::get<BuildingRef>(gui.selection)
+							   : BuildingRef{}) ||
 		 ownerDialog != activeDialog() || ownerTool != gui.toolManager.getBuildingName() ||
 		 ownerOverlay != bool(gui.typingInputScreen || gui.scrollableText)))
 	{
@@ -673,10 +672,10 @@ bool GameGUITouch::process(SDL_Event &event)
 		return true;
 	}
 	// Input validates against the live building (authoritative state).
-	Building *held = inspecting() ? gui.selectionBuilding() : nullptr;
+	const auto* held = inspecting() ? gui.inputBuildingPanel() : nullptr;
 	if (!fingers.empty() && held &&
-		(heldBuildingState != held->buildingState ||
-		 heldConstructionState != held->constructionResultState))
+		(heldBuildingState != held->state().buildingState ||
+		 heldConstructionState != held->state().constructionResultState))
 	{
 		cancel();
 		return true;
@@ -724,10 +723,10 @@ bool GameGUITouch::process(SDL_Event &event)
 			ownerRegion = interfaceRegion(point);
 			heldActionKind = -1;
 			heldActionConfirmation = confirmDestroy;
-			if (Building *building = inspecting() ? gui.selectionBuilding() : nullptr)
+			if (const auto* building = inspecting() ? gui.inputBuildingPanel() : nullptr)
 			{
-				heldBuildingState = building->buildingState;
-				heldConstructionState = building->constructionResultState;
+				heldBuildingState = building->state().buildingState;
+				heldConstructionState = building->state().constructionResultState;
 				if (ownerRegion == 3)
 					if (const auto row = actionAt(point))
 					{
@@ -740,8 +739,8 @@ bool GameGUITouch::process(SDL_Event &event)
 			ownerSelection = gui.selectionMode;
 			ownerMenu = gui.inGameMenu;
 			ownerBuilding = gui.selectionMode == GameGUI::BUILDING_SELECTION
-								? gui.selectionBuilding()
-								: nullptr;
+								? std::get<BuildingRef>(gui.selection)
+								: BuildingRef{};
 			ownerDialog = activeDialog();
 			ownerOverlay = gui.typingInputScreen || gui.scrollableText;
 			ownerTool = gui.toolManager.getBuildingName();
@@ -753,7 +752,7 @@ bool GameGUITouch::process(SDL_Event &event)
 																					  : TouchMode::Navigate;
 			// A contact on or near one of the player's flags carries the flag rather
 			// than the map, even straight after a tap.
-			Building *grabbed = !interfaceGesture && natural == TouchMode::Navigate ? grabbableFlag(point) : nullptr;
+			auto grabbed = !interfaceGesture && natural == TouchMode::Navigate ? grabbableFlag(point) : nullptr;
 			if (grabbed)
 				beginFlagDrag(*grabbed, key, point);
 			else
@@ -1065,7 +1064,7 @@ void GameGUITouch::replayStroke(const TouchStrokeSession &completed)
 {
 	// Record which displayed cells this stroke changes, so undo can revert
 	// exactly those and nothing that was already painted before it.
-	auto &map = gui.game.map;
+	const auto &map = gui.drawnScene().map;
 	const bool adding = completed.mode == BrushTool::MODE_ADD;
 	std::vector<BrushCoverage::Cell> centres;
 	for (const auto &p : completed.points)
@@ -1078,7 +1077,7 @@ void GameGUITouch::replayStroke(const TouchStrokeSession &completed)
 		const int x = cx & map.getMaskW(), y = cy & map.getMaskH();
 		const bool before = view.get(map.coordToIndex(x, y));
 		// The farm brush skips ground nothing can grow on, so those cells never change.
-		if (zone == GameGUIToolManager::Farm && adding && !map.canPaintFarmArea(x, y))
+		if (zone == GameGUIToolManager::Farm && adding && !gui.toolManager.canPaintFarmArea(x,y))
 			continue;
 		if (before != adding)
 			changed.insert({x, y});
@@ -1126,9 +1125,9 @@ void GameGUITouch::applyZoneUndo()
 	if (!zoneUndo || globalContainer->isViewingGame())
 		return;
 	while (auto pending = gui.toolManager.getOrder())
-		gui.orderQueue.push_back(pending);
+		gui.enqueueOrder(pending);
 	for (const auto &order : zoneUndo->orders)
-		gui.orderQueue.push_back(order);
+		gui.enqueueOrder(order);
 	auto &view = gui.toolManager.displayedViewForZone(static_cast<GameGUIToolManager::ZoneType>(zoneUndo->zone));
 	for (const auto &[index, value] : zoneUndo->displayed)
 		view.set(index, value);
@@ -1377,12 +1376,14 @@ void GameGUITouch::interfaceTap(ViewPoint point)
 			return;
 		}
 		// Touch opens dialogs by intent, never by synthesizing desktop pixels.
-		if (button == 3)
-			gui.openDialog(GameGUI::IGM_OBJECTIVES, std::make_unique<InGameObjectivesScreen>(&gui, false));
-		else if (button == 4)
-			gui.openDialog(GameGUI::IGM_ALLIANCE, std::make_unique<InGameAllianceScreen>(&gui));
-		else
-			gui.openMainMenu();
+        const auto open=[&] {
+            if (button == 3)
+                gui.openDialog(GameGUI::IGM_OBJECTIVES, std::make_unique<InGameObjectivesScreen>(&gui, false));
+            else if (button == 4)
+                gui.openDialog(GameGUI::IGM_ALLIANCE, std::make_unique<InGameAllianceScreen>(&gui));
+            else gui.openMainMenu();
+        };
+        if (button == 3 || button == 4 || !gui.parkForClient(open)) open();
 		return;
 	}
 	else if (hudInput && layout().panel.contains(point))
@@ -1442,23 +1443,23 @@ void GameGUITouch::interfaceTap(ViewPoint point)
 
 // The visible unit drawn under a screen point, matching draw order: ground units
 // first, then flying units, using their interpolated rectangles.
-Unit *GameGUITouch::unitAt(ViewPoint screenPoint, double reachPoints) const
+UnitRef GameGUITouch::unitAt(ViewPoint screenPoint, double reachPoints) const
 {
 	const ViewPoint point{double(gui.mapMouseX(int(screenPoint.x))), double(gui.mapMouseY(int(screenPoint.y)))};
-	Unit *found = nullptr, *nearest = nullptr;
+	UnitRef found, nearest;
 	const double radius = reachPoints * globalContainer->gfx->logicalUnitsPerPoint() / gui.camera.zoom;
 	double nearestDistance = radius * radius;
 	const int tiles = 1 + int(std::ceil(radius / 32));
 	// Hit the positions presented to the player, including optional between-tick
 	// motion. Input runs with the simulation parked; resolve snapshot identities
 	// before returning so a dead/replaced unit can never be selected.
-	const Scene *scene = gui.view.scene;
-	if (scene && scene->map.identity() != gui.game.map.identity()) scene = nullptr;
+	const PresentationFrame *scene = gui.view.scene;
+	if (!scene || !scene->world.occupancy) return {};
 	auto scan = [&](const auto &map)
 	{
 		const int mx = int(point.x) / 32 + gui.viewportX, my = int(point.y) / 32 + gui.viewportY;
 		const Uint32 visible =
-			globalContainer->replaying ? globalContainer->replayVisibleTeams : gui.localTeam->me;
+			globalContainer->replaying ? globalContainer->replayVisibleTeams : Team::teamNumberToMask(gui.localTeamNo);
 		const bool wholeMap = globalContainer->replaying && !globalContainer->replayShowFog;
 		// Match draw order: ground units first, then flying units, using their interpolated rectangles.
 		for (bool air : {false, true})
@@ -1468,16 +1469,13 @@ Unit *GameGUITouch::unitAt(ViewPoint screenPoint, double reachPoints) const
 					const Uint16 gid = air ? map.getAirUnit(x, y) : map.getGroundUnit(x, y);
 					if (gid == NOGUID)
 						continue;
-					const SceneUnit *shown = scene ? scene->entities.unit(gid) : nullptr;
+					const SnapshotUnit *shown = scene ? scene->entities.unit(gid) : nullptr;
 					if (scene && !shown) continue;
-					auto *unit = shown ? gui.game.resolveUnit({shown->gid, shown->generation})
-						: gui.game.teams[Unit::GIDtoTeam(gid)]->myUnits[Unit::GIDtoID(gid)];
-					if (!unit)
-						continue;
-					const int ux = shown ? shown->posX : unit->posX, uy = shown ? shown->posY : unit->posY;
-					const int moveX = shown ? shown->dx : unit->dx, moveY = shown ? shown->dy : unit->dy;
-					const int action = shown ? shown->action : unit->action;
-					const int delta = shown ? drawnUnitDelta(*shown, gui.view.render.unitMotion) : unit->delta;
+                    if (!shown) continue;
+                    const int ux=shown->posX, uy=shown->posY;
+                    const int moveX=shown->dx, moveY=shown->dy;
+                    const int action=shown->action;
+                    const int delta=drawnUnitDelta(*shown,gui.view.render.unitMotion);
 					if (!wholeMap && !map.isFOWDiscovered(x, y, visible) &&
 						!map.isFOWDiscovered(x - moveX, y - moveY, visible))
 						continue;
@@ -1492,43 +1490,44 @@ Unit *GameGUITouch::unitAt(ViewPoint screenPoint, double reachPoints) const
 					const double dy = MapCamera::wrap(point.y - py - 16 + map.getH() * 16., map.getH() * 32.) - map.getH() * 16.;
 					const double distance = dx * dx + dy * dy;
 					if ((wholeMap || map.isFOWDiscovered(x, y, visible) || Unit::GIDtoTeam(gid) == gui.localTeamNo) &&
-						(distance < nearestDistance || (distance == nearestDistance && nearest && gid < nearest->gid)))
+						(distance < nearestDistance || (distance == nearestDistance && !nearest.empty() && gid < nearest.gid)))
 					{
-						nearest = unit;
+						nearest = shown->identity;
 						nearestDistance = distance;
 					}
 					if (point.x > px && point.x < px + 32 && point.y > py && point.y < py + 32 &&
 						(wholeMap || map.isFOWDiscovered(x, y, visible) ||
 						 Unit::GIDtoTeam(gid) == gui.localTeamNo))
-						found = unit;
+						found = shown->identity;
 				}
 	};
 	if (scene) scan(scene->map);
-	else scan(gui.game.map); // Before the first frame, no presentation exists yet.
-	return found ? found : nearest;
+	return !found.empty() ? found : nearest;
 }
 
 void GameGUITouch::select(ViewPoint point)
 {
+    const auto& map = gui.drawnScene().map;
+    if (!gui.drawnScene().world.occupancy) return;
 	const auto screenPoint = point;
 	point = {double(gui.mapMouseX(point.x)), double(gui.mapMouseY(point.y))};
 	if (gui.putMark && !globalContainer->isViewingGame())
 	{
-		gui.orderQueue.push_back(std::make_shared<MapMarkOrder>(
-			gui.localTeamNo, (int(point.x) / 32 + gui.viewportX) & gui.game.map.getMaskW(),
-			(int(point.y) / 32 + gui.viewportY) & gui.game.map.getMaskH()));
+		gui.enqueueOrder(std::make_shared<MapMarkOrder>(
+			gui.localTeamNo, (int(point.x) / 32 + gui.viewportX) & map.getMaskW(),
+			(int(point.y) / 32 + gui.viewportY) & map.getMaskH()));
 		gui.putMark = false;
 		return;
 	}
-	auto *hitUnit = unitAt(screenPoint);
+	auto hitUnit = unitAt(screenPoint);
 	// Exact flags/buildings/resources retain precedence; the halo fills nearby ground.
 	const int tileX = int(point.x) / 32 + gui.viewportX, tileY = int(point.y) / 32 + gui.viewportY;
-	const bool resourceHit = gui.game.map.isResource(tileX, tileY) &&
-		gui.game.map.isMapDiscovered(tileX, tileY, gui.localTeam->me);
-	if (!hitUnit && usesHUD() && !resourceHit && gui.game.map.getBuilding(tileX, tileY) == NOGBID &&
+    const bool resourceHit = map.getResource(tileX, tileY).type != NO_RES_TYPE &&
+        map.isMapDiscovered(tileX, tileY, Team::teamNumberToMask(gui.localTeamNo));
+	if (hitUnit.empty() && usesHUD() && !resourceHit && gui.drawnScene().map.getBuilding(tileX,tileY) == NOGBID &&
 		!gui.flagAt(int(point.x), int(point.y), gui.flagReachAt(screenPoint.x, screenPoint.y)))
 		hitUnit = unitAt(screenPoint, InGameTouchTheme::flagReach);
-	gui.view.mouseUnit = Game::refOf(hitUnit);
+	gui.view.mouseUnit = hitUnit;
 	const bool wasInspecting = inspecting();
 	// A read-only card is not a palette to restore after a building inspector.
 	const bool wasOpen = panelOpen && !inspectingReadOnly();
@@ -1641,6 +1640,7 @@ void GameGUITouch::prepareDraw()
 
 void GameGUITouch::menuAction(int action)
 {
+    if(gui.parkForClient([&]{menuAction(action);})) return;
 	if (action == -2)
 		return;
 	if (action == -1)
@@ -1678,24 +1678,14 @@ void GameGUITouch::menuAction(int action)
 			globalContainer->replayShowFog = !globalContainer->replayShowFog;
 		else if (action == 32)
 			globalContainer->replayVisibleTeams =
-				globalContainer->replayVisibleTeams == 0xffffffff ? gui.localTeam->me : 0xffffffff;
+				globalContainer->replayVisibleTeams == 0xffffffff ? Team::teamNumberToMask(gui.localTeamNo) : 0xffffffff;
 		else if (action == 33)
 			globalContainer->replayShowAreas = !globalContainer->replayShowAreas;
 		else if (action == 34)
 			globalContainer->replayShowFlags = !globalContainer->replayShowFlags;
-		else if (action >= 40 && action - 40 < gui.game.teamsCount())
+		else if (action >= 40 && gui.drawnScene().world.teams && size_t(action - 40) < gui.drawnScene().world.teams->values.size())
 		{
-			gui.clearSelection();
-			gui.localTeamNo = action - 40;
-			gui.adjustLocalTeam();
-			for (int i = 0; i < gui.game.gameHeader.getNumberOfPlayers(); ++i)
-				if (gui.game.players[i]->teamNumber == gui.localTeamNo)
-				{
-					gui.localPlayer = i;
-					break;
-				}
-			if (globalContainer->replayVisibleTeams != 0xffffffff)
-				globalContainer->replayVisibleTeams = gui.localTeam->me;
+            gui.selectViewedTeam(action - 40);
 		}
 		return;
 	}
@@ -1718,7 +1708,7 @@ void GameGUITouch::menuAction(int action)
 	case 3:
 		if (usesHUD() && !layout().persistentPanel && !globalContainer->isViewingGame())
 		{
-			statsCatalog = Stats::catalogForBuildings(gui.game.buildingsTypes);
+			statsCatalog = Stats::catalogForBuildings(*gui.drawnScene().buildingTypes);
 			statsOpen = true; // The compact statistics sheet.
 			break;
 		}

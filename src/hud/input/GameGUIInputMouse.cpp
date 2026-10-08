@@ -103,44 +103,41 @@ double GameGUI::flagReachAt(double screenX, double screenY) const
 	return InGameTouchTheme::flagReach + (InGameTouchTheme::flagReachEdge - InGameTouchTheme::flagReach) * toward;
 }
 
-Building *GameGUI::flagAt(int mx, int my, double reachPoints)
+const SnapshotBuilding* GameGUI::flagAt(int mx, int my, double reachPoints)
 {
-	int mapX, mapY;
-	game.map.displayToMapCaseAligned(mx, my, &mapX, &mapY, viewportX, viewportY);
-	for (Building *flag : localTeam->virtualBuildings)
-		if (displayedPosX(*flag)==mapX && displayedPosY(*flag)==mapY)
-			return flag;
-	if (reachPoints <= 0)
-		return nullptr;
-	// Screen points whatever the zoom, measured to the flag's tile centre across
-	// the map's wrap.
-	const double radius = reachPoints * globalContainer->gfx->logicalUnitsPerPoint() / camera.zoom;
-	double nearestDistance = radius * radius;
-	Building *nearest = nullptr;
-	const double worldX = mx + viewportX * 32., worldY = my + viewportY * 32.;
-	const auto wrappedDistance = [](double delta, double period)
-	{
-		return MapCamera::wrap(delta + period / 2, period) - period / 2;
-	};
-	for (auto *flag : localTeam->virtualBuildings)
-	{
-		const double dx = wrappedDistance(worldX - (displayedPosX(*flag) * 32. + 16),
-										   game.map.getW() * 32.);
-		const double dy = wrappedDistance(worldY - (displayedPosY(*flag) * 32. + 16),
-										   game.map.getH() * 32.);
-		const double distance = dx * dx + dy * dy;
-		if (distance < nearestDistance ||
-			(distance == nearestDistance && nearest && flag->gid < nearest->gid))
-		{
-			nearest = flag;
-			nearestDistance = distance;
-		}
-	}
-	return nearest;
+    if (!drawnScene().world.occupancy) return nullptr;
+    const auto& map = drawnScene().map;
+    int mapX, mapY;
+    map.displayToMapCaseAligned(mx,my,&mapX,&mapY,viewportX,viewportY);
+    std::vector<BuildingRef> flags;
+    {
+        const auto& e=drawnScene().entities;
+        for (auto gid : e.virtualBuildings[localTeamNo])
+            if (const auto* b=e.building(gid.gid); b && b->identity==gid) flags.push_back(gid);
+    }
+    for (const auto ref : flags)
+        if (auto b=inputBuilding(ref); b && displayedPosX(*b)==mapX && displayedPosY(*b)==mapY) return b;
+    if (reachPoints <= 0) return {};
+    const double radius=reachPoints*globalContainer->gfx->logicalUnitsPerPoint()/camera.zoom;
+    double nearestDistance=radius*radius;
+    const SnapshotBuilding* nearest=nullptr;
+    const double worldX=mx+viewportX*32., worldY=my+viewportY*32.;
+    const auto wrapped=[](double delta,double period) { return MapCamera::wrap(delta+period/2,period)-period/2; };
+    for (const auto ref : flags)
+    {
+        auto b=inputBuilding(ref); if (!b) continue;
+        const double dx=wrapped(worldX-(displayedPosX(*b)*32.+16),map.getW()*32.);
+        const double dy=wrapped(worldY-(displayedPosY(*b)*32.+16),map.getH()*32.);
+        const double distance=dx*dx+dy*dy;
+        if (distance<nearestDistance || (distance==nearestDistance && nearest && b->gid<nearest->gid))
+        { nearest=b; nearestDistance=distance; }
+    }
+    return nearest;
 }
 
 void GameGUI::handleMapClick(int mx, int my, int button)
 {
+    if (!drawnScene().map.getW()) return;
 	updateCamera();
 	if (!torusView.active() && (!camera.contains(mx,my) || my<16)) return;
 	const double flagReach=flagReachAt(mx, my);
@@ -157,119 +154,75 @@ void GameGUI::handleMapClick(int mx, int my, int button)
 	else if (putMark)
 	{
 		int markx, marky;
-		game.map.displayToMapCaseAligned(mx, my, &markx, &marky, viewportX, viewportY);
-		orderQueue.push_back(shared_ptr<Order>(new MapMarkOrder(localTeamNo, markx, marky)));
+		drawnScene().map.displayToMapCaseAligned(mx, my, &markx, &marky, viewportX, viewportY);
+		enqueueOrder(shared_ptr<Order>(new MapMarkOrder(localTeamNo, markx, marky)));
 		globalContainer->gfx->cursorManager.setNextType(CursorManager::CURSOR_NORMAL);
 		putMark = false;
 	}
 	else
 	{
 		int mapX, mapY;
-		game.map.displayToMapCaseAligned(mx, my, &mapX, &mapY, viewportX, viewportY);
+		drawnScene().map.displayToMapCaseAligned(mx, my, &mapX, &mapY, viewportX, viewportY);
 		selectionPushedPosX=mapX;
 		selectionPushedPosY=mapY;
 		// check for flag first
-		if (Building *flag=flagAt(mx, my, 0))
+		if (auto flag=flagAt(mx, my, 0))
 		{
-			setSelection(BUILDING_SELECTION, flag);
+			setSelection(BUILDING_SELECTION, unsigned(flag->gid));
 			selectionPushed=true;
 			return;
 		}
-        // Keep exact flag hits above units/buildings as before. The extra
-        // touch-only selection halo claims otherwise empty ground, so it cannot
-        // steal direct clicks from a neighbouring building or unit.
-        Unit *mouseUnit = game.resolveUnit(view.mouseUnit);
-        if (touch->usesHUD() && !torusView.active() && !mouseUnit &&
-            game.map.getBuilding(mapX, mapY) == NOGBID)
-        {
-            if (Building *nearest=flagAt(mx, my, flagReach))
-            {
-                setSelection(BUILDING_SELECTION, nearest);
-                // A forgiving selection click must not move the flag onto the
-                // neighbouring tile on mouse-up. Touch drags move flags through
-                // GameGUITouch, which grabs them before the map pans.
-                selectionPushed = false;
+        // Selection always resolves against the displayed generation. Shift-click
+        // additionally serializes that exact entity under the caller's owner guard;
+        // an entity deleted since publication has nothing left to dump.
+        const auto dump = [&](UnitRef unit, BuildingRef building) {
+            if (!(inputState.modifiers() & SDL_KMOD_SHIFT)) return;
+            Unit* liveUnit = game.resolveUnit(unit);
+            Building* liveBuilding = game.resolveBuilding(building);
+            if (!liveUnit && !liveBuilding) return;
+            const char* filename = liveUnit ? "unit.dump.txt" : "building.dump.txt";
+            TextOutputStream stream(Toolkit::getFileManager()->openOutputStreamBackend(filename));
+            if (stream.isEndOfStream()) {
+                std::cerr << "Can't dump entity to file " << filename << std::endl;
                 return;
             }
+            if (liveUnit) {
+                liveUnit->save(&stream);
+                liveUnit->saveCrossRef(&stream);
+                liveBuilding = liveUnit->attachedBuilding;
+            }
+            if (liveBuilding) {
+                liveBuilding->save(&stream);
+                liveBuilding->saveCrossRef(&stream);
+            }
+        };
+        const auto& scene=drawnScene();
+        const auto* unit=scene.entities.unit(view.mouseUnit);
+        const auto gid=scene.map.getBuilding(mapX,mapY);
+        if (touch->usesHUD() && !torusView.active() && !unit && gid==NOGBID)
+            if (auto nearest=flagAt(mx,my,flagReach))
+            { setSelection(BUILDING_SELECTION,unsigned(nearest->gid)); selectionPushed=false; return; }
+        if (unit)
+        {
+            setSelection(UNIT_SELECTION,unsigned(unit->gid)); selectionPushed=true;
+            dump(unit->identity,{});
+            return;
         }
-		// then for unit
-		if (mouseUnit)
-		{
-			// a unit is selected:
-			setSelection(UNIT_SELECTION, mouseUnit);
-			selectionPushed = true;
-			// handle dump of unit characteristics
-			if ((inputState.modifiers() & SDL_KMOD_SHIFT) != 0)
-			{
-				OutputStream *stream = new TextOutputStream(Toolkit::getFileManager()->openOutputStreamBackend("unit.dump.txt"));
-				if (stream->isEndOfStream())
-				{
-					std::cerr << "Can't dump unit to file unit.dump.txt" << std::endl;
-				}
-				else
-				{
-					std::cerr << "Dump unit " << mouseUnit->gid << " memory" << std::endl;
-					mouseUnit->save(stream);
-					mouseUnit->saveCrossRef(stream);
-					if (mouseUnit->attachedBuilding)
-					{
-						mouseUnit->attachedBuilding->save(stream);
-						mouseUnit->attachedBuilding->saveCrossRef(stream);
-					}
-				}
-				delete stream;
-			}
-		}
-		else
-		{
-			// then for building
-			Uint16 gbid=game.map.getBuilding(mapX, mapY);
-			if (gbid != NOGBID)
-			{
-				int buildingTeam=Building::GIDtoTeam(gbid);
-				// we can select for view buildings that are in shared vision, or any building in replay mode
-				if ((buildingTeam==localTeamNo)
-					|| game.map.isFOWDiscovered(mapX, mapY, localTeam->me)
-					|| (game.map.isMapDiscovered(mapX, mapY, localTeam->me) && (game.teams[buildingTeam]->allies&(Team::teamNumberToMask(localTeamNo))))
-					|| globalContainer->isViewingGame() )
-				{
-					setSelection(BUILDING_SELECTION, gbid);
-					selectionPushed=true;
-					// showUnitWorkingToBuilding=true;
-					// handle dump of building characteristics
-					if ((inputState.modifiers() & SDL_KMOD_SHIFT) != 0)
-					{
-						OutputStream *stream = new TextOutputStream(Toolkit::getFileManager()->openOutputStreamBackend("building.dump.txt"));
-						if (stream->isEndOfStream())
-						{
-							std::cerr << "Can't dump unit to file building.dump.txt" << std::endl;
-						}
-						else
-						{
-							Building* selBuild=selectionBuilding();
-							std::cerr << "Dump building " << selBuild->gid << " memory" << std::endl;
-							selBuild->save(stream);
-							selBuild->saveCrossRef(stream);
-						}
-						delete stream;
-					}
-				}
-			}
-			else
-			{
-				// and resource
-				if (game.map.isResource(mapX, mapY) && game.map.isMapDiscovered(mapX, mapY, localTeam->me))
-				{
-					setSelection(RESOURCE_SELECTION, mapY*game.map.getW()+mapX);
-					selectionPushed=true;
-				}
-				else
-				{
-					if (selectionMode == RESOURCE_SELECTION)
-						clearSelection();
-				}
-			}
-		}
+        const auto me=Team::teamNumberToMask(localTeamNo);
+        if (const auto* building=scene.entities.building(gid))
+        {
+            const int team=building->team;
+            if (team==localTeamNo || scene.map.isFOWDiscovered(mapX,mapY,me) ||
+                (scene.map.isMapDiscovered(mapX,mapY,me) && (scene.entities.teams[team].allies&me)) ||
+                globalContainer->isViewingGame())
+            {
+                setSelection(BUILDING_SELECTION,unsigned(gid)); selectionPushed=true;
+                dump({},building->identity);
+            }
+        }
+        else if (scene.map.getResource(mapX,mapY).type!=NO_RES_TYPE && scene.map.isMapDiscovered(mapX,mapY,me))
+        { setSelection(RESOURCE_SELECTION,unsigned(scene.map.coordToIndex(mapX,mapY))); selectionPushed=true; }
+        else if (selectionMode==RESOURCE_SELECTION) clearSelection();
 	}
 }
 

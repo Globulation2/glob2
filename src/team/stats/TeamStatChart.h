@@ -5,7 +5,6 @@
 #include <string>
 #include <vector>
 
-class Game;
 
 //! Team statistics charts shared by the end-of-game results and the in-match
 //! statistics sheet. What is drawn comes from the metric catalog
@@ -31,8 +30,9 @@ class TeamStatChart
 	//! Paints the chart for `options.metric` into the rectangle, on the dark plot
 	//! background its colours are chosen for (`background`, which the caller fills).
 	//! With too little recorded history for the metric it says so instead.
-	static void paint(const Game &game, GAGCore::DrawableSurface &surface, int left, int top, int width, int height,
-					  const Options &options);
+    static void paint(const std::vector<Stats::TeamHistory>& histories, Uint32 tick,
+                      GAGCore::DrawableSurface& surface, int left, int top, int width, int height,
+                      const Options& options);
 	//! Translated name of a metric, and the longer explanation of what it measures.
 	static std::string title(const Stats::Metric &metric);
 	static std::string about(const Stats::Metric &metric);

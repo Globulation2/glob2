@@ -3,6 +3,7 @@
 
 #pragma once
 
+#include <span>
 #include <vector>
 #include "Types.h"
 
@@ -27,7 +28,7 @@ namespace OverlayFill
 	/// strictly inside the radius (relx*relx + rely*rely < distance*distance)
 	/// are incremented.
 	void increasePoint(int x, int y, int distance, int width, int height,
-	                   std::vector<Uint32>& field, Uint32& max);
+	                   std::span<Uint32> field, Uint32& max);
 
 	/// Accumulate a bump scaled by `value`. Used by the Defence overlay, where
 	/// `value` is a turret's attack power so stronger turrets paint a hotter
@@ -35,5 +36,9 @@ namespace OverlayFill
 	/// (relx*relx + rely*rely <= distance*distance) are incremented by
 	/// value * (distance - (relx*relx + rely*rely) / distance).
 	void spreadPoint(int x, int y, int value, int distance, int width, int height,
-	                 std::vector<Uint32>& field, Uint32& max);
+	                 std::span<Uint32> field, Uint32& max);
+	// Visit at most budget positions, retaining the next position in cursor.
+	// Returns true once the complete radial kernel has been accumulated.
+	bool spreadPointChunk(int x, int y, int value, int distance, int width, int height,
+	                      std::span<Uint32> field, Uint32& max, size_t& cursor, size_t budget);
 }

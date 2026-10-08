@@ -3,7 +3,7 @@ import { useState } from 'react';
 import type { LeaderboardEntry } from '@glob2/protocol';
 import { api } from '../api.ts';
 import { GameArt } from '../art.tsx';
-import { Avatar, Loaded, PlayerLink, TableWrap } from '../components/common.tsx';
+import { AiMark, Avatar, Loaded, PlayerLink, TableWrap } from '../components/common.tsx';
 import { aiName, percent, rating, versionKey } from '../format.ts';
 import { Link } from '../router.tsx';
 import { useLoad, useSession } from '../state.tsx';
@@ -48,7 +48,7 @@ function Rows({ entries, caption }: { entries: LeaderboardEntry[]; caption: stri
                   </>
                 ) : (
                   <>
-                    <GameArt name="school" size={30} className="ai-mark" />
+                    <AiMark size="small" />
                     <Link to={aiHref(e.entity.ai, versionKey(e.entity.simVersion))}>
                       {aiName(e.entity.ai)}
                     </Link>{' '}

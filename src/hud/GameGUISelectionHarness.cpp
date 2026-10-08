@@ -16,62 +16,84 @@
 class GameGUISelectionHarness
 {
 public:
-	static void destructionClearsSelection()
-	{
-		GameGUI gui;
-		gui.init();
-		gui.localTeamNo = 0;
-		Team team(&gui.game);
-		team.race.load();
-		gui.game.teams[0] = &team;
-		const int buildingType = globalContainer->buildingsTypes.getTypeNum("swarm", 0, false);
+    static void frozenInputAdmission(bool threaded)
+    {
+        glob2test::HeadlessGame world;
+        auto& gui = world.gui;
+        auto* building = world.addBuilding("swarm",4,4);
+        gui.setSelection(GameGUI::BUILDING_SELECTION, building);
+        PresentationFrame scene;
+        gui.prepareLocalPresentation(scene);
+        gui.setPublishedScene(&scene);
+        gui.simulationThreaded = threaded;
+        const auto original = Game::refOf(building);
+        gui.checkSelection();
+        REQUIRE(gui.inputBuildingPanel());
+        CHECK(gui.view.selectedBuilding == nullptr);
+        gui.requestBuildingDestruction(*gui.inputBuildingPanel());
+        REQUIRE(gui.orderQueue.size() == 1);
+        CHECK(gui.orderQueue.front()->clientTarget == original);
+        REQUIRE(world.game.removeUnitAndBuildingAndFlags(4,4,Game::DEL_BUILDING));
+        auto* replacement = world.addBuilding("swarm",4,4);
+        REQUIRE(replacement->gid == original.gid);
+        REQUIRE(replacement->scriptIdentity != original.generation);
+        // Both selection and action still use what was actually displayed.
+        gui.checkSelection();
+        REQUIRE(gui.inputBuildingPanel());
+        CHECK(gui.inputBuildingPanel()->state().scriptIdentity == original.generation);
+        // An action issued after slot reuse must still stamp the displayed generation.
+        gui.orderQueue.clear();
+        gui.enqueueOrder(std::make_shared<OrderDelete>(original.gid));
+        REQUIRE(gui.orderQueue.front()->clientTarget == original);
+        // The simulation admits no order for the replacement incarnation.
+        CHECK(gui.getOrder()->getOrderType() == ORDER_NULL);
+        gui.enqueueOrder(std::make_shared<NullOrder>());
+        gui.orderQueue.front()->clientWorld = scene.map.identity()+1;
+        CHECK(gui.getOrder()->getOrderType() == ORDER_NULL);
+        gui.prepareLocalPresentation(scene);
+        gui.checkSelection();
+        CHECK(gui.selectionMode != GameGUI::BUILDING_SELECTION);
+        gui.simulationThreaded = false;
+        gui.setPublishedScene(nullptr);
+    }
+    static void destructionClearsSelection()
+    {
+        glob2test::HeadlessGame world;
+        auto& gui=world.gui;
+        const auto viewport=std::pair{gui.viewportX,gui.viewportY};
+        auto* building=world.addBuilding("swarm",4,4);
+        gui.setSelection(GameGUI::BUILDING_SELECTION,building);
+        gui.prepareLocalPresentation(gui.frameScene);
+        gui.checkSelection();
+        REQUIRE(gui.selectionMode==GameGUI::BUILDING_SELECTION);
+        REQUIRE(gui.view.selectedBuilding==nullptr);
+        REQUIRE(world.game.removeUnitAndBuildingAndFlags(4,4,Game::DEL_BUILDING));
+        // The retained frame and its selection remain coherent until replacement.
+        gui.checkSelection();
+        REQUIRE(gui.selectionMode==GameGUI::BUILDING_SELECTION);
+        gui.prepareLocalPresentation(gui.frameScene);
+        gui.iterateSelection();
+        assertClearedKeepViewport(gui);
 
-		// Match Team::syncStep: empty the table slot, then delete the entity.
-		// The selection holds a gid + generation, so nothing dangles and the
-		// GUI needs no destruction callback.
-		auto* building = new Building(0, 0, 2, buildingType, &team,
-		                              &globalContainer->buildingsTypes, 0, 0);
-		team.myBuildings[2] = building;
-		gui.setSelection(GameGUI::BUILDING_SELECTION, building);
-		REQUIRE((gui.selectionBuilding() == building && gui.view.selectedBuilding == building));
-		team.myBuildings[2] = nullptr;
-		delete building;
-		REQUIRE(gui.selectionMode == GameGUI::BUILDING_SELECTION);
-		REQUIRE(!gui.selectionBuilding());
-		gui.iterateSelection();
-		assertCleared(gui);
-
-		auto* unit = new Unit(0, 0, 2, WORKER, &team, 0);
-		team.myUnits[2] = unit;
-		gui.setSelection(GameGUI::UNIT_SELECTION, unit);
-		team.myUnits[2] = nullptr;
-		delete unit;
-		REQUIRE(!gui.selectionUnit());
-		gui.iterateSelection();
-		assertCleared(gui);
-
-		gui.iterateSelection();
-		assertCleared(gui);
-		gui.setSelection(GameGUI::BUILDING_SELECTION, static_cast<void*>(nullptr));
-		gui.iterateSelection();
-		assertCleared(gui);
-		gui.setSelection(GameGUI::UNIT_SELECTION, static_cast<void*>(nullptr));
-		gui.iterateSelection();
-		assertCleared(gui);
-
-		// A live unit with no peer remains selected. No viewport centering
-		// occurs in this case, so this also runs without a graphics context.
-		unit = new Unit(0, 0, 2, WORKER, &team, 0);
-		team.myUnits[2] = unit;
-		gui.setSelection(GameGUI::UNIT_SELECTION, unit);
-		gui.iterateSelection();
-		REQUIRE(gui.selectionMode == GameGUI::UNIT_SELECTION);
-		REQUIRE((gui.selectionUnit() == unit && gui.view.selectedUnit == unit));
-		gui.clearSelection();
-		team.myUnits[2] = nullptr;
-		delete unit;
-		gui.game.teams[0] = nullptr;
-	}
+        auto* unit=world.addUnit(WORKER,10,10);
+        gui.setSelection(GameGUI::UNIT_SELECTION,unit);
+        gui.prepareLocalPresentation(gui.frameScene);
+        gui.iterateSelection();
+        REQUIRE(gui.selectionMode==GameGUI::UNIT_SELECTION);
+        REQUIRE(gui.view.selectedUnit==nullptr);
+        REQUIRE(world.game.removeUnitAndBuildingAndFlags(10,10,Game::DEL_UNIT));
+        gui.checkSelection();
+        REQUIRE(gui.selectionMode==GameGUI::UNIT_SELECTION);
+        gui.prepareLocalPresentation(gui.frameScene);
+        gui.iterateSelection();
+        assertClearedKeepViewport(gui);
+        gui.iterateSelection();
+        assertClearedKeepViewport(gui);
+        gui.setSelection(GameGUI::UNIT_SELECTION,static_cast<void*>(nullptr));
+        gui.iterateSelection();
+        assertClearedKeepViewport(gui);
+        CHECK(std::pair{gui.viewportX,gui.viewportY}==viewport);
+    }
 
 	// A newcomer that takes the dead entity's slot (same gid) must inherit
 	// neither the selection nor the failing-unit recording.
@@ -184,7 +206,7 @@ public:
 		REQUIRE(!gui.selectionUnit());
 		gui.consumeClientEvents();
 		REQUIRE(gui.selectionUnit() == unit);
-		REQUIRE(gui.view.selectedUnit == unit);
+		REQUIRE(gui.view.selectedUnit == nullptr);
 	}
 
 	static void assertClearedKeepViewport(const GameGUI& gui)
@@ -203,6 +225,13 @@ public:
 
 TEST_SUITE("GameGUISelection")
 {
+    TEST_CASE("displayed actions cannot target a reused entity or replaced world")
+    {
+        glob2test::HeadlessGlobals globals;
+        GameGUISelectionHarness::frozenInputAdmission(false);
+        GameGUISelectionHarness::frozenInputAdmission(true);
+    }
+
 	TEST_CASE("selection clears once its entity is destroyed")
 	{
 		glob2test::HeadlessGlobals globals;

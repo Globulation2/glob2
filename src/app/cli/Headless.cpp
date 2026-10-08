@@ -1,3 +1,4 @@
+#include <utility>
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include <Environment.h>
 #include "Headless.h"
@@ -241,7 +242,7 @@ void Headless::playersAndTeamsJson(std::ostream &result, Game &game, const std::
         result << ",\"routing_comparison\":{\"wheat_delivered\":" << m.delivered[materialIndex(MaterialId::Food)]
             << ",\"wheat_harvested\":" << m.harvested[materialIndex(MaterialId::Food)]
             << ",\"starvation_deaths\":" << starvation << ",\"construction_completed\":" << completed << '}';
-		const TeamStat &stats=*team->stats.getLatestStat();
+		const TeamStat &stats=*std::as_const(team->stats).getLatestStat();
 		result << ",\"standard_statistics\":"; standardStatistics(result,stats);
 		result << ",\"statistics\":{\"total_units\":" << stats.totalUnit << ",\"total_buildings\":" << stats.totalBuilding
 			<< ",\"total_hp\":" << stats.totalHP << ",\"total_attack_power\":" << stats.totalAttackPower
@@ -433,7 +434,8 @@ struct HeadlessRunner
 		}
 		if (!fields.empty()) engine.diagnostics = std::make_shared<GameDiagnostics::Session>(engine.gui.game,(output/"diagnostics").string(),diagnosticInterval,diagnosticPng=="true");
 		const unsigned computeThreads = integer(one(options, "--compute-threads",
-			std::to_string(defaultAIThreadCount(engine.gui.game))), 1, 64);
+			std::to_string(options.count("--gradient-workers") && gradientWorkers
+                ? gradientWorkers+1 : defaultAIThreadCount(engine.gui.game))), 1, 64);
 		const std::string computeExperiments = one(options, "--compute-experiments", "ai");
 		unsigned experimentMask = 0;
 		if (computeExperiments == "all") experimentMask = 15;

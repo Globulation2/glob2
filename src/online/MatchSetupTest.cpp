@@ -84,6 +84,11 @@ std::string sha256Hex(const std::string& text)
 
 TEST_SUITE("MatchSetup")
 {
+    TEST_CASE("New match rules default to eight tick AI decisions")
+    {
+        CHECK(MatchRules{}.aiOrderDelay == 8);
+    }
+
     TEST_CASE("AI order delay is optional bounded integer data and round trips through headers")
     {
         glob2test::HeadlessGlobals globals;

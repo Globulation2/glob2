@@ -4,6 +4,8 @@
 #include "SceneEntities.h"
 #include "SceneMap.h"
 #include "ScenePanels.h"
+#include "sim/snapshot/WorldSnapshot.h"
+#include "sim/presentation/PresentationRequest.h"
 
 #include <SDL3/SDL_stdinc.h>
 
@@ -12,10 +14,11 @@
 class OverlayArea;
 struct BuildingType;
 
-//! Everything the renderer draws for one frame, extracted from the simulation at a
-//! tick boundary and read-only afterwards. Grows as render passes are ported to it.
-struct Scene
+//! An immutable published world lease, view request, and derived presentation.
+struct PresentationFrame
 {
+    SimulationSnapshot::Handle world;
+    SceneRequest request;
 	// Retain the immutable type storage referenced by entity and panel records.
 	std::shared_ptr<const std::vector<BuildingType>> buildingTypes;
 	bool materialVisible(unsigned material) const { return material < 8 || ((map.materialPresence() | entities.materialPresence) & (1u << material)); }
@@ -27,6 +30,7 @@ struct Scene
 	}
 	bool editor = false;
 	Uint32 tick = 0;
+    Uint64 executedOrderRevision = 0;
 	//! When that tick finished (SDL_GetTicks) and the interval to the next one in
 	//! milliseconds (0 when the simulation runs uncapped), for drawing units between ticks.
 	Uint64 tickTime = 0;
@@ -37,4 +41,14 @@ struct Scene
 	//! The overlay map (starving, damage, defence or fertility) the client asked for, or
 	//! null. Shared and immutable: unchanged frames reuse the same snapshot.
 	std::shared_ptr<const OverlayArea> overlay;
+    // Called only after the producer/consumer has exclusive ownership of a
+    // retired slot. Preserve reusable derived storage without pinning old worlds.
+    void releaseWorld()
+    {
+        world={}; buildingTypes.reset(); panels={};
+        auto masks=std::move(entities.connectionMasks);
+        entities={}; entities.connectionMasks=std::move(masks);
+        map.releaseWorld();
+        overlay.reset();
+    }
 };

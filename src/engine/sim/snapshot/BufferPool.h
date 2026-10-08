@@ -13,13 +13,15 @@ namespace SimulationSnapshot
 // limit covers the longest consumer horizon plus the store's latest capture:
 // delayed map gradients retain up to sixteen ticks and AI decisions up to
 // eight, both leasing the same per-tick captures, so max(16, 8) + 1 = 17.
+// Presentation reserves five additional epochs: active input, pending input,
+// and three published/reusable PresentationFrame slots. Unused capacity is never allocated.
 //
 // Synchronization: a consumer's final release is an atomic release-decrement of
 // the use count. The owner reads that count (a relaxed atomic load) and then
 // issues an acquire fence, which synchronizes with the consumer's decrement, so
 // every read the consumer made of the buffer happens-before the owner's reuse.
 // (ThreadSanitizer does not model fences, so it cannot confirm this handoff.)
-template<class T, std::size_t MaximumBuffers = 17> class BufferPool
+template<class T, std::size_t MaximumBuffers = 22> class BufferPool
 {
 	std::vector<std::shared_ptr<T>> buffers;
 	std::size_t cursor = 0;

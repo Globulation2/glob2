@@ -1,89 +1,10 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "SceneMap.h"
 
-#include "Map.h"
-#include "Game.h"
 #include "TerrainRegistry.h"
+#include "sim/snapshot/WorldSnapshot.h"
 #include <algorithm>
 #include <bit>
-
-void SceneMap::extract(const Map &map)
-{
-	extract(map, map.displayViewportW, map.displayViewportH);
-}
-
-void SceneMap::extract(const Map &map, int displayW, int displayH, bool includeScriptAreas)
-{
-	tick = map.game ? map.game->stepCounter : 0;
-	registry = map.frozenTerrainRegistry();
-	resourceDefinitions = map.frozenResourceRegistry();
-	w = map.getW();
-	h = map.getH();
-	wMask = map.getMaskW();
-	hMask = map.getMaskH();
-	wDec = map.getShiftW();
-	sourceIdentity = map.identity();
-	sourceKey = &map;
-	terrainSeedValue = map.terrainSeed();
-	const size_t size = size_t(w) * h;
-	terrain.resize(size);
-	terrainTypes = map.terrainTypes();
-	terrainAppearances.resize(size);
-	resources.resize(size);
-	multiStocks.clear();
-	if (!multiStockIndices.empty()) multiStockIndices.assign(size, UINT32_MAX);
-	presentMaterials = 0;
-	resourcesGrow.resize(size);
-	groundUnits.resize(size);
-	airUnits.resize(size);
-	buildings.resize(size);
-	scriptAreas.resize(includeScriptAreas ? size : 0);
-	for (size_t i = 0; i < size; ++i)
-	{
-		const Tile &tile = map.getTile(i);
-		terrainAppearances[i] = registry->appearance(terrainTypes[i]);
-		terrain[i] = tile.terrain;
-		resources[i] = tile.resource;
-		if (tile.resource.type != NO_RES_TYPE)
-		{
-			const auto mask = resourceDefinitions->properties(static_cast<ResourceId>(tile.resource.type)).materialMask;
-			presentMaterials |= mask;
-			if (std::popcount(mask) > 1)
-			{
-				if (multiStockIndices.empty()) multiStockIndices.assign(size, UINT32_MAX);
-				multiStockIndices[i] = multiStocks.size();
-				auto& stock = multiStocks.emplace_back();
-				for (unsigned m = 0; m < MaterialCount; ++m) stock[m] = map.materialAmountAtSlot(i, m);
-			}
-		}
-		resourcesGrow[i] = tile.canResourcesGrow;
-		groundUnits[i] = tile.groundUnit;
-		airUnits[i] = tile.airUnit;
-		buildings[i] = tile.building;
-		if (includeScriptAreas)
-		{
-			scriptAreas[i] = 0;
-			for (int n = 0; n < 9; ++n)
-				if (map.isPointSet(n, int(i) & wMask, int(i >> wDec)))
-					scriptAreas[i] |= 1 << n;
-		}
-	}
-	undermap.resize(size);
-	for (size_t i = 0; i < size; ++i)
-		undermap[i] = Uint8(map.getUMTerrain(int(i) & wMask, int(i >> wDec)));
-	displayViewportW = displayW;
-	displayViewportH = displayH;
-	discovered.assign(map.mapDiscovered.begin(), map.mapDiscovered.end());
-	if (map.fogOfWar)
-		fogOfWar.assign(map.fogOfWar, map.fogOfWar + size);
-	else
-		fogOfWar.assign(size, 0);
-	discovered.resize(size, 0);
-	forbiddenView = map.displayedForbiddenView;
-	guardAreaView = map.displayedGuardAreaView;
-	clearAreaView = map.displayedClearAreaView;
-	farmAreaView = map.displayedFarmAreaView;
-}
 
 bool SceneMap::isMapPartiallyDiscovered(int x1, int y1, int x2, int y2, Uint32 visionMask) const
 {
@@ -134,19 +55,130 @@ bool SceneMap::isHardSpaceForBuilding(int x, int y, int w, int h) const
 		for (int xi = x; xi < x + w; xi++)
 		{
 			const size_t i = coordToIndex(xi, yi);
-			if ((resources[i].type != NO_RES_TYPE && resourceDefinitions->properties(static_cast<ResourceId>(resources[i].type)).blocksBuilding) || buildings[i] != 0xFFFF ||
-				!registry->properties(terrainTypes[i]).buildable)
+			if ((getResource(i).type != NO_RES_TYPE && resourceDefinitions->properties(static_cast<ResourceId>(getResource(i).type)).blocksBuilding) || getBuilding(xi, yi) != 0xFFFF ||
+				!registry->properties(terrainTypeAt(xi, yi)).buildable)
 				return false;
 		}
 	return true;
 }
 
-Uint16 SceneMap::materialAmountAt(size_t index, unsigned material) const
+Uint16 SceneMap::materialAmountAt(size_t index,unsigned material) const
+{ return snapshot && validMaterial(material) ? MapState::materialAmountAt(snapshot->view(),index,int(material)) : 0; }
+
+void SceneMap::bindSnapshot(const SimulationSnapshot::Handle& world,int displayW,int displayH,int localTeam)
 {
-	if (!validMaterial(material) || resources[index].type == NO_RES_TYPE) return 0;
-	const auto& p = resourceDefinitions->properties(static_cast<ResourceId>(resources[index].type));
-	if (!(p.materialMask & (1u << material))) return 0;
-	if (!multiStockIndices.empty() && multiStockIndices[index] != UINT32_MAX)
-		return multiStocks[multiStockIndices[index]][material];
-	return static_cast<Uint16>(resources[index].amount);
+    const Uint32 mask=localTeam>=0 && localTeam<32 ? Uint32(1)<<localTeam : 0;
+    const bool sameWorld=derivedComplete && sourceIdentity==world.worldIdentity
+        && w==world.width && h==world.height;
+    prepareAreas=!sameWorld || displayedTeamMask!=mask || areaRevision!=world.mapGenerations[3];
+    prepareMaterials=!sameWorld || resourceRevision!=world.mapGenerations[1]
+        || configurationRevision!=world.configurationRevision;
+    derivedComplete=!prepareAreas && !prepareMaterials;
+    const auto previousMaterials=presentMaterials;
+    w=world.width;h=world.height;wMask=w-1;hMask=h-1;wDec=std::countr_zero(unsigned(w));
+    sourceIdentity=world.worldIdentity;
+    terrainSeedValue=world.session->terrainSeed;
+    displayViewportW=displayW;displayViewportH=displayH;
+    scriptAreas=world.annotations ? std::span<const Uint16>(world.annotations->scriptAreas) : std::span<const Uint16>{};
+    const auto count=size_t(w)*h;
+    if (forbiddenView.getBitLength()!=count) {
+        forbiddenView.resize(count);guardAreaView.resize(count);clearAreaView.resize(count);farmAreaView.resize(count);
+    }
+    displayedTeamMask=mask;
+    areaRevision=world.mapGenerations[3];resourceRevision=world.mapGenerations[1];
+    configurationRevision=world.configurationRevision;
+    bindSnapshot(world);
+    if (!prepareMaterials) presentMaterials=previousMaterials;
+}
+
+void SceneMap::bindSnapshot(const SimulationSnapshot::Handle& world)
+{
+    using namespace SimulationSnapshot;
+    auto required = bit(Component::Terrain) | bit(Component::Resources) | bit(Component::Occupancy)
+        | bit(Component::Visibility) | bit(Component::Catalogs) | bit(Component::Areas);
+    if (world.annotations) required |= bit(Component::Annotations);
+    if (world.width != w || world.height != h || world.worldIdentity != sourceIdentity)
+        throw std::invalid_argument("PresentationFrame display metadata and snapshot belong to different worlds");
+    if (world.growth) required |= bit(Component::Growth) | bit(Component::Rules);
+    snapshot = std::make_shared<const Handle>(world.project(required));
+    snapshotFog = snapshot->visibility->visible.data();
+    tick = world.tick; registry = snapshot->terrain->registry; resourceDefinitions = snapshot->catalogs->resources;
+    presentMaterials = 0;
+}
+
+void SceneMap::prepareChunk(size_t first,size_t count)
+{
+    if (!prepareAreas && !prepareMaterials) return;
+    const auto end=std::min(first+count,size_t(w)*h);
+    for (size_t i=first;i<end;++i) {
+        if (prepareAreas) {
+        const auto& area=snapshot->areas->cells[i];
+        forbiddenView.set(i,(area.forbidden & displayedTeamMask)!=0);
+        guardAreaView.set(i,(area.guard & displayedTeamMask)!=0);
+        clearAreaView.set(i,(area.clear & displayedTeamMask)!=0);
+        farmAreaView.set(i,(area.farm & displayedTeamMask)!=0);
+        }
+        if (prepareMaterials) {
+        const auto& resource=snapshot->resources->cells[i].resource;
+        if (resource.type!=NO_RES_TYPE)
+            presentMaterials|=resourceDefinitions->properties(static_cast<ResourceId>(resource.type)).materialMask;
+        }
+    }
+    if (end==size_t(w)*h) derivedComplete=true;
+}
+
+Uint16 SceneMap::getTerrain(int x, int y) const
+{ const auto i = coordToIndex(x,y); return snapshot->terrain->legacy[i]; }
+TerrainType SceneMap::terrainTypeAt(int x, int y) const
+{ const auto i = coordToIndex(x,y); return (*snapshot->terrain->identity)[i]; }
+TerrainType SceneMap::appearanceAt(int x, int y) const
+{ return registry->appearance(terrainTypeAt(x,y)); }
+const Resource& SceneMap::getResource(int x, int y) const { return getResource(coordToIndex(x,y)); }
+const Resource& SceneMap::getResource(size_t i) const
+{ return snapshot->resources->cells[i].resource; }
+bool SceneMap::isMapDiscovered(int x, int y, Uint32 mask) const
+{ const auto i = coordToIndex(x,y); return ((snapshot->visibility->discovered[i]) & mask) != 0; }
+bool SceneMap::isFOWDiscovered(int x, int y, int mask) const
+{ return (fogOfWarData()[coordToIndex(x,y)] & mask) != 0; }
+bool SceneMap::canResourcesGrow(int x, int y) const
+{ const auto i = coordToIndex(x,y); return snapshot->resources->cells[i].mayGrow; }
+Uint16 SceneMap::getGroundUnit(int x, int y) const
+{ const auto i = coordToIndex(x,y); return snapshot->occupancy->cells[i].groundUnit; }
+Uint16 SceneMap::getAirUnit(int x, int y) const
+{ const auto i = coordToIndex(x,y); return snapshot->occupancy->cells[i].airUnit; }
+Uint16 SceneMap::getBuilding(int x, int y) const
+{ const auto i = coordToIndex(x,y); return snapshot->occupancy->cells[i].building; }
+
+int SceneMap::getUMTerrain(int x, int y) const
+{ const auto i = coordToIndex(x,y); return snapshot->terrain->undermap[i]; }
+
+bool SceneMap::canPaintFarmArea(int x,int y) const
+{ return snapshot && snapshot->canPaintFarmAt(coordToIndex(x,y)); }
+
+bool SceneMap::isFreeForAirUnit(int x,int y) const
+{
+    const auto& resource=getResource(x,y);
+    return registry->properties(terrainTypeAt(x,y)).flyable && getAirUnit(x,y)==0xffff
+        && (resource.type==NO_RES_TYPE || !resourceDefinitions->properties(ResourceId(resource.type)).blocksAir);
+}
+bool SceneMap::isFreeForGroundUnit(int x,int y,bool canSwim,Uint32 teamMask) const
+{
+    const auto& terrain=registry->properties(terrainTypeAt(x,y));
+    const auto& resource=getResource(x,y);
+    return (terrain.walkable || (canSwim && terrain.swimmable)) && getGroundUnit(x,y)==0xffff
+        && getBuilding(x,y)==0xffff && !(snapshot->areas->cells[coordToIndex(x,y)].forbidden & teamMask)
+        && (resource.type==NO_RES_TYPE || !resourceDefinitions->properties(ResourceId(resource.type)).blocksGround);
+}
+bool SceneMap::isFreeForBuilding(int x,int y,int width,int height) const
+{
+    if (!isHardSpaceForBuilding(x,y,width,height)) return false;
+    for (int dy=0;dy<height;++dy) for (int dx=0;dx<width;++dx)
+        if (getGroundUnit(x+dx,y+dy)!=0xffff) return false;
+    return true;
+}
+
+std::string SceneMap::getAreaName(int index) const
+{
+    return snapshot && snapshot->annotations && index >= 0 && size_t(index) < snapshot->annotations->areaNames.size()
+        ? snapshot->annotations->areaNames[index] : std::string{};
 }

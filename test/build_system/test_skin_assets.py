@@ -72,6 +72,29 @@ class ColonySkinAssetsTest(unittest.TestCase):
                 index_at = header + vertices * uv_stride
                 self.assertEqual(data[index_at:index_at + indices * 4], baked[20 + vertices * 8:20 + vertices * 8 + indices * 4])
 
+    def test_material_unwraps_are_shared_by_runtime_and_studio(self):
+        manifest = json.loads((FOLDER / 'manifest.json').read_text())
+        for model in ('worker', 'warrior'):
+            reference = None
+            contract = json.loads((FOLDER / (model + '-surface.json')).read_text())
+            for name in UNIT_FORMATS:
+                if not name.startswith(model + '-'):
+                    continue
+                record = manifest['meshes'][name + '.gsk']['detailUV']
+                data = (FOLDER / record['file']).read_bytes()
+                self.assertEqual(hashlib.sha256(data).hexdigest(), record['sha256'])
+                self.assertEqual(data, (DESIGNER / record['file']).read_bytes())
+                magic, count = struct.unpack_from('<4sI', data)
+                self.assertEqual(magic, b'GUV1')
+                self.assertEqual(count, len(contract['welds']))
+                if reference is None:
+                    reference = data
+                self.assertEqual(data, reference, 'material chart changed between actions')
+                uv = [data[8+i*8:16+i*8] for i in range(count)]
+                for fold in contract['reflections'].values():
+                    for a, b in enumerate(fold):
+                        self.assertEqual(uv[a], uv[b], 'material reflection mismatch')
+
     def test_installed_meshes_match_their_sources_and_paint_contract(self):
         result = subprocess.run(
             [sys.executable, str(ROOT / 'tools/skins/test_export.py'), str(FOLDER)],

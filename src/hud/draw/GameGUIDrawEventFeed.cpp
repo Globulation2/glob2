@@ -38,7 +38,7 @@ int GameGUI::drawEventFeed(int x, int y)
 	const Uint64 nowMs = SDL_GetTicks();
 	const auto &teams = drawnScene().entities.teams;
 	const GAGCore::Color ownColor =
-		localTeamNo >= 0 && localTeamNo < static_cast<int>(teams.size()) ? teams[localTeamNo].color : GAGCore::Color();
+		localTeamNo >= 0 && localTeamNo < static_cast<int>(teams.size()) ? presentationColor(teams[localTeamNo].color) : GAGCore::Color();
 	Font *font = globalContainer->standardFont;
 
 	for (const GameEventFeed::Row &row : eventFeed.rows())
@@ -59,7 +59,7 @@ int GameGUI::drawEventFeed(int x, int y)
 			// The other team's colour behind a worker.
 			if (row.subject < teams.size())
 			{
-				const GAGCore::Color c = teams[row.subject].color;
+				const GAGCore::Color c = presentationColor(teams[row.subject].color);
 				globalContainer->gfx->drawFilledRect(x, y, EVENT_ICON_PX, EVENT_ICON_PX, c.r, c.g, c.b,
 													 static_cast<Uint8>(alpha * 3 / 4));
 			}
@@ -68,7 +68,7 @@ int GameGUI::drawEventFeed(int x, int y)
 		case GEBuildingUnderAttack:
 		case GEBuildingCompleted:
 		{
-			BuildingType *type = row.subject < game.buildingsTypes.size() ? game.buildingsTypes.get(row.subject) : nullptr;
+			const BuildingType *type = row.subject < drawnScene().buildingTypes->size() ? &drawnScene().buildingTypes->at(row.subject) : nullptr;
 			if (!type)
 				break;
 			const bool mini = type->miniSpriteImage >= 0;

@@ -12,15 +12,17 @@
 void GameGUI::drawBuildingInfos(void)
 {
 	const SceneBuildingPanel* selBuild = &drawnScene().panels.building;
-	if (!selBuild->valid)
+	const auto* selected = std::get_if<BuildingRef>(&selection);
+    if (!selBuild->valid || !selected || selected->gid != selBuild->state().gid || selected->generation != selBuild->state().scriptIdentity
+        || drawnScene().panels.local.state().number != localTeamNo)
 		return;
-	BuildingType *buildingType = selBuild->type;
+	const BuildingType* buildingType = selBuild->type;
 	int ypos = YPOS_BASE_BUILDING;
 	unsigned unitInsideBarYDec = 0;
 
-	if (buildingInfoScrollGid!=selBuild->gid)
+	if (buildingInfoScrollGid!=selBuild->state().gid)
 	{
-		buildingInfoScrollGid=selBuild->gid;
+		buildingInfoScrollGid=selBuild->state().gid;
 		buildingInfoScroll=0; buildingInfoScrollMaximum=0;
 	}
 	BuildingPreviewRows previewRows;

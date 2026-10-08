@@ -1,3 +1,4 @@
+#include "render/scene/BuildingCatalogView.h"
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "GameGUITouch.h"
 #include "InGameTouchTheme.h"
@@ -117,13 +118,13 @@ void GameGUITouch::drawBuildPalette()
 			drawPointLabel(rect, zones[items[i].name.back() - '0'], .75);
 			continue;
 		}
-		auto *type = gui.game.buildingsTypes.getByType(items[i].name.c_str(), 0, false);
+		auto *type = BuildingCatalogView(*gui.drawnScene().buildingTypes).getByType(items[i].name.c_str(), 0, false);
 		if (type)
 		{
 			auto *sprite = type->miniSpriteImage >= 0 ? type->miniSpritePtr : type->gameSpritePtr;
 			const int frame =
 				type->miniSpriteImage >= 0 ? type->miniSpriteImage : type->gameSpriteImage;
-			sprite->setBaseColor(gui.drawnScene().panels.local.color);
+			sprite->setBaseColor(presentationColor(gui.drawnScene().panels.local.state().color));
 			const double factor = std::min({unit, (rect.w - 8 * unit) / sprite->getW(frame),
 											(rect.h - 8 * unit) / sprite->getH(frame)});
 			gfx->setUITransform(factor, rect.x + (rect.w - sprite->getW(frame) * factor) / 2,

@@ -75,7 +75,12 @@ carry their original update ticks. In particular, the strategic snapshot's own
   returned remain separate measurements.
 
 Counters are cumulative from `coverage_start`; derive rates from sample differences.
-Timestamps are simulation ticks. AI-local timer values retain the AI's own cadence.
+Timestamps are simulation ticks. Published sample timestamps use the game clock;
+individual field update timestamps retain the observation time of delayed AI
+decisions. Historical samples use the 512-tick capture boundaries. Saves written
+by early format-143 builds may instead contain ordered observation-time history;
+the loader preserves that history when reading them. AI-local timer values retain
+the AI's own cadence.
 
 ## Built-in coverage
 
@@ -233,7 +238,10 @@ Writes occur outside AI updates. A capture directory is published only after all
 requested outputs close successfully; failures are reported without stopping the
 game. `summary.json` counts completed, failed and skipped captures. Files from an
 interrupted write are never marked complete. Capture state is session-local and
-is neither saved nor included in simulation checksums.
+is neither saved nor included in simulation checksums. Pending AI decisions keep
+their live capture buffers when a checkpoint is written, but those buffers are
+omitted from the checkpoint. Loading starts a new capture session rather than
+resuming an image that was pending in the old process.
 
 These options apply to `--run-game`, including loaded games, and require a Maxima
 controller. Interactive captures and environment-variable aliases are not

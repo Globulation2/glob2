@@ -257,7 +257,10 @@ private selection API without exposing it to game callers.
 `ClientChannelsTest.cpp` covers the `src/engine/sim/` channels: team events reaching the
 GUI once, in order and aged like `Team::updateEvents`; script presentation going
 through `ClientCommandSink`; the SGSL Space acknowledgement in `ClientRequests`;
-and order effects such as pause arriving as events.
+and order effects such as pause arriving as events. Concurrent delivery checks
+FIFO completeness and coherent pulses; reentrant publication waits for the next
+batch. Script-channel cases check immediate enablement queries before the client
+drains commands, including ordered alias matching.
 
 Run as the `GameGUISelection` and `ClientChannels` suites of `glob2-engine-tests`:
 
@@ -1080,6 +1083,37 @@ write timing counts and completed/failed/superseded accounting. See
 off/on (serialized worlds, outcomes, RNG, and generation telemetry) and emits generation
 timing records, including site assignment. Use a disposable HOME and run from the repository.
 
+Scene extraction has an opt-in paired diagnostic in the engine harness:
+
+```sh
+GLOB2_SCENE_BENCH=1 build/linux/client/release/test/glob2-engine-tests --test-suite=ScenePerformance
+```
+
+It compares synchronous extraction with owner capture and pure preparation on the
+same seeded state at 128, 512 and 1024 tiles per side, with 512 units. Five warmups
+precede 40 samples for unchanged and changed terrain. CSV rows report median and
+p95 microseconds plus snapshot pool capacity, leased payload bytes and cumulative
+copied bytes. Three retained Scenes model consumer leases. These are extraction
+microbenchmarks, not frame-rate or whole-game speedup measurements; pool payload
+accounting excludes registry heaps and allocator overhead. No timing threshold is
+used as a test assertion.
+
+The end-to-end client diagnostic compares a forced frame-wide simulation boundary
+with routine snapshot input in the same executable:
+
+```sh
+python3 test/run_tests.py --binary engine --tag benchmark --filter 'EngineSession/snapshot client frame latency*' --artifacts artifacts/client-latency
+```
+
+Each arm runs five seconds on `balanced.map`, seed 123, maximum simulation speed,
+two compute threads and an 800×600 portable graphics context. The CSV records
+completed frames, ticks, input and whole-frame median/p95 duration, and p95 Scene
+age. Whole-frame duration includes drawing; input duration excludes it. These are
+host processing times, not event-to-photon latency. The forced boundary isolates
+parking cost within this implementation, not the performance of an older binary.
+Repeat runs with recorded CPU affinity and system load; throughput and frame age
+can trade off under contention, and no performance threshold is asserted.
+
 ### Distributed gameplay, AI and performance telemetry
 
 `python3 test/test_distributed_game_telemetry.py` tests typed streaming extraction,
@@ -1220,6 +1254,8 @@ icon opacity. It catches an opaque building disappearing abruptly at the fade's 
 Build `scons release=1 server=0 unit-tests path-gradient-test
 building-gradient-invalidation-test`. The `ComputeExecutor` unit suite checks exclusive
 slots, barriers, nested batches, exception propagation, reuse and reconfiguration.
+It also gates presentation work while simulation batches and deadline joins finish,
+and verifies pending replacement, cancellation, serial pumping and capture release.
 The path oracle also exercises independent eager/lazy searches at 1/2/4/8 threads;
 the building invalidation harness compares real area/building seed fields and
 frozen hiring advancement. Linux/Windows CI run the executor and path oracle.
@@ -1516,6 +1552,8 @@ The added behavior coverage focuses on the following native boundaries:
 | `LegacyScriptCoverage`, `USLCoverage` | Parsing failures, legacy and painted area waits, counts, flags and suspension, summons and alliances, recursion, thread yields, garbage collection and runtime errors |
 | `GUIOrderCoverage`, `GUIInteractionCoverage` | Queued requests, clamps, deduplication, field reconciliation, replay input, desktop menu interactions and unit information |
 | `EditorActionCoverage` | Action dispatch, unit/building editing, matching controls and save/load persistence |
+| `BrushCatalog` | Editor brush catalogue contents, imported terrain order, experiment locks and map-header enabling, resource placement validity, catalogue action round trips, imported-name collisions and opaque map-matching swatches |
+| `EditorDockLayout` | The editor dock at 1024x480, 1024x600, 1280x720 and 1920x1080: controls inside the dock without overlap, unique keys, the last card reachable by scrolling, clicks at the dock edge, live cards after definition imports, locked experiments enabled from the dock, palette navigation, search and the object inspector |
 | `SurfaceCoverage` | Alpha grids, cropped/scaled blits, clip boundaries and progress-bar pixels |
 
 Use uncovered functions and branch annotations to choose the next scenario by

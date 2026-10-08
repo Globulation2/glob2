@@ -104,6 +104,7 @@ int GameGUI::litSpeedChevrons() const
 
 void GameGUI::cycleGameSpeed(bool forwards)
 {
+    if(parkForClient([&]{cycleGameSpeed(forwards);})) return;
 	if(!canChangeGameSpeed())
 		return;
 	// The chevrons replace a replay's fast-forward instead of hiding behind it.
@@ -138,6 +139,7 @@ void GameGUI::changeGameSpeed(int amount)
 
 void GameGUI::setGameSpeed(int speed)
 {
+    if(parkForClient([&]{setGameSpeed(speed);})) return;
 	if(!canChangeGameSpeed())
 		return;
 	const int oldSpeed=globalContainer->settings.gameSpeed;
@@ -211,14 +213,15 @@ void GameGUI::handleKey(SDL_KeyboardEvent key, bool pressed, bool repeat)
 				{
 					if (selectionMode==BUILDING_SELECTION)
 					{
-						Building* selBuild = selectionBuilding();
-						int unitWorking = defaultAssign.getDefaultAssignedUnits(selBuild->getConstructionOriginTypeNum());
+						const auto* selBuild = inputBuildingPanel();
+						if (!selBuild) break;
+						int unitWorking = defaultAssign.getDefaultAssignedUnits(drawnScene(), selBuild->state().constructionOriginTypeNum);
 						// Another team's building can be selected for viewing; its upgrade is not ours to cancel.
-						if (selBuild->owner->teamNumber != localTeamNo)
+						if (selBuild->owner().number != localTeamNo)
 							break;
-						if (selBuild->constructionResultState == Building::UPGRADE)
-							orderQueue.push_back(shared_ptr<Order>(new OrderCancelConstruction(selBuild->gid, unitWorking)));
-						else if ((selBuild->constructionResultState==Building::NO_CONSTRUCTION) && (selBuild->buildingState==Building::ALIVE))
+						if (selBuild->state().constructionResultState == Building::UPGRADE)
+							enqueueOrder(shared_ptr<Order>(new OrderCancelConstruction(selBuild->state().gid, unitWorking)));
+						else if ((selBuild->state().constructionResultState==Building::NO_CONSTRUCTION) && (selBuild->state().buildingState==Building::ALIVE))
 							repairAndUpgradeBuilding(selBuild, false, true);
 					}
 				}
@@ -227,14 +230,15 @@ void GameGUI::handleKey(SDL_KeyboardEvent key, bool pressed, bool repeat)
 				{
 					if (selectionMode==BUILDING_SELECTION)
 					{
-						Building* selBuild=selectionBuilding();
+						const auto* selBuild = inputBuildingPanel();
+						if (!selBuild) break;
 						const int current = displayedMaxUnitWorking(*selBuild);
-						if ((selBuild->owner->teamNumber==localTeamNo) && (selBuild->type->maxUnitWorking) && (current<MAX_UNIT_WORKING))
+						if ((selBuild->owner().number==localTeamNo) && (selBuild->type->maxUnitWorking) && (current<MAX_UNIT_WORKING))
 						{
 							int nbReq=std::min(20, current+1);
-							pendingFor(selBuild->gid).pendingMaxUnitWorking = nbReq;
-							orderQueue.push_back(shared_ptr<Order>(new OrderModifyBuilding(selBuild->gid, nbReq)));
-							defaultAssign.setDefaultAssignedUnits(selBuild->typeNum, nbReq);
+							pendingFor(selBuild->state().gid).pendingMaxUnitWorking = nbReq;
+							enqueueOrder(shared_ptr<Order>(new OrderModifyBuilding(selBuild->state().gid, nbReq)));
+							defaultAssign.setDefaultAssignedUnits(drawnScene(), selBuild->state().typeNum, nbReq);
 						}
 					}
 				}
@@ -243,14 +247,15 @@ void GameGUI::handleKey(SDL_KeyboardEvent key, bool pressed, bool repeat)
 				{
 					if (selectionMode==BUILDING_SELECTION)
 					{
-						Building* selBuild=selectionBuilding();
+						const auto* selBuild = inputBuildingPanel();
+						if (!selBuild) break;
 						const int current = displayedMaxUnitWorking(*selBuild);
-						if ((selBuild->owner->teamNumber==localTeamNo) && (selBuild->type->maxUnitWorking) && (current>0))
+						if ((selBuild->owner().number==localTeamNo) && (selBuild->type->maxUnitWorking) && (current>0))
 						{
 							int nbReq=std::max(0, current-1);
-							pendingFor(selBuild->gid).pendingMaxUnitWorking = nbReq;
-							orderQueue.push_back(shared_ptr<Order>(new OrderModifyBuilding(selBuild->gid, nbReq)));
-							defaultAssign.setDefaultAssignedUnits(selBuild->typeNum, nbReq);
+							pendingFor(selBuild->state().gid).pendingMaxUnitWorking = nbReq;
+							enqueueOrder(shared_ptr<Order>(new OrderModifyBuilding(selBuild->state().gid, nbReq)));
+							defaultAssign.setDefaultAssignedUnits(drawnScene(), selBuild->state().typeNum, nbReq);
 						}
 					}
 				}
@@ -288,7 +293,10 @@ void GameGUI::handleKey(SDL_KeyboardEvent key, bool pressed, bool repeat)
 				break;
 				case GameGUIKeyActions::GoToHome:
 				{
-					centerViewportOn(localTeam->startPosX, localTeam->startPosY);
+					if (drawnScene().world.teams) {
+                        const auto& home = drawnScene().world.teams->values.at(localTeamNo);
+                        centerViewportOn(home.startX, home.startY);
+                    }
 				}
 				break;
 				case GameGUIKeyActions::PauseGame:
@@ -316,16 +324,17 @@ void GameGUI::handleKey(SDL_KeyboardEvent key, bool pressed, bool repeat)
 				{
 					if (selectionMode==BUILDING_SELECTION)
 					{
-						Building* selBuild=selectionBuilding();
-						if (selBuild->owner->teamNumber==localTeamNo)
+						const auto* selBuild = inputBuildingPanel();
+						if (!selBuild) break;
+						if (selBuild->owner().number==localTeamNo)
 						{
-							if (selBuild->buildingState==Building::WAITING_FOR_DESTRUCTION)
+							if (selBuild->state().buildingState==Building::WAITING_FOR_DESTRUCTION)
 							{
-								orderQueue.push_back(shared_ptr<Order>(new OrderCancelDelete(selBuild->gid)));
+								enqueueOrder(shared_ptr<Order>(new OrderCancelDelete(selBuild->state().gid)));
 							}
-							else if (selBuild->buildingState==Building::ALIVE)
+							else if (selBuild->state().buildingState==Building::ALIVE)
 							{
-								orderQueue.push_back(shared_ptr<Order>(new OrderDelete(selBuild->gid)));
+								enqueueOrder(shared_ptr<Order>(new OrderDelete(selBuild->state().gid)));
 							}
 						}
 					}
@@ -335,14 +344,15 @@ void GameGUI::handleKey(SDL_KeyboardEvent key, bool pressed, bool repeat)
 				{
 					if (selectionMode==BUILDING_SELECTION)
 					{
-						Building* selBuild = selectionBuilding();
-						int unitWorking = defaultAssign.getDefaultAssignedUnits(selBuild->getConstructionOriginTypeNum());
+						const auto* selBuild = inputBuildingPanel();
+						if (!selBuild) break;
+						int unitWorking = defaultAssign.getDefaultAssignedUnits(drawnScene(), selBuild->state().constructionOriginTypeNum);
 						// Another team's building can be selected for viewing; its repair is not ours to cancel.
-						if (selBuild->owner->teamNumber != localTeamNo)
+						if (selBuild->owner().number != localTeamNo)
 							break;
-						if (selBuild->constructionResultState == Building::REPAIR)
-							orderQueue.push_back(shared_ptr<Order>(new OrderCancelConstruction(selBuild->gid, unitWorking)));
-						else if ((selBuild->constructionResultState==Building::NO_CONSTRUCTION) && (selBuild->buildingState==Building::ALIVE))
+						if (selBuild->state().constructionResultState == Building::REPAIR)
+							enqueueOrder(shared_ptr<Order>(new OrderCancelConstruction(selBuild->state().gid, unitWorking)));
+						else if ((selBuild->state().constructionResultState==Building::NO_CONSTRUCTION) && (selBuild->state().buildingState==Building::ALIVE))
 							repairAndUpgradeBuilding(selBuild, true, false);
 					}
 				}

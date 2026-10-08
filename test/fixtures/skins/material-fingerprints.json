@@ -1,112 +1,112 @@
 {
   "candy": {
-    "contrast": 0.174,
-    "coverage": 0.089,
-    "luminance": 0.456
+    "contrast": 0.177,
+    "coverage": 0.088,
+    "luminance": 0.467
   },
   "carbon": {
-    "contrast": 0.128,
-    "coverage": 0.089,
-    "luminance": 0.241
+    "contrast": 0.134,
+    "coverage": 0.088,
+    "luminance": 0.25
   },
   "cartoon": {
-    "contrast": 0.199,
-    "coverage": 0.089,
-    "luminance": 0.411
+    "contrast": 0.206,
+    "coverage": 0.088,
+    "luminance": 0.427
   },
   "chrome": {
-    "contrast": 0.211,
-    "coverage": 0.089,
-    "luminance": 0.384
+    "contrast": 0.216,
+    "coverage": 0.088,
+    "luminance": 0.397
   },
   "cloud": {
-    "contrast": 0.13,
-    "coverage": 0.102,
-    "luminance": 0.43
+    "contrast": 0.128,
+    "coverage": 0.106,
+    "luminance": 0.419
   },
   "crystal": {
-    "contrast": 0.203,
-    "coverage": 0.089,
-    "luminance": 0.541
+    "contrast": 0.202,
+    "coverage": 0.088,
+    "luminance": 0.563
   },
   "glossy": {
-    "contrast": 0.215,
-    "coverage": 0.089,
-    "luminance": 0.411
+    "contrast": 0.224,
+    "coverage": 0.088,
+    "luminance": 0.426
   },
   "goo": {
-    "contrast": 0.145,
-    "coverage": 0.089,
-    "luminance": 0.484
+    "contrast": 0.166,
+    "coverage": 0.088,
+    "luminance": 0.489
   },
   "hairy": {
-    "contrast": 0.116,
-    "coverage": 0.116,
+    "contrast": 0.117,
+    "coverage": 0.113,
     "luminance": 0.488
   },
   "hammered": {
-    "contrast": 0.206,
-    "coverage": 0.089,
-    "luminance": 0.348
-  },
-  "honeycomb": {
-    "contrast": 0.214,
-    "coverage": 0.089,
-    "luminance": 0.372
-  },
-  "ice": {
-    "contrast": 0.161,
-    "coverage": 0.089,
-    "luminance": 0.529
-  },
-  "lava": {
-    "contrast": 0.189,
-    "coverage": 0.089,
-    "luminance": 0.23
-  },
-  "leather": {
-    "contrast": 0.177,
-    "coverage": 0.089,
-    "luminance": 0.384
-  },
-  "matte": {
-    "contrast": 0.165,
-    "coverage": 0.089,
-    "luminance": 0.424
-  },
-  "metallic": {
-    "contrast": 0.188,
-    "coverage": 0.089,
-    "luminance": 0.33
-  },
-  "scales": {
-    "contrast": 0.198,
-    "coverage": 0.089,
-    "luminance": 0.367
-  },
-  "slime": {
-    "contrast": 0.13,
-    "coverage": 0.089,
-    "luminance": 0.563
-  },
-  "stone": {
-    "contrast": 0.19,
-    "coverage": 0.089,
+    "contrast": 0.185,
+    "coverage": 0.088,
     "luminance": 0.341
   },
+  "honeycomb": {
+    "contrast": 0.22,
+    "coverage": 0.088,
+    "luminance": 0.389
+  },
+  "ice": {
+    "contrast": 0.175,
+    "coverage": 0.088,
+    "luminance": 0.544
+  },
+  "lava": {
+    "contrast": 0.185,
+    "coverage": 0.088,
+    "luminance": 0.22
+  },
+  "leather": {
+    "contrast": 0.188,
+    "coverage": 0.088,
+    "luminance": 0.404
+  },
+  "matte": {
+    "contrast": 0.169,
+    "coverage": 0.088,
+    "luminance": 0.433
+  },
+  "metallic": {
+    "contrast": 0.199,
+    "coverage": 0.088,
+    "luminance": 0.352
+  },
+  "scales": {
+    "contrast": 0.201,
+    "coverage": 0.088,
+    "luminance": 0.373
+  },
+  "slime": {
+    "contrast": 0.156,
+    "coverage": 0.088,
+    "luminance": 0.567
+  },
+  "stone": {
+    "contrast": 0.183,
+    "coverage": 0.088,
+    "luminance": 0.334
+  },
   "velvet": {
-    "contrast": 0.089,
-    "coverage": 0.089,
-    "luminance": 0.36
+    "contrast": 0.086,
+    "coverage": 0.088,
+    "luminance": 0.364
   },
   "wood": {
-    "contrast": 0.199,
-    "coverage": 0.089,
-    "luminance": 0.35
+    "contrast": 0.203,
+    "coverage": 0.088,
+    "luminance": 0.362
   },
   "woven": {
-    "contrast": 0.172,
-    "coverage": 0.089,
+    "contrast": 0.167,
+    "coverage": 0.088,
     "luminance": 0.363
   }
 }

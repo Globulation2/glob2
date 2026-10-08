@@ -1798,3 +1798,40 @@ TEST_CASE("Sparse variant reset accepts refreshed diagnostics and restored snaps
         }
     }
 }
+
+TEST_CASE("Delayed observation telemetry saves remain readable" * doctest::test_suite("TeamStatsSave"))
+{
+    using namespace AITelemetry;
+    for (bool text : {false, true})
+    {
+        const auto read = [&](std::vector<Uint32> ticks, Uint32 current, int version) {
+            auto series = std::make_shared<Series>();
+            series->fields = schema(0);
+            series->current.tick = current;
+            series->current.values.resize(series->fields.size());
+            for (auto tick : ticks) {
+                auto sample = series->current;
+                sample.tick = tick;
+                series->history.push_back(sample);
+            }
+            auto* memory = new GAGCore::MemoryStreamBackend;
+            std::unique_ptr<GAGCore::OutputStream> out(text ? static_cast<GAGCore::OutputStream*>(new GAGCore::TextOutputStream(memory)) : static_cast<GAGCore::OutputStream*>(new GAGCore::BinaryOutputStream(memory)));
+            save(out.get(), {series});
+            auto bytes = memory->takeContents();
+            auto* source = new GAGCore::MemoryStreamBackend(bytes.data(), bytes.size());
+            source->seekFromStart(0);
+            std::unique_ptr<GAGCore::InputStream> in(text ? static_cast<GAGCore::InputStream*>(new GAGCore::TextInputStream(source)) : static_cast<GAGCore::InputStream*>(new GAGCore::BinaryInputStream(source)));
+            std::vector<std::shared_ptr<Series>> restored;
+            load(in.get(), restored, version);
+            REQUIRE(restored.size() == 1);
+            CHECK(restored[0]->history == series->history);
+        };
+        CHECK_NOTHROW(read({0, 504, 1016}, 1016, 143));
+        CHECK_NOTHROW(read({0, 512, 1024}, 1024, 142));
+        CHECK_THROWS(read({504}, 1016, 142));
+        CHECK_THROWS(read({504, 504}, 1016, 143));
+        CHECK_THROWS(read({1016, 504}, 1016, 143));
+        CHECK_THROWS(read({1024}, 1016, 143));
+        CHECK_THROWS(read({0, 1, 2, 3}, 3, 143));
+    }
+}

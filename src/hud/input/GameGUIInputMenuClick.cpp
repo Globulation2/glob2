@@ -22,6 +22,7 @@ using std::static_pointer_cast;
 
 void GameGUI::handleMenuClick(int mx, int my, int button)
 {
+    if(globalContainer->isViewingGame() && parkForClient([&]{handleMenuClick(mx,my,button);})) return;
 	// handle minimap
 	if (my<128 && mx > (RIGHT_MENU_OFFSET) && mx < RIGHT_MENU_WIDTH - RIGHT_MENU_OFFSET)
 	{
@@ -29,7 +30,7 @@ void GameGUI::handleMenuClick(int mx, int my, int button)
 		{
 			int markx, marky;
 			minimapMouseToPos(globalContainer->gfx->getW() - RIGHT_MENU_WIDTH + mx, my, &markx, &marky, false);
-			orderQueue.push_back(shared_ptr<Order>(new MapMarkOrder(localTeamNo, markx, marky)));
+			enqueueOrder(shared_ptr<Order>(new MapMarkOrder(localTeamNo, markx, marky)));
 			globalContainer->gfx->cursorManager.setNextType(CursorManager::CURSOR_NORMAL);
 			putMark = false;
 		}
@@ -178,7 +179,7 @@ void GameGUI::handleMenuClick(int mx, int my, int button)
 			// Disable/enable combined vision
 			if (globalContainer->replayVisibleTeams == 0xFFFFFFFF)
 			{
-				globalContainer->replayVisibleTeams = localTeam->me;
+				globalContainer->replayVisibleTeams = Team::teamNumberToMask(localTeamNo);
 			}
 			else
 			{
@@ -196,31 +197,11 @@ void GameGUI::handleMenuClick(int mx, int my, int button)
 			globalContainer->replayShowFlags = !globalContainer->replayShowFlags;
 		}
 
-		for (int i = 0; i < game.teamsCount(); i++)
-		{
-			if (mx > x && mx < x+20 && my > y+REPLAY_PANEL_PLAYERLIST_YOFFSET+(i+1)*inc && my < y+REPLAY_PANEL_PLAYERLIST_YOFFSET+(i+1)*inc + 20)
-			{
-				localTeamNo = i;
-
-				// Update everything to match this team number
-				adjustLocalTeam();
-
-				// Update localPlayer to the first player of this team
-				for (int j=0; j<game.gameHeader.getNumberOfPlayers(); j++)
-				{
-					if (game.players[j]->teamNumber == localTeamNo)
-					{
-						localPlayer = j;
-						break;
-					}
-				}
-
-				// Update the visible players unless all players are visible
-				if (globalContainer->replayVisibleTeams != 0xFFFFFFFF)
-				{
-					globalContainer->replayVisibleTeams = localTeam->me;
-				}
-			}
-		}
+        const auto& frame = drawnScene();
+        const int count = frame.world.teams ? int(frame.world.teams->values.size()) : 0;
+        for (int i = 0; i < count; ++i)
+            if (mx > x && mx < x + 20 && my > y + REPLAY_PANEL_PLAYERLIST_YOFFSET + (i + 1) * inc &&
+                my < y + REPLAY_PANEL_PLAYERLIST_YOFFSET + (i + 1) * inc + 20)
+                selectViewedTeam(i);
 	}
 }

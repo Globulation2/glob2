@@ -22,7 +22,7 @@ Supported saved games still load and adopt the current simulation;
 the save floor remains 58.
 
 Structured `--run-game` accepts `--ai-order-delay N`, where `N` is an integer
-from 0 through 8 and defaults to 0 for a new match. It is one match-wide engine
+from 0 through 8 and defaults to 8 for a new match. It is one match-wide engine
 setting, shared by all native and JavaScript AI players. `--rule aiOrderDelay=N`
 sets the same rule. Saved games retain their original setting; do not override it
 when continuing a save. Delay 8 intentionally changes response pacing compared
@@ -407,7 +407,7 @@ Performance records describe this execution session and are not stored in saves.
 ### Gradient scheduling compatibility
 
 Version 120 makes periodic resource, guard and clear fields publish eight ticks
-after seeding. The current default is two background workers. Saves retain
+after their observation boundary. Current execution uses the shared compute pool. Saves retain
 completed pending fields and their remaining deadlines without publishing them early;
 older saves remain loadable and start with an empty queue. The save compatibility
 floor remains 58. Version 123 narrows forbidden-zone invalidations to affected
@@ -420,12 +420,21 @@ that replay floor. Network protocol 51 requires compact-map readers and rejects
 older and newer clients. Background save finalization owns a captured state and
 does not advance simulation; continuation checks must still compare the same
 captured tick, seed and orders. Routing worker availability affects wall time only:
-the serial fallback publishes on the same ticks. Headless `--gradient-workers 0` is the deterministic serial propagation control.
+the serial fallback publishes on the same ticks. Headless `--gradient-workers 0` is the deterministic owner-only seeding and propagation control.
+
+Periodic material, market, guard and clear gradients use the same executor as AI.
+Their immutable inputs are captured at the completed-tick boundary; seeding and
+propagation both execute privately and retain the existing publication deadlines.
+The deprecated positive `--gradient-workers N` selects shared execution and uses
+`N+1` total threads only when `--compute-threads` is absent. Zero keeps gradient
+jobs on the owner. Saving drains private work without publishing it early and
+continues to serialize completed fields with their remaining deadlines.
+
 
 Version 139 / simulation revision 21 selects periodic preparation after the whole
 Game tick, then lets Engine seed private gradient jobs alongside AI decisions in
-one completed-tick observation phase. `--compute-threads 1` serializes that phase
-at the same boundary. The default worker cap is unchanged. Fixed publication
+one completed-tick observation phase. `--compute-threads 1` serializes shared AI and periodic gradient work
+at the same boundary. Fixed publication
 cadence and saved pending deadlines are unchanged; saves drain deferred preparation
 before serializing, and old saves still load. Moving the observation point can
 change routes/AI trajectories and introduced replay floor 139. Runtime resource

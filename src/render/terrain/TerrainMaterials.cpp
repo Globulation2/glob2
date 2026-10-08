@@ -163,20 +163,26 @@ Catalog Catalog::parse(const nlohmann::json &j)
 		require(!v.key.empty() && keys.insert(v.key).second, "duplicate material key");
 		v.salt = keyHash(v.key);
 		v.profile = findProfile(m.at("profile"));
-		const auto ocean = m.value("ocean", nlohmann::json(false));
-		require(ocean.is_boolean(), "ocean must be a boolean");
-		v.ocean = ocean.get<bool>();
-		if (m.contains("backdrop"))
+		// Water is an ordinary (animated) tile material; the scrolling ocean
+		// backdrop and per-material backdrops were retired.
+		require(!m.contains("ocean") && !m.contains("backdrop"),
+				"ocean and backdrop materials are no longer supported");
+		const auto edges = m.value("edges", nlohmann::json("blend"));
+		require(edges == "blend" || edges == "periodic", "edges must be 'blend' or 'periodic'");
+		v.periodicEdges = edges == "periodic";
+		if (m.contains("decor"))
 		{
-			const auto &b = m.at("backdrop");
-			v.backdrop = {dataPath(b.at("sprite")),
-						  integerInRange(b.value("first_frame", nlohmann::json(0)), 0, 65535),
-						  integerInRange(b.value("frames", nlohmann::json(1)), 1, 256),
-						  integerInRange(b.value("ticks", nlohmann::json(1)), 1,
-										 std::numeric_limits<int>::max())};
-			require(!v.ocean, "ocean material cannot have a separate backdrop");
-			require(v.backdrop.firstFrame + v.backdrop.frames <= 65536,
-					"backdrop animation exceeds supported frame range");
+			const auto &d = m.at("decor");
+			require(d.is_object(), "decor must be an object");
+			v.decor.sprite = dataPath(d.at("sprite"));
+			for (const auto *key : {"full", "edge"})
+			{
+				auto &frames = std::string(key) == "full" ? v.decor.full : v.decor.edge;
+				require(d.at(key).is_array() && !d.at(key).empty() && d.at(key).size() <= 256,
+						"decor frames must be a non-empty array");
+				for (const auto &frame : d.at(key))
+					frames.push_back(integerInRange(frame, 0, 65535));
+			}
 		}
 		v.animationFrames = integerInRange(m.value("animation_frames", nlohmann::json(1)), 1, 256);
 		v.animationTicks = integerInRange(m.value("animation_ticks", nlohmann::json(1)), 1,
@@ -224,7 +230,6 @@ Catalog Catalog::parse(const nlohmann::json &j)
 		if (terrainPaintable(TerrainType(type)))
 			require(c.bindings.contains(terrainPresentation(TerrainType(type)).name),
 					"missing terrain binding");
-	require(c.materials[c.bindings.at("water")].ocean, "water binding must use ocean backdrop");
 	std::set<std::pair<MaterialId, MaterialId>> pairs;
 	const auto treatments = j.value("pair_treatments", nlohmann::json::array());
 	require(treatments.is_array(), "pair treatments must be an array");
@@ -268,6 +273,15 @@ unsigned Catalog::variantIndex(MaterialId id, int x, int y, std::uint32_t seed) 
 		n -= m.variants[i].weight;
 	}
 	return unsigned(m.variants.size() - 1);
+}
+int Catalog::decorFrame(MaterialId id, int x, int y, bool edge, std::uint32_t seed) const
+{
+	const auto &d = materials[id].decor;
+	const auto &frames = edge ? d.edge : d.full;
+	if (frames.empty())
+		return -1;
+	// A salt distinct from the ground variant's, so the two choices are independent.
+	return frames[hash(x, y, materials[id].salt ^ mapSeedSalt(seed) ^ 0x6dec0u) % frames.size()];
 }
 int Catalog::frame(MaterialId id, int x, int y, int time, std::uint32_t seed) const
 {

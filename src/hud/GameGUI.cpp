@@ -45,9 +45,7 @@ GameGUI::GameGUI(bool persistPreferences)
 	         10, // y offset
 	         128, // width
 	         128, //height
-	         Minimap::ShowFOW), // minimap mode
-
-	  ghostManager(game)
+	         Minimap::ShowFOW) // minimap mode
 {
 	this->persistPreferences = persistPreferences;
 }
@@ -72,7 +70,7 @@ void GameGUI::requestPause(bool pause)
 		addNotice(Toolkit::getStringTable()->getString("[turn no pauses left]"));
 		return;
 	}
-	orderQueue.push_back(std::make_shared<PauseGameOrder>(pause));
+	enqueueOrder(std::make_shared<PauseGameOrder>(pause));
 }
 
 GameGUI::~GameGUI()
@@ -131,7 +129,8 @@ void GameGUI::init()
 	// A new game starts with empty client channels.
 	clientEvents.reset();
 	clientRequests.reset();
-	clientRequests.publishDisplaySize(game.map.displayViewportW, game.map.displayViewportH);
+	clientRequests.publishDisplaySize(globalContainer->gfx ? std::max(0, globalContainer->gfx->getW()-RIGHT_MENU_WIDTH) : 0,
+                                     globalContainer->gfx ? globalContainer->gfx->getH() : 0);
 	for (auto &queue : pendingTeamEvents)
 		queue.clear();
 	eventFeed.clear();
@@ -186,6 +185,7 @@ void GameGUI::rebuildBuildingChoices(bool preserve)
 		for (size_t i=0; i<flagsChoiceName.size(); ++i) previous[flagsChoiceName[i]]=flagsChoiceState[i];
 	}
 	buildingsChoiceName.clear(); flagsChoiceName.clear();
+	choiceCatalog = game.buildingsTypes.retainTypes();
 	for (size_t id=0; id<game.buildingsTypes.size(); ++id)
 	{
 		const auto* type=game.buildingsTypes.get(id);
@@ -212,20 +212,28 @@ void GameGUI::adjustLocalTeam()
 	assert(localTeam);
 	teamStats = &localTeam->stats;
 
-	// Mirror the displayed-team identity onto Map so the renderer's overlay caches can
-	// track which team's areas to draw. This is render-only display state, not sim state.
-	game.map.setDisplayedTeam(localTeamNo);
-
-	// Rebuild the render-only forbidden / guard / clear overlay caches for the new view.
-	game.map.computeDisplayedForbidden(localTeamNo);
-	game.map.computeDisplayedGuardArea(localTeamNo);
-	game.map.computeDisplayedClearArea(localTeamNo);
-	game.map.computeDisplayedFarmArea(localTeamNo);
-
 	// set default event position
 	eventGoPosX = localTeam->startPosX;
 	eventGoPosY = localTeam->startPosY;
 	eventGoType = 0;
+}
+
+void GameGUI::selectViewedTeam(int team)
+{
+    const auto& frame = drawnScene();
+    if (!frame.world.teams || !frame.world.session || team < 0 ||
+        size_t(team) >= frame.world.teams->values.size()) return;
+    clearSelection();
+    localTeamNo = team;
+    const auto& shown = frame.world.teams->values[team];
+    eventGoPosX = shown.startX;
+    eventGoPosY = shown.startY;
+    eventGoType = 0;
+    const auto& players = frame.world.session->players;
+    for (size_t i = 0; i < players.size(); ++i)
+        if (players[i].teamNumber == team) { localPlayer = int(i); break; }
+    if (globalContainer->replayVisibleTeams != 0xffffffff)
+        globalContainer->replayVisibleTeams = shown.mask;
 }
 
 void GameGUI::adjustInitialViewport()
@@ -239,16 +247,14 @@ void GameGUI::adjustInitialViewport()
 
 std::shared_ptr<Order> GameGUI::getOrder(void)
 {
-	if(globalContainer->liveSpectating) { orderQueue.clear(); return std::make_shared<NullOrder>(); }
-	std::shared_ptr<Order> order;
-	if (orderQueue.size()==0)
-		order=shared_ptr<Order>(new NullOrder());
-	else
+	if (globalContainer->liveSpectating) { orderQueue.clear(); return std::make_shared<NullOrder>(); }
+	while (auto order = orderQueue.take())
 	{
-		order=orderQueue.front();
-		orderQueue.pop_front();
+		if (order->clientWorld && order->clientWorld != game.map.identity()) continue;
+		if (order->clientTarget && !game.resolveBuilding(*order->clientTarget)) continue;
+		return order;
 	}
-	return order;
+	return std::make_shared<NullOrder>();
 }
 
 void GameGUI::setMultiLine(const std::string &input, std::vector<std::string> *output, std::string indent)
@@ -333,21 +339,23 @@ void GameGUI::addMessage(const GAGCore::Color& color, const std::string &msgText
 
 void GameGUI::addMark(shared_ptr<MapMarkOrder>mmo)
 {
-	markManager.addMark(Mark(mmo->x, mmo->y, game.teams[mmo->teamNumber]->color));
+	if (mmo->teamNumber < drawnScene().entities.teamCount)
+		markManager.addMark(Mark(mmo->x, mmo->y, presentationColor(drawnScene().entities.teams[mmo->teamNumber].color)));
 }
 
 void GameGUI::updateCamera()
 {
+    const auto& map = drawnScene().map;
+    if (!map.getW() || !map.getH()) return;
     if (camera.tileX()!=viewportX) camera.originX=viewportX*32.0+camera.fractionX();
     if (camera.tileY()!=viewportY) camera.originY=viewportY*32.0+camera.fractionY();
     if (touch && touch->usesHUD()) {
         const auto bounds=touch->worldBounds();
-        camera.resize(bounds.w,bounds.h,game.map.getW()*32.0,game.map.getH()*32.0,bounds.x,bounds.y);
-    } else camera.resize(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH,globalContainer->gfx->getH(),game.map.getW()*32.0,game.map.getH()*32.0);
+        camera.resize(bounds.w,bounds.h,map.getW()*32.0,map.getH()*32.0,bounds.x,bounds.y);
+    } else camera.resize(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH,globalContainer->gfx->getH(),map.getW()*32.0,map.getH()*32.0);
     viewportX=camera.tileX();viewportY=camera.tileY();
-    game.map.displayViewportW=std::ceil(camera.visibleW()+camera.fractionX());
-    game.map.displayViewportH=std::ceil(camera.visibleH()+camera.fractionY());
-    clientRequests.publishDisplaySize(game.map.displayViewportW,game.map.displayViewportH);
+    clientRequests.publishDisplaySize(std::ceil(camera.visibleW()+camera.fractionX()),
+                                      std::ceil(camera.visibleH()+camera.fractionY()));
     view.mouseX=mapMouseX(mouseX);view.mouseY=mapMouseY(mouseY);
 }
 bool GameGUI::zoomMap(double steps,int x,int y)
@@ -366,9 +374,8 @@ bool GameGUI::zoomMap(double steps,int x,int y)
     else camera.wheel(steps,x,y);
     viewportX=camera.tileX();viewportY=camera.tileY();
     torusView.rebaseViewport(viewportX,viewportY);
-    game.map.displayViewportW=std::ceil(camera.visibleW()+camera.fractionX());
-    game.map.displayViewportH=std::ceil(camera.visibleH()+camera.fractionY());
-    clientRequests.publishDisplaySize(game.map.displayViewportW,game.map.displayViewportH);
+    clientRequests.publishDisplaySize(std::ceil(camera.visibleW()+camera.fractionX()),
+                                      std::ceil(camera.visibleH()+camera.fractionY()));
     view.mouseX=mapMouseX(mouseX);view.mouseY=mapMouseY(mouseY);
     return true;
 }
@@ -396,7 +403,8 @@ bool GameGUI::enqueueCommanderOrders(const std::vector<std::shared_ptr<Order>> &
   return false;
  std::list<std::shared_ptr<Order>> prepared(orders.begin(),orders.end());
  if(!commit())return false;
- orderQueue.splice(orderQueue.end(),prepared);
+ for (const auto& order : prepared) stampClientOrder(order, true);
+ orderQueue.append(prepared);
  return true;
 }
 

@@ -467,7 +467,7 @@ TEST_CASE("Hive Mind commander panel [display]" * doctest::test_suite("HiveMindP
 	auto *screen = world.gui.hiveCards.get();
 	screen->compose = [&] { world.gui.openCommander(); };
 	screen->attach(*globalContainer->gfx);
-	world.gui.drawAll(0);
+	glob2test::drawGUI(world.gui,0);
 	REQUIRE(screen->host().find("hive/toggle/" + pid) != nullptr);
 	CHECK(screen->host().find("hive/credits") == nullptr);
 	globalContainer->gfx->printScreen(glob2test::artifactDirFromWorkingDirectory() +
@@ -475,7 +475,7 @@ TEST_CASE("Hive Mind commander panel [display]" * doctest::test_suite("HiveMindP
 	client->commandDraft = "Build two inns near our colony";
 	world.gui.openCommander();
 	CHECK(world.gui.typingCommander);
-	world.gui.drawAll(0);
+	glob2test::drawGUI(world.gui,0);
 	globalContainer->gfx->printScreen(glob2test::artifactDirFromWorkingDirectory() +
 									  "/hive-command-input.bmp");
 	// Stop wins over Return submission while preserving the editable draft.
@@ -501,7 +501,7 @@ TEST_CASE("Hive Mind commander panel [display]" * doctest::test_suite("HiveMindP
 	CHECK(world.gui.typingCommander);
 	// Use actual event routing: visible HUD controls stay usable while typing.
 	screen->invalidate();
-	world.gui.drawAll(0);
+	glob2test::drawGUI(world.gui,0);
 	auto *stopButton = screen->host().find("hive/stop");
 	REQUIRE(stopButton);
 	SDL_Event click{};
@@ -533,14 +533,14 @@ TEST_CASE("Hive Mind commander panel [display]" * doctest::test_suite("HiveMindP
 		REQUIRE(node);
 		screen->host().tapAt(
 			{node->bounds.x + node->bounds.w / 2, node->bounds.y + node->bounds.h / 2});
-		world.gui.drawAll(0);
+		glob2test::drawGUI(world.gui,0);
 	};
 	tap("hive/stop");
 	CHECK(stopPosts == 4);
 	CHECK(client->standingOrders().size() == 1); // Stop does not cancel automation.
 	client->reports = {"Earlier attack report", "Latest colony report"};
 	screen->invalidate();
-	world.gui.drawAll(0);
+	glob2test::drawGUI(world.gui,0);
 	auto text = [&]
 	{
 		std::string all;
@@ -561,7 +561,7 @@ TEST_CASE("Hive Mind commander panel [display]" * doctest::test_suite("HiveMindP
 	tap("hive/details");
 	client->reports = {std::string(179, 'x') + "防衛"};
 	screen->invalidate();
-	world.gui.drawAll(0);
+	glob2test::drawGUI(world.gui,0);
 	CHECK(text().find(std::string(179, 'x') + "…") != std::string::npos);
 	// Stop also wins over modified Return in ordinary team chat: never send
 	// a message when the player intended to stop the commander.

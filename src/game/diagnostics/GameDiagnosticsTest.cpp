@@ -94,7 +94,7 @@ TEST_CASE("private diagnostic reservation survives owner ticks and serialization
     maxima->fieldDiagnostics=stable;
     session.publishCapture(restored);CHECK(stable->captured);CHECK(stable->tick==0);
     restored.fields[0].values[0]=5;CHECK(stable->fields[0].values[0]!=5);
-    session.completeTick(fixture.game);REQUIRE(session.pending());session.drain();
+    session.completeTick(fixture.game.captureReadBoundary({},true,session.observationRequirements(fixture.game.stepCounter)));REQUIRE(session.pending());session.drain();
     fixture.game.stepCounter=9;session.beginTick(fixture.game);CHECK_FALSE(session.reserveCapture(0,9));
     fixture.game.stepCounter=10;session.beginTick(fixture.game);CHECK(session.reserveCapture(0,10)!=nullptr);
     CHECK(maxima->fieldDiagnostics==stable);
@@ -105,6 +105,37 @@ TEST_CASE("private diagnostic reservation survives owner ticks and serialization
     const auto invalid=invalidBackend->takeContents();
     GAGCore::BinaryInputStream malformed(new GAGCore::MemoryStreamBackend(invalid.data(),invalid.size()));malformed.seekFromStart(0);
     CHECK_FALSE(restored.load(&malformed));
+}
+TEST_CASE("pending diagnostic output does not block world advancement or alias later worker output [artifacts]")
+{
+    glob2test::HeadlessGlobals globals;
+    glob2test::HeadlessGame fixture({.loadDefaultRace=true});
+    GameHeader header;header.setNumberOfPlayers(1);
+    header.getBasePlayer(0)=BasePlayer(0,"diagnostics",0,BasePlayer::playerTypeFromImplementationID(AI::MAXIMA));
+    fixture.game.setGameHeader(header);
+    const auto directory=glob2test::artifactDir()/"pending-publication";
+    GameDiagnostics::Session session(fixture.game,directory.string(),1,false);
+    AIMaximaPlacement::WorldState state;state.reset(fixture.game.map.getW(),fixture.game.map.getH());
+    session.beginTick(fixture.game);
+    const auto first=session.reserveCapture(0,0);REQUIRE(first);
+    state.tiles[0].foodOpportunity=7;first->capture(state);
+    fixture.game.stepCounter=1;session.beginTick(fixture.game);
+    const auto second=session.reserveCapture(0,1);REQUIRE(second);
+    state.tiles[0].foodOpportunity=19;second->capture(state);
+    session.publishCapture(*first);
+    session.completeTick(fixture.game.captureReadBoundary({},true,0));REQUIRE(session.pending());
+    session.publishCapture(*second);
+    fixture.game.syncStep(0);
+    CHECK(fixture.game.stepCounter==2);
+    session.beginTick(fixture.game);CHECK_FALSE(session.reserveCapture(0,2));
+    session.drain();CHECK_FALSE(session.pending());
+    session.completeTick(fixture.game.captureReadBoundary({},true,0));REQUIRE(session.pending());
+    session.drain();session.finish();
+    for (const auto [tick,expected]:{std::pair{0,7},std::pair{1,19}}) {
+        std::ifstream input(directory/(tick ? "tick-0000001.player0.team0" : "tick-0000000.player0.team0")/"foodOpportunity.field");
+        int w=0,h=0,value=0;input>>w>>h>>value;
+        CHECK(w==fixture.game.map.getW());CHECK(h==fixture.game.map.getH());CHECK(value==expected);
+    }
 }
 TEST_CASE("diagnostic budget counts private captures across the delay horizon [artifacts]")
 {
@@ -121,7 +152,7 @@ TEST_CASE("diagnostic budget counts private captures across the delay horizon [a
     // another full field allocation while the first private output is held.
     fixture.game.stepCounter=1;session.beginTick(fixture.game);
     CHECK_FALSE(session.reserveCapture(0,1));
-    session.completeTick(fixture.game);REQUIRE(session.pending());session.drain();
+    session.completeTick(fixture.game.captureReadBoundary({},true,session.observationRequirements(fixture.game.stepCounter)));REQUIRE(session.pending());session.drain();
     session.publishCapture(*first);first.reset(); // an uncaptured invocation releases its reservation
     fixture.game.stepCounter=2;session.beginTick(fixture.game);
     auto second=session.reserveCapture(0,2);REQUIRE(second);
@@ -150,7 +181,7 @@ TEST_CASE("controllers sharing a team publish distinct complete captures and rec
 			auto* maxima=dynamic_cast<AIMaxima::Maxima*>(world.game.players[p]->ai->aiImplementation);
 			REQUIRE(maxima);REQUIRE(maxima->fieldDiagnostics);maxima->fieldDiagnostics->capture(state);
 		}
-		session.completeTick(world.game);REQUIRE(session.pending());session.drain();CHECK_FALSE(session.pending());
+		session.completeTick(world.game.captureReadBoundary({},true,session.observationRequirements(world.game.stepCounter)));REQUIRE(session.pending());session.drain();CHECK_FALSE(session.pending());
 	};
 	capture();CHECK(std::filesystem::is_regular_file(path/"diagnostics"));
 	std::filesystem::remove(path/"diagnostics");world.game.stepCounter=10;capture();session.finish();
@@ -161,7 +192,7 @@ TEST_CASE("controllers sharing a team publish distinct complete captures and rec
 	// A smaller injected budget exercises the same production admission path.
 	GameDiagnostics::Session limited(world.game,(path/"limited").string(),10,false,1024);
 	world.game.stepCounter=20;
-	limited.beginTick(world.game);limited.completeTick(world.game);REQUIRE(limited.pending());limited.drain();limited.finish();
+	limited.beginTick(world.game);limited.completeTick(world.game.captureReadBoundary({},true,limited.observationRequirements(world.game.stepCounter)));REQUIRE(limited.pending());limited.drain();limited.finish();
 	std::ifstream final(path/"limited/summary.json");final>>status;CHECK(status["skipped"]==2);
 }
 TEST_CASE("capped scene export survives repeated graphics lifetimes and write failures [artifacts]")
@@ -172,8 +203,8 @@ TEST_CASE("capped scene export survives repeated graphics lifetimes and write fa
 		glob2test::HeadlessGame world({.wDec=5,.hDec=4,.teams=2,.discovered=true,.loadDefaultRace=true});
 		REQUIRE(world.addBuilding("inn",4,4)); REQUIRE(world.addUnit(WORKER,12,8));
 		world.game.map.setResourceByIndex(18,10,WHEAT,1);
-		Scene scene; SceneRequest request; request.includePanels=false;
-		extractScene(world.game,request,scene);
+		PresentationFrame scene; SceneRequest request; request.includePanels=false;
+		SceneExtractor().prepare((world.game).captureReadBoundary({},true,SceneExtractor::requirements(request)), request, scene);
 		const auto checksum=world.game.checkSum();
 		const auto path=(glob2test::artifactDir()/("render-"+std::to_string(lifetime)+".png")).string();
 		MapRender::toPng(scene,path,128);
@@ -195,7 +226,7 @@ TEST_CASE("portrait exports cover the whole map after dimension rounding [artifa
 {
 	glob2test::HeadlessGlobals globals;
 	glob2test::HeadlessGame world({.wDec=4,.hDec=6,.teams=1,.discovered=true,.loadDefaultRace=true});
-	Scene scene;SceneRequest request;request.includePanels=false;extractScene(world.game,request,scene);
+	PresentationFrame scene;SceneRequest request;request.includePanels=false;SceneExtractor().prepare((world.game).captureReadBoundary({},true,SceneExtractor::requirements(request)), request, scene);
 	const auto path=(glob2test::artifactDir()/"portrait.png").string();
 	MapRender::toPng(scene,path,9);
 	SDL_Surface* image=IMG_Load(path.c_str());REQUIRE(image);
@@ -355,4 +386,39 @@ TEST_CASE("per-game metric bands retain labels and count every finished ground v
         completed+=!catalog.get(i)->isBuildingSite && catalog.get(i)->semantics.occupiesGround;
     CHECK(buildings.bands.size()==completed);
 }
+}
+
+TEST_CASE("Delayed diagnostic offers cover planner ticks without duplicate captures" * doctest::test_suite("GameDiagnostics"))
+{
+    glob2test::HeadlessGlobals globals;
+    glob2test::HeadlessGame fixture({.wDec=5,.hDec=5,.loadDefaultRace=true});
+    GameHeader header; header.setNumberOfPlayers(1);
+    header.getBasePlayer(0)=BasePlayer(0,"diagnostics",0,BasePlayer::playerTypeFromImplementationID(AI::MAXIMA));
+    fixture.game.setGameHeader(header);
+    GameDiagnostics::Session session(fixture.game,(glob2test::artifactDir()/"delayed-offers").string(),500,false);
+    std::vector<std::shared_ptr<GameDiagnostics::FieldSink>> offers;
+    for (unsigned tick=0;tick<8;++tick) {
+        fixture.game.stepCounter=tick;
+        session.beginTick(fixture.game);
+        offers.push_back(session.reserveCapture(0,tick));
+        REQUIRE(offers.back());
+    }
+    AIMaximaPlacement::WorldState state;
+    state.reset(32,32);
+    offers[3]->capture(state);
+    offers[4]->capture(state);
+    REQUIRE(offers[3]->captured);
+    REQUIRE(offers[4]->captured);
+    for (unsigned tick=0;tick<8;++tick) session.publishCapture(*offers[tick]);
+    auto* maxima=dynamic_cast<AIMaxima::Maxima*>(fixture.game.players[0]->ai->aiImplementation);
+    REQUIRE(maxima);
+    CHECK(maxima->fieldDiagnostics->tick==3);
+    CHECK(maxima->fieldDiagnostics->nextTick==503);
+    session.completeTick(fixture.game.captureReadBoundary({}, true, session.observationRequirements(fixture.game.stepCounter)));
+    REQUIRE(session.pending());
+    session.drain();
+    fixture.game.stepCounter=502; session.beginTick(fixture.game);
+    CHECK_FALSE(session.reserveCapture(0,502));
+    fixture.game.stepCounter=503; session.beginTick(fixture.game);
+    CHECK(session.reserveCapture(0,503)!=nullptr);
 }

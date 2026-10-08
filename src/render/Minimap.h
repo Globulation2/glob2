@@ -7,7 +7,6 @@
 #include "GraphicContext.h"
 #include "Game.h"
 
-class Game;
 
 ///This class is used to represent a minimap
 class Minimap
@@ -29,12 +28,16 @@ public:
 	~Minimap();
 
 	///Sets the game associated with the minimap (only its map size is kept)
-	void setGame(Game& game);
+	void setMapSize(int width,int height);
     void resizeViewport(int width);
+	///Places the minimap at absolute surface coordinates, `size` pixels square,
+	///without painting the legacy sidebar border around it. Used by the editor
+	///dock, which lays the minimap out itself.
+	void setPlacement(int x, int y, int size);
 
 	///Draws the minimap
 	//! Draw from scene, the frame's extracted map and entities.
-	void draw(const Scene &scene, int localteam, int viewportX, int viewportY, int viewportW, int viewportH);
+	void draw(const PresentationFrame &scene, int localteam, int viewportX, int viewportY, int viewportW, int viewportH);
 
 	///This tells whether the given on-screen coordinates are inside the minimap itself
 	bool insideMinimap(int x, int y);
@@ -56,6 +59,9 @@ public:
 private:
 	///Computes the minimap positioning
 	void computeMinimapPositioning();
+	///Top-left of the minimap picture on the surface
+	int originX() const { return placed ? placeX : gameWidth-menuWidth+xOffset; }
+	int originY() const { return placed ? placeY : yOffset; }
 
 	///Refreshes a range of rows on the screen, handles wrapping
 	void refreshPixelRows(int start, int end, int localteam);
@@ -80,8 +86,10 @@ private:
 	int mini_offset_x;
 	int mini_offset_y;
 	MinimapMode minimapMode;
+	bool placed = false;
+	int placeX = 0, placeY = 0;
 	
-	const Scene* scene = nullptr; //!< valid only while draw() runs
+	const PresentationFrame* scene = nullptr; //!< valid only while draw() runs
 	int mapW = 0, mapH = 0;       //!< size of the shown map, in tiles
 
 	DrawableSurface *surface;

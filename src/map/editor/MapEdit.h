@@ -7,8 +7,12 @@
 #include <BackgroundFileWriter.h>
 #include <InputState.h>
 #include <utility>
+#include <functional>
 
 #include "Brush.h"
+#include "BrushCatalog.h"
+#include "BrushSwatches.h"
+#include "MapEditPresentation.h"
 #include "TerrainPresentation.h"
 #include "GAGSys.h"
 #include "LoadSaveDialog.h"
@@ -17,10 +21,13 @@
 #include "KeyboardManager.h"
 #include "MapEditDialog.h"
 #include "WidgetRectangle.h"
+#include <algorithm>
 #include <optional>
+#include <set>
 #include "render/Minimap.h"
 #include "OverlayAreas.h"
 #include "ScriptEditorScreen.h"
+#include "EditorDialogs.h"
 #include <string>
 #include <vector>
 
@@ -39,6 +46,8 @@ constexpr int mapEditZoneButtonX(int index, int count)
 
 class MapEdit;
 class PhoneEditor;
+class EditorDock;
+struct InspectorModel;
 
 ///This is a map editor widget, which is a widget that works within the map editor. Now to answer the crucial question, why not
 ///use libgag? Indeed, I had pondered on the use of libgag for quite some time, considering all of the odds and ends that would
@@ -311,11 +320,8 @@ public:
 class UnitInfoTitle : public MapEditorWidget
 {
 public:
-	UnitInfoTitle(MapEdit& me, const widgetRectangle& area, const std::string& group, const std::string& name, const std::string& action, Unit* unit);
+	UnitInfoTitle(MapEdit& me, const widgetRectangle& area, const std::string& group, const std::string& name, const std::string& action);
 	void draw();
-	void setUnit(Unit* unit);
-private:
-	Unit* unit;
 };
 
 
@@ -324,17 +330,16 @@ private:
 class UnitPicture : public MapEditorWidget
 {
 public:
-	UnitPicture(MapEdit& me, const widgetRectangle& area, const std::string& group, const std::string& name, const std::string& action, Unit* unit);
+	UnitPicture(MapEdit& me, const widgetRectangle& area, const std::string& group, const std::string& name, const std::string& action);
 	void draw();
-	void setUnit(Unit* unit);
-private:
-	Unit* unit;
 };
 
 
 
 ///This is a small text object. It shows two values and a label, like "label 1/2". The denominator can be fixed or variable. Either way, the numerator is done 
 ///by pointer because this class is used for the convenient editing of values in a Unit or Building
+using EditorValueReader=std::function<Sint32(const PresentationFrame&)>;
+
 class FractionValueText : public MapEditorWidget
 {
 public:
@@ -342,11 +347,12 @@ public:
 	FractionValueText(MapEdit& me, const widgetRectangle& area, const std::string& group, const std::string& name, const std::string& action, const std::string& label, Sint32* numerator, Sint32 denominator);
 	~FractionValueText();
 	void draw();
-	void setValues(Sint32* numerator, Sint32* denominator);
-	void setValues(Sint32* numerator);
+	void setValues(Sint32* numerator, Sint32* denominator, EditorValueReader readValue, EditorValueReader readMax);
+	void setValues(Sint32* numerator, EditorValueReader readValue);
 private:
 	std::string label;
 	Sint32* numerator;
+    EditorValueReader readValue,readMax;
 	Sint32* denominator;
 	bool isDenominatorPreset;
 };
@@ -362,14 +368,15 @@ public:
 	~ValueScrollBox();
 	void draw();
 	void handleClick(int relMouseX, int relMouseY);
-	void setValues(Sint32* value, Sint32* max);
+	void setValues(Sint32* value, Sint32* max, EditorValueReader readValue, EditorValueReader readMax);
     // Semantic value access shared by desktop and touch presentations.
-    int currentValue() const { return *value; }
-    int maximumValue() const { return *max; }
+    int currentValue() const;
+    int maximumValue() const;
     void setValue(int requested);
-	void setValues(Sint32* value);
+	void setValues(Sint32* value, EditorValueReader readValue);
 private:
 	Sint32* value;
+    EditorValueReader readValue,readMax;
 	Sint32* max;
 	bool isMaxPreset;
 };
@@ -380,11 +387,8 @@ private:
 class BuildingInfoTitle : public MapEditorWidget
 {
 public:
-	BuildingInfoTitle(MapEdit& me, const widgetRectangle& area, const std::string& group, const std::string& name, const std::string& action, Building* building);
+	BuildingInfoTitle(MapEdit& me, const widgetRectangle& area, const std::string& group, const std::string& name, const std::string& action);
 	void draw();
-	void setBuilding(Building* building);
-private:
-	Building* building;
 };
 
 
@@ -393,11 +397,8 @@ private:
 class BuildingPicture : public MapEditorWidget
 {
 public:
-	BuildingPicture(MapEdit& me, const widgetRectangle& area, const std::string& group, const std::string& name, const std::string& action, Building* building);
+	BuildingPicture(MapEdit& me, const widgetRectangle& area, const std::string& group, const std::string& name, const std::string& action);
 	void draw();
-	void setBuilding(Building* building);
-private:
-	Building* building;
 };
 
 
@@ -424,6 +425,9 @@ public:
 	NumberCycler(MapEdit& me, const widgetRectangle& area, const std::string& group, const std::string& name, const std::string& action, int maxNumber);
 	void draw();
 	int getIndex();
+	// Selects number `index`+1, clamped to 1..maxNumber.
+	void setIndex(int index) { currentNumber = std::clamp(index + 1, 1, maxNumber); }
+	int maximum() const { return maxNumber; }
 	void handleClick(int relMouseX, int relMouseY);
 private:
 	int maxNumber;
@@ -454,8 +458,7 @@ class MapEdit
     friend class GameGUITouchHarness;
 	friend class MobileGalleryGameplay;
 	std::unique_ptr<PhoneEditor> phone;
-    int menuWidth() const { return phone ? 0 : RIGHT_MENU_WIDTH; }
-    bool editing = false, quitDecision = false;
+    bool editing = false;
     int editingResult = 0;
     GAGCore::InputState inputState;
     bool fertilityRequested = false;
@@ -494,7 +497,7 @@ public:
 	void drawDialog();
     bool needsFertility() const { return fertilityRequested; }
     bool finishFertility(bool completed);
-    bool needsQuitDecision() const { return quitDecision; }
+    bool needsQuitDecision() const { return confirmPurpose == ConfirmPurpose::Quit || confirmPurpose == ConfirmPurpose::QuitApplication; }
     void resolveQuitDecision(int choice);
     int editingReturnCode() const { return editingResult; }
 
@@ -509,6 +512,97 @@ public:
 	///Game::ViewState. Owned here (not on Game) and passed into game.drawMap.
 	///The editor only ever uses selectedUnit.
 	Game::ViewState view;
+
+	// --- WS-A brush catalogue ---
+	// One brush model for every presentation; see BrushCatalog.h for entry ids
+	// and actions. The catalogue is rebuilt lazily whenever the map's terrain or
+	// resource definitions, the enabled experiments or the building catalog change.
+	const std::vector<BrushGroup>& brushCatalog();
+	// Increases whenever brushCatalog() content may have changed; presentations
+	// rebuild their cards when it differs from the value they last saw.
+	std::uint64_t catalogRevision();
+	// The catalogue entry with this id, or nullptr.
+	const BrushEntry* findBrush(std::string_view id);
+	// Catalogue id of the active brush ("terrain/grass", "resource/wheat",
+	// "building/swarm", "zone/guard", "tool/delete", ...), empty when nothing is
+	// selected. Presentations highlight the entry whose id matches.
+	std::string currentBrushId() const;
+	// Whether the edited map may use an experiment: switched on in the player's
+	// settings or already carried by the map's game header.
+	bool experimentEnabled(const std::string& key) const;
+	// Carries the experiment in this map's game header, marks the map modified and
+	// refreshes the catalogue. Returns false for keys the map cannot carry.
+	bool enableExperimentForMap(const std::string& key);
+	// The shared swatch cache, bound to the map's current registries.
+	BrushSwatches& brushSwatches();
+private:
+	ExperimentGate experimentGate() const;
+	BrushCatalogInputs brushCatalogInputs() const;
+	std::string brushCatalogSignature() const;
+	// Maps legacy resource selectors (Wheat..PruneTree) and terrain aliases to the
+	// canonical selector, so equal brushes compare equal.
+	TerrainSelector::TerrainType canonicalSelector(TerrainSelector::TerrainType type) const;
+	std::vector<BrushGroup> brushCatalogCache;
+	std::string brushCatalogKey;
+	std::uint64_t brushCatalogRevision = 0;
+	std::unique_ptr<BrushSwatches> swatches;
+public:
+	// --- end WS-A brush catalogue ---
+
+	// --- WS-C dock ---
+	// The desktop/tablet brush browser (EditorDock.h). Presentations without a
+	// dock (the phone editor) report width 0. createDock() replaces any existing
+	// dock; destroyDock() drops it and returns the map to the full width.
+	bool hasDock() const { return bool(dock); }
+	void createDock();
+	void destroyDock();
+	// Logical width the dock takes from the right of the editor surface; the
+	// legacy sidebar width when neither dock nor phone presentation exists.
+	int dockWidth() const;
+	EditorDock *editorDock() const { return dock.get(); }
+	// Map status strip (bottom-left of the map): pointer coordinates plus the
+	// transient status from showStatus().
+	const std::string &coordinatesText() const { return coordinates; }
+private:
+	friend class EditorDock;
+	friend InspectorModel buildInspectorModel(MapEdit &editor);
+	std::unique_ptr<EditorDock> dock;
+	// Dock sections the author collapsed ("<section>/<group>"), kept across
+	// dock rebuilds and presentation switches.
+	std::set<std::string> dockCollapsed;
+	std::string coordinates;
+	// Dock navigation for "open terrain palette [group]" and "open resource palette".
+	void revealBrushGroup(BrushSection section, const std::string &group);
+	// Whether the pointer is over the dock or a dialog (no map brush preview).
+	bool pointerOverInterface() const;
+	// Centres the map view on the map cell under a point of the placed minimap.
+	void centerViewOnMinimap(int x, int y);
+	// Sends a pointer or key event to the dock when it owns it; false for the map.
+	bool routeToDock(SDL_Event &event);
+	bool swallowSearchKeyText = false;
+	// Updates and paints the dock over the map (beneath any dialog).
+	void drawDock(Uint32 tick);
+public:
+	// --- end WS-C dock ---
+	// --- WS-D presentation ---
+	// The phone tray or the dock, chosen live from the window and input
+	// (MapEditPresentation.h).
+	EditorPresentation presentation() const;
+	// Re-chooses the presentation (viewportResized and construction call it). On a
+	// change, unfinished strokes and drags are cancelled and the brush, panel
+	// mode, team and levels kept. Returns whether the presentation changed.
+	bool syncPresentation();
+	// The dock sizes its targets for touch.
+	bool presentationTouchTargets() const;
+	// MapEditorScreen requests a point-sized (responsive) viewport.
+	bool wantsResponsiveViewport() const;
+private:
+	EditorPresentation wantedPresentation() const;
+	// Seam for the EditorDock (WS-C): createDock()/destroyDock().
+	void enterDockPresentation();
+	void leaveDockPresentation();
+public:
+	// --- end WS-D presentation ---
 
 	friend class MapEditorWidget;
 	friend class BuildingSelectorWidget;
@@ -761,6 +855,7 @@ private:
 	int buildingLevel;
 	///Returns whether the particular type of building is upgradable
 	int buildingSelectionType(const std::string& key);
+    int displayedBuildingSelectionType(const std::string& key) const;
 	void rebuildBuildingSelectors();
 	void layoutBuildingSelectors();
 	bool scrollBuildingSelectors(double delta);
@@ -823,12 +918,8 @@ private:
 	///Tells whether the save-game menu screen is being drawn right now
 	bool showingSave;
 	std::unique_ptr<LoadSaveDialog> loadSaveScreen;
-	std::unique_ptr<TerrainPaletteDialog> terrainPalette;
-	std::unique_ptr<ResourcePaletteDialog> resourcePalette;
 	bool importingResources = false;
 	void importResourceFile(const std::string& filename);
-	// Brush to restore when the palette is cancelled.
-	TerrainSelector::TerrainType brushBeforePalette = TerrainSelector::NoTerrain;
 	bool importingTerrain = false;
 	void importTerrainFile(const std::string &filename);
 
@@ -876,6 +967,38 @@ private:
 	void handleTerrainClick(int mx, int my);
 	///Tells whether the terrain is being dragged, continually placing more
 	bool isDraggingTerrain;
+	// --- WS-B brush painting ---
+public:
+	using BrushCell = std::pair<int, int>;
+	//! Map cell under a map-local pointer position. Every brush, terrain or
+	//! resource, is centred on this cell; preview and commit share it.
+	BrushCell brushCellAt(int mx, int my) const;
+	//! The brush figure's cells centred on a map cell, in unwrapped coordinates
+	//! around it, aligned to the current stroke's checkerboard origin.
+	std::vector<BrushCell> terrainBrushCells(int mapX, int mapY) const;
+	//! Cells whose terrain identity an Add stroke stamped at this cell sets. A
+	//! legacy corner terrain also fills any cell all of whose corners it writes,
+	//! as the checkerboard figures do; otherwise this is terrainBrushCells.
+	std::vector<BrushCell> terrainStrokeCells(int mapX, int mapY) const;
+	//! The cells of a footprint where the selected resource cannot be placed.
+	std::vector<BrushCell> invalidResourceCells(const std::vector<BrushCell> &footprint);
+	//! "<Resource> can only be placed on: <terrains>" for the selected resource.
+	std::string resourcePlacementHint() const;
+	//! A short non-interactive message at the bottom left of the map.
+	void showStatus(std::string text, Uint32 durationMs = 4000);
+	const std::string &lastStatus() const { return statusText; }
+private:
+	std::string statusText;
+	Uint64 statusUntil = 0;
+	int strokeCoveredCells = 0, strokePlacedResources = 0;
+	void finishTerrainStroke();
+	void drawTerrainBrushPreview();
+public:
+    // Explicit owner observation for editor drawing and standalone editor tools.
+    void preparePresentation();
+private:
+	void drawStatus();
+	// --- end WS-B brush painting ---
 	///Handles a click or drag of the mouse when removing objects
 	void handleDeleteClick(int mx, int my);
 	///Tells whether the delete tool is being dragged
@@ -927,4 +1050,74 @@ private:
 	///Handles a click or drag of the no resource growth area placement tool
 	void handleNoResourceGrowthClick(int mx, int my);
 
+	// --- WS-E flows ---
+	// Saving, loading, sharing and quitting stay inside the editor: decisions
+	// are EditorConfirmDialog cards and fertility runs in an EditorProgressDialog
+	// over the live map (implemented in MapEditFlows.cpp).
+public:
+	bool hasUnsavedChanges() const { return hasMapBeenModified; }
+	// A window close or application quit (SDL_EVENT_QUIT, Cmd+Q, Alt+F4).
+	void requestApplicationQuit();
+	// MapShareScreen returned with this result.
+	void finishShare(bool shared);
+	bool fertilityOverlayStale() const { return isFertilityOn && fertilityStale; }
+	enum class ConfirmPurpose
+	{
+		None,
+		Quit,
+		QuitApplication,
+		LoadUnsaved,
+		ShareSaveFirst,
+		RerollTerrain
+	};
+	ConfirmPurpose pendingConfirm() const { return confirmPurpose; }
+	EditorConfirmDialog *confirmation() const { return confirmDialog.get(); }
+	EditorProgressDialog *fertilityProgress() const { return progressDialog.get(); }
+	// The map file this editor last loaded or saved; empty for a map never saved.
+	const std::string &savedMapFile() const { return savedFilename; }
+
+private:
+	enum FlowChoice
+	{
+		ChoiceSave,
+		ChoiceDiscard,
+		ChoiceCancel,
+		ChoiceShareSaved,
+		ChoiceConfirm
+	};
+	std::unique_ptr<EditorConfirmDialog> confirmDialog;
+	ConfirmPurpose confirmPurpose = ConfirmPurpose::None;
+	std::vector<FlowChoice> confirmChoices;
+	void openConfirm(ConfirmPurpose purpose);
+	void resolveConfirm(int index);
+	std::unique_ptr<EditorProgressDialog> progressDialog;
+	void openFertilityProgress();
+	void finishFertilityProgress();
+	bool fullQuitAfterSave = false, shareAfterSave = false, loadAfterSave = false;
+	bool fertilityStale = false, fertilityChipPressed = false;
+	std::string savedFilename;
+	// The load picker, after any unsaved-changes decision.
+	void openLoadDialog();
+	// Close menus and pickers before a flow opens the save dialog.
+	void closeDialogsForFlow();
+	void saveSucceeded();
+	void clearSaveFollowUps();
+	// Device file picker for definition imports.
+	std::unique_ptr<GAGCore::ApplicationHost::FileSelection> deviceSelection;
+	void beginDeviceImport();
+	void pollDeviceImport();
+	void importTerrainJson(const std::string &json);
+	void importResourceJson(const std::string &json);
+	// Snapshots taken when the teams or scenario editor opens; OK marks the map
+	// modified only when the result differs.
+	std::vector<TeamsEditor::Slot> teamSlotsAtOpen;
+	std::vector<BaseTeam> baseTeamsAtOpen;
+	std::string scenarioAtOpen;
+	std::string scenarioFingerprint();
+	bool teamSlotsChanged() const;
+	// The "refresh fertility" chip shown over the map while the overlay is stale.
+	bool handleFlowEvent(const SDL_Event &event);
+	void drawFlowOverlays();
+	widgetRectangle fertilityChipRect() const;
+	// --- end WS-E flows ---
 };

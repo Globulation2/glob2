@@ -110,11 +110,11 @@ public:
 	void drawBrush(int x, int y, int viewportX, int viewportY, int originalX=-1, int originalY=-1, bool onlines=false);
 	void drawBrush(int x, int y, GAGCore::Color c, int viewportX, int viewportY, int originalX=-1, int originalY=-1, bool onlines=false);
 	//! Return the mode of the brush
-	unsigned getType(void) { return static_cast<unsigned>(mode); }
+	unsigned getType(void) const { return static_cast<unsigned>(mode); }
 	//! Set the mode of the brush
 	void setType(Mode m) { mode = m; }
 	//! Return the id of the actual figure, always in [0, BRUSH_COUNT).
-	unsigned getFigure(void) { return figure; }
+	unsigned getFigure(void) const { return figure; }
 	/*! Set the id of the actual figure; f must be in [0, BRUSH_COUNT).
 		Sole mutation point for figure — handleClick routes through here too,
 		so the range invariant is enforced in one place. */
@@ -127,6 +127,8 @@ public:
 	
 	//! This enables or disables the ability to select add / remove. Used by the map editor because logically you can't "remove" Terrain and such.
 	void setAddRemoveEnabledState(bool value);
+	//! Whether Add/Delete can be chosen for the current brush.
+	bool addRemoveIsEnabled() const { return addRemoveEnabled; }
 	//! Return the left extend of the brush (not counting its center cell)
 	static int getBrushDimXMinus(unsigned figure);
 	//! Return the right extend of the brush (not counting its center cell)

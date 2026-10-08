@@ -22,7 +22,7 @@ GameObjectives::GameObjectives() :
 
 
 
-int GameObjectives::getNumberOfObjectives()
+int GameObjectives::getNumberOfObjectives() const
 {
 	return texts.size();
 }
@@ -31,6 +31,7 @@ int GameObjectives::getNumberOfObjectives()
 
 void GameObjectives::addNewObjective(const std::string& objective, bool ishidden, bool complete, bool nfailed, GameObjectiveType type, int scriptNumber)
 {
+	frozenValue.reset();
 	texts.push_back(objective);
 	hidden.push_back(ishidden);
 	completed.push_back(complete);
@@ -57,6 +58,7 @@ bool GameObjectives::isValidObjectiveIndex(int n) const
 
 void GameObjectives::removeObjective(int n)
 {
+	frozenValue.reset();
 	if (!isValidObjectiveIndex(n))
 		return;
 	texts.erase(texts.begin() + n);
@@ -71,13 +73,15 @@ void GameObjectives::removeObjective(int n)
 
 void GameObjectives::setGameObjectiveText(int n, const std::string& objective)
 {
+	if (!isValidObjectiveIndex(n) || (texts[n] == objective)) return;
+	frozenValue.reset();
 	if (isValidObjectiveIndex(n))
 		texts[n] = objective;
 }
 
 
 
-const std::string& GameObjectives::getGameObjectiveText(int n)
+const std::string& GameObjectives::getGameObjectiveText(int n) const
 {
 	if (isValidObjectiveIndex(n))
 		return texts[n];
@@ -89,6 +93,8 @@ const std::string& GameObjectives::getGameObjectiveText(int n)
 
 void GameObjectives::setObjectiveHidden(int n)
 {
+	if (!isValidObjectiveIndex(n) || (hidden[n])) return;
+	frozenValue.reset();
 	if (isValidObjectiveIndex(n))
 		hidden[n]=true;
 }
@@ -97,13 +103,15 @@ void GameObjectives::setObjectiveHidden(int n)
 
 void GameObjectives::setObjectiveVisible(int n)
 {
+	if (!isValidObjectiveIndex(n) || (!hidden[n])) return;
+	frozenValue.reset();
 	if (isValidObjectiveIndex(n))
 		hidden[n]=false;
 }
 
 
 
-bool GameObjectives::isObjectiveVisible(int n)
+bool GameObjectives::isObjectiveVisible(int n) const
 {
 	if (isValidObjectiveIndex(n))
 		return !hidden[n];
@@ -116,6 +124,8 @@ bool GameObjectives::isObjectiveVisible(int n)
 
 void GameObjectives::setObjectiveComplete(int n)
 {
+	if (!isValidObjectiveIndex(n) || (completed[n] && !failed[n])) return;
+	frozenValue.reset();
 	if (isValidObjectiveIndex(n))
 	{
 		completed[n]=true;
@@ -127,6 +137,8 @@ void GameObjectives::setObjectiveComplete(int n)
 
 void GameObjectives::setObjectiveIncomplete(int n)
 {
+	if (!isValidObjectiveIndex(n) || (!completed[n] && !failed[n])) return;
+	frozenValue.reset();
 	if (isValidObjectiveIndex(n))
 	{
 		completed[n]=false;
@@ -138,6 +150,8 @@ void GameObjectives::setObjectiveIncomplete(int n)
 
 void GameObjectives::setObjectiveFailed(int n)
 {
+	if (!isValidObjectiveIndex(n) || (!completed[n] && failed[n])) return;
+	frozenValue.reset();
 	if (isValidObjectiveIndex(n))
 	{
 		completed[n]=false;
@@ -147,7 +161,7 @@ void GameObjectives::setObjectiveFailed(int n)
 
 
 
-bool GameObjectives::isObjectiveComplete(int n)
+bool GameObjectives::isObjectiveComplete(int n) const
 {
 	if (isValidObjectiveIndex(n))
 		return completed[n];
@@ -157,7 +171,7 @@ bool GameObjectives::isObjectiveComplete(int n)
 
 
 
-bool GameObjectives::isObjectiveFailed(int n)
+bool GameObjectives::isObjectiveFailed(int n) const
 {
 	if (isValidObjectiveIndex(n))
 		return failed[n];
@@ -169,13 +183,15 @@ bool GameObjectives::isObjectiveFailed(int n)
 
 void GameObjectives::setObjectiveType(int n, GameObjectiveType type)
 {
+	if (!isValidObjectiveIndex(n) || (types[n] == type)) return;
+	frozenValue.reset();
 	if (isValidObjectiveIndex(n))
 		types[n] = type;
 }
 
 
 
-GameObjectives::GameObjectiveType GameObjectives::getObjectiveType(int n)
+GameObjectives::GameObjectiveType GameObjectives::getObjectiveType(int n) const
 {
 	if (isValidObjectiveIndex(n))
 		return types[n];
@@ -187,13 +203,15 @@ GameObjectives::GameObjectiveType GameObjectives::getObjectiveType(int n)
 
 void GameObjectives::setScriptNumber(int n, int scriptNumber)
 {
+	if (!isValidObjectiveIndex(n) || (scriptNumbers[n] == ScriptNumber::clampToWireDomain(scriptNumber))) return;
+	frozenValue.reset();
 	if (isValidObjectiveIndex(n))
 		scriptNumbers[n] = ScriptNumber::clampToWireDomain(scriptNumber);
 }
 
 
 
-int GameObjectives::getScriptNumber(int n)
+int GameObjectives::getScriptNumber(int n) const
 {
 	if (isValidObjectiveIndex(n))
 		return scriptNumbers[n];
@@ -227,6 +245,7 @@ void GameObjectives::encodeData(GAGCore::OutputStream* stream) const
 
 void GameObjectives::decodeData(GAGCore::InputStream* stream, Uint32 versionMinor)
 {
+	frozenValue.reset();
 	texts.clear();
 	hidden.clear();
 	completed.clear();

@@ -12,7 +12,12 @@ documented in [Distributed tournaments](../tools/tournaments.md).
 
 All shipped AI controllers decide from an immutable engine snapshot through
 `AIEngine::AIWorldView`. The simulation owner captures a union of required
-components at the polling boundary. Engine snapshot records live under
+components through `Game::captureReadBoundary()`. The engine declares AI, gradient,
+admitted presentation and diagnostic requirements before publishing their union.
+`Game::snapshots()` owns the shared Store; the AI pipeline receives a projection
+of that published handle and does not initiate capture. Explicit
+`Store::invalidateBoundary()` revisions allow an owner to publish same-tick edits
+without advancing game time; existing leases stay immutable. Engine snapshot records live under
 `src/engine/sim/snapshot/`; the AI adapter and shared queries live under
 `src/ai/observation/`. Records contain values and stable entity identities;
 rendering pointers and live `Game`, `Map`, `Team`, `Unit` or `Building` objects
@@ -47,7 +52,9 @@ Unit and building scalar state uses the authoritative `UnitState` and
 per live entity; heap entities are not a contiguous slot pool. Runtime pointers,
 query scratch and GUI state remain outside the records. Building observations
 select private stock or the captured team's stock through an immutable resource
-pool selector; team stock is not duplicated into every building. Ordered
+pool selector; team stock is not duplicated into every building. Supplier records
+also capture a material-availability mask after reservations, used by periodic
+market gradients without consulting live stock. Ordered
 relationship IDs remain explicit capture work. Upgrade and repair feasibility
 queries read the frozen map arrays when requested; capture does not scan every
 building footprint to precompute unused decisions.
@@ -81,18 +88,40 @@ pointer; the pool reuses a buffer once that pointer is the only one left, after 
 acquire fence that orders the consumer's final reads before the owner's next write,
 including inputs retired by delayed gradient jobs. Reads need no locking, and a
 buffer outlives the capture Store while any consumer holds it. Memory metrics are
-computed on telemetry query, never on the capture path.
+computed on telemetry query, never on the capture path. Component pools permit
+22 buffers, retaining the existing safety ceiling until the combined consumer
+horizon is measured. Buffers allocate only on demand. Retired frame slots release
+their world leases immediately while preserving reusable derived arrays; the
+current frame, admitted preparation, retained view-refresh input and diagnostic
+publication each have explicit ownership. The resource-plane pool retains its original 17-epoch bound because
+presentation does not lease resource-gradient fields.
 
 All parallel simulation work shares the map's `ComputeExecutor`
 (`src/common/ComputeExecutor.h`): blocking `run()` batches for map computation and
-deferred lane batches for AI decisions. `AIEngine::Pipeline` submits one batch per
+deferred batches for AI decisions and periodic gradients. AI controller lanes
+preserve decision order; gradient jobs need no lane. `AIEngine::Pipeline` submits one batch per
 tick with one job per controller on that controller's lane, and joins it at the
 deadline, executing remaining jobs itself from the oldest live batch forward. The
 match-wide `GameHeader::aiOrderDelay` is an integer from 0 through 8, defaulting
-to 0. An order observed at logical tick `t` is delivered at `t + delay`. Thread
+to 8 for new games. An order observed at logical tick `t` is delivered at `t + delay`. Thread
 count and completion time never choose that deadline or which decision a
 controller makes; the owner publishes in stable request order. Human orders and
 scenario map scripts retain their existing scheduling.
+
+The executor also provides a separate, bounded presentation queue. It runs one
+chunk at a time on the last compute worker, leaving another worker for simulation
+when at least two are available. Ready simulation work takes precedence between
+chunks. Submission replaces the single pending request; the active request keeps
+its immutable inputs until its current chunk finishes. Tickets expose completion,
+cancellation and failures without joining. Simulation `run()`, `join()` and
+`joinAll()` never execute or await presentation. With no workers, the application
+thread calls `pumpPresentation()` explicitly. Reconfiguration and teardown cancel
+pending work and wait for the active chunk without executing it on the caller.
+Captured inputs are released on completion, even if a caller retains its ticket.
+Presentation preparation uses these jobs and only the published world handle.
+Data-dependent operations can yield and resume the same chunk: large defence
+footprints visit at most 1024 positions per claim, and overlay clearing is sliced
+into 1024-cell ranges. This also bounds cooperative work on serial browser hosts.
 
 Commands own encoded order bytes, target incarnation, diagnostics and telemetry.
 The owner validates current identities and normal order rules at delivery and
@@ -667,7 +696,7 @@ native rendering in the same process, at the same camera and simulation state.
 It reports paired process CPU timings and checks pixel differences after timing
 ends. Set `GLOB2_BENCH_COMPARE_AI=1` to advance one AI tick before each pair;
 combine this with the camera sweep to exercise resource changes and wrap seams.
-The comparison uses the no-cloud pass, a fixed water phase, eight warmup pairs,
+The comparison uses the no-cloud pass, a fixed animation phase, eight warmup pairs,
 and a sparse tolerance of at most 100 changed channels with a maximum delta of
 1/255. That tolerance does not establish bit-exact moving-scene output. The
 immediate reference retains the ordinary resource sprite batch; it disables the
@@ -788,7 +817,7 @@ existing paths; cache-backed team-color surfaces cannot be deferred safely.
 
 
 For comparisons with another revision, set `GLOB2_BENCH_PAUSE_PRESENTATION=1`
-to freeze the water phase and `GLOB2_BENCH_WARMUP_FRAMES` to the same number of
+to freeze terrain animation and `GLOB2_BENCH_WARMUP_FRAMES` to the same number of
 frames on both executables. Record cold-frame samples as well as steady-state
 medians, and confirm `STEADY_CACHE pending=0` before describing results as fully
 warmed. Compare complete builds from both revisions; the diagnostic immediate
@@ -855,6 +884,16 @@ seeds, binaries, captures and timing data under `artifacts/` for review.
 
 ### Skin materials
 
+Procedural pattern repeats are set in `skinMaterialRepeat` in the shared GLSL:
+classic glossy uses 4×, wood 3×, leather 5×, and woven fabric, stone, scales and
+honeycomb 2×; other materials use 1×. The scale applies to material detail after
+sampling the paint and material atlas, so painted markings retain their placement.
+Studio, native rendering and sprite baking use these same settings. Worker and
+warrior meshes retain the established paint UVs and carry a separate bounded
+GUV1 sidecar for procedural detail, so rebuilding the surface does not move saved
+paint. Both renderers use the paint UVs when a sidecar is absent; malformed
+sidecars are rejected. See the [unit asset pipeline](../../tools/unit-animation/README.md#experimental-live-colony-skins).
+
 Colony-skin materials are declared once in `libgag/shaders/skin-materials.json`
 (ids, keys, display names, picker groups, which materials grow fur shells, the
 shell count and the fur length and depth bias every renderer uses) and shaded
@@ -919,18 +958,22 @@ For timing and scheduling, start with `src/game/Game_sync.cpp` and `src/engine/E
   so visual effects can change, run at any frame rate or move to another thread
   without consuming simulation draws.
 - Simulation/client boundary (`src/engine/sim/`). Simulation code must not call `GameGUI`;
-  it talks to the client through three channels, which `GameGUI` owns and `Game`
-  points to (all null without a GUI):
+  it talks to the client through value channels. `GameGUI` owns the event/request
+  queues; `Game` owns the stable script endpoint (inactive without a GUI):
   - `ClientEvents`: lossless queue of notices the simulation publishes (team
     `GameEvent`s, chat, voice, marks, pause, ghost removal, building removal, unit
-    conversion, executed orders) plus a per-tick latest-value pulse
+    conversion, executed orders, script presentation) plus a per-tick latest-value pulse
     (`Team::wasRecentEvent` for every team). `Game::executeOrderAndNotify` publishes
     the order effects; `GameGUI::consumeClientEvents` applies them after each order,
     after each engine tick, and at the start of `step` and `drawAll`.
   - `ClientCommandSink`: the presentation commands map scripts issue (building and
     flag choices, GUI elements, highlights, Space swallowing, script text). SGSL,
     USL and JavaScript map scripts call it instead of `GameGUI`. Its two read
-    methods are legacy USL queries; do not add more.
+    methods are legacy USL queries; do not add more. `Game::scriptClient` forwards
+    directly during serial execution. At threaded startup it receives the current
+    ordered choices and aliases, then updates its own enablement mirror and enqueues
+    commands. Queries never wait for GUI consumption. USL retains this same stable
+    endpoint across mode changes.
   - `ClientRequests`: a latest-value `ClientView` (viewport, observed building,
     overlay, debug layers) and a lossless command queue (the SGSL Space
     acknowledgement). `Game::applyClientRequests` applies them at the start of
@@ -939,9 +982,10 @@ For timing and scheduling, start with `src/game/Game_sync.cpp` and `src/engine/E
 
   Client code holds entities as `BuildingRef`/`UnitRef` (gid plus `scriptIdentity`)
   and resolves them through `Game::resolveBuilding`/`resolveUnit` at each use; do not
-  keep `Building*`/`Unit*` across ticks in client code. The channels are
-  single-threaded for now. Making them thread-safe only changes `LosslessQueue` and
-  the latest-value accessors.
+  keep `Building*`/`Unit*` across ticks in client code. Queue and pulse access are
+  synchronized. Draining swaps out one batch under a short lock, then delivers it
+  without holding the lock; notices published during delivery wait for the next
+  drain. Channel resets require a lifecycle boundary with producers stopped.
 - For behavior-preserving refactors and optimizations, compare base and changed
   builds using identical saves/maps, seeds, settings and orders. Compare per-tick
   state/checksums as well as replay bytes: matching orders alone do not prove that
@@ -1155,32 +1199,33 @@ For timing and scheduling, start with `src/game/Game_sync.cpp` and `src/engine/E
   are rebuilt from the registry and cells, never serialized. Registry factories
   publish `shared_ptr<const TerrainRegistry>`; copying a registry is private because
   authoring presentation strings borrow its owned key/name storage.
-- The engine has a completed-tick observation phase. `Game::syncStep` first runs
-  all world mutations, including fog, projects and scripts, then selects/reserves
-  one periodic gradient job. Engine defers private seeding into its next
-  preparation barrier before capturing AI decision inputs. This is the default architecture; the
-  compute mask and thread count select execution only, never observation timing.
-  Direct `Game::syncStep` callers complete preparation before returning unless
-  they explicitly request `PreparationCompletion::Deferred` and own its barrier.
-  Standalone `Map::syncStep` retains synchronous map-level preparation.
-- `ReadOnlyPhase` remains the barrier for private gradient preparation that
-  borrows stable owner inputs. AI decisions use the separate immutable snapshot
-  pipeline described [above](#ai-observations-and-delayed-orders), and can outlive
-  the polling boundary. Add worker work only after auditing scratch ownership,
-  RNG, input lifetime and shared caches; workers never publish shared telemetry
-  or mutate live simulation objects.
-- Gradient selection, round-robin flags and queue membership stay on the simulation
-  owner. A typed reservation is visible to AI lazy invalidation before dispatch;
-  preparation writes only its private seeds and immutable terrain snapshots.
-  Propagation may then outlive the observation barrier, but publication remains
-  after its configured delay (eight ticks by default), before team stepping.
-  Worker count and completion time never
-  select publication time. Saves, compute/terrain reconfiguration and subsequent
-  mutations drain preparation; teardown discards its descriptor before resetting
-  the queue. Seed/dispatch failures mark the job completed with an error, preventing
-  a save or publication from waiting indefinitely. Inspect these contracts before
-  adding parallel work; sharing the executor alone does not establish safety.
-- Gradient field seeding lives in the area, building and resource source files.
+- The engine has a completed-tick observation phase. After fog, projects and
+  scripts, `Game::syncStep` selects/reserves one periodic gradient job. The next
+  observation captures AI and gradient requirements together in a game-owned
+  snapshot store. AI and gradient batches share the compute executor; gradient
+  seeding and propagation both read immutable projections and may outlive the
+  observation boundary. Direct stepping captures and submits before returning;
+  explicit deferred stepping leaves that capture to its caller. Direct map
+  stepping invalidates the cached boundary because its caller need not advance
+  the game's tick counter.
+- Gradient selection, round-robin flags, invalidation and publication stay on the
+  simulation owner. Jobs own their output and use worker-private scratch; they never read live map
+  arrays or mutable seed caches. Publication remains after the configured delay
+  (eight ticks by default), before team stepping. Completion time never changes
+  publication time. Saving joins private work without publishing it, then writes
+  the existing field/deadline representation. Reconfiguration drains work before
+  resizing scratch; teardown drains callbacks and discards reservations. Job-owned
+  errors survive executor batch retirement and surface at save/publication.
+- The executor ring holds 36 batches for the combined AI/gradient horizon.
+  Gradient jobs use no AI controller lane and submit no nested deferred work.
+  Thread counts change execution only. Review scratch ownership, input lifetimes,
+  RNG and shared caches before adding another producer.
+- Periodic snapshot seeding uses `SnapshotGradient` and shared `SeedCells`
+  predicates. Each executor slot owns derived seed templates, maintained using
+  exact immutable chunk versions, with direct-kernel fallbacks. Material caches
+  retain compact base fields and goal bitsets. No cached template retains snapshot
+  buffers or reads the live mutable material cache. Immediate building seeding
+  remains in its domain source files.
   `MapGradientPropagation.cpp` starts eager fields through the private
   `src/field/GradientPropagation.h` core; `BuildingGradientSearch.cpp` resumes
   building fields. Both use `src/field/GradientRelaxation.h`. Keep their cell-cost
@@ -1518,34 +1563,63 @@ a supported open-file checker and is conservatively skipped there.
 
 ## Scene renderer
 
-Drawing reads an immutable `Scene` (`src/render/scene/`), never live simulation objects, so it
-runs while the simulation advances on another thread. `Game::drawSceneMap` accepts
-an extracted Scene directly; `Game::drawMap` supplies extraction for legacy callers.
-Offline `--render-game` and Maxima field PNGs use the same passes through a scoped,
-bounded software target. Asset loading is shared with normal game startup.
+Drawing reads an immutable `PresentationFrame` (`src/render/scene/`). It retains
+the shared world snapshot, view request, captured timing and derived presentation
+results. Unit, building, team, relationship, entity-index, effect and map data are
+borrowed from standard snapshot components. There is no second entity extraction
+or map-array capture. `Game::drawMap` requires an explicitly supplied frame;
+`Game::drawSceneMap` accepts it directly.
 
-- `SceneExtractor::extract(game, request, scene)` (`src/render/scene/SceneExtract.cpp`) is the
-  only place presentation code reads the game. `GameGUI::drawAll` extracts
-  `frameScene` once per frame and publishes it in `Game::ViewState::scene`; `drawMap`
-  callers without a published scene (menu colony, editor, torus without a GUI, tests)
-  get one extracted into `ViewState::render.ownScene`. `ViewState::drawnScene()`
-  returns whichever was drawn.
-- `SceneMap` copies the per-tile layers whole (terrain, resources, occupancy, discovery
-  and fog, displayed areas); its queries match `Map`'s. `SceneEntities` holds
-  presentation copies of units, buildings and flags with lookup by gid (field names
-  follow `Unit`/`Building`; `team` indexes `SceneEntities::teams`), per-sector
-  bullets and animations, and the selected building's map-view data. Static
-  definitions (`BuildingType`, `Race`) are referenced, not copied.
-- The overlay map is computed during extraction and shared as an immutable snapshot;
-  it refreshes when the requested type or team changes and once per 25-tick window.
-- Adding something drawn on the map: extract what the drawing needs in
-  `SceneExtract.cpp` and read it from the `Scene` in the render pass. Never read
-  `Game`, `Map`, `Team`, `Unit` or `Building` state from drawing code.
-  `test/build_system/test_scene_boundary.py` rejects live entity reads in the render
-  passes, the minimap and `GameGUIDraw*`, and simulation includes in `src/render/scene/` headers.
-- Selection panels, the HUD, the top bar, statistics pages, the minimap and the building
-  tool's placement preview also draw from the Scene (`ScenePanels`, `SceneMap`). Input
-  handlers still act on the game, and validate against it before issuing an order.
+- The engine admits presentation only when its bounded producer has capacity,
+  declares requirements with AI and gradients, and publishes one shared capture.
+  `SceneExtractor::prepare` accepts an immutable handle and request, never live
+  simulation objects. Preparation runs on the shared compute executor. A complete
+  frame is published through `SceneBuffer`; drawing keeps the previous complete
+  frame while work is in flight. Simulation barriers do not join presentation.
+  Interactive sessions open the next completed world's shared read boundary
+  before waiting for tick pacing. AI polling and order delivery stay at their
+  existing deadlines and reuse that publication; presentation does not wait a
+  whole tick interval before starting. The native mailbox admits at most one
+  preparation per client request and can replace an unconsumed completed frame.
+- Serial hosts and browsers use the same preparation path. Hosts without a compute
+  worker pump bounded chunks between simulation work; cancellation does not wait
+  on the browser event loop. Camera and selection updates can prepare from a retained
+  world without capturing again. Its timing and executed-order revision remain
+  associated with that exact world.
+- Map views retain standard terrain, resource, occupancy, area and visibility
+  components. Undermap corners remain authoritative, editable map state. Optional
+  script areas use tracked chunks. Display-area masks, material availability,
+  connections and overlays are derived in resumable preparation chunks. Cached
+  display data is keyed by world identity, relevant revisions and view settings.
+- Unit animation and building shooting fields live in the normal pointer-free state
+  records. Selected panels borrow those records and immutable catalogs; presentation
+  calculations and formatting belong in frame storage. Catalog definitions are frozen
+  once per revision, so a later owner reconfiguration cannot change a retained frame.
+  AI telemetry, debug gradients, failure histories, and statistics histories are requested
+  separately from ordinary frames. Statistics histories share immutable samples
+  between observations until the next history revision; the compact HUD sample
+  ring remains independent. Alliance controls read session player identities and
+  team masks; objective and hint dialogs retain immutable narrative payloads that
+  are reused until mutation. Opening these dialogs does not park simulation.
+  Shift-click diagnostic dumps select the displayed generation and serialize it
+  only if that same entity still exists at the explicit owner boundary.
+- The editor and standalone tools explicitly obtain an owner-boundary snapshot before
+  preparing a frame. Offline map images and diagnostic PNGs use the same drawing
+  passes and graphics-thread asset ownership. Diagnostic preparation consumes the
+  published union rather than recapturing from the live game. A bounded diagnostic
+  batch owns its fields and snapshot independently; PNG preparation and export do
+  not park the simulation. Occupied publication slots stop further diagnostic
+  admission, with skipped or superseded output reported explicitly.
+- The animated menu colony includes admitted presentation requirements in its AI
+  boundary and uses the same bounded preparation producer. Drawing and resizing
+  never capture another world; headless menu simulations admit no presentation.
+- `test/build_system/test_scene_boundary.py` checks the rendering dependency boundary;
+  compile-time preparation tests reject live `Game`, `Map`, `Unit` and `Building`
+  inputs. New authoritative values belong in the owning standard snapshot component,
+  with capture/lifetime tests; view-dependent calculations belong in preparation.
+- Routine selection resolves generation-checked snapshot identities. Command
+  admission still validates targets on the simulation owner. Exceptional editing,
+  saving and diagnostic actions retain explicit owner access.
 
 ### Target render FPS
 
@@ -1581,18 +1655,37 @@ creating the simulation thread fails, run the same session serially (`Engine::st
 also remains the headless default and the equivalence reference.
 
 - The simulation thread paces itself with the speed presets and runs ticks
-  (`Engine::simulationStep`: orders, network, `Game::syncStep`). After a tick, if the main
-  thread has taken the previous Scene, it extracts the next one into a `SceneBuffer`
-  (lock-free triple buffer), so fast-forward extracts at most once per drawn frame.
-- The main thread draws the newest Scene when the render ceiling permits a frame. Work that reads or writes the game —
-  input, `GameGUI::step`, consuming `ClientEvents`, checking the selection, script
-  highlights — runs in `SimulationRunner::withGame`, which parks the simulation between
-  ticks (immediately when it is sleeping between ticks).
+  (`Engine::simulationStep`: orders, network, `Game::syncStep`). Before pacing,
+  the engine publishes the completed world's shared read boundary with the union
+  of AI, gradient and admitted presentation requirements. Presentation preparation
+  borrows that publication and runs on the compute executor. A worker publishes
+  the completed `PresentationFrame` into a `SceneBuffer` (lock-free triple buffer);
+  only one preparation is in flight, and a newer complete frame can supersede an
+  unconsumed one. Neither capture nor presentation admission depends on drawing
+  completing first.
+- The main thread draws the newest complete frame when the render ceiling permits.
+  Routine input, selection, client events and script highlights use the frame and
+  client-owned state without parking the simulation. Exceptional live-state work
+  (save capture, owner-backed settings, viewpoint changes and diagnostic dumps) uses
+  `GameGUI::parkForClient` / `SimulationRunner::withGame` at a tick boundary.
+  Alliance, objective and hint dialogs read immutable snapshot payloads.
+  Autosave scheduling publishes an atomic pending request; the client owns the
+  writer and captures the save at that explicit boundary. Telemetry windows cross
+  a locked mailbox after simulation work finishes.
 - Only state both threads use is shared: `ClientRequests`' view is locked; `gamePaused`,
   `hardPause`, `isRunning` and the CPU-load history are atomics. A pause order or the local
   player leaving takes effect on the simulation thread in the same tick, as in serial
-  execution. GUI state extraction reads (selection, local team) changes only while the
-  simulation is parked.
+  execution. Scene requests (selection, local team and view options) cross a locked
+  latest-value mailbox; the simulation fills in its own tick timing at capture.
+- GUI orders cross `ClientOrderQueue`, which atomically takes orders and coalesces
+  flag moves without exposing iterators. Locally issued entity orders carry the
+  displayed incarnation and world identity; admission drops obsolete targets before
+  sending or recording them. These guards are not serialized and do not alter the
+  wire protocol. Building actions and threaded selection read the displayed Scene;
+  touch gestures retain incarnation identities. Area previews are client-owned layers
+  over the Scene: active strokes and queued paint remain visible until an execution
+  acknowledgement is included in the acquired Scene. Farm paint eligibility reads
+  retained growth/rules inputs when the experiment is enabled.
 - The synchronized RNG belongs to the game, so results do not depend on the thread.
   `GLOB2_SIM_THREAD=1` runs headless sessions on the simulation thread for
   `check_sim_thread.py --candidate-env GLOB2_SIM_THREAD=1`; `GLOB2_SIM_THREAD=0` keeps
@@ -1602,7 +1695,7 @@ also remains the headless default and the equivalence reference.
   background is therefore not caught up after resuming, as in serial execution.
   GUI updates use `SDL_GetTicks()` instead: touch event timestamps and momentum
   must share the SDL clock, including after the session clock has been suspended.
-- Values the client sets while drawing and extraction reads (viewport, drawn map size,
+- Values the client sets while drawing and preparation reads (viewport, drawn map size,
   overlay, observed building) go through `ClientRequests`, never through `Game` or `Map`
   fields. To check for races, build with `CXXFLAGS="-g -fsanitize=thread"
   LINKFLAGS="-fsanitize=thread"` and run a windowed `-test-games` session or a headless
@@ -1629,9 +1722,9 @@ off by default) draws units between ticks, so threaded play at display rate uses
 32 animation frames per direction instead of repeating one pose per tick.
 
 - A unit's drawn position and animation frame follow `delta`, which the simulation
-  advances by `SceneUnit::stepSpeed` each tick. Each frame, `GameGUI::drawAll` sets
+  advances by `unitActionStepSpeed` computed from the captured unit record each tick. Each frame, `GameGUI::drawAll` sets
   `MapRenderState::unitMotion` to the elapsed fraction of the tick interval since the
-  Scene's tick (`Scene::tickTime`, `Scene::tickInterval`; `src/unit/render/UnitMotion.h`).
+  captured tick (`PresentationFrame::tickTime`, `PresentationFrame::tickInterval`; `src/unit/render/UnitMotion.h`).
   Unit drawing, path lines, off-screen markers and worker circles add that fraction of
   `stepSpeed` to `delta`, stopping at the end of the current action.
 - Motion is 0 when the setting is off, when the game is paused, and when the simulation
@@ -1779,7 +1872,7 @@ opaque rectangle fills directly on its borrowed framebuffer. Translucent draws a
 mixed pixel formats retain SDL geometry rasterization so platform-specific blending
 rounding and source modulation match the reference. General triangles use that same
 lazy SDL renderer; its queue flushes before direct writes or target replacement.
-Large existing images expanded past 512 pixels, including water, retain SDL geometry
+Large existing images expanded past 512 pixels retain SDL geometry
 rasterization because its fixed-point overflow behavior is visible at some transformed
 sizes. Borrowed terrain run views use direct rasterization: they replace small tiles and must not acquire that
 large-triangle behavior. Correcting the legacy large-image appearance needs separate
@@ -1828,16 +1921,12 @@ coastlines retain individual source blits, avoiding repeated alpha scans over
 transparent holes. Views are destroyed before their backing page.
 Each page validates the canonical terrain neighborhood, discovery decisions and
 revisions of the materials its recipes use. Animation or source changes in unrelated
-materials do not invalidate it. Pages store raw color/alpha, so coastlines blend over
-animated water once. Map replacement (a new `Map::identity()`) clears the cache;
+materials do not invalidate it; a phase change of an animated material (water,
+deep water, lava, ember field) recomposes only the pages that use it. Pages store
+raw color/alpha. Map replacement (a new `Map::identity()`) clears the cache;
 editor terrain changes, wrapped neighbors and visible-team changes are detected
 during preparation. Resources, actors, fog and overlays keep their existing
-passes. Water coverage subtracts only verified opaque terrain rectangles, including discovery
-boundaries. A complete animated water tile is omitted only when all of it is covered;
-partially covered tiles retain their original source mapping and animation phase.
-Coverage includes the original water pass's overshoot outside the viewport, which a
-transform can bring onscreen. Fragmented coverage falls back to the full pass after
-64 rectangles. Oversized working sets stream one temporary canonical page at a time
+passes. Oversized working sets stream one temporary canonical page at a time
 at the same sampling density as the full view. If a page cannot fit the device or
 allocation fails, an emergency composed-tile path preserves coverage but can differ
 in fractional resampling and HD mip filtering. None of these caches enter saves,

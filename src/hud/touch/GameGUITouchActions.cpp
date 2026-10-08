@@ -35,18 +35,7 @@ namespace
 		return {};
 	}
 
-	//! The same, from the live building: input checks a held action against it.
-	std::string liveConstructionActionLabel(Building &b, Team &local)
-	{
-		const bool offersConstruction = b.constructionResultState == Building::NO_CONSTRUCTION &&
-			b.buildingState == Building::ALIVE && !b.type->isBuildingSite;
-		return constructionActionLabel(b.constructionResultState, b.buildingState, b.type, b.hp,
-			offersConstruction && b.type->semantics.repairable && b.type->prevLevel>=0 &&
-				local.maxBuildLevel()>=b.owner->game->buildingsTypes.get(b.type->prevLevel)->semantics.requiredWorkerLevel && b.isHardSpaceForBuildingSite(Building::REPAIR),
-			offersConstruction && b.isUpgradeAvailable() &&
-				local.maxBuildLevel()>=b.owner->game->buildingsTypes.get(b.type->nextLevel)->semantics.requiredWorkerLevel && b.isHardSpaceForBuildingSite(Building::UPGRADE),
-			b.getEffectiveMaxHp());
-	}
+
 }
 
 bool GameGUITouch::inspecting() const
@@ -61,7 +50,7 @@ const SceneBuildingPanel *GameGUITouch::inspectedBuilding() const
 	// The panel was extracted for the selection current when the frame was drawn.
 	const SceneBuildingPanel &panel = gui.drawnScene().panels.building;
 	const BuildingRef selected = std::get<BuildingRef>(gui.selection);
-	if (!panel.valid || panel.gid != selected.gid || panel.generation != selected.generation)
+	if (!panel.valid || panel.state().gid != selected.gid || panel.state().scriptIdentity != selected.generation)
 		return nullptr;
 	return &panel;
 }
@@ -71,14 +60,14 @@ std::vector<GameGUITouch::BuildingAction> GameGUITouch::buildingActions() const
 	auto *b = inspectedBuilding();
 	if (!b)
 		return result;
-	if (b->owner.teamNumber != gui.drawnScene().panels.local.teamNumber || globalContainer->isViewingGame())
+	if (b->owner().number != gui.drawnScene().panels.local.state().number || globalContainer->isViewingGame())
 		return result;
 	if (allocationBuilding())
 	{
 		result.push_back({GAGCore::FormattableString(GAGCore::Toolkit::getStringTable()->getString(
 														 "[Assigned %0 · Target %1]"))
-							  .arg(b->unitsWorking)
-							  .arg(allocation && allocation->kind == 6 && allocation->building == b->gid
+							  .arg(b->state().working.count)
+							  .arg(allocation && allocation->kind == 6 && allocation->building == b->state().gid
 									   ? allocation->requested
 									   : gui.displayedMaxUnitWorking(*b)),
 						  6});
@@ -121,13 +110,13 @@ std::vector<GameGUITouch::BuildingAction> GameGUITouch::buildingActions() const
 		for (int i = 0; i < EXPLORATION_FLAG_OPTION_COUNT; ++i)
 			result.push_back({tr(names[i]), 11, i, gui.displayedExplorersRequireBombing(*b) == bool(i)});
 	}
-	const std::string construction = constructionActionLabel(b->constructionResultState, b->buildingState, b->type, b->hp,
-		b->hardSpaceForRepair, b->hardSpaceForUpgrade, b->effectiveMaxHp);
+	const std::string construction = constructionActionLabel(b->state().constructionResultState, b->state().buildingState, b->type, b->state().hp,
+		b->hardSpaceForRepair, b->hardSpaceForUpgrade, b->state().maxHp);
 	if (!construction.empty())
 		result.push_back({construction, 3});
-	if (b->buildingState == Building::WAITING_FOR_DESTRUCTION)
+	if (b->state().buildingState == Building::WAITING_FOR_DESTRUCTION)
 		result.push_back({tr("[cancel destroy]"), 4});
-	else if (b->buildingState == Building::ALIVE)
+	else if (b->state().buildingState == Building::ALIVE)
 	{
 		result.push_back({confirmDestroy
 							  ? GAGCore::FormattableString(tr("[Confirm %0]")).arg(tr("[destroy]"))
@@ -276,7 +265,7 @@ bool GameGUITouch::processAllocationPointer(const SDL_Event &event, ViewPoint po
 	const TouchPlacementSession::Pointer pointer{event.tfinger.touchID, event.tfinger.fingerID};
 	gui.checkSelection();
 	// Input issues orders against the live building (see allocationBuilding for drawing).
-	Building *building = allocationBuilding() ? gui.selectionBuilding() : nullptr;
+	const auto* building = allocationBuilding() ? gui.inputBuildingPanel() : nullptr;
 	const double unit = globalContainer->gfx->logicalUnitsPerPoint();
 	if (!allocation)
 	{
@@ -291,7 +280,8 @@ bool GameGUITouch::processAllocationPointer(const SDL_Event &event, ViewPoint po
 			if (!region || (region->part != DialRegion::Arc && region->part != DialRegion::Proportions) ||
 				(region->action.kind != 6 && region->action.kind != 0 && region->action.kind != 8))
 				return false;
-			TouchAllocationSession session{pointer, {}, building->gid, gui.localTeamNo};
+			TouchAllocationSession session{pointer, {}, building->state().gid, gui.localTeamNo};
+			session.generation = building->state().scriptIdentity;
 			session.kind = region->action.kind;
 			session.value = region->action.value;
 			session.maximum = region->maximum;
@@ -334,9 +324,10 @@ bool GameGUITouch::processAllocationPointer(const SDL_Event &event, ViewPoint po
 		allocation = TouchAllocationSession{
 			pointer,
 			{content.x + 56 * unit, point.y - 24 * unit, content.w - 112 * unit, 48 * unit},
-			building->gid,
+			building->state().gid,
 			gui.localTeamNo,
 			gui.displayedMaxUnitWorking(*building)};
+		allocation->generation=building->state().scriptIdentity;
 	}
 	if (pointer != allocation->pointer)
 	{
@@ -348,7 +339,7 @@ bool GameGUITouch::processAllocationPointer(const SDL_Event &event, ViewPoint po
 		}
 		return true;
 	}
-	if (!building || building->gid != allocation->building || gui.localTeamNo != allocation->team ||
+	if (!building || building->state().gid != allocation->building || building->state().scriptIdentity != allocation->generation || gui.localTeamNo != allocation->team ||
 		activeDialog())
 	{
 		allocation.reset();
@@ -442,8 +433,8 @@ std::optional<GameGUITouch::BuildingAction> GameGUITouch::actionAt(ViewPoint poi
 void GameGUITouch::tapBuildingAction(ViewPoint point)
 {
 	// Input issues orders against the live building (see inspectedBuilding for drawing).
-	Building *b = inspecting() ? gui.selectionBuilding() : nullptr;
-	if (!b || b->owner != gui.localTeam || globalContainer->isViewingGame())
+	const auto* b = inspecting() ? gui.inputBuildingPanel() : nullptr;
+	if (!b || b->owner().number != gui.localTeamNo || globalContainer->isViewingGame())
 		return;
 	if (usesDial())
 	{
@@ -451,7 +442,7 @@ void GameGUITouch::tapBuildingAction(ViewPoint point)
 		if (!region || region->action.kind != heldActionKind || region->action.value != heldActionValue ||
 			heldActionConfirmation != confirmDestroy ||
 			(region->action.kind == 3 && (region->action.label != heldActionLabel ||
-										  liveConstructionActionLabel(*b, *gui.localTeam) != heldActionLabel)))
+										  constructionActionLabel(b->state().constructionResultState, b->state().buildingState, b->type, b->state().hp, b->hardSpaceForRepair, b->hardSpaceForUpgrade, b->state().maxHp) != heldActionLabel)))
 			return;
 		tapDial(*b, *region, point);
 		return;
@@ -462,7 +453,7 @@ void GameGUITouch::tapBuildingAction(ViewPoint point)
 		return;
 	// The panel shows the last drawn state; commit only if the live building still offers it.
 	if (picked->kind == 3 && (picked->label != heldActionLabel ||
-							  liveConstructionActionLabel(*b, *gui.localTeam) != heldActionLabel))
+							  constructionActionLabel(b->state().constructionResultState, b->state().buildingState, b->type, b->state().hp, b->hardSpaceForRepair, b->hardSpaceForUpgrade, b->state().maxHp) != heldActionLabel))
 		return;
 	const auto row = *picked;
 	auto content = panelContent();
@@ -505,7 +496,7 @@ void GameGUITouch::tapBuildingAction(ViewPoint point)
 	else
 		applyDiscreteAction(*b, row);
 }
-void GameGUITouch::setRatio(Building &building, int type, int value)
+void GameGUITouch::setRatio(const SceneBuildingPanel &building, int type, int value)
 {
 	auto values = gui.displayedRatio(building);
 	const int next = std::clamp(value, 0, int(MAX_RATIO_RANGE));
@@ -516,18 +507,18 @@ void GameGUITouch::setRatio(Building &building, int type, int value)
 }
 // Both inspector presentations share the pending UI value and send exactly one
 // existing simulation order. Drawing and drag previews never mutate the building.
-void GameGUITouch::commitRatios(Building &building, const std::array<int, 3> &values)
+void GameGUITouch::commitRatios(const SceneBuildingPanel &building, const std::array<int, 3> &values)
 {
 	if (values == gui.displayedRatio(building))
 		return;
-	gui.pendingFor(building.gid).pendingRatio = values;
+	gui.pendingFor(building.state().gid).pendingRatio = values;
 	auto wire = values;
-	gui.orderQueue.push_back(std::make_shared<OrderModifySwarm>(building.gid, wire.data()));
+	gui.enqueueOrder(std::make_shared<OrderModifySwarm>(building.state().gid, wire.data()));
 }
 
 // Clearing resources, flag requirements, construction and destruction: the
 // same orders from the row list and the dial.
-void GameGUITouch::applyDiscreteAction(Building &building, const BuildingAction &row)
+void GameGUITouch::applyDiscreteAction(const SceneBuildingPanel &building, const BuildingAction &row)
 {
 	auto *b = &building;
 	if (row.kind == 1)
@@ -536,33 +527,33 @@ void GameGUITouch::applyDiscreteAction(Building &building, const BuildingAction 
 		bool wire[MaterialCount];
 		for (int k = 0; k < MaterialCount; ++k)
 			values[k] = wire[k] = gui.displayedClearingResource(*b, k) ^ (k == row.value);
-		gui.pendingFor(b->gid).pendingClearingResources = values;
-		gui.orderQueue.push_back(std::make_shared<OrderModifyClearingFlag>(b->gid, wire));
+		gui.pendingFor(b->state().gid).pendingClearingResources = values;
+		gui.enqueueOrder(std::make_shared<OrderModifyClearingFlag>(b->state().gid, wire));
 	}
 	else if (row.kind == 2)
 	{
 		if (gui.displayedMinLevelToFlag(*b) == row.value)
 			return;
-		gui.pendingFor(b->gid).pendingMinLevelToFlag = row.value;
-		gui.orderQueue.push_back(std::make_shared<OrderModifyMinLevelToFlag>(b->gid, row.value));
+		gui.pendingFor(b->state().gid).pendingMinLevelToFlag = row.value;
+		gui.enqueueOrder(std::make_shared<OrderModifyMinLevelToFlag>(b->state().gid, row.value));
 	}
 	else if (row.kind == 12)
 	{
 		if (gui.displayedMinWorkerLevelToFlag(*b)==row.value) return;
-		gui.pendingFor(b->gid).pendingMinWorkerLevelToFlag=row.value;
-		gui.orderQueue.push_back(std::make_shared<OrderModifyMinLevelToFlag>(b->gid,row.value,2));
+		gui.pendingFor(b->state().gid).pendingMinWorkerLevelToFlag=row.value;
+		gui.enqueueOrder(std::make_shared<OrderModifyMinLevelToFlag>(b->state().gid,row.value,2));
 	}
 	else if (row.kind == 11)
 	{
 		if (gui.displayedExplorersRequireBombing(*b)==bool(row.value)) return;
-		gui.pendingFor(b->gid).pendingExplorersRequireBombing=bool(row.value);
-		gui.orderQueue.push_back(std::make_shared<OrderModifyMinLevelToFlag>(b->gid,row.value,1));
+		gui.pendingFor(b->state().gid).pendingExplorersRequireBombing=bool(row.value);
+		gui.enqueueOrder(std::make_shared<OrderModifyMinLevelToFlag>(b->state().gid,row.value,1));
 	}
 	else if (row.kind == 5)
 		confirmDestroy = false;
 	else
 	{
-		if (row.kind == 4 && b->buildingState == Building::ALIVE && !confirmDestroy)
+		if (row.kind == 4 && b->state().buildingState == Building::ALIVE && !confirmDestroy)
 		{
 			confirmDestroy = true;
 			return;

@@ -196,6 +196,22 @@ void gatedJob(void* context, std::size_t)
 	gate->passed.fetch_add(1);
 }
 }
+TEST_CASE("completed lanes can change placement while an unrelated older batch remains")
+{
+    if constexpr (!GAGCore::ThreadSupport::available) return;
+    ComputeExecutor executor; executor.configure(2);
+    Gate held, completed; completed.open = true;
+    ComputeExecutor::Group older{1, {gatedJob, &held}};
+    auto first = executor.submit(std::span(&older, 1), ComputeExecutor::Placement::OwnerOnly);
+    ComputeExecutor::Group lane{1, {gatedJob, &completed}, 2};
+    auto second = executor.submit(std::span(&lane, 1));
+    while (!executor.finished(second)) std::this_thread::yield();
+    REQUIRE(executor.liveBatches() == 2);
+    auto third = executor.submit(std::span(&lane, 1), ComputeExecutor::Placement::OwnerOnly);
+    held.open = true;
+    executor.join(third); executor.join(second); executor.join(first);
+    CHECK(completed.passed == 2);
+}
 TEST_CASE("lane groups run in index order, placements cannot mix on a lane, and the horizon is bounded")
 {
 	for (unsigned threads : {1u, 3u})
@@ -266,4 +282,135 @@ TEST_CASE("borrowed groups cover serial parallel empty and exception barriers") 
         phase.run(executor); // Executor remains usable after the error barrier.
     }
 }
+}
+
+TEST_SUITE("ComputeExecutor")
+{
+TEST_CASE("presentation cannot delay simulation barriers or run on the simulation owner")
+{
+    if constexpr (!GAGCore::ThreadSupport::available) return;
+    for (unsigned threads : {2u, 3u, 5u})
+    {
+        ComputeExecutor executor;
+        executor.configure(threads);
+        std::atomic<bool> entered{false}, release{false}, ownerRan{false};
+        const auto owner = std::this_thread::get_id();
+        auto work = executor.submitPresentation(3, [&](size_t) {
+            if (std::this_thread::get_id() == owner) ownerRan = true;
+            entered = true;
+            while (!release.load()) std::this_thread::yield();
+        });
+        const auto deadline = std::chrono::steady_clock::now() + std::chrono::seconds(5);
+        while (!entered && std::chrono::steady_clock::now() < deadline) std::this_thread::yield();
+        // Watchdog releases the gate on regressions, so the test fails rather
+        // than leaving the suite stuck in a barrier or destructor.
+        std::atomic<bool> timedOut{false};
+        std::thread watchdog([&] {
+            while (!release && std::chrono::steady_clock::now() < deadline) std::this_thread::yield();
+            if (!release.exchange(true)) timedOut = true;
+        });
+        std::atomic<int> simulation{0};
+        executor.run(19, [&](size_t) { ++simulation; });
+        ComputeExecutor::Group group{11, {[](void* p, size_t) { ++*static_cast<std::atomic<int>*>(p); }, &simulation}};
+        auto batch = executor.submit(std::span(&group, 1));
+        executor.join(batch);
+        executor.joinAll();
+        CHECK(entered.load());
+        CHECK(simulation.load() == 30);
+        CHECK_FALSE(work->finished());
+        work->cancel();
+        release = true;
+        watchdog.join();
+        executor.cancelPresentationAndWait();
+        CHECK_FALSE(timedOut.load());
+        CHECK_FALSE(ownerRan.load());
+        CHECK(work->status() == ComputeExecutor::Presentation::Status::Canceled);
+    }
+}
+TEST_CASE("presentation progresses before a continuous simulation backlog drains")
+{
+    if constexpr (!GAGCore::ThreadSupport::available) return;
+    ComputeExecutor executor;
+    executor.configure(2);
+    struct State { std::atomic<bool> entered{false}, release{false}; std::atomic<size_t> completed{0}; } state;
+    ComputeExecutor::Group group{10000, {[](void* p, size_t index) {
+        auto& state = *static_cast<State*>(p);
+        if (!index) {
+            state.entered = true;
+            while (!state.release) std::this_thread::yield();
+        }
+        ++state.completed;
+    }, &state}};
+    auto batch = executor.submit(std::span(&group, 1));
+    const auto deadline = std::chrono::steady_clock::now() + std::chrono::seconds(5);
+    while (!state.entered && std::chrono::steady_clock::now() < deadline) std::this_thread::yield();
+    std::atomic<size_t> observed{10000};
+    auto work = executor.submitPresentation(1, [&](size_t) { observed = state.completed.load(); });
+    state.release = true;
+    while (!work->finished() && std::chrono::steady_clock::now() < deadline) std::this_thread::yield();
+    CHECK(work->finished());
+    CHECK(observed.load() < 10000);
+    executor.join(batch);
+    executor.cancelPresentationAndWait();
+    CHECK(state.completed.load() == 10000);
+}
+TEST_CASE("presentation replacement, chunk pumping, cancellation and errors retain no captures")
+{
+    ComputeExecutor executor;
+    executor.configure(1);
+    int count = 0;
+    auto input = std::make_shared<int>(4);
+    std::weak_ptr<int> weak = input;
+    auto old = executor.submitPresentation(1, [input, &count](size_t) { count += *input; });
+    input.reset();
+    auto current = executor.submitPresentation(3, [&](size_t i) { count += int(i) + 1; });
+    CHECK(weak.expired());
+    CHECK(old->status() == ComputeExecutor::Presentation::Status::Canceled);
+    executor.joinAll();
+    CHECK(count == 0);
+    CHECK(executor.pumpPresentation());
+    CHECK(count == 1);
+    CHECK_FALSE(current->finished());
+    current->cancel();
+    CHECK(executor.pumpPresentation());
+    CHECK(count == 1);
+    CHECK(current->status() == ComputeExecutor::Presentation::Status::Canceled);
+    auto bad = executor.submitPresentation(1, [](size_t) { throw std::runtime_error("presentation failure"); });
+    CHECK(executor.pumpPresentation());
+    CHECK_THROWS_WITH_AS(bad->rethrowFailure(), "presentation failure", std::runtime_error);
+    CHECK_FALSE(executor.pumpPresentation());
+    auto good = executor.submitPresentation(2, [&](size_t) { ++count; });
+    CHECK(executor.pumpPresentation());
+    CHECK(executor.pumpPresentation());
+    CHECK(good->status() == ComputeExecutor::Presentation::Status::Complete);
+    CHECK(count == 3);
+    CHECK(executor.presentationMetrics().replaced == 1);
+    auto pending = executor.submitPresentation(1, [](size_t) { FAIL("canceled job executed"); });
+    executor.configure(1);
+    CHECK(pending->status() == ComputeExecutor::Presentation::Status::Canceled);
+}
+TEST_CASE("resumable presentation yields without advancing or retaining canceled inputs")
+{
+    ComputeExecutor executor;
+    executor.configure(1);
+    auto input=std::make_shared<int>(0);
+    std::weak_ptr<int> weak=input;
+    std::vector<size_t> visited;
+    auto work=executor.submitResumablePresentation(2,[input,&visited](size_t chunk) {
+        visited.push_back(chunk);
+        return ++*input==3;
+    });
+    input.reset();
+    for (int i=0;i<4;++i) {
+        REQUIRE(executor.pumpPresentation());
+        CHECK_FALSE(work->finished());
+    }
+    CHECK(visited==std::vector<size_t>{0,0,0,1});
+    work->cancel();
+    REQUIRE(executor.pumpPresentation());
+    CHECK(weak.expired());
+    CHECK(work->status()==ComputeExecutor::Presentation::Status::Canceled);
+    CHECK(visited.size()==4);
+}
+
 }

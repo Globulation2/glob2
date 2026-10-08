@@ -19,6 +19,7 @@
 
 #include "Game.h"
 #include "GameGUI.h"
+#include "render/scene/BuildingCatalogView.h"
 #include "GameGUITouch.h"
 #include "GameGUIDialog.h"
 #include "GameGUIInternal.h"
@@ -102,23 +103,21 @@ bool GameGUI::processTypingInput(SDL_Event *event)
 			message = cmd->body;
 			if (cmd->name == "a")
 			{
-				nchatMask = localTeam->allies;
+				nchatMask = drawnScene().panels.local.state().allies;
 			}
 			else
 			{
-				for (int i = 0; i < game.gameHeader.getNumberOfPlayers(); ++i)
-				{
-					if (cmd->name == game.gameHeader.getBasePlayer(i).name)
-					{
-						nchatMask = game.gameHeader.getBasePlayer(i).teamNumberMask | localTeam->me;
-						break;
-					}
-				}
+                if (const auto& session = drawnScene().world.session)
+                    for (const auto& player : session->players)
+                        if (cmd->name == player.name) {
+                            nchatMask = Team::teamNumberToMask(player.teamNumber) | Team::teamNumberToMask(localTeamNo);
+                            break;
+                        }
 			}
 		}
 
 		if (!message.empty())
-			orderQueue.push_back(shared_ptr<Order>(new MessageOrder(nchatMask, MessageOrder::NORMAL_MESSAGE_TYPE, message.c_str())));
+			enqueueOrder(shared_ptr<Order>(new MessageOrder(nchatMask, MessageOrder::NORMAL_MESSAGE_TYPE, message.c_str())));
 	}
 	closeChat();
 	return true;
@@ -126,6 +125,11 @@ bool GameGUI::processTypingInput(SDL_Event *event)
 
 void GameGUI::processEvent(SDL_Event *event)
 {
+    // Live diagnostic dumps and dialog construction are exceptional owner work.
+    const bool diagnostic=(event->type==SDL_EVENT_MOUSE_BUTTON_DOWN || event->type==SDL_EVENT_MOUSE_BUTTON_UP) && (inputState.modifiers() & SDL_KMOD_SHIFT);
+    const bool ownerDialog = gameMenuScreen && inGameMenu != IGM_TELEMETRY
+        && inGameMenu != IGM_ALLIANCE && inGameMenu != IGM_OBJECTIVES;
+    if ((diagnostic || ownerDialog || hive) && parkForClient([&]{processEvent(event);})) return;
     if (GAGCore::scrollGesture(*event) && !inputState.hasFocus()) return;
     inputState.observe(*event);
     if(hiveCards && !gameMenuScreen && !scrollableText && !inGameMenu && globalContainer->settings.hiveMindEnabled && hiveCards->handle(*event))return;
@@ -235,7 +239,7 @@ void GameGUI::processEvent(SDL_Event *event)
 	else if (event->type==SDL_EVENT_QUIT)
 	{
 		exitGlobCompletely=true;
-		orderQueue.push_back(shared_ptr<Order>(new PlayerQuitsGameOrder(localPlayer)));
+		enqueueOrder(shared_ptr<Order>(new PlayerQuitsGameOrder(localPlayer)));
 		flushOutgoingAndExit=true;
 	}
 }
@@ -273,6 +277,7 @@ void GameGUI::handleMenuIconClick(SDL_MouseButtonEvent mouseEvent)
 
 		if (menu != -1)
 		{
+            if (menu == IGM_MAIN && parkForClient([&]{handleMenuIconClick(mouseEvent);})) return;
 			if (inGameMenu == menu)
 			{
 				closeDialog();
@@ -365,8 +370,10 @@ void GameGUI::handleMouseButtonDown(SDL_MouseButtonEvent mouseEvent)
 			{
 				// Direct flag grabs still move the flag; other map objects
 				// can start a camera drag.
-				const bool movingFlag = selectionMode == BUILDING_SELECTION && selectionPushed &&
-					selectionBuilding()->type->semantics.relocatable;
+				const auto* ref=std::get_if<BuildingRef>(&selection);
+                const auto* building=ref ? inputBuilding(*ref) : nullptr;
+                const bool movingFlag = selectionMode == BUILDING_SELECTION && selectionPushed &&
+                    building && drawnScene().entities.type(*building)->semantics.relocatable;
 				mapPanPushed = !movingFlag;
 				panMouseX=mouseEvent.x;
 				panMouseY=mouseEvent.y;
@@ -394,8 +401,10 @@ void GameGUI::handleMouseButtonUp(SDL_MouseButtonEvent mouseEvent)
 	int button=mouseEvent.button;
 	if ((button==SDL_BUTTON_LEFT) && camera.contains(mouseEvent.x,mouseEvent.y) && mouseEvent.y>=16)
 	{
+        const auto* ref=std::get_if<BuildingRef>(&selection);
+        const auto* building=ref ? inputBuilding(*ref) : nullptr;
 		if (!mapPanPushed && (selectionMode==BUILDING_SELECTION) &&
-			selectionPushed && selectionBuilding()->type->semantics.relocatable)
+			selectionPushed && building && drawnScene().entities.type(*building)->semantics.relocatable)
 		{
 			// update flag
 			moveFlag(mapMouseX(mouseEvent.x), mapMouseY(mouseEvent.y), true);
@@ -484,34 +493,20 @@ void GameGUI::nextDisplayMode(void)
 	} while ((1<<((int)displayMode)) & hiddenGUIElements);
 }
 
-void GameGUI::repairAndUpgradeBuilding(Building *building, bool repair, bool upgrade)
+void GameGUI::repairAndUpgradeBuilding(const SceneBuildingPanel* building, bool repair, bool upgrade)
 {
-	BuildingType *buildingType = building->type;
-
-	// building site can't be repaired nor upgraded
-	if (buildingType->isBuildingSite)
-		return;
-	// we can upgrade or repair only building from our team
-	if (building->owner->teamNumber != localTeamNo)
-		return;
-	int typeNum = buildingType->nextLevel;
-	int unitWorking = defaultAssign.getDefaultAssignedUnits(typeNum);
-	int repairUnitWorking = defaultAssign.getDefaultAssignedUnits(buildingType->prevLevel);
-	int unitWorkingFuture = defaultAssign.getDefaultAssignedUnits(typeNum>=0 ? game.buildingsTypes.getFinishedTypeNum(game.buildingsTypes.get(typeNum)->key) : -1);
-	if ((building->hp < building->getEffectiveMaxHp()) && repair)
-	{
-		// repair
-		if ((building->type->semantics.repairable && buildingType->prevLevel>=0) &&
-			(building->isHardSpaceForBuildingSite(Building::REPAIR)) &&
-			(localTeam->maxBuildLevel() >= game.buildingsTypes.get(buildingType->prevLevel)->semantics.requiredWorkerLevel))
-			orderQueue.push_back(shared_ptr<Order>(new OrderConstruction(building->gid, repairUnitWorking, std::clamp(displayedMaxUnitWorking(*building),0,buildingType->semantics.assignmentLimit))));
-	}
-	else if (upgrade)
-	{
-		// upgrade
-		if (building->isUpgradeAvailable() &&
-			(building->isHardSpaceForBuildingSite(Building::UPGRADE)) &&
-			(localTeam->maxBuildLevel() >= game.buildingsTypes.get(buildingType->nextLevel)->semantics.requiredWorkerLevel))
-			orderQueue.push_back(shared_ptr<Order>(new OrderConstruction(building->gid, unitWorking, unitWorkingFuture)));
-	}
+    if (!building || building->owner().number != localTeamNo || building->type->isBuildingSite) return;
+    const auto& type = *building->type;
+    if (repair && building->state().hp < building->state().maxHp)
+    {
+        if (building->hardSpaceForRepair)
+            enqueueOrder(std::make_shared<OrderConstruction>(building->state().gid,
+                defaultAssign.getDefaultAssignedUnits(drawnScene(), type.prevLevel),
+                std::clamp(displayedMaxUnitWorking(*building), 0, type.semantics.assignmentLimit)));
+    }
+    else if (upgrade && building->hardSpaceForUpgrade)
+        enqueueOrder(std::make_shared<OrderConstruction>(building->state().gid,
+            defaultAssign.getDefaultAssignedUnits(drawnScene(), type.nextLevel),
+            defaultAssign.getDefaultAssignedUnits(drawnScene(), BuildingCatalogView(*drawnScene().buildingTypes).getFinishedTypeNum(
+                BuildingCatalogView(*drawnScene().buildingTypes).get(type.nextLevel)->key))));
 }

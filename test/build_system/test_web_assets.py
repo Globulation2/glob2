@@ -51,7 +51,7 @@ class WebAssetPlanTests(unittest.TestCase):
 
     def test_in_game_sprites_follow_the_main_menu(self):
         # GlobalContainer::loadGameGraphics, including every building's artwork.
-        for path in ('data/gfx/unit0r.png', 'data/gfx/unit1000.png', 'data/gfx/terrain0.png', 'data/gfx/terrain333.png', 'data/gfx/water0.png', 'data/gfx/gamegui0.png',
+        for path in ('data/gfx/unit0r.png', 'data/gfx/unit1000.png', 'data/gfx/terrain0.png', 'data/gfx/terrain333.png', 'data/gfx/terrain-water0.png', 'data/gfx/gamegui0.png',
                      'data/gfx/ressource0.png', 'data/gfx/particle0.png', 'data/gfx/swarm0b0.png',
                      'data/gfx/inn0b0r.png', 'data/gfx/racetrack2b0.png', 'data/gfx/minibuildingsite5.png',
                      'data/gfx/explorationflag0r.png', 'data/gfx/wallc0.png'):
@@ -70,7 +70,7 @@ class WebAssetPlanTests(unittest.TestCase):
                                                 'data/gfx/unitmini.sheet', 'data/gfx/unitmini-sheet-0.png'], {'unit'}),
                          {'data/gfx/unit.sheet', 'data/gfx/unit-sheet-3.webp'})
 
-    def test_terrain_registry_atlases_and_backdrops_are_game_sprites(self):
+    def test_terrain_registry_atlases_and_decor_are_game_sprites(self):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
             (root / 'src/app').mkdir(parents=True)
@@ -84,7 +84,7 @@ class WebAssetPlanTests(unittest.TestCase):
                 'constexpr auto backdrop = "data/gfx/future-backdrop";\n')
             (root / 'data/terrain').mkdir(parents=True)
             (root / 'data/terrain/tileset.json').write_text(json.dumps({'materials': [
-                {'sprite': 'data/materials/rock', 'backdrop': {'sprite': 'data/gfx/glow'}}]}))
+                {'sprite': 'data/materials/rock', 'decor': {'sprite': 'data/gfx/glow'}}]}))
             names = web_assets.game_sprites(root)
             self.assertEqual(names, {'unit', 'terrain', 'gamegui', 'swarm0b',
                                      'future-terrain', 'future-backdrop', 'data/materials/rock', 'glow'})
@@ -119,7 +119,7 @@ class WebAssetPlanTests(unittest.TestCase):
         for resource in json.loads((ROOT / 'data/resources/registry.json').read_text())['resources']:
             prefix = resource['presentation']['sprite']
             self.assertIn(prefix.removeprefix('data/gfx/'), web_assets.game_sprites(ROOT))
-        for key in ('gold-ore', 'iron-ore', 'sand', 'cotton'):
+        for key in ('gold-ore', 'iron-ore', 'silica', 'cotton'):
             self.assertEqual(self.owner['data/gfx/resource-' + key + '0.png'], 'game')
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)

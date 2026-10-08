@@ -28,6 +28,7 @@ struct BuildingView : BuildingStateRecord
 	int team = 0;
 	int maxHp = 0;
 	bool usesTeamResources = false;
+	MaterialMask availableSupplyMask = 0; // Stock after reservations, captured for gradient readers.
 	UnitRange working, inside;
 };
 
@@ -38,11 +39,16 @@ struct UnitView : UnitState
 	BuildingRef attached, target;
 };
 
+struct ColorRecord { Uint8 r = 0, g = 0, b = 0, a = 255; };
 struct TeamView
 {
 	int number = 0, prestige = 0, startX = 0, startY = 0;
-	bool alive = false;
-	Uint32 mask = 0, allies = 0, enemies = 0;
+	bool alive = false, won = false, lost = false;
+	ColorRecord color;
+	std::string firstPlayerName;
+	int unitConversionGained = 0, unitConversionLost = 0, noMoreBuildingSitesCountdown = 0;
+	std::array<Sint32, MaterialSlotCount> reservedMaterials{};
+	Uint32 mask = 0, allies = 0, enemies = 0, playersMask = 0;
 	Uint32 foodVision = 0, exchangeVision = 0, otherVision = 0;
 	TeamStat statistics;
 	std::array<Sint32, MaterialSlotCount> materials{};

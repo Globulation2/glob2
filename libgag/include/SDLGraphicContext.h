@@ -483,7 +483,7 @@ namespace GAGCore
 			unsigned program = 0, rigProgram = 0, fragment = 0, framebuffer = 0, depth = 0;
 			struct RigBuffers
 			{
-				unsigned vertices = 0, indices = 0;
+				unsigned vertices = 0, indices = 0, vao = 0;
 			};
 			struct Uniforms
 			{
@@ -642,6 +642,9 @@ namespace GAGCore
         static void translateMouseCoordinates(float &x, float &y);
 		//! rewrite a polled event's mouse coordinates from window pixels to logical coordinates
 		static void translateMouseEvent(SDL_Event *event);
+		//! Counts render device/target resets seen by translateMouseEvent, so caches of
+		//! composed surfaces (editor swatches) can drop themselves without an event hook.
+		static std::uint64_t renderResetGeneration();
 		//! Pump events at a frame boundary; modal expose callbacks only present a cached frame.
 		static int pollEvent(SDL_Event *event);
 		virtual void setClipRect(int x, int y, int w, int h);

@@ -19,6 +19,8 @@ export type Mesh = {
   count: number;
   frames: number;
   uv: Float32Array;
+  /** Separate procedural unwrap; omitted assets use the paint chart. */
+  detailUV?: Float32Array;
   indices: Uint32Array;
   /** xyz, normal xyz per vertex in clip space: the fixed chart for fill and
    * pattern tools, and the framing reference for the inspection camera. */
@@ -36,8 +38,16 @@ export type ViewTransform = {
   pivot: number[];
   radius: number;
 };
-export type Camera = { yaw: number; zoom: number; game: boolean; angle: number };
-export const DEFAULT_CAMERA: Camera = { yaw: 0, zoom: 1, game: false, angle: 0 };
+/** `yaw` turns the model about its upright axis; `pitch` raises or lowers the
+ * inspection camera from the exported game elevation (about 45 degrees). */
+export type Camera = { yaw: number; pitch: number; zoom: number; game: boolean; angle: number };
+export const DEFAULT_CAMERA: Camera = { yaw: 0, pitch: 0, zoom: 1, game: false, angle: 0 };
+/** Inspection tilt stops equally far above and below the exported game view. */
+export const MAX_PITCH = (40 * Math.PI) / 180;
+export const MIN_PITCH = -MAX_PITCH;
+export function clampPitch(pitch: number): number {
+  return Math.max(MIN_PITCH, Math.min(MAX_PITCH, pitch));
+}
 export const ACTIONS = {
   worker: ['walk', 'swim', 'harvest'],
   warrior: ['walk', 'swim', 'fight'],
@@ -266,6 +276,33 @@ async function loadBakedMesh(asset: string) {
     throw new Error('Model and camera versions do not match. Reload to update.');
   return { mesh: decode(bytes), view };
 }
+export function decodeDetailUV(bytes: ArrayBuffer, count: number): Float32Array {
+  const view = new DataView(bytes);
+  if (
+    count < 3 ||
+    count > MAX_VERTICES ||
+    bytes.byteLength !== 8 + count * 8 ||
+    String.fromCharCode(...new Uint8Array(bytes, 0, 4)) !== 'GUV1' ||
+    view.getUint32(4, true) !== count
+  )
+    throw new Error('Invalid material unwrap dimensions.');
+  const uv = new Float32Array(count * 2);
+  for (let i = 0; i < uv.length; i++) {
+    const value = view.getFloat32(8 + i * 4, true);
+    if (!Number.isFinite(value) || value < 0 || value > 1)
+      throw new Error('Invalid material unwrap coordinate.');
+    uv[i] = value;
+  }
+  return uv;
+}
+async function withDetailUV(asset: string, loaded: { mesh: Mesh; view: ViewTransform }) {
+  if (!asset.startsWith('worker-') && !asset.startsWith('warrior-')) return loaded;
+  const response = await fetch(`/skins/models/${asset}.guv`);
+  if (response.status === 404) return loaded;
+  if (!response.ok) throw new Error('Could not load the material unwrap.');
+  loaded.mesh.detailUV = decodeDetailUV(await response.arrayBuffer(), loaded.mesh.count);
+  return loaded;
+}
 const cache = new Map<string, Promise<{ mesh: Mesh; view: ViewTransform }>>();
 /** Unit clips load their fitted asset and fall back to the baked clip, which
  * shares the paint layout, if the fitted asset is missing or invalid. */
@@ -279,10 +316,12 @@ export function loadMesh(asset: string) {
             return loadBakedMesh(asset);
           })
         : loadBakedMesh(asset)
-    ).catch((e: unknown) => {
-      cache.delete(asset);
-      throw e;
-    });
+    )
+      .then((loaded) => withDetailUV(asset, loaded))
+      .catch((e: unknown) => {
+        cache.delete(asset);
+        throw e;
+      });
     cache.set(asset, pending);
   }
   return pending;
@@ -352,6 +391,9 @@ export function projectPose(
   const { center, radius } = inspectionFit(mesh, view);
   const sy = Math.sin(camera.yaw),
     cy = Math.cos(camera.yaw);
+  const pitch = clampPitch(camera.pitch),
+    sp = Math.sin(pitch),
+    cp = Math.cos(pitch);
   const ca = Math.cos((-camera.angle * Math.PI) / 180),
     sa = Math.sin((-camera.angle * Math.PI) / 180);
   const factor = (camera.zoom * INSPECTION_FILL) / radius;
@@ -380,7 +422,10 @@ export function projectPose(
         // camera basis. Rotating projected axes would tilt the model as it turns.
         const x = cy * a[0]! - sy * a[1]!,
           y = sy * a[0]! + cy * a[1]!;
-        return [0, 1, 2].map((k) => n[k]! * x + n[k + 3]! * y + n[k + 6]! * a[2]!);
+        const c = [0, 1, 2].map((k) => n[k]! * x + n[k + 3]! * y + n[k + 6]! * a[2]!);
+        // Pitch swings the camera about the screen's horizontal axis, after the
+        // turn, so the model keeps its heading and the screen stays level.
+        return [c[0]!, cp * c[1]! - sp * c[2]!, sp * c[1]! + cp * c[2]!];
       };
       position = rotate(p.map((v, k) => v - center[k]!));
       position = [

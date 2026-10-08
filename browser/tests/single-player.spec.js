@@ -1,6 +1,6 @@
 const {clickCreateMap,clickCampaignFooter,chooseEditorLandscape}=require('./editor-controls');
 const {editTextField}=require('./main-menu');
-const {gameURL,clickMainMenu,clickSettingsDone,clickCustomGameStart,clickCustomAIProfile,clickControl,clickListRow,controlBox}=require('./main-menu');
+const {gameURL,clickMainMenu,clickSettingsDone,clickCustomGameStart,clickCustomAIProfile,clickControl,clickListRow,controlBox,control}=require('./main-menu');
 const {darkShare}=require('./pixels');
 const {test, expect} = require('@playwright/test');
 
@@ -211,12 +211,11 @@ test('map editor frames resume after cancelling quit and can discard a new map',
   await screen(page, 'MapEditorScreen');
   await page.locator('#canvas').press('Escape', {delay:80});
   await clickControl(page, 'quit');
-  await screen(page, 'MessageScreen');
+  await control(page, 'choice/2'); // The unsaved-changes card over the map.
   await page.locator('#canvas').press('Escape', {delay:80});
   await screen(page, 'MapEditorScreen');
   await page.locator('#canvas').press('Escape', {delay:80});
   await clickControl(page, 'quit');
-  await screen(page, 'MessageScreen');
   await clickControl(page, 'choice/1'); // Quit without saving.
   await screen(page, 'EditorMainMenu');
   expect(errors).toEqual([]);
@@ -232,14 +231,12 @@ test('editor save cancellation keeps edits open and completed fertility saves th
   await screen(page, 'MapEditorScreen');
   await page.locator('#canvas').press('Escape', {delay:80});
   await clickControl(page, 'quit');
-  await screen(page, 'MessageScreen');
   await clickControl(page, 'choice/0'); // Save before quit.
   await screen(page, 'MapEditorScreen');
   await page.locator('#canvas').press('Escape', {delay:80}); // Cancel file selection.
   await page.locator('#canvas').press('Escape', {delay:80}); // Reopen editor menu.
   await clickControl(page, 'quit');
-  await screen(page, 'MessageScreen'); // Unsaved edits are still present.
-  await clickControl(page, 'choice/0');
+  await clickControl(page, 'choice/0'); // Unsaved edits are still present.
   await screen(page, 'MapEditorScreen');
   await editTextField(page,'Browser editor');
   await clickControl(page, 'ok');
@@ -335,6 +332,8 @@ test('cancelling an editor replacement preserves edits and a completed load repl
   for (const cancel of [true, false]) {
     await page.locator('#canvas').press('Escape', {delay:80});
     await clickControl(page, 'load'); // Load map from inside the editor.
+    // The new map is unsaved: the card asks first; keep it by not saving.
+    await clickControl(page, 'choice/1');
     await clickListRow(page, 'files', 0);
     await holdLoader(page, 'EditorLoadScreen');
     await clickControl(page, 'ok');
@@ -347,7 +346,7 @@ test('cancelling an editor replacement preserves edits and a completed load repl
     await page.locator('#canvas').press('Escape', {delay:80});
     await clickControl(page, 'quit');
     if (cancel) {
-      await screen(page, 'MessageScreen'); // The original unsaved map is retained.
+      await control(page, 'choice/2'); // The original unsaved map is retained.
       await page.locator('#canvas').press('Escape', {delay:80});
       await screen(page, 'MapEditorScreen');
     } else await screen(page, 'EditorMainMenu'); // Replacement is unmodified.
@@ -378,7 +377,6 @@ test(`map generation can be cancelled before retrying (${terrain.name})`, async 
   await screen(page, 'MapEditorScreen');
   await page.locator('#canvas').press('Escape', {delay:80});
   await clickControl(page, 'quit');
-  await screen(page, 'MessageScreen');
   await clickControl(page, 'choice/1');
   await screen(page, 'EditorMainMenu');
   expect(errors).toEqual([]);

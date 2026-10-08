@@ -14,8 +14,8 @@
 #include "UnitType.h"
 #include <SDL3/SDL.h>
 
-UnitInfoTitle::UnitInfoTitle(MapEdit& me, const widgetRectangle& area, const std::string& group, const std::string& name, const std::string& action, Unit* unit)
-	: MapEditorWidget(me, area, group, name, action), unit(unit)
+UnitInfoTitle::UnitInfoTitle(MapEdit& me, const widgetRectangle& area, const std::string& group, const std::string& name, const std::string& action)
+	: MapEditorWidget(me, area, group, name, action)
 {
 
 }
@@ -26,7 +26,9 @@ void UnitInfoTitle::draw()
 {
 	const int xpos=area.x;
 	const int ypos=area.y;
-	Unit* u=unit;
+    const auto& frame=*me.view.scene;
+    const auto* u=frame.entities.unit(frame.entities.selectedUnit);
+    if (!u) return;
 
 	// draw "unit of player" title
 	Uint8 r, g, b;
@@ -34,7 +36,7 @@ void UnitInfoTitle::draw()
 	title += getUnitName(u->typeNum);
 	title += " (";
 
-	title += displayPlayerName(*u->owner);
+	title += displayPlayerName(frame.entities.teams[u->team].firstPlayerName);
 	title += ")";
 
 	r=160;
@@ -50,15 +52,12 @@ void UnitInfoTitle::draw()
 
 
 
-void UnitInfoTitle::setUnit(Unit* aUnit)
-{
-	unit=aUnit;
-}
 
 
 
-UnitPicture::UnitPicture(MapEdit& me, const widgetRectangle& area, const std::string& group, const std::string& name, const std::string& action, Unit* unit)
-	: MapEditorWidget(me, area, group, name, action), unit(unit)
+
+UnitPicture::UnitPicture(MapEdit& me, const widgetRectangle& area, const std::string& group, const std::string& name, const std::string& action)
+	: MapEditorWidget(me, area, group, name, action)
 {
 
 }
@@ -70,9 +69,12 @@ void UnitPicture::draw()
 	const int xpos=area.x;
 	const int ypos=area.y;
 
+    const auto& frame=*me.view.scene;
+    const auto* unit=frame.entities.unit(frame.entities.selectedUnit);
+    if (!unit) return;
 	// draw unit's image
 	int imgid;
-	UnitType *ut=unit->race->getUnitType(unit->typeNum, 0);
+	const UnitType *ut=&frame.world.catalogs->unitTypes[unit->typeNum][0];
 	assert(unit->action>=0);
 	assert(unit->action<NB_MOVE);
 	imgid=ut->startImage[unit->action];
@@ -86,7 +88,7 @@ void UnitPicture::draw()
 	imgid=unitAnimationFrame(imgid, dir, delta);
 
 	Sprite *unitSprite=globalContainer->units;
-	unitSprite->setBaseColor(unit->owner->color);
+	unitSprite->setBaseColor(presentationColor(frame.entities.teams[unit->team].color));
 	int decX = (32-unitSprite->getW(imgid))/2;
 	int decY = (32-unitSprite->getH(imgid))/2;
 	globalContainer->gfx->drawSprite(xpos+12+decX, ypos+7+decY, unitSprite, imgid);
@@ -95,10 +97,7 @@ void UnitPicture::draw()
 
 
 
-void UnitPicture::setUnit(Unit* aUnit)
-{
-	unit=aUnit;
-}
+
 
 
 
@@ -128,24 +127,30 @@ FractionValueText::~FractionValueText()
 
 void FractionValueText::draw()
 {
-	globalContainer->gfx->drawString(area.x, area.y, globalContainer->littleFont, FormattableString("%0:  %1/%2").arg(Toolkit::getStringTable()->getString(label.c_str())).arg(*numerator).arg(*denominator).c_str());
+    if (!me.view.scene || !readValue || (!isDenominatorPreset && !readMax)) return;
+    const auto value=readValue(*me.view.scene);
+    const auto maximum=isDenominatorPreset ? *denominator : readMax(*me.view.scene);
+	globalContainer->gfx->drawString(area.x, area.y, globalContainer->littleFont, FormattableString("%0:  %1/%2").arg(Toolkit::getStringTable()->getString(label.c_str())).arg(value).arg(maximum).c_str());
 }
 
 
 
-void FractionValueText::setValues(Sint32* aNumerator, Sint32* aDenominator)
+void FractionValueText::setValues(Sint32* aNumerator, Sint32* aDenominator, EditorValueReader reader, EditorValueReader maxReader)
 {
 	if (isDenominatorPreset) delete denominator;
 	isDenominatorPreset=false;
 	numerator=aNumerator;
+    readValue=std::move(reader);
 	denominator=aDenominator;
+    readMax=std::move(maxReader);
 }
 
 
 
-void FractionValueText::setValues(Sint32* aNumerator)
+void FractionValueText::setValues(Sint32* aNumerator, EditorValueReader reader)
 {
 	numerator=aNumerator;
+    readValue=std::move(reader);
 }
 
 
@@ -177,11 +182,11 @@ ValueScrollBox::~ValueScrollBox()
 void ValueScrollBox::draw()
 {
 	//Sometimes a scrollbox gets initiated with max-value 0. A turret construction site has 0/0 stone and 0/0 shots. To not run into arithmetic exceptions those cases are treated here.
-	if((*max) != 0)
+	if(maximumValue() != 0)
 	{
 		globalContainer->gfx->setClipRect(area.x, area.y, 112, 16);
 		globalContainer->gfx->drawSprite(area.x, area.y, globalContainer->gamegui, 9);
-		int size=int((Sint64(*value)*92)/(*max));
+		int size=int((Sint64(currentValue())*92)/maximumValue());
 		globalContainer->gfx->setClipRect(area.x+10, area.y, size, 16);
 		globalContainer->gfx->drawSprite(area.x+10, area.y+3, globalContainer->gamegui, 10);
 		globalContainer->gfx->setClipRect();
@@ -192,12 +197,14 @@ void ValueScrollBox::draw()
 
 void ValueScrollBox::handleClick(int relMouseX, int relMouseY)
 {
+    const auto before=*value;
 	if(relMouseX<10)
 		(*value)=std::max((*value)-1, 0);
 	else if(relMouseX>102)
 		(*value)=std::min((*value)+1, (*max));
 	else
 		(*value)=int(float(relMouseX-10) * (float(*max)/float(92))+0.5);
+    if (*value!=before) me.game.snapshots().invalidateBoundary();
 	MapEditorWidget::handleClick(relMouseX, relMouseY);
 }
 
@@ -205,23 +212,38 @@ void ValueScrollBox::handleClick(int relMouseX, int relMouseY)
 
 void ValueScrollBox::setValue(int requested)
 {
+    const auto before=*value;
     *value = std::clamp(requested, 0, std::max(0, int(*max)));
+    if (*value!=before) me.game.snapshots().invalidateBoundary();
+    me.mapHasBeenModified();
     activate();
 }
 
-void ValueScrollBox::setValues(Sint32* aValue, Sint32* aMax)
+void ValueScrollBox::setValues(Sint32* aValue, Sint32* aMax, EditorValueReader reader, EditorValueReader maxReader)
 {
 	if (isMaxPreset) delete max;
 	isMaxPreset=false;
 	value=aValue;
+    readValue=std::move(reader);
 	max=aMax;
+    readMax=std::move(maxReader);
 }
 
 
 
-void ValueScrollBox::setValues(Sint32* aValue)
+void ValueScrollBox::setValues(Sint32* aValue, EditorValueReader reader)
 {
 	value=aValue;
+    readValue=std::move(reader);
 }
 
 
+
+int ValueScrollBox::currentValue() const
+{
+    return me.view.scene && readValue ? readValue(*me.view.scene) : 0;
+}
+int ValueScrollBox::maximumValue() const
+{
+    return isMaxPreset ? *max : me.view.scene && readMax ? readMax(*me.view.scene) : 0;
+}

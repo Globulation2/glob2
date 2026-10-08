@@ -91,23 +91,28 @@ bool MapEdit::performBuildingAction(const std::string& action, float relMouseX, 
 			selectionMode=EditingBuilding;
 			panelMode=BuildingEditor;
 			selectedBuildingGID=gid;
+            view.selectedBuilding=b;
 			enableOnlyGroup("building editor");
-			buildingInfoTitle->setBuilding(b);
-			buildingPicture->setBuilding(b);
 			buildingEditRows.clear(); buildingEditFirstRow=0;
 			const auto& spec=b->type->semantics;
-			buildingHPLabel->setValues(&b->hp,&b->type->hpMax);
-			buildingHPScrollBox->setValues(&b->hp,&b->type->hpMax);
-			buildingAssignedLabel->setValues(&b->maxUnitWorking,&b->type->semantics.assignmentLimit);
-			buildingAssignedScrollBox->setValues(&b->maxUnitWorking,&b->type->semantics.assignmentLimit);
-			buildingWorkerRatioLabel->setValues(&b->ratio[WORKER]); buildingWorkerRatioScrollBox->setValues(&b->ratio[WORKER]);
-			buildingExplorerRatioLabel->setValues(&b->ratio[EXPLORER]); buildingExplorerRatioScrollBox->setValues(&b->ratio[EXPLORER]);
-			buildingWarriorRatioLabel->setValues(&b->ratio[WARRIOR]); buildingWarriorRatioScrollBox->setValues(&b->ratio[WARRIOR]);
-			buildingBulletsLabel->setValues(&b->bullets,&b->type->maxBullets); buildingBulletsScrollBox->setValues(&b->bullets,&b->type->maxBullets);
-			buildingMinimumLevelLabel->setValues(&b->minLevelToFlag); buildingMinimumLevelScrollBox->setValues(&b->minLevelToFlag);
-			buildingWorkerLevelLabel->setValues(&b->minWorkerLevelToFlag); buildingWorkerLevelScrollBox->setValues(&b->minWorkerLevelToFlag);
+			buildingHPLabel->setValues(&b->hp,&b->type->hpMax, [](const PresentationFrame& frame) { const auto* value=frame.entities.building(frame.entities.selectedBuilding.ref); return value ? Sint32(value->hp) : 0; }, [](const PresentationFrame& frame) { const auto* value=frame.entities.building(frame.entities.selectedBuilding.ref); return value ? Sint32(frame.entities.type(*value)->hpMax) : 0; });
+			buildingHPScrollBox->setValues(&b->hp,&b->type->hpMax, [](const PresentationFrame& frame) { const auto* value=frame.entities.building(frame.entities.selectedBuilding.ref); return value ? Sint32(value->hp) : 0; }, [](const PresentationFrame& frame) { const auto* value=frame.entities.building(frame.entities.selectedBuilding.ref); return value ? Sint32(frame.entities.type(*value)->hpMax) : 0; });
+			buildingAssignedLabel->setValues(&b->maxUnitWorking,&b->type->semantics.assignmentLimit, [](const PresentationFrame& frame) { const auto* value=frame.entities.building(frame.entities.selectedBuilding.ref); return value ? Sint32(value->maxUnitWorking) : 0; }, [](const PresentationFrame& frame) { const auto* value=frame.entities.building(frame.entities.selectedBuilding.ref); return value ? Sint32(frame.entities.type(*value)->semantics.assignmentLimit) : 0; });
+			buildingAssignedScrollBox->setValues(&b->maxUnitWorking,&b->type->semantics.assignmentLimit, [](const PresentationFrame& frame) { const auto* value=frame.entities.building(frame.entities.selectedBuilding.ref); return value ? Sint32(value->maxUnitWorking) : 0; }, [](const PresentationFrame& frame) { const auto* value=frame.entities.building(frame.entities.selectedBuilding.ref); return value ? Sint32(frame.entities.type(*value)->semantics.assignmentLimit) : 0; });
+			buildingWorkerRatioLabel->setValues(&b->ratio[WORKER], [](const PresentationFrame& frame) { const auto* value=frame.entities.building(frame.entities.selectedBuilding.ref); return value ? Sint32(value->ratio[WORKER]) : 0; }); buildingWorkerRatioScrollBox->setValues(&b->ratio[WORKER], [](const PresentationFrame& frame) { const auto* value=frame.entities.building(frame.entities.selectedBuilding.ref); return value ? Sint32(value->ratio[WORKER]) : 0; });
+			buildingExplorerRatioLabel->setValues(&b->ratio[EXPLORER], [](const PresentationFrame& frame) { const auto* value=frame.entities.building(frame.entities.selectedBuilding.ref); return value ? Sint32(value->ratio[EXPLORER]) : 0; }); buildingExplorerRatioScrollBox->setValues(&b->ratio[EXPLORER], [](const PresentationFrame& frame) { const auto* value=frame.entities.building(frame.entities.selectedBuilding.ref); return value ? Sint32(value->ratio[EXPLORER]) : 0; });
+			buildingWarriorRatioLabel->setValues(&b->ratio[WARRIOR], [](const PresentationFrame& frame) { const auto* value=frame.entities.building(frame.entities.selectedBuilding.ref); return value ? Sint32(value->ratio[WARRIOR]) : 0; }); buildingWarriorRatioScrollBox->setValues(&b->ratio[WARRIOR], [](const PresentationFrame& frame) { const auto* value=frame.entities.building(frame.entities.selectedBuilding.ref); return value ? Sint32(value->ratio[WARRIOR]) : 0; });
+			buildingBulletsLabel->setValues(&b->bullets,&b->type->maxBullets, [](const PresentationFrame& frame) { const auto* value=frame.entities.building(frame.entities.selectedBuilding.ref); return value ? Sint32(value->bullets) : 0; }, [](const PresentationFrame& frame) { const auto* value=frame.entities.building(frame.entities.selectedBuilding.ref); return value ? Sint32(frame.entities.type(*value)->maxBullets) : 0; }); buildingBulletsScrollBox->setValues(&b->bullets,&b->type->maxBullets, [](const PresentationFrame& frame) { const auto* value=frame.entities.building(frame.entities.selectedBuilding.ref); return value ? Sint32(value->bullets) : 0; }, [](const PresentationFrame& frame) { const auto* value=frame.entities.building(frame.entities.selectedBuilding.ref); return value ? Sint32(frame.entities.type(*value)->maxBullets) : 0; });
+			buildingMinimumLevelLabel->setValues(&b->minLevelToFlag, [](const PresentationFrame& frame) { const auto* value=frame.entities.building(frame.entities.selectedBuilding.ref); return value ? Sint32(value->minLevelToFlag) : 0; }); buildingMinimumLevelScrollBox->setValues(&b->minLevelToFlag, [](const PresentationFrame& frame) { const auto* value=frame.entities.building(frame.entities.selectedBuilding.ref); return value ? Sint32(value->minLevelToFlag) : 0; });
+			buildingWorkerLevelLabel->setValues(&b->minWorkerLevelToFlag, [](const PresentationFrame& frame) { const auto* value=frame.entities.building(frame.entities.selectedBuilding.ref); return value ? Sint32(value->minWorkerLevelToFlag) : 0; }); buildingWorkerLevelScrollBox->setValues(&b->minWorkerLevelToFlag, [](const PresentationFrame& frame) { const auto* value=frame.entities.building(frame.entities.selectedBuilding.ref); return value ? Sint32(value->minWorkerLevelToFlag) : 0; });
 			buildingBombingRequirement=b->explorersRequireBombing;
-			buildingRadiusLabel->setValues(&b->unitStayRange,&b->type->maxUnitStayRange); buildingRadiusScrollBox->setValues(&b->unitStayRange,&b->type->maxUnitStayRange);
+            const auto bombing=[](const PresentationFrame& frame) {
+                const auto* value=frame.entities.building(frame.entities.selectedBuilding.ref);
+                return value ? Sint32(value->explorersRequireBombing) : 0;
+            };
+            buildingBombingLabel->setValues(&buildingBombingRequirement,bombing);
+            buildingBombingScrollBox->setValues(&buildingBombingRequirement,bombing);
+			buildingRadiusLabel->setValues(&b->unitStayRange,&b->type->maxUnitStayRange, [](const PresentationFrame& frame) { const auto* value=frame.entities.building(frame.entities.selectedBuilding.ref); return value ? Sint32(value->unitStayRange) : 0; }, [](const PresentationFrame& frame) { const auto* value=frame.entities.building(frame.entities.selectedBuilding.ref); return value ? Sint32(frame.entities.type(*value)->maxUnitStayRange) : 0; }); buildingRadiusScrollBox->setValues(&b->unitStayRange,&b->type->maxUnitStayRange, [](const PresentationFrame& frame) { const auto* value=frame.entities.building(frame.entities.selectedBuilding.ref); return value ? Sint32(value->unitStayRange) : 0; }, [](const PresentationFrame& frame) { const auto* value=frame.entities.building(frame.entities.selectedBuilding.ref); return value ? Sint32(frame.entities.type(*value)->maxUnitStayRange) : 0; });
 			addBuildingEditRow(buildingHPLabel,buildingHPScrollBox,b->type->hpMax>0);
 			addBuildingEditRow(buildingAssignedLabel,buildingAssignedScrollBox,spec.assignmentLimit>0);
 			addBuildingEditRow(buildingWorkerRatioLabel,buildingWorkerRatioScrollBox,spec.production.recipes[WORKER].enabled);
@@ -119,8 +124,8 @@ bool MapEdit::performBuildingAction(const std::string& action, float relMouseX, 
             const auto present=editorMaterialPresence(game,requested);
 			for (int resource=0; resource<MaterialCount; ++resource)
 			{
-				buildingResourceLabels[resource]->setValues(&b->materials[resource],&b->type->maxMaterial[resource]);
-				buildingResourceControls[resource]->setValues(&b->materials[resource],&b->type->maxMaterial[resource]);
+				buildingResourceLabels[resource]->setValues(&b->materials[resource],&b->type->maxMaterial[resource], [resource](const PresentationFrame& frame) { const auto* value=frame.entities.building(frame.entities.selectedBuilding.ref); return value ? Sint32(frame.entities.materials(*value)[resource]) : 0; }, [resource](const PresentationFrame& frame) { const auto* value=frame.entities.building(frame.entities.selectedBuilding.ref); return value ? Sint32(frame.entities.type(*value)->maxMaterial[resource]) : 0; });
+				buildingResourceControls[resource]->setValues(&b->materials[resource],&b->type->maxMaterial[resource], [resource](const PresentationFrame& frame) { const auto* value=frame.entities.building(frame.entities.selectedBuilding.ref); return value ? Sint32(frame.entities.materials(*value)[resource]) : 0; }, [resource](const PresentationFrame& frame) { const auto* value=frame.entities.building(frame.entities.selectedBuilding.ref); return value ? Sint32(frame.entities.type(*value)->maxMaterial[resource]) : 0; });
 				addBuildingEditRow(buildingResourceLabels[resource],buildingResourceControls[resource],b->type->maxMaterial[resource]>0 &&
 					(resource < int(MaterialId::Gold) || (present&(1u<<resource))));
 			}
@@ -137,6 +142,7 @@ bool MapEdit::performBuildingAction(const std::string& action, float relMouseX, 
 		if (selectionMode==EditingBuilding)
 			if (auto* b=game.teams[Building::GIDtoTeam(selectedBuildingGID)]->myBuildings[Building::GIDtoID(selectedBuildingGID)])
 				b->explorersRequireBombing=buildingBombingRequirement!=0;
+		game.snapshots().invalidateBoundary();
 		hasMapBeenModified = true;
 	}
 	else

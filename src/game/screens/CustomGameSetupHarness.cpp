@@ -139,8 +139,8 @@ struct CustomGameSetupHarness
             world.game.players[t]->name = "Long colony name " + std::to_string(t + 1);
             world.game.teams[t]->stats.getLatestStat()->totalUnit = 10 + t;
         }
-        Scene scene;
-        world.gui.extractScene(scene);
+        PresentationFrame scene;
+        world.gui.prepareLocalPresentation(scene);
         world.gui.setPublishedScene(&scene);
         globalContainer->liveSpectating = true;
         world.gui.measurementPage = world.gui.statisticsPages() - 1;
@@ -925,7 +925,7 @@ struct CustomGameSetupHarness
 			engine.run();
 			{
 				FrontendScope gameplay(false);
-				engine.gui.drawAll(engine.gui.localTeamNo);
+				glob2test::drawGUI(engine.gui,engine.gui.localTeamNo);
 				globalContainer->gfx->printScreen(output + "/live-control-" +
 												  std::to_string(control) + ".bmp");
 			}
@@ -2326,10 +2326,13 @@ struct CustomGameSetupHarness
 				   !globalContainer->replayShowFog));
 		}
 		e.gatherAndAdvanceOrders(true);
+		// Delayed decisions may still be running; join before reading the test counters.
+		e.gui.game.drainAI();
 		for (auto ai : counters)
 			REQUIRE(ai->calls == 1);
 		// Repeating a not-ready tick must not ask any AI twice.
 		e.gatherAndAdvanceOrders(false);
+		e.gui.game.drainAI();
 		for (auto ai : counters)
 			REQUIRE(ai->calls == 1);
 		std::cout << "PASS order routing: mode " << control

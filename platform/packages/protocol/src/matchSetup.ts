@@ -351,7 +351,7 @@ export const STANDARD_RULES: MatchRules = {
   allyTeamsFixed: true,
   resourceGrowthDisabled: false,
   resourceScarcityLevel: 0,
-  aiOrderDelay: 0,
+  aiOrderDelay: 8,
   instantConstruction: false,
   stockpileStartLevel: 0,
   hungerDisabled: false,

@@ -1,5 +1,5 @@
 const {clickCreateMap}=require('./editor-controls');
-const {gameURL,clickMainMenu,clickSettingsDone,clickCustomGameStart,clickControl}=require('./main-menu');
+const {gameURL,clickMainMenu,clickSettingsDone,clickCustomGameStart,clickControl,control}=require('./main-menu');
 const {test, expect} = require('@playwright/test');
 const snapshot = page => page.evaluate(() => glob2Diagnostics.snapshot());
 const screen = (page, name) => expect.poll(async () => (await snapshot(page)).screen).toContain(name);
@@ -48,7 +48,9 @@ test('editor dialogs and discard controls follow viewport changes', async ({page
   await clickCreateMap(page); await screen(page,'MapEditorScreen');
   await page.locator('#canvas').press('Escape',{delay:80});
   await resize(page,1280,720);
-  await clickControl(page,'quit'); await screen(page,'MessageScreen');
+  // Unsaved work is decided on a card over the map, not on a separate page.
+  await clickControl(page,'quit'); await control(page,'choice/1');
+  expect((await snapshot(page)).screen).toContain('MapEditorScreen');
   await resize(page,1000,800);
   await clickControl(page,'choice/1'); await screen(page,'EditorMainMenu');
 });

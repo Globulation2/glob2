@@ -233,8 +233,8 @@ public:
 	};
 	bool gradientPipelineEnabled() const;
 	GradientPipelineStatus gradientPipelineStatus() const;
-	// Owner selects/reserves before any AI work; preparation writes private job data
-	// and synchronized caches only. Drain before world mutation, save or reconfigure.
+	// Owner selects/reserves and captures inputs before dispatch. Deferred jobs
+	// seed and propagate private data from immutable leases; join before save/reconfigure.
 	void stagePeriodicGradientPreparation();
 	bool hasPendingGradientPreparation() const;
 	SimulationSnapshot::Requirements pendingGradientRequirements() const;
@@ -242,6 +242,7 @@ public:
 	void preparePendingGradient(const SimulationSnapshot::Handle& foundation);
 	void advanceGradientPipeline();
 	void finishGradientPipeline();
+	void resetGradientPipeline() noexcept;
 	void setGradientWorkerCount(unsigned workers);
 	void configureGradientPipeline(unsigned workers, unsigned delay);
 	void updateTeamAreaGradients(int teamNumber);
@@ -329,7 +330,7 @@ public:
 			((Uint32(1) << Team::MAX_COUNT) - 1);
 	}
 	//! Do a step associated with map (grow resources and process bullets)
-	// Standalone map callers retain synchronous periodic preparation. Game defers
+	// Standalone map callers capture/submit periodic preparation here. Game defers
 	// selection until its entire tick (including scripts/fog/projects) is complete.
 	void syncStep(Uint32 stepCounter, bool preparePeriodic = true);
 	//! Switch the Fog of War bufferResourceType
@@ -908,11 +909,25 @@ public:
 	Sector *getSector(int i) { assert(i>=0); assert(i<sizeSector); return sectors+i; }
 
 	//! Set undermap terrain type at (x,y) (undermap positions)
-	void setUMTerrain(int x, int y, TerrainType t) { undermap[coordToIndex(x, y)] = (Uint8)t; }
+	void setUMTerrain(int x, int y, TerrainType t)
+    {
+        const auto index = coordToIndex(x,y);
+        if (undermap[index] != Uint8(t)) { undermap[index] = Uint8(t); markTerrain(index); }
+    }
+    std::span<const Uint8> undermapState() const { return {undermap, size_t(w)*h}; }
 	//! Return undermap terrain type at (x,y)
 	TerrainType getUMTerrain(int x, int y) const { return (TerrainType)undermap[coordToIndex(x, y)]; }
 	//! Set undermap terrain type at (x,y) (undermap positions) on an area
 	void setUMatPos(int x, int y, TerrainType t, int l);
+	//! Map-editor brush: paints whole cells of a legacy corner terrain (GRASS,
+	//! SAND or WATER). Only the listed cells lose an authored whole-cell
+	//! identity; all four undermap corners of every listed cell become t; the
+	//! grass/water sand-shore rule of setUMatPos is applied only to corners
+	//! outside that written set; tiles are rebuilt over the cells' bounding box
+	//! plus two. Cells are unwrapped map coordinates and wrap on the torus.
+	//! Editor authoring only: no generator, script, order or simulation path
+	//! uses it, so it does not take part in match determinism.
+	void paintLegacyCells(const std::vector<std::pair<int, int>> &cells, TerrainType t);
 
 	//! With l==0, it will remove no resource. (Unaligned coordinates)
 	void setNoResource(int x, int y, int l);
@@ -928,6 +943,7 @@ public:
 	///The following is for script areas, which are named areas for map scripts set in the editor
 	///@{
 	///Returns whether area #n is set for a particular point. n can be from 0 to 8
+	std::span<const Uint16> scriptAreaState() const { return scriptAreaCells; }
 	bool isPointSet(int n, int x, int y) const;
 	///Sets a particular point on area #n
 	void setPoint(int n, int x, int y);
@@ -957,7 +973,7 @@ public:
 	//! simulation code. Generators derive it from their request seed, the editor
 	//! rerolls it, and maps saved before format 138 load with seed 0.
 	Uint32 terrainSeed() const { return terrainSeedValue; }
-	void setTerrainSeed(Uint32 seed) { terrainSeedValue = seed; }
+	void setTerrainSeed(Uint32 seed);
 	void mapCaseToDisplayable(int mx, int my, int *px, int *py, int viewportX, int viewportY) const;
 	//! Transform coordinate from map (mx,my) to screen (px,py). Use this one to display a path line to the screen.
 	void mapCaseToDisplayableVector(int mx, int my, int *px, int *py, int viewportX, int viewportY, int screenW, int screenH) const;
@@ -1340,5 +1356,4 @@ public:
 	void smoothResources(int times);
 
 private:
-	void preparePendingGradientInputs(const SimulationSnapshot::Handle* foundation);
 };

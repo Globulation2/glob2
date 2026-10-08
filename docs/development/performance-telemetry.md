@@ -200,13 +200,15 @@ receipts, RNG and controller continuation state. Worker counts remain local exec
 configuration. Changing the match delay can change strategy, replay orders and game feel;
 changing only worker count must preserve execution at the same delay.
 
-Structured `--run-game` accepts `--ai-order-delay D` for a new match, and
+Structured `--run-game` accepts `--ai-order-delay D` for a new match (default 8 ticks), and
 `--compute-threads N` (1–64) with `--compute-experiments MODE`. Modes are `none`,
 `areas`, `initialize`, `hiring`, `ai`, and `all`; `ai` is the default. The default
-count is the smaller of four, available hardware threads, and AI controllers, with a
-minimum of one. Ordinary GUI and legacy `--nox` runs accept `--ai-threads N`.
-The count is the compute executor's thread count including the simulation owner; with
-`ai` enabled, AI decisions share those threads. `--compute-experiments none` keeps the
+count is the smaller of four, available hardware threads, and the larger of three
+and the AI controller count, with a minimum of one. This leaves background capacity
+for periodic gradients even in games without AI. Ordinary GUI and legacy `--nox` runs accept `--ai-threads N`.
+The count is the compute executor's thread count including the simulation owner; periodic gradients share this executor, and with
+`ai` enabled, AI decisions share those threads too. The legacy name `--ai-threads`
+therefore sizes all shared compute work. `--compute-experiments none` keeps the
 decisions on the owner at the same deadlines (an owner-only batch), as do thread creation
 failure and platforms without threads.
 A loaded match's configured delay cannot be overridden.
@@ -328,17 +330,42 @@ regression checks. Timing thresholds are deliberately not CI assertions.
 
 ### Delayed periodic gradients
 
-All games use two background workers and an eight-tick publication delay by
-default. Structured headless runs accept `--gradient-workers N --gradient-delay D`.
-`N` counts **background workers** (0–16); the simulation thread is additional.
-`D` is the fixed publication delay (1–16 ticks, default 8). Zero workers computes
-synchronously but retains exactly the same publication schedule, providing the
+All games use the shared compute executor and an eight-tick publication delay by
+default. Structured headless runs accept `--gradient-delay D` (1–16 ticks, default
+8) and the deprecated `--gradient-workers N` (0–16), described below. Owner-only
+execution retains exactly the same publication schedule, providing the
 determinism and timing control for each delay. Different delays may produce
 different games. A loaded game's delay cannot change while jobs are pending.
 
-The pipeline seeds one allocated resource, guard or clear field at the original
-end-of-tick round-robin boundary. It snapshots weighted terrain inputs, propagates
-in private storage, and publishes before the teams step at the fixed deadline.
+The owner reserves one allocated material, market, guard or clear field at the
+completed-tick round-robin boundary. AI and gradients capture the union of their
+required immutable components once; each job leases only its own projection. A
+shared-executor job seeds and propagates the field in private storage. It never
+reads live map arrays, supplier stock or mutable seed caches. Market observations
+include material availability after reservations, and guard jobs capture alliances
+and, when crowd balancing is enabled, units. Publication stays before the teams
+step at the existing fixed deadline. Immediate on-demand and forbidden/building
+fields keep their synchronous paths.
+
+The mutable material seed cache remains on synchronous paths. Periodic material
+jobs use caches private to each executor thread, updated from immutable snapshot
+chunk versions. Templates reuse base fields and material/forbidden bitsets. Fog
+and supplier availability are applied from each request's snapshot. Out-of-order
+snapshot ticks are supported by comparing exact chunk versions. Cached templates
+hold no snapshot leases, and changing worlds or registries invalidates them.
+Small maps, over-budget inputs and allocation failures use the direct kernels.
+Optional seed cache payloads share a 64 MiB budget across executor slots;
+reconfiguration discards them. Guard seeding uses compact terrain lookups.
+Include warmed-cache baselines, snapshot capture/copying, peak memory and total CPU
+in performance comparisons; moving work off the owner does not itself establish a speedup.
+
+`--compute-threads` sizes the shared executor, including the owner. The deprecated
+`--gradient-workers 0` selects owner-only gradient jobs. A positive value selects
+shared jobs and, unless `--compute-threads` is explicit, requests that value plus
+one total threads. It no longer creates a separate pool or imposes a per-gradient
+concurrency cap. `gradient_workers` reports available shared background threads
+(or zero for owner-only placement); `compute_threads` reports total executor size.
+Gradient placement is independent of the AI compute-experiment flag.
 A synchronous refresh supersedes older pending results for that field. Increasing
 worker count does not increase the number of scheduled fields. Buffers are bounded
 by the delay; workers block on condition variables when idle.
@@ -354,8 +381,9 @@ fields eight ticks older than before; synchronous refreshes still take effect
 immediately.
 
 `result.json` includes actual worker count, delay, jobs, published/discarded jobs,
-maximum pending buffers, deadline wait nanoseconds, and summed propagation elapsed
-nanoseconds. The latter is **not CPU time**. Whole-process user+system CPU must be
+maximum pending buffers, deadline wait nanoseconds, and summed seeding-plus-propagation elapsed
+nanoseconds. `gradient_preparation_ns` records worker seed time collected at joins;
+snapshot capture remains part of the snapshot metrics. The latter is **not CPU time**. Whole-process user+system CPU must be
 measured externally. Timed runs drain outstanding work before stopping the timer;
 finishing work does not publish it early.
 

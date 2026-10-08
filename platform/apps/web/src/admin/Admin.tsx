@@ -362,7 +362,7 @@ export function Admin({ tab }: { tab: string | undefined }) {
   return (
     <>
       <div className="page-head">
-        <GameArt name="hospital" size={72} className="head-art" />
+        <GameArt name="clearingFlag" size={72} className="head-art" />
         <div className="grow">
           <h1>Moderation</h1>
           <p className="sub">
