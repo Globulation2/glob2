@@ -263,6 +263,12 @@
 }
 .studio-page .ms-compose-area {
   flex: none;
+  max-height: 60%;
+  overflow: auto;
+}
+.studio-page .ms-compose-area .studio-composer {
+  max-height: none;
+  overflow: visible;
 }
 .studio-artifact > .ms-map-pane {
   height: 100%;
