@@ -1,0 +1,121 @@
+{
+  "schema_version": 2,
+  "report_type": "generation_failure",
+  "engine": {
+    "version_major": 0,
+    "version_minor": 149
+  },
+  "generation": {
+    "available": true,
+    "generator": "maze",
+    "legacy_id": 11,
+    "revision": 0,
+    "seed": 0,
+    "package_hash": "",
+    "api_version": 0,
+    "toolkit_version": 0,
+    "parameters": {
+      "width": 256,
+      "height": 256,
+      "teams": 4,
+      "workers": 4,
+      "cell-shape": 2,
+      "cell-size": 32,
+      "warp": 0,
+      "channel-width": 2,
+      "loopiness": 5,
+      "wheat-amount": 100,
+      "wood-amount": 100,
+      "stone-amount": 100,
+      "algae-amount": 100,
+      "fruit-amount": 100,
+      "sand-roads": 1,
+      "dead-end-treasure": 1
+    },
+    "raw_request": {
+      "method": 11,
+      "width_exponent": 8,
+      "height_exponent": 8,
+      "teams": 4,
+      "workers": 4,
+      "options": {
+        "algae-amount": 100,
+        "cell-shape": 2,
+        "cell-size": 32,
+        "channel-width": 2,
+        "dead-end-treasure": 1,
+        "fruit-amount": 100,
+        "loopiness": 5,
+        "sand-roads": 1,
+        "stone-amount": 100,
+        "warp": 0,
+        "wheat-amount": 100,
+        "wood-amount": 100
+      }
+    },
+    "legacy_terrain_type": 2,
+    "legacy_resource_amounts": [
+      7,
+      7,
+      7,
+      7,
+      7,
+      7,
+      7,
+      7,
+      7,
+      7,
+      7,
+      7,
+      7,
+      7,
+      7
+    ],
+    "telemetry": {
+      "schema_version": 1,
+      "enabled": true,
+      "record_limit": 4096,
+      "dropped_records": 0,
+      "invalid_values": 0,
+      "records": [
+        {
+          "key": "fixture.count",
+          "kind": "measurement",
+          "subject": 0,
+          "value": 7
+        },
+        {
+          "key": "fixture.share",
+          "kind": "measurement",
+          "subject": null,
+          "value": 0.5
+        },
+        {
+          "key": "fixture.open",
+          "kind": "measurement",
+          "subject": null,
+          "value": false
+        },
+        {
+          "key": "fixture.variant",
+          "kind": "choice",
+          "subject": null,
+          "value": "A \"quoted\" choice\u000a"
+        },
+        {
+          "key": "fixture.plot",
+          "kind": "fallback",
+          "subject": 0,
+          "value": "omitted"
+        }
+      ]
+    },
+    "outcome": {
+      "success": false,
+      "stage": "fixture",
+      "error": "placement_failed",
+      "detail": "No plot\u000awith \"room\""
+    },
+    "selection_quality": null
+  }
+}

@@ -1,0 +1,298 @@
+[
+  {
+    "binary": "/home/bradley/.codex/worktrees/repair-tls-rejection-fixture/glob2/build/native-coverage-torus/test/MapReportHarness",
+    "args": [
+      "/home/bradley/.codex/worktrees/repair-tls-rejection-fixture/glob2/artifacts/map-report/fixtures"
+    ],
+    "returncode": 0,
+    "stdout": "PASS report fixtures: known routes, resource barriers, unchanged serialization and RNG\n",
+    "stderr": ""
+  },
+  {
+    "binary": "/home/bradley/.codex/worktrees/repair-tls-rejection-fixture/glob2/build/native-coverage-torus/src/glob2",
+    "args": [
+      "--generate-map",
+      "maze",
+      "-d",
+      "/home/bradley/.codex/worktrees/repair-tls-rejection-fixture/glob2",
+      "--seed",
+      "7",
+      "--width",
+      "128",
+      "--height",
+      "128",
+      "--set",
+      "cell-shape=0",
+      "--output",
+      "/home/bradley/.codex/worktrees/repair-tls-rejection-fixture/glob2/artifacts/map-report/maze.map.gz"
+    ],
+    "returncode": 0,
+    "stdout": "maze revision 15 seed 7 [complete]: \nMap: /home/bradley/.codex/worktrees/repair-tls-rejection-fixture/glob2/artifacts/map-report/maze.map.gz\n",
+    "stderr": ""
+  },
+  {
+    "binary": "/home/bradley/.codex/worktrees/repair-tls-rejection-fixture/glob2/build/native-coverage-torus/src/glob2",
+    "args": [
+      "--generate-map",
+      "maze",
+      "-d",
+      "/home/bradley/.codex/worktrees/repair-tls-rejection-fixture/glob2",
+      "--seed",
+      "7",
+      "--width",
+      "128",
+      "--height",
+      "128",
+      "--set",
+      "cell-shape=0",
+      "--output",
+      "/home/bradley/.codex/worktrees/repair-tls-rejection-fixture/glob2/artifacts/map-report/maze.map.gz",
+      "--json",
+      "/home/bradley/.codex/worktrees/repair-tls-rejection-fixture/glob2/artifacts/map-report/maze.json"
+    ],
+    "returncode": 0,
+    "stdout": "maze revision 15 seed 7 [complete]: \nMap: /home/bradley/.codex/worktrees/repair-tls-rejection-fixture/glob2/artifacts/map-report/maze.map.gz\nMap report: /home/bradley/.codex/worktrees/repair-tls-rejection-fixture/glob2/artifacts/map-report/maze.json\n",
+    "stderr": ""
+  },
+  {
+    "binary": "/home/bradley/.codex/worktrees/repair-tls-rejection-fixture/glob2/build/native-coverage-torus/src/glob2",
+    "args": [
+      "--generate-map",
+      "maze",
+      "-d",
+      "/home/bradley/.codex/worktrees/repair-tls-rejection-fixture/glob2",
+      "--seed",
+      "7",
+      "--width",
+      "128",
+      "--height",
+      "128",
+      "--set",
+      "cell-shape=0",
+      "--json",
+      "/home/bradley/.codex/worktrees/repair-tls-rejection-fixture/glob2/artifacts/map-report/repeat.json"
+    ],
+    "returncode": 0,
+    "stdout": "maze revision 15 seed 7 [complete]: \nMap report: /home/bradley/.codex/worktrees/repair-tls-rejection-fixture/glob2/artifacts/map-report/repeat.json\n",
+    "stderr": ""
+  },
+  {
+    "binary": "/home/bradley/.codex/worktrees/repair-tls-rejection-fixture/glob2/build/native-coverage-torus/src/glob2",
+    "args": [
+      "--generate-map",
+      "maze",
+      "-d",
+      "/home/bradley/.codex/worktrees/repair-tls-rejection-fixture/glob2",
+      "--config",
+      "map.cfg",
+      "--seed",
+      "7",
+      "--set",
+      "cell-shape=0",
+      "--json",
+      "/home/bradley/.codex/worktrees/repair-tls-rejection-fixture/glob2/artifacts/map-report/config.json"
+    ],
+    "returncode": 0,
+    "stdout": "maze revision 15 seed 7 [complete]: \nMap report: /home/bradley/.codex/worktrees/repair-tls-rejection-fixture/glob2/artifacts/map-report/config.json\n",
+    "stderr": ""
+  },
+  {
+    "binary": "/home/bradley/.codex/worktrees/repair-tls-rejection-fixture/glob2/build/native-coverage-torus/src/glob2",
+    "args": [
+      "--preview-map",
+      "/home/bradley/.codex/worktrees/repair-tls-rejection-fixture/glob2/artifacts/map-report/maze.map.gz",
+      "-d",
+      "/home/bradley/.codex/worktrees/repair-tls-rejection-fixture/glob2",
+      "--json",
+      "/home/bradley/.codex/worktrees/repair-tls-rejection-fixture/glob2/artifacts/map-report/loaded.json"
+    ],
+    "returncode": 0,
+    "stdout": "Map report: /home/bradley/.codex/worktrees/repair-tls-rejection-fixture/glob2/artifacts/map-report/loaded.json\n",
+    "stderr": ""
+  },
+  {
+    "binary": "/home/bradley/.codex/worktrees/repair-tls-rejection-fixture/glob2/build/native-coverage-torus/src/glob2",
+    "args": [
+      "--preview-map",
+      "/home/bradley/.codex/worktrees/repair-tls-rejection-fixture/glob2/test/fixtures/team-stats/version88.game.gz",
+      "-d",
+      "/home/bradley/.codex/worktrees/repair-tls-rejection-fixture/glob2",
+      "--json",
+      "/home/bradley/.codex/worktrees/repair-tls-rejection-fixture/glob2/artifacts/map-report/team-stats.json"
+    ],
+    "returncode": 0,
+    "stdout": "Map report: /home/bradley/.codex/worktrees/repair-tls-rejection-fixture/glob2/artifacts/map-report/team-stats.json\n",
+    "stderr": ""
+  },
+  {
+    "binary": "/home/bradley/.codex/worktrees/repair-tls-rejection-fixture/glob2/build/native-coverage-torus/src/glob2",
+    "args": [
+      "--preview-map",
+      "/home/bradley/.codex/worktrees/repair-tls-rejection-fixture/glob2/test/fixtures/wrapped-building/reproducer.game.gz",
+      "-d",
+      "/home/bradley/.codex/worktrees/repair-tls-rejection-fixture/glob2",
+      "--json",
+      "/home/bradley/.codex/worktrees/repair-tls-rejection-fixture/glob2/artifacts/map-report/wrapped-building.json"
+    ],
+    "returncode": 0,
+    "stdout": "Map report: /home/bradley/.codex/worktrees/repair-tls-rejection-fixture/glob2/artifacts/map-report/wrapped-building.json\n",
+    "stderr": ""
+  },
+  {
+    "binary": "/home/bradley/.codex/worktrees/repair-tls-rejection-fixture/glob2/build/native-coverage-torus/src/glob2",
+    "args": [
+      "--preview-map",
+      "/home/bradley/.codex/worktrees/repair-tls-rejection-fixture/glob2/test/fixtures/entering-explorer/reproducer.game.gz",
+      "-d",
+      "/home/bradley/.codex/worktrees/repair-tls-rejection-fixture/glob2",
+      "--json",
+      "/home/bradley/.codex/worktrees/repair-tls-rejection-fixture/glob2/artifacts/map-report/entering-explorer.json"
+    ],
+    "returncode": 0,
+    "stdout": "Map report: /home/bradley/.codex/worktrees/repair-tls-rejection-fixture/glob2/artifacts/map-report/entering-explorer.json\n",
+    "stderr": ""
+  },
+  {
+    "binary": "/home/bradley/.codex/worktrees/repair-tls-rejection-fixture/glob2/build/native-coverage-torus/src/glob2",
+    "args": [
+      "--generate-map",
+      "symmetric-arena",
+      "-d",
+      "/home/bradley/.codex/worktrees/repair-tls-rejection-fixture/glob2",
+      "--width",
+      "128",
+      "--height",
+      "256",
+      "--teams",
+      "8",
+      "--json",
+      "/home/bradley/.codex/worktrees/repair-tls-rejection-fixture/glob2/artifacts/map-report/failed-request.json",
+      "--output",
+      "/home/bradley/.codex/worktrees/repair-tls-rejection-fixture/glob2/artifacts/map-report/must-not-exist.map"
+    ],
+    "returncode": 1,
+    "stdout": "Map report: /home/bradley/.codex/worktrees/repair-tls-rejection-fixture/glob2/artifacts/map-report/failed-request.json\n",
+    "stderr": "Map command: symmetric-arena revision 1 seed 1 [validation]: Eight colonies need a square map in the symmetric arena.\n"
+  },
+  {
+    "binary": "/home/bradley/.codex/worktrees/repair-tls-rejection-fixture/glob2/build/native-coverage-torus/src/glob2",
+    "args": [
+      "--generate-map",
+      "maze",
+      "-d",
+      "/home/bradley/.codex/worktrees/repair-tls-rejection-fixture/glob2",
+      "--seed",
+      "7",
+      "--width",
+      "128",
+      "--height",
+      "128",
+      "--set",
+      "cell-shape=0",
+      "--output",
+      "/home/bradley/.codex/worktrees/repair-tls-rejection-fixture/glob2/artifacts/map-report/maze.map.gz",
+      "--json",
+      "/home/bradley/.codex/worktrees/repair-tls-rejection-fixture/glob2/artifacts/map-report/maze.map.gz"
+    ],
+    "returncode": 1,
+    "stdout": "",
+    "stderr": "Map command: Input and output paths must be distinct\n"
+  },
+  {
+    "binary": "/home/bradley/.codex/worktrees/repair-tls-rejection-fixture/glob2/build/native-coverage-torus/src/glob2",
+    "args": [
+      "--preview-map",
+      "/home/bradley/.codex/worktrees/repair-tls-rejection-fixture/glob2/artifacts/map-report/maze.map.gz",
+      "-d",
+      "/home/bradley/.codex/worktrees/repair-tls-rejection-fixture/glob2",
+      "--json",
+      "/home/bradley/.codex/worktrees/repair-tls-rejection-fixture/glob2/artifacts/map-report/maze.map.gz"
+    ],
+    "returncode": 1,
+    "stdout": "",
+    "stderr": "Map command: Input and output paths must be distinct\n"
+  },
+  {
+    "binary": "/home/bradley/.codex/worktrees/repair-tls-rejection-fixture/glob2/build/native-coverage-torus/src/glob2",
+    "args": [
+      "--generate-map",
+      "maze",
+      "-d",
+      "/home/bradley/.codex/worktrees/repair-tls-rejection-fixture/glob2",
+      "--seed",
+      "7",
+      "--width",
+      "128",
+      "--height",
+      "128",
+      "--set",
+      "cell-shape=0",
+      "--json",
+      "/home/bradley/.codex/worktrees/repair-tls-rejection-fixture/glob2/artifacts/map-report"
+    ],
+    "returncode": 1,
+    "stdout": "maze revision 15 seed 7 [complete]: \n",
+    "stderr": "Map command: Cannot write JSON: /home/bradley/.codex/worktrees/repair-tls-rejection-fixture/glob2/artifacts/map-report\n"
+  },
+  {
+    "binary": "/home/bradley/.codex/worktrees/repair-tls-rejection-fixture/glob2/build/native-coverage-torus/src/glob2",
+    "args": [
+      "--generate-map",
+      "maze",
+      "-d",
+      "/home/bradley/.codex/worktrees/repair-tls-rejection-fixture/glob2",
+      "--seed",
+      "7",
+      "--width",
+      "128",
+      "--height",
+      "128",
+      "--set",
+      "cell-shape=0",
+      "--json"
+    ],
+    "returncode": 1,
+    "stdout": "",
+    "stderr": "Map command: Missing value for --json\n"
+  },
+  {
+    "binary": "/home/bradley/.codex/worktrees/repair-tls-rejection-fixture/glob2/build/native-coverage-torus/src/glob2",
+    "args": [
+      "--generate-map",
+      "maze",
+      "-d",
+      "/home/bradley/.codex/worktrees/repair-tls-rejection-fixture/glob2",
+      "--seed",
+      "7",
+      "--width",
+      "128",
+      "--height",
+      "128",
+      "--set",
+      "cell-shape=0",
+      "--json",
+      "/home/bradley/.codex/worktrees/repair-tls-rejection-fixture/glob2/artifacts/map-report/maze.json",
+      "--preview-size",
+      "256"
+    ],
+    "returncode": 1,
+    "stdout": "",
+    "stderr": "Map command: Preview size/scale requires a PNG output\n"
+  },
+  {
+    "binary": "/home/bradley/.codex/worktrees/repair-tls-rejection-fixture/glob2/build/native-coverage-torus/src/glob2",
+    "args": [
+      "--generate-map",
+      "maze",
+      "-d",
+      "/home/bradley/.codex/worktrees/repair-tls-rejection-fixture/glob2",
+      "--config",
+      "/tmp/glob2-map-report-jr521wqg/map.cfg",
+      "--json",
+      "/tmp/glob2-map-report-jr521wqg/map.cfg"
+    ],
+    "returncode": 1,
+    "stdout": "",
+    "stderr": "Map command: Input and output paths must be distinct\n"
+  }
+]
