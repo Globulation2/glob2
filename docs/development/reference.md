@@ -1966,7 +1966,9 @@ cache — lives in `MapRenderState`, owned by `Game::ViewState`, never on `Game`
 the simulation neither reads nor writes it and each view animates independently. The
 terrain cache is transient presentation state: 16×16-cell composed pages, a 32 MiB
 software storage reservation including pixels, recipes and borrowed views, and a
-separate 128 MiB GPU-mode reservation with least-recently-used eviction. Native and
+separate 128 MiB GPU-mode reservation with least-recently-used eviction. Kept
+coverage masks for mixed cells beside animated materials add at most a quarter of
+that budget. Native and
 HD rendering share CPU composition; GPU backends upload the resulting pages.
 The [terrain authoring guide](../assets/terrain-materials.md) describes the catalog,
 boundary resolver, source preparation, budgets and asset pipeline.

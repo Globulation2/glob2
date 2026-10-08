@@ -2,7 +2,7 @@
   "generator": "tools/artwork/terrain_synth.py",
   "method": "procedural",
   "generator_sha256": {
-    "tools/artwork/terrain_synth.py": "7bcde1353e6c5ded00fb349e5091d326ac7a45777978f0337c2a40a728883aae",
+    "tools/artwork/terrain_synth.py": "2f4c3e68380882bf76ebddc87ba58c2f375f6d601d6d58717294b7ef39627237",
     "tools/artwork/material_tiles.py": "224e159e0974023797710aa959994f11658c82da8fb80f9701e4abc13c74ed83"
   },
   "material": "marsh",
@@ -74,6 +74,7 @@
     "minimap": null,
     "placeholder_only": false,
     "periodic": true,
+    "grid": 0,
     "note": ""
   },
   "seed": "fnv1a32(\"marsh:<variant>:<phase>\")",
@@ -159,12 +160,12 @@
       }
     }
   },
-  "python": "3.14.4",
+  "python": "3.13.16",
   "pillow": "12.2.0",
   "platform": {
     "system": "linux",
     "machine": "x86_64",
-    "libc": "glibc 2.43"
+    "libc": "glibc 2.39"
   },
   "runtime_sha256": {
     "data/gfx/terrain-marsh0.png": "dfee6f28cc2c2cf3eacc645034317a5999f78e69fffdbb793f34661b053768a1",
