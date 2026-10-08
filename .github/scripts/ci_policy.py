@@ -86,7 +86,7 @@ def unclassified(path):
 def cheap_path(path):
     return (path.startswith(('docs/', 'test/build_system/test_ci', 'fdroid/', 'fastlane/'))
             or path.endswith('.md') or path in MIRROR_DEPLOY_FILES or path in {
-                'test/test_run_tests.py', 'test/test_ci_failure_aggregation.py',
+                'requirements-dev.txt', 'test/test_run_tests.py', 'test/test_ci_failure_aggregation.py',
                 'tools/package_steam_windows.py', 'test/test_steam_windows_package.py',
                 'mobile/android_release.py', '.github/workflows/steam-windows-package.yml',
                 '.github/workflows/mac-app-store.yml'})
