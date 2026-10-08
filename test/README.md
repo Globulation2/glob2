@@ -821,7 +821,19 @@ The real-engine movement-method fixture checks every swim class: a valid resourc
 target remains unchanged, and a depleted target is refreshed after its resource
 gradient is rebuilt. It invokes the movement method directly, rather than running
 an entire match. The runner isolates the profile and working directory and checks that preferences
-remain unchanged. Linux CI runs this regression.
+remain unchanged. Linux CI runs this regression. Fetching is greedy: the unit
+heads for the resource nearest to itself, even when another is a cheaper carry.
+
+`FetchHiringScore/*` checks hiring a fetcher: the hunger check measures the walk
+to the resource rather than the whole trip, and the score estimates the walk out
+plus the carry home.
+
+`LegacyRoundTripSave/*` loads
+[`greedy-fetching/round-trip-143.game.gz`](fixtures/greedy-fetching/README.md), a
+mid-game save written when fetching still routed by round trip, with round-trip
+fields live. The loader discards those fields; the game plays 1,000 more ticks
+against a golden per-tick trace and continues identically after a binary or text
+save in the current format.
 
 ## Hiring bucket iteration
 
