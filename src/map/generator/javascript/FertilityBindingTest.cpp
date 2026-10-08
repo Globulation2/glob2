@@ -92,8 +92,7 @@ TEST_CASE("Toolkit consumers reject empty fertility arguments" *
 TEST_CASE("Script control mutations cannot bypass native domain contracts" *
 		  doctest::test_suite("ScriptGenerator"))
 {
-	const std::string control =
-		"const ctl=c.toolkit.GeneratorControls.GeneratorControl_toggle('test','Test',false);";
+	const std::string control = "const ctl=c.toolkit.Farmland.cropCrossingsControl();";
 	for (const auto *mutation :
 		 {"ctl.step=0;ctl.values();", "ctl.step=0;ctl.normalize(1);",
 		  "ctl.kind=0;ctl.maximum=1000000;ctl.values();", "ctl.allowedValues=[1,0];ctl.values();",
@@ -104,8 +103,7 @@ TEST_CASE("Script control mutations cannot bypass native domain contracts" *
 		CHECK(error.find("control") != std::string::npos);
 	}
 	const auto shift = runFertility(
-		"const "
-		"ctl=c.toolkit.GeneratorControls.GeneratorControl_percentage('test','Test');ctl.powerOfTwo="
+		"const ctl=c.toolkit.Terrain.heightFieldResourceControls().get(0);ctl.powerOfTwo="
 		"true;ctl.maximum=30;ctl.step=1;ctl.defaultValue=0;ctl.searchRange=null;ctl.displayValue("
 		"31);");
 	INFO(shift);

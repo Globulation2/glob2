@@ -123,6 +123,20 @@ class Binding
 	std::uint64_t nativeFuel = NativeWork;
 	size_t nativeBytes = 0;
 	bool exhausted = false;
+	enum class Exhaustion
+	{
+		None,
+		InterpreterWork,
+		NativeWork,
+		NativeMemory,
+		CallbackDepth,
+		Operations,
+		CachedDesigns,
+		HostFailure
+	};
+	// The first resource failure survives script catches and later interrupts.
+	// Keep only a bounded cause: recording exhaustion must not allocate memory.
+	Exhaustion exhaustion = Exhaustion::None;
 	unsigned conversionDepth = 0, callbackDepth = 0;
 	std::vector<std::shared_ptr<bool>> leases;
 	std::shared_ptr<bool> generationLease;
@@ -172,6 +186,9 @@ class Binding
 	void charge(uint64_t amount = 1);
 	void chargeNative(uint64_t amount);
 	void allocate(size_t amount);
+	void exhaust(Exhaustion cause);
+	const char *exhaustionMessage() const;
+	[[noreturn]] void rejectResource(Exhaustion cause);
 	[[noreturn]] void fail();
 	void check(JSValueConst value)
 	{

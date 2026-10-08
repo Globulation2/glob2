@@ -50,7 +50,7 @@ void Binding::initializeRuntime()
 			auto &e = *static_cast<Binding *>(opaque);
 			if (!e.fuel || e.exhausted)
 			{
-				e.exhausted = true;
+				e.exhaust(Exhaustion::InterpreterWork);
 				return 1;
 			}
 			--e.fuel;
@@ -180,13 +180,46 @@ NativeBox *Binding::box(JSValueConst value) const
 {
 	return static_cast<NativeBox *>(JS_GetOpaque(value, nativeClass));
 }
+void Binding::exhaust(Exhaustion cause)
+{
+	if (exhaustion == Exhaustion::None)
+		exhaustion = cause;
+	exhausted = true;
+}
+const char *Binding::exhaustionMessage() const
+{
+	switch (exhaustion)
+	{
+	case Exhaustion::InterpreterWork:
+		return "Generator execution budget exhausted";
+	case Exhaustion::NativeWork:
+		return "Generator native work budget exhausted";
+	case Exhaustion::NativeMemory:
+		return "Generator native memory budget exhausted";
+	case Exhaustion::CallbackDepth:
+		return "Native callback nesting exceeds 64";
+	case Exhaustion::Operations:
+		return "Too many toolkit operation handles";
+	case Exhaustion::CachedDesigns:
+		return "Too many cached designs";
+	case Exhaustion::None:
+	case Exhaustion::HostFailure:
+		return "Generator resource budget exhausted";
+	}
+	return "Generator resource budget exhausted";
+}
+[[noreturn]] void Binding::rejectResource(Exhaustion cause)
+{
+	exhaust(cause);
+	throw ResourceError(exhaustionMessage());
+}
 void Binding::charge(uint64_t n)
 {
 	if (exhausted || n > fuel)
 	{
-		exhausted = true;
-		fuel = 0;
-		throw ResourceError("Generator execution budget exhausted");
+		if (!exhausted)
+			fuel = 0;
+		rejectResource(Exhaustion::InterpreterWork);
 	}
 	fuel -= n;
 }
@@ -194,9 +227,9 @@ void Binding::chargeNative(uint64_t n)
 {
 	if (exhausted || n > nativeFuel)
 	{
-		exhausted = true;
-		nativeFuel = 0;
-		throw ResourceError("Generator native work budget exhausted");
+		if (!exhausted)
+			nativeFuel = 0;
+		rejectResource(Exhaustion::NativeWork);
 	}
 	nativeFuel -= n;
 }
@@ -207,8 +240,7 @@ void Binding::allocate(size_t n)
 	// Keep it monotonic and give QuickJS only the remaining shared allowance.
 	if (exhausted || n > limit - nativeBytes)
 	{
-		exhausted = true;
-		throw ResourceError("Generator native memory budget exhausted");
+		rejectResource(Exhaustion::NativeMemory);
 	}
 	nativeBytes += n;
 	JS_SetMemoryLimit(runtime, limit - nativeBytes);
@@ -218,7 +250,7 @@ Binding::CallbackScope::CallbackScope(Binding &binding)
 	  previousReadonly(e.readonly), previousGenerationLease(e.generationLease)
 {
 	if (e.callbackDepth >= 64)
-		throw ResourceError("Native callback nesting exceeds 64");
+		e.rejectResource(Exhaustion::CallbackDepth);
 	e.allocate(64);
 	lease = std::make_shared<bool>(true);
 	e.leases.push_back(lease);
@@ -237,6 +269,10 @@ Binding::CallbackScope::~CallbackScope()
 [[noreturn]] void Binding::fail()
 {
 	Script::JSValueOwner error(ctx, JS_GetException(ctx));
+	// QuickJS may replace a caught native error with "interrupted", or run out
+	// of memory while constructing it. Preserve our original bounded cause.
+	if (exhausted || !fuel || JS_Glob2HostFailure(runtime))
+		rejectResource(!fuel ? Exhaustion::InterpreterWork : Exhaustion::HostFailure);
 	Script::JSStringOwner text(ctx, error.get());
 	std::string message = text.get() ? text.get() : "JavaScript exception";
 	Script::JSValueOwner stack(ctx, JS_GetPropertyStr(ctx, error.get(), "stack"));
@@ -246,13 +282,8 @@ Binding::CallbackScope::~CallbackScope()
 		if (s.get())
 			message += '\n' + std::string(s.get());
 	}
-	if (exhausted || !fuel || JS_Glob2HostFailure(runtime))
-	{
-		// Exhaustion may leave no space for QuickJS to allocate its exception.
-		if (message.empty() || message == "null" || message == "undefined")
-			message = "Generator resource budget exhausted";
-		throw ResourceError(message);
-	}
+	if (JS_Glob2HostFailure(runtime))
+		rejectResource(Exhaustion::HostFailure);
 	throw ScriptError(message);
 }
 JSValue Binding::dispatch(JSContext *ctx, JSValueConst self, int n, JSValueConst *a, int index,
@@ -265,10 +296,10 @@ JSValue Binding::dispatch(JSContext *ctx, JSValueConst self, int n, JSValueConst
 		auto operation = e.operations.at(index).call;
 		return (*operation)(self, n, a);
 	}
-	catch (const ResourceError &error)
+	catch (const ResourceError &)
 	{
-		e.exhausted = true;
-		return JS_ThrowInternalError(ctx, "%s", error.what());
+		e.exhaust(Exhaustion::HostFailure);
+		return JS_ThrowInternalError(ctx, "%s", e.exhaustionMessage());
 	}
 	catch (const std::exception &error)
 	{
@@ -289,7 +320,7 @@ Binding::registerOperation(std::string name,
 						   std::function<JSValue(JSValueConst, int, JSValueConst *)> operation)
 {
 	if (operations.size() >= MaximumOperations)
-		throw ResourceError("Too many toolkit operation handles");
+		rejectResource(Exhaustion::Operations);
 	// Every registration path retains its callable until runtime teardown.
 	allocate(sizeof(Operation) + name.capacity() + 128);
 	const auto index = unsigned(operations.size());
@@ -496,7 +527,7 @@ void Binding::installContextDesign(JSValueConst result)
 			if (it != cachedDesigns.end())
 				return JS_DupValue(ctx, it->second);
 			if (cachedDesigns.size() >= 128)
-				throw ResourceError("Too many cached designs");
+				rejectResource(Exhaustion::CachedDesigns);
 			Script::JSValueOwner value(ctx, JS_Call(ctx, a[1], JS_UNDEFINED, 0, nullptr));
 			check(value.get());
 			if (JS_IsPromise(value.get()))
@@ -644,7 +675,7 @@ std::string invoke(const Package &p, const char *callback, const GenerationReque
 		Script::JSValueOwner result(e.ctx, JS_Call(e.ctx, fn.get(), JS_UNDEFINED, 1, &arg));
 		e.check(result.get());
 		if (e.exhausted || JS_Glob2HostFailure(e.runtime))
-			throw ResourceError("Generator resource budget exhausted");
+			e.rejectResource(Binding::Exhaustion::HostFailure);
 		if (JS_IsUndefined(result.get()) || JS_IsNull(result.get()))
 			return {};
 		if (JS_IsString(result.get()))
