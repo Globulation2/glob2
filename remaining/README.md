@@ -1,3 +1,5 @@
+Follow-up: [player-free statistics and independent review](./player-free-review.md). New master `0507700f1` adds vertex terrain and remains unintegrated; the historical comparisons below retain their frozen revisions.
+
 # Resource-growth experiments: final delivery
 
 Delivered source: `b7a47812222f34a1a4bccc97adc59f516769fa56`. Current-master comparator frozen before final validation: `67fd5b935c98c3d6d0c5ba9d25754ce7df0f83f9`. Historical baseline: `edb09d40204a1fdb3a6d0e5934ef34e9c344de60`.

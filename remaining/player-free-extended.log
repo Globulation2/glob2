@@ -1,0 +1,4 @@
+PASS ResourceGrowthBenchmark/player-free growth reconciles world stocks and team statistics (27.1s)
+
+1 passed, 0 failed, 0 skipped (27.1s of test time)
+[run_tests] JUnit report: artifacts/resource-growth/remaining/player-free-extended.xml (1 cases)

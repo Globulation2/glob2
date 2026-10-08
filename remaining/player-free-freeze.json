@@ -1,0 +1,14 @@
+{
+  "commit": "0039b69e5b85c539ee43cd00682fafeaea95dd8d",
+  "integrated_base": "67fd5b935c98c3d6d0c5ba9d25754ce7df0f83f9",
+  "fetched_master": "0507700f1dcb4ff444ad2483b3320e9d16ec4ed0",
+  "platform": "Linux x86-64",
+  "compiler": "g++ (Ubuntu 15.2.0-16ubuntu1) 15.2.0",
+  "flags": "release=1 server=0 optimized_assets=0; -O3; same dependencies as final-integration-freeze.json",
+  "binaries": {
+    "build/linux/client/release/src/glob2": "9c4589afb2d5817d62e1dd86b6799c1e85bd37aad7552dc254a54e5ead6f7ec8",
+    "build/linux/client/release/test/glob2-engine-tests": "8807fc800aea8f2c216c7d0df2ba4c154908c4671d1cba8988c5cad47af276ed"
+  },
+  "input": "Programmatic fixture in src/map/ResourceGrowthBenchmark.cpp at tested commit; seeds 1..20,64 squared,512 ticks,delay8,owner1/shared4; zero players,2 passive teams,zero units/buildings/harvesting",
+  "timing_claim": false
+}
