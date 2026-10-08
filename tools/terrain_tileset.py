@@ -216,10 +216,6 @@ def _validate(document, root):
         for v in m["variants"]:
             if type(v["weight"]) is not int or not 1 <= v["weight"] <= 1_000_000:
                 raise ValueError("Variant weight must be a positive integer")
-        if "variant_grid" in m:
-            grid = integer(m["variant_grid"], 1, 16, "Variant grid")
-            if grid & (grid - 1) or m.get("edges") != "periodic" or len(m["variants"]) != grid * grid:
-                raise ValueError("variant_grid needs a power of two, periodic edges and grid*grid variants")
             if type(v["frame"]) is not int:
                 raise ValueError("Frame must be an integer")
             for phase in range(phases):
@@ -232,6 +228,10 @@ def _validate(document, root):
                     if image.size != (32, 32):
                         raise ValueError(f"Invalid logical frame dimensions: {source}")
                 sources[relative] = hashlib.sha256(source.read_bytes()).hexdigest()
+        if "variant_grid" in m:
+            grid = integer(m["variant_grid"], 1, 16, "Variant grid")
+            if grid & (grid - 1) or m.get("edges") != "periodic" or len(m["variants"]) != grid * grid:
+                raise ValueError("variant_grid needs a power of two, periodic edges and grid*grid variants")
         if "decor" in m:
             decor = m["decor"]
             decor_sprite = data_path(decor["sprite"], "Decor sprite")
