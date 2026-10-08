@@ -4,6 +4,7 @@
 #include "Team.h"
 #include "Unit.h"
 #include "Building.h"
+#include "BuildingType.h"
 #include "engine/sim/snapshot/WorldSnapshot.h"
 
 TEST_SUITE("TeamLiveLists")
@@ -19,6 +20,37 @@ TEST_CASE("live slot lists follow every slot assignment and order the snapshot r
 		{
 			CHECK(game.teams[t]->liveUnits.matches(game.teams[t]->myUnits, Unit::MAX_COUNT));
 			CHECK(game.teams[t]->liveBuildings.matches(game.teams[t]->myBuildings, Building::MAX_COUNT));
+			// The authoritative arrays remain an independent checksum-order oracle.
+			auto* current = game.teams[t];
+			std::vector<Uint32> stages, units, buildings, expectedUnits, expectedBuildings;
+			current->checkSum(&stages, &buildings, &units);
+			const auto rotate = [](Uint32 value) { return (value >> 1) | (value << 31); };
+			Uint32 expected = rotate(current->BaseTeam::checkSum());
+			REQUIRE(stages.size() >= 3);
+			CHECK(stages[0] == expected);
+			for (int slot=0; slot<Unit::MAX_COUNT; ++slot)
+				if (auto* unit=current->myUnits[slot]) expected = rotate(expected ^ unit->checkSum(&expectedUnits));
+			CHECK(stages[1] == expected);
+			CHECK(units == expectedUnits);
+			for (int slot=0; slot<Building::MAX_COUNT; ++slot)
+				if (auto* building=current->myBuildings[slot]) expected = rotate(expected ^ building->checkSum(&expectedBuildings));
+			CHECK(stages[2] == expected);
+			CHECK(buildings == expectedBuildings);
+			TeamStats measured;
+			// One complete smoothing window, with reload semantics avoiding labour accumulation.
+			for (int sample=0; sample<32; ++sample) measured.step(current, true);
+			int expectedCount=0, expectedHP=0, expectedBuildingsCount=0;
+			for (int slot=0; slot<Unit::MAX_COUNT; ++slot)
+				if (auto* unit=current->myUnits[slot]) { ++expectedCount; expectedHP+=unit->hp; }
+			for (int slot=0; slot<Building::MAX_COUNT; ++slot)
+				if (auto* building=current->myBuildings[slot])
+				{
+					expectedHP+=building->hp;
+					expectedBuildingsCount+=!building->type->isBuildingSite && !building->type->isVirtual;
+				}
+			CHECK(measured.getLatestStat()->totalUnit == expectedCount);
+			CHECK(measured.getLatestStat()->totalHP == expectedHP);
+			CHECK(measured.getLatestStat()->totalBuilding == expectedBuildingsCount);
 		}
 	};
 	consistent();
@@ -70,5 +102,15 @@ TEST_CASE("live slot lists follow every slot assignment and order the snapshot r
 	team->rebuildLiveLists();
 	consistent();
 	CHECK(team->integrity());
+
+	// Read-only scans also cover a full slot table, including its final slot.
+	for (int slot=0; slot<Unit::MAX_COUNT; ++slot)
+		if (!team->myUnits[slot])
+		{
+			team->myUnits[slot] = new Unit(8, 12, slot, WORKER, team, 0);
+			team->attachUnit(slot);
+		}
+	CHECK(team->liveUnits.size() == std::size_t(Unit::MAX_COUNT));
+	consistent();
 }
 }

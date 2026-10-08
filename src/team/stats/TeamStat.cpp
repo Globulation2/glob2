@@ -424,9 +424,8 @@ void TeamStats::step(Team *team, bool reloaded)
 	// handle in game stat step
 	TeamSmoothedStat &smoothedStat=smoothedStats[smoothedIndex];
 	smoothedStat.reset();
-	for (int i=0; i<Unit::MAX_COUNT; i++)
+	for (Unit *u : team->liveUnits.entries())
 	{
-		Unit *u=team->myUnits[i];
 		observeMeasurementUnit(u);
 		// Filter here: most of the 1024 slots hold no worker.
 		if (!reloaded && u && u->typeNum == WORKER)
@@ -438,9 +437,8 @@ void TeamStats::step(Team *team, bool reloaded)
 		}
 	}
 	
-	for (int i=0; i<Building::MAX_COUNT; i++)
+	for (Building *b : team->liveBuildings.entries())
 	{
-		Building *b = team->myBuildings[i];
 		if (b)
 		{
 			observeMeasurementBuilding(b);
@@ -499,9 +497,8 @@ void TeamStats::step(Team *team, bool reloaded)
 	stat.reset();
 	stat.buildingCountByVariant.resize(team->game->buildingsTypes.size(),0);
 
-	for (int i=0; i<Unit::MAX_COUNT; i++)
+	for (Unit *u : team->liveUnits.entries())
 	{
-		Unit *u=team->myUnits[i];
 		if (u)
 		{
 			stat.totalUnit++;
@@ -558,9 +555,8 @@ void TeamStats::step(Team *team, bool reloaded)
 		}
 	}
 
-	for (int i=0; i<Building::MAX_COUNT; i++)
+	for (Building *b : team->liveBuildings.entries())
 	{
-		Building *b = team->myBuildings[i];
 		if (b)
 		{
 			++stat.buildingCountByVariant[b->typeNum];
