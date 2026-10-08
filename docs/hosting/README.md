@@ -1663,7 +1663,20 @@ conversion and team-color layers without making provider calls.
 
 ## Admin reporting
 
-`/admin/reports` unifies reports across maps, AIs, buildings, sets, skins and music.
-Moderators can hide/disable content, resolve or dismiss reports, and independently
-restore content through `/admin/content`. Existing moderation URLs remain available.
-Accounts, matches, reports and content use stable cursors and retain URL filters.
+`/admin` opens Overview for administrators and Reports for moderators. Unified
+reports cover all six libraries; Content permits restoration without an open
+report. Legacy moderation URLs remain available. Roles and deletion follow the
+existing self-role and hierarchy rules. The deletion form explains consequences
+and requires the current account name. Match verification filters expose pending
+and failed outcomes; force is a separate confirmation that remains audited.
+
+Operations shows uncertain studio requests, current reservations per product,
+queued/failed engine jobs, queue age and last-seen worker leases/engine agents.
+Inspect details to see safe metadata and available metering evidence. Returning a
+generation reservation requires a reason and confirmation that delivery cannot
+be recovered. AI Studio and Hive reconciliation charges measured usage up to the
+original reservation, releases the remainder, and requires evidence. Wallet and
+request locks make repeat/concurrent resolution idempotent. There are no automatic
+provider retries or arbitrary credit adjustments. Audit can be filtered by actor,
+action, target and dates; moderators only see moderation actions.
+

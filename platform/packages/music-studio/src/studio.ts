@@ -662,6 +662,7 @@ export class MusicStudio {
 
     error?: string,
     cancelling = false,
+    recovery?: { actor: string; reason: string },
   ) {
     return this.db.transaction().execute(async (db) => {
       await this.lockWallet(db, row.account_id);
@@ -675,6 +676,8 @@ export class MusicStudio {
           throw new Error('Expected a database row.');
         })();
       if (['ready', 'failed'].includes(current.status)) return;
+      if (recovery && current.status !== 'uncertain')
+        throw new HiveError('conflict', 'Only uncertain requests can be recovered.');
       if (cancelling && ['dispatched', 'uncertain'].includes(current.status))
         throw new HiveError('conflict', 'Wait for the provider outcome before cancelling.');
       if (current.lease !== row.lease)
@@ -723,6 +726,10 @@ export class MusicStudio {
           db,
         );
       }
+      if (recovery)
+        await sql`INSERT INTO admin_audit_log(actor_account_id,action,target_type,target_id,details) VALUES(${recovery.actor},'music-studio.fail','music-studio-request',${row.id},${JSON.stringify({ reason: recovery.reason, from: { status: current.status, reserved: row.kind === 'generate' ? 1 : 0 }, to: { status: 'failed', reserved: 0, charged: 0 } })}::jsonb)`.execute(
+          db,
+        );
       await sql`UPDATE music_studio_requests SET status=${result ? 'ready' : 'failed'},charged=${!!charge},release_id=${releaseId},error=${error ?? null},completed_at=now(),lease_until=NULL WHERE id=${row.id}`.execute(
         db,
       );

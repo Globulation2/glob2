@@ -195,12 +195,21 @@ export async function historyRoutes(app: FastifyInstance, identity: Identity): P
 
   // Re-runs verification of a match whose check failed or was lost (see
   // history/reverify.ts). Body: { "force": true } replaces a queued verify job.
-  app.post<{ Params: { id: string }; Body: { force?: unknown } | undefined }>(
+  app.post<{ Params: { id: string }; Body: { force?: unknown; reason?: unknown } | undefined }>(
     '/api/v1/admin/matches/:id/reverify',
     async (request, reply) => {
       const { account } = await requireRole(identity, request, 'admin');
       const force = request.body?.force === true;
-      const result = await reverify(services.db, account, request.params.id, { force });
+      const reason = request.body?.reason;
+      if (
+        reason !== undefined &&
+        (typeof reason !== 'string' || !reason.trim() || reason.length > 2000)
+      )
+        throw apiError('bad_request', 'Invalid recovery reason.');
+      const result = await reverify(services.db, account, request.params.id, {
+        force,
+        ...(typeof reason === 'string' ? { reason } : {}),
+      });
       return reply.status(202).send(result);
     },
   );

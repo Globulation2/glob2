@@ -1,10 +1,11 @@
 import { MusicReports } from '../music/Moderation.tsx';
 import { SkinReports } from '../skins/Moderation.tsx';
-import { UnifiedReports, Content, PageControls, useAdminFilters } from './Moderation.tsx';
+import { Operations } from './Operations.tsx';
+import { UnifiedReports, Content, Audit, PageControls, useAdminFilters } from './Moderation.tsx';
 // Central administration; legacy music and skin report URLs remain supported.
 import { useState, type FormEvent } from 'react';
 import type { AdminAccount } from '@glob2/protocol';
-import { api } from '../api.ts';
+import { request, api } from '../api.ts';
 import { GameArt } from '../art.tsx';
 import { Empty, ErrorNotice, Loaded, MatchListView, PlayerLink } from '../components/common.tsx';
 import { date, dateTime } from '../format.ts';
@@ -16,6 +17,8 @@ const TABS = [
   { id: 'matches', name: 'Matches' },
   { id: 'reports', name: 'Reports' },
   { id: 'content', name: 'Content' },
+  { id: 'audit', name: 'Audit' },
+  { id: 'operations', name: 'Operations' },
 ];
 
 const MUTES = [
@@ -32,6 +35,9 @@ function AccountRow({ initial, isAdmin }: { initial: AdminAccount; isAdmin: bool
   const [reason, setReason] = useState('');
   const [error, setError] = useState<Error>();
   const [now] = useState(() => Date.now());
+  const { account: actor } = useSession();
+  const [role, setRole] = useState(account.role);
+  const [confirmation, setConfirmation] = useState('');
   const act = async (action: () => Promise<AdminAccount>) => {
     setError(undefined);
     try {
@@ -124,6 +130,58 @@ function AccountRow({ initial, isAdmin }: { initial: AdminAccount; isAdmin: bool
               </button>
             </div>
           )}
+          {isAdmin && actor?.id !== account.id && account.kind === 'registered' && (
+            <div className="toolbar">
+              <label>
+                Role{' '}
+                <select value={role} onChange={(e) => setRole(e.target.value as typeof role)}>
+                  {['user', 'moderator', 'admin'].map((r) => (
+                    <option key={r}>{r}</option>
+                  ))}
+                </select>
+              </label>
+              <button
+                disabled={role === account.role || !reason.trim()}
+                onClick={() =>
+                  void act(() =>
+                    request<AdminAccount>('POST', `/api/v1/admin/accounts/${account.id}/role`, {
+                      body: { role, reason },
+                    }),
+                  )
+                }
+              >
+                Change role
+              </button>
+            </div>
+          )}
+          {isAdmin && actor?.id !== account.id && (
+            <details>
+              <summary>Delete account</summary>
+              <p>
+                Deletes sign-in identities, sessions, personal information and owned content. Match
+                history remains anonymized. This cannot be undone.
+              </p>
+              <label>
+                Type {account.displayName} to confirm{' '}
+                <input value={confirmation} onChange={(e) => setConfirmation(e.target.value)} />
+              </label>
+              <button
+                className="danger"
+                disabled={confirmation !== account.displayName || !reason.trim()}
+                onClick={() =>
+                  void act(async () => {
+                    await request('DELETE', `/api/v1/admin/accounts/${account.id}`, {
+                      query: { reason },
+                    });
+                    setOpen(false);
+                    return { ...account, status: 'deleted', displayName: 'Deleted player' };
+                  })
+                }
+              >
+                Delete account
+              </button>
+            </details>
+          )}
           {error && <ErrorNotice error={error} />}
         </div>
       )}
@@ -177,6 +235,7 @@ function Matches() {
   const { values, set } = useAdminFilters();
   const [q, setQ] = useState(values['q'] ?? '');
   const load = useLoad((signal) => api.adminMatches(values, signal), [JSON.stringify(values)]);
+  const { account } = useSession();
   return (
     <>
       <form
@@ -225,11 +284,50 @@ function Matches() {
         {(page) => (
           <>
             <MatchListView matches={page.items} empty="No matches found." />
+            {account?.role === 'admin' &&
+              page.items
+                .filter((m) => m.status === 'ended')
+                .map((m) => <Reverify key={m.id} id={m.id} reload={load.reload} />)}
             <PageControls nextCursor={page.nextCursor} />
           </>
         )}
       </Loaded>
     </>
+  );
+}
+
+function Reverify({ id, reload }: { id: string; reload: () => void }) {
+  const [reason, setReason] = useState(''),
+    [force, setForce] = useState(false),
+    [busy, setBusy] = useState(false),
+    [error, setError] = useState('');
+  async function act() {
+    if (force && !window.confirm(`Force re-verification of ${id}?`)) return;
+    setBusy(true);
+    try {
+      await request('POST', `/api/v1/admin/matches/${id}/reverify`, { body: { force, reason } });
+      reload();
+    } catch (e) {
+      setError(String(e));
+    } finally {
+      setBusy(false);
+    }
+  }
+  return (
+    <details>
+      <summary>Re-verify {id}</summary>
+      <label>
+        Reason <input value={reason} onChange={(e) => setReason(e.target.value)} maxLength={2000} />
+      </label>
+      <label>
+        <input type="checkbox" checked={force} onChange={(e) => setForce(e.target.checked)} />
+        Force re-verification
+      </label>
+      <button disabled={busy || !reason.trim()} onClick={() => void act()}>
+        Re-verify
+      </button>
+      {error && <p role="alert">{error}</p>}
+    </details>
   );
 }
 
@@ -280,6 +378,9 @@ export function Admin({ tab }: { tab: string | undefined }) {
       {current === 'skins' && <SkinReports />}
       {current === 'music' && <MusicReports />}
       {current === 'content' && <Content />}
+      {current === 'audit' && <Audit />}
+      {current === 'operations' &&
+        (account.role === 'admin' ? <Operations /> : <p>Administrator access is required.</p>)}
     </>
   );
 }

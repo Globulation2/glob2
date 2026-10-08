@@ -1,9 +1,10 @@
-import {} from '@glob2/protocol';
+import { Credits } from '@glob2/billing';
+import { AdminOperationDetail } from '@glob2/protocol';
 import { randomUUID } from 'node:crypto';
 import { afterAll, beforeAll, expect, it } from 'vitest';
 import { sql } from 'kysely';
 import { schemaIssues, AdminReportList, AdminContentList } from '@glob2/protocol';
-import {} from '@glob2/protocol';
+import { AdminOperations } from '@glob2/protocol';
 import { createHarness, type Harness, type Instance } from './support.ts';
 let h: Harness, api: Instance;
 const sessions: Record<string, string> = {},
@@ -58,7 +59,7 @@ function call(path: string, role = 'admin', body?: unknown) {
   });
 }
 it('guards reads and validates all library union contracts', async () => {
-  for (const path of ['/reports', '/content']) {
+  for (const path of ['/reports', '/content', '/audit']) {
     expect((await call('/api/v1/admin' + path, 'user')).status).toBe(403);
     expect((await call('/api/v1/admin' + path, 'moderator')).status).toBe(200);
   }
@@ -130,6 +131,68 @@ it('resolves a report and hides its content atomically under contention', async 
   expect(closed.items[0]!.resolution).toBe('Reviewed');
 });
 
+it('restricts analytics, finances and recovery to admins and validates their contracts', async () => {
+  for (const [path, schema] of [['operations', AdminOperations]] as const) {
+    expect((await call('/api/v1/admin/' + path, 'moderator')).status).toBe(403);
+    const response = await call('/api/v1/admin/' + path);
+    const data = await response.json();
+    expect(response.status, path + JSON.stringify(data)).toBe(200);
+    expect(schemaIssues(schema, data)).toEqual([]);
+  }
+});
+it('reconciles Hive once under contention, audits credit consequences, and exposes only metering', async () => {
+  const credits = new Credits(h.database.db),
+    account = ids['user']!,
+    id = randomUUID();
+  await h.database.db
+    .insertInto('hive_wallets')
+    .values({ account_id: account, balance: 100 })
+    .execute();
+  await credits.reserve(account, id, 50, {
+    version: 'test',
+    model: 'test-model',
+    input: 1000000,
+    cachedInput: 0,
+    output: 1000000,
+  });
+  await credits.dispatch(id);
+  await credits.uncertain(id);
+  const detail = await (await call('/api/v1/admin/operations/hive/' + id)).json();
+  expect(schemaIssues(AdminOperationDetail, detail)).toEqual([]);
+  expect(JSON.stringify(detail)).not.toContain('prompt');
+  const statuses = await Promise.all(
+    [1, 2].map(
+      async () =>
+        (
+          await call('/api/v1/admin/hive/calls/' + id + '/reconcile', 'admin', {
+            usage: { input: 2, cachedInput: 0, output: 1 },
+            evidence: 'Confirmed metering',
+          })
+        ).status,
+    ),
+  );
+  expect(statuses.every((s) => s === 200 || s === 409)).toBe(true);
+  expect(await credits.balance(account)).toEqual({ balance: 97, reserved: 0, available: 97 });
+  const logs = await h.database.db
+    .selectFrom('admin_audit_log')
+    .selectAll()
+    .where('action', '=', 'hive.reconcile')
+    .where('target_id', '=', id)
+    .execute();
+  expect(logs).toHaveLength(1);
+  expect(logs[0]?.details).toMatchObject({
+    reason: 'Confirmed metering',
+    to: { charged: 3, reserved: 0 },
+  });
+  expect(
+    (
+      await call('/api/v1/admin/hive/calls/' + id + '/reconcile', 'moderator', {
+        usage: { input: 2, cachedInput: 0, output: 1 },
+        evidence: 'Metering',
+      })
+    ).status,
+  ).toBe(403);
+});
 it('supports inspect, hide, resolve, revisit and restore for every library', async () => {
   const db = h.database.db,
     owner = ids['user']!;
