@@ -417,9 +417,11 @@ TEST_SUITE("ResourceGrowth")
 			{[](void *p, size_t) { static_cast<std::latch *>(p)->count_down(); }, &finished},
 			ComputeExecutor::NoLane};
 		auto marker =
-			m.computeExecutor().submit(std::span(&signal, 1), 0, ComputeExecutor::Placement::Shared);
+			m.computeExecutor().submit(std::span(&signal, 1), ComputeExecutor::advanceDue(9), ComputeExecutor::Placement::Shared);
 		finished.wait();
 		m.computeExecutor().join(marker);
+		CHECK_FALSE(m.computeExecutor().finished(pipeline.pending.front()->work));
+		CHECK(m.computeExecutor().finished(pipeline.pending.back()->work));
 		pipeline.publish(m, 7);
 		CHECK(pipeline.metrics.published == 0);
 		pipeline.publish(m, 8);
@@ -697,10 +699,15 @@ TEST_CASE("engine preflight opens both historical growth and released vertex sav
     glob2test::GlobalsOptions options; options.loadStrings=true;
     glob2test::HeadlessGlobals globals(options);
     for (const char *name : {"growth146.game.gz","growth148.game.gz","vertex148.game.gz"}) {
-        CAPTURE(name);
+        CAPTURE(std::string(name));
         Engine engine;
         const auto path=glob2test::inflated(std::string("resources/growth-save-layout/")+name);
-        REQUIRE(engine.initCustom(path.string())==Engine::EE_NO_ERROR);
+        // These simulation fixtures omit the optional GameGUI tail. Exercise the
+        // production header preflight, then load the complete simulation payload.
+        MapHeader header; GameHeader players;
+        auto input=engine.openGameInput(path.string(),header,players);
+        REQUIRE(input != nullptr);
+        REQUIRE(engine.gui.game.load(input.get()));
         CHECK(engine.gui.game.map.resourceGrowthDelay()==8);
     }
 }

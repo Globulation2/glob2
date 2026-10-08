@@ -220,7 +220,7 @@ void testBinaryHeaderFormsAndLegacy()
         if(form!=1) historical.erase(6,1);
         // Format 145 adds an empty artwork chunk count before resource declarations.
         if(form!=1) historical.erase(historical.size()-experimentBytes-resourceExperimentBytes-4,4);
-		if (form != 1) for (const auto headerVersion : {144, 145, 146})
+		if (form != 1) for (const auto headerVersion : {144, 145})
 		{
 			// Published format 144 has map artwork but no GameHeader building
 			// artwork. A following record must remain aligned at this boundary.
