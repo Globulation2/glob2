@@ -78,7 +78,7 @@ describe('loadConfig', () => {
       env: { DATABASE_URL: 'postgres://x/y', RELAY_KEYS: shared, RELAY_KEYS_FILE: 'relay-keys' },
     });
     expect(config.relayKeys).toEqual([{ key: shared }, { key: pinned, relayId: 'relay-eu1' }]);
-    expect(config.uploadMaxBytes).toBe(16 * 1024 * 1024);
+    expect(config.uploadMaxBytes).toBe(64 * 1024 * 1024);
     expect(() => parseRelayKeys('short')).toThrow(ConfigError);
     expect(() => parseRelayKeys(`bad id!:${shared}`)).toThrow(ConfigError);
     expect(loadConfig({ cwd, env: { DATABASE_URL: 'postgres://x/y' } }).relayKeys).toEqual([]);

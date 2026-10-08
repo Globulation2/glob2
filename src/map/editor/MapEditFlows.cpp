@@ -1,3 +1,4 @@
+#include "MapAssetBundle.h"
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Editor flows that must not lose work or leave the editor: quit and window
 // close, replacing or sharing the map, rerolling the terrain look, fertility
@@ -139,6 +140,7 @@ void MapEdit::requestApplicationQuit()
 
 void MapEdit::closeDialogsForFlow()
 {
+    setLibraryDialog.reset();
 	if (showingMenuScreen)
 		performAction("close menu screen");
 	if (showingLoad)
@@ -228,7 +230,7 @@ void MapEdit::importResourceJson(const std::string &json)
 
 void MapEdit::beginDeviceImport()
 {
-	if (!GAGCore::ApplicationHost::canImportFiles() || !showingLoad || !(importingTerrain || importingResources))
+	if (!GAGCore::ApplicationHost::canImportFiles() || !showingLoad || !(importingTerrain || importingResources || importingSet))
 		return;
 	deviceSelection = GAGCore::ApplicationHost::selectFile("json");
 	GAGCore::ApplicationHost::importChanged("selecting");
@@ -262,7 +264,9 @@ void MapEdit::pollDeviceImport()
 	{
 		const auto file = selection->takeFile();
 		const std::string json(file.bytes.begin(), file.bytes.end());
-		if (resources)
+		if (importingSet)
+            importSetJson(json);
+        else if (resources)
 			importResourceJson(json);
 		else
 			importTerrainJson(json);
@@ -359,4 +363,11 @@ void MapEdit::drawFlowOverlays()
 		gfx->drawRect(chip.x, chip.y, chip.width, chip.height, 176, 148, 232);
 		gfx->drawString(chip.x + 12, chip.y + 6, font, text("[editor fertility stale]"));
 	}
+}
+
+void MapEdit::importSetJson(const std::string& json, const std::vector<std::string>& selected)
+{
+    game.map.importSet(json, selected);
+    game.gameHeader.setResourceExperiments(game.map.resourceRegistry().experiments());
+    minimap.resetMinimapDrawing(); hasMapBeenModified = true; fertilityRequested = true;
 }

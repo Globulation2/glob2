@@ -1,0 +1,208 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "glob2-protocol:SetPackage",
+  "title": "SetPackage",
+  "type": "object",
+  "required": [
+    "schemaVersion",
+    "setId",
+    "versionId",
+    "title",
+    "description",
+    "tags",
+    "license",
+    "credits",
+    "terrains",
+    "resources",
+    "assets"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "type": "number",
+      "const": 1
+    },
+    "setId": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+      "description": "Lowercase UUID."
+    },
+    "versionId": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+      "description": "Lowercase UUID."
+    },
+    "title": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128,
+      "pattern": "\\S"
+    },
+    "description": {
+      "type": "string",
+      "maxLength": 2000
+    },
+    "tags": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 32
+      },
+      "maxItems": 8,
+      "uniqueItems": true
+    },
+    "license": {
+      "anyOf": [
+        {
+          "type": "string",
+          "const": "CC0-1.0"
+        },
+        {
+          "type": "string",
+          "const": "CC-BY-4.0"
+        }
+      ]
+    },
+    "credits": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "author",
+          "license"
+        ],
+        "properties": {
+          "author": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128,
+            "pattern": "\\S"
+          },
+          "source": {
+            "type": "string",
+            "maxLength": 2000
+          },
+          "license": {
+            "anyOf": [
+              {
+                "type": "string",
+                "const": "CC0-1.0"
+              },
+              {
+                "type": "string",
+                "const": "CC-BY-4.0"
+              }
+            ]
+          }
+        },
+        "additionalProperties": false
+      },
+      "minItems": 1,
+      "maxItems": 64
+    },
+    "terrains": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "patternProperties": {
+          "^.*$": {}
+        }
+      },
+      "maxItems": 16384
+    },
+    "resources": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "patternProperties": {
+          "^.*$": {}
+        }
+      },
+      "maxItems": 16384
+    },
+    "experiments": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "patternProperties": {
+          "^.*$": {}
+        }
+      },
+      "maxItems": 128
+    },
+    "assets": {
+      "type": "object",
+      "required": [
+        "schemaVersion",
+        "sheets",
+        "terrains",
+        "credits"
+      ],
+      "properties": {
+        "schemaVersion": {
+          "type": "number",
+          "const": 1
+        },
+        "sheets": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "hash",
+              "png",
+              "frameWidth",
+              "frameHeight"
+            ],
+            "properties": {
+              "hash": {
+                "type": "string",
+                "pattern": "^[0-9a-f]{64}$",
+                "description": "Lowercase hexadecimal SHA-256 digest."
+              },
+              "png": {
+                "type": "string",
+                "maxLength": 16777216,
+                "pattern": "^[A-Za-z0-9_-]+$"
+              },
+              "frameWidth": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 64
+              },
+              "frameHeight": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 64
+              }
+            },
+            "additionalProperties": false
+          },
+          "maxItems": 256
+        },
+        "terrains": {
+          "type": "object",
+          "patternProperties": {
+            "^.*$": {
+              "type": "object",
+              "patternProperties": {
+                "^.*$": {}
+              }
+            }
+          }
+        },
+        "credits": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "patternProperties": {
+              "^.*$": {}
+            }
+          },
+          "maxItems": 64
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}

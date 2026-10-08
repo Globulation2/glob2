@@ -49,13 +49,15 @@ namespace
 bool drawCachedResources(Uint64 mapIdentity, const SceneMap& map, int left, int top,
     int right, int bottom, int viewportX, int viewportY)
 {
-    const auto& presentation = ResourceSprites::resolve(map.frozenResourceRegistry());
+    const auto& presentation = ResourceSprites::resolve(map.frozenResourceRegistry(), map.frozenAssetBundle());
     auto *gfx = globalContainer->gfx;
     auto *batch = gfx->getRenderBatch();
     if (!batch) return false;
     auto *sprite = globalContainer->resources;
-    const auto &compositor = globalContainer->terrainCompositor();
+    const auto &compositor = globalContainer->terrainCompositor(map.frozenAssetBundle());
     auto *decorSprite = compositor.decorSprite();
+    if (!decorSprite && std::any_of(compositor.catalog().materials.begin(), compositor.catalog().materials.end(),
+        [](const auto &m) { return !m.decor.sprite.empty(); })) return false;
     std::vector<int> frames, decorFrames;
     GAGCore::MapGeometryCache *cache;
     try { frames.resize(map.getW()); decorFrames.resize(map.getW()); cache = &batch->geometryCache(); }
@@ -156,9 +158,8 @@ void Game::drawMapResources(int left, int top, int right, int bot, int viewportX
 
     if ((drawOptions & DRAW_WHOLE_MAP) && drawCachedResources(sceneMap.cacheKey(), sceneMap, left, top,
             right, bot, viewportX, viewportY)) return;
-    const auto& catalog = ResourceSprites::resolve(sceneMap.frozenResourceRegistry());
-    const auto &compositor = globalContainer->terrainCompositor();
-    Sprite *decorSprite = compositor.decorSprite();
+    const auto& catalog = ResourceSprites::resolve(sceneMap.frozenResourceRegistry(), sceneMap.frozenAssetBundle());
+    const auto &compositor = globalContainer->terrainCompositor(sceneMap.frozenAssetBundle());
     Sprite* pendingSprite = nullptr;
     const auto flush = [&] {
         if (pendingSprite) globalContainer->gfx->finishDrawingSprite(pendingSprite, 255);
@@ -175,6 +176,7 @@ void Game::drawMapResources(int left, int top, int right, int bot, int viewportX
 						y+viewportY+1,
 						visibleTeams))
 			{
+                auto *decorSprite = compositor.decorSprite(sceneMap, x + viewportX, y + viewportY);
 				if (decorSprite)
 				{
 					const int decor = compositor.decorFrame(sceneMap, x + viewportX, y + viewportY);
@@ -216,7 +218,7 @@ void Game::drawMapOverview(int left, int top, int right, int bot, int viewportX,
 	PERF_SCOPE_TIME(Terrain);
 	Uint32 visibleTeams = Team::teamNumberToMask(localTeam);
 	if (globalContainer->isViewingGame()) visibleTeams = globalContainer->replayVisibleTeams;
-	auto &compositor = globalContainer->terrainCompositor();
+	auto &compositor = globalContainer->terrainCompositor(sceneMap.frozenAssetBundle());
 	constexpr int samples = TerrainVisual::Compositor::OverviewSamples;
 	const int columns = right-left+1, rows = bot-top+1;
 	if (!render.overview)

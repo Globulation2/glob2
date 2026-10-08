@@ -101,6 +101,7 @@
     "PlayerProfile": "schemas/PlayerProfile.schema.json",
     "PublicAccount": "schemas/PublicAccount.schema.json",
     "PublishAiRequest": "schemas/PublishAiRequest.schema.json",
+    "PublishSetRequest": "schemas/PublishSetRequest.schema.json",
     "PublishSkinRequest": "schemas/PublishSkinRequest.schema.json",
     "RealtimeAuthHandoffBeginParams": "schemas/RealtimeAuthHandoffBeginParams.schema.json",
     "RealtimeAuthHandoffBeginResult": "schemas/RealtimeAuthHandoffBeginResult.schema.json",
@@ -179,8 +180,11 @@
     "RoomList": "schemas/RoomList.schema.json",
     "RoomMapSelection": "schemas/RoomMapSelection.schema.json",
     "RoomState": "schemas/RoomState.schema.json",
+    "SaveSetDraftRequest": "schemas/SaveSetDraftRequest.schema.json",
     "SaveSkinDraftRequest": "schemas/SaveSkinDraftRequest.schema.json",
     "SelfAccount": "schemas/SelfAccount.schema.json",
+    "SetPackage": "schemas/SetPackage.schema.json",
+    "SetSheet": "schemas/SetSheet.schema.json",
     "SignInResponse": "schemas/SignInResponse.schema.json",
     "SignOutRequest": "schemas/SignOutRequest.schema.json",
     "SimVersion": "schemas/SimVersion.schema.json",
@@ -201,9 +205,12 @@
     "UpdateAccountRequest": "schemas/UpdateAccountRequest.schema.json",
     "UpdateAiRequest": "schemas/UpdateAiRequest.schema.json",
     "UpdateMapRequest": "schemas/UpdateMapRequest.schema.json",
+    "UpdateSetRequest": "schemas/UpdateSetRequest.schema.json",
     "ValidateAiPayload": "schemas/ValidateAiPayload.schema.json",
     "ValidateMapPayload": "schemas/ValidateMapPayload.schema.json",
     "ValidateMapResult": "schemas/ValidateMapResult.schema.json",
+    "ValidateSetPayload": "schemas/ValidateSetPayload.schema.json",
+    "ValidateSetResult": "schemas/ValidateSetResult.schema.json",
     "VerifyMatchPayload": "schemas/VerifyMatchPayload.schema.json",
     "VerifyVerdict": "schemas/VerifyVerdict.schema.json"
   },
@@ -256,6 +263,31 @@
       "schema": "AiUpload",
       "valid": true,
       "note": "A private staging receipt binds compatibility checks to exact source bytes."
+    },
+    {
+      "file": "valid/ValidateSetPayload/exact-package.json",
+      "schema": "ValidateSetPayload",
+      "valid": true,
+      "note": "Validate exactly these immutable package bytes."
+    },
+    {
+      "file": "valid/ValidateSetResult/checked-release.json",
+      "schema": "ValidateSetResult",
+      "valid": true,
+      "note": "Engine validation binds artwork and properties to the package hash."
+    },
+    {
+      "file": "valid/PublishSetRequest/public-release.json",
+      "schema": "PublishSetRequest",
+      "valid": true,
+      "note": "Publication requires a checked draft revision."
+    },
+    {
+      "file": "invalid/PublishSetRequest/unsaved-draft.json",
+      "schema": "PublishSetRequest",
+      "valid": false,
+      "stage": "schema",
+      "note": "An unsaved revision cannot be published."
     },
     {
       "file": "invalid/AiValidationReport/partial-checks.json",

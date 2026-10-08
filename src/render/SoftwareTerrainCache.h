@@ -9,6 +9,7 @@
 
 class SceneMap;
 class TerrainRegistry;
+class MapAssetBundle;
 // Shared presentation page cache. The historical name remains for existing view
 // controls/benchmarks; software and GPU consume the same composed coverage.
 class SoftwareTerrainCache
@@ -60,6 +61,7 @@ class SoftwareTerrainCache
 							 int preferredDownsample = 0);
 	std::vector<std::unique_ptr<Chunk>> chunks;
 	std::shared_ptr<const TerrainRegistry> registry;
+    std::shared_ptr<const MapAssetBundle> assets;
 	std::vector<Copy> copies;
 	std::uint64_t frame = 0, hits = 0, rebuilds = 0;
 	SDL_Rect paintBounds{};

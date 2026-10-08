@@ -9,6 +9,7 @@
 #include "UnitType.h"
 #include "BuildingCapabilities.h"
 #include "ResourceRegistry.h"
+#include "MapAssetBundle.h"
 #include "ResourceHabitats.h"
 #include "MapStateView.h"
 #include "ResourcePlaneKey.h"
@@ -29,6 +30,7 @@ struct Catalogs
 	std::array<std::array<UnitType, NB_UNIT_LEVELS>, NB_UNIT_TYPE> unitTypes;
 	// Immutable resource catalog and compiled habitat permissions, shared with the map.
 	std::shared_ptr<const ResourceRegistry> resources;
+    std::shared_ptr<const MapAssetBundle> assets;
 	std::shared_ptr<const ResourceHabitats> habitats;
 };
 // Which live chunks a pooled buffer mirrors (MapState::ChangeTracker stamps),

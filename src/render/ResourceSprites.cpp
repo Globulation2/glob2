@@ -4,13 +4,15 @@
 #include <Toolkit.h>
 #include <GraphicContext.h>
 
-const ResourceSprites& ResourceSprites::resolve(std::shared_ptr<const ResourceRegistry> definitions)
+namespace { ResourceSprites cache; GAGCore::Sprite* legacy = nullptr; }
+void ResourceSprites::clear() { cache=ResourceSprites{};legacy=nullptr; }
+const ResourceSprites& ResourceSprites::resolve(std::shared_ptr<const ResourceRegistry> definitions, std::shared_ptr<const MapAssetBundle> assets)
 {
-    static ResourceSprites cache;
-    static GAGCore::Sprite* legacy = nullptr;
-    if (cache.definitions != definitions || legacy != globalContainer->resources)
+    if (cache.definitions != definitions || cache.assets != assets || legacy != globalContainer->resources)
     {
         cache.definitions = std::move(definitions);
+        cache.assets = std::move(assets);
+        cache.customSprites = std::make_unique<MapAssetSprites>(cache.assets);
         legacy = globalContainer->resources;
         cache.sprites.assign(cache.definitions->size(), nullptr);
         cache.legacyOnly = true;
@@ -18,7 +20,7 @@ const ResourceSprites& ResourceSprites::resolve(std::shared_ptr<const ResourceRe
         {
             const auto& presentation = cache.definitions->presentation(static_cast<ResourceId>(id));
             auto* sprite = presentation.sprite == "data/gfx/ressource" ? legacy
-                : GAGCore::Toolkit::getSprite(presentation.sprite);
+                : cache.customSprites->resolve(presentation.sprite);
             cache.sprites[id] = sprite;
             if (sprite != legacy || presentation.animationFrames != 1) cache.legacyOnly = false;
         }

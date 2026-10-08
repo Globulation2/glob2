@@ -149,7 +149,7 @@ export async function playRoutes(
 
   app.post<{ Querystring: { format?: string; simVersion?: string; fileName?: string } }>(
     '/api/v1/uploads',
-    { bodyLimit: services.config.uploadMaxBytes ?? 16 * 1024 * 1024 },
+    { bodyLimit: services.config.uploadMaxBytes ?? 64 * 1024 * 1024 },
     async (request, reply) => {
       const { account } = await requireAccount(identity, request);
       const format = request.query.format;

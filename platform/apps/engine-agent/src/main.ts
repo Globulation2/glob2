@@ -1,3 +1,4 @@
+import { createAssetSandbox, createSetValidator } from './setValidation.ts';
 import { createAiValidator } from './aiValidation.ts';
 // engine-agent: one image per sim version (the glob2 headless binary of that
 // version plus this wrapper). It has no database or blob-store access: jobs,
@@ -131,7 +132,23 @@ try {
         'AI publishing unavailable: isolated validator failed its startup probe',
       );
     }
+    let setValidator;
+    if (catalog.versionMinor >= 144 || catalog.commands.includes('validate_set')) {
+      // Format 144 maps embed uploaded PNGs too. Publishing's opt-in only gates
+      // validate-set availability; ordinary map jobs must use the same boundary.
+      try {
+        engine.options.processLauncher = await createAssetSandbox(engine.options);
+        const validated = await createSetValidator(engine.options);
+        if (env['ENGINE_SET_VALIDATION'] === '1' && catalog.commands.includes('validate_set'))
+          setValidator = validated;
+      } catch (error) {
+        throw new ConfigError(
+          'Asset-capable engine isolation failed its startup probe: ' + (error as Error).message,
+        );
+      }
+    }
     runner = new HeadlessEngineRunner({
+      ...(setValidator ? { setValidator } : {}),
       ...(aiValidator ? { aiValidator } : {}),
       engine,
       catalog,

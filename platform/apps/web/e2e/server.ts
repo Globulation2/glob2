@@ -16,6 +16,7 @@ import { extname, join, normalize, resolve } from 'node:path';
 import { SEEDED_QUEUES, seedHistory } from '../../api/test/historySeed.ts';
 import { createHarness } from '../../api/test/support.ts';
 import { previewFixture, seedShowcase } from './showcase.ts';
+import { SET_CREDITS_FIXTURE } from '../../api/test/setCreditsFixture.ts';
 
 const here = import.meta.dirname;
 const repo = resolve(here, '../../../..');
@@ -124,6 +125,11 @@ const seed = await seedHistory(harness.database.db, harness.blobs, {
   ...(existsSync(replayFixture) ? { replayBytes: readFileSync(replayFixture) } : {}),
   mapPreview: previewFixture('even-ground'),
 });
+await harness.database.db
+  .updateTable('map_versions')
+  .set({ set_credits: JSON.stringify(SET_CREDITS_FIXTURE) })
+  .where('hash', '=', seed.mapHash)
+  .execute();
 // The test painter owns a designer unlock without contacting a payment provider.
 await harness.database.db
   .insertInto('entitlements')

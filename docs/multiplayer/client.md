@@ -441,3 +441,18 @@ reported complete until the host persistence request succeeds. A failed flush
 retains recovery bytes and offers retry/export. Local removal cannot delete
 bundled sets. Changes affect local music and presentation only; they do not alter
 simulation, saved games, replays or the match protocol.
+
+## Custom terrain and resource sets
+
+The map editor's **Set Library** uses the configured instance and signed-in account.
+It downloads an exact release with a bounded response and verifies its hash before
+import. The dialog previews its terrain/resources, allows selecting individual
+entries, and shows license and creator credit. Disk import accepts the same JSON
+package offline. The map owns all custom images and definitions after import;
+built-in graphics are referenced from installed game data.
+
+The same dialog exposes copied map content and attribution, local edits and an
+explicit replacement action for a newer release. Updates are never automatic.
+See [resource catalogs](../features/resource-catalogs.md#themed-terrain-and-resource-sets)
+for package bounds, compatibility and update behavior. Maps and replays do not
+contact the set library during play.

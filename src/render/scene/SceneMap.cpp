@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "SceneMap.h"
+#include "MapAssetBundle.h"
 
 #include "TerrainRegistry.h"
 #include "sim/snapshot/WorldSnapshot.h"
@@ -42,7 +43,7 @@ void SceneMap::mapCaseToDisplayableVector(int mx, int my, int *px, int *py, int 
 	*py = y << 5;
 }
 
-SceneMap::SceneMap() : registry(TerrainRegistry::builtins()), resourceDefinitions(ResourceRegistry::availableDefaults()) {}
+SceneMap::SceneMap() : registry(TerrainRegistry::builtins()), resourceDefinitions(ResourceRegistry::availableDefaults()), assets(MapAssetBundle::empty()) {}
 
 const TerrainPresentation &SceneMap::terrainPresentation(TerrainType type) const
 {
@@ -102,7 +103,7 @@ void SceneMap::bindSnapshot(const SimulationSnapshot::Handle& world)
     if (world.growth) required |= bit(Component::Growth) | bit(Component::Rules);
     snapshot = std::make_shared<const Handle>(world.project(required));
     snapshotFog = snapshot->visibility->visible.data();
-    tick = world.tick; registry = snapshot->terrain->registry; resourceDefinitions = snapshot->catalogs->resources;
+    tick = world.tick; registry = snapshot->terrain->registry; resourceDefinitions = snapshot->catalogs->resources; assets = snapshot->catalogs->assets;
     presentMaterials = 0;
 }
 

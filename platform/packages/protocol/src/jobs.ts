@@ -1,3 +1,4 @@
+import { ValidateSetPayload, ValidateSetResult, MapSetCredits } from './sets.ts';
 import { ValidateAiPayload, AiValidationReport } from './ais.ts';
 // Engine-agent job contracts. Anything that needs the engine runs as a job for
 // one simulation version: an engine-agent built from that version's glob2
@@ -22,6 +23,7 @@ import { SimVersion, simVersionKey } from './simVersion.ts';
 
 export const ENGINE_JOB_KINDS = [
   'validate-ai',
+  'validate-set',
   'import-ai-map',
   'generate-map',
   'validate-map',
@@ -39,6 +41,7 @@ export function engineTaskIdentifier(kind: EngineJobKind, simVersion: SimVersion
 }
 
 const MapFacts = Open({
+  setCredits: Type.Optional(MapSetCredits),
   width: Type.Integer({ minimum: 1 }),
   height: Type.Integer({ minimum: 1 }),
   teamCount: Type.Integer({ minimum: 1, maximum: 12 }),
@@ -215,6 +218,7 @@ interface JobContract {
 }
 
 export const engineJobs = {
+  'validate-set': { payload: ValidateSetPayload, result: ValidateSetResult },
   'validate-ai': { payload: ValidateAiPayload, result: AiValidationReport },
   'import-ai-map': { payload: ImportAiMapPayload, result: ImportAiMapResult },
   'generate-map': { payload: GenerateMapPayload, result: GenerateMapResult },
@@ -228,6 +232,7 @@ export type EngineJobOutput<K extends EngineJobKind> = Static<(typeof engineJobs
 
 const JobKind = Type.Union([
   Type.Literal('validate-ai'),
+  Type.Literal('validate-set'),
   Type.Literal('import-ai-map'),
   Type.Literal('generate-map'),
   Type.Literal('validate-map'),
