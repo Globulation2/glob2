@@ -14,15 +14,17 @@ BrushSwatches::BrushSwatches() = default;
 BrushSwatches::~BrushSwatches() = default;
 
 void BrushSwatches::bind(std::shared_ptr<const TerrainRegistry> terrain,
-						 std::shared_ptr<const ResourceRegistry> resources, std::shared_ptr<const MapAssetBundle> bundle)
+						 std::shared_ptr<const ResourceRegistry> resources,
+						 std::shared_ptr<const MapAssetBundle> bundle)
 {
-	std::string next = (terrain ? terrain->digest() : std::string()) + "/" + (resources ? resources->digest() : std::string());
+	std::string next = (terrain ? terrain->digest() : std::string()) + "/" +
+					   (resources ? resources->digest() : std::string());
 	terrainRegistry = std::move(terrain);
 	resourceRegistry = std::move(resources);
 	if (next != digest || assets != bundle)
 	{
 		digest = std::move(next);
-        assets = std::move(bundle);
+		assets = std::move(bundle);
 		clear();
 	}
 }
@@ -73,9 +75,12 @@ GAGCore::DrawableSurface *BrushSwatches::terrain(TerrainType type, int px)
 
 GAGCore::DrawableSurface *BrushSwatches::resource(ResourceId id, TerrainType backdrop, int px)
 {
-	if (px <= 0 || !usable() || !resourceRegistry || !resourceRegistry->valid(id) || !terrainRegistry->valid(backdrop))
+	if (px <= 0 || !usable() || !resourceRegistry || !resourceRegistry->valid(id) ||
+		!terrainRegistry->valid(backdrop))
 		return nullptr;
-	const auto key = std::make_pair("resource/" + std::to_string(resourceIndex(id)) + "/" + std::to_string(unsigned(backdrop)), px);
+	const auto key = std::make_pair("resource/" + std::to_string(resourceIndex(id)) + "/" +
+										std::to_string(unsigned(backdrop)),
+									px);
 	if (auto found = cache.find(key); found != cache.end())
 		return found->second.get();
 	auto surface = composeResource(id, backdrop, px);
@@ -92,7 +97,8 @@ void makeOpaque(DrawableSurface &surface)
 		return;
 	for (int y = 0; y < sdl->h; ++y)
 	{
-		auto *row = reinterpret_cast<Uint32 *>(static_cast<unsigned char *>(sdl->pixels) + y * sdl->pitch);
+		auto *row =
+			reinterpret_cast<Uint32 *>(static_cast<unsigned char *>(sdl->pixels) + y * sdl->pitch);
 		for (int x = 0; x < sdl->w; ++x)
 			row[x] |= 0xff000000u;
 	}
@@ -108,14 +114,15 @@ std::unique_ptr<DrawableSurface> BrushSwatches::composeTerrain(TerrainType type,
 	// the current instance for each new swatch, rather than retaining a flag
 	// tied to the previous instance. Cached swatches need no texture work.
 	const bool gpu = globalContainer->gfx->getOptionFlags() &
-		(GAGCore::GraphicContext::USEGPU | GAGCore::GraphicContext::PORTABLEGPU);
+					 (GAGCore::GraphicContext::USEGPU | GAGCore::GraphicContext::PORTABLEGPU);
 	compositor.prepare(gpu, 0);
 	const auto &catalog = compositor.catalog();
 	// A custom material binding takes precedence over the imported base look.
 	const auto appearance = terrainRegistry->appearance(type);
 	const bool builtinLook = unsigned(appearance) < TERRAIN_COUNT;
 	auto binding = catalog.bindings.find(terrainRegistry->key(type));
-    if (binding == catalog.bindings.end() && builtinLook) binding = catalog.bindings.find(terrainPresentation(appearance).name);
+	if (binding == catalog.bindings.end() && builtinLook)
+		binding = catalog.bindings.find(terrainPresentation(appearance).name);
 	// Two by two map cells, as the map shows them at 100% zoom, at an integer
 	// scale at least as large as the swatch: neighbouring cells pick their own
 	// texture variants.
@@ -159,7 +166,8 @@ std::unique_ptr<DrawableSurface> BrushSwatches::composeTerrain(TerrainType type,
 					if (auto *source = sprite->nativeFrame(frame))
 					{
 						const int w = source->getW() * scale, h = source->getH() * scale;
-						base.drawSurface(x * cell + cell / 2 - w / 2, y * cell + cell / 2 - h / 2, w, h, source);
+						base.drawSurface(x * cell + cell / 2 - w / 2, y * cell + cell / 2 - h / 2,
+										 w, h, source);
 					}
 				}
 	}
@@ -170,14 +178,16 @@ std::unique_ptr<DrawableSurface> BrushSwatches::composeTerrain(TerrainType type,
 	return result;
 }
 
-std::unique_ptr<DrawableSurface> BrushSwatches::composeResource(ResourceId id, TerrainType backdrop, int px)
+std::unique_ptr<DrawableSurface> BrushSwatches::composeResource(ResourceId id, TerrainType backdrop,
+																int px)
 {
 	auto result = std::make_unique<DrawableSurface>(px, px);
 	if (auto *ground = terrain(backdrop, px))
 		result->drawSurface(0, 0, ground);
 	const auto &presentation = resourceRegistry->presentation(id);
 	const auto &sprites = ResourceSprites::resolve(resourceRegistry, assets);
-	auto *sprite = resourceIndex(id) < sprites.sprites.size() ? sprites.sprites[resourceIndex(id)] : nullptr;
+	auto *sprite =
+		resourceIndex(id) < sprites.sprites.size() ? sprites.sprites[resourceIndex(id)] : nullptr;
 	if (sprite && !presentation.levels.empty())
 	{
 		// The fullest stage, the look an author expects of a freshly painted deposit.
@@ -190,4 +200,121 @@ std::unique_ptr<DrawableSurface> BrushSwatches::composeResource(ResourceId id, T
 	}
 	makeOpaque(*result);
 	return result;
+}
+
+GAGCore::DrawableSurface *BrushSwatches::terrainScene(TerrainType type, TerrainType neighbor,
+													  unsigned phase, unsigned variation, int px)
+{
+	if (!usable() || px <= 0 || px > 768 || !terrainRegistry->valid(type) ||
+		!terrainRegistry->valid(neighbor))
+		return nullptr;
+	const auto key = std::make_pair("scene/" + std::to_string(unsigned(type)) + "/" +
+										std::to_string(unsigned(neighbor)) + "/" +
+										std::to_string(phase) + "/" + std::to_string(variation),
+									px);
+	if (auto it = cache.find(key); it != cache.end())
+		return it->second.get();
+	auto &compositor = globalContainer->terrainCompositor(assets);
+	const auto &catalog = compositor.catalog();
+	auto materialFor = [&](TerrainType id)
+	{
+		auto found = catalog.bindings.find(terrainRegistry->key(id));
+		if (found == catalog.bindings.end())
+			found =
+				catalog.bindings.find(terrainPresentation(terrainRegistry->appearance(id)).name);
+		return found == catalog.bindings.end() ? TerrainVisual::MaterialId(0) : found->second;
+	};
+	const auto material = materialFor(type), other = materialFor(neighbor);
+	compositor.prepare(false, int(phase * catalog.materials[material].animationTicks));
+	auto source = std::make_unique<DrawableSurface>(192, 192);
+	auto cellMaterial = [&](int x, int y)
+	{
+		x = (x + 6) % 6;
+		y = (y + 6) % 6;
+		// An isolated cell, a one-cell path, bends and a concave pond edge.
+		return ((x == 1 && y == 1) || (x == 3 && y >= 1 && y <= 4) ||
+				(y == 4 && x >= 1 && x <= 4) || (x >= 4 && y <= 1))
+				   ? material
+				   : other;
+	};
+	for (int y = 0; y < 6; ++y)
+		for (int x = 0; x < 6; ++x)
+		{
+			TerrainVisual::Recipe recipe;
+			recipe.x = x;
+			recipe.y = y;
+			recipe.width = recipe.height = 6;
+			recipe.seed = variation;
+			for (int sy = 0; sy < 4; ++sy)
+				for (int sx = 0; sx < 4; ++sx)
+				{
+					const int lx = (2 * x + sx - 1 + 12) % 12, ly = (2 * y + sy - 1 + 12) % 12;
+					recipe.samples[sy * 4 + sx] = cellMaterial(lx / 2, ly / 2);
+				}
+			compositor.compose(recipe, source->getSDLSurface(), x * 32, y * 32, 1);
+		}
+	source->markPixelsChanged();
+	// Decor uses the same per-material sprite and coordinate selection as map rows.
+	for (int y = 0; y < 6; ++y)
+		for (int x = 0; x < 6; ++x)
+		{
+			if (cellMaterial(x, y) != material)
+				continue;
+			const bool edge =
+				cellMaterial(x - 1, y) != material || cellMaterial(x + 1, y) != material ||
+				cellMaterial(x, y - 1) != material || cellMaterial(x, y + 1) != material;
+			if (auto *sprite = compositor.decorSprite(material))
+			{
+				const int frame = catalog.decorFrame(material, x, y, edge, variation);
+				if (frame >= 0)
+					if (auto *image = sprite->nativeFrame(frame))
+						source->drawSurface(x * 32 + 16 - image->getW() / 2,
+											y * 32 + 16 - image->getH() / 2, image);
+			}
+		}
+	makeOpaque(*source);
+	auto result = std::make_unique<DrawableSurface>(px, px);
+	result->drawSurface(0, 0, px, px, source.get());
+	makeOpaque(*result);
+	return cache.emplace(key, std::move(result)).first->second.get();
+}
+GAGCore::DrawableSurface *BrushSwatches::resourceStage(ResourceId id, TerrainType backdrop,
+													   unsigned stock, unsigned phase,
+													   unsigned variation, int px)
+{
+	if (!usable() || px <= 0 || px > 512 || !resourceRegistry || !resourceRegistry->valid(id) ||
+		!terrainRegistry->valid(backdrop))
+		return nullptr;
+	const auto key =
+		std::make_pair("stage/" + std::to_string(resourceIndex(id)) + "/" +
+						   std::to_string(unsigned(backdrop)) + "/" + std::to_string(stock) + "/" +
+						   std::to_string(phase) + "/" + std::to_string(variation),
+					   px);
+	if (auto it = cache.find(key); it != cache.end())
+		return it->second.get();
+	auto result = std::make_unique<DrawableSurface>(px, px);
+	if (auto *ground = terrain(backdrop, px))
+		result->drawSurface(0, 0, ground);
+	const auto &presentation = resourceRegistry->presentation(id);
+	const auto &sprites = ResourceSprites::resolve(resourceRegistry, assets);
+	auto *sprite =
+		resourceIndex(id) < sprites.sprites.size() ? sprites.sprites[resourceIndex(id)] : nullptr;
+	if (sprite && !presentation.levels.empty())
+	{
+		const ResourceSpriteLevel *level = &presentation.levels.front();
+		for (const auto &candidate : presentation.levels)
+			if (candidate.stock <= stock)
+				level = &candidate;
+		if (!level->variants.empty())
+		{
+			const unsigned frame =
+				level->variants[variation % level->variants.size()].frame +
+				(phase % presentation.animationFrames) * presentation.animationStride;
+			auto *image = sprite->nativeFrame(frame);
+			if (image && image->getSDLSurface())
+				result->drawSurface(0, 0, px, px, image);
+		}
+	}
+	makeOpaque(*result);
+	return cache.emplace(key, std::move(result)).first->second.get();
 }

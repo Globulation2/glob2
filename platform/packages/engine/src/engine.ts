@@ -154,7 +154,7 @@ export class GlobEngine {
     return readFile(path);
   }
 
-  async validateSet(bytes: Uint8Array, signal?: AbortSignal) {
+  async validateSet(bytes: Uint8Array, signal?: AbortSignal, gallery = false) {
     return this.scratch(async (dir) => {
       const input = join(dir, 'set.json'),
         reportPath = join(dir, 'report.json'),
@@ -162,7 +162,15 @@ export class GlobEngine {
       await writeFile(input, bytes);
       const result = await this.run(
         'inspect',
-        ['--validate-set', input, '--json', reportPath, '--preview', preview],
+        [
+          '--validate-set',
+          input,
+          '--json',
+          reportPath,
+          '--preview',
+          preview,
+          ...(gallery ? ['--gallery', '1'] : []),
+        ],
         dir,
         signal,
       );
