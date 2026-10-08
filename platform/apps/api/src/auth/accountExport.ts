@@ -37,6 +37,10 @@ export const EXPORTED_ACCOUNT_COLUMNS: Record<string, string[]> = {
   match_colony_skins: ['account_id'],
   skin_purchases: ['account_id'],
   colony_skin_reports: ['reporter_account_id'],
+  asset_sets: ['owner_account_id'],
+  set_likes: ['account_id'],
+  set_reports: ['reporter_account_id'],
+  set_downloads: ['downloader'],
   ais: ['owner_account_id'],
   ai_uploads: ['owner_account_id'],
   ai_likes: ['account_id'],
@@ -446,6 +450,34 @@ export async function exportAccount(
         .select(['map_id', sql<string>`day::text`.as('day')])
         .where('downloader', '=', `a:${id}`)
         .orderBy('day')
+        .execute();
+
+      const assetSets = await tx
+        .selectFrom('asset_sets')
+        .selectAll()
+        .where('owner_account_id', '=', id)
+        .execute();
+      const setIds = assetSets.map((s) => s.id);
+      const setDrafts = setIds.length
+        ? await tx.selectFrom('set_drafts').selectAll().where('set_id', 'in', setIds).execute()
+        : [];
+      const setVersions = setIds.length
+        ? await tx.selectFrom('set_versions').selectAll().where('set_id', 'in', setIds).execute()
+        : [];
+      const setLikes = await tx
+        .selectFrom('set_likes')
+        .selectAll()
+        .where('account_id', '=', id)
+        .execute();
+      const setReports = await tx
+        .selectFrom('set_reports')
+        .selectAll()
+        .where('reporter_account_id', '=', id)
+        .execute();
+      const setDownloads = await tx
+        .selectFrom('set_downloads')
+        .select(['version_id', sql<string>`day::text`.as('day')])
+        .where('downloader', '=', `a:${id}`)
         .execute();
 
       const ais = await tx
@@ -959,6 +991,14 @@ export async function exportAccount(
           attempts: rows(musicStudioAttempts),
           events: rows(musicStudioEvents),
           artifacts: rows(musicStudioArtifacts),
+        },
+        sets: {
+          published: rows(assetSets),
+          drafts: rows(setDrafts),
+          versions: rows(setVersions),
+          likes: rows(setLikes),
+          reports: rows(setReports),
+          downloads: rows(setDownloads),
         },
         ais: {
           published: ais.map((a) => ({

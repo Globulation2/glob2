@@ -1,0 +1,49 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "glob2-protocol:ValidateSetResult",
+  "title": "ValidateSetResult",
+  "type": "object",
+  "required": [
+    "hash",
+    "suite",
+    "valid",
+    "minVersionMinor",
+    "terrainCount",
+    "resourceCount"
+  ],
+  "properties": {
+    "hash": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$",
+      "description": "Lowercase hexadecimal SHA-256 digest."
+    },
+    "suite": {
+      "type": "number",
+      "const": 1
+    },
+    "valid": {
+      "type": "boolean"
+    },
+    "reason": {
+      "type": "string",
+      "maxLength": 2000
+    },
+    "previewHash": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$",
+      "description": "Lowercase hexadecimal SHA-256 digest."
+    },
+    "minVersionMinor": {
+      "type": "integer",
+      "minimum": 144
+    },
+    "terrainCount": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "resourceCount": {
+      "type": "integer",
+      "minimum": 0
+    }
+  }
+}

@@ -1,4 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
+#include "MapAssetBundle.h"
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
 #include "BuildingGradientSearch.h"
@@ -47,6 +48,7 @@ try
 	Sint32 versionMinor = header.getVersionMinor();
     const bool packed=versionMinor>=FILE_FORMAT_VERSION_COMPACT_STATE && GAGCore::PackedArray::binary(stream);
 
+    assetBundleValue = MapAssetBundle::empty();
 	clear();
 	terrainRegistryValue = TerrainRegistry::builtins();
     resourceRegistryValue = versionMinor >= FILE_FORMAT_VERSION_RUNTIME_RESOURCES
@@ -132,6 +134,20 @@ try
         {
             throw std::ios_base::failure(std::string("Invalid resource registry: ")+error.what());
         }
+    }
+    if (versionMinor >= FILE_FORMAT_VERSION_MAP_ASSETS) {
+        stream->readEnterSection("customAssets");
+        const auto length = stream->readUint32("length");
+        if (length > MapAssetBundle::MaximumBytes) throw std::ios_base::failure("Custom artwork exceeds 16 MiB");
+        if (length) {
+            std::string assets(length, '\0');
+            stream->read(assets.data(), length, "bytes");
+            try { assetBundleValue = MapAssetBundle::deserialize(assets); }
+            catch (const std::exception& error) { throw std::ios_base::failure(error.what()); }
+        }
+        stream->readLeaveSection();
+        try { assetBundleValue->validate(terrainRegistry(), resourceRegistry()); }
+        catch (const std::exception& error) { throw std::ios_base::failure(error.what()); }
     }
 	terrainCounts.assign(terrainRegistry().size(), 0);
 
@@ -437,6 +453,12 @@ void Map::save(GAGCore::OutputStream *stream)
         }
         stream->writeLeaveSection();
     }
+
+    stream->writeEnterSection("customAssets");
+    const auto assets = assetBundleValue->isEmpty() ? std::string{} : assetBundleValue->serialize();
+    stream->writeUint32(assets.size(), "length");
+    if (!assets.empty()) stream->write(assets.data(), assets.size(), "bytes");
+    stream->writeLeaveSection();
 
 	// We write what's inside the map:
 	if(GAGCore::PackedArray::binary(stream)) GAGCore::PackedArray::write<Uint8>(stream,size,[&](size_t i){return undermap[i];});

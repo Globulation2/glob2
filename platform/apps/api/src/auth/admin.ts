@@ -326,6 +326,10 @@ export class AdminService {
       await tx.deleteFrom('ai_likes').where('account_id', '=', id).execute();
       await tx.deleteFrom('ai_favourites').where('account_id', '=', id).execute();
       await tx.deleteFrom('ai_reports').where('reporter_account_id', '=', id).execute();
+      await tx.deleteFrom('asset_sets').where('owner_account_id', '=', id).execute();
+      await tx.deleteFrom('set_likes').where('account_id', '=', id).execute();
+      await tx.deleteFrom('set_reports').where('reporter_account_id', '=', id).execute();
+      await tx.deleteFrom('set_downloads').where('downloader', '=', `a:${id}`).execute();
       await tx.deleteFrom('ai_downloads').where('downloader', '=', `a:${id}`).execute();
       // Music has no match-history dependency. Removing releases cascades their
       // assets/likes/reports; private source blobs expire within 24 hours.

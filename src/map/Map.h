@@ -33,6 +33,7 @@
 #include "FertilityField.h"
 #include "TerrainProperties.h"
 #include "TerrainRegistry.h"
+class MapAssetBundle;
 #include "TerrainExperiments.h"
 #include "BitArray.h"
 
@@ -141,6 +142,8 @@ class Map
 	// when a multi-yield deposit is first placed; zero means no sidecar slot.
     std::shared_ptr<const ResourceHabitats> resourceHabitatsValue=std::make_shared<const ResourceHabitats>();
     void rebuildResourceHabitats();
+    void installCatalogs(std::shared_ptr<const TerrainRegistry> terrain,
+        std::shared_ptr<const ResourceRegistry> resources, std::shared_ptr<const MapAssetBundle> assets);
 	std::vector<Uint32> resourceStockIndices;
 	std::vector<std::array<Uint16, MaterialCount>> resourceStocks;
 	std::vector<Uint32> freeResourceStocks;
@@ -153,6 +156,7 @@ class Map
 	bool harvestMaterial(size_t index, int material);
 	std::vector<TerrainType> terrainIds;
 	std::shared_ptr<const TerrainRegistry> terrainRegistryValue = TerrainRegistry::builtins();
+    std::shared_ptr<const MapAssetBundle> assetBundleValue;
 	std::vector<Uint16> terrainPropertyIndices;
 	const TerrainProperties *terrainPropertyTable = terrainRegistryValue->propertyProfiles().data();
 	std::vector<std::size_t> terrainCounts = std::vector<std::size_t>(TERRAIN_COUNT);
@@ -504,6 +508,10 @@ public:
 	}
 
 	//! Canonical gameplay identity; never inferred from art in a simulation query.
+	std::shared_ptr<const MapAssetBundle> frozenAssetBundle() const { return assetBundleValue; }
+    void editCustomEntry(std::string_view key, std::string_view definition, std::string_view artwork);
+    void updateSet(std::string_view source, std::string_view oldVersion, const std::vector<std::string>& selected = {});
+    void importSet(std::string_view json, const std::vector<std::string>& selected = {});
 	const TerrainRegistry &terrainRegistry() const { return *terrainRegistryValue; }
 	std::shared_ptr<const TerrainRegistry> frozenTerrainRegistry() const
 	{

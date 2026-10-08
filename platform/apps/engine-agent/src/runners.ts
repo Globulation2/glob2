@@ -1,3 +1,4 @@
+import type { SetValidator } from './setValidation.ts';
 import type { AiValidator } from './aiValidation.ts';
 // The real EngineRunner: each job kind as glob2 headless commands plus blob
 // store I/O. Inputs arrive already checked against the job schema (the agent
@@ -46,6 +47,7 @@ export const DEFAULT_RUNNER_LIMITS: RunnerLimits = {
 export interface HeadlessRunnerOptions {
   engine: GlobEngine;
   aiValidator?: AiValidator;
+  setValidator?: SetValidator;
   catalog: EngineCatalog;
   simVersion: SimVersion;
   /** Blob access for run() calls that pass none (tests); the agent passes each lease's own. */
@@ -82,6 +84,8 @@ export class HeadlessEngineRunner implements EngineRunner {
 
   constructor(options: HeadlessRunnerOptions) {
     this.options = options;
+    if (options.setValidator && options.catalog.commands.includes('validate_set'))
+      this.kinds.push('validate-set');
     if (options.aiValidator) this.kinds.push('validate-ai');
     this.limits = { ...DEFAULT_RUNNER_LIMITS, ...options.limits };
   }
@@ -92,6 +96,23 @@ export class HeadlessEngineRunner implements EngineRunner {
     let result: unknown;
     try {
       switch (job.kind) {
+        case 'validate-set': {
+          if (!this.options.setValidator)
+            throw new EngineJobError('unavailable', 'Isolated set validation is unavailable');
+          const validation = await this.options.setValidator(
+            await blobs.read(job.payload.blobHash, 16 * 1024 * 1024),
+            signal,
+          );
+          if (validation.report.hash !== job.payload.blobHash)
+            throw new EngineOutputError('set validation hash mismatch');
+          result = {
+            ...validation.report,
+            ...(validation.png
+              ? { previewHash: await blobs.write(validation.png, CONTENT_TYPES.png) }
+              : {}),
+          };
+          break;
+        }
         case 'validate-ai':
           if (!this.options.aiValidator)
             throw new EngineJobError('unavailable', 'Isolated AI validation is unavailable');
@@ -265,6 +286,7 @@ export class HeadlessEngineRunner implements EngineRunner {
         width: report.width,
         height: report.height,
         teamCount: report.teamCount,
+        ...(report.setCredits ? { setCredits: report.setCredits } : {}),
         ...(report.buildingCatalog ? { buildingCatalog: report.buildingCatalog } : {}),
         ...(report.resourceExperiments ? { resourceExperiments: report.resourceExperiments } : {}),
         ...(report.requiredResourceExperiments

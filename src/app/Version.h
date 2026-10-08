@@ -7,7 +7,8 @@
 // This is the version of map and savegame format, and all of the recorded data on the server
 #define VERSION_MAJOR 0
 #define MINIMUM_VERSION_MINOR 58
-#define VERSION_MINOR 143
+#define VERSION_MINOR 144
+// version 144 embeds custom terrain/resource artwork and set attribution in maps and saves.
 // version 143 adds engine snapshots, scheduled AI decision streams and pending command state.
 // version 142 rebuilds pre-penalty terrain route caches; replay trajectories change.
 // version 141 adds the built-in terrain catalogue; older custom terrain IDs are remapped on load.

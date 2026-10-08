@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "glob2-protocol:ValidateSetPayload",
+  "title": "ValidateSetPayload",
+  "type": "object",
+  "required": [
+    "blobHash",
+    "suite"
+  ],
+  "properties": {
+    "blobHash": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$",
+      "description": "Lowercase hexadecimal SHA-256 digest."
+    },
+    "suite": {
+      "type": "number",
+      "const": 1
+    }
+  },
+  "additionalProperties": false
+}

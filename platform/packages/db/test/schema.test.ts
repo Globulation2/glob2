@@ -13,6 +13,58 @@ type ColumnLists = { [T in keyof Database]: readonly (keyof Database[T] & string
 
 /** Every column of every table, as typed in src/schema.ts. */
 const typedColumns: ColumnLists = {
+  asset_sets: [
+    'id',
+    'owner_account_id',
+    'title',
+    'description',
+    'tags',
+    'visibility',
+    'hidden',
+    'hidden_reason',
+    'created_at',
+    'updated_at',
+  ],
+  set_drafts: [
+    'id',
+    'set_id',
+    'revision',
+    'document',
+    'hash',
+    'validation_job_id',
+    'sim_version',
+    'report',
+    'status',
+    'error',
+    'published_version_id',
+    'updated_at',
+  ],
+  set_versions: [
+    'id',
+    'set_id',
+    'hash',
+    'label',
+    'notes',
+    'license',
+    'credits',
+    'sim_version',
+    'min_version_minor',
+    'report',
+    'preview_hash',
+    'created_at',
+  ],
+  set_likes: ['set_id', 'account_id'],
+  set_downloads: ['version_id', 'downloader', 'day'],
+  set_reports: [
+    'id',
+    'set_id',
+    'reporter_account_id',
+    'reason',
+    'details',
+    'resolved',
+    'resolution',
+    'created_at',
+  ],
   image_webp_renditions: ['source_sha256', 'webp_sha256'],
   ai_studio_projects: ['id', 'account_id', 'title', 'revision', 'created_at', 'updated_at'],
   ai_studio_revisions: ['project_id', 'revision', 'source', 'hash', 'reason', 'created_at'],
@@ -579,6 +631,7 @@ const typedColumns: ColumnLists = {
     'hidden_by_account_id',
   ],
   map_versions: [
+    'set_credits',
     'building_catalog',
     'resource_experiments',
     'required_resource_experiments',
@@ -1027,6 +1080,7 @@ describe('migrations', () => {
         '0045_building_catalogs',
         '0046_skin_collection',
         '0047_resource_experiments',
+        '0048_sets',
       ]);
       expect(
         (
@@ -1096,7 +1150,7 @@ describe('migrations', () => {
         existing.db,
       );
       const upgraded = await migrateToLatest(existing.db);
-      expect(upgraded).toHaveLength(25);
+      expect(upgraded).toHaveLength(26);
       expect(upgraded.every((migration) => migration.status === 'Success')).toBe(true);
       expect(
         await existing.db
@@ -1237,6 +1291,7 @@ describe('migrations', () => {
         ['0045_building_catalogs', 'Success'],
         ['0046_skin_collection', 'Success'],
         ['0047_resource_experiments', 'Success'],
+        ['0048_sets', 'Success'],
       ]);
       for (const table of [
         'colony_skin_versions',
@@ -1374,6 +1429,7 @@ describe('migrations', () => {
         ['0045_building_catalogs', 'Success'],
         ['0046_skin_collection', 'Success'],
         ['0047_resource_experiments', 'Success'],
+        ['0048_sets', 'Success'],
       ]);
       expect(
         await db

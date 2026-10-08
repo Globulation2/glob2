@@ -95,9 +95,9 @@
 		# WebAssembly runtime ('wasm-unsafe-eval'), pthread and probe workers
 		# (blob:), and connections to whichever instance and relays the player
 		# chooses (https:, wss:).
-		@standardPlay not path /studio.html
+		@standardPlay not path /studio.html /set-preview.html
 		header @standardPlay Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval'; worker-src 'self' blob:; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; media-src 'self' data: blob:; font-src 'self' data:; connect-src 'self' https: wss:; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'"
-		@studioEmbed path /studio.html
+		@studioEmbed path /studio.html /set-preview.html
 		header @studioEmbed X-Frame-Options "SAMEORIGIN"
 		header @studioEmbed Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval'; worker-src 'self' blob:; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; media-src 'self' data: blob:; font-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'self'; frame-ancestors 'self'"
 		# Serve the Brotli or gzip copy written at build time (browser/precompress.py)

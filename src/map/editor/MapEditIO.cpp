@@ -1,3 +1,4 @@
+#include "MapAssetBundle.h"
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 // Copyright (C) 2006 Bradley Arsenault
@@ -304,4 +305,15 @@ void MapEdit::importResourceFile(const std::string& filename)
 	std::string json(bytes, '\0');
 	if (bytes && !input->readExact(json.data(), bytes)) throw std::runtime_error("Cannot read resource definitions");
 	importResourceJson(json);
+}
+
+void MapEdit::importSetFile(const std::string& filename)
+{
+    std::unique_ptr<GAGCore::StreamBackend> input(Toolkit::getFileManager()->openInputStreamBackend(filename));
+    if (!input || !input->isValid()) throw std::runtime_error("Cannot open set package");
+    input->seekFromEnd(0); const auto bytes = input->getPosition(); input->seekFromStart(0);
+    if (bytes > MapAssetBundle::MaximumBytes) throw std::runtime_error("Set exceeds 16 MiB");
+    std::string json(bytes, '\0');
+    if (bytes && !input->readExact(json.data(), bytes)) throw std::runtime_error("Cannot read set package");
+    importSetJson(json);
 }

@@ -312,6 +312,7 @@ services:
       LOG_LEVEL: ${LOG_LEVEL:-info}
       SHUTDOWN_GRACE_SECONDS: ${SHUTDOWN_GRACE_SECONDS:-25}
       ENGINE_CONCURRENCY: ${ENGINE_CONCURRENCY:-1}
+      ENGINE_SET_VALIDATION: ${ENGINE_SET_VALIDATION:-0}
       PLATFORM_INTERNAL_URL: http://platform-api:8080
       ENGINE_AGENT_KEY_FILE: /var/lib/glob2/engine-agent/agent.key
     volumes: [engine-agent-secret:/var/lib/glob2/engine-agent:ro]

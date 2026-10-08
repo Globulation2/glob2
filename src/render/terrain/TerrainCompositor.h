@@ -2,6 +2,7 @@
 #pragma once
 #include "TerrainMaterials.h"
 #include "TerrainType.h"
+#include "render/MapAssetSprites.h"
 #include <SDLGraphicContext.h>
 #include <memory>
 
@@ -25,7 +26,7 @@ class Surface : public GAGCore::DrawableSurface
 class Compositor
 {
   public:
-	explicit Compositor(Catalog catalog);
+	explicit Compositor(Catalog catalog, std::shared_ptr<const MapAssetBundle> assets = MapAssetBundle::empty());
 	const Catalog &catalog() const { return definitions; }
 	std::pair<GAGCore::Sprite *, unsigned> editorIcon(TerrainType type) const;
 	void prepare(bool hd, int time);
@@ -37,7 +38,9 @@ class Compositor
 						 const std::array<unsigned char, 3> *cellColor = nullptr) const;
 	// The shared decor sprite (every decor block names the same one), or null
 	// when the catalog has no decor; the renderer batches decor like resources.
-	GAGCore::Sprite *decorSprite() const { return decorSprite_; }
+	GAGCore::Sprite *decorSprite() const { return sharedDecorSprite; }
+    GAGCore::Sprite *decorSprite(MaterialId id) const { return decorSprites.at(id); }
+    GAGCore::Sprite *decorSprite(const SceneMap &map, int x, int y) const;
 	// Decor frame drawn over cell (x, y), or -1. Cells with a neighbour of a
 	// different appearance use the smaller edge frames.
 	int decorFrame(const SceneMap &, int x, int y) const;
@@ -54,11 +57,15 @@ class Compositor
 		std::vector<std::array<unsigned char, 4>> pixels;
 	};
 	Catalog definitions;
+    MapAssetSprites customSprites;
+    MaterialId materialFor(const SceneMap&, int x, int y) const;
 	std::shared_ptr<CompiledPack> pack;
 	std::map<std::uint64_t, std::uint64_t> cleanSources;
 	std::array<MaterialId, TERRAIN_COUNT> terrainBindings{};
 	std::vector<GAGCore::Sprite *> sprites;
-	GAGCore::Sprite *decorSprite_ = nullptr;
+	std::vector<GAGCore::Sprite *> decorSprites;
+    GAGCore::Sprite *sharedDecorSprite = nullptr;
+    bool mixedDecorSprites = false;
 	static void readTexture(Texture &, GAGCore::DrawableSurface *);
 	std::vector<std::vector<Texture>> textures;
 	std::vector<std::uint64_t> materialRevisions;

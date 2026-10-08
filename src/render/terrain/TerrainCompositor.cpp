@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "TerrainCompositor.h"
+#include "map/TerrainRegistry.h"
 #include "TerrainCompiledPack.h"
 #include "TerrainPresentation.h"
 #include "render/scene/SceneMap.h"
@@ -10,7 +11,8 @@
 
 namespace TerrainVisual
 {
-Compositor::Compositor(Catalog catalog) : definitions(std::move(catalog))
+Compositor::Compositor(Catalog catalog, std::shared_ptr<const MapAssetBundle> assets)
+    : definitions(std::move(catalog)), customSprites(std::move(assets))
 {
 	pack = CompiledPack::load(definitions);
 	for (unsigned type = 0; type < TERRAIN_COUNT; ++type)
@@ -24,7 +26,7 @@ Compositor::Compositor(Catalog catalog) : definitions(std::move(catalog))
 	}
 	for (const auto &m : definitions.materials)
 	{
-		auto *sprite = GAGCore::Toolkit::getSprite(m.sprite);
+		auto *sprite = customSprites.resolve(m.sprite);
 		if (!sprite)
 			throw std::runtime_error("Missing terrain material sprite: " + m.sprite);
 		for (const auto &v : m.variants)
@@ -40,21 +42,24 @@ Compositor::Compositor(Catalog catalog) : definitions(std::move(catalog))
 			}
 		if (!m.decor.sprite.empty())
 		{
-			auto *decor = GAGCore::Toolkit::getSprite(m.decor.sprite);
-			if (!decor || (decorSprite_ && decor != decorSprite_))
-				throw std::runtime_error("Terrain decor must share one loadable sprite: " + m.key);
+			auto *decor = customSprites.resolve(m.decor.sprite);
+			if (!decor)
+				throw std::runtime_error("Missing terrain decor sprite: " + m.key);
 			for (const auto &frames : {m.decor.full, m.decor.edge})
 				for (int frame : frames)
 					if (frame >= decor->getFrameCount() || decor->getW(frame) > 64 ||
 						decor->getH(frame) > 64)
 						throw std::runtime_error("Terrain decor frame missing or larger than 64x64: " +
 												 m.key);
-			decorSprite_ = decor;
+			if (sharedDecorSprite && sharedDecorSprite != decor) mixedDecorSprites = true;
+            sharedDecorSprite = decor;
 		}
-		sprites.push_back(sprite);
+		decorSprites.push_back(m.decor.sprite.empty() ? nullptr : customSprites.resolve(m.decor.sprite));
+        sprites.push_back(sprite);
 		textures.emplace_back(m.variants.size());
 		materialRevisions.push_back(0);
 	}
+    if (mixedDecorSprites) sharedDecorSprite = nullptr;
 }
 void Compositor::readTexture(Texture &t, GAGCore::DrawableSurface *source)
 {
@@ -174,19 +179,29 @@ void Compositor::prepare(bool hd, int time)
 	}
 	resolution = nextResolution;
 }
+MaterialId Compositor::materialFor(const SceneMap& map, int x, int y) const {
+    const auto type = map.terrainTypeAt(x, y);
+    const auto found = definitions.bindings.find(map.terrainRegistry().key(type));
+    if (unsigned(type) >= TERRAIN_COUNT && found != definitions.bindings.end()) return found->second;
+    return terrainBindings[unsigned(map.appearanceAt(x, y))];
+}
+GAGCore::Sprite *Compositor::decorSprite(const SceneMap &map, int x, int y) const
+{
+    return decorSprites[materialFor(map, x & map.getMaskW(), y & map.getMaskH())];
+}
 int Compositor::decorFrame(const SceneMap &map, int x, int y) const
 {
 	x &= map.getMaskW();
 	y &= map.getMaskH();
-	const auto type = map.appearanceAt(x, y);
-	if (unsigned(type) >= TERRAIN_COUNT || terrainUsesLegacyCorners(type))
+	const auto type = map.terrainTypeAt(x, y);
+	if (unsigned(type) < TERRAIN_COUNT && terrainUsesLegacyCorners(type))
 		return -1;
-	const auto id = terrainBindings[unsigned(type)];
+	const auto id = materialFor(map, x, y);
 	if (definitions.materials[id].decor.full.empty())
 		return -1;
 	bool edge = false;
 	for (const auto [dx, dy] : {std::pair{-1, 0}, {1, 0}, {0, -1}, {0, 1}})
-		edge |= map.appearanceAt((x + dx) & map.getMaskW(), (y + dy) & map.getMaskH()) != type;
+		edge |= materialFor(map, (x + dx) & map.getMaskW(), (y + dy) & map.getMaskH()) != id;
 	return definitions.decorFrame(id, x, y, edge, map.terrainSeed());
 }
 Recipe Compositor::describe(const SceneMap &map, int x, int y) const
@@ -207,7 +222,8 @@ Recipe Compositor::describe(const SceneMap &map, int x, int y) const
 			unsigned material = unsigned(map.appearanceAt(cx, cy));
 			if (unsigned(type) < TERRAIN_COUNT && terrainUsesLegacyCorners(type))
 				material = legacyCorners(map.getTerrain(cx, cy))[(qx & 1) + 2 * (qy & 1)];
-			r.samples[j * 4 + i] = terrainBindings[material];
+			r.samples[j * 4 + i] = unsigned(type) < TERRAIN_COUNT && terrainUsesLegacyCorners(type)
+                ? terrainBindings[material] : materialFor(map, cx, cy);
 		}
 	return r;
 }

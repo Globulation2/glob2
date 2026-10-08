@@ -72,6 +72,7 @@ export async function findStaleEngineJobs(db: Db, options: SweepOptions = {}): P
           AND NOT EXISTS (
             SELECT 1 FROM engine_agents a
             WHERE a.sim_version = j.sim_version
+              AND j.kind = ANY(a.kinds)
               AND a.last_seen_at > now() - make_interval(secs => ${ENGINE_AGENT_FRESH_SECONDS})
           )
         )

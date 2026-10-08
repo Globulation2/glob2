@@ -359,7 +359,7 @@ export async function mapCatalogRoutes(app: FastifyInstance, identity: Identity)
   app.post<{ Params: { id: string }; Querystring: { simVersion?: string; notes?: string } }>(
     '/api/v1/maps/:id/versions',
     {
-      bodyLimit: services.config.uploadMaxBytes ?? 16 * 1024 * 1024,
+      bodyLimit: services.config.uploadMaxBytes ?? 64 * 1024 * 1024,
     },
     async (request, reply) => {
       const viewer = await signedIn(request);

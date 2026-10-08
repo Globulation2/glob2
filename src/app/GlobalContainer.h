@@ -11,6 +11,7 @@
 #include "BuildingType.h"
 #include "Settings.h"
 #include "TerrainType.h"
+class MapAssetBundle;
 #include <array>
 
 namespace GAGCore
@@ -84,6 +85,9 @@ public:
 	std::unique_ptr<DrawableSurface> title; //!< Owned.
 	
 	TerrainVisual::Compositor &terrainCompositor();
+    TerrainVisual::Compositor &terrainCompositor(std::shared_ptr<const MapAssetBundle> assets);
+    std::shared_ptr<const MapAssetBundle> compositorAssets;
+    std::unique_ptr<TerrainVisual::Compositor> customTerrainCompositor;
     std::unique_ptr<TerrainVisual::Compositor> terrainCompositor_;
 	Sprite *terrain = nullptr;
 
