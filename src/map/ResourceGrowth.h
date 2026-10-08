@@ -88,7 +88,7 @@ class Pipeline
 	void publish(Map &, Uint32 tick);
 	void finish();
 	void reset() noexcept;
-	void configure(unsigned ticks);
+	void setDelay(unsigned ticks);
 	void save(GAGCore::OutputStream *, Uint32 tick);
 	void load(GAGCore::InputStream *, Map &, Uint32 tick, int versionMinor);
 	Uint32 checksum(bool heavy);

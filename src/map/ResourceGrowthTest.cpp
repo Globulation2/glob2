@@ -260,7 +260,7 @@ TEST_SUITE("ResourceGrowth")
 			auto &m = fallback.game.map;
 			seed(m, crop(m));
 			m.configureCompute(1, 0);
-			m.configureResourceGrowth(delay);
+			m.setResourceGrowthDelay(delay);
 			fallback.step(12);
 			auto *bytes = new GAGCore::MemoryStreamBackend;
 			GAGCore::BinaryOutputStream output(bytes);
@@ -272,10 +272,10 @@ TEST_SUITE("ResourceGrowth")
 			glob2test::HeadlessGame shared({.loadDefaultRace = true, .header = true});
 			REQUIRE(shared.game.load(&input));
 			shared.game.map.configureCompute(4, 0);
-			shared.game.map.configureResourceGrowth(delay);
+			shared.game.map.setResourceGrowthDelay(delay);
 			REQUIRE(shared.game.checkSum(nullptr, nullptr, nullptr, true) ==
 					fallback.game.checkSum(nullptr, nullptr, nullptr, true));
-			CHECK_THROWS(shared.game.map.configureResourceGrowth(delay == 1 ? 3 : 1));
+			CHECK_THROWS(shared.game.map.setResourceGrowthDelay(delay == 1 ? 3 : 1));
 			auto foodStocks = [&]()
 			{
 				Uint64 total = 0;
@@ -300,13 +300,37 @@ TEST_SUITE("ResourceGrowth")
 			}
 		}
 	}
+	TEST_CASE("setting the delay leaves reservations and unfinished work untouched")
+	{
+		glob2test::HeadlessGlobals globals;
+		glob2test::HeadlessGame world({.header = true});
+		auto &map = world.game.map;
+		seed(map, crop(map));
+		map.configureCompute(1, 0); // No worker threads.
+		auto &pipeline = map.gradientRuntime->growth;
+		pipeline.stage(0, 48);
+		map.setResourceGrowthDelay(8);
+		CHECK_THROWS(map.setResourceGrowthDelay(3));
+		CHECK(pipeline.needsPreparation());
+		CHECK(pipeline.count() == 0);
+		auto snapshot = world.game.snapshotStore().captureBoundary(
+			world.game, ResourceGrowth::Pipeline::requirements());
+		pipeline.prepare(snapshot, map.computeExecutor());
+		map.setResourceGrowthDelay(8);
+		CHECK_THROWS(map.setResourceGrowthDelay(3));
+		CHECK(pipeline.count() == 1);
+		CHECK_FALSE(map.computeExecutor().finished(pipeline.pending.front()->work));
+		CHECK(pipeline.metrics.computeNs == 0);
+		pipeline.finish();
+		CHECK(pipeline.metrics.sampled > 0);
+	}
 	TEST_CASE("pipeline waits at exact deadline and pause does not publish")
 	{
 		glob2test::HeadlessGlobals globals;
 		glob2test::HeadlessGame world({.header = true});
 		auto &m = world.game.map;
 		seed(m, crop(m));
-		m.configureResourceGrowth(3);
+		m.setResourceGrowthDelay(3);
 		world.step();
 		CHECK(m.resourceGrowthMetrics().published == 0);
 		world.game.anyPlayerWaited = true;
@@ -357,7 +381,7 @@ TEST_SUITE("ResourceGrowth")
 		auto &m = world.game.map;
 		seed(m, crop(m));
 		m.configureCompute(1, 0);
-		m.configureResourceGrowth(8);
+		m.setResourceGrowthDelay(8);
 		world.step();
 		REQUIRE(m.gradientRuntime->growth.count() == 1);
 		CHECK(m.resourceGrowthMetrics().computeNs == 0);
@@ -517,9 +541,9 @@ TEST_CASE("both format 144 and 145 lineages and compact growth saves retain cont
         const auto headerDelta = std::rotr(original.game.mapHeader.checkSum() ^ restored.game.mapHeader.checkSum(),
             4 + original.game.mapHeader.getNumberOfTeams() + original.game.gameHeader.getNumberOfPlayers());
         original.game.map.configureCompute(1, 0);
-        original.game.map.configureResourceGrowth(8);
+        original.game.map.setResourceGrowthDelay(8);
         restored.game.map.configureCompute(4, 0);
-        restored.game.map.configureResourceGrowth(8);
+        restored.game.map.setResourceGrowthDelay(8);
         for (unsigned tick = 0; tick < 24; ++tick)
         {
             CHECK((original.game.checkSum(nullptr, nullptr, nullptr, true) ^ headerDelta) ==
@@ -696,7 +720,7 @@ TEST_CASE("finishing the last deferred tick computes without publishing early" *
     glob2test::HeadlessGlobals globals;
     glob2test::HeadlessGame world({.header = true});
     auto &map = world.game.map;
-    map.configureResourceGrowth(8);
+    map.setResourceGrowthDelay(8);
     world.game.syncStep(-1, Game::PreparationCompletion::Deferred);
     REQUIRE(map.gradientRuntime->growth.needsPreparation());
     const auto published = map.resourceGrowthMetrics().published;

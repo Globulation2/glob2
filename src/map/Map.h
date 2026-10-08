@@ -274,7 +274,7 @@ public:
     void preparePendingWorld(const SimulationSnapshot::Handle&);
     void stageResourceGrowth();
     void finishResourceGrowth();
-    void configureResourceGrowth(unsigned delay);
+    void setResourceGrowthDelay(unsigned delay);
     unsigned resourceGrowthDelay() const;
     const ResourceGrowth::Metrics& resourceGrowthMetrics() const;
 	bool hasPendingGradientPreparation() const;

@@ -92,7 +92,7 @@ TEST_SUITE("ResourceGrowthBenchmark")
 					auto &map = world.game.map;
 					setup(map, scenario);
 					map.configureCompute(variant == "shared" ? 4 : 1, 0);
-					map.configureResourceGrowth(delay);
+					map.setResourceGrowthDelay(delay);
 					auto scan = [&]()
 					{
 						std::array<Uint64, MaterialCount + 1> totals{};
@@ -403,7 +403,7 @@ TEST_SUITE("ResourceGrowthBenchmark")
 					else REQUIRE(loadedChecksum == initialChecksum);
 					auto &map = game.map;
 					map.configureCompute(variant == "shared" ? 4 : 1, 0);
-					map.configureResourceGrowth(delay ? delay : 8);
+					map.setResourceGrowthDelay(delay ? delay : 8);
 					auto scan = [&]()
 					{
 						std::array<std::array<Uint64, MaterialCount>, 2> counts{};
@@ -585,7 +585,7 @@ TEST_SUITE("ResourceGrowthBenchmark")
 						auto &map = world.game.map;
 						setup(map, scenario);
 						map.configureCompute(variant == 3 ? 4 : 1, 0);
-						map.configureResourceGrowth(8);
+						map.setResourceGrowthDelay(8);
 						// Warm ecology before timing; snapshot capture remains inside timing.
 						map.resourceGrowthField();
 						map.rebuildGrowthCoverage();
@@ -710,7 +710,7 @@ TEST_SUITE("ResourceGrowthBenchmark")
 						{.wDec = 7, .hDec = 7, .header = true, .seed = seed});
 					auto &map = world.game.map;
 					setup(map, "dense");
-					map.configureResourceGrowth(8);
+					map.setResourceGrowthDelay(8);
 					world.game.syncRandom.seed(seed);
 					const auto initialFood = stocks(map);
 					const Uint64 initialDeposits = Uint64(map.getW()) * map.getH() / 4;

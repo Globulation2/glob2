@@ -388,11 +388,10 @@ void Pipeline::reset() noexcept
 	metrics = {};
 	delay = 8;
 }
-void Pipeline::configure(unsigned ticks)
+void Pipeline::setDelay(unsigned ticks)
 {
 	if (ticks < 1 || ticks > 16 || (ticks != delay && (!pending.empty() || reservation)))
 		throw std::invalid_argument("Cannot change pending resource growth delay");
-	finish();
 	delay = ticks;
 }
 void Pipeline::save(GAGCore::OutputStream *s, Uint32 tick)
@@ -589,10 +588,9 @@ void Map::finishResourceGrowth()
 	preparePendingWorld();
 	gradientRuntime->growth.finish();
 }
-void Map::configureResourceGrowth(unsigned delay)
+void Map::setResourceGrowthDelay(unsigned delay)
 {
-	preparePendingWorld();
-	gradientRuntime->growth.configure(delay);
+	gradientRuntime->growth.setDelay(delay);
 }
 unsigned Map::resourceGrowthDelay() const
 {
