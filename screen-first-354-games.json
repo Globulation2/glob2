@@ -1,0 +1,432 @@
+{
+  "budget": 1.25,
+  "rule": "lagrange",
+  "baseline": {
+    "score": 0.4972,
+    "parameter": 1.0,
+    "at_parameter": {
+      "lifetimes": 838427,
+      "hit_rate": 0.6787,
+      "query_weighted_coverage": 0.4542,
+      "extra_cpu": 1.1606,
+      "owner_saving": 0.4236,
+      "parameter": 1.0
+    }
+  },
+  "alone": {
+    "buildings": {
+      "score": 0.5186,
+      "parameter": 1.0,
+      "at_parameter": {
+        "lifetimes": 838427,
+        "hit_rate": 0.6882,
+        "query_weighted_coverage": 0.4805,
+        "extra_cpu": 1.1751,
+        "owner_saving": 0.4568,
+        "parameter": 1.0
+      }
+    },
+    "construction": {
+      "score": 0.4986,
+      "parameter": 1.0,
+      "at_parameter": {
+        "lifetimes": 838427,
+        "hit_rate": 0.6762,
+        "query_weighted_coverage": 0.4572,
+        "extra_cpu": 1.1586,
+        "owner_saving": 0.4241,
+        "parameter": 1.0
+      }
+    },
+    "hint": {
+      "score": 0.815,
+      "parameter": 0.7,
+      "at_parameter": {
+        "lifetimes": 838427,
+        "hit_rate": 0.7464,
+        "query_weighted_coverage": 0.666,
+        "extra_cpu": 1.2125,
+        "owner_saving": 0.7925,
+        "parameter": 0.7
+      }
+    },
+    "hint_h": {
+      "score": 0.8379,
+      "parameter": 0.5,
+      "at_parameter": {
+        "lifetimes": 838427,
+        "hit_rate": 0.8264,
+        "query_weighted_coverage": 0.8207,
+        "extra_cpu": 1.2265,
+        "owner_saving": 0.8278,
+        "parameter": 0.5
+      }
+    },
+    "hint_q": {
+      "score": 0.8423,
+      "parameter": 0.4,
+      "at_parameter": {
+        "lifetimes": 838427,
+        "hit_rate": 0.8562,
+        "query_weighted_coverage": 0.8911,
+        "extra_cpu": 1.2415,
+        "owner_saving": 0.8394,
+        "parameter": 0.4
+      }
+    },
+    "is_site": {
+      "score": 0.4978,
+      "parameter": 1.0,
+      "at_parameter": {
+        "lifetimes": 838427,
+        "hit_rate": 0.6762,
+        "query_weighted_coverage": 0.4542,
+        "extra_cpu": 1.1575,
+        "owner_saving": 0.4222,
+        "parameter": 1.0
+      }
+    },
+    "kind": {
+      "score": 0.5157,
+      "parameter": 1.0,
+      "at_parameter": {
+        "lifetimes": 838427,
+        "hit_rate": 0.6868,
+        "query_weighted_coverage": 0.5291,
+        "extra_cpu": 1.176,
+        "owner_saving": 0.4554,
+        "parameter": 1.0
+      }
+    },
+    "level": {
+      "score": 0.4996,
+      "parameter": 1.0,
+      "at_parameter": {
+        "lifetimes": 838427,
+        "hit_rate": 0.6868,
+        "query_weighted_coverage": 0.4634,
+        "extra_cpu": 1.1691,
+        "owner_saving": 0.433,
+        "parameter": 1.0
+      }
+    },
+    "max_workers": {
+      "score": 0.5034,
+      "parameter": 1.0,
+      "at_parameter": {
+        "lifetimes": 838427,
+        "hit_rate": 0.6859,
+        "query_weighted_coverage": 0.5067,
+        "extra_cpu": 1.1657,
+        "owner_saving": 0.4361,
+        "parameter": 1.0
+      }
+    },
+    "progress": {
+      "score": 0.4991,
+      "parameter": 1.0,
+      "at_parameter": {
+        "lifetimes": 838427,
+        "hit_rate": 0.676,
+        "query_weighted_coverage": 0.4626,
+        "extra_cpu": 1.1575,
+        "owner_saving": 0.4238,
+        "parameter": 1.0
+      }
+    },
+    "route": {
+      "score": 0.4972,
+      "parameter": 1.0,
+      "at_parameter": {
+        "lifetimes": 838427,
+        "hit_rate": 0.6787,
+        "query_weighted_coverage": 0.4542,
+        "extra_cpu": 1.1606,
+        "owner_saving": 0.4236,
+        "parameter": 1.0
+      }
+    },
+    "serving": {
+      "score": 0.8545,
+      "parameter": 0.5,
+      "at_parameter": {
+        "lifetimes": 838427,
+        "hit_rate": 0.815,
+        "query_weighted_coverage": 0.817,
+        "extra_cpu": 1.2415,
+        "owner_saving": 0.8506,
+        "parameter": 0.5
+      }
+    },
+    "serving_age": {
+      "score": 0.5009,
+      "parameter": 1.0,
+      "at_parameter": {
+        "lifetimes": 838427,
+        "hit_rate": 0.6785,
+        "query_weighted_coverage": 0.4794,
+        "extra_cpu": 1.1601,
+        "owner_saving": 0.4275,
+        "parameter": 1.0
+      }
+    },
+    "serving_h": {
+      "score": 0.8744,
+      "parameter": 0.3,
+      "at_parameter": {
+        "lifetimes": 838427,
+        "hit_rate": 0.8861,
+        "query_weighted_coverage": 0.9207,
+        "extra_cpu": 1.246,
+        "owner_saving": 0.8735,
+        "parameter": 0.3
+      }
+    },
+    "serving_q": {
+      "score": 0.8764,
+      "parameter": 0.3,
+      "at_parameter": {
+        "lifetimes": 838427,
+        "hit_rate": 0.886,
+        "query_weighted_coverage": 0.9267,
+        "extra_cpu": 1.2248,
+        "owner_saving": 0.8704,
+        "parameter": 0.3
+      }
+    },
+    "serving_queries": {
+      "score": 0.5067,
+      "parameter": 1.0,
+      "at_parameter": {
+        "lifetimes": 838427,
+        "hit_rate": 0.6849,
+        "query_weighted_coverage": 0.7281,
+        "extra_cpu": 1.1635,
+        "owner_saving": 0.4368,
+        "parameter": 1.0
+      }
+    },
+    "size": {
+      "score": 0.5018,
+      "parameter": 1.0,
+      "at_parameter": {
+        "lifetimes": 838427,
+        "hit_rate": 0.6663,
+        "query_weighted_coverage": 0.4452,
+        "extra_cpu": 1.1674,
+        "owner_saving": 0.4347,
+        "parameter": 1.0
+      }
+    },
+    "swim": {
+      "score": 0.4928,
+      "parameter": 1.0,
+      "at_parameter": {
+        "lifetimes": 838427,
+        "hit_rate": 0.6724,
+        "query_weighted_coverage": 0.4455,
+        "extra_cpu": 1.1665,
+        "owner_saving": 0.4288,
+        "parameter": 1.0
+      }
+    },
+    "tick": {
+      "score": 0.5236,
+      "parameter": 1.0,
+      "at_parameter": {
+        "lifetimes": 838427,
+        "hit_rate": 0.684,
+        "query_weighted_coverage": 0.4764,
+        "extra_cpu": 1.1688,
+        "owner_saving": 0.4564,
+        "parameter": 1.0
+      }
+    },
+    "type": {
+      "score": 0.5046,
+      "parameter": 1.0,
+      "at_parameter": {
+        "lifetimes": 838427,
+        "hit_rate": 0.6834,
+        "query_weighted_coverage": 0.5059,
+        "extra_cpu": 1.1698,
+        "owner_saving": 0.4395,
+        "parameter": 1.0
+      }
+    },
+    "units": {
+      "score": 0.531,
+      "parameter": 1.0,
+      "at_parameter": {
+        "lifetimes": 838427,
+        "hit_rate": 0.6888,
+        "query_weighted_coverage": 0.5563,
+        "extra_cpu": 1.1771,
+        "owner_saving": 0.4687,
+        "parameter": 1.0
+      }
+    },
+    "units_h": {
+      "score": 0.5304,
+      "parameter": 1.0,
+      "at_parameter": {
+        "lifetimes": 838427,
+        "hit_rate": 0.678,
+        "query_weighted_coverage": 0.5666,
+        "extra_cpu": 1.1716,
+        "owner_saving": 0.4637,
+        "parameter": 1.0
+      }
+    },
+    "workers": {
+      "score": 0.5019,
+      "parameter": 1.0,
+      "at_parameter": {
+        "lifetimes": 838427,
+        "hit_rate": 0.689,
+        "query_weighted_coverage": 0.4298,
+        "extra_cpu": 1.1692,
+        "owner_saving": 0.4375,
+        "parameter": 1.0
+      }
+    }
+  },
+  "selection": [
+    {
+      "keys": [],
+      "score": 0.4972,
+      "parameter": 1.0,
+      "at_parameter": {
+        "lifetimes": 838427,
+        "hit_rate": 0.6787,
+        "query_weighted_coverage": 0.4542,
+        "extra_cpu": 1.1606,
+        "owner_saving": 0.4236,
+        "parameter": 1.0
+      },
+      "next": {
+        "buildings": 0.5186,
+        "construction": 0.4986,
+        "hint": 0.815,
+        "hint_h": 0.8379,
+        "hint_q": 0.8423,
+        "is_site": 0.4978,
+        "kind": 0.5157,
+        "level": 0.4996,
+        "max_workers": 0.5034,
+        "progress": 0.4991,
+        "route": 0.4972,
+        "serving": 0.8545,
+        "serving_age": 0.5009,
+        "serving_h": 0.8744,
+        "serving_q": 0.8764,
+        "serving_queries": 0.5067,
+        "size": 0.5018,
+        "swim": 0.4928,
+        "tick": 0.5236,
+        "type": 0.5046,
+        "units": 0.531,
+        "units_h": 0.5304,
+        "workers": 0.5019
+      }
+    },
+    {
+      "keys": [
+        "serving_q"
+      ],
+      "score": 0.8764,
+      "parameter": 0.3,
+      "at_parameter": {
+        "lifetimes": 838427,
+        "hit_rate": 0.886,
+        "query_weighted_coverage": 0.9267,
+        "extra_cpu": 1.2248,
+        "owner_saving": 0.8704,
+        "parameter": 0.3
+      },
+      "next": {
+        "buildings": 0.8786,
+        "construction": 0.8764,
+        "hint": 0.9068,
+        "hint_h": 0.9109,
+        "hint_q": 0.9114,
+        "is_site": 0.8764,
+        "kind": 0.8788,
+        "level": 0.8763,
+        "max_workers": 0.8782,
+        "progress": 0.8766,
+        "route": 0.8764,
+        "serving": 0.8764,
+        "serving_age": 0.8767,
+        "serving_h": 0.8765,
+        "serving_queries": 0.8781,
+        "size": 0.8768,
+        "swim": 0.8767,
+        "tick": 0.8785,
+        "type": 0.8779,
+        "units": 0.8783,
+        "units_h": 0.8782,
+        "workers": 0.8781
+      }
+    },
+    {
+      "keys": [
+        "serving_q",
+        "hint_q"
+      ],
+      "score": 0.9114,
+      "parameter": 0.3,
+      "at_parameter": {
+        "lifetimes": 838427,
+        "hit_rate": 0.8816,
+        "query_weighted_coverage": 0.9108,
+        "extra_cpu": 1.2218,
+        "owner_saving": 0.9043,
+        "parameter": 0.3
+      },
+      "next": {
+        "buildings": 0.9111,
+        "construction": 0.9109,
+        "hint": 0.9112,
+        "hint_h": 0.9113,
+        "is_site": 0.9109,
+        "kind": 0.9114,
+        "level": 0.9112,
+        "max_workers": 0.9118,
+        "progress": 0.9108,
+        "route": 0.9113,
+        "serving": 0.9113,
+        "serving_age": 0.9109,
+        "serving_h": 0.9114,
+        "serving_queries": 0.9107,
+        "size": 0.9115,
+        "swim": 0.9112,
+        "tick": 0.9112,
+        "type": 0.9112,
+        "units": 0.9108,
+        "units_h": 0.9106,
+        "workers": 0.9115
+      }
+    }
+  ],
+  "rejected_next": {
+    "key": "max_workers",
+    "score": 0.9118,
+    "parameter": 0.3,
+    "at_parameter": {
+      "lifetimes": 838427,
+      "hit_rate": 0.881,
+      "query_weighted_coverage": 0.919,
+      "extra_cpu": 1.2209,
+      "owner_saving": 0.9049,
+      "parameter": 0.3
+    }
+  },
+  "selected": {
+    "keys": [
+      "serving_q",
+      "hint_q"
+    ],
+    "parameter": 0.3
+  }
+}

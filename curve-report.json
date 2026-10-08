@@ -1,0 +1,289 @@
+{
+  "shares": {
+    "busy_oazis": 0.026,
+    "tournament": 0.007,
+    "all": 0.026
+  },
+  "curve": [
+    {
+      "point": "l0020",
+      "scenario": "all",
+      "lifetimes": 3408777,
+      "hit_rate": 0.9983,
+      "query_weighted_coverage": 0.9979,
+      "extra_cpu": 2.6183,
+      "owner_saving": 0.9964,
+      "process_cpu_ratio": 1.0421
+    },
+    {
+      "point": "l0020",
+      "scenario": "tournament",
+      "lifetimes": 3408777,
+      "hit_rate": 0.9983,
+      "query_weighted_coverage": 0.9979,
+      "extra_cpu": 2.6183,
+      "owner_saving": 0.9964,
+      "process_cpu_ratio": 1.0113
+    },
+    {
+      "point": "l0050",
+      "scenario": "all",
+      "lifetimes": 3408777,
+      "hit_rate": 0.9875,
+      "query_weighted_coverage": 0.9843,
+      "extra_cpu": 1.7246,
+      "owner_saving": 0.9659,
+      "process_cpu_ratio": 1.0188
+    },
+    {
+      "point": "l0050",
+      "scenario": "tournament",
+      "lifetimes": 3408777,
+      "hit_rate": 0.9875,
+      "query_weighted_coverage": 0.9843,
+      "extra_cpu": 1.7246,
+      "owner_saving": 0.9659,
+      "process_cpu_ratio": 1.0051
+    },
+    {
+      "point": "l0100",
+      "scenario": "all",
+      "lifetimes": 3408777,
+      "hit_rate": 0.9686,
+      "query_weighted_coverage": 0.9702,
+      "extra_cpu": 1.3641,
+      "owner_saving": 0.9415,
+      "process_cpu_ratio": 1.0095
+    },
+    {
+      "point": "l0100",
+      "scenario": "tournament",
+      "lifetimes": 3408777,
+      "hit_rate": 0.9686,
+      "query_weighted_coverage": 0.9702,
+      "extra_cpu": 1.3641,
+      "owner_saving": 0.9415,
+      "process_cpu_ratio": 1.0025
+    },
+    {
+      "point": "l0150",
+      "scenario": "all",
+      "lifetimes": 3408777,
+      "hit_rate": 0.9527,
+      "query_weighted_coverage": 0.9615,
+      "extra_cpu": 1.2788,
+      "owner_saving": 0.9313,
+      "process_cpu_ratio": 1.0072
+    },
+    {
+      "point": "l0150",
+      "scenario": "tournament",
+      "lifetimes": 3408777,
+      "hit_rate": 0.9527,
+      "query_weighted_coverage": 0.9615,
+      "extra_cpu": 1.2788,
+      "owner_saving": 0.9313,
+      "process_cpu_ratio": 1.002
+    },
+    {
+      "point": "l0200",
+      "scenario": "all",
+      "lifetimes": 3408777,
+      "hit_rate": 0.937,
+      "query_weighted_coverage": 0.9544,
+      "extra_cpu": 1.2406,
+      "owner_saving": 0.9248,
+      "process_cpu_ratio": 1.0063
+    },
+    {
+      "point": "l0200",
+      "scenario": "tournament",
+      "lifetimes": 3408777,
+      "hit_rate": 0.937,
+      "query_weighted_coverage": 0.9544,
+      "extra_cpu": 1.2406,
+      "owner_saving": 0.9248,
+      "process_cpu_ratio": 1.0017
+    },
+    {
+      "point": "l0300",
+      "scenario": "all",
+      "lifetimes": 3408777,
+      "hit_rate": 0.9115,
+      "query_weighted_coverage": 0.9414,
+      "extra_cpu": 1.2039,
+      "owner_saving": 0.916,
+      "process_cpu_ratio": 1.0053
+    },
+    {
+      "point": "l0300",
+      "scenario": "tournament",
+      "lifetimes": 3408777,
+      "hit_rate": 0.9115,
+      "query_weighted_coverage": 0.9414,
+      "extra_cpu": 1.2039,
+      "owner_saving": 0.916,
+      "process_cpu_ratio": 1.0014
+    },
+    {
+      "point": "l0400",
+      "scenario": "all",
+      "lifetimes": 3408777,
+      "hit_rate": 0.8676,
+      "query_weighted_coverage": 0.9173,
+      "extra_cpu": 1.1731,
+      "owner_saving": 0.9054,
+      "process_cpu_ratio": 1.0045
+    },
+    {
+      "point": "l0400",
+      "scenario": "tournament",
+      "lifetimes": 3408777,
+      "hit_rate": 0.8676,
+      "query_weighted_coverage": 0.9173,
+      "extra_cpu": 1.1731,
+      "owner_saving": 0.9054,
+      "process_cpu_ratio": 1.0012
+    },
+    {
+      "point": "l0500",
+      "scenario": "all",
+      "lifetimes": 3408777,
+      "hit_rate": 0.8598,
+      "query_weighted_coverage": 0.9117,
+      "extra_cpu": 1.1659,
+      "owner_saving": 0.9021,
+      "process_cpu_ratio": 1.0043
+    },
+    {
+      "point": "l0500",
+      "scenario": "tournament",
+      "lifetimes": 3408777,
+      "hit_rate": 0.8598,
+      "query_weighted_coverage": 0.9117,
+      "extra_cpu": 1.1659,
+      "owner_saving": 0.9021,
+      "process_cpu_ratio": 1.0012
+    },
+    {
+      "point": "l0700",
+      "scenario": "all",
+      "lifetimes": 3408777,
+      "hit_rate": 0.8138,
+      "query_weighted_coverage": 0.8787,
+      "extra_cpu": 1.1498,
+      "owner_saving": 0.8933,
+      "process_cpu_ratio": 1.0039
+    },
+    {
+      "point": "l0700",
+      "scenario": "tournament",
+      "lifetimes": 3408777,
+      "hit_rate": 0.8138,
+      "query_weighted_coverage": 0.8787,
+      "extra_cpu": 1.1498,
+      "owner_saving": 0.8933,
+      "process_cpu_ratio": 1.001
+    },
+    {
+      "point": "l1000",
+      "scenario": "all",
+      "lifetimes": 3408777,
+      "hit_rate": 0.7293,
+      "query_weighted_coverage": 0.7957,
+      "extra_cpu": 1.1347,
+      "owner_saving": 0.8812,
+      "process_cpu_ratio": 1.0035
+    },
+    {
+      "point": "l1000",
+      "scenario": "tournament",
+      "lifetimes": 3408777,
+      "hit_rate": 0.7293,
+      "query_weighted_coverage": 0.7957,
+      "extra_cpu": 1.1347,
+      "owner_saving": 0.8812,
+      "process_cpu_ratio": 1.0009
+    },
+    {
+      "point": "l1500",
+      "scenario": "all",
+      "lifetimes": 3408777,
+      "hit_rate": 0.5728,
+      "query_weighted_coverage": 0.2679,
+      "extra_cpu": 1.1231,
+      "owner_saving": 0.8658,
+      "process_cpu_ratio": 1.0032
+    },
+    {
+      "point": "l1500",
+      "scenario": "tournament",
+      "lifetimes": 3408777,
+      "hit_rate": 0.5728,
+      "query_weighted_coverage": 0.2679,
+      "extra_cpu": 1.1231,
+      "owner_saving": 0.8658,
+      "process_cpu_ratio": 1.0009
+    },
+    {
+      "point": "l2000",
+      "scenario": "all",
+      "lifetimes": 3408777,
+      "hit_rate": 0.5691,
+      "query_weighted_coverage": 0.2598,
+      "extra_cpu": 1.1227,
+      "owner_saving": 0.865,
+      "process_cpu_ratio": 1.0032
+    },
+    {
+      "point": "l2000",
+      "scenario": "tournament",
+      "lifetimes": 3408777,
+      "hit_rate": 0.5691,
+      "query_weighted_coverage": 0.2598,
+      "extra_cpu": 1.1227,
+      "owner_saving": 0.865,
+      "process_cpu_ratio": 1.0009
+    },
+    {
+      "point": "l3000",
+      "scenario": "all",
+      "lifetimes": 3408777,
+      "hit_rate": 0.4247,
+      "query_weighted_coverage": 0.1503,
+      "extra_cpu": 1.1072,
+      "owner_saving": 0.8269,
+      "process_cpu_ratio": 1.0028
+    },
+    {
+      "point": "l3000",
+      "scenario": "tournament",
+      "lifetimes": 3408777,
+      "hit_rate": 0.4247,
+      "query_weighted_coverage": 0.1503,
+      "extra_cpu": 1.1072,
+      "owner_saving": 0.8269,
+      "process_cpu_ratio": 1.0008
+    },
+    {
+      "point": "eager",
+      "scenario": "all",
+      "lifetimes": 3408777,
+      "hit_rate": 1.0,
+      "query_weighted_coverage": 1.0,
+      "extra_cpu": 2.8138,
+      "owner_saving": 1.0,
+      "process_cpu_ratio": 1.0472
+    },
+    {
+      "point": "eager",
+      "scenario": "tournament",
+      "lifetimes": 3408777,
+      "hit_rate": 1.0,
+      "query_weighted_coverage": 1.0,
+      "extra_cpu": 2.8138,
+      "owner_saving": 1.0,
+      "process_cpu_ratio": 1.0127
+    }
+  ]
+}
