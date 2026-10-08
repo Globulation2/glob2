@@ -28,20 +28,28 @@ operating point, `GLOB2_BUILDING_DEPTH=full` and `lazy`
 When a stale field's refresh is staged, two depths of that same field are known
 in O(1):
 
-- **serving**: how deep the field still serving had been settled so far, the
-  `settledCost()` of its search. It is the freshest sample of how far this
+- **serving**: how deep readers of the field still serving required it, the
+  `requiredCost()` of its search. It is the freshest sample of how far this
   field's readers reach.
-- **previous**: the final settled depth of the lifetime it replaced,
+- **previous**: the final reader-required depth of the lifetime it replaced,
   `Building::settledCostHint`.
+
+Worker preparation does not contribute to either input. Each scalar query records
+its required cost layer even when the worker already prepared the answer. Queries
+for unreachable cells require exhaustion; seeded goals and blocked cells require
+no propagation. Completing a field for serialization does not add reader demand.
+Demand resets with each new search, so two lower-demand lifetimes allow the
+prediction to shrink. Using prepared depth instead would feed speculative work
+back into the next prediction and progressively overbuild active fields.
 
 With `m` the deeper of the two, the depth is
 
 ```text
-depth = offset + (slope256 * m) >> 8      clamped to [32, 65535]
-depth = unknown                           when neither is known
+depth = offset + ((slope256 * m) >> 8)    clamped to [32, 65535]
+depth = 32                               when neither is known
 ```
 
-Each operating point is three integers in the generated
+Each operating point is a name and two integers in the generated
 `src/map/gradient/BuildingGradientDepthPolicy.h`, and
 `Map::predictBuildingDepth` evaluates the expression above. Clearing and combat
 fields, whose goals move, still settle fully; fields without a usable old value
@@ -49,14 +57,16 @@ are built synchronously and never reach the model.
 
 Nothing in the model names a building type, a team or a map, so new buildings
 need no refit. The fitted points settle a little beyond the deeper past depth:
-the default settles m plus about four tiles (offset 38, slope 257/256).
+the default (λ 0.1) prepares `166 + (292 * m >> 8)`, approximately
+16.6 land tiles beyond 1.14 times the deeper past demand.
 
-A field with neither depth settles only its seeds. While a game plays, that
-happens to 0.001% of scheduled refreshes; after a save is loaded it happens to
+A field with neither depth prepares the minimum depth (32 cost units). In the
+training games, that happened to 0.001% of scheduled refreshes; after a save is
+loaded it happens to
 every field once, because the past depths are not saved. Fitting a depth for
 that case would send a burst of deep worker searches right after loading, for
-fields about which nothing is known; seeds only lets the readers decide, and
-the field has a history from its next refresh.
+fields about which nothing is known. Minimum preparation lets the readers decide,
+and the field has a history from its next refresh.
 
 ## Choosing the constants
 
@@ -152,43 +162,22 @@ coverage weights it by resolve calls. A prediction just short of the needed
 depth misses but still saves almost all of the work, which is why owner saving
 stays high where the hit rate falls.
 
-Per map size at the default (λ 0.5): 64x64 saves 0.958 at 1.16x, 128x128 0.923
-at 1.18x, and 256x256 0.883 at 1.16x.
-
 The header carries λ 0.1, 0.2, 0.3 and 0.5 (`l0100` to `l0500`); the default
-is λ 0.5.
+is λ 0.1.
 `GLOB2_BUILDING_DEPTH=<name>` selects one at run time for timing, alongside
 `table` (the default point), `full` and `lazy`.
 
-**How the default was chosen.** By owner time on three late busy-Oazis
-checkpoints (11 Maxima, seed 19, ticks 8192, 12288 and 16384). Each run loads a
-checkpoint, warms up 2,048 ticks so every field has a history, and measures the
-next 2,048 ticks with four compute threads on eight pinned cores; two repeats,
-order rotated. The owner's lazy search, `gradient.building_resume`, in ms:
+The default prioritizes keeping search off the simulation owner. On the original
+lazy dataset, λ 0.1 offloads 94.15% of scheduled search work at 1.3641 times lazy
+search work, compared with 90.21% at 1.1659 times for λ 0.5. These are histogram
+estimates for building-field searches, not measured whole-game CPU ratios.
 
-| Depth | 8192 | 12288 | 16384 |
-| --- | ---: | ---: | ---: |
-| lazy (seeds only) | 400 | 811 | 1068 |
-| fit 2, p80 | 77 | 158 | 134 |
-| **λ 0.5** | **44** | **103** | **87** |
-| λ 0.3 | 43 | 95 | 92 |
-| λ 0.2 | 40 | 96 | 91 |
-| λ 0.1 | 38 | 91 | 77 |
-| full | 36 | 94 | 84 |
-
-λ 0.5 already reaches what settling every field fully reaches; what remains is
-cold fields, which build synchronously and never reach the model. Deeper points
-spend more worker CPU for nothing measurable, so λ 0.5 is the default. Whole-loop
-owner time and process CPU varied by 30-50% between repeats on the shared host
-these runs used, too much to separate the points; a quiet host should repeat that
-comparison at the next refit. The per-tick checksums of all fourteen runs of each
-checkpoint were identical.
-
-Search is a small share of process CPU in steady play (about 2.6% in busy late
-games and under 1% in typical ones, measured for fit 2), so by the histogram
-estimate the default costs well under 1% of process CPU over lazy fields. That
-estimate is not a measurement; the shared-host runs above could not confirm or
-refute it.
+The coefficients were fitted on lazy lifetimes, so worker preparation did not
+inflate their training inputs. Reader-demand tracking restores those intended
+inputs in the running engine. Earlier runtime comparisons used prepared search
+depth as history and could accumulate speculative depth across refreshes; they
+cannot establish the tradeoff after removing that feedback. Changing λ does not
+change gameplay, field values, publication deadlines or save/replay formats.
 
 ## When to refit
 
@@ -200,7 +189,7 @@ scheduling. Refitting moves only CPU, so it needs no `SIM_REVISION` bump.
 | --- | --- | --- | --- |
 | 1 | first fit, round-trip fetching | quantile table: previous, type, progress | p80 |
 | 2 | round-trip removal (greedy fetching) | quantile table: previous, units, type | p80 |
-| **3** | **staged inputs, larger campaign** | **a + k · max(serving, previous)** | **λ 0.5** |
+| **3** | **staged inputs, larger campaign; reader-demand history** | **a + k · max(serving, previous)** | **λ 0.1** |
 
 ## Running it
 
@@ -213,7 +202,7 @@ python3 -m tools.tournaments run RESULTS --hosts hosts.json
 
 python3 tools/gradient_depth_fit.py dataset RESULTS RUNS --output dataset.npz --jobs 16
 # Fit the operating points and regenerate the summary and the header.
-python3 tools/gradient_depth_fit.py fit dataset.npz --operating-point 0.5 --points 0.1 0.2 0.3
+python3 tools/gradient_depth_fit.py fit dataset.npz --operating-point 0.1 --points 0.2 0.3 0.5
 # The default's metrics, overall and per map size; and the held-out curve.
 python3 tools/gradient_depth_fit.py evaluate dataset.npz
 python3 tools/gradient_depth_fit.py evaluate dataset.npz --curve [--share busy_oazis=0.026]
@@ -232,7 +221,8 @@ without numpy.
   buildings differently, and nothing here has been checked against human play.
 - The extra-CPU and saving figures come from the lifetimes' depth histograms,
   not measured thread time; beyond a partial field's reach the work is
-  extrapolated from complete fields. The default was chosen by measured time.
+  extrapolated from complete fields. The default favors owner offload; runtime
+  measurements must include total CPU and synchronous fallback cost.
 - The campaign has no busy 11-player games; large 256x256 games carry the most
   work. The timing checkpoints are busy Oazis games.
 - A field whose readers suddenly reach much further than before (a burst of new

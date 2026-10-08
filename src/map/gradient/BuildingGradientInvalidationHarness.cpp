@@ -14,6 +14,7 @@
 #include "GameGUI.h"
 #include "Building.h"
 #include "BuildingGradientSearch.h"
+#include "BuildingGradientDepthPolicy.h"
 #include "BuildingType.h"
 #include "IntBuildingType.h"
 #include "Race.h"
@@ -1035,6 +1036,34 @@ void scheduledSameTickSwimClassesKeepRequestOrder()
 
 TEST_SUITE("BuildingGradientInvalidation")
 {
+	TEST_CASE("prediction retains reader demand across rebuilds and save completion")
+	{
+		glob2test::HeadlessGlobals globals;
+		World world;
+		Scheduler scheduler(world, 2, 1);
+		auto& map = world.game.map;
+		map.setBuildingGradientDepth("table");
+		Building* building = world.place(24, 24);
+		REQUIRE(world.available(building, 2, 2));
+		const int demand = building->globalGradientSearch[0]->requiredCost();
+		REQUIRE(demand > 0);
+		const int predicted = map.predictBuildingDepth(building, 0);
+		map.finishBuildingGradient(building, 0);
+		CHECK(map.predictBuildingDepth(building, 0) == predicted);
+		CHECK(building->globalGradientSearch[0]->requiredCost() == demand);
+		world.game.stepCounter = DIRTY_GRACE_TICKS + 1;
+		map.addForbidden(10, 10, 0);
+		scheduler.tick([&] { REQUIRE(world.available(building, 2, 2)); });
+		map.advanceGradientPipeline();
+		REQUIRE(scheduler.status().published == 1);
+		CHECK(building->settledCostHint[0] == demand);
+		CHECK(building->globalGradientSearch[0]->requiredCost() == 0);
+		CHECK(map.predictBuildingDepth(building, 0) == BuildingGradientDepth::target(0, demand));
+		map.updateGlobalGradient(building, 0);
+		CHECK(building->settledCostHint[0] == 0);
+		CHECK(map.predictBuildingDepth(building, 0) == BuildingGradientDepth::target(0, 0));
+	}
+
 	TEST_CASE("centre placed inside an existing ring")
 	{
 		glob2test::HeadlessGlobals globals;
