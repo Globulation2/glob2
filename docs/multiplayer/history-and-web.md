@@ -189,9 +189,10 @@ pages carry an OpenGraph image for link previews.
 | `/matches`, `/matches/{id}` | Recent matches; match page with replay actions, players, rating changes and timelines; verification and connection diagnostics are expandable |
 | `/maps`, `/maps/mine`, `/maps/new`, `/maps/{id}` | Map catalog, my maps, upload, map page (preview, versions, like, report, owner edits) |
 | `/account` | The signed-in account: sign-in methods, data export, Hive Mind credit link, delete |
+| `/admin`, `/admin/overview` | Administrators: current activity, trends, coverage and CSV export; default landing page |
 | `/admin/reports`, `/admin/content` | Moderators: reports across maps, AIs, buildings, sets, skins and music; hide/disable, restore, resolve and dismiss |
 | `/admin/accounts`, `/admin/matches` | Account search and moderation; administrators also change roles/delete accounts and request verification with separately confirmed forced verification |
-| `/admin/operations`, `/admin/finances` | Administrators: uncertain requests, credit reservations, workers/jobs and recovery; confirmed cash and estimated provider costs |
+| `/admin/operations` | Administrators: uncertain requests, credit reservations, workers/jobs and recovery |
 | `/admin/audit` | Searchable action history; administrators see all actions, moderators see moderation only |
 
 The existing `/admin/music`, `/admin/skins` and `/sets/reports` routes remain
@@ -202,7 +203,7 @@ reason, status and recorded resolution; content restoration does not require an
 open report. Mutations are checked on the server and recorded with reasons.
 Resolution holds a report row lock, including through the legacy endpoints.
 
-Read endpoints under `/api/v1/admin` include `/reports`, `/content`, `/audit`, `/operations` and `/operations/:product/:id`.
+Read endpoints under `/api/v1/admin` include `/reports`, `/content`, `/audit`, `/operations` and `/operations/:product/:id`, `/analytics`.
 See [hosting](../hosting/README.md#admin-reporting) for configuration and recovery.
 
 Map detail previews show one complete map period at its native aspect ratio.

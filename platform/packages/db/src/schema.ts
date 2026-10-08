@@ -826,6 +826,7 @@ export interface HiveLedgerTable {
   created_at: Timestamp;
 }
 export interface HiveCallsTable {
+  completed_at: NullableTimestamp;
   id: string;
   account_id: string;
   reserved: number;
@@ -1055,6 +1056,7 @@ export interface AiStudioRevisionsTable {
   created_at: Timestamp;
 }
 export interface AiStudioRequestsTable {
+  completed_at: NullableTimestamp;
   id: string;
   project_id: string;
   base_revision: number;
@@ -1182,6 +1184,11 @@ interface SetReportsTable {
   created_at: Timestamp;
 }
 export interface Database {
+  admin_library_publications: { library: string; version_id: string; day: string };
+  account_activity_days: { account_id: string; day: string; kind: 'guest' | 'registered' };
+  admin_daily_metrics: { day: string; metric: string; dimension: string; value: number };
+  admin_metric_coverage: { metric: string; since: string; historical_incomplete: boolean };
+  admin_analytics_settings: { id: boolean; collection: boolean; started_at: Timestamp };
   admin_report_resolutions: {
     library: string;
     report_id: string;

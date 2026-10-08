@@ -234,6 +234,7 @@ export class AdminService {
         .forUpdate()
         .executeTakeFirstOrThrow();
       if (current.status === 'deleted') throw apiError('not_found', 'No such account.');
+      await tx.deleteFrom('account_activity_days').where('account_id', '=', id).execute();
       await tx
         .updateTable('admin_report_resolutions')
         .set({ actor_id: null })

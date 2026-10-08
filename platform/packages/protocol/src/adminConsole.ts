@@ -1,6 +1,7 @@
 import { Type, type Static } from 'typebox';
 import { Open, Strict, Timestamp, Uuid } from './common.ts';
 import { Page } from './resources.ts';
+import { InstanceStats } from './history.ts';
 
 export const AdminLibrary = Type.Union([
   Type.Literal('maps'),
@@ -128,6 +129,33 @@ export const AdminUsageReconcile = Strict({
     output: Type.Integer({ minimum: 0 }),
   }),
 });
+export const AdminMetric = Open({
+  day: Type.String(),
+  metric: Type.String(),
+  dimension: Type.String(),
+  value: Type.Number(),
+});
+export const AdminAnalytics = Open({
+  attention: Type.Record(Type.String(), Type.Integer({ minimum: 0 })),
+  days: Type.Integer(),
+  generatedAt: Timestamp,
+  live: InstanceStats,
+  metrics: Type.Array(AdminMetric),
+  active: Open({
+    daily: Type.Integer(),
+    weekly: Type.Integer(),
+    monthly: Type.Integer(),
+    registered: Open({ daily: Type.Integer(), weekly: Type.Integer(), monthly: Type.Integer() }),
+    guests: Open({ daily: Type.Integer(), weekly: Type.Integer(), monthly: Type.Integer() }),
+  }),
+  participants: Open({ current: Type.Integer(), previous: Type.Integer() }),
+  coverage: Type.Array(
+    Open({ metric: Type.String(), since: Type.String(), historicalIncomplete: Type.Boolean() }),
+  ),
+  topContent: Type.Array(AdminContent),
+  collection: Type.Boolean(),
+});
+export type AdminAnalytics = Static<typeof AdminAnalytics>;
 export const adminConsoleSchemas = {
   AdminLibrary,
   AdminContent,
@@ -142,4 +170,6 @@ export const adminConsoleSchemas = {
   AdminOperations,
   AdminOperationDetail,
   AdminUsageReconcile,
+  AdminMetric,
+  AdminAnalytics,
 };

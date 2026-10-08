@@ -1,4 +1,4 @@
-import { maintainAiLibrary } from '@glob2/core';
+import { maintainAiLibrary, retainAnalytics } from '@glob2/core';
 // Housekeeping and retention (docs/hosting/README.md, "Retention"). Runs on
 // the scheduler leader every minute; every delete is bounded (RETENTION_BATCH
 // rows per table and run) and served by an index, so a backlog drains over a
@@ -80,6 +80,7 @@ export const RATE_LIMIT_IDLE_HOURS = 24;
 
 /** Housekeeping that must run on exactly one worker (the scheduler leader). */
 export async function runMaintenance(db: Kysely<Database>): Promise<MaintenanceResult> {
+  await retainAnalytics(db);
   await maintainAiLibrary(db);
   const signins = await db
     .updateTable('signin_attempts')

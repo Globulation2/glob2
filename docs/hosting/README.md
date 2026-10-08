@@ -1680,3 +1680,32 @@ request locks make repeat/concurrent resolution idempotent. There are no automat
 provider retries or arbitrary credit adjustments. Audit can be filtered by actor,
 action, target and dates; moderators only see moderation actions.
 
+Set `analytics` in the instance JSON to independently control collection and
+admin display (both default true):
+
+```json
+"analytics": { "collection": true, "display": true }
+```
+
+All replicas of an instance must use the same collection setting. Activity is one
+conflict-safe marker per account per UTC day for a successful authenticated
+non-admin request or realtime action, including activity across UTC midnight.
+Guests and registered accounts are shown separately. Service credentials,
+anonymous visitors, health checks and dashboard polling are excluded. Identifiable
+markers are kept for 90 days, included in export and erased on account deletion;
+anonymous daily totals are kept for 24 months. Daily counters update transactionally
+with source changes, survive source cleanup, and handle repeated/late completions.
+Worker maintenance applies retention. Stopping collection creates a history gap;
+it does not manufacture activity when restarted. Historical source backfills are
+explicitly incomplete and never use `last_seen_at` to infer active users.
+
+Analytics uses UTC 7/30/90-day periods with previous-period comparisons, accessible
+charts/tables and CSV downloads. Status trends are cohorts by request creation day;
+completion duration uses creation-to-completion time. Download counts follow
+library counting rules and are not unique users; skin download history is unavailable.
+All admin responses disable public caching; aggregate endpoints cache internally
+for 60 seconds and display their updated time.
+
+
+Roll out additive migrations and backend before the dependent web build. Collection
+and display can be disabled separately; verify live totals using read-only queries.
