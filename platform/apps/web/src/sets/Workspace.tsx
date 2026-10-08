@@ -24,14 +24,6 @@ const name = (key: string) =>
     .replaceAll('_', ' ')
     .replace(/^./, (x) => x.toUpperCase());
 
-function referencesSprite(value: unknown, path: string): boolean {
-  if (typeof value === 'string') return value === path;
-  if (Array.isArray(value)) return value.some((entry) => referencesSprite(entry, path));
-  if (value && typeof value === 'object')
-    return Object.values(value).some((entry) => referencesSprite(entry, path));
-  return false;
-}
-
 type JsonEdit = { text: string; error: string; value: string };
 const JsonEdits = createContext<{
   edits: Record<string, JsonEdit>;
