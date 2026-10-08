@@ -147,7 +147,10 @@ test('building workspace supports revision-bound chat, previews, restoration and
   await page.getByRole('button', { name: 'Send', exact: true }).click();
   expect(writes[1]).toMatchObject({ expectedRevision: revision, references: ['b'.repeat(64)] });
   if (info.project.name === 'phone')
-    await page.getByRole('tab', { name: 'Preview', exact: true }).first().click();
+    await page
+      .getByRole('tab', { name: /^Preview(?: ·.*)?$/ })
+      .first()
+      .click();
   await expect(page.getByText('Interior seats')).toBeVisible();
   await page.getByLabel('Compare with').selectOption('old');
   await expect(page.getByText('Current saved draft: 300')).toBeVisible();

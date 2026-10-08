@@ -160,7 +160,10 @@ test('terrain creation workspace fits desktop and phone and submits one revision
   await page.goto('/terrain-studio/' + id);
   await expect(page.getByRole('heading', { name: 'Fungal swamp', exact: true })).toBeVisible();
   if (info.project.name === 'phone')
-    await page.getByRole('tab', { name: 'Preview', exact: true }).first().click();
+    await page
+      .getByRole('tab', { name: /^Preview(?: ·.*)?$/ })
+      .first()
+      .click();
   await expect(page.getByRole('heading', { name: 'Scene and resource gallery' })).toBeVisible();
   if (info.project.name === 'phone')
     await page.getByRole('tab', { name: 'Chat', exact: true }).click();
@@ -224,7 +227,10 @@ test('terrain creation workspace fits desktop and phone and submits one revision
   await page.screenshot({ path: resolve(directory, `${info.project.name}.png`), fullPage: true });
   // A background refresh must preserve unsaved inspector values from this tab.
   if (info.project.name === 'phone')
-    await page.getByRole('tab', { name: 'Preview', exact: true }).first().click();
+    await page
+      .getByRole('tab', { name: /^Preview(?: ·.*)?$/ })
+      .first()
+      .click();
   await page.getByRole('tab', { name: 'Edit', exact: true }).click();
   const titleInput = page.getByLabel('Title', { exact: true });
   await titleInput.fill('My unsaved terrain title');
