@@ -402,6 +402,7 @@ TEST_SUITE("SoftwareRenderer")
 		game.map.paintCell(0, 0, WATER);
 		compare(29, 30, 1);
 		game.map.setSize(8, 8, GRASS);
+		game.map.setGame(&game); // Rebind sectors and animation storage after replacement.
 		REQUIRE(cache().bytes() == 0); // a replaced map starts an empty cache
 		for (int chunk = 0; chunk < 40; ++chunk)
 		{
@@ -413,6 +414,7 @@ TEST_SUITE("SoftwareRenderer")
 		CHECK_FALSE(cache().prepare(sceneOf(game.map), *globals->terrain, 0, 0, 127, 127,
 													   0, 0, game.teams[0]->me, true));
 		game.map.setSize(4, 4, GRASS);
+		game.map.setGame(&game);
 		compare(0, 0, 0);
 		for (int y = 0; y < 16; ++y)
 			for (int x = 0; x < 16; ++x)

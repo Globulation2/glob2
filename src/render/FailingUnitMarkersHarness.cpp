@@ -164,6 +164,8 @@ public:
 		// a torus view this bare game does not have.
 		gui.localTeam = gui.game.teams[0];
 		gui.teamStats = &gui.localTeam->stats;
+		gui.game.snapshots().invalidateBoundary();
+		gui.prepareLocalPresentation();
 		gui.updateCamera();
 		auto* gfx = globalContainer->gfx;
 		gfx->drawFilledRect(0, 0, gfx->getW(), gfx->getH(), 0, 0, 32);
@@ -215,6 +217,8 @@ public:
 		require(scene.inn->unitsFailingByReason[Building::UnitTooLowLevel].size() == LOW_COUNT,
 			"and it still holds the gids of the scan that ran while it was asking");
 
+		gui.game.snapshots().invalidateBoundary();
+		gui.prepareLocalPresentation();
 		gui.updateCamera();
 		auto* gfx = globalContainer->gfx;
 		std::set<Uint16> visible;
