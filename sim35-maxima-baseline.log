@@ -1,0 +1,28 @@
+GLOB2_TEST_BUILD compiler=15.2.0 platform=Linux pointer_bits=64
+GLOB2_TEST_PROVENANCE {"compiler": "g++", "dirty": true, "flags": {"CCFLAGS": "", "CPPDEFINES": "GLOB2_OFFICIAL_INSTANCE_ORIGIN \\\"https://app.glob2online.com\\\" GLOB2_OFFICIAL_INSTANCE_FORMER_ORIGINS \\\"https://glob2online.com\\\" HAVE_CONFIG_H SDL_MAIN_HANDLED", "CXXFLAGS": "-g -std=gnu++20 -Wall -fPIC", "LINKFLAGS": "-g -Wl,-rpath,$ORIGIN/../lib/glob2 -Wall -Wl,-rpath,/home/bradley/.codex/worktrees/repair-tls-rejection-fixture/glob2/build/sdl3-ci/prefix/lib -Wl,--enable-new-dtags"}, "revision": "da57b459f1eb20b9b4a08d25eb502711dd81986b", "sourceStatus": ["?? build-software-terrain/"], "sourceTreeSha256": "089917be0b372acfe53498b7e80d1a1e291f08c173ba94db6aff47c884ab1583"}
+[doctest] doctest version is "2.4.11"
+[doctest] run with "--help" for options
+Settings::load("preferences.txt") : error, can't open file.
+Rally checksum mismatch: shift=0 step=1 actual=206885965 expected=1226233493
+===============================================================================
+src/ai/maxima/MaximaCombatIntegrationTest.cpp:1470:
+TEST SUITE: Maxima.Combat
+TEST CASE:  rally assembles by movement
+
+src/ai/maxima/MaximaCombatIntegrationTest.cpp:498: FATAL ERROR: REQUIRE( (expectedShift==shift && expectedStep==f.game.stepCounter && expectedChecksum==checksum) ) is NOT correct!
+  values: REQUIRE( false )
+
+Settings::load("preferences.txt") : error, can't open file.
+Army birth checksum mismatch: tick=1 actual=3528247108 expected=1818459628
+===============================================================================
+src/ai/maxima/MaximaEconomyRegressionTest.cpp:958:
+TEST SUITE: Maxima.Economy
+TEST CASE:  army births match platform checksums
+
+src/ai/maxima/MaximaEconomyRegressionTest.cpp:569: FATAL ERROR: REQUIRE( (expectedTick==tick && expectedChecksum==checksum) ) is NOT correct!
+  values: REQUIRE( false )
+
+===============================================================================
+[doctest] test cases:  2 |  0 passed | 2 failed | 1312 skipped
+[doctest] assertions: 92 | 90 passed | 2 failed |
+[doctest] Status: FAILURE!
