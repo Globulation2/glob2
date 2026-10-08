@@ -1,0 +1,9 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="7" failures="0" errors="0" skipped="0"><testsuite name="PathGradient"><testcase classname="PathGradient" name="building depth history follows readers rather than preparation [pathfinding]" time="0.003433" status="run" />
+    <testcase classname="PathGradient" name="reader depth agrees for lazy and fully prepared weighted fields [pathfinding]" time="0.002454" status="run" />
+    <testcase classname="PathGradient" name="immutable water snapshots share storage and retain their captured terrain [pathfinding]" time="0" status="run" />
+    <testcase classname="PathGradient" name="analytic oracle" time="0" status="run" />
+    <testcase classname="PathGradient" name="parallel searches" time="0.030156" status="run" />
+    <testcase classname="PathGradient" name="lazy building fields" time="0.027759" status="run" />
+    <testcase classname="PathGradient" name="boundary; random and exhaustive seeds against the heap oracle" time="0.233711" status="run" />
+  </testsuite></testsuites>

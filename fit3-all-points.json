@@ -1,0 +1,93 @@
+{
+ "version": 5,
+ "games": 1472,
+ "lifetimes": 3408777,
+ "default": "l0500",
+ "points": [
+  {
+   "name": "l0020",
+   "lambda": 0.02,
+   "offset": 842,
+   "slope256": 1289
+  },
+  {
+   "name": "l0050",
+   "lambda": 0.05,
+   "offset": 418,
+   "slope256": 340
+  },
+  {
+   "name": "l0100",
+   "lambda": 0.1,
+   "offset": 166,
+   "slope256": 292
+  },
+  {
+   "name": "l0150",
+   "lambda": 0.15,
+   "offset": 118,
+   "slope256": 270
+  },
+  {
+   "name": "l0200",
+   "lambda": 0.2,
+   "offset": 88,
+   "slope256": 268
+  },
+  {
+   "name": "l0300",
+   "lambda": 0.3,
+   "offset": 56,
+   "slope256": 266
+  },
+  {
+   "name": "l0400",
+   "lambda": 0.4,
+   "offset": 26,
+   "slope256": 266
+  },
+  {
+   "name": "l0500",
+   "lambda": 0.5,
+   "offset": 38,
+   "slope256": 257
+  },
+  {
+   "name": "l0700",
+   "lambda": 0.7,
+   "offset": 18,
+   "slope256": 258
+  },
+  {
+   "name": "l1000",
+   "lambda": 1.0,
+   "offset": -2,
+   "slope256": 257
+  },
+  {
+   "name": "l1500",
+   "lambda": 1.5,
+   "offset": -18,
+   "slope256": 257
+  },
+  {
+   "name": "l2000",
+   "lambda": 2.0,
+   "offset": -10,
+   "slope256": 254
+  },
+  {
+   "name": "l3000",
+   "lambda": 3.0,
+   "offset": -36,
+   "slope256": 253
+  }
+ ],
+ "cross_validated": {
+  "lifetimes": 3408777,
+  "hit_rate": 0.8598,
+  "query_weighted_coverage": 0.9117,
+  "extra_cpu": 1.1659,
+  "owner_saving": 0.9021
+ }
+}

@@ -1,0 +1,10 @@
+{
+  "dataset": "fit-3 original lazy-search traces",
+  "source": "original retained depth-model dataset",
+  "sha256": "1dc254d93e5c0841415b9e8059cf215d000ea5b279137762d18715dbd1236e7c",
+  "games": 1472,
+  "lifetimes": 3408777,
+  "purpose": "Recompute the existing game-fold cross-validated lambda curve; original lazy traces reflect reader demand, so removing preparation feedback does not change this fitted curve.",
+  "selected_lambda": 0.1,
+  "runtime_measurements": "Additional measurements cancelled at user request; no final PR performance claim."
+}

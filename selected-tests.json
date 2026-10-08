@@ -1,0 +1,158 @@
+[
+  {
+    "suite": "BuildingGradientInvalidation",
+    "name": "a deleted building's pending result cannot replace a reused destination"
+  },
+  {
+    "suite": "BuildingGradientInvalidation",
+    "name": "a paused field keeps its original obstacles"
+  },
+  {
+    "suite": "BuildingGradientInvalidation",
+    "name": "a pending result keeps the generation a team-local edit carries forward"
+  },
+  {
+    "suite": "BuildingGradientInvalidation",
+    "name": "a ring cuts off a virtual flags field"
+  },
+  {
+    "suite": "BuildingGradientInvalidation",
+    "name": "a rival teams ring cuts off a cached field"
+  },
+  {
+    "suite": "BuildingGradientInvalidation",
+    "name": "access metadata follows the newest capture across swim classes and saves"
+  },
+  {
+    "suite": "BuildingGradientInvalidation",
+    "name": "an empty building pipeline follows a changed header delay through save and load"
+  },
+  {
+    "suite": "BuildingGradientInvalidation",
+    "name": "area and team-wide resets keep stale walking fields serving with the pipeline on"
+  },
+  {
+    "suite": "BuildingGradientInvalidation",
+    "name": "centre placed inside an existing ring"
+  },
+  {
+    "suite": "BuildingGradientInvalidation",
+    "name": "delayed fields"
+  },
+  {
+    "suite": "BuildingGradientInvalidation",
+    "name": "idle field storage is reused without stale routes"
+  },
+  {
+    "suite": "BuildingGradientInvalidation",
+    "name": "partial scheduled fields resume on the owner from transferred buckets"
+  },
+  {
+    "suite": "BuildingGradientInvalidation",
+    "name": "pending building results survive save boundaries and cannot resurrect evicted fields"
+  },
+  {
+    "suite": "BuildingGradientInvalidation",
+    "name": "prediction retains reader demand across rebuilds and save completion"
+  },
+  {
+    "suite": "BuildingGradientInvalidation",
+    "name": "public reads resolve their inputs"
+  },
+  {
+    "suite": "BuildingGradientInvalidation",
+    "name": "requests during team stepping are captured at the observation boundary"
+  },
+  {
+    "suite": "BuildingGradientInvalidation",
+    "name": "ring placed around an existing field"
+  },
+  {
+    "suite": "BuildingGradientInvalidation",
+    "name": "same-tick swim classes write access metadata in request order"
+  },
+  {
+    "suite": "BuildingGradientInvalidation",
+    "name": "scheduled building fields publish at fixed deadlines across worker counts and delays"
+  },
+  {
+    "suite": "BuildingGradientInvalidation",
+    "name": "slow and failing workers never change the publication tick"
+  },
+  {
+    "suite": "BuildingGradientInvalidation",
+    "name": "snapshot building seeds and captured-input searches match the synchronous kernels for every route and swim class"
+  },
+  {
+    "suite": "BuildingGradientInvalidation",
+    "name": "synchronous rebuilds and lifecycle hooks supersede pending jobs that share a deadline"
+  },
+  {
+    "suite": "PathGradient",
+    "name": "analytic oracle"
+  },
+  {
+    "suite": "PathGradient",
+    "name": "boundary; random and exhaustive seeds against the heap oracle"
+  },
+  {
+    "suite": "PathGradient",
+    "name": "building depth history follows readers rather than preparation [pathfinding]"
+  },
+  {
+    "suite": "PathGradient",
+    "name": "immutable water snapshots share storage and retain their captured terrain [pathfinding]"
+  },
+  {
+    "suite": "PathGradient",
+    "name": "lazy building fields"
+  },
+  {
+    "suite": "PathGradient",
+    "name": "parallel searches"
+  },
+  {
+    "suite": "PathGradient",
+    "name": "reader depth agrees for lazy and fully prepared weighted fields [pathfinding]"
+  },
+  {
+    "suite": "src/map/gradient/PathGradientHarness.cpp",
+    "name": "eager terrain specialization proves uniform costs across the whole field [pathfinding]"
+  },
+  {
+    "suite": "src/map/gradient/PathGradientHarness.cpp",
+    "name": "general terrain queue supports colliding costs and wrapped thin grids [pathfinding]"
+  },
+  {
+    "suite": "src/map/gradient/PathGradientHarness.cpp",
+    "name": "lazy terrain costs preserve uniform materials and source costs [pathfinding]"
+  },
+  {
+    "suite": "src/map/gradient/PathGradientHarness.cpp",
+    "name": "mixed terrain costs match heap oracle and immutable lazy searches [pathfinding]"
+  },
+  {
+    "suite": "src/map/gradient/PathGradientHarness.cpp",
+    "name": "prepared terrain profiles deduplicate pairs and alias queue destinations [pathfinding]"
+  },
+  {
+    "suite": "src/map/gradient/PathGradientHarness.cpp",
+    "name": "queued mixed gradients retain terrain costs until fixed publication [pathfinding]"
+  },
+  {
+    "suite": "src/map/gradient/PathGradientHarness.cpp",
+    "name": "strategic terrain distances retain wide costs until publishing tile estimates [pathfinding]"
+  },
+  {
+    "suite": "src/map/gradient/PathGradientHarness.cpp",
+    "name": "strategic terrain queue matches independent wide heap across boundaries and saturation [pathfinding]"
+  },
+  {
+    "suite": "src/map/gradient/PathGradientHarness.cpp",
+    "name": "terrain snapshots survive paused searches and release obsolete generations [pathfinding]"
+  },
+  {
+    "suite": "src/map/gradient/PathGradientHarness.cpp",
+    "name": "vertex terrain rejects unregistered terrain IDs [pathfinding]"
+  }
+]

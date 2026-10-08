@@ -1,0 +1,58 @@
+{
+  "source_revision": "320a67d78ee500d0542ade55f79f0d3ccb1fa4fd",
+  "base_revision": "b5c9f3ed276b82a557f582eb0be1b910b93a9a49",
+  "platform": "macOS-26.6.2-arm64-arm-64bit-Mach-O",
+  "cpu": "Apple M3",
+  "compiler": "Apple clang version 21.0.0 (clang-2100.3.34.2)",
+  "dependencies": {
+    "sdl2": "2.32.70",
+    "SDL2_image": "2.8.12",
+    "SDL2_ttf": "2.24.0",
+    "libpng": "1.6.59",
+    "opusfile": "0.12",
+    "vorbisfile": "1.3.7",
+    "libzstd": "1.5.7",
+    "sdl3": "3.4.18",
+    "SDL3_image": "unavailable",
+    "SDL3_ttf": "unavailable",
+    "SDL3_net": "unavailable",
+    "libwebp": "1.6.0",
+    "fribidi": "1.0.16",
+    "epoxy": "1.5.10",
+    "speex": "1.2.1"
+  },
+  "build_flags": [
+    "-j8",
+    "release=1",
+    "server=0",
+    "--build=build/depth-feedback"
+  ],
+  "recording_prefix": "Existing pinned release recording dependency prefix; no dependency changes in this PR",
+  "source_sha256": {
+    "docs/building-gradient-depth-model.md": "4e2c07f04d6c329d5fd671a8e27cf66c4f806840d6fecd3c8a80ef6192f11464",
+    "src/building/Building.h": "2c38e006dde1ab633f7055f6e10bd25b2cb3ee70119a7cd83d93b61e99d2c47b",
+    "src/map/gradient/BuildingGradientDepthPolicy.h": "2d488a4775d0283b7a4a8d7a38d844fed933dcb0053f03d7458f5da3af0d4dae",
+    "src/map/gradient/BuildingGradientInvalidationHarness.cpp": "af0ef629c8df0ce69711fe3ee125209928c0a9c4b6c662e5b26c5022669567fa",
+    "src/map/gradient/BuildingGradientSearch.cpp": "11f0ed7b5ee7ab00561d2730c09aa8fbe2678a97359306d1d40965fd29ed0c5e",
+    "src/map/gradient/BuildingGradientSearch.h": "3258b0c8192028a9f63d278b4e2d2e25764a0adf93ca2212070e182ccccdf33c",
+    "src/map/gradient/BuildingGradientStats.cpp": "37e77fc8dad366a3aa8ae38c7b3d34ebd0879a4be529887aef21ec705fca5367",
+    "src/map/gradient/BuildingGradientStats.h": "439aa9eae14755c70703ce1b8b4d2937127eb4c5d2a8a6d6bfe09ee51eb0c816",
+    "src/map/gradient/MapGradientBuilding.cpp": "4e218a78239af84ebe06826872955bf5e5d10b06f7a9922cccb389b1034272b8",
+    "src/map/gradient/MapGradientScheduling.cpp": "7718f3b8c971c190e4a3ec957379c398432e99a96fb9049c45d51ed5f276fe23",
+    "src/map/gradient/PathGradientHarness.cpp": "950534000e5cb84ca4b459394fbcfb484bd4332fffd82dc1b7566b9f301765b7",
+    "tools/gradient_depth_fit.py": "0e3b031bf29c6794ce9544439c8439acc243af7a29105b35fcdf19282b8af1e1",
+    "tools/gradient_depth_model.json": "4ca039326c3cc7c3f5122344aac837b8a2431f3d0158bce4be46c7296ea23d48"
+  },
+  "coverage_rationale": "Reader-demand tracking and a default preparation depth change; focus weighted lazy/prepared equality, per-lifetime histories, fixed publication schedules, pending saves and game checksum continuation. No simulated rules, save bytes or replay/network version gates changed.",
+  "limits": [
+    "Native macOS arm64 only; Linux/Windows/browser and ThreadSanitizer coverage not verified for this PR.",
+    "Hosted checks are cheap contracts only.",
+    "Additional performance measurements cancelled at user request; no final-PR speedup claim."
+  ],
+  "binary_sha256": {
+    "build/depth-feedback/src/glob2": "bcc767fe90783192359ed17876edc032858e1fcace2ec3164077cd515c6a20b4",
+    "build/depth-feedback/test/glob2-unit-tests": "58f4de3d28e7243cad30136370d35f3b6a1a3b65f2510ea425414ba054802dbc",
+    "build/depth-feedback/test/glob2-engine-tests": "5cbd3a434a72c738d4cc290d170d3e50461143e227b0fdeb161a13f27de6edcf"
+  },
+  "python_runtime": "Python 3.14.7"
+}

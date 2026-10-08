@@ -1,0 +1,15 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="13" failures="0" errors="0" skipped="0"><testsuite name="src/map/gradient/PathGradientHarness.cpp"><testcase classname="src/map/gradient/PathGradientHarness.cpp" name="mixed terrain costs match heap oracle and immutable lazy searches [pathfinding]" time="0.158236" status="run" />
+    <testcase classname="src/map/gradient/PathGradientHarness.cpp" name="general terrain queue supports colliding costs and wrapped thin grids [pathfinding]" time="0.000552" status="run" />
+    <testcase classname="src/map/gradient/PathGradientHarness.cpp" name="vertex terrain rejects unregistered terrain IDs [pathfinding]" time="0" status="run" />
+    <testcase classname="src/map/gradient/PathGradientHarness.cpp" name="strategic terrain distances retain wide costs until publishing tile estimates [pathfinding]" time="0.001528" status="run" />
+    <testcase classname="src/map/gradient/PathGradientHarness.cpp" name="terrain snapshots survive paused searches and release obsolete generations [pathfinding]" time="0.001198" status="run" />
+    <testcase classname="src/map/gradient/PathGradientHarness.cpp" name="queued mixed gradients retain terrain costs until fixed publication [pathfinding]" time="0.004246" status="run" />
+    <testcase classname="src/map/gradient/PathGradientHarness.cpp" name="strategic terrain queue matches independent wide heap across boundaries and saturation [pathfinding]" time="0.013567" status="run" />
+    <testcase classname="src/map/gradient/PathGradientHarness.cpp" name="lazy terrain costs preserve uniform materials and source costs [pathfinding]" time="0.009042" status="run" />
+    <testcase classname="src/map/gradient/PathGradientHarness.cpp" name="prepared terrain profiles deduplicate pairs and alias queue destinations [pathfinding]" time="0" status="run" />
+    <testcase classname="src/map/gradient/PathGradientHarness.cpp" name="eager terrain specialization proves uniform costs across the whole field [pathfinding]" time="0.002565" status="run" />
+  </testsuite><testsuite name="PathGradient"><testcase classname="PathGradient" name="building depth history follows readers rather than preparation [pathfinding]" time="0.00296" status="run" />
+    <testcase classname="PathGradient" name="reader depth agrees for lazy and fully prepared weighted fields [pathfinding]" time="0.002473" status="run" />
+    <testcase classname="PathGradient" name="immutable water snapshots share storage and retain their captured terrain [pathfinding]" time="0" status="run" />
+  </testsuite></testsuites>
