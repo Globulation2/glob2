@@ -12,11 +12,13 @@
 #include <StreamBackend.h>
 #include <Toolkit.h>
 #include <FileManager.h>
+#include <GraphicContext.h>
 #include "ExperimentalFeatures.h"
 #include <type_traits>
 #include <nlohmann/json.hpp>
 #include <stdexcept>
 #include <map>
+#include <array>
 
 TEST_SUITE("BuildingCatalog")
 {
@@ -713,45 +715,140 @@ TEST_CASE("portable bundle verifies image bytes and catalog frame references") {
 }
 }
 
-TEST_SUITE("BuildingLibrary") {
-TEST_CASE("installed families are explicitly selected and corrupt updates never replace a release") {
-    glob2test::HeadlessGlobals fixture;
-    Online::MemoryStorage storage;BuildingLibrary library(storage);
-    const auto stock=globalContainer->buildingsTypes;
-    auto package=packageFixture("11111111-1111-4111-8111-111111111111");
-    auto combined=stock;combined.composePackages({package.dump()});
-    const auto archiveHash=Online::Sha256::hex("release-one");
-    nlohmann::json manifest={{"schemaVersion",1},{"name","Kitchen"},{"namespace",package.at("namespace")},
-        {"archiveHash",archiveHash},{"packageJson",package.dump()},{"packageHash",Online::Sha256::hex(package.dump())},
-        {"catalogHash",combined.fingerprint()},{"baseHash",stock.fingerprint()},{"simVersion",Online::SimVersion::local().key()}};
-    library.install(manifest,{});CHECK(library.entries().size()==1);
-    CHECK(library.entries().at(0).at("simVersion")==manifest.at("simVersion"));
-    CHECK(library.entries().at(0).at("baseHash")==manifest.at("baseHash"));
-    // Exercise the production profile adapter as well as MemoryStorage: atomic
-    // file writes require their parent directory to exist on a fresh install.
-    const auto directory=std::filesystem::path(GAGCore::Toolkit::getFileManager()->getDir(0))/"online/buildings";
-    std::filesystem::remove_all(directory);
-    auto profileStorage=Online::makeUserDirectoryStorage();
-    BuildingLibrary profileLibrary(*profileStorage);
-    REQUIRE(std::filesystem::is_directory(directory));
-    CHECK_NOTHROW(profileLibrary.install(manifest,{}));
-    CHECK(profileLibrary.entries().size()==1);
-    profileLibrary.remove(package.at("namespace").get<std::string>());
-    CHECK(library.compose(stock).catalog.fingerprint()==stock.fingerprint());
-    library.select(package.at("namespace").get<std::string>(),true);
-    CHECK(library.compose(stock).catalog.fingerprint()==combined.fingerprint());
-    auto corrupt=manifest;corrupt["packageHash"]=std::string(64,'0');
-    const auto before=storage.files;CHECK_THROWS(library.install(corrupt,{}));CHECK(storage.files==before);
-    auto other=packageFixture("22222222-2222-4222-8222-222222222222");
-    auto second=stock;second.composePackages({other.dump()});
-    auto next=manifest;next["namespace"]=other.at("namespace");next["packageJson"]=other.dump();next["packageHash"]=Online::Sha256::hex(other.dump());next["catalogHash"]=second.fingerprint();next["archiveHash"]=Online::Sha256::hex("release-two");
-    library.install(next,{});library.select(other.at("namespace").get<std::string>(),true);
-    auto expected=stock;expected.composePackages({other.dump(),package.dump()});
-    CHECK(library.compose(stock).catalog.fingerprint()==expected.fingerprint());
-    storage.files["online/buildings/"+archiveHash+".json"]="{}";
-    CHECK_THROWS(library.compose(stock));
-    library.remove(package.at("namespace").get<std::string>());
-    CHECK(library.compose(stock).catalog.fingerprint()==second.fingerprint());
-    CHECK(storage.persisted>=6);
+TEST_CASE("portable custom artwork loads and draws its exact native frame [display] [artifacts]" * doctest::test_suite("BuildingArtwork"))
+{
+    glob2test::HeadlessGlobals globals({.display=true,.width=128,.height=128,.screenFlags=0});
+	// The pinned ImageAssets lossless fixture has opaque, transparent and half-alpha pixels.
+	const unsigned char webp[] = {
+		82, 73, 70,  70, 58,  0,   0,   0,   87,  69,  66,  80,  86,  80,  56,  76,  45,
+		0,  0,  0,   47, 1,   64,  0,   16,  31,  32,  32,  33,  238, 240, 127, 159, 220,
+		16, 18, 144, 41, 81,  245, 144, 144, 128, 88,  66,  247, 127, 138, 67,  2,   1,
+		66, 58, 229, 98, 156, 66,  169, 23,  23,  104, 136, 232, 127, 4,   0};
+	const std::string image(reinterpret_cast<const char *>(webp), sizeof(webp));
+	const auto hash = Online::Sha256::hex(image);
+	auto package = packageFixture("11111111-1111-4111-8111-111111111111");
+	package["sprites"].push_back(
+		{{"key", "native-render"},
+		 {"frames", nlohmann::json::array({{{"imageHash", hash}, {"width", 2}, {"height", 2}}})}});
+	package["variants"][0]["properties"]["gameSprite"] = "package:native-render";
+	package["variants"][0]["properties"]["miniSprite"] = "package:native-render";
+	auto catalog = globals->buildingsTypes;
+	catalog.composePackages({package.dump()});
+	const auto artwork = artworkFixture(package["sprites"], {{hash, image}});
+	glob2test::HeadlessGame world({.header = true});
+	world.game.buildingsTypes = catalog;
+	world.game.gameHeader.setBuildingCatalogSnapshot(catalog.snapshotJson());
+	world.game.gameHeader.setBuildingArtwork(artwork);
+	world.game.configureBuildingCatalog();
+	const auto id = catalog.findByKey(package.at("variants")[0].at("key").get<std::string>());
+	auto *building = world.game.addBuilding(5, 5, id, 0);
+	REQUIRE(building);
+	world.game.map.setBuilding(5, 5, building->type->width, building->type->height, building->gid);
+	auto *saved = new GAGCore::MemoryStreamBackend;
+	GAGCore::BinaryOutputStream output(saved);
+	world.game.save(&output, false, "Painted kitchen");
+	output.flush();
+	saved->seekFromStart(0);
+	GameGUI restored(false);
+	GAGCore::BinaryInputStream input(new GAGCore::MemoryStreamBackend(*saved));
+	REQUIRE(restored.game.load(&input));
+	CHECK(restored.game.checkSum() == world.game.checkSum());
+	REQUIRE(restored.game.gameHeader.getBuildingArtwork());
+	CHECK(restored.game.gameHeader.getBuildingArtwork()->bytes() == artwork);
+	const auto *type = restored.game.buildingsTypes.get(id);
+	REQUIRE(type->gameSpritePtr);
+	REQUIRE(type->miniSpritePtr);
+	CHECK(type->gameSpritePtr->getFrameCount() == 1);
+	CHECK(type->gameSpritePtr->getW(0) == 2);
+	CHECK(type->gameSpritePtr->getH(0) == 2);
+	auto *gfx = globals->gfx;
+	gfx->beginFrame(GAGCore::GraphicContext::FrameMode::FullRedraw);
+	gfx->setClipRect();
+	gfx->drawFilledRect(0, 0, 128, 128, GAGCore::Color(10, 20, 30));
+	gfx->drawSprite(10, 10, type->gameSpritePtr, type->gameSpriteImage);
+	// Enlarged copy makes the same mounted frame easy to inspect in the evidence.
+	gfx->drawSprite(32, 32, 64, 64, type->miniSpritePtr, type->miniSpriteImage);
+	gfx->nextFrame();
+	auto *frame = gfx->completedFrame();
+	REQUIRE(frame);
+	const auto pixel = [&](int x, int y)
+	{
+		Uint8 r, g, b, a;
+		REQUIRE(SDL_ReadSurfacePixel(frame, x, y, &r, &g, &b, &a));
+		return std::array<Uint8, 3>{r, g, b};
+	};
+	CHECK(pixel(10, 10) == std::array<Uint8, 3>{17, 39, 71});
+	CHECK(pixel(11, 10) == std::array<Uint8, 3>{10, 20, 30});
+	CHECK(pixel(11, 11) == std::array<Uint8, 3>{0, 255, 30});
+	REQUIRE(SDL_SaveBMP(
+		frame,
+		(glob2test::artifactDir() / "building-artwork-native-software.bmp").string().c_str()));
 }
+
+TEST_SUITE("BuildingLibrary")
+{
+	TEST_CASE(
+		"installed families are explicitly selected and corrupt updates never replace a release")
+	{
+		glob2test::HeadlessGlobals fixture;
+		Online::MemoryStorage storage;
+		BuildingLibrary library(storage);
+		const auto stock = globalContainer->buildingsTypes;
+		auto package = packageFixture("11111111-1111-4111-8111-111111111111");
+		auto combined = stock;
+		combined.composePackages({package.dump()});
+		const auto archiveHash = Online::Sha256::hex("release-one");
+		nlohmann::json manifest = {{"schemaVersion", 1},
+								   {"name", "Kitchen"},
+								   {"namespace", package.at("namespace")},
+								   {"archiveHash", archiveHash},
+								   {"packageJson", package.dump()},
+								   {"packageHash", Online::Sha256::hex(package.dump())},
+								   {"catalogHash", combined.fingerprint()},
+								   {"baseHash", stock.fingerprint()},
+								   {"simVersion", Online::SimVersion::local().key()}};
+		library.install(manifest, {});
+		CHECK(library.entries().size() == 1);
+		CHECK(library.entries().at(0).at("simVersion") == manifest.at("simVersion"));
+		CHECK(library.entries().at(0).at("baseHash") == manifest.at("baseHash"));
+		// Exercise the production profile adapter as well as MemoryStorage: atomic
+		// file writes require their parent directory to exist on a fresh install.
+		const auto directory =
+			std::filesystem::path(GAGCore::Toolkit::getFileManager()->getDir(0)) /
+			"online/buildings";
+		std::filesystem::remove_all(directory);
+		auto profileStorage = Online::makeUserDirectoryStorage();
+		BuildingLibrary profileLibrary(*profileStorage);
+		REQUIRE(std::filesystem::is_directory(directory));
+		CHECK_NOTHROW(profileLibrary.install(manifest, {}));
+		CHECK(profileLibrary.entries().size() == 1);
+		profileLibrary.remove(package.at("namespace").get<std::string>());
+		CHECK(library.compose(stock).catalog.fingerprint() == stock.fingerprint());
+		library.select(package.at("namespace").get<std::string>(), true);
+		CHECK(library.compose(stock).catalog.fingerprint() == combined.fingerprint());
+		auto corrupt = manifest;
+		corrupt["packageHash"] = std::string(64, '0');
+		const auto before = storage.files;
+		CHECK_THROWS(library.install(corrupt, {}));
+		CHECK(storage.files == before);
+		auto other = packageFixture("22222222-2222-4222-8222-222222222222");
+		auto second = stock;
+		second.composePackages({other.dump()});
+		auto next = manifest;
+		next["namespace"] = other.at("namespace");
+		next["packageJson"] = other.dump();
+		next["packageHash"] = Online::Sha256::hex(other.dump());
+		next["catalogHash"] = second.fingerprint();
+		next["archiveHash"] = Online::Sha256::hex("release-two");
+		library.install(next, {});
+		library.select(other.at("namespace").get<std::string>(), true);
+		auto expected = stock;
+		expected.composePackages({other.dump(), package.dump()});
+		CHECK(library.compose(stock).catalog.fingerprint() == expected.fingerprint());
+		storage.files["online/buildings/" + archiveHash + ".json"] = "{}";
+		CHECK_THROWS(library.compose(stock));
+		library.remove(package.at("namespace").get<std::string>());
+		CHECK(library.compose(stock).catalog.fingerprint() == second.fingerprint());
+		CHECK(storage.persisted >= 6);
+	}
 }
