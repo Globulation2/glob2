@@ -335,7 +335,7 @@ TEST_CASE("building pipeline admits several jobs per tick, publishes in reservat
         pipeline.reset();
 
         // A slow worker never moves its deadline: the owner joins it exactly at the due tick.
-        if (workers) {
+        if (workers && GAGCore::ThreadSupport::available) {
             pipeline.configure(workers, delay, runTestBuildingJob);
             published.clear();
             pipeline.publish=[&](auto& job) { published.push_back(job.payload.value); return true; };
