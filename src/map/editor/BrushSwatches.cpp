@@ -256,12 +256,8 @@ GAGCore::DrawableSurface *BrushSwatches::terrainScene(TerrainType type, TerrainT
 			recipe.y = y;
 			recipe.width = recipe.height = 6;
 			recipe.seed = variation;
-			for (int sy = 0; sy < 4; ++sy)
-				for (int sx = 0; sx < 4; ++sx)
-				{
-					const int lx = (2 * x + sx - 1 + 12) % 12, ly = (2 * y + sy - 1 + 12) % 12;
-					recipe.samples[sy * 4 + sx] = cellMaterial(lx / 2, ly / 2);
-				}
+			recipe.corners = {cellMaterial(x, y), cellMaterial(x + 1, y), cellMaterial(x, y + 1),
+							  cellMaterial(x + 1, y + 1)};
 			compositor.compose(recipe, source->getSDLSurface(), x * 32, y * 32, 1);
 		}
 	source->markPixelsChanged();
@@ -269,14 +265,28 @@ GAGCore::DrawableSurface *BrushSwatches::terrainScene(TerrainType type, TerrainT
 	for (int y = 0; y < 6; ++y)
 		for (int x = 0; x < 6; ++x)
 		{
-			if (cellMaterial(x, y) != material)
-				continue;
-			const bool edge =
-				cellMaterial(x - 1, y) != material || cellMaterial(x + 1, y) != material ||
-				cellMaterial(x, y - 1) != material || cellMaterial(x, y + 1) != material;
-			if (auto *sprite = compositor.decorSprite(material))
+			const std::array<TerrainVisual::MaterialId, 4> corners = {
+				cellMaterial(x, y), cellMaterial(x + 1, y), cellMaterial(x, y + 1),
+				cellMaterial(x + 1, y + 1)};
+			TerrainVisual::MaterialId decorated = 0;
+			unsigned count = 0;
+			for (auto id : corners)
 			{
-				const int frame = catalog.decorFrame(material, x, y, edge, variation);
+				if (catalog.materials[id].decor.full.empty())
+					continue;
+				const auto same = unsigned(std::count(corners.begin(), corners.end(), id));
+				if (same > count)
+				{
+					decorated = id;
+					count = same;
+				}
+			}
+			if (count < 2)
+				continue;
+			const bool edge = count < 4;
+			if (auto *sprite = compositor.decorSprite(decorated))
+			{
+				const int frame = catalog.decorFrame(decorated, x, y, edge, variation);
 				if (frame >= 0)
 					if (auto *image = sprite->nativeFrame(frame))
 						drawFrame(*source, x * 32 + 16 - image->getW() / 2,

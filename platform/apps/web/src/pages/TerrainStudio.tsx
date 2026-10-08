@@ -6,7 +6,7 @@ import type {
   TerrainStudioProgress,
   TerrainStudioTurn,
 } from '@glob2/protocol';
-import { request } from '../api.ts';
+import { ApiError, request } from '../api.ts';
 import { Link, useRouter } from '../router.tsx';
 import { useSession } from '../state.tsx';
 import { SetWorkspace } from '../sets/Workspace.tsx';
@@ -35,6 +35,14 @@ export function TerrainStudio({ id }: { id?: string }) {
     [dirty, setDirty] = useState(false),
     [selectedRefs, setSelectedRefs] = useState<string[]>([]);
   const [retrying, setRetrying] = useState(false);
+  const [inspectorRevision, setInspectorRevision] = useState<number>();
+  const dirtyRef = useRef(false),
+    messages = useRef<HTMLDivElement>(null),
+    followMessages = useRef(true);
+  const manualDirty = useCallback((value: boolean) => {
+    dirtyRef.current = value;
+    setDirty(value);
+  }, []);
   const submission = useRef<TerrainStudioTurn | null>(null),
     creation = useRef(crypto.randomUUID()),
     serial = useRef(0);
@@ -67,6 +75,7 @@ export function TerrainStudio({ id }: { id?: string }) {
       if (signal?.aborted || ticket !== serial.current) return;
       setThread(t);
       setDraft(d);
+      if (!dirtyRef.current) setInspectorRevision(d.revision);
       setProgress(p);
       const key = account && id ? `terrain-studio-turn:${account.id}:${id}` : '';
       if (submission.current && t.requests.some((r) => r.id === submission.current?.id)) {
@@ -111,9 +120,11 @@ export function TerrainStudio({ id }: { id?: string }) {
     try {
       const value = sessionStorage.getItem(key);
       if (value) {
-        submission.current = JSON.parse(value) as TerrainStudioTurn;
+        const saved = JSON.parse(value) as TerrainStudioTurn;
+        submission.current = saved;
         queueMicrotask(() => {
-          setText(submission.current?.text ?? '');
+          setText(saved.text);
+          setSelectedRefs(saved.references);
           setRetrying(true);
         });
       }
@@ -121,6 +132,10 @@ export function TerrainStudio({ id }: { id?: string }) {
       sessionStorage.removeItem(key);
     }
   }, [account, id]);
+  useEffect(() => {
+    if (followMessages.current && messages.current)
+      messages.current.scrollTop = messages.current.scrollHeight;
+  }, [thread?.messages]);
   async function action(fn: () => Promise<void>) {
     setBusy(true);
     setError('');
@@ -155,7 +170,19 @@ export function TerrainStudio({ id }: { id?: string }) {
     submission.current = value;
     setRetrying(true);
     sessionStorage.setItem(`terrain-studio-turn:${account.id}:${id}`, JSON.stringify(value));
-    await request('POST', `${ROOT}/threads/${id}/turns`, { body: value });
+    followMessages.current = true;
+    try {
+      await request('POST', `${ROOT}/threads/${id}/turns`, { body: value });
+    } catch (e) {
+      // A definite rejection did not accept this turn. Keep its prompt editable;
+      // transport/server failures retain the UUID to safely retry an unknown outcome.
+      if (e instanceof ApiError && e.status >= 400 && e.status < 500 && e.status !== 408) {
+        submission.current = null;
+        setRetrying(false);
+        sessionStorage.removeItem(`terrain-studio-turn:${account.id}:${id}`);
+      }
+      throw e;
+    }
     submission.current = null;
     setRetrying(false);
     sessionStorage.removeItem(`terrain-studio-turn:${account.id}:${id}`);
@@ -255,7 +282,16 @@ export function TerrainStudio({ id }: { id?: string }) {
         <div className="ts-layout">
           <aside className="ts-chat">
             <h2>Design conversation</h2>
-            <div className="ts-messages" aria-live="polite">
+            <div
+              className="ts-messages"
+              aria-live="polite"
+              ref={messages}
+              onScroll={() => {
+                const box = messages.current;
+                if (box)
+                  followMessages.current = box.scrollHeight - box.scrollTop - box.clientHeight < 48;
+              }}
+            >
               {thread?.messages.map((m) => (
                 <article key={m.id} className={'ts-message ' + m.role}>
                   <strong>{m.role === 'user' ? 'You' : 'Terrain designer'}</strong>
@@ -285,7 +321,7 @@ export function TerrainStudio({ id }: { id?: string }) {
                 <input
                   type="file"
                   accept="image/png,image/jpeg,image/webp"
-                  disabled={busy || !wallet?.enabled}
+                  disabled={busy || retrying || !wallet?.enabled}
                   onChange={(e) => {
                     const file = e.target.files?.[0];
                     if (file)
@@ -295,7 +331,7 @@ export function TerrainStudio({ id }: { id?: string }) {
                           `${ROOT}/threads/${id}/references`,
                           { body: file },
                         );
-                        setSelectedRefs((v) => [...v, ref.hash].slice(-4));
+                        setSelectedRefs((v) => [...new Set([...v, ref.hash])].slice(-4));
                       });
                     e.target.value = '';
                   }}
@@ -312,7 +348,9 @@ export function TerrainStudio({ id }: { id?: string }) {
                     <input
                       type="checkbox"
                       checked={selectedRefs.includes(r.hash)}
-                      disabled={!selectedRefs.includes(r.hash) && selectedRefs.length >= 4}
+                      disabled={
+                        retrying || (!selectedRefs.includes(r.hash) && selectedRefs.length >= 4)
+                      }
                       onChange={(e) =>
                         setSelectedRefs((v) =>
                           e.target.checked ? [...v, r.hash] : v.filter((h) => h !== r.hash),
@@ -345,7 +383,6 @@ export function TerrainStudio({ id }: { id?: string }) {
                     submission.current = null;
                     setRetrying(false);
                     sessionStorage.removeItem(`terrain-studio-turn:${account.id}:${id}`);
-                    setText('');
                   }}
                 >
                   Discard local retry
@@ -433,15 +470,18 @@ export function TerrainStudio({ id }: { id?: string }) {
                           <div key={k}>
                             <dt>{propertyLabel(k)}</dt>
                             <dd>
-                              {typeof v === 'number' && k.endsWith('Q8')
-                                ? `${v / 256}×`
-                                : typeof v === 'number' && ['growthRate', 'spreadRate'].includes(k)
-                                  ? `${(v / (k === 'growthRate' ? 65536 : 196608)).toFixed(2)}× wheat`
-                                  : typeof v === 'boolean'
-                                    ? v
-                                      ? 'Yes'
-                                      : 'No'
-                                    : String(v)}
+                              {typeof v === 'number' && k.endsWith('HealthQ8')
+                                ? `${v / 256} HP per exposed tick`
+                                : typeof v === 'number' && k.endsWith('Q8')
+                                  ? `${v / 256}×`
+                                  : typeof v === 'number' &&
+                                      ['growthRate', 'spreadRate'].includes(k)
+                                    ? `${(v / (k === 'growthRate' ? 65536 : 196608)).toFixed(2)}× wheat`
+                                    : typeof v === 'boolean'
+                                      ? v
+                                        ? 'Yes'
+                                        : 'No'
+                                      : String(v)}
                             </dd>
                           </div>
                         ))}
@@ -471,12 +511,33 @@ export function TerrainStudio({ id }: { id?: string }) {
                 </div>
                 <details className="ts-inspector">
                   <summary>Manually edit entries, artwork, and release settings</summary>
+                  {dirty && inspectorRevision !== draft.revision && (
+                    <div role="alert">
+                      <p>
+                        Another session saved revision {draft.revision}. Your unsaved edits are
+                        preserved, but saving them may conflict. Copy any edits you want to keep
+                        before loading the saved revision.
+                      </p>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          manualDirty(false);
+                          setInspectorRevision(draft.revision);
+                        }}
+                      >
+                        Discard manual edits and load saved revision
+                      </button>
+                    </div>
+                  )}
                   <fieldset disabled={!!pending}>
                     <SetWorkspace
                       id={draft.id}
-                      key={draft.revision}
-                      onDirtyChange={setDirty}
-                      onSaved={() => void refresh()}
+                      key={inspectorRevision}
+                      onDirtyChange={manualDirty}
+                      onSaved={() => {
+                        manualDirty(false);
+                        void refresh();
+                      }}
                     />
                   </fieldset>
                 </details>
@@ -554,6 +615,8 @@ function CandidatePreview({ url }: { url: string }) {
 function propertyLabel(key: string) {
   const labels: Record<string, string> = {
     groundSpeedQ8: 'Ground movement',
+    groundHealthQ8: 'Ground health change',
+    airHealthQ8: 'Air health change',
     swimSpeedQ8: 'Swimming movement',
     growthQ8: 'Resource growth',
     growthRate: 'Growth rate',

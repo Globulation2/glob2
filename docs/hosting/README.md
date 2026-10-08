@@ -1568,8 +1568,10 @@ terrainStudio:
 
 Use a model supporting the configured image options described in the
 [OpenAI image API](https://developers.openai.com/api/reference/resources/images/methods/edit).
-Set `TERRAIN_OPENAI_API_KEY` only on the authoring worker, then start the
-`ai-terrain` Compose profile. The `ai-terrain-worker` image shares the matching
+Set `TERRAIN_OPENAI_API_KEY` only on the authoring worker; `deploy/.env.example`
+lists its credentials and optional pinned image. Start the worker with
+`docker compose --profile ai-terrain up -d --build ai-terrain-worker`.
+The `ai-terrain-worker` image shares the matching
 native engine, includes the artwork converter and pins Pillow through
 `tools/asset-requirements.txt`. Local workers additionally require `ENGINE_BINARY`,
 `GLOB2_SOURCE_DIR`, and `TERRAIN_PYTHON`; use the pinned asset encoder interpreter.
@@ -1588,9 +1590,16 @@ stages are reused after restarts. Ambiguous provider outcomes retain the reserva
 and require operator reconciliation; they never dispatch a duplicate automatically.
 After confirming a request cannot be recovered, an administrator can use
 `POST /api/v1/admin/terrain-studio/requests/<id>/fail` to return its reservation.
-Cancellation waits for an in-flight provider outcome. Private references, source
-artwork, reports, and generated candidates are included in account export and
-removed by account deletion; retain financial ledger history under existing policy.
+Cancellation waits for an in-flight provider outcome. Ordinary set or draft
+deletion rejects active Terrain Studio work so its reservation and provider journal
+remain available; finish, cancel, or reconcile the request before deleting.
+Account export includes
+project and request history, artifact metadata and hashes, reports, and candidate
+package documents. It does not bundle uploaded references or source-image bytes;
+download those through the project's private artifact links before deletion.
+Account deletion removes private project records and their blob references;
+unreferenced bytes are subsequently collected under the normal blob-GC grace
+period. Financial ledger history follows existing retention policy.
 
 Serve `/api/v1/terrain-studio/threads/<id>/events` as an unbuffered authenticated
 SSE stream, as for Map Studio. Keep the matching browser game runtime deployed:

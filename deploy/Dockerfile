@@ -120,12 +120,11 @@ ARG GLOB2_WEBSITE_URL=
 ARG GLOB2_DOWNLOAD_URL=
 COPY platform/ ./
 COPY examples/javascript /app/examples/javascript
-COPY data/resources/registry.json /app/data/resources/registry.json
 # Colony Studio imports the game's material shader raw (materialShader.ts).
 COPY libgag/shaders /app/libgag/shaders
 # The navigation shares the game's Tabler icon sources (src/icons.tsx).
 COPY datasrc/icons/tabler /app/datasrc/icons/tabler
-# Colony Studio's set editor imports the shared resource registry (sets/model.ts).
+# Set authoring and Terrain Studio import the shared resource registry.
 COPY data/resources/registry.json /app/data/resources/registry.json
 COPY --from=music-web-build /source/platform/apps/web/public/music/decoder.js apps/web/public/music/decoder.js
 COPY --from=music-web-build /source/platform/apps/web/public/music/decoder.wasm apps/web/public/music/decoder.wasm

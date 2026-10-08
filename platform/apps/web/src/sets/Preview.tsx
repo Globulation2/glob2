@@ -74,7 +74,15 @@ export function SetPreview({ pack, gallery = false }: { pack: SetPackage; galler
         <>
           <label>
             Animation phase
-            <select value={phase} onChange={(e) => setPhase(Number(e.target.value))}>
+            <select
+              value={phase}
+              onChange={(e) => {
+                setImage('');
+                if (run) setStatus('Loading browser renderer…');
+                setRun((previous) => previous && { ...previous, id: crypto.randomUUID() });
+                setPhase(Number(e.target.value));
+              }}
+            >
               {[0, 1, 2, 3].map((v) => (
                 <option key={v} value={v}>
                   {v + 1}
@@ -84,7 +92,15 @@ export function SetPreview({ pack, gallery = false }: { pack: SetPackage; galler
           </label>
           <label>
             Variation
-            <select value={variant} onChange={(e) => setVariant(Number(e.target.value))}>
+            <select
+              value={variant}
+              onChange={(e) => {
+                setImage('');
+                if (run) setStatus('Loading browser renderer…');
+                setRun((previous) => previous && { ...previous, id: crypto.randomUUID() });
+                setVariant(Number(e.target.value));
+              }}
+            >
               {[0, 1, 2, 3].map((v) => (
                 <option key={v} value={v}>
                   {v + 1}

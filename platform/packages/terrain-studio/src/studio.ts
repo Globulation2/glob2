@@ -431,6 +431,35 @@ export class TerrainStudio {
       );
     });
   }
+  /** Ordinary set deletion must preserve active reservations and provider journals. */
+  async removeSet(account: string, set: string, draft?: string) {
+    await this.db.transaction().execute(async (db) => {
+      // Submission, reservation and delivery all take this wallet first. Keeping
+      // it through deletion closes the race with a new turn on this draft.
+      await this.lockWallet(db, account);
+      const parent =
+        await sql`SELECT id FROM asset_sets WHERE id=${set} AND owner_account_id=${account} FOR UPDATE`.execute(
+          db,
+        );
+      if (!parent.rows.length) throw new HiveError('not_found', 'Set not found.');
+      const drafts =
+        await sql`SELECT id FROM set_drafts WHERE set_id=${set} ${draft ? sql`AND id=${draft}` : sql``} ORDER BY id FOR UPDATE`.execute(
+          db,
+        );
+      if (draft && !drafts.rows.length) throw new HiveError('not_found', 'Draft not found.');
+      const active =
+        await sql`SELECT r.id FROM terrain_studio_requests r JOIN terrain_studio_threads t ON t.id=r.thread_id JOIN set_drafts d ON d.id=t.draft_id WHERE d.set_id=${set} ${draft ? sql`AND d.id=${draft}` : sql``} AND r.status NOT IN ('ready','failed') LIMIT 1`.execute(
+          db,
+        );
+      if (active.rows.length)
+        throw new HiveError(
+          'conflict',
+          'Finish or cancel active Terrain Studio work before deleting this draft or set.',
+        );
+      if (draft) await sql`DELETE FROM set_drafts WHERE id=${draft}`.execute(db);
+      else await sql`DELETE FROM asset_sets WHERE id=${set}`.execute(db);
+    });
+  }
   async claim() {
     return this.db.transaction().execute(async (db) => {
       const row = (

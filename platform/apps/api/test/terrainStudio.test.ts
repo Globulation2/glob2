@@ -277,3 +277,53 @@ it('publishes a delivered generation through ordinary set publishing with its re
     .executeTakeFirstOrThrow();
   expect(release).toEqual({ hash, preview_hash: previewHash });
 });
+it('preserves reservations and journals when ordinary deletion targets active studio work', async () => {
+  const pack = newPackage('TerrainOwner'),
+    thread = randomUUID(),
+    id = randomUUID();
+  await studio.create(owner.accountId, 'Deletion protection', thread, pack);
+  await studio.submit(
+    owner.accountId,
+    thread,
+    {
+      id,
+      text: 'Create terrain',
+      expectedRevision: 0,
+      references: [],
+    },
+    { enabled: true, salesEnabled: false, providerCallsPerDay: 100 },
+  );
+  const row = await studio.claim();
+  if (!row || row.id !== id) throw Error('Missing claimed request');
+  await studio.reserveBuild(row);
+  await harness.database.db
+    .insertInto('terrain_studio_attempts')
+    .values({
+      id: randomUUID(),
+      request_id: id,
+      stage: 'image',
+      model: 'test',
+      status: 'uncertain',
+      input: {},
+    })
+    .execute();
+  await studio.checkpoint(row, 'uncertain', {});
+  for (const path of ['/api/v1/set-drafts/' + pack.versionId, '/api/v1/sets/' + pack.setId]) {
+    expect((await call('DELETE', path, other)).status).toBe(404);
+    expect((await call('DELETE', path, owner)).status).toBe(409);
+  }
+  expect((await studio.credits.balance(owner.accountId)).reserved).toBe(1);
+  expect(await studio.request(id)).toMatchObject({ status: 'uncertain' });
+  expect(
+    await harness.database.db
+      .selectFrom('terrain_studio_attempts')
+      .select('status')
+      .where('request_id', '=', id)
+      .executeTakeFirst(),
+  ).toEqual({ status: 'uncertain' });
+  await studio.finish(row, undefined, 'Reconciled failure');
+  expect((await studio.credits.balance(owner.accountId)).reserved).toBe(0);
+  expect((await call('DELETE', '/api/v1/set-drafts/' + pack.versionId, owner)).status).toBe(204);
+  expect(await studio.request(id)).toBeUndefined();
+  expect((await call('DELETE', '/api/v1/sets/' + pack.setId, owner)).status).toBe(204);
+});

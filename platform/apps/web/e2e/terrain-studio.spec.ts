@@ -66,10 +66,21 @@ test('terrain creation workspace fits desktop and phone and submits one revision
     assets: { schemaVersion: 1, sheets: [], terrains: {}, credits: [] },
   };
   const writes: unknown[] = [];
+  let draftRevision = 1;
+  const referenceHash = 'a'.repeat(64);
+  let hasReference = false;
   await page.route('**/api/v1/terrain-studio/**', async (route) => {
     const path = new URL(route.request().url()).pathname;
     if (route.request().method() === 'POST') {
+      if (path.endsWith('/references')) {
+        hasReference = true;
+        return route.fulfill({ json: { hash: referenceHash } });
+      }
       writes.push(route.request().postDataJSON());
+      if (writes.length === 1)
+        return route.fulfill({ status: 409, json: { message: 'Draft revision changed.' } });
+      if (writes.length === 2)
+        return route.fulfill({ status: 503, json: { message: 'Connection interrupted.' } });
       await route.fulfill({ json: { id: 'next' } });
       return;
     }
@@ -109,7 +120,15 @@ test('terrain creation workspace fits desktop and phone and submits one revision
         title: 'Fungal swamp',
         draftId,
         cursor: '0',
-        references: [],
+        references: hasReference
+          ? [
+              {
+                hash: referenceHash,
+                label: 'Style reference',
+                url: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+aD1sAAAAASUVORK5CYII=',
+              },
+            ]
+          : [],
         revisions: [],
         messages: [
           {
@@ -131,8 +150,8 @@ test('terrain creation workspace fits desktop and phone and submits one revision
     route.fulfill({
       json: {
         id: draftId,
-        revision: 1,
-        package: pack,
+        revision: draftRevision,
+        package: { ...pack, title: draftRevision === 1 ? pack.title : 'Saved elsewhere' },
         publishedVersionId: null,
         validation: { status: 'valid' },
       },
@@ -152,11 +171,32 @@ test('terrain creation workspace fits desktop and phone and submits one revision
     .fill('Make only the marsh faster.');
   await page.getByRole('button', { name: 'Send', exact: true }).click();
   expect(writes).toHaveLength(1);
+  await expect(page.getByRole('alert')).toContainText('Draft revision changed.');
+  const prompt = page.getByLabel('Describe your creation or ask a question');
+  await expect(prompt).toBeEnabled();
+  await expect(prompt).toHaveValue('Make only the marsh faster.');
+  // Uploading identical artwork must not create duplicate IDs in the turn.
+  const reference = {
+    name: 'reference.png',
+    mimeType: 'image/png',
+    buffer: Buffer.from('fixture'),
+  };
+  await page.getByLabel('Reference images', { exact: true }).setInputFiles(reference);
+  await expect(page.getByLabel('Use reference')).toBeChecked();
+  await page.getByLabel('Reference images', { exact: true }).setInputFiles(reference);
+  await expect(page.getByRole('button', { name: 'Send', exact: true })).toBeEnabled();
+  await page.getByRole('button', { name: 'Send', exact: true }).click();
+  await expect(page.getByRole('button', { name: 'Retry saved request' })).toBeEnabled();
+  await expect(prompt).toBeDisabled();
+  await page.getByRole('button', { name: 'Retry saved request' }).click();
+  expect(writes).toHaveLength(3);
+  expect(writes[2]).toEqual(writes[1]);
   expect(writes[0]).toMatchObject({
     text: 'Make only the marsh faster.',
     expectedRevision: 1,
     references: [],
   });
+  expect(writes[2]).toMatchObject({ references: [referenceHash] });
   const directory = resolve(
     process.env['SCREENSHOT_DIR'] ?? '../../../artifacts/terrain-studio/screenshots',
   );
@@ -177,4 +217,17 @@ test('terrain creation workspace fits desktop and phone and submits one revision
     });
   }
   await page.screenshot({ path: resolve(directory, `${info.project.name}.png`), fullPage: true });
+  // A background refresh must preserve unsaved inspector values from this tab.
+  await page
+    .getByText('Manually edit entries, artwork, and release settings', { exact: true })
+    .click();
+  const titleInput = page.getByLabel('Title', { exact: true });
+  await titleInput.fill('My unsaved terrain title');
+  draftRevision = 2;
+  await expect(page.getByRole('alert')).toContainText('Another session saved revision 2', {
+    timeout: 15000,
+  });
+  await expect(titleInput).toHaveValue('My unsaved terrain title');
+  await page.getByRole('button', { name: 'Discard manual edits and load saved revision' }).click();
+  await expect(titleInput).toHaveValue('Saved elsewhere');
 });

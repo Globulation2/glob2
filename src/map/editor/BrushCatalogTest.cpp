@@ -417,6 +417,9 @@ TEST_SUITE("BrushCatalog")
 					wheatEntry->swatch.resource, wheatEntry->swatch.terrain, stock, phase, phase);
 				REQUIRE(stage);
 				CHECK(fullyOpaque(*stage));
+				auto *ground = swatches.terrain(wheatEntry->swatch.terrain, 64);
+				CHECK(std::memcmp(stage->getSDLSurface()->pixels, ground->getSDLSurface()->pixels,
+								  std::size_t(ground->getSDLSurface()->pitch) * 64) != 0);
 			}
 		}
 		CHECK(editor.game.map.checkSum(true) == checksum);

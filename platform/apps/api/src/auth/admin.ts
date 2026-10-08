@@ -199,6 +199,12 @@ export class AdminService {
         .where('account_id', '=', id)
         .forUpdate()
         .execute();
+      await tx
+        .selectFrom('terrain_wallets')
+        .select('account_id')
+        .where('account_id', '=', id)
+        .forUpdate()
+        .execute();
       // Skin publication and draft saves lock this account before committing.
       const current = await tx
         .selectFrom('accounts')
