@@ -5604,6 +5604,30 @@ Burdin mea
 Silizea
 [Cotton]
 Kotoia
+[Jungle trees]
+
+[Pine trees]
+
+[Dead trees]
+
+[Ruins]
+
+[Camp-site]
+
+[Ancient debris]
+
+[Scrub]
+
+[Tall grass]
+
+[Maize]
+
+[Potatoes]
+
+[Rice]
+
+[Fish]
+
 [Reroll terrain look]
 Ausaz aukeratu berriro lurraren itxura
 [boulders]

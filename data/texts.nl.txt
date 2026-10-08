@@ -5604,6 +5604,30 @@ IJzererts
 Kwartszand
 [Cotton]
 Katoen
+[Jungle trees]
+Junglebomen
+[Pine trees]
+Dennen
+[Dead trees]
+Dode bomen
+[Ruins]
+Ruïnes
+[Camp-site]
+Kampeerplaats
+[Ancient debris]
+Oud puin
+[Scrub]
+Struikgewas
+[Tall grass]
+Hoog gras
+[Maize]
+Maïs
+[Potatoes]
+Aardappelen
+[Rice]
+Rijst
+[Fish]
+Vissen
 [Reroll terrain look]
 Terreinuiterlijk opnieuw loten
 [boulders]

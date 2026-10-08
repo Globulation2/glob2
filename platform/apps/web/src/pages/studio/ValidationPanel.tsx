@@ -1,3 +1,4 @@
+import { Icon } from '../../icons.tsx';
 import type { Check } from './types.ts';
 export function ValidationPanel({
   checks,
@@ -18,7 +19,16 @@ export function ValidationPanel({
     >
       <summary>
         <span className={`ms-check-badge${checking ? ' ms-check-running' : ''}`} aria-hidden="true">
-          {checking ? '◌' : checks.every((c) => c.status === 'passed') ? '✓' : '!'}
+          <Icon
+            name={
+              checking
+                ? 'loader-2'
+                : checks.every((c) => c.status === 'passed')
+                  ? 'check'
+                  : 'alert-triangle'
+            }
+            size={18}
+          />
         </span>
         <strong>
           {checking
@@ -43,13 +53,16 @@ export function ValidationPanel({
           <li key={c.id} data-state={c.status}>
             <button aria-pressed={selected === c.id} onClick={() => select(c)}>
               <span aria-hidden="true">
-                {c.status === 'passed'
-                  ? '✓'
-                  : c.status === 'failed'
-                    ? '!'
-                    : c.status === 'running'
-                      ? '◌'
-                      : '–'}
+                <Icon
+                  name={
+                    c.status === 'passed'
+                      ? 'check'
+                      : c.status === 'failed'
+                        ? 'alert-triangle'
+                        : 'loader-2'
+                  }
+                  size={18}
+                />
               </span>
               <strong>{c.label}</strong>
               <span>{c.status.replace('-', ' ')}</span>

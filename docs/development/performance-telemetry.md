@@ -654,3 +654,47 @@ that from residual activity on reserved CPUs, including deliberately idle SMT
 siblings. Whole-host busy counts alone do not establish contamination of the
 reserved cores. Continue recording CPU, wall time, RSS and frequency evidence and
 retain anomalous runs for separate investigation.
+
+### Resource growth pipeline measurements
+
+`test/benchmark_resource_growth.py` accepts the parallel-compute scenario manifest,
+with `--baseline`, `--delays 1 3 8`, `--threads 1 2 4 8`, and `--repeats 10`.
+Use `--verify` separately for exact per-tick candidate comparisons at each delay.
+Headless checksum telemetry also emits `world.checksums`, including every resource
+and completed pending proposal; this heavy verification joins private growth work
+and is deliberately excluded from timings.
+Timing runs include `--benchmark-warmup 0` to expose the existing tick histogram;
+whole-process wall/CPU/RSS and engine run time remain distinct intervals. An
+unmeasured process warm-up precedes ten rotated paired rounds. Summary ratios and
+bootstrap intervals are per scenario; different old/new trajectories are not
+behavioral equivalence evidence. The zero-worker control (`--compute-threads 1`)
+also changes AI and gradient concurrency, so it does not isolate growth placement.
+
+`ResourceGrowthBenchmark` (opt-in benchmark tag) compares legacy immediate growth,
+snapshot compute plus immediate mutation, delayed execution with zero workers,
+and delayed shared execution. Fixtures reset outside the timer; ecology is warmed and snapshot
+capture stays inside the timer. `GLOB2_GROWTH_BENCHMARK_OUTPUT` selects its JSON
+output, and `GLOB2_GROWTH_ECOLOGY_OUTPUT` selects the twenty-seed ecology report.
+Ecology runs both reserve-preserving and deposit-depleting harvesting. Its
+single-material, one-unit-seed fixture uses stock conservation to distinguish
+replenishment, new deposits and removals from the actual harvest.
+The legacy component control executes the old algorithm in the candidate binary;
+use the retained baseline executable for the old engine's end-to-end cost.
+
+`ResourceGrowthFixtures` creates controlled full-engine starting saves from the
+baseline-generated `idle128`, `idle256`, `idle512` and `ai256` initial saves.
+Set `GLOB2_GROWTH_FIXTURE_INPUT` to their parent directory and
+`GLOB2_GROWTH_FIXTURE_OUTPUT` to an empty output directory. It retains the teams
+and buildings, installs uniform crops, and produces sparse, dense, saturated,
+low-stock active-AI, blocked-spread, multi-material and disabled-growth cases.
+The generator uses pre-pipeline APIs: when comparing different save versions,
+compile this test-only source in the baseline test registry so both executables
+can load its output. Do not modify the preserved baseline game executable.
+
+Headless JSON `growth_*` metrics report submitted/published batches, samples,
+proposals, accepted/rejected operations, capacity clamps, added stocks/tiles,
+pending/proposal-buffer high-water marks and computation/queue/wait/publication
+nanoseconds. Worker elapsed time is not process CPU. Snapshot capture/copy and
+memory costs appear in the shared snapshot metrics. Wait time combines deadline
+joins, zero-worker fallback computation and explicit drains; final draining completes computation without applying
+future mutations. Report end-to-end regressions even when owner computation falls.

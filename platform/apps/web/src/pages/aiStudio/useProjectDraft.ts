@@ -1,3 +1,4 @@
+import { studioLocal } from '../../components/studio/storage.ts';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import type { AiStudioDetail } from '@glob2/protocol';
 import { ApiError, request } from '../../api.ts';
@@ -27,9 +28,9 @@ export function useProjectDraft(url: string, recoveryKey: string, onError: (text
   const remember = useCallback(() => {
     if (!recoveryKey || !known.current) return;
     try {
-      if (draft.current === known.current.current.source) localStorage.removeItem(recoveryKey);
+      if (draft.current === known.current.current.source) studioLocal.removeItem(recoveryKey);
       else
-        localStorage.setItem(
+        studioLocal.setItem(
           recoveryKey,
           JSON.stringify({
             revision: known.current.revision,
@@ -75,7 +76,7 @@ export function useProjectDraft(url: string, recoveryKey: string, onError: (text
     if (!recovered.current && recoveryKey) {
       recovered.current = true;
       try {
-        const local = JSON.parse(localStorage.getItem(recoveryKey) ?? 'null') as {
+        const local = JSON.parse(studioLocal.getItem(recoveryKey) ?? 'null') as {
           revision: number;
           source: string;
         } | null;
@@ -106,6 +107,10 @@ export function useProjectDraft(url: string, recoveryKey: string, onError: (text
     const p = known.current;
     if (!p || draft.current === p.current.source) return;
     const text = draft.current;
+    if (!text.trim()) {
+      setSaved('Draft is temporarily empty. Add source to save.');
+      return;
+    }
     ++generation.current;
     setSaved('Saving…');
     const task = (async () => {
@@ -138,7 +143,7 @@ export function useProjectDraft(url: string, recoveryKey: string, onError: (text
     ++generation.current;
     known.current = undefined;
     try {
-      localStorage.removeItem(recoveryKey);
+      studioLocal.removeItem(recoveryKey);
     } catch {
       /* Optional recovery. */
     }
@@ -153,10 +158,20 @@ export function useProjectDraft(url: string, recoveryKey: string, onError: (text
         event.returnValue = '';
       }
     };
+    const route = (event: Event) => {
+      if (
+        known.current &&
+        draft.current !== known.current.current.source &&
+        !window.confirm('Leave with unsaved edits? A recovery copy stays on this device.')
+      )
+        event.preventDefault();
+    };
+    window.addEventListener('glob2-before-navigate', route);
     window.addEventListener('beforeunload', before);
     return () => {
       invalidate();
       window.removeEventListener('beforeunload', before);
+      window.removeEventListener('glob2-before-navigate', route);
     };
   }, [invalidate]);
 

@@ -179,7 +179,7 @@ GAGCore::CooperativeTask GameGUI::loadTask(GAGCore::InputStream *stream, bool ig
 		}
 
 		if(game.mapHeader.getVersionMinor() >= 69)
-			defaultAssign.load(stream, game.mapHeader.getVersionMinor());
+			defaultAssign.load(stream, game.mapHeader.loadingVersion());
 		stream->readLeaveSection();
 	}
 

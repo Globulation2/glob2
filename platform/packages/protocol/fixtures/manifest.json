@@ -114,6 +114,7 @@
     "MusicStudioProgress": "schemas/MusicStudioProgress.schema.json",
     "MusicStudioSettings": "schemas/MusicStudioSettings.schema.json",
     "MusicStudioStageProgress": "schemas/MusicStudioStageProgress.schema.json",
+    "MusicStudioTurn": "schemas/MusicStudioTurn.schema.json",
     "PlatformJwks": "schemas/PlatformJwks.schema.json",
     "PlayerDirectory": "schemas/PlayerDirectory.schema.json",
     "PlayerProfile": "schemas/PlayerProfile.schema.json",

@@ -235,22 +235,25 @@ void FertilityFieldTest::testForMapZeroesNonGrass()
 	map.makeSand(6, 6);
 	map.putResource(10, 10, WHEAT);
 	const Fertility::Field field = Fertility::forMap(map);
-	CHECK_EQ(std::uint32_t(0), field.at(4, 4));
+	// Fish make open water food habitat; sand never is.
+	CHECK(field.at(4, 4) > 0u);
 	CHECK_EQ(std::uint32_t(0), field.at(6, 6));
 	CHECK(field.at(5, 4) > 0u);
 }
 
 void FertilityFieldTest::testForMapZeroesGrassNoDepositReaches()
 {
-	// An island of grass ringed by water, with the only deposit outside the ring.
+	// An island of grass ringed by sand, with the only deposit outside the ring.
 	TinyMap map;
 	for (int d = -2; d <= 2; ++d)
 	{
-		map.makeWater(14 + d, 14 - 2);
-		map.makeWater(14 + d, 14 + 2);
-		map.makeWater(14 - 2, 14 + d);
-		map.makeWater(14 + 2, 14 + d);
+		map.makeSand(14 + d, 14 - 2);
+		map.makeSand(14 + d, 14 + 2);
+		map.makeSand(14 - 2, 14 + d);
+		map.makeSand(14 + 2, 14 + d);
 	}
+	// Water outside the ring keeps the deposit's own field fertile.
+	map.makeWater(27, 25);
 	map.putResource(25, 25, WHEAT);
 	const Fertility::Field field = Fertility::forMap(map);
 	CHECK_EQ(std::uint32_t(0), field.at(14, 14));

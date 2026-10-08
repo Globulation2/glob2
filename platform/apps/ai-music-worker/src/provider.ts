@@ -175,7 +175,7 @@ export interface MusicProvider {
     prompt: string,
     maxOutput: number,
     signal: AbortSignal,
-    format?: 'discussion' | 'action',
+    format?: 'discussion' | 'turn' | 'action',
   ): Promise<ModelReply>;
 }
 const OUTPUT_SCHEMAS = {
@@ -183,6 +183,16 @@ const OUTPUT_SCHEMAS = {
     type: 'object',
     properties: { text: { type: 'string' }, brief: { type: 'string' } },
     required: ['text', 'brief'],
+    additionalProperties: false,
+  },
+  turn: {
+    type: 'object',
+    properties: {
+      text: { type: 'string' },
+      brief: { type: 'string' },
+      action: { type: 'string', enum: ['discuss', 'build'] },
+    },
+    required: ['text', 'brief', 'action'],
     additionalProperties: false,
   },
   action: {
@@ -209,7 +219,7 @@ export class OpenAIMusic implements MusicProvider {
     prompt: string,
     maxOutput: number,
     signal: AbortSignal,
-    format: 'discussion' | 'action' = 'action',
+    format: 'discussion' | 'turn' | 'action' = 'action',
   ): Promise<ModelReply> {
     if (signal.aborted) throw new ProviderRejected('Provider call cancelled before dispatch.');
     let response: Response;

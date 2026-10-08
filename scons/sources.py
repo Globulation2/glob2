@@ -406,6 +406,7 @@ CLIENT_SOURCES = (
     'map/MapResourceState.cpp',
     'map/MapCells.cpp',
     'map/MapStep.cpp',
+    'map/ResourceGrowth.cpp',
     'map/MapTerrain.cpp',
     'render/MapView.cpp',
     'map/editor/Widgets.cpp',

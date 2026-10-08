@@ -4,6 +4,7 @@ import { MusicStudio, MUSIC_STUDIO_CHANNEL } from '@glob2/music-studio';
 import {
   MusicStudioCreate,
   MusicStudioMessage,
+  MusicStudioTurn,
   MusicStudioGenerate,
   Strict,
   Uuid,
@@ -191,6 +192,21 @@ export async function musicStudioRoutes(app: FastifyInstance) {
         release();
         throw error;
       }
+    }),
+  );
+  app.post('/api/v1/music-studio/threads/:id/turns', async (request) =>
+    guarded(async () => {
+      requireEnabled();
+      return studio.submit(
+        (await accountOf(request)).id,
+        threadOf(request),
+        'chat',
+        body(MusicStudioTurn, request.body),
+        config?.pipelineVersion ?? '',
+        config?.chatPerHour ?? 60,
+        config,
+        true,
+      );
     }),
   );
   app.post('/api/v1/music-studio/threads/:id/messages', async (request) =>

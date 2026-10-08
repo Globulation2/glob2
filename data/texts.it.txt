@@ -5604,6 +5604,30 @@ Minerale di ferro
 Silice
 [Cotton]
 Cotone
+[Jungle trees]
+Alberi della giungla
+[Pine trees]
+Pini
+[Dead trees]
+Alberi morti
+[Ruins]
+Rovine
+[Camp-site]
+Accampamento
+[Ancient debris]
+Detriti antichi
+[Scrub]
+Sterpaglia
+[Tall grass]
+Erba alta
+[Maize]
+Mais
+[Potatoes]
+Patate
+[Rice]
+Riso
+[Fish]
+Pesci
 [Reroll terrain look]
 Genera un nuovo aspetto casuale del terreno
 [boulders]

@@ -90,6 +90,7 @@ export interface BuildingAiStudioRequest {
   created_at: string;
 }
 export interface BuildingAiStudioRevision {
+  appliedRevision?: string | null;
   requestId: string;
   title: string;
   applied: boolean;
@@ -98,6 +99,7 @@ export interface BuildingAiStudioRevision {
   package: BuildingPackage;
 }
 export interface BuildingAiStudioThread {
+  draftHistory?: { revision: string; title: string; created_at: string }[];
   id: string;
   title: string;
   draftId: string;

@@ -49,6 +49,11 @@ public:
 	
 	/// Returns the version minor
 	Sint32 getVersionMinor() const;
+	// Draft growth saves reused 146–148 before those numbers shipped on master.
+	// Resolve the terrain layout before reading any version-dependent game state.
+	void resolveGrowthLayout(GAGCore::InputStream *stream);
+	bool historicalGrowthLayout = false;
+	Sint32 loadingVersion() const { return historicalGrowthLayout ? 145 : versionMinor; }
 	
 	/// Returns the number of teams
 	Sint32 getNumberOfTeams() const;

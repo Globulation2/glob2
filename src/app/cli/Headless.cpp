@@ -1,7 +1,8 @@
-#include <utility>
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include <Environment.h>
 #include "Headless.h"
+#include "ResourceGrowth.h"
+#include <utility>
 #include "scripting/javascript/ScriptCommand.h"
 #include "scripting/javascript/ScriptRuntime.h"
 #include "scripting/javascript/ScriptValue.h"
@@ -459,6 +460,8 @@ struct HeadlessRunner
 		else if (computeExperiments == "ai") experimentMask = Map::ComputeAI;
 		else if (computeExperiments != "none") throw std::invalid_argument("unknown compute experiment: " + computeExperiments);
 		engine.gui.game.map.configureCompute(computeThreads, experimentMask);
+        engine.gui.game.map.setResourceGrowthDelay(integer(
+            one(options, "--resource-growth-delay", std::to_string(engine.gui.game.map.resourceGrowthDelay())), 1, 16));
 		const auto pipeline = engine.gui.game.map.gradientPipelineStatus();
 		if (!pipeline.enabled) engine.gui.game.map.configureGradientPipeline(gradientWorkers, gradientDelay);
 		else {
@@ -485,6 +488,7 @@ struct HeadlessRunner
 		uint64_t setupCpu=0,runCpu=0,measureStart=0;
 		unsigned measuredTicks=0;
         std::array<Uint64,64> tickHistogram{};
+        std::vector<Uint64> tickDurations;
 		if(benchmark)
 		{
 			const uint64_t first=engine.gui.game.stepCounter;
@@ -501,16 +505,17 @@ struct HeadlessRunner
                 if(beforeTick>=start && engine.gui.game.stepCounter>beforeTick) {
                     const auto duration=Uint64(std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::steady_clock::now()-tickStart).count());
                     ++tickHistogram[std::min<unsigned>(std::bit_width(duration),63)];
+                    tickDurations.push_back(duration);
                 }
 				if(!measureStart && engine.gui.game.stepCounter>=start) measureStart=processCpuNs();
 			}
 			engine.finishSession();
-			engine.gui.game.map.finishGradientPipeline();
+			engine.gui.game.map.finishGradientPipeline(); engine.gui.game.map.finishResourceGrowth();
 			if(!measureStart || engine.gui.game.stepCounter<=start) throw std::runtime_error("game ended before benchmark measurement");
 			runCpu=processCpuNs()-measureStart;
 			measuredTicks=engine.gui.game.stepCounter-start;
 		}
-		else { engine.run(); engine.gui.game.map.finishGradientPipeline(); }
+		else { engine.run(); engine.gui.game.map.finishGradientPipeline(); engine.gui.game.map.finishResourceGrowth(); }
 		if (engine.diagnostics) engine.diagnostics->finish();
 		const auto runEnd = std::chrono::steady_clock::now();
 		const auto saveCpuStart=benchmark?processCpuNs():0;
@@ -521,6 +526,8 @@ struct HeadlessRunner
 		Game &game=engine.gui.game;
 		const auto pipelineResult = game.map.gradientPipelineStatus();
 		const auto buildingResult = game.map.buildingGradientPipelineStatus();
+        std::sort(tickDurations.begin(),tickDurations.end());
+        const auto percentile=[&](unsigned p)->Uint64 {return tickDurations.empty()?0:tickDurations[(tickDurations.size()-1)*p/100];};
 		engine.trackTeamEliminations();
 		std::ostringstream result;
 		// A game the win probability model called is reported distinctly from one
@@ -544,6 +551,28 @@ struct HeadlessRunner
 			<< ",\"benchmark_measured_ticks\":" << measuredTicks
 			<< ",\"setup_ns\":" << std::chrono::duration_cast<std::chrono::nanoseconds>(runStart - setupStart).count()
 			<< ",\"run_ns\":" << std::chrono::duration_cast<std::chrono::nanoseconds>(runEnd - runStart).count()
+			<< ",\"growth_submitted\":" << game.map.resourceGrowthMetrics().submitted
+			<< ",\"growth_published\":" << game.map.resourceGrowthMetrics().published
+			<< ",\"growth_sampled\":" << game.map.resourceGrowthMetrics().sampled
+			<< ",\"growth_proposals\":" << game.map.resourceGrowthMetrics().proposals
+			<< ",\"growth_publishedProposals\":" << game.map.resourceGrowthMetrics().publishedProposals
+			<< ",\"growth_accepted\":" << game.map.resourceGrowthMetrics().accepted
+			<< ",\"growth_rejected\":" << game.map.resourceGrowthMetrics().rejected
+			<< ",\"growth_clamped\":" << game.map.resourceGrowthMetrics().clamped
+			<< ",\"growth_stockAdded\":" << game.map.resourceGrowthMetrics().stockAdded
+			<< ",\"growth_tilesAdded\":" << game.map.resourceGrowthMetrics().tilesAdded
+			<< ",\"growth_capacityGrowthBatches\":" << game.map.resourceGrowthMetrics().capacityGrowthBatches
+			<< ",\"growth_maxProposals\":" << game.map.resourceGrowthMetrics().maxProposals
+			<< ",\"growth_maxPending\":" << game.map.resourceGrowthMetrics().maxPending
+			<< ",\"growth_maxProposalBytes\":" << game.map.resourceGrowthMetrics().maxProposalBytes
+			<< ",\"growth_computeNs\":" << game.map.resourceGrowthMetrics().computeNs
+			<< ",\"growth_queueNs\":" << game.map.resourceGrowthMetrics().queueNs
+			<< ",\"growth_waitNs\":" << game.map.resourceGrowthMetrics().waitNs
+			<< ",\"growth_publicationNs\":" << game.map.resourceGrowthMetrics().publicationNs
+			<< ",\"growth_delay\":" << game.map.resourceGrowthDelay()
+            << ",\"tick_p50_ns\":" << percentile(50)
+            << ",\"tick_p95_ns\":" << percentile(95)
+            << ",\"tick_p99_ns\":" << percentile(99)
 			<< ",\"gradient_pipeline\":" << "true"
 			<< ",\"gradient_workers\":" << pipelineResult.workers
 			<< ",\"gradient_delay\":" << pipelineResult.delay
@@ -772,7 +801,7 @@ int runHeadlessCommand(int argc,char **argv)
 			std::cout << "}" << std::endl;return 0;
 		}
 		const std::set<std::string> common={"--output-dir","--profile","--building-catalog","--building-artwork"};
-		const std::set<std::string> gameKeys={"--diagnostic-fields","--diagnostic-interval","--diagnostic-png","--benchmark-warmup","--ai-script","--map-script","--map-file","--load-game","--game-seed","--player","--ai-param","--alliance","--win-condition","--win-probability","--experiment","--rule","--fork-rule","--ticks","--compute-threads","--compute-experiments","--gradient-workers","--gradient-delay","--ai-order-delay","--save","--telemetry","--replay","--generator","--map-seed","--param","--candidates"};
+		const std::set<std::string> gameKeys={"--diagnostic-fields","--diagnostic-interval","--diagnostic-png","--benchmark-warmup","--ai-script","--map-script","--map-file","--load-game","--game-seed","--player","--ai-param","--alliance","--win-condition","--win-probability","--experiment","--rule","--fork-rule","--ticks","--compute-threads","--compute-experiments","--gradient-workers","--gradient-delay","--resource-growth-delay","--ai-order-delay","--save","--telemetry","--replay","--generator","--map-seed","--param","--candidates"};
 		const std::set<std::string> mapKeys={"--generator","--map-seed","--param","--candidates","--rotations","--write-map","--report","--perturb"};
 		Options options;
 		for(int i=2;i<argc;++i)

@@ -5604,6 +5604,30 @@ FFmpeg недоступен, поэтому запись отключена. У�
 Кремнезём
 [Cotton]
 Хлопок
+[Jungle trees]
+Тропические деревья
+[Pine trees]
+Сосны
+[Dead trees]
+Мёртвые деревья
+[Ruins]
+Руины
+[Camp-site]
+Стоянка
+[Ancient debris]
+Древние обломки
+[Scrub]
+Кустарник
+[Tall grass]
+Высокая трава
+[Maize]
+Кукуруза
+[Potatoes]
+Картофель
+[Rice]
+Рис
+[Fish]
+Рыба
 [Reroll terrain look]
 Заново выбрать случайный вид ландшафта
 [boulders]

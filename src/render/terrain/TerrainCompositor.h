@@ -31,7 +31,32 @@ class Compositor
 	std::pair<GAGCore::Sprite *, unsigned> editorIcon(TerrainType type) const;
 	void prepare(bool hd, int time);
 	Recipe describe(const SceneMap &, int x, int y) const;
-	void compose(const Recipe &, SDL_Surface *target, int x, int y, int scale) const;
+	// Coverage of one mixed cell at one sampling scale. It depends on the cell's
+	// geometry, never on the animation phase, so a page can keep it and re-blend
+	// only the textures when an animated material changes phase.
+	struct CellMask
+	{
+		struct Sample
+		{
+			// Weights of the palette slots other than the largest, in slot order;
+			// the largest takes the rest of 65536, so each fits sixteen bits.
+			std::uint16_t others[3];
+			std::uint16_t margin;
+			std::uint8_t slots; // Largest, dominant and neighbor palette slots, two bits each.
+		};
+		Recipe recipe;
+		int scale = 0;
+		std::array<MaterialId, 4> palette{}; // Distinct corner materials.
+		unsigned colors = 0;
+		std::vector<Sample> samples;
+		std::size_t bytes() const { return sizeof(CellMask) + samples.capacity() * sizeof(Sample); }
+	};
+	CellMask mask(const Recipe &, int scale) const;
+	void mask(const Recipe &, int scale, CellMask &out) const; // Reuses out's storage.
+	// A uniform recipe ignores the mask; a mixed one composes from it when given.
+	void compose(const Recipe &, SDL_Surface *target, int x, int y, int scale,
+				 const CellMask *mask = nullptr) const;
+	bool animated(MaterialId id) const { return definitions.materials[id].animationFrames > 1; }
 	// Subtile palette samples share the detailed renderer's material partition.
 	static constexpr int OverviewSamples = 4;
 	// Per corner (Recipe::corners order), an overview colour replacing the

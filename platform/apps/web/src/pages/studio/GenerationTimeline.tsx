@@ -1,3 +1,4 @@
+import { Icon } from '../../icons.tsx';
 import type { Artifact, Stage, StageId } from './types.ts';
 
 export function GenerationTimeline({
@@ -24,11 +25,13 @@ export function GenerationTimeline({
             onClick={() => select(s.id)}
           >
             <span className="ms-stage-icon">
-              {s.status === 'complete'
-                ? '✓'
-                : s.status === 'failed'
-                  ? '!'
-                  : String(i + 1).padStart(2, '0')}
+              {s.status === 'complete' ? (
+                <Icon name="check" size={18} />
+              ) : s.status === 'failed' ? (
+                <Icon name="alert-triangle" size={18} />
+              ) : (
+                String(i + 1).padStart(2, '0')
+              )}
             </span>
             <span className="ms-stage-long">{s.label}</span>
             <span className="ms-stage-short">
