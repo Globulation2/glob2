@@ -1025,8 +1025,9 @@ TEST_CASE("frozen seeded resource compositions preserve invariants and exact sim
         for (unsigned n=0;n<count;++n)
         {
             const int x=3+(n%8)*3,y=4+(n/8)*7;
-            map.paintCell(x,y,n%4==0 ? WATER : n%4==1 ? SAND : GRASS);
+            // Sand first: the cell painted last keeps all four corners.
             if(n%4==0) map.paintCell(x+1,y,SAND);
+            map.paintCell(x,y,n%4==0 ? WATER : n%4==1 ? SAND : GRASS);
             const auto id=*map.resourceRegistry().find("fixture:composition-"+std::to_string(n));
             REQUIRE(map.incResource(x,y,id,0));
             if(map.resourcePropertiesByIndex(resourceIndex(id)).farmable) map.addFarmArea(x,y,0);

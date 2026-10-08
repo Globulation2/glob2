@@ -313,13 +313,12 @@ to compare this platform's rows of `test/map-generator-golden.txt` against fresh
 with no rows reports and passes, so a new machine can run the check before its rows exist;
 `--require-rows` makes that a failure instead, which is what CI runs, so the table must carry
 rows for every platform running that check in CI (`linux-x86_64` today). The current
-table records runtime-resource RNG epoch 1: resource sprite selection no longer consumes
-simulation RNG, so initial stock quantities and full fingerprints can change without
-individual generator recipe revisions. The complete pre-epoch table, including historical
-`macos-arm64` rows, is retained in
-`test/fixtures/map-generators/pre-resource-epoch-golden.txt`. Current macOS full rows are
-unverified and must be measured on macOS before `--require-rows` can pass there; do not copy
-Linux hashes. The five separately verified explicit-design topology comparisons below do
+table records vertex terrain (save format 144): every generated map changed when terrain
+moved to map vertices, without individual generator recipe revisions. The complete
+pre-resource-epoch table, including historical `macos-arm64` rows, is retained in
+`test/fixtures/map-generators/pre-resource-epoch-golden.txt`. The table has no macOS rows;
+they must be measured on macOS before `--require-rows` can pass there; do not copy Linux
+hashes. The five separately verified explicit-design topology comparisons below do
 not establish topology equivalence for every changed golden. The framework reference under
 `docs/map-generators/` describes the remaining rules it enforces.
 

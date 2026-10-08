@@ -406,11 +406,15 @@ void GradientTest::testRandomFieldsAgainstReference()
 		const int swimClass = trial % SWIM_CLASS_COUNT;
 		GrassMap map(trial % 6, (trial / 6) % 6);
 		auto input = blank(map);
+		for (size_t i = 0; i < map.cells(); ++i)
+			if (random() % 3 == 0) map.putWater(i % width, i / width);
+		// A painted cell spreads its corners to its neighbours: read back which
+		// cells actually swim.
 		std::vector<bool> water(map.cells());
 		for (size_t i = 0; i < map.cells(); ++i)
+			water[i] = map.terrainPropertiesAt(i).swimmable;
+		for (size_t i = 0; i < map.cells(); ++i)
 		{
-			water[i] = random() % 3 == 0;
-			if (water[i]) map.putWater(i % width, i / width);
 			if (random() % 4 == 0 || (water[i] && swimClass == 0))
 				input[i] = GRADIENT_FORBIDDEN;
 			else if (trial % 10 != 0 && random() % 12 == 0)

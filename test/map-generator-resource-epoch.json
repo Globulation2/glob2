@@ -1,66 +1,39 @@
 {
   "resource_epoch": 1,
-  "description": "Full map hashes after resource sprites stopped consuming simulation RNG. Topology hashes exclude stock quantities but include terrain, source identities and colony starts. Historical full hashes retain the pre-epoch reference. Rows require independently verified archived map comparisons.",
+  "description": "Full map hashes after resource sprites stopped consuming simulation RNG. Topology hashes exclude stock quantities but include terrain, source identities and colony starts. Historical full hashes retain the pre-epoch reference. Rows require independently verified archived map comparisons. Since save format 144 terrain is stored per vertex, so topology hashes vertex terrain; the linux-x86_64 rows and portable topology were re-recorded then, and macOS rows await a macOS run.",
   "platforms": {
     "linux-x86_64": {
       "canals": {
         "historical_full": 16622643961647829752,
-        "topology": 1342704325069643704,
-        "full": 11099226097251723814
+        "topology": 6348996818089081022,
+        "full": 3860126852787330257
       },
       "caravanserai": {
         "historical_full": 6244602504248136250,
-        "topology": 16571860465599968285,
-        "full": 7881860256827117520
+        "topology": 3089921906549973481,
+        "full": 5516374082483329031
       },
       "fingerprint": {
         "historical_full": 5648058033288605271,
-        "topology": 8437600554994148324,
-        "full": 3308641788709647431
+        "topology": 13975002589605011184,
+        "full": 4849160931982160389
       },
       "honeycomb-isle": {
         "historical_full": 5908701397362810997,
-        "topology": 10559024323253052986,
-        "full": 9145829052127692952
+        "topology": 10716426061597934434,
+        "full": 16498894964178795898
       },
       "maze": {
         "historical_full": 6132248727033081699,
-        "topology": 401563344924014212,
-        "full": 5504856400217732380
-      }
-    },
-    "macos-arm64": {
-      "canals": {
-        "historical_full": 16622643961647829752,
-        "topology": 1342704325069643704,
-        "full": 11099226097251723814
-      },
-      "caravanserai": {
-        "historical_full": 6244602504248136250,
-        "topology": 16571860465599968285,
-        "full": 7881860256827117520
-      },
-      "fingerprint": {
-        "historical_full": 15850274609968439542,
-        "topology": 11062457841233645806,
-        "full": 16881829834589485263
-      },
-      "honeycomb-isle": {
-        "historical_full": 5908701397362810997,
-        "topology": 10559024323253052986,
-        "full": 9145829052127692952
-      },
-      "maze": {
-        "historical_full": 6132248727033081699,
-        "topology": 401563344924014212,
-        "full": 5504856400217732380
+        "topology": 8061784440331878678,
+        "full": 6969477568041698913
       }
     }
   },
   "portable_topology": {
-    "maze": 401563344924014212,
-    "canals": 1342704325069643704,
-    "caravanserai": 16571860465599968285,
-    "honeycomb-isle": 10559024323253052986
+    "maze": 8061784440331878678,
+    "canals": 6348996818089081022,
+    "caravanserai": 3089921906549973481,
+    "honeycomb-isle": 10716426061597934434
   }
 }
