@@ -10,6 +10,7 @@ export * from './history.ts';
 export * from './realtime.ts';
 export * from './jobs.ts';
 export * from './admin.ts';
+export * from './adminConsole.ts';
 export * from './validate.ts';
 export * from './registry.ts';
 export * from './document.ts';

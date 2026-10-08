@@ -1,3 +1,4 @@
+import { adminConsoleSchemas } from './adminConsole.ts';
 import {
   BuildingPackage,
   PublishBuildingRequest,
@@ -177,6 +178,9 @@ realtimeEntries[realtimeSchemaName('match.start', 'Event')] = {
 };
 
 export const schemaRegistry: Record<string, RegisteredSchema> = {
+  ...Object.fromEntries(
+    Object.entries(adminConsoleSchemas).map(([name, schema]) => [name, { schema }]),
+  ),
   PublishBuildingRequest: { schema: PublishBuildingRequest },
   UpdateBuildingFamilyRequest: { schema: UpdateBuildingFamilyRequest },
   SaveBuildingDraftRequest: {

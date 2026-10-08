@@ -1,3 +1,4 @@
+import { resolveReport } from '../admin/moderation.ts';
 import { createHash } from 'node:crypto';
 import { sql, type Selectable } from 'kysely';
 import type { Account, Database } from '@glob2/db';
@@ -757,39 +758,18 @@ export async function setLibraryRoutes(app: FastifyInstance, identity: Identity)
     async (r, reply) => {
       const a = (await requireRole(identity, r, 'moderator')).account,
         input = body(ResolveMapReportRequest, r.body);
-      await db.transaction().execute(async (trx) => {
-        const report = await trx
-          .selectFrom('set_reports')
-          .selectAll()
-          .where('id', '=', uuid(r.params.id))
-          .forUpdate()
-          .executeTakeFirst();
-        if (!report) throw apiError('not_found', 'Report not found.');
-        if (input.hideMap)
-          await trx
-            .updateTable('asset_sets')
-            .set({
-              hidden: true,
-              hidden_reason: input.hideReason ?? input.note ?? 'Hidden following moderator review',
-            })
-            .where('id', '=', report.set_id)
-            .execute();
-        await trx
-          .updateTable('set_reports')
-          .set({ resolved: true, resolution: input.note ?? input.status })
-          .where('id', '=', report.id)
-          .execute();
-        await trx
-          .insertInto('admin_audit_log')
-          .values({
-            actor_account_id: a.id,
-            action: 'set:resolve-report',
-            target_type: 'set-report',
-            target_id: r.params.id,
-            details: JSON.stringify(input),
-          })
-          .execute();
-      });
+      await resolveReport(
+        db,
+        'sets',
+        uuid(r.params.id),
+        {
+          resolution: input.status,
+          reason: input.hideReason ?? input.note ?? 'Reviewed through set moderation',
+          hide: input.hideMap,
+        },
+        a.id,
+        { action: 'set:resolve-report', targetType: 'set-report', reportTarget: true },
+      );
       return reply.status(204).send();
     },
   );

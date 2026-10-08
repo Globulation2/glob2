@@ -1,3 +1,4 @@
+import { resolveReport } from '../admin/moderation.ts';
 // REST for the map catalog (/api/v1/maps) and its moderation
 // (/api/v1/admin/maps, /api/v1/admin/map-reports). Rules and views are in
 // catalog.ts; engine-job results are applied by the worker (play/catalog.ts).
@@ -825,31 +826,21 @@ export async function mapCatalogRoutes(app: FastifyInstance, identity: Identity)
       const actor = (await requireRole(identity, request, 'moderator')).account;
       const input = body(ResolveMapReportRequest, request.body);
       if (!UUID.test(request.params.id)) throw apiError('not_found', 'No such report.');
-      const report = await db
-        .updateTable('map_reports')
-        .set({
-          status: input.status,
-          resolved_by_account_id: actor.id,
-          resolved_at: sql<Date>`now()`,
-          resolution_note: input.note ?? null,
-        })
-        .where('id', '=', request.params.id)
-        .returning(['id', 'map_id', 'reason'])
-        .executeTakeFirst();
-      if (!report) throw apiError('not_found', 'No such report.');
-      await audit(actor, `map.report.${input.status}`, report.map_id, {
-        report: report.id,
-        ...(input.note ? { note: input.note } : {}),
-      });
-      if (input.hideMap) {
-        await setHidden(
-          actor,
-          report.map_id,
-          true,
-          input.hideReason ?? input.note ?? `Reported: ${report.reason}`,
-        );
-      }
-      const row = await reportQuery().where('r.id', '=', report.id).executeTakeFirstOrThrow();
+      await resolveReport(
+        db,
+        'maps',
+        request.params.id,
+        {
+          resolution: input.status,
+          reason: input.hideReason ?? input.note ?? 'Reviewed through map moderation',
+          hide: input.hideMap,
+        },
+        actor.id,
+        { action: 'map.report.' + input.status, targetType: 'map', reportTarget: false },
+      );
+      const row = await reportQuery()
+        .where('r.id', '=', request.params.id)
+        .executeTakeFirstOrThrow();
       const [view] = await reportViews([row], { account: actor });
       if (!view) throw apiError('not_found', 'No such report.');
       return view;

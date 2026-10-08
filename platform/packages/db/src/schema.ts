@@ -1182,6 +1182,14 @@ interface SetReportsTable {
   created_at: Timestamp;
 }
 export interface Database {
+  admin_report_resolutions: {
+    library: string;
+    report_id: string;
+    resolution: string;
+    reason: string;
+    actor_id: string | null;
+    resolved_at: Timestamp;
+  };
   building_families: BuildingFamiliesTable;
   building_releases: BuildingReleasesTable;
   building_likes: BuildingSocialTable;

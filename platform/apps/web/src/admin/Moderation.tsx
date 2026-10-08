@@ -1,0 +1,245 @@
+import { useState } from 'react';
+import type { AdminReport, AdminReportList, AdminContent, AdminContentList } from '@glob2/protocol';
+import { request } from '../api.ts';
+import { Loaded, Empty } from '../components/common.tsx';
+import { useLoad } from '../state.tsx';
+import { Link, useRouter } from '../router.tsx';
+import { dateTime } from '../format.ts';
+
+export function useAdminFilters(defaults: Record<string, string> = {}) {
+  const { location, navigate } = useRouter();
+  const values = { ...defaults, ...Object.fromEntries(location.search) };
+  const set = (patch: Record<string, string | undefined>) => {
+    const params = new URLSearchParams(location.search);
+    if (!Object.hasOwn(patch, 'cursor')) params.delete('cursor');
+    for (const [key, value] of Object.entries(patch)) {
+      if (value) params.set(key, value);
+      else params.delete(key);
+    }
+    navigate(location.path + (params.size ? '?' + params.toString() : ''));
+  };
+  return { values, set };
+}
+export function PageControls({ nextCursor }: { nextCursor?: string }) {
+  const { values, set } = useAdminFilters();
+  return (
+    <div className="toolbar">
+      {values['cursor'] && <button onClick={() => set({ cursor: undefined })}>First page</button>}
+      {nextCursor && <button onClick={() => set({ cursor: nextCursor })}>Next page</button>}
+    </div>
+  );
+}
+const LIBRARIES = ['maps', 'ais', 'buildings', 'sets', 'skins', 'music'];
+function LibraryFilter({ value, onChange }: { value: string; onChange: (v: string) => void }) {
+  return (
+    <label>
+      Library{' '}
+      <select value={value} onChange={(e) => onChange(e.target.value)}>
+        <option value="">All libraries</option>
+        {LIBRARIES.map((l) => (
+          <option key={l} value={l}>
+            {l}
+          </option>
+        ))}
+      </select>
+    </label>
+  );
+}
+function ReportRow({ report, reload }: { report: AdminReport; reload: () => void }) {
+  const [reason, setReason] = useState(''),
+    [busy, setBusy] = useState(false),
+    [error, setError] = useState('');
+  async function resolve(resolution: 'resolved' | 'dismissed', hide = false) {
+    setBusy(true);
+    setError('');
+    try {
+      await request('POST', `/api/v1/admin/reports/${report.library}/${report.id}/resolve`, {
+        body: { resolution, hide, reason },
+      });
+      reload();
+    } catch (e) {
+      setError(e instanceof Error ? e.message : String(e));
+    } finally {
+      setBusy(false);
+    }
+  }
+  return (
+    <article className="card" data-testid="admin-report">
+      <h3>
+        <Link to={report.href}>{report.name}</Link> <span className="badge">{report.library}</span>
+      </h3>
+      <p>
+        {report.reporterName} · {dateTime(report.createdAt)} · {report.status}
+        {report.hidden ? ' · Content hidden' : ''}
+      </p>
+      <p style={{ whiteSpace: 'pre-wrap', overflowWrap: 'anywhere' }}>
+        {report.reason}
+        {report.details ? ' — ' + report.details : ''}
+      </p>
+      {report.previewHref && (
+        <img src={report.previewHref} width={256} height={256} alt="Reported skin texture" />
+      )}
+      {report.resolution && (
+        <p>
+          Resolution: {report.resolution}
+          {report.resolvedAt ? ' · ' + dateTime(report.resolvedAt) : ''}
+        </p>
+      )}
+      {report.status === 'open' && (
+        <fieldset disabled={busy}>
+          <label>
+            Moderation reason{' '}
+            <textarea value={reason} maxLength={2000} onChange={(e) => setReason(e.target.value)} />
+          </label>
+          <div className="toolbar">
+            <button disabled={!reason.trim()} onClick={() => void resolve('resolved', true)}>
+              {report.library === 'skins' ? 'Disable' : 'Hide'} and resolve
+            </button>
+            {report.library !== 'skins' && (
+              <button disabled={!reason.trim()} onClick={() => void resolve('resolved')}>
+                Resolve
+              </button>
+            )}
+            <button disabled={!reason.trim()} onClick={() => void resolve('dismissed')}>
+              Dismiss
+            </button>
+          </div>
+        </fieldset>
+      )}
+      {error && <p role="alert">{error}</p>}
+    </article>
+  );
+}
+export function UnifiedReports({ library }: { library?: string }) {
+  const { values, set } = useAdminFilters({ status: 'open', library: library ?? '' });
+  const load = useLoad(
+    (signal) => request<AdminReportList>('GET', '/api/v1/admin/reports', { query: values, signal }),
+    [JSON.stringify(values)],
+  );
+  return (
+    <section>
+      <h2>Reports</h2>
+      <div className="toolbar">
+        <LibraryFilter value={values['library'] ?? ''} onChange={(v) => set({ library: v })} />
+        <label>
+          Status{' '}
+          <select value={values['status']} onChange={(e) => set({ status: e.target.value })}>
+            {['open', 'resolved', 'dismissed', 'all'].map((s) => (
+              <option key={s}>{s}</option>
+            ))}
+          </select>
+        </label>
+      </div>
+      <Loaded load={load}>
+        {(page) => (
+          <>
+            <p>{LIBRARIES.map((l) => `${l}: ${page.counts[l] ?? 0} open`).join(' · ')}</p>
+            {page.items.length === 0 ? (
+              <Empty>No reports.</Empty>
+            ) : (
+              page.items.map((r) => (
+                <ReportRow key={r.library + r.id} report={r} reload={load.reload} />
+              ))
+            )}
+            <PageControls nextCursor={page.nextCursor} />
+          </>
+        )}
+      </Loaded>
+    </section>
+  );
+}
+function ContentRow({ content, reload }: { content: AdminContent; reload: () => void }) {
+  const [reason, setReason] = useState(''),
+    [busy, setBusy] = useState(false),
+    [error, setError] = useState('');
+  async function act() {
+    setBusy(true);
+    setError('');
+    try {
+      await request('POST', `/api/v1/admin/content/${content.library}/${content.id}/moderation`, {
+        body: { hidden: !content.hidden, reason },
+      });
+      reload();
+    } catch (e) {
+      setError(e instanceof Error ? e.message : String(e));
+    } finally {
+      setBusy(false);
+    }
+  }
+  return (
+    <article className="card">
+      <h3>
+        <Link to={content.href}>{content.name}</Link>{' '}
+        <span className="badge">{content.library}</span>
+      </h3>
+      <p>
+        {content.hidden ? 'Hidden' : 'Available'} · {dateTime(content.createdAt)}
+        {content.downloads !== null ? ` · ${content.downloads} recorded downloads` : ''}
+      </p>
+      {content.reason && <p>{content.reason}</p>}
+      {content.previewHref && (
+        <img src={content.previewHref} width={256} height={256} alt="Skin texture" />
+      )}
+      <label>
+        Moderation reason{' '}
+        <input value={reason} maxLength={2000} onChange={(e) => setReason(e.target.value)} />
+      </label>
+      <button disabled={busy || !reason.trim()} onClick={() => void act()}>
+        {content.hidden ? 'Restore' : 'Hide'}
+      </button>
+      {error && <p role="alert">{error}</p>}
+    </article>
+  );
+}
+export function Content() {
+  const { values, set } = useAdminFilters({ hidden: 'true' }),
+    [q, setQ] = useState(values['q'] ?? '');
+  const load = useLoad(
+    (signal) =>
+      request<AdminContentList>('GET', '/api/v1/admin/content', { query: values, signal }),
+    [JSON.stringify(values)],
+  );
+  return (
+    <section>
+      <h2>Content</h2>
+      <form
+        className="toolbar"
+        onSubmit={(e) => {
+          e.preventDefault();
+          set({ q });
+        }}
+      >
+        <LibraryFilter value={values['library'] ?? ''} onChange={(v) => set({ library: v })} />
+        <label>
+          Visibility{' '}
+          <select value={values['hidden']} onChange={(e) => set({ hidden: e.target.value })}>
+            <option value="true">Hidden</option>
+            <option value="false">Available</option>
+            <option value="all">All</option>
+          </select>
+        </label>
+        <input
+          aria-label="Find content"
+          placeholder="Name or content ID"
+          value={q}
+          onChange={(e) => setQ(e.target.value)}
+        />
+        <button>Search</button>
+      </form>
+      <Loaded load={load}>
+        {(page) => (
+          <>
+            {page.items.length === 0 ? (
+              <Empty>No content found.</Empty>
+            ) : (
+              page.items.map((c) => (
+                <ContentRow key={c.library + c.id} content={c} reload={load.reload} />
+              ))
+            )}
+            <PageControls nextCursor={page.nextCursor} />
+          </>
+        )}
+      </Loaded>
+    </section>
+  );
+}

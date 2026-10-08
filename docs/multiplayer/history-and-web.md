@@ -138,7 +138,19 @@ pages carry an OpenGraph image for link previews.
 | `/matches`, `/matches/{id}` | Recent matches; match page with replay actions, players, rating changes and timelines; verification and connection diagnostics are expandable |
 | `/maps`, `/maps/mine`, `/maps/new`, `/maps/{id}` | Map catalog, my maps, upload, map page (preview, versions, like, report, owner edits) |
 | `/account` | The signed-in account: sign-in methods, data export, Hive Mind credit link, delete |
-| `/admin/accounts`, `/admin/matches`, `/admin/reports` | Moderation: account search, rename, mute and (administrators) ban; match lookup; map report queue with hide and unhide |
+| `/admin/reports`, `/admin/content` | Moderators: reports across maps, AIs, buildings, sets, skins and music; hide/disable, restore, resolve and dismiss |
+| `/admin/accounts`, `/admin/matches` | Account search and moderation; administrators may ban accounts |
+
+The existing `/admin/music`, `/admin/skins` and `/sets/reports` routes remain
+available. Reports and content can be filtered by library; accounts, matches,
+reports, content, operations and audit retain filters/cursors in their URLs.
+Lists use timestamp plus identifier ordering. Reports display the reporter,
+reason, status and recorded resolution; content restoration does not require an
+open report. Mutations are checked on the server and recorded with reasons.
+Resolution holds a report row lock, including through the legacy endpoints.
+
+Read endpoints under `/api/v1/admin` include `/reports`, `/content`.
+See [hosting](../hosting/README.md#admin-reporting) for configuration and recovery.
 
 Map detail previews show one complete map period at its native aspect ratio.
 Drag with a mouse or touch, or focus the preview and use arrow keys, to pan

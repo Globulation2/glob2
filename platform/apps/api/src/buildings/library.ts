@@ -1,3 +1,4 @@
+import { resolveReport } from '../admin/moderation.ts';
 import { randomUUID } from 'node:crypto';
 import { sql } from 'kysely';
 import type { FastifyInstance, FastifyRequest } from 'fastify';
@@ -663,16 +664,14 @@ export async function buildingLibraryRoutes(app: FastifyInstance, identity: Iden
     const actor = (await requireRole(identity, r, 'moderator')).account;
     if (!UUID.test(r.params.id) || (r.body as { resolved?: unknown })?.resolved !== true)
       throw apiError('bad_request', 'Choose an existing report to resolve.');
-    await db.transaction().execute(async (trx) => {
-      const row = await trx
-        .updateTable('building_reports')
-        .set({ resolved: true })
-        .where('id', '=', r.params.id)
-        .returning(['id', 'family_id'])
-        .executeTakeFirst();
-      if (!row) throw apiError('not_found', 'No such report.');
-      await audit(trx, actor.id, 'building.report.resolve', row.family_id, { report: row.id });
-    });
+    await resolveReport(
+      db,
+      'buildings',
+      r.params.id,
+      { resolution: 'resolved', reason: 'Reviewed through building moderation' },
+      actor.id,
+      { action: 'building.report.resolve', targetType: 'building', reportTarget: false },
+    );
     return reply.status(204).send();
   });
   app.put<{ Params: { id: string } }>('/api/v1/buildings/:id/moderation', async (r, reply) => {
