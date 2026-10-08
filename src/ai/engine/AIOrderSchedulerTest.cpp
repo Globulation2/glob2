@@ -187,7 +187,11 @@ TEST_SUITE("AIOrderScheduler")
 		const auto poll = [](TestScheduler& scheduler, Uint32 tick, unsigned players, std::chrono::microseconds work) {
 			for (unsigned player = 0; player < players; ++player)
 				scheduler.submit({player, 1, tick, tick, 0}, observation(tick), [work](const auto&) {
-					if (work.count()) std::this_thread::sleep_for(work);
+					// Sub-millisecond sleep_for can round down on Windows.
+					// Measure actual work so the placement threshold is exercised.
+					const auto until = std::chrono::steady_clock::now() + work;
+					while (std::chrono::steady_clock::now() < until)
+						std::this_thread::yield();
 					return nullCommand();
 				});
 			scheduler.takeDue(tick);
