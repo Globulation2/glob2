@@ -154,6 +154,8 @@ TEST_CASE("settings screen; in-game slider; shortcuts and camera cadence [displa
         REQUIRE(gui.loadFromHeaders(map,header,true,true));
         gui.localPlayer=gui.localTeamNo=0;
         gui.adjustLocalTeam();
+        // Camera dimensions come from the presented snapshot.
+        gui.prepareLocalPresentation();
         gui.adjustInitialViewport();
         REQUIRE(gui.canChangeGameSpeed());
         SDL_Event key={}; key.type=SDL_EVENT_KEY_DOWN;
