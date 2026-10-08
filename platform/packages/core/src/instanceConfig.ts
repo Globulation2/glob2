@@ -111,6 +111,12 @@ export const QueueConfig = Strict({
 export type QueueConfig = Static<typeof QueueConfig>;
 
 export const InstanceConfig = Strict({
+  analytics: Type.Optional(
+    Strict({
+      collection: Type.Boolean({ default: true }),
+      display: Type.Boolean({ default: true }),
+    }),
+  ),
   hiveMind: Type.Optional(HiveConfig),
   mapStudio: Type.Optional(MapStudioConfig),
   musicStudio: Type.Optional(MusicStudioConfig),

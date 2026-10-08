@@ -625,8 +625,10 @@ Data safety form in step with it. The Play build includes online play, so the fo
 must declare what the official instance collects when a player goes online (account
 and display name, optional e-mail address from a sign-in provider, user IDs, in-game
 and room chat, uploaded maps, match and connection-quality data, IP addresses in logs
-and rate limits), that it is sent over TLS, that nothing is used for ads, analytics or
-tracking, and that players can download their data and delete their account at
+and rate limits), plus first-party online account activity (90-day identifiable
+markers and 24-month anonymous daily totals). It is sent over TLS; nothing is used
+for advertising or tracking across apps or sites. Players can download their data
+and delete their account at
 `https://app.glob2online.com/account`. Single-player, editor and LAN play collect
 nothing. The game has no minimum age; the Play Console target-audience and content
 answers must match the policy's [children](privacy-policy.md#children) section. Invite links open the app only after the official instance publishes the Play

@@ -14,6 +14,7 @@ import { ACCOUNT_EXPORT_FORMAT, type AccountExport } from '@glob2/protocol';
 /** Tables with account data this export reads, by the column naming the account. */
 export const EXPORTED_ACCOUNT_COLUMNS: Record<string, string[]> = {
   accounts: ['id'],
+  account_activity_days: ['account_id'],
   identities: ['account_id'],
   device_credentials: ['account_id'],
   refresh_tokens: ['account_id'],
@@ -102,6 +103,8 @@ export const EXPORTED_ACCOUNT_COLUMNS: Record<string, string[]> = {
  * account beyond what the export already lists.
  */
 export const UNEXPORTED_ACCOUNT_COLUMNS: Record<string, string> = {
+  'admin_report_resolutions.actor_id':
+    'the moderator who resolved a report, not the reporting account',
   'admin_audit_log.actor_account_id': 'the moderator who acted, not the account',
   'blobs.owner_account_id': 'the files are listed through maps, uploads, music and skins',
   'colony_skin_reports.resolved_by_account_id': 'the moderator who resolved a report',
@@ -1146,6 +1149,14 @@ export async function exportAccount(
         .execute();
       return {
         format: ACCOUNT_EXPORT_FORMAT,
+        activityDays: rows(
+          await tx
+            .selectFrom('account_activity_days')
+            .select(['day', 'kind'])
+            .where('account_id', '=', id)
+            .orderBy('day')
+            .execute(),
+        ),
         exportedAt: new Date().toISOString(),
         instance: origin,
         account: clean({

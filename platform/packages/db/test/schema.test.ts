@@ -13,6 +13,11 @@ type ColumnLists = { [T in keyof Database]: readonly (keyof Database[T] & string
 
 /** Every column of every table, as typed in src/schema.ts. */
 const typedColumns: ColumnLists = {
+  admin_library_publications: ['library', 'version_id', 'day'],
+  account_activity_days: ['account_id', 'day', 'kind'],
+  admin_daily_metrics: ['day', 'metric', 'dimension', 'value'],
+  admin_metric_coverage: ['metric', 'since', 'historical_incomplete'],
+  admin_analytics_settings: ['id', 'collection', 'started_at'],
   admin_report_resolutions: [
     'library',
     'report_id',
@@ -116,6 +121,7 @@ const typedColumns: ColumnLists = {
   terrain_wallets: ['account_id', 'balance', 'reserved'],
   terrain_ledger: ['id', 'account_id', 'amount', 'kind', 'details', 'created_at'],
   terrain_calls: [
+    'completed_at',
     'id',
     'account_id',
     'reserved',
@@ -205,6 +211,7 @@ const typedColumns: ColumnLists = {
   building_wallets: ['account_id', 'balance', 'reserved'],
   building_ledger: ['id', 'account_id', 'amount', 'kind', 'details', 'created_at'],
   building_calls: [
+    'completed_at',
     'id',
     'account_id',
     'reserved',
@@ -293,6 +300,7 @@ const typedColumns: ColumnLists = {
   ai_studio_projects: ['id', 'account_id', 'title', 'revision', 'created_at', 'updated_at'],
   ai_studio_revisions: ['project_id', 'revision', 'source', 'hash', 'reason', 'created_at'],
   ai_studio_requests: [
+    'completed_at',
     'id',
     'project_id',
     'base_revision',
@@ -311,6 +319,7 @@ const typedColumns: ColumnLists = {
   ai_studio_runs: ['id', 'project_id', 'revision', 'seed', 'opponent', 'summary', 'created_at'],
   ai_studio_wallets: ['account_id', 'balance', 'reserved'],
   ai_studio_calls: [
+    'completed_at',
     'id',
     'account_id',
     'reserved',
@@ -600,13 +609,43 @@ const typedColumns: ColumnLists = {
   ],
   music_wallets: ['account_id', 'balance', 'reserved'],
   music_ledger: ['id', 'account_id', 'amount', 'kind', 'details', 'created_at'],
-  music_calls: ['id', 'account_id', 'reserved', 'status', 'charged', 'rate', 'usage', 'created_at'],
+  music_calls: [
+    'completed_at',
+    'id',
+    'account_id',
+    'reserved',
+    'status',
+    'charged',
+    'rate',
+    'usage',
+    'created_at',
+  ],
   map_wallets: ['account_id', 'balance', 'reserved'],
   map_ledger: ['id', 'account_id', 'amount', 'kind', 'details', 'created_at'],
-  map_calls: ['id', 'account_id', 'reserved', 'status', 'charged', 'rate', 'usage', 'created_at'],
+  map_calls: [
+    'completed_at',
+    'id',
+    'account_id',
+    'reserved',
+    'status',
+    'charged',
+    'rate',
+    'usage',
+    'created_at',
+  ],
   hive_wallets: ['account_id', 'balance', 'reserved'],
   hive_ledger: ['id', 'account_id', 'amount', 'kind', 'details', 'created_at'],
-  hive_calls: ['id', 'account_id', 'reserved', 'status', 'charged', 'rate', 'usage', 'created_at'],
+  hive_calls: [
+    'completed_at',
+    'id',
+    'account_id',
+    'reserved',
+    'status',
+    'charged',
+    'rate',
+    'usage',
+    'created_at',
+  ],
   hive_sessions: [
     'id',
     'account_id',
@@ -1310,6 +1349,7 @@ describe('migrations', () => {
         '0051_terrain_studio',
         '0052_building_studio',
         '0053_admin_console',
+        '0054_admin_analytics',
       ]);
       expect(
         (
@@ -1379,7 +1419,7 @@ describe('migrations', () => {
         existing.db,
       );
       const upgraded = await migrateToLatest(existing.db);
-      expect(upgraded).toHaveLength(31);
+      expect(upgraded).toHaveLength(32);
       expect(upgraded.every((migration) => migration.status === 'Success')).toBe(true);
       expect(
         await existing.db
@@ -1526,6 +1566,7 @@ describe('migrations', () => {
         ['0051_terrain_studio', 'Success'],
         ['0052_building_studio', 'Success'],
         ['0053_admin_console', 'Success'],
+        ['0054_admin_analytics', 'Success'],
       ]);
       for (const table of [
         'colony_skin_versions',
@@ -1669,6 +1710,7 @@ describe('migrations', () => {
         ['0051_terrain_studio', 'Success'],
         ['0052_building_studio', 'Success'],
         ['0053_admin_console', 'Success'],
+        ['0054_admin_analytics', 'Success'],
       ]);
       expect(
         await db

@@ -2,6 +2,7 @@
 // sessions, moderation, realtime fan-out) from the API's injected services.
 import type { FastifyReply, FastifyRequest } from 'fastify';
 import type { Account } from '@glob2/db';
+import { AccountActivity } from '@glob2/core';
 import type { ApiServices } from './services.ts';
 import { AccountService } from './auth/accounts.ts';
 import { AdminService, hasRole, type Role } from './auth/admin.ts';
@@ -36,6 +37,7 @@ export interface SharedLimits {
 }
 
 export interface Identity {
+  activity: AccountActivity;
   keys: SigningKeys;
   accounts: AccountService;
   tokens: TokenService;
@@ -86,6 +88,7 @@ export function createIdentity(services: ApiServices): Identity {
   });
   const limits = config.instance.limits ?? {};
   return {
+    activity: new AccountActivity(db, config.instance.analytics?.collection !== false),
     keys,
     accounts,
     tokens,
@@ -226,6 +229,7 @@ export async function authenticate(
   const token = bearerToken(request);
   if (token) {
     const { account, claims } = await identity.tokens.verifyAccess(token);
+    authenticatedAccounts.set(request, account);
     return { account, via: 'bearer', familyId: claims.sid };
   }
   const cookie = request.cookies[sessionCookieName(identity)];
@@ -233,11 +237,14 @@ export async function authenticate(
     const account = await identity.webSessions.find(cookie);
     if (account) {
       requireSameOrigin(identity, request);
+      authenticatedAccounts.set(request, account);
       return { account, via: 'cookie' };
     }
   }
   return undefined;
 }
+
+export const authenticatedAccounts = new WeakMap<FastifyRequest, Account>();
 
 export async function requireAccount(identity: Identity, request: FastifyRequest) {
   const caller = await authenticate(identity, request);

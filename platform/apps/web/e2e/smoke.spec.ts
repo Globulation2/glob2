@@ -319,6 +319,12 @@ test('moderation pages for administrators only', async ({ page }, info) => {
   await page.goto('/admin/reports');
   await expect(page.getByTestId('admin-report')).toContainText('north colony');
   await check(page, info, 'admin-reports');
+  for (const section of ['overview', 'content', 'operations', 'audit']) {
+    await page.goto('/admin/' + section);
+    await expect(page.getByRole('heading', { level: 2 }).first()).toBeVisible();
+    await expect(page.locator('main')).not.toContainText('Internal server error');
+    await check(page, info, 'admin-' + section);
+  }
   await page.goto('/admin/matches');
   await page.getByLabel('Status').selectOption('running');
   await expect(page.getByTestId('match-row')).toHaveCount(1);

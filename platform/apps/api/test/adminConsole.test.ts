@@ -1,10 +1,11 @@
+import { AccountActivity } from '@glob2/core';
 import { Credits } from '@glob2/billing';
 import { AdminOperationDetail } from '@glob2/protocol';
 import { randomUUID } from 'node:crypto';
 import { afterAll, beforeAll, expect, it } from 'vitest';
 import { sql } from 'kysely';
 import { schemaIssues, AdminReportList, AdminContentList } from '@glob2/protocol';
-import { AdminOperations } from '@glob2/protocol';
+import { AdminAnalytics, AdminOperations } from '@glob2/protocol';
 import { createHarness, type Harness, type Instance } from './support.ts';
 let h: Harness, api: Instance;
 const sessions: Record<string, string> = {},
@@ -132,14 +133,39 @@ it('resolves a report and hides its content atomically under contention', async 
 });
 
 it('restricts analytics, finances and recovery to admins and validates their contracts', async () => {
-  for (const [path, schema] of [['operations', AdminOperations]] as const) {
+  for (const [path, schema] of [
+    ['analytics', AdminAnalytics],
+
+    ['operations', AdminOperations],
+  ] as const) {
     expect((await call('/api/v1/admin/' + path, 'moderator')).status).toBe(403);
     const response = await call('/api/v1/admin/' + path);
     const data = await response.json();
     expect(response.status, path + JSON.stringify(data)).toBe(200);
     expect(schemaIssues(schema, data)).toEqual([]);
   }
+  expect((await call('/api/v1/admin/analytics?days=1000')).status).toBe(400);
 });
+it('excludes admin polling and unsuccessful calls from account activity', async () => {
+  await call('/api/v1/admin/content');
+  expect(
+    await h.database.db
+      .selectFrom('account_activity_days')
+      .selectAll()
+      .where('account_id', '=', ids['admin']!)
+      .execute(),
+  ).toHaveLength(0);
+  await call('/api/v1/accounts/me', 'user');
+  await new Promise((resolve) => setTimeout(resolve, 20));
+  expect(
+    await h.database.db
+      .selectFrom('account_activity_days')
+      .selectAll()
+      .where('account_id', '=', ids['user']!)
+      .execute(),
+  ).toHaveLength(1);
+});
+
 it('reconciles Hive once under contention, audits credit consequences, and exposes only metering', async () => {
   const credits = new Credits(h.database.db),
     account = ids['user']!,
@@ -303,4 +329,35 @@ it('supports inspect, hide, resolve, revisit and restore for every library', asy
       ).status,
     ).toBe(204);
   }
+});
+
+it('exports retained activity and erases markers even when recording races with deletion', async () => {
+  const victim = await h.database.db
+    .insertInto('accounts')
+    .values({ kind: 'registered', display_name: 'Activity deletion' })
+    .returningAll()
+    .executeTakeFirstOrThrow();
+  sessions['victim'] = await api.app.identity.webSessions.create(victim.id);
+  await new AccountActivity(h.database.db).record(victim);
+  const exported = (await (await call('/api/v1/accounts/me/export', 'victim')).json()) as {
+    activityDays: { day: string; kind: string }[];
+  };
+  expect(exported.activityDays).toHaveLength(1);
+  const admin = await h.database.db
+    .selectFrom('accounts')
+    .selectAll()
+    .where('id', '=', ids['admin']!)
+    .executeTakeFirstOrThrow();
+  await Promise.all([
+    new AccountActivity(h.database.db).record(victim),
+    api.app.identity.admin.deleteAccount(admin, victim, 'Deletion test'),
+    new AccountActivity(h.database.db).record(victim),
+  ]);
+  expect(
+    await h.database.db
+      .selectFrom('account_activity_days')
+      .selectAll()
+      .where('account_id', '=', victim.id)
+      .execute(),
+  ).toHaveLength(0);
 });

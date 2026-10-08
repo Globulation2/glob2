@@ -1,4 +1,5 @@
 export * from './config.ts';
+export * from './analytics.ts';
 export * from './instanceConfig.ts';
 export * from './queueConfig.ts';
 export * from './logging.ts';
