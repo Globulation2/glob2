@@ -15,10 +15,18 @@ hematite chunks; silica is white-blue quartz points on a pale bed, a spiky
 silhouette that stays distinct from sand ground; cotton is a leafy bush with
 fluffy white bolls in brown star-shaped husks.
 
-Needs NumPy, SciPy and Pillow. Outputs are committed; rerun after editing:
+Painting is deterministic: every random choice comes from a fixed per-resource
+seed, so rerunning the tool unchanged reproduces the committed pixels. Edit the
+layout tables and palettes in each `paint_*` function, preview, then write:
 
-    python3 tools/artwork/paint_resources.py                 # write frames + HD
     python3 tools/artwork/paint_resources.py --sheet artifacts/resources.png
+    python3 tools/artwork/paint_resources.py --sheet artifacts/dirt.png --ground terrain-dirt0
+    python3 tools/artwork/paint_resources.py                 # write frames + HD
+    python3 tools/artwork/package_runtime.py --check
+
+Needs NumPy, SciPy and Pillow (not the pinned encoder interpreter). Writing
+replaces `data/gfx/resource-<name>0.png` and upserts the HD frame in both pack
+copies; the resource registry and simulation are untouched.
 """
 import argparse
 import math
@@ -31,15 +39,21 @@ from scipy import ndimage
 
 ROOT = Path(__file__).resolve().parents[2]
 
-SS = 16           # supersample per logical pixel
-N = 32 * SS       # canvas size
+SS = 16           # supersamples per logical (classic) pixel
+N = 32 * SS       # working canvas size for one 32x32 frame
+HD_CATEGORY = "procedural-materials"
+HD_RECIPE = "procedural resource painter v1"  # package_runtime.py classifies by this prefix
+
+# Top-left light shared with the stock sprites; y grows downward on screen.
 LIGHT = np.array([-0.55, -0.75, 0.9])
 LIGHT = LIGHT / np.linalg.norm(LIGHT)
 
-yy, xx = np.mgrid[0:N, 0:N].astype(np.float32) / SS  # logical coordinates
+# Per-pixel logical coordinates; all layouts below are in classic pixels (0-32).
+yy, xx = np.mgrid[0:N, 0:N].astype(np.float32) / SS
 
 
 def fbm(seed, scale, octaves=4):
+    """Smooth value noise in [0, 1]; `scale` is the base feature size in classic pixels."""
     rng = np.random.default_rng(seed)
     out = np.zeros((N, N), np.float32)
     amp, total = 1.0, 0.0
@@ -66,7 +80,11 @@ def ramp(t, stops):
 
 
 class Layer:
-    """Height-field scene: union of faceted boulders, with per-pixel owner id."""
+    """Height-field scene: union of faceted boulders, with per-pixel owner id.
+
+    `parts[id]` holds each boulder's material tag so painters can colour whole
+    boulders (nuggets, hematite) differently from the stone around them.
+    """
 
     def __init__(self):
         self.h = np.full((N, N), -1.0, np.float32)
@@ -74,6 +92,9 @@ class Layer:
         self.parts = []
 
     def boulder(self, cx, cy, r, height, facets, rng, squash=0.85, top=0.8, mat=0):
+        """Add a rock: the intersection of `facets` jittered sloped planes and a
+        flat top, i.e. a convex faceted dome. `squash` < 1 flattens it vertically
+        on screen for the three-quarter view."""
         dx, dy = xx - cx, (yy - cy) / squash
         base = rng.random() * math.tau
         h = np.full((N, N), np.inf, np.float32)
@@ -91,6 +112,8 @@ class Layer:
         return pid
 
     def normals(self):
+        """Surface normals of the height field, lightly blurred so facet edges
+        antialias; the 0.75 factor softens slopes toward the stock rocks' look."""
         h = np.where(self.id >= 0, self.h, 0)
         h = ndimage.gaussian_filter(h, 0.6 * SS / 4)
         gy, gx = np.gradient(h)
@@ -101,10 +124,12 @@ class Layer:
 
 
 def lambert(n, amb=0.38, k=0.75):
+    """Diffuse brightness; values above 1 feed each palette's highlight stop."""
     return np.clip(amb + k * (n @ LIGHT), 0, 1.3)
 
 
 def spec(n, power=24):
+    """Blinn-Phong highlight for the metallic materials (gold, hematite)."""
     v = np.array([0, 0, 1.0])
     hv = LIGHT + v
     hv /= np.linalg.norm(hv)
@@ -128,13 +153,16 @@ def rim(alpha, width=0.9):
 
 
 def shadow(alpha, dx=1.6, dy=1.3, blur=1.1, strength=0.42):
+    """Soft contact shadow cast to the lower right, opposite the light."""
     s = ndimage.shift(alpha, (dy * SS, dx * SS), order=1)
     s = ndimage.gaussian_filter(s, blur * SS)
     return s * strength
 
 
 def compose(rgb, alpha, shadow_strength=0.42, outline=(40, 22, 60), outline_k=0.55):
-    """Shadow under the sprite, soft dark rim on the silhouette."""
+    """Finish a painted object: darken its silhouette rim toward `outline` so it
+    separates from any ground, then add the contact shadow underneath. Returns
+    straight (non-premultiplied) RGBA with alpha in [0, 1]."""
     r = rim(alpha)[..., None]
     rgb = rgb * (1 - r * outline_k) + np.array(outline, np.float32) * r * outline_k
     sh = shadow(alpha, strength=shadow_strength) * (1 - alpha)
@@ -155,6 +183,7 @@ def downsample(img, size):
 
 
 def sharpen(img, amount=0.35):
+    """Mild unsharp mask for the 32px frame, which the 16x box filter softens."""
     rgb = img[..., :3]
     blur = ndimage.gaussian_filter(rgb, (0.7, 0.7, 0))
     img = img.copy()
@@ -163,6 +192,7 @@ def sharpen(img, amount=0.35):
 
 
 def to_image(img):
+    """Quantise to 8-bit RGBA and clear near-invisible fringe pixels."""
     out = img.copy()
     out[..., 3] *= 255
     out = np.clip(np.round(out), 0, 255).astype(np.uint8)
@@ -172,10 +202,12 @@ def to_image(img):
 
 # --------------------------------------------------------------------------- ore
 
+# Palette stops are (brightness, rgb). STONE matches the stock rocks' lavender.
 STONE = [(0.0, (52, 36, 82)), (0.35, (98, 80, 130)), (0.65, (145, 125, 175)), (0.9, (182, 164, 210)), (1.1, (215, 202, 235))]
 
 
 def ore_cluster(rng, layout):
+    """Build a Layer from (cx, cy, radius, height, facets, material) rows."""
     L = Layer()
     for cx, cy, r, ht, f, mat in layout:
         L.boulder(cx, cy, r, ht, f, rng, mat=mat)
@@ -202,7 +234,8 @@ def paint_gold(seed=7):
     lit = lambert(n)
     mats = np.array(L.parts)[np.maximum(L.id, 0)]
     stone = ramp(lit, STONE)
-    # gold veins: thin ridges of noise across the stone, broader near the top facets
+    # Gold covers stone two ways: veins along the mid-level contour of one noise
+    # field (width varied by a second), and larger patches where a third peaks.
     v = fbm(seed + 1, 7, 4)
     w = fbm(seed + 2, 4, 3)
     vein = np.clip((1 - np.abs(v - 0.5) / (0.05 + 0.07 * w)) * 2.5, 0, 1)
@@ -214,12 +247,13 @@ def paint_gold(seed=7):
     rgb = stone * (1 - gold_mask[..., None]) + gold * gold_mask[..., None]
     s = seams(L.id)[..., None]
     rgb = rgb * (1 - 0.55 * s)
-    # sparkles
+    # A few star glints on fully gold pixels sell "metal" at small sizes.
     rgb = sparkle(rgb, alpha * gold_mask, rng, count=4, size=1.6)
     return compose(np.clip(rgb, 0, 255), alpha)
 
 
 def sparkle(rgb, where, rng, count, size):
+    """Paint `count` four-point glints centred on random pixels of `where`."""
     ys, xs = np.nonzero(where > 0.9)
     if not len(ys):
         return rgb
@@ -256,7 +290,8 @@ def paint_iron(seed=11):
     rust = ramp(lit, RUST)
     HEM = [(0.0, (22, 20, 30)), (0.35, (48, 46, 60)), (0.65, (78, 78, 96)), (0.9, (110, 112, 132)), (1.1, (150, 155, 175))]
     hem = ramp(lit, HEM) + spec(n, 30)[..., None] * np.array([150, 170, 210])
-    # rust banding: stratified noise, stronger on stone
+    # Rust follows tilted sedimentary bands warped by noise, then thresholded so
+    # only the strongest bands show; it is fainter on the metallic chunks.
     band = fbm(seed + 4, 5, 4)
     strata = 0.5 + 0.5 * np.sin((yy * 0.9 + xx * 0.35) * 1.3 + band * 7)
     rust_mask = np.clip((strata * 0.6 + band * 0.7 - 0.74) * 5, 0, 1)
@@ -272,6 +307,7 @@ def paint_iron(seed=11):
 # ------------------------------------------------------------------------ silica
 
 def poly(pts):
+    """Filled polygon mask from classic-pixel points."""
     img = Image.new("L", (N, N), 0)
     ImageDraw.Draw(img).polygon([(x * SS, y * SS) for x, y in pts], fill=255)
     return np.asarray(img, np.float32) / 255
@@ -288,7 +324,9 @@ def paint_silica(seed=5):
     BED = [(0.0, (88, 78, 92)), (0.35, (140, 130, 140)), (0.65, (190, 182, 186)), (0.9, (222, 216, 214)), (1.1, (240, 236, 232))]
     rgb = ramp(lambert(n), BED)
     rgb *= (1 - 0.45 * seams(L.id)[..., None])
-    # crystals: (base x, base y, length, width, lean angle deg) back to front
+    # Crystals: (base x, base y, length, width, lean angle deg), back to front.
+    # Each is a prism drawn as four flat faces: lit left side, shaded right side
+    # and a two-faced pyramidal tip, with a white ridge line between the sides.
     crystals = [
         (13.0, 19.5, 15.5, 4.6, -14),
         (19.0, 19.0, 13.0, 4.2, 16),
@@ -336,6 +374,7 @@ def paint_silica(seed=5):
 
 
 def line_mask(p0, p1, w):
+    """Antialiased segment mask of half-width `w` (classic pixels)."""
     x0, y0 = p0
     x1, y1 = p1
     dx, dy = x1 - x0, y1 - y0
@@ -346,21 +385,18 @@ def line_mask(p0, p1, w):
 
 # ------------------------------------------------------------------------ cotton
 
-def disc(cx, cy, r, sq=1.0):
-    return np.clip((r - np.hypot(xx - cx, (yy - cy) / sq)) * SS / 2, 0, 1)
-
-
 def paint_cotton(seed=3):
     rng = np.random.default_rng(seed)
     rgb = np.zeros((N, N, 3), np.float32)
     alpha = np.zeros((N, N), np.float32)
 
+    # Painter's algorithm: stems, then leaves, then bolls on top.
     def put(mask, col):
         nonlocal rgb, alpha
         rgb = rgb * (1 - mask[..., None]) + col * mask[..., None]
         alpha = np.maximum(alpha, mask)
 
-    # woody stems from a common base
+    # Woody stems from a common base to each boll: (cx, cy, radius).
     base = (16.0, 29.0)
     bolls = [(10.0, 9.0, 4.3), (21.0, 8.0, 4.5), (24.5, 17.5, 4.0), (7.0, 18.5, 3.9), (15.5, 15.0, 4.7), (17.0, 23.5, 3.7)]
     STEM = np.array([96, 62, 36.0])
@@ -368,7 +404,8 @@ def paint_cotton(seed=3):
         mid = ((base[0] + bx) / 2 + rng.uniform(-1.5, 1.5), (base[1] + by) / 2 + 1)
         put(line_mask(base, mid, 0.75) * 1.0, STEM)
         put(line_mask(mid, (bx, by + r * 0.4), 0.6), STEM * 1.1)
-    # leaves: dark green lobed ovals tucked between bolls
+    # Leaves: (cx, cy, half-length, rotation) ovals with a midrib, mostly on the
+    # bush's outline so green frames the white bolls.
     LEAF_D = np.array([34, 78, 30.0])
     LEAF_L = np.array([104, 160, 62.0])
     leaves = [(15.5, 5.0, 4.0, 1.4), (27.5, 10.5, 4.0, 0.7), (3.5, 11.5, 4.0, -0.7), (28.5, 23.0, 3.8, 0.9),
@@ -383,7 +420,8 @@ def paint_cotton(seed=3):
         vein = np.clip(1 - np.abs(v) / 0.22, 0, 1) * (np.abs(u) < lr * 0.8)
         col = col * (1 - 0.35 * vein[..., None])
         put(m, col)
-    # bolls: brown star-shaped bracts behind, then 4 fluffy white lobes
+    # Bolls: a five-pointed brown husk (bract) behind four shaded white lobes.
+    # The husk is what makes it read as cotton rather than a white flower.
     BRACT = np.array([132, 86, 46.0])
     BRACT_D = np.array([70, 42, 24.0])
     for bx, by, r in bolls:
@@ -415,12 +453,11 @@ def paint_cotton(seed=3):
     return compose(np.clip(rgb, 0, 255), alpha, shadow_strength=0.38, outline=(40, 40, 52), outline_k=0.5)
 
 
-HD_CATEGORY = "procedural-materials"
-HD_RECIPE = "procedural resource painter v1"
 PAINTERS = {"gold-ore": paint_gold, "iron-ore": paint_iron, "silica": paint_silica, "cotton": paint_cotton}
 
 
 def render(name):
+    """Paint `name` and return (classic 32px, HD 128px) PIL images."""
     img = PAINTERS[name]()
     hd = downsample(img, 128)
     classic = sharpen(downsample(img, 32), 0.3)
