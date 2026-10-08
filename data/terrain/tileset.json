@@ -588,9 +588,11 @@
           "weight": 1
         }
       ],
-      "animation_frames": 4,
+      "animation_frames": 16,
       "animation_stride": 16,
-      "animation_ticks": 24,
+      "animation_ticks": 6,
+      "edges": "periodic",
+      "variant_grid": 4,
       "minimap": [0, 40, 120],
       "seam": {
         "height": 5,
@@ -2575,9 +2577,11 @@
           "weight": 1
         }
       ],
-      "animation_frames": 4,
+      "animation_frames": 16,
       "animation_stride": 16,
-      "animation_ticks": 24,
+      "animation_ticks": 6,
+      "edges": "periodic",
+      "variant_grid": 4,
       "minimap": [24, 18, 84],
       "seam": {
         "height": 6,

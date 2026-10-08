@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #pragma once
 #include <SDLGraphicContext.h>
-#include "terrain/TerrainMaterials.h"
+#include "terrain/TerrainCompositor.h"
 #include <array>
 #include <cstdint>
 #include <memory>
@@ -18,6 +18,23 @@ class SoftwareTerrainCache
   public:
 	static constexpr int ChunkTiles = 16, ChunkPixels = ChunkTiles * 32;
 	static constexpr std::size_t Budget = 32u * 1024u * 1024u, GPUBudget = 128u * 1024u * 1024u;
+	// Coverage kept for mixed cells next to animated materials, so a phase change
+	// re-blends their textures instead of re-sampling coverage. A quarter of the
+	// page budget; cells beyond it compose without a kept mask.
+	static constexpr std::size_t MaskBudget = Budget / 4, GPUMaskBudget = GPUBudget / 4;
+	struct HeldMask
+	{
+		TerrainVisual::Compositor::CellMask mask;
+		std::shared_ptr<std::size_t> total;
+		HeldMask(TerrainVisual::Compositor::CellMask m, std::shared_ptr<std::size_t> t)
+			: mask(std::move(m)), total(std::move(t))
+		{
+			*total += mask.bytes();
+		}
+		~HeldMask() { *total -= mask.bytes(); }
+		HeldMask(const HeldMask &) = delete;
+		HeldMask &operator=(const HeldMask &) = delete;
+	};
 	struct Tile
 	{
 		TerrainVisual::Recipe recipe;
@@ -40,6 +57,7 @@ class SoftwareTerrainCache
 		std::array<bool, ChunkTiles * ChunkTiles> opaque{}, empty{};
 		std::unique_ptr<GAGCore::DrawableSurface> image;
 		std::vector<OpaqueRun> opaqueRuns;
+		std::array<std::unique_ptr<HeldMask>, ChunkTiles * ChunkTiles> masks;
 		bool valid = false;
 		// Only materials present in discovered recipes invalidate this page.
 		std::vector<std::pair<TerrainVisual::MaterialId, std::uint64_t>> materialRevisions;
@@ -62,11 +80,16 @@ class SoftwareTerrainCache
 							 int bottom, int vx, int vy, Uint32 visibleTeams, bool wholeMap,
 							 int animationTime, int preferredResolution, bool tiledCapture = false,
 							 int preferredDownsample = 0);
+	// Frees kept masks of pages not drawn this frame, oldest first, until
+	// `needed` more bytes fit the mask budget. Returns whether they now fit.
+	bool releaseMasks(std::size_t needed);
 	std::vector<std::unique_ptr<Chunk>> chunks;
 	std::shared_ptr<const TerrainRegistry> registry;
     std::shared_ptr<const MapAssetBundle> assets;
 	std::vector<Copy> copies;
 	std::uint64_t frame = 0, hits = 0, rebuilds = 0;
+	// Bytes of every chunk's kept masks; shared so a mask outliving the cache is safe.
+	std::shared_ptr<std::size_t> maskTotal = std::make_shared<std::size_t>(0);
 	SDL_Rect paintBounds{};
 	// Composition scale and subsequent page reduction are separate: reduction
 	// filters the native material result, never its individual source textures.
@@ -97,4 +120,5 @@ class SoftwareTerrainCache
 	std::size_t bytes() const;
 	std::uint64_t cacheHits() const { return hits; }
 	std::uint64_t cacheRebuilds() const { return rebuilds; }
+	std::size_t maskBytes() const { return *maskTotal; }
 };
