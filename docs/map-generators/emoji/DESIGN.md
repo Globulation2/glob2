@@ -36,7 +36,7 @@ feature islands reached by a crossing is a known limit of every face, not only n
 Regular outlines divide a grass interior from the surrounding country; crossings
 bridge the rim's water. Filled lagoons make shoreline and swimming important. Inverse
 filled shapes provide a central continent. Inverse outlines use thicker strokes
-(minimum 14 undermap corners) to retain land after beaches, creating narrow fronts.
+(minimum 14 vertices) to retain land after beaches, creating narrow fronts.
 The bypass and crossing causeways deliberately override the binary
 artwork before starts are chosen. Beaches are sand in every mode.
 

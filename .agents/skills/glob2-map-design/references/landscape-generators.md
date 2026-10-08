@@ -85,7 +85,7 @@ are distinct effects: a nearby sand tile is not a blanket zero-growth radius.
 Three useful patterns emerge:
 
 1. **Protected settlements beside productive country.** Polder's village ring and Old growth's
-   clearing ring use two undermap-corner layers of sand to resist bridging through the terrain
+   clearing ring use two vertex layers of sand to resist bridging through the terrain
    conversion. Polder removes home wheat/wood blocks because the external rows supply them and
    the interior needs building room. Old growth excludes home wood while seeding wheat around
    several pools. Validate both the ring and harvest access across it.
@@ -111,7 +111,7 @@ examples of tuning after play, not proof that their current defaults solve every
 ## Building and movement room after rasterization
 
 Measure pure grass footprints on the final map, not disc radii or nominal land area. Terrain
-uses four undermap corners per tile, so beaches consume more usable room than their painted
+takes each tile's rules from its four corner vertices, so beaches consume more usable room than their painted
 outline suggests. A thin pond can become almost all beach; a narrow island can keep walkable
 sand but lose its building strip. Tidal flats sizes oasis ponds down with small oases; Coral
 keeps a minimum branch half-width of four so beaches plus a road leave some grass.
