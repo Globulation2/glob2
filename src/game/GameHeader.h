@@ -29,7 +29,7 @@ public:
 	void reset();	
 
 	///Loads game header information from the stream
-	bool load(GAGCore::InputStream *stream, Sint32 versionMinor);
+	bool load(GAGCore::InputStream *stream, Sint32 versionMinor, Sint32 historicalGrowthVersion = 0);
 	
 	///Saves game header information to the stream
 	void save(GAGCore::OutputStream *stream) const;

@@ -1,3 +1,4 @@
+import { studioLocal } from './components/studio/storage.ts';
 import { Players } from './pages/Players.tsx';
 import './music/music.css';
 import { Skins } from './pages/Skins.tsx';
@@ -74,6 +75,7 @@ const CREDITS_URL = `${SOURCE_URL}/blob/master/docs/assets/source-attribution.md
 
 interface Route {
   pattern: string;
+  workspace?: boolean;
   section: string;
   title: string;
   render: (params: Record<string, string>) => ReactNode;
@@ -94,12 +96,14 @@ export const ROUTES: Route[] = [
   },
   {
     pattern: '/ai-building-studio',
+    workspace: true,
     section: 'buildings',
     title: 'AI Building Studio',
     render: () => <AiBuildingStudio />,
   },
   {
     pattern: '/ai-building-studio/:id',
+    workspace: true,
     section: 'buildings',
     title: 'AI Building Studio',
     render: (p) => <AiBuildingStudio key={p['id']} id={p['id']} />,
@@ -124,12 +128,14 @@ export const ROUTES: Route[] = [
   },
   {
     pattern: '/terrain-studio',
+    workspace: true,
     section: 'sets',
     title: 'AI Terrain Studio',
     render: () => <TerrainStudio />,
   },
   {
     pattern: '/terrain-studio/:id',
+    workspace: true,
     section: 'sets',
     title: 'AI Terrain Studio',
     render: (p) => <TerrainStudio key={p['id']} id={p['id']} />,
@@ -149,9 +155,16 @@ export const ROUTES: Route[] = [
     title: 'Set library',
     render: (p) => <SetDetail key={p['id']} id={p['id'] ?? ''} />,
   },
-  { pattern: '/ai-studio', section: 'ais', title: 'AI Studio', render: () => <AiStudio /> },
+  {
+    pattern: '/ai-studio',
+    workspace: true,
+    section: 'ais',
+    title: 'AI Studio',
+    render: () => <AiStudio />,
+  },
   {
     pattern: '/ai-studio/:id',
+    workspace: true,
     section: 'ais',
     title: 'AI Studio',
     render: (p) => <AiStudio key={p['id']} id={p['id']} />,
@@ -186,12 +199,14 @@ export const ROUTES: Route[] = [
   },
   {
     pattern: '/music-studio',
+    workspace: true,
     section: 'music',
     title: 'AI Music Studio',
     render: () => <MusicStudio />,
   },
   {
     pattern: '/music-studio/:id',
+    workspace: true,
     section: 'music',
     title: 'AI Music Studio',
     render: (p) => <MusicStudio key={p['id']} id={p['id']} />,
@@ -207,12 +222,14 @@ export const ROUTES: Route[] = [
   { pattern: '/skins', section: 'skins', title: 'Colony skins', render: () => <Skins /> },
   {
     pattern: '/map-studio',
+    workspace: true,
     section: 'maps',
     title: 'AI Map Studio',
     render: () => <MapStudio />,
   },
   {
     pattern: '/map-studio/:id',
+    workspace: true,
     section: 'maps',
     title: 'AI Map Studio',
     render: (p) => <MapStudio key={p['id']} id={p['id']} />,
@@ -344,16 +361,27 @@ function Layout() {
   const section = found?.route.section;
   const name = instance?.name ?? 'Globulation 2';
   const home = section === 'home';
-  const studio =
-    section === 'skins' ||
-    (found?.route.pattern.startsWith('/map-studio') ?? false) ||
-    (found?.route.pattern.startsWith('/music-studio') ?? false);
+  const studio = section === 'skins' || !!found?.route.workspace;
   const main = useRef<HTMLElement>(null);
-  const mapWorkspace = found?.route.pattern.startsWith('/map-studio') ?? false;
-  const [navigationCollapsed, setNavigationCollapsed] = useState(false);
-  const [mapNavigationCollapsed, setMapNavigationCollapsed] = useState(true);
-  const collapsed = mapWorkspace ? mapNavigationCollapsed : navigationCollapsed;
-  const setCollapsed = mapWorkspace ? setMapNavigationCollapsed : setNavigationCollapsed;
+  const navigationKey = `studio-navigation:${account?.id ?? 'anonymous'}`;
+  const [navigationPreference, setNavigationPreference] = useState(() => ({
+    key: navigationKey,
+    collapsed: studioLocal.getItem(navigationKey) !== 'expanded',
+  }));
+  if (navigationPreference.key !== navigationKey)
+    setNavigationPreference({
+      key: navigationKey,
+      collapsed: studioLocal.getItem(navigationKey) !== 'expanded',
+    });
+  const collapsed =
+    studio &&
+    (navigationPreference.key === navigationKey
+      ? navigationPreference.collapsed
+      : studioLocal.getItem(navigationKey) !== 'expanded');
+  const setCollapsed = (value: boolean) => {
+    setNavigationPreference({ key: navigationKey, collapsed: value });
+    studioLocal.setItem(navigationKey, value ? 'collapsed' : 'expanded');
+  };
   const drawer = useRef<HTMLDialogElement>(null);
   const [drawerOpen, setDrawerOpen] = useState(false);
   const openNavigation = () => {
@@ -363,15 +391,10 @@ function Layout() {
   useEffect(() => {
     if (typeof window.matchMedia !== 'function') return;
     const close = () => drawer.current?.close();
-    const expanded = window.matchMedia('(min-width: 1100px)');
-    const mobile = window.matchMedia('(max-width: 899px)');
-    expanded.addEventListener('change', close);
-    mobile.addEventListener('change', close);
-    return () => {
-      expanded.removeEventListener('change', close);
-      mobile.removeEventListener('change', close);
-    };
-  }, []);
+    const rail = window.matchMedia(studio ? '(min-width: 600px)' : '(min-width: 900px)');
+    rail.addEventListener('change', close);
+    return () => rail.removeEventListener('change', close);
+  }, [studio]);
   useEffect(() => {
     if (drawer.current?.open) drawer.current.close();
   }, [location.path]);
@@ -436,7 +459,7 @@ function Layout() {
             aria-label={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
             aria-expanded={!collapsed}
           >
-            ☰
+            <Icon name="list-details" />
           </button>
         )}
       </div>
@@ -510,7 +533,7 @@ function Layout() {
         }}
         aria-label="Open navigation"
       >
-        ☰
+        <Icon name="list-details" />
       </button>
       <dialog
         ref={drawer}

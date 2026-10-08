@@ -5604,6 +5604,30 @@ Rautamalmi
 Kvartsihiekka
 [Cotton]
 Puuvilla
+[Jungle trees]
+Viidakkopuut
+[Pine trees]
+Männyt
+[Dead trees]
+Kuolleet puut
+[Ruins]
+Rauniot
+[Camp-site]
+Leiripaikka
+[Ancient debris]
+Muinaiset jäänteet
+[Scrub]
+Pensaikko
+[Tall grass]
+Korkea ruoho
+[Maize]
+Maissi
+[Potatoes]
+Perunat
+[Rice]
+Riisi
+[Fish]
+Kalat
 [Reroll terrain look]
 Arvo maaston ulkoasu uudelleen
 [boulders]

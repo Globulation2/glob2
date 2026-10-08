@@ -1,3 +1,4 @@
+import { useTheme } from '../../theme.tsx';
 import { useEffect, useRef } from 'react';
 import * as monaco from 'monaco-editor';
 import EditorWorker from 'monaco-editor/esm/vs/editor/editor.worker?worker';
@@ -28,6 +29,10 @@ export default function Editor({
   readOnly: boolean;
   onChange: (text: string) => void;
 }) {
+  const { theme } = useTheme();
+  useEffect(() => {
+    monaco.editor.setTheme(theme === 'dark' ? 'vs-dark' : 'vs');
+  }, [theme]);
   const host = useRef<HTMLDivElement>(null),
     editor = useRef<monaco.editor.IStandaloneCodeEditor | monaco.editor.IStandaloneDiffEditor>(
       null,
@@ -37,7 +42,7 @@ export default function Editor({
   useEffect(() => {
     change.current = onChange;
   }, [onChange]);
-  const initial = useRef({ source, baseline, readOnly });
+  const initial = useRef({ source, baseline, readOnly, theme });
   const diff = baseline !== undefined;
   useEffect(() => {
     if (!host.current) return;
@@ -53,7 +58,7 @@ export default function Editor({
       fontSize: 14,
       readOnly: initial.current.readOnly,
       scrollBeyondLastLine: false,
-      theme: 'vs-dark',
+      theme: initial.current.theme === 'dark' ? 'vs-dark' : 'vs',
       ariaLabel: 'AI JavaScript source',
     };
     const e = diff

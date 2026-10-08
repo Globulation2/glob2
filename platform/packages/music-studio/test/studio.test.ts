@@ -273,3 +273,60 @@ it('rejects delivery and checkpoints from an old lease after another worker clai
   await studio.finish(current, result);
   expect(await studio.credits.balance(account)).toEqual({ balance: 2, reserved: 0, available: 2 });
 });
+
+it('a discussion turn completes without a generation or reservation', async () => {
+  const { account, thread } = await fixture();
+  const input = { id: randomUUID(), text: 'What instruments would suit this?', settings };
+  await studio.submit(account, thread, 'chat', input, 'music-v1', 60, undefined, true);
+  const row = (await studio.request(input.id))!;
+  await studio.finish(row, {
+    text: 'Consider flute and harp.',
+    brief: 'Flute and harp',
+    action: 'discuss',
+  });
+  expect(
+    (await studio.get(account, thread)).requests.filter((r) => r.kind === 'generate'),
+  ).toHaveLength(0);
+  expect((await studio.credits.balance(account)).reserved).toBe(0);
+});
+it('retries and replayed turn completions enqueue exactly one paid build with its persisted identity', async () => {
+  const { account, thread } = await fixture();
+  const input = { id: randomUUID(), text: 'Compose a flute soundtrack', settings };
+  await Promise.all(
+    Array.from({ length: 5 }, () =>
+      studio.submit(account, thread, 'chat', input, 'music-v1', 60, undefined, true),
+    ),
+  );
+  const row = (await studio.request(input.id))!;
+  const generationId = row.checkpoints['generationId'];
+  await expect(
+    studio.submit(
+      account,
+      thread,
+      'chat',
+      { ...input, settings: { ...settings, seed: 5 } },
+      'music-v1',
+      60,
+      undefined,
+      true,
+    ),
+  ).rejects.toThrow('retry identifier');
+  await Promise.all(
+    Array.from({ length: 5 }, () =>
+      studio.finish(row, {
+        text: 'Creating your flute soundtrack.',
+        brief: 'Flute',
+        action: 'build',
+      }),
+    ),
+  );
+  const builds = (await studio.get(account, thread)).requests.filter((r) => r.kind === 'generate');
+  expect(builds.map((r) => r.id)).toEqual([generationId]);
+  expect(await studio.credits.balance(account)).toEqual({ balance: 3, reserved: 1, available: 2 });
+  const build = (await studio.request(String(generationId)))!;
+  await Promise.all([
+    studio.finish(build, await delivery()),
+    studio.finish(build, await delivery()),
+  ]);
+  expect(await studio.credits.balance(account)).toEqual({ balance: 2, reserved: 0, available: 2 });
+});

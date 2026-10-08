@@ -5604,6 +5604,30 @@ Fera erco
 Kvarco
 [Cotton]
 Kotono
+[Jungle trees]
+Ĝangalaj arboj
+[Pine trees]
+Pinoj
+[Dead trees]
+Mortintaj arboj
+[Ruins]
+Ruinoj
+[Camp-site]
+Tendaro
+[Ancient debris]
+Antikvaj rubaĵoj
+[Scrub]
+Arbustaro
+[Tall grass]
+Alta herbo
+[Maize]
+Maizo
+[Potatoes]
+Terpomoj
+[Rice]
+Rizo
+[Fish]
+Fiŝoj
 [Reroll terrain look]
 Denove hazardigi la aspekton de la tereno
 [boulders]

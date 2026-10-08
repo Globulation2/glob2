@@ -95,6 +95,11 @@ namespace GAGCore
 		TextInputStream(StreamBackend *backend);
 		//! Return all subsections of root
 		void getSubSections(const std::string &root, std::set<std::string> *sections);
+		//! Test a field relative to the current section without changing parser state.
+		bool hasField(const std::string &name) const
+		{
+			return table.contains(key.empty() ? name : key + "." + name);
+		}
 		
 		virtual void read(void *data, size_t size, const std::string name);
 		virtual Sint8 readSint8(const std::string name) { return static_cast<Sint8>(readFromTable<signed>(name)); }

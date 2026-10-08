@@ -759,7 +759,8 @@ record. `glob2 --sim-version` prints the JSON.
   followed by the simulation data files. The revision is hashed first as a pseudo-file
   with path `#sim-revision` and the revision in decimal ASCII as its content. The data
   files are those listed in `Online::simDataFiles()`: the Maxima strategies (`data/maxima/*.strategy`), the
-  Nicowar tables (`data/nicowar.default.txt`, `data/nicowar.txt`), the default building
+  Nicowar tables (`data/nicowar.default.txt`, `data/nicowar.txt`), the default resource
+  registry (`data/resources/registry.json`), the default building
   manifest (`data/buildings/manifest.json`) and every definition it references, and the USL runtime
   (`data/usl/*/Runtime/*.usl`), in byte-wise sorted path order. For each file the hash
   takes the path bytes, one zero byte, the content length as a big-endian 64-bit number

@@ -215,7 +215,7 @@ void Game::prestigeSyncStep()
 void Game::syncStep(Sint32 localTeam, PreparationCompletion completion)
 {
 	const auto random = bindRandom();
-	map.preparePendingGradient();
+	map.preparePendingWorld();
 	applyClientRequests();
 	if (!anyPlayerWaited)
 	{
@@ -286,7 +286,8 @@ void Game::syncStep(Sint32 localTeam, PreparationCompletion completion)
 		// All world mutations, including script/fog/project tail work, are done.
 		// Selection stays ordered; only private preparation can join AI decisions.
 		map.stagePeriodicGradientPreparation();
-		if (completion == PreparationCompletion::Complete) map.preparePendingGradient();
+        map.stageResourceGrowth();
+		if (completion == PreparationCompletion::Complete) map.preparePendingWorld();
 	}
 }
 

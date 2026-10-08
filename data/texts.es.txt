@@ -5604,6 +5604,30 @@ Mineral de hierro
 Sílice
 [Cotton]
 Algodón
+[Jungle trees]
+Árboles de selva
+[Pine trees]
+Pinos
+[Dead trees]
+Árboles muertos
+[Ruins]
+Ruinas
+[Camp-site]
+Campamento
+[Ancient debris]
+Restos antiguos
+[Scrub]
+Matorral
+[Tall grass]
+Hierba alta
+[Maize]
+Maíz
+[Potatoes]
+Patatas
+[Rice]
+Arroz
+[Fish]
+Peces
 [Reroll terrain look]
 Volver a sortear el aspecto del terreno
 [boulders]

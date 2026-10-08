@@ -69,6 +69,7 @@ void Map::installCatalogs(std::shared_ptr<const TerrainRegistry> terrain,
         deposits[i]=r;
     }
     finishGradientPipeline();
+    gradientRuntime->growth.reset();
     terrainRegistryValue = std::move(terrain);
     assetBundleValue = std::move(assets);
     resourceRegistryValue=next;
@@ -149,7 +150,7 @@ void Map::releaseResourceStock(size_t index)
     }
 }
 
-void Map::initializeResourceStock(size_t index)
+void Map::initializeResourceStock(size_t index, const std::array<Uint16, MaterialCount> *initialStocks)
 {
     markResource(index);
     auto& r=resourceCells[index].resource;
@@ -159,7 +160,7 @@ void Map::initializeResourceStock(size_t index)
     const auto& yields=resourceRegistry().yields(static_cast<ResourceId>(r.type));
     if (std::has_single_bit(p.materialMask))
     {
-        r.amount=std::min<Uint32>(r.amount,yields[materialIndex(p.primaryMaterial)].capacity);
+        r.amount=std::min<Uint32>(initialStocks ? (*initialStocks)[materialIndex(p.primaryMaterial)] : r.amount,yields[materialIndex(p.primaryMaterial)].capacity);
         if (!r.amount && !p.persistsWhenEmpty) r.clear();
         return;
     }
@@ -169,7 +170,7 @@ void Map::initializeResourceStock(size_t index)
     else { slot=freeResourceStocks.back(); freeResourceStocks.pop_back(); }
     resourceStockIndices[index]=slot;
     auto& stocks=resourceStocks[slot-1];
-    for (unsigned m=0; m<MaterialCount; ++m) stocks[m]=yields[m].initial;
+    for (unsigned m=0; m<MaterialCount; ++m) stocks[m]=initialStocks ? std::min((*initialStocks)[m], yields[m].capacity) : yields[m].initial;
     refreshResourceTotal(index);
 }
 

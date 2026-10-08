@@ -170,6 +170,13 @@ Catalog Catalog::parse(const nlohmann::json &j)
 		const auto edges = m.value("edges", nlohmann::json("blend"));
 		require(edges == "blend" || edges == "periodic", "edges must be 'blend' or 'periodic'");
 		v.periodicEdges = edges == "periodic";
+		if (m.contains("variant_grid"))
+		{
+			// A power of two divides every map size, so the block wraps on the torus.
+			v.variantGrid = integerInRange(m.at("variant_grid"), 1, 16);
+			require((v.variantGrid & (v.variantGrid - 1)) == 0, "variant_grid must be a power of two");
+			require(v.periodicEdges, "variant_grid requires periodic edges");
+		}
 		if (m.contains("decor"))
 		{
 			const auto &d = m.at("decor");
@@ -219,6 +226,8 @@ Catalog Catalog::parse(const nlohmann::json &j)
 			v.variants.push_back({frame, unsigned(w)});
 			v.totalWeight += unsigned(w);
 		}
+		require(!v.variantGrid || v.variants.size() == std::size_t(v.variantGrid * v.variantGrid),
+				"variant_grid needs one variant per block cell");
 		c.materials.push_back(std::move(v));
 	}
 	require(j.at("bindings").is_object(), "bindings must be an object");
@@ -264,6 +273,11 @@ std::uint32_t mapSeedSalt(std::uint32_t seed)
 unsigned Catalog::variantIndex(MaterialId id, int x, int y, std::uint32_t seed) const
 {
 	const auto &m = materials[id];
+	if (m.variantGrid)
+	{
+		const unsigned mask = unsigned(m.variantGrid) - 1;
+		return (unsigned(y) & mask) * unsigned(m.variantGrid) + (unsigned(x) & mask);
+	}
 	unsigned n = hash(x, y, m.salt ^ mapSeedSalt(seed)) % m.totalWeight;
 	for (unsigned i = 0; i < m.variants.size(); ++i)
 	{

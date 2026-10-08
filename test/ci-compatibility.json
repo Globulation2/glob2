@@ -58,6 +58,8 @@
     "AIPipeline/*",
     "WorldSnapshot/*",
     "SharedWorkerLifecycle/*",
+    "ResourceGrowth/*",
+    "ResourceGrowthBenchmark/player-free*",
     "AIStateContinuation/*",
     "AIRecoveryCoverage/*",
     "AIDecisionCoverage/*",
