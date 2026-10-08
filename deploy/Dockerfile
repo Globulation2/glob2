@@ -308,6 +308,8 @@ COPY --from=node-binary /usr/local/bin/node /usr/local/bin/node
 RUN groupadd --gid 10001 glob2 && useradd --uid 10001 --gid 10001 --no-create-home --home-dir /nonexistent glob2 && \
     mkdir -p /var/lib/glob2/blobs && chown 10001:10001 /var/lib/glob2/blobs
 COPY --from=platform-runtime-deps /app/platform /app/platform
+# Shared protocol set-authoring imports the registry when the worker starts.
+COPY data/resources/registry.json /app/data/resources/registry.json
 ENV NODE_ENV=production BLOB_STORE=fs BLOB_DIR=/var/lib/glob2/blobs
 WORKDIR /app/platform
 USER 10001:10001
