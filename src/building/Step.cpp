@@ -152,11 +152,8 @@ int Building::gatherBringMaterialsCandidates(BringMaterialsCandidate* candidates
 	resetFailureTallies();
 
 	int count=0;
-	for(int n=0; n<Unit::MAX_COUNT; ++n)
+	for(Unit* unit : owner->liveUnits.entries())
 	{
-		Unit* unit=owner->myUnits[n];
-		if(!unit)
-			continue;
 		if(!unit->performance[HARVEST])
 			continue;
 		if(unit->attachedBuilding == this && unit->activity == Unit::ACT_FILLING)
@@ -201,11 +198,8 @@ bool Building::wantsAnotherDelivery(int r, const int* targets, const int* served
 
 void Building::selectUnitCarryingWantedMaterial(const int* targets, const int* served, BringMaterialsSelection& sel)
 {
-	for(int n=0; n<Unit::MAX_COUNT; ++n)
+	for(Unit* unit : owner->liveUnits.entries())
 	{
-		Unit* unit=owner->myUnits[n];
-		if(!unit)
-			continue;
 		if(!unit->performance[HARVEST])
 			continue;
 		if(unit->attachedBuilding == this && unit->activity == Unit::ACT_FILLING)
