@@ -1,0 +1,20 @@
+WARNING: 
+
+To increase the performance of the tunnel, consider installing NumPy. For instructions,
+please see https://cloud.google.com/iap/docs/using-tcp-forwarding#increasing_the_tcp_upload_bandwidth
+
+64611b2894871d198f121482dcf5f1fdd1cfb0f1
+64611b2894871d198f121482dcf5f1fdd1cfb0f1
+/glob2-platform-platform-api-1 sha256:38b06499a41eebdcccbe4f2af2ed37bb9b2dd62cdc817966d7ff1841e4553419 2026-10-08T17:27:30.042985233Z running
+/glob2-platform-platform-worker-1 sha256:38b06499a41eebdcccbe4f2af2ed37bb9b2dd62cdc817966d7ff1841e4553419 2026-10-08T17:27:31.3674376Z running
+/glob2-platform-caddy-1 sha256:724736b1ffc7dffcecd050d5285ff9e4c791d245ca319c3bb49e1a407393f053 2026-10-08T17:30:02.714939924Z running
+/glob2-platform-engine-agent-1 sha256:3b26b1a4c18e7bc725ec32861f85d0341e2ebcf506ffbaf294e2d502883e5f87 2026-10-08T17:27:35.942819032Z running
+/glob2-platform-relay-1 sha256:364e728bd9bc86fbf0731bcebf5737cbc65b2b3da3afe1bea0c3eb6de2fa84de 2026-10-08T17:27:36.785268623Z running
+{"endpoint":"reports","status":200,"contract":"valid","elapsedMs":62}
+{"endpoint":"content","status":200,"contract":"valid","elapsedMs":14}
+{"endpoint":"audit","status":200,"contract":"valid","elapsedMs":11}
+{"endpoint":"operations","status":200,"contract":"valid","elapsedMs":45}
+{"endpoint":"analytics","status":200,"contract":"valid","elapsedMs":55}
+{"endpoint":"finances","status":200,"contract":"valid","elapsedMs":30}
+{"adminRoleVerified":true,"attentionMatchesSource":true,"attention":{"reports":0,"uncertain":0,"failedJobs":4},"financialJournalMatches":true,"coverage":30,"providerRateVersions":0,"unknownPurchases":0}
+Admin page HTTP 200

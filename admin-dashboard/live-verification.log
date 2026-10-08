@@ -1,0 +1,12 @@
+WARNING: 
+
+To increase the performance of the tunnel, consider installing NumPy. For instructions,
+please see https://cloud.google.com/iap/docs/using-tcp-forwarding#increasing_the_tcp_upload_bandwidth
+
+{"endpoint":"reports","status":200,"contract":"valid","elapsedMs":102}
+{"endpoint":"content","status":200,"contract":"valid","elapsedMs":20}
+{"endpoint":"audit","status":200,"contract":"valid","elapsedMs":26}
+{"endpoint":"operations","status":200,"contract":"valid","elapsedMs":110}
+{"endpoint":"analytics","status":200,"contract":"valid","elapsedMs":128}
+{"endpoint":"finances","status":200,"contract":"valid","elapsedMs":53}
+{"adminRoleVerified":true,"attentionMatchesSource":true,"attention":{"reports":0,"uncertain":0,"failedJobs":4},"financialJournalMatches":true,"coverage":30,"providerRateVersions":0,"unknownPurchases":0}

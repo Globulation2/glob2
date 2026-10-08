@@ -7,7 +7,7 @@ transforming...
 ✓ 2092 modules transformed.
 rendering chunks...
 computing gzip size...
-dist/index.html                                          1.57 kB │ gzip:   0.67 kB
+dist/index.html                                          1.57 kB │ gzip:   0.66 kB
 dist/assets/hospital-CZ8mxl8H.webp                       4.16 kB
 dist/assets/glob-64-DRYAgOz9.png                         4.51 kB
 dist/assets/school-3kPEHozp.webp                         4.60 kB
@@ -56,7 +56,7 @@ dist/assets/rolldown-runtime-hePW80VL.js                 0.71 kB │ gzip:   0.4
 dist/assets/javascript-B4R-vfPS.js                       0.73 kB │ gzip:   0.44 kB │ map:      1.97 kB
 dist/assets/azcli-Bc_sGQ0U.js                            0.75 kB │ gzip:   0.32 kB │ map:      2.36 kB
 dist/assets/ini-sBoK_t0W.js                              1.00 kB │ gzip:   0.52 kB │ map:      3.07 kB
-dist/assets/sets-CxbFAiAk.js                             1.06 kB │ gzip:   0.68 kB │ map:      3.03 kB
+dist/assets/sets-DvP3Jz74.js                             1.06 kB │ gzip:   0.68 kB │ map:      3.03 kB
 dist/assets/csp-bTuwJoIa.js                              1.31 kB │ gzip:   0.51 kB │ map:      2.92 kB
 dist/assets/preload-helper-DjzSQ1t3.js                   1.38 kB │ gzip:   0.75 kB
 dist/assets/pla-CopQ2nXW.js                              1.58 kB │ gzip:   0.64 kB │ map:      4.98 kB
@@ -121,7 +121,7 @@ dist/assets/handlebars-CSh1zEJR.js                       6.33 kB │ gzip:   1.4
 dist/assets/julia-Bri6UV-V.js                            6.54 kB │ gzip:   2.68 kB │ map:     16.27 kB
 dist/assets/systemverilog-Bz4Y3fRF.js                    6.90 kB │ gzip:   2.76 kB │ map:     17.08 kB
 dist/assets/st-DbInun42.js                               6.98 kB │ gzip:   2.28 kB │ map:     16.63 kB
-dist/assets/state-0qBSNCmK.js                            7.14 kB │ gzip:   2.65 kB │ map:     25.17 kB
+dist/assets/state-CXjxCpu9.js                            7.14 kB │ gzip:   2.65 kB │ map:     25.17 kB
 dist/assets/scala-DHpiXF5c.js                            7.15 kB │ gzip:   2.11 kB │ map:     17.57 kB
 dist/assets/wgsl-DpFanUEy.js                             7.22 kB │ gzip:   2.76 kB │ map:     13.95 kB
 dist/assets/perl-oz_6vUea.js                             7.39 kB │ gzip:   3.13 kB │ map:     18.62 kB
@@ -133,37 +133,37 @@ dist/assets/ruby-DezsRK8O.js                             8.25 kB │ gzip:   2.5
 dist/assets/jsx-runtime-BNakU3Ej.js                      8.29 kB │ gzip:   3.15 kB │ map:     32.76 kB
 dist/assets/sql-NEE52Syq.js                              8.88 kB │ gzip:   3.78 kB │ map:     20.61 kB
 dist/assets/protobuf-C531GsRP.js                         8.94 kB │ gzip:   2.08 kB │ map:     21.66 kB
-dist/assets/Player-D71Qe57Q.js                           9.00 kB │ gzip:   3.05 kB │ map:     26.64 kB
-dist/assets/BuildingLibrary-D8M-xvo0.js                  9.59 kB │ gzip:   2.99 kB │ map:     28.20 kB
+dist/assets/Player-Bfcd-68h.js                           9.00 kB │ gzip:   3.05 kB │ map:     26.64 kB
+dist/assets/BuildingLibrary-C7hSK0c3.js                  9.59 kB │ gzip:   2.99 kB │ map:     28.20 kB
 dist/assets/mysql-SOo6toE5.js                            9.70 kB │ gzip:   4.02 kB │ map:     20.95 kB
 dist/assets/elixir-6RTg0lbw.js                          10.16 kB │ gzip:   2.54 kB │ map:     27.32 kB
 dist/assets/redshift-DT7zqm-g.js                        10.37 kB │ gzip:   4.28 kB │ map:     20.83 kB
-dist/assets/Library-Bxvzg1oH.js                         10.65 kB │ gzip:   3.38 kB │ map:     30.60 kB
+dist/assets/Library-B1VEoEF7.js                         10.65 kB │ gzip:   3.38 kB │ map:     30.60 kB
 dist/assets/abap-08VXUWAP.js                            11.73 kB │ gzip:   5.18 kB │ map:     28.61 kB
 dist/assets/pgsql-DTj74zXo.js                           11.95 kB │ gzip:   4.47 kB │ map:     22.87 kB
 dist/assets/jsonMode-CBjmCrq_.js                        12.22 kB │ gzip:   4.48 kB │ map:     79.61 kB
-dist/assets/TerrainStudio-C9u6vGnC.js                   12.87 kB │ gzip:   4.68 kB │ map:     43.15 kB
-dist/assets/BuildingStudio-DTyDknB4.js                  14.12 kB │ gzip:   4.59 kB │ map:     47.43 kB
+dist/assets/TerrainStudio-C__TIoJ0.js                   12.87 kB │ gzip:   4.69 kB │ map:     43.15 kB
+dist/assets/BuildingStudio-DD1eXtdy.js                  14.12 kB │ gzip:   4.59 kB │ map:     47.43 kB
 dist/assets/art-a2G_MtQn.js                             14.26 kB │ gzip:  10.57 kB │ map:     18.63 kB
-dist/assets/Library-BlOcpzeL.js                         15.31 kB │ gzip:   4.85 kB │ map:     44.62 kB
+dist/assets/Library-BREOHfna.js                         15.31 kB │ gzip:   4.85 kB │ map:     44.62 kB
 dist/assets/powerquery-D3hlyOfw.js                      15.39 kB │ gzip:   4.77 kB │ map:     26.39 kB
 dist/assets/freemarker2-BlDkF-qS.js                     15.59 kB │ gzip:   4.01 kB │ map:     63.67 kB
 dist/assets/solidity-BEEn4gHE.js                        16.03 kB │ gzip:   4.43 kB │ map:     32.07 kB
-dist/assets/Match-CGGvLjDn.js                           16.09 kB │ gzip:   5.16 kB │ map:     46.54 kB
-dist/assets/Cover-CNRwrIiZ.js                           17.49 kB │ gzip:   6.03 kB │ map:     50.35 kB
-dist/assets/AiBuildingStudio-Bk4qXqnV.js                18.78 kB │ gzip:   6.21 kB │ map:     60.56 kB
-dist/assets/Ais-DvIdyuwD.js                             20.99 kB │ gzip:   6.80 kB │ map:     64.15 kB
+dist/assets/Match-6xtWoy7S.js                           16.09 kB │ gzip:   5.16 kB │ map:     46.54 kB
+dist/assets/Cover-vyYZRont.js                           17.49 kB │ gzip:   6.03 kB │ map:     50.35 kB
+dist/assets/AiBuildingStudio-EER-HJdP.js                18.78 kB │ gzip:   6.21 kB │ map:     60.56 kB
+dist/assets/Ais-oGqfn6dA.js                             20.99 kB │ gzip:   6.80 kB │ map:     64.15 kB
 dist/assets/tsMode-BTAU4csj.js                          21.85 kB │ gzip:   6.17 kB │ map:     83.08 kB
-dist/assets/Workspace-BmrdJXyI.js                       22.23 kB │ gzip:   7.19 kB │ map:     77.59 kB
-dist/assets/Maps-CYIWP6bZ.js                            22.53 kB │ gzip:   7.00 kB │ map:     68.38 kB
-dist/assets/AiStudio-BfkSZVZV.js                        23.02 kB │ gzip:   7.73 kB │ map:     74.36 kB
-dist/assets/MusicStudio-BEZy5PL8.js                     27.98 kB │ gzip:   9.17 kB │ map:     89.27 kB
+dist/assets/Workspace-B8AaxEyB.js                       22.23 kB │ gzip:   7.20 kB │ map:     77.59 kB
+dist/assets/Maps-g_RLcc1l.js                            22.53 kB │ gzip:   6.99 kB │ map:     68.38 kB
+dist/assets/AiStudio-CYemJ45M.js                        23.02 kB │ gzip:   7.73 kB │ map:     74.36 kB
+dist/assets/MusicStudio--trNXYBF.js                     27.98 kB │ gzip:   9.17 kB │ map:     89.27 kB
 dist/assets/lspLanguageFeatures-CVqJuzBb.js             28.28 kB │ gzip:   7.21 kB │ map:    138.89 kB
-dist/assets/Account-CUtL7V9C.js                         33.68 kB │ gzip:  10.21 kB │ map:    110.48 kB
-dist/assets/Admin-Dm08vpaP.js                           36.62 kB │ gzip:   9.35 kB │ map:    106.61 kB
-dist/assets/MapStudio-Cf9g-boU.js                       44.02 kB │ gzip:  13.51 kB │ map:    136.45 kB
+dist/assets/Account-JTN8O6Co.js                         33.68 kB │ gzip:  10.21 kB │ map:    110.48 kB
+dist/assets/Admin-s-mLcWQ-.js                           36.71 kB │ gzip:   9.38 kB │ map:    106.73 kB
+dist/assets/MapStudio-DH0NbB3Z.js                       44.02 kB │ gzip:  13.51 kB │ map:    136.45 kB
 dist/assets/Editor-BhGi8lw7.js                          76.99 kB │ gzip:  21.99 kB │ map:    301.49 kB
-dist/assets/index-YQXnmpuy.js                          591.95 kB │ gzip: 179.73 kB │ map:  2,744.50 kB
+dist/assets/index-CWPwn2jF.js                          592.15 kB │ gzip: 179.75 kB │ map:  2,744.50 kB
 dist/assets/editor.api2-C21O8rKV.js                  3,624.78 kB │ gzip: 926.27 kB │ map: 14,202.37 kB
 
 [plugin builtin:vite-reporter] 
@@ -171,4 +171,4 @@ dist/assets/editor.api2-C21O8rKV.js                  3,624.78 kB │ gzip: 926.2
 - Using dynamic import() to code-split the application
 - Use build.rolldownOptions.output.codeSplitting to improve chunking: https://rolldown.rs/reference/OutputOptions.codeSplitting
 - Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
-✓ built in 5.50s
+✓ built in 4.74s

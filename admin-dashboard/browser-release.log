@@ -2,16 +2,16 @@
 > @glob2/web@0.1.0 e2e
 > playwright test -c e2e/playwright.config.ts --grep moderation pages
 
-[WebServer] (node:2719933) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (node:2740467) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
 [WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
 
 Running 2 tests using 1 worker
 
-(node:2720088) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(node:2740504) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
 (Use `node --trace-warnings ...` to show where the warning was created)
-  ✓  1 [desktop] › e2e/smoke.spec.ts:305:1 › moderation pages for administrators only (24.1s)
-(node:2721293) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+  ✓  1 [desktop] › e2e/smoke.spec.ts:305:1 › moderation pages for administrators only (20.8s)
+(node:2741680) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
 (Use `node --trace-warnings ...` to show where the warning was created)
-  ✓  2 [phone] › e2e/smoke.spec.ts:305:1 › moderation pages for administrators only (26.3s)
+  ✓  2 [phone] › e2e/smoke.spec.ts:305:1 › moderation pages for administrators only (26.1s)
 
-  2 passed (59.5s)
+  2 passed (53.4s)

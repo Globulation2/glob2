@@ -5,7 +5,7 @@ Four stacked draft PRs: #949, #950, #952, #953. Phase commits:
 - Phase 1: `ca976ab06a901499809d0bc75fece1f49c83fa6d`
 - Phase 2: `f04dad2e4a01c3ffd425fc0a4bd612d9d153338f`
 - Phase 3: `62df82ca9b9a85dc349d1c9457ef2778fd7e5104`
-- Phase 4: `9bb8a0faebfffbd5596a0b36d4317f69c11cc299`
+- Phase 4: `64611b2894871d198f121482dcf5f1fdd1cfb0f1`
 
 Initial base: `68aa1075b365efab78083fe5587051e689cb7ed1`. Phase 2/3/4 bases are the previous phase commits.
 Fetched master before final validation: `37213ca3cb2dc806a491a77a525323464b96a859`. Intervening changes concern engine checksum references, not the platform components changed here. No merge/rebase was needed.
@@ -45,4 +45,6 @@ No native simulation code changed, so native checksum/save/replay/platform build
 
 Historical gaps are shown explicitly; active users are not reconstructed from last_seen_at. Cash remains separated by currency/mode and credits by product. No monetary provider rates are configured on the live host, so costs are labelled unavailable until immutable provider rates are configured. Missing amounts are never inferred from customer credits or current prices.
 
-Deployment uses additive migrations before backend/UI, a database backup and preserved prior image IDs. Running engine/relay images are retained. Live verification compares attention and financial totals to read-only source aggregates; an ephemeral five-minute admin authentication session is removed afterward. Live details will be recorded in `live-verification.log` once deployment finishes.
+Deployment uses additive migrations before backend/UI, a database backup and preserved prior image IDs. Running engine/relay images are retained. Live verification compares attention and financial totals to read-only source aggregates; an ephemeral five-minute admin authentication session is removed afterward. Live details will be recorded in `live-verification.log` after deployment. Backend/worker code is from `9bb8a0faebfffbd5596a0b36d4317f69c11cc299`; final `64611b2894871d198f121482dcf5f1fdd1cfb0f1` only clarifies activity units in the web Overview. That final UI build passed the desktop/phone checks, lint and web types, and is deployed as a separate Caddy layer. The backend code is byte-for-byte unchanged by that final commit.
+
+Final live read-only checks: all six read endpoints returned HTTP 200 and valid typed contracts. Open reports, uncertain requests and failed-job counts matched source records; confirmed cash matched the journal. The administrator role is verified for genixpro. The live host has zero configured provider rate versions. Source records showed 0 open reports, 0 uncertain requests and 4 existing failed engine jobs. Final public UI HTML was compared byte-for-byte with the tested production build. Database backup remains on the host at `/opt/glob2/backups/admin-dashboard-20261008T172530Z`. No native engine/relay containers were recreated.
