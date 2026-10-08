@@ -1,0 +1,37 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="36" failures="0" errors="0" skipped="1"><testsuite name="ResourceGrowth"><testcase classname="ResourceGrowth" name="both format 144 and 145 lineages and compact growth saves retain continuation [save-format]" time="2.76638" status="run" />
+  <testcase classname="ResourceGrowth" name="configured seeds preserve rates variety collisions and saved output" time="0.082075" status="run" />
+  <testcase classname="ResourceGrowth" name="format 144 and 145 packed growth headers cannot alias artwork lengths" time="0" status="run" />
+  <testcase classname="ResourceGrowth" name="frozen input outlives terrain and resource edits and wrapping remains valid" time="0.078685" status="run" />
+  <testcase classname="ResourceGrowth" name="kernel is immutable deterministic and responds to disabled growth and scarcity" time="0.076685" status="run" />
+  <testcase classname="ResourceGrowth" name="later worker completion cannot publish ahead of an earlier owner batch" time="0.090277" status="run" />
+  <testcase classname="ResourceGrowth" name="legacy pending masks migrate and signed pending proposals validate on load" time="0.074022" status="run" />
+  <testcase classname="ResourceGrowth" name="light checksums leave owner work deferred and world replacement discards it" time="0.078217" status="run" />
+  <testcase classname="ResourceGrowth" name="material deltas cap independently and create configured seed stocks" time="0.080393" status="run" />
+  <testcase classname="ResourceGrowth" name="owner and shared deadlines match and pending work survives saving" time="0.470429" status="run" />
+  <testcase classname="ResourceGrowth" name="pipeline waits at exact deadline and pause does not publish" time="0.080459" status="run" />
+  <testcase classname="ResourceGrowth" name="proposal capacity grows safely and is retained for reuse" time="0.073906" status="run" />
+  <testcase classname="ResourceGrowth" name="publication accounts for proposals rejected by a different world" time="0.11612" status="run" />
+  <testcase classname="ResourceGrowth" name="signed proposals use only current resource type and apply in order" time="0.075838" status="run" />
+  <testcase classname="ResourceGrowth" name="text save layout probes are relative and preserve section state" time="0" status="run" />
+  <testcase classname="ResourceGrowth" name="typed proposal loading validates fields and preserves old queued units" time="0.080495" status="run" />
+  <testcase classname="ResourceGrowth" name="zero seed stocks use authoritative resource initialization" time="0.204586" status="run" />
+  </testsuite><testsuite name="ResourceGrowthBenchmark"><testcase classname="ResourceGrowthBenchmark" name="player-free growth reconciles world stocks and team statistics" time="1.68131" status="run" />
+  </testsuite><testsuite name="TeamStatsSave"><testcase classname="TeamStatsSave" name="32 sampling phases; ring wrap; repeated loads; text streams and corruption controls [save-format]" time="6.68151" status="run" />
+  <testcase classname="TeamStatsSave" name="AI telemetry continues across a save [save-format]" time="2.2616" status="run" />
+  <testcase classname="TeamStatsSave" name="Compact team histories preserve samples across two batch boundaries" time="0.319588" status="run" />
+  <testcase classname="TeamStatsSave" name="Compact telemetry retains every sample across chunk boundaries" time="1.03207" status="run" />
+  <testcase classname="TeamStatsSave" name="Delayed observation telemetry saves remain readable" time="0.070041" status="run" />
+  <testcase classname="TeamStatsSave" name="Sparse variant reset accepts refreshed diagnostics and restored snapshots" time="0.817777" status="run" />
+  <testcase classname="TeamStatsSave" name="Sparse variant snapshot reset clears vanished types without clearing history" time="0.349358" status="run" />
+  <testcase classname="TeamStatsSave" name="clearing telemetry counts operations once by configured primary material" time="0.169765" status="run" />
+  <testcase classname="TeamStatsSave" name="combat deaths are attributed by place and assignment" time="0.051905" status="run" />
+  <testcase classname="TeamStatsSave" name="defence snapshot counts warriors by place and enemy warriors at home" time="0.050466" status="run" />
+  <testcase classname="TeamStatsSave" name="every live worker-tick lands in exactly one labour bucket" time="0.05298" status="run" />
+  <testcase classname="TeamStatsSave" name="labour, combat and defence measurements survive a save [save-format]" time="0.189506" status="run" />
+  <testcase classname="TeamStatsSave" name="legacy version 84 fixture replays the golden trace [save-format][golden]" time="0.082707" status="run" />
+  <testcase classname="TeamStatsSave" name="legacy version 88 fixture replays the golden trace [save-format][golden]" time="0.073972" status="run" />
+  <testcase classname="TeamStatsSave" name="older saves load with labour coverage starting at the loaded tick [save-format]" time="0.089915" status="run" />
+  <testcase classname="TeamStatsSave" name="place lookup agrees with a brute-force scan of every building tile" time="0.072772" status="run" />
+  <testcase classname="TeamStatsSave" name="places: own buildings first, then enemies; allies, flags and new buildings do not count" time="0.054746" status="run" />
+  <testcase classname="TeamStatsSave" name="measurement screenshots [display][artifacts]" time="0.000"><skipped message="needs a display" /></testcase></testsuite></testsuites>

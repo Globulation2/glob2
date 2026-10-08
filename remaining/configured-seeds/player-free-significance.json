@@ -1,0 +1,122 @@
+{
+  "replicates": "20 paired seeds, not individual ticks or owner/shared copies",
+  "bootstrap": "100000 seed-pair resamples; ratio of mean final stocks; percentile 95% CI, not multiplicity-adjusted",
+  "test": "Two-sided exact paired sign test, Holm adjustment across six scenarios; tests direction consistency, not a parametric mean difference",
+  "scope": "Fixed scenarios and512tick horizon, retained immediate reference vs delayed full game steps; no causal attribution from this comparison",
+  "results": [
+    {
+      "scenario": "dense",
+      "n": 20,
+      "difference_percent": -2.9061989548918254,
+      "paired_bootstrap_95_ci_percent": [
+        -4.3228026735642855,
+        -1.4784837049236055
+      ],
+      "mean_absolute_difference": -196.6,
+      "lower_pairs": 16,
+      "higher_pairs": 4,
+      "ties": 0,
+      "two_sided_exact_sign_p": 0.01181793212890625,
+      "old_mean_deposits": 2162.3,
+      "new_mean_deposits": 2101.9,
+      "old_growth_units": 4194.6,
+      "new_growth_units": 3998,
+      "holm_adjusted_sign_p": 0.047271728515625
+    },
+    {
+      "scenario": "sparse",
+      "n": 20,
+      "difference_percent": -5.837067677812247,
+      "paired_bootstrap_95_ci_percent": [
+        -10.834537170796754,
+        -0.7727432384966648
+      ],
+      "mean_absolute_difference": -25.4,
+      "lower_pairs": 13,
+      "higher_pairs": 7,
+      "ties": 0,
+      "two_sided_exact_sign_p": 0.26317596435546875,
+      "old_mean_deposits": 150.2,
+      "new_mean_deposits": 142.2,
+      "old_growth_units": 274.75,
+      "new_growth_units": 249.35,
+      "holm_adjusted_sign_p": 0.7895278930664062
+    },
+    {
+      "scenario": "multi",
+      "n": 20,
+      "difference_percent": -5.463084814954078,
+      "paired_bootstrap_95_ci_percent": [
+        -7.076839616639097,
+        -3.8554575061825136
+      ],
+      "mean_absolute_difference": -813.65,
+      "lower_pairs": 20,
+      "higher_pairs": 0,
+      "ties": 0,
+      "two_sided_exact_sign_p": 1.9073486328125e-06,
+      "old_mean_deposits": 2648.7,
+      "new_mean_deposits": 2556.85,
+      "old_growth_units": 11821.6,
+      "new_growth_units": 11007.95,
+      "holm_adjusted_sign_p": 1.1444091796875e-05
+    },
+    {
+      "scenario": "saturated",
+      "n": 20,
+      "difference_percent": -2.3166984970522275,
+      "paired_bootstrap_95_ci_percent": [
+        -3.369146005509638,
+        -1.3089824239918668
+      ],
+      "mean_absolute_difference": -209.25,
+      "lower_pairs": 17,
+      "higher_pairs": 3,
+      "ties": 0,
+      "two_sided_exact_sign_p": 0.0025768280029296875,
+      "old_mean_deposits": 2558.45,
+      "new_mean_deposits": 2514.25,
+      "old_growth_units": 3912.25,
+      "new_growth_units": 3703,
+      "holm_adjusted_sign_p": 0.012884140014648438
+    },
+    {
+      "scenario": "blocked",
+      "n": 20,
+      "difference_percent": -0.24494946370913206,
+      "paired_bootstrap_95_ci_percent": [
+        -1.0859762048899824,
+        0.5557692069123821
+      ],
+      "mean_absolute_difference": -9.9,
+      "lower_pairs": 11,
+      "higher_pairs": 9,
+      "ties": 0,
+      "two_sided_exact_sign_p": 0.8238029479980469,
+      "old_mean_deposits": 1024,
+      "new_mean_deposits": 1024,
+      "old_growth_units": 1471.4,
+      "new_growth_units": 1461.5,
+      "holm_adjusted_sign_p": 1
+    },
+    {
+      "scenario": "disabled",
+      "n": 20,
+      "difference_percent": 0.0,
+      "paired_bootstrap_95_ci_percent": [
+        0.0,
+        0.0
+      ],
+      "mean_absolute_difference": 0,
+      "lower_pairs": 0,
+      "higher_pairs": 0,
+      "ties": 20,
+      "two_sided_exact_sign_p": 1,
+      "old_mean_deposits": 1024,
+      "new_mean_deposits": 1024,
+      "old_growth_units": 0,
+      "new_growth_units": 0,
+      "holm_adjusted_sign_p": 1
+    }
+  ]
+}
