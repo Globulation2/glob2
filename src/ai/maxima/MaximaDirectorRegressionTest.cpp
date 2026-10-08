@@ -122,7 +122,7 @@ struct Fixture
     {
         for(int y=0; y<64; ++y) for(int x=0; x<64; ++x) {
             const bool land=y>=5 && y<=55 && ((x>=5 && x<=19) || (x>=26 && x<=45));
-            game.map.setTerrain(x,y,land ? 0 : 256);
+            game.map.paintCell(x, y, land ? GRASS : WATER);
         }
         ai->context.gradients.invalidate();
     }
@@ -361,7 +361,7 @@ static void unifiedHospitalCapacity() {
 
 static void proactiveProtection() {
     Fixture f; f.building(10,10,0);auto& a=*f.ai;auto& c=a.context;c.initialize();
-    for(int y=0;y<64;++y)f.game.map.setTerrain(0,y,256);
+    for(int y=0;y<64;++y)f.game.map.paintCell(0, y, WATER);
     f.game.map.setResourceByIndex(3,11,WOOD,5);f.game.map.setResourceByIndex(4,11,WOOD,5);f.game.map.setResourceByIndex(5,11,WOOD,5);
     a.timer=5000;a.budget.farming_enabled=true;a.budget.farming_protection_enabled=true;
     a.budget.farming_minimum_wood_fertility=0;

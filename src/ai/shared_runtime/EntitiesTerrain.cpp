@@ -136,10 +136,10 @@ bool Entities::Unwalkable::operator==(const Entity& rhs) const
 { return typeid(rhs)==typeid(Entities::Unwalkable); }
 
 bool Entities::Water::is_entity(const AIEngine::AIWorldView& world,int x,int y)
-{ return terrainProvidesFertility(world.terrain->properties(world.terrainAt(world.tileIndex(x,y)).type)); }
+{ return terrainProvidesFertility(world.terrainPropertiesAt(world.tileIndex(x,y))); }
 bool Entities::Position::is_entity(const AIEngine::AIWorldView&,int posx,int posy)
 { return x==posx && y==posy; }
 bool Entities::Sand::is_entity(const AIEngine::AIWorldView& world,int x,int y)
-{ return world.terrain->properties(world.terrainAt(world.tileIndex(x,y)).type).shoreline; }
+{ return world.terrainPropertiesAt(world.tileIndex(x,y)).shoreline; }
 bool Entities::Unwalkable::is_entity(const AIEngine::AIWorldView& world,int x,int y)
-{ return !world.terrain->properties(world.terrainAt(world.tileIndex(x,y)).type).walkable; }
+{ return !world.terrainPropertiesAt(world.tileIndex(x,y)).walkable; }

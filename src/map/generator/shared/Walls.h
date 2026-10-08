@@ -16,8 +16,8 @@ namespace MapGeneration
 // diagonally, and the walks and tower ranges that a validator checks the result against.
 
 /// The land a unit landing from the sea can reach without crossing solid grass: every land tile
-/// with a `sea` undermap vertex in the box its four corners touch, and every beach (land that is
-/// not pure grass) joined to one. `sea` marks undermap vertices, so a generator decides which
+/// with a `sea` terrain vertex in the box its four corners touch, and every beach (land that is
+/// not pure grass) joined to one. `sea` marks terrain vertices, so a generator decides which
 /// water is sea and which (a home's lake) is not. `notBeach` marks sand that must not carry the
 /// margin inland, such as a sand road.
 std::vector<unsigned char> seaMargin(const Map &, const Torus &,
@@ -148,7 +148,7 @@ GatePartitionCheck checkGatePartition(const Torus &, const std::vector<unsigned 
 /// is not stone, crops and buildings counted as the ground they will leave (only water, stone and
 /// the shut tiles part two colonies for good): {-1, -1} when every colony keeps to itself. The
 /// check for a map whose causeways, bridges or gates are meant to be the only ways between
-/// colonies: shut them and nobody should reach anybody. A shut sand line is undermap corners, so
+/// colonies: shut them and nobody should reach anybody. A shut sand line is terrain vertices, so
 /// pass the tiles it makes walkable (Sketch.h's roadTiles), not the corners alone.
 std::array<int, 2> colonyLeak(const Map &, const Torus &, int teams,
 							  const std::vector<unsigned char> &shut);

@@ -381,7 +381,7 @@ bool generate(Game &game, GenerationContext &context)
 	for (int i = 0; i < n; ++i)
 		terrain[i] = L.water[i] ? WATER : (L.farm.sand[i] || L.road[i]) ? SAND : GRASS;
 	layBeaches(terrain, t);
-	writeUndermap(map, terrain);
+	writeVertices(map, terrain);
 	// The blocks are stone, wherever the beaches left pure grass.
 	for (int i = 0; i < n; ++i)
 		if (L.block[i] && map.isResourceAllowed(i % t.w, i / t.w, STONE))

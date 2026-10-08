@@ -548,9 +548,9 @@ bool populate(Game &game, GenerationContext &context, const Layout &L, const Tow
 			if (existingPassage.empty())
 			{
 				// Use the engine's terrain predicates rather than guessing which mixed
-				// shoreline sprites are walkable. No resources/buildings exist yet.
+				// shoreline tiles are walkable. No resources/buildings exist yet.
 				// Later reservations only add sand, so this cached permission stays true.
-				writeUndermap(game.map, terrain);
+				writeVertices(game.map, terrain);
 				existingPassage.assign(t.size(), 0);
 				for (int i = 0; i < t.size(); ++i)
 					existingPassage[i] =
@@ -580,7 +580,7 @@ bool populate(Game &game, GenerationContext &context, const Layout &L, const Tow
 	const auto roadGround = roadTiles(t, sand);
 	for (int i = 0; i < t.size(); ++i)
 		reserve[i] = reserve[i] || roadGround[i];
-	writeUndermap(game.map, terrain);
+	writeVertices(game.map, terrain);
 	Map &map = game.map;
 	for (int i = 0; i < t.size(); ++i)
 		if (L.rock[i])
@@ -788,7 +788,7 @@ bool generate(Game &game, GenerationContext &context)
 		context.detail = L.failure;
 		return false;
 	}
-	writeUndermap(game.map, L.terrain);
+	writeVertices(game.map, L.terrain);
 	const Town town = townPlan(context);
 	const auto sites = candidateSites(L, game.map, town);
 	context.telemetry.measure("lava-shield.starts.candidates", sites.size());

@@ -17,7 +17,6 @@ TERRAIN_GROUP_EXPERIMENTS{{
 	std::nullopt, // Sand
 	std::nullopt, // Grass
 	ExperimentId::IceTerrain,
-	std::nullopt, // Shore
 	ExperimentId::PathTerrain,
 	ExperimentId::ObstacleTerrain,
 	ExperimentId::RidgeTerrain,

@@ -76,7 +76,7 @@ using namespace MapGeneration;
 namespace
 {
 
-// THE PLOT. Its ring is one undermap vertex of sand (kPlotRing, as Canals' pads): a tile takes its
+// THE PLOT. Its ring is one terrain vertex of sand (kPlotRing, as Canals' pads): a tile takes its
 // terrain from its four corners, so the ring spoils the two tiles either side of it (kRingBand) for
 // crops and buildings alike, a walkable band round every plot where workers wait and units pass, while
 // a single sand vertex is already enough to stop the crops, which spread only onto pure grass
@@ -764,7 +764,7 @@ bool generate(Game &game, GenerationContext &context)
 		game.addTeam();
 
 	context.stage = "plantations terrain";
-	writeUndermap(map, L.sketch);
+	writeVertices(map, L.sketch);
 
 	// THE GRANTED BUILDINGS, before the colonies. Every island a colony holds - its home and each
 	// granted island - carries a swarm and a completed swimming pool packed side by side along the

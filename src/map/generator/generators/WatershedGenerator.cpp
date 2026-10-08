@@ -37,9 +37,9 @@ using namespace MapGeneration;
 // own named streams and never reads the map, so validateWorld can plan the same layout again and
 // check every ford and channel against the finished world.
 //
-// Terrain is stamped on the undermap with a symmetric version of Map::controlSand's shoreline
-// rule, then controlSand itself is run and must change nothing: the shores are already what it
-// would make of them, without its row-order raster pass silting narrow channels unevenly.
+// Terrain is stamped on the map's vertices with Map::layBeaches' shoreline rule already applied,
+// then layBeaches itself is run and must change nothing: the shores are already what it would
+// make of them.
 //
 // WHY IT PLAYS WELL (docs/map-generators/GAME_RULES_FOR_MAP_DESIGN.md). Rivers are the map's
 // walls and its wealth at once: wheat and wood regrow only near water, so the best land is right
@@ -61,7 +61,7 @@ constexpr const char *kLayoutStream = "watershed-layout";
 constexpr const char *kRiverStream = "watershed-rivers";
 constexpr const char *kStartStream = "watershed-starts";
 
-// Channel radius, in undermap vertices, before the shores are sanded. Sanding takes up to about
+// Channel radius, in terrain vertices, before the shores are sanded. Sanding takes up to about
 // 1.5 vertices off a diagonal channel, and a tile is water only when all four corners are, so this
 // is the narrowest channel whose water tiles still form a 4-connected core in every direction: a
 // line no unit can step across.
@@ -1165,9 +1165,9 @@ std::vector<unsigned char> stampTerrain(const Layout &layout, const WatershedOpt
 			}
 	}
 
-	// Map::controlSand's rule, applied to every vertex at once instead of in raster order: water
-	// touching grass and grass touching water both become sand, so every shore gets the same sand
-	// on both sides and the result is already a fixed point of controlSand.
+	// Map::layBeaches' rule, applied to every vertex at once: water touching grass and grass
+	// touching water both become sand, so every shore gets the same sand on both sides and the
+	// result is already a fixed point of layBeaches.
 	const std::vector<unsigned char> before = terrain;
 	for (int y = 0; y < h; ++y)
 		for (int x = 0; x < w; ++x)
@@ -1792,18 +1792,15 @@ bool generate(Game &game, GenerationContext &context)
 		context.detail = checkChannels(layout, stampedWater);
 	if (!context.detail.empty())
 		return false;
+	writeVertices(map, terrain);
+	map.layBeaches();
 	for (int y = 0; y < h; ++y)
 		for (int x = 0; x < w; ++x)
-			map.setUMTerrain(x, y, TerrainType(terrain[size_t(y) * w + x]));
-	map.controlSand();
-	for (int y = 0; y < h; ++y)
-		for (int x = 0; x < w; ++x)
-			if (map.getUMTerrain(x, y) != terrain[size_t(y) * w + x])
+			if (map.vertexTerrainAt(x, y) != terrain[size_t(y) * w + x])
 			{
-				context.detail = "Map::controlSand changed the stamped shoreline";
+				context.detail = "Map::layBeaches changed the stamped shoreline";
 				return false;
 			}
-	map.rebuildTerrain();
 
 	context.stage = "watershed colonies";
 	const Tiles tiles = tileView(terrain, w, h);

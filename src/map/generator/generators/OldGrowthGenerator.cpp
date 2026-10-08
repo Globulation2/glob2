@@ -186,7 +186,7 @@ bool generate(Game &game, GenerationContext &context)
 	for (int i = 0; i < n; ++i)
 		terrain[i] = L.water[i] ? WATER : L.sand[i] ? SAND : GRASS;
 	layBeaches(terrain, t);
-	writeUndermap(map, terrain);
+	writeVertices(map, terrain);
 
 	context.stage = "old growth colonies";
 	if (!settleRoundColonies(game, context, "growth-starts", L.homeOf, L.homes, L.homeRadius))

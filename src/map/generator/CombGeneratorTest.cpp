@@ -79,7 +79,7 @@ void contracts()
 	require(restored.game.load(&in), "generated save loads");
 	for (int y = 0; y < 256; ++y)
 		for (int x = 0; x < 256; ++x)
-			require(first.game.map.getTerrain(x, y) == restored.game.map.getTerrain(x, y) &&
+			require(first.game.map.vertexTerrainAt(x, y) == restored.game.map.vertexTerrainAt(x, y) &&
 						first.game.map.getResource(x, y).getUint32() ==
 							restored.game.map.getResource(x, y).getUint32(),
 					"terrain and resources survive save/load");
@@ -90,7 +90,7 @@ void contracts()
 	const auto reserve = buildAnchors(t, potentialBuildingTiles(second.game.map), 6);
 	TerrainSketch terrain(t.size());
 	for (int i = 0; i < t.size(); ++i)
-		terrain[i] = TerrainType(second.game.map.getUMTerrain(i % t.w, i / t.w));
+		terrain[i] = TerrainType(second.game.map.vertexTerrainAt(i % t.w, i / t.w));
 	const auto fertility = cropGrowthField(terrain, t);
 	const auto envelope = fertileCropEnvelope(second.game.map, fertility);
 	const int home = unitTilesByTeam(second.game.map, 4).front().front();

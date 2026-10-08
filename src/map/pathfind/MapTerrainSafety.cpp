@@ -23,13 +23,13 @@ struct EscapeProfile
 
     unsigned entryCost(const Map& map, size_t index, bool diagonal) const
     {
-        const auto terrain = map.terrainTypeAt(index);
+        const auto& rule = map.cellRule(index);
         if (air)
         {
-            const auto cardinal = map.terrainRegistry().airRouteCost(terrain);
+            const auto cardinal = rule.airRouteCost;
             return diagonal ? cardinal * 14 / 10 : cardinal;
         }
-        const auto cost = map.terrainRegistry().movement(swim).entries[terrain];
+        const auto cost = rule.ground[swim];
         return diagonal ? cost.diagonal : cost.cardinal;
     }
 

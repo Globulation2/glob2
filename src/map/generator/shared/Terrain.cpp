@@ -37,7 +37,7 @@
 //   waterline, and its thickness is capped by whichever of water and grass is scarcer.
 // - Algae needs water with sand in reach, which the shallow rim of the deepest water gives; stone
 //   right above the beach is the first land a colony walks onto.
-// - Grass may not touch water: controlSand after painting rings every shore.
+// - Grass may not touch water: Map::layBeaches after painting rings every shore.
 namespace MapGeneration
 {
 std::vector<GeneratorControl> heightFieldResourceControls()
@@ -92,8 +92,8 @@ HeightFieldLevels classifyHeightField(HeightMap &hm, const HeightFieldTiling &ti
 									  const HeightFieldOptions &options)
 {
 	const unsigned int wHeightMap = tiling.w, hHeightMap = tiling.h;
-	/// the proportions requested through the gui can directly be translated into tile counts of the
-	/// undermap.
+	/// the proportions requested through the gui can directly be translated into vertex counts of
+	/// the map.
 	unsigned int waterTiles, sandTiles, grassTiles, wheatWoodTiles, algaeTiles;
 	/// grass + sand + water + desert as from the gui
 	// The fruit control (a grove count, 4 by default) is added to the total too, as if it were a
@@ -183,28 +183,30 @@ void paintHeightFieldTerrain(Map &map, HeightMap &hm, const HeightFieldTiling &t
 							 const HeightFieldLevels &levels)
 {
 	const int w = map.getW();
+	const auto state = map.vertexTerrainState();
+	std::vector<TerrainType> vertices(state.begin(), state.end());
 	const unsigned int wHeightMap = tiling.w, hHeightMap = tiling.h;
 	for (unsigned y = 0; y < hHeightMap; y++)
 		for (unsigned x = 0; x < wHeightMap; x++)
 		{
-			int tmpUndermap;
+			TerrainType vertex;
 			if (hm(y * wHeightMap + x) < levels.water)
-				tmpUndermap = WATER;
+				vertex = WATER;
 			else if (hm(y * wHeightMap + x) < levels.sand)
-				tmpUndermap = SAND;
+				vertex = SAND;
 			else if (hm(y * wHeightMap + x) < levels.grass)
-				tmpUndermap = GRASS;
+				vertex = GRASS;
 			else
-				tmpUndermap = SAND; // desert: the highest ground dries out
+				vertex = SAND; // desert: the highest ground dries out
 			for (int yRepeat = 0; yRepeat < tiling.hRepeat; yRepeat++)
 				for (int xRepeat = 0; xRepeat < tiling.wRepeat; xRepeat++)
-					map.setUMTerrain(
-						(xRepeat * wHeightMap + x + (yRepeat * hHeightMap + y) * w) % w,
-						(xRepeat * wHeightMap + x + (yRepeat * hHeightMap + y) * w) / w,
-						static_cast<TerrainType>(tmpUndermap));
+				{
+					const unsigned i = xRepeat * wHeightMap + x + (yRepeat * hHeightMap + y) * w;
+					vertices[size_t(map.coordToIndex(int(i % w), int(i / w)))] = vertex;
+				}
 		}
-	map.controlSand();
-	map.rebuildTerrain();
+	map.assignVertexTerrain(vertices);
+	map.layBeaches();
 }
 
 void paintHeightFieldResources(Map &map, HeightMap &hm, const HeightFieldTiling &tiling,
@@ -304,7 +306,7 @@ bool chooseHeightFieldStarts(Game &game, GenerationContext &context)
 			int startX = 0;
 			for (int x = 0; x < w; x++)
 			{
-				int a = map.getUMTerrain(x, y);
+				int a = map.vertexTerrainAt(x, y);
 				if (a == GRASS)
 					width++;
 				else
@@ -314,10 +316,10 @@ bool chooseHeightFieldStarts(Game &game, GenerationContext &context)
 						int centerX = ((x + startX) >> 1);
 						int top, bot;
 						for (top = 0; top < h; top++)
-							if (map.getUMTerrain(centerX, y - top) != GRASS)
+							if (map.vertexTerrainAt(centerX, y - top) != GRASS)
 								break;
 						for (bot = 0; bot < h; bot++)
-							if (map.getUMTerrain(centerX, y + bot) != GRASS)
+							if (map.vertexTerrainAt(centerX, y + bot) != GRASS)
 								break;
 						int height = top + bot - 1;
 						int surface = height * width;
@@ -404,7 +406,7 @@ bool plantHeightFieldGroves(Map &map, GenerationContext &context, const HeightFi
 			}
 			x = (context.stream("resources")() % wHeightMap);
 			y = (context.stream("resources")() % hHeightMap);
-		} while (map.getUMTerrain(x, y) != GRASS || map.isResource(x, y));
+		} while (map.vertexTerrainAt(x, y) != GRASS || map.isResource(x, y));
 		// choose size of grove (tree count)
 		int grovesize = (context.stream("resources")() % 10) + 1;
 		context.telemetry.measure("terrain.groves.search_attempts", attempts, q1);
@@ -422,7 +424,7 @@ bool plantHeightFieldGroves(Map &map, GenerationContext &context, const HeightFi
 			{
 				int xNew = x + context.stream("resources")() % 3 - 1;
 				int yNew = y + context.stream("resources")() % 3 - 1;
-				if (map.getUMTerrain(xNew, yNew) == GRASS && !map.isResource(xNew, yNew))
+				if (map.vertexTerrainAt(xNew, yNew) == GRASS && !map.isResource(xNew, yNew))
 				{
 					x = xNew;
 					y = yNew;

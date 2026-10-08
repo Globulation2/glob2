@@ -618,7 +618,7 @@ struct CustomGameSetupHarness
 		map.setSize(8, 8, GRASS);
 		for (int y = 0; y < 256; ++y)
 			for (int x = 128; x < 256; ++x)
-				map.setUMatPos(x, y, WATER, 1);
+				map.paintVertexSquare(x, y, WATER, 1);
 		MapThumbnail image;
 		image.loadFromMap(map);
 		{
@@ -2659,7 +2659,7 @@ TEST_SUITE("CustomGameSetup")
 		for (int y = 0; y < g.map.getH(); ++y)
 			for (int x = 0; x < g.map.getW(); ++x)
 			{
-				REQUIRE(g.map.getTerrain(x, y) == loaded.map.getTerrain(x, y));
+				REQUIRE(g.map.vertexTerrainAt(x, y) == loaded.map.vertexTerrainAt(x, y));
 				REQUIRE(g.map.getResource(x, y).type == loaded.map.getResource(x, y).type);
 			}
 		for (int i = 0; i < 4; ++i)

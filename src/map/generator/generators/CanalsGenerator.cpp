@@ -611,7 +611,7 @@ bool generate(Game &game, GenerationContext &context)
 	for (int i = 0; i < n; ++i)
 		if (L.bridge[i] && L.canal[i])
 			terrain[i] = SAND;
-	writeUndermap(map, terrain);
+	writeVertices(map, terrain);
 	// The built kinds' walls: stone on every designed wall tile (all pure grass, by the design's own
 	// check), before anything else is placed.
 	for (int i = 0; i < n; ++i)

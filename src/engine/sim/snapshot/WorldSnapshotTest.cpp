@@ -139,7 +139,8 @@ TEST_SUITE("WorldSnapshot")
             CHECK(std::memcmp(observed.resources->cells.data(),map.resourceState().data(),map.resourceState().size_bytes())==0);
             CHECK(std::memcmp(observed.occupancy->cells.data(),map.occupancyState().data(),map.occupancyState().size_bytes())==0);
             CHECK(std::memcmp(observed.areas->cells.data(),map.areaState().data(),map.areaState().size_bytes())==0);
-            CHECK(std::memcmp(observed.terrain->legacy.data(),map.legacyTerrainState().data(),map.legacyTerrainState().size_bytes())==0);
+            CHECK(std::memcmp(observed.terrain->cellRules.data(),map.cellRuleState().data(),map.cellRuleState().size_bytes())==0);
+            CHECK(std::equal(observed.terrain->vertices->begin(),observed.terrain->vertices->end(),map.vertexTerrainState().begin()));
             for(std::size_t i=0;i<map.cellCount();++i) {
                 CHECK(observed.visibility->discovered[i]==map.mapDiscovered[i]);
                 CHECK(observed.visibility->visible[i]==(map.fogOfWar?map.fogOfWar[i]:0));
@@ -162,10 +163,10 @@ TEST_SUITE("WorldSnapshot")
 			const auto view=captured.project(mask);
 			for (std::size_t i=0;i<1024;++i)
 			{
-				const auto full=view.tileAt(i); const auto terrain=view.terrainAt(i);
+				const auto full=view.tileAt(i); const auto rule=view.cellRuleAt(i);
 				const auto resource=view.resourceAt(i); const auto occupancy=view.occupancyAt(i);
 				const auto areas=view.areasAt(i); const auto visibility=view.visibilityAt(i);
-				CHECK(terrain.type==full.terrain); CHECK(terrain.legacy==full.legacyTerrain);
+				CHECK(rule==full.cellRule);
 				CHECK(resource.resource.getUint32()==full.resource.getUint32()); CHECK(resource.fertility==full.fertility);
 				CHECK(resource.mayGrow==full.resourcesMayGrow); CHECK(view.canPaintFarmAt(i)==full.canPaintFarm);
 				CHECK(occupancy.building==full.building); CHECK(occupancy.groundUnit==full.groundUnit);
@@ -174,7 +175,7 @@ TEST_SUITE("WorldSnapshot")
 				CHECK(areas.clear==full.clear); CHECK(areas.farm==full.farm);
 				CHECK(visibility.discovered==full.discovered); CHECK(visibility.visible==full.visible);
 			}
-			CHECK_THROWS_AS(view.terrainAt(1024),std::out_of_range);
+			CHECK_THROWS_AS(view.cellRuleAt(1024),std::out_of_range);
 			CHECK_THROWS_AS(view.resourceAt(1024),std::out_of_range);
 			CHECK_THROWS_AS(view.occupancyAt(1024),std::out_of_range);
 			CHECK_THROWS_AS(view.areasAt(1024),std::out_of_range);
@@ -204,6 +205,7 @@ TEST_SUITE("WorldSnapshot")
 	}
 	TEST_CASE("AI boundary validates each captured map array before fast reads")
 	{
+		glob2test::HeadlessGlobals globals;
 		using namespace SimulationSnapshot;
 		const auto geometry=[] { Handle h; h.width=32; h.height=32; return h; };
 		const auto checkCells=[&]<class Layer>(Component component, std::shared_ptr<const Layer> Handle::*member)
@@ -230,17 +232,18 @@ TEST_SUITE("WorldSnapshot")
             if (count==1024) CHECK_NOTHROW(AIEngine::AIWorldView(std::move(h)));
             else CHECK_THROWS_AS(AIEngine::AIWorldView(std::move(h)),std::logic_error);
         }
-		for (std::size_t count : {1023u,1024u,1025u}) for (bool malformedIdentity : {false,true})
+		const auto rules=std::make_shared<const CellRuleTable>(TerrainRegistry::builtins(),ResourceRegistry::builtins());
+		for (std::size_t count : {1023u,1024u,1025u}) for (bool malformedVertices : {false,true})
 		{
 			auto h=geometry(); h.requirements=bit(Component::Terrain);
-			auto layer=std::make_shared<Terrain>();
-			layer->identity=std::make_shared<const std::vector<TerrainType>>(malformedIdentity?count:1024,GRASS);
-			layer->legacy.resize(malformedIdentity?1024:count); h.terrain=layer;
+			auto layer=std::make_shared<Terrain>(); layer->rules=rules;
+			layer->vertices=std::make_shared<const std::vector<TerrainType>>(malformedVertices?count:1024,GRASS);
+			layer->cellRules.resize(malformedVertices?1024:count); h.terrain=layer;
 			if (count==1024) CHECK_NOTHROW(AIEngine::AIWorldView(std::move(h)));
 			else CHECK_THROWS_AS(AIEngine::AIWorldView(std::move(h)),std::logic_error);
 		}
 		auto missingIdentity=geometry(); missingIdentity.requirements=bit(Component::Terrain);
-		auto terrain=std::make_shared<Terrain>(); terrain->legacy.resize(1024); missingIdentity.terrain=terrain;
+		auto terrain=std::make_shared<Terrain>(); terrain->rules=rules; terrain->cellRules.resize(1024); missingIdentity.terrain=terrain;
 		CHECK_THROWS_AS(AIEngine::AIWorldView(std::move(missingIdentity)),std::logic_error);
 		auto emptyGrowth=geometry(); emptyGrowth.requirements=bit(Component::Growth);
 		emptyGrowth.growth=std::make_shared<const Fertility::GrowthCache>();
@@ -263,8 +266,8 @@ TEST_SUITE("WorldSnapshot")
 		AIEngine::AIWorldView original(captured);
 		for (std::size_t i=0;i<1024;++i)
 		{
-			const auto terrain=original.terrainAt(i), checkedTerrain=captured.terrainAt(i);
-			CHECK(terrain.type==checkedTerrain.type); CHECK(terrain.legacy==checkedTerrain.legacy);
+			CHECK(original.cellRuleAt(i)==captured.cellRuleAt(i));
+			CHECK(sameTerrainProperties(original.terrainPropertiesAt(i),captured.terrainPropertiesAt(i)));
 			const auto resource=original.resourceAt(i), checkedResource=captured.resourceAt(i);
 			CHECK(resource.resource.getUint32()==checkedResource.resource.getUint32());
 			CHECK(resource.fertility==checkedResource.fertility); CHECK(resource.mayGrow==checkedResource.mayGrow);
@@ -448,11 +451,11 @@ TEST_SUITE("WorldSnapshot")
 		SimulationSnapshot::Store store;
 		auto terrain = store.captureBoundary(fixture.game, SimulationSnapshot::bit(SimulationSnapshot::Component::Terrain));
 		REQUIRE(terrain.terrain); CHECK_FALSE(terrain.entities); CHECK_FALSE(terrain.resources); CHECK_FALSE(terrain.growth);
-		CHECK(store.metrics.captures == 1); CHECK(store.metrics.bytesCopied == 1024 * (sizeof(Uint16) + sizeof(Uint8)));
+		CHECK(store.metrics.captures == 1); CHECK(store.metrics.bytesCopied == 1024 * sizeof(Uint16));
 		store.captureBoundary(fixture.game, SimulationSnapshot::bit(SimulationSnapshot::Component::Terrain));
 		CHECK(store.metrics.captures == 1);
 	}
-	TEST_CASE("undermap changes preserve retained terrain and reuse unchanged versions")
+	TEST_CASE("vertex changes preserve retained terrain and reuse unchanged versions")
 	{
 		glob2test::HeadlessGlobals globals;
 		glob2test::HeadlessGame fixture{glob2test::GameOptions{.wDec=5, .hDec=5, .teams=1}};
@@ -460,22 +463,24 @@ TEST_SUITE("WorldSnapshot")
 		auto& map = game.map;
 		SimulationSnapshot::Store store;
 		const auto required = SimulationSnapshot::bit(SimulationSnapshot::Component::Terrain);
-		map.setUMTerrain(4, 5, GRASS);
+		map.setVertexTerrain(4, 5, GRASS);
 		const auto original = store.captureBoundary(game, required);
 		const auto index = map.coordToIndex(4, 5);
-		map.setUMTerrain(4, 5, WATER);
+		map.setVertexTerrain(4, 5, WATER);
 		store.invalidateBoundary();
 		const auto changed = store.captureBoundary(game, required);
 		CHECK(original.terrain != changed.terrain);
-		CHECK(original.terrain->undermap[index] == GRASS);
-		CHECK(changed.terrain->undermap[index] == WATER);
+		CHECK((*original.terrain->vertices)[index] == GRASS);
+		CHECK((*changed.terrain->vertices)[index] == WATER);
+		CHECK(original.terrain->cellRules[index] == GRASS);
+		CHECK(changed.terrain->cellRules[index] != GRASS);
 		CHECK_NOTHROW(SimulationSnapshot::verifyCapture(game, changed));
-		map.setUMTerrain(4, 5, WATER);
+		map.setVertexTerrain(4, 5, WATER);
 		store.invalidateBoundary();
 		CHECK(store.captureBoundary(game, required).terrain == changed.terrain);
 		store.reset();
-		CHECK(original.terrain->undermap[index] == GRASS);
-		CHECK(changed.terrain->undermap[index] == WATER);
+		CHECK((*original.terrain->vertices)[index] == GRASS);
+		CHECK((*changed.terrain->vertices)[index] == WATER);
 	}
 	TEST_CASE("warm component buffers stop allocating at a fixed population")
 	{
@@ -624,8 +629,8 @@ TEST_SUITE("WorldSnapshot")
 		glob2test::HeadlessGame fixture{glob2test::GameOptions{.wDec=5, .hDec=5, .teams=1, .discovered=true, .clearImmobile=true, .loadDefaultRace=true}};
 		auto& game = fixture.game;
 		for (int y = 0; y < game.map.getH(); ++y) {
-			for (int x = 0; x < 8; ++x) game.map.setUMatPos(x, y, WATER, 1);
-			for (int x = 8; x < 16; ++x) game.map.setUMatPos(x, y, SAND, 1);
+			for (int x = 0; x < 8; ++x) game.map.paintVertexSquare(x, y, WATER, 1);
+			for (int x = 8; x < 16; ++x) game.map.paintVertexSquare(x, y, SAND, 1);
 		}
 		SimulationSnapshot::Store store;
 		auto checkParity = [&] {

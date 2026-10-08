@@ -360,8 +360,8 @@ std::string orbitMismatch(const Game &game, const Symmetry &s, int teams,
 			for (int u = 0; u < w; ++u)
 			{
 				const int c = s.corner(e, u, v);
-				if (map.getUMTerrain(u, v) != map.getUMTerrain(c % w, c / w))
-					return "Undermap corner" + at(u, v) + under;
+				if (map.vertexTerrainAt(u, v) != map.vertexTerrainAt(c % w, c / w))
+					return "Terrain vertex" + at(u, v) + under;
 			}
 		for (int y = 0; y < h; ++y)
 			for (int x = 0; x < w; ++x)

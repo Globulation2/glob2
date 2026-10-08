@@ -38,7 +38,7 @@ TEST_SUITE("TerrainMaterials")
 		glob2test::HeadlessGame fixture({.wDec = 6, .hDec = 5, .discovered = true});
 		for (int y = 0; y < 32; ++y)
 			for (int x = 32; x < 48; ++x)
-				fixture.game.map.setCellTerrain(x, y, ICE);
+				fixture.game.map.paintCell(x, y, ICE);
 		SceneMap scene;
 		glob2test::observeMap(fixture.game.map,scene);
 		SoftwareTerrainCache cache;
@@ -197,7 +197,7 @@ TEST_SUITE("TerrainMaterials")
 		compositor.prepare(false, 0);
 		TerrainVisual::Recipe recipe;
 		recipe.width = recipe.height = 16;
-		recipe.samples.fill(definitions.find("ice"));
+		recipe.corners.fill(definitions.find("ice"));
 		GAGCore::DrawableSurface result(32, 32);
 		auto *surface = result.getSDLSurface();
 		compositor.compose(recipe, surface, 0, 0, 1);
@@ -227,8 +227,8 @@ TEST_SUITE("TerrainMaterials")
 		compositor.prepare(false, 0);
 		TerrainVisual::Recipe r;
 		r.width = r.height = 16;
-		for (int i = 0; i < 16; ++i)
-			r.samples[i] = 60 + (i % 4);
+		for (int i = 0; i < 4; ++i)
+			r.corners[i] = 60 + i;
 		GAGCore::DrawableSurface result(32, 32);
 		compositor.compose(r, result.getSDLSurface(), 0, 0, 1);
 		CHECK(result.hasOpaquePixels());
@@ -249,9 +249,7 @@ TEST_SUITE("TerrainMaterials")
 		r.width = r.height = 16;
 		r.x = 3;
 		r.y = 5;
-		for (int j = 0; j < 4; ++j)
-			for (int i = 0; i < 4; ++i)
-				r.samples[j * 4 + i] = i < 2 ? ice : grass;
+		r.corners = {ice, grass, ice, grass};
 		const auto render = [&](const TerrainVisual::Catalog &c)
 		{
 			TerrainVisual::Compositor compositor(c);
@@ -307,8 +305,7 @@ TEST_SUITE("TerrainMaterials")
 		r.width = r.height = 16;
 		r.x = 4;
 		r.y = 9;
-		for (int i = 0; i < 16; ++i)
-			r.samples[i] = (i % 4) < 2 ? grass : sand;
+		r.corners = {grass, sand, grass, sand};
 		unsigned differentPixels = 0;
 		for (std::uint32_t seed : {0u, 1u, 0xdeadbeefu})
 		{
@@ -334,13 +331,9 @@ TEST_SUITE("TerrainMaterials")
 		// Both tiles along a shared edge agree for any seed, as the seedless test checks.
 		TerrainVisual::Recipe left = r, right = r;
 		left.seed = right.seed = 77;
-		right.x = r.x + 1; // One tile is two lattice columns.
-		for (int y = 0; y < 4; ++y)
-			for (int x = 0; x < 4; ++x)
-			{
-				left.samples[y * 4 + x] = (x + y) % 5;
-				right.samples[y * 4 + x] = (x + y + 2) % 5;
-			}
+		right.x = r.x + 1; // The right tile's left corners are the left tile's right corners.
+		left.corners = {0, 1, 2, 3};
+		right.corners = {1, 4, 3, 0};
 		for (int y = 0; y < 32; ++y)
 		{
 			const auto p = TerrainVisual::coverage(c, left, 8192, y * 256),
@@ -353,41 +346,6 @@ TEST_SUITE("TerrainMaterials")
 			}
 			CHECK(pp == qq);
 		}
-	}
-	TEST_CASE("all legacy shore groups retain their corner orientation")
-	{
-		constexpr unsigned masks[] = {8, 4, 1, 2, 3, 12, 5, 10, 7, 11, 14, 13, 6, 9};
-		for (unsigned group = 0; group < 14; ++group)
-			for (unsigned variant = 0; variant < 8; ++variant)
-			{
-				const auto a = TerrainVisual::legacyCorners(16 + group * 8 + variant);
-				const auto b = TerrainVisual::legacyCorners(144 + group * 8 + variant);
-				for (int k = 0; k < 4; ++k)
-				{
-					CHECK(a[k] == ((masks[group] >> k & 1) ? 2 : 1));
-					CHECK(b[k] == (((masks[group] ^ (group >= 12 ? 15u : 0u)) >> k & 1) ? 1 : 0));
-				}
-			}
-	}
-	TEST_CASE("legacy decoder inverts the engine lookup for both compatibility profiles")
-	{
-		glob2test::HeadlessGlobals globals;
-		struct LegacyMap : Map
-		{
-			using Map::lookup;
-		} map;
-		for (unsigned low : {0u, 1u})
-			for (unsigned mask = 0; mask < 16; ++mask)
-			{
-				std::array<unsigned, 4> corners{};
-				for (int k = 0; k < 4; ++k)
-					corners[k] = low + ((mask >> k) & 1);
-				for (int variation = 0; variation < 16; ++variation)
-				{
-					const auto frame = map.lookup(corners[0], corners[1], corners[2], corners[3]);
-					CHECK(TerrainVisual::legacyCorners(frame) == corners);
-				}
-			}
 	}
 	TEST_CASE("prepared coverage preserves native and HD contour geometry")
 	{
@@ -424,10 +382,8 @@ TEST_SUITE("TerrainMaterials")
 				recipe.width = recipe.height = 16;
 				recipe.x = 15;
 				recipe.y = 9;
-				for (int y = 0; y < 4; ++y)
-					for (int x = 0; x < 4; ++x)
-						recipe.samples[y * 4 + x] =
-							(configuration >> (2 * ((x & 1) + 2 * (y & 1)))) & 3;
+				for (int k = 0; k < 4; ++k)
+					recipe.corners[k] = (configuration >> (2 * k)) & 3;
 				const TerrainVisual::PreparedCoverage prepared(definitions, recipe);
 				for (int scale : {1, 4})
 					for (int y = 0; y < 32 * scale; ++y)
@@ -445,7 +401,7 @@ TEST_SUITE("TerrainMaterials")
 			// Fingerprint the reviewed native/HD geometry. Intentional contour changes
 			// require a rendered comparison and an updated digest, not just a
 			// matching partition sum.
-			CHECK(digest == (legacy ? 18185691832014944171ull : 1965875410804105497ull));
+			CHECK(digest == (legacy ? 15866489041356360345ull : 14215220908205104757ull));
 		}
 	}
 	TEST_CASE("the Python validator's built-in name list mirrors the terrain table")
@@ -480,10 +436,8 @@ TEST_SUITE("TerrainMaterials")
 			recipe.width = recipe.height = 16;
 			recipe.x = 15;
 			recipe.y = 9;
-			for (int y = 0; y < 4; ++y)
-				for (int x = 0; x < 4; ++x)
-					recipe.samples[y * 4 + x] =
-						samples[(configuration >> (2 * ((x & 1) + 2 * (y & 1)))) & 3];
+			for (int k = 0; k < 4; ++k)
+				recipe.corners[k] = samples[(configuration >> (2 * k)) & 3];
 			const TerrainVisual::PreparedCoverage prepared(definitions, recipe);
 			for (int scale : {1, 4})
 				for (int y = 0; y < 32 * scale; ++y)
@@ -498,7 +452,7 @@ TEST_SUITE("TerrainMaterials")
 					}
 		}
 		// Intentional profile changes need a rendered comparison and a new digest.
-		CHECK(digest == 7217410723105018781ull);
+		CHECK(digest == 11045336540448780839ull);
 	}
 	TEST_CASE("coverage partitions every binary shape and multi-material junction")
 	{
@@ -510,9 +464,8 @@ TEST_SUITE("TerrainMaterials")
 			r.width = r.height = 16;
 			r.x = 7;
 			r.y = 9;
-			for (int y = 0; y < 4; ++y)
-				for (int x = 0; x < 4; ++x)
-					r.samples[y * 4 + x] = (configuration >> (2 * ((x & 1) + 2 * (y & 1)))) & 3;
+			for (int k = 0; k < 4; ++k)
+				r.corners[k] = (configuration >> (2 * k)) & 3;
 			const TerrainVisual::PreparedCoverage prepared(c, r);
 			for (int y = 0; y < 32; ++y)
 				for (int x = 0; x < 32; ++x)
@@ -538,12 +491,8 @@ TEST_SUITE("TerrainMaterials")
 		a.y = 15;
 		TerrainVisual::Recipe b = a;
 		b.x = 0;
-		for (int y = 0; y < 4; ++y)
-			for (int x = 0; x < 4; ++x)
-			{
-				a.samples[y * 4 + x] = (x + y) % 5;
-				b.samples[y * 4 + x] = (x + y + 2) % 5;
-			}
+		a.corners = {0, 1, 2, 3};
+		b.corners = {1, 4, 3, 0}; // Left corners equal a's right corners.
 		for (int y = 0; y < 32; ++y)
 		{
 			const auto p = TerrainVisual::coverage(c, a, 8192, y * 256),
@@ -566,8 +515,7 @@ TEST_SUITE("TerrainMaterials")
 			profile.roughness = profile.speckle = profile.bridge = 0;
 		TerrainVisual::Recipe r;
 		r.width = r.height = 16;
-		r.samples.fill(c.find("grass"));
-		r.samples[5] = r.samples[10] = c.find("road");
+		r.corners = {c.find("road"), c.find("grass"), c.find("grass"), c.find("road")};
 		// Along a diagonal each region is solid up to the narrow junction;
 		// merging their bilinear weights used to create a broad saddle fade.
 		const auto interior = coverage(c, r, 14 * 256, 14 * 256);
@@ -579,12 +527,8 @@ TEST_SUITE("TerrainMaterials")
 		TerrainVisual::Recipe a = r, b = r;
 		a.y = 15;
 		b.y = 0;
-		for (int y = 0; y < 4; ++y)
-			for (int x = 0; x < 4; ++x)
-			{
-				a.samples[y * 4 + x] = (x + y) % 5;
-				b.samples[y * 4 + x] = (x + y + 2) % 5;
-			}
+		a.corners = {0, 1, 2, 3};
+		b.corners = {2, 3, 4, 0}; // Top corners equal a's bottom corners.
 		for (int x = 0; x < 32; ++x)
 		{
 			const auto p = coverage(c, a, x * 256, 8192), q = coverage(c, b, x * 256, 0);
@@ -612,12 +556,11 @@ TEST_SUITE("TerrainMaterials")
 						r.width = r.height = size;
 						r.x = x % size;
 						r.y = y % size;
-						for (int j = 0; j < 4; ++j)
-							for (int i = 0; i < 4; ++i)
-								r.samples[j * 4 + i] =
-									TerrainVisual::hash((r.x * 2 + i - 1 + size * 2) % (size * 2),
-														(r.y * 2 + j - 1 + size * 2) % (size * 2)) %
-									5;
+						// Corner materials hashed from wrapped vertex coordinates.
+						for (int k = 0; k < 4; ++k)
+							r.corners[k] = TerrainVisual::hash((r.x + (k & 1)) % size,
+															   (r.y + (k >> 1)) % size) %
+										   5;
 						return r;
 					};
 					const TerrainVisual::PreparedCoverage a(c, recipe(position, position));
@@ -654,8 +597,7 @@ TEST_SUITE("TerrainMaterials")
 			r.width = r.height = 16;
 			r.x = 4;
 			r.y = cy;
-			for (int i = 0; i < 16; ++i)
-				r.samples[i] = i % 4 < 2 ? grass : ice;
+			r.corners = {grass, ice, grass, ice};
 			const TerrainVisual::PreparedCoverage prepared(c, r);
 			std::array<int, 32> segment{};
 			for (int y = 0; y < 32; ++y)
@@ -703,8 +645,7 @@ TEST_SUITE("TerrainMaterials")
 			TerrainVisual::Recipe r;
 			r.width = r.height = 16;
 			r.x = r.y = position;
-			for (int i = 0; i < 16; ++i)
-				r.samples[i] = c.find(i % 4 < 2 ? "grass" : "ice");
+			r.corners = {c.find("grass"), c.find("ice"), c.find("grass"), c.find("ice")};
 			const TerrainVisual::PreparedCoverage prepared(c, r);
 			for (int y : {8, 24})
 			{
@@ -848,23 +789,24 @@ TEST_SUITE("TerrainMaterials")
 		for (int x = 0; x < 128; ++x)
 			CHECK(a.frame(a.find("ice"), x, 7, 0) == b.frame(b.find("ice"), x, 7, 0));
 	}
-	TEST_CASE("single cells retain their center and animation does not reseed variants")
+	TEST_CASE("single vertices own their corner and animation does not reseed variants")
 	{
 		glob2test::HeadlessGlobals globals;
 		auto c = catalog();
 		for (auto key : {"water", "sand", "grass", "ice", "road"})
 		{
+			// A lone vertex of key: within the warp's six pixels of the tile
+			// corner, every sample still lies in the corner's uniform patch.
 			TerrainVisual::Recipe r;
 			r.width = r.height = 16;
-			r.samples.fill(c.find(key) == c.find("grass") ? c.find("ice") : c.find("grass"));
-			for (auto index : {5, 6, 9, 10})
-				r.samples[index] = c.find(key);
+			r.corners.fill(c.find(key) == c.find("grass") ? c.find("ice") : c.find("grass"));
+			r.corners[0] = c.find(key);
 			for (r.y = 0; r.y < r.height; ++r.y)
 				for (r.x = 0; r.x < r.width; ++r.x)
 				{
 					const TerrainVisual::PreparedCoverage prepared(c, r);
-					for (int y : {14, 16, 18})
-						for (int x : {14, 16, 18})
+					for (int y : {0, 1})
+						for (int x : {0, 1})
 						{
 							const auto result = prepared.at(x * 256, y * 256);
 							unsigned weight = 0;

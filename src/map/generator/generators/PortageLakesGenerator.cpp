@@ -1232,7 +1232,7 @@ bool materialize(Game &game, GenerationContext &c, const Layout &L)
 	}
 	const auto &t = L.t;
 	const PortageLakesOptions o(c.request);
-	writeUndermap(game.map, L.terrain);
+	writeVertices(game.map, L.terrain);
 	for (size_t k = 0; k < L.homes.size(); ++k)
 		game.addTeam();
 	for (size_t k = 0; k < L.homes.size(); ++k)
@@ -1458,7 +1458,7 @@ std::string validateWorld(const Game &game, const GenerationContext &c)
 			continue;
 		matched = true;
 		for (int i = 0; i < actual.size(); ++i)
-			matched &= candidate.terrain[i] == game.map.getUMTerrain(i % actual.w, i / actual.w);
+			matched &= candidate.terrain[i] == game.map.vertexTerrainAt(i % actual.w, i / actual.w);
 		if (matched)
 			L = std::move(candidate);
 	}

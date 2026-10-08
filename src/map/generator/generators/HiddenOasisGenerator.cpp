@@ -1285,7 +1285,7 @@ bool generate(Game &game, GenerationContext &context)
 		game.addTeam();
 
 	context.stage = "hidden-oasis terrain";
-	writeUndermap(map, L.terrain);
+	writeVertices(map, L.terrain);
 
 	context.stage = "hidden-oasis colonies";
 	const auto homeMask = [&](int team)

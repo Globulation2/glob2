@@ -28,9 +28,8 @@ using namespace MapGeneration;
 //
 // Everything that shapes the belt is periodic in the map's own size - whole-number harmonics for
 // its centre line and width, lattice noise whose cells tile the torus for its coastline - so the
-// seam can't be seen. Terrain is written straight to the undermap with an order-independent beach
-// pass rather than Map::controlSand(), whose in-place raster scan makes shorelines depend on scan
-// order.
+// seam can't be seen. Terrain is written straight to the map's vertices after an order-independent
+// beach pass that, unlike Map::layBeaches(), leaves the water whole.
 //
 // WHY IT PLAYS WELL (docs/map-generators/GAME_RULES_FOR_MAP_DESIGN.md). Every colony has the same
 // situation: one neighbour each way along the belt, sea behind it, and colonies alternating between
@@ -549,7 +548,7 @@ bool generate(Game &game, GenerationContext &context)
 	const RingWorldOptions options(context.request);
 	Map &map = game.map;
 	const int width = map.getW(), height = map.getH(), teams = context.request.nbTeams;
-	map.makeHomogenMap(WATER);
+	map.fillTerrain(WATER);
 	for (int i = 0; i < teams; ++i)
 		game.addTeam();
 	const Axes axes = axesFor(width, height);
@@ -583,7 +582,7 @@ bool generate(Game &game, GenerationContext &context)
 		context.telemetry.fallback("ring-world.islands.omitted",
 								   "Candidate budget or water clearance limited islands.");
 	layBeaches(terrain, t);
-	writeUndermap(map, terrain);
+	writeVertices(map, terrain);
 
 	context.stage = "ring colonies";
 	if (!placeColonies(game, context, belt, options.bothCoasts))

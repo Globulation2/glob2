@@ -140,5 +140,5 @@ bool Map::pathfindAirPointToPoint(int x, int y, int targetX, int targetY, int *d
 	return field::airRoute(
 		w, h, x, y, targetX, targetY, minimum, aStarPoints, aStarExaminedPoints,
 		[&](int px, int py) { return isFreeForAirUnit(px, py); },
-		[&](int px, int py) { return terrainRegistry().airRouteCost(terrainTypeAt(px, py)); }, dx, dy);
+		[&](int px, int py) { return cellRule(coordToIndex(px, py)).airRouteCost; }, dx, dy);
 }

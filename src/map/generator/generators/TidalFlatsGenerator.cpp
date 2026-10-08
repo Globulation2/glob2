@@ -476,7 +476,7 @@ bool generate(Game &game, GenerationContext &context)
 	const TidalFlatsOptions o(context.request);
 	Map &map = game.map;
 	const int teams = context.request.nbTeams;
-	map.makeHomogenMap(SAND);
+	map.fillTerrain(SAND);
 	for (int i = 0; i < teams; ++i)
 		game.addTeam();
 	const Layout L = design(context.request, context);
@@ -498,7 +498,7 @@ bool generate(Game &game, GenerationContext &context)
 			terrain[i] = WATER;
 	}
 	layBeaches(terrain, t);
-	writeUndermap(map, terrain);
+	writeVertices(map, terrain);
 
 	context.stage = "flats colonies";
 	const auto island = [&](int team)

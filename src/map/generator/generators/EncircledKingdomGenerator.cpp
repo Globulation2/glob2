@@ -714,7 +714,7 @@ bool generate(Game &game, GenerationContext &c)
 	}
 	const Torus &t = L.t;
 	const EncircledKingdomOptions o(c.request);
-	writeUndermap(game.map, L.terrain);
+	writeVertices(game.map, L.terrain);
 	for (int i = 0; i < t.size(); ++i)
 		if (L.wall[i])
 			game.map.setResourceByIndex(i % t.w, i / t.w, STONE, 1);

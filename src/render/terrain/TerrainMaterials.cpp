@@ -224,8 +224,7 @@ Catalog Catalog::parse(const nlohmann::json &j)
 	require(j.at("bindings").is_object(), "bindings must be an object");
 	for (const auto &[key, value] : j.at("bindings").items())
 		c.bindings.emplace(key, c.find(value));
-	// Every paintable built-in terrain needs a material; legacy shores resolve
-	// through their corner materials.
+	// Every paintable built-in terrain needs a material.
 	for (unsigned type = 0; type < TERRAIN_COUNT; ++type)
 		if (terrainPaintable(TerrainType(type)))
 			require(c.bindings.contains(terrainPresentation(TerrainType(type)).name),
@@ -288,26 +287,6 @@ int Catalog::frame(MaterialId id, int x, int y, int time, std::uint32_t seed) co
 	const auto &m = materials[id];
 	return m.variants[variantIndex(id, x, y, seed)].frame +
 		   (unsigned(time) / m.animationTicks % m.animationFrames) * m.animationStride;
-}
-std::array<unsigned, 4> legacyCorners(unsigned frame)
-{
-	if (frame < 16)
-		return {2, 2, 2, 2};
-	if (frame >= 256)
-		return {0, 0, 0, 0};
-	if (frame >= 128 && frame < 144)
-		return {1, 1, 1, 1};
-	// Bits TL/TR/BL/BR of the higher material in each eight-frame shore group.
-	constexpr unsigned masks[] = {8, 4, 1, 2, 3, 12, 5, 10, 7, 11, 14, 13, 6, 9};
-	const bool shore = frame >= 144;
-	const unsigned group = (frame - (shore ? 144 : 16)) / 8;
-	// The two diagonal groups in the water shoreline atlas are reversed
-	// relative to grass/sand (Map::lookup rows 240 and 248).
-	const unsigned mask = masks[group] ^ ((shore && group >= 12) ? 15u : 0u);
-	std::array<unsigned, 4> result{};
-	for (int i = 0; i < 4; ++i)
-		result[i] = (mask & (1u << i)) ? (shore ? 1 : 2) : (shore ? 0 : 1);
-	return result;
 }
 PreparedCoverage::Curve::Curve(const Profile *p, unsigned motif) : profile(p)
 {
@@ -372,9 +351,11 @@ PreparedCoverage::PreparedCoverage(const Catalog &c, const Recipe &r)
 		for (int sx = 0; sx < 3; ++sx)
 		{
 			auto &patch = patches[sy * 3 + sx];
-			const MaterialId ids[] = {r.samples[sy * 4 + sx], r.samples[sy * 4 + sx + 1],
-									  r.samples[(sy + 1) * 4 + sx],
-									  r.samples[(sy + 1) * 4 + sx + 1]};
+			// Lattice columns sx and sx + 1 take corner columns sx / 2 and
+			// (sx + 1) / 2: the outer patches hold one corner column or row.
+			const int left = sx / 2, right = (sx + 1) / 2, top = sy / 2, bottom = (sy + 1) / 2;
+			const MaterialId ids[] = {r.corners[top * 2 + left], r.corners[top * 2 + right],
+									  r.corners[bottom * 2 + left], r.corners[bottom * 2 + right]};
 			if (ids[0] == ids[1] && ids[0] == ids[2] && ids[0] == ids[3])
 			{
 				patch.materials[0] = ids[0];

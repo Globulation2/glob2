@@ -987,7 +987,7 @@ bool generate(Game &game, GenerationContext &context)
 		game.addTeam();
 
 	context.stage = "honeycomb isle terrain";
-	writeUndermap(map, L.terrain);
+	writeVertices(map, L.terrain);
 	// Standing stone and rubble go down before the colonies: neither is ever on a home.
 	int stoneTiles = 0;
 	for (int i = 0; i < n; ++i)

@@ -400,7 +400,7 @@ bool generate(Game &game, GenerationContext &context)
 		return false;
 	}
 	Map &map = game.map;
-	writeUndermap(map, L.terrain);
+	writeVertices(map, L.terrain);
 	const auto grass = pureTiles(L.terrain, t, GRASS);
 	for (int k = 0; k < context.request.nbTeams; ++k)
 		game.addTeam();
@@ -500,7 +500,7 @@ std::string validateWorld(const Game &game, const GenerationContext &context)
 		return L.failure;
 	const auto &t = L.t;
 	for (int i = 0; i < t.size(); ++i)
-		if (game.map.getUMTerrain(i % t.w, i / t.w) != L.terrain[i])
+		if (game.map.vertexTerrainAt(i % t.w, i / t.w) != L.terrain[i])
 			return "Settlement changed the bitten coastline or ponds.";
 	const auto buildable = buildableTiles(game.map);
 	const auto anchors = buildAnchors(t, buildable);

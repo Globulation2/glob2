@@ -401,7 +401,7 @@ public:
                 dense.game.addBuilding(x,y,globalContainer->buildingsTypes.getFinishedTypeNum(types[(x+y)%6]),team);
                 for(int i=0;i<3;++i)dense.game.addUnit(x+i,y+5,team,i,0,0,0,0);
             }
-            for(int y=0;y<64;++y)for(int x=0;x<3;++x)dense.game.map.setUMatPos(x,y,WATER,1);
+            for(int y=0;y<64;++y)for(int x=0;x<3;++x)dense.game.map.paintVertexSquare(x,y,WATER,1);
             dense.regenerateGameHeader();dense.minimap.setMapSize(dense.game.map.getW(), dense.game.map.getH());dense.updateCamera();
             for(double zoom:{dense.camera.minimumZoom(),.5,MapCamera::MAX_ZOOM})
             {

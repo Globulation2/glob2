@@ -6,9 +6,9 @@
 #include <cstdint>
 
 // One row per built-in TerrainType: its group (and therefore its simulation
-// profile and experiment), external name, string-table label, semantic colours
-// and the frozen saved-frame contract. TerrainProperties.h, TerrainPresentation.h,
-// TerrainCompatibility.h and TerrainExperiments.h all derive from this table, so
+// profile and experiment), external name, string-table label and semantic
+// colours. TerrainProperties.h, TerrainPresentation.h and TerrainExperiments.h
+// all derive from this table, so
 // adding a look is one enumerator in TerrainType.h, one row here, one string-table
 // label and one material binding in data/terrain/tileset.json.
 struct TerrainColor
@@ -23,25 +23,15 @@ struct TerrainTypeDefinition
 	// External name for scripts, files and material bindings; label is a string-table key.
 	const char *name, *label;
 	TerrainColor minimap, overview, image, preview;
-	// Saved Tile::terrain frame range. Frames are stable identities checked on
-	// load and hashed into map checksums; they are not drawing frames.
-	int firstFrame, variants;
-	bool legacyCorners;
 };
 
 namespace terrain_table_detail
 {
-// Rows 7 onward take sixteen abstract frames each after the legacy ranges
-// (0–303 classic tiles, 304–333 retired edge masks).
-inline constexpr int AUTHORED_FRAME_BASE = 336;
-inline constexpr int AUTHORED_FRAMES = 16;
 constexpr TerrainTypeDefinition authored(TerrainType id, TerrainGroup group, const char *name,
 										  const char *label, TerrainColor minimap,
 										  TerrainColor mid)
 {
-	return {id,      group, name, label, minimap, mid, mid, minimap,
-			AUTHORED_FRAME_BASE + AUTHORED_FRAMES * (int(id) - int(TERRAIN_COUNT_BEFORE_CATALOGUE)),
-			AUTHORED_FRAMES, false};
+	return {id, group, name, label, minimap, mid, mid, minimap};
 }
 } // namespace terrain_table_detail
 
@@ -50,15 +40,13 @@ inline constexpr auto TERRAIN_TYPES = []
 	using namespace terrain_table_detail;
 	using G = TerrainGroup;
 	std::array<TerrainTypeDefinition, TERRAIN_COUNT> rows{{
-		// Frozen built-ins: names, colours and frame ranges are saved-file contracts.
-		{WATER, G::Water, "water", "[water]", {0, 40, 120}, {70, 50, 191}, {0, 64, 255}, {0, 40, 120}, 256, 16, true},
-		{SAND, G::Sand, "sand", "[sand]", {170, 170, 0}, {182, 168, 48}, {240, 220, 140}, {170, 170, 0}, 128, 16, true},
-		{GRASS, G::Grass, "grass", "[grass]", {0, 90, 0}, {30, 113, 30}, {0, 128, 0}, {0, 90, 0}, 0, 16, true},
-		{ICE, G::Ice, "ice", "[ice]", {190, 225, 240}, {190, 225, 240}, {190, 225, 240}, {190, 225, 240}, 272, 16, false},
+		// Frozen built-ins: names and colours are file and script contracts.
+		{WATER, G::Water, "water", "[water]", {0, 40, 120}, {70, 50, 191}, {0, 64, 255}, {0, 40, 120}},
+		{SAND, G::Sand, "sand", "[sand]", {170, 170, 0}, {182, 168, 48}, {240, 220, 140}, {170, 170, 0}},
+		{GRASS, G::Grass, "grass", "[grass]", {0, 90, 0}, {30, 113, 30}, {0, 128, 0}, {0, 90, 0}},
+		{ICE, G::Ice, "ice", "[ice]", {190, 225, 240}, {190, 225, 240}, {190, 225, 240}, {190, 225, 240}},
 		// Trail retains its legacy external name/key for scripts and files.
-		{TRAIL, G::Paths, "road", "[road]", {176, 138, 98}, {176, 138, 98}, {176, 138, 98}, {176, 138, 98}, 288, 16, false},
-		{GRASS_SAND_SHORE, G::Shore, "grass_sand_border", "[sand]", {85, 130, 0}, {106, 140, 39}, {240, 220, 140}, {85, 130, 0}, 16, 112, true},
-		{SAND_WATER_SHORE, G::Shore, "sand_water_border", "[sand]", {85, 105, 60}, {126, 109, 119}, {240, 220, 140}, {85, 105, 60}, 144, 112, true},
+		{TRAIL, G::Paths, "road", "[road]", {176, 138, 98}, {176, 138, 98}, {176, 138, 98}, {176, 138, 98}},
 		// Catalogue types: minimap colour, then the shared overview/image colour.
 		authored(BOULDERS, G::Obstacles, "boulders", "[boulders]", {70, 72, 74}, {88, 90, 92}),
 		authored(HEDGE, G::Obstacles, "hedge", "[hedge]", {30, 62, 34}, {38, 78, 40}),
@@ -96,8 +84,7 @@ inline constexpr TerrainGroup terrainGroup(TerrainType type)
 {
 	return TERRAIN_TYPES[unsigned(type)].group;
 }
-// Paintable built-ins are editor brushes and import presets; the legacy shore
-// profiles are corner adapters that only old files and the corner editor produce.
+// Paintable built-ins are editor brushes and import presets.
 inline constexpr bool terrainPaintable(TerrainType type)
 {
 	return TERRAIN_GROUPS[unsigned(TERRAIN_TYPES[unsigned(type)].group)].paletteVisible;
@@ -116,11 +103,9 @@ constexpr bool sameColor(TerrainColor a, TerrainColor b)
 {
 	return a.r == b.r && a.g == b.g && a.b == b.b;
 }
-constexpr bool frozenRow(const TerrainTypeDefinition &row, const char *name, int firstFrame,
-						 int variants, bool legacyCorners)
+constexpr bool frozenRow(const TerrainTypeDefinition &row, const char *name)
 {
-	return sameText(row.name, name) && row.firstFrame == firstFrame &&
-		   row.variants == variants && row.legacyCorners == legacyCorners;
+	return sameText(row.name, name);
 }
 } // namespace terrain_table_detail
 
@@ -132,23 +117,12 @@ static_assert(
 		{
 			const auto &row = TERRAIN_TYPES[i];
 			if (unsigned(row.id) != i || unsigned(row.group) >= TERRAIN_GROUP_COUNT || !row.name ||
-				!row.label || row.firstFrame < 0 || row.variants <= 0 ||
-				row.firstFrame + row.variants > 65536)
-				return false;
-			if (row.legacyCorners != !TERRAIN_GROUPS[unsigned(row.group)].paletteVisible &&
-				i >= TERRAIN_COUNT_BEFORE_CATALOGUE)
+				!row.label)
 				return false;
 			for (unsigned j = 0; j < i; ++j)
 			{
 				const auto &other = TERRAIN_TYPES[j];
 				if (sameText(row.name, other.name))
-					return false;
-				// Frame ranges are saved identities and must never overlap.
-				if (row.firstFrame < other.firstFrame + other.variants &&
-					other.firstFrame < row.firstFrame + row.variants)
-					return false;
-				// Image import resolves whole-cell colours by nearest match.
-				if (!row.legacyCorners && !other.legacyCorners && sameColor(row.image, other.image))
 					return false;
 				// Every paintable type is a distinct import/export colour.
 				if (terrainPaintable(row.id) && terrainPaintable(other.id) && sameColor(row.image, other.image))
@@ -157,20 +131,15 @@ static_assert(
 		}
 		return true;
 	}(),
-	"Terrain rows need unique names, image colours and non-overlapping saved frame ranges");
+	"Terrain rows need unique names and image colours");
 
-// Existing saves, replays and checksums depend on these seven rows byte for byte.
+// Scripts, files and material bindings name the classic rows.
 static_assert(
 	[]
 	{
 		using namespace terrain_table_detail;
-		return TERRAIN_COUNT_BEFORE_CATALOGUE == 7 &&
-			   frozenRow(TERRAIN_TYPES[WATER], "water", 256, 16, true) &&
-			   frozenRow(TERRAIN_TYPES[SAND], "sand", 128, 16, true) &&
-			   frozenRow(TERRAIN_TYPES[GRASS], "grass", 0, 16, true) &&
-			   frozenRow(TERRAIN_TYPES[ICE], "ice", 272, 16, false) &&
-			   frozenRow(TERRAIN_TYPES[TRAIL], "road", 288, 16, false) &&
-			   frozenRow(TERRAIN_TYPES[GRASS_SAND_SHORE], "grass_sand_border", 16, 112, true) &&
-			   frozenRow(TERRAIN_TYPES[SAND_WATER_SHORE], "sand_water_border", 144, 112, true);
+		return frozenRow(TERRAIN_TYPES[WATER], "water") && frozenRow(TERRAIN_TYPES[SAND], "sand") &&
+			   frozenRow(TERRAIN_TYPES[GRASS], "grass") && frozenRow(TERRAIN_TYPES[ICE], "ice") &&
+			   frozenRow(TERRAIN_TYPES[TRAIL], "road");
 	}(),
-	"Format-136 terrain identities are frozen");
+	"The classic terrain names are frozen");

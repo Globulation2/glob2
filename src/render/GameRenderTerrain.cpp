@@ -226,17 +226,27 @@ void Game::drawMapOverview(int left, int top, int right, int bot, int viewportX,
 	else if (render.overview->getW()!=columns*samples || render.overview->getH()!=rows*samples)
 		render.overview->setRes(columns*samples, rows*samples);
 	auto *pixels = render.overview->getSDLSurface();
-	// Sample the same corner/whole-cell partition as the textured terrain. A
-	// whole-tile corner hue moves legacy coasts half a tile during the fade.
+	// Sample the same corner partition as the textured terrain. A whole-tile
+	// hue would move coasts half a tile during the fade.
 	for (int y=top; y<=bot; y++)
 		for (int x=left; x<=right; x++)
 		{
 			const int ox = (x-left)*samples, oy = (y-top)*samples;
-			const auto type = sceneMap.terrainTypeAt(x+viewportX, y+viewportY);
-			const auto color = sceneMap.terrainPresentation(type).overview;
-			const std::array<unsigned char, 3> cellColor{color.r, color.g, color.b};
+			// Custom terrain corners keep their saved overview colours.
+			const auto corners = sceneMap.cellCorners(x+viewportX, y+viewportY);
+			std::array<std::array<unsigned char, 3>, 4> colors{};
+			TerrainVisual::Compositor::CornerColors custom{};
+			bool anyCustom = false;
+			for (unsigned k = 0; k < corners.size(); ++k)
+				if (unsigned(corners[k]) >= TERRAIN_COUNT)
+				{
+					const auto color = sceneMap.terrainPresentation(corners[k]).overview;
+					colors[k] = {color.r, color.g, color.b};
+					custom[k] = &colors[k];
+					anyCustom = true;
+				}
 			compositor.composeOverview(compositor.describe(sceneMap, x+viewportX, y+viewportY),
-									   pixels, ox, oy, unsigned(type) < TERRAIN_COUNT ? nullptr : &cellColor);
+									   pixels, ox, oy, anyCustom ? &custom : nullptr);
 			const auto &resource = sceneMap.getResource(x+viewportX, y+viewportY);
 			if (resource.type != NO_RES_TYPE && ((drawOptions & DRAW_WHOLE_MAP) != 0 ||
 				sceneMap.isMapPartiallyDiscovered(x+viewportX-1, y+viewportY-1, x+viewportX+1, y+viewportY+1, visibleTeams)))

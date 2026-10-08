@@ -31,17 +31,4 @@ std::set<Cell> cells(unsigned figure, const std::vector<Cell> &centres)
 		covered.merge(stamp(figure, centre, centres.front()));
 	return covered;
 }
-std::set<Cell> cornerClosure(const std::set<Cell> &covered)
-{
-	std::set<Cell> closed = covered, corners;
-	for (const auto &[x, y] : covered)
-		for (int dy = 0; dy <= 1; ++dy)
-			for (int dx = 0; dx <= 1; ++dx)
-				corners.insert({x + dx, y + dy});
-	// A cell (x, y) reads the corners (x..x+1, y..y+1).
-	for (const auto &[x, y] : corners)
-		if (corners.count({x + 1, y}) && corners.count({x, y + 1}) && corners.count({x + 1, y + 1}))
-			closed.insert({x, y});
-	return closed;
-}
 } // namespace BrushCoverage

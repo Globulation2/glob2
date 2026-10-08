@@ -281,7 +281,7 @@ bool generate(Game &game, GenerationContext &c)
 				for (int dx = -1; dx <= 2; ++dx)
 					terrain[t.at(i % t.w + dx, i / t.w + dy)] = GRASS;
 	layBeaches(terrain, t);
-	writeUndermap(map, terrain);
+	writeVertices(map, terrain);
 	for (int i = 0; i < n; ++i)
 		if (L.wall[i] && map.terrainSupportsResourceAtByIndex(i % t.w, i / t.w, STONE))
 			map.setResourceByIndex(i % t.w, i / t.w, STONE, 1);

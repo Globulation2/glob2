@@ -14,6 +14,7 @@ from gradient_benchmark import (
     baseline_travel_header,
     cases,
     load_cases,
+    real_registry,
     main,
     prepare_output,
     run_cases,
@@ -121,7 +122,7 @@ class BenchmarkProtocolTest(unittest.TestCase):
         for suite in ('smoke', 'representative', 'full'):
             matrix = list(cases(suite))
             self.assertEqual({case['swim'] for case in matrix}, set(range(7)))
-            self.assertEqual({case['registry'] for case in matrix}, {7, 8, 32, 64})
+            self.assertEqual({case['registry'] for case in matrix}, {real_registry(), 32, 64})
             self.assertTrue(any(case.get('width') == 1 for case in matrix))
             self.assertTrue(any(case.get('cap') == 0 for case in matrix))
             self.assertEqual({case['costs'] for case in matrix}, {'equivalent', 'distinct'})

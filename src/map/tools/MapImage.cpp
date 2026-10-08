@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "MapImage.h"
+#include "TerrainCornerPresentation.h"
 #include "TerrainPresentation.h"
 #include "Game.h"
 #include "GlobalContainer.h"
@@ -35,22 +36,18 @@ constexpr Category terrainCategory(TerrainType type)
     return {c.r,c.g,c.b,type,NO_RES};
 }
 // Explicit legacy image-format palette: these named built-in content choices
-// define nearest-color and cell-majority ties. Keep in sync with CLI.md.
+// define nearest-color and vertex-majority ties. Keep in sync with CLI.md. Every
+// other built-in terrain follows in identity order with its own image colour.
 constexpr auto palette = [] {
     constexpr std::array<Category,12> legacy{{terrainCategory(GRASS), terrainCategory(SAND), terrainCategory(WATER),
         {0,64,0,GRASS,WOOD}, {255,255,0,GRASS,WHEAT}, {128,128,128,GRASS,STONE},
         {0,255,255,WATER,ALGA}, {255,0,255,GRASS,PAPYRUS}, {255,0,0,GRASS,CHERRY},
         {255,128,0,GRASS,ORANGE}, {128,0,255,GRASS,PRUNE}, {255,255,255,GRASS,NO_RES}}};
-    constexpr auto authoredCount = [] {
-        unsigned count=0;
-        for (const auto& p : TerrainCompatibilityTable) count += !p.legacyCorners;
-        return count;
-    }();
-    std::array<Category,legacy.size()+authoredCount> result{};
+    std::array<Category,legacy.size()+TERRAIN_COUNT-3> result{};
     unsigned cursor=0;
     for (const auto& entry : legacy) result[cursor++]=entry;
     for (unsigned type=0;type<TERRAIN_COUNT;++type)
-        if (!terrainUsesLegacyCorners(static_cast<TerrainType>(type)))
+        if (!classicTerrain(static_cast<TerrainType>(type)))
             result[cursor++]=terrainCategory(static_cast<TerrainType>(type));
     return result;
 }();
@@ -86,7 +83,7 @@ int nearest(Uint8 r, Uint8 g, Uint8 b)
 		const auto &c = palette[i];
 		int d = (int(r) - c.r) * (int(r) - c.r) + (int(g) - c.g) * (int(g) - c.g) +
 				(int(b) - c.b) * (int(b) - c.b);
-		if (unsigned(c.terrain) >= TERRAIN_COUNT_BEFORE_CATALOGUE && d != 0)
+		if (unsigned(c.terrain) > unsigned(TRAIL) && d != 0)
 			continue;
 		if (d < distance)
 		{
@@ -466,7 +463,8 @@ std::vector<MapGeneratorPoint> findImageMarkers(const std::vector<int> &cells, i
 	return anchors;
 }
 
-std::vector<unsigned char> clearImageHomes(Map &map, const std::vector<int> &cells,
+// Each colony's 7x7 starting patch of vertices is cleared to grass.
+std::vector<unsigned char> clearImageHomes(const Map &map, const std::vector<int> &cells,
 										 const std::vector<MapGeneratorPoint> &anchors,
 										 MapImageImportReport &report)
 {
@@ -482,7 +480,6 @@ std::vector<unsigned char> clearImageHomes(Map &map, const std::vector<int> &cel
 				if (homes[i])
 					throw std::runtime_error("Colony starting patches overlap");
 				homes[i] = 1;
-				map.setUMTerrain(x, y, GRASS);
 				if (palette[cells[i]].resource != NO_RES)
 					++report.clearedResources;
 			}
@@ -500,47 +497,53 @@ std::vector<unsigned char> makeProtectedResources(const std::vector<unsigned cha
 	return protectedResources;
 }
 
-std::vector<TerrainType> applyImportedTerrain(Map &map, const std::vector<int> &cells,
-										 const std::vector<unsigned char> &homes,
-										 const std::vector<unsigned char> &protectedResources,
-										 MapImageImportReport &report)
+// Each decoded pixel is one vertex. Seam repair and beaches reshape only grass,
+// sand and water; every other terrain keeps its authored vertices and counts as
+// sand while the classic terrain around it is repaired.
+void applyImportedTerrain(Map &map, const std::vector<int> &cells,
+						  const std::vector<unsigned char> &homes,
+						  const std::vector<unsigned char> &protectedResources,
+						  MapImageImportReport &report)
 {
 	const int w = map.getW(), h = map.getH();
 	std::vector<TerrainType> original(w * h);
 	for (int i = 0; i < w * h; ++i)
 		original[i] = palette[cells[i]].terrain;
-	std::vector<TerrainType> repaired = original;
-    // The old corner lattice remains a legacy editing adapter. Explicit
-    // materials are restored as whole cells after legacy shore reconciliation.
-    for (auto &type : repaired)
-		if (!map.terrainUsesLegacyCorners(type))
+	std::vector<TerrainType> classic = original;
+	for (auto &type : classic)
+		if (!classicTerrain(type))
 			type = SAND;
-	const auto legacyOriginal = repaired;
+	auto repaired = classic;
 	repairSeams(repaired, w, h, report.seamWidth, protectedResources, {GRASS, SAND, WATER});
+	std::vector<TerrainType> vertices(w * h);
 	for (int i = 0; i < w * h; ++i)
 	{
-		report.seamTerrainChanges += repaired[i] != legacyOriginal[i];
-		map.setUMTerrain(i % w, i / w, homes[i] ? GRASS : repaired[i]);
+		report.seamTerrainChanges += repaired[i] != classic[i];
+		vertices[i] = homes[i] ? GRASS : classicTerrain(original[i]) ? repaired[i] : original[i];
 	}
-	map.controlSand();
+	map.assignVertexTerrain(vertices);
+	map.layBeaches();
 	if (report.seamWidth)
 	{
-		// controlSand is in-place and may give identical edge cells different
-		// shores. Reconcile with sand: this cannot introduce water/grass contact.
+		// Beaches depend on each edge vertex's own neighbours, so vertices the
+		// seam repair made equal can still differ afterwards. Reconcile with sand:
+		// this cannot bring grass and water together.
+		std::vector<TerrainType> next(map.vertexTerrainState().begin(), map.vertexTerrainState().end());
+		const auto seen = [&](int i) { return classicTerrain(next[i]) ? next[i] : SAND; };
 		const auto join = [&](const std::vector<int> &indices) {
-			const auto type = map.getUMTerrain(indices.front() % w, indices.front() / w);
+			const auto type = seen(indices.front());
 			bool mismatch = false;
 			for (int i : indices)
 			{
 				if (protectedResources[i])
 					return;
-				mismatch |= map.getUMTerrain(i % w, i / w) != type;
+				mismatch |= seen(i) != type;
 			}
 			if (mismatch)
 				for (int i : indices)
-					if (map.getUMTerrain(i % w, i / w) != SAND)
+					if (classicTerrain(next[i]) && next[i] != SAND)
 					{
-						map.setUMTerrain(i % w, i / w, SAND);
+						next[i] = SAND;
 						++report.seamShoreChanges;
 					}
 		};
@@ -549,37 +552,15 @@ std::vector<TerrainType> applyImportedTerrain(Map &map, const std::vector<int> &
 			join({y * w, y * w + w - 1});
 		for (int x = 1; x < w - 1; ++x)
 			join({x, (h - 1) * w + x});
+		if (report.seamShoreChanges)
+			map.assignVertexTerrain(next);
 	}
-	map.rebuildTerrain();
-    // Whole-cell materials are not sand corners. Restore neighboring uniform
-    // legacy cells whose only foreign corner was an authored material, so a
-    // trail in an ocean does not create walkable shores outside the trail cell.
-    // Genuinely mixed classic corners retain the existing shore adapter.
-    for (int y=0; y<h; ++y) for (int x=0; x<w; ++x) {
-        const int i=y*w+x;
-		if (homes[i] || !map.terrainUsesLegacyCorners(original[i]) ||
-			repaired[i] != legacyOriginal[i])
-			continue;
-		bool authored=false,uniform=true;
-        for (int dy=0; dy<=1; ++dy) for(int dx=0; dx<=1; ++dx) {
-            const int j=((y+dy)%h)*w+(x+dx)%w;
-            if (homes[j]) { uniform=false; continue; }
-			if (!map.terrainUsesLegacyCorners(original[j]))
-				authored = true;
-			else if (original[j]!=original[i] || repaired[j]!=legacyOriginal[j]) uniform=false;
-        }
-        if (authored && uniform) map.setCellTerrain(x,y,original[i]);
-    }
-    for (int i=0; i<w*h; ++i) {
-		if (!homes[i] && !map.terrainUsesLegacyCorners(original[i]))
-			map.setCellTerrain(i%w,i/w,original[i]);
-    }
-	return original;
+	for (int i = 0; i < w * h; ++i)
+		report.terrainChanges += map.vertexTerrainAt(size_t(i)) != original[i];
 }
 
 std::vector<int> collectImportedResources(Map &map, const std::vector<int> &cells,
 										 const std::vector<unsigned char> &homes,
-										 const std::vector<TerrainType> &original,
 										 MapImageImportReport &report)
 {
 	const int w = map.getW(), h = map.getH();
@@ -590,9 +571,6 @@ std::vector<int> collectImportedResources(Map &map, const std::vector<int> &cell
 		const int x = i % w;
 		const int y = i / w;
 		const int type = paletteIds[cells[i]];
-		const auto material = map.terrainTypeAt(x,y);
-		report.terrainChanges += (map.terrainUsesLegacyCorners(material) ? map.getUMTerrain(x, y)
-																		 : material) != original[i];
 		if (type == NO_RES || homes[i])
 			continue;
 		if (!map.isResourceAllowed(x, y, type))
@@ -687,39 +665,34 @@ void exportMapImage(const Game &game, const std::string &path)
 	const auto paletteIds = paletteResourceIds(map);
 	const int w = map.getW(), h = map.getH();
 	auto out = surface(SDL_CreateSurface(w, h, SDL_PIXELFORMAT_RGBA32));
-	std::vector<int> cells(w * h);
+	// Pixel (x,y) is vertex (x,y): its terrain's registered image colour, unless
+	// the cell it is the top-left corner of holds a palette resource.
+	std::vector<TerrainColor> colors(w * h);
+	const auto paletteColor = [](int index) {
+		return TerrainColor{palette[index].r, palette[index].g, palette[index].b};
+	};
 	for (int y = 0; y < h; ++y)
 		for (int x = 0; x < w; ++x)
 		{
-			const auto material = map.terrainTypeAt(x,y);
-			const auto terrain = map.terrainUsesLegacyCorners(material)
-									 ? map.getUMTerrain(x, y)
-									 : map.terrainRegistry().appearance(material);
-			int c = 0;
-            for (int candidate=0; candidate<int(palette.size()); ++candidate)
-                if (candidate!=marker && palette[candidate].resource==NO_RES && palette[candidate].terrain==terrain)
-                { c=candidate; break; }
-			if (unsigned(material) >= TERRAIN_COUNT) c = -1-int(material);
+			auto c = map.terrainPresentation(map.vertexTerrainAt(x, y)).image;
 			const auto &resource = map.getResource(x, y);
 			for (int r = 3; r < marker; ++r)
 				if (paletteIds[r] != NO_RES && resource.type == paletteIds[r])
 				{
-					c = r;
+					c = paletteColor(r);
 					break;
 				}
-			cells[y * w + x] = c;
+			colors[y * w + x] = c;
 		}
 	for (int team = 0; team < game.teamsCount(); ++team)
 		for (int dy = -1; dy <= 5; ++dy)
 			for (int dx = -1; dx <= 5; ++dx)
-				cells[map.normalizeY(game.teams[team]->startPosY + dy) * w +
-					  map.normalizeX(game.teams[team]->startPosX + dx)] = marker;
+				colors[map.normalizeY(game.teams[team]->startPosY + dy) * w +
+					   map.normalizeX(game.teams[team]->startPosX + dx)] = paletteColor(marker);
 	for (int y = 0; y < h; ++y)
 		for (int x = 0; x < w; ++x)
 		{
-			const int index = cells[y * w + x];
-			const auto c = index < 0 ? map.terrainPresentation(TerrainType(-1-index)).image
-				: TerrainColor{palette[index].r, palette[index].g, palette[index].b};
+			const auto c = colors[y * w + x];
 			const Uint32 pixel = SDL_MapRGBA(SDL_GetPixelFormatDetails(out->format), SDL_GetSurfacePalette(out.get()), c.r, c.g, c.b, 255);
 			std::memcpy(static_cast<Uint8 *>(out->pixels) + y * out->pitch + x * 4, &pixel, 4);
 		}
@@ -761,8 +734,8 @@ void importMapImage(Game &game, const std::string &path, GenerationRequest &requ
 	report.seamWidth = seamWidth < 0 ? std::min(12, std::max(2, std::min(w, h) / 32)) : seamWidth;
 	if (report.seamWidth > 16 || report.seamWidth < 0 || 2 * report.seamWidth + 2 >= std::min(w, h))
 		throw std::runtime_error("Image seam width does not fit the map");
-	const auto original = applyImportedTerrain(map, decoded.cells, homes, protectedResources, report);
-	auto resources = collectImportedResources(map, decoded.cells, homes, original, report);
+	applyImportedTerrain(map, decoded.cells, homes, protectedResources, report);
+	auto resources = collectImportedResources(map, decoded.cells, homes, report);
 	repairResourceSeams(resources, map, report.seamWidth, protectedResources, report);
 	applyImportedResources(map, context, resources);
 	placeImportedSettlements(game, context, request, anchors);

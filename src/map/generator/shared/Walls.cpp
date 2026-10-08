@@ -21,7 +21,7 @@ std::vector<unsigned char> seaMargin(const Map &map, const Torus &t,
 		if (!map.terrainPropertiesAt(i).walkable)
 			continue;
 		beach[i] = map.terrainPropertiesAt(i).shoreline && !notBeach[i];
-		// A tile's corners are undermap vertices (x, y) to (x + 1, y + 1); the beach pass reaches a
+		// A tile's corners are terrain vertices (x, y) to (x + 1, y + 1); the beach pass reaches a
 		// vertex one step further, so a sea vertex anywhere in the box one wider decides the tile.
 		for (int dy = -1; dy <= 2 && !margin[i]; ++dy)
 			for (int dx = -1; dx <= 2; ++dx)
@@ -43,7 +43,7 @@ std::vector<unsigned char> seaVertices(const Map &map, const Torus &t,
 {
 	std::vector<unsigned char> sea(t.size(), 0);
 	for (int i = 0; i < t.size(); ++i)
-		sea[i] = map.getUMTerrain(i % t.w, i / t.w) == WATER && !lakes[i];
+		sea[i] = map.vertexTerrainAt(i % t.w, i / t.w) == WATER && !lakes[i];
 	return sea;
 }
 

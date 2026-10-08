@@ -23,7 +23,7 @@
 #include "Ressource.h"
 #include "MapState.h"
 #include "ResourceRegistry.h"
-#include "ResourceHabitats.h"
+#include "CellRules.h"
 #include "MapStateView.h"
 #include "ResourcePlaneKey.h"
 #include "MapChangeTracking.h"
@@ -64,7 +64,6 @@ struct Offset
 // a 1x1 piece of map
 struct Tile
 {
-	Uint16 terrain = 0; // default, not really meaningful.
 	Uint16 building = NOGBID;
 
 	Resource resource;
@@ -135,13 +134,11 @@ class Map
 	}
 	mutable std::mutex waterSnapshotMutex;
 	mutable std::shared_ptr<const std::vector<Uint8>> waterSnapshot;
-	mutable std::shared_ptr<const std::vector<TerrainType>> terrainSnapshot;
+	mutable std::shared_ptr<const std::vector<TerrainType>> vertexSnapshot;
 	mutable std::array<std::shared_ptr<const TerrainMovementSnapshot>, 7> terrainMovementSnapshots;
 	std::shared_ptr<const ResourceRegistry> resourceRegistryValue = ResourceRegistry::availableDefaults();
 	// Single-yield tiles keep stock inline. The index plane is allocated only
 	// when a multi-yield deposit is first placed; zero means no sidecar slot.
-    std::shared_ptr<const ResourceHabitats> resourceHabitatsValue=std::make_shared<const ResourceHabitats>();
-    void rebuildResourceHabitats();
     void installCatalogs(std::shared_ptr<const TerrainRegistry> terrain,
         std::shared_ptr<const ResourceRegistry> resources, std::shared_ptr<const MapAssetBundle> assets);
 	std::vector<Uint32> resourceStockIndices;
@@ -154,19 +151,25 @@ class Map
 	void rebuildResourceState();
 	void materialStockChanged(size_t index, MaterialMask before);
 	bool harvestMaterial(size_t index, int material);
-	std::vector<TerrainType> terrainIds;
+	// Terrain is stored once per vertex, and only there: vertex (x,y) is the
+	// top-left corner of cell (x,y). Each cell's rules are derived from its four
+	// corners (CellRules.h); cells keep only the index of their rule.
+	std::vector<TerrainType> vertexTerrain;
+	std::vector<Uint16> cellRules;
 	std::shared_ptr<const TerrainRegistry> terrainRegistryValue = TerrainRegistry::builtins();
     std::shared_ptr<const MapAssetBundle> assetBundleValue;
-	std::vector<Uint16> terrainPropertyIndices;
-	const TerrainProperties *terrainPropertyTable = terrainRegistryValue->propertyProfiles().data();
+	std::shared_ptr<CellRuleTable> cellRuleTable;
+	const CellRule *cellRuleData = nullptr;
+	// Vertices per terrain type, and cells per cell rule.
 	std::vector<std::size_t> terrainCounts = std::vector<std::size_t>(TERRAIN_COUNT);
+	std::vector<std::size_t> cellRuleCounts;
 	std::array<unsigned, 6> terrainFeatures{};
 	unsigned terrainBucketCount = 64;
 	std::array<std::array<unsigned, 182>, 7> terrainGroundCostCounts{};
 	std::array<unsigned, 41> terrainAirCostCounts{};
 	std::array<unsigned, 7> terrainMinimumGround = gradient_kernel::MINIMUM_TERRAIN_ENTRY_COSTS;
 	unsigned terrainMinimumAir = GRADIENT_STEP;
-	void adjustTerrainFeatures(TerrainType type, bool add);
+	void adjustTerrainFeatures(std::uint16_t rule, bool add);
 	std::uint64_t terrainGenerationValue = 1;
     // Explicit availability changes of intrinsically static material sources.
     // Shared AI gradients persist only whether this generation is current.
@@ -176,8 +179,19 @@ class Map
         // Zero is reserved for a stale shared-runtime gradient after loading.
         if (++staticMaterialSourceGenerationValue == 0) ++staticMaterialSourceGenerationValue;
     }
-	void changeTerrainIdentity(size_t index, TerrainType type);
-	void rebuildTerrainCounts();
+	// The rule of cell index for its corners, interned on demand; a table shared with a snapshot
+	// (use_count above one) is cloned before it gains a rule.
+	std::uint16_t deriveCellRule(size_t index);
+	void changeCellRule(size_t index, std::uint16_t rule);
+	void writeVertex(size_t index, TerrainType type);
+	// Re-derives every cell after a bulk vertex change, keeping the rule table.
+	void rederiveAllCells();
+	void bindCellRules();
+	// Loading formats before 146: vertices under whole-cell terrain take it on.
+	void convertLegacyCellTerrain(const std::vector<TerrainType> &cells);
+	// Re-derives every cell rule from the vertices, with table or else a fresh
+	// table for the current registries, and recounts terrain and features.
+	void rebuildTerrainCounts(std::shared_ptr<CellRuleTable> table = {});
 	unsigned terrainEditDepth = 0;
 	bool terrainEditChanged = false, terrainRoutesChanged = false;
 	bool terrainHealthEffects = false;
@@ -257,7 +271,6 @@ public:
 
 	void saveRuntimeState(GAGCore::OutputStream *stream) const;
 	void loadRuntimeState(GAGCore::InputStream *stream, Sint32 versionMinor);
-	//! Type of terrain (used for undermap)
 
 	// === Tile geometry (cross-slice) ===
 	//! Bit-shift converting a tile index to its top-left pixel coordinate
@@ -269,9 +282,8 @@ public:
 	//! Half-tile in pixels — used when centring sprites / bullets on a tile.
 	static constexpr int HALF_TILE_PX = 16;
 
-	//! Sentinel returned by Map::getTerrainType when the underlying terrain
-	//! sprite ID does not fall in any of the registered terrain ranges
-	//! (GRASS / SAND / WATER). Callers test for `< 0` / `== TERRAIN_TYPE_UNKNOWN`.
+	//! Sentinel returned by Map::getTerrainType for a cell whose corners hold
+	//! different terrains. Callers test for `< 0` / `== TERRAIN_TYPE_UNKNOWN`.
 	static constexpr int TERRAIN_TYPE_UNKNOWN = -1;
 
 	//! "Infinity" / "unvisited" sentinel for the A* algorithm's Uint16 cost fields
@@ -495,17 +507,6 @@ public:
 		return getTile(size_t(coordToIndex(x, y)));
 	}
 
-	//! Return the terrain for a given coordinate
-	inline Uint16 getTerrain(int x, int y) const
-	{
-		return legacyTerrain[coordToIndex(x, y)];
-	}
-	
-	//! Return the terrain for a given position in tile array
-	inline Uint16 getTerrain(size_t pos) const
-	{
-		return legacyTerrain[pos];
-	}
 
 	//! Canonical gameplay identity; never inferred from art in a simulation query.
 	std::shared_ptr<const MapAssetBundle> frozenAssetBundle() const { return assetBundleValue; }
@@ -527,16 +528,52 @@ public:
 		return terrainRegistryValue->presentation(type);
 	}
 	bool validTerrainType(unsigned type) const { return terrainRegistryValue->valid(type); }
-	bool terrainUsesLegacyCorners(TerrainType type) const
-	{
-		return terrainRegistry().compatibility(type).legacyCorners;
-	}
 	void importTerrainDefinitions(std::string_view json);
-	TerrainType terrainTypeAt(size_t index) const { return terrainIds[index]; }
-	TerrainType terrainTypeAt(int x, int y) const { return terrainTypeAt(coordToIndex(x,y)); }
+	// === Vertex terrain ===
+	TerrainType vertexTerrainAt(size_t index) const { return vertexTerrain[index]; }
+	TerrainType vertexTerrainAt(int x, int y) const { return vertexTerrain[coordToIndex(x, y)]; }
+	std::span<const TerrainType> vertexTerrainState() const { return vertexTerrain; }
+	//! The corners of cell (x,y): top-left, top-right, bottom-left, bottom-right.
+	std::array<TerrainType, 4> cellCorners(int x, int y) const
+	{
+		return {vertexTerrainAt(x, y), vertexTerrainAt(x + 1, y), vertexTerrainAt(x, y + 1), vertexTerrainAt(x + 1, y + 1)};
+	}
+	std::array<TerrainType, 4> cellCorners(size_t index) const { return cellCorners(int(index & wMask), int(index >> wDec)); }
+	//! Write one vertex; the four cells around it are re-derived immediately.
+	void setVertexTerrain(size_t index, TerrainType type);
+	void setVertexTerrain(int x, int y, TerrainType type) { setVertexTerrain(size_t(coordToIndex(x, y)), type); }
+	//! Replace every vertex at once.
+	void assignVertexTerrain(std::span<const TerrainType> vertices);
+	void fillTerrain(TerrainType type);
+	//! Paints the listed vertices (unwrapped coordinates allowed) with type.
+	//! With beaches, grass and water never meet: an opposite vertex next to a
+	//! painted grass or water vertex, outside the painted set, becomes sand.
+	//! Returns every vertex index that changed, beaches included.
+	std::vector<size_t> paintVertices(const std::vector<std::pair<int, int>> &vertices, TerrainType type,
+									  bool beaches = true);
+	//! Paints the square of 2*(l/2)+1 vertices a side centred on (x,y), with
+	//! beaches; l of 0 or 1 paints the single vertex.
+	void paintVertexSquare(int x, int y, TerrainType type, int l);
+	//! Turns every grass vertex next to water, and every water vertex next to
+	//! grass, into sand. Reads the terrain as it was, so the order of the scan
+	//! does not matter.
+	void layBeaches();
+	// === Cell rules ===
+	std::uint16_t cellRuleAt(size_t index) const { return cellRules[index]; }
+	const CellRule &cellRule(size_t index) const { return cellRuleData[cellRules[index]]; }
+	const CellRuleTable &cellRuleTableRef() const { return *cellRuleTable; }
+	std::shared_ptr<const CellRuleTable> frozenCellRules() const { return cellRuleTable; }
+	std::span<const Uint16> cellRuleState() const { return cellRules; }
+	//! A cell's terrain when all four corners agree, otherwise MIXED_TERRAIN.
+	TerrainType terrainTypeAt(size_t index) const
+	{
+		const auto &corners = cellRuleData[cellRules[index]].corners;
+		return corners[0] == corners[3] ? corners[0] : MIXED_TERRAIN;
+	}
+	TerrainType terrainTypeAt(int x, int y) const { return terrainTypeAt(size_t(coordToIndex(x,y))); }
 	const TerrainProperties &terrainPropertiesAt(size_t index) const
 	{
-		return terrainPropertyTable[terrainPropertyIndices[index]];
+		return cellRuleData[cellRules[index]].properties;
 	}
 	const TerrainProperties& terrainPropertiesAt(int x, int y) const { return terrainPropertiesAt(coordToIndex(x,y)); }
 	// Terrain habitat only: ignores deposits, buildings and units already here.
@@ -555,10 +592,9 @@ public:
     std::uint64_t materialRenewalPotentialAt(size_t index,MaterialId material) const { return materialRenewalPotentialAtSlot(index,materialIndex(material)); }
     std::uint64_t materialExpansionRateAtSlot(size_t index,int material) const;
     std::uint64_t materialExpansionRateAt(size_t index,MaterialId material) const { return materialExpansionRateAtSlot(index,materialIndex(material)); }
-	const std::vector<TerrainType>& terrainTypes() const { return terrainIds; }
 	std::uint64_t terrainGeneration() const { return terrainGenerationValue; }
     std::uint64_t staticMaterialSourceGeneration() const { return staticMaterialSourceGenerationValue; }
-	std::shared_ptr<const std::vector<TerrainType>> frozenTerrainSnapshot() const;
+	std::shared_ptr<const std::vector<TerrainType>> frozenVertexSnapshot() const;
 	std::shared_ptr<const TerrainMovementSnapshot>
 	frozenTerrainMovementSnapshot(unsigned swim) const;
 	bool hasTerrainMovementModifiers() const { return terrainMovementModifiers; }
@@ -578,20 +614,18 @@ public:
 		TerrainEditBatch& operator=(const TerrainEditBatch&) = delete;
 	};
 	TerrainEditBatch editTerrain() { return TerrainEditBatch(*this); }
-	void setCellTerrain(size_t index, TerrainType type);
-	void setCellTerrain(int x, int y, TerrainType type) { setCellTerrain(coordToIndex(x,y), type); }
-	// Explicit adapter for old serialized state and legacy test/import fixtures.
-	void importLegacyTerrain();
+	//! Paints the four corner vertices of a cell, so the cell becomes uniform
+	//! and the cells around it transitions. No beaches are laid.
+	void paintCell(size_t index, TerrainType type);
+	void paintCell(int x, int y, TerrainType type) { paintCell(coordToIndex(x,y), type); }
 	int getTerrainType(int x, int y) const
 	{
 		const auto type = terrainTypeAt(x,y);
-		return type == GRASS_SAND_SHORE || type == SAND_WATER_SHORE ? TERRAIN_TYPE_UNKNOWN : int(type);
+		return type == MIXED_TERRAIN ? TERRAIN_TYPE_UNKNOWN : int(type);
 	}
 
 	const ResourceRegistry& resourceRegistry() const { return *resourceRegistryValue; }
     std::shared_ptr<const ResourceRegistry> frozenResourceRegistry() const { return resourceRegistryValue; }
-    std::shared_ptr<const ResourceHabitats> frozenResourceHabitats() const { return resourceHabitatsValue; }
-    const ResourceHabitats& resourceHabitats() const { return *resourceHabitatsValue; }
     std::span<const Uint32> resourceStockIndexState() const { return resourceStockIndices; }
     std::span<const std::array<Uint16, MaterialCount>> resourceStockState() const { return resourceStocks; }
     int resourceScarcityLevel() const;
@@ -643,11 +677,9 @@ public:
 	std::span<const MapState::ResourceCell> resourceState() const { return resourceCells; }
 	std::span<const MapState::OccupancyCell> occupancyState() const { return occupancyCells; }
 	std::span<const MapState::AreaCell> areaState() const { return areaCells; }
-	std::span<const Uint16> legacyTerrainState() const { return legacyTerrain; }
 	const Tile getTile(size_t index) const
 	{
 		Tile tile;
-		tile.terrain = legacyTerrain[index];
 		tile.resource = resourceCells[index].resource;
 		tile.fertility = resourceCells[index].fertility;
 		tile.canResourcesGrow = resourceCells[index].mayGrow;
@@ -661,8 +693,7 @@ public:
 		tile.scriptAreas = scriptAreaCells[index];
 		return tile;
 	}
-	// Restores stored cell data (including its sprite), not canonical terrain
-	// identity. Terrain changes still use setCellTerrain/importLegacyTerrain.
+	// Restores stored cell data. Terrain lives on vertices and is not part of a Tile.
 	void replaceTile(size_t index, const Tile &tile);
 	void replaceTile(int x, int y, const Tile &tile) { replaceTile(coordToIndex(x, y), tile); }
 	void replaceResource(size_t index, const Resource &resource);
@@ -699,8 +730,6 @@ public:
 		return exploredArea[team][coordToIndex(x, y)];
 	}
 	
-	// Legacy corner/sprite authoring adapter. Gameplay mutations use setCellTerrain.
-	void setTerrain(int x, int y, Uint16 terrain);
 
 	//! A bump throws away every cached route field in the game, so only paint
 	//! a tile that is not already in the state being asked for.
@@ -729,11 +758,6 @@ public:
 	bool isGrass(int x, int y) const { return terrainTypeAt(x,y) == GRASS; }
 	bool isGrass(unsigned pos) const { return terrainTypeAt(pos) == GRASS; }
 	bool isSand(int x, int y) const { return terrainTypeAt(x,y) == SAND; }
-	bool hasSand(int x, int y) const
-	{
-		const auto type = terrainTypeAt(x,y);
-		return type == SAND || type == GRASS_SAND_SHORE || type == SAND_WATER_SHORE;
-	}
 
 	bool isResource(int x, int y) const
 	{
@@ -916,26 +940,6 @@ public:
 	//! Return a sector in the sector array. It is not clean because too high level
 	Sector *getSector(int i) { assert(i>=0); assert(i<sizeSector); return sectors+i; }
 
-	//! Set undermap terrain type at (x,y) (undermap positions)
-	void setUMTerrain(int x, int y, TerrainType t)
-    {
-        const auto index = coordToIndex(x,y);
-        if (undermap[index] != Uint8(t)) { undermap[index] = Uint8(t); markTerrain(index); }
-    }
-    std::span<const Uint8> undermapState() const { return {undermap, size_t(w)*h}; }
-	//! Return undermap terrain type at (x,y)
-	TerrainType getUMTerrain(int x, int y) const { return (TerrainType)undermap[coordToIndex(x, y)]; }
-	//! Set undermap terrain type at (x,y) (undermap positions) on an area
-	void setUMatPos(int x, int y, TerrainType t, int l);
-	//! Map-editor brush: paints whole cells of a legacy corner terrain (GRASS,
-	//! SAND or WATER). Only the listed cells lose an authored whole-cell
-	//! identity; all four undermap corners of every listed cell become t; the
-	//! grass/water sand-shore rule of setUMatPos is applied only to corners
-	//! outside that written set; tiles are rebuilt over the cells' bounding box
-	//! plus two. Cells are unwrapped map coordinates and wrap on the torus.
-	//! Editor authoring only: no generator, script, order or simulation path
-	//! uses it, so it does not take part in match determinism.
-	void paintLegacyCells(const std::vector<std::pair<int, int>> &cells, TerrainType t);
 
 	//! With l==0, it will remove no resource. (Unaligned coordinates)
 	void setNoResource(int x, int y, int l);
@@ -1170,7 +1174,6 @@ private:
 	std::vector<MapState::ResourceCell> resourceCells;
 	std::vector<MapState::OccupancyCell> occupancyCells;
 	std::vector<MapState::AreaCell> areaCells;
-	std::vector<Uint16> legacyTerrain;
 	std::vector<Uint16> scriptAreaCells;
 public:
 	Uint64 identityValue = 0;
@@ -1179,16 +1182,7 @@ public:
 	Sint32 wMask, hMask;
 	Sint32 wDec, hDec;
 	
-protected:
-	// private functions, used for edition
-
-	void regenerateMap(int x, int y, int w, int h);
-	
-	Uint16 lookup(Uint8 tl, Uint8 tr, Uint8 bl, Uint8 br) const;
-
 public:
-	// Rebuild rendered terrain after bulk undermap edits.
-	void rebuildTerrain() { regenerateMap(0, 0, w, h); }
     // here we handle terrain
 	// mapDiscovered
 	bool arraysBuilt; // if true, the next pointers(arrays) have to be valid and filled.
@@ -1301,7 +1295,6 @@ protected:
 	//Used for scheduling computation time on the clear area gradients
 	bool clearGradientUpdated[Team::MAX_COUNT][SWIM_CLASS_COUNT];
 	
-	Uint8 *undermap;
 	Uint8 **listedAddr;
 	size_t size;
 
@@ -1358,9 +1351,6 @@ public:
 	void dumpGradient(Uint8 *gradient, const std::string filename = "gradient.dump.pgm");
 
 public:
-	void makeHomogenMap(TerrainType terrainType);
-    GAGCore::CooperativeTask makeHomogenMapTask(TerrainType terrainType);
-	void controlSand(void);
 	void smoothResources(int times);
 
 private:

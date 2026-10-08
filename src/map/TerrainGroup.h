@@ -17,8 +17,6 @@ enum class TerrainGroup : std::uint8_t
 	Sand,
 	Grass,
 	Ice,
-	// Legacy corner shores: walkable, unbuildable, never offered in the palette.
-	Shore,
 	Paths,
 	Obstacles,
 	Ridges,
@@ -78,10 +76,6 @@ inline constexpr auto TERRAIN_GROUPS = []
 		ice.walkable = true;
 		ice.groundSpeedQ8 = 128;
 		ice.groundHealthQ8 = -8;
-	}
-	{
-		auto &shore = define(TerrainGroup::Shore, "shore", "[sand]", false);
-		shore.walkable = shore.shoreline = true;
 	}
 	{
 		// Trail, dirt track, boardwalk: fast, buildable, nothing grows.

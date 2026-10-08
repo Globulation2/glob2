@@ -549,7 +549,7 @@ bool generate(Game &game, GenerationContext &context)
 	}
 	const Torus &t = L.t;
 	Map &map = game.map;
-	writeUndermap(map, L.terrain);
+	writeVertices(map, L.terrain);
 	const auto fertility = Fertility::forMap(map, false);
 	context.stage = "emoji existing-land starts";
 	const auto sites = existingStarts(map, L, fertility, context);
@@ -706,9 +706,9 @@ std::string validateWorld(const Game &game, const GenerationContext &context)
 	const Layout L = design(context.request, replay);
 	if (auto error = designMismatch(L, game.map, "emoji"); !error.empty())
 		return error;
-	// Stronger than checking the silhouette: every single undermap corner must survive settlement.
+	// Stronger than checking the silhouette: every single terrain vertex must survive settlement.
 	for (int i = 0; i < L.t.size(); ++i)
-		if (game.map.getUMTerrain(i % L.t.w, i / L.t.w) != L.terrain[i])
+		if (game.map.vertexTerrainAt(i % L.t.w, i / L.t.w) != L.terrain[i])
 			return "Emoji terrain changed during colony placement.";
 	const auto anchors = buildAnchors(L.t, buildableTiles(game.map));
 	const auto units = unitTilesByTeam(game.map, context.request.nbTeams);

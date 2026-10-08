@@ -466,7 +466,7 @@ bool generate(Game &game, GenerationContext &context)
 	const Torus &t = L.t;
 	for (int k = 0; k < context.request.nbTeams; ++k)
 		game.addTeam();
-	writeUndermap(game.map, L.terrain);
+	writeVertices(game.map, L.terrain);
 	context.stage = "bastion keys walls";
 	const auto walls = designedStone(game.map, t, L.wall);
 	if (walls.gaps)

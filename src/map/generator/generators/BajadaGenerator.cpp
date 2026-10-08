@@ -1261,7 +1261,7 @@ bool generate(Game &game, GenerationContext &context)
 			terrain[i] = SAND;
 	}
 	layBeaches(terrain, t);
-	writeUndermap(map, terrain);
+	writeVertices(map, terrain);
 	for (int i = 0; i < n; ++i)
 		if (L.stone[i] && map.isResourceAllowed(i % t.w, i / t.w, STONE))
 			map.setResourceByIndex(i % t.w, i / t.w, STONE, 1);

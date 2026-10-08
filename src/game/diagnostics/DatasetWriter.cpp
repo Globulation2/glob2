@@ -199,10 +199,10 @@ void DatasetWriter::writeStateBlob(int senderTeamNum, Game& game)
 		{
 			int x0 = gx * stepX;
 
-			// Terrain: take the top-left source cell (categorical; we'd
-			// need a histogram to do better and the model can learn around
-			// downsample artifacts).
-			const auto tt = map.terrainTypeAt(x0, y0);
+			// Terrain: take the top-left source vertex, the top-left corner
+			// of the top-left source cell (categorical; we'd need a histogram
+			// to do better and the model can learn around downsample artifacts).
+			const auto tt = map.vertexTerrainAt(x0, y0);
 			Uint8 terrain = unsigned(tt) >= 255 ? 255 : static_cast<Uint8>(tt);
 
 			Uint32 resourceSum = 0;

@@ -21,7 +21,8 @@
   model building counts, then u32 grid width/height. Each grid cell is 9 bytes:
   u8 terrain, resource amount, own units, visible enemy units; u16 own building,
   visible enemy building; u8 discovery. Building values are concrete catalog
-  IDs + 1; zero means absent. Terrain 255 means unrepresentable.
+  IDs + 1; zero means absent. Terrain is the terrain ID of the cell block's
+  top-left vertex; 255 means unrepresentable.
 
   Readers must branch on the magic. GDS1 has no metadata and its two building
   channels are u8 legacy families + 1 (7 bytes/cell). Never reinterpret those

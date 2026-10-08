@@ -95,7 +95,7 @@ constexpr int kReferenceGap = 6, kSmallestSpacing = 16;
 // a quarter of the map; with it, two fifths.
 constexpr int kSiteMinimumPercent = 83, kRelaxRounds = 3;
 // An esker is a wandering line of sand `kEskerHalfWidth` tiles either side of its centre: three
-// undermap corners of sand, which is four walkable tiles across (a tile with any sand corner is
+// terrain vertices of sand, which is four walkable tiles across (a tile with any sand corner is
 // land), so a column of units crosses it two abreast, while a defender's towers on the landing
 // cover the whole of it (a level-1 tower reaches 5 tiles). It wanders by up to `kEskerWander`
 // tiles from the straight line between its two drumlins, enough to read as a ridge the meltwater
@@ -409,7 +409,7 @@ bool generate(Game &game, GenerationContext &context)
 	for (int i = 0; i < n; ++i)
 		terrain[i] = L.esker[i] || L.collar[i] ? SAND : L.drumlinOf[i] >= 0 ? GRASS : WATER;
 	layBeaches(terrain, t);
-	writeUndermap(map, terrain);
+	writeVertices(map, terrain);
 
 	// Colonies: each swarm on its town head, as near the designed spot as the head's grass allows.
 	context.stage = "drumlin field colonies";
@@ -487,7 +487,7 @@ std::string validateWorld(const Game &game, const GenerationContext &context)
 	const Torus &t = L.t;
 	const int teams = context.request.nbTeams;
 	// The promise the map makes: with the eskers shut, no colony can walk to another. An esker is
-	// sand on undermap corners and a tile with any sand corner is walkable, so the tiles to shut
+	// sand on terrain vertices and a tile with any sand corner is walkable, so the tiles to shut
 	// are every tile touching an esker corner (roadTiles), not the corners alone.
 	if (const std::array<int, 2> leak = colonyLeak(map, t, teams, roadTiles(t, L.esker));
 		leak[0] >= 0)
@@ -534,7 +534,7 @@ GeneratorDefinition drumlinFieldDefinition()
 		// Sites 20 apart across the grain and drumlins two and a half times as long as wide give a
 		// 256 map some fifty drumlins of about 16 by 40 tiles round four homes of 22 by 55, with
 		// two fifths of the sketch land (the sweep: 28% pure grass, 16% buildable, once the beaches
-		// are laid). The water gap is in undermap corners between any two drumlins: 6 corners is
+		// are laid). The water gap is in terrain vertices between any two drumlins: 6 corners is
 		// five tiles of pure water, which no unit steps over and no tower shoots across
 		// (Channels.h: the banks' grass is 10 tiles apart, past a top tower's 9), while the
 		// narrowest, 4, lets a top-level tower on one drumlin shell the next; the spacing widens

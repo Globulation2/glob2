@@ -395,7 +395,8 @@ void Minimap::computeColors(int row, int localTeam)
 					}
 					else
 					{
-						pcolIndex=static_cast<int>(scene->map.presentationTypeAt(minidx,minidy));
+						// One sample per vertex, as in map thumbnails.
+						pcolIndex=static_cast<int>(scene->map.vertexTerrainAt(minidx,minidy));
 						if (pcolIndex >= TERRAIN_COUNT)
 						{
 							customColor =

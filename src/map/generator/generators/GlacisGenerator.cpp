@@ -497,7 +497,7 @@ struct Layout
 	FortStencil stencil;
 	std::vector<ShapePoint> homes;
 	std::vector<int> facings;
-	TerrainSketch sketch; // undermap corners
+	TerrainSketch sketch; // terrain vertices
 	std::vector<signed char> kind;
 	std::vector<int> fortOf;    // colony of every tile in a fort's zone, else -1
 	std::vector<int> gardenOf;  // colony * 3 + garden for garden tiles, else -1
@@ -878,7 +878,7 @@ bool generate(Game &game, GenerationContext &context)
 	context.stage = "glacis terrain";
 	TerrainSketch terrain = L.sketch;
 	layBeaches(terrain, t);
-	writeUndermap(map, terrain);
+	writeVertices(map, terrain);
 	const DesignedStone walls = designedStone(map, t, L.wall);
 	if (walls.gaps)
 	{

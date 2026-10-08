@@ -1178,7 +1178,7 @@ bool Gradient::isSource(unsigned x, unsigned y)
 		if(building!=NOGBID && getBuildingFromGid(map, building)->team==team->number)
 			return true;
 	}
-	if(sources&Water && terrainProvidesFertility(map->terrain->properties(map->terrainAt(index).type)))
+	if(sources&Water && terrainProvidesFertility(map->terrainPropertiesAt(index)))
 		return true;
 	return false;
 }

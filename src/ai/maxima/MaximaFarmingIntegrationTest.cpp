@@ -71,7 +71,7 @@ struct Fixture
 void farmManagementRadius()
 {
     Fixture f;auto& ai=*f.ai;Map& map=f.game.map;
-    for(int y=0;y<64;++y)map.setCellTerrain(10,y,WATER);
+    for(int y=0;y<64;++y)map.paintCell(10,y,WATER);
     auto* home=f.game.addBuilding(11,1,
         globalContainer->buildingsTypes.getTypeNum("inn",0,false),0);
     REQUIRE(home);
@@ -101,7 +101,7 @@ void coastalWheatCrossesFertilityDips()
     for(int resource:{WHEAT,WOOD})
     {
         Fixture f;auto& ai=*f.ai;Map& map=f.game.map;
-        for(int y=0;y<64;++y)map.setCellTerrain(10,y,WATER);
+        for(int y=0;y<64;++y)map.paintCell(10,y,WATER);
         map.setResourceByIndex(11,20,resource,5);
         ai.budget.farming_enabled=true;ai.budget.farming_protection_enabled=true;
         ai.budget.farming_wheat_fertility_min=65536;
@@ -128,7 +128,7 @@ void seedSurvival()
         Fixture f;auto& ai=*f.ai;Map& map=f.game.map;
         auto index=[&](int x,int y){return map.normalizeY(y+offset)*64+map.normalizeX(x+offset);};
         for(int y=0;y<64;++y)for(int x=0;x<12;++x)
-            map.setCellTerrain(x+offset,y,WATER);
+            map.paintCell(x+offset,y,WATER);
         const int first=index(20,20),second=index(21,21),growth=index(22,20);
         setYoungResource(map,first%64,first/64,resource);
         setYoungResource(map,second%64,second/64,resource);
@@ -276,11 +276,9 @@ void expansionLeavesHarvestLanesOpen()
         for(int y=0;y<64;++y)for(int x=0;x<64;++x)
             map.setResourcesGrow(x,y, 0);
         for(int y=0;y<64;++y)for(int x=0;x<12;++x)
-        {int i=index(x,y);map.setCellTerrain(i%64,i/64,WATER);}
+        {int i=index(x,y);map.paintCell(i%64,i/64,WATER);}
         const int seed=index(19,19),support=index(20,19);
         const int target=index(20,20),other=index(20,18);
-        // The donor sits on a narrow shoreline; access remains on the east.
-        for(int y:{18,20}){int i=index(19,y);map.setCellTerrain(i%64,i/64,WATER);}
         setYoungResource(map,seed%64,seed/64,WHEAT);
         for(int y:{25,27,29,31})
         {
@@ -326,7 +324,7 @@ void woodReserveSurvivesWheatPincer()
         auto index=[&](int x,int y){return map.normalizeY(y+offset)*64+map.normalizeX(x+offset);};
         for(int i=0;i<64*64;++i)map.setResourcesGrow(i%64,i/64, 0);
         for(int y=0;y<64;++y)for(int x=0;x<12;++x)
-        {int i=index(x,y);map.setCellTerrain(i%64,i/64,WATER);}
+        {int i=index(x,y);map.paintCell(i%64,i/64,WATER);}
         const int seed=index(20,20),outlet=index(20,19),worker=index(21,18);
         for(int y=19;y<=21;++y)for(int x=19;x<=21;++x)
         {int i=index(x,y);setYoungResource(map,i%64,i/64,WHEAT);}
@@ -413,7 +411,7 @@ void woodReserveSurvivesWheatPincer()
 void woodReserveSurvivesOwnFarmProtection()
 {
     Fixture f;auto& ai=*f.ai;Map& map=f.game.map;
-    for(int y=0;y<64;++y)for(int x=0;x<12;++x)map.setCellTerrain(x,y,WATER);
+    for(int y=0;y<64;++y)for(int x=0;x<12;++x)map.paintCell(x,y,WATER);
     const int seed=21*64+20;
     setYoungResource(map,seed%64,seed/64,WOOD);
     REQUIRE(f.game.addUnit(24,21,0,WORKER,0,0,0,0));
@@ -436,7 +434,7 @@ void alignedPatternTransitions()
         Fixture f;auto& ai=*f.ai;Map& map=f.game.map;
         auto index=[&](int x,int y){return map.normalizeY(y+offset)*64+map.normalizeX(x+offset);};
         for(int y=0;y<64;++y)for(int x=0;x<12;++x)
-        {int i=index(x,y);map.setCellTerrain(i%64,i/64,WATER);}
+        {int i=index(x,y);map.paintCell(i%64,i/64,WATER);}
         for(int y=18;y<=26;++y)for(int x=18;x<=26;++x)
         {int i=index(x,y);setYoungResource(map,i%64,i/64,resource);}
         configurePattern(f);
@@ -468,7 +466,7 @@ void permanentWheatLayout()
         auto index=[&](int x,int y){return map.normalizeY(y+offset)*64+map.normalizeX(x+offset);};
         for(int y=0;y<64;++y)for(int x=0;x<64;++x)map.setResourcesGrow(x,y, 1);
         for(int y=0;y<64;++y)for(int x=0;x<12;++x)
-        {int i=index(x,y);map.setCellTerrain(i%64,i/64,WATER);}
+        {int i=index(x,y);map.paintCell(i%64,i/64,WATER);}
         for(int y=18;y<=26;++y)for(int x=18;x<=26;++x)
         {int i=index(x,y);setYoungResource(map,i%64,i/64,WHEAT);}
         configurePattern(f);
@@ -517,7 +515,7 @@ void firebreakManagementRadius()
     REQUIRE(home);
     // Firebreaks target actual spreading threats; radius is tested in a
     // fertile corridor rather than against permanently static dry-map trees.
-    for(int y=0;y<64;++y) map.setCellTerrain(10,y,WATER);
+    for(int y=0;y<64;++y) map.paintCell(10,y,WATER);
     for(int y:{21,22,63})map.setResourceByIndex(11,y,WOOD,5);
     REQUIRE(map.materialExpansionRateAt(map.coordToIndex(11,22),MaterialId::Wood)>0);
     ai.budget.farming_enabled=true;
@@ -548,7 +546,7 @@ void maintenanceProtectionAgreement()
         Fixture f;auto& ai=*f.ai;Map& map=f.game.map;
         auto index=[&](int x,int y){return map.normalizeY(y+offset)*64+map.normalizeX(x+offset);};
         for(int y=0;y<64;++y)for(int x=0;x<12;++x)
-        {int i=index(x,y);map.setCellTerrain(i%64,i/64,WATER);}
+        {int i=index(x,y);map.paintCell(i%64,i/64,WATER);}
         const int wheat=index(18,21),wood=index(18,22);
         setYoungResource(map,wheat%64,wheat/64,WHEAT);
         setYoungResource(map,wood%64,wood/64,WOOD);
@@ -692,7 +690,7 @@ TEST_SUITE("Maxima.FarmingIntegration")
 	{
 		glob2test::HeadlessGlobals globals;
 		Fixture f;auto& ai=*f.ai;auto& map=f.game.map;
-		for(int y=0; y<64; ++y) map.setTerrain(10,y,256);
+		for(int y=0; y<64; ++y) map.paintCell(10, y, WATER);
 		for(int y=20; y<24; ++y) for(int x=11; x<15; ++x) setYoungResource(map,x,y,WHEAT);
 		for(int y=40; y<44; ++y) for(int x=11; x<15; ++x) setYoungResource(map,x,y,WOOD);
 		ai.budget.farming_enabled=true;ai.budget.farming_protection_enabled=true;
@@ -818,7 +816,7 @@ TEST_SUITE("Maxima.FarmingIntegration")
         {
             CAPTURE(material);
             Fixture f; auto& ai=*f.ai; auto& map=f.game.map;
-            for(int y=0;y<64;++y) map.setCellTerrain(10,y,WATER);
+            for(int y=0;y<64;++y) map.paintCell(10,y,WATER);
             auto spec=Json::parse(map.resourceRegistry().serialize())["resources"][material=="food"?1:0];
             spec["key"]="fixture:actual-donor";
             spec["properties"]["ecology"]="uniform";
@@ -842,7 +840,7 @@ TEST_SUITE("Maxima.FarmingIntegration")
             };
             importTerrain("fixture:other-donor");
             const auto terrain=map.terrainRegistry().find("fixture:target"); REQUIRE(terrain);
-            map.setCellTerrain(11,21,*terrain);
+            map.paintCell(11,21,*terrain);
             ai.update_farming(ai.context);
             CHECK_FALSE(ai.farm_protection_mask[21*64+11]);
             importTerrain("fixture:actual-donor");
@@ -850,7 +848,7 @@ TEST_SUITE("Maxima.FarmingIntegration")
             CHECK(ai.farm_protection_mask[21*64+11]);
             if(material=="food")
             {
-                map.setCellTerrain(11,21,GRASS);
+                map.paintCell(11,21,GRASS);
                 const auto otherId=map.resourceRegistry().find("fixture:other-donor"); REQUIRE(otherId);
                 map.setResource(11,21,*otherId,0);
                 map.setResourceAmount(map.coordToIndex(11,21),1);

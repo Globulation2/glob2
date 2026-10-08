@@ -361,7 +361,7 @@ bool generate(Game &game, GenerationContext &context)
 					 [&](int i) { return patches[i]; });
 	}
 	layBeaches(terrain, t);
-	writeUndermap(map, terrain);
+	writeVertices(map, terrain);
 	// Stone stands only on pure grass; a ridge tile the beaches or the lee sand spoiled is left out,
 	// which is why the pools keep kFootGap from the stone and the sand lies on the far side.
 	for (int i = 0; i < n; ++i)

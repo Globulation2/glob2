@@ -101,7 +101,7 @@ std::size_t retained(const GradientWorkspace &w)
 
 struct Options
 {
-	int width = 128, height = 128, swim = 3, registry = 7, repeats = 5, cap = COST_LIMIT,
+	int width = 128, height = 128, swim = 3, registry = int(TERRAIN_COUNT), repeats = 5, cap = COST_LIMIT,
 		travel = 1;
 	std::string pattern = "dense", costs = "equivalent", seeds = "single", layout = "shared",
 				mode = "terrain";
@@ -550,23 +550,16 @@ int main(int argc, char **argv)
 	try
 	{
 		const auto options = parseOptions(argc, argv);
-		switch (options.registry)
-		{
-		case 7:
-			run<7>(options);
-			break;
-		case 8:
-			run<8>(options);
-			break;
-		case 32:
+		// The real registry, or a synthetic one large enough to repeat its costs.
+		if (options.registry == int(TERRAIN_COUNT))
+			run<TERRAIN_COUNT>(options);
+		else if (options.registry == 32 && TERRAIN_COUNT <= 32)
 			run<32>(options);
-			break;
-		case 64:
+		else if (options.registry == 64 && TERRAIN_COUNT <= 64)
 			run<64>(options);
-			break;
-		default:
-			throw std::runtime_error("registry must be 7,8,32,64");
-		}
+		else
+			throw std::runtime_error("registry must be TERRAIN_COUNT (" + std::to_string(TERRAIN_COUNT) +
+									 "), or 32 or 64 when not smaller than it");
 	}
 	catch (const std::exception &error)
 	{

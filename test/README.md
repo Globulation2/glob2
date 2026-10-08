@@ -298,7 +298,7 @@ normal build. This is a direct method regression, not an interactive replay test
 ## Terrain resource regression
 
 The `TerrainResources` suite (`python3 test/run_tests.py --filter 'TerrainResources/*'`)
-links the actual client objects and exercises terrain regeneration and resource clearing for all eight
+links the actual client objects and exercises terrain edits and resource clearing for all eight
 resource types, all three base terrains, overlapping strokes, and all four
 wrapped map corners. A whole-map oracle checks both removal and preservation.
 These are headless map-operation tests; they do not drive editor mouse events.
@@ -313,13 +313,12 @@ to compare this platform's rows of `test/map-generator-golden.txt` against fresh
 with no rows reports and passes, so a new machine can run the check before its rows exist;
 `--require-rows` makes that a failure instead, which is what CI runs, so the table must carry
 rows for every platform running that check in CI (`linux-x86_64` today). The current
-table records runtime-resource RNG epoch 1: resource sprite selection no longer consumes
-simulation RNG, so initial stock quantities and full fingerprints can change without
-individual generator recipe revisions. The complete pre-epoch table, including historical
-`macos-arm64` rows, is retained in
-`test/fixtures/map-generators/pre-resource-epoch-golden.txt`. Current macOS full rows are
-unverified and must be measured on macOS before `--require-rows` can pass there; do not copy
-Linux hashes. The five separately verified explicit-design topology comparisons below do
+table records vertex terrain (save format 146): every generated map changed when terrain
+moved to map vertices, without individual generator recipe revisions. The complete
+pre-resource-epoch table, including historical `macos-arm64` rows, is retained in
+`test/fixtures/map-generators/pre-resource-epoch-golden.txt`. The table has no macOS rows;
+they must be measured on macOS before `--require-rows` can pass there; do not copy Linux
+hashes. The five separately verified explicit-design topology comparisons below do
 not establish topology equivalence for every changed golden. The framework reference under
 `docs/map-generators/` describes the remaining rules it enforces.
 
@@ -398,8 +397,13 @@ struct GrassMap : Map {
         wDec = 3; hDec = 3; w = 8; h = 8;  // 8x8 map
         wMask = 7; hMask = 7;
         size = 64;
-        cases.assign(64, Case{});           // default sprite=0 (grass), no bldg/unit
-        importLegacyTerrain();            // initialize canonical terrain IDs
+        resourceCells.assign(size, {});    // no resource, no building, no unit
+        occupancyCells.assign(size, {});
+        areaCells.assign(size, {});
+        scriptAreaCells.assign(size, 0);
+        vertexTerrain.assign(size, GRASS); // one terrain per vertex
+        bindBootstrappedArrays();
+        rebuildTerrainCounts();            // compile the cell rules
         // No Sector or auxiliary arrays are allocated.
     }
     ~GrassMap() {
@@ -410,7 +414,7 @@ struct GrassMap : Map {
 };
 ```
 
-`cases`, `w` / `h` / `wMask` / `hMask` / `wDec` / `hDec` are all public on `Map`. `arraysBuilt` is also public. Default-constructed `Case` is "grass tile, no occupant, terrain=0, ressource.type=NO_RES_TYPE".
+`w` / `h` / `wMask` / `hMask` / `wDec` / `hDec` and `arraysBuilt` are public on `Map`; the cell arrays are private, so `MapQueryTest.cpp` (the complete fixture, which also loads a resource registry) builds with test-only private access.
 
 ### Stubs for `Sector`
 
@@ -422,12 +426,13 @@ Add the translation unit to `UNIT_TESTS` in `test/tests.py`. The production sour
 
 ### Terrain encoding for tests
 
-Use `Map::setCellTerrain(x, y, TerrainType)` for semantic terrain edits. Batch larger
-edits with `auto batch = map.editTerrain()` to invalidate derived fields once.
-`Case::terrain` is a sprite frame, not a terrain ID. Legacy-import fixtures that
-write frames directly must call `importLegacyTerrain()` afterwards; this adapter
-accepts only classic frames (grass 0–15, sand 128–143, water 256–271 and their
-intervening shore frames). Tests should not use frame ranges as gameplay predicates.
+Terrain is stored per vertex: vertex (x,y) is the top-left corner of cell (x,y), and a
+cell is wholly one terrain only when all four of its corners are. Use
+`Map::setVertexTerrain(x, y, type)` for one vertex, `paintVertices(vertices, type, false)`
+for a set without beaches, and `assignVertexTerrain` or `fillTerrain` for a whole map.
+A lone vertex makes the four cells around it mixed. Batch larger edits with
+`auto batch = map.editTerrain()` to invalidate derived fields once. Test gameplay with
+`terrainPropertiesAt`, not with terrain IDs.
 
 ### When to use this pattern
 

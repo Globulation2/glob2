@@ -436,7 +436,7 @@ bool generate(Game &game, GenerationContext &c)
 	const Village v = villageFor(o.fieldSize);
 	const Torus &t = L.t;
 	Map &map = game.map;
-	writeUndermap(map, L.terrain);
+	writeVertices(map, L.terrain);
 	for (int k = 0; k < c.request.nbTeams; ++k)
 		game.addTeam();
 	c.stage = "hedgerow villages";

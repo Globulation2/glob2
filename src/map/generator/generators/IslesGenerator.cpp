@@ -45,7 +45,7 @@ using namespace MapGeneration;
 // - Resources block movement: divideUpPlayerLands keeps fields on the coast zones and stone in the
 //   interior, and the algae patch is kept off the bridges so it cannot choke one.
 // - Wheat and wood regrow near water; every colony's fields are its coastal zones.
-// - Grass may not touch water: controlSand after painting rings every coast and bridge in sand.
+// - Grass may not touch water: layBeaches after painting rings every coast and bridge in sand.
 //
 // What the stages of a roll hand each other: the area grid and the next free area number, each
 // colony's seed point, weight and area, the spacing the dispersion found, the height field the
@@ -238,8 +238,8 @@ static void paintTerrain(Game &game, GenerationContext &context, const IslesOpti
 	//
 	// Noise of -45 to +44. The thresholds read: water under 90, beach from 96 to 104, grass
 	// otherwise - including the narrow 90 to 95 band, which is grass right at the water's edge; it
-	// becomes beach anyway when controlSand rings the coast. Open sea (50) can reach 94 at the
-	// noise's very top, so a rare single grass speck can appear offshore; controlSand turns it to
+	// becomes beach anyway when layBeaches rings the coast. Open sea (50) can reach 94 at the
+	// noise's very top, so a rare single grass speck can appear offshore; layBeaches turns it to
 	// sand.
 	adjustHeightmapFromPerlinNoise(game.map, context, L.heightmap, 45);
 	for (int x = 0; x < game.map.getW(); ++x)
@@ -248,14 +248,14 @@ static void paintTerrain(Game &game, GenerationContext &context, const IslesOpti
 		{
 			int total_height = L.heightmap[y * game.map.getW() + x];
 			if (total_height < 90)
-				game.map.setUMatPos(x, y, WATER, 1);
+				game.map.paintVertexSquare(x, y, WATER, 1);
 			else if (options.sandy_beaches && total_height > 95 && total_height < 105)
-				game.map.setUMatPos(x, y, SAND, 1);
+				game.map.paintVertexSquare(x, y, SAND, 1);
 			else
-				game.map.setUMatPos(x, y, GRASS, 1);
+				game.map.paintVertexSquare(x, y, GRASS, 1);
 		}
 	}
-	game.map.controlSand();
+	game.map.layBeaches();
 }
 
 // Re-divide the land between the colonies and give each an algae patch just off its coast.
@@ -318,7 +318,7 @@ static bool generate(Game &game, GenerationContext &context)
 {
 	context.stage = "layout";
 	const IslesOptions options(context.request);
-	game.map.makeHomogenMap(context.request.terrainType);
+	game.map.fillTerrain(context.request.terrainType);
 	for (int i = 0; i < context.request.nbTeams; ++i)
 		game.addTeam();
 	Layout L(game.map);

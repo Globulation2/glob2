@@ -255,6 +255,7 @@ CLIENT_SOURCES = (
     'ui/screens/MainMenuScreen.cpp',
     'map/Map.cpp',
     'map/TerrainRegistry.cpp',
+    'map/CellRules.cpp',
     'map/MapAssetBundle.cpp',
     'map/MapSetImport.cpp',
     'map/editor/SetLibraryDialog.cpp',

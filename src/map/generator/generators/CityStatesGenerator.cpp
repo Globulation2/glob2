@@ -73,8 +73,8 @@ using namespace MapGeneration;
 // just feels lame when you receive it"), so a home is one of four kinds.
 //
 // The whole design is a pure function of the request, so validateWorld rebuilds it and checks the
-// finished world. Terrain is written straight to the undermap with an order-independent beach
-// pass, as Ring world does.
+// finished world. Terrain is written straight to the map's vertices with an order-independent
+// beach pass, as Ring world does.
 //
 // GAME RULES BEHIND IT (docs/map-generators/GAME_RULES_FOR_MAP_DESIGN.md): stone can never be
 // cleared, so a stone wall is permanent, which is what makes the causeway the only door; water
@@ -314,7 +314,7 @@ struct Layout
 	std::vector<signed char> region;
 	std::vector<int> homeOf; // HomeLand tiles: which home, else -1
 	std::vector<unsigned char> lake, river, ford, sand, ridge, strip, causeway, road, clear;
-	// The sand roads: undermap vertices turned to sand, and the tiles with a corner on one.
+	// The sand roads: terrain vertices turned to sand, and the tiles with a corner on one.
 	std::vector<unsigned char> sandRoad, roadTile;
 	std::vector<double> radius, angle;
 	// The islets' middles, where their 10x4 building plots are stamped.
@@ -1078,7 +1078,7 @@ std::vector<unsigned char> seaMargin(const Map &map, const Layout &L)
 	std::vector<unsigned char> sea(n, 0);
 	for (int i = 0; i < n; ++i)
 		sea[i] =
-			map.getUMTerrain(i % t.w, i / t.w) == WATER && !L.lake[i] && L.region[i] != Commons;
+			map.vertexTerrainAt(i % t.w, i / t.w) == WATER && !L.lake[i] && L.region[i] != Commons;
 	return MapGeneration::seaMargin(map, t, sea, L.roadTile);
 }
 
@@ -1421,7 +1421,7 @@ bool generate(Game &game, GenerationContext &context)
 	const CityStatesOptions o(context.request);
 	Map &map = game.map;
 	const int teams = context.request.nbTeams;
-	map.makeHomogenMap(GRASS);
+	map.fillTerrain(GRASS);
 	for (int i = 0; i < teams; ++i)
 		game.addTeam();
 	const Layout L = design(context.request, context);
@@ -1458,7 +1458,7 @@ bool generate(Game &game, GenerationContext &context)
 		stampFarmPlot(terrain, t, isletPlots, site.x - plot.width / 2, site.y - plot.height / 2,
 					  plot);
 	layBeaches(terrain, t);
-	writeUndermap(map, terrain);
+	writeVertices(map, terrain);
 	const std::vector<unsigned char> line = stoneTiles(map, L);
 	for (int i = 0; i < n; ++i)
 		if (line[i])

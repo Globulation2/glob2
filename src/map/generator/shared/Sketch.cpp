@@ -12,7 +12,7 @@ std::vector<unsigned char> pureTiles(const Map &map, TerrainType type)
 	const Torus t(map);
 	std::vector<unsigned char> result(t.size(), 0);
 	for (int i = 0; i < t.size(); ++i)
-		result[i] = map.getTerrainType(i % t.w, i / t.w) == type;
+		result[i] = map.terrainTypeAt(i % t.w, i / t.w) == type;
 	return result;
 }
 
@@ -34,13 +34,16 @@ void layBeaches(TerrainSketch &terrain, const Torus &t)
 		}
 }
 
-void writeUndermap(Map &map, const TerrainSketch &terrain)
+void writeVertices(Map &map, const TerrainSketch &terrain)
 {
-	const int w = map.getW(), h = map.getH();
-	for (int y = 0; y < h; ++y)
-		for (int x = 0; x < w; ++x)
-			map.setUMTerrain(x, y, TerrainType(terrain[size_t(y) * w + x]));
-	map.rebuildTerrain();
+	std::vector<TerrainType> vertices(terrain.size());
+	std::transform(terrain.begin(), terrain.end(), vertices.begin(), [](unsigned char t) { return TerrainType(t); });
+	map.assignVertexTerrain(vertices);
+}
+
+void paintTile(Map &map, int x, int y, TerrainType type)
+{
+	map.paintVertices({{x, y}, {x + 1, y}, {x, y + 1}, {x + 1, y + 1}}, type, false);
 }
 
 int countTiles(const TerrainSketch &terrain, TerrainType type)

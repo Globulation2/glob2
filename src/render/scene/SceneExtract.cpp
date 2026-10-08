@@ -220,7 +220,7 @@ void preparePanels(const SceneInputs& input, PresentationFrame& scene, const std
                 if (r.type != NO_RES_TYPE && map.resourceRegistry().properties(static_cast<ResourceId>(r.type)).blocksBuilding) return false;
                 const auto occupant = map.getBuilding(x+dx,y+dy);
                 if (occupant != 0xffff && occupant != bp.state().gid) return false;
-                if (!map.terrainRegistry().properties(map.terrainTypeAt(x+dx,y+dy)).buildable) return false;
+                if (!map.terrainPropertiesAt(x+dx,y+dy).buildable) return false;
             }
             return true;
         };

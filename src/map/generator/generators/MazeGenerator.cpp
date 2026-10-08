@@ -28,8 +28,8 @@ using namespace MapGeneration;
 // channel. Passages fill their cells with grass, so colonies farm and build their way out into the
 // maze, and every colony starts in its own cul-de-sac.
 //
-// Terrain is designed in a TerrainSketch, one undermap corner at a time. Each tile's terrain comes
-// from its four undermap corners (Map::regenerateMap), so the whole map is drawn from one distance
+// Terrain is designed in a TerrainSketch, one terrain vertex at a time. Each tile's terrain comes
+// from its four corner vertices, so the whole map is drawn from one distance
 // field: steps from the corners of every wall's stone line. Walking out from a wall, the corners one
 // step out stay land, the next channel-width + 1 are water and everything further is land again;
 // layBeaches turns the land beside that water to sand. In tiles, that is the stone spine, two sandy
@@ -55,7 +55,7 @@ using namespace MapGeneration;
 namespace
 {
 
-// The undermap corners one step from a wall's stone line stay land (its flank); the channel's
+// The terrain vertices one step from a wall's stone line stay land (its flank); the channel's
 // water starts one step further out.
 constexpr int kFlankSteps = 1;
 
@@ -496,7 +496,7 @@ std::vector<unsigned char> openCorners(const Torus &t, const MazeDesign &d)
 }
 
 // A sand road down every open edge, from each cell's centre through the edge's middle to the
-// next centre: undermap sand on the corners of every tile a sealed line passes, so each road tile is
+// next centre: sand vertices on the corners of every tile a sealed line passes, so each road tile is
 // pure sand and consecutive ones share a side. At a home it stops against the swarm's 4x4
 // footprint (the settlement is anchored on the centre), so the swarm still stands on grass. Only
 // grass corners take sand, so a road can never reach into a channel. Returns the tiles the road
@@ -538,7 +538,7 @@ bool generate(Game &game, GenerationContext &context)
 	const MazeOptions o(context.request);
 	Map &map = game.map;
 	const int teams = context.request.nbTeams;
-	map.makeHomogenMap(WATER);
+	map.fillTerrain(WATER);
 	for (int i = 0; i < teams; ++i)
 		game.addTeam();
 	const MazeDesign d = designMaze(context.request, context);
@@ -567,7 +567,7 @@ bool generate(Game &game, GenerationContext &context)
 	// built on one: a road links every cell to the maze and can never be closed.
 	const std::vector<unsigned char> onRoad =
 		o.sandRoads ? layRoads(sketch, t, d) : std::vector<unsigned char>(size_t(t.size()), 0);
-	writeUndermap(map, sketch);
+	writeVertices(map, sketch);
 	const DesignedStone stone = designedStone(map, t, spine);
 	if (stone.gaps)
 	{

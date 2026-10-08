@@ -331,7 +331,7 @@ bool populate(Game &game, GenerationContext &c, const Layout &L, const std::vect
 {
 	const auto &t = L.t;
 	const CombOptions o(c.request);
-	writeUndermap(game.map, L.terrain);
+	writeVertices(game.map, L.terrain);
 	for (size_t k = 0; k < sites.size(); ++k)
 		game.addTeam();
 	if (!sites.empty() && !settleColonies(
@@ -443,7 +443,7 @@ std::string checkWorld(const Game &game, const Layout &L, GenerationContext *tra
 	const auto &t = L.t;
 	const auto &map = game.map;
 	for (int i = 0; i < t.size(); ++i)
-		if (map.getUMTerrain(i % t.w, i / t.w) != L.terrain[i])
+		if (map.vertexTerrainAt(i % t.w, i / t.w) != L.terrain[i])
 			return "The Comb terrain no longer matches its coast and channel design.";
 	auto open = groundUnitTiles(map);
 	const auto units = unitTilesByTeam(map, game.teamsCount());

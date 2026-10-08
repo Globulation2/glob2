@@ -4,7 +4,6 @@
 
 #include "BuildingGradientSearch.h"
 #include "Map.h"
-#include "TerrainCompatibility.h"
 #include "gradient/GradientRuntime.h"
 #include "FileFormatVersions.h"
 #include "Version.h"
@@ -76,12 +75,10 @@ try
 	hMask = h-1;
 	size = w*h;
 
-	// Files older than the catalogue were written with seven built-ins: their custom
-	// definitions and tile IDs start at 7 and move behind the current built-ins.
+	// Older files numbered their built-ins differently (TerrainRegistry::currentTerrainId);
+	// their custom definitions and terrain IDs move behind the current built-ins.
 	const unsigned savedBuiltins = TerrainRegistry::savedBuiltinCount(versionMinor);
-	// Returns a value the registry rejects when the renumbered ID would not fit.
-	auto remapTerrainId = [savedBuiltins](Uint16 v) -> unsigned
-	{ return v < savedBuiltins ? v : unsigned(v) - savedBuiltins + TERRAIN_COUNT; };
+	const bool vertexTerrainFormat = versionMinor >= FILE_FORMAT_VERSION_VERTEX_TERRAIN;
 	if (versionMinor >= FILE_FORMAT_VERSION_RUNTIME_TERRAIN)
 	{
 		stream->readEnterSection("terrainRegistry");
@@ -163,30 +160,74 @@ try
 	resourceCells.resize(size);
 	occupancyCells.resize(size);
 	areaCells.resize(size);
-	legacyTerrain.resize(size);
 	scriptAreaCells.resize(size);
 	for (auto &cell : resourceCells) cell.mayGrow = 1;
 	for (auto &cell : occupancyCells) cell.immobileUnit = 255;
-	terrainIds.assign(size, GRASS);
+	vertexTerrain.assign(size, GRASS);
 	resetChangeTracking();
 	refreshLiveView();
-	undermap = new Uint8[size];
 	listedAddr = new Uint8*[size];
 	aStarPoints=new AStarAlgorithmPoint[size];
 
+	// Before format 146 a cell kept its own terrain ID (from format 134) besides
+	// the classic corners; these are the converted IDs, MIXED_TERRAIN where the
+	// cell was drawn by its classic corners.
+	std::vector<TerrainType> legacyCellTerrain;
+	if (!vertexTerrainFormat && versionMinor >= FILE_FORMAT_VERSION_TERRAIN_PROPERTIES)
+		legacyCellTerrain.assign(size, MIXED_TERRAIN);
+	auto readLegacyCellTerrain = [&](size_t i, Uint16 saved)
+	{
+		const auto id = TerrainRegistry::currentTerrainId(savedBuiltins, saved);
+		if (id && !validTerrainType(*id)) throw std::ios_base::failure("Unknown terrain identity");
+		if (!id) return; // a shore: drawn from its corners
+		const auto type = static_cast<TerrainType>(*id);
+		if (type != WATER && type != SAND && type != GRASS)
+		{
+			legacyCellTerrain[i] = type;
+			return;
+		}
+		// A classic ID normally matches its corners: uniform corners, or grass
+		// beside water, which drew grass. One set directly on the cell (an older
+		// whole-cell edit) disagrees, and the game ruled it by the ID.
+		const int x = int(i & wMask), y = int(i >> wDec);
+		const TerrainType corners[4] = {vertexTerrain[coordToIndex(x, y)], vertexTerrain[coordToIndex(x + 1, y)],
+										vertexTerrain[coordToIndex(x, y + 1)], vertexTerrain[coordToIndex(x + 1, y + 1)]};
+		const bool uniform = corners[0] == corners[1] && corners[0] == corners[2] && corners[0] == corners[3];
+		const bool grassWater = std::find(std::begin(corners), std::end(corners), GRASS) != std::end(corners) &&
+								std::find(std::begin(corners), std::end(corners), WATER) != std::end(corners);
+		const bool drawn = uniform ? corners[0] == type : grassWater && type == GRASS;
+		if (!drawn) legacyCellTerrain[i] = type;
+	};
 
-	// We read what's inside the map:
-	if (packed) GAGCore::PackedArray::read<Uint8>(stream,size,[&](size_t i,Uint8 v){undermap[i]=v;});
-    else stream->read(undermap, size, "undermap");
-	for (size_t i = 0; i < size; ++i)
-		if (undermap[i] > GRASS) co_return false;
+	// We read what's inside the map: the terrain of every vertex, then the cells.
+	if (vertexTerrainFormat)
+	{
+		if (packed)
+			GAGCore::PackedArray::read<Uint16>(stream,size,[&](size_t i,Uint16 v){ if (!validTerrainType(v)) throw std::ios_base::failure("Unknown terrain identity"); vertexTerrain[i]=static_cast<TerrainType>(v); });
+	}
+	else
+	{
+		// The classic corners: water, sand or grass.
+		std::vector<Uint8> undermap(size);
+		if (packed) GAGCore::PackedArray::read<Uint8>(stream,size,[&](size_t i,Uint8 v){undermap[i]=v;});
+		else stream->read(undermap.data(), size, "undermap");
+		for (size_t i = 0; i < size; ++i)
+		{
+			if (undermap[i] > GRASS) co_return false;
+			vertexTerrain[i] = static_cast<TerrainType>(undermap[i]);
+		}
+	}
 	stream->readEnterSection("cases");
     if(packed)
     {
         GAGCore::PackedArray::read<Uint32>(stream,size,[&](size_t i,Uint32 v){mapDiscovered[i]=v;});
-        GAGCore::PackedArray::read<Uint16>(stream,size,[&](size_t i,Uint16 v){legacyTerrain[i]=v;});
-        if (versionMinor >= FILE_FORMAT_VERSION_TERRAIN_PROPERTIES)
-            GAGCore::PackedArray::read<Uint16>(stream,size,[&](size_t i,Uint16 v){ const auto id=remapTerrainId(v); if (!validTerrainType(id)) throw std::ios_base::failure("Unknown terrain identity"); terrainIds[i]=static_cast<TerrainType>(id); });
+        if (!vertexTerrainFormat)
+        {
+            // Classic sprite frames, derived from the corners: no longer read.
+            GAGCore::PackedArray::read<Uint16>(stream,size,[&](size_t,Uint16){});
+            if (versionMinor >= FILE_FORMAT_VERSION_TERRAIN_PROPERTIES)
+                GAGCore::PackedArray::read<Uint16>(stream,size,readLegacyCellTerrain);
+        }
         GAGCore::PackedArray::read<Uint16>(stream,size,[&](size_t i,Uint16 v){occupancyCells[i].building=v;});
         if (versionMinor>=FILE_FORMAT_VERSION_RUNTIME_RESOURCES)
             GAGCore::PackedArray::read<Uint16>(stream,size,[&](size_t i,Uint16 v){resourceCells[i].resource.type=v;});
@@ -213,22 +254,17 @@ try
 		stream->readEnterSection(i);
 		if (!packed) mapDiscovered[i] = stream->readUint32("mapDiscovered");
 
-		if (!packed) legacyTerrain[i] = stream->readUint16("terrain");
-		if (versionMinor < FILE_FORMAT_VERSION_TERRAIN_PROPERTIES)
+		if (!packed && vertexTerrainFormat)
 		{
-			if (legacyTerrain[i] >= 272) co_return false;
-			terrainIds[i] = legacyTerrainType(legacyTerrain[i]);
+			const auto v = stream->readUint16("vertexTerrain");
+			if (!validTerrainType(v)) co_return false;
+			vertexTerrain[i] = static_cast<TerrainType>(v);
 		}
-		else
+		else if (!packed)
 		{
-			if (!packed)
-			{
-				const auto id = remapTerrainId(stream->readUint16("terrainType"));
-				if (!validTerrainType(id)) co_return false;
-				terrainIds[i] = static_cast<TerrainType>(id);
-			}
-			const auto& visual = terrainRegistry().compatibility(terrainIds[i]);
-			if (legacyTerrain[i] < visual.firstFrame || legacyTerrain[i] >= visual.firstFrame + visual.variants) co_return false;
+			stream->readUint16("terrain");
+			if (versionMinor >= FILE_FORMAT_VERSION_TERRAIN_PROPERTIES)
+				readLegacyCellTerrain(i, stream->readUint16("terrainType"));
 		}
 		if (!packed) occupancyCells[i].building = stream->readUint16("building");
 		if (occupancyCells[i].building != NOGBID && occupancyCells[i].building >= Building::MAX_COUNT * header.getNumberOfTeams())
@@ -288,12 +324,13 @@ try
 		stream->readLeaveSection();
 	}
 	stream->readLeaveSection();
+	if (!legacyCellTerrain.empty()) convertLegacyCellTerrain(legacyCellTerrain);
 
     std::vector<Uint32> savedMultiTotals;
     if (versionMinor>=FILE_FORMAT_VERSION_RUNTIME_RESOURCES)
         for (const auto& cell:resourceCells)
             if (cell.resource.type!=NO_RES_TYPE && !std::has_single_bit(resourcePropertiesByIndex(cell.resource.type).materialMask)) savedMultiTotals.push_back(cell.resource.amount);
-    rebuildResourceHabitats();
+    rebuildTerrainCounts();
     rebuildResourceState();
     if (versionMinor>=FILE_FORMAT_VERSION_RUNTIME_RESOURCES)
     {
@@ -337,7 +374,6 @@ try
 	if (restoreExploredArea)
 		loadExploredArea(stream, header.getNumberOfTeams(), game != NULL, versionMinor);
 
-	rebuildTerrainCounts();
 	this->game = game;
 
 	// We load sectors:
@@ -460,15 +496,12 @@ void Map::save(GAGCore::OutputStream *stream)
     if (!assets.empty()) stream->write(assets.data(), assets.size(), "bytes");
     stream->writeLeaveSection();
 
-	// We write what's inside the map:
-	if(GAGCore::PackedArray::binary(stream)) GAGCore::PackedArray::write<Uint8>(stream,size,[&](size_t i){return undermap[i];});
-    else stream->write(undermap, size, "undermap");
+	// We write what's inside the map: the terrain of every vertex, then the cells.
+	if(GAGCore::PackedArray::binary(stream)) GAGCore::PackedArray::write<Uint16>(stream,size,[&](size_t i){return static_cast<Uint16>(vertexTerrain[i]);});
 	stream->writeEnterSection("cases");
     if(GAGCore::PackedArray::binary(stream))
     {
         GAGCore::PackedArray::write<Uint32>(stream,size,[&](size_t i){return mapDiscovered[i];});
-        GAGCore::PackedArray::write<Uint16>(stream,size,[&](size_t i){return legacyTerrain[i];});
-        GAGCore::PackedArray::write<Uint16>(stream,size,[&](size_t i){return static_cast<Uint16>(terrainIds[i]);});
         GAGCore::PackedArray::write<Uint16>(stream,size,[&](size_t i){return occupancyCells[i].building;});
         GAGCore::PackedArray::write<Uint16>(stream,size,[&](size_t i){return resourceCells[i].resource.type;});
         GAGCore::PackedArray::write<Uint8>(stream,size,[&](size_t i){return resourceCells[i].resource.variety;});
@@ -489,8 +522,7 @@ void Map::save(GAGCore::OutputStream *stream)
 		stream->writeEnterSection(i);
 		stream->writeUint32(mapDiscovered[i], "mapDiscovered");
 
-		stream->writeUint16(legacyTerrain[i], "terrain");
-		stream->writeUint16(static_cast<Uint16>(terrainIds[i]), "terrainType");
+		stream->writeUint16(static_cast<Uint16>(vertexTerrain[i]), "vertexTerrain");
 		stream->writeUint16(occupancyCells[i].building, "building");
 		
 		stream->writeUint16(resourceCells[i].resource.type,"resourceType");
@@ -1139,4 +1171,23 @@ void Map::loadMaterialRoutingCache(GAGCore::InputStream* stream, bool packed, in
         stream->readLeaveSection();
     }
     stream->readLeaveSection();
+}
+
+void Map::convertLegacyCellTerrain(const std::vector<TerrainType> &cells)
+{
+	// A vertex takes the terrain of a touching cell that had a whole-cell terrain,
+	// so such a cell keeps it at all four corners. Where several touch, prefer the
+	// cell the vertex is the top-left corner of, then the cells to its top-left,
+	// top and left.
+	std::vector<TerrainType> vertices(vertexTerrain);
+	for (int y = 0; y < h; ++y)
+		for (int x = 0; x < w; ++x)
+			for (const auto& [dx, dy] : {std::pair{0, 0}, {-1, -1}, {0, -1}, {-1, 0}})
+			{
+				const auto cell = cells[coordToIndex(x + dx, y + dy)];
+				if (cell == MIXED_TERRAIN) continue;
+				vertices[coordToIndex(x, y)] = cell;
+				break;
+			}
+	vertexTerrain = std::move(vertices);
 }

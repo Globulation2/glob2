@@ -3,7 +3,7 @@
 #include "MapState.h"
 #include "Material.h"
 #include "ResourceRegistry.h"
-#include "ResourceHabitats.h"
+#include "CellRules.h"
 #include "TerrainRegistry.h"
 #include "FertilityField.h"
 #include <array>
@@ -29,8 +29,8 @@ struct View
 	std::span<const ResourceCell> resources;
 	std::span<const OccupancyCell> occupancy;
 	std::span<const AreaCell> areas;
-	std::span<const TerrainType> terrainIds;
-	std::span<const Uint16> legacyTerrain;
+	// The rule index of each cell into rules (CellRules.h).
+	std::span<const Uint16> cellRules;
 	// Multi-yield stock sidecar, referenced through its vectors: the live
 	// sidecar grows at runtime, and a cached view must follow it.
 	const std::vector<Uint32>* stockIndices = nullptr;
@@ -39,7 +39,7 @@ struct View
 	std::span<const Uint32> materialSourceCounts;
 	const TerrainRegistry* terrainRegistry = nullptr;
 	const ResourceRegistry* resourceRegistry = nullptr;
-	const ResourceHabitats* habitats = nullptr;
+	const CellRuleTable* rules = nullptr;
 	const Fertility::GrowthCache* growth = nullptr;
 	bool resourceGrowthDisabled = false;
 	int resourceScarcityLevel = 0;
@@ -47,7 +47,7 @@ struct View
 	std::size_t index(int x, int y) const { return (std::size_t(Uint32(y) & hMask) << wDec) + (Uint32(x) & wMask); }
 	int normalizeX(int x) const { return int(Uint32(x) & wMask); }
 	int normalizeY(int y) const { return int(Uint32(y) & hMask); }
-	const TerrainProperties& terrainProperties(std::size_t i) const { return terrainRegistry->properties(terrainIds[i]); }
+	const TerrainProperties& terrainProperties(std::size_t i) const { return (*rules)[cellRules[i]].properties; }
 	const ResourceProperties& resourceProperties(unsigned type) const { return resourceRegistry->properties(static_cast<ResourceId>(type)); }
 };
 
@@ -104,26 +104,25 @@ inline bool resourceVisibleToHarvest(const View& v, std::size_t i)
 { const auto id = v.resources[i].resource.type; return id != NO_RES_TYPE && v.resourceProperties(id).visibleToHarvest; }
 inline bool isFarmableResource(const View& v, int type)
 { return type != NO_RES_TYPE && v.resourceRegistry->valid(unsigned(type)) && v.resourceProperties(type).farmable; }
+// A cell whose four corners are all this terrain; uniform rules share the terrain's ID.
 inline bool terrainSupportsResourceType(const View& v, TerrainType terrain, ResourceId resource)
 {
 	const auto id = resourceIndex(resource);
 	if (!v.terrainRegistry->valid(terrain) || !v.resourceRegistry->valid(id)) return false;
-	return v.habitats->supportsResource(terrain, v.terrainRegistry->propertyIndex(terrain), id);
+	return v.rules->supportsResource(std::uint16_t(terrain), id);
 }
 inline bool terrainSupportsResource(const View& v, std::size_t i, ResourceId resource)
 {
 	const auto id = resourceIndex(resource);
 	if (!v.resourceRegistry->valid(id)) return false;
-	const auto terrain = v.terrainIds[i];
-	return v.habitats->supportsResource(terrain, v.terrainRegistry->propertyIndex(terrain), id);
+	return v.rules->supportsResource(v.cellRules[i], id);
 }
 inline bool terrainSupportsResourceSlot(const View& v, std::size_t i, int type)
 { return type >= 0 && type < NO_RES_TYPE && terrainSupportsResource(v, i, static_cast<ResourceId>(type)); }
 inline bool terrainSupportsMaterial(const View& v, std::size_t i, int material)
 {
 	if (material < 0 || material >= int(MaterialCount)) return false;
-	const auto terrain = v.terrainIds[i];
-	return (v.habitats->materialPermissions(terrain, v.terrainRegistry->propertyIndex(terrain)) & (1u << material)) != 0;
+	return (v.rules->materialPermissions(v.cellRules[i]) & (1u << material)) != 0;
 }
 inline bool terrainSupportsMaterial(const View& v, std::size_t i, MaterialId material) { return terrainSupportsMaterial(v, i, int(materialIndex(material))); }
 // Natural growth may place or extend a deposit on this cell.
@@ -201,7 +200,7 @@ inline int farmCropAt(const View& v, int x, int y)
 		const auto& p = v.resourceProperties(id);
 		if (p.farmable && (p.materialMask & (1u << requested)) && terrainSupportsResourceSlot(v, i, id)) nearby = std::min<int>(nearby, id);
 	}
-	return nearby != NO_RES_TYPE ? nearby : v.habitats->farmResource(v.terrainIds[i]);
+	return nearby != NO_RES_TYPE ? nearby : v.rules->farmResource(v.cellRules[i]);
 }
 inline bool canPaintFarmArea(const View& v, int x, int y)
 {

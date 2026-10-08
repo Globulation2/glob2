@@ -110,10 +110,10 @@ TEST_SUITE("CortexActionCoverage")
         glob2test::HeadlessGame world({.terrain=WATER,.clearImmobile=true,.header=true});
         auto& map=world.game.map;
         std::fill(map.fogOfWar,map.fogOfWar+32*32,world.team->me);
-        for(int x=2;x<=14;++x)map.setTerrain(x,8,GRASS);
+        for(int x=2;x<=14;++x)map.paintCell(x, 8, GRASS);
         // A longer land-only detour reaches the far side of the third food
         // cell later; it must not replace the first path's greater food depth.
-        for(int x=8;x<=11;++x)map.setTerrain(x,7,GRASS);
+        for(int x=8;x<=11;++x)map.paintCell(x, 7, GRASS);
         for(int x:{6,7,10,12}) {
             map.setResourceByIndex(x,8,WHEAT,1);
             REQUIRE(map.isMaterialTakeableSlot(x,8, WHEAT));
@@ -159,8 +159,8 @@ TEST_SUITE("CortexActionCoverage")
         CHECK(revealed.depthOf==first.depthOf);
         CHECK(revealed.desired==first.desired);
         // This scan's territory does not wrap, even when it touches the seam.
-        for(int x=0;x<=3;++x)map.setTerrain(x,20,GRASS);
-        map.setTerrain(31,20,GRASS);
+        for(int x=0;x<=3;++x)map.paintCell(x, 20, GRASS);
+        map.paintCell(31, 20, GRASS);
         map.setResourceByIndex(31,20,WHEAT,1);
         REQUIRE(map.isMaterialTakeableSlot(31,20, WHEAT));
         const auto edge=scan({index(0,20)},31,true);

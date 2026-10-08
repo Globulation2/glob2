@@ -115,7 +115,7 @@ bool MapInfo::is_resource(int x, int y)
 bool MapInfo::is_water(int x, int y)
 {
     const auto& observed=observation();
-    return observed.terrain->properties(observed.terrainAt(observed.tileIndex(x,y)).type).swimmable;
+    return observed.terrainPropertiesAt(observed.tileIndex(x,y)).swimmable;
 }
 
 
@@ -123,7 +123,7 @@ bool MapInfo::is_water(int x, int y)
 bool MapInfo::is_sand(int x, int y)
 {
     const auto& observed=observation();
-    return observed.terrain->properties(observed.terrainAt(observed.tileIndex(x,y)).type).inhibitionQ8!=0;
+    return observed.terrainPropertiesAt(observed.tileIndex(x,y)).inhibitionQ8!=0;
 }
 
 
@@ -143,7 +143,7 @@ bool MapInfo::is_crop_habitat(int x, int y)
 bool MapInfo::is_grass(int x, int y)
 {
     const auto& observed=observation();
-    return observed.terrain->properties(observed.terrainAt(observed.tileIndex(x,y)).type).buildable;
+    return observed.terrainPropertiesAt(observed.tileIndex(x,y)).buildable;
 }
 
 
@@ -152,7 +152,7 @@ bool MapInfo::backs_onto_sand(int x, int y)
 {
     const auto& observed=observation();
         for(int dy=-1;dy<=1;++dy) for(int dx=-1;dx<=1;++dx)
-            if((dx || dy) && observed.terrain->properties(observed.terrainAt(observed.tileIndex(x+dx,y+dy)).type).shoreline)
+            if((dx || dy) && observed.terrainPropertiesAt(observed.tileIndex(x+dx,y+dy)).shoreline)
                 return true;
         return false;
 

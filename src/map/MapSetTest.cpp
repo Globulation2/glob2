@@ -99,7 +99,7 @@ TEST_CASE("custom artwork properties and credits survive offline save and load [
 	map.setGame(&world.game);
 	const auto buildingArtwork = installBuildingArtwork(world.game);
 	const auto terrain = *map.terrainRegistry().find(prefix + "ice");
-	map.setCellTerrain(7, 8, terrain);
+	map.paintCell(7, 8, terrain);
 	CHECK(map.terrainRegistry().properties(terrain).groundSpeedQ8 == 192);
 	CHECK(map.frozenAssetBundle()->sheets.size() == 1);
 	CHECK(map.frozenAssetBundle()->credits[0]["authors"][0]["author"] == "Fixture artist");
@@ -211,7 +211,7 @@ TEST_CASE("selected terrain includes custom resources and explicit updates repla
     CHECK(map.frozenAssetBundle()->credits[0]["entries"].size()==3);
     const auto oldTerrain=*map.terrainRegistry().find(prefix+"ice");
     const auto oldResource=*map.resourceRegistry().find(prefix+"tree");
-    map.setCellTerrain(5,5,oldTerrain);map.setResourceByIndex(5,5,resourceIndex(oldResource),1);
+    map.paintCell(5,5,oldTerrain);map.setResourceByIndex(5,5,resourceIndex(oldResource),1);
     map.setMaterialAmount(map.coordToIndex(5,5),MaterialId::Paper,2);
     map.setMaterialAmount(map.coordToIndex(5,5),MaterialId::Food,0);
     const std::string nextVersion="33333333-3333-4333-8333-333333333333";
@@ -228,7 +228,7 @@ TEST_CASE("selected terrain includes custom resources and explicit updates repla
     CHECK(map.frozenAssetBundle()->credits.size()==2);
     CHECK(map.materialAmountAt(map.coordToIndex(5,5),MaterialId::Food)==0);
     CHECK(map.materialAmountAt(map.coordToIndex(5,5),MaterialId::Paper)==1);
-    map.setCellTerrain(5,5,oldTerrain);map.setResourceByIndex(5,5,resourceIndex(oldResource),1);
+    map.paintCell(5,5,oldTerrain);map.setResourceByIndex(5,5,resourceIndex(oldResource),1);
     map.updateSet(next.dump(),versionId,{nextPrefix+"ice"});
     CHECK(map.terrainTypeAt(5,5)==*map.terrainRegistry().find(nextPrefix+"ice"));
     CHECK(map.frozenAssetBundle()->credits.size()==2);
@@ -242,7 +242,7 @@ TEST_CASE("custom sprites render from memory without installation [display] [art
     resource["presentation"]["levels"]=Json::array({Json{{"stock",0},{"variants",Json::array({Json{{"frame",1},{"weight",1}}})}}});
     source["resources"].push_back(resource);
     std::ofstream(glob2test::artifactDir()/"set.json") << source.dump();
-    glob2test::HeadlessGame world;auto& map=world.game.map;map.game=nullptr;map.importSet(source.dump());map.setGame(&world.game);map.setCellTerrain(7,8,*map.terrainRegistry().find(prefix+"ice"));
+    glob2test::HeadlessGame world;auto& map=world.game.map;map.game=nullptr;map.importSet(source.dump());map.setGame(&world.game);map.paintCell(7,8,*map.terrainRegistry().find(prefix+"ice"));
     SceneMap scene;glob2test::observeMap(map,scene);
     TerrainVisual::Compositor compositor(TerrainVisual::loadCatalog(map.frozenAssetBundle()),map.frozenAssetBundle());
     compositor.prepare(false,0);GAGCore::DrawableSurface pixels(32,32);

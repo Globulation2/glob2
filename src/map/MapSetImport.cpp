@@ -210,8 +210,9 @@ void Map::updateSet(std::string_view source, std::string_view oldVersion, const 
     auto edit=editTerrain();
     for(size_t i=0;i<cellCount();++i) {
         const int x=int(i&wMask), y=int(i>>wDec);
-        if(auto old=oldTerrain.find(terrainIds[i]);old!=oldTerrain.end())
-            if(keep.contains(prefix+old->second))if(auto next=terrainRegistry().find(prefix+old->second)) setCellTerrain(x,y,*next);
+        // Terrain lives on vertices; vertex i is the top-left corner of cell i.
+        if(auto old=oldTerrain.find(vertexTerrain[i]);old!=oldTerrain.end())
+            if(keep.contains(prefix+old->second))if(auto next=terrainRegistry().find(prefix+old->second)) setVertexTerrain(x,y,*next);
         auto r=resourceCells[i].resource;
         if(auto old=oldResources.find(static_cast<ResourceId>(r.type));old!=oldResources.end())
             if(keep.contains(prefix+old->second))if(auto next=resourceRegistry().find(prefix+old->second)) {

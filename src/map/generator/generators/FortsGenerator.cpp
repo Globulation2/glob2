@@ -597,7 +597,7 @@ bool generate(Game &game, GenerationContext &context)
 	const Torus &t = L.t;
 	Map &map = game.map;
 	context.stage = "forts terrain";
-	writeUndermap(map, L.terrain);
+	writeVertices(map, L.terrain);
 	const auto stone = designedStone(map, t, L.wall);
 	if (stone.gaps)
 	{

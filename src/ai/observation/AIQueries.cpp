@@ -42,7 +42,7 @@ bool AIWorldView::canPaintFarmAt(std::size_t index) const
 TileView AIWorldView::composeTile(std::size_t index) const
 {
 	TileView result;
-	if (terrainCells) { result.terrain = terrainCells[index]; result.legacyTerrain = legacyTerrainCells[index]; }
+	if (cellRuleCells) result.cellRule = cellRuleCells[index];
 	if (resourceCells) {
 		const auto& cell = resourceCells[index];
 		result.resource = cell.resource; result.fertility = cell.fertility; result.resourcesMayGrow = cell.mayGrow;
@@ -82,7 +82,7 @@ bool AIWorldView::isHardSpaceForBuildingSite(const BuildingView& building, bool 
 		if (MapState::resourceBlocksBuilding(view, index)) return false;
 		const auto occupant = occupancyAt(index).building;
 		if (occupant != NOGBID && occupant != building.identity.gid) return false;
-		if (!terrain->properties(terrainAt(index).type).buildable) return false;
+		if (!terrainPropertiesAt(index).buildable) return false;
 	}
 	return true;
 }

@@ -39,8 +39,7 @@ inline std::uint64_t mapFingerprint(const Game &game)
 	for (int y = 0; y < game.map.getH(); ++y)
 		for (int x = 0; x < game.map.getW(); ++x)
 		{
-			add(game.map.getUMTerrain(x, y));
-			add(game.map.getTerrain(x, y));
+			add(game.map.vertexTerrainAt(x, y));
 			// Keep the historical empty marker in geometry fingerprints; storage
 			// widening alone must not invalidate established generator worlds.
 			const auto resource=game.map.getResource(x,y).type;
@@ -276,7 +275,7 @@ inline void frameworkChecks()
 		{cells, GeneratorControl{"room", "Room", 4, 8, 1, 6}.withSearchRange(6, 8)},
 		[](Game &game, GenerationContext &ctx)
 		{
-			game.map.makeHomogenMap(GRASS);
+			game.map.fillTerrain(GRASS);
 			for (int i = 0; i < ctx.request.nbTeams; ++i)
 				game.addTeam();
 			std::vector<unsigned char> home(size_t(game.map.getW()) * game.map.getH(), 0);

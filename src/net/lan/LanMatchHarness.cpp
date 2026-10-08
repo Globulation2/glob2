@@ -764,7 +764,7 @@ TEST_SUITE("LanMatchHarness")
 			map.importTerrainDefinitions(
 				R"({"schemaVersion":1,"terrains":[{"key":"lan:mud","name":"Mud","base":"grass","appearance":"sand","properties":{"groundSpeedQ8":192}}]})");
 			map.setGame(&author.game);
-			map.setCellTerrain(8, 8, *map.terrainRegistry().find("lan:mud"));
+			map.paintCell(8, 8, *map.terrainRegistry().find("lan:mud"));
 			digest = map.terrainRegistry().digest();
 			REQUIRE(globalContainer->fileManager->writeAtomically(
 				path, [&](GAGCore::OutputStream &out)

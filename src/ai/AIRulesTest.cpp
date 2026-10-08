@@ -529,7 +529,7 @@ TEST_CASE("renewable material potential survives saturation and honors yield pol
     const auto food=materialIndex(MaterialId::Food);
     const auto wheat=*map.resourceRegistry().find("wheat");
     // All-grass fixture maps have zero land fertility until a water donor exists.
-    map.setCellTerrain(9,8,WATER);
+    map.paintCell(9,8,WATER);
     map.setResource(8,8,wheat,0);
     const auto ecology=map.resourceGrowthRateAt(index,resourceIndex(wheat));
     REQUIRE(ecology>0);

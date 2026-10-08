@@ -482,7 +482,7 @@ bool generate(Game &game, GenerationContext &context)
 	const AmphitheatreOptions o(context.request);
 	Map &map = game.map;
 	const int teams = context.request.nbTeams;
-	map.makeHomogenMap(GRASS);
+	map.fillTerrain(GRASS);
 	for (int i = 0; i < teams; ++i)
 		game.addTeam();
 	const Layout L = design(context.request, context);
@@ -501,7 +501,7 @@ bool generate(Game &game, GenerationContext &context)
 		if (L.bay[i])
 			terrain[i] = WATER;
 	layBeaches(terrain, t);
-	writeUndermap(map, terrain);
+	writeVertices(map, terrain);
 	const std::vector<unsigned char> stone = stoneTiles(map, L);
 	for (int i = 0; i < n; ++i)
 		if (stone[i])
@@ -683,7 +683,7 @@ std::string validateWorld(const Game &game, const GenerationContext &context)
 	if (largest - smallest > std::max(4, smallest * kAreaTolerance / 100))
 		return "The territories differ in size by " + std::to_string(largest - smallest) +
 			   " tiles.";
-	// Each bay was grown to the same number of undermap corners; a tile is water only when all four of
+	// Each bay was grown to the same number of terrain vertices; a tile is water only when all four of
 	// its corners are, so the tiles that read as water can differ a little with the outline, but every
 	// bay must be there.
 	for (int k = 0; k < teams; ++k)

@@ -379,7 +379,7 @@ bool generate(Game &game, GenerationContext &c)
 	}
 	const Torus &t = L.t;
 	const OrchardCommonsOptions o(c.request);
-	writeUndermap(game.map, L.terrain);
+	writeVertices(game.map, L.terrain);
 	for (int k = 0; k < c.request.nbTeams; ++k)
 		game.addTeam();
 	c.stage = "orchard resources";

@@ -463,7 +463,7 @@ bool populate(Game &game, GenerationContext &c, const Layout &L, const std::vect
 	const FaultedCityOptions o(c.request);
 	const Torus &t = L.t;
 	Map &map = game.map;
-	writeUndermap(map, L.terrain);
+	writeVertices(map, L.terrain);
 	for (int k = 0; k < c.request.nbTeams; ++k) game.addTeam();
 	for (int i = 0; i < t.size(); ++i)
 		if (L.wall[i]) map.setResourceByIndex(i % t.w, i / t.w, STONE, 1);
@@ -638,7 +638,7 @@ std::string validateWorld(const Game &game, const GenerationContext &c)
 		if (!designMismatch(candidate, game.map, "faulted city").empty()) continue;
 		matched = true;
 		for (int i = 0; i < candidate.t.size() && matched; ++i)
-			matched = candidate.terrain[i] == game.map.getUMTerrain(i % candidate.t.w, i / candidate.t.w);
+			matched = candidate.terrain[i] == game.map.vertexTerrainAt(i % candidate.t.w, i / candidate.t.w);
 		if (matched) L = std::move(candidate);
 	}
 	if (!matched) return "The city terrain no longer matches its design.";
@@ -647,7 +647,7 @@ std::string validateWorld(const Game &game, const GenerationContext &c)
 	{
 		if (L.wall[i] && game.map.getResource(i % L.t.w, i / L.t.w).type != STONE)
 			return "The city has lost part of its masonry.";
-		if (L.fault[i] && (game.map.getUMTerrain(i % L.t.w, i / L.t.w) != SAND ||
+		if (L.fault[i] && (game.map.vertexTerrainAt(i % L.t.w, i / L.t.w) != SAND ||
 			game.map.isResource(i % L.t.w, i / L.t.w)))
 			return "A city fault is obstructed.";
 	}

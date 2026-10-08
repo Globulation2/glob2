@@ -90,7 +90,7 @@ not a timer: clearing cost also depends on deposit amounts, worker abilities,
 access and staffing. Pass width sets frontage after clearing. Cleared saddles are
 grass and can subsequently be built on; open passes retain their sand lanes.
 
-Terrain uses four undermap corners per tile. All corners supporting structural
+Each tile's terrain comes from its four corner vertices. All vertices supporting structural
 stone or wood are protected from sand road painting, preventing the approach from
 eroding the barrier or creating a diagonal bypass. Both stone and saddle wood
 are also protected from starting-resource and cramped-start repair routines.

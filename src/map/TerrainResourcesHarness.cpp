@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
-// Exercise real terrain regeneration and resource clearing without a window.
+// Exercise real terrain edits and resource clearing without a window.
 #include "EngineFixtures.h"
 #include "Version.h"
 #include "FileFormatVersions.h"
@@ -79,7 +79,7 @@ TEST_CASE("terrain strokes clear incompatible resources; buildings and units")
 							before.push_back(map.getResource(x, y));
 
 					// The map operations MapEdit::handleTerrainClick uses for one cell.
-					map.paintLegacyCells({{px, py}}, paint);
+					map.paintVertices({{px, py}, {px + 1, py}, {px, py + 1}, {px + 1, py + 1}}, paint);
 					map.removeUnallowedResources(px - 2, py - 2, 5, 5);
 
 					// Independent whole-map oracle: retain every compatible resource.
@@ -140,7 +140,7 @@ TEST_CASE("terrain strokes clear incompatible resources; buildings and units")
 		// painted cell moves the corners of the cells up to two away.
 		void stroke(int x, int y, TerrainType paint)
 		{
-			game.map.paintLegacyCells({{x, y}}, paint);
+			game.map.paintVertices({{x, y}, {x + 1, y}, {x, y + 1}, {x + 1, y + 1}}, paint);
 			game.map.removeUnallowedResources(x - 2, y - 2, 5, 5);
 			game.removeUnallowedUnitsAndBuildings(x - 2, y - 2, 5, 5);
 		}
@@ -714,10 +714,10 @@ TEST_CASE("redefined builtin resource follows declarative habitat and terrain wh
     spec["properties"]["ecology"]="shore";
     map.installResourceDefinitions(Json{{"schemaVersion",1},{"resources",Json::array({spec})}}.dump());
     CHECK_FALSE(map.terrainSupportsResourceAtByIndex(8,8,WHEAT));
-    map.setCellTerrain(8,8,WATER);
+    map.paintCell(8,8,WATER);
     CHECK(map.terrainSupportsResourceAtByIndex(8,8,WHEAT));
     map.importTerrainDefinitions(R"({"schemaVersion":1,"terrains":[{"key":"fixture:whitelist","name":"Whitelist","base":"grass","appearance":"grass","properties":{},"allowedResourceKeys":["wheat"]}]})");
-    map.setCellTerrain(9,8,*map.terrainRegistry().find("fixture:whitelist"));
+    map.paintCell(9,8,*map.terrainRegistry().find("fixture:whitelist"));
     CHECK_FALSE(map.terrainSupportsResourceAtByIndex(9,8,WHEAT));
     const auto oldRegistry=map.frozenTerrainRegistry();
     const auto checksum=map.checkSum(true);
@@ -1025,8 +1025,9 @@ TEST_CASE("frozen seeded resource compositions preserve invariants and exact sim
         for (unsigned n=0;n<count;++n)
         {
             const int x=3+(n%8)*3,y=4+(n/8)*7;
-            map.setCellTerrain(x,y,n%4==0 ? WATER : n%4==1 ? SAND : GRASS);
-            if(n%4==0) map.setCellTerrain(x+1,y,SAND);
+            // Sand first: the cell painted last keeps all four corners.
+            if(n%4==0) map.paintCell(x+1,y,SAND);
+            map.paintCell(x,y,n%4==0 ? WATER : n%4==1 ? SAND : GRASS);
             const auto id=*map.resourceRegistry().find("fixture:composition-"+std::to_string(n));
             REQUIRE(map.incResource(x,y,id,0));
             if(map.resourcePropertiesByIndex(resourceIndex(id)).farmable) map.addFarmArea(x,y,0);

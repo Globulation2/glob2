@@ -326,7 +326,7 @@ bool generate(Game &game, GenerationContext &context)
 	for (int i = 0; i < n; ++i)
 		terrain[i] = L.water[i] ? WATER : L.road[i] ? SAND : GRASS;
 	layBeaches(terrain, t);
-	writeUndermap(map, terrain);
+	writeVertices(map, terrain);
 	// The rock: stone on every tile that is not carved, wherever pure grass allows it.
 	std::vector<unsigned char> rock(n, 0);
 	for (int i = 0; i < n; ++i)
