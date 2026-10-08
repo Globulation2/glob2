@@ -65,6 +65,8 @@ void Fertility::applyGrowthOpportunities(Map& map,int x,int y,std::uint32_t rate
 
 // Immediate reference path for tests and benchmarks. Production ticks use the
 // snapshot pipeline; calling both would apply growth twice.
+// Immediate reference used by ecology benchmarks and generator contract tests.
+// Advancing gameplay ticks use the snapshot growth pipeline instead.
 void Map::growResources(void)
 {
     if(game->gameHeader.isResourceGrowthDisabled()) return;

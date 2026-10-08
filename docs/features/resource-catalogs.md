@@ -97,8 +97,9 @@ when the optional experiment translation keys are unavailable.
 
 Rates use exact integer units: **196608 means one opportunity/probability one**.
 Growth opportunities are calculated from a completed-tick snapshot and published
-eight ticks later by default. Replenishment applies only to the original deposit;
-spread can survive removal of its source. Destinations are revalidated at publication,
+eight ticks later by default. Replenishment accepts a matching resource type;
+a positive increment can recreate an empty destination with configured initial stocks.
+Spread can survive removal of its source. Destinations are revalidated at publication,
 and accepted increments preserve intervening harvesting. See
 [delayed growth](../development/reference.md#delayed-resource-growth).
 

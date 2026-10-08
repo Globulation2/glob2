@@ -1,7 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "Map.h"
-#include <limits>
-#include <stdexcept>
 #include "gradient/GradientRuntime.h"
 
 void Map::resourceSeedChanged(size_t index, unsigned flags)

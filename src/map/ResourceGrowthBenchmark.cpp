@@ -75,9 +75,9 @@ TEST_SUITE("ResourceGrowthBenchmark")
 		for (const std::string scenario : {"dense", "sparse", "multi", "saturated", "blocked", "disabled"})
 			for (unsigned randomSeed = 1; randomSeed <= seeds; ++randomSeed)
 			{
-				std::vector<Uint32> ownerChecksums;
-				Json ownerStatistics;
-				for (const std::string variant : {"immediate-reference", "owner", "shared"})
+				std::vector<Uint32> fallbackChecksums;
+				Json fallbackStatistics;
+				for (const std::string variant : {"immediate-reference", "zero-workers", "shared"})
 				{
 					INFO(scenario, " seed=", randomSeed, " variant=", variant);
 					glob2test::HeadlessGame world({.wDec = output ? 6 : 5, .hDec = output ? 6 : 5,
@@ -92,7 +92,7 @@ TEST_SUITE("ResourceGrowthBenchmark")
 					auto &map = world.game.map;
 					setup(map, scenario);
 					map.configureCompute(variant == "shared" ? 4 : 1, 0);
-					map.configureResourceGrowth(delay, variant == "shared");
+					map.configureResourceGrowth(delay);
 					auto scan = [&]()
 					{
 						std::array<Uint64, MaterialCount + 1> totals{};
@@ -154,8 +154,8 @@ TEST_SUITE("ResourceGrowthBenchmark")
 							REQUIRE(metrics.tilesAdded == physicalTiles);
 							REQUIRE(metrics.publishedProposals == metrics.accepted + metrics.rejected);
 							const auto checksum = world.game.checkSum(nullptr, nullptr, nullptr, true);
-							if (variant == "owner") ownerChecksums.push_back(checksum);
-							else REQUIRE(checksum == ownerChecksums[tick]);
+							if (variant == "zero-workers") fallbackChecksums.push_back(checksum);
+							else REQUIRE(checksum == fallbackChecksums[tick]);
 						}
 					}
 					map.finishResourceGrowth(); // Compute outstanding work without publishing early.
@@ -163,8 +163,8 @@ TEST_SUITE("ResourceGrowthBenchmark")
 					if (scenario == "disabled") REQUIRE(final == initial);
 					else REQUIRE(final != initial);
 					if (scenario == "blocked") REQUIRE(final[MaterialCount] == initial[MaterialCount]);
-					if (variant == "owner") ownerStatistics = statistics;
-					if (variant == "shared") REQUIRE(statistics == ownerStatistics);
+					if (variant == "zero-workers") fallbackStatistics = statistics;
+					if (variant == "shared") REQUIRE(statistics == fallbackStatistics);
 					report["samples"].push_back({{"scenario", scenario}, {"seed", randomSeed},
 						{"variant", variant}, {"initial", initial}, {"final", scan()},
 						{"statistics", statistics.back()}, {"checkpoints", checkpoints}});
@@ -373,19 +373,19 @@ TEST_SUITE("ResourceGrowthBenchmark")
 				const auto startingBytes = serialize(generated.game);
 				if (seed == 1) artifact(name + "-initial", startingBytes);
 				std::vector<Uint32> checksums;
-				Json ownerStatistics;
+				Json fallbackStatistics;
 				Uint32 initialChecksum = 0;
 				std::vector<std::pair<std::string, unsigned>> runs;
 				if (!masterInputs) runs.emplace_back("immediate-reference", 0);
 				for (unsigned delay : delays)
 				{
-					runs.emplace_back("owner", delay);
+					runs.emplace_back("zero-workers", delay);
 					runs.emplace_back("shared", delay);
 				}
 				for (const auto &[variant, delay] : runs)
 				{
 					INFO(name, " ", variant, " delay=", delay);
-					if (variant == "owner") checksums.clear();
+					if (variant == "zero-workers") checksums.clear();
 					GameGUI gui;
 					auto &game = gui.game;
 					GAGCore::BinaryInputStream input(new GAGCore::MemoryStreamBackend(
@@ -403,7 +403,7 @@ TEST_SUITE("ResourceGrowthBenchmark")
 					else REQUIRE(loadedChecksum == initialChecksum);
 					auto &map = game.map;
 					map.configureCompute(variant == "shared" ? 4 : 1, 0);
-					map.configureResourceGrowth(delay ? delay : 8, variant == "shared");
+					map.configureResourceGrowth(delay ? delay : 8);
 					auto scan = [&]()
 					{
 						std::array<std::array<Uint64, MaterialCount>, 2> counts{};
@@ -459,13 +459,13 @@ TEST_SUITE("ResourceGrowthBenchmark")
 						if (variant != "immediate-reference")
 						{
 							const auto hash = game.checkSum(nullptr, nullptr, nullptr, true);
-							if (variant == "owner") checksums.push_back(hash);
+							if (variant == "zero-workers") checksums.push_back(hash);
 							else REQUIRE(hash == checksums[tick - 1]);
 						}
 					}
 					map.finishResourceGrowth();
-					if (variant == "owner") ownerStatistics = statistics;
-					if (variant == "shared") REQUIRE(ownerStatistics == statistics);
+					if (variant == "zero-workers") fallbackStatistics = statistics;
+					if (variant == "shared") REQUIRE(fallbackStatistics == statistics);
 					Json sample = {{"generator", result.generatorId}, {"revision", result.revision},
 						{"seed", seed}, {"width", map.getW()}, {"height", map.getH()}, {"options", request.options},
 						{"variant", variant}, {"delay", delay}, {"initial_checksum", initialChecksum},
@@ -585,7 +585,7 @@ TEST_SUITE("ResourceGrowthBenchmark")
 						auto &map = world.game.map;
 						setup(map, scenario);
 						map.configureCompute(variant == 3 ? 4 : 1, 0);
-						map.configureResourceGrowth(8, variant == 3);
+						map.configureResourceGrowth(8);
 						// Warm ecology before timing; snapshot capture remains inside timing.
 						map.resourceGrowthField();
 						map.rebuildGrowthCoverage();
@@ -710,7 +710,7 @@ TEST_SUITE("ResourceGrowthBenchmark")
 						{.wDec = 7, .hDec = 7, .header = true, .seed = seed});
 					auto &map = world.game.map;
 					setup(map, "dense");
-					map.configureResourceGrowth(8, false);
+					map.configureResourceGrowth(8);
 					world.game.syncRandom.seed(seed);
 					const auto initialFood = stocks(map);
 					const Uint64 initialDeposits = Uint64(map.getW()) * map.getH() / 4;

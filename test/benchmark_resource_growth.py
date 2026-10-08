@@ -33,7 +33,7 @@ def summarize(rows):
             entry['growth'] = {k: statistics.median(r['result'][k] for r in selected)
                                for k in selected[0]['result'] if k.startswith('growth_')}
             thread_count = name.split('t')[-1].split('-')[0] if name.startswith('d') else name.rsplit('t', 1)[-1]
-            for control in [f'legacy-t{thread_count}', name.split('-')[0] + '-owner']:
+            for control in [f'legacy-t{thread_count}', name.split('t')[0] + 't1']:
                 reference = {r['repeat']: r for r in samples if r['variant'] == control}
                 if not reference:
                     continue
@@ -64,13 +64,9 @@ def main():
     manifest = json.loads(a.manifest.read_text())
     variants = []
     for d in a.delays:
-        for mode, threads in [('owner', 1)] + [('shared', t) for t in a.threads]:
-            # Keep a fixed executor size for owner placement as well, so AI/gradient
-            # contention comparisons have a matched owner control for each pool size.
-            if mode == 'owner':
-                variants.extend((f'd{d}t{t}-owner', a.binary.resolve(), ['--resource-growth-delay', str(d), '--resource-growth-execution', 'owner', '--compute-threads', str(t)]) for t in a.threads)
-            else:
-                variants.append((f'd{d}t{threads}-shared', a.binary.resolve(), ['--resource-growth-delay', str(d), '--resource-growth-execution', 'shared', '--compute-threads', str(threads)]))
+        for threads in a.threads:
+            variants.append((f'd{d}t{threads}', a.binary.resolve(),
+                             ['--resource-growth-delay', str(d), '--compute-threads', str(threads)]))
     if a.baseline and not a.verify:
         variants[0:0] = [(f'legacy-t{t}', a.baseline.resolve(), ['--compute-threads', str(t)]) for t in a.threads]
     a.output.mkdir(parents=True, exist_ok=False)
@@ -83,7 +79,7 @@ def main():
                 'manifest': manifest,
                 'binaries': {str(exe): digest(exe) for _, exe, _ in variants},
                 'repeats': a.repeats, 'delays': a.delays, 'threads': a.threads,
-                'note': 'Old/new games may diverge; only same-delay candidate modes must match. CPU covers all child threads. Bootstrap intervals describe this host/run set.'}
+                'note': 'Old/new games may diverge; only same-delay candidate worker counts must match. CPU covers all child threads. Bootstrap intervals describe this host/run set.'}
     (a.output/'metadata.json').write_text(json.dumps(metadata, indent=2))
     rows = []
     with (a.output/'measurements.jsonl').open('w') as log:

@@ -1,8 +1,8 @@
-#include "ResourceGrowth.h"
-#include <utility>
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include <Environment.h>
 #include "Headless.h"
+#include "ResourceGrowth.h"
+#include <utility>
 #include "scripting/javascript/ScriptCommand.h"
 #include "scripting/javascript/ScriptRuntime.h"
 #include "scripting/javascript/ScriptValue.h"
@@ -460,9 +460,8 @@ struct HeadlessRunner
 		else if (computeExperiments == "ai") experimentMask = Map::ComputeAI;
 		else if (computeExperiments != "none") throw std::invalid_argument("unknown compute experiment: " + computeExperiments);
 		engine.gui.game.map.configureCompute(computeThreads, experimentMask);
-        const auto growthExecution=one(options,"--resource-growth-execution","shared");
-        if(growthExecution!="shared" && growthExecution!="owner") throw std::invalid_argument("Invalid resource growth execution");
-        engine.gui.game.map.configureResourceGrowth(integer(one(options,"--resource-growth-delay",std::to_string(engine.gui.game.map.resourceGrowthDelay())),1,16),growthExecution=="shared");
+        engine.gui.game.map.configureResourceGrowth(integer(
+            one(options, "--resource-growth-delay", std::to_string(engine.gui.game.map.resourceGrowthDelay())), 1, 16));
 		const auto pipeline = engine.gui.game.map.gradientPipelineStatus();
 		if (!pipeline.enabled) engine.gui.game.map.configureGradientPipeline(gradientWorkers, gradientDelay);
 		else {
@@ -802,7 +801,7 @@ int runHeadlessCommand(int argc,char **argv)
 			std::cout << "}" << std::endl;return 0;
 		}
 		const std::set<std::string> common={"--output-dir","--profile","--building-catalog","--building-artwork"};
-		const std::set<std::string> gameKeys={"--diagnostic-fields","--diagnostic-interval","--diagnostic-png","--benchmark-warmup","--ai-script","--map-script","--map-file","--load-game","--game-seed","--player","--ai-param","--alliance","--win-condition","--win-probability","--experiment","--rule","--fork-rule","--ticks","--compute-threads","--compute-experiments","--gradient-workers","--gradient-delay","--resource-growth-delay","--resource-growth-execution","--ai-order-delay","--save","--telemetry","--replay","--generator","--map-seed","--param","--candidates"};
+		const std::set<std::string> gameKeys={"--diagnostic-fields","--diagnostic-interval","--diagnostic-png","--benchmark-warmup","--ai-script","--map-script","--map-file","--load-game","--game-seed","--player","--ai-param","--alliance","--win-condition","--win-probability","--experiment","--rule","--fork-rule","--ticks","--compute-threads","--compute-experiments","--gradient-workers","--gradient-delay","--resource-growth-delay","--ai-order-delay","--save","--telemetry","--replay","--generator","--map-seed","--param","--candidates"};
 		const std::set<std::string> mapKeys={"--generator","--map-seed","--param","--candidates","--rotations","--write-map","--report","--perturb"};
 		Options options;
 		for(int i=2;i<argc;++i)

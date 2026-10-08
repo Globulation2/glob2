@@ -667,11 +667,12 @@ Timing runs include `--benchmark-warmup 0` to expose the existing tick histogram
 whole-process wall/CPU/RSS and engine run time remain distinct intervals. An
 unmeasured process warm-up precedes ten rotated paired rounds. Summary ratios and
 bootstrap intervals are per scenario; different old/new trajectories are not
-behavioral equivalence evidence. Compare matched executor sizes for AI contention.
+behavioral equivalence evidence. The zero-worker control (`--compute-threads 1`)
+also changes AI and gradient concurrency, so it does not isolate growth placement.
 
 `ResourceGrowthBenchmark` (opt-in benchmark tag) compares legacy immediate growth,
-snapshot compute plus immediate mutation, delayed owner execution, and delayed
-shared execution. Fixtures reset outside the timer; ecology is warmed and snapshot
+snapshot compute plus immediate mutation, delayed execution with zero workers,
+and delayed shared execution. Fixtures reset outside the timer; ecology is warmed and snapshot
 capture stays inside the timer. `GLOB2_GROWTH_BENCHMARK_OUTPUT` selects its JSON
 output, and `GLOB2_GROWTH_ECOLOGY_OUTPUT` selects the twenty-seed ecology report.
 Ecology runs both reserve-preserving and deposit-depleting harvesting. Its
@@ -695,5 +696,5 @@ proposals, accepted/rejected operations, capacity clamps, added stocks/tiles,
 pending/proposal-buffer high-water marks and computation/queue/wait/publication
 nanoseconds. Worker elapsed time is not process CPU. Snapshot capture/copy and
 memory costs appear in the shared snapshot metrics. Wait time combines deadline
-joins, owner work and explicit drains; final draining completes computation without applying
+joins, zero-worker fallback computation and explicit drains; final draining completes computation without applying
 future mutations. Report end-to-end regressions even when owner computation falls.

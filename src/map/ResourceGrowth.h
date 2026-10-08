@@ -49,8 +49,9 @@ struct Metrics
 void calculate(const MapState::View &view, MersenneTwister &random, Batch &output);
 void apply(Map &map, const Batch &batch, Metrics &metrics);
 
-// Owner lifecycle: stage -> prepare -> run -> join -> publish. run may execute on
-// the shared executor; deadlines, accounting and mutation remain owner-only.
+// Lifecycle: stage -> prepare -> run -> join -> publish. Calculation uses the
+// shared executor, with its zero-worker fallback. The simulation owner manages
+// deadlines, accounting and publication.
 // finish joins without publishing; reset drains callbacks and discards pending work.
 class Pipeline
 {
@@ -77,7 +78,6 @@ class Pipeline
 
   public:
 	unsigned delay = 8;
-	bool shared = true;
 	Metrics metrics;
 	~Pipeline() { reset(); }
 	static SimulationSnapshot::Requirements requirements();
@@ -88,7 +88,7 @@ class Pipeline
 	void publish(Map &, Uint32 tick);
 	void finish();
 	void reset() noexcept;
-	void configure(unsigned ticks, bool workers);
+	void configure(unsigned ticks);
 	void save(GAGCore::OutputStream *, Uint32 tick);
 	void load(GAGCore::InputStream *, Map &, Uint32 tick, int versionMinor);
 	Uint32 checksum(bool heavy);

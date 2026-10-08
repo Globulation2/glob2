@@ -103,7 +103,7 @@ All parallel simulation work shares the map's `ComputeExecutor`
 (`src/common/ComputeExecutor.h`): blocking `run()` batches for map computation and
 deferred batches for AI decisions, periodic gradients, scheduled building
 gradients and resource growth. Each deferred batch carries the tick it is due. Workers run deferred
-jobs earliest due first, in submission order within a lane. For shared placement the owner never runs
+jobs earliest due first, in submission order within a lane. The owner never runs
 deferred work while a worker exists: at a join it only waits, even when the only
 worker also runs presentation, which that worker interleaves with simulation jobs
 (so a join may wait out one presentation chunk). Only an executor with no workers
@@ -112,9 +112,7 @@ owner time split cleanly into owner work and owner wait (`compute_owner_jobs` is
 zero whenever workers exist). A producer that opts out of sharing (`--compute-experiments`
 without `ai`, `--gradient-workers 0`, or a cheap AI batch at delay 0) computes
 inline when it submits, outside the executor, and still publishes at the deadline.
-The growth comparison control `--resource-growth-execution owner` instead
-queues explicitly owner-only jobs, executed at join. These cannot use controller
-lanes; shared work stays on workers. AI controller lanes preserve decision order;
+AI controller lanes preserve decision order;
 gradient and growth jobs need no lane.
 `AIEngine::Pipeline` submits one batch per tick with one job per controller on
 that controller's lane, and joins it at the deadline. The
@@ -1388,8 +1386,8 @@ not seed further growth within the same pass.
 
 The shared compute executor runs whole batches concurrently. Publication occurs
 at `snapshot.tick + delay`, after team stepping, with eight ticks as the default.
-A late worker is joined at its deadline; owner-only execution uses the identical
-schedule. The mutation pass visits the compact proposal list rather than scanning
+A late worker is joined at its deadline. With zero workers, the executor runs
+the same calculation on the simulation owner at the join. The mutation pass visits the compact proposal list rather than scanning
 the map. Each 12-byte proposal stores its tile, resource type, source variety and
 operation. Replenishment carries one signed material delta. A seed carries
 worker-calculated replenishment choices for a matching destination at publication.
@@ -1419,7 +1417,7 @@ seed collisions may contain saturated materials without increasing this counter.
 Diagnostic counters restart on load; team statistics retain their saved history.
 
 `ResourceGrowthBenchmark/player-free*` reconciles stock scans with statistics,
-using two passive teams and no players, units, buildings or harvesting. Owner/shared
+using two passive teams and no players, units, buildings or harvesting. Zero-worker/shared
 states and statistics must match. `GLOB2_GROWTH_PLAYER_FREE_OUTPUT` selects a JSON
 output path and expands testing from two seeds/64 ticks/32² to 20 seeds/512 ticks/64².
 `GLOB2_GROWTH_PLAYER_FREE_DELAY` selects 1–16 ticks (default 8) for this test only.
@@ -1435,7 +1433,7 @@ Crater Lakes and Islands generators with their default controls and two colonies
 on 128²/256² maps. It removes colony entities for a no-harvesting comparison, keeping
 the generated terrain and resource placement. Each execution variant loads the same
 serialized starting world. Every tick reconciles material stocks and deposit counts
-with growth statistics and compares owner/shared heavy checksums. Set
+with growth statistics and compares zero-worker/shared heavy checksums. Set
 `GLOB2_GROWTH_GENERATED_OUTPUT` to a JSON path to expand from one seed/32 ticks to
 20 seeds/512 ticks per generator (`GLOB2_GROWTH_GENERATED_TICKS` can select a longer
 1–16384 tick horizon) and save representative generated worlds with their original colonies,
@@ -1458,7 +1456,7 @@ and `fixture-<seed>.json` per world. This mode requires case selection and an ou
 path. It imports classic terrain vertices, the canonical resource catalog and
 exact deposit types, varieties and material stocks, then verifies habitat,
 growth permission and ecology rates at every cell for all exported renewable
-types. Mismatches fail before stepping. Owner/shared arms load identical native
+types. Mismatches fail before stepping. Zero-worker/shared arms load identical native
 saves of that imported world; the retained immediate-growth pass is omitted in
 this mode. Master reference results must come from a separately pinned master
 executable using full simulation ticks, and every missing fixture must be
@@ -1502,8 +1500,9 @@ pending batches. Routine checksums include seeds and deadlines without waiting;
 heavy verification joins and includes proposal contents. Worker placement is local
 execution configuration; delay and pending output are simulation state.
 
-`--resource-growth-delay 1..16` and `--resource-growth-execution shared|owner` expose
-the headless controls. A loaded queue cannot change delay while work is pending.
+`--resource-growth-delay 1..16` controls the headless publication delay.
+Growth always uses the shared executor. `--compute-threads 1` leaves zero workers
+and exercises its fallback; larger values include the owner plus worker threads. A loaded queue cannot change delay while work is pending.
 No growth passes are scheduled while regrowth is disabled. Disabling regrowth also
 rejects pending proposals when they reach publication.
 

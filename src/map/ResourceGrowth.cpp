@@ -1,5 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "ResourceGrowth.h"
+#include "Utilities.h"
+#include "gradient/GradientRuntime.h"
 #include "Map.h"
 #include "Game.h"
 #include "Team.h"
@@ -299,9 +301,8 @@ void Pipeline::prepare(const SimulationSnapshot::Handle &snapshot, ComputeExecut
 	const ComputeExecutor::Group group{1, {run, job}, ComputeExecutor::NoLane};
 	try
 	{
-		job->work =
-			executor->submit(std::span(&group, 1), ComputeExecutor::advanceDue(job->output.dueTick), shared ? ComputeExecutor::Placement::Shared
-														  : ComputeExecutor::Placement::OwnerOnly);
+		job->work = executor->submit(std::span(&group, 1),
+			ComputeExecutor::advanceDue(job->output.dueTick));
 	}
 	catch (...)
 	{
@@ -386,15 +387,13 @@ void Pipeline::reset() noexcept
 	proposalReserve = 0;
 	metrics = {};
 	delay = 8;
-	shared = true;
 }
-void Pipeline::configure(unsigned ticks, bool workers)
+void Pipeline::configure(unsigned ticks)
 {
 	if (ticks < 1 || ticks > 16 || (ticks != delay && (!pending.empty() || reservation)))
 		throw std::invalid_argument("Cannot change pending resource growth delay");
 	finish();
 	delay = ticks;
-	shared = workers;
 }
 void Pipeline::save(GAGCore::OutputStream *s, Uint32 tick)
 {
@@ -558,8 +557,6 @@ Uint32 Pipeline::checksum(bool heavy)
 }
 } // namespace ResourceGrowth
 
-#include "gradient/GradientRuntime.h"
-#include "Utilities.h"
 
 SimulationSnapshot::Requirements Map::pendingWorldRequirements() const
 {
@@ -592,10 +589,10 @@ void Map::finishResourceGrowth()
 	preparePendingWorld();
 	gradientRuntime->growth.finish();
 }
-void Map::configureResourceGrowth(unsigned delay, bool shared)
+void Map::configureResourceGrowth(unsigned delay)
 {
 	preparePendingWorld();
-	gradientRuntime->growth.configure(delay, shared);
+	gradientRuntime->growth.configure(delay);
 }
 unsigned Map::resourceGrowthDelay() const
 {

@@ -251,20 +251,20 @@ TEST_SUITE("ResourceGrowth")
 		CHECK(scarce < normal / 4);
 		CHECK(scarce > 0);
 	}
-	TEST_CASE("owner and shared deadlines match and pending work survives saving")
+	TEST_CASE("zero-worker and shared deadlines match and pending work survives saving")
 	{
 		glob2test::HeadlessGlobals globals;
 		for (unsigned delay : {1u, 3u, 8u})
 		{
-			glob2test::HeadlessGame owner({.loadDefaultRace = true, .header = true, .seed = 48});
-			auto &m = owner.game.map;
+			glob2test::HeadlessGame fallback({.loadDefaultRace = true, .header = true, .seed = 48});
+			auto &m = fallback.game.map;
 			seed(m, crop(m));
 			m.configureCompute(1, 0);
-			m.configureResourceGrowth(delay, false);
-			owner.step(12);
+			m.configureResourceGrowth(delay);
+			fallback.step(12);
 			auto *bytes = new GAGCore::MemoryStreamBackend;
 			GAGCore::BinaryOutputStream output(bytes);
-			owner.game.save(&output, false, "Growth continuation");
+			fallback.game.save(&output, false, "Growth continuation");
 			output.flush();
 			auto *copy = new GAGCore::MemoryStreamBackend(*bytes);
 			copy->seekFromStart(0);
@@ -272,10 +272,10 @@ TEST_SUITE("ResourceGrowth")
 			glob2test::HeadlessGame shared({.loadDefaultRace = true, .header = true});
 			REQUIRE(shared.game.load(&input));
 			shared.game.map.configureCompute(4, 0);
-			shared.game.map.configureResourceGrowth(delay, true);
+			shared.game.map.configureResourceGrowth(delay);
 			REQUIRE(shared.game.checkSum(nullptr, nullptr, nullptr, true) ==
-					owner.game.checkSum(nullptr, nullptr, nullptr, true));
-			CHECK_THROWS(shared.game.map.configureResourceGrowth(delay == 1 ? 3 : 1, true));
+					fallback.game.checkSum(nullptr, nullptr, nullptr, true));
+			CHECK_THROWS(shared.game.map.configureResourceGrowth(delay == 1 ? 3 : 1));
 			auto foodStocks = [&]()
 			{
 				Uint64 total = 0;
@@ -288,7 +288,7 @@ TEST_SUITE("ResourceGrowth")
 				shared.game.teams[0]->stats.measurements.growthGlobal[1][materialIndex(MaterialId::Food)];
 			for (int tick = 0; tick < 40; ++tick)
 			{
-				owner.step();
+				fallback.step();
 				shared.step();
 				const auto &metrics = shared.game.map.resourceGrowthMetrics();
 				CHECK(metrics.publishedProposals == metrics.accepted + metrics.rejected);
@@ -296,7 +296,7 @@ TEST_SUITE("ResourceGrowth")
 				CHECK(shared.game.teams[0]->stats.measurements.growthGlobal[1][materialIndex(MaterialId::Food)] ==
 					  initialAdded + metrics.stockAdded);
 				CHECK(shared.game.checkSum(nullptr, nullptr, nullptr, true) ==
-					  owner.game.checkSum(nullptr, nullptr, nullptr, true));
+					  fallback.game.checkSum(nullptr, nullptr, nullptr, true));
 			}
 		}
 	}
@@ -306,7 +306,7 @@ TEST_SUITE("ResourceGrowth")
 		glob2test::HeadlessGame world({.header = true});
 		auto &m = world.game.map;
 		seed(m, crop(m));
-		m.configureResourceGrowth(3, false);
+		m.configureResourceGrowth(3);
 		world.step();
 		CHECK(m.resourceGrowthMetrics().published == 0);
 		world.game.anyPlayerWaited = true;
@@ -350,13 +350,14 @@ TEST_SUITE("ResourceGrowth")
 		CHECK(metrics.accepted == 0);
 		CHECK(metrics.rejected == b.proposals.size());
 	}
-	TEST_CASE("light checksums leave owner work deferred and world replacement discards it")
+	TEST_CASE("light checksums leave zero-worker work deferred and world replacement discards it")
 	{
 		glob2test::HeadlessGlobals globals;
 		glob2test::HeadlessGame world({.header = true});
 		auto &m = world.game.map;
 		seed(m, crop(m));
-		m.configureResourceGrowth(8, false);
+		m.configureCompute(1, 0);
+		m.configureResourceGrowth(8);
 		world.step();
 		REQUIRE(m.gradientRuntime->growth.count() == 1);
 		CHECK(m.resourceGrowthMetrics().computeNs == 0);
@@ -376,7 +377,7 @@ TEST_SUITE("ResourceGrowth")
 		auto &map = world.game.map;
 		seed(map, crop(map));
 		ResourceGrowth::Pipeline pipeline;
-		pipeline.shared = false;
+
 		auto snapshot = world.game.snapshotStore().captureBoundary(
 			world.game, ResourceGrowth::Pipeline::requirements());
 		pipeline.stage(snapshot.tick, 48);
@@ -390,47 +391,59 @@ TEST_SUITE("ResourceGrowth")
 		CHECK(pipeline.metrics.accepted == 0);
 	}
 
-	TEST_CASE("later worker completion cannot publish ahead of an earlier owner batch")
+	TEST_CASE("later completed work cannot publish ahead of an earlier batch")
 	{
 		if (!GAGCore::ThreadSupport::available)
 			return;
 		glob2test::HeadlessGlobals globals;
 		glob2test::HeadlessGame world({.header = true});
-		auto &m = world.game.map;
-		seed(m, crop(m));
-		m.configureCompute(2, 0);
+		auto &map = world.game.map;
+		seed(map, crop(map));
+		map.configureCompute(3, 0);
+		auto &executor = map.computeExecutor();
 		ResourceGrowth::Pipeline pipeline;
-		pipeline.shared = false;
 		auto first = world.game.snapshotStore().captureBoundary(
 			world.game, ResourceGrowth::Pipeline::requirements());
 		pipeline.stage(first.tick, 1);
-		pipeline.prepare(first, m.computeExecutor());
-		world.game.stepCounter = 1;
-		auto second = world.game.snapshotStore().captureBoundary(
-			world.game, ResourceGrowth::Pipeline::requirements());
-		pipeline.shared = true;
-		pipeline.stage(second.tick, 2);
-		pipeline.prepare(second, m.computeExecutor());
-		std::latch finished(1);
-		ComputeExecutor::Group signal{
-			1,
-			{[](void *p, size_t) { static_cast<std::latch *>(p)->count_down(); }, &finished},
-			ComputeExecutor::NoLane};
-		auto marker =
-			m.computeExecutor().submit(std::span(&signal, 1), ComputeExecutor::advanceDue(9), ComputeExecutor::Placement::Shared);
-		finished.wait();
-		m.computeExecutor().join(marker);
-		CHECK_FALSE(m.computeExecutor().finished(pipeline.pending.front()->work));
-		CHECK(m.computeExecutor().finished(pipeline.pending.back()->work));
-		pipeline.publish(m, 7);
-		CHECK(pipeline.metrics.published == 0);
-		pipeline.publish(m, 8);
+		pipeline.prepare(first, executor);
+		pipeline.finish();
+		{
+			// Hold the first batch's completion fence after calculation. This
+			// forces out-of-order completion without a production scheduling hook.
+			struct Fence
+			{
+				ComputeExecutor &executor;
+				std::latch entered{1}, release{1};
+				ComputeExecutor::Batch work;
+				~Fence() { release.count_down(); executor.join(work); }
+			} fence{executor};
+			ComputeExecutor::Group blocked{1, {[](void *p, size_t) {
+				auto &fence = *static_cast<Fence *>(p);
+				fence.entered.count_down();
+				fence.release.wait();
+			}, &fence}, ComputeExecutor::NoLane};
+			fence.work = executor.submit(std::span(&blocked, 1), ComputeExecutor::advanceDue(8));
+			pipeline.pending.front()->work = fence.work;
+			fence.entered.wait();
+			world.game.stepCounter = 1;
+			auto second = world.game.snapshotStore().captureBoundary(
+				world.game, ResourceGrowth::Pipeline::requirements());
+			pipeline.stage(second.tick, 2);
+			pipeline.prepare(second, executor);
+			// Join only the later job; the first worker remains blocked.
+			executor.join(pipeline.pending.back()->work);
+			CHECK_FALSE(executor.finished(pipeline.pending.front()->work));
+			pipeline.publish(map, 7);
+			CHECK(pipeline.metrics.published == 0);
+		}
+		pipeline.publish(map, 8);
 		CHECK(pipeline.metrics.published == 1);
 		CHECK(pipeline.count() == 1);
-		pipeline.publish(m, 9);
+		pipeline.publish(map, 9);
 		CHECK(pipeline.metrics.published == 2);
 		CHECK(pipeline.count() == 0);
 	}
+
 }
 
 TEST_CASE("format 144 and 145 packed growth headers cannot alias artwork lengths" * doctest::test_suite("ResourceGrowth"))
@@ -504,9 +517,9 @@ TEST_CASE("both format 144 and 145 lineages and compact growth saves retain cont
         const auto headerDelta = std::rotr(original.game.mapHeader.checkSum() ^ restored.game.mapHeader.checkSum(),
             4 + original.game.mapHeader.getNumberOfTeams() + original.game.gameHeader.getNumberOfPlayers());
         original.game.map.configureCompute(1, 0);
-        original.game.map.configureResourceGrowth(8, false);
+        original.game.map.configureResourceGrowth(8);
         restored.game.map.configureCompute(4, 0);
-        restored.game.map.configureResourceGrowth(8, true);
+        restored.game.map.configureResourceGrowth(8);
         for (unsigned tick = 0; tick < 24; ++tick)
         {
             CHECK((original.game.checkSum(nullptr, nullptr, nullptr, true) ^ headerDelta) ==
@@ -542,7 +555,7 @@ TEST_CASE("configured seeds preserve rates variety collisions and saved output" 
     CHECK((seedProposal.incrementMask & materialBit(MaterialId::Paper)) == 0);
     const auto at = seedProposal.tile;
     ResourceGrowth::Pipeline pipeline;
-    pipeline.shared = false;
+
     pipeline.stage(snapshot.tick, 48);
     pipeline.prepare(snapshot, map.computeExecutor());
     auto *bytes = new GAGCore::MemoryStreamBackend;
@@ -683,7 +696,7 @@ TEST_CASE("finishing the last deferred tick computes without publishing early" *
     glob2test::HeadlessGlobals globals;
     glob2test::HeadlessGame world({.header = true});
     auto &map = world.game.map;
-    map.configureResourceGrowth(8, false);
+    map.configureResourceGrowth(8);
     world.game.syncStep(-1, Game::PreparationCompletion::Deferred);
     REQUIRE(map.gradientRuntime->growth.needsPreparation());
     const auto published = map.resourceGrowthMetrics().published;

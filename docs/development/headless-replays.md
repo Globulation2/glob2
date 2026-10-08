@@ -89,9 +89,9 @@ Format 149 preserves embedded artwork, vertex terrain, scheduled building fields
 and typed delayed growth proposals. The loader also distinguishes released
 formats 144–148 from the older growth-draft layouts that reused those version
 numbers, converting legacy pending work on load. Use
-`--resource-growth-delay 1..16` (default 8) and
-`--resource-growth-execution shared|owner` (default shared) for comparisons.
-Both execution modes publish at the same deadlines; changing the delay changes
+`--resource-growth-delay 1..16` (default 8) to set publication timing.
+Growth always uses the shared executor; `--compute-threads 1` leaves zero workers
+and runs its fallback on the simulation owner. Publication deadlines are identical; changing the delay changes
 simulation behavior and is rejected while a loaded queue is pending.
 
 ## CLI Flags
