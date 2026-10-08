@@ -111,7 +111,7 @@ public:
 	// the saved scene shows what a screenful of badges looks like at real size
 	// and whether badges on neighbouring tiles stay apart.
 	static const int LOW_COUNT = 10;
-	struct Scene
+	struct PresentationFrame
 	{
 		Team* team; Building* inn; Unit* low[LOW_COUNT]; Unit* schooled;
 		int lowX[LOW_COUNT] = {4, 5, 4,  5, 12, 13,  6,  7, 2, 14};
@@ -119,9 +119,9 @@ public:
 	};
 	// A level-2 inn wanting wheat: only schooled workers may stock it. Ten
 	// unschooled workers spread around it, one schooled next to a wheat tile.
-	static Scene buildScene(Game& game)
+	static PresentationFrame buildScene(Game& game)
 	{
-		Scene scene;
+		PresentationFrame scene;
 		game.map.setSize(5, 5, GRASS); // 32x32
 		game.map.setGame(&game);
 		for (int y = 0; y < game.map.getH(); ++y)
@@ -150,7 +150,7 @@ public:
 	{
 		GameGUI gui;
 		gui.init();
-		Scene scene = buildScene(gui.game);
+		PresentationFrame scene = buildScene(gui.game);
 		gui.localTeamNo = 0;
 		gui.localPlayer = 0;
 		gui.setSelection(GameGUI::BUILDING_SELECTION, static_cast<void*>(scene.inn));
@@ -195,7 +195,7 @@ public:
 	{
 		GameGUI gui;
 		gui.init();
-		Scene scene = buildScene(gui.game);
+		PresentationFrame scene = buildScene(gui.game);
 		gui.localTeamNo = 0;
 		gui.localPlayer = 0;
 		gui.localTeam = gui.game.teams[0];
@@ -221,12 +221,12 @@ public:
 		Game::ViewState view;
 		view.selectedBuilding = scene.inn;
 		gfx->drawFilledRect(0, 0, gfx->getW(), gfx->getH(), 0, 0, 0);
-		{ SceneMap layers; layers.extract(gui.game.map); gui.game.drawMapTerrain(0, 0, DRAW_W >> 5, DRAW_H >> 5, 0, 0, 0, Game::DRAW_WHOLE_MAP, layers); }
+		{ SceneMap layers; glob2test::observeMap(gui.game.map,layers); gui.game.drawMapTerrain(0, 0, DRAW_W >> 5, DRAW_H >> 5, 0, 0, 0, Game::DRAW_WHOLE_MAP, layers); }
 		gui.game.drawMapGroundBuildings(0, 0, DRAW_W >> 5, DRAW_H >> 5, DRAW_W, DRAW_H, 0, 0, 0, Game::DRAW_WHOLE_MAP, &visible, nullptr, glob2test::sceneOf(gui.game), nullptr);
 		gui.game.drawMapGroundUnits(0, 0, DRAW_W >> 5, DRAW_H >> 5, DRAW_W, DRAW_H, 0, 0, 0, Game::DRAW_WHOLE_MAP, view, glob2test::sceneOf(gui.game, view));
 		Frame stopped = grab();
 		gfx->drawFilledRect(0, 0, gfx->getW(), gfx->getH(), 0, 0, 0);
-		{ SceneMap layers; layers.extract(gui.game.map); gui.game.drawMapTerrain(0, 0, DRAW_W >> 5, DRAW_H >> 5, 0, 0, 0, Game::DRAW_WHOLE_MAP, layers); }
+		{ SceneMap layers; glob2test::observeMap(gui.game.map,layers); gui.game.drawMapTerrain(0, 0, DRAW_W >> 5, DRAW_H >> 5, 0, 0, 0, Game::DRAW_WHOLE_MAP, layers); }
 		gui.game.drawMapGroundBuildings(0, 0, DRAW_W >> 5, DRAW_H >> 5, DRAW_W, DRAW_H, 0, 0, 0, Game::DRAW_WHOLE_MAP, &visible, nullptr, glob2test::sceneOf(gui.game), nullptr);
 		Game::ViewState none;
 		gui.game.drawMapGroundUnits(0, 0, DRAW_W >> 5, DRAW_H >> 5, DRAW_W, DRAW_H, 0, 0, 0, Game::DRAW_WHOLE_MAP, none, glob2test::sceneOf(gui.game, none));
@@ -245,7 +245,7 @@ public:
 	{
 
 	Game game(nullptr);
-	Scene scene = buildScene(game);
+	PresentationFrame scene = buildScene(game);
 	Team* team = scene.team; Building* inn = scene.inn; Unit* schooled = scene.schooled;
 	Unit** low = scene.low; const int* lowX = scene.lowX; const int* lowY = scene.lowY;
 
@@ -272,7 +272,7 @@ public:
 	auto render = [&](Game::ViewState& view) {
 		std::set<Uint16> visible;
 		gfx->drawFilledRect(0, 0, gfx->getW(), gfx->getH(), 0, 0, 0);
-		{ SceneMap layers; layers.extract(game.map); game.drawMapTerrain(0, 0, DRAW_W >> 5, DRAW_H >> 5, 0, 0, 0, Game::DRAW_WHOLE_MAP, layers); }
+		{ SceneMap layers; glob2test::observeMap(game.map,layers); game.drawMapTerrain(0, 0, DRAW_W >> 5, DRAW_H >> 5, 0, 0, 0, Game::DRAW_WHOLE_MAP, layers); }
 		game.drawMapGroundBuildings(0, 0, DRAW_W >> 5, DRAW_H >> 5, DRAW_W, DRAW_H, 0, 0, 0, Game::DRAW_WHOLE_MAP, &visible, nullptr, glob2test::sceneOf(game), nullptr);
 		game.drawMapGroundUnits(0, 0, DRAW_W >> 5, DRAW_H >> 5, DRAW_W, DRAW_H, 0, 0, 0, Game::DRAW_WHOLE_MAP, view, glob2test::sceneOf(game, view));
 		return grab();

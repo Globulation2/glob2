@@ -35,12 +35,14 @@ void blank(MapEdit &editor)
 	editor.viewportX = 0;
 	editor.viewportY = 0;
 	editor.updateCamera();
-	editor.minimap.setGame(editor.game);
+	editor.minimap.setMapSize(editor.game.map.getW(), editor.game.map.getH());
+    editor.preparePresentation();
 }
 
 void importTerrain(MapEdit &editor, const Json &terrains)
 {
 	editor.game.map.importTerrainDefinitions(Json{{"schemaVersion", 1}, {"terrains", terrains}}.dump());
+    editor.preparePresentation();
 }
 
 Json customTerrain(const std::string &key, const std::string &name, const char *appearance = "sand")

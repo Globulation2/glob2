@@ -2,56 +2,41 @@
 #pragma once
 
 #include "Scene.h"
-#include "sim/ClientRequests.h"
+#include "sim/presentation/PresentationRequest.h"
 #include "sim/EntityRef.h"
+#include "sim/snapshot/Requirements.h"
 
 #include <memory>
+#include <unordered_map>
 
-class Game;
 namespace SimulationSnapshot { struct Handle; }
 struct SceneInputs;
 
-//! What the client wants drawn this frame: whose view, and what it has selected.
-struct SceneRequest
-{
-	std::optional<std::pair<Uint32, Uint32>> highlights;
-	bool includeScriptAreas = false;
-	bool includePanels = true;
-	int localTeam = 0;
-	bool spectating = false;
-	ClientRequests::ClientView view;
-	BuildingRef selectedBuilding;
-	UnitRef selectedUnit;
-	//! When the latest tick finished and the interval to the next (see Scene).
-	Uint64 tickTime = 0;
-	Uint32 tickInterval = 0;
-};
-
 class OverlayArea;
 
-//! Fills Scenes from a game. The only place presentation code reads the
-//! simulation: it runs where the game may be read (between ticks, on the
-//! simulation side once threaded) and never modifies the game. It keeps the
-//! state that spans frames, such as the overlay map, which refreshes when the
-//! requested type changes or the game enters a new 25-tick window.
+//! Prepares derived presentation data from immutable world and view inputs.
+//! Retains derived caches between frames; never reads the live simulation.
 class SceneExtractor
 {
 public:
-	static void extractInputPanels(const Game& game, const SceneRequest& request, ScenePanels& panels);
-	void extract(const Game &game, const SceneRequest &request, Scene &scene);
-    //! Capture simulation-owned source values; only called at an owner boundary.
-    std::shared_ptr<SceneInputs> capture(const Game& game, const SceneRequest& request);
+    static SimulationSnapshot::Requirements requirements(const SceneRequest& request);
+    static std::shared_ptr<SceneInputs> inputs(const SimulationSnapshot::Handle& world,const SceneRequest& request);
+    void prepare(const SimulationSnapshot::Handle& world,const SceneRequest& request,PresentationFrame& scene);
     //! Pure preparation from owned immutable inputs, safe beyond the read phase.
-    void prepare(const SceneInputs& inputs, Scene& scene);
+    void prepare(const SceneInputs& inputs, PresentationFrame& scene);
     static size_t preparationChunks(const SceneInputs& inputs);
-    void prepareChunk(const SceneInputs& inputs, Scene& scene, size_t chunk);
+    bool prepareChunk(const SceneInputs& inputs, PresentationFrame& scene, size_t chunk);
 
 private:
 	std::shared_ptr<const OverlayArea> overlay;
+    std::shared_ptr<OverlayArea> pendingOverlay;
+    std::array<int,SceneEntities::Teams> buildLevels{};
+    std::unordered_multimap<int,const SnapshotBuilding*> connectionCandidates;
+    size_t candidateBuilding = 0, candidateCell = 0, connectionBuilding = 0;
 	Uint8 overlayType = 0;
 	Uint32 overlayWindow = 0;
 	int overlayTeam = -1;
+    Uint64 overlayWorld=0, overlayConfiguration=0, overlayObservation=0;
+    Uint32 overlayTick=0;
+    std::array<Uint64,5> overlayMapGenerations{};
 };
-
-//! Extract with a fresh extractor: for one-off drawing without frame-spanning state.
-void extractScene(const Game &game, const SceneRequest &request, Scene &scene);

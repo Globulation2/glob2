@@ -20,11 +20,11 @@ class SceneMap;
 //! into the fog (DARKEN_TICKS) and quickly out of it (REVEAL_TICKS), so new sight
 //! still feels immediate.
 //!
-//! Time is game time in ticks: the drawn Scene's tick plus the fraction of the tick
+//! Time is game time in ticks: the drawn PresentationFrame's tick plus the fraction of the tick
 //! interval that has elapsed since (unitMotionFraction). Fades therefore stop while
 //! the game is paused and follow the game speed.
 //!
-//! Usage, once per drawn frame: update() with the drawn Scene, then level() for the
+//! Usage, once per drawn frame: update() with the drawn PresentationFrame, then level() for the
 //! tiles being drawn. reset() when the fade is not drawn, so that its next use
 //! starts settled instead of fading through changes it did not see.
 class FogFade
@@ -42,8 +42,8 @@ public:
 	//! Alpha of the plain fog shade, and the peak alpha of the shade sprite's pixels.
 	static constexpr Uint8 SHADE_ALPHA = 127;
 
-	//! Follow the fog of the drawn Scene, for the teams whose sight the viewer
-	//! shares, as of the Scene's `tick`; `time` is the game time this frame is drawn
+	//! Follow the fog of the drawn PresentationFrame, for the teams whose sight the viewer
+	//! shares, as of the PresentationFrame's `tick`; `time` is the game time this frame is drawn
 	//! at (tick plus the elapsed fraction of the tick interval).
 	void update(const SceneMap &map, Uint32 visibleTeams, Uint32 tick, double time);
 	//! The same over a w x h map (both powers of two) whose fog of war is `fog`,
@@ -82,7 +82,7 @@ private:
 	//! sight is shown makes earlier fades meaningless, so it settles.
 	Uint64 identity = 0;
 	Uint32 teams = 0;
-	//! The last Scene tick seen, and the game time of the last update.
+	//! The last PresentationFrame tick seen, and the game time of the last update.
 	Uint32 lastTick = 0;
 	double now = 0;
 	//! Per tile: whether the tile is fogged, its level when that last changed, and

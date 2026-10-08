@@ -1,3 +1,4 @@
+#include <utility>
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2001-2008 Stephane Magnenat
 // Copyright (C) 2001-2008 Luc-Olivier de Charrière
@@ -18,7 +19,7 @@
 //get values from the game
 int Story::valueOfVariable(const Game *game, SGSLToken::TokenType type, int teamNumber, int level)
 {
-	TeamStat *latestStat=game->teams[teamNumber]->stats.getLatestStat();
+	const TeamStat *latestStat=std::as_const(game->teams[teamNumber]->stats).getLatestStat();
 	switch(type)
 	{
 		case(SGSLToken::S_WORKER):

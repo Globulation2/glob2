@@ -153,8 +153,9 @@ void GameGUITouch::advancePlacement()
 // the touched tile, or on the phone HUD the nearest within the same reach that
 // selects flags (InGameTouchTheme::flagReach). As with selection, that reach never claims a unit
 // or a building directly under the finger.
-std::optional<SceneBuilding> GameGUITouch::grabbableFlag(ViewPoint point)
+const SnapshotBuilding* GameGUITouch::grabbableFlag(ViewPoint point)
 {
+    if (!gui.drawnScene().world.occupancy) return {};
 	if (globalContainer->isViewingGame() || gui.torusView.active() || gui.putMark ||
 		!world().contains(point) || controls().contains(point) || interfaceRegion(point) != 0)
 		return {};
@@ -167,30 +168,30 @@ std::optional<SceneBuilding> GameGUITouch::grabbableFlag(ViewPoint point)
 	if (!usesHUD() || !unitAt(point).empty())
 		return {};
 	int tileX, tileY;
-	gui.game.map.displayToMapCaseAligned(mx, my, &tileX, &tileY, gui.viewportX, gui.viewportY);
-	if ((gui.simulationThreaded ? gui.drawnScene().map.getBuilding(tileX,tileY) : gui.game.map.getBuilding(tileX,tileY)) != NOGBID)
+	gui.drawnScene().map.displayToMapCaseAligned(mx, my, &tileX, &tileY, gui.viewportX, gui.viewportY);
+	if (gui.drawnScene().map.getBuilding(tileX,tileY) != NOGBID)
 		return {};
 	return gui.flagAt(mx, my, gui.flagReachAt(point.x, point.y));
 }
 
-std::optional<SceneBuilding> GameGUITouch::draggedFlag() const
+const SnapshotBuilding* GameGUITouch::draggedFlag() const
 {
 	if (!flagDrag || flagDrag->team != gui.localTeamNo || globalContainer->isViewingGame())
 		return {};
     auto flag=gui.inputBuilding({Uint16(flagDrag->gid),flagDrag->generation});
-    if (!flag || flag->team != gui.localTeamNo || !flag->type->semantics.relocatable || flag->buildingState != Building::ALIVE) return {};
+    if (!flag || flag->team != gui.localTeamNo || !gui.drawnScene().entities.type(*flag)->semantics.relocatable || flag->buildingState != Building::ALIVE) return {};
 	return flag;
 }
 
-void GameGUITouch::beginFlagDrag(const SceneBuilding &flag, TouchPlacementSession::Pointer pointer, ViewPoint point)
+void GameGUITouch::beginFlagDrag(const SnapshotBuilding &flag, TouchPlacementSession::Pointer pointer, ViewPoint point)
 {
-	const auto &map = gui.game.map;
+	const auto &map = gui.drawnScene().map;
 	const auto wrapped = [](double delta, double period)
 	{ return MapCamera::wrap(delta + period / 2, period) - period / 2; };
 	TouchFlagSession session;
 	session.pointer = pointer;
 	session.gid = flag.gid;
-	session.generation = flag.generation;
+	session.generation = flag.scriptIdentity;
 	session.team = gui.localTeamNo;
 	session.start = session.position = point;
 	session.originX = gui.displayedPosX(flag);
@@ -224,7 +225,7 @@ void GameGUITouch::advanceFlagDrag()
 	const int mx = int(std::floor(gui.mapMouseX(int(point.x)) + flagDrag->offsetX));
 	const int my = int(std::floor(gui.mapMouseY(int(point.y)) + flagDrag->offsetY));
 	int x, y;
-	gui.game.map.cursorToBuildingPos(mx, my, flag->type->width, flag->type->height, &x, &y,
+	gui.drawnScene().map.cursorToBuildingPos(mx, my, gui.drawnScene().entities.type(*flag)->width, gui.drawnScene().entities.type(*flag)->height, &x, &y,
 									 gui.viewportX, gui.viewportY);
 	if (x != gui.displayedPosX(*flag) || y != gui.displayedPosY(*flag))
 	{
@@ -238,7 +239,7 @@ void GameGUITouch::advanceFlagDrag()
 // sends; one that never left the flag's tile sends nothing.
 void GameGUITouch::releaseFlagDrag(bool restore)
 {
-	auto flag = flagDrag && flagDrag->moved ? draggedFlag() : std::optional<SceneBuilding>{};
+	auto flag = flagDrag && flagDrag->moved ? draggedFlag() : nullptr;
 	if (flag)
 		gui.queueFlagMove(*flag, restore ? flagDrag->originX : gui.displayedPosX(*flag),
 						  restore ? flagDrag->originY : gui.displayedPosY(*flag), true);

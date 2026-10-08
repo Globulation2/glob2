@@ -7,13 +7,13 @@
 #include <map>
 
 // Main-thread-only speculative paint. The simulation's displayed areas remain
-// authoritative; a pending layer survives until a Scene includes its execution.
+// authoritative; a pending layer survives until a PresentationFrame includes its execution.
 class ClientAreaPreview
 {
     struct Pending { std::shared_ptr<Order> order; Uint64 acknowledged = 0; };
     std::vector<Pending> pending;
     std::array<std::map<size_t,bool>,4> stroke;
-    Uint64 world = 0, revision = 0;
+    Uint64 world = 0, revision = 0, areaRevision = 0, configurationRevision = 0;
     Uint32 tick = 0;
     int team = -1;
     bool dirty = true;
@@ -56,14 +56,16 @@ public:
             if(!p.acknowledged && zone(*p.order)==z && same(static_cast<const OrderAlterArea&>(*p.order),static_cast<const OrderAlterArea&>(order)))
             { p.acknowledged=serial; dirty=true; break; }
     }
-    void refresh(const Scene& scene,int viewedTeam)
+    void refresh(const PresentationFrame& scene,int viewedTeam)
     {
         if(world!=scene.map.identity() || team!=viewedTeam)
         {
             pending.clear(); for(auto& layer:stroke) layer.clear();
             world=scene.map.identity(); team=viewedTeam; dirty=true;
         }
-        if(!dirty && tick==scene.tick && revision==scene.executedOrderRevision) return;
+        if(!dirty && tick==scene.tick && revision==scene.executedOrderRevision
+            && areaRevision==scene.world.mapGenerations[3] && configurationRevision==scene.world.configurationRevision) return;
+        areaRevision=scene.world.mapGenerations[3]; configurationRevision=scene.world.configurationRevision;
         tick=scene.tick; revision=scene.executedOrderRevision; dirty=false;
         for(unsigned z=0;z<4;++z) shown[z]=scene.map.displayedArea(z);
         std::erase_if(pending,[&](const auto& p){return p.acknowledged && p.acknowledged<=revision;});

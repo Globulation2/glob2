@@ -4,6 +4,7 @@
 #include "Glob2Test.h"
 
 #include "SceneBuffer.h"
+#include "ThreadSupport.h"
 
 #include <thread>
 #include <vector>
@@ -50,6 +51,7 @@ TEST_SUITE("SceneBuffer")
 
 	TEST_CASE("concurrent producer and consumer never observe torn or out-of-order values")
 	{
+        if constexpr (!GAGCore::ThreadSupport::available) return;
 		SceneBuffer<Frame> buffer;
 		constexpr unsigned last = 200000;
 		std::thread producer([&] {
@@ -77,4 +79,5 @@ TEST_SUITE("SceneBuffer")
 		CHECK_FALSE(backwards);
 		CHECK(acquisitions > 0);
 	}
+
 }

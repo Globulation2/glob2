@@ -46,7 +46,7 @@ namespace
 // inside texture runs, and select the exact source tile range with binary
 // searches. Splitting rectangles vertically would change the painter order.
 // Partial discovery uses the ordinary path below instead.
-bool drawCachedResources(const void *mapIdentity, const SceneMap& map, int left, int top,
+bool drawCachedResources(Uint64 mapIdentity, const SceneMap& map, int left, int top,
     int right, int bottom, int viewportX, int viewportY)
 {
     const auto& presentation = ResourceSprites::resolve(map.frozenResourceRegistry());
@@ -259,7 +259,7 @@ void Game::drawMapOverview(int left, int top, int right, int bot, int viewportX,
 	globalContainer->gfx->drawSurface(left*32, top*32, columns*32, rows*32, render.overview.get(), alpha);
 }
 
-void Game::drawMapTerritory(int left, int top, int right, int bot, int viewportX, int viewportY, int localTeam, Uint32 drawOptions, const Scene& scene, float opacity)
+void Game::drawMapTerritory(int left, int top, int right, int bot, int viewportX, int viewportY, int localTeam, Uint32 drawOptions, const PresentationFrame& scene, float opacity)
 {
 	// A wash strong enough to read over the terrain colours, inside a solid
 	// border: the edge of a colour shows where a faint tint of it does not.
@@ -270,7 +270,7 @@ void Game::drawMapTerritory(int left, int top, int right, int bot, int viewportX
 	PERF_SCOPE_TIME(Overlay);
 	const SceneEntities &entities = scene.entities;
 	const SceneMap &sceneMap = scene.map;
-	Uint32 visibleTeams = entities.teams[localTeam].me;
+	Uint32 visibleTeams = entities.teams[localTeam].mask;
 	if (globalContainer->isViewingGame()) visibleTeams = globalContainer->replayVisibleTeams;
 	// Each cell of a coarse grid belongs to the team with the nearest building
 	// within reach. Rebuilt per frame: a few hundred buildings stamp a few
@@ -279,17 +279,17 @@ void Game::drawMapTerritory(int left, int top, int right, int bot, int viewportX
 	const int gridW = std::max(1, sceneMap.getW()/Cell), gridH = std::max(1, sceneMap.getH()/Cell);
 	static std::vector<Uint16> owner; // team in the high byte, squared distance in the low
 	owner.assign(size_t(gridW)*gridH, 0xFFFF);
-	for (const SceneBuilding &sceneBuilding : entities.buildings)
+	for (const SnapshotBuilding &sceneBuilding : entities.buildings)
 		{
-			const SceneBuilding *building = &sceneBuilding;
+			const SnapshotBuilding *building = &sceneBuilding;
 			const int teamNumber = building->team;
-			if (!building->type || building->type->isVirtual)
+			if (!entities.type(*building) || entities.type(*building)->isVirtual)
 				continue;
-			if (!(drawOptions & DRAW_WHOLE_MAP) && !(entities.teams[teamNumber].me & visibleTeams)
+			if (!(drawOptions & DRAW_WHOLE_MAP) && !(entities.teams[teamNumber].mask & visibleTeams)
 				&& !(building->seenByMask & visibleTeams))
 				continue;
-			const int centerX = (building->posX + building->type->width/2)/Cell;
-			const int centerY = (building->posY + building->type->height/2)/Cell;
+			const int centerX = (building->posX + entities.type(*building)->width/2)/Cell;
+			const int centerY = (building->posY + entities.type(*building)->height/2)/Cell;
 			const int reach = Reach/Cell;
 			for (int dy=-reach; dy<=reach; dy++)
 				for (int dx=-reach; dx<=reach; dx++)
@@ -313,7 +313,7 @@ void Game::drawMapTerritory(int left, int top, int right, int bot, int viewportX
 	// brought up to the same brightness, keeping its hue.
 	const auto washColor = [&](int team, Uint8 a)
 	{
-		const GAGCore::Color &color = entities.teams[team].color;
+		const GAGCore::Color &color = presentationColor(entities.teams[team].color);
 		const int brightest = std::max({int(color.r), int(color.g), int(color.b), 1});
 		const auto lift = [&](Uint8 channel) { return Uint8(std::min(255, 40 + channel * 215 / brightest)); };
 		return GAGCore::Color(lift(color.r), lift(color.g), lift(color.b), a);
@@ -362,7 +362,7 @@ void Game::drawMapTerritory(int left, int top, int right, int bot, int viewportX
 
 void Game::drawMapDebugAreas(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions, ViewState& view)
 {
-	const Scene& scene = view.drawnScene();
+	const PresentationFrame& scene = view.drawnScene();
 	const SceneMap& map = scene.map;
 	const auto& selected = scene.entities.selectedBuilding;
 	if (!selected.verbose) return;

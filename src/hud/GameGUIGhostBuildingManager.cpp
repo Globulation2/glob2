@@ -6,7 +6,7 @@
 #include "GameGUIGhostBuildingManager.h"
 
 #include "GlobalContainer.h"
-#include "Game.h"
+#include "render/scene/Scene.h"
 
 namespace
 {
@@ -15,14 +15,6 @@ namespace
 	constexpr int GHOST_SPRITE_ALPHA = 200;
 }
 
-GameGUIGhostBuildingManager::GameGUIGhostBuildingManager(Game& game)
-	: game(game)
-{
-
-}
-
-
-
 void GameGUIGhostBuildingManager::addBuilding(Sint32 typeNum, int x, int y)
 {
 	buildings.push_back(GhostBuilding{typeNum, x, y});
@@ -30,15 +22,17 @@ void GameGUIGhostBuildingManager::addBuilding(Sint32 typeNum, int x, int y)
 
 
 
-bool GameGUIGhostBuildingManager::isGhostBuilding(int x, int y, int w, int h)
+bool GameGUIGhostBuildingManager::isGhostBuilding(const PresentationFrame& scene, int x, int y, int w, int h) const
 {
+	if (!scene.map.getW() || !scene.map.getH()) return false;
 	for(const GhostBuilding& ghost : buildings)
 	{
-		const BuildingType *bt = game.buildingsTypes.get(ghost.typeNum);
+		if (!scene.buildingTypes || ghost.typeNum < 0 || size_t(ghost.typeNum) >= scene.buildingTypes->size()) continue;
+		const BuildingType *bt = &scene.buildingTypes->at(ghost.typeNum);
 		// Two footprints on a torus collide only if they overlap on both axes
 		// independently.
-		if(wrappedRangesOverlap(x, w, ghost.x, bt->width, game.map.getW()) &&
-		   wrappedRangesOverlap(y, h, ghost.y, bt->height, game.map.getH()))
+		if(wrappedRangesOverlap(x, w, ghost.x, bt->width, scene.map.getW()) &&
+		   wrappedRangesOverlap(y, h, ghost.y, bt->height, scene.map.getH()))
 			return true;
 	}
 	return false;
@@ -63,25 +57,26 @@ void GameGUIGhostBuildingManager::removeBuilding(int x, int y)
 
 
 
-void GameGUIGhostBuildingManager::drawAll(int viewportX, int viewportY, int localTeam)
+void GameGUIGhostBuildingManager::drawAll(const PresentationFrame& scene, int viewportX, int viewportY, int localTeam, int displayW, int displayH)
 {
+	if (localTeam < 0 || localTeam >= scene.entities.teamCount) return;
 	for(const GhostBuilding& ghost : buildings)
 	{
-		BuildingType *bt = game.buildingsTypes.get(ghost.typeNum);
+		if (!scene.buildingTypes || ghost.typeNum < 0 || size_t(ghost.typeNum) >= scene.buildingTypes->size()) continue;
+		const BuildingType *bt = &scene.buildingTypes->at(ghost.typeNum);
 		Sprite *sprite = bt->gameSpritePtr;
-		sprite->setBaseColor(game.teams[localTeam]->color);
+		sprite->setBaseColor(presentationColor(scene.entities.teams[localTeam].color));
 
 		//Find position to draw. The sprite is anchored at the bottom-left of the
 		//footprint: its width always matches the footprint, but it may be taller
 		//(roofs, flag poles), so only Y is pulled up by the overhang.
 		int spriteH = sprite->getH(bt->gameSpriteImage);
-		int rectX = ((ghost.x - viewportX) & game.map.wMask) * Map::TILE_PX;
-		int rectY = (((ghost.y - viewportY) & game.map.hMask) * Map::TILE_PX) - (spriteH - bt->height * Map::TILE_PX);
+		int rectX = ((ghost.x - viewportX) & scene.map.getMaskW()) * 32;
+		int rectY = (((ghost.y - viewportY) & scene.map.getMaskH()) * 32) - (spriteH - bt->height * 32);
 
 		//Draw
 		forEachMapCopy(rectX, rectY, rectX+sprite->getW(bt->gameSpriteImage)-1, rectY+spriteH-1,
-			game.map.getW()*32, game.map.getH()*32, game.map.displayViewportW ? game.map.displayViewportW : globalContainer->gfx->getW()-GAME_GUI_RIGHT_MENU_WIDTH,
-			game.map.displayViewportH ? game.map.displayViewportH : globalContainer->gfx->getH(), [&](int dx, int dy) {
+			scene.map.getW()*32, scene.map.getH()*32, displayW, displayH, [&](int dx, int dy) {
 				globalContainer->gfx->drawSprite(rectX+dx, rectY+dy, sprite, bt->gameSpriteImage, GHOST_SPRITE_ALPHA);
 			});
 	}

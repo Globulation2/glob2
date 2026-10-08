@@ -88,7 +88,7 @@ class HighResolutionIntegrationHarness
         globalContainer->settings.highResolutionArtwork=true;
         MapEdit editor;editor.game.map.setSize(4,4,GRASS);editor.game.map.setGame(&editor.game);editor.game.addTeam(0);
         auto building=editor.game.addBuilding(15,15,globalContainer->buildingsTypes.getFinishedTypeNum("swarm"),0);REQUIRE(building);
-        editor.regenerateGameHeader();editor.minimap.setGame(editor.game);editor.updateCamera();
+        editor.regenerateGameHeader();editor.minimap.setMapSize(editor.game.map.getW(), editor.game.map.getH());editor.updateCamera();
         editor.game.map.displayViewportW=editor.game.map.displayViewportH=512;
         // Setup can destroy a staging GameGUI, which releases shared HD caches.
         Sprite::setHighResolution(true);
@@ -123,7 +123,7 @@ class HighResolutionIntegrationHarness
             gfx->endMapTransform();auto actual=pixels();REQUIRE(visible.size()==1);
             for(int y:{100,int(100+448*zoom)})for(int x:{100,int(100+448*zoom)})REQUIRE(coloredRegion(x,y,64*zoom,64*zoom));
             begin();
-            {const Scene &buildingScene=glob2test::sceneOf(editor.game);for(int y:{-32,480})for(int x:{-32,480})editor.game.drawMapBuilding(x,y,building->gid,0,0,0,Game::DRAW_WHOLE_MAP,buildingScene, nullptr);}
+            {const PresentationFrame &buildingScene=glob2test::sceneOf(editor.game);for(int y:{-32,480})for(int x:{-32,480})editor.game.drawMapBuilding(x,y,building->gid,0,0,0,Game::DRAW_WHOLE_MAP,buildingScene, nullptr);}
             gfx->endMapTransform();REQUIRE(actual==pixels());
         }
         // More than one complete period must repeat geometry without duplicating
@@ -134,7 +134,7 @@ class HighResolutionIntegrationHarness
         gfx->endMapTransform();auto repeated=pixels();REQUIRE(visible.size()==1);
         gfx->drawFilledRect(0,0,gfx->getW(),gfx->getH(),0,0,0);
         gfx->beginMapTransform(.5,100,100,100,100,512,512);
-        {const Scene &buildingScene=glob2test::sceneOf(editor.game);for(int y:{-32,480,992})for(int x:{-32,480,992})editor.game.drawMapBuilding(x,y,building->gid,0,0,0,Game::DRAW_WHOLE_MAP,buildingScene, nullptr);}
+        {const PresentationFrame &buildingScene=glob2test::sceneOf(editor.game);for(int y:{-32,480,992})for(int x:{-32,480,992})editor.game.drawMapBuilding(x,y,building->gid,0,0,0,Game::DRAW_WHOLE_MAP,buildingScene, nullptr);}
         gfx->endMapTransform();REQUIRE(repeated==pixels());
         int advances=0;
         gfx->drawFilledRect(0,0,gfx->getW(),gfx->getH(),0,0,0);
@@ -158,7 +158,7 @@ class HighResolutionIntegrationHarness
         editor.drawMap(0,0,gfx->getW(),gfx->getH());editor.drawMenu();editor.drawMiniMap();editor.drawWidgets();capture("seam-corners-50");
         // A full-period minimap viewport must have four edges, not a collapsed line.
         gfx->drawFilledRect(0,0,gfx->getW(),gfx->getH(),0,0,0);
-        Minimap mini(false,160,gfx->getW(),8,8,128,128,Minimap::ShowFOW);mini.setGame(editor.game);mini.draw(editor.view.drawnScene(),0,0,0,16,16);
+        Minimap mini(false,160,gfx->getW(),8,8,128,128,Minimap::ShowFOW);mini.setMapSize(editor.game.map.getW(),editor.game.map.getH());mini.draw(editor.view.drawnScene(),0,0,0,16,16);
         auto data=pixels();GLint v[4];glGetIntegerv(GL_VIEWPORT,v);
         auto white=[&](int x,int y){int px=(x+.5)*v[2]/gfx->getW(),py=(gfx->getH()-y-.5)*v[3]/gfx->getH();auto p=&data[(py*v[2]+px)*4];return p[0]==255&&p[1]==255&&p[2]==255;};
         const int left=gfx->getW()-160+8;
@@ -177,14 +177,14 @@ public:
             Engine engine;REQUIRE(engine.initCustom("games/gd-small-2ai.game")==Engine::EE_NO_ERROR);
             finishAssets();
             REQUIRE(Sprite::highResolutionStats().cpuBytes==0);
-            auto &gui=engine.gui;gui.updateCamera();gui.zoomMap(10,300,300);gui.drawAll(0);
+            auto &gui=engine.gui;gui.updateCamera();gui.zoomMap(10,300,300);glob2test::drawGUI(gui,0);
             const auto checksum = gui.game.checkSum(nullptr, nullptr, nullptr, true);
             for (double zoom : {.5, 1., 2.})
             {
                 gui.camera.setZoom(zoom, 300, 300);
                 gui.viewportX = gui.camera.tileX(); gui.viewportY = gui.camera.tileY();
-                gui.drawAll(0); globalContainer->gfx->nextFrame();
-                gui.drawAll(0); globalContainer->gfx->nextFrame();
+                glob2test::drawGUI(gui,0); globalContainer->gfx->nextFrame();
+                glob2test::drawGUI(gui,0); globalContainer->gfx->nextFrame();
                 REQUIRE(gui.game.checkSum(nullptr, nullptr, nullptr, true) == checksum);
                 REQUIRE(Sprite::highResolutionStats().cpuBytes == 0);
             }
@@ -193,7 +193,7 @@ public:
         }
         {
             const size_t loaded=Sprite::highResolutionStats().cpuBytes;
-            MapEdit editor;REQUIRE(editor.load("maps/Archipelago.map"));editor.minimap.setGame(editor.game);
+            MapEdit editor;REQUIRE(editor.load("maps/Archipelago.map"));editor.minimap.setMapSize(editor.game.map.getW(), editor.game.map.getH());
             finishAssets();
             REQUIRE(Sprite::highResolutionStats().cpuBytes==loaded);
             editor.updateCamera();editor.zoomMap(10,300,300);
@@ -233,7 +233,7 @@ public:
                 gui.camera.setZoom(zoom,300,300);gui.viewportX=gui.camera.tileX();gui.viewportY=gui.camera.tileY();
                 const auto randomState=syncRandEngine();const auto gameRandom=gui.game.syncRandom;
                 gfx->resetDrawCallCount();auto start=std::chrono::steady_clock::now();
-                for(int i=0;i<10;++i){gui.drawAll(0);glFinish();}
+                for(int i=0;i<10;++i){glob2test::drawGUI(gui,0);glFinish();}
                 auto ms=std::chrono::duration<double,std::milli>(std::chrono::steady_clock::now()-start).count()/10;
                 std::cout<<(hd?"HD":"original")<<" gameplay "<<zoom*100<<"%: "<<ms<<" ms, "<<gfx->getDrawCallCount()/10<<" calls, "<<DrawableSurface::allocatedTextureBytes()<<" GPU bytes\n";
                 capture(std::string(hd?"game-hd-":"game-original-")+std::to_string(int(zoom*100)));
@@ -246,7 +246,7 @@ public:
                     settings.clouds=false; settings.cloudShadows=true;
                     settings.buildingParticles=true; settings.translucentPanels=false;
                     settings.fullMagicEffects=false; settings.smoothProgressIndicators=false;
-                    gui.drawAll(0); capture("game-hd-independent-effects");
+                    glob2test::drawGUI(gui,0); capture("game-hd-independent-effects");
                     REQUIRE(gui.game.checkSum(nullptr,nullptr,nullptr,true)==checksum);
                     REQUIRE((syncRandEngine()==randomState && gui.game.syncRandom==gameRandom));
                     settings=previous;
@@ -266,7 +266,7 @@ public:
             if (glob2test::fullscreenEnabled())
             {
                 auto center=gui.camera.screenToWorld(gui.camera.width/2.0,gui.camera.height/2.0);
-                REQUIRE(gfx->toggleFullscreen());gui.updateCamera();gui.drawAll(0);capture(hd?"fullscreen-hd":"fullscreen-original");
+                REQUIRE(gfx->toggleFullscreen());gui.updateCamera();glob2test::drawGUI(gui,0);capture(hd?"fullscreen-hd":"fullscreen-original");
                 auto fullscreenCenter=gui.camera.screenToWorld(gui.camera.width/2.0,gui.camera.height/2.0);
                 // Camera origins normalize on the torus when the larger native view
                 // crosses a map seam; compare the same world location modulo its period.
@@ -298,11 +298,11 @@ public:
         {
             Engine replay;REQUIRE(replay.loadReplay("replays/current.replay")==Engine::EE_NO_ERROR);
             finishAssets();
-            auto &gui=replay.gui;gui.updateCamera();gui.zoomMap(5,300,300);gui.drawAll(0);capture("replay-hd");
+            auto &gui=replay.gui;gui.updateCamera();gui.zoomMap(5,300,300);glob2test::drawGUI(gui,0);capture("replay-hd");
         }
         globalContainer->replaying=false;
         {
-            MapEdit editor;REQUIRE(editor.load("maps/Archipelago.map"));editor.minimap.setGame(editor.game);editor.updateCamera();
+            MapEdit editor;REQUIRE(editor.load("maps/Archipelago.map"));editor.minimap.setMapSize(editor.game.map.getW(), editor.game.map.getH());editor.updateCamera();
             finishAssets();
             auto& settings = globalContainer->settings;
             const bool previousEdgeScroll = settings.edgeScrollWindowed;
@@ -374,7 +374,7 @@ public:
         }
         {
             MapEdit tinyEditor;tinyEditor.game.map.setSize(4,4,GRASS);tinyEditor.game.map.setGame(&tinyEditor.game);tinyEditor.game.addTeam(0);
-            tinyEditor.regenerateGameHeader();tinyEditor.minimap.setGame(tinyEditor.game);
+            tinyEditor.regenerateGameHeader();tinyEditor.minimap.setMapSize(tinyEditor.game.map.getW(), tinyEditor.game.map.getH());
             tinyEditor.game.addBuilding(5,5,globalContainer->buildingsTypes.getFinishedTypeNum("swarm"),0);
             tinyEditor.updateCamera();tinyEditor.camera.setZoom(0.25,300,300);tinyEditor.viewportX=tinyEditor.camera.tileX();tinyEditor.viewportY=tinyEditor.camera.tileY();
             tinyEditor.drawMap(0,0,gfx->getW(),gfx->getH());tinyEditor.drawMenu();tinyEditor.drawMiniMap();tinyEditor.drawWidgets();capture("small-map-repeated");
@@ -402,7 +402,7 @@ public:
                 for(int i=0;i<3;++i)dense.game.addUnit(x+i,y+5,team,i,0,0,0,0);
             }
             for(int y=0;y<64;++y)for(int x=0;x<3;++x)dense.game.map.setUMatPos(x,y,WATER,1);
-            dense.regenerateGameHeader();dense.minimap.setGame(dense.game);dense.updateCamera();
+            dense.regenerateGameHeader();dense.minimap.setMapSize(dense.game.map.getW(), dense.game.map.getH());dense.updateCamera();
             for(double zoom:{dense.camera.minimumZoom(),.5,MapCamera::MAX_ZOOM})
             {
                 dense.camera.setZoom(zoom,0,0);dense.viewportX=dense.camera.tileX();dense.viewportY=dense.camera.tileY();

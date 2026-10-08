@@ -12,8 +12,10 @@ documented in [Distributed tournaments](../tools/tournaments.md).
 
 All shipped AI controllers decide from an immutable engine snapshot through
 `AIEngine::AIWorldView`. The simulation owner captures a union of required
-components at the polling boundary. `Game::snapshots()` owns the shared Store;
-the AI pipeline borrows it rather than owning a separate capture cache. Explicit
+components through `Game::captureReadBoundary()`. The engine declares AI, gradient,
+admitted presentation and diagnostic requirements before publishing their union.
+`Game::snapshots()` owns the shared Store; the AI pipeline receives a projection
+of that published handle and does not initiate capture. Explicit
 `Store::invalidateBoundary()` revisions allow an owner to publish same-tick edits
 without advancing game time; existing leases stay immutable. Engine snapshot records live under
 `src/engine/sim/snapshot/`; the AI adapter and shared queries live under
@@ -87,9 +89,11 @@ acquire fence that orders the consumer's final reads before the owner's next wri
 including inputs retired by delayed gradient jobs. Reads need no locking, and a
 buffer outlives the capture Store while any consumer holds it. Memory metrics are
 computed on telemetry query, never on the capture path. Component pools permit
-22 buffers: the existing 17-epoch simulation horizon plus five presentation
-leases (active input, pending input and three Scene slots). Buffers allocate only
-on demand. The resource-plane pool retains its original 17-epoch bound because
+22 buffers, retaining the existing safety ceiling until the combined consumer
+horizon is measured. Buffers allocate only on demand. Retired frame slots release
+their world leases immediately while preserving reusable derived arrays; the
+current frame, admitted preparation, retained view-refresh input and diagnostic
+publication each have explicit ownership. The resource-plane pool retains its original 17-epoch bound because
 presentation does not lease resource-gradient fields.
 
 All parallel simulation work shares the map's `ComputeExecutor`
@@ -114,7 +118,10 @@ cancellation and failures without joining. Simulation `run()`, `join()` and
 thread calls `pumpPresentation()` explicitly. Reconfiguration and teardown cancel
 pending work and wait for the active chunk without executing it on the caller.
 Captured inputs are released on completion, even if a caller retains its ticket.
-These scheduling APIs do not yet move the existing Scene extractor off simulation.
+Presentation preparation uses these jobs and only the published world handle.
+Data-dependent operations can yield and resume the same chunk: large defence
+footprints visit at most 1024 positions per claim, and overlay clearing is sliced
+into 1024-cell ranges. This also bounds cooperative work on serial browser hosts.
 
 Commands own encoded order bytes, target incarnation, diagnostics and telemetry.
 The owner validates current identities and normal order rules at delivery and
@@ -1556,50 +1563,63 @@ a supported open-file checker and is conservatively skipped there.
 
 ## Scene renderer
 
-Drawing reads an immutable `Scene` (`src/render/scene/`), never live simulation objects, so it
-runs while the simulation advances on another thread. `Game::drawSceneMap` accepts
-an extracted Scene directly; `Game::drawMap` supplies extraction for legacy callers.
-Offline `--render-game` and Maxima field PNGs use the same passes through a scoped,
-bounded software target. Asset loading is shared with normal game startup.
+Drawing reads an immutable `PresentationFrame` (`src/render/scene/`). It retains
+the shared world snapshot, view request, captured timing and derived presentation
+results. Unit, building, team, relationship, entity-index, effect and map data are
+borrowed from standard snapshot components. There is no second entity extraction
+or map-array capture. `Game::drawMap` requires an explicitly supplied frame;
+`Game::drawSceneMap` accepts it directly.
 
-- Native threaded sessions capture immutable inputs at a simulation boundary using
-  `SceneExtractor::capture`. A presentation task on the shared compute executor
-  prepares entity records, connections, panels and overlays, then publishes the
-  complete Scene through a triple buffer. Simulation barriers never join that task.
-  One preparation is in flight; a slow consumer retains its previous complete Scene.
-  After eight simulation claims, the designated worker gives a pending presentation
-  chunk a turn, preventing starvation under a continuous compute backlog.
-  Without a compute worker, the graphics owner explicitly pumps preparation.
-- Serial simulation hosts (including turn matches and both browser runtimes) use
-  `ScenePreparation` to submit the same immutable inputs to the compute executor.
-  Transport polling stays on the host thread. Pthread builds prepare on a worker;
-  without workers the host explicitly pumps the task. Cancellation retains only
-  the active task's immutable storage and does not wait on the browser event loop.
-  World replacement discards the outgoing producer and its published Scene.
-- `SceneExtractor::extract(game, request, scene)` remains the synchronous path for
-  the editor, standalone rendering and direct GUI test callers. `Game::ViewState::drawnScene()`
-  returns the Scene supplied by the session or extracted for the current draw.
-- Snapshot-backed `SceneMap` retains terrain, resources, occupancy and visibility
-  component leases instead of copying their full arrays into each Scene. The terrain
-  component includes the map's undermap corner values (one byte per cell); unchanged
-  terrain is shared across frames, while changed versions remain alive until their
-  consumers release them. Displayed areas and optional script areas are captured
-  separately. Queries preserve the synchronous `SceneMap` behavior.
-- `SceneEntities` contains presentation records with lookup by gid and generation,
-  per-sector bullets and animations, and the selected building's map-view data.
-  Scenes retain their building definitions and a stateless Race facade, so preparation
-  does not hold pointers into live teams or entities.
-- Preparation calculates overlay maps from frozen inputs; the cache refreshes when
-  the requested type or team changes and once per 25-tick window. Worker preparation
-  owns a separate cache from synchronous extraction.
-- Adding something drawn on the map: extract what the drawing needs in
-  `SceneExtract.cpp` and read it from the `Scene` in the render pass. Never read
-  `Game`, `Map`, `Team`, `Unit` or `Building` state from drawing code.
-  `test/build_system/test_scene_boundary.py` rejects live entity reads in the render
-  passes, the minimap and `GameGUIDraw*`, and simulation includes in `src/render/scene/` headers.
-- Selection panels, the HUD, the top bar, statistics pages, the minimap and the building
-  tool's placement preview also draw from the Scene (`ScenePanels`, `SceneMap`). Input
-  handlers still act on the game, and validate against it before issuing an order.
+- The engine admits presentation only when its bounded producer has capacity,
+  declares requirements with AI and gradients, and publishes one shared capture.
+  `SceneExtractor::prepare` accepts an immutable handle and request, never live
+  simulation objects. Preparation runs on the shared compute executor. A complete
+  frame is published through `SceneBuffer`; drawing keeps the previous complete
+  frame while work is in flight. Simulation barriers do not join presentation.
+  Interactive sessions open the next completed world's shared read boundary
+  before waiting for tick pacing. AI polling and order delivery stay at their
+  existing deadlines and reuse that publication; presentation does not wait a
+  whole tick interval before starting. The native mailbox admits at most one
+  preparation per client request and can replace an unconsumed completed frame.
+- Serial hosts and browsers use the same preparation path. Hosts without a compute
+  worker pump bounded chunks between simulation work; cancellation does not wait
+  on the browser event loop. Camera and selection updates can prepare from a retained
+  world without capturing again. Its timing and executed-order revision remain
+  associated with that exact world.
+- Map views retain standard terrain, resource, occupancy, area and visibility
+  components. Undermap corners remain authoritative, editable map state. Optional
+  script areas use tracked chunks. Display-area masks, material availability,
+  connections and overlays are derived in resumable preparation chunks. Cached
+  display data is keyed by world identity, relevant revisions and view settings.
+- Unit animation and building shooting fields live in the normal pointer-free state
+  records. Selected panels borrow those records and immutable catalogs; presentation
+  calculations and formatting belong in frame storage. Catalog definitions are frozen
+  once per revision, so a later owner reconfiguration cannot change a retained frame.
+  AI telemetry, debug gradients, failure histories, and statistics histories are requested
+  separately from ordinary frames. Statistics histories share immutable samples
+  between observations until the next history revision; the compact HUD sample
+  ring remains independent. Alliance controls read session player identities and
+  team masks; objective and hint dialogs retain immutable narrative payloads that
+  are reused until mutation. Opening these dialogs does not park simulation.
+  Shift-click diagnostic dumps select the displayed generation and serialize it
+  only if that same entity still exists at the explicit owner boundary.
+- The editor and standalone tools explicitly obtain an owner-boundary snapshot before
+  preparing a frame. Offline map images and diagnostic PNGs use the same drawing
+  passes and graphics-thread asset ownership. Diagnostic preparation consumes the
+  published union rather than recapturing from the live game. A bounded diagnostic
+  batch owns its fields and snapshot independently; PNG preparation and export do
+  not park the simulation. Occupied publication slots stop further diagnostic
+  admission, with skipped or superseded output reported explicitly.
+- The animated menu colony includes admitted presentation requirements in its AI
+  boundary and uses the same bounded preparation producer. Drawing and resizing
+  never capture another world; headless menu simulations admit no presentation.
+- `test/build_system/test_scene_boundary.py` checks the rendering dependency boundary;
+  compile-time preparation tests reject live `Game`, `Map`, `Unit` and `Building`
+  inputs. New authoritative values belong in the owning standard snapshot component,
+  with capture/lifetime tests; view-dependent calculations belong in preparation.
+- Routine selection resolves generation-checked snapshot identities. Command
+  admission still validates targets on the simulation owner. Exceptional editing,
+  saving and diagnostic actions retain explicit owner access.
 
 ### Target render FPS
 
@@ -1635,15 +1655,20 @@ creating the simulation thread fails, run the same session serially (`Engine::st
 also remains the headless default and the equivalence reference.
 
 - The simulation thread paces itself with the speed presets and runs ticks
-  (`Engine::simulationStep`: orders, network, `Game::syncStep`). After a tick, if the main
-  thread has taken the previous Scene, it captures frozen inputs and submits
-  preparation. A compute worker publishes the result into a `SceneBuffer`
-  (lock-free triple buffer); only one preparation is in flight.
-- The main thread draws the newest Scene when the render ceiling permits a frame.
-  Routine input, selection, client events and script highlights use the Scene and
+  (`Engine::simulationStep`: orders, network, `Game::syncStep`). Before pacing,
+  the engine publishes the completed world's shared read boundary with the union
+  of AI, gradient and admitted presentation requirements. Presentation preparation
+  borrows that publication and runs on the compute executor. A worker publishes
+  the completed `PresentationFrame` into a `SceneBuffer` (lock-free triple buffer);
+  only one preparation is in flight, and a newer complete frame can supersede an
+  unconsumed one. Neither capture nor presentation admission depends on drawing
+  completing first.
+- The main thread draws the newest complete frame when the render ceiling permits.
+  Routine input, selection, client events and script highlights use the frame and
   client-owned state without parking the simulation. Exceptional live-state work
-  (save capture, dialogs, settings, viewpoint changes and diagnostic dumps) uses
+  (save capture, owner-backed settings, viewpoint changes and diagnostic dumps) uses
   `GameGUI::parkForClient` / `SimulationRunner::withGame` at a tick boundary.
+  Alliance, objective and hint dialogs read immutable snapshot payloads.
   Autosave scheduling publishes an atomic pending request; the client owns the
   writer and captures the save at that explicit boundary. Telemetry windows cross
   a locked mailbox after simulation work finishes.
@@ -1670,7 +1695,7 @@ also remains the headless default and the equivalence reference.
   background is therefore not caught up after resuming, as in serial execution.
   GUI updates use `SDL_GetTicks()` instead: touch event timestamps and momentum
   must share the SDL clock, including after the session clock has been suspended.
-- Values the client sets while drawing and extraction reads (viewport, drawn map size,
+- Values the client sets while drawing and preparation reads (viewport, drawn map size,
   overlay, observed building) go through `ClientRequests`, never through `Game` or `Map`
   fields. To check for races, build with `CXXFLAGS="-g -fsanitize=thread"
   LINKFLAGS="-fsanitize=thread"` and run a windowed `-test-games` session or a headless
@@ -1697,9 +1722,9 @@ off by default) draws units between ticks, so threaded play at display rate uses
 32 animation frames per direction instead of repeating one pose per tick.
 
 - A unit's drawn position and animation frame follow `delta`, which the simulation
-  advances by `SceneUnit::stepSpeed` each tick. Each frame, `GameGUI::drawAll` sets
+  advances by `unitActionStepSpeed` computed from the captured unit record each tick. Each frame, `GameGUI::drawAll` sets
   `MapRenderState::unitMotion` to the elapsed fraction of the tick interval since the
-  Scene's tick (`Scene::tickTime`, `Scene::tickInterval`; `src/unit/render/UnitMotion.h`).
+  captured tick (`PresentationFrame::tickTime`, `PresentationFrame::tickInterval`; `src/unit/render/UnitMotion.h`).
   Unit drawing, path lines, off-screen markers and worker circles add that fraction of
   `stepSpeed` to `delta`, stopping at the end of the current action.
 - Motion is 0 when the setting is off, when the game is paused, and when the simulation

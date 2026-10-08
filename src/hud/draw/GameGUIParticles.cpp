@@ -84,11 +84,11 @@ void GameGUI::drawParticles(bool advance)
 		int radius = std::max(globalContainer->particles->getW(cf.frameA), globalContainer->particles->getH(cf.frameA));
 		if (cf.hasFrameB)
 			radius = std::max({radius, globalContainer->particles->getW(cf.frameB), globalContainer->particles->getH(cf.frameB)});
-		const float x=MapCamera::wrap(p->x-viewportX*32,game.map.getW()*32);
-		const float y=MapCamera::wrap(p->y-viewportY*32,game.map.getH()*32);
+		const float x=MapCamera::wrap(p->x-viewportX*32,drawnScene().map.getW()*32);
+		const float y=MapCamera::wrap(p->y-viewportY*32,drawnScene().map.getH()*32);
 		forEachMapCopy(int(x)-radius, int(y)-radius, int(x)+radius, int(y)+radius,
-			game.map.getW()*32, game.map.getH()*32, game.map.displayViewportW ? game.map.displayViewportW : globalContainer->gfx->getW()-GAME_GUI_RIGHT_MENU_WIDTH,
-			game.map.displayViewportH ? game.map.displayViewportH : globalContainer->gfx->getH(), [&](int dx, int dy) {
+			drawnScene().map.getW()*32, drawnScene().map.getH()*32, std::ceil(camera.visibleW()+camera.fractionX()),
+			std::ceil(camera.visibleH()+camera.fractionY()), [&](int dx, int dy) {
 				drawCenteredParticleSprite(x+dx, y+dy, cf.frameA, cf.alphaA);
 				if (cf.hasFrameB)
 					drawCenteredParticleSprite(x+dx, y+dy, cf.frameB, cf.alphaB);
@@ -108,10 +108,10 @@ void GameGUI::generateNewParticles(std::set<Uint16> *visibleBuildings)
 	const Uint32 stepCounter = drawnScene().tick;
 	for (Uint16 gid : *visibleBuildings)
 	{
-		const SceneBuilding* building = entities.building(gid);
+		const SnapshotBuilding* building = entities.building(gid);
 		if (!building)
 			continue;
-		BuildingType* type = building->type;
+		const BuildingType* type = entities.type(*building);
 		int x, y;
 		x=::displayedPosX(buildingGuiState, building->gid, building->posX)*32;
 		y=::displayedPosY(buildingGuiState, building->gid, building->posY)*32;
@@ -119,7 +119,7 @@ void GameGUI::generateNewParticles(std::set<Uint16> *visibleBuildings)
 		if (!type->isBuildingSite)
 		{
 			// damaged building smoke
-			float hpRatio = (float)building->hp / (float)building->effectiveMaxHp;
+			float hpRatio = (float)building->hp / (float)building->maxHp;
 			if (
 				(hpRatio < SMOKE_HEAVY_HP_RATIO && ((stepCounter & 0x1) == 0)) ||
 				(hpRatio < SMOKE_LIGHT_HP_RATIO && ((stepCounter & 0x3) == 0))
@@ -144,7 +144,7 @@ void GameGUI::generateNewParticles(std::set<Uint16> *visibleBuildings)
 				p->lifeSpan = SMOKE_LIFESPAN_TICKS;
 				p->startImg = PARTICLE_START_IMG;
 				p->endImg = PARTICLE_END_IMG;
-				p->color = entities.owner(*building).color;
+				p->color = presentationColor(entities.owner(*building).color);
 				particles.insert(p);
 			}
 
@@ -169,7 +169,7 @@ void GameGUI::generateNewParticles(std::set<Uint16> *visibleBuildings)
 					p->lifeSpan = TURRET_FLASH_LIFESPAN_TICKS;
 					p->startImg = PARTICLE_START_IMG;
 					p->endImg = PARTICLE_END_IMG;
-					p->color = entities.owner(*building).color;
+					p->color = presentationColor(entities.owner(*building).color);
 					particles.insert(p);
 				}
 			}

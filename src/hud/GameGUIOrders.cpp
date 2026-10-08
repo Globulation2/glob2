@@ -218,7 +218,7 @@ void GameGUI::handleClientEvent(ClientEventVariant&& event)
 		else if constexpr (std::is_same_v<T, ClientEvent::OrderExecuted>)
 		{
 			reconcileBuildingGuiState(e.order);
-            if(simulationThreaded) toolManager.acknowledgePaint(*e.order,e.revision);
+            toolManager.acknowledgePaint(*e.order,e.revision);
 		}
 		else if constexpr (std::is_same_v<T, ClientEvent::BuildingRemoved>)
 		{
@@ -242,7 +242,7 @@ void GameGUI::handleClientEvent(ClientEventVariant&& event)
 
 void GameGUI::stampClientOrder(const std::shared_ptr<Order>& order, bool simulationOwner)
 {
-    const bool frozen = simulationThreaded && !simulationOwner;
+    const bool frozen = !simulationOwner;
     order->clientWorld = frozen ? drawnScene().map.identity() : game.map.identity();
     std::optional<Uint16> gid;
     switch (order->getOrderType())
@@ -265,7 +265,7 @@ void GameGUI::stampClientOrder(const std::shared_ptr<Order>& order, bool simulat
     if (frozen)
     {
         const auto* building = drawnScene().entities.building(*gid);
-        order->clientTarget = building ? BuildingRef{*gid, building->generation} : BuildingRef{};
+        order->clientTarget = building ? BuildingRef{*gid, building->scriptIdentity} : BuildingRef{};
     }
     else
     {
@@ -278,6 +278,6 @@ void GameGUI::stampClientOrder(const std::shared_ptr<Order>& order, bool simulat
 void GameGUI::enqueueOrder(std::shared_ptr<Order> order)
 {
     stampClientOrder(order);
-    if(simulationThreaded) toolManager.trackPaint(order);
+    toolManager.trackPaint(order);
     orderQueue.push_back(std::move(order));
 }

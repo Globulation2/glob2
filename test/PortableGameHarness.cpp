@@ -29,7 +29,7 @@ TEST_SUITE("PortableGame")
 		        now+=40;
 		    }
 		    if(!std::filesystem::exists(std::filesystem::path(SDL_getenv_unsafe("GLOB2_USER_DATA_DIR"))/"portable-scene.bmp"))
-		        throw std::runtime_error("Scene screenshot was not produced");
+		        throw std::runtime_error("PresentationFrame screenshot was not produced");
 		    engine.finishSession();
 		}
 		NET_Quit();

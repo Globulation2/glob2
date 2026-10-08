@@ -7,6 +7,7 @@
 #include <BackgroundFileWriter.h>
 #include <InputState.h>
 #include <utility>
+#include <functional>
 
 #include "Brush.h"
 #include "BrushCatalog.h"
@@ -319,11 +320,8 @@ public:
 class UnitInfoTitle : public MapEditorWidget
 {
 public:
-	UnitInfoTitle(MapEdit& me, const widgetRectangle& area, const std::string& group, const std::string& name, const std::string& action, Unit* unit);
+	UnitInfoTitle(MapEdit& me, const widgetRectangle& area, const std::string& group, const std::string& name, const std::string& action);
 	void draw();
-	void setUnit(Unit* unit);
-private:
-	Unit* unit;
 };
 
 
@@ -332,17 +330,16 @@ private:
 class UnitPicture : public MapEditorWidget
 {
 public:
-	UnitPicture(MapEdit& me, const widgetRectangle& area, const std::string& group, const std::string& name, const std::string& action, Unit* unit);
+	UnitPicture(MapEdit& me, const widgetRectangle& area, const std::string& group, const std::string& name, const std::string& action);
 	void draw();
-	void setUnit(Unit* unit);
-private:
-	Unit* unit;
 };
 
 
 
 ///This is a small text object. It shows two values and a label, like "label 1/2". The denominator can be fixed or variable. Either way, the numerator is done 
 ///by pointer because this class is used for the convenient editing of values in a Unit or Building
+using EditorValueReader=std::function<Sint32(const PresentationFrame&)>;
+
 class FractionValueText : public MapEditorWidget
 {
 public:
@@ -350,11 +347,12 @@ public:
 	FractionValueText(MapEdit& me, const widgetRectangle& area, const std::string& group, const std::string& name, const std::string& action, const std::string& label, Sint32* numerator, Sint32 denominator);
 	~FractionValueText();
 	void draw();
-	void setValues(Sint32* numerator, Sint32* denominator);
-	void setValues(Sint32* numerator);
+	void setValues(Sint32* numerator, Sint32* denominator, EditorValueReader readValue, EditorValueReader readMax);
+	void setValues(Sint32* numerator, EditorValueReader readValue);
 private:
 	std::string label;
 	Sint32* numerator;
+    EditorValueReader readValue,readMax;
 	Sint32* denominator;
 	bool isDenominatorPreset;
 };
@@ -370,14 +368,15 @@ public:
 	~ValueScrollBox();
 	void draw();
 	void handleClick(int relMouseX, int relMouseY);
-	void setValues(Sint32* value, Sint32* max);
+	void setValues(Sint32* value, Sint32* max, EditorValueReader readValue, EditorValueReader readMax);
     // Semantic value access shared by desktop and touch presentations.
-    int currentValue() const { return *value; }
-    int maximumValue() const { return *max; }
+    int currentValue() const;
+    int maximumValue() const;
     void setValue(int requested);
-	void setValues(Sint32* value);
+	void setValues(Sint32* value, EditorValueReader readValue);
 private:
 	Sint32* value;
+    EditorValueReader readValue,readMax;
 	Sint32* max;
 	bool isMaxPreset;
 };
@@ -388,11 +387,8 @@ private:
 class BuildingInfoTitle : public MapEditorWidget
 {
 public:
-	BuildingInfoTitle(MapEdit& me, const widgetRectangle& area, const std::string& group, const std::string& name, const std::string& action, Building* building);
+	BuildingInfoTitle(MapEdit& me, const widgetRectangle& area, const std::string& group, const std::string& name, const std::string& action);
 	void draw();
-	void setBuilding(Building* building);
-private:
-	Building* building;
 };
 
 
@@ -401,11 +397,8 @@ private:
 class BuildingPicture : public MapEditorWidget
 {
 public:
-	BuildingPicture(MapEdit& me, const widgetRectangle& area, const std::string& group, const std::string& name, const std::string& action, Building* building);
+	BuildingPicture(MapEdit& me, const widgetRectangle& area, const std::string& group, const std::string& name, const std::string& action);
 	void draw();
-	void setBuilding(Building* building);
-private:
-	Building* building;
 };
 
 
@@ -862,6 +855,7 @@ private:
 	int buildingLevel;
 	///Returns whether the particular type of building is upgradable
 	int buildingSelectionType(const std::string& key);
+    int displayedBuildingSelectionType(const std::string& key) const;
 	void rebuildBuildingSelectors();
 	void layoutBuildingSelectors();
 	bool scrollBuildingSelectors(double delta);
@@ -999,6 +993,10 @@ private:
 	int strokeCoveredCells = 0, strokePlacedResources = 0;
 	void finishTerrainStroke();
 	void drawTerrainBrushPreview();
+public:
+    // Explicit owner observation for editor drawing and standalone editor tools.
+    void preparePresentation();
+private:
 	void drawStatus();
 	// --- end WS-B brush painting ---
 	///Handles a click or drag of the mouse when removing objects

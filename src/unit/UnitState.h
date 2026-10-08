@@ -7,7 +7,7 @@
 
 // Authoritative pointer-free unit state. Both live units and captured units use
 // this exact record; capture copies it without translating fields or arrays.
-// Relationships, query caches and rendering state remain outside the record.
+// Relationships and query caches remain outside the record.
 struct UnitState
 {
 	enum Medical
@@ -106,6 +106,8 @@ struct UnitState
 	Sint32 destinationPurpose;
 	int carriedMaterial;
 	MaterialPacket carriedPacket{};
+	// Authoritative animation clocks; copied with the rest of unit state.
+	Sint32 levelUpAnimation = 0, magicActionAnimation = 0;
 	Sint32 jobTimer; // Waits 32 ticks for a job before seeking training or healing.
 };
 static_assert(std::is_trivially_copyable_v<UnitState>);

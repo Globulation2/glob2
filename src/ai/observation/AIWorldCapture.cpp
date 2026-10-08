@@ -62,5 +62,5 @@ AIWorldView::AIWorldView(SimulationSnapshot::Handle captured) : lease(std::move(
 std::shared_ptr<const AIWorldView::Catalog> AIWorldView::captureCatalog(const Game& game)
 { return SimulationSnapshot::captureCatalog(game); }
 std::shared_ptr<const AIWorldView> AIWorldView::capture(const Game& game, std::shared_ptr<const Catalog> catalog)
-{ return std::make_shared<AIWorldView>(SimulationSnapshot::capture(game, std::move(catalog))); }
+{ return std::make_shared<AIWorldView>(SimulationSnapshot::capture(game, std::move(catalog), SimulationSnapshot::Simulation)); }
 } // namespace AIEngine

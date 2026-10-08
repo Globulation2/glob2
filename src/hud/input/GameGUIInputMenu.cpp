@@ -242,6 +242,7 @@ bool GameGUI::processGameMenu(SDL_Event *event)
 
 		case IGM_ALLIANCE:
 		{
+            if (!drawnScene().world.session) { closeDialog(); return true; }
 			if (result != InGameAllianceScreen::OK)
 				return false;
 			auto *alliance = static_cast<InGameAllianceScreen *>(gameMenuScreen.get());
@@ -255,9 +256,9 @@ bool GameGUI::processGameMenu(SDL_Event *event)
 			teamMask[0]=teamMask[1]=teamMask[2]=teamMask[3]=teamMask[4]=0;
 
 			// mask are for players, we need to convert them to team.
-			for (int pi=0; pi<game.gameHeader.getNumberOfPlayers(); pi++)
+			for (size_t pi=0; pi<drawnScene().world.session->players.size(); pi++)
 			{
-				int otherTeam=game.players[pi]->teamNumber;
+				int otherTeam=drawnScene().world.session->players[pi].teamNumber;
 				for (int mi=0; mi<5; mi++)
 				{
 					if (playerMask[mi]&(1<<pi))
@@ -270,8 +271,8 @@ bool GameGUI::processGameMenu(SDL_Event *event)
 
 			// we have a special cases for uncontrolled Teams:
 			// FIXME : remove this
-			for (int ti=0; ti<game.mapHeader.getNumberOfTeams(); ti++)
-				if (game.teams[ti]->playersMask==0)
+			for (int ti=0; ti<drawnScene().entities.teamCount; ti++)
+				if (drawnScene().entities.teams[ti].playersMask==0)
 					teamMask[1]|=(1<<ti); // we want to hit them.
 
 			enqueueOrder(shared_ptr<Order>(new SetAllianceOrder(localTeamNo,

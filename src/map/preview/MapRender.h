@@ -3,7 +3,7 @@
 #include <cstdint>
 #include <string>
 #include <vector>
-struct Scene;
+struct PresentationFrame;
 namespace MapRender
 {
 inline constexpr int DefaultPixels = 4096;
@@ -18,5 +18,5 @@ struct Field
 Field readField(const std::string& path);
 void validate(const Field& field, int width, int height);
 unsigned char alpha(std::int64_t value, std::int64_t maximum);
-void toPng(const Scene& scene, const std::string& path, int maximumPixels = DefaultPixels, const Field* field = nullptr);
+void toPng(const PresentationFrame& scene, const std::string& path, int maximumPixels = DefaultPixels, const Field* field = nullptr);
 }

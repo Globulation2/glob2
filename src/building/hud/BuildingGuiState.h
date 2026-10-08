@@ -68,7 +68,7 @@ using BuildingGuiStateMap = std::unordered_map<Uint16, BuildingGuiState>;
 // is heavy and we want this header light enough to forward-declare through.
 Sint32 displayedPosX(const BuildingGuiStateMap& m, const Building& b);
 Sint32 displayedPosY(const BuildingGuiStateMap& m, const Building& b);
-//! Same, for drawing from a Scene: the building's gid and authoritative position.
+//! Same, for drawing from a PresentationFrame: the building's gid and authoritative position.
 Sint32 displayedPosX(const BuildingGuiStateMap& m, Uint16 gid, Sint32 posX);
 Sint32 displayedPosY(const BuildingGuiStateMap& m, Uint16 gid, Sint32 posY);
 Sint32 displayedMaxUnitWorking(const BuildingGuiStateMap& m, const Building& b);
@@ -81,29 +81,31 @@ std::array<Sint32, NB_UNIT_TYPE> displayedRatio(const BuildingGuiStateMap& m, co
 /// The same accessors for presentation copies of a building (e.g. SceneBuildingPanel):
 /// any type with the Building field names gid, posX, posY, maxUnitWorking,
 /// unitStayRange, priority, clearingMaterials, minLevelToFlag and ratio.
+template<class B> const auto& authoritativeBuilding(const B& b)
+{ if constexpr (requires { b.state(); }) return b.state(); else return b; }
 template <class B> const BuildingGuiState* pendingStateOf(const BuildingGuiStateMap& m, const B& b)
 {
-	auto it = m.find(b.gid);
+	auto it = m.find(authoritativeBuilding(b).gid);
 	return it == m.end() ? nullptr : &it->second;
 }
 template <class B> Sint32 displayedPosX(const BuildingGuiStateMap& m, const B& b)
-{ auto* s = pendingStateOf(m, b); return (s && s->pendingPosX) ? *s->pendingPosX : b.posX; }
+{ auto* s = pendingStateOf(m, b); return (s && s->pendingPosX) ? *s->pendingPosX : authoritativeBuilding(b).posX; }
 template <class B> Sint32 displayedPosY(const BuildingGuiStateMap& m, const B& b)
-{ auto* s = pendingStateOf(m, b); return (s && s->pendingPosY) ? *s->pendingPosY : b.posY; }
+{ auto* s = pendingStateOf(m, b); return (s && s->pendingPosY) ? *s->pendingPosY : authoritativeBuilding(b).posY; }
 template <class B> Sint32 displayedMaxUnitWorking(const BuildingGuiStateMap& m, const B& b)
-{ auto* s = pendingStateOf(m, b); return (s && s->pendingMaxUnitWorking) ? *s->pendingMaxUnitWorking : b.maxUnitWorking; }
+{ auto* s = pendingStateOf(m, b); return (s && s->pendingMaxUnitWorking) ? *s->pendingMaxUnitWorking : authoritativeBuilding(b).maxUnitWorking; }
 template <class B> Sint32 displayedUnitStayRange(const BuildingGuiStateMap& m, const B& b)
-{ auto* s = pendingStateOf(m, b); return (s && s->pendingUnitStayRange) ? *s->pendingUnitStayRange : b.unitStayRange; }
+{ auto* s = pendingStateOf(m, b); return (s && s->pendingUnitStayRange) ? *s->pendingUnitStayRange : authoritativeBuilding(b).unitStayRange; }
 template <class B> Sint32 displayedPriority(const BuildingGuiStateMap& m, const B& b)
-{ auto* s = pendingStateOf(m, b); return (s && s->pendingPriority) ? *s->pendingPriority : b.priority; }
+{ auto* s = pendingStateOf(m, b); return (s && s->pendingPriority) ? *s->pendingPriority : authoritativeBuilding(b).priority; }
 template <class B> bool displayedClearingResource(const BuildingGuiStateMap& m, const B& b, int i)
-{ auto* s = pendingStateOf(m, b); return (s && s->pendingClearingResources) ? (*s->pendingClearingResources)[i] : b.clearingMaterials[i]; }
+{ auto* s = pendingStateOf(m, b); return (s && s->pendingClearingResources) ? (*s->pendingClearingResources)[i] : authoritativeBuilding(b).clearingMaterials[i]; }
 template <class B> Sint32 displayedMinLevelToFlag(const BuildingGuiStateMap& m, const B& b)
-{ auto* s = pendingStateOf(m, b); return (s && s->pendingMinLevelToFlag) ? *s->pendingMinLevelToFlag : b.minLevelToFlag; }
+{ auto* s = pendingStateOf(m, b); return (s && s->pendingMinLevelToFlag) ? *s->pendingMinLevelToFlag : authoritativeBuilding(b).minLevelToFlag; }
 template <class B> Sint32 displayedMinWorkerLevelToFlag(const BuildingGuiStateMap& m,const B& b)
-{ auto* s=pendingStateOf(m,b); return (s && s->pendingMinWorkerLevelToFlag) ? *s->pendingMinWorkerLevelToFlag : b.minWorkerLevelToFlag; }
+{ auto* s=pendingStateOf(m,b); return (s && s->pendingMinWorkerLevelToFlag) ? *s->pendingMinWorkerLevelToFlag : authoritativeBuilding(b).minWorkerLevelToFlag; }
 template <class B> bool displayedExplorersRequireBombing(const BuildingGuiStateMap& m,const B& b)
-{ auto* s=pendingStateOf(m,b); return (s && s->pendingExplorersRequireBombing) ? *s->pendingExplorersRequireBombing : b.explorersRequireBombing; }
+{ auto* s=pendingStateOf(m,b); return (s && s->pendingExplorersRequireBombing) ? *s->pendingExplorersRequireBombing : authoritativeBuilding(b).explorersRequireBombing; }
 template <class B> std::array<Sint32, NB_UNIT_TYPE> displayedRatio(const BuildingGuiStateMap& m, const B& b)
 {
 	auto* s = pendingStateOf(m, b);
@@ -111,7 +113,7 @@ template <class B> std::array<Sint32, NB_UNIT_TYPE> displayedRatio(const Buildin
 		return *s->pendingRatio;
 	std::array<Sint32, NB_UNIT_TYPE> r;
 	for (int i = 0; i < NB_UNIT_TYPE; i++)
-		r[i] = b.ratio[i];
+		r[i] = authoritativeBuilding(b).ratio[i];
 	return r;
 }
 

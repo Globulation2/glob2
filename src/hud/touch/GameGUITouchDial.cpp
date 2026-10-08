@@ -474,7 +474,7 @@ void GameGUITouch::drawDial()
 						InGameTouchTheme::dialFill());
 		if (row.kind == 6)
 			TouchDial::fill(g, ring.outer - 5, ring.outer, region.from,
-							TouchDial::angleOf(int(b->unitsWorking), region.sliderFrom, region.sliderTo,
+							TouchDial::angleOf(int(b->state().working.count), region.sliderFrom, region.sliderTo,
 											   region.maximum),
 							InGameTouchTheme::ink());
 		sliderCaptions.push_back({captionRect(centre, row.label, .72), row.label});

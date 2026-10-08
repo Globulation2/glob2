@@ -47,7 +47,7 @@ std::string experimentName(MapEdit &editor, const std::string &key)
 	for (const auto &definition : registeredExperimentDefinitions())
 		if (definition.key == key)
 			return definition.label;
-	for (const auto &definition : editor.game.map.resourceRegistry().experiments())
+	for (const auto &definition : editor.view.scene->map.resourceRegistry().experiments())
 		if (definition.key == key)
 			return definition.label;
 	return key;
@@ -70,7 +70,7 @@ std::string validOnLine(MapEdit &editor, const BrushEntry &entry)
 		++shown;
 		if (!names.empty())
 			names += ", ";
-		const auto &presentation = editor.game.map.terrainPresentation(type);
+		const auto &presentation = editor.view.scene->map.terrainPresentation(type);
 		names += unsigned(type) < TERRAIN_COUNT ? translatedOr(presentation.label, presentation.label)
 												: std::string(presentation.label);
 	}
@@ -114,14 +114,14 @@ Element EditorDock::card(const Presentation &p, const BrushEntry &entry)
 			"dock/picture/" + entry.id, {tile, tile},
 			[this, kind, key, locked](fe::Canvas &canvas, fe::Rect r, const fe::Frame &)
 			{
-				const auto teamColor = editor.game.teams[editor.team] ? editor.game.teams[editor.team]->color
-																	   : GAGCore::Color(255, 255, 255);
+				const auto teamColor = editor.view.scene && editor.team < editor.view.scene->entities.teamCount
+                    ? presentationColor(editor.view.scene->entities.teams[editor.team].color) : GAGCore::Color(255, 255, 255);
 				switch (kind)
 				{
 				case BrushSwatch::Kind::Building:
 				{
-					const int id = editor.buildingSelectionType(key);
-					const auto *type = id >= 0 ? editor.game.buildingsTypes.get(id) : nullptr;
+					const int id = editor.displayedBuildingSelectionType(key);
+					const auto *type = id >= 0 ? &(*editor.view.scene->buildingTypes)[id] : nullptr;
 					if (!type)
 						return;
 					auto *sprite = type->miniSpriteImage >= 0 ? type->miniSpritePtr : type->gameSpritePtr;
@@ -289,7 +289,7 @@ Element EditorDock::areaControls(const Presentation &p)
 								   invalidate();
 							   },
 							   number);
-	std::string name = editor.game.map.getAreaName(area);
+	std::string name = editor.view.scene ? editor.view.scene->map.getAreaName(area) : std::string{};
 	if (name.empty())
 		name = fe::tr("[Unnamed Area]");
 	fe::ButtonOptions rename;

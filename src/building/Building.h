@@ -610,10 +610,6 @@ public:
 	// slot: 0 = unknown (not yet computed), 1 = true (has at least one), 2 = false (none).
 	int anyResourceToClear[SWIM_VARIANT_COUNT];
 
-	// shooting eye-candy data, not net synchronised
-	Uint32 lastShootStep;
-	Sint32 lastShootSpeedX;
-	Sint32 lastShootSpeedY;
 
 
 	enum UnitCantWorkReason
@@ -629,7 +625,6 @@ public:
 		UnitCantWorkReasonSize,
 	};
 
-	Uint32 unitsFailingRequirements[UnitCantWorkReasonSize];
 	/// Display only. While the local player has this building selected, the
 	/// units behind each tally are kept by gid so the map view can mark them.
 	/// Never read by the simulation, not saved, not in the checksum.
@@ -671,7 +666,6 @@ private:
 
 	// swarm building parameters (private):
 	Sint32 totalRatio;
-	Sint32 percentUsed[NB_UNIT_TYPE];
 
 	// turrets building parameters (private):
 	Uint32 shootingStep;

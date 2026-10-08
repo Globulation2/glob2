@@ -7,7 +7,8 @@
 #include "DynamicClouds.h"
 #include <SDL3/SDL.h>
 #include "render/MapRenderState.h"
-class Game;
+class GameGUI;
+struct PresentationFrame;
 
 // Presentation-only state. Never serialized or sent to other players.
 class TorusView
@@ -36,7 +37,7 @@ class TorusView
     // False requests the ordinary 2D renderer on this same frame. The ring
     // shows its focus at `flatZoom`, the 2D camera's zoom, so both views share
     // one zoom and one level of detail.
-    bool draw(Game &game, int team, unsigned options, int &viewportX, int &viewportY, int width,
+    bool draw(const PresentationFrame& frame,GameGUI* gui, int team, unsigned options, int &viewportX, int &viewportY, int width,
               int height, float flatZoom = 1, float fractionX = 0, float fractionY = 0);
 
   private:

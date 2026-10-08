@@ -231,12 +231,12 @@ class SoftwareRenderBenchmark
 				if (getenv("PROFILE_PRESERVE_FRAME"))
 					gfx->beginFrame(GraphicContext::FrameMode::PreserveContent);
 				if (std::string(mode) == "gui")
-					gui.drawAll(0);
+					glob2test::drawGUI(gui,0);
 				else
 				{
 					gfx->beginFrame(GraphicContext::FrameMode::FullRedraw);
 					gfx->setClipRect();
-					gui.game.drawMap(0, 0, gfx->getW() - 160, gfx->getH(), 0, 0, gui.viewportX,
+					glob2test::drawMap(gui.game,0, 0, gfx->getW() - 160, gfx->getH(), 0, 0, gui.viewportX,
 									 gui.viewportY, 0, gui.view, Game::DRAW_AREA);
 				}
 				Uint64 b = SDL_GetPerformanceCounter();

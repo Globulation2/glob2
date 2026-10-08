@@ -3,12 +3,13 @@
 
 #pragma once
 
-#include <vector>
+#include <memory>
+#include <span>
+#include <limits>
 #include "Types.h"
 #include <GraphicContext.h>
 
 namespace SimulationSnapshot { struct Handle; }
-class Game;
 
 ///This class is used to compute overlay areas, a tool to visualize concentrations
 ///of, for example, starving units. Note that these may be computed in another
@@ -31,8 +32,9 @@ public:
 	~OverlayArea();
 	
 	///Compute the overlay area
-	void compute(Game& game, OverlayType type, int localteam);
 	void compute(const SimulationSnapshot::Handle& world, OverlayType type, int localteam, Uint16 fertilityMaximum);
+    static size_t chunks(const SimulationSnapshot::Handle& world,OverlayType type);
+    bool computeChunk(const SimulationSnapshot::Handle& world,OverlayType type,int localteam,Uint16 fertilityMaximum,size_t chunk);
 
 	///Gets the value of the overlay for a given position
 	Uint32 getValue(int x, int y) const;
@@ -64,7 +66,8 @@ protected:
 	OverlayType lasttype;
 	int height;
 	int width;
-	std::vector<Uint32> overlay;
+	std::unique_ptr<Uint32[]> overlay;
+    size_t activeChunk=std::numeric_limits<size_t>::max(), buildingCursor=0, kernelCursor=0;
 	Uint32 overlaymax;
 };
 

@@ -43,7 +43,7 @@ struct DialogFixture
 {
 	glob2test::HeadlessGlobals globals{{.loadStrings = true}};
 	glob2test::HeadlessGame world;
-	Scene scene;
+	PresentationFrame scene;
 	CountingText text;
 	InGameAITelemetryScreen dialog{&world.gui};
 	DialogFixture(int width = 1280, int height = 800, bool touch = false)
@@ -283,11 +283,14 @@ TEST_CASE("telemetry full-game timings and desktop phone captures [display:1280x
 		for (bool stress : {false, true})
 		{
 			std::vector<double> opening, refresh, scrolling, searching;
-			Scene presentation;
+			PresentationFrame presentation;
 			auto drawScene = [&]
 			{
-				world.gui.setPublishedScene(nullptr);
-				world.gui.drawAll(0);
+                auto request = world.gui.sceneRequest();
+                request.includeTelemetry = true;
+                SceneExtractor().prepare(world.game.captureReadBoundary({}, true, SceneExtractor::requirements(request)), request, presentation);
+                world.gui.setPublishedScene(&presentation);
+				glob2test::drawGUI(world.gui,0);
 				REQUIRE_FALSE(world.gui.drawnScene().panels.aiTelemetry.empty());
 				REQUIRE(world.gui.drawnScene().panels.aiTelemetry[0].values.size() > 600);
 				if (stress)
