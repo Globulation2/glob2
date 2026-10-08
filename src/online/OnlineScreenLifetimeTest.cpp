@@ -16,6 +16,9 @@
 #include "OnlineHubScreen.h"
 #include "OnlineMapsScreen.h"
 #include "OnlineGeneratorsScreen.h"
+#include "GeneratorControls.h"
+#include "OnlineHandoff.h"
+#include "SimVersion.h"
 #include "OnlineProfileScreen.h"
 #include "OnlineServices.h"
 #include "PlatformClient.h"
@@ -112,6 +115,50 @@ void closeInFlight(ScriptedPlatform &platform, const std::string &name,
 
 TEST_SUITE("OnlineScreenLifetime")
 {
+	TEST_CASE("generator examples with omitted controls use engine defaults when selecting a room")
+	{
+		glob2test::HeadlessGlobals globals({.loadStrings = true});
+		ScriptedPlatform platform;
+		GAGGUI::ScreenStack stack(*globalContainer->gfx);
+		OnlineGeneratorsScreen screen(stack);
+		const auto previous = Online::takePendingRoomMap();
+		screen.detail = Json{
+			{"generator", {{"id", "11111111-1111-4111-8111-111111111111"}, {"name", "Example"}}},
+			{"versions",
+			 Json::array(
+				 {Json{{"id", "22222222-2222-4222-8222-222222222222"},
+					   {"hash", std::string(64, 'a')},
+					   {"packageHash", std::string(64, 'a')},
+					   {"example",
+						{{"seed", 19},
+						 {"params", {{"workers", 3}}},
+						 {"candidates", 1},
+						 {"startingUnitLevel", 0}}},
+					   {"metadata",
+						{{"id", "test:generator"},
+						 {"revision", 1},
+						 {"editorOnly", false},
+						 {"controls", Json::array({{{"id", "layout"}, {"default", 2}}})}}},
+					   {"validations",
+						Json::array({{{"valid", true},
+									  {"suite", 1},
+									  {"simVersion", Online::SimVersion::local().key()}}})}}})}};
+		screen.selectRelease(0);
+		for (const auto &control : sharedGeneratorControls())
+			CHECK(screen.settings["params"][control.id] ==
+				  (control.id == "workers" ? 3 : control.defaultValue));
+		CHECK(screen.settings["params"]["layout"] == 2);
+		CHECK_NOTHROW(screen.useInRoom());
+		const auto selected = Online::takePendingRoomMap();
+		REQUIRE(selected);
+		REQUIRE(selected->scriptDescriptor);
+		CHECK(Json::parse(*selected->scriptDescriptor).at("params") ==
+			  screen.settings.at("params"));
+		CHECK(selected->teamCount == screen.settings.at("params").at("teams").get<int>());
+		if (previous)
+			Online::useMapInRoom(*previous);
+	}
+
 	TEST_CASE("generator installation clears pending state when restoring the library throws")
 	{
 		glob2test::HeadlessGlobals globals({.loadStrings = true});

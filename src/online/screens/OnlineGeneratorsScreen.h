@@ -24,6 +24,7 @@ class OnlineGeneratorsScreen : public Glob2UI::Screen
 	bool loading = false, downloading = false, mine = false, compatibleOnly = false;
 	void fetch(bool more = false);
 	void select(const std::string &id);
+	void selectRelease(int index);
 	void install();
 	void failInstallation(const std::string &message);
 	void useInRoom();

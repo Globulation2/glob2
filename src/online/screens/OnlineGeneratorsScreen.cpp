@@ -6,6 +6,7 @@
 #include "Sha256.h"
 #include "PlatformApi.h"
 #include "SimVersion.h"
+#include "GeneratorControls.h"
 #include "ui/OnlineUI.h"
 #include <ScreenStack.h>
 using namespace Glob2UI;
@@ -102,8 +103,7 @@ void OnlineGeneratorsScreen::select(const std::string &id)
 					   if (!r.ok)
 						   throw std::runtime_error(r.error.message);
 					   detail = r.result;
-					   version = 0;
-					   settings = detail.at("versions").at(0).at("example");
+					   selectRelease(0);
 				   }
 				   catch (const std::exception &e)
 				   {
@@ -113,6 +113,23 @@ void OnlineGeneratorsScreen::select(const std::string &id)
 				   invalidate();
 			   });
 	invalidate();
+}
+void OnlineGeneratorsScreen::selectRelease(int index)
+{
+	version = index;
+	const auto &release = detail.at("versions").at(index);
+	settings = release.at("example");
+	auto &params = settings.at("params");
+	for (const auto &control : sharedGeneratorControls())
+		if (!params.contains(control.id))
+			params[control.id] = control.defaultValue;
+	for (const auto &control : release.at("metadata").at("controls"))
+	{
+		const std::string id = control.at("id");
+		if (!params.contains(id))
+			params[id] = control.at("default");
+	}
+	replacing.clear();
 }
 void OnlineGeneratorsScreen::install()
 {
@@ -305,9 +322,7 @@ Element OnlineGeneratorsScreen::build(const Presentation &p)
 							  {
 								  if (downloading || persistence)
 									  return;
-								  version = i;
-								  settings = detail.at("versions").at(i).at("example");
-								  replacing.clear();
+								  selectRelease(i);
 								  invalidate();
 							  }));
 		rows.push_back(paragraph(metadata.value("editorOnly", false)
@@ -317,25 +332,21 @@ Element OnlineGeneratorsScreen::build(const Presentation &p)
 			paragraph(compatible(release)
 						  ? "Technical checks passed for this engine. Balance is not certified."
 						  : "This release has no passing checks for this engine."));
-		for (const auto &key : {"width", "height", "teams", "workers"})
+		for (const auto &shared : sharedGeneratorControls())
 		{
+			const auto control =
+				metadata.value("editorOnly", false) ? editorSizeControl(shared) : shared;
+			const auto domain = control.values();
 			std::vector<std::string> values;
-			std::vector<int> domain;
-			const int low = (std::string(key) == "width" || std::string(key) == "height") ? 6 : 1,
-					  high = (std::string(key) == "width" || std::string(key) == "height") ? 9
-							 : std::string(key) == "teams"                                 ? 12
-																						   : 8;
-			int chosen = 0;
-			for (int n = low; n <= high; ++n)
-			{
-				if (n == settings["params"].value(key, low))
-					chosen = int(values.size());
-				domain.push_back(n);
-				values.push_back(std::to_string(n));
-			}
-			rows.push_back(field(key, choice(std::string("generator/") + key, values, chosen,
-											 [this, key = std::string(key), domain](int i)
-											 { settings["params"][key] = domain.at(i); })));
+			for (const int value : domain)
+				values.push_back(std::to_string(control.displayValue(value)));
+			const int chosen = control.indexOf(settings.at("params").at(control.id).get<int>());
+			rows.push_back(field(control.label, choice("generator/" + control.id, values, chosen,
+													   [this, id = control.id, domain](int i)
+													   {
+														   settings["params"][id] = domain.at(i);
+														   invalidate();
+													   })));
 		}
 		for (const auto &c : metadata.at("controls"))
 		{
@@ -361,10 +372,12 @@ Element OnlineGeneratorsScreen::build(const Presentation &p)
 				labels.push_back(kind == "choice" ? c.at("choices").at(n).get<std::string>()
 												  : std::to_string(shown));
 			}
-			rows.push_back(
-				field(c.at("label"),
-					  choice("generator/control/" + id, labels, chosen, [this, id, domain](int i)
-							 { settings["params"][id] = domain.at(i); })));
+			rows.push_back(field(c.at("label"), choice("generator/control/" + id, labels, chosen,
+													   [this, id, domain](int i)
+													   {
+														   settings["params"][id] = domain.at(i);
+														   invalidate();
+													   })));
 		}
 		rows.push_back(
 			paragraph("Seed: " + std::to_string(settings.at("seed").get<std::uint32_t>())));
