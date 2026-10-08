@@ -271,7 +271,7 @@ export async function generatorLibraryRoutes(app: FastifyInstance, identity: Ide
   app.get<{ Params: { id: string } }>('/api/v1/generator-uploads/:id', async (r) =>
     uploadView(r.params.id, await signed(r)),
   );
-  async function publish(r: FastifyRequest, aiId?: string) {
+  async function publish(r: FastifyRequest, generatorId?: string) {
     const a = await signed(r),
       input = body(PublishGeneratorRequest, r.body);
     if (a.kind === 'guest' && input.visibility === 'public')
@@ -296,7 +296,7 @@ export async function generatorLibraryRoutes(app: FastifyInstance, identity: Ide
       if (!u || u.expires_at < new Date())
         throw apiError('not_found', 'Upload expired; validate again.');
       if (u.published_generator_id) {
-        if (aiId && aiId !== u.published_generator_id)
+        if (generatorId && generatorId !== u.published_generator_id)
           throw apiError('conflict', 'Upload already published elsewhere.');
         return u.published_generator_id;
       }
@@ -318,7 +318,7 @@ export async function generatorLibraryRoutes(app: FastifyInstance, identity: Ide
         v.suite !== GENERATOR_VALIDATION_SUITE
       )
         throw apiError('conflict', 'All compatibility checks must pass before publishing.');
-      let id = aiId;
+      let id = generatorId;
       if (id) {
         const row = await trx
           .selectFrom('generators')
@@ -365,7 +365,7 @@ export async function generatorLibraryRoutes(app: FastifyInstance, identity: Ide
             .returning('id')
             .executeTakeFirstOrThrow()
         ).id;
-      if (!aiId) {
+      if (!generatorId) {
         const claim = await trx
           .insertInto('generator_ids')
           .values({ manifest_id: v.report.metadata.id, generator_id: id })
