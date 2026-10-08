@@ -1,5 +1,11 @@
 import { useState } from 'react';
-import type { AdminReport, AdminReportList, AdminContent, AdminContentList } from '@glob2/protocol';
+import type {
+  AdminReport,
+  AdminReportList,
+  AdminContent,
+  AdminContentList,
+  AdminAuditList,
+} from '@glob2/protocol';
 import { request } from '../api.ts';
 import { Loaded, Empty } from '../components/common.tsx';
 import { useLoad } from '../state.tsx';
@@ -234,6 +240,62 @@ export function Content() {
             ) : (
               page.items.map((c) => (
                 <ContentRow key={c.library + c.id} content={c} reload={load.reload} />
+              ))
+            )}
+            <PageControls nextCursor={page.nextCursor} />
+          </>
+        )}
+      </Loaded>
+    </section>
+  );
+}
+export function Audit() {
+  const { values, set } = useAdminFilters(),
+    [draft, setDraft] = useState(values);
+  const load = useLoad(
+    (signal) => request<AdminAuditList>('GET', '/api/v1/admin/audit', { query: values, signal }),
+    [JSON.stringify(values)],
+  );
+  return (
+    <section>
+      <h2>Audit history</h2>
+      <form
+        className="toolbar"
+        onSubmit={(e) => {
+          e.preventDefault();
+          set(draft);
+        }}
+      >
+        {['actor', 'action', 'target', 'from', 'to'].map((key) => (
+          <label key={key}>
+            {key}
+            <input
+              type={key === 'from' || key === 'to' ? 'date' : 'text'}
+              value={draft[key] ?? ''}
+              onChange={(e) => setDraft({ ...draft, [key]: e.target.value })}
+            />
+          </label>
+        ))}
+        <button>Filter</button>
+      </form>
+      <Loaded load={load}>
+        {(page) => (
+          <>
+            {page.items.length === 0 ? (
+              <Empty>No actions found.</Empty>
+            ) : (
+              page.items.map((row) => (
+                <article key={row.id} className="card">
+                  <p>
+                    {dateTime(row.createdAt)} · {row.actorName} · {row.action}
+                  </p>
+                  <p>
+                    {row.targetType}: {row.targetId}
+                  </p>
+                  <pre style={{ whiteSpace: 'pre-wrap', overflowWrap: 'anywhere' }}>
+                    {JSON.stringify(row.details, null, 2)}
+                  </pre>
+                </article>
               ))
             )}
             <PageControls nextCursor={page.nextCursor} />

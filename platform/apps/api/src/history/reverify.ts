@@ -22,7 +22,7 @@ export async function reverify(
   db: Kysely<Database>,
   actor: Account | undefined,
   matchId: string,
-  options: { force?: boolean } = {},
+  options: { force?: boolean; reason?: string } = {},
 ): Promise<{ jobId: string; previous: string }> {
   if (!UUID.test(matchId)) throw apiError('not_found', REFUSALS.not_found);
   const outcome = await reverifyMatch(db, matchId, options);
@@ -46,6 +46,7 @@ export async function reverify(
         job: outcome.jobId,
         previous: outcome.previous,
         force: options.force ?? false,
+        ...(options.reason ? { reason: options.reason } : {}),
       }),
     })
     .execute();

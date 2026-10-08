@@ -71,6 +71,63 @@ export const AdminAuditEntry = Open({
 export type AdminAuditEntry = Static<typeof AdminAuditEntry>;
 export const AdminAuditList = Page(AdminAuditEntry);
 export type AdminAuditList = Static<typeof AdminAuditList>;
+export const AdminOperation = Open({
+  id: Type.String(),
+  product: Type.String(),
+  accountId: Type.Union([Uuid, Type.Null()]),
+  status: Type.String(),
+  createdAt: Timestamp,
+  reserved: Type.Integer({ minimum: 0 }),
+  kind: Type.String(),
+  error: Type.Union([Type.String(), Type.Null()]),
+});
+export type AdminOperation = Static<typeof AdminOperation>;
+export const AdminOperations = Open({
+  items: Type.Array(AdminOperation),
+  agents: Type.Array(Open({ id: Type.String(), lastSeenAt: Timestamp })),
+  queueAgeSeconds: Type.Union([Type.Number({ minimum: 0 }), Type.Null()]),
+  reservedCredits: Type.Array(
+    Open({ product: Type.String(), reserved: Type.Number({ minimum: 0 }) }),
+  ),
+  workers: Type.Array(Open({ name: Type.String(), holder: Type.String(), renewedAt: Timestamp })),
+  nextCursor: Type.Optional(Type.String()),
+});
+export type AdminOperations = Static<typeof AdminOperations>;
+export const AdminOperationDetail = Open({
+  id: Type.String(),
+  product: Type.String(),
+  status: Type.String(),
+  createdAt: Timestamp,
+  completedAt: Type.Union([Timestamp, Type.Null()]),
+  reserved: Type.Number(),
+  charged: Type.Union([Type.Number(), Type.Null()]),
+  usage: Type.Union([
+    Open({ input: Type.Number(), cached: Type.Number(), output: Type.Number() }),
+    Type.Null(),
+  ]),
+  creditConsequence: Type.String(),
+  attempts: Type.Array(
+    Open({
+      model: Type.String(),
+      stage: Type.String(),
+      status: Type.String(),
+      usage: Type.Union([
+        Open({ input: Type.Number(), cached: Type.Number(), output: Type.Number() }),
+        Type.Null(),
+      ]),
+      createdAt: Timestamp,
+    }),
+  ),
+});
+export type AdminOperationDetail = Static<typeof AdminOperationDetail>;
+export const AdminUsageReconcile = Strict({
+  evidence: Type.String({ minLength: 1, maxLength: 2000 }),
+  usage: Strict({
+    input: Type.Integer({ minimum: 0 }),
+    cachedInput: Type.Integer({ minimum: 0 }),
+    output: Type.Integer({ minimum: 0 }),
+  }),
+});
 export const adminConsoleSchemas = {
   AdminLibrary,
   AdminContent,
@@ -81,4 +138,8 @@ export const adminConsoleSchemas = {
   AdminModerateContent,
   AdminAuditEntry,
   AdminAuditList,
+  AdminOperation,
+  AdminOperations,
+  AdminOperationDetail,
+  AdminUsageReconcile,
 };

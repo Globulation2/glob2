@@ -736,6 +736,7 @@ export class TerrainStudio {
     result?: { text: string; brief?: string } | Delivery,
     error?: string,
     cancelling = false,
+    recovery?: { actor: string; reason: string },
   ) {
     return this.db.transaction().execute(async (db) => {
       await this.lockWallet(db, row.account_id);
@@ -743,6 +744,8 @@ export class TerrainStudio {
       const locked = await this.request(row.id, db);
       if (!locked) throw new HiveError('not_found', 'Request unavailable.');
       if (['ready', 'failed'].includes(locked.status)) return;
+      if (recovery && locked.status !== 'uncertain')
+        throw new HiveError('conflict', 'Only uncertain requests can be recovered.');
       if (cancelling && ['dispatched', 'uncertain'].includes(locked.status))
         throw new HiveError('conflict', 'Wait for the provider outcome before cancelling.');
       if (locked.lease !== row.lease) throw new HiveError('conflict', 'Worker lease expired.');
@@ -818,6 +821,10 @@ export class TerrainStudio {
           db,
         );
       }
+      if (recovery)
+        await sql`INSERT INTO admin_audit_log(actor_account_id,action,target_type,target_id,details) VALUES(${recovery.actor},'terrain-studio.fail','terrain-studio-request',${row.id},${JSON.stringify({ reason: recovery.reason, from: { status: locked.status, reserved: row.kind === 'generate' ? 1 : 0 }, to: { status: 'failed', reserved: 0, charged: 0 } })}::jsonb)`.execute(
+          db,
+        );
       await sql`UPDATE terrain_studio_requests SET status=${result ? 'ready' : 'failed'},charged=${!!charge},error=${error ?? null},completed_at=now(),lease_until=NULL WHERE id=${row.id}`.execute(
         db,
       );

@@ -303,6 +303,12 @@ export async function studioRoutes(app: FastifyInstance, rooms: RoomService) {
     guarded(async () => {
       const account = await accountOf(request);
       if (account.role !== 'admin') throw apiError('forbidden', 'Administrator access required.');
+      const reason = (request.body as { reason?: unknown } | undefined)?.reason;
+      if (
+        reason !== undefined &&
+        (typeof reason !== 'string' || !reason.trim() || reason.length > 2000)
+      )
+        throw apiError('bad_request', 'Give a bounded recovery reason.');
       const id = threadOf(request),
         row = await studio.request(id);
       if (!row || row.status !== 'uncertain')
@@ -311,9 +317,10 @@ export async function studioRoutes(app: FastifyInstance, rooms: RoomService) {
         row,
         undefined,
         'Generation could not be recovered. Your credit was returned.',
-      );
-      await sql`INSERT INTO admin_audit_log(actor_account_id,action,target_type,target_id,details) VALUES(${account.id},'studio.fail','studio-request',${id},'{}'::jsonb)`.execute(
-        app.services.db,
+        {
+          actor: account.id,
+          reason: typeof reason === 'string' ? reason : 'Operator reconciliation',
+        },
       );
       return { reconciled: true };
     }),

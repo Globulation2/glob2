@@ -98,7 +98,12 @@ export class AdminService {
       .execute();
   }
 
-  async setRole(actor: Account | undefined, target: Account, role: Role): Promise<Account> {
+  async setRole(
+    actor: Account | undefined,
+    target: Account,
+    role: Role,
+    reason?: string,
+  ): Promise<Account> {
     if (actor && actor.id === target.id)
       throw apiError('forbidden', 'You cannot change your own role.');
     if (role !== 'user' && target.kind !== 'registered') {
@@ -113,7 +118,11 @@ export class AdminService {
       .where('id', '=', target.id)
       .returningAll()
       .executeTakeFirstOrThrow();
-    await this.audit(actor, 'account.role', target, { from: target.role, to: role });
+    await this.audit(actor, 'account.role', target, {
+      from: target.role,
+      to: role,
+      ...(reason ? { reason } : {}),
+    });
     return updated;
   }
 

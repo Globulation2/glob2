@@ -190,7 +190,9 @@ pages carry an OpenGraph image for link previews.
 | `/maps`, `/maps/mine`, `/maps/new`, `/maps/{id}` | Map catalog, my maps, upload, map page (preview, versions, like, report, owner edits) |
 | `/account` | The signed-in account: sign-in methods, data export, Hive Mind credit link, delete |
 | `/admin/reports`, `/admin/content` | Moderators: reports across maps, AIs, buildings, sets, skins and music; hide/disable, restore, resolve and dismiss |
-| `/admin/accounts`, `/admin/matches` | Account search and moderation; administrators may ban accounts |
+| `/admin/accounts`, `/admin/matches` | Account search and moderation; administrators also change roles/delete accounts and request verification with separately confirmed forced verification |
+| `/admin/operations`, `/admin/finances` | Administrators: uncertain requests, credit reservations, workers/jobs and recovery; confirmed cash and estimated provider costs |
+| `/admin/audit` | Searchable action history; administrators see all actions, moderators see moderation only |
 
 The existing `/admin/music`, `/admin/skins` and `/sets/reports` routes remain
 available. Reports and content can be filtered by library; accounts, matches,
@@ -200,7 +202,7 @@ reason, status and recorded resolution; content restoration does not require an
 open report. Mutations are checked on the server and recorded with reasons.
 Resolution holds a report row lock, including through the legacy endpoints.
 
-Read endpoints under `/api/v1/admin` include `/reports`, `/content`.
+Read endpoints under `/api/v1/admin` include `/reports`, `/content`, `/audit`, `/operations` and `/operations/:product/:id`.
 See [hosting](../hosting/README.md#admin-reporting) for configuration and recovery.
 
 Map detail previews show one complete map period at its native aspect ratio.

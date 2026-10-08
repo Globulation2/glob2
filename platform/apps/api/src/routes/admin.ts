@@ -125,7 +125,12 @@ export async function adminRoutes(app: FastifyInstance, identity: Identity): Pro
     async (request): Promise<AdminAccount> => {
       const { account: actor } = await requireRole(identity, request, 'admin');
       const input = body(AdminRoleRequest, request.body);
-      const updated = await identity.admin.setRole(actor, await target(request), input.role);
+      const updated = await identity.admin.setRole(
+        actor,
+        await target(request),
+        input.role,
+        input.reason,
+      );
       return identity.admin.view(updated);
     },
   );
