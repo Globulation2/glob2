@@ -116,8 +116,38 @@ export class StripePayments implements Payments {
         }
       }
     }
+    const latest =
+      payment &&
+      typeof payment !== 'string' &&
+      payment.latest_charge &&
+      typeof payment.latest_charge !== 'string'
+        ? payment.latest_charge
+        : null;
+    let refunds: { id: string; amount: number; at: Date }[] | undefined;
+    if (latest?.amount_refunded) {
+      const page = await this.stripe.refunds.list({ charge: latest.id, limit: 100 });
+      if (page.has_more) throw new Error('Refund history requires manual reconciliation.');
+      refunds = page.data
+        .filter((r) => r.status === 'succeeded')
+        .map((r) => ({ id: r.id, amount: r.amount, at: new Date(r.created * 1000) }));
+    }
     return {
       purchaseId: session.metadata.purchaseId,
+      monetary: {
+        paid: session.payment_status === 'paid' ? (session.amount_total ?? 0) : 0,
+        refunded:
+          payment &&
+          typeof payment !== 'string' &&
+          payment.latest_charge &&
+          typeof payment.latest_charge !== 'string'
+            ? payment.latest_charge.amount_refunded
+            : 0,
+        disputed: state === 'disputed',
+        currency: session.currency ?? '',
+        live: session.livemode,
+        createdAt: latest?.created ?? session.created,
+        refunds,
+      },
       accountId: session.metadata.accountId,
       sessionId: session.id,
       priceId: item.price.id,

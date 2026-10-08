@@ -41,6 +41,7 @@ import { adminRoutes } from './routes/admin.ts';
 import { adminConsoleRoutes } from './admin/routes.ts';
 import { operationsRoutes } from './admin/operations.ts';
 import { analyticsRoutes } from './admin/analytics.ts';
+import { financeRoutes } from './admin/finances.ts';
 import { authRoutes } from './routes/auth.ts';
 import { signinRoutes } from './routes/signin.ts';
 import { internalRoutes } from './routes/internal.ts';
@@ -281,6 +282,7 @@ export async function buildApp(
   await adminConsoleRoutes(app, identity);
   await operationsRoutes(app, identity);
   await analyticsRoutes(app, identity);
+  await financeRoutes(app, identity);
   await pageAssetRoutes(app);
   await signinRoutes(app, identity);
   await playRoutes(app, identity, rooms);

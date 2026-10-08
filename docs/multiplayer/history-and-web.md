@@ -141,7 +141,7 @@ pages carry an OpenGraph image for link previews.
 | `/admin`, `/admin/overview` | Administrators: current activity, trends, coverage and CSV export; default landing page |
 | `/admin/reports`, `/admin/content` | Moderators: reports across maps, AIs, buildings, sets, skins and music; hide/disable, restore, resolve and dismiss |
 | `/admin/accounts`, `/admin/matches` | Account search and moderation; administrators also change roles/delete accounts and request verification with separately confirmed forced verification |
-| `/admin/operations` | Administrators: uncertain requests, credit reservations, workers/jobs and recovery |
+| `/admin/operations`, `/admin/finances` | Administrators: uncertain requests, credit reservations, workers/jobs and recovery; confirmed cash and estimated provider costs |
 | `/admin/audit` | Searchable action history; administrators see all actions, moderators see moderation only |
 
 The existing `/admin/music`, `/admin/skins` and `/sets/reports` routes remain
@@ -152,8 +152,14 @@ reason, status and recorded resolution; content restoration does not require an
 open report. Mutations are checked on the server and recorded with reasons.
 Resolution holds a report row lock, including through the legacy endpoints.
 
-Read endpoints under `/api/v1/admin` include `/reports`, `/content`, `/audit`, `/operations` and `/operations/:product/:id`, `/analytics`.
-See [hosting](../hosting/README.md#admin-reporting) for configuration and recovery.
+Read endpoints under `/api/v1/admin` include `/reports`, `/content`, `/audit`,
+`/operations`, `/operations/:product/:id`, `/analytics` and `/finances`. Analytics,
+finances and operations are admin-only. Analytics and finances accept `days=7`,
+`30` (default), or `90`; finances also accepts `mode=live` (default), `test`, or
+`unclassified`. Results are cached for 60 seconds and display their generation
+time. No private prompts/source are returned by operations lists or details.
+See [hosting](../hosting/README.md#admin-reporting) for collection, coverage,
+recovery and rate configuration.
 
 Map detail previews show one complete map period at its native aspect ratio.
 Drag with a mouse or touch, or focus the preview and use arrow keys, to pan

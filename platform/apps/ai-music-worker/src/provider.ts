@@ -1,10 +1,17 @@
+import { recordAttemptUsage } from '@glob2/billing';
 import { randomUUID } from 'node:crypto';
 import { isDeepStrictEqual } from 'node:util';
 import { sql } from 'kysely';
 import { type MusicStudio, emitState, type RequestRow } from '@glob2/music-studio';
 export class ProviderUncertain extends Error {}
 export class ProviderBudget extends Error {}
-export class ProviderRejected extends Error {}
+export class ProviderRejected extends Error {
+  readonly usage: unknown;
+  constructor(message: string, usage?: unknown) {
+    super(message);
+    this.usage = usage;
+  }
+}
 export class Attempts {
   readonly studio: MusicStudio;
   readonly dailyBudget: number;
@@ -74,6 +81,13 @@ export class Attempts {
     try {
       const output = await call();
       returned = true;
+      await recordAttemptUsage(
+        this.studio.db,
+        'music',
+        row.id,
+        stage,
+        (output as { usage?: unknown }).usage,
+      );
       await this.studio.db.transaction().execute(async (db) => {
         const current = (
           await sql`SELECT id FROM music_studio_requests WHERE id=${row.id} AND lease=${row.lease} AND status='dispatched' FOR UPDATE`.execute(
@@ -96,6 +110,8 @@ export class Attempts {
       row.status = 'processing';
       return output;
     } catch (error) {
+      if (error instanceof ProviderRejected)
+        await recordAttemptUsage(this.studio.db, 'music', row.id, stage, error.usage);
       // A lost COMMIT acknowledgement is not a lost provider result. Check the
       // durable journal before turning a successfully saved response uncertain.
       if (returned) {
@@ -268,7 +284,7 @@ export class OpenAIMusic implements MusicProvider {
         }[];
       };
       if (output.status !== 'completed')
-        throw new ProviderRejected('The assistant exhausted its output budget.');
+        throw new ProviderRejected('The assistant exhausted its output budget.', output.usage);
       const messages = output.output.filter(
         (o) => o.type === 'message' && o.phase !== 'commentary',
       );
@@ -278,7 +294,7 @@ export class OpenAIMusic implements MusicProvider {
         .map((c) => c.text ?? '')
         .join('');
       if (!text || text.length > 256 * 1024)
-        throw new ProviderRejected('The assistant returned no usable composition.');
+        throw new ProviderRejected('The assistant returned no usable composition.', output.usage);
       return { text, usage: output.usage, responseId: output.id };
     } catch (error) {
       if (error instanceof ProviderRejected) throw error;

@@ -1,0 +1,38 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "glob2-protocol:AdminFinanceCash",
+  "title": "AdminFinanceCash",
+  "type": "object",
+  "required": [
+    "product",
+    "currency",
+    "mode",
+    "period",
+    "kind",
+    "amount",
+    "events"
+  ],
+  "properties": {
+    "product": {
+      "type": "string"
+    },
+    "currency": {
+      "type": "string"
+    },
+    "mode": {
+      "type": "string"
+    },
+    "period": {
+      "type": "string"
+    },
+    "kind": {
+      "type": "string"
+    },
+    "amount": {
+      "type": "number"
+    },
+    "events": {
+      "type": "integer"
+    }
+  }
+}

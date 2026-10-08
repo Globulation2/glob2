@@ -26,6 +26,52 @@ const typedColumns: ColumnLists = {
     'actor_id',
     'resolved_at',
   ],
+  admin_payment_totals: [
+    'product',
+    'purchase_id',
+    'provider_id',
+    'mode',
+    'currency',
+    'paid_amount',
+    'refunded_amount',
+    'disputed',
+    'revision',
+    'historical',
+  ],
+  admin_financial_events: [
+    'id',
+    'product',
+    'purchase_id',
+    'provider_id',
+    'mode',
+    'currency',
+    'kind',
+    'amount',
+    'occurred_at',
+    'recorded_at',
+    'historical',
+  ],
+  admin_provider_attempts: [
+    'product',
+    'attempt_id',
+    'request_id',
+    'model',
+    'stage',
+    'status',
+    'usage',
+    'created_at',
+  ],
+  admin_provider_rates: [
+    'version',
+    'model',
+    'currency',
+    'effective_at',
+    'input_micros',
+    'cached_input_micros',
+    'output_micros',
+    'call_micros',
+  ],
+
   building_families: [
     'download_count',
     'id',
@@ -1350,6 +1396,7 @@ describe('migrations', () => {
         '0052_building_studio',
         '0053_admin_console',
         '0054_admin_analytics',
+        '0055_admin_finances',
       ]);
       expect(
         (
@@ -1419,7 +1466,7 @@ describe('migrations', () => {
         existing.db,
       );
       const upgraded = await migrateToLatest(existing.db);
-      expect(upgraded).toHaveLength(32);
+      expect(upgraded).toHaveLength(33);
       expect(upgraded.every((migration) => migration.status === 'Success')).toBe(true);
       expect(
         await existing.db
@@ -1567,6 +1614,7 @@ describe('migrations', () => {
         ['0052_building_studio', 'Success'],
         ['0053_admin_console', 'Success'],
         ['0054_admin_analytics', 'Success'],
+        ['0055_admin_finances', 'Success'],
       ]);
       for (const table of [
         'colony_skin_versions',
@@ -1711,6 +1759,7 @@ describe('migrations', () => {
         ['0052_building_studio', 'Success'],
         ['0053_admin_console', 'Success'],
         ['0054_admin_analytics', 'Success'],
+        ['0055_admin_finances', 'Success'],
       ]);
       expect(
         await db

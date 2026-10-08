@@ -1706,6 +1706,26 @@ library counting rules and are not unique users; skin download history is unavai
 All admin responses disable public caching; aggregate endpoints cache internally
 for 60 seconds and display their updated time.
 
+Finances defaults to live payments. Verified payment paths write an idempotent
+reporting journal of actual monetary amounts; currencies and live/test/unclassified
+modes stay separate. Locally verified historical credit purchases retain their
+original pack amounts with unknown mode. Historical skin cash amounts remain
+unknown. Credit reversals are never used to infer cash refunds. Credits are shown
+in separate product units, including purchased/granted/consumed/returned/reserved.
+Disputes are separate from refunds. Fees, hosting bills, exchange rates and profit
+are outside this report.
 
-Roll out additive migrations and backend before the dependent web build. Collection
-and display can be disabled separately; verify live totals using read-only queries.
+Provider attempts retain metering even when saving the result later fails. Supply
+`analytics.providerRates` as an array of immutable rate versions with `version`,
+`model`, `currency`, `effectiveAt`, `inputMicros`, `cachedInputMicros`, `outputMicros`
+and `callMicros`. Token rates are millionths of currency per million tokens; the
+fixed call rate is millionths of currency per attempt. Rates are monetary prices,
+independent of customer credit rates. A model uses the latest effective version at
+attempt time. To change a price, add a new version; editing a persisted version
+fails startup. Missing usage or pricing remains unavailable, never zero. No provider
+rates are preconfigured: the operator must enter verified contract prices.
+
+Roll out additive migrations and backend before the dependent web build. Verify
+live dashboard totals against source tables using read-only queries; test destructive
+actions on a disposable database. Schema rollback is unnecessary for a UI rollback;
+collection/display can each be disabled independently.

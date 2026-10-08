@@ -1,0 +1,162 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "glob2-protocol:AdminFinances",
+  "title": "AdminFinances",
+  "type": "object",
+  "required": [
+    "days",
+    "mode",
+    "generatedAt",
+    "cash",
+    "credits",
+    "costs",
+    "unknownPurchases",
+    "historicalIncomplete"
+  ],
+  "properties": {
+    "days": {
+      "type": "integer"
+    },
+    "mode": {
+      "type": "string"
+    },
+    "generatedAt": {
+      "type": "string",
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?(Z|[+-]\\d{2}:\\d{2})$",
+      "description": "RFC 3339 date-time."
+    },
+    "cash": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "product",
+          "currency",
+          "mode",
+          "period",
+          "kind",
+          "amount",
+          "events"
+        ],
+        "properties": {
+          "product": {
+            "type": "string"
+          },
+          "currency": {
+            "type": "string"
+          },
+          "mode": {
+            "type": "string"
+          },
+          "period": {
+            "type": "string"
+          },
+          "kind": {
+            "type": "string"
+          },
+          "amount": {
+            "type": "number"
+          },
+          "events": {
+            "type": "integer"
+          }
+        }
+      }
+    },
+    "credits": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "product",
+          "kind",
+          "amount"
+        ],
+        "properties": {
+          "product": {
+            "type": "string"
+          },
+          "kind": {
+            "type": "string"
+          },
+          "amount": {
+            "type": "number"
+          }
+        }
+      }
+    },
+    "costs": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "product",
+          "model",
+          "period",
+          "currency",
+          "rateVersion",
+          "attempts",
+          "metered",
+          "priced",
+          "estimatedMicros"
+        ],
+        "properties": {
+          "product": {
+            "type": "string"
+          },
+          "model": {
+            "type": "string"
+          },
+          "period": {
+            "type": "string"
+          },
+          "currency": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "rateVersion": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "attempts": {
+            "type": "integer"
+          },
+          "metered": {
+            "type": "integer"
+          },
+          "priced": {
+            "type": "integer"
+          },
+          "estimatedMicros": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        }
+      }
+    },
+    "unknownPurchases": {
+      "type": "integer"
+    },
+    "historicalIncomplete": {
+      "type": "boolean"
+    }
+  }
+}

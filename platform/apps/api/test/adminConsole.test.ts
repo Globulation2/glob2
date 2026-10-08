@@ -1,11 +1,11 @@
 import { AccountActivity } from '@glob2/core';
-import { Credits } from '@glob2/billing';
+import { Credits, recordPaymentFact } from '@glob2/billing';
 import { AdminOperationDetail } from '@glob2/protocol';
 import { randomUUID } from 'node:crypto';
 import { afterAll, beforeAll, expect, it } from 'vitest';
 import { sql } from 'kysely';
 import { schemaIssues, AdminReportList, AdminContentList } from '@glob2/protocol';
-import { AdminAnalytics, AdminOperations } from '@glob2/protocol';
+import { AdminAnalytics, AdminFinances, AdminOperations } from '@glob2/protocol';
 import { createHarness, type Harness, type Instance } from './support.ts';
 let h: Harness, api: Instance;
 const sessions: Record<string, string> = {},
@@ -135,7 +135,7 @@ it('resolves a report and hides its content atomically under contention', async 
 it('restricts analytics, finances and recovery to admins and validates their contracts', async () => {
   for (const [path, schema] of [
     ['analytics', AdminAnalytics],
-
+    ['finances', AdminFinances],
     ['operations', AdminOperations],
   ] as const) {
     expect((await call('/api/v1/admin/' + path, 'moderator')).status).toBe(403);
@@ -145,6 +145,7 @@ it('restricts analytics, finances and recovery to admins and validates their con
     expect(schemaIssues(schema, data)).toEqual([]);
   }
   expect((await call('/api/v1/admin/analytics?days=1000')).status).toBe(400);
+  expect((await call('/api/v1/admin/finances?mode=all')).status).toBe(400);
 });
 it('excludes admin polling and unsuccessful calls from account activity', async () => {
   await call('/api/v1/admin/content');
@@ -219,6 +220,52 @@ it('reconciles Hive once under contention, audits credit consequences, and expos
     ).status,
   ).toBe(403);
 });
+it('keeps financial modes separate and makes unpriced metered costs unavailable', async () => {
+  await h.database.db.transaction().execute((tx) =>
+    recordPaymentFact(tx, {
+      product: 'maps',
+      purchaseId: 'money-fixture',
+      providerId: 'pi_verified',
+      mode: 'test',
+      currency: 'cad',
+      paid: 1234,
+      refunded: 0,
+      disputed: false,
+      occurredAt: new Date(),
+    }),
+  );
+  await h.database.db
+    .insertInto('admin_provider_attempts')
+    .values({
+      product: 'maps',
+      attempt_id: 'meter-fixture',
+      request_id: 'safe-metadata',
+      model: 'unpriced',
+      stage: 'image',
+      status: 'failed',
+      usage: { input: 10, output: 5, cachedInput: 0 },
+      created_at: new Date(),
+    })
+    .execute();
+  const response = await call('/api/v1/admin/finances?days=7&mode=test'),
+    data = (await response.json()) as AdminFinances;
+  expect(response.status).toBe(200);
+  expect(schemaIssues(AdminFinances, data)).toEqual([]);
+  expect(data.cash).toContainEqual(
+    expect.objectContaining({ currency: 'cad', amount: 1234, mode: 'test' }),
+  );
+  expect(data.credits).toContainEqual({ product: 'hive', kind: 'returned', amount: 47 });
+  expect(data.costs.find((c) => c.model === 'unpriced')).toMatchObject({
+    metered: 1,
+    priced: 0,
+    estimatedMicros: null,
+  });
+  const live = (await (
+    await call('/api/v1/admin/finances?days=7&mode=live')
+  ).json()) as AdminFinances;
+  expect(live.cash).toHaveLength(0);
+});
+
 it('supports inspect, hide, resolve, revisit and restore for every library', async () => {
   const db = h.database.db,
     owner = ids['user']!;

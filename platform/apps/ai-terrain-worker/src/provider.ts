@@ -1,3 +1,4 @@
+import { recordAttemptUsage } from '@glob2/billing';
 import { TerrainPlan } from '@glob2/terrain-studio';
 import { randomUUID } from 'node:crypto';
 import { isDeepStrictEqual } from 'node:util';
@@ -5,7 +6,13 @@ import { sql } from 'kysely';
 import { type TerrainStudio, emitState, type RequestRow } from '@glob2/terrain-studio';
 export class ProviderUncertain extends Error {}
 export class ProviderBudget extends Error {}
-export class ProviderRejected extends Error {}
+export class ProviderRejected extends Error {
+  readonly usage: unknown;
+  constructor(message: string, usage?: unknown) {
+    super(message);
+    this.usage = usage;
+  }
+}
 export class Attempts {
   readonly studio: TerrainStudio;
   readonly dailyBudget: number;
@@ -75,6 +82,13 @@ export class Attempts {
     try {
       const output = await call();
       returned = true;
+      await recordAttemptUsage(
+        this.studio.db,
+        'terrain',
+        row.id,
+        stage,
+        (output as { usage?: unknown }).usage,
+      );
       await this.studio.db.transaction().execute(async (db) => {
         const current = (
           await sql`SELECT id FROM terrain_studio_requests WHERE id=${row.id} AND lease=${row.lease} AND status='dispatched' FOR UPDATE`.execute(
@@ -97,6 +111,8 @@ export class Attempts {
       row.status = 'processing';
       return output;
     } catch (error) {
+      if (error instanceof ProviderRejected)
+        await recordAttemptUsage(this.studio.db, 'terrain', row.id, stage, error.usage);
       // A lost COMMIT acknowledgement is not a lost provider result. Check the
       // durable journal before turning a successfully saved response uncertain.
       if (returned) {
@@ -244,7 +260,7 @@ export class OpenAITerrain implements TerrainProvider {
       signal,
     );
     if (output['status'] !== 'completed')
-      throw new ProviderRejected('Assistant response did not complete.');
+      throw new ProviderRejected('Assistant response did not complete.', output['usage']);
     const messages = (
       output['output'] as {
         type: string;
@@ -257,7 +273,8 @@ export class OpenAITerrain implements TerrainProvider {
       .filter((c) => c.type === 'output_text')
       .map((c) => c.text ?? '')
       .join('');
-    if (!text || text.length > 256 * 1024) throw new ProviderRejected('No usable design.');
+    if (!text || text.length > 256 * 1024)
+      throw new ProviderRejected('No usable design.', output['usage']);
     return { text, usage: output['usage'], responseId: String(output['id'] ?? '') };
   }
   async image(
@@ -294,10 +311,10 @@ export class OpenAITerrain implements TerrainProvider {
       signal,
     );
     const encoded = (output['data'] as { b64_json?: string }[])?.[0]?.b64_json;
-    if (!encoded) throw new ProviderRejected('Image provider returned no PNG.');
+    if (!encoded) throw new ProviderRejected('Image provider returned no PNG.', output['usage']);
     const bytes = Buffer.from(encoded, 'base64');
     if (!bytes.length || bytes.length > 16 * 1024 * 1024)
-      throw new ProviderRejected('Image exceeds the limit.');
+      throw new ProviderRejected('Image exceeds the limit.', output['usage']);
     return { bytes, usage: output['usage'], responseId: String(output['id'] ?? '') };
   }
 }

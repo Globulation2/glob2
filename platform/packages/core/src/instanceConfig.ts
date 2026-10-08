@@ -115,6 +115,20 @@ export const InstanceConfig = Strict({
     Strict({
       collection: Type.Boolean({ default: true }),
       display: Type.Boolean({ default: true }),
+      providerRates: Type.Optional(
+        Type.Array(
+          Strict({
+            version: Type.String({ minLength: 1, maxLength: 64 }),
+            model: Type.String({ minLength: 1, maxLength: 128 }),
+            currency: Type.String({ pattern: '^[a-z]{3}$' }),
+            effectiveAt: Type.String({ format: 'date-time' }),
+            inputMicros: Type.Integer({ minimum: 0 }),
+            cachedInputMicros: Type.Integer({ minimum: 0 }),
+            outputMicros: Type.Integer({ minimum: 0 }),
+            callMicros: Type.Integer({ minimum: 0 }),
+          }),
+        ),
+      ),
     }),
   ),
   hiveMind: Type.Optional(HiveConfig),

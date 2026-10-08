@@ -32,6 +32,8 @@ it('fulfills and reverses map purchases without modifying Hive or its entitlemen
   const session = {
     id: 'cs_' + id,
     mode: 'payment',
+    created: Math.floor(Date.now() / 1000),
+    livemode: false,
     payment_status: 'paid',
     client_reference_id: id,
     payment_intent: 'pi_' + id,
@@ -82,6 +84,8 @@ it('isolates Studio purchases, retry settlement and reversals from the other pro
   const session = {
     id: 'cs_' + id,
     mode: 'payment',
+    created: Math.floor(Date.now() / 1000),
+    livemode: false,
     payment_status: 'paid',
     client_reference_id: id,
     payment_intent: 'pi_' + id,
@@ -273,6 +277,8 @@ it('fulfills and reverses music purchases without modifying Hive or its entitlem
   const session = {
     id: 'cs_' + id,
     mode: 'payment',
+    created: Math.floor(Date.now() / 1000),
+    livemode: false,
     payment_status: 'paid',
     client_reference_id: id,
     payment_intent: 'pi_' + id,
@@ -323,6 +329,8 @@ it('settles terrain purchases and reversals independently of music and map credi
   const session = {
     id: 'cs_' + id,
     mode: 'payment',
+    created: Math.floor(Date.now() / 1000),
+    livemode: false,
     payment_status: 'paid',
     client_reference_id: id,
     payment_intent: 'pi_' + id,

@@ -254,6 +254,14 @@ account. Administrators use these totals to understand signups, online activity,
 matches, library publication/download counts and studio reliability. Downloads
 follow each library's existing counting rules and are not unique visitors.
 
+Administrators also see verified payment and refund amounts, currencies and
+payment mode, product credit flows, and provider usage with estimated costs when
+usage and monetary rates are available. These records contain no card details,
+credentials, private studio prompts or generated source. Financial records
+already retained for purchase reconciliation remain subject to the retention
+rules in the payment sections above. Uncertain or unavailable facts are labeled;
+we do not infer historical activity from last-seen timestamps.
+
 ## Your rights
 
 Depending on where you live (for example under Canada's PIPEDA or the EU and UK

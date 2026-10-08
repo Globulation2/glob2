@@ -3,6 +3,7 @@ import { sql, type Kysely, type Transaction } from 'kysely';
 import type { Database } from '@glob2/db';
 import Stripe from 'stripe';
 import { CREDIT_PRODUCTS, HiveError, integer, type CreditProduct } from './credits.ts';
+import { recordPaymentFact } from './reporting.ts';
 export interface CreditPack {
   id: string;
   priceId: string;
@@ -137,6 +138,17 @@ export class Checkout {
       )
         throw new Error('Checkout does not match the purchase.');
       if (p.paid) return;
+      await recordPaymentFact(db, {
+        product: this.product,
+        purchaseId: p.id,
+        providerId: payment,
+        mode: session.livemode ? 'live' : 'test',
+        currency: p.pack.currency,
+        paid: session.amount_total ?? p.pack.amount,
+        refunded: 0,
+        disputed: false,
+        occurredAt: new Date(session.created * 1000),
+      });
       await sql`INSERT INTO ${this.table('wallets')}(account_id) VALUES(${p.account_id}) ON CONFLICT DO NOTHING`.execute(
         db,
       );
@@ -262,6 +274,28 @@ export class Checkout {
         event.id,
         lock,
       );
+      const refunded = charges.data.reduce((sum, c) => sum + c.amount_refunded, 0);
+      let refunds: { id: string; amount: number; at: Date }[] | undefined;
+      if (refunded) {
+        const page = await this.stripe.refunds.list({ payment_intent: paymentId, limit: 100 });
+        if (page.has_more) throw new Error('Refund history requires manual reconciliation.');
+        refunds = page.data
+          .filter((r) => r.status === 'succeeded')
+          .map((r) => ({ id: r.id, amount: r.amount, at: new Date(r.created * 1000) }));
+      }
+      await recordPaymentFact(lock, {
+        product: this.product,
+        purchaseId,
+        providerId: paymentId,
+        mode: session.livemode ? 'live' : 'test',
+        currency: session.currency ?? '',
+        paid: session.amount_total ?? 0,
+        refunded,
+        refunds,
+        paymentAt: new Date(session.created * 1000),
+        disputed,
+        occurredAt: new Date(event.created * 1000),
+      });
     });
   }
 }

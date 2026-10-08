@@ -2,6 +2,7 @@ import { MusicReports } from '../music/Moderation.tsx';
 import { SkinReports } from '../skins/Moderation.tsx';
 import { Operations } from './Operations.tsx';
 import { Overview } from './Overview.tsx';
+import { Finances } from './Finances.tsx';
 import { UnifiedReports, Content, Audit, PageControls, useAdminFilters } from './Moderation.tsx';
 // Central administration; legacy music and skin report URLs remain supported.
 import { useState, type FormEvent } from 'react';
@@ -15,6 +16,7 @@ import { isModerator, useLoad, useSession } from '../state.tsx';
 
 const TABS = [
   { id: 'overview', name: 'Overview' },
+  { id: 'finances', name: 'Finances' },
   { id: 'accounts', name: 'Accounts' },
   { id: 'matches', name: 'Matches' },
   { id: 'reports', name: 'Reports' },
@@ -383,6 +385,8 @@ export function Admin({ tab }: { tab: string | undefined }) {
       {current === 'audit' && <Audit />}
       {current === 'overview' &&
         (account.role === 'admin' ? <Overview /> : <p>Administrator access is required.</p>)}
+      {current === 'finances' &&
+        (account.role === 'admin' ? <Finances /> : <p>Administrator access is required.</p>)}
       {current === 'operations' &&
         (account.role === 'admin' ? <Operations /> : <p>Administrator access is required.</p>)}
     </>

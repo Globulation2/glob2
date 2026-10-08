@@ -54,6 +54,19 @@ beforeAll(async () => {
         has_more: false,
       };
     } else if (pathname === '/v1/checkout/sessions/cs_skin') value = session;
+    else if (pathname === '/v1/refunds')
+      value = {
+        object: 'list',
+        has_more: false,
+        data: [
+          {
+            id: 're_skin',
+            amount: charge.amount_refunded,
+            status: 'succeeded',
+            created: 1720000000,
+          },
+        ],
+      };
     else if (pathname === '/v1/disputes')
       value = { object: 'list', has_more: false, data: [{ id: 'dp_skin', status: dispute }] };
     else {

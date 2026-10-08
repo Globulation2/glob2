@@ -7,6 +7,7 @@ import type { Database } from '@glob2/db';
 import { HiveTool, HIVE_LIMITS } from '@glob2/protocol';
 import { Credits, HiveError, required, price, type RateCard, type Usage } from './credits.ts';
 import { Sessions } from './sessions.ts';
+import { recordAttemptUsage } from '@glob2/billing';
 export interface ModelStep {
   providerModel?: string;
   providerResponseId?: string;
@@ -208,6 +209,7 @@ export class Commander {
             if ((await this.sessions.get(id)).generation === generation)
               await this.sessions.event(id, randomUUID(), 'progress', { text });
           });
+          await recordAttemptUsage(this.db, 'hive', callId, 'usage', result.usage);
           await this.credits.settle(s.account_id, callId, result.usage);
         } catch (error) {
           await this.credits.uncertain(callId);
