@@ -1,0 +1,150 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="153" failures="0" errors="0" skipped="5"><testsuite name="AIOrderScheduler"><testcase classname="AIOrderScheduler" name="Diagnostic captures do not change saved pending orders" time="0.000169" status="run" />
+  <testcase classname="AIOrderScheduler" name="all delays preserve every FIFO poll and fixed player ordered deadlines" time="0.453612" status="run" />
+  <testcase classname="AIOrderScheduler" name="cancellation joins the old controller generation before replacement" time="0" status="run" />
+  <testcase classname="AIOrderScheduler" name="configuration rejects live work and submissions after a tick was dispatched" time="0.000164" status="run" />
+  <testcase classname="AIOrderScheduler" name="failure joins work and cannot partially publish or lose the original error" time="0.00022" status="run" />
+  <testcase classname="AIOrderScheduler" name="restore refuses truncated duplicate and out of window pending requests" time="0.000222" status="run" />
+  <testcase classname="AIOrderScheduler" name="same initialization identity cannot restore contradictory planes" time="0.000108" status="run" />
+  <testcase classname="AIOrderScheduler" name="save drains computation and retains future outputs without recomputing" time="0.00028" status="run" />
+  <testcase classname="AIOrderScheduler" name="saved repeated enrollments retain the first initialization tick" time="0.00029" status="run" />
+  <testcase classname="AIOrderScheduler" name="sharing follows the delay and the measured decision work" time="0.005083" status="run" />
+  </testsuite><testsuite name="AIPipeline"><testcase classname="AIPipeline" name="a submitted deadline is delivered even when no new poll is eligible" time="0.040578" status="run" />
+  <testcase classname="AIPipeline" name="every shipped controller preserves orders and state across worker counts and all delays" time="1.39027" status="run" />
+  <testcase classname="AIPipeline" name="pause and repeated boundary calls cannot execute a published command twice" time="0.538489" status="run" />
+  <testcase classname="AIPipeline" name="replacement cancels an old output without rejecting identical new wire bytes" time="0.043649" status="run" />
+  <testcase classname="AIPipeline" name="save continuation retains controller caches receipts and future commands at pipeline boundaries" time="23.7005" status="run" />
+  <testcase classname="AIPipeline" name="team death cancels submitted work and saves receipts for a revived controller" time="0.108518" status="run" />
+  <testcase classname="AIPipeline" name="wrapper preemption preserves controller rejection feedback and pending release identity across save" time="0.085616" status="run" />
+  </testsuite><testsuite name="BuildingGradientInvalidation"><testcase classname="BuildingGradientInvalidation" name="a deleted building's pending result cannot replace a reused destination" time="0.056706" status="run" />
+  <testcase classname="BuildingGradientInvalidation" name="a paused field keeps its original obstacles" time="0.138043" status="run" />
+  <testcase classname="BuildingGradientInvalidation" name="a pending result keeps the generation a team-local edit carries forward" time="0.053673" status="run" />
+  <testcase classname="BuildingGradientInvalidation" name="a ring cuts off a virtual flags field" time="0.062002" status="run" />
+  <testcase classname="BuildingGradientInvalidation" name="a rival teams ring cuts off a cached field" time="0.044467" status="run" />
+  <testcase classname="BuildingGradientInvalidation" name="access metadata follows the newest capture across swim classes and saves" time="0.042235" status="run" />
+  <testcase classname="BuildingGradientInvalidation" name="an empty building pipeline follows a changed header delay through save and load" time="0.053076" status="run" />
+  <testcase classname="BuildingGradientInvalidation" name="area and team-wide resets keep stale walking fields serving with the pipeline on" time="0.090923" status="run" />
+  <testcase classname="BuildingGradientInvalidation" name="centre placed inside an existing ring" time="0.044325" status="run" />
+  <testcase classname="BuildingGradientInvalidation" name="delayed fields" time="0.465243" status="run" />
+  <testcase classname="BuildingGradientInvalidation" name="idle field storage is reused without stale routes" time="0.067594" status="run" />
+  <testcase classname="BuildingGradientInvalidation" name="partial scheduled fields resume on the owner from transferred buckets" time="0.119132" status="run" />
+  <testcase classname="BuildingGradientInvalidation" name="pending building results survive save boundaries and cannot resurrect evicted fields" time="0.768878" status="run" />
+  <testcase classname="BuildingGradientInvalidation" name="public reads resolve their inputs" time="0.101998" status="run" />
+  <testcase classname="BuildingGradientInvalidation" name="requests during team stepping are captured at the observation boundary" time="0.043509" status="run" />
+  <testcase classname="BuildingGradientInvalidation" name="ring placed around an existing field" time="0.044112" status="run" />
+  <testcase classname="BuildingGradientInvalidation" name="same-tick swim classes write access metadata in request order" time="0.051984" status="run" />
+  <testcase classname="BuildingGradientInvalidation" name="scheduled building fields publish at fixed deadlines across worker counts and delays" time="0.229592" status="run" />
+  <testcase classname="BuildingGradientInvalidation" name="slow and failing workers never change the publication tick" time="0.196839" status="run" />
+  <testcase classname="BuildingGradientInvalidation" name="snapshot building seeds and captured-input searches match the synchronous kernels for every route and swim class" time="0.769985" status="run" />
+  <testcase classname="BuildingGradientInvalidation" name="synchronous rebuilds and lifecycle hooks supersede pending jobs that share a deadline" time="0.04134" status="run" />
+  </testsuite><testsuite name="EngineSession"><testcase classname="EngineSession" name="incremental sessions; editor decisions; fertility equivalence and cancellation [writes-preferences]" time="4.88099" status="run" />
+  <testcase classname="EngineSession" name="native presentation fallback yields between expensive chunks" time="0.031143" status="run" />
+  <testcase classname="EngineSession" name="new client requests replace completed pending frames without recapture" time="0.028638" status="run" />
+  <testcase classname="EngineSession" name="serial sessions retain chat text across skipped GUI frames" time="0.990769" status="run" />
+  <testcase classname="EngineSession" name="paced sessions publish completed worlds before waiting and AI reuses them [display]" time="0.000"><skipped message="needs a display" /></testcase><testcase classname="EngineSession" name="menu colony rendering consumes its shared boundary without recapture [display]" time="0.000"><skipped message="needs a display" /></testcase><testcase classname="EngineSession" name="render ceilings preserve per tick simulation checksums [display][artifacts]" time="0.000"><skipped message="needs a display" /></testcase><testcase classname="EngineSession" name="routine snapshot input needs no simulation boundary [display][artifacts][writes-preferences]" time="0.000"><skipped message="needs a display" /></testcase><testcase classname="EngineSession" name="momentum uses the SDL clock after session suspension [display][artifacts]" time="0.000"><skipped message="needs a display" /></testcase></testsuite><testsuite name="GradientPreparation"><testcase classname="GradientPreparation" name="all supported team masks match the scalar fields" time="0.07401" status="run" />
+  <testcase classname="GradientPreparation" name="cached natural goals follow immobile occupancy and live overlays" time="0.107363" status="run" />
+  <testcase classname="GradientPreparation" name="compact clearing traits preserve custom high-ID property combinations" time="0.093496" status="run" />
+  <testcase classname="GradientPreparation" name="compound passable material goals track depletion visibility and overlapping suppliers" time="0.064441" status="run" />
+  <testcase classname="GradientPreparation" name="concurrent lazy requests publish one complete resource field" time="0.064673" status="run" />
+  <testcase classname="GradientPreparation" name="concurrent preparation owns buffers and serializes dirty cache refresh" time="0.057029" status="run" />
+  <testcase classname="GradientPreparation" name="custom terrain and registry replacement preserve cached and direct seeds" time="0.066005" status="run" />
+  <testcase classname="GradientPreparation" name="explicit clearing overrides farm crop protection but never forbidden paint" time="0.062122" status="run" />
+  <testcase classname="GradientPreparation" name="mutation and reset boundaries use current state" time="0.067559" status="run" />
+  <testcase classname="GradientPreparation" name="optional cache storage can be unavailable or over budget" time="0.178457" status="run" />
+  <testcase classname="GradientPreparation" name="periodic supplier snapshots subtract reservations and retain overlay seeds" time="0.076766" status="run" />
+  <testcase classname="GradientPreparation" name="published plane registry matches a sweep of live material fields" time="0.063511" status="run" />
+  <testcase classname="GradientPreparation" name="resource cache tracks cell writes and falls back through mutation bursts" time="0.253382" status="run" />
+  <testcase classname="GradientPreparation" name="seed cells match scalar predicates across policies and changing overlays" time="1.33259" status="run" />
+  <testcase classname="GradientPreparation" name="snapshot material templates refresh changed chunks and accept older snapshots" time="0.137277" status="run" />
+  <testcase classname="GradientPreparation" name="snapshot seeds preserve every periodic kind after the live world changes" time="0.077387" status="run" />
+  <testcase classname="GradientPreparation" name="supplier seed indexing rejects foreign and invalid building IDs in cached and direct fields" time="0.060379" status="run" />
+  <testcase classname="GradientPreparation" name="warm preparation keeps custom supplier unions exclusions penalties and overlays live" time="0.068533" status="run" />
+  </testsuite><testsuite name="MatchSetup"><testcase classname="MatchSetup" name="AI order delay is optional bounded integer data and round trips through headers" time="0.034578" status="run" />
+  <testcase classname="MatchSetup" name="Building gradient delay is optional bounded integer data and round trips through headers" time="0.030863" status="run" />
+  <testcase classname="MatchSetup" name="New match rules default to eight tick AI decisions" time="0" status="run" />
+  <testcase classname="MatchSetup" name="SHA-256 matches the FIPS 180-4 test vectors" time="0.005344" status="run" />
+  <testcase classname="MatchSetup" name="a map file is found and checked by the hash of its decompressed bytes" time="0.03853" status="run" />
+  <testcase classname="MatchSetup" name="catalog rules identity partitions ratings without changing the executable identity" time="0.000285" status="run" />
+  <testcase classname="MatchSetup" name="closed seats close their team and follow every player seat" time="0.050434" status="run" />
+  <testcase classname="MatchSetup" name="embedded catalogs carry dynamic experiments independently of installed definitions" time="0.124597" status="run" />
+  <testcase classname="MatchSetup" name="every MatchSetup and SimVersion contract fixture is accepted or rejected at its stage" time="0.047457" status="run" />
+  <testcase classname="MatchSetup" name="map-required terrain experiments propagate to setup and cannot be omitted" time="0.040946" status="run" />
+  <testcase classname="MatchSetup" name="the simulation data hash covers every data file the simulation loads" time="0.040461" status="run" />
+  <testcase classname="MatchSetup" name="the vendored fixtures match the protocol package when it is present" time="0.010007" status="run" />
+  <testcase classname="MatchSetup" name="unknown experiments, JavaScript AIs and unexpressible headers are refused" time="0.03248" status="run" />
+  <testcase classname="MatchSetup" name="valid setups become the GameHeader every client and the verifier run" time="0.036664" status="run" />
+  </testsuite><testsuite name="ResourceGrowth"><testcase classname="ResourceGrowth" name="both format 144 and 145 lineages and compact growth saves retain continuation [save-format]" time="3.5762" status="run" />
+  <testcase classname="ResourceGrowth" name="configured seeds preserve rates variety collisions and saved output" time="0.062939" status="run" />
+  <testcase classname="ResourceGrowth" name="engine preflight opens both historical growth and released vertex saves" time="0.593738" status="run" />
+  <testcase classname="ResourceGrowth" name="finishing the last deferred tick computes without publishing early" time="0.064368" status="run" />
+  <testcase classname="ResourceGrowth" name="format 144 and 145 packed growth headers cannot alias artwork lengths" time="0" status="run" />
+  <testcase classname="ResourceGrowth" name="frozen input outlives terrain and resource edits and wrapping remains valid" time="0.070105" status="run" />
+  <testcase classname="ResourceGrowth" name="kernel is immutable deterministic and responds to disabled growth and scarcity" time="0.082122" status="run" />
+  <testcase classname="ResourceGrowth" name="later completed work cannot publish ahead of an earlier batch" time="0.060874" status="run" />
+  <testcase classname="ResourceGrowth" name="legacy pending masks migrate and signed pending proposals validate on load" time="0.08139" status="run" />
+  <testcase classname="ResourceGrowth" name="light checksums leave zero-worker work deferred and world replacement discards it" time="0.065696" status="run" />
+  <testcase classname="ResourceGrowth" name="material deltas cap independently and create configured seed stocks" time="0.090424" status="run" />
+  <testcase classname="ResourceGrowth" name="pipeline waits at exact deadline and pause does not publish" time="0.07481" status="run" />
+  <testcase classname="ResourceGrowth" name="proposal capacity grows safely and is retained for reuse" time="0.089519" status="run" />
+  <testcase classname="ResourceGrowth" name="publication accounts for proposals rejected by a different world" time="0.091765" status="run" />
+  <testcase classname="ResourceGrowth" name="setting the delay leaves reservations and unfinished work untouched" time="0.073991" status="run" />
+  <testcase classname="ResourceGrowth" name="signed proposals use only current resource type and apply in order" time="0.089305" status="run" />
+  <testcase classname="ResourceGrowth" name="text save layout probes are relative and preserve section state" time="0" status="run" />
+  <testcase classname="ResourceGrowth" name="typed proposal loading validates fields and preserves old queued units" time="0.066472" status="run" />
+  <testcase classname="ResourceGrowth" name="zero seed stocks use authoritative resource initialization" time="0.163105" status="run" />
+  <testcase classname="ResourceGrowth" name="zero-worker and shared deadlines match and pending work survives saving" time="0.607711" status="run" />
+  </testsuite><testsuite name="RuntimeResources"><testcase classname="RuntimeResources" name="a half-harvested scavenge site survives save and continues identically" time="0.213384" status="run" />
+  <testcase classname="RuntimeResources" name="bounded starter crop replacement uses surplus materials and respects clearability" time="0.061307" status="run" />
+  <testcase classname="RuntimeResources" name="custom compound deposit has independent material stock and destructive harvest" time="0.030605" status="run" />
+  <testcase classname="RuntimeResources" name="custom ground and air obstruction independently govern routes across toroidal barriers" time="0.162191" status="run" />
+  <testcase classname="RuntimeResources" name="destructive resources cannot bridge pooled farms even without reserves or regrowth" time="0.176724" status="run" />
+  <testcase classname="RuntimeResources" name="editor catalog replacement preserves materials across layouts and rejects invalid imports atomically" time="0.040546" status="run" />
+  <testcase classname="RuntimeResources" name="embedded resource save starts with an invalid installed catalog" time="0.235128" status="run" />
+  <testcase classname="RuntimeResources" name="farm harvest uses the touched material policy before pooling neighboring stock" time="0.106645" status="run" />
+  <testcase classname="RuntimeResources" name="fixed property ablations preserve harvest growth clearing and movement invariants" time="0.085137" status="run" />
+  <testcase classname="RuntimeResources" name="frozen seeded resource compositions preserve invariants and exact simulation continuation [golden]" time="0.602468" status="run" />
+  <testcase classname="RuntimeResources" name="growth at capacity stays capped and persistent fruit depletes" time="0.031404" status="run" />
+  <testcase classname="RuntimeResources" name="infinite farm stocks remain harvestable at their seed reserve" time="0.069597" status="run" />
+  <testcase classname="RuntimeResources" name="landscape dead trees, undergrowth and fish keep their habitats and obstruction" time="0.027972" status="run" />
+  <testcase classname="RuntimeResources" name="landscape scavenge sites start full, deplete per material and vanish when empty" time="0.028479" status="run" />
+  <testcase classname="RuntimeResources" name="landscape showcase map places every landscape resource [artifacts]" time="0.089176" status="run" />
+  <testcase classname="RuntimeResources" name="last finite source extinction and persistent source regrowth update material presence" time="0.033054" status="run" />
+  <testcase classname="RuntimeResources" name="legacy resource saves ignore reordered modified installed defaults in a fresh process" time="0.101156" status="run" />
+  <testcase classname="RuntimeResources" name="material frontage counts secondary stocks and prospective renewable supply" time="0.049832" status="run" />
+  <testcase classname="RuntimeResources" name="material harvesting consumes stock and never invents a delivery" time="0.028655" status="run" />
+  <testcase classname="RuntimeResources" name="redefined builtin resource follows declarative habitat and terrain whitelist intersection" time="0.035465" status="run" />
+  <testcase classname="RuntimeResources" name="released observation format 139 imports legacy stocks and preserves current save continuation" time="0.312249" status="run" />
+  <testcase classname="RuntimeResources" name="released terrain-seed format 138 retains legacy resource and material continuation" time="0.281196" status="run" />
+  <testcase classname="RuntimeResources" name="renamed deposits and sprite variants preserve stochastic stock trajectories" time="0.100624" status="run" />
+  <testcase classname="RuntimeResources" name="resource identities above byte range preserve compound stocks through save and continuation" time="0.234773" status="run" />
+  <testcase classname="RuntimeResources" name="seed cache allocates only live material bitsets and reuses them after depletion" time="0.068343" status="run" />
+  <testcase classname="RuntimeResources" name="shared starting supply checks accept material sources above resource id 255" time="0.126059" status="run" />
+  <testcase classname="RuntimeResources" name="start diagnostics distinguish configured renewal from spreading pressure" time="0.074743" status="run" />
+  <testcase classname="RuntimeResources" name="starting crop guarantees and adjacent supply use live material yields" time="0.047886" status="run" />
+  <testcase classname="RuntimeResources" name="unused catalog definitions allocate no material gradients and schedule no extra work" time="0.135968" status="run" />
+  <testcase classname="RuntimeResources" name="workers carry food from camp-sites to an inn and leave their other yields" time="0.20677" status="run" />
+  </testsuite><testsuite name="SharedWorkerLifecycle"><testcase classname="SharedWorkerLifecycle" name="background saves finish on a worker and remain readable after teardown" time="0.021919" status="run" />
+  <testcase classname="SharedWorkerLifecycle" name="no-AI completed ticks agree across shared worker counts [artifacts]" time="0.778925" status="run" />
+  <testcase classname="SharedWorkerLifecycle" name="pending gradient work survives a save and continues at the same deadlines" time="0.213077" status="run" />
+  <testcase classname="SharedWorkerLifecycle" name="resource catalog import drains deferred material preparation before replacing stocks" time="0.087624" status="run" />
+  </testsuite><testsuite name="SimulationReadPhase"><testcase classname="SimulationReadPhase" name="AI and pending gradients consume the presentation union without another capture" time="0.092647" status="run" />
+  <testcase classname="SimulationReadPhase" name="direct completed steps match deferred preparation across worker counts" time="0.260178" status="run" />
+  <testcase classname="SimulationReadPhase" name="presentation borrows the published no-AI read boundary without recapture" time="0.0644" status="run" />
+  </testsuite><testsuite name="TurnEngineHarness"><testcase classname="TurnEngineHarness" name="a 10 s flag drag and a held key keep the input delay bounded, without a flood [network-sim][artifacts]" time="1.46571" status="run" />
+  <testcase classname="TurnEngineHarness" name="a client sending hostile orders of every type crashes no one and is refused identically everywhere [network-sim][fuzz][artifacts]" time="12.3208" status="run" />
+  <testcase classname="TurnEngineHarness" name="a client that executes a tampered order is repaired by an in-place reload and named by the verifier [network-sim][artifacts]" time="2.35836" status="run" />
+  <testcase classname="TurnEngineHarness" name="a pause limit is enforced identically everywhere and the record verifies [network-sim][artifacts]" time="0.941605" status="run" />
+  <testcase classname="TurnEngineHarness" name="a player who leaves stays listed as Left, and the one left standing learns why it won [network-sim]" time="0.578513" status="run" />
+  <testcase classname="TurnEngineHarness" name="a player who quits leaves through the relay's quit order and the rest play on [network-sim]" time="1.46074" status="run" />
+  <testcase classname="TurnEngineHarness" name="a save with closed seats: reteamed players keep their colonies, closed ones are cleared [network-sim]" time="1.90892" status="run" />
+  <testcase classname="TurnEngineHarness" name="closed seats are closed colonies: the last player standing wins everywhere and the record verifies [network-sim]" time="4.18236" status="run" />
+  <testcase classname="TurnEngineHarness" name="embedded terrain definitions travel with shared matches and verifier replays [network-sim][artifacts]" time="1.43079" status="run" />
+  <testcase classname="TurnEngineHarness" name="engines report network telemetry, and its output changes nothing they execute [network-sim][artifacts]" time="1.40913" status="run" />
+  <testcase classname="TurnEngineHarness" name="four engines survive a stall and a restart: the restarted client reloads and fast-forwards [network-sim][artifacts]" time="2.82323" status="run" />
+  <testcase classname="TurnEngineHarness" name="one client claiming the game finished does not end it for a player who is reconnecting [network-sim]" time="0.953247" status="run" />
+  <testcase classname="TurnEngineHarness" name="orders a hostile relay forges for a seat are refused by the verifier, which still verifies [network-sim]" time="0.980341" status="run" />
+  <testcase classname="TurnEngineHarness" name="the committed match record verifies to the committed checksum trace [network-sim][golden]" time="0.523513" status="run" />
+  <testcase classname="TurnEngineHarness" name="two engines with AI seats under latency, jitter and loss agree at every tick and the record verifies [network-sim][artifacts]" time="2.68686" status="run" />
+  <testcase classname="TurnEngineHarness" name="voice packets do not hold up a player's orders [network-sim][artifacts]" time="1.50613" status="run" />
+  <testcase classname="TurnEngineHarness" name="without a pause limit a pause lasts until someone resumes it [network-sim]" time="0.540916" status="run" />
+  </testsuite></testsuites>

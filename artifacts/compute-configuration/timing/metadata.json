@@ -1,0 +1,53 @@
+{
+  "platform": "macOS-26.6.2-arm64-arm-64bit-Mach-O",
+  "binaries": {
+    "/Users/bradley/.codex/worktrees/compute-baseline/glob2/build/darwin/client/release/src/glob2": "85922efa56020cb09c016ddfa188301f528fd48d10d6df154c8daba895f2dbad",
+    "/Users/bradley/.codex/worktrees/compute-configuration/glob2/build/darwin/client/release/src/glob2": "8eab19776f232bb58b6da22b16c04126c440f61673694d96fff9e3e88d915b78"
+  },
+  "manifest": {
+    "scenarios": [
+      {
+        "id": "mixed-ai",
+        "group": "mixed-ai",
+        "args": [
+          "--load-game",
+          "/Users/bradley/.codex/worktrees/compute-configuration/glob2/artifacts/compute-configuration/parity/baseline/final.game.gz",
+          "--ticks",
+          "2048"
+        ],
+        "fixture_sha256": {
+          "/Users/bradley/.codex/worktrees/compute-configuration/glob2/artifacts/compute-configuration/parity/baseline/final.game.gz": "878710491d59a2ccaca96dd32f7a26f0df0c0a3ec50703cc1647ebd33b6f388c"
+        }
+      },
+      {
+        "id": "runtime-ai",
+        "group": "runtime-ai",
+        "args": [
+          "--load-game",
+          "/Users/bradley/.codex/worktrees/compute-configuration/glob2/artifacts/compute-configuration/parity/runtime-new-fixture/initial.game.gz",
+          "--ticks",
+          "1024"
+        ],
+        "fixture_sha256": {
+          "/Users/bradley/.codex/worktrees/compute-configuration/glob2/artifacts/compute-configuration/parity/runtime-new-fixture/initial.game.gz": "79a7b95dece22ac62c50ea501a72ae123114ee19eb10785ad346d3044640cbfe"
+        }
+      }
+    ]
+  },
+  "arguments": {
+    "before": "/Users/bradley/.codex/worktrees/compute-baseline/glob2/build/darwin/client/release/src/glob2",
+    "after": "/Users/bradley/.codex/worktrees/compute-configuration/glob2/build/darwin/client/release/src/glob2",
+    "manifest": "/Users/bradley/.codex/worktrees/compute-configuration/glob2/artifacts/compute-configuration/benchmark-manifest.json",
+    "output": "/Users/bradley/.codex/worktrees/compute-configuration/glob2/artifacts/compute-configuration/timing",
+    "repeats": 5,
+    "threads": [
+      "1",
+      "2",
+      "4",
+      "8",
+      "auto"
+    ],
+    "verify": false
+  },
+  "memory_note": "wait4 peak resident bytes, measured separately for each child"
+}

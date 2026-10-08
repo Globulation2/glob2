@@ -1,0 +1,30 @@
+{
+  "scenarios": [
+    {
+      "id": "mixed-ai",
+      "group": "mixed-ai",
+      "args": [
+        "--load-game",
+        "/Users/bradley/.codex/worktrees/compute-configuration/glob2/artifacts/compute-configuration/parity/baseline/final.game.gz",
+        "--ticks",
+        "2048"
+      ],
+      "fixture_sha256": {
+        "/Users/bradley/.codex/worktrees/compute-configuration/glob2/artifacts/compute-configuration/parity/baseline/final.game.gz": "878710491d59a2ccaca96dd32f7a26f0df0c0a3ec50703cc1647ebd33b6f388c"
+      }
+    },
+    {
+      "id": "runtime-ai",
+      "group": "runtime-ai",
+      "args": [
+        "--load-game",
+        "/Users/bradley/.codex/worktrees/compute-configuration/glob2/artifacts/compute-configuration/parity/runtime-new-fixture/initial.game.gz",
+        "--ticks",
+        "1024"
+      ],
+      "fixture_sha256": {
+        "/Users/bradley/.codex/worktrees/compute-configuration/glob2/artifacts/compute-configuration/parity/runtime-new-fixture/initial.game.gz": "79a7b95dece22ac62c50ea501a72ae123114ee19eb10785ad346d3044640cbfe"
+      }
+    }
+  ]
+}

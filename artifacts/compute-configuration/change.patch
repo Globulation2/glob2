@@ -1,0 +1,1697 @@
+diff --git a/browser/tests/determinism.spec.js b/browser/tests/determinism.spec.js
+index ba95f6a75..8f0186367 100644
+--- a/browser/tests/determinism.spec.js
++++ b/browser/tests/determinism.spec.js
+@@ -24,7 +24,7 @@ test(`WebAssembly produces a complete per-tick simulation trace (${variant}/${th
+           FS.writeFile('/tmp/initial.game.gz', Uint8Array.from(atob('${fixture.toString('base64')}'), c => c.charCodeAt(0)));
+         }],
+         async onRuntimeInitialized() {
+-          const code = await Module.start(['--nox', '/tmp/initial.game.gz', '1500', '1', '--ai-threads', '${threads}']);
++          const code = await Module.start(['--nox', '/tmp/initial.game.gz', '1500', '1', '--compute-threads', '${threads}']);
+           if (code !== 0) throw new Error('Engine exited: ' + code);
+           // Avoid millions of individually serialized Playwright values.
+           // Chunk the conversion so large traces do not overflow the call stack.
+diff --git a/browser/tests/pacing.spec.js b/browser/tests/pacing.spec.js
+index cc24494a4..6377ec48f 100644
+--- a/browser/tests/pacing.spec.js
++++ b/browser/tests/pacing.spec.js
+@@ -18,7 +18,7 @@ async function referenceTrace(page) {
+       preRun:[()=>{ENV.GLOB2_REPLAY_PATH='/tmp/reference.replay';ENV.GLOB2_CHECKSUM_SIDECAR='1';
+         FS.writeFile('/tmp/initial.game.gz',Uint8Array.from(atob('${fs.readFileSync(fixture).toString('base64')}'),c=>c.charCodeAt(0)));}],
+       async onRuntimeInitialized(){
+-        const code=await Module.start(['--nox','/tmp/initial.game.gz','1500','1','--ai-threads','1']);
++        const code=await Module.start(['--nox','/tmp/initial.game.gz','1500','1','--compute-threads','1']);
+         if(code!==0)throw new Error('Reference engine exited: '+code);
+         const bytes=FS.readFile('/tmp/reference.replay.checksums');let binary='';
+         for(let i=0;i<bytes.length;i+=32768)binary+=String.fromCharCode(...bytes.subarray(i,i+32768));
+diff --git a/docs/development/headless-replays.md b/docs/development/headless-replays.md
+index 4a8e5828d..2f43d60c1 100644
+--- a/docs/development/headless-replays.md
++++ b/docs/development/headless-replays.md
+@@ -223,10 +223,16 @@ Same as `-test-games-nox` but **with GUI** — useful for visually verifying AI
+ ## Verifying a match record
+ 
+ ```sh
+-glob2 --verify-match <record.g2mr> --map <map-file> --out <dir> [--profile <name>]
++glob2 --verify-match <record.g2mr> --map <map-file> --out <dir> \
++  [--profile <name>] [--compute-threads auto|N]
+ glob2 --sim-version
+ ```
+ 
++`--verify-match` accepts the same compute sizing as game sessions. Its `compute.json`
++records requested, resolved and actual sizing separately from deterministic
++verification results. Headless `--turn-client` also accepts this setting and
++reports sizing in its result telemetry.
++
+ `--verify-match` replays a relay match record (the format is in the
+ [turn protocol](../multiplayer/turn-protocol.md#match-record)) headlessly and judges the
+ checksums the live clients reported. Pass absolute paths: a macOS build changes its
+@@ -452,15 +458,18 @@ that replay floor. Network protocol 51 requires compact-map readers and rejects
+ older and newer clients. Background save finalization owns a captured state and
+ does not advance simulation; continuation checks must still compare the same
+ captured tick, seed and orders. Routing worker availability affects wall time only:
+-the serial fallback publishes on the same ticks. Headless `--gradient-workers 0` is the deterministic owner-only seeding and propagation control: the owner computes each periodic and building gradient job when it submits it, and publication keeps its deadline.
++the serial fallback publishes on the same ticks. `--compute-threads 1` is the
++owner-only control; all deferred producers submit to the same executor and the
++owner computes their jobs at joins when there are no workers.
+ 
+ Periodic material, market, guard and clear gradients use the same executor as AI.
+ Their immutable inputs are captured at the completed-tick boundary; seeding and
+ propagation both execute privately and retain the existing publication deadlines.
+-The deprecated positive `--gradient-workers N` selects shared execution and uses
+-`N+1` total threads only when `--compute-threads` is absent. Zero keeps gradient
+-jobs on the owner. Saving drains private work without publishing it early and
+-continues to serialize completed fields with their remaining deadlines.
++`--compute-threads auto|N` controls the shared pool for all sessions; `auto` uses
++reported logical CPU threads (one if unavailable), and N is a positive unsigned
++participant count including the owner. Saving drains
++private work without publishing it early and continues to serialize completed
++fields with their remaining deadlines.
+ 
+ 
+ Version 139 / simulation revision 21 selects periodic preparation after the whole
+diff --git a/docs/development/performance-telemetry.md b/docs/development/performance-telemetry.md
+index ab7fb1212..4520dfd79 100644
+--- a/docs/development/performance-telemetry.md
++++ b/docs/development/performance-telemetry.md
+@@ -190,10 +190,13 @@ quartile 0-3 on construction sites, empty otherwise), and its team's live
+ `team_units` and `team_buildings`. The last three columns are the depth model's
+ inputs at the moment the lifetime's depth was decided: `staged` is 1 when a
+ scheduled refresh was staged for it (the context is then read at staging, not at
+-publication), `previous_hint` is the depth the lifetime before it settled
+-(`settledCostHint`) and `serving_settled` is how deep the field it replaced had
+-been settled by then, each -1 when unknown. All are empty when the start was not
+-seen, for example for a field restored from a save.
++publication), `previous_hint` is the reader-required depth of the lifetime before it
++(`settledCostHint`) and `serving_settled` is how deep readers of the field it
++replaced required it by then, each -1 when unknown. All are empty when the start was not
++seen, for example for a field restored from a save. The historical column names
++`serving_settled` and `previous_hint` now record reader-required depth, excluding
++worker preparation and serialization completion. `prev_settled_cost` still
++records the actual prepared search frontier.
+ 
+ `result.json` then has a `building_gradient` object: `rebuilds` by reason,
+ `dirty_with_generation` (dirty rebuilds whose topology generation had also moved),
+@@ -209,7 +212,7 @@ Pinned to four reserved cores on an x86_64 host, busy Oazis (11 Maxima, seed 19)
+ measured no difference beyond run-to-run noise (about 1%), at 4096 and at 12288
+ ticks, between master, the branch with the flag off, and the branch with it on.
+ 
+-## Scheduled AI decisions and experimental map computation
++## Scheduled AI decisions and shared computation
+ 
+ All shipped controllers borrow immutable engine snapshots for decisions. The simulation
+ owner captures the required component union once per poll tick; unchanged components are
+@@ -248,31 +251,31 @@ receipts, RNG and controller continuation state. Worker counts remain local exec
+ configuration. Changing the match delay can change strategy, replay orders and game feel;
+ changing only worker count must preserve execution at the same delay.
+ 
+-Structured `--run-game` accepts `--ai-order-delay D` for a new match (default 8 ticks), and
+-`--compute-threads N` (1–64) with `--compute-experiments MODE`. Modes are `none`,
+-`areas`, `initialize`, `hiring`, `ai`, and `all`; `ai` is the default. The default
+-count is the smaller of four, available hardware threads, and the larger of three
+-and the AI controller count, with a minimum of one. This leaves background capacity
+-for periodic gradients even in games without AI. Ordinary GUI and legacy `--nox` runs accept `--ai-threads N`.
+-The count is the compute executor's thread count including the simulation owner; periodic gradients share this executor, and with
+-`ai` enabled, AI decisions share those threads too. The legacy name `--ai-threads`
+-therefore sizes all shared compute work. `--compute-experiments none` has the owner
+-decide inline when each batch is dispatched, delivering at the same deadlines. Thread
+-creation failure and platforms without threads leave an executor with no workers,
+-whose owner runs each batch at its join.
+-A loaded match's configured delay cannot be overridden.
+-
+-Map computation runs as blocking batches on the same executor, whose thread count
+-includes the submitting thread. Area jobs rebuild allocated forbidden/guard/clear fields at existing structural
+-refresh boundaries. Initialization jobs use 4096-cell chunks on maps of at least
+-16384 cells; goal painting and forbidden-border detection retain their serial ordering.
+-Hiring jobs advance frozen building searches in separate swim classes before candidate
+-evaluation, without refreshing caches or changing use timestamps. These jobs use
+-blocking batches and may perform unnecessary work. Periodic one-field-per-tick refresh
+-remains unchanged. `all` includes AI scheduling and these map experiments; other map
+-modes use inline scheduled AI decisions. Measure the additional work separately.
+-
+-`result.json` retains the map executor's `compute_threads`, `compute_experiments`,
++All sessions use `--compute-threads auto|N`, where N is a positive unsigned
++integer counting total executor participants, including the simulation owner.
++`auto` (the default) uses all reported logical CPU threads, falling back to one
++if detection returns zero. There is no separate limit of 64 for explicit counts.
++The background pool has N−1 workers. AI, periodic/building gradients, resource
++growth and presentation share this pool. `--compute-threads 1` is the serial
++compute control. Thread creation failure and platforms without threads also leave
++no workers; the owner runs deferred batches at their joins.
++
++`--ai-threads`, `--gradient-workers` and `--compute-experiments` have been removed;
++use `--compute-threads auto|N`. The optional area, initialization and hiring compute
++paths and their environment selector have also been removed. Structural area
++refreshes and live field initialization retain their serial production order.
++
++Structured `--run-game` accepts `--ai-order-delay D` for a new match (default 8
++ticks). Delays are simulation rules, separate from local thread configuration.
++A loaded match's configured AI delay cannot be overridden.
++
++`compute_requested_threads` records the CLI sizing as a string (`auto` or the
++explicit count), `compute_resolved_threads` records the resolved participant count,
++`compute_threads` records the actual count including serial fallback, and
++`compute_workers` records actual background workers. Automatic sizing should be
++measured separately from fixed counts; using every logical CPU is not a speedup claim.
++
++`result.json` retains the map executor's `compute_threads`,
+ `compute_batches`, `compute_jobs`, `compute_parallel_batches`, `compute_batch_ns`,
+ `compute_deferred_batches`, `compute_deferred_jobs`, `compute_owner_jobs`,
+ `compute_worker_jobs`, `compute_join_wait_ns`, `compute_wait_ns`, and
+@@ -281,8 +284,6 @@ every deferred batch (AI decisions, periodic and building gradients) as the exec
+ saw them. `compute_owner_jobs` is zero whenever the executor has workers, since the
+ owner only waits at joins; `compute_join_wait_ns` is that waiting. The
+ `ai_pipeline` object reports the AI scheduler's own view of its work.
+-`hiring_prepasses` counts candidate-scan hooks and
+-`hiring_popped_entries` counts advanced entries, including stale entries.
+ `building_gradient_jobs`, `building_gradient_published` and
+ `building_gradient_discarded` count scheduled building walking fields admitted,
+ installed at their deadline and dropped (superseded or destination gone);
+@@ -330,7 +331,8 @@ The asynchronous AI migration requires at least ten paired zero-delay runs again
+ master, with uncertainty reported for full-match CPU and elapsed-time ratios. Both
+ regressions must remain within 5%. Separate deadline misses and waits from average
+ tick time, and compare gameplay at delays 0, 1, 4 and 8 independently of throughput.
+-The production delay remains zero until those experiments justify a change.
++The current production delay is eight ticks; retain that value when comparing
++thread counts for this configuration cleanup.
+ 
+ Headless benchmark mode also exports `benchmark_tick_histogram`: fixed
+ logarithmic nanosecond buckets with exclusive upper bounds (the final `null`
+@@ -387,8 +389,10 @@ delay and format separately; cross-version byte equality is not the acceptance t
+ The runner retains commands, executable/input hashes, logs, results, per-process
+ peak resident memory, wall time, and user-plus-system CPU time from `wait4`.
+ It runs one warm-up and five measured repetitions by default, with rotated/reversed
+-ordering; use `--repeats 10` for ten paired measurement rounds.
+-Compare owner-only scheduled AI (`none`), one and several compute threads,
++ordering; use `--repeats 10` for ten paired measurement rounds. Explicit counts
++run on both binaries; `auto` runs separately on the candidate. The summary includes
++wall and CPU ratios against the base at the same explicit count.
++Compare one and several compute threads, automatic sizing,
+ and the baseline at the same delay. Aggregate ratios do not replace per-scenario CPU and small-map
+ regression checks. Timing thresholds are deliberately not CI assertions.
+ 
+@@ -397,8 +401,8 @@ regression checks. Timing thresholds are deliberately not CI assertions.
+ 
+ All games use the shared compute executor and an eight-tick publication delay by
+ default. Structured headless runs accept `--gradient-delay D` (1–16 ticks, default
+-8) and the deprecated `--gradient-workers N` (0–16), described below. Owner-only
+-computation retains exactly the same publication schedule, providing the
++8). `--compute-threads 1` provides owner-only
++computation with exactly the same publication schedule, providing the
+ determinism and timing control for each delay. Different delays may produce
+ different games. A loaded game's delay cannot change while jobs are pending.
+ 
+@@ -424,15 +428,11 @@ reconfiguration discards them. Guard seeding uses compact terrain lookups.
+ Include warmed-cache baselines, snapshot capture/copying, peak memory and total CPU
+ in performance comparisons; moving work off the owner does not itself establish a speedup.
+ 
+-`--compute-threads` sizes the shared executor, including the owner. The deprecated
+-`--gradient-workers 0` selects owner-only gradient jobs: the owner computes each
+-periodic and building job inline when it submits it, outside the executor, and
+-publication keeps its deadline. A positive value selects
+-shared jobs and, unless `--compute-threads` is explicit, requests that value plus
+-one total threads. It no longer creates a separate pool or imposes a per-gradient
+-concurrency cap. `gradient_workers` reports available shared background threads
+-(or zero for owner-only placement); `compute_threads` reports total executor size.
+-Gradient placement is independent of the AI compute-experiment flag.
++`--compute-threads` sizes the shared executor, including the owner. Periodic and
++building jobs always submit to it in normal sessions. With no workers, the owner
++computes at the join; publication retains its deadline. `gradient_workers`
++reports available shared background threads and `compute_threads` reports total
++executor size.
+ A synchronous refresh supersedes older pending results for that field. Increasing
+ worker count does not increase the number of scheduled fields. Buffers are bounded
+ by the delay; workers block on condition variables when idle.
+@@ -478,10 +478,8 @@ Field preparation runs synchronously at submission; only propagation runs on
+ these background workers. Preparation includes reading current resources, terrain,
+ occupancy, team areas, fog and market availability into the job-owned seed buffer.
+ Do not attribute the entire resource/area-gradient scope to background CPU, or
+-add its inclusive time to propagation time. The `initialize` compute experiment
+-can split the seeding loop into blocking chunks; compare it against one-thread
+-`initialize` with identical AI settings. Comparing it directly against default
+-`ai` mode also changes where AI work runs.
++add its inclusive time to propagation time. Live seeding retains its serial order;
++private snapshot jobs prepare their buffers on the shared executor.
+ 
+ Resource preparation shares two derived base fields for walking and swimming.
+ Each request copies a base into its owned buffer and patches resource goals,
+diff --git a/docs/development/reference.md b/docs/development/reference.md
+index a695ed210..9451824aa 100644
+--- a/docs/development/reference.md
++++ b/docs/development/reference.md
+@@ -109,8 +109,7 @@ worker also runs presentation, which that worker interleaves with simulation job
+ (so a join may wait out one presentation chunk). Only an executor with no workers
+ runs deferred jobs on the owner, at the join, because nothing else can. This keeps
+ owner time split cleanly into owner work and owner wait (`compute_owner_jobs` is
+-zero whenever workers exist). A producer that opts out of sharing (`--compute-experiments`
+-without `ai`, `--gradient-workers 0`, or a cheap AI batch at delay 0) computes
++zero whenever workers exist). A cheap AI batch at delay 0 computes
+ inline when it submits, outside the executor, and still publishes at the deadline.
+ AI controller lanes preserve decision order;
+ gradient and growth jobs need no lane.
+@@ -1273,7 +1272,7 @@ For timing and scheduling, start with `src/game/Game_sync.cpp` and `src/engine/E
+   64 waiting requests) and maps without a game build synchronously.
+   `Map::predictBuildingDepth` reads the generated
+   [depth model](../building-gradient-depth-model.md) from the field's own past
+-  depths (its serving search's settled cost and `settledCostHint`). It only moves
++  reader demand (its serving search's required cost and `settledCostHint`). It only moves
+   search work between worker and owner; `GLOB2_BUILDING_DEPTH=full|table|lazy`
+   or an operating point name overrides it for timing.
+ - The executor ring holds 65 batches: each deferred producer holds at most its
+diff --git a/docs/tools/tournaments.md b/docs/tools/tournaments.md
+index e5025025d..c0a87226c 100644
+--- a/docs/tools/tournaments.md
++++ b/docs/tools/tournaments.md
+@@ -141,8 +141,7 @@ Game options:
+ | `--experiment KEY` | Repeatable [experimental feature](../features/experimental-features.md) baked into a new game, e.g. `guard-area-balancing`; the profile's settings never apply to structured runs; forbidden when loading a save. Listed in `result.json` under `resolved.experiments` |
+ | `--rule name=value` | Repeatable custom rules, using the names and ranges in [headless rules](../development/headless-replays.md#glob2_test_rules). New games only; effective values are recorded in `resolved.rules`. Tournament game configurations accept the equivalent `rules` object, e.g. `{"noUpgrades": 1, "peaceful": 1}` |
+ | `--ticks N` | Absolute tick limit, default 90000; must exceed saved tick |
+-| `--compute-threads N` | Execution threads, 1–64 including main; default minimum of AI controllers, available hardware threads and 4 (at least 1) |
+-| `--compute-experiments MODE` | `none`, `areas`, `initialize`, `hiring`, `ai`, `all`; default `ai`; map modes remain experimental |
++| `--compute-threads auto\|N` | Shared executor participants including the owner; default `auto` uses reported logical CPUs; explicit N is a positive unsigned integer |
+ | `--replay true/false` | false |
+ | `--save initial/final/every:N` | Repeatable opt-in saves; checkpoints are diagnostics, not automatic recovery |
+ | `--telemetry NAME` | Repeatable checksums, team-timeline, maxima, gradient-stats ([building field statistics](../development/performance-telemetry.md#building-field-statistics)); default none |
+@@ -701,14 +700,13 @@ ticks, workload size, platform, and all commands rather than extrapolating one r
+ to every tournament.
+ 
+ 
+-Periodic gradient propagation uses two background workers and an eight-tick
+-publication delay by default, including normal games. `--gradient-workers N`
+-selects 0–16 background workers for headless runs; zero is the serial control
+-with identical simulation behavior. `--gradient-delay D` selects 1–16 ticks for
+-experiments before work is pending. A loaded game preserves its saved delay;
+-worker count may change without altering decisions. Save and replay exports
+-retain pending fields and deadlines. See
+-[performance experiments](../development/performance-telemetry.md) for the
++Periodic gradient propagation shares the session's compute executor and uses an
++eight-tick publication delay by default. `--compute-threads auto|N` selects the
++whole pool; one participant is the serial control with identical simulation
++behavior. `--gradient-delay D` selects 1–16 ticks for experiments before work is
++pending. A loaded game preserves its saved delay; worker count may change without
++altering decisions. Save and replay exports retain pending fields and deadlines.
++See [performance experiments](../development/performance-telemetry.md) for the
+ benchmark procedure and interpretation of CPU and wall time.
+ 
+ 
+diff --git a/platform/apps/engine-agent/test/fixtures/game-result.json b/platform/apps/engine-agent/test/fixtures/game-result.json
+index ee05d2a54..4d5f1da08 100644
+--- a/platform/apps/engine-agent/test/fixtures/game-result.json
++++ b/platform/apps/engine-agent/test/fixtures/game-result.json
+@@ -15,10 +15,10 @@
+   "gradient_wait_ns": 2527573,
+   "gradient_active_elapsed_ns": 80473665,
+   "compute_active_elapsed_ns": 13642408,
+-  "hiring_prepasses": 0,
+-  "hiring_popped_entries": 0,
++  "compute_requested_threads": "2",
++  "compute_resolved_threads": 2,
+   "compute_threads": 2,
+-  "compute_experiments": "ai",
++  "compute_workers": 1,
+   "compute_batches": 2100,
+   "compute_jobs": 4200,
+   "compute_parallel_batches": 2100,
+diff --git a/src/ai/AIThreading.h b/src/ai/AIThreading.h
+deleted file mode 100644
+index 0f5f8a2b2..000000000
+--- a/src/ai/AIThreading.h
++++ /dev/null
+@@ -1,20 +0,0 @@
+-// SPDX-License-Identifier: GPL-3.0-or-later
+-#pragma once
+-
+-#include "Game.h"
+-#include "Player.h"
+-
+-#include <algorithm>
+-#include <thread>
+-
+-// Count the submitting thread too. Keep the default bounded by useful AI and gradient jobs
+-// and available CPUs; explicit thread-count options can still request 1..64.
+-inline unsigned defaultAIThreadCount(const Game& game)
+-{
+-	unsigned controllers=0;
+-	for(int i=0; i<game.gameHeader.getNumberOfPlayers(); ++i)
+-		if(game.players[i] && game.players[i]->ai)
+-			++controllers;
+-	const unsigned hardware=std::thread::hardware_concurrency();
+-	return std::clamp(std::min(std::max(3u, controllers), hardware ? hardware : 1u), 1u, 4u);
+-}
+diff --git a/src/ai/engine/AIPipeline.cpp b/src/ai/engine/AIPipeline.cpp
+index ca6defb74..9b5f54e28 100644
+--- a/src/ai/engine/AIPipeline.cpp
++++ b/src/ai/engine/AIPipeline.cpp
+@@ -56,9 +56,9 @@ std::vector<std::pair<unsigned,std::shared_ptr<Order>>> Pipeline::prepare(Game&
+   if(requested[p])throw std::invalid_argument("Duplicate AI poll player");
+   requested[p]=true;
+  }
+- // Decisions run on the map's compute executor; with the AI experiment on,
+- // its workers share them and the owner joins at the deadline.
+- const bool shared=game.map.computeEnabled(Map::ComputeAI);
++ // Decisions use the shared executor; the owner joins at the deadline.
++ // Without workers, the executor runs deferred work on the owner at its join.
++ constexpr bool shared=true;
+  if(!configured) {scheduler.configure(game.gameHeader.getAIOrderDelay(),game.map.computeExecutor(),shared);configured=true;}
+  else if(scheduler.delayTicks()!=game.gameHeader.getAIOrderDelay()) throw std::logic_error("AI delay cannot change during a match");
+  else if(!scheduler.hasExecutor()||scheduler.sharedExecution()!=shared) scheduler.configureExecution(game.map.computeExecutor(),shared);
+diff --git a/src/ai/engine/AIPipelineTest.cpp b/src/ai/engine/AIPipelineTest.cpp
+index 81b394f94..54468fdbf 100644
+--- a/src/ai/engine/AIPipelineTest.cpp
++++ b/src/ai/engine/AIPipelineTest.cpp
+@@ -18,11 +18,11 @@ constexpr std::array controllers{AI::NUMBI, AI::CASTOR, AI::WARRUSH,
+ constexpr std::array<unsigned, 9> actors{0,1,2,3,4,5,6,7,8};
+ constexpr unsigned ticks = 20;
+ 
+-void populate(glob2test::HeadlessGame& fixture, unsigned delay, unsigned workers)
++void populate(glob2test::HeadlessGame& fixture, unsigned delay, unsigned threads)
+ {
+     auto& game = fixture.game;
+     game.gameHeader.setAIOrderDelay(delay);
+-    game.map.configureCompute(workers ? workers : 1, workers ? Map::ComputeAI : 0);
++    game.map.configureCompute(threads);
+     for (unsigned player : actors)
+     {
+         const int x = (player % 3) * 40, y = (player / 3) * 40;
+@@ -117,12 +117,12 @@ std::string save(Game& game)
+     game.save(&output,false,"AI pipeline continuation"); output.flush();
+     return memory->takeContents();
+ }
+-void load(Game& game, const std::string& bytes, unsigned workers)
++void load(Game& game, const std::string& bytes, unsigned threads)
+ {
+     GAGCore::BinaryInputStream input(new GAGCore::MemoryStreamBackend(bytes.data(),bytes.size()));
+     input.seekFromStart(0); REQUIRE(game.load(&input));
+     game.setWaitingOnMask(0);
+-    game.map.configureCompute(workers ? workers : 1, workers ? Map::ComputeAI : 0);
++    game.map.configureCompute(threads);
+ }
+ }
+ 
+@@ -134,16 +134,16 @@ TEST_CASE("every shipped controller preserves orders and state across worker cou
+     for (unsigned delay=0; delay<=8; ++delay) {
+         CAPTURE(delay);
+         std::vector<Tick> expected;
+-        for (unsigned workers : {0u,1u,4u}) {
+-            CAPTURE(workers);
++        for (unsigned threads : {1u,2u,4u,8u}) {
++            CAPTURE(threads);
+             setSyncRandSeed(0xA171);
+             glob2test::HeadlessGame fixture(glob2test::GameOptions{.wDec=7,.hDec=7,.teams=9,
+                 .loadDefaultRace=true,.header=true,.seed=0xA171});
+-            populate(fixture,delay,workers);
++            populate(fixture,delay,threads);
+             for (unsigned tick=0; tick<ticks; ++tick) {
+                 CAPTURE(tick);
+                 auto actual=advance(fixture.game);
+-                if (!workers) expected.push_back(std::move(actual));
++                if (threads == 1) expected.push_back(std::move(actual));
+                 else compare(actual,expected[tick]);
+             }
+             fixture.game.drainAI();
+@@ -153,12 +153,12 @@ TEST_CASE("every shipped controller preserves orders and state across worker cou
+ TEST_CASE("save continuation retains controller caches receipts and future commands at pipeline boundaries")
+ {
+     glob2test::HeadlessGlobals globals;
+-    for (unsigned delay=0; delay<=8; ++delay) for (unsigned workers : {0u,1u,4u}) {
+-        CAPTURE(delay); CAPTURE(workers);
++    for (unsigned delay=0; delay<=8; ++delay) for (unsigned threads : {1u,2u,4u,8u}) {
++        CAPTURE(delay); CAPTURE(threads);
+         setSyncRandSeed(0xA171);
+         glob2test::HeadlessGame fixture(glob2test::GameOptions{.wDec=7,.hDec=7,.teams=9,
+             .loadDefaultRace=true,.header=true,.seed=0xA171});
+-        populate(fixture,delay,workers);
++        populate(fixture,delay,threads);
+         std::vector<Tick> expected;
+         std::vector<std::pair<unsigned,std::string>> checkpoints;
+         for (unsigned tick=0; tick<ticks; ++tick) {
+@@ -170,7 +170,7 @@ TEST_CASE("save continuation retains controller caches receipts and future comma
+         for (const auto& [start,bytes] : checkpoints) {
+             CAPTURE(start);
+             GameGUI restored(false);
+-            load(restored.game,bytes,workers);
++            load(restored.game,bytes,threads);
+             for (unsigned tick=start; tick<ticks; ++tick) {
+                 CAPTURE(tick);
+                 compare(advance(restored.game),expected[tick]);
+@@ -192,7 +192,7 @@ TEST_CASE("pause and repeated boundary calls cannot execute a published command
+         game.gameHeader.setAIConfig(0,Script::config(
+             "function step(c){return {type:'workers',building:c.game.buildings({team:c.myTeam})[0],workers:3};}"));
+         game.players[0]->makeItAI(AI::JAVASCRIPT);
+-        game.map.configureCompute(4,Map::ComputeAI);
++        game.map.configureCompute(4);
+         constexpr std::array<unsigned,1> player{0};
+         for (unsigned tick=0; tick<=delay; ++tick) {
+             auto first=game.prepareAIOrders(player,false)[0].second;
+@@ -234,7 +234,7 @@ TEST_CASE("replacement cancels an old output without rejecting identical new wir
+     game.gameHeader.setAIConfig(0,Script::config(
+         "function step(c){return {type:'workers',building:c.game.buildings({team:c.myTeam})[0],workers:3};}"));
+     game.players[0]->makeItAI(AI::JAVASCRIPT);
+-    game.map.configureCompute(4,Map::ComputeAI);
++    game.map.configureCompute(4);
+     constexpr std::array<unsigned,1> player{0};
+     auto old=game.prepareAIOrders(player,false)[0].second;
+     REQUIRE(old->getOrderType()==ORDER_MODIFY_BUILDING);
+diff --git a/src/app/GlobalContainer.h b/src/app/GlobalContainer.h
+index b67aacf3f..d0670c5a3 100644
+--- a/src/app/GlobalContainer.h
++++ b/src/app/GlobalContainer.h
+@@ -125,9 +125,9 @@ public:
+ 	bool networkInitialized = false;
+ 	bool structuredHeadless = false;
+ 	bool headlessReplay = false;
+-	// Zero selects the bounded hardware/AI-count default. Structured
++	// Zero selects the reported logical CPU count (one if unavailable). Structured
+ 	// --run-game configures its own compute executor instead.
+-	unsigned aiThreads = 0;
++	unsigned computeThreads = 0;
+ 	std::string runNoXGameName;
+ 	int runNoXCountRuns; //!< The number of runs you want to repeat the no X run
+ 	bool automaticEndingGame;
+diff --git a/src/app/GlobalContainerArgs.cpp b/src/app/GlobalContainerArgs.cpp
+index ec7f301ff..7b48aff88 100644
+--- a/src/app/GlobalContainerArgs.cpp
++++ b/src/app/GlobalContainerArgs.cpp
+@@ -5,6 +5,7 @@
+ // GlobalContainer.cpp because parseArgs and its helpers are nearly
+ // 400 lines on their own and have no overlap with the asset/init code.
+ 
++#include "ComputeThreads.h"
+ #include <sstream>
+ #include <cerrno>
+ #include <cstdlib>
+@@ -198,19 +199,21 @@ void GlobalContainer::parseArgs(int argc, char *argv[])
+ 					"--ai-types <comma-separated-list> requires an argument\n"),
+ 				testGamesAIPool, false);
+ 		}
+-		else if (strcmp(argv[i], "--ai-threads")==0)
++		else if (isRemovedComputeOption(argv[i]))
++		{
++			std::cerr << argv[i] << " has been removed; use --compute-threads auto|N\n";
++			exit(1);
++		}
++		else if (strcmp(argv[i], "--compute-threads")==0)
+ 		{
+ 			const char *value = requireStringArg(i, argc, argv,
+-				"--ai-threads <1..64> requires an argument\n");
+-			char *end = nullptr;
+-			errno = 0;
+-			const long count = std::strtol(value, &end, 10);
+-			if (errno || end == value || *end || count < 1 || count > 64)
++				"--compute-threads <auto|N> requires an argument\n");
++			try { computeThreads = parseComputeThreadCount(value); }
++			catch (const std::invalid_argument& error)
+ 			{
+-				std::cerr << "--ai-threads expects an integer from 1 to 64\n";
++				std::cerr << error.what() << '\n';
+ 				exit(1);
+ 			}
+-			aiThreads = static_cast<unsigned>(count);
+ 		}
+ 		else if (strcmp(argv[i], "--map")==0)
+ 		{
+@@ -453,6 +456,7 @@ void GlobalContainer::parseArgs(int argc, char *argv[])
+ 			printf("-test-games-nox\tCreates random games with AI and tests them, without gui\n");
+ 			printf("--ai-types <list>\tcomma-separated AI names to draw from in -test-games* (default: all)\n");
+ 			printf("\t\tvalid: %s\n", AINames::validAINames().c_str());
++			printf("--compute-threads <auto|N>\tshared compute pool; auto uses logical CPU count\n");
+ 			printf("--map <name>\tpin the map for -test-games* (resolved as maps/<name>.map)\n");
+ 			printf("--matchup <list>\tcomma-separated per-team AI names; matchup[k] plays team k\n");
+ 			printf("\t\trequires --map; mutually exclusive with --ai-types\n");
+diff --git a/src/app/cli/Headless.cpp b/src/app/cli/Headless.cpp
+index 5854d3dcf..b3038ed11 100644
+--- a/src/app/cli/Headless.cpp
++++ b/src/app/cli/Headless.cpp
+@@ -16,7 +16,7 @@
+ #include "Sha256.h"
+ #include "AINames.h"
+ #include "AIJavaScript.h"
+-#include "AIThreading.h"
++#include "ComputeThreads.h"
+ #include "AIMaximaStrategy.h"
+ #include "ai/cortex/CortexTuning.h"
+ #include "Game.h"
+@@ -36,6 +36,7 @@
+ #include <Toolkit.h>
+ #include <algorithm>
+ #include <chrono>
++#include <cstdlib>
+ #include <ctime>
+ #ifdef WIN32
+ #ifndef NOMINMAX
+@@ -279,7 +280,6 @@ struct HeadlessRunner
+ 			setHeadlessEnvironment("SDL_VIDEODRIVER","dummy");
+ 			setHeadlessEnvironment("SDL_AUDIODRIVER","dummy");
+ 		}
+-		const unsigned gradientWorkers = integer(one(options, "--gradient-workers", "2"), 0, 16);
+ 		const unsigned gradientDelay = integer(one(options, "--gradient-delay", "8"), 1, 16);
+ 		GlobalContainer globals(one(options, "--profile", "glob2-tournament").c_str(), one(options, "--building-catalog"));
+ 		globalContainer=&globals;
+@@ -448,28 +448,19 @@ struct HeadlessRunner
+ 			auto& script=engine.gui.game.mapscript;script.setMapScriptMode(MapScript::JavaScript);script.setMapScript(Script::readSource(one(options,"--map-script")));if(!script.compileCode())throw std::invalid_argument(script.getError().getMessage());
+ 		}
+ 		if (!fields.empty()) engine.diagnostics = std::make_shared<GameDiagnostics::Session>(engine.gui.game,(output/"diagnostics").string(),diagnosticInterval,diagnosticPng=="true");
+-		const unsigned computeThreads = integer(one(options, "--compute-threads",
+-			std::to_string(options.count("--gradient-workers") && gradientWorkers
+-                ? gradientWorkers+1 : defaultAIThreadCount(engine.gui.game))), 1, 64);
+-		const std::string computeExperiments = one(options, "--compute-experiments", "ai");
+-		unsigned experimentMask = 0;
+-		if (computeExperiments == "all") experimentMask = 15;
+-		else if (computeExperiments == "areas") experimentMask = Map::ComputeAreas;
+-		else if (computeExperiments == "initialize") experimentMask = Map::ComputeInitialize;
+-		else if (computeExperiments == "hiring") experimentMask = Map::ComputeHiring;
+-		else if (computeExperiments == "ai") experimentMask = Map::ComputeAI;
+-		else if (computeExperiments != "none") throw std::invalid_argument("unknown compute experiment: " + computeExperiments);
+-		engine.gui.game.map.configureCompute(computeThreads, experimentMask);
++		const std::string requestedSizing = one(options, "--compute-threads", "auto");
++		const unsigned computeThreads = resolveComputeThreadCount(parseComputeThreadCount(requestedSizing));
++		engine.gui.game.map.configureCompute(computeThreads);
+         engine.gui.game.map.setResourceGrowthDelay(integer(
+             one(options, "--resource-growth-delay", std::to_string(engine.gui.game.map.resourceGrowthDelay())), 1, 16));
+ 		const auto pipeline = engine.gui.game.map.gradientPipelineStatus();
+-		if (!pipeline.enabled) engine.gui.game.map.configureGradientPipeline(gradientWorkers, gradientDelay);
++		if (!pipeline.enabled) engine.gui.game.map.configureGradientPipeline(1, gradientDelay);
+ 		else {
+ 			if (options.count("--gradient-delay") && gradientDelay != pipeline.delay) {
+ 				if (pipeline.pending) throw std::invalid_argument("cannot change the delay with pending gradients");
+-				engine.gui.game.map.configureGradientPipeline(gradientWorkers, gradientDelay);
++				engine.gui.game.map.configureGradientPipeline(1, gradientDelay);
+ 			}
+-			engine.gui.game.map.setGradientWorkerCount(gradientWorkers);
++			engine.gui.game.map.setGradientWorkerCount(1);
+ 		}
+ 		globals.headlessReplay=recordReplay;
+ 		if(recordReplay) {
+@@ -595,9 +586,7 @@ struct HeadlessRunner
+ 		for (std::size_t reason = 0; reason < buildingResult.synchronousByReason.size(); ++reason)
+ 			result << (reason ? "," : "") << quote(Map::buildingSyncReasonName(Map::BuildingSyncReason(reason)))
+ 				<< ':' << buildingResult.synchronousByReason[reason];
+-		result << '}'
+-			<< ",\"hiring_prepasses\":" << game.map.hiringPrepasses
+-			<< ",\"hiring_popped_entries\":" << game.map.hiringPoppedEntries;
++		result << '}';
+ 		if (auto *stats = game.map.gradientStats.get())
+ 		{
+ 			// Diagnostics only: close the live field lifetimes and export them.
+@@ -610,7 +599,9 @@ struct HeadlessRunner
+ 		}
+ 		result
+ 			<< ",\"compute_threads\":" << game.map.computeExecutor().threadCount()
+-			<< ",\"compute_experiments\":" << quote(computeExperiments)
++			<< ",\"compute_requested_threads\":" << quote(requestedSizing)
++			<< ",\"compute_resolved_threads\":" << computeThreads
++			<< ",\"compute_workers\":" << game.map.computeExecutor().threadCount() - 1
+ 			<< ",\"compute_batches\":" << game.map.computeExecutor().metrics().batches
+ 			<< ",\"compute_jobs\":" << game.map.computeExecutor().metrics().jobs
+ 			<< ",\"compute_parallel_batches\":" << game.map.computeExecutor().metrics().parallelBatches
+@@ -801,12 +792,13 @@ int runHeadlessCommand(int argc,char **argv)
+ 			std::cout << "}" << std::endl;return 0;
+ 		}
+ 		const std::set<std::string> common={"--output-dir","--profile","--building-catalog","--building-artwork"};
+-		const std::set<std::string> gameKeys={"--diagnostic-fields","--diagnostic-interval","--diagnostic-png","--benchmark-warmup","--ai-script","--map-script","--map-file","--load-game","--game-seed","--player","--ai-param","--alliance","--win-condition","--win-probability","--experiment","--rule","--fork-rule","--ticks","--compute-threads","--compute-experiments","--gradient-workers","--gradient-delay","--resource-growth-delay","--ai-order-delay","--save","--telemetry","--replay","--generator","--map-seed","--param","--candidates"};
++		const std::set<std::string> gameKeys={"--diagnostic-fields","--diagnostic-interval","--diagnostic-png","--benchmark-warmup","--ai-script","--map-script","--map-file","--load-game","--game-seed","--player","--ai-param","--alliance","--win-condition","--win-probability","--experiment","--rule","--fork-rule","--ticks","--compute-threads","--gradient-delay","--resource-growth-delay","--ai-order-delay","--save","--telemetry","--replay","--generator","--map-seed","--param","--candidates"};
+ 		const std::set<std::string> mapKeys={"--generator","--map-seed","--param","--candidates","--rotations","--write-map","--report","--perturb"};
+ 		Options options;
+ 		for(int i=2;i<argc;++i)
+ 		{
+ 			std::string key=argv[i];
++			if (isRemovedComputeOption(key)) throw std::invalid_argument(key + " has been removed; use --compute-threads auto|N");
+ 			if(!common.count(key) && !(command=="--run-game"?gameKeys:mapKeys).count(key)) throw std::invalid_argument("unknown option: " + key);
+ 			if(++i>=argc)throw std::invalid_argument("missing value for " + key);
+ 			options[key].push_back(argv[i]);
+diff --git a/src/app/cli/TurnClientCommand.cpp b/src/app/cli/TurnClientCommand.cpp
+index f05e999f5..990b7f46c 100644
+--- a/src/app/cli/TurnClientCommand.cpp
++++ b/src/app/cli/TurnClientCommand.cpp
+@@ -22,6 +22,7 @@
+ #include <thread>
+ 
+ #include "Building.h"
++#include "ComputeThreads.h"
+ #include "BuildingType.h"
+ #include "ai/BuildingCapabilities.h"
+ #include "Engine.h"
+@@ -50,6 +51,7 @@ struct Options
+ 	double ordersPerSecond = 0.5;
+ 	double maxSeconds = 1800;
+ 	std::uint32_t seed = 1;
++	unsigned computeThreads = 0;
+ };
+ 
+ std::string readText(const std::string& path)
+@@ -142,6 +144,7 @@ static int play(const Options& options, const fs::path& output)
+ 	globalContainer = &globals;
+ 	globals.runNoX = true;
+ 	globals.structuredHeadless = true;
++	globals.computeThreads = options.computeThreads;
+ 	globals.automaticEndingGame = false;
+ 	globals.load();
+ 
+@@ -269,6 +272,10 @@ static int play(const Options& options, const fs::path& output)
+ 	       << ",\"ended_by\":" << Headless::quote(endedBy) << ",\"session_state\":" << int(finalState)
+ 	       << ",\"executed_ticks\":" << finalTick << ",\"game_ended\":" << (game.isGameEnded ? "true" : "false")
+ 	       << ",\"timed_out\":" << (timedOut ? "true" : "false") << ",\"desync_flagged\":" << (desync ? "true" : "false")
++	       << ",\"compute_requested_threads\":" << Headless::quote(options.computeThreads ? std::to_string(options.computeThreads) : "auto")
++	       << ",\"compute_resolved_threads\":" << resolveComputeThreadCount(options.computeThreads)
++	       << ",\"compute_threads\":" << game.map.computeExecutor().threadCount()
++	       << ",\"compute_workers\":" << game.map.computeExecutor().threadCount() - 1
+ 	       << ",\"reloads\":" << reloads << ",\"orders_queued\":" << ordersQueued
+ 	       << ",\"rtt_ms\":" << rtt / 1000 << ",\"jitter_ms\":" << jitter / 1000
+ 	       << ",\"wall_seconds\":" << elapsed() << ",\"first_tick_seconds\":" << firstTickAt
+@@ -300,12 +307,13 @@ int runTurnClient(int argc, char** argv)
+ 	{
+ 		if (argc < 3)
+ 			throw Usage("usage: --turn-client <assignment.json> --map <file> --out <dir> [--orders-per-second R] "
+-			            "[--max-seconds S] [--seed N] [--profile <name>]");
++			            "[--max-seconds S] [--seed N] [--profile <name>] [--compute-threads auto|N]");
+ 		Options options;
+ 		options.assignment = argv[2];
+ 		for (int i = 3; i < argc; i += 2)
+ 		{
+ 			const std::string key = argv[i];
++			if (isRemovedComputeOption(key)) throw Usage(key + " has been removed; use --compute-threads auto|N");
+ 			if (i + 1 >= argc)
+ 				throw Usage("missing value for " + key);
+ 			const std::string value = argv[i + 1];
+@@ -313,6 +321,8 @@ int runTurnClient(int argc, char** argv)
+ 				options.map = value;
+ 			else if (key == "--out")
+ 				options.out = value;
++			else if (key == "--compute-threads")
++				options.computeThreads = parseComputeThreadCount(value);
+ 			else if (key == "--profile")
+ 				options.profile = value;
+ 			else if (key == "--orders-per-second")
+diff --git a/src/app/cli/VerifyMatch.cpp b/src/app/cli/VerifyMatch.cpp
+index 6e9f50dc8..02ea24d08 100644
+--- a/src/app/cli/VerifyMatch.cpp
++++ b/src/app/cli/VerifyMatch.cpp
+@@ -21,6 +21,7 @@
+ #include "Environment.h"
+ #include "Game.h"
+ #include "GlobalContainer.h"
++#include "ComputeThreads.h"
+ #include "Headless.h"
+ #include "ReplayWriter.h"
+ #include "Sha256.h"
+@@ -275,6 +276,11 @@ MatchVerifier::Verdict MatchVerifier::verify(const Turn::MatchRecord& record, co
+ 	result << ",\"verification\":" << verification.dump()
+ 	       << ",\"network\":" << Turn::recordNetworkSummary(record).dump() << '}';
+ 	Headless::writeJson((output / "result.json").string(), result.str());
++	Headless::writeJson((output / "compute.json").string(), json{
++	    {"compute_requested_threads", globals.computeThreads ? std::to_string(globals.computeThreads) : "auto"},
++	    {"compute_resolved_threads", resolveComputeThreadCount(globals.computeThreads)},
++	    {"compute_threads", game.map.computeExecutor().threadCount()},
++	    {"compute_workers", game.map.computeExecutor().threadCount() - 1}}.dump());
+ 
+ 	json teams = json::array();
+ 	for (int t = 0; t < game.mapHeader.getNumberOfTeams(); ++t)
+@@ -329,7 +335,7 @@ MatchVerifier::Verdict MatchVerifier::verify(const Turn::MatchRecord& record, co
+ }
+ 
+ int MatchVerifier::run(const std::string& recordPath, const std::string& mapPath, const fs::path& output,
+-                       const std::string& profile)
++                       const std::string& profile, unsigned computeThreads)
+ {
+ 	// Record and setup first: a defect here is a bad request, not a verdict.
+ 	Turn::MatchRecord record;
+@@ -357,6 +363,7 @@ int MatchVerifier::run(const std::string& recordPath, const std::string& mapPath
+ 
+ 	GlobalContainer globals(profile.c_str());
+ 	globalContainer = &globals;
++	globals.computeThreads = computeThreads;
+ 	globals.runNoX = true;
+ 	globals.structuredHeadless = true;
+ 	globals.load();
+@@ -370,18 +377,22 @@ int runVerifyMatch(int argc, char** argv)
+ 	try
+ 	{
+ 		if (argc < 3)
+-			throw Usage("usage: --verify-match <record> --map <file> --out <dir> [--profile <name>]");
++			throw Usage("usage: --verify-match <record> --map <file> --out <dir> [--profile <name>] [--compute-threads auto|N]");
+ 		const std::string record = argv[2];
+ 		std::string map, out, profile = "glob2-verify";
++		unsigned computeThreads = 0;
+ 		for (int i = 3; i < argc; i += 2)
+ 		{
+ 			const std::string key = argv[i];
++			if (isRemovedComputeOption(key)) throw Usage(key + " has been removed; use --compute-threads auto|N");
+ 			if (i + 1 >= argc)
+ 				throw Usage("missing value for " + key);
+ 			if (key == "--map")
+ 				map = argv[i + 1];
+ 			else if (key == "--out" || key == "--output-dir")
+ 				out = argv[i + 1];
++			else if (key == "--compute-threads")
++				computeThreads = parseComputeThreadCount(argv[i + 1]);
+ 			else if (key == "--profile")
+ 				profile = argv[i + 1];
+ 			else
+@@ -397,7 +408,7 @@ int runVerifyMatch(int argc, char** argv)
+ 		GAGCore::setProcessEnvironment("GLOB2_USER_DATA_DIR", profileDir.c_str(), 1);
+ 		if (fs::exists(output / "result.json"))
+ 			throw Usage("output directory already contains a result");
+-		return MatchVerifier::run(fs::absolute(record).string(), fs::absolute(map).string(), output, profile);
++		return MatchVerifier::run(fs::absolute(record).string(), fs::absolute(map).string(), output, profile, computeThreads);
+ 	}
+ 	catch (const std::exception& error)
+ 	{
+diff --git a/src/app/cli/VerifyMatch.h b/src/app/cli/VerifyMatch.h
+index a06cc4338..fd6ebbc6d 100644
+--- a/src/app/cli/VerifyMatch.h
++++ b/src/app/cli/VerifyMatch.h
+@@ -52,5 +52,5 @@ struct MatchVerifier
+ 	/// The command line: checks the record and setup, creates the process's
+ 	/// GlobalContainer and verifies. Bad input throws std::invalid_argument.
+ 	static int run(const std::string& recordPath, const std::string& mapPath, const std::filesystem::path& output,
+-	               const std::string& profile);
++	               const std::string& profile, unsigned computeThreads = 0);
+ };
+diff --git a/src/building/Step.cpp b/src/building/Step.cpp
+index 9a69baed3..7f2fbffd8 100644
+--- a/src/building/Step.cpp
++++ b/src/building/Step.cpp
+@@ -146,7 +146,6 @@ bool Building::considerUnitForMaterial(Unit* unit, int wantedMaterial, int* dist
+ 
+ int Building::gatherBringMaterialsCandidates(BringMaterialsCandidate* candidates, int wantedMaterial)
+ {
+-	owner->map->advanceHiringGradients(this);
+ 	// The tallies count units, and the same unit is offered every material the
+ 	// building tries to staff, so start each scan from zero: what the info panel
+ 	// ends up showing is one coherent pass, for the last material attempted.
+diff --git a/src/common/ComputeExecutor.h b/src/common/ComputeExecutor.h
+index 8aee6c904..1d989a92c 100644
+--- a/src/common/ComputeExecutor.h
++++ b/src/common/ComputeExecutor.h
+@@ -377,7 +377,7 @@ public:
+ 		const std::function<std::thread(std::function<void()>)> &launch =
+ 			[](std::function<void()> function) { return GAGCore::ThreadSupport::launch(std::move(function)); })
+ 	{
+-		assert(!active && threads >= 1 && threads <= 64);
++		assert(!active && threads >= 1);
+ 		stop();
+ 		presentationWorker = threads > 1 ? threads - 1 : 0;
+ 		if constexpr (GAGCore::ThreadSupport::available)
+diff --git a/src/common/ComputeExecutorHarness.cpp b/src/common/ComputeExecutorHarness.cpp
+index 31fcf0414..799b8ccb1 100644
+--- a/src/common/ComputeExecutorHarness.cpp
++++ b/src/common/ComputeExecutorHarness.cpp
+@@ -7,14 +7,38 @@
+ #include <thread>
+ #include <atomic>
+ #include "ComputeExecutor.h"
++#include "ComputeThreads.h"
+ #include <array>
+ #include <stdexcept>
+ #include <chrono>
+ #include <span>
+ #include <mutex>
++#include <limits>
++#include <string>
+ 
+ TEST_SUITE("ComputeExecutor")
+ {
++TEST_CASE("automatic sizing follows hardware and supports unknown CPU counts")
++{
++    CHECK(defaultComputeThreadCount(0) == 1);
++    CHECK(defaultComputeThreadCount(1) == 1);
++    CHECK(defaultComputeThreadCount(12) == 12);
++    CHECK(defaultComputeThreadCount(128) == 128);
++}
++TEST_CASE("thread configuration accepts auto and rejects malformed or overflowing overrides")
++{
++    CHECK(parseComputeThreadCount("auto") == 0);
++    CHECK(parseComputeThreadCount("1") == 1);
++    CHECK(parseComputeThreadCount("64") == 64);
++    CHECK(parseComputeThreadCount("65") == 65);
++    CHECK(parseComputeThreadCount("128") == 128);
++    CHECK(parseComputeThreadCount(std::to_string(std::numeric_limits<unsigned>::max())) == std::numeric_limits<unsigned>::max());
++    CHECK(resolveComputeThreadCount(0, 0) == 1);
++    CHECK(resolveComputeThreadCount(0, 128) == 128);
++    CHECK(resolveComputeThreadCount(65, 8) == 65);
++    for (const auto value : {"", "0", "-1", "+1", " 1", "1 ", "1x", "1.5", "999999999999999999999"})
++        CHECK_THROWS_AS(parseComputeThreadCount(value), std::invalid_argument);
++}
+ TEST_CASE("supported platforms execute jobs concurrently on distinct threads")
+ {
+     if constexpr (GAGCore::ThreadSupport::available)
+diff --git a/src/common/ComputeThreads.h b/src/common/ComputeThreads.h
+new file mode 100644
+index 000000000..49b1114ee
+--- /dev/null
++++ b/src/common/ComputeThreads.h
+@@ -0,0 +1,39 @@
++// SPDX-License-Identifier: GPL-3.0-or-later
++#pragma once
++
++#include <charconv>
++#include <stdexcept>
++#include <string_view>
++#include <thread>
++
++// Total executor participants, including the simulation owner. Hardware discovery
++// may return zero; one participant is the portable serial fallback. Work placement
++// and match deadlines are independent of this local execution setting.
++inline unsigned defaultComputeThreadCount(unsigned hardware = std::thread::hardware_concurrency())
++{
++    return hardware ? hardware : 1;
++}
++
++// Zero represents automatic sizing in application configuration. The explicit
++// override accepts the executor's positive unsigned count range.
++inline unsigned parseComputeThreadCount(std::string_view value)
++{
++    if (value == "auto") return 0;
++    if (value.empty())
++        throw std::invalid_argument("--compute-threads expects auto or a positive unsigned integer");
++    unsigned count = 0;
++    const auto result = std::from_chars(value.data(), value.data() + value.size(), count);
++    if (result.ec != std::errc{} || result.ptr != value.data() + value.size() || count < 1)
++        throw std::invalid_argument("--compute-threads expects auto or a positive unsigned integer");
++    return count;
++}
++
++inline unsigned resolveComputeThreadCount(unsigned requested, unsigned hardware = std::thread::hardware_concurrency())
++{
++    return requested ? requested : defaultComputeThreadCount(hardware);
++}
++
++inline bool isRemovedComputeOption(std::string_view option)
++{
++    return option == "--ai-threads" || option == "--gradient-workers" || option == "--compute-experiments";
++}
+diff --git a/src/engine/EngineRun.cpp b/src/engine/EngineRun.cpp
+index 85c5a40b5..5dba381a8 100644
+--- a/src/engine/EngineRun.cpp
++++ b/src/engine/EngineRun.cpp
+@@ -8,7 +8,7 @@
+ #include <FormatableString.h>
+ 
+ #include "AINames.h"
+-#include "AIThreading.h"
++#include "ComputeThreads.h"
+ #include "ChecksumSidecar.h"
+ #include "ConnectionOverlay.h"
+ #include "DatasetWriter.h"
+@@ -860,9 +860,8 @@ void Engine::reloadTurnInitialState()
+ 		if (!checksumSidecar->open(state.replayPath, gui.game))
+ 			checksumSidecar.reset();
+ 	}
+-	if (!globalContainer->structuredHeadless)
+-		gui.game.map.configureCompute(globalContainer->aiThreads ? globalContainer->aiThreads
+-			: defaultAIThreadCount(gui.game), Map::ComputeAI);
++	if (!globalContainer->structuredHeadless || turn)
++		gui.game.map.configureCompute(resolveComputeThreadCount(globalContainer->computeThreads));
+ 	teamEliminatedTick.clear();
+ 	if (session)
+ 		session->wasReadyLastTick = true;
+@@ -896,9 +895,8 @@ void Engine::beginSession(Uint64 now)
+ {
+     if (session) throw std::logic_error("Engine session is already active");
+     if (!net) throw std::logic_error("Engine session requires an initialized game");
+-	if (!globalContainer->structuredHeadless)
+-		gui.game.map.configureCompute(globalContainer->aiThreads ? globalContainer->aiThreads
+-			: defaultAIThreadCount(gui.game), Map::ComputeAI);
++	if (!globalContainer->structuredHeadless || turn)
++		gui.game.map.configureCompute(resolveComputeThreadCount(globalContainer->computeThreads));
+     sessionEndingTarget = globalContainer->automaticEndingSteps;
+     MainLoopState st{};
+     st.adjustableGameSpeed = gui.canChangeGameSpeed();
+diff --git a/src/engine/EngineSessionHarness.cpp b/src/engine/EngineSessionHarness.cpp
+index 5ae1c5124..388da752c 100644
+--- a/src/engine/EngineSessionHarness.cpp
++++ b/src/engine/EngineSessionHarness.cpp
+@@ -83,7 +83,7 @@ TEST_SUITE("EngineSession")
+         struct NetworkScope { ~NetworkScope(){NET_Quit();} } network;
+         globalContainer->automaticEndingGame=false;
+         globalContainer->settings.autosaveGames=false;
+-        globalContainer->aiThreads=1;
++        globalContainer->computeThreads=1;
+         Engine engine;
+         REQUIRE(engine.initCampaign("maps/balanced.map")==Engine::EE_NO_ERROR);
+         globalContainer->settings.gameSpeed=Settings::GAME_SPEED_NORMAL;
+@@ -252,7 +252,7 @@ TEST_SUITE("EngineSession")
+         globalContainer->automaticEndingGame=false;
+         globalContainer->settings.autosaveGames=false;
+         globalContainer->settings.gameSpeed=Settings::GAME_SPEED_MAXIMUM;
+-        globalContainer->aiThreads=2;
++        globalContainer->computeThreads=2;
+         std::ofstream evidence(glob2test::artifactDir()/"client-frame-latency.csv");
+         evidence << "forced_park,frames,ticks,elapsed_ms,frame_p50_us,frame_p95_us,scene_age_p95_ms,input_p50_us,input_p95_us\n";
+         for(bool forced : {true,false})
+diff --git a/src/game/SharedWorkerLifecycleTest.cpp b/src/game/SharedWorkerLifecycleTest.cpp
+index 8890317f3..f57ad3614 100644
+--- a/src/game/SharedWorkerLifecycleTest.cpp
++++ b/src/game/SharedWorkerLifecycleTest.cpp
+@@ -93,7 +93,7 @@ TEST_CASE("pending gradient work survives a save and continues at the same deadl
+     REQUIRE(source.loadFromHeaders(mapHeader, header, true, true));
+     auto &map = source.game.map;
+     map.getClearAreasGradient(0, 0);
+-    map.configureCompute(4,0);
++    map.configureCompute(4);
+     map.configureGradientPipeline(2, 3);
+     map.advanceGradientPipeline();
+     map.syncStep(0, false);
+@@ -148,7 +148,7 @@ TEST_CASE("direct completed steps match deferred preparation across worker count
+         game->map.configureGradientPipeline(0, 8);
+     }
+     for (unsigned threads : {1, 4}) {
+-        deferred.game.map.configureCompute(threads, Map::ComputeAI);
++        deferred.game.map.configureCompute(threads);
+         for (unsigned tick = 0; tick < 64; ++tick) {
+             direct.game.syncStep(0);
+             CHECK_FALSE(direct.game.map.hasPendingGradientPreparation());
+@@ -166,7 +166,7 @@ TEST_CASE("direct completed steps match deferred preparation across worker count
+     }
+     deferred.game.syncStep(0, Game::PreparationCompletion::Deferred);
+     REQUIRE(deferred.game.map.hasPendingGradientPreparation());
+-    deferred.game.map.configureCompute(1, 0);
++    deferred.game.map.configureCompute(1);
+     CHECK_FALSE(deferred.game.map.hasPendingGradientPreparation());
+     deferred.game.syncStep(0, Game::PreparationCompletion::Deferred);
+     deferred.game.map.setGradientWorkerCount(2);
+@@ -209,7 +209,7 @@ TEST_CASE("no-AI completed ticks agree across shared worker counts [artifacts]"
+         GAGCore::BinaryInputStream reader(new GAGCore::MemoryStreamBackend(checkpoint.data(),checkpoint.size()));
+         reader.seekFromStart(0);
+         REQUIRE(game.load(&reader));
+-        game.game.map.configureCompute(threads,0);
++        game.game.map.configureCompute(threads);
+         std::vector<Uint32> actual;
+         for (unsigned tick=0; tick<96; ++tick) {
+             game.game.syncStep(0,Game::PreparationCompletion::Deferred);
+@@ -289,7 +289,7 @@ TEST_CASE("AI and pending gradients consume the presentation union without anoth
+     auto* observer=new BoundaryObserver;
+     delete game.players[0]->ai->aiImplementation;
+     game.players[0]->ai->aiImplementation=observer;
+-    game.map.configureCompute(2,Map::ComputeAI);
++    game.map.configureCompute(2);
+     game.map.configureGradientPipeline(0,8);
+     game.map.getClearAreasGradient(0,0);
+     game.syncStep(0,Game::PreparationCompletion::Deferred);
+diff --git a/src/map/Map.cpp b/src/map/Map.cpp
+index d817d7835..2609e8c88 100644
+--- a/src/map/Map.cpp
++++ b/src/map/Map.cpp
+@@ -521,14 +521,13 @@ void Map::clearGradientBufferPool()
+ 		delete[] idleGradientBuffers[--idleGradientBufferCount];
+ }
+ 
+-void Map::configureCompute(unsigned threads, unsigned experiments)
++void Map::configureCompute(unsigned threads)
+ {
+ 	finishGradientPipeline();
+ 	finishResourceGrowth();
+ 	compute.configure(threads);
+ 	gradientRuntime->pipeline.resizeWorkspaces();
+ 	gradientRuntime->workspaces.resize(compute.threadCount());
+-	computeExperiments = experiments;
+ }
+ 
+ void Map::clear()
+diff --git a/src/map/Map.h b/src/map/Map.h
+index 90f5bfcb3..58c889fa0 100644
+--- a/src/map/Map.h
++++ b/src/map/Map.h
+@@ -110,7 +110,6 @@ class Map
+ 	void seedMaterialGradientWithSuppliers(int team, Uint8 resource, int swim, Uint16 *output, const Building* consumer, unsigned modes);
+ 	mutable ComputeExecutor compute;
+ 	mutable std::unique_ptr<GradientRuntime> gradientRuntime;
+-	unsigned computeExperiments = 0;
+ 	// Scheduled building gradients (MapGradientScheduling.cpp).
+ 	void stageBuildingGradientPreparation();
+ 	SimulationSnapshot::Requirements pendingBuildingRequirements() const;
+@@ -240,22 +239,14 @@ public:
+ 	std::shared_ptr<const std::vector<Uint8>> frozenWaterSnapshot() const;
+ 	Uint16 *acquireBuildingGradientBuffer();
+ 	void recycleBuildingGradientBuffer(Uint16 *buffer);
+-	std::uint64_t hiringPrepasses = 0, hiringPoppedEntries = 0;
+-	enum ComputeExperiment { ComputeAreas = 1, ComputeInitialize = 2, ComputeHiring = 4, ComputeAI = 8 };
+-	void configureCompute(unsigned threads, unsigned experiments);
++	void configureCompute(unsigned threads);
+ 	ComputeExecutor &computeExecutor() { return compute; }
+-	bool computeEnabled(ComputeExperiment experiment) const { return computeExperiments & experiment; }
+-	// Fixed chunks and synchronous barriers: thresholds affect execution only.
++	// Live field seeding retains its serial production order.
+ 	template<class Function> void initializeGradientCells(Function function) const
+ 	{
+-		constexpr size_t chunk = 4096;
+-		if (!computeEnabled(ComputeInitialize) || size < 16384)
+-		{ function(0, size); return; }
+-		compute.run((size + chunk - 1) / chunk, [&](size_t part) {
+-			const size_t begin = part * chunk;
+-			function(begin, std::min(begin + chunk, size));
+-		});
++		function(0, size);
+ 	}
++
+ 	struct GradientPipelineStatus
+ 	{
+ 		bool enabled = false;
+@@ -333,7 +324,6 @@ public:
+ 	void seedMaterialGradient(int team, Uint8 resource, int swim, Uint16 *gradient, bool withMarkets = false, const Building* consumer = nullptr, unsigned modes = 0);
+ 	void seedGuardAreasGradient(int team, int swim, Uint16 *gradient);
+ 	void seedClearAreasGradient(int team, int swim, Uint16 *gradient);
+-	void advanceHiringGradients(Building *building);
+ 
+ 	void saveRuntimeState(GAGCore::OutputStream *stream) const;
+ 	void loadRuntimeState(GAGCore::InputStream *stream, Sint32 versionMinor);
+diff --git a/src/map/ResourceGrowthBenchmark.cpp b/src/map/ResourceGrowthBenchmark.cpp
+index 4573ce074..215ba86d2 100644
+--- a/src/map/ResourceGrowthBenchmark.cpp
++++ b/src/map/ResourceGrowthBenchmark.cpp
+@@ -91,7 +91,7 @@ TEST_SUITE("ResourceGrowthBenchmark")
+ 					REQUIRE(world.game.gameHeader.getNumberOfPlayers() == 0);
+ 					auto &map = world.game.map;
+ 					setup(map, scenario);
+-					map.configureCompute(variant == "shared" ? 4 : 1, 0);
++					map.configureCompute(variant == "shared" ? 4 : 1);
+ 					map.setResourceGrowthDelay(delay);
+ 					auto scan = [&]()
+ 					{
+@@ -402,7 +402,7 @@ TEST_SUITE("ResourceGrowthBenchmark")
+ 					if (variant == runs.front().first && delay == runs.front().second) initialChecksum = loadedChecksum;
+ 					else REQUIRE(loadedChecksum == initialChecksum);
+ 					auto &map = game.map;
+-					map.configureCompute(variant == "shared" ? 4 : 1, 0);
++					map.configureCompute(variant == "shared" ? 4 : 1);
+ 					map.setResourceGrowthDelay(delay ? delay : 8);
+ 					auto scan = [&]()
+ 					{
+@@ -584,7 +584,7 @@ TEST_SUITE("ResourceGrowthBenchmark")
+ 							{.wDec = shift, .hDec = shift, .header = true, .seed = 713});
+ 						auto &map = world.game.map;
+ 						setup(map, scenario);
+-						map.configureCompute(variant == 3 ? 4 : 1, 0);
++						map.configureCompute(variant == 3 ? 4 : 1);
+ 						map.setResourceGrowthDelay(8);
+ 						// Warm ecology before timing; snapshot capture remains inside timing.
+ 						map.resourceGrowthField();
+diff --git a/src/map/ResourceGrowthTest.cpp b/src/map/ResourceGrowthTest.cpp
+index dd11bc83d..02f762cb5 100644
+--- a/src/map/ResourceGrowthTest.cpp
++++ b/src/map/ResourceGrowthTest.cpp
+@@ -259,7 +259,7 @@ TEST_SUITE("ResourceGrowth")
+ 			glob2test::HeadlessGame fallback({.loadDefaultRace = true, .header = true, .seed = 48});
+ 			auto &m = fallback.game.map;
+ 			seed(m, crop(m));
+-			m.configureCompute(1, 0);
++			m.configureCompute(1);
+ 			m.setResourceGrowthDelay(delay);
+ 			fallback.step(12);
+ 			auto *bytes = new GAGCore::MemoryStreamBackend;
+@@ -271,7 +271,7 @@ TEST_SUITE("ResourceGrowth")
+ 			GAGCore::BinaryInputStream input(copy);
+ 			glob2test::HeadlessGame shared({.loadDefaultRace = true, .header = true});
+ 			REQUIRE(shared.game.load(&input));
+-			shared.game.map.configureCompute(4, 0);
++			shared.game.map.configureCompute(4);
+ 			shared.game.map.setResourceGrowthDelay(delay);
+ 			REQUIRE(shared.game.checkSum(nullptr, nullptr, nullptr, true) ==
+ 					fallback.game.checkSum(nullptr, nullptr, nullptr, true));
+@@ -306,7 +306,7 @@ TEST_SUITE("ResourceGrowth")
+ 		glob2test::HeadlessGame world({.header = true});
+ 		auto &map = world.game.map;
+ 		seed(map, crop(map));
+-		map.configureCompute(1, 0); // No worker threads.
++		map.configureCompute(1); // No worker threads.
+ 		auto &pipeline = map.gradientRuntime->growth;
+ 		pipeline.stage(0, 48);
+ 		map.setResourceGrowthDelay(8);
+@@ -380,7 +380,7 @@ TEST_SUITE("ResourceGrowth")
+ 		glob2test::HeadlessGame world({.header = true});
+ 		auto &m = world.game.map;
+ 		seed(m, crop(m));
+-		m.configureCompute(1, 0);
++		m.configureCompute(1);
+ 		m.setResourceGrowthDelay(8);
+ 		world.step();
+ 		REQUIRE(m.gradientRuntime->growth.count() == 1);
+@@ -423,7 +423,7 @@ TEST_SUITE("ResourceGrowth")
+ 		glob2test::HeadlessGame world({.header = true});
+ 		auto &map = world.game.map;
+ 		seed(map, crop(map));
+-		map.configureCompute(3, 0);
++		map.configureCompute(3);
+ 		auto &executor = map.computeExecutor();
+ 		ResourceGrowth::Pipeline pipeline;
+ 		auto first = world.game.snapshotStore().captureBoundary(
+@@ -540,9 +540,9 @@ TEST_CASE("both format 144 and 145 lineages and compact growth saves retain cont
+         // Save version is the only intentional header checksum difference.
+         const auto headerDelta = std::rotr(original.game.mapHeader.checkSum() ^ restored.game.mapHeader.checkSum(),
+             4 + original.game.mapHeader.getNumberOfTeams() + original.game.gameHeader.getNumberOfPlayers());
+-        original.game.map.configureCompute(1, 0);
++        original.game.map.configureCompute(1);
+         original.game.map.setResourceGrowthDelay(8);
+-        restored.game.map.configureCompute(4, 0);
++        restored.game.map.configureCompute(4);
+         restored.game.map.setResourceGrowthDelay(8);
+         for (unsigned tick = 0; tick < 24; ++tick)
+         {
+diff --git a/src/map/gradient/BuildingGradientInvalidationHarness.cpp b/src/map/gradient/BuildingGradientInvalidationHarness.cpp
+index ba66f955d..003cb4dc6 100644
+--- a/src/map/gradient/BuildingGradientInvalidationHarness.cpp
++++ b/src/map/gradient/BuildingGradientInvalidationHarness.cpp
+@@ -312,65 +312,6 @@ static void publicReadsResolveTheirInputs()
+ 	std::puts("PASS public distance, movement and full-field lazy API boundaries");
+ }
+ 
+-static void parallelFields()
+-{
+-	World world(7);
+-	Map &map = world.game.map;
+-	Building *building = world.place(20, 20);
+-	Building *flag = world.placeFlag(40, 40, 5);
+-	for (int x = 50; x < 65; ++x)
+-	{
+-		map.paintCell(x, 60, WATER);
+-		map.addForbidden(x, 62, 0);
+-		map.addGuardArea(x, 64, 0);
+-		map.addClearArea(x, 66, 0);
+-	}
+-	const size_t cells = map.getW() * map.getH();
+-	std::vector<std::vector<Uint16>> expected;
+-	auto capture = [&] {
+-		std::vector<std::vector<Uint16>> fields;
+-		for (int swim = 0; swim < SWIM_CLASS_COUNT; ++swim)
+-		{
+-			for (auto *b : {building, flag})
+-			{
+-				map.buildingGradient(b, swim);
+-				map.updateGlobalGradient(b, swim);
+-				const auto *field = map.buildingGradient(b, swim);
+-				require(field != nullptr, "parallel test building reachable");
+-				fields.emplace_back(field, field + cells);
+-			}
+-			for (const auto *field : {map.getForbiddenGradient(0, swim), map.getGuardAreasGradient(0, swim), map.getClearAreasGradient(0, swim)})
+-				fields.emplace_back(field, field + cells);
+-		}
+-		return fields;
+-	};
+-	expected = capture();
+-	for (unsigned threads : {1, 2, 4, 8})
+-	{
+-		map.configureCompute(threads, 7);
+-		map.updateTeamAreaGradients(0);
+-		require(capture() == expected, "parallel area/building initialization preserves all fields");
+-	}
+-	// Exercise the hiring prepass with two independently owned weighted fields.
+-	Unit *a = world.game.addUnit(10, 10, 0, WORKER, 0, 0, 0, 0);
+-	Unit *b = world.game.addUnit(12, 10, 0, WORKER, 0, 0, 0, 0);
+-	require(a && b, "hiring test units created");
+-	for (auto *unit : {a, b}) { unit->activity = Unit::ACT_RANDOM; unit->medical = Unit::MED_FREE; unit->performance[HARVEST] = 1; unit->performance[WALK] = 10; }
+-	a->performance[SWIM] = 0; b->performance[SWIM] = 20;
+-	map.updateGlobalGradient(building, a->swimClass());
+-	map.updateGlobalGradient(building, b->swimClass());
+-	const auto used = building->globalGradientUsedStep[a->swimClass()];
+-	map.advanceHiringGradients(building);
+-	require(building->globalGradientUsedStep[a->swimClass()] == used, "prepass does not touch use timestamps");
+-	for (auto *unit : {a, b})
+-	{
+-		const int swim = unit->swimClass();
+-		const auto *field = map.buildingGradient(building, swim);
+-		require(std::vector<Uint16>(field, field + cells) == expected[swim * 5], "hiring advancement preserves frozen fields");
+-	}
+-	std::puts("PASS parallel area batches, seed initialization, frozen hiring advancement");
+-}
+-
+ static void delayedFields()
+ {
+ 	for (unsigned workers : {0, 1, 2, 4, 8}) for (int kind=0; kind<3; ++kind)
+@@ -573,7 +514,7 @@ struct Scheduler
+ 	Scheduler(World& world, unsigned workers, unsigned delay) : game(world.game), map(world.game.map)
+ 	{
+ 		game.gameHeader.setBuildingGradientDelay(delay);
+-		map.configureCompute(workers + 1, 0);
++		map.configureCompute(workers + 1);
+ 		map.configureGradientPipeline(workers, 8);
+ 	}
+ 	template <class Teams> void tick(Teams&& teams)
+@@ -1124,11 +1065,6 @@ TEST_SUITE("BuildingGradientInvalidation")
+ 		glob2test::HeadlessGlobals globals;
+ 		publicReadsResolveTheirInputs();
+ 	}
+-	TEST_CASE("parallel fields")
+-	{
+-		glob2test::HeadlessGlobals globals;
+-		parallelFields();
+-	}
+ 	TEST_CASE("delayed fields")
+ 	{
+ 		glob2test::HeadlessGlobals globals;
+diff --git a/src/map/gradient/GradientPreparationTest.cpp b/src/map/gradient/GradientPreparationTest.cpp
+index abedb50cd..c8b87f295 100644
+--- a/src/map/gradient/GradientPreparationTest.cpp
++++ b/src/map/gradient/GradientPreparationTest.cpp
+@@ -479,7 +479,7 @@ TEST_SUITE("GradientPreparation")
+ 		m.paintCell(1, WATER);
+ 		m.addForbidden(0, 0, 1);
+ 		std::vector<std::vector<Uint16>> outputs(16, std::vector<Uint16>(m.size));
+-		m.configureCompute(4, Map::ComputeInitialize);
++		m.configureCompute(4);
+ 		m.computeExecutor().run(outputs.size(), [&](size_t job) {
+ 			m.seedMaterialGradient(job % 2, job % MaterialCount, job % SWIM_CLASS_COUNT,
+ 				outputs[job].data(), false);
+@@ -608,7 +608,7 @@ TEST_SUITE("GradientPreparation")
+ 		std::vector<Uint16> expected(m.size), actual(m.size);
+ 		for (unsigned threads : {1, 2, 4})
+ 		{
+-			m.configureCompute(threads, Map::ComputeInitialize);
++			m.configureCompute(threads);
+ 			for (int phase=0; phase<4; ++phase)
+ 			{
+ 				world.game.gameHeader.getExperiments().set(ExperimentId::FarmAreas, phase & 1);
+@@ -785,7 +785,7 @@ TEST_SUITE("GradientPreparation")
+ 			scalarResource(m, 0, resource, 0, expected.data(), false);
+ 			m.propagateGradient(expected.data(), 0);
+ 			m.configureGradientPipeline(workers, 8);
+-			m.configureCompute(4, Map::ComputeAI);
++			m.configureCompute(4);
+ 			std::vector<Uint16 *> requests(8);
+ 			m.computeExecutor().run(requests.size(), [&](size_t j) {
+ 				requests[j] = m.getMaterialGradientSlot(0, resource, 0);
+diff --git a/src/map/gradient/MapGradientArea.cpp b/src/map/gradient/MapGradientArea.cpp
+index 8900ee2da..bb1038f64 100644
+--- a/src/map/gradient/MapGradientArea.cpp
++++ b/src/map/gradient/MapGradientArea.cpp
+@@ -273,29 +273,9 @@ void Map::updateClearAreasGradient()
+ 		updateClearAreasGradient(i);
+ }
+ 
+-// These refreshes already share a simulation boundary. Only allocated fields
+-// participate; no worker changes cache ownership or refresh scheduling.
+ void Map::updateTeamAreaGradients(int teamNumber)
+ {
+-	if (!computeEnabled(ComputeAreas))
+-	{
+-		updateForbiddenGradient(teamNumber);
+-		updateGuardAreasGradient(teamNumber);
+-		updateClearAreasGradient(teamNumber);
+-		return;
+-	}
+-	std::vector<std::pair<int, int>> jobs;
+-	for (int kind = 0; kind < 3; ++kind)
+-		for (int swim = 0; swim < SWIM_CLASS_COUNT; ++swim)
+-		{
+-			const auto field = kind == 0 ? forbiddenGradient[teamNumber][swim]
+-				: kind == 1 ? guardAreasGradient[teamNumber][swim] : clearAreasGradient[teamNumber][swim];
+-			if (field) jobs.emplace_back(kind, swim);
+-		}
+-	computeExecutor().run(jobs.size(), [&](size_t i) {
+-		const auto [kind, swim] = jobs[i];
+-		if (kind == 0) updateForbiddenGradient(teamNumber, swim);
+-		else if (kind == 1) updateGuardAreasGradient(teamNumber, swim);
+-		else updateClearAreasGradient(teamNumber, swim);
+-	});
++	updateForbiddenGradient(teamNumber);
++	updateGuardAreasGradient(teamNumber);
++	updateClearAreasGradient(teamNumber);
+ }
+diff --git a/src/map/gradient/PathGradientHarness.cpp b/src/map/gradient/PathGradientHarness.cpp
+index ff23eacfd..f04f14262 100644
+--- a/src/map/gradient/PathGradientHarness.cpp
++++ b/src/map/gradient/PathGradientHarness.cpp
+@@ -263,7 +263,7 @@ void parallelChecks()
+ 	for (int swim = 0; swim < 7; ++swim) expected[swim] = oracle(seeds, terrain, 128, 128, swim, CostLimit);
+ 	for (unsigned threads : {1, 2, 4, 8})
+ 	{
+-		map.configureCompute(threads, 7);
++		map.configureCompute(threads);
+ 		for (int repeat = 0; repeat < 5; ++repeat)
+ 		{
+ 			std::array<std::vector<Uint16>, 7> actual;
+@@ -271,7 +271,7 @@ void parallelChecks()
+ 			map.computeExecutor().run(7, [&](size_t swim) { map.propagateGradient(actual[swim].data(), swim); });
+ 			for (int swim = 0; swim < 7; ++swim) require(actual[swim] == expected[swim], "parallel propagation differs from oracle");
+ 		}
+-		// Concurrent independent lazy searches, including nested water initialization.
++		// Concurrent independent lazy searches, including serial water initialization.
+ 		std::array<std::vector<Uint16>, 7> actual;
+ 		for (auto &field : actual) { field.assign(terrain.size(), Unreached); field[0] = Goal; }
+ 		map.computeExecutor().run(7, [&](size_t swim) {
+diff --git a/src/map/pathfind/MapPathfindBuilding.cpp b/src/map/pathfind/MapPathfindBuilding.cpp
+index 8348afc8d..6eb769bee 100644
+--- a/src/map/pathfind/MapPathfindBuilding.cpp
++++ b/src/map/pathfind/MapPathfindBuilding.cpp
+@@ -164,38 +164,3 @@ bool Map::pathfindBuilding(Building *building, int swimClass, int x, int y, int
+ 		return true;
+ 	return buildingGradientDirection(building, swimClass, x, y, dx, dy, false, route);
+ }
+-
+-void Map::advanceHiringGradients(Building *building)
+-{
+-	if (!computeEnabled(ComputeHiring)) return;
+-	++hiringPrepasses;
+-	// Most callers have at most one active class. Avoid a full unit scan when
+-	// there cannot be an independent pair of searches to advance.
+-	unsigned incomplete = 0;
+-	for (int swim=0; swim<SWIM_CLASS_COUNT; ++swim)
+-		if (const auto &search=building->globalGradientSearch[swim]; search && !search->complete()) ++incomplete;
+-	if (incomplete < 2) return;
+-	std::array<std::vector<size_t>, SWIM_CLASS_COUNT> targets;
+-	for (int n = 0; n < Unit::MAX_COUNT; ++n)
+-	{
+-		const Unit *unit = building->owner->myUnits[n];
+-		if (!unit || !unit->performance[HARVEST] || unit->activity != Unit::ACT_RANDOM
+-			|| unit->medical != Unit::MED_FREE) continue;
+-		const int swim = unit->swimClass();
+-		const auto &search = building->globalGradientSearch[swim];
+-		if (search && !search->complete()) targets[swim].push_back(coordToIndex(unit->posX, unit->posY));
+-	}
+-	std::vector<int> jobs;
+-	for (int swim = 0; swim < SWIM_CLASS_COUNT; ++swim)
+-		if (!targets[swim].empty()) jobs.push_back(swim);
+-	// One field offers no inter-field parallelism; do not do speculative work.
+-	if (jobs.size() < 2) return;
+-	std::vector<std::uint64_t> popped(jobs.size());
+-	computeExecutor().run(jobs.size(), [&](size_t i) {
+-		const int swim = jobs[i];
+-		const auto before = building->globalGradientSearch[swim]->poppedEntries();
+-		for (size_t cell : targets[swim]) building->globalGradientSearch[swim]->resolve(cell);
+-		popped[i] = building->globalGradientSearch[swim]->poppedEntries() - before;
+-	});
+-	for (auto count : popped) hiringPoppedEntries += count;
+-}
+diff --git a/src/scripting/javascript/ScriptSimulationTest.cpp b/src/scripting/javascript/ScriptSimulationTest.cpp
+index 77e993e33..6b3119e7e 100644
+--- a/src/scripting/javascript/ScriptSimulationTest.cpp
++++ b/src/scripting/javascript/ScriptSimulationTest.cpp
+@@ -124,7 +124,7 @@ Run execute(const std::filesystem::path &input, const std::filesystem::path &dir
+         // Normalize that metadata after the real loader has validated the input:
+         // a new save version must not masquerade as simulation divergence.
+         engine.gui.game.mapHeader.versionMinor = 125;
+-		engine.gui.game.map.configureCompute(workers, Map::ComputeAI);
++		engine.gui.game.map.configureCompute(workers);
+ 		if (conversion)
+ 			prepareConversion(engine, directory);
+ 		if (!playback)
+diff --git a/test/benchmark_gradient_pipeline.py b/test/benchmark_gradient_pipeline.py
+index cc1f64fd8..d22ccbb61 100644
+--- a/test/benchmark_gradient_pipeline.py
++++ b/test/benchmark_gradient_pipeline.py
+@@ -88,7 +88,7 @@ def main():
+         if '--save' in s['args'] or '--replay' in s['args']:
+             p.error('pipeline scenarios must omit save/replay exports')
+     output.mkdir(parents=True, exist_ok=False)
+-    variants = [(f'd{d}-w{w}', binary, ['--gradient-workers', str(w), '--gradient-delay', str(d)]) for d in a.delays for w in a.workers]
++    variants = [(f'd{d}-w{w}', binary, ['--compute-threads', str(w + 1), '--gradient-delay', str(d)]) for d in a.delays for w in a.workers]
+     if a.baseline and not a.verify:
+         variants.insert(0, ('legacy', a.baseline.resolve(), []))
+     metadata = {'platform': platform.platform(), 'manifest': manifest, 'binaries': {str(exe): digest(exe) for _, exe, _ in variants},
+diff --git a/test/benchmark_parallel_compute.py b/test/benchmark_parallel_compute.py
+index 9a3bf3496..6fd8ebb40 100644
+--- a/test/benchmark_parallel_compute.py
++++ b/test/benchmark_parallel_compute.py
+@@ -1,4 +1,4 @@
+-"""Retained paired wall/CPU benchmarks for the opt-in compute experiments.
++"""Retained paired wall/CPU benchmarks for the shared compute executor.
+ 
+ A manifest contains scenarios with id, args (headless arguments without output),
+ optional group, and fixture_sha256 (absolute paths to input hashes). Run one
+@@ -68,12 +68,18 @@ def summarize(rows):
+                 value['wall_speedup'] = baseline['wall_s'] / value['wall_s']
+                 value['cpu_ratio'] = value['cpu_s'] / baseline['cpu_s']
+         for name, value in variants.items():
++            if name.startswith('compute-'):
++                count = name.removeprefix('compute-')
++                paired = variants.get('baseline' if count == '1' else f'baseline-{count}')
++                if paired:
++                    value['wall_speedup_over_base_same_threads'] = paired['wall_s'] / value['wall_s']
++                    value['cpu_ratio_over_base_same_threads'] = value['cpu_s'] / paired['cpu_s']
+             if name != 'baseline':
+                 serial = variants.get(name.rsplit('-', 1)[0] + '-1')
+                 if serial:
+-                    value['speedup_over_prototype_serial'] = serial['wall_s'] / value['wall_s']
++                    value['speedup_over_serial'] = serial['wall_s'] / value['wall_s']
+                     if 'run_s' in serial and 'run_s' in value:
+-                        value['runtime_speedup_over_prototype_serial'] = serial['run_s'] / value['run_s']
++                        value['runtime_speedup_over_serial'] = serial['run_s'] / value['run_s']
+         summaries[scenario] = variants
+     return summaries
+ 
+@@ -97,7 +103,6 @@ def aggregate_summary(summary, scenarios):
+             result[key] = math.exp(statistics.mean(statistics.mean(v) for v in by_group.values()))
+         result['worst_cpu_ratio'] = max(v['cpu_ratio'] for v in heavy)
+         result['worst_control_speedup'] = min((v['wall_speedup'] for v in small), default=None)
+-        result['meets_target_on_measured_suite'] = result['wall_speedup'] >= 1.5 and all(v['cpu_ratio'] <= 1.10 for v in heavy) and all(v['wall_speedup'] >= 1 / 1.05 for v in small)
+         aggregate[variant] = result
+     return aggregate
+ 
+@@ -109,13 +114,12 @@ def main():
+     parser.add_argument('manifest', type=Path)
+     parser.add_argument('--output', type=Path, required=True)
+     parser.add_argument('--repeats', type=int, default=5)
+-    parser.add_argument('--threads', type=int, nargs='+', default=[1, 2, 4, 8])
+-    parser.add_argument('--experiments', nargs='+', choices=['none', 'areas', 'initialize', 'hiring', 'ai', 'all'], default=['areas', 'initialize', 'hiring', 'ai', 'all'])
++    parser.add_argument('--threads', nargs='+', default=['1', '2', '4', '8', 'auto'])
+     parser.add_argument('--verify', action='store_true', help='Compare per-tick traces, replay orders and final saves, without timing repeats')
+     args = parser.parse_args()
+     before, after, output = args.before.resolve(), args.after.resolve(), args.output.resolve()
+-    if args.repeats < 1 or any(n < 1 or n > 64 for n in args.threads):
+-        parser.error('positive repeats and threads in 1..64 required')
++    if args.repeats < 1 or any(n != 'auto' and (not n.isascii() or not n.isdecimal() or int(n) < 1 or int(n) > 2**32 - 1) for n in args.threads):
++        parser.error('positive repeats and auto or positive unsigned thread counts required')
+     manifest = json.loads(args.manifest.read_text())
+     for scenario in manifest['scenarios']:
+         for path, expected in scenario.get('fixture_sha256', {}).items():
+@@ -126,10 +130,11 @@ def main():
+                     arguments=vars(args) | {'before': str(before), 'after': str(after), 'output': str(output), 'manifest': str(args.manifest.resolve())},
+                     memory_note='wait4 peak resident bytes, measured separately for each child')
+     (output / 'metadata.json').write_text(json.dumps(metadata, indent=2))
+-    variants = [('baseline', before, [])]
+-    for experiment in args.experiments:
+-        for threads in args.threads:
+-            variants.append((f'{experiment}-{threads}', after, ['--compute-threads', str(threads), '--compute-experiments', experiment]))
++    variants = [('baseline', before, ['--compute-threads', '1'])]
++    for threads in args.threads:
++        if threads not in ('1', 'auto'):
++            variants.append((f'baseline-{threads}', before, ['--compute-threads', threads]))
++        variants.append((f'compute-{threads}', after, ['--compute-threads', threads]))
+     rows = []
+     with (output / 'measurements.jsonl').open('w') as stream:
+         for scenario in manifest['scenarios']:
+diff --git a/test/check_gradient_pipeline.py b/test/check_gradient_pipeline.py
+index bfd1f1a9b..703396c80 100644
+--- a/test/check_gradient_pipeline.py
++++ b/test/check_gradient_pipeline.py
+@@ -43,7 +43,7 @@ def main():
+     assert default['result']['gradient_delay'] == 8
+     assert default['result']['gradient_workers'] == default['result']['compute_threads'] - 1
+     explicit = execute(binary, ['--load-game',str(initial),'--ticks','32',
+-        '--compute-threads','2','--gradient-workers','8'], output/'explicit-shared-size')
++        '--compute-threads','2'], output/'explicit-shared-size')
+     assert explicit['result']['compute_threads'] in (1, 2)  # Threadless fallback is supported.
+     assert explicit['result']['gradient_workers'] == explicit['result']['compute_threads'] - 1
+     # Save with work pending at every offset of the eight-tick pipeline. Compare
+@@ -57,10 +57,10 @@ def main():
+         for workers in (0,1,2):
+             dest = output/f'resumed-{phase}-{workers}'
+             execute(binary, ['--load-game',str(checkpoint/'final.game'),'--ticks','80',
+-                             '--gradient-workers',str(workers),'--telemetry','checksums','--replay','true'], dest)
++                             '--compute-threads',str(workers + 1),'--telemetry','checksums','--replay','true'], dest)
+             ticks = detailed_ticks((dest/'game.replay.checksums').read_bytes())
+             assert ticks and all(expected[t] == value for t,value in ticks.items()), (phase, workers)
+-    cases = [['--gradient-workers','17'],['--gradient-workers','0','--gradient-delay','0'],
++    cases = [['--compute-threads','4294967296'],['--compute-threads','1','--gradient-delay','0'],
+              ['--load-game',str(output/'checkpoint-0/final.game'),'--gradient-delay','3']]
+     for index, args in enumerate(cases):
+         dest = output/f'rejection-{index}'
+@@ -115,7 +115,7 @@ def building_pass(binary, initial, output):
+             for workers in (0, 1, 2):
+                 dest = output/f'resumed-d{delay}-{phase}-{workers}'
+                 resumed = execute(binary, ['--load-game', str(checkpoint/'final.game'), '--ticks', str(RESUME_TICKS),
+-                                           '--gradient-workers', str(workers), '--telemetry', 'checksums'], dest)
++                                           '--compute-threads', str(workers + 1), '--telemetry', 'checksums'], dest)
+                 assert resumed['result']['resolved']['rules']['buildingGradientDelay'] == delay
+                 assert resumed['result']['resolved']['fork'] == []
+                 ticks = detailed_ticks((dest/'game.replay.checksums').read_bytes())
+@@ -129,7 +129,7 @@ def building_pass(binary, initial, output):
+         os.environ['GLOB2_BUILDING_DEPTH'] = mode
+         try:
+             dest = output/f'depth-{mode}'
+-            execute(binary, ['--load-game', str(initial), *fork(4), '--ticks', '1024', '--gradient-workers', '2',
++            execute(binary, ['--load-game', str(initial), *fork(4), '--ticks', '1024', '--compute-threads', '3',
+                              '--telemetry', 'checksums'], dest)
+         finally:
+             del os.environ['GLOB2_BUILDING_DEPTH']
+diff --git a/test/check_parallel_compute.py b/test/check_parallel_compute.py
+index 9e162479e..71f1bf6bd 100644
+--- a/test/check_parallel_compute.py
++++ b/test/check_parallel_compute.py
+@@ -27,14 +27,18 @@ def main():
+     initial = str(fixture / 'initial.game')
+     common = ['--load-game', initial, '--ticks', '1024', '--telemetry', 'checksums', '--replay', 'true', '--save', 'final']
+     references = {}
+-    for label, exe, extra in [('baseline', baseline, ['--compute-threads', '1', '--compute-experiments', 'none']),
++    counts = (1, 2, 4, 8, 'auto')
++    for label, exe, extra in [('baseline', baseline, ['--compute-threads', '1']),
+                               ('default', binary, []),
+-                              *[(f'{experiment}-{n}', binary, ['--compute-threads', str(n), '--compute-experiments', experiment]) for experiment in ('none', 'areas', 'initialize', 'hiring', 'ai', 'all') for n in (1, 2, 4, 8)]]:
++                              *[(f'compute-{n}', binary, ['--compute-threads', str(n)]) for n in counts]]:
+         run = output / label
+         execution = execute(exe, common + extra, run)
+         if label == 'default':
+-            assert execution['result']['compute_experiments'] == 'ai'
+-            assert 1 <= execution['result']['compute_threads'] <= 4
++            report = execution['result']
++            assert report['compute_requested_threads'] == 'auto'
++            assert report['compute_threads'] in (1, report['compute_resolved_threads'])
++            assert report['compute_workers'] == report['compute_threads'] - 1
++            assert 'compute_experiments' not in report
+         hashes = {name: digest(run / name) for name in ('game.replay.checksums', 'game.replay', 'final.game')}
+         if not references: references = hashes
+         assert hashes == references, (label, hashes, references)
+@@ -42,13 +46,13 @@ def main():
+     tail_args = ['--load-game', str(output / 'baseline/final.game'), '--ticks', '1280', '--telemetry', 'checksums', '--save', 'final']
+     full_args = ['--load-game', initial, '--ticks', '1280', '--telemetry', 'checksums', '--save', 'final']
+     full = output / 'uninterrupted'
+-    execute(baseline, full_args + ['--compute-threads', '1', '--compute-experiments', 'none'], full)
++    execute(baseline, full_args + ['--compute-threads', '1'], full)
+     full_ticks = detailed_ticks((full / 'game.replay.checksums').read_bytes())
+     resumed = output / 'baseline-continuation'
+-    execute(baseline, tail_args + ['--compute-threads', '1', '--compute-experiments', 'none'], resumed)
+-    for n in (1, 2, 4, 8):
++    execute(baseline, tail_args + ['--compute-threads', '1'], resumed)
++    for n in counts:
+         run = output / f'continuation-{n}'
+-        execute(binary, tail_args + ['--compute-threads', str(n), '--compute-experiments', 'all'], run)
++        execute(binary, tail_args + ['--compute-threads', str(n)], run)
+         ticks = detailed_ticks((run / 'game.replay.checksums').read_bytes())
+         assert ticks and all(full_ticks[tick] == value for tick, value in ticks.items()), f'continuation differs: {n}'
+         assert digest(run / 'final.game') == digest(resumed / 'final.game'), f'final continuation save differs from serial reload: {n}'
+@@ -58,10 +62,9 @@ def main():
+     legacy_args = ['--load-game', str(legacy), '--ticks', '512',
+                    '--telemetry', 'checksums', '--save', 'final']
+     legacy_reference = None
+-    for n in (1, 2, 4, 8):
++    for n in counts:
+         run = output / f'echo-v121-{n}'
+-        execute(binary, legacy_args + ['--compute-threads', str(n),
+-                                      '--compute-experiments', 'ai'], run)
++        execute(binary, legacy_args + ['--compute-threads', str(n)], run)
+         hashes = {name: digest(run / name) for name in ('game.replay.checksums', 'final.game')}
+         if legacy_reference is None: legacy_reference = hashes
+         assert hashes == legacy_reference, f'v121 shared-runtime continuation differs: {n}'
+@@ -77,15 +80,14 @@ def main():
+                   '--ticks', '1024', '--telemetry', 'checksums', '--replay', 'true',
+                   '--save', 'final']
+         reference = None
+-        for n in (1, 2, 4, 8):
++        for n in counts:
+             run = output / f'{label}-{n}'
+-            execute(binary, common + ['--compute-threads', str(n),
+-                                      '--compute-experiments', 'ai'], run)
++            execute(binary, common + ['--compute-threads', str(n)], run)
+             hashes = {name: digest(run / name) for name in
+                       ('game.replay.checksums', 'game.replay', 'final.game')}
+             if reference is None: reference = hashes
+             assert hashes == reference, f'{label} game differs: {n}'
+-    print('PASS compute experiments: exact traces, replay bytes, final saves, and runtime/Castor/Numbi continuation at 1/2/4/8 threads')
++    print('PASS shared compute: exact traces, replay bytes, final saves, and runtime/Castor/Numbi continuation at 1/2/4/8/auto threads')
+ 
+ 
+ if __name__ == '__main__':
+diff --git a/test/check_telemetry_simulation.py b/test/check_telemetry_simulation.py
+index 0ba0dd1dd..3c30d7674 100644
+--- a/test/check_telemetry_simulation.py
++++ b/test/check_telemetry_simulation.py
+@@ -79,8 +79,8 @@ def main(binary: str, parallel_ai: bool = False, evidence: Path | None = None, u
+         }
+         (evidence / "manifest.json").write_text(json.dumps(manifest, indent=2) + "\n")
+ 
+-    compute = (["--compute-threads", "4", "--compute-experiments", "ai"] if parallel_ai
+-               else ["--compute-threads", "1", "--compute-experiments", "ai"])
++    compute = (["--compute-threads", "4"] if parallel_ai
++               else ["--compute-threads", "1"])
+     for save, ticks, fixture in SCENARIOS:
+         with run_directory(evidence, save.stem) as directory:
+             output = Path(directory)
+diff --git a/test/fixtures/scoped-gradients/README.md b/test/fixtures/scoped-gradients/README.md
+index 9375874f2..45f0947e1 100644
+--- a/test/fixtures/scoped-gradients/README.md
++++ b/test/fixtures/scoped-gradients/README.md
+@@ -33,7 +33,8 @@ verify without that flag using both the default and `--parallel-ai` modes.
+ Generate from the legacy saves named by that script with `--run-game --load-game`
+ and `--telemetry checksums`, using the stop ticks encoded in the filenames.
+ For `v108-reload-256`, load the retained v108 checkpoint at tick 1024 and stop at
+-1280. Serial (`--gradient-workers 0`) and single-worker (`--gradient-workers 1`)
++1280. Serial and single-worker
++controls (currently `--compute-threads 1` and `--compute-threads 2`)
+ outputs were independently compared byte for byte. Both use the default
+ eight-tick publication delay. Compress sidecars with gzip mtime zero.
+ 
+diff --git a/test/maxima/check_save_continuation_fixture.py b/test/maxima/check_save_continuation_fixture.py
+index 4a4514bf3..fb7794337 100644
+--- a/test/maxima/check_save_continuation_fixture.py
++++ b/test/maxima/check_save_continuation_fixture.py
+@@ -23,7 +23,7 @@ def run(binary, saved, output, stop_tick, workers, checkpoint=False):
+     output.mkdir(parents=True, exist_ok=False)
+     command = [str(binary), "--run-game", "--load-game", str(saved),
+                "--ticks", str(stop_tick), "--compute-threads", str(workers),
+-               "--compute-experiments", "ai", "--telemetry", "checksums",
++               "--telemetry", "checksums",
+                "--output-dir", str(output)]
+     if checkpoint:
+         command += ["--save", "every:30256"]
+diff --git a/test/test_cli_smoke.py b/test/test_cli_smoke.py
+index 4554c11ef..b93f21b3d 100644
+--- a/test/test_cli_smoke.py
++++ b/test/test_cli_smoke.py
+@@ -68,6 +68,50 @@ class CliSmoke(unittest.TestCase):
+         self.assertTrue(records)
+         return records
+ 
++    def test_unified_compute_pool_preserves_trace_with_auto_sizing(self):
++        source = self.generated()
++        serial = self.game(self.root / 'serial', source, workers=1)
++        automatic = self.game(self.root / 'auto', source, workers='auto')
++        shared = self.game(self.root / 'shared', source, workers=2)
++        self.assertEqual(serial, automatic)
++        self.assertEqual(serial, shared)
++        report = json.loads((self.root / 'auto/result.json').read_text())
++        self.assertGreaterEqual(report['compute_resolved_threads'], 1)
++        self.assertEqual(report['compute_requested_threads'], 'auto')
++        self.assertIn(report['compute_threads'], (1, report['compute_resolved_threads']))
++        self.assertEqual(report['compute_workers'], report['compute_threads'] - 1)
++        self.assertEqual(report['gradient_workers'], report['compute_threads'] - 1)
++        self.assertNotIn('compute_experiments', report)
++
++    def test_removed_compute_options_point_to_unified_setting(self):
++        for flag, value in (('--ai-threads', '2'), ('--gradient-workers', '2'),
++                            ('--compute-experiments', 'ai')):
++            for prefix, status in (([], 1), (['--run-game'], 2),
++                                   (['--verify-match', 'missing.record'], 2),
++                                   (['--turn-client', 'missing.json'], 2)):
++                with self.subTest(flag=flag, command=prefix):
++                    result = self.command(*prefix, flag, value, status=status)
++                    self.assertIn('has been removed', result.stderr)
++                    self.assertIn('--compute-threads auto|N', result.stderr)
++
++    def test_match_verification_preserves_trace_across_compute_sizes(self):
++        reference = None
++        golden = (ROOT / 'test/fixtures/multiplayer/FourSquares1.verify-trace.txt').read_bytes()
++        for count in (1, 2, 4, 8, 'auto'):
++            output = self.root / f'verify-{count}'
++            self.command('--verify-match', ROOT / 'test/fixtures/multiplayer/FourSquares1.g2mr',
++                         '--map', ROOT / 'maps/FourSquares1.map.gz', '--out', output,
++                         '--compute-threads', count)
++            self.assertEqual((output / 'checksums.txt').read_bytes(), golden)
++            result = (output / 'result.json').read_bytes()
++            if reference is None:
++                reference = result
++            self.assertEqual(result, reference)
++            compute = json.loads((output / 'compute.json').read_text())
++            self.assertEqual(compute['compute_requested_threads'], str(count))
++            self.assertIn(compute['compute_threads'], (1, compute['compute_resolved_threads']))
++            self.assertEqual(compute['compute_workers'], compute['compute_threads'] - 1)
++
+     def test_help_and_catalog_describe_real_commands(self):
+         self.assertIn('-nox',self.command('--help').stdout)
+         catalog=json.loads(self.command('--headless-catalog').stdout)
+@@ -83,6 +127,7 @@ class CliSmoke(unittest.TestCase):
+ 
+     def test_headless_numeric_and_missing_input_errors_are_structured(self):
+         for index, extra in enumerate([['--ticks','0'],['--compute-threads','-1'],
++                                       ['--compute-threads','4294967296'],
+                                        ['--map-file',self.root/'missing.map','--game-seed','713','--player','castor']]):
+             output=self.root/f'invalid-{index}'
+             self.command('--run-game','--output-dir',output,*extra,status=2)

@@ -1,0 +1,21 @@
+{
+  "base_revision": "18f6926d08733a5a184030afe12b929006b57af3",
+  "branch": "codex/compute-configuration",
+  "platform": "macOS-26.6.2-arm64-arm-64bit-Mach-O",
+  "architecture": "arm64",
+  "compiler": "Apple clang version 21.0.0 (clang-2100.3.34.2)\nTarget: arm64-apple-darwin25.6.0\nThread model: posix\nInstalledDir: /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin",
+  "logical_cpus": "8",
+  "build_command": "scons -j8 release=1 unit-tests engine-tests build/darwin/client/release/src/glob2",
+  "build_flags": "C++20, -O3; simulation objects use -fno-fast-math -ffp-contract=off",
+  "coverage": "native macOS arm64; executor/pipelines/lifecycle, AI and gradient/save continuation, replay/turn boundaries, CLI and golden match checks; paired explicit counts and automatic sizing",
+  "omissions": [
+    "Linux, Windows, Android and WebAssembly execution",
+    "ThreadSanitizer",
+    "display-tagged tests and interactive playtesting",
+    "full long-match benchmark corpus"
+  ],
+  "additional_python_suite_limit": "Unrelated benchmark_resource_refactor campaign tests require Linux os.sched_getaffinity; the changed child-execution cleanup test passed on macOS",
+  "tested_commit": "e1d8bca98780df1374427cfbb6992107cba44a2b",
+  "source_patch_sha256": "d5528073f07db400c3f897eb5ff4746b0ad4f1fb6fda0c065a44a06f9fba1374",
+  "platform_test_dependencies": "Existing /Users/bradley/glob2/platform/node_modules, vitest 5.0.3; temporary symlink removed after 13 CLI fixture tests passed"
+}

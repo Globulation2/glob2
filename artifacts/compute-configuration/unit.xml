@@ -1,0 +1,26 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="24" failures="0" errors="0" skipped="0"><testsuite name="ComputeExecutor"><testcase classname="ComputeExecutor" name="automatic sizing follows hardware and supports unknown CPU counts" time="0" status="run" />
+    <testcase classname="ComputeExecutor" name="thread configuration accepts auto and rejects malformed or overflowing overrides" time="0.000743" status="run" />
+    <testcase classname="ComputeExecutor" name="supported platforms execute jobs concurrently on distinct threads" time="0.000244" status="run" />
+    <testcase classname="ComputeExecutor" name="exclusive slots; nested batches; reuse; errors; barriers and reconfiguration" time="0.014302" status="run" />
+    <testcase classname="ComputeExecutor" name="deferred batches complete with lanes and isolated errors" time="0.129387" status="run" />
+    <testcase classname="ComputeExecutor" name="lane groups run in index order and the horizon is bounded" time="0.004849" status="run" />
+    <testcase classname="ComputeExecutor" name="workers run deferred batches earliest due first and the owner only waits" time="0.001139" status="run" />
+    <testcase classname="ComputeExecutor" name="without workers the owner runs the jobs due no later than the join" time="0" status="run" />
+    <testcase classname="ComputeExecutor" name="a lane keeps submission order: a lane job due before a live earlier one is rejected" time="0.005257" status="run" />
+    <testcase classname="ComputeExecutor" name="the slot count covers every producer's horizon" time="0" status="run" />
+    <testcase classname="ComputeExecutor" name="presentation cannot delay simulation barriers with spare workers or run on the simulation owner" time="0.003964" status="run" />
+    <testcase classname="ComputeExecutor" name="with one worker the owner waits through its presentation chunk and never runs the join itself" time="0.027357" status="run" />
+    <testcase classname="ComputeExecutor" name="presentation progresses before a continuous simulation backlog drains" time="0.002968" status="run" />
+    <testcase classname="ComputeExecutor" name="presentation replacement, chunk pumping, cancellation and errors retain no captures" time="0" status="run" />
+    <testcase classname="ComputeExecutor" name="resumable presentation yields without advancing or retaining canceled inputs" time="0" status="run" />
+  </testsuite><testsuite name="GradientPipeline"><testcase classname="GradientPipeline" name="fixed publication; supersession; bounded buffers; scheduling stress; fallback; exceptions and teardown" time="0.575947" status="run" />
+    <testcase classname="GradientPipeline" name="reservation is invalidatable before preparation and seed failures cannot strand it" time="0.000181" status="run" />
+    <testcase classname="GradientPipeline" name="projected terrain leases end at completion including failed work" time="0.000107" status="run" />
+    <testcase classname="GradientPipeline" name="gradient, building and AI batches share the maximum deferred horizon" time="0.013232" status="run" />
+    <testcase classname="GradientPipeline" name="building pipeline admits several jobs per tick, publishes in reservation order at fixed deadlines, supersedes, survives slow and failing workers" time="1.45732" status="run" />
+    <testcase classname="GradientPipeline" name="building pipeline pending results survive a save-style round trip" time="0.001602" status="run" />
+    <testcase classname="GradientPipeline" name="owner-only preparation computes at submission and errors surface at the deadline" time="0.000128" status="run" />
+    <testcase classname="GradientPipeline" name="shared preparation executes off the owner and retains its deadline" time="0" status="run" />
+  </testsuite><testsuite name="ReadOnlyPhase"><testcase classname="ReadOnlyPhase" name="borrowed groups cover serial parallel empty and exception barriers" time="0.000671" status="run" />
+  </testsuite></testsuites>

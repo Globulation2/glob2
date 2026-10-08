@@ -1,0 +1,352 @@
+{
+  "scenarios": {
+    "mixed-ai": {
+      "baseline": {
+        "wall_s": 0.41109695797786117,
+        "cpu_s": 0.40673299999999996,
+        "peak_rss_bytes": 73891840,
+        "run_s": 0.148757333,
+        "ticks": [
+          2048
+        ],
+        "termination": [
+          "tick_cap"
+        ],
+        "wall_speedup": 1.0,
+        "cpu_ratio": 1.0
+      },
+      "baseline-2": {
+        "wall_s": 0.37212287494912744,
+        "cpu_s": 0.412606,
+        "peak_rss_bytes": 73449472,
+        "run_s": 0.109262917,
+        "ticks": [
+          2048
+        ],
+        "termination": [
+          "tick_cap"
+        ],
+        "wall_speedup": 1.1047344456694899,
+        "cpu_ratio": 1.01443944799168
+      },
+      "baseline-4": {
+        "wall_s": 0.32928199996240437,
+        "cpu_s": 0.43124399999999996,
+        "peak_rss_bytes": 74743808,
+        "run_s": 0.066171542,
+        "ticks": [
+          2048
+        ],
+        "termination": [
+          "tick_cap"
+        ],
+        "wall_speedup": 1.2484647142109133,
+        "cpu_ratio": 1.0602631210155065
+      },
+      "baseline-8": {
+        "wall_s": 0.33846312505193055,
+        "cpu_s": 0.505413,
+        "peak_rss_bytes": 76070912,
+        "run_s": 0.074254041,
+        "ticks": [
+          2048
+        ],
+        "termination": [
+          "tick_cap"
+        ],
+        "wall_speedup": 1.2145989549519949,
+        "cpu_ratio": 1.2426161634290802
+      },
+      "compute-1": {
+        "wall_s": 0.41143274982459843,
+        "cpu_s": 0.407039,
+        "peak_rss_bytes": 74612736,
+        "run_s": 0.147886458,
+        "ticks": [
+          2048
+        ],
+        "termination": [
+          "tick_cap"
+        ],
+        "wall_speedup": 0.9991838475501028,
+        "cpu_ratio": 1.000752336299243,
+        "wall_speedup_over_base_same_threads": 0.9991838475501028,
+        "cpu_ratio_over_base_same_threads": 1.000752336299243,
+        "speedup_over_serial": 1.0,
+        "runtime_speedup_over_serial": 1.0
+      },
+      "compute-2": {
+        "wall_s": 0.3716478750575334,
+        "cpu_s": 0.412052,
+        "peak_rss_bytes": 74006528,
+        "run_s": 0.110277333,
+        "ticks": [
+          2048
+        ],
+        "termination": [
+          "tick_cap"
+        ],
+        "wall_speedup": 1.1061463970814331,
+        "cpu_ratio": 1.0130773750839004,
+        "wall_speedup_over_base_same_threads": 1.001278091234937,
+        "cpu_ratio_over_base_same_threads": 0.9986573147263976,
+        "speedup_over_serial": 1.1070499185846445,
+        "runtime_speedup_over_serial": 1.3410412999378576
+      },
+      "compute-4": {
+        "wall_s": 0.32884550001472235,
+        "cpu_s": 0.42932899999999996,
+        "peak_rss_bytes": 75431936,
+        "run_s": 0.065403,
+        "ticks": [
+          2048
+        ],
+        "termination": [
+          "tick_cap"
+        ],
+        "wall_speedup": 1.2501218899436253,
+        "cpu_ratio": 1.0555548726068453,
+        "wall_speedup_over_base_same_threads": 1.0013273709011146,
+        "cpu_ratio_over_base_same_threads": 0.9955593585070169,
+        "speedup_over_serial": 1.2511430133791663,
+        "runtime_speedup_over_serial": 2.2611571028851887
+      },
+      "compute-8": {
+        "wall_s": 0.33637649985030293,
+        "cpu_s": 0.502805,
+        "peak_rss_bytes": 76939264,
+        "run_s": 0.074399416,
+        "ticks": [
+          2048
+        ],
+        "termination": [
+          "tick_cap"
+        ],
+        "wall_speedup": 1.222133407538312,
+        "cpu_ratio": 1.2362040945780155,
+        "wall_speedup_over_base_same_threads": 1.0062032430997891,
+        "cpu_ratio_over_base_same_threads": 0.9948398636362736,
+        "speedup_over_serial": 1.2231316694468777,
+        "runtime_speedup_over_serial": 1.9877368123427206
+      },
+      "compute-auto": {
+        "wall_s": 0.3378750840201974,
+        "cpu_s": 0.505702,
+        "peak_rss_bytes": 77692928,
+        "run_s": 0.074229,
+        "ticks": [
+          2048
+        ],
+        "termination": [
+          "tick_cap"
+        ],
+        "wall_speedup": 1.216712854604238,
+        "cpu_ratio": 1.2433267032672541,
+        "speedup_over_serial": 1.2177066889016412,
+        "runtime_speedup_over_serial": 1.9923002869498443
+      }
+    },
+    "runtime-ai": {
+      "baseline": {
+        "wall_s": 0.3266322079580277,
+        "cpu_s": 0.32266799999999995,
+        "peak_rss_bytes": 63176704,
+        "run_s": 0.09144775,
+        "ticks": [
+          1024
+        ],
+        "termination": [
+          "tick_cap"
+        ],
+        "wall_speedup": 1.0,
+        "cpu_ratio": 1.0
+      },
+      "baseline-2": {
+        "wall_s": 0.2968797499779612,
+        "cpu_s": 0.328042,
+        "peak_rss_bytes": 63111168,
+        "run_s": 0.062542125,
+        "ticks": [
+          1024
+        ],
+        "termination": [
+          "tick_cap"
+        ],
+        "wall_speedup": 1.1002172023597945,
+        "cpu_ratio": 1.0166548898558272
+      },
+      "baseline-4": {
+        "wall_s": 0.2746404998470098,
+        "cpu_s": 0.342796,
+        "peak_rss_bytes": 63717376,
+        "run_s": 0.039029583,
+        "ticks": [
+          1024
+        ],
+        "termination": [
+          "tick_cap"
+        ],
+        "wall_speedup": 1.1893082343644883,
+        "cpu_ratio": 1.0623799075210434
+      },
+      "baseline-8": {
+        "wall_s": 0.28832499985583127,
+        "cpu_s": 0.417046,
+        "peak_rss_bytes": 65175552,
+        "run_s": 0.052995916,
+        "ticks": [
+          1024
+        ],
+        "termination": [
+          "tick_cap"
+        ],
+        "wall_speedup": 1.1328612091263361,
+        "cpu_ratio": 1.2924925930058142
+      },
+      "compute-1": {
+        "wall_s": 0.3259135000407696,
+        "cpu_s": 0.321876,
+        "peak_rss_bytes": 63717376,
+        "run_s": 0.090656084,
+        "ticks": [
+          1024
+        ],
+        "termination": [
+          "tick_cap"
+        ],
+        "wall_speedup": 1.0022052106376944,
+        "cpu_ratio": 0.9975454646881625,
+        "wall_speedup_over_base_same_threads": 1.0022052106376944,
+        "cpu_ratio_over_base_same_threads": 0.9975454646881625,
+        "speedup_over_serial": 1.0,
+        "runtime_speedup_over_serial": 1.0
+      },
+      "compute-2": {
+        "wall_s": 0.29661762504838407,
+        "cpu_s": 0.327932,
+        "peak_rss_bytes": 63504384,
+        "run_s": 0.061736709,
+        "ticks": [
+          1024
+        ],
+        "termination": [
+          "tick_cap"
+        ],
+        "wall_speedup": 1.1011894788947476,
+        "cpu_ratio": 1.0163139821736276,
+        "wall_speedup_over_base_same_threads": 1.0008837132639516,
+        "cpu_ratio_over_base_same_threads": 0.999664677084032,
+        "speedup_over_serial": 1.0987664673925117,
+        "runtime_speedup_over_serial": 1.468430784025109
+      },
+      "compute-4": {
+        "wall_s": 0.27271520788781345,
+        "cpu_s": 0.339798,
+        "peak_rss_bytes": 64126976,
+        "run_s": 0.0384195,
+        "ticks": [
+          1024
+        ],
+        "termination": [
+          "tick_cap"
+        ],
+        "wall_speedup": 1.1977044129214607,
+        "cpu_ratio": 1.053088623600729,
+        "wall_speedup_over_base_same_threads": 1.0070597161563073,
+        "cpu_ratio_over_base_same_threads": 0.991254273678806,
+        "speedup_over_serial": 1.19506903397496,
+        "runtime_speedup_over_serial": 2.359637267533414
+      },
+      "compute-8": {
+        "wall_s": 0.2895278329961002,
+        "cpu_s": 0.42416499999999996,
+        "peak_rss_bytes": 65437696,
+        "run_s": 0.054243541,
+        "ticks": [
+          1024
+        ],
+        "termination": [
+          "tick_cap"
+        ],
+        "wall_speedup": 1.128154777307463,
+        "cpu_ratio": 1.3145555183656266,
+        "wall_speedup_over_base_same_threads": 0.9958455353745381,
+        "cpu_ratio_over_base_same_threads": 1.0170700594179058,
+        "speedup_over_serial": 1.125672432484788,
+        "runtime_speedup_over_serial": 1.6712788717093525
+      },
+      "compute-auto": {
+        "wall_s": 0.28792733303271234,
+        "cpu_s": 0.41477699999999995,
+        "peak_rss_bytes": 65437696,
+        "run_s": 0.05270725,
+        "ticks": [
+          1024
+        ],
+        "termination": [
+          "tick_cap"
+        ],
+        "wall_speedup": 1.1344258445964142,
+        "cpu_ratio": 1.2854605972702593,
+        "speedup_over_serial": 1.1319297011782536,
+        "runtime_speedup_over_serial": 1.71999267652932
+      }
+    }
+  },
+  "aggregate": {
+    "baseline": {
+      "wall_speedup": 1.0,
+      "cpu_ratio": 1.0,
+      "worst_cpu_ratio": 1.0,
+      "worst_control_speedup": null
+    },
+    "baseline-2": {
+      "wall_speedup": 1.1024735104141887,
+      "cpu_ratio": 1.0155465647932582,
+      "worst_cpu_ratio": 1.0166548898558272,
+      "worst_control_speedup": null
+    },
+    "baseline-4": {
+      "wall_speedup": 1.2185275396660293,
+      "cpu_ratio": 1.0613209865316084,
+      "worst_cpu_ratio": 1.0623799075210434,
+      "worst_control_speedup": null
+    },
+    "baseline-8": {
+      "wall_speedup": 1.1730183462804413,
+      "cpu_ratio": 1.2673090338119541,
+      "worst_cpu_ratio": 1.2924925930058142,
+      "worst_control_speedup": null
+    },
+    "compute-1": {
+      "wall_speedup": 1.0006933888058482,
+      "cpu_ratio": 0.99914761389466,
+      "worst_cpu_ratio": 1.000752336299243,
+      "worst_control_speedup": null
+    },
+    "compute-2": {
+      "wall_speedup": 1.103665155100679,
+      "cpu_ratio": 1.014694388139367,
+      "worst_cpu_ratio": 1.0163139821736276,
+      "worst_control_speedup": null
+    },
+    "compute-4": {
+      "wall_speedup": 1.2236325037670406,
+      "cpu_ratio": 1.054321026978304,
+      "worst_cpu_ratio": 1.0555548726068453,
+      "worst_control_speedup": null
+    },
+    "compute-8": {
+      "wall_speedup": 1.1742042591565554,
+      "cpu_ratio": 1.2747779862994628,
+      "worst_cpu_ratio": 1.3145555183656266,
+      "worst_control_speedup": null
+    },
+    "compute-auto": {
+      "wall_speedup": 1.1748491425352137,
+      "cpu_ratio": 1.26421813251669,
+      "worst_cpu_ratio": 1.2854605972702593,
+      "worst_control_speedup": null
+    }
+  }
+}

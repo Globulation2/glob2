@@ -1,0 +1,9 @@
+
+ RUN  v5.0.3 /Users/bradley/.codex/worktrees/compute-configuration/glob2/platform
+
+
+ Test Files  1 passed (1)
+      Tests  13 passed (13)
+   Start at  16:22:39
+   Duration  2.11s (import 44%, transform 37%, tests 18%)
+
