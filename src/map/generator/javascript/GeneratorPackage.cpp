@@ -210,6 +210,7 @@ std::shared_ptr<const Package> Package::load(const std::string &path)
 {
 	if (!std::filesystem::is_directory(path))
 		return parse(readFile(path));
+	require(!std::filesystem::is_symlink(path), "Generator package root may not be a symlink");
 	auto root = std::filesystem::canonical(path);
 	Json manifest = Json::parse(readFile(root / "manifest.json"));
 	Json package{{"formatVersion", 1}, {"manifest", manifest}, {"modules", Json::object()}};

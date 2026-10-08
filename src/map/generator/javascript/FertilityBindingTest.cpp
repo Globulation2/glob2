@@ -106,7 +106,8 @@ TEST_CASE("Script control mutations cannot bypass native domain contracts" *
 	const auto shift = runFertility(
 		"const "
 		"ctl=c.toolkit.GeneratorControls.GeneratorControl_percentage('test','Test');ctl.powerOfTwo="
-		"true;ctl.maximum=30;ctl.defaultValue=0;ctl.searchRange=null;ctl.displayValue(31);");
+		"true;ctl.maximum=30;ctl.step=1;ctl.defaultValue=0;ctl.searchRange=null;ctl.displayValue("
+		"31);");
 	INFO(shift);
 	CHECK(shift.find("0..30") != std::string::npos);
 }
