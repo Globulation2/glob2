@@ -77,7 +77,8 @@ separate evidence as new engine versions are served; old evidence remains visibl
 
 In the native **Generators** tab (also linked from **Settings → Map generators**),
 select an exact compatible release and install it. File and package hashes are
-checked, and durable-storage failure restores the previous library. An installed
+checked. Failed durable writes trigger rollback; restoration failures are reported
+and clear the pending operation. An installed
 manifest ID requires explicit replacement confirmation. Release provenance is
 stored separately from package bytes. New publications do not automatically update
 an installed package; select and install the desired release explicitly.
@@ -92,8 +93,8 @@ need the generator installed. Match history retains the exact package, requested
 and chosen seed and settings. Sharing those generated map bytes links verified
 server provenance to the finished map version. A version upload may supply a
 `generator` query parameter containing a scripted descriptor; it remains an author
-claim unless the server independently recognizes the generated world bytes. Ranked matchmaking keeps native
-map generation. Older clients must update before joining scripted rooms.
+claim unless the server independently recognizes the generated world bytes. Ranked
+matchmaking keeps native map generation. Older clients must update before joining scripted rooms.
 
 ## Manifest and portable format
 
