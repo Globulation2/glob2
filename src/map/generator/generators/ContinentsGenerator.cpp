@@ -177,7 +177,7 @@ struct Layout
 	Torus t{1, 1};
 	const AtlasRegion *region = nullptr;
 	RasterFit fit;
-	std::vector<unsigned char> corners; // each undermap corner's LandClass
+	std::vector<unsigned char> corners; // each terrain vertex's LandClass
 	std::vector<unsigned char> river;   // corners under a river
 	std::vector<unsigned char> ford;    // river corners turned to sand
 	TerrainSketch terrain;              // with beaches laid
@@ -247,7 +247,7 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 	context.telemetry.choice("continents.region", L.region->id);
 
 	// Fit it into the map inside the sea margin, turned when that makes it larger and the player
-	// allows. The fit is in undermap corners, which the sketch is drawn in.
+	// allows. The fit is in terrain vertices, which the sketch is drawn in.
 	const int margin = std::max(kMarginMinimum, std::min(t.w, t.h) / kMarginDivisor);
 	L.fit = fitRaster(L.region->width, L.region->height, t.w, t.h, margin, o.orientation == 0);
 	if (L.fit.width <= 0 || L.fit.height <= 0)
@@ -603,7 +603,7 @@ bool generate(Game &game, GenerationContext &context)
 		game.addTeam();
 
 	context.stage = "continents terrain";
-	writeUndermap(map, L.terrain);
+	writeVertices(map, L.terrain);
 
 	// Every colony on its own territory's grass, its swarm at its site.
 	context.stage = "continents colonies";

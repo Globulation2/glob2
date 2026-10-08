@@ -3,6 +3,7 @@
 #include "MapAssetBundle.h"
 
 #include "TerrainRegistry.h"
+#include "TerrainCornerPresentation.h"
 #include "sim/snapshot/WorldSnapshot.h"
 #include <algorithm>
 #include <bit>
@@ -57,7 +58,7 @@ bool SceneMap::isHardSpaceForBuilding(int x, int y, int w, int h) const
 		{
 			const size_t i = coordToIndex(xi, yi);
 			if ((getResource(i).type != NO_RES_TYPE && resourceDefinitions->properties(static_cast<ResourceId>(getResource(i).type)).blocksBuilding) || getBuilding(xi, yi) != 0xFFFF ||
-				!registry->properties(terrainTypeAt(xi, yi)).buildable)
+				!terrainPropertiesAt(xi, yi).buildable)
 				return false;
 		}
 	return true;
@@ -128,12 +129,14 @@ void SceneMap::prepareChunk(size_t first,size_t count)
     if (end==size_t(w)*h) derivedComplete=true;
 }
 
-Uint16 SceneMap::getTerrain(int x, int y) const
-{ const auto i = coordToIndex(x,y); return snapshot->terrain->legacy[i]; }
+TerrainType SceneMap::vertexTerrainAt(int x, int y) const
+{ return (*snapshot->terrain->vertices)[coordToIndex(x,y)]; }
 TerrainType SceneMap::terrainTypeAt(int x, int y) const
-{ const auto i = coordToIndex(x,y); return (*snapshot->terrain->identity)[i]; }
-TerrainType SceneMap::appearanceAt(int x, int y) const
-{ return registry->appearance(terrainTypeAt(x,y)); }
+{ const auto c = cellCorners(x, y); return c[0] == c[1] && c[0] == c[2] && c[0] == c[3] ? c[0] : MIXED_TERRAIN; }
+const TerrainProperties& SceneMap::terrainPropertiesAt(int x, int y) const
+{ return (*snapshot->terrain->rules)[snapshot->terrain->cellRules[coordToIndex(x,y)]].properties; }
+TerrainType SceneMap::presentationTypeAt(int x, int y) const { return dominantCornerTerrain(cellCorners(x, y)); }
+TerrainType SceneMap::appearanceAt(int x, int y) const { return registry->appearance(presentationTypeAt(x, y)); }
 const Resource& SceneMap::getResource(int x, int y) const { return getResource(coordToIndex(x,y)); }
 const Resource& SceneMap::getResource(size_t i) const
 { return snapshot->resources->cells[i].resource; }
@@ -150,8 +153,6 @@ Uint16 SceneMap::getAirUnit(int x, int y) const
 Uint16 SceneMap::getBuilding(int x, int y) const
 { const auto i = coordToIndex(x,y); return snapshot->occupancy->cells[i].building; }
 
-int SceneMap::getUMTerrain(int x, int y) const
-{ const auto i = coordToIndex(x,y); return snapshot->terrain->undermap[i]; }
 
 bool SceneMap::canPaintFarmArea(int x,int y) const
 { return snapshot && snapshot->canPaintFarmAt(coordToIndex(x,y)); }
@@ -159,12 +160,12 @@ bool SceneMap::canPaintFarmArea(int x,int y) const
 bool SceneMap::isFreeForAirUnit(int x,int y) const
 {
     const auto& resource=getResource(x,y);
-    return registry->properties(terrainTypeAt(x,y)).flyable && getAirUnit(x,y)==0xffff
+    return terrainPropertiesAt(x,y).flyable && getAirUnit(x,y)==0xffff
         && (resource.type==NO_RES_TYPE || !resourceDefinitions->properties(ResourceId(resource.type)).blocksAir);
 }
 bool SceneMap::isFreeForGroundUnit(int x,int y,bool canSwim,Uint32 teamMask) const
 {
-    const auto& terrain=registry->properties(terrainTypeAt(x,y));
+    const auto& terrain=terrainPropertiesAt(x,y);
     const auto& resource=getResource(x,y);
     return (terrain.walkable || (canSwim && terrain.swimmable)) && getGroundUnit(x,y)==0xffff
         && getBuilding(x,y)==0xffff && !(snapshot->areas->cells[coordToIndex(x,y)].forbidden & teamMask)

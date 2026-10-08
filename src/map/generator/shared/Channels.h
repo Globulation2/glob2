@@ -11,7 +11,7 @@ namespace MapGeneration
 // from the first minute, a moat no tower can reach over, a strait with a few sand bridges. Every
 // generator that parts land with water has done the same beach arithmetic by hand; it lives here once.
 //
-// The arithmetic. A straight channel `w` undermap corners wide gets a sand corner either side from
+// The arithmetic. A straight channel `w` terrain vertices wide gets a sand corner either side from
 // layBeaches, and a tile is pure grass only when its four corners are, so the channel spoils w + 3
 // tiles of grass across (kChannelSpoiledTiles), of which w - 1 are pure water. A tower's footprint on
 // the last grass tile of one bank is w + 4 tiles (Chebyshev) from the first grass tile of the other,
@@ -49,7 +49,7 @@ std::vector<unsigned char> beachTiles(const Map &, const Torus &);
 /// of it. Run after layBeaches (a bridge's own sand needs no beach). Returns the corners changed.
 int bridgeAcross(TerrainSketch &, const Torus &, ShapePoint from, ShapePoint to, double halfWidth);
 
-/// The water that parts labelled cells into islands: a strait `corners` undermap corners wide (4 to 8)
+/// The water that parts labelled cells into islands: a strait `corners` terrain vertices wide (4 to 8)
 /// along every border between two cells of `labels` (as nearestSiteLabels or labelTiles give them). An
 /// even width is the two tiles either side of a border grown (corners - 2) / 2 tiles each way; an odd
 /// one is labelBorders' one-tile wall grown (corners - 1) / 2. Grown as squares, so a diagonal border's

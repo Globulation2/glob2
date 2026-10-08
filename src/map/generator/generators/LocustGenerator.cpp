@@ -87,7 +87,7 @@ bool generate(Game &game, GenerationContext &context)
 	for (int i = 0; i < t.size(); ++i)
 		terrain[i] = L.water[i] ? WATER : L.sand[i] ? SAND : GRASS;
 	layBeaches(terrain, t);
-	writeUndermap(map, terrain);
+	writeVertices(map, terrain);
 	for (int k = 0; k < context.request.nbTeams; ++k)
 		game.addTeam();
 	context.stage = "locust colonies";

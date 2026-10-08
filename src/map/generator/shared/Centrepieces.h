@@ -8,7 +8,7 @@ namespace MapGeneration
 // designs so a map of identical modules does not read as one stamp repeated (maintainer review
 // 2026-09-16, Hedgerow Country and Breachable highlands: "a few different designs and patterns for
 // each square... similar to how canals was set up"). Every design lies inside the square of
-// half-width `radius` undermap corners round the centre, so a design's crop-growth envelope and
+// half-width `radius` terrain vertices round the centre, so a design's crop-growth envelope and
 // its keep-out from hedges and ridges are the square's, whatever design a module draws; only
 // how much water it holds, and so how fast its crops regrow, differs. A map that promises its
 // colonies equal food gives every home the same design and varies the rest.

@@ -69,6 +69,15 @@ void SimulationRunner::run()
 				park(lock);
 				continue;
 			}
+			// Diagnostic output owns a bounded publication slot. Let the client
+			// drain it before advancing, as the serial loop does after each tick.
+			// Otherwise a fast headless producer finishes while the first PNG
+			// batch is rendering and silently misses later capture intervals.
+			if (engine.headlessDiagnosticsPending())
+			{
+				wake.wait_for(lock, std::chrono::milliseconds(1));
+				continue;
+			}
 			lock.unlock();
 			const Uint64 now = engine.sessionClock();
 			const Uint32 delay = engine.sessionDelay(now);

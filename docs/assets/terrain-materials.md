@@ -181,10 +181,11 @@ A material opts in with a `decor` block:
 "decor": {"sprite": "data/gfx/terrain-decor", "full": [0, 1, 2], "edge": [8, 9]}
 ```
 
-- `full` frames are used for cells whose four neighbours share the cell's
+- `full` frames are used for cells whose four corners share a decorated
   appearance.
-- `edge` frames are smaller and pulled toward the cell centre, for cells with an
-  open neighbour, so clusters do not spill far onto open ground.
+- `edge` frames are smaller and pulled toward the cell centre, for cells where two
+  or three corners share it, so clusters do not spill far onto open ground. A
+  single decorated corner draws no decor.
 - The frame is chosen by a coordinate hash salted with the map's terrain seed.
 - All decor blocks share one sprite, so the cached GPU path batches decor rows
   like resource rows.
@@ -310,20 +311,50 @@ existing artwork.
 
 | Profile | roughness / amplitude / feather / speckle / bridge (Q8) | Curves | Materials |
 | --- | --- | --- | --- |
-| `rock` | 384 / 896 / 192 / 448 / 192 | 16 × 9, angular | boulders, ridge_rock, outcrop, scree, gravel, chasm |
-| `soft` | 160 / 512 / 448 / 128 / 640 | 12 × 17, gentle | mud, marsh, loam, moss, deep_snow, deep_water, dark_water, clay, dirt |
-| `crisp` | 96 / 256 / 128 / 0 / 256 | 8 × 9 | void_hole, boardwalk |
-| `brush` | 320 / 768 / 320 / 384 / 512 | 16 × 17 | hedge, thicket, flower_meadow, spring_meadow |
-| `sand` (existing) | | | dirt_track |
-| `fractured` (existing) | | | lava, ember_field |
+| `rock` | 384 / 896 / 192 / 448 / 192 | 48 × 9, angular | boulders, ridge_rock, outcrop, scree, gravel, chasm |
+| `soft` | 160 / 512 / 448 / 128 / 640 | 40 × 17, gentle | mud, marsh, loam, moss, deep_snow, deep_water, dark_water, clay, dirt |
+| `crisp` | 96 / 256 / 128 / 0 / 256 | 24 × 9 | void_hole, boardwalk |
+| `brush` | 320 / 768 / 320 / 384 / 512 | 48 × 17 | hedge, thicket, flower_meadow, spring_meadow |
+| `sand` (existing) | 256 / 1024 / 320 / 512 / 512 | 61 × 17, traced | water, sand, grass, dirt_track |
+| `fractured` (existing) | 320 / 768 / 320 / 128 / 256 | 32 × 9 | ice, lava, ember_field |
+| `cobblestone` (existing) | 256 / 640 / 224 / 320 / 384 | 24 × 9 | road |
+| `shore` | 256 / 832 / 320 / 384 / 704 | 48 × 33, lobed with ripple | pair treatments only |
+| `liquid` | 256 / 1024 / 448 / 128 / 640 | 40 × 33, broad and smooth | pair treatments only |
+| `organic` | 288 / 896 / 320 / 320 / 512 | 48 × 17, lobed and noisy | pair treatments only |
 
 `tools/terrain_profile_curves.py --write` generates the curves with seeded random
 walks and appends a missing profile with these parameters; never author curves by
-hand. Pair treatments: boulders, ridge_rock and outcrop against grass use `rock`;
-hedge and thicket against grass use `brush`; water/deep_water and
-deep_water/dark_water use `soft`; lava and ember_field against grass, sand, dirt
-and gravel use `fractured`; void_hole and chasm against every other material use
-`crisp` (the default rule would otherwise let the rougher neighbour win).
+hand. The script still emits the earlier, shorter curve sets and lacks the
+`shore`, `liquid` and `organic` profiles, so `--write` would shrink the shipped
+sets; bring it up to date before regenerating. `sand` uses every distinct traced
+edge of the original grass/sand tiles, so the classic coast keeps its look with
+less repetition. `shore`, `liquid` and
+`organic` are sine series with a weak fundamental plus a detrended ripple; the
+weak fundamental keeps edge crossings near the vertex lattice so lone cells stay
+round. Their feather and speckle are unused, since softness and pebbles come from
+the material's own profile.
+
+Pair treatments cover material pairs that meet inside one cell now that terrain
+is stored per vertex. Entries are needed only where the choice differs from the
+default rule (the rougher profile wins):
+
+- `rock`: boulders, ridge_rock and outcrop against grass.
+- `brush`: hedge and thicket against grass.
+- `shore`: grass, moss, loam, spring_meadow and flower_meadow against water,
+  deep_water and dark_water.
+- `liquid`: water/deep_water, deep_water/dark_water, water/dark_water, ice/water,
+  and marsh and mud against the three waters.
+- `organic`: moss, loam, mud, marsh, dirt, clay and deep_snow against grass and
+  sand; moss/loam, moss/marsh, loam/dirt, loam/mud, mud/marsh, dirt/clay,
+  dirt/mud, clay/mud, deep_snow/ice, and spring_meadow against moss, loam,
+  flower_meadow and dirt, and flower_meadow/dirt.
+- `crisp`: boardwalk against grass, sand, the three waters, marsh, mud, moss,
+  dirt, loam, clay, gravel, dirt_track and road; void_hole and chasm against
+  every other material.
+- `cobblestone`: road against grass, sand, dirt_track, gravel, scree,
+  flower_meadow and spring_meadow.
+- `fractured`: lava and ember_field against grass, sand, dirt, gravel and scree;
+  lava against hedge and flower_meadow.
 
 ### Seam ranks
 
@@ -350,18 +381,17 @@ model, which only tones neighbours; it would need an engine-side self-lip.
 
 ## Boundaries and masks
 
-The presentation resolver uses a 16-pixel lattice. Whole-cell terrains fill their
-four quadrants; legacy sprites decode into their original TL/TR/BL/BR material
-configuration, including the reversed diagonal groups in the sand/water atlas.
-A test verifies both profiles against the engine's frozen lookup. The resolver
+The presentation resolver uses a 16-pixel lattice. Terrain is stored per map
+vertex, so a tile's four corner vertices give its TL/TR/BL/BR materials directly; a
+tile whose corners agree fills all four quadrants with one material. The resolver
 reads the scene snapshot, never the live simulation. `PreparedCoverage` resolves
 the nine patches needed by a tile once, including shared contour choices and
 side-connected corner groups, then samples them at native or HD pixel centers.
 
 The optional catalog-level `boundary_warp_q8` array controls world-space bends at
-64-, 32- and 8-pixel scales. The shipped values `[640, 256, 96]` allow about four
-pixels of combined displacement per axis: a broad meander, a medium ripple and a
-faint angular grit. The first two scales interpolate smoothly; the finest adds
+64-, 32- and 8-pixel scales. The shipped values `[960, 352, 120]` allow about
+five and a half pixels of combined displacement per axis: a broad meander, a
+medium ripple and a faint angular grit. The first two scales interpolate smoothly; the finest adds
 angular irregularity. Pebbly detail comes from the authored profiles below. These bends continue across tile
 boundaries instead of restarting a motif in every patch. Values are nonnegative
 integers, bounded by `[1024, 384, 128]`; omitting the array disables the field
@@ -524,16 +554,17 @@ source surface revisions invalidate cached pixels; catalog file edits do not
 trigger a live catalog reload.
 
 Review the gallery at normal play scale and enlarged detail: isolated cells,
-one-cell roads, bends, holes, mixed junctions, legacy shore orientation, torus
+one-cell roads, bends, holes, mixed junctions, grass/sand/water corner mixes, torus
 edges, translucent water borders and fractional zoom. The current gallery case
 also writes a 256-tick simulation checksum trace and cold/warm cache timings.
 Compare that trace with the same fixture built against the base revision.
 
 ## Caches and compatibility
 
-`TerrainCompatibility.h` freezes old frame ranges, corner semantics and the frame
-hash used by map authoring. Legacy lookup keeps its synchronized random calls.
-Changing visual variants in the catalog cannot change those contracts.
+Saved maps hold terrain IDs per vertex, not sprite frames, so changing visual
+variants in the catalog cannot change saved state, checksums or simulation RNG use.
+Files older than format 146 also stored sprite frames; the loader skips them, and
+only `LegacyTerrainFrames.h` still decodes classic frames, for old script memories.
 
 `TerrainVisual::Compositor` owns prepared material sources. Source lifetime and
 content revisions, animation phase and native/HD selection invalidate prepared

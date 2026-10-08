@@ -55,10 +55,10 @@ namespace
 			for (auto &cell : resourceCells) cell.mayGrow = 1;
 			occupancyCells.assign(size, {});
 			areaCells.assign(size, {});
-			legacyTerrain.assign(size, 0);
 			scriptAreaCells.assign(size, 0);
+			vertexTerrain.assign(size, GRASS);
 			bindBootstrappedArrays();
-            importLegacyTerrain();
+            rebuildTerrainCounts();
 		}
 		~GrassMap()
 		{
@@ -68,8 +68,8 @@ namespace
 			size = 0;
 		}
 		size_t cells() const { return size; }
-		void putWater(int x, int y) { setCellTerrain(x,y,WATER); }
-		void putWaterAt(size_t i) { setCellTerrain(i,WATER); }
+		void putWater(int x, int y) { paintCell(x,y,WATER); }
+		void putWaterAt(size_t i) { paintCell(i,WATER); }
 
 		// The kernel before the low-level rewrite, kept verbatim as a differential oracle.
 		void legacyPropagateGradient(Uint16 *gradient, int swimClass, int maxCost = GRADIENT_COST_LIMIT) const
@@ -406,11 +406,15 @@ void GradientTest::testRandomFieldsAgainstReference()
 		const int swimClass = trial % SWIM_CLASS_COUNT;
 		GrassMap map(trial % 6, (trial / 6) % 6);
 		auto input = blank(map);
+		for (size_t i = 0; i < map.cells(); ++i)
+			if (random() % 3 == 0) map.putWater(i % width, i / width);
+		// A painted cell spreads its corners to its neighbours: read back which
+		// cells actually swim.
 		std::vector<bool> water(map.cells());
 		for (size_t i = 0; i < map.cells(); ++i)
+			water[i] = map.terrainPropertiesAt(i).swimmable;
+		for (size_t i = 0; i < map.cells(); ++i)
 		{
-			water[i] = random() % 3 == 0;
-			if (water[i]) map.putWater(i % width, i / width);
 			if (random() % 4 == 0 || (water[i] && swimClass == 0))
 				input[i] = GRADIENT_FORBIDDEN;
 			else if (trial % 10 != 0 && random() % 12 == 0)

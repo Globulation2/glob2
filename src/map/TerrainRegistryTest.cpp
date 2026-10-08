@@ -72,7 +72,6 @@ TEST_SUITE("TerrainRegistry")
 		CHECK(registry->find("test:a") == first);
 		CHECK(registry->find("test:z") == second);
 		CHECK(registry->properties(first).groundSpeedQ8 == 192);
-		CHECK_FALSE(registry->compatibility(first).legacyCorners);
 		CHECK(registry->appearance(first) == SAND);
 		auto updated = registry->importJson(source(Json::array(
 			{definition("test:a", "grass", {{"groundSpeedQ8", 64}}), definition("test:0")})));
@@ -103,8 +102,6 @@ TEST_SUITE("TerrainRegistry")
 		CHECK(snapshot->appearance(firstId) == snapshot->appearance(secondId));
 		CHECK(snapshot->appearance(firstId) == SAND);
 		CHECK(snapshot->propertyIndex(firstId) != snapshot->propertyIndex(secondId));
-		CHECK_FALSE(snapshot->compatibility(firstId).legacyCorners);
-		CHECK(snapshot->compatibility(firstId).firstFrame == terrainCompatibility(SAND).firstFrame);
 
 		first["name"] = "Replacement name";
 		const auto replacement = snapshot->importJson(source(Json::array({first})));
@@ -113,10 +110,9 @@ TEST_SUITE("TerrainRegistry")
 		CHECK(std::string(replacement->presentation(firstId).label) == "Replacement name");
 		CHECK(std::string(replacement->presentation(secondId).label) == "Second terrain");
 
-		// Format 136 retains every resolved field, including legacy timing that
-		// no longer drives drawing. Appearance material catalogs cannot rewrite
-		// authoritative saved bytes or their simulation digest.
-		for (const auto *field : {"minimap", "animationTicks"})
+		// Saved colours are authoritative bytes in the simulation digest;
+		// appearance material catalogs cannot rewrite them.
+		for (const auto *field : {"minimap"})
 		{
 			CAPTURE(field);
 			auto saved = Json::parse(snapshot->serialize());
@@ -178,8 +174,11 @@ TEST_SUITE("TerrainRegistry")
 		auto saved = Json::parse(imported->serialize());
 		saved["terrains"][0]["id"] = TERRAIN_COUNT + 3;
 		CHECK_THROWS(TerrainRegistry::deserialize(saved.dump()));
+		// Sprite frames saved before format 146 are accepted and ignored.
 		saved = Json::parse(imported->serialize());
 		saved["terrains"][0]["presentation"]["firstFrame"] = 999999;
+		CHECK(TerrainRegistry::deserialize(saved.dump())->serialize() == imported->serialize());
+		saved["terrains"][0]["presentation"]["spriteSheet"] = 1;
 		CHECK_THROWS(TerrainRegistry::deserialize(saved.dump()));
 		CHECK(registry->size() == TERRAIN_COUNT);
 	}
@@ -224,14 +223,11 @@ TEST_SUITE("TerrainRegistry")
 			const auto id = *registry->find("test:preset");
 			CHECK(registry->appearance(id) == type);
 			CHECK(registry->propertyIndex(id) == registry->propertyIndex(type));
-			CHECK(registry->compatibility(id).firstFrame == terrainCompatibility(type).firstFrame);
-			CHECK(registry->compatibility(id).variants == terrainCompatibility(type).variants);
-			CHECK_FALSE(registry->compatibility(id).legacyCorners);
 			CHECK(registry->presentation(id).minimap.r == TerrainPresentations[i].minimap.r);
-			// Saved metadata round-trips through the frozen-frame check.
+			// Saved metadata round-trips.
 			CHECK(TerrainRegistry::deserialize(registry->serialize())->digest() == registry->digest());
 		}
-		CHECK(presets == TERRAIN_COUNT - 2);
+		CHECK(presets == TERRAIN_COUNT);
 
 		// A file written with seven built-ins numbers its definitions from 7; the
 		// loader renumbers them behind the current built-ins without changing content.

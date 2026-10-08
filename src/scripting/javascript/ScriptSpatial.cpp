@@ -17,10 +17,16 @@ namespace Script
 {
 namespace
 {
+// A remembered cell's rules, combined from its corners as the map combines them.
+TerrainProperties cellTerrain(const Observations::Cell &cell, const TerrainRegistry &registry)
+{
+	return combineCornerRules(registry.properties(cell.corners[0]), registry.properties(cell.corners[1]),
+							  registry.properties(cell.corners[2]), registry.properties(cell.corners[3]));
+}
 bool passable(const Observations::Cell &cell, const std::string &mode,
 			  const TerrainRegistry &registry, const ResourceRegistry& resources)
 {
-	const auto &terrain = registry.properties(cell.terrainType);
+	const auto terrain = cellTerrain(cell, registry);
 	const auto* deposit=cell.resource==NO_RES_TYPE ? nullptr : &resources.properties(static_cast<ResourceId>(cell.resource));
 	if (mode == "fly") return terrain.flyable && (!deposit || !deposit->blocksAir);
 	return !cell.building && !cell.forbidden && (!deposit || !deposit->blocksGround) &&
@@ -241,9 +247,8 @@ std::shared_ptr<Spatial::Field> Spatial::distanceField(const Value &spec, const 
 					  (c.known && ::Script::passable(c, mode, *observations.world().terrain, *observations.world().resourceRegistry));
 		if(metric=="path")
         {
-			const auto &registry = *observations.world().terrain;
-			entryCosts[i] = mode == "fly" ? registry.airCost(c.terrainType)
-										  : registry.groundTravelCost(c.terrainType);
+			const auto rules = cellTerrain(c, *observations.world().terrain);
+			entryCosts[i] = gradient_kernel::scaledTerrainStep(GRADIENT_STEP, mode == "fly" ? rules.airSpeedQ8 : rules.groundSpeedQ8);
 		}
 	}
 	const auto key = spec.encode();
@@ -765,7 +770,7 @@ Value Spatial::placement(const Value &spec, const Value &staged, const QueryBudg
 						bool inside = xx >= 0 && xx < bw && yy >= 0 && yy < bh;
 						if (!c.known || c.building || reserved[at] ||
 							(inside &&
-							 (!c.visible || !observations.world().terrain->properties(c.terrainType).buildable ||
+							 (!c.visible || !cellTerrain(c, *observations.world().terrain).buildable ||
 							  (c.resource != NO_RES_TYPE && observations.world().resourceRegistry->properties(static_cast<ResourceId>(c.resource)).blocksBuilding))))
 						{
 							valid = false;

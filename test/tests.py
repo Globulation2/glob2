@@ -105,6 +105,7 @@ ENGINE_TESTS = [
     '#src/map/pathfind/TerrainHazardBenchmark.cpp',
     '#src/map/TerrainEcologyHarness.cpp',
     ('#src/map/TerrainPropertiesTest.cpp', dict(cxxflags=['-fno-access-control'])),
+    ('#src/map/VertexTerrainTest.cpp', dict(cxxflags=['-fno-access-control'])),
     '#src/net/LockstepSessionTest.cpp',
     '#src/game/orders/OrderValidationTest.cpp',
     '#src/online/MatchSetupTest.cpp',
@@ -340,6 +341,7 @@ UNIT_TESTS = [
 # object; entries with `defines` are compiled again for the unit binary only.
 UNIT_PRODUCTION_SOURCES = [
     '#src/map/TerrainRegistry.cpp',
+    '#src/map/CellRules.cpp',
     '#src/map/MapAssetBundle.cpp',
     '#src/render/terrain/TerrainCatalogIO.cpp',
     '#src/render/terrain/TerrainMaterials.cpp',

@@ -310,7 +310,7 @@ void Gradient::recalculate(const AIEngine::AIWorldView& world,unsigned observerT
     {
 		field::expandTerrainTravel(
 			values, width, height, info.terrainTravel,
-			[&](std::size_t i) { return map->terrainAt(i).type; }, *map->terrain);
+			[&](std::size_t i) { return map->cellRuleAt(i); }, *map->cellRules);
 		queue.clear();
     }
     else field::expandDistances(values,queue,{width,height},field::Surrounding,UnreachableCell);

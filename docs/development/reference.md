@@ -32,8 +32,8 @@ coverage when extending them.
 
 Map storage and snapshots use the same trivially copyable records from
 `src/map/MapState.h`. Resource, occupancy and area arrays are authoritative;
-there is no maintained `Tile` mirror. Legacy terrain sprites and visibility
-remain contiguous scalar arrays. The live `Map` and every snapshot expose the same
+there is no maintained `Tile` mirror. Vertex terrain, cell rule indices and
+visibility remain contiguous scalar arrays. The live `Map` and every snapshot expose the same
 borrowed `MapState::View` (`src/map/MapStateView.h`), and each cell query has one
 inline implementation there; `Map` members forward to it. Every cell write stamps
 its 16x16 chunk (`src/map/MapChangeTracking.h`); capture compares whole-array
@@ -1039,8 +1039,8 @@ For timing and scheduling, start with `src/game/Game_sync.cpp` and `src/engine/E
   difference and test the intended behavior rather than claiming old/new equivalence.
 - Terrain simulation properties retain the fixed layout in `src/map/TerrainProperties.h`,
   indexed by stable 16-bit `TerrainType` IDs in a map-owned immutable `TerrainRegistry`.
-  Use `map.terrainProperties(type)` or `map.terrainPropertiesAt(...)`; the global
-  constexpr table defines only the seven built-ins. Walking, swimming, flying, building eligibility,
+  Use `map.terrainProperties(type)` for a terrain or `map.terrainPropertiesAt(...)`
+  for a cell; the global constexpr table defines only the built-ins. Walking, swimming, flying, building eligibility,
   resource habitats, irrigation, movement rates, health and projectile obstruction
   are independent capabilities. Use a property predicate when asking what a cell
   permits; compare IDs only when its identity is the actual question (for example,
@@ -1049,44 +1049,70 @@ For timing and scheduling, start with `src/game/Game_sync.cpp` and `src/engine/E
   the terrain material hashes so maps look distinct; generators derive it from their
   request seed and the editor can reroll it. It is never read by simulation code and
   is not in `checkSum()`; see [terrain materials](../assets/terrain-materials.md#map-seed).
-- `Map::terrainTypeAt` reads the canonical ID plane. `Tile::terrain` is presentation
-  state: its sprite frame must never determine gameplay. Use `setCellTerrain` and
-  batch edits with `editTerrain()` so snapshots, topology and ecology caches stay
-  consistent with the canonical IDs. The compatibility `getTerrainType` query returns an
-  unknown category for legacy shores; never use it to index the property table.
-  The old corner editor and old-file importer are explicit
-  adapters; legacy shores have their own walkable, unbuildable profiles.
-- Saved sprite ranges, corner semantics and authoring frame selection are frozen in
-  `TerrainCompatibility.h`. Detailed terrain rendering resolves shipped appearances
-  through a presentation-only material catalog, corner coverage resolver and CPU
-  compositor. `data/terrain/tileset.json` defines those materials independently of
-  gameplay IDs; `TerrainPresentation.h` retains semantic editor and image-interchange
+- Terrain is stored once per map vertex (`Map::vertexTerrain`, save format 146).
+  Vertex (x,y) is the top-left corner of cell (x,y); `cellCorners(x, y)` returns the
+  top-left, top-right, bottom-left and bottom-right corners. A cell's rules come
+  from its corners through `combineCornerRules` (`TerrainPropertiesLayout.h`):
+  equal corners keep their terrain's exact profile; mixed corners are walkable when
+  any corner is, never swimmable or buildable, block projectiles and count as a
+  shoreline when any corner does, and are otherwise as permissive as their weakest
+  corner (speed and ground damage from the walkable corners). Mixed grass/sand and sand/water cells reproduce the retired shore
+  profiles exactly, which is why no shore terrain types exist.
+- A per-map `CellRuleTable` (`src/map/CellRules.h`) compiles each corner combination
+  once: properties, movement costs per swimming class, air costs and resource
+  habitat. Cells store only a rule index; rule t is the uniform cell of type t, and
+  mixed combinations follow in the order the map first needs them, up to 65536.
+  Snapshots, gradient preparation and AI observations share the table immutably.
+- `Map::terrainTypeAt` returns a cell's terrain when its corners agree and
+  `MIXED_TERRAIN` otherwise. That sentinel is never stored; never index a table
+  with it. The script-facing `getTerrainType` maps mixed cells to the unknown
+  category. Write vertices with `setVertexTerrain`, `paintVertices`,
+  `paintVertexSquare`, `assignVertexTerrain` or `fillTerrain`, and batch edits with
+  `editTerrain()` so snapshots, topology and ecology caches stay consistent.
+- Grass directly against water is legal: the cells between are walkable and
+  unbuildable. Beaches are a painting and generation convention. `paintVertices`
+  (by default) and `paintVertexSquare` turn an opposite vertex next to painted
+  grass or water into sand. `Map::layBeaches()` handles a whole map independently
+  of scan order and turns both sides of every grass/water contact into sand, a
+  two-vertex beach. Editor terrain brushes stamp vertices; the smallest
+  figure is one vertex.
+- Files older than format 146 convert at load. Their classic corner grid gives the
+  vertices; then a vertex touching a cell that held a non-classic terrain takes it,
+  preferring the cell it is the top-left corner of, then the cells to its top-left,
+  top and left. A classic ID that disagrees with its cell's corners (an older direct
+  cell edit) is kept the same way. Where two different whole-cell terrains touch,
+  the cell converted first loses corners and becomes a transition. Saved sprite
+  frames are skipped.
+- Detailed terrain rendering resolves shipped appearances through a
+  presentation-only material catalog, corner coverage resolver and CPU compositor.
+  `data/terrain/tileset.json` defines those materials independently of gameplay
+  IDs; `TerrainPresentation.h` retains semantic editor and image-interchange
   metadata. See [terrain material authoring](../assets/terrain-materials.md) for
   variants, boundary profiles, asset validation and cache behavior. Visual catalog
-  changes must not change saved frames or simulation RNG use.
+  changes must not change saved state or simulation RNG use.
 - Built-in terrain is table-driven. `TerrainGroup.h` defines one property profile per
   gameplay group; `TerrainTypeTable.h` lists every `TerrainType` with its group, external
-  name, string-table label, semantic colours and frozen saved-frame range, and the
-  `TerrainProperties.h`, `TerrainPresentation.h`, `TerrainCompatibility.h` and
-  `TerrainExperiments.h` tables derive from it. Members of a group are byte-identical
+  name, string-table label and semantic colours, and the `TerrainProperties.h`,
+  `TerrainPresentation.h` and `TerrainExperiments.h` tables derive from it. Members of a group are byte-identical
   profiles, so the registry deduplicates them into one property index; use
   `terrainGroup(type)` for palette and reporting buckets, never for simulation rules.
   Adding a type is one enumerator, one row, one label and one material binding;
   adding a group is one profile and, when gated, one `ExperimentId`.
-- Format 141 raised `TERRAIN_COUNT` from 7 to 31. Custom definitions and tile IDs in
-  older files start at 7, so `Map::loadTask` remaps IDs at or above the file's built-in
-  count (`TERRAIN_COUNT_BEFORE_CATALOGUE`) to follow the current built-ins, and
-  `TerrainRegistry::deserialize` takes that count. Built-in-only files are unchanged
-  byte for byte; custom registries re-serialize with shifted IDs, so their digest
-  changes and replays from formats 136 to 140 that embed one no longer verify.
-- Runtime types inherit a shipped appearance and use full tiles; legacy corner
-  adapters apply only to built-ins. Any paintable built-in is a valid `base` or
-  `appearance`. Import definitions through
+- Format 141 raised the built-in count from 7 to 31; format 146 retired the two
+  shore types (IDs 5 and 6), moving the catalogue down by two to `TERRAIN_COUNT` 29.
+  `TerrainRegistry::savedBuiltinCount` gives a file's built-in count
+  (`TERRAIN_COUNT_BEFORE_CATALOGUE` or `TERRAIN_COUNT_BEFORE_VERTEX` for older files),
+  `TerrainRegistry::currentTerrainId` remaps its saved IDs, and
+  `TerrainRegistry::deserialize` takes that count. Custom registries re-serialize
+  with shifted IDs, so their digest changes and replays that embed one no longer
+  verify.
+- Runtime types inherit a shipped appearance and occupy vertices like built-ins.
+  Any paintable built-in is a valid `base` or `appearance`. Import definitions through
   `Map::importTerrainDefinitions` before a match or in the editor. It validates and
   compiles the complete replacement before publishing it, preserves existing IDs,
   and appends new keys in sorted order. Scenes and gradient jobs retain the same
-  registry snapshot; inner loops borrow indexed data. Scenes cache the shipped
-  appearance in a two-byte cell plane; the compositor resolves equivalent aliases
+  registry snapshot; inner loops borrow indexed data. Scenes resolve each
+  vertex's shipped appearance through the registry; the compositor resolves equivalent aliases
   to the same material without scanning custom definitions. Render caches bind the
   registry snapshot and actual asset revisions. Saved custom colors remain
   authoritative for previews and minimaps; built-ins use catalog palettes.
@@ -1098,13 +1124,12 @@ For timing and scheduling, start with `src/game/Game_sync.cpp` and `src/engine/E
 - Trail retains stable terrain ID `4` (`TRAIL`) and experiment position `3`
   (`TrailTerrain`). Its external name, translation keys and serialized experiment
   key remain `road` / `road-terrain` for scripting, reports, editor actions and
-  existing files. Classic frames 288–303 come from `datasrc/gfx/trail/`; the
-  material catalog independently chooses the detailed appearance for that ID.
+  existing files. The material catalog chooses the detailed appearance for that ID.
 - Ecology caches terrain-only land and aquatic fields for the map's lifetime.
   Normal growth, harvesting, unit movement and building placement do not rebuild
   them. Map replacement invalidates them; terrain edits invalidate them only when
   effective fertility contributions, inhibition, shore support or local growth
-  factors change. Habitat-only edits update one cell's resource mask, and other
+  factors change. Habitat-only edits update the resource masks of the cells around the vertex, and other
   capability changes retain the fields. A query inside an edit batch observes all
   preceding changes; closing the batch does not discard an already-current field.
   The weighted kernels preserve the classic paired water/inhibition and rotated
@@ -1130,8 +1155,9 @@ For timing and scheduling, start with `src/game/Game_sync.cpp` and `src/engine/E
   The completed-tick observation phase introduced replay floor 139. Runtime resource
   catalogs introduced replay floor 140 and network protocol 59.
   Damage-weighted routing and idle safety introduced replay floor 142 and network protocol 60.
-  The current replay floor is 143 and network protocol is 61 for engine snapshots and
-  scheduled AI decisions.
+  Engine snapshots and scheduled AI decisions introduced replay floor 143 and network
+  protocol 61; building artwork raised the protocol to 62. Vertex terrain sets the
+  current replay floor, 146.
   Loading earlier saves rebuilds cached routes on maps with terrain health effects;
   current saves retain their completed and pending fields for exact continuation.
   Custom registry checksums hash canonical serialized fields, not struct padding.
@@ -1339,13 +1365,17 @@ fixtures with the older build so both readers accept exactly the same bytes. Use
 from whole-engine CPU time per tick. Alternate revision order across repeats and
 report distributions; changed routes also change the later simulation workload.
 
-Engine movement profiles are prepared once from the compiled terrain table in
-`src/field/PreparedTerrainCosts.h`. Terrain identities with the same cardinal and
-diagonal entry costs share a cost class; equal edge costs share queue destinations,
-including cardinal/diagonal aliases. Eager propagation can select a one-class
-kernel only after checking every non-forbidden cell, including source cells.
-Lazy searches retain the profile selected by their captured swimming class and
-an immutable terrain snapshot. Each search or worker owns its mutable queue;
+Engine movement profiles come from the map's cell rules: each `CellRuleTable`
+entry (`src/map/CellRules.h`) carries its entry costs per swim class, and
+`Map::frozenTerrainMovementSnapshot` compacts the profiles its cells use, in cell
+order, into `PreparedTerrainCosts` (`src/field/PreparedTerrainCosts.h`). Rules with
+the same cardinal and diagonal entry costs share a cost class; equal edge costs
+share queue destinations, including cardinal/diagonal aliases. Eager propagation can
+select a one-class kernel only after checking every non-forbidden cell, including
+source cells. Lazy searches retain the profile snapshot of their captured swimming
+class. A swim class supports at most 256 distinct cost profiles; mixed cells take
+their speed and health from different corners, so an imported registry whose
+combinations exceed that limit is rejected when a cell first needs the rule. Each search or worker owns its mutable queue;
 prepared profiles contain no search state and introduce no serialized cache.
 
 Strategic AI travel fields in `src/field/TerrainTravel.h` use a separate bounded
@@ -1367,7 +1397,8 @@ python3 tools/gradient_benchmark.py \
   --output artifacts/gradient-bench --suite representative --repeats 11
 ```
 
-The runner copies candidate headers and harness source before compiling, records
+The runner copies candidate headers (the field kernels and the header-only
+terrain and resource tables they include) and harness source before compiling, records
 compiler/flags and SHA-256 hashes, and writes raw JSONL samples plus per-case
 median comparisons. `--cpu N` pins the subprocess on Linux. `--scalar` forces the
 scalar implementation; otherwise the compiler target selects SSE2 or NEON.
@@ -1388,8 +1419,10 @@ uses the current Trail terrain identity with the same movement cost.
 Cases cover classic terrain, uniform Trail/ice, sparse/connected trails, mixed
 terrain and enclosed modifiers; all seven swimming profiles; dense/deferred
 seeds and capped propagation; thin and rectangular tori; and synthetic registries
-of 8, 32 and 64 identities with equivalent or distinct movement costs. The real
-registry is measured separately. Synthetic registries call the generic prepared
+of 32 and 64 identities with equivalent or distinct movement costs. The real
+registry (`TERRAIN_COUNT` built-in types, read from `src/map/TerrainType.h`) is
+measured separately. Each cell takes one terrain identity directly, as a cell
+whose four corners agree would; corner-mixed rules are outside this harness. Synthetic registries call the generic prepared
 profile API; they do not add game terrain definitions. `--bucket-count 256`
 is an isolated future-cost experiment that changes only copied headers.
 
@@ -1587,7 +1620,7 @@ or map-array capture. `Game::drawMap` requires an explicitly supplied frame;
   world without capturing again. Its timing and executed-order revision remain
   associated with that exact world.
 - Map views retain standard terrain, resource, occupancy, area and visibility
-  components. Undermap corners remain authoritative, editable map state. Optional
+  components; vertex terrain is the authoritative, editable map state. Optional
   script areas use tracked chunks. Display-area masks, material availability,
   connections and overlays are derived in resumable preparation chunks. Cached
   display data is keyed by world identity, relevant revisions and view settings.
@@ -1817,8 +1850,7 @@ it is saved, checksummed or read by the simulation.
   leaves hairline seams.
   The outline stroke stops thickening at two points.
 - In the cross-fade `Game::drawMapOverview` fades in terrain palette colours sampled
-  from the detailed compositor's material coverage, including legacy corner shores
-  and whole-cell materials. Four samples per tile axis keep coastlines aligned
+  from the detailed compositor's material coverage of each cell's corners. Four samples per tile axis keep coastlines aligned
   during the fade; resource minimap colours tint their gameplay cells over that
   ground. In the overview this replaces the water, terrain and resource passes.
   The reusable image stretches over the map in a single draw, avoiding thousands

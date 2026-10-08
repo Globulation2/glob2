@@ -109,7 +109,7 @@ struct CatalogWorld
             for(int sample=0;sample<TeamStats::STATS_SMOOTH_SIZE;++sample) game.teams[team]->stats.step(game.teams[team]);
         }
         // Nicowar's existing siting policy requires a finite distance from water.
-        game.map.setCellTerrain(0,0,WATER);
+        game.map.paintCell(0,0,WATER);
         game.map.setMapDiscovered();
     }
 };

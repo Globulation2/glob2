@@ -19,10 +19,9 @@ Compositor::Compositor(Catalog catalog, std::shared_ptr<const MapAssetBundle> as
 	{
 		const auto found =
 			definitions.bindings.find(terrainPresentation(static_cast<TerrainType>(type)).name);
-		if (found != definitions.bindings.end())
-			terrainBindings[type] = found->second;
-		else if (!terrainUsesLegacyCorners(static_cast<TerrainType>(type)))
+		if (found == definitions.bindings.end())
 			throw std::runtime_error("Missing terrain material binding");
+		terrainBindings[type] = found->second;
 	}
 	for (const auto &m : definitions.materials)
 	{
@@ -179,30 +178,48 @@ void Compositor::prepare(bool hd, int time)
 	}
 	resolution = nextResolution;
 }
-MaterialId Compositor::materialFor(const SceneMap& map, int x, int y) const {
-    const auto type = map.terrainTypeAt(x, y);
-    const auto found = definitions.bindings.find(map.terrainRegistry().key(type));
-    if (unsigned(type) >= TERRAIN_COUNT && found != definitions.bindings.end()) return found->second;
-    return terrainBindings[unsigned(map.appearanceAt(x, y))];
+MaterialId Compositor::materialFor(const SceneMap& map, TerrainType type) const {
+    // Custom terrain with its own artwork binds by key; anything else draws its appearance.
+    if (unsigned(type) >= TERRAIN_COUNT)
+        if (const auto found = definitions.bindings.find(map.terrainRegistry().key(type)); found != definitions.bindings.end())
+            return found->second;
+    return terrainBindings[unsigned(map.terrainRegistry().appearance(type))];
+}
+std::pair<MaterialId, unsigned> Compositor::decorMaterial(const SceneMap &map, int x, int y) const
+{
+	// The decorated material most corners share: all four draw its full decor,
+	// two or three its edge decor, a single corner none.
+	MaterialId best = 0;
+	unsigned count = 0;
+	const auto corners = map.cellCorners(x & map.getMaskW(), y & map.getMaskH());
+	std::array<MaterialId, 4> materials;
+	for (unsigned k = 0; k < corners.size(); ++k)
+		materials[k] = materialFor(map, corners[k]);
+	for (const auto id : materials)
+	{
+		if (definitions.materials[id].decor.full.empty())
+			continue;
+		const auto same = unsigned(std::count(materials.begin(), materials.end(), id));
+		if (same > count)
+		{
+			best = id;
+			count = same;
+		}
+	}
+	return {best, count};
 }
 GAGCore::Sprite *Compositor::decorSprite(const SceneMap &map, int x, int y) const
 {
-    return decorSprites[materialFor(map, x & map.getMaskW(), y & map.getMaskH())];
+    return decorSprites[decorMaterial(map, x, y).first];
 }
 int Compositor::decorFrame(const SceneMap &map, int x, int y) const
 {
 	x &= map.getMaskW();
 	y &= map.getMaskH();
-	const auto type = map.terrainTypeAt(x, y);
-	if (unsigned(type) < TERRAIN_COUNT && terrainUsesLegacyCorners(type))
+	const auto [best, count] = decorMaterial(map, x, y);
+	if (count < 2)
 		return -1;
-	const auto id = materialFor(map, x, y);
-	if (definitions.materials[id].decor.full.empty())
-		return -1;
-	bool edge = false;
-	for (const auto [dx, dy] : {std::pair{-1, 0}, {1, 0}, {0, -1}, {0, 1}})
-		edge |= materialFor(map, (x + dx) & map.getMaskW(), (y + dy) & map.getMaskH()) != id;
-	return definitions.decorFrame(id, x, y, edge, map.terrainSeed());
+	return definitions.decorFrame(best, x, y, count < 4, map.terrainSeed());
 }
 Recipe Compositor::describe(const SceneMap &map, int x, int y) const
 {
@@ -212,19 +229,9 @@ Recipe Compositor::describe(const SceneMap &map, int x, int y) const
 	r.width = map.getW();
 	r.height = map.getH();
 	r.seed = map.terrainSeed();
-	for (int j = 0; j < 4; ++j)
-		for (int i = 0; i < 4; ++i)
-		{
-			const int qx = (r.x * 2 + i - 1) & (r.width * 2 - 1),
-					  qy = (r.y * 2 + j - 1) & (r.height * 2 - 1);
-			const int cx = qx / 2, cy = qy / 2;
-			auto type = map.terrainTypeAt(cx, cy);
-			unsigned material = unsigned(map.appearanceAt(cx, cy));
-			if (unsigned(type) < TERRAIN_COUNT && terrainUsesLegacyCorners(type))
-				material = legacyCorners(map.getTerrain(cx, cy))[(qx & 1) + 2 * (qy & 1)];
-			r.samples[j * 4 + i] = unsigned(type) < TERRAIN_COUNT && terrainUsesLegacyCorners(type)
-                ? terrainBindings[material] : materialFor(map, cx, cy);
-		}
+	const auto corners = map.cellCorners(r.x, r.y);
+	for (unsigned k = 0; k < corners.size(); ++k)
+		r.corners[k] = materialFor(map, corners[k]);
 	return r;
 }
 void Compositor::compose(const Recipe &r, SDL_Surface *target, int ox, int oy, int scale) const
@@ -241,17 +248,17 @@ void Compositor::compose(const Recipe &r, SDL_Surface *target, int ox, int oy, i
 	};
 	std::vector<Source> selected(definitions.materials.size());
 	auto *sources = selected.data();
-	for (auto id : r.samples)
+	for (auto id : r.corners)
 		if (!sources[id].pixels)
 		{
 			const auto &texture = textures[id][definitions.variantIndex(id, r.x, r.y, r.seed)];
 			sources[id] = {texture.pixels.data(), texture.size};
 		}
-	const bool uniform = std::all_of(r.samples.begin(), r.samples.end(),
-									 [&](auto id) { return id == r.samples[0]; });
+	const bool uniform = std::all_of(r.corners.begin(), r.corners.end(),
+									 [&](auto id) { return id == r.corners[0]; });
 	if (uniform)
 	{
-		const auto &texture = sources[r.samples[0]];
+		const auto &texture = sources[r.corners[0]];
 		for (int y = 0; y < size; ++y)
 		{
 			auto *row = reinterpret_cast<Uint32 *>(static_cast<unsigned char *>(target->pixels) +
@@ -321,20 +328,27 @@ void Compositor::compose(const Recipe &r, SDL_Surface *target, int ox, int oy, i
 		}
 }
 void Compositor::composeOverview(const Recipe &r, SDL_Surface *target, int ox, int oy,
-								 const std::array<unsigned char, 3> *cellColor) const
+								 const CornerColors *cornerColors) const
 {
 	if (target->format != SDL_PIXELFORMAT_ARGB8888)
 		throw std::runtime_error("Terrain overview requires ARGB8888");
 	const auto packed = [](const auto &color)
 	{ return 0xFF000000u | (unsigned(color[0]) << 16) | (unsigned(color[1]) << 8) | color[2]; };
-	// Saved custom whole-cell aliases may carry their own overview palette.
+	// Saved custom terrain may carry its own overview palette: a material takes
+	// the colour of the first corner drawn with it that names one.
 	const auto colorOf = [&](MaterialId id) -> const std::array<unsigned char, 3> &
-	{ return cellColor && id == r.samples[5] ? *cellColor : definitions.materials[id].preview; };
-	if (std::all_of(r.samples.begin(), r.samples.end(),
-					[&](auto id) { return id == r.samples[0]; }))
+	{
+		if (cornerColors)
+			for (unsigned k = 0; k < r.corners.size(); ++k)
+				if (r.corners[k] == id && (*cornerColors)[k])
+					return *(*cornerColors)[k];
+		return definitions.materials[id].preview;
+	};
+	if (std::all_of(r.corners.begin(), r.corners.end(),
+					[&](auto id) { return id == r.corners[0]; }))
 	{
 		SDL_Rect area{ox, oy, OverviewSamples, OverviewSamples};
-		SDL_FillSurfaceRect(target, &area, packed(colorOf(r.samples[0])));
+		SDL_FillSurfaceRect(target, &area, packed(colorOf(r.corners[0])));
 		return;
 	}
 	const PreparedCoverage prepared(definitions, r);

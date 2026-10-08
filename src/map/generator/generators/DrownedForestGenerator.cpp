@@ -1183,7 +1183,7 @@ bool buildWorld(Game &game, GenerationContext &c, const Layout &source,
 	const DrownedForestOptions o(c.request);
 	Map &map = game.map;
 	const Torus &t = L.t;
-	writeUndermap(map, L.terrain);
+	writeVertices(map, L.terrain);
 	for (int i = 0; i < t.size(); ++i)
 		if (L.forest[i])
 			map.setResourceByIndex(i % t.w, i / t.w, WOOD, 1);
@@ -1808,7 +1808,7 @@ std::string validateWorld(const Game &game, const GenerationContext &c)
 	if (!L.failure.empty())
 		return L.failure;
 	for (int i = 0; i < L.t.size(); ++i)
-		if (game.map.getUMTerrain(i % L.t.w, i / L.t.w) != L.terrain[i])
+		if (game.map.vertexTerrainAt(i % L.t.w, i / L.t.w) != L.terrain[i])
 			return "The drowned landscape changed after design.";
 	return checkWorld(game, c, L);
 }

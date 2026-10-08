@@ -6,17 +6,16 @@
 
 namespace gradient_preparation
 {
-// Preserve the compact built-in terrain lookup for live and frozen cells.
+// A compact per-rule lookup for live and frozen cells.
 template<class Function>
 void withOpenTerrain(const MapState::View& view, int swim, Function fn)
 {
-    const auto value=[swim](const TerrainProperties& p) {
-        return Uint16(p.walkable || (swim>0 && p.swimmable) ? GRADIENT_UNREACHABLE : GRADIENT_FORBIDDEN);
-    };
-    if (view.terrainRegistry->size()==TERRAIN_COUNT) {
-        std::array<Uint16,TERRAIN_COUNT> table;
-        for (unsigned i=0;i<TERRAIN_COUNT;++i) table[i]=value(view.terrainRegistry->properties(static_cast<TerrainType>(i)));
-        fn([&](size_t i) { return table[view.terrainIds[i]]; });
-    } else fn([&](size_t i) { return value(view.terrainProperties(i)); });
+    std::vector<Uint16> table(view.rules->size());
+    for (size_t r=0;r<table.size();++r)
+    {
+        const auto& p=view.rules->properties(std::uint16_t(r));
+        table[r]=Uint16(p.walkable || (swim>0 && p.swimmable) ? GRADIENT_UNREACHABLE : GRADIENT_FORBIDDEN);
+    }
+    fn([&](size_t i) { return table[view.cellRules[i]]; });
 }
 }

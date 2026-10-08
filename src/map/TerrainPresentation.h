@@ -1,11 +1,10 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #pragma once
-#include "TerrainCompatibility.h"
 #include "TerrainTypeTable.h"
 #include <array>
 #include <cstdint>
 // Semantic editor/interchange metadata. Detailed visual materials are defined by
-// data/terrain/tileset.json, independently of gameplay identities and save frames.
+// data/terrain/tileset.json, independently of gameplay identities.
 struct TerrainPresentation
 {
 	const char *name, *label;

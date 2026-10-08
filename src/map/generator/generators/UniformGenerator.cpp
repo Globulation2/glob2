@@ -13,7 +13,7 @@ using namespace MapGeneration;
 // validation and the golden test expect exactly one team from it instead of one per colony.
 static bool generate(Game &game, GenerationContext &context)
 {
-	game.map.makeHomogenMap(context.request.terrainType);
+	game.map.fillTerrain(context.request.terrainType);
 	game.addTeam();
 	context.telemetry.measure("uniform.terrain.type", int(context.request.terrainType));
 	context.telemetry.measure("uniform.terrain.tiles", game.map.getW() * game.map.getH());

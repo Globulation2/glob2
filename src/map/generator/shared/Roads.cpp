@@ -214,7 +214,7 @@ bool openColonyRoutes(Map &map, const GenerationContext &context, const Torus &t
 				}
 		return tiles;
 	};
-	bool changed = false, forded = false;
+	bool changed = false;
 	for (int team = 1; team < teams; ++team)
 	{
 		std::vector<unsigned char> open(n), source(n, 0);
@@ -249,18 +249,20 @@ bool openColonyRoutes(Map &map, const GenerationContext &context, const Torus &t
 						 });
 		if (radius > 0)
 			clearRoute(map, t, route, radius, keep);
+		// Fords are written once the whole route is walked, so every tile on it is judged by the
+		// terrain the route was planned on.
+		std::vector<std::pair<int, int>> fords;
 		for (int i : route)
 		{
 			const int x = i % t.w, y = i / t.w;
 			if (map.isWater(x, y))
 			{
 				// One sand corner turns this tile and its three other tiles into walkable shore.
-				map.setUMTerrain(x, y, SAND);
+				fords.push_back({x, y});
 				for (int dy = -1; dy <= 0; ++dy)
 					for (int dx = -1; dx <= 0; ++dx)
 						if (map.isResource(t.x(x + dx), t.y(y + dy)))
 							map.setNoResource(t.x(x + dx), t.y(y + dy), 1);
-				forded = true;
 			}
 			else if (map.isResource(x, y))
 			{
@@ -268,8 +270,8 @@ bool openColonyRoutes(Map &map, const GenerationContext &context, const Torus &t
 			}
 			changed = true;
 		}
-		if (forded)
-			map.rebuildTerrain();
+		if (!fords.empty())
+			map.paintVertices(fords, SAND, false);
 	}
 	return changed;
 }

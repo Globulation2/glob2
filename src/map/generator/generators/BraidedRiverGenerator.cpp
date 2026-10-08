@@ -86,7 +86,7 @@ constexpr const char *kResourceStream = "braided-river-resources";
 
 // --- The belt and its lanes ---------------------------------------------------------------------
 //
-// A thread's half width in undermap corners swells and narrows along the lap between its base and
+// A thread's half width in terrain vertices swells and narrows along the lap between its base and
 // base plus swell: 2.2 to 3.5, so channels are 4.4 to 7 corners wide, 3 to 6 tiles of open water
 // across. The floor matters for the game: a channel's pure-water tiles must stay 4-connected so no
 // unit can step over it diagonally (channelCoreFault), and at a half width under about 1.8 a
@@ -1002,7 +1002,7 @@ bool generate(Game &game, GenerationContext &context)
 		game.addTeam();
 
 	context.stage = "braided river terrain";
-	writeUndermap(map, L.terrain);
+	writeVertices(map, L.terrain);
 
 	// The wall and the moraine go down before the colonies, so a settlement never lands on
 	// stone; both are the map's structure and stay whatever the stone amount says.

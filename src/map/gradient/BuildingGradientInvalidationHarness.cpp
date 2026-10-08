@@ -307,7 +307,7 @@ static void parallelFields()
 	Building *flag = world.placeFlag(40, 40, 5);
 	for (int x = 50; x < 65; ++x)
 	{
-		map.setTerrain(x, 60, 256);
+		map.paintCell(x, 60, WATER);
 		map.addForbidden(x, 62, 0);
 		map.addGuardArea(x, 64, 0);
 		map.addClearArea(x, 66, 0);
@@ -364,7 +364,7 @@ static void delayedFields()
 	{
 		World world(7);
 		Map &map=world.game.map;
-		map.setTerrain(55, 55, 256);
+		map.paintCell(55, 55, WATER);
 		map.setResourceByIndex(30, 30, 0, 1);
 		map.addGuardArea(40, 40, 0);
 		map.addClearArea(30, 30, 0);
@@ -396,7 +396,7 @@ static void delayedFields()
 		else if(kind==1) map.seedGuardAreasGradient(0, swim, frozen.data());
 		else map.seedClearAreasGradient(0, swim, frozen.data());
 		map.propagateGradient(frozen.data(), swim);
-		map.setTerrain(55, 55, 0); // Workers must use captured water, not this live edit.
+		map.paintCell(55, 55, GRASS); // Workers must use captured water, not this live edit.
 		map.advanceGradientPipeline(); map.advanceGradientPipeline(); map.advanceGradientPipeline();
 		require(std::vector<Uint16>(field(),field()+cells)==frozen, "terrain changes do not alter a pending snapshot");
 		map.syncStep(3); // Destruction must safely drain a job in flight.

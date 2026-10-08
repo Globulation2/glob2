@@ -105,6 +105,16 @@ void makeOpaque(DrawableSurface &surface)
 	surface.markPixelsChanged();
 }
 
+// Scale a sprite frame's own pixels into a rectangle. The plain drawSurface
+// overloads sample from the frame's atlas offset, which only addresses the
+// shared GPU sheet: on a frame's own CPU pixels it points past the image and
+// atlased sprites (resources, decor) would draw nothing.
+void drawFrame(DrawableSurface &target, int x, int y, int w, int h, DrawableSurface *frame)
+{
+	const auto *pixels = frame->getSDLSurface();
+	target.drawSurface(x, y, w, h, frame, 0, 0, pixels->w, pixels->h);
+}
+
 } // namespace
 
 std::unique_ptr<DrawableSurface> BrushSwatches::composeTerrain(TerrainType type, int px)
@@ -143,7 +153,7 @@ std::unique_ptr<DrawableSurface> BrushSwatches::composeTerrain(TerrainType type,
 	{
 		DrawableSurface texture(size, size);
 		TerrainVisual::Recipe recipe;
-		recipe.samples.fill(binding->second);
+		recipe.corners.fill(binding->second);
 		recipe.width = recipe.height = 2;
 		for (int y = 0; y < 2; ++y)
 			for (int x = 0; x < 2; ++x)
@@ -163,11 +173,12 @@ std::unique_ptr<DrawableSurface> BrushSwatches::composeTerrain(TerrainType type,
 					const int frame = catalog.decorFrame(binding->second, x, y, false);
 					if (frame < 0)
 						continue;
-					if (auto *source = sprite->nativeFrame(frame))
+					auto *source = sprite->nativeFrame(frame);
+					if (source && source->getSDLSurface())
 					{
 						const int w = source->getW() * scale, h = source->getH() * scale;
-						base.drawSurface(x * cell + cell / 2 - w / 2, y * cell + cell / 2 - h / 2,
-										 w, h, source);
+						drawFrame(base, x * cell + cell / 2 - w / 2, y * cell + cell / 2 - h / 2, w,
+								  h, source);
 					}
 				}
 	}
@@ -196,7 +207,7 @@ std::unique_ptr<DrawableSurface> BrushSwatches::composeResource(ResourceId id, T
 		if (!source || !source->getSDLSurface())
 			source = sprite->nativeFrame(frame);
 		if (source && source->getSDLSurface())
-			result->drawSurface(0, 0, px, px, source);
+			drawFrame(*result, 0, 0, px, px, source);
 	}
 	makeOpaque(*result);
 	return result;
@@ -268,8 +279,9 @@ GAGCore::DrawableSurface *BrushSwatches::terrainScene(TerrainType type, TerrainT
 				const int frame = catalog.decorFrame(material, x, y, edge, variation);
 				if (frame >= 0)
 					if (auto *image = sprite->nativeFrame(frame))
-						source->drawSurface(x * 32 + 16 - image->getW() / 2,
-											y * 32 + 16 - image->getH() / 2, image);
+						drawFrame(*source, x * 32 + 16 - image->getW() / 2,
+								  y * 32 + 16 - image->getH() / 2, image->getW(), image->getH(),
+								  image);
 			}
 		}
 	makeOpaque(*source);
@@ -312,7 +324,7 @@ GAGCore::DrawableSurface *BrushSwatches::resourceStage(ResourceId id, TerrainTyp
 				(phase % presentation.animationFrames) * presentation.animationStride;
 			auto *image = sprite->nativeFrame(frame);
 			if (image && image->getSDLSurface())
-				result->drawSurface(0, 0, px, px, image);
+				drawFrame(*result, 0, 0, px, px, image);
 		}
 	}
 	makeOpaque(*result);

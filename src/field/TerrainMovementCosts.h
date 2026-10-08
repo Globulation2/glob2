@@ -44,16 +44,18 @@ constexpr unsigned scaledTerrainStep(unsigned base, unsigned speedQ8)
 {
     return std::max(1u, (base * 256u + speedQ8 / 2u) / speedQ8);
 }
+// Damage-weighted cost of entering a cell with these rules, by swim class.
+constexpr EntrySteps terrainEntrySteps(const TerrainProperties &p, int swim)
+{
+    const unsigned base = p.swimmable && swim > 0 ? WATER_STEP[swim] : GRADIENT_STEP;
+    return entrySteps(hazardRouteCost(scaledTerrainStep(base, p.groundSpeedQ8), p.groundHealthQ8));
+}
 using TerrainEntryCosts = std::array<EntrySteps, TERRAIN_COUNT>;
 constexpr TerrainEntryCosts terrainEntryCosts(int swim)
 {
     TerrainEntryCosts result{};
     for (unsigned t = 0; t < TERRAIN_COUNT; ++t)
-    {
-        const auto &p = terrainProperties(static_cast<TerrainType>(t));
-        const unsigned base = p.swimmable && swim > 0 ? WATER_STEP[swim] : GRADIENT_STEP;
-        result[t] = entrySteps(hazardRouteCost(scaledTerrainStep(base, p.groundSpeedQ8), p.groundHealthQ8));
-    }
+        result[t] = terrainEntrySteps(terrainProperties(static_cast<TerrainType>(t)), swim);
     return result;
 }
 inline constexpr auto TERRAIN_ENTRY_COSTS = [] {

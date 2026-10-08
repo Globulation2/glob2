@@ -38,8 +38,9 @@ static_assert(gradient_kernel::scaledTerrainStep(GRADIENT_STEP,64)<TERRAIN_TRAVE
 // neighbor steps cost the same before terrain scaling. A distant road must not
 // change diagonal distances on routes that never touch modified terrain.
 // Saturate only the public short distance; never the queue's ordering key.
-template<class Values,class TerrainAt>
-void expandTerrainTravel(Values& values,int width,int height,TerrainTravel mode,TerrainAt terrainAt,const TerrainRegistry& registry=*TerrainRegistry::builtins())
+// Costs is a TerrainRegistry indexed by terrain type, or a CellRuleTable indexed by cell rule.
+template<class Values,class TerrainAt,class Costs=TerrainRegistry>
+void expandTerrainTravel(Values& values,int width,int height,TerrainTravel mode,TerrainAt terrainAt,const Costs& registry=*TerrainRegistry::builtins())
 {
     constexpr unsigned infinity=std::numeric_limits<unsigned>::max();
     std::vector<unsigned> costs(values.size(),infinity);
@@ -92,8 +93,8 @@ void expandTerrainTravel(Values& values,int width,int height,TerrainTravel mode,
 // Forward, byte-valued reach/influence fields retain 0 obstacles and 1 floor.
 // Keep sub-tile costs in the queue so two half-cost road steps consume one
 // strength unit. Only publish rounded strength after the full expansion.
-template<class Value,class TerrainAt>
-void expandTerrainInfluence(Value* values,int width,int height,TerrainAt terrainAt,const TerrainRegistry& registry=*TerrainRegistry::builtins())
+template<class Value,class TerrainAt,class Costs=TerrainRegistry>
+void expandTerrainInfluence(Value* values,int width,int height,TerrainAt terrainAt,const Costs& registry=*TerrainRegistry::builtins())
 {
     const int size=width*height;
     std::vector<unsigned> strength(size);

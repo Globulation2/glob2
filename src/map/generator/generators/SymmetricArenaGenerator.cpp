@@ -39,10 +39,9 @@ using MapGeneration::topShare;
 //
 // Symmetry is enforced by construction. Every decision is either a function of a tile's whole
 // orbit (integer noise summed over the orbit, the integer squared distance from the centre) or
-// is made once for colony 0 and stamped onto every image of it. Map::controlSand()'s in-place,
-// row-order pass is replaced by the same rule applied to every corner at once, per-tile random
-// clumps by deterministic growth, and the amounts the engine RNG gives each resource tile are
-// equalised over its orbit. validateWorld then checks the invariance on the finished world.
+// is made once for colony 0 and stamped onto every image of it. Beaches are laid by one rule
+// applied to every corner at once, per-tile random clumps by deterministic growth, and the
+// amounts the engine RNG gives each resource tile are equalised over its orbit. validateWorld then checks the invariance on the finished world.
 //
 // WHY IT PLAYS WELL (docs/map-generators/GAME_RULES_FOR_MAP_DESIGN.md). It is the tournament map:
 // no colony can blame its start, because every colony's ground is an exact image of every other's.
@@ -75,7 +74,7 @@ int wrap(int v, int n)
 	return v < 0 ? v + n : v;
 }
 
-// Continuous positions relative to the map centre, in tiles. The centre is an undermap corner,
+// Continuous positions relative to the map centre, in tiles. The centre is a terrain vertex,
 // so corners sit on integers and tile centres on half-integers.
 struct Point
 {
@@ -312,10 +311,10 @@ bool onCauseway(const Arena &a, const Layout &l, Point p, double inner, double o
 	return false;
 }
 
-// The finished undermap, and the corner masks later steps need.
+// The finished terrain vertices, and the corner masks later steps need.
 struct Terrain
 {
-	std::vector<unsigned char> undermap, moat, ponds, causeways, paths;
+	std::vector<unsigned char> vertices, moat, ponds, causeways, paths;
 };
 
 // A walking route for colony 0 from its home to the outer end of each of its causeways: the
@@ -342,7 +341,7 @@ bool carvePaths(const Arena &a, const Layout &l, Terrain &t)
 			torus, MapGeneration::GridNeighbors::Eight, {l.homeV * w + l.homeU}, goal,
 			[&](int, int j, int dx, int dy)
 			{
-				const bool water = t.undermap[size_t(j)] == WATER;
+				const bool water = t.vertices[size_t(j)] == WATER;
 				if (water && (t.moat[size_t(j)] || t.ponds[size_t(j)]))
 					return -1;
 				return (dx && dy ? kDiagonal : kStraight) + (water ? kFord : 0);
@@ -362,8 +361,8 @@ bool carvePaths(const Arena &a, const Layout &l, Terrain &t)
 				for (int dx = -1; dx <= 1; ++dx)
 				{
 					const size_t j = size_t(wrap(v + dy, h)) * w + wrap(u + dx, w);
-					if (t.undermap[j] == WATER && !t.moat[j] && !t.ponds[j])
-						t.undermap[j] = GRASS;
+					if (t.vertices[j] == WATER && !t.moat[j] && !t.ponds[j])
+						t.vertices[j] = GRASS;
 				}
 		}
 	return true;
@@ -439,17 +438,17 @@ bool buildTerrain(Map &map, GenerationContext &context, const Arena &a, const La
 				lakes[size_t(i)] = 0;
 
 	// Later layers win: lakes and ponds, then clear home ground, the moat, and causeways of sand.
-	t.undermap.assign(n, GRASS);
+	t.vertices.assign(n, GRASS);
 	for (size_t i = 0; i < n; ++i)
 	{
 		if (lakes[i] || t.ponds[i])
-			t.undermap[i] = WATER;
+			t.vertices[i] = WATER;
 		if (homeDisc[i])
-			t.undermap[i] = GRASS;
+			t.vertices[i] = GRASS;
 		if (t.moat[i])
-			t.undermap[i] = WATER;
+			t.vertices[i] = WATER;
 		if (t.causeways[i])
-			t.undermap[i] = SAND;
+			t.vertices[i] = SAND;
 	}
 	if (!carvePaths(a, l, t))
 	{
@@ -457,29 +456,26 @@ bool buildTerrain(Map &map, GenerationContext &context, const Arena &a, const La
 		return false;
 	}
 
-	// Map::controlSand()'s rule - grass touching water becomes sand - applied to every corner at
-	// once rather than in place in row order, which is what keeps it symmetric. Water is left
-	// alone, so no moat, pond or channel silts up.
-	std::vector<unsigned char> sanded(t.undermap);
+	// The beach rule - grass touching water becomes sand - applied to every corner at once, which
+	// is what keeps it symmetric. Unlike Map::layBeaches, water is left alone, so no moat, pond or
+	// channel silts up.
+	std::vector<unsigned char> sanded(t.vertices);
 	for (int v = 0; v < h; ++v)
 		for (int u = 0; u < w; ++u)
 		{
 			const size_t i = size_t(v) * w + u;
-			if (t.undermap[i] != GRASS)
+			if (t.vertices[i] != GRASS)
 				continue;
 			for (int dy = -1; dy <= 1 && sanded[i] == GRASS; ++dy)
 				for (int dx = -1; dx <= 1; ++dx)
-					if (t.undermap[size_t(wrap(v + dy, h)) * w + wrap(u + dx, w)] == WATER)
+					if (t.vertices[size_t(wrap(v + dy, h)) * w + wrap(u + dx, w)] == WATER)
 					{
 						sanded[i] = SAND;
 						break;
 					}
 		}
-	t.undermap.swap(sanded);
-	for (int v = 0; v < h; ++v)
-		for (int u = 0; u < w; ++u)
-			map.setUMTerrain(u, v, TerrainType(t.undermap[size_t(v) * w + u]));
-	map.rebuildTerrain();
+	t.vertices.swap(sanded);
+	MapGeneration::writeVertices(map, t.vertices);
 	return true;
 }
 
@@ -859,7 +855,7 @@ bool generate(Game &game, GenerationContext &context)
 	const SymmetricArenaOptions o(context.request);
 	const Arena a = arenaFor(context.request);
 	Map &map = game.map;
-	map.makeHomogenMap(WATER);
+	map.fillTerrain(WATER);
 	for (int i = 0; i < a.teams; ++i)
 		game.addTeam();
 	if (a.teams < 2 || a.symmetry.order() != a.teams)
@@ -900,7 +896,7 @@ bool generate(Game &game, GenerationContext &context)
 }
 
 // The arena's guarantees, checked on the finished world rather than trusted: every symmetry of
-// the request maps undermap corners, tile terrain, deposits (type and amount), buildings and
+// the request maps terrain vertices, tile terrain, deposits (type and amount), buildings and
 // units onto themselves with the colonies permuted one to one; those permutations carry any
 // colony onto any other; and every colony walks to wheat, wood, each fruit and open ground in
 // the orchard, all in the same number of steps. Water, buildings and every resource block the

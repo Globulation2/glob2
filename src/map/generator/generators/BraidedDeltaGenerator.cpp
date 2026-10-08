@@ -346,7 +346,7 @@ bool generate(Game &game, GenerationContext &context)
 	}
 	const Torus &t = L.t;
 	Map &map = game.map;
-	writeUndermap(map, L.terrain);
+	writeVertices(map, L.terrain);
 	for (int k = 0; k < context.request.nbTeams; ++k)
 		game.addTeam();
 	context.stage = "braided delta colonies";

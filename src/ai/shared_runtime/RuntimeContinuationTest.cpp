@@ -118,7 +118,7 @@ class RuntimeContinuationTest
         Game game(nullptr);setup(game);
         AISharedRuntime::Runtime::OwnerObservationScope observationScope(runtime(game,0));
         game.map.setResourceByIndex(4,5,WHEAT,3);
-        game.map.setCellTerrain(7,5,TRAIL);
+        game.map.paintCell(7,5,TRAIL);
         auto world=AIEngine::AIWorldView::capture(game,AIEngine::AIWorldView::captureCatalog(game));
         GradientManager live(&game.map),snapshot(*world);
         GradientInfo wheat=info(new Entities::MaterialSource(WHEAT));
@@ -143,7 +143,7 @@ class RuntimeContinuationTest
         }
         // Terrain may change after the last AI poll, before owner save. The
         // comparison binds current metadata without recomputing the old field.
-        game.map.setCellTerrain(6,5,ICE);
+        game.map.paintCell(6,5,ICE);
         auto changed=AIEngine::AIWorldView::capture(game,AIEngine::AIWorldView::captureCatalog(game));
         snapshot.bindWorld(*changed);
         REQUIRE(save(live,false)==save(snapshot,false));
@@ -297,19 +297,19 @@ class RuntimeContinuationTest
             diagonal.terrainTravel=field::TerrainTravel::Walk;
             GradientManager manager(&neutral);
             REQUIRE(manager.get_gradient(diagonal).get_height(3,3)==3);
-            neutral.setCellTerrain(8,8,TRAIL);
+            neutral.paintCell(8,8,TRAIL);
             REQUIRE(manager.get_gradient(diagonal).get_height(3,3)==3);
         }
         Game game(nullptr); game.map.setSize(4,4,WATER); game.map.setGame(&game);
         auto& map=game.map;
-        for(int x=0;x<16;++x) map.setCellTerrain(x,1,GRASS);
+        for(int x=0;x<16;++x) map.paintCell(x,1,GRASS);
         auto walking=info(new Entities::Position(0,1));
         walking.terrainTravel=field::TerrainTravel::Walk;
         auto geometry=info(new Entities::Position(0,1));
         GradientManager original(&map);
         REQUIRE(original.get_gradient(walking).get_height(4,1)==4);
         REQUIRE(original.get_gradient(geometry).get_height(4,1)==4);
-        for(int x=0;x<16;++x) map.setCellTerrain(x,1,TRAIL);
+        for(int x=0;x<16;++x) map.paintCell(x,1,TRAIL);
         for(bool text:{false,true})
         {
             GradientManager restored(&map);

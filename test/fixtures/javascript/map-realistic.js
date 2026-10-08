@@ -10,7 +10,7 @@ function step(ctx) {
     const angleY=2*Math.PI*t.y/ctx.game.map.height;
     a.mass+=weight; a.cx+=weight*Math.cos(angleX); a.sx+=weight*Math.sin(angleX);
     a.cy+=weight*Math.cos(angleY); a.sy+=weight*Math.sin(angleY);
-    a.suitability+=Math.log1p(t.fertility??0)*Math.exp(-(t.terrain??0)/4);
+    a.suitability+=Math.log1p(t.fertility??0)*Math.exp(-(t.corners?.[0]??0)/4);
     return a;
   },{mass:0,cx:0,sx:0,cy:0,sy:0,suitability:0});
   const centroid={x:Math.atan2(totals.sx,totals.cx)*ctx.game.map.width/(2*Math.PI),

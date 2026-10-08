@@ -87,7 +87,7 @@ Handle capture(const Game& game,
 		const bool sameCatalog = previous->catalogs && previous->catalogs->buildings == catalog && previous->configurationRevision == result->configurationRevision
 			&& (!needs(requirements, Component::Session) || !previous->catalogs->buildingFingerprint.empty())
             && previous->catalogs->assets == game.map.frozenAssetBundle()
-            && previous->catalogs->resources == game.map.frozenResourceRegistry() && previous->catalogs->habitats == game.map.frozenResourceHabitats();
+            && previous->catalogs->resources == game.map.frozenResourceRegistry();
 		reuse(Component::Catalogs, result->catalogs, previous->catalogs, sameCatalog);
 		reuse(Component::Rules, result->rules, previous->rules, previous->configurationRevision == result->configurationRevision);
 		const auto generations = result->mapGenerations;
@@ -152,7 +152,8 @@ Handle capture(const Game& game,
 	result->width = game.map.getW(); result->height = game.map.getH();
 	if (needs(requirements, Component::Terrain))
 	{ terrain->registry = game.map.frozenTerrainRegistry();
-	terrain->identity = game.map.frozenTerrainSnapshot(); }
+	terrain->rules = game.map.frozenCellRules();
+	terrain->vertices = game.map.frozenVertexSnapshot(); }
 	terrain->revision = game.map.terrainGeneration();
 	terrain->movementModifiers = game.map.hasTerrainMovementModifiers();
 	terrain->airConstraints = game.map.hasAirTerrainConstraints();
@@ -170,7 +171,6 @@ Handle capture(const Game& game,
 		catalogs->typeDefinitions = std::make_shared<const std::vector<BuildingType>>(*game.buildingsTypes.retainTypes());
 		catalogs->resources = game.map.frozenResourceRegistry();
         catalogs->assets = game.map.frozenAssetBundle();
-		catalogs->habitats = game.map.frozenResourceHabitats();
 	}
 	if (needs(requirements, Component::Rules)) {
 		auto config = std::make_shared<GameHeader>(header);
@@ -241,14 +241,12 @@ Handle capture(const Game& game,
     }
 	if (needs(requirements, Component::Terrain))
 	{
-		const auto source = game.map.legacyTerrainState();
-		bool resized = prepare(terrain->legacy, source.size());
-		resized |= prepare(terrain->undermap, source.size());
+		// Rule indices stay valid while the table only grows; replacing the
+		// table marks every terrain chunk changed, so no stale index survives.
+		const auto source = game.map.cellRuleState();
+		const bool resized = prepare(terrain->cellRules, source.size());
 		refresh(terrain->stamps, game.map.changes(MapState::TrackedArray::Terrain), resized,
-			[&](std::size_t start, std::size_t length) {
-                copyCells(terrain->legacy, source, start, length);
-                copyCells(terrain->undermap, game.map.undermapState(), start, length);
-            });
+			[&](std::size_t start, std::size_t length) { copyCells(terrain->cellRules, source, start, length); });
 	}
 	if (needs(requirements, Component::Resources))
 	{
@@ -513,11 +511,11 @@ void verifyCapture(const Game& game, const Handle& handle)
 	const auto live = game.map.cellView();
 	if (handle.terrain)
 	{
-		compare("terrain", handle.terrain->legacy, game.map.legacyTerrainState());
-		compare("undermap", handle.terrain->undermap, game.map.undermapState());
-		if (!handle.terrain->identity || handle.terrain->identity->size() != live.terrainIds.size()
-			|| (!live.terrainIds.empty() && std::memcmp(handle.terrain->identity->data(), live.terrainIds.data(), live.terrainIds.size_bytes())))
-			throw std::logic_error("snapshot verification: terrain identity differs from the live map");
+		compare("cell rules", handle.terrain->cellRules, game.map.cellRuleState());
+		const auto vertices = game.map.vertexTerrainState();
+		if (!handle.terrain->vertices || handle.terrain->vertices->size() != vertices.size()
+			|| (!vertices.empty() && std::memcmp(handle.terrain->vertices->data(), vertices.data(), vertices.size_bytes())))
+			throw std::logic_error("snapshot verification: terrain vertices differ from the live map");
 	}
 	if (handle.resources)
 	{

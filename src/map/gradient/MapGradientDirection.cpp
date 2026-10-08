@@ -35,7 +35,7 @@ int Map::minStepCost(int swimClass) const
 
 int Map::stepCost(int dx, int dy, size_t targetIndex, int swimClass) const
 {
-	const auto cost = terrainRegistry().movement(swimClass).entries[terrainTypeAt(targetIndex)];
+	const auto cost = cellRule(targetIndex).ground[swimClass];
 	return dx != 0 && dy != 0 ? cost.diagonal : cost.cardinal;
 }
 

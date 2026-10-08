@@ -315,6 +315,27 @@ class ChangedPathsTest(unittest.TestCase):
                         # Evaluate only the exact, asserted expression above.
                         self.assertEqual(eval(expression, {"__builtins__": {}}, context), allowed)
 
+    def test_browser_checks_survive_skipped_optional_native_producer(self):
+        workflow = (SCRIPT.parents[2] / '.github/workflows/build.yml').read_text()
+        block = workflow.split('  web-test:\n', 1)[1].split('    runs-on:', 1)[0]
+        guard = re.search(r"if: \$\{\{ (.*?) \}\}", block).group(1)
+        # A status function disables GitHub's implicit success() over ancestors;
+        # web-native can succeed while its optional native producer was skipped.
+        self.assertIn('!cancelled()', guard)
+        expression = guard.replace('!cancelled()', 'not cancelled').replace('&&', 'and')
+        expression = expression.replace('needs.changes.outputs.browser', 'browser')
+        expression = expression.replace('needs.web-build.result', 'build')
+        expression = expression.replace('needs.web-native.result', 'native')
+        for cancelled in (False, True):
+            for browser in ('false', 'true'):
+                for build in ('success', 'failure', 'cancelled', 'skipped'):
+                    for native in ('success', 'failure', 'cancelled', 'skipped'):
+                        with self.subTest(cancelled=cancelled, browser=browser, build=build, native=native):
+                            actual = eval(expression, {'__builtins__': {}}, dict(
+                                cancelled=cancelled, browser=browser, build=build, native=native))
+                            self.assertEqual(actual, not cancelled and browser == 'true'
+                                             and build == 'success' and native == 'success')
+
     def test_every_inline_build_checks_out_the_selected_revision(self):
         workflow = (SCRIPT.parents[2] / ".github/workflows/build.yml").read_text()
         checkouts = workflow.split("      - uses: actions/checkout@v4\n")[1:]

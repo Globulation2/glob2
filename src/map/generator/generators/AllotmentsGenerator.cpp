@@ -446,7 +446,7 @@ bool generate(Game &game, GenerationContext &context)
 	context.stage = "allotments terrain";
 	TerrainSketch terrain = L.sketch;
 	layBeaches(terrain, t);
-	writeUndermap(map, terrain);
+	writeVertices(map, terrain);
 
 	context.stage = "allotments colonies";
 	std::vector<int> townOf(n, -1);

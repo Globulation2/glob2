@@ -619,7 +619,7 @@ bool generate(Game &game, GenerationContext &context)
 	context.stage = "caravanserai terrain";
 	TerrainSketch terrain = L.sketch;
 	layBeaches(terrain, t);
-	writeUndermap(map, terrain);
+	writeVertices(map, terrain);
 	const DesignedStone walls = designedStone(map, t, L.wall);
 	if (walls.gaps)
 	{

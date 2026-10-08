@@ -280,7 +280,7 @@ bool generate(Game &game, GenerationContext &context)
 	context.stage = "polder terrain";
 	TerrainSketch terrain = L.sketch;
 	layBeaches(terrain, t);
-	writeUndermap(map, terrain);
+	writeVertices(map, terrain);
 
 	context.stage = "polder colonies";
 	if (!settleRoundColonies(game, context, "polder-starts", L.homeOf, L.homes, L.villageRadius))

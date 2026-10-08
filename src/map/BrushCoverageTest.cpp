@@ -71,20 +71,4 @@ TEST_SUITE("BrushCoverage")
 			CHECK(both == BrushCoverage::cells(figure, {{4, 4}, {9, 5}}));
 		}
 	}
-
-	TEST_CASE("corner closure adds only cells whose four corners are all written")
-	{
-		using Set = std::set<BrushCoverage::Cell>;
-		// Solid, line and diagonal shapes close on themselves.
-		for (unsigned figure : {0u, 1u, 2u, 3u, 6u, 7u})
-		{
-			const auto cells = BrushCoverage::stamp(figure, {0, 0}, {0, 0});
-			CHECK_MESSAGE(BrushCoverage::cornerClosure(cells) == cells, "figure " << figure);
-		}
-		// A checkerboard's gaps share all four corners with its cells.
-		CHECK(BrushCoverage::cornerClosure({{0, 0}, {2, 0}, {1, 1}}) == Set{{0, 0}, {1, 0}, {2, 0}, {1, 1}});
-		CHECK(BrushCoverage::cornerClosure({{0, 0}, {2, 0}, {0, 2}, {2, 2}}) ==
-			  Set{{0, 0}, {1, 0}, {2, 0}, {0, 1}, {1, 1}, {2, 1}, {0, 2}, {1, 2}, {2, 2}});
-		CHECK(BrushCoverage::cornerClosure({}).empty());
-	}
 }

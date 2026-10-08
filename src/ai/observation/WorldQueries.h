@@ -39,7 +39,7 @@ public:
  int getH() const { return world.height; }
  TileView getTile(int x,int y) const { return world.tile(x,y); }
  Uint16 getBuilding(int x,int y) const { return world.occupancyAt(world.tileIndex(x,y)).building; }
- const TerrainProperties& terrainPropertiesAt(int x,int y) const { return world.terrain->properties(world.terrainAt(world.tileIndex(x,y)).type); }
+ const TerrainProperties& terrainPropertiesAt(int x,int y) const { return world.terrainPropertiesAt(world.tileIndex(x,y)); }
  bool isMapDiscovered(int x,int y,Uint32 mask) const { return world.visibilityAt(world.tileIndex(x,y)).discovered&mask; }
  bool isFOWDiscovered(int x,int y,Uint32 mask) const { return world.visibilityAt(world.tileIndex(x,y)).visible&mask; }
  bool isForbidden(int x,int y,Uint32 mask) const { return world.areasAt(world.tileIndex(x,y)).forbidden&mask; }
@@ -111,7 +111,7 @@ public:
   for(int dy=0;dy<height;++dy) for(int dx=0;dx<width;++dx) {
    const auto i=world.tileIndex(x+dx,y+dy);const auto r=world.resourceAt(i);const auto o=world.occupancyAt(i);
    if(MapState::resourceBlocksBuilding(world.state(),i) || (o.building!=0xffff && o.building!=ignore)
-     || (!hard && o.groundUnit!=0xffff) || !world.terrain->properties(world.terrainAt(i).type).buildable) return false;
+     || (!hard && o.groundUnit!=0xffff) || !world.terrainPropertiesAt(i).buildable) return false;
   }
   return true;
  }
@@ -181,8 +181,8 @@ public:
    values.resize(world.tiles.size());
    bool modified=false;
    for(size_t i=0;i<values.size();++i) {
-    const auto terrainCell=world.terrainAt(i);const auto resourceCell=world.resourceAt(i);const auto occupancy=world.occupancyAt(i);
-    const auto& terrain=world.terrain->properties(terrainCell.type);
+    const auto resourceCell=world.resourceAt(i);const auto occupancy=world.occupancyAt(i);
+    const auto& terrain=world.terrainPropertiesAt(i);
     modified |= terrain.groundSpeedQ8!=256;
     Uint16 value=GRADIENT_FORBIDDEN;
     if(!(world.areasAt(i).forbidden & mask) && occupancy.immobileUnit==255) {
@@ -195,7 +195,7 @@ public:
     values[i]=value;
    }
    gradient_kernel::propagateTerrainField(values.data(),swim,gradient_kernel::COST_LIMIT,{world.width,world.height},scratch,
-    [&](size_t i){return world.terrainAt(i).type;},modified,*world.terrain,256);
+    [&](size_t i){return world.cellRuleAt(i);},modified,*world.cellRules,256);
     initialization.values=std::move(buffer);
    }
    if(enrollments && enrollmentsReported.insert(key).second)

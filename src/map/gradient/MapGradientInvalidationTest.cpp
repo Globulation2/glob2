@@ -122,7 +122,7 @@ TEST_SUITE("MapGradientInvalidation")
 	  m.setResourceByIndex(20,20,WHEAT,1);m.setResourceAmount(m.coordToIndex(20,20), 3);
 	  if(mutation==4)m.markImmobileUnit(21,20,0);
 	  if(mutation==6)m.setBuilding(21,20,1,1,42);
-	  if(mutation==8)m.setTerrain(21,20,256);
+	  if(mutation==8)m.paintCell(21, 20, WATER);
 	  auto* g=m.getForbiddenGradient(0,swim);std::vector<Uint16> old(g,g+4096);
 	  switch(mutation){
 	   case 0:m.setResourceAmount(m.coordToIndex(20,20), 1);m.decResource(20,20);break;
@@ -132,8 +132,8 @@ TEST_SUITE("MapGradientInvalidation")
 	   case 4:m.clearImmobileUnit(21,20);break;
 	   case 5:m.setBuilding(21,20,1,1,42);break;
 	   case 6:m.setBuilding(21,20,1,1,NOGBID);break;
-	   case 7:m.setTerrain(21,20,256);break;
-	   case 8:m.setTerrain(21,20,0);break;
+	   case 7:m.paintCell(21, 20, WATER);break;
+	   case 8:m.paintCell(21, 20, GRASS);break;
 	   case 9:edit(f,20,20,true);break; // no-op forbidden brush
 	   case 10:edit(f,20,20,false);break; // resource-only mask edit
 	   case 11:{auto resource=m.getResource(20,20);resource.type=WOOD;m.replaceResource(20,20,resource);break;}

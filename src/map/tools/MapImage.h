@@ -13,10 +13,11 @@ struct MapImageImportReport
 	std::string json() const;
 };
 void exportMapImage(const Game &, const std::string &path);
-// Map images are a lossy categorical interchange format for new maps. Import
-// classifies image pixels to the fixed terrain/resource/marker palette,
-// resamples to the requested map dimensions, then builds a fresh game from the
-// decoded cells. It does not preserve arbitrary saved-game state. On failure the
+// Map images are a lossy categorical interchange format for new maps. Pixel
+// (x,y) is map vertex (x,y): its terrain, or a resource of the cell it is the
+// top-left corner of, or a colony marker. Import classifies image pixels to the
+// fixed terrain/resource/marker palette, resamples to the requested map
+// dimensions, then builds a fresh game from the decoded vertices. It does not preserve arbitrary saved-game state. On failure the
 // candidate must be discarded. expectedTeams == 0 accepts the marker count found
 // in the image; otherwise it requires an exact marker count match before
 // modifying the request team count.

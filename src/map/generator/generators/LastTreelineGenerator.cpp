@@ -297,7 +297,7 @@ bool generate(Game &game, GenerationContext &c)
 	}
 	const Torus &t = L.t;
 	const LastTreelineOptions o(c.request);
-	writeUndermap(game.map, L.terrain);
+	writeVertices(game.map, L.terrain);
 	for (int k = 0; k < c.request.nbTeams; ++k)
 		game.addTeam();
 	c.stage = "treeline colonies";
@@ -481,7 +481,7 @@ std::string validateWorld(const Game &game, const GenerationContext &c)
 	// Read the FINISHED terrain, so a late edit cannot silently irrigate home wood.
 	TerrainSketch actual(t.size());
 	for (int i = 0; i < t.size(); ++i)
-		actual[i] = TerrainType(map.getUMTerrain(i % t.w, i / t.w));
+		actual[i] = TerrainType(map.vertexTerrainAt(i % t.w, i / t.w));
 	const auto fertility = cropGrowthField(actual, t);
 	if (auto e = containedPlotsMismatch(map, t, L.plotOf, &fertility); !e.empty())
 		return e;

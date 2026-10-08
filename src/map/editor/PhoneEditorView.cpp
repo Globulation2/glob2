@@ -182,20 +182,19 @@ void PhoneEditor::drawInteractionPreview()
 	{
 		// Preview brush coverage without mutating terrain. The same brush mask
 		// drives the committed editor operation; screen/world conversion wraps.
-		// Terrain brushes are cell-centred like every other brush.
+		// Terrain brushes stamp the vertex nearest each point, other brushes the
+		// cell under it; a vertex's square is centred on the vertex.
+		const bool vertices = editor.selectionMode == MapEdit::PlaceTerrain && editor.brushOnVertices();
+		const int offset = vertices ? editor.brushSquareOffset() : 0;
 		std::vector<BrushCoverage::Cell> centres;
 		for (auto p : pending)
 		{
 			auto [wx, wy] = editor.camera.screenToWorld(p.x, p.y);
-			centres.push_back(BrushCoverage::cellAt(wx, wy));
+			centres.push_back(BrushCoverage::cellAt(wx, wy, -offset));
 		}
 		const bool erase = editor.brush.getType() == BrushTool::MODE_DEL ||
 						   editor.selectionMode == MapEdit::RemoveObject;
 		auto cells = BrushCoverage::cells(editor.brush.getFigure(), centres);
-		// A corner terrain also fills the cells whose corners it all writes.
-		if (!erase && editor.selectionMode == MapEdit::PlaceTerrain &&
-			editor.terrainType >= TerrainSelector::Grass && editor.terrainType <= TerrainSelector::Water)
-			cells = BrushCoverage::cornerClosure(cells);
 		Color fill = erase ? Color(220, 80, 65, 115) : Color(240, 208, 110, 110);
 		if (!erase && editor.selectionMode == MapEdit::PlaceTerrain)
 		{
@@ -212,7 +211,7 @@ void PhoneEditor::drawInteractionPreview()
 		const int size = std::max(2, int(32 * editor.camera.zoom));
 		for (auto [x, y] : cells)
 		{
-			auto [sx, sy] = editor.camera.worldToScreen(x * 32, y * 32);
+			auto [sx, sy] = editor.camera.worldToScreen(x * 32 + offset, y * 32 + offset);
 			gfx->drawFilledRect(int(sx), int(sy), size, size, fill);
 			gfx->drawRect(int(sx), int(sy), size, size, edge);
 		}

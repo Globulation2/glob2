@@ -3,31 +3,38 @@
 Every choice a generator makes — how wide a passage is, how far wheat lies from a swarm, why a
 beach is always sand — follows from a handful of engine rules and from what makes a Globulation 2
 game fun to play. This page collects both, with the code that enforces each rule, so a generator's
-comments can say "because grass may not touch water" and a reader can check it here.
+comments can say "because a mixed tile is unbuildable" and a reader can check it here.
 
 ## The rules of the terrain
 
-- **Terrain is drawn from corners.** The map stores an *undermap*: one terrain type (water, sand
-  or grass) per tile corner. A tile's terrain is derived from its four corners
-  (`Map::regenerateMap`), so a tile is pure grass only when all four of its corners are grass.
-  A single sand corner spoils the four tiles around it. This is why a one-cell sand road
-  (`tracePath`) blocks a strip about two tiles wide, and why generators stamp grass inside a
-  one-tile sand ring.
-- **Grass may never touch water.** There is no grass-to-water tile graphic, so every grass corner
-  beside water must become sand. `Map::controlSand` does it in place in row order, which makes a
-  shoreline depend on scan direction; the designed generators use `layBeaches`, which applies the
-  same rule to every corner at once. The pass is not a step in a fixed order, it is a postcondition:
-  anything that cuts terrain after it — a late pond, a farm plot stamped against a lake — needs
-  another pass, or that shoreline ships as a hard grass/water edge that reads immediately as a bug
-  in the finished game (the fractal maps' garden beds and bank plots did, 2026-09-16). Size a crop
-  bed knowing the beach will take its innermost row: three rows of farmable grass means four rows
-  of grass laid down.
-- **Buildings need pure grass.** `Map::isFreeForBuilding` requires grass, no resource and no unit
-  on every tile of the footprint (`Map::checkTile`). Sand is walkable but unbuildable, so a map's
-  building room is its grass, not its land. A swarm is 4×4; the start scorer counts free 4×4
-  footprints as a colony's room (`StartQuality`).
+- **Terrain lives on corners.** The map stores one terrain type per vertex (`Map::vertexTerrain`);
+  vertex (x,y) is the top-left corner of tile (x,y). A tile's rules come from its four corners
+  (`combineCornerRules`, `TerrainPropertiesLayout.h`, compiled once per combination by
+  `CellRuleTable`): equal corners keep that terrain's rules exactly; mixed corners are walkable
+  when any corner is, never swimmable or buildable, and otherwise as permissive as the weakest
+  corner. So a tile is pure grass only when all four of its corners are grass, and a single sand
+  vertex spoils the four tiles around it. This is why a one-vertex sand road (`tracePath`) blocks a
+  strip about two tiles wide, and why generators stamp grass inside a one-tile sand ring. Read a
+  vertex with `vertexTerrainAt`, a tile's corners with `cellCorners`, and a tile's rules with
+  `terrainPropertiesAt`; `terrainTypeAt` answers `MIXED_TERRAIN` for a mixed tile.
+- **Beaches are a convention, not a rule.** Grass directly against water is legal: the tiles
+  between are walkable and unbuildable, exactly like a sand/water or grass/sand tile. The shipped
+  maps keep sand between grass and water. `Map::layBeaches()` turns every grass vertex next to
+  water, and every water vertex next to grass, into sand, reading the terrain as it was, so the
+  result does not depend on scan order; the designed generators apply the same rule to their
+  `TerrainSketch` with `layBeaches` before `writeVertices`. `Map::paintVertices` and
+  `paintVertexSquare` lay sand around what they paint. A beach is a postcondition, not a step in
+  a fixed order: anything that cuts terrain after it, such as a late pond or a farm plot stamped
+  against a lake, needs another pass, or that shoreline ships as a bare grass/water edge unlike
+  the rest of the map. Size a crop bed knowing the beach will take its innermost row: three rows
+  of farmable grass means four rows of grass laid down.
+- **Buildings need buildable tiles.** `Map::isFreeForBuilding` requires buildable terrain, no
+  resource and no unit on every tile of the footprint (`Map::checkTile`). Among the classic
+  terrains only pure grass is buildable, and a mixed tile never is, so a map's building room is
+  its pure grass, not its land. A swarm is 4×4; the start scorer counts free 4×4 footprints as a
+  colony's room (`StartQuality`).
 - **Water blocks walking until a colony can swim.** Ground units cannot enter water
-  (`TileChecks::waterBlocks`) until they have trained at a swimming pool. Every island map, strait
+  (cells whose four corners are all water) until they have trained at a swimming pool. Every island map, strait
   and moat is therefore a *timing* rule: it separates colonies early and opens once pools are
   built. Sand and grass are both walkable.
 - **Resources block movement and building.** A unit cannot stand on a tile with a resource on it
@@ -40,7 +47,7 @@ comments can say "because grass may not touch water" and a reader can check it h
   to its range, 5, 7 or 9 tiles beyond every side by level, with no line of sight
   (`Building::findBestTarget`, `BuildingUtils::turretScanTile`, `BuildingTypesDefence.cpp`). A wall stops walking but not shooting, so
   a wall's thickness decides whether towers on either side can reach each other (`towerReach`).
-- **Towers shoot over water too.** A straight channel w undermap corners wide spoils w + 3 tiles of
+- **Towers shoot over water too.** A straight channel w water vertices wide spoils w + 3 tiles of
   grass and puts the banks' nearest grass w + 4 tiles apart, so a level-1 tower on one bank covers the
   other across a single water corner and a level-3 tower across five (`shared/Channels`). A canal can
   start a tower duel long before either side can swim.
@@ -106,15 +113,15 @@ the classic `water`, `sand`, `grass`, `ice` and `road` (the compatibility key fo
 Trail) plus every terrain-catalogue type (`boulders`, `hedge`, `thicket`, `ridge_rock`,
 `outcrop`, `dirt`, `clay`, `gravel`, `flower_meadow`, `mud`, `marsh`, `deep_snow`,
 `scree`, `dirt_track`, `boardwalk`, `lava`, `ember_field`, `loam`, `moss`,
-`spring_meadow`, `deep_water`, `dark_water`, `void_hole`, `chasm`). The legacy shore
-profiles are not presets. The base supplies all simulation
+`spring_meadow`, `deep_water`, `dark_water`, `void_hole`, `chasm`). There are no shore
+types: mixed corners make transitions. The base supplies all simulation
 defaults; appearance selects a shipped material and resolved preview colors independently.
 Detailed artwork and natural boundaries use the shared [material catalog](../assets/terrain-materials.md);
 custom types sharing an appearance resolve to the same material. Every
 entry requires `key`, `name`, `base`, `properties` and `appearance`; use an empty
-`properties` object to inherit all base values. Bases cannot refer to custom keys. Custom tiles have full-tile presentation and do
-not participate in the legacy corner adapter. Existing corner rules above describe
-classic terrain. Eligibility is controlled by properties: for example custom
+`properties` object to inherit all base values. Bases cannot refer to custom keys. Custom
+types are stored on vertices like the built-ins, and their tiles follow the same corner
+rules. Eligibility is controlled by properties: for example custom
 walkable terrain can allow buildings, exclude flight or obstruct projectiles.
 
 Keys use lowercase ASCII letters, digits, `.`, `_` and `-`, separated by exactly one
@@ -123,7 +130,7 @@ text; keys and names are limited to 128 UTF-8 bytes. Each import must contain un
 keys. Existing custom keys retain their IDs when reimported; new keys append in
 sorted order. Reimport updates all cells painted with an existing key, including
 its name and appearance. Keys omitted from the new file remain installed; imports
-do not remove definitions, renumber tiles or reset the registry. The seven built-ins
+do not remove definitions, renumber tiles or reset the registry. Built-ins
 cannot be overridden. Import validation is atomic:
 invalid fields, values, duplicate JSON members or keys leave the map unchanged.
 The total limit is 16,384 types, including built-ins; input is limited to 32 MiB.

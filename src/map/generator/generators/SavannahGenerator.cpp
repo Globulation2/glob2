@@ -319,7 +319,7 @@ bool generate(Game &game, GenerationContext &context)
 		return false;
 	}
 	context.stage = "savannah terrain";
-	writeUndermap(game.map, L.terrain);
+	writeVertices(game.map, L.terrain);
 	for (int k = 0; k < context.request.nbTeams; ++k)
 		game.addTeam();
 	context.stage = "savannah colonies";

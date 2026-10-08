@@ -475,7 +475,7 @@ bool generate(Game &game, GenerationContext &c)
 	}
 	const auto &t = L.t;
 	HungryMarchesOptions o(c.request);
-	writeUndermap(game.map, L.terrain);
+	writeVertices(game.map, L.terrain);
 	for (int k = 0; k < c.request.nbTeams; ++k)
 		game.addTeam();
 	for (int k = 0; k < c.request.nbTeams; ++k)
@@ -641,7 +641,7 @@ std::string validateWorld(const Game &game, const GenerationContext &c)
 			if (kinds[components[i]] == 3)
 				return "Timber and wheat share a growing bank.";
 		}
-		if (game.map.getUMTerrain(i % t.w, i / t.w) != L.terrain[i])
+		if (game.map.vertexTerrainAt(i % t.w, i / t.w) != L.terrain[i])
 			return "The floodplain terrain changed after design.";
 		if (L.roads[i] && game.map.isResource(i % t.w, i / t.w))
 			return "A harvest crossing is blocked.";

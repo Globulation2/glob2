@@ -746,7 +746,7 @@ void stampCrossings(Layout &L, const CrossingSelection &selection, GenerationCon
 	for (size_t k = 0; k < selection.selected.size(); ++k)
 	{
 		const auto &c = selection.selected[k];
-		// Seven undermap corners across yields at least six traversable tiles.
+		// Seven terrain vertices across yields at least six traversable tiles.
 		strokePath(L.crossings, L.t, {{c.from.x, c.from.y, 3.5}, {c.to.x, c.to.y, 3.5}});
 		// A landing is the last grass tile before the shore on the crossing's own axis, offset
 		// so a two-wide path is centred on the bridge. A path must arrive along that axis and
@@ -799,7 +799,7 @@ bool furnishAndSettle(Game &game, GenerationContext &context, const Layout &L)
 	const auto &t = L.t;
 	Map &map = game.map;
 	context.stage = "fractal terrain and contained farms";
-	writeUndermap(map, L.terrain);
+	writeVertices(map, L.terrain);
 
 	const int wheatAmount = context.request.option("wheat-amount"),
 			  woodAmount = context.request.option("wood-amount");

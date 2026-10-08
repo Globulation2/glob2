@@ -248,7 +248,7 @@ TEST_CASE("wraps swimmers, buildings and team areas together across the source s
 	glob2test::HeadlessGame world({.wDec = 6, .hDec = 6, .loadDefaultRace = true});
 	auto &game = world.game;
 	REQUIRE(world.addBuilding("swarm", 2, 10));
-	game.map.setTerrain(63, 10, 256);
+	game.map.paintCell(63, 10, WATER);
 	auto *swimmer = game.addUnit(63, 10, 0, WORKER, 3, 0, 0, 0);
 	REQUIRE(swimmer);
 	swimmer->level[WALK] = 0;

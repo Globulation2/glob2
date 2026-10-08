@@ -17,7 +17,7 @@ namespace MapGeneration
 // and lakes. Marchland uses this instead of asking its terrain search to discover a river from
 // positional water-share targets, which did not constrain the channel's shape.
 
-/// The shape of a river bed. Widths are in undermap corners, and a tile is pure water only when its
+/// The shape of a river bed. Widths are in terrain vertices, and a tile is pure water only when its
 /// four corners are, so a bed of half width `w` leaves about 2w - 1 tiles of open water and spoils
 /// kChannelSpoiledTiles more to beach either side (Channels.h).
 struct RiverStyle

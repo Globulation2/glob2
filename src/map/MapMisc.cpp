@@ -24,8 +24,7 @@ Uint32 Map::checkSum(bool heavy)
 		{
 
 			cs+=
-				static_cast<Uint32>(terrainIds[index]) +
-				legacyTerrain[index] +
+				static_cast<Uint32>(vertexTerrain[index]) +
 				occupancyCells[index].building +
 				resourceCells[index].resource.getUint32() +
 				occupancyCells[index].groundUnit +

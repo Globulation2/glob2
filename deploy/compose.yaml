@@ -325,6 +325,13 @@ services:
 
   engine-agent:
     <<: *hardening
+    # Asset-capable engines require nested Bubblewrap namespaces. Reuse the
+    # confined namespace policy also used by the recipe worker.
+    security_opt:
+      - no-new-privileges:true
+      - seccomp=${GLOB2_ENGINE_SECCOMP_PROFILE:-./security/ai-music-seccomp.json}
+      - apparmor=${GLOB2_ENGINE_APPARMOR_PROFILE:-glob2-engine}
+      - systempaths=unconfined
     image: ${GLOB2_ENGINE_AGENT_IMAGE:-glob2-engine-agent:development}
     build:
       context: ..

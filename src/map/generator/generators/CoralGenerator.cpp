@@ -739,7 +739,7 @@ bool generate(Game &game, GenerationContext &context)
 	const CoralOptions o(context.request);
 	Map &map = game.map;
 	const int teams = context.request.nbTeams;
-	map.makeHomogenMap(WATER);
+	map.fillTerrain(WATER);
 	for (int i = 0; i < teams; ++i)
 		game.addTeam();
 	const Layout L = design(context.request, context);
@@ -786,7 +786,7 @@ bool generate(Game &game, GenerationContext &context)
 				terrain[i] = SAND;
 	}
 	layBeaches(terrain, t);
-	writeUndermap(map, terrain);
+	writeVertices(map, terrain);
 
 	context.stage = "coral colonies";
 	const auto pad = [&](int team)

@@ -340,8 +340,8 @@ bool placeArchipelagoStarts(Game &game, GenerationContext &context, int islandSi
 		const auto* type=game.buildingsTypes.get(typeNum);
 		const StartingLayout layout(type->width,type->height,context.request.nbWorkers);
 		const int squareSize = std::max({5 + islandSize / 10,layout.width+1,layout.height+1,2*layout.workerRows+1});
-		game.map.setUMatPos(context.bootX[s] + layout.width/2, context.bootY[s], GRASS, squareSize);
-		game.map.setUMatPos(context.bootX[s] + layout.width/2, context.bootY[s] + layout.height/2, GRASS, squareSize);
+		game.map.paintVertexSquare(context.bootX[s] + layout.width/2, context.bootY[s], GRASS, squareSize);
+		game.map.paintVertexSquare(context.bootX[s] + layout.width/2, context.bootY[s] + layout.height/2, GRASS, squareSize);
 
 		if (!game.isBuildingTypeAvailable(typeNum) || !game.checkRoomForBuilding(context.bootX[s], context.bootY[s],
 									   game.buildingsTypes.get(typeNum), s, false))
@@ -394,7 +394,7 @@ bool placeStarts(Game &game, GenerationContext &context)
 			for (int x=0; x<=layout.width; ++x)
 				for (int y=-layout.workerRows; y<=layout.height; ++y)
 				{
-					game.map.setUMatPos(context.bootX[s]+x,context.bootY[s]+y,GRASS,1);
+					game.map.paintVertexSquare(context.bootX[s]+x,context.bootY[s]+y,GRASS,1);
 					game.map.setNoResource(context.bootX[s]+x,context.bootY[s]+y,1);
 				}
 		}

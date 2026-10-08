@@ -15,7 +15,7 @@ TEST_SUITE("NumbiObservation")
    .wDec=5,.hDec=5,.teams=2,.discovered=true,.clearImmobile=true,.loadDefaultRace=true}};
   auto& game=fixture.game;auto& map=game.map;
   map.setResourceByIndex(5,5,WHEAT,1);map.setResourceByIndex(24,20,WOOD,1);map.setResourceByIndex(10,24,CHERRY,1);
-  map.setCellTerrain(16,16,WATER);map.setCellTerrain(17,16,ICE);map.setCellTerrain(18,16,TRAIL);
+  map.paintCell(16,16,WATER);map.paintCell(17,16,ICE);map.paintCell(18,16,TRAIL);
   map.addForbidden(4,5,0);map.markImmobileUnit(6,5,0);
   const auto world=AIEngine::AIWorldView::capture(game,AIEngine::AIWorldView::captureCatalog(game));
   NumbiObservation::ResourceInitializations cache;

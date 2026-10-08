@@ -30,6 +30,7 @@ no NaN, infinity, per-tile grids, elapsed-time measurements, or simulation steps
 | --- | --- |
 | `engine.version_major`, `version_minor` | The reporting executable's engine/save-format version constants, not the input file's original version. |
 | `map.name` | Stored map name for an input file; `null` for the freshly generated snapshot, before its output filename supplies a saved name. |
+| `map.setCredits` | Frozen artwork-set attribution from the map asset bundle: set/version IDs, title, license, authors, source hash and credited entries. Empty when no custom sets are used. |
 | `map.width`, `height`, `tiles` | Tile dimensions and their product. |
 | `map.wrap_x`, `wrap_y` | Both true: this is a toroidal map. All reported paths and components wrap. |
 | `map.player_slots` | Actual colony/team count. This is what “number of players” usually means when comparing generated maps. An editor-only generator may create fewer colonies than its request's `teams` value. |
@@ -105,24 +106,25 @@ and movement connectivity use **eight neighbors**, including diagonals. All wrap
 
 ## Terrain, resources, space, and fertility
 
-`terrain` partitions every tile by its canonical gameplay material: `grass`,
-`grass_sand_border`, `sand`, `sand_water_border`, `water`, `ice`, or `road`
-(the legacy report key for Trail).
-The retained `unknown` key is zero for validated maps. Each value is coverage;
-counts sum to `map.tiles`. Resource/building occupancy does not change this
-classification. Legacy borders remain whole mixed tiles. Ice and Trail each
-occupy a whole gameplay cell; decorative edge blending does not change its type.
-The additive `ice` and `road` coverage keys are optional in the version-2 schema
-so reports produced before those materials remain readable; current writers
-always emit both, including zero coverage. Embedded custom types add coverage
-entries keyed by their namespaced registry keys, including unused definitions.
-The schema permits these namespaced keys; IDs and display names are not keys.
+`terrain` partitions the map's terrain vertices (one per tile: each tile's
+top-left corner) by terrain type: `grass`, `sand`, `water`, `ice`, `road` (the
+legacy report key for Trail) and every other registered type. The retained
+`unknown` key is zero for validated maps. Each value is coverage; counts sum to
+`map.tiles`. Resource/building occupancy does not change this classification.
+A tile's gameplay rules come from its four corners, so walking, swimming and
+building measurements in `space` and `movement` read cells, not this partition.
+The version-2 schema keeps the retired `grass_sand_border` and
+`sand_water_border` keys as optional, so older reports remain readable; current
+writers no longer emit them, because mixed grass/sand and sand/water corners now
+form those transitions. The `ice` and `road` keys are likewise optional for older
+reports; current writers always emit every registered type, including zero
+coverage. Embedded custom types add coverage entries keyed by their namespaced
+registry keys, including unused definitions. The schema permits these namespaced
+keys; IDs and display names are not keys.
 
-`underlying_terrain` separately partitions the engine's underlying terrain grid
-into `grass`, `sand`, `water`, and `unknown`, using coverage objects. It need not
-match the visible terrain percentages: visible tiles combine adjacent terrain
-corners and therefore include border classes. This grid is a legacy editor
-representation; authored ice/Trail cells override its gameplay and appearance.
+`underlying_terrain` partitions the same vertices into `grass`, `sand`, `water`,
+and `unknown` (every other type), using coverage objects. It is retained for
+version-2 consumers that predate the catalogue terrain types.
 
 `resources.occupied` counts all resource-bearing tiles, including unknown types.
 `unknown_type_tiles` counts IDs absent from the map's embedded resource registry,

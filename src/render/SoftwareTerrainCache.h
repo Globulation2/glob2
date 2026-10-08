@@ -5,6 +5,7 @@
 #include <array>
 #include <cstdint>
 #include <memory>
+#include <tuple>
 #include <vector>
 
 class SceneMap;
@@ -32,7 +33,8 @@ class SoftwareTerrainCache
 	{
 		int x = 0, y = 0, scale = 1;
 		Uint32 seed = 0; // Map terrain seed the page was composed with.
-		std::array<Uint32, (ChunkTiles + 2) * (ChunkTiles + 2)> sources{};
+		// Vertex terrain the page's tile corners read.
+		std::array<Uint32, (ChunkTiles + 1) * (ChunkTiles + 1)> sources{};
 		std::array<Tile, ChunkTiles * ChunkTiles> tiles{};
 		// Empty cells expose only the separately drawn ocean and submit no software blit.
 		std::array<bool, ChunkTiles * ChunkTiles> opaque{}, empty{};
@@ -47,7 +49,8 @@ class SoftwareTerrainCache
 		ChunkPixels * ChunkPixels * 4 + sizeof(Chunk) +
 		ChunkTiles * ChunkTiles *
 			(sizeof(OpaqueRun) + sizeof(GAGCore::DrawableSurface) + sizeof(SDL_Surface) +
-			 16 * sizeof(std::pair<TerrainVisual::MaterialId, std::uint64_t>));
+			 std::tuple_size_v<decltype(TerrainVisual::Recipe::corners)> *
+				 sizeof(std::pair<TerrainVisual::MaterialId, std::uint64_t>));
 	struct Copy
 	{
 		Chunk *chunk;

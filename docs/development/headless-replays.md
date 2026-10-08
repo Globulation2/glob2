@@ -17,7 +17,8 @@ bytes, with no dependency on local authoring JSON. The existing map-content hash
 binds distributed matches to the definitions.
 Building format 137 adds configurable services and capability-driven AI; replays
 recorded before version 137 became incompatible and network protocol 57 separated
-clients using those rules. The current replay floor is 143 for engine snapshots and scheduled AI decisions.
+clients using those rules. Format 146 stores terrain per map vertex and derives each
+cell's rules from its corners; the current replay floor is 146.
 Supported saved games still load and adopt the current simulation;
 the save floor remains 58.
 
@@ -454,3 +455,7 @@ selection and weights. The save floor stays 58 and replay floor stays 127;
 fresh-game decision behavior is unchanged. Older saves use historical defaults
 for omitted state, whose original values cannot be recovered. Protocol 54 carries
 the additional continuation fields.
+
+Headless diagnostic exports wait for each pending output batch before advancing
+the simulation, including with `GLOB2_SIM_THREAD=1`. This keeps capture intervals
+from being lost while PNGs are written; it affects export wall time only.

@@ -90,10 +90,12 @@ int main(int argc, char **argv)
 			game.map.replaceResource(5, 5, {WOOD, 0, 3, 0});
 			game.map.replaceResource(7, 5, {WHEAT, 0, 5, 0});
 			emit(game, std::filesystem::path(argv[1]) / "grass.json");
-			game.map.setCellTerrain(20, 20, ICE);
-			game.map.setCellTerrain(21, 20, TRAIL);
-			game.map.setCellTerrain(22, 20, GRASS_SAND_SHORE);
-			game.map.setCellTerrain(23, 20, SAND_WATER_SHORE);
+			// Single vertices, far enough apart that each makes its own four
+			// mixed cells with the surrounding grass.
+			game.map.setVertexTerrain(20, 20, ICE);
+			game.map.setVertexTerrain(22, 20, TRAIL);
+			game.map.setVertexTerrain(24, 20, SAND);
+			game.map.setVertexTerrain(26, 20, WATER);
 			emit(game, std::filesystem::path(argv[1]) / "materials.json");
 		}
 		{
@@ -120,11 +122,10 @@ int main(int argc, char **argv)
 			Game game(nullptr);
 			game.map.setSize(6, 6, WATER);
 			game.map.setGame(&game);
-			for (int x : {1, 3})
-			{
-				game.map.setTerrain(x, 1, 0);
-				game.map.setUMTerrain(x, 1, GRASS);
-			}
+			// One grass corner makes cells (1,1) and (3,1) walkable; every corner
+			// of cell (2,1) between them stays water.
+			game.map.setVertexTerrain(1, 1, GRASS);
+			game.map.setVertexTerrain(4, 1, GRASS);
 			teams(game, 1, 3);
 			emit(game, std::filesystem::path(argv[1]) / "islands.json");
 			for (int y = 0; y < 3; ++y)

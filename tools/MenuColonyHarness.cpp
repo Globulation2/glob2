@@ -135,7 +135,7 @@ void generate(const char *path)
 		for (int x = 0; x < game.map.getW(); ++x)
 		{
 			const int dx = ((x - bx + 64) & 127) - 64, dy = ((y - by + 64) & 127) - 64;
-			if (game.map.getUMTerrain(x, y) != GRASS || (std::abs(dx) < 6 && std::abs(dy) < 6))
+			if (game.map.terrainTypeAt(x, y) != GRASS || (std::abs(dx) < 6 && std::abs(dy) < 6))
 				continue;
 			if ((x % 8 < 4) && (y % 8 < 4))
 			{

@@ -47,11 +47,6 @@ bool MaterialSeedCache::trySeed(const SimulationSnapshot::Handle& snapshot, int 
                 resourceTraits[id]=p.materialMask | (p.blocksGround?0x10000:0)
                     | (std::has_single_bit(p.materialMask)?0:0x20000);
             }
-            terrainTraits.resize(view.terrainRegistry->size());
-            for (size_t id=0; id<terrainTraits.size(); ++id) {
-                const auto& p=view.terrainRegistry->properties(static_cast<TerrainType>(id));
-                terrainTraits[id]=(p.walkable?1:0)|((p.walkable||p.swimmable)?2:0);
-            }
             for (auto& values:base) values.resize(cells);
             signatures.assign(cells,0);
             forbiddenMasks.assign(cells,0);
@@ -85,7 +80,8 @@ bool MaterialSeedCache::trySeed(const SimulationSnapshot::Handle& snapshot, int 
                         const bool open=mobile && !(traits&0x10000);
                         const MaterialMask mask=!mobile?0:(traits&0x20000)?MapState::materialMaskAt(view,i)
                             :deposit.amount?MaterialMask(traits&AllMaterials):0;
-                        const Uint8 terrain=terrainTraits[view.terrainIds[i]];
+                        const auto& rules=view.terrainProperties(i);
+                        const Uint8 terrain=(rules.walkable?1:0)|((rules.walkable||rules.swimmable)?2:0);
                         // Only facts that affect seeds: moving units, animation and positive
                         // stock changes do not alter this template. All twelve materials fit.
                         static_assert(MaterialCount==12);
@@ -263,7 +259,7 @@ void propagate(const Request& request, const SimulationSnapshot::Handle& snapsho
 {
     gradient_kernel::propagateTerrainField(out, request.swim, gradient_kernel::COST_LIMIT,
         {snapshot.width, snapshot.height}, scratch,
-        [types=snapshot.terrain->identity->data()](size_t i) { return types[i]; },
-        snapshot.terrain->movementModifiers, *snapshot.terrain->registry, request.terrainBuckets);
+        [rules=snapshot.terrain->cellRules.data()](size_t i) { return rules[i]; },
+        snapshot.terrain->movementModifiers, *snapshot.terrain->rules, request.terrainBuckets);
 }
 }
