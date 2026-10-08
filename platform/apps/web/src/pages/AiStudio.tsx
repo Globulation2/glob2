@@ -187,8 +187,8 @@ function AiWorkspace({ id }: { id?: string }) {
     void (async () => {
       if (!account) return;
       try {
-        const w = await loadWallet();
-        if (!mounted || !w.enabled) return;
+        await loadWallet();
+        if (!mounted) return;
         if (id) await refresh();
         else
           setProjects(

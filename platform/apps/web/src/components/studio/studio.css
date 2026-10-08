@@ -449,6 +449,8 @@
     background: ButtonText;
   }
   .studio-tabs button[aria-selected='true'] {
+    color: CanvasText !important;
+    background: Canvas !important;
     border: 2px solid Highlight;
   }
   .studio-page [aria-disabled='true'] {

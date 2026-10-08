@@ -19,6 +19,7 @@ test('studio edits, restores, explicitly checks, watches a pinned revision and p
   const delayedSubmission = new Promise<void>((resolve) => {
     acknowledgeSubmission = resolve;
   });
+  let enabled = true;
   let mapFetches = 0,
     detailReads = 0;
   const history = [
@@ -51,7 +52,7 @@ test('studio edits, restores, explicitly checks, watches a pinned revision and p
     if (path.endsWith('/account'))
       return r.fulfill({
         json: {
-          enabled: true,
+          enabled,
           model: 'Studio coding model',
           maxRequestCredits: 100,
           balance: 100,
@@ -327,7 +328,15 @@ test('studio edits, restores, explicitly checks, watches a pinned revision and p
   page.once('dialog', (d) => d.accept());
   await page.getByRole('button', { name: 'Undo revision', exact: true }).click();
   await expect(page.getByText(`Saved · revision ${restoredRevision}`).first()).toBeVisible();
+  enabled = false;
   await page.reload();
+  await expect(
+    page.getByText(
+      'Generation is unavailable. Saved code, export and local tools remain accessible.',
+    ),
+  ).toBeVisible();
+  if (info.project.name === 'phone')
+    await page.getByRole('tab', { name: 'Preview', exact: true }).first().click();
   await expect(page.getByText(`Saved · revision ${restoredRevision}`).first()).toBeVisible();
   if (info.project.name === 'desktop')
     await expect(page.locator('.monaco-editor').first()).toBeVisible();
