@@ -1,0 +1,111 @@
+[WebServer] 127.0.0.1 - - [08/Oct/2026 18:26:17] "GET / HTTP/1.1" 200 -
+
+Running 6 tests using 1 worker
+
+(node:3197223) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] 127.0.0.1 - - [08/Oct/2026 18:26:19] "GET /test-host-cc4aaf13-3db5-4793-a544-90f88a9bf4ba.html HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [08/Oct/2026 18:26:19] "GET /script-tests.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [08/Oct/2026 18:26:19] "GET /script-tests.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [08/Oct/2026 18:26:19] "GET /script-tests.wasm HTTP/1.1" 200 -
+  ✓  1 [chromium] › tests/determinism.spec.js:379:3 › WebAssembly preserves shared generator worlds and save continuation (serial) (3.9s)
+[WebServer] 127.0.0.1 - - [08/Oct/2026 18:26:23] "GET /test-host-4873e3d6-4d12-4d3d-a397-022c6c3acca0.html HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [08/Oct/2026 18:26:23] "GET /threaded/script-tests.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [08/Oct/2026 18:26:23] "GET /script-tests.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [08/Oct/2026 18:26:23] "GET /threaded/script-tests.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [08/Oct/2026 18:26:23] "GET /threaded/script-tests.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [08/Oct/2026 18:26:23] "GET /threaded/script-tests.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [08/Oct/2026 18:26:23] "GET /threaded/script-tests.wasm HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [08/Oct/2026 18:26:23] "GET /threaded/script-tests.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [08/Oct/2026 18:26:23] "GET /threaded/script-tests.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [08/Oct/2026 18:26:23] "GET /threaded/script-tests.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [08/Oct/2026 18:26:23] "GET /threaded/script-tests.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [08/Oct/2026 18:26:23] "GET /threaded/script-tests.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [08/Oct/2026 18:26:23] "GET /threaded/script-tests.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [08/Oct/2026 18:26:23] "GET /threaded/script-tests.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [08/Oct/2026 18:26:23] "GET /threaded/script-tests.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [08/Oct/2026 18:26:23] "GET /threaded/script-tests.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [08/Oct/2026 18:26:23] "GET /threaded/script-tests.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [08/Oct/2026 18:26:23] "GET /threaded/script-tests.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [08/Oct/2026 18:26:23] "GET /threaded/script-tests.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [08/Oct/2026 18:26:23] "GET /threaded/script-tests.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [08/Oct/2026 18:26:23] "GET /threaded/script-tests.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [08/Oct/2026 18:26:23] "GET /threaded/script-tests.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [08/Oct/2026 18:26:23] "GET /threaded/script-tests.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [08/Oct/2026 18:26:23] "GET /threaded/script-tests.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [08/Oct/2026 18:26:23] "GET /threaded/script-tests.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [08/Oct/2026 18:26:23] "GET /threaded/script-tests.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [08/Oct/2026 18:26:23] "GET /threaded/script-tests.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [08/Oct/2026 18:26:23] "GET /threaded/script-tests.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [08/Oct/2026 18:26:23] "GET /threaded/script-tests.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [08/Oct/2026 18:26:23] "GET /threaded/script-tests.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [08/Oct/2026 18:26:23] "GET /threaded/script-tests.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [08/Oct/2026 18:26:23] "GET /threaded/script-tests.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [08/Oct/2026 18:26:23] "GET /threaded/script-tests.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [08/Oct/2026 18:26:23] "GET /threaded/script-tests.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [08/Oct/2026 18:26:23] "GET /threaded/script-tests.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [08/Oct/2026 18:26:23] "GET /threaded/script-tests.js HTTP/1.1" 304 -
+  ✓  2 [chromium] › tests/determinism.spec.js:379:3 › WebAssembly preserves shared generator worlds and save continuation (threaded) (4.9s)
+(node:3198095) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] 127.0.0.1 - - [08/Oct/2026 18:26:31] "GET /test-host-d40586d5-dc56-4978-bf32-6d74f3a28019.html HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [08/Oct/2026 18:26:31] "GET /script-tests.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [08/Oct/2026 18:26:32] "GET /script-tests.wasm HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [08/Oct/2026 18:26:32] "GET /script-tests.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [08/Oct/2026 18:26:32] code 404, message File not found
+[WebServer] 127.0.0.1 - - [08/Oct/2026 18:26:32] "GET /favicon.ico HTTP/1.1" 404 -
+  ✓  3 [firefox] › tests/determinism.spec.js:379:3 › WebAssembly preserves shared generator worlds and save continuation (serial) (6.7s)
+[WebServer] 127.0.0.1 - - [08/Oct/2026 18:26:36] "GET /test-host-f5a7b9ac-e7c4-4c17-b4ba-7f888526175a.html HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [08/Oct/2026 18:26:37] "GET /threaded/script-tests.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [08/Oct/2026 18:26:37] "GET /script-tests.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [08/Oct/2026 18:26:37] "GET /threaded/script-tests.wasm HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [08/Oct/2026 18:26:37] "GET /threaded/script-tests.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [08/Oct/2026 18:26:37] "GET /threaded/script-tests.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [08/Oct/2026 18:26:37] "GET /threaded/script-tests.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [08/Oct/2026 18:26:37] "GET /threaded/script-tests.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [08/Oct/2026 18:26:37] "GET /threaded/script-tests.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [08/Oct/2026 18:26:37] "GET /threaded/script-tests.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [08/Oct/2026 18:26:37] "GET /threaded/script-tests.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [08/Oct/2026 18:26:37] "GET /threaded/script-tests.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [08/Oct/2026 18:26:37] "GET /threaded/script-tests.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [08/Oct/2026 18:26:37] "GET /threaded/script-tests.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [08/Oct/2026 18:26:37] "GET /threaded/script-tests.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [08/Oct/2026 18:26:37] "GET /threaded/script-tests.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [08/Oct/2026 18:26:37] "GET /threaded/script-tests.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [08/Oct/2026 18:26:37] "GET /threaded/script-tests.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [08/Oct/2026 18:26:37] "GET /threaded/script-tests.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [08/Oct/2026 18:26:37] "GET /threaded/script-tests.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [08/Oct/2026 18:26:37] "GET /threaded/script-tests.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [08/Oct/2026 18:26:37] "GET /threaded/script-tests.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [08/Oct/2026 18:26:37] "GET /threaded/script-tests.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [08/Oct/2026 18:26:37] "GET /threaded/script-tests.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [08/Oct/2026 18:26:37] "GET /threaded/script-tests.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [08/Oct/2026 18:26:37] "GET /threaded/script-tests.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [08/Oct/2026 18:26:37] "GET /threaded/script-tests.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [08/Oct/2026 18:26:37] "GET /threaded/script-tests.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [08/Oct/2026 18:26:37] "GET /threaded/script-tests.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [08/Oct/2026 18:26:38] "GET /threaded/script-tests.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [08/Oct/2026 18:26:38] "GET /threaded/script-tests.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [08/Oct/2026 18:26:38] "GET /threaded/script-tests.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [08/Oct/2026 18:26:38] "GET /threaded/script-tests.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [08/Oct/2026 18:26:38] "GET /threaded/script-tests.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [08/Oct/2026 18:26:38] "GET /threaded/script-tests.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [08/Oct/2026 18:26:38] "GET /threaded/script-tests.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [08/Oct/2026 18:26:38] code 404, message File not found
+[WebServer] 127.0.0.1 - - [08/Oct/2026 18:26:38] "GET /favicon.ico HTTP/1.1" 404 -
+  ✓  4 [firefox] › tests/determinism.spec.js:379:3 › WebAssembly preserves shared generator worlds and save continuation (threaded) (5.4s)
+(node:3199075) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] 127.0.0.1 - - [08/Oct/2026 18:26:44] "GET /test-host-47898bef-c6ef-4c17-8c4d-264bf5c04583.html HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [08/Oct/2026 18:26:44] "GET /script-tests.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [08/Oct/2026 18:26:44] "GET /script-tests.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [08/Oct/2026 18:26:44] "GET /script-tests.wasm HTTP/1.1" 200 -
+  ✓  5 [webkit] › tests/determinism.spec.js:379:3 › WebAssembly preserves shared generator worlds and save continuation (serial) (5.9s)
+[WebServer] 127.0.0.1 - - [08/Oct/2026 18:26:50] "GET /test-host-10e8b88d-638f-42f8-b504-08678c7dec3e.html HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [08/Oct/2026 18:26:50] "GET /threaded/script-tests.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [08/Oct/2026 18:26:50] "GET /script-tests.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [08/Oct/2026 18:26:50] "GET /threaded/script-tests.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [08/Oct/2026 18:26:50] "GET /threaded/script-tests.wasm HTTP/1.1" 200 -
+  ✓  6 [webkit] › tests/determinism.spec.js:379:3 › WebAssembly preserves shared generator worlds and save continuation (threaded) (6.4s)
+
+  6 passed (39.1s)

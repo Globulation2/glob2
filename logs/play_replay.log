@@ -1,0 +1,4 @@
+PASS TurnEngineHarness/shared scripted maps play and produce verified ordinary replays without installation [network-sim][artifacts] (1.2s)
+
+1 passed, 0 failed, 0 skipped (1.2s of test time)
+[run_tests] JUnit report: artifacts/generator-library/real-play-pr/junit.xml (1 cases)

@@ -1,0 +1,270 @@
+{
+  "baseRevision": "b5c9f3ed276b82a557f582eb0be1b910b93a9a49",
+  "uncommitted": true,
+  "sourceFiles": {
+    "browser/tests/determinism.spec.js": "24dc2b047c1a43842b513d9308ebd08a39a13e1388ae6e57f37da7726243ed97",
+    "docs/map-generators/JAVASCRIPT.md": "42539b01b7dc342f64af3165af47c2992ec24dc3f11470d07a342159d4ac05ce",
+    "docs/multiplayer/architecture.md": "a619ff9accf8b177d1ba2cd1c4887ca5c852cb1af7612fd3a570698bae75cc3d",
+    "docs/multiplayer/client.md": "d63094e979eebfe0839bb706e783f3d7d92aebadb74c897f82cf2b9c80181df1",
+    "docs/multiplayer/turn-protocol.md": "72f91631149165f29dd3043c1ac2d5ce95352b26300766987bc65ef48e775004",
+    "platform/apps/api/src/admin/moderation.ts": "7a217d94f9b173b35de2893c8eb7949077cd57a9e27971de6feb5043b50e4cc1",
+    "platform/apps/api/src/app.ts": "c7a2b998ddc67fc7b16c95dbd124d84acde7d219d61a735489e0ab16f5da4697",
+    "platform/apps/api/src/auth/accountExport.ts": "365108c0195ae66c3de6894304e8ea0303d17b4692f6b3f6f1e08b5419b0baf6",
+    "platform/apps/api/src/auth/admin.ts": "eb76d7e5be453b8a8efea101925afd03d7ff440eb3eef5e05528decf9bfe9a7d",
+    "platform/apps/api/src/generators/catalogViews.ts": "f5d62f7031e8010f1bbfc3c48d5ea942d3ca6ab6dd94fae2efb5ed99389f614e",
+    "platform/apps/api/src/generators/routes.ts": "3362696eb943c543759c56b6d1d4be1b1fb9f6be20407fd593ae116ee8e58d0f",
+    "platform/apps/api/src/maps/catalog.ts": "2ffbd0b7e57d64a9c8989cb42f17148ba19f179d92c15b7379e581070f2596e4",
+    "platform/apps/api/src/maps/routes.ts": "26f163ddabd199408799766ca8f9ca23636fd47a7db917ad5b55bd93283a86b1",
+    "platform/apps/api/src/play/realtime.ts": "80ab35d3ff184cd203ef1cbb9fd816533b642c11b86b11966f10c6b329f8a2d8",
+    "platform/apps/api/src/play/rooms.ts": "2ee969fbcae62fc2b20b4d076cf9a3780f8b5507441dfebd6640f07c66e730ad",
+    "platform/apps/api/src/realtime/connection.ts": "4396dfde83f1a6137c889bee8de4ba4b9687262b7d7c24fd458becf6c7ee1d52",
+    "platform/apps/api/src/realtime/hub.ts": "cf1e99b8663e184ea94c2d7fc4983305960309f4e7cf1d395ca3d110f11a35b3",
+    "platform/apps/api/src/realtime/server.ts": "a1b423646331a64a516d8d43b6d34289c0b3be2050594930de9ab516d1747ddf",
+    "platform/apps/api/src/routes/engine.ts": "b8b3e70ac59fdd1c9467f0763a7740f4cefbed91c9585b9527e948224f6d6eca",
+    "platform/apps/api/test/adminConsole.test.ts": "f70f94a9b71a7b150831cb00c4bb35622064b385a435c4ebada264711fcc3001",
+    "platform/apps/api/test/generator-real-flow.test.ts": "acf98afec7660f5a4e84d4704aed435c0af63f7c3a843dc5402f85b6c3e616ce",
+    "platform/apps/api/test/generators.test.ts": "99fe12d307a43b296c9b3420e0a05ac578a5703eb1b9a2c20241ee55cf2450c6",
+    "platform/apps/api/test/support.ts": "81f21868e42899a2588e0c140ea1e6fa68d218cad52ec45c19a70bacac5da533",
+    "platform/apps/engine-agent/src/agent.ts": "e106dd6741c946f81be1023c57ee9fcb3450099996c047e78cd79d5df71d2b4f",
+    "platform/apps/engine-agent/src/generatorValidation.ts": "f07fb0e5ce338514e234a727b9fcb38bee6ae84ca4c4c5572a6cde14aca8c422",
+    "platform/apps/engine-agent/src/main.ts": "8ba176248455cde9dbfe8f85d16c78ad225abfca14816ae61492d538af827c82",
+    "platform/apps/engine-agent/src/runners.ts": "48cbacd363e29845029d28ee25dc0128b9a5a8c343d489ffa4b9a3383b960729",
+    "platform/apps/engine-agent/test/generator-real.test.ts": "66f242305ea450b9474ac08964442bbbe4ea0a1ff9da20cdfc6a2dd4ec11336b",
+    "platform/apps/engine-agent/test/generatorFixture.ts": "8e0d9fdb1d43e5722da3ca0897d0ff3cdcb8b773dc8199ec9155ce90ad654145",
+    "platform/apps/engine-agent/test/generatorValidation.test.ts": "a5f80d217a58c6e84025ac05eed5b5baa1d1dedd9ca7f88e93b45564e4d34e98",
+    "platform/apps/web/e2e/generators.spec.ts": "89ccace78d64dd488bb8e8e99be8d24760646e7aefaf7f259555e2b277a2dbe3",
+    "platform/apps/web/src/App.tsx": "6ae47013a66a3bb5e0d041249c50b8a9f4889c7f484d946ba2fd42bb6359245a",
+    "platform/apps/web/src/admin/Moderation.tsx": "2c7be8f84ca6902301f8237d6af062265179435707d382a406d2ab3414de46fe",
+    "platform/apps/web/src/admin/presentation.ts": "9ec0a3d0efd9905b42d15c27457f626ece9349194edb57a4348086568fee4dbe",
+    "platform/apps/web/src/generatorApi.ts": "9fdec4a5a30af9106f16b0ef533e5d0a411fa41b6b1fda84509307862f96c4c3",
+    "platform/apps/web/src/pages/Generators.tsx": "5805ed2b174af0131d120176b72a0e2c7f132c57b525b22bea27a5664c83cf09",
+    "platform/apps/web/src/pages/Maps.tsx": "6af2a0dc44e0fcec386f229ea1696eeba2e6ee49821e88225e8206be599b8bcc",
+    "platform/apps/web/test/generatorFixture.ts": "31cc3f74cf0aa78c30cdee162b401c78e6910c2c4acc6f005fe783636fccdfe2",
+    "platform/apps/web/test/generators.test.tsx": "13341eab287a3898d6d277b073955f32ff8eadd5cdf010c13d378d2d9821c729",
+    "platform/apps/worker/src/blobGc.ts": "ab9ace764a5dccb63cc57e0c424c469bfc4db4dfd5eb1d02caa685e4f299dfe7",
+    "platform/apps/worker/src/maintenance.ts": "f1666542b9f614e36acefb3958183805c5cf7bd4609f482ce3e670ac74301e54",
+    "platform/apps/worker/test/reliability.test.ts": "2dbda16b8e3a8ba5cd7f1f55eccee92bffe9a847bdbaa5d147b5c8c413e96589",
+    "platform/packages/core/src/generatorAccess.ts": "9fd220f53f175028d36d567c258f0a2f09d72afb574fa5b74a05556e2f9425ed",
+    "platform/packages/core/src/generatorLibrary.ts": "0942e14c00a9135fabdb1dd17b0619166d3148ae2129db0cfae6a23c32dc2808",
+    "platform/packages/core/src/index.ts": "425f1c56fce950d3975592fefdcaf97c1c784683b277a3b7a244a7c8eb4c0395",
+    "platform/packages/db/migrations/0057_generator_library.sql": "68f11afb6779e55b71c06798a1798735d12d584c4c82406abfde28f4586b0ee1",
+    "platform/packages/db/src/schema.ts": "718ae7e6e18e20d8f69e226dbbaae1bfdce79f826ca625238d461fd26919e256",
+    "platform/packages/db/test/schema.test.ts": "a53be9dc89744fc96d931f4c2c62fc7ad538ed3c89ed3bee073cfc6e6ea3049c",
+    "platform/packages/play/src/play/maps.ts": "710aee683f671ddf53b6354d6b201016d4582952b3215653021cb6c4b5e5373a",
+    "platform/packages/play/src/ratings/apply.ts": "60bf3dfb80363ae2ac7c710ccbeb052b8ec9202159c58a2428adc4687cd58f4f",
+    "platform/packages/protocol/fixtures/invalid/MatchSetup/scripted-team-count.json": "88a0acf72d965ed9eef8188b5a28e95be263f74a5cf1d40bb5129fb5ac72b571",
+    "platform/packages/protocol/fixtures/invalid/ScriptGeneratorDescriptor/native-id.json": "96154512e9feb201f1bff04d4cd130ab6efdfff254f7b5a43c371f76eead8c6e",
+    "platform/packages/protocol/fixtures/manifest.json": "e42e3152b989bcd9c3ea0e6238d2c6b163c7533581e315775f475529cb615fbb",
+    "platform/packages/protocol/fixtures/schemas/AccountExport.schema.json": "b2009f5d972d1a86ef19f2caab5d56bc6bf966d7127df3eaef016c2782e95d36",
+    "platform/packages/protocol/fixtures/schemas/AdminAnalytics.schema.json": "281ad437c8416f0b173d52a59ff46686499d0eb9380dae4b47f3aaa3c5a5e55f",
+    "platform/packages/protocol/fixtures/schemas/AdminContent.schema.json": "e16b2a3d4fd5c386fd04d108cb65b1dcc781fc9bc8178bbc1604366901f65d99",
+    "platform/packages/protocol/fixtures/schemas/AdminContentList.schema.json": "b88941c2b55b3e906ab858b48a047c5a8210b27ae82697582685f4453a4eacf9",
+    "platform/packages/protocol/fixtures/schemas/AdminLibrary.schema.json": "37cf347f7fa5372c058f4c68f0706bb39854527ff0e5a807b837024220299d8a",
+    "platform/packages/protocol/fixtures/schemas/AdminReport.schema.json": "31a650fdbf0c691faae2cafdada91d33182d4bc49e304fccd184385af32c7ac3",
+    "platform/packages/protocol/fixtures/schemas/AdminReportList.schema.json": "178ab32c3c6de8d80d717d3d2b677c73aa7093f0602216ae90af78675ebb4454",
+    "platform/packages/protocol/fixtures/schemas/EngineJob.schema.json": "a49f1997106d09cee9f1c339bc569bd7ea1bc5154f9dbf8eeccc4bfc8bbb8d46",
+    "platform/packages/protocol/fixtures/schemas/EngineJobResult.schema.json": "52836e534b434391bc5dc83f409c7d4bd35f364caff0c832dd46cdeb6d8bb279",
+    "platform/packages/protocol/fixtures/schemas/GenerateScriptMapPayload.schema.json": "31bfc62a5505d0699a14c968635fb389d0cb373c13347ebf44fc17afe3f259f1",
+    "platform/packages/protocol/fixtures/schemas/GenerateScriptMapResult.schema.json": "6edfc743808c205c002a36e70f6f750fbe5ff15e05f25b7f2c7df2b3cbb423d0",
+    "platform/packages/protocol/fixtures/schemas/GeneratorControlInfo.schema.json": "93160fcfb3136550548e3daf374b40cf5e94fc7d3625438a7db6030edaf172a9",
+    "platform/packages/protocol/fixtures/schemas/GeneratorDetail.schema.json": "9cc76709704324c417d1640e325c45c8a5c557fdc06f454b7fd95bd2375b4604",
+    "platform/packages/protocol/fixtures/schemas/GeneratorInfo.schema.json": "b29b93b2e711d57d7264e3378e3709c979d336adc42a2befa5020951816a1a0f",
+    "platform/packages/protocol/fixtures/schemas/GeneratorList.schema.json": "6ad9d4bcae777dc0856e7a043171f41eb0ad4af8159f7bd5b74d4490dd832871",
+    "platform/packages/protocol/fixtures/schemas/GeneratorMetadata.schema.json": "2a9204d307ff522706039604208d7034c0e053344cca9e0a52bc169d358a5848",
+    "platform/packages/protocol/fixtures/schemas/GeneratorSample.schema.json": "09763a0f536ac3425ea5780d7c0afd98568b3c006e3e8abc98932d1a2584b907",
+    "platform/packages/protocol/fixtures/schemas/GeneratorSettings.schema.json": "683133dfe2716b2b5fd45695ee4e82a622d6c8b0ecf664619d5f818464c1e544",
+    "platform/packages/protocol/fixtures/schemas/GeneratorSocialResult.schema.json": "4b9fcd7542dda54bb08c75c23567c0da4108289f6f7fa8adfe92cbb6c469e185",
+    "platform/packages/protocol/fixtures/schemas/GeneratorUpload.schema.json": "a36ed3ed844655ea9f709078c52f01cafef1e1432d38377bb672d04bc71ef4cf",
+    "platform/packages/protocol/fixtures/schemas/GeneratorValidationReport.schema.json": "70bbd677aea9a748d45a14269a3af767f184bb58bc2a3e8ac5049d5d440bcd30",
+    "platform/packages/protocol/fixtures/schemas/GeneratorVersion.schema.json": "f68db57f3f6e925e1c9ab921fb085e0e61952fc971bd34937955148a1b1a20b5",
+    "platform/packages/protocol/fixtures/schemas/MapDetail.schema.json": "0cae52003c68612d3f3edf3443a9db6e64dc79f0248c612b12017300d71e5922",
+    "platform/packages/protocol/fixtures/schemas/MapInfo.schema.json": "5f8044a418d1ec8e8e9878e21bb6084d5c2b6b793a6730acce3907b289dc3c33",
+    "platform/packages/protocol/fixtures/schemas/MapList.schema.json": "4f2f43c7572af6419891823bca35ffa98ce318dc3fb7220ed970728d36938167",
+    "platform/packages/protocol/fixtures/schemas/MapReportInfo.schema.json": "f32750dfb14ac6216c18971aae6c4673bc3b4c1514aef7a414a802ab56b8114a",
+    "platform/packages/protocol/fixtures/schemas/MapReportList.schema.json": "cab46a76795d0a2e8c59b63799c321d5fc4db54c6438036fc427742c98788622",
+    "platform/packages/protocol/fixtures/schemas/MapSource.schema.json": "fef4fead93b77dbc0377c0f41be679810b9e893d9d9c79fdb03d8a1a17c90514",
+    "platform/packages/protocol/fixtures/schemas/MapVersionInfo.schema.json": "970c2c0b251e0e86d6a6d2c0bd306c99db911d6542f8d51531d31705da576d7b",
+    "platform/packages/protocol/fixtures/schemas/MatchAssignment.schema.json": "b9b4cb3c0b11b04a3bb1f3d160af08a01ba08af43e07ac4062cb6572d86ae651",
+    "platform/packages/protocol/fixtures/schemas/MatchDetail.schema.json": "20b0e779131091353f99d8f4c30176af84125d08f89b52a75569e3265d7d69b0",
+    "platform/packages/protocol/fixtures/schemas/MatchSetup.schema.json": "9856c5f23005beeca9374f30187d333691f4e4a18bb12aec2f7da961a81246dc",
+    "platform/packages/protocol/fixtures/schemas/PublishGeneratorRequest.schema.json": "261b6e63be5cc3818b12e12312808e0b5b679af8cf7d9fe9be3dbc3c7cd49caa",
+    "platform/packages/protocol/fixtures/schemas/RealtimeEventMatchStart.schema.json": "c419f664162f041b33798fdd052a40bbd53d5a15adf8c2b2b483de8ff6c9a440",
+    "platform/packages/protocol/fixtures/schemas/RealtimeEventRoomState.schema.json": "f3516416ea820382075101294c94749731cf573758da3890904041461e8e2c41",
+    "platform/packages/protocol/fixtures/schemas/RealtimeMatchReconnectResult.schema.json": "4a58cb59d4abb654a689b22283a2a43e70319866dfa91ebea3399cd7695b286b",
+    "platform/packages/protocol/fixtures/schemas/RealtimeMatchRematchResult.schema.json": "8a32e467136965149539cacfd0b70faff68ef0f9b248f0a850faf61166a91bc6",
+    "platform/packages/protocol/fixtures/schemas/RealtimeRoomCreateParams.schema.json": "ebbc26f3b8a0e0ec01166fbe0917e1ad6a5bc2d1b524c683e37019d3d399f2c2",
+    "platform/packages/protocol/fixtures/schemas/RealtimeRoomCreateResult.schema.json": "c1f5daa2aea12ffcf4cbe5cf72c18358150812b731ba8c7e907e205ae7708325",
+    "platform/packages/protocol/fixtures/schemas/RealtimeRoomJoinResult.schema.json": "339a00d8149238fc5556f80a269d906b55af09053e08e44c1dcf28478de108f3",
+    "platform/packages/protocol/fixtures/schemas/RealtimeRoomKickResult.schema.json": "5d564bf77c89b8f06f60642745369aadd8ebe3f096b4d64970792f0e157dfa04",
+    "platform/packages/protocol/fixtures/schemas/RealtimeRoomSetReadyResult.schema.json": "940ec1fe2dcdfe7b65f9332eb50a0012ed7468b923d673d4f2a9633a823a0628",
+    "platform/packages/protocol/fixtures/schemas/RealtimeRoomSetSeatResult.schema.json": "a9b9c361b0be18c115ce187a3ff625a282c8dbf2b1a50d00d0d0770da7fbbcc6",
+    "platform/packages/protocol/fixtures/schemas/RealtimeRoomUpdateParams.schema.json": "37aa0602686fdba9bceb6acbce0e5420add599c7e8abd552e1f62c707ec5f731",
+    "platform/packages/protocol/fixtures/schemas/RealtimeRoomUpdateResult.schema.json": "471fb461d5e28fcfd52dad0c39c10c264ed5d573572a842f1a2d371252639bc9",
+    "platform/packages/protocol/fixtures/schemas/RealtimeSessionHelloParams.schema.json": "9b56bf87fd76d4c3f6cfaf4d234007fc614052837bc926cd3d8994c2e5521b7c",
+    "platform/packages/protocol/fixtures/schemas/RoomMapSelection.schema.json": "499ce45c390079ba0e4796212636e659899cd9f93b9bb13e154e6f2345b92fa9",
+    "platform/packages/protocol/fixtures/schemas/RoomState.schema.json": "33b0b7772c5841b17612ba73bbd0d671d256b4a1b6199835a0b28553ac5f636a",
+    "platform/packages/protocol/fixtures/schemas/ScriptGeneratorDescriptor.schema.json": "73c40b5fe1296bb95fcbcb4acaadfce18b07e2e7f5cb8f55dd2f27ef6031b8a4",
+    "platform/packages/protocol/fixtures/schemas/UpdateGeneratorRequest.schema.json": "1cb4282d1abc994c2fba111c92b5f814c706cd8b4bcdf96db554a2bee21490f9",
+    "platform/packages/protocol/fixtures/schemas/ValidateGeneratorPayload.schema.json": "eb7b77c7405b3c99c00288f351f79fc34cd5a5a450306b476823d6149a226c55",
+    "platform/packages/protocol/fixtures/schemas/VerifyMatchPayload.schema.json": "e5376456675577faa9b1a893af8836bde423d75d45d05c24c4b417490b95df8b",
+    "platform/packages/protocol/fixtures/valid/MatchSetup/scripted-world.json": "e08f7afd410f400b9855b90d158e952eb031599c6436501cc417fbb3c293b1f6",
+    "platform/packages/protocol/fixtures/valid/RoomMapSelection/scripted-pending.json": "8d7a943cd99ff83ba2d8fae14b2709f6259301c3fd575ae74a0e6a45bb66e22b",
+    "platform/packages/protocol/fixtures/valid/ScriptGeneratorDescriptor/exact-release.json": "4b821d35bb13ddce8d5c6c508a3ef575e2cf63d7ef28c15fb57a09bf0b014b16",
+    "platform/packages/protocol/fixtures/valid/ValidateGeneratorPayload/bounded-example.json": "cb17dbee4a1c8bbf199e5b9583a39c131567dad323898d6c2c628b51c02ab6ff",
+    "platform/packages/protocol/scripts/fixtureCases.ts": "c5517037ca5f22206fe5d897f4ee8f53feb512c96d2a889204ab6b8af914d2d3",
+    "platform/packages/protocol/src/adminConsole.ts": "6cf91193e840cb5c7dce1461e54bd9b72a3a6012561b36870b8fe8512acec5e3",
+    "platform/packages/protocol/src/generators.ts": "840ef67c55a2200bcf5485eea95ac382771d0a7b2b904878091b21639cecc51c",
+    "platform/packages/protocol/src/index.ts": "d5fb335063c6d4b51a66f1653856f5597d2e2c3e1247bcde536a1e3f471bee32",
+    "platform/packages/protocol/src/jobs.ts": "e0254b1b4fc08762e525774aba70af779aeeef01c73f0d7174a3172aeea72cd6",
+    "platform/packages/protocol/src/matchSetup.ts": "17c7dcafeed8560ee01ae8a77f72fc0651a0012488d82836b9be459db48adedc",
+    "platform/packages/protocol/src/realtime.ts": "800d9ffbc130833fda4d633afa17db9ef2fc78eef3ed3d403308251155ec6dae",
+    "platform/packages/protocol/src/registry.ts": "cc985a687f76bcf9b664bf19fc416f4fe34a897a07afb0ee6533f1a0716c07c9",
+    "platform/packages/protocol/src/resources.ts": "e9a881d7755e38925b34a6c00ac2d1b8aa8f5e5d78fcca5e349b2e3d22336a54",
+    "scons/sources.py": "f42f8d4ac22a91b9d270eed29b2136625328b441386ce70fbdde0a6d34b30af9",
+    "src/app/cli/MapCommand.cpp": "0b1f5b21cd6f9689226d0f72473f08e728af5c85e6c293e1e7ce7c57fdb31a55",
+    "src/map/generator/javascript/GeneratorPackage.cpp": "e815e4153f91f19f3543c67b8cfc67a9a12319729507dc1da9be070f5d67ab28",
+    "src/map/generator/javascript/GeneratorPackage.h": "e2c809f3faeaa42181ab9f89783339d08f45ac72bf495fc8580f154d484ed08e",
+    "src/map/generator/javascript/ScriptGeneratorTest.cpp": "a95a72be1aa4338762a9f4387c73687a0f98e883610845f0a656c182c1d1aaf5",
+    "src/net/turn/TurnEngineHarness.cpp": "61ae76aae019669a9b2e329ff298ac10c1e252071c08b7646dd1a6d3d73b922e",
+    "src/online/MatchSetup.cpp": "84db1aef35f46a491f0459c2954a10dd63ac7ed19ebe645cc252a74509e990ee",
+    "src/online/MatchSetup.h": "9e057f32ff4e54c03060d303ed831c00876ebd1424d063ce66b3557b8d50be8a",
+    "src/online/MatchSetupTest.cpp": "b2504ec28730067b649a6894b1bfb38754c040cf0b9594b7c39bfda345956b24",
+    "src/online/OnlineHandoff.h": "8534583ba4ecea536adee30ba269e375fba9c89cff13cbec59be04adf79b3ff0",
+    "src/online/PlatformClient.cpp": "4ec95115680f8c83b30b4ba281e26dddd138d5de6b953476dba1e6fbb4556d32",
+    "src/online/PlatformRoom.cpp": "aca13beffda830415d968d50d792bf13e169238684fd83844135752716f756b1",
+    "src/online/PlatformRoom.h": "a7e5eeb8ca7815ef1982a4d846dff4bc348bdd99440aea6c13f3e646ae871d28",
+    "src/online/PlatformRoomTest.cpp": "5cac14a74cf48c0f539583d2896dc934c7206bd16373cc5373ebc35b33dcb0c3",
+    "src/online/screens/OnlineGeneratorsScreen.cpp": "0e13571c6afce2df459f2e5081bc0dcdb1402bd02aae409243ab3a899e953c3f",
+    "src/online/screens/OnlineGeneratorsScreen.h": "1aa642ae0f44e21abcf1824aac09055ee25a9a801de239407092ed200ab8baad",
+    "src/online/screens/OnlineMapsScreen.cpp": "57c1302af68822f86bd20b77f55ec457739ef57c9eba2d9638b2340235dc1808",
+    "src/online/screens/RoomScreen.cpp": "b9a2060c7e6aa56b573dd0dae3e397c89e49ffc12bfc9291ff0e44dfb33f9d4d",
+    "src/online/screens/RoomScreen.h": "3685ed01add37c12ca4a58562dc865faa55bf06c3c2c5d5197c7cef7b079054a",
+    "src/ui/settings/SettingsScreenCustomGenerators.cpp": "db88ce8a24b5af12c4c19707edecd823948c30e3b1763bd4154eaceb01931d77",
+    "test/fixtures/generators/shared-generator-trace.sha256": "4519f868648d39487cd7c19e4832e83a911d3b355cba227b55675ae5fb2a6617",
+    "test/fixtures/protocol/invalid/MatchSetup/scripted-team-count.json": "88a0acf72d965ed9eef8188b5a28e95be263f74a5cf1d40bb5129fb5ac72b571",
+    "test/fixtures/protocol/manifest.json": "e42e3152b989bcd9c3ea0e6238d2c6b163c7533581e315775f475529cb615fbb",
+    "test/fixtures/protocol/valid/MatchSetup/scripted-world.json": "e08f7afd410f400b9855b90d158e952eb031599c6436501cc417fbb3c293b1f6",
+    "test/tests.py": "b64781f71d4aa5e8e23d054b656d39cc277bffadc085c51b62146e6f5154e917"
+  },
+  "host": "Linux-7.0.0-31-generic-x86_64-with-glibc2.43",
+  "checks": {
+    "platform": {
+      "tests": 152,
+      "passed": true
+    },
+    "native": {
+      "cases": 78,
+      "passed": true
+    },
+    "realWorker": {
+      "tests": 5,
+      "passed": true
+    },
+    "publicationRoomFlow": {
+      "tests": 1,
+      "passed": true,
+      "legacyMatchReconnectGuard": true
+    },
+    "playReplayFromRoomMap": {
+      "tests": 1,
+      "passed": true
+    },
+    "website": {
+      "projects": [
+        "desktop",
+        "phone"
+      ],
+      "tests": 2,
+      "passed": true
+    },
+    "browserDeterminism": {
+      "passed": true,
+      "tests": 6,
+      "projects": [
+        "chromium",
+        "firefox",
+        "webkit"
+      ],
+      "variants": [
+        "serial",
+        "threaded"
+      ],
+      "matchedLinux": true,
+      "saveResumeCompared": true,
+      "freshCiFixtureFallbackPassed": true,
+      "durationSeconds": 32.2
+    },
+    "typecheck": {
+      "passed": true,
+      "command": "npm run typecheck"
+    },
+    "lint": {
+      "passed": true,
+      "command": "npx eslint apps packages"
+    },
+    "reconnectRegression": {
+      "files": 3,
+      "tests": 52,
+      "passed": true
+    },
+    "engineRegression": {
+      "files": 9,
+      "tests": 54,
+      "passed": true,
+      "optionalTestsSkipped": 6
+    },
+    "realControlValidation": {
+      "files": 2,
+      "tests": 2,
+      "passed": true
+    },
+    "nativeGolden": {
+      "cases": 1,
+      "passed": true,
+      "traceSha256": "b8fc22e448b9adbbfe7f2a4b084a23b249cc72a65c609729d4ce5c6c3bd169bd"
+    }
+  },
+  "coverageLimits": [
+    "Windows, macOS, Android and iOS native execution not performed on this Linux host.",
+    "Room start used the API relay fixture; gameplay and replay used real engine instances over the turn harness simulated network."
+  ],
+  "environmentNotes": [
+    "The Linux-labelled dependency cache contained Android libraries. Native linking used the verified SDL3 prefix and host native libraries; see native build log and build provenance.",
+    "The real worker ran bwrap on a dedicated 512 MiB tmpfs with production WebP assets and the real Linux engine."
+  ],
+  "reviewStages": {
+    "catalogueAndValidation": [
+      "platform/packages/db/migrations/0057_generator_library.sql",
+      "platform/packages/protocol/src/generators.ts",
+      "platform/apps/api/src/generators",
+      "platform/apps/engine-agent/src/generatorValidation.ts",
+      "platform/apps/web/src/pages/Generators.tsx"
+    ],
+    "localDiscovery": [
+      "src/online/screens/OnlineGeneratorsScreen.cpp",
+      "src/map/generator/javascript/GeneratorPackage.cpp",
+      "src/ui/settings/SettingsScreenCustomGenerators.cpp"
+    ],
+    "onlineRooms": [
+      "platform/apps/api/src/play/rooms.ts",
+      "platform/packages/play/src/play/maps.ts",
+      "src/online/MatchSetup.cpp",
+      "src/online/PlatformRoom.cpp"
+    ]
+  },
+  "commands": {
+    "nativeBuild": "GLOB2_SDL3_PREFIX=/home/bradley/.local/share/glob2/development/dependencies/Linux-x86_64-0db2318ca135e0c408e4c9d3 scons release=1 optimized_assets=0 -j8 'LINKFLAGS=-L/home/bradley/.codex/worktrees/repair-tls-rejection-fixture/glob2/build/sdl3-ci-current/prefix/lib -L/usr/lib/x86_64-linux-gnu -Wl,-rpath,/home/bradley/.codex/worktrees/repair-tls-rejection-fixture/glob2/build/sdl3-ci-current/prefix/lib' tests build/linux/client/release/src/glob2",
+    "nativeChecks": "python3 test/run_tests.py --no-display -j6 --filter 'ScriptGenerator/*' --filter 'MatchSetup/*' --filter 'PlatformRoom/*' --filter 'PlatformClient/*' --filter 'TurnEngineHarness/the committed*' --filter 'TurnEngineHarness/shared scripted maps*' --artifacts artifacts/generator-library/native-final --junit artifacts/generator-library/native-final/junit.xml",
+    "nativeGolden": "python3 test/run_tests.py --no-display -j2 --filter 'ScriptGenerator/Shared generated worlds*' --artifacts artifacts/generator-library/native-golden --junit artifacts/generator-library/native-golden/junit.xml",
+    "browserBuild": "scons target=web release=1 -j16 web-tests",
+    "browserCheck": "cd browser && npx playwright test tests/determinism.spec.js --grep 'shared generator worlds'",
+    "realValidation": "cd platform && GLOB2_BINARY=/home/bradley/.codex/worktrees/be4b/glob2/build/linux/client/release/src/glob2 GLOB2_GENERATOR_SCRATCH=/tmp/glob2-generator-scratch GLOB2_GENERATOR_WORKDIR=/home/bradley/.codex/worktrees/be4b/glob2/artifacts/generator-library/runtime ENGINE_SET_LIBRARY_PATH=/home/bradley/.codex/worktrees/repair-tls-rejection-fixture/glob2/build/sdl3-ci-current/prefix/lib npx vitest run apps/engine-agent/test/generator-real.test.ts apps/api/test/generator-real-flow.test.ts",
+    "reconnectRegression": "cd platform && npx vitest run apps/api/test/generators.test.ts apps/api/test/realtime.test.ts apps/api/test/rooms.test.ts",
+    "simVersion": "python3 test/check_sim_revision.py --base b5c9f3ed276b82a557f582eb0be1b910b93a9a49"
+  },
+  "simulation": {
+    "revision": 36,
+    "goldenMatchUnchanged": true,
+    "saveFormatChanged": false
+  }
+}

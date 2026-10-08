@@ -1,0 +1,244 @@
+{
+  "sourceHash": "b9d8335e1e2e36c60230452dc78d1c3bbfd4f887cd5b9f4df8070a70dabcaeeb",
+  "simVersion": "149-67-4214885f0c7bd136c24be45f3e74fee8fe888824bf1c478645e907b7f855cb39",
+  "suite": 1,
+  "valid": true,
+  "samples": [
+    {
+      "settings": {
+        "seed": 19,
+        "params": {
+          "width": 7,
+          "height": 7,
+          "teams": 2,
+          "workers": 4
+        },
+        "candidates": 1,
+        "startingUnitLevel": 0
+      },
+      "status": "passed",
+      "fingerprint": "48f3b214156e025ba71a1c7de00668f759b22270c258dc0949d368736b93e3ae"
+    },
+    {
+      "settings": {
+        "seed": 20,
+        "params": {
+          "width": 7,
+          "height": 7,
+          "teams": 2,
+          "workers": 4
+        },
+        "candidates": 1,
+        "startingUnitLevel": 0
+      },
+      "status": "passed",
+      "fingerprint": "3c6969e0a611e57388c479377d53558b3dfa0662e39aa08656769cef86a5fe66"
+    },
+    {
+      "settings": {
+        "seed": 21,
+        "params": {
+          "width": 7,
+          "height": 7,
+          "teams": 2,
+          "workers": 4
+        },
+        "candidates": 1,
+        "startingUnitLevel": 0
+      },
+      "status": "passed",
+      "fingerprint": "4bb29a7c4ecbf24466e29abc6ae440321239061b10c256cbb4932a1815e1ce1f"
+    },
+    {
+      "settings": {
+        "seed": 19,
+        "params": {
+          "width": 6,
+          "height": 6,
+          "teams": 2,
+          "workers": 4
+        },
+        "candidates": 1,
+        "startingUnitLevel": 0
+      },
+      "status": "refused",
+      "message": "test:shared-generator revision 1 seed 3156985305 [validation]: This example supports at least 128 tiles and at most two colonies"
+    },
+    {
+      "settings": {
+        "seed": 19,
+        "params": {
+          "width": 8,
+          "height": 8,
+          "teams": 2,
+          "workers": 4
+        },
+        "candidates": 1,
+        "startingUnitLevel": 0
+      },
+      "status": "passed",
+      "fingerprint": "ea259cd14b18d8e042fc24d007eb402e2794871ced6eace8d43603ea060d6bc9"
+    },
+    {
+      "settings": {
+        "seed": 19,
+        "params": {
+          "width": 7,
+          "height": 8,
+          "teams": 2,
+          "workers": 4
+        },
+        "candidates": 1,
+        "startingUnitLevel": 0
+      },
+      "status": "passed",
+      "fingerprint": "03a4a1c4e1cd1bfcc150949674065dc22983f10ca3c9c028bca3b3003e2ad9f2"
+    },
+    {
+      "settings": {
+        "seed": 19,
+        "params": {
+          "width": 7,
+          "height": 7,
+          "teams": 2,
+          "workers": 4
+        },
+        "candidates": 1,
+        "startingUnitLevel": 0
+      },
+      "status": "passed",
+      "fingerprint": "48f3b214156e025ba71a1c7de00668f759b22270c258dc0949d368736b93e3ae"
+    },
+    {
+      "settings": {
+        "seed": 19,
+        "params": {
+          "width": 7,
+          "height": 7,
+          "teams": 8,
+          "workers": 4
+        },
+        "candidates": 1,
+        "startingUnitLevel": 0
+      },
+      "status": "refused",
+      "message": "test:shared-generator revision 1 seed 3156985305 [validation]: This example supports at least 128 tiles and at most two colonies"
+    },
+    {
+      "settings": {
+        "seed": 19,
+        "params": {
+          "width": 7,
+          "height": 7,
+          "teams": 2,
+          "workers": 4,
+          "roughness": 0
+        },
+        "candidates": 1,
+        "startingUnitLevel": 0
+      },
+      "status": "passed",
+      "fingerprint": "48f3b214156e025ba71a1c7de00668f759b22270c258dc0949d368736b93e3ae"
+    },
+    {
+      "settings": {
+        "seed": 19,
+        "params": {
+          "width": 7,
+          "height": 7,
+          "teams": 2,
+          "workers": 4,
+          "roughness": 2
+        },
+        "candidates": 1,
+        "startingUnitLevel": 0
+      },
+      "status": "passed",
+      "fingerprint": "48f3b214156e025ba71a1c7de00668f759b22270c258dc0949d368736b93e3ae"
+    },
+    {
+      "settings": {
+        "seed": 19,
+        "params": {
+          "width": 7,
+          "height": 7,
+          "teams": 2,
+          "workers": 4,
+          "season": 0
+        },
+        "candidates": 1,
+        "startingUnitLevel": 0
+      },
+      "status": "passed",
+      "fingerprint": "48f3b214156e025ba71a1c7de00668f759b22270c258dc0949d368736b93e3ae"
+    },
+    {
+      "settings": {
+        "seed": 19,
+        "params": {
+          "width": 7,
+          "height": 7,
+          "teams": 2,
+          "workers": 4,
+          "season": 1
+        },
+        "candidates": 1,
+        "startingUnitLevel": 0
+      },
+      "status": "passed",
+      "fingerprint": "48f3b214156e025ba71a1c7de00668f759b22270c258dc0949d368736b93e3ae"
+    }
+  ],
+  "metadata": {
+    "apiVersion": 1,
+    "controls": [
+      {
+        "default": 1,
+        "group": "terrain",
+        "id": "roughness",
+        "kind": "range",
+        "label": "Roughness",
+        "maximum": 2,
+        "minimum": 0,
+        "powerOfTwo": false,
+        "step": 1,
+        "values": [
+          0,
+          1,
+          2
+        ]
+      },
+      {
+        "choices": [
+          "Summer",
+          "Winter"
+        ],
+        "default": 0,
+        "group": "resources",
+        "id": "season",
+        "kind": "choice",
+        "label": "Season",
+        "maximum": 1,
+        "minimum": 0,
+        "powerOfTwo": false,
+        "step": 1,
+        "values": [
+          0,
+          1
+        ]
+      }
+    ],
+    "description": "",
+    "editorOnly": false,
+    "id": "test:shared-generator",
+    "name": "Shared landscape",
+    "packageHash": "a805252d4262995c866351237342d23307ce72a04de96dcac88300e46db86ffc",
+    "revision": 1,
+    "tags": [
+      "terrain:natural"
+    ],
+    "toolkitVersion": 1
+  },
+  "packageHash": "a805252d4262995c866351237342d23307ce72a04de96dcac88300e46db86ffc",
+  "fileHash": "a805252d4262995c866351237342d23307ce72a04de96dcac88300e46db86ffc"
+}

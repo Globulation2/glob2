@@ -1,0 +1,83 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="81" failures="0" errors="0" skipped="0"><testsuite name="MatchSetup"><testcase classname="MatchSetup" name="AI order delay is optional bounded integer data and round trips through headers" time="0.058229" status="run" />
+  <testcase classname="MatchSetup" name="Building gradient delay is optional bounded integer data and round trips through headers" time="0.096502" status="run" />
+  <testcase classname="MatchSetup" name="New match rules default to eight tick AI decisions" time="0" status="run" />
+  <testcase classname="MatchSetup" name="SHA-256 matches the FIPS 180-4 test vectors" time="0.007809" status="run" />
+  <testcase classname="MatchSetup" name="Scripted map sources preserve exact provenance and enforce team count" time="0.00161" status="run" />
+  <testcase classname="MatchSetup" name="a map file is found and checked by the hash of its decompressed bytes" time="0.05268" status="run" />
+  <testcase classname="MatchSetup" name="catalog rules identity partitions ratings without changing the executable identity" time="0.000254" status="run" />
+  <testcase classname="MatchSetup" name="closed seats close their team and follow every player seat" time="0.08098" status="run" />
+  <testcase classname="MatchSetup" name="embedded catalogs carry dynamic experiments independently of installed definitions" time="0.316475" status="run" />
+  <testcase classname="MatchSetup" name="every MatchSetup and SimVersion contract fixture is accepted or rejected at its stage" time="0.05978" status="run" />
+  <testcase classname="MatchSetup" name="map-required terrain experiments propagate to setup and cannot be omitted" time="0.052259" status="run" />
+  <testcase classname="MatchSetup" name="the simulation data hash covers every data file the simulation loads" time="0.065085" status="run" />
+  <testcase classname="MatchSetup" name="the vendored fixtures match the protocol package when it is present" time="0.007407" status="run" />
+  <testcase classname="MatchSetup" name="unknown experiments, JavaScript AIs and unexpressible headers are refused" time="0.07194" status="run" />
+  <testcase classname="MatchSetup" name="valid setups become the GameHeader every client and the verifier run" time="0.086037" status="run" />
+  </testsuite><testsuite name="OnlineScreenLifetime"><testcase classname="OnlineScreenLifetime" name="generator examples with omitted controls use engine defaults when selecting a room" time="0.240633" status="run" />
+  <testcase classname="OnlineScreenLifetime" name="generator installation clears pending state when restoring the library throws" time="0.368279" status="run" />
+  <testcase classname="OnlineScreenLifetime" name="online screens closed with platform calls in flight are never called back" time="0.23031" status="run" />
+  </testsuite><testsuite name="PlatformRoom"><testcase classname="PlatformRoom" name="a map change is announced once; a status change is not" time="0.217881" status="run" />
+  <testcase classname="PlatformRoom" name="a member without a seat is listed, and Ready says why it is unavailable" time="0.389267" status="run" />
+  <testcase classname="PlatformRoom" name="a premade map is uploaded and chosen for the room, then named by the server" time="0.355986" status="run" />
+  <testcase classname="PlatformRoom" name="a room's teams are named from their alliances, in team order" time="0.188621" status="run" />
+  <testcase classname="PlatformRoom" name="catalog launch creates the room with its map in the initial request" time="0.287112" status="run" />
+  <testcase classname="PlatformRoom" name="scripted launch pins a release and reroll retains that identity" time="0.195288" status="run" />
+  <testcase classname="PlatformRoom" name="the server's start notice is shown once in the room chat" time="0.296609" status="run" />
+  </testsuite><testsuite name="ScriptGenerator"><testcase classname="ScriptGenerator" name="All named stream consumers share creation limits and accounting" time="0.030381" status="run" />
+  <testcase classname="ScriptGenerator" name="Boolean buffer proxies become JavaScript booleans" time="0.003242" status="run" />
+  <testcase classname="ScriptGenerator" name="By value copies reserve native payloads before allocation" time="0.002817" status="run" />
+  <testcase classname="ScriptGenerator" name="Conversion failures release intermediate QuickJS containers" time="0.003693" status="run" />
+  <testcase classname="ScriptGenerator" name="Custom preferences persist string identity and tolerate missing packages" time="0.008416" status="run" />
+  <testcase classname="ScriptGenerator" name="Every operation registration path shares the handle budget" time="0.051762" status="run" />
+  <testcase classname="ScriptGenerator" name="Fertility binding rejects incomplete fields and mismatched masks" time="0.016729" status="run" />
+  <testcase classname="ScriptGenerator" name="Fertility binding reserves native work and memory before rebuilding" time="0.068555" status="run" />
+  <testcase classname="ScriptGenerator" name="Frozen controls survive package replacement and catalogs are released" time="0.006452" status="run" />
+  <testcase classname="ScriptGenerator" name="Frozen selections retain defaults and rules after package removal" time="0.007897" status="run" />
+  <testcase classname="ScriptGenerator" name="Full toolkit records buffers geometry callbacks and solver" time="0.115569" status="run" />
+  <testcase classname="ScriptGenerator" name="Graph ownership optional callbacks and pointer outputs" time="0.102521" status="run" />
+  <testcase classname="ScriptGenerator" name="Installed generator library writes to a fresh user profile [writes-preferences]" time="0.062362" status="run" />
+  <testcase classname="ScriptGenerator" name="Library mutations retain memory and disk when storage throws" time="0.003282" status="run" />
+  <testcase classname="ScriptGenerator" name="Moved callback arguments retain their converted storage" time="0.001728" status="run" />
+  <testcase classname="ScriptGenerator" name="Native scratch tables respect the allocation budget" time="1.27351" status="run" />
+  <testcase classname="ScriptGenerator" name="Native work and interpreter resource failures are sticky" time="4.55557" status="run" />
+  <testcase classname="ScriptGenerator" name="Nested buffer fills are accounted and returned rows own their data" time="0.002373" status="run" />
+  <testcase classname="ScriptGenerator" name="Nested buffer get fill and set reserve before copying" time="0.004809" status="run" />
+  <testcase classname="ScriptGenerator" name="Online generator installation verifies hashes and persists provenance transactionally" time="0.003732" status="run" />
+  <testcase classname="ScriptGenerator" name="Optional JavaScript examples generate repeatable validated worlds [slow]" time="6.22508" status="run" />
+  <testcase classname="ScriptGenerator" name="Owned classes preserve borrowed context and RNG expiration" time="0.119636" status="run" />
+  <testcase classname="ScriptGenerator" name="Package identity controls modules and installation rollback" time="0.004506" status="run" />
+  <testcase classname="ScriptGenerator" name="Request immutability RNG streams and module isolation" time="0.007742" status="run" />
+  <testcase classname="ScriptGenerator" name="Script control mutations cannot bypass native domain contracts" time="0.01133" status="run" />
+  <testcase classname="ScriptGenerator" name="Script resource placement uses the world catalog and bounded brushes" time="0.122122" status="run" />
+  <testcase classname="ScriptGenerator" name="Script terrain and colonies go through engine world validation" time="0.372078" status="run" />
+  <testcase classname="ScriptGenerator" name="Shared generated worlds continue identically without installed generator code [golden]" time="0.977799" status="run" />
+  <testcase classname="ScriptGenerator" name="Site graphs share distance captures and account repeated graph copies" time="0.181386" status="run" />
+  <testcase classname="ScriptGenerator" name="Toolkit consumers reject empty fertility arguments" time="0.083033" status="run" />
+  </testsuite><testsuite name="TurnEngineHarness"><testcase classname="TurnEngineHarness" name="shared scripted maps play and produce verified ordinary replays without installation [network-sim][artifacts]" time="1.63794" status="run" />
+  <testcase classname="TurnEngineHarness" name="the committed match record verifies to the committed checksum trace [network-sim][golden]" time="0.77866" status="run" />
+  </testsuite><testsuite name="PlatformClient"><testcase classname="PlatformClient" name="first start creates a guest, keeps its credential and says hello with the token" time="0.000706" status="run" />
+    <testcase classname="PlatformClient" name="an unsupported sim version says which side is out of date" time="0.00153" status="run" />
+    <testcase classname="PlatformClient" name="a returning player signs in with the device credential or refresh token" time="0" status="run" />
+    <testcase classname="PlatformClient" name="without consent to sign in, the socket connects anonymously" time="0" status="run" />
+    <testcase classname="PlatformClient" name="responses reach their own requests; timeouts and events are delivered" time="0.000335" status="run" />
+    <testcase classname="PlatformClient" name="requests made before the socket is online wait for it" time="0.00015" status="run" />
+    <testcase classname="PlatformClient" name="lost connections retry with growing, jittered backoff" time="0.000257" status="run" />
+    <testcase classname="PlatformClient" name="a connection that never opens times out and retries" time="0" status="run" />
+    <testcase classname="PlatformClient" name="tokens refresh before expiry, rotate the stored token and re-authenticate the socket" time="0.000247" status="run" />
+    <testcase classname="PlatformClient" name="a refused refresh token falls back to the device credential" time="0.000101" status="run" />
+    <testcase classname="PlatformClient" name="a refresh that fails on the network is retried while the token lasts" time="0.000182" status="run" />
+    <testcase classname="PlatformClient" name="a refused token at hello continues anonymously and signs in again" time="0.000134" status="run" />
+    <testcase classname="PlatformClient" name="update_required stops retrying" time="0.000109" status="run" />
+    <testcase classname="PlatformClient" name="an idle socket is checked with session.ping and replaced when silent" time="0.000166" status="run" />
+    <testcase classname="PlatformClient" name="browser sign-in opens the page, survives a reconnect and adopts the session" time="0.000356" status="run" />
+    <testcase classname="PlatformClient" name="browser sign-in failures, cancellation and expiry" time="0.000843" status="run" />
+    <testcase classname="PlatformClient" name="session.revoked signs out and stops automatic sign-in" time="0.000175" status="run" />
+    <testcase classname="PlatformClient" name="sign-out revokes the refresh token, reconnects anonymously and stays signed out" time="0.000283" status="run" />
+    <testcase classname="PlatformClient" name="stop cancels everything and credentials stay per instance" time="0.000139" status="run" />
+    <testcase classname="PlatformClient" name="rename patches the account" time="0.000167" status="run" />
+    <testcase classname="PlatformClient" name="REST calls return an id that cancels them; a cancelled call never calls back" time="0.000213" status="run" />
+    <testcase classname="PlatformClient" name="the instance description is fetched once per start and shared" time="0" status="run" />
+    <testcase classname="PlatformClient" name="a scope cancels its owner's calls and listeners when the owner goes away" time="0.000267" status="run" />
+    <testcase classname="PlatformClient" name="a handler that destroys another owner in the same update does not reach it" time="0.000141" status="run" />
+  </testsuite></testsuites>

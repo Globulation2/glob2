@@ -1,0 +1,94 @@
+
+ RUN  v5.0.3 /home/bradley/.codex/worktrees/be4b/glob2/platform
+
+ ❯ apps/api/test/deletion.test.ts (5 tests | 5 skipped) 5075ms
+ ❯ apps/api/test/catalog.test.ts (19 tests | 19 skipped) 5310ms
+
+⎯⎯⎯⎯⎯⎯ Failed Suites 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  apps/api/test/catalog.test.ts [ apps/api/test/catalog.test.ts ]
+Error: migration 0022_map_studio failed: out of shared memory
+ ❯ migrateToLatest packages/db/src/migrate.ts:64:11
+     62|     const failed = results?.find((r) => r.status === 'Error');
+     63|     const message = error instanceof Error ? error.message : String(er…
+     64|     throw new Error(`migration ${failed?.migrationName ?? '(unknown)'}…
+       |           ^
+     65|       cause: error,
+     66|     });
+ ❯ migrateDatabase packages/db/src/migrate.ts:82:19
+ ❯ createTestDatabase packages/db/test/support.ts:83:7
+ ❯ createHarness apps/api/test/support.ts:61:20
+ ❯ apps/api/test/catalog.test.ts:36:13
+
+Caused by: error: out of shared memory
+ ❯ node_modules/pg/lib/client.js:694:17
+ ❯ PostgresConnection.executeQuery node_modules/kysely/dist/dialect/postgres/postgres-driver.js:113:28
+ ❯ node_modules/kysely/dist/query-executor/query-executor-base.js:39:24
+ ❯ SingleConnectionProvider.#run node_modules/kysely/dist/driver/single-connection-provider.js:24:16
+ ❯ DefaultQueryExecutor.executeQuery node_modules/kysely/dist/query-executor/query-executor-base.js:38:28
+ ❯ Object.up packages/db/src/migrate.ts:33:11
+ ❯ Migrator.#migrateUp node_modules/kysely/dist/migration/migrator.js:569:17
+ ❯ run node_modules/kysely/dist/migration/migrator.js:419:24
+ ❯ node_modules/kysely/dist/kysely.js:680:32
+ ❯ PostgresConnection.executeQuery node_modules/kysely/dist/dialect/postgres/postgres-driver.js:126:41
+ ❯ node_modules/kysely/dist/query-executor/query-executor-base.js:39:24
+ ❯ SingleConnectionProvider.#run node_modules/kysely/dist/driver/single-connection-provider.js:24:16
+ ❯ DefaultQueryExecutor.executeQuery node_modules/kysely/dist/query-executor/query-executor-base.js:38:28
+ ❯ Object.up packages/db/src/migrate.ts:33:11
+ ❯ Migrator.#migrateUp node_modules/kysely/dist/migration/migrator.js:569:17
+ ❯ run node_modules/kysely/dist/migration/migrator.js:419:24
+ ❯ node_modules/kysely/dist/kysely.js:680:32
+ ❯ SingleConnectionProvider.#run node_modules/kysely/dist/driver/single-connection-provider.js:24:16
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+Serialized Error: { length: 138, severity: 'ERROR', code: '53200', detail: undefined, hint: 'You might need to increase max_locks_per_transaction.', position: undefined, internalPosition: undefined, internalQuery: undefined, where: undefined, schema: undefined, table: undefined, dataType: undefined, constraint: undefined, file: 'lock.c', routine: 'LockAcquireExtended' }
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  apps/api/test/deletion.test.ts [ apps/api/test/deletion.test.ts ]
+Error: migration 0022_map_studio failed: out of shared memory
+ ❯ migrateToLatest packages/db/src/migrate.ts:64:11
+     62|     const failed = results?.find((r) => r.status === 'Error');
+     63|     const message = error instanceof Error ? error.message : String(er…
+     64|     throw new Error(`migration ${failed?.migrationName ?? '(unknown)'}…
+       |           ^
+     65|       cause: error,
+     66|     });
+ ❯ migrateDatabase packages/db/src/migrate.ts:82:19
+ ❯ createTestDatabase packages/db/test/support.ts:83:7
+ ❯ createHarness apps/api/test/support.ts:61:20
+ ❯ apps/api/test/deletion.test.ts:19:13
+
+Caused by: error: out of shared memory
+ ❯ node_modules/pg/lib/client.js:694:17
+ ❯ PostgresConnection.executeQuery node_modules/kysely/dist/dialect/postgres/postgres-driver.js:113:28
+ ❯ node_modules/kysely/dist/query-executor/query-executor-base.js:39:24
+ ❯ SingleConnectionProvider.#run node_modules/kysely/dist/driver/single-connection-provider.js:24:16
+ ❯ DefaultQueryExecutor.executeQuery node_modules/kysely/dist/query-executor/query-executor-base.js:38:28
+ ❯ Object.up packages/db/src/migrate.ts:33:11
+ ❯ Migrator.#migrateUp node_modules/kysely/dist/migration/migrator.js:569:17
+ ❯ run node_modules/kysely/dist/migration/migrator.js:419:24
+ ❯ node_modules/kysely/dist/kysely.js:680:32
+ ❯ PostgresConnection.executeQuery node_modules/kysely/dist/dialect/postgres/postgres-driver.js:126:41
+ ❯ node_modules/kysely/dist/query-executor/query-executor-base.js:39:24
+ ❯ SingleConnectionProvider.#run node_modules/kysely/dist/driver/single-connection-provider.js:24:16
+ ❯ DefaultQueryExecutor.executeQuery node_modules/kysely/dist/query-executor/query-executor-base.js:38:28
+ ❯ Object.up packages/db/src/migrate.ts:33:11
+ ❯ Migrator.#migrateUp node_modules/kysely/dist/migration/migrator.js:569:17
+ ❯ run node_modules/kysely/dist/migration/migrator.js:419:24
+ ❯ node_modules/kysely/dist/kysely.js:680:32
+ ❯ SingleConnectionProvider.#run node_modules/kysely/dist/driver/single-connection-provider.js:24:16
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+Serialized Error: { length: 138, severity: 'ERROR', code: '53200', detail: undefined, hint: 'You might need to increase max_locks_per_transaction.', position: undefined, internalPosition: undefined, internalQuery: undefined, where: undefined, schema: undefined, table: undefined, dataType: undefined, constraint: undefined, file: 'lock.c', routine: 'LockAcquireExtended' }
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+ Test Files  2 failed (2)
+      Tests  24 skipped (24)
+   Start at  18:12:37
+   Duration  20.95s (import 37%, transform 36%, tests 27%)
+
+  Transform  transforming modules took 13.80s · 36% of tracked time, re-done on every run
+             persist transforms across runs with fsModuleCache: true
+             learn more: https://vitest.dev/guide/improving-performance#caching-between-reruns
+

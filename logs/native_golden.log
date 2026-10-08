@@ -1,0 +1,4 @@
+PASS ScriptGenerator/Shared generated worlds continue identically without installed generator code [golden] (0.6s)
+
+1 passed, 0 failed, 0 skipped (0.6s of test time)
+[run_tests] JUnit report: artifacts/generator-library/native-golden/junit.xml (1 cases)

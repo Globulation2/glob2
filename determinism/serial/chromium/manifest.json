@@ -1,0 +1,29 @@
+{
+  "dirty": false,
+  "revision": "e0d929e0f2fd815c3a256fd7651a559edc30d24e",
+  "sourceStatus": [],
+  "sourceTreeSha256": "14609f970c5b9426475edcb49a2dbc248b6967205c1533bea4a6d53b2a75ed76",
+  "build": {
+    "compiler": "/home/bradley/.local/share/glob2/development/toolchains/emscripten/Linux-x86_64-88a621bc131cd4954413aa39/upstream/emscripten/em++",
+    "dirty": false,
+    "flags": {
+      "CCFLAGS": "",
+      "CPPDEFINES": "HAVE_CONFIG_H GLOB2_OFFICIAL_INSTANCE_ORIGIN \\\"https://app.glob2online.com\\\" GLOB2_OFFICIAL_INSTANCE_FORMER_ORIGINS \\\"https://glob2online.com\\\"",
+      "CXXFLAGS": "-std=gnu++20 -fwasm-exceptions -g2 -O2 --use-port=zlib",
+      "LINKFLAGS": "--js-library browser/canvas-size.js -fwasm-exceptions -O2 -sLEGACY_GL_EMULATION=1 -sFETCH=1 -sMIN_WEBGL_VERSION=2 -sMAX_WEBGL_VERSION=2 -sALLOW_MEMORY_GROWTH -sINITIAL_MEMORY=134217728 -sSTACK_SIZE=8388608 -sASSERTIONS=1 -sFORCE_FILESYSTEM -lidbfs.js -lwebsocket.js '-sEXPORTED_FUNCTIONS=[\"_main\",\"_malloc\",\"_free\"]' '-sEXPORTED_RUNTIME_METHODS=[\"callMain\",\"FS\"]' --pre-js browser/storage.js --pre-js browser/file-selection.js --pre-js browser/audio.js --pre-js browser/recording.js --pre-js browser/runtime.js --post-js browser/webgl-shaders.js --use-port=zlib --pre-js /home/bradley/.codex/worktrees/be4b/glob2/build/emscripten/client/release/asset-manifest.js --pre-js browser/asset-loader.js"
+    },
+    "revision": "e0d929e0f2fd815c3a256fd7651a559edc30d24e",
+    "sourceStatus": [],
+    "sourceTreeSha256": "14609f970c5b9426475edcb49a2dbc248b6967205c1533bea4a6d53b2a75ed76"
+  },
+  "provenanceIssues": [],
+  "variant": "serial",
+  "browser": "chromium",
+  "browserVersion": "153.0.8010.12",
+  "binaries": {
+    "script-tests.js": "98f5a614c773a1137c7564fe88d00ee3af3bdc02aa83bbd6f556b25120ff423a",
+    "script-tests.wasm": "2635789ff3165b89d29c3fb1197d100b982433c012505f8c3bb50c3b32dcabdb",
+    "script-tests.data": "5e57ee1ba0d29bd332c096a7133d9deaab1e11cd47b94fab83643410d8c89df9"
+  },
+  "traceHash": "b8fc22e448b9adbbfe7f2a4b084a23b249cc72a65c609729d4ce5c6c3bd169bd"
+}

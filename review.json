@@ -1,0 +1,42 @@
+{
+  "reviewer": "independent Codex subagent /root/review",
+  "scope": "feature source diff, publication/access/isolation/protocol/native installation, followed by both fixes",
+  "independentlyRanFullMatrix": false,
+  "findings": [
+    {
+      "severity": "P2",
+      "area": "room member expiry",
+      "problem": "Reconnect after candidate snapshot could still be deleted",
+      "resolution": "Delete rechecks connection and expiry; returned removal count reflects actual deletion",
+      "tests": [
+        "reliability/member expiry races: reconnected",
+        "reliability/member expiry races: recently disconnected"
+      ],
+      "status": "resolved"
+    },
+    {
+      "severity": "P2",
+      "area": "installation restoration",
+      "problem": "Rollback exception escaped the callback/timer and retained pending persistence",
+      "resolution": "Common failure handler catches restoration error and always resets pending state; accurately reports failure",
+      "tests": [
+        "OnlineScreenLifetime/generator installation clears pending state when restoring the library throws",
+        "ScriptGenerator/Library mutations retain memory and disk when storage throws"
+      ],
+      "status": "resolved"
+    },
+    {
+      "severity": "P2",
+      "foundBy": "parent final review, independently confirmed",
+      "area": "native release settings",
+      "problem": "Valid examples may omit controls; room handoff could throw reading teams",
+      "resolution": "Materialize core and manifest defaults while preserving supplied values; reuse core domains and display labels",
+      "tests": [
+        "OnlineScreenLifetime/generator examples with omitted controls use engine defaults when selecting a room"
+      ],
+      "status": "resolved"
+    }
+  ],
+  "remainingMergeBlockers": [],
+  "deployment": "Existing bounded tmpfs and Bubblewrap support startup probes; no new runtime dependency or configuration required"
+}

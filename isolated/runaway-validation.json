@@ -1,0 +1,76 @@
+{
+  "sourceHash": "97bbabf40f58c60aa52d69b5d5dad7c9e80c3c3a0667d167cfb3bbeef440035a",
+  "simVersion": "149-67-4214885f0c7bd136c24be45f3e74fee8fe888824bf1c478645e907b7f855cb39",
+  "suite": 1,
+  "valid": false,
+  "samples": [
+    {
+      "settings": {
+        "seed": 19,
+        "params": {
+          "width": 7,
+          "height": 7,
+          "teams": 2,
+          "workers": 4
+        },
+        "candidates": 1,
+        "startingUnitLevel": 0
+      },
+      "status": "failed",
+      "message": "test:shared-generator revision 1 seed 3156985305 [terrain]: test:shared-generator [generate]: Generator execution budget exhausted"
+    }
+  ],
+  "metadata": {
+    "apiVersion": 1,
+    "controls": [
+      {
+        "default": 1,
+        "group": "terrain",
+        "id": "roughness",
+        "kind": "range",
+        "label": "Roughness",
+        "maximum": 2,
+        "minimum": 0,
+        "powerOfTwo": false,
+        "step": 1,
+        "values": [
+          0,
+          1,
+          2
+        ]
+      },
+      {
+        "choices": [
+          "Summer",
+          "Winter"
+        ],
+        "default": 0,
+        "group": "resources",
+        "id": "season",
+        "kind": "choice",
+        "label": "Season",
+        "maximum": 1,
+        "minimum": 0,
+        "powerOfTwo": false,
+        "step": 1,
+        "values": [
+          0,
+          1
+        ]
+      }
+    ],
+    "description": "",
+    "editorOnly": false,
+    "id": "test:shared-generator",
+    "name": "Shared landscape",
+    "packageHash": "a99c15394ec77cb5da3e0f860c97dff965c8008a42a571b9abfbb519d1ec3f53",
+    "revision": 1,
+    "tags": [
+      "terrain:natural"
+    ],
+    "toolkitVersion": 1
+  },
+  "packageHash": "a99c15394ec77cb5da3e0f860c97dff965c8008a42a571b9abfbb519d1ec3f53",
+  "fileHash": "a99c15394ec77cb5da3e0f860c97dff965c8008a42a571b9abfbb519d1ec3f53",
+  "error": "test:shared-generator revision 1 seed 3156985305 [terrain]: test:shared-generator [generate]: Generator execution budget exhausted"
+}

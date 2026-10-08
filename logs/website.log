@@ -1,0 +1,17 @@
+
+> @glob2/web@0.1.0 e2e
+> playwright test -c e2e/playwright.config.ts generators.spec.ts
+
+[WebServer] (node:3044621) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 2 tests using 1 worker
+
+(node:3046152) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  1 [desktop] › e2e/generators.spec.ts:6:1 › generator catalogue, exact release evidence and staged publication (12.8s)
+(node:3047767) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  2 [phone] › e2e/generators.spec.ts:6:1 › generator catalogue, exact release evidence and staged publication (16.2s)
+
+  2 passed (45.7s)

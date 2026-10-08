@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites>
+  <testsuite name="./this.program" errors="0" failures="0" tests="1034" time="1.861" timestamp="2026-10-08T22:26:35Z" doctest_version="2.4.11">
+    <testcase classname="src/map/generator/javascript/ScriptGeneratorTest.cpp" name="Shared generated worlds continue identically without installed generator code [golden]" time="1.861" status="run"/>
+  </testsuite>
+</testsuites>
