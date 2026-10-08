@@ -193,6 +193,7 @@ export interface EngineJobsTable {
   id: Generated<string>;
   kind:
     | 'validate-ai'
+    | 'validate-buildings'
     | 'validate-set'
     | 'generate-map'
     | 'validate-map'
@@ -1083,6 +1084,51 @@ export interface AiStudioRunsTable {
   summary: Defaulted<string>;
   created_at: Timestamp;
 }
+export interface BuildingDraftsTable {
+  id: Generated<string>;
+  owner_account_id: string;
+  revision: Defaulted<string>;
+  name: string;
+  archive: Buffer;
+  created_at: Timestamp;
+  updated_at: Timestamp;
+}
+
+export interface BuildingFamiliesTable {
+  download_count: Defaulted<number>;
+  id: Generated<string>;
+  owner_account_id: string;
+  namespace: string;
+  name: string;
+  description: Defaulted<string>;
+  visibility: Defaulted<'public' | 'unlisted' | 'private'>;
+  hidden: Defaulted<boolean>;
+  hidden_reason: string | null;
+  created_at: Timestamp;
+  updated_at: Timestamp;
+}
+export interface BuildingReleasesTable {
+  id: Generated<string>;
+  family_id: string;
+  archive_hash: string;
+  job_id: string;
+  sim_version: string;
+  base_hash: string;
+  suite: number;
+  created_at: Timestamp;
+}
+export interface BuildingSocialTable {
+  family_id: string;
+  account_id: string;
+}
+export interface BuildingReportsTable {
+  id: Generated<string>;
+  family_id: string;
+  reporter_account_id: string | null;
+  reason: string;
+  resolved: Defaulted<boolean>;
+  created_at: Timestamp;
+}
 interface AssetSetsTable {
   id: string;
   owner_account_id: string;
@@ -1134,6 +1180,12 @@ interface SetReportsTable {
   created_at: Timestamp;
 }
 export interface Database {
+  building_families: BuildingFamiliesTable;
+  building_releases: BuildingReleasesTable;
+  building_likes: BuildingSocialTable;
+  building_favourites: BuildingSocialTable;
+  building_reports: BuildingReportsTable;
+  building_drafts: BuildingDraftsTable;
   asset_sets: AssetSetsTable;
   set_drafts: SetDraftsTable;
   set_versions: SetVersionsTable;

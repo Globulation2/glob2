@@ -392,6 +392,7 @@ UNIT_PRODUCTION_SOURCES = [
     '#src/game/Bullet.cpp',
     '#src/game/ExperimentalFeatures.cpp',
     '#src/game/GameHeader.cpp',
+    '#src/building/BuildingArtwork.cpp',
     '#src/building/types/BuildingCatalog.cpp',
     '#src/building/types/Buildings.cpp',
     '#src/building/types/BuildingTypesColony.cpp',

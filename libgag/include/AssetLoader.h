@@ -6,6 +6,7 @@
 #include <cstdint>
 #include <functional>
 #include <memory>
+#include <map>
 #include <string>
 #include <typeindex>
 #include <utility>
@@ -111,6 +112,9 @@ public:
     AssetLoader(const AssetLoader&) = delete;
     AssetLoader& operator=(const AssetLoader&) = delete;
 
+    // Verified, content-addressed community artwork only; cannot shadow installed files.
+    using CommunityFiles = std::map<std::string, std::shared_ptr<const Bytes>>;
+    void setCommunityFiles(CommunityFiles files);
     Handle<Directory> requestDirectory(const std::string& folder);
     Handle<Bytes> requestBytes(const std::string& path, Priority priority = Priority::Required);
     Handle<AssetImage> requestImage(const std::string& path, Priority priority = Priority::Required, bool highResolution = false);

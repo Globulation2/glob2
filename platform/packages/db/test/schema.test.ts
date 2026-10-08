@@ -13,6 +13,41 @@ type ColumnLists = { [T in keyof Database]: readonly (keyof Database[T] & string
 
 /** Every column of every table, as typed in src/schema.ts. */
 const typedColumns: ColumnLists = {
+  building_families: [
+    'download_count',
+    'id',
+    'owner_account_id',
+    'namespace',
+    'name',
+    'description',
+    'visibility',
+    'hidden',
+    'hidden_reason',
+    'created_at',
+    'updated_at',
+  ],
+  building_releases: [
+    'id',
+    'family_id',
+    'archive_hash',
+    'job_id',
+    'sim_version',
+    'base_hash',
+    'suite',
+    'created_at',
+  ],
+  building_likes: ['family_id', 'account_id'],
+  building_favourites: ['family_id', 'account_id'],
+  building_reports: ['id', 'family_id', 'reporter_account_id', 'reason', 'resolved', 'created_at'],
+  building_drafts: [
+    'id',
+    'owner_account_id',
+    'revision',
+    'name',
+    'archive',
+    'created_at',
+    'updated_at',
+  ],
   asset_sets: [
     'id',
     'owner_account_id',
@@ -1081,6 +1116,8 @@ describe('migrations', () => {
         '0046_skin_collection',
         '0047_resource_experiments',
         '0048_sets',
+        '0049_building_drafts',
+        '0050_building_library',
       ]);
       expect(
         (
@@ -1150,7 +1187,7 @@ describe('migrations', () => {
         existing.db,
       );
       const upgraded = await migrateToLatest(existing.db);
-      expect(upgraded).toHaveLength(26);
+      expect(upgraded).toHaveLength(28);
       expect(upgraded.every((migration) => migration.status === 'Success')).toBe(true);
       expect(
         await existing.db
@@ -1292,6 +1329,8 @@ describe('migrations', () => {
         ['0046_skin_collection', 'Success'],
         ['0047_resource_experiments', 'Success'],
         ['0048_sets', 'Success'],
+        ['0049_building_drafts', 'Success'],
+        ['0050_building_library', 'Success'],
       ]);
       for (const table of [
         'colony_skin_versions',
@@ -1430,6 +1469,8 @@ describe('migrations', () => {
         ['0046_skin_collection', 'Success'],
         ['0047_resource_experiments', 'Success'],
         ['0048_sets', 'Success'],
+        ['0049_building_drafts', 'Success'],
+        ['0050_building_library', 'Success'],
       ]);
       expect(
         await db

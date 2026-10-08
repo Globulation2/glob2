@@ -2,6 +2,8 @@
 #include "EngineFixtures.h"
 #include "editor/BrushSwatches.h"
 #include "MapAssetBundle.h"
+#include "BuildingArtwork.h"
+#include <TextStream.h>
 #include "ResourceRegistry.h"
 #include "online/Sha256.h"
 #include "render/scene/SceneMap.h"
@@ -37,52 +39,135 @@ Json package() {
     result["assets"]["terrains"][prefix+"ice"]={{"sprite","data/sets/"+hash},{"profile","soft"},{"preview",Json::array({80,120,160})},{"variants",Json::array({Json{{"frame",0},{"weight",1}}})}};
     return result;
 }
+// Keep the two independent portable artwork transports in the same saved game.
+std::string installBuildingArtwork(Game& game) {
+    const unsigned char webp[] = {82,73,70,70,58,0,0,0,87,69,66,80,86,80,56,76,45,0,0,0,47,1,64,0,16,31,32,32,33,238,240,127,159,220,16,18,144,41,81,245,144,144,128,88,66,247,127,138,67,2,1,66,58,229,98,156,66,169,23,23,104,136,232,127,4,0};
+    const std::string image(reinterpret_cast<const char*>(webp), sizeof(webp));
+    const auto hash = Online::Sha256::hex(image);
+    const Json sprites = Json::array({Json{{"key", "combined"}, {"frames", Json::array({Json{{"imageHash", hash}, {"width", 2}, {"height", 2}}})}}});
+	const Json buildingPackage = {
+		{"schemaVersion", 1},
+		{"namespace", setId},
+		{"experiments", Json::array()},
+		{"sprites", sprites},
+		{"variants",
+		 Json::array({Json{{"key", "b-" + setId + "-combined"},
+						   {"properties",
+							{{"width", 2},
+							 {"height", 2},
+							 {"hpInit", 200},
+							 {"hpMax", 200},
+							 {"gameSprite", "package:combined"},
+							 {"miniSprite", "data/gfx/miniinn0b"}}},
+						   {"semantics", {{"placeable", true}, {"instantPlacement", true}}}}})}};
+	game.buildingsTypes.composePackages({buildingPackage.dump()});
+	game.gameHeader.setBuildingCatalogSnapshot(game.buildingsTypes.snapshotJson());
+	std::string bytes = "G2BA0001";
+	const auto write = [&](std::uint32_t n)
+	{
+		for (unsigned i = 0; i < 4; ++i)
+			bytes += char((n >> (i * 8)) & 255);
+	};
+	const auto manifest = sprites.dump();
+	write(manifest.size());
+	bytes += manifest;
+	write(1);
+	bytes += hash;
+	write(image.size());
+	bytes += image;
+	game.gameHeader.setBuildingArtwork(bytes);
+	game.configureBuildingCatalog();
+	return bytes;
+}
+
 }
 TEST_SUITE("MapSets") {
-TEST_CASE("custom artwork properties and credits survive offline save and load [artifacts]") {
-    glob2test::HeadlessGlobals globals;
-    glob2test::HeadlessGame world({.loadDefaultRace=true,.header=true});
-    auto& map=world.game.map;
-    CHECK(map.frozenAssetBundle()->isEmpty());
-    auto installed=Json::parse(ResourceRegistry::builtins()->serialize()).at("resources")[0];
-    installed["key"]="legacy:installed";installed["presentation"]["sprite"]="data/sets/installed-legacy-art";
-    map.installResourceDefinitions(Json{{"schemaVersion",1},{"resources",Json::array({installed})}}.dump());
-    const auto source=package(); map.game=nullptr; map.importSet(source.dump()); map.setGame(&world.game);
-    const auto terrain=*map.terrainRegistry().find(prefix+"ice");
-    map.setCellTerrain(7,8,terrain);
-    CHECK(map.terrainRegistry().properties(terrain).groundSpeedQ8==192);
-    CHECK(map.frozenAssetBundle()->sheets.size()==1);
-    CHECK(map.frozenAssetBundle()->credits[0]["authors"][0]["author"]=="Fixture artist");
-    CHECK(map.frozenAssetBundle()->serialize().find("data/gfx/")==std::string::npos);
-    auto* backend=new GAGCore::MemoryStreamBackend;
-    GAGCore::BinaryOutputStream out(backend); world.game.save(&out,true,"set fixture");out.flush();
-    const auto bytes=backend->takeContents();
-    std::ofstream saved(glob2test::artifactDir()/"custom-set.map",std::ios::binary);
-    saved.write(reinterpret_cast<const char*>(bytes.data()),bytes.size());saved.close();
-    GameGUI restored(false);
-    GAGCore::BinaryInputStream input(new GAGCore::MemoryStreamBackend(std::string(bytes)));
-    REQUIRE(restored.game.load(&input));
-    CHECK(restored.game.map.frozenAssetBundle()->serialize()==map.frozenAssetBundle()->serialize());
-    CHECK(restored.game.map.terrainTypeAt(7,8)==terrain);
-    CHECK(restored.game.map.terrainRegistry().digest()==map.terrainRegistry().digest());
-    CHECK(restored.game.map.resourceRegistry().presentation(*restored.game.map.resourceRegistry().find("legacy:installed")).sprite=="data/sets/installed-legacy-art");
-    auto* saveBackend=new GAGCore::MemoryStreamBackend;
-    GAGCore::BinaryOutputStream savedGame(saveBackend);
-    world.game.save(&savedGame,false,"set game fixture");savedGame.flush();
-    const auto savedBytes=saveBackend->takeContents();
-    std::ofstream gameFile(glob2test::artifactDir()/"custom-set.game",std::ios::binary);
-    gameFile.write(reinterpret_cast<const char*>(savedBytes.data()),savedBytes.size());gameFile.close();
-    GameGUI restoredGame(false);
-    GAGCore::BinaryInputStream gameInput(new GAGCore::MemoryStreamBackend(std::string(savedBytes)));
-    REQUIRE(restoredGame.game.load(&gameInput));
-    CHECK(restoredGame.game.map.frozenAssetBundle()->serialize()==map.frozenAssetBundle()->serialize());
-    CHECK(restoredGame.game.map.terrainRegistry().digest()==map.terrainRegistry().digest());
-    CHECK(restoredGame.game.checkSum()==world.game.checkSum());
-    const auto snapshot=SimulationSnapshot::capture(world.game,SimulationSnapshot::captureCatalog(world.game));
-    CHECK(snapshot.catalogs->assets==map.frozenAssetBundle());
-    SceneMap scene;scene.bindSnapshot(snapshot,map.displayViewportW,map.displayViewportH,map.displayedTeam);auto frozen=scene.frozenAssetBundle();
-    map.tile(2,1);CHECK(map.frozenAssetBundle()==frozen);CHECK(map.terrainTypeAt(39,8)==terrain);
-    map.clear(); CHECK(frozen->sheets.size()==1);
+TEST_CASE("custom artwork properties and credits survive offline save and load [artifacts]")
+{
+	glob2test::HeadlessGlobals globals;
+	glob2test::HeadlessGame world({.loadDefaultRace = true, .header = true});
+	auto &map = world.game.map;
+	CHECK(map.frozenAssetBundle()->isEmpty());
+	auto installed = Json::parse(ResourceRegistry::builtins()->serialize()).at("resources")[0];
+	installed["key"] = "legacy:installed";
+	installed["presentation"]["sprite"] = "data/sets/installed-legacy-art";
+	map.installResourceDefinitions(
+		Json{{"schemaVersion", 1}, {"resources", Json::array({installed})}}.dump());
+	const auto source = package();
+	map.game = nullptr;
+	map.importSet(source.dump());
+	map.setGame(&world.game);
+	const auto buildingArtwork = installBuildingArtwork(world.game);
+	const auto terrain = *map.terrainRegistry().find(prefix + "ice");
+	map.setCellTerrain(7, 8, terrain);
+	CHECK(map.terrainRegistry().properties(terrain).groundSpeedQ8 == 192);
+	CHECK(map.frozenAssetBundle()->sheets.size() == 1);
+	CHECK(map.frozenAssetBundle()->credits[0]["authors"][0]["author"] == "Fixture artist");
+	CHECK(map.frozenAssetBundle()->serialize().find("data/gfx/") == std::string::npos);
+	auto *backend = new GAGCore::MemoryStreamBackend;
+	GAGCore::BinaryOutputStream out(backend);
+	world.game.save(&out, true, "set fixture");
+	out.flush();
+	const auto bytes = backend->takeContents();
+	std::ofstream saved(glob2test::artifactDir() / "custom-set.map", std::ios::binary);
+	saved.write(reinterpret_cast<const char *>(bytes.data()), bytes.size());
+	saved.close();
+	GameGUI restored(false);
+	GAGCore::BinaryInputStream input(new GAGCore::MemoryStreamBackend(std::string(bytes)));
+	REQUIRE(restored.game.load(&input));
+	REQUIRE(restored.game.gameHeader.getBuildingArtwork());
+	CHECK(restored.game.gameHeader.getBuildingArtwork()->bytes() == buildingArtwork);
+	CHECK(restored.game.buildingsTypes.fingerprint() ==
+		  world.game.buildingsTypes.fingerprint());
+	CHECK(restored.game.map.frozenAssetBundle()->serialize() ==
+		  map.frozenAssetBundle()->serialize());
+	CHECK(restored.game.map.terrainTypeAt(7, 8) == terrain);
+	CHECK(restored.game.map.terrainRegistry().digest() == map.terrainRegistry().digest());
+	CHECK(restored.game.map.resourceRegistry()
+			  .presentation(*restored.game.map.resourceRegistry().find("legacy:installed"))
+			  .sprite == "data/sets/installed-legacy-art");
+	auto *saveBackend = new GAGCore::MemoryStreamBackend;
+	GAGCore::BinaryOutputStream savedGame(saveBackend);
+	world.game.save(&savedGame, false, "set game fixture");
+	savedGame.flush();
+	const auto savedBytes = saveBackend->takeContents();
+	std::ofstream gameFile(glob2test::artifactDir() / "custom-set.game", std::ios::binary);
+	gameFile.write(reinterpret_cast<const char *>(savedBytes.data()), savedBytes.size());
+	gameFile.close();
+	GameGUI restoredGame(false);
+	GAGCore::BinaryInputStream gameInput(
+		new GAGCore::MemoryStreamBackend(std::string(savedBytes)));
+	REQUIRE(restoredGame.game.load(&gameInput));
+	REQUIRE(restoredGame.game.gameHeader.getBuildingArtwork());
+	CHECK(restoredGame.game.gameHeader.getBuildingArtwork()->bytes() == buildingArtwork);
+	CHECK(restoredGame.game.map.frozenAssetBundle()->serialize() ==
+		  map.frozenAssetBundle()->serialize());
+	CHECK(restoredGame.game.map.terrainRegistry().digest() == map.terrainRegistry().digest());
+	CHECK(restoredGame.game.checkSum() == world.game.checkSum());
+	auto *textBackend = new GAGCore::MemoryStreamBackend;
+	GAGCore::TextOutputStream textOut(textBackend);
+	world.game.save(&textOut, false, "combined text game");
+	textOut.flush();
+	textBackend->seekFromStart(0);
+	GAGCore::TextInputStream textInput(new GAGCore::MemoryStreamBackend(*textBackend));
+	Game textRestored(nullptr);
+	REQUIRE(textRestored.load(&textInput));
+	REQUIRE(textRestored.gameHeader.getBuildingArtwork());
+	CHECK(textRestored.gameHeader.getBuildingArtwork()->bytes() == buildingArtwork);
+	CHECK(textRestored.map.frozenAssetBundle()->serialize() ==
+		  map.frozenAssetBundle()->serialize());
+	CHECK(textRestored.checkSum() == world.game.checkSum());
+	const auto snapshot =
+		SimulationSnapshot::capture(world.game, SimulationSnapshot::captureCatalog(world.game));
+	CHECK(snapshot.catalogs->assets == map.frozenAssetBundle());
+	SceneMap scene;
+	scene.bindSnapshot(snapshot, map.displayViewportW, map.displayViewportH, map.displayedTeam);
+	auto frozen = scene.frozenAssetBundle();
+	map.tile(2, 1);
+	CHECK(map.frozenAssetBundle() == frozen);
+	CHECK(map.terrainTypeAt(39, 8) == terrain);
+	map.clear();
+	CHECK(frozen->sheets.size() == 1);
 }
 TEST_CASE("invalid packages fail atomically and reimports preserve local edits") {
     glob2test::HeadlessGlobals globals; Map map;map.setSize(5,5,GRASS);

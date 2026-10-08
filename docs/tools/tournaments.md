@@ -74,11 +74,13 @@ startup diagnostics go to stderr. It enumerates selectable AIs (excluding None),
 Cortex and Maxima parameter schemas, generators, controls, revisions, telemetry,
 and save/network versions, plus map-report and generation-telemetry schema versions.
 Its `commands` list names the structured commands this build supports (`game`,
-`generate_map`, `verify_match`, `sim_version`), and `sim_version` holds the build's
+`generate_map`, `verify_match`, `sim_version`, `compose_buildings`), and `sim_version` holds the build's
 simulation version (see [verifying a match record](../development/headless-replays.md#verifying-a-match-record)),
 so a job runner can probe a binary without passing it flags it may not know.
-Structured commands require `--output-dir DIR`; an existing
-`result.json` is rejected. Values are separate ordinary arguments, not JSON.
+Game and generation commands require `--output-dir DIR`; an existing
+`result.json` is rejected. Building-family composition writes JSON to stdout; see
+[portable building families](../features/building-catalogs.md#portable-building-families).
+Values are separate ordinary arguments, not JSON.
 
 ```sh
 build/src/glob2 --generate-map --generator 15 --map-seed 42 \
@@ -692,3 +694,10 @@ worker count may change without altering decisions. Save and replay exports
 retain pending fields and deadlines. See
 [performance experiments](../development/performance-telemetry.md) for the
 benchmark procedure and interpretation of CPU and wall time.
+
+
+New generated maps can carry normalized custom building frames with
+`--building-catalog CATALOG_JSON --building-artwork BUNDLE_G2BA`. Use the canonical
+snapshot produced by `--compose-buildings` as the catalog file. The artwork bundle
+is verified against that catalog and embedded in the generated map (format 145).
+Families selected in the graphical picker do not affect headless generation.

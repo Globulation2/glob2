@@ -18,6 +18,7 @@
 
 #include "DatasetWriter.h"
 #include "Game.h"
+#include "BuildingArtwork.h"
 #include "ai/BuildingCapabilities.h"
 #include <stdexcept>
 #include "GameUtilities.h"
@@ -195,6 +196,9 @@ void Game::setGameHeader(const GameHeader& newGameHeader, bool saveAI)
 		&& resolvedHeader.getBuildingCatalogSnapshot() != buildingsTypes.snapshotJson())
 		throw std::runtime_error("Game setup building catalog does not match the map catalog");
 	resolvedHeader.setBuildingCatalogSnapshot(buildingsTypes.snapshotJson());
+    if (resolvedHeader.getBuildingArtwork() && (!gameHeader.getBuildingArtwork() || resolvedHeader.getBuildingArtwork()->bytes()!=gameHeader.getBuildingArtwork()->bytes()))
+        throw std::runtime_error("Game setup artwork does not match the map");
+    resolvedHeader.setBuildingArtwork(gameHeader.getBuildingArtwork() ? gameHeader.getBuildingArtwork()->bytes() : std::string{});
 	resolvedHeader.setResourceExperiments(map.resourceRegistry().experiments());
 	for (int p=0; p<Team::MAX_COUNT; ++p)
 	{

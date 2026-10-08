@@ -3,6 +3,7 @@
 #include "Game.h"
 #include "GenerationContext.h"
 #include "Utilities.h"
+#include <memory>
 namespace MapGeneration
 {
 ScoredSettlementChoice
@@ -26,7 +27,10 @@ chooseScoredSettlements(GenerationContext &context, const std::vector<std::vecto
 			context.telemetry.choice("starts.scored.outcome", "incomplete proposal", int(k));
 			continue;
 		}
-		Game trial(nullptr);
+		// Preview workers have smaller stacks than the main thread. Keep the
+		// candidate simulation on the heap, as with the final generated game.
+		auto trialStorage = std::make_unique<Game>(nullptr);
+		Game &trial = *trialStorage;
 		trial.map.setSize(context.request.wDec, context.request.hDec);
 		trial.map.setGame(&trial);
 		GenerationContext probe(initial);

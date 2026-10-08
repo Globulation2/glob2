@@ -22,6 +22,7 @@ import {
 import { SimVersion, simVersionKey } from './simVersion.ts';
 
 export const ENGINE_JOB_KINDS = [
+  'validate-buildings',
   'validate-ai',
   'validate-set',
   'import-ai-map',
@@ -217,7 +218,24 @@ interface JobContract {
   result: TSchema;
 }
 
+export const ValidateBuildingsPayload = Strict({
+  blobHash: Sha256Hex,
+  baseHash: Sha256Hex,
+  suite: Type.Literal(1),
+});
+export const ValidateBuildingsResult = Type.Union([
+  Strict({
+    valid: Type.Literal(true),
+    archiveHash: Sha256Hex,
+    baseHash: Sha256Hex,
+    catalog: BuildingCatalog,
+    artworkHash: Type.Optional(Sha256Hex),
+    suite: Type.Literal(1),
+  }),
+  Strict({ valid: Type.Literal(false), reason: Type.String({ maxLength: 2000 }) }),
+]);
 export const engineJobs = {
+  'validate-buildings': { payload: ValidateBuildingsPayload, result: ValidateBuildingsResult },
   'validate-set': { payload: ValidateSetPayload, result: ValidateSetResult },
   'validate-ai': { payload: ValidateAiPayload, result: AiValidationReport },
   'import-ai-map': { payload: ImportAiMapPayload, result: ImportAiMapResult },
@@ -231,6 +249,7 @@ export type EngineJobPayload<K extends EngineJobKind> = Static<(typeof engineJob
 export type EngineJobOutput<K extends EngineJobKind> = Static<(typeof engineJobs)[K]['result']>;
 
 const JobKind = Type.Union([
+  Type.Literal('validate-buildings'),
   Type.Literal('validate-ai'),
   Type.Literal('validate-set'),
   Type.Literal('import-ai-map'),

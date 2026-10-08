@@ -35,6 +35,12 @@ const MapStudio = lazy(() =>
   import('./pages/MapStudio.tsx').then((m) => ({ default: m.MapStudio })),
 );
 const AiStudio = lazy(() => import('./pages/AiStudio.tsx').then((m) => ({ default: m.AiStudio })));
+const BuildingLibrary = lazy(() =>
+  import('./pages/BuildingLibrary.tsx').then((m) => ({ default: m.BuildingLibrary })),
+);
+const BuildingStudio = lazy(() =>
+  import('./pages/BuildingStudio.tsx').then((m) => ({ default: m.BuildingStudio })),
+);
 const Ais = lazy(() => import('./pages/Ais.tsx').then((m) => ({ default: m.Ais })));
 const AiPage = lazy(() => import('./pages/Ais.tsx').then((m) => ({ default: m.AiPage })));
 const AiPublish = lazy(() => import('./pages/Ais.tsx').then((m) => ({ default: m.AiPublish })));
@@ -68,6 +74,30 @@ interface Route {
 }
 
 export const ROUTES: Route[] = [
+  {
+    pattern: '/buildings',
+    section: 'buildings',
+    title: 'Building library',
+    render: () => <BuildingLibrary />,
+  },
+  {
+    pattern: '/buildings/:id',
+    section: 'buildings',
+    title: 'Building family',
+    render: (p) => <BuildingLibrary key={p['id']} id={p['id']} />,
+  },
+  {
+    pattern: '/building-studio',
+    section: 'buildings',
+    title: 'Building Studio',
+    render: () => <BuildingStudio />,
+  },
+  {
+    pattern: '/building-studio/:id',
+    section: 'buildings',
+    title: 'Building Studio',
+    render: (p) => <BuildingStudio key={p['id']} id={p['id']} />,
+  },
   {
     pattern: '/sets',
     section: 'sets',
@@ -336,6 +366,7 @@ function Layout() {
     { to: '/maps', id: 'maps', name: 'Maps', icon: 'map' },
     { to: '/sets', id: 'sets', name: 'Terrain & resources', icon: 'palette' },
     { to: '/ais', id: 'ais', name: 'AI Library', icon: 'robot' },
+    { to: '/buildings', id: 'buildings', name: 'Buildings', icon: 'map' },
     { to: '/music', id: 'music', name: 'Music', icon: 'music' },
     { to: '/skins', id: 'skins', name: 'Skins', icon: 'palette' },
     ...(isModerator(account)
@@ -389,7 +420,7 @@ function Layout() {
             group === 'Play'
               ? ['home', 'leaderboard', 'players', 'matches'].includes(item.id)
               : group === 'Create'
-                ? ['maps', 'sets', 'ais', 'music', 'skins'].includes(item.id)
+                ? ['maps', 'sets', 'ais', 'buildings', 'music', 'skins'].includes(item.id)
                 : item.id === 'admin',
           );
           return items.length ? (

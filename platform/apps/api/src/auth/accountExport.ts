@@ -37,6 +37,11 @@ export const EXPORTED_ACCOUNT_COLUMNS: Record<string, string[]> = {
   match_colony_skins: ['account_id'],
   skin_purchases: ['account_id'],
   colony_skin_reports: ['reporter_account_id'],
+  building_families: ['owner_account_id'],
+  building_likes: ['account_id'],
+  building_favourites: ['account_id'],
+  building_reports: ['reporter_account_id'],
+  building_drafts: ['owner_account_id'],
   asset_sets: ['owner_account_id'],
   set_likes: ['account_id'],
   set_reports: ['reporter_account_id'],
@@ -892,6 +897,43 @@ export async function exportAccount(
         .orderBy('a.created_at')
         .execute();
 
+      const buildingDrafts = await tx
+        .selectFrom('building_drafts')
+        .selectAll()
+        .where('owner_account_id', '=', id)
+        .orderBy('created_at')
+        .execute();
+      const buildingFamilies = await tx
+        .selectFrom('building_families')
+        .selectAll()
+        .where('owner_account_id', '=', id)
+        .execute();
+      const buildingReleases = buildingFamilies.length
+        ? await tx
+            .selectFrom('building_releases')
+            .selectAll()
+            .where(
+              'family_id',
+              'in',
+              buildingFamilies.map((f) => f.id),
+            )
+            .execute()
+        : [];
+      const buildingLikes = await tx
+        .selectFrom('building_likes')
+        .selectAll()
+        .where('account_id', '=', id)
+        .execute();
+      const buildingFavourites = await tx
+        .selectFrom('building_favourites')
+        .selectAll()
+        .where('account_id', '=', id)
+        .execute();
+      const buildingReports = await tx
+        .selectFrom('building_reports')
+        .selectAll()
+        .where('reporter_account_id', '=', id)
+        .execute();
       return {
         format: ACCOUNT_EXPORT_FORMAT,
         exportedAt: new Date().toISOString(),
@@ -915,6 +957,17 @@ export async function exportAccount(
           refreshTokens: rows(refreshTokens),
           webSessions: rows(webSessions),
           signInAttempts: rows(signInAttempts),
+        },
+        buildings: {
+          families: rows(buildingFamilies),
+          releases: rows(buildingReleases),
+          likes: rows(buildingLikes),
+          favourites: rows(buildingFavourites),
+          reports: rows(buildingReports),
+          drafts: buildingDrafts.map(({ archive, ...draft }) => ({
+            ...clean(draft),
+            archiveBase64: archive.toString('base64'),
+          })),
         },
         skins: {
           published: skins.map((skin) => ({

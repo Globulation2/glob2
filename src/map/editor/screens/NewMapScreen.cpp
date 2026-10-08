@@ -8,6 +8,7 @@
 #include "GenerationService.h"
 #include "GenerationValidation.h"
 #include "LandscapePickerScreen.h"
+#include "BuildingLibraryScreen.h"
 #include <FormatableString.h>
 
 namespace fe = Glob2UI;
@@ -102,6 +103,21 @@ Element NewMapScreen::build(const Presentation &p)
 																			descriptor.terrainType = TerrainType(i);
 																			invalidatePreview();
 																		})));
+	if (screens)
+		fields.push_back(fe::button("newmap/buildings", "Building families",
+									[this]
+									{
+										screens->push(std::make_unique<BuildingLibraryScreen>(),
+													  [this](GAGGUI::Screen &, int result)
+													  {
+														  if (result == QUIT_APPLICATION)
+														  {
+															  endExecute(QUIT_APPLICATION);
+															  return;
+														  }
+														  invalidatePreview();
+													  });
+									}));
 	fe::ButtonOptions toggleOptions;
 	toggleOptions.selected = parameters;
 	fields.push_back(fe::button("parameters", parameters ? tr("Hide parameters") : tr("Size and parameters"), [this] { parameters = !parameters; }, toggleOptions));

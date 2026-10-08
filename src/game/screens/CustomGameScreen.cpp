@@ -1,6 +1,9 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "CustomGameScreen.h"
 #include "OnlineServices.h"
+#include "BuildingLibraryScreen.h"
+#include "BuildingLibrary.h"
+#include "OnlineStorage.h"
 #include "PlatformClient.h"
 #include "InstanceConfig.h"
 #include "ChooseMapScreen.h"
@@ -523,6 +526,13 @@ void CustomGameScreen::invalidatePreview()
 	invalidate();
 }
 
+void CustomGameScreen::buildingSelectionChanged()
+{
+	// Rebuild generated previews, but retain a loaded map's immutable catalog.
+	if (setup.random) invalidatePreview();
+	invalidate();
+}
+
 std::string CustomGameScreen::teamsLabel(const TeamLayout::Layout &layout) const
 {
 	const int lone = setup.loneColony(layout);
@@ -587,6 +597,7 @@ bool CustomGameScreen::loadMap(const std::string &requestedPath)
 			entry.bytes = bytes;
 			entry.header = world->mapHeader;
 			entry.buildingCatalogSnapshot = world->gameHeader.getBuildingCatalogSnapshot();
+			entry.buildingArtwork = world->gameHeader.getBuildingArtwork();
 			entry.terrain.loadFromMap(world->map);
 			if (!entry.terrain.isLoaded())
 				throw std::runtime_error("map terrain");
@@ -597,6 +608,8 @@ bool CustomGameScreen::loadMap(const std::string &requestedPath)
 		int old = setup.capacity;
 		mapHeader = entry.header;
 		gameHeader.setBuildingCatalogSnapshot(entry.buildingCatalogSnapshot);
+		gameHeader.setBuildingArtwork(entry.buildingArtwork ? entry.buildingArtwork->bytes()
+															: std::string{});
 		setup.setCapacity(mapHeader.getNumberOfTeams());
 		source = path;
 		generatedSnapshot.reset();
@@ -646,6 +659,18 @@ bool CustomGameScreen::generateMap()
 	try
 	{
 		std::unique_ptr<Game> game;
+		BuildingLibrary::Selection buildings{globalContainer->buildingsTypes, {}};
+		// Keep this choice fixed across candidate rolls; installed releases never
+		// replace the immutable definitions in a loaded map or save.
+		if (Online::servicesCreated())
+			buildings = BuildingLibrary(Online::services().storage)
+							.compose(globalContainer->buildingsTypes);
+		else
+		{
+			auto storage = Online::makeUserDirectoryStorage();
+			if (storage)
+				buildings = BuildingLibrary(*storage).compose(globalContainer->buildingsTypes);
+		}
 		GenerationService generator;
 		const auto rootSeed = GenerationContext::randomSeed();
 		GenerationResult generationResult;
@@ -661,6 +686,9 @@ bool CustomGameScreen::generateMap()
 		for (int attempt = 0; attempt < candidates; ++attempt)
 		{
 			auto roll = std::make_unique<Game>(nullptr);
+			roll->buildingsTypes = buildings.catalog;
+			roll->gameHeader.setBuildingCatalogSnapshot(buildings.catalog.snapshotJson());
+			roll->configureBuildingCatalog();
 			auto request = setup.generator;
 			request.seed =
 				shown
@@ -682,6 +710,8 @@ bool CustomGameScreen::generateMap()
 		}
 		if (!game)
 			throw std::runtime_error(generationResult.diagnostic());
+		game->gameHeader.setBuildingArtwork(buildings.artwork ? buildings.artwork->bytes()
+															  : std::string{});
 		// Veteran/Fast start: the generators place level-0 workers; raise the chosen world's
 		// before it is saved, so the snapshot every client loads carries them.
 		if (setup.startingUnitLevel != 0)
@@ -696,6 +726,9 @@ bool CustomGameScreen::generateMap()
 		Engine::applyLocalExperiments(initial, game->mapHeader);
 		game->setGameHeader(initial);
 		gameHeader.setBuildingCatalogSnapshot(initial.getBuildingCatalogSnapshot());
+		gameHeader.setBuildingArtwork(game->gameHeader.getBuildingArtwork()
+										  ? game->gameHeader.getBuildingArtwork()->bytes()
+										  : std::string{});
 		// GameLoadScreen reads these bytes directly (Engine::initCustomFromBytesTask): a map
 		// this process just generated and is about to load right back gets no benefit from a
 		// round trip through disk, so the serialized bytes just move to another in-memory owner.
@@ -1256,6 +1289,23 @@ Element CustomGameScreen::mapTab(const Presentation &p, bool narrow)
 					{.enabled = validMap && !previewBusy(), .flat = true, .alignLeft = true, .icon = fe::uiIcon(fe::UIIcon::Settings)}));
 		}
 	}
+	// Room generators run on the server and cannot consult this profile's selection.
+	// A locally generated map can still be shared through the map library.
+	if (!forRoom)
+		left.push_back(fe::button("map/buildings", "Building families",
+								  [this]
+								  {
+									  screens.push(std::make_unique<BuildingLibraryScreen>(),
+												   [this](GAGGUI::Screen &, int result)
+												   {
+													   if (result == QUIT_APPLICATION)
+													   {
+														   endExecute(QUIT_APPLICATION);
+														   return;
+													   }
+													   buildingSelectionChanged();
+												   });
+								  }));
 	auto leftParts = left;
 	auto leftColumn = fe::column(std::move(left), {p.pt(8)});
 

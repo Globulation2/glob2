@@ -50,6 +50,7 @@ export const CHAT_RETENTION_DAYS = 30;
 /**
  * Finished engine jobs are kept this long. The newest succeeded verify job of
  * each match is kept for good (the match page shows its verdict details).
+ * Building releases retain their referenced validation job as their verdict.
  */
 export const ENGINE_JOB_RETENTION_DAYS = 30;
 /** Resolved match proposals and finished queue tickets are kept this long. */
@@ -168,6 +169,7 @@ export async function runMaintenance(db: Kysely<Database>): Promise<MaintenanceR
     'id',
     sql`SELECT j.id FROM engine_jobs j
         WHERE j.status <> 'queued' AND j.completed_at < ${days(ENGINE_JOB_RETENTION_DAYS)}
+          AND NOT EXISTS (SELECT 1 FROM building_releases v WHERE v.job_id=j.id)
           AND NOT (
             j.kind = 'verify-match' AND j.status = 'succeeded' AND NOT EXISTS (
               SELECT 1 FROM engine_jobs n

@@ -577,6 +577,31 @@ docker compose up -d --force-recreate init platform-api   # init writes a new re
 sed -i '/^RELAY_KEYS=/d' .env && docker compose up -d platform-api
 ```
 
+## Building-family library rollout
+
+Apply migrations through `0050_building_library.sql` before updating the API and
+worker. Migration 0049 adds private account drafts; 0050 adds published families,
+immutable archives, social activity and the `validate-buildings` engine job kind.
+Rebuild and deploy the engine-agent image from the matching engine source, then
+deploy the website. The agent enables this job kind only when its binary's
+`--headless-catalog` advertises `compose_buildings`; a recent heartbeat must also
+advertise the same stock catalog hash used for publication.
+
+Publication is unavailable until a compatible agent is present. Existing agents
+continue serving their advertised kinds and simulation versions. Pending releases
+become downloadable after native validation succeeds; failed jobs can be retried
+by publishing the same saved draft again. A published release pins its archive,
+stock catalog and simulation version, so a new engine does not silently replace
+old validation. Keep agents for simulation versions the instance still supports.
+
+Format 145 maps, saves and replays include custom building artwork alongside their catalog.
+The earlier terrain/resource asset bundle retains its format-144 loading gate.
+Network protocol 62 prevents mixed header layouts in one match. The save-support
+floor remains 58. Authors share generated maps through the existing map library;
+server-side room generation does not read a player's locally installed families.
+See [building catalogs](../features/building-catalogs.md#online-library-and-installed-families)
+for quotas, package limits, moderation and the author workflow.
+
 ## JavaScript AI validation rollout
 
 Apply database migrations through `0040_ai_library.sql`, then deploy the engine

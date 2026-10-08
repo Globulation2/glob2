@@ -1,3 +1,5 @@
+import { buildingLibraryRoutes } from './buildings/library.ts';
+import { buildingDraftRoutes } from './buildings/drafts.ts';
 import { setLibraryRoutes } from './sets/routes.ts';
 import { musicStudioRoutes } from './music/studio.ts';
 import { aiStudioRoutes } from './ai-studio/routes.ts';
@@ -258,6 +260,8 @@ export async function buildApp(
   await playRoutes(app, identity, rooms);
   await mapCatalogRoutes(app, identity);
   await aiLibraryRoutes(app, identity);
+  await buildingDraftRoutes(app, identity);
+  await buildingLibraryRoutes(app, identity);
   await setLibraryRoutes(app, identity);
   await musicRoutes(app, identity);
   await skinRoutes(app, identity);

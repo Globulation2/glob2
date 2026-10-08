@@ -1,10 +1,27 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "Glob2Test.h"
 #include "BuildingType.h"
+#include "BuildingLibrary.h"
+#include "BuildingLibraryScreen.h"
+#include "OnlineServices.h"
+#include "OnlineFakes.h"
+#include "EngineFixtures.h"
+#include "OnlineStorage.h"
+#include "SimVersion.h"
+#include "GameHeader.h"
+#include "Version.h"
+#include <BinaryStream.h>
+#include <TextStream.h>
+#include <StreamBackend.h>
+#include <Toolkit.h>
+#include <FileManager.h>
+#include <GraphicContext.h>
 #include "ExperimentalFeatures.h"
 #include <type_traits>
 #include <nlohmann/json.hpp>
 #include <stdexcept>
+#include <map>
+#include <array>
 
 TEST_SUITE("BuildingCatalog")
 {
@@ -440,4 +457,478 @@ TEST_CASE("legacy inventory vocabulary imports and ambiguous material aliases fa
     CHECK(catalog.snapshotJson()==before);
 }
 
+}
+
+namespace {
+nlohmann::json packageFixture(const std::string& name)
+{
+    const std::string key="b-"+name+"-kitchen";
+    return {{"schemaVersion",1},{"namespace",name},{"experiments",nlohmann::json::array()},
+        {"sprites",nlohmann::json::array()}, {"variants",nlohmann::json::array({{
+            {"key",key}, {"properties",{{"width",2},{"height",2},{"hpInit",200},{"hpMax",200},
+                {"gameSprite","data/gfx/inn0b"},{"miniSprite","data/gfx/miniinn0b"}}},
+            {"semantics",{{"placeable",true},{"instantPlacement",true}}}
+        }})}};
+}
+}
+TEST_SUITE("BuildingPackages")
+{
+TEST_CASE("composition sorts packages and preserves the stock IDs and starting building")
+{
+    const auto first=packageFixture("11111111-1111-4111-8111-111111111111").dump();
+    const auto second=packageFixture("22222222-2222-4222-8222-222222222222").dump();
+    BuildingsTypes a,b,stock; a.initLegacy(); b.initLegacy(); stock.initLegacy();
+    a.composePackages({second,first}); b.composePackages({first,second});
+    CHECK(a.snapshotJson()==b.snapshotJson());
+    CHECK(a.fingerprint()==b.fingerprint());
+    const auto composed=a.snapshotJson();
+    CHECK_THROWS(a.composePackages({first}));
+    CHECK(a.snapshotJson()==composed);
+    CHECK(a.getStartingBuildingTypeNum()==stock.getStartingBuildingTypeNum());
+    REQUIRE(a.size()==stock.size()+2);
+    for(std::size_t i=0;i<stock.size();++i) CHECK(a.get(i)->key==stock.get(i)->key);
+    auto unchanged=stock; unchanged.composePackages({});
+    CHECK(unchanged.fingerprint()==stock.fingerprint());
+}
+TEST_CASE("rejected package composition preserves descriptors and canonical stock bytes")
+{
+    using Json=nlohmann::json;
+    BuildingsTypes catalog; catalog.initLegacy();
+    const auto before=catalog.snapshotJson();
+    const auto good=packageFixture("11111111-1111-4111-8111-111111111111");
+    auto rejected=[&](Json package) {
+        CHECK_THROWS(catalog.composePackages({package.dump()}));
+        CHECK(catalog.snapshotJson()==before);
+    };
+    auto bad=good; bad["variants"][0]["key"]="stock-replacement"; rejected(bad);
+    bad=good; bad["variants"][0]["previous"]="inn.0.site"; rejected(bad);
+    bad=good; bad["variants"][0]["requiredExperiment"]="markets-v2"; rejected(bad);
+    bad=good; bad["variants"][0]["properties"]["width"]=0; rejected(bad);
+    bad=good; bad["variants"][0]["properties"]["gameSprite"]="/tmp/sprite"; rejected(bad);
+    bad=good; bad["variants"][0]["properties"].erase("gameSprite"); rejected(bad);
+    bad=good; bad["variants"][0]["properties"].erase("miniSprite"); rejected(bad);
+    bad["variants"][0]["properties"]["miniSpriteImage"]=-1;
+    BuildingsTypes withoutMini; withoutMini.initLegacy();
+    CHECK_NOTHROW(withoutMini.composePackages({bad.dump()}));
+    bad=good; bad["variants"][0]["id"]=0; rejected(bad);
+    bad=good; bad["variants"][0]["semantics"]["market"]["suppliesStockExperiment"]="b-22222222-2222-4222-8222-222222222222-enable"; rejected(bad);
+    CHECK_THROWS(catalog.composePackages({good.dump(),good.dump()}));
+    CHECK(catalog.snapshotJson()==before);
+}
+TEST_CASE("artwork hashes bind catalog identity and custom frame indices are checked")
+{
+    using Json=nlohmann::json;
+    BuildingsTypes a,b; a.initLegacy(); b.initLegacy();
+    auto package=packageFixture("11111111-1111-4111-8111-111111111111");
+    package["sprites"].push_back({{"key","kitchen"},{"frames",Json::array({{
+        {"imageHash",std::string(64,'a')},{"width",64},{"height",64}
+    }})}});
+    package["variants"][0]["properties"]["gameSprite"]="package:kitchen";
+    a.composePackages({package.dump()});
+    CHECK(a.get(55)->gameSprite.starts_with("community/buildings/"));
+    package["sprites"][0]["frames"][0]["imageHash"]=std::string(64,'b');
+    b.composePackages({package.dump()});
+    CHECK(a.fingerprint()!=b.fingerprint());
+    package["variants"][0]["properties"]["gameSpriteCount"]=2;
+    CHECK_THROWS(b.composePackages({package.dump()}));
+}
+}
+
+#include "BuildingArtwork.h"
+#include "Sha256.h"
+namespace {
+std::string artworkFixture(const nlohmann::json& sprites,const std::map<std::string,std::string>& images)
+{
+    std::string result="G2BA0001";
+    const auto write=[&](std::uint32_t value) { for(unsigned i=0;i<4;++i) result+=char((value>>(i*8))&255); };
+    const auto text=sprites.dump();write(text.size());result+=text;write(images.size());
+    for(const auto& [hash,bytes]:images) { result+=hash;write(bytes.size());result+=bytes; }
+    return result;
+}
+}
+TEST_SUITE("BuildingArtwork") {
+TEST_CASE("portable bundle verifies image bytes and catalog frame references") {
+    const unsigned char webp[]={82,73,70,70,58,0,0,0,87,69,66,80,86,80,56,76,45,0,0,0,47,1,64,0,16,31,32,32,33,238,240,127,159,220,16,18,144,41,81,245,144,144,128,88,66,247,127,138,67,2,1,66,58,229,98,156,66,169,23,23,104,136,232,127,4,0};
+    const std::string image(reinterpret_cast<const char*>(webp),sizeof(webp));
+    const auto hash=Online::Sha256::hex(image);
+    auto package=packageFixture("11111111-1111-4111-8111-111111111111");
+    package["sprites"].push_back({{"key","kitchen"},{"frames",nlohmann::json::array({{
+        {"imageHash",hash},{"width",2},{"height",2}
+    }})}});
+    package["variants"][0]["properties"]["gameSprite"]="package:kitchen";
+    BuildingsTypes catalog; catalog.initLegacy();catalog.composePackages({package.dump()});
+	CHECK_THROWS(BuildingArtwork::decode({}, catalog));
+	const auto bytes = artworkFixture(package["sprites"], {{hash, image}});
+	const auto artwork = BuildingArtwork::decode(bytes, catalog);
+	REQUIRE(artwork);
+	CHECK(artwork->bytes() == bytes);
+	CHECK(artwork->files().size() == 1);
+	GameHeader header;
+	header.setBuildingCatalogSnapshot(catalog.snapshotJson());
+	header.setBuildingArtwork(bytes);
+	for (bool text : {false, true})
+		for (bool withoutPlayerInfo : {false, true})
+		{
+			GAGCore::MemoryStreamBackend backend;
+			{
+				auto *owned = new GAGCore::MemoryStreamBackend;
+				std::unique_ptr<GAGCore::OutputStream> stream;
+				if (text)
+					stream = std::make_unique<GAGCore::TextOutputStream>(owned);
+				else
+					stream = std::make_unique<GAGCore::BinaryOutputStream>(owned);
+				if (withoutPlayerInfo)
+					header.saveWithoutPlayerInfo(stream.get());
+				else
+					header.save(stream.get());
+				stream->flush();
+				backend = *owned;
+			}
+			backend.seekFromStart(0);
+			GameHeader restored;
+			std::unique_ptr<GAGCore::InputStream> stream;
+			if (text)
+				stream = std::make_unique<GAGCore::TextInputStream>(
+					new GAGCore::MemoryStreamBackend(backend));
+			else
+				stream = std::make_unique<GAGCore::BinaryInputStream>(
+					new GAGCore::MemoryStreamBackend(backend));
+			REQUIRE((withoutPlayerInfo ? restored.loadWithoutPlayerInfo(stream.get(), VERSION_MINOR)
+									   : restored.load(stream.get(), VERSION_MINOR)));
+			REQUIRE(restored.getBuildingArtwork());
+			CHECK(restored.getBuildingArtwork()->bytes() == bytes);
+			CHECK(restored.getBuildingCatalogSnapshot() == catalog.snapshotJson());
+		}
+	GameHeader retained = header;
+	CHECK(retained.getBuildingArtwork() == header.getBuildingArtwork());
+	retained.reset();
+	CHECK_FALSE(retained.getBuildingArtwork());
+	CHECK_THROWS(header.setBuildingArtwork({}));
+	{
+		glob2test::HeadlessGlobals globals;
+		Online::MemoryStorage storage;
+		BuildingLibrary library(storage);
+		const auto releaseHash = Online::Sha256::hex("artwork-release");
+		nlohmann::json manifest = {{"schemaVersion", 1},
+								   {"name", "Painted kitchen"},
+								   {"namespace", package.at("namespace")},
+								   {"archiveHash", releaseHash},
+								   {"packageJson", package.dump()},
+								   {"packageHash", Online::Sha256::hex(package.dump())},
+								   {"catalogHash", catalog.fingerprint()},
+								   {"baseHash", globalContainer->buildingsTypes.fingerprint()},
+								   {"simVersion", Online::SimVersion::local().key()},
+								   {"artworkHash", Online::Sha256::hex(bytes)}};
+		library.install(manifest, bytes);
+		library.select(package.at("namespace").get<std::string>(), true);
+		auto selected = library.compose(globalContainer->buildingsTypes);
+		REQUIRE(selected.artwork);
+		CHECK(selected.artwork->files().size() == 1);
+		CHECK(selected.artwork->bytes() == bytes);
+		glob2test::HeadlessGame::Options options;
+		options.header = true;
+		glob2test::HeadlessGame world(options);
+		world.game.buildingsTypes = selected.catalog;
+		world.game.gameHeader.setBuildingCatalogSnapshot(selected.catalog.snapshotJson());
+		world.game.gameHeader.setBuildingArtwork(selected.artwork->bytes());
+		world.game.configureBuildingCatalog();
+		const auto id = world.game.buildingsTypes.findByKey(
+			package.at("variants")[0].at("key").get<std::string>());
+		auto *building = world.game.addBuilding(5, 5, id, 0);
+		REQUIRE(building);
+		world.game.map.setBuilding(5, 5, building->type->width, building->type->height,
+								   building->gid);
+		for (bool text : {false, true})
+		{
+			auto *saved = new GAGCore::MemoryStreamBackend;
+			std::unique_ptr<GAGCore::OutputStream> output;
+			if (text)
+				output = std::make_unique<GAGCore::TextOutputStream>(saved);
+			else
+				output = std::make_unique<GAGCore::BinaryOutputStream>(saved);
+			world.game.save(output.get(), false, "Portable kitchen");
+			output->flush();
+			saved->seekFromStart(0);
+			std::unique_ptr<GAGCore::InputStream> input;
+			if (text)
+				input = std::make_unique<GAGCore::TextInputStream>(
+					new GAGCore::MemoryStreamBackend(*saved));
+			else
+				input = std::make_unique<GAGCore::BinaryInputStream>(
+					new GAGCore::MemoryStreamBackend(*saved));
+			Game loaded(nullptr);
+			REQUIRE(loaded.load(input.get()));
+			REQUIRE(loaded.gameHeader.getBuildingArtwork());
+			CHECK(loaded.gameHeader.getBuildingArtwork()->bytes() == bytes);
+			CHECK(loaded.buildingsTypes.fingerprint() == catalog.fingerprint());
+			CHECK(loaded.checkSum() == world.game.checkSum());
+		}
+		storage.files["online/buildings/" + releaseHash + ".g2ba"] = "corrupt";
+		CHECK_THROWS(library.compose(globalContainer->buildingsTypes));
+	}
+	auto bad = bytes;
+	bad.back() ^= 1;
+	CHECK_THROWS(BuildingArtwork::decode(bad, catalog));
+	CHECK_THROWS(BuildingArtwork::decode(bytes + "extra", catalog));
+	auto brokenImage = image;
+	brokenImage[25] ^= char(255);
+	const auto brokenHash = Online::Sha256::hex(brokenImage);
+	auto brokenPackage = package;
+	brokenPackage["sprites"][0]["frames"][0]["imageHash"] = brokenHash;
+	BuildingsTypes brokenCatalog;
+	brokenCatalog.initLegacy();
+	brokenCatalog.composePackages({brokenPackage.dump()});
+	CHECK_THROWS_WITH(
+		BuildingArtwork::decode(
+			artworkFixture(brokenPackage["sprites"], {{brokenHash, brokenImage}}), brokenCatalog),
+		"Building artwork: damaged WebP pixels");
+
+	auto wrong = package["sprites"];
+	wrong[0]["frames"][0]["width"] = 3;
+	CHECK_THROWS(BuildingArtwork::decode(artworkFixture(wrong, {{hash, image}}), catalog));
+	CHECK_THROWS(BuildingArtwork::decode(artworkFixture(nlohmann::json::array(), {}), catalog));
+	BuildingsTypes stock;
+	stock.initLegacy();
+	CHECK_FALSE(BuildingArtwork::decode({}, stock));
+	// Shared hashes do not share renderer allocations: every sprite frame and
+	// team layer must count against the decoded budget before assets are read.
+	for (bool teamLayer : {false, true})
+	{
+		nlohmann::json frames = nlohmann::json::array();
+		for (int frame = 0; frame < (teamLayer ? 33 : 65); ++frame)
+		{
+			nlohmann::json descriptor = {{"imageHash", hash}, {"width", 512}, {"height", 512}};
+			if (teamLayer)
+				descriptor["teamColorHash"] = hash;
+			frames.push_back(descriptor);
+		}
+		CHECK_THROWS_WITH(
+			BuildingArtwork::decode(
+				artworkFixture(nlohmann::json::array({{{"key", "shared"}, {"frames", frames}}}),
+							   {{hash, image}}),
+				stock),
+			"Building artwork: decoded artwork exceeds 64 MiB");
+	}
+	const std::string nested = std::string(1000, '[') + "0" + std::string(1000, ']');
+	std::string deep = "G2BA0001";
+	for (unsigned i = 0; i < 4; ++i)
+		deep += char((nested.size() >> (i * 8)) & 255);
+	deep+=nested;deep+=std::string(4,0);
+    CHECK_THROWS_WITH(BuildingArtwork::decode(deep,stock),"Building artwork: manifest nesting exceeds 64 levels");
+}
+}
+
+TEST_CASE("portable custom artwork loads and draws its exact native frame [display] [artifacts]" * doctest::test_suite("BuildingArtwork"))
+{
+    glob2test::HeadlessGlobals globals({.display=true,.width=128,.height=128,.screenFlags=0});
+	// The pinned ImageAssets lossless fixture has opaque, transparent and half-alpha pixels.
+	const unsigned char webp[] = {
+		82, 73, 70,  70, 58,  0,   0,   0,   87,  69,  66,  80,  86,  80,  56,  76,  45,
+		0,  0,  0,   47, 1,   64,  0,   16,  31,  32,  32,  33,  238, 240, 127, 159, 220,
+		16, 18, 144, 41, 81,  245, 144, 144, 128, 88,  66,  247, 127, 138, 67,  2,   1,
+		66, 58, 229, 98, 156, 66,  169, 23,  23,  104, 136, 232, 127, 4,   0};
+	const std::string image(reinterpret_cast<const char *>(webp), sizeof(webp));
+	const auto hash = Online::Sha256::hex(image);
+	auto package = packageFixture("11111111-1111-4111-8111-111111111111");
+	package["sprites"].push_back(
+		{{"key", "native-render"},
+		 {"frames", nlohmann::json::array({{{"imageHash", hash}, {"width", 2}, {"height", 2}}})}});
+	package["variants"][0]["properties"]["gameSprite"] = "package:native-render";
+	package["variants"][0]["properties"]["miniSprite"] = "package:native-render";
+	auto catalog = globals->buildingsTypes;
+	catalog.composePackages({package.dump()});
+	const auto artwork = artworkFixture(package["sprites"], {{hash, image}});
+	glob2test::HeadlessGame world({.header = true});
+	world.game.buildingsTypes = catalog;
+	world.game.gameHeader.setBuildingCatalogSnapshot(catalog.snapshotJson());
+	world.game.gameHeader.setBuildingArtwork(artwork);
+	world.game.configureBuildingCatalog();
+	const auto id = catalog.findByKey(package.at("variants")[0].at("key").get<std::string>());
+	auto *building = world.game.addBuilding(5, 5, id, 0);
+	REQUIRE(building);
+	world.game.map.setBuilding(5, 5, building->type->width, building->type->height, building->gid);
+	auto *saved = new GAGCore::MemoryStreamBackend;
+	GAGCore::BinaryOutputStream output(saved);
+	world.game.save(&output, false, "Painted kitchen");
+	output.flush();
+	saved->seekFromStart(0);
+	GameGUI restored(false);
+	GAGCore::BinaryInputStream input(new GAGCore::MemoryStreamBackend(*saved));
+	REQUIRE(restored.game.load(&input));
+	CHECK(restored.game.checkSum() == world.game.checkSum());
+	REQUIRE(restored.game.gameHeader.getBuildingArtwork());
+	CHECK(restored.game.gameHeader.getBuildingArtwork()->bytes() == artwork);
+	const auto *type = restored.game.buildingsTypes.get(id);
+	REQUIRE(type->gameSpritePtr);
+	REQUIRE(type->miniSpritePtr);
+	CHECK(type->gameSpritePtr->getFrameCount() == 1);
+	CHECK(type->gameSpritePtr->getW(0) == 2);
+	CHECK(type->gameSpritePtr->getH(0) == 2);
+	auto *gfx = globals->gfx;
+	gfx->beginFrame(GAGCore::GraphicContext::FrameMode::FullRedraw);
+	gfx->setClipRect();
+	gfx->drawFilledRect(0, 0, 128, 128, GAGCore::Color(10, 20, 30));
+	gfx->drawSprite(10, 10, type->gameSpritePtr, type->gameSpriteImage);
+	// Enlarged copy makes the same mounted frame easy to inspect in the evidence.
+	gfx->drawSprite(32, 32, 64, 64, type->miniSpritePtr, type->miniSpriteImage);
+	gfx->nextFrame();
+	auto *frame = gfx->completedFrame();
+	REQUIRE(frame);
+	const auto pixel = [&](int x, int y)
+	{
+		Uint8 r, g, b, a;
+		// Native desktop frames use backing pixels; draw positions use logical units.
+		const int px = x * frame->w / gfx->getW(), py = y * frame->h / gfx->getH();
+		REQUIRE(SDL_ReadSurfacePixel(frame, px, py, &r, &g, &b, &a));
+		return std::array<Uint8, 3>{r, g, b};
+	};
+	CHECK(pixel(10, 10) == std::array<Uint8, 3>{17, 39, 71});
+	CHECK(pixel(11, 10) == std::array<Uint8, 3>{10, 20, 30});
+	CHECK(pixel(11, 11) == std::array<Uint8, 3>{0, 255, 30});
+	REQUIRE(SDL_SaveBMP(
+		frame,
+		(glob2test::artifactDir() / "building-artwork-native-software.bmp").string().c_str()));
+}
+
+struct BuildingLibraryScreenHarness
+{
+	static void checkDetail()
+	{
+		const std::string origin = "https://play.example.org",
+						  id = "11111111-1111-4111-8111-111111111111";
+		OnlineFakes::World world;
+		Online::ServicesOwner owner;
+		auto &client = owner.get().client;
+		client.replaceEnvironment(world.environment());
+		client.start(origin);
+		auto guest = world.http.pending("/api/v1/auth/guest");
+		REQUIRE(guest);
+		guest->reply(200, nlohmann::json{{"account", OnlineFakes::account()},
+										 {"tokens", OnlineFakes::tokens("r1", 1790000000, 600)},
+										 {"deviceCredential", std::string(43, 'c')}});
+		client.update();
+		BuildingLibraryScreen screen;
+		screen.familyInput = origin + "/buildings/" + id;
+		screen.openFamily();
+		auto detail = world.http.pending("/api/v1/buildings/" + id);
+		REQUIRE(detail);
+		CHECK(detail->request.url == origin + "/api/v1/buildings/" + id);
+		detail->reply(200, nlohmann::json{
+							   {"id", id}, {"name", "Shared kitchen"}, {"visibility", "unlisted"}});
+		client.update();
+		CHECK_FALSE(screen.busy);
+		CHECK(screen.openedFamily.at("id") == id);
+		const auto before = world.http.exchanges.size();
+		screen.familyInput = "https://another.example/buildings/" + id;
+		screen.openFamily();
+		CHECK(world.http.exchanges.size() == before);
+		CHECK(screen.status.find("another instance") != std::string::npos);
+		screen.familyInput = id;
+		screen.openFamily();
+		detail = world.http.pending("/api/v1/buildings/" + id);
+		REQUIRE(detail);
+		detail->reply(200, nlohmann::json{{"id", "22222222-2222-4222-8222-222222222222"}});
+		client.update();
+		CHECK(screen.openedFamily.is_null());
+		CHECK(screen.status == "The server returned a different family.");
+		screen.openFamily();
+		detail = world.http.pending("/api/v1/buildings/" + id);
+		REQUIRE(detail);
+		detail->reply(404,
+					  nlohmann::json{{"code", "not_found"}, {"message", "Not found"}});
+		client.update();
+		CHECK(screen.openedFamily.is_null());
+		CHECK(screen.status.find("signing in through Online") != std::string::npos);
+	}
+};
+TEST_SUITE("BuildingFamilyLinks")
+{
+	TEST_CASE("family links stay on the selected instance and normalize bounded IDs")
+	{
+		const std::string id = "abcdefab-cdef-4abc-8def-abcdefabcdef",
+						  origin = "https://play.example.org";
+		CHECK(buildingFamilyIdFromLink("  " + id + "\n", origin) == id);
+		CHECK(buildingFamilyIdFromLink("ABCDEFAB-CDEF-4ABC-8DEF-ABCDEFABCDEF", origin) == id);
+		CHECK(buildingFamilyIdFromLink(origin + "/buildings/" + id + "/?from=share#details",
+									   origin) == id);
+		for (const auto &link :
+			 {"https://other.example/buildings/" + id, origin + ".evil/buildings/" + id,
+			  "https://play.example.org@evil.example/buildings/" + id,
+			  origin + "/api/v1/buildings/" + id, origin + "/buildings/../" + id, id + "/extra",
+			  std::string(36, '-'), std::string(1025, 'x')})
+			CHECK_THROWS(buildingFamilyIdFromLink(link, origin));
+	}
+	TEST_CASE("unlisted family detail uses the instance client and rejects changed identity")
+	{
+		glob2test::HeadlessGlobals globals;
+		BuildingLibraryScreenHarness::checkDetail();
+	}
+}
+
+TEST_SUITE("BuildingLibrary")
+{
+	TEST_CASE(
+		"installed families are explicitly selected and corrupt updates never replace a release")
+	{
+		glob2test::HeadlessGlobals fixture;
+		Online::MemoryStorage storage;
+		BuildingLibrary library(storage);
+		const auto stock = globalContainer->buildingsTypes;
+		auto package = packageFixture("11111111-1111-4111-8111-111111111111");
+		auto combined = stock;
+		combined.composePackages({package.dump()});
+		const auto archiveHash = Online::Sha256::hex("release-one");
+		nlohmann::json manifest = {{"schemaVersion", 1},
+								   {"name", "Kitchen"},
+								   {"namespace", package.at("namespace")},
+								   {"archiveHash", archiveHash},
+								   {"packageJson", package.dump()},
+								   {"packageHash", Online::Sha256::hex(package.dump())},
+								   {"catalogHash", combined.fingerprint()},
+								   {"baseHash", stock.fingerprint()},
+								   {"simVersion", Online::SimVersion::local().key()}};
+		library.install(manifest, {});
+		CHECK(library.entries().size() == 1);
+		CHECK(library.entries().at(0).at("simVersion") == manifest.at("simVersion"));
+		CHECK(library.entries().at(0).at("baseHash") == manifest.at("baseHash"));
+		// Exercise the production profile adapter as well as MemoryStorage: atomic
+		// file writes require their parent directory to exist on a fresh install.
+		const auto directory =
+			std::filesystem::path(GAGCore::Toolkit::getFileManager()->getDir(0)) /
+			"online/buildings";
+		std::filesystem::remove_all(directory);
+		auto profileStorage = Online::makeUserDirectoryStorage();
+		BuildingLibrary profileLibrary(*profileStorage);
+		REQUIRE(std::filesystem::is_directory(directory));
+		CHECK_NOTHROW(profileLibrary.install(manifest, {}));
+		CHECK(profileLibrary.entries().size() == 1);
+		profileLibrary.remove(package.at("namespace").get<std::string>());
+		CHECK(library.compose(stock).catalog.fingerprint() == stock.fingerprint());
+		library.select(package.at("namespace").get<std::string>(), true);
+		CHECK(library.compose(stock).catalog.fingerprint() == combined.fingerprint());
+		auto corrupt = manifest;
+		corrupt["packageHash"] = std::string(64, '0');
+		const auto before = storage.files;
+		CHECK_THROWS(library.install(corrupt, {}));
+		CHECK(storage.files == before);
+		auto other = packageFixture("22222222-2222-4222-8222-222222222222");
+		auto second = stock;
+		second.composePackages({other.dump()});
+		auto next = manifest;
+		next["namespace"] = other.at("namespace");
+		next["packageJson"] = other.dump();
+		next["packageHash"] = Online::Sha256::hex(other.dump());
+		next["catalogHash"] = second.fingerprint();
+		next["archiveHash"] = Online::Sha256::hex("release-two");
+		library.install(next, {});
+		library.select(other.at("namespace").get<std::string>(), true);
+		auto expected = stock;
+		expected.composePackages({other.dump(), package.dump()});
+		CHECK(library.compose(stock).catalog.fingerprint() == expected.fingerprint());
+		storage.files["online/buildings/" + archiveHash + ".json"] = "{}";
+		CHECK_THROWS(library.compose(stock));
+		library.remove(package.at("namespace").get<std::string>());
+		CHECK(library.compose(stock).catalog.fingerprint() == second.fingerprint());
+		CHECK(storage.persisted >= 6);
+	}
 }
