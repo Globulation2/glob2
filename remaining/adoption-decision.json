@@ -1,0 +1,23 @@
+{
+  "status": "retain_experiments",
+  "reason": "The integrated all-four combination fails the primary dense regression gate at 30 pairs. No individual candidate or A+B qualified independently in the original isolated campaign.",
+  "dense_tps_gain": {
+    "median": -0.0295,
+    "ci95": [
+      -0.0408,
+      -0.015
+    ]
+  },
+  "dense_cpu_reduction": {
+    "median": -0.0352,
+    "ci95": [
+      -0.0484,
+      -0.014
+    ]
+  },
+  "sensitivity": "Not run: no combination selected after fresh integrated qualification. Correctness matrix across all requested settings was completed.",
+  "retained_integration_tree": "5e9f333f8d6bf89c064ad5ac44d95c1b11e41519",
+  "delivered_revision": "9e9497d7151effae8fdd00a48db515511d30077a",
+  "delivered_tree": "85e5dffafb8c4a87b5fc8946fc96bbc6f4970e70",
+  "final_master_comparison": "6487b873dd3f29ad3ab75c7513597fa47905c132"
+}

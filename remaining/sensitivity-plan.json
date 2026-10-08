@@ -1,0 +1,223 @@
+{
+  "output": "sensitivity",
+  "repeats": 10,
+  "affinity_design": "Eight physical cores and their SMT siblings reserved for every case, including the four-thread control. Only delay or executor size changes within this sweep. Compare to its paired integrated baseline, not unpaired four-core timings.",
+  "cases": [
+    {
+      "id": "delay-8-threads-1",
+      "reference": {
+        "name": "integration-baseline",
+        "binary": "/home/bradley/.codex/worktrees/114f19f3-7248-4ab6-a516-3ff0849d0a96/glob2/artifacts/resource-growth/remaining/integration-baseline",
+        "cwd": "/home/bradley/.codex/worktrees/114f19f3-7248-4ab6-a516-3ff0849d0a96/glob2/artifacts/resource-growth/remaining/integration-src",
+        "args": [
+          "--compute-threads",
+          "1",
+          "--resource-growth-delay",
+          "8",
+          "--resource-growth-execution",
+          "shared"
+        ]
+      },
+      "candidate": {
+        "name": "integration-production",
+        "binary": "/home/bradley/.codex/worktrees/114f19f3-7248-4ab6-a516-3ff0849d0a96/glob2/artifacts/resource-growth/remaining/integration-production",
+        "cwd": "/home/bradley/.codex/worktrees/114f19f3-7248-4ab6-a516-3ff0849d0a96/glob2/artifacts/resource-growth/remaining/integration-src",
+        "args": [
+          "--compute-threads",
+          "1",
+          "--resource-growth-delay",
+          "8",
+          "--resource-growth-execution",
+          "shared"
+        ]
+      },
+      "scenarios": [
+        "dense",
+        "multi",
+        "ai512",
+        "disabled512"
+      ],
+      "same_behavior": true
+    },
+    {
+      "id": "delay-8-threads-2",
+      "reference": {
+        "name": "integration-baseline",
+        "binary": "/home/bradley/.codex/worktrees/114f19f3-7248-4ab6-a516-3ff0849d0a96/glob2/artifacts/resource-growth/remaining/integration-baseline",
+        "cwd": "/home/bradley/.codex/worktrees/114f19f3-7248-4ab6-a516-3ff0849d0a96/glob2/artifacts/resource-growth/remaining/integration-src",
+        "args": [
+          "--compute-threads",
+          "2",
+          "--resource-growth-delay",
+          "8",
+          "--resource-growth-execution",
+          "shared"
+        ]
+      },
+      "candidate": {
+        "name": "integration-production",
+        "binary": "/home/bradley/.codex/worktrees/114f19f3-7248-4ab6-a516-3ff0849d0a96/glob2/artifacts/resource-growth/remaining/integration-production",
+        "cwd": "/home/bradley/.codex/worktrees/114f19f3-7248-4ab6-a516-3ff0849d0a96/glob2/artifacts/resource-growth/remaining/integration-src",
+        "args": [
+          "--compute-threads",
+          "2",
+          "--resource-growth-delay",
+          "8",
+          "--resource-growth-execution",
+          "shared"
+        ]
+      },
+      "scenarios": [
+        "dense",
+        "multi",
+        "ai512",
+        "disabled512"
+      ],
+      "same_behavior": true
+    },
+    {
+      "id": "delay-8-threads-4",
+      "reference": {
+        "name": "integration-baseline",
+        "binary": "/home/bradley/.codex/worktrees/114f19f3-7248-4ab6-a516-3ff0849d0a96/glob2/artifacts/resource-growth/remaining/integration-baseline",
+        "cwd": "/home/bradley/.codex/worktrees/114f19f3-7248-4ab6-a516-3ff0849d0a96/glob2/artifacts/resource-growth/remaining/integration-src",
+        "args": [
+          "--compute-threads",
+          "4",
+          "--resource-growth-delay",
+          "8",
+          "--resource-growth-execution",
+          "shared"
+        ]
+      },
+      "candidate": {
+        "name": "integration-production",
+        "binary": "/home/bradley/.codex/worktrees/114f19f3-7248-4ab6-a516-3ff0849d0a96/glob2/artifacts/resource-growth/remaining/integration-production",
+        "cwd": "/home/bradley/.codex/worktrees/114f19f3-7248-4ab6-a516-3ff0849d0a96/glob2/artifacts/resource-growth/remaining/integration-src",
+        "args": [
+          "--compute-threads",
+          "4",
+          "--resource-growth-delay",
+          "8",
+          "--resource-growth-execution",
+          "shared"
+        ]
+      },
+      "scenarios": [
+        "dense",
+        "multi",
+        "ai512",
+        "disabled512"
+      ],
+      "same_behavior": true
+    },
+    {
+      "id": "delay-8-threads-8",
+      "reference": {
+        "name": "integration-baseline",
+        "binary": "/home/bradley/.codex/worktrees/114f19f3-7248-4ab6-a516-3ff0849d0a96/glob2/artifacts/resource-growth/remaining/integration-baseline",
+        "cwd": "/home/bradley/.codex/worktrees/114f19f3-7248-4ab6-a516-3ff0849d0a96/glob2/artifacts/resource-growth/remaining/integration-src",
+        "args": [
+          "--compute-threads",
+          "8",
+          "--resource-growth-delay",
+          "8",
+          "--resource-growth-execution",
+          "shared"
+        ]
+      },
+      "candidate": {
+        "name": "integration-production",
+        "binary": "/home/bradley/.codex/worktrees/114f19f3-7248-4ab6-a516-3ff0849d0a96/glob2/artifacts/resource-growth/remaining/integration-production",
+        "cwd": "/home/bradley/.codex/worktrees/114f19f3-7248-4ab6-a516-3ff0849d0a96/glob2/artifacts/resource-growth/remaining/integration-src",
+        "args": [
+          "--compute-threads",
+          "8",
+          "--resource-growth-delay",
+          "8",
+          "--resource-growth-execution",
+          "shared"
+        ]
+      },
+      "scenarios": [
+        "dense",
+        "multi",
+        "ai512",
+        "disabled512"
+      ],
+      "same_behavior": true
+    },
+    {
+      "id": "delay-1-threads-4",
+      "reference": {
+        "name": "integration-baseline",
+        "binary": "/home/bradley/.codex/worktrees/114f19f3-7248-4ab6-a516-3ff0849d0a96/glob2/artifacts/resource-growth/remaining/integration-baseline",
+        "cwd": "/home/bradley/.codex/worktrees/114f19f3-7248-4ab6-a516-3ff0849d0a96/glob2/artifacts/resource-growth/remaining/integration-src",
+        "args": [
+          "--compute-threads",
+          "4",
+          "--resource-growth-delay",
+          "1",
+          "--resource-growth-execution",
+          "shared"
+        ]
+      },
+      "candidate": {
+        "name": "integration-production",
+        "binary": "/home/bradley/.codex/worktrees/114f19f3-7248-4ab6-a516-3ff0849d0a96/glob2/artifacts/resource-growth/remaining/integration-production",
+        "cwd": "/home/bradley/.codex/worktrees/114f19f3-7248-4ab6-a516-3ff0849d0a96/glob2/artifacts/resource-growth/remaining/integration-src",
+        "args": [
+          "--compute-threads",
+          "4",
+          "--resource-growth-delay",
+          "1",
+          "--resource-growth-execution",
+          "shared"
+        ]
+      },
+      "scenarios": [
+        "dense",
+        "multi",
+        "ai512",
+        "disabled512"
+      ],
+      "same_behavior": true
+    },
+    {
+      "id": "delay-3-threads-4",
+      "reference": {
+        "name": "integration-baseline",
+        "binary": "/home/bradley/.codex/worktrees/114f19f3-7248-4ab6-a516-3ff0849d0a96/glob2/artifacts/resource-growth/remaining/integration-baseline",
+        "cwd": "/home/bradley/.codex/worktrees/114f19f3-7248-4ab6-a516-3ff0849d0a96/glob2/artifacts/resource-growth/remaining/integration-src",
+        "args": [
+          "--compute-threads",
+          "4",
+          "--resource-growth-delay",
+          "3",
+          "--resource-growth-execution",
+          "shared"
+        ]
+      },
+      "candidate": {
+        "name": "integration-production",
+        "binary": "/home/bradley/.codex/worktrees/114f19f3-7248-4ab6-a516-3ff0849d0a96/glob2/artifacts/resource-growth/remaining/integration-production",
+        "cwd": "/home/bradley/.codex/worktrees/114f19f3-7248-4ab6-a516-3ff0849d0a96/glob2/artifacts/resource-growth/remaining/integration-src",
+        "args": [
+          "--compute-threads",
+          "4",
+          "--resource-growth-delay",
+          "3",
+          "--resource-growth-execution",
+          "shared"
+        ]
+      },
+      "scenarios": [
+        "dense",
+        "multi",
+        "ai512",
+        "disabled512"
+      ],
+      "same_behavior": true
+    }
+  ]
+}

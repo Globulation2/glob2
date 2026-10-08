@@ -1,0 +1,119 @@
+A
+  dense 10 TPS 2.9 1.53 3.71 CPU 3.41 2.03 4.48
+  multi 1 TPS 8.07 8.07 8.07 CPU 1.3 1.3 1.3
+AB
+  dense 10 TPS -1.05 -2.98 4.29 CPU -1.17 -3.6 4.15
+ABCD
+  dense 10 TPS 3.77 2.01 6.42 CPU 4.19 2.68 6.53
+B
+  dense 10 TPS -0.57 -1.98 2.16 CPU -0.49 -2.19 1.95
+  multi 1 TPS 11.22 11.22 11.22 CPU 2.08 2.08 2.08
+C
+  dense 10 TPS 0.46 -2.91 2.95 CPU 0.6 -3.01 3.46
+  multi 1 TPS -0.27 -0.27 -0.27 CPU -1.62 -1.62 -1.62
+D
+  dense 10 TPS -0.37 -2.11 2.53 CPU 0.6 -2.73 2.79
+  multi 1 TPS 1.13 1.13 1.13 CPU 1.57 1.57 1.57
+control
+  dense 10 TPS 5.91 1.07 7.25 CPU 6.54 1.36 7.42
+master
+  dense 10 TPS -4.71 -6.24 -2.61 CPU -4.69 -5.61 -2.1
+{
+  "A": {
+    "wins": [
+      [
+        "dense",
+        "tps_gain"
+      ],
+      [
+        "dense",
+        "cpu_reduction"
+      ],
+      [
+        "multi",
+        "tps_gain"
+      ],
+      [
+        "multi",
+        "cpu_reduction"
+      ]
+    ],
+    "rules_out_primary_regressions": false,
+    "demonstrated_regressions": [],
+    "investigate": [],
+    "qualifies_numerically": false,
+    "requires_extension": true
+  },
+  "AB": {
+    "wins": [],
+    "rules_out_primary_regressions": false,
+    "demonstrated_regressions": [],
+    "investigate": [],
+    "qualifies_numerically": false,
+    "requires_extension": true
+  },
+  "ABCD": {
+    "wins": [
+      [
+        "dense",
+        "tps_gain"
+      ],
+      [
+        "dense",
+        "cpu_reduction"
+      ]
+    ],
+    "rules_out_primary_regressions": false,
+    "demonstrated_regressions": [],
+    "investigate": [],
+    "qualifies_numerically": false,
+    "requires_extension": true
+  },
+  "B": {
+    "wins": [
+      [
+        "multi",
+        "tps_gain"
+      ],
+      [
+        "multi",
+        "cpu_reduction"
+      ]
+    ],
+    "rules_out_primary_regressions": false,
+    "demonstrated_regressions": [],
+    "investigate": [],
+    "qualifies_numerically": false,
+    "requires_extension": true
+  },
+  "C": {
+    "wins": [],
+    "rules_out_primary_regressions": false,
+    "demonstrated_regressions": [],
+    "investigate": [],
+    "qualifies_numerically": false,
+    "requires_extension": true
+  },
+  "D": {
+    "wins": [
+      [
+        "multi",
+        "tps_gain"
+      ],
+      [
+        "multi",
+        "cpu_reduction"
+      ]
+    ],
+    "rules_out_primary_regressions": false,
+    "demonstrated_regressions": [],
+    "investigate": [
+      [
+        "multi",
+        "p99_change"
+      ]
+    ],
+    "qualifies_numerically": false,
+    "requires_extension": true
+  }
+}

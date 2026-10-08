@@ -1,0 +1,25 @@
+focused tests integration-production pass
+per-tick dense 1 all match
+per-tick dense 3 all match
+per-tick dense 8 all match
+per-tick multi 1 all match
+per-tick multi 3 all match
+per-tick multi 8 all match
+per-tick ai512 1 all match
+per-tick ai512 3 all match
+per-tick ai512 8 all match
+per-tick disabled512 1 all match
+per-tick disabled512 3 all match
+per-tick disabled512 8 all match
+per-tick sparse 1 all match
+per-tick sparse 3 all match
+per-tick sparse 8 all match
+per-tick saturated 1 all match
+per-tick saturated 3 all match
+per-tick saturated 8 all match
+per-tick harvested 1 all match
+per-tick harvested 3 all match
+per-tick harvested 8 all match
+per-tick fragmented 1 all match
+per-tick fragmented 3 all match
+per-tick fragmented 8 all match

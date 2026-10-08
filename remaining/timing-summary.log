@@ -1,0 +1,209 @@
+A
+  ai512 10 TPS 1.16 -0.83 2.64 CPU 1.16 0.12 2.69
+  dense 10 TPS -2.1 -3.3 1.75 CPU -2.38 -3.53 1.55
+  disabled512 10 TPS -0.98 -3.03 2.42 CPU -0.07 -3.54 2.42
+  fragmented 10 TPS 0.04 -2.51 2.02 CPU -0.03 -4.41 2.22
+  harvested 10 TPS -0.91 -2.87 1.41 CPU -0.67 -1.96 0.76
+  multi 10 TPS 3.8 -1.95 6.96 CPU 1.73 -0.42 2.55
+  saturated 10 TPS -1.71 -3.91 1.21 CPU -1.95 -3.96 1.3
+  sparse 10 TPS 1.5 -8.11 8.84 CPU 0.93 -6.25 6.81
+AB
+  ai512 10 TPS 0.8 -1.45 2.17 CPU 2.54 -1.22 3.04
+  dense 10 TPS 0.48 -3.38 5.04 CPU 0.51 -3.22 4.98
+  disabled512 10 TPS 0.56 -1.46 3.32 CPU 0.98 -1.62 3.08
+  fragmented 10 TPS -1.73 -3.28 0.46 CPU -1.51 -4.34 0.87
+  harvested 10 TPS 0.66 -1.11 2.65 CPU 1.54 -0.81 3.86
+  multi 10 TPS 1.58 -5.97 6.89 CPU -0.42 -2.19 1.5
+  saturated 10 TPS 1.1 -1.66 3.7 CPU 1.19 -1.68 3.68
+  sparse 10 TPS 2.58 -4.28 8.54 CPU 1.32 -2.46 4.42
+ABCD
+  ai512 10 TPS 2.56 0.98 3.29 CPU 3.64 0.38 4.76
+  dense 10 TPS 3.92 0.74 8.57 CPU 3.76 1.53 8.61
+  disabled512 10 TPS 1.56 -1.5 3.96 CPU 1.16 -1.1 3.16
+  fragmented 10 TPS -0.06 -3.67 1.67 CPU 0.76 -4.85 2.24
+  harvested 10 TPS 1.67 0.88 2.46 CPU 1.2 0.36 2.64
+  multi 10 TPS 0.42 -7.19 10.94 CPU 2.29 0.58 3.86
+  saturated 10 TPS 2.75 -1.12 6.36 CPU 2.87 -1.16 6.2
+  sparse 10 TPS 5.33 1.31 11.8 CPU 3.92 1.0 7.34
+B
+  ai512 10 TPS 1.87 -0.8 4.87 CPU 2.79 -1.27 5.77
+  dense 10 TPS 0.22 -2.29 4.24 CPU 0.58 -2.3 4.06
+  disabled512 10 TPS 1.41 -1.84 2.81 CPU 1.47 -1.82 3.7
+  fragmented 10 TPS -1.08 -1.87 1.25 CPU -1.23 -1.92 0.88
+  harvested 10 TPS -0.07 -1.46 2.34 CPU 0.47 -0.4 2.68
+  multi 10 TPS 3.0 -7.7 7.86 CPU 0.67 -3.56 4.42
+  saturated 10 TPS -0.74 -2.66 1.25 CPU -0.94 -3.47 1.57
+  sparse 10 TPS -0.19 -4.55 3.41 CPU 0.03 -3.03 2.64
+C
+  ai512 10 TPS 1.04 -0.93 1.7 CPU 0.66 -1.26 2.43
+  dense 10 TPS 3.15 -0.37 6.47 CPU 3.67 -0.72 5.98
+  disabled512 10 TPS -0.5 -1.99 1.04 CPU -2.33 -4.81 1.17
+  fragmented 10 TPS 0.38 -0.88 2.73 CPU 0.5 -1.75 3.31
+  harvested 10 TPS -0.07 -1.91 1.1 CPU 0.59 -0.92 1.43
+  multi 10 TPS 6.66 2.38 8.93 CPU 2.64 1.39 4.54
+  saturated 10 TPS 0.96 -0.93 3.97 CPU 1.63 -0.79 4.03
+  sparse 10 TPS 3.02 -0.47 4.77 CPU 1.55 -0.98 2.97
+D
+  ai512 10 TPS -0.22 -0.85 2.42 CPU 0.27 -0.68 2.72
+  dense 10 TPS 1.98 -0.21 6.67 CPU 2.3 -0.7 6.78
+  disabled512 10 TPS -0.48 -1.02 2.73 CPU -1.46 -3.7 3.23
+  fragmented 10 TPS 1.47 0.2 2.41 CPU 2.79 -0.4 3.68
+  harvested 10 TPS 1.02 0.39 2.39 CPU 0.94 0.14 1.8
+  multi 10 TPS -4.28 -6.57 0.87 CPU 0.05 -0.75 1.28
+  saturated 10 TPS 0.15 -1.89 2.19 CPU -0.05 -2.52 2.41
+  sparse 10 TPS 6.42 0.65 15.26 CPU 3.36 0.04 8.8
+control
+  ai512 10 TPS 0.81 -0.71 2.55 CPU 1.45 -0.92 3.38
+  dense 10 TPS 0.87 -0.99 3.83 CPU 0.87 -1.3 4.36
+  disabled512 10 TPS -0.11 -1.58 1.69 CPU 1.35 -2.81 2.05
+  fragmented 10 TPS 1.25 0.57 2.95 CPU 1.6 0.6 2.85
+  harvested 10 TPS -0.36 -2.08 0.65 CPU -0.59 -2.2 0.24
+  multi 10 TPS -1.13 -6.89 4.72 CPU 0.73 -3.33 2.73
+  saturated 10 TPS 0.31 -0.93 1.94 CPU 0.24 -1.17 2.21
+  sparse 10 TPS 0.13 -4.67 3.47 CPU -1.07 -2.77 1.89
+master
+  ai512 10 TPS 0.53 -1.06 1.98 CPU 2.56 1.42 4.3
+  dense 10 TPS -5.96 -6.72 -3.14 CPU -5.75 -6.47 -2.79
+  disabled512 10 TPS -0.98 -3.39 1.03 CPU -0.96 -4.84 1.42
+  fragmented 10 TPS -10.58 -13.13 -9.05 CPU -4.11 -9.0 -3.47
+  harvested 10 TPS -3.33 -5.68 -0.38 CPU -3.19 -4.64 -1.09
+  multi 10 TPS -30.38 -32.58 -28.47 CPU -4.1 -5.02 -1.77
+  saturated 10 TPS -6.88 -9.92 -5.58 CPU -6.83 -10.09 -4.4
+  sparse 10 TPS 0.96 -2.64 8.22 CPU -0.56 -3.93 3.87
+{
+  "A": {
+    "wins": [
+      [
+        "ai512",
+        "cpu_reduction"
+      ]
+    ],
+    "rules_out_primary_regressions": false,
+    "demonstrated_regressions": [],
+    "investigate": [
+      [
+        "disabled512",
+        "p99_change"
+      ]
+    ],
+    "qualifies_numerically": false,
+    "requires_extension": true
+  },
+  "AB": {
+    "wins": [],
+    "rules_out_primary_regressions": false,
+    "demonstrated_regressions": [],
+    "investigate": [],
+    "qualifies_numerically": false,
+    "requires_extension": true
+  },
+  "ABCD": {
+    "wins": [
+      [
+        "ai512",
+        "tps_gain"
+      ],
+      [
+        "ai512",
+        "cpu_reduction"
+      ],
+      [
+        "dense",
+        "tps_gain"
+      ],
+      [
+        "dense",
+        "cpu_reduction"
+      ],
+      [
+        "harvested",
+        "tps_gain"
+      ],
+      [
+        "harvested",
+        "cpu_reduction"
+      ],
+      [
+        "multi",
+        "cpu_reduction"
+      ],
+      [
+        "sparse",
+        "tps_gain"
+      ],
+      [
+        "sparse",
+        "cpu_reduction"
+      ]
+    ],
+    "rules_out_primary_regressions": false,
+    "demonstrated_regressions": [],
+    "investigate": [
+      [
+        "dense",
+        "p99_change"
+      ],
+      [
+        "disabled512",
+        "p99_change"
+      ]
+    ],
+    "qualifies_numerically": false,
+    "requires_extension": true
+  },
+  "B": {
+    "wins": [],
+    "rules_out_primary_regressions": false,
+    "demonstrated_regressions": [],
+    "investigate": [
+      [
+        "multi",
+        "p99_change"
+      ]
+    ],
+    "qualifies_numerically": false,
+    "requires_extension": true
+  },
+  "C": {
+    "wins": [
+      [
+        "multi",
+        "tps_gain"
+      ],
+      [
+        "multi",
+        "cpu_reduction"
+      ]
+    ],
+    "rules_out_primary_regressions": false,
+    "demonstrated_regressions": [],
+    "investigate": [],
+    "qualifies_numerically": false,
+    "requires_extension": true
+  },
+  "D": {
+    "wins": [
+      [
+        "fragmented",
+        "tps_gain"
+      ],
+      [
+        "harvested",
+        "tps_gain"
+      ],
+      [
+        "sparse",
+        "tps_gain"
+      ],
+      [
+        "sparse",
+        "cpu_reduction"
+      ]
+    ],
+    "rules_out_primary_regressions": false,
+    "demonstrated_regressions": [],
+    "investigate": [],
+    "qualifies_numerically": false,
+    "requires_extension": true
+  }
+}

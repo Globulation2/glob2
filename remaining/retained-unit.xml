@@ -1,0 +1,23 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="21" failures="0" errors="0" skipped="0"><testsuite name="libgag/src/TextStreamTest.cpp"><testcase classname="libgag/src/TextStreamTest.cpp" name="TextStream/qualified save field names coexist with section inheritance" time="0" status="run" />
+    <testcase classname="libgag/src/TextStreamTest.cpp" name="TextStream/raw binary fields roundtrip and malformed hex is rejected" time="0.000175" status="run" />
+  </testsuite><testsuite name="BufferedFileStream"><testcase classname="BufferedFileStream" name="bytes; SHA1; boundaries; seeks; reads; flush and destruction; memory stream writes" time="0.012976" status="run" />
+  </testsuite><testsuite name="ComputeExecutor"><testcase classname="ComputeExecutor" name="supported platforms execute jobs concurrently on distinct threads" time="0.000407" status="run" />
+    <testcase classname="ComputeExecutor" name="exclusive slots; nested batches; reuse; errors; barriers and reconfiguration" time="0.018001" status="run" />
+    <testcase classname="ComputeExecutor" name="deferred batches drain FIFO with owner participation, lanes, isolated errors and placements" time="0.107023" status="run" />
+    <testcase classname="ComputeExecutor" name="completed lanes can change placement while an unrelated older batch remains" time="0.000163" status="run" />
+    <testcase classname="ComputeExecutor" name="lane groups run in index order, placements cannot mix on a lane, and the horizon is bounded" time="0.002025" status="run" />
+    <testcase classname="ComputeExecutor" name="presentation cannot delay simulation barriers or run on the simulation owner" time="0.001007" status="run" />
+    <testcase classname="ComputeExecutor" name="presentation progresses before a continuous simulation backlog drains" time="0.008666" status="run" />
+    <testcase classname="ComputeExecutor" name="presentation replacement, chunk pumping, cancellation and errors retain no captures" time="0" status="run" />
+    <testcase classname="ComputeExecutor" name="resumable presentation yields without advancing or retaining canceled inputs" time="0" status="run" />
+  </testsuite><testsuite name="ReplayAppearance"><testcase classname="ReplayAppearance" name="only matching recordings and trusted origins restore appearance context" time="0.000245" status="run" />
+    <testcase classname="ReplayAppearance" name="companions survive copies but stale and oversized files are ignored" time="0.000477" status="run" />
+  </testsuite><testsuite name="ReplayStepCounter"><testcase classname="ReplayStepCounter" name="truncated replay bodies never become zero-filled orders" time="0.000918" status="run" />
+    <testcase classname="ReplayStepCounter" name="step totals cannot wrap" time="0" status="run" />
+    <testcase classname="ReplayStepCounter" name="checksum mismatch closes playback safely" time="0" status="run" />
+    <testcase classname="ReplayStepCounter" name="legacy create decoder respects both historical payload lengths" time="0" status="run" />
+    <testcase classname="ReplayStepCounter" name="WideRoundTrip" time="0.000374" status="run" />
+    <testcase classname="ReplayStepCounter" name="VersionBounds" time="0" status="run" />
+    <testcase classname="ReplayStepCounter" name="DecodeVersionPlumbing" time="0" status="run" />
+  </testsuite></testsuites>

@@ -1,0 +1,84 @@
+{
+  "output": "retained-comparison",
+  "repeats": 10,
+  "master_revision": "6487b873dd3f29ad3ab75c7513597fa47905c132",
+  "purpose": "Compare the retained growth implementation, integrated with current master including both format-144 save lineages, against edb09d402 and untouched current master. The four optimization candidates remain experiments.",
+  "cases": [
+    {
+      "id": "retained-vs-edb",
+      "reference": {
+        "name": "baseline",
+        "binary": "/home/bradley/.codex/worktrees/114f19f3-7248-4ab6-a516-3ff0849d0a96/glob2/artifacts/resource-growth/remaining/baseline/glob2",
+        "cwd": "/home/bradley/.codex/worktrees/114f19f3-7248-4ab6-a516-3ff0849d0a96/glob2",
+        "args": [
+          "--compute-threads",
+          "4",
+          "--resource-growth-delay",
+          "8",
+          "--resource-growth-execution",
+          "shared"
+        ]
+      },
+      "candidate": {
+        "name": "retained-current-master",
+        "binary": "/home/bradley/.codex/worktrees/114f19f3-7248-4ab6-a516-3ff0849d0a96/glob2/artifacts/resource-growth/remaining/retained",
+        "cwd": "/home/bradley/.codex/worktrees/114f19f3-7248-4ab6-a516-3ff0849d0a96/glob2",
+        "args": [
+          "--compute-threads",
+          "4",
+          "--resource-growth-delay",
+          "8",
+          "--resource-growth-execution",
+          "shared"
+        ]
+      },
+      "scenarios": [
+        "dense",
+        "multi",
+        "ai512",
+        "disabled512",
+        "sparse",
+        "saturated",
+        "harvested",
+        "fragmented"
+      ],
+      "same_behavior": true
+    },
+    {
+      "id": "retained-vs-latest-master",
+      "reference": {
+        "name": "master-6487b873d",
+        "binary": "/home/bradley/.codex/worktrees/114f19f3-7248-4ab6-a516-3ff0849d0a96/glob2/artifacts/resource-growth/remaining/current-master-src/build/linux/client/release/src/glob2",
+        "cwd": "/home/bradley/.codex/worktrees/114f19f3-7248-4ab6-a516-3ff0849d0a96/glob2/artifacts/resource-growth/remaining/current-master-src",
+        "args": [
+          "--compute-threads",
+          "4"
+        ]
+      },
+      "candidate": {
+        "name": "retained-current-master",
+        "binary": "/home/bradley/.codex/worktrees/114f19f3-7248-4ab6-a516-3ff0849d0a96/glob2/artifacts/resource-growth/remaining/retained",
+        "cwd": "/home/bradley/.codex/worktrees/114f19f3-7248-4ab6-a516-3ff0849d0a96/glob2",
+        "args": [
+          "--compute-threads",
+          "4",
+          "--resource-growth-delay",
+          "8",
+          "--resource-growth-execution",
+          "shared"
+        ]
+      },
+      "scenarios": [
+        "dense",
+        "multi",
+        "ai512",
+        "disabled512",
+        "sparse",
+        "saturated",
+        "harvested",
+        "fragmented"
+      ],
+      "same_behavior": false
+    }
+  ]
+}

@@ -1,0 +1,22 @@
+{
+  "baseline-confirmation": [
+    "multi"
+  ],
+  "integration-confirmation": [
+    "dense",
+    "ai512",
+    "saturated",
+    "harvested"
+  ],
+  "optimized-original": [
+    "dense",
+    "multi",
+    "disabled512",
+    "saturated",
+    "harvested"
+  ],
+  "direct-owner": [
+    "dense",
+    "multi"
+  ]
+}

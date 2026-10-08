@@ -1,0 +1,24 @@
+9ee89f1592dd99178aa6da2b862486801e4cd2a3
+100644 6c0a3a47cca1c78096282a0570ca9ed5a207f754 1	src/ai/engine/AIPipeline.cpp
+100644 d76f476df07032c3b37a27b352ec3df47ff9207c 2	src/ai/engine/AIPipeline.cpp
+100644 0a8bf95c36583d95168f542bc29adfddf8d559bb 3	src/ai/engine/AIPipeline.cpp
+100644 9953cffd93c5c56dacacb9dff928714865406068 1	src/app/cli/Headless.cpp
+100644 fdf5d2f7e2ed3b87e86cd56053509133bd155829 2	src/app/cli/Headless.cpp
+100644 ec1d12f8ead10c270d7822b5e4834f152fdf40d5 3	src/app/cli/Headless.cpp
+100644 287f41bba792f899416db289bb1e7a8d6841ea6f 1	src/game/GameAI.cpp
+100644 043dd967ebbb0792e80d057237ff8c705639ffac 2	src/game/GameAI.cpp
+100644 af11369f1dc7cba306cb891a319d15c0725674bf 3	src/game/GameAI.cpp
+
+Auto-merging docs/development/reference.md
+Auto-merging scons/sources.py
+Auto-merging src/ai/engine/AIPipeline.cpp
+CONFLICT (content): Merge conflict in src/ai/engine/AIPipeline.cpp
+Auto-merging src/app/cli/Headless.cpp
+CONFLICT (content): Merge conflict in src/app/cli/Headless.cpp
+Auto-merging src/common/ComputeExecutor.h
+Auto-merging src/engine/EngineRun.cpp
+Auto-merging src/engine/sim/snapshot/WorldCapture.cpp
+Auto-merging src/game/GameAI.cpp
+CONFLICT (content): Merge conflict in src/game/GameAI.cpp
+Auto-merging src/map/Map.cpp
+Auto-merging src/map/Map.h

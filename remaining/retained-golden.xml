@@ -1,0 +1,30 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="12" failures="2" errors="0" skipped="0"><testsuite name="BuildingCatalogFixtures"><testcase classname="BuildingCatalogFixtures" name="retained seeded compositions preserve full simulation continuation [golden]" time="0.372252" status="run" />
+  </testsuite><testsuite name="FarmAreas"><testcase classname="FarmAreas" name="without the experiment the default game has a stable checksum trace [golden]" time="0.135062" status="run" />
+  </testsuite><testsuite name="GuardAreaBalance"><testcase classname="GuardAreaBalance" name="without the experiment every warrior takes the nearest area; nobody leaves it; the checksum trace is stable [golden]" time="1.06744" status="run" />
+  </testsuite><testsuite name="MapTiling"><testcase classname="MapTiling" name="a repeated starting map has portable per-tick checksums [save-format][golden]" time="0.129419" status="run" />
+  </testsuite><testsuite name="MarketsV2"><testcase classname="MarketsV2" name="disabled fruit deliveries have a stable per-tick trace and save continuation [golden][save-format][artifacts]" time="1.14623" status="run" />
+  <testcase classname="MarketsV2" name="enabled supply networks repeat deterministically with save continuation [golden][save-format][artifacts]" time="2.51237" status="run" />
+  <testcase classname="MarketsV2" name="legacy workers already travelling to markets continue after migration [golden][save-format]" time="0.108436" status="run" />
+  </testsuite><testsuite name="RuntimeResources"><testcase classname="RuntimeResources" name="frozen seeded resource compositions preserve invariants and exact simulation continuation [golden]" time="0.517528" status="run">
+      <failure message="golden mismatch against resources/seeded-compositions.trace at line 1   expected: 410362371 0 3001687654 b84bf391a9f0665bf93d6a35c0f3079ce5e59e1808239055817c84592b90e9e1   actual:   410362371 0 3035242086 b84bf391a9f0665bf93d6a35c0f3079ce5e59e1808239055817c84592b90e9e1" type="FAIL">
+test/support/Glob2Test.cpp:205:
+golden mismatch against resources/seeded-compositions.trace at line 1
+  expected: 410362371 0 3001687654 b84bf391a9f0665bf93d6a35c0f3079ce5e59e1808239055817c84592b90e9e1
+  actual:   410362371 0 3035242086 b84bf391a9f0665bf93d6a35c0f3079ce5e59e1808239055817c84592b90e9e1
+
+      </failure>
+    </testcase>
+  </testsuite><testsuite name="TeamStatsSave"><testcase classname="TeamStatsSave" name="legacy version 84 fixture replays the golden trace [save-format][golden]" time="0.085406" status="run" />
+  <testcase classname="TeamStatsSave" name="legacy version 88 fixture replays the golden trace [save-format][golden]" time="0.072" status="run" />
+  </testsuite><testsuite name="TurnEngineHarness"><testcase classname="TurnEngineHarness" name="the committed match record verifies to the committed checksum trace [network-sim][golden]" time="0.464779" status="run">
+      <failure message="unverifiable == verified" type="CHECK">
+src/net/turn/TurnEngineHarness.cpp:1793:
+CHECK( v.verdict == "verified" ) is NOT correct!
+  values: CHECK( unverifiable == verified )
+  logged: the match ran sim version 145-63-38a0b82e83d4be9d7791c7e448e656ed779ad7e003b938f37b2d31c6ac589212 but this verifier is 146-64-a2bb366f2a4439310dfd8d973c6adf80812adfd944f09d582137fa55efe07267
+
+      </failure>
+    </testcase>
+  </testsuite><testsuite name="WinProbability"><testcase classname="WinProbability" name="enabled rule preserves the per-tick checksum trace across its decision boundary [golden][artifacts]" time="0.07113" status="run" />
+  </testsuite></testsuites>

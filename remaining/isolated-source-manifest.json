@@ -1,0 +1,20 @@
+{
+  "base": {
+    "src/map/Map.h": "5432b3e208d5d804531663da2224b782a987ad750a819b696368f8d1cbe0d221",
+    "src/map/MapResourceState.cpp": "0614d089d0bda8a499d899a8dce019a35e7d0deee223a0b1039107ba46b14a16",
+    "src/map/ResourceGrowth.cpp": "b895361424bb17e24c2edcc4d5877374d113f233bf0dd0b97f70acc476a7902f",
+    "src/engine/sim/snapshot/WorldSnapshot.h": "e84f5115eb5fb607901fb2f1eeaae0a317deaeccd10fdf6f4b7a9da333ebb63c",
+    "src/engine/sim/snapshot/WorldCapture.cpp": "9be1f4f6a83fd964d017509d2addae92ad3c5a70da4980527ca3bc5023cf9460",
+    "src/map/ResourceGrowthTest.cpp": "920f73140fd92b8974e9ff19dc814811196d4dbacbd94d79fec0a6f0c6537513",
+    "src/engine/sim/snapshot/WorldSnapshotTest.cpp": "8c8dc4408648ebd4a1a5c49dc1fe5c04937cadd8b3729e8cf54a57f9fa6c4a4a"
+  },
+  "stock-tracking": {
+    "src/map/Map.h": "e5a45ea8590cb90917f9dbac4d7bc6c7ba0772569f5cc6b1fe0caa561b5ba9f3",
+    "src/map/MapResourceState.cpp": "070b7b88f03b66783d45cd73b97aba1f735b2f0b12e949afe2ec57a8f8556d78",
+    "src/map/ResourceGrowth.cpp": "b895361424bb17e24c2edcc4d5877374d113f233bf0dd0b97f70acc476a7902f",
+    "src/engine/sim/snapshot/WorldSnapshot.h": "068d34cf900259c3ad835d7d07c9bbd9241c58982c6267bdf75a03fde6b7e0b0",
+    "src/engine/sim/snapshot/WorldCapture.cpp": "b95ffaa183d3eb9a8bb53c65929463a6fd558d8f36a937b750b621d9b05920cf",
+    "src/map/ResourceGrowthTest.cpp": "920f73140fd92b8974e9ff19dc814811196d4dbacbd94d79fec0a6f0c6537513",
+    "src/engine/sim/snapshot/WorldSnapshotTest.cpp": "8c8dc4408648ebd4a1a5c49dc1fe5c04937cadd8b3729e8cf54a57f9fa6c4a4a"
+  }
+}

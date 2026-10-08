@@ -1,0 +1,231 @@
+{
+  "output": "confirmation",
+  "repeats": 10,
+  "master_revision": "0f1a2569ab7f23c8702a078978054f73f4ddb9cc",
+  "cases": [
+    {
+      "id": "baseline-confirmation",
+      "reference": {
+        "name": "baseline",
+        "binary": "/home/bradley/.codex/worktrees/114f19f3-7248-4ab6-a516-3ff0849d0a96/glob2/artifacts/resource-growth/remaining/baseline/glob2",
+        "cwd": "/home/bradley/.codex/worktrees/114f19f3-7248-4ab6-a516-3ff0849d0a96/glob2",
+        "args": [
+          "--compute-threads",
+          "4",
+          "--resource-growth-delay",
+          "8",
+          "--resource-growth-execution",
+          "shared"
+        ]
+      },
+      "candidate": {
+        "name": "production",
+        "binary": "/home/bradley/.codex/worktrees/114f19f3-7248-4ab6-a516-3ff0849d0a96/glob2/artifacts/resource-growth/remaining/production",
+        "cwd": "/home/bradley/.codex/worktrees/114f19f3-7248-4ab6-a516-3ff0849d0a96/glob2",
+        "args": [
+          "--compute-threads",
+          "4",
+          "--resource-growth-delay",
+          "8",
+          "--resource-growth-execution",
+          "shared"
+        ]
+      },
+      "scenarios": [
+        "dense",
+        "multi",
+        "ai512",
+        "disabled512",
+        "sparse",
+        "saturated",
+        "harvested",
+        "fragmented"
+      ],
+      "same_behavior": true
+    },
+    {
+      "id": "integration-confirmation",
+      "reference": {
+        "name": "integration-baseline",
+        "binary": "/home/bradley/.codex/worktrees/114f19f3-7248-4ab6-a516-3ff0849d0a96/glob2/artifacts/resource-growth/remaining/integration-baseline",
+        "cwd": "/home/bradley/.codex/worktrees/114f19f3-7248-4ab6-a516-3ff0849d0a96/glob2/artifacts/resource-growth/remaining/integration-src",
+        "args": [
+          "--compute-threads",
+          "4",
+          "--resource-growth-delay",
+          "8",
+          "--resource-growth-execution",
+          "shared"
+        ]
+      },
+      "candidate": {
+        "name": "integration-production",
+        "binary": "/home/bradley/.codex/worktrees/114f19f3-7248-4ab6-a516-3ff0849d0a96/glob2/artifacts/resource-growth/remaining/integration-production",
+        "cwd": "/home/bradley/.codex/worktrees/114f19f3-7248-4ab6-a516-3ff0849d0a96/glob2/artifacts/resource-growth/remaining/integration-src",
+        "args": [
+          "--compute-threads",
+          "4",
+          "--resource-growth-delay",
+          "8",
+          "--resource-growth-execution",
+          "shared"
+        ]
+      },
+      "scenarios": [
+        "dense",
+        "multi",
+        "ai512",
+        "disabled512",
+        "sparse",
+        "saturated",
+        "harvested",
+        "fragmented"
+      ],
+      "same_behavior": true
+    },
+    {
+      "id": "latest-master",
+      "reference": {
+        "name": "latest-master",
+        "binary": "/home/bradley/.codex/worktrees/114f19f3-7248-4ab6-a516-3ff0849d0a96/glob2/artifacts/resource-growth/remaining/latest-master-src/build/linux/client/release/src/glob2",
+        "cwd": "/home/bradley/.codex/worktrees/114f19f3-7248-4ab6-a516-3ff0849d0a96/glob2/artifacts/resource-growth/remaining/latest-master-src",
+        "args": [
+          "--compute-threads",
+          "4"
+        ]
+      },
+      "candidate": {
+        "name": "integration-production",
+        "binary": "/home/bradley/.codex/worktrees/114f19f3-7248-4ab6-a516-3ff0849d0a96/glob2/artifacts/resource-growth/remaining/integration-production",
+        "cwd": "/home/bradley/.codex/worktrees/114f19f3-7248-4ab6-a516-3ff0849d0a96/glob2/artifacts/resource-growth/remaining/integration-src",
+        "args": [
+          "--compute-threads",
+          "4",
+          "--resource-growth-delay",
+          "8",
+          "--resource-growth-execution",
+          "shared"
+        ]
+      },
+      "scenarios": [
+        "dense",
+        "multi",
+        "ai512",
+        "disabled512",
+        "sparse",
+        "saturated",
+        "harvested",
+        "fragmented"
+      ],
+      "same_behavior": false
+    },
+    {
+      "id": "optimized-original",
+      "reference": {
+        "name": "optimized-original",
+        "binary": "/home/bradley/.codex/worktrees/114f19f3-7248-4ab6-a516-3ff0849d0a96/glob2/artifacts/resource-growth/remaining/optimized-original-src/build/linux/client/release/src/glob2",
+        "cwd": "/home/bradley/.codex/worktrees/114f19f3-7248-4ab6-a516-3ff0849d0a96/glob2/artifacts/resource-growth/remaining/optimized-original-src",
+        "args": [
+          "--compute-threads",
+          "4"
+        ]
+      },
+      "candidate": {
+        "name": "integration-production",
+        "binary": "/home/bradley/.codex/worktrees/114f19f3-7248-4ab6-a516-3ff0849d0a96/glob2/artifacts/resource-growth/remaining/integration-production",
+        "cwd": "/home/bradley/.codex/worktrees/114f19f3-7248-4ab6-a516-3ff0849d0a96/glob2/artifacts/resource-growth/remaining/integration-src",
+        "args": [
+          "--compute-threads",
+          "4",
+          "--resource-growth-delay",
+          "8",
+          "--resource-growth-execution",
+          "shared"
+        ]
+      },
+      "scenarios": [
+        "dense",
+        "multi",
+        "ai512",
+        "disabled512",
+        "sparse",
+        "saturated",
+        "harvested",
+        "fragmented"
+      ],
+      "same_behavior": false
+    },
+    {
+      "id": "direct-owner",
+      "reference": {
+        "name": "integration-direct",
+        "binary": "/home/bradley/.codex/worktrees/114f19f3-7248-4ab6-a516-3ff0849d0a96/glob2/artifacts/resource-growth/remaining/integration-direct",
+        "cwd": "/home/bradley/.codex/worktrees/114f19f3-7248-4ab6-a516-3ff0849d0a96/glob2/artifacts/resource-growth/remaining/integration-src",
+        "args": [
+          "--compute-threads",
+          "4",
+          "--resource-growth-delay",
+          "8",
+          "--resource-growth-execution",
+          "owner"
+        ]
+      },
+      "candidate": {
+        "name": "integration-production",
+        "binary": "/home/bradley/.codex/worktrees/114f19f3-7248-4ab6-a516-3ff0849d0a96/glob2/artifacts/resource-growth/remaining/integration-production",
+        "cwd": "/home/bradley/.codex/worktrees/114f19f3-7248-4ab6-a516-3ff0849d0a96/glob2/artifacts/resource-growth/remaining/integration-src",
+        "args": [
+          "--compute-threads",
+          "4",
+          "--resource-growth-delay",
+          "8",
+          "--resource-growth-execution",
+          "shared"
+        ]
+      },
+      "scenarios": [
+        "dense",
+        "multi",
+        "ai512",
+        "disabled512"
+      ],
+      "same_behavior": true
+    },
+    {
+      "id": "merge-effect",
+      "reference": {
+        "name": "production",
+        "binary": "/home/bradley/.codex/worktrees/114f19f3-7248-4ab6-a516-3ff0849d0a96/glob2/artifacts/resource-growth/remaining/production",
+        "cwd": "/home/bradley/.codex/worktrees/114f19f3-7248-4ab6-a516-3ff0849d0a96/glob2",
+        "args": [
+          "--compute-threads",
+          "4",
+          "--resource-growth-delay",
+          "8",
+          "--resource-growth-execution",
+          "shared"
+        ]
+      },
+      "candidate": {
+        "name": "integration-production",
+        "binary": "/home/bradley/.codex/worktrees/114f19f3-7248-4ab6-a516-3ff0849d0a96/glob2/artifacts/resource-growth/remaining/integration-production",
+        "cwd": "/home/bradley/.codex/worktrees/114f19f3-7248-4ab6-a516-3ff0849d0a96/glob2/artifacts/resource-growth/remaining/integration-src",
+        "args": [
+          "--compute-threads",
+          "4",
+          "--resource-growth-delay",
+          "8",
+          "--resource-growth-execution",
+          "shared"
+        ]
+      },
+      "scenarios": [
+        "dense",
+        "multi",
+        "ai512",
+        "disabled512"
+      ],
+      "same_behavior": true
+    }
+  ]
+}

@@ -1,0 +1,5 @@
+Settings::load("preferences.txt") : error, can't open file.
+nox::game started
+nox::gui.game.checkSum() = 770c279f
+automaticEndingGame ended: 128 ticks, 0 minutes, 5 seconds
+GLOB2_GAME_END ticks=128 winner_team=-1 seed=713 map="Growth multi" orders=0 players=team0:JavaScript,team1:JavaScript

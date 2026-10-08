@@ -1,0 +1,8 @@
+dense {'world.checksums': None, 'game.replay.checksums': True}
+multi {'world.checksums': None, 'game.replay.checksums': True}
+ai512 {'world.checksums': None, 'game.replay.checksums': True}
+disabled512 {'world.checksums': None, 'game.replay.checksums': True}
+sparse {'world.checksums': None, 'game.replay.checksums': True}
+saturated {'world.checksums': None, 'game.replay.checksums': True}
+harvested {'world.checksums': None, 'game.replay.checksums': True}
+fragmented {'world.checksums': None, 'game.replay.checksums': True}

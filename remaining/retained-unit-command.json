@@ -1,0 +1,24 @@
+{
+  "cwd": "/home/bradley/.codex/worktrees/114f19f3-7248-4ab6-a516-3ff0849d0a96/glob2",
+  "command": [
+    "/usr/bin/python3",
+    "test/run_tests.py",
+    "--binary",
+    "unit",
+    "--no-display",
+    "-j",
+    "4",
+    "--artifacts",
+    "/home/bradley/.codex/worktrees/114f19f3-7248-4ab6-a516-3ff0849d0a96/glob2/artifacts/resource-growth/remaining/retained-unit",
+    "--junit",
+    "/home/bradley/.codex/worktrees/114f19f3-7248-4ab6-a516-3ff0849d0a96/glob2/artifacts/resource-growth/remaining/retained-unit.xml",
+    "--filter",
+    "ComputeExecutor/*",
+    "--filter",
+    "*Stream*/*",
+    "--filter",
+    "*Version*/*",
+    "--filter",
+    "*Replay*/*"
+  ]
+}

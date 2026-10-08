@@ -1,0 +1,87 @@
+{
+  "scenarios": [
+    {
+      "id": "dense",
+      "group": "controlled",
+      "args": [
+        "--load-game",
+        "/home/bradley/.codex/worktrees/114f19f3-7248-4ab6-a516-3ff0849d0a96/glob2/artifacts/resource-growth/controlled-fixtures/dense/initial.game.gz",
+        "--ticks",
+        "1024",
+        "--gradient-workers",
+        "2",
+        "--compute-experiments",
+        "ai"
+      ],
+      "fixture_sha256": {
+        "/home/bradley/.codex/worktrees/114f19f3-7248-4ab6-a516-3ff0849d0a96/glob2/artifacts/resource-growth/controlled-fixtures/dense/initial.game.gz": "792c46160b91a805625e7e9a13eece611fd75728e472e5578741c718fa0027b8"
+      }
+    },
+    {
+      "id": "multi",
+      "group": "controlled",
+      "args": [
+        "--load-game",
+        "/home/bradley/.codex/worktrees/114f19f3-7248-4ab6-a516-3ff0849d0a96/glob2/artifacts/resource-growth/controlled-fixtures/multi/initial.game.gz",
+        "--ticks",
+        "1024",
+        "--gradient-workers",
+        "2",
+        "--compute-experiments",
+        "ai"
+      ],
+      "fixture_sha256": {
+        "/home/bradley/.codex/worktrees/114f19f3-7248-4ab6-a516-3ff0849d0a96/glob2/artifacts/resource-growth/controlled-fixtures/multi/initial.game.gz": "d7ed56ff27421eacda4f35e5102041b67d6bc76c333fc8aa0668708a886dece7"
+      }
+    },
+    {
+      "id": "ai512",
+      "group": "ai",
+      "args": [
+        "--load-game",
+        "/home/bradley/.codex/worktrees/114f19f3-7248-4ab6-a516-3ff0849d0a96/glob2/artifacts/resource-growth/fixtures/ai512/initial.game.gz",
+        "--ticks",
+        "1024",
+        "--gradient-workers",
+        "2",
+        "--compute-experiments",
+        "ai"
+      ],
+      "fixture_sha256": {
+        "/home/bradley/.codex/worktrees/114f19f3-7248-4ab6-a516-3ff0849d0a96/glob2/artifacts/resource-growth/fixtures/ai512/initial.game.gz": "a32e576292df8a7975eb703f50fe42dfe95493cf3b9303c1e758c35296952ede"
+      }
+    },
+    {
+      "id": "disabled512",
+      "group": "control",
+      "args": [
+        "--load-game",
+        "/home/bradley/.codex/worktrees/114f19f3-7248-4ab6-a516-3ff0849d0a96/glob2/artifacts/resource-growth/fixtures/disabled512/initial.game.gz",
+        "--ticks",
+        "1024",
+        "--gradient-workers",
+        "2",
+        "--compute-experiments",
+        "ai"
+      ],
+      "fixture_sha256": {
+        "/home/bradley/.codex/worktrees/114f19f3-7248-4ab6-a516-3ff0849d0a96/glob2/artifacts/resource-growth/fixtures/disabled512/initial.game.gz": "c35196cc4d114f1c0f4296f89bac6344f63a1d31d1f1271c25174a6dbfcebed2"
+      }
+    }
+  ],
+  "repeats": 3,
+  "warmups": 1,
+  "purpose": "separate attribution; not primary timing or adoption evidence",
+  "affinity": [
+    0,
+    1,
+    2,
+    3
+  ],
+  "binaries": {
+    "control": "f24c66c686cbb2375e94ce9df10716e3650a598ff5b0cc3056981837ca83eead",
+    "ABCD": "4afede721c556d1e4ff6cfdfdaa128c3828851f937f1bc837afb8f7362718989"
+  },
+  "completed": true,
+  "checksums_and_work_match": true
+}

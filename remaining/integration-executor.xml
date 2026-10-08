@@ -1,0 +1,11 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="9" failures="0" errors="0" skipped="0"><testsuite name="ComputeExecutor"><testcase classname="ComputeExecutor" name="supported platforms execute jobs concurrently on distinct threads" time="0.000429" status="run" />
+    <testcase classname="ComputeExecutor" name="exclusive slots; nested batches; reuse; errors; barriers and reconfiguration" time="0.018514" status="run" />
+    <testcase classname="ComputeExecutor" name="deferred batches drain FIFO with owner participation, lanes, isolated errors and placements" time="0.100806" status="run" />
+    <testcase classname="ComputeExecutor" name="completed lanes can change placement while an unrelated older batch remains" time="0.000135" status="run" />
+    <testcase classname="ComputeExecutor" name="lane groups run in index order, placements cannot mix on a lane, and the horizon is bounded" time="0.001442" status="run" />
+    <testcase classname="ComputeExecutor" name="presentation cannot delay simulation barriers or run on the simulation owner" time="0.000881" status="run" />
+    <testcase classname="ComputeExecutor" name="presentation progresses before a continuous simulation backlog drains" time="0.004582" status="run" />
+    <testcase classname="ComputeExecutor" name="presentation replacement, chunk pumping, cancellation and errors retain no captures" time="0" status="run" />
+    <testcase classname="ComputeExecutor" name="resumable presentation yields without advancing or retaining canceled inputs" time="0" status="run" />
+  </testsuite></testsuites>

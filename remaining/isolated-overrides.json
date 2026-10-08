@@ -1,0 +1,58 @@
+{
+  "control": {
+    "cwd": "/home/bradley/.codex/worktrees/114f19f3-7248-4ab6-a516-3ff0849d0a96/glob2",
+    "objects": {
+      "build/linux/client/release/src/map/MapResourceState.o": "/home/bradley/.codex/worktrees/114f19f3-7248-4ab6-a516-3ff0849d0a96/glob2/artifacts/resource-growth/remaining/isolated-off-MapResourceState-MapResourceState.o",
+      "build/linux/client/release/src/map/ResourceGrowth.o": "/home/bradley/.codex/worktrees/114f19f3-7248-4ab6-a516-3ff0849d0a96/glob2/artifacts/resource-growth/remaining/isolated-off-ResourceGrowth-ResourceGrowth.o",
+      "build/linux/client/release/src/engine/sim/snapshot/WorldCapture.o": "/home/bradley/.codex/worktrees/114f19f3-7248-4ab6-a516-3ff0849d0a96/glob2/artifacts/resource-growth/remaining/isolated-off-WorldCapture-WorldCapture.o"
+    }
+  },
+  "A": {
+    "cwd": "/home/bradley/.codex/worktrees/114f19f3-7248-4ab6-a516-3ff0849d0a96/glob2",
+    "objects": {
+      "build/linux/client/release/src/map/MapResourceState.o": "/home/bradley/.codex/worktrees/114f19f3-7248-4ab6-a516-3ff0849d0a96/glob2/artifacts/resource-growth/remaining/isolated-A-MapResourceState-MapResourceState.o",
+      "build/linux/client/release/src/map/ResourceGrowth.o": "/home/bradley/.codex/worktrees/114f19f3-7248-4ab6-a516-3ff0849d0a96/glob2/artifacts/resource-growth/remaining/isolated-off-ResourceGrowth-ResourceGrowth.o",
+      "build/linux/client/release/src/engine/sim/snapshot/WorldCapture.o": "/home/bradley/.codex/worktrees/114f19f3-7248-4ab6-a516-3ff0849d0a96/glob2/artifacts/resource-growth/remaining/isolated-off-WorldCapture-WorldCapture.o"
+    }
+  },
+  "B": {
+    "cwd": "/home/bradley/.codex/worktrees/114f19f3-7248-4ab6-a516-3ff0849d0a96/glob2",
+    "objects": {
+      "build/linux/client/release/src/map/MapResourceState.o": "/home/bradley/.codex/worktrees/114f19f3-7248-4ab6-a516-3ff0849d0a96/glob2/artifacts/resource-growth/remaining/isolated-B-MapResourceState-MapResourceState.o",
+      "build/linux/client/release/src/map/ResourceGrowth.o": "/home/bradley/.codex/worktrees/114f19f3-7248-4ab6-a516-3ff0849d0a96/glob2/artifacts/resource-growth/remaining/isolated-B-ResourceGrowth-ResourceGrowth.o",
+      "build/linux/client/release/src/engine/sim/snapshot/WorldCapture.o": "/home/bradley/.codex/worktrees/114f19f3-7248-4ab6-a516-3ff0849d0a96/glob2/artifacts/resource-growth/remaining/isolated-off-WorldCapture-WorldCapture.o"
+    }
+  },
+  "C": {
+    "cwd": "/home/bradley/.codex/worktrees/114f19f3-7248-4ab6-a516-3ff0849d0a96/glob2/artifacts/resource-growth/remaining/c-layout-src",
+    "objects": {
+      "build/linux/client/release/src/map/MapResourceState.o": "/home/bradley/.codex/worktrees/114f19f3-7248-4ab6-a516-3ff0849d0a96/glob2/artifacts/resource-growth/remaining/isolated-c-layout-C-MapResourceState-MapResourceState.o",
+      "build/linux/client/release/src/map/ResourceGrowth.o": "/home/bradley/.codex/worktrees/114f19f3-7248-4ab6-a516-3ff0849d0a96/glob2/artifacts/resource-growth/remaining/isolated-c-layout-off-ResourceGrowth-ResourceGrowth.o",
+      "build/linux/client/release/src/engine/sim/snapshot/WorldCapture.o": "/home/bradley/.codex/worktrees/114f19f3-7248-4ab6-a516-3ff0849d0a96/glob2/artifacts/resource-growth/remaining/isolated-c-layout-C-WorldCapture-WorldCapture.o"
+    }
+  },
+  "D": {
+    "cwd": "/home/bradley/.codex/worktrees/114f19f3-7248-4ab6-a516-3ff0849d0a96/glob2",
+    "objects": {
+      "build/linux/client/release/src/map/MapResourceState.o": "/home/bradley/.codex/worktrees/114f19f3-7248-4ab6-a516-3ff0849d0a96/glob2/artifacts/resource-growth/remaining/isolated-off-MapResourceState-MapResourceState.o",
+      "build/linux/client/release/src/map/ResourceGrowth.o": "/home/bradley/.codex/worktrees/114f19f3-7248-4ab6-a516-3ff0849d0a96/glob2/artifacts/resource-growth/remaining/isolated-off-ResourceGrowth-ResourceGrowth.o",
+      "build/linux/client/release/src/engine/sim/snapshot/WorldCapture.o": "/home/bradley/.codex/worktrees/114f19f3-7248-4ab6-a516-3ff0849d0a96/glob2/artifacts/resource-growth/remaining/isolated-D-WorldCapture-WorldCapture.o"
+    }
+  },
+  "AB": {
+    "cwd": "/home/bradley/.codex/worktrees/114f19f3-7248-4ab6-a516-3ff0849d0a96/glob2",
+    "objects": {
+      "build/linux/client/release/src/map/MapResourceState.o": "/home/bradley/.codex/worktrees/114f19f3-7248-4ab6-a516-3ff0849d0a96/glob2/artifacts/resource-growth/remaining/isolated-AB-MapResourceState-MapResourceState.o",
+      "build/linux/client/release/src/map/ResourceGrowth.o": "/home/bradley/.codex/worktrees/114f19f3-7248-4ab6-a516-3ff0849d0a96/glob2/artifacts/resource-growth/remaining/isolated-B-ResourceGrowth-ResourceGrowth.o",
+      "build/linux/client/release/src/engine/sim/snapshot/WorldCapture.o": "/home/bradley/.codex/worktrees/114f19f3-7248-4ab6-a516-3ff0849d0a96/glob2/artifacts/resource-growth/remaining/isolated-off-WorldCapture-WorldCapture.o"
+    }
+  },
+  "ABCD": {
+    "cwd": "/home/bradley/.codex/worktrees/114f19f3-7248-4ab6-a516-3ff0849d0a96/glob2/artifacts/resource-growth/remaining/c-layout-src",
+    "objects": {
+      "build/linux/client/release/src/map/MapResourceState.o": "/home/bradley/.codex/worktrees/114f19f3-7248-4ab6-a516-3ff0849d0a96/glob2/artifacts/resource-growth/remaining/isolated-c-layout-ABC-MapResourceState-MapResourceState.o",
+      "build/linux/client/release/src/map/ResourceGrowth.o": "/home/bradley/.codex/worktrees/114f19f3-7248-4ab6-a516-3ff0849d0a96/glob2/artifacts/resource-growth/remaining/isolated-c-layout-B-ResourceGrowth-ResourceGrowth.o",
+      "build/linux/client/release/src/engine/sim/snapshot/WorldCapture.o": "/home/bradley/.codex/worktrees/114f19f3-7248-4ab6-a516-3ff0849d0a96/glob2/artifacts/resource-growth/remaining/isolated-c-layout-CD-WorldCapture-WorldCapture.o"
+    }
+  }
+}

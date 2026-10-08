@@ -1,0 +1,11 @@
+{
+  "source_revision": "0f1a2569ab7f23c8702a078978054f73f4ddb9cc",
+  "growth": "unchanged immediate algorithm",
+  "common_improvements": [
+    "baseline contiguous snapshot copy",
+    "A incremental totals",
+    "C tracked stock blocks",
+    "D coalesced sparse spatial copies"
+  ],
+  "B": "not applicable; original growth emits no proposals"
+}

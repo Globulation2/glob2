@@ -1,0 +1,16 @@
+retained-work dense
+current-master-work dense
+retained-work multi
+current-master-work multi
+retained-work ai512
+current-master-work ai512
+retained-work disabled512
+current-master-work disabled512
+retained-work sparse
+current-master-work sparse
+retained-work saturated
+current-master-work saturated
+retained-work harvested
+current-master-work harvested
+retained-work fragmented
+current-master-work fragmented

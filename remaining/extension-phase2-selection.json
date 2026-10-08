@@ -1,0 +1,27 @@
+{
+  "dense": [
+    "B",
+    "ABCD"
+  ],
+  "multi": [
+    "B",
+    "ABCD",
+    "D"
+  ],
+  "ai512": [
+    "B"
+  ],
+  "disabled512": [
+    "C",
+    "D",
+    "ABCD"
+  ],
+  "saturated": [
+    "B"
+  ],
+  "fragmented": [
+    "ABCD",
+    "D",
+    "control"
+  ]
+}

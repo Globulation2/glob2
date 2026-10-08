@@ -1,0 +1,9 @@
+{
+  "branch_parent": "edb09d40204a1fdb3a6d0e5934ef34e9c344de60",
+  "master_parent": "0f1a2569ab7f23c8702a078978054f73f4ddb9cc",
+  "automatic_merge_tree": "9ee89f1592dd99178aa6da2b862486801e4cd2a3",
+  "optimization_state": "baseline, no remaining candidates",
+  "resolved_baseline_tree": "5e9f333f8d6bf89c064ad5ac44d95c1b11e41519",
+  "baseline_binary_sha256": "06bb83dfbe14d78381fc8d800dc627c3c8def081379537c55b066a32a5abf098",
+  "production_binary_sha256": "2988455b2a634eb5c54acb91d9a4fc8c24d23cf0ba3735db821a67b99138e4a4"
+}

@@ -1,0 +1,6 @@
+Settings::load("preferences.txt") : error, can't open file.
+nox::game started
+nox::gui.game.checkSum() = 8470d4a0
+automaticEndingGame ended: 1024 ticks, 0 minutes, 40 seconds
+GLOB2_GAME_END ticks=1024 winner_team=-1 seed=713 map="Growth harvested" orders=0 players=team0:Nicowar,team1:Warrush
+final: wrote /home/bradley/.codex/worktrees/114f19f3-7248-4ab6-a516-3ff0849d0a96/glob2/artifacts/resource-growth/remaining/retained-work/harvested/final.game.gz

@@ -1,0 +1,197 @@
+{
+  "scenarios": [
+    {
+      "id": "dense",
+      "group": "controlled",
+      "args": [
+        "--load-game",
+        "/home/bradley/.codex/worktrees/114f19f3-7248-4ab6-a516-3ff0849d0a96/glob2/artifacts/resource-growth/controlled-fixtures/dense/initial.game.gz",
+        "--ticks",
+        "1024",
+        "--gradient-workers",
+        "2",
+        "--compute-experiments",
+        "ai"
+      ],
+      "fixture_sha256": {
+        "/home/bradley/.codex/worktrees/114f19f3-7248-4ab6-a516-3ff0849d0a96/glob2/artifacts/resource-growth/controlled-fixtures/dense/initial.game.gz": "792c46160b91a805625e7e9a13eece611fd75728e472e5578741c718fa0027b8"
+      }
+    },
+    {
+      "id": "multi",
+      "group": "controlled",
+      "args": [
+        "--load-game",
+        "/home/bradley/.codex/worktrees/114f19f3-7248-4ab6-a516-3ff0849d0a96/glob2/artifacts/resource-growth/controlled-fixtures/multi/initial.game.gz",
+        "--ticks",
+        "1024",
+        "--gradient-workers",
+        "2",
+        "--compute-experiments",
+        "ai"
+      ],
+      "fixture_sha256": {
+        "/home/bradley/.codex/worktrees/114f19f3-7248-4ab6-a516-3ff0849d0a96/glob2/artifacts/resource-growth/controlled-fixtures/multi/initial.game.gz": "d7ed56ff27421eacda4f35e5102041b67d6bc76c333fc8aa0668708a886dece7"
+      }
+    },
+    {
+      "id": "ai512",
+      "group": "ai",
+      "args": [
+        "--load-game",
+        "/home/bradley/.codex/worktrees/114f19f3-7248-4ab6-a516-3ff0849d0a96/glob2/artifacts/resource-growth/fixtures/ai512/initial.game.gz",
+        "--ticks",
+        "1024",
+        "--gradient-workers",
+        "2",
+        "--compute-experiments",
+        "ai"
+      ],
+      "fixture_sha256": {
+        "/home/bradley/.codex/worktrees/114f19f3-7248-4ab6-a516-3ff0849d0a96/glob2/artifacts/resource-growth/fixtures/ai512/initial.game.gz": "a32e576292df8a7975eb703f50fe42dfe95493cf3b9303c1e758c35296952ede"
+      }
+    },
+    {
+      "id": "disabled512",
+      "group": "control",
+      "args": [
+        "--load-game",
+        "/home/bradley/.codex/worktrees/114f19f3-7248-4ab6-a516-3ff0849d0a96/glob2/artifacts/resource-growth/fixtures/disabled512/initial.game.gz",
+        "--ticks",
+        "1024",
+        "--gradient-workers",
+        "2",
+        "--compute-experiments",
+        "ai"
+      ],
+      "fixture_sha256": {
+        "/home/bradley/.codex/worktrees/114f19f3-7248-4ab6-a516-3ff0849d0a96/glob2/artifacts/resource-growth/fixtures/disabled512/initial.game.gz": "c35196cc4d114f1c0f4296f89bac6344f63a1d31d1f1271c25174a6dbfcebed2"
+      }
+    },
+    {
+      "id": "sparse",
+      "group": "focused",
+      "args": [
+        "--load-game",
+        "/home/bradley/.codex/worktrees/114f19f3-7248-4ab6-a516-3ff0849d0a96/glob2/artifacts/resource-growth/remaining/fixtures/sparse/initial.game.gz",
+        "--ticks",
+        "1024",
+        "--gradient-workers",
+        "2",
+        "--compute-experiments",
+        "ai"
+      ],
+      "fixture_sha256": {
+        "/home/bradley/.codex/worktrees/114f19f3-7248-4ab6-a516-3ff0849d0a96/glob2/artifacts/resource-growth/remaining/fixtures/sparse/initial.game.gz": "16fdc189a889cdd0e6537597db618c038b688ddd920238f22adca604c54cbd3c"
+      }
+    },
+    {
+      "id": "saturated",
+      "group": "focused",
+      "args": [
+        "--load-game",
+        "/home/bradley/.codex/worktrees/114f19f3-7248-4ab6-a516-3ff0849d0a96/glob2/artifacts/resource-growth/remaining/fixtures/saturated/initial.game.gz",
+        "--ticks",
+        "1024",
+        "--gradient-workers",
+        "2",
+        "--compute-experiments",
+        "ai"
+      ],
+      "fixture_sha256": {
+        "/home/bradley/.codex/worktrees/114f19f3-7248-4ab6-a516-3ff0849d0a96/glob2/artifacts/resource-growth/remaining/fixtures/saturated/initial.game.gz": "ae4e2c671149ac8fea88b0e74124a111dd6a9f618af6c9eb49f86848d8f92f66"
+      }
+    },
+    {
+      "id": "harvested",
+      "group": "focused",
+      "args": [
+        "--load-game",
+        "/home/bradley/.codex/worktrees/114f19f3-7248-4ab6-a516-3ff0849d0a96/glob2/artifacts/resource-growth/remaining/fixtures/harvested/initial.game.gz",
+        "--ticks",
+        "1024",
+        "--gradient-workers",
+        "2",
+        "--compute-experiments",
+        "ai"
+      ],
+      "fixture_sha256": {
+        "/home/bradley/.codex/worktrees/114f19f3-7248-4ab6-a516-3ff0849d0a96/glob2/artifacts/resource-growth/remaining/fixtures/harvested/initial.game.gz": "ef41f11518f36651b82464525803b976406d3beefd1f29151c28f467ad5a0210"
+      }
+    },
+    {
+      "id": "fragmented",
+      "group": "focused",
+      "args": [
+        "--load-game",
+        "/home/bradley/.codex/worktrees/114f19f3-7248-4ab6-a516-3ff0849d0a96/glob2/artifacts/resource-growth/remaining/fixtures/fragmented/initial.game.gz",
+        "--ticks",
+        "1024",
+        "--gradient-workers",
+        "2",
+        "--compute-experiments",
+        "ai"
+      ],
+      "fixture_sha256": {
+        "/home/bradley/.codex/worktrees/114f19f3-7248-4ab6-a516-3ff0849d0a96/glob2/artifacts/resource-growth/remaining/fixtures/fragmented/initial.game.gz": "61853087e3ca22f66bec17766b4c4ba6df7cbc249b5d95d4131ac0a015f62866"
+      }
+    }
+  ],
+  "repeats": 10,
+  "variants": [
+    "control",
+    "A",
+    "B",
+    "C",
+    "D",
+    "AB",
+    "ABCD",
+    "master"
+  ],
+  "affinity": [
+    0,
+    1,
+    2,
+    3
+  ],
+  "binaries": {
+    "control": {
+      "path": "/home/bradley/.codex/worktrees/114f19f3-7248-4ab6-a516-3ff0849d0a96/glob2/artifacts/resource-growth/remaining/control",
+      "sha256": "a99ddfb8d685f5ff501f584e35efbcec489b09238e0a8a7a5cf654db7ce05cb9"
+    },
+    "A": {
+      "path": "/home/bradley/.codex/worktrees/114f19f3-7248-4ab6-a516-3ff0849d0a96/glob2/artifacts/resource-growth/remaining/A",
+      "sha256": "537427c75d933331b9ccebcd6a3ff5641bc4a989db85b0a2fafaa672003c9ca1"
+    },
+    "B": {
+      "path": "/home/bradley/.codex/worktrees/114f19f3-7248-4ab6-a516-3ff0849d0a96/glob2/artifacts/resource-growth/remaining/B",
+      "sha256": "815151a48aabf92be24708b4e89462c2253ed60e774d4bba8a04eb201b35d7da"
+    },
+    "C": {
+      "path": "/home/bradley/.codex/worktrees/114f19f3-7248-4ab6-a516-3ff0849d0a96/glob2/artifacts/resource-growth/remaining/C",
+      "sha256": "505da456a4661b591ddb3ffe895bf07f700ed4ca6db75a415e225b4ecdaec0df"
+    },
+    "D": {
+      "path": "/home/bradley/.codex/worktrees/114f19f3-7248-4ab6-a516-3ff0849d0a96/glob2/artifacts/resource-growth/remaining/D",
+      "sha256": "10093f79416b9dd0b5efa60881924cdfcb9c3f7596778dc9808e9418a7883983"
+    },
+    "AB": {
+      "path": "/home/bradley/.codex/worktrees/114f19f3-7248-4ab6-a516-3ff0849d0a96/glob2/artifacts/resource-growth/remaining/AB",
+      "sha256": "294a9994fa7c3d838a5f3948c99e0c1c731dcf5350b39807e5e85ed796064f81"
+    },
+    "ABCD": {
+      "path": "/home/bradley/.codex/worktrees/114f19f3-7248-4ab6-a516-3ff0849d0a96/glob2/artifacts/resource-growth/remaining/ABCD",
+      "sha256": "4d1f582a72c6651954dcb20ffa36b983272bdd6d5b9542717a12afd7f62efdd7"
+    },
+    "master": {
+      "path": "/home/bradley/.codex/worktrees/114f19f3-7248-4ab6-a516-3ff0849d0a96/glob2/artifacts/resource-growth/remaining/master-src/build/linux/client/release/src/glob2",
+      "sha256": "b48f2b542cb21dc6875baf05317a953fe0f49ba0747c7c3e10d3749779b53beb"
+    },
+    "baseline": {
+      "path": "/home/bradley/.codex/worktrees/114f19f3-7248-4ab6-a516-3ff0849d0a96/glob2/artifacts/resource-growth/remaining/baseline/glob2",
+      "sha256": "fc07bd3d7caee9c05d33bde3d5bb3e4254d2ecff2dad8ca5fb7ab2f6cf5fea80"
+    }
+  },
+  "baseline_revision": "edb09d40204a1fdb3a6d0e5934ef34e9c344de60",
+  "master_revision": "a0a59e4a6478a2533ec0c10efb8027f0db1152a8"
+}

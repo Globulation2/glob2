@@ -1,0 +1,23 @@
+{
+  "fields": [
+    "sizeof(Map)",
+    "resourceStocks",
+    "materialSourceCounts",
+    "idleGradientBuffers"
+  ],
+  "offsets": {
+    "before": [
+      "84328",
+      "8216",
+      "8264",
+      "13776"
+    ],
+    "after": [
+      "84328",
+      "8216",
+      "8264",
+      "13776"
+    ]
+  },
+  "match": true
+}

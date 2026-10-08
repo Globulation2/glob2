@@ -1,0 +1,7 @@
+stages build control
+stages build A
+stages build B
+stages build C
+stages build D
+stages build AB
+stages build ABCD

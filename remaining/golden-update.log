@@ -1,0 +1,5 @@
+PASS RuntimeResources/frozen seeded resource compositions preserve invariants and exact simulation continuation [golden] (0.6s)
+PASS TurnEngineHarness/the committed match record verifies to the committed checksum trace [network-sim][golden] (1.2s)
+
+2 passed, 0 failed, 0 skipped (1.7s of test time)
+[run_tests] JUnit report: /home/bradley/.codex/worktrees/114f19f3-7248-4ab6-a516-3ff0849d0a96/glob2/artifacts/tests/junit.xml (2 cases)

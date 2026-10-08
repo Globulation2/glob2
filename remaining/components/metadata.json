@@ -1,0 +1,19 @@
+{
+  "binaries": {
+    "control": "7217749d822203098b4d9781f00213b0be5f575c78bf35802dd364fbe80fbb5b",
+    "A": "529556d4ee655f9185ba7f650f89655971474d1f81ebb3fe534e6a2277c0675f",
+    "B": "ee42f2e103e425f6140819296862b36e25da3729e371d8e5e22d5318dc21a631",
+    "C": "8c8d9d460bd9134e3ef4bfd19fa8f36b4718ee4762681e4b7fd1c9a1713808f9",
+    "D": "f8568c0c6d838bc4f75945bc7deeb6ec395f64a17c061b3bff9c8912984bf972",
+    "AB": "1999fbd933b36cf0708c82ecdb6e969a4752ceb8087fbfb2f49c914da03591a0",
+    "ABCD": "2aa1a7da8fc05e97808bfa584f577c531d1b0950f6ed345a354743e9eda31be6"
+  },
+  "affinity": [
+    0,
+    1,
+    2,
+    3
+  ],
+  "repeats": 10,
+  "warmups": 1
+}

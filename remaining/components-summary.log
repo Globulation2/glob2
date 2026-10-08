@@ -1,0 +1,42 @@
+A
+stock|True||| {'elapsed_ns': {'before': 1342391.5, 'after': 805475.0, 'reduction': 40.2}, 'copy_calls': {'before': 0.0, 'after': 0.0}}
+publication|True||| {'elapsed_ns': {'before': 2479369.5, 'after': 2382400.0, 'reduction': 3.6}}
+capture||512|sparse|0 {'elapsed_ns': {'before': 1750874.0, 'after': 1763213.0, 'reduction': -5.9}, 'copied_bytes': {'before': 50462720.0, 'after': 50462720.0, 'reduction': 0.0}, 'copy_calls': {'before': 1056.0, 'after': 1056.0, 'reduction': 0.0}}
+capture||512|clustered|0 {'elapsed_ns': {'before': 12393227.0, 'after': 13053846.5, 'reduction': -2.5}, 'copied_bytes': {'before': 83886080.0, 'after': 83886080.0, 'reduction': 0.0}, 'copy_calls': {'before': 262176.0, 'after': 262176.0, 'reduction': 0.0}}
+capture||512|half|0 {'elapsed_ns': {'before': 33140094.5, 'after': 33801619.5, 'reduction': -2.6}, 'copied_bytes': {'before': 117440512.0, 'after': 117440512.0, 'reduction': 0.0}, 'copy_calls': {'before': 524320.0, 'after': 524320.0, 'reduction': 0.0}}
+capture||512|dense|0 {'elapsed_ns': {'before': 29944280.5, 'after': 28522881.0, 'reduction': 2.0}, 'copied_bytes': {'before': 184549376.0, 'after': 184549376.0, 'reduction': 0.0}, 'copy_calls': {'before': 96.0, 'after': 96.0, 'reduction': 0.0}}
+B
+stock|True||| {'elapsed_ns': {'before': 1342391.5, 'after': 1350332.0, 'reduction': -0.3}, 'copy_calls': {'before': 0.0, 'after': 0.0}}
+publication|True||| {'elapsed_ns': {'before': 2479369.5, 'after': 2459144.5, 'reduction': 0.4}}
+capture||512|sparse|0 {'elapsed_ns': {'before': 1750874.0, 'after': 1775773.5, 'reduction': 0.8}, 'copied_bytes': {'before': 50462720.0, 'after': 50462720.0, 'reduction': 0.0}, 'copy_calls': {'before': 1056.0, 'after': 1056.0, 'reduction': 0.0}}
+capture||512|clustered|0 {'elapsed_ns': {'before': 12393227.0, 'after': 12493610.0, 'reduction': -5.1}, 'copied_bytes': {'before': 83886080.0, 'after': 83886080.0, 'reduction': 0.0}, 'copy_calls': {'before': 262176.0, 'after': 262176.0, 'reduction': 0.0}}
+capture||512|half|0 {'elapsed_ns': {'before': 33140094.5, 'after': 32413951.5, 'reduction': 0.9}, 'copied_bytes': {'before': 117440512.0, 'after': 117440512.0, 'reduction': 0.0}, 'copy_calls': {'before': 524320.0, 'after': 524320.0, 'reduction': 0.0}}
+capture||512|dense|0 {'elapsed_ns': {'before': 29944280.5, 'after': 25702467.5, 'reduction': 7.1}, 'copied_bytes': {'before': 184549376.0, 'after': 184549376.0, 'reduction': 0.0}, 'copy_calls': {'before': 96.0, 'after': 96.0, 'reduction': 0.0}}
+C
+stock|True||| {'elapsed_ns': {'before': 1342391.5, 'after': 1262192.0, 'reduction': -3.5}, 'copy_calls': {'before': 0.0, 'after': 0.0}}
+publication|True||| {'elapsed_ns': {'before': 2479369.5, 'after': 2551089.0, 'reduction': -3.4}}
+capture||512|sparse|0 {'elapsed_ns': {'before': 1750874.0, 'after': 95254.0, 'reduction': 94.5}, 'copied_bytes': {'before': 50462720.0, 'after': 327680.0, 'reduction': 99.4}, 'copy_calls': {'before': 1056.0, 'after': 1056.0, 'reduction': 0.0}}
+capture||512|clustered|0 {'elapsed_ns': {'before': 12393227.0, 'after': 4192728.0, 'reduction': 68.0}, 'copied_bytes': {'before': 83886080.0, 'after': 35127296.0, 'reduction': 58.1}, 'copy_calls': {'before': 262176.0, 'after': 262400.0, 'reduction': -0.1}}
+capture||512|half|0 {'elapsed_ns': {'before': 33140094.5, 'after': 13164765.0, 'reduction': 59.5}, 'copied_bytes': {'before': 117440512.0, 'after': 70254592.0, 'reduction': 40.2}, 'copy_calls': {'before': 524320.0, 'after': 524800.0, 'reduction': -0.1}}
+capture||512|dense|0 {'elapsed_ns': {'before': 29944280.5, 'after': 18858923.5, 'reduction': 33.0}, 'copied_bytes': {'before': 184549376.0, 'after': 140509184.0, 'reduction': 23.9}, 'copy_calls': {'before': 96.0, 'after': 1088.0, 'reduction': -1033.3}}
+D
+stock|True||| {'elapsed_ns': {'before': 1342391.5, 'after': 1338851.5, 'reduction': 0.0}, 'copy_calls': {'before': 0.0, 'after': 0.0}}
+publication|True||| {'elapsed_ns': {'before': 2479369.5, 'after': 2470325.0, 'reduction': -0.2}}
+capture||512|sparse|0 {'elapsed_ns': {'before': 1750874.0, 'after': 1743034.0, 'reduction': 3.1}, 'copied_bytes': {'before': 50462720.0, 'after': 50462720.0, 'reduction': 0.0}, 'copy_calls': {'before': 1056.0, 'after': 1056.0, 'reduction': 0.0}}
+capture||512|clustered|0 {'elapsed_ns': {'before': 12393227.0, 'after': 7226029.5, 'reduction': 45.5}, 'copied_bytes': {'before': 83886080.0, 'after': 83886080.0, 'reduction': 0.0}, 'copy_calls': {'before': 262176.0, 'after': 8224.0, 'reduction': 96.9}}
+capture||512|half|0 {'elapsed_ns': {'before': 33140094.5, 'after': 16127502.5, 'reduction': 52.6}, 'copied_bytes': {'before': 117440512.0, 'after': 117440512.0, 'reduction': 0.0}, 'copy_calls': {'before': 524320.0, 'after': 16416.0, 'reduction': 96.9}}
+capture||512|dense|0 {'elapsed_ns': {'before': 29944280.5, 'after': 28390150.0, 'reduction': 1.1}, 'copied_bytes': {'before': 184549376.0, 'after': 184549376.0, 'reduction': 0.0}, 'copy_calls': {'before': 96.0, 'after': 96.0, 'reduction': 0.0}}
+AB
+stock|True||| {'elapsed_ns': {'before': 1342391.5, 'after': 697546.0, 'reduction': 41.1}, 'copy_calls': {'before': 0.0, 'after': 0.0}}
+publication|True||| {'elapsed_ns': {'before': 2479369.5, 'after': 2139731.5, 'reduction': 13.3}}
+capture||512|sparse|0 {'elapsed_ns': {'before': 1750874.0, 'after': 1665664.5, 'reduction': 9.3}, 'copied_bytes': {'before': 50462720.0, 'after': 50462720.0, 'reduction': 0.0}, 'copy_calls': {'before': 1056.0, 'after': 1056.0, 'reduction': 0.0}}
+capture||512|clustered|0 {'elapsed_ns': {'before': 12393227.0, 'after': 12569650.5, 'reduction': 2.2}, 'copied_bytes': {'before': 83886080.0, 'after': 83886080.0, 'reduction': 0.0}, 'copy_calls': {'before': 262176.0, 'after': 262176.0, 'reduction': 0.0}}
+capture||512|half|0 {'elapsed_ns': {'before': 33140094.5, 'after': 32191242.0, 'reduction': 4.8}, 'copied_bytes': {'before': 117440512.0, 'after': 117440512.0, 'reduction': 0.0}, 'copy_calls': {'before': 524320.0, 'after': 524320.0, 'reduction': 0.0}}
+capture||512|dense|0 {'elapsed_ns': {'before': 29944280.5, 'after': 29645670.0, 'reduction': -0.2}, 'copied_bytes': {'before': 184549376.0, 'after': 184549376.0, 'reduction': 0.0}, 'copy_calls': {'before': 96.0, 'after': 96.0, 'reduction': 0.0}}
+ABCD
+stock|True||| {'elapsed_ns': {'before': 1342391.5, 'after': 1097588.0, 'reduction': 18.5}, 'copy_calls': {'before': 0.0, 'after': 0.0}}
+publication|True||| {'elapsed_ns': {'before': 2479369.5, 'after': 2496109.0, 'reduction': -1.1}}
+capture||512|sparse|0 {'elapsed_ns': {'before': 1750874.0, 'after': 100684.5, 'reduction': 94.4}, 'copied_bytes': {'before': 50462720.0, 'after': 327680.0, 'reduction': 99.4}, 'copy_calls': {'before': 1056.0, 'after': 1056.0, 'reduction': 0.0}}
+capture||512|clustered|0 {'elapsed_ns': {'before': 12393227.0, 'after': 1333936.0, 'reduction': 89.6}, 'copied_bytes': {'before': 83886080.0, 'after': 35127296.0, 'reduction': 58.1}, 'copy_calls': {'before': 262176.0, 'after': 8448.0, 'reduction': 96.8}}
+capture||512|half|0 {'elapsed_ns': {'before': 33140094.5, 'after': 4621422.5, 'reduction': 86.6}, 'copied_bytes': {'before': 117440512.0, 'after': 70254592.0, 'reduction': 40.2}, 'copy_calls': {'before': 524320.0, 'after': 16896.0, 'reduction': 96.8}}
+capture||512|dense|0 {'elapsed_ns': {'before': 29944280.5, 'after': 20586625.5, 'reduction': 30.0}, 'copied_bytes': {'before': 184549376.0, 'after': 140509184.0, 'reduction': 23.9}, 'copy_calls': {'before': 96.0, 'after': 1088.0, 'reduction': -1033.3}}

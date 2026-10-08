@@ -1,0 +1,469 @@
+diff --git a/src/engine/sim/snapshot/WorldCapture.cpp b/src/engine/sim/snapshot/WorldCapture.cpp
+index 8f0138015..6fa1137e8 100644
+--- a/src/engine/sim/snapshot/WorldCapture.cpp
++++ b/src/engine/sim/snapshot/WorldCapture.cpp
+@@ -1,3 +1,9 @@
++#ifndef GROWTH_OPT_C
++#define GROWTH_OPT_C 1
++#endif
++#ifndef GROWTH_OPT_D
++#define GROWTH_OPT_D 1
++#endif
+ // SPDX-License-Identifier: GPL-3.0-or-later
+ #include "WorldSnapshot.h"
+ #include "SnapshotStorage.h"
+@@ -211,12 +217,26 @@ Handle capture(const Game& game,
+ 			if (storage && stamps.chunks.capacity() < live.chunks.size()) ++storage->allocations;
+ 			stamps.chunks.assign(live.chunks.begin(), live.chunks.end());
+ 		}
++#if GROWTH_OPT_D
++        else for (std::size_t chunk=0;chunk<live.chunks.size();) {
++            if (stamps.chunks[chunk]==live.chunks[chunk]) { ++chunk; continue; }
++            const auto first=chunk, rowEnd=(chunk/geometry.chunksWide+1)*geometry.chunksWide;
++            do { stamps.chunks[chunk]=live.chunks[chunk]; ++chunk; }
++            while (chunk<rowEnd && stamps.chunks[chunk]!=live.chunks[chunk]);
++            const auto x=(first%geometry.chunksWide)*MapState::ChunkGeometry::Side;
++            const auto y=(first/geometry.chunksWide)*MapState::ChunkGeometry::Side;
++            const auto length=std::min(std::size_t(geometry.width)-x,(chunk-first)*MapState::ChunkGeometry::Side);
++            for (std::size_t r=y;r<std::min(std::size_t(geometry.height),y+MapState::ChunkGeometry::Side);++r)
++                copyRange(r*geometry.width+x,length);
++        }
++#else
+ 		else for (std::size_t chunk = 0; chunk < live.chunks.size(); ++chunk)
+ 			if (stamps.chunks[chunk] != live.chunks[chunk])
+ 			{
+ 				geometry.forEachRow(chunk, copyRange);
+ 				stamps.chunks[chunk] = live.chunks[chunk];
+ 			}
++#endif
+ 		stamps.worldIdentity = identity; stamps.width = geometry.width; stamps.height = geometry.height;
+ 		stamps.filledTick = game.stepCounter;
+ 	};
+@@ -241,7 +261,29 @@ Handle capture(const Game& game,
+ 			copyCells(resources->cells, cellsSource, start, length);
+ 			if (!indexSource.empty()) copyCells(resources->stockIndices, indexSource, start, length);
+ 		});
+-		copyArray(resources->stocks, game.map.resourceStockState());
++#if GROWTH_OPT_C
++        const auto source=game.map.resourceStockState();
++        const bool resizedStocks=prepare(resources->stocks,source.size());
++        auto& stamps=resources->stockStamps;
++        const auto& live=game.map.stockChanges();
++        const bool full=resizedStocks || stamps.worldIdentity!=identity || stamps.chunks.size()!=live.chunks.size();
++        std::size_t dirty=0;
++        if (!full) for (std::size_t i=0;i<live.chunks.size();++i) dirty+=stamps.chunks[i]!=live.chunks[i];
++        if (full || dirty>live.chunks.size()/2) {
++            copyCells(resources->stocks,source,0,source.size());
++            reserve(stamps.chunks,live.chunks.size());
++            stamps.chunks.assign(live.chunks.begin(),live.chunks.end());
++        } else for (std::size_t i=0;i<live.chunks.size();) {
++            if (stamps.chunks[i]==live.chunks[i]) { ++i; continue; }
++            const auto first=i;
++            do { stamps.chunks[i]=live.chunks[i]; ++i; }
++            while (i<live.chunks.size() && stamps.chunks[i]!=live.chunks[i]);
++            copyCells(resources->stocks,source,first*256,std::min(source.size(),i*256)-first*256);
++        }
++        stamps.worldIdentity=identity;
++#else
++        copyArray(resources->stocks, game.map.resourceStockState());
++#endif
+ 		resources->staticMaterialSourceGeneration = game.map.staticMaterialSourceGeneration();
+ 		{ const auto live = game.map.cellView(); std::copy(live.materialSourceCounts.begin(), live.materialSourceCounts.end(), resources->materialSourceCounts.begin()); }
+ 	}
+diff --git a/src/engine/sim/snapshot/WorldSnapshot.h b/src/engine/sim/snapshot/WorldSnapshot.h
+index 94904d39a..fd9af1226 100644
+--- a/src/engine/sim/snapshot/WorldSnapshot.h
++++ b/src/engine/sim/snapshot/WorldSnapshot.h
+@@ -59,6 +59,7 @@ struct Resources
+ 	std::array<Uint32, MaterialCount> materialSourceCounts{};
+ 	Uint64 staticMaterialSourceGeneration = 0;
+ 	ChunkStamps stamps; // cells and stockIndices
++	ChunkStamps stockStamps; // contiguous blocks of 256 stock records
+ };
+ using OccupancyCell = MapState::OccupancyCell;
+ struct Occupancy { std::vector<OccupancyCell> cells; ChunkStamps stamps; };
+diff --git a/src/engine/sim/snapshot/WorldSnapshotTest.cpp b/src/engine/sim/snapshot/WorldSnapshotTest.cpp
+index 39577f41f..fee11026b 100644
+--- a/src/engine/sim/snapshot/WorldSnapshotTest.cpp
++++ b/src/engine/sim/snapshot/WorldSnapshotTest.cpp
+@@ -861,3 +861,46 @@ TEST_CASE("explicit observation boundaries refresh paused state and retain old l
+     CHECK(fixture.game.snapshots().captureBoundary(fixture.game, needed).entities->units.front().hp == previousHp - 1);
+ }
+ }
++
++TEST_CASE("stock snapshots survive slot reuse rebuild and sparse refresh" * doctest::test_suite("WorldSnapshot")) {
++ glob2test::HeadlessGlobals globals;
++ glob2test::HeadlessGame world({.wDec=7,.hDec=6,.header=true});auto& game=world.game;auto& map=game.map;
++ auto resource=nlohmann::json::parse(map.resourceRegistry().serialize())["resources"][WHEAT];
++ resource["key"]="snapshot-churn";resource["yields"]["paper"]=resource["yields"]["food"];
++ auto doc=nlohmann::json{{"schemaVersion",1},{"resources",{resource}}}.dump();map.installResourceDefinitions(doc);
++ auto type=Uint16(resourceIndex(*map.resourceRegistry().find("snapshot-churn")));
++ for(size_t i=0;i<2048;++i)map.replaceResource(i,Resource{type,0,1,0});
++ SimulationSnapshot::Store store;store.setVerification(true);
++ auto next=[&]{++game.stepCounter;return store.captureBoundary(game,SimulationSnapshot::bit(SimulationSnapshot::Component::Resources)|SimulationSnapshot::bit(SimulationSnapshot::Component::Terrain));};
++ auto held=next();auto original=held.resources->stocks;
++ for(unsigned pass=0;pass<32;++pass) {
++  for(unsigned n=0;n<48;++n) {
++   const auto i=(pass*71+n*13)%2048;
++   map.replaceResource(i,Resource{});
++   map.replaceResource(2048+i,Resource{type,0,1,0});
++   map.setMaterialAmount(2048+i,MaterialId::Paper,1+pass%4);
++  }
++  auto captured=next();REQUIRE(captured.resources->stocks==std::vector(map.resourceStockState().begin(),map.resourceStockState().end()));
++  REQUIRE(held.resources->stocks==original);
++ }
++ map.rebuildResourceState();auto rebuilt=next();
++ REQUIRE(rebuilt.resources->stocks==std::vector(map.resourceStockState().begin(),map.resourceStockState().end()));
++ map.setMaterialAmount(2050,MaterialId::Paper,4);auto changed=next();
++ REQUIRE(changed.resources->stocks==std::vector(map.resourceStockState().begin(),map.resourceStockState().end()));
++}
++TEST_CASE("coalesced rows preserve partial and rectangular snapshot arrays" * doctest::test_suite("WorldSnapshot")) {
++ glob2test::HeadlessGlobals globals;
++ for(auto dimensions:{std::pair{3,2},std::pair{7,5}}) {
++  glob2test::HeadlessGame world({.wDec=dimensions.first,.hDec=dimensions.second});auto& game=world.game;
++  SimulationSnapshot::Store store;store.setVerification(true);
++  const auto areas=SimulationSnapshot::bit(SimulationSnapshot::Component::Areas);
++  auto next=[&]{++game.stepCounter;return store.captureBoundary(game,areas);};
++  auto held=next();
++  for(int pass=0;pass<24;++pass) {
++   for(int x=0;x<game.map.getW()/2;++x)game.map.addForbidden(x,pass%game.map.getH(),0);
++   auto captured=next();
++   REQUIRE(std::memcmp(captured.areas->cells.data(),game.map.areaState().data(),game.map.areaState().size_bytes())==0);
++  }
++  REQUIRE(held.areas->cells[0].forbidden==0);
++ }
++}
+diff --git a/src/map/Map.h b/src/map/Map.h
+index df2cc110a..59d012b88 100644
+--- a/src/map/Map.h
++++ b/src/map/Map.h
+@@ -151,6 +151,10 @@ class Map
+ 	void refreshResourceTotal(size_t index);
+ 	void rebuildResourceState();
+ 	void materialStockChanged(size_t index, MaterialMask before);
++    void commitMaterialAmount(size_t index, unsigned material, Uint16 oldAmount, Uint16 amount, const ResourceProperties& properties);
++    MapState::ChangeTracker resourceStockChanges;
++    void markResourceStock(size_t slot);
++    void resetResourceStockChanges();
+ 	bool harvestMaterial(size_t index, int material);
+ 	std::vector<TerrainType> terrainIds;
+ 	std::shared_ptr<const TerrainRegistry> terrainRegistryValue = TerrainRegistry::builtins();
+@@ -623,7 +627,10 @@ public:
+ 	bool resourceVisibleToHarvest(size_t index) const { return MapState::resourceVisibleToHarvest(liveCells, index); }
+ 	bool hasMaterialSourceSlot(int material) const { return MapState::hasMaterialSource(liveCells, material); }
+ 	bool hasMaterialSource(MaterialId material) const { return hasMaterialSourceSlot(static_cast<int>(material)); }
+-	void setMaterialAmount(size_t index, MaterialId material, Uint16 amount);
++	enum class MaterialDeltaResult { AppliedExisting, AppliedSeed, Rejected, CapacityClamped };
++    MaterialDeltaResult applyMaterialDelta(size_t index, Uint16 type, unsigned material, int delta);
++    const MapState::ChangeTracker& stockChanges() const { return resourceStockChanges; }
++    void setMaterialAmount(size_t index, MaterialId material, Uint16 amount);
+     void setMaterialAmountSlot(size_t index,int material,Uint16 amount) { if (validMaterial(material)) setMaterialAmount(index,static_cast<MaterialId>(material),amount); }
+ 	bool growResourceStock(size_t index);
+ 	bool isMaterialTakeable(int x,int y,MaterialId material) const { return materialAmountAt(coordToIndex(x,y),material)>0; }
+diff --git a/src/map/MapResourceState.cpp b/src/map/MapResourceState.cpp
+index 8a83b0a91..d097b8a5e 100644
+--- a/src/map/MapResourceState.cpp
++++ b/src/map/MapResourceState.cpp
+@@ -1,3 +1,9 @@
++#ifndef GROWTH_OPT_A
++#define GROWTH_OPT_A 1
++#endif
++#ifndef GROWTH_OPT_C
++#define GROWTH_OPT_C 1
++#endif
+ // SPDX-License-Identifier: GPL-3.0-or-later
+ // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
+ 
+@@ -71,6 +77,7 @@ void Map::installResourceDefinitions(const std::string& json)
+     resourceHabitatsValue=staged.resourceHabitatsValue;
+     resourceStockIndices=std::move(stockIndices);
+     resourceStocks=std::move(stocks);
++    resetResourceStockChanges();
+     freeResourceStocks.clear();
+     materialSourceCounts=counts;
+     refreshLiveView();
+@@ -159,6 +166,21 @@ void Map::initializeResourceStock(size_t index, const std::array<Uint16, Materia
+     refreshResourceTotal(index);
+ }
+ 
++void Map::markResourceStock(size_t slot)
++{
++#if GROWTH_OPT_C
++    const auto count=(resourceStocks.size()+255)/256;
++    if (resourceStockChanges.chunks.size()!=count) resourceStockChanges.reset(count);
++    resourceStockChanges.mark(slot/256);
++#endif
++}
++void Map::resetResourceStockChanges()
++{
++#if GROWTH_OPT_C
++    resourceStockChanges.reset((resourceStocks.size()+255)/256);
++#endif
++}
++
+ void Map::refreshResourceTotal(size_t index)
+ {
+     const auto slot=resourceStockIndices.empty() ? 0 : resourceStockIndices[index];
+@@ -166,6 +188,7 @@ void Map::refreshResourceTotal(size_t index)
+     Uint32 total=0;
+     for (auto stock : resourceStocks[slot-1]) total+=stock;
+     resourceCells[index].resource.amount=total;
++    markResourceStock(slot-1);
+     markResource(index);
+ }
+ 
+@@ -191,6 +214,7 @@ void Map::rebuildResourceState()
+     resourceChanges.markAll();
+     bumpStaticMaterialSourceGeneration();
+     resourceStockIndices.clear(); resourceStocks.clear(); freeResourceStocks.clear(); materialSourceCounts.fill(0);
++    resetResourceStockChanges();
+     for (size_t i=0;i<cellCount();++i)
+     {
+         initializeResourceStock(i);
+@@ -210,17 +234,50 @@ void Map::setMaterialAmount(size_t index,MaterialId materialId,Uint16 amount)
+     const auto& yield=resourceRegistry().yields(static_cast<ResourceId>(r.type))[material];
+     amount=std::min(amount,yield.capacity);
+     if (amount==oldAmount) return;
++    commitMaterialAmount(index,material,oldAmount,amount,p);
++}
++
++void Map::commitMaterialAmount(size_t index, unsigned material, Uint16 oldAmount, Uint16 amount, const ResourceProperties& p)
++{
++    auto& r=resourceCells[index].resource;
+     const bool crossesZero=(oldAmount==0)!=(amount==0);
+-    // Only availability transitions affect counters; capture renewable membership
+-    // before mutation, including an empty persistent stock that can regrow.
+     const auto before=crossesZero ? resourceMaterialMaskAt(index) : MaterialMask(0);
+     markResource(index);
+     if (std::has_single_bit(p.materialMask)) r.amount=amount;
+-    else { resourceStocks[resourceStockIndices[index]-1][material]=amount; refreshResourceTotal(index); }
++    else {
++        resourceStocks[resourceStockIndices[index]-1][material]=amount;
++#if GROWTH_OPT_A
++        r.amount = r.amount - oldAmount + amount;
++        markResourceStock(resourceStockIndices[index]-1);
++#else
++        refreshResourceTotal(index);
++#endif
++    }
+     if (crossesZero) materialStockChanged(index,before);
+     if (!r.amount && !p.persistsWhenEmpty) replaceResource(index,Resource{});
+ }
+ 
++Map::MaterialDeltaResult Map::applyMaterialDelta(size_t index, Uint16 type, unsigned material, int delta)
++{
++    if (index>=cellCount() || material>=MaterialCount || (delta!=1 && delta!=-1) || !resourceRegistry().valid(type))
++        return MaterialDeltaResult::Rejected;
++    const auto oldType=resourceCells[index].resource.type;
++    if (oldType!=type && (oldType!=NO_RES_TYPE || delta<0)) return MaterialDeltaResult::Rejected;
++    const auto& p=resourcePropertiesByIndex(type);
++    if (!(p.materialMask&(1u<<material))) return MaterialDeltaResult::Rejected;
++    const auto capacity=resourceRegistry().yields(static_cast<ResourceId>(type))[material].capacity;
++    const unsigned amount=oldType==NO_RES_TYPE ? 0 : materialAmountAtSlot(index,material);
++    if (delta>0 && amount>=capacity) return MaterialDeltaResult::CapacityClamped;
++    if (delta<0 && !amount) return MaterialDeltaResult::Rejected;
++    if (oldType==NO_RES_TYPE) {
++        std::array<Uint16,MaterialCount> stocks{}; stocks[material]=1;
++        replaceResource(index,Resource{type,0,1,0},&stocks);
++        return MaterialDeltaResult::AppliedSeed;
++    }
++    commitMaterialAmount(index,material,amount,amount+delta,p);
++    return MaterialDeltaResult::AppliedExisting;
++}
++
+ void Map::setResourceAmount(size_t index, Uint32 amount)
+ {
+     const auto& r=resourceCells[index].resource;
+diff --git a/src/map/ResourceGrowth.cpp b/src/map/ResourceGrowth.cpp
+index 891653bba..dd6168dca 100644
+--- a/src/map/ResourceGrowth.cpp
++++ b/src/map/ResourceGrowth.cpp
+@@ -1,3 +1,6 @@
++#ifndef GROWTH_OPT_B
++#define GROWTH_OPT_B 1
++#endif
+ // SPDX-License-Identifier: GPL-3.0-or-later
+ #include "ResourceGrowth.h"
+ #include "Map.h"
+@@ -134,10 +137,25 @@ void apply(Map &map, const Batch &batch, Metrics &metrics)
+ 		metrics.publicationNs += now() - start;
+ 		return;
+ 	}
++#if !GROWTH_OPT_B
+ 	const auto v = map.cellView();
++#endif
+ 	map.rebuildGrowthCoverage();
+ 	for (const auto &p : batch.proposals)
+ 	{
++#if GROWTH_OPT_B
++        const auto result=map.applyMaterialDelta(p.tile,p.type,p.material,p.delta);
++        if (result==Map::MaterialDeltaResult::Rejected || result==Map::MaterialDeltaResult::CapacityClamped) {
++            ++metrics.rejected;
++            metrics.clamped += result==Map::MaterialDeltaResult::CapacityClamped;
++            continue;
++        }
++        const bool newTile=result==Map::MaterialDeltaResult::AppliedSeed;
++        metrics.tilesAdded += newTile;
++        ++metrics.accepted;
++        metrics.stockAdded += p.delta>0;
++        recordDelta(map,p,newTile);
++#else
+ 		// Kernel output and save loading validate indices, materials and +/-1 deltas.
+ 		assert(p.tile < v.resources.size());
+ 		const auto oldType = v.resources[p.tile].resource.type;
+@@ -169,6 +187,7 @@ void apply(Map &map, const Batch &batch, Metrics &metrics)
+ 		++metrics.accepted;
+ 		metrics.stockAdded += p.delta > 0;
+ 		recordDelta(map, p, oldType == NO_RES_TYPE);
++#endif
+ 	}
+ 	metrics.publicationNs += now() - start;
+ }
+diff --git a/src/map/ResourceGrowthTest.cpp b/src/map/ResourceGrowthTest.cpp
+index 273bdd0a0..56da8883d 100644
+--- a/src/map/ResourceGrowthTest.cpp
++++ b/src/map/ResourceGrowthTest.cpp
+@@ -386,3 +386,143 @@ TEST_SUITE("ResourceGrowth")
+ 		CHECK(pipeline.count() == 0);
+ 	}
+ }
++
++namespace ReferenceGrowth
++{ using namespace ResourceGrowth; }
++namespace ReferenceGrowth
++{
++namespace
++{
++Uint64 now()
++{
++	return std::chrono::duration_cast<std::chrono::nanoseconds>(
++			   std::chrono::steady_clock::now().time_since_epoch())
++		.count();
++}
++// Publication already knows the one changed material and its exact delta.
++// Avoid constructing and comparing all material stocks for each unit operation.
++void recordDelta(Map &map, const Proposal &p, bool newTile)
++{
++	const int x = p.tile % map.getW(), y = p.tile / map.getW();
++	std::array<Uint32, GROWTH_COVERAGE_BANDS> coverage;
++	for (int band = 0; band < GROWTH_COVERAGE_BANDS; ++band)
++		coverage[band] = map.teamsWithBuildingsNear(x, y, band);
++	for (int t = 0; t < map.game->mapHeader.getNumberOfTeams(); ++t)
++	{
++		auto *team = map.game->teams[t];
++		if (!team)
++			continue;
++		auto &m = team->stats.measurements;
++		m.growthGlobal[0][p.material] += newTile;
++		m.growthGlobal[1][p.material] += p.delta > 0;
++		m.growthGlobal[2][p.material] += p.delta < 0;
++		for (int band = 0; band < GROWTH_COVERAGE_BANDS; ++band)
++			if (coverage[band] & (Uint32(1) << t))
++			{
++				m.growthTiles[band][p.material] += newTile;
++				m.growthAmount[band][p.material] += p.delta > 0;
++				m.growthReduction[band][p.material] += p.delta < 0;
++			}
++	}
++}
++} // namespace
++void apply(Map &map, const Batch &batch, Metrics &metrics)
++{
++	const auto start = now();
++	if (batch.proposals.empty())
++		return;
++	if (map.game->gameHeader.isResourceGrowthDisabled())
++	{
++		metrics.rejected += batch.proposals.size();
++		metrics.publicationNs += now() - start;
++		return;
++	}
++	const auto v = map.cellView();
++	map.rebuildGrowthCoverage();
++	for (const auto &p : batch.proposals)
++	{
++		// Kernel output and save loading validate indices, materials and +/-1 deltas.
++		assert(p.tile < v.resources.size());
++		const auto oldType = v.resources[p.tile].resource.type;
++		if (oldType != p.type && (oldType != NO_RES_TYPE || p.delta < 0))
++		{
++			++metrics.rejected;
++			continue;
++		}
++		const auto capacity =
++			v.resourceRegistry->yields(static_cast<ResourceId>(p.type))[p.material].capacity;
++		const unsigned amount =
++			oldType == NO_RES_TYPE ? 0 : map.materialAmountAtSlot(p.tile, p.material);
++		if ((p.delta > 0 && amount >= capacity) || (p.delta < 0 && amount == 0))
++		{
++			metrics.clamped += p.delta > 0;
++			++metrics.rejected;
++			continue;
++		}
++		if (oldType == NO_RES_TYPE)
++		{
++			// A seed is exactly one unit, including for multi-material deposits.
++			std::array<Uint16, MaterialCount> stocks{};
++			stocks[p.material] = 1;
++			map.replaceResource(p.tile, Resource{p.type, 0, 1, 0}, &stocks);
++			++metrics.tilesAdded;
++		}
++		else
++			map.setMaterialAmountSlot(p.tile, p.material, amount + p.delta);
++		++metrics.accepted;
++		metrics.stockAdded += p.delta > 0;
++		recordDelta(map, p, oldType == NO_RES_TYPE);
++	}
++	metrics.publicationNs += now() - start;
++}
++
++
++}
++
++TEST_CASE("optimized publication matches frozen reference and statistics" * doctest::test_suite("ResourceGrowth")) {
++ glob2test::HeadlessGlobals globals;
++ glob2test::HeadlessGame a({.wDec=6,.hDec=6,.teams=4,.header=true,.seed=713});
++ glob2test::HeadlessGame b({.wDec=6,.hDec=6,.teams=4,.header=true,.seed=713});
++ auto type=crop(a.game.map,true);REQUIRE(type==crop(b.game.map,true));
++ for(auto* game:{&a.game,&b.game})for(int t=0;t<4;++t) {
++  auto &stats=game->teams[t]->stats;stats.coverageBuildings={{t*9,t*11,2,2},{0,0,4,4}};++stats.coverageBuildingGeneration;
++ }
++ MersenneTwister rng(981);ResourceGrowth::Metrics x,y;
++ for(int batch=0;batch<64;++batch) {
++  for(unsigned n=0;n<12;++n) {
++   const auto i=rng()%a.game.map.cellCount();
++   const Resource replacement=n%3==0 ? Resource{} : Resource{Uint16(n%2 ? resourceIndex(type) : STONE),0,1,0};
++   a.game.map.replaceResource(i,replacement);b.game.map.replaceResource(i,replacement);
++  }
++  ResourceGrowth::Batch proposals;
++  for(int n=0;n<512;++n)proposals.proposals.push_back({Uint32(rng()%a.game.map.cellCount()),Uint16(resourceIndex(type)),Uint8(rng()%2?materialIndex(MaterialId::Food):materialIndex(MaterialId::Paper)),Sint8(rng()%2?1:-1)});
++  ReferenceGrowth::apply(a.game.map,proposals,x);ResourceGrowth::apply(b.game.map,proposals,y);
++  for(int t=0;t<4;++t)REQUIRE(a.game.teams[t]->stats.measurements==b.game.teams[t]->stats.measurements);
++  REQUIRE(x.accepted==y.accepted);REQUIRE(x.rejected==y.rejected);REQUIRE(x.clamped==y.clamped);REQUIRE(x.stockAdded==y.stockAdded);REQUIRE(x.tilesAdded==y.tilesAdded);
++  REQUIRE(std::equal(a.game.map.cellView().materialSourceCounts.begin(),a.game.map.cellView().materialSourceCounts.end(),b.game.map.cellView().materialSourceCounts.begin()));
++  for(size_t i=0;i<a.game.map.cellCount();++i) {
++   REQUIRE(a.game.map.getResource(i)==b.game.map.getResource(i));
++   REQUIRE(a.game.map.materialStocksAt(i)==b.game.map.materialStocksAt(i));
++   Uint32 total=0;for(auto amount:b.game.map.materialStocksAt(i))total+=amount;
++   REQUIRE(b.game.map.getResource(i).amount==total);
++  }
++ }
++}
++TEST_CASE("material totals match full sums through clamping and zero crossings" * doctest::test_suite("ResourceGrowth")) {
++ glob2test::HeadlessGlobals globals;
++ glob2test::HeadlessGame world({.header=true});auto& map=world.game.map;
++ auto resource=nlohmann::json::parse(map.resourceRegistry().serialize())["resources"][WHEAT];
++ resource["key"]="maximum-stock";resource["properties"]["persistsWhenEmpty"]=true;
++ resource["yields"]["food"]["capacity"]=65535;
++ resource["yields"]["paper"]=resource["yields"]["food"];
++ map.installResourceDefinitions(nlohmann::json{{"schemaVersion",1},{"resources",{resource}}}.dump());
++ auto id=*map.resourceRegistry().find("maximum-stock");
++ map.replaceResource(0,Resource{Uint16(resourceIndex(id)),0,1,0});
++ for(unsigned food:{0u,1u,65534u,65535u,0u})for(unsigned paper:{65535u,65534u,1u,0u}) {
++  map.setMaterialAmount(0,MaterialId::Food,food);map.setMaterialAmount(0,MaterialId::Paper,paper);
++  REQUIRE(map.getResource(0).amount==food+paper);
++  auto before=map.changes(MapState::TrackedArray::Resources).generation;
++  map.setMaterialAmount(0,MaterialId::Paper,paper);
++  REQUIRE(map.changes(MapState::TrackedArray::Resources).generation==before);
++ }
++}

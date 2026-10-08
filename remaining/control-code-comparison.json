@@ -1,0 +1,11 @@
+{
+  "baseline": {
+    "bytes": 33883432,
+    "text_sha256": "ba1d5e4a5bdb51afdec931406d526dc30a66cbe6b57048e1ea773fb7ca83012b"
+  },
+  "control": {
+    "bytes": 33883432,
+    "text_sha256": "4031e713a3d2c0afabd7f55c842c9e9ce09e53b3d67933f2507d59e283637617"
+  },
+  "different_bytes": 189108
+}

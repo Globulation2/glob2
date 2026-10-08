@@ -1,0 +1,4 @@
+PASS MapSets/custom artwork properties and credits survive offline save and load [artifacts] (0.4s)
+
+1 passed, 0 failed, 0 skipped (0.4s of test time)
+[run_tests] JUnit report: ../current-master-compat/artwork.xml (1 cases)
