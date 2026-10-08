@@ -46,7 +46,7 @@ function measureName(metric: string, dimension: string) {
   if (metric === 'accounts.created')
     return dimension === 'guest' ? 'Guest accounts created' : 'Registered signups';
   if (metric === 'activity')
-    return dimension === 'guest' ? 'Guest active accounts' : 'Registered active accounts';
+    return dimension === 'guest' ? 'Guest active account-days' : 'Registered active account-days';
   if (metric.startsWith('matches.')) return 'Matches ' + metric.slice(8);
   if (metric === 'library.published') return (products[dimension] ?? dimension) + ' publications';
   if (metric === 'library.downloads')
@@ -215,9 +215,10 @@ export function Overview() {
               >
                 <table>
                   <caption>
-                    Current {data.days} days and previous {data.days} days. Studio/job statuses use
-                    request creation dates. Publications count versions; recorded downloads use each
-                    library’s existing counting rules.
+                    Current {data.days} days and previous {data.days} days. Activity totals count
+                    account-days; the active-account cards count distinct accounts. Studio/job
+                    statuses use request creation dates. Publications count versions; recorded
+                    downloads use each library’s existing counting rules.
                   </caption>
                   <thead>
                     <tr>
