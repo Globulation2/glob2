@@ -1,0 +1,30 @@
+[
+  {
+    "fixture": "sparse",
+    "participants": 4,
+    "hashes": {
+      "game.replay.checksums": "3d384a3601baa47b827ddc7973d01bf4f6b352ff33c83586807cfbd0d4fa2332",
+      "game.replay": "62e8cb87d422379bc0119c60450a2d2fd8e04a8e655858058ec1e2d7e5f393d6",
+      "final.game.gz": "cf5dd2050d4d67a22f97ba1be8da34c0923b4ba13ad8a500ae8cc71fbb0e0323"
+    },
+    "matches_instrumented": {
+      "game.replay.checksums": true,
+      "game.replay": true,
+      "final.game.gz": true
+    }
+  },
+  {
+    "fixture": "dense",
+    "participants": 4,
+    "hashes": {
+      "game.replay.checksums": "9fb6bcc38fd2819abf44d10afd6098fe1e3cc5171f67efefd6b3b9b5a4dfb0ef",
+      "game.replay": "3903beffadb4965d0f31a3a6f40f6db5cb1672da10a066b2aac71a0208a1771b",
+      "final.game.gz": "9b0072d4ccdeb783f3884003eee00e75a4b203105e615cb34f319d85fdf28a33"
+    },
+    "matches_instrumented": {
+      "game.replay.checksums": true,
+      "game.replay": true,
+      "final.game.gz": true
+    }
+  }
+]

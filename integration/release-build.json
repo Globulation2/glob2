@@ -1,0 +1,19 @@
+{
+  "revision": "7954cff48a2d5b6ec3b363197f8d4a343ee8b4d4",
+  "binary_sha256": "226d0325710bf0072414ff49eb2da5bc3afce046ed78656a4800b82ccbbcd7eb",
+  "command": [
+    "scons",
+    "-j8",
+    "release=1",
+    "profile=0",
+    "serial_audit_skip_assets=1",
+    "CC=gcc-13",
+    "CXX=/home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/g++-13-symbols",
+    "CXXFLAGS=-g2",
+    "LINKFLAGS=-g2",
+    "--build=build/serial-opt-gcc13",
+    "build/serial-opt-gcc13/src/glob2",
+    "tests"
+  ],
+  "headless_instrumentation": false
+}

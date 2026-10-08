@@ -1,0 +1,159 @@
+{
+  "reason": "Maintainer accepted existing evidence and requested merge followed by hot-path reanalysis; remaining broad UI coverage stopped",
+  "active_processes": [
+    {
+      "pid": 3355054,
+      "command": [
+        "/bin/sh",
+        "/usr/bin/xvfb-run",
+        "-a",
+        "-s",
+        "-screen 0 1600x1400x24 -noreset",
+        "/usr/bin/python3",
+        "/home/bradley/.codex/worktrees/serial-opt-gcc13/glob2/test/xvfb_session.py",
+        "/home/bradley/.codex/worktrees/serial-opt-gcc13/glob2/build/serial-opt-gcc13/test/glob2-engine-tests",
+        "-r=junit",
+        "-o=/tmp/glob2-test-kpz5ncd5/junit.xml",
+        "--no-breaks=true",
+        "-tc=production presentation records menus and gameplay without changing per-tick state [display][artifacts][recording]",
+        "-ts=GameplayRecording.Integration"
+      ]
+    },
+    {
+      "pid": 3355486,
+      "command": [
+        "/bin/sh",
+        "/usr/bin/xvfb-run",
+        "-a",
+        "-s",
+        "-screen 0 1600x1400x24 -noreset",
+        "/usr/bin/python3",
+        "/home/bradley/.codex/worktrees/serial-opt-gcc13/glob2/test/xvfb_session.py",
+        "/home/bradley/.codex/worktrees/serial-opt-gcc13/glob2/build/serial-opt-gcc13/test/glob2-engine-tests",
+        "-r=junit",
+        "-o=/tmp/glob2-test-3vujp7vl/junit.xml",
+        "--no-breaks=true",
+        "-tc=threaded scene recording preserves baseline per-tick checksums [display][artifacts][recording]",
+        "-ts=GameplayRecording.Integration"
+      ]
+    },
+    {
+      "pid": 3355819,
+      "command": [
+        "/home/bradley/.codex/worktrees/serial-opt-gcc13/glob2/build/serial-opt-gcc13/test/glob2-engine-tests",
+        "-r=junit",
+        "-o=/tmp/glob2-test-5prk15po/junit.xml",
+        "--no-breaks=true",
+        "-tc=autosave defaults; atomic and background writes; truncated and malformed loads; imports and campaign progress [save-format][writes-preferences]",
+        "-ts=SavegameSafety"
+      ]
+    },
+    {
+      "pid": 3356354,
+      "command": [
+        "/home/bradley/.codex/worktrees/serial-opt-gcc13/glob2/build/serial-opt-gcc13/test/glob2-engine-tests",
+        "-r=junit",
+        "-o=/tmp/glob2-test-yhncso1y/junit.xml",
+        "--no-breaks=true",
+        "-tc=AI tags collection counts and recursive predicates are bounded",
+        "-ts=UntrustedFiles"
+      ]
+    },
+    {
+      "pid": 3355506,
+      "command": [
+        "Xvfb",
+        ":127",
+        "-screen",
+        "0",
+        "1600x1400x24",
+        "-noreset",
+        "-nolisten",
+        "tcp",
+        "-auth",
+        "/tmp/glob2-test-3vujp7vl/xvfb-run.4v4y2Z/Xauthority"
+      ]
+    },
+    {
+      "pid": 3355540,
+      "command": [
+        "/usr/bin/python3",
+        "/home/bradley/.codex/worktrees/serial-opt-gcc13/glob2/test/xvfb_session.py",
+        "/home/bradley/.codex/worktrees/serial-opt-gcc13/glob2/build/serial-opt-gcc13/test/glob2-engine-tests",
+        "-r=junit",
+        "-o=/tmp/glob2-test-3vujp7vl/junit.xml",
+        "--no-breaks=true",
+        "-tc=threaded scene recording preserves baseline per-tick checksums [display][artifacts][recording]",
+        "-ts=GameplayRecording.Integration"
+      ]
+    },
+    {
+      "pid": 3355545,
+      "command": [
+        "/usr/bin/openbox",
+        "--sm-disable",
+        "--startup",
+        "/usr/bin/xprop -root -f _GLOB2_TEST_WM_READY 32c -set _GLOB2_TEST_WM_READY 1"
+      ]
+    },
+    {
+      "pid": 3355557,
+      "command": [
+        "/home/bradley/.codex/worktrees/serial-opt-gcc13/glob2/build/serial-opt-gcc13/test/glob2-engine-tests",
+        "-r=junit",
+        "-o=/tmp/glob2-test-3vujp7vl/junit.xml",
+        "--no-breaks=true",
+        "-tc=threaded scene recording preserves baseline per-tick checksums [display][artifacts][recording]",
+        "-ts=GameplayRecording.Integration"
+      ]
+    },
+    {
+      "pid": 3355064,
+      "command": [
+        "Xvfb",
+        ":130",
+        "-screen",
+        "0",
+        "1600x1400x24",
+        "-noreset",
+        "-nolisten",
+        "tcp",
+        "-auth",
+        "/tmp/glob2-test-kpz5ncd5/xvfb-run.8EckLt/Xauthority"
+      ]
+    },
+    {
+      "pid": 3355127,
+      "command": [
+        "/usr/bin/python3",
+        "/home/bradley/.codex/worktrees/serial-opt-gcc13/glob2/test/xvfb_session.py",
+        "/home/bradley/.codex/worktrees/serial-opt-gcc13/glob2/build/serial-opt-gcc13/test/glob2-engine-tests",
+        "-r=junit",
+        "-o=/tmp/glob2-test-kpz5ncd5/junit.xml",
+        "--no-breaks=true",
+        "-tc=production presentation records menus and gameplay without changing per-tick state [display][artifacts][recording]",
+        "-ts=GameplayRecording.Integration"
+      ]
+    },
+    {
+      "pid": 3355136,
+      "command": [
+        "/usr/bin/openbox",
+        "--sm-disable",
+        "--startup",
+        "/usr/bin/xprop -root -f _GLOB2_TEST_WM_READY 32c -set _GLOB2_TEST_WM_READY 1"
+      ]
+    },
+    {
+      "pid": 3355159,
+      "command": [
+        "/home/bradley/.codex/worktrees/serial-opt-gcc13/glob2/build/serial-opt-gcc13/test/glob2-engine-tests",
+        "-r=junit",
+        "-o=/tmp/glob2-test-kpz5ncd5/junit.xml",
+        "--no-breaks=true",
+        "-tc=production presentation records menus and gameplay without changing per-tick state [display][artifacts][recording]",
+        "-ts=GameplayRecording.Integration"
+      ]
+    }
+  ]
+}

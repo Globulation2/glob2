@@ -1,0 +1,5 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="3" failures="0" errors="0" skipped="0"><testsuite name="EditorDockLayout"><testcase classname="EditorDockLayout" name="dock controls fit inside the dock without overlapping at common window sizes [display][artifacts]" time="37.3834" status="run" />
+  <testcase classname="EditorDockLayout" name="palette actions switch tabs expand the group and scroll it to the top [display]" time="14.897" status="run" />
+  </testsuite><testsuite name="GameGUITouch"><testcase classname="GameGUITouch" name="a touch on or near a flag drags the flag; not the map [display]" time="6.16991" status="run" />
+  </testsuite></testsuites>

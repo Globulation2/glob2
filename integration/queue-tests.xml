@@ -1,0 +1,13 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="11" failures="0" errors="0" skipped="0"><testsuite name="ClientChannels"><testcase classname="ClientChannels" name="LosslessQueue hands every item over once, in order" time="0" status="run" />
+  <testcase classname="ClientChannels" name="cleared queues discard pending events and accept a fresh batch" time="0" status="run" />
+  <testcase classname="ClientChannels" name="client orders cross the producer consumer boundary once in FIFO order" time="0.006526" status="run" />
+  <testcase classname="ClientChannels" name="concurrent event delivery preserves every value and coherent pulses" time="0.002214" status="run" />
+  <testcase classname="ClientChannels" name="flag coalescing preserves incarnation and queue position" time="0" status="run" />
+  <testcase classname="ClientChannels" name="order side effects reach the GUI as events" time="0.093879" status="run" />
+  <testcase classname="ClientChannels" name="queue callbacks can publish the next bounded batch" time="0" status="run" />
+  <testcase classname="ClientChannels" name="script queries observe commands before the client consumes them" time="0" status="run" />
+  <testcase classname="ClientChannels" name="scripts reach the client only through ClientCommandSink" time="0.187213" status="run" />
+  <testcase classname="ClientChannels" name="simultaneous producers retain their order without lost or duplicate events" time="0.001833" status="run" />
+  <testcase classname="ClientChannels" name="team events reach the GUI exactly once, in order, and age like Team::updateEvents" time="0.07262" status="run" />
+  </testsuite></testsuites>

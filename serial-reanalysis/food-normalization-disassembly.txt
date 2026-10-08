@@ -1,0 +1,33 @@
+000000000049d6f0 <AIMaximaFoodLedger::Input::normalizeX(int) const>:
+  49d6f0:	endbr64
+  49d6f4:	mov    (%rdi),%ecx
+  49d6f6:	mov    %esi,%eax
+  49d6f8:	xor    %edx,%edx
+  49d6fa:	test   %ecx,%ecx
+  49d6fc:	jle    49d708 <AIMaximaFoodLedger::Input::normalizeX(int) const+0x18>
+  49d6fe:	cltd
+  49d6ff:	idiv   %ecx
+  49d701:	add    %edx,%ecx
+  49d703:	test   %edx,%edx
+  49d705:	cmovs  %ecx,%edx
+  49d708:	mov    %edx,%eax
+  49d70a:	ret
+  49d70b:	nop
+  49d70c:	nopl   0x0(%rax)
+
+000000000049d710 <AIMaximaFoodLedger::Input::normalizeY(int) const>:
+  49d710:	endbr64
+  49d714:	mov    0x4(%rdi),%ecx
+  49d717:	mov    %esi,%eax
+  49d719:	xor    %edx,%edx
+  49d71b:	test   %ecx,%ecx
+  49d71d:	jle    49d729 <AIMaximaFoodLedger::Input::normalizeY(int) const+0x19>
+  49d71f:	cltd
+  49d720:	idiv   %ecx
+  49d722:	add    %edx,%ecx
+  49d724:	test   %edx,%edx
+  49d726:	cmovs  %ecx,%edx
+  49d729:	mov    %edx,%eax
+  49d72b:	ret
+  49d72c:	nopl   0x0(%rax)
+

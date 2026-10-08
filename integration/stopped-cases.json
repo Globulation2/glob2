@@ -1,0 +1,80 @@
+[
+  {
+    "pid": 3302761,
+    "command": [
+      "/home/bradley/.codex/worktrees/serial-opt-gcc13/glob2/build/serial-opt-gcc13/test/glob2-engine-tests",
+      "-r=junit",
+      "-o=/tmp/glob2-test-9s3cmauc/junit.xml",
+      "--no-breaks=true",
+      "-tc=catalog generation contracts [slow][map-generators]",
+      "-ts=MapGeneratorRegistry"
+    ],
+    "reason": "Remaining unrelated stress case stopped after maintainer accepted merge and requested hot-path reanalysis",
+    "cpu_seconds": 410.28
+  },
+  {
+    "pid": 3336629,
+    "command": [
+      "/home/bradley/.codex/worktrees/serial-opt-gcc13/glob2/build/serial-opt-gcc13/test/glob2-engine-tests",
+      "-r=junit",
+      "-o=/tmp/glob2-test-fnm9n7fo/junit.xml",
+      "--no-breaks=true",
+      "-tc=every screen lays out; navigates and captures at laptop across presentations and insets [display:1600x1400][artifacts][slow]",
+      "-ts=UIPresentation"
+    ],
+    "reason": "Remaining rendering stress case stopped to prioritize requested post-merge profiling",
+    "cpu_seconds": 22.049999999999997
+  },
+  {
+    "pid": 3328686,
+    "command": [
+      "/home/bradley/.codex/worktrees/serial-opt-gcc13/glob2/build/serial-opt-gcc13/test/glob2-engine-tests",
+      "-r=junit",
+      "-o=/tmp/glob2-test-zlp82gcv/junit.xml",
+      "--no-breaks=true",
+      "-tc=every screen lays out; navigates and captures at tablet portrait across presentations and insets [display:1600x1400][artifacts][slow]",
+      "-ts=UIPresentation"
+    ],
+    "reason": "Remaining rendering stress case stopped to prioritize requested post-merge profiling",
+    "cpu_seconds": 128.52
+  },
+  {
+    "pid": 3338222,
+    "command": [
+      "/home/bradley/.codex/worktrees/serial-opt-gcc13/glob2/build/serial-opt-gcc13/test/glob2-engine-tests",
+      "-r=junit",
+      "-o=/tmp/glob2-test-cp4bix7y/junit.xml",
+      "--no-breaks=true",
+      "-tc=every screen lays out; navigates and captures at tablet landscape across presentations and insets [display:1600x1400][artifacts][slow]",
+      "-ts=UIPresentation"
+    ],
+    "reason": "Remaining rendering stress coverage omitted after maintainer accepted merge and requested profiling",
+    "cpu_seconds": 215.49
+  },
+  {
+    "pid": 3337527,
+    "command": [
+      "/home/bradley/.codex/worktrees/serial-opt-gcc13/glob2/build/serial-opt-gcc13/test/glob2-engine-tests",
+      "-r=junit",
+      "-o=/tmp/glob2-test-w7ye0a4o/junit.xml",
+      "--no-breaks=true",
+      "-tc=every screen lays out; navigates and captures at fullhd across presentations and insets [display:2200x1400][artifacts][slow]",
+      "-ts=UIPresentation"
+    ],
+    "reason": "Remaining rendering stress coverage omitted after maintainer accepted merge and requested profiling",
+    "cpu_seconds": 281.78
+  },
+  {
+    "pid": 3354518,
+    "command": [
+      "/home/bradley/.codex/worktrees/serial-opt-gcc13/glob2/build/serial-opt-gcc13/test/glob2-engine-tests",
+      "-r=junit",
+      "-o=/tmp/glob2-test-3p5jn998/junit.xml",
+      "--no-breaks=true",
+      "-tc=every screen lays out; navigates and captures at small portrait across presentations and insets [display:1600x1400][artifacts][slow]",
+      "-ts=UIPresentation"
+    ],
+    "reason": "Remaining rendering stress coverage omitted after maintainer accepted merge and requested profiling",
+    "cpu_seconds": 0.51
+  }
+]

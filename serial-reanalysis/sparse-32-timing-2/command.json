@@ -1,0 +1,16 @@
+[
+  "/home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-reanalysis/glob2",
+  "--run-game",
+  "--load-game",
+  "/home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-audit/peaceful/initial.game.gz",
+  "--ticks",
+  "4096",
+  "--compute-threads",
+  "32",
+  "--benchmark-warmup",
+  "0",
+  "--output-dir",
+  "/home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-reanalysis/sparse-32-timing-2",
+  "--profile",
+  "serial-reanalysis"
+]

@@ -1,0 +1,717 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="3" failures="80" errors="0" skipped="0"><testsuite name="EditorDockLayout"><testcase classname="EditorDockLayout" name="dock controls fit inside the dock without overlapping at common window sizes [display][artifacts]" time="11.9814" status="run">
+      <failure message="false" type="CHECK">
+src/map/editor/EditorDockLayoutTest.cpp:80:
+CHECK( area.contains(scroll) ) is NOT correct!
+  values: CHECK( false )
+  logged: 1024x480 logical 1024x480
+          1024x480-tab0
+
+      </failure>
+      <failure message="0 &gt;  0" type="CHECK">
+src/map/editor/EditorDockLayoutTest.cpp:94:
+CHECK( b.h &gt; 0 ) is NOT correct!
+  values: CHECK( 0 &gt;  0 )
+  logged: 1024x480 logical 1024x480
+          1024x480-tab0
+          dock/brush/mode/0
+
+      </failure>
+      <failure message="false" type="CHECK">
+src/map/editor/EditorDockLayoutTest.cpp:99:
+CHECK( area.contains(b) ) is NOT correct!
+  values: CHECK( false )
+  logged: 1024x480 logical 1024x480
+          1024x480-tab0
+          dock/brush/mode/0
+
+      </failure>
+      <failure message="0 &gt;  0" type="CHECK">
+src/map/editor/EditorDockLayoutTest.cpp:94:
+CHECK( b.h &gt; 0 ) is NOT correct!
+  values: CHECK( 0 &gt;  0 )
+  logged: 1024x480 logical 1024x480
+          1024x480-tab0
+          dock/brush/mode/1
+
+      </failure>
+      <failure message="false" type="CHECK">
+src/map/editor/EditorDockLayoutTest.cpp:99:
+CHECK( area.contains(b) ) is NOT correct!
+  values: CHECK( false )
+  logged: 1024x480 logical 1024x480
+          1024x480-tab0
+          dock/brush/mode/1
+
+      </failure>
+      <failure message="false" type="CHECK">
+src/map/editor/EditorDockLayoutTest.cpp:99:
+CHECK( area.contains(b) ) is NOT correct!
+  values: CHECK( false )
+  logged: 1024x480 logical 1024x480
+          1024x480-tab0
+          dock/brush/shape/0
+
+      </failure>
+      <failure message="false" type="CHECK">
+src/map/editor/EditorDockLayoutTest.cpp:99:
+CHECK( area.contains(b) ) is NOT correct!
+  values: CHECK( false )
+  logged: 1024x480 logical 1024x480
+          1024x480-tab0
+          dock/brush/shape/1
+
+      </failure>
+      <failure message="false" type="CHECK">
+src/map/editor/EditorDockLayoutTest.cpp:99:
+CHECK( area.contains(b) ) is NOT correct!
+  values: CHECK( false )
+  logged: 1024x480 logical 1024x480
+          1024x480-tab0
+          dock/brush/shape/2
+
+      </failure>
+      <failure message="false" type="CHECK">
+src/map/editor/EditorDockLayoutTest.cpp:99:
+CHECK( area.contains(b) ) is NOT correct!
+  values: CHECK( false )
+  logged: 1024x480 logical 1024x480
+          1024x480-tab0
+          dock/brush/shape/3
+
+      </failure>
+      <failure message="false" type="CHECK">
+src/map/editor/EditorDockLayoutTest.cpp:99:
+CHECK( area.contains(b) ) is NOT correct!
+  values: CHECK( false )
+  logged: 1024x480 logical 1024x480
+          1024x480-tab0
+          dock/brush/shape/4
+
+      </failure>
+      <failure message="false" type="CHECK">
+src/map/editor/EditorDockLayoutTest.cpp:99:
+CHECK( area.contains(b) ) is NOT correct!
+  values: CHECK( false )
+  logged: 1024x480 logical 1024x480
+          1024x480-tab0
+          dock/brush/shape/5
+
+      </failure>
+      <failure message="false" type="CHECK">
+src/map/editor/EditorDockLayoutTest.cpp:99:
+CHECK( area.contains(b) ) is NOT correct!
+  values: CHECK( false )
+  logged: 1024x480 logical 1024x480
+          1024x480-tab0
+          dock/brush/shape/6
+
+      </failure>
+      <failure message="false" type="CHECK">
+src/map/editor/EditorDockLayoutTest.cpp:99:
+CHECK( area.contains(b) ) is NOT correct!
+  values: CHECK( false )
+  logged: 1024x480 logical 1024x480
+          1024x480-tab0
+          dock/brush/shape/7
+
+      </failure>
+      <failure message="false" type="CHECK">
+src/map/editor/EditorDockLayoutTest.cpp:80:
+CHECK( area.contains(scroll) ) is NOT correct!
+  values: CHECK( false )
+  logged: 1024x480 logical 1024x480
+          1024x480-tab1
+
+      </failure>
+      <failure message="0 &gt;  0" type="CHECK">
+src/map/editor/EditorDockLayoutTest.cpp:94:
+CHECK( b.h &gt; 0 ) is NOT correct!
+  values: CHECK( 0 &gt;  0 )
+  logged: 1024x480 logical 1024x480
+          1024x480-tab1
+          dock/brush/mode/0
+
+      </failure>
+      <failure message="false" type="CHECK">
+src/map/editor/EditorDockLayoutTest.cpp:99:
+CHECK( area.contains(b) ) is NOT correct!
+  values: CHECK( false )
+  logged: 1024x480 logical 1024x480
+          1024x480-tab1
+          dock/brush/mode/0
+
+      </failure>
+      <failure message="0 &gt;  0" type="CHECK">
+src/map/editor/EditorDockLayoutTest.cpp:94:
+CHECK( b.h &gt; 0 ) is NOT correct!
+  values: CHECK( 0 &gt;  0 )
+  logged: 1024x480 logical 1024x480
+          1024x480-tab1
+          dock/brush/mode/1
+
+      </failure>
+      <failure message="false" type="CHECK">
+src/map/editor/EditorDockLayoutTest.cpp:99:
+CHECK( area.contains(b) ) is NOT correct!
+  values: CHECK( false )
+  logged: 1024x480 logical 1024x480
+          1024x480-tab1
+          dock/brush/mode/1
+
+      </failure>
+      <failure message="false" type="CHECK">
+src/map/editor/EditorDockLayoutTest.cpp:99:
+CHECK( area.contains(b) ) is NOT correct!
+  values: CHECK( false )
+  logged: 1024x480 logical 1024x480
+          1024x480-tab1
+          dock/brush/shape/0
+
+      </failure>
+      <failure message="false" type="CHECK">
+src/map/editor/EditorDockLayoutTest.cpp:99:
+CHECK( area.contains(b) ) is NOT correct!
+  values: CHECK( false )
+  logged: 1024x480 logical 1024x480
+          1024x480-tab1
+          dock/brush/shape/1
+
+      </failure>
+      <failure message="false" type="CHECK">
+src/map/editor/EditorDockLayoutTest.cpp:99:
+CHECK( area.contains(b) ) is NOT correct!
+  values: CHECK( false )
+  logged: 1024x480 logical 1024x480
+          1024x480-tab1
+          dock/brush/shape/2
+
+      </failure>
+      <failure message="false" type="CHECK">
+src/map/editor/EditorDockLayoutTest.cpp:99:
+CHECK( area.contains(b) ) is NOT correct!
+  values: CHECK( false )
+  logged: 1024x480 logical 1024x480
+          1024x480-tab1
+          dock/brush/shape/3
+
+      </failure>
+      <failure message="false" type="CHECK">
+src/map/editor/EditorDockLayoutTest.cpp:99:
+CHECK( area.contains(b) ) is NOT correct!
+  values: CHECK( false )
+  logged: 1024x480 logical 1024x480
+          1024x480-tab1
+          dock/brush/shape/4
+
+      </failure>
+      <failure message="false" type="CHECK">
+src/map/editor/EditorDockLayoutTest.cpp:99:
+CHECK( area.contains(b) ) is NOT correct!
+  values: CHECK( false )
+  logged: 1024x480 logical 1024x480
+          1024x480-tab1
+          dock/brush/shape/5
+
+      </failure>
+      <failure message="false" type="CHECK">
+src/map/editor/EditorDockLayoutTest.cpp:99:
+CHECK( area.contains(b) ) is NOT correct!
+  values: CHECK( false )
+  logged: 1024x480 logical 1024x480
+          1024x480-tab1
+          dock/brush/shape/6
+
+      </failure>
+      <failure message="false" type="CHECK">
+src/map/editor/EditorDockLayoutTest.cpp:99:
+CHECK( area.contains(b) ) is NOT correct!
+  values: CHECK( false )
+  logged: 1024x480 logical 1024x480
+          1024x480-tab1
+          dock/brush/shape/7
+
+      </failure>
+      <failure message="false" type="CHECK">
+src/map/editor/EditorDockLayoutTest.cpp:80:
+CHECK( area.contains(scroll) ) is NOT correct!
+  values: CHECK( false )
+  logged: 1024x480 logical 1024x480
+          1024x480-tab3
+
+      </failure>
+      <failure message="0 &gt;  0" type="CHECK">
+src/map/editor/EditorDockLayoutTest.cpp:94:
+CHECK( b.h &gt; 0 ) is NOT correct!
+  values: CHECK( 0 &gt;  0 )
+  logged: 1024x480 logical 1024x480
+          1024x480-tab3
+          dock/brush/mode/0
+
+      </failure>
+      <failure message="false" type="CHECK">
+src/map/editor/EditorDockLayoutTest.cpp:99:
+CHECK( area.contains(b) ) is NOT correct!
+  values: CHECK( false )
+  logged: 1024x480 logical 1024x480
+          1024x480-tab3
+          dock/brush/mode/0
+
+      </failure>
+      <failure message="0 &gt;  0" type="CHECK">
+src/map/editor/EditorDockLayoutTest.cpp:94:
+CHECK( b.h &gt; 0 ) is NOT correct!
+  values: CHECK( 0 &gt;  0 )
+  logged: 1024x480 logical 1024x480
+          1024x480-tab3
+          dock/brush/mode/1
+
+      </failure>
+      <failure message="false" type="CHECK">
+src/map/editor/EditorDockLayoutTest.cpp:99:
+CHECK( area.contains(b) ) is NOT correct!
+  values: CHECK( false )
+  logged: 1024x480 logical 1024x480
+          1024x480-tab3
+          dock/brush/mode/1
+
+      </failure>
+      <failure message="false" type="CHECK">
+src/map/editor/EditorDockLayoutTest.cpp:99:
+CHECK( area.contains(b) ) is NOT correct!
+  values: CHECK( false )
+  logged: 1024x480 logical 1024x480
+          1024x480-tab3
+          dock/brush/shape/0
+
+      </failure>
+      <failure message="false" type="CHECK">
+src/map/editor/EditorDockLayoutTest.cpp:99:
+CHECK( area.contains(b) ) is NOT correct!
+  values: CHECK( false )
+  logged: 1024x480 logical 1024x480
+          1024x480-tab3
+          dock/brush/shape/1
+
+      </failure>
+      <failure message="false" type="CHECK">
+src/map/editor/EditorDockLayoutTest.cpp:99:
+CHECK( area.contains(b) ) is NOT correct!
+  values: CHECK( false )
+  logged: 1024x480 logical 1024x480
+          1024x480-tab3
+          dock/brush/shape/2
+
+      </failure>
+      <failure message="false" type="CHECK">
+src/map/editor/EditorDockLayoutTest.cpp:99:
+CHECK( area.contains(b) ) is NOT correct!
+  values: CHECK( false )
+  logged: 1024x480 logical 1024x480
+          1024x480-tab3
+          dock/brush/shape/3
+
+      </failure>
+      <failure message="false" type="CHECK">
+src/map/editor/EditorDockLayoutTest.cpp:99:
+CHECK( area.contains(b) ) is NOT correct!
+  values: CHECK( false )
+  logged: 1024x480 logical 1024x480
+          1024x480-tab3
+          dock/brush/shape/4
+
+      </failure>
+      <failure message="false" type="CHECK">
+src/map/editor/EditorDockLayoutTest.cpp:99:
+CHECK( area.contains(b) ) is NOT correct!
+  values: CHECK( false )
+  logged: 1024x480 logical 1024x480
+          1024x480-tab3
+          dock/brush/shape/5
+
+      </failure>
+      <failure message="false" type="CHECK">
+src/map/editor/EditorDockLayoutTest.cpp:99:
+CHECK( area.contains(b) ) is NOT correct!
+  values: CHECK( false )
+  logged: 1024x480 logical 1024x480
+          1024x480-tab3
+          dock/brush/shape/6
+
+      </failure>
+      <failure message="false" type="CHECK">
+src/map/editor/EditorDockLayoutTest.cpp:99:
+CHECK( area.contains(b) ) is NOT correct!
+  values: CHECK( false )
+  logged: 1024x480 logical 1024x480
+          1024x480-tab3
+          dock/brush/shape/7
+
+      </failure>
+      <failure message="false" type="CHECK">
+src/map/editor/EditorDockLayoutTest.cpp:80:
+CHECK( area.contains(scroll) ) is NOT correct!
+  values: CHECK( false )
+  logged: 1024x600 logical 1024x600
+          1024x600-tab0
+
+      </failure>
+      <failure message="0 &gt;  0" type="CHECK">
+src/map/editor/EditorDockLayoutTest.cpp:94:
+CHECK( b.h &gt; 0 ) is NOT correct!
+  values: CHECK( 0 &gt;  0 )
+  logged: 1024x600 logical 1024x600
+          1024x600-tab0
+          dock/brush/mode/0
+
+      </failure>
+      <failure message="false" type="CHECK">
+src/map/editor/EditorDockLayoutTest.cpp:99:
+CHECK( area.contains(b) ) is NOT correct!
+  values: CHECK( false )
+  logged: 1024x600 logical 1024x600
+          1024x600-tab0
+          dock/brush/mode/0
+
+      </failure>
+      <failure message="0 &gt;  0" type="CHECK">
+src/map/editor/EditorDockLayoutTest.cpp:94:
+CHECK( b.h &gt; 0 ) is NOT correct!
+  values: CHECK( 0 &gt;  0 )
+  logged: 1024x600 logical 1024x600
+          1024x600-tab0
+          dock/brush/mode/1
+
+      </failure>
+      <failure message="false" type="CHECK">
+src/map/editor/EditorDockLayoutTest.cpp:99:
+CHECK( area.contains(b) ) is NOT correct!
+  values: CHECK( false )
+  logged: 1024x600 logical 1024x600
+          1024x600-tab0
+          dock/brush/mode/1
+
+      </failure>
+      <failure message="false" type="CHECK">
+src/map/editor/EditorDockLayoutTest.cpp:99:
+CHECK( area.contains(b) ) is NOT correct!
+  values: CHECK( false )
+  logged: 1024x600 logical 1024x600
+          1024x600-tab0
+          dock/brush/shape/0
+
+      </failure>
+      <failure message="false" type="CHECK">
+src/map/editor/EditorDockLayoutTest.cpp:99:
+CHECK( area.contains(b) ) is NOT correct!
+  values: CHECK( false )
+  logged: 1024x600 logical 1024x600
+          1024x600-tab0
+          dock/brush/shape/1
+
+      </failure>
+      <failure message="false" type="CHECK">
+src/map/editor/EditorDockLayoutTest.cpp:99:
+CHECK( area.contains(b) ) is NOT correct!
+  values: CHECK( false )
+  logged: 1024x600 logical 1024x600
+          1024x600-tab0
+          dock/brush/shape/2
+
+      </failure>
+      <failure message="false" type="CHECK">
+src/map/editor/EditorDockLayoutTest.cpp:99:
+CHECK( area.contains(b) ) is NOT correct!
+  values: CHECK( false )
+  logged: 1024x600 logical 1024x600
+          1024x600-tab0
+          dock/brush/shape/3
+
+      </failure>
+      <failure message="false" type="CHECK">
+src/map/editor/EditorDockLayoutTest.cpp:99:
+CHECK( area.contains(b) ) is NOT correct!
+  values: CHECK( false )
+  logged: 1024x600 logical 1024x600
+          1024x600-tab0
+          dock/brush/shape/4
+
+      </failure>
+      <failure message="false" type="CHECK">
+src/map/editor/EditorDockLayoutTest.cpp:99:
+CHECK( area.contains(b) ) is NOT correct!
+  values: CHECK( false )
+  logged: 1024x600 logical 1024x600
+          1024x600-tab0
+          dock/brush/shape/5
+
+      </failure>
+      <failure message="false" type="CHECK">
+src/map/editor/EditorDockLayoutTest.cpp:99:
+CHECK( area.contains(b) ) is NOT correct!
+  values: CHECK( false )
+  logged: 1024x600 logical 1024x600
+          1024x600-tab0
+          dock/brush/shape/6
+
+      </failure>
+      <failure message="false" type="CHECK">
+src/map/editor/EditorDockLayoutTest.cpp:99:
+CHECK( area.contains(b) ) is NOT correct!
+  values: CHECK( false )
+  logged: 1024x600 logical 1024x600
+          1024x600-tab0
+          dock/brush/shape/7
+
+      </failure>
+      <failure message="false" type="CHECK">
+src/map/editor/EditorDockLayoutTest.cpp:80:
+CHECK( area.contains(scroll) ) is NOT correct!
+  values: CHECK( false )
+  logged: 1024x600 logical 1024x600
+          1024x600-tab1
+
+      </failure>
+      <failure message="0 &gt;  0" type="CHECK">
+src/map/editor/EditorDockLayoutTest.cpp:94:
+CHECK( b.h &gt; 0 ) is NOT correct!
+  values: CHECK( 0 &gt;  0 )
+  logged: 1024x600 logical 1024x600
+          1024x600-tab1
+          dock/brush/mode/0
+
+      </failure>
+      <failure message="false" type="CHECK">
+src/map/editor/EditorDockLayoutTest.cpp:99:
+CHECK( area.contains(b) ) is NOT correct!
+  values: CHECK( false )
+  logged: 1024x600 logical 1024x600
+          1024x600-tab1
+          dock/brush/mode/0
+
+      </failure>
+      <failure message="0 &gt;  0" type="CHECK">
+src/map/editor/EditorDockLayoutTest.cpp:94:
+CHECK( b.h &gt; 0 ) is NOT correct!
+  values: CHECK( 0 &gt;  0 )
+  logged: 1024x600 logical 1024x600
+          1024x600-tab1
+          dock/brush/mode/1
+
+      </failure>
+      <failure message="false" type="CHECK">
+src/map/editor/EditorDockLayoutTest.cpp:99:
+CHECK( area.contains(b) ) is NOT correct!
+  values: CHECK( false )
+  logged: 1024x600 logical 1024x600
+          1024x600-tab1
+          dock/brush/mode/1
+
+      </failure>
+      <failure message="false" type="CHECK">
+src/map/editor/EditorDockLayoutTest.cpp:99:
+CHECK( area.contains(b) ) is NOT correct!
+  values: CHECK( false )
+  logged: 1024x600 logical 1024x600
+          1024x600-tab1
+          dock/brush/shape/0
+
+      </failure>
+      <failure message="false" type="CHECK">
+src/map/editor/EditorDockLayoutTest.cpp:99:
+CHECK( area.contains(b) ) is NOT correct!
+  values: CHECK( false )
+  logged: 1024x600 logical 1024x600
+          1024x600-tab1
+          dock/brush/shape/1
+
+      </failure>
+      <failure message="false" type="CHECK">
+src/map/editor/EditorDockLayoutTest.cpp:99:
+CHECK( area.contains(b) ) is NOT correct!
+  values: CHECK( false )
+  logged: 1024x600 logical 1024x600
+          1024x600-tab1
+          dock/brush/shape/2
+
+      </failure>
+      <failure message="false" type="CHECK">
+src/map/editor/EditorDockLayoutTest.cpp:99:
+CHECK( area.contains(b) ) is NOT correct!
+  values: CHECK( false )
+  logged: 1024x600 logical 1024x600
+          1024x600-tab1
+          dock/brush/shape/3
+
+      </failure>
+      <failure message="false" type="CHECK">
+src/map/editor/EditorDockLayoutTest.cpp:99:
+CHECK( area.contains(b) ) is NOT correct!
+  values: CHECK( false )
+  logged: 1024x600 logical 1024x600
+          1024x600-tab1
+          dock/brush/shape/4
+
+      </failure>
+      <failure message="false" type="CHECK">
+src/map/editor/EditorDockLayoutTest.cpp:99:
+CHECK( area.contains(b) ) is NOT correct!
+  values: CHECK( false )
+  logged: 1024x600 logical 1024x600
+          1024x600-tab1
+          dock/brush/shape/5
+
+      </failure>
+      <failure message="false" type="CHECK">
+src/map/editor/EditorDockLayoutTest.cpp:99:
+CHECK( area.contains(b) ) is NOT correct!
+  values: CHECK( false )
+  logged: 1024x600 logical 1024x600
+          1024x600-tab1
+          dock/brush/shape/6
+
+      </failure>
+      <failure message="false" type="CHECK">
+src/map/editor/EditorDockLayoutTest.cpp:99:
+CHECK( area.contains(b) ) is NOT correct!
+  values: CHECK( false )
+  logged: 1024x600 logical 1024x600
+          1024x600-tab1
+          dock/brush/shape/7
+
+      </failure>
+      <failure message="false" type="CHECK">
+src/map/editor/EditorDockLayoutTest.cpp:80:
+CHECK( area.contains(scroll) ) is NOT correct!
+  values: CHECK( false )
+  logged: 1024x600 logical 1024x600
+          1024x600-tab3
+
+      </failure>
+      <failure message="0 &gt;  0" type="CHECK">
+src/map/editor/EditorDockLayoutTest.cpp:94:
+CHECK( b.h &gt; 0 ) is NOT correct!
+  values: CHECK( 0 &gt;  0 )
+  logged: 1024x600 logical 1024x600
+          1024x600-tab3
+          dock/brush/mode/0
+
+      </failure>
+      <failure message="false" type="CHECK">
+src/map/editor/EditorDockLayoutTest.cpp:99:
+CHECK( area.contains(b) ) is NOT correct!
+  values: CHECK( false )
+  logged: 1024x600 logical 1024x600
+          1024x600-tab3
+          dock/brush/mode/0
+
+      </failure>
+      <failure message="0 &gt;  0" type="CHECK">
+src/map/editor/EditorDockLayoutTest.cpp:94:
+CHECK( b.h &gt; 0 ) is NOT correct!
+  values: CHECK( 0 &gt;  0 )
+  logged: 1024x600 logical 1024x600
+          1024x600-tab3
+          dock/brush/mode/1
+
+      </failure>
+      <failure message="false" type="CHECK">
+src/map/editor/EditorDockLayoutTest.cpp:99:
+CHECK( area.contains(b) ) is NOT correct!
+  values: CHECK( false )
+  logged: 1024x600 logical 1024x600
+          1024x600-tab3
+          dock/brush/mode/1
+
+      </failure>
+      <failure message="false" type="CHECK">
+src/map/editor/EditorDockLayoutTest.cpp:99:
+CHECK( area.contains(b) ) is NOT correct!
+  values: CHECK( false )
+  logged: 1024x600 logical 1024x600
+          1024x600-tab3
+          dock/brush/shape/0
+
+      </failure>
+      <failure message="false" type="CHECK">
+src/map/editor/EditorDockLayoutTest.cpp:99:
+CHECK( area.contains(b) ) is NOT correct!
+  values: CHECK( false )
+  logged: 1024x600 logical 1024x600
+          1024x600-tab3
+          dock/brush/shape/1
+
+      </failure>
+      <failure message="false" type="CHECK">
+src/map/editor/EditorDockLayoutTest.cpp:99:
+CHECK( area.contains(b) ) is NOT correct!
+  values: CHECK( false )
+  logged: 1024x600 logical 1024x600
+          1024x600-tab3
+          dock/brush/shape/2
+
+      </failure>
+      <failure message="false" type="CHECK">
+src/map/editor/EditorDockLayoutTest.cpp:99:
+CHECK( area.contains(b) ) is NOT correct!
+  values: CHECK( false )
+  logged: 1024x600 logical 1024x600
+          1024x600-tab3
+          dock/brush/shape/3
+
+      </failure>
+      <failure message="false" type="CHECK">
+src/map/editor/EditorDockLayoutTest.cpp:99:
+CHECK( area.contains(b) ) is NOT correct!
+  values: CHECK( false )
+  logged: 1024x600 logical 1024x600
+          1024x600-tab3
+          dock/brush/shape/4
+
+      </failure>
+      <failure message="false" type="CHECK">
+src/map/editor/EditorDockLayoutTest.cpp:99:
+CHECK( area.contains(b) ) is NOT correct!
+  values: CHECK( false )
+  logged: 1024x600 logical 1024x600
+          1024x600-tab3
+          dock/brush/shape/5
+
+      </failure>
+      <failure message="false" type="CHECK">
+src/map/editor/EditorDockLayoutTest.cpp:99:
+CHECK( area.contains(b) ) is NOT correct!
+  values: CHECK( false )
+  logged: 1024x600 logical 1024x600
+          1024x600-tab3
+          dock/brush/shape/6
+
+      </failure>
+      <failure message="false" type="CHECK">
+src/map/editor/EditorDockLayoutTest.cpp:99:
+CHECK( area.contains(b) ) is NOT correct!
+  values: CHECK( false )
+  logged: 1024x600 logical 1024x600
+          1024x600-tab3
+          dock/brush/shape/7
+
+      </failure>
+    </testcase>
+  <testcase classname="EditorDockLayout" name="palette actions switch tabs expand the group and scroll it to the top [display]" time="2.8352" status="run">
+      <failure message="258 &lt;= -540" type="CHECK">
+src/map/editor/EditorDockLayoutTest.cpp:321:
+CHECK( heading.y &lt;= scroll.y + 4 ) is NOT correct!
+  values: CHECK( 258 &lt;= -540 )
+
+      </failure>
+    </testcase>
+  </testsuite><testsuite name="GameGUITouch"><testcase classname="GameGUITouch" name="a touch on or near a flag drags the flag; not the map [display]" time="1.78183" status="run">
+      <failure message="false" type="REQUIRE">
+src/hud/touch/GameGUITouchHarness.cpp:60:
+REQUIRE( static_cast&lt;bool&gt;(condition) ) is NOT correct!
+  values: REQUIRE( false )
+  logged: Dragging a flag must not pan the map
+
+      </failure>
+    </testcase>
+  </testsuite></testsuites>

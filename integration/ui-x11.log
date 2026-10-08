@@ -1,0 +1,6 @@
+PASS GameGUITouch/a touch on or near a flag drags the flag; not the map [display] (6.8s)
+PASS EditorDockLayout/dock controls fit inside the dock without overlapping at common window sizes [display][artifacts] (39.0s)
+PASS EditorDockLayout/palette actions switch tabs expand the group and scroll it to the top [display] (16.4s)
+
+3 passed, 0 failed, 0 skipped (62.1s of test time)
+[run_tests] JUnit report: /home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/integration/ui-x11.xml (3 cases)

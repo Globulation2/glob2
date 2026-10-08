@@ -1,0 +1,126 @@
+diff --git a/SConstruct b/SConstruct
+index 21ec7d38c..2df53876d 100644
+--- a/SConstruct
++++ b/SConstruct
+@@ -607,7 +607,7 @@ def main():
+     optimized_install = not env['server'] and env.get('role') != 'relay' and 'install' in COMMAND_LINE_TARGETS
+     if optimized_install and 'dist' in COMMAND_LINE_TARGETS:
+         raise ValueError('Run release install and source dist as separate SCons invocations')
+-    if not env['server'] and env.get('role') != 'relay':
++    if not env['server'] and env.get('role') != 'relay' and not ARGUMENTS.get("serial_audit_skip_assets"):
+         from runtime_assets import prepare_assets
+         prepare_assets(env)
+     if optimized_install:
+diff --git a/src/app/cli/Headless.cpp b/src/app/cli/Headless.cpp
+index 3e4a8d597..d34488c7e 100644
+--- a/src/app/cli/Headless.cpp
++++ b/src/app/cli/Headless.cpp
+@@ -1,3 +1,43 @@
++#ifdef GLOB2_SERIAL_AUDIT
++#include <valgrind/callgrind.h>
++extern "C" void heaptrack_pause() __attribute__((weak));
++extern "C" void heaptrack_resume() __attribute__((weak));
++#include <cstdlib>
++#include <cstdio>
++#include <fcntl.h>
++#include <unistd.h>
++#include <time.h>
++#include <sys/syscall.h>
++static unsigned long long auditClock(clockid_t id) { timespec t{}; clock_gettime(id, &t); return t.tv_sec * 1000000000ULL + t.tv_nsec; }
++static unsigned long long auditOwner, auditProcess, auditWall;
++static void serialAuditControl(bool start)
++{
++    if (start) { if (heaptrack_resume) heaptrack_resume(); }
++    else if (heaptrack_pause) heaptrack_pause();
++    const char* control = std::getenv("GLOB2_AUDIT_CONTROL");
++    const char* ack = std::getenv("GLOB2_AUDIT_ACK");
++    if (control && ack) {
++    static int c = -1, a = -1;
++    if (start) { c = open(control, O_WRONLY); a = open(ack, O_RDONLY); }
++    if (c < 0 || a < 0) std::abort();
++    const char* command = start ? "enable\n" : "disable\n";
++    if (write(c, command, start ? 7 : 8) < 0) std::abort();
++    char reply[32];
++    if (read(a, reply, sizeof(reply)) <= 0) std::abort();
++    if (!start) { close(a); close(c); }
++    }
++    if (start) {
++        auditOwner = auditClock(CLOCK_THREAD_CPUTIME_ID);
++        auditProcess = auditClock(CLOCK_PROCESS_CPUTIME_ID);
++        auditWall = auditClock(CLOCK_MONOTONIC);
++    } else {
++        const auto wall = auditClock(CLOCK_MONOTONIC) - auditWall;
++        const auto process = auditClock(CLOCK_PROCESS_CPUTIME_ID) - auditProcess;
++        const auto owner = auditClock(CLOCK_THREAD_CPUTIME_ID) - auditOwner;
++        std::fprintf(stderr, "SERIAL_AUDIT_WINDOW owner_tid=%ld owner_cpu_ns=%llu process_cpu_ns=%llu wall_ns=%llu\n", syscall(SYS_gettid), owner, process, wall);
++    }
++}
++#endif
+ // SPDX-License-Identifier: GPL-3.0-or-later
+ #include <Environment.h>
+ #include "Headless.h"
+@@ -263,7 +303,10 @@ struct HeadlessRunner
+ {
+ 	static int game(const Options &options, const fs::path &output)
+ 	{
+-		const auto setupStart = std::chrono::steady_clock::now();
++#ifdef GLOB2_SERIAL_AUDIT
++        if (heaptrack_pause) heaptrack_pause();
++#endif
++        const auto setupStart = std::chrono::steady_clock::now();
+ 		const bool benchmark=options.count("--benchmark-warmup")!=0;
+ 		const auto setupCpuStart=benchmark?processCpuNs():0;
+ 		const unsigned benchmarkWarmup=integer(one(options,"--benchmark-warmup","0"),0,std::numeric_limits<int>::max());
+@@ -484,6 +527,15 @@ struct HeadlessRunner
+ 				static_cast<AIJavaScript *>(player->ai->aiImplementation)->enableValidationReporting();
+ 		}
+ 		const auto initialChecksum = engine.gui.game.checkSum(nullptr, nullptr, nullptr, true);
++#ifdef GLOB2_SERIAL_AUDIT
++        {
++            std::ostringstream snapshot;
++            snapshot << "{\"tick\":" << engine.gui.game.stepCounter << ",";
++            Headless::playersAndTeamsJson(snapshot, engine.gui.game, std::vector<Sint32>(engine.gui.game.teamsCount(), -1));
++            snapshot << "}";
++            Headless::writeJson((output/"audit-initial-state.json").string(), snapshot.str());
++        }
++#endif
+ 		const auto runStart = std::chrono::steady_clock::now();
+ 		uint64_t setupCpu=0,runCpu=0,measureStart=0;
+ 		unsigned measuredTicks=0;
+@@ -497,6 +549,10 @@ struct HeadlessRunner
+ 			setupCpu=processCpuNs()-setupCpuStart;
+ 			engine.prepareRun(); engine.beginSession(SDL_GetTicks());
+ 			if(benchmarkWarmup==0) measureStart=processCpuNs();
++#ifdef GLOB2_SERIAL_AUDIT
++            const auto auditComputeStart = engine.gui.game.map.computeExecutor().metrics();
++            if (benchmarkWarmup == 0) { CALLGRIND_ZERO_STATS; CALLGRIND_START_INSTRUMENTATION; serialAuditControl(true); }
++#endif
+ 			while(engine.gui.isRunning)
+ 			{
+                 const auto beforeTick=engine.gui.game.stepCounter;
+@@ -507,9 +563,23 @@ struct HeadlessRunner
+                     ++tickHistogram[std::min<unsigned>(std::bit_width(duration),63)];
+                     tickDurations.push_back(duration);
+                 }
+-				if(!measureStart && engine.gui.game.stepCounter>=start) measureStart=processCpuNs();
++				if(!measureStart && engine.gui.game.stepCounter>=start) {
++                    measureStart=processCpuNs();
++#ifdef GLOB2_SERIAL_AUDIT
++                    CALLGRIND_ZERO_STATS; CALLGRIND_START_INSTRUMENTATION; serialAuditControl(true);
++#endif
++                }
+ 			}
+-			engine.finishSession();
++#ifdef GLOB2_SERIAL_AUDIT
++            serialAuditControl(false);
++            const auto auditComputeEnd = engine.gui.game.map.computeExecutor().metrics();
++            std::fprintf(stderr, "SERIAL_AUDIT_EXECUTOR join_wait_ns=%llu owner_jobs=%zu worker_jobs=%zu\n",
++                static_cast<unsigned long long>(auditComputeEnd.joinWaitNs-auditComputeStart.joinWaitNs),
++                auditComputeEnd.ownerJobs-auditComputeStart.ownerJobs, auditComputeEnd.workerJobs-auditComputeStart.workerJobs);
++            CALLGRIND_STOP_INSTRUMENTATION;
++            CALLGRIND_DUMP_STATS;
++#endif
++            engine.finishSession();
+ 			engine.gui.game.map.finishGradientPipeline(); engine.gui.game.map.finishResourceGrowth();
+ 			if(!measureStart || engine.gui.game.stepCounter<=start) throw std::runtime_error("game ended before benchmark measurement");
+ 			runCpu=processCpuNs()-measureStart;

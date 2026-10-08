@@ -1,0 +1,2984 @@
+{
+  "sparse-4": {
+    "owner": {
+      "total_sample_share_percent": 24.57,
+      "kernel_share_percent": 9.523809523809524,
+      "top": [
+        {
+          "total_percent": 2.43,
+          "tid": null,
+          "mode": ".",
+          "symbol": "__memmove_avx_unaligned_erms",
+          "role_percent": 9.89010989010989
+        },
+        {
+          "total_percent": 2.28,
+          "tid": null,
+          "mode": ".",
+          "symbol": "auto SimulationSnapshot::capture(Game const&, std::shared_ptr<std::vector<SimulationSnapshot::BuildingKindView, std::allocator<SimulationSnapshot::BuildingKindView> > const>, unsigned int, SimulationSnapshot::Handle const*, SimulationSnapshot::Storage*)::{lambda(SimulationSnapshot::ChunkStamps&, MapState::ChangeTracker const&, bool, auto:1)#1}::operator()<SimulationSnapshot::capture(Game const&, std::shared_ptr<std::vector<SimulationSnapshot::BuildingKindView, std::allocator<SimulationSnapshot::BuildingKindView> > const>, unsigned int, SimulationSnapshot::Handle const*, SimulationSnapshot::Storage*)::{lambda(unsigned long, unsigned long)#3}>(SimulationSnapshot::ChunkStamps&, MapState::ChangeTracker const&, bool, SimulationSnapshot::capture(Game const&, std::shared_ptr<std::vector<SimulationSnapshot::BuildingKindView, std::allocator<SimulationSnapshot::BuildingKindView> > const>, unsigned int, SimulationSnapshot::Handle const*, SimulationSnapshot::Storage*)::{lambda(unsigned long, unsigned long)#3}) const",
+          "role_percent": 9.279609279609279
+        },
+        {
+          "total_percent": 1.55,
+          "tid": null,
+          "mode": ".",
+          "symbol": "SimulationSnapshot::capture(Game const&, std::shared_ptr<std::vector<SimulationSnapshot::BuildingKindView, std::allocator<SimulationSnapshot::BuildingKindView> > const>, unsigned int, SimulationSnapshot::Handle const*, SimulationSnapshot::Storage*)",
+          "role_percent": 6.308506308506309
+        },
+        {
+          "total_percent": 1.17,
+          "tid": null,
+          "mode": ".",
+          "symbol": "Team::syncStep()",
+          "role_percent": 4.761904761904762
+        },
+        {
+          "total_percent": 1.16,
+          "tid": null,
+          "mode": ".",
+          "symbol": "Team::integrity()",
+          "role_percent": 4.721204721204721
+        },
+        {
+          "total_percent": 1.14,
+          "tid": null,
+          "mode": ".",
+          "symbol": "auto SimulationSnapshot::capture(Game const&, std::shared_ptr<std::vector<SimulationSnapshot::BuildingKindView, std::allocator<SimulationSnapshot::BuildingKindView> > const>, unsigned int, SimulationSnapshot::Handle const*, SimulationSnapshot::Storage*)::{lambda(SimulationSnapshot::ChunkStamps&, MapState::ChangeTracker const&, bool, auto:1)#1}::operator()<SimulationSnapshot::capture(Game const&, std::shared_ptr<std::vector<SimulationSnapshot::BuildingKindView, std::allocator<SimulationSnapshot::BuildingKindView> > const>, unsigned int, SimulationSnapshot::Handle const*, SimulationSnapshot::Storage*)::{lambda(unsigned long, unsigned long)#4}>(SimulationSnapshot::ChunkStamps&, MapState::ChangeTracker const&, bool, SimulationSnapshot::capture(Game const&, std::shared_ptr<std::vector<SimulationSnapshot::BuildingKindView, std::allocator<SimulationSnapshot::BuildingKindView> > const>, unsigned int, SimulationSnapshot::Handle const*, SimulationSnapshot::Storage*)::{lambda(unsigned long, unsigned long)#4}) const",
+          "role_percent": 4.639804639804639
+        },
+        {
+          "total_percent": 0.88,
+          "tid": null,
+          "mode": ".",
+          "symbol": "Map::propagateGradient(unsigned short*, int, int)",
+          "role_percent": 3.5816035816035816
+        },
+        {
+          "total_percent": 0.8,
+          "tid": null,
+          "mode": ".",
+          "symbol": "Unit::locationIsInEnemyGuardTowerRange(int, int) const",
+          "role_percent": 3.2560032560032566
+        },
+        {
+          "total_percent": 0.47,
+          "tid": null,
+          "mode": ".",
+          "symbol": "ThunkPrototype::propagateMarkForGC()",
+          "role_percent": 1.912901912901913
+        },
+        {
+          "total_percent": 0.45,
+          "tid": null,
+          "mode": ".",
+          "symbol": "Building::materialDeliveryNeed(int) const",
+          "role_percent": 1.8315018315018317
+        },
+        {
+          "total_percent": 0.35,
+          "tid": null,
+          "mode": ".",
+          "symbol": "Map::updateGlobalGradient(Building*, int, BuildingRoute)",
+          "role_percent": 1.4245014245014243
+        },
+        {
+          "total_percent": 0.34,
+          "tid": null,
+          "mode": ".",
+          "symbol": "AIEngine::AIWorldView::AIWorldView(SimulationSnapshot::Handle)",
+          "role_percent": 1.3838013838013838
+        },
+        {
+          "total_percent": 0.31,
+          "tid": null,
+          "mode": ".",
+          "symbol": "Unit::syncStep()",
+          "role_percent": 1.2617012617012617
+        },
+        {
+          "total_percent": 0.29,
+          "tid": null,
+          "mode": ".",
+          "symbol": "auto SimulationSnapshot::capture(Game const&, std::shared_ptr<std::vector<SimulationSnapshot::BuildingKindView, std::allocator<SimulationSnapshot::BuildingKindView> > const>, unsigned int, SimulationSnapshot::Handle const*, SimulationSnapshot::Storage*)::{lambda(SimulationSnapshot::ChunkStamps&, MapState::ChangeTracker const&, bool, auto:1)#1}::operator()<SimulationSnapshot::capture(Game const&, std::shared_ptr<std::vector<SimulationSnapshot::BuildingKindView, std::allocator<SimulationSnapshot::BuildingKindView> > const>, unsigned int, SimulationSnapshot::Handle const*, SimulationSnapshot::Storage*)::{lambda(unsigned long, unsigned long)#6}>(SimulationSnapshot::ChunkStamps&, MapState::ChangeTracker const&, bool, SimulationSnapshot::capture(Game const&, std::shared_ptr<std::vector<SimulationSnapshot::BuildingKindView, std::allocator<SimulationSnapshot::BuildingKindView> > const>, unsigned int, SimulationSnapshot::Handle const*, SimulationSnapshot::Storage*)::{lambda(unsigned long, unsigned long)#6}) const",
+          "role_percent": 1.1803011803011803
+        },
+        {
+          "total_percent": 0.28,
+          "tid": null,
+          "mode": ".",
+          "symbol": "Unit::checkSum(std::vector<unsigned int, std::allocator<unsigned int> >*)",
+          "role_percent": 1.1396011396011396
+        },
+        {
+          "total_percent": 0.28,
+          "tid": null,
+          "mode": ".",
+          "symbol": "Map::updateForbiddenGradient(int, int)",
+          "role_percent": 1.1396011396011396
+        },
+        {
+          "total_percent": 0.28,
+          "tid": null,
+          "mode": ".",
+          "symbol": "Building::computeWishedMaterials(int*)",
+          "role_percent": 1.1396011396011396
+        },
+        {
+          "total_percent": 0.27,
+          "tid": null,
+          "mode": ".",
+          "symbol": "Building::gatherBringMaterialsCandidates(Building::BringMaterialsCandidate*, int)",
+          "role_percent": 1.098901098901099
+        },
+        {
+          "total_percent": 0.26,
+          "tid": null,
+          "mode": ".",
+          "symbol": "Map::preparePendingGradient(SimulationSnapshot::Handle const&)",
+          "role_percent": 1.0582010582010581
+        },
+        {
+          "total_percent": 0.23,
+          "tid": null,
+          "mode": ".",
+          "symbol": "Map::setMapDiscovered(int, int, unsigned int)",
+          "role_percent": 0.9361009361009361
+        }
+      ]
+    },
+    "other_threads": {
+      "total_sample_share_percent": 75.3,
+      "kernel_share_percent": 6.852589641434263,
+      "top": [
+        {
+          "total_percent": 16.560000000000002,
+          "tid": null,
+          "mode": ".",
+          "symbol": "gradient_preparation::propagate(gradient_preparation::Request const&, SimulationSnapshot::Handle const&, unsigned short*, GradientWorkspace&)",
+          "role_percent": 21.992031872509965
+        },
+        {
+          "total_percent": 3.8499999999999996,
+          "tid": null,
+          "mode": ".",
+          "symbol": "gradient_preparation::MaterialSeedCache::trySeed(SimulationSnapshot::Handle const&, int, int, int, unsigned short*, unsigned short const*)",
+          "role_percent": 5.112881806108898
+        },
+        {
+          "total_percent": 3.6799999999999997,
+          "tid": null,
+          "mode": ".",
+          "symbol": "AIMaximaFoodLedger::Ledger::walk(AIMaximaFoodLedger::Input const&, int, int, int, int, int, int, std::vector<AIMaximaFoodLedger::Ledger::ReachCell, std::allocator<AIMaximaFoodLedger::Ledger::ReachCell> >&, std::vector<unsigned int, std::allocator<unsigned int> > const*, long long) const",
+          "role_percent": 4.8871181938911015
+        },
+        {
+          "total_percent": 3.03,
+          "tid": null,
+          "mode": ".",
+          "symbol": "AIMaximaFoodLedger::Input::normalizeY(int) const",
+          "role_percent": 4.0239043824701195
+        },
+        {
+          "total_percent": 2.2399999999999998,
+          "tid": null,
+          "mode": ".",
+          "symbol": "AIMaximaFoodLedger::Input::normalizeX(int) const",
+          "role_percent": 2.97476759628154
+        },
+        {
+          "total_percent": 2.17,
+          "tid": null,
+          "mode": ".",
+          "symbol": "AI::decide(AIEngine::DecisionContext const&)",
+          "role_percent": 2.8818061088977425
+        },
+        {
+          "total_percent": 2.09,
+          "tid": null,
+          "mode": ".",
+          "symbol": "AIMaximaPlacement::Planner::prepareScoringCaches(AIMaximaPlacement::WorldState const&) const",
+          "role_percent": 2.7755644090305442
+        },
+        {
+          "total_percent": 1.85,
+          "tid": null,
+          "mode": ".",
+          "symbol": "ResourceGrowth::calculate(MapState::View const&, MersenneTwister&, ResourceGrowth::Batch&)",
+          "role_percent": 2.456839309428951
+        },
+        {
+          "total_percent": 1.74,
+          "tid": null,
+          "mode": ".",
+          "symbol": "_ZN5field12breadthFirstISt6vectorIiSaIiEEZN8AIMaxima21reachableFoodCapacityEPKN8AIEngine11AIWorldViewEPKN18SimulationSnapshot12BuildingViewEjbiRKNS4_7Farming19ExactFertilityCacheEPKS1_IhSaIhEEPSt3setIiSt4lessIiES2_EiEUliE1_ZNS_8traverseIS3_St5arrayINS_6OffsetELm8EEZNS_8traverseIS3_SU_SQ_ZNS4_21reachableFoodCapacityES8_SC_jbiSG_SK_SP_iEUliiiE2_EEvRT_RKNS_4GridERKT0_T1_T2_EUliE_SQ_SW_EEvSY_S11_S14_S15_S16_T3_EUlRKSX_E_EEvSY_S12_S15_",
+          "role_percent": 2.310756972111554
+        },
+        {
+          "total_percent": 1.7300000000000002,
+          "tid": null,
+          "mode": ".",
+          "symbol": "gradient_preparation::seed(gradient_preparation::Request const&, SimulationSnapshot::Handle const&, unsigned short*, gradient_preparation::CrowdingScratch&)",
+          "role_percent": 2.2974767596281547
+        },
+        {
+          "total_percent": 1.62,
+          "tid": null,
+          "mode": ".",
+          "symbol": "AIMaximaFoodLedger::Ledger::residualUpperBound(AIMaximaFoodLedger::Input const&, AIMaximaFoodLedger::Result const&, int, int, int, int, int, int, bool) const",
+          "role_percent": 2.1513944223107573
+        },
+        {
+          "total_percent": 1.28,
+          "tid": null,
+          "mode": ".",
+          "symbol": "AIMaxima::Maxima::collect_development_world(AIMaximaRuntime::Context&, unsigned int*) const",
+          "role_percent": 1.699867197875166
+        },
+        {
+          "total_percent": 1.03,
+          "tid": null,
+          "mode": ".",
+          "symbol": "void field::expandDistances<AIMaximaPlacement::DistanceField, field::Frontier, std::array<field::Offset, 4ul>, int, field::expandDistances<AIMaximaPlacement::DistanceField, field::Frontier, std::array<field::Offset, 4ul>, int>(AIMaximaPlacement::DistanceField&, field::Frontier&, field::Grid const&, std::array<field::Offset, 4ul> const&, int)::{lambda(int)#1}>(AIMaximaPlacement::DistanceField&, field::Frontier&, field::Grid const&, std::array<field::Offset, 4ul> const&, int, field::expandDistances<AIMaximaPlacement::DistanceField, field::Frontier, std::array<field::Offset, 4ul>, int>(AIMaximaPlacement::DistanceField&, field::Frontier&, field::Grid const&, std::array<field::Offset, 4ul> const&, int)::{lambda(int)#1})",
+          "role_percent": 1.3678618857901728
+        },
+        {
+          "total_percent": 1.01,
+          "tid": null,
+          "mode": ".",
+          "symbol": "AIMaximaFoodLedger::Input::index(int, int) const",
+          "role_percent": 1.341301460823373
+        },
+        {
+          "total_percent": 1.01,
+          "tid": null,
+          "mode": ".",
+          "symbol": "AIMaxima::Maxima::select_wood_reserve(AIMaximaRuntime::Context&, std::vector<unsigned char, std::allocator<unsigned char> > const*) const::{lambda(int, bool)#1}::operator()(int, bool) const",
+          "role_percent": 1.341301460823373
+        },
+        {
+          "total_percent": 0.98,
+          "tid": null,
+          "mode": ".",
+          "symbol": "__memmove_avx_unaligned_erms",
+          "role_percent": 1.301460823373174
+        },
+        {
+          "total_percent": 0.94,
+          "tid": null,
+          "mode": ".",
+          "symbol": "ComputeExecutor::worker(unsigned long)",
+          "role_percent": 1.248339973439575
+        },
+        {
+          "total_percent": 0.81,
+          "tid": null,
+          "mode": ".",
+          "symbol": "AIMaxima::Maxima::wheat_invasion_clearing_required(AIMaximaRuntime::Context&, int, std::vector<unsigned char, std::allocator<unsigned char> > const&, AIMaxima::Maxima::WoodReserve const&) const",
+          "role_percent": 1.0756972111553786
+        },
+        {
+          "total_percent": 0.8,
+          "tid": null,
+          "mode": ".",
+          "symbol": "void field::expandDistances<std::vector<short, std::allocator<short> >, field::Frontier, std::array<field::Offset, 8ul>, AIMaximaRuntime::Gradients::DistanceState, field::expandDistances<std::vector<short, std::allocator<short> >, field::Frontier, std::array<field::Offset, 8ul>, AIMaximaRuntime::Gradients::DistanceState>(std::vector<short, std::allocator<short> >&, field::Frontier&, field::Grid const&, std::array<field::Offset, 8ul> const&, AIMaximaRuntime::Gradients::DistanceState)::{lambda(int)#1}>(std::vector<short, std::allocator<short> >&, field::Frontier&, field::Grid const&, std::array<field::Offset, 8ul> const&, AIMaximaRuntime::Gradients::DistanceState, field::expandDistances<std::vector<short, std::allocator<short> >, field::Frontier, std::array<field::Offset, 8ul>, AIMaximaRuntime::Gradients::DistanceState>(std::vector<short, std::allocator<short> >&, field::Frontier&, field::Grid const&, std::array<field::Offset, 8ul> const&, AIMaximaRuntime::Gradients::DistanceState)::{lambda(int)#1})",
+          "role_percent": 1.062416998671979
+        },
+        {
+          "total_percent": 0.77,
+          "tid": null,
+          "mode": ".",
+          "symbol": "AIMaxima::Maxima::build_maintenance_clearing_plan(AIMaximaRuntime::Context&)",
+          "role_percent": 1.0225763612217795
+        }
+      ]
+    },
+    "timing_repeats": 3,
+    "timings": [
+      {
+        "fixture": "sparse",
+        "participants": 4,
+        "mode": "timing-0",
+        "owner_tid": 3415279,
+        "owner_cpu_ns": 595531562,
+        "process_cpu_ns": 2716427426,
+        "wall_ns": 1296401669,
+        "join_wait_ns": 706476984,
+        "final_checksum": 527521303
+      },
+      {
+        "fixture": "sparse",
+        "participants": 4,
+        "mode": "timing-1",
+        "owner_tid": 3415316,
+        "owner_cpu_ns": 719515721,
+        "process_cpu_ns": 2842660016,
+        "wall_ns": 1341775142,
+        "join_wait_ns": 628133065,
+        "final_checksum": 527521303
+      },
+      {
+        "fixture": "sparse",
+        "participants": 4,
+        "mode": "timing-2",
+        "owner_tid": 3415453,
+        "owner_cpu_ns": 631172559,
+        "process_cpu_ns": 2696547376,
+        "wall_ns": 1297749491,
+        "join_wait_ns": 676213749,
+        "final_checksum": 527521303
+      }
+    ],
+    "median_seconds": {
+      "owner_cpu_ns": 0.631172559,
+      "process_cpu_ns": 2.716427426,
+      "wall_ns": 1.297749491,
+      "join_wait_ns": 0.676213749
+    },
+    "counters": {
+      "task-clock": {
+        "value": 2624.51,
+        "unit": "msec"
+      },
+      "context-switches": {
+        "value": 11453.0,
+        "unit": ""
+      },
+      "cpu-migrations": {
+        "value": 56.0,
+        "unit": ""
+      },
+      "cycles": {
+        "value": 9880980958.0,
+        "unit": ""
+      },
+      "instructions": {
+        "value": 14644164297.0,
+        "unit": ""
+      },
+      "branches": {
+        "value": 2215216402.0,
+        "unit": ""
+      },
+      "branch-misses": {
+        "value": 52451677.0,
+        "unit": ""
+      },
+      "cache-misses": {
+        "value": 82475472.0,
+        "unit": ""
+      }
+    }
+  },
+  "hiring-4": {
+    "owner": {
+      "total_sample_share_percent": 30.87,
+      "kernel_share_percent": 3.9844509232264333,
+      "top": [
+        {
+          "total_percent": 3.35,
+          "tid": null,
+          "mode": ".",
+          "symbol": "SimulationSnapshot::capture(Game const&, std::shared_ptr<std::vector<SimulationSnapshot::BuildingKindView, std::allocator<SimulationSnapshot::BuildingKindView> > const>, unsigned int, SimulationSnapshot::Handle const*, SimulationSnapshot::Storage*)",
+          "role_percent": 10.851959831551667
+        },
+        {
+          "total_percent": 2.62,
+          "tid": null,
+          "mode": ".",
+          "symbol": "__memmove_avx_unaligned_erms",
+          "role_percent": 8.487204405571752
+        },
+        {
+          "total_percent": 2.0,
+          "tid": null,
+          "mode": ".",
+          "symbol": "Map::propagateGradient(unsigned short*, int, int)",
+          "role_percent": 6.478781988986071
+        },
+        {
+          "total_percent": 1.88,
+          "tid": null,
+          "mode": ".",
+          "symbol": "auto SimulationSnapshot::capture(Game const&, std::shared_ptr<std::vector<SimulationSnapshot::BuildingKindView, std::allocator<SimulationSnapshot::BuildingKindView> > const>, unsigned int, SimulationSnapshot::Handle const*, SimulationSnapshot::Storage*)::{lambda(SimulationSnapshot::ChunkStamps&, MapState::ChangeTracker const&, bool, auto:1)#1}::operator()<SimulationSnapshot::capture(Game const&, std::shared_ptr<std::vector<SimulationSnapshot::BuildingKindView, std::allocator<SimulationSnapshot::BuildingKindView> > const>, unsigned int, SimulationSnapshot::Handle const*, SimulationSnapshot::Storage*)::{lambda(unsigned long, unsigned long)#4}>(SimulationSnapshot::ChunkStamps&, MapState::ChangeTracker const&, bool, SimulationSnapshot::capture(Game const&, std::shared_ptr<std::vector<SimulationSnapshot::BuildingKindView, std::allocator<SimulationSnapshot::BuildingKindView> > const>, unsigned int, SimulationSnapshot::Handle const*, SimulationSnapshot::Storage*)::{lambda(unsigned long, unsigned long)#4}) const",
+          "role_percent": 6.0900550696469065
+        },
+        {
+          "total_percent": 1.62,
+          "tid": null,
+          "mode": ".",
+          "symbol": "auto SimulationSnapshot::capture(Game const&, std::shared_ptr<std::vector<SimulationSnapshot::BuildingKindView, std::allocator<SimulationSnapshot::BuildingKindView> > const>, unsigned int, SimulationSnapshot::Handle const*, SimulationSnapshot::Storage*)::{lambda(SimulationSnapshot::ChunkStamps&, MapState::ChangeTracker const&, bool, auto:1)#1}::operator()<SimulationSnapshot::capture(Game const&, std::shared_ptr<std::vector<SimulationSnapshot::BuildingKindView, std::allocator<SimulationSnapshot::BuildingKindView> > const>, unsigned int, SimulationSnapshot::Handle const*, SimulationSnapshot::Storage*)::{lambda(unsigned long, unsigned long)#3}>(SimulationSnapshot::ChunkStamps&, MapState::ChangeTracker const&, bool, SimulationSnapshot::capture(Game const&, std::shared_ptr<std::vector<SimulationSnapshot::BuildingKindView, std::allocator<SimulationSnapshot::BuildingKindView> > const>, unsigned int, SimulationSnapshot::Handle const*, SimulationSnapshot::Storage*)::{lambda(unsigned long, unsigned long)#3}) const",
+          "role_percent": 5.247813411078718
+        },
+        {
+          "total_percent": 1.25,
+          "tid": null,
+          "mode": ".",
+          "symbol": "Team::syncStep()",
+          "role_percent": 4.049238743116295
+        },
+        {
+          "total_percent": 0.95,
+          "tid": null,
+          "mode": ".",
+          "symbol": "Team::integrity()",
+          "role_percent": 3.077421444768383
+        },
+        {
+          "total_percent": 0.94,
+          "tid": null,
+          "mode": ".",
+          "symbol": "auto SimulationSnapshot::capture(Game const&, std::shared_ptr<std::vector<SimulationSnapshot::BuildingKindView, std::allocator<SimulationSnapshot::BuildingKindView> > const>, unsigned int, SimulationSnapshot::Handle const*, SimulationSnapshot::Storage*)::{lambda(SimulationSnapshot::ChunkStamps&, MapState::ChangeTracker const&, bool, auto:1)#1}::operator()<SimulationSnapshot::capture(Game const&, std::shared_ptr<std::vector<SimulationSnapshot::BuildingKindView, std::allocator<SimulationSnapshot::BuildingKindView> > const>, unsigned int, SimulationSnapshot::Handle const*, SimulationSnapshot::Storage*)::{lambda(unsigned long, unsigned long)#6}>(SimulationSnapshot::ChunkStamps&, MapState::ChangeTracker const&, bool, SimulationSnapshot::capture(Game const&, std::shared_ptr<std::vector<SimulationSnapshot::BuildingKindView, std::allocator<SimulationSnapshot::BuildingKindView> > const>, unsigned int, SimulationSnapshot::Handle const*, SimulationSnapshot::Storage*)::{lambda(unsigned long, unsigned long)#6}) const",
+          "role_percent": 3.0450275348234532
+        },
+        {
+          "total_percent": 0.63,
+          "tid": null,
+          "mode": ".",
+          "symbol": "Unit::checkSum(std::vector<unsigned int, std::allocator<unsigned int> >*)",
+          "role_percent": 2.0408163265306123
+        },
+        {
+          "total_percent": 0.62,
+          "tid": null,
+          "mode": ".",
+          "symbol": "Building::computeWishedMaterials(int*)",
+          "role_percent": 2.008422416585682
+        },
+        {
+          "total_percent": 0.59,
+          "tid": null,
+          "mode": ".",
+          "symbol": "Building::materialDeliveryNeed(int) const",
+          "role_percent": 1.9112406867508906
+        },
+        {
+          "total_percent": 0.54,
+          "tid": null,
+          "mode": ".",
+          "symbol": "Map::updateForbiddenGradient(int, int)",
+          "role_percent": 1.749271137026239
+        },
+        {
+          "total_percent": 0.53,
+          "tid": null,
+          "mode": ".",
+          "symbol": "Unit::locationIsInEnemyGuardTowerRange(int, int) const",
+          "role_percent": 1.7168772270813086
+        },
+        {
+          "total_percent": 0.46,
+          "tid": null,
+          "mode": ".",
+          "symbol": "TeamStats::observeLabour(Unit*)",
+          "role_percent": 1.4901198574667964
+        },
+        {
+          "total_percent": 0.45,
+          "tid": null,
+          "mode": ".",
+          "symbol": "AIEngine::OrderScheduler::submit(AIEngine::RequestId, std::shared_ptr<AIEngine::AIWorldView const>, std::function<AIEngine::Command (AIEngine::AIWorldView const&)>)",
+          "role_percent": 1.4577259475218658
+        },
+        {
+          "total_percent": 0.43,
+          "tid": null,
+          "mode": ".",
+          "symbol": "Map::setMapDiscovered(int, int, unsigned int)",
+          "role_percent": 1.3929381276320052
+        },
+        {
+          "total_percent": 0.42,
+          "tid": null,
+          "mode": ".",
+          "symbol": "void gradient_preparation::clearCells<Map::seedClearAreasGradient(int, int, unsigned short*)::{lambda(auto:1)#1}>(MapState::View const&, bool, int, int, unsigned short*, Map::seedClearAreasGradient(int, int, unsigned short*)::{lambda(auto:1)#1})",
+          "role_percent": 1.3605442176870748
+        },
+        {
+          "total_percent": 0.35,
+          "tid": null,
+          "mode": ".",
+          "symbol": "AIEngine::AIWorldView::AIWorldView(SimulationSnapshot::Handle)",
+          "role_percent": 1.1337868480725621
+        },
+        {
+          "total_percent": 0.31,
+          "tid": null,
+          "mode": ".",
+          "symbol": "TeamStats::observeMeasurementUnit(Unit*)",
+          "role_percent": 1.004211208292841
+        },
+        {
+          "total_percent": 0.3,
+          "tid": null,
+          "mode": ".",
+          "symbol": "Map::updateExploredArea(int)",
+          "role_percent": 0.9718172983479106
+        }
+      ]
+    },
+    "other_threads": {
+      "total_sample_share_percent": 69.3,
+      "kernel_share_percent": 5.252525252525253,
+      "top": [
+        {
+          "total_percent": 20.19,
+          "tid": null,
+          "mode": ".",
+          "symbol": "gradient_preparation::propagate(gradient_preparation::Request const&, SimulationSnapshot::Handle const&, unsigned short*, GradientWorkspace&)",
+          "role_percent": 29.134199134199136
+        },
+        {
+          "total_percent": 6.43,
+          "tid": null,
+          "mode": ".",
+          "symbol": "AIMaximaFruit::Field::build()",
+          "role_percent": 9.278499278499279
+        },
+        {
+          "total_percent": 4.75,
+          "tid": null,
+          "mode": ".",
+          "symbol": "gradient_preparation::MaterialSeedCache::trySeed(SimulationSnapshot::Handle const&, int, int, int, unsigned short*, unsigned short const*)",
+          "role_percent": 6.854256854256854
+        },
+        {
+          "total_percent": 2.56,
+          "tid": null,
+          "mode": ".",
+          "symbol": "_ZN5field12breadthFirstISt6vectorIiSaIiEEZN8AIMaxima21reachableFoodCapacityEPKN8AIEngine11AIWorldViewEPKN18SimulationSnapshot12BuildingViewEjbiRKNS4_7Farming19ExactFertilityCacheEPKS1_IhSaIhEEPSt3setIiSt4lessIiES2_EiEUliE1_ZNS_8traverseIS3_St5arrayINS_6OffsetELm8EEZNS_8traverseIS3_SU_SQ_ZNS4_21reachableFoodCapacityES8_SC_jbiSG_SK_SP_iEUliiiE2_EEvRT_RKNS_4GridERKT0_T1_T2_EUliE_SQ_SW_EEvSY_S11_S14_S15_S16_T3_EUlRKSX_E_EEvSY_S12_S15_",
+          "role_percent": 3.694083694083694
+        },
+        {
+          "total_percent": 1.4600000000000002,
+          "tid": null,
+          "mode": ".",
+          "symbol": "AIMaximaFoodLedger::Input::normalizeX(int) const",
+          "role_percent": 2.106782106782107
+        },
+        {
+          "total_percent": 1.35,
+          "tid": null,
+          "mode": ".",
+          "symbol": "AIMaxima::Maxima::worker_reachable_circulation(AIMaximaRuntime::Context&, bool) const",
+          "role_percent": 1.9480519480519483
+        },
+        {
+          "total_percent": 1.28,
+          "tid": null,
+          "mode": ".",
+          "symbol": "AI::decide(AIEngine::DecisionContext const&)",
+          "role_percent": 1.847041847041847
+        },
+        {
+          "total_percent": 1.21,
+          "tid": null,
+          "mode": ".",
+          "symbol": "AIMaximaFoodLedger::Ledger::walk(AIMaximaFoodLedger::Input const&, int, int, int, int, int, int, std::vector<AIMaximaFoodLedger::Ledger::ReachCell, std::allocator<AIMaximaFoodLedger::Ledger::ReachCell> >&, std::vector<unsigned int, std::allocator<unsigned int> > const*, long long) const",
+          "role_percent": 1.746031746031746
+        },
+        {
+          "total_percent": 1.2,
+          "tid": null,
+          "mode": ".",
+          "symbol": "void BuildingGradientSearch::advance<BuildingGradientSearch::resolveToCost(int)::{lambda()#1}>(BuildingGradientSearch::resolveToCost(int)::{lambda()#1})",
+          "role_percent": 1.7316017316017316
+        },
+        {
+          "total_percent": 1.16,
+          "tid": null,
+          "mode": ".",
+          "symbol": "AIMaximaPlacement::Planner::prepareScoringCaches(AIMaximaPlacement::WorldState const&) const",
+          "role_percent": 1.6738816738816737
+        },
+        {
+          "total_percent": 1.11,
+          "tid": null,
+          "mode": ".",
+          "symbol": "AIMaximaPlacement::Planner::prepareRouteCache(AIMaximaPlacement::WorldState const&, int) const",
+          "role_percent": 1.6017316017316021
+        },
+        {
+          "total_percent": 1.02,
+          "tid": null,
+          "mode": ".",
+          "symbol": "AIMaximaFoodLedger::Input::normalizeY(int) const",
+          "role_percent": 1.471861471861472
+        },
+        {
+          "total_percent": 0.93,
+          "tid": null,
+          "mode": ".",
+          "symbol": "AIMaxima::Maxima::collect_fruit_field(AIMaximaRuntime::Context&) const",
+          "role_percent": 1.341991341991342
+        },
+        {
+          "total_percent": 0.85,
+          "tid": null,
+          "mode": ".",
+          "symbol": "void field::expandDistances<std::vector<short, std::allocator<short> >, field::Frontier, std::array<field::Offset, 8ul>, AIMaximaRuntime::Gradients::DistanceState, field::expandDistances<std::vector<short, std::allocator<short> >, field::Frontier, std::array<field::Offset, 8ul>, AIMaximaRuntime::Gradients::DistanceState>(std::vector<short, std::allocator<short> >&, field::Frontier&, field::Grid const&, std::array<field::Offset, 8ul> const&, AIMaximaRuntime::Gradients::DistanceState)::{lambda(int)#1}>(std::vector<short, std::allocator<short> >&, field::Frontier&, field::Grid const&, std::array<field::Offset, 8ul> const&, AIMaximaRuntime::Gradients::DistanceState, field::expandDistances<std::vector<short, std::allocator<short> >, field::Frontier, std::array<field::Offset, 8ul>, AIMaximaRuntime::Gradients::DistanceState>(std::vector<short, std::allocator<short> >&, field::Frontier&, field::Grid const&, std::array<field::Offset, 8ul> const&, AIMaximaRuntime::Gradients::DistanceState)::{lambda(int)#1})",
+          "role_percent": 1.2265512265512266
+        },
+        {
+          "total_percent": 0.8,
+          "tid": null,
+          "mode": ".",
+          "symbol": "ResourceGrowth::calculate(MapState::View const&, MersenneTwister&, ResourceGrowth::Batch&)",
+          "role_percent": 1.1544011544011545
+        },
+        {
+          "total_percent": 0.77,
+          "tid": null,
+          "mode": ".",
+          "symbol": "AIMaximaPlacement::WorldState::index(int, int) const",
+          "role_percent": 1.1111111111111112
+        },
+        {
+          "total_percent": 0.75,
+          "tid": null,
+          "mode": ".",
+          "symbol": "AIMaxima::Maxima::build_farming_protection_plan(AIMaximaRuntime::Context&)",
+          "role_percent": 1.0822510822510825
+        },
+        {
+          "total_percent": 0.73,
+          "tid": null,
+          "mode": ".",
+          "symbol": "gradient_preparation::seedBuilding(gradient_preparation::BuildingSeed const&, SimulationSnapshot::Handle const&, unsigned short*)",
+          "role_percent": 1.0533910533910533
+        },
+        {
+          "total_percent": 0.72,
+          "tid": null,
+          "mode": ".",
+          "symbol": "__memmove_avx_unaligned_erms",
+          "role_percent": 1.0389610389610389
+        },
+        {
+          "total_percent": 0.64,
+          "tid": null,
+          "mode": ".",
+          "symbol": "gradient_preparation::seed(gradient_preparation::Request const&, SimulationSnapshot::Handle const&, unsigned short*, gradient_preparation::CrowdingScratch&)",
+          "role_percent": 0.9235209235209235
+        }
+      ]
+    },
+    "timing_repeats": 1,
+    "timings": [
+      {
+        "fixture": "hiring",
+        "participants": 4,
+        "mode": "timing-0",
+        "owner_tid": 3416990,
+        "owner_cpu_ns": 945669819,
+        "process_cpu_ns": 3719861536,
+        "wall_ns": 1538992143,
+        "join_wait_ns": 600579400,
+        "final_checksum": 922089456
+      }
+    ],
+    "median_seconds": {
+      "owner_cpu_ns": 0.945669819,
+      "process_cpu_ns": 3.719861536,
+      "wall_ns": 1.538992143,
+      "join_wait_ns": 0.6005794
+    },
+    "counters": {
+      "task-clock": {
+        "value": 3081.23,
+        "unit": "msec"
+      },
+      "context-switches": {
+        "value": 9650.0,
+        "unit": ""
+      },
+      "cpu-migrations": {
+        "value": 35.0,
+        "unit": ""
+      },
+      "cycles": {
+        "value": 11730886855.0,
+        "unit": ""
+      },
+      "instructions": {
+        "value": 16189817071.0,
+        "unit": ""
+      },
+      "branches": {
+        "value": 2222665927.0,
+        "unit": ""
+      },
+      "branch-misses": {
+        "value": 65433666.0,
+        "unit": ""
+      },
+      "cache-misses": {
+        "value": 99080526.0,
+        "unit": ""
+      }
+    }
+  },
+  "established-4": {
+    "owner": {
+      "total_sample_share_percent": 17.37,
+      "kernel_share_percent": 4.605641911341393,
+      "top": [
+        {
+          "total_percent": 2.09,
+          "tid": null,
+          "mode": ".",
+          "symbol": "SimulationSnapshot::capture(Game const&, std::shared_ptr<std::vector<SimulationSnapshot::BuildingKindView, std::allocator<SimulationSnapshot::BuildingKindView> > const>, unsigned int, SimulationSnapshot::Handle const*, SimulationSnapshot::Storage*)",
+          "role_percent": 12.03223949337939
+        },
+        {
+          "total_percent": 1.27,
+          "tid": null,
+          "mode": ".",
+          "symbol": "Map::propagateGradient(unsigned short*, int, int)",
+          "role_percent": 7.311456534254461
+        },
+        {
+          "total_percent": 1.13,
+          "tid": null,
+          "mode": ".",
+          "symbol": "__memmove_avx_unaligned_erms",
+          "role_percent": 6.505469199769717
+        },
+        {
+          "total_percent": 1.02,
+          "tid": null,
+          "mode": ".",
+          "symbol": "Unit::checkSum(std::vector<unsigned int, std::allocator<unsigned int> >*)",
+          "role_percent": 5.872193436960276
+        },
+        {
+          "total_percent": 0.38,
+          "tid": null,
+          "mode": ".",
+          "symbol": "Unit::locationIsInEnemyGuardTowerRange(int, int) const",
+          "role_percent": 2.1876799078871616
+        },
+        {
+          "total_percent": 0.37,
+          "tid": null,
+          "mode": ".",
+          "symbol": "Building::integrity()",
+          "role_percent": 2.130109383995394
+        },
+        {
+          "total_percent": 0.37,
+          "tid": null,
+          "mode": ".",
+          "symbol": "Building::materialDeliveryNeed(int) const",
+          "role_percent": 2.130109383995394
+        },
+        {
+          "total_percent": 0.36,
+          "tid": null,
+          "mode": ".",
+          "symbol": "auto SimulationSnapshot::capture(Game const&, std::shared_ptr<std::vector<SimulationSnapshot::BuildingKindView, std::allocator<SimulationSnapshot::BuildingKindView> > const>, unsigned int, SimulationSnapshot::Handle const*, SimulationSnapshot::Storage*)::{lambda(SimulationSnapshot::ChunkStamps&, MapState::ChangeTracker const&, bool, auto:1)#1}::operator()<SimulationSnapshot::capture(Game const&, std::shared_ptr<std::vector<SimulationSnapshot::BuildingKindView, std::allocator<SimulationSnapshot::BuildingKindView> > const>, unsigned int, SimulationSnapshot::Handle const*, SimulationSnapshot::Storage*)::{lambda(unsigned long, unsigned long)#3}>(SimulationSnapshot::ChunkStamps&, MapState::ChangeTracker const&, bool, SimulationSnapshot::capture(Game const&, std::shared_ptr<std::vector<SimulationSnapshot::BuildingKindView, std::allocator<SimulationSnapshot::BuildingKindView> > const>, unsigned int, SimulationSnapshot::Handle const*, SimulationSnapshot::Storage*)::{lambda(unsigned long, unsigned long)#3}) const",
+          "role_percent": 2.0725388601036268
+        },
+        {
+          "total_percent": 0.35,
+          "tid": null,
+          "mode": ".",
+          "symbol": "BuildingGradientSearch::resolved(unsigned long) const",
+          "role_percent": 2.0149683362118593
+        },
+        {
+          "total_percent": 0.34,
+          "tid": null,
+          "mode": ".",
+          "symbol": "auto SimulationSnapshot::capture(Game const&, std::shared_ptr<std::vector<SimulationSnapshot::BuildingKindView, std::allocator<SimulationSnapshot::BuildingKindView> > const>, unsigned int, SimulationSnapshot::Handle const*, SimulationSnapshot::Storage*)::{lambda(SimulationSnapshot::ChunkStamps&, MapState::ChangeTracker const&, bool, auto:1)#1}::operator()<SimulationSnapshot::capture(Game const&, std::shared_ptr<std::vector<SimulationSnapshot::BuildingKindView, std::allocator<SimulationSnapshot::BuildingKindView> > const>, unsigned int, SimulationSnapshot::Handle const*, SimulationSnapshot::Storage*)::{lambda(unsigned long, unsigned long)#4}>(SimulationSnapshot::ChunkStamps&, MapState::ChangeTracker const&, bool, SimulationSnapshot::capture(Game const&, std::shared_ptr<std::vector<SimulationSnapshot::BuildingKindView, std::allocator<SimulationSnapshot::BuildingKindView> > const>, unsigned int, SimulationSnapshot::Handle const*, SimulationSnapshot::Storage*)::{lambda(unsigned long, unsigned long)#4}) const",
+          "role_percent": 1.9573978123200921
+        },
+        {
+          "total_percent": 0.32,
+          "tid": null,
+          "mode": ".",
+          "symbol": "void BuildingGradientSearch::advance<BuildingGradientSearch::resolve(unsigned long)::{lambda()#1}>(BuildingGradientSearch::resolve(unsigned long)::{lambda()#1})",
+          "role_percent": 1.842256764536557
+        },
+        {
+          "total_percent": 0.31,
+          "tid": null,
+          "mode": ".",
+          "symbol": "Team::syncStep()",
+          "role_percent": 1.7846862406447899
+        },
+        {
+          "total_percent": 0.3,
+          "tid": null,
+          "mode": ".",
+          "symbol": "BuildingGradientSearch::resolve(unsigned long)",
+          "role_percent": 1.7271157167530224
+        },
+        {
+          "total_percent": 0.3,
+          "tid": null,
+          "mode": ".",
+          "symbol": "Team::integrity()",
+          "role_percent": 1.7271157167530224
+        },
+        {
+          "total_percent": 0.29,
+          "tid": null,
+          "mode": ".",
+          "symbol": "void gradient_preparation::clearCells<Map::seedClearAreasGradient(int, int, unsigned short*)::{lambda(auto:1)#1}>(MapState::View const&, bool, int, int, unsigned short*, Map::seedClearAreasGradient(int, int, unsigned short*)::{lambda(auto:1)#1})",
+          "role_percent": 1.6695451928612548
+        },
+        {
+          "total_percent": 0.29,
+          "tid": null,
+          "mode": ".",
+          "symbol": "Map::setMapDiscovered(int, int, unsigned int)",
+          "role_percent": 1.6695451928612548
+        },
+        {
+          "total_percent": 0.23,
+          "tid": null,
+          "mode": ".",
+          "symbol": "Building::checkSum(std::vector<unsigned int, std::allocator<unsigned int> >*)",
+          "role_percent": 1.3241220495106505
+        },
+        {
+          "total_percent": 0.2,
+          "tid": null,
+          "mode": ".",
+          "symbol": "Unit::integrity()",
+          "role_percent": 1.1514104778353482
+        },
+        {
+          "total_percent": 0.2,
+          "tid": null,
+          "mode": ".",
+          "symbol": "Building::selectUnitCarryingWantedMaterial(int const*, int const*, Building::BringMaterialsSelection&)",
+          "role_percent": 1.1514104778353482
+        },
+        {
+          "total_percent": 0.19,
+          "tid": null,
+          "mode": ".",
+          "symbol": "TeamStats::observeLabour(Unit*)",
+          "role_percent": 1.0938399539435808
+        }
+      ]
+    },
+    "other_threads": {
+      "total_sample_share_percent": 82.01,
+      "kernel_share_percent": 3.0240214607974636,
+      "top": [
+        {
+          "total_percent": 13.22,
+          "tid": null,
+          "mode": ".",
+          "symbol": "AIMaximaFoodLedger::Ledger::walk(AIMaximaFoodLedger::Input const&, int, int, int, int, int, int, std::vector<AIMaximaFoodLedger::Ledger::ReachCell, std::allocator<AIMaximaFoodLedger::Ledger::ReachCell> >&, std::vector<unsigned int, std::allocator<unsigned int> > const*, long long) const",
+          "role_percent": 16.119985367638094
+        },
+        {
+          "total_percent": 8.66,
+          "tid": null,
+          "mode": ".",
+          "symbol": "AIMaximaFoodLedger::Input::normalizeX(int) const",
+          "role_percent": 10.559687842945982
+        },
+        {
+          "total_percent": 6.880000000000001,
+          "tid": null,
+          "mode": ".",
+          "symbol": "AIMaximaFoodLedger::Input::normalizeY(int) const",
+          "role_percent": 8.389220826728447
+        },
+        {
+          "total_percent": 6.24,
+          "tid": null,
+          "mode": ".",
+          "symbol": "gradient_preparation::propagate(gradient_preparation::Request const&, SimulationSnapshot::Handle const&, unsigned short*, GradientWorkspace&)",
+          "role_percent": 7.608828191683941
+        },
+        {
+          "total_percent": 5.76,
+          "tid": null,
+          "mode": ".",
+          "symbol": "void BuildingGradientSearch::advance<BuildingGradientSearch::resolveToCost(int)::{lambda()#1}>(BuildingGradientSearch::resolveToCost(int)::{lambda()#1})",
+          "role_percent": 7.023533715400561
+        },
+        {
+          "total_percent": 3.0999999999999996,
+          "tid": null,
+          "mode": ".",
+          "symbol": "AIMaximaPlacement::Planner::colonyFoodTiles(AIMaximaPlacement::WorldState const&, int, int, AIMaximaPlacement::Footprint const&) const",
+          "role_percent": 3.7800268259968286
+        },
+        {
+          "total_percent": 3.0300000000000002,
+          "tid": null,
+          "mode": ".",
+          "symbol": "AIMaxima::Maxima::worker_reachable_circulation(AIMaximaRuntime::Context&, bool) const",
+          "role_percent": 3.6946713815388366
+        },
+        {
+          "total_percent": 2.9499999999999997,
+          "tid": null,
+          "mode": ".",
+          "symbol": "_ZN5field12breadthFirstISt6vectorIiSaIiEEZN8AIMaxima21reachableFoodCapacityEPKN8AIEngine11AIWorldViewEPKN18SimulationSnapshot12BuildingViewEjbiRKNS4_7Farming19ExactFertilityCacheEPKS1_IhSaIhEEPSt3setIiSt4lessIiES2_EiEUliE1_ZNS_8traverseIS3_St5arrayINS_6OffsetELm8EEZNS_8traverseIS3_SU_SQ_ZNS4_21reachableFoodCapacityES8_SC_jbiSG_SK_SP_iEUliiiE2_EEvRT_RKNS_4GridERKT0_T1_T2_EUliE_SQ_SW_EEvSY_S11_S14_S15_S16_T3_EUlRKSX_E_EEvSY_S12_S15_",
+          "role_percent": 3.5971223021582723
+        },
+        {
+          "total_percent": 2.69,
+          "tid": null,
+          "mode": ".",
+          "symbol": "AIMaximaFoodLedger::Input::index(int, int) const",
+          "role_percent": 3.280087794171442
+        },
+        {
+          "total_percent": 2.2199999999999998,
+          "tid": null,
+          "mode": ".",
+          "symbol": "gradient_preparation::MaterialSeedCache::trySeed(SimulationSnapshot::Handle const&, int, int, int, unsigned short*, unsigned short const*)",
+          "role_percent": 2.7069869528106323
+        },
+        {
+          "total_percent": 1.9900000000000002,
+          "tid": null,
+          "mode": ".",
+          "symbol": "AIMaximaFruit::Field::build()",
+          "role_percent": 2.426533349591513
+        },
+        {
+          "total_percent": 1.88,
+          "tid": null,
+          "mode": ".",
+          "symbol": "gradient_preparation::seedBuilding(gradient_preparation::BuildingSeed const&, SimulationSnapshot::Handle const&, unsigned short*)",
+          "role_percent": 2.2924033654432385
+        },
+        {
+          "total_percent": 1.27,
+          "tid": null,
+          "mode": ".",
+          "symbol": "AIMaximaPlacement::Planner::prepareRouteCache(AIMaximaPlacement::WorldState const&, int) const",
+          "role_percent": 1.548591635166443
+        },
+        {
+          "total_percent": 1.25,
+          "tid": null,
+          "mode": ".",
+          "symbol": "AIMaximaFoodLedger::Ledger::residualUpperBound(AIMaximaFoodLedger::Input const&, AIMaximaFoodLedger::Result const&, int, int, int, int, int, int, bool) const",
+          "role_percent": 1.5242043653213022
+        },
+        {
+          "total_percent": 1.23,
+          "tid": null,
+          "mode": ".",
+          "symbol": "AIMaximaPlacement::Planner::prepareFoodLedger(AIMaximaPlacement::WorldState const&, int, int, int, int, int) const",
+          "role_percent": 1.4998170954761614
+        },
+        {
+          "total_percent": 0.9299999999999999,
+          "tid": null,
+          "mode": ".",
+          "symbol": "AIMaximaPlacement::Planner::prepareMaterialSources(AIMaximaPlacement::WorldState const&) const",
+          "role_percent": 1.1340080477990488
+        },
+        {
+          "total_percent": 0.78,
+          "tid": null,
+          "mode": ".",
+          "symbol": "AIMaximaPlacement::Planner::addBuildCandidatesRange(AIMaximaPlacement::WorldState const&, AIMaximaPlacement::DevelopmentIntent const&, unsigned int, bool, std::vector<AIMaximaPlacement::Planner::Candidate, std::allocator<AIMaximaPlacement::Planner::Candidate> >&, unsigned long&, unsigned long, AIMaximaPlacement::DevelopmentAction&, bool&, unsigned long&, AIMaximaPlacement::DevelopmentAction&, bool&, unsigned long&)",
+          "role_percent": 0.9511035239604926
+        },
+        {
+          "total_percent": 0.73,
+          "tid": null,
+          "mode": ".",
+          "symbol": "__memset_avx2_unaligned_erms",
+          "role_percent": 0.8901353493476405
+        },
+        {
+          "total_percent": 0.54,
+          "tid": null,
+          "mode": ".",
+          "symbol": "AIMaximaFoodLedger::Ledger::evaluate(AIMaximaFoodLedger::Input const&, AIMaximaFoodLedger::Result&, AIMaximaFoodLedger::EvaluationMode) const",
+          "role_percent": 0.6584562858188027
+        },
+        {
+          "total_percent": 0.53,
+          "tid": null,
+          "mode": ".",
+          "symbol": "AIMaximaPlacement::Planner::prepareScoringCaches(AIMaximaPlacement::WorldState const&) const",
+          "role_percent": 0.6462626508962321
+        }
+      ]
+    },
+    "timing_repeats": 1,
+    "timings": [
+      {
+        "fixture": "established",
+        "participants": 4,
+        "mode": "timing-0",
+        "owner_tid": 3426330,
+        "owner_cpu_ns": 2556012573,
+        "process_cpu_ns": 15045532526,
+        "wall_ns": 7556171490,
+        "join_wait_ns": 5021936151,
+        "final_checksum": 2193790803
+      }
+    ],
+    "median_seconds": {
+      "owner_cpu_ns": 2.556012573,
+      "process_cpu_ns": 15.045532526,
+      "wall_ns": 7.55617149,
+      "join_wait_ns": 5.021936151
+    },
+    "counters": {
+      "task-clock": {
+        "value": 15438.01,
+        "unit": "msec"
+      },
+      "context-switches": {
+        "value": 14372.0,
+        "unit": ""
+      },
+      "cpu-migrations": {
+        "value": 226.0,
+        "unit": ""
+      },
+      "cycles": {
+        "value": 60310770411.0,
+        "unit": ""
+      },
+      "instructions": {
+        "value": 85107585417.0,
+        "unit": ""
+      },
+      "branches": {
+        "value": 12681811551.0,
+        "unit": ""
+      },
+      "branch-misses": {
+        "value": 385969129.0,
+        "unit": ""
+      },
+      "cache-misses": {
+        "value": 271416032.0,
+        "unit": ""
+      }
+    }
+  },
+  "dense-4": {
+    "owner": {
+      "total_sample_share_percent": 41.63,
+      "kernel_share_percent": 3.5551285130915202,
+      "top": [
+        {
+          "total_percent": 3.74,
+          "tid": null,
+          "mode": ".",
+          "symbol": "SimulationSnapshot::capture(Game const&, std::shared_ptr<std::vector<SimulationSnapshot::BuildingKindView, std::allocator<SimulationSnapshot::BuildingKindView> > const>, unsigned int, SimulationSnapshot::Handle const*, SimulationSnapshot::Storage*)",
+          "role_percent": 8.98390583713668
+        },
+        {
+          "total_percent": 3.33,
+          "tid": null,
+          "mode": ".",
+          "symbol": "void BuildingGradientSearch::advance<BuildingGradientSearch::resolve(unsigned long)::{lambda()#1}>(BuildingGradientSearch::resolve(unsigned long)::{lambda()#1})",
+          "role_percent": 7.999039154455921
+        },
+        {
+          "total_percent": 2.59,
+          "tid": null,
+          "mode": ".",
+          "symbol": "BuildingGradientSearch::resolve(unsigned long)",
+          "role_percent": 6.22147489791016
+        },
+        {
+          "total_percent": 1.66,
+          "tid": null,
+          "mode": ".",
+          "symbol": "Building::noteUnitFailing(Unit*, Building::UnitCantWorkReason)",
+          "role_percent": 3.9875090079269753
+        },
+        {
+          "total_percent": 1.65,
+          "tid": null,
+          "mode": ".",
+          "symbol": "Unit::checkSum(std::vector<unsigned int, std::allocator<unsigned int> >*)",
+          "role_percent": 3.9634878693250055
+        },
+        {
+          "total_percent": 1.46,
+          "tid": null,
+          "mode": ".",
+          "symbol": "Building::gatherBringMaterialsCandidates(Building::BringMaterialsCandidate*, int)",
+          "role_percent": 3.5070862358875807
+        },
+        {
+          "total_percent": 1.46,
+          "tid": null,
+          "mode": ".",
+          "symbol": "Building::selectUnitCarryingWantedMaterial(int const*, int const*, Building::BringMaterialsSelection&)",
+          "role_percent": 3.5070862358875807
+        },
+        {
+          "total_percent": 1.37,
+          "tid": null,
+          "mode": ".",
+          "symbol": "Building::considerUnitForBuilding(Unit*, int*)",
+          "role_percent": 3.290895988469854
+        },
+        {
+          "total_percent": 1.27,
+          "tid": null,
+          "mode": ".",
+          "symbol": "Map::propagateGradient(unsigned short*, int, int)",
+          "role_percent": 3.050684602450156
+        },
+        {
+          "total_percent": 1.19,
+          "tid": null,
+          "mode": ".",
+          "symbol": "__memmove_avx_unaligned_erms",
+          "role_percent": 2.858515493634398
+        },
+        {
+          "total_percent": 0.98,
+          "tid": null,
+          "mode": ".",
+          "symbol": "BuildingGradientSearch::resolved(unsigned long) const",
+          "role_percent": 2.3540715829930337
+        },
+        {
+          "total_percent": 0.89,
+          "tid": null,
+          "mode": ".",
+          "symbol": "Building::integrity()",
+          "role_percent": 2.1378813355753064
+        },
+        {
+          "total_percent": 0.81,
+          "tid": null,
+          "mode": ".",
+          "symbol": "Map::updateGlobalGradient(Building*, int, BuildingRoute)",
+          "role_percent": 1.9457122267595484
+        },
+        {
+          "total_percent": 0.76,
+          "tid": null,
+          "mode": ".",
+          "symbol": "PerformanceTelemetry::Scope::Scope(PerformanceTelemetry::Id, int)",
+          "role_percent": 1.8256065337496998
+        },
+        {
+          "total_percent": 0.75,
+          "tid": null,
+          "mode": ".",
+          "symbol": "Map::materialAvailableSlot(int, int, int, int, int, int*, bool, Building const*)",
+          "role_percent": 1.8015853951477299
+        },
+        {
+          "total_percent": 0.75,
+          "tid": null,
+          "mode": ".",
+          "symbol": "Building::considerUnitForMaterial(Unit*, int, int*)",
+          "role_percent": 1.8015853951477299
+        },
+        {
+          "total_percent": 0.69,
+          "tid": null,
+          "mode": ".",
+          "symbol": "Building::materialDeliveryNeed(int) const",
+          "role_percent": 1.6574585635359116
+        },
+        {
+          "total_percent": 0.51,
+          "tid": null,
+          "mode": ".",
+          "symbol": "Game::refOf(Unit const*)",
+          "role_percent": 1.2250780687004563
+        },
+        {
+          "total_percent": 0.5,
+          "tid": null,
+          "mode": ".",
+          "symbol": "Map::checkTile(int, int, Map::TileChecks, bool, unsigned int, unsigned short) const",
+          "role_percent": 1.2010569300984866
+        },
+        {
+          "total_percent": 0.47,
+          "tid": null,
+          "mode": ".",
+          "symbol": "Team::swapTask(Unit*)",
+          "role_percent": 1.1289935142925773
+        }
+      ]
+    },
+    "other_threads": {
+      "total_sample_share_percent": 59.07,
+      "kernel_share_percent": 4.333841205349585,
+      "top": [
+        {
+          "total_percent": 9.49,
+          "tid": null,
+          "mode": ".",
+          "symbol": "void BuildingGradientSearch::advance<BuildingGradientSearch::resolveToCost(int)::{lambda()#1}>(BuildingGradientSearch::resolveToCost(int)::{lambda()#1})",
+          "role_percent": 16.06568478076858
+        },
+        {
+          "total_percent": 6.93,
+          "tid": null,
+          "mode": ".",
+          "symbol": "AIMaximaFoodLedger::Ledger::walk(AIMaximaFoodLedger::Input const&, int, int, int, int, int, int, std::vector<AIMaximaFoodLedger::Ledger::ReachCell, std::allocator<AIMaximaFoodLedger::Ledger::ReachCell> >&, std::vector<unsigned int, std::allocator<unsigned int> > const*, long long) const",
+          "role_percent": 11.731843575418994
+        },
+        {
+          "total_percent": 5.17,
+          "tid": null,
+          "mode": ".",
+          "symbol": "gradient_preparation::propagate(gradient_preparation::Request const&, SimulationSnapshot::Handle const&, unsigned short*, GradientWorkspace&)",
+          "role_percent": 8.752327746741155
+        },
+        {
+          "total_percent": 4.62,
+          "tid": null,
+          "mode": ".",
+          "symbol": "_ZN5field12breadthFirstISt6vectorIiSaIiEEZN8AIMaxima21reachableFoodCapacityEPKN8AIEngine11AIWorldViewEPKN18SimulationSnapshot12BuildingViewEjbiRKNS4_7Farming19ExactFertilityCacheEPKS1_IhSaIhEEPSt3setIiSt4lessIiES2_EiEUliE1_ZNS_8traverseIS3_St5arrayINS_6OffsetELm8EEZNS_8traverseIS3_SU_SQ_ZNS4_21reachableFoodCapacityES8_SC_jbiSG_SK_SP_iEUliiiE2_EEvRT_RKNS_4GridERKT0_T1_T2_EUliE_SQ_SW_EEvSY_S11_S14_S15_S16_T3_EUlRKSX_E_EEvSY_S12_S15_",
+          "role_percent": 7.82122905027933
+        },
+        {
+          "total_percent": 4.08,
+          "tid": null,
+          "mode": ".",
+          "symbol": "AIMaximaFoodLedger::Input::normalizeX(int) const",
+          "role_percent": 6.9070594210259015
+        },
+        {
+          "total_percent": 3.71,
+          "tid": null,
+          "mode": ".",
+          "symbol": "AIMaximaFoodLedger::Input::normalizeY(int) const",
+          "role_percent": 6.280683934315219
+        },
+        {
+          "total_percent": 2.4699999999999998,
+          "tid": null,
+          "mode": ".",
+          "symbol": "gradient_preparation::seedBuilding(gradient_preparation::BuildingSeed const&, SimulationSnapshot::Handle const&, unsigned short*)",
+          "role_percent": 4.181479600474013
+        },
+        {
+          "total_percent": 2.3,
+          "tid": null,
+          "mode": ".",
+          "symbol": "gradient_preparation::MaterialSeedCache::trySeed(SimulationSnapshot::Handle const&, int, int, int, unsigned short*, unsigned short const*)",
+          "role_percent": 3.8936854579312676
+        },
+        {
+          "total_percent": 2.2800000000000002,
+          "tid": null,
+          "mode": ".",
+          "symbol": "AIMaxima::Maxima::worker_reachable_circulation(AIMaximaRuntime::Context&, bool) const",
+          "role_percent": 3.8598273235144744
+        },
+        {
+          "total_percent": 1.5399999999999998,
+          "tid": null,
+          "mode": ".",
+          "symbol": "AIMaximaFruit::Field::build()",
+          "role_percent": 2.6070763500931093
+        },
+        {
+          "total_percent": 1.37,
+          "tid": null,
+          "mode": ".",
+          "symbol": "AIMaximaFoodLedger::Input::index(int, int) const",
+          "role_percent": 2.319282207550364
+        },
+        {
+          "total_percent": 0.8,
+          "tid": null,
+          "mode": ".",
+          "symbol": "AIMaximaFoodLedger::Ledger::residualUpperBound(AIMaximaFoodLedger::Input const&, AIMaximaFoodLedger::Result const&, int, int, int, int, int, int, bool) const",
+          "role_percent": 1.3543253766717456
+        },
+        {
+          "total_percent": 0.7400000000000001,
+          "tid": null,
+          "mode": ".",
+          "symbol": "AIMaximaPlacement::Planner::prepareRouteCache(AIMaximaPlacement::WorldState const&, int) const",
+          "role_percent": 1.2527509734213647
+        },
+        {
+          "total_percent": 0.73,
+          "tid": null,
+          "mode": ".",
+          "symbol": "AIMaximaPlacement::Planner::colonyFoodTiles(AIMaximaPlacement::WorldState const&, int, int, AIMaximaPlacement::Footprint const&) const",
+          "role_percent": 1.2358219062129676
+        },
+        {
+          "total_percent": 0.72,
+          "tid": null,
+          "mode": ".",
+          "symbol": "AIMaximaPlacement::Planner::prepareFoodLedger(AIMaximaPlacement::WorldState const&, int, int, int, int, int) const",
+          "role_percent": 1.2188928390045708
+        },
+        {
+          "total_percent": 0.61,
+          "tid": null,
+          "mode": ".",
+          "symbol": "BuildingGradientSearch::begin(BuildingGradientSearch::Inputs const&, unsigned short*, int, int, int)",
+          "role_percent": 1.0326730997122058
+        },
+        {
+          "total_percent": 0.43000000000000005,
+          "tid": null,
+          "mode": ".",
+          "symbol": "AIMaxima::(anonymous namespace)::compute_preemptive_distance_field(int, int, std::vector<unsigned char, std::allocator<unsigned char> > const&, std::vector<int, std::allocator<int> > const&, std::vector<int, std::allocator<int> >&)",
+          "role_percent": 0.7279498899610632
+        },
+        {
+          "total_percent": 0.34,
+          "tid": null,
+          "mode": ".",
+          "symbol": "__memmove_avx_unaligned_erms",
+          "role_percent": 0.5755882850854919
+        },
+        {
+          "total_percent": 0.33,
+          "tid": null,
+          "mode": ".",
+          "symbol": "__memset_avx2_unaligned_erms",
+          "role_percent": 0.5586592178770949
+        },
+        {
+          "total_percent": 0.31,
+          "tid": null,
+          "mode": ".",
+          "symbol": "AIMaximaPlacement::Planner::prepareMaterialSources(AIMaximaPlacement::WorldState const&) const",
+          "role_percent": 0.5248010834603013
+        }
+      ]
+    },
+    "timing_repeats": 3,
+    "timings": [
+      {
+        "fixture": "dense",
+        "participants": 4,
+        "mode": "timing-0",
+        "owner_tid": 3438288,
+        "owner_cpu_ns": 10937821794,
+        "process_cpu_ns": 27201902817,
+        "wall_ns": 15799706509,
+        "join_wait_ns": 4845409849,
+        "final_checksum": 1193663972
+      },
+      {
+        "fixture": "dense",
+        "participants": 4,
+        "mode": "timing-1",
+        "owner_tid": 3440738,
+        "owner_cpu_ns": 10393849878,
+        "process_cpu_ns": 25675622117,
+        "wall_ns": 14728286624,
+        "join_wait_ns": 4322288698,
+        "final_checksum": 1193663972
+      },
+      {
+        "fixture": "dense",
+        "participants": 4,
+        "mode": "timing-2",
+        "owner_tid": 3441817,
+        "owner_cpu_ns": 11778183253,
+        "process_cpu_ns": 27486286406,
+        "wall_ns": 16648546391,
+        "join_wait_ns": 4511378092,
+        "final_checksum": 1193663972
+      }
+    ],
+    "median_seconds": {
+      "owner_cpu_ns": 10.937821794,
+      "process_cpu_ns": 27.201902817,
+      "wall_ns": 15.799706509,
+      "join_wait_ns": 4.511378092
+    },
+    "counters": {
+      "task-clock": {
+        "value": 27039.86,
+        "unit": "msec"
+      },
+      "context-switches": {
+        "value": 17617.0,
+        "unit": ""
+      },
+      "cpu-migrations": {
+        "value": 1294.0,
+        "unit": ""
+      },
+      "cycles": {
+        "value": 105173531734.0,
+        "unit": ""
+      },
+      "instructions": {
+        "value": 118382377860.0,
+        "unit": ""
+      },
+      "branches": {
+        "value": 17278120961.0,
+        "unit": ""
+      },
+      "branch-misses": {
+        "value": 555993038.0,
+        "unit": ""
+      },
+      "cache-misses": {
+        "value": 555908018.0,
+        "unit": ""
+      }
+    }
+  },
+  "combat-4": {
+    "owner": {
+      "total_sample_share_percent": 22.31,
+      "kernel_share_percent": 10.040340654415061,
+      "top": [
+        {
+          "total_percent": 2.47,
+          "tid": null,
+          "mode": ".",
+          "symbol": "SimulationSnapshot::capture(Game const&, std::shared_ptr<std::vector<SimulationSnapshot::BuildingKindView, std::allocator<SimulationSnapshot::BuildingKindView> > const>, unsigned int, SimulationSnapshot::Handle const*, SimulationSnapshot::Storage*)",
+          "role_percent": 11.071268489466608
+        },
+        {
+          "total_percent": 1.74,
+          "tid": null,
+          "mode": ".",
+          "symbol": "Map::propagateGradient(unsigned short*, int, int)",
+          "role_percent": 7.799193186911698
+        },
+        {
+          "total_percent": 1.02,
+          "tid": null,
+          "mode": ".",
+          "symbol": "__memmove_avx_unaligned_erms",
+          "role_percent": 4.571940833706859
+        },
+        {
+          "total_percent": 0.98,
+          "tid": null,
+          "mode": ".",
+          "symbol": "Unit::checkSum(std::vector<unsigned int, std::allocator<unsigned int> >*)",
+          "role_percent": 4.392649036306588
+        },
+        {
+          "total_percent": 0.74,
+          "tid": null,
+          "mode": ".",
+          "symbol": "Building::integrity()",
+          "role_percent": 3.3168982519049752
+        },
+        {
+          "total_percent": 0.6,
+          "tid": null,
+          "mode": ".",
+          "symbol": "auto SimulationSnapshot::capture(Game const&, std::shared_ptr<std::vector<SimulationSnapshot::BuildingKindView, std::allocator<SimulationSnapshot::BuildingKindView> > const>, unsigned int, SimulationSnapshot::Handle const*, SimulationSnapshot::Storage*)::{lambda(SimulationSnapshot::ChunkStamps&, MapState::ChangeTracker const&, bool, auto:1)#1}::operator()<SimulationSnapshot::capture(Game const&, std::shared_ptr<std::vector<SimulationSnapshot::BuildingKindView, std::allocator<SimulationSnapshot::BuildingKindView> > const>, unsigned int, SimulationSnapshot::Handle const*, SimulationSnapshot::Storage*)::{lambda(unsigned long, unsigned long)#3}>(SimulationSnapshot::ChunkStamps&, MapState::ChangeTracker const&, bool, SimulationSnapshot::capture(Game const&, std::shared_ptr<std::vector<SimulationSnapshot::BuildingKindView, std::allocator<SimulationSnapshot::BuildingKindView> > const>, unsigned int, SimulationSnapshot::Handle const*, SimulationSnapshot::Storage*)::{lambda(unsigned long, unsigned long)#3}) const",
+          "role_percent": 2.6893769610040343
+        },
+        {
+          "total_percent": 0.51,
+          "tid": null,
+          "mode": ".",
+          "symbol": "Building::materialDeliveryNeed(int) const",
+          "role_percent": 2.2859704168534294
+        },
+        {
+          "total_percent": 0.5,
+          "tid": null,
+          "mode": ".",
+          "symbol": "Building::checkSum(std::vector<unsigned int, std::allocator<unsigned int> >*)",
+          "role_percent": 2.241147467503362
+        },
+        {
+          "total_percent": 0.43,
+          "tid": null,
+          "mode": ".",
+          "symbol": "void BuildingGradientSearch::advance<BuildingGradientSearch::resolve(unsigned long)::{lambda()#1}>(BuildingGradientSearch::resolve(unsigned long)::{lambda()#1})",
+          "role_percent": 1.9273868220528911
+        },
+        {
+          "total_percent": 0.42,
+          "tid": null,
+          "mode": ".",
+          "symbol": "Map::updateGlobalGradient(Building*, int, BuildingRoute)",
+          "role_percent": 1.8825638727028238
+        },
+        {
+          "total_percent": 0.42,
+          "tid": null,
+          "mode": ".",
+          "symbol": "auto SimulationSnapshot::capture(Game const&, std::shared_ptr<std::vector<SimulationSnapshot::BuildingKindView, std::allocator<SimulationSnapshot::BuildingKindView> > const>, unsigned int, SimulationSnapshot::Handle const*, SimulationSnapshot::Storage*)::{lambda(SimulationSnapshot::ChunkStamps&, MapState::ChangeTracker const&, bool, auto:1)#1}::operator()<SimulationSnapshot::capture(Game const&, std::shared_ptr<std::vector<SimulationSnapshot::BuildingKindView, std::allocator<SimulationSnapshot::BuildingKindView> > const>, unsigned int, SimulationSnapshot::Handle const*, SimulationSnapshot::Storage*)::{lambda(unsigned long, unsigned long)#4}>(SimulationSnapshot::ChunkStamps&, MapState::ChangeTracker const&, bool, SimulationSnapshot::capture(Game const&, std::shared_ptr<std::vector<SimulationSnapshot::BuildingKindView, std::allocator<SimulationSnapshot::BuildingKindView> > const>, unsigned int, SimulationSnapshot::Handle const*, SimulationSnapshot::Storage*)::{lambda(unsigned long, unsigned long)#4}) const",
+          "role_percent": 1.8825638727028238
+        },
+        {
+          "total_percent": 0.4,
+          "tid": null,
+          "mode": ".",
+          "symbol": "Team::syncStep()",
+          "role_percent": 1.7929179740026897
+        },
+        {
+          "total_percent": 0.37,
+          "tid": null,
+          "mode": ".",
+          "symbol": "Building::computeWishedMaterials(int*)",
+          "role_percent": 1.6584491259524876
+        },
+        {
+          "total_percent": 0.34,
+          "tid": null,
+          "mode": ".",
+          "symbol": "Team::integrity()",
+          "role_percent": 1.5239802779022862
+        },
+        {
+          "total_percent": 0.25,
+          "tid": null,
+          "mode": ".",
+          "symbol": "auto SimulationSnapshot::capture(Game const&, std::shared_ptr<std::vector<SimulationSnapshot::BuildingKindView, std::allocator<SimulationSnapshot::BuildingKindView> > const>, unsigned int, SimulationSnapshot::Handle const*, SimulationSnapshot::Storage*)::{lambda(SimulationSnapshot::ChunkStamps&, MapState::ChangeTracker const&, bool, auto:1)#1}::operator()<SimulationSnapshot::capture(Game const&, std::shared_ptr<std::vector<SimulationSnapshot::BuildingKindView, std::allocator<SimulationSnapshot::BuildingKindView> > const>, unsigned int, SimulationSnapshot::Handle const*, SimulationSnapshot::Storage*)::{lambda(unsigned long, unsigned long)#6}>(SimulationSnapshot::ChunkStamps&, MapState::ChangeTracker const&, bool, SimulationSnapshot::capture(Game const&, std::shared_ptr<std::vector<SimulationSnapshot::BuildingKindView, std::allocator<SimulationSnapshot::BuildingKindView> > const>, unsigned int, SimulationSnapshot::Handle const*, SimulationSnapshot::Storage*)::{lambda(unsigned long, unsigned long)#6}) const",
+          "role_percent": 1.120573733751681
+        },
+        {
+          "total_percent": 0.24,
+          "tid": null,
+          "mode": ".",
+          "symbol": "Map::updateForbiddenGradient(int, int)",
+          "role_percent": 1.0757507844016136
+        },
+        {
+          "total_percent": 0.23,
+          "tid": null,
+          "mode": ".",
+          "symbol": "Building::updateCallLists()",
+          "role_percent": 1.0309278350515465
+        },
+        {
+          "total_percent": 0.23,
+          "tid": null,
+          "mode": ".",
+          "symbol": "void gradient_preparation::clearCells<Map::seedClearAreasGradient(int, int, unsigned short*)::{lambda(auto:1)#1}>(MapState::View const&, bool, int, int, unsigned short*, Map::seedClearAreasGradient(int, int, unsigned short*)::{lambda(auto:1)#1})",
+          "role_percent": 1.0309278350515465
+        },
+        {
+          "total_percent": 0.21,
+          "tid": null,
+          "mode": ".",
+          "symbol": "Unit::syncStep()",
+          "role_percent": 0.9412819363514119
+        },
+        {
+          "total_percent": 0.18,
+          "tid": null,
+          "mode": ".",
+          "symbol": "Building::selectUnitCarryingWantedMaterial(int const*, int const*, Building::BringMaterialsSelection&)",
+          "role_percent": 0.8068130883012102
+        }
+      ]
+    },
+    "other_threads": {
+      "total_sample_share_percent": 78.78,
+      "kernel_share_percent": 7.590759075907591,
+      "top": [
+        {
+          "total_percent": 11.62,
+          "tid": null,
+          "mode": ".",
+          "symbol": "AIMaximaFoodLedger::Ledger::walk(AIMaximaFoodLedger::Input const&, int, int, int, int, int, int, std::vector<AIMaximaFoodLedger::Ledger::ReachCell, std::allocator<AIMaximaFoodLedger::Ledger::ReachCell> >&, std::vector<unsigned int, std::allocator<unsigned int> > const*, long long) const",
+          "role_percent": 14.749936532114749
+        },
+        {
+          "total_percent": 5.91,
+          "tid": null,
+          "mode": ".",
+          "symbol": "gradient_preparation::propagate(gradient_preparation::Request const&, SimulationSnapshot::Handle const&, unsigned short*, GradientWorkspace&)",
+          "role_percent": 7.5019040365575025
+        },
+        {
+          "total_percent": 5.34,
+          "tid": null,
+          "mode": ".",
+          "symbol": "AIMaximaFoodLedger::Input::normalizeX(int) const",
+          "role_percent": 6.778370144706779
+        },
+        {
+          "total_percent": 4.62,
+          "tid": null,
+          "mode": ".",
+          "symbol": "AIMaximaFoodLedger::Input::normalizeY(int) const",
+          "role_percent": 5.864432597105865
+        },
+        {
+          "total_percent": 4.23,
+          "tid": null,
+          "mode": ".",
+          "symbol": "AIMaxima::Maxima::worker_reachable_circulation(AIMaximaRuntime::Context&, bool) const",
+          "role_percent": 5.36938309215537
+        },
+        {
+          "total_percent": 3.5200000000000005,
+          "tid": null,
+          "mode": ".",
+          "symbol": "void BuildingGradientSearch::advance<BuildingGradientSearch::resolveToCost(int)::{lambda()#1}>(BuildingGradientSearch::resolveToCost(int)::{lambda()#1})",
+          "role_percent": 4.468139121604469
+        },
+        {
+          "total_percent": 2.57,
+          "tid": null,
+          "mode": ".",
+          "symbol": "AIMaximaFoodLedger::Input::index(int, int) const",
+          "role_percent": 3.262249301853262
+        },
+        {
+          "total_percent": 1.9899999999999998,
+          "tid": null,
+          "mode": ".",
+          "symbol": "gradient_preparation::MaterialSeedCache::trySeed(SimulationSnapshot::Handle const&, int, int, int, unsigned short*, unsigned short const*)",
+          "role_percent": 2.5260218329525257
+        },
+        {
+          "total_percent": 1.94,
+          "tid": null,
+          "mode": ".",
+          "symbol": "gradient_preparation::seedBuilding(gradient_preparation::BuildingSeed const&, SimulationSnapshot::Handle const&, unsigned short*)",
+          "role_percent": 2.4625539477024625
+        },
+        {
+          "total_percent": 1.84,
+          "tid": null,
+          "mode": ".",
+          "symbol": "_ZN5field12breadthFirstISt6vectorIiSaIiEEZN8AIMaxima21reachableFoodCapacityEPKN8AIEngine11AIWorldViewEPKN18SimulationSnapshot12BuildingViewEjbiRKNS4_7Farming19ExactFertilityCacheEPKS1_IhSaIhEEPSt3setIiSt4lessIiES2_EiEUliE1_ZNS_8traverseIS3_St5arrayINS_6OffsetELm8EEZNS_8traverseIS3_SU_SQ_ZNS4_21reachableFoodCapacityES8_SC_jbiSG_SK_SP_iEUliiiE2_EEvRT_RKNS_4GridERKT0_T1_T2_EUliE_SQ_SW_EEvSY_S11_S14_S15_S16_T3_EUlRKSX_E_EEvSY_S12_S15_",
+          "role_percent": 2.3356181772023357
+        },
+        {
+          "total_percent": 1.6400000000000001,
+          "tid": null,
+          "mode": ".",
+          "symbol": "AIMaximaFruit::Field::build()",
+          "role_percent": 2.081746636202082
+        },
+        {
+          "total_percent": 1.3399999999999999,
+          "tid": null,
+          "mode": ".",
+          "symbol": "AIMaximaPlacement::Planner::prepareRouteCache(AIMaximaPlacement::WorldState const&, int) const",
+          "role_percent": 1.7009393247017008
+        },
+        {
+          "total_percent": 1.25,
+          "tid": null,
+          "mode": ".",
+          "symbol": "AIMaximaPlacement::Planner::scoreCandidate(AIMaximaPlacement::WorldState const&, AIMaximaPlacement::DevelopmentIntent const*, AIMaximaPlacement::Planner::Candidate const&) const",
+          "role_percent": 1.5866971312515867
+        },
+        {
+          "total_percent": 1.05,
+          "tid": null,
+          "mode": ".",
+          "symbol": "AIMaximaPlacement::Planner::addBuildCandidatesRange(AIMaximaPlacement::WorldState const&, AIMaximaPlacement::DevelopmentIntent const&, unsigned int, bool, std::vector<AIMaximaPlacement::Planner::Candidate, std::allocator<AIMaximaPlacement::Planner::Candidate> >&, unsigned long&, unsigned long, AIMaximaPlacement::DevelopmentAction&, bool&, unsigned long&, AIMaximaPlacement::DevelopmentAction&, bool&, unsigned long&)",
+          "role_percent": 1.3328255902513328
+        },
+        {
+          "total_percent": 0.8,
+          "tid": null,
+          "mode": ".",
+          "symbol": "AIMaximaFoodLedger::Ledger::operatingQuery(AIMaximaFoodLedger::Input const&, AIMaximaFoodLedger::Result const&, AIMaximaFoodLedger::ConsumerInput const&, int, AIMaximaFoodLedger::Result const*, int) const",
+          "role_percent": 1.0154861640010155
+        },
+        {
+          "total_percent": 0.66,
+          "tid": null,
+          "mode": ".",
+          "symbol": "AIMaximaPlacement::WorldState::index(int, int) const",
+          "role_percent": 0.8377760853008377
+        },
+        {
+          "total_percent": 0.64,
+          "tid": null,
+          "mode": ".",
+          "symbol": "AIMaxima::Maxima::collect_development_world(AIMaximaRuntime::Context&, unsigned int*) const",
+          "role_percent": 0.8123889312008125
+        },
+        {
+          "total_percent": 0.63,
+          "tid": null,
+          "mode": ".",
+          "symbol": "AIMaximaFoodLedger::Ledger::residualUpperBound(AIMaximaFoodLedger::Input const&, AIMaximaFoodLedger::Result const&, int, int, int, int, int, int, bool) const",
+          "role_percent": 0.7996953541507997
+        },
+        {
+          "total_percent": 0.61,
+          "tid": null,
+          "mode": ".",
+          "symbol": "AIMaxima::(anonymous namespace)::TacticalReachability::powersAt(SimulationSnapshot::TeamView const*, SimulationSnapshot::BuildingView const*, int, int, int, bool, std::map<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, int, std::less<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > >, std::allocator<std::pair<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const, int> > >*) [clone .constprop.0]",
+          "role_percent": 0.7743082000507743
+        },
+        {
+          "total_percent": 0.6,
+          "tid": null,
+          "mode": ".",
+          "symbol": "void field::expandDistances<AIMaximaPlacement::DistanceField, field::Frontier, std::array<field::Offset, 4ul>, int, field::expandDistances<AIMaximaPlacement::DistanceField, field::Frontier, std::array<field::Offset, 4ul>, int>(AIMaximaPlacement::DistanceField&, field::Frontier&, field::Grid const&, std::array<field::Offset, 4ul> const&, int)::{lambda(int)#1}>(AIMaximaPlacement::DistanceField&, field::Frontier&, field::Grid const&, std::array<field::Offset, 4ul> const&, int, field::expandDistances<AIMaximaPlacement::DistanceField, field::Frontier, std::array<field::Offset, 4ul>, int>(AIMaximaPlacement::DistanceField&, field::Frontier&, field::Grid const&, std::array<field::Offset, 4ul> const&, int)::{lambda(int)#1})",
+          "role_percent": 0.7616146230007617
+        }
+      ]
+    },
+    "timing_repeats": 1,
+    "timings": [
+      {
+        "fixture": "combat",
+        "participants": 4,
+        "mode": "timing-0",
+        "owner_tid": 3449476,
+        "owner_cpu_ns": 4579908657,
+        "process_cpu_ns": 20911752753,
+        "wall_ns": 14782671659,
+        "join_wait_ns": 7572328956,
+        "final_checksum": 3505709840
+      }
+    ],
+    "median_seconds": {
+      "owner_cpu_ns": 4.579908657,
+      "process_cpu_ns": 20.911752753,
+      "wall_ns": 14.782671659,
+      "join_wait_ns": 7.572328956
+    },
+    "counters": {
+      "task-clock": {
+        "value": 21515.87,
+        "unit": "msec"
+      },
+      "context-switches": {
+        "value": 32433.0,
+        "unit": ""
+      },
+      "cpu-migrations": {
+        "value": 2143.0,
+        "unit": ""
+      },
+      "cycles": {
+        "value": 84834318666.0,
+        "unit": ""
+      },
+      "instructions": {
+        "value": 73875180752.0,
+        "unit": ""
+      },
+      "branches": {
+        "value": 11463240691.0,
+        "unit": ""
+      },
+      "branch-misses": {
+        "value": 381696153.0,
+        "unit": ""
+      },
+      "cache-misses": {
+        "value": 354267099.0,
+        "unit": ""
+      }
+    }
+  },
+  "sparse-1": {
+    "owner": {
+      "total_sample_share_percent": 100.46000000000001,
+      "kernel_share_percent": 2.7374079235516624,
+      "top": [
+        {
+          "total_percent": 16.12,
+          "tid": null,
+          "mode": ".",
+          "symbol": "gradient_preparation::propagate(gradient_preparation::Request const&, SimulationSnapshot::Handle const&, unsigned short*, GradientWorkspace&)",
+          "role_percent": 16.04618753732829
+        },
+        {
+          "total_percent": 3.9,
+          "tid": null,
+          "mode": ".",
+          "symbol": "AIMaximaFoodLedger::Ledger::walk(AIMaximaFoodLedger::Input const&, int, int, int, int, int, int, std::vector<AIMaximaFoodLedger::Ledger::ReachCell, std::allocator<AIMaximaFoodLedger::Ledger::ReachCell> >&, std::vector<unsigned int, std::allocator<unsigned int> > const*, long long) const",
+          "role_percent": 3.8821421461278116
+        },
+        {
+          "total_percent": 3.35,
+          "tid": null,
+          "mode": ".",
+          "symbol": "auto SimulationSnapshot::capture(Game const&, std::shared_ptr<std::vector<SimulationSnapshot::BuildingKindView, std::allocator<SimulationSnapshot::BuildingKindView> > const>, unsigned int, SimulationSnapshot::Handle const*, SimulationSnapshot::Storage*)::{lambda(SimulationSnapshot::ChunkStamps&, MapState::ChangeTracker const&, bool, auto:1)#1}::operator()<SimulationSnapshot::capture(Game const&, std::shared_ptr<std::vector<SimulationSnapshot::BuildingKindView, std::allocator<SimulationSnapshot::BuildingKindView> > const>, unsigned int, SimulationSnapshot::Handle const*, SimulationSnapshot::Storage*)::{lambda(unsigned long, unsigned long)#3}>(SimulationSnapshot::ChunkStamps&, MapState::ChangeTracker const&, bool, SimulationSnapshot::capture(Game const&, std::shared_ptr<std::vector<SimulationSnapshot::BuildingKindView, std::allocator<SimulationSnapshot::BuildingKindView> > const>, unsigned int, SimulationSnapshot::Handle const*, SimulationSnapshot::Storage*)::{lambda(unsigned long, unsigned long)#3}) const",
+          "role_percent": 3.3346605614174796
+        },
+        {
+          "total_percent": 3.28,
+          "tid": null,
+          "mode": ".",
+          "symbol": "SimulationSnapshot::capture(Game const&, std::shared_ptr<std::vector<SimulationSnapshot::BuildingKindView, std::allocator<SimulationSnapshot::BuildingKindView> > const>, unsigned int, SimulationSnapshot::Handle const*, SimulationSnapshot::Storage*)",
+          "role_percent": 3.2649810869998004
+        },
+        {
+          "total_percent": 3.26,
+          "tid": null,
+          "mode": ".",
+          "symbol": "__memmove_avx_unaligned_erms",
+          "role_percent": 3.2450726657376063
+        },
+        {
+          "total_percent": 3.12,
+          "tid": null,
+          "mode": ".",
+          "symbol": "gradient_preparation::MaterialSeedCache::trySeed(SimulationSnapshot::Handle const&, int, int, int, unsigned short*, unsigned short const*)",
+          "role_percent": 3.1057137169022497
+        },
+        {
+          "total_percent": 2.66,
+          "tid": null,
+          "mode": ".",
+          "symbol": "ResourceGrowth::calculate(MapState::View const&, MersenneTwister&, ResourceGrowth::Batch&)",
+          "role_percent": 2.6478200278717896
+        },
+        {
+          "total_percent": 2.18,
+          "tid": null,
+          "mode": ".",
+          "symbol": "AIMaximaFoodLedger::Input::normalizeX(int) const",
+          "role_percent": 2.170017917579136
+        },
+        {
+          "total_percent": 1.68,
+          "tid": null,
+          "mode": ".",
+          "symbol": "AIMaximaFoodLedger::Input::normalizeY(int) const",
+          "role_percent": 1.672307386024288
+        },
+        {
+          "total_percent": 1.65,
+          "tid": null,
+          "mode": ".",
+          "symbol": "_ZN5field12breadthFirstISt6vectorIiSaIiEEZN8AIMaxima21reachableFoodCapacityEPKN8AIEngine11AIWorldViewEPKN18SimulationSnapshot12BuildingViewEjbiRKNS4_7Farming19ExactFertilityCacheEPKS1_IhSaIhEEPSt3setIiSt4lessIiES2_EiEUliE1_ZNS_8traverseIS3_St5arrayINS_6OffsetELm8EEZNS_8traverseIS3_SU_SQ_ZNS4_21reachableFoodCapacityES8_SC_jbiSG_SK_SP_iEUliiiE2_EEvRT_RKNS_4GridERKT0_T1_T2_EUliE_SQ_SW_EEvSY_S11_S14_S15_S16_T3_EUlRKSX_E_EEvSY_S12_S15_",
+          "role_percent": 1.642444754130997
+        },
+        {
+          "total_percent": 1.6,
+          "tid": null,
+          "mode": ".",
+          "symbol": "AIMaximaFoodLedger::Ledger::residualUpperBound(AIMaximaFoodLedger::Input const&, AIMaximaFoodLedger::Result const&, int, int, int, int, int, int, bool) const",
+          "role_percent": 1.5926737009755128
+        },
+        {
+          "total_percent": 1.58,
+          "tid": null,
+          "mode": ".",
+          "symbol": "AIMaxima::Maxima::build_farming_protection_plan(AIMaximaRuntime::Context&)",
+          "role_percent": 1.5727652797133187
+        },
+        {
+          "total_percent": 1.47,
+          "tid": null,
+          "mode": ".",
+          "symbol": "gradient_preparation::seed(gradient_preparation::Request const&, SimulationSnapshot::Handle const&, unsigned short*, gradient_preparation::CrowdingScratch&)",
+          "role_percent": 1.463268962771252
+        },
+        {
+          "total_percent": 1.43,
+          "tid": null,
+          "mode": ".",
+          "symbol": "auto SimulationSnapshot::capture(Game const&, std::shared_ptr<std::vector<SimulationSnapshot::BuildingKindView, std::allocator<SimulationSnapshot::BuildingKindView> > const>, unsigned int, SimulationSnapshot::Handle const*, SimulationSnapshot::Storage*)::{lambda(SimulationSnapshot::ChunkStamps&, MapState::ChangeTracker const&, bool, auto:1)#1}::operator()<SimulationSnapshot::capture(Game const&, std::shared_ptr<std::vector<SimulationSnapshot::BuildingKindView, std::allocator<SimulationSnapshot::BuildingKindView> > const>, unsigned int, SimulationSnapshot::Handle const*, SimulationSnapshot::Storage*)::{lambda(unsigned long, unsigned long)#4}>(SimulationSnapshot::ChunkStamps&, MapState::ChangeTracker const&, bool, SimulationSnapshot::capture(Game const&, std::shared_ptr<std::vector<SimulationSnapshot::BuildingKindView, std::allocator<SimulationSnapshot::BuildingKindView> > const>, unsigned int, SimulationSnapshot::Handle const*, SimulationSnapshot::Storage*)::{lambda(unsigned long, unsigned long)#4}) const",
+          "role_percent": 1.4234521202468642
+        },
+        {
+          "total_percent": 1.41,
+          "tid": null,
+          "mode": ".",
+          "symbol": "AIMaximaPlacement::Planner::prepareScoringCaches(AIMaximaPlacement::WorldState const&) const",
+          "role_percent": 1.4035436989846704
+        },
+        {
+          "total_percent": 1.34,
+          "tid": null,
+          "mode": ".",
+          "symbol": "AIMaxima::Maxima::collect_development_world(AIMaximaRuntime::Context&, unsigned int*) const",
+          "role_percent": 1.3338642245669918
+        },
+        {
+          "total_percent": 1.29,
+          "tid": null,
+          "mode": ".",
+          "symbol": "Team::integrity()",
+          "role_percent": 1.2840931714115071
+        },
+        {
+          "total_percent": 1.23,
+          "tid": null,
+          "mode": ".",
+          "symbol": "AI::decide(AIEngine::DecisionContext const&)",
+          "role_percent": 1.2243679076249252
+        },
+        {
+          "total_percent": 0.96,
+          "tid": null,
+          "mode": ".",
+          "symbol": "AIMaxima::Maxima::captureTelemetry()",
+          "role_percent": 0.9556042205853075
+        },
+        {
+          "total_percent": 0.88,
+          "tid": null,
+          "mode": ".",
+          "symbol": "Map::propagateGradient(unsigned short*, int, int)",
+          "role_percent": 0.8759705355365318
+        }
+      ]
+    },
+    "other_threads": {
+      "total_sample_share_percent": 0,
+      "kernel_share_percent": 0,
+      "top": []
+    },
+    "timing_repeats": 3,
+    "timings": [
+      {
+        "fixture": "sparse",
+        "participants": 1,
+        "mode": "timing-0",
+        "owner_tid": 3451737,
+        "owner_cpu_ns": 4196753879,
+        "process_cpu_ns": 4196750819,
+        "wall_ns": 5982465957,
+        "join_wait_ns": 0,
+        "final_checksum": 527521303
+      },
+      {
+        "fixture": "sparse",
+        "participants": 1,
+        "mode": "timing-1",
+        "owner_tid": 3451894,
+        "owner_cpu_ns": 4587990968,
+        "process_cpu_ns": 4587987048,
+        "wall_ns": 5242165017,
+        "join_wait_ns": 0,
+        "final_checksum": 527521303
+      },
+      {
+        "fixture": "sparse",
+        "participants": 1,
+        "mode": "timing-2",
+        "owner_tid": 3452045,
+        "owner_cpu_ns": 4679622512,
+        "process_cpu_ns": 4679618692,
+        "wall_ns": 8696895776,
+        "join_wait_ns": 0,
+        "final_checksum": 527521303
+      }
+    ],
+    "median_seconds": {
+      "owner_cpu_ns": 4.587990968,
+      "process_cpu_ns": 4.587987048,
+      "wall_ns": 5.982465957,
+      "join_wait_ns": 0.0
+    },
+    "counters": {
+      "task-clock": {
+        "value": 4086.06,
+        "unit": "msec"
+      },
+      "context-switches": {
+        "value": 2324.0,
+        "unit": ""
+      },
+      "cpu-migrations": {
+        "value": 12.0,
+        "unit": ""
+      },
+      "cycles": {
+        "value": 16235867121.0,
+        "unit": ""
+      },
+      "instructions": {
+        "value": 14252914375.0,
+        "unit": ""
+      },
+      "branches": {
+        "value": 2129438492.0,
+        "unit": ""
+      },
+      "branch-misses": {
+        "value": 53003830.0,
+        "unit": ""
+      },
+      "cache-misses": {
+        "value": 84514860.0,
+        "unit": ""
+      }
+    }
+  },
+  "dense-1": {
+    "owner": {
+      "total_sample_share_percent": 98.95,
+      "kernel_share_percent": 3.2541687721071253,
+      "top": [
+        {
+          "total_percent": 7.25,
+          "tid": null,
+          "mode": ".",
+          "symbol": "void BuildingGradientSearch::advance<BuildingGradientSearch::resolveToCost(int)::{lambda()#1}>(BuildingGradientSearch::resolveToCost(int)::{lambda()#1})",
+          "role_percent": 7.326932794340575
+        },
+        {
+          "total_percent": 6.23,
+          "tid": null,
+          "mode": ".",
+          "symbol": "AIMaximaFoodLedger::Ledger::walk(AIMaximaFoodLedger::Input const&, int, int, int, int, int, int, std::vector<AIMaximaFoodLedger::Ledger::ReachCell, std::allocator<AIMaximaFoodLedger::Ledger::ReachCell> >&, std::vector<unsigned int, std::allocator<unsigned int> > const*, long long) const",
+          "role_percent": 6.29610914603335
+        },
+        {
+          "total_percent": 6.15,
+          "tid": null,
+          "mode": ".",
+          "symbol": "SimulationSnapshot::capture(Game const&, std::shared_ptr<std::vector<SimulationSnapshot::BuildingKindView, std::allocator<SimulationSnapshot::BuildingKindView> > const>, unsigned int, SimulationSnapshot::Handle const*, SimulationSnapshot::Storage*)",
+          "role_percent": 6.2152602324406265
+        },
+        {
+          "total_percent": 4.2,
+          "tid": null,
+          "mode": ".",
+          "symbol": "gradient_preparation::propagate(gradient_preparation::Request const&, SimulationSnapshot::Handle const&, unsigned short*, GradientWorkspace&)",
+          "role_percent": 4.244567963617989
+        },
+        {
+          "total_percent": 3.78,
+          "tid": null,
+          "mode": ".",
+          "symbol": "void BuildingGradientSearch::advance<BuildingGradientSearch::resolve(unsigned long)::{lambda()#1}>(BuildingGradientSearch::resolve(unsigned long)::{lambda()#1})",
+          "role_percent": 3.8201111672561896
+        },
+        {
+          "total_percent": 3.49,
+          "tid": null,
+          "mode": ".",
+          "symbol": "_ZN5field12breadthFirstISt6vectorIiSaIiEEZN8AIMaxima21reachableFoodCapacityEPKN8AIEngine11AIWorldViewEPKN18SimulationSnapshot12BuildingViewEjbiRKNS4_7Farming19ExactFertilityCacheEPKS1_IhSaIhEEPSt3setIiSt4lessIiES2_EiEUliE1_ZNS_8traverseIS3_St5arrayINS_6OffsetELm8EEZNS_8traverseIS3_SU_SQ_ZNS4_21reachableFoodCapacityES8_SC_jbiSG_SK_SP_iEUliiiE2_EEvRT_RKNS_4GridERKT0_T1_T2_EUliE_SQ_SW_EEvSY_S11_S14_S15_S16_T3_EUlRKSX_E_EEvSY_S12_S15_",
+          "role_percent": 3.527033855482567
+        },
+        {
+          "total_percent": 3.12,
+          "tid": null,
+          "mode": ".",
+          "symbol": "AIMaximaFoodLedger::Input::normalizeX(int) const",
+          "role_percent": 3.1531076301162204
+        },
+        {
+          "total_percent": 2.97,
+          "tid": null,
+          "mode": ".",
+          "symbol": "Unit::checkSum(std::vector<unsigned int, std::allocator<unsigned int> >*)",
+          "role_percent": 3.001515917129864
+        },
+        {
+          "total_percent": 2.45,
+          "tid": null,
+          "mode": ".",
+          "symbol": "AIMaximaFoodLedger::Input::normalizeY(int) const",
+          "role_percent": 2.47599797877716
+        },
+        {
+          "total_percent": 2.21,
+          "tid": null,
+          "mode": ".",
+          "symbol": "gradient_preparation::seedBuilding(gradient_preparation::BuildingSeed const&, SimulationSnapshot::Handle const&, unsigned short*)",
+          "role_percent": 2.2334512379989895
+        },
+        {
+          "total_percent": 2.16,
+          "tid": null,
+          "mode": ".",
+          "symbol": "Building::integrity()",
+          "role_percent": 2.182920667003537
+        },
+        {
+          "total_percent": 2.13,
+          "tid": null,
+          "mode": ".",
+          "symbol": "gradient_preparation::MaterialSeedCache::trySeed(SimulationSnapshot::Handle const&, int, int, int, unsigned short*, unsigned short const*)",
+          "role_percent": 2.1526023244062658
+        },
+        {
+          "total_percent": 2.09,
+          "tid": null,
+          "mode": ".",
+          "symbol": "BuildingGradientSearch::resolve(unsigned long)",
+          "role_percent": 2.112177867609904
+        },
+        {
+          "total_percent": 2.04,
+          "tid": null,
+          "mode": ".",
+          "symbol": "AIMaxima::Maxima::worker_reachable_circulation(AIMaximaRuntime::Context&, bool) const",
+          "role_percent": 2.061647296614452
+        },
+        {
+          "total_percent": 1.58,
+          "tid": null,
+          "mode": ".",
+          "symbol": "Building::selectUnitCarryingWantedMaterial(int const*, int const*, Building::BringMaterialsSelection&)",
+          "role_percent": 1.5967660434562911
+        },
+        {
+          "total_percent": 1.55,
+          "tid": null,
+          "mode": ".",
+          "symbol": "Building::noteUnitFailing(Unit*, Building::UnitCantWorkReason)",
+          "role_percent": 1.5664477008590199
+        },
+        {
+          "total_percent": 1.41,
+          "tid": null,
+          "mode": ".",
+          "symbol": "AIMaximaFoodLedger::Input::index(int, int) const",
+          "role_percent": 1.4249621020717533
+        },
+        {
+          "total_percent": 1.25,
+          "tid": null,
+          "mode": ".",
+          "symbol": "Game::refOf(Unit const*)",
+          "role_percent": 1.263264274886306
+        },
+        {
+          "total_percent": 1.2,
+          "tid": null,
+          "mode": ".",
+          "symbol": "Map::propagateGradient(unsigned short*, int, int)",
+          "role_percent": 1.2127337038908539
+        },
+        {
+          "total_percent": 1.15,
+          "tid": null,
+          "mode": ".",
+          "symbol": "Building::considerUnitForBuilding(Unit*, int*)",
+          "role_percent": 1.1622031328954017
+        }
+      ]
+    },
+    "other_threads": {
+      "total_sample_share_percent": 0,
+      "kernel_share_percent": 0,
+      "top": []
+    },
+    "timing_repeats": 3,
+    "timings": [
+      {
+        "fixture": "dense",
+        "participants": 1,
+        "mode": "timing-0",
+        "owner_tid": 3467144,
+        "owner_cpu_ns": 38715841295,
+        "process_cpu_ns": 38715837045,
+        "wall_ns": 55180264583,
+        "join_wait_ns": 0,
+        "final_checksum": 1193663972
+      },
+      {
+        "fixture": "dense",
+        "participants": 1,
+        "mode": "timing-1",
+        "owner_tid": 3470759,
+        "owner_cpu_ns": 38760442199,
+        "process_cpu_ns": 38760438939,
+        "wall_ns": 44760955356,
+        "join_wait_ns": 0,
+        "final_checksum": 1193663972
+      },
+      {
+        "fixture": "dense",
+        "participants": 1,
+        "mode": "timing-2",
+        "owner_tid": 3472349,
+        "owner_cpu_ns": 39733365496,
+        "process_cpu_ns": 39733362456,
+        "wall_ns": 68979852708,
+        "join_wait_ns": 0,
+        "final_checksum": 1193663972
+      }
+    ],
+    "median_seconds": {
+      "owner_cpu_ns": 38.760442199,
+      "process_cpu_ns": 38.760438939,
+      "wall_ns": 55.180264583,
+      "join_wait_ns": 0.0
+    },
+    "counters": {
+      "task-clock": {
+        "value": 40010.34,
+        "unit": "msec"
+      },
+      "context-switches": {
+        "value": 14844.0,
+        "unit": ""
+      },
+      "cpu-migrations": {
+        "value": 175.0,
+        "unit": ""
+      },
+      "cycles": {
+        "value": 158711583563.0,
+        "unit": ""
+      },
+      "instructions": {
+        "value": 117497984290.0,
+        "unit": ""
+      },
+      "branches": {
+        "value": 17104218266.0,
+        "unit": ""
+      },
+      "branch-misses": {
+        "value": 575049294.0,
+        "unit": ""
+      },
+      "cache-misses": {
+        "value": 687495477.0,
+        "unit": ""
+      }
+    }
+  },
+  "sparse-32": {
+    "owner": {
+      "total_sample_share_percent": 23.44,
+      "kernel_share_percent": 20.563139931740615,
+      "top": [
+        {
+          "total_percent": 1.89,
+          "tid": null,
+          "mode": ".",
+          "symbol": "__memmove_avx_unaligned_erms",
+          "role_percent": 8.063139931740613
+        },
+        {
+          "total_percent": 1.71,
+          "tid": null,
+          "mode": ".",
+          "symbol": "SimulationSnapshot::capture(Game const&, std::shared_ptr<std::vector<SimulationSnapshot::BuildingKindView, std::allocator<SimulationSnapshot::BuildingKindView> > const>, unsigned int, SimulationSnapshot::Handle const*, SimulationSnapshot::Storage*)",
+          "role_percent": 7.295221843003412
+        },
+        {
+          "total_percent": 1.66,
+          "tid": null,
+          "mode": ".",
+          "symbol": "auto SimulationSnapshot::capture(Game const&, std::shared_ptr<std::vector<SimulationSnapshot::BuildingKindView, std::allocator<SimulationSnapshot::BuildingKindView> > const>, unsigned int, SimulationSnapshot::Handle const*, SimulationSnapshot::Storage*)::{lambda(SimulationSnapshot::ChunkStamps&, MapState::ChangeTracker const&, bool, auto:1)#1}::operator()<SimulationSnapshot::capture(Game const&, std::shared_ptr<std::vector<SimulationSnapshot::BuildingKindView, std::allocator<SimulationSnapshot::BuildingKindView> > const>, unsigned int, SimulationSnapshot::Handle const*, SimulationSnapshot::Storage*)::{lambda(unsigned long, unsigned long)#3}>(SimulationSnapshot::ChunkStamps&, MapState::ChangeTracker const&, bool, SimulationSnapshot::capture(Game const&, std::shared_ptr<std::vector<SimulationSnapshot::BuildingKindView, std::allocator<SimulationSnapshot::BuildingKindView> > const>, unsigned int, SimulationSnapshot::Handle const*, SimulationSnapshot::Storage*)::{lambda(unsigned long, unsigned long)#3}) const",
+          "role_percent": 7.081911262798634
+        },
+        {
+          "total_percent": 1.14,
+          "tid": null,
+          "mode": ".",
+          "symbol": "Team::syncStep()",
+          "role_percent": 4.863481228668942
+        },
+        {
+          "total_percent": 0.76,
+          "tid": null,
+          "mode": "k",
+          "symbol": "native_queued_spin_lock_slowpath",
+          "role_percent": 3.242320819112628
+        },
+        {
+          "total_percent": 0.74,
+          "tid": null,
+          "mode": ".",
+          "symbol": "Map::propagateGradient(unsigned short*, int, int)",
+          "role_percent": 3.1569965870307164
+        },
+        {
+          "total_percent": 0.66,
+          "tid": null,
+          "mode": ".",
+          "symbol": "Team::integrity()",
+          "role_percent": 2.8156996587030716
+        },
+        {
+          "total_percent": 0.52,
+          "tid": null,
+          "mode": ".",
+          "symbol": "auto SimulationSnapshot::capture(Game const&, std::shared_ptr<std::vector<SimulationSnapshot::BuildingKindView, std::allocator<SimulationSnapshot::BuildingKindView> > const>, unsigned int, SimulationSnapshot::Handle const*, SimulationSnapshot::Storage*)::{lambda(SimulationSnapshot::ChunkStamps&, MapState::ChangeTracker const&, bool, auto:1)#1}::operator()<SimulationSnapshot::capture(Game const&, std::shared_ptr<std::vector<SimulationSnapshot::BuildingKindView, std::allocator<SimulationSnapshot::BuildingKindView> > const>, unsigned int, SimulationSnapshot::Handle const*, SimulationSnapshot::Storage*)::{lambda(unsigned long, unsigned long)#4}>(SimulationSnapshot::ChunkStamps&, MapState::ChangeTracker const&, bool, SimulationSnapshot::capture(Game const&, std::shared_ptr<std::vector<SimulationSnapshot::BuildingKindView, std::allocator<SimulationSnapshot::BuildingKindView> > const>, unsigned int, SimulationSnapshot::Handle const*, SimulationSnapshot::Storage*)::{lambda(unsigned long, unsigned long)#4}) const",
+          "role_percent": 2.218430034129693
+        },
+        {
+          "total_percent": 0.34,
+          "tid": null,
+          "mode": ".",
+          "symbol": "Unit::locationIsInEnemyGuardTowerRange(int, int) const",
+          "role_percent": 1.4505119453924915
+        },
+        {
+          "total_percent": 0.29,
+          "tid": null,
+          "mode": ".",
+          "symbol": "AIEngine::AIWorldView::AIWorldView(SimulationSnapshot::Handle)",
+          "role_percent": 1.2372013651877132
+        },
+        {
+          "total_percent": 0.29,
+          "tid": null,
+          "mode": ".",
+          "symbol": "Building::materialDeliveryNeed(int) const",
+          "role_percent": 1.2372013651877132
+        },
+        {
+          "total_percent": 0.28,
+          "tid": null,
+          "mode": ".",
+          "symbol": "cfree@GLIBC_2.2.5",
+          "role_percent": 1.1945392491467577
+        },
+        {
+          "total_percent": 0.28,
+          "tid": null,
+          "mode": "k",
+          "symbol": "psi_group_change",
+          "role_percent": 1.1945392491467577
+        },
+        {
+          "total_percent": 0.26,
+          "tid": null,
+          "mode": ".",
+          "symbol": "void gradient_preparation::clearCells<Map::seedClearAreasGradient(int, int, unsigned short*)::{lambda(auto:1)#1}>(MapState::View const&, bool, int, int, unsigned short*, Map::seedClearAreasGradient(int, int, unsigned short*)::{lambda(auto:1)#1})",
+          "role_percent": 1.1092150170648465
+        },
+        {
+          "total_percent": 0.25,
+          "tid": null,
+          "mode": ".",
+          "symbol": "AIEngine::OrderScheduler::submit(AIEngine::RequestId, std::shared_ptr<AIEngine::AIWorldView const>, std::function<AIEngine::Command (AIEngine::AIWorldView const&)>)",
+          "role_percent": 1.0665529010238908
+        },
+        {
+          "total_percent": 0.24,
+          "tid": null,
+          "mode": ".",
+          "symbol": "malloc",
+          "role_percent": 1.023890784982935
+        },
+        {
+          "total_percent": 0.23,
+          "tid": null,
+          "mode": ".",
+          "symbol": "auto SimulationSnapshot::capture(Game const&, std::shared_ptr<std::vector<SimulationSnapshot::BuildingKindView, std::allocator<SimulationSnapshot::BuildingKindView> > const>, unsigned int, SimulationSnapshot::Handle const*, SimulationSnapshot::Storage*)::{lambda(SimulationSnapshot::ChunkStamps&, MapState::ChangeTracker const&, bool, auto:1)#1}::operator()<SimulationSnapshot::capture(Game const&, std::shared_ptr<std::vector<SimulationSnapshot::BuildingKindView, std::allocator<SimulationSnapshot::BuildingKindView> > const>, unsigned int, SimulationSnapshot::Handle const*, SimulationSnapshot::Storage*)::{lambda(unsigned long, unsigned long)#6}>(SimulationSnapshot::ChunkStamps&, MapState::ChangeTracker const&, bool, SimulationSnapshot::capture(Game const&, std::shared_ptr<std::vector<SimulationSnapshot::BuildingKindView, std::allocator<SimulationSnapshot::BuildingKindView> > const>, unsigned int, SimulationSnapshot::Handle const*, SimulationSnapshot::Storage*)::{lambda(unsigned long, unsigned long)#6}) const",
+          "role_percent": 0.9812286689419796
+        },
+        {
+          "total_percent": 0.21,
+          "tid": null,
+          "mode": "k",
+          "symbol": "update_curr",
+          "role_percent": 0.8959044368600683
+        },
+        {
+          "total_percent": 0.2,
+          "tid": null,
+          "mode": "k",
+          "symbol": "try_to_wake_up",
+          "role_percent": 0.8532423208191127
+        },
+        {
+          "total_percent": 0.2,
+          "tid": null,
+          "mode": ".",
+          "symbol": "Unit::checkSum(std::vector<unsigned int, std::allocator<unsigned int> >*)",
+          "role_percent": 0.8532423208191127
+        }
+      ]
+    },
+    "other_threads": {
+      "total_sample_share_percent": 76.01,
+      "kernel_share_percent": 32.600973556111036,
+      "top": [
+        {
+          "total_percent": 9.2,
+          "tid": null,
+          "mode": ".",
+          "symbol": "gradient_preparation::propagate(gradient_preparation::Request const&, SimulationSnapshot::Handle const&, unsigned short*, GradientWorkspace&)",
+          "role_percent": 12.103670569661885
+        },
+        {
+          "total_percent": 7.09,
+          "tid": null,
+          "mode": ".",
+          "symbol": "gradient_preparation::MaterialSeedCache::trySeed(SimulationSnapshot::Handle const&, int, int, int, unsigned short*, unsigned short const*)",
+          "role_percent": 9.327720036837258
+        },
+        {
+          "total_percent": 4.07,
+          "tid": null,
+          "mode": ".",
+          "symbol": "AIMaximaFoodLedger::Ledger::walk(AIMaximaFoodLedger::Input const&, int, int, int, int, int, int, std::vector<AIMaximaFoodLedger::Ledger::ReachCell, std::allocator<AIMaximaFoodLedger::Ledger::ReachCell> >&, std::vector<unsigned int, std::allocator<unsigned int> > const*, long long) const",
+          "role_percent": 5.354558610709118
+        },
+        {
+          "total_percent": 1.6000000000000005,
+          "tid": null,
+          "mode": ".",
+          "symbol": "AIMaximaFoodLedger::Input::normalizeX(int) const",
+          "role_percent": 2.104986186028155
+        },
+        {
+          "total_percent": 1.5700000000000005,
+          "tid": null,
+          "mode": ".",
+          "symbol": "AIMaximaFoodLedger::Ledger::residualUpperBound(AIMaximaFoodLedger::Input const&, AIMaximaFoodLedger::Result const&, int, int, int, int, int, int, bool) const",
+          "role_percent": 2.065517695040127
+        },
+        {
+          "total_percent": 1.4800000000000002,
+          "tid": null,
+          "mode": "k",
+          "symbol": "native_write_msr",
+          "role_percent": 1.9471122220760428
+        },
+        {
+          "total_percent": 1.2300000000000002,
+          "tid": null,
+          "mode": ".",
+          "symbol": "AIMaximaFoodLedger::Input::normalizeY(int) const",
+          "role_percent": 1.6182081305091436
+        },
+        {
+          "total_percent": 1.2000000000000006,
+          "tid": null,
+          "mode": ".",
+          "symbol": "AI::decide(AIEngine::DecisionContext const&)",
+          "role_percent": 1.5787396395211164
+        },
+        {
+          "total_percent": 1.0100000000000005,
+          "tid": null,
+          "mode": ".",
+          "symbol": "AIMaximaFoodLedger::Input::index(int, int) const",
+          "role_percent": 1.3287725299302728
+        },
+        {
+          "total_percent": 1.0000000000000004,
+          "tid": null,
+          "mode": ".",
+          "symbol": "gradient_preparation::seed(gradient_preparation::Request const&, SimulationSnapshot::Handle const&, unsigned short*, gradient_preparation::CrowdingScratch&)",
+          "role_percent": 1.3156163662675968
+        },
+        {
+          "total_percent": 1.0000000000000002,
+          "tid": null,
+          "mode": ".",
+          "symbol": "AIMaxima::Maxima::collect_development_world(AIMaximaRuntime::Context&, unsigned int*) const",
+          "role_percent": 1.3156163662675966
+        },
+        {
+          "total_percent": 1.0000000000000002,
+          "tid": null,
+          "mode": ".",
+          "symbol": "AIMaximaPlacement::Planner::prepareScoringCaches(AIMaximaPlacement::WorldState const&) const",
+          "role_percent": 1.3156163662675966
+        },
+        {
+          "total_percent": 0.8200000000000003,
+          "tid": null,
+          "mode": ".",
+          "symbol": "ResourceGrowth::calculate(MapState::View const&, MersenneTwister&, ResourceGrowth::Batch&)",
+          "role_percent": 1.0788054203394293
+        },
+        {
+          "total_percent": 0.7900000000000003,
+          "tid": null,
+          "mode": "k",
+          "symbol": "dequeue_entities",
+          "role_percent": 1.0393369293514014
+        },
+        {
+          "total_percent": 0.7600000000000002,
+          "tid": null,
+          "mode": "k",
+          "symbol": "native_queued_spin_lock_slowpath",
+          "role_percent": 0.9998684383633735
+        },
+        {
+          "total_percent": 0.7400000000000001,
+          "tid": null,
+          "mode": "k",
+          "symbol": "srso_safe_ret",
+          "role_percent": 0.9735561110380214
+        },
+        {
+          "total_percent": 0.6900000000000002,
+          "tid": null,
+          "mode": ".",
+          "symbol": "ComputeExecutor::worker(unsigned long)",
+          "role_percent": 0.9077752927246416
+        },
+        {
+          "total_percent": 0.6900000000000002,
+          "tid": null,
+          "mode": ".",
+          "symbol": "AIMaxima::Maxima::captureTelemetry()",
+          "role_percent": 0.9077752927246416
+        },
+        {
+          "total_percent": 0.6900000000000002,
+          "tid": null,
+          "mode": ".",
+          "symbol": "_ZN5field12breadthFirstISt6vectorIiSaIiEEZN8AIMaxima21reachableFoodCapacityEPKN8AIEngine11AIWorldViewEPKN18SimulationSnapshot12BuildingViewEjbiRKNS4_7Farming19ExactFertilityCacheEPKS1_IhSaIhEEPSt3setIiSt4lessIiES2_EiEUliE1_ZNS_8traverseIS3_St5arrayINS_6OffsetELm8EEZNS_8traverseIS3_SU_SQ_ZNS4_21reachableFoodCapacityES8_SC_jbiSG_SK_SP_iEUliiiE2_EEvRT_RKNS_4GridERKT0_T1_T2_EUliE_SQ_SW_EEvSY_S11_S14_S15_S16_T3_EUlRKSX_E_EEvSY_S12_S15_",
+          "role_percent": 0.9077752927246416
+        },
+        {
+          "total_percent": 0.66,
+          "tid": null,
+          "mode": "k",
+          "symbol": "reweight_entity",
+          "role_percent": 0.8683068017366137
+        }
+      ]
+    },
+    "timing_repeats": 3,
+    "timings": [
+      {
+        "fixture": "sparse",
+        "participants": 32,
+        "mode": "timing-0",
+        "owner_tid": 3479180,
+        "owner_cpu_ns": 1637391323,
+        "process_cpu_ns": 7421026123,
+        "wall_ns": 4693956509,
+        "join_wait_ns": 1630404106,
+        "final_checksum": 527521303
+      },
+      {
+        "fixture": "sparse",
+        "participants": 32,
+        "mode": "timing-1",
+        "owner_tid": 3479346,
+        "owner_cpu_ns": 1524378596,
+        "process_cpu_ns": 6621060925,
+        "wall_ns": 4673095991,
+        "join_wait_ns": 1408985475,
+        "final_checksum": 527521303
+      },
+      {
+        "fixture": "sparse",
+        "participants": 32,
+        "mode": "timing-2",
+        "owner_tid": 3479561,
+        "owner_cpu_ns": 1430606303,
+        "process_cpu_ns": 6694830075,
+        "wall_ns": 4421762386,
+        "join_wait_ns": 1582527914,
+        "final_checksum": 527521303
+      }
+    ],
+    "median_seconds": {
+      "owner_cpu_ns": 1.524378596,
+      "process_cpu_ns": 6.694830075,
+      "wall_ns": 4.673095991,
+      "join_wait_ns": 1.582527914
+    },
+    "counters": {
+      "task-clock": {
+        "value": 9465.34,
+        "unit": "msec"
+      },
+      "context-switches": {
+        "value": 192210.0,
+        "unit": ""
+      },
+      "cpu-migrations": {
+        "value": 12945.0,
+        "unit": ""
+      },
+      "cycles": {
+        "value": 33264792607.0,
+        "unit": ""
+      },
+      "instructions": {
+        "value": 19834264595.0,
+        "unit": ""
+      },
+      "branches": {
+        "value": 3333811558.0,
+        "unit": ""
+      },
+      "branch-misses": {
+        "value": 158429598.0,
+        "unit": ""
+      },
+      "cache-misses": {
+        "value": 182641591.0,
+        "unit": ""
+      }
+    }
+  },
+  "dense-32": {
+    "owner": {
+      "total_sample_share_percent": 48.17,
+      "kernel_share_percent": 7.411251816483287,
+      "top": [
+        {
+          "total_percent": 5.23,
+          "tid": null,
+          "mode": ".",
+          "symbol": "SimulationSnapshot::capture(Game const&, std::shared_ptr<std::vector<SimulationSnapshot::BuildingKindView, std::allocator<SimulationSnapshot::BuildingKindView> > const>, unsigned int, SimulationSnapshot::Handle const*, SimulationSnapshot::Storage*)",
+          "role_percent": 10.85738011210297
+        },
+        {
+          "total_percent": 3.46,
+          "tid": null,
+          "mode": ".",
+          "symbol": "void BuildingGradientSearch::advance<BuildingGradientSearch::resolve(unsigned long)::{lambda()#1}>(BuildingGradientSearch::resolve(unsigned long)::{lambda()#1})",
+          "role_percent": 7.18289391737596
+        },
+        {
+          "total_percent": 2.89,
+          "tid": null,
+          "mode": ".",
+          "symbol": "Unit::checkSum(std::vector<unsigned int, std::allocator<unsigned int> >*)",
+          "role_percent": 5.999584803819805
+        },
+        {
+          "total_percent": 2.15,
+          "tid": null,
+          "mode": ".",
+          "symbol": "BuildingGradientSearch::resolve(unsigned long)",
+          "role_percent": 4.463358937097778
+        },
+        {
+          "total_percent": 1.89,
+          "tid": null,
+          "mode": ".",
+          "symbol": "Building::integrity()",
+          "role_percent": 3.9236039028440937
+        },
+        {
+          "total_percent": 1.45,
+          "tid": null,
+          "mode": ".",
+          "symbol": "Building::selectUnitCarryingWantedMaterial(int const*, int const*, Building::BringMaterialsSelection&)",
+          "role_percent": 3.010172306414781
+        },
+        {
+          "total_percent": 1.38,
+          "tid": null,
+          "mode": ".",
+          "symbol": "Building::noteUnitFailing(Unit*, Building::UnitCantWorkReason)",
+          "role_percent": 2.8648536433464806
+        },
+        {
+          "total_percent": 1.23,
+          "tid": null,
+          "mode": ".",
+          "symbol": "Game::refOf(Unit const*)",
+          "role_percent": 2.5534565082001244
+        },
+        {
+          "total_percent": 1.18,
+          "tid": null,
+          "mode": ".",
+          "symbol": "Map::propagateGradient(unsigned short*, int, int)",
+          "role_percent": 2.449657463151339
+        },
+        {
+          "total_percent": 1.09,
+          "tid": null,
+          "mode": ".",
+          "symbol": "Building::considerUnitForBuilding(Unit*, int*)",
+          "role_percent": 2.262819182063525
+        },
+        {
+          "total_percent": 0.9,
+          "tid": null,
+          "mode": ".",
+          "symbol": "Building::computeWishedMaterials(int*)",
+          "role_percent": 1.86838281087814
+        },
+        {
+          "total_percent": 0.85,
+          "tid": null,
+          "mode": ".",
+          "symbol": "Building::gatherBringMaterialsCandidates(Building::BringMaterialsCandidate*, int)",
+          "role_percent": 1.7645837658293542
+        },
+        {
+          "total_percent": 0.85,
+          "tid": null,
+          "mode": ".",
+          "symbol": "__memmove_avx_unaligned_erms",
+          "role_percent": 1.7645837658293542
+        },
+        {
+          "total_percent": 0.84,
+          "tid": null,
+          "mode": ".",
+          "symbol": "BuildingGradientSearch::resolved(unsigned long) const",
+          "role_percent": 1.743823956819597
+        },
+        {
+          "total_percent": 0.77,
+          "tid": null,
+          "mode": ".",
+          "symbol": "Building::materialDeliveryNeed(int) const",
+          "role_percent": 1.5985052937512974
+        },
+        {
+          "total_percent": 0.77,
+          "tid": null,
+          "mode": ".",
+          "symbol": "Building::considerUnitForMaterial(Unit*, int, int*)",
+          "role_percent": 1.5985052937512974
+        },
+        {
+          "total_percent": 0.72,
+          "tid": null,
+          "mode": ".",
+          "symbol": "PerformanceTelemetry::Scope::Scope(PerformanceTelemetry::Id, int)",
+          "role_percent": 1.4947062487025118
+        },
+        {
+          "total_percent": 0.71,
+          "tid": null,
+          "mode": ".",
+          "symbol": "Map::materialAvailableSlot(int, int, int, int, int, int*, bool, Building const*)",
+          "role_percent": 1.4739464396927546
+        },
+        {
+          "total_percent": 0.68,
+          "tid": null,
+          "mode": ".",
+          "symbol": "Map::updateGlobalGradient(Building*, int, BuildingRoute)",
+          "role_percent": 1.4116670126634836
+        },
+        {
+          "total_percent": 0.65,
+          "tid": null,
+          "mode": ".",
+          "symbol": "Building::checkSum(std::vector<unsigned int, std::allocator<unsigned int> >*)",
+          "role_percent": 1.3493875856342121
+        }
+      ]
+    },
+    "other_threads": {
+      "total_sample_share_percent": 49.54,
+      "kernel_share_percent": 14.432781590633834,
+      "top": [
+        {
+          "total_percent": 6.050000000000001,
+          "tid": null,
+          "mode": ".",
+          "symbol": "void BuildingGradientSearch::advance<BuildingGradientSearch::resolveToCost(int)::{lambda()#1}>(BuildingGradientSearch::resolveToCost(int)::{lambda()#1})",
+          "role_percent": 12.212353653613244
+        },
+        {
+          "total_percent": 5.999999999999999,
+          "tid": null,
+          "mode": ".",
+          "symbol": "AIMaximaFoodLedger::Ledger::walk(AIMaximaFoodLedger::Input const&, int, int, int, int, int, int, std::vector<AIMaximaFoodLedger::Ledger::ReachCell, std::allocator<AIMaximaFoodLedger::Ledger::ReachCell> >&, std::vector<unsigned int, std::allocator<unsigned int> > const*, long long) const",
+          "role_percent": 12.111425111021395
+        },
+        {
+          "total_percent": 3.9499999999999997,
+          "tid": null,
+          "mode": ".",
+          "symbol": "gradient_preparation::propagate(gradient_preparation::Request const&, SimulationSnapshot::Handle const&, unsigned short*, GradientWorkspace&)",
+          "role_percent": 7.973354864755752
+        },
+        {
+          "total_percent": 3.2199999999999984,
+          "tid": null,
+          "mode": ".",
+          "symbol": "_ZN5field12breadthFirstISt6vectorIiSaIiEEZN8AIMaxima21reachableFoodCapacityEPKN8AIEngine11AIWorldViewEPKN18SimulationSnapshot12BuildingViewEjbiRKNS4_7Farming19ExactFertilityCacheEPKS1_IhSaIhEEPSt3setIiSt4lessIiES2_EiEUliE1_ZNS_8traverseIS3_St5arrayINS_6OffsetELm8EEZNS_8traverseIS3_SU_SQ_ZNS4_21reachableFoodCapacityES8_SC_jbiSG_SK_SP_iEUliiiE2_EEvRT_RKNS_4GridERKT0_T1_T2_EUliE_SQ_SW_EEvSY_S11_S14_S15_S16_T3_EUlRKSX_E_EEvSY_S12_S15_",
+          "role_percent": 6.499798142914813
+        },
+        {
+          "total_percent": 2.859999999999998,
+          "tid": null,
+          "mode": ".",
+          "symbol": "AIMaximaFoodLedger::Input::normalizeX(int) const",
+          "role_percent": 5.773112636253528
+        },
+        {
+          "total_percent": 2.2099999999999986,
+          "tid": null,
+          "mode": ".",
+          "symbol": "AIMaximaFoodLedger::Input::normalizeY(int) const",
+          "role_percent": 4.461041582559545
+        },
+        {
+          "total_percent": 1.8800000000000006,
+          "tid": null,
+          "mode": ".",
+          "symbol": "AIMaxima::Maxima::worker_reachable_circulation(AIMaximaRuntime::Context&, bool) const",
+          "role_percent": 3.7949132014533724
+        },
+        {
+          "total_percent": 1.8200000000000012,
+          "tid": null,
+          "mode": ".",
+          "symbol": "gradient_preparation::MaterialSeedCache::trySeed(SimulationSnapshot::Handle const&, int, int, int, unsigned short*, unsigned short const*)",
+          "role_percent": 3.6737989503431594
+        },
+        {
+          "total_percent": 1.720000000000001,
+          "tid": null,
+          "mode": ".",
+          "symbol": "gradient_preparation::seedBuilding(gradient_preparation::BuildingSeed const&, SimulationSnapshot::Handle const&, unsigned short*)",
+          "role_percent": 3.4719418651594696
+        },
+        {
+          "total_percent": 1.3200000000000003,
+          "tid": null,
+          "mode": ".",
+          "symbol": "AIMaximaFoodLedger::Input::index(int, int) const",
+          "role_percent": 2.6645135244247076
+        },
+        {
+          "total_percent": 1.0600000000000005,
+          "tid": null,
+          "mode": ".",
+          "symbol": "AIMaximaFruit::Field::build()",
+          "role_percent": 2.1396851029471144
+        },
+        {
+          "total_percent": 0.71,
+          "tid": null,
+          "mode": ".",
+          "symbol": "AIMaximaFoodLedger::Ledger::residualUpperBound(AIMaximaFoodLedger::Input const&, AIMaximaFoodLedger::Result const&, int, int, int, int, int, int, bool) const",
+          "role_percent": 1.4331853048041985
+        },
+        {
+          "total_percent": 0.6800000000000002,
+          "tid": null,
+          "mode": ".",
+          "symbol": "AIMaximaPlacement::Planner::colonyFoodTiles(AIMaximaPlacement::WorldState const&, int, int, AIMaximaPlacement::Footprint const&) const",
+          "role_percent": 1.372628179249092
+        },
+        {
+          "total_percent": 0.6599999999999999,
+          "tid": null,
+          "mode": ".",
+          "symbol": "AIMaximaPlacement::Planner::prepareFoodLedger(AIMaximaPlacement::WorldState const&, int, int, int, int, int) const",
+          "role_percent": 1.3322567622123536
+        },
+        {
+          "total_percent": 0.6200000000000003,
+          "tid": null,
+          "mode": ".",
+          "symbol": "AIMaximaPlacement::Planner::prepareRouteCache(AIMaximaPlacement::WorldState const&, int) const",
+          "role_percent": 1.2515139281388783
+        },
+        {
+          "total_percent": 0.49000000000000005,
+          "tid": null,
+          "mode": ".",
+          "symbol": "AIMaximaPlacement::Planner::prepareMaterialSources(AIMaximaPlacement::WorldState const&) const",
+          "role_percent": 0.9890997174000808
+        },
+        {
+          "total_percent": 0.42000000000000004,
+          "tid": null,
+          "mode": ".",
+          "symbol": "AIMaximaFoodLedger::Ledger::evaluate(AIMaximaFoodLedger::Input const&, AIMaximaFoodLedger::Result&, AIMaximaFoodLedger::EvaluationMode) const",
+          "role_percent": 0.847799757771498
+        },
+        {
+          "total_percent": 0.37000000000000005,
+          "tid": null,
+          "mode": ".",
+          "symbol": "BuildingGradientSearch::begin(BuildingGradientSearch::Inputs const&, unsigned short*, int, int, int)",
+          "role_percent": 0.7468712151796529
+        },
+        {
+          "total_percent": 0.3100000000000001,
+          "tid": null,
+          "mode": ".",
+          "symbol": "ComputeExecutor::worker(unsigned long)",
+          "role_percent": 0.6257569640694391
+        },
+        {
+          "total_percent": 0.30000000000000004,
+          "tid": null,
+          "mode": "k",
+          "symbol": "__schedule",
+          "role_percent": 0.6055712555510699
+        }
+      ]
+    },
+    "timing_repeats": 3,
+    "timings": [
+      {
+        "fixture": "dense",
+        "participants": 32,
+        "mode": "timing-0",
+        "owner_tid": 3486339,
+        "owner_cpu_ns": 19941474924,
+        "process_cpu_ns": 42856944855,
+        "wall_ns": 31825454530,
+        "join_wait_ns": 8747437434,
+        "final_checksum": 1193663972
+      },
+      {
+        "fixture": "dense",
+        "participants": 32,
+        "mode": "timing-1",
+        "owner_tid": 3487446,
+        "owner_cpu_ns": 19359120105,
+        "process_cpu_ns": 40894698707,
+        "wall_ns": 30793625566,
+        "join_wait_ns": 7681563615,
+        "final_checksum": 1193663972
+      },
+      {
+        "fixture": "dense",
+        "participants": 32,
+        "mode": "timing-2",
+        "owner_tid": 3488519,
+        "owner_cpu_ns": 20229307258,
+        "process_cpu_ns": 43986900021,
+        "wall_ns": 31448841342,
+        "join_wait_ns": 6883594116,
+        "final_checksum": 1193663972
+      }
+    ],
+    "median_seconds": {
+      "owner_cpu_ns": 19.941474924,
+      "process_cpu_ns": 42.856944855,
+      "wall_ns": 31.448841342,
+      "join_wait_ns": 7.681563615
+    },
+    "counters": {
+      "task-clock": {
+        "value": 47035.96,
+        "unit": "msec"
+      },
+      "context-switches": {
+        "value": 274725.0,
+        "unit": ""
+      },
+      "cpu-migrations": {
+        "value": 18169.0,
+        "unit": ""
+      },
+      "cycles": {
+        "value": 180654892498.0,
+        "unit": ""
+      },
+      "instructions": {
+        "value": 124285120221.0,
+        "unit": ""
+      },
+      "branches": {
+        "value": 18565559689.0,
+        "unit": ""
+      },
+      "branch-misses": {
+        "value": 714075286.0,
+        "unit": ""
+      },
+      "cache-misses": {
+        "value": 788347401.0,
+        "unit": ""
+      }
+    }
+  }
+}

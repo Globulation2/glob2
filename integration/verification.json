@@ -1,0 +1,212 @@
+[
+  {
+    "scenario": "sparse",
+    "participants": 1,
+    "hashes": {
+      "game.replay.checksums": "3d384a3601baa47b827ddc7973d01bf4f6b352ff33c83586807cfbd0d4fa2332",
+      "game.replay": "62e8cb87d422379bc0119c60450a2d2fd8e04a8e655858058ec1e2d7e5f393d6",
+      "final.game.gz": "cf5dd2050d4d67a22f97ba1be8da34c0923b4ba13ad8a500ae8cc71fbb0e0323"
+    },
+    "matches_pinned_baseline": {
+      "game.replay.checksums": true,
+      "game.replay": true,
+      "final.game.gz": true
+    }
+  },
+  {
+    "scenario": "sparse",
+    "participants": 4,
+    "hashes": {
+      "game.replay.checksums": "3d384a3601baa47b827ddc7973d01bf4f6b352ff33c83586807cfbd0d4fa2332",
+      "game.replay": "62e8cb87d422379bc0119c60450a2d2fd8e04a8e655858058ec1e2d7e5f393d6",
+      "final.game.gz": "cf5dd2050d4d67a22f97ba1be8da34c0923b4ba13ad8a500ae8cc71fbb0e0323"
+    },
+    "matches_pinned_baseline": {
+      "game.replay.checksums": true,
+      "game.replay": true,
+      "final.game.gz": true
+    }
+  },
+  {
+    "scenario": "sparse",
+    "participants": 32,
+    "hashes": {
+      "game.replay.checksums": "3d384a3601baa47b827ddc7973d01bf4f6b352ff33c83586807cfbd0d4fa2332",
+      "game.replay": "62e8cb87d422379bc0119c60450a2d2fd8e04a8e655858058ec1e2d7e5f393d6",
+      "final.game.gz": "cf5dd2050d4d67a22f97ba1be8da34c0923b4ba13ad8a500ae8cc71fbb0e0323"
+    },
+    "matches_pinned_baseline": {
+      "game.replay.checksums": true,
+      "game.replay": true,
+      "final.game.gz": true
+    }
+  },
+  {
+    "scenario": "hiring",
+    "participants": 1,
+    "hashes": {
+      "game.replay.checksums": "baf0aeb62aca260b1f29a96f5c8ca4aae1e2d9a55e1247127d3eb454e7be8a9f",
+      "game.replay": "ec910e8034932e701d270a785ee3aaebb5ddb611f532dfe8c5a2363ed9784f6d",
+      "final.game.gz": "11f52062c550513b15259ae8f6dc76276b73894add562aaebc0f4ed73c2b0b0d"
+    },
+    "matches_pinned_baseline": {
+      "game.replay.checksums": true,
+      "game.replay": true,
+      "final.game.gz": true
+    }
+  },
+  {
+    "scenario": "hiring",
+    "participants": 4,
+    "hashes": {
+      "game.replay.checksums": "baf0aeb62aca260b1f29a96f5c8ca4aae1e2d9a55e1247127d3eb454e7be8a9f",
+      "game.replay": "ec910e8034932e701d270a785ee3aaebb5ddb611f532dfe8c5a2363ed9784f6d",
+      "final.game.gz": "11f52062c550513b15259ae8f6dc76276b73894add562aaebc0f4ed73c2b0b0d"
+    },
+    "matches_pinned_baseline": {
+      "game.replay.checksums": true,
+      "game.replay": true,
+      "final.game.gz": true
+    }
+  },
+  {
+    "scenario": "hiring",
+    "participants": 32,
+    "hashes": {
+      "game.replay.checksums": "baf0aeb62aca260b1f29a96f5c8ca4aae1e2d9a55e1247127d3eb454e7be8a9f",
+      "game.replay": "ec910e8034932e701d270a785ee3aaebb5ddb611f532dfe8c5a2363ed9784f6d",
+      "final.game.gz": "11f52062c550513b15259ae8f6dc76276b73894add562aaebc0f4ed73c2b0b0d"
+    },
+    "matches_pinned_baseline": {
+      "game.replay.checksums": true,
+      "game.replay": true,
+      "final.game.gz": true
+    }
+  },
+  {
+    "scenario": "established",
+    "participants": 1,
+    "hashes": {
+      "game.replay.checksums": "65293c38dbd088c1daa8116674f4c543e6310b6a201303ad9e2cf89c84ad8b73",
+      "game.replay": "8d4d7c916700dbdaee91fa73ef6fb630a22fca32f68ca84ba6ac24f5c64d93e8",
+      "final.game.gz": "8f41b78348ec51290cd15d7db78b9a8678e4aec99306b80921d80082a995a67e"
+    },
+    "matches_pinned_baseline": {
+      "game.replay.checksums": true,
+      "game.replay": true,
+      "final.game.gz": true
+    }
+  },
+  {
+    "scenario": "established",
+    "participants": 4,
+    "hashes": {
+      "game.replay.checksums": "65293c38dbd088c1daa8116674f4c543e6310b6a201303ad9e2cf89c84ad8b73",
+      "game.replay": "8d4d7c916700dbdaee91fa73ef6fb630a22fca32f68ca84ba6ac24f5c64d93e8",
+      "final.game.gz": "8f41b78348ec51290cd15d7db78b9a8678e4aec99306b80921d80082a995a67e"
+    },
+    "matches_pinned_baseline": {
+      "game.replay.checksums": true,
+      "game.replay": true,
+      "final.game.gz": true
+    }
+  },
+  {
+    "scenario": "established",
+    "participants": 32,
+    "hashes": {
+      "game.replay.checksums": "65293c38dbd088c1daa8116674f4c543e6310b6a201303ad9e2cf89c84ad8b73",
+      "game.replay": "8d4d7c916700dbdaee91fa73ef6fb630a22fca32f68ca84ba6ac24f5c64d93e8",
+      "final.game.gz": "8f41b78348ec51290cd15d7db78b9a8678e4aec99306b80921d80082a995a67e"
+    },
+    "matches_pinned_baseline": {
+      "game.replay.checksums": true,
+      "game.replay": true,
+      "final.game.gz": true
+    }
+  },
+  {
+    "scenario": "dense",
+    "participants": 1,
+    "hashes": {
+      "game.replay.checksums": "9fb6bcc38fd2819abf44d10afd6098fe1e3cc5171f67efefd6b3b9b5a4dfb0ef",
+      "game.replay": "3903beffadb4965d0f31a3a6f40f6db5cb1672da10a066b2aac71a0208a1771b",
+      "final.game.gz": "9b0072d4ccdeb783f3884003eee00e75a4b203105e615cb34f319d85fdf28a33"
+    },
+    "matches_pinned_baseline": {
+      "game.replay.checksums": true,
+      "game.replay": true,
+      "final.game.gz": true
+    }
+  },
+  {
+    "scenario": "dense",
+    "participants": 4,
+    "hashes": {
+      "game.replay.checksums": "9fb6bcc38fd2819abf44d10afd6098fe1e3cc5171f67efefd6b3b9b5a4dfb0ef",
+      "game.replay": "3903beffadb4965d0f31a3a6f40f6db5cb1672da10a066b2aac71a0208a1771b",
+      "final.game.gz": "9b0072d4ccdeb783f3884003eee00e75a4b203105e615cb34f319d85fdf28a33"
+    },
+    "matches_pinned_baseline": {
+      "game.replay.checksums": true,
+      "game.replay": true,
+      "final.game.gz": true
+    }
+  },
+  {
+    "scenario": "dense",
+    "participants": 32,
+    "hashes": {
+      "game.replay.checksums": "9fb6bcc38fd2819abf44d10afd6098fe1e3cc5171f67efefd6b3b9b5a4dfb0ef",
+      "game.replay": "3903beffadb4965d0f31a3a6f40f6db5cb1672da10a066b2aac71a0208a1771b",
+      "final.game.gz": "9b0072d4ccdeb783f3884003eee00e75a4b203105e615cb34f319d85fdf28a33"
+    },
+    "matches_pinned_baseline": {
+      "game.replay.checksums": true,
+      "game.replay": true,
+      "final.game.gz": true
+    }
+  },
+  {
+    "scenario": "combat",
+    "participants": 1,
+    "hashes": {
+      "game.replay.checksums": "aadb8f026c5332bc9d06b08f7eda6c8cc078a940a625f8b2354b0568b742ae27",
+      "game.replay": "ce45eaddfec4516a33177cc269a8482394a6edbb4ca2aa08f0288f7878d95c88",
+      "final.game.gz": "8035797d0ea30d58cf85ac3ca777d2b532efd3163ae23fffe92873f7e846af35"
+    },
+    "matches_pinned_baseline": {
+      "game.replay.checksums": true,
+      "game.replay": true,
+      "final.game.gz": true
+    }
+  },
+  {
+    "scenario": "combat",
+    "participants": 4,
+    "hashes": {
+      "game.replay.checksums": "aadb8f026c5332bc9d06b08f7eda6c8cc078a940a625f8b2354b0568b742ae27",
+      "game.replay": "ce45eaddfec4516a33177cc269a8482394a6edbb4ca2aa08f0288f7878d95c88",
+      "final.game.gz": "8035797d0ea30d58cf85ac3ca777d2b532efd3163ae23fffe92873f7e846af35"
+    },
+    "matches_pinned_baseline": {
+      "game.replay.checksums": true,
+      "game.replay": true,
+      "final.game.gz": true
+    }
+  },
+  {
+    "scenario": "combat",
+    "participants": 32,
+    "hashes": {
+      "game.replay.checksums": "aadb8f026c5332bc9d06b08f7eda6c8cc078a940a625f8b2354b0568b742ae27",
+      "game.replay": "ce45eaddfec4516a33177cc269a8482394a6edbb4ca2aa08f0288f7878d95c88",
+      "final.game.gz": "8035797d0ea30d58cf85ac3ca777d2b532efd3163ae23fffe92873f7e846af35"
+    },
+    "matches_pinned_baseline": {
+      "game.replay.checksums": true,
+      "game.replay": true,
+      "final.game.gz": true
+    }
+  }
+]

@@ -1,0 +1,16 @@
+[
+  "/home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-reanalysis/glob2",
+  "--run-game",
+  "--load-game",
+  "/home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-audit/peaceful/checkpoint-4096.game.gz",
+  "--ticks",
+  "8192",
+  "--compute-threads",
+  "4",
+  "--benchmark-warmup",
+  "0",
+  "--output-dir",
+  "/home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-reanalysis/hiring-4-timing-0",
+  "--profile",
+  "serial-reanalysis"
+]
