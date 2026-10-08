@@ -7,7 +7,7 @@
 
 // Stable serialized identities, stored once per map vertex. Behaviour, names and
 // colours live in TerrainTypeTable.h; append new identities before TERRAIN_COUNT.
-// Format 144 retired the two shore profiles (5 and 6) and renumbered the
+// Format 146 retired the two shore profiles (5 and 6) and renumbered the
 // catalogue behind TRAIL; files written earlier are remapped on load.
 enum TerrainType : std::uint16_t
 {
@@ -48,7 +48,7 @@ enum TerrainType : std::uint16_t
 // (TerrainRegistry::currentTerrainId).
 // Before format 141 there were seven built-ins, two of them shore profiles.
 inline constexpr unsigned TERRAIN_COUNT_BEFORE_CATALOGUE = 7;
-// Formats 141 to 143 still numbered the two shore profiles as 5 and 6.
+// Formats 141 to 145 still numbered the two shore profiles as 5 and 6.
 inline constexpr unsigned TERRAIN_COUNT_BEFORE_VERTEX = 31;
 // Not an identity: the answer of per-cell type queries for a cell whose four
 // corners hold different terrains. It is never stored.

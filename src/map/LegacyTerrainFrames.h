@@ -5,7 +5,7 @@
 #include <cstdint>
 #include <optional>
 
-// Classic sprite frames, as files before format 144 stored them per cell: the
+// Classic sprite frames, as files before format 146 stored them per cell: the
 // frame range each grass/sand/water corner pattern drew, indexed
 // (2-tl)*27 + (2-tr)*9 + (2-bl)*3 + (2-br). Patterns with grass against water
 // never had art and drew grass. Only loaders of old data read these.

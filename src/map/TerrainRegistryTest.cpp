@@ -174,7 +174,7 @@ TEST_SUITE("TerrainRegistry")
 		auto saved = Json::parse(imported->serialize());
 		saved["terrains"][0]["id"] = TERRAIN_COUNT + 3;
 		CHECK_THROWS(TerrainRegistry::deserialize(saved.dump()));
-		// Sprite frames saved before format 144 are accepted and ignored.
+		// Sprite frames saved before format 146 are accepted and ignored.
 		saved = Json::parse(imported->serialize());
 		saved["terrains"][0]["presentation"]["firstFrame"] = 999999;
 		CHECK(TerrainRegistry::deserialize(saved.dump())->serialize() == imported->serialize());

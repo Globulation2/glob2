@@ -345,7 +345,7 @@ std::optional<unsigned> TerrainRegistry::currentTerrainId(unsigned savedBuiltins
 		return saved;
 	if (saved < TERRAIN_COUNT_BEFORE_CATALOGUE)
 		return std::nullopt;
-	// Catalogue built-ins (formats 141 to 143) sit behind the retired shores.
+	// Catalogue built-ins (formats 141 to 145) sit behind the retired shores.
 	if (saved < savedBuiltins)
 		return saved - (TERRAIN_COUNT_BEFORE_CATALOGUE - BOULDERS);
 	return saved - savedBuiltins + TERRAIN_COUNT;
@@ -383,7 +383,7 @@ std::shared_ptr<const TerrainRegistry> TerrainRegistry::deserialize(std::string_
 		auto presentation = TerrainPresentations[appearance];
 		presentation.editorSelectable = true;
 		const auto &visual = item.at("presentation");
-		// Files before format 144 also saved the shipped sprite frames of the
+		// Files before format 146 also saved the shipped sprite frames of the
 		// appearance; they no longer mean anything and are ignored.
 		fields(visual,
 			   {"firstFrame", "variants", "editorFrame", "animatedBackdrop", "edgeFirstFrame",

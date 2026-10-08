@@ -1,6 +1,6 @@
 {
   "resource_epoch": 1,
-  "description": "Full map hashes after resource sprites stopped consuming simulation RNG. Topology hashes exclude stock quantities but include terrain, source identities and colony starts. Historical full hashes retain the pre-epoch reference. Rows require independently verified archived map comparisons. Since save format 144 terrain is stored per vertex, so topology hashes vertex terrain; the linux-x86_64 rows and portable topology were re-recorded then, and macOS rows await a macOS run.",
+  "description": "Full map hashes after resource sprites stopped consuming simulation RNG. Topology hashes exclude stock quantities but include terrain, source identities and colony starts. Historical full hashes retain the pre-epoch reference. Rows require independently verified archived map comparisons. Since save format 146 terrain is stored per vertex, so topology hashes vertex terrain; the linux-x86_64 rows and portable topology were re-recorded then, and macOS rows await a macOS run.",
   "platforms": {
     "linux-x86_64": {
       "canals": {

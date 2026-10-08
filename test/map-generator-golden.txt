@@ -1,4 +1,4 @@
-# Golden map fingerprints, vertex terrain (save format 144, SIM30).
+# Golden map fingerprints, vertex terrain (save format 146, SIM32).
 # platform id revision wDec hDec teams seed status hash
 # Generator recipes/revisions are unchanged by this global change: terrain is stored per vertex and
 # every cell derives its rules from its corners, so every generated map changed at once.

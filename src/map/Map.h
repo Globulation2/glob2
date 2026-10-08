@@ -187,7 +187,7 @@ class Map
 	// Re-derives every cell after a bulk vertex change, keeping the rule table.
 	void rederiveAllCells();
 	void bindCellRules();
-	// Loading formats before 144: vertices under whole-cell terrain take it on.
+	// Loading formats before 146: vertices under whole-cell terrain take it on.
 	void convertLegacyCellTerrain(const std::vector<TerrainType> &cells);
 	// Re-derives every cell rule from the vertices, with table or else a fresh
 	// table for the current registries, and recounts terrain and features.

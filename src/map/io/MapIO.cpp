@@ -169,7 +169,7 @@ try
 	listedAddr = new Uint8*[size];
 	aStarPoints=new AStarAlgorithmPoint[size];
 
-	// Before format 144 a cell kept its own terrain ID (from format 134) besides
+	// Before format 146 a cell kept its own terrain ID (from format 134) besides
 	// the classic corners; these are the converted IDs, MIXED_TERRAIN where the
 	// cell was drawn by its classic corners.
 	std::vector<TerrainType> legacyCellTerrain;

@@ -563,7 +563,7 @@ Compare that trace with the same fixture built against the base revision.
 
 Saved maps hold terrain IDs per vertex, not sprite frames, so changing visual
 variants in the catalog cannot change saved state, checksums or simulation RNG use.
-Files older than format 144 also stored sprite frames; the loader skips them, and
+Files older than format 146 also stored sprite frames; the loader skips them, and
 only `LegacyTerrainFrames.h` still decodes classic frames, for old script memories.
 
 `TerrainVisual::Compositor` owns prepared material sources. Source lifetime and

@@ -1049,7 +1049,7 @@ For timing and scheduling, start with `src/game/Game_sync.cpp` and `src/engine/E
   the terrain material hashes so maps look distinct; generators derive it from their
   request seed and the editor can reroll it. It is never read by simulation code and
   is not in `checkSum()`; see [terrain materials](../assets/terrain-materials.md#map-seed).
-- Terrain is stored once per map vertex (`Map::vertexTerrain`, save format 144).
+- Terrain is stored once per map vertex (`Map::vertexTerrain`, save format 146).
   Vertex (x,y) is the top-left corner of cell (x,y); `cellCorners(x, y)` returns the
   top-left, top-right, bottom-left and bottom-right corners. A cell's rules come
   from its corners through `combineCornerRules` (`TerrainPropertiesLayout.h`):
@@ -1076,7 +1076,7 @@ For timing and scheduling, start with `src/game/Game_sync.cpp` and `src/engine/E
   of scan order and turns both sides of every grass/water contact into sand, a
   two-vertex beach. Editor terrain brushes stamp vertices; the smallest
   figure is one vertex.
-- Files older than format 144 convert at load. Their classic corner grid gives the
+- Files older than format 146 convert at load. Their classic corner grid gives the
   vertices; then a vertex touching a cell that held a non-classic terrain takes it,
   preferring the cell it is the top-left corner of, then the cells to its top-left,
   top and left. A classic ID that disagrees with its cell's corners (an older direct
@@ -1098,7 +1098,7 @@ For timing and scheduling, start with `src/game/Game_sync.cpp` and `src/engine/E
   `terrainGroup(type)` for palette and reporting buckets, never for simulation rules.
   Adding a type is one enumerator, one row, one label and one material binding;
   adding a group is one profile and, when gated, one `ExperimentId`.
-- Format 141 raised the built-in count from 7 to 31; format 144 retired the two
+- Format 141 raised the built-in count from 7 to 31; format 146 retired the two
   shore types (IDs 5 and 6), moving the catalogue down by two to `TERRAIN_COUNT` 29.
   `TerrainRegistry::savedBuiltinCount` gives a file's built-in count
   (`TERRAIN_COUNT_BEFORE_CATALOGUE` or `TERRAIN_COUNT_BEFORE_VERTEX` for older files),
@@ -1155,8 +1155,9 @@ For timing and scheduling, start with `src/game/Game_sync.cpp` and `src/engine/E
   The completed-tick observation phase introduced replay floor 139. Runtime resource
   catalogs introduced replay floor 140 and network protocol 59.
   Damage-weighted routing and idle safety introduced replay floor 142 and network protocol 60.
-  The current replay floor is 143 and network protocol is 61 for engine snapshots and
-  scheduled AI decisions.
+  Engine snapshots and scheduled AI decisions introduced replay floor 143 and network
+  protocol 61; building artwork raised the protocol to 62. Vertex terrain sets the
+  current replay floor, 146.
   Loading earlier saves rebuilds cached routes on maps with terrain health effects;
   current saves retain their completed and pending fields for exact continuation.
   Custom registry checksums hash canonical serialized fields, not struct padding.
