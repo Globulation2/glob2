@@ -1,0 +1,16 @@
+final-retained-work dense
+final-master-work dense
+final-retained-work multi
+final-master-work multi
+final-retained-work ai512
+final-master-work ai512
+final-retained-work disabled512
+final-master-work disabled512
+final-retained-work sparse
+final-master-work sparse
+final-retained-work saturated
+final-master-work saturated
+final-retained-work harvested
+final-master-work harvested
+final-retained-work fragmented
+final-master-work fragmented

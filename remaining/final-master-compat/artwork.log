@@ -1,0 +1,4 @@
+PASS BuildingArtwork/portable bundle verifies image bytes and catalog frame references (0.9s)
+
+1 passed, 0 failed, 0 skipped (0.9s of test time)
+[run_tests] JUnit report: /home/bradley/.codex/worktrees/114f19f3-7248-4ab6-a516-3ff0849d0a96/glob2/artifacts/resource-growth/remaining/final-master-compat/artwork.xml (1 cases)

@@ -1,0 +1,34 @@
+{
+  "multi": {
+    "reference": {
+      "rss_mib": 192.607421875,
+      "snapshot_peak_allocated_buffers": 18.0,
+      "snapshot_peak_retained_bytes": 31200647.0,
+      "snapshot_peak_leased_buffers": 6.0,
+      "extraction_ns": 4748122233.5
+    },
+    "candidate": {
+      "rss_mib": 249.98046875,
+      "snapshot_peak_allocated_buffers": 37.0,
+      "snapshot_peak_retained_bytes": 54931047.0,
+      "snapshot_peak_leased_buffers": 8.0,
+      "extraction_ns": 3006665191.5
+    }
+  },
+  "fragmented": {
+    "reference": {
+      "rss_mib": 182.302734375,
+      "snapshot_peak_allocated_buffers": 25.5,
+      "snapshot_peak_retained_bytes": 41217159.0,
+      "snapshot_peak_leased_buffers": 6.0,
+      "extraction_ns": 2149430742.0
+    },
+    "candidate": {
+      "rss_mib": 211.5859375,
+      "snapshot_peak_allocated_buffers": 37.0,
+      "snapshot_peak_retained_bytes": 54931071.0,
+      "snapshot_peak_leased_buffers": 8.0,
+      "extraction_ns": 1244813286.0
+    }
+  }
+}

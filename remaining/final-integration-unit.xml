@@ -1,0 +1,31 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="29" failures="0" errors="0" skipped="0"><testsuite name="libgag/src/TextStreamTest.cpp"><testcase classname="libgag/src/TextStreamTest.cpp" name="TextStream/qualified save field names coexist with section inheritance" time="0" status="run" />
+    <testcase classname="libgag/src/TextStreamTest.cpp" name="TextStream/raw binary fields roundtrip and malformed hex is rejected" time="0.000158" status="run" />
+  </testsuite><testsuite name="BufferedFileStream"><testcase classname="BufferedFileStream" name="bytes; SHA1; boundaries; seeks; reads; flush and destruction; memory stream writes" time="0.013015" status="run" />
+  </testsuite><testsuite name="ComputeExecutor"><testcase classname="ComputeExecutor" name="supported platforms execute jobs concurrently on distinct threads" time="0.000363" status="run" />
+    <testcase classname="ComputeExecutor" name="exclusive slots; nested batches; reuse; errors; barriers and reconfiguration" time="0.017523" status="run" />
+    <testcase classname="ComputeExecutor" name="deferred batches drain FIFO with owner participation, lanes, isolated errors and placements" time="0.101121" status="run" />
+    <testcase classname="ComputeExecutor" name="completed lanes can change placement while an unrelated older batch remains" time="0.000207" status="run" />
+    <testcase classname="ComputeExecutor" name="lane groups run in index order, placements cannot mix on a lane, and the horizon is bounded" time="0.001632" status="run" />
+    <testcase classname="ComputeExecutor" name="presentation cannot delay simulation barriers or run on the simulation owner" time="0.001113" status="run" />
+    <testcase classname="ComputeExecutor" name="presentation progresses before a continuous simulation backlog drains" time="0.002406" status="run" />
+    <testcase classname="ComputeExecutor" name="presentation replacement, chunk pumping, cancellation and errors retain no captures" time="0" status="run" />
+    <testcase classname="ComputeExecutor" name="resumable presentation yields without advancing or retaining canceled inputs" time="0" status="run" />
+  </testsuite><testsuite name="GameHeaderTextSaveLoad"><testcase classname="GameHeaderTextSaveLoad" name="embedded catalog crosses text and binary chunk boundaries" time="0.485936" status="run" />
+    <testcase classname="GameHeaderTextSaveLoad" name="FullRoundTrip" time="0.000534" status="run" />
+    <testcase classname="GameHeaderTextSaveLoad" name="PlayerInfoRoundTrip" time="0.000355" status="run" />
+    <testcase classname="GameHeaderTextSaveLoad" name="BinaryHeaderFormsAndLegacy" time="0.000297" status="run" />
+    <testcase classname="GameHeaderTextSaveLoad" name="AI order delay round trips at both boundaries and rejects invalid saved bytes" time="0.001335" status="run" />
+    <testcase classname="GameHeaderTextSaveLoad" name="New games and reset headers default to eight tick AI decisions" time="0" status="run" />
+    <testcase classname="GameHeaderTextSaveLoad" name="released format 145 header detects empty artwork without consuming the next record" time="0.001241" status="run" />
+    <testcase classname="GameHeaderTextSaveLoad" name="compact-growth format 145 headers preserve definitions and enabled keys" time="0.000213" status="run" />
+  </testsuite><testsuite name="ReplayAppearance"><testcase classname="ReplayAppearance" name="only matching recordings and trusted origins restore appearance context" time="0.000276" status="run" />
+    <testcase classname="ReplayAppearance" name="companions survive copies but stale and oversized files are ignored" time="0.000481" status="run" />
+  </testsuite><testsuite name="ReplayStepCounter"><testcase classname="ReplayStepCounter" name="truncated replay bodies never become zero-filled orders" time="0.000935" status="run" />
+    <testcase classname="ReplayStepCounter" name="step totals cannot wrap" time="0" status="run" />
+    <testcase classname="ReplayStepCounter" name="checksum mismatch closes playback safely" time="0" status="run" />
+    <testcase classname="ReplayStepCounter" name="legacy create decoder respects both historical payload lengths" time="0" status="run" />
+    <testcase classname="ReplayStepCounter" name="WideRoundTrip" time="0.000424" status="run" />
+    <testcase classname="ReplayStepCounter" name="VersionBounds" time="0" status="run" />
+    <testcase classname="ReplayStepCounter" name="DecodeVersionPlumbing" time="0" status="run" />
+  </testsuite></testsuites>

@@ -14,3 +14,5 @@ Each run starts from the same saved fixture and scripted orders, then advances t
 | fragmented | 117648 | 104116 | 740585 | 590352 | -150233 (-20.29%) |
 
 Material-by-material stocks and team growth-statistic arrays are preserved in [retained-work/results.json](./retained-work/results.json). Playable final saves and their inspection commands/logs are in each scenario subdirectory. These are fixed-seed outcomes, not a claim about long-run ecological equivalence.
+
+The final b7a478122/67fd5b935 integration reproduces every stock/statistic value above and all1,024-tick replay traces. See `final-work-stock-comparison.json` and `final-work-trace-comparison.json`; final saves are in `final-retained-work/` and `final-master-work/`.

@@ -1,0 +1,82 @@
+[
+  {
+    "scenario": "dense",
+    "variant": "final-retained-work",
+    "matches_6487_integration": true
+  },
+  {
+    "scenario": "dense",
+    "variant": "final-master-work",
+    "matches_6487_integration": true
+  },
+  {
+    "scenario": "multi",
+    "variant": "final-retained-work",
+    "matches_6487_integration": true
+  },
+  {
+    "scenario": "multi",
+    "variant": "final-master-work",
+    "matches_6487_integration": true
+  },
+  {
+    "scenario": "ai512",
+    "variant": "final-retained-work",
+    "matches_6487_integration": true
+  },
+  {
+    "scenario": "ai512",
+    "variant": "final-master-work",
+    "matches_6487_integration": true
+  },
+  {
+    "scenario": "disabled512",
+    "variant": "final-retained-work",
+    "matches_6487_integration": true
+  },
+  {
+    "scenario": "disabled512",
+    "variant": "final-master-work",
+    "matches_6487_integration": true
+  },
+  {
+    "scenario": "sparse",
+    "variant": "final-retained-work",
+    "matches_6487_integration": true
+  },
+  {
+    "scenario": "sparse",
+    "variant": "final-master-work",
+    "matches_6487_integration": true
+  },
+  {
+    "scenario": "saturated",
+    "variant": "final-retained-work",
+    "matches_6487_integration": true
+  },
+  {
+    "scenario": "saturated",
+    "variant": "final-master-work",
+    "matches_6487_integration": true
+  },
+  {
+    "scenario": "harvested",
+    "variant": "final-retained-work",
+    "matches_6487_integration": true
+  },
+  {
+    "scenario": "harvested",
+    "variant": "final-master-work",
+    "matches_6487_integration": true
+  },
+  {
+    "scenario": "fragmented",
+    "variant": "final-retained-work",
+    "matches_6487_integration": true
+  },
+  {
+    "scenario": "fragmented",
+    "variant": "final-master-work",
+    "matches_6487_integration": true
+  }
+]

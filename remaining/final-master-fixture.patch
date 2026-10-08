@@ -1,0 +1,10 @@
+--- a/src/building/types/BuildingCatalogTest.cpp
++++ b/src/building/types/BuildingCatalogTest.cpp
+@@ -648,6 +648,7 @@
+ 				output = std::make_unique<GAGCore::BinaryOutputStream>(saved);
+ 			world.game.save(output.get(), false, "Portable kitchen");
+ 			output->flush();
++            if (!text) glob2test::writeFile(glob2test::artifactDir()/"building145.game", std::string(saved->getBuffer(), saved->getPosition()));
+ 			saved->seekFromStart(0);
+ 			std::unique_ptr<GAGCore::InputStream> input;
+ 			if (text)

@@ -1,0 +1,82 @@
+[
+  {
+    "scenario": "dense",
+    "variant": "final-retained-work",
+    "stocks_and_statistics_match_6487": true
+  },
+  {
+    "scenario": "dense",
+    "variant": "final-master-work",
+    "stocks_and_statistics_match_6487": true
+  },
+  {
+    "scenario": "multi",
+    "variant": "final-retained-work",
+    "stocks_and_statistics_match_6487": true
+  },
+  {
+    "scenario": "multi",
+    "variant": "final-master-work",
+    "stocks_and_statistics_match_6487": true
+  },
+  {
+    "scenario": "ai512",
+    "variant": "final-retained-work",
+    "stocks_and_statistics_match_6487": true
+  },
+  {
+    "scenario": "ai512",
+    "variant": "final-master-work",
+    "stocks_and_statistics_match_6487": true
+  },
+  {
+    "scenario": "disabled512",
+    "variant": "final-retained-work",
+    "stocks_and_statistics_match_6487": true
+  },
+  {
+    "scenario": "disabled512",
+    "variant": "final-master-work",
+    "stocks_and_statistics_match_6487": true
+  },
+  {
+    "scenario": "sparse",
+    "variant": "final-retained-work",
+    "stocks_and_statistics_match_6487": true
+  },
+  {
+    "scenario": "sparse",
+    "variant": "final-master-work",
+    "stocks_and_statistics_match_6487": true
+  },
+  {
+    "scenario": "saturated",
+    "variant": "final-retained-work",
+    "stocks_and_statistics_match_6487": true
+  },
+  {
+    "scenario": "saturated",
+    "variant": "final-master-work",
+    "stocks_and_statistics_match_6487": true
+  },
+  {
+    "scenario": "harvested",
+    "variant": "final-retained-work",
+    "stocks_and_statistics_match_6487": true
+  },
+  {
+    "scenario": "harvested",
+    "variant": "final-master-work",
+    "stocks_and_statistics_match_6487": true
+  },
+  {
+    "scenario": "fragmented",
+    "variant": "final-retained-work",
+    "stocks_and_statistics_match_6487": true
+  },
+  {
+    "scenario": "fragmented",
+    "variant": "final-master-work",
+    "stocks_and_statistics_match_6487": true
+  }
+]

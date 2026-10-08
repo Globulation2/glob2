@@ -1,0 +1,29 @@
+{
+  "artwork": [
+    "/usr/bin/python3",
+    "test/run_tests.py",
+    "--binary",
+    "engine",
+    "--no-display",
+    "--filter",
+    "BuildingArtwork/portable bundle*",
+    "--artifacts",
+    "/home/bradley/.codex/worktrees/114f19f3-7248-4ab6-a516-3ff0849d0a96/glob2/artifacts/resource-growth/remaining/final-master-compat/artwork",
+    "--junit",
+    "/home/bradley/.codex/worktrees/114f19f3-7248-4ab6-a516-3ff0849d0a96/glob2/artifacts/resource-growth/remaining/final-master-compat/artwork.xml"
+  ],
+  "empty_args": [
+    "--load-game",
+    "/home/bradley/.codex/worktrees/114f19f3-7248-4ab6-a516-3ff0849d0a96/glob2/artifacts/resource-growth/remaining/fixtures/sparse/initial.game.gz",
+    "--ticks",
+    "1",
+    "--gradient-workers",
+    "2",
+    "--compute-experiments",
+    "ai",
+    "--compute-threads",
+    "4",
+    "--save",
+    "final"
+  ]
+}

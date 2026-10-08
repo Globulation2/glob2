@@ -1,0 +1,143 @@
+retained-vs-edb
+  dense 10 TPS 4.69 1.46 6.57 CPU 5.09 1.33 6.2
+  multi 10 TPS 2.17 -5.38 15.86 CPU 3.94 1.41 5.11
+  ai512 10 TPS 0.19 -1.19 0.82 CPU 1.12 -1.78 2.8
+  disabled512 10 TPS -0.68 -3.53 0.1 CPU -2.47 -5.01 1.93
+  sparse 10 TPS 5.16 3.46 10.58 CPU 2.37 1.35 5.51
+  saturated 10 TPS 2.49 0.39 4.14 CPU 2.29 0.35 3.56
+  harvested 10 TPS -0.04 -0.19 0.13 CPU 0.74 0.27 1.27
+  fragmented 10 TPS 1.15 -1.18 1.96 CPU 1.84 -0.62 3.06
+retained-vs-latest-master
+  dense 10 TPS 6.93 5.64 7.74 CPU 6.15 4.95 6.77
+  multi 10 TPS 48.55 38.71 56.53 CPU 5.53 3.04 7.95
+  ai512 10 TPS -0.03 -1.61 2.3 CPU -1.57 -3.43 0.47
+  disabled512 10 TPS 2.13 0.91 3.86 CPU 1.54 -0.15 3.45
+  sparse 10 TPS -0.2 -4.37 0.59 CPU 1.93 -1.07 3.11
+  saturated 10 TPS 7.69 5.22 9.5 CPU 6.37 3.78 8.05
+  harvested 10 TPS 4.53 4.34 5.85 CPU 5.44 5.12 5.72
+  fragmented 10 TPS 16.18 14.33 16.68 CPU 5.12 3.41 6.24
+{
+  "retained-vs-edb": {
+    "same_behavior": true,
+    "wins": [
+      [
+        "dense",
+        "tps_gain"
+      ],
+      [
+        "dense",
+        "cpu_reduction"
+      ],
+      [
+        "multi",
+        "cpu_reduction"
+      ],
+      [
+        "sparse",
+        "tps_gain"
+      ],
+      [
+        "sparse",
+        "cpu_reduction"
+      ],
+      [
+        "saturated",
+        "tps_gain"
+      ],
+      [
+        "saturated",
+        "cpu_reduction"
+      ]
+    ],
+    "rules_out_primary_regressions": false,
+    "blockers": [
+      [
+        "multi",
+        "tps_gain",
+        10
+      ],
+      [
+        "disabled512",
+        "tps_gain",
+        10
+      ],
+      [
+        "disabled512",
+        "cpu_reduction",
+        10
+      ]
+    ],
+    "demonstrated_regressions": [],
+    "investigate": [],
+    "qualifies_numerically": false
+  },
+  "retained-vs-latest-master": {
+    "same_behavior": false,
+    "wins": [
+      [
+        "dense",
+        "tps_gain"
+      ],
+      [
+        "dense",
+        "cpu_reduction"
+      ],
+      [
+        "multi",
+        "tps_gain"
+      ],
+      [
+        "multi",
+        "cpu_reduction"
+      ],
+      [
+        "disabled512",
+        "tps_gain"
+      ],
+      [
+        "saturated",
+        "tps_gain"
+      ],
+      [
+        "saturated",
+        "cpu_reduction"
+      ],
+      [
+        "harvested",
+        "tps_gain"
+      ],
+      [
+        "harvested",
+        "cpu_reduction"
+      ],
+      [
+        "fragmented",
+        "tps_gain"
+      ],
+      [
+        "fragmented",
+        "cpu_reduction"
+      ]
+    ],
+    "rules_out_primary_regressions": false,
+    "blockers": [
+      [
+        "ai512",
+        "cpu_reduction",
+        10
+      ]
+    ],
+    "demonstrated_regressions": [],
+    "investigate": [
+      [
+        "multi",
+        "rss_change"
+      ],
+      [
+        "fragmented",
+        "rss_change"
+      ]
+    ],
+    "qualifies_numerically": false
+  }
+}

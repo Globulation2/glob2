@@ -1,0 +1,10 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="8" failures="0" errors="0" skipped="0"><testsuite name="GameHeaderTextSaveLoad"><testcase classname="GameHeaderTextSaveLoad" name="embedded catalog crosses text and binary chunk boundaries" time="0.528793" status="run" />
+    <testcase classname="GameHeaderTextSaveLoad" name="FullRoundTrip" time="0.000582" status="run" />
+    <testcase classname="GameHeaderTextSaveLoad" name="PlayerInfoRoundTrip" time="0.000368" status="run" />
+    <testcase classname="GameHeaderTextSaveLoad" name="BinaryHeaderFormsAndLegacy" time="0.000311" status="run" />
+    <testcase classname="GameHeaderTextSaveLoad" name="AI order delay round trips at both boundaries and rejects invalid saved bytes" time="0.001424" status="run" />
+    <testcase classname="GameHeaderTextSaveLoad" name="New games and reset headers default to eight tick AI decisions" time="0" status="run" />
+    <testcase classname="GameHeaderTextSaveLoad" name="released format 145 header detects empty artwork without consuming the next record" time="0.001324" status="run" />
+    <testcase classname="GameHeaderTextSaveLoad" name="compact-growth format 145 headers preserve definitions and enabled keys" time="0.000236" status="run" />
+  </testsuite></testsuites>

@@ -1,7 +1,7 @@
 from pathlib import Path
 import json, statistics
 base=Path('artifacts/resource-growth/remaining')
-lines=['# Resource-growth optimization experiments', '', 'Baseline: `edb09d40204a1fdb3a6d0e5934ef34e9c344de60`. Candidate confirmation master: `0f1a2569ab7f23c8702a078978054f73f4ddb9cc`. Final retained comparison master: `6487b873dd3f29ad3ab75c7513597fa47905c132`. Linux x86-64, GCC 15.2, release/O3. See frozen inputs, build commands, fixture hashes, and reservation audits in this directory.', '', 'Positive throughput and CPU-reduction values favor the candidate. Intervals are paired bootstrap 95% intervals (2,000 resamples); absolute savings are medians of paired differences, not differences between independent medians. Warm-ups are excluded. No measured slow runs are discarded.', '']
+lines=['# Resource-growth optimization experiments', '', 'Baseline: `edb09d40204a1fdb3a6d0e5934ef34e9c344de60`. Candidate confirmation master: `0f1a2569ab7f23c8702a078978054f73f4ddb9cc`. Intermediate retained comparison master: `6487b873dd3f29ad3ab75c7513597fa47905c132`. Final retained comparison master: `67fd5b935` (full identities in final-integration-freeze.json). Linux x86-64, GCC 15.2, release/O3. See frozen inputs, build commands, fixture hashes, and reservation audits in this directory.', '', 'Positive throughput and CPU-reduction values favor the candidate. Intervals are paired bootstrap 95% intervals (2,000 resamples); absolute savings are medians of paired differences, not differences between independent medians. Warm-ups are excluded. No measured slow runs are discarded.', '']
 def percent(v):return f"{100*v['median']:+.2f}% [{100*v['ci95'][0]:+.2f}, {100*v['ci95'][1]:+.2f}]"
 def table(summary):
  for case, scenarios in summary['results'].items():
@@ -10,7 +10,7 @@ def table(summary):
    tail=lambda key: 'Unavailable' if not d.get(key) or 'median' not in d[key] else percent(d[key])
    lines.append(f"| {s} | {d['pairs']} | {percent(d['tps_gain'])} | {percent(d['cpu_reduction'])} | {d['saved_ms']['median']:+.2f} ms | {d['cpu_saved_ms']['median']:+.2f} ms | {tail('p99_change')} | {tail('rss_change')} |")
   lines.append('')
-for folder in ['extended','confirmation','sensitivity','retained-comparison']:
+for folder in ['extended','confirmation','sensitivity','retained-comparison','final-integration-comparison']:
  p=base/folder/'summary.json'
  if not p.exists():continue
  lines.extend([f'# {folder.title()} comparisons', '', f'Raw measurements and metadata: [`{folder}/`](./{folder}/).', ''])

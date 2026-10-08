@@ -1,6 +1,6 @@
 # Resource-growth optimization experiments
 
-Baseline: `edb09d40204a1fdb3a6d0e5934ef34e9c344de60`. Candidate confirmation master: `0f1a2569ab7f23c8702a078978054f73f4ddb9cc`. Final retained comparison master: `6487b873dd3f29ad3ab75c7513597fa47905c132`. Linux x86-64, GCC 15.2, release/O3. See frozen inputs, build commands, fixture hashes, and reservation audits in this directory.
+Baseline: `edb09d40204a1fdb3a6d0e5934ef34e9c344de60`. Candidate confirmation master: `0f1a2569ab7f23c8702a078978054f73f4ddb9cc`. Intermediate retained comparison master: `6487b873dd3f29ad3ab75c7513597fa47905c132`. Final retained comparison master: `67fd5b935` (full identities in final-integration-freeze.json). Linux x86-64, GCC 15.2, release/O3. See frozen inputs, build commands, fixture hashes, and reservation audits in this directory.
 
 Positive throughput and CPU-reduction values favor the candidate. Intervals are paired bootstrap 95% intervals (2,000 resamples); absolute savings are medians of paired differences, not differences between independent medians. Warm-ups are excluded. No measured slow runs are discarded.
 
@@ -216,6 +216,36 @@ Raw measurements and metadata: [`retained-comparison/`](./retained-comparison/).
 | harvested | 10 | +2.85% [+0.50, +5.70] | +3.75% [+0.73, +6.18] | +13.76 ms | +53.26 ms | Unavailable | -2.39% [-2.58, -1.75] |
 | fragmented | 10 | +10.22% [+8.09, +13.70] | +5.32% [+2.29, +7.17] | +260.23 ms | +530.81 ms | Unavailable | +6.87% [+5.39, +8.36] |
 
+# Final-Integration-Comparison comparisons
+
+Raw measurements and metadata: [`final-integration-comparison/`](./final-integration-comparison/).
+
+## retained-vs-edb
+
+| Scenario | Pairs | Throughput change [95% CI] | Engine CPU reduction [95% CI] | Wall saved / 1024 ticks | CPU saved / 1024 ticks | p99 change | Peak RSS change |
+|---|---:|---|---|---:|---:|---:|---:|
+| dense | 10 | +4.69% [+1.46, +6.57] | +5.09% [+1.33, +6.20] | +20.33 ms | +90.98 ms | -6.01% [-9.81, -3.30] | +0.32% [-0.10, +0.87] |
+| multi | 10 | +2.17% [-5.38, +15.86] | +3.94% [+1.41, +5.11] | +88.42 ms | +508.11 ms | -4.14% [-17.67, +11.33] | -0.33% [-3.12, +0.76] |
+| ai512 | 10 | +0.19% [-1.19, +0.82] | +1.12% [-1.78, +2.80] | +2.59 ms | +48.87 ms | +3.90% [+2.53, +5.96] | +0.09% [-0.92, +0.32] |
+| disabled512 | 10 | -0.68% [-3.53, +0.10] | -2.47% [-5.01, +1.93] | -7.04 ms | -79.08 ms | +3.20% [+0.60, +4.81] | +0.22% [-0.06, +0.38] |
+| sparse | 10 | +5.16% [+3.46, +10.58] | +2.37% [+1.35, +5.51] | +5.21 ms | +8.54 ms | -9.10% [-12.13, +0.63] | +0.00% [+0.00, +0.00] |
+| saturated | 10 | +2.49% [+0.39, +4.14] | +2.29% [+0.35, +3.56] | +10.86 ms | +39.81 ms | -5.64% [-7.81, -4.46] | +0.29% [-0.35, +1.36] |
+| harvested | 10 | -0.04% [-0.19, +0.13] | +0.74% [+0.27, +1.27] | -0.20 ms | +9.76 ms | +1.66% [+0.56, +3.29] | +1.03% [+0.64, +1.42] |
+| fragmented | 10 | +1.15% [-1.18, +1.96] | +1.84% [-0.62, +3.06] | +27.42 ms | +172.72 ms | -3.46% [-5.86, +2.37] | +0.27% [-0.67, +1.05] |
+
+## retained-vs-latest-master
+
+| Scenario | Pairs | Throughput change [95% CI] | Engine CPU reduction [95% CI] | Wall saved / 1024 ticks | CPU saved / 1024 ticks | p99 change | Peak RSS change |
+|---|---:|---|---|---:|---:|---:|---:|
+| dense | 10 | +6.93% [+5.64, +7.74] | +6.15% [+4.95, +6.77] | +29.76 ms | +110.67 ms | Unavailable | +1.50% [+0.95, +2.26] |
+| multi | 10 | +48.55% [+38.71, +56.53] | +5.53% [+3.04, +7.95] | +1893.61 ms | +725.24 ms | Unavailable | +28.59% [+25.79, +33.85] |
+| ai512 | 10 | -0.03% [-1.61, +2.30] | -1.57% [-3.43, +0.47] | -0.40 ms | -67.25 ms | Unavailable | -0.35% [-1.30, -0.22] |
+| disabled512 | 10 | +2.13% [+0.91, +3.86] | +1.54% [-0.15, +3.45] | +21.52 ms | +50.15 ms | Unavailable | -0.35% [-0.98, -0.03] |
+| sparse | 10 | -0.20% [-4.37, +0.59] | +1.93% [-1.07, +3.11] | -0.20 ms | +6.91 ms | Unavailable | +0.00% [+0.00, +0.00] |
+| saturated | 10 | +7.69% [+5.22, +9.50] | +6.37% [+3.78, +8.05] | +33.34 ms | +116.07 ms | Unavailable | -0.15% [-0.40, +0.64] |
+| harvested | 10 | +4.53% [+4.34, +5.85] | +5.44% [+5.12, +5.72] | +21.64 ms | +75.03 ms | Unavailable | -1.79% [-2.40, -1.35] |
+| fragmented | 10 | +16.18% [+14.33, +16.68] | +5.12% [+3.41, +6.24] | +387.14 ms | +485.42 ms | Unavailable | +15.61% [+10.57, +18.82] |
+
 # Interpretation and limitations
 
 - Untouched master and optimized-original retain immediate growth. They differ from delayed growth in RNG, within-pass feedback, and publication timing. Their throughput comparisons are not same-work proofs; use the accompanying final stock, deposit, and growth-statistic records. Delayed variants must match checksums and all accepted-work counters.
@@ -228,10 +258,3 @@ Raw measurements and metadata: [`retained-comparison/`](./retained-comparison/).
 - Linux results do not establish Windows, macOS, Android, browser, or threadless determinism. These platforms were unavailable for execution in this experiment.
 
 See [timer boundaries](./timing-boundaries.md) and the verification logs for detailed coverage.
-
-
-## Final memory and baseline caveats
-
-Against untouched current master, median peak RSS rises from189.2 to248.4MiB on multi-material (+30.4% paired median) and200.1 to213.1MiB on fragmented (+6.87%). Additional snapshot retention accounts for part of the difference: buffer high-water marks and reported retained capacity are recorded in `final-memory-investigation.json`. These counters omit stock sidecars and proposals, so they do not fully attribute RSS. This is an existing delayed-pipeline memory cost; no memory improvement is claimed. Untouched-master copied-byte accounting also omits material-stock sidecars that the branch counts, so the raw byte totals must not be directly compared as physical traffic.
-
-The final same-behavior comparison against edb09d402 is mostly uncertain at ten pairs. Sparse throughput improves4.56% [2.94,8.74]; harvesting throughput falls1.88% [0.11,3.11], and disabled-growth CPU rises1.87% [0.37,4.64]. These are integration comparisons, not qualifying new optimizations, and were not extended to30. The intervals do not establish equivalence or rule out every2% regression. No candidate is adopted on their strength.

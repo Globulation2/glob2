@@ -1,0 +1,16 @@
+Auto-merging scons/sources.py
+Auto-merging src/app/FileFormatVersions.h
+CONFLICT (content): Merge conflict in src/app/FileFormatVersions.h
+Auto-merging src/app/Version.h
+CONFLICT (content): Merge conflict in src/app/Version.h
+Auto-merging src/app/cli/Headless.cpp
+CONFLICT (content): Merge conflict in src/app/cli/Headless.cpp
+Auto-merging src/game/Game_io.cpp
+Auto-merging src/team/stats/TeamStatsSaveHarness.cpp
+CONFLICT (content): Merge conflict in src/team/stats/TeamStatsSaveHarness.cpp
+Auto-merging test/ci-compatibility.json
+warning: Cannot merge binary files: test/fixtures/multiplayer/FourSquares1.g2mr (HEAD vs. 67fd5b935)
+Auto-merging test/fixtures/multiplayer/FourSquares1.g2mr
+CONFLICT (content): Merge conflict in test/fixtures/multiplayer/FourSquares1.g2mr
+Auto-merging test/tests.py
+Automatic merge failed; fix conflicts and then commit the result.
