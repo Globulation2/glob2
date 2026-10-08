@@ -1,0 +1,50 @@
+
+Running 4 tests using 1 worker
+
+(node:3257860) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  1 [chromium] › browser/tests/import.spec.js:99:1 › imports a complete replay and rejects a truncated command stream (serial) (47.9s)
+  ✘  2 [chromium] › browser/tests/import.spec.js:99:1 › imports a complete replay and rejects a truncated command stream (threaded) (44.7s)
+(node:3261422) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  3 [chromium] › browser/tests/session-reload.spec.js:83:1 › an active replay can be loaded again through the scheduled loader (serial) @webgl2-reload-c (59.4s)
+  ✓  4 [chromium] › browser/tests/session-reload.spec.js:83:1 › an active replay can be loaded again through the scheduled loader (threaded) @webgl2-reload-c (38.2s)
+
+
+  1) [chromium] › browser/tests/import.spec.js:99:1 › imports a complete replay and rejects a truncated command stream (threaded) 
+
+    Error: expect(received).toContain(expected) // indexOf
+
+    Expected substring: "MainMenuScreen"
+    Received string:    "loading"
+
+    Call Log:
+    - Timeout 30000ms exceeded while waiting on the predicate
+
+       7 | const {gunzipSync,gzipSync} = require('node:zlib');
+       8 | const state = page => page.evaluate(() => glob2Diagnostics.snapshot());
+    >  9 | const screen = (page, name) => expect.poll(async () => (await state(page)).screen).toContain(name);
+         |                                                                                    ^
+      10 | const digest = bytes => ({size:bytes.length,sha256:createHash('sha256').update(bytes).digest('hex')});
+      11 | async function select(page,name,bytes) {
+      12 |   const chooser = page.waitForEvent('filechooser');
+        at screen (/home/bradley/.codex/worktrees/repair-tls-rejection-fixture/glob2/browser/tests/import.spec.js:9:84)
+        at /home/bradley/.codex/worktrees/repair-tls-rejection-fixture/glob2/browser/tests/import.spec.js:46:51
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    artifacts/replay149-browser/import-imports-a-complete--eef17-ed-command-stream-threaded--chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: artifacts/replay149-browser/import-imports-a-complete--eef17-ed-command-stream-threaded--chromium/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    artifacts/replay149-browser/import-imports-a-complete--eef17-ed-command-stream-threaded--chromium/trace.zip
+    Usage:
+
+        npx playwright show-trace artifacts/replay149-browser/import-imports-a-complete--eef17-ed-command-stream-threaded--chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  1 failed
+    [chromium] › browser/tests/import.spec.js:99:1 › imports a complete replay and rejects a truncated command stream (threaded) 
+  3 passed (3.6m)

@@ -1,0 +1,10 @@
+PR967 verification
+Tested fixture/test commit: 54dcd6eddacbc85115794d1236b5a65d808850d4; base159f99a12.
+Linux x86_64, GCC15.2 debug native CLI, SDL3 local prefix; Node22.22.1, Chromium Playwright.
+Native writer built mastere5bf091b, replay format149. Browser serial/threaded artifact web-client from hosted run37822501719 (merge0dd1c71b3, format149). These are earlier runtime revisions, not a rebuilt final master. Scope is fixture acceptance/import/reload; no runtime or simulation code changes.
+Record command: GLOB2_USER_DATA_DIR=$PWD/artifacts/replay149/profile GLOB2_TEST_SEED=42 GLOB2_REPLAY_PATH=$PWD/browser/tests/fixtures/cross-replay.replay SDL_VIDEODRIVER=dummy SDL_AUDIODRIVER=dummy build/native-coverage-torus/src/glob2 --nox games/cross-replay.game.gz 1500 1
+Result:1500ticks finalchecksum d5db88d9.
+Browser command: GLOB2_TEST_URL=http://127.0.0.1:8794 GLOB2_TEST_RENDERER=software npx --prefix browser playwright test --config=browser/playwright.config.js tests/import.spec.js tests/session-reload.spec.js --project=chromium --grep 'imports a complete replay|an active replay' --output=artifacts/replay149-browser
+Result:3passed; threaded import timed out in menu startup before fixture read. Retry same command limited to tests/import.spec.js --grep 'truncated command stream \(threaded\)' --output=artifacts/replay149-browser-retry:1passed23.2s. Original failure retained.
+Coverage: serial/threaded complete import, truncated command rejection, active replay reload. Firefox/WebKit and cross-platform per-tick equivalence not rerun; fixture-only refresh does not claim those results.
+Fetched master6f8cf442fe5e35aa7e7773f51f3854fa3c8e0ccf before final acceptance; no changes versus base in src/replay, src/app/Version.h or browser.
