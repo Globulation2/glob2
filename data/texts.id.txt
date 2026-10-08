@@ -5604,6 +5604,30 @@ Bijih besi
 Silika
 [Cotton]
 Kapas
+[Jungle trees]
+Pohon rimba
+[Pine trees]
+Pohon pinus
+[Dead trees]
+Pohon mati
+[Ruins]
+Reruntuhan
+[Camp-site]
+Perkemahan
+[Ancient debris]
+Puing kuno
+[Scrub]
+Semak belukar
+[Tall grass]
+Rumput tinggi
+[Maize]
+Jagung
+[Potatoes]
+Kentang
+[Rice]
+Padi
+[Fish]
+Ikan
 [Reroll terrain look]
 Acak ulang tampilan medan
 [boulders]

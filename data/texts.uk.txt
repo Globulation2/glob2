@@ -5604,6 +5604,30 @@ FFmpeg недоступний, тому запис вимкнено. Устан�
 Кремнезем
 [Cotton]
 Бавовна
+[Jungle trees]
+Тропічні дерева
+[Pine trees]
+Сосни
+[Dead trees]
+Мертві дерева
+[Ruins]
+Руїни
+[Camp-site]
+Стоянка
+[Ancient debris]
+Стародавні уламки
+[Scrub]
+Чагарник
+[Tall grass]
+Висока трава
+[Maize]
+Кукурудза
+[Potatoes]
+Картопля
+[Rice]
+Рис
+[Fish]
+Риба
 [Reroll terrain look]
 Заново вибрати випадковий вигляд ландшафту
 [boulders]

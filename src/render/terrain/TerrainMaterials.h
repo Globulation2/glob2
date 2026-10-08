@@ -56,6 +56,11 @@ struct Material
 	// Variants share one periodic edge band and join without the runtime's
 	// border blend toward variant 0 ("edges": "periodic").
 	bool periodicEdges = false;
+	// Positional variants ("variant_grid"): the variants are one row-major
+	// variantGrid x variantGrid block of cells repeating across the map, so a
+	// periodic field larger than a cell continues across every cell edge.
+	// Zero picks variants by hash.
+	int variantGrid = 0;
 	Decor decor;
 	std::array<unsigned char, 3> preview{}, minimap{};
 	Seam seam;

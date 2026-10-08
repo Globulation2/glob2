@@ -390,6 +390,15 @@ TEST_SUITE("SoftwareRenderer")
 			view.render.animationTime = phase;
 			compare(29, 30, 0);
 		}
+		// Every water phase: kept coverage of mixed water cells re-blends to the
+		// same pixels as uncached composition.
+		for (int time = 0; time < 96; time += 6)
+		{
+			view.render.animationTime = time;
+			compare(29, 30, 0);
+		}
+		CHECK(cache().maskBytes() > 0);
+		CHECK(cache().maskBytes() <= SoftwareTerrainCache::MaskBudget);
 		game.map.unsetMapDiscovered();
 		game.map.setMapDiscovered(0, 0, 16, 32, game.teams[0]->me);
 		game.map.setMapDiscovered(16, 0, 16, 32, game.teams[1]->me);
