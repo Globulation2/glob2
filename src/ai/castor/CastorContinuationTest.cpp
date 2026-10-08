@@ -191,14 +191,15 @@ void continuation(AI::ImplementationID id, bool depleted, int checkpoint)
 
 TEST_SUITE("CastorContinuation")
 {
-    TEST_CASE("crop habitat excludes transition sprite sixteen and new paved terrain")
+    TEST_CASE("crop habitat excludes sand transitions and new paved terrain")
     {
         glob2test::HeadlessGlobals globals;
         World world(AI::CASTOR,false,713);
         auto& map=world.world.game.map;
-        map.setTerrain(20,20,16); // Historical >16 check accidentally accepted this shore.
-        map.setCellTerrain(24,20,TRAIL);
-        map.setCellTerrain(28,20,ICE);
+        // Sprite 16 drew this shore; the historical >16 check accidentally accepted it.
+        map.setVertexTerrain(20,20,SAND); map.setVertexTerrain(21,20,SAND); map.setVertexTerrain(20,21,SAND);
+        map.paintCell(24,20,TRAIL);
+        map.paintCell(28,20,ICE);
         AICastor ai(world.world.game.players[0]);
         MersenneTwister random(713); ai.setRandomEngine(random);
         for(int tick=0;tick<AI_CASTOR_BOOT_IDLE_TICKS+2;++tick) ai.getOrder();

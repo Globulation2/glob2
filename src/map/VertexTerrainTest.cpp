@@ -182,7 +182,7 @@ TEST_CASE("a cell's four corners paint it uniform and its neighbours mixed")
 	glob2test::HeadlessGlobals globals;
 	Map map;
 	map.setSize(4, 4, GRASS);
-	map.setCellTerrain(6, 6, BOULDERS);
+	map.paintCell(6, 6, BOULDERS);
 	CHECK(map.terrainTypeAt(6, 6) == BOULDERS);
 	CHECK_FALSE(map.terrainPropertiesAt(6, 6).walkable);
 	CHECK(map.terrainPropertiesAt(6, 6).projectileBlocks);

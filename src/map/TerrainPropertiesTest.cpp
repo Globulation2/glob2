@@ -66,10 +66,10 @@ TEST_CASE("vertex terrain survives tiling and batches snapshot invalidation")
     const auto generation = map.terrainGeneration();
     {
         auto batch = map.editTerrain();
-        map.setCellTerrain(8,8,TRAIL);
+        map.paintCell(8,8,TRAIL);
         const auto partial=map.frozenVertexSnapshot();
         map.resourceGrowthField();
-        map.setCellTerrain(11,8,ICE);
+        map.paintCell(11,8,ICE);
         CHECK_EQ((*partial)[map.coordToIndex(11,8)],WATER);
         CHECK_EQ((*map.frozenVertexSnapshot())[map.coordToIndex(11,8)],ICE);
         CHECK_FALSE(map.growthCache.validFor(map));
@@ -100,7 +100,7 @@ TEST_CASE("same-size map replacement and terrain edits refresh ecology")
     map.setSize(5,5,GRASS);
     CHECK_FALSE(map.growthCache.validFor(map));
     CHECK(map.resourceGrowthField().landField().at(8,8)==0);
-    map.setCellTerrain(9,8,WATER);
+    map.paintCell(9,8,WATER);
     CHECK_FALSE(map.growthCache.validFor(map));
     CHECK(map.resourceGrowthField().landField().at(8,8)>0);
     map.tile(2,1);
@@ -119,7 +119,7 @@ TEST_CASE("terrain edits refresh escape costs and supersede queued route snapsho
     const auto old = escape[map.coordToIndex(8,8)];
     {
         auto batch = map.editTerrain();
-        for (int x=8;x<12;++x) map.setCellTerrain(x,8,TRAIL);
+        for (int x=8;x<12;++x) map.paintCell(x,8,TRAIL);
     }
     CHECK(escape[map.coordToIndex(8,8)] > old);
     map.setResourceByIndex(15,15,WHEAT,1);
@@ -129,7 +129,7 @@ TEST_CASE("terrain edits refresh escape costs and supersede queued route snapsho
     auto& pipeline = map.gradientRuntime->pipeline;
     map.stagePeriodicGradientPreparation();
     map.preparePendingGradient();
-    map.setCellTerrain(9,8,ICE);
+    map.paintCell(9,8,ICE);
     map.advanceGradientPipeline();
     map.advanceGradientPipeline();
     CHECK_EQ(pipeline.metrics.discarded,1);
@@ -141,7 +141,7 @@ TEST_CASE("required terrain experiments survive tiling and distinguish map heade
     glob2test::HeadlessGlobals globals;
     glob2test::HeadlessGame world({.header=true});
     auto& map = world.game.map;
-    map.setCellTerrain(8,8,ICE);
+    map.paintCell(8,8,ICE);
     map.tile(2,1);
     CHECK(world.game.mapHeader.requiredTerrainExperiments.has(ExperimentId::IceTerrain));
     MapHeader plain, required;
@@ -174,7 +174,7 @@ TEST_CASE("ice exposure includes stationary units and preserves fractional healt
     glob2test::HeadlessGlobals globals;
     glob2test::HeadlessGame world({.loadDefaultRace=true,.header=true});
     auto& map = world.game.map;
-    map.setCellTerrain(8,8,ICE);
+    map.paintCell(8,8,ICE);
     Unit* unit = world.addUnit(WORKER,8,8);
     REQUIRE(unit);
     unit->hp = unit->performance[HP];
@@ -217,7 +217,7 @@ TEST_CASE("explorers ignore ice damage and no-permadeath applies to ground hazar
 {
     glob2test::HeadlessGlobals globals;
     glob2test::HeadlessGame world({.loadDefaultRace=true,.header=true});
-    world.game.map.setCellTerrain(8,8,ICE);
+    world.game.map.paintCell(8,8,ICE);
     Unit* explorer=world.addUnit(EXPLORER,8,8);
     REQUIRE(explorer);
     const int hp=explorer->hp;
@@ -248,7 +248,7 @@ TEST_CASE("health modifiers clip healing and expose units that have found an exi
     for (int i=0;i<32;++i) unit->applyTerrainHealthRate(12);
     CHECK_EQ(unit->hp,maximum);
     CHECK_EQ(unit->terrainHealthRemainder,0);
-    world.game.map.setCellTerrain(8,8,ICE);
+    world.game.map.paintCell(8,8,ICE);
     unit->displacement=Unit::DIS_EXITING_BUILDING;
     unit->attachedBuilding=nullptr;
     unit->insideTimeout=0;
@@ -347,18 +347,18 @@ TEST_SUITE("TerrainRuntime")
 		CHECK_FALSE(first.hasTerrainHealthEffects());
 		CHECK_FALSE(first.hasAirTerrainConstraints());
 		const auto bog = *first.terrainRegistry().find("test:bog");
-		first.setCellTerrain(3, 3, bog);
+		first.paintCell(3, 3, bog);
 		CHECK(first.terrainQueueBuckets() == 256);
 		CHECK(first.hasTerrainMovementModifiers());
 		CHECK_FALSE(first.isFreeForGroundUnit(3, 3, false, 1));
 		CHECK(first.isFreeForGroundUnit(3, 3, true, 1));
-		first.setCellTerrain(3, 3, GRASS);
+		first.paintCell(3, 3, GRASS);
 		CHECK(first.terrainQueueBuckets() == 64);
 		CHECK_FALSE(first.hasTerrainMovementModifiers());
 		first.importTerrainDefinitions(
 			R"({"schemaVersion":1,"terrains":[{"key":"test:bog","name":"Water equivalent","base":"water","properties":{},"appearance":"sand"}]})");
-		first.setCellTerrain(3, 3, bog);
-		second.setCellTerrain(3, 3, WATER);
+		first.paintCell(3, 3, bog);
+		second.paintCell(3, 3, WATER);
 		CHECK_FALSE(first.hasTerrainMovementModifiers());
 		CHECK((*first.frozenWaterSnapshot())[first.coordToIndex(3, 3)] == 1);
 		std::vector<Uint16> expected(1024, 1), actual;
@@ -381,7 +381,7 @@ TEST_SUITE("TerrainRuntime")
 		auto &map = world.game.map;
 		CHECK_THROWS(map.importTerrainDefinitions(runtimeDefinitions));
 		const auto hazard = *map.terrainRegistry().find("test:hazard");
-		map.setCellTerrain(8, 8, hazard);
+		map.paintCell(8, 8, hazard);
 		CHECK_FALSE(map.isFreeForBuilding(8, 8));
 		CHECK(map.hasTerrainHealthEffects());
 		CHECK(map.hasAirTerrainConstraints());
@@ -406,10 +406,10 @@ TEST_SUITE("TerrainRuntime")
 			auto batch = map.editTerrain();
 			for (int y = 0; y < 32; ++y)
 				for (int x = 0; x < 32; ++x)
-					map.setCellTerrain(x, y, hazard);
+					map.paintCell(x, y, hazard);
 		}
-		map.setCellTerrain(2, 2, GRASS);
-		map.setCellTerrain(12, 12, GRASS);
+		map.paintCell(2, 2, GRASS);
+		map.paintCell(12, 12, GRASS);
 		int dx = 0, dy = 0;
 		CHECK_FALSE(map.pathfindAirPointToPoint(2, 2, 12, 12, &dx, &dy));
 	}
@@ -425,7 +425,7 @@ TEST_SUITE("TerrainRuntime")
 			for (int y = 0; y < 32; ++y)
 				for (int x = 0; x < 32; ++x)
 					if ((x * 3 + y * 7) % 5 == 0)
-						map.setCellTerrain(x, y, bog);
+						map.paintCell(x, y, bog);
 		}
 		for (int swim = 0; swim < 7; ++swim)
 		{
@@ -501,7 +501,7 @@ TEST_SUITE("TerrainRuntime")
 					auto batch = map.editTerrain();
 					for (int y = 0; y < 32; ++y)
 						for (int x = 8; x < 13; ++x)
-							map.setCellTerrain(x, y, water);
+							map.paintCell(x, y, water);
 				}
 				CHECK(map.hasTerrainMovementModifiers() == (speed != 256));
 				map.setResourceByIndex(20, 20, WHEAT, 1);
@@ -546,7 +546,7 @@ TEST_SUITE("TerrainRuntime")
 		glob2test::HeadlessGlobals globals;
 		Map map;
 		map.setSize(5, 5, GRASS);
-		map.setCellTerrain(8, 8, ICE);
+		map.paintCell(8, 8, ICE);
 		std::vector<Uint16> expected(1024, 1);
 		expected[0] = GRADIENT_AT_GOAL;
 		map.propagateGradient(expected.data(), 6);
@@ -592,7 +592,7 @@ TEST_SUITE("TerrainRuntime")
 			Json{{"schemaVersion", 1}, {"terrains", definitions}}.dump());
 		world.game.map.setGame(&world.game);
 		REQUIRE(world.game.map.terrainRegistry().serialize().size() > 1024 * 1024);
-		world.game.map.setCellTerrain(8, 8, TerrainType(2000));
+		world.game.map.paintCell(8, 8, TerrainType(2000));
 		auto *bytes = new GAGCore::MemoryStreamBackend;
 		GAGCore::BinaryOutputStream output(bytes);
 		world.game.save(&output, false, "large-registry");
@@ -621,8 +621,8 @@ TEST_SUITE("TerrainRuntime")
 		glob2test::HeadlessGame world({.loadDefaultRace = true, .header = true});
 		importBeforeMatch(world.game);
 		auto &map = world.game.map;
-		map.setCellTerrain(8, 8, *map.terrainRegistry().find("test:hazard"));
-		map.setCellTerrain(9, 8, *map.terrainRegistry().find("test:bog"));
+		map.paintCell(8, 8, *map.terrainRegistry().find("test:hazard"));
+		map.paintCell(9, 8, *map.terrainRegistry().find("test:bog"));
 		auto *worker = world.addUnit(WORKER, 8, 8);
 		REQUIRE(worker);
 		for (int i = 0; i < 7; ++i)
@@ -697,11 +697,6 @@ TEST_SUITE("TerrainRuntime")
 			CHECK(map.terrainTypeAt(14, 14) == SAND);
 			CHECK(map.terrainTypeAt(16, 14) == WATER);
 			CHECK(map.terrainTypeAt(0, 0) == GRASS);
-			// Saved frames kept their appearance ranges, so the load-time frame check held.
-			CHECK(map.getTerrain(4, 4) >= 256);
-			CHECK(map.getTerrain(4, 4) < 272);
-			CHECK(map.getTerrain(6, 6) >= 128);
-			CHECK(map.getTerrain(6, 6) < 144);
 		};
 		GameGUI loaded;
 		{
@@ -730,7 +725,7 @@ TEST_SUITE("TerrainRuntime")
 		// Current files number their custom definitions from the current built-ins.
 		CHECK(nlohmann::json::parse(reloaded.game.map.terrainRegistry().serialize())["terrains"][0]["id"] == TERRAIN_COUNT);
 	}
-	TEST_CASE("painted catalogue terrain survives save and reload with its frames and checksum")
+	TEST_CASE("painted catalogue terrain survives save and reload with its checksum")
 	{
 		glob2test::HeadlessGlobals globals;
 		glob2test::HeadlessGame world({.loadDefaultRace = true, .header = true});
@@ -742,14 +737,11 @@ TEST_SUITE("TerrainRuntime")
 		REQUIRE(painted.size() == 24);
 		for (std::size_t n = 0; n < painted.size(); ++n)
 		{
-			map.setCellTerrain(int(n % 8) * 2 + 2, int(n / 8) * 3 + 2, painted[n]);
-			// Saved frames come from the type's own contract, never a neighbour's.
-			const auto &frames = terrainCompatibility(painted[n]);
-			CHECK(map.getTerrain(int(n % 8) * 2 + 2, int(n / 8) * 3 + 2) >= frames.firstFrame);
-			CHECK(map.getTerrain(int(n % 8) * 2 + 2, int(n / 8) * 3 + 2) < frames.firstFrame + frames.variants);
+			map.paintCell(int(n % 8) * 2 + 2, int(n / 8) * 3 + 2, painted[n]);
+			CHECK(map.terrainTypeAt(int(n % 8) * 2 + 2, int(n / 8) * 3 + 2) == painted[n]);
 		}
-		map.setCellTerrain(20, 20, ICE);
-		map.setCellTerrain(22, 20, TRAIL);
+		map.paintCell(20, 20, ICE);
+		map.paintCell(22, 20, TRAIL);
 		const auto required = map.requiredTerrainExperiments();
 		CHECK(required.size() == 11); // nine catalogue groups plus ice and trail
 		for (auto text : {false, true})
@@ -787,7 +779,7 @@ TEST_SUITE("TerrainRuntime")
 				continue;
 			Map map;
 			map.setSize(5, 5, GRASS);
-			map.setCellTerrain(2, 2, type);
+			map.paintCell(2, 2, type);
 			const auto required = map.requiredTerrainExperiments();
 			const auto expected = terrainExperiment(type);
 			CHECK(required.size() == (expected ? 1u : 0u));
@@ -811,19 +803,18 @@ TEST_SUITE("TerrainRuntime")
 				{"key":"mod:bog","name":"Bog","base":"water","properties":{"groundSpeedQ8":128},"appearance":"water"}]})");
 			const auto pit = *custom.terrainRegistry().find("mod:pit");
 			const auto bog = *custom.terrainRegistry().find("mod:bog");
-			custom.setCellTerrain(1, 1, pit);
+			custom.paintCell(1, 1, pit);
 			CHECK(custom.requiredTerrainExperiments().has(ExperimentId::VoidTerrain));
 			CHECK(custom.requiredTerrainExperiments().size() == 1);
-			custom.setCellTerrain(1, 1, GRASS);
-			custom.setCellTerrain(2, 2, bog);
+			custom.paintCell(1, 1, GRASS);
+			custom.paintCell(2, 2, bog);
 			CHECK(custom.requiredTerrainExperiments().empty());
 		}
 		// Classic ground never acquires a requirement.
 		Map plain;
 		plain.setSize(5, 5, GRASS);
-		plain.setCellTerrain(1, 1, SAND);
-		plain.setUMTerrain(3, 3, WATER);
-		plain.rebuildTerrain();
+		plain.paintCell(1, 1, SAND);
+		plain.setVertexTerrain(3, 3, WATER);
 		CHECK(plain.requiredTerrainExperiments().empty());
 		// Group mechanics the catalogue promises.
 		CHECK_FALSE(terrainProperties(BOULDERS).walkable);
@@ -887,7 +878,7 @@ TEST_SUITE("TerrainRuntime")
 						{
 							const auto &choices = equivalents[original];
 							map.setVertexTerrain(x, y,
-											   choices[terrainVisualHash(x, y) % choices.size()]);
+											   choices[unsigned(x * 73856093u ^ y * 19349663u) % choices.size()]);
 						}
 					}
 			}
@@ -1007,7 +998,7 @@ TEST_CASE("extreme authored hazards saturate and shared fields agree with point 
     map.setSize(5,5,GRASS);
     map.importTerrainDefinitions(R"({"schemaVersion":1,"terrains":[{"key":"test:extreme","name":"Extreme","base":"grass","properties":{"groundHealthQ8":-32768,"airHealthQ8":-32768},"appearance":"ice"}]})");
     const auto extreme=*map.terrainRegistry().find("test:extreme");
-    map.setCellTerrain(8,8,extreme);
+    map.paintCell(8,8,extreme);
     CHECK(map.stepCost(1,0,map.coordToIndex(8,8),0)==181);
     CHECK(map.stepCost(1,1,map.coordToIndex(8,8),0)==253);
     CHECK(map.terrainRegistry().airRouteCost(extreme)==181);
@@ -1019,7 +1010,7 @@ TEST_CASE("extreme authored hazards saturate and shared fields agree with point 
     // The hazard's transition cells cost as much, so the diagonal is cheapest.
     CHECK(field[map.coordToIndex(7,7)]==GRADIENT_AT_GOAL-253);
     const auto snapshot=map.frozenTerrainMovementSnapshot(0);
-    map.setCellTerrain(8,8,GRASS);
+    map.paintCell(8,8,GRASS);
     CHECK(map.frozenTerrainMovementSnapshot(0)!=snapshot);
     CHECK(map.terrainQueueBuckets()==64);
     CHECK_FALSE(map.hasTerrainMovementModifiers());
@@ -1029,7 +1020,7 @@ TEST_CASE("old hazard route caches rebuild while current saves retain routing st
     glob2test::HeadlessGlobals globals;
     glob2test::HeadlessGame world({.loadDefaultRace=true,.header=true});
     auto& map=world.game.map;
-    map.setCellTerrain(9,8,ICE);
+    map.paintCell(9,8,ICE);
     // Wheat clear of the ice's transition cells, where nothing grows.
     map.setResourceByIndex(12,8,WHEAT,1);
     REQUIRE(map.getResource(12,8).type==WHEAT);
@@ -1145,7 +1136,7 @@ TEST_CASE("flyers share safety fields across teams and ignore ground invalidatio
     map.importTerrainDefinitions(R"({"schemaVersion":1,"terrains":[{"key":"test:air-escape","name":"Air hazard","base":"grass","properties":{"airHealthQ8":-16},"appearance":"ice"}]})");
     map.setGame(&world.game);
     const auto hazard=*map.terrainRegistry().find("test:air-escape");
-    for(int y=6;y<=12;++y) for(int x=6;x<=12;++x) map.setCellTerrain(x,y,hazard);
+    for(int y=6;y<=12;++y) for(int x=6;x<=12;++x) map.paintCell(x,y,hazard);
     auto* first=world.addUnit(EXPLORER,8,8,0);
     auto* other=world.addUnit(EXPLORER,9,8,1);
     REQUIRE(first); REQUIRE(other);
@@ -1157,7 +1148,7 @@ TEST_CASE("flyers share safety fields across teams and ignore ground invalidatio
     map.setBuilding(15,16,1,1,0);
     REQUIRE(map.pathfindTerrainSafety(first));
     CHECK(map.gradientRuntime->safety.builds==1);
-    map.setCellTerrain(8,9,GRASS);
+    map.paintCell(8,9,GRASS);
     REQUIRE(map.pathfindTerrainSafety(first));
     CHECK(map.gradientRuntime->safety.builds==2);
     CHECK(first->dx==0); CHECK(first->dy==1);
@@ -1175,8 +1166,8 @@ TEST_CASE("escape fields respect runtime resource blocking and ignore stock-only
     map.installResourceDefinitions(R"({"schemaVersion":1,"resources":[{"key":"test:canopy","properties":{"blocksGround":false,"blocksAir":true,"persistsWhenEmpty":true},"yields":{"food":{"capacity":9,"initial":3,"consumption":"one"}},"presentation":{"name":"Canopy","sprite":"data/gfx/ressource","minimap":[10,20,30],"levels":[{"stock":0,"variants":[{"frame":1}]}]}}]})");
     map.setGame(&world.game);
     const auto hazard=*map.terrainRegistry().find("test:both-hazard");
-    for(int y=0;y<map.getH();++y) for(int x=0;x<map.getW();++x) map.setCellTerrain(x,y,hazard);
-    map.setCellTerrain(13,8,GRASS);
+    for(int y=0;y<map.getH();++y) for(int x=0;x<map.getW();++x) map.paintCell(x,y,hazard);
+    map.paintCell(13,8,GRASS);
     auto* ground=world.addUnit(WORKER,12,8);
     auto* air=world.addUnit(EXPLORER,12,8);
     REQUIRE(ground); REQUIRE(air);
@@ -1206,10 +1197,10 @@ TEST_CASE("escape fields charge destination terrain and choose a cheaper indirec
     map.game=nullptr;
     map.importTerrainDefinitions(R"({"schemaVersion":1,"terrains":[{"key":"test:mild","name":"Mild hazard","base":"grass","properties":{"groundHealthQ8":-1},"appearance":"ice"},{"key":"test:slow-safe","name":"Slow safety","base":"grass","properties":{"groundSpeedQ8":64},"appearance":"grass"}]})");
     map.setGame(&world.game);
-    map.setCellTerrain(8,8,ICE);
-    map.setCellTerrain(9,8,*map.terrainRegistry().find("test:slow-safe"));
-    map.setCellTerrain(8,7,*map.terrainRegistry().find("test:mild"));
-    map.setCellTerrain(8,6,GRASS);
+    map.paintCell(8,8,ICE);
+    map.paintCell(9,8,*map.terrainRegistry().find("test:slow-safe"));
+    map.paintCell(8,7,*map.terrainRegistry().find("test:mild"));
+    map.paintCell(8,6,GRASS);
     auto* unit=world.addUnit(WORKER,8,8);
     REQUIRE(unit);
     REQUIRE(map.pathfindTerrainSafety(unit));

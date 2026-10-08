@@ -535,7 +535,7 @@ TEST_CASE("Scene extraction performance" * doctest::test_suite("ScenePerformance
             std::vector<double> legacy,captures,prepares;
             for (int i=0;i<45;++i)
             {
-                if (changed) { ++game.stepCounter; game.map.setUMTerrain(i%width,0,static_cast<TerrainType>(i%2)); }
+                if (changed) { ++game.stepCounter; game.map.setVertexTerrain(i%width,0,static_cast<TerrainType>(i%2)); }
                 auto a=Clock::now(); direct.extract(game,request,oldScene); auto b=Clock::now();
                 auto inputs=capture.capture(game,request); auto c=Clock::now();
                 prepare.prepare(*inputs,newScene); auto d=Clock::now();
@@ -660,6 +660,6 @@ TEST_CASE("farm input eligibility is frozen with presentation inputs" * doctest:
         for(int x=0;x<world.game.map.getW();++x)
             CHECK(scene.map.canPaintFarmArea(x,y)==world.game.map.canPaintFarmArea(x,y));
     const bool before=scene.map.canPaintFarmArea(4,4);
-    world.game.map.setUMTerrain(4,4,WATER);
+    world.game.map.setVertexTerrain(4,4,WATER);
     CHECK(scene.map.canPaintFarmArea(4,4)==before);
 }

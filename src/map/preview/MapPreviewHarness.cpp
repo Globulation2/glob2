@@ -71,7 +71,7 @@ MapThumbnail terrain(int wDec, int hDec, bool noise = false)
 		for (int x = 0; x < map.getW(); ++x)
 		{
 			int kind = noise ? random() % 3 : (x < map.getW() / 2 ? 0 : 1);
-			map.setUMatPos(x, y, kind == 0 ? GRASS : kind == 1 ? WATER : SAND, 1);
+			map.paintVertexSquare(x, y, kind == 0 ? GRASS : kind == 1 ? WATER : SAND, 1);
 		}
 	MapThumbnail image;
 	image.loadFromMap(map);

@@ -993,7 +993,7 @@ TEST_CASE("JavaScript native spatial answers exclude hidden terrain resources an
 	};
 	auto initial = answers(before);
 	game.map.setFertility(22, 22, 65535);
-	game.map.setCellTerrain(22, 22,WATER);
+	game.map.paintCell(22, 22,WATER);
 	game.map.setResourceByIndex(21, 21, WHEAT, 1);
 	enemy->hp = 999;
 	world.addUnit(WARRIOR, 24, 24, 1);
@@ -1011,7 +1011,7 @@ TEST_CASE("JavaScript native spatial answers exclude hidden terrain resources an
 	CHECK(summary.get("fertility").number == 321);
 	CHECK(summary.get("visibleTiles").number == 0);
 	game.map.setMapDiscovered(10, 10, game.teams[0]->me);
-	game.map.setCellTerrain(10, 10,WATER);
+	game.map.paintCell(10, 10,WATER);
 	auto location = Value::object().set("x", 10).set("y", 10);
 	CHECK(remembered.query("passable", {location}, {}).number == 0);
 	location.set("movement", "swim");
@@ -1262,7 +1262,7 @@ TEST_CASE("JavaScript farm areas: experiments query, farmArea order and tile fie
 		// Water down the left edge, so the grass beside it can grow wheat.
 		for (int y = 0; y < game.map.getH(); ++y)
 			for (int x = 0; x < 8; ++x)
-				game.map.setUMatPos(x, y, WATER, 1);
+				game.map.paintVertexSquare(x, y, WATER, 1);
 		Value mask = Value::array();
 		for (int i = 0; i < 4; ++i)
 			mask.items.emplace_back(true);
@@ -1358,8 +1358,8 @@ TEST_CASE("JavaScript path fields use terrain travel costs and invalidate speed-
     glob2test::HeadlessGlobals globals;
     glob2test::HeadlessGame world({.wDec=4,.hDec=4,.teams=1});
     auto& map=world.game.map;
-    for(int y=0;y<16;++y) for(int x=0;x<16;++x) map.setCellTerrain(x,y,WATER);
-    for(int x=0;x<16;++x) map.setCellTerrain(x,1,GRASS);
+    for(int y=0;y<16;++y) for(int x=0;x<16;++x) map.paintCell(x,y,WATER);
+    for(int x=0;x<16;++x) map.paintCell(x,1,GRASS);
     Observations observations(world.game,-1); observations.setProfile(2);
     Spatial spatial(world.game,0,observations);
     Value points=Value::array(); points.items.push_back(Value::object().set("x",0).set("y",1));
@@ -1370,10 +1370,10 @@ TEST_CASE("JavaScript path fields use terrain travel costs and invalidate speed-
         return spatial.query("fieldValue",{handle,Value(4),Value(1)},{}).get("distance").number;
     };
     CHECK_EQ(sample(spec),4);
-    for(int x=0;x<16;++x) map.setCellTerrain(x,1,TRAIL);
+    for(int x=0;x<16;++x) map.paintCell(x,1,TRAIL);
     ++world.game.stepCounter;
     CHECK_EQ(sample(spec),2);
-    for(int x=0;x<16;++x) map.setCellTerrain(x,1,ICE);
+    for(int x=0;x<16;++x) map.paintCell(x,1,ICE);
     ++world.game.stepCounter;
     CHECK_EQ(sample(spec),8);
     spec.set("metric","chebyshev");
@@ -1395,7 +1395,7 @@ TEST_CASE("JavaScript path diagonals retain the neutral strategic metric" *
         return spatial.query("fieldValue",{handle,Value(3),Value(3)},{}).get("distance").number;
     };
     CHECK_EQ(sample(),3);
-    world.game.map.setCellTerrain(8,8,TRAIL);
+    world.game.map.paintCell(8,8,TRAIL);
     ++world.game.stepCounter;
     CHECK_EQ(sample(),3);
 }
@@ -1405,7 +1405,7 @@ TEST_CASE("JavaScript terrain registry exposes immutable property capabilities i
 {
     glob2test::HeadlessGlobals globals;
     glob2test::HeadlessGame world({.wDec=4,.hDec=4,.teams=1});
-    world.game.map.setCellTerrain(5,5,ICE);
+    world.game.map.paintCell(5,5,ICE);
     for(unsigned profile:{1u,2u}) for(bool commander:{false,true})
     {
         Observations observations(world.game,-1);observations.setProfile(profile);

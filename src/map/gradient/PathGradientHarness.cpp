@@ -310,10 +310,10 @@ TEST_CASE("immutable water snapshots share storage and retain their captured ter
 	auto first=map.frozenWaterSnapshot();
 	auto second=map.frozenWaterSnapshot();
 	REQUIRE(first==second);
-	map.setTerrain(0,0,257); REQUIRE(map.frozenWaterSnapshot()==first);
-	map.setTerrain(0,0,0); auto changed=map.frozenWaterSnapshot();
+	map.paintCell(0, 0, WATER); REQUIRE(map.frozenWaterSnapshot()==first);
+	map.paintCell(0, 0, GRASS); auto changed=map.frozenWaterSnapshot();
 	REQUIRE(changed!=first); REQUIRE((*first)[0]==1); REQUIRE((*changed)[0]==0);
-	map.setTerrain(1,0,256); auto next=map.frozenWaterSnapshot();
+	map.paintCell(1, 0, WATER); auto next=map.frozenWaterSnapshot();
 	REQUIRE((*changed)[1]==0); REQUIRE((*next)[1]==1);
 }
 
@@ -510,7 +510,7 @@ TEST_CASE("terrain snapshots survive paused searches and release obsolete genera
     for (int swim = 0; swim < 7; ++swim)
     {
         PathMap map(5, 5, std::vector<Uint16>(1024, 0));
-        map.setCellTerrain(0, TRAIL);
+        map.paintCell(0, TRAIL);
         auto captured = map.frozenVertexSnapshot();
         REQUIRE(captured == map.frozenVertexSnapshot());
         // Searches retain the compact movement profiles of their generation.
@@ -524,7 +524,7 @@ TEST_CASE("terrain snapshots survive paused searches and release obsolete genera
         b.begin(map, second.data(), swim);
         a.resolve(1);
         REQUIRE_FALSE(a.complete());
-        map.setCellTerrain(0, ICE);
+        map.paintCell(0, ICE);
         auto replacement = map.frozenVertexSnapshot();
         REQUIRE(replacement != captured);
         REQUIRE((*captured)[0] == TRAIL);
@@ -561,7 +561,7 @@ TEST_CASE("production lazy gradient phases [benchmark][pathfinding]")
         PathMap map(shift, shift, std::vector<Uint16>(count, 0));
         // Classic, connected roads, dense mixes, uniform road, and uniform ice.
         if (layout) for (std::size_t i = 0; i < count; ++i)
-            map.setCellTerrain(i, layout == 1
+            map.paintCell(i, layout == 1
                 ? ((i % width) % 16 == 0 || (i / width) % 16 == 0 ? TRAIL : GRASS)
                 : layout == 3 ? TRAIL : layout == 4 ? ICE
                 : static_cast<TerrainType>((i * 37 + i / width * 19) % TERRAIN_COUNT));
@@ -638,7 +638,7 @@ TEST_CASE("queued mixed gradients retain terrain costs until fixed publication [
             std::copy(seeds.begin(), seeds.end(), job.data.get());
             job.terrain = snapshot; job.modifiedCosts = true;
         });
-        for (unsigned i = 0; i < count; ++i) map.setCellTerrain(i, GRASS);
+        for (unsigned i = 0; i < count; ++i) map.paintCell(i, GRASS);
         snapshot.reset();
         pipeline.finish();
         REQUIRE(published[0] == 0);

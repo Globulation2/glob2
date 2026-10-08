@@ -85,7 +85,7 @@ namespace
 	{
 		for (int y = 0; y < map.getH(); y++)
 			for (int x = 0; x < width; x++)
-				map.setUMatPos(x, y, WATER, 1);
+				map.paintVertexSquare(x, y, WATER, 1);
 	}
 
 	//! A worker at (x,y) finishing a harvest against the tile at (x+dx,y+dy).
@@ -485,9 +485,9 @@ TEST_SUITE("FarmAreas")
 			for (int y = 0; y < map.getH(); y++)
 			{
 				for (int x = 0; x < 8; x++)
-					map.setUMatPos(x, y, WATER, 1);
+					map.paintVertexSquare(x, y, WATER, 1);
 				for (int x = 8; x < 16; x++)
-					map.setUMatPos(x, y, SAND, 1);
+					map.paintVertexSquare(x, y, SAND, 1);
 			}
 			const int water = 3, sand = 11, grass = 19;
 			REQUIRE(map.getTerrainType(water, 10) == WATER);

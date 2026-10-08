@@ -134,11 +134,11 @@ namespace
 		//   water : 256..271
 		void makeWater(int x, int y)
 		{
-			setCellTerrain(x,y,WATER);
+			paintCell(x,y,WATER);
 		}
 		void makeSand(int x, int y)
 		{
-			setCellTerrain(x,y,SAND);
+			paintCell(x,y,SAND);
 		}
 	};
 
@@ -386,11 +386,11 @@ TEST_SUITE("MapQuery")
 TEST_CASE("trail and ice placement use properties independent of sprite variants")
 {
     GrassMap map;
-    map.setCellTerrain(2,2,TRAIL);
+    map.paintCell(2,2,TRAIL);
     CHECK(map.isFreeForGroundUnit(2,2,false,1));
     CHECK(map.isFreeForGroundUnit(2,2,true,1));
     CHECK(map.isFreeForBuilding(2,2));
-    map.setCellTerrain(2,2,ICE);
+    map.paintCell(2,2,ICE);
     CHECK(map.isFreeForGroundUnit(2,2,false,1));
     CHECK(map.isFreeForGroundUnit(2,2,true,1));
     CHECK_FALSE(map.isFreeForBuilding(2,2));
@@ -400,13 +400,13 @@ TEST_CASE("trail and ice placement use properties independent of sprite variants
 TEST_CASE("point routes prefer trails and reject impassable destination terrain")
 {
     GrassMap map;map.enableRouting();
-    for(int x=0;x<8;++x)map.setCellTerrain(x,2,TRAIL);
-    for(int x=2;x<=4;++x)map.setCellTerrain(x,3,ICE);
+    for(int x=0;x<8;++x)map.paintCell(x,2,TRAIL);
+    for(int x=2;x<=4;++x)map.paintCell(x,3,ICE);
     int dx=0,dy=0;
     REQUIRE(map.pathfindPointToPoint(1,3,5,3,&dx,&dy,0,1,100));
     CHECK_EQ(dy,-1);
     CHECK_EQ(std::abs(dx),1);
-    map.setCellTerrain(5,3,WATER);
+    map.paintCell(5,3,WATER);
     CHECK_FALSE(map.pathfindPointToPoint(1,3,5,3,&dx,&dy,0,1,100));
     REQUIRE(map.pathfindPointToPoint(1,3,5,3,&dx,&dy,3,1,100));
     CHECK_FALSE(map.pathfindPointToPoint(1,3,5,3,&dx,&dy,3,1,1));
@@ -445,16 +445,16 @@ TEST_CASE("air property profiles honor no-fly barriers and weighted travel witho
     // cannot route through the forbidden cells to reach it.
     REQUIRE(map.airRouteWithProperties(1,3,2,3,properties,&dx,&dy));
     CHECK_EQ(dx,0); CHECK_EQ(dy,0);
-    for(int y=0;y<8;++y) for(int x=0;x<8;++x) map.setCellTerrain(x,y,ICE);
-    map.setCellTerrain(1,3,GRASS); map.setCellTerrain(5,3,GRASS);
+    for(int y=0;y<8;++y) for(int x=0;x<8;++x) map.paintCell(x,y,ICE);
+    map.paintCell(1,3,GRASS); map.paintCell(5,3,GRASS);
     CHECK_FALSE(map.airRouteWithProperties(1,3,5,3,properties,&dx,&dy));
     CHECK_EQ(dx,0); CHECK_EQ(dy,0);
-    for(int y=0;y<8;++y) for(int x=0;x<8;++x) map.setCellTerrain(x,y,GRASS);
+    for(int y=0;y<8;++y) for(int x=0;x<8;++x) map.paintCell(x,y,GRASS);
     properties[ICE].flyable=true;
     properties[ICE].airSpeedQ8=64;
     properties[TRAIL].airSpeedQ8=1024;
-    for(int x=0;x<8;++x) map.setCellTerrain(x,1,TRAIL);
-    for(int x=2;x<=4;++x) map.setCellTerrain(x,3,ICE);
+    for(int x=0;x<8;++x) map.paintCell(x,1,TRAIL);
+    for(int x=2;x<=4;++x) map.paintCell(x,3,ICE);
     REQUIRE(map.airRouteWithProperties(1,3,5,3,properties,&dx,&dy));
     CHECK_EQ(dy,-1); CHECK_EQ(std::abs(dx),1);
 }

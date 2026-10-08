@@ -342,7 +342,7 @@ TEST_SUITE("EditorActionCoverage")
         MapEdit editor; blank(editor); editor.performAction("add team"); editor.team=0;
         REQUIRE(editor.farmingZone!=nullptr);
         // Water down the left edge, so the grass beside it can grow wheat.
-        for (int y=0; y<32; ++y) for (int x=0; x<8; ++x) editor.game.map.setUMatPos(x,y,WATER,1);
+        for (int y=0; y<32; ++y) for (int x=0; x<8; ++x) editor.game.map.paintVertexSquare(x,y,WATER,1);
         editor.game.map.setResourcesGrow(20,12, 0);
         editor.performAction("select farm zone"); editor.brush.setFigure(1); editor.brush.mode=BrushTool::MODE_ADD;
         REQUIRE(editor.brushType==MapEdit::FarmAreaBrush);

@@ -320,7 +320,6 @@ void Map::bindCellRules()
 void Map::rebuildTerrainCounts(std::shared_ptr<CellRuleTable> table)
 {
 	invalidateResourceSeeds();
-	deferredVertexWrites = false;
 	// Uniform rules come first, by terrain ID; mixed ones follow in row-major order.
 	cellRuleTable = table ? std::move(table) : std::make_shared<CellRuleTable>(terrainRegistryValue, resourceRegistryValue);
 	cellRuleCounts.assign(cellRuleTable->size(), 0);
@@ -458,22 +457,6 @@ void Map::rederiveAllCells()
 	if (!terrainEditDepth) finishTerrainEdit();
 }
 
-void Map::setUMTerrain(int x, int y, TerrainType type)
-{
-	if (!validTerrainType(type)) throw std::invalid_argument("Unknown terrain identity");
-	const auto index = size_t(coordToIndex(x, y));
-	if (vertexTerrain[index] == type) return;
-	--terrainCounts[vertexTerrain[index]];
-	++terrainCounts[type];
-	vertexTerrain[index] = type;
-	deferredVertexWrites = true;
-}
-
-void Map::rebuildTerrain()
-{
-	if (deferredVertexWrites) rederiveAllCells();
-}
-
 void Map::fillTerrain(TerrainType type)
 {
 	assignVertexTerrain(std::vector<TerrainType>(vertexTerrain.size(), type));
@@ -516,7 +499,7 @@ void Map::finishTerrainEdit()
 	}
 }
 
-void Map::setCellTerrain(size_t index, TerrainType type)
+void Map::paintCell(size_t index, TerrainType type)
 {
 	if (index >= size) throw std::out_of_range("Terrain cell index");
 	auto batch = editTerrain();

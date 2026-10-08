@@ -208,11 +208,11 @@ void layeredCache(bool gpu, bool hd = false)
 		for (int x = 0; x < 32; ++x)
 		{
 			if (x < 3)
-				map.setTerrain(x, y, 256);
+				map.paintCell(x, y, WATER);
 			if ((x + y * 3) % 7 == 0)
-				map.setCellTerrain(x, y, ICE);
+				map.paintCell(x, y, ICE);
 			else if ((x * 5 + y) % 11 == 0)
-				map.setCellTerrain(x, y, TRAIL);
+				map.paintCell(x, y, TRAIL);
 		}
 	SceneMap scene;
 	scene.extract(map);
@@ -268,7 +268,7 @@ void layeredCache(bool gpu, bool hd = false)
 		CHECK(cache.cacheHits() > 0);
 	auto &compositor = globals->terrainCompositor();
 	const auto before = compositor.describe(scene, 0, 0);
-	map.setCellTerrain(0, 0, TRAIL);
+	map.paintCell(0, 0, TRAIL);
 	CHECK(compositor.describe(scene, 0, 0) == before);
 	scene.extract(map);
 	compare();
@@ -278,7 +278,7 @@ void layeredCache(bool gpu, bool hd = false)
 		game,
 		R"({"schemaVersion":1,"terrains":[{"key":"test:custom","name":"Custom ice","base":"grass","properties":{},"appearance":"ice"}]})");
 	const auto custom = *map.terrainRegistry().find("test:custom");
-	map.setCellTerrain(0, 0, custom);
+	map.paintCell(0, 0, custom);
 	scene.extract(map);
 	compare();
 	compare();
@@ -323,10 +323,9 @@ TEST_SUITE("TerrainPresentation")
 		auto &map = fixture.game.map;
 		for (int y = 0; y < 16; ++y)
 			for (int x = 0; x < 16; ++x)
-				map.setUMTerrain(x, y, x < 4 || y < 4 ? WATER : x < 7 || y < 7 ? SAND : GRASS);
-		map.rebuildTerrain();
+				map.setVertexTerrain(x, y, x < 4 || y < 4 ? WATER : x < 7 || y < 7 ? SAND : GRASS);
 		// Away from (9,9), where wheat needs pure grass.
-		map.setCellTerrain(12, 12, ICE);
+		map.paintCell(12, 12, ICE);
 		SceneMap scene;
 		scene.extract(map);
 		auto &compositor = globals->terrainCompositor();
@@ -489,16 +488,16 @@ TEST_SUITE("TerrainPresentation")
 		auto &compositor = globals->terrainCompositor();
 		constexpr int dx[4] = {0, 1, 0, -1}, dy[4] = {-1, 0, 1, 0};
 		const TerrainType aliases[] = {ICE, a, b, a};
-		map.setCellTerrain(0, 0, TRAIL);
+		map.paintCell(0, 0, TRAIL);
 		for (unsigned mask = 0; mask < 16; ++mask)
 		{
 			CAPTURE(mask);
 			for (int side = 0; side < 4; ++side)
-				map.setCellTerrain(dx[side], dy[side], mask & (1u << side) ? ICE : TRAIL);
+				map.paintCell(dx[side], dy[side], mask & (1u << side) ? ICE : TRAIL);
 			SceneMap expected;
 			expected.extract(map);
 			for (int side = 0; side < 4; ++side)
-				map.setCellTerrain(dx[side], dy[side], mask & (1u << side) ? aliases[side] : TRAIL);
+				map.paintCell(dx[side], dy[side], mask & (1u << side) ? aliases[side] : TRAIL);
 			SceneMap actual;
 			actual.extract(map);
 			for (int y = -1; y <= 1; ++y)
@@ -512,7 +511,7 @@ TEST_SUITE("TerrainPresentation")
 		}
 		for (int y = 0; y < 16; ++y)
 			for (int x = 0; x < 16; ++x)
-				map.setCellTerrain(x, y, sand);
+				map.paintCell(x, y, sand);
 		SceneMap scene;
 		scene.extract(map);
 		CHECK(scene.presentationTypeAt(0, 0) == sand);
@@ -530,8 +529,8 @@ TEST_SUITE("TerrainPresentation")
 			fixture.game,
 			R"({"schemaVersion":1,"terrains":[{"key":"test:custom","name":"Custom","base":"grass","properties":{},"appearance":"sand"}]})");
 		const auto custom = *map.terrainRegistry().find("test:custom");
-		map.setCellTerrain(0, 0, custom);
-		map.setCellTerrain(1, 0, ICE);
+		map.paintCell(0, 0, custom);
+		map.paintCell(1, 0, ICE);
 		MapThumbnail thumbnail;
 		thumbnail.loadFromMap(map);
 		REQUIRE(thumbnail.pixels());
@@ -590,7 +589,7 @@ TEST_SUITE("TerrainPresentation")
 					auto &map = fixture.game.map;
 					for (int y = 0; y < map.getH(); ++y)
 						for (int x = 0; x < map.getW(); ++x)
-							map.setCellTerrain(
+							map.paintCell(
 								x, y,
 								x < 3 ? WATER : (y == 4 ? TRAIL : ((x + y) % 3 ? ICE : GRASS)));
 					GAGCore::Sprite::setHighResolution(hd);
@@ -642,7 +641,7 @@ TEST_SUITE("TerrainPresentation")
 				glob2test::HeadlessGame fixture({.wDec = 5, .hDec = 5, .discovered = true});
 				for (int y = 0; y < 32; ++y)
 					for (int x = 0; x < 32; ++x)
-						fixture.game.map.setCellTerrain(
+						fixture.game.map.paintCell(
 							x, y, y == 4 ? TRAIL : ((x + y) % 3 ? ICE : GRASS));
 				GAGCore::Sprite::setHighResolution(hd);
 				SceneMap scene;
@@ -790,9 +789,9 @@ TEST_SUITE("TerrainPresentation")
 				for (int y = 0; y < map.getH(); ++y)
 					for (int x = 0; x < map.getW(); ++x)
 						if (x % 32 < 4)
-							map.setCellTerrain(x, y, WATER);
+							map.paintCell(x, y, WATER);
 						else if (y % 32 < 4)
-							map.setCellTerrain(x, y, ICE);
+							map.paintCell(x, y, ICE);
 			}
 			SceneMap scene;
 			scene.extract(map);
@@ -929,12 +928,12 @@ TEST_SUITE("TerrainPresentation")
 			draw(-7, -6);
 			CHECK(pixels() == expected);
 			cache.enabled = true;
-			map.setCellTerrain(0, 0, TRAIL);
+			map.paintCell(0, 0, TRAIL);
 			scene.extract(map);
 			draw(-7, -6);
 			CHECK(cache.cacheRebuilds() > rebuilds);
 			CHECK(pixels() != expected);
-			map.setCellTerrain(0, 0, WATER);
+			map.paintCell(0, 0, WATER);
 			CHECK(fixture.checksum() == checksum);
 			// Returning to a close view restores native page density.
 			REQUIRE(cache.prepare(scene, *globals->terrain, 0, 0, 15, 15, 0, 0, fixture.team->me,
@@ -1127,11 +1126,11 @@ TEST_SUITE("TerrainPresentation")
 			const auto [sprite, frame] = compositor.editorIcon(type);
 			CHECK(sprite != nullptr);
 			CHECK(frame < 65536);
-			// Classic corner terrain exports through the undermap; whole-cell types
-			// export their registered colour.
+			// Each vertex exports its registered colour; the classic ones are
+			// already covered by the ordinary map around them.
 			if (classicTerrain(type))
 				continue;
-			map.setCellTerrain(int(painted.size()) + 1, 1, type);
+			map.paintCell(int(painted.size()) + 1, 1, type);
 			painted.push_back(type);
 		}
 		(void)minimap;
@@ -1158,8 +1157,8 @@ TEST_SUITE("TerrainPresentation")
 		glob2test::HeadlessGlobals globals;
 		glob2test::HeadlessGame fixture({.wDec = 5, .hDec = 5, .teams = 0});
 		auto &map = fixture.game.map;
-		map.setCellTerrain(1, 1, ICE);
-		map.setCellTerrain(2, 1, TRAIL);
+		map.paintCell(1, 1, ICE);
+		map.paintCell(2, 1, TRAIL);
 		const auto filename = (glob2test::artifactDir() / "terrain-colors.png").string();
 		exportMapImage(fixture.game, filename);
 		auto *source = IMG_Load(filename.c_str());
@@ -1199,9 +1198,9 @@ TEST_SUITE("TerrainValidation")
 			for (int x = 0; x < 32; ++x)
 			{
 				if (x < 5)
-					map.setTerrain(x, y, 128);
+					map.paintCell(x, y, SAND);
 				if (x < 2)
-					map.setTerrain(x, y, 256);
+					map.paintCell(x, y, WATER);
 			}
 		// Every catalogue type as a 3x3 island on grass with a detached diagonal cell,
 		// five per row, so interior variants, boundaries and seams are all visible.
@@ -1215,21 +1214,21 @@ TEST_SUITE("TerrainValidation")
 			const int ox = 6 + int(n % 5) * 5, oy = int(n / 5) * 5; // rows 0..23 are rendered
 			for (int dy = 0; dy < 3; ++dy)
 				for (int dx = 0; dx < 3; ++dx)
-					map.setCellTerrain(ox + dx, oy + dy, types[n]);
-			map.setCellTerrain(ox + 3, oy + 3, types[n]);
+					map.paintCell(ox + dx, oy + dy, types[n]);
+			map.paintCell(ox + 3, oy + 3, types[n]);
 		}
 		// Water-side samples: deep and dark water meet open water and the beach; lava
 		// and a hole sit on the beach edge.
 		for (int y = 2; y < 6; ++y)
 			for (int x = 2; x < 4; ++x)
-				map.setCellTerrain(x, y, DEEP_WATER);
+				map.paintCell(x, y, DEEP_WATER);
 		for (int y = 8; y < 12; ++y)
 			for (int x = 2; x < 4; ++x)
-				map.setCellTerrain(x, y, DARK_WATER);
+				map.paintCell(x, y, DARK_WATER);
 		for (int y = 14; y < 17; ++y)
-			map.setCellTerrain(4, y, LAVA);
+			map.paintCell(4, y, LAVA);
 		for (int y = 19; y < 22; ++y)
-			map.setCellTerrain(4, y, VOID_HOLE);
+			map.paintCell(4, y, VOID_HOLE);
 		SceneMap scene;
 		scene.extract(map);
 		fixture.game.drawMapTerrain(0, 0, 31, 23, 0, 0, 0, Game::DRAW_WHOLE_MAP, scene);
@@ -1337,16 +1336,16 @@ TEST_SUITE("TerrainValidation")
 			for (int x = 0; x < 32; ++x)
 			{
 				if (x < 8)
-					map.setTerrain(x, y, 128);
+					map.paintCell(x, y, SAND);
 				if (x < 3)
-					map.setTerrain(x, y, 256);
+					map.paintCell(x, y, WATER);
 				if ((x - 17) * (x - 17) + (y - 10) * (y - 10) < 42)
-					map.setCellTerrain(x, y, ICE);
+					map.paintCell(x, y, ICE);
 				if (y == 20 || x == 25 || (x > 9 && x < 24 && y == x - 5))
-					map.setCellTerrain(x, y, TRAIL);
+					map.paintCell(x, y, TRAIL);
 			}
-		map.setCellTerrain(31, 0, ICE);
-		map.setCellTerrain(0, 0, TRAIL);
+		map.paintCell(31, 0, ICE);
+		map.paintCell(0, 0, TRAIL);
 		fixture.addUnit(WORKER, 17, 10);
 		fixture.addUnit(WORKER, 25, 20);
 		std::ofstream trace(glob2test::artifactDir() / "checksums.txt");
@@ -1389,7 +1388,7 @@ TEST_SUITE("TerrainValidation")
 			for (int y = 0; y < 32; ++y)
 				for (int x = 0; x < 32; ++x)
 				{
-					map.setCellTerrain(
+					map.paintCell(
 						x, y,
 						pattern ? ((x + y) % 3 == 0 ? ICE : ((x * 3 + y) % 5 == 0 ? TRAIL : GRASS))
 								: GRASS);

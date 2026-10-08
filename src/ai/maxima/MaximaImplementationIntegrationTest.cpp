@@ -500,7 +500,7 @@ static void reviewBugRegressions()
     // (19,30) on the home island for a target on the opposite shore.
     for(int y=0;y<64;++y) for(int x=0;x<64;++x) {
         const bool land=y>=5&&y<=55&&((x>=5&&x<=19)||(x>=26&&x<=45));
-        game.map.setTerrain(x,y,land?0:256);
+        game.map.paintCell(x, y, land?GRASS:WATER);
         game.map.setMapDiscovered(x,y,player.team->me);
     }
     c.gradients.invalidate();
@@ -1326,7 +1326,7 @@ static void explorerSwarmStaffingRegressions()
     for(int position:{30,50})
     {
         game.map.setResourceByIndex(position+6,position+1,WHEAT,1);
-        game.map.setCellTerrain(position+6,position+3,WATER);
+        game.map.paintCell(position+6,position+3,WATER);
     }
     // Swarm 0 runs empty; swarms 1 and 2 stay full. Staffing is each swarm's
     // own closed loop now, so there is no colony total to divide and no
@@ -1427,7 +1427,7 @@ static void economicResourceAccessRegressions()
     Unit* worker=game.addUnit(12,16,0,WORKER,0,0,0,0); REQUIRE(worker);
     // Both vertical water strips close the route around the toroidal map.
     for(int y=0;y<64;++y)
-    { game.map.setCellTerrain(0,y,WATER); game.map.setCellTerrain(16,y,WATER); }
+    { game.map.paintCell(0,y,WATER); game.map.paintCell(16,y,WATER); }
     for(int y=0;y<64;++y) for(int x=0;x<64;++x) game.map.setMapDiscovered(x,y,player.team->me);
     game.map.setResourceByIndex(13,20,WHEAT,1);
     game.map.setResourceByIndex(19,11,WHEAT,1);
@@ -1458,7 +1458,7 @@ static void economicResourceAccessRegressions()
     // Sharing connectivity must preserve algae's unit counts and shore access.
     game.map.setResourceByIndex(16,24,ALGA,1);
     game.map.setResourceAmount(game.map.coordToIndex(16,24), 4);
-    for(int y=18;y<=21;++y) for(int x=20;x<=23;++x) game.map.setCellTerrain(x,y,WATER);
+    for(int y=18;y<=21;++y) for(int x=20;x<=23;++x) game.map.paintCell(x,y,WATER);
     game.map.setResourceByIndex(21,19,ALGA,1);
     game.map.setResourceAmount(game.map.coordToIndex(21,19), 3);
     ai.update_environment_model(c);
@@ -1696,7 +1696,7 @@ TEST_SUITE("Maxima.Implementation")
         glob2test::HeadlessGlobals globals;
         glob2test::HeadlessGame fixture(glob2test::GameOptions{.header=true});
         auto& map=fixture.game.map; map.setSize(4,4,WATER);map.setGame(&fixture.game);
-        for(int x=0;x<16;++x) map.setCellTerrain(x,1,GRASS);
+        for(int x=0;x<16;++x) map.paintCell(x,1,GRASS);
         Player& player=*fixture.game.players[0];
         Gradients::GradientManager manager(&player),restored(&player);
         auto observation=AIEngine::AIWorldView::capture(fixture.game,AIEngine::AIWorldView::captureCatalog(fixture.game));
@@ -1708,7 +1708,7 @@ TEST_SUITE("Maxima.Implementation")
         geometric.add_source(new Gradients::Entities::Position(0,1));
         REQUIRE(manager.get_gradient(walking).get_height(4,1)==4);
         REQUIRE(manager.get_gradient(geometric).get_height(4,1)==4);
-        for(int x=0;x<16;++x) map.setCellTerrain(x,1,TRAIL);
+        for(int x=0;x<16;++x) map.paintCell(x,1,TRAIL);
         manager.unbind();
         observation=AIEngine::AIWorldView::capture(fixture.game,observation->catalog);
         manager.bind(*observation,player.number,player.team->teamNumber);
@@ -1813,10 +1813,10 @@ TEST_CASE("Maxima food catchments and carrier discounts follow trail and ice tra
     const int innType=globalContainer->buildingsTypes.getTypeNum("inn",0,false);
     const auto* type=globalContainer->buildingsTypes.get(innType);
     for(int dy=0;dy<type->height;++dy)for(int dx=0;dx<type->width;++dx)
-        map.setCellTerrain(2+dx,2+dy,GRASS);
+        map.paintCell(2+dx,2+dy,GRASS);
     auto* inn=game.addBuilding(2,2,innType,0);REQUIRE(inn);
     const int sx=inn->posX+inn->type->width,sy=inn->posY;
-    for(int dx=0;dx<=4;++dx)map.setCellTerrain(sx+dx,sy,GRASS);
+    for(int dx=0;dx<=4;++dx)map.paintCell(sx+dx,sy,GRASS);
     map.setResourceByIndex(sx+4,sy,WHEAT,1);
     AIMaxima::Farming::ExactFertilityCache fertility;
     fertility.rebuild(32,32,std::vector<uint8_t>(1024),std::vector<uint8_t>(1024));

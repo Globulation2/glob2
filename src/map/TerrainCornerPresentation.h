@@ -1,7 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #pragma once
 #include "TerrainRegistry.h"
-#include "LegacyTerrainFrames.h"
 #include <algorithm>
 #include <array>
 
@@ -26,19 +25,4 @@ inline TerrainType dominantCornerTerrain(const std::array<TerrainType, 4> &corne
 		}
 	}
 	return best;
-}
-
-// The sprite frame the classic renderer draws the cell with: a classic corner
-// pattern's frame range, else the dominant terrain's range, varied by position.
-inline std::uint16_t legacyCellFrame(const TerrainRegistry &registry, const std::array<TerrainType, 4> &corners,
-									  int x, int y)
-{
-	const auto hash = terrainVisualHash(x, y);
-	if (std::all_of(corners.begin(), corners.end(), classicTerrain))
-	{
-		const auto &range = legacyClassicFrames(corners[0], corners[1], corners[2], corners[3]);
-		return std::uint16_t(range[0] + hash % range[1]);
-	}
-	const auto &frames = registry.compatibility(dominantCornerTerrain(corners));
-	return std::uint16_t(frames.firstFrame + hash % frames.variants);
 }

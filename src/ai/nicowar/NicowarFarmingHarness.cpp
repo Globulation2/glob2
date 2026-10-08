@@ -82,7 +82,7 @@ TEST_SUITE("NicowarFarming")
 		{
 			Fixture f;
 			auto& map = f.game.map;
-			for (int y=0; y<64; ++y) map.setCellTerrain(0,y,WATER);
+			for (int y=0; y<64; ++y) map.paintCell(0,y,WATER);
 			for (int x : {5, 6, 7, 9, 10}) map.setResourceByIndex(x, 9, WOOD, 0);
 			map.setResourceByIndex(4, 9, WHEAT, 0);
 			map.setResourceByIndex(5, 20, WOOD, 0);
@@ -107,7 +107,7 @@ TEST_SUITE("NicowarFarming")
 			// This block tests adjacency of actual spreading threats. The old
 			// all-grass fixture had zero ecological growth everywhere.
 			for(int x:{18,38,48,61}) for(int y=0;y<64;++y)
-				map.setCellTerrain(x,y,WATER);
+				map.paintCell(x,y,WATER);
 			const int directions[][2] = {{-1,0}, {1,0}, {0,-1}, {0,1}, {-1,-1}, {-1,1}, {1,-1}, {1,1}};
 			for (int i=0; i<8; ++i)
 			{
@@ -142,7 +142,7 @@ TEST_SUITE("NicowarFarming")
 		glob2test::HeadlessGlobals globals;
 		Fixture f(true), baseline;
 		auto setup=[](Map& map) {
-			for (int y=0; y<64; ++y) for (int x=0; x<6; ++x) map.setUMatPos(x, y, WATER, 1);
+			for (int y=0; y<64; ++y) for (int x=0; x<6; ++x) map.paintVertexSquare(x, y, WATER, 1);
 			for (int y=10; y<14; ++y) for (int x=9; x<13; ++x) map.setResourceByIndex(x, y, WHEAT, 0);
 			map.setResourceByIndex(11, 11, WOOD, 0);
 			map.addForbidden(9, 11, 0);

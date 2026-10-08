@@ -171,7 +171,7 @@ static void tiledCapture(bool hd = false)
     gui.init();
     makeTorusMapFixture(gui.game, 64, 64);
     for (int y = 0; y < 64; ++y) for (int x = 0; x < 64; ++x)
-        gui.game.map.setUMatPos(x, y, GRASS, 1);
+        gui.game.map.paintVertexSquare(x, y, GRASS, 1);
     gui.localPlayer = gui.localTeamNo = 0;
     gui.adjustLocalTeam();
     gui.selectionMode = GameGUI::TOOL_SELECTION;

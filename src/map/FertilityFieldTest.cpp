@@ -117,8 +117,8 @@ namespace
 		}
 		~TinyMap() { w = h = wMask = hMask = wDec = hDec = 0; size = 0; }
 
-		void makeWater(int x, int y) { setCellTerrain(x,y,WATER); }
-		void makeSand(int x, int y) { setCellTerrain(x,y,SAND); }
+		void makeWater(int x, int y) { paintCell(x,y,WATER); }
+		void makeSand(int x, int y) { paintCell(x,y,SAND); }
 		void putResource(int x, int y, int type)
 		{
 			replaceResource(x, y, Resource{static_cast<Uint8>(type), 0, 1, 0});
@@ -320,9 +320,9 @@ TEST_CASE("cached ecology changes after canonical terrain mutation")
     map.makeWater(9,8);
     const auto watered=map.resourceGrowthField().landField().at(8,8);
     CHECK(watered>initial);
-    map.setCellTerrain(8,8,TRAIL);
+    map.paintCell(8,8,TRAIL);
     CHECK(map.resourceGrowthRateAt(map.coordToIndex(8,8),WHEAT)==0);
-    map.setCellTerrain(8,8,GRASS);
+    map.paintCell(8,8,GRASS);
     CHECK(map.resourceGrowthRateAt(map.coordToIndex(8,8),WHEAT)>0);
 }
 
@@ -339,8 +339,8 @@ TEST_CASE("habitat and movement edits reuse exact ecology fields")
     // A lone sand vertex makes the four cells around it shore, without sand's inhibition.
     for(const auto type : {TRAIL,ICE,SAND,GRASS})
     {
-        if (type==SAND) { map.setCellTerrain(index,GRASS); map.setVertexTerrain(7,8,SAND); }
-        else map.setCellTerrain(index,type);
+        if (type==SAND) { map.paintCell(index,GRASS); map.setVertexTerrain(7,8,SAND); }
+        else map.paintCell(index,type);
         // This also checks validity after each edit's terrain-generation bump.
         REQUIRE(cache.validFor(map));
         CHECK(map.resourceGrowthField().landField().values()==land);

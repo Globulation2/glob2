@@ -76,8 +76,8 @@ TEST_SUITE("AIRecoveryCoverage")
         glob2test::HeadlessGlobals globals;
         glob2test::HeadlessGame w(glob2test::GameOptions{
             .terrain=WATER,.discovered=true,.clearImmobile=true,.loadDefaultRace=true,.header=true});
-        for (int y=2;y<12;++y) for (int x=2;x<12;++x) w.game.map.setTerrain(x,y,GRASS);
-        for (int y=18;y<28;++y) for (int x=18;x<28;++x) w.game.map.setTerrain(x,y,GRASS);
+        for (int y=2;y<12;++y) for (int x=2;x<12;++x) w.game.map.paintCell(x, y, GRASS);
+        for (int y=18;y<28;++y) for (int x=18;x<28;++x) w.game.map.paintCell(x, y, GRASS);
         w.addBuilding("swarm",4,4);
         auto* player=w.game.players[0];
         auto empty=Cortex::assessSwim(player,true);
@@ -100,14 +100,14 @@ TEST_SUITE("AIRecoveryCoverage")
         glob2test::HeadlessGlobals globals;
         glob2test::HeadlessGame w(glob2test::GameOptions{
             .terrain=WATER,.teams=2,.discovered=true,.clearImmobile=true,.loadDefaultRace=true,.header=true});
-        for (int y=2;y<12;++y) for (int x=2;x<12;++x) w.game.map.setTerrain(x,y,GRASS);
-        for (int y=18;y<28;++y) for (int x=18;x<28;++x) w.game.map.setTerrain(x,y,GRASS);
+        for (int y=2;y<12;++y) for (int x=2;x<12;++x) w.game.map.paintCell(x, y, GRASS);
+        for (int y=18;y<28;++y) for (int x=18;x<28;++x) w.game.map.paintCell(x, y, GRASS);
         w.addBuilding("swarm",4,4); w.addBuilding("swarm",20,20,0,1);
         auto water=Cortex::assessAmphibious(w.game.players[0],20,20,nullptr,nullptr,0,2,8);
         CHECK(water.amphibious==1); CHECK(water.landDist==-1); CHECK(water.swimDist>=0);
         CHECK(water.landingValid==1);
         CHECK(!w.game.map.isWater(water.landingX,water.landingY));
-        for (int y=0;y<32;++y) for (int x=0;x<32;++x) w.game.map.setTerrain(x,y,GRASS);
+        for (int y=0;y<32;++y) for (int x=0;x<32;++x) w.game.map.paintCell(x, y, GRASS);
         auto land=Cortex::assessAmphibious(w.game.players[0],20,20,nullptr,nullptr,0,2,8);
         CHECK(land.amphibious==0); CHECK(land.landDist>=0);
     }
@@ -150,7 +150,7 @@ TEST_SUITE("AIRecoveryCoverage")
             .teams=2,.discovered=true,.clearImmobile=true,.loadDefaultRace=true,.header=true});
         w.game.gameHeader.getExperiments().set(ExperimentId::FarmAreas);
         w.addBuilding("inn",4,4);
-        for(int y=14; y<18; ++y) for(int x=7; x<13; ++x) w.game.map.setTerrain(x,y,256);
+        for(int y=14; y<18; ++y) for(int x=7; x<13; ++x) w.game.map.paintCell(x, y, WATER);
         for(int y=7; y<13; ++y) for(int x=7; x<13; ++x) w.game.map.setResourceByIndex(x,y,WHEAT,1);
         w.game.map.setMapDiscovered();
         std::fill(w.game.map.fogOfWar,w.game.map.fogOfWar+32*32,~Uint32(0));

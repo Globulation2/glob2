@@ -63,7 +63,6 @@ struct Offset
 // a 1x1 piece of map
 struct Tile
 {
-	Uint16 terrain = 0; // default, not really meaningful.
 	Uint16 building = NOGBID;
 
 	Resource resource;
@@ -185,7 +184,6 @@ class Map
 	void changeCellRule(size_t index, std::uint16_t rule);
 	void writeVertex(size_t index, TerrainType type);
 	// A table shared with a snapshot (use_count above one) is cloned before it gains a rule.
-	bool deferredVertexWrites = false;
 	// Re-derives every cell after a bulk vertex change, keeping the rule table.
 	void rederiveAllCells();
 	void bindCellRules();
@@ -273,7 +271,6 @@ public:
 
 	void saveRuntimeState(GAGCore::OutputStream *stream) const;
 	void loadRuntimeState(GAGCore::InputStream *stream, Sint32 versionMinor);
-	//! Type of terrain (used for undermap)
 
 	// === Tile geometry (cross-slice) ===
 	//! Bit-shift converting a tile index to its top-left pixel coordinate
@@ -511,13 +508,6 @@ public:
 		return getTile(size_t(coordToIndex(x, y)));
 	}
 
-	//! Transitional: the classic sprite frame that would have drawn this cell.
-	//! Derived from the cell's corners; removed once the renderer reads vertices.
-	Uint16 getTerrain(int x, int y) const { return getTerrain(size_t(coordToIndex(x, y))); }
-	Uint16 getTerrain(size_t pos) const;
-	//! Transitional: the corner type that dominates a cell, for presentation only.
-	TerrainType presentationTypeAt(size_t index) const;
-	TerrainType presentationTypeAt(int x, int y) const { return presentationTypeAt(size_t(coordToIndex(x, y))); }
 
 	//! Canonical gameplay identity; never inferred from art in a simulation query.
 	const TerrainRegistry &terrainRegistry() const { return *terrainRegistryValue; }
@@ -535,10 +525,6 @@ public:
 		return terrainRegistryValue->presentation(type);
 	}
 	bool validTerrainType(unsigned type) const { return terrainRegistryValue->valid(type); }
-	bool terrainUsesLegacyCorners(TerrainType type) const
-	{
-		return terrainRegistry().compatibility(type).legacyCorners;
-	}
 	void importTerrainDefinitions(std::string_view json);
 	// === Vertex terrain ===
 	TerrainType vertexTerrainAt(size_t index) const { return vertexTerrain[index]; }
@@ -625,9 +611,10 @@ public:
 		TerrainEditBatch& operator=(const TerrainEditBatch&) = delete;
 	};
 	TerrainEditBatch editTerrain() { return TerrainEditBatch(*this); }
-	//! Transitional: every corner of the cell becomes type.
-	void setCellTerrain(size_t index, TerrainType type);
-	void setCellTerrain(int x, int y, TerrainType type) { setCellTerrain(coordToIndex(x,y), type); }
+	//! Paints the four corner vertices of a cell, so the cell becomes uniform
+	//! and the cells around it transitions. No beaches are laid.
+	void paintCell(size_t index, TerrainType type);
+	void paintCell(int x, int y, TerrainType type) { paintCell(coordToIndex(x,y), type); }
 	int getTerrainType(int x, int y) const
 	{
 		const auto type = terrainTypeAt(x,y);
@@ -690,7 +677,6 @@ public:
 	const Tile getTile(size_t index) const
 	{
 		Tile tile;
-		tile.terrain = getTerrain(index);
 		tile.resource = resourceCells[index].resource;
 		tile.fertility = resourceCells[index].fertility;
 		tile.canResourcesGrow = resourceCells[index].mayGrow;
@@ -741,8 +727,6 @@ public:
 		return exploredArea[team][coordToIndex(x, y)];
 	}
 	
-	// Transitional: paints the corners a classic sprite frame drew.
-	void setTerrain(int x, int y, Uint16 terrain);
 
 	//! A bump throws away every cached route field in the game, so only paint
 	//! a tile that is not already in the state being asked for.
@@ -953,16 +937,6 @@ public:
 	//! Return a sector in the sector array. It is not clean because too high level
 	Sector *getSector(int i) { assert(i>=0); assert(i<sizeSector); return sectors+i; }
 
-	//! Transitional vertex adapters for the former undermap API. Like the
-	//! undermap, these writes reach the cells only at the next rebuildTerrain().
-	void setUMTerrain(int x, int y, TerrainType t);
-	TerrainType getUMTerrain(int x, int y) const { return vertexTerrainAt(x, y); }
-	//! Paints the vertex square of side l+1 around (x,y) with t. Grass and water
-	//! never touch: an opposite vertex next to a written one becomes sand.
-	void setUMatPos(int x, int y, TerrainType t, int l);
-	//! Transitional editor brush: all four corners of every listed cell become t,
-	//! with the sand rule of setUMatPos applied to corners outside that set.
-	void paintLegacyCells(const std::vector<std::pair<int, int>> &cells, TerrainType t);
 
 	//! With l==0, it will remove no resource. (Unaligned coordinates)
 	void setNoResource(int x, int y, int l);
@@ -1205,8 +1179,6 @@ public:
 	Sint32 wDec, hDec;
 	
 public:
-	//! Transitional: re-derives the cells after setUMTerrain writes.
-	void rebuildTerrain();
     // here we handle terrain
 	// mapDiscovered
 	bool arraysBuilt; // if true, the next pointers(arrays) have to be valid and filled.
@@ -1375,9 +1347,6 @@ public:
 	void dumpGradient(Uint8 *gradient, const std::string filename = "gradient.dump.pgm");
 
 public:
-	void makeHomogenMap(TerrainType terrainType);
-    GAGCore::CooperativeTask makeHomogenMapTask(TerrainType terrainType);
-	void controlSand(void);
 	void smoothResources(int times);
 
 private:

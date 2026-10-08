@@ -226,7 +226,7 @@ TEST_CASE("empty and prohibited resource cells do not acquire bonus growth")
     map.rebuildGrowthCoverage();
     Fertility::applyGrowthOpportunities(map,12,12,4*Fertility::kRateScale,1);
     CHECK(map.getResource(12,12).type==NO_RES_TYPE);
-    map.setCellTerrain(12,12,TRAIL);
+    map.paintCell(12,12,TRAIL);
     auto resource=map.getResource(12,12);
     resource.type=WHEAT;resource.amount=1;resource.variety=0;
     map.replaceResource(12,12,resource);

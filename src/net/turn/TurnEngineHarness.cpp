@@ -881,10 +881,10 @@ TEST_SUITE("TurnEngineHarness")
 					{
 						const auto original = map.terrainTypeAt(x, y);
 						if (original == GRASS && (x + y) % 3 == 0)
-							map.setCellTerrain(x, y,
+							map.paintCell(x, y,
 											   *map.terrainRegistry().find("distribution:mud"));
 						else if (original == WATER)
-							map.setCellTerrain(x, y,
+							map.paintCell(x, y,
 											   *map.terrainRegistry().find("distribution:water"));
 					}
 			}

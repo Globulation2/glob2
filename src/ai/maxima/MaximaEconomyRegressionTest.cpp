@@ -86,7 +86,7 @@ struct Fixture
     void supply(int x,int y)
     {
         game.map.setResourceByIndex(x+6,y+1,WHEAT,1);
-        game.map.setCellTerrain(x+6,y+3,WATER);
+        game.map.paintCell(x+6,y+3,WATER);
     }
     int population() const
     {
@@ -235,7 +235,7 @@ void growingFoodFundsCapacity()
 {
     Fixture f; f.swarm(10,10,0); f.supply(10,10);
     for(int y=8;y<=24;++y) for(int x=21;x<=35;++x)
-        f.game.map.setCellTerrain(x,y,WATER);
+        f.game.map.paintCell(x,y,WATER);
     auto& ai=*f.ai; auto& c=ai.context; c.initialize();
     ai.snapshot.population=120; ai.snapshot.workers=90;
     ai.update_environment_model(c); glob2test::withMaximaObservation(ai.context,[&]() -> decltype(auto) {return ai.build_policy_bids();}); glob2test::withMaximaObservation(ai.context,[&]() -> decltype(auto) {return ai.arbitrate_policy_bids();});
@@ -266,7 +266,7 @@ void distantWheatFundsRecovery()
     REQUIRE(ai.budget.swarm_workers==0);
     f.game.map.setResourceByIndex(36,11,WHEAT,1);
     // A full water barrier (including the wrap edge) cuts off nonswimmers.
-    for(int y=0;y<64;++y)for(int x:{0,25})f.game.map.setCellTerrain(x,y,WATER);
+    for(int y=0;y<64;++y)for(int x:{0,25})f.game.map.paintCell(x,y,WATER);
     ai.fertility_cache=AIMaxima::Farming::ExactFertilityCache();
     ai.budget.can_swim=false;
     ai.update_environment_model(c);glob2test::withMaximaObservation(ai.context,[&]() -> decltype(auto) {return ai.build_policy_bids();});glob2test::withMaximaObservation(ai.context,[&]() -> decltype(auto) {return ai.arbitrate_policy_bids();});
@@ -1035,7 +1035,7 @@ FeedingSceneResult measureFeedingScene(const char* label,int stage,int distance,
         // population arbitrarily far away. Harvestable inputs are replenished
         // at source, never in the building: real workers must deliver them.
         for(int y=0;y<64;++y)for(int x=0;x<64;++x)
-            if(x<8 || y<8 || x>48 || y>48)world.game.map.setCellTerrain(x,y,WATER);
+            if(x<8 || y<8 || x>48 || y>48)world.game.map.paintCell(x,y,WATER);
         auto* inn=world.addBuilding("inn",16,16,stage);
         auto order=std::make_shared<OrderModifyBuilding>(inn->gid,plan.carriers);order->sender=0;world.game.executeOrder(order,0);
         for(int unit=0;unit<population;++unit) {
@@ -1899,10 +1899,10 @@ TEST_CASE("custom construction supply counts reachable mixed yields and shore ac
     const auto resource=f.game.map.resourceRegistry().find("test:mixed-shore-stock");
     REQUIRE(resource.has_value());
     auto* worker=f.game.addUnit(20,20,0,WORKER,0,0,0,0);REQUIRE(worker);
-    f.game.map.setCellTerrain(21,20,WATER);
+    f.game.map.paintCell(21,20,WATER);
     f.game.map.setResource(21,20,*resource,0);
     for(int dy=-1;dy<=1;++dy)for(int dx=-1;dx<=1;++dx)
-        if(dx||dy)f.game.map.setCellTerrain(40+dx,40+dy,WATER);
+        if(dx||dy)f.game.map.paintCell(40+dx,40+dy,WATER);
     f.game.map.setResource(40,40,*resource,0);
     f.game.map.fogOfWar[f.game.map.coordToIndex(21,20)]|=f.player.team->me;
     f.game.map.fogOfWar[f.game.map.coordToIndex(40,40)]|=f.player.team->me;

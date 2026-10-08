@@ -1,8 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
-// The resource-fraying pass the random generators share, and the transitional in-place sand pass
-// that map tools still call (generators use the order-independent Map::layBeaches). Kept out of
+// The resource-fraying pass the random generators share. Kept out of
 // MapTerrain.cpp on purpose: smoothResources needs globalContainer's resource types, and the test
 // build links MapTerrain.cpp against a stripped server-mode libgag that has no globalContainer
 // (test/SConstruct).
@@ -11,25 +10,6 @@
 #include "MapInternal.h"
 #include "Unit.h"
 #include "Utilities.h"
-
-///Transitional: cares for the sand so water is never next to grass, in raster order.
-void Map::controlSand(void)
-{
-	auto batch = editTerrain();
-	for (int y=0; y<h; y++)
-		for (int x=0; x<w; x++)
-		{
-			const auto tt=vertexTerrainAt(x, y);
-			if (tt!=WATER && tt!=GRASS)
-				continue;
-			// Water next to grass, or grass next to water, becomes sand.
-			const auto clash = tt==WATER ? GRASS : WATER;
-			for (int dy=-1; dy<=1; dy++)
-				for (int dx=-1; dx<=1; dx++)
-					if (vertexTerrainAt(x+dx, y+dy)==clash)
-						setVertexTerrain(x, y, SAND);
-		}
-}
 
 // The random generators' closing pass (nuage, 2002): the resource growth step run over the whole map
 // `times` times, without its water test, to fray the square deposits setResource stamps into

@@ -629,8 +629,8 @@ TEST_SUITE("WorldSnapshot")
 		glob2test::HeadlessGame fixture{glob2test::GameOptions{.wDec=5, .hDec=5, .teams=1, .discovered=true, .clearImmobile=true, .loadDefaultRace=true}};
 		auto& game = fixture.game;
 		for (int y = 0; y < game.map.getH(); ++y) {
-			for (int x = 0; x < 8; ++x) game.map.setUMatPos(x, y, WATER, 1);
-			for (int x = 8; x < 16; ++x) game.map.setUMatPos(x, y, SAND, 1);
+			for (int x = 0; x < 8; ++x) game.map.paintVertexSquare(x, y, WATER, 1);
+			for (int x = 8; x < 16; ++x) game.map.paintVertexSquare(x, y, SAND, 1);
 		}
 		SimulationSnapshot::Store store;
 		auto checkParity = [&] {

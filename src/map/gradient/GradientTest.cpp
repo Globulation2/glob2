@@ -68,8 +68,8 @@ namespace
 			size = 0;
 		}
 		size_t cells() const { return size; }
-		void putWater(int x, int y) { setCellTerrain(x,y,WATER); }
-		void putWaterAt(size_t i) { setCellTerrain(i,WATER); }
+		void putWater(int x, int y) { paintCell(x,y,WATER); }
+		void putWaterAt(size_t i) { paintCell(i,WATER); }
 
 		// The kernel before the low-level rewrite, kept verbatim as a differential oracle.
 		void legacyPropagateGradient(Uint16 *gradient, int swimClass, int maxCost = GRADIENT_COST_LIMIT) const

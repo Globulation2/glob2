@@ -3334,7 +3334,7 @@ class GameGUITouchHarness
 		auto &map = gui.game.map;
 		for (int y = 30; y < 50; ++y)
 			for (int x = 30; x < 50; ++x) {
-				map.setUMTerrain(x,y,GRASS);
+				map.setVertexTerrain(x,y,GRASS);
 				map.setNoResource(x,y,1);
 			}
 		auto *worker = gui.game.addUnit(40,40,0,WORKER,0,255,0,0);

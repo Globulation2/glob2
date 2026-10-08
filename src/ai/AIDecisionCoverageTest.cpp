@@ -55,9 +55,9 @@ struct World
                 // A lake south of the field, and a second field with its own lake
                 // east of the inn, inside the colony region Cortex scans.
                 for (int y=25+offset; y<30+offset; ++y)
-                    for (int x=4+offset; x<20+offset; ++x) world.game.map.setUMatPos(x,y,WATER,1);
+                    for (int x=4+offset; x<20+offset; ++x) world.game.map.paintVertexSquare(x,y,WATER,1);
                 for (int y=0+offset; y<15+offset; ++y)
-                    for (int x=24+offset; x<30+offset; ++x) world.game.map.setUMatPos(x,y,WATER,1);
+                    for (int x=24+offset; x<30+offset; ++x) world.game.map.paintVertexSquare(x,y,WATER,1);
                 for (int y=1+offset; y<10+offset; ++y)
                     for (int x=16+offset; x<22+offset; ++x) world.game.map.setResourceByIndex(x,y,WHEAT,1);
             }

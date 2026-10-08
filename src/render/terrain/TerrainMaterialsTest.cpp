@@ -38,7 +38,7 @@ TEST_SUITE("TerrainMaterials")
 		glob2test::HeadlessGame fixture({.wDec = 6, .hDec = 5, .discovered = true});
 		for (int y = 0; y < 32; ++y)
 			for (int x = 32; x < 48; ++x)
-				fixture.game.map.setCellTerrain(x, y, ICE);
+				fixture.game.map.paintCell(x, y, ICE);
 		SceneMap scene;
 		scene.extract(fixture.game.map);
 		SoftwareTerrainCache cache;

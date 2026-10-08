@@ -276,10 +276,10 @@ TEST_CASE("lazy placement hard space matches canonical rectangles and refreshes 
         map.setResource(0,0,*ground,0);map.setBuilding(0,0,1,1,0);
         {const auto cells = map.cellView(); Cortex::HardSpaceView view(cells);CHECK_FALSE(view.at(0,0));} // No ignored occupant.
         compare();
-        map.setBuilding(0,0,1,1,NOGBID);map.setCellTerrain(0,0,WATER);
+        map.setBuilding(0,0,1,1,NOGBID);map.paintCell(0,0,WATER);
         {const auto cells = map.cellView(); Cortex::HardSpaceView view(cells);CHECK_FALSE(view.at(0,0));}
         compare();
-        map.setCellTerrain(0,0,GRASS);
+        map.paintCell(0,0,GRASS);
         {const auto cells = map.cellView(); Cortex::HardSpaceView view(cells);CHECK(view.at(0,0));} // A fresh pass sees mutations.
         compare();
     }
