@@ -177,14 +177,15 @@ GAGCore::CooperativeTask Game::loadTask(GAGCore::InputStream *stream)
 	if (!tempMapHeader.load(stream))
 		co_return false;
 	mapHeader=tempMapHeader;
-	Sint32 versionMinor=mapHeader.getVersionMinor();
+	mapHeader.resolveGrowthLayout(stream);
+	Sint32 versionMinor=mapHeader.loadingVersion();
 
 
 	// We load the game header
 	GameHeader tempGameHeader;
 	if (verbose)
 		printf("Loading game header\n");
-	if (!tempGameHeader.load(stream, versionMinor))
+	if (!tempGameHeader.load(stream, versionMinor, mapHeader.historicalGrowthLayout ? mapHeader.getVersionMinor() : 0))
 		co_return false;
 	gameHeader=tempGameHeader;
 	// Resolve before any entity takes a descriptor pointer. Older files must
@@ -301,7 +302,7 @@ GAGCore::CooperativeTask Game::loadTask(GAGCore::InputStream *stream)
 	if(versionMinor >= FILE_FORMAT_VERSION_USL_MAPSCRIPT)
 	{
 		// This is the new map script system
-		if (!mapscript.decodeData(stream, mapHeader.getVersionMinor()))
+		if (!mapscript.decodeData(stream, versionMinor))
 			co_return false;
 	}
 
@@ -821,6 +822,9 @@ void Game::save(GAGCore::OutputStream *stream, bool fileIsAMap, const std::strin
 
 Uint32 Game::checkSum(std::vector<Uint32> *checkSumsVector, std::vector<Uint32> *checkSumsVectorForBuildings, std::vector<Uint32> *checkSumsVectorForUnits, bool heavy)
 {
+    // Explicit verification may join future work. Network checksums retain
+    // their full live-map coverage without shortening worker deadlines.
+    const bool includePending = heavy;
 	Uint32 cs=0;
 
 	Uint32 headerCs=mapHeader.checkSum();
@@ -864,7 +868,7 @@ Uint32 Game::checkSum(std::vector<Uint32> *checkSumsVector, std::vector<Uint32> 
 			break;
 		}
 	}
-	Uint32 mapCs=map.checkSum(heavy);
+	Uint32 mapCs=map.checkSum(heavy, includePending);
 	cs^=mapCs;
 	if (checkSumsVector)
 		checkSumsVector->push_back(mapCs);// [3+t*20+p*2]

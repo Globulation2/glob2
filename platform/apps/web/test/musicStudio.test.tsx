@@ -1,4 +1,5 @@
 // @vitest-environment jsdom
+vi.mock('../src/state.tsx', () => ({ useSession: () => ({ account: { id: 'owner' } }) }));
 import { afterEach, beforeEach, expect, it, vi } from 'vitest';
 import { render, screen, fireEvent, cleanup, waitFor } from '@testing-library/react';
 import { MusicWorkspace } from '../src/pages/music-studio/Workspace.tsx';
@@ -150,7 +151,7 @@ it('keeps an active last-credit generation inspectable but disables new paid wor
   );
   await screen.findByText('Your composer is working…');
   expect(
-    (screen.getByRole('button', { name: /Compose soundtrack/ }) as HTMLButtonElement).disabled,
+    screen.getByRole('button', { name: 'Send' }).getAttribute('aria-disabled') === 'true',
   ).toBe(true);
   await waitFor(() => expect(screen.queryByTestId('music-player')).toBeNull());
 });
@@ -158,10 +159,10 @@ it('provides keyboard resizing and keeps edits unsent until explicitly submitted
   render(<MusicWorkspace {...props} draft="Make the calm arrangement more spacious" />);
   const separator = screen.getByRole('separator');
   fireEvent.keyDown(separator, { key: 'ArrowRight' });
-  expect(separator.getAttribute('aria-valuenow')).toBe('38');
+  expect(separator.getAttribute('aria-valuenow')).toBe('42');
   expect(
-    (screen.getByRole('button', { name: /Compose soundtrack/ }) as HTMLButtonElement).disabled,
-  ).toBe(true);
+    screen.getByRole('button', { name: 'Send' }).getAttribute('aria-disabled') === 'true',
+  ).toBe(false);
 });
 
 it('aligns comparisons only when both duration and musical timeline match', async () => {
@@ -388,3 +389,31 @@ it('ignores a stale release response after switching versions', async () => {
   );
   await waitFor(() => expect(screen.getByTestId('music-player').textContent).toContain('music1'));
 });
+
+it.each(['click', 'Enter'])(
+  'opens Music credits on zero-balance %s and retains the prompt',
+  (method) => {
+    const openCredits = vi.fn();
+    const send = vi.fn();
+    render(
+      <MusicWorkspace
+        {...props}
+        wallet={{ ...props.wallet, available: 0 }}
+        draft="Make this melody calmer."
+        send={send}
+        openCredits={openCredits}
+      />,
+    );
+    if (method === 'click') fireEvent.click(screen.getByRole('button', { name: /^Send$/ }));
+    else
+      fireEvent.keyDown(screen.getByRole('textbox', { name: 'Your idea or next change' }), {
+        key: 'Enter',
+      });
+    expect(openCredits).toHaveBeenCalledOnce();
+    expect(send).not.toHaveBeenCalled();
+    expect(
+      (screen.getByRole('textbox', { name: 'Your idea or next change' }) as HTMLTextAreaElement)
+        .value,
+    ).toBe('Make this melody calmer.');
+  },
+);

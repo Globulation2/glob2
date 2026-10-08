@@ -76,9 +76,10 @@ export async function aiStudioRoutes(app: FastifyInstance) {
     runner?.stop();
     await pending;
   });
-  const account = async (r: FastifyRequest) => {
+  const account = async (r: FastifyRequest, generation = false) => {
     const { account } = await requireAccount(app.identity, r);
-    if (!config?.enabled) throw apiError('not_found', 'AI Studio is not enabled on this instance.');
+    if (generation && !config?.enabled)
+      throw apiError('not_found', 'AI Studio is not enabled on this instance.');
     return account;
   };
   const idOf = (r: FastifyRequest) => body(Strict({ id: Uuid }), r.params).id;
@@ -257,7 +258,7 @@ export async function aiStudioRoutes(app: FastifyInstance) {
   );
   app.post(ROOT + '/projects/:id/requests', async (r, reply) =>
     guard(async () => {
-      const a = await account(r),
+      const a = await account(r, true),
         v = body(AiStudioCommand, r.body);
       await enforce(requests, a.id, reply, 'Too many Studio requests.');
       if (!runner || v.budget > (config?.maxRequestCredits ?? 0))

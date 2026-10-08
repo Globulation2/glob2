@@ -5604,6 +5604,30 @@ Minereu de fier
 Silice
 [Cotton]
 Bumbac
+[Jungle trees]
+Arbori de junglă
+[Pine trees]
+Pini
+[Dead trees]
+Arbori morți
+[Ruins]
+Ruine
+[Camp-site]
+Tabără
+[Ancient debris]
+Resturi străvechi
+[Scrub]
+Tufăriș
+[Tall grass]
+Iarbă înaltă
+[Maize]
+Porumb
+[Potatoes]
+Cartofi
+[Rice]
+Orez
+[Fish]
+Pești
 [Reroll terrain look]
 Alege din nou aleatoriu aspectul terenului
 [boulders]

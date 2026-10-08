@@ -119,8 +119,11 @@ class WebAssetPlanTests(unittest.TestCase):
         for resource in json.loads((ROOT / 'data/resources/registry.json').read_text())['resources']:
             prefix = resource['presentation']['sprite']
             self.assertIn(prefix.removeprefix('data/gfx/'), web_assets.game_sprites(ROOT))
-        for key in ('gold-ore', 'iron-ore', 'silica', 'cotton'):
-            self.assertEqual(self.owner['data/gfx/resource-' + key + '0.png'], 'game')
+            if prefix != 'data/gfx/ressource':
+                frames = sorted((ROOT / 'data/gfx').glob(Path(prefix).name + '[0-9]*.png'))
+                self.assertTrue(frames, prefix)
+                for frame in frames:
+                    self.assertEqual(self.owner[frame.relative_to(ROOT).as_posix()], 'game')
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
             (root / 'src/app').mkdir(parents=True)

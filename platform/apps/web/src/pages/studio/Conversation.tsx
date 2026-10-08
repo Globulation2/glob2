@@ -1,3 +1,4 @@
+import { Icon } from '../../icons.tsx';
 import { useEffect, useRef, useState } from 'react';
 import { ART } from '../../art.tsx';
 import type { Thread } from './types.ts';
@@ -90,7 +91,7 @@ export function Conversation({
         {!thread?.messages.length && (
           <div className="ms-chat-intro">
             <img src={ART.swarm} alt="" />
-            <h3>What will your world look like?</h3>
+            <h2>What will your world look like?</h2>
             <p>Describe a map to build, ask a question, or explore an idea together.</p>
             <div className="ms-prompt-ideas">
               {[
@@ -203,7 +204,7 @@ export function Conversation({
             setUnread(false);
           }}
         >
-          New messages ↓
+          New messages <Icon name="chevron-down" size={18} />
         </button>
       )}
     </div>

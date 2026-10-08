@@ -234,7 +234,8 @@ Recipe Compositor::describe(const SceneMap &map, int x, int y) const
 		r.corners[k] = materialFor(map, corners[k]);
 	return r;
 }
-void Compositor::compose(const Recipe &r, SDL_Surface *target, int ox, int oy, int scale) const
+void Compositor::compose(const Recipe &r, SDL_Surface *target, int ox, int oy, int scale,
+						 const CellMask *mask) const
 {
 	if (target->format != SDL_PIXELFORMAT_ARGB8888)
 		throw std::runtime_error("Terrain compositor requires ARGB8888");
@@ -279,21 +280,35 @@ void Compositor::compose(const Recipe &r, SDL_Surface *target, int ox, int oy, i
 		}
 		return;
 	}
-	const PreparedCoverage prepared(definitions, r);
+	// Uncached composition reuses one mask per thread rather than allocating.
+	thread_local CellMask scratch;
+	if (!mask)
+		this->mask(r, scale, scratch);
+	const auto &cell = mask ? *mask : scratch;
+	if (cell.recipe != r || cell.scale != scale)
+		throw std::runtime_error("Terrain cell mask does not match its recipe");
+	const auto *sample = cell.samples.data();
 	for (int y = 0; y < size; ++y)
-		for (int x = 0; x < size; ++x)
+		for (int x = 0; x < size; ++x, ++sample)
 		{
-			const auto mask = prepared.at((x * 256 + 128) / scale, (y * 256 + 128) / scale);
-			const auto *weights = mask.weight.data();
-			const auto *materials = mask.material.data();
+			unsigned weights[4];
+			const unsigned largest = sample->slots & 3;
+			unsigned rest = 65536;
+			for (unsigned slot = 0, other = 0; slot < 4; ++slot)
+				if (slot != largest)
+				{
+					weights[slot] = sample->others[other++];
+					rest -= weights[slot];
+				}
+			weights[largest] = rest;
 			std::uint64_t rgb[3] = {};
 			unsigned alpha = 0;
-			for (int i = 0; i < 4; ++i)
-				if (weights[i] && sources[materials[i]].pixels)
+			for (unsigned slot = 0; slot < cell.colors; ++slot)
+				if (weights[slot] && sources[cell.palette[slot]].pixels)
 				{
-					const auto &t = sources[materials[i]];
+					const auto &t = sources[cell.palette[slot]];
 					const auto *p = t.pixels[(y * t.size / size) * t.size + x * t.size / size].data();
-					const unsigned a = weights[i] * p[3];
+					const unsigned a = weights[slot] * p[3];
 					alpha += a;
 					for (int k = 0; k < 3; ++k)
 						rgb[k] += std::uint64_t(p[k]) * a;
@@ -304,19 +319,18 @@ void Compositor::compose(const Recipe &r, SDL_Surface *target, int ox, int oy, i
 			// Seam treatment: the dominant material darkens under a higher
 			// neighbor's edge and takes that neighbor's fringe tint. Textures are
 			// never blended across the seam; only the contact band is toned.
-			unsigned dominant = 0;
-			for (unsigned i = 1; i < 4; ++i)
-				if (mask.weight[i] > mask.weight[dominant])
-					dominant = i;
-			const auto &self = definitions.materials[mask.material[dominant]].seam;
-			const auto &other = definitions.materials[mask.neighbor].seam;
+			const auto dominant = cell.palette[sample->slots >> 2 & 3];
+			const auto neighbor = cell.palette[sample->slots >> 4 & 3];
+			const int margin = sample->margin;
+			const auto &self = definitions.materials[dominant].seam;
+			const auto &other = definitions.materials[neighbor].seam;
 			int shade = 256, tint = 0;
-			if (mask.neighbor != mask.material[dominant])
+			if (neighbor != dominant)
 			{
-				if (other.cast && other.height > self.height && int(mask.margin) < other.castWidth)
-					shade = 256 - other.cast * (other.castWidth - int(mask.margin)) / other.castWidth;
-				if (other.fringe && int(mask.margin) < other.fringeWidth)
-					tint = other.fringe * (other.fringeWidth - int(mask.margin)) / other.fringeWidth;
+				if (other.cast && other.height > self.height && margin < other.castWidth)
+					shade = 256 - other.cast * (other.castWidth - margin) / other.castWidth;
+				if (other.fringe && margin < other.fringeWidth)
+					tint = other.fringe * (other.fringeWidth - margin) / other.fringeWidth;
 			}
 			const auto channel = [&](int k)
 			{
@@ -325,6 +339,57 @@ void Compositor::compose(const Recipe &r, SDL_Surface *target, int ox, int oy, i
 			};
 			*p = ((alpha + 32768) / 65536 << 24) | (channel(0) << 16) | (channel(1) << 8) |
 				 channel(2);
+		}
+}
+Compositor::CellMask Compositor::mask(const Recipe &r, int scale) const
+{
+	CellMask cell;
+	mask(r, scale, cell);
+	return cell;
+}
+void Compositor::mask(const Recipe &r, int scale, CellMask &cell) const
+{
+	cell.palette = {};
+	cell.colors = 0;
+	cell.recipe = r;
+	cell.scale = scale;
+	const auto slotOf = [&](MaterialId id)
+	{
+		for (unsigned slot = 0; slot < cell.colors; ++slot)
+			if (cell.palette[slot] == id)
+				return slot;
+		throw std::runtime_error("Terrain coverage names a material outside its cell");
+	};
+	for (auto id : r.corners)
+		if (std::find(cell.palette.begin(), cell.palette.begin() + cell.colors, id) ==
+			cell.palette.begin() + cell.colors)
+			cell.palette[cell.colors++] = id;
+	const int size = 32 * scale;
+	cell.samples.resize(std::size_t(size) * size);
+	auto *sample = cell.samples.data();
+	const PreparedCoverage prepared(definitions, r);
+	for (int y = 0; y < size; ++y)
+		for (int x = 0; x < size; ++x, ++sample)
+		{
+			const auto coverage = prepared.at((x * 256 + 128) / scale, (y * 256 + 128) / scale);
+			// Entries of one material add linearly in the blend, so they merge.
+			unsigned weights[4] = {};
+			for (int i = 0; i < 4; ++i)
+				if (coverage.weight[i])
+					weights[slotOf(coverage.material[i])] += coverage.weight[i];
+			unsigned dominant = 0, largest = 0;
+			for (unsigned i = 1; i < 4; ++i)
+				if (coverage.weight[i] > coverage.weight[dominant])
+					dominant = i;
+			for (unsigned slot = 1; slot < 4; ++slot)
+				if (weights[slot] > weights[largest])
+					largest = slot;
+			for (unsigned slot = 0, other = 0; slot < 4; ++slot)
+				if (slot != largest)
+					sample->others[other++] = std::uint16_t(weights[slot]);
+			sample->margin = std::uint16_t(std::min(coverage.margin, 65535u));
+			sample->slots = std::uint8_t(largest | slotOf(coverage.material[dominant]) << 2 |
+										 slotOf(coverage.neighbor) << 4);
 		}
 }
 void Compositor::composeOverview(const Recipe &r, SDL_Surface *target, int ox, int oy,

@@ -5604,6 +5604,30 @@ Vasérc
 Kvarchomok
 [Cotton]
 Pamut
+[Jungle trees]
+Dzsungelfák
+[Pine trees]
+Fenyők
+[Dead trees]
+Elhalt fák
+[Ruins]
+Romok
+[Camp-site]
+Táborhely
+[Ancient debris]
+Ősi törmelék
+[Scrub]
+Bozót
+[Tall grass]
+Magas fű
+[Maize]
+Kukorica
+[Potatoes]
+Burgonya
+[Rice]
+Rizs
+[Fish]
+Halak
 [Reroll terrain look]
 Terep megjelenésének újrasorsolása
 [boulders]

@@ -5604,6 +5604,30 @@ Demir cevheri
 Silika
 [Cotton]
 Pamuk
+[Jungle trees]
+Tropik ağaçlar
+[Pine trees]
+Çam ağaçları
+[Dead trees]
+Kuru ağaçlar
+[Ruins]
+Harabeler
+[Camp-site]
+Kamp yeri
+[Ancient debris]
+Antik kalıntılar
+[Scrub]
+Çalılık
+[Tall grass]
+Uzun otlar
+[Maize]
+Mısır
+[Potatoes]
+Patates
+[Rice]
+Pirinç
+[Fish]
+Balık
 [Reroll terrain look]
 Arazi görünümünü yeniden rastgele seç
 [boulders]

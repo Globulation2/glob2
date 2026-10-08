@@ -5604,6 +5604,30 @@ Minério de ferro
 Sílica
 [Cotton]
 Algodão
+[Jungle trees]
+
+[Pine trees]
+
+[Dead trees]
+
+[Ruins]
+
+[Camp-site]
+
+[Ancient debris]
+
+[Scrub]
+
+[Tall grass]
+
+[Maize]
+
+[Potatoes]
+
+[Rice]
+
+[Fish]
+
 [Reroll terrain look]
 Adtresañ neuz an douar
 [boulders]

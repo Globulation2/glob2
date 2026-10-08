@@ -20,10 +20,13 @@ trail, ice and water tiles are only measured for the style targets (luma mean an
 spread, neighbour grain, saturation) that keep the new art low-contrast and
 painterly beside them.
 
-Each material renders sixteen independent, periodic 128x128 variants,
-box-downsamples them to 32x32 and shares ring 0 of the perimeter across variants
-(tools/artwork/material_tiles.py) so any two variants join. Animated materials
-render four phases per variant; the frame layout is `variant + 16 * phase`.
+Each material renders sixteen periodic 128x128 variants and box-downsamples them
+to 32x32. Ordinary materials render them independently and share ring 0 of the
+perimeter across variants (tools/artwork/material_tiles.py) so any two variants
+join; periodic materials share an outer band instead, and grid materials
+(`variant_grid`) slice one block so each variant continues its neighbours. Animated materials
+render several phases per variant (four; sixteen for water and deep water); the
+frame layout is `variant + 16 * phase`.
 Outputs are `data/gfx/terrain-<name>N.png`, the 128x128 HD frames the classic
 tiles were downsampled from (`data/highres/v1/terrain-<name>N.png`, registered in
 the pack through tools/artwork/highres_pack.py) and `datasrc/gfx/<name>/provenance.json`.
@@ -722,6 +725,11 @@ class Recipe:
     # a shared edge and the runtime skips its border blend ("edges": "periodic").
     # Per-variant features stay inside the interior.
     periodic: bool = False
+    # Positional variants ("variant_grid"): the sixteen variants are the cells
+    # of one periodic GRID x GRID block, variant `gx + GRID * gy`, which the
+    # runtime repeats by cell position. Requires `periodic`; the renderer gets
+    # the block's cell from `ctx.variant` and continues across every edge.
+    grid: int = 0
     note: str = ""
 
     def describe(self):
@@ -1150,56 +1158,118 @@ def render_spring_meadow(ctx):
 
 
 # Water: opaque animated tiles in the colour of the retired scrolling ocean
-# backdrop (data/gfx/water0.png averaged about (69, 52, 200), luma 74, std 3).
-# Gentle swells carry two ripple networks that cross-fade over the loop, so
-# glints rise and fade instead of the whole surface sliding. Deep and dark
-# water are darker opaque variants of the same liquid. Statistics only, no
-# pixels read.
+# backdrop (data/gfx/water0.png averaged about (69, 52, 200), luma 74). Water
+# and deep water are cells of one 4x4-cell periodic block (`variant_grid`), so
+# a wave field four cells across continues over every cell edge. The field is a
+# sum of plane waves with whole wave numbers on that block, each advancing a
+# whole number of cycles per loop: every cell animates locally and all cells
+# share the clock, so crests roll across open water in one direction. A swell
+# toward the lower right sets the bands; finer cross chop breaks their crests
+# into moving glints. Deep water reads the same field (same seed and wind), so
+# crests carry on across the shallow/deep blend. Statistics only, no pixels
+# read.
 
 OCEAN = (69, 52, 200)
+WAVE_GRID = 4
+WAVE_PHASES = 16
+WAVE_SIZE = WAVE_GRID * N
+# Whole-period sine table: wave numbers and the per-phase shift are integers,
+# so every sample is a table lookup.
+WAVE_SIN = [math.sin(TAU * i / WAVE_SIZE) for i in range(WAVE_SIZE)]
+# (kx, ky, cycles per loop, amplitude): cycles per block; a wave moves toward +k.
+WAVE_SWELL = [(2, 1, 1, 1.0), (3, 1, 1, 0.45), (3, 2, 1, 0.35), (4, 2, 2, 0.30)]
+# At most four cycles per loop: a term moves no more than a quarter of its
+# wavelength per phase, so fine chop reads as motion rather than flicker.
+WAVE_CHOP = [(5, 1, 2, 0.5), (4, 4, 2, 0.45), (6, -1, 2, 0.4), (3, 6, 2, 0.35), (7, 3, 3, 0.35),
+             (8, -3, 3, 0.3), (5, 7, 3, 0.3), (9, 2, 3, 0.25), (11, 5, 4, 0.2), (6, 10, 4, 0.2),
+             (12, -2, 4, 0.18), (13, 7, 4, 0.14), (15, 4, 4, 0.14), (10, 13, 4, 0.12),
+             (17, -5, 4, 0.1), (16, 11, 4, 0.1)]
+# A static periodic warp (integer render px) bends the crests.
+WAVE_WARP = [(1, 2, 12), (2, -1, 9), (1, -1, 6)]
+_WAVE_CACHE = {}
 
 
-def ripple_loop(ctx, cells, warp, edge, width, networks=2):
-    """Worley-edge ripple networks cross-faded around the animation loop."""
-    rng = ctx.rng
-    nets = []
-    for _ in range(networks):
-        f1, f2, _ = worley(rng, cells)
-        ridge = domain_warp([b - a for a, b in zip(f1, f2)], fbm(rng, 4, 2), fbm(rng, 4, 2), warp)
-        nets.append(band(ridge, edge, width))
-    weights = [max(0.0, math.cos(TAU * (ctx.t - k / networks))) for k in range(networks)]
-    total = sum(weights) or 1.0
-    return [sum(w * net[i] for w, net in zip(weights, nets)) / total for i in range(N * N)]
+def wave_fields(phase, phases=WAVE_PHASES):
+    """(swell, chop, front) on the WAVE_SIZE block for one phase: swell and chop
+    in [-1, 1], and the swell's slope along its travel, positive on the leading
+    face that catches the light."""
+    key = (phase, phases)
+    if key in _WAVE_CACHE:
+        return _WAVE_CACHE[key]
+    rng = random.Random(fnv1a32("water:waves"))
+    swell = [(kx, ky, c, a, rng.randrange(WAVE_SIZE)) for kx, ky, c, a in WAVE_SWELL]
+    chop = [(kx, ky, c, a, rng.randrange(WAVE_SIZE)) for kx, ky, c, a in WAVE_CHOP]
+    warp = [(kx, ky, a, rng.randrange(WAVE_SIZE)) for kx, ky, a in WAVE_WARP]
+    size, table, quarter = WAVE_SIZE, WAVE_SIN, WAVE_SIZE // 4
+    shift = size // phases
+
+    def warp_at(x, y, axis):
+        return int(round(sum(a * table[(kx * x + ky * y + ph + quarter * axis * (i + 1)) % size]
+                             for i, (kx, ky, a, ph) in enumerate(warp))))
+
+    out = []
+    for comps in (swell, chop):
+        total = sum(c[3] for c in comps)
+        terms = [(kx, ky, a / total, ph - c * phase * shift) for kx, ky, c, a, ph in comps]
+        values = [0.0] * (size * size)
+        for y in range(size):
+            row = y * size
+            for x in range(size):
+                xw, yw = x + warp_at(x, y, 0), y + warp_at(x, y, 1)
+                values[row + x] = sum(a * table[(kx * xw + ky * yw + ph) % size] for kx, ky, a, ph in terms)
+        out.append(values)
+    swell_values = out[0]
+    front = [0.0] * (size * size)
+    for y in range(size):
+        up, down, row = ((y - 1) % size) * size, ((y + 1) % size) * size, y * size
+        for x in range(size):
+            ahead = swell_values[row + (x + 2) % size] + swell_values[down + x]
+            behind = swell_values[row + (x - 2) % size] + swell_values[up + x]
+            front[row + x] = (behind - ahead) * 6
+    out.append(front)
+    _WAVE_CACHE.clear()  # One phase per render job; keep a single block resident.
+    _WAVE_CACHE[key] = tuple(out)
+    return _WAVE_CACHE[key]
+
+
+def wave_cell(ctx, values):
+    """The N x N cell of a block field that variant `ctx.variant` shows."""
+    gx, gy = ctx.variant % WAVE_GRID, ctx.variant // WAVE_GRID
+    out = []
+    for y in range(gy * N, gy * N + N):
+        row = y * WAVE_SIZE + gx * N
+        out.extend(values[row:row + N])
+    return out
+
+
+def render_waves(ctx, palette, swell_weight, chop_weight, glint, front):
+    """Swell bands lit on their leading face, with glints where chop crests
+    ride swell crests."""
+    s, c, f = (wave_cell(ctx, values) for values in wave_fields(ctx.phase, ctx.phases))
+    t = [0.5 + swell_weight * a + chop_weight * b for a, b in zip(s, c)]
+    rgb = ramp([smoothstep(0.05, 0.5, v) for v in t], [(0.0, palette["deep"]), (1.0, palette["base"])])
+    rgb = mix(rgb, palette["light"], [0.8 * smoothstep(0.45, 0.85, v) + front * smoothstep(0, 1, d)
+                                      for v, d in zip(t, f)], 1.0)
+    glints = [smoothstep(0.0, 0.6, a) * smoothstep(0.22, 0.55, b) for a, b in zip(s, c)]
+    return mix(rgb, palette["glint"], glints, glint)
 
 
 @recipe(name="water", group="water", label="Water", profile="sand",
         seam={"height": 5, "cast_q8": 72, "cast_width_q8": 640},
-        palette={"deep": (60, 44, 188), "base": OCEAN, "light": (80, 64, 210), "glint": (138, 128, 236)},
-        style=Style(luma=74, std=5, grain_max=5, match=0.6), phases=4, animation_ticks=24,
-        preview=(70, 50, 191), minimap=(0, 40, 120))
+        palette={"deep": (50, 36, 168), "base": (68, 52, 198), "light": (86, 72, 216), "glint": (156, 150, 244)},
+        style=Style(luma=74, std=8, grain_max=8, match=0.0), phases=WAVE_PHASES, animation_ticks=6,
+        periodic=True, grid=WAVE_GRID, preview=(70, 50, 191), minimap=(0, 40, 120))
 def render_water(ctx):
-    p = RECIPES["water"].palette
-    rng = ctx.rng
-    swell = normalize(fbm(rng, 3, 3))
-    rgb = ramp(swell, [(0.0, p["deep"]), (0.5, p["base"]), (1.0, p["light"])])
-    ripples = ripple_loop(ctx, 5, 10, 0.025, 0.05)
-    rgb = mix(rgb, p["glint"], [r * (0.35 + 0.65 * s) for r, s in zip(ripples, swell)], 0.22)
-    return rgb, None
+    return render_waves(ctx, RECIPES["water"].palette, 0.35, 0.2, 0.55, 0.2), None
 
 
 @recipe(name="deep_water", group="deep_water", label="Deep water", profile="soft",
         seam={"height": 6, "cast_q8": 72, "cast_width_q8": 640},
-        palette={"tint": (52, 38, 150), "swell": (60, 46, 166), "thread": (110, 96, 214)},
-        style=Style(luma=56, std=5, grain_max=6, match=0.5), phases=4, animation_ticks=24,
-        preview=(44, 34, 120), minimap=(24, 18, 84))
+        palette={"deep": (40, 28, 132), "base": (52, 38, 152), "light": (62, 48, 170), "glint": (110, 96, 214)},
+        style=Style(luma=56, std=6, grain_max=7, match=0.0), phases=WAVE_PHASES, animation_ticks=6,
+        periodic=True, grid=WAVE_GRID, preview=(44, 34, 120), minimap=(24, 18, 84))
 def render_deep_water(ctx):
-    p = RECIPES["deep_water"].palette
-    rng = ctx.rng
-    swell = normalize(fbm(rng, 4, 2))
-    rgb = mix(flat(p["tint"]), p["swell"], swell, 0.6)
-    ripples = ripple_loop(ctx, 4, 12, 0.02, 0.04)
-    rgb = mix(rgb, p["thread"], [r * (0.3 + 0.7 * s) for r, s in zip(ripples, swell)], 0.14)
-    return rgb, None
+    return render_waves(ctx, RECIPES["deep_water"].palette, 0.4, 0.12, 0.3, 0.15), None
 
 
 @recipe(name="dark_water", group="deep_water", label="Dark water", profile="soft",
@@ -1511,7 +1581,7 @@ def render_phase(name, phase):
         # Animated phases must keep one variant order; phase 0 decides it.
         order = sorted(range(VARIANTS), key=lambda v: (perimeter_structure(render_fields(name, v, 0)[0]), v))
     renders = [renders[v] for v in order]
-    if rec.periodic:
+    if rec.periodic and not rec.grid:
         renders = force_periodic_band(renders)
     small = [box_down_fields(rgb, alpha) for rgb, alpha in renders]
     pooled = [sum((rgb[k] for rgb, _ in small), []) for k in range(3)]
@@ -1590,6 +1660,8 @@ def material_block(name, phases):
         block["animation_ticks"] = rec.animation_ticks
     if rec.periodic:
         block["edges"] = "periodic"
+    if rec.grid:
+        block["variant_grid"] = rec.grid
     block["minimap"] = list(minimap)
     block["seam"] = dict(rec.seam)
     return block

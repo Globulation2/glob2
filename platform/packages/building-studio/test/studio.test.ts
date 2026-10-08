@@ -85,6 +85,12 @@ it('deduplicates turns and settles successful deliveries exactly once', async ()
   const t = await studio.get(f.account, f.thread);
   expect(t.revisions).toHaveLength(1);
   expect(t.revisions[0]?.applied).toBe(true);
+  const draft = await database.db
+    .selectFrom('building_drafts')
+    .select('revision')
+    .where('id', '=', f.draftId)
+    .executeTakeFirstOrThrow();
+  expect(t.revisions[0]?.appliedRevision).toBe(draft.revision);
   expect(t.revisions[0]?.package.namespace).toBe(f.delivery.package.namespace);
 });
 it('preserves concurrent manual edits, then restores a candidate with compare-and-swap', async () => {
@@ -100,6 +106,15 @@ it('preserves concurrent manual edits, then restores a candidate with compare-an
     studio.adopt(f.account, f.thread, f.row.id, f.input.expectedRevision, f.delivery.archive),
   ).rejects.toThrow('changed');
   await studio.adopt(f.account, f.thread, f.row.id, manual, f.delivery.archive);
+  const adopted = await database.db
+    .selectFrom('building_drafts')
+    .select('revision')
+    .where('id', '=', f.draftId)
+    .executeTakeFirstOrThrow();
+  expect((await studio.get(f.account, f.thread)).revisions[0]?.appliedRevision).toBe(
+    adopted.revision,
+  );
+  expect(adopted.revision).not.toBe(manual);
   expect((await studio.credits.balance(f.account)).balance).toBe(2);
 });
 it('keeps discussion free and refunds failed builds', async () => {
@@ -190,4 +205,43 @@ it('keeps every retained candidate accessible beyond the first fifty revisions',
   const snapshot = await studio.get(f.account, f.thread);
   expect(snapshot.revisions).toHaveLength(51);
   expect(snapshot.revisions.some((r) => r.requestId === f.row.id)).toBe(true);
+});
+it('preserves replaced manual drafts, restores with a new revision, and rejects stale undo', async () => {
+  const f = await fixture();
+  const before = await database.db
+    .selectFrom('building_drafts')
+    .selectAll()
+    .where('id', '=', f.draftId)
+    .executeTakeFirstOrThrow();
+  await studio.reserveBuild(f.row);
+  await studio.finish(f.row, f.delivery);
+  const generated = await database.db
+    .selectFrom('building_drafts')
+    .selectAll()
+    .where('id', '=', f.draftId)
+    .executeTakeFirstOrThrow();
+  expect((await studio.get(f.account, f.thread)).draftHistory?.map((d) => d.revision)).toContain(
+    before.revision,
+  );
+  expect((await studio.draftBackup(f.account, f.thread, before.revision)).archive).toEqual(
+    before.archive,
+  );
+  await expect(studio.draftBackup(randomUUID(), f.thread, before.revision)).rejects.toThrow();
+  await expect(
+    studio.restoreDraft(f.account, f.thread, before.revision, before.revision),
+  ).rejects.toThrow('Draft changed');
+  const balance = await studio.credits.balance(f.account);
+  await studio.restoreDraft(f.account, f.thread, before.revision, generated.revision);
+  const restored = await database.db
+    .selectFrom('building_drafts')
+    .selectAll()
+    .where('id', '=', f.draftId)
+    .executeTakeFirstOrThrow();
+  expect(restored.archive).toEqual(before.archive);
+  expect(restored.revision).not.toBe(before.revision);
+  expect(restored.revision).not.toBe(generated.revision);
+  expect((await studio.get(f.account, f.thread)).draftHistory?.map((d) => d.revision)).toContain(
+    generated.revision,
+  );
+  expect(await studio.credits.balance(f.account)).toEqual(balance);
 });

@@ -1,3 +1,4 @@
+import { studioSession } from '../../components/studio/storage.ts';
 import { useCallback, useEffect, useState } from 'react';
 import type { StudioSettings } from '@glob2/protocol';
 
@@ -12,7 +13,7 @@ interface Design {
 }
 function readSaved<T>(key: string): T | undefined {
   try {
-    return (JSON.parse(sessionStorage.getItem(key) ?? 'null') as T | null) ?? undefined;
+    return (JSON.parse(studioSession.getItem(key) ?? 'null') as T | null) ?? undefined;
   } catch {
     return undefined;
   }
@@ -24,7 +25,7 @@ export function useStudioDraft(accountId: string, id?: string) {
   const draftKey = `studio-draft:${suffix}`;
   const pendingKey = `studio-pending:${suffix}`;
   const settingsKey = `studio-settings:${suffix}`;
-  const [draft, setDraft] = useState(() => sessionStorage.getItem(draftKey) ?? '');
+  const [draft, setDraft] = useState(() => studioSession.getItem(draftKey) ?? '');
   const [pending, updatePending] = useState(() => readSaved<Pending>(pendingKey));
   const [design, setDesign] = useState<Design>(() => {
     const saved = readSaved<Design>(settingsKey);
@@ -35,16 +36,16 @@ export function useStudioDraft(accountId: string, id?: string) {
     };
   });
   useEffect(() => {
-    sessionStorage.setItem(draftKey, draft);
+    studioSession.setItem(draftKey, draft);
   }, [draftKey, draft]);
   useEffect(() => {
-    sessionStorage.setItem(settingsKey, JSON.stringify(design));
+    studioSession.setItem(settingsKey, JSON.stringify(design));
   }, [settingsKey, design]);
   // Persist before sending, rather than waiting for an effect after the network call.
   const setPending = useCallback(
     (value: Pending | undefined) => {
-      if (value) sessionStorage.setItem(pendingKey, JSON.stringify(value));
-      else sessionStorage.removeItem(pendingKey);
+      if (value) studioSession.setItem(pendingKey, JSON.stringify(value));
+      else studioSession.removeItem(pendingKey);
       updatePending(value);
     },
     [pendingKey],
