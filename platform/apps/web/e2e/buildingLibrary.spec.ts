@@ -16,6 +16,11 @@ test('browses, downloads and forks a released family', async ({ page, request, b
   await page.getByRole('link', { name: 'Community kitchen', exact: true }).click();
   await expect(page.getByRole('heading', { name: 'Community kitchen', exact: true })).toBeVisible();
   await expect(page.getByRole('link', { name: 'Download family' })).toBeVisible();
+  await expect(page.getByRole('textbox', { name: 'Family link', exact: true })).toHaveValue(
+    page.url(),
+  );
+  await page.getByText('Use buildings in the game', { exact: true }).click();
+  await expect(page.getByText(/For an unlisted family, copy its page link/)).toBeVisible();
   if (await page.getByRole('button', { name: 'Unlike', exact: true }).count())
     await page.getByRole('button', { name: 'Unlike', exact: true }).click();
   await page.getByRole('button', { name: 'Like', exact: true }).click();

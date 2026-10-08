@@ -9,6 +9,45 @@
 #include <algorithm>
 using namespace Glob2UI;
 using Json = nlohmann::json;
+std::string buildingFamilyIdFromLink(const std::string &input, const std::string &origin)
+{
+	if (input.size() > 1024)
+		throw std::runtime_error("Family links must be at most 1024 characters.");
+	const auto first = input.find_first_not_of(" \t\r\n"), last = input.find_last_not_of(" \t\r\n");
+	std::string value =
+		first == std::string::npos ? std::string{} : input.substr(first, last - first + 1);
+	if (value.find("://") != std::string::npos)
+	{
+		if (origin.empty())
+			throw std::runtime_error("Choose an online instance before opening a family link.");
+		const auto prefix = origin + "/buildings/";
+		if (!value.starts_with(prefix))
+			throw std::runtime_error(
+				"This link is from another instance. Switch to that instance in Online first.");
+		value = value.substr(prefix.size());
+		value = value.substr(0, value.find_first_of("?#"));
+		if (value.ends_with('/'))
+			value.pop_back();
+	}
+	if (value.size() != 36)
+		throw std::runtime_error("Enter a building family ID or a link to its family page.");
+	for (std::size_t i = 0; i < value.size(); ++i)
+	{
+		if (i == 8 || i == 13 || i == 18 || i == 23)
+		{
+			if (value[i] != '-')
+				throw std::runtime_error("Invalid building family ID.");
+		}
+		else
+		{
+			if (value[i] >= 'A' && value[i] <= 'F')
+				value[i] += 'a' - 'A';
+			if (!((value[i] >= '0' && value[i] <= '9') || (value[i] >= 'a' && value[i] <= 'f')))
+				throw std::runtime_error("Invalid building family ID.");
+		}
+	}
+	return value;
+}
 BuildingLibraryScreen::BuildingLibraryScreen()
 	: library(Online::services().storage), calls(Online::services().client)
 {
@@ -62,6 +101,53 @@ void BuildingLibraryScreen::reload(bool more)
 			}
 			invalidate();
 		});
+}
+void BuildingLibraryScreen::openFamily()
+{
+	if (busy)
+		return;
+	std::string id;
+	try
+	{
+		id = buildingFamilyIdFromLink(familyInput, Online::services().client.origin());
+	}
+	catch (const std::exception &error)
+	{
+		status = error.what();
+		invalidate();
+		return;
+	}
+	busy = true;
+	status = "Opening building family";
+	openedFamily = Json();
+	invalidate();
+	calls.rest(HttpFetch::Method::Get, "/api/v1/buildings/" + id, Online::Json(),
+			   [this, id](const auto &response)
+			   {
+				   busy = false;
+				   try
+				   {
+					   if (!response.ok)
+					   {
+						   if (response.error.code == "not_found" ||
+							   response.error.code == "forbidden" ||
+							   response.error.code == "unauthenticated")
+							   throw std::runtime_error(
+								   "Family unavailable. Private families require signing in "
+								   "through Online with an account that can access them.");
+						   throw std::runtime_error(response.error.message);
+					   }
+					   if (!response.result.is_object() || response.result.at("id") != id)
+						   throw std::runtime_error("The server returned a different family.");
+					   openedFamily = response.result;
+					   status = "Opened family. Install its compatible release below.";
+				   }
+				   catch (const std::exception &error)
+				   {
+					   status = error.what();
+				   }
+				   invalidate();
+			   });
 }
 void BuildingLibraryScreen::install(const Json &family, const Json &release)
 {
@@ -148,6 +234,27 @@ Element BuildingLibraryScreen::build(const Presentation &p)
 		"with these families, publish it in the map library, then choose that map in your room."));
 	body.push_back(
 		button("buildings/reload", "Refresh library", [this] { reload(); }, {.enabled = !busy}));
+	TextFieldOptions linkOptions;
+	linkOptions.maxLength = 1024;
+	linkOptions.enabled = !busy;
+	linkOptions.placeholder = "Family link or ID";
+	linkOptions.submit = [this](const std::string &text)
+	{
+		familyInput = text;
+		openFamily();
+	};
+	body.push_back(field("Family link or ID", textField(
+												  "buildings/link", familyInput,
+												  [this](const std::string &text)
+												  {
+													  familyInput = text;
+													  invalidate();
+												  },
+												  linkOptions)));
+	body.push_back(button("buildings/open", "Open family", [this] { openFamily(); },
+						  {.enabled = !busy && !familyInput.empty()}));
+	body.push_back(caption("Open an unlisted family by its link or ID. For private families, sign "
+						   "in through Online first."));
 	body.push_back(label("Installed families", {FontRole::Heading}));
 	try
 	{
@@ -190,8 +297,20 @@ Element BuildingLibraryScreen::build(const Presentation &p)
 								  },
 								  {.enabled = !busy}));
 		}
-		body.push_back(label("Public library", {FontRole::Heading}));
-		for (const auto &family : families)
+		body.push_back(label("Available families", {FontRole::Heading}));
+		auto rows = families;
+		if (openedFamily.is_object())
+		{
+			for (auto it = rows.begin(); it != rows.end();)
+			{
+				if (it->at("id") == openedFamily.at("id"))
+					it = rows.erase(it);
+				else
+					++it;
+			}
+			rows.insert(rows.begin(), openedFamily);
+		}
+		for (const auto &family : rows)
 		{
 			body.push_back(label(family.at("name").get<std::string>(), {FontRole::Heading}));
 			body.push_back(

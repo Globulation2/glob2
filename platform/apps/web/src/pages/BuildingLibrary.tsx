@@ -81,6 +81,11 @@ export function BuildingLibrary({ id }: { id?: string }) {
           alongside stock buildings. Existing maps and saves keep their own buildings.
         </p>
         <p>
+          For an unlisted family, copy its page link and paste it into Family link or ID in the
+          game’s Building families picker, then choose Open family. Use the same online instance
+          where the family was published. Private families also require signing in as their owner.
+        </p>
+        <p>
           To play online, publish the generated map in the map library and select it for your room.
           Download family exports a ZIP for importing or editing in Building Studio.
         </p>
@@ -104,6 +109,19 @@ export function BuildingLibrary({ id }: { id?: string }) {
                     />
                   )}
                 <p>By {family.owner.displayName}</p>
+                <label>
+                  Family link
+                  <input
+                    readOnly
+                    value={window.location.origin + '/buildings/' + family.id}
+                    onFocus={(event) => event.currentTarget.select()}
+                    onClick={(event) => event.currentTarget.select()}
+                  />
+                </label>
+                <p>
+                  Copy this link into Family link or ID in the game’s Building families picker to
+                  open this family directly.
+                </p>
                 <p>{family.description}</p>
                 {family.hidden && <p role="status">This family has been hidden by a moderator.</p>}
                 <p>

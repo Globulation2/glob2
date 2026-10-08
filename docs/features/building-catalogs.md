@@ -370,7 +370,9 @@ To create and share a family:
    native validation; rejected releases explain the error. Further draft changes
    need another publication to appear in the library.
 6. In the game, open **Building families** on a local new-game or editor new-map
-   screen, install the compatible release and enable it. Selection applies to new
+   screen, browse public families or paste the family's page link into **Family
+   link or ID** and choose **Open family**. Private families need sign-in to the
+   same instance. Install the compatible release and enable it. Selection applies to new
    maps in that profile. To play it online, share the resulting map and select it
    in the room. Downloading a ZIP on the website exports the authored package.
 
@@ -451,6 +453,8 @@ is limited to 20 requests per account per hour. Reports are limited to 10/hour.
 The native new-game and new-map screens open **Building families**. The picker
 installs a chosen compatible release, verifies its package and artwork hashes
 and resolved catalog, and lets players explicitly enable or remove families.
+Unlisted families open by their page link or ID; links must belong to the
+selected instance. Private family lookup uses that instance's signed-in account.
 Installed releases stay pinned until another release is chosen. The cache is
 limited to 100 families and 64 MiB; combined manifests and decoded pixels retain
 the composition bounds above. Selection is applied before new-map generation.

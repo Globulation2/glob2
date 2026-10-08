@@ -303,7 +303,9 @@ build/darwin/client/release/src/OnlinePlayHarness quick https://app.glob2online.
 **Building families** on local new-game and editor new-map screens opens
 `src/online/screens/BuildingLibraryScreen.cpp`. It browses the selected instance's
 public library, installs compatible validated releases and lets the player choose
-which families to add to stock buildings. Online browsing needs that instance;
+which families to add to stock buildings. **Family link or ID** also opens an
+unlisted family directly; page links must use the selected instance's origin.
+Private families require that owner's sign-in through Online. Online browsing needs that instance;
 already installed families remain available offline. Selection is stored in the
 local profile and applies to subsequent new maps in both flows.
 

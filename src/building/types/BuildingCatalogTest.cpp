@@ -2,6 +2,9 @@
 #include "Glob2Test.h"
 #include "BuildingType.h"
 #include "BuildingLibrary.h"
+#include "BuildingLibraryScreen.h"
+#include "OnlineServices.h"
+#include "OnlineFakes.h"
 #include "EngineFixtures.h"
 #include "OnlineStorage.h"
 #include "SimVersion.h"
@@ -783,6 +786,81 @@ TEST_CASE("portable custom artwork loads and draws its exact native frame [displ
 	REQUIRE(SDL_SaveBMP(
 		frame,
 		(glob2test::artifactDir() / "building-artwork-native-software.bmp").string().c_str()));
+}
+
+struct BuildingLibraryScreenHarness
+{
+	static void checkDetail()
+	{
+		const std::string origin = "https://play.example.org",
+						  id = "11111111-1111-4111-8111-111111111111";
+		OnlineFakes::World world;
+		Online::ServicesOwner owner;
+		auto &client = owner.get().client;
+		client.replaceEnvironment(world.environment());
+		client.start(origin);
+		auto guest = world.http.pending("/api/v1/auth/guest");
+		REQUIRE(guest);
+		guest->reply(200, nlohmann::json{{"account", OnlineFakes::account()},
+										 {"tokens", OnlineFakes::tokens("r1", 1790000000, 600)},
+										 {"deviceCredential", std::string(43, 'c')}});
+		client.update();
+		BuildingLibraryScreen screen;
+		screen.familyInput = origin + "/buildings/" + id;
+		screen.openFamily();
+		auto detail = world.http.pending("/api/v1/buildings/" + id);
+		REQUIRE(detail);
+		CHECK(detail->request.url == origin + "/api/v1/buildings/" + id);
+		detail->reply(200, nlohmann::json{
+							   {"id", id}, {"name", "Shared kitchen"}, {"visibility", "unlisted"}});
+		client.update();
+		CHECK_FALSE(screen.busy);
+		CHECK(screen.openedFamily.at("id") == id);
+		const auto before = world.http.exchanges.size();
+		screen.familyInput = "https://another.example/buildings/" + id;
+		screen.openFamily();
+		CHECK(world.http.exchanges.size() == before);
+		CHECK(screen.status.find("another instance") != std::string::npos);
+		screen.familyInput = id;
+		screen.openFamily();
+		detail = world.http.pending("/api/v1/buildings/" + id);
+		REQUIRE(detail);
+		detail->reply(200, nlohmann::json{{"id", "22222222-2222-4222-8222-222222222222"}});
+		client.update();
+		CHECK(screen.openedFamily.is_null());
+		CHECK(screen.status == "The server returned a different family.");
+		screen.openFamily();
+		detail = world.http.pending("/api/v1/buildings/" + id);
+		REQUIRE(detail);
+		detail->reply(404,
+					  nlohmann::json{{"error", {{"code", "not_found"}, {"message", "Not found"}}}});
+		client.update();
+		CHECK(screen.openedFamily.is_null());
+		CHECK(screen.status.find("signing in through Online") != std::string::npos);
+	}
+};
+TEST_SUITE("BuildingFamilyLinks")
+{
+	TEST_CASE("family links stay on the selected instance and normalize bounded IDs")
+	{
+		const std::string id = "abcdefab-cdef-4abc-8def-abcdefabcdef",
+						  origin = "https://play.example.org";
+		CHECK(buildingFamilyIdFromLink("  " + id + "\n", origin) == id);
+		CHECK(buildingFamilyIdFromLink("ABCDEFAB-CDEF-4ABC-8DEF-ABCDEFABCDEF", origin) == id);
+		CHECK(buildingFamilyIdFromLink(origin + "/buildings/" + id + "/?from=share#details",
+									   origin) == id);
+		for (const auto &link :
+			 {"https://other.example/buildings/" + id, origin + ".evil/buildings/" + id,
+			  "https://play.example.org@evil.example/buildings/" + id,
+			  origin + "/api/v1/buildings/" + id, origin + "/buildings/../" + id, id + "/extra",
+			  std::string(36, '-'), std::string(1025, 'x')})
+			CHECK_THROWS(buildingFamilyIdFromLink(link, origin));
+	}
+	TEST_CASE("unlisted family detail uses the instance client and rejects changed identity")
+	{
+		glob2test::HeadlessGlobals globals;
+		BuildingLibraryScreenHarness::checkDetail();
+	}
 }
 
 TEST_SUITE("BuildingLibrary")
