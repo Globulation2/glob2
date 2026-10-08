@@ -1,0 +1,29 @@
+{
+  "source": "edb09d40204a1fdb3a6d0e5934ef34e9c344de60",
+  "master": "a0a59e4a6478a2533ec0c10efb8027f0db1152a8",
+  "before_source": "5430ef31c135667deeb8043c827d79b3fec4cda4",
+  "integrated_master": "06a106d3a888ef11482a955bddb713d584cd5570",
+  "binaries": {
+    "artifacts/resource-growth/copy-policy/before-glob2": "4552348a057fe975be05bf0d8056e67c4585e6328594b02bb1ed9acf3a3482aa",
+    "build/linux/client/release/src/glob2": "fc07bd3d7caee9c05d33bde3d5bb3e4254d2ecff2dad8ca5fb7ab2f6cf5fea80",
+    "build/linux/client/release/test/glob2-engine-tests": "94a2c28aa949526f8c60f02f7e9bdb0eee17a977bc2c76501fc1ebac608a0a79"
+  },
+  "per_tick_runs": 72,
+  "world_and_replay_checksums_match": true,
+  "tests_passed": 102,
+  "golden_passed": 12,
+  "failures": 0,
+  "omitted_platforms": [
+    "Windows",
+    "macOS",
+    "ARM",
+    "browser",
+    "threadless"
+  ],
+  "merge_tree_clean": true,
+  "timing_runs": 88,
+  "matching_final_checksums": true,
+  "matching_growth_counters": true,
+  "cgroup_restored": true,
+  "governors_restored": true
+}

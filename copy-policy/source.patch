@@ -1,0 +1,148 @@
+commit edb09d40204a1fdb3a6d0e5934ef34e9c344de60
+Author:     Bradley Arsenault <brad@bradleyarsenault.me>
+AuthorDate: Wed Oct 7 20:40:41 2026 -0400
+Commit:     Bradley Arsenault <brad@bradleyarsenault.me>
+CommitDate: Wed Oct 7 20:40:41 2026 -0400
+
+    Refresh densely changed snapshot arrays with contiguous copies
+
+diff --git a/docs/development/reference.md b/docs/development/reference.md
+index 875d24a93..bc110b3e1 100644
+--- a/docs/development/reference.md
++++ b/docs/development/reference.md
+@@ -35,8 +35,11 @@ remain contiguous scalar arrays. The live `Map` and every snapshot expose the sa
+ borrowed `MapState::View` (`src/map/MapStateView.h`), and each cell query has one
+ inline implementation there; `Map` members forward to it. Every cell write stamps
+ its 16x16 chunk (`src/map/MapChangeTracking.h`); capture compares whole-array
+-generations to share unchanged components and copies only the chunks a reused
+-pooled buffer does not already mirror, without per-cell translation. Writes that
++generations to share unchanged components. Reused pooled buffers copy changed
++chunks when at most half are dirty; denser changes use contiguous whole-array
++copies to avoid many strided row copies. Both paths copy the same authoritative
++records without per-cell translation. Copy-byte metrics include the multi-material
++stock sidecar, which is copied whole when resources are refreshed. Writes that
+ bypass the marked setters are caught by `GLOB2_SNAPSHOT_VERIFY=1`, which
+ byte-compares every capture with the live game. Published material gradient planes
+ sit in a dense registry keyed like the snapshot's plane table
+diff --git a/src/engine/sim/snapshot/WorldCapture.cpp b/src/engine/sim/snapshot/WorldCapture.cpp
+index ded2927a2..8f0138015 100644
+--- a/src/engine/sim/snapshot/WorldCapture.cpp
++++ b/src/engine/sim/snapshot/WorldCapture.cpp
+@@ -176,11 +176,13 @@ Handle capture(const Game& game,
+         static_assert(std::is_same_v<Element, std::remove_const_t<typename decltype(source)::element_type>>);
+         reserve(destination, source.size()); destination.resize(source.size());
+         if (!source.empty()) std::memcpy(destination.data(), source.data(), source.size_bytes());
++        if (storage) storage->bytesCopied += source.size_bytes();
+     };
+ 	// Map arrays: a buffer that already mirrors this world copies only the
+-	// chunks whose live stamp moved since its last fill; anything else (a new
+-	// buffer, another world, a resize) copies everything. Arrays sharing one
+-	// tracker are refreshed from the same dirty set.
++	// chunks whose live stamp moved since its last fill, unless most are dirty.
++	// Dense changes use contiguous copies to avoid strided row-copy overhead.
++	// New buffers, world changes and resizes also copy everything. Arrays
++	// sharing one tracker are refreshed from the same dirty set.
+ 	const auto identity = game.map.identity();
+ 	const auto& geometry = game.map.chunks();
+ 	const auto cellCount = game.map.cellCount();
+@@ -199,7 +201,11 @@ Handle capture(const Game& game,
+ 	const auto refresh = [&](ChunkStamps& stamps, const MapState::ChangeTracker& live, bool resized, auto copyRange) {
+ 		const bool everything = resized || stamps.worldIdentity != identity || stamps.width != geometry.width
+ 			|| stamps.height != geometry.height || stamps.chunks.size() != live.chunks.size();
+-		if (everything)
++		std::size_t dirty = 0;
++		if (!everything)
++			for (std::size_t chunk = 0; chunk < live.chunks.size(); ++chunk)
++				dirty += stamps.chunks[chunk] != live.chunks[chunk];
++		if (everything || dirty > live.chunks.size() / 2)
+ 		{
+ 			copyRange(std::size_t(0), cellCount);
+ 			if (storage && stamps.chunks.capacity() < live.chunks.size()) ++storage->allocations;
+diff --git a/src/engine/sim/snapshot/WorldSnapshotTest.cpp b/src/engine/sim/snapshot/WorldSnapshotTest.cpp
+index 855576170..39577f41f 100644
+--- a/src/engine/sim/snapshot/WorldSnapshotTest.cpp
++++ b/src/engine/sim/snapshot/WorldSnapshotTest.cpp
+@@ -11,6 +11,7 @@
+ #include <atomic>
+ #include <thread>
+ #include <cstring>
++#include <nlohmann/json.hpp>
+ #include <ThreadSupport.h>
+ 
+ TEST_SUITE("WorldSnapshot")
+@@ -678,7 +679,7 @@ TEST_SUITE("WorldSnapshot")
+ 	// Trivially copyable cells have no operator==; compare their bytes.
+ 	template<class Cell> bool sameCells(const std::vector<Cell>& captured, std::span<const Cell> live)
+ 	{ return captured.size() == live.size() && (live.empty() || !std::memcmp(captured.data(), live.data(), live.size_bytes())); }
+-	TEST_CASE("a single cell change copies one chunk of one component into a reused buffer")
++	TEST_CASE("reused buffers copy sparse chunks and refresh dense changes contiguously")
+ 	{
+ 		glob2test::HeadlessGlobals globals;
+ 		glob2test::HeadlessGame fixture{glob2test::GameOptions{.wDec=5, .hDec=5, .teams=1, .discovered=true, .clearImmobile=true, .loadDefaultRace=true}};
+@@ -707,13 +708,56 @@ TEST_SUITE("WorldSnapshot")
+ 		CHECK(third.resourceAt(map.coordToIndex(6, 6)).resource.type == WHEAT);
+ 		CHECK(sameCells(third.resources->cells, map.resourceState()));
+ 		// Buffer B last saw the world at the second capture, so reusing it moves
+-		// the chunk changed at the third capture plus the two changed now.
++		// three dirty chunks out of four trigger a contiguous refresh.
+ 		second = {};
+ 		const auto threeBefore = store.metrics.bytesCopied;
+ 		map.setResourceByIndex(20, 20, WOOD, 1); map.setResourceByIndex(5, 20, STONE, 1);
+ 		auto fourth = next();
+-		CHECK(store.metrics.bytesCopied - threeBefore == 3 * expected);
++		CHECK(store.metrics.bytesCopied - threeBefore == 4 * expected);
+ 		CHECK(sameCells(fourth.resources->cells, map.resourceState()));
++		CHECK(third.resourceAt(map.coordToIndex(20, 20)).resource.type != WOOD);
++		// Keep A held so the next capture must allocate C, then reuse the
++		// densely refreshed B. Its stamps must include the whole refresh.
++		map.setResourceByIndex(21, 21, WOOD, 1);
++		auto fifth = next();
++		fourth = {};
++		map.setResourceByIndex(22, 22, WOOD, 1);
++		const auto sparseBefore = store.metrics.bytesCopied;
++		auto sixth = next();
++		CHECK(store.metrics.bytesCopied - sparseBefore == expected);
++		CHECK(sameCells(sixth.resources->cells, map.resourceState()));
++		CHECK(fifth.resourceAt(map.coordToIndex(22, 22)).resource.type != WOOD);
++	}
++	TEST_CASE("resource copy metrics include multi-material stock sidecars")
++	{
++		glob2test::HeadlessGlobals globals;
++		glob2test::HeadlessGame fixture{glob2test::GameOptions{.wDec=5, .hDec=5, .teams=1, .loadDefaultRace=true}};
++		auto& game = fixture.game; auto& map = game.map;
++		auto resource = nlohmann::json::parse(map.resourceRegistry().serialize())["resources"][WHEAT];
++		resource["key"] = "snapshot-mixed-crop";
++		resource["yields"]["paper"] = resource["yields"]["food"];
++		map.installResourceDefinitions(nlohmann::json{{"schemaVersion", 1}, {"resources", {resource}}}.dump());
++		const auto type = resourceIndex(*map.resourceRegistry().find("snapshot-mixed-crop"));
++		map.setResourceByIndex(5, 5, type, 1);
++		REQUIRE_FALSE(map.resourceStockState().empty());
++		SimulationSnapshot::Store store;
++		store.setVerification(true);
++		const auto next = [&] { ++game.stepCounter; return store.captureBoundary(game, SimulationSnapshot::bit(SimulationSnapshot::Component::Resources)); };
++		auto first = next();
++		CHECK(store.metrics.bytesCopied == map.resourceState().size_bytes()
++			+ map.resourceStockIndexState().size_bytes() + map.resourceStockState().size_bytes());
++		map.setResourceByIndex(6, 6, type, 1);
++		auto second = next();
++		first = {};
++		map.setResourceByIndex(7, 7, type, 1);
++		const auto before = store.metrics.bytesCopied;
++		auto third = next();
++		const auto chunkCells = MapState::ChunkGeometry::Side * MapState::ChunkGeometry::Side;
++		CHECK(store.metrics.bytesCopied - before == chunkCells * (sizeof(SimulationSnapshot::ResourceCell) + sizeof(Uint32))
++			+ map.resourceStockState().size_bytes());
++		CHECK(sameCells(third.resources->cells, map.resourceState()));
++		CHECK(sameCells(third.resources->stockIndices, map.resourceStockIndexState()));
++		CHECK(sameCells(third.resources->stocks, map.resourceStockState()));
+ 	}
+ 	TEST_CASE("a retained consumer leaves the newest free buffer to absorb only later changes")
+ 	{
+@@ -742,6 +786,7 @@ TEST_SUITE("WorldSnapshot")
+ 		const auto reuseBefore = store.metrics.bytesCopied;
+ 		map.addForbidden(3, 3, 0);
+ 		auto e = next();                          // C is newer than A: chunks since C's fill only
++		// Exactly half dirty remains a sparse copy.
+ 		CHECK(store.metrics.bytesCopied - reuseBefore == 2 * chunkBytes);
+ 		CHECK(sameCells(e.areas->cells, map.areaState()));
+ 	}

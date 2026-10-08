@@ -1,0 +1,20 @@
+# Working directory: repository root. Full commands, compiler/link lines: build-committed.log.
+# Preserve the pre-change executable before rebuilding:
+mkdir -p artifacts/resource-growth/copy-policy
+cp build/linux/client/release/src/glob2 artifacts/resource-growth/copy-policy/before-glob2
+
+git fetch origin master
+git merge-tree --write-tree HEAD origin/master
+
+CCACHE=1 GLOB2_SDL3_PREFIX=/tmp/glob2-sdl3/prefix GLOB2_RECORDING_PREFIX=/home/bradley/glob2-terrain-art2/build/linux/client/release/recording/prefix scons -j16 release=1 server=0 optimized_assets=0 build/linux/client/release/src/glob2 build/linux/client/release/test/glob2-engine-tests
+
+export LD_LIBRARY_PATH=/tmp/glob2-sdl3/prefix/lib
+python3 test/run_tests.py --binary engine --filter 'WorldSnapshot/*' --filter 'ResourceGrowth/*' --filter 'ComputeExecutor/*' --filter '*Gradient*/*' --filter '*Resource*/*' --no-display -j8 --timeout 600 --junit artifacts/resource-growth/copy-policy/tests-final.xml --artifacts artifacts/resource-growth/copy-policy/tests-final
+python3 test/run_tests.py --binary engine --tag golden --no-display -j4 --timeout 600 --junit artifacts/resource-growth/copy-policy/golden.xml --artifacts artifacts/resource-growth/copy-policy/golden
+
+# Separate checksum verification; before/after with delays 1,3,8 and owner/shared 1,2,4,8.
+python3 docs/.work/verify-growth-copy-policy.py
+
+# No concurrent builds/tests during measurement. Alternating pair order, one warm-up, ten measured pairs.
+bash docs/.work/run-growth-copy-policy.sh
+python3 docs/.work/report-growth-copy-policy.py
