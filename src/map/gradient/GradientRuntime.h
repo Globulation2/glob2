@@ -5,6 +5,7 @@
 // prevents queue, thread and scratch-storage details from entering Map's API.
 #include "GradientPipeline.h"
 #include "BuildingGradientJob.h"
+#include "ResourceGrowth.h"
 #include "SnapshotGradient.h"
 #include "ResourceSeedCache.h"
 #include "TerrainSafetyCache.h"
@@ -83,6 +84,7 @@ struct GradientRuntime
 	// timing comparisons. Local configuration, never saved.
 	enum class BuildingDepth { Table, Full, Lazy };
 	BuildingDepth buildingDepth = BuildingDepth::Table;
+    ResourceGrowth::Pipeline growth;
 	// One simulation-owned reservation, consumed once during the observation phase.
 	// Scalar identities survive the scheduling barrier without borrowing stack lambdas.
 	struct Preparation {
