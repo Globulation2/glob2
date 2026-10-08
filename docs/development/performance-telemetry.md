@@ -180,7 +180,13 @@ describes the lifetime that just ended (`age`, `prev_complete`, `prev_settled_co
 `prev_settled_tiles`, `prev_popped`, `prev_queries` = resolve calls, `prev_extensions` =
 calls that expanded the search, and `popped_at_depth_0..31`, popped entries per 80-cost
 band of eight land tiles with the last band open-ended) together with how that
-lifetime began (`lifetime_reason`, `lifetime_verdict`).
+lifetime began (`lifetime_reason`, `lifetime_verdict`). The final columns are the
+inputs a depth prediction could read in O(1) when that lifetime started: map
+`width` and `height`, the building's `level`, `is_site`, `construction_state`
+(`none`, `new`, `upgrade`, `repair`), `progress` (the delivered/needed material
+quartile 0-3 on construction sites, empty otherwise), and its team's live
+`team_units` and `team_buildings`. They are empty when the start was not seen,
+for example for a field restored from a save.
 
 A change journal (a 65536-entry ring of generation, cell, kind and team mask) records the
 sites that bump `Map::topologyGeneration`: changed footprint cells, `setBuilding` calls
@@ -197,7 +203,15 @@ generation, are only counted.
 `dirty_with_generation`, `generation_verdicts`, `generation_kept`, `events`,
 `popped_total`, `popped_by_lifetime_reason`, `popped_by_lifetime_verdict`,
 `popped_kept`, `clearing_goal_gone`, `journal` counters and the `unbumped` change counts.
-`tools/gradient_depth_fit.py` fits depth-prediction tables from the CSV rows.
+[The building-field depth model](../building-gradient-depth-model.md) is fitted
+from these rows.
+
+The statistics stay compiled into release builds and are gated at run time, as
+`team-timeline` is: tournament workers run ordinary release binaries. With the flag
+off, the hooks reduce to null-pointer tests and a few always-on search counters.
+Pinned to four reserved cores on an x86_64 host, busy Oazis (11 Maxima, seed 19)
+measured no difference beyond run-to-run noise (about 1%), at 4096 and at 12288
+ticks, between master, the branch with the flag off, and the branch with it on.
 
 ## Scheduled AI decisions and experimental map computation
 

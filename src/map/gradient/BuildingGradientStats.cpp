@@ -200,6 +200,31 @@ BuildingGradientStats::Verdict BuildingGradientStats::classify(const Map &map, c
 	return Verdict::Rebuild;
 }
 
+BuildingGradientStats::Context BuildingGradientStats::context(const Building &building)
+{
+	Context value;
+	value.known = true;
+	if (const BuildingType *type = building.type)
+	{
+		value.level = std::int16_t(type->level);
+		value.site = type->isBuildingSite != 0;
+		if (value.site)
+		{
+			int delivered = 0, needed = 0;
+			for (int r = 0; r < MaterialSlotCount; ++r)
+			{
+				delivered += std::max(0, building.localMaterials[r]);
+				needed += std::max(0, type->maxMaterial[r]);
+			}
+			value.progress = std::int8_t(needed > 0 ? std::min(3, delivered * 4 / needed) : 3);
+		}
+	}
+	value.construction = std::uint8_t(building.constructionResultState);
+	value.units = std::uint16_t(std::min<std::size_t>(building.owner->liveUnits.size(), UINT16_MAX));
+	value.buildings = std::uint16_t(std::min<std::size_t>(building.owner->liveBuildings.size(), UINT16_MAX));
+	return value;
+}
+
 std::uint16_t BuildingGradientStats::typeIndex(const Building &building)
 {
 	const std::string &name = building.type ? building.type->type : std::string("unknown");
@@ -260,6 +285,7 @@ void BuildingGradientStats::closeLifetime(Row &row, const Building &building, in
 		return;
 	}
 	row.lifetimeKnown = true;
+	row.context = found->second.context;
 	row.lifetimeReason = found->second.reason;
 	row.lifetimeVerdict = found->second.verdict;
 	poppedByReason[unsigned(row.lifetimeReason)] += row.prevPopped;
@@ -287,7 +313,9 @@ void BuildingGradientStats::fieldRebuilding(const Map &map, const Building &buil
 	++verdictCounts[unsigned(verdict)];
 	++eventCounts[unsigned(Event::Rebuild)];
 	rowList.push_back(row);
-	lifetimes[key(building, slot)] = {tick, reason, verdict};
+	mapWidth = map.getW();
+	mapHeight = map.getH();
+	lifetimes[key(building, slot)] = {tick, reason, verdict, context(building)};
 }
 
 void BuildingGradientStats::fieldReleased(const Building &building, int slot, Event event, std::uint32_t tick)
@@ -322,7 +350,7 @@ void BuildingGradientStats::writeCsv(std::ostream &out) const
 		   "prev_extensions";
 	for (int i = 0; i < DEPTH_BINS; ++i)
 		out << ",popped_at_depth_" << i;
-	out << '\n';
+	out << ",width,height,level,is_site,construction_state,progress,team_units,team_buildings\n";
 	for (const auto &row : rowList)
 	{
 		out << row.tick << ',' << int(row.team) << ',' << row.gid << ',' << typeNames[row.type] << ','
@@ -336,7 +364,7 @@ void BuildingGradientStats::writeCsv(std::ostream &out) const
 			out << ",,,,,,,,";
 			for (int i = 0; i < DEPTH_BINS; ++i)
 				out << ',';
-			out << '\n';
+			out << ',' << mapWidth << ',' << mapHeight << ",,,,,,\n";
 			continue;
 		}
 		out << row.age << ',' << int(row.prevSearch) << ',' << int(row.prevLocked) << ',' << int(row.prevComplete)
@@ -348,6 +376,18 @@ void BuildingGradientStats::writeCsv(std::ostream &out) const
 		out << ',' << row.prevPopped << ',' << row.prevQueries << ',' << row.prevExtensions;
 		for (int i = 0; i < DEPTH_BINS; ++i)
 			out << ',' << row.poppedAtDepth[i];
+		out << ',' << mapWidth << ',' << mapHeight;
+		if (row.context.known)
+		{
+			static constexpr const char *CONSTRUCTION[] = {"none", "new", "upgrade", "repair"};
+			out << ',' << row.context.level << ',' << int(row.context.site) << ','
+				<< CONSTRUCTION[std::min<unsigned>(row.context.construction, 3)] << ',';
+			if (row.context.progress >= 0)
+				out << int(row.context.progress);
+			out << ',' << row.context.units << ',' << row.context.buildings;
+		}
+		else
+			out << ",,,,,,";
 		out << '\n';
 	}
 }

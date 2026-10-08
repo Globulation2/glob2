@@ -46,6 +46,18 @@ class BuildingGradientStats
 		bool detailed = false; // Bump only: the bump site recorded its cells
 	};
 
+	// The building and its team when a lifetime starts: the inputs a depth
+	// prediction made at rebuild time could read, each in O(1).
+	struct Context
+	{
+		bool known = false;
+		std::int16_t level = 0;
+		bool site = false;
+		std::uint8_t construction = 0; // BuildingStateRecord::ConstructionResultState
+		std::int8_t progress = -1; // delivered/needed material quartile 0..3 on sites
+		std::uint16_t units = 0, buildings = 0;
+	};
+
 	struct Row
 	{
 		std::uint32_t tick = 0;
@@ -63,6 +75,7 @@ class BuildingGradientStats
 		std::int32_t prevSettledCost = -1;
 		std::uint64_t prevPopped = 0, prevQueries = 0, prevExtensions = 0;
 		std::array<std::uint32_t, DEPTH_BINS> poppedAtDepth{};
+		Context context; // of the ending lifetime, captured at its start
 	};
 
 	static bool enabledByEnvironment();
@@ -113,7 +126,9 @@ class BuildingGradientStats
 		std::uint32_t start = 0;
 		Reason reason = Reason::Other;
 		Verdict verdict = Verdict::None;
+		Context context;
 	};
+	static Context context(const Building &building);
 
 	void push(const JournalEntry &entry);
 	Row previousRow(const Building &building, int slot, Event event, std::uint32_t tick, bool hasPrevious, int access);
@@ -121,6 +136,7 @@ class BuildingGradientStats
 	std::uint16_t typeIndex(const Building &building);
 	static std::uint64_t key(const Building &building, int slot);
 
+	int mapWidth = 0, mapHeight = 0;
 	std::vector<JournalEntry> journal;
 	std::size_t journalHead = 0, journalSize = 0;
 	std::uint32_t lostGeneration = 0;
