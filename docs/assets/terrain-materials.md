@@ -145,8 +145,10 @@ the style targets that keep the new art low-contrast and painterly beside them:
 ground materials aim at a luma spread of 6–14 and a grain of 3–10 at 32 px.
 
 Each recipe renders at 128×128, is area-averaged to 32×32 and pulled toward its
-luma targets by one affine transform computed from variant 0, so all variants of
-a material share one tone. Joins work with the runtime's border preparation
+luma targets by one affine transform computed from the pooled statistics of all
+sixteen variants, so all variants of a material share one tone. Periodic and grid
+materials (below) skip the border preparation and none of the perimeter treatment
+in this paragraph applies to them. Joins work with the runtime's border preparation
 rather than against it: `seamless_sources` (and `TerrainCompositor::prepare`)
 blend the outer four native pixels of every variant toward variant 0's
 *reflected* pixel (`min(x, 31 - x)`, `min(y, 31 - y)`) with weights 1, 3/4, 1/2
@@ -250,10 +252,10 @@ phases; only the glow ramp moves.
 
 `"variant_grid": G` (a power of two up to 16, with `"edges": "periodic"` and
 exactly G×G variants) picks a cell's variant from its position instead of the
-hash: cell (x, y) shows variant `(y mod G) * G + (x mod G)`. The variants are
-then one periodic block G cells across that repeats over the map; map sizes are
-powers of two, so the block also wraps across the torus seams. The map seed does
-not move the block. Each variant only ever meets its block neighbours, so its
+hash: cell (x, y) shows variant `(y mod G) * G + (x mod G)`, and variant
+weights are ignored. The variants are then one periodic block G cells across
+that repeats over the map; map sizes are powers of two no smaller than G, so the
+block also wraps across the torus seams. The map seed does not move the block. Each variant only ever meets its block neighbours, so its
 edges continue theirs rather than a shared band, and the border blend is skipped
 as for periodic edges. Use it for a field that must be larger than one cell, such
 as travelling waves. Map artwork bundles do not accept the key, so maps that
@@ -265,7 +267,8 @@ Water and deep water are `variant_grid 4` materials with sixteen phases
 (`animation_ticks 6`, the same 96-tick loop as the four-phase water before). The
 recipe renders one 512×512 periodic block, a sum of plane waves whose wave
 numbers are whole cycles per block and whose phases advance a whole number of
-cycles per loop, and slices it into the sixteen variants. Every cell animates
+cycles per loop (at most four, a quarter wavelength per phase, so fine chop
+moves rather than flickers), and slices it into the sixteen variants. Every cell animates
 locally on the shared clock and the field is continuous across all cell edges,
 so the swell's crests roll toward the lower right across open water, and finer
 cross chop breaks them into moving glints. Deep water reads the same field in a
@@ -276,7 +279,9 @@ Marsh pools are opaque too.
 
 Each sixteen-phase material is 256 native and 256 HD frames. A material whose
 phase changes every few ticks also recomposes the terrain pages that show it at
-that rate, so check the terrain cache cost when adding faster or wider animation.
+that rate; see [Caches and compatibility](#caches-and-compatibility) for the
+kept coverage that keeps this cheap, and check the terrain cache cost when
+adding faster or wider animation.
 
 `--check` re-synthesises every material and compares the pixel hashes with the
 committed PNGs and with `provenance.json`; it also requires the recorded
@@ -602,8 +607,16 @@ Each page and tile tracks revisions only for materials used by its discovered
 recipes; an animation outside that dependency set does not rebuild the page.
 Changes to the overall page sampling density still invalidate view pages.
 The historical `SoftwareTerrainCache` name is retained for benchmark controls,
-but the cache also draws GPU pages. Software storage stays bounded by 32 MiB;
-GPU pages have a separate 128 MiB budget. HD oversampling falls from 4× to 2× or
+but the cache also draws GPU pages. Software page storage stays bounded by
+32 MiB; GPU pages have a separate 128 MiB budget. Pages also keep the coverage of
+mixed cells that touch an animated material (`Compositor::CellMask`, 10 bytes per
+composed pixel), so a phase change re-blends their textures instead of
+re-sampling the boundary; coverage depends only on the cell, never on the phase.
+These masks have their own budget of a quarter of the page budget (8 MiB software,
+32 MiB GPU); when it is full, masks of pages not drawn in the current frame are
+released oldest first, and cells that still do not fit compose without one.
+Composition always blends through the same mask encoding, so a kept mask and a
+fresh one give identical pixels. HD oversampling falls from 4× to 2× or
 1× when necessary to fit the visible pages or the device texture limit. If native
 pages still exceed the budget in a zoomed-out GPU view, the cache reduces them by
 powers of two as needed, going no coarser than the nearest level to the display's

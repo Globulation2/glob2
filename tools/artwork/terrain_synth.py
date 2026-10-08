@@ -20,9 +20,11 @@ trail, ice and water tiles are only measured for the style targets (luma mean an
 spread, neighbour grain, saturation) that keep the new art low-contrast and
 painterly beside them.
 
-Each material renders sixteen independent, periodic 128x128 variants,
-box-downsamples them to 32x32 and shares ring 0 of the perimeter across variants
-(tools/artwork/material_tiles.py) so any two variants join. Animated materials
+Each material renders sixteen periodic 128x128 variants and box-downsamples them
+to 32x32. Ordinary materials render them independently and share ring 0 of the
+perimeter across variants (tools/artwork/material_tiles.py) so any two variants
+join; periodic materials share an outer band instead, and grid materials
+(`variant_grid`) slice one block so each variant continues its neighbours. Animated materials
 render several phases per variant (four; sixteen for water and deep water); the
 frame layout is `variant + 16 * phase`.
 Outputs are `data/gfx/terrain-<name>N.png`, the 128x128 HD frames the classic
@@ -1176,10 +1178,12 @@ WAVE_SIZE = WAVE_GRID * N
 WAVE_SIN = [math.sin(TAU * i / WAVE_SIZE) for i in range(WAVE_SIZE)]
 # (kx, ky, cycles per loop, amplitude): cycles per block; a wave moves toward +k.
 WAVE_SWELL = [(2, 1, 1, 1.0), (3, 1, 1, 0.45), (3, 2, 1, 0.35), (4, 2, 2, 0.30)]
+# At most four cycles per loop: a term moves no more than a quarter of its
+# wavelength per phase, so fine chop reads as motion rather than flicker.
 WAVE_CHOP = [(5, 1, 2, 0.5), (4, 4, 2, 0.45), (6, -1, 2, 0.4), (3, 6, 2, 0.35), (7, 3, 3, 0.35),
              (8, -3, 3, 0.3), (5, 7, 3, 0.3), (9, 2, 3, 0.25), (11, 5, 4, 0.2), (6, 10, 4, 0.2),
-             (12, -2, 4, 0.18), (13, 7, 5, 0.14), (15, 4, 5, 0.14), (10, 13, 5, 0.12),
-             (17, -5, 6, 0.1), (16, 11, 6, 0.1)]
+             (12, -2, 4, 0.18), (13, 7, 4, 0.14), (15, 4, 4, 0.14), (10, 13, 4, 0.12),
+             (17, -5, 4, 0.1), (16, 11, 4, 0.1)]
 # A static periodic warp (integer render px) bends the crests.
 WAVE_WARP = [(1, 2, 12), (2, -1, 9), (1, -1, 6)]
 _WAVE_CACHE = {}

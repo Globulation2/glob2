@@ -52,6 +52,7 @@ class Compositor
 		std::size_t bytes() const { return sizeof(CellMask) + samples.capacity() * sizeof(Sample); }
 	};
 	CellMask mask(const Recipe &, int scale) const;
+	void mask(const Recipe &, int scale, CellMask &out) const; // Reuses out's storage.
 	// A uniform recipe ignores the mask; a mixed one composes from it when given.
 	void compose(const Recipe &, SDL_Surface *target, int x, int y, int scale,
 				 const CellMask *mask = nullptr) const;

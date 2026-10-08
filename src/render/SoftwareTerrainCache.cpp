@@ -397,7 +397,7 @@ bool SoftwareTerrainCache::prepareAtResolution(const SceneMap &map, GAGCore::Spr
 											[&](auto id) { return compositor.animated(id); }))
 							{
 								passing = compositor.mask(recipe, maskScale);
-								if (*maskTotal + passing->bytes() <= (gpu ? GPUMaskBudget : MaskBudget))
+								if (releaseMasks(passing->bytes()))
 								{
 									held = std::make_unique<HeldMask>(std::move(*passing), maskTotal);
 									passing.reset();
@@ -551,6 +551,25 @@ void SoftwareTerrainCache::draw(GAGCore::GraphicContext &target)
 									   visible.w, visible.h);
 			}
 	}
+}
+bool SoftwareTerrainCache::releaseMasks(std::size_t needed)
+{
+	const std::size_t budget = gpu ? GPUMaskBudget : MaskBudget;
+	if (needed > budget)
+		return false;
+	std::vector<Chunk *> idle;
+	for (auto &chunk : chunks)
+		if (chunk->used != frame)
+			idle.push_back(chunk.get());
+	std::sort(idle.begin(), idle.end(), [](auto *a, auto *b) { return a->used < b->used; });
+	for (auto *chunk : idle)
+	{
+		if (*maskTotal + needed <= budget)
+			break;
+		for (auto &held : chunk->masks)
+			held.reset();
+	}
+	return *maskTotal + needed <= budget;
 }
 std::size_t SoftwareTerrainCache::bytes() const
 {

@@ -280,8 +280,11 @@ void Compositor::compose(const Recipe &r, SDL_Surface *target, int ox, int oy, i
 		}
 		return;
 	}
-	const CellMask own = mask ? CellMask{} : this->mask(r, scale);
-	const auto &cell = mask ? *mask : own;
+	// Uncached composition reuses one mask per thread rather than allocating.
+	thread_local CellMask scratch;
+	if (!mask)
+		this->mask(r, scale, scratch);
+	const auto &cell = mask ? *mask : scratch;
 	if (cell.recipe != r || cell.scale != scale)
 		throw std::runtime_error("Terrain cell mask does not match its recipe");
 	const auto *sample = cell.samples.data();
@@ -341,6 +344,13 @@ void Compositor::compose(const Recipe &r, SDL_Surface *target, int ox, int oy, i
 Compositor::CellMask Compositor::mask(const Recipe &r, int scale) const
 {
 	CellMask cell;
+	mask(r, scale, cell);
+	return cell;
+}
+void Compositor::mask(const Recipe &r, int scale, CellMask &cell) const
+{
+	cell.palette = {};
+	cell.colors = 0;
 	cell.recipe = r;
 	cell.scale = scale;
 	const auto slotOf = [&](MaterialId id)
@@ -381,7 +391,6 @@ Compositor::CellMask Compositor::mask(const Recipe &r, int scale) const
 			sample->slots = std::uint8_t(largest | slotOf(coverage.material[dominant]) << 2 |
 										 slotOf(coverage.neighbor) << 4);
 		}
-	return cell;
 }
 void Compositor::composeOverview(const Recipe &r, SDL_Surface *target, int ox, int oy,
 								 const CornerColors *cornerColors) const

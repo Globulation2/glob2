@@ -281,6 +281,11 @@ class TerrainSynth(unittest.TestCase):
                             self.assertLessEqual(steps[edge], 1.25 * beside + 0.25)
 
     def test_water_waves_travel_in_small_steps_around_the_loop(self):
+        # No wave term moves more than a quarter wavelength per phase (aliasing
+        # would read as flicker), and every term closes the loop exactly.
+        for kx, ky, cycles, _ in synth.WAVE_SWELL + synth.WAVE_CHOP:
+            self.assertLessEqual(cycles / synth.WAVE_PHASES, 0.25, (kx, ky))
+        self.assertEqual(synth.WAVE_SIZE % synth.WAVE_PHASES, 0)
         for name in ("water", "deep_water"):
             recipe = synth.RECIPES[name]
             self.assertEqual(recipe.phases, synth.WAVE_PHASES)

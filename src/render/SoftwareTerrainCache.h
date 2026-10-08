@@ -80,6 +80,9 @@ class SoftwareTerrainCache
 							 int bottom, int vx, int vy, Uint32 visibleTeams, bool wholeMap,
 							 int animationTime, int preferredResolution, bool tiledCapture = false,
 							 int preferredDownsample = 0);
+	// Frees kept masks of pages not drawn this frame, oldest first, until
+	// `needed` more bytes fit the mask budget. Returns whether they now fit.
+	bool releaseMasks(std::size_t needed);
 	std::vector<std::unique_ptr<Chunk>> chunks;
 	std::shared_ptr<const TerrainRegistry> registry;
     std::shared_ptr<const MapAssetBundle> assets;

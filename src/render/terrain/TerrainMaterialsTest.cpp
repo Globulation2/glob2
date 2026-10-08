@@ -290,6 +290,100 @@ TEST_SUITE("TerrainMaterials")
 			}
 		}
 	}
+	TEST_CASE("mixed cells compose exactly as a direct per-pixel coverage blend [display]")
+	{
+		// The reference is the blend before cell masks: sample coverage per pixel
+		// and blend the four entries in place, with the same seam toning.
+		glob2test::HeadlessGlobals globals({.display = true});
+		auto definitions = catalog();
+		definitions.compiledPack.clear();
+		TerrainVisual::Compositor compositor(definitions);
+		compositor.prepare(false, 0);
+		const auto &c = compositor.catalog();
+		const auto water = c.find("water"), sand = c.find("sand"), grass = c.find("grass"),
+				   deep = c.find("deep_water"), ice = c.find("ice");
+		const auto pixels = [](GAGCore::DrawableSurface &s, int x, int y)
+		{
+			return reinterpret_cast<const Uint32 *>(
+				static_cast<const unsigned char *>(s.getSDLSurface()->pixels) +
+				y * s.getSDLSurface()->pitch)[x];
+		};
+		const std::vector<std::array<TerrainVisual::MaterialId, 4>> mixes = {
+			{water, sand, water, sand},	  {water, water, water, grass}, {grass, water, water, grass},
+			{water, sand, grass, deep},	  {deep, water, sand, sand},	{ice, water, grass, ice},
+			{sand, grass, water, water}};
+		for (std::uint32_t seed : {0u, 7u})
+			for (int scale : {1, 2})
+				for (const auto &corners : mixes)
+				{
+					TerrainVisual::Recipe r;
+					r.width = r.height = 32;
+					r.x = 5;
+					r.y = 9;
+					r.seed = seed;
+					r.corners = corners;
+					// Each material's texture as this cell selects it: a uniform cell copies it.
+					std::map<TerrainVisual::MaterialId, std::vector<Uint32>> textures;
+					for (auto id : corners)
+					{
+						auto uniform = r;
+						uniform.corners = {id, id, id, id};
+						GAGCore::DrawableSurface tile(32, 32);
+						compositor.compose(uniform, tile.getSDLSurface(), 0, 0, 1);
+						auto &t = textures[id];
+						for (int y = 0; y < 32; ++y)
+							for (int x = 0; x < 32; ++x)
+								t.push_back(pixels(tile, x, y));
+					}
+					const int size = 32 * scale;
+					GAGCore::DrawableSurface actual(size, size);
+					compositor.compose(r, actual.getSDLSurface(), 0, 0, scale);
+					const TerrainVisual::PreparedCoverage prepared(c, r);
+					unsigned mismatches = 0;
+					for (int y = 0; y < size; ++y)
+						for (int x = 0; x < size; ++x)
+						{
+							const auto mask = prepared.at((x * 256 + 128) / scale, (y * 256 + 128) / scale);
+							std::uint64_t rgb[3] = {};
+							unsigned alpha = 0;
+							for (int i = 0; i < 4; ++i)
+								if (mask.weight[i])
+								{
+									const Uint32 p = textures.at(mask.material[i])[(y * 32 / size) * 32 + x * 32 / size];
+									const unsigned channels[] = {p >> 16 & 255, p >> 8 & 255, p & 255};
+									const unsigned a = mask.weight[i] * (p >> 24);
+									alpha += a;
+									for (int k = 0; k < 3; ++k)
+										rgb[k] += std::uint64_t(channels[k]) * a;
+								}
+							unsigned dominant = 0;
+							for (unsigned i = 1; i < 4; ++i)
+								if (mask.weight[i] > mask.weight[dominant])
+									dominant = i;
+							const auto &self = c.materials[mask.material[dominant]].seam;
+							const auto &other = c.materials[mask.neighbor].seam;
+							int shade = 256, tint = 0;
+							if (mask.neighbor != mask.material[dominant])
+							{
+								if (other.cast && other.height > self.height && int(mask.margin) < other.castWidth)
+									shade = 256 - other.cast * (other.castWidth - int(mask.margin)) / other.castWidth;
+								if (other.fringe && int(mask.margin) < other.fringeWidth)
+									tint = other.fringe * (other.fringeWidth - int(mask.margin)) / other.fringeWidth;
+							}
+							const auto channel = [&](int k)
+							{
+								unsigned value = unsigned(alpha ? rgb[k] / alpha : 0) * shade >> 8;
+								return value + (unsigned(other.fringeColor[k]) - value) * tint / 256;
+							};
+							const Uint32 expected = ((alpha + 32768) / 65536 << 24) | (channel(0) << 16) |
+													(channel(1) << 8) | channel(2);
+							mismatches += pixels(actual, x, y) != expected;
+						}
+					INFO("seed " << seed << " scale " << scale << " corners " << corners[0] << ","
+								 << corners[1] << "," << corners[2] << "," << corners[3]);
+					CHECK(mismatches == 0);
+				}
+	}
 	TEST_CASE("map seed reseeds variants and boundaries without breaking partitions or edges")
 	{
 		glob2test::HeadlessGlobals globals;
