@@ -33,7 +33,7 @@ UNCLASSIFIED_FILES = {'libgag/include/RenderFramePacer.h', 'src/team/BaseTeam.cp
 TEST_SOURCE = re.compile(r'(Test|Harness|Benchmark|Fixture)\.(cpp|mm|py)$')
 TEST_SOURCE_NAMES = {'RuntimePackCheck.cpp', 'MaximaStrategyDump.cpp', 'source_contracts.py', 'MapGeneratorStudy.cpp',
                      'RecordingMultiplayerPeer.cpp', 'OnlineProbeFileManager.cpp', 'PlatformClientProbe.cpp',
-                     'OnlineScreensProbe.cpp', 'RelayTestMain.cpp'}
+                     'OnlineScreensProbe.cpp', 'RelayTestMain.cpp', 'ResourceGrowthFixtures.cpp'}
 # Build-system and service suites: unknown to the selector, so every check.
 TOOLING_TESTS = ('test/build_system/', 'test/baselines/', 'test/relay_service/', 'test/online_service/')
 TEST_ROOTS = ('src/', 'libgag/', 'libusl/', 'natsort/', 'mobile/')
