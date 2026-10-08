@@ -85,3 +85,38 @@ test('authors a private family with revision-safe saving and portable export', a
   await page.getByRole('button', { name: 'Delete draft', exact: true }).click();
   await expect(page.getByRole('heading', { name: 'Building Studio', exact: true })).toBeVisible();
 });
+
+test('protects pending JSON on Back and restores it after Forward', async ({
+  page,
+  request,
+  baseURL,
+}) => {
+  if (!baseURL) throw new Error('The browser test needs its configured base URL.');
+  const seed = (await (await request.get('/__seed')).json()) as { userSession: string };
+  await page
+    .context()
+    .addCookies([{ name: 'glob2_session', value: seed.userSession, url: baseURL }]);
+  await page.goto('/building-studio');
+  await page.getByRole('button', { name: 'Create a family' }).click();
+  await expect(page.getByRole('heading', { name: 'Building family editor' })).toBeVisible();
+  const editorUrl = page.url();
+  await page.getByText('Family experiments', { exact: true }).click();
+  const pending = page.getByRole('textbox', { name: 'Family experiments JSON', exact: true });
+  await pending.fill('[unfinished');
+  page.once('dialog', (dialog) => dialog.dismiss());
+  await page.goBack();
+  await expect(page).toHaveURL(editorUrl);
+  await expect(pending).toHaveValue('[unfinished');
+  page.once('dialog', (dialog) => dialog.accept());
+  await page.goBack();
+  await expect(page.getByRole('heading', { name: 'Building Studio', exact: true })).toBeVisible();
+  await page.goForward();
+  await expect(page).toHaveURL(editorUrl);
+  await page.getByRole('button', { name: 'Restore device copy' }).click();
+  await page.getByText('Family experiments', { exact: true }).click();
+  await expect(pending).toHaveValue('[unfinished');
+  // Deleting a dirty draft needs its destructive confirmation, not a second leave dialog.
+  page.once('dialog', (dialog) => dialog.accept());
+  await page.getByRole('button', { name: 'Delete draft', exact: true }).click();
+  await expect(page.getByRole('heading', { name: 'Building Studio', exact: true })).toBeVisible();
+});

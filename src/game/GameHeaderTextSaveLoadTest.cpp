@@ -213,11 +213,32 @@ void testBinaryHeaderFormsAndLegacy()
         // not a shorter tail; player-info-only records never contain it.
         memory->seekFromEnd(0);
         std::string historical(memory->getBuffer(),memory->getPosition());
-        // Format 144 adds an empty artwork chunk count before resource declarations.
+        // Format 145 adds an empty artwork chunk count before resource declarations.
         if(form!=1) historical.erase(historical.size()-experimentBytes-resourceExperimentBytes-4,4);
-        if(form!=1) historical.erase(5,1);
-		const size_t legacySize=historical.size()-extension;
-		auto *oldBytes=new MemoryStreamBackend(historical.data(),legacySize);
+		if (form != 1)
+		{
+			// Published format 144 has map artwork but no GameHeader building
+			// artwork. A following record must remain aligned at this boundary.
+			constexpr Uint32 sentinel144 = 0x144145;
+			auto *v144Bytes = new MemoryStreamBackend;
+			BinaryOutputStream v144Out(v144Bytes);
+			v144Out.write(historical.data(), historical.size(), "header");
+			v144Out.writeUint32(sentinel144, "nextRecord");
+			v144Out.flush();
+			v144Bytes->seekFromStart(0);
+			BinaryInputStream v144(new MemoryStreamBackend(*v144Bytes));
+			GameHeader beforeBuildingArtwork;
+			REQUIRE((form == 0 ? beforeBuildingArtwork.load(&v144, FILE_FORMAT_VERSION_MAP_ASSETS)
+							   : beforeBuildingArtwork.loadWithoutPlayerInfo(
+									 &v144, FILE_FORMAT_VERSION_MAP_ASSETS)));
+			CHECK_FALSE(beforeBuildingArtwork.getBuildingArtwork());
+			CHECK(beforeBuildingArtwork.getAIOrderDelay() == original.getAIOrderDelay());
+			CHECK(v144.readUint32("nextRecord") == sentinel144);
+		}
+		if (form != 1)
+			historical.erase(5, 1);
+		const size_t legacySize = historical.size() - extension;
+		auto *oldBytes = new MemoryStreamBackend(historical.data(), legacySize);
 		oldBytes->seekFromStart(0);
 		BinaryInputStream old(oldBytes);
 		loaded.setAIConfig(0,"stale");

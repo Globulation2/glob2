@@ -93,29 +93,33 @@ test.describe('responsive mixed input',()=>{
     await expect.poll(async()=>(await snapshot(page)).tick).toBeGreaterThan(tick);
     await page.screenshot({path:info.outputPath('phone-loaded-match.png')});
   });
-  // The editor chooses its presentation from room, live (MapEditPresentation.h):
-  // a touch tablet docks, a phone in either orientation uses the card tray, and
-  // a desktop-sized window docks again with the same session.
-  test('touch editor docks on a tablet and uses the tray on a phone',async({page},info)=>{
+  // Browser software and WebGL2 retain the dock: the phone tray requires
+  // the SDL portable renderer (MapEdit::wantedPresentation). Native
+  // EditorPresentation tests cover that renderer's live dock/tray switching.
+  test('touch browser editor retains its dock across phone rotation',async({page},info)=>{
     const controls=()=>page.evaluate(()=>Object.keys(glob2Diagnostics.snapshot().controls));
     const tray=async()=>(await controls()).some(key=>key.startsWith('tray/'));
     await page.goto(gameURL());await screen(page,'MainMenuScreen');
     await clickMainMenu(page,'editor');await screen(page,'EditorMainMenu');
     await clickControl(page,'new-map');await screen(page,'NewMapScreen');
     await clickCreateMap(page);await screen(page,'MapEditorScreen');
-    await matchFrame(page);
+    // The editor advances host turns, not simulation match frames.
+    const loop=(await snapshot(page)).loop;
+    await expect.poll(async()=>(await snapshot(page)).loop).toBeGreaterThan(loop+2);
+    await tapControl(page,'dock/tab/terrain');
+    await control(page,'brush/terrain/grass');
     expect(await tray()).toBe(false);
     await page.screenshot({path:info.outputPath('editor-tablet-dock.png')});
     await page.setViewportSize({width:390,height:844});
     await expect.poll(async()=>{const s=await snapshot(page);return [s.width,s.height];}).toEqual([390,844]);
-    await control(page,'tray/terrain/grass');
-    await tapControl(page,'tray/mode/1');
-    await tapControl(page,'tray/resource/wheat');
-    await control(page,'tray/chip/0');
-    await page.screenshot({path:info.outputPath('editor-phone-tray.png')});
+    await control(page,'brush/terrain/grass');
+    await tapControl(page,'brush/terrain/grass');
+    expect(await tray()).toBe(false);
+    await page.screenshot({path:info.outputPath('editor-phone-dock.png')});
     await page.setViewportSize({width:844,height:390});
     await expect.poll(async()=>{const s=await snapshot(page);return [s.width,s.height];}).toEqual([844,390]);
-    await control(page,'tray/resource/wheat');
+    await control(page,'brush/terrain/grass');
+    expect(await tray()).toBe(false);
     await page.screenshot({path:info.outputPath('editor-phone-landscape.png')});
     await page.setViewportSize({width:1024,height:768});
     await expect.poll(tray).toBe(false);

@@ -15,6 +15,7 @@
 // presentations draw themselves (buildings, units, zones, tools).
 
 #include "BrushCatalog.h"
+#include "MapAssetBundle.h"
 #include <cstdint>
 #include <map>
 #include <memory>
@@ -36,7 +37,8 @@ class BrushSwatches
 
 	// The definitions swatches are composed from. Rebinding to registries with
 	// other digests drops every cached swatch; identical digests keep them.
-	void bind(std::shared_ptr<const TerrainRegistry> terrain, std::shared_ptr<const ResourceRegistry> resources);
+	void bind(std::shared_ptr<const TerrainRegistry> terrain, std::shared_ptr<const ResourceRegistry> resources,
+        std::shared_ptr<const MapAssetBundle> assets = MapAssetBundle::empty());
 	// Swatch for a catalogue entry, `px` pixels square. Owned by this cache: valid
 	// until the next bind() that changes digests, clear() or device reset.
 	GAGCore::DrawableSurface *get(const BrushEntry &entry, int px = 64);
@@ -52,7 +54,7 @@ class BrushSwatches
 	std::shared_ptr<const TerrainRegistry> terrainRegistry;
 	std::shared_ptr<const ResourceRegistry> resourceRegistry;
 	std::string digest;
+    std::shared_ptr<const MapAssetBundle> assets = MapAssetBundle::empty();
 	std::uint64_t resetGeneration = 0;
-	bool prepared = false;
 	std::map<std::pair<std::string, int>, std::unique_ptr<GAGCore::DrawableSurface>> cache;
 };

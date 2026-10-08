@@ -13,6 +13,7 @@
 #include "GameGUIKeyActions.h"
 #include "Glob2Style.h"
 #include "GlobalContainer.h"
+#include "render/ResourceSprites.h"
 #include "TerrainPresentation.h"
 #include "ResourceRegistry.h"
 #include "render/terrain/TerrainCatalogIO.h"
@@ -127,6 +128,9 @@ GlobalContainer::~GlobalContainer(void)
 	mix.reset();
 	voiceRecorder.reset();
 	title.reset();
+    ResourceSprites::clear();
+	customTerrainCompositor.reset();
+    compositorAssets.reset();
 	terrainCompositor_.reset();
 
 	// SDL_net owns resolver threads and conditions. Join them before the
@@ -466,4 +470,15 @@ TerrainVisual::Compositor &GlobalContainer::terrainCompositor()
 		terrainCompositor_ =
 			std::make_unique<TerrainVisual::Compositor>(TerrainVisual::loadCatalog());
 	return *terrainCompositor_;
+}
+
+TerrainVisual::Compositor &GlobalContainer::terrainCompositor(std::shared_ptr<const MapAssetBundle> assets)
+{
+    if (!assets || assets->isEmpty()) return terrainCompositor();
+    if (compositorAssets != assets) {
+        auto replacement = std::make_unique<TerrainVisual::Compositor>(TerrainVisual::loadCatalog(assets), assets);
+        customTerrainCompositor = std::move(replacement);
+        compositorAssets = std::move(assets);
+    }
+    return *customTerrainCompositor;
 }

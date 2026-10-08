@@ -9,6 +9,10 @@ import type {
   MusicTrack,
   MusicConvert,
   AiValidationReport,
+  SetPackage,
+  ValidateSetResult,
+  SetCredit,
+  MapSetCredits,
 } from '@glob2/protocol';
 
 /** Column with a database default: optional on insert. */
@@ -188,8 +192,9 @@ export interface EngineAgentsTable {
 export interface EngineJobsTable {
   id: Generated<string>;
   kind:
-    | 'validate-buildings'
     | 'validate-ai'
+    | 'validate-buildings'
+    | 'validate-set'
     | 'generate-map'
     | 'validate-map'
     | 'render-preview'
@@ -250,6 +255,7 @@ export interface MapsTable {
 }
 
 export interface MapVersionsTable {
+  set_credits: DefaultedJson<MapSetCredits>;
   building_catalog: NullableJson<JsonValue>;
   resource_experiments: DefaultedJson<ResourceExperimentDefinitions>;
   required_resource_experiments: DefaultedJson<string[]>;
@@ -1123,6 +1129,56 @@ export interface BuildingReportsTable {
   resolved: Defaulted<boolean>;
   created_at: Timestamp;
 }
+interface AssetSetsTable {
+  id: string;
+  owner_account_id: string;
+  title: string;
+  description: Defaulted<string>;
+  tags: Defaulted<string[]>;
+  visibility: Defaulted<'public' | 'unlisted' | 'private'>;
+  hidden: Defaulted<boolean>;
+  hidden_reason: string | null;
+  created_at: Timestamp;
+  updated_at: Timestamp;
+}
+interface SetDraftsTable {
+  id: string;
+  set_id: string;
+  revision: Defaulted<number>;
+  document: Json<SetPackage>;
+  hash: string | null;
+  validation_job_id: string | null;
+  sim_version: string | null;
+  report: NullableJson<ValidateSetResult>;
+  status: 'pending' | 'valid' | 'invalid' | 'error' | null;
+  error: string | null;
+  published_version_id: string | null;
+  updated_at: Timestamp;
+}
+interface SetVersionsTable {
+  id: string;
+  set_id: string;
+  hash: string;
+  label: string;
+  notes: Defaulted<string>;
+  license: 'CC0-1.0' | 'CC-BY-4.0';
+  credits: Json<SetCredit[]>;
+  sim_version: string;
+  min_version_minor: number;
+  report: Json<ValidateSetResult>;
+  preview_hash: string | null;
+  created_at: Timestamp;
+}
+interface SetReportsTable {
+  id: Generated<string>;
+  set_id: string;
+  reporter_account_id: string;
+  reason: string;
+  details: string;
+  resolved: Defaulted<boolean>;
+  resolution: string | null;
+  created_at: Timestamp;
+}
 export interface Database {
   building_families: BuildingFamiliesTable;
   building_releases: BuildingReleasesTable;
@@ -1130,6 +1186,12 @@ export interface Database {
   building_favourites: BuildingSocialTable;
   building_reports: BuildingReportsTable;
   building_drafts: BuildingDraftsTable;
+  asset_sets: AssetSetsTable;
+  set_drafts: SetDraftsTable;
+  set_versions: SetVersionsTable;
+  set_likes: { set_id: string; account_id: string };
+  set_downloads: { version_id: string; downloader: string; day: Defaulted<string> };
+  set_reports: SetReportsTable;
   ai_studio_projects: AiStudioProjectsTable;
   ai_studio_revisions: AiStudioRevisionsTable;
   ai_studio_requests: AiStudioRequestsTable;

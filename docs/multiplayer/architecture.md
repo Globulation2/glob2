@@ -31,17 +31,17 @@ ratings and history start fresh.
  Caddy: TLS, static web client and web app, /api, /realtime, /relay
 ```
 
-| Part | Code | Role |
-| --- | --- | --- |
-| `platform-api` | `platform/apps/api` | Public REST (`/api/v1`), realtime WebSocket (`/realtime`), browser sign-in pages (`/signin`, `/auth/<provider>/…`), JWKS (`/.well-known/jwks.json`), internal endpoints for relays and agents (`/internal`), health (`/healthz`, `/readyz`). Stateless; run any number of replicas. |
-| `platform-worker` | `platform/apps/worker` | Applies engine-job results (recording verify-match verdicts and history, applying ratings, completing map jobs); runs the scheduler (maintenance, matchmaker, rating sweep, warm map pool, relay sweep) on the one replica holding the leader lock. The process code only: the domain logic it runs is in `@glob2/play`. |
-| `engine-agent` | `platform/apps/engine-agent` | Runs engine jobs for exactly one sim version with its glob2 binary; see [Engine agents](#engine-agents). |
-| web app | `platform/apps/web` | Home, leaderboards, player and match pages, map catalog, moderation (React + Vite); see [match history and the web app](history-and-web.md). Sign-in and invite pages are rendered by `platform-api`. |
-| relay | `src/relay/` (M2) | Clock and turn sequencing for matches; trusts only signed tickets. |
-| contracts | `platform/packages/protocol` | Every JSON shape, exported as JSON Schema with fixtures for C++. |
-| data | `platform/packages/db` | SQL migrations, typed Kysely access, pub/sub, leader lock. |
-| match domain | `platform/packages/play` | Shared by the API and the worker: ratings, queue tickets and proposals, the match start sequence, relay placement, map sources, match-end intake, catalog job results, the warm map pool and stored-JSON decoding. Test doubles and fixtures are exported as `@glob2/play/testing`. |
-| plumbing | `platform/packages/core` | Configuration, logging, AccessPolicy, blob store, job queue, engine-agent liveness, shutdown. |
+| Part              | Code                         | Role                                                                                                                                                                                                                                                                                                                     |
+| ----------------- | ---------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `platform-api`    | `platform/apps/api`          | Public REST (`/api/v1`), realtime WebSocket (`/realtime`), browser sign-in pages (`/signin`, `/auth/<provider>/…`), JWKS (`/.well-known/jwks.json`), internal endpoints for relays and agents (`/internal`), health (`/healthz`, `/readyz`). Stateless; run any number of replicas.                                      |
+| `platform-worker` | `platform/apps/worker`       | Applies engine-job results (recording verify-match verdicts and history, applying ratings, completing map jobs); runs the scheduler (maintenance, matchmaker, rating sweep, warm map pool, relay sweep) on the one replica holding the leader lock. The process code only: the domain logic it runs is in `@glob2/play`. |
+| `engine-agent`    | `platform/apps/engine-agent` | Runs engine jobs for exactly one sim version with its glob2 binary; see [Engine agents](#engine-agents).                                                                                                                                                                                                                 |
+| web app           | `platform/apps/web`          | Home, leaderboards, player and match pages, map catalog, moderation (React + Vite); see [match history and the web app](history-and-web.md). Sign-in and invite pages are rendered by `platform-api`.                                                                                                                    |
+| relay             | `src/relay/` (M2)            | Clock and turn sequencing for matches; trusts only signed tickets.                                                                                                                                                                                                                                                       |
+| contracts         | `platform/packages/protocol` | Every JSON shape, exported as JSON Schema with fixtures for C++.                                                                                                                                                                                                                                                         |
+| data              | `platform/packages/db`       | SQL migrations, typed Kysely access, pub/sub, leader lock.                                                                                                                                                                                                                                                               |
+| match domain      | `platform/packages/play`     | Shared by the API and the worker: ratings, queue tickets and proposals, the match start sequence, relay placement, map sources, match-end intake, catalog job results, the warm map pool and stored-JSON decoding. Test doubles and fixtures are exported as `@glob2/play/testing`.                                      |
+| plumbing          | `platform/packages/core`     | Configuration, logging, AccessPolicy, blob store, job queue, engine-agent liveness, shutdown.                                                                                                                                                                                                                            |
 
 Apps depend on packages, never on each other: ESLint rejects imports of an app
 package (`@glob2/api`, `@glob2/worker`, `@glob2/engine-agent`, `@glob2/web`)
@@ -102,17 +102,17 @@ exactly one thing to every engine (`MatchSetup`, requests, job payloads), reject
 unknown properties. Documents the platform emits (responses, events, REST
 resources) allow unknown properties, so newer servers can add fields without
 breaking older clients. Some rules cannot be expressed in JSON Schema; those are
-*semantic* checks (`matchSetupProblems()`) and a document is valid only if it
+_semantic_ checks (`matchSetupProblems()`) and a document is valid only if it
 passes both.
 
-| Area | Schemas |
-| --- | --- |
-| Match description | `SimVersion`, `MatchSetup`, `MapSource`, `GeneratorDescriptor`, `MatchRules` |
-| Tickets | `MatchTicketHeader`, `MatchTicketClaims` |
-| Relay ↔ platform | `RelayRegistration(Response)`, `RelayHeartbeat(Response)`, `RelayMatchEnded` |
-| Realtime | `RealtimeRequest`, `RealtimeResponse`, `RealtimeEvent`, `RealtimeServerMessage`, `MatchAssignment`, and per method `Realtime<Method>Params`/`Result`, per event `RealtimeEvent<Event>` |
-| REST | accounts and auth, `InstanceInfo`, rooms, matches, maps, leaderboards, `ErrorBody` |
-| Engine jobs | `EngineJob`, `EngineJobResult`, and per kind payload and result |
+| Area              | Schemas                                                                                                                                                                                |
+| ----------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Match description | `SimVersion`, `MatchSetup`, `MapSource`, `GeneratorDescriptor`, `MatchRules`                                                                                                           |
+| Tickets           | `MatchTicketHeader`, `MatchTicketClaims`                                                                                                                                               |
+| Relay ↔ platform  | `RelayRegistration(Response)`, `RelayHeartbeat(Response)`, `RelayMatchEnded`                                                                                                           |
+| Realtime          | `RealtimeRequest`, `RealtimeResponse`, `RealtimeEvent`, `RealtimeServerMessage`, `MatchAssignment`, and per method `Realtime<Method>Params`/`Result`, per event `RealtimeEvent<Event>` |
+| REST              | accounts and auth, `InstanceInfo`, rooms, matches, maps, leaderboards, `ErrorBody`                                                                                                     |
+| Engine jobs       | `EngineJob`, `EngineJobResult`, and per kind payload and result                                                                                                                        |
 
 **Fixtures for other languages.** `platform/packages/protocol/fixtures/` holds:
 
@@ -135,18 +135,18 @@ validator. C++ contract tests read the manifest and must reach the same verdicts
 `MatchSetup` field names follow the `GameHeader` accessors they set, and every
 rule is required, so there are no defaults for two builds to disagree on.
 
-| MatchSetup | GameHeader |
-| --- | --- |
-| `seed` | `setRandomSeed` |
-| `seats[i]` (numbered 0..k-1) | `BasePlayer` *i*: `human` → `P_IP` on every client and in the verifier (as networked games do today, so heavy checksums agree), `ai` → `P_AI + id`; `name`, `team`; `setNumberOfPlayers(k)` |
-| `seats[i].aiConfig` | `setAIConfig(i, …)` |
-| `teams[t].alliance` (teams listed 0..n-1, n = map team count) | `setAllyTeamNumber(t, alliance + 1)` |
-| `rules.prestigeVictory`, `rules.suddenDeathMinutes` | prestige and sudden-death winning conditions (minutes × 60 × 25 ticks) |
-| `rules.mapDiscovered`, `rules.allyTeamsFixed` | `setMapDiscovered`, `setAllyTeamsFixed` |
-| economy and combat rules | the setter of the same name (`setResourceScarcityLevel`, …) |
-| `rules.aiOrderDelay` (optional integer 0–8, new matches use 8; absent means 0) | `setAIOrderDelay`; one delay for every AI controller in the match |
-| `experiments` | `ExperimentSet` keys; an unknown key is an error, not ignored |
-| `map.hash` | the map or save the client loads (SHA-256 of the decompressed bytes) |
+| MatchSetup                                                                     | GameHeader                                                                                                                                                                                  |
+| ------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `seed`                                                                         | `setRandomSeed`                                                                                                                                                                             |
+| `seats[i]` (numbered 0..k-1)                                                   | `BasePlayer` _i_: `human` → `P_IP` on every client and in the verifier (as networked games do today, so heavy checksums agree), `ai` → `P_AI + id`; `name`, `team`; `setNumberOfPlayers(k)` |
+| `seats[i].aiConfig`                                                            | `setAIConfig(i, …)`                                                                                                                                                                         |
+| `teams[t].alliance` (teams listed 0..n-1, n = map team count)                  | `setAllyTeamNumber(t, alliance + 1)`                                                                                                                                                        |
+| `rules.prestigeVictory`, `rules.suddenDeathMinutes`                            | prestige and sudden-death winning conditions (minutes × 60 × 25 ticks)                                                                                                                      |
+| `rules.mapDiscovered`, `rules.allyTeamsFixed`                                  | `setMapDiscovered`, `setAllyTeamsFixed`                                                                                                                                                     |
+| economy and combat rules                                                       | the setter of the same name (`setResourceScarcityLevel`, …)                                                                                                                                 |
+| `rules.aiOrderDelay` (optional integer 0–8, new matches use 8; absent means 0) | `setAIOrderDelay`; one delay for every AI controller in the match                                                                                                                           |
+| `experiments`                                                                  | `ExperimentSet` keys; an unknown key is an error, not ignored                                                                                                                               |
+| `map.hash`                                                                     | the map or save the client loads (SHA-256 of the decompressed bytes)                                                                                                                        |
 
 Several seats may share a team: a human and an AI on one team is the custom-game
 shared control; several humans may also share a team. AI ids are the CLI names
@@ -426,16 +426,16 @@ applied in order by `glob2-migrate` (`npm run migrate -- latest`); the Kysely
 types in `src/schema.ts` are checked column for column against the migrated
 database in tests.
 
-| Area | Tables |
-| --- | --- |
-| Identity | `accounts`, `identities`, `device_credentials`, `refresh_tokens`, `signin_attempts`, `web_sessions`, `auth_flows`, `entitlements`, `admin_audit_log` |
-| Infrastructure | `blobs`, `relays` (registration, load, drain, last heartbeat), `engine_agents`, `engine_jobs`, `warm_maps` (the quick-match pool over `generated_maps`) |
-| Rooms | `rooms` (settings JSON, revision), `room_members` (with relay round trips), `room_seats` (with locks), `room_chat_messages`, `room_kicks` |
-| Map sources | `map_uploads` (private uploads and their validation), `generated_maps` (one generation per descriptor and sim version) |
-| Matches | `matches` (the exact `MatchSetup`, seed, map hash, relay and placement attempts, verification, the relay's end report), `match_participants`, `match_team_stats`, `match_artifacts` |
-| Ratings | `rating_entities` (an account, or an AI at one sim version), `ratings` (OpenSkill μ/σ per ladder, ordinal generated), `rating_history` (per-match change) |
-| Quick match | `queue_tickets` (one active ticket per account), `match_proposals` and `match_proposal_seats` (groups and accept prompts), `queue_cooldowns` |
-| Maps | `maps` (owner, visibility, moderation, counters, latest version), `map_versions` (content hash, size, dimensions, team count, preview, validation), `map_likes`, `map_reports`, `map_downloads`; see [Map catalog](#map-catalog) |
+| Area           | Tables                                                                                                                                                                                                                           |
+| -------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Identity       | `accounts`, `identities`, `device_credentials`, `refresh_tokens`, `signin_attempts`, `web_sessions`, `auth_flows`, `entitlements`, `admin_audit_log`                                                                             |
+| Infrastructure | `blobs`, `relays` (registration, load, drain, last heartbeat), `engine_agents`, `engine_jobs`, `warm_maps` (the quick-match pool over `generated_maps`)                                                                          |
+| Rooms          | `rooms` (settings JSON, revision), `room_members` (with relay round trips), `room_seats` (with locks), `room_chat_messages`, `room_kicks`                                                                                        |
+| Map sources    | `map_uploads` (private uploads and their validation), `generated_maps` (one generation per descriptor and sim version)                                                                                                           |
+| Matches        | `matches` (the exact `MatchSetup`, seed, map hash, relay and placement attempts, verification, the relay's end report), `match_participants`, `match_team_stats`, `match_artifacts`                                              |
+| Ratings        | `rating_entities` (an account, or an AI at one sim version), `ratings` (OpenSkill μ/σ per ladder, ordinal generated), `rating_history` (per-match change)                                                                        |
+| Quick match    | `queue_tickets` (one active ticket per account), `match_proposals` and `match_proposal_seats` (groups and accept prompts), `queue_cooldowns`                                                                                     |
+| Maps           | `maps` (owner, visibility, moderation, counters, latest version), `map_versions` (content hash, size, dimensions, team count, preview, validation), `map_likes`, `map_reports`, `map_downloads`; see [Map catalog](#map-catalog) |
 
 Hashes are lowercase hex (`sha256_hex` domain), ids are UUIDs, and enumerations
 are text with CHECK constraints so they can grow without type migrations.
@@ -531,14 +531,14 @@ engine API, with a bearer agent key (`ENGINE_AGENT_KEYS`/`ENGINE_AGENT_KEYS_FILE
 on the API, `ENGINE_AGENT_KEY_FILE` on the agent; shapes in the protocol package's
 `jobs.ts`):
 
-| Call | Purpose |
-| --- | --- |
-| `POST /internal/v1/engine/agents/heartbeat`, `DELETE …/agents/{id}` | Announce the agent's sim version and kinds (`engine_agents`). |
-| `POST /internal/v1/engine/jobs/lease` | The oldest queued job of the agent's sim version and kinds, with a lease token, or `204`. |
-| `POST …/jobs/{id}/extend`, `…/release` | Keep the lease while the engine runs; give the job back for a retry. |
-| `POST …/jobs/{id}/result` | Report the result or failure (idempotent per lease). |
-| `GET /internal/v1/engine/blobs/{sha256}` | A blob whose hash the leased job's payload contains, and no other. |
-| `PUT /internal/v1/engine/blobs?contentType=&visibility=` | Store an output blob by content (known content types only). |
+| Call                                                                | Purpose                                                                                   |
+| ------------------------------------------------------------------- | ----------------------------------------------------------------------------------------- |
+| `POST /internal/v1/engine/agents/heartbeat`, `DELETE …/agents/{id}` | Announce the agent's sim version and kinds (`engine_agents`).                             |
+| `POST /internal/v1/engine/jobs/lease`                               | The oldest queued job of the agent's sim version and kinds, with a lease token, or `204`. |
+| `POST …/jobs/{id}/extend`, `…/release`                              | Keep the lease while the engine runs; give the job back for a retry.                      |
+| `POST …/jobs/{id}/result`                                           | Report the result or failure (idempotent per lease).                                      |
+| `GET /internal/v1/engine/blobs/{sha256}`                            | A blob whose hash the leased job's payload contains, and no other.                        |
+| `PUT /internal/v1/engine/blobs?contentType=&visibility=`            | Store an output blob by content (known content types only).                               |
 
 Calls about a job carry its lease token in `X-Glob2-Lease`.
 
@@ -577,6 +577,7 @@ blob the agent stores is also registered in `blobs`.
 | `render-preview` | `--preview-map <file> --output preview.png --preview-size <px>` | PNG blob hash and pixel size |
 | `verify-match` | `--verify-match <record> --map <file> --out <dir>` | `verified`/`diverged` with the outcome, team statistics and timelines, or `unverifiable` |
 | `validate-buildings` | `--compose-buildings --package <manifest> --artwork-bundle <bundle>` | Archive and stock hashes, suite version, resolved catalog hash and snapshot, and optional artwork hash; deterministic rejection returns `valid: false` and a reason |
+
 
 Before running the generator, the agent checks the descriptor against the
 catalog. An unknown or editor-only generator, a revision this binary does not
@@ -651,13 +652,13 @@ uses display metadata as a substitute for the map's definitions.
 The aggregate views from migration 0004 cover verified, ended matches of the
 last 90 days:
 
-| View | Contents |
-| --- | --- |
-| `match_results_view` | One row per seat of every verified match, with queue, generator and map. |
-| `recent_win_rates_view` | Games, wins and win rate per player, by queue, map or generator. A player is an account, or an AI id at one sim version. |
-| `recent_game_lengths_view` | Mean, median, p90 and maximum length in ticks, by queue and by generator. |
-| `team_timeline_view` | The 512-tick samples of each team as rows. |
-| `account_economy_curves_view` | A player's units, buildings and prestige at each tick of each match, next to their own average at that tick. |
+| View                          | Contents                                                                                                                 |
+| ----------------------------- | ------------------------------------------------------------------------------------------------------------------------ |
+| `match_results_view`          | One row per seat of every verified match, with queue, generator and map.                                                 |
+| `recent_win_rates_view`       | Games, wins and win rate per player, by queue, map or generator. A player is an account, or an AI id at one sim version. |
+| `recent_game_lengths_view`    | Mean, median, p90 and maximum length in ticks, by queue and by generator.                                                |
+| `team_timeline_view`          | The 512-tick samples of each team as rows.                                                                               |
+| `account_economy_curves_view` | A player's units, buildings and prestige at each tick of each match, next to their own average at that tick.             |
 
 ### Warm map pool
 
@@ -751,6 +752,7 @@ version. Listings show and filter on it.
    The web app's upload form checks the file with `POST /api/v1/uploads` first and
    polls it; only a file the game loads gets a map (step 1) and a version, so a
    failed upload leaves no empty map page behind.
+
 3. The bytes become a private blob. The version row is written with two job ids,
    and only then are the jobs submitted, so a fast result always finds its row:
    - `validate-map` (format `map`);
@@ -772,12 +774,12 @@ bytes.
 **Visibility.** Moderators and administrators see every map. Every other caller
 gets `404` for a map they may not see, so its existence does not leak.
 
-| Visibility | Listed | Map, versions, file, preview, blob by hash |
-| --- | --- | --- |
-| `public` | in `GET /api/v1/maps` and the owner's public list | anyone, signed in or not |
-| `unlisted` (default) | no | anyone with the id or hash |
-| `private` | no | the owner |
-| hidden by a moderator | no | the owner (with `hiddenReason`) |
+| Visibility            | Listed                                            | Map, versions, file, preview, blob by hash |
+| --------------------- | ------------------------------------------------- | ------------------------------------------ |
+| `public`              | in `GET /api/v1/maps` and the owner's public list | anyone, signed in or not                   |
+| `unlisted` (default)  | no                                                | anyone with the id or hash                 |
+| `private`             | no                                                | the owner                                  |
+| hidden by a moderator | no                                                | the owner (with `hiddenReason`)            |
 
 Pending and invalid versions are shown only to the owner. Guests may create
 unlisted and private maps but not publish them. `GET /api/v1/blobs/maps/{hash}`
@@ -816,12 +818,12 @@ bytes as an attachment, and `…/preview.webp` serves the preview.
 open report per map; a repeat answers the open one. Each account may file 10 reports
 per hour. Moderators and administrators can then use these routes:
 
-| Route | Effect |
-| --- | --- |
-| `GET /api/v1/admin/map-reports?status=open\|resolved\|dismissed\|all&mapId=&cursor=` | Reports, newest first, with the map and reporter |
-| `POST /api/v1/admin/map-reports/{id}/resolve` | `ResolveMapReportRequest`: `resolved` or `dismissed`, an optional note, and optionally hide the map |
-| `POST /api/v1/admin/maps/{id}/hide` | Hide with a reason (`MapHideRequest`) |
-| `POST /api/v1/admin/maps/{id}/unhide` | Show again |
+| Route                                                                                | Effect                                                                                              |
+| ------------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------------------- |
+| `GET /api/v1/admin/map-reports?status=open\|resolved\|dismissed\|all&mapId=&cursor=` | Reports, newest first, with the map and reporter                                                    |
+| `POST /api/v1/admin/map-reports/{id}/resolve`                                        | `ResolveMapReportRequest`: `resolved` or `dismissed`, an optional note, and optionally hide the map |
+| `POST /api/v1/admin/maps/{id}/hide`                                                  | Hide with a reason (`MapHideRequest`)                                                               |
+| `POST /api/v1/admin/maps/{id}/unhide`                                                | Show again                                                                                          |
 
 Administrators may also delete any map. Every moderation action is written to
 `admin_audit_log` with `target_type` `map`.
@@ -860,24 +862,23 @@ own one-command test; see
 
 Each milestone is one or more reviewable pull requests; YOG kept working until M9.
 
-| | Milestone | Content |
-| --- | --- | --- |
-| M0 | Foundations | This workspace, protocol contracts and fixtures, data model, CI job, design docs; C++ JSON, HTTP fetch, WebSocket text mode and the `LockstepSession` interface |
-| M1 | Turn netcode core | Turn sequencer, jitter buffer, client session, match record, multi-client harness, `--verify-match` |
-| M2 | Relay and LAN | `role=relay`; LAN on the new netcode; first playtest of the new netcode's feel |
-| M3 | Identity | Accounts, guests, providers, handoff sign-in, tokens and JWKS, platform client, admin CLI, hub sign-in |
-| M4 | Rooms and matches | Rooms, uploads, generation jobs, tickets, relay registration and allocation, invite links, room screen, compose stack v2 |
-| M5 | Verification and ratings | Verify jobs, OpenSkill, AI entities, leaderboard, profile and match pages, post-game screen |
-| M6 | Quick match | Queue config, matchmaker, region probes, AI backfill, warm map pool |
-| M7 | Map catalog | Upload, browse, previews, moderation |
-| M8 | Admin and polish | Admin pages, connection HUD, phone layouts |
-| M9 | Cutover | Delete YOG, IRC and the server and router roles; update docs (done) |
+|     | Milestone                | Content                                                                                                                                                         |
+| --- | ------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| M0  | Foundations              | This workspace, protocol contracts and fixtures, data model, CI job, design docs; C++ JSON, HTTP fetch, WebSocket text mode and the `LockstepSession` interface |
+| M1  | Turn netcode core        | Turn sequencer, jitter buffer, client session, match record, multi-client harness, `--verify-match`                                                             |
+| M2  | Relay and LAN            | `role=relay`; LAN on the new netcode; first playtest of the new netcode's feel                                                                                  |
+| M3  | Identity                 | Accounts, guests, providers, handoff sign-in, tokens and JWKS, platform client, admin CLI, hub sign-in                                                          |
+| M4  | Rooms and matches        | Rooms, uploads, generation jobs, tickets, relay registration and allocation, invite links, room screen, compose stack v2                                        |
+| M5  | Verification and ratings | Verify jobs, OpenSkill, AI entities, leaderboard, profile and match pages, post-game screen                                                                     |
+| M6  | Quick match              | Queue config, matchmaker, region probes, AI backfill, warm map pool                                                                                             |
+| M7  | Map catalog              | Upload, browse, previews, moderation                                                                                                                            |
+| M8  | Admin and polish         | Admin pages, connection HUD, phone layouts                                                                                                                      |
+| M9  | Cutover                  | Delete YOG, IRC and the server and router roles; update docs (done)                                                                                             |
 
 The original plan referred to `src/net/gateway/` for server patterns; that
 directory was removed when transport moved to native WSS, and its equivalents now
 live in `src/net/NetTransport.cpp`, `src/net/WssTransport.cpp`,
 `src/net/ServerControl.cpp` and `deploy/`.
-
 
 ## Colony skin payments
 
@@ -1055,6 +1056,7 @@ buffer; both backends restore the map renderer's state after the prepass. Contex
 from retained meshes and paint. Native mobile rendering, live spectator
 attachment and full performance validation remain required
 before release.
+
 ## AI Map Studio
 
 The optional map studio lives at `/map-studio` on the online app host, reached
@@ -1148,26 +1150,25 @@ not proof of competitive balance, long-term economy or human enjoyment. Qualify
 model outputs with modern-AI games, sustained growth checks and human play review
 before enabling sales. See the hosting guide for flags, credentials and recovery.
 
-
 ## JavaScript AI library
 
 `/api/v1/ais` provides a versioned catalogue for local-play JavaScript controllers.
 The website owns publishing; the native settings library discovers, downloads and
 installs exact releases. The contracts live in `packages/protocol/src/ais.ts`.
 
-| Route | Behaviour |
-| --- | --- |
-| `GET /api/v1/ais` | `q`, comma-separated `tags`, `sort=likes|newest|updated|downloads`, `favourites=true`, `owner=me`, keyset `cursor` and bounded `limit` |
-| `GET /api/v1/ais/{id}` | AI identity, versions and historical validation evidence |
-| `POST /api/v1/ai-uploads` | Private staged UTF-8 source bytes; queues/coalesces validation |
-| `GET /api/v1/ai-uploads/{id}` | Owner-only persistent checklist and retryable failure |
-| `POST /api/v1/ais` / `POST /api/v1/ais/{id}/versions` | Atomically consume a passing upload into a new AI or owned release |
-| `PATCH /api/v1/ais/{id}` | Owner edits catalogue metadata and visibility |
-| `DELETE /api/v1/ais/{id}` | Owner removes a catalogue AI |
-| `GET /api/v1/ais/{id}/versions/{versionId}/file` | Exact bytes, safe `.js` attachment, daily deduplicated version download accounting |
-| `PUT` / `DELETE /api/v1/ais/{id}/like` or `/favourite` | Idempotent registered-account social actions |
-| `POST /api/v1/ais/{id}/reports` | Map-library reporting reasons and limits |
-| `/api/v1/admin/ais/...` | Moderator report queue, resolution, hide and unhide |
+| Route                                                  | Behaviour                                                                          |
+| ------------------------------------------------------ | ---------------------------------------------------------------------------------- |
+| `GET /api/v1/ais`                                      | `q`, comma-separated `tags`, `sort=likes                                           | newest | updated | downloads`, `favourites=true`, `owner=me`, keyset `cursor`and bounded`limit` |
+| `GET /api/v1/ais/{id}`                                 | AI identity, versions and historical validation evidence                           |
+| `POST /api/v1/ai-uploads`                              | Private staged UTF-8 source bytes; queues/coalesces validation                     |
+| `GET /api/v1/ai-uploads/{id}`                          | Owner-only persistent checklist and retryable failure                              |
+| `POST /api/v1/ais` / `POST /api/v1/ais/{id}/versions`  | Atomically consume a passing upload into a new AI or owned release                 |
+| `PATCH /api/v1/ais/{id}`                               | Owner edits catalogue metadata and visibility                                      |
+| `DELETE /api/v1/ais/{id}`                              | Owner removes a catalogue AI                                                       |
+| `GET /api/v1/ais/{id}/versions/{versionId}/file`       | Exact bytes, safe `.js` attachment, daily deduplicated version download accounting |
+| `PUT` / `DELETE /api/v1/ais/{id}/like` or `/favourite` | Idempotent registered-account social actions                                       |
+| `POST /api/v1/ais/{id}/reports`                        | Map-library reporting reasons and limits                                           |
+| `/api/v1/admin/ais/...`                                | Moderator report queue, resolution, hide and unhide                                |
 
 AI identities own likes and private favourites. Immutable `ai_versions` own source
 hashes, version labels, notes and download statistics. `ai_validations` bind seven
@@ -1200,6 +1201,7 @@ local provenance stores origin, AI identity, version identity and hash. Explicit
 updates preserve local IDs and roll back on persistence failure; saves and replays
 embed source exactly as before. No local gameplay telemetry, competitive ratings,
 tournament registration or multiplayer custom controllers are introduced.
+
 ## AI coding Studio
 
 The opt-in `aiStudio` service provides private, single-file JavaScript projects at
@@ -1373,3 +1375,49 @@ fingerprints cover worker tools, Python sources and dependency/asset definitions
 and fence recovery across an incompatible worker upgrade. Successful history deletion
 also clears that conversation's browser draft and checkout-return state; other projects
 are retained.
+
+## Terrain and resource set library
+
+`sets.ts` in the protocol package defines the bounded set package and draft,
+publication and validation contracts. `asset_sets` supplies owner-controlled metadata
+and visibility; `set_drafts` stores revisions and the job/hash that owns current
+validation; `set_versions` stores immutable packages and engine previews. Likes,
+daily download counts and moderator reports use separate tables. The REST surface
+is `/api/v1/sets` and `/api/v1/set-drafts`, with report handling under
+`/api/v1/admin/sets`. Catalog pages use cursors tied to their sort order. Set listings omit release notes
+and contributor details, which are returned by the individual set endpoint. Draft
+listings return titles and identifiers with stable `updatedAt`/identifier cursor
+pagination (`limit` defaults to 100); individual draft reads include the package.
+
+The web workspace uploads PNGs into the package, maps frames to custom entries,
+and saves properties and credits. `/play/set-preview.html` runs an ephemeral browser
+engine against the current draft for an interactive preview request. It uses a
+temporary profile, validates the message origin/source/run/revision, and never
+mounts the player's persistent saves. This preview does not authorize publication.
+
+All jobs from asset-capable engines (file format 144 onward) run through a shared
+isolated launcher, including map validation, previews and match verification:
+uploaded maps can contain the same bundled PNGs as standalone sets. A failed
+launcher probe prevents the agent from starting. Server publication checks are
+`validate-set` jobs, advertised only when additionally enabled. Set `ENGINE_SET_VALIDATION=1` after validating the deployment.
+The startup probe requires Linux bubblewrap, a dedicated scratch tmpfs of at most
+4 GiB and the engine inside a namespace without networking. Installed data and
+engine/runtime libraries are read-only; the job alone gets writable scratch. The
+probe starts the engine and renders a small set before advertising the capability.
+`ENGINE_SET_LIBRARY_PATH` can supply additional runtime library directories. Standalone
+set checks are bounded to 120 seconds, 2 GiB address space and 64 MiB per output file.
+Without a successful probe the asset-capable agent cannot serve engine jobs;
+drafts can still be saved. Standalone set publication checks are disabled by
+default in engine-agent deployments.
+
+Results apply only while the draft still owns the exact job and hash. The stale-job
+sweep requires a fresh agent advertising the job kind as well as its simulation
+version; losing the set capability cannot leave an old check pending indefinitely.
+Publication locks the parent and draft and requires passing checks on the requested revision.
+A set may retain 50 releases and 100 drafts; immutable release labels and hashes
+cannot be reused. Blob collection retains draft inputs, checked previews, queued
+inputs and published packages. Account exports include owned sets, drafts, versions,
+likes, reports and download rows; account deletion removes those owned rows.
+
+Map validation also extracts bundled set attribution for shared-map version pages.
+Moderating or withdrawing a source set never invalidates a self-contained map.

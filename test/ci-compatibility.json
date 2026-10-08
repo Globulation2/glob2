@@ -68,7 +68,8 @@
     "CastorContinuation/*",
     "Maxima.Continuation/*",
     "RuntimeResources/*",
-    "TerrainResources/*"
+    "TerrainResources/*",
+    "MapSets/*"
   ],
   "unit_filters": [
     "*"

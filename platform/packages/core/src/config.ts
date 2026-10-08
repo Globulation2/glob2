@@ -107,7 +107,7 @@ export interface PlatformConfig {
   relayKeys?: RelayKey[];
   /** Keys engine agents authenticate with on /internal/v1/engine (none: agents are refused). */
   engineAgentKeys?: EngineAgentKey[];
-  /** Largest uploaded map or save, in bytes (UPLOAD_MAX_BYTES, default 16 MiB). */
+  /** Largest uploaded map or save, in bytes (UPLOAD_MAX_BYTES, default 64 MiB). */
   uploadMaxBytes?: number;
   /** Largest match record a relay may upload, in bytes (RECORD_MAX_BYTES, default 64 MiB). */
   recordMaxBytes?: number;
@@ -266,7 +266,7 @@ export function loadConfig(options: LoadConfigOptions = {}): PlatformConfig {
     },
     relayKeys,
     engineAgentKeys,
-    uploadMaxBytes: integer(env, 'UPLOAD_MAX_BYTES', 16 * 1024 * 1024, 1024, 1024 * 1024 * 1024),
+    uploadMaxBytes: integer(env, 'UPLOAD_MAX_BYTES', 64 * 1024 * 1024, 1024, 1024 * 1024 * 1024),
     recordMaxBytes: integer(env, 'RECORD_MAX_BYTES', 64 * 1024 * 1024, 1024, 1024 * 1024 * 1024),
     secrets: env,
   };

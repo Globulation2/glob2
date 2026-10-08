@@ -4,6 +4,7 @@
 import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 import { defaultMapPool } from '@glob2/core';
+import { SET_CREDITS_FIXTURE } from '../../api/test/setCreditsFixture.ts';
 import {
   EngineInputError,
   EngineOutputError,
@@ -88,6 +89,14 @@ describe('catalog and generation', () => {
       ],
     });
     expect(() => parseMapReport('{"schema_version":3}')).toThrow(EngineOutputError);
+  });
+
+  it('preserves map set attribution and rejects malformed engine credits', () => {
+    const report = JSON.parse(fixture('save-report.json'));
+    report.map.setCredits = SET_CREDITS_FIXTURE;
+    expect(parseMapReport(JSON.stringify(report)).setCredits).toEqual(SET_CREDITS_FIXTURE);
+    report.map.setCredits = [{ ...SET_CREDITS_FIXTURE[0], sourceHash: 'invalid' }];
+    expect(() => parseMapReport(JSON.stringify(report))).toThrow();
   });
 
   it('reads saved players from report controllers', () => {

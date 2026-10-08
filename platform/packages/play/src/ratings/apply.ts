@@ -1,3 +1,4 @@
+import { applySetJobResult } from '../sets.ts';
 // Verified results → ratings and history. The verify-match verdict arrives
 // through the engine-job result task (applyEngineJobResult);
 // handleEngineJobResult records it (outcomes, team statistics and timelines,
@@ -74,6 +75,7 @@ export async function handleEngineJobResult(
       // uploads; a no-op for verify-match jobs.
       await applyMapJobResult(trx, jobId);
       await applyAiValidation(trx, jobId);
+      await applySetJobResult(trx, jobId);
     }
     return applied;
   });

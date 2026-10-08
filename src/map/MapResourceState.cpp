@@ -2,6 +2,7 @@
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
 #include "Map.h"
+#include "MapAssetBundle.h"
 #include "gradient/ResourceSeedCache.h"
 #include "gradient/GradientRuntime.h"
 #include "Utilities.h"
@@ -24,13 +25,19 @@ void Map::installResourceDefinitions(const std::string& json)
 {
     if (game && !game->edit && game->stepCounter != 0)
         throw std::logic_error("Resource definitions are frozen during a match");
-    const auto next=resourceRegistry().importJson(json);
+    installCatalogs(terrainRegistryValue, resourceRegistry().importJson(json), assetBundleValue);
+}
+
+void Map::installCatalogs(std::shared_ptr<const TerrainRegistry> terrain,
+    std::shared_ptr<const ResourceRegistry> next, std::shared_ptr<const MapAssetBundle> assets)
+{
+    assets->validate(*terrain, *next);
     // Stage every allocating operation against the replacement catalog before
     // publishing it. A malformed import or allocation failure leaves the map
     // and its running readers on the original immutable snapshot.
     Map staged;
     staged.resourceRegistryValue=next;
-    staged.terrainRegistryValue=terrainRegistryValue;
+    staged.terrainRegistryValue=terrain;
     staged.rebuildResourceHabitats();
     std::vector<Resource> deposits(cellCount());
     std::vector<Uint32> stockIndices;
@@ -64,7 +71,29 @@ void Map::installResourceDefinitions(const std::string& json)
         for (unsigned mask=sources;mask;mask&=mask-1) ++counts[std::countr_zero(mask)];
         deposits[i]=r;
     }
+    std::vector<std::size_t> terrainCountsNext(terrain->size());
+    std::vector<Uint16> propertyIndices(terrainIds.size()), frames = legacyTerrain;
+    for (std::size_t i = 0; i < terrainIds.size(); ++i) {
+        ++terrainCountsNext[terrainIds[i]];
+        propertyIndices[i] = terrain->propertyIndex(terrainIds[i]);
+        const auto& p = terrain->compatibility(terrainIds[i]);
+        if (!p.legacyCorners) frames[i] = p.firstFrame + terrainVisualHash(int(i & wMask), int(i >> wDec)) % p.variants;
+    }
     finishGradientPipeline();
+    terrainRegistryValue = std::move(terrain);
+    assetBundleValue = std::move(assets);
+    terrainPropertyIndices = std::move(propertyIndices);
+    terrainPropertyTable = terrainRegistry().propertyProfiles().data();
+    terrainCounts = std::move(terrainCountsNext);
+    legacyTerrain = std::move(frames);
+    terrainFeatures.fill(0); terrainGroundCostCounts = {}; terrainAirCostCounts = {};
+    for (unsigned t = 0; t < terrainCounts.size(); ++t)
+        if (terrainCounts[t]) adjustTerrainFeatures(TerrainType(t), true);
+    terrainChanges.markAll();
+    {
+        std::lock_guard<std::mutex> lock(waterSnapshotMutex);
+        terrainSnapshot.reset(); terrainMovementSnapshots = {}; waterSnapshot.reset();
+    }
     resourceRegistryValue=next;
     bumpStaticMaterialSourceGeneration();
     resourceHabitatsValue=staged.resourceHabitatsValue;
@@ -75,9 +104,19 @@ void Map::installResourceDefinitions(const std::string& json)
     refreshLiveView();
     for (size_t i=0;i<cellCount();++i) resourceCells[i].resource=deposits[i];
     resourceChanges.markAll();
-    growthCache.invalidate();
+    { std::lock_guard<std::mutex> lock(growthCacheMutex); growthCache.invalidate(); }
     invalidateResourceSeeds();
     bumpTopologyGeneration();
+    if (arraysBuilt && marketsV2Enabled())
+        for (int team = 0; team < Team::MAX_COUNT; ++team)
+            for (int material = 0; material < MaterialCount; ++material)
+                for (int swim = 0; swim < SWIM_CLASS_COUNT; ++swim) {
+                    gradientRuntime->pipeline.invalidate(&marketMaterialGradients[team][material][swim]);
+                    marketGradientUpdated[team][material][swim] = false;
+                    marketGradientDirty[team][material][swim] = true;
+                }
+    terrainEditChanged = terrainRoutesChanged = true;
+    finishTerrainEdit();
 }
 
 ExperimentSet Map::requiredResourceExperiments() const

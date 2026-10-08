@@ -702,7 +702,8 @@ int runHeadlessCommand(int argc,char **argv)
 			GlobalContainer globals("glob2-tournament-catalog");
 			globalContainer=&globals;globals.runNoX=true;
 			std::cout << "{\"schema_version\":1,\"save_version\":" << VERSION_MINOR << ",\"protocol_version\":" << NET_PROTOCOL_VERSION
-				<< ",\"building_catalog_hash\":" << quote(globals.buildingsTypes.fingerprint()) << ",\"map_report_version\":2,\"generation_telemetry_version\":1,\"gameplay_telemetry_version\":2,\"ai_telemetry_version\":1,\"performance_telemetry_version\":1,\"commands\":[\"game\",\"generate_map\",\"verify_match\",\"sim_version\",\"compose_buildings\"],\"sim_version\":" << Online::currentSimVersion().toJson().dump() << ",\"verify_match_version\":1,\"telemetry\":[\"checksums\",\"team-timeline\",\"maxima\"],\"ais\":[";
+				<< ",\"building_catalog_hash\":" << quote(globals.buildingsTypes.fingerprint()) << ",\"map_report_version\":2,\"generation_telemetry_version\":1,\"gameplay_telemetry_version\":2,\"ai_telemetry_version\":1,\"performance_telemetry_version\":1,\"commands\":[\"game\",\"generate_map\",\"verify_match\",\"sim_version\",\"compose_buildings\",\"validate_set\"],\"sim_version\":" << Online::currentSimVersion().toJson().dump() << ",\"verify_match_version\":1,\"telemetry\":[\"checksums\",\"team-timeline\",\"maxima\"],\"ais\":[";
+
 			bool comma=false;
 			for(int ai:AINames::selectionOrder())
 			{

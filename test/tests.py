@@ -26,6 +26,7 @@ ENGINE_SUPPORT = [
 
 # glob2-engine-tests: every client object except the entry point, plus these.
 ENGINE_TESTS = [
+    ('#src/map/MapSetTest.cpp', dict(cxxflags=['-fno-access-control'])),
     ('#src/unit/render/ColonySkinPreviewTest.cpp', dict(cxxflags=['-fno-access-control'])),
     '#src/audio/MusicSetTest.cpp',
     '#src/audio/MusicStreamTest.cpp',
@@ -339,6 +340,9 @@ UNIT_TESTS = [
 # object; entries with `defines` are compiled again for the unit binary only.
 UNIT_PRODUCTION_SOURCES = [
     '#src/map/TerrainRegistry.cpp',
+    '#src/map/MapAssetBundle.cpp',
+    '#src/render/terrain/TerrainCatalogIO.cpp',
+    '#src/render/terrain/TerrainMaterials.cpp',
     '#src/scripting/javascript/ScriptValue.cpp',
     '#src/scripting/javascript/ScriptRuntime.cpp',
     '#src/hive/HiveWorker.cpp',

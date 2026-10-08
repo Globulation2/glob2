@@ -230,6 +230,7 @@ function BuildingWorkspace({ id }: { id: string }) {
 }
 function Editor({ initial }: { initial: BuildingDraft }) {
   const form = useRef<HTMLFormElement>(null);
+  const allowNavigation = useRef(false);
   const { navigate } = useRouter();
   const [draft, setDraft] = useState(initial),
     [pkg, setPackage] = useState(initial.package),
@@ -279,21 +280,17 @@ function Editor({ initial }: { initial: BuildingDraft }) {
     const leave = (event: BeforeUnloadEvent) => {
       event.preventDefault();
     };
-    const leaveLink = (event: MouseEvent) => {
-      const link = event.target instanceof Element ? event.target.closest('a[href]') : null;
-      if (!link || event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) return;
-      const href = link.getAttribute('href');
-      if (!href?.startsWith('/') || href.startsWith('/api/')) return;
+    const leaveRoute = (event: Event) => {
+      if (allowNavigation.current) return;
       if (!window.confirm('Leave with unsaved changes? A recovery copy stays on this device.')) {
         event.preventDefault();
-        event.stopPropagation();
       }
     };
     window.addEventListener('beforeunload', leave);
-    document.addEventListener('click', leaveLink, true);
+    window.addEventListener('glob2-before-navigate', leaveRoute);
     return () => {
       window.removeEventListener('beforeunload', leave);
-      document.removeEventListener('click', leaveLink, true);
+      window.removeEventListener('glob2-before-navigate', leaveRoute);
     };
   }, [dirty]);
   const accept = (next: BuildingDraft) => {
@@ -771,6 +768,8 @@ function Editor({ initial }: { initial: BuildingDraft }) {
                 } catch {
                   /* Device storage can be disabled. */
                 }
+                // Successful deletion already confirmed discarding this editor.
+                allowNavigation.current = true;
                 navigate('/building-studio');
               } catch (e) {
                 setError(fail(e));

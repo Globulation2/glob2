@@ -21,6 +21,8 @@ import type {
 } from '@glob2/protocol';
 import {
   MAX_TIMELINE_SAMPLES,
+  MapSetCredits,
+  parse,
   buildingCatalogExperimentKeys,
   resourceExperimentKeys,
 } from '@glob2/protocol';
@@ -250,6 +252,7 @@ export function generateMapArgs(
 export const GENERATED_MAP_FILE = 'map-r0.map.gz';
 
 export interface MapFacts {
+  setCredits?: MapSetCredits;
   buildingCatalog?: BuildingCatalog;
   resourceExperiments?: ResourceExperimentDefinitions;
   requiredResourceExperiments?: string[];
@@ -284,6 +287,7 @@ export function parseGenerationResult(text: string): GenerationOutcome {
       height: map.height,
       teamCount: map.teamCount,
       ...(map.buildingCatalog ? { buildingCatalog: map.buildingCatalog } : {}),
+      ...(map.setCredits ? { setCredits: map.setCredits } : {}),
       ...(map.resourceExperiments ? { resourceExperiments: map.resourceExperiments } : {}),
       ...(map.requiredResourceExperiments
         ? { requiredResourceExperiments: map.requiredResourceExperiments }
@@ -389,6 +393,9 @@ function parseReportMap(report: Json): ReportMap {
   }
   return {
     ...(buildingCatalog ? { buildingCatalog } : {}),
+    ...(map['setCredits'] !== undefined
+      ? { setCredits: parse(MapSetCredits, map['setCredits'], 'map set credits') }
+      : {}),
     ...(resourceExperiments ? { resourceExperiments } : {}),
     ...(requiredResourceExperiments ? { requiredResourceExperiments } : {}),
     name: typeof map['name'] === 'string' ? map['name'] : null,

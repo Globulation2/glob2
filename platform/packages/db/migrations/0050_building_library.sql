@@ -1,6 +1,6 @@
 ALTER TABLE engine_jobs DROP CONSTRAINT engine_jobs_kind_check;
 ALTER TABLE engine_jobs ADD CONSTRAINT engine_jobs_kind_check CHECK (
- kind IN ('generate-map','validate-map','render-preview','verify-match','import-ai-map','validate-ai','validate-buildings')
+ kind IN ('generate-map','validate-map','render-preview','verify-match','import-ai-map','validate-ai','validate-set','validate-buildings')
 );
 CREATE TABLE building_families (
  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),

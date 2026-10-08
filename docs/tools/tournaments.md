@@ -699,5 +699,5 @@ benchmark procedure and interpretation of CPU and wall time.
 New generated maps can carry normalized custom building frames with
 `--building-catalog CATALOG_JSON --building-artwork BUNDLE_G2BA`. Use the canonical
 snapshot produced by `--compose-buildings` as the catalog file. The artwork bundle
-is verified against that catalog and embedded in the generated map (format 144).
+is verified against that catalog and embedded in the generated map (format 145).
 Families selected in the graphical picker do not affect headless generation.

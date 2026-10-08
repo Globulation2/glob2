@@ -8,6 +8,7 @@ import { gunzipSync } from 'node:zlib';
 import { checkBuildingPackage, type BuildingPackage } from '@glob2/protocol';
 import { canonicalBuildingJson, buildingAssetHash } from '@glob2/protocol/node';
 import type { GeneratorDescriptor, ImportAiMapPayload, SimVersion } from '@glob2/protocol';
+import { parse, ValidateSetResult } from '@glob2/protocol';
 import {
   CATALOG_ARGS,
   parseBuildingComposition,
@@ -38,6 +39,7 @@ import {
   withScratchDir,
   type ProcessLimits,
   type RunResult,
+  type RunOptions,
 } from './process.ts';
 
 export type EngineCommand = 'catalog' | 'generate' | 'inspect' | 'verify';
@@ -51,6 +53,8 @@ export interface EngineOptions {
   scratchRoot?: string;
   /** Limits per command. */
   limits: Record<EngineCommand, ProcessLimits>;
+  /** Optional isolation boundary; installed before leasing untrusted jobs. */
+  processLauncher?: (options: RunOptions, scratch: string) => Promise<RunResult>;
   /** Largest file the agent reads back from a command's output directory. */
   maxOutputBytes: number;
 }
@@ -102,23 +106,27 @@ export class GlobEngine {
     scratch: string,
     signal?: AbortSignal,
   ): Promise<RunResult> {
-    const result = await runProcess({
-      binary: this.options.binary,
-      args,
-      cwd: this.options.workdir,
-      env: {
-        // Keep profiles, settings and logs inside the job's scratch directory.
-        HOME: scratch,
-        GLOB2_USER_DIR: join(scratch, 'profile'),
-        SDL_VIDEODRIVER: 'dummy',
-        SDL_AUDIODRIVER: 'dummy',
+    const launch = this.options.processLauncher ?? ((options: RunOptions) => runProcess(options));
+    const result = await launch(
+      {
+        binary: this.options.binary,
+        args,
+        cwd: this.options.workdir,
+        env: {
+          // Keep profiles, settings and logs inside the job's scratch directory.
+          HOME: scratch,
+          GLOB2_USER_DIR: join(scratch, 'profile'),
+          SDL_VIDEODRIVER: 'dummy',
+          SDL_AUDIODRIVER: 'dummy',
+        },
+        limits: this.options.limits[command],
+        // The catalog is read from stdout (a few hundred KiB); other commands
+        // write files and their output is only kept for diagnostics.
+        maxCaptureBytes: command === 'catalog' ? 32 * 1024 * 1024 : 64 * 1024,
+        ...(signal ? { signal } : {}),
       },
-      limits: this.options.limits[command],
-      // The catalog is read from stdout (a few hundred KiB); other commands
-      // write files and their output is only kept for diagnostics.
-      maxCaptureBytes: command === 'catalog' ? 32 * 1024 * 1024 : 64 * 1024,
-      ...(signal ? { signal } : {}),
-    });
+      scratch,
+    );
     if (result.timedOut) {
       throw new EngineCrashError(
         `${args[0]} timed out after ${this.options.limits[command].timeoutMs} ms`,
@@ -144,6 +152,32 @@ export class GlobEngine {
       throw new EngineOutputError(`${path} is ${size} bytes; limit ${this.options.maxOutputBytes}`);
     }
     return readFile(path);
+  }
+
+  async validateSet(bytes: Uint8Array, signal?: AbortSignal) {
+    return this.scratch(async (dir) => {
+      const input = join(dir, 'set.json'),
+        reportPath = join(dir, 'report.json'),
+        preview = join(dir, 'preview.png');
+      await writeFile(input, bytes);
+      const result = await this.run(
+        'inspect',
+        ['--validate-set', input, '--json', reportPath, '--preview', preview],
+        dir,
+        signal,
+      );
+      if (result.code !== 0) this.fail('set validation', result);
+      const reportBytes = await this.output(reportPath);
+      if (!reportBytes) throw new EngineOutputError('set validator omitted its report');
+      const report = parse(
+        ValidateSetResult,
+        JSON.parse(Buffer.from(reportBytes).toString()),
+        'set validation',
+      );
+      const png = report.valid ? await this.output(preview) : undefined;
+      if (report.valid && !png) throw new EngineOutputError('set validator omitted its preview');
+      return { report, png };
+    });
   }
 
   private fail(what: string, result: RunResult): never {

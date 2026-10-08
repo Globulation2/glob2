@@ -5880,3 +5880,65 @@ Chọn lại ngẫu nhiên diện mạo địa hình
 
 [editor fertility tap refresh]
 
+[editor menu import set]
+
+[editor menu set library]
+
+[set library loading]
+
+[set library downloading]
+
+[set library connection error]
+
+[set library hash error]
+
+[set library package error]
+
+[set library listing error]
+
+[set library release error]
+
+[set library selection help]
+
+[set library empty]
+
+[set library release help]
+
+[set library heading]
+
+[set library browse]
+
+[set library local]
+
+[set library local help]
+
+[set library apply]
+
+[set library updated]
+
+[set library search hint]
+
+[set library search]
+
+[set library set]
+
+[set library update help]
+
+[set library import]
+
+[set library next]
+
+[set library back]
+
+[set library license %0]
+
+[set library release %0]
+
+[set library replace %0]
+
+[set library preview limit]
+
+[set library definition]
+
+[set library artwork]
+

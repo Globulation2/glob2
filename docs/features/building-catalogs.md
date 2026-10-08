@@ -107,7 +107,7 @@ The standalone `G2BA0001` artwork bundle contains a canonical sprite manifest an
 hash-addressed normalized WebP bytes. The native decoder verifies hashes, image
 headers, decoded pixels, dimensions, catalog references and frame bounds before producing an
 in-memory community asset mount. Community mounts cannot shadow installed
-artwork or fall through to filesystem assets. Format 144 embeds the bundle after the resolved catalog in map, save and replay
+artwork or fall through to filesystem assets. Format 145 embeds the bundle after the resolved catalog in map, save and replay
 headers. Older files load without a bundle. The native loader verifies the
 embedded bytes before mounting sprites, including in headless validation.
 Composing packages alone does not publish a release.
@@ -484,5 +484,5 @@ release resources recheck visibility and moderation on every request.
 For command-line new maps, write the composed catalog snapshot to a JSON file
 and pass `--building-catalog` with `--building-artwork` to `--generate-map`.
 The latter accepts the verified `G2BA0001` bundle, which is embedded in the output.
-Format 144 and network protocol 62 separate clients using the new header layout;
+Format 145 and network protocol 62 separate clients using the new header layout;
 the save-support floor remains 58 and replay acceptance remains at 143.

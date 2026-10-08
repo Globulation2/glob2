@@ -114,7 +114,7 @@ BrushSwatches& MapEdit::brushSwatches()
 {
 	if (!swatches)
 		swatches = std::make_unique<BrushSwatches>();
-	if (view.scene) swatches->bind(view.scene->world.terrain->registry, view.scene->world.catalogs->resources);
+	if (view.scene) swatches->bind(view.scene->world.terrain->registry, view.scene->world.catalogs->resources, view.scene->world.catalogs->assets);
 	return *swatches;
 }
 

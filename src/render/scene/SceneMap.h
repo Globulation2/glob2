@@ -6,6 +6,7 @@
 #include "TerrainProperties.h"
 #include "Ressource.h"
 #include "ResourceRegistry.h"
+class MapAssetBundle;
 
 #include <SDL3/SDL_stdinc.h>
 
@@ -23,6 +24,7 @@ class SceneMap
 {
 	std::shared_ptr<const TerrainRegistry> registry;
 	std::shared_ptr<const ResourceRegistry> resourceDefinitions;
+    std::shared_ptr<const MapAssetBundle> assets;
 	MaterialMask presentMaterials = 0;
     Uint32 displayedTeamMask = 0;
     bool prepareAreas=true,prepareMaterials=true,derivedComplete=false;
@@ -37,6 +39,7 @@ class SceneMap
 	SceneMap();
 	MaterialMask materialPresence() const { return presentMaterials; }
 	Uint16 materialAmountAt(size_t index, unsigned material) const;
+	std::shared_ptr<const MapAssetBundle> frozenAssetBundle() const { return assets; }
 	const ResourceRegistry& resourceRegistry() const { return *resourceDefinitions; }
 	std::shared_ptr<const ResourceRegistry> frozenResourceRegistry() const { return resourceDefinitions; }
 	const TerrainRegistry &terrainRegistry() const { return *registry; }

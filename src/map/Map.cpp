@@ -3,6 +3,7 @@
 
 #include <atomic>
 #include "Map.h"
+#include "MapAssetBundle.h"
 #include "TerrainCompatibility.h"
 #include "TerrainLine.h"
 #include <stdexcept>
@@ -42,7 +43,7 @@ const int tabClose[8][2]={
 	{-1,  1},
 	{-1,  0}};
 
-Map::Map() : gradientRuntime(std::make_unique<GradientRuntime>())
+Map::Map() : gradientRuntime(std::make_unique<GradientRuntime>()), assetBundleValue(MapAssetBundle::empty())
 {
     rebuildResourceHabitats();
 	topologyGeneration=1;
@@ -278,63 +279,7 @@ void Map::importTerrainDefinitions(std::string_view json)
 {
 	if (game && !game->edit)
 		throw std::logic_error("Terrain definitions can only change in the map editor");
-	auto next = terrainRegistry().importJson(json);
-	Map staged;
-	staged.terrainRegistryValue = next;
-	staged.resourceRegistryValue = resourceRegistryValue;
-	staged.rebuildResourceHabitats();
-	// Compilation/validation and allocation happen before publishing a replacement.
-	std::vector<std::size_t> counts(next->size());
-	std::vector<Uint16> propertyIndices(terrainIds.size());
-	for (std::size_t i = 0; i < terrainIds.size(); ++i)
-	{
-		++counts[terrainIds[i]];
-		propertyIndices[i] = next->propertyIndex(terrainIds[i]);
-	}
-	finishGradientPipeline();
-	terrainRegistryValue = std::move(next);
-	invalidateResourceSeeds();
-	terrainPropertyIndices = std::move(propertyIndices);
-	terrainPropertyTable = terrainRegistry().propertyProfiles().data();
-    resourceHabitatsValue=staged.resourceHabitatsValue;
-    refreshLiveView();
-	terrainCounts = std::move(counts);
-	terrainFeatures.fill(0);
-	terrainGroundCostCounts = {};
-	terrainAirCostCounts = {};
-	for (unsigned t = 0; t < terrainCounts.size(); ++t)
-		if (terrainCounts[t])
-			adjustTerrainFeatures(TerrainType(t), true);
-	for (std::size_t i = 0; i < terrainIds.size(); ++i)
-	{
-		const auto &p = terrainRegistry().compatibility(terrainIds[i]);
-		if (!p.legacyCorners)
-			legacyTerrain[i] =
-				p.firstFrame + terrainVisualHash(int(i & wMask), int(i >> wDec)) % p.variants;
-	}
-	terrainChanges.markAll();
-	{
-		std::lock_guard<std::mutex> lock(growthCacheMutex);
-		growthCache.invalidate();
-	}
-	{
-		std::lock_guard<std::mutex> lock(waterSnapshotMutex);
-		terrainSnapshot.reset();
-		terrainMovementSnapshots = {};
-		waterSnapshot.reset();
-	}
-	if (arraysBuilt && marketsV2Enabled())
-		for (int team = 0; team < Team::MAX_COUNT; ++team)
-			for (int resource = 0; resource < MaterialCount; ++resource)
-				for (int swim = 0; swim < SWIM_CLASS_COUNT; ++swim)
-				{
-					gradientRuntime->pipeline.invalidate(
-						&marketMaterialGradients[team][resource][swim]);
-					marketGradientUpdated[team][resource][swim] = false;
-					marketGradientDirty[team][resource][swim] = true;
-				}
-	terrainEditChanged = terrainRoutesChanged = true;
-	finishTerrainEdit();
+    installCatalogs(terrainRegistry().importJson(json), resourceRegistryValue, assetBundleValue);
 }
 
 void Map::rebuildTerrainCounts()

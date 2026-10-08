@@ -54,6 +54,103 @@
         "teamCount"
       ],
       "properties": {
+        "setCredits": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "setId",
+              "versionId",
+              "title",
+              "license",
+              "authors",
+              "sourceHash",
+              "entries"
+            ],
+            "properties": {
+              "setId": {
+                "type": "string",
+                "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+                "description": "Lowercase UUID."
+              },
+              "versionId": {
+                "type": "string",
+                "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+                "description": "Lowercase UUID."
+              },
+              "title": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 128,
+                "pattern": "\\S"
+              },
+              "license": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "const": "CC0-1.0"
+                  },
+                  {
+                    "type": "string",
+                    "const": "CC-BY-4.0"
+                  }
+                ]
+              },
+              "authors": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "required": [
+                    "author",
+                    "license"
+                  ],
+                  "properties": {
+                    "author": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 128,
+                      "pattern": "\\S"
+                    },
+                    "source": {
+                      "type": "string",
+                      "maxLength": 2000
+                    },
+                    "license": {
+                      "anyOf": [
+                        {
+                          "type": "string",
+                          "const": "CC0-1.0"
+                        },
+                        {
+                          "type": "string",
+                          "const": "CC-BY-4.0"
+                        }
+                      ]
+                    }
+                  },
+                  "additionalProperties": false
+                },
+                "minItems": 1,
+                "maxItems": 64
+              },
+              "sourceHash": {
+                "type": "string",
+                "pattern": "^[0-9a-f]{64}$",
+                "description": "Lowercase hexadecimal SHA-256 digest."
+              },
+              "entries": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "maxLength": 128
+                },
+                "maxItems": 32768
+              }
+            },
+            "additionalProperties": false
+          },
+          "maxItems": 256
+        },
         "width": {
           "type": "integer",
           "minimum": 1

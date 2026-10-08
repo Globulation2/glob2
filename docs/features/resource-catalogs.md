@@ -156,8 +156,11 @@ Each level has one or more weighted sprite variants. `sprite` is a canonical
 `data/`-relative sprite prefix; traversal and absolute paths are rejected.
 Optional `animationFrames`, `animationStride` and `animationTicks` default to one.
 All effective frame indices must fit 0–65535. Installed artwork is loaded through
-the normal asset system; transferring a map does not download its sprite files.
-Missing custom artwork uses the visible magenta fallback. The generated foundation
+the normal asset system. Themed set sheets use map-owned artwork bundles instead,
+so transferring those maps includes their custom sprite files.
+Missing installed artwork referenced by manually imported legacy definitions uses
+the visible magenta fallback. A missing spritesheet belonging to a credited set
+bundle is rejected during import or load. The generated foundation
 artwork and provenance are recorded in `datasrc/gfx/resources/manifest.json`.
 
 Save format 140 embeds resolved resource definitions, material stocks and required
@@ -251,3 +254,101 @@ an immutable eight-resource import catalog compiled into the compatibility adapt
 They never consult installed resource JSON. Installed defaults pin those historical
 keys to slots 0–7, regardless of authoring order; additional keys sort deterministically.
 Custom resources and all resources in embedded snapshots retain their registry IDs.
+
+## Themed terrain and resource sets
+
+The online **Terrain & resources** library at `/sets` holds flexible sets of custom
+terrain, resource deposits, or both. A release includes definitions, PNG
+spritesheets, frame grids and mappings, and attribution under CC0-1.0 or
+CC-BY-4.0. Sets reuse the engine's existing material identities; they do not add
+new inventory materials. Presets supply initial properties, and the web workspace
+exposes property overrides, material yields, stock levels, variants and animation.
+Advanced terrain colors, seams and decor use the engine's material declaration.
+
+### Authoring and sharing a set
+
+1. Open **Terrain & resources → Create a set**, enter its title, tags, license and
+   creator credit, then add terrains or resources from presets. Each entry keeps a
+   stable key within a release; changing its display name does not break updates.
+2. Set the PNG frame width/height before **Upload PNG**. Terrain frames must be
+   32×32; resource/decor frames can be up to 64×64. Select the uploaded image in
+   the entry's **Spritesheet** control. Reupload identical image bytes with new
+   dimensions to repair a mistaken frame grid, then check every frame mapping.
+   **Remove sheet** removes unused images; change or remove entries that still
+   reference an image first. Identical PNG bytes must use the same frame grid
+   when combining sets in one map.
+3. Click a tile in **Inspect sheet**, or type **Selected frame**, to choose a frame.
+   This only selects a candidate: **Add selected frame** assigns it as a variant.
+   Variant weights choose relative frequency; animation frame count, stride and
+   ticks control the frame sequence. Resource stock levels select variants by the
+   total stock across all materials.
+4. Edit supported gameplay properties and material yields. Terrain Q8 fields use
+   fixed-point units: 256 = 1; health fields express signed HP per exposed tick
+   divided by 256. Resource rates use 196608 for one opportunity/probability one,
+   with bounds described [in the field reference](#simulation-properties). Advanced JSON
+   edits remain attached to their entry when switching entries; correct every
+   invalid edit before saving.
+5. **Save draft** keeps a private working copy. **Preview current changes** renders
+   unsaved content locally in the browser. **Run checks & preview** saves and
+   validates the exact revision for publication; a later edit requires new checks.
+   Checks need an available set-validation engine agent on the instance.
+6. Enter a release label, notes and visibility, verify credits/reuse rights, then
+   **Publish this release**. Use **Create new release** for later revisions.
+   **My sets → Load more drafts** reveals older working drafts. On a public set,
+   **Inspect latest release** shows read-only entry properties before importing.
+7. In the map editor, open **Set Library**, inspect an exact release, select its
+   entries and import them, or download its package and import it from disk.
+   Painting and local edits use the map's copied content. To update placed entries,
+   explicitly choose **Replace placed entries** for another release; review the
+   warning about replacing local edits and capping existing stocks.
+
+The native CLI can check a downloaded or authored package without an online
+instance:
+
+```sh
+glob2 --validate-set package.json --json report.json --preview preview.png
+```
+
+The report binds the exact package hash to its validation result; the optional
+preview renders a contact sheet of up to 64 entries. An invalid package produces
+`valid: false` with a reason and a successful command exit; invocation, input-file
+and report-output errors produce a nonzero exit. Inspect the report's `valid`
+field before treating a package as usable.
+
+Drafts are private and saved with revision checks. Checks bind the exact serialized
+package hash to an engine validation job. Saving again invalidates those checks.
+Publishing creates an immutable release; further editing creates a new release.
+Public sets appear in the library, unlisted sets are accessible by link, and private
+sets are visible to their owner. Withdrawal or moderation blocks future downloads,
+without changing copies already incorporated in maps.
+
+The map editor's **Set Library** searches the current online instance and imports a
+chosen release or selected entries. Required custom resources are included with
+selected terrain. The **Import Terrain & Resource Set** menu action accepts a
+bounded `.json` package from disk, including in the browser editor. Entries use
+stable keys derived from their set and release UUIDs, so independently authored
+sets and releases can coexist without colliding.
+
+Each map retains its own editable copy. The library dialog's **Map content, credits
+& local edits** panel edits the copied definitions and terrain material declaration,
+with the same validation applied before publication to the map. Original credits
+remain. Reimporting existing entries cannot silently overwrite those edits. To
+update placed content, choose another release of the same set and explicitly select
+**Replace placed entries**. Matching entry keys within the set move to the new release;
+removed entries remain on the old release. Local changes to replaced entries are
+superseded, and material stocks are retained up to the new capacities.
+
+Format 144 stores a map-owned artwork bundle alongside the existing terrain and
+resource snapshots. Only custom artwork and set attribution are bundled. Built-in
+terrain and resource graphics continue to come from the installed game. Loading,
+playing, sharing and replaying a map require no library lookup, creator account or
+previously installed set. Scene snapshots retain the immutable bundle; graphics
+objects are created and destroyed on the render thread.
+
+Packages are limited to 16 MiB, 256 sheets, 2048×2048 pixels per sheet and 64 MiB of
+decoded pixels in the combined map bundle. Terrain frames are 32×32; resources and
+decor can use frames up to 64×64. Hashes, PNG decoding, duplicate JSON keys, depth,
+paths, property bounds and effective animation/decor frame indices are checked.
+Invalid imports leave the map's catalogs and bundle unchanged. Existing saves remain
+readable at the durable compatibility floor; maps with new bundles require format
+144. Simulation revision 30 identifies this loading behavior for online matches.
