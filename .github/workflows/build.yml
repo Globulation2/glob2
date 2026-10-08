@@ -1340,6 +1340,7 @@ jobs:
           --health-retries 20
     env:
       TEST_DATABASE_URL: postgres://glob2:glob2@localhost:5432/postgres
+      TERRAIN_PYTHON: /usr/bin/python3
     defaults:
       run:
         working-directory: platform
@@ -1354,11 +1355,11 @@ jobs:
           node-version: '22'
           cache: npm
           cache-dependency-path: platform/package-lock.json
-      - name: Install music upload processing tools
+      - name: Install music and terrain artwork processing tools
         id: install_music_upload_processing_tools
         run: |
           sudo apt-get update -qq
-          sudo apt-get install -y --no-install-recommends ffmpeg
+          sudo apt-get install -y --no-install-recommends ffmpeg python3-pil
       - name: Install platform dependencies
         id: install_platform_dependencies
         run: npm ci
