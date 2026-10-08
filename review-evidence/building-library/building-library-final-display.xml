@@ -1,0 +1,4 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="2" failures="0" errors="0" skipped="0"><testsuite name="BuildingArtwork"><testcase classname="BuildingArtwork" name="portable custom artwork loads and draws its exact native frame [display] [artifacts]" time="0.505159" status="run" />
+  </testsuite><testsuite name="CustomGameSetup"><testcase classname="CustomGameSetup" name="custom game screens; captures and translated keys [slow][display:1024x768][artifacts][writes-preferences]" time="28.5863" status="run" />
+  </testsuite></testsuites>

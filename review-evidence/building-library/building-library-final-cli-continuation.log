@@ -1,0 +1,6 @@
+Settings::load("preferences.txt") : error, can't open file.
+nox::game started
+nox::gui.game.checkSum() = 2cfb3897
+automaticEndingGame ended: 160 ticks, 0 minutes, 6 seconds
+GLOB2_GAME_END ticks=160 winner_team=-1 seed=19 map="study-15-42-r0" orders=0 players=team0:Cortex,team1:Cortex
+final: wrote /Users/bradley/glob2/artifacts/building-library/portable-final-continuation/final.game.gz

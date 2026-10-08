@@ -1,0 +1,19 @@
+[WebServer] (node:60183) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 8 tests using 1 worker
+
+(node:60192) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  1 [desktop] › e2e/buildingLibrary.spec.ts:7:1 › browses, downloads and forks a released family (2.0s)
+  ✓  2 [desktop] › e2e/buildingLibrary.spec.ts:59:1 › owner changes published visibility and confirms withdrawal (410ms)
+  ✓  3 [desktop] › e2e/buildingStudio.spec.ts:6:1 › authors a private family with revision-safe saving and portable export (1.6s)
+  ✓  4 [desktop] › e2e/buildingStudio.spec.ts:89:1 › protects pending JSON on Back and restores it after Forward (514ms)
+(node:60267) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  5 [phone] › e2e/buildingLibrary.spec.ts:7:1 › browses, downloads and forks a released family (2.1s)
+  ✓  6 [phone] › e2e/buildingLibrary.spec.ts:59:1 › owner changes published visibility and confirms withdrawal (432ms)
+  ✓  7 [phone] › e2e/buildingStudio.spec.ts:6:1 › authors a private family with revision-safe saving and portable export (1.9s)
+  ✓  8 [phone] › e2e/buildingStudio.spec.ts:89:1 › protects pending JSON on Back and restores it after Forward (530ms)
+
+  8 passed (12.6s)

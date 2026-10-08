@@ -1,0 +1,24 @@
+Settings::load("preferences.txt") : error, can't open file.
+STUDY,15,42,1,16384,10674,40,2522,3148,8420,4526,11520,1616,3248,0.020083,13853930007842959159
+TUNE,786,4,7,2,1314,676,146,128,4,7
+QUALITY,1,0.996595,0.996595,1.099474,1.106285,1.102879,2,0.001160
+COLONY,0,4,7,1670,786,346,63,0,3893.3,1.099474,0.498297
+COLONY,1,4,7,1670,840,346,63,0,3893.3,1.106285,0.501703
+REQUEST,symmetric-arena,1,42,7,7,2,4
+OPTION,algae-amount,100
+OPTION,causeway-width,4
+OPTION,causeways,1
+OPTION,centre-size,10
+OPTION,fruit-amount,100
+OPTION,lakes,20
+OPTION,moat,1
+OPTION,moat-width,5
+OPTION,orchard-stone,1
+OPTION,richness,100
+OPTION,stone-amount,100
+OPTION,wheat-amount,100
+OPTION,wood-amount,100
+START,0,32,98
+START,1,92,26
+MAPFILE,0,/Users/bradley/glob2/artifacts/building-library/portable-final/map-r0.map.gz,664432,13698580684541413456
+ROTATIONS,2,1,0,1,1,1,1

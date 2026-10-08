@@ -1,0 +1,57 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="55" failures="0" errors="0" skipped="0"><testsuite name="AISavePortability"><testcase classname="AISavePortability" name="runtime initialisation; area order serialisation and Maxima reserved telemetry" time="0.040595" status="run" />
+  </testsuite><testsuite name="AITargetTelemetrySave"><testcase classname="AITargetTelemetrySave" name="Cortex flag targets carry the team that owns each building" time="0.052923" status="run" />
+  <testcase classname="AITargetTelemetrySave" name="Cortex records its committed target until the offense stands down, across saves" time="0.141998" status="run" />
+  <testcase classname="AITargetTelemetrySave" name="Numbi reports the highest-numbered enemy its attack searches" time="0.063229" status="run" />
+  <testcase classname="AITargetTelemetrySave" name="target fields are declared in schema version 2" time="0.127818" status="run" />
+  <testcase classname="AITargetTelemetrySave" name="target telemetry names only real enemies and leaves the simulation unchanged" time="6.36885" status="run" />
+  </testsuite><testsuite name="EnteringUnitSave"><testcase classname="EnteringUnitSave" name="generated fixtures round-trip through binary saves [save-format]" time="3.11201" status="run" />
+  <testcase classname="EnteringUnitSave" name="the retained fixture loads [save-format]" time="0.06501" status="run" />
+  </testsuite><testsuite name="RuntimeBuildingOrderSaveLoad"><testcase classname="RuntimeBuildingOrderSaveLoad" name="Pre96StreamLeavesSentinel" time="0" status="run" />
+  <testcase classname="RuntimeBuildingOrderSaveLoad" name="RoundTripCurrentVersion" time="0" status="run" />
+  <testcase classname="RuntimeBuildingOrderSaveLoad" name="UnregisteredOrderRoundTrips" time="0" status="run" />
+  </testsuite><testsuite name="SavegameSafety"><testcase classname="SavegameSafety" name="autosave defaults; atomic and background writes; truncated and malformed loads; imports and campaign progress [save-format][writes-preferences]" time="8.51366" status="run" />
+  </testsuite><testsuite name="TeamStatsSave"><testcase classname="TeamStatsSave" name="32 sampling phases; ring wrap; repeated loads; text streams and corruption controls [save-format]" time="5.70498" status="run" />
+  <testcase classname="TeamStatsSave" name="AI telemetry continues across a save [save-format]" time="1.30637" status="run" />
+  <testcase classname="TeamStatsSave" name="Compact team histories preserve samples across two batch boundaries" time="0.195103" status="run" />
+  <testcase classname="TeamStatsSave" name="Compact telemetry retains every sample across chunk boundaries" time="0.585762" status="run" />
+  <testcase classname="TeamStatsSave" name="Delayed observation telemetry saves remain readable" time="0.033816" status="run" />
+  <testcase classname="TeamStatsSave" name="Sparse variant reset accepts refreshed diagnostics and restored snapshots" time="0.657407" status="run" />
+  <testcase classname="TeamStatsSave" name="Sparse variant snapshot reset clears vanished types without clearing history" time="0.177999" status="run" />
+  <testcase classname="TeamStatsSave" name="clearing telemetry counts operations once by configured primary material" time="0.109205" status="run" />
+  <testcase classname="TeamStatsSave" name="combat deaths are attributed by place and assignment" time="0.028012" status="run" />
+  <testcase classname="TeamStatsSave" name="defence snapshot counts warriors by place and enemy warriors at home" time="0.040637" status="run" />
+  <testcase classname="TeamStatsSave" name="every live worker-tick lands in exactly one labour bucket" time="0.044366" status="run" />
+  <testcase classname="TeamStatsSave" name="labour, combat and defence measurements survive a save [save-format]" time="0.181114" status="run" />
+  <testcase classname="TeamStatsSave" name="legacy version 84 fixture replays the golden trace [save-format][golden]" time="0.105216" status="run" />
+  <testcase classname="TeamStatsSave" name="legacy version 88 fixture replays the golden trace [save-format][golden]" time="0.105199" status="run" />
+  <testcase classname="TeamStatsSave" name="older saves load with labour coverage starting at the loaded tick [save-format]" time="0.098641" status="run" />
+  <testcase classname="TeamStatsSave" name="place lookup agrees with a brute-force scan of every building tile" time="0.057542" status="run" />
+  <testcase classname="TeamStatsSave" name="places: own buildings first, then enemies; allies, flags and new buildings do not count" time="0.035611" status="run" />
+  </testsuite><testsuite name="BasePlayerSaveLoad"><testcase classname="BasePlayerSaveLoad" name="RoundTripCurrentVersion" time="0" status="run" />
+    <testcase classname="BasePlayerSaveLoad" name="Pre86StreamReadsUint16PlayerID" time="0" status="run" />
+    <testcase classname="BasePlayerSaveLoad" name="TypeValidation" time="0" status="run" />
+    <testcase classname="BasePlayerSaveLoad" name="NumberAndTeamNumberValidation" time="0" status="run" />
+    <testcase classname="BasePlayerSaveLoad" name="ExhaustedStreamFails" time="0" status="run" />
+  </testsuite><testsuite name="BaseTeamSaveLoad"><testcase classname="BaseTeamSaveLoad" name="RoundTripPinsAlphaOpaque" time="0" status="run" />
+    <testcase classname="BaseTeamSaveLoad" name="SaveLoadSaveIsByteStable" time="0" status="run" />
+  </testsuite><testsuite name="BulletSaveLoad"><testcase classname="BulletSaveLoad" name="RoundTripCurrentVersion" time="0" status="run" />
+    <testcase classname="BulletSaveLoad" name="Pre85StreamDefaultsToTicksLeft" time="0" status="run" />
+  </testsuite><testsuite name="GameHeaderTextSaveLoad"><testcase classname="GameHeaderTextSaveLoad" name="embedded catalog crosses text and binary chunk boundaries" time="0.325436" status="run" />
+    <testcase classname="GameHeaderTextSaveLoad" name="FullRoundTrip" time="0.000458" status="run" />
+    <testcase classname="GameHeaderTextSaveLoad" name="PlayerInfoRoundTrip" time="0.000348" status="run" />
+    <testcase classname="GameHeaderTextSaveLoad" name="BinaryHeaderFormsAndLegacy" time="0.000125" status="run" />
+    <testcase classname="GameHeaderTextSaveLoad" name="AI order delay round trips at both boundaries and rejects invalid saved bytes" time="0.001483" status="run" />
+    <testcase classname="GameHeaderTextSaveLoad" name="New games and reset headers default to eight tick AI decisions" time="0" status="run" />
+  </testsuite><testsuite name="MapExploredAreaSaveLoad"><testcase classname="MapExploredAreaSaveLoad" name="RoundTripRestoresEveryTeam" time="0.000328" status="run" />
+    <testcase classname="MapExploredAreaSaveLoad" name="DiscardConsumesSectionWithoutAllocating" time="0" status="run" />
+  </testsuite><testsuite name="ReplayAppearance"><testcase classname="ReplayAppearance" name="only matching recordings and trusted origins restore appearance context" time="0.000433" status="run" />
+    <testcase classname="ReplayAppearance" name="companions survive copies but stale and oversized files are ignored" time="0.003595" status="run" />
+  </testsuite><testsuite name="ReplayStepCounter"><testcase classname="ReplayStepCounter" name="truncated replay bodies never become zero-filled orders" time="0.00186" status="run" />
+    <testcase classname="ReplayStepCounter" name="step totals cannot wrap" time="0" status="run" />
+    <testcase classname="ReplayStepCounter" name="checksum mismatch closes playback safely" time="0" status="run" />
+    <testcase classname="ReplayStepCounter" name="legacy create decoder respects both historical payload lengths" time="0" status="run" />
+    <testcase classname="ReplayStepCounter" name="WideRoundTrip" time="0.000773" status="run" />
+    <testcase classname="ReplayStepCounter" name="VersionBounds" time="0.000242" status="run" />
+    <testcase classname="ReplayStepCounter" name="DecodeVersionPlumbing" time="0" status="run" />
+  </testsuite></testsuites>

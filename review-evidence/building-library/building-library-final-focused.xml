@@ -1,0 +1,50 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="48" failures="0" errors="0" skipped="0"><testsuite name="BuildingArtwork"><testcase classname="BuildingArtwork" name="portable bundle verifies image bytes and catalog frame references" time="0.571263" status="run" />
+  </testsuite><testsuite name="BuildingCatalog"><testcase classname="BuildingCatalog" name="assignment limits compile staffing capability independently for each stage" time="0.00932" status="run" />
+  <testcase classname="BuildingCatalog" name="compact runtime traits preserve validated numeric boundaries" time="0.014039" status="run" />
+  <testcase classname="BuildingCatalog" name="compiled runtime rows are dense aligned value copies and refresh gates in place" time="0.000791" status="run" />
+  <testcase classname="BuildingCatalog" name="documented experimental field kitchen loads from its authored files" time="0.001108" status="run" />
+  <testcase classname="BuildingCatalog" name="expanded canonical snapshots must fit transport before catalog publication" time="0.240925" status="run" />
+  <testcase classname="BuildingCatalog" name="experiment metadata obeys the same contract before startup and transport" time="0.068818" status="run" />
+  <testcase classname="BuildingCatalog" name="invalid catalog reports the rejected field and preserves the active catalog" time="0.162011" status="run" />
+  <testcase classname="BuildingCatalog" name="legacy inventory vocabulary imports and ambiguous material aliases fail atomically" time="0.013069" status="run" />
+  <testcase classname="BuildingCatalog" name="manifest parsing identifies the broken definition file without publishing a catalog" time="0.015178" status="run" />
+  <testcase classname="BuildingCatalog" name="new materials retain high bits through catalogs and compact runtime rows" time="0.016515" status="run" />
+  <testcase classname="BuildingCatalog" name="renamed composite variant and added feature survive embedded snapshot" time="0.017705" status="run" />
+  <testcase classname="BuildingCatalog" name="shipped JSON preserves all 55 frozen variants and exact canonical stock snapshot" time="0.014376" status="run" />
+  <testcase classname="BuildingCatalog" name="snapshot roundtrip owns independent descriptors and ignores runtime gates" time="0.017135" status="run" />
+  <testcase classname="BuildingCatalog" name="stable keys need no compatibility family alias and defaults are bounded preferences" time="0.0139" status="run" />
+  </testsuite><testsuite name="BuildingFamilyLinks"><testcase classname="BuildingFamilyLinks" name="family links stay on the selected instance and normalize bounded IDs" time="0.000366" status="run" />
+  <testcase classname="BuildingFamilyLinks" name="unlisted family detail uses the instance client and rejects changed identity" time="0.022317" status="run" />
+  </testsuite><testsuite name="BuildingLibrary"><testcase classname="BuildingLibrary" name="installed families are explicitly selected and corrupt updates never replace a release" time="0.262442" status="run" />
+  </testsuite><testsuite name="BuildingPackages"><testcase classname="BuildingPackages" name="artwork hashes bind catalog identity and custom frame indices are checked" time="0.028102" status="run" />
+  <testcase classname="BuildingPackages" name="composition sorts packages and preserves the stock IDs and starting building" time="0.047166" status="run" />
+  <testcase classname="BuildingPackages" name="rejected package composition preserves descriptors and canonical stock bytes" time="0.082327" status="run" />
+  </testsuite><testsuite name="CustomGameSetup"><testcase classname="CustomGameSetup" name="catalog local launch loads the exact cached version and rejects invalid maps [writes-preferences]" time="0.275765" status="run" />
+  <testcase classname="CustomGameSetup" name="custom AI library identities and released preferences round trip" time="0.172808" status="run" />
+  <testcase classname="CustomGameSetup" name="experiments from settings are baked into a new game; a save keeps them; campaigns never take them" time="0.506754" status="run" />
+  <testcase classname="CustomGameSetup" name="generated map snapshot launches from memory" time="0.381018" status="run" />
+  <testcase classname="CustomGameSetup" name="local building experiments are filtered by the destination catalog while saves retain theirs" time="0.056654" status="run" />
+  <testcase classname="CustomGameSetup" name="map previews retain embedded experimental catalogs through cache hits" time="0.391966" status="run" />
+  <testcase classname="CustomGameSetup" name="preview queue priority and restart" time="0.321853" status="run" />
+  </testsuite><testsuite name="MapSets"><testcase classname="MapSets" name="custom artwork properties and credits survive offline save and load [artifacts]" time="0.413187" status="run" />
+  <testcase classname="MapSets" name="invalid packages fail atomically and reimports preserve local edits" time="0.024534" status="run" />
+  <testcase classname="MapSets" name="selected terrain includes custom resources and explicit updates replace local copies" time="0.030772" status="run" />
+  </testsuite><testsuite name="AssetLoader"><testcase classname="AssetLoader" name="WebP requests deduplicate and preserve alpha and invisible RGB in both execution modes" time="0.002251" status="run" />
+    <testcase classname="AssetLoader" name="read backpressure yields to decoders and retained metadata cannot stall images" time="0.006631" status="run" />
+    <testcase classname="AssetLoader" name="dependency continuations do not block workers and preparation overlaps" time="0.001732" status="run" />
+    <testcase classname="AssetLoader" name="exclusive transfer refuses copied subscriptions and borrowed payloads" time="0" status="run" />
+    <testcase classname="AssetLoader" name="retained continuation inputs survive cancellation of the caller subscription" time="0.003174" status="run" />
+    <testcase classname="AssetLoader" name="unique completed requests do not accumulate expired cache metadata" time="0.000673" status="run" />
+    <testcase classname="AssetLoader" name="reader workers overlap independently of CPU preparation" time="0.001605" status="run" />
+    <testcase classname="AssetLoader" name="finalizers run only on the owner thread and expired owners cancel publication" time="0.000136" status="run" />
+    <testcase classname="AssetLoader" name="nonpositive polling budgets do not start cooperative work or finalizers" time="0" status="run" />
+    <testcase classname="AssetLoader" name="failures cancellation invalidation and shutdown leave usable handles" time="0.001014" status="run" />
+  </testsuite><testsuite name="CommunityAssets"><testcase classname="CommunityAssets" name="verified memory assets use the ordinary loader without shadowing installed files" time="0.010148" status="run" />
+  </testsuite><testsuite name="GameHeaderTextSaveLoad"><testcase classname="GameHeaderTextSaveLoad" name="embedded catalog crosses text and binary chunk boundaries" time="0.281916" status="run" />
+    <testcase classname="GameHeaderTextSaveLoad" name="FullRoundTrip" time="0.000266" status="run" />
+    <testcase classname="GameHeaderTextSaveLoad" name="PlayerInfoRoundTrip" time="0.000181" status="run" />
+    <testcase classname="GameHeaderTextSaveLoad" name="BinaryHeaderFormsAndLegacy" time="0" status="run" />
+    <testcase classname="GameHeaderTextSaveLoad" name="AI order delay round trips at both boundaries and rejects invalid saved bytes" time="0.000801" status="run" />
+    <testcase classname="GameHeaderTextSaveLoad" name="New games and reset headers default to eight tick AI decisions" time="0" status="run" />
+  </testsuite></testsuites>
