@@ -14,7 +14,7 @@ inline CellGraph ownedSitesCellGraph(Binding &e, const Torus &torus, const std::
 	for (std::size_t a = 0; a < neighbours.size(); ++a)
 		for (int b : neighbours[a])
 		{
-			e.chargeNative();
+			e.chargeNative(1);
 			if (b < 0 || std::size_t(b) >= sites.size())
 				throw TypeMismatch("Cell graph neighbour outside site range");
 			edges += a < std::size_t(b);
