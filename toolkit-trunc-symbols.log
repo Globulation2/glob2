@@ -1,0 +1,7 @@
+Traceback (most recent call last):
+  File "/home/bradley/.codex/worktrees/repair-tls-rejection-fixture/glob2/tools/javascript/check-math-symbols.py", line 37, in <module>
+    check(args.objects, args.nm)
+    ~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/bradley/.codex/worktrees/repair-tls-rejection-fixture/glob2/tools/javascript/check-math-symbols.py", line 29, in check
+    raise RuntimeError(f'{obj}: platform numeric symbols: {", ".join(sorted(set(unexpected)))}')
+RuntimeError: build/native-coverage-torus/src/map/generator/javascript/ToolkitBindings0.o: platform numeric symbols: lround, round
