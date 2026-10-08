@@ -43,7 +43,7 @@ const int tabClose[8][2]={
 
 Map::Map() : gradientRuntime(std::make_unique<GradientRuntime>())
 {
-    rebuildResourceHabitats();
+    rebuildTerrainCounts();
 	topologyGeneration=1;
 	game=NULL;
 
@@ -121,13 +121,6 @@ std::shared_ptr<const std::vector<TerrainType>> Map::frozenVertexSnapshot() cons
 	std::lock_guard<std::mutex> lock(waterSnapshotMutex);
 	if (!vertexSnapshot) vertexSnapshot = std::make_shared<const std::vector<TerrainType>>(vertexTerrain);
 	return vertexSnapshot;
-}
-
-std::shared_ptr<const std::vector<Uint16>> Map::frozenCellRuleSnapshot() const
-{
-	std::lock_guard<std::mutex> lock(waterSnapshotMutex);
-	if (!cellRuleSnapshot) cellRuleSnapshot = std::make_shared<const std::vector<Uint16>>(cellRules);
-	return cellRuleSnapshot;
 }
 
 std::shared_ptr<const TerrainMovementSnapshot>
@@ -320,7 +313,8 @@ void Map::bindCellRules()
 void Map::rebuildTerrainCounts(std::shared_ptr<CellRuleTable> table)
 {
 	invalidateResourceSeeds();
-	// Uniform rules come first, by terrain ID; mixed ones follow in row-major order.
+	// A fresh table numbers uniform rules by terrain ID and mixed ones in
+	// row-major order; a table passed in keeps the rules it already holds.
 	cellRuleTable = table ? std::move(table) : std::make_shared<CellRuleTable>(terrainRegistryValue, resourceRegistryValue);
 	cellRuleCounts.assign(cellRuleTable->size(), 0);
 	// Size the cells before binding: the live view spans this array.
@@ -353,7 +347,6 @@ void Map::rebuildTerrainCounts(std::shared_ptr<CellRuleTable> table)
 		std::lock_guard<std::mutex> lock(waterSnapshotMutex);
 		waterSnapshot.reset();
 		vertexSnapshot.reset();
-		cellRuleSnapshot.reset();
 		terrainMovementSnapshots = {};
 	}
 	{
@@ -392,7 +385,6 @@ void Map::changeCellRule(size_t index, std::uint16_t rule)
 	// outside caches can never retain that partial state after the batch ends.
 	{
 		std::lock_guard<std::mutex> lock(waterSnapshotMutex);
-		cellRuleSnapshot.reset();
 		terrainMovementSnapshots = {};
 		waterSnapshot.reset();
 	}
@@ -572,7 +564,6 @@ void Map::clear()
 		std::lock_guard<std::mutex> lock(waterSnapshotMutex);
 		waterSnapshot.reset();
 		vertexSnapshot.reset();
-		cellRuleSnapshot.reset();
 		terrainMovementSnapshots = {};
 	}
 	resourceStockIndices.clear();
@@ -664,7 +655,7 @@ void Map::setSize(int wDec, int hDec, TerrainType terrainType)
     {
         resourceRegistryValue = ResourceRegistry::builtins();
         refreshLiveView();
-        rebuildResourceHabitats();
+        rebuildTerrainCounts();
     }
 	if (!validTerrainType(terrainType)) throw std::invalid_argument("Unknown terrain identity");
 

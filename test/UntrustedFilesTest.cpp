@@ -165,7 +165,7 @@ TEST_CASE("terrain loaders reject invalid resources occupants and sector dimensi
         CHECK_FALSE(restored.load(stream.get(),header,&world.game));
     }
     poke(original);
-	auto bad = poisoned(bytes, out, "encoding", 254); // First packed array is the undermap.
+	auto bad = poisoned(bytes, out, "encoding", 254); // First packed array is the vertex terrain.
 	auto stream = input(bad);
 	Map restored;
     CHECK_FALSE(restored.load(stream.get(),header,&world.game));

@@ -22,11 +22,6 @@ inline constexpr std::uint16_t LEGACY_CLASSIC_FRAMES[81][2] =
 	{ 0, 16 }, { 0, 16 }, { 0, 16 }, { 0, 16 }, { 184, 8 }, { 152, 8 }, { 0, 16 }, { 144, 8 }, { 256, 16 },
 };
 
-constexpr const std::uint16_t (&legacyClassicFrames(TerrainType tl, TerrainType tr, TerrainType bl, TerrainType br))[2]
-{
-	return LEGACY_CLASSIC_FRAMES[(2 - tl) * 27 + (2 - tr) * 9 + (2 - bl) * 3 + (2 - br)];
-}
-
 // The corners (top-left, top-right, bottom-left, bottom-right) a classic frame
 // drew, or nothing for frames outside the classic ranges (272 and up).
 constexpr std::optional<std::array<TerrainType, 4>> legacyFrameCorners(std::uint16_t frame)

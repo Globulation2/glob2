@@ -259,12 +259,6 @@ void Map::decResource(int x,int y)
 }
 
 
-void Map::rebuildResourceHabitats()
-{
-    // Resource habitats are compiled into the cell rules.
-    rebuildTerrainCounts();
-}
-
 bool Map::terrainSupportsMaterialAtSlot(int x,int y,int material) const
 {
     return MapState::terrainSupportsMaterial(liveCells,coordToIndex(x,y),material);

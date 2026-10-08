@@ -292,7 +292,8 @@ bottom-left, bottom-right. Terrain is stored per map vertex, and vertex (x,y) is
 top-left corner of tile (x,y). Index the immutable definitions returned by
 `ctx.game.terrainTypes()` with these IDs. When all four agree, the tile has that
 terrain's rules exactly; mixed corners are walkable when any corner is, never
-swimmable or buildable, and otherwise as permissive as the weakest corner. There is
+swimmable or buildable, block projectiles and count as a shoreline when any corner
+does, and are otherwise as permissive as the weakest corner. There is
 no single per-tile terrain field. `corners` follows the same visibility and
 remembered-observation rules as `resource`. The registry is static public metadata
 and does not reveal map contents.
@@ -337,12 +338,12 @@ Each entry has `id`, stable `name`, `experiment` (a required experiment key or
 | `allowedResources` | Runtime resource IDs permitted by compiled habitat rules and explicit terrain whitelists; refreshed when either catalog changes |
 | `farmMaterial` | Preferred renewable farming material key, or `null` for none |
 
-The array is ID-indexed and includes internal shoreline profiles and experimental
-materials even when the current match has not enabled their authoring options.
+The array is ID-indexed and includes experimental materials even when the current
+match has not enabled their authoring options.
 All nested registry values are read-only in both scripting profiles, including
 commander and map scripts. Existing IDs remain water `0`, sand `1`, grass `2`,
-ice `3`, Trail `4` (legacy registry name `road`), grass/sand shore `5`, and sand/water shore `6`; scripts should
-query capabilities instead of comparing those IDs or graphic frame ranges.
+ice `3` and Trail `4` (legacy registry name `road`); scripts should query capabilities
+instead of comparing IDs.
 `ctx.spatial.passable` additionally checks known occupancy and movement rules;
 spatial placement and connectivity use the same canonical terrain properties.
 

@@ -100,7 +100,7 @@ namespace
 		{
             // Unit binaries do not initialize Toolkit or an installed asset search path.
             resourceRegistryValue = ResourceRegistry::loadFile((glob2test::sourceRoot() / "data/resources/registry.json").string());
-            rebuildResourceHabitats();
+            rebuildTerrainCounts();
 			wDec = hDec = kMapDec;
 			w = h = 1 << kMapDec;
 			wMask = hMask = w - 1;

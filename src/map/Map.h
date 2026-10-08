@@ -134,14 +134,10 @@ class Map
 	mutable std::mutex waterSnapshotMutex;
 	mutable std::shared_ptr<const std::vector<Uint8>> waterSnapshot;
 	mutable std::shared_ptr<const std::vector<TerrainType>> vertexSnapshot;
-	mutable std::shared_ptr<const std::vector<Uint16>> cellRuleSnapshot;
 	mutable std::array<std::shared_ptr<const TerrainMovementSnapshot>, 7> terrainMovementSnapshots;
 	std::shared_ptr<const ResourceRegistry> resourceRegistryValue = ResourceRegistry::availableDefaults();
 	// Single-yield tiles keep stock inline. The index plane is allocated only
 	// when a multi-yield deposit is first placed; zero means no sidecar slot.
-    // Recompiles the cell rules (and so the resource habitats) for the current
-    // terrain and resource registries.
-    void rebuildResourceHabitats();
 	std::vector<Uint32> resourceStockIndices;
 	std::vector<std::array<Uint16, MaterialCount>> resourceStocks;
 	std::vector<Uint32> freeResourceStocks;
@@ -179,11 +175,11 @@ class Map
         // Zero is reserved for a stale shared-runtime gradient after loading.
         if (++staticMaterialSourceGenerationValue == 0) ++staticMaterialSourceGenerationValue;
     }
-	// The rule of cell index for its current corners, interned on demand.
+	// The rule of cell index for its corners, interned on demand; a table shared with a snapshot
+	// (use_count above one) is cloned before it gains a rule.
 	std::uint16_t deriveCellRule(size_t index);
 	void changeCellRule(size_t index, std::uint16_t rule);
 	void writeVertex(size_t index, TerrainType type);
-	// A table shared with a snapshot (use_count above one) is cloned before it gains a rule.
 	// Re-derives every cell after a bulk vertex change, keeping the rule table.
 	void rederiveAllCells();
 	void bindCellRules();
@@ -282,9 +278,8 @@ public:
 	//! Half-tile in pixels — used when centring sprites / bullets on a tile.
 	static constexpr int HALF_TILE_PX = 16;
 
-	//! Sentinel returned by Map::getTerrainType when the underlying terrain
-	//! sprite ID does not fall in any of the registered terrain ranges
-	//! (GRASS / SAND / WATER). Callers test for `< 0` / `== TERRAIN_TYPE_UNKNOWN`.
+	//! Sentinel returned by Map::getTerrainType for a cell whose corners hold
+	//! different terrains. Callers test for `< 0` / `== TERRAIN_TYPE_UNKNOWN`.
 	static constexpr int TERRAIN_TYPE_UNKNOWN = -1;
 
 	//! "Infinity" / "unvisited" sentinel for the A* algorithm's Uint16 cost fields
@@ -548,7 +543,8 @@ public:
 	//! Returns every vertex index that changed, beaches included.
 	std::vector<size_t> paintVertices(const std::vector<std::pair<int, int>> &vertices, TerrainType type,
 									  bool beaches = true);
-	//! Paints the square of side l+1 of vertices centred on (x,y), with beaches.
+	//! Paints the square of 2*(l/2)+1 vertices a side centred on (x,y), with
+	//! beaches; l of 0 or 1 paints the single vertex.
 	void paintVertexSquare(int x, int y, TerrainType type, int l);
 	//! Turns every grass vertex next to water, and every water vertex next to
 	//! grass, into sand. Reads the terrain as it was, so the order of the scan
@@ -591,7 +587,6 @@ public:
 	std::uint64_t terrainGeneration() const { return terrainGenerationValue; }
     std::uint64_t staticMaterialSourceGeneration() const { return staticMaterialSourceGenerationValue; }
 	std::shared_ptr<const std::vector<TerrainType>> frozenVertexSnapshot() const;
-	std::shared_ptr<const std::vector<Uint16>> frozenCellRuleSnapshot() const;
 	std::shared_ptr<const TerrainMovementSnapshot>
 	frozenTerrainMovementSnapshot(unsigned swim) const;
 	bool hasTerrainMovementModifiers() const { return terrainMovementModifiers; }
@@ -690,7 +685,7 @@ public:
 		tile.scriptAreas = scriptAreaCells[index];
 		return tile;
 	}
-	// Restores stored cell data; Tile::terrain is ignored, as terrain lives on vertices.
+	// Restores stored cell data. Terrain lives on vertices and is not part of a Tile.
 	void replaceTile(size_t index, const Tile &tile);
 	void replaceTile(int x, int y, const Tile &tile) { replaceTile(coordToIndex(x, y), tile); }
 	void replaceResource(size_t index, const Resource &resource);

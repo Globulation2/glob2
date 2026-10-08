@@ -724,7 +724,7 @@ int runMapStudy(int argc, char **argv)
 	const std::string timingJson = timing ? metricTimingJson(game, descriptor, result) : "";
 	auto &map = game.map;
 	int grass = 0, sand = 0, water = 0, shore = 0, free = 0, fit4 = 0;
-	int umGrass = 0, umSand = 0, umWater = 0;
+	int vertexGrass = 0, vertexSand = 0, vertexWater = 0;
 	std::vector<int> materialCounts(map.terrainRegistry().size());
 	std::uint64_t hash = 14695981039346656037ULL;
 	std::vector<int> footprint(map.getW() * map.getH(), 0);
@@ -759,13 +759,13 @@ int runMapStudy(int argc, char **argv)
 			switch (map.vertexTerrainAt(x, y))
 			{
 			case GRASS:
-				++umGrass;
+				++vertexGrass;
 				break;
 			case SAND:
-				++umSand;
+				++vertexSand;
 				break;
 			case WATER:
-				++umWater;
+				++vertexWater;
 				break;
 			default:
 				break;
@@ -776,8 +776,8 @@ int runMapStudy(int argc, char **argv)
 			hash *= 1099511628211ULL;
 		}
 	std::printf("STUDY,%d,%u,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%.6f,%llu\n", method, seed, success,
-				map.getW() * map.getH(), grass, sand, water, shore, free, fit4, umGrass, umSand,
-				umWater, seconds, (unsigned long long)hash);
+				map.getW() * map.getH(), grass, sand, water, shore, free, fit4, vertexGrass, vertexSand,
+				vertexWater, seconds, (unsigned long long)hash);
 	for (int type = 0; type < int(materialCounts.size()); ++type)
 		if (type != GRASS && type != SAND && type != WATER && materialCounts[type])
 			std::printf("STUDY_TERRAIN,%s,%d\n", map.terrainPresentation(TerrainType(type)).name,

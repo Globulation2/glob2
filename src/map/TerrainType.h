@@ -45,7 +45,7 @@ enum TerrainType : std::uint16_t
 };
 // Built-in counts of older files. Their custom definitions and terrain IDs start
 // at the count they were written with and are remapped on load
-// (savedTerrainId in TerrainRegistry.h).
+// (TerrainRegistry::currentTerrainId).
 // Before format 141 there were seven built-ins, two of them shore profiles.
 inline constexpr unsigned TERRAIN_COUNT_BEFORE_CATALOGUE = 7;
 // Formats 141 to 143 still numbered the two shore profiles as 5 and 6.

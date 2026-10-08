@@ -314,7 +314,7 @@ try
     if (versionMinor>=FILE_FORMAT_VERSION_RUNTIME_RESOURCES)
         for (const auto& cell:resourceCells)
             if (cell.resource.type!=NO_RES_TYPE && !std::has_single_bit(resourcePropertiesByIndex(cell.resource.type).materialMask)) savedMultiTotals.push_back(cell.resource.amount);
-    rebuildResourceHabitats();
+    rebuildTerrainCounts();
     rebuildResourceState();
     if (versionMinor>=FILE_FORMAT_VERSION_RUNTIME_RESOURCES)
     {

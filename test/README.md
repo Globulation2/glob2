@@ -298,7 +298,7 @@ normal build. This is a direct method regression, not an interactive replay test
 ## Terrain resource regression
 
 The `TerrainResources` suite (`python3 test/run_tests.py --filter 'TerrainResources/*'`)
-links the actual client objects and exercises terrain regeneration and resource clearing for all eight
+links the actual client objects and exercises terrain edits and resource clearing for all eight
 resource types, all three base terrains, overlapping strokes, and all four
 wrapped map corners. A whole-map oracle checks both removal and preservation.
 These are headless map-operation tests; they do not drive editor mouse events.

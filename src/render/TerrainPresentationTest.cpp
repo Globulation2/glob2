@@ -1238,8 +1238,8 @@ TEST_SUITE("TerrainValidation")
 		REQUIRE(IMG_SavePNG(
 			globals->gfx->getSDLSurface(),
 			(glob2test::artifactDir() / "terrain-catalogue-gallery.png").string().c_str()));
-		// Obstacle islands carry decor: interior cells use full frames, cells
-		// with an open neighbour the smaller edge frames; open ground has none.
+		// Obstacle islands carry decor: cells with four obstacle corners use full
+		// frames, cells with two or three the smaller edge frames; open ground has none.
 		auto &compositor = globals->terrainCompositor();
 		REQUIRE(compositor.decorSprite());
 		const auto &catalog = compositor.catalog();

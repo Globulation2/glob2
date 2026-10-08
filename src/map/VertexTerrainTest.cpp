@@ -202,12 +202,11 @@ TEST_CASE("snapshots keep the rule table they were taken with")
 	Map map;
 	map.setSize(4, 4, GRASS);
 	const auto rules = map.frozenCellRules();
-	const auto cells = map.frozenCellRuleSnapshot();
 	const auto size = rules->size();
 	map.setVertexTerrain(3, 3, LAVA);
 	CHECK(rules->size() == size);
 	CHECK(map.cellRuleTableRef().size() > size);
-	CHECK((*cells)[map.coordToIndex(3, 3)] == GRASS);
+	CHECK(&map.cellRuleTableRef() != rules.get());
 	CHECK(map.cellRuleAt(map.coordToIndex(3, 3)) >= size);
 }
 

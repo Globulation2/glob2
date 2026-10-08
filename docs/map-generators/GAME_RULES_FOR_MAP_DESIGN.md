@@ -34,7 +34,7 @@ comments can say "because a mixed tile is unbuildable" and a reader can check it
   its pure grass, not its land. A swarm is 4×4; the start scorer counts free 4×4 footprints as a
   colony's room (`StartQuality`).
 - **Water blocks walking until a colony can swim.** Ground units cannot enter water
-  (`TileChecks::waterBlocks`) until they have trained at a swimming pool. Every island map, strait
+  (cells whose four corners are all water) until they have trained at a swimming pool. Every island map, strait
   and moat is therefore a *timing* rule: it separates colonies early and opens once pools are
   built. Sand and grass are both walkable.
 - **Resources block movement and building.** A unit cannot stand on a tile with a resource on it

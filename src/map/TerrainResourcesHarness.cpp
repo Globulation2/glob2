@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
-// Exercise real terrain regeneration and resource clearing without a window.
+// Exercise real terrain edits and resource clearing without a window.
 #include "EngineFixtures.h"
 #include "Version.h"
 #include "FileFormatVersions.h"

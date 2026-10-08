@@ -191,13 +191,15 @@ void MapEdit::drawTerrainBrushPreview()
 	auto *gfx = globalContainer->gfx;
 	const int mx = int(MapCamera::wrap(mapMouseX(mouseX), view.scene->map.getW() * 32));
 	const int my = int(MapCamera::wrap(mapMouseY(mouseY), view.scene->map.getH() * 32));
+	// The same lattice point a click takes (brushCellAt): the nearest vertex
+	// for a terrain brush, so checkerboard figures keep the stroke's parity.
+	const int offset = brushSquareOffset();
 	int centreX, centreY;
-    view.scene->map.displayToMapCaseAligned(mx, my, &centreX, &centreY, viewportX, viewportY);
+    view.scene->map.displayToMapCaseAligned(mx - offset, my - offset, &centreX, &centreY, viewportX, viewportY);
 	const bool adding = brush.getType() != BrushTool::MODE_DEL;
 	const auto cells = terrainBrushCells(centreX, centreY);
 	// Same layout as BrushTool::drawBrush: the pointer's lattice point, then
 	// offsets. A vertex's square is centred on it, half a cell up and left.
-	const int offset = brushSquareOffset();
 	const int baseX = ((mx - offset) & ~0x1f) + offset, baseY = ((my - offset) & ~0x1f) + offset;
 	constexpr int cellSize = 32, inset = 2;
 	auto cellRect = [&](const BrushCell &cell, auto draw)

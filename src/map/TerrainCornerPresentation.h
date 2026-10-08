@@ -7,10 +7,11 @@
 // Presentation of a cell from its four corner terrains (top-left, top-right,
 // bottom-left, bottom-right), for drawing code that still thinks per cell.
 
-inline bool classicTerrain(TerrainType type) { return type == WATER || type == SAND || type == GRASS; }
+constexpr bool classicTerrain(TerrainType type) { return type == WATER || type == SAND || type == GRASS; }
 
-// The corner terrain a whole-cell view of the cell shows: authored (non-classic)
-// terrain first, then the most frequent corner, then corner order.
+// The corner terrain a whole-cell view of the cell shows (preview hue, appearance).
+// Catalogue terrain wins over classic so small features stay visible in those
+// coarse views; then the most frequent corner, then corner order.
 inline TerrainType dominantCornerTerrain(const std::array<TerrainType, 4> &corners)
 {
 	TerrainType best = corners[0];

@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "MapImage.h"
+#include "TerrainCornerPresentation.h"
 #include "TerrainPresentation.h"
 #include "Game.h"
 #include "GlobalContainer.h"
@@ -33,11 +34,6 @@ constexpr Category terrainCategory(TerrainType type)
 {
     const auto c=terrainPresentation(type).image;
     return {c.r,c.g,c.b,type,NO_RES};
-}
-// Grass, sand and water: the terrain that seam repair and beaches reshape.
-constexpr bool classicTerrain(TerrainType type)
-{
-	return type == GRASS || type == SAND || type == WATER;
 }
 // Explicit legacy image-format palette: these named built-in content choices
 // define nearest-color and vertex-majority ties. Keep in sync with CLI.md. Every

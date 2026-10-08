@@ -181,10 +181,11 @@ A material opts in with a `decor` block:
 "decor": {"sprite": "data/gfx/terrain-decor", "full": [0, 1, 2], "edge": [8, 9]}
 ```
 
-- `full` frames are used for cells whose four neighbours share the cell's
+- `full` frames are used for cells whose four corners share a decorated
   appearance.
-- `edge` frames are smaller and pulled toward the cell centre, for cells with an
-  open neighbour, so clusters do not spill far onto open ground.
+- `edge` frames are smaller and pulled toward the cell centre, for cells where two
+  or three corners share it, so clusters do not spill far onto open ground. A
+  single decorated corner draws no decor.
 - The frame is chosen by a coordinate hash salted with the map's terrain seed.
 - All decor blocks share one sprite, so the cached GPU path batches decor rows
   like resource rows.
@@ -532,7 +533,8 @@ Compare that trace with the same fixture built against the base revision.
 
 Saved maps hold terrain IDs per vertex, not sprite frames, so changing visual
 variants in the catalog cannot change saved state, checksums or simulation RNG use.
-`TerrainCompatibility.h` keeps the frame ranges files older than format 144 recorded.
+Files older than format 144 also stored sprite frames; the loader skips them, and
+only `LegacyTerrainFrames.h` still decodes classic frames, for old script memories.
 
 `TerrainVisual::Compositor` owns prepared material sources. Source lifetime and
 content revisions, animation phase and native/HD selection invalidate prepared
