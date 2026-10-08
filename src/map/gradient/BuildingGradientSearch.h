@@ -45,6 +45,7 @@ class BuildingGradientSearch
 	std::uint16_t *gradient = nullptr;
 	std::size_t cells = 0, pending = 0;
 	int currentCost = 0, swimClass = 0;
+	int readerCost = 0;
 	std::uint64_t popped = 0;
 	int widthMask = 0, heightMask = 0;
 	template <class Done> void advance(Done done);
@@ -76,6 +77,9 @@ class BuildingGradientSearch
 	void resolveToCost(int cost);
 	// The first cost layer not yet expanded: every cheaper cell is final.
 	int settledCost() const { return currentCost; }
+	// Required by scalar readers, including hits within worker-prepared layers.
+	// Preparation and finish() do not increase this demand history.
+	int requiredCost() const { return readerCost; }
 	bool complete() const { return pending == 0; }
 	bool resolved(std::size_t target) const;
 	std::uint64_t poppedEntries() const { return popped; }

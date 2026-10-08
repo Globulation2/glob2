@@ -46,7 +46,7 @@ void BuildingGradientSearch::begin(const Inputs &inputs, std::uint16_t *seeded, 
 	widthMask = width - 1;
 	heightMask = height - 1;
 	swimClass = swim;
-	currentCost = 0;
+	currentCost = readerCost = 0;
 	popped = 0;
 	pending = 0;
 	queries = extensions = 0;
@@ -101,11 +101,23 @@ void BuildingGradientSearch::resolve(std::size_t target)
 {
 	assert(target <= cells);
 	++queries;
-	if (complete() || (target < cells && resolved(target)))
-		return;
-	++extensions;
-	PERF_SCOPE_TIME(BuildingGradientResume);
-	advance([&] { return target != cells && resolved(target); });
+	if (!complete() && !(target < cells && resolved(target)))
+	{
+		++extensions;
+		PERF_SCOPE_TIME(BuildingGradientResume);
+		advance([&] { return target != cells && resolved(target); });
+	}
+	if (target < cells)
+	{
+		const auto value = gradient[target];
+		// A reachable query requires its whole cost layer, even if preparation
+		// already settled it. An unreachable query needs search exhaustion.
+		// Goals and blocked cells are known from seeds without propagation.
+		const int needed = value == GRADIENT_UNREACHABLE ? currentCost
+			: (value > GRADIENT_UNREACHABLE && value != GRADIENT_AT_GOAL
+				? GRADIENT_AT_GOAL - value + 1 : 0);
+		readerCost = std::max(readerCost, needed);
+	}
 }
 
 void BuildingGradientSearch::resolveToCost(int cost)
@@ -184,7 +196,7 @@ void BuildingGradientSearch::clearForReuse()
 {
 	gradient = nullptr;
 	cells = pending = 0;
-	currentCost = 0;
+	currentCost = readerCost = 0;
 	popped = queries = extensions = 0;
 	poppedAtDepth.fill(0);
 	registry.reset();

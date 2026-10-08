@@ -47,7 +47,7 @@ void Map::updateGlobalGradient(Building *building, int swimClass, BuildingRoute 
 	building->supersedeGradient(slot);
 	gradientRuntime->countSynchronous();
 	if (const auto &previous = building->globalGradientSearch[slot])
-		building->settledCostHint[slot] = Uint16(std::min(previous->settledCost(), 0xFFFE));
+		building->settledCostHint[slot] = Uint16(std::min(previous->requiredCost(), 0xFFFE));
 	// A rebuild replaces the old search and its frozen terrain snapshot.
 	// Keep bucket capacity when possible; a locked field has no pending search.
 	building->dirtyGradient[slot]=false;
