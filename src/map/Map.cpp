@@ -521,14 +521,13 @@ void Map::clearGradientBufferPool()
 		delete[] idleGradientBuffers[--idleGradientBufferCount];
 }
 
-void Map::configureCompute(unsigned threads, unsigned experiments)
+void Map::configureCompute(unsigned threads)
 {
 	finishGradientPipeline();
 	finishResourceGrowth();
 	compute.configure(threads);
 	gradientRuntime->pipeline.resizeWorkspaces();
 	gradientRuntime->workspaces.resize(compute.threadCount());
-	computeExperiments = experiments;
 }
 
 void Map::clear()

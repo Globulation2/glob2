@@ -377,7 +377,7 @@ public:
 		const std::function<std::thread(std::function<void()>)> &launch =
 			[](std::function<void()> function) { return GAGCore::ThreadSupport::launch(std::move(function)); })
 	{
-		assert(!active && threads >= 1 && threads <= 64);
+		assert(!active && threads >= 1);
 		stop();
 		presentationWorker = threads > 1 ? threads - 1 : 0;
 		if constexpr (GAGCore::ThreadSupport::available)

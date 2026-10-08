@@ -8,7 +8,7 @@
 #include <FormatableString.h>
 
 #include "AINames.h"
-#include "AIThreading.h"
+#include "ComputeThreads.h"
 #include "ChecksumSidecar.h"
 #include "ConnectionOverlay.h"
 #include "DatasetWriter.h"
@@ -860,9 +860,8 @@ void Engine::reloadTurnInitialState()
 		if (!checksumSidecar->open(state.replayPath, gui.game))
 			checksumSidecar.reset();
 	}
-	if (!globalContainer->structuredHeadless)
-		gui.game.map.configureCompute(globalContainer->aiThreads ? globalContainer->aiThreads
-			: defaultAIThreadCount(gui.game), Map::ComputeAI);
+	if (!globalContainer->structuredHeadless || turn)
+		gui.game.map.configureCompute(resolveComputeThreadCount(globalContainer->computeThreads));
 	teamEliminatedTick.clear();
 	if (session)
 		session->wasReadyLastTick = true;
@@ -896,9 +895,8 @@ void Engine::beginSession(Uint64 now)
 {
     if (session) throw std::logic_error("Engine session is already active");
     if (!net) throw std::logic_error("Engine session requires an initialized game");
-	if (!globalContainer->structuredHeadless)
-		gui.game.map.configureCompute(globalContainer->aiThreads ? globalContainer->aiThreads
-			: defaultAIThreadCount(gui.game), Map::ComputeAI);
+	if (!globalContainer->structuredHeadless || turn)
+		gui.game.map.configureCompute(resolveComputeThreadCount(globalContainer->computeThreads));
     sessionEndingTarget = globalContainer->automaticEndingSteps;
     MainLoopState st{};
     st.adjustableGameSpeed = gui.canChangeGameSpeed();

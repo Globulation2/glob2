@@ -110,7 +110,6 @@ class Map
 	void seedMaterialGradientWithSuppliers(int team, Uint8 resource, int swim, Uint16 *output, const Building* consumer, unsigned modes);
 	mutable ComputeExecutor compute;
 	mutable std::unique_ptr<GradientRuntime> gradientRuntime;
-	unsigned computeExperiments = 0;
 	// Scheduled building gradients (MapGradientScheduling.cpp).
 	void stageBuildingGradientPreparation();
 	SimulationSnapshot::Requirements pendingBuildingRequirements() const;
@@ -240,22 +239,14 @@ public:
 	std::shared_ptr<const std::vector<Uint8>> frozenWaterSnapshot() const;
 	Uint16 *acquireBuildingGradientBuffer();
 	void recycleBuildingGradientBuffer(Uint16 *buffer);
-	std::uint64_t hiringPrepasses = 0, hiringPoppedEntries = 0;
-	enum ComputeExperiment { ComputeAreas = 1, ComputeInitialize = 2, ComputeHiring = 4, ComputeAI = 8 };
-	void configureCompute(unsigned threads, unsigned experiments);
+	void configureCompute(unsigned threads);
 	ComputeExecutor &computeExecutor() { return compute; }
-	bool computeEnabled(ComputeExperiment experiment) const { return computeExperiments & experiment; }
-	// Fixed chunks and synchronous barriers: thresholds affect execution only.
+	// Live field seeding retains its serial production order.
 	template<class Function> void initializeGradientCells(Function function) const
 	{
-		constexpr size_t chunk = 4096;
-		if (!computeEnabled(ComputeInitialize) || size < 16384)
-		{ function(0, size); return; }
-		compute.run((size + chunk - 1) / chunk, [&](size_t part) {
-			const size_t begin = part * chunk;
-			function(begin, std::min(begin + chunk, size));
-		});
+		function(0, size);
 	}
+
 	struct GradientPipelineStatus
 	{
 		bool enabled = false;
@@ -333,7 +324,6 @@ public:
 	void seedMaterialGradient(int team, Uint8 resource, int swim, Uint16 *gradient, bool withMarkets = false, const Building* consumer = nullptr, unsigned modes = 0);
 	void seedGuardAreasGradient(int team, int swim, Uint16 *gradient);
 	void seedClearAreasGradient(int team, int swim, Uint16 *gradient);
-	void advanceHiringGradients(Building *building);
 
 	void saveRuntimeState(GAGCore::OutputStream *stream) const;
 	void loadRuntimeState(GAGCore::InputStream *stream, Sint32 versionMinor);

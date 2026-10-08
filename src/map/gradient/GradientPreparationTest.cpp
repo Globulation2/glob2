@@ -479,7 +479,7 @@ TEST_SUITE("GradientPreparation")
 		m.paintCell(1, WATER);
 		m.addForbidden(0, 0, 1);
 		std::vector<std::vector<Uint16>> outputs(16, std::vector<Uint16>(m.size));
-		m.configureCompute(4, Map::ComputeInitialize);
+		m.configureCompute(4);
 		m.computeExecutor().run(outputs.size(), [&](size_t job) {
 			m.seedMaterialGradient(job % 2, job % MaterialCount, job % SWIM_CLASS_COUNT,
 				outputs[job].data(), false);
@@ -608,7 +608,7 @@ TEST_SUITE("GradientPreparation")
 		std::vector<Uint16> expected(m.size), actual(m.size);
 		for (unsigned threads : {1, 2, 4})
 		{
-			m.configureCompute(threads, Map::ComputeInitialize);
+			m.configureCompute(threads);
 			for (int phase=0; phase<4; ++phase)
 			{
 				world.game.gameHeader.getExperiments().set(ExperimentId::FarmAreas, phase & 1);
@@ -785,7 +785,7 @@ TEST_SUITE("GradientPreparation")
 			scalarResource(m, 0, resource, 0, expected.data(), false);
 			m.propagateGradient(expected.data(), 0);
 			m.configureGradientPipeline(workers, 8);
-			m.configureCompute(4, Map::ComputeAI);
+			m.configureCompute(4);
 			std::vector<Uint16 *> requests(8);
 			m.computeExecutor().run(requests.size(), [&](size_t j) {
 				requests[j] = m.getMaterialGradientSlot(0, resource, 0);

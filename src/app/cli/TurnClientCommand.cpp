@@ -22,6 +22,7 @@
 #include <thread>
 
 #include "Building.h"
+#include "ComputeThreads.h"
 #include "BuildingType.h"
 #include "ai/BuildingCapabilities.h"
 #include "Engine.h"
@@ -50,6 +51,7 @@ struct Options
 	double ordersPerSecond = 0.5;
 	double maxSeconds = 1800;
 	std::uint32_t seed = 1;
+	unsigned computeThreads = 0;
 };
 
 std::string readText(const std::string& path)
@@ -142,6 +144,7 @@ static int play(const Options& options, const fs::path& output)
 	globalContainer = &globals;
 	globals.runNoX = true;
 	globals.structuredHeadless = true;
+	globals.computeThreads = options.computeThreads;
 	globals.automaticEndingGame = false;
 	globals.load();
 
@@ -269,6 +272,10 @@ static int play(const Options& options, const fs::path& output)
 	       << ",\"ended_by\":" << Headless::quote(endedBy) << ",\"session_state\":" << int(finalState)
 	       << ",\"executed_ticks\":" << finalTick << ",\"game_ended\":" << (game.isGameEnded ? "true" : "false")
 	       << ",\"timed_out\":" << (timedOut ? "true" : "false") << ",\"desync_flagged\":" << (desync ? "true" : "false")
+	       << ",\"compute_requested_threads\":" << Headless::quote(options.computeThreads ? std::to_string(options.computeThreads) : "auto")
+	       << ",\"compute_resolved_threads\":" << resolveComputeThreadCount(options.computeThreads)
+	       << ",\"compute_threads\":" << game.map.computeExecutor().threadCount()
+	       << ",\"compute_workers\":" << game.map.computeExecutor().threadCount() - 1
 	       << ",\"reloads\":" << reloads << ",\"orders_queued\":" << ordersQueued
 	       << ",\"rtt_ms\":" << rtt / 1000 << ",\"jitter_ms\":" << jitter / 1000
 	       << ",\"wall_seconds\":" << elapsed() << ",\"first_tick_seconds\":" << firstTickAt
@@ -300,12 +307,13 @@ int runTurnClient(int argc, char** argv)
 	{
 		if (argc < 3)
 			throw Usage("usage: --turn-client <assignment.json> --map <file> --out <dir> [--orders-per-second R] "
-			            "[--max-seconds S] [--seed N] [--profile <name>]");
+			            "[--max-seconds S] [--seed N] [--profile <name>] [--compute-threads auto|N]");
 		Options options;
 		options.assignment = argv[2];
 		for (int i = 3; i < argc; i += 2)
 		{
 			const std::string key = argv[i];
+			if (isRemovedComputeOption(key)) throw Usage(key + " has been removed; use --compute-threads auto|N");
 			if (i + 1 >= argc)
 				throw Usage("missing value for " + key);
 			const std::string value = argv[i + 1];
@@ -313,6 +321,8 @@ int runTurnClient(int argc, char** argv)
 				options.map = value;
 			else if (key == "--out")
 				options.out = value;
+			else if (key == "--compute-threads")
+				options.computeThreads = parseComputeThreadCount(value);
 			else if (key == "--profile")
 				options.profile = value;
 			else if (key == "--orders-per-second")

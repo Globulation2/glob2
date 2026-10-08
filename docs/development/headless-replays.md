@@ -223,9 +223,15 @@ Same as `-test-games-nox` but **with GUI** — useful for visually verifying AI 
 ## Verifying a match record
 
 ```sh
-glob2 --verify-match <record.g2mr> --map <map-file> --out <dir> [--profile <name>]
+glob2 --verify-match <record.g2mr> --map <map-file> --out <dir> \
+  [--profile <name>] [--compute-threads auto|N]
 glob2 --sim-version
 ```
+
+`--verify-match` accepts the same compute sizing as game sessions. Its `compute.json`
+records requested, resolved and actual sizing separately from deterministic
+verification results. Headless `--turn-client` also accepts this setting and
+reports sizing in its result telemetry.
 
 `--verify-match` replays a relay match record (the format is in the
 [turn protocol](../multiplayer/turn-protocol.md#match-record)) headlessly and judges the
@@ -452,15 +458,18 @@ that replay floor. Network protocol 51 requires compact-map readers and rejects
 older and newer clients. Background save finalization owns a captured state and
 does not advance simulation; continuation checks must still compare the same
 captured tick, seed and orders. Routing worker availability affects wall time only:
-the serial fallback publishes on the same ticks. Headless `--gradient-workers 0` is the deterministic owner-only seeding and propagation control: the owner computes each periodic and building gradient job when it submits it, and publication keeps its deadline.
+the serial fallback publishes on the same ticks. `--compute-threads 1` is the
+owner-only control; all deferred producers submit to the same executor and the
+owner computes their jobs at joins when there are no workers.
 
 Periodic material, market, guard and clear gradients use the same executor as AI.
 Their immutable inputs are captured at the completed-tick boundary; seeding and
 propagation both execute privately and retain the existing publication deadlines.
-The deprecated positive `--gradient-workers N` selects shared execution and uses
-`N+1` total threads only when `--compute-threads` is absent. Zero keeps gradient
-jobs on the owner. Saving drains private work without publishing it early and
-continues to serialize completed fields with their remaining deadlines.
+`--compute-threads auto|N` controls the shared pool for all sessions; `auto` uses
+reported logical CPU threads (one if unavailable), and N is a positive unsigned
+participant count including the owner. Saving drains
+private work without publishing it early and continues to serialize completed
+fields with their remaining deadlines.
 
 
 Version 139 / simulation revision 21 selects periodic preparation after the whole

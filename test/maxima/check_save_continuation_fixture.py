@@ -23,7 +23,7 @@ def run(binary, saved, output, stop_tick, workers, checkpoint=False):
     output.mkdir(parents=True, exist_ok=False)
     command = [str(binary), "--run-game", "--load-game", str(saved),
                "--ticks", str(stop_tick), "--compute-threads", str(workers),
-               "--compute-experiments", "ai", "--telemetry", "checksums",
+               "--telemetry", "checksums",
                "--output-dir", str(output)]
     if checkpoint:
         command += ["--save", "every:30256"]

@@ -18,11 +18,11 @@ constexpr std::array controllers{AI::NUMBI, AI::CASTOR, AI::WARRUSH,
 constexpr std::array<unsigned, 9> actors{0,1,2,3,4,5,6,7,8};
 constexpr unsigned ticks = 20;
 
-void populate(glob2test::HeadlessGame& fixture, unsigned delay, unsigned workers)
+void populate(glob2test::HeadlessGame& fixture, unsigned delay, unsigned threads)
 {
     auto& game = fixture.game;
     game.gameHeader.setAIOrderDelay(delay);
-    game.map.configureCompute(workers ? workers : 1, workers ? Map::ComputeAI : 0);
+    game.map.configureCompute(threads);
     for (unsigned player : actors)
     {
         const int x = (player % 3) * 40, y = (player / 3) * 40;
@@ -117,12 +117,12 @@ std::string save(Game& game)
     game.save(&output,false,"AI pipeline continuation"); output.flush();
     return memory->takeContents();
 }
-void load(Game& game, const std::string& bytes, unsigned workers)
+void load(Game& game, const std::string& bytes, unsigned threads)
 {
     GAGCore::BinaryInputStream input(new GAGCore::MemoryStreamBackend(bytes.data(),bytes.size()));
     input.seekFromStart(0); REQUIRE(game.load(&input));
     game.setWaitingOnMask(0);
-    game.map.configureCompute(workers ? workers : 1, workers ? Map::ComputeAI : 0);
+    game.map.configureCompute(threads);
 }
 }
 
@@ -134,16 +134,16 @@ TEST_CASE("every shipped controller preserves orders and state across worker cou
     for (unsigned delay=0; delay<=8; ++delay) {
         CAPTURE(delay);
         std::vector<Tick> expected;
-        for (unsigned workers : {0u,1u,4u}) {
-            CAPTURE(workers);
+        for (unsigned threads : {1u,2u,4u,8u}) {
+            CAPTURE(threads);
             setSyncRandSeed(0xA171);
             glob2test::HeadlessGame fixture(glob2test::GameOptions{.wDec=7,.hDec=7,.teams=9,
                 .loadDefaultRace=true,.header=true,.seed=0xA171});
-            populate(fixture,delay,workers);
+            populate(fixture,delay,threads);
             for (unsigned tick=0; tick<ticks; ++tick) {
                 CAPTURE(tick);
                 auto actual=advance(fixture.game);
-                if (!workers) expected.push_back(std::move(actual));
+                if (threads == 1) expected.push_back(std::move(actual));
                 else compare(actual,expected[tick]);
             }
             fixture.game.drainAI();
@@ -153,12 +153,12 @@ TEST_CASE("every shipped controller preserves orders and state across worker cou
 TEST_CASE("save continuation retains controller caches receipts and future commands at pipeline boundaries")
 {
     glob2test::HeadlessGlobals globals;
-    for (unsigned delay=0; delay<=8; ++delay) for (unsigned workers : {0u,1u,4u}) {
-        CAPTURE(delay); CAPTURE(workers);
+    for (unsigned delay=0; delay<=8; ++delay) for (unsigned threads : {1u,2u,4u,8u}) {
+        CAPTURE(delay); CAPTURE(threads);
         setSyncRandSeed(0xA171);
         glob2test::HeadlessGame fixture(glob2test::GameOptions{.wDec=7,.hDec=7,.teams=9,
             .loadDefaultRace=true,.header=true,.seed=0xA171});
-        populate(fixture,delay,workers);
+        populate(fixture,delay,threads);
         std::vector<Tick> expected;
         std::vector<std::pair<unsigned,std::string>> checkpoints;
         for (unsigned tick=0; tick<ticks; ++tick) {
@@ -170,7 +170,7 @@ TEST_CASE("save continuation retains controller caches receipts and future comma
         for (const auto& [start,bytes] : checkpoints) {
             CAPTURE(start);
             GameGUI restored(false);
-            load(restored.game,bytes,workers);
+            load(restored.game,bytes,threads);
             for (unsigned tick=start; tick<ticks; ++tick) {
                 CAPTURE(tick);
                 compare(advance(restored.game),expected[tick]);
@@ -192,7 +192,7 @@ TEST_CASE("pause and repeated boundary calls cannot execute a published command 
         game.gameHeader.setAIConfig(0,Script::config(
             "function step(c){return {type:'workers',building:c.game.buildings({team:c.myTeam})[0],workers:3};}"));
         game.players[0]->makeItAI(AI::JAVASCRIPT);
-        game.map.configureCompute(4,Map::ComputeAI);
+        game.map.configureCompute(4);
         constexpr std::array<unsigned,1> player{0};
         for (unsigned tick=0; tick<=delay; ++tick) {
             auto first=game.prepareAIOrders(player,false)[0].second;
@@ -234,7 +234,7 @@ TEST_CASE("replacement cancels an old output without rejecting identical new wir
     game.gameHeader.setAIConfig(0,Script::config(
         "function step(c){return {type:'workers',building:c.game.buildings({team:c.myTeam})[0],workers:3};}"));
     game.players[0]->makeItAI(AI::JAVASCRIPT);
-    game.map.configureCompute(4,Map::ComputeAI);
+    game.map.configureCompute(4);
     constexpr std::array<unsigned,1> player{0};
     auto old=game.prepareAIOrders(player,false)[0].second;
     REQUIRE(old->getOrderType()==ORDER_MODIFY_BUILDING);

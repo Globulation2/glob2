@@ -146,7 +146,6 @@ bool Building::considerUnitForMaterial(Unit* unit, int wantedMaterial, int* dist
 
 int Building::gatherBringMaterialsCandidates(BringMaterialsCandidate* candidates, int wantedMaterial)
 {
-	owner->map->advanceHiringGradients(this);
 	// The tallies count units, and the same unit is offered every material the
 	// building tries to staff, so start each scan from zero: what the info panel
 	// ends up showing is one coherent pass, for the last material attempted.

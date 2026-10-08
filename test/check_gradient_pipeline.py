@@ -43,7 +43,7 @@ def main():
     assert default['result']['gradient_delay'] == 8
     assert default['result']['gradient_workers'] == default['result']['compute_threads'] - 1
     explicit = execute(binary, ['--load-game',str(initial),'--ticks','32',
-        '--compute-threads','2','--gradient-workers','8'], output/'explicit-shared-size')
+        '--compute-threads','2'], output/'explicit-shared-size')
     assert explicit['result']['compute_threads'] in (1, 2)  # Threadless fallback is supported.
     assert explicit['result']['gradient_workers'] == explicit['result']['compute_threads'] - 1
     # Save with work pending at every offset of the eight-tick pipeline. Compare
@@ -57,10 +57,10 @@ def main():
         for workers in (0,1,2):
             dest = output/f'resumed-{phase}-{workers}'
             execute(binary, ['--load-game',str(checkpoint/'final.game'),'--ticks','80',
-                             '--gradient-workers',str(workers),'--telemetry','checksums','--replay','true'], dest)
+                             '--compute-threads',str(workers + 1),'--telemetry','checksums','--replay','true'], dest)
             ticks = detailed_ticks((dest/'game.replay.checksums').read_bytes())
             assert ticks and all(expected[t] == value for t,value in ticks.items()), (phase, workers)
-    cases = [['--gradient-workers','17'],['--gradient-workers','0','--gradient-delay','0'],
+    cases = [['--compute-threads','4294967296'],['--compute-threads','1','--gradient-delay','0'],
              ['--load-game',str(output/'checkpoint-0/final.game'),'--gradient-delay','3']]
     for index, args in enumerate(cases):
         dest = output/f'rejection-{index}'
@@ -115,7 +115,7 @@ def building_pass(binary, initial, output):
             for workers in (0, 1, 2):
                 dest = output/f'resumed-d{delay}-{phase}-{workers}'
                 resumed = execute(binary, ['--load-game', str(checkpoint/'final.game'), '--ticks', str(RESUME_TICKS),
-                                           '--gradient-workers', str(workers), '--telemetry', 'checksums'], dest)
+                                           '--compute-threads', str(workers + 1), '--telemetry', 'checksums'], dest)
                 assert resumed['result']['resolved']['rules']['buildingGradientDelay'] == delay
                 assert resumed['result']['resolved']['fork'] == []
                 ticks = detailed_ticks((dest/'game.replay.checksums').read_bytes())
@@ -129,7 +129,7 @@ def building_pass(binary, initial, output):
         os.environ['GLOB2_BUILDING_DEPTH'] = mode
         try:
             dest = output/f'depth-{mode}'
-            execute(binary, ['--load-game', str(initial), *fork(4), '--ticks', '1024', '--gradient-workers', '2',
+            execute(binary, ['--load-game', str(initial), *fork(4), '--ticks', '1024', '--compute-threads', '3',
                              '--telemetry', 'checksums'], dest)
         finally:
             del os.environ['GLOB2_BUILDING_DEPTH']
