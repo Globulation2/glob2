@@ -833,7 +833,7 @@ struct BuildingLibraryScreenHarness
 		detail = world.http.pending("/api/v1/buildings/" + id);
 		REQUIRE(detail);
 		detail->reply(404,
-					  nlohmann::json{{"error", {{"code", "not_found"}, {"message", "Not found"}}}});
+					  nlohmann::json{{"code", "not_found"}, {"message", "Not found"}});
 		client.update();
 		CHECK(screen.openedFamily.is_null());
 		CHECK(screen.status.find("signing in through Online") != std::string::npos);
