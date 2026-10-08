@@ -1725,7 +1725,11 @@ modes stay separate. Locally verified historical credit purchases retain their
 original pack amounts with unknown mode. Historical skin cash amounts remain
 unknown. Credit reversals are never used to infer cash refunds. Credits are shown
 in separate product units, including purchased/granted/consumed/returned/reserved.
-Disputes are separate from refunds. Fees, hosting bills, exchange rates and profit
+Disputes are separate from refunds. Payment, refund and dispute-opening times
+come from verified provider facts. If only a closed dispute’s current state is
+available, its closure is initially dated when reconciliation observes it; a
+verified closure webhook replaces that observed timestamp. Fees, hosting bills,
+exchange rates and profit
 are outside this report. Cash is formatted using
 [Stripe charge/refund currency units](https://docs.stripe.com/currencies#special-cases),
 including zero-decimal currencies and the ISK/UGX API exceptions; CSV preserves
