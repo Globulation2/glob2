@@ -1,0 +1,34 @@
+Source: 5430ef31c135667deeb8043c827d79b3fec4cda4; original baseline: d42d3e512.
+Environment/build instructions and preserved input fixtures: ../simple/commands.txt and prior evidence directories.
+Restore evidence under artifacts/resource-growth in the source checkout. Generated diagnostic translation units and JSON compiler/link argument arrays are included here. Build scripts use matching existing release object files and recover flags from archived build logs; adapt dependency paths on other machines. No production object is replaced.
+
+Build diagnostic variants (outside timing):
+python3 docs/.work/build-growth-attribution-v2.py
+python3 docs/.work/build-growth-attribution-controls.py
+python3 docs/.work/build-growth-statistics-candidate.py
+python3 docs/.work/build-growth-copy-candidate.py
+python3 docs/.work/build-growth-final-controls.py
+python3 docs/.work/build-growth-legacy-copy.py
+python3 docs/.work/build-growth-direct-owner.py
+
+LD_LIBRARY_PATH=/tmp/glob2-sdl3/prefix/lib is set for all engine/test runs.
+Original wrapper invocations, commands and failures are recorded in cpuset*.json and governor*.json. The final successful campaigns use:
+python3 docs/.work/run_with_shared_host_cpuset.py --audit OUTPUT/cpuset.json --cpus 0-3 --reserve-cpus 0-3,16-19 --timeout-seconds 2400 -- python3 test/run_with_benchmark_governor.py --audit OUTPUT/governor.json --cpus 0 1 2 3 -- COMMAND
+
+COMMAND selections (separate output directories required for fresh reruns):
+python3 docs/.work/run-growth-attribution-v2.py writes
+bash docs/.work/resume-growth-attribution-v2.sh
+python3 docs/.work/run-growth-direct-owner.py
+
+Correctness, outside timing:
+artifacts/resource-growth/attribution-v2/batched-statistics-tests --test-suite=ResourceGrowth
+artifacts/resource-growth/attribution-v2/batched-statistics-tests --test-case='batched statistics match reference*'
+artifacts/resource-growth/attribution-v2/bulk-copy-tests --test-suite=WorldSnapshot
+artifacts/resource-growth/attribution-v2/direct-owner-tests --test-suite=ResourceGrowth
+python3 test/benchmark_resource_growth.py artifacts/resource-growth/attribution-v2/direct-owner-bulk artifacts/resource-growth/attribution-v2/eager-verify-manifest.json --output OUTPUT/direct-determinism --delays 8 --threads 4 --verify
+
+The copy test has one expected old copy-byte-count assertion failure. See README. Both count-only and snapshot control cases run in matched-controls-tests; env paths and case selection are in resume-growth-attribution-v2.sh. The eager-join attempt is deliberately excluded as a clean placement control.
+
+Analysis:
+python3 docs/.work/summarize-growth-attribution-v2.py
+python3 docs/.work/report-growth-attribution-v2.py

@@ -1,0 +1,1324 @@
+{
+  "samples": [
+    {
+      "capture_ns": 1773738,
+      "captures": 256,
+      "copied_bytes": 9818112,
+      "existing_cadence": 1,
+      "final_food": 38970,
+      "growth": false,
+      "repeat": -1,
+      "size": 256
+    },
+    {
+      "capture_ns": 1756399,
+      "captures": 256,
+      "copied_bytes": 9818112,
+      "existing_cadence": 1,
+      "final_food": 38970,
+      "growth": true,
+      "repeat": -1,
+      "size": 256
+    },
+    {
+      "capture_ns": 1863628,
+      "captures": 256,
+      "copied_bytes": 9818112,
+      "existing_cadence": 1,
+      "final_food": 38970,
+      "growth": true,
+      "repeat": 0,
+      "size": 256
+    },
+    {
+      "capture_ns": 1862688,
+      "captures": 256,
+      "copied_bytes": 9818112,
+      "existing_cadence": 1,
+      "final_food": 38970,
+      "growth": false,
+      "repeat": 0,
+      "size": 256
+    },
+    {
+      "capture_ns": 1843298,
+      "captures": 256,
+      "copied_bytes": 9818112,
+      "existing_cadence": 1,
+      "final_food": 38970,
+      "growth": false,
+      "repeat": 1,
+      "size": 256
+    },
+    {
+      "capture_ns": 1567700,
+      "captures": 256,
+      "copied_bytes": 9818112,
+      "existing_cadence": 1,
+      "final_food": 38970,
+      "growth": true,
+      "repeat": 1,
+      "size": 256
+    },
+    {
+      "capture_ns": 1586750,
+      "captures": 256,
+      "copied_bytes": 9818112,
+      "existing_cadence": 1,
+      "final_food": 38970,
+      "growth": true,
+      "repeat": 2,
+      "size": 256
+    },
+    {
+      "capture_ns": 1164233,
+      "captures": 256,
+      "copied_bytes": 9818112,
+      "existing_cadence": 1,
+      "final_food": 38970,
+      "growth": false,
+      "repeat": 2,
+      "size": 256
+    },
+    {
+      "capture_ns": 1194992,
+      "captures": 256,
+      "copied_bytes": 9818112,
+      "existing_cadence": 1,
+      "final_food": 38970,
+      "growth": false,
+      "repeat": 3,
+      "size": 256
+    },
+    {
+      "capture_ns": 1387071,
+      "captures": 256,
+      "copied_bytes": 9818112,
+      "existing_cadence": 1,
+      "final_food": 38970,
+      "growth": true,
+      "repeat": 3,
+      "size": 256
+    },
+    {
+      "capture_ns": 1401062,
+      "captures": 256,
+      "copied_bytes": 9818112,
+      "existing_cadence": 1,
+      "final_food": 38970,
+      "growth": true,
+      "repeat": 4,
+      "size": 256
+    },
+    {
+      "capture_ns": 1380192,
+      "captures": 256,
+      "copied_bytes": 9818112,
+      "existing_cadence": 1,
+      "final_food": 38970,
+      "growth": false,
+      "repeat": 4,
+      "size": 256
+    },
+    {
+      "capture_ns": 1386191,
+      "captures": 256,
+      "copied_bytes": 9818112,
+      "existing_cadence": 1,
+      "final_food": 38970,
+      "growth": false,
+      "repeat": 5,
+      "size": 256
+    },
+    {
+      "capture_ns": 1394681,
+      "captures": 256,
+      "copied_bytes": 9818112,
+      "existing_cadence": 1,
+      "final_food": 38970,
+      "growth": true,
+      "repeat": 5,
+      "size": 256
+    },
+    {
+      "capture_ns": 1385952,
+      "captures": 256,
+      "copied_bytes": 9818112,
+      "existing_cadence": 1,
+      "final_food": 38970,
+      "growth": true,
+      "repeat": 6,
+      "size": 256
+    },
+    {
+      "capture_ns": 1393592,
+      "captures": 256,
+      "copied_bytes": 9818112,
+      "existing_cadence": 1,
+      "final_food": 38970,
+      "growth": false,
+      "repeat": 6,
+      "size": 256
+    },
+    {
+      "capture_ns": 1386392,
+      "captures": 256,
+      "copied_bytes": 9818112,
+      "existing_cadence": 1,
+      "final_food": 38970,
+      "growth": false,
+      "repeat": 7,
+      "size": 256
+    },
+    {
+      "capture_ns": 1401523,
+      "captures": 256,
+      "copied_bytes": 9818112,
+      "existing_cadence": 1,
+      "final_food": 38970,
+      "growth": true,
+      "repeat": 7,
+      "size": 256
+    },
+    {
+      "capture_ns": 1393752,
+      "captures": 256,
+      "copied_bytes": 9818112,
+      "existing_cadence": 1,
+      "final_food": 38970,
+      "growth": true,
+      "repeat": 8,
+      "size": 256
+    },
+    {
+      "capture_ns": 1398352,
+      "captures": 256,
+      "copied_bytes": 9818112,
+      "existing_cadence": 1,
+      "final_food": 38970,
+      "growth": false,
+      "repeat": 8,
+      "size": 256
+    },
+    {
+      "capture_ns": 1384771,
+      "captures": 256,
+      "copied_bytes": 9818112,
+      "existing_cadence": 1,
+      "final_food": 38970,
+      "growth": false,
+      "repeat": 9,
+      "size": 256
+    },
+    {
+      "capture_ns": 1393971,
+      "captures": 256,
+      "copied_bytes": 9818112,
+      "existing_cadence": 1,
+      "final_food": 38970,
+      "growth": true,
+      "repeat": 9,
+      "size": 256
+    },
+    {
+      "capture_ns": 829755,
+      "captures": 64,
+      "copied_bytes": 5864448,
+      "existing_cadence": 4,
+      "final_food": 38970,
+      "growth": false,
+      "repeat": -1,
+      "size": 256
+    },
+    {
+      "capture_ns": 1395552,
+      "captures": 256,
+      "copied_bytes": 9818112,
+      "existing_cadence": 4,
+      "final_food": 38970,
+      "growth": true,
+      "repeat": -1,
+      "size": 256
+    },
+    {
+      "capture_ns": 1401972,
+      "captures": 256,
+      "copied_bytes": 9818112,
+      "existing_cadence": 4,
+      "final_food": 38970,
+      "growth": true,
+      "repeat": 0,
+      "size": 256
+    },
+    {
+      "capture_ns": 821946,
+      "captures": 64,
+      "copied_bytes": 5864448,
+      "existing_cadence": 4,
+      "final_food": 38970,
+      "growth": false,
+      "repeat": 0,
+      "size": 256
+    },
+    {
+      "capture_ns": 833785,
+      "captures": 64,
+      "copied_bytes": 5864448,
+      "existing_cadence": 4,
+      "final_food": 38970,
+      "growth": false,
+      "repeat": 1,
+      "size": 256
+    },
+    {
+      "capture_ns": 1397132,
+      "captures": 256,
+      "copied_bytes": 9818112,
+      "existing_cadence": 4,
+      "final_food": 38970,
+      "growth": true,
+      "repeat": 1,
+      "size": 256
+    },
+    {
+      "capture_ns": 1386921,
+      "captures": 256,
+      "copied_bytes": 9818112,
+      "existing_cadence": 4,
+      "final_food": 38970,
+      "growth": true,
+      "repeat": 2,
+      "size": 256
+    },
+    {
+      "capture_ns": 839484,
+      "captures": 64,
+      "copied_bytes": 5864448,
+      "existing_cadence": 4,
+      "final_food": 38970,
+      "growth": false,
+      "repeat": 2,
+      "size": 256
+    },
+    {
+      "capture_ns": 833865,
+      "captures": 64,
+      "copied_bytes": 5864448,
+      "existing_cadence": 4,
+      "final_food": 38970,
+      "growth": false,
+      "repeat": 3,
+      "size": 256
+    },
+    {
+      "capture_ns": 1392471,
+      "captures": 256,
+      "copied_bytes": 9818112,
+      "existing_cadence": 4,
+      "final_food": 38970,
+      "growth": true,
+      "repeat": 3,
+      "size": 256
+    },
+    {
+      "capture_ns": 1409691,
+      "captures": 256,
+      "copied_bytes": 9818112,
+      "existing_cadence": 4,
+      "final_food": 38970,
+      "growth": true,
+      "repeat": 4,
+      "size": 256
+    },
+    {
+      "capture_ns": 838675,
+      "captures": 64,
+      "copied_bytes": 5864448,
+      "existing_cadence": 4,
+      "final_food": 38970,
+      "growth": false,
+      "repeat": 4,
+      "size": 256
+    },
+    {
+      "capture_ns": 838605,
+      "captures": 64,
+      "copied_bytes": 5864448,
+      "existing_cadence": 4,
+      "final_food": 38970,
+      "growth": false,
+      "repeat": 5,
+      "size": 256
+    },
+    {
+      "capture_ns": 1403432,
+      "captures": 256,
+      "copied_bytes": 9818112,
+      "existing_cadence": 4,
+      "final_food": 38970,
+      "growth": true,
+      "repeat": 5,
+      "size": 256
+    },
+    {
+      "capture_ns": 1439470,
+      "captures": 256,
+      "copied_bytes": 9818112,
+      "existing_cadence": 4,
+      "final_food": 38970,
+      "growth": true,
+      "repeat": 6,
+      "size": 256
+    },
+    {
+      "capture_ns": 843325,
+      "captures": 64,
+      "copied_bytes": 5864448,
+      "existing_cadence": 4,
+      "final_food": 38970,
+      "growth": false,
+      "repeat": 6,
+      "size": 256
+    },
+    {
+      "capture_ns": 948114,
+      "captures": 64,
+      "copied_bytes": 5864448,
+      "existing_cadence": 4,
+      "final_food": 38970,
+      "growth": false,
+      "repeat": 7,
+      "size": 256
+    },
+    {
+      "capture_ns": 1459191,
+      "captures": 256,
+      "copied_bytes": 9818112,
+      "existing_cadence": 4,
+      "final_food": 38970,
+      "growth": true,
+      "repeat": 7,
+      "size": 256
+    },
+    {
+      "capture_ns": 1183413,
+      "captures": 256,
+      "copied_bytes": 9818112,
+      "existing_cadence": 4,
+      "final_food": 38970,
+      "growth": true,
+      "repeat": 8,
+      "size": 256
+    },
+    {
+      "capture_ns": 737735,
+      "captures": 64,
+      "copied_bytes": 5864448,
+      "existing_cadence": 4,
+      "final_food": 38970,
+      "growth": false,
+      "repeat": 8,
+      "size": 256
+    },
+    {
+      "capture_ns": 791655,
+      "captures": 64,
+      "copied_bytes": 5864448,
+      "existing_cadence": 4,
+      "final_food": 38970,
+      "growth": false,
+      "repeat": 9,
+      "size": 256
+    },
+    {
+      "capture_ns": 1197722,
+      "captures": 256,
+      "copied_bytes": 9818112,
+      "existing_cadence": 4,
+      "final_food": 38970,
+      "growth": true,
+      "repeat": 9,
+      "size": 256
+    },
+    {
+      "capture_ns": 413207,
+      "captures": 8,
+      "copied_bytes": 2826240,
+      "existing_cadence": 32,
+      "final_food": 38970,
+      "growth": false,
+      "repeat": -1,
+      "size": 256
+    },
+    {
+      "capture_ns": 1210612,
+      "captures": 256,
+      "copied_bytes": 9818112,
+      "existing_cadence": 32,
+      "final_food": 38970,
+      "growth": true,
+      "repeat": -1,
+      "size": 256
+    },
+    {
+      "capture_ns": 1284502,
+      "captures": 256,
+      "copied_bytes": 9818112,
+      "existing_cadence": 32,
+      "final_food": 38970,
+      "growth": true,
+      "repeat": 0,
+      "size": 256
+    },
+    {
+      "capture_ns": 396737,
+      "captures": 8,
+      "copied_bytes": 2826240,
+      "existing_cadence": 32,
+      "final_food": 38970,
+      "growth": false,
+      "repeat": 0,
+      "size": 256
+    },
+    {
+      "capture_ns": 376737,
+      "captures": 8,
+      "copied_bytes": 2826240,
+      "existing_cadence": 32,
+      "final_food": 38970,
+      "growth": false,
+      "repeat": 1,
+      "size": 256
+    },
+    {
+      "capture_ns": 1173933,
+      "captures": 256,
+      "copied_bytes": 9818112,
+      "existing_cadence": 32,
+      "final_food": 38970,
+      "growth": true,
+      "repeat": 1,
+      "size": 256
+    },
+    {
+      "capture_ns": 1214942,
+      "captures": 256,
+      "copied_bytes": 9818112,
+      "existing_cadence": 32,
+      "final_food": 38970,
+      "growth": true,
+      "repeat": 2,
+      "size": 256
+    },
+    {
+      "capture_ns": 410377,
+      "captures": 8,
+      "copied_bytes": 2826240,
+      "existing_cadence": 32,
+      "final_food": 38970,
+      "growth": false,
+      "repeat": 2,
+      "size": 256
+    },
+    {
+      "capture_ns": 515617,
+      "captures": 8,
+      "copied_bytes": 2826240,
+      "existing_cadence": 32,
+      "final_food": 38970,
+      "growth": false,
+      "repeat": 3,
+      "size": 256
+    },
+    {
+      "capture_ns": 1187903,
+      "captures": 256,
+      "copied_bytes": 9818112,
+      "existing_cadence": 32,
+      "final_food": 38970,
+      "growth": true,
+      "repeat": 3,
+      "size": 256
+    },
+    {
+      "capture_ns": 1206583,
+      "captures": 256,
+      "copied_bytes": 9818112,
+      "existing_cadence": 32,
+      "final_food": 38970,
+      "growth": true,
+      "repeat": 4,
+      "size": 256
+    },
+    {
+      "capture_ns": 408179,
+      "captures": 8,
+      "copied_bytes": 2826240,
+      "existing_cadence": 32,
+      "final_food": 38970,
+      "growth": false,
+      "repeat": 4,
+      "size": 256
+    },
+    {
+      "capture_ns": 412517,
+      "captures": 8,
+      "copied_bytes": 2826240,
+      "existing_cadence": 32,
+      "final_food": 38970,
+      "growth": false,
+      "repeat": 5,
+      "size": 256
+    },
+    {
+      "capture_ns": 1205824,
+      "captures": 256,
+      "copied_bytes": 9818112,
+      "existing_cadence": 32,
+      "final_food": 38970,
+      "growth": true,
+      "repeat": 5,
+      "size": 256
+    },
+    {
+      "capture_ns": 1271914,
+      "captures": 256,
+      "copied_bytes": 9818112,
+      "existing_cadence": 32,
+      "final_food": 38970,
+      "growth": true,
+      "repeat": 6,
+      "size": 256
+    },
+    {
+      "capture_ns": 432077,
+      "captures": 8,
+      "copied_bytes": 2826240,
+      "existing_cadence": 32,
+      "final_food": 38970,
+      "growth": false,
+      "repeat": 6,
+      "size": 256
+    },
+    {
+      "capture_ns": 410928,
+      "captures": 8,
+      "copied_bytes": 2826240,
+      "existing_cadence": 32,
+      "final_food": 38970,
+      "growth": false,
+      "repeat": 7,
+      "size": 256
+    },
+    {
+      "capture_ns": 1424741,
+      "captures": 256,
+      "copied_bytes": 9818112,
+      "existing_cadence": 32,
+      "final_food": 38970,
+      "growth": true,
+      "repeat": 7,
+      "size": 256
+    },
+    {
+      "capture_ns": 1435161,
+      "captures": 256,
+      "copied_bytes": 9818112,
+      "existing_cadence": 32,
+      "final_food": 38970,
+      "growth": true,
+      "repeat": 8,
+      "size": 256
+    },
+    {
+      "capture_ns": 433698,
+      "captures": 8,
+      "copied_bytes": 2826240,
+      "existing_cadence": 32,
+      "final_food": 38970,
+      "growth": false,
+      "repeat": 8,
+      "size": 256
+    },
+    {
+      "capture_ns": 427878,
+      "captures": 8,
+      "copied_bytes": 2826240,
+      "existing_cadence": 32,
+      "final_food": 38970,
+      "growth": false,
+      "repeat": 9,
+      "size": 256
+    },
+    {
+      "capture_ns": 1390311,
+      "captures": 256,
+      "copied_bytes": 9818112,
+      "existing_cadence": 32,
+      "final_food": 38970,
+      "growth": true,
+      "repeat": 9,
+      "size": 256
+    },
+    {
+      "capture_ns": 5000379,
+      "captures": 256,
+      "copied_bytes": 21132288,
+      "existing_cadence": 1,
+      "final_food": 160244,
+      "growth": false,
+      "repeat": -1,
+      "size": 512
+    },
+    {
+      "capture_ns": 5139288,
+      "captures": 256,
+      "copied_bytes": 21132288,
+      "existing_cadence": 1,
+      "final_food": 160244,
+      "growth": true,
+      "repeat": -1,
+      "size": 512
+    },
+    {
+      "capture_ns": 5014380,
+      "captures": 256,
+      "copied_bytes": 21132288,
+      "existing_cadence": 1,
+      "final_food": 160244,
+      "growth": true,
+      "repeat": 0,
+      "size": 512
+    },
+    {
+      "capture_ns": 5014060,
+      "captures": 256,
+      "copied_bytes": 21132288,
+      "existing_cadence": 1,
+      "final_food": 160244,
+      "growth": false,
+      "repeat": 0,
+      "size": 512
+    },
+    {
+      "capture_ns": 5020449,
+      "captures": 256,
+      "copied_bytes": 21132288,
+      "existing_cadence": 1,
+      "final_food": 160244,
+      "growth": false,
+      "repeat": 1,
+      "size": 512
+    },
+    {
+      "capture_ns": 5024769,
+      "captures": 256,
+      "copied_bytes": 21132288,
+      "existing_cadence": 1,
+      "final_food": 160244,
+      "growth": true,
+      "repeat": 1,
+      "size": 512
+    },
+    {
+      "capture_ns": 4944969,
+      "captures": 256,
+      "copied_bytes": 21132288,
+      "existing_cadence": 1,
+      "final_food": 160244,
+      "growth": true,
+      "repeat": 2,
+      "size": 512
+    },
+    {
+      "capture_ns": 5816453,
+      "captures": 256,
+      "copied_bytes": 21132288,
+      "existing_cadence": 1,
+      "final_food": 160244,
+      "growth": false,
+      "repeat": 2,
+      "size": 512
+    },
+    {
+      "capture_ns": 5763836,
+      "captures": 256,
+      "copied_bytes": 21132288,
+      "existing_cadence": 1,
+      "final_food": 160244,
+      "growth": false,
+      "repeat": 3,
+      "size": 512
+    },
+    {
+      "capture_ns": 5865835,
+      "captures": 256,
+      "copied_bytes": 21132288,
+      "existing_cadence": 1,
+      "final_food": 160244,
+      "growth": true,
+      "repeat": 3,
+      "size": 512
+    },
+    {
+      "capture_ns": 5810134,
+      "captures": 256,
+      "copied_bytes": 21132288,
+      "existing_cadence": 1,
+      "final_food": 160244,
+      "growth": true,
+      "repeat": 4,
+      "size": 512
+    },
+    {
+      "capture_ns": 5856634,
+      "captures": 256,
+      "copied_bytes": 21132288,
+      "existing_cadence": 1,
+      "final_food": 160244,
+      "growth": false,
+      "repeat": 4,
+      "size": 512
+    },
+    {
+      "capture_ns": 5047589,
+      "captures": 256,
+      "copied_bytes": 21132288,
+      "existing_cadence": 1,
+      "final_food": 160244,
+      "growth": false,
+      "repeat": 5,
+      "size": 512
+    },
+    {
+      "capture_ns": 4977549,
+      "captures": 256,
+      "copied_bytes": 21132288,
+      "existing_cadence": 1,
+      "final_food": 160244,
+      "growth": true,
+      "repeat": 5,
+      "size": 512
+    },
+    {
+      "capture_ns": 5898584,
+      "captures": 256,
+      "copied_bytes": 21132288,
+      "existing_cadence": 1,
+      "final_food": 160244,
+      "growth": true,
+      "repeat": 6,
+      "size": 512
+    },
+    {
+      "capture_ns": 5923855,
+      "captures": 256,
+      "copied_bytes": 21132288,
+      "existing_cadence": 1,
+      "final_food": 160244,
+      "growth": false,
+      "repeat": 6,
+      "size": 512
+    },
+    {
+      "capture_ns": 5886974,
+      "captures": 256,
+      "copied_bytes": 21132288,
+      "existing_cadence": 1,
+      "final_food": 160244,
+      "growth": false,
+      "repeat": 7,
+      "size": 512
+    },
+    {
+      "capture_ns": 5729364,
+      "captures": 256,
+      "copied_bytes": 21132288,
+      "existing_cadence": 1,
+      "final_food": 160244,
+      "growth": true,
+      "repeat": 7,
+      "size": 512
+    },
+    {
+      "capture_ns": 5763694,
+      "captures": 256,
+      "copied_bytes": 21132288,
+      "existing_cadence": 1,
+      "final_food": 160244,
+      "growth": true,
+      "repeat": 8,
+      "size": 512
+    },
+    {
+      "capture_ns": 5795554,
+      "captures": 256,
+      "copied_bytes": 21132288,
+      "existing_cadence": 1,
+      "final_food": 160244,
+      "growth": false,
+      "repeat": 8,
+      "size": 512
+    },
+    {
+      "capture_ns": 5871343,
+      "captures": 256,
+      "copied_bytes": 21132288,
+      "existing_cadence": 1,
+      "final_food": 160244,
+      "growth": false,
+      "repeat": 9,
+      "size": 512
+    },
+    {
+      "capture_ns": 5947322,
+      "captures": 256,
+      "copied_bytes": 21132288,
+      "existing_cadence": 1,
+      "final_food": 160244,
+      "growth": true,
+      "repeat": 9,
+      "size": 512
+    },
+    {
+      "capture_ns": 4629782,
+      "captures": 64,
+      "copied_bytes": 13467648,
+      "existing_cadence": 4,
+      "final_food": 160244,
+      "growth": false,
+      "repeat": -1,
+      "size": 512
+    },
+    {
+      "capture_ns": 5801486,
+      "captures": 256,
+      "copied_bytes": 21132288,
+      "existing_cadence": 4,
+      "final_food": 160244,
+      "growth": true,
+      "repeat": -1,
+      "size": 512
+    },
+    {
+      "capture_ns": 4955960,
+      "captures": 256,
+      "copied_bytes": 21132288,
+      "existing_cadence": 4,
+      "final_food": 160244,
+      "growth": true,
+      "repeat": 0,
+      "size": 512
+    },
+    {
+      "capture_ns": 4029636,
+      "captures": 64,
+      "copied_bytes": 13467648,
+      "existing_cadence": 4,
+      "final_food": 160244,
+      "growth": false,
+      "repeat": 0,
+      "size": 512
+    },
+    {
+      "capture_ns": 3895436,
+      "captures": 64,
+      "copied_bytes": 13467648,
+      "existing_cadence": 4,
+      "final_food": 160244,
+      "growth": false,
+      "repeat": 1,
+      "size": 512
+    },
+    {
+      "capture_ns": 5008511,
+      "captures": 256,
+      "copied_bytes": 21132288,
+      "existing_cadence": 4,
+      "final_food": 160244,
+      "growth": true,
+      "repeat": 1,
+      "size": 512
+    },
+    {
+      "capture_ns": 5035529,
+      "captures": 256,
+      "copied_bytes": 21132288,
+      "existing_cadence": 4,
+      "final_food": 160244,
+      "growth": true,
+      "repeat": 2,
+      "size": 512
+    },
+    {
+      "capture_ns": 4000185,
+      "captures": 64,
+      "copied_bytes": 13467648,
+      "existing_cadence": 4,
+      "final_food": 160244,
+      "growth": false,
+      "repeat": 2,
+      "size": 512
+    },
+    {
+      "capture_ns": 4066565,
+      "captures": 64,
+      "copied_bytes": 13467648,
+      "existing_cadence": 4,
+      "final_food": 160244,
+      "growth": false,
+      "repeat": 3,
+      "size": 512
+    },
+    {
+      "capture_ns": 4968749,
+      "captures": 256,
+      "copied_bytes": 21132288,
+      "existing_cadence": 4,
+      "final_food": 160244,
+      "growth": true,
+      "repeat": 3,
+      "size": 512
+    },
+    {
+      "capture_ns": 5000280,
+      "captures": 256,
+      "copied_bytes": 21132288,
+      "existing_cadence": 4,
+      "final_food": 160244,
+      "growth": true,
+      "repeat": 4,
+      "size": 512
+    },
+    {
+      "capture_ns": 3937836,
+      "captures": 64,
+      "copied_bytes": 13467648,
+      "existing_cadence": 4,
+      "final_food": 160244,
+      "growth": false,
+      "repeat": 4,
+      "size": 512
+    },
+    {
+      "capture_ns": 4617942,
+      "captures": 64,
+      "copied_bytes": 13467648,
+      "existing_cadence": 4,
+      "final_food": 160244,
+      "growth": false,
+      "repeat": 5,
+      "size": 512
+    },
+    {
+      "capture_ns": 5785594,
+      "captures": 256,
+      "copied_bytes": 21132288,
+      "existing_cadence": 4,
+      "final_food": 160244,
+      "growth": true,
+      "repeat": 5,
+      "size": 512
+    },
+    {
+      "capture_ns": 5907603,
+      "captures": 256,
+      "copied_bytes": 21132288,
+      "existing_cadence": 4,
+      "final_food": 160244,
+      "growth": true,
+      "repeat": 6,
+      "size": 512
+    },
+    {
+      "capture_ns": 4103285,
+      "captures": 64,
+      "copied_bytes": 13467648,
+      "existing_cadence": 4,
+      "final_food": 160244,
+      "growth": false,
+      "repeat": 6,
+      "size": 512
+    },
+    {
+      "capture_ns": 4037705,
+      "captures": 64,
+      "copied_bytes": 13467648,
+      "existing_cadence": 4,
+      "final_food": 160244,
+      "growth": false,
+      "repeat": 7,
+      "size": 512
+    },
+    {
+      "capture_ns": 4946919,
+      "captures": 256,
+      "copied_bytes": 21132288,
+      "existing_cadence": 4,
+      "final_food": 160244,
+      "growth": true,
+      "repeat": 7,
+      "size": 512
+    },
+    {
+      "capture_ns": 4964521,
+      "captures": 256,
+      "copied_bytes": 21132288,
+      "existing_cadence": 4,
+      "final_food": 160244,
+      "growth": true,
+      "repeat": 8,
+      "size": 512
+    },
+    {
+      "capture_ns": 3945415,
+      "captures": 64,
+      "copied_bytes": 13467648,
+      "existing_cadence": 4,
+      "final_food": 160244,
+      "growth": false,
+      "repeat": 8,
+      "size": 512
+    },
+    {
+      "capture_ns": 3920977,
+      "captures": 64,
+      "copied_bytes": 13467648,
+      "existing_cadence": 4,
+      "final_food": 160244,
+      "growth": false,
+      "repeat": 9,
+      "size": 512
+    },
+    {
+      "capture_ns": 5042378,
+      "captures": 256,
+      "copied_bytes": 21132288,
+      "existing_cadence": 4,
+      "final_food": 160244,
+      "growth": true,
+      "repeat": 9,
+      "size": 512
+    },
+    {
+      "capture_ns": 3515557,
+      "captures": 8,
+      "copied_bytes": 8309760,
+      "existing_cadence": 32,
+      "final_food": 160244,
+      "growth": false,
+      "repeat": -1,
+      "size": 512
+    },
+    {
+      "capture_ns": 4963470,
+      "captures": 256,
+      "copied_bytes": 21132288,
+      "existing_cadence": 32,
+      "final_food": 160244,
+      "growth": true,
+      "repeat": -1,
+      "size": 512
+    },
+    {
+      "capture_ns": 5006809,
+      "captures": 256,
+      "copied_bytes": 21132288,
+      "existing_cadence": 32,
+      "final_food": 160244,
+      "growth": true,
+      "repeat": 0,
+      "size": 512
+    },
+    {
+      "capture_ns": 4089743,
+      "captures": 8,
+      "copied_bytes": 8309760,
+      "existing_cadence": 32,
+      "final_food": 160244,
+      "growth": false,
+      "repeat": 0,
+      "size": 512
+    },
+    {
+      "capture_ns": 4148475,
+      "captures": 8,
+      "copied_bytes": 8309760,
+      "existing_cadence": 32,
+      "final_food": 160244,
+      "growth": false,
+      "repeat": 1,
+      "size": 512
+    },
+    {
+      "capture_ns": 5737416,
+      "captures": 256,
+      "copied_bytes": 21132288,
+      "existing_cadence": 32,
+      "final_food": 160244,
+      "growth": true,
+      "repeat": 1,
+      "size": 512
+    },
+    {
+      "capture_ns": 5782406,
+      "captures": 256,
+      "copied_bytes": 21132288,
+      "existing_cadence": 32,
+      "final_food": 160244,
+      "growth": true,
+      "repeat": 2,
+      "size": 512
+    },
+    {
+      "capture_ns": 4025695,
+      "captures": 8,
+      "copied_bytes": 8309760,
+      "existing_cadence": 32,
+      "final_food": 160244,
+      "growth": false,
+      "repeat": 2,
+      "size": 512
+    },
+    {
+      "capture_ns": 4112374,
+      "captures": 8,
+      "copied_bytes": 8309760,
+      "existing_cadence": 32,
+      "final_food": 160244,
+      "growth": false,
+      "repeat": 3,
+      "size": 512
+    },
+    {
+      "capture_ns": 5814964,
+      "captures": 256,
+      "copied_bytes": 21132288,
+      "existing_cadence": 32,
+      "final_food": 160244,
+      "growth": true,
+      "repeat": 3,
+      "size": 512
+    },
+    {
+      "capture_ns": 5750676,
+      "captures": 256,
+      "copied_bytes": 21132288,
+      "existing_cadence": 32,
+      "final_food": 160244,
+      "growth": true,
+      "repeat": 4,
+      "size": 512
+    },
+    {
+      "capture_ns": 4111376,
+      "captures": 8,
+      "copied_bytes": 8309760,
+      "existing_cadence": 32,
+      "final_food": 160244,
+      "growth": false,
+      "repeat": 4,
+      "size": 512
+    },
+    {
+      "capture_ns": 4035954,
+      "captures": 8,
+      "copied_bytes": 8309760,
+      "existing_cadence": 32,
+      "final_food": 160244,
+      "growth": false,
+      "repeat": 5,
+      "size": 512
+    },
+    {
+      "capture_ns": 5803604,
+      "captures": 256,
+      "copied_bytes": 21132288,
+      "existing_cadence": 32,
+      "final_food": 160244,
+      "growth": true,
+      "repeat": 5,
+      "size": 512
+    },
+    {
+      "capture_ns": 5794614,
+      "captures": 256,
+      "copied_bytes": 21132288,
+      "existing_cadence": 32,
+      "final_food": 160244,
+      "growth": true,
+      "repeat": 6,
+      "size": 512
+    },
+    {
+      "capture_ns": 4064616,
+      "captures": 8,
+      "copied_bytes": 8309760,
+      "existing_cadence": 32,
+      "final_food": 160244,
+      "growth": false,
+      "repeat": 6,
+      "size": 512
+    },
+    {
+      "capture_ns": 4069305,
+      "captures": 8,
+      "copied_bytes": 8309760,
+      "existing_cadence": 32,
+      "final_food": 160244,
+      "growth": false,
+      "repeat": 7,
+      "size": 512
+    },
+    {
+      "capture_ns": 4978939,
+      "captures": 256,
+      "copied_bytes": 21132288,
+      "existing_cadence": 32,
+      "final_food": 160244,
+      "growth": true,
+      "repeat": 7,
+      "size": 512
+    },
+    {
+      "capture_ns": 4965399,
+      "captures": 256,
+      "copied_bytes": 21132288,
+      "existing_cadence": 32,
+      "final_food": 160244,
+      "growth": true,
+      "repeat": 8,
+      "size": 512
+    },
+    {
+      "capture_ns": 3626729,
+      "captures": 8,
+      "copied_bytes": 8309760,
+      "existing_cadence": 32,
+      "final_food": 160244,
+      "growth": false,
+      "repeat": 8,
+      "size": 512
+    },
+    {
+      "capture_ns": 3496827,
+      "captures": 8,
+      "copied_bytes": 8309760,
+      "existing_cadence": 32,
+      "final_food": 160244,
+      "growth": false,
+      "repeat": 9,
+      "size": 512
+    },
+    {
+      "capture_ns": 4995369,
+      "captures": 256,
+      "copied_bytes": 21132288,
+      "existing_cadence": 32,
+      "final_food": 160244,
+      "growth": true,
+      "repeat": 9,
+      "size": 512
+    }
+  ]
+}

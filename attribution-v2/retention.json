@@ -1,0 +1,796 @@
+{
+  "samples": [
+    {
+      "capture_ns": 757446,
+      "captures": 256,
+      "copied_bytes": 6868992,
+      "final_food": 38970,
+      "repeat": -1,
+      "retained": 0,
+      "size": 256
+    },
+    {
+      "capture_ns": 766925,
+      "captures": 256,
+      "copied_bytes": 6868992,
+      "final_food": 38970,
+      "repeat": -1,
+      "retained": 1,
+      "size": 256
+    },
+    {
+      "capture_ns": 1323782,
+      "captures": 256,
+      "copied_bytes": 12493824,
+      "final_food": 38970,
+      "repeat": -1,
+      "retained": 4,
+      "size": 256
+    },
+    {
+      "capture_ns": 2314036,
+      "captures": 256,
+      "copied_bytes": 16825344,
+      "final_food": 38970,
+      "repeat": -1,
+      "retained": 8,
+      "size": 256
+    },
+    {
+      "capture_ns": 761486,
+      "captures": 256,
+      "copied_bytes": 6868992,
+      "final_food": 38970,
+      "repeat": 0,
+      "retained": 1,
+      "size": 256
+    },
+    {
+      "capture_ns": 1334972,
+      "captures": 256,
+      "copied_bytes": 12493824,
+      "final_food": 38970,
+      "repeat": 0,
+      "retained": 4,
+      "size": 256
+    },
+    {
+      "capture_ns": 2284406,
+      "captures": 256,
+      "copied_bytes": 16825344,
+      "final_food": 38970,
+      "repeat": 0,
+      "retained": 8,
+      "size": 256
+    },
+    {
+      "capture_ns": 762495,
+      "captures": 256,
+      "copied_bytes": 6868992,
+      "final_food": 38970,
+      "repeat": 0,
+      "retained": 0,
+      "size": 256
+    },
+    {
+      "capture_ns": 1512542,
+      "captures": 256,
+      "copied_bytes": 12493824,
+      "final_food": 38970,
+      "repeat": 1,
+      "retained": 4,
+      "size": 256
+    },
+    {
+      "capture_ns": 2756402,
+      "captures": 256,
+      "copied_bytes": 16825344,
+      "final_food": 38970,
+      "repeat": 1,
+      "retained": 8,
+      "size": 256
+    },
+    {
+      "capture_ns": 885044,
+      "captures": 256,
+      "copied_bytes": 6868992,
+      "final_food": 38970,
+      "repeat": 1,
+      "retained": 0,
+      "size": 256
+    },
+    {
+      "capture_ns": 889544,
+      "captures": 256,
+      "copied_bytes": 6868992,
+      "final_food": 38970,
+      "repeat": 1,
+      "retained": 1,
+      "size": 256
+    },
+    {
+      "capture_ns": 2819812,
+      "captures": 256,
+      "copied_bytes": 16825344,
+      "final_food": 38970,
+      "repeat": 2,
+      "retained": 8,
+      "size": 256
+    },
+    {
+      "capture_ns": 764285,
+      "captures": 256,
+      "copied_bytes": 6868992,
+      "final_food": 38970,
+      "repeat": 2,
+      "retained": 0,
+      "size": 256
+    },
+    {
+      "capture_ns": 779915,
+      "captures": 256,
+      "copied_bytes": 6868992,
+      "final_food": 38970,
+      "repeat": 2,
+      "retained": 1,
+      "size": 256
+    },
+    {
+      "capture_ns": 1314481,
+      "captures": 256,
+      "copied_bytes": 12493824,
+      "final_food": 38970,
+      "repeat": 2,
+      "retained": 4,
+      "size": 256
+    },
+    {
+      "capture_ns": 762776,
+      "captures": 256,
+      "copied_bytes": 6868992,
+      "final_food": 38970,
+      "repeat": 3,
+      "retained": 0,
+      "size": 256
+    },
+    {
+      "capture_ns": 765205,
+      "captures": 256,
+      "copied_bytes": 6868992,
+      "final_food": 38970,
+      "repeat": 3,
+      "retained": 1,
+      "size": 256
+    },
+    {
+      "capture_ns": 1341661,
+      "captures": 256,
+      "copied_bytes": 12493824,
+      "final_food": 38970,
+      "repeat": 3,
+      "retained": 4,
+      "size": 256
+    },
+    {
+      "capture_ns": 2261007,
+      "captures": 256,
+      "copied_bytes": 16825344,
+      "final_food": 38970,
+      "repeat": 3,
+      "retained": 8,
+      "size": 256
+    },
+    {
+      "capture_ns": 757714,
+      "captures": 256,
+      "copied_bytes": 6868992,
+      "final_food": 38970,
+      "repeat": 4,
+      "retained": 1,
+      "size": 256
+    },
+    {
+      "capture_ns": 1321572,
+      "captures": 256,
+      "copied_bytes": 12493824,
+      "final_food": 38970,
+      "repeat": 4,
+      "retained": 4,
+      "size": 256
+    },
+    {
+      "capture_ns": 2284356,
+      "captures": 256,
+      "copied_bytes": 16825344,
+      "final_food": 38970,
+      "repeat": 4,
+      "retained": 8,
+      "size": 256
+    },
+    {
+      "capture_ns": 758406,
+      "captures": 256,
+      "copied_bytes": 6868992,
+      "final_food": 38970,
+      "repeat": 4,
+      "retained": 0,
+      "size": 256
+    },
+    {
+      "capture_ns": 1316381,
+      "captures": 256,
+      "copied_bytes": 12493824,
+      "final_food": 38970,
+      "repeat": 5,
+      "retained": 4,
+      "size": 256
+    },
+    {
+      "capture_ns": 2316686,
+      "captures": 256,
+      "copied_bytes": 16825344,
+      "final_food": 38970,
+      "repeat": 5,
+      "retained": 8,
+      "size": 256
+    },
+    {
+      "capture_ns": 762715,
+      "captures": 256,
+      "copied_bytes": 6868992,
+      "final_food": 38970,
+      "repeat": 5,
+      "retained": 0,
+      "size": 256
+    },
+    {
+      "capture_ns": 764506,
+      "captures": 256,
+      "copied_bytes": 6868992,
+      "final_food": 38970,
+      "repeat": 5,
+      "retained": 1,
+      "size": 256
+    },
+    {
+      "capture_ns": 2264037,
+      "captures": 256,
+      "copied_bytes": 16825344,
+      "final_food": 38970,
+      "repeat": 6,
+      "retained": 8,
+      "size": 256
+    },
+    {
+      "capture_ns": 765775,
+      "captures": 256,
+      "copied_bytes": 6868992,
+      "final_food": 38970,
+      "repeat": 6,
+      "retained": 0,
+      "size": 256
+    },
+    {
+      "capture_ns": 769705,
+      "captures": 256,
+      "copied_bytes": 6868992,
+      "final_food": 38970,
+      "repeat": 6,
+      "retained": 1,
+      "size": 256
+    },
+    {
+      "capture_ns": 1327712,
+      "captures": 256,
+      "copied_bytes": 12493824,
+      "final_food": 38970,
+      "repeat": 6,
+      "retained": 4,
+      "size": 256
+    },
+    {
+      "capture_ns": 884964,
+      "captures": 256,
+      "copied_bytes": 6868992,
+      "final_food": 38970,
+      "repeat": 7,
+      "retained": 0,
+      "size": 256
+    },
+    {
+      "capture_ns": 888555,
+      "captures": 256,
+      "copied_bytes": 6868992,
+      "final_food": 38970,
+      "repeat": 7,
+      "retained": 1,
+      "size": 256
+    },
+    {
+      "capture_ns": 1506790,
+      "captures": 256,
+      "copied_bytes": 12493824,
+      "final_food": 38970,
+      "repeat": 7,
+      "retained": 4,
+      "size": 256
+    },
+    {
+      "capture_ns": 2865142,
+      "captures": 256,
+      "copied_bytes": 16825344,
+      "final_food": 38970,
+      "repeat": 7,
+      "retained": 8,
+      "size": 256
+    },
+    {
+      "capture_ns": 872035,
+      "captures": 256,
+      "copied_bytes": 6868992,
+      "final_food": 38970,
+      "repeat": 8,
+      "retained": 1,
+      "size": 256
+    },
+    {
+      "capture_ns": 1525752,
+      "captures": 256,
+      "copied_bytes": 12493824,
+      "final_food": 38970,
+      "repeat": 8,
+      "retained": 4,
+      "size": 256
+    },
+    {
+      "capture_ns": 2812184,
+      "captures": 256,
+      "copied_bytes": 16825344,
+      "final_food": 38970,
+      "repeat": 8,
+      "retained": 8,
+      "size": 256
+    },
+    {
+      "capture_ns": 875344,
+      "captures": 256,
+      "copied_bytes": 6868992,
+      "final_food": 38970,
+      "repeat": 8,
+      "retained": 0,
+      "size": 256
+    },
+    {
+      "capture_ns": 1536850,
+      "captures": 256,
+      "copied_bytes": 12493824,
+      "final_food": 38970,
+      "repeat": 9,
+      "retained": 4,
+      "size": 256
+    },
+    {
+      "capture_ns": 2827663,
+      "captures": 256,
+      "copied_bytes": 16825344,
+      "final_food": 38970,
+      "repeat": 9,
+      "retained": 8,
+      "size": 256
+    },
+    {
+      "capture_ns": 882565,
+      "captures": 256,
+      "copied_bytes": 6868992,
+      "final_food": 38970,
+      "repeat": 9,
+      "retained": 0,
+      "size": 256
+    },
+    {
+      "capture_ns": 878435,
+      "captures": 256,
+      "copied_bytes": 6868992,
+      "final_food": 38970,
+      "repeat": 9,
+      "retained": 1,
+      "size": 256
+    },
+    {
+      "capture_ns": 3041582,
+      "captures": 256,
+      "copied_bytes": 15826944,
+      "final_food": 160244,
+      "repeat": -1,
+      "retained": 0,
+      "size": 512
+    },
+    {
+      "capture_ns": 3081042,
+      "captures": 256,
+      "copied_bytes": 15826944,
+      "final_food": 160244,
+      "repeat": -1,
+      "retained": 1,
+      "size": 512
+    },
+    {
+      "capture_ns": 6564049,
+      "captures": 256,
+      "copied_bytes": 28947456,
+      "final_food": 160244,
+      "repeat": -1,
+      "retained": 4,
+      "size": 512
+    },
+    {
+      "capture_ns": 10968561,
+      "captures": 256,
+      "copied_bytes": 39069696,
+      "final_food": 160244,
+      "repeat": -1,
+      "retained": 8,
+      "size": 512
+    },
+    {
+      "capture_ns": 3114451,
+      "captures": 256,
+      "copied_bytes": 15826944,
+      "final_food": 160244,
+      "repeat": 0,
+      "retained": 1,
+      "size": 512
+    },
+    {
+      "capture_ns": 6609939,
+      "captures": 256,
+      "copied_bytes": 28947456,
+      "final_food": 160244,
+      "repeat": 0,
+      "retained": 4,
+      "size": 512
+    },
+    {
+      "capture_ns": 11138381,
+      "captures": 256,
+      "copied_bytes": 39069696,
+      "final_food": 160244,
+      "repeat": 0,
+      "retained": 8,
+      "size": 512
+    },
+    {
+      "capture_ns": 2395965,
+      "captures": 256,
+      "copied_bytes": 15826944,
+      "final_food": 160244,
+      "repeat": 0,
+      "retained": 0,
+      "size": 512
+    },
+    {
+      "capture_ns": 4771420,
+      "captures": 256,
+      "copied_bytes": 28947456,
+      "final_food": 160244,
+      "repeat": 1,
+      "retained": 4,
+      "size": 512
+    },
+    {
+      "capture_ns": 11044343,
+      "captures": 256,
+      "copied_bytes": 39069696,
+      "final_food": 160244,
+      "repeat": 1,
+      "retained": 8,
+      "size": 512
+    },
+    {
+      "capture_ns": 3049170,
+      "captures": 256,
+      "copied_bytes": 15826944,
+      "final_food": 160244,
+      "repeat": 1,
+      "retained": 0,
+      "size": 512
+    },
+    {
+      "capture_ns": 2421497,
+      "captures": 256,
+      "copied_bytes": 15826944,
+      "final_food": 160244,
+      "repeat": 1,
+      "retained": 1,
+      "size": 512
+    },
+    {
+      "capture_ns": 7462285,
+      "captures": 256,
+      "copied_bytes": 39069696,
+      "final_food": 160244,
+      "repeat": 2,
+      "retained": 8,
+      "size": 512
+    },
+    {
+      "capture_ns": 2398845,
+      "captures": 256,
+      "copied_bytes": 15826944,
+      "final_food": 160244,
+      "repeat": 2,
+      "retained": 0,
+      "size": 512
+    },
+    {
+      "capture_ns": 2434015,
+      "captures": 256,
+      "copied_bytes": 15826944,
+      "final_food": 160244,
+      "repeat": 2,
+      "retained": 1,
+      "size": 512
+    },
+    {
+      "capture_ns": 4840942,
+      "captures": 256,
+      "copied_bytes": 28947456,
+      "final_food": 160244,
+      "repeat": 2,
+      "retained": 4,
+      "size": 512
+    },
+    {
+      "capture_ns": 3091521,
+      "captures": 256,
+      "copied_bytes": 15826944,
+      "final_food": 160244,
+      "repeat": 3,
+      "retained": 0,
+      "size": 512
+    },
+    {
+      "capture_ns": 3048382,
+      "captures": 256,
+      "copied_bytes": 15826944,
+      "final_food": 160244,
+      "repeat": 3,
+      "retained": 1,
+      "size": 512
+    },
+    {
+      "capture_ns": 4827302,
+      "captures": 256,
+      "copied_bytes": 28947456,
+      "final_food": 160244,
+      "repeat": 3,
+      "retained": 4,
+      "size": 512
+    },
+    {
+      "capture_ns": 7553194,
+      "captures": 256,
+      "copied_bytes": 39069696,
+      "final_food": 160244,
+      "repeat": 3,
+      "retained": 8,
+      "size": 512
+    },
+    {
+      "capture_ns": 2408745,
+      "captures": 256,
+      "copied_bytes": 15826944,
+      "final_food": 160244,
+      "repeat": 4,
+      "retained": 1,
+      "size": 512
+    },
+    {
+      "capture_ns": 4734931,
+      "captures": 256,
+      "copied_bytes": 28947456,
+      "final_food": 160244,
+      "repeat": 4,
+      "retained": 4,
+      "size": 512
+    },
+    {
+      "capture_ns": 7474614,
+      "captures": 256,
+      "copied_bytes": 39069696,
+      "final_food": 160244,
+      "repeat": 4,
+      "retained": 8,
+      "size": 512
+    },
+    {
+      "capture_ns": 2414675,
+      "captures": 256,
+      "copied_bytes": 15826944,
+      "final_food": 160244,
+      "repeat": 4,
+      "retained": 0,
+      "size": 512
+    },
+    {
+      "capture_ns": 4748563,
+      "captures": 256,
+      "copied_bytes": 28947456,
+      "final_food": 160244,
+      "repeat": 5,
+      "retained": 4,
+      "size": 512
+    },
+    {
+      "capture_ns": 7475803,
+      "captures": 256,
+      "copied_bytes": 39069696,
+      "final_food": 160244,
+      "repeat": 5,
+      "retained": 8,
+      "size": 512
+    },
+    {
+      "capture_ns": 2411478,
+      "captures": 256,
+      "copied_bytes": 15826944,
+      "final_food": 160244,
+      "repeat": 5,
+      "retained": 0,
+      "size": 512
+    },
+    {
+      "capture_ns": 3081849,
+      "captures": 256,
+      "copied_bytes": 15826944,
+      "final_food": 160244,
+      "repeat": 5,
+      "retained": 1,
+      "size": 512
+    },
+    {
+      "capture_ns": 10929332,
+      "captures": 256,
+      "copied_bytes": 39069696,
+      "final_food": 160244,
+      "repeat": 6,
+      "retained": 8,
+      "size": 512
+    },
+    {
+      "capture_ns": 2664404,
+      "captures": 256,
+      "copied_bytes": 15826944,
+      "final_food": 160244,
+      "repeat": 6,
+      "retained": 0,
+      "size": 512
+    },
+    {
+      "capture_ns": 2382335,
+      "captures": 256,
+      "copied_bytes": 15826944,
+      "final_food": 160244,
+      "repeat": 6,
+      "retained": 1,
+      "size": 512
+    },
+    {
+      "capture_ns": 4820429,
+      "captures": 256,
+      "copied_bytes": 28947456,
+      "final_food": 160244,
+      "repeat": 6,
+      "retained": 4,
+      "size": 512
+    },
+    {
+      "capture_ns": 2422346,
+      "captures": 256,
+      "copied_bytes": 15826944,
+      "final_food": 160244,
+      "repeat": 7,
+      "retained": 0,
+      "size": 512
+    },
+    {
+      "capture_ns": 2397686,
+      "captures": 256,
+      "copied_bytes": 15826944,
+      "final_food": 160244,
+      "repeat": 7,
+      "retained": 1,
+      "size": 512
+    },
+    {
+      "capture_ns": 4744679,
+      "captures": 256,
+      "copied_bytes": 28947456,
+      "final_food": 160244,
+      "repeat": 7,
+      "retained": 4,
+      "size": 512
+    },
+    {
+      "capture_ns": 7604303,
+      "captures": 256,
+      "copied_bytes": 39069696,
+      "final_food": 160244,
+      "repeat": 7,
+      "retained": 8,
+      "size": 512
+    },
+    {
+      "capture_ns": 2440704,
+      "captures": 256,
+      "copied_bytes": 15826944,
+      "final_food": 160244,
+      "repeat": 8,
+      "retained": 1,
+      "size": 512
+    },
+    {
+      "capture_ns": 5000258,
+      "captures": 256,
+      "copied_bytes": 28947456,
+      "final_food": 160244,
+      "repeat": 8,
+      "retained": 4,
+      "size": 512
+    },
+    {
+      "capture_ns": 7585154,
+      "captures": 256,
+      "copied_bytes": 39069696,
+      "final_food": 160244,
+      "repeat": 8,
+      "retained": 8,
+      "size": 512
+    },
+    {
+      "capture_ns": 3067763,
+      "captures": 256,
+      "copied_bytes": 15826944,
+      "final_food": 160244,
+      "repeat": 8,
+      "retained": 0,
+      "size": 512
+    },
+    {
+      "capture_ns": 6685048,
+      "captures": 256,
+      "copied_bytes": 28947456,
+      "final_food": 160244,
+      "repeat": 9,
+      "retained": 4,
+      "size": 512
+    },
+    {
+      "capture_ns": 7576913,
+      "captures": 256,
+      "copied_bytes": 39069696,
+      "final_food": 160244,
+      "repeat": 9,
+      "retained": 8,
+      "size": 512
+    },
+    {
+      "capture_ns": 2427005,
+      "captures": 256,
+      "copied_bytes": 15826944,
+      "final_food": 160244,
+      "repeat": 9,
+      "retained": 0,
+      "size": 512
+    },
+    {
+      "capture_ns": 2445454,
+      "captures": 256,
+      "copied_bytes": 15826944,
+      "final_food": 160244,
+      "repeat": 9,
+      "retained": 1,
+      "size": 512
+    }
+  ]
+}

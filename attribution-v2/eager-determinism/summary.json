@@ -1,0 +1,248 @@
+{
+  "ai512": {
+    "d8t4-owner": {
+      "wall_s": 0.8320947112515569,
+      "cpu_s": 1.218993,
+      "peak_rss_bytes": 142524416,
+      "run_s": 0.507785956,
+      "tick_percentiles_ns": {
+        "tick_p50_ns": 0,
+        "tick_p95_ns": 0,
+        "tick_p99_ns": 0
+      },
+      "growth": {
+        "growth_submitted": 128,
+        "growth_published": 119,
+        "growth_sampled": 543478,
+        "growth_proposals": 3716,
+        "growth_accepted": 3451,
+        "growth_rejected": 40,
+        "growth_clamped": 40,
+        "growth_stockAdded": 3451,
+        "growth_tilesAdded": 100,
+        "growth_capacityGrowthBatches": 0,
+        "growth_maxProposals": 51,
+        "growth_maxPending": 9,
+        "growth_maxProposalBytes": 1179648,
+        "growth_computeNs": 27701756,
+        "growth_queueNs": 208743611,
+        "growth_waitNs": 236378316,
+        "growth_publicationNs": 1402759,
+        "growth_delay": 8
+      },
+      "d8t4-owner": {
+        "run_time_ratio": 1.0,
+        "ratio_95pct_ci": [
+          1.0,
+          1.0
+        ],
+        "run_delta_ms": 0.0,
+        "cpu_ratio": 1.0
+      }
+    },
+    "d8t4-shared": {
+      "wall_s": 0.715179389808327,
+      "cpu_s": 1.1153170000000001,
+      "peak_rss_bytes": 141975552,
+      "run_s": 0.393029062,
+      "tick_percentiles_ns": {
+        "tick_p50_ns": 0,
+        "tick_p95_ns": 0,
+        "tick_p99_ns": 0
+      },
+      "growth": {
+        "growth_submitted": 128,
+        "growth_published": 119,
+        "growth_sampled": 543478,
+        "growth_proposals": 3716,
+        "growth_accepted": 3451,
+        "growth_rejected": 40,
+        "growth_clamped": 40,
+        "growth_stockAdded": 3451,
+        "growth_tilesAdded": 100,
+        "growth_capacityGrowthBatches": 0,
+        "growth_maxProposals": 51,
+        "growth_maxPending": 9,
+        "growth_maxProposalBytes": 1179648,
+        "growth_computeNs": 26066300,
+        "growth_queueNs": 90921727,
+        "growth_waitNs": 156828289,
+        "growth_publicationNs": 1323704,
+        "growth_delay": 8
+      },
+      "d8t4-owner": {
+        "run_time_ratio": 0.7740053803299751,
+        "ratio_95pct_ci": [
+          0.7740053803299751,
+          0.7740053803299751
+        ],
+        "run_delta_ms": -114.756894,
+        "cpu_ratio": 0.9149494705876081
+      }
+    }
+  },
+  "dense": {
+    "d8t4-owner": {
+      "wall_s": 0.39649937115609646,
+      "cpu_s": 0.571515,
+      "peak_rss_bytes": 66048000,
+      "run_s": 0.116475534,
+      "tick_percentiles_ns": {
+        "tick_p50_ns": 0,
+        "tick_p95_ns": 0,
+        "tick_p99_ns": 0
+      },
+      "growth": {
+        "growth_submitted": 128,
+        "growth_published": 119,
+        "growth_sampled": 136865,
+        "growth_proposals": 12025,
+        "growth_accepted": 11095,
+        "growth_rejected": 40,
+        "growth_clamped": 40,
+        "growth_stockAdded": 11095,
+        "growth_tilesAdded": 3444,
+        "growth_capacityGrowthBatches": 0,
+        "growth_maxProposals": 207,
+        "growth_maxPending": 9,
+        "growth_maxProposalBytes": 294912,
+        "growth_computeNs": 4572689,
+        "growth_queueNs": 43714032,
+        "growth_waitNs": 48267192,
+        "growth_publicationNs": 2250604,
+        "growth_delay": 8
+      },
+      "d8t4-owner": {
+        "run_time_ratio": 1.0,
+        "ratio_95pct_ci": [
+          1.0,
+          1.0
+        ],
+        "run_delta_ms": 0.0,
+        "cpu_ratio": 1.0
+      }
+    },
+    "d8t4-shared": {
+      "wall_s": 0.3531041177920997,
+      "cpu_s": 0.508331,
+      "peak_rss_bytes": 67780608,
+      "run_s": 0.095620112,
+      "tick_percentiles_ns": {
+        "tick_p50_ns": 0,
+        "tick_p95_ns": 0,
+        "tick_p99_ns": 0
+      },
+      "growth": {
+        "growth_submitted": 128,
+        "growth_published": 119,
+        "growth_sampled": 136865,
+        "growth_proposals": 12025,
+        "growth_accepted": 11095,
+        "growth_rejected": 40,
+        "growth_clamped": 40,
+        "growth_stockAdded": 11095,
+        "growth_tilesAdded": 3444,
+        "growth_capacityGrowthBatches": 0,
+        "growth_maxProposals": 207,
+        "growth_maxPending": 9,
+        "growth_maxProposalBytes": 294912,
+        "growth_computeNs": 4280060,
+        "growth_queueNs": 18022255,
+        "growth_waitNs": 37824812,
+        "growth_publicationNs": 2054938,
+        "growth_delay": 8
+      },
+      "d8t4-owner": {
+        "run_time_ratio": 0.8209458992478197,
+        "ratio_95pct_ci": [
+          0.8209458992478197,
+          0.8209458992478197
+        ],
+        "run_delta_ms": -20.855422,
+        "cpu_ratio": 0.8894447214858753
+      }
+    }
+  },
+  "multi": {
+    "d8t4-owner": {
+      "wall_s": 0.9720832700841129,
+      "cpu_s": 1.682505,
+      "peak_rss_bytes": 159440896,
+      "run_s": 0.614952527,
+      "tick_percentiles_ns": {
+        "tick_p50_ns": 0,
+        "tick_p95_ns": 0,
+        "tick_p99_ns": 0
+      },
+      "growth": {
+        "growth_submitted": 128,
+        "growth_published": 119,
+        "growth_sampled": 543650,
+        "growth_proposals": 111924,
+        "growth_accepted": 101833,
+        "growth_rejected": 3,
+        "growth_clamped": 3,
+        "growth_stockAdded": 101833,
+        "growth_tilesAdded": 19134,
+        "growth_capacityGrowthBatches": 0,
+        "growth_maxProposals": 1586,
+        "growth_maxPending": 9,
+        "growth_maxProposalBytes": 1179648,
+        "growth_computeNs": 38577885,
+        "growth_queueNs": 158079695,
+        "growth_waitNs": 196588590,
+        "growth_publicationNs": 23482125,
+        "growth_delay": 8
+      },
+      "d8t4-owner": {
+        "run_time_ratio": 1.0,
+        "ratio_95pct_ci": [
+          1.0,
+          1.0
+        ],
+        "run_delta_ms": 0.0,
+        "cpu_ratio": 1.0
+      }
+    },
+    "d8t4-shared": {
+      "wall_s": 0.9944560430012643,
+      "cpu_s": 1.638986,
+      "peak_rss_bytes": 158887936,
+      "run_s": 0.641134826,
+      "tick_percentiles_ns": {
+        "tick_p50_ns": 0,
+        "tick_p95_ns": 0,
+        "tick_p99_ns": 0
+      },
+      "growth": {
+        "growth_submitted": 128,
+        "growth_published": 119,
+        "growth_sampled": 543650,
+        "growth_proposals": 111924,
+        "growth_accepted": 101833,
+        "growth_rejected": 3,
+        "growth_clamped": 3,
+        "growth_stockAdded": 101833,
+        "growth_tilesAdded": 19134,
+        "growth_capacityGrowthBatches": 0,
+        "growth_maxProposals": 1586,
+        "growth_maxPending": 9,
+        "growth_maxProposalBytes": 1179648,
+        "growth_computeNs": 41929325,
+        "growth_queueNs": 49225125,
+        "growth_waitNs": 230900946,
+        "growth_publicationNs": 21645932,
+        "growth_delay": 8
+      },
+      "d8t4-owner": {
+        "run_time_ratio": 1.042576130433561,
+        "ratio_95pct_ci": [
+          1.042576130433561,
+          1.042576130433561
+        ],
+        "run_delta_ms": 26.182299,
+        "cpu_ratio": 0.9741344007892994
+      }
+    }
+  }
+}

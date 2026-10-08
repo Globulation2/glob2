@@ -1,0 +1,16 @@
+--- a/src/map/ResourceGrowth.cpp
++++ b/src/map/ResourceGrowth.cpp
+@@ -255,9 +255,10 @@
+ 	const ComputeExecutor::Group group{1, {run, job}, ComputeExecutor::NoLane};
+ 	try
+ 	{
+-		job->work =
+-			executor->submit(std::span(&group, 1), shared ? ComputeExecutor::Placement::Shared
+-														  : ComputeExecutor::Placement::OwnerOnly);
++        if (shared)
++            job->work = executor->submit(std::span(&group, 1), ComputeExecutor::Placement::Shared);
++        else
++            run(job, 0); // pure serial control: do not pump unrelated executor jobs
+ 	}
+ 	catch (...)
+ 	{

@@ -1,0 +1,19 @@
+--- a/src/engine/sim/snapshot/WorldCapture.cpp
++++ b/src/engine/sim/snapshot/WorldCapture.cpp
+@@ -199,9 +199,13 @@
+ 	const auto refresh = [&](ChunkStamps& stamps, const MapState::ChangeTracker& live, bool resized, auto copyRange) {
+ 		const bool everything = resized || stamps.worldIdentity != identity || stamps.width != geometry.width
+ 			|| stamps.height != geometry.height || stamps.chunks.size() != live.chunks.size();
+-		if (everything)
+-		{
+-			copyRange(std::size_t(0), cellCount);
++		std::size_t dirty = 0;
++        if (!everything)
++            for (std::size_t chunk=0; chunk<live.chunks.size(); ++chunk)
++                dirty += stamps.chunks[chunk] != live.chunks[chunk];
++        if (everything || dirty > live.chunks.size()/2)
++        {
++            copyRange(std::size_t(0), cellCount);
+ 			if (storage && stamps.chunks.capacity() < live.chunks.size()) ++storage->allocations;
+ 			stamps.chunks.assign(live.chunks.begin(), live.chunks.end());
+ 		}

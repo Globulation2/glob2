@@ -1,0 +1,103 @@
+{
+  "source": "5430ef31c135667deeb8043c827d79b3fec4cda4",
+  "master": "52e4d3dc0440e12ff65494ad3eb1681e9c2c0af3",
+  "clean_source": true,
+  "completed_engine_runs": {
+    "statistics": 88,
+    "batched": 132,
+    "stage-runs": 48,
+    "fair": 88,
+    "direct-control": 66
+  },
+  "all_final_world_checksums_match_per_revision_reference": true,
+  "all_recorded_binary_hashes_unchanged": true,
+  "reservation_cleanup": [
+    {
+      "audit": "cpuset-shared-host.json",
+      "own_group_absent": true,
+      "state": "completed",
+      "exit_code": 0,
+      "original_affinity_restored": true
+    },
+    {
+      "audit": "cpuset.json",
+      "own_group_absent": true,
+      "state": "completed",
+      "exit_code": 1,
+      "original_affinity_restored": true
+    },
+    {
+      "audit": "cpuset-controls.json",
+      "own_group_absent": true,
+      "state": "failed",
+      "exit_code": null,
+      "original_affinity_restored": false
+    },
+    {
+      "audit": "cpuset-resumed.json",
+      "own_group_absent": true,
+      "state": "failed",
+      "exit_code": null,
+      "original_affinity_restored": false
+    },
+    {
+      "audit": "cpuset-owner-control.json",
+      "own_group_absent": true,
+      "state": "completed",
+      "exit_code": 1,
+      "original_affinity_restored": false
+    },
+    {
+      "audit": "cpuset-direct-control.json",
+      "own_group_absent": true,
+      "state": "completed",
+      "exit_code": 0,
+      "original_affinity_restored": true
+    }
+  ],
+  "governor_cleanup": [
+    {
+      "audit": "governor-shared-host.json",
+      "restored": true
+    },
+    {
+      "audit": "governor.json",
+      "restored": true
+    },
+    {
+      "audit": "governor-controls.json",
+      "restored": true
+    },
+    {
+      "audit": "governor-resumed.json",
+      "restored": true
+    },
+    {
+      "audit": "governor-owner-control.json",
+      "restored": true
+    },
+    {
+      "audit": "governor-direct-control.json",
+      "restored": true
+    }
+  ],
+  "current_affinity": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21,
+    22,
+    23
+  ],
+  "root_cpus": "0-7,16-23"
+}
