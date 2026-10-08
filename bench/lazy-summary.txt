@@ -1,0 +1,16 @@
+width layout           base_ms  vertex_ms  ratio   (CPU summed over 7 swim classes x 3 queries x 5 repeats, mean of 2 runs)
+   32 classic             1.97       1.57   0.80
+   32 road grid           3.61       1.48   0.41
+   32 dense mix           4.53       2.87   0.63
+   32 uniform road        3.33       1.77   0.53
+   32 uniform ice         4.36       2.36   0.54
+  128 classic            32.13      14.58   0.45
+  128 road grid          46.67      14.67   0.31
+  128 dense mix          52.26      26.26   0.50
+  128 uniform road       20.95      19.05   0.91
+  128 uniform ice        29.08      21.90   0.75
+  512 classic           292.79     236.12   0.81
+  512 road grid         408.80     293.54   0.72
+  512 dense mix         504.48     556.58   1.10
+  512 uniform road      408.06     345.12   0.85
+  512 uniform ice       454.09     379.20   0.84

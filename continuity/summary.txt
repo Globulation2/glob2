@@ -1,0 +1,24 @@
+maps_A_big_pond.map.rules                     0/ 16384 (0.00%) {}
+maps_Archipelago.map.rules                    0/ 16384 (0.00%) {}
+maps_Centerfolds_2.map.rules                  0/ 16384 (0.00%) {}
+maps_Dejans.map.rules                         0/  4096 (0.00%) {}
+maps_Easy_Three.map.rules                     0/ 16384 (0.00%) {}
+maps_FourSquares1.map.rules                   0/ 16384 (0.00%) {}
+maps_G2.map.rules                             0/ 16384 (0.00%) {}
+maps_Garden_3.map.rules                       0/ 16384 (0.00%) {}
+maps_Holiday_Island_2.map.rules               0/ 16384 (0.00%) {}
+maps_Island_of_the_Renfur.map.rules           0/ 16384 (0.00%) {}
+maps_Isles.map.rules                          0/ 16384 (0.00%) {}
+maps_Mazury.map.rules                         0/ 16384 (0.00%) {}
+maps_Migration.map.rules                      0/ 16384 (0.00%) {}
+maps_Muka.map.rules                           0/  8192 (0.00%) {}
+maps_Oazis.map.rules                          0/ 65536 (0.00%) {}
+maps_Playground.map.rules                     0/ 16384 (0.00%) {}
+maps_Sand_River.map.rules                     0/ 16384 (0.00%) {}
+maps_SmallForTwo.map.rules                    0/  4096 (0.00%) {}
+maps_Triangle.map.rules                       0/ 16384 (0.00%) {}
+maps_Wild_River.map.rules                     0/ 16384 (0.00%) {}
+maps_balanced.map.rules                       0/ 16384 (0.00%) {}
+maps_balanced_for_2.map.rules                 0/  4096 (0.00%) {}
+maps_strange2.map.rules                       0/ 16384 (0.00%) {}
+TOTAL 0/380928 (0.000%) {}
