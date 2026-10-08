@@ -8,7 +8,6 @@
 #include "InGameTouchTheme.h"
 #include "MapEdit.h"
 #include "PhoneEditor.h"
-#include "Unit.h"
 #include "render/UnitAnimation.h"
 #include "render/UnitSkin.h"
 #include "resource/ResourceRegistry.h"
@@ -116,7 +115,7 @@ void PhoneEditor::layoutTray(double unit)
 	const std::string key = std::to_string(editor.catalogRevision()) + '|' + std::to_string(paletteMode) + '|' +
 							std::to_string(unit) + '|' + std::to_string(textScale) + '|' + std::to_string(scriptAreas) + std::to_string(editor.fertilityOverlayStale()) +
 							'|' + (scriptAreas && editor.areaNumber ? std::to_string(editor.areaNumber->getIndex()) +
-																		  editor.game.map.getAreaName(editor.areaNumber->getIndex())
+																		  (editor.view.scene ? editor.view.scene->map.getAreaName(editor.areaNumber->getIndex()) : std::string{})
 																	: std::string());
 	if (key == trayLayoutKey && !rows.empty())
 		return;

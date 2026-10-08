@@ -32,7 +32,7 @@ DRAWING = ('src/render/GameRender*.cpp', 'src/render/Minimap.cpp', 'src/render/t
            'src/hud/touch/GameGUITouchView.cpp', 'src/hud/touch/GameGUITouchPalette.cpp',
            'src/hud/touch/GameGUITouchLens.cpp', 'src/hud/touch/GameGUITouchPlacement.cpp',
            'src/map/editor/MapEditInspector.cpp', 'src/map/editor/EditorDockObjects.cpp',
-           'src/map/editor/EditorDock.cpp', 'src/hud/GameGUIGhostBuildingManager.cpp',
+           'src/map/editor/EditorDock.cpp', 'src/map/editor/PhoneEditorTray.cpp', 'src/hud/GameGUIGhostBuildingManager.cpp',
            'src/hud/GameGUITorus.cpp', 'src/hud/draw/GameGUIParticles.cpp', 'src/hud/GameGUIStep.cpp',
            'src/render/overlay/MarkManager.cpp', 'src/hud/GameGUIDialog.cpp', 'src/hud/input/GameGUIInputMouse.cpp', 'src/hud/input/GameGUIInputMenu.cpp', 'src/hud/GameGUIScript.cpp', 'src/hud/GameGUIToolManager.cpp')
 
