@@ -56,6 +56,7 @@ GameHeader makeFixtureHeader()
 	header.setGameLatency(12);
 	header.setOrderRate(3);
 	header.setAIOrderDelay(8);
+	header.setBuildingGradientDelay(2);
 	header.setRandomSeed(0xCAFEBABE);
 	header.setMapDiscovered(true);
 	header.setAllyTeamsFixed(true);
@@ -121,6 +122,7 @@ void testFullRoundTrip()
 	check(loaded.getGameLatency() == 12, "full: gameLatency preserved");
 	check(loaded.getOrderRate() == 3, "full: orderRate preserved");
 	check(loaded.getAIOrderDelay() == 8, "full: AI order delay preserved");
+	check(loaded.getBuildingGradientDelay() == 2, "full: building gradient delay preserved");
 	for (int team = 0; team < Team::MAX_COUNT; ++team)
 		check(loaded.getAllyTeamNumber(team) == original.getAllyTeamNumber(team),
 		      "full: indexed alliance slots preserved");
@@ -208,11 +210,14 @@ void testBinaryHeaderFormsAndLegacy()
 		const size_t catalogBytes=4; // Empty catalog: zero chunk count (version136).
         const size_t resourceExperimentBytes=4; // Empty declaration count (version140).
 		if (form!=1) extension+=ruleBytes+experimentBytes+catalogBytes+resourceExperimentBytes;
-        // Version 143 inserted delay after int32 latency and uint8 rate,
-        // before the existing payload. Older forms need that byte removed,
-        // not a shorter tail; player-info-only records never contain it.
+        // Version 143 inserted the AI delay after int32 latency and uint8 rate,
+        // and version 148 the building gradient delay after it, before the
+        // existing payload. Older forms need those bytes removed, not a
+        // shorter tail; player-info-only records never contain them.
         memory->seekFromEnd(0);
         std::string historical(memory->getBuffer(),memory->getPosition());
+        const std::string current=historical;
+        if(form!=1) historical.erase(6,1);
         // Format 145 adds an empty artwork chunk count before resource declarations.
         if(form!=1) historical.erase(historical.size()-experimentBytes-resourceExperimentBytes-4,4);
 		if (form != 1)
@@ -280,6 +285,26 @@ void testBinaryHeaderFormsAndLegacy()
             CHECK(older.getRandomSeed()==original.getRandomSeed());
             CHECK(older.getExperiments()==original.getExperiments());
             CHECK(prior.readUint32("nextRecord")==sentinel);
+            CHECK(older.getBuildingGradientDelay()==GameHeader::DEFAULT_BUILDING_GRADIENT_DELAY);
+            // Formats 143-147 have the AI delay but no building gradient delay
+            // byte: the AI delay is kept and the building delay takes its default.
+            constexpr Sint32 aiPipelineVersion=FILE_FORMAT_VERSION_BUILDING_GRADIENT_PIPELINE-1;
+            static_assert(aiPipelineVersion==FILE_FORMAT_VERSION_GREEDY_FETCHING);
+            std::string v143=current;v143.erase(6,1);
+            auto* v143Bytes=new MemoryStreamBackend;
+            BinaryOutputStream v143Out(v143Bytes);
+            v143Out.write(v143.data(),v143.size(),"header");
+            v143Out.writeUint32(sentinel,"nextRecord");v143Out.flush();
+            v143Bytes->seekFromStart(0);
+            BinaryInputStream at143(new MemoryStreamBackend(*v143Bytes));
+            GameHeader previous;previous.setBuildingGradientDelay(2);
+            REQUIRE((form==0 ? previous.load(&at143,aiPipelineVersion) : previous.loadWithoutPlayerInfo(&at143,aiPipelineVersion)));
+            CHECK(previous.getAIOrderDelay()==original.getAIOrderDelay());
+            CHECK(previous.getBuildingGradientDelay()==GameHeader::DEFAULT_BUILDING_GRADIENT_DELAY);
+            CHECK(previous.getAIConfig(0)==original.getAIConfig(0));
+            CHECK(previous.getRandomSeed()==original.getRandomSeed());
+            CHECK(previous.getExperiments()==original.getExperiments());
+            CHECK(at143.readUint32("nextRecord")==sentinel);
 		}
 	}
 }
@@ -370,4 +395,53 @@ TEST_CASE("New games and reset headers default to eight tick AI decisions" *
     header.setAIOrderDelay(0);
     header.reset();
     CHECK(header.getAIOrderDelay() == 8);
+}
+
+TEST_CASE("Building gradient delay round trips at both boundaries and rejects invalid saved bytes" *
+          doctest::test_suite("GameHeaderTextSaveLoad"))
+{
+    for(unsigned delay : {1u,8u}) for(bool text : {false,true}) for(bool players : {false,true}) {
+        CAPTURE(delay); CAPTURE(text); CAPTURE(players);
+        auto original=makeFixtureHeader();original.setBuildingGradientDelay(delay);
+        auto* memory=new MemoryStreamBackend;
+        std::unique_ptr<OutputStream> output(text ? static_cast<OutputStream*>(new TextOutputStream(memory))
+            : static_cast<OutputStream*>(new BinaryOutputStream(memory)));
+        if(players) original.save(output.get());else original.saveWithoutPlayerInfo(output.get());
+        output->writeUint32(0xB6D,"sentinel");output->flush();
+        std::unique_ptr<InputStream> input;
+        if(text) input=makeInputStream(*memory);
+        else {auto* copy=new MemoryStreamBackend(*memory);copy->seekFromStart(0);input=std::make_unique<BinaryInputStream>(copy);}
+        GameHeader restored;
+        REQUIRE((players ? restored.load(input.get(),VERSION_MINOR) : restored.loadWithoutPlayerInfo(input.get(),VERSION_MINOR)));
+        CHECK(restored.getBuildingGradientDelay()==delay);
+        CHECK(restored.getAIOrderDelay()==original.getAIOrderDelay());
+        CHECK(restored.getRandomSeed()==original.getRandomSeed());
+        CHECK(input->readUint32("sentinel")==0xB6D);
+    }
+    GameHeader header;
+    CHECK_THROWS_AS(header.setBuildingGradientDelay(0),std::invalid_argument);
+    CHECK_THROWS_AS(header.setBuildingGradientDelay(9),std::invalid_argument);
+    CHECK_THROWS_AS(header.setBuildingGradientDelay(unsigned(-1)),std::invalid_argument);
+    for(unsigned invalid : {0u,9u,255u}) for(bool players : {false,true}) {
+        CAPTURE(invalid); CAPTURE(players);
+        auto* memory=new MemoryStreamBackend;
+        BinaryOutputStream output(memory);
+        if(players) header.save(&output);else header.saveWithoutPlayerInfo(&output);
+        // int32 latency, uint8 order rate, uint8 AI delay, then this byte.
+        output.flush();auto bytes=memory->takeContents();bytes[6]=char(invalid);
+        BinaryInputStream input(new MemoryStreamBackend(bytes.data(),bytes.size()));input.seekFromStart(0);
+        GameHeader restored;
+        if(players) CHECK_THROWS_AS(restored.load(&input,VERSION_MINOR),std::runtime_error);
+        else CHECK_THROWS_AS(restored.loadWithoutPlayerInfo(&input,VERSION_MINOR),std::runtime_error);
+    }
+}
+
+TEST_CASE("New games and reset headers default to an eight tick building gradient delay" *
+          doctest::test_suite("GameHeaderTextSaveLoad"))
+{
+    GameHeader header;
+    CHECK(header.getBuildingGradientDelay() == 8);
+    header.setBuildingGradientDelay(2);
+    header.reset();
+    CHECK(header.getBuildingGradientDelay() == 8);
 }

@@ -51,3 +51,9 @@ void Map::finishGradientPipeline() {
     preparePendingGradient();
     gradientRuntime->pipeline.finish();
 }
+// Unit fixtures never schedule building fields; clearing only drops storage.
+void Map::resetBuildingGradientPipeline() noexcept {
+    gradientRuntime->stagedBuildings.clear();
+    gradientRuntime->buildingRequests.clear();
+    gradientRuntime->buildings.reset();
+}

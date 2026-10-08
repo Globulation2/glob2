@@ -82,6 +82,7 @@
     "resourceGrowthDisabled": false,
     "resourceScarcityLevel": 0,
     "aiOrderDelay": 8,
+    "buildingGradientDelay": 8,
     "instantConstruction": false,
     "stockpileStartLevel": 0,
     "hungerDisabled": false,

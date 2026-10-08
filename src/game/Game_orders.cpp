@@ -424,7 +424,7 @@ bool Game::executeAlterForbidden(const OrderAlterForbidden& oaa, int localPlayer
 			const bool ownTeam = team == oaa.teamNumber;
 			const bool clearingFlag = building->type->zonable[WORKER];
 			if (ownTeam && (walkingChanged || clearingFlag))
-				building->resetPathfindGradients();
+				building->resetPathfindGradients(Building::GradientDrop::Area);
 			else
 			{
 				// A team-local edit must not newly stale unrelated walking fields.
@@ -432,9 +432,9 @@ bool Game::executeAlterForbidden(const OrderAlterForbidden& oaa, int localPlayer
 				for (int swim=0; swim<BUILDING_GRADIENT_COUNT; ++swim)
 					if (building->gradientGeneration[swim] == oldGeneration)
 						building->gradientGeneration[swim] = map.topologyGeneration;
-				if (ownTeam) building->resetRoundTripGradients();
 			}
 		}
+	map.carryPendingBuildingGenerations(oldGeneration, map.topologyGeneration);
 	if (walkingChanged)
 	{
 		map.updateForbiddenGradient(oaa.teamNumber);

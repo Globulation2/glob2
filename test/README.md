@@ -665,6 +665,20 @@ elapse before it can judge a field, and takes the constant from that header rath
 than copying it — when the interval was raised from 25 to 100, a local copy here
 silently stopped covering it and the regression passed stale fields.
 
+The scheduled cases run the suite's worlds with the default scheduled building
+pipeline: worker kernels match the synchronous seeding and search for every route,
+swim class and terrain-cost branch; fields publish at fixed deadlines across workers
+0/1/2/4/8 and delays 1/4/8; requests are captured at the observation boundary;
+partial fields resume from transferred buckets with every depth setting; synchronous
+rebuilds, resets, evictions and reused destinations supersede; pending results
+survive saves at every phase; access metadata follows the newest capture, in request
+order within one tick; area and team-wide resets keep stale fields serving; a
+team-local forbidden edit carries pending generations forward; and slow or failing
+workers never move publication. `GradientPipeline/*` covers the pipeline template
+alone, and `python3 test/check_gradient_pipeline.py BINARY` adds a building pass
+forked with `--fork-rule buildingGradientDelay=N` (delays 1/4/8, workers 0/1/2/4/8,
+save/resume at every phase, full/table/lazy depth, rejected delays 0 and 9).
+
 To see the harness fail, drop `gradientGeneration[swimClass] != topologyGeneration`
 from `Map::buildingGradient`: `ring-after`, `ring-other-team` and `ring-flag` all
 fail. `ring-before` passes either way by construction — nothing is cached before
@@ -677,6 +691,13 @@ The `MapGradientInvalidation` suite (`python3 test/run_tests.py --filter
 brushes, including resource-only edits, clearing goals, other teams and previously
 stale caches. It also checks resource, terrain, building and immobility transitions,
 a depleted escape exit, unreachable pockets and the refresh budget across tick wrap.
+Its gradient-stats case checks the lifetime rows of `BuildingGradientStats` (cold,
+generation, drop, eviction and end rows with their previous-search figures), the CSV
+and JSON exports, and that the statistics leave fields unchanged. `python3 test/test_gradient_depth_fit.py` checks the
+[depth model](../docs/building-gradient-depth-model.md) fitter on synthetic rows,
+that regenerating `BuildingGradientDepthPolicy.h` from the committed summary is a
+no-op, and, when a C++ compiler is present, that the header's lookup agrees with the
+fitter.
 
 Forbidden edits preserve unaffected walking fields and pending searches; own-team
 harvest round trips and clearing destinations still invalidate. Escape fields have
@@ -826,7 +847,19 @@ The real-engine movement-method fixture checks every swim class: a valid resourc
 target remains unchanged, and a depleted target is refreshed after its resource
 gradient is rebuilt. It invokes the movement method directly, rather than running
 an entire match. The runner isolates the profile and working directory and checks that preferences
-remain unchanged. Linux CI runs this regression.
+remain unchanged. Linux CI runs this regression. Fetching is greedy: the unit
+heads for the resource nearest to itself, even when another is a cheaper carry.
+
+`FetchHiringScore/*` checks hiring a fetcher: the hunger check measures the walk
+to the resource rather than the whole trip, and the score estimates the walk out
+plus the carry home.
+
+`LegacyRoundTripSave/*` loads
+[`greedy-fetching/round-trip-143.game.gz`](fixtures/greedy-fetching/README.md), a
+mid-game save written when fetching still routed by round trip, with round-trip
+fields live. The loader discards those fields; the game plays 1,000 more ticks
+against a golden per-tick trace and continues identically after a binary or text
+save in the current format.
 
 ## Hiring bucket iteration
 
@@ -1259,8 +1292,14 @@ icon opacity. It catches an opaque building disappearing abruptly at the fade's 
 Build `scons release=1 server=0 unit-tests path-gradient-test
 building-gradient-invalidation-test`. The `ComputeExecutor` unit suite checks exclusive
 slots, barriers, nested batches, exception propagation, reuse and reconfiguration.
-It also gates presentation work while simulation batches and deadline joins finish,
-and verifies pending replacement, cancellation, serial pumping and capture release.
+For deferred batches it checks earliest-due ordering (ties and lane order by
+submission), that the owner only waits at a join whenever a worker exists, that an
+executor with no workers runs the jobs due no later than the join inline, and that
+with one worker shared with presentation a join waits out the running chunk and then
+completes in due order with no owner jobs. Producers that opt out of sharing compute
+inline at submission (`GradientPipeline` owner-only case). It also gates presentation
+work while simulation batches and deadline joins finish, and verifies pending
+replacement, cancellation, serial pumping and capture release.
 The path oracle also exercises independent eager/lazy searches at 1/2/4/8 threads;
 the building invalidation harness compares real area/building seed fields and
 frozen hiring advancement. Linux/Windows CI run the executor and path oracle.

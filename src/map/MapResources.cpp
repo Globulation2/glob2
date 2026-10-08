@@ -383,7 +383,7 @@ template bool Map::getGlobalGradientDestination<Uint16>(const Uint16 *gradient, 
 template<typename T>
 bool Map::isGradientPeak(const T *gradient, int x, int y) const
 {
-	// A round-trip gradient's goal is seeded at a finite cost, not the type's
+	// A market-seeded gradient's goal starts at a finite cost, not the type's
 	// max the way GRADIENT_AT_GOAL is, so getGlobalGradientDestination's own
 	// "reached exact goal" check does not generalize to it. This is the
 	// weaker, gradient-agnostic property an ascent target actually needs:

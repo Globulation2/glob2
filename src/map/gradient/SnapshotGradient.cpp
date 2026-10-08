@@ -4,6 +4,7 @@
 #include "MapInternal.h"
 #include "Building.h"
 #include "Unit.h"
+#include "BuildingType.h"
 #include "field/RuntimeTerrainGradient.h"
 #include <array>
 #include <bit>
@@ -261,5 +262,44 @@ void propagate(const Request& request, const SimulationSnapshot::Handle& snapsho
         {snapshot.width, snapshot.height}, scratch,
         [rules=snapshot.terrain->cellRules.data()](size_t i) { return rules[i]; },
         snapshot.terrain->movementModifiers, *snapshot.terrain->rules, request.terrainBuckets);
+}
+
+SimulationSnapshot::Requirements buildingRequirements()
+{
+    using namespace SimulationSnapshot;
+    return bit(Component::Catalogs) | bit(Component::Terrain) | bit(Component::Resources)
+        | bit(Component::Occupancy) | bit(Component::Areas);
+}
+
+BuildingSeed captureBuildingSeed(const Building& building, int swim, BuildingRoute route)
+{
+    BuildingSeed seed;
+    seed.posX=building.posX; seed.posY=building.posY;
+    seed.width=building.type->width; seed.height=building.type->height;
+    seed.unitStayRange=building.unitStayRange; seed.swim=swim;
+    seed.gid=Uint16(building.gid);
+    seed.route=building.resolveRoute(route);
+    seed.occupiesGround=building.type->semantics.occupiesGround;
+    seed.teamMask=building.owner->me; seed.allies=building.owner->allies;
+    std::copy(std::begin(building.clearingMaterials), std::end(building.clearingMaterials), seed.clearingMaterials.begin());
+    return seed;
+}
+
+BuildingSeedResult seedBuilding(const BuildingSeed& building, const SimulationSnapshot::Handle& snapshot, Uint16* out)
+{
+    const auto view=snapshot.view();
+    const auto size=size_t(view.width)*view.height;
+    return buildingCells(view, building, out, [size](auto fn) { fn(0, size); });
+}
+
+BuildingSeedResult buildBuilding(const BuildingSeed& building, const SimulationSnapshot::Handle& snapshot,
+    const BuildingGradientSearch::Inputs& inputs, Uint16* out, BuildingGradientSearch& search, int depthTarget)
+{
+    const auto result=seedBuilding(building, snapshot, out);
+    if (result.locked) return result;
+    search.begin(inputs, out, building.swim, snapshot.width, snapshot.height);
+    // resolveToCost records no owner telemetry; COST_LIMIT drains every queue.
+    search.resolveToCost(depthTarget);
+    return result;
 }
 }

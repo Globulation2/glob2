@@ -179,6 +179,14 @@ export const MatchRules = Strict(
         description: 'Engine-wide AI decision delay in ticks; absent means zero.',
       }),
     ),
+    buildingGradientDelay: Type.Optional(
+      Type.Integer({
+        minimum: 1,
+        maximum: 8,
+        description:
+          'Ticks between capturing and publishing a scheduled building walking field; absent means eight.',
+      }),
+    ),
     instantConstruction: Type.Boolean(),
     stockpileStartLevel: Type.Integer({ minimum: 0, maximum: 3 }),
     hungerDisabled: Type.Boolean(),
@@ -352,6 +360,7 @@ export const STANDARD_RULES: MatchRules = {
   resourceGrowthDisabled: false,
   resourceScarcityLevel: 0,
   aiOrderDelay: 8,
+  buildingGradientDelay: 8,
   instantConstruction: false,
   stockpileStartLevel: 0,
   hungerDisabled: false,

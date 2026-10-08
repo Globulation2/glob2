@@ -11,7 +11,7 @@ Campaigns and tutorials keep their authored behavior.
 
 With the experiment enabled, workers supplying non-market buildings can fetch
 resources from their team's stocked markets, including when no natural tile of
-that resource remains. Resource and round-trip routing charge a market pickup an
+that resource remains. Resource routing charges a market pickup an
 extra five tiles, so a nearer natural source can still win. Existing worker
 attachment between deliveries is preserved.
 

@@ -75,3 +75,7 @@ describe('realtime', () => {
 it('new matches explicitly default to eight tick AI decisions', () => {
   expect(STANDARD_RULES.aiOrderDelay).toBe(8);
 });
+
+it('new matches spell out the eight tick building gradient delay', () => {
+  expect(STANDARD_RULES.buildingGradientDelay).toBe(8);
+});

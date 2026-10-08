@@ -843,11 +843,12 @@ static void measurementReplayBoundaries()
 	// Format 124 introduced experiments; format 125 adds JavaScript identities.
 	// Format 128 changes save encoding, retaining the format-127 replay floor.
 	// Format 130 adds the farm-areas tile mask, still retaining that floor.
-	// Vertex terrain sets replay floor 146, protocol 62;
-	// older save compatibility remains independent of these acceptance gates.
-	require(REPLAY_MINIMUM_VERSION_MINOR == FILE_FORMAT_VERSION_VERTEX_TERRAIN && NET_PROTOCOL_VERSION == 62,
+	// Scheduled building gradients (format 148, after greedy-only fetching at
+	// 147) set replay floor 148 and protocol 63; older save compatibility
+	// remains independent of these acceptance gates.
+	require(REPLAY_MINIMUM_VERSION_MINOR == FILE_FORMAT_VERSION_BUILDING_GRADIENT_PIPELINE && NET_PROTOCOL_VERSION == 63,
 			"integrated simulation uses current replay and network gates");
-	for (int version : {98, 99, 100, 101, 102, 103, 104, 105, 106, 107, 115, 119, 120, 121, 122, 123, 124, 133, 134, 135, FILE_FORMAT_VERSION_RUNTIME_TERRAIN, FILE_FORMAT_VERSION_TERRAIN_SEED, 139, FILE_FORMAT_VERSION_RUNTIME_RESOURCES, FILE_FORMAT_VERSION_TERRAIN_CATALOGUE, VERSION_MINOR, VERSION_MINOR+1})
+	for (int version : {98, 99, 100, 101, 102, 103, 104, 105, 106, 107, 115, 119, 120, 121, 122, 123, 124, 133, 134, 135, FILE_FORMAT_VERSION_RUNTIME_TERRAIN, FILE_FORMAT_VERSION_TERRAIN_SEED, 139, FILE_FORMAT_VERSION_RUNTIME_RESOURCES, FILE_FORMAT_VERSION_TERRAIN_CATALOGUE, FILE_FORMAT_VERSION_AI_PIPELINE, FILE_FORMAT_VERSION_BUILDING_ARTWORK, FILE_FORMAT_VERSION_VERTEX_TERRAIN, FILE_FORMAT_VERSION_GREEDY_FETCHING, VERSION_MINOR, VERSION_MINOR+1})
 	{
 		auto *bytes = new GAGCore::MemoryStreamBackend;
 		GAGCore::BinaryOutputStream writer(bytes);

@@ -10,29 +10,16 @@
 #include "Unit.h"
 #include "MapInternal.h"
 #include "BuildingGradientSearch.h"
+#include "gradient/BuildingGradientStats.h"
 
 
 
-// Building pathfinding (buildingGradient, buildingAvailable, roundTripGradient,
-// roundTripDistance, pathfindBuilding)
+// Building pathfinding (buildingGradient, buildingAvailable, pathfindBuilding)
 
 namespace {
 
 // A unit that cannot make progress forces a rebuild at most this often (~5 s).
 constexpr Uint32 STUCK_REBUILD_TICKS = 128;
-// A round-trip gradient follows its two parents with at most this delay (the
-// resource gradient stays authoritative for reachability, so staleness only
-// costs a detour). Building::freeIdleGradients drops unused ones.
-// This timer is the only thing that refreshes the child: a topology generation
-// bump rebuilds the parent walking field on its next use, but does not
-// propagate to the round-trip fields derived from it, so for up to this many
-// ticks a fetcher can be priced against the ground as it was before the
-// change. It still cannot walk into a wall - directionByGradient re-tests live
-// passability on every candidate step - so the cost is a detour, and the
-// alternative (stamping the parent's generation on the child) would rebuild
-// every live child on every structural change, which measured far worse than
-// the detour it removes.
-constexpr Uint32 ROUND_TRIP_REFRESH_TICKS = 120;
 
 
 } // namespace
@@ -45,20 +32,45 @@ bool Map::prepareBuildingGradient(Building *building, int swimClass, BuildingRou
 	Uint32 lastUpdate=building->lastGlobalGradientUpdateStepCounter[slot];
 	Uint32 now=game->stepCounter;
 	building->globalGradientUsedStep[slot]=now;
-	bool rebuild=false;
+	bool rebuild=false, cold=false;
+	using Reason = BuildingGradientStats::Reason;
+	Reason reason = Reason::Other;
 	if (gradient==NULL)
 	{
 		gradient=acquireBuildingGradientBuffer();
-		rebuild=true;
+		rebuild=cold=true;
+		reason=Reason::Null;
 	}
 	else if ((building->dirtyGradient[slot] || building->gradientGeneration[slot]!=topologyGeneration)
 		&& lastUpdate+GRADIENT_DIRTY_REBUILD_TICKS<=now)
+	{
 		rebuild=true;
+		reason=building->dirtyGradient[slot] ? Reason::Dirty : Reason::Generation;
+	}
 	// A clearing flag's goals are resources, which grow and get cleared.
 	else if (building->resolveRoute(route) == BuildingRoute::Clearing && lastUpdate+CLEARING_FLAG_REFRESH_TICKS<=now)
+	{
 		rebuild=true;
-	if (rebuild)
+		reason=Reason::Clearing;
+	}
+	// With scheduled building gradients a refresh is requested and the old
+	// field keeps serving until its publication; a cold field has none.
+	if (rebuild && (cold || !requestBuildingRefresh(building, slot)))
+	{
+		using Sync = BuildingSyncReason;
+		if (cold)
+			switch (building->gradientDrop[slot])
+			{
+			case Building::GradientDrop::New: noteBuildingSyncReason(Sync::ColdNew); break;
+			case Building::GradientDrop::Idle: noteBuildingSyncReason(Sync::ColdIdle); break;
+			case Building::GradientDrop::Own: noteBuildingSyncReason(Sync::ColdOwn); break;
+			case Building::GradientDrop::Team: noteBuildingSyncReason(Sync::ColdTeam); break;
+			case Building::GradientDrop::Area: noteBuildingSyncReason(Sync::ColdArea); break;
+			}
+		else noteBuildingSyncReason(Sync::Other);
+		if (gradientStats) gradientStats->setPendingReason(reason);
 		updateGlobalGradient(building, swimClass, route);
+	}
 	return !building->locked[building->routeAccess(swimClass, route)];
 }
 
@@ -109,42 +121,6 @@ bool Map::buildingAvailable(Building *building, int swimClass, int x, int y, int
 }
 
 
-const Uint16 *Map::roundTripGradientSlot(Building *building, int resourceType, int swimClass)
-{
-	if (!prepareBuildingGradient(building, swimClass, BuildingRoute::Footprint))
-		return NULL;
-	Uint32 now=game->stepCounter;
-	Uint16 *&gradient=building->roundTripGradient[resourceType][swimClass];
-	building->roundTripGradientUsedStep[resourceType][swimClass]=now;
-	if (gradient!=NULL && building->roundTripGradientStep[resourceType][swimClass]+ROUND_TRIP_REFRESH_TICKS>now)
-		return gradient;
-	if (gradient==NULL)
-		gradient=acquireBuildingGradientBuffer();
-	updateRoundTripGradientSlot(building, resourceType, swimClass);
-	return gradient;
-}
-
-bool Map::roundTripDistanceSlot(Building *building, int resourceType, int swimClass, int x, int y, int *dist)
-{
-	PERF_SCOPE_TIME(PathBuilding);
-	// Only gradients a fetcher keeps alive: hiring looks at every needed
-	// resource of every building, far more than ever get fetched.
-	const Uint16 *gradient=building->roundTripGradient[resourceType][swimClass];
-	if (gradient==NULL)
-		return false;
-	// It may be a few ticks older than the resource gradient the callers walk
-	// by; never report a resource that one says is gone.
-	if (!materialAvailableSlot(building->owner->teamNumber, resourceType, swimClass, x, y, false, building))
-		return false;
-	building->roundTripGradientUsedStep[resourceType][swimClass]=game->stepCounter;
-	Uint16 g=gradient[coordToIndex(x, y)];
-	if (g<=GRADIENT_UNREACHABLE)
-		return false;
-	*dist=gradientTiles(g);
-	return true;
-}
-
-
 bool Map::pathfindBuilding(Building *building, int swimClass, int x, int y, int *dx, int *dy, BuildingRoute route)
 {
 	const int slot = building->routeSlot(swimClass, route);
@@ -167,6 +143,7 @@ bool Map::pathfindBuilding(Building *building, int swimClass, int x, int y, int 
 	{
 		// Standing where one of the flag's resources was: it is gone, the gradient is stale.
 		building->dirtyGradient[slot]=true;
+		if (gradientStats) gradientStats->clearingGoalGone();
 		return false;
 	}
 	if (buildingGradientDirection(building, swimClass, x, y, dx, dy, true, route))
@@ -174,7 +151,12 @@ bool Map::pathfindBuilding(Building *building, int swimClass, int x, int y, int 
 	if (building->lastGlobalGradientUpdateStepCounter[slot]+STUCK_REBUILD_TICKS>game->stepCounter)
 		return buildingGradientDirection(building, swimClass, x, y, dx, dy, false, route);
 
-	// Stuck for a while: the gradient may be stale, rebuild it now.
+	// Stuck for a while: the gradient may be stale. A scheduled refresh keeps
+	// sidestepping on the old field until it publishes; otherwise rebuild now.
+	if (requestBuildingRefresh(building, slot))
+		return buildingGradientDirection(building, swimClass, x, y, dx, dy, false, route);
+	noteBuildingSyncReason(BuildingSyncReason::Other);
+	if (gradientStats) gradientStats->setPendingReason(BuildingGradientStats::Reason::Stuck);
 	updateGlobalGradient(building, swimClass, route);
 	if (building->locked[building->routeAccess(swimClass, route)])
 		return false;

@@ -698,10 +698,147 @@ void loadGradient(GAGCore::InputStream *stream, Uint16 *&field, size_t size, boo
 }
 }
 
+// Scheduled building gradients: the request queue in FIFO order (stale entries
+// kept, so the overflow fallback sees the same length after loading) and the
+// pending jobs in publication order. Each pending search is finished first, as
+// lazy fields are below, so no bucket queue is serialized; a restored job is
+// complete with no search. Supersession is resolved here into a flag, since
+// slot epochs are owner-only. Saves before 148 carry none of this.
+void Map::saveBuildingGradientPipeline(GAGCore::OutputStream *stream) const
+{
+	auto &rt=*gradientRuntime;
+	stream->writeEnterSection("buildingGradientPipeline");
+	stream->writeUint8(rt.buildings.delayTicks(), "delay");
+	stream->writeEnterSection("queue");
+	stream->writeUint16(rt.buildingRequests.size(), "count");
+	unsigned index=0;
+	for (const auto &request : rt.buildingRequests)
+	{
+		const Building *b=buildingGradientDestination(request.team, request.building, request.identity);
+		const bool stale=request.stale || !b || b->refreshEpoch[request.slot]!=request.epoch || !b->globalGradient[request.slot];
+		stream->writeEnterSection(index++);
+		stream->writeUint8(request.team, "team");
+		stream->writeUint16(request.building, "building");
+		stream->writeUint32(request.identity, "identity");
+		stream->writeUint8(request.slot, "slot");
+		stream->writeUint8(stale, "stale");
+		stream->writeLeaveSection();
+	}
+	stream->writeLeaveSection();
+	stream->writeEnterSection("pending");
+	stream->writeUint8(rt.buildings.pendingCount(), "count");
+	index=0;
+	rt.buildings.visitPending([&](BuildingGradientJobPipeline::Job &job, unsigned remaining) {
+		auto &p=job.payload;
+		const Building *b=buildingGradientDestination(p.team, p.buildingId, p.scriptIdentity);
+		const bool superseded=job.superseded || !b || b->refreshEpoch[p.slot]!=p.epoch || !b->globalGradient[p.slot];
+		if (!superseded && p.search && !p.locked) p.search->finish();
+		stream->writeEnterSection(index++);
+		stream->writeUint8(p.team, "team");
+		stream->writeUint16(p.buildingId, "building");
+		stream->writeUint32(p.scriptIdentity, "identity");
+		stream->writeUint8(p.slot, "slot");
+		stream->writeUint32(p.captureTick, "captured");
+		stream->writeUint32(p.generation, "generation");
+		stream->writeUint8(remaining, "remaining");
+		stream->writeUint8(superseded, "superseded");
+		stream->writeUint8(p.locked, "locked");
+		stream->writeUint8(p.resourceState, "resourceState");
+		saveGradient(stream, superseded ? nullptr : p.data.get(), size);
+		stream->writeLeaveSection();
+	});
+	stream->writeLeaveSection();
+	stream->writeLeaveSection();
+}
+
+void Map::loadBuildingGradientPipeline(GAGCore::InputStream *stream, bool packed)
+{
+	auto &rt=*gradientRuntime;
+	stream->readEnterSection("buildingGradientPipeline");
+	const unsigned delay=stream->readUint8("delay");
+	stream->readEnterSection("queue");
+	const unsigned requests=stream->readUint16("count");
+	ensureBuildingGradientPipeline();
+	// An empty pipeline carries no deadlines, so it follows the header even when
+	// the saved delay predates a fork or a header change; saved work must match.
+	const bool otherDelay=delay!=rt.buildings.delayTicks();
+	if (otherDelay && requests)
+		throw std::runtime_error("Saved building gradient delay does not match the match rules");
+	if (requests && !buildingGradientPipelineActive())
+		throw std::runtime_error("Saved building gradient requests require the pipeline");
+	const auto validDestination=[&](unsigned team, unsigned building, unsigned slot) {
+		if (team>=unsigned(game->teamsCount()) || building>=unsigned(Building::MAX_COUNT) || slot>=unsigned(BUILDING_GRADIENT_COUNT))
+			throw std::runtime_error("Invalid saved building gradient destination");
+	};
+	for (unsigned i=0; i<requests; ++i)
+	{
+		stream->readEnterSection(i);
+		GradientRuntime::BuildingRequest request;
+		request.team=stream->readUint8("team");
+		request.building=stream->readUint16("building");
+		request.identity=stream->readUint32("identity");
+		request.slot=stream->readUint8("slot");
+		request.stale=loadFlag(stream, "stale");
+		stream->readLeaveSection();
+		validDestination(request.team, request.building, request.slot);
+		Building *b=buildingGradientDestination(request.team, request.building, request.identity);
+		if (!b) request.stale=true;
+		if (!request.stale)
+		{
+			if (b->refreshRequested.test(request.slot)) throw std::runtime_error("Duplicate saved building gradient request");
+			request.epoch=b->refreshEpoch[request.slot];
+			b->refreshRequested.set(request.slot);
+		}
+		rt.buildingRequests.push_back(request);
+	}
+	stream->readLeaveSection();
+	stream->readEnterSection("pending");
+	const unsigned count=stream->readUint8("count");
+	if (otherDelay && count)
+		throw std::runtime_error("Saved building gradient delay does not match the match rules");
+	for (unsigned i=0; i<count; ++i)
+	{
+		stream->readEnterSection(i);
+		building_gradient::Job p;
+		p.team=stream->readUint8("team");
+		p.buildingId=stream->readUint16("building");
+		p.scriptIdentity=stream->readUint32("identity");
+		p.slot=stream->readUint8("slot");
+		validDestination(p.team, p.buildingId, p.slot);
+		p.swim=p.slot%SWIM_CLASS_COUNT;
+		p.route=BuildingRoute(p.slot/SWIM_CLASS_COUNT);
+		p.captureTick=stream->readUint32("captured");
+		p.generation=stream->readUint32("generation");
+		const unsigned remaining=stream->readUint8("remaining");
+		bool superseded=loadFlag(stream, "superseded");
+		p.locked=loadFlag(stream, "locked");
+		p.resourceState=stream->readUint8("resourceState");
+		if (p.resourceState>2) throw std::runtime_error("Invalid saved resource state");
+		Uint16 *field=nullptr;
+		loadGradient(stream, field, size, packed);
+		p.data.reset(field);
+		stream->readLeaveSection();
+		if (!superseded && !p.data) throw std::runtime_error("Missing saved building gradient result");
+		Building *b=buildingGradientDestination(p.team, p.buildingId, p.scriptIdentity);
+		if (!b) superseded=true;
+		if (!superseded)
+		{
+			if (b->refreshRequested.test(p.slot)) throw std::runtime_error("Duplicate saved building gradient job");
+			p.epoch=b->refreshEpoch[p.slot];
+			b->refreshRequested.set(p.slot);
+		}
+		rt.buildings.restoreCompleted(remaining, superseded, std::move(p));
+	}
+	stream->readLeaveSection();
+	stream->readLeaveSection();
+}
+
 // Cached routing fields deliberately lag map edits. Recomputing them on load
 // changes decisions before their scheduled refresh, even with an identical RNG.
 void Map::saveRuntimeState(GAGCore::OutputStream *stream) const
 {
+	// A header changed since the last tick (a fork) reconfigures an empty pipeline first.
+	const_cast<Map*>(this)->ensureBuildingGradientPipeline();
 	const_cast<Map*>(this)->preparePendingGradient();
 	stream->writeEnterSection("mapRuntime");
 	stream->writeUint8(fogOfWar == fogOfWarA.data(), "fogIsA");
@@ -787,19 +924,11 @@ void Map::saveRuntimeState(GAGCore::OutputStream *stream) const
 				stream->writeUint32(building->gradientGeneration[sw], "generation");
 				stream->writeLeaveSection();
 			}
-			stream->writeEnterSection("roundTrip");
+			stream->writeEnterSection("gradientUse");
 			for (int sw=0; sw<SWIM_CLASS_COUNT; ++sw)
 			{
 				stream->writeEnterSection(sw);
 				stream->writeUint32(building->globalGradientUsedStep[sw], "usedStep");
-				for (int r=0; r<MaterialSlotCount; ++r)
-				{
-					stream->writeEnterSection(r);
-					saveGradient(stream, building->roundTripGradient[r][sw], size);
-					stream->writeUint32(building->roundTripGradientStep[r][sw], "step");
-					stream->writeUint32(building->roundTripGradientUsedStep[r][sw], "usedStep");
-					stream->writeLeaveSection();
-				}
 				stream->writeLeaveSection();
 			}
 			stream->writeLeaveSection();
@@ -865,6 +994,8 @@ void Map::saveRuntimeState(GAGCore::OutputStream *stream) const
 	});
 	stream->writeLeaveSection();
 	saveMaterialRoutingCache(stream);
+	// Last, so streams of older layouts (and tests replaying them) read unchanged.
+	saveBuildingGradientPipeline(stream);
 	stream->writeLeaveSection();
 }
 
@@ -874,6 +1005,10 @@ void Map::loadRuntimeState(GAGCore::InputStream *stream, Sint32 versionMinor)
     const bool packed=versionMinor>=FILE_FORMAT_VERSION_COMPACT_STATE && GAGCore::PackedArray::binary(stream);
 	gradientRuntime->preparation={};
 	gradientRuntime->pipeline.reset();
+	resetBuildingGradientPipeline();
+	for (int t=0; t<game->teamsCount(); ++t)
+		for (int b=0; b<Building::MAX_COUNT; ++b)
+			if (auto *building=game->teams[t]->myBuildings[b]) building->refreshRequested.reset();
 	stream->readEnterSection("mapRuntime");
 	const bool fogIsA=loadFlag(stream,"fogIsA");
 	if (versionMinor>=FILE_FORMAT_VERSION_TOPOLOGY_GENERATION)
@@ -966,8 +1101,22 @@ void Map::loadRuntimeState(GAGCore::InputStream *stream, Sint32 versionMinor)
 					? stream->readUint32("generation") : topologyGeneration;
 				stream->readLeaveSection();
 			}
-			if (versionMinor >= FILE_FORMAT_VERSION_ROUND_TRIP_FIELDS)
+			if (versionMinor >= FILE_FORMAT_VERSION_GREEDY_FETCHING)
 			{
+				stream->readEnterSection("gradientUse");
+				for (int sw=0; sw<SWIM_CLASS_COUNT; ++sw)
+				{
+					stream->readEnterSection(sw);
+					building->globalGradientUsedStep[building->routeSlot(sw, savedRoute)]=stream->readUint32("usedStep");
+					stream->readLeaveSection();
+				}
+				stream->readLeaveSection();
+			}
+			else if (versionMinor >= FILE_FORMAT_VERSION_ROUND_TRIP_FIELDS)
+			{
+				// Formats 95-146 also carry the retired round-trip fields beside each
+				// walking field's last-use step. Read and discard them; resource
+				// fetching never consults one now.
 				stream->readEnterSection("roundTrip");
 				for (int sw=0; sw<SWIM_CLASS_COUNT; ++sw)
 				{
@@ -976,9 +1125,11 @@ void Map::loadRuntimeState(GAGCore::InputStream *stream, Sint32 versionMinor)
 					for (int r=0; r<MaterialSlotCount; ++r)
 					{
 						stream->readEnterSection(r);
-						loadGradient(stream, building->roundTripGradient[r][sw], size, packed);
-						building->roundTripGradientStep[r][sw]=stream->readUint32("step");
-						building->roundTripGradientUsedStep[r][sw]=stream->readUint32("usedStep");
+						Uint16 *retired=nullptr;
+						loadGradient(stream, retired, size, packed);
+						delete[] retired;
+						stream->readUint32("step");
+						stream->readUint32("usedStep");
 						stream->readLeaveSection();
 					}
 					stream->readLeaveSection();
@@ -1055,6 +1206,8 @@ void Map::loadRuntimeState(GAGCore::InputStream *stream, Sint32 versionMinor)
 		stream->readLeaveSection();
 	}
 	if (versionMinor>=FILE_FORMAT_VERSION_BUILDING_CATALOG) loadMaterialRoutingCache(stream,packed,versionMinor);
+	// Older saves restore no scheduled building work.
+	if (versionMinor>=FILE_FORMAT_VERSION_BUILDING_GRADIENT_PIPELINE) loadBuildingGradientPipeline(stream,packed);
 	stream->readLeaveSection();
     if (versionMinor < FILE_FORMAT_VERSION_HAZARD_ROUTING && hasTerrainHealthEffects()) {
         // Consume the complete old state first, then discard only route caches.

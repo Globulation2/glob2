@@ -18,7 +18,9 @@ binds distributed matches to the definitions.
 Building format 137 adds configurable services and capability-driven AI; replays
 recorded before version 137 became incompatible and network protocol 57 separated
 clients using those rules. Format 146 stores terrain per map vertex and derives each
-cell's rules from its corners; the current replay floor is 146.
+cell's rules from its corners. Format 147 makes resource fetching greedy only, without
+round-trip routing, and format 148 schedules building walking fields; the current
+replay floor is 148.
 Supported saved games still load and adopt the current simulation;
 the save floor remains 58.
 
@@ -29,6 +31,30 @@ sets the same rule. Saved games retain their original setting; do not override i
 when continuing a save. Delay 8 intentionally changes response pacing compared
 with delay 0. Compare the same initial state, seed, delay and orders across worker
 counts and platforms when checking determinism.
+
+`--rule buildingGradientDelay=N` (1 through 8, default 8) sets how many ticks a
+scheduled building walking field waits between capture and publication. It cannot
+change while scheduled building fields are pending. Format 148 saves the pending
+fields and the request queue; older saves restore none and start the pipeline at
+the delay their header implies (8 before format 148).
+
+To compare delays from one checkpoint, fork it explicitly:
+`--load-game busy.game --fork-rule buildingGradientDelay=N`. A fork changes the
+loaded match's rules before its first tick; it is a different match from the saved
+one, not a continuation. Its replay (`--replay true`) starts at the fork and
+`result.json` lists the changes under `resolved.fork` (empty for a plain
+continuation). Only this rule can be forked, and only from a save with no pending
+scheduled building fields (a save from before format 148, or one taken before any
+refresh was requested); to measure another delay later in a game, save the
+checkpoint from a run started with `--rule buildingGradientDelay=N`. Other
+overrides of a saved game, including `--experiment`, `--rule` and
+`--ai-order-delay`, are still rejected.
+
+`GLOB2_BUILDING_DEPTH=full|table|lazy` chooses how far a worker settles a scheduled
+building field before publication: the generated depth model (`table`, the
+default), the whole field, or only its seeds. Readers resolve unsettled cells on the
+owner either way, so the setting moves CPU between workers and the simulation thread
+and never changes a result; use it only for timing comparisons.
 
 Format 143 saves the AI engine's completed pending orders, logical deadlines and
 execution feedback. Saving finishes outstanding decisions without executing
@@ -110,6 +136,7 @@ Turns custom-game rules on for `-test-games` and `-test-games-nox` matches, as c
 | `noPermadeath` | 0-1 | No permadeath |
 | `peaceful` | 0-1 | Peaceful mode |
 | `fortress` | 0-2 | Fortress buildings (x5, x10 building HP) |
+| `buildingGradientDelay` | 1-8 | Ticks between capturing and publishing a scheduled building walking field (default 8) |
 | `suddenDeathTick` | 0-100000000 | Sudden-death timer at this tick (0 = off; the lobby offers 30-90 minutes, 45,000-135,000 ticks) |
 | `winProbabilityPermille` | 0 or 501-1000 | Estimated win-probability condition (0 = off); distinct from the sudden-death timer |
 | `<experiment key>` | 0-1 | An [experimental feature](../features/experimental-features.md) by its key, e.g. `guard-area-balancing`. The profile's Settings > Experiments apply first; a rule here overrides that one experiment |
@@ -416,7 +443,7 @@ that replay floor. Network protocol 51 requires compact-map readers and rejects
 older and newer clients. Background save finalization owns a captured state and
 does not advance simulation; continuation checks must still compare the same
 captured tick, seed and orders. Routing worker availability affects wall time only:
-the serial fallback publishes on the same ticks. Headless `--gradient-workers 0` is the deterministic owner-only seeding and propagation control.
+the serial fallback publishes on the same ticks. Headless `--gradient-workers 0` is the deterministic owner-only seeding and propagation control: the owner computes each periodic and building gradient job when it submits it, and publication keeps its deadline.
 
 Periodic material, market, guard and clear gradients use the same executor as AI.
 Their immutable inputs are captured at the completed-tick boundary; seeding and

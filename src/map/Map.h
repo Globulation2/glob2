@@ -15,6 +15,7 @@
 #include <memory>
 #include <mutex>
 #include <optional>
+#include <string_view>
 #include <span>
 #include <vector>
 #include <assert.h>
@@ -52,6 +53,7 @@ class Game;
 class SessionGame;
 class MapHeader;
 struct GradientRuntime;
+class BuildingGradientStats;
 
 //! 2D grid offset returned by Map's 3x3-neighborhood "doesTouch" queries.
 //! dx and dy are each in {-1, 0, +1}.
@@ -108,6 +110,14 @@ class Map
 	mutable ComputeExecutor compute;
 	mutable std::unique_ptr<GradientRuntime> gradientRuntime;
 	unsigned computeExperiments = 0;
+	// Scheduled building gradients (MapGradientScheduling.cpp).
+	void stageBuildingGradientPreparation();
+	SimulationSnapshot::Requirements pendingBuildingRequirements() const;
+	void prepareStagedBuildingGradients(const SimulationSnapshot::Handle& foundation);
+	void resetBuildingGradientPipeline() noexcept;
+	Building *buildingGradientDestination(int team, int id, Uint32 identity) const;
+	void saveBuildingGradientPipeline(GAGCore::OutputStream *stream) const;
+	void loadBuildingGradientPipeline(GAGCore::InputStream *stream, bool packed);
 	// The live cell view minus the game's growth settings, rebound by
 	// refreshLiveView() whenever an input is replaced. Per-cell queries read
 	// it directly instead of assembling a view on every call.
@@ -263,6 +273,48 @@ public:
 	void resetGradientPipeline() noexcept;
 	void setGradientWorkerCount(unsigned workers);
 	void configureGradientPipeline(unsigned workers, unsigned delay);
+	// Scheduled building gradients (MapGradientScheduling.cpp). Team stepping
+	// requests refreshes of existing fields and keeps serving the old ones;
+	// after the tick up to MaxJobsPerTick requests are staged, captured at the
+	// observation boundary, built on workers and published
+	// buildingGradientDelay ticks later. Cold fields stay synchronous; area and
+	// team-wide resets keep old walking fields serving instead of making them
+	// cold (Building::keepsStaleGradients).
+	//! Why a building walking field was built on the owner. cold_* name what
+	//! last dropped the field (never built, idle eviction, the building's own
+	//! reset, a team-wide reset, an area edit).
+	enum class BuildingSyncReason : unsigned char
+	{
+		Inactive, ColdNew, ColdIdle, ColdOwn, ColdTeam, ColdArea, Overflow, Other, Count
+	};
+	static const char *buildingSyncReasonName(BuildingSyncReason reason);
+	struct BuildingGradientPipelineStatus
+	{
+		bool enabled = false;
+		unsigned delay = 0;
+		std::size_t pending = 0, queued = 0;
+		std::uint64_t jobs = 0, published = 0, discarded = 0, synchronous = 0, maxPending = 0, waitNs = 0;
+		std::array<std::uint64_t, std::size_t(BuildingSyncReason::Count)> synchronousByReason{};
+	};
+	//! Tags the next synchronous building build for the counters above.
+	void noteBuildingSyncReason(BuildingSyncReason reason);
+	//! A team-local edit moves current fields to the new topology generation;
+	//! pending results captured at the old one move with them.
+	void carryPendingBuildingGenerations(Uint32 from, Uint32 to);
+	BuildingGradientPipelineStatus buildingGradientPipelineStatus() const;
+	//! Follow the header's buildingGradientDelay now; throws with pending work.
+	void ensureBuildingGradientPipeline();
+	bool buildingGradientPipelineActive() const;
+	//! Queue a refresh of an existing walking field (slot = routeSlot). False
+	//! when the caller must rebuild synchronously (no pipeline: a map without
+	//! a game, or no existing field).
+	bool requestBuildingRefresh(Building *building, int slot);
+	//! Worker depth for a scheduled walking field: every reader still resolves
+	//! its cell first, so the prediction moves CPU, never values.
+	int predictBuildingDepth(const Building *building, int slot) const;
+	//! "table" (default), "full" or "lazy" (seeds only): CPU placement for
+	//! timing comparisons, never results. GLOB2_BUILDING_DEPTH sets it too.
+	void setBuildingGradientDepth(std::string_view mode);
 	void updateTeamAreaGradients(int teamNumber);
 	void seedMaterialGradient(int team, Uint8 resource, int swim, Uint16 *gradient, bool withMarkets = false, const Building* consumer = nullptr, unsigned modes = 0);
 	void seedGuardAreasGradient(int team, int swim, Uint16 *gradient);
@@ -1065,7 +1117,7 @@ public:
 	bool getGlobalGradientDestination(const T *gradient, int x, int y, Sint32 *targetX, Sint32 *targetY) const;
 	//! Whether (x, y) is a local maximum of gradient: no neighbour holds a strictly higher
 	//! value. True at any tile getGlobalGradientDestination's ascent could end on, including
-	//! gradients like a round-trip field whose seeded goal is a finite cost, not the type's max.
+	//! gradients like a market-seeded field whose goal is a finite cost, not the type's max.
 	template<typename T>
 	bool isGradientPeak(const T *gradient, int x, int y) const;
 
@@ -1095,9 +1147,8 @@ public:
 	//! (guard-area balancing: stepping within an area).
 	bool directionByGradient(Uint32 teamMask, int swimClass, int x, int y, const Uint16 *gradient, int *dx, int *dy, bool strict, Uint32 guardAreaMask = 0) const;
 	void updateMaterialGradient(int teamNumber, Uint8 resourceType, int swimClass, bool withMarkets = false);
-	//! Direction toward a resource of resourceType. With a target building the round-trip
-	//! gradient is descended, so the unit heads for the resource that is nearest for
-	//! fetching and carrying it there; without one, for the resource nearest to itself.
+	//! Direction toward the resource of resourceType nearest to (x, y). A target building
+	//! selects which suppliers (markets, stock) its resource gradient includes.
 	bool pathfindMaterial(int teamNumber, Uint8 resourceType, int swimClass, int x, int y, int *dx, int *dy, bool *stopWork, Building *target, bool withMarkets = false);
 	void pathfindRandom(Unit *unit);
 	//! Idle escape toward non-damaging terrain using a lazily shared field.
@@ -1107,17 +1158,6 @@ public:
 	//! Initialize a fresh building field and retain its search frontier. Point
 	//! queries extend it on demand; buildingGradient returns a complete field.
 	void updateGlobalGradient(Building *building, int swimClass, BuildingRoute route = BuildingRoute::Automatic);
-	//! Rebuild the building's round-trip gradient for a resource type and swim class:
-	//! every tile of that resource is seeded with its distance to the building, so a
-	//! cell's value is the cheapest fetch-and-carry trip from there.
-	void updateRoundTripGradientSlot(Building *building, int resourceType, int swimClass);
-	//! The building's round-trip gradient, built or refreshed on demand. NULL when the
-	//! building cannot be reached.
-	const Uint16 *roundTripGradientSlot(Building *building, int resourceType, int swimClass);
-	//! Tiles of the cheapest trip from (x, y) to a resource of resourceType and on to the
-	//! building, read from a round-trip gradient a fetcher's walk has already built. False
-	//! when there is none or no such trip; the caller then scores by the plain distances.
-	bool roundTripDistanceSlot(Building *building, int resourceType, int swimClass, int x, int y, int *dist);
 	//! Complete field, refreshed as needed; NULL when locked. Point queries use
 	//! buildingAvailable/pathfindBuilding so partial arrays never escape this API.
 	const Uint16 *buildingGradient(Building *building, int swimClass, BuildingRoute route = BuildingRoute::Automatic);
@@ -1134,6 +1174,8 @@ public:
 	//! and a unit blocked by one forces its own rebuild in pathfindBuilding.
 	Uint32 topologyGeneration;
 	void bumpTopologyGeneration() { topologyGeneration++; }
+	//! Diagnostics only (--telemetry gradient-stats); null otherwise.
+	std::unique_ptr<BuildingGradientStats> gradientStats;
 	bool pathfindForbidden(const Uint16 *optionGradient, int teamNumber, int swimClass, int x, int y, int *dx, int *dy);
 	enum class AreaKind { Guard, Clear };
 	//! Find the best direction toward a guard or clear area; return true if one has been found.

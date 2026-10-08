@@ -4,6 +4,7 @@
 #pragma once
 
 #include "Material.h"
+#include <bitset>
 #include <climits>
 #include <list>
 #include <memory>
@@ -118,8 +119,10 @@ class Building : public BuildingUtils, public BuildingStateRecord
 	virtual ~Building(void);
 	void freeGradients();
 	// Drop the pathfinding gradients (call after the building moves or its range changes).
-	void resetPathfindGradients();
-	void resetRoundTripGradients();
+	// Why a field was last dropped; diagnostics only (synchronous rebuild reasons).
+	enum class GradientDrop : Uint8 { New, Idle, Own, Team, Area };
+	void resetPathfindGradients(GradientDrop cause = GradientDrop::Own);
+	bool keepsStaleGradients(GradientDrop cause) const;
 	// Request a rebuild on use once the refresh throttle permits (map changed nearby).
 	void dirtyGradients();
 
@@ -488,9 +491,9 @@ private:
 		Unit* choosen;
 	};
 
-	/// Lets src/unit/RoundTripHungerGateHarness.cpp reach considerUnitForMaterial
+	/// Lets src/unit/FetchHiringScoreHarness.cpp reach considerUnitForMaterial
 	/// without exposing it to game callers, as GameGUI does for its own harness.
-	friend class RoundTripHungerGateHarness;
+	friend class FetchHiringScoreHarness;
 
 	/// Whether a unit is a possible hire at all: harvest-capable, idle, healthy,
 	/// high enough level, and close enough to reach this building before going
@@ -587,16 +590,26 @@ public:
 	// All swimming classes share passability, but keep separate weighted fields.
 	//! Last step a unit asked for the gradient; freeIdleGradients drops it when that is long ago.
 	Uint32 globalGradientUsedStep[BUILDING_GRADIENT_COUNT];
-	//! Round-trip gradients per material and swim class (see Map::roundTripGradient),
-	//! NULL until a unit fetching that material for this building asks for one, freed again
-	//! by freeIdleGradients when unused for a while. Their last rebuild and last
-	//! use, in steps.
-	Uint16 *roundTripGradient[MaterialSlotCount][SWIM_CLASS_COUNT];
-	Uint32 roundTripGradientStep[MaterialSlotCount][SWIM_CLASS_COUNT];
-	Uint32 roundTripGradientUsedStep[MaterialSlotCount][SWIM_CLASS_COUNT];
-	//! Drop the building's and the round-trip gradients nobody asked for lately. Only
-	//! buildings with fetchers need one, and each is a full map of Uint16.
+	//! Drop the building's gradients nobody asked for lately. Each is a full map
+	//! of Uint16.
 	void freeIdleGradients();
+	//! Scheduled building gradients (MapGradientScheduling.cpp).
+	//! Owner-only and never serialized: a save records each pending result's
+	//! supersession instead. refreshEpoch[slot] changes whenever the slot is
+	//! rebuilt synchronously or dropped, so an older pending result cannot
+	//! replace it; refreshRequested marks a queued or pending refresh of the
+	//! slot; settledCostHint is the cost its previous search had settled when it
+	//! was replaced (Map::predictBuildingDepth).
+	Uint32 refreshEpoch[BUILDING_GRADIENT_COUNT] {};
+	std::bitset<BUILDING_GRADIENT_COUNT> refreshRequested;
+	static constexpr Uint16 UNKNOWN_SETTLED_COST = 0xFFFF;
+	Uint16 settledCostHint[BUILDING_GRADIENT_COUNT] {};
+	void supersedeGradient(int slot) { ++refreshEpoch[slot]; refreshRequested.reset(slot); }
+	//! A dropped field starts its next lifetime with no depth history.
+	void dropGradientSlot(int slot, GradientDrop cause)
+	{ supersedeGradient(slot); settledCostHint[slot] = UNKNOWN_SETTLED_COST; gradientDrop[slot] = cause; }
+	//! Owner-only diagnostics, never serialized or read by the simulation.
+	GradientDrop gradientDrop[BUILDING_GRADIENT_COUNT] {};
 	BuildingRoute resolveRoute(BuildingRoute route) const;
 	int routeSlot(int swimClass, BuildingRoute route) const
 	{ return int(route == BuildingRoute::Automatic ? resolveRoute(route) : route) * SWIM_CLASS_COUNT + swimClass; }

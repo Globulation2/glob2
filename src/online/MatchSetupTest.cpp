@@ -117,6 +117,37 @@ TEST_SUITE("MatchSetup")
         }
     }
 
+    TEST_CASE("Building gradient delay is optional bounded integer data and round trips through headers")
+    {
+        CHECK(MatchRules{}.buildingGradientDelay == 8);
+        CHECK(MatchRules{}.buildingGradientDelay == int(GameHeader::DEFAULT_BUILDING_GRADIENT_DELAY));
+        glob2test::HeadlessGlobals globals;
+        auto document=json::parse(glob2test::readFile(fixtureRoot()/"valid/MatchSetup/room-closed-seats.json"));
+        document["rules"].erase("buildingGradientDelay");
+        const auto absent=MatchSetup::fromJson(document);
+        CHECK(absent.rules.buildingGradientDelay==8);
+        CHECK(absent.toGameHeader(mapWithTeams(4)).getBuildingGradientDelay()==8);
+        for(unsigned delay : {1u,2u,4u}) {
+            CAPTURE(delay);
+            document["rules"]["buildingGradientDelay"]=delay;
+            const auto setup=MatchSetup::fromJson(document);
+            CHECK(setup.rules.buildingGradientDelay==delay);
+            CHECK(MatchSetup::parse(setup.dump()).rules.buildingGradientDelay==delay);
+            CHECK_FALSE(setup.rules==absent.rules);
+            auto map=mapWithTeams(4);
+            auto header=setup.toGameHeader(map);
+            CHECK(header.getBuildingGradientDelay()==delay);
+            const auto restored=MatchSetup::fromGameHeader(header,map,setup.map,setup.simVersion);
+            CHECK(restored.rules.buildingGradientDelay==delay);
+            CHECK(restored.toJson()["rules"]["buildingGradientDelay"]==delay);
+        }
+        for(const auto& invalid : {json(0),json(-1),json(9),json(1.5),json(4.0),json("4"),json(true),json(nullptr)}) {
+            CAPTURE(invalid);
+            document["rules"]["buildingGradientDelay"]=invalid;
+            CHECK_THROWS_AS(MatchSetup::fromJsonSchemaOnly(document),MatchSetupError);
+        }
+    }
+
 	TEST_CASE("embedded catalogs carry dynamic experiments independently of installed definitions")
 	{
 		glob2test::HeadlessGlobals globals;
@@ -216,11 +247,13 @@ TEST_SUITE("MatchSetup")
 			{
 				MatchSetup setup;
 				CHECK_NOTHROW(setup = MatchSetup::parse(text));
-				// Older setup documents omit the optional delay. Canonical output
-				// spells out its engine default while preserving every other field.
+				// Older setup documents omit the optional delays. Canonical output
+				// spells out their engine defaults while preserving every other field.
 				json canonical = document;
 				if (!canonical["rules"].contains("aiOrderDelay"))
 					canonical["rules"]["aiOrderDelay"] = 0;
+				if (!canonical["rules"].contains("buildingGradientDelay"))
+					canonical["rules"]["buildingGradientDelay"] = 8;
 				CHECK(setup.toJson() == canonical);
 				CHECK(MatchSetup::parse(setup.dump()).toJson() == canonical);
 				++valid;

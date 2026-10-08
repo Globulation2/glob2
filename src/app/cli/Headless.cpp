@@ -19,6 +19,7 @@
 #include "AIMaximaStrategy.h"
 #include "ai/cortex/CortexTuning.h"
 #include "Game.h"
+#include "gradient/BuildingGradientStats.h"
 #include "GameRuleOverrides.h"
 #include "Player.h"
 #include "TeamStat.h"
@@ -108,7 +109,7 @@ void isolateEnvironment()
 		"GLOB2_MAXIMA_FORMAT", "GLOB2_MAXIMA_OVERRIDES", "GLOB2_MAXIMA_TEAM_OVERRIDES",
 		"GLOB2_MAXIMA_PLAYER_OVERRIDES", "GLOB2_MAXIMA_TUNING", "GLOB2_NICOWAR_V3_OVERRIDES",
 		"GLOB2_NICOWAR_V3_TUNING", "GLOB2_MAXIMA_TELEMETRY", "GLOB2_DATASET_PATH",
-		"GLOB2_CHECKSUM_SIDECAR", "GLOB2_REPLAY_PATH", "GLOB2_TEAM_TIMELINE", "GLOB2_TEAM_RESULTS",
+		"GLOB2_CHECKSUM_SIDECAR", "GLOB2_REPLAY_PATH", "GLOB2_TEAM_TIMELINE", "GLOB2_TEAM_RESULTS", "GLOB2_GRADIENT_STATS",
 		"GLOB2_DUMP_GAME", "GLOB2_STUDY_EXPLAIN", "GLOB2_USER_DIR", "GLOB2_USER_DATA_DIR",
 		"GLOB2_PERF_DISABLE", "GLOB2_PERF_BUILD_LABEL",
 		"GLOB2_CORTEX_POLICY", "GLOB2_CORTEX_NET", "GLOB2_CORTEX_DECISION_NET",
@@ -297,6 +298,7 @@ struct HeadlessRunner
 			if(telemetry=="checksums") setHeadlessEnvironment("GLOB2_CHECKSUM_SIDECAR", "1");
 			else if(telemetry=="team-timeline") setHeadlessEnvironment("GLOB2_TEAM_TIMELINE", "1");
 			else if(telemetry=="maxima") setHeadlessEnvironment("GLOB2_MAXIMA_TELEMETRY", "1");
+			else if(telemetry=="gradient-stats") setHeadlessEnvironment("GLOB2_GRADIENT_STATS", "1");
 			else throw std::invalid_argument("unknown telemetry: " + telemetry);
 		}
 		globals.load();
@@ -311,6 +313,9 @@ struct HeadlessRunner
 			else throw std::invalid_argument("unknown save request: " + save);
 		}
 		auto mapFile=one(options,"--map-file"); auto saved=one(options,"--load-game");
+		std::vector<std::string> forkSettings;
+		if(saved.empty() && options.count("--fork-rule"))
+			throw std::invalid_argument("--fork-rule requires --load-game");
 		if(mapFile.empty() == saved.empty()) throw std::invalid_argument("choose exactly one of --map-file and --load-game");
 		auto &requested = mapFile.empty() ? saved : mapFile;
 		// A bare ".map"/".game" path prefers an existing ".gz" sibling, matching how
@@ -323,6 +328,22 @@ struct HeadlessRunner
 				if(options.count(key)) throw std::invalid_argument(std::string(key)+" cannot override a saved game");
 			if(engine.initCustom(saved)!=Engine::EE_NO_ERROR) throw std::invalid_argument("cannot load saved game");
 			if(globals.automaticEndingSteps <= int(engine.gui.game.stepCounter)) throw std::invalid_argument("tick limit must exceed the saved tick");
+			// An explicit fork, never a silent continuation: the loaded match's
+			// rules change before its first tick, the recorded replay starts
+			// here and result.json lists the fork. Only settings whose change
+			// needs no pending work to be remapped are accepted.
+			auto& header=engine.gui.game.gameHeader;
+			for(const auto &rule : many(options,"--fork-rule"))
+			{
+				if(rule.rfind("buildingGradientDelay=",0)!=0) throw std::invalid_argument("--fork-rule accepts only buildingGradientDelay=N");
+				applyGameRule(header, rule);
+				forkSettings.push_back("rule:"+rule);
+			}
+			const auto buildings=engine.gui.game.map.buildingGradientPipelineStatus();
+			if(!forkSettings.empty() && (buildings.pending || buildings.queued))
+				throw std::invalid_argument("cannot fork a saved game with pending building gradients");
+			// Apply the forked delay now, so a save before the first tick records it.
+			engine.gui.game.map.ensureBuildingGradientPipeline();
 		}
 		else
 		{
@@ -499,6 +520,7 @@ struct HeadlessRunner
 		PerformanceTelemetry::collector().reset();
 		Game &game=engine.gui.game;
 		const auto pipelineResult = game.map.gradientPipelineStatus();
+		const auto buildingResult = game.map.buildingGradientPipelineStatus();
 		engine.trackTeamEliminations();
 		std::ostringstream result;
 		// A game the win probability model called is reported distinctly from one
@@ -533,8 +555,31 @@ struct HeadlessRunner
 			<< ",\"gradient_preparation_ns\":" << pipelineResult.preparationNs
 			<< ",\"gradient_active_elapsed_ns\":" << pipelineResult.activeElapsedNs
 			<< ",\"compute_active_elapsed_ns\":" << game.map.computeExecutor().activeNs()
+			<< ",\"building_gradient_jobs\":" << buildingResult.jobs
+			<< ",\"building_gradient_published\":" << buildingResult.published
+			<< ",\"building_gradient_discarded\":" << buildingResult.discarded
+			<< ",\"building_gradient_synchronous\":" << buildingResult.synchronous
+			<< ",\"building_gradient_max_pending\":" << buildingResult.maxPending
+			<< ",\"building_gradient_wait_ns\":" << buildingResult.waitNs
+			<< ",\"building_gradient_pending\":" << buildingResult.pending
+			<< ",\"building_gradient_synchronous_by_reason\":{";
+		for (std::size_t reason = 0; reason < buildingResult.synchronousByReason.size(); ++reason)
+			result << (reason ? "," : "") << quote(Map::buildingSyncReasonName(Map::BuildingSyncReason(reason)))
+				<< ':' << buildingResult.synchronousByReason[reason];
+		result << '}'
 			<< ",\"hiring_prepasses\":" << game.map.hiringPrepasses
-			<< ",\"hiring_popped_entries\":" << game.map.hiringPoppedEntries
+			<< ",\"hiring_popped_entries\":" << game.map.hiringPoppedEntries;
+		if (auto *stats = game.map.gradientStats.get())
+		{
+			// Diagnostics only: close the live field lifetimes and export them.
+			stats->finish(game);
+			result << ",\"building_gradient\":";
+			stats->writeJson(result);
+			std::ofstream csv(output/"gradient-stats.csv");
+			stats->writeCsv(csv);
+			if (!csv) throw std::runtime_error("cannot write gradient-stats.csv");
+		}
+		result
 			<< ",\"compute_threads\":" << game.map.computeExecutor().threadCount()
 			<< ",\"compute_experiments\":" << quote(computeExperiments)
 			<< ",\"compute_batches\":" << game.map.computeExecutor().metrics().batches
@@ -546,7 +591,6 @@ struct HeadlessRunner
 			<< ",\"compute_deferred_jobs\":" << game.map.computeExecutor().metrics().deferredJobs
 			<< ",\"compute_owner_jobs\":" << game.map.computeExecutor().metrics().ownerJobs
 			<< ",\"compute_worker_jobs\":" << game.map.computeExecutor().metrics().workerJobs
-			<< ",\"compute_lane_wait_ns\":" << game.map.computeExecutor().metrics().laneWaitNs
 			<< ",\"compute_join_wait_ns\":" << game.map.computeExecutor().metrics().joinWaitNs
 			<< ",\"ai_pipeline\":{";
 		bool metricComma=false;
@@ -574,7 +618,15 @@ struct HeadlessRunner
 		comma=false;
 		for(const auto& [name,value]:gameRuleValues(game.gameHeader))
 		{ if(comma)result<<','; comma=true; result<<quote(name)<<':'<<value; }
-		result << "}},";
+		result << "}";
+		if(!saved.empty())
+		{
+			result << ",\"fork\":[";
+			comma=false;
+			for(const auto& setting:forkSettings) { if(comma)result<<','; comma=true; result<<quote(setting); }
+			result << ']';
+		}
+		result << "},";
 		Headless::playersAndTeamsJson(result, game, engine.teamEliminatedTick);
 		result << ",\"javascriptControllers\":[";
 		bool scriptComma = false;
@@ -702,7 +754,7 @@ int runHeadlessCommand(int argc,char **argv)
 			GlobalContainer globals("glob2-tournament-catalog");
 			globalContainer=&globals;globals.runNoX=true;
 			std::cout << "{\"schema_version\":1,\"save_version\":" << VERSION_MINOR << ",\"protocol_version\":" << NET_PROTOCOL_VERSION
-				<< ",\"building_catalog_hash\":" << quote(globals.buildingsTypes.fingerprint()) << ",\"map_report_version\":2,\"generation_telemetry_version\":1,\"gameplay_telemetry_version\":2,\"ai_telemetry_version\":1,\"performance_telemetry_version\":1,\"commands\":[\"game\",\"generate_map\",\"verify_match\",\"sim_version\",\"compose_buildings\",\"validate_set\"],\"sim_version\":" << Online::currentSimVersion().toJson().dump() << ",\"verify_match_version\":1,\"telemetry\":[\"checksums\",\"team-timeline\",\"maxima\"],\"ais\":[";
+				<< ",\"building_catalog_hash\":" << quote(globals.buildingsTypes.fingerprint()) << ",\"map_report_version\":2,\"generation_telemetry_version\":1,\"gameplay_telemetry_version\":2,\"ai_telemetry_version\":1,\"performance_telemetry_version\":1,\"commands\":[\"game\",\"generate_map\",\"verify_match\",\"sim_version\",\"compose_buildings\",\"validate_set\"],\"sim_version\":" << Online::currentSimVersion().toJson().dump() << ",\"verify_match_version\":1,\"telemetry\":[\"checksums\",\"team-timeline\",\"maxima\",\"gradient-stats\"],\"ais\":[";
 
 			bool comma=false;
 			for(int ai:AINames::selectionOrder())
@@ -720,7 +772,7 @@ int runHeadlessCommand(int argc,char **argv)
 			std::cout << "}" << std::endl;return 0;
 		}
 		const std::set<std::string> common={"--output-dir","--profile","--building-catalog","--building-artwork"};
-		const std::set<std::string> gameKeys={"--diagnostic-fields","--diagnostic-interval","--diagnostic-png","--benchmark-warmup","--ai-script","--map-script","--map-file","--load-game","--game-seed","--player","--ai-param","--alliance","--win-condition","--win-probability","--experiment","--rule","--ticks","--compute-threads","--compute-experiments","--gradient-workers","--gradient-delay","--ai-order-delay","--save","--telemetry","--replay","--generator","--map-seed","--param","--candidates"};
+		const std::set<std::string> gameKeys={"--diagnostic-fields","--diagnostic-interval","--diagnostic-png","--benchmark-warmup","--ai-script","--map-script","--map-file","--load-game","--game-seed","--player","--ai-param","--alliance","--win-condition","--win-probability","--experiment","--rule","--fork-rule","--ticks","--compute-threads","--compute-experiments","--gradient-workers","--gradient-delay","--ai-order-delay","--save","--telemetry","--replay","--generator","--map-seed","--param","--candidates"};
 		const std::set<std::string> mapKeys={"--generator","--map-seed","--param","--candidates","--rotations","--write-map","--report","--perturb"};
 		Options options;
 		for(int i=2;i<argc;++i)

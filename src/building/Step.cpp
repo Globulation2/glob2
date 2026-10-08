@@ -135,16 +135,12 @@ bool Building::considerUnitForMaterial(Unit* unit, int wantedMaterial, int* dist
 		return false;
 	}
 
-	// Score by the whole job: the round-trip field when a fetcher has already
-	// built one. Without one, estimate the carry leg rather than reach for the
-	// building distance alone: a unit standing at the building carries as far
-	// as it walked out, and one standing at the resource carries the building
-	// distance. Building a field here instead would cost one per material of
-	// every hiring building, nearly all of them never fetched.
-	int roundTrip = 0;
-	if(!owner->map->roundTripDistanceSlot(this, wantedMaterial, unit->swimClass(), unit->posX, unit->posY, &roundTrip))
-		roundTrip = distMaterial + std::max(distBuilding, distMaterial);
-	*dist = roundTrip<<Q8_FIXED_POINT_SHIFT;
+	// Score by the whole job, estimating the carry leg rather than reaching
+	// for the building distance alone: a unit standing at the building carries
+	// as far as it walked out, and one standing at the resource carries the
+	// building distance.
+	const int wholeTrip = distMaterial + std::max(distBuilding, distMaterial);
+	*dist = wholeTrip<<Q8_FIXED_POINT_SHIFT;
 	return true;
 }
 

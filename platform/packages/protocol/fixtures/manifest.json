@@ -451,6 +451,39 @@
       "note": "AI order delay must be an integer from zero through eight."
     },
     {
+      "file": "valid/MatchSetup/building-gradient-delay-two.json",
+      "schema": "MatchSetup",
+      "valid": true,
+      "note": "A two-tick building gradient delay instead of the default eight."
+    },
+    {
+      "file": "valid/MatchSetup/building-gradient-delay-omitted.json",
+      "schema": "MatchSetup",
+      "valid": true,
+      "note": "Setup documents may omit the building gradient delay; the engine uses eight ticks."
+    },
+    {
+      "file": "invalid/MatchSetup/building-gradient-delay-zero.json",
+      "schema": "MatchSetup",
+      "valid": false,
+      "stage": "schema",
+      "note": "Building gradient delay must be an integer from one through eight."
+    },
+    {
+      "file": "invalid/MatchSetup/building-gradient-delay-too-large.json",
+      "schema": "MatchSetup",
+      "valid": false,
+      "stage": "schema",
+      "note": "Building gradient delay must be an integer from one through eight."
+    },
+    {
+      "file": "invalid/MatchSetup/building-gradient-delay-fractional.json",
+      "schema": "MatchSetup",
+      "valid": false,
+      "stage": "schema",
+      "note": "Building gradient delay must be an integer from one through eight."
+    },
+    {
       "file": "valid/MatchSetup/catalog-1v1.json",
       "schema": "MatchSetup",
       "valid": true,

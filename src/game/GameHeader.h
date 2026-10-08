@@ -59,6 +59,10 @@ public:
 	Uint64 observationRevision() const { return observationRevisionValue; }
 	unsigned getAIOrderDelay() const { return aiOrderDelay; }
 	void setAIOrderDelay(unsigned ticks) { if (ticks > 8) throw std::invalid_argument("AI order delay must be 0..8 ticks"); aiOrderDelay = ticks; ++observationRevisionValue; }
+	///Ticks between capturing a scheduled building walking field and publishing it (1..8).
+	static constexpr unsigned DEFAULT_BUILDING_GRADIENT_DELAY = 8;
+	unsigned getBuildingGradientDelay() const { return buildingGradientDelay; }
+	void setBuildingGradientDelay(unsigned ticks) { if (ticks < 1 || ticks > 8) throw std::invalid_argument("Building gradient delay must be 1..8 ticks"); buildingGradientDelay = ticks; ++observationRevisionValue; }
 	inline void setGameLatency(Sint32 latency) { gameLatency = latency;  ++observationRevisionValue; }
 	
 	///Returns the order rate. 1 means an order is sent across the net for every frame,
@@ -275,6 +279,7 @@ private:
 	///Used for net games to hide latency.
 	Sint32 gameLatency;
 	Uint8 aiOrderDelay = 8;
+	Uint8 buildingGradientDelay = DEFAULT_BUILDING_GRADIENT_DELAY;
 
 	///Sets the order rate
 	Uint8 orderRate;

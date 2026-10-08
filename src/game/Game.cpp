@@ -189,6 +189,12 @@ void Game::setGameHeader(const GameHeader& newGameHeader, bool saveAI)
 		drainAI();
 		if (aiPipeline && gameHeader.getAIOrderDelay()!=newGameHeader.getAIOrderDelay())
 			throw std::logic_error("A saved match cannot change its AI delay");
+		// Pending building fields carry deadlines from the old delay. Without
+		// any, the next tick reconfigures the pipeline from the new header.
+		const auto buildings=map.buildingGradientPipelineStatus();
+		if ((buildings.pending || buildings.queued)
+			&& gameHeader.getBuildingGradientDelay()!=newGameHeader.getBuildingGradientDelay())
+			throw std::logic_error("A saved match cannot change its building gradient delay with pending fields");
 	} else clearAI();
 	const GameHeader previousHeader = gameHeader;
 	GameHeader resolvedHeader = newGameHeader;

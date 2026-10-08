@@ -7,7 +7,11 @@
 // This is the version of map and savegame format, and all of the recorded data on the server
 #define VERSION_MAJOR 0
 #define MINIMUM_VERSION_MINOR 58
-#define VERSION_MINOR 146
+#define VERSION_MINOR 148
+// version 148 adds the match-wide building gradient delay rule and pending scheduled
+//             building gradient state.
+// version 147 removes round-trip resource fetching: workers always fetch greedily, and
+//             saves drop the round-trip fields that earlier formats carry and the loader discards.
 // version 146 stores terrain once per map vertex.
 // version 145 embeds immutable custom building artwork; older save readers remain supported.
 // version 144 embeds custom terrain/resource artwork and set attribution in maps and saves.
@@ -181,7 +185,9 @@
 //NetMessage, and the likes, in parallel to change of the VERSION_MINOR above. It is part of
 //the simulation version (src/online/SimVersion.cpp). The YOG lobby that also checked it
 //(YOG_MIN_CLIENT_NET_PROTOCOL_VERSION) was removed at protocol 51.
-#define NET_PROTOCOL_VERSION 62
+#define NET_PROTOCOL_VERSION 63
+// protocol 63 requires format-148 game headers with the building gradient delay.
+// protocol 62 requires readers of format-145 portable building artwork.
 // protocol 61 requires format-143 AI decision scheduling and the match-wide AI order delay.
 // protocol 60 requires damage-weighted routing and safe idle movement.
 // protocol 59 requires readers of format-140 runtime resource and material snapshots.

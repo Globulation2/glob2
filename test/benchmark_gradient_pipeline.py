@@ -113,7 +113,9 @@ def main():
                     if a.verify:
                         # Same delay must match even if the worker finished much earlier/later.
                         signature = {'trace': digest(dest/'game.replay.checksums'),
-                                     'result': {k: row['result'][k] for k in ('ticks', 'termination', 'teams', 'gradient_jobs', 'gradient_published', 'gradient_discarded')}}
+                                     'result': {k: row['result'][k] for k in ('ticks', 'termination', 'teams', 'gradient_jobs', 'gradient_published', 'gradient_discarded',
+                                                'building_gradient_jobs', 'building_gradient_published', 'building_gradient_discarded',
+                                                'building_gradient_synchronous', 'building_gradient_max_pending') if k in row['result']}}
                         delay = label.split('-w')[0]
                         if delay in references:
                             assert signature == references[delay], (scenario['id'], label, 'determinism mismatch')

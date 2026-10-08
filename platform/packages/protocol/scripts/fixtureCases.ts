@@ -1084,6 +1084,33 @@ export const fixtureCases: FixtureCase[] = [
   })),
   {
     schema: 'MatchSetup',
+    name: 'building-gradient-delay-two',
+    valid: true,
+    note: 'A two-tick building gradient delay instead of the default eight.',
+    value: { ...SETUP_CATALOG_1V1, rules: { ...STANDARD_RULES, buildingGradientDelay: 2 } },
+  },
+  {
+    schema: 'MatchSetup',
+    name: 'building-gradient-delay-omitted',
+    valid: true,
+    note: 'Setup documents may omit the building gradient delay; the engine uses eight ticks.',
+    value: {
+      ...SETUP_CATALOG_1V1,
+      rules: Object.fromEntries(
+        Object.entries(STANDARD_RULES).filter(([key]) => key !== 'buildingGradientDelay'),
+      ),
+    },
+  },
+  ...[0, 9, 1.5].map((delay) => ({
+    schema: 'MatchSetup' as const,
+    name: `building-gradient-delay-${delay === 0 ? 'zero' : delay === 9 ? 'too-large' : 'fractional'}`,
+    valid: false,
+    stage: 'schema' as const,
+    note: 'Building gradient delay must be an integer from one through eight.',
+    value: { ...SETUP_CATALOG_1V1, rules: { ...STANDARD_RULES, buildingGradientDelay: delay } },
+  })),
+  {
+    schema: 'MatchSetup',
     name: 'catalog-1v1',
     valid: true,
     note: 'Two humans on a catalog map, standard rules.',
