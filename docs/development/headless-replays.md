@@ -17,7 +17,7 @@ bytes, with no dependency on local authoring JSON. The existing map-content hash
 binds distributed matches to the definitions.
 Building format 137 adds configurable services and capability-driven AI; replays
 recorded before version 137 became incompatible and network protocol 57 separated
-clients using those rules. The current replay floor is 145: greedy resource fetching is the default, with saved round-trip routing available as an experiment.
+clients using those rules. The current replay floor is 146: resource fetching is greedy only, without round-trip routing.
 Supported saved games still load and adopt the current simulation;
 the save floor remains 58.
 
@@ -40,11 +40,6 @@ Cabino and Cortex discard queued commands whose selected target incarnation has
 disappeared. These fixes can change trajectories. Replay/network acceptance remains governed by the engine's
 replay and simulation version gates. See the
 [AI engine contract](reference.md#ai-observations-and-delayed-orders).
-
-Structured results include per-team `routing_comparison` counters for wheat
-harvested and delivered, completed construction and starvation deaths. They are
-cumulative simulation measurements, exported after execution; they do not
-represent only the `--benchmark-warmup` timing window.
 
 Headless runs and scripted `-test-games` runs default autosaving off for that
 process. Normal-play preferences are preserved. Use explicit initial saves or

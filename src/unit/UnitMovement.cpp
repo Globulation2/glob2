@@ -585,18 +585,13 @@ void Unit::handleMovementGoingToResource()
 		directionFromDxDy();
 		movement=MOV_GOING_DX_DY;
 		// targetX/Y (also the debug path line, hotkey T) were set once, by
-		// ascending a gradient, when the fetch task started. pathfindResource
-		// above re-reads whichever gradient actually governs the step fresh
-		// every action -- the round-trip field when attachedBuilding has one
-		// and it is valid here, the plain resource gradient otherwise -- and
-		// either field can be rebuilt, or the preference between them can
-		// flip, while the unit is still walking. Re-ascend from here whenever
-		// the stored target has stopped being a peak of that same gradient;
-		// isGradientPeak is a cheap check to run every action, the ascent
-		// itself only when it actually goes stale.
-		const Uint16 *roundTrip = attachedBuilding ? map->roundTripGradientSlot(attachedBuilding, destinationPurpose, swim) : NULL;
-		const Uint16 *gradient = (roundTrip && roundTrip[map->coordToIndex(posX, posY)]>GRADIENT_UNREACHABLE)
-			? roundTrip : map->getMaterialGradientSlot(teamNumber, destinationPurpose, swim, withMarkets, attachedBuilding);
+		// ascending a gradient, when the fetch task started. pathfindMaterial
+		// above re-reads the resource gradient that governs the step fresh
+		// every action, and that field can be rebuilt while the unit is still
+		// walking. Re-ascend from here whenever the stored target has stopped
+		// being a peak of that same gradient; isGradientPeak is a cheap check
+		// to run every action, the ascent itself only when it actually goes stale.
+		const Uint16 *gradient = map->getMaterialGradientSlot(teamNumber, destinationPurpose, swim, withMarkets, attachedBuilding);
 		if (!map->isGradientPeak(gradient, targetX, targetY))
 			map->getGlobalGradientDestination(gradient, posX, posY, &targetX, &targetY);
 	}

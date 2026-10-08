@@ -65,7 +65,10 @@ build does not know is dropped on load with one line on stderr; the game then
 plays without it, which is the documented policy for a save from a build whose
 experiment was removed. When an experiment graduates into default behaviour,
 remove its entry and its gate together: old saves that named it load and play the
-now-default rules.
+now-default rules. Keys listed by `retiredExperimentKey` are dropped silently,
+even by the strict readers: `round-trip-resource-fetching` (round-trip routing,
+removed; resource fetching is always greedy) and `greedy-resource-fetching` (an
+earlier draft's opt-in for that same greedy behaviour).
 
 Required terrain keys are stricter: an unknown required key or unknown terrain ID
 rejects the map instead of silently changing its behavior. A save containing
@@ -174,26 +177,3 @@ For a built-in engine experiment:
    golden match record as required by the simulation-version policy.
 6. In the pull request, describe the feel changes with the experiment on; a
    maintainer playing it is part of review.
-
-### Round-trip resource fetching
-
-Greedy fetching is the default: workers walk to the nearest available resource,
-then return to their building. Hiring and job swaps use existing trip-distance
-estimates and hunger checks; market eligibility and live movement checks still
-apply.
-
-Enable the saved `round-trip-resource-fetching` experiment to restore routing
-and candidate scoring using building-specific round-trip fields. These account
-for the return journey when choosing a resource patch. Across 24 paired seeded
-matches, greedy fetching used about 12% less late-game simulation CPU; enabling
-round-trip fetching therefore costs about 14% relative to greedy in that sample.
-Food delivery and starvation effects vary by layout. Compare both settings in
-real play before choosing a long-term policy.
-
-The experiment is off by default and persists in game saves, replay headers and
-network setup. Replay format 145 and simulation revision 29 distinguish the new
-default from earlier clients. Existing saves remain readable (minimum format
-58); saves without this flag now use greedy fetching. The former experimental
-`greedy-resource-fetching` key is obsolete and is ignored when loading, leaving
-the same greedy behavior. This can change the pacing and economy of older games
-that previously used round-trip routing.

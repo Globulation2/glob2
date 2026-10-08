@@ -1053,7 +1053,7 @@ public:
 	bool getGlobalGradientDestination(const T *gradient, int x, int y, Sint32 *targetX, Sint32 *targetY) const;
 	//! Whether (x, y) is a local maximum of gradient: no neighbour holds a strictly higher
 	//! value. True at any tile getGlobalGradientDestination's ascent could end on, including
-	//! gradients like a round-trip field whose seeded goal is a finite cost, not the type's max.
+	//! gradients like a market-seeded field whose goal is a finite cost, not the type's max.
 	template<typename T>
 	bool isGradientPeak(const T *gradient, int x, int y) const;
 
@@ -1083,9 +1083,8 @@ public:
 	//! (guard-area balancing: stepping within an area).
 	bool directionByGradient(Uint32 teamMask, int swimClass, int x, int y, const Uint16 *gradient, int *dx, int *dy, bool strict, Uint32 guardAreaMask = 0) const;
 	void updateMaterialGradient(int teamNumber, Uint8 resourceType, int swimClass, bool withMarkets = false);
-	//! Direction toward a resource of resourceType. With a target building the round-trip
-	//! gradient is descended, so the unit heads for the resource that is nearest for
-	//! fetching and carrying it there; without one, for the resource nearest to itself.
+	//! Direction toward the resource of resourceType nearest to (x, y). A target building
+	//! selects which suppliers (markets, stock) its resource gradient includes.
 	bool pathfindMaterial(int teamNumber, Uint8 resourceType, int swimClass, int x, int y, int *dx, int *dy, bool *stopWork, Building *target, bool withMarkets = false);
 	void pathfindRandom(Unit *unit);
 	//! Idle escape toward non-damaging terrain using a lazily shared field.
@@ -1095,17 +1094,6 @@ public:
 	//! Initialize a fresh building field and retain its search frontier. Point
 	//! queries extend it on demand; buildingGradient returns a complete field.
 	void updateGlobalGradient(Building *building, int swimClass, BuildingRoute route = BuildingRoute::Automatic);
-	//! Rebuild the building's round-trip gradient for a resource type and swim class:
-	//! every tile of that resource is seeded with its distance to the building, so a
-	//! cell's value is the cheapest fetch-and-carry trip from there.
-	void updateRoundTripGradientSlot(Building *building, int resourceType, int swimClass);
-	//! The building's round-trip gradient, built or refreshed on demand. NULL when the
-	//! building cannot be reached.
-	const Uint16 *roundTripGradientSlot(Building *building, int resourceType, int swimClass);
-	//! Tiles of the cheapest trip from (x, y) to a resource of resourceType and on to the
-	//! building, read from a round-trip gradient a fetcher's walk has already built. False
-	//! when there is none or no such trip; the caller then scores by the plain distances.
-	bool roundTripDistanceSlot(Building *building, int resourceType, int swimClass, int x, int y, int *dist);
 	//! Complete field, refreshed as needed; NULL when locked. Point queries use
 	//! buildingAvailable/pathfindBuilding so partial arrays never escape this API.
 	const Uint16 *buildingGradient(Building *building, int swimClass, BuildingRoute route = BuildingRoute::Automatic);

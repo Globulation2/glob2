@@ -38,7 +38,7 @@ scanout. No GPU queries, synchronization, or additional world scans are introduc
 
 Scopes cover units/buildings/tasks, map updates, fog, scripts, construction projects,
 statistics, orders/replay checksums, AI totals and observation/planning/gradient phases,
-resource/building/round-trip/area gradients and propagation, pathfinding, rendering passes,
+resource/building/area gradients and propagation, pathfinding, rendering passes,
 loading/generation/site assignment/site relaxation/validation, and save/output work.
 Per-player `ai.player` scopes identify player, team, implementation, and controller
 generation where the synchronous polling API is instrumented. Scheduled worker decisions
@@ -145,9 +145,8 @@ the existing refresh/use policy, while reading a prepared field only extends it.
 The queues share the eager solver's expansion kernel and are freed with their
 field, including the existing idle-field eviction; no separate cache is added.
 
-Round-trip construction, forbidden-area escape and gradient debug rendering finish
-the relevant cached fields. Reading an already-cached round-trip field does not
-force completion. Existing refresh deadlines and use timestamps are preserved.
+Forbidden-area escape and gradient debug rendering finish the relevant cached
+fields. Existing refresh deadlines and use timestamps are preserved.
 
 Saving finishes pending fields from their original snapshots without refreshing
 them, then writes the existing complete-field representation. Loaded fields start
@@ -157,9 +156,8 @@ water snapshots also add memory.
 
 `gradient.building` measures initialization and search setup.
 `gradient.building_resume` measures actual lazy extensions and completion, including
-those nested in round-trip construction or saving. Sum these two scopes to compare
-building-field construction, but do not then add inclusive round-trip/save timings
-to that total. Benchmark evidence belongs under `artifacts/`, not in this guide.
+those nested in saving. Sum these two scopes to compare building-field construction,
+but do not then add inclusive save timings to that total. Benchmark evidence belongs under `artifacts/`, not in this guide.
 
 ## Scheduled AI decisions and experimental map computation
 

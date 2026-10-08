@@ -87,7 +87,7 @@ suite; map callbacks still execute when AI decisions are supplied by the replay.
 
 `released-v123.replay.gz` is a gzip copy of the existing browser replay import
 fixture (`browser/tests/fixtures/cross-replay.replay`), recorded for 1,500 ticks
-from `games/cross-replay.game.gz`, seed 42, by a format-145 build. The shared
+from `games/cross-replay.game.gz`, seed 42, by a format-146 build. The shared
 compatibility suite retains this replay as a rejection fixture after the
 sixteen-team replay floor moved to 127. It accepts replay version 127 and rejects
 versions outside the current acceptance range. It accepts client protocol 50

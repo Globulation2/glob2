@@ -193,31 +193,45 @@ TEST_SUITE("ExperimentalFeatures")
 		CHECK(toggled != guard);
 	}
 
-	TEST_CASE("round-trip fetching is opt-in and the retired greedy key stays greedy")
+	TEST_CASE("retired resource-fetching keys load silently as absent")
 	{
-		ExperimentSet defaults;
-		CHECK(!defaults.has(ExperimentId::RoundTripResourceFetching));
-		const auto roundTrip = ExperimentSet::fromText("round-trip-resource-fetching");
-		CHECK(roundTrip.has(ExperimentId::RoundTripResourceFetching));
-		CHECK(roundTrip.toText() == "round-trip-resource-fetching");
-		ExperimentSet restored;
-		REQUIRE(loadBytes(bytesOf(roundTrip), VERSION_MINOR, restored));
-		CHECK(restored == roundTrip);
+		std::vector<std::string> unknown;
+		const auto parsed = ExperimentSet::fromText("round-trip-resource-fetching,greedy-resource-fetching,guard-area-balancing", &unknown);
+		CHECK(parsed == guardOnly());
+		CHECK(unknown.empty());
+		CHECK(retiredExperimentKey("round-trip-resource-fetching"));
+		CHECK(retiredExperimentKey("greedy-resource-fetching"));
+		CHECK(!knownExperimentKey("round-trip-resource-fetching"));
 
-		auto* memory = new MemoryStreamBackend;
-		BinaryOutputStream out(memory);
-		out.writeEnterSection("experiments");
-		out.writeUint32(1, "count");
-		out.writeEnterSection(0u);
-		out.writeText("greedy-resource-fetching", "key");
-		out.writeLeaveSection();
-		out.writeLeaveSection();
-		out.flush();
-		const std::string legacy(memory->getBuffer(), memory->getPosition());
-		glob2test::CapturedStderr stderrText;
-		REQUIRE(loadBytes(legacy, 144, restored));
-		CHECK(restored.empty());
-		CHECK(!restored.has(ExperimentId::RoundTripResourceFetching));
+		for (const char *retired : {"round-trip-resource-fetching", "greedy-resource-fetching"})
+		{
+			// Saves, replay headers and setup messages written by builds that had these
+			// keys; both the lenient and the strict loader drop them without a word.
+			for (bool strict : {false, true})
+			{
+				auto* memory = new MemoryStreamBackend;
+				BinaryOutputStream out(memory);
+				out.writeEnterSection("experiments");
+				out.writeUint32(2, "count");
+				out.writeEnterSection(0u);
+				out.writeText(retired, "key");
+				out.writeLeaveSection();
+				out.writeEnterSection(1u);
+				out.writeText("guard-area-balancing", "key");
+				out.writeLeaveSection();
+				out.writeLeaveSection();
+				out.flush();
+				const std::string legacy(memory->getBuffer(), memory->getPosition());
+				ExperimentSet restored;
+				glob2test::CapturedStderr stderrText;
+				auto* in = new MemoryStreamBackend(legacy.data(), legacy.size());
+				in->seekFromStart(0);
+				BinaryInputStream stream(in);
+				REQUIRE(restored.load(&stream, 145, strict));
+				CHECK(restored == guardOnly());
+				CHECK(stderrText.text().empty());
+			}
+		}
 	}
 
 	TEST_CASE("stream round trip; a pre-124 stream reads nothing; corrupt input is refused")

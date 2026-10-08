@@ -610,8 +610,8 @@ TEST_CASE("queued mixed gradients retain terrain costs until fixed publication [
         auto snapshot = map.frozenTerrainSnapshot();
         std::vector<Uint16> seeds(count, Unreached); seeds[0] = Goal - seedCost;
         for (unsigned i = 7; i < count; i += 17) seeds[i] = Blocked;
-        // Market sources start at cost 50; round-trip sources can also be
-        // deferred beyond a complete bucket-ring revolution.
+        // Market sources start at cost 50; seeds can also be deferred beyond
+        // a complete bucket-ring revolution.
         if (seedCost) seeds[count / 2] = Goal - (gradient_kernel::BUCKETS + seedCost);
         const auto expected = oracle(seeds, std::vector<Uint16>(count, 0), width,
             width, swim, CostLimit, snapshot.get());

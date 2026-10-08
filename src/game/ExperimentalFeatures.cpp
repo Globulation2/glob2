@@ -44,8 +44,6 @@ const std::vector<ExperimentDefinition> &experimentDefinitions()
 		 "Adds deep and dark water to the map editor. Swimmers cross them more slowly, no algae grows in them, and they still irrigate nearby fields."},
 		{ExperimentId::VoidTerrain, "void-terrain", "Void terrain",
 		 "Adds holes and chasms to the map editor. Nothing can cross them, not even flying units, and projectiles stop at their edge."},
-		{ExperimentId::RoundTripResourceFetching, "round-trip-resource-fetching", "Round-trip resource fetching",
-		 "Choose resources by the whole journey back to the building instead of the nearest source. Used about 14% more late-game simulation CPU in paired tests; food-delivery benefits depend on the map."},
 	};
 	return definitions;
 }
@@ -183,6 +181,13 @@ bool knownExperimentKey(const std::string &key, const std::vector<std::string> &
 		std::find(allowedKeys.begin(), allowedKeys.end(), key) != allowedKeys.end();
 }
 
+bool retiredExperimentKey(const std::string &key)
+{
+	// round-trip-resource-fetching restored round-trip routing, removed with it.
+	// greedy-resource-fetching was an earlier opt-in for today's only behaviour.
+	return key == "round-trip-resource-fetching" || key == "greedy-resource-fetching";
+}
+
 std::string experimentLabel(const CatalogExperimentDefinition &definition) { return translated(definition, false); }
 std::string experimentHelp(const CatalogExperimentDefinition &definition) { return translated(definition, true); }
 
@@ -249,7 +254,7 @@ ExperimentSet ExperimentSet::fromKeys(const std::vector<std::string> &keys, std:
 			continue;
 		if (knownExperimentKey(key, allowedKeys))
 			set.set(key, true, allowedKeys);
-		else if (unknown)
+		else if (unknown && !retiredExperimentKey(key))
 			unknown->push_back(key);
 	}
 	return set;
@@ -310,6 +315,8 @@ bool ExperimentSet::load(GAGCore::InputStream *stream, Sint32 versionMinor, bool
 		}
 		if (knownExperimentKey(key, allowedKeys))
 			set(key, true, allowedKeys);
+		else if (retiredExperimentKey(key))
+			continue;
 		else if (rejectUnknown)
 		{
 			stream->readLeaveSection();

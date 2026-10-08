@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
-// Real-engine regression: the hunger check that decides whether a unit may be
-// hired for a resource must measure the walk to that resource, not the length
-// of the whole fetch-and-carry trip.
+// Real-engine regression for hiring a fetcher: the hunger check that decides
+// whether a unit may be hired for a resource measures the walk to that resource,
+// not the whole fetch-and-carry trip, and the score estimates that whole trip.
 #include "EngineFixtures.h"
 #include "GlobalContainer.h"
 #include "FileManager.h"
@@ -23,7 +23,7 @@
 #include <cstdlib>
 
 // Named in a friend declaration, so it stays outside the anonymous namespace.
-class RoundTripHungerGateHarness
+class FetchHiringScoreHarness
 {
 public:
 	static bool consider(Building* building, Unit* unit, int resource, int* dist)
@@ -44,9 +44,6 @@ static void aUnitIsJudgedOnTheWalkToTheResource()
 {
 	GameGUI gui;
 	Game& game = gui.game;
-	auto experiments = game.gameHeader.getExperiments();
-	experiments.set(ExperimentId::RoundTripResourceFetching);
-	game.gameHeader.setExperiments(experiments);
 	game.map.setSize(5, 5, GRASS); // 32x32
 	game.map.setGame(&game);
 	game.addTeam(0);
@@ -85,46 +82,34 @@ static void aUnitIsJudgedOnTheWalkToTheResource()
 	require(game.map.materialAvailableSlot(0, WOOD, swimClass, unit->posX, unit->posY, &distResource),
 		"the wood is reachable");
 
-	// The round-trip field only exists once somebody has fetched this resource
-	// for this building, which is when the two lengths can be confused.
-	require(game.map.roundTripGradientSlot(site, WOOD, swimClass) != NULL, "the round-trip field builds");
-	int roundTrip = 0;
-	require(game.map.roundTripDistanceSlot(site, WOOD, swimClass, unit->posX, unit->posY, &roundTrip),
-		"the round trip is known here");
-	std::printf("distBuilding=%d distResource=%d roundTrip=%d\n", distBuilding, distResource, roundTrip);
-	require(roundTrip - distBuilding > distResource,
+	const int wholeTrip = distResource + std::max(distBuilding, distResource);
+	std::printf("distBuilding=%d distResource=%d wholeTrip=%d\n", distBuilding, distResource, wholeTrip);
+	require(wholeTrip - distBuilding > distResource,
 		"the trip really is longer than the walk to the wood, so the two are distinguishable");
 
 	// Just enough time to reach the wood, not enough for the whole trip. The
 	// unit is hireable: it eats at the site on the way back.
 	const int timeLeft = distResource + 2;
 	require(timeLeft > distBuilding, "the site itself is within reach");
-	require(timeLeft < roundTrip - distBuilding, "the whole trip does not fit in the same budget");
+	require(timeLeft < wholeTrip, "the whole trip does not fit in the same budget");
 	unit->trigHungry = 100;
 	unit->hungry = unit->trigHungry + timeLeft * unit->race->hungriness;
 
 	int dist = 0;
-	require(RoundTripHungerGateHarness::consider(site, unit, WOOD, &dist),
+	require(FetchHiringScoreHarness::consider(site, unit, WOOD, &dist),
 		"a unit that can reach the wood is hireable for it");
+	require(dist == (wholeTrip<<Q8_FIXED_POINT_SHIFT), "the hire is scored by the whole trip");
 
-	experiments.set(ExperimentId::RoundTripResourceFetching, false);
-	game.gameHeader.setExperiments(experiments);
-	const auto *cached = site->roundTripGradient[WOOD][swimClass];
-	require(game.map.roundTripGradientSlot(site, WOOD, swimClass) == NULL,
-		"greedy routing ignores a previously cached round-trip field");
-	require(!game.map.roundTripDistanceSlot(site, WOOD, swimClass, unit->posX, unit->posY, &roundTrip),
-		"greedy scoring ignores a previously cached round-trip field");
-	require(site->roundTripGradient[WOOD][swimClass] == cached,
-		"greedy queries do not mutate existing cache storage");
-	require(RoundTripHungerGateHarness::consider(site, unit, WOOD, &dist),
-		"greedy hiring still uses the walk-to-resource hunger gate");
+	// One step short of the wood is not enough.
+	unit->hungry = unit->trigHungry + distResource * unit->race->hungriness;
+	require(!FetchHiringScoreHarness::consider(site, unit, WOOD, &dist),
+		"a unit that would starve before reaching the wood is not hired");
 	std::puts("PASS the hunger check measures the walk to the resource, not the whole trip");
 }
 
-// Without a round-trip field the score still has to be a round trip, or a
-// resource that has one is ranked against a resource that does not on two
-// different scales.
-static void theFallbackScoresAWholeRoundTrip()
+// The score is a whole trip, not the one-way walk, so a resource far from the
+// building is not ranked as cheaply as one beside it.
+static void theScoreEstimatesTheWholeTrip()
 {
 	GameGUI gui;
 	Game& game = gui.game;
@@ -159,40 +144,36 @@ static void theFallbackScoresAWholeRoundTrip()
 	unit->hungry = unit->trigHungry + 1000 * unit->race->hungriness;
 
 	const int swimClass = unit->swimClass();
-	int distBuilding = 0, distResource = 0, unused = 0;
+	int distBuilding = 0, distResource = 0;
 	require(game.map.buildingAvailable(site, swimClass, unit->posX, unit->posY, &distBuilding),
 		"the site is reachable");
 	require(game.map.materialAvailableSlot(0, WOOD, swimClass, unit->posX, unit->posY, &distResource),
 		"the wood is reachable");
-	require(game.map.roundTripGradientSlot(site, WOOD, swimClass) == NULL,
-		"default greedy fetching does not construct a round-trip field");
-	require(!game.map.roundTripDistanceSlot(site, WOOD, swimClass, unit->posX, unit->posY, &unused),
-		"no round-trip field exists for a building nothing has fetched for");
 	require(distBuilding < distResource, "the unit is nearer the site than the wood");
 
 	int dist = 0;
-	require(RoundTripHungerGateHarness::consider(site, unit, WOOD, &dist), "the unit is hireable for the wood");
+	require(FetchHiringScoreHarness::consider(site, unit, WOOD, &dist), "the unit is hireable for the wood");
 
 	const int wholeTrip = distResource + std::max(distBuilding, distResource);
-	std::printf("fallback: distBuilding=%d distResource=%d scored=%d expected=%d\n",
+	std::printf("score: distBuilding=%d distResource=%d scored=%d expected=%d\n",
 		distBuilding, distResource, dist, wholeTrip<<Q8_FIXED_POINT_SHIFT);
 	require(dist == (wholeTrip<<Q8_FIXED_POINT_SHIFT),
-		"the fallback scores the walk out plus the carry home");
+		"the score is the walk out plus the carry home");
 
-	std::puts("PASS the fallback score is a whole round trip, not a one-way walk");
+	std::puts("PASS the hiring score is the whole trip, not a one-way walk");
 }
 }
 
-TEST_SUITE("RoundTripHungerGate")
+TEST_SUITE("FetchHiringScore")
 {
 	TEST_CASE("a unit is judged on the walk to the resource")
 	{
 		glob2test::HeadlessGlobals globals;
 		aUnitIsJudgedOnTheWalkToTheResource();
 	}
-	TEST_CASE("the fallback scores a whole round trip")
+	TEST_CASE("the score estimates the whole fetch-and-carry trip")
 	{
 		glob2test::HeadlessGlobals globals;
-		theFallbackScoresAWholeRoundTrip();
+		theScoreEstimatesTheWholeTrip();
 	}
 }

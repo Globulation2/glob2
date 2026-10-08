@@ -7,7 +7,10 @@
 // This is the version of map and savegame format, and all of the recorded data on the server
 #define VERSION_MAJOR 0
 #define MINIMUM_VERSION_MINOR 58
-#define VERSION_MINOR 145
+#define VERSION_MINOR 146
+// version 146 removes round-trip resource fetching: workers always fetch greedily, and
+//             saves drop the round-trip fields that earlier formats carry and the loader discards.
+// versions 144 and 145 were greedy-fetching drafts that kept the version-143 save layout.
 // version 143 adds engine snapshots, scheduled AI decision streams and pending command state.
 // version 142 rebuilds pre-penalty terrain route caches; replay trajectories change.
 // version 141 adds the built-in terrain catalogue; older custom terrain IDs are remapped on load.

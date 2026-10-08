@@ -90,6 +90,7 @@ static constexpr int FILE_FORMAT_VERSION_PENDING_CONSTRUCTION = 90;
 static constexpr int FILE_FORMAT_VERSION_CONTINUATION_STATE = 91;
 
 //! A building's round-trip fields and gradient use stamps join the cached routing fields.
+//! The round-trip fields are read and discarded from FILE_FORMAT_VERSION_GREEDY_FETCHING on.
 static constexpr int FILE_FORMAT_VERSION_ROUND_TRIP_FIELDS = 95;
 
 //! The map's topology generation and each cached field's generation stamp
@@ -220,3 +221,7 @@ static constexpr int FILE_FORMAT_VERSION_HAZARD_ROUTING = 142;
 
 //! Shared AI scheduling and pending command execution state.
 static constexpr int FILE_FORMAT_VERSION_AI_PIPELINE = 143;
+
+//! Resource fetching is greedy only: buildings save their walking fields' last-use
+//! steps without the retired round-trip fields that formats 95-145 carried.
+static constexpr int FILE_FORMAT_VERSION_GREEDY_FETCHING = 146;

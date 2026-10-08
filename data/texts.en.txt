@@ -5750,10 +5750,6 @@ Pick a brush. Groups share one set of rules; their members differ only in look.
 Algae grow
 [terrain palette experiments hint]
 Pick a brush. More terrain groups appear here once their experiments are enabled under Settings > Experiments.
-[experiment round-trip-resource-fetching]
-Round-trip resource fetching
-[experiment round-trip-resource-fetching help]
-Choose resources by the whole journey back to the building instead of the nearest source. Used about 14% more late-game simulation CPU in paired tests; food-delivery benefits depend on the map.
 [brush valid on %0]
 Valid on: %0
 [brush valid nowhere]

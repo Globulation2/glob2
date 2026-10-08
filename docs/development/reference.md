@@ -1130,8 +1130,8 @@ For timing and scheduling, start with `src/game/Game_sync.cpp` and `src/engine/E
   The completed-tick observation phase introduced replay floor 139. Runtime resource
   catalogs introduced replay floor 140 and network protocol 59.
   Damage-weighted routing and idle safety introduced replay floor 142 and network protocol 60.
-  The current replay floor is 143 and network protocol is 61 for engine snapshots and
-  scheduled AI decisions.
+  Network protocol 61 covers engine snapshots and scheduled AI decisions. The current
+  replay floor is 146: resource fetching is greedy only.
   Loading earlier saves rebuilds cached routes on maps with terrain health effects;
   current saves retain their completed and pending fields for exact continuation.
   Custom registry checksums hash canonical serialized fields, not struct padding.

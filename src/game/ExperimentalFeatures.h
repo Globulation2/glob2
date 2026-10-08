@@ -54,7 +54,8 @@ enum class ExperimentId : Uint8
 	FertileTerrain = 11,
 	DeepWaterTerrain = 12,
 	VoidTerrain = 13,
-	RoundTripResourceFetching = 14,
+	// 14 was round-trip resource fetching; its key is retired (see
+	// retiredExperimentKey) and resource fetching is always greedy.
 	Count
 };
 
@@ -102,6 +103,9 @@ std::vector<CatalogExperimentDefinition> loadCatalogExperimentDefinitions(GAGCor
 // Built-ins first in their historical order, followed by installed dynamic keys.
 std::vector<CatalogExperimentDefinition> registeredExperimentDefinitions();
 bool knownExperimentKey(const std::string &key, const std::vector<std::string> &allowedKeys = {});
+// Keys of removed engine experiments. Saves, replay headers, preferences and
+// setup messages that still carry one load as if it were absent, silently.
+bool retiredExperimentKey(const std::string &key);
 std::string experimentLabel(const CatalogExperimentDefinition &definition);
 std::string experimentHelp(const CatalogExperimentDefinition &definition);
 
@@ -132,6 +136,7 @@ public:
 	std::string toText() const;
 	// Parse keys (comma-separated, or a list). Unknown keys are ignored; when
 	// `unknown` is given they are appended to it so the caller can report them.
+	// Retired keys are dropped without being reported.
 	static ExperimentSet fromText(const std::string &text, std::vector<std::string> *unknown = nullptr,
 		const std::vector<std::string> &allowedKeys = {});
 	static ExperimentSet fromKeys(const std::vector<std::string> &keys, std::vector<std::string> *unknown = nullptr,
@@ -139,7 +144,8 @@ public:
 
 	// Save and load the set as its own stream section. load() clears the set,
 	// reads nothing from streams older than FILE_FORMAT_VERSION_EXPERIMENTS,
-	// drops unknown keys with one line on stderr each, and returns false only
+	// drops retired keys silently and unknown keys with one line on stderr each
+	// (or fails on them with rejectUnknown), and returns false only
 	// when the section itself is malformed.
 	// Text streams key sibling sections by name, so two sets saved side by side
 	// need distinct section names; binary streams ignore them.
