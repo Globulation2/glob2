@@ -9,10 +9,12 @@ fields were live, so the save carries those fields in each building's
 
 `LegacyRoundTripSave/*` loads it with the current engine, which reads and
 discards the round-trip fields, and plays ticks 1,201–2,200 with greedy
-fetching. `round-trip-143-checksums.txt` is that per-tick trace (FNV-1a over
-every checksum part except the MapHeader, whose version changes on save).
-PR #883's greedy default produced the same trace. Re-saving at tick 1,700 in
-binary and text form, in the current format, must continue identically.
+fetching and scheduled building walking fields (the save restores no pending
+fields, and its pre-148 header gets the default eight-tick delay).
+`round-trip-143-checksums.txt` is that per-tick trace (FNV-1a over every
+checksum part except the MapHeader, whose version changes on save),
+regenerated on Linux whenever the simulation changes. Re-saving at tick 1,700
+in binary and text form, in the current format, must continue identically.
 
 The fixture was produced by a writer case built only in a master `06a106d3a`
 tree; it is not part of the test suite because current code has no round-trip

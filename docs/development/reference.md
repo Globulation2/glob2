@@ -1166,8 +1166,9 @@ For timing and scheduling, start with `src/game/Game_sync.cpp` and `src/engine/E
   catalogs introduced replay floor 140 and network protocol 59.
   Damage-weighted routing and idle safety introduced replay floor 142 and network protocol 60.
   Engine snapshots and scheduled AI decisions introduced replay floor 143 and network
-  protocol 61; building artwork raised the protocol to 62. Vertex terrain sets the
-  current replay floor, 146.
+  protocol 61; building artwork raised the protocol to 62. Vertex terrain set replay
+  floor 146; greedy-only fetching (format 147) and scheduled building gradients
+  (format 148) set the current replay floor, 148, and network protocol 63.
   Loading earlier saves rebuilds cached routes on maps with terrain health effects;
   current saves retain their completed and pending fields for exact continuation.
   Custom registry checksums hash canonical serialized fields, not struct padding.

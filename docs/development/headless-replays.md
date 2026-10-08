@@ -18,7 +18,9 @@ binds distributed matches to the definitions.
 Building format 137 adds configurable services and capability-driven AI; replays
 recorded before version 137 became incompatible and network protocol 57 separated
 clients using those rules. Format 146 stores terrain per map vertex and derives each
-cell's rules from its corners; the current replay floor is 146.
+cell's rules from its corners. Format 147 makes resource fetching greedy only, without
+round-trip routing, and format 148 schedules building walking fields; the current
+replay floor is 148.
 Supported saved games still load and adopt the current simulation;
 the save floor remains 58.
 

@@ -72,7 +72,9 @@ def main():
 
 
 BUILDING_DELAYS = (1, 4, 8)
-SAVE_TICK, RESUME_TICKS = 600, 720
+# Late enough that refreshes are frequent (about one per 17 ticks), so a save
+# can catch fields in flight at every phase, even at delay 1.
+SAVE_TICK, RESUME_TICKS = 2048, 2400
 
 
 def fork(delay):
@@ -116,7 +118,7 @@ def building_pass(binary, initial, output):
                 assert resumed['result']['resolved']['fork'] == []
                 ticks = detailed_ticks((dest/'game.replay.checksums').read_bytes())
                 assert ticks and all(expected[t] == value for t, value in ticks.items()), (delay, phase, workers)
-    assert {d for d, _ in pending_saves} == set(BUILDING_DELAYS), 'saves must catch scheduled building fields in flight'
+    assert len(pending_saves) == sum(BUILDING_DELAYS), 'saves must catch scheduled building fields in flight at every phase'
     # The worker depth moves CPU between worker and owner, never results.
     traces = {}
     for mode in ('table', 'full', 'lazy'):
