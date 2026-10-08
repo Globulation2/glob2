@@ -16,7 +16,8 @@
     "growth146.game.gz": "7e8b7d7635b94d65501245b054f376b6f08f7b07a124accec3c062d68badf883",
     "building145.game.gz": "2826d2c20f3ac29cb2cdf8faf642bb887f34faa5d1a110047eaa2c9b27669b59",
     "empty-building145.game.gz": "91654abac06777c432abd41c3ef277ac4f9fb88e33803b5edc7e018c1686c4bf",
-    "growth148.game.gz": "f573550ace487e979a6a304736fbf8e766b4b64c2596f013d89396fb606268d1"
+    "growth148.game.gz": "f573550ace487e979a6a304736fbf8e766b4b64c2596f013d89396fb606268d1",
+    "vertex148.game.gz": "e674bfd4cbca46c592b17ff4972c3e719b4b12e32712af422029908554a1e23c"
   },
   "artwork144": {
     "source_revision": "6487b873dd3f29ad3ab75c7513597fa47905c132",
@@ -45,5 +46,9 @@
   "growth148": {
     "source_revision": "dd7391a1eaa9a0877af73e5eaa1aabf9a567bad1",
     "source": "Generated River seed1,4096 ticks, shared delay8; typed pending proposals with classic terrain"
+  },
+  "vertex148": {
+    "source_revision": "68aa1075b365efab78083fe5587051e689cb7ed1",
+    "source": "Current-master production engine,dense benchmark fixture,1024 ticks"
   }
 }

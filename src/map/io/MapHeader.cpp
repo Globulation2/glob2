@@ -4,6 +4,9 @@
 #include "Version.h"
 #include "FileFormatVersions.h"
 #include "MapHeader.h"
+#include "Map.h"
+#include "TerrainRegistry.h"
+#include "ResourceRegistry.h"
 #include <algorithm>
 #include <map>
 #include <cassert>
@@ -447,6 +450,7 @@ std::vector<std::string> glob2ListMapOrSaveFiles(GAGCore::FileManager& files, co
 // valid encodings (including delta blocks); require exactly one valid decoding.
 void MapHeader::resolveGrowthLayout(GAGCore::InputStream *stream)
 {
+ GAGCore::BinaryInputStream::CheckedReads checked(stream);
  historicalGrowthLayout = false;
  if (versionMinor < 146 || versionMinor > 148) return;
  if (auto *text = dynamic_cast<GAGCore::TextInputStream *>(stream)) {
@@ -460,16 +464,16 @@ void MapHeader::resolveGrowthLayout(GAGCore::InputStream *stream)
  char magic[4];stream->read(magic,4,"signatureStart");
  if (std::memcmp(magic,"MapB",4)) throw std::runtime_error("Invalid map layout signature");
  const auto wd=stream->readSint32("wDec"), hd=stream->readSint32("hDec");
- if(wd<4 || hd<4 || wd>15 || hd>15 || wd+hd>24) throw std::runtime_error("Invalid map dimensions in layout probe");
- const auto chunks=[&]() {
+ if(!Map::supportedDimensions(wd,hd)) throw std::runtime_error("Invalid map dimensions in layout probe");
+ const auto chunks=[&](size_t maximum) {
   auto count=stream->readUint32("chunks");
-  if(!count || count>256) throw std::runtime_error("Invalid layout catalog chunks");
+  if(!count || count>maximum/65536) throw std::runtime_error("Invalid layout catalog chunks");
   std::string data;
   while(count--) {auto bytes=stream->readUint32("length");if(bytes>65536) throw std::runtime_error("Invalid layout catalog size");auto at=data.size();data.resize(at+bytes);stream->read(data.data()+at,bytes,"definitions");}
   return data;
  };
- const auto terrains=nlohmann::json::parse(chunks()).at("terrains");
- stream->readUint32("terrainSeed"); chunks();
+ const auto terrains=nlohmann::json::parse(chunks(TerrainRegistry::MaximumDefinitionBytes)).at("terrains");
+ stream->readUint32("terrainSeed"); chunks(ResourceRegistry::MaximumDefinitionBytes);
  if(!terrains.empty()) {
   const auto first=terrains.at(0).at("id").get<unsigned>();
   if(first!=29 && first!=31) throw std::runtime_error("Unknown historical terrain catalog");

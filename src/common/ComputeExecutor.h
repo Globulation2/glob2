@@ -28,8 +28,9 @@
 //  * submit()/join(): deferred batches (AI decisions, gradients). The owner
 //    thread submits each batch tagged with the tick it is due. Workers run
 //    deferred jobs earliest due first, in submission order within a lane. At a
-//    join the owner only waits: it never runs deferred work while any worker
-//    exists, even when the only worker also runs presentation, which it
+//    join the owner only waits for Shared work while any worker
+//    exists. Explicit OwnerOnly jobs run on the owner and cannot use lanes.
+//    When the only worker also runs presentation, it
 //    interleaves with these jobs. With no workers the owner runs the jobs due
 //    no later than the batch at its join, because nothing else can.
 //
@@ -102,7 +103,7 @@ public:
 	// A batch occupies a slot from submission until its join. Each deferred
 	// producer submits at most one batch per tick and joins it at its horizon,
 	// so it holds at most horizon + 1 slots: AI decisions (8), periodic
-	// gradients (16) and building gradients (8), plus headroom for tests and
+	// gradients (16), building gradients (8) and growth (16), plus headroom for tests and
 	// teardown. The producers static_assert their horizons against these.
 	static constexpr std::size_t AIHorizon = 8, GradientHorizon = 16, BuildingHorizon = 8, GrowthHorizon = 16;
 	static constexpr std::size_t Slots = (AIHorizon + 1) + (GradientHorizon + 1) + (BuildingHorizon + 1) + (GrowthHorizon + 1) + 13;
@@ -588,7 +589,7 @@ public:
 		std::unique_lock<std::mutex> lock(mutex);
 		auto& slot = slots[batch.slot];
 		if (slot.serial != batch.serial) { batch = {}; return; }
-		for (Claim claimed; (claimed = claim(true, &slot)).valid; lock.lock())
+		for (Claim claimed; (ownerRunsDeferred() || slot.placement == Placement::OwnerOnly) && (claimed = claim(true, &slot)).valid; lock.lock())
 		{
 			lock.unlock();
 			execute(claimed, 0);

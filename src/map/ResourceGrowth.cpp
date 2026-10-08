@@ -589,6 +589,7 @@ void Map::stageResourceGrowth()
 }
 void Map::finishResourceGrowth()
 {
+	preparePendingWorld();
 	gradientRuntime->growth.finish();
 }
 void Map::configureResourceGrowth(unsigned delay, bool shared)

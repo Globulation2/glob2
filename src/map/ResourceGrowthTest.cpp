@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "EngineFixtures.h"
+#include "Engine.h"
 #include "ResourceGrowth.h"
 #include "Version.h"
 #include "MapAssetBundle.h"
@@ -473,7 +474,7 @@ TEST_CASE("both format 144 and 145 lineages and compact growth saves retain cont
     glob2test::GlobalsOptions options;
     options.loadStrings = true;
     glob2test::HeadlessGlobals globals(options);
-    for (const auto name : {"growth144.game.gz", "growth145.game.gz", "growth146.game.gz", "growth148.game.gz", "artwork144.game.gz", "empty-artwork144.game.gz", "building145.game.gz", "empty-building145.game.gz"})
+    for (const auto name : {"growth144.game.gz", "growth145.game.gz", "growth146.game.gz", "growth148.game.gz", "vertex148.game.gz", "artwork144.game.gz", "empty-artwork144.game.gz", "building145.game.gz", "empty-building145.game.gz"})
     {
         CAPTURE(name);
         glob2test::HeadlessGame original({.loadDefaultRace = true, .header = true});
@@ -672,5 +673,34 @@ TEST_CASE("typed proposal loading validates fields and preserves old queued unit
         if (bad == 4) p.incrementMask = 1;
         ResourceGrowth::Pipeline invalid;
         CHECK_THROWS(load(invalid, VERSION_MINOR, p));
+    }
+}
+
+TEST_CASE("finishing the last deferred tick computes without publishing early" * doctest::test_suite("ResourceGrowth"))
+{
+    glob2test::HeadlessGlobals globals;
+    glob2test::HeadlessGame world({.header = true});
+    auto &map = world.game.map;
+    map.configureResourceGrowth(8, false);
+    world.game.syncStep(-1, Game::PreparationCompletion::Deferred);
+    REQUIRE(map.gradientRuntime->growth.needsPreparation());
+    const auto published = map.resourceGrowthMetrics().published;
+    map.finishResourceGrowth();
+    CHECK_FALSE(map.gradientRuntime->growth.needsPreparation());
+    CHECK(map.resourceGrowthMetrics().submitted == 1);
+    CHECK(map.resourceGrowthMetrics().published == published);
+    CHECK(map.gradientRuntime->growth.count() == 1);
+}
+
+TEST_CASE("engine preflight opens both historical growth and released vertex saves" * doctest::test_suite("ResourceGrowth"))
+{
+    glob2test::GlobalsOptions options; options.loadStrings=true;
+    glob2test::HeadlessGlobals globals(options);
+    for (const char *name : {"growth146.game.gz","growth148.game.gz","vertex148.game.gz"}) {
+        CAPTURE(name);
+        Engine engine;
+        const auto path=glob2test::inflated(std::string("resources/growth-save-layout/")+name);
+        REQUIRE(engine.initCustom(path.string())==Engine::EE_NO_ERROR);
+        CHECK(engine.gui.game.map.resourceGrowthDelay()==8);
     }
 }
