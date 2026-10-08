@@ -1271,4 +1271,4 @@ void Engine::runOneGameSession(bool& doRunOnceAgain)
     doRunOnceAgain = finishSession();
 }
 
-bool Engine::diagnosticsPending() const { return diagnostics && diagnostics->pending(); }
+bool Engine::headlessDiagnosticsPending() const { return globalContainer->runNoX && diagnostics && diagnostics->pending(); }

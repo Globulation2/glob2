@@ -455,3 +455,7 @@ selection and weights. The save floor stays 58 and replay floor stays 127;
 fresh-game decision behavior is unchanged. Older saves use historical defaults
 for omitted state, whose original values cannot be recovered. Protocol 54 carries
 the additional continuation fields.
+
+Headless diagnostic exports wait for each pending output batch before advancing
+the simulation, including with `GLOB2_SIM_THREAD=1`. This keeps capture intervals
+from being lost while PNGs are written; it affects export wall time only.
