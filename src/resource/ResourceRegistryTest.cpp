@@ -90,10 +90,12 @@ TEST_SUITE("ResourceRegistry")
             CHECK_FALSE(props(key).persistsWhenEmpty);
         }
         CHECK(yield("dead-trees", MaterialId::Wood).initial == 3);
-        CHECK(props("ruins").materialMask == (materialBit(MaterialId::Wood) | materialBit(MaterialId::Stone) | materialBit(MaterialId::Metal)));
+        CHECK(props("ruins").materialMask == (materialBit(MaterialId::Wood) | materialBit(MaterialId::Metal)));
         CHECK(props("camp-site").materialMask == (materialBit(MaterialId::Wood) | materialBit(MaterialId::Food) | materialBit(MaterialId::Fabric)));
-        CHECK(props("ancient-debris").materialMask == (materialBit(MaterialId::Stone) | materialBit(MaterialId::Gold) | materialBit(MaterialId::Metal)));
-        CHECK(yield("ruins", MaterialId::Stone).initial == 3);
+        CHECK(props("ancient-debris").materialMask == (materialBit(MaterialId::Gold) | materialBit(MaterialId::Metal)));
+        CHECK(yield("ruins", MaterialId::Wood).initial == 4);
+        // Stone stays a static source so stone gradients keep their cache.
+        CHECK((registry->mutableMaterialSources() & materialBit(MaterialId::Stone)) == 0);
         // Undergrowth is walkable but must be cleared before building.
         for (const auto* key : {"scrub", "tall-grass"})
         {

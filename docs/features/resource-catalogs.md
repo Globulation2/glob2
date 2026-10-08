@@ -212,10 +212,10 @@ stock generators do not place them. Behaviour comes only from the fields above.
 | --- | --- | --- |
 | `jungle-trees` | wood | Like trees, faster growth; two looks per stage |
 | `pine-trees` | wood | Like trees, slower growth; two looks per stage |
-| `dead-trees` | wood 3 | No growth or spread; stands on land or sand; finite |
-| `ruins` | stone 3, wood 2, metal 1 | Finite scavenge site on land or sand |
+| `dead-trees` | wood 3 | No growth or spread; finite |
+| `ruins` | wood 4, metal 2 | Finite scavenge site |
 | `camp-site` | food 2, wood 2, fabric 1 | Finite scavenge site |
-| `ancient-debris` | stone 2, metal 2, gold 1 | Finite scavenge site on land or sand |
+| `ancient-debris` | metal 3, gold 2 | Finite scavenge site; same placement as the ore deposits |
 | `scrub` | wood 2 | Does not block walking; blocks building until cleared; slow spread |
 | `tall-grass` | wood 1 | Does not block walking; blocks building until cleared; spreads |
 | `maize` | food 4 | Farmable crop; faster growth, smaller stock |
@@ -226,6 +226,15 @@ stock generators do not place them. Behaviour comes only from the fields above.
 Scavenge sites start full, never grow and vanish once every yield is gone; their
 sprite shrinks with the total stock. Because no building consumes metal, gold or
 fabric yet, a site keeps its last pieces until a clearing area removes it.
+Two catalog-wide properties follow from the definitions rather than from placed
+deposits, so the set keeps them unchanged except where noted. Scavenge sites do
+not yield stone: a finite stone yield would make stone a mutable material source in
+every new map and give up its static-gradient cache. A material's habitat is the
+union of the habitats of every resource yielding it, and AI fertility, crop maps and
+generator checks read it; dead trees, camp-sites and ruins therefore need growth
+land like trees and wheat, and debris matches the ore deposits. Fish are the one
+deliberate exception: as an aquatic food they make water food habitat in every new
+map, which changes how the AIs read fertility.
 Farm areas replant the farmable crop next to each cell, so a maize or potato field
 keeps its crop; an empty field and a boundary with wheat use the lowest-ID crop,
 wheat. Fish are the first resource to use `animationFrames`: each stock level is
@@ -250,6 +259,10 @@ python3 tools/artwork/package_runtime.py --check
    (declare a new experiment in `experiments` if none fits). Only the eight legacy
    resources are ungated. New keys sort after the legacy slots, so they can renumber
    later gated resources in newly created maps; code must look resources up by key.
+   Keep stone a static source: a finite or growing stone yield anywhere in the
+   catalog makes stone mutable for every map (the `ResourceRegistry` suite checks this).
+   A new yield on a terrain where no existing resource yields that material widens
+   the material's habitat for every map, which is a simulation change.
 2. Paint its frames and HD frames with a deterministic tool under
    `tools/artwork/`, run `package_runtime.py --check`, and credit the artwork in
    `docs/assets/source-attribution.md`.

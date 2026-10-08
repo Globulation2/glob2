@@ -1399,7 +1399,7 @@
         "growthRate": 0,
         "spreadRate": 0,
         "ecology": "none",
-        "habitatMask": 9,
+        "habitatMask": 1,
         "stockBranchDivisor": 8,
         "stockDependentGrowth": true,
         "blocksGround": true,
@@ -1411,7 +1411,7 @@
         "farmable": false,
         "smoothPlacement": false,
         "clearConsumption": "all",
-        "requiresGrowthTerrain": false,
+        "requiresGrowthTerrain": true,
         "requiresPermanentDepositsTerrain": false
       },
       "yields": {
@@ -1480,11 +1480,11 @@
     {
       "key": "ruins",
       "properties": {
-        "primaryMaterial": "stone",
+        "primaryMaterial": "wood",
         "growthRate": 0,
         "spreadRate": 0,
         "ecology": "none",
-        "habitatMask": 9,
+        "habitatMask": 1,
         "stockBranchDivisor": 8,
         "stockDependentGrowth": true,
         "blocksGround": true,
@@ -1496,33 +1496,24 @@
         "farmable": false,
         "smoothPlacement": false,
         "clearConsumption": "all",
-        "requiresGrowthTerrain": false,
+        "requiresGrowthTerrain": true,
         "requiresPermanentDepositsTerrain": false
       },
       "yields": {
         "wood": {
-          "capacity": 2,
-          "initial": 2,
+          "capacity": 4,
+          "initial": 4,
           "seedReserve": 1,
-          "growthRate": 0,
-          "consumption": "one",
-          "destroysDeposit": false,
-          "placementMaximum": 0
-        },
-        "stone": {
-          "capacity": 3,
-          "initial": 3,
-          "seedReserve": 1,
-          "growthRate": 0,
+          "growthRate": 196608,
           "consumption": "one",
           "destroysDeposit": false,
           "placementMaximum": 0
         },
         "metal": {
-          "capacity": 1,
-          "initial": 1,
+          "capacity": 2,
+          "initial": 2,
           "seedReserve": 1,
-          "growthRate": 0,
+          "growthRate": 196608,
           "consumption": "one",
           "destroysDeposit": false,
           "placementMaximum": 0
@@ -1626,7 +1617,7 @@
         "farmable": false,
         "smoothPlacement": false,
         "clearConsumption": "all",
-        "requiresGrowthTerrain": false,
+        "requiresGrowthTerrain": true,
         "requiresPermanentDepositsTerrain": false
       },
       "yields": {
@@ -1731,11 +1722,11 @@
     {
       "key": "ancient-debris",
       "properties": {
-        "primaryMaterial": "stone",
+        "primaryMaterial": "metal",
         "growthRate": 0,
         "spreadRate": 0,
         "ecology": "none",
-        "habitatMask": 9,
+        "habitatMask": 1,
         "stockBranchDivisor": 8,
         "stockDependentGrowth": true,
         "blocksGround": true,
@@ -1751,29 +1742,20 @@
         "requiresPermanentDepositsTerrain": false
       },
       "yields": {
-        "stone": {
+        "gold": {
           "capacity": 2,
           "initial": 2,
           "seedReserve": 1,
-          "growthRate": 0,
-          "consumption": "one",
-          "destroysDeposit": false,
-          "placementMaximum": 0
-        },
-        "gold": {
-          "capacity": 1,
-          "initial": 1,
-          "seedReserve": 1,
-          "growthRate": 0,
+          "growthRate": 196608,
           "consumption": "one",
           "destroysDeposit": false,
           "placementMaximum": 0
         },
         "metal": {
-          "capacity": 2,
-          "initial": 2,
+          "capacity": 3,
+          "initial": 3,
           "seedReserve": 1,
-          "growthRate": 0,
+          "growthRate": 196608,
           "consumption": "one",
           "destroysDeposit": false,
           "placementMaximum": 0
