@@ -50,7 +50,7 @@ struct HeightFieldLevels
 HeightFieldLevels classifyHeightField(HeightMap &, const HeightFieldTiling &,
 									  const HeightFieldOptions &);
 
-/// Writes the field's terrain to the undermap, tiled, and runs the engine's sand control.
+/// Writes the field's terrain to the map's vertices, tiled, and lays the engine's beaches.
 void paintHeightFieldTerrain(Map &, HeightMap &, const HeightFieldTiling &,
 							 const HeightFieldLevels &);
 /// Paints algae, stone, wheat and wood as bands of the field; wheat and wood alternate along the

@@ -47,7 +47,7 @@ int plantShoreFields(Map &, const Torus &, const std::vector<ShoreField> &,
 					 const Fertility::Field &, int percent);
 
 /// An irregular grass plot surrounded by sand. `corners` is an arbitrary, nonempty set of
-/// undermap vertices; a Chebyshev margin seals diagonal growth across the wrap.
+/// terrain vertices; a Chebyshev margin seals diagonal growth across the wrap.
 /// The default two rows preserve existing gardens; one row is a thinner, still sealed bund.
 /// margin must be positive.
 /// Returns the pure grass tiles inside it, suitable for a crop eligibility list. The caller must
@@ -95,7 +95,7 @@ FarmRows bestFarmRows(double angle);
 /// need areas in the inverse ratio.
 double farmYield(double angle);
 
-/// A farm laid over a region: which undermap vertices are water, and for every vertex of the region
+/// A farm laid over a region: which terrain vertices are water, and for every vertex of the region
 /// the row it lies in (even rows are crops, odd rows water; -1 outside the region).
 struct Farm
 {
@@ -120,7 +120,7 @@ struct ContourWobble
 	double at(double angle) const;
 };
 
-/// Contour rows around a central clearing, circular or wobbled. Widths are undermap CORNERS, as
+/// Contour rows around a central clearing, circular or wobbled. Widths are terrain VERTICES, as
 /// in layFarm; beaches and four-corner conversion consume crop ground at every boundary.
 /// The inner and outer caps contain eight-neighbour crop spread. Every radial crossing
 /// cuts BOTH crop and water rows, keeping circulation open after crops fill the bands.
@@ -161,7 +161,7 @@ ContourFarm layContourFarm(TerrainSketch &, const Torus &, const std::vector<Sha
 						   const ContourFarmStyle &);
 
 /// A clearing in the middle of a farm for buildings: `width` by `height` tiles of pure grass with a
-/// ring of sand `ring` undermap vertices wide round it (two vertices make a full tile of sand), so
+/// ring of sand `ring` terrain vertices wide round it (two vertices make a full tile of sand), so
 /// no crop grows onto it and nothing but the clearing is buildable. 10 by 4 seats a swarm or an inn
 /// with room to walk round it.
 struct FarmPlot

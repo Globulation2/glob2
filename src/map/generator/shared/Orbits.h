@@ -26,8 +26,8 @@ namespace MapGeneration
 // the generator shares out the ground with growTerritories (Territories.h).
 
 /// A symmetry as a signed permutation matrix acting on doubled centred coordinates, then a move by
-/// (tx, ty) whole tiles. Tile (x, y) is (2x + 1 - W, 2y + 1 - H) and undermap corner (u, v) is
-/// (2u - W, 2v - H). A tile's terrain comes from its four corners (Map::regenerateMap), and the same
+/// (tx, ty) whole tiles. Tile (x, y) is (2x + 1 - W, 2y + 1 - H) and terrain vertex (u, v) is
+/// (2u - W, 2v - H). A tile's terrain comes from its four corner vertices, and the same
 /// matrix maps a tile's corners onto its image's corners, so the tile rotation (x, y) -> (W-1-y, x) is
 /// the corner rotation (u, v) -> (W-v, u). A translation moves tiles and corners alike.
 struct Isometry
@@ -46,7 +46,7 @@ struct Symmetry
 	int order() const { return int(elements.size()); }
 	/// The index of the image of tile (x, y) under element e.
 	int tile(int e, int x, int y) const;
-	/// The index of the image of undermap corner (u, v) under element e.
+	/// The index of the image of terrain vertex (u, v) under element e.
 	int corner(int e, int u, int v) const;
 	/// The top-left tile of the image of a w x h footprint anchored at (x, y): the image of a
 	/// rectangle is a rectangle, so it is the image's lowest corner on each axis.
@@ -130,7 +130,7 @@ std::vector<unsigned char> topShare(const std::vector<int> &value,
 /// naming the tile in `detail`, when an orbit's deposits differ in type.
 bool equaliseDeposits(Map &, const Symmetry &, std::string &detail);
 
-/// Whether a finished world is exactly symmetric: every element maps undermap corners, tile graphics
+/// Whether a finished world is exactly symmetric: every element maps terrain vertices, tile graphics
 /// (by class), deposits (type and amount), buildings and units onto themselves, with the colonies
 /// permuted one to one, and those permutations carry colony 0 onto every other colony. Empty when it
 /// is; otherwise what broke, and where. `permutations`, if given, receives each non-identity element's
@@ -151,7 +151,7 @@ inline double nearestSiteDistance(const Torus &t, const std::vector<ShapePoint> 
 }
 /// Quarter turns of a stencil: a design drawn once in its own frame (offsets from an origin vertex)
 /// and stamped at every colony turned by a whole number of quarter turns, `facing` 0 to 3, so every
-/// copy covers exactly the same tiles. The two grids turn differently: a vertex (undermap corner)
+/// copy covers exactly the same tiles. The two grids turn differently: a vertex (tile corner)
 /// at offset (dx, dy) turns about the origin vertex, while tile (dx, dy), whose centre lies half a
 /// tile past its top-left corner, lands one tile over on the axes the turn flips. Evaluate a
 /// stencil's tiles at their centres and its corners at the corners, and turn each with its own rule,
