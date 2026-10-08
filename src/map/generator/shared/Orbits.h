@@ -1,5 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #pragma once
+#include "GenerationWork.h"
+#include "GenerationNumeric.h"
 #include "Geometry.h"
 #include "Grid.h"
 #include <algorithm>
@@ -144,9 +146,16 @@ inline double nearestSiteDistance(const Torus &t, const std::vector<ShapePoint> 
 {
 	double nearest = std::min(t.w, t.h);
 	for (size_t a = 0; a < sites.size(); ++a)
+	{
+		::MapGeneration::generationCheckpoint();
 		for (size_t b = a + 1; b < sites.size(); ++b)
-			nearest = std::min(nearest, std::hypot(t.offsetX(int(sites[a].x), int(sites[b].x)),
-												   t.offsetY(int(sites[a].y), int(sites[b].y))));
+		{
+			::MapGeneration::generationCheckpoint();
+			nearest = std::min(nearest, ::MapGeneration::Numeric::hypot(
+											t.offsetX(int(sites.at(a).x), int(sites.at(b).x)),
+											t.offsetY(int(sites.at(a).y), int(sites.at(b).y))));
+		}
+	}
 	return nearest;
 }
 /// Quarter turns of a stencil: a design drawn once in its own frame (offsets from an origin vertex)

@@ -1,5 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #pragma once
+#include "GenerationWork.h"
+#include "GenerationNumeric.h"
 #include "GenerationContext.h"
 #include <algorithm>
 #include <array>
@@ -30,7 +32,8 @@ struct Anneal
 	double heat(int move) const
 	{
 		return moves < 2 ? to
-						 : from * std::pow(to / from, double(move) / double(std::max(1, moves - 1)));
+						 : from * ::MapGeneration::Numeric::pow(
+									  to / from, double(move) / double(std::max(1, moves - 1)));
 	}
 };
 
@@ -70,6 +73,7 @@ SolveReport anneal(const Anneal &schedule, GenerationContext &context, Propose p
 	remember();
 	for (int move = 0; move < schedule.moves; ++move)
 	{
+		::MapGeneration::generationCheckpoint();
 		++report.attempted;
 		if (!propose())
 			continue;

@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #pragma once
+#include "GenerationWork.h"
 #include "GenerationContext.h"
 #include "GenerationRequest.h"
 #include <map>
@@ -45,10 +46,16 @@ Layout cachedDesign(const GenerationRequest &request, GenerationContext &context
 		cache.valid = true;
 	}
 	for (const auto &[name, state] : cache.streams)
+	{
+		::MapGeneration::generationCheckpoint();
 		if (context.stream(name) != std::mt19937(GenerationContext::deriveSeed(request.seed, name)))
 			return designAfresh(request, context);
+	}
 	for (const auto &[name, state] : cache.streams)
+	{
+		::MapGeneration::generationCheckpoint();
 		context.stream(name) = state;
+	}
 	context.telemetry.replay(cache.telemetry);
 	return cache.layout;
 }

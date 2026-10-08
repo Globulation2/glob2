@@ -1,3 +1,4 @@
+#include "GenerationWork.h"
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 // Copyright (C) 2008 Bradley Arsenault
@@ -76,10 +77,13 @@ HeightFieldTiling heightFieldTiling(int w, int h, int repeat)
 	/// respect symmetry-requirements
 	unsigned int wPower2Divider = 0, hPower2Divider = 0;
 	for (int i = 0; i < repeat; i++)
+	{
+		::MapGeneration::generationCheckpoint();
 		if ((w >> wPower2Divider) > (h >> hPower2Divider))
 			wPower2Divider++;
 		else
 			hPower2Divider++;
+	}
 	HeightFieldTiling tiling;
 	tiling.wRepeat = 1 << wPower2Divider;
 	tiling.hRepeat = 1 << hPower2Divider;
@@ -143,6 +147,7 @@ HeightFieldLevels classifyHeightField(HeightMap &hm, const HeightFieldTiling &ti
 
 	for (unsigned i = 0; i < wHeightMap * hHeightMap; i++)
 	{
+		::MapGeneration::generationCheckpoint();
 		histogram[hm.uiLevel(i, 2048)]++;
 	}
 	unsigned int accumulatedHistogram = 0;
@@ -150,6 +155,7 @@ HeightFieldLevels classifyHeightField(HeightMap &hm, const HeightFieldTiling &ti
 	HeightFieldLevels levels;
 	while ((levels.water == 0) && (i < 2048))
 	{
+		::MapGeneration::generationCheckpoint();
 		accumulatedHistogram += histogram[i++];
 		if (levels.algae == 0 && accumulatedHistogram >= algaeTiles)
 			levels.algae = (float)(i - 1) / 2048.0;
@@ -158,12 +164,14 @@ HeightFieldLevels classifyHeightField(HeightMap &hm, const HeightFieldTiling &ti
 	}
 	while ((levels.sand == 0) && (i < 2048))
 	{
+		::MapGeneration::generationCheckpoint();
 		accumulatedHistogram += histogram[i++];
 		if (accumulatedHistogram >= waterTiles + sandTiles)
 			levels.sand = (float)(i - 1) / 2048.0;
 	}
 	while ((levels.grass == 0) && (i < 2048))
 	{
+		::MapGeneration::generationCheckpoint();
 		accumulatedHistogram += histogram[i++];
 		if (levels.wheat == 0 && accumulatedHistogram >= wheatTop)
 			levels.wheat = (float)(i - 1) / 2048.0;
@@ -187,8 +195,11 @@ void paintHeightFieldTerrain(Map &map, HeightMap &hm, const HeightFieldTiling &t
 	std::vector<TerrainType> vertices(state.begin(), state.end());
 	const unsigned int wHeightMap = tiling.w, hHeightMap = tiling.h;
 	for (unsigned y = 0; y < hHeightMap; y++)
+	{
+		::MapGeneration::generationCheckpoint();
 		for (unsigned x = 0; x < wHeightMap; x++)
 		{
+			::MapGeneration::generationCheckpoint();
 			TerrainType vertex;
 			if (hm(y * wHeightMap + x) < levels.water)
 				vertex = WATER;
@@ -199,12 +210,17 @@ void paintHeightFieldTerrain(Map &map, HeightMap &hm, const HeightFieldTiling &t
 			else
 				vertex = SAND; // desert: the highest ground dries out
 			for (int yRepeat = 0; yRepeat < tiling.hRepeat; yRepeat++)
+			{
+				::MapGeneration::generationCheckpoint();
 				for (int xRepeat = 0; xRepeat < tiling.wRepeat; xRepeat++)
 				{
+					::MapGeneration::generationCheckpoint();
 					const unsigned i = xRepeat * wHeightMap + x + (yRepeat * hHeightMap + y) * w;
-					vertices[size_t(map.coordToIndex(int(i % w), int(i / w)))] = vertex;
+					vertices.at(size_t(map.coordToIndex(int(i % w), int(i / w)))) = vertex;
 				}
+			}
 		}
+	}
 	map.assignVertexTerrain(vertices);
 	map.layBeaches();
 }
@@ -215,8 +231,10 @@ void paintHeightFieldResources(Map &map, HeightMap &hm, const HeightFieldTiling 
 	const unsigned int wHeightMap = tiling.w, hHeightMap = tiling.h;
 	for (unsigned y = 0; y < hHeightMap; y++)
 	{
+		::MapGeneration::generationCheckpoint();
 		for (unsigned x = 0; x < wHeightMap; x++)
 		{
+			::MapGeneration::generationCheckpoint();
 			int tmpResource = NO_RES;
 			const float level = hm(x + wHeightMap * y);
 			const bool stoneBand = options.hilltopStone
@@ -255,8 +273,10 @@ void paintHeightFieldResources(Map &map, HeightMap &hm, const HeightFieldTiling 
 			{
 				for (int yRepeat = 0; yRepeat < tiling.hRepeat; yRepeat++)
 				{
+					::MapGeneration::generationCheckpoint();
 					for (int xRepeat = 0; xRepeat < tiling.wRepeat; xRepeat++)
 					{
+						::MapGeneration::generationCheckpoint();
 						map.setResourceByIndex(xRepeat * wHeightMap + x, yRepeat * hHeightMap + y,
 										tmpResource, 1);
 					}
@@ -297,15 +317,18 @@ bool chooseHeightFieldStarts(Game &game, GenerationContext &context)
 	// TODO: First pass to find the number of available places.
 	for (int team = 0; team < nbTeams; team++)
 	{
+		::MapGeneration::generationCheckpoint();
 		int maxSurface = 0;
 		int maxX = 0;
 		int maxY = 0;
 		for (int y = 0; y < h; y++)
 		{
+			::MapGeneration::generationCheckpoint();
 			int width = 0;
 			int startX = 0;
 			for (int x = 0; x < w; x++)
 			{
+				::MapGeneration::generationCheckpoint();
 				int a = map.vertexTerrainAt(x, y);
 				if (a == GRASS)
 					width++;
@@ -316,11 +339,17 @@ bool chooseHeightFieldStarts(Game &game, GenerationContext &context)
 						int centerX = ((x + startX) >> 1);
 						int top, bot;
 						for (top = 0; top < h; top++)
+						{
+							::MapGeneration::generationCheckpoint();
 							if (map.vertexTerrainAt(centerX, y - top) != GRASS)
 								break;
+						}
 						for (bot = 0; bot < h; bot++)
+						{
+							::MapGeneration::generationCheckpoint();
 							if (map.vertexTerrainAt(centerX, y + bot) != GRASS)
 								break;
+						}
 						int height = top + bot - 1;
 						int surface = height * width;
 						assert(surface > 0);
@@ -328,12 +357,15 @@ bool chooseHeightFieldStarts(Game &game, GenerationContext &context)
 						int centerY = y + ((bot - top) >> 1);
 						bool farEnough = true;
 						for (int ti = 0; ti < team; ti++)
+						{
+							::MapGeneration::generationCheckpoint();
 							if (map.warpDistSquare(centerX, centerY, bootX[ti], bootY[ti]) <
 								minDistSquare)
 							{
 								farEnough = false;
 								break;
 							}
+						}
 
 						if (surface > maxSurface && farEnough)
 						{
@@ -377,6 +409,7 @@ bool plantHeightFieldGroves(Map &map, GenerationContext &context, const HeightFi
 	// bigger maps now.
 	for (int q1 = 0; q1 < count; q1++) // counting groves
 	{
+		::MapGeneration::generationCheckpoint();
 		// choose fruit
 		int fruit;
 		switch (context.stream("resources")() % 3)
@@ -397,6 +430,7 @@ bool plantHeightFieldGroves(Map &map, GenerationContext &context, const HeightFi
 		int attempts = 0;
 		do
 		{
+			::MapGeneration::generationCheckpoint();
 			if (++attempts > int(wHeightMap * hHeightMap * 4))
 			{
 				context.detail = "No free grass for fruit";
@@ -415,13 +449,22 @@ bool plantHeightFieldGroves(Map &map, GenerationContext &context, const HeightFi
 		int stalledSteps = 0;
 		for (int i = 0; i < grovesize; i++)
 		{
+			::MapGeneration::generationCheckpoint();
 			for (int yRepeat = 0; yRepeat < tiling.hRepeat; yRepeat++)
+			{
+				::MapGeneration::generationCheckpoint();
 				for (int xRepeat = 0; xRepeat < tiling.wRepeat; xRepeat++)
-					map.setResourceByIndex(xRepeat * wHeightMap + x, yRepeat * hHeightMap + y, fruit, 1);
+				{
+					::MapGeneration::generationCheckpoint();
+					map.setResourceByIndex(xRepeat * wHeightMap + x, yRepeat * hHeightMap + y,
+										   fruit, 1);
+				}
+			}
 			// find a valid neighbor of actual coordinate
 			bool advanced = false;
 			for (int iTry = 0; iTry < 100; iTry++)
 			{
+				::MapGeneration::generationCheckpoint();
 				int xNew = x + context.stream("resources")() % 3 - 1;
 				int yNew = y + context.stream("resources")() % 3 - 1;
 				if (map.vertexTerrainAt(xNew, yNew) == GRASS && !map.isResource(xNew, yNew))

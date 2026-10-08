@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #pragma once
+#include "GenerationNumeric.h"
 #include <algorithm>
 #include <cmath>
 #include <array>
@@ -53,7 +54,10 @@ struct Stretch
 	{
 		// Unstretched, the heading is returned as it is, not rebuilt through atan2, so a square
 		// map's trigonometry is untouched to the last bit.
-		return sx == sy ? angle : std::atan2(std::sin(angle) * sy, std::cos(angle) * sx);
+		return sx == sy
+				   ? angle
+				   : ::MapGeneration::Numeric::atan2(::MapGeneration::Numeric::sin(angle) * sy,
+													 ::MapGeneration::Numeric::cos(angle) * sx);
 	}
 	/// The larger of the two scales: how much farther any design distance may reach on the map.
 	double longest() const { return std::max(sx, sy); }
@@ -67,12 +71,16 @@ struct AxisFrame
 	double x, y, angle;
 	ShapePoint at(double along, double across) const
 	{
-		return {x + along * std::cos(angle) - across * std::sin(angle),
-				y + along * std::sin(angle) + across * std::cos(angle)};
+		return {x + along * ::MapGeneration::Numeric::cos(angle) -
+					across * ::MapGeneration::Numeric::sin(angle),
+				y + along * ::MapGeneration::Numeric::sin(angle) +
+					across * ::MapGeneration::Numeric::cos(angle)};
 	}
 	ShapePoint project(double dx, double dy) const
 	{
-		return {dx * std::cos(angle) + dy * std::sin(angle), -dx * std::sin(angle) + dy * std::cos(angle)};
+		return {
+			dx * ::MapGeneration::Numeric::cos(angle) + dy * ::MapGeneration::Numeric::sin(angle),
+			-dx * ::MapGeneration::Numeric::sin(angle) + dy * ::MapGeneration::Numeric::cos(angle)};
 	}
 };
 // Area-preserving stretch and rotation. Geometry stays independent of terrain and wrapping.

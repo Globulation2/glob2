@@ -7,6 +7,8 @@
 #include <cstdint>
 #include <map>
 #include <string>
+#include <memory>
+struct GeneratorDefinition;
 class GeneratorRegistry;
 struct GenerationRequest
 {
@@ -37,6 +39,9 @@ struct GenerationRequest
 	using ControlGroup = ::ControlGroup;
 	GenerationRequest();
 	int method = eUNIFORM; // stable registry ID, never a selection index
+	// Immutable catalog captured when selecting a method; freezes custom package revisions.
+	std::shared_ptr<const GeneratorRegistry> catalog;
+	const GeneratorDefinition &definition() const;
 	int wDec = 0, hDec = 0, nbTeams = 0, nbWorkers = 0;
 	TerrainType terrainType = GRASS;
 	std::uint32_t seed = 0;

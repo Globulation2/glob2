@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #pragma once
+#include "GenerationWork.h"
 #include "Drawing.h"
 #include "Geometry.h"
 #include "Grid.h"
@@ -56,7 +57,7 @@ struct Tessellation
 	int cellAt(int column, int row) const;
 	int other(int edge, int cell) const
 	{
-		return edges[edge].cells[0] == cell ? edges[edge].cells[1] : edges[edge].cells[0];
+		return edges.at(edge).cells[0] == cell ? edges.at(edge).cells[1] : edges.at(edge).cells[0];
 	}
 	/// The copy of `p`, shifted by whole map sizes, nearest `reference`.
 	SubtilePoint imageNear(SubtilePoint p, SubtilePoint reference) const;
@@ -69,8 +70,8 @@ struct Tessellation
 	/// stored.
 	SubtilePoint centreAcross(int edge, int cell) const;
 	/// The tile holding a cell's centre.
-	int centreTileX(int cell) const { return int(subtileTile(cells[cell].centre.x)); }
-	int centreTileY(int cell) const { return int(subtileTile(cells[cell].centre.y)); }
+	int centreTileX(int cell) const { return int(subtileTile(cells.at(cell).centre.x)); }
+	int centreTileY(int cell) const { return int(subtileTile(cells.at(cell).centre.y)); }
 	/// Per cell, the cell across each of its edges, in edge order.
 	RegionGraph neighbours() const;
 	/// Squared distance between two cells' centres, the short way round, in subtile units.

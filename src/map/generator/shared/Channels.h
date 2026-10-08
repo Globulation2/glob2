@@ -1,5 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #pragma once
+#include "GenerationWork.h"
+#include "GenerationNumeric.h"
 #include "Drawing.h"
 #include "Grid.h"
 #include "Sketch.h"
@@ -156,7 +158,7 @@ inline int wrapIndex(int value, int period)
 }
 inline double centred(double delta, double period)
 {
-	return delta - period * std::round(delta / period);
+	return delta - period * ::MapGeneration::Numeric::round(delta / period);
 }
 /// The unit tangent at a point of a centre line, from the points two either side (clamped at an
 /// open line's ends), the short way round the torus.
@@ -166,14 +168,14 @@ inline ShapePoint tangentAt(const Torus &t, const std::vector<ShapePoint> &line,
 	const int n = int(line.size());
 	const int before = closed ? wrapIndex(index - 2, n) : std::max(0, index - 2);
 	const int after = closed ? wrapIndex(index + 2, n) : std::min(n - 1, index + 2);
-	const double dx = centred(line[after].x - line[before].x, t.w);
-	const double dy = centred(line[after].y - line[before].y, t.h);
-	const double len = std::hypot(dx, dy);
+	const double dx = centred(line.at(after).x - line.at(before).x, t.w);
+	const double dy = centred(line.at(after).y - line.at(before).y, t.h);
+	const double len = ::MapGeneration::Numeric::hypot(dx, dy);
 	return len > 1e-9 ? ShapePoint{dx / len, dy / len} : ShapePoint{1, 0};
 }
 inline int tileOf(const Torus &t, double x, double y)
 {
-	return t.at(int(std::floor(x)), int(std::floor(y)));
+	return t.at(int(::MapGeneration::Numeric::floor(x)), int(::MapGeneration::Numeric::floor(y)));
 }
 inline std::string where(const Torus &t, double x, double y)
 {
@@ -196,23 +198,37 @@ std::string fordFault(const Torus &t, const SandFord &f, Water water, double pro
 	const auto wetNear = [&](double x, double y)
 	{
 		for (int dy = -1; dy <= 1; ++dy)
+		{
+			::MapGeneration::generationCheckpoint();
 			for (int dx = -1; dx <= 1; ++dx)
+			{
+				::MapGeneration::generationCheckpoint();
 				if (wet(x + dx, y + dy))
 					return true;
+			}
+		}
 		return false;
 	};
 	for (int side : {-1, 1})
 	{
+		::MapGeneration::generationCheckpoint();
 		const double d = side * (f.halfWidth + probe);
 		if (!wetNear(f.x + f.alongX * d, f.y + f.alongY * d))
 			return "A ford" + where(t, f.x, f.y) + " does not cross a channel.";
 	}
 	for (int a = -1; a <= 1; ++a)
+	{
+		::MapGeneration::generationCheckpoint();
 		for (double s = -f.span; s <= f.span + 1e-9; s += 0.5)
+		{
+			::MapGeneration::generationCheckpoint();
 			if (wet(f.x + f.alongX * a + f.acrossX * s, f.y + f.alongY * a + f.acrossY * s))
 				return "A ford" + where(t, f.x, f.y) + " is cut by open water.";
+		}
+	}
 	for (int side : {-1, 1})
 	{
+		::MapGeneration::generationCheckpoint();
 		const double s = side * (f.span + 1.0);
 		if (wet(f.x + f.acrossX * s, f.y + f.acrossY * s))
 			return "A ford" + where(t, f.x, f.y) + " does not reach its bank.";
@@ -229,18 +245,19 @@ std::string channelCoreFault(const Torus &t, const std::vector<ShapePoint> &cent
 	int px = 0, py = 0;
 	for (size_t i = 0; i < centreline.size(); ++i)
 	{
+		::MapGeneration::generationCheckpoint();
 		if (skip(int(i)))
 		{
 			previous = false;
 			continue;
 		}
-		const int tile = tileOf(t, centreline[i].x, centreline[i].y);
+		const int tile = tileOf(t, centreline.at(i).x, centreline.at(i).y);
 		const int x = tile % t.w, y = tile / t.w;
 		if (!water(x, y))
-			return "A channel silts up" + where(t, centreline[i].x, centreline[i].y) + ".";
+			return "A channel silts up" + where(t, centreline.at(i).x, centreline.at(i).y) + ".";
 		if (previous && x != px && y != py && !water(x, py) && !water(px, y))
-			return "A channel can be stepped across" + where(t, centreline[i].x, centreline[i].y) +
-				   ".";
+			return "A channel can be stepped across" +
+				   where(t, centreline.at(i).x, centreline.at(i).y) + ".";
 		previous = true;
 		px = x;
 		py = y;
@@ -263,11 +280,12 @@ channelCrossings(const Torus &t, const std::vector<ShapePoint> &centreline,
 	const int n = int(centreline.size());
 	for (int i = 0; i < n; ++i)
 	{
+		::MapGeneration::generationCheckpoint();
 		const ShapePoint tangent = tangentAt(t, centreline, i, closed);
-		const double nx = -tangent.y, ny = tangent.x, probe = radius[i] + reach;
-		const ShapePoint p = centreline[i];
-		const int a = labels[tileOf(t, p.x + nx * probe, p.y + ny * probe)];
-		const int b = labels[tileOf(t, p.x - nx * probe, p.y - ny * probe)];
+		const double nx = -tangent.y, ny = tangent.x, probe = radius.at(i) + reach;
+		const ShapePoint p = centreline.at(i);
+		const int a = labels.at(tileOf(t, p.x + nx * probe, p.y + ny * probe));
+		const int b = labels.at(tileOf(t, p.x - nx * probe, p.y - ny * probe));
 		if (a < 0 || b < 0 || a == b || !clear(i))
 			continue;
 		const int lo = std::min(a, b), hi = std::max(a, b);
@@ -286,6 +304,7 @@ channelCrossings(const Torus &t, const std::vector<ShapePoint> &centreline,
 	std::vector<ChannelCrossing> crossings;
 	for (const Run &run : runs)
 	{
+		::MapGeneration::generationCheckpoint();
 		const int length = run.last - run.first + 1;
 		if (length < minimumRun)
 			continue;

@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 #include "NewMapScreen.h"
+#include "GeneratorText.h"
 #include "GUIMapPreview.h"
 #include "Game.h"
 #include "GenerationContext.h"
@@ -20,7 +21,7 @@ namespace
 std::string tr(const char *label) { return fe::tr(std::string("[") + label + "]"); }
 } // namespace
 
-NewMapScreen::NewMapScreen(const GeneratorRegistry &registry, GAGGUI::ScreenStack *screens) : registry(registry), screens(screens)
+NewMapScreen::NewMapScreen(const GeneratorRegistry &registry, GAGGUI::ScreenStack *screens) : registryOwner(std::make_shared<const GeneratorRegistry>(registry)), registry(*registryOwner), screens(screens)
 {
 	descriptor.setMethodDefaults(registry.methods().front(), registry);
 	preview = std::make_unique<MapPreview>();
@@ -93,9 +94,12 @@ Element NewMapScreen::build(const Presentation &p)
 									  }
 								  }));
 	if (!blank)
-		fields.push_back(fe::field(tr("Landscape"),
-								   fe::chooser("landscape", GAGCore::FormattableString(tr("%0 / Browse")).arg(tr(registry.at(descriptor.method).nameKey)),
-											   [this] { chooseLandscape(); })));
+		fields.push_back(fe::field(
+			tr("Landscape"),
+			fe::chooser(
+				"landscape",
+				GAGCore::FormattableString(tr("%0 / Browse")).arg(generatorName(descriptor)),
+				[this] { chooseLandscape(); })));
 	else
 		fields.push_back(fe::field(tr("Starting terrain"), fe::choice("terrain", {tr("water"), tr("sand"), tr("grass")}, descriptor.terrainType,
 																		[this](int i)
@@ -127,7 +131,8 @@ Element NewMapScreen::build(const Presentation &p)
 		{
 			if (c.isToggle())
 			{
-				fields.push_back(fe::toggle(c.id, tr(c.label), c.get(descriptor) != 0,
+				fields.push_back(fe::toggle(c.id, generatorText(descriptor.definition(), c.label),
+											c.get(descriptor) != 0,
 											[this, c](bool value)
 											{
 												c.set(descriptor, value);
@@ -137,13 +142,16 @@ Element NewMapScreen::build(const Presentation &p)
 			}
 			std::vector<std::string> values;
 			for (int value : c.values())
-				values.push_back(c.isChoice() ? tr(c.valueLabel(value)) : std::to_string(c.displayValue(value)));
-			fields.push_back(fe::field(tr(c.label), fe::choice(c.id, values, c.indexOf(c.get(descriptor)),
-															   [this, c](int index)
-															   {
-																   c.set(descriptor, c.valueAt(index));
-																   invalidatePreview();
-															   })));
+				values.push_back(c.isChoice()
+									 ? generatorText(descriptor.definition(), c.valueLabel(value))
+									 : std::to_string(c.displayValue(value)));
+			fields.push_back(fe::field(generatorText(descriptor.definition(), c.label),
+									   fe::choice(c.id, values, c.indexOf(c.get(descriptor)),
+												  [this, c](int index)
+												  {
+													  c.set(descriptor, c.valueAt(index));
+													  invalidatePreview();
+												  })));
 		};
 		for (const auto &c : GenerationRequest::sharedControls())
 			if (!blank || c.id == "width" || c.id == "height")
@@ -195,7 +203,7 @@ LandscapePickerScreen *NewMapScreen::chooseLandscape()
 		}
 		if (method == descriptor.method)
 			selected = int(entries.size());
-		entries.push_back({tr(registry.at(method).nameKey), request, method, registry.at(method).tags});
+		entries.push_back({generatorName(request), request, method, registry.at(method).tags});
 	}
 	auto picker = std::make_unique<LandscapePickerScreen>(tr("Choose a landscape"), std::move(entries), selected);
 	auto *result = picker.get();

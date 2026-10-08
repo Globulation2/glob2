@@ -717,3 +717,9 @@ New generated maps can carry normalized custom building frames with
 snapshot produced by `--compose-buildings` as the catalog file. The artwork bundle
 is verified against that catalog and embedded in the generated map (format 145).
 Families selected in the graphical picker do not affect headless generation.
+
+Custom JavaScript generator jobs may use a namespaced string `generator` ID. Attach
+the frozen portable package as an input named `generator-package` (or numbered
+`generator-package-*` inputs for several packages). The adapter supplies them through
+`--generator-package`; package artifacts therefore participate in job identity and
+travel with the request. See [generator authoring](../map-generators/JAVASCRIPT.md).

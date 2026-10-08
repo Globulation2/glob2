@@ -14,6 +14,7 @@
 #include "GenerationContext.h"
 #include "GenerationService.h"
 #include "GeneratorRegistry.h"
+#include "GeneratorText.h"
 #include "GlobalContainer.h"
 #include "LandscapePickerScreen.h"
 #include "LandscapePreviewer.h"
@@ -141,6 +142,7 @@ CustomGameScreen::CustomGameScreen(GAGGUI::ScreenStack &screens) : screens(scree
 	if (preferences.load(*files))
 	{
 		setup = preferences.setup;
+        if(!preferences.missingGeneratorId.empty())message="Missing map generator: "+preferences.missingGeneratorId+". A native landscape was selected.";
 		userMaps = preferences.userMaps && separateMapLibraries;
 		landscapeSortOrder = preferences.landscapeSortOrder;
 		std::copy(std::begin(preferences.expanded), std::end(preferences.expanded), expanded);
@@ -330,7 +332,7 @@ void CustomGameScreen::savePreferences()
 std::vector<std::pair<int, GenerationRequest>> CustomGameScreen::landscapeEntries() const
 {
 	std::vector<std::pair<int, GenerationRequest>> entries;
-	for (int method : GeneratorRegistry::builtins().methods(false))
+	for (int method : GeneratorRegistry::active().methods(false))
 	{
 		auto draft = setup;
 		draft.generatorHistory.select(draft.generator, method);
@@ -349,9 +351,8 @@ LandscapePickerScreen *CustomGameScreen::chooseLandscape()
 	{
 		if (method == setup.generator.method)
 			selected = int(shown.size());
-		LandscapePickerScreen::Entry entry{tr(GenerationRequest::methodName(method)), request,
-										   method};
-		if (const auto *definition = GeneratorRegistry::builtins().find(method))
+		LandscapePickerScreen::Entry entry{generatorName(request), request, method};
+		if (const auto *definition = GeneratorRegistry::active().find(method))
 			entry.tags = definition->tags;
 		shown.push_back(std::move(entry));
 	}
@@ -1030,8 +1031,10 @@ Element CustomGameScreen::build(const Presentation &p)
 																			 : std::vector<std::string>{"Map", "Players & Teams", "Game Rules"});
 	const std::string rulesetTitle = setup.rulesetTitle(forRoom);
 	const std::vector<std::string> details = {
-		setup.random ? tr(GenerationRequest::methodName(setup.generator.method)) : mapHeader.getMapName(),
-		std::to_string(setup.activeColonies()) + " " + tr("colonies") + " / " + teamsLabel(setup.teamLayout()), rulesetTitle};
+		setup.random ? generatorName(setup.generator) : mapHeader.getMapName(),
+		std::to_string(setup.activeColonies()) + " " + tr("colonies") + " / " +
+			teamsLabel(setup.teamLayout()),
+		rulesetTitle};
 	std::vector<Element> tabs;
 	for (int i = 0; i < 3; ++i)
 	{
@@ -1188,7 +1191,9 @@ Element CustomGameScreen::mapTab(const Presentation &p, bool narrow)
 			++setup.mapRevision;
 			invalidatePreview();
 		};
-		left.push_back(fe::field(tr("Landscape"), fe::chooser("generator/landscape", tr(GenerationRequest::methodName(g.method)), [this] { chooseLandscape(); })));
+		left.push_back(
+			fe::field(tr("Landscape"), fe::chooser("generator/landscape", generatorName(g),
+												   [this] { chooseLandscape(); })));
 		GenerationRequest defaults;
 		defaults.setMethodDefaults(g.method);
 		const bool atDefaults = g.options == defaults.options && g.wDec == defaults.wDec && g.hDec == defaults.hDec && setup.capacity == defaults.nbTeams;
@@ -1201,15 +1206,17 @@ Element CustomGameScreen::mapTab(const Presentation &p, bool narrow)
 		{
 			std::vector<std::string> options;
 			for (int v : c.values())
-				options.push_back(c.isChoice() ? tr(c.valueLabel(v)) : std::to_string(c.displayValue(v)));
-			left.push_back(fe::field(tr(c.label), fe::choice(id, options, c.indexOf(c.get(g)),
-															 [this, c, changed](int i)
-															 {
-																 c.set(setup.generator, c.valueAt(i));
-																 if (c.id == "teams")
-																	 setup.setCapacity(setup.generator.nbTeams);
-																 changed();
-															 }),
+				options.push_back(c.isChoice() ? generatorText(g.definition(), c.valueLabel(v))
+											   : std::to_string(c.displayValue(v)));
+			left.push_back(fe::field(generatorText(g.definition(), c.label),
+									 fe::choice(id, options, c.indexOf(c.get(g)),
+												[this, c, changed](int i)
+												{
+													c.set(setup.generator, c.valueAt(i));
+													if (c.id == "teams")
+														setup.setCapacity(setup.generator.nbTeams);
+													changed();
+												}),
 									 {"", 160}));
 		};
 		for (const auto &c : GenerationRequest::sharedControls())
@@ -1236,7 +1243,7 @@ Element CustomGameScreen::mapTab(const Presentation &p, bool narrow)
 			if (!expanded[section])
 				continue;
 			bool any = false;
-			for (const auto &c : GenerationRequest::controls(g.method))
+			for (const auto &c : g.definition().controls)
 			{
 				if (static_cast<int>(c.group) != section)
 					continue;
@@ -1244,7 +1251,8 @@ Element CustomGameScreen::mapTab(const Presentation &p, bool narrow)
 				const std::string id = "generator/" + c.id;
 				if (c.isToggle())
 				{
-					left.push_back(fe::toggle(id, tr(c.label), c.get(g) != 0,
+					left.push_back(fe::toggle(id, generatorText(g.definition(), c.label),
+											  c.get(g) != 0,
 											  [this, c, changed](bool on)
 											  {
 												  c.set(setup.generator, on ? 1 : 0);
@@ -1269,7 +1277,7 @@ Element CustomGameScreen::mapTab(const Presentation &p, bool narrow)
 				{
 					fe::SliderOptions options;
 					options.valueText = std::to_string(c.get(g));
-					options.caption = tr(c.label);
+					options.caption = generatorText(g.definition(), c.label);
 					left.push_back(fe::slider(id, (c.get(g) - c.minimum) / c.step, 0, (c.maximum - c.minimum) / c.step,
 											  [c, apply](int i) { apply(c.minimum + i * c.step); }, options));
 				}
@@ -1277,7 +1285,10 @@ Element CustomGameScreen::mapTab(const Presentation &p, bool narrow)
 				{
 					fe::StepperOptions options;
 					options.step = c.step;
-					left.push_back(fe::field(tr(c.label), fe::stepper(id, c.get(g), c.minimum, c.maximum, apply, options), {"", 160}));
+					left.push_back(
+						fe::field(generatorText(g.definition(), c.label),
+								  fe::stepper(id, c.get(g), c.minimum, c.maximum, apply, options),
+								  {"", 160}));
 				}
 			}
 			if (!any)
@@ -1310,8 +1321,10 @@ Element CustomGameScreen::mapTab(const Presentation &p, bool narrow)
 	auto leftColumn = fe::column(std::move(left), {p.pt(8)});
 
 	std::vector<Element> right;
-	right.push_back(narrow ? fe::paragraph(setup.random ? tr(GenerationRequest::methodName(setup.generator.method)) : mapHeader.getMapName())
-						   : fe::heading(setup.random ? tr(GenerationRequest::methodName(setup.generator.method)) : mapHeader.getMapName()));
+	right.push_back(
+		narrow
+			? fe::paragraph(setup.random ? generatorName(setup.generator) : mapHeader.getMapName())
+			: fe::heading(setup.random ? generatorName(setup.generator) : mapHeader.getMapName()));
 	const std::string dimensions = validMap ? std::to_string(preview->getLastWidth()) + " x " + std::to_string(preview->getLastHeight())
 							   : setup.random ? std::to_string(1 << setup.generator.wDec) + " x " + std::to_string(1 << setup.generator.hDec)
 											  : "";

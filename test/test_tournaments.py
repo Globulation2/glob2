@@ -31,6 +31,17 @@ out=pathlib.Path(sys.argv[sys.argv.index('--output-dir')+1]);out.mkdir(parents=T
 
 
 class RuleJobs(unittest.TestCase):
+    def test_custom_generators_require_and_pass_frozen_packages(self):
+        from tools.tournaments.jobs import EngineJob
+        request = job('generate_map','a'*64,config={'generator':'example:map'},seeds={'map':91})
+        with self.assertRaisesRegex(ValueError,'frozen generator package'):
+            EngineJob('generate_map').validate(request)
+        request['inputs']={'generator-package-0':{'sha256':'b'*64}}
+        adapter=EngineJob('generate_map');adapter.validate(request)
+        command=adapter.command(request,{'directory':'/bundle','executable':'glob2'},'/attempt',{'generator-package-0':'/frozen.json'})
+        self.assertEqual(command[command.index('--generator-package')+1],'/frozen.json')
+        self.assertEqual(command[command.index('--generator')+1],'example:map')
+
     def test_rules_are_repeatable_sorted_and_new_game_only(self):
         from tools.tournaments.jobs import EngineJob
         adapter = EngineJob('game')

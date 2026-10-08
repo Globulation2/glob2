@@ -1,3 +1,5 @@
+#include "GenerationWork.h"
+#include "GenerationNumeric.h"
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "Geometry.h"
 #include "GenerationContext.h"
@@ -6,7 +8,8 @@
 namespace MapGeneration
 {
 ShapeTransform::ShapeTransform(ShapePoint c, double angle, double scale)
-	: center(c), cosine(std::cos(angle)), sine(std::sin(angle)), stretch(scale)
+	: center(c), cosine(::MapGeneration::Numeric::cos(angle)),
+	  sine(::MapGeneration::Numeric::sin(angle)), stretch(scale)
 {
 	if (!std::isfinite(c.x) || !std::isfinite(c.y) || !std::isfinite(angle) ||
 		!std::isfinite(scale) || scale <= 0)
@@ -39,6 +42,7 @@ RadialShape::RadialShape(double r, double roughness, GenerationContext &context,
 	constexpr double falloff[] = {0.42, 0.28, 0.18, 0.12};
 	for (size_t i = 0; i < amplitude.size(); ++i)
 	{
+		::MapGeneration::generationCheckpoint();
 		const auto choices = std::uint32_t((amplitudeMaximum - 0.6) * 1000) + 1;
 		amplitude[i] = roughness * falloff[i] * (0.6 + context.bounded(stream, choices) / 1000.0);
 		phase[i] = 2 * kPi * context.bounded(stream, 65536) / 65536.0;
@@ -49,14 +53,20 @@ double RadialShape::radiusAt(double theta) const
 	constexpr int harmonics[] = {2, 3, 5, 7};
 	double wobble = 0;
 	for (size_t i = 0; i < amplitude.size(); ++i)
-		wobble += amplitude[i] * std::cos(harmonics[i] * theta + phase[i]);
+	{
+		::MapGeneration::generationCheckpoint();
+		wobble += amplitude[i] * ::MapGeneration::Numeric::cos(harmonics[i] * theta + phase[i]);
+	}
 	return radius * (1 + wobble);
 }
 double RadialShape::maximumRadius() const
 {
 	double sum = 0;
 	for (double a : amplitude)
+	{
+		::MapGeneration::generationCheckpoint();
 		sum += std::abs(a);
+	}
 	return radius * (1 + sum);
 }
 double Teardrop::halfWidthAt(double along) const
@@ -66,7 +76,7 @@ double Teardrop::halfWidthAt(double along) const
 	if (s <= 0 || s >= length || width <= 0)
 		return 0;
 	const double u = s < widest ? (widest - s) / widest : (s - widest) / (length - widest);
-	return width / 2 * std::sqrt(std::max(0.0, 1 - u * u));
+	return width / 2 * ::MapGeneration::Numeric::sqrt(std::max(0.0, 1 - u * u));
 }
 
 double Teardrop::reach(double stretch) const
@@ -77,8 +87,10 @@ double Teardrop::reach(double stretch) const
 	double farthest = length / 2 / stretch;
 	for (int k = 1; k < 64; ++k)
 	{
+		::MapGeneration::generationCheckpoint();
 		const double along = -length / 2 + length * k / 64;
-		farthest = std::max(farthest, std::hypot(along / stretch, halfWidthAt(along)));
+		farthest = std::max(farthest,
+							::MapGeneration::Numeric::hypot(along / stretch, halfWidthAt(along)));
 	}
 	return farthest;
 }
@@ -98,8 +110,11 @@ void stampShape(std::vector<int> &labels, int width, int height, int label,
 		throw std::invalid_argument("Invalid shape grid");
 	const auto center = transform.toMap({0, 0});
 	for (int y = 0; y < height; ++y)
+	{
+		::MapGeneration::generationCheckpoint();
 		for (int x = 0; x < width; ++x)
 		{
+			::MapGeneration::generationCheckpoint();
 			ShapePoint p{double(x), double(y)};
 			if (wrap)
 			{
@@ -107,9 +122,11 @@ void stampShape(std::vector<int> &labels, int width, int height, int label,
 				p.y = center.y + std::remainder(p.y - center.y, height);
 			}
 			p = transform.toShape(p);
-			if (std::hypot(p.x, p.y) < shape.radiusAt(std::atan2(p.y, p.x)))
-				labels[size_t(y) * width + x] = label;
+			if (::MapGeneration::Numeric::hypot(p.x, p.y) <
+				shape.radiusAt(::MapGeneration::Numeric::atan2(p.y, p.x)))
+				labels.at(size_t(y) * width + x) = label;
 		}
+	}
 }
 void stampRoughDisc(std::vector<int> &labels, int width, int height, int label, int x, int y,
 					double radius, double roughness, GenerationContext &context,

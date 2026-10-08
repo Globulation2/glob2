@@ -166,29 +166,35 @@ GenerationRequest::GenerationRequest()
 }
 void GenerationRequest::setMethodDefaults(int id)
 {
-	setMethodDefaults(id, GeneratorRegistry::builtins());
+	setMethodDefaults(id, GeneratorRegistry::active());
 }
 void GenerationRequest::setMethodDefaults(int id, const GeneratorRegistry &registry)
 {
 	method = id;
+	if (&registry == &GeneratorRegistry::active())
+		catalog = GeneratorRegistry::activeSnapshot();
+	else if (&registry == &GeneratorRegistry::builtins())
+		catalog = std::shared_ptr<const GeneratorRegistry>(&registry, [](auto *) {});
+	else
+		catalog = std::make_shared<GeneratorRegistry>(registry);
 	options.clear();
 	for (const auto &c : registry.at(id).controls)
 		c.set(*this, c.defaultValue);
 }
 const std::vector<GeneratorControl> &GenerationRequest::controls(int id)
 {
-	return GeneratorRegistry::builtins().at(id).controls;
+	return GeneratorRegistry::active().at(id).controls;
 }
 const char *GenerationRequest::methodName(int id)
 {
-	return GeneratorRegistry::builtins().at(id).nameKey;
+	return GeneratorRegistry::active().at(id).nameKey;
 }
 bool GenerationRequest::randomizeControls(std::uint32_t seed, int attempts,
 										  ParameterDomain sampling)
 {
 	// A stream of its own: this is lobby randomness, nothing the simulation ever sees.
 	std::mt19937 rng(seed);
-	const GeneratorDefinition &definition = GeneratorRegistry::builtins().at(method);
+	const GeneratorDefinition &definition = this->definition();
 	for (int attempt = 0; attempt < attempts; ++attempt)
 	{
 		GenerationRequest draft = *this;
@@ -225,7 +231,7 @@ const GeneratorControl &GenerationRequest::control(int method, const std::string
 }
 bool GenerationRequest::hasTerrainWeight() const
 {
-	return hasTerrainWeight(controls(method));
+	return hasTerrainWeight(definition().controls);
 }
 bool GenerationRequest::hasTerrainWeight(const std::vector<Control> &definitions) const
 {
@@ -241,7 +247,7 @@ bool GenerationRequest::hasTerrainWeight(const std::vector<Control> &definitions
 }
 void GenerationHistory::select(GenerationRequest &current, int id)
 {
-	select(current, id, GeneratorRegistry::builtins());
+	select(current, id, GeneratorRegistry::active());
 }
 void GenerationHistory::select(GenerationRequest &current, int id,
 							   const GeneratorRegistry &registry)
@@ -261,4 +267,9 @@ void GenerationHistory::select(GenerationRequest &current, int id,
 	next.terrainType = current.terrainType;
 	next.seed = current.seed;
 	current = next;
+}
+
+const GeneratorDefinition &GenerationRequest::definition() const
+{
+	return (catalog ? *catalog : GeneratorRegistry::active()).at(method);
 }

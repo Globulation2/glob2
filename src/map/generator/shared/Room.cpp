@@ -1,3 +1,4 @@
+#include "GenerationWork.h"
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "Room.h"
 #include "Map.h"
@@ -8,8 +9,14 @@ std::vector<unsigned char> buildableTiles(const Map &map)
 	const Torus t(map);
 	std::vector<unsigned char> open(size_t(t.size()), 0);
 	for (int y = 0; y < t.h; ++y)
+	{
+		::MapGeneration::generationCheckpoint();
 		for (int x = 0; x < t.w; ++x)
-			open[size_t(y) * t.w + x] = map.isFreeForBuilding(x, y);
+		{
+			::MapGeneration::generationCheckpoint();
+			open.at(size_t(y) * t.w + x) = map.isFreeForBuilding(x, y);
+		}
+	}
 	return open;
 }
 
@@ -21,22 +28,36 @@ std::vector<unsigned char> buildAnchors(const Torus &t, const std::vector<unsign
 	const int n = t.size();
 	std::vector<int> run(size_t(n), 0);
 	for (int y = 0; y < t.h; ++y)
+	{
+		::MapGeneration::generationCheckpoint();
 		for (int x = 0; x < t.w; ++x)
 		{
+			::MapGeneration::generationCheckpoint();
 			int length = 0;
-			while (length < size && buildable[t.at(x + length, y)])
+			while (length < size && buildable.at(t.at(x + length, y)))
+			{
+				::MapGeneration::generationCheckpoint();
 				++length;
-			run[size_t(y) * t.w + x] = length;
+			}
+			run.at(size_t(y) * t.w + x) = length;
 		}
+	}
 	std::vector<unsigned char> anchors(size_t(n), 0);
 	for (int y = 0; y < t.h; ++y)
+	{
+		::MapGeneration::generationCheckpoint();
 		for (int x = 0; x < t.w; ++x)
 		{
+			::MapGeneration::generationCheckpoint();
 			bool fits = true;
 			for (int dy = 0; dy < size && fits; ++dy)
-				fits = run[t.at(x, y + dy)] >= size;
-			anchors[size_t(y) * t.w + x] = fits;
+			{
+				::MapGeneration::generationCheckpoint();
+				fits = run.at(t.at(x, y + dy)) >= size;
+			}
+			anchors.at(size_t(y) * t.w + x) = fits;
 		}
+	}
 	return anchors;
 }
 
@@ -45,11 +66,17 @@ int buildSites(const Torus &t, const std::vector<unsigned char> &buildable,
 {
 	std::vector<unsigned char> usable(buildable.size(), 0);
 	for (size_t i = 0; i < usable.size(); ++i)
-		usable[i] = buildable[i] && region[i];
+	{
+		::MapGeneration::generationCheckpoint();
+		usable.at(i) = buildable.at(i) && region.at(i);
+	}
 	const std::vector<unsigned char> anchors = buildAnchors(t, usable, size);
 	int count = 0;
 	for (unsigned char a : anchors)
+	{
+		::MapGeneration::generationCheckpoint();
 		count += a;
+	}
 	return count;
 }
 
@@ -58,8 +85,11 @@ std::vector<unsigned char> potentialBuildingTiles(const Map &map)
 	const Torus t(map);
 	std::vector<unsigned char> open(t.size(), 0);
 	for (int i = 0; i < t.size(); ++i)
-		open[i] = map.terrainPropertiesAt(i).buildable && !map.isResource(i % t.w, i / t.w) &&
-				  map.getBuilding(i % t.w, i / t.w) == NOGBID;
+	{
+		::MapGeneration::generationCheckpoint();
+		open.at(i) = map.terrainPropertiesAt(i).buildable && !map.isResource(i % t.w, i / t.w) &&
+					 map.getBuilding(i % t.w, i / t.w) == NOGBID;
+	}
 	return open;
 }
 BuildingArrangement arrangeBuildingGrid(const Torus &t, const std::vector<unsigned char> &buildable,
@@ -82,70 +112,100 @@ BuildingArrangement arrangeBuildingGrid(const Torus &t, const std::vector<unsign
 	// feasible layout fixture, not a maximal rectangle-packing solver.
 	for (int64_t y = int64_t(b.y0) + grid.inset; y + grid.height <= int64_t(b.y1) - grid.inset;
 		 y += grid.height + grid.gap)
+	{
+		::MapGeneration::generationCheckpoint();
 		for (int64_t x = int64_t(b.x0) + grid.inset; x + grid.width <= int64_t(b.x1) - grid.inset;
 			 x += grid.width + grid.gap)
 		{
+			::MapGeneration::generationCheckpoint();
 			bool fits = true;
 			for (int dy = 0; fits && dy < grid.height; ++dy)
+			{
+				::MapGeneration::generationCheckpoint();
 				for (int dx = 0; fits && dx < grid.width; ++dx)
-					fits = buildable[t.at(int(x) + dx, int(y) + dy)];
+				{
+					::MapGeneration::generationCheckpoint();
+					fits = buildable.at(t.at(int(x) + dx, int(y) + dy));
+				}
+			}
 			if (!fits)
 				continue;
 			result.footprints.push_back(
 				{int(x), int(y), int(x) + grid.width, int(y) + grid.height});
 			for (int dy = 0; dy < grid.height; ++dy)
+			{
+				::MapGeneration::generationCheckpoint();
 				for (int dx = 0; dx < grid.width; ++dx)
-					remaining[t.at(int(x) + dx, int(y) + dy)] = 0;
+				{
+					::MapGeneration::generationCheckpoint();
+					remaining.at(t.at(int(x) + dx, int(y) + dy)) = 0;
+				}
+			}
 		}
+	}
 	// Only reachability matters here. Stop once every proposed building has a
 	// reachable cardinal face instead of flooding the entire world for a local grid.
 	std::vector<unsigned char> visited(t.size(), 0);
 	std::vector<int> queue;
 	for (int i : entrances)
 	{
+		::MapGeneration::generationCheckpoint();
 		if (i < 0 || i >= t.size())
 		{
 			result.failure = "Invalid building-arrangement entrance.";
 			return result;
 		}
-		if (remaining[i] && !visited[i])
+		if (remaining.at(i) && !visited.at(i))
 		{
-			visited[i] = 1;
+			visited.at(i) = 1;
 			queue.push_back(i);
 		}
 	}
 	std::vector<int> footprintAt(t.size(), -1);
 	for (size_t id = 0; id < result.footprints.size(); ++id)
 	{
-		const auto &box = result.footprints[id];
+		::MapGeneration::generationCheckpoint();
+		const auto &box = result.footprints.at(id);
 		for (int y = box.y0; y < box.y1; ++y)
+		{
+			::MapGeneration::generationCheckpoint();
 			for (int x = box.x0; x < box.x1; ++x)
-				footprintAt[t.at(x, y)] = int(id);
+			{
+				::MapGeneration::generationCheckpoint();
+				footprintAt.at(t.at(x, y)) = int(id);
+			}
+		}
 	}
 	std::vector<unsigned char> accessible(result.footprints.size(), 0);
 	size_t missing = accessible.size();
 	for (size_t head = 0; missing && head < queue.size(); ++head)
 	{
-		const int tile = queue[head], x = tile % t.w, y = tile / t.w;
+		::MapGeneration::generationCheckpoint();
+		const int tile = queue.at(head), x = tile % t.w, y = tile / t.w;
 		for (int n : {t.at(x - 1, y), t.at(x + 1, y), t.at(x, y - 1), t.at(x, y + 1)})
 		{
-			const int id = footprintAt[n];
-			if (id >= 0 && !accessible[id])
+			::MapGeneration::generationCheckpoint();
+			const int id = footprintAt.at(n);
+			if (id >= 0 && !accessible.at(id))
 			{
-				accessible[id] = 1;
+				accessible.at(id) = 1;
 				--missing;
 			}
 		}
 		for (int dy = -1; dy <= 1; ++dy)
+		{
+			::MapGeneration::generationCheckpoint();
 			for (int dx = -1; dx <= 1; ++dx)
 			{
+				::MapGeneration::generationCheckpoint();
 				const int n = t.at(x + dx, y + dy);
-				if (remaining[n] && !visited[n])
+				if (remaining.at(n) && !visited.at(n))
 				{
-					visited[n] = 1;
+					visited.at(n) = 1;
 					queue.push_back(n);
 				}
 			}
+		}
 	}
 	if (missing)
 		result.failure = "A proposed building has no reachable gathering/circulation face.";

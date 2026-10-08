@@ -28,6 +28,7 @@ class UserDirectoryStorage final : public OnlineStorage
 		files.addWriteSubdir("online/skins");
         files.addWriteSubdir("online/skin-sprites");
 		files.addWriteSubdir("ais");
+		files.addWriteSubdir("generators");
 	}
     std::size_t size(const std::string &path) override {
         std::unique_ptr<GAGCore::StreamBackend> stream(files.openInputStreamBackend(path));

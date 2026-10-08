@@ -10,6 +10,7 @@
     "ReadOnlyPhase/*",
     "SimulationReadPhase/*",
     "*Script*/*",
+    "ScriptGenerator/*",
     "AITelemetryUI/*",
     "SettingsAILibrary/*",
     "*Stream*/*",

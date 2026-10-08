@@ -1,3 +1,5 @@
+#include "GenerationWork.h"
+#include "GenerationNumeric.h"
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "StartQuality.h"
 #include "Material.h"
@@ -33,11 +35,15 @@ std::vector<double> winProbabilities(const std::vector<double> &fitness)
 	double total = 0;
 	for (std::size_t i = 0; i < fitness.size(); ++i)
 	{
-		probability[i] = std::exp(fitness[i] - top);
-		total += probability[i];
+		::MapGeneration::generationCheckpoint();
+		probability.at(i) = ::MapGeneration::Numeric::exp(fitness.at(i) - top);
+		total += probability.at(i);
 	}
 	for (double &value : probability)
+	{
+		::MapGeneration::generationCheckpoint();
 		value = total > 0 ? value / total : 1.0 / double(fitness.size());
+	}
 	return probability;
 }
 
@@ -48,14 +54,20 @@ double mapFairness(const std::vector<double> &probability)
 		return 1.0; // one colony has nobody to be unfair to
 	double total = 0;
 	for (double value : probability)
+	{
+		::MapGeneration::generationCheckpoint();
 		total += value;
+	}
 	if (total <= 0)
 		return 1.0;
 	std::vector<double> ordered(probability);
 	std::sort(ordered.begin(), ordered.end());
 	double weighted = 0;
 	for (std::size_t i = 0; i < n; ++i)
-		weighted += (2.0 * double(i + 1) - double(n) - 1.0) * ordered[i];
+	{
+		::MapGeneration::generationCheckpoint();
+		weighted += (2.0 * double(i + 1) - double(n) - 1.0) * ordered.at(i);
+	}
 	// Divided by the (n-1)/n ceiling a raw Gini cannot exceed, so two colonies and eight
 	// colonies are read off the same scale.
 	const double gini = weighted / total * (1.0 / double(n - 1));
@@ -73,8 +85,11 @@ StartQualityReport scoreStarts(Game &game, int requestedTeams, const StartQualit
 
 	const std::vector<std::vector<int>> workers = unitTilesByTeam(map, nbTeams);
 	for (const auto &team : workers)
+	{
+		::MapGeneration::generationCheckpoint();
 		if (team.empty())
-			return report; // nothing walked out of this colony; there is nothing to score
+			return report;
+	} // nothing walked out of this colony; there is nothing to score
 
 	const Fertility::Field fertility = Fertility::forMap(map);
 
@@ -89,13 +104,17 @@ StartQualityReport scoreStarts(Game &game, int requestedTeams, const StartQualit
 	constexpr std::uint32_t kFertilityCeiling = std::numeric_limits<Uint16>::max();
 	Uint16 fertilityMax = 0;
 	for (int y = 0; y < h; ++y)
+	{
+		::MapGeneration::generationCheckpoint();
 		for (int x = 0; x < w; ++x)
 		{
+			::MapGeneration::generationCheckpoint();
 			const Uint16 value =
 				static_cast<Uint16>(std::min(fertility.at(x, y), kFertilityCeiling));
 			map.setFertility(x, y, value);
 			fertilityMax = std::max(fertilityMax, value);
 		}
+	}
 	map.fertilityMaximum = fertilityMax;
 
 	report.colonies.resize(nbTeams);
@@ -104,17 +123,21 @@ StartQualityReport scoreStarts(Game &game, int requestedTeams, const StartQualit
 
 	for (int team = 0; team < nbTeams; ++team)
 	{
-		ColonyQuality &colony = report.colonies[team];
-		walkingFields.push_back(walkFromWorkers(map, workers[team]));
+		::MapGeneration::generationCheckpoint();
+		ColonyQuality &colony = report.colonies.at(team);
+		walkingFields.push_back(walkFromWorkers(map, workers.at(team)));
 		const std::vector<int> &dist = walkingFields.back();
 
 		for (int p = 0; p < w * h; ++p)
 		{
-			if (dist[p] >= 0)
+			::MapGeneration::generationCheckpoint();
+			if (dist.at(p) >= 0)
 				++colony.reachableTiles;
-			if (dist[p] >= 0)
+			if (dist.at(p) >= 0)
 				for (auto &band : colony.distanceBands)
-					if (dist[p] <= band.walkingSteps)
+				{
+					::MapGeneration::generationCheckpoint();
+					if (dist.at(p) <= band.walkingSteps)
 					{
 						const int x = p % w, y = p / w;
 						++band.reachedTiles;
@@ -125,7 +148,8 @@ StartQualityReport scoreStarts(Game &game, int requestedTeams, const StartQualit
 							band.fertileGrassTiles += fertility.at(x, y) > 0;
 						}
 					}
-			if (dist[p] < 0 || dist[p] > scale.catchmentSteps)
+				}
+			if (dist.at(p) < 0 || dist.at(p) > scale.catchmentSteps)
 				continue;
 			const int x = p % w, y = p / w;
 			++colony.catchmentTiles;
@@ -146,27 +170,35 @@ StartQualityReport scoreStarts(Game &game, int requestedTeams, const StartQualit
 		// A deposit counts once however many catchment tiles touch it; workers gather from
 		// beside a deposit, so what matters is that the colony can stand next to it at all.
 		for (int y = 0; y < h; ++y)
+		{
+			::MapGeneration::generationCheckpoint();
 			for (int x = 0; x < w; ++x)
 			{
+				::MapGeneration::generationCheckpoint();
 				const Resource &resource = map.getResource(x, y);
 				if (resource.type == NO_RES_TYPE)
 					continue;
 				int nearest = -1;
 				for (int dy = -1; dy <= 1; ++dy)
+				{
+					::MapGeneration::generationCheckpoint();
 					for (int dx = -1; dx <= 1; ++dx)
 					{
+						::MapGeneration::generationCheckpoint();
 						if (!dx && !dy)
 							continue;
-						const int d = dist[map.normalizeY(y + dy) * w + map.normalizeX(x + dx)];
+						const int d = dist.at(map.normalizeY(y + dy) * w + map.normalizeX(x + dx));
 						if (d >= 0 && (nearest < 0 || d < nearest))
 							nearest = d;
 					}
+				}
 				if (nearest < 0)
 					continue;
 				const int reach = nearest + 1;
                 for (unsigned material=0; material<MaterialCount; ++material)
-                {
-                    const auto amount=map.materialAmountAtSlot(y*w+x,material);
+				{
+					::MapGeneration::generationCheckpoint();
+					const auto amount=map.materialAmountAtSlot(y*w+x,material);
                     if (!amount) continue;
 				auto &access = colony.materials[material];
 				if (access.nearestDistance < 0 || reach < access.nearestDistance)
@@ -177,13 +209,17 @@ StartQualityReport scoreStarts(Game &game, int requestedTeams, const StartQualit
 					access.catchmentAmount += amount;
 				}
 				for (auto &band : colony.distanceBands)
+				{
+					::MapGeneration::generationCheckpoint();
 					if (nearest <= band.walkingSteps)
 					{
 						++band.depositTiles[material];
 						band.storedAmount[material] += amount;
 					}
-                }
+				}
+				}
 			}
+		}
 		colony.wheatDistance = colony.materials[materialIndex(MaterialId::Food)].nearestDistance;
 		colony.woodDistance = colony.materials[materialIndex(MaterialId::Wood)].nearestDistance;
 		colony.resourceAmount = colony.materials[materialIndex(MaterialId::Food)].catchmentAmount +
@@ -191,12 +227,16 @@ StartQualityReport scoreStarts(Game &game, int requestedTeams, const StartQualit
 
 		for (int rival = 0; rival < nbTeams; ++rival)
 		{
+			::MapGeneration::generationCheckpoint();
 			if (rival == team)
 				continue;
 			int nearest = -1;
-			for (int p : workers[rival])
-				if (dist[p] >= 0 && (nearest < 0 || dist[p] < nearest))
-					nearest = dist[p];
+			for (int p : workers.at(rival))
+			{
+				::MapGeneration::generationCheckpoint();
+				if (dist.at(p) >= 0 && (nearest < 0 || dist.at(p) < nearest))
+					nearest = dist.at(p);
+			}
 			if (nearest < 0)
 				continue; // no land route to this rival, which is isolation rather than threat
 			++colony.reachableRivals;
@@ -206,17 +246,18 @@ StartQualityReport scoreStarts(Game &game, int requestedTeams, const StartQualit
 			if (nearest <= scale.threatRadius)
 				++colony.rivalsWithinThreat;
 		}
-
 	}
 
 	// Assign each walkable tile to its uniquely closest colony, or to every colony
 	// tied for first. A catchment tile is also counted in that colony's local share.
 	for (int p = 0; p < w * h; ++p)
 	{
+		::MapGeneration::generationCheckpoint();
 		int best = -1, ties = 0, owner = -1;
 		for (int team = 0; team < nbTeams; ++team)
 		{
-			const int d = walkingFields[team][p];
+			::MapGeneration::generationCheckpoint();
+			const int d = walkingFields.at(team).at(p);
 			if (d < 0)
 				continue;
 			if (best < 0 || d < best)
@@ -232,20 +273,24 @@ StartQualityReport scoreStarts(Game &game, int requestedTeams, const StartQualit
 			continue;
 		for (int team = 0; team < nbTeams; ++team)
 		{
+			::MapGeneration::generationCheckpoint();
 			if (ties == 1 && team != owner)
 				continue;
-			if (ties > 1 && walkingFields[team][p] != best)
+			if (ties > 1 && walkingFields.at(team).at(p) != best)
 				continue;
-			auto &colony = report.colonies[team];
-			const bool local = walkingFields[team][p] <= scale.catchmentSteps;
+			auto &colony = report.colonies.at(team);
+			const bool local = walkingFields.at(team).at(p) <= scale.catchmentSteps;
 			for (auto &band : colony.distanceBands)
-				if (walkingFields[team][p] <= band.walkingSteps)
+			{
+				::MapGeneration::generationCheckpoint();
+				if (walkingFields.at(team).at(p) <= band.walkingSteps)
 				{
 					if (ties == 1)
 						++band.exclusiveNearestTiles;
 					else
 						++band.tiedNearestTiles;
 				}
+			}
 			if (ties == 1)
 			{
 				++colony.exclusiveNearestTiles;
@@ -263,8 +308,11 @@ StartQualityReport scoreStarts(Game &game, int requestedTeams, const StartQualit
 	// the same cost as a rival. This is positional access, not actual ownership.
 	std::vector<int> approach(nbTeams, -1);
 	for (int y = 0; y < h; ++y)
+	{
+		::MapGeneration::generationCheckpoint();
 		for (int x = 0; x < w; ++x)
 		{
+			::MapGeneration::generationCheckpoint();
 			const Resource &resource = map.getResource(x, y);
 			if (resource.type == NO_RES_TYPE)
 				continue;
@@ -272,50 +320,60 @@ StartQualityReport scoreStarts(Game &game, int requestedTeams, const StartQualit
 			std::fill(approach.begin(), approach.end(), -1);
 			for (int team = 0; team < nbTeams; ++team)
 			{
+				::MapGeneration::generationCheckpoint();
 				for (int dy = -1; dy <= 1; ++dy)
+				{
+					::MapGeneration::generationCheckpoint();
 					for (int dx = -1; dx <= 1; ++dx)
 					{
+						::MapGeneration::generationCheckpoint();
 						if (!dx && !dy)
 							continue;
-						const int d = walkingFields[team][map.normalizeY(y + dy) * w +
-																	   map.normalizeX(x + dx)];
-						if (d >= 0 && (approach[team] < 0 || d < approach[team]))
-							approach[team] = d;
+						const int d = walkingFields.at(team).at(map.normalizeY(y + dy) * w +
+																map.normalizeX(x + dx));
+						if (d >= 0 && (approach.at(team) < 0 || d < approach.at(team)))
+							approach.at(team) = d;
 					}
-				if (approach[team] < 0)
+				}
+				if (approach.at(team) < 0)
 					continue;
-				if (best < 0 || approach[team] < best)
+				if (best < 0 || approach.at(team) < best)
 				{
-					best = approach[team];
+					best = approach.at(team);
 					owner = team;
 					ties = 1;
 				}
-				else if (approach[team] == best)
+				else if (approach.at(team) == best)
 					++ties;
 			}
 			if (best < 0)
 				continue;
 			for (int team = 0; team < nbTeams; ++team)
 			{
-				if ((ties == 1 && team != owner) || (ties > 1 && approach[team] != best))
+				::MapGeneration::generationCheckpoint();
+				if ((ties == 1 && team != owner) || (ties > 1 && approach.at(team) != best))
 					continue;
                 for (unsigned material=0; material<MaterialCount; ++material)
-                {
-                    const auto amount=map.materialAmountAtSlot(y*w+x,material);
+				{
+					::MapGeneration::generationCheckpoint();
+					const auto amount=map.materialAmountAtSlot(y*w+x,material);
                     if (!amount) continue;
-				auto &access = report.colonies[team].materials[material];
-				for (auto &band : report.colonies[team].distanceBands)
-					if (best <= band.walkingSteps)
+					auto &access = report.colonies.at(team).materials[material];
+					for (auto &band : report.colonies.at(team).distanceBands)
 					{
-						if (ties == 1)
+						::MapGeneration::generationCheckpoint();
+						if (best <= band.walkingSteps)
 						{
-							++band.exclusiveDepositTiles[material];
-							band.exclusiveStoredAmount[material] += amount;
-						}
-						else
-						{
-							++band.tiedDepositTiles[material];
-							band.tiedStoredAmount[material] += amount;
+							if (ties == 1)
+							{
+								++band.exclusiveDepositTiles[material];
+								band.exclusiveStoredAmount[material] += amount;
+							}
+							else
+							{
+								++band.tiedDepositTiles[material];
+								band.tiedStoredAmount[material] += amount;
+							}
 						}
 					}
 				if (best > scale.catchmentSteps)
@@ -330,22 +388,27 @@ StartQualityReport scoreStarts(Game &game, int requestedTeams, const StartQualit
 					++access.tiedCatchmentDeposits;
 					access.tiedCatchmentAmount += amount;
 				}
-                }
+				}
 			}
 		}
+	}
 
 	// Every measurement is final now -- territory, deposits and bands included -- so the fitted
 	// model can read them. Fitness first, then what it says about who wins and how evenly.
 	std::vector<double> fitness(report.colonies.size());
 	for (std::size_t i = 0; i < report.colonies.size(); ++i)
-		fitness[i] = startFitness(report.colonies, i);
+	{
+		::MapGeneration::generationCheckpoint();
+		fitness.at(i) = startFitness(report.colonies, i);
+	}
 	const std::vector<double> probability = winProbabilities(fitness);
 	double sum = 0;
 	for (std::size_t i = 0; i < report.colonies.size(); ++i)
 	{
-		report.colonies[i].fitness = fitness[i];
-		report.colonies[i].winProbability = probability[i];
-		sum += fitness[i];
+		::MapGeneration::generationCheckpoint();
+		report.colonies.at(i).fitness = fitness.at(i);
+		report.colonies.at(i).winProbability = probability.at(i);
+		sum += fitness.at(i);
 	}
 	report.worstFitness = *std::min_element(fitness.begin(), fitness.end());
 	report.bestFitness = *std::max_element(fitness.begin(), fitness.end());

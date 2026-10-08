@@ -1,0 +1,145 @@
+{
+  "id": "examples:swamp",
+  "name": "Swamp (JavaScript)",
+  "apiVersion": 1,
+  "revision": 1,
+  "author": "Globulation 2",
+  "description": "Optional JavaScript orchestration of Swamp.",
+  "tags": [
+    "terrain:natural",
+    "feature:lakes",
+    "style:wide-open"
+  ],
+  "controls": [
+    {
+      "id": "water",
+      "label": "Water weight",
+      "minimum": 0,
+      "maximum": 100,
+      "step": 1,
+      "default": 35,
+      "searchRange": [
+        25,
+        45
+      ],
+      "group": "terrain",
+      "terrainWeight": true
+    },
+    {
+      "id": "grass",
+      "label": "Grass weight",
+      "minimum": 0,
+      "maximum": 100,
+      "step": 1,
+      "default": 60,
+      "searchRange": [
+        55,
+        85
+      ],
+      "group": "terrain",
+      "terrainWeight": true
+    },
+    {
+      "id": "smoothing",
+      "label": "Smoothing",
+      "minimum": 1,
+      "maximum": 8,
+      "step": 1,
+      "default": 6,
+      "searchRange": [
+        5,
+        7
+      ],
+      "group": "terrain"
+    },
+    {
+      "id": "fruit",
+      "label": "Fruit",
+      "minimum": 0,
+      "maximum": 64,
+      "step": 1,
+      "default": 4,
+      "searchRange": [
+        2,
+        8
+      ],
+      "group": "resources"
+    },
+    {
+      "id": "wheat-amount",
+      "label": "Wheat amount",
+      "minimum": 0,
+      "maximum": 300,
+      "step": 25,
+      "default": 100,
+      "searchRange": [
+        75,
+        150
+      ],
+      "group": "resources"
+    },
+    {
+      "id": "wood-amount",
+      "label": "Wood amount",
+      "minimum": 0,
+      "maximum": 300,
+      "step": 25,
+      "default": 100,
+      "searchRange": [
+        75,
+        150
+      ],
+      "group": "resources"
+    },
+    {
+      "id": "stone-amount",
+      "label": "Stone amount",
+      "minimum": 0,
+      "maximum": 300,
+      "step": 25,
+      "default": 100,
+      "searchRange": [
+        75,
+        150
+      ],
+      "group": "resources"
+    },
+    {
+      "id": "algae-amount",
+      "label": "Algae amount",
+      "minimum": 0,
+      "maximum": 300,
+      "step": 25,
+      "default": 100,
+      "searchRange": [
+        75,
+        150
+      ],
+      "group": "resources"
+    },
+    {
+      "id": "hilltop-stone",
+      "label": "Stone on hilltops",
+      "kind": "toggle",
+      "default": 0,
+      "group": "resources",
+      "searchValues": [
+        0
+      ]
+    },
+    {
+      "id": "repeat",
+      "label": "Repeat landscape",
+      "minimum": 0,
+      "maximum": 5,
+      "step": 1,
+      "default": 0,
+      "searchRange": [
+        0,
+        1
+      ],
+      "group": "layout",
+      "powerOfTwo": true
+    }
+  ]
+}

@@ -14,8 +14,8 @@ import time
 from pathlib import Path
 
 
-def load_catalog(binary, timeout=60):
-    result = subprocess.run([str(binary), '--headless-catalog'], capture_output=True,
+def load_catalog(binary, timeout=60, generator_packages=()):
+    result = subprocess.run([str(binary), '--headless-catalog']+[v for p in generator_packages for v in ['--generator-package',str(p)]], capture_output=True,
                             text=True, timeout=timeout, check=True)
     catalog = json.loads(result.stdout)
     if catalog.get('schema_version') != 1 or not isinstance(catalog.get('generators'), list):
@@ -36,7 +36,7 @@ def dimension_exponent(tiles):
     return tiles.bit_length() - 1
 
 
-def generate_map(binary, method, seed, width, height, teams, settings=None, timeout=120):
+def generate_map(binary, method, seed, width, height, teams, settings=None, timeout=120, generator_packages=()):
     """Return category (completed/refused/execution_error), detail, timing and native JSON.
 
     This is a single seed, without lobby candidate selection. Dimensions are tile counts;
@@ -54,6 +54,7 @@ def generate_map(binary, method, seed, width, height, teams, settings=None, time
     with tempfile.TemporaryDirectory(prefix='glob2-map-study-') as directory:
         command = [str(binary), '--generate-map', '--generator', str(method),
                    '--map-seed', str(seed), '--output-dir', directory]
+        command += [v for p in generator_packages for v in ['--generator-package',str(p)]]
         for key, value in params.items():
             command += ['--param', f'{key}={value}']
         try:

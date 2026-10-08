@@ -192,7 +192,9 @@ struct CustomGameSetup
 			return "Invalid colony count.";
 		if (random)
 		{
-			const auto *definition = GeneratorRegistry::builtins().find(generator.method);
+			const auto *definition =
+				(generator.catalog ? *generator.catalog : GeneratorRegistry::active())
+					.find(generator.method);
 			if (!definition)
 				return "Unknown generator";
 			auto request = generator;

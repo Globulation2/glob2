@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "GenerationContext.h"
+#include "GenerationWork.h"
 #include <stdexcept>
 int GenerationContext::choiceFromSeed(std::uint32_t seed, const std::string &name,
 									  const std::vector<int> &values)
@@ -34,6 +35,12 @@ std::uint32_t GenerationContext::deriveSeed(std::uint32_t seed, const std::strin
 }
 std::mt19937 &GenerationContext::stream(const std::string &name)
 {
+	if (MapGeneration::generationWork)
+	{
+		MapGeneration::generationCheckpoint();
+		if (name.size() > 128 || (!streams.contains(name) && streams.size() >= 256))
+			throw std::invalid_argument("Generator RNG stream limit exceeded");
+	}
 	return streams.try_emplace(name, deriveSeed(request.seed, name)).first->second;
 }
 std::uint32_t GenerationContext::randomSeed()

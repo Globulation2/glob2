@@ -1060,6 +1060,24 @@
       "title": "Results: you left",
       "description": "The leaver's loss at once; the record follows when the match ends.",
       "group": "Online play"
+    },
+    {
+      "id": "settings-generators",
+      "title": "Map generators",
+      "description": "Custom map generator import, replacement, export and removal.",
+      "group": "Settings"
+    },
+    {
+      "id": "new-map-scripted",
+      "title": "Scripted editor landscape",
+      "description": "Installed JavaScript package selected in the map editor. Requires generator-only capture fixtures.",
+      "group": "Map generators"
+    },
+    {
+      "id": "setup-scripted",
+      "title": "Scripted game landscape",
+      "description": "Installed JavaScript package with a generated local-game preview. Requires generator-only capture fixtures.",
+      "group": "Map generators"
     }
   ],
   "gaps": [

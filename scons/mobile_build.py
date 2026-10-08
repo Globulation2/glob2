@@ -8,7 +8,7 @@ from build_layout import PACKAGE_VERSION, write_if_changed, prepare_directory
 import ccache
 from mobile_toolchain import discover, LOCK
 from mobile_artifacts import verify_android_library, archive_object_name
-from javascript import javascript_objects, numeric_guard
+from javascript import javascript_objects, numeric_guard, strict_numeric_source, guarded_numeric_source
 import official_instance
 from sources import CLIENT_SOURCES, GAG_SOURCES, USL_SOURCES, INCLUDE_DIRECTORIES
 import skin_materials
@@ -101,8 +101,8 @@ def build_mobile(directory, identity, arguments):
         env.Append(LIBS=['android', 'log', 'dl', 'm'])
         env['_LIBFLAGS'] = '-Wl,--start-group ' + env['_LIBFLAGS'] + ' -Wl,--end-group'
         # SDL3/SDL_main.h supplies Android entry-point routing.
-        objects = [(strict if name.startswith('src/scripting/javascript/') or name == 'src/ai/javascript/AIJavaScript.cpp' else env).SharedObject(str(object_root / (name + '.o')), name) for name in files] + script_objects
-        numeric_guard(strict, [obj for name, obj in zip(files, objects) if name.startswith('src/scripting/javascript/') or name == 'src/ai/javascript/AIJavaScript.cpp'])
+        objects = [(strict if strict_numeric_source(name) else env).SharedObject(str(object_root / (name + '.o')), name) for name in files] + script_objects
+        numeric_guard(strict, [obj for name, obj in zip(files, objects) if guarded_numeric_source(name)])
         program = env.SharedLibrary(str(output / 'lib/main'), objects)
         if 'android-tests' in COMMAND_LINE_TARGETS:
             # Cross-compile the two doctest binaries from test/tests.py as Android PIE
@@ -168,8 +168,8 @@ def build_mobile(directory, identity, arguments):
         # Xcode links the archive with the SDL startup and system frameworks.
         objc = env.Clone()
         objc.Append(CCFLAGS=['-fobjc-arc'])
-        objects = [(objc if name == 'mobile/ios/Documents.mm' else strict if name.startswith('src/scripting/javascript/') or name == 'src/ai/javascript/AIJavaScript.cpp' else env).Object(str(object_root / archive_object_name(name)), name) for name in files] + script_objects
-        numeric_guard(strict, [obj for name, obj in zip(files, objects) if name.startswith('src/scripting/javascript/') or name == 'src/ai/javascript/AIJavaScript.cpp'])
+        objects = [(objc if name == 'mobile/ios/Documents.mm' else strict if strict_numeric_source(name) else env).Object(str(object_root / archive_object_name(name)), name) for name in files] + script_objects
+        numeric_guard(strict, [obj for name, obj in zip(files, objects) if guarded_numeric_source(name)])
         # ar replaces matching members but otherwise retains obsolete names.
         # Recreate this owned output so renamed/removed sources cannot survive.
         env['ARCOM'] = [Delete('$TARGET'), env['ARCOM']]

@@ -1,5 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #pragma once
+#include "GenerationWork.h"
+#include "GenerationNumeric.h"
 #include "Grid.h"
 #include "TerrainType.h"
 #include <algorithm>
@@ -59,16 +61,26 @@ void sprinkleSand(TerrainSketch &sketch, const Torus &t, const std::vector<unsig
 {
 	std::vector<unsigned char> water(sketch.size(), 0);
 	for (size_t i = 0; i < sketch.size(); ++i)
-		water[i] = sketch[i] == WATER;
+	{
+		::MapGeneration::generationCheckpoint();
+		water.at(i) = sketch.at(i) == WATER;
+	}
 	const std::vector<int> steps = stepsFrom(t, water);
 	std::vector<std::pair<double, int>> ranked;
 	for (int i = 0; i < t.size(); ++i)
-		if (eligible[i] && sketch[i] == GRASS && steps[i] >= inland)
+	{
+		::MapGeneration::generationCheckpoint();
+		if (eligible.at(i) && sketch.at(i) == GRASS && steps.at(i) >= inland)
 			ranked.push_back({-noiseAt(i), i});
+	}
 	std::stable_sort(ranked.begin(), ranked.end());
-	const size_t patches = size_t(std::lround(ranked.size() * std::clamp(share, 0.0, 1.0)));
+	const size_t patches =
+		size_t(::MapGeneration::Numeric::lround(ranked.size() * std::clamp(share, 0.0, 1.0)));
 	for (size_t k = 0; k < patches; ++k)
-		sketch[ranked[k].second] = SAND;
+	{
+		::MapGeneration::generationCheckpoint();
+		sketch.at(ranked.at(k).second) = SAND;
+	}
 }
 
 /// A sand road kept inland: clears every road vertex fewer than `gap` steps from `water`. Sand that
@@ -96,22 +108,24 @@ int growWater(const Torus &t, std::vector<unsigned char> &water, int seed, int t
 	using Entry = std::pair<long long, int>;
 	std::priority_queue<Entry, std::vector<Entry>, std::greater<Entry>> frontier;
 	frontier.push({key(seed), seed});
-	queued[seed] = stamp;
+	queued.at(seed) = stamp;
 	int grown = 0;
 	while (!frontier.empty() && grown < target)
 	{
+		::MapGeneration::generationCheckpoint();
 		const int tile = frontier.top().second;
 		frontier.pop();
-		if (water[tile])
+		if (water.at(tile))
 			continue;
-		water[tile] = 1;
+		water.at(tile) = 1;
 		++grown;
 		for (const auto &s : kCardinalSteps)
 		{
+			::MapGeneration::generationCheckpoint();
 			const int next = t.at(tile % t.w + s[0], tile / t.w + s[1]);
-			if (eligible(next) && !water[next] && queued[next] != stamp)
+			if (eligible(next) && !water.at(next) && queued.at(next) != stamp)
 			{
-				queued[next] = stamp;
+				queued.at(next) = stamp;
 				frontier.push({key(next), next});
 			}
 		}

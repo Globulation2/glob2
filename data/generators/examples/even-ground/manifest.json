@@ -1,0 +1,123 @@
+{
+  "id": "examples:even-ground",
+  "name": "Even Ground (JavaScript)",
+  "apiVersion": 1,
+  "revision": 1,
+  "author": "Globulation 2",
+  "description": "Optional JavaScript orchestration of Even Ground.",
+  "tags": [
+    "terrain:natural",
+    "feature:lakes",
+    "style:wide-open",
+    "fairness:solved-catchment"
+  ],
+  "controls": [
+    {
+      "id": "water-share",
+      "label": "Water",
+      "minimum": 0,
+      "maximum": 40,
+      "step": 5,
+      "default": 10,
+      "searchRange": [
+        5,
+        25
+      ],
+      "group": "terrain"
+    },
+    {
+      "id": "balance",
+      "label": "Balance",
+      "minimum": 0,
+      "maximum": 100,
+      "step": 10,
+      "default": 70,
+      "searchRange": [
+        60,
+        100
+      ],
+      "group": "layout"
+    },
+    {
+      "id": "passes",
+      "label": "Tight passes",
+      "minimum": 0,
+      "maximum": 100,
+      "step": 10,
+      "default": 40,
+      "searchRange": [
+        30,
+        80
+      ],
+      "group": "layout"
+    },
+    {
+      "id": "effort",
+      "label": "Solver effort",
+      "kind": "choice",
+      "choices": [
+        "Brief",
+        "Normal",
+        "Patient"
+      ],
+      "default": 1,
+      "group": "layout",
+      "searchValues": [
+        1,
+        2
+      ]
+    },
+    {
+      "id": "wheat-amount",
+      "label": "Wheat amount",
+      "minimum": 0,
+      "maximum": 300,
+      "step": 25,
+      "default": 100,
+      "searchRange": [
+        75,
+        150
+      ],
+      "group": "resources"
+    },
+    {
+      "id": "wood-amount",
+      "label": "Wood amount",
+      "minimum": 0,
+      "maximum": 300,
+      "step": 25,
+      "default": 100,
+      "searchRange": [
+        75,
+        150
+      ],
+      "group": "resources"
+    },
+    {
+      "id": "stone-amount",
+      "label": "Stone amount",
+      "minimum": 0,
+      "maximum": 300,
+      "step": 25,
+      "default": 100,
+      "searchRange": [
+        75,
+        150
+      ],
+      "group": "resources"
+    },
+    {
+      "id": "algae-amount",
+      "label": "Algae amount",
+      "minimum": 0,
+      "maximum": 300,
+      "step": 25,
+      "default": 100,
+      "searchRange": [
+        75,
+        150
+      ],
+      "group": "resources"
+    }
+  ]
+}
