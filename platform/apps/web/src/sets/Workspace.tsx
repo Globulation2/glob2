@@ -1,3 +1,5 @@
+import { ReleaseDialog } from '../components/studio/Studio.tsx';
+import { Icon } from '../icons.tsx';
 import { createContext, useContext, useEffect, useState } from 'react';
 import type { SetDraft, SetPackage, SetInfo } from '@glob2/protocol';
 import { request } from '../api.ts';
@@ -190,15 +192,18 @@ function Variants({
     </div>
   );
 }
-export function SetWorkspace({
+export function SetEditor({
   id,
   onDirtyChange,
   onSaved,
+  serverRevision,
 }: {
   id?: string;
   onDirtyChange?: (dirty: boolean) => void;
   onSaved?: () => void;
+  serverRevision?: number;
 }) {
+  const [releaseOpen, setReleaseOpen] = useState(false);
   const { account } = useSession(),
     { navigate } = useRouter();
   const [pack, setPack] = useState<SetPackage | null>(null),
@@ -379,14 +384,49 @@ export function SetWorkspace({
       }}
     >
       <section className="set-workspace">
+        {draft && dirty && serverRevision !== undefined && serverRevision !== draft.revision && (
+          <div role="alert">
+            <p>Another session saved revision {serverRevision}. Your local edits are preserved.</p>
+            <button
+              onClick={() => {
+                const url = URL.createObjectURL(
+                  new Blob([JSON.stringify({ package: pack, jsonEdits }, null, 2)], {
+                    type: 'application/json',
+                  }),
+                );
+                const link = document.createElement('a');
+                link.href = url;
+                link.download = 'terrain-local-recovery.json';
+                link.click();
+                setTimeout(() => URL.revokeObjectURL(url), 1000);
+              }}
+            >
+              Download local changes
+            </button>
+            <button
+              onClick={() =>
+                void action(async () => {
+                  const current = await request<SetDraft>('GET', '/api/v1/set-drafts/' + draft.id);
+                  setDraft(current);
+                  setPack(current.package);
+                  setJsonEdits({});
+                  setDirty(false);
+                  onSaved?.();
+                })
+              }
+            >
+              Discard manual edits and load saved revision
+            </button>
+          </div>
+        )}
         <header className="set-heading">
           <div>
-            {draft && !published && (
+            {draft && !published && !onDirtyChange && (
               <Link to={`/terrain-studio?draft=${draft.id}`} className="button">
                 Edit with AI
               </Link>
             )}
-            <h1>{pack.title}</h1>
+            {onDirtyChange ? <h2>{pack.title}</h2> : <h1>{pack.title}</h1>}
             <p>
               {published
                 ? 'Published release'
@@ -398,7 +438,7 @@ export function SetWorkspace({
               · Custom artwork and gameplay properties
             </p>
           </div>
-          <Link to="/sets/mine">My sets</Link>
+          {!onDirtyChange && <Link to="/sets/mine">My sets</Link>}
         </header>
         {error && (
           <p className="notice" role="alert">
@@ -1083,46 +1123,65 @@ export function SetWorkspace({
               alt="Game-engine preview of the checked set"
             />
           )}
-          <fieldset disabled={!checked || busy || published}>
-            <label>
-              Release label
-              <input value={label} maxLength={64} onChange={(e) => setLabel(e.target.value)} />
-            </label>
-            <label>
-              Release notes
-              <textarea value={notes} maxLength={2000} onChange={(e) => setNotes(e.target.value)} />
-            </label>
-            <label>
-              Visibility
-              <select value={visibility} onChange={(e) => setVisibility(e.target.value)}>
-                <option value="public">Public library</option>
-                <option value="unlisted">Anyone with the link</option>
-                <option value="private">Only me</option>
-              </select>
-            </label>
-            <p>
-              Publishing allows reuse under {pack.license}, including embedding and editing this
-              content in shared maps. Confirm that the credits and reuse rights cover every uploaded
-              image.
-            </p>
-            <button
-              onClick={() =>
-                void action(async () => {
-                  if (!draft) throw Error('Save the draft before publishing.');
-                  const published = await request<SetInfo>(
-                    'POST',
-                    `/api/v1/set-drafts/${draft.id}/publish`,
-                    { body: { revision: draft.revision, label, notes, visibility } },
-                  );
-                  navigate('/sets/' + published.id);
-                })
-              }
-            >
-              Publish this release
-            </button>
-          </fieldset>
+          <button onClick={() => setReleaseOpen(true)}>
+            <Icon name="share" size={18} /> Review & publish
+          </button>
+          {!checked && <p>Save and run checks on the current revision before publishing.</p>}
+          <ReleaseDialog
+            open={releaseOpen}
+            onClose={() => setReleaseOpen(false)}
+            title={`Publish revision ${draft?.revision ?? 'unsaved'}`}
+          >
+            <fieldset disabled={!checked || busy || published}>
+              <label>
+                Release label
+                <input value={label} maxLength={64} onChange={(e) => setLabel(e.target.value)} />
+              </label>
+              <label>
+                Release notes
+                <textarea
+                  value={notes}
+                  maxLength={2000}
+                  onChange={(e) => setNotes(e.target.value)}
+                />
+              </label>
+              <label>
+                Visibility
+                <select value={visibility} onChange={(e) => setVisibility(e.target.value)}>
+                  <option value="public">Public library</option>
+                  <option value="unlisted">Anyone with the link</option>
+                  <option value="private">Only me</option>
+                </select>
+              </label>
+              <p>
+                Publishing allows reuse under {pack.license}, including embedding and editing this
+                content in shared maps. Confirm that the credits and reuse rights cover every
+                uploaded image.
+              </p>
+              <button
+                onClick={() =>
+                  void action(async () => {
+                    if (!draft) throw Error('Save the draft before publishing.');
+                    const published = await request<SetInfo>(
+                      'POST',
+                      `/api/v1/set-drafts/${draft.id}/publish`,
+                      { body: { revision: draft.revision, label, notes, visibility } },
+                    );
+                    navigate('/sets/' + published.id);
+                  })
+                }
+              >
+                Publish this release
+              </button>
+            </fieldset>
+          </ReleaseDialog>
         </footer>
       </section>
     </JsonEdits.Provider>
   );
+}
+
+/** Standalone route uses the same editor as Terrain Studio. */
+export function SetWorkspace(props: Parameters<typeof SetEditor>[0]) {
+  return <SetEditor {...props} />;
 }

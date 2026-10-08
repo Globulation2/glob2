@@ -1017,6 +1017,22 @@ export async function exportAccount(
         .selectAll('v')
         .where('t.account_id', '=', id)
         .execute();
+      const buildingDraftHistory = (
+        await sql<{
+          archive: Buffer;
+          thread_id: string;
+          revision: string;
+          title: string;
+          created_at: Date;
+        }>`SELECT h.* FROM building_studio_draft_history h JOIN building_studio_threads t ON t.id=h.thread_id WHERE t.account_id=${id}`.execute(
+          tx,
+        )
+      ).rows;
+      const terrainDraftHistory = (
+        await sql<Row>`SELECT h.* FROM terrain_studio_draft_history h JOIN terrain_studio_threads t ON t.id=h.thread_id WHERE t.account_id=${id}`.execute(
+          tx,
+        )
+      ).rows;
       const musicStudioWallets = await tx
         .selectFrom('music_wallets')
         .select(['balance', 'reserved'])
@@ -1244,6 +1260,7 @@ export async function exportAccount(
           artifacts: rows(studioArtifacts),
         },
         terrainStudio: {
+          draftHistory: rows(terrainDraftHistory),
           wallets: rows(terrainStudioWallets),
           ledger: rows(terrainStudioLedger),
           calls: rows(terrainStudioCalls),
@@ -1257,6 +1274,10 @@ export async function exportAccount(
           revisions: rows(terrainStudioRevisions),
         },
         buildingStudio: {
+          draftHistory: buildingDraftHistory.map(({ archive, ...draft }) => ({
+            ...draft,
+            archiveBase64: archive.toString('base64'),
+          })),
           wallets: rows(buildingStudioWallets),
           ledger: rows(buildingStudioLedger),
           calls: rows(buildingStudioCalls),

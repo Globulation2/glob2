@@ -100,3 +100,11 @@ directory's `manifest.json` and rerun the exporter (see
 
 Use game artwork for decoration: page headers, stat tiles and empty states. Pick a
 sprite that fits the page, and avoid giving two pages the same one.
+
+AI studios share the shell and interaction components in `src/components/studio/`.
+Use labelled Tabler actions consistently, keep text on primary and destructive
+actions, and give compact icon buttons accessible names and keyboard tooltips.
+Studio surfaces, focus indicators and status colours use the selected light/dark
+theme; statuses also need text. Preserve reduced-motion and forced-colours rules.
+Test independent scrolling, keyboard tabs, separator presets, dialog focus return,
+IME composition, narrow reflow and zoom when changing workspace controls.

@@ -24,9 +24,11 @@ test('authors a private family with revision-safe saving and portable export', a
   await expect(
     page.getByRole('status').filter({ hasText: 'Resolve invalid fields before saving.' }),
   ).toBeVisible();
+  await page.getByRole('button', { name: 'Review release settings' }).click();
   await expect(
     page.getByRole('button', { name: 'Publish saved family', exact: true, includeHidden: true }),
   ).toBeDisabled();
+  await page.getByRole('button', { name: 'Close panel' }).click();
   page.once('dialog', (dialog) => dialog.accept());
   await page.reload();
   await page.getByRole('button', { name: 'Restore device copy' }).click();

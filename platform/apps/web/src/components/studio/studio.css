@@ -1,0 +1,527 @@
+.studio-page {
+  height: var(--studio-height, 100dvh);
+  min-height: 0 !important;
+  display: flex !important;
+  flex-direction: column;
+  overflow: hidden !important;
+  background: var(--bg);
+  color: var(--ink);
+  max-width: none !important;
+  margin: 0 !important;
+}
+.studio-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 16px;
+  min-height: 56px;
+  flex: none;
+  border-bottom: 1px solid var(--line);
+  background: var(--surface);
+}
+.studio-header h1 {
+  font-family: var(--font-body);
+  font-size: 17px;
+  margin: 0;
+}
+.studio-header-actions {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  flex-wrap: wrap;
+}
+.studio-workspace {
+  flex: 1;
+  min-height: 0;
+  min-width: 0;
+  display: grid;
+  grid-template-columns: minmax(320px, var(--studio-split, 40%)) 8px minmax(360px, 1fr);
+  overflow: hidden;
+}
+.studio-conversation {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  min-width: 0;
+  overflow: hidden;
+  background: var(--surface);
+}
+.studio-artifact {
+  position: relative;
+  min-width: 0;
+  min-height: 0;
+  overflow: auto;
+  overscroll-behavior: contain;
+  background: var(--bg);
+  padding: 16px;
+}
+.studio-workspace [hidden] {
+  display: none !important;
+}
+.studio-separator {
+  cursor: col-resize;
+  touch-action: none;
+  background: var(--surface-3);
+}
+.studio-separator:hover,
+.studio-separator:focus-visible {
+  background: var(--accent);
+}
+.studio-width {
+  margin-bottom: 12px;
+  font-size: var(--text-sm);
+}
+.studio-width summary {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  min-height: 44px;
+}
+.studio-width > div {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.studio-log-wrap {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+  display: flex;
+}
+.studio-log {
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+  overscroll-behavior: contain;
+  padding: 16px;
+  overflow-wrap: anywhere;
+}
+.studio-unread {
+  position: absolute;
+  bottom: 8px;
+  left: 50%;
+  transform: translateX(-50%);
+  white-space: nowrap;
+}
+.studio-composer {
+  flex: none;
+  padding: 12px 16px;
+  border-top: 1px solid var(--line);
+  display: grid;
+  gap: 6px;
+}
+.studio-composer textarea,
+.studio-page textarea {
+  width: 100%;
+  box-sizing: border-box;
+}
+.studio-composer textarea {
+  min-height: 54px;
+  max-height: 150px;
+  resize: none;
+}
+.studio-compose-actions {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  justify-content: space-between;
+}
+.studio-compose-actions > span,
+.studio-compose-help,
+.studio-edit-target {
+  font-size: var(--text-xs);
+  color: var(--ink-2);
+  margin: 0;
+}
+.studio-edit-target {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.studio-composer-tools > div {
+  max-height: 160px;
+  overflow: auto;
+  padding: 8px;
+}
+.studio-composer-tools summary {
+  min-height: 44px;
+  cursor: pointer;
+}
+.studio-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  padding: 4px;
+  background: var(--surface-2);
+  border-radius: var(--r-sm);
+}
+.studio-tabs button[aria-selected='true'] {
+  background: var(--accent);
+  color: var(--accent-ink);
+}
+.studio-page button,
+.studio-page .btn,
+.studio-page select,
+.studio-page summary {
+  min-height: 44px;
+}
+.studio-page button,
+.studio-page .btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+.studio-page button[aria-disabled='true'] {
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+.studio-revisions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+.studio-request-status {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  padding: 8px 16px;
+  flex: none;
+}
+.studio-dialog {
+  position: fixed;
+  margin: 0 0 0 auto;
+  inset: 0;
+  max-height: 100dvh;
+  height: 100dvh;
+  width: min(560px, 100vw);
+  max-width: 100vw;
+  padding: 20px;
+  border: 0;
+  border-left: 1px solid var(--line);
+  background: var(--surface);
+  color: var(--ink);
+  overflow: auto;
+}
+.studio-dialog::backdrop {
+  background: var(--scrim);
+}
+.studio-dialog > header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+.studio-dialog h2 {
+  margin: 0;
+}
+.studio-dialog button {
+  min-height: 44px;
+}
+.studio-dialog .ms-credit-panel {
+  display: block;
+  max-height: none;
+  padding: 0;
+  border: 0;
+}
+.studio-page :is(button, select, input, textarea, summary, a):focus-visible,
+.studio-separator:focus-visible,
+.studio-log:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+.studio-page > .ms-header {
+  height: auto;
+  min-height: 56px;
+  padding: 8px 16px;
+  gap: 12px;
+}
+.studio-page .ms-brand h1 {
+  font-size: 17px;
+}
+.studio-page .ms-brand .ms-eyebrow,
+.studio-page .ms-emblem {
+  display: none;
+}
+.studio-page .ms-projects {
+  padding-left: 12px;
+}
+.studio-page > .ms-banner {
+  max-height: 100px;
+  overflow: auto;
+  justify-content: flex-start;
+  flex: none;
+}
+.studio-page .ms-chat-container {
+  flex: 1;
+  min-height: 0;
+}
+.studio-page .ms-compose-area {
+  flex: none;
+  max-height: 60%;
+  overflow: auto;
+}
+.studio-page .ms-compose-area .studio-composer {
+  max-height: none;
+  overflow: visible;
+}
+.studio-artifact > .ms-map-pane {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+.studio-artifact .ms-build-details {
+  overflow: visible;
+  flex: none;
+}
+.studio-artifact .ms-viewer-wrap {
+  flex: 1;
+  min-height: 220px;
+}
+.studio-artifact .ms-map-heading {
+  padding: 0;
+  flex-wrap: wrap;
+}
+.studio-artifact .mu-inspector {
+  padding: 0;
+}
+.studio-artifact .as-code-pane {
+  padding: 0;
+}
+.studio-page :is(.as-chat, .bas-chat, .ts-chat, .mu-chat) {
+  padding: 0;
+  gap: 0;
+  min-height: 0;
+  position: static;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+.studio-page :is(.as-chat-history, .bas-messages, .ts-messages, .mu-messages) {
+  flex: 1;
+  min-height: 0;
+  height: auto;
+  max-height: none;
+  overflow: auto;
+  padding: 16px;
+}
+.studio-page :is(.bas-chat, .ts-chat) > h2 {
+  font-size: 17px;
+  margin: 12px 16px;
+}
+.studio-page :is(.bas-chat, .ts-chat) > form,
+.studio-page .as-chat > form {
+  padding: 12px 16px;
+  border-top: 1px solid var(--line);
+  flex: none;
+  max-height: 55%;
+  overflow: auto;
+}
+.studio-page :is(.bas-chat, .ts-chat) > form textarea {
+  min-height: 54px;
+  max-height: 150px;
+}
+.studio-page :is(.bas-chat, .ts-chat) > form .studio-attachments {
+  max-height: 120px;
+  overflow: auto;
+}
+.studio-page :is(.bas-chat, .ts-chat) > [role='status'] {
+  padding: 8px 16px;
+}
+.studio-page .building-ai-project-options {
+  margin: 0 16px;
+}
+.studio-page :is(.bas-preview, .ts-preview) {
+  padding: 0;
+}
+.studio-page .as-editor {
+  height: 60vh;
+  min-height: 260px;
+}
+.studio-page .as-source {
+  min-height: 55vh;
+}
+.studio-page .as-chat > details {
+  padding: 4px 16px;
+  max-height: 120px;
+  overflow: auto;
+}
+.studio-page .as-toolbar {
+  padding: 8px 16px;
+  margin: 0;
+}
+.studio-page .studio-artifact .as-toolbar {
+  padding-inline: 0;
+}
+.studio-page .as-workspace,
+.studio-page .as-chat,
+.studio-page .as-code-pane {
+  color: var(--ink);
+  background: var(--surface);
+}
+.studio-page .as-user {
+  background: var(--surface-2);
+}
+.studio-page :is(.as-response, .as-chat small, .as-welcome, .as-welcome h2) {
+  color: var(--ink);
+}
+.studio-page :is(.as-chat, .as-code-pane) :is(button, input, select, textarea, .btn) {
+  background: var(--surface-2);
+  color: var(--ink);
+  border-color: var(--line);
+}
+.studio-page :is(.as-chat, .as-code-pane) .primary {
+  background: var(--accent);
+  color: var(--accent-ink);
+}
+.studio-page textarea::placeholder {
+  color: var(--ink-2);
+}
+.studio-page .as-code-pane .seg {
+  background: var(--surface-2);
+}
+.studio-page .as-code-pane .seg button[aria-pressed='true'] {
+  background: var(--accent);
+  color: var(--accent-ink);
+}
+.studio-workspace[data-narrow='true'] {
+  display: flex;
+  flex-direction: column;
+}
+.studio-workspace[data-narrow='true'] > .studio-tabs {
+  flex: none;
+  border-radius: 0;
+}
+.studio-workspace[data-narrow='true'] > :is(.studio-conversation, .studio-artifact) {
+  flex: 1;
+}
+@media (max-width: 600px) {
+  .app-shell.studio-shell {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .studio-shell > .app-sidebar {
+    display: none;
+  }
+  .studio-shell > .rail-expand {
+    left: 4px;
+    top: 6px;
+    width: 44px;
+    height: 44px;
+  }
+  .studio-shell .studio-header,
+  .studio-page > .ms-header {
+    padding-left: 52px;
+    flex-wrap: wrap;
+  }
+  .studio-header-actions {
+    gap: 4px;
+  }
+  .studio-page .ms-projects {
+    margin: 0;
+    flex: 1;
+    padding-left: 0;
+    border: 0;
+  }
+  .studio-page .ms-projects summary {
+    max-width: none;
+  }
+  .studio-page .ms-brand {
+    flex: 1;
+  }
+  .studio-page .ms-credit-button {
+    white-space: normal;
+  }
+  .studio-artifact {
+    padding: 12px;
+  }
+  .studio-compose-actions > span {
+    max-width: 65%;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .studio-page * {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+@media (forced-colors: active) {
+  .studio-separator {
+    background: ButtonText;
+  }
+  .studio-tabs button[aria-selected='true'] {
+    color: CanvasText !important;
+    background: Canvas !important;
+    border: 2px solid Highlight;
+  }
+  .studio-page [aria-disabled='true'] {
+    color: GrayText;
+    opacity: 1;
+  }
+}
+
+.studio-conversation > :is(.as-chat, .bas-chat, .ts-chat, .mu-chat) {
+  flex: 1;
+  min-height: 0;
+}
+.studio-page {
+  height: var(--studio-height, 100dvh) !important;
+}
+.app-shell.studio-shell {
+  height: 100dvh;
+  min-height: 0;
+  overflow: hidden;
+}
+.studio-shell > .app-sidebar {
+  height: 100dvh;
+  min-height: 0;
+  overflow: auto;
+}
+.studio-composer {
+  max-height: 60%;
+  overflow: auto;
+}
+.studio-dialog > header button {
+  position: relative;
+}
+.studio-dialog > header button .studio-tooltip {
+  display: none;
+  position: absolute;
+  right: 0;
+  top: 100%;
+  white-space: nowrap;
+  background: var(--ink);
+  color: var(--surface);
+  padding: 4px 8px;
+  z-index: 2;
+}
+.studio-dialog > header button:is(:hover, :focus-visible) .studio-tooltip {
+  display: block;
+}
+.studio-page .ms-map-heading h2 {
+  font-size: 17px;
+  margin: 0;
+}
+
+.studio-announcement {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+.studio-header a {
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+}
+.studio-page button,
+.studio-dialog button {
+  min-width: 44px;
+}

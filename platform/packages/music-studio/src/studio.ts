@@ -6,6 +6,7 @@ import { Credits, HiveError } from '@glob2/billing';
 import { notify as notifyDatabase, type Database } from '@glob2/db';
 import type {
   MusicStudioGenerate,
+  MusicStudioTurn,
   MusicStudioRequest,
   MusicStudioThread,
   MusicStudioEvent,
@@ -248,10 +249,11 @@ export class MusicStudio {
     account: string,
     thread: string,
     kind: 'chat' | 'generate',
-    input: MusicStudioGenerate | { id: string; text: string },
+    input: MusicStudioGenerate | MusicStudioTurn | { id: string; text: string },
     pipelineVersion: string,
     chatPerHour = 60,
     config?: MusicStudioConfig,
+    turn = false,
   ) {
     return this.db.transaction().execute(async (db) => {
       const wallet = await this.lockWallet(db, account);
@@ -262,7 +264,12 @@ export class MusicStudio {
       if (old) {
         const requested =
           'text' in input
-            ? { text: input.text }
+            ? {
+                text: input.text,
+                ...(turn && 'settings' in input
+                  ? { turn: true, settings: input.settings, parent: input.parent ?? null }
+                  : {}),
+              }
             : { settings: input.settings, parent: input.parent ?? null };
         if (
           old.account_id !== account ||
@@ -290,7 +297,12 @@ export class MusicStudio {
         throw new HiveError('conflict', 'Wait for your current studio request to finish.');
       const submission =
         'text' in input
-          ? { text: input.text }
+          ? {
+              text: input.text,
+              ...(turn && 'settings' in input
+                ? { turn: true, settings: input.settings, parent: input.parent ?? null }
+                : {}),
+            }
           : { settings: input.settings, parent: input.parent ?? null };
       if (kind === 'chat' && 'text' in input) {
         const recent =
@@ -337,11 +349,12 @@ export class MusicStudio {
         messages,
         pipelineVersion,
         config,
+        ...(turn ? { turn: true } : {}),
         ...('settings' in input
           ? { settings: input.settings, ...(input.parent ? { parent: input.parent } : {}) }
           : {}),
       };
-      await sql`INSERT INTO music_studio_requests(id,thread_id,account_id,kind,input,checkpoints) VALUES(${input.id},${thread},${account},${kind},${JSON.stringify(snapshot)}::jsonb,${JSON.stringify({ submission })}::jsonb)`.execute(
+      await sql`INSERT INTO music_studio_requests(id,thread_id,account_id,kind,input,checkpoints) VALUES(${input.id},${thread},${account},${kind},${JSON.stringify(snapshot)}::jsonb,${JSON.stringify({ submission, ...(turn ? { generationId: randomUUID() } : {}) })}::jsonb)`.execute(
         db,
       );
       if (kind === 'generate')
@@ -658,7 +671,7 @@ export class MusicStudio {
   }
   async finish(
     row: RequestRow,
-    result?: { text: string; brief?: string } | Delivery,
+    result?: { text: string; brief?: string; action?: 'discuss' | 'build' } | Delivery,
 
     error?: string,
     cancelling = false,
@@ -679,6 +692,18 @@ export class MusicStudio {
         throw new HiveError('conflict', 'Wait for the provider outcome before cancelling.');
       if (current.lease !== row.lease)
         throw new HiveError('conflict', 'MusicStudio worker lease expired.');
+      if (result && current.status === 'uncertain')
+        throw new HiveError('conflict', 'Reconcile the provider outcome first.');
+      if (
+        current.input.turn &&
+        result &&
+        'text' in result &&
+        !['discuss', 'build'].includes(result.action ?? '')
+      )
+        throw new HiveError(
+          'bad_request',
+          'A music turn requires a validated discuss or build decision.',
+        );
       let releaseId: string | null = null;
       if (result && 'metadata' in result) {
         if (current.status === 'uncertain')
@@ -726,6 +751,30 @@ export class MusicStudio {
       await sql`UPDATE music_studio_requests SET status=${result ? 'ready' : 'failed'},charged=${!!charge},release_id=${releaseId},error=${error ?? null},completed_at=now(),lease_until=NULL WHERE id=${row.id}`.execute(
         db,
       );
+      // A durable turn can authorize one build. Replayed completions return above.
+      if (result && 'text' in result && current.input.turn && result.action === 'build') {
+        if (!current.input.settings || typeof current.checkpoints['generationId'] !== 'string')
+          throw new HiveError('bad_request', 'The turn is missing its build context.');
+        const wallet = await this.lockWallet(db, row.account_id);
+        if (Number(wallet.balance) - Number(wallet.reserved) < 1)
+          throw new HiveError('credits', 'An available music credit is needed to build.');
+        const generationId = current.checkpoints['generationId'];
+        const input = {
+          ...current.input,
+          turn: undefined,
+          sourceTurnId: current.id,
+          brief: result.brief ?? current.input.brief,
+          messages: [...current.input.messages, { role: 'assistant', text: result.text }],
+        };
+        const submission = { settings: input.settings, parent: input.parent ?? null };
+        await sql`INSERT INTO music_studio_requests(id,thread_id,account_id,kind,input,checkpoints) VALUES(${generationId},${row.thread_id},${row.account_id},'generate',${JSON.stringify(input)}::jsonb,${JSON.stringify({ submission })}::jsonb)`.execute(
+          db,
+        );
+        await sql`UPDATE music_wallets SET reserved=reserved+1 WHERE account_id=${row.account_id}`.execute(
+          db,
+        );
+        await emitState(db, { ...row, id: generationId }, 'queued');
+      }
       await sql`UPDATE music_studio_threads SET updated_at=now() WHERE id=${row.thread_id}`.execute(
         db,
       );

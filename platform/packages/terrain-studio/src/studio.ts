@@ -266,6 +266,15 @@ export class TerrainStudio {
         label: r.label,
         url: `/api/v1/terrain-studio/threads/${thread}/artifacts/${r.id}`,
       })),
+      draftHistory: (
+        await sql<{
+          revision: number;
+          title: string;
+          created_at: string;
+        }>`SELECT revision,document->>'title' AS title,created_at FROM terrain_studio_draft_history WHERE thread_id=${thread} ORDER BY created_at DESC`.execute(
+          db,
+        )
+      ).rows,
       revisions: (
         await sql<TerrainStudioRevision>`SELECT request_id AS "requestId",document->>'title' AS title,applied,base_revision AS "baseRevision",report FROM terrain_studio_revisions WHERE thread_id=${thread} ORDER BY created_at DESC LIMIT 50`.execute(
           db,
@@ -777,7 +786,7 @@ export class TerrainStudio {
         await sql`INSERT INTO terrain_studio_revisions(request_id,thread_id,base_revision,document,hash,report,sim_version,applied) VALUES(${row.id},${row.thread_id},${row.input.submission.expectedRevision},${JSON.stringify(result.package)}::jsonb,${result.hash},${JSON.stringify(result.report)}::jsonb,${result.simVersion},${applied})`.execute(
           db,
         );
-        if (applied) await this.apply(db, t.draftId, result);
+        if (applied) await this.apply(db, t.draftId, result, row.thread_id);
       }
       if (result) {
         const text =
@@ -844,13 +853,94 @@ export class TerrainStudio {
       );
     });
   }
-  private async apply(db: Db, draftId: string, result: Delivery) {
+  private async apply(db: Db, draftId: string, result: Delivery, thread: string) {
+    await this.backup(db, thread, draftId);
+
     await sql`UPDATE set_drafts SET document=${JSON.stringify(result.package)}::jsonb,revision=revision+1,hash=${result.hash},report=${JSON.stringify(result.report)}::jsonb,sim_version=${result.simVersion},status='valid',error=NULL,validation_job_id=NULL,updated_at=now() WHERE id=${draftId}`.execute(
       db,
     );
     await sql`UPDATE asset_sets SET title=${result.package.title},description=${result.package.description},tags=${result.package.tags},updated_at=now() WHERE id=${result.package.setId}`.execute(
       db,
     );
+  }
+  private async backup(db: Db, thread: string, draftId: string) {
+    const size = (
+      await sql<{
+        bytes: string;
+      }>`SELECT coalesce(sum(octet_length(h.document::text)),0)::bigint AS bytes FROM terrain_studio_draft_history h JOIN terrain_studio_threads t ON t.id=h.thread_id WHERE t.account_id=(SELECT account_id FROM terrain_studio_threads WHERE id=${thread})`.execute(
+        db,
+      )
+    ).rows[0];
+    const draft = (
+      await sql<{
+        bytes: number;
+        exists: boolean;
+      }>`SELECT octet_length(document::text)::int AS bytes,EXISTS(SELECT 1 FROM terrain_studio_draft_history h WHERE h.thread_id=${thread} AND h.revision=d.revision) AS exists FROM set_drafts d WHERE id=${draftId}`.execute(
+        db,
+      )
+    ).rows[0];
+    if (draft && !draft.exists && Number(size?.bytes ?? 0) + draft.bytes > 64 * 1024 * 1024)
+      throw new HiveError(
+        'conflict',
+        'Private draft history is limited to 64 MiB. Export an old project before deleting its history.',
+      );
+    await sql`INSERT INTO terrain_studio_draft_history(thread_id,revision,document,hash,report,sim_version,status) SELECT ${thread},revision,document,hash,report,sim_version,status FROM set_drafts WHERE id=${draftId} ON CONFLICT DO NOTHING`.execute(
+      db,
+    );
+  }
+  async draftBackup(account: string, thread: string, revision: number) {
+    await this.own(account, thread);
+    const row = (
+      await sql<{
+        document: SetPackage;
+      }>`SELECT document FROM terrain_studio_draft_history WHERE thread_id=${thread} AND revision=${revision}`.execute(
+        this.db,
+      )
+    ).rows[0];
+    if (!row) throw new HiveError('not_found', 'Saved draft unavailable.');
+    return row.document;
+  }
+  async restoreDraft(account: string, thread: string, revision: number, expectedRevision: number) {
+    await this.db.transaction().execute(async (db) => {
+      await this.lockWallet(db, account);
+      const t = await this.own(account, thread, db);
+      // Match the set-before-draft lock order used by generation and publication.
+      await sql`SELECT id FROM asset_sets WHERE id=(SELECT set_id FROM set_drafts WHERE id=${t.draftId}) FOR UPDATE`.execute(
+        db,
+      );
+      const current = (
+        await sql<{
+          revision: number;
+          published_version_id: string | null;
+        }>`SELECT revision,published_version_id FROM set_drafts WHERE id=${t.draftId} FOR UPDATE`.execute(
+          db,
+        )
+      ).rows[0];
+      if (!current || current.revision !== expectedRevision || current.published_version_id)
+        throw new HiveError('conflict', 'Draft changed or was published.');
+      if (
+        (
+          await sql`SELECT id FROM terrain_studio_requests WHERE account_id=${account} AND status NOT IN ('ready','failed')`.execute(
+            db,
+          )
+        ).rows.length
+      )
+        throw new HiveError('conflict', 'Wait for active studio work before restoring.');
+      const saved = (
+        await sql`SELECT revision FROM terrain_studio_draft_history WHERE thread_id=${thread} AND revision=${revision}`.execute(
+          db,
+        )
+      ).rows[0];
+      if (!saved) throw new HiveError('not_found', 'Saved draft unavailable.');
+      await this.backup(db, thread, t.draftId);
+      await sql`UPDATE set_drafts d SET document=h.document,revision=d.revision+1,hash=h.hash,report=h.report,sim_version=h.sim_version,status=CASE WHEN h.status='pending' THEN NULL ELSE h.status END,error=NULL,validation_job_id=NULL,updated_at=now() FROM terrain_studio_draft_history h WHERE d.id=${t.draftId} AND h.thread_id=${thread} AND h.revision=${revision}`.execute(
+        db,
+      );
+      await sql`UPDATE asset_sets s SET title=d.document->>'title',description=d.document->>'description',tags=ARRAY(SELECT jsonb_array_elements_text(d.document->'tags')),updated_at=now() FROM set_drafts d WHERE d.id=${t.draftId} AND s.id=d.set_id`.execute(
+        db,
+      );
+      await notify(db, account, thread);
+    });
   }
   async adopt(account: string, thread: string, request: string, expectedRevision: number) {
     await this.db.transaction().execute(async (db) => {
@@ -890,13 +980,18 @@ export class TerrainStudio {
           db,
         );
       if (!hidden.rows.length) throw new HiveError('not_found', 'Set unavailable.');
-      await this.apply(db, t.draftId, {
-        package: result.document,
-        hash: result.hash,
-        report: result.report,
-        simVersion: result.sim_version,
-        text: '',
-      });
+      await this.apply(
+        db,
+        t.draftId,
+        {
+          package: result.document,
+          hash: result.hash,
+          report: result.report,
+          simVersion: result.sim_version,
+          text: '',
+        },
+        thread,
+      );
       await sql`UPDATE terrain_studio_revisions SET applied=true WHERE request_id=${request}`.execute(
         db,
       );
