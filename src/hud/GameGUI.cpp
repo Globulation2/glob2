@@ -345,10 +345,12 @@ void GameGUI::addMark(shared_ptr<MapMarkOrder>mmo)
 
 void GameGUI::updateCamera()
 {
-    const auto& map = drawnScene().map;
-    if (!map.getW() || !map.getH()) return;
+    // Client input can run before the first asynchronous scene arrives. Keep
+    // its camera origin in sync so scrolling cannot overwrite the initial view.
     if (camera.tileX()!=viewportX) camera.originX=viewportX*32.0+camera.fractionX();
     if (camera.tileY()!=viewportY) camera.originY=viewportY*32.0+camera.fractionY();
+    const auto& map = drawnScene().map;
+    if (!map.getW() || !map.getH()) return;
     if (touch && touch->usesHUD()) {
         const auto bounds=touch->worldBounds();
         camera.resize(bounds.w,bounds.h,map.getW()*32.0,map.getH()*32.0,bounds.x,bounds.y);

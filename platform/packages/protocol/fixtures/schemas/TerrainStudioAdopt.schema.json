@@ -1,0 +1,16 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "glob2-protocol:TerrainStudioAdopt",
+  "title": "TerrainStudioAdopt",
+  "type": "object",
+  "required": [
+    "expectedRevision"
+  ],
+  "properties": {
+    "expectedRevision": {
+      "type": "integer",
+      "minimum": 0
+    }
+  },
+  "additionalProperties": false
+}

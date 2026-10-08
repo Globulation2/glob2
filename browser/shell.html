@@ -380,7 +380,7 @@ var Module = {
     // Startup packages were in place before main(); only later ones are news.
     Module.glob2Assets?.takeInstalled();
     if(globalThis.glob2SetPreview) {
-      Module.start(['--validate-set','/tmp/set.json','--json','/tmp/report.json','--preview','/tmp/preview.png']).then(code=>{
+      Module.start(['--validate-set','/tmp/set.json','--json','/tmp/report.json','--preview','/tmp/preview.png',...(new URLSearchParams(location.search).get('gallery')==='1'?['--gallery','1','--phase',new URLSearchParams(location.search).get('phase')||'0','--variation',new URLSearchParams(location.search).get('variant')||'0']:[])]).then(code=>{
         if(code!==0)throw Error('Preview engine exited with code '+code);
         const report=JSON.parse(FS.readFile('/tmp/report.json',{encoding:'utf8'}));
         const png=report.valid?FS.readFile('/tmp/preview.png'):null;

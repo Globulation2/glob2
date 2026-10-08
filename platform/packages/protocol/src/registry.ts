@@ -5,6 +5,8 @@ import {
   SaveBuildingDraftRequest,
   checkBuildingPackage,
 } from './buildings.ts';
+import { buildingStudioSchemas } from './buildingStudio.ts';
+import { terrainStudioSchemas } from './terrainStudio.ts';
 import { setSchemas } from './sets.ts';
 import { musicStudioSchemas } from './musicStudio.ts';
 import { aiStudioSchemas } from './aiStudio.ts';
@@ -218,7 +220,11 @@ export const schemaRegistry: Record<string, RegisteredSchema> = {
   ...setSchemas,
   ...Object.fromEntries(Object.entries(aiSchemas).map(([name, schema]) => [name, { schema }])),
   ...Object.fromEntries(
-    Object.entries(musicStudioSchemas).map(([name, schema]) => [name, { schema }]),
+    Object.entries({
+      ...musicStudioSchemas,
+      ...terrainStudioSchemas,
+      ...buildingStudioSchemas,
+    }).map(([name, schema]) => [name, { schema }]),
   ),
   ...Object.fromEntries(Object.entries(studioSchemas).map(([name, schema]) => [name, { schema }])),
   ...Object.fromEntries(Object.entries(hiveSchemas).map(([name, schema]) => [name, { schema }])),

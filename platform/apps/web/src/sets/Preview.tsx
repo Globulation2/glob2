@@ -1,8 +1,10 @@
 import { useEffect, useRef, useState } from 'react';
 import type { SetPackage } from '@glob2/protocol';
 /** The browser build runs the same bounded import and renderer as native validation. */
-export function SetPreview({ pack }: { pack: SetPackage }) {
+export function SetPreview({ pack, gallery = false }: { pack: SetPackage; gallery?: boolean }) {
   const frame = useRef<HTMLIFrameElement>(null);
+  const [phase, setPhase] = useState(0),
+    [variant, setVariant] = useState(0);
   const [run, setRun] = useState<{ id: string; source: string } | null>(null),
     [image, setImage] = useState(''),
     [status, setStatus] = useState('');
@@ -33,6 +35,9 @@ export function SetPreview({ pack }: { pack: SetPackage }) {
             runId: run.id,
             revision: 1,
             source: run.source,
+            gallery,
+            phase,
+            variant,
           },
           location.origin,
         );
@@ -42,7 +47,11 @@ export function SetPreview({ pack }: { pack: SetPackage }) {
       }
       if (m.type === 'complete') {
         clearTimeout(timer);
-        if (m.report?.valid && m.png instanceof Uint8Array && m.png.byteLength <= 4 * 1024 * 1024) {
+        if (
+          m.report?.valid &&
+          m.png instanceof Uint8Array &&
+          m.png.byteLength <= (gallery ? 32 : 4) * 1024 * 1024
+        ) {
           url = URL.createObjectURL(new Blob([new Uint8Array(m.png)], { type: 'image/png' }));
           setImage(url);
           setStatus(
@@ -57,10 +66,50 @@ export function SetPreview({ pack }: { pack: SetPackage }) {
       window.removeEventListener('message', receive);
       if (url) URL.revokeObjectURL(url);
     };
-  }, [run]);
+  }, [run, gallery, phase, variant]);
   return (
     <div>
-      <h3>Game preview</h3>
+      <h3>{gallery ? 'Scene and resource gallery' : 'Game preview'}</h3>
+      {gallery && (
+        <>
+          <label>
+            Animation phase
+            <select
+              value={phase}
+              onChange={(e) => {
+                setImage('');
+                if (run) setStatus('Loading browser renderer…');
+                setRun((previous) => previous && { ...previous, id: crypto.randomUUID() });
+                setPhase(Number(e.target.value));
+              }}
+            >
+              {[0, 1, 2, 3].map((v) => (
+                <option key={v} value={v}>
+                  {v + 1}
+                </option>
+              ))}
+            </select>
+          </label>
+          <label>
+            Variation
+            <select
+              value={variant}
+              onChange={(e) => {
+                setImage('');
+                if (run) setStatus('Loading browser renderer…');
+                setRun((previous) => previous && { ...previous, id: crypto.randomUUID() });
+                setVariant(Number(e.target.value));
+              }}
+            >
+              {[0, 1, 2, 3].map((v) => (
+                <option key={v} value={v}>
+                  {v + 1}
+                </option>
+              ))}
+            </select>
+          </label>
+        </>
+      )}
       <button
         type="button"
         onClick={() => {
@@ -79,7 +128,7 @@ export function SetPreview({ pack }: { pack: SetPackage }) {
           title="Set preview engine"
           tabIndex={-1}
           aria-hidden="true"
-          src={`/play/set-preview.html?threads=serial&renderer=software&run=${run.id}&revision=1`}
+          src={`/play/set-preview.html?threads=serial&renderer=software&run=${run.id}&revision=1&gallery=${gallery ? 1 : 0}&phase=${phase}&variant=${variant}`}
           style={{ width: 1, height: 1, border: 0 }}
         />
       )}

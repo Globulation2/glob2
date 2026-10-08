@@ -51,6 +51,9 @@ export function SetLibrary({ mine = false }: { mine?: boolean }) {
           <Link className="button" to="/sets/new">
             Create a set
           </Link>
+          <Link className="button" to="/terrain-studio">
+            Create with AI
+          </Link>
         </div>
       </header>
       {isModerator(account) && <Link to="/sets/reports">Moderation reports</Link>}
@@ -219,9 +222,14 @@ export function SetDetail({ id }: { id: string }) {
       )}
       <div className="set-actions">
         {latest && !s.hidden && (
-          <a className="button" href={`/api/v1/sets/${id}/versions/${latest.id}/file`}>
-            Download set
-          </a>
+          <>
+            <Link className="button" to={`/terrain-studio?version=${latest.id}`}>
+              Remix with AI
+            </Link>
+            <a className="button" href={`/api/v1/sets/${id}/versions/${latest.id}/file`}>
+              Download set
+            </a>
+          </>
         )}
         {account && (
           <button

@@ -65,6 +65,7 @@ export function BuildingLibrary({ id }: { id?: string }) {
     <div className="building-studio">
       <h1>{id ? 'Building family' : 'Building library'}</h1>
       <p>
+        <Link to="/ai-building-studio">Create with AI</Link>
         <Link to="/building-studio">Create a building family</Link>
         {id && (
           <>

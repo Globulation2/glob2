@@ -18,6 +18,12 @@ import { SessionProvider, isModerator, useSession } from './state.tsx';
 import { ThemeProvider, ThemeToggle } from './theme.tsx';
 
 // Pages most visitors never open load on demand.
+const AiBuildingStudio = lazy(() =>
+  import('./pages/AiBuildingStudio.tsx').then((m) => ({ default: m.AiBuildingStudio })),
+);
+const TerrainStudio = lazy(() =>
+  import('./pages/TerrainStudio.tsx').then((m) => ({ default: m.TerrainStudio })),
+);
 const MusicLibrary = lazy(() =>
   import('./music/Library.tsx').then((m) => ({ default: m.MusicLibrary })),
 );
@@ -87,6 +93,18 @@ export const ROUTES: Route[] = [
     render: (p) => <BuildingLibrary key={p['id']} id={p['id']} />,
   },
   {
+    pattern: '/ai-building-studio',
+    section: 'buildings',
+    title: 'AI Building Studio',
+    render: () => <AiBuildingStudio />,
+  },
+  {
+    pattern: '/ai-building-studio/:id',
+    section: 'buildings',
+    title: 'AI Building Studio',
+    render: (p) => <AiBuildingStudio key={p['id']} id={p['id']} />,
+  },
+  {
     pattern: '/building-studio',
     section: 'buildings',
     title: 'Building Studio',
@@ -103,6 +121,18 @@ export const ROUTES: Route[] = [
     section: 'sets',
     title: 'Terrain & resource sets',
     render: () => <SetLibrary />,
+  },
+  {
+    pattern: '/terrain-studio',
+    section: 'sets',
+    title: 'AI Terrain Studio',
+    render: () => <TerrainStudio />,
+  },
+  {
+    pattern: '/terrain-studio/:id',
+    section: 'sets',
+    title: 'AI Terrain Studio',
+    render: (p) => <TerrainStudio key={p['id']} id={p['id']} />,
   },
   { pattern: '/sets/mine', section: 'sets', title: 'My sets', render: () => <SetLibrary mine /> },
   { pattern: '/sets/new', section: 'sets', title: 'Create a set', render: () => <SetWorkspace /> },

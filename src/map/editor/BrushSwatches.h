@@ -37,24 +37,31 @@ class BrushSwatches
 
 	// The definitions swatches are composed from. Rebinding to registries with
 	// other digests drops every cached swatch; identical digests keep them.
-	void bind(std::shared_ptr<const TerrainRegistry> terrain, std::shared_ptr<const ResourceRegistry> resources,
-        std::shared_ptr<const MapAssetBundle> assets = MapAssetBundle::empty());
+	void bind(std::shared_ptr<const TerrainRegistry> terrain,
+			  std::shared_ptr<const ResourceRegistry> resources,
+			  std::shared_ptr<const MapAssetBundle> assets = MapAssetBundle::empty());
 	// Swatch for a catalogue entry, `px` pixels square. Owned by this cache: valid
 	// until the next bind() that changes digests, clear() or device reset.
 	GAGCore::DrawableSurface *get(const BrushEntry &entry, int px = 64);
 	GAGCore::DrawableSurface *terrain(TerrainType type, int px = 64);
 	GAGCore::DrawableSurface *resource(ResourceId resource, TerrainType backdrop, int px = 64);
+	// Presentation-only scene and stock-stage inspection for set creation.
+	GAGCore::DrawableSurface *terrainScene(TerrainType type, TerrainType neighbor, unsigned phase,
+										   unsigned variation, int px = 192);
+	GAGCore::DrawableSurface *resourceStage(ResourceId id, TerrainType backdrop, unsigned stock,
+											unsigned phase, unsigned variation, int px = 64);
 	void clear();
 	std::size_t size() const { return cache.size(); }
 
   private:
 	std::unique_ptr<GAGCore::DrawableSurface> composeTerrain(TerrainType type, int px);
-	std::unique_ptr<GAGCore::DrawableSurface> composeResource(ResourceId resource, TerrainType backdrop, int px);
+	std::unique_ptr<GAGCore::DrawableSurface> composeResource(ResourceId resource,
+															  TerrainType backdrop, int px);
 	bool usable();
 	std::shared_ptr<const TerrainRegistry> terrainRegistry;
 	std::shared_ptr<const ResourceRegistry> resourceRegistry;
 	std::string digest;
-    std::shared_ptr<const MapAssetBundle> assets = MapAssetBundle::empty();
+	std::shared_ptr<const MapAssetBundle> assets = MapAssetBundle::empty();
 	std::uint64_t resetGeneration = 0;
 	std::map<std::pair<std::string, int>, std::unique_ptr<GAGCore::DrawableSurface>> cache;
 };

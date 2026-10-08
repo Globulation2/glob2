@@ -31,6 +31,7 @@ export const SetSheet = Strict({
   frameWidth: Type.Integer({ minimum: 1, maximum: 64 }),
   frameHeight: Type.Integer({ minimum: 1, maximum: 64 }),
 });
+export type SetSheet = Static<typeof SetSheet>;
 export const SetPackage = Strict({
   schemaVersion: Type.Literal(1),
   setId: Uuid,

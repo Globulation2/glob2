@@ -4,6 +4,8 @@
 import type { ColumnType, Generated, Insertable, Selectable, Updateable } from 'kysely';
 import type {
   ResourceExperimentDefinitions,
+  BuildingPackage,
+  BuildingStudioReport,
   MusicMetadata,
   MusicRelease,
   MusicTrack,
@@ -1235,6 +1237,60 @@ export interface Database {
   colony_skin_equipment: ColonySkinEquipmentTable;
   match_colony_skins: MatchColonySkinsTable;
 
+  building_wallets: HiveWalletsTable;
+  building_ledger: HiveLedgerTable;
+  building_calls: HiveCallsTable;
+  building_purchases: HivePurchasesTable;
+  building_studio_threads: StudioThreadsTable & {
+    draft_id: string;
+  };
+  building_studio_messages: StudioMessagesTable;
+  building_studio_requests: Omit<StudioRequestsTable, 'map_id' | 'map_hash'>;
+  building_studio_attempts: StudioAttemptsTable;
+  building_studio_events: StudioEventsTable;
+  // Uploaded references belong to a project before any generation request exists.
+  building_studio_artifacts: Omit<StudioArtifactsTable, 'width' | 'height' | 'request_id'> & {
+    request_id: Nullable<string>;
+  };
+  building_studio_provider_usage: StudioProviderUsageTable;
+  building_studio_revisions: {
+    request_id: string;
+    thread_id: string;
+    base_revision: string;
+    title: string;
+    document: Json<BuildingPackage>;
+    archive: Buffer;
+    hash: string;
+    report: Json<BuildingStudioReport>;
+    sim_version: string;
+    applied: Generated<boolean>;
+    created_at: Generated<Date>;
+  };
+  terrain_wallets: HiveWalletsTable;
+  terrain_ledger: HiveLedgerTable;
+  terrain_calls: HiveCallsTable;
+  terrain_purchases: HivePurchasesTable;
+  terrain_studio_threads: StudioThreadsTable & {
+    draft_id: string;
+    source_version_id: Nullable<string>;
+  };
+  terrain_studio_messages: StudioMessagesTable;
+  terrain_studio_requests: Omit<StudioRequestsTable, 'map_id' | 'map_hash'>;
+  terrain_studio_attempts: StudioAttemptsTable;
+  terrain_studio_events: StudioEventsTable;
+  terrain_studio_artifacts: Omit<StudioArtifactsTable, 'width' | 'height'>;
+  terrain_studio_provider_usage: StudioProviderUsageTable;
+  terrain_studio_revisions: {
+    request_id: string;
+    thread_id: string;
+    base_revision: number;
+    document: Json<SetPackage>;
+    hash: string;
+    report: Json<ValidateSetResult>;
+    sim_version: string;
+    applied: Generated<boolean>;
+    created_at: Generated<Date>;
+  };
   music_wallets: HiveWalletsTable;
   music_ledger: HiveLedgerTable;
   music_calls: HiveCallsTable;

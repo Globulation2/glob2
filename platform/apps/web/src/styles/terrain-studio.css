@@ -1,0 +1,139 @@
+.terrain-studio {
+  max-width: 1440px;
+  margin: auto;
+}
+.ts-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 1.5rem;
+  align-items: start;
+}
+.ts-header h1 {
+  margin: 0.5rem 0;
+}
+.ts-credits,
+.ts-start {
+  padding: 1rem;
+  margin: 1rem 0;
+  border: 1px solid var(--border, #485746);
+  border-radius: 12px;
+}
+.ts-layout {
+  display: grid;
+  grid-template-columns: minmax(280px, 380px) minmax(0, 1fr);
+  gap: 1.5rem;
+}
+.ts-chat,
+.ts-preview {
+  min-width: 0;
+}
+.ts-chat {
+  position: sticky;
+  top: 1rem;
+  align-self: start;
+}
+.ts-messages {
+  max-height: 52vh;
+  overflow: auto;
+  overscroll-behavior: contain;
+}
+.ts-message {
+  padding: 0.8rem 1rem;
+  border-radius: 10px;
+  margin-bottom: 0.6rem;
+  background: var(--surface-2);
+}
+.ts-message.user {
+  margin-left: 1rem;
+  background: var(--surface, #344435);
+}
+.ts-message p {
+  white-space: pre-wrap;
+}
+.ts-chat label,
+.ts-start label {
+  display: block;
+  margin: 0.7rem 0;
+}
+.ts-chat textarea,
+.ts-start input {
+  width: 100%;
+  box-sizing: border-box;
+}
+.ts-stages {
+  display: flex;
+  flex-wrap: wrap;
+  padding: 0;
+  gap: 0.5rem;
+  list-style: none;
+}
+.ts-stages li {
+  padding: 0.6rem;
+  border: 1px solid var(--border, #485746);
+  border-radius: 8px;
+  flex: 1;
+}
+.ts-stages span,
+.ts-stages small {
+  display: block;
+}
+.ts-stages [data-status='running'] {
+  border-color: #d7b36a;
+}
+.ts-stages [data-status='complete'] {
+  border-color: #83ad74;
+}
+.ts-references {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+.ts-references img {
+  display: block;
+  width: 76px;
+  height: 76px;
+  object-fit: contain;
+}
+.ts-entries,
+.ts-projects {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+}
+.ts-entries article {
+  padding: 1rem;
+  border: 1px solid var(--border, #485746);
+  border-radius: 10px;
+}
+.ts-entries dl div {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+}
+.ts-entries dd {
+  margin: 0;
+}
+.ts-entries pre {
+  overflow: auto;
+}
+.ts-inspector {
+  margin: 1.5rem 0;
+}
+.ts-preview .set-contact {
+  max-width: 100%;
+  image-rendering: pixelated;
+}
+@media (max-width: 800px) {
+  .ts-layout {
+    grid-template-columns: 1fr;
+  }
+  .ts-chat {
+    position: static;
+  }
+  .ts-header {
+    display: block;
+  }
+  .ts-messages {
+    max-height: 40vh;
+  }
+}
