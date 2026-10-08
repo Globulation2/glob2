@@ -1350,7 +1350,8 @@ python3 tools/gradient_benchmark.py \
   --output artifacts/gradient-bench --suite representative --repeats 11
 ```
 
-The runner copies candidate headers and harness source before compiling, records
+The runner copies candidate headers (the field kernels and the header-only
+terrain and resource tables they include) and harness source before compiling, records
 compiler/flags and SHA-256 hashes, and writes raw JSONL samples plus per-case
 median comparisons. `--cpu N` pins the subprocess on Linux. `--scalar` forces the
 scalar implementation; otherwise the compiler target selects SSE2 or NEON.
@@ -1371,8 +1372,10 @@ uses the current Trail terrain identity with the same movement cost.
 Cases cover classic terrain, uniform Trail/ice, sparse/connected trails, mixed
 terrain and enclosed modifiers; all seven swimming profiles; dense/deferred
 seeds and capped propagation; thin and rectangular tori; and synthetic registries
-of 8, 32 and 64 identities with equivalent or distinct movement costs. The real
-registry is measured separately. Synthetic registries call the generic prepared
+of 32 and 64 identities with equivalent or distinct movement costs. The real
+registry (`TERRAIN_COUNT` built-in types, read from `src/map/TerrainType.h`) is
+measured separately. Each cell takes one terrain identity directly, as a cell
+whose four corners agree would; corner-mixed rules are outside this harness. Synthetic registries call the generic prepared
 profile API; they do not add game terrain definitions. `--bucket-count 256`
 is an isolated future-cost experiment that changes only copied headers.
 

@@ -106,32 +106,40 @@ def baseline_travel_header(source):
     return text
 
 
+def real_registry():
+    """The built-in terrain count, which dispatch and strategic modes require."""
+    text = (ROOT / 'src/map/TerrainType.h').read_text()
+    start = text.index('TERRAIN_COUNT=') + len('TERRAIN_COUNT=')
+    return int(text[start:text.index(',', start)])
+
+
 def cases(suite):
     # Exhaustive combinations stay opt-in. Balance each requested axis without
     # creating the full Cartesian product of every independent dimension.
+    real = real_registry()
     sizes = {
         'full': (32, 64, 128, 256, 512),
         'representative': (32, 128, 512),
         'smoke': (32,),
     }[suite]
     for size, pattern, swim in itertools.product(sizes, PATTERNS, range(7)):
-        yield dict(size=size, pattern=pattern, swim=swim, registry=7,
+        yield dict(size=size, pattern=pattern, swim=swim, registry=real,
                    costs='equivalent', seeds='single', mode='terrain')
     for size, swim in itertools.product(sizes, range(7)):
-        yield dict(size=size, pattern='classic', swim=swim, registry=7,
+        yield dict(size=size, pattern='classic', swim=swim, registry=real,
                    costs='equivalent', seeds='single', mode='dispatch')
     for size, pattern, travel in itertools.product(sizes, PATTERNS, (1, 2, 3)):
-        yield dict(size=size, pattern=pattern, swim=3, registry=7,
+        yield dict(size=size, pattern=pattern, swim=3, registry=real,
                    costs='equivalent', seeds='dense', mode='strategic', travel=travel)
     for registry, costs, seeds, mode in itertools.product(
-        (8, 32, 64), ('equivalent', 'distinct'),
+        (32, 64), ('equivalent', 'distinct'),
         ('single', 'dense', 'deferred'), ('terrain', 'plane'),
     ):
         yield dict(size=128 if suite != 'smoke' else 32, pattern='dense', swim=3,
                    registry=registry, costs=costs, seeds=seeds, mode=mode)
     for width, height, swim in itertools.product((1, 2, 3, 17), (1, 3, 31), range(7)):
         yield dict(width=width, height=height, pattern='dense', swim=swim,
-                   registry=8, costs='equivalent', seeds='deferred', cap=127,
+                   registry=32, costs='equivalent', seeds='deferred', cap=127,
                    mode='terrain')
     for cap, seeds in itertools.product(
         (0, 1, 42, 63, 64, 65, 250, 701), ('single', 'dense', 'deferred'),
@@ -182,11 +190,17 @@ def copy_sources(args):
     (snapshot / 'map').mkdir(exist_ok=True)
     for header in (args.candidate_dir / 'field').glob('*.h'):
         shutil.copyfile(header, snapshot / 'field' / header.name)
-    for name in ('TerrainProperties.h', 'TerrainType.h'):
-        shutil.copyfile(args.candidate_dir / 'map' / name, snapshot / 'map' / name)
+    # The terrain tables are header-only and include one another, so take every
+    # top-level header of their directories rather than a list that drifts from
+    # their includes.
+    for directory in ('map', 'resource'):
+        (snapshot / directory).mkdir(exist_ok=True)
+        for header in (args.candidate_dir / directory).glob('*.h'):
+            shutil.copyfile(header, snapshot / directory / header.name)
     if (args.candidate_dir / 'map/TerrainRegistry.h').exists():
-        for name in ('TerrainRegistry.h', 'TerrainRegistry.cpp', 'TerrainPresentation.h'):
-            shutil.copyfile(args.candidate_dir / 'map' / name, snapshot / 'map' / name)
+        shutil.copyfile(args.candidate_dir / 'map/TerrainRegistry.cpp', snapshot / 'map/TerrainRegistry.cpp')
+        (snapshot / 'app').mkdir(exist_ok=True)
+        shutil.copyfile(args.candidate_dir / 'app/FileFormatVersions.h', snapshot / 'app/FileFormatVersions.h')
         (snapshot / 'online').mkdir(exist_ok=True)
         for name in ('Sha256.h', 'Sha256.cpp'):
             shutil.copyfile(args.candidate_dir / 'online' / name, snapshot / 'online' / name)
@@ -211,6 +225,7 @@ def build_benchmark(args, snapshot):
     ]
     if (snapshot / 'map/TerrainRegistry.cpp').exists():
         command.extend([str(snapshot / 'map/TerrainRegistry.cpp'), str(snapshot / 'online/Sha256.cpp'),
+                        '-I' + str(snapshot / 'app'), '-I' + str(snapshot / 'map'),
                         '-I' + str(ROOT / 'third_party/nlohmann-json/include')])
     if args.scalar:
         command.insert(1, '-DGLOB2_GRADIENT_SCALAR')
