@@ -5604,6 +5604,30 @@ AI 원격 측정
 규사
 [Cotton]
 목화
+[Jungle trees]
+정글 나무
+[Pine trees]
+소나무
+[Dead trees]
+죽은 나무
+[Ruins]
+폐허
+[Camp-site]
+야영지
+[Ancient debris]
+고대 잔해
+[Scrub]
+덤불
+[Tall grass]
+키 큰 풀
+[Maize]
+옥수수
+[Potatoes]
+감자
+[Rice]
+벼
+[Fish]
+물고기
 [Reroll terrain look]
 지형 외관 다시 무작위 선택
 [boulders]

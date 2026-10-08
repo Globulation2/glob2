@@ -5604,6 +5604,30 @@ Zlatá ruda
 Kremeň
 [Cotton]
 Bavlna
+[Jungle trees]
+Džungľové stromy
+[Pine trees]
+Borovice
+[Dead trees]
+Mŕtve stromy
+[Ruins]
+Ruiny
+[Camp-site]
+Táborisko
+[Ancient debris]
+Prastaré trosky
+[Scrub]
+Krovie
+[Tall grass]
+Vysoká tráva
+[Maize]
+Kukurica
+[Potatoes]
+Zemiaky
+[Rice]
+Ryža
+[Fish]
+Ryby
 [Reroll terrain look]
 Znova náhodne vybrať vzhľad terénu
 [boulders]

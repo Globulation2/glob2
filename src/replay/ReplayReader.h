@@ -19,10 +19,10 @@ class Order;
 //! Malformed or truncated replay bodies are rejected, including partial recordings.
 
 //! Oldest replay format (the VERSION_MINOR the replay was written with) that
-//! the reader still accepts. Version 148 schedules building walking fields and
-//! version 147 removes round-trip resource fetching; older replays use different rules.
+//! the reader still accepts. Version 149 combines delayed resource growth with
+//! vertex terrain, greedy fetching and scheduled building walking fields.
 //! Save compatibility has a separate floor in Version.h.
-static constexpr Uint16 REPLAY_MINIMUM_VERSION_MINOR = 148;
+static constexpr Uint16 REPLAY_MINIMUM_VERSION_MINOR = 149;
 
 /// This class is used for reading replays.
 /// The replay stream is kept open and read every time you do retrieveOrder.

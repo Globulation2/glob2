@@ -197,6 +197,14 @@ TEST_SUITE("BrushCatalog")
 		// Enabling a locked experiment for the map unlocks its entries, marks the
 		// map modified, advances the revision and makes the brush selectable.
 		REQUIRE(experiments.count("foundation-resources"));
+		REQUIRE(experiments.count("landscape-resources"));
+		REQUIRE(editor.findBrush("resource/scrub"));
+		CHECK(editor.findBrush("resource/scrub")->locked);
+		CHECK(editor.findBrush("resource/scrub")->group == "landscape-resources");
+		// Fish live in water, scrub on grass.
+		const auto &fish = editor.findBrush("resource/fish")->validOn;
+		CHECK(std::find(fish.begin(), fish.end(), WATER) != fish.end());
+		CHECK(std::find(fish.begin(), fish.end(), GRASS) == fish.end());
 		editor.performAction("select resource gold-ore");
 		CHECK(editor.currentBrushId().empty());
 		editor.hasMapBeenModified = false;

@@ -5606,6 +5606,30 @@ Iron ore
 Silica
 [Cotton]
 Cotton
+[Jungle trees]
+Jungle trees
+[Pine trees]
+Pine trees
+[Dead trees]
+Dead trees
+[Ruins]
+Ruins
+[Camp-site]
+Camp-site
+[Ancient debris]
+Ancient debris
+[Scrub]
+Scrub
+[Tall grass]
+Tall grass
+[Maize]
+Maize
+[Potatoes]
+Potatoes
+[Rice]
+Rice
+[Fish]
+Fish
 [boulders]
 Boulders
 [hedge]

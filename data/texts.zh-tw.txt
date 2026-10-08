@@ -5604,6 +5604,30 @@ AI 遙測
 矽砂
 [Cotton]
 棉花
+[Jungle trees]
+叢林樹木
+[Pine trees]
+松樹
+[Dead trees]
+枯樹
+[Ruins]
+廢墟
+[Camp-site]
+營地
+[Ancient debris]
+古代殘骸
+[Scrub]
+灌木叢
+[Tall grass]
+高草
+[Maize]
+玉米
+[Potatoes]
+馬鈴薯
+[Rice]
+水稻
+[Fish]
+魚
 [Reroll terrain look]
 重新隨機產生地形外觀
 [boulders]

@@ -296,6 +296,34 @@ export async function buildingStudioRoutes(app: FastifyInstance) {
       );
     }),
   );
+  app.get('/api/v1/ai-building-studio/threads/:id/drafts/:revision/file', async (request, reply) =>
+    guarded(async () => {
+      const params = body(Strict({ id: Uuid, revision: Uuid }), request.params);
+      const saved = await studio.draftBackup(
+        (await accountOf(request)).id,
+        params.id,
+        params.revision,
+      );
+      return reply
+        .header('content-type', 'application/zip')
+        .header('cache-control', 'private, no-store')
+        .header('content-disposition', 'attachment; filename="saved-draft.zip"')
+        .send(saved.archive);
+    }),
+  );
+  app.post('/api/v1/ai-building-studio/threads/:id/drafts/:revision/restore', async (request) =>
+    guarded(async () => {
+      const params = body(Strict({ id: Uuid, revision: Uuid }), request.params),
+        input = body(BuildingAiStudioAdopt, request.body);
+      await studio.restoreDraft(
+        (await accountOf(request)).id,
+        params.id,
+        params.revision,
+        input.expectedRevision,
+      );
+      return { ok: true };
+    }),
+  );
   app.post('/api/v1/ai-building-studio/threads/:id/requests/:requestId/adopt', async (request) =>
     guarded(async () => {
       const params = body(Strict({ id: Uuid, requestId: Uuid }), request.params),

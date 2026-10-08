@@ -127,28 +127,44 @@ export class Pipeline {
     );
     if (row.kind === 'chat') {
       const prompt = `You are the Globulation 2 music studio assistant. Discuss original CPU-composed instrumental sets, explain changes clearly and keep a concise rolling brief. Never claim to generate until the user presses Generate. Respond with JSON {"text":"reply","brief":"accumulated design brief"}.\n${guide}\nBrief: ${row.input.brief}\nConversation: ${JSON.stringify(row.input.messages)}`;
-      this.budget(prompt, 0, cfg);
+      const turnPrompt = row.input.turn
+        ? prompt
+            .replace(
+              'Never claim to generate until the user presses Generate.',
+              'If the latest message explicitly requests creation or an edit, choose build. For questions, brainstorming, or ambiguous requests choose discuss and clarify. Never build speculatively. One turn authorizes at most one soundtrack build.',
+            )
+            .replace(
+              'Respond with JSON {"text":"reply","brief":"accumulated design brief"}.',
+              'Respond with JSON {"text":"reply","brief":"accumulated design brief","action":"discuss"|"build"}.',
+            )
+        : prompt;
+      this.budget(turnPrompt, 0, cfg);
       signal.throwIfAborted();
-      const reply = await attempts.run(row, 'chat', model, { prompt }, () =>
+      const reply = await attempts.run(row, 'chat', model, { prompt: turnPrompt }, () =>
         this.provider.text(
           model,
-          prompt,
+          turnPrompt,
           Math.min(4000, cfg.maxOutputTokens ?? 4000),
           signal,
-          'discussion',
+          row.input.turn ? 'turn' : 'discussion',
         ),
       );
-      const value = this.json(reply.text) as { text?: unknown; brief?: unknown };
+      const value = this.json(reply.text) as { text?: unknown; brief?: unknown; action?: unknown };
       if (
         typeof value.text !== 'string' ||
         !value.text.trim() ||
         value.text.length > 16000 ||
         typeof value.brief !== 'string' ||
-        value.brief.length > 16000
+        value.brief.length > 16000 ||
+        (row.input.turn && value.action !== 'discuss' && value.action !== 'build')
       )
         throw Error('Assistant returned an invalid discussion.');
       await this.studio.text(row, value.text, 0);
-      await this.studio.finish(row, { text: value.text, brief: value.brief });
+      await this.studio.finish(row, {
+        text: value.text,
+        brief: value.brief,
+        ...(row.input.turn ? { action: value.action as 'discuss' | 'build' } : {}),
+      });
       return;
     }
     const settings = row.input.settings;

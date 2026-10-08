@@ -1,3 +1,29 @@
+import list_details from '../../../../datasrc/icons/tabler/list-details.svg?raw';
+import message from '../../../../datasrc/icons/tabler/message.svg?raw';
+import send from '../../../../datasrc/icons/tabler/send.svg?raw';
+import plus from '../../../../datasrc/icons/tabler/plus.svg?raw';
+import pencil from '../../../../datasrc/icons/tabler/pencil.svg?raw';
+import eye from '../../../../datasrc/icons/tabler/eye.svg?raw';
+import restore from '../../../../datasrc/icons/tabler/restore.svg?raw';
+import refresh from '../../../../datasrc/icons/tabler/refresh.svg?raw';
+import download from '../../../../datasrc/icons/tabler/download.svg?raw';
+import upload from '../../../../datasrc/icons/tabler/upload.svg?raw';
+import share from '../../../../datasrc/icons/tabler/share.svg?raw';
+import settings from '../../../../datasrc/icons/tabler/settings.svg?raw';
+import coins from '../../../../datasrc/icons/tabler/coins.svg?raw';
+import check from '../../../../datasrc/icons/tabler/check.svg?raw';
+import alert_triangle from '../../../../datasrc/icons/tabler/alert-triangle.svg?raw';
+import wifi_off from '../../../../datasrc/icons/tabler/wifi-off.svg?raw';
+import loader_2 from '../../../../datasrc/icons/tabler/loader-2.svg?raw';
+import adjustments_horizontal from '../../../../datasrc/icons/tabler/adjustments-horizontal.svg?raw';
+import chevron_down from '../../../../datasrc/icons/tabler/chevron-down.svg?raw';
+import chevron_right from '../../../../datasrc/icons/tabler/chevron-right.svg?raw';
+import folder_open from '../../../../datasrc/icons/tabler/folder-open.svg?raw';
+import flask from '../../../../datasrc/icons/tabler/flask.svg?raw';
+import copy from '../../../../datasrc/icons/tabler/copy.svg?raw';
+import info_circle from '../../../../datasrc/icons/tabler/info-circle.svg?raw';
+import building from '../../../../datasrc/icons/tabler/building.svg?raw';
+import mountain from '../../../../datasrc/icons/tabler/mountain.svg?raw';
 // Interface icons: the game's own Tabler outline set (datasrc/icons/tabler, pinned
 // and hash-checked by its manifest.json), shared with the native UI. Add an icon to
 // that manifest first, then import it here; see art/README.md.
@@ -13,6 +39,33 @@ import users from '../../../../datasrc/icons/tabler/users.svg?raw';
 import x from '../../../../datasrc/icons/tabler/x.svg?raw';
 
 const SOURCES = {
+  'list-details': list_details,
+  message: message,
+  send: send,
+  plus: plus,
+  pencil: pencil,
+  eye: eye,
+  restore: restore,
+  refresh: refresh,
+  download: download,
+  upload: upload,
+  share: share,
+  settings: settings,
+  coins: coins,
+  check: check,
+  'alert-triangle': alert_triangle,
+  'wifi-off': wifi_off,
+  'loader-2': loader_2,
+  'adjustments-horizontal': adjustments_horizontal,
+  'chevron-down': chevron_down,
+  'chevron-right': chevron_right,
+  'folder-open': folder_open,
+  flask: flask,
+  copy: copy,
+  'info-circle': info_circle,
+  building: building,
+  mountain: mountain,
+
   'player-play': playerPlay,
   map,
   music,

@@ -508,3 +508,35 @@ it('applies a lowered operator daily limit to requests with an older budget snap
   expect((await studio.request(id))?.error).toContain('daily service limit');
   expect((await studio.request(id))?.charged).toBe(false);
 });
+
+it.each(['discuss', 'build', 'invalid'] as const)(
+  'validates automatic turn decision %s before enqueueing a generation',
+  async (action) => {
+    const { account, thread, id } = await fixture();
+    await studio.cancel(account, thread, id);
+    const input = {
+      id: randomUUID(),
+      text: action === 'discuss' ? 'Which instruments fit?' : 'Compose a flute soundtrack',
+      settings: { pipeline: 'acoustic-v1' as const, seed: 4 },
+    };
+    await studio.submit(account, thread, 'chat', input, 'music-v1', 30, cfg, true);
+    const text = vi.fn(async () => ({
+      text: JSON.stringify({ text: 'Flute and harp.', brief: 'Flute', action }),
+      usage: { input_tokens: 100, output_tokens: 100 },
+    }));
+    const run = vi.fn();
+    await worker({ text }, { run }).tick();
+    expect(run).not.toHaveBeenCalled();
+    const snapshot = await studio.get(account, thread);
+    expect(
+      snapshot.requests.filter((r) => r.kind === 'generate' && r.status === 'queued'),
+    ).toHaveLength(action === 'build' ? 1 : 0);
+    expect((await studio.request(input.id))?.status).toBe(
+      action === 'invalid' ? 'failed' : 'ready',
+    );
+    for (const build of snapshot.requests.filter(
+      (r) => r.kind === 'generate' && r.status === 'queued',
+    ))
+      await studio.cancel(account, thread, build.id);
+  },
+);

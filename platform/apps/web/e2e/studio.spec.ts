@@ -109,16 +109,86 @@ test('conversation and canvas fit desktop and phone', async ({ page, request }, 
       });
   });
   await page.goto(`/map-studio/${id}`);
-  await expect(page.locator('.app-sidebar')).toBeVisible();
+  if (info.project.name === 'phone') {
+    await expect(page.locator('.app-sidebar')).toBeHidden();
+    await page.getByRole('button', { name: 'Open navigation' }).click();
+    await expect(page.getByRole('button', { name: 'Close navigation' })).toBeVisible();
+  } else await expect(page.locator('.app-sidebar')).toBeVisible();
   await expect(
     page
       .getByRole('navigation', { name: 'Main', exact: true })
       .getByRole('link', { name: 'Maps', exact: true }),
   ).toHaveAttribute('aria-current', 'page');
+  if (info.project.name === 'phone') {
+    await page.keyboard.press('Escape');
+    await expect(page.getByRole('button', { name: 'Open navigation' })).toBeFocused();
+  }
   await expect(page.getByRole('button', { name: /Generate map/ })).toHaveCount(0);
-  await expect(page.locator('.ms-header')).toHaveCSS('height', '56px');
-  const versionsTab = page.getByRole('button', { name: /^Map/ });
+  expect(
+    await page.locator('.studio-header').evaluate((el) => el.getBoundingClientRect().height),
+  ).toBeLessThanOrEqual(110);
+  const versionsTab = page.getByRole('tab', { name: /^Preview/ }).first();
   if (await versionsTab.isVisible()) await versionsTab.click();
+  if (info.project.name === 'phone') {
+    const chat = page.getByRole('tab', { name: 'Chat', exact: true }).first();
+    const preview = page.getByRole('tab', { name: 'Preview', exact: true }).first();
+    await preview.focus();
+    await page.keyboard.press('ArrowLeft');
+    await expect(chat).toBeFocused();
+    await expect(preview).toHaveAttribute('aria-selected', 'true');
+    await page.keyboard.press('Space');
+    await expect(chat).toHaveAttribute('aria-selected', 'true');
+    await expect(page.locator('.studio-artifact')).toBeHidden();
+    await page.keyboard.press('ArrowRight');
+    await page.keyboard.press('Enter');
+    await expect(preview).toHaveAttribute('aria-selected', 'true');
+    await expect(page.locator('.studio-conversation')).toBeHidden();
+  }
+  if (info.project.name === 'desktop') {
+    const separator = page.getByRole('separator', { name: 'Resize conversation' });
+    await separator.focus();
+    await page.keyboard.press('End');
+    await expect(separator).toHaveAttribute(
+      'aria-valuenow',
+      (await separator.getAttribute('aria-valuemax')) ?? '',
+    );
+    await page.locator('.studio-width > summary').click();
+    await page.getByRole('button', { name: 'Reset · 40% chat' }).click();
+    await page.locator('.studio-width > summary').click();
+    const compare = page.getByLabel('Compare with version');
+    await compare.focus();
+    await page.setViewportSize({ width: 700, height: 720 });
+    await expect(page.getByRole('tab', { name: 'Preview', exact: true }).first()).toHaveAttribute(
+      'aria-selected',
+      'true',
+    );
+    await expect(compare).toBeVisible();
+    await expect(compare).toBeFocused();
+    await page.setViewportSize({ width: 1280, height: 860 });
+    const prompt = page.getByRole('textbox', { name: 'Describe your map or discuss changes' });
+    await prompt.focus();
+    await page.setViewportSize({ width: 700, height: 720 });
+    await expect(page.getByRole('tab', { name: 'Chat', exact: true }).first()).toHaveAttribute(
+      'aria-selected',
+      'true',
+    );
+    await expect(prompt).toBeVisible();
+    await expect(prompt).toBeFocused();
+    await page.setViewportSize({ width: 1280, height: 860 });
+  }
+  const credits = page.getByRole('button', { name: /Map credits/ });
+  await credits.click();
+  const creditDialog = page.getByRole('dialog');
+  await expect(creditDialog).toBeVisible();
+  for (let step = 0; step < 5; step++) {
+    await page.keyboard.press('Tab');
+    await expect
+      .poll(() => creditDialog.evaluate((dialog) => dialog.contains(document.activeElement)))
+      .toBe(true);
+  }
+  await page.keyboard.press('Escape');
+  await expect(creditDialog).toBeHidden();
+  await expect(credits).toBeFocused();
   const screenshotDir = process.env['SCREENSHOT_DIR'];
   if (screenshotDir && info.project.name === 'desktop') {
     mkdirSync(screenshotDir, { recursive: true });
@@ -131,11 +201,14 @@ test('conversation and canvas fit desktop and phone', async ({ page, request }, 
       await page.setViewportSize({ width, height });
       await expect(page.locator('.ms-workspace-root')).toHaveCSS('height', `${height}px`);
       if (width < 900) {
-        await page.getByRole('button', { name: 'Chat', exact: true }).click();
+        await page.getByRole('tab', { name: 'Chat', exact: true }).first().click();
         await page.screenshot({ path: join(screenshotDir, `after-${width}x${height}-chat.png`) });
-        await page.getByRole('button', { name: /^Map/ }).click();
+        await page
+          .getByRole('tab', { name: /^Preview/ })
+          .first()
+          .click();
       } else {
-        const pane = await page.locator('.ms-conversation').boundingBox();
+        const pane = await page.locator('.studio-conversation').boundingBox();
         const log = await page.getByRole('log').boundingBox();
         if (!log || !pane) throw new Error('Conversation layout missing');
         expect(log.height / pane.height).toBeGreaterThanOrEqual(0.6);
@@ -156,7 +229,7 @@ test('conversation and canvas fit desktop and phone', async ({ page, request }, 
       measurements.push({
         width,
         height,
-        conversation: await page.locator('.ms-conversation').boundingBox(),
+        conversation: await page.locator('.studio-conversation').boundingBox(),
         log: await page.getByRole('log', { includeHidden: true }).boundingBox(),
         canvas: await page.locator('.ms-map-surface').boundingBox(),
         image: await page.locator('.ms-map-image').boundingBox(),
@@ -196,13 +269,18 @@ test('conversation and canvas fit desktop and phone', async ({ page, request }, 
       fullPage: true,
     });
   }
-  const conversationTab = page.getByRole('button', { name: 'Chat', exact: true });
+  const conversationTab = page.getByRole('tab', { name: 'Chat', exact: true }).first();
   if (await conversationTab.isVisible()) await conversationTab.click();
   await page
     .getByRole('textbox', { name: 'Describe your map or discuss changes' })
     .fill('Add a second walking bridge.');
-  await expect(page.getByRole('button', { name: 'Send message' })).toBeEnabled();
-  await page.getByRole('button', { name: 'Send message' }).click();
+  await expect(page.getByRole('button', { name: 'Send' })).toBeEnabled();
+  const prompt = page.getByRole('textbox', { name: 'Describe your map or discuss changes' });
+  await prompt.press('Shift+Enter');
+  expect(writes).toHaveLength(0);
+  await expect(prompt).toHaveValue('Add a second walking bridge.\n');
+  await prompt.fill('Add a second walking bridge.');
+  await prompt.press('Enter');
   await expect.poll(() => writes.length).toBe(1);
   expect(writes[0]).toMatchObject({
     text: 'Add a second walking bridge.',
@@ -224,15 +302,17 @@ test('conversation and canvas fit desktop and phone', async ({ page, request }, 
     await page.keyboard.press('End');
     await expect(separator).toHaveAttribute('aria-valuenow', '65');
     await page.keyboard.press('Home');
-    await expect(separator).toHaveAttribute('aria-valuenow', '35');
+    const min = await separator.getAttribute('aria-valuemin');
+    await expect(separator).toHaveAttribute('aria-valuenow', min ?? '');
   }
-  const mapTab = page.getByRole('button', { name: /^Map/ });
+  const mapTab = page.getByRole('tab', { name: /^Preview/ }).first();
   if (await mapTab.isVisible()) await mapTab.click();
   await page.getByLabel('Inspect version').selectOption(versions[0]?.id ?? '');
+  await page.getByRole('button', { name: 'Edit this version', exact: true }).click();
   if (await conversationTab.isVisible()) await conversationTab.click();
-  await expect(page.getByText('Editing version 1', { exact: true })).toBeVisible();
+  await expect(page.getByText('Editing version 1', { exact: true }).first()).toBeVisible();
   await page.getByRole('textbox').fill('Add timber near the colonies');
-  await page.getByRole('button', { name: 'Send message' }).click();
+  await page.getByRole('button', { name: 'Send' }).click();
   await expect.poll(() => writes.length).toBe(2);
   expect(writes[1]).toMatchObject({
     text: 'Add timber near the colonies',
@@ -249,8 +329,8 @@ test('conversation and canvas fit desktop and phone', async ({ page, request }, 
 
   available = 0;
   await page.reload();
-  await expect(page.getByRole('button', { name: 'Send message' })).toBeDisabled();
-  await expect(page.getByText(/An available credit is needed to chat or build/)).toBeVisible();
+  await expect(page.getByRole('button', { name: 'Send' })).toBeDisabled();
+  await expect(page.getByText(/An available Map credit is needed to chat or build/)).toBeVisible();
 
   for (const status of ['processing', 'failed', 'uncertain']) {
     shownVersions = [
@@ -272,7 +352,7 @@ test('conversation and canvas fit desktop and phone', async ({ page, request }, 
       await expect(page.getByRole('textbox')).toHaveValue(/Please try building.*starter food/);
       expect(writes).toHaveLength(2);
     } else {
-      await expect(page.getByRole('button', { name: 'Send message' })).toBeDisabled();
+      await expect(page.getByRole('button', { name: 'Send' })).toBeDisabled();
       if (status === 'uncertain') {
         await expect(page.getByText('Awaiting provider outcome', { exact: true })).toBeVisible();
         await expect(page.getByRole('button', { name: 'Prepare retry' })).toHaveCount(0);
