@@ -6,6 +6,7 @@
 #include <deque>
 #include <memory>
 #include <mutex>
+#include <optional>
 #include <string>
 #include <utility>
 #include <variant>
@@ -38,12 +39,13 @@ public:
 	template <typename F>
 	void drain(F &&consume)
 	{
-		std::deque<T> batch;
+		std::optional<std::deque<T>> batch;
 		{
 			std::lock_guard<std::mutex> lock(mutex);
-			batch.swap(items);
+			if (items.empty()) return;
+			batch.emplace().swap(items);
 		}
-		for (auto &value : batch) consume(std::move(value));
+		for (auto &value : *batch) consume(std::move(value));
 	}
 	bool empty() const { std::lock_guard<std::mutex> lock(mutex); return items.empty(); }
 	size_t size() const { std::lock_guard<std::mutex> lock(mutex); return items.size(); }

@@ -2,9 +2,9 @@
 
 ## Replay import
 
-`cross-replay.replay` is an import/playback fixture recorded at file format 148
+`cross-replay.replay` is an import/playback fixture recorded at file format 149
 from the repository's unchanged `games/cross-replay.game.gz` (seed 42), for 1,500
-ticks. The replay reader's current minimum accepted format is 148.
+ticks. The replay reader's current minimum accepted format is 149.
 
 Re-record when the accepted replay floor changes, using an isolated profile:
 

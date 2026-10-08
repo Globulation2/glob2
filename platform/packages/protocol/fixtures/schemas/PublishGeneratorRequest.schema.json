@@ -1,0 +1,58 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "glob2-protocol:PublishGeneratorRequest",
+  "title": "PublishGeneratorRequest",
+  "type": "object",
+  "required": [
+    "uploadId",
+    "name",
+    "description",
+    "visibility",
+    "version",
+    "notes"
+  ],
+  "properties": {
+    "uploadId": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+      "description": "Lowercase UUID."
+    },
+    "name": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128,
+      "pattern": "\\S"
+    },
+    "description": {
+      "type": "string",
+      "maxLength": 4000
+    },
+    "visibility": {
+      "anyOf": [
+        {
+          "type": "string",
+          "const": "public"
+        },
+        {
+          "type": "string",
+          "const": "unlisted"
+        },
+        {
+          "type": "string",
+          "const": "private"
+        }
+      ]
+    },
+    "version": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 64,
+      "pattern": "\\S"
+    },
+    "notes": {
+      "type": "string",
+      "maxLength": 2000
+    }
+  },
+  "additionalProperties": false
+}

@@ -144,6 +144,43 @@ struct Fixture
 
 TEST_SUITE("PlatformRoom")
 {
+	TEST_CASE("scripted launch pins a release and reroll retains that identity")
+	{
+		Fixture f;
+		Json descriptor{{"libraryId", "11111111-1111-4111-8111-111111111111"},
+						{"versionId", "22222222-2222-4222-8222-222222222222"},
+						{"fileHash", HASH},
+						{"packageHash", HASH},
+						{"generatorId", "author:river"},
+						{"revision", 2},
+						{"seed", 19},
+						{"params", {{"width", 7}, {"height", 7}, {"teams", 2}}},
+						{"candidates", 1},
+						{"startingUnitLevel", 0}};
+		RoomMapChoice choice;
+		choice.title = "River";
+		choice.scriptDescriptor = descriptor.dump();
+		auto launched = PlatformRoom::create(f.client, f.maps, f.storage, "Shared generator", false,
+											 defaultRoomSetup(2, 0), false, choice);
+		f.client.update();
+		const auto creation = f.world.socket().find("room.create");
+		REQUIRE(!creation.is_null());
+		CHECK(creation["params"]["map"] == Json{{"kind", "scripted"}, {"generator", descriptor}});
+		auto state = room(3, ME, Json::array({seat(0, ME, "Guest-1234"), seat(1, "", "")}),
+						  Json::array({member(ME, "Guest-1234")}));
+		state["map"] = {{"kind", "scripted"}, {"generator", descriptor}};
+		f.world.socket().respond(creation, Json{{"room", state}});
+		f.client.update();
+		CHECK(launched->mapName().find("revision 2") != std::string::npos);
+		launched->rerollScriptGenerator();
+		f.client.update();
+		const auto update = f.world.socket().find("room.update");
+		REQUIRE(!update.is_null());
+		descriptor["seed"] = 20;
+		CHECK(update["params"]["changes"]["map"] ==
+			  Json{{"kind", "scripted"}, {"generator", descriptor}});
+	}
+
 	TEST_CASE("catalog launch creates the room with its map in the initial request")
 	{
 		Fixture f;

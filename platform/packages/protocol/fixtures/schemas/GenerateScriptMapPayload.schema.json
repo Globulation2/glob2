@@ -1,0 +1,84 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "glob2-protocol:GenerateScriptMapPayload",
+  "title": "GenerateScriptMapPayload",
+  "type": "object",
+  "required": [
+    "generator"
+  ],
+  "properties": {
+    "generator": {
+      "type": "object",
+      "required": [
+        "libraryId",
+        "versionId",
+        "packageHash",
+        "fileHash",
+        "generatorId",
+        "revision",
+        "seed",
+        "params",
+        "candidates",
+        "startingUnitLevel"
+      ],
+      "properties": {
+        "libraryId": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+          "description": "Lowercase UUID."
+        },
+        "versionId": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+          "description": "Lowercase UUID."
+        },
+        "packageHash": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$",
+          "description": "Lowercase hexadecimal SHA-256 digest."
+        },
+        "fileHash": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$",
+          "description": "Lowercase hexadecimal SHA-256 digest."
+        },
+        "generatorId": {
+          "type": "string",
+          "pattern": "^[a-z0-9_.-]+:[a-z0-9_.:-]+$",
+          "maxLength": 128
+        },
+        "revision": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 4294967295
+        },
+        "seed": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 4294967295
+        },
+        "params": {
+          "type": "object",
+          "patternProperties": {
+            "^[A-Za-z0-9_-]{1,64}$": {
+              "type": "integer"
+            }
+          },
+          "maxProperties": 72
+        },
+        "candidates": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 5,
+          "default": 1
+        },
+        "startingUnitLevel": {
+          "type": "number",
+          "const": 0
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}

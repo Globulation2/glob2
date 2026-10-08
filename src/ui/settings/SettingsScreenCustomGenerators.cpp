@@ -1,3 +1,5 @@
+#include "OnlineGeneratorsScreen.h"
+#include <ScreenStack.h>
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "SettingsScreen.h"
 #include "GeneratorPackage.h"
@@ -98,6 +100,17 @@ void SettingsScreen::buildCustomGenerators()
 		info(tr("Waiting for file selection or storage…"));
 		return;
 	}
+	if (screens)
+		button("generator.browse", tr("Browse shared generators"),
+			   [this]
+			   {
+				   screens->push(std::make_unique<OnlineGeneratorsScreen>(*screens),
+								 [this](GAGGUI::Screen &, int)
+								 {
+									 customGenerators.reset();
+									 invalidate();
+								 });
+			   });
 	button("generator.import", tr("Import map generator"),
 		   [this]
 		   {

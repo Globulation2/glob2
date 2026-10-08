@@ -1,3 +1,8 @@
+import {
+  ValidateGeneratorPayload,
+  GeneratorValidationReport,
+  ScriptGeneratorDescriptor,
+} from './generators.ts';
 import { ValidateSetPayload, ValidateSetResult, MapSetCredits } from './sets.ts';
 import { ValidateAiPayload, AiValidationReport } from './ais.ts';
 // Engine-agent job contracts. Anything that needs the engine runs as a job for
@@ -22,6 +27,8 @@ import {
 import { SimVersion, simVersionKey } from './simVersion.ts';
 
 export const ENGINE_JOB_KINDS = [
+  'validate-generator',
+  'generate-script-map',
   'validate-buildings',
   'validate-ai',
   'validate-set',
@@ -234,7 +241,14 @@ export const ValidateBuildingsResult = Type.Union([
   }),
   Strict({ valid: Type.Literal(false), reason: Type.String({ maxLength: 2000 }) }),
 ]);
+export const GenerateScriptMapPayload = Strict({ generator: ScriptGeneratorDescriptor });
+export const GenerateScriptMapResult = Open({
+  ...GenerateMapResult.properties,
+  packageHash: Sha256Hex,
+});
 export const engineJobs = {
+  'validate-generator': { payload: ValidateGeneratorPayload, result: GeneratorValidationReport },
+  'generate-script-map': { payload: GenerateScriptMapPayload, result: GenerateScriptMapResult },
   'validate-buildings': { payload: ValidateBuildingsPayload, result: ValidateBuildingsResult },
   'validate-set': { payload: ValidateSetPayload, result: ValidateSetResult },
   'validate-ai': { payload: ValidateAiPayload, result: AiValidationReport },
@@ -249,6 +263,8 @@ export type EngineJobPayload<K extends EngineJobKind> = Static<(typeof engineJob
 export type EngineJobOutput<K extends EngineJobKind> = Static<(typeof engineJobs)[K]['result']>;
 
 const JobKind = Type.Union([
+  Type.Literal('validate-generator'),
+  Type.Literal('generate-script-map'),
   Type.Literal('validate-buildings'),
   Type.Literal('validate-ai'),
   Type.Literal('validate-set'),

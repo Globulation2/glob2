@@ -276,16 +276,23 @@ Library::Library(Online::OnlineStorage &s) : storage(s)
 {
 	std::string bytes;
 	if (storage.read(LibraryPath, bytes))
-		packages = decode(bytes);
+		packages = decode(bytes, provenance);
 }
-std::string Library::encode(const PackageMap &candidate)
+std::string Library::encode(const PackageMap &candidate, const Origins &origins)
 {
 	Json entries = Json::array();
 	for (const auto &[id, p] : candidate)
 		entries.push_back(Json::parse(p->canonical));
-	return Json{{"version", 1}, {"packages", entries}}.dump();
+	Json sources = Json::object();
+	for (const auto &[id, o] : origins)
+		sources[id] = {{"origin", o.origin},
+					   {"libraryId", o.libraryId},
+					   {"versionId", o.versionId},
+					   {"fileHash", o.fileHash},
+					   {"packageHash", o.packageHash}};
+	return Json{{"version", 1}, {"packages", entries}, {"origins", sources}}.dump();
 }
-Library::PackageMap Library::decode(const std::string &bytes)
+Library::PackageMap Library::decode(const std::string &bytes, Origins &origins)
 {
 	require(bytes.size() <= LibraryLimit, "Generator library exceeds limit");
 	auto root = Json::parse(bytes);
@@ -298,24 +305,37 @@ Library::PackageMap Library::decode(const std::string &bytes)
 		auto p = Package::parse(v.dump());
 		require(loaded.emplace(p->id, p).second, "Duplicate generator ID");
 	}
+	origins.clear();
+	if (root.contains("origins"))
+		for (const auto &[id, v] : root["origins"].items())
+		{
+			require(loaded.contains(id), "Unknown generator provenance");
+			origins[id] = {v.at("origin"), v.at("libraryId"), v.at("versionId"), v.at("fileHash"),
+						   v.at("packageHash")};
+			require(origins[id].packageHash == loaded.at(id)->hash,
+					"Generator provenance hash mismatch");
+		}
 	return loaded;
 }
-void Library::save(PackageMap candidate)
+void Library::save(PackageMap candidate, Origins origins)
 {
 	require(candidate.size() <= LibraryPackageLimit, "Generator library exceeds package limit");
-	const auto bytes = encode(candidate);
+	const auto bytes = encode(candidate, origins);
 	require(bytes.size() <= LibraryLimit, "Generator library exceeds limit");
 	// A false result or exception leaves both the active catalog and this library
 	// unchanged. OnlineStorage replaces its file only after a complete write.
 	if (!storage.write(LibraryPath, bytes))
 		throw std::runtime_error("Could not save generator library");
 	packages.swap(candidate);
+	provenance.swap(origins);
 }
 void Library::rollback(const std::string &bytes)
 {
-	save(decode(bytes));
+	Origins origins;
+	auto candidate = decode(bytes, origins);
+	save(std::move(candidate), std::move(origins));
 }
-void Library::put(const std::string &bytes, const std::string &replace)
+void Library::put(const std::string &bytes, const std::string &replace, const LibraryOrigin *origin)
 {
 	auto p = Package::parse(bytes);
 	require(replace.empty() ? !packages.contains(p->id)
@@ -323,13 +343,23 @@ void Library::put(const std::string &bytes, const std::string &replace)
 			"Duplicate generator ID or replacement identity mismatch");
 	auto candidate = packages;
 	candidate[p->id] = p;
-	save(std::move(candidate));
+	auto origins = provenance;
+	origins.erase(p->id);
+	if (origin)
+	{
+		require(Online::Sha256::hex(bytes) == origin->fileHash && p->hash == origin->packageHash,
+				"Generator download hash mismatch");
+		origins[p->id] = *origin;
+	}
+	save(std::move(candidate), std::move(origins));
 }
 void Library::remove(const std::string &id)
 {
 	auto candidate = packages;
 	require(candidate.erase(id) != 0, "Unknown custom generator");
-	save(std::move(candidate));
+	auto origins = provenance;
+	origins.erase(id);
+	save(std::move(candidate), std::move(origins));
 }
 void Library::publish() const
 {

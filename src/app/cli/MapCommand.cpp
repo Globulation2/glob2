@@ -231,9 +231,9 @@ void exportPreview(const Game &game, const std::string &path, int size, int scal
 bool isMapCommand(const char *arg)
 {
 	const std::string s = arg;
-	return s == "--validate-set" || s == "--generate-map" || s == "--preview-map" ||
-		   s == "--list-map-generators" || s == "--render-game" || s == "--export-map-image" ||
-		   s == "--import-map-image";
+	return s == "--inspect-generator-package" || s == "--validate-set" || s == "--generate-map" ||
+		   s == "--preview-map" || s == "--list-map-generators" || s == "--render-game" ||
+		   s == "--export-map-image" || s == "--import-map-image";
 }
 void printMapCommandHelp()
 {
@@ -242,6 +242,8 @@ void printMapCommandHelp()
 		   "    [--render-field file.field] [--field-color r,g,b]\n"
 		<< "  --validate-set <package.json> --json report.json [--preview preview.png] [--gallery "
 		   "1] [--phase 0..3] [--variation 0..3]\n"
+		<< "  --inspect-generator-package package.json --output canonical.json --json "
+		   "metadata.json\n"
 		<< "Map launch modes (put the mode first; no display required):\n"
 		   "  --generate-map <generator> [--output file.map] [--preview file.png] [--json "
 		   "report.json]\n"
@@ -276,6 +278,56 @@ int runMapCommand(int argc, char **argv)
 		if (argc == 3 && std::string(argv[2]) == "--help")
 		{
 			printMapCommandHelp();
+			return 0;
+		}
+		if (mode == "--inspect-generator-package")
+		{
+			if (argc != 7 || std::string(argv[3]) != "--output" || std::string(argv[5]) != "--json")
+				throw std::runtime_error("Expected --inspect-generator-package input --output "
+										 "canonical --json metadata");
+			if (samePath(argv[2], argv[4]) || samePath(argv[2], argv[6]) ||
+				samePath(argv[4], argv[6]))
+				throw std::runtime_error("Input and output paths must be distinct");
+			const auto package = MapGeneration::JavaScript::Package::load(argv[2]);
+			auto metadata = nlohmann::json::parse(package->canonical).at("manifest");
+			metadata["description"] = package->description;
+			metadata["editorOnly"] = package->editorOnly;
+			metadata["controls"] = nlohmann::json::array();
+			for (const auto &c : package->controls)
+			{
+				nlohmann::json control{{"id", c.id},
+									   {"label", c.label},
+									   {"group", c.group == ControlGroup::Terrain     ? "terrain"
+												 : c.group == ControlGroup::Resources ? "resources"
+																					  : "layout"},
+									   {"kind", c.isChoice()   ? "choice"
+												: c.isToggle() ? "toggle"
+															   : "range"},
+									   {"minimum", c.minimum},
+									   {"maximum", c.maximum},
+									   {"step", c.step},
+									   {"default", c.defaultValue},
+									   {"values", c.values()},
+									   {"powerOfTwo", c.powerOfTwo}};
+				if (c.isChoice())
+				{
+					control["choices"] = nlohmann::json::array();
+					for (const auto *label : c.valueLabels)
+						control["choices"].push_back(label);
+				}
+				metadata["controls"].push_back(std::move(control));
+			}
+			metadata["toolkitVersion"] = 1;
+			metadata["packageHash"] = package->hash;
+			for (const char *path : {argv[4], argv[6]})
+				parentDirectory(path);
+			std::ofstream canonical(argv[4], std::ios::binary), report(argv[6], std::ios::binary);
+			canonical << package->canonical;
+			report << metadata.dump();
+			canonical.close();
+			report.close();
+			if (!canonical || !report)
+				throw std::runtime_error("Cannot write generator inspection");
 			return 0;
 		}
 		if (mode == "--validate-set")

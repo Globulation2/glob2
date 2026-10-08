@@ -51,6 +51,9 @@ no NaN, infinity, per-tile grids, elapsed-time measurements, or simulation steps
 
 For generation in this invocation, `generation.available` is true and includes:
 
+- `package_hash`, `api_version`, and `toolkit_version`: JavaScript package identity
+  and API/toolkit versions. Built-in generators use an empty hash and zero versions;
+  unavailable package identity is null.
 - `generator`: stable string ID; `legacy_id`: numeric ID; `revision`: generator
   revision; `seed`: exact unsigned 32-bit seed supplied to the service.
 - `parameters`: **all resolved registered controls**, including defaults and config/

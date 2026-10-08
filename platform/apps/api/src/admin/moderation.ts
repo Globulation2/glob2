@@ -6,8 +6,24 @@ import { cursorTimeSql } from '../http/cursorTime.ts';
 import { decodeCursor, encodeCursor, pageSize } from './cursor.ts';
 
 type Db = Kysely<Database> | Transaction<Database>;
-export const LIBRARIES = ['maps', 'ais', 'buildings', 'sets', 'skins', 'music'] as const;
+export const LIBRARIES = [
+  'maps',
+  'ais',
+  'generators',
+  'buildings',
+  'sets',
+  'skins',
+  'music',
+] as const;
 const specs = {
+  generators: [
+    'generators',
+    'name',
+    'owner_account_id',
+    'generator_reports',
+    'generator_id',
+    'reporter_account_id',
+  ],
   maps: ['maps', 'title', 'owner_account_id', 'map_reports', 'map_id', 'reporter_account_id'],
   ais: ['ais', 'name', 'owner_account_id', 'ai_reports', 'ai_id', 'reporter_account_id'],
   buildings: [
@@ -64,13 +80,13 @@ function contentQuery(library: AdminLibrary) {
 function reportQuery(library: AdminLibrary) {
   const [table, , , reports, fk, reporter] = specs[library];
   const status =
-    library === 'maps' || library === 'ais'
+    library === 'maps' || library === 'ais' || library === 'generators'
       ? sql`r.status`
       : library === 'skins'
         ? sql`CASE WHEN r.resolution IS NULL THEN 'open' WHEN r.resolution='dismissed' THEN 'dismissed' ELSE 'resolved' END`
         : sql`CASE WHEN r.resolved THEN coalesce(m.resolution,'resolved') ELSE 'open' END`;
   const resolution =
-    library === 'maps' || library === 'ais'
+    library === 'maps' || library === 'ais' || library === 'generators'
       ? sql`r.resolution_note`
       : library === 'skins'
         ? sql`r.resolution_reason`
@@ -79,7 +95,7 @@ function reportQuery(library: AdminLibrary) {
           : sql`m.reason`;
   return sql`SELECT r.id, ${library}::text AS library, c.id AS "contentId", ${contentName(library)} AS name,
  ${hidden(library)} AS hidden, ${sql.ref(`r.${reporter}`)} AS "reporterId", coalesce(a.display_name,'Deleted player') AS "reporterName",
- ${library === 'skins' ? sql`'/api/v1/admin/skins/versions/' || r.version_id::text || '/texture'` : sql`NULL::text`} AS "previewHref", r.reason, ${library === 'maps' || library === 'ais' || library === 'sets' ? sql`r.details` : sql`''::text`} AS details,
+ ${library === 'skins' ? sql`'/api/v1/admin/skins/versions/' || r.version_id::text || '/texture'` : sql`NULL::text`} AS "previewHref", r.reason, ${library === 'maps' || library === 'ais' || library === 'generators' || library === 'sets' ? sql`r.details` : sql`''::text`} AS details,
  r.created_at AS "createdAt", ${cursorTimeSql(sql<Date>`r.created_at`)} AS "cursorAt", ${status} AS status, ${resolution} AS resolution,
  ${library === 'maps' || library === 'skins' ? sql`r.resolved_at` : sql`m.resolved_at`} AS "resolvedAt"
  FROM ${sql.table(reports)} r
@@ -227,7 +243,7 @@ export async function resolveReport(
     ).rows[0];
     if (!row) throw apiError('not_found', 'Report not found.');
     const open =
-      library === 'maps' || library === 'ais'
+      library === 'maps' || library === 'ais' || library === 'generators'
         ? row['status'] === 'open'
         : library === 'skins'
           ? row['resolution'] === null
@@ -250,7 +266,7 @@ export async function resolveReport(
     const update =
       library === 'maps'
         ? sql`status=${input.resolution},resolution_note=${input.reason},resolved_at=now(),resolved_by_account_id=${actor}::uuid`
-        : library === 'ais'
+        : library === 'ais' || library === 'generators'
           ? sql`status=${input.resolution},resolution_note=${input.reason}`
           : library === 'skins'
             ? sql`resolution=${input.hide ? 'disabled' : 'dismissed'},resolution_reason=${input.reason},resolved_at=now(),resolved_by_account_id=${actor}::uuid`

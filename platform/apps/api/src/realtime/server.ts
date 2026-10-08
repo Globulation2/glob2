@@ -2,6 +2,7 @@
 // address), heartbeat, and the session and sign-in methods. Room, queue and
 // match methods come from play/realtime.ts (`extraHandlers`).
 import type { FastifyInstance } from 'fastify';
+import { sql } from 'kysely';
 import type { WebSocket } from 'ws';
 import {
   REALTIME_PROTOCOL_VERSION,
@@ -97,11 +98,39 @@ export async function realtimeRoutes(
       if (params.protocol !== REALTIME_PROTOCOL_VERSION) {
         throw apiError('update_required', 'Unsupported realtime protocol version.');
       }
+      const generatorSharing = params.client.generatorSharing === true;
       if (params.accessToken) {
         const { account, claims } = await identity.tokens.verifyAccess(params.accessToken);
+        if (!generatorSharing) {
+          const [room, match] = await Promise.all([
+            services.db
+              .selectFrom('room_members as m')
+              .innerJoin('rooms as r', 'r.id', 'm.room_id')
+              .select('r.id')
+              .where('m.account_id', '=', account.id)
+              .where('r.status', '!=', 'closed')
+              .where(sql<boolean>`r.settings->'map'->>'kind' = 'scripted'`)
+              .executeTakeFirst(),
+            services.db
+              .selectFrom('match_participants as p')
+              .innerJoin('matches as m', 'm.id', 'p.match_id')
+              .select('m.id')
+              .where('p.account_id', '=', account.id)
+              .where('p.kind', '=', 'human')
+              .where('m.status', 'in', ['starting', 'running'])
+              .where(sql<boolean>`m.setup->'map'->>'kind' = 'scripted'`)
+              .executeTakeFirst(),
+          ]);
+          if (room || match)
+            throw apiError(
+              'update_required',
+              'Update the game to reconnect to your shared generator room or match.',
+            );
+        }
+        connection.generatorSharing = generatorSharing;
         connection.authenticate(account, claims.sid);
         await identity.accounts.touch(account.id);
-      }
+      } else connection.generatorSharing = generatorSharing;
       connection.helloDone = true;
       connection.platform = params.client.platform;
       connection.simVersion = params.client.simVersion;

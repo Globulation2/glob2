@@ -47,6 +47,12 @@ export const EXPORTED_ACCOUNT_COLUMNS: Record<string, string[]> = {
   set_likes: ['account_id'],
   set_reports: ['reporter_account_id'],
   set_downloads: ['downloader'],
+  generators: ['owner_account_id'],
+  generator_uploads: ['owner_account_id'],
+  generator_likes: ['account_id'],
+  generator_favourites: ['account_id'],
+  generator_reports: ['reporter_account_id'],
+  generator_downloads: ['downloader'],
   ais: ['owner_account_id'],
   ai_uploads: ['owner_account_id'],
   ai_likes: ['account_id'],
@@ -548,6 +554,71 @@ export async function exportAccount(
         .execute();
       const aiDownloads = await tx
         .selectFrom('ai_downloads')
+        .select(['version_id', sql<string>`day::text`.as('day')])
+        .where('downloader', '=', `a:${id}`)
+        .execute();
+      const generators = await tx
+        .selectFrom('generators')
+        .select([
+          'id',
+          'name',
+          'description',
+          'tags',
+          'visibility',
+          'hidden',
+          'hidden_reason',
+          'created_at',
+          'updated_at',
+        ])
+        .where('owner_account_id', '=', id)
+        .execute();
+      const generatorVersions = generators.length
+        ? await tx
+            .selectFrom('generator_versions')
+            .selectAll()
+            .where(
+              'generator_id',
+              'in',
+              generators.map((a) => a.id),
+            )
+            .execute()
+        : [];
+      const generatorLikes = await tx
+        .selectFrom('generator_likes')
+        .select('generator_id')
+        .where('account_id', '=', id)
+        .execute();
+      const generatorFavourites = await tx
+        .selectFrom('generator_favourites')
+        .select('generator_id')
+        .where('account_id', '=', id)
+        .execute();
+      const generatorReports = await tx
+        .selectFrom('generator_reports')
+        .select([
+          'id',
+          'generator_id',
+          'reason',
+          'details',
+          'status',
+          'created_at',
+          'resolution_note',
+        ])
+        .where('reporter_account_id', '=', id)
+        .execute();
+      const generatorUploads = await tx
+        .selectFrom('generator_uploads')
+        .select([
+          'id',
+          'validation_id',
+          'expires_at',
+          'published_generator_id',
+          'published_version_id',
+        ])
+        .where('owner_account_id', '=', id)
+        .execute();
+      const generatorDownloads = await tx
+        .selectFrom('generator_downloads')
         .select(['version_id', sql<string>`day::text`.as('day')])
         .where('downloader', '=', `a:${id}`)
         .execute();
@@ -1336,6 +1407,19 @@ export async function exportAccount(
           reports: rows(aiReports),
           uploads: rows(aiUploads),
           downloads: rows(aiDownloads),
+        },
+        generators: {
+          published: generators.map((a) => ({
+            ...clean(a),
+            versions: rows(generatorVersions.filter((v) => v.generator_id === a.id)).map(
+              ({ generatorId: _generatorId, ...v }) => v,
+            ),
+          })),
+          likes: rows(generatorLikes),
+          favourites: rows(generatorFavourites),
+          reports: rows(generatorReports),
+          uploads: rows(generatorUploads),
+          downloads: rows(generatorDownloads),
         },
         music: { releases: rows(music), likes: rows(musicLikes), reports: rows(musicReports) },
         maps: {

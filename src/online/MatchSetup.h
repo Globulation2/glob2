@@ -100,13 +100,21 @@ namespace Online
 
 	struct MapSource
 	{
-		enum class Kind { Catalog, Upload, Generated };
+		enum class Kind
+		{
+			Catalog,
+			Upload,
+			Generated,
+			Scripted
+		};
 		enum class Format { Map, Save };
 		Kind kind = Kind::Catalog;
 		std::string hash; ///< SHA-256 of the decompressed map bytes, lowercase hex
 		std::optional<std::string> mapId;           ///< catalog only
 		Format format = Format::Map;                 ///< upload only; Map otherwise
-		std::optional<GeneratorDescriptor> generator; ///< generated only
+		std::optional<GeneratorDescriptor> generator;
+		std::optional<std::string> scriptGenerator;
+		std::optional<std::uint32_t> chosenSeed; ///< generated only
 		bool operator==(const MapSource& o) const;
 	};
 

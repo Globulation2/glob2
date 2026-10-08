@@ -20,6 +20,7 @@ import { applyCoverage } from '../skins/paint.ts';
 import { useSkinDocument } from '../skins/useSkinDocument.ts';
 import { useToolboxLayout } from '../skins/useToolboxLayout.ts';
 import { SkinLibrary } from '../skins/SkinLibrary.tsx';
+import { ColorPicker } from '../skins/ColorPicker.tsx';
 import { CopyPaintDialog } from '../skins/CopyPaintDialog.tsx';
 
 export function Skins() {
@@ -472,18 +473,7 @@ function SkinStudio() {
                       </button>
                     </div>
                     {mode === 'colour' ? (
-                      <label className="skin-color-field">
-                        <input
-                          type="color"
-                          aria-label="Paint color"
-                          value={brush}
-                          onChange={(e) => setBrush(e.target.value)}
-                        />
-                        <span>
-                          <strong>Paint color</strong>
-                          <small>{brush.toUpperCase()}</small>
-                        </span>
-                      </label>
+                      <ColorPicker label="Paint color" value={brush} onChange={setBrush} />
                     ) : (
                       <MaterialSwatches
                         color={d.building}
@@ -540,18 +530,12 @@ function SkinStudio() {
                     </label>
                     <details className="skin-buildings">
                       <summary>Buildings</summary>
-                      <label className="skin-color-field">
-                        <input
-                          type="color"
-                          aria-label="Building color"
-                          value={d.building}
-                          onChange={(e) => doc.edit({ building: e.target.value })}
-                        />
-                        <span>
-                          <strong>Building color</strong>
-                          <small>Colors your buildings; painted units stay unchanged.</small>
-                        </span>
-                      </label>
+                      <ColorPicker
+                        label="Building color"
+                        value={d.building}
+                        onChange={(building) => doc.edit({ building })}
+                        description="Colors your buildings; painted units stay unchanged."
+                      />
                       <svg
                         viewBox="0 0 120 80"
                         role="img"

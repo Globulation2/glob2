@@ -415,19 +415,17 @@ Uint32 Team::checkSum(std::vector<Uint32> *checkSumsVector, std::vector<Uint32> 
 	if (checkSumsVector)
 		checkSumsVector->push_back(cs); // [1+t*20]
 
-	for (int i=0; i<Unit::MAX_COUNT; i++)
-		if (myUnits[i])
+	for (Unit *unit : liveUnits.entries())
 	{
-		cs^=myUnits[i]->checkSum(checkSumsVectorForUnits);
+		cs^=unit->checkSum(checkSumsVectorForUnits);
 		cs=rotr1(cs);
 	}
 	if (checkSumsVector)
 		checkSumsVector->push_back(cs); // [2+t*20]
 
-	for (int i=0; i<Building::MAX_COUNT; i++)
-		if (myBuildings[i])
+	for (Building *building : liveBuildings.entries())
 	{
-		cs^=myBuildings[i]->checkSum(checkSumsVectorForBuildings);
+		cs^=building->checkSum(checkSumsVectorForBuildings);
 		cs=rotr1(cs);
 	}
 	if (checkSumsVector)

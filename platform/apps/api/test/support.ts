@@ -243,10 +243,10 @@ export class RealtimeClient {
     return response.result!;
   }
 
-  hello(accessToken?: string, simVersion: object = SIM) {
+  hello(accessToken?: string, simVersion: object = SIM, generatorSharing = false) {
     return this.ok('session.hello', {
       protocol: 1,
-      client: { platform: 'desktop', version: 'test', simVersion },
+      client: { platform: 'desktop', version: 'test', simVersion, generatorSharing },
       ...(accessToken ? { accessToken } : {}),
     });
   }

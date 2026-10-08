@@ -78,9 +78,8 @@ RoomScreen::RoomScreen(GAGGUI::ScreenStack &screens, std::shared_ptr<RoomBackend
 {
 	// "Use in a room" from the map browser lands in the open online room.
 	if (this->room->kind() == RoomBackend::Kind::Online)
-		Online::setRoomMapHandler([this](const Online::RoomMapChoice &choice) {
-			pendingCatalogMap = std::make_pair(choice.hash, choice.mapId);
-		});
+		Online::setRoomMapHandler([this](const Online::RoomMapChoice &choice)
+								  { pendingCatalogMap = choice; });
 	// Pick up what the backend already queued (preview fixtures, early chat).
 	onTimer(0);
 }
@@ -289,11 +288,16 @@ void RoomScreen::onTimer(Uint32 tick)
 	if (!pendingCatalogMap && room->kind() == RoomBackend::Kind::Online && room->lobbyReady() && room->canEditSetup() &&
 		Online::pendingRoomMap())
 		if (auto kept = Online::takePendingRoomMap())
-			pendingCatalogMap = std::make_pair(kept->hash, kept->mapId);
+			pendingCatalogMap = *kept;
 	if (pendingCatalogMap && room->lobbyReady())
 	{
 		if (auto *online = dynamic_cast<Online::PlatformRoom *>(room.get()); online && online->canEditSetup())
-			online->useCatalogMap(pendingCatalogMap->first, pendingCatalogMap->second);
+		{
+			if (pendingCatalogMap->scriptDescriptor)
+				online->useScriptGenerator(*pendingCatalogMap->scriptDescriptor);
+			else
+				online->useCatalogMap(pendingCatalogMap->hash, pendingCatalogMap->mapId);
+		}
 		pendingCatalogMap.reset();
 	}
 	if (auto file = room->mapFile(); file && *file != previewFile)
@@ -748,7 +752,17 @@ Element RoomScreen::mapPanel(const Presentation &p, bool phone)
 	if (!status.empty())
 		facts.push_back(row({icon(uiIcon(UIIcon::Spinner), {16, theme().palette.muted}), expanded(paragraph(status, {FontRole::Support, true}))}, {p.pt(6), CrossAlign::Center}));
 	// Size and seed describe a generated map; a premade map's file is the map.
+	const auto scripted = online ? online->scriptGenerator() : std::nullopt;
 	const bool generated = !online || online->generatedMap();
+	if (scripted)
+	{
+		const auto descriptor = nlohmann::json::parse(*scripted);
+		facts.push_back(
+			field("Seed", label(std::to_string(descriptor.at("seed").get<std::uint32_t>()))));
+		if (room->canEditSetup())
+			facts.push_back(button("map/reroll-generator", "Reroll",
+								   [online] { online->rerollScriptGenerator(); }));
+	}
 	if (haveDraft && generated)
 	{
 		facts.push_back(field(tr("[room colonies]"), label(std::to_string(draft.capacity))));
@@ -758,7 +772,9 @@ Element RoomScreen::mapPanel(const Presentation &p, bool phone)
 	else if (room->teamCount() > 0)
 		facts.push_back(field(tr("[room colonies]"), label(std::to_string(room->teamCount()))));
 	if (online)
-		facts.push_back(paragraph(tr(generated ? "[room generated on server]" : "[room premade map shared]"), {FontRole::Support, true}));
+		facts.push_back(paragraph(
+			tr(generated || scripted ? "[room generated on server]" : "[room premade map shared]"),
+			{FontRole::Support, true}));
 	if (room->canEditSetup())
 		facts.push_back(button("map/change", tr("[room change map]"), [this] { editSetup(0); }, {.icon = uiIcon(UIIcon::Map)}));
 	else if (!room->isHost())

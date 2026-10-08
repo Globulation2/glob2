@@ -1755,6 +1755,21 @@
                 "options"
               ],
               "additionalProperties": false
+            },
+            "package_hash": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "description": "JavaScript generator package hash; empty for built-in generators, null when unavailable."
+            },
+            "api_version": {
+              "type": "integer",
+              "description": "JavaScript generator API version; zero for built-in generators."
+            },
+            "toolkit_version": {
+              "type": "integer",
+              "description": "JavaScript toolkit version; zero for built-in generators."
             }
           },
           "required": [

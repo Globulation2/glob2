@@ -27,3 +27,5 @@ export * from './terrainStudio.ts';
 export * from './setAuthoring.ts';
 
 export * from './buildingStudio.ts';
+
+export * from './generators.ts';

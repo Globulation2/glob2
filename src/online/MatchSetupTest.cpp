@@ -598,3 +598,30 @@ TEST_SUITE("MatchSetup")
 		MESSAGE("sim version " << version.key());
 	}
 }
+
+TEST_CASE("Scripted map sources preserve exact provenance and enforce team count" *
+		  doctest::test_suite("MatchSetup"))
+{
+	auto document =
+		json::parse(glob2test::readFile(fixtureRoot() / "valid/MatchSetup/room-closed-seats.json"));
+	const auto count = document["teams"].size();
+	document["map"] = {{"kind", "scripted"},
+					   {"hash", std::string(64, 'a')},
+					   {"chosenSeed", 91},
+					   {"generator",
+						{{"libraryId", "11111111-1111-4111-8111-111111111111"},
+						 {"versionId", "22222222-2222-4222-8222-222222222222"},
+						 {"packageHash", std::string(64, 'b')},
+						 {"fileHash", std::string(64, 'c')},
+						 {"generatorId", "author:landscape"},
+						 {"revision", 2},
+						 {"seed", 19},
+						 {"candidates", 1},
+						 {"startingUnitLevel", 0},
+						 {"params", {{"teams", count}, {"width", 7}, {"height", 7}}}}}};
+	const auto setup = Online::MatchSetup::fromJson(document);
+	CHECK(setup.map.kind == Online::MapSource::Kind::Scripted);
+	CHECK(setup.toJson()["map"] == document["map"]);
+	document["map"]["generator"]["params"]["teams"] = count + 1;
+	CHECK_THROWS(Online::MatchSetup::fromJson(document));
+}

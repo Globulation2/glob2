@@ -25,21 +25,29 @@ struct Package : std::enable_shared_from_this<Package>
 	static std::shared_ptr<const Package> load(const std::string &path);
 	GeneratorDefinition definition(int handle) const;
 };
+struct LibraryOrigin
+{
+	std::string origin, libraryId, versionId, fileHash, packageHash;
+};
 class Library
 {
 	Online::OnlineStorage &storage;
 	using PackageMap = std::map<std::string, std::shared_ptr<const Package>>;
 	PackageMap packages;
-	static std::string encode(const PackageMap &);
-	static PackageMap decode(const std::string &);
-	void save(PackageMap candidate);
+	using Origins = std::map<std::string, LibraryOrigin>;
+	Origins provenance;
+	static std::string encode(const PackageMap &, const Origins &);
+	static PackageMap decode(const std::string &, Origins &);
+	void save(PackageMap candidate, Origins origins);
 
   public:
 	explicit Library(Online::OnlineStorage &);
 	const auto &entries() const { return packages; }
-	std::string checkpoint() const { return encode(packages); }
+	std::string checkpoint() const { return encode(packages, provenance); }
 	void rollback(const std::string &);
-	void put(const std::string &bytes, const std::string &replace = {});
+	void put(const std::string &bytes, const std::string &replace = {},
+			 const LibraryOrigin *origin = nullptr);
+	const auto &origins() const { return provenance; }
 	void remove(const std::string &id);
 	void publish() const;
 };

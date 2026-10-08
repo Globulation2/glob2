@@ -22,6 +22,14 @@
           "anyOf": [
             {
               "type": "string",
+              "const": "validate-generator"
+            },
+            {
+              "type": "string",
+              "const": "generate-script-map"
+            },
+            {
+              "type": "string",
               "const": "validate-buildings"
             },
             {
@@ -85,6 +93,14 @@
         },
         "kind": {
           "anyOf": [
+            {
+              "type": "string",
+              "const": "validate-generator"
+            },
+            {
+              "type": "string",
+              "const": "generate-script-map"
+            },
             {
               "type": "string",
               "const": "validate-buildings"

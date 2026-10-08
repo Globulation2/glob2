@@ -7,6 +7,9 @@
 #include "CustomGamePreferences.h"
 #include "CustomGameRules.h"
 #include <nlohmann/json.hpp>
+#include <BinaryStream.h>
+#include <StreamBackend.h>
+#include "Sha256.h"
 
 namespace JSGen = MapGeneration::JavaScript;
 using Json = nlohmann::json;
@@ -495,4 +498,101 @@ TEST_CASE("Library mutations retain memory and disk when storage throws" *
 	storage.throwWrites = false;
 	library.rollback(initial);
 	CHECK(library.checkpoint() == initial);
+}
+
+TEST_CASE("Online generator installation verifies hashes and persists provenance transactionally" *
+		  doctest::test_suite("ScriptGenerator"))
+{
+	Online::MemoryStorage storage;
+	JSGen::Library library(storage);
+	auto p = JSGen::Package::parse(package("export function generate(){}"));
+	JSGen::LibraryOrigin origin{"https://example.test", "11111111-1111-4111-8111-111111111111",
+								"22222222-2222-4222-8222-222222222222", p->hash, p->hash};
+	library.put(p->canonical, "", &origin);
+	JSGen::Library restored(storage);
+	REQUIRE(restored.origins().contains(p->id));
+	CHECK(restored.origins().at(p->id).versionId == origin.versionId);
+	const auto checkpoint = library.checkpoint();
+	auto bad = origin;
+	bad.fileHash = std::string(64, '0');
+	CHECK_THROWS(library.put(p->canonical, p->id, &bad));
+	CHECK(library.checkpoint() == checkpoint);
+	library.put(package("export function generate(){return 'refused';}", 2), p->id);
+	CHECK(library.origins().empty());
+	library.rollback(checkpoint);
+	CHECK(library.origins().at(p->id).versionId == origin.versionId);
+}
+
+TEST_CASE("Shared generated worlds continue identically without installed generator code [golden]" *
+		  doctest::test_suite("ScriptGenerator"))
+{
+	glob2test::HeadlessGlobals globals;
+	auto p = JSGen::Package::parse(package(R"(export function generate(c){
+        const t=c.torus, terrain=c.mask(t.size(),2);
+        c.toolkit.Sketch.writeVertices(terrain);c.addTeams();
+        if(!c.toolkit.Pipeline.settleColonies("shared",team=>terrain,team=>({x:24+team*48,y:24})))return 'Cannot place colonies';
+        c.toolkit.Pipeline.secureStartingCrops(t);
+    })"));
+	GeneratorRegistry registry({p->definition(1000000)});
+	std::string trace;
+	for (const unsigned seed : {19u, 91u})
+	{
+		GenerationRequest request;
+		request.setMethodDefaults(1000000, registry);
+		request.seed = seed;
+		request.wDec = 7;
+		request.hDec = 6;
+		request.nbTeams = 2;
+		Game first(nullptr), repeat(nullptr);
+		REQUIRE(GenerationService(registry).generate(first, request));
+		REQUIRE(GenerationService(registry).generate(repeat, request));
+		REQUIRE(mapFingerprint(first) == mapFingerprint(repeat));
+		trace +=
+			"world " + std::to_string(seed) + " " + std::to_string(mapFingerprint(first)) + "\n";
+		GameHeader header;
+		header.setNumberOfPlayers(2);
+		header.setRandomSeed(seed);
+		for (int team = 0; team < 2; ++team)
+			header.getBasePlayer(team) = BasePlayer(team, "Shared map", team, BasePlayer::P_LOCAL);
+		first.setGameHeader(header, true);
+		first.setWaitingOnMask(0);
+		for (int tick = 0; tick < 64; ++tick)
+			first.syncStep(0);
+		auto *memory = new GAGCore::MemoryStreamBackend;
+		GAGCore::BinaryOutputStream output(memory);
+		first.save(&output, false, "Shared generated world");
+		output.flush();
+		const auto bytes = memory->takeContents();
+		glob2test::writeFile(glob2test::artifactDir() / ("seed-" + std::to_string(seed) + ".game"),
+							 bytes);
+		Game restored(nullptr);
+		GAGCore::BinaryInputStream input(
+			new GAGCore::MemoryStreamBackend(bytes.data(), bytes.size()));
+		input.seekFromStart(0);
+		REQUIRE(restored.load(&input));
+		restored.setWaitingOnMask(0);
+		auto components = [](Game &g)
+		{
+			std::vector<Uint32> state, buildings, units;
+			g.checkSum(&state, &buildings, &units, true);
+			state.erase(state.begin());
+			state.insert(state.end(), buildings.begin(), buildings.end());
+			state.insert(state.end(), units.begin(), units.end());
+			return state;
+		};
+		for (int tick = 0; tick < 256; ++tick)
+		{
+			CAPTURE(seed); CAPTURE(tick);
+			first.syncStep(0);
+			restored.syncStep(0);
+			REQUIRE(components(first) == components(restored));
+			REQUIRE(first.syncRandom == restored.syncRandom);
+			trace += std::to_string(seed) + " " + std::to_string(tick + 65);
+			for (const auto value : components(first))
+				trace += " " + std::to_string(value);
+			trace += "\n";
+		}
+	}
+	glob2test::writeFile(glob2test::artifactDir() / "shared-generators.trace", trace);
+	glob2test::expectGolden("generators/shared-generator-trace.sha256", Online::Sha256::hex(trace) + "\n");
 }

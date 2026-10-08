@@ -1,6 +1,7 @@
 /* Canvas creation validates the 2D context. */
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 import { useEffect, useRef, useState } from 'react';
+import { ColorPicker } from './ColorPicker.tsx';
 import { MeshPreview, type SceneView } from './MeshPreview.tsx';
 import { StudioDialog, MaterialSwatches } from './StudioControls.tsx';
 import { cloneSkin, paintCanvas, type SkinData } from './useSkinDocument.ts';
@@ -179,10 +180,7 @@ export function PatternDialog({
             </button>
           </div>
           {mode === 'colour' ? (
-            <label>
-              Pattern color
-              <input type="color" value={color} onChange={(e) => setColor(e.target.value)} />
-            </label>
+            <ColorPicker label="Pattern color" value={color} onChange={setColor} />
           ) : (
             <MaterialSwatches color={data.building} selected={material} onSelect={setMaterial} />
           )}
@@ -305,14 +303,7 @@ export function PatternDialog({
           {!solid &&
             background &&
             (mode === 'colour' ? (
-              <label>
-                Background color
-                <input
-                  type="color"
-                  value={secondColor}
-                  onChange={(e) => setSecondColor(e.target.value)}
-                />
-              </label>
+              <ColorPicker label="Background color" value={secondColor} onChange={setSecondColor} />
             ) : (
               <label>
                 Background material
