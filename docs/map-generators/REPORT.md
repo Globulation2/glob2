@@ -30,6 +30,7 @@ no NaN, infinity, per-tile grids, elapsed-time measurements, or simulation steps
 | --- | --- |
 | `engine.version_major`, `version_minor` | The reporting executable's engine/save-format version constants, not the input file's original version. |
 | `map.name` | Stored map name for an input file; `null` for the freshly generated snapshot, before its output filename supplies a saved name. |
+| `map.setCredits` | Frozen artwork-set attribution from the map asset bundle: set/version IDs, title, license, authors, source hash and credited entries. Empty when no custom sets are used. |
 | `map.width`, `height`, `tiles` | Tile dimensions and their product. |
 | `map.wrap_x`, `wrap_y` | Both true: this is a toroidal map. All reported paths and components wrap. |
 | `map.player_slots` | Actual colony/team count. This is what “number of players” usually means when comparing generated maps. An editor-only generator may create fewer colonies than its request's `teams` value. |

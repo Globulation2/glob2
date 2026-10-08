@@ -83,6 +83,17 @@ def contract_rejections(report):
 
     rejected('unexpected root property', lambda j: j.update(unexpected=True))
     rejected('map width type', lambda j: j['map'].update(width='128'))
+    credited = json.loads(json.dumps(report))
+    credited['map']['setCredits'] = [{
+        'setId': '11111111-1111-4111-8111-111111111111',
+        'versionId': '22222222-2222-4222-8222-222222222222',
+        'title': 'Example', 'license': 'CC-BY-4.0',
+        'authors': [{'author': 'Artist', 'license': 'CC-BY-4.0'}],
+        'sourceHash': 'a'*64, 'entries': ['terrain/example'],
+    }]
+    contract(credited)
+    rejected('credits array type', lambda j: j['map'].update(setCredits={}))
+    rejected('incomplete credit', lambda j: j['map'].update(setCredits=[{'title':'Example'}]))
     rejected('telemetry kind enum', lambda j: telemetry(j)['records'][0].update(kind='unknown'))
     rejected('telemetry value type', lambda j: telemetry(j)['records'][0].update(value={}))
     rejected('negative subject', lambda j: telemetry(j)['records'][0].update(subject=-1))
