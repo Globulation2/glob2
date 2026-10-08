@@ -658,7 +658,7 @@ TEST_CASE("farm overlay beside the other zones at every zoom tier [display:1024x
 			gui.viewportX = gui.camera.tileX();
 			gui.viewportY = gui.camera.tileY();
 			gui.updateCamera();
-			gui.drawAll(0);
+			glob2test::drawGUI(gui,0);
 			gfx->printScreen(glob2test::artifactDirFromWorkingDirectory() + "/zones-" + (hd ? "hd" : "classic") +
 							 "-" + std::to_string(int(zoom * 100)) + ".bmp");
 			gfx->nextFrame();

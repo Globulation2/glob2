@@ -681,11 +681,16 @@ const std::vector<Metric> &catalog()
 
 std::vector<Metric> catalogForBuildings(const BuildingsTypes& buildings)
 {
+    return catalogForBuildings(*buildings.retainTypes());
+}
+
+std::vector<Metric> catalogForBuildings(std::span<const BuildingType> buildings)
+{
     auto metrics=catalog();
     auto& metric=metrics[findMetric("buildings")];
     for (size_t id=0; id<buildings.size(); ++id)
     {
-        const auto& type=*buildings.get(id);
+        const auto& type=buildings[id];
         if (type.isBuildingSite || !type.semantics.occupiesGround) continue;
         // The key disambiguates same-name stages and survives translation changes.
         const std::string label=type.presentation.displayName.empty() ? type.key :

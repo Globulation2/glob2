@@ -5,10 +5,8 @@
 #include "BuildingPresentation.h"
 #include "BuildingType.h"
 #include "EditorDockInternal.h"
-#include "Game.h"
 #include "GlobalContainer.h"
 #include "MapEdit.h"
-#include "Unit.h"
 #include "UnitDisplayNames.h"
 #include "UnitType.h"
 #include "render/UnitAnimation.h"
@@ -21,19 +19,21 @@ namespace fe = Glob2UI;
 InspectorModel buildInspectorModel(MapEdit &editor)
 {
 	InspectorModel model;
+    if (!editor.view.scene) return model;
+    const auto& frame = *editor.view.scene;
+    model.world = frame.world;
 	if (editor.panelMode == MapEdit::BuildingEditor && editor.selectedBuildingGID != NOGBID)
 	{
-		auto *team = editor.game.teams[Building::GIDtoTeam(editor.selectedBuildingGID)];
-		auto *building = team ? team->myBuildings[Building::GIDtoID(editor.selectedBuildingGID)] : nullptr;
+		const auto *building = frame.entities.building(editor.selectedBuildingGID);
 		if (!building)
 			return model;
 		model.kind = InspectorModel::Kind::Building;
 		model.identity = editor.selectedBuildingGID;
 		model.building = building;
-		model.title = buildingDisplayName(*building->type);
+		model.title = buildingDisplayName(*frame.entities.type(*building));
 		model.detail = GAGCore::FormattableString(fe::tr("[Team %0 / Level %1]"))
-						   .arg(building->owner->teamNumber + 1)
-						   .arg(building->type->level + 1);
+						   .arg(building->team + 1)
+						   .arg(frame.entities.type(*building)->level + 1);
 		// The rows the selection set up (MapEdit::addBuildingEditRow), in order.
 		struct Named
 		{
@@ -71,15 +71,14 @@ InspectorModel buildInspectorModel(MapEdit &editor)
 	}
 	if (editor.panelMode == MapEdit::UnitEditor && editor.selectedUnitGID != NOGUID)
 	{
-		auto *team = editor.game.teams[Unit::GIDtoTeam(editor.selectedUnitGID)];
-		auto *unit = team ? team->myUnits[Unit::GIDtoID(editor.selectedUnitGID)] : nullptr;
+		const auto *unit = frame.entities.unit(editor.selectedUnitGID);
 		if (!unit)
 			return model;
 		model.kind = InspectorModel::Kind::Unit;
 		model.identity = 65536 + editor.selectedUnitGID;
 		model.unit = unit;
 		model.title = getUnitName(unit->typeNum);
-		model.detail = GAGCore::FormattableString(fe::tr("[Team %0]")).arg(unit->owner->teamNumber + 1);
+		model.detail = GAGCore::FormattableString(fe::tr("[Team %0]")).arg(unit->team + 1);
 		model.rows.push_back({"hp", fe::tr("[hp]"), editor.unitHPScrollBox});
 		struct Skill
 		{
@@ -127,21 +126,21 @@ void paintInspectorPicture(fe::Canvas &canvas, fe::Rect bounds, const InspectorM
 {
 	if (model.building)
 	{
-		const auto *type = model.building->type;
+		const auto *type = &(*model.world.catalogs->typeDefinitions)[model.building->typeNum];
 		auto *sprite = type->miniSpriteImage >= 0 ? type->miniSpritePtr : type->gameSpritePtr;
 		const int frame = type->miniSpriteImage >= 0 ? type->miniSpriteImage : type->gameSpriteImage;
 		if (!sprite)
 			return;
-		sprite->setBaseColor(model.building->owner->color);
+		sprite->setBaseColor(presentationColor(model.world.teams->values[model.building->team].color));
 		EditorDockPaint::spriteFit(canvas, bounds, sprite, frame, 1.5);
 	}
 	else if (model.unit)
 	{
 		auto *unit = model.unit;
-		const auto *type = unit->race->getUnitType(unit->typeNum, 0);
+		const auto *type = &model.world.catalogs->unitTypes[unit->typeNum][0];
 		const int image = unitAnimationFrame(type->startImage[unit->action], unit->direction, unit->delta);
 		auto *sprite = globalContainer->units;
-		sprite->setBaseColor(unit->owner->color);
+		sprite->setBaseColor(presentationColor(model.world.teams->values[unit->team].color));
 		EditorDockPaint::spriteFit(canvas, bounds, sprite, image, 1.5);
 	}
 }

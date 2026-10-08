@@ -733,3 +733,10 @@ void Map::setGame(Game *game)
 		sectors[i].setGame(game);
 	game->animations->resize(sizeSector);
 }
+
+void Map::setTerrainSeed(Uint32 seed)
+{
+    if (terrainSeedValue == seed) return;
+    terrainSeedValue = seed;
+    if (game) game->snapshots().invalidateBoundary();
+}

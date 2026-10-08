@@ -25,7 +25,7 @@ def configure(env):
               root / 'src/unit/render/ColonySkinPreview.cpp',
               root / 'libgag/shaders/skin-materials.json',
               root / 'libgag/shaders/skin-material.glsl']
-    for pattern in ('*.gsk', '*.gsr', '*.gsb', '*.view.json'):
+    for pattern in ('*.gsk', '*.gsr', '*.gsb', '*.guv', '*.view.json'):
         inputs += sorted((root / 'data/skins/colony-v1').glob(pattern))
 
     def generate(target, source, env):

@@ -423,7 +423,7 @@ void TorusView::updateClouds(int time)
 #endif
 }
 
-bool TorusView::draw(Game &game, int team, unsigned options, int &vx, int &vy, int width, int height, float flatZoom, float fractionX, float fractionY)
+bool TorusView::draw(const PresentationFrame& frame,GameGUI* gui, int team, unsigned options, int &vx, int &vy, int width, int height, float flatZoom, float fractionX, float fractionY)
 {
 	PERF_SCOPE_TIME(Torus);
 #ifdef GLOB2_TORUS_OPENGL
@@ -451,18 +451,18 @@ bool TorusView::draw(Game &game, int team, unsigned options, int &vx, int &vy, i
         // Put the current viewport center on the front of the torus. Preserve
         // its sub-tile offset, so even the first/last frame matches normal 2D.
         TorusGeometry::MapFocus focus =
-            TorusGeometry::mapFocus(game.map.getW(), game.map.getH(), vx, vy, width, height);
+            TorusGeometry::mapFocus(frame.map.getW(), frame.map.getH(), vx, vy, width, height);
         if (!worldW || !worldH)
         {
             originX = focus.originX;
             originY = focus.originY;
         }
-        focusU = (((vx - originX) & game.map.getMaskW()) + fractionX / 32.0f + width / (64.0f * flatZoom)) / game.map.getW();
-        focusV = (((vy - originY) & game.map.getMaskH()) + fractionY / 32.0f + (height + 16) / (64.0f * flatZoom)) / game.map.getH();
+        focusU = (((vx - originX) & frame.map.getMaskW()) + fractionX / 32.0f + width / (64.0f * flatZoom)) / frame.map.getW();
+        focusV = (((vy - originY) & frame.map.getMaskH()) + fractionY / 32.0f + (height + 16) / (64.0f * flatZoom)) / frame.map.getH();
         baseViewportX = vx;
         baseViewportY = vy;
-        worldW = game.map.getW();
-        worldH = game.map.getH();
+        worldW = frame.map.getW();
+        worldH = frame.map.getH();
         travelU = travelV = cameraU = cameraV = 0;
     }
     // Manual switching is symmetric. Automatic movement unfolds gradually,
@@ -493,7 +493,7 @@ bool TorusView::draw(Game &game, int team, unsigned options, int &vx, int &vy, i
     vy = destination.y;
     float pull = smooth(amount);
     float roll = smooth(amount);
-    float aspect = float(game.map.getW()) / game.map.getH();
+    float aspect = float(frame.map.getW()) / frame.map.getH();
     const TorusGeometry::Shape shape(aspect);
     float anchorU = focusU + cameraU, anchorV = focusV + cameraV;
     // The ring keeps one attitude on screen: the surface slides around the
@@ -531,13 +531,13 @@ bool TorusView::draw(Game &game, int team, unsigned options, int &vx, int &vy, i
     // The ring shows its focus at the 2D camera's zoom: folding the map
     // neither zooms in nor out, and the wheel means the same in both views.
     // Only an automatic reveal pulls back, to the whole ring.
-    const float mapPixels = game.map.getW() * 32.0f;
+    const float mapPixels = frame.map.getW() * 32.0f;
     const float fit = 0.9f * std::min(width / ringWidth, (height - 16) / ringHeight);
     float scale = mapPixels * flatZoom / focusGain;
     // Fully zoomed out the whole ring is in view. The flat view of a very
     // wide map stops zooming out before its ring would fit, so that ring is
     // drawn smaller throughout by what it lacks there.
-    const float minimumZoom = std::min(1.0f, std::max(width / mapPixels, height / (game.map.getH() * 32.0f)));
+    const float minimumZoom = std::min(1.0f, std::max(width / mapPixels, height / (frame.map.getH() * 32.0f)));
     scale *= std::min(1.0f, fit * focusGain / (mapPixels * minimumZoom));
     if (wholeRing)
         scale = std::min(scale, fit);
@@ -586,13 +586,13 @@ bool TorusView::draw(Game &game, int team, unsigned options, int &vx, int &vy, i
         glGetIntegerv(GL_FRAMEBUFFER_BINDING, &oldFramebuffer);
         glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
         Game::ViewState mapView;
-        if (!game.gui) mapView.render = std::move(standaloneRender);
-        Game::ViewState &captureView = game.gui ? game.gui->view : mapView;
-        const Scene *previousScene = captureView.scene;
+        if (!gui) mapView.render = std::move(standaloneRender);
+        Game::ViewState &captureView = gui ? gui->view : mapView;
+        const PresentationFrame *previousScene = captureView.scene;
         const unsigned captureOptions = options | Game::DRAW_NO_CLOUD_LAYER | Game::DRAW_TILED_CAPTURE;
-        game.prepareMapCapture(team, captureView, captureOptions, game.gui && game.gui->gamePaused);
-        captureView.scene = previousScene ? previousScene : &captureView.render.ownScene;
-        if (game.gui) game.gui->toolManager.setDrawnScene(captureView.scene);
+        Game::prepareSceneMapFrame(frame,team,captureView,captureOptions,gui && gui->gamePaused);
+        captureView.scene = &frame;
+        if (gui) gui->toolManager.setDrawnScene(captureView.scene);
         bool advancePreviews = true;
         for (const auto &tile : tiles)
         {
@@ -612,19 +612,19 @@ bool TorusView::draw(Game &game, int team, unsigned options, int &vx, int &vy, i
             GAGCore::MapTransformScope mapPass(*gfx, shownZoom, 0, 0,
                 SDL_Rect{0, gfx->getH() - reach, reach, reach});
             glDisable(GL_SCISSOR_TEST);
-            const int tx = (originX + tile.x / 32 - 1) & game.map.getMaskW();
-            const int ty = (originY + tile.y / 32 - 1) & game.map.getMaskH();
-            if (game.gui)
-                game.gui->drawTorusMap(tx, ty, tile.w + 64, tile.h + 64, team, captureOptions, cloudGridLimit, advancePreviews);
+            const int tx = (originX + tile.x / 32 - 1) & frame.map.getMaskW();
+            const int ty = (originY + tile.y / 32 - 1) & frame.map.getMaskH();
+            if (gui)
+                gui->drawTorusMap(tx, ty, tile.w + 64, tile.h + 64, team, captureOptions, cloudGridLimit, advancePreviews);
             else
-                game.drawMap(0, 0, tile.w + 64, tile.h + 64, 0, 0, tx, ty, team,
+                Game::drawSceneMap(frame,0, 0, tile.w + 64, tile.h + 64, 0, 0, tx, ty, team,
                              captureView, captureOptions, nullptr, nullptr, false, cloudGridLimit, true);
             Sprite::flushBatches(gfx);
             advancePreviews = false;
         }
-        Game::finishMapCapture(captureView, captureOptions, game.gui && game.gui->gamePaused);
+        Game::finishMapCapture(captureView, captureOptions, gui && gui->gamePaused);
         captureView.scene = previousScene;
-        if (!game.gui) standaloneRender = std::move(mapView.render);
+        if (!gui) standaloneRender = std::move(mapView.render);
         gfx->setRenderTargetScale(0);
         gfx->setClipRect();
         // Capture disables scissoring directly while the 2D cache remembers it
@@ -635,7 +635,7 @@ bool TorusView::draw(Game &game, int team, unsigned options, int &vx, int &vy, i
     const bool drawClouds =
         globalContainer->settings.clouds;
     if (drawClouds)
-        updateClouds(game.gui ? game.gui->mapAnimationTime() : standaloneRender.animationTime);
+        updateClouds(gui ? gui->mapAnimationTime() : standaloneRender.animationTime);
 
     // Save GL state AFTER the game renderer: its state cache must still match
     // the restored state when the ordinary HUD resumes drawing.

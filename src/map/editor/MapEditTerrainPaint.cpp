@@ -189,9 +189,10 @@ void MapEdit::finishTerrainStroke()
 void MapEdit::drawTerrainBrushPreview()
 {
 	auto *gfx = globalContainer->gfx;
-	const int mx = int(MapCamera::wrap(mapMouseX(mouseX), game.map.getW() * 32));
-	const int my = int(MapCamera::wrap(mapMouseY(mouseY), game.map.getH() * 32));
-	const auto [centreX, centreY] = brushCellAt(mx, my);
+	const int mx = int(MapCamera::wrap(mapMouseX(mouseX), view.scene->map.getW() * 32));
+	const int my = int(MapCamera::wrap(mapMouseY(mouseY), view.scene->map.getH() * 32));
+	int centreX, centreY;
+    view.scene->map.displayToMapCaseAligned(mx, my, &centreX, &centreY, viewportX, viewportY);
 	const bool adding = brush.getType() != BrushTool::MODE_DEL;
 	const auto cells = terrainBrushCells(centreX, centreY);
 	// Same layout as BrushTool::drawBrush: the pointer's lattice point, then
@@ -205,7 +206,23 @@ void MapEdit::drawTerrainBrushPreview()
 			 cellSize - inset, cellSize - inset);
 	};
 	if (adding)
-		for (const auto &cell : invalidResourceCells(cells))
+		for (const auto &cell : [&] {
+            std::vector<BrushCell> invalid;
+            if (!TerrainSelector::isResource(terrainType)) return invalid;
+            const auto& world = view.scene->world;
+            const auto& registry = view.scene->map.resourceRegistry();
+            const auto resource = TerrainSelector::resourceType(terrainType, registry);
+            if (!registry.valid(resource)) return cells;
+            const auto& properties = registry.properties(resource);
+            for (const auto& cell : cells) {
+                const auto [x, y] = cell;
+                if (!MapState::terrainSupportsResource(world.view(), view.scene->map.coordToIndex(x, y), resource)
+                    || (properties.blocksBuilding && view.scene->map.getBuilding(x, y) != NOGBID)
+                    || (properties.blocksGround && view.scene->map.getGroundUnit(x, y) != NOGUID)
+                    || (properties.blocksAir && view.scene->map.getAirUnit(x, y) != NOGUID)) invalid.push_back(cell);
+            }
+            return invalid;
+        }())
 			cellRect(cell, [&](int x, int y, int w, int h) { gfx->drawFilledRect(x, y, w, h, Color(220, 40, 40, 110)); });
 	const int intensity = adding ? 255 : 170;
 	for (const auto &cell : cells)

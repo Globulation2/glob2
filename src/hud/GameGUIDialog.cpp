@@ -164,31 +164,34 @@ Element InGameEndOfGameScreen::build(const Presentation &p)
 //! Alliance screen
 InGameAllianceScreen::InGameAllianceScreen(GameGUI *gameGUI) : gameGUI(gameGUI)
 {
-	Game &game = gameGUI->game;
-	players = game.gameHeader.getNumberOfPlayers();
+	const auto& frame = gameGUI->drawnScene();
+    if (!frame.world.session || gameGUI->localTeamNo >= frame.entities.teamCount) return;
+    const auto& session = *frame.world.session;
+    const auto& local = frame.entities.teams[gameGUI->localTeamNo];
+    players = session.players.size();
 	editable = !globalContainer->replaying;
-	const bool fixed = game.gameHeader.areAllyTeamsFixed() && !globalContainer->replaying;
+	const bool fixed = session.fixedAlliances && !globalContainer->replaying;
 	for (int i = 0; i < players; i++)
 	{
-		const int otherTeam = game.players[i]->teamNumber;
+		const int otherTeam = session.players[i].teamNumber;
 		const Uint32 otherTeamMask = Team::teamNumberToMask(otherTeam);
 		teamOf[i] = otherTeam;
-		ownAlliance[i] = (gameGUI->localTeam->allies & otherTeamMask) != 0;
-		ownNormal[i] = (gameGUI->localTeam->sharedVisionOther & otherTeamMask) != 0;
-		ownFood[i] = (gameGUI->localTeam->sharedVisionFood & otherTeamMask) != 0;
-		ownMarket[i] = (gameGUI->localTeam->sharedVisionExchange & otherTeamMask) != 0;
+		ownAlliance[i] = (local.allies & otherTeamMask) != 0;
+		ownNormal[i] = (local.otherVision & otherTeamMask) != 0;
+		ownFood[i] = (local.foodVision & otherTeamMask) != 0;
+		ownMarket[i] = (local.exchangeVision & otherTeamMask) != 0;
 		ownChat[i] = ((gameGUI->chatMask) & (1 << i)) != 0;
 		if (otherTeam == gameGUI->localTeamNo)
 			continue;
 		Entry entry;
 		entry.player = i;
 		entry.team = otherTeam;
-		const auto type = game.players[i]->type;
+		const auto type = session.players[i].type;
 		if (type >= Player::P_AI || type == Player::P_IP || type == Player::P_LOCAL)
-			entry.name = game.players[i]->name;
+			entry.name = session.players[i].name;
 		else
-			entry.name = "(" + game.players[i]->name + ")";
-		entry.color = game.players[i]->team->color;
+			entry.name = "(" + session.players[i].name + ")";
+		entry.color = presentationColor(frame.entities.teams[otherTeam].color);
 		entry.alliance = ownAlliance[i];
 		entry.normalVision = ownNormal[i];
 		entry.foodVision = ownFood[i];
@@ -533,28 +536,30 @@ Element InGameOptionScreen::build(const Presentation &p)
 
 InGameObjectivesScreen::InGameObjectivesScreen(GameGUI *gui, bool showBriefing)
 {
-	briefing = localized(gui->game.missionBriefing);
-	for (int i = 0; i < gui->game.objectives.getNumberOfObjectives(); ++i)
+	const auto& session = gui->drawnScene().world.session;
+    if (!session || !session->objectives || !session->hints) { page = OBJECTIVES; return; }
+    briefing = session->missionBriefing ? localized(*session->missionBriefing) : std::string();
+	for (int i = 0; i < session->objectives->getNumberOfObjectives(); ++i)
 	{
-		if (!gui->game.objectives.isObjectiveVisible(i))
+		if (!session->objectives->isObjectiveVisible(i))
 			continue;
 		Line line;
-		line.text = localized(gui->game.objectives.getGameObjectiveText(i));
-		line.state = gui->game.objectives.isObjectiveComplete(i) ? 1 : gui->game.objectives.isObjectiveFailed(i) ? 2 : 0;
-		if (gui->game.objectives.getObjectiveType(i) == GameObjectives::Primary)
+		line.text = localized(session->objectives->getGameObjectiveText(i));
+		line.state = session->objectives->isObjectiveComplete(i) ? 1 : session->objectives->isObjectiveFailed(i) ? 2 : 0;
+		if (session->objectives->getObjectiveType(i) == GameObjectives::Primary)
 			primary.push_back(line);
 		else
 			secondary.push_back(line);
 	}
-	for (int i = 0; i < gui->game.objectives.getNumberOfObjectives(); ++i)
-		if (gui->game.objectives.getObjectiveType(i) == GameObjectives::Secondary)
+	for (int i = 0; i < session->objectives->getNumberOfObjectives(); ++i)
+		if (session->objectives->getObjectiveType(i) == GameObjectives::Secondary)
 			hasSecondary = true;
 	int n = 0;
-	for (int i = 0; i < gui->game.gameHints.getNumberOfHints(); ++i)
-		if (gui->game.gameHints.isHintVisible(i))
+	for (int i = 0; i < session->hints->getNumberOfHints(); ++i)
+		if (session->hints->isHintVisible(i))
 		{
 			Line line;
-			line.text = std::to_string(++n) + ") " + localized(gui->game.gameHints.getGameHintText(i));
+			line.text = std::to_string(++n) + ") " + localized(session->hints->getGameHintText(i));
 			hints.push_back(line);
 		}
 	page = showBriefing && !briefing.empty() ? BRIEFING : OBJECTIVES;

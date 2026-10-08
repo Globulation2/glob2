@@ -17,10 +17,10 @@ Element EditorDock::teamPicker(const Presentation &p)
 {
 	std::vector<Element> swatches;
 	const int side = p.pt(p.touch ? 48 : 28);
-	for (int i = 0; i < Team::MAX_COUNT; ++i)
+	for (int i = 0; editor.view.scene && i < editor.view.scene->entities.teamCount; ++i)
 	{
-		auto *team = editor.game.teams[i];
-		if (!team)
+		const auto *team = &editor.view.scene->entities.teams[i];
+		if (!team->mask)
 			continue;
 		fe::ButtonOptions options;
 		options.selected = editor.team == i;
@@ -34,7 +34,7 @@ Element EditorDock::teamPicker(const Presentation &p)
 													 invalidate();
 												 },
 												 options),
-									  fe::center(fe::swatch(team->color, p.touch ? 28 : 16))}));
+									  fe::center(fe::swatch(presentationColor(team->color), p.touch ? 28 : 16))}));
 	}
 	fe::WrapOptions grid;
 	grid.gap = p.pt(3);
@@ -45,12 +45,12 @@ Element EditorDock::teamPicker(const Presentation &p)
 
 Element EditorDock::teamsTab(const Presentation &p)
 {
-	const int count = editor.game.mapHeader.getNumberOfTeams();
+	const int count = editor.view.scene ? editor.view.scene->entities.teamCount : 0;
 	std::vector<Element> rows;
-	for (int i = 0; i < Team::MAX_COUNT; ++i)
+	for (int i = 0; editor.view.scene && i < editor.view.scene->entities.teamCount; ++i)
 	{
-		auto *team = editor.game.teams[i];
-		if (!team)
+		const auto *team = &editor.view.scene->entities.teams[i];
+		if (!team->mask)
 			continue;
 		fe::ButtonOptions options;
 		options.selected = editor.team == i;
@@ -71,7 +71,7 @@ Element EditorDock::teamsTab(const Presentation &p)
 												 return o;
 											 }()),
 								  fe::padding(fe::Insets::symmetric(p.pt(8), 0),
-											  fe::row({fe::swatch(team->color, 18), fe::label(label)},
+											  fe::row({fe::swatch(presentationColor(team->color), 18), fe::label(label)},
 													  {p.pt(8), fe::CrossAlign::Center}))}));
 	}
 	fe::ButtonOptions add, remove, editTeams;

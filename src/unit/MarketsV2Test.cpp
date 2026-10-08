@@ -383,7 +383,7 @@ TEST_CASE("market panels show gated upgrades and shared stock [display][artifact
 			GAGCore::setProcessEnvironment("GLOB2_MOBILE_UI",touch ? "1" : "0",1);
 			globals->gfx->setResponsiveViewport(touch,800,600);
 			world.gui.touch->panelOpen=touch;
-			world.gui.drawAll(0);
+			glob2test::drawGUI(world.gui,0);
 			CHECK(world.gui.drawnScene().panels.building.hardSpaceForUpgrade==enabled);
 			const std::string name=std::string("market-")+(enabled ? "v2-" : "legacy-")+(touch ? "touch.bmp" : "desktop.bmp");
 			globals->gfx->printScreen(name);

@@ -298,7 +298,7 @@ static int run(int argc, char **argv)
                     globalContainer->gfx->beginMapTransform(zoom, -fraction*zoom, -fraction*zoom, 0, 0, width, height);
                     const bool pausePresentation = std::getenv("GLOB2_BENCH_PAUSE_PRESENTATION");
                     if (pausePresentation) gui.view.render.animationTime = 22;
-                    gui.game.drawMap(0, 0, drawW, drawH, 0, 0,
+                    glob2test::drawMap(gui.game,0, 0, drawW, drawH, 0, 0,
                         panX, panY, 0, gui.view, options, nullptr, nullptr, pausePresentation,
                         detailForZoom(gui.game, zoom));
                     globalContainer->gfx->endMapTransform();
@@ -351,7 +351,7 @@ static int run(int argc, char **argv)
                             gui.view.render.animationTime = 22;
                             glFinish();
                             const auto cpuStart = std::clock();
-                            gui.game.drawMap(0, 0, drawW, drawH, 0, 0, panX, panY, 0,
+                            glob2test::drawMap(gui.game,0, 0, drawW, drawH, 0, 0, panX, panY, 0,
                                 gui.view, options, nullptr, nullptr, true, detailForZoom(gui.game, zoom));
                             gfx->endMapTransform();
                             glFinish();
@@ -417,7 +417,7 @@ static int run(int argc, char **argv)
             globalContainer->settings.cloudShadows = clouds;
             measure(clouds ? "2D clouds" : "2D no clouds", [&] {
                 globalContainer->gfx->setClipRect();
-                gui.game.drawMap(0, 0, width, height, 0, 0, x, y, 0, gui.view, Game::DRAW_WHOLE_MAP);
+                glob2test::drawMap(gui.game,0, 0, width, height, 0, 0, x, y, 0, gui.view, Game::DRAW_WHOLE_MAP);
             });
             view.reset();
             view.toggle();
@@ -427,12 +427,12 @@ static int run(int argc, char **argv)
             gui.view.render.minimumZoom = ringZoom;
             if (const char *zoom = std::getenv("GLOB2_BENCH_ZOOM"))
                 ringZoom = std::clamp(float(std::atof(zoom)), ringZoom, float(MapCamera::MAX_ZOOM));
-            assert(view.draw(gui.game, 0, Game::DRAW_WHOLE_MAP, x, y, width, height, ringZoom));
+            assert(view.draw(glob2test::sceneOf(gui.game),gui.game.gui, 0, Game::DRAW_WHOLE_MAP, x, y, width, height, ringZoom));
             measure(clouds ? "Torus clouds" : "Torus no clouds", [&] {
                 view.amount = 1;
                 view.lastFrame = SDL_GetTicks();
                 view.setViewport((x + 1) & gui.game.map.getMaskW(), (y + 1) & gui.game.map.getMaskH());
-                assert(view.draw(gui.game, 0, Game::DRAW_WHOLE_MAP, x, y, width, height, ringZoom));
+                assert(view.draw(glob2test::sceneOf(gui.game),gui.game.gui, 0, Game::DRAW_WHOLE_MAP, x, y, width, height, ringZoom));
             });
             size_t bytes = 0;
             for (const auto &tile : view.tiles) bytes += size_t(tile.textureW) * tile.textureH * 4;

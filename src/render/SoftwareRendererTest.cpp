@@ -355,7 +355,7 @@ TEST_SUITE("SoftwareRenderer")
 		Game::ViewState view;
 		const auto cache = [&]() -> SoftwareTerrainCache & { return view.render.terrainCache(game.map.identity()); };
 		SceneMap extracted;
-		const auto sceneOf = [&](const Map &map) -> const SceneMap & { extracted.extract(map); return extracted; };
+		const auto sceneOf = [&](const Map &map) -> const SceneMap & { glob2test::observeMap(map,extracted); return extracted; };
 		// Every classic corner pattern, on the vertex lattice.
 		for (int y = 0; y < 32; ++y)
 			for (int x = 0; x < 32; ++x)
@@ -370,7 +370,7 @@ TEST_SUITE("SoftwareRenderer")
 				globals->gfx->setClipRect();
 				globals->gfx->drawFilledRect(0, 0, 640, 480, Color(11, 22, 33));
 				globals->gfx->beginMapTransform(1, 1, 1, 0, 0, 640, 480);
-				game.drawMap(0, 0, 640, 480, 0, 0, vx, vy, team, view, Game::DRAW_NO_CLOUD_LAYER,
+				glob2test::drawMap(game,0, 0, 640, 480, 0, 0, vx, vy, team, view, Game::DRAW_NO_CLOUD_LAYER,
 							 nullptr, nullptr, true);
 				globals->gfx->endMapTransform();
 				auto image = snapshot(globals->gfx->getSDLSurface());

@@ -389,4 +389,28 @@ TEST_CASE("presentation replacement, chunk pumping, cancellation and errors reta
     executor.configure(1);
     CHECK(pending->status() == ComputeExecutor::Presentation::Status::Canceled);
 }
+TEST_CASE("resumable presentation yields without advancing or retaining canceled inputs")
+{
+    ComputeExecutor executor;
+    executor.configure(1);
+    auto input=std::make_shared<int>(0);
+    std::weak_ptr<int> weak=input;
+    std::vector<size_t> visited;
+    auto work=executor.submitResumablePresentation(2,[input,&visited](size_t chunk) {
+        visited.push_back(chunk);
+        return ++*input==3;
+    });
+    input.reset();
+    for (int i=0;i<4;++i) {
+        REQUIRE(executor.pumpPresentation());
+        CHECK_FALSE(work->finished());
+    }
+    CHECK(visited==std::vector<size_t>{0,0,0,1});
+    work->cancel();
+    REQUIRE(executor.pumpPresentation());
+    CHECK(weak.expired());
+    CHECK(work->status()==ComputeExecutor::Presentation::Status::Canceled);
+    CHECK(visited.size()==4);
+}
+
 }

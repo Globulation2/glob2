@@ -4,6 +4,8 @@
 #include "Ressource.h"
 #include "UnitConsts.h"
 #include "sim/EntityRef.h"
+#include "sim/snapshot/WorldSnapshot.h"
+#include <span>
 
 #include <SDLGraphicContext.h>
 
@@ -12,54 +14,15 @@
 #include <vector>
 
 struct BuildingType;
-class Race;
 
-//! Presentation copy of a team: what drawing needs to colour and filter its entities.
-struct SceneTeam
-{
-	GAGCore::Color color;
-	int teamNumber = 0;
-	Uint32 me = 0, allies = 0, sharedVisionOther = 0;
-	int startPosX = 0, startPosY = 0;
-	std::string firstPlayerName; //!< empty when uncontrolled
-};
+using SceneTeam = SimulationSnapshot::TeamView;
+inline GAGCore::Color presentationColor(const SimulationSnapshot::ColorRecord& c)
+{ return {c.r,c.g,c.b,c.a}; }
 
-//! Presentation copy of a unit. Field names follow Unit so drawing code reads the
-//! same; `team` indexes SceneEntities::teams (indices survive moving a Scene).
-struct SceneUnit
-{
-	Uint16 gid = 0xFFFF;
-	Uint32 generation = 0;
-	int team = 0;
-	Race *race = nullptr; //!< static per-team unit definitions
-	Sint32 typeNum = 0, posX = 0, posY = 0, dx = 0, dy = 0, direction = 0, delta = 0;
-	//! How far delta advances next tick (unitActionStepSpeed).
-	Sint32 stepSpeed = 0;
-	Sint32 action = 0, hp = 0, hungry = 0, carriedMaterial = 0, experienceLevel = 0;
-	Sint32 levelUpAnimation = 0, magicActionAnimation = 0;
-	bool validTarget = false;
-	Sint32 targetX = 0, targetY = 0;
-	Sint32 performance[NB_ABILITY] = {};
-};
+//! The standard immutable records, borrowed without renderer-specific copies.
+using SnapshotUnit = SimulationSnapshot::UnitView;
 
-//! Presentation copy of a building, including flags (virtual buildings).
-struct SceneBuilding
-{
-	Uint16 gid = 0xFFFF;
-	Uint32 generation = 0;
-	int team = 0;
-	BuildingType *type = nullptr; //!< static building type definition
-	BuildingType *lastUpgradeType = nullptr;
-	Sint32 typeNum = 0, shortTypeNum = 0, posX = 0, posY = 0, hp = 0, effectiveMaxHp = 0;
-	Sint32 buildingState = 0;
-	Sint32 maxUnitInside = 0, unitsInside = 0, maxUnitWorking = 0, unitsWorking = 0;
-	Sint32 materials[MaterialCount] = {};
-	Sint32 bullets = 0, unitStayRange = 0;
-	Uint8 connectionMask=0;
-	Uint32 seenByMask = 0;
-	Uint32 lastShootStep = 0;
-	Sint32 lastShootSpeedX = 0, lastShootSpeedY = 0;
-};
+using SnapshotBuilding = SimulationSnapshot::BuildingView;
 
 //! What the selected building contributes to the map view (off-screen worker
 //! arrows and failing-unit badges).
@@ -68,27 +31,20 @@ struct SceneSelectedBuilding
 	static constexpr int FailReasons = 8; //!< Building::UnitCantWorkReasonSize (checked)
 	BuildingRef ref;
 	int verbose = 0;
-	std::vector<Uint16> debugGradient;
+	std::span<const Uint16> debugGradient;
 	bool recordFailingUnits = false;
 	Sint32 desiredMaxUnitWorking = 0;
-	std::array<Uint32, FailReasons> unitsFailingRequirements{};
-	std::array<std::vector<Uint16>, FailReasons> unitsFailingByReason;
-	std::vector<Uint16> unitsWorking; //!< gids, in the building's order
+	std::span<const Uint32> unitsFailingRequirements;
+	std::array<std::span<const Uint16>, FailReasons> unitsFailingByReason;
+	std::span<const UnitRef> unitsWorking; //!< Generation-checked snapshot relationships
 };
 
-struct SceneBullet { Sint32 px = 0, py = 0, speedX = 0, speedY = 0, ticksLeft = 0, ticksInitial = 0; };
-struct SceneExplosion { int x = 0, y = 0, ticksLeft = 0; };
-struct SceneDeathAnimation { int x = 0, y = 0, ticksLeft = 0, team = 0; };
+using SceneBullet = SimulationSnapshot::BulletRecord;
+using SceneExplosion = SimulationSnapshot::ExplosionRecord;
+using SceneDeathAnimation = SimulationSnapshot::DeathRecord;
+using SceneSectorEffects = SimulationSnapshot::SectorEffects;
 
-//! Bullets and animations of one map sector, in drawing order.
-struct SceneSectorEffects
-{
-	std::vector<SceneBullet> bullets;
-	std::vector<SceneExplosion> explosions;
-	std::vector<SceneDeathAnimation> deaths;
-};
-
-//! All units, buildings and effects of a Scene, with lookup by gid.
+//! All units, buildings and effects of a PresentationFrame, with lookup by gid.
 struct SceneEntities
 {
 	static constexpr int Teams = 32;           //!< >= Team::MAX_COUNT (checked)
@@ -96,33 +52,50 @@ struct SceneEntities
 
 	int teamCount = 0;
 	MaterialMask materialPresence = 0;
-	std::array<SceneTeam, Teams> teams{};
-	std::vector<SceneUnit> units;
-	std::vector<SceneBuilding> buildings;
+	std::span<const SceneTeam> teams;
+	std::span<const SnapshotUnit> units;
+	std::span<const SnapshotBuilding> buildings;
+    SimulationSnapshot::Handle world;
+    std::shared_ptr<const std::vector<BuildingType>> typeDefinitions;
+    std::vector<Uint8> connectionMasks;
 	//! Flag gids per team, in each team's order.
-	std::array<std::vector<Uint16>, Teams> virtualBuildings;
-	std::vector<SceneSectorEffects> sectors;
+	std::array<std::span<const BuildingRef>, Teams> virtualBuildings;
+	std::span<const SceneSectorEffects> sectors;
 	SceneSelectedBuilding selectedBuilding;
 	UnitRef selectedUnit;
 	Uint32 highlightUnitType = 0, highlightBuildingType = 0;
 
-	const SceneTeam &owner(const SceneUnit &u) const { return teams[u.team]; }
-	const SceneTeam &owner(const SceneBuilding &b) const { return teams[b.team]; }
-	const SceneUnit *unit(Uint16 gid) const
+    const BuildingType* type(const SnapshotBuilding& b) const { return &typeDefinitions->at(b.typeNum); }
+    const BuildingType* lastUpgradeType(const SnapshotBuilding& b) const {
+        int completed=b.typeNum;
+        if (b.constructionResultState==BuildingStateRecord::REPAIR)
+            completed=b.constructionOriginTypeNum>=0 ? b.constructionOriginTypeNum : type(b)->isBuildingSite ? type(b)->nextLevel : b.typeNum;
+        return &typeDefinitions->at(typeDefinitions->at(completed).terminalTypeNum);
+    }
+    const Sint32* materials(const SnapshotBuilding& b) const { return b.usesTeamResources ? world.teams->values.at(b.team).materials.data() : b.localMaterials; }
+    Uint8 connections(const SnapshotBuilding& b) const { return connectionMasks.at(buildingIndex[b.gid]); }
+	const SceneTeam &owner(const SnapshotUnit &u) const { return teams[u.team]; }
+	const SceneTeam &owner(const SnapshotBuilding &b) const { return teams[b.team]; }
+	const SnapshotUnit *unit(Uint16 gid) const
 	{
-		const int i = gid < unitIndex.size() ? unitIndex[gid] : -1;
-		return i >= 0 ? &units[i] : nullptr;
+		const Uint32 i = gid < unitIndex.size() ? unitIndex[gid] : Uint32(-1);
+		return size_t(i)<units.size() ? &units[i] : nullptr;
 	}
-	const SceneBuilding *building(Uint16 gid) const
+	const SnapshotBuilding *building(Uint16 gid) const
 	{
-		const int i = gid < buildingIndex.size() ? buildingIndex[gid] : -1;
-		return i >= 0 ? &buildings[i] : nullptr;
+		const Uint32 i = gid < buildingIndex.size() ? buildingIndex[gid] : Uint32(-1);
+		return size_t(i)<buildings.size() ? &buildings[i] : nullptr;
 	}
-	bool isSelected(const SceneUnit &u) const { return u.gid == selectedUnit.gid && u.generation == selectedUnit.generation; }
-	bool isSelected(const SceneBuilding &b) const
+    const SnapshotUnit* unit(UnitRef ref) const
+    { const auto* value=unit(ref.gid); return value && value->identity==ref ? value : nullptr; }
+    const SnapshotBuilding* building(BuildingRef ref) const
+    { const auto* value=building(ref.gid); return value && value->identity==ref ? value : nullptr; }
+	bool isSelected(const SnapshotUnit &u) const { return u.gid == selectedUnit.gid && u.scriptIdentity == selectedUnit.generation; }
+	bool isSelected(const SnapshotBuilding &b) const
 	{
-		return b.gid == selectedBuilding.ref.gid && b.generation == selectedBuilding.ref.generation;
+		return b.gid == selectedBuilding.ref.gid && b.scriptIdentity == selectedBuilding.ref.generation;
 	}
 
-	std::vector<int> unitIndex, buildingIndex; //!< gid -> index, -1 when absent
+	std::span<const Uint32> unitIndex;
+    std::span<const Uint32> buildingIndex; //!< gid -> index, -1 when absent
 };

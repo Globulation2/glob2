@@ -2,9 +2,7 @@
 // Team statistics charts, shared by the end-of-game results and the in-match
 // statistics sheet.
 #include "TeamStatChart.h"
-#include "Game.h"
 #include "GlobalContainer.h"
-#include "Team.h"
 #include "InGameTouchTheme.h"
 #include "stats/MetricSeries.h"
 #include <FormatableString.h>
@@ -612,23 +610,19 @@ void TeamStatChart::paintReadings(DrawableSurface &surface, int left, int top, i
 	}
 }
 
-void TeamStatChart::paint(const Game &game, DrawableSurface &surface, int left, int top, int width, int height,
-						  const Options &options)
+void TeamStatChart::paint(const std::vector<Stats::TeamHistory>& histories, Uint32 tick,
+                          DrawableSurface& surface, int left, int top, int width, int height,
+                          const Options& options)
 {
-	if (!options.metric || width < 40 || height < 40)
-		return;
-	const Stats::Metric &metric = *options.metric;
-	const Stats::View view = Stats::validView(metric, options.view);
-	const Text text(surface, globalContainer->littleFont);
-
-	std::vector<Stats::TeamHistory> histories;
-	std::vector<Stats::Marker> markers;
-	for (const auto &team : options.teams)
-	{
-		histories.push_back(Stats::historyOf(team.team, game.teams[team.team]->stats));
-		const auto found = Stats::markers(histories.back());
-		markers.insert(markers.end(), found.begin(), found.end());
-	}
+    if (!options.metric || width < 40 || height < 40) return;
+    const Stats::Metric& metric = *options.metric;
+    const Stats::View view = Stats::validView(metric, options.view);
+    const Text text(surface, globalContainer->littleFont);
+    std::vector<Stats::Marker> markers;
+    for (const auto& history : histories) {
+        const auto found = Stats::markers(history);
+        markers.insert(markers.end(), found.begin(), found.end());
+    }
 	const Stats::Chart chart = Stats::buildChart(metric, view, histories);
 	std::size_t samples = 0;
 	for (const auto &team : chart.teams)
@@ -651,7 +645,7 @@ void TeamStatChart::paint(const Game &game, DrawableSurface &surface, int left, 
 	if (chart.global)
 		markers.clear();
 
-	ChartPainter painter{text, options, metric, chart, markers, left, top, width, height, std::max<Uint32>(1, game.stepCounter)};
+	ChartPainter painter{text, options, metric, chart, markers, left, top, width, height, std::max<Uint32>(1, tick)};
 	int y = top + pad;
 	text.draw(left + pad, y, text.fit(axisTitle(metric, view), width - 2 * pad), muted);
 	y += text.height + 4;

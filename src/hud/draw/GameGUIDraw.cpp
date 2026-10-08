@@ -148,7 +148,7 @@ void GameGUI::drawPanel(void)
 {
 	PERF_SCOPE_TIME(Panel);
 	// ensure we have a valid selection and associate pointers (with a simulation
-	// thread, threadedClientStep checks the immutable Scene)
+	// thread, threadedClientStep checks the immutable PresentationFrame)
 	if (!simulationThreaded)
 		checkSelection();
 
@@ -271,7 +271,7 @@ void GameGUI::drawTopScreenBar(void)
 	int dec = (globalContainer->gfx->getW()-640)>>2;
 	dec += 10;
 
-	globalContainer->unitmini->setBaseColor(drawnScene().panels.local.color);
+	globalContainer->unitmini->setBaseColor(presentationColor(drawnScene().panels.local.state().color));
 	for (int i=0; i<3; i++)
 	{
 		free = teamStats->getFreeUnits(i);
@@ -312,12 +312,12 @@ void GameGUI::drawTopScreenBar(void)
 	}
 
 	// draw prestige stats
-	globalContainer->gfx->drawString(dec+0, 0, globalContainer->littleFont, FormattableString("%0 / %1 / %2").arg(drawnScene().panels.local.prestige).arg(drawnScene().panels.hud.totalPrestige).arg(drawnScene().panels.hud.prestigeToReach).c_str());
+	globalContainer->gfx->drawString(dec+0, 0, globalContainer->littleFont, FormattableString("%0 / %1 / %2").arg(drawnScene().panels.local.state().prestige).arg(drawnScene().panels.hud.totalPrestige()).arg(drawnScene().panels.hud.state().prestigeToReach).c_str());
 
 	dec += 90;
 
 	// draw unit conversion stats
-	globalContainer->gfx->drawString(dec, 0, globalContainer->littleFont, FormattableString("+%0 / -%1").arg(drawnScene().panels.local.unitConversionGained).arg(drawnScene().panels.local.unitConversionLost).c_str());
+	globalContainer->gfx->drawString(dec, 0, globalContainer->littleFont, FormattableString("+%0 / -%1").arg(drawnScene().panels.local.state().unitConversionGained).arg(drawnScene().panels.local.state().unitConversionLost).c_str());
 
 	// draw the speed control and the simulation tick rate
 	dec = topBarSpeedX();
@@ -397,14 +397,14 @@ void GameGUI::drawOverlayInfos(void)
 		if (selectionMode==TOOL_SELECTION)
 		{
 			globalContainer->gfx->setClipRect(0, 0, globalContainer->gfx->getW()-RIGHT_MENU_WIDTH, globalContainer->gfx->getH());
-			globalContainer->gfx->drawMapCopies(game.map.getW()*32,game.map.getH()*32,game.map.displayViewportW,game.map.displayViewportH,[&](){ toolManager.drawTool(int(MapCamera::wrap(mapMouseX(mouseX),game.map.getW()*32)), int(MapCamera::wrap(mapMouseY(mouseY),game.map.getH()*32)), localTeamNo, viewportX, viewportY, inputState.modifiers()); });
+			globalContainer->gfx->drawMapCopies(drawnScene().map.getW()*32,drawnScene().map.getH()*32,drawnScene().map.viewportWidth(),drawnScene().map.viewportHeight(),[&](){ toolManager.drawTool(int(MapCamera::wrap(mapMouseX(mouseX),drawnScene().map.getW()*32)), int(MapCamera::wrap(mapMouseY(mouseY),drawnScene().map.getH()*32)), localTeamNo, viewportX, viewportY, inputState.modifiers()); });
 		}
 		// The phone HUD previews strokes as cells under the finger; its mouse
 		// position is never updated by touch, so the hover cursor would be stale.
 		else if (selectionMode==BRUSH_SELECTION && !touch->usesHUD())
 		{
 			globalContainer->gfx->setClipRect(0, 0, globalContainer->gfx->getW()-RIGHT_MENU_WIDTH, globalContainer->gfx->getH());
-			globalContainer->gfx->drawMapCopies(game.map.getW()*32,game.map.getH()*32,game.map.displayViewportW,game.map.displayViewportH,[&](){ toolManager.drawTool(int(MapCamera::wrap(mapMouseX(mouseX),game.map.getW()*32)), int(MapCamera::wrap(mapMouseY(mouseY),game.map.getH()*32)), localTeamNo, viewportX, viewportY, inputState.modifiers()); });
+			globalContainer->gfx->drawMapCopies(drawnScene().map.getW()*32,drawnScene().map.getH()*32,drawnScene().map.viewportWidth(),drawnScene().map.viewportHeight(),[&](){ toolManager.drawTool(int(MapCamera::wrap(mapMouseX(mouseX),drawnScene().map.getW()*32)), int(MapCamera::wrap(mapMouseY(mouseY),drawnScene().map.getH()*32)), localTeamNo, viewportX, viewportY, inputState.modifiers()); });
 		}
 		else if (selectionMode==BUILDING_SELECTION && drawnScene().panels.building.valid)
 		{
@@ -412,14 +412,14 @@ void GameGUI::drawOverlayInfos(void)
 			const SceneMap &sceneMap = drawnScene().map;
 			globalContainer->gfx->setClipRect(0, 0, globalContainer->gfx->getW()-RIGHT_MENU_WIDTH, globalContainer->gfx->getH());
 			int centerX, centerY;
-			game.map.buildingPosToCursor(displayedPosX(*selBuild), displayedPosY(*selBuild),  selBuild->type->width, selBuild->type->height, &centerX, &centerY, viewportX, viewportY);
+			drawnScene().map.buildingPosToCursor(displayedPosX(*selBuild), displayedPosY(*selBuild),  selBuild->type->width, selBuild->type->height, &centerX, &centerY, viewportX, viewportY);
 			const int radius = selBuild->type->width*16;
 			forEachMapCopy(centerX-radius, centerY-radius, centerX+radius, centerY+radius,
-				game.map.getW()*32, game.map.getH()*32, game.map.displayViewportW,
-				game.map.displayViewportH, [&](int dx, int dy) {
-				if (selBuild->owner.teamNumber==localTeamNo)
+				drawnScene().map.getW()*32, drawnScene().map.getH()*32, drawnScene().map.viewportWidth(),
+				drawnScene().map.viewportHeight(), [&](int dx, int dy) {
+				if (selBuild->owner().number==localTeamNo)
 					globalContainer->gfx->drawCircle(centerX+dx, centerY+dy, selBuild->type->width*16, 0, 0, 190);
-				else if ((drawnScene().panels.local.allies) & (selBuild->owner.me))
+				else if ((drawnScene().panels.local.state().allies) & (selBuild->owner().mask))
 					globalContainer->gfx->drawCircle(centerX+dx, centerY+dy, selBuild->type->width*16, 255, 196, 0);
 				else if (!selBuild->type->isVirtual)
 					globalContainer->gfx->drawCircle(centerX+dx, centerY+dy, selBuild->type->width*16, 190, 0, 0);
@@ -427,12 +427,12 @@ void GameGUI::drawOverlayInfos(void)
 
 			// draw a white circle around units that are working at building
 			if ((showUnitWorkingToBuilding)
-				&& ((selBuild->owner.allies) &(Team::teamNumberToMask(localTeamNo))))
+				&& ((selBuild->owner().allies) &(Team::teamNumberToMask(localTeamNo))))
 			{
-				for (Uint16 worker : drawnScene().entities.selectedBuilding.unitsWorking)
+				for (UnitRef worker : drawnScene().entities.selectedBuilding.unitsWorking)
 				{
-					const SceneUnit *unit = drawnScene().entities.unit(worker);
-					if (!unit)
+					const SnapshotUnit *unit = drawnScene().entities.unit(worker.gid);
+					if (!unit || unit->identity!=worker)
 						continue;
 					int px, py;
 					sceneMap.mapCaseToDisplayable(unit->posX, unit->posY, &px, &py, viewportX, viewportY);
@@ -442,8 +442,8 @@ void GameGUI::drawOverlayInfos(void)
 						px-=(unit->dx*deltaLeft)>>3;
 						py-=(unit->dy*deltaLeft)>>3;
 					}
-					forEachMapCopy(px, py, px+32, py+32, game.map.getW()*32, game.map.getH()*32,
-						game.map.displayViewportW, game.map.displayViewportH, [&](int dx, int dy) {
+					forEachMapCopy(px, py, px+32, py+32, drawnScene().map.getW()*32, drawnScene().map.getH()*32,
+						drawnScene().map.viewportWidth(), drawnScene().map.viewportHeight(), [&](int dx, int dy) {
 							globalContainer->gfx->drawCircle(px+16+dx, py+16+dy, 16, 255, 255, 255, 180);
 						});
 				}
@@ -452,13 +452,13 @@ void GameGUI::drawOverlayInfos(void)
 		else if (selectionMode==RESOURCE_SELECTION)
 		{
 			int resource = selectionResource();
-			int rx = resource & game.map.getMaskW();
-			int ry = resource >> game.map.getShiftW();
+			int rx = resource & drawnScene().map.getMaskW();
+			int ry = resource >> drawnScene().map.getShiftW();
 			int px, py;
-			game.map.mapCaseToDisplayable(rx, ry, &px, &py, viewportX, viewportY);
+			drawnScene().map.mapCaseToDisplayable(rx, ry, &px, &py, viewportX, viewportY);
 			globalContainer->gfx->setClipRect(0, 0, globalContainer->gfx->getW()-RIGHT_MENU_WIDTH, globalContainer->gfx->getH());
-			forEachMapCopy(px, py, px+32, py+32, game.map.getW()*32, game.map.getH()*32,
-				game.map.displayViewportW, game.map.displayViewportH, [&](int dx, int dy) {
+			forEachMapCopy(px, py, px+32, py+32, drawnScene().map.getW()*32, drawnScene().map.getH()*32,
+				drawnScene().map.viewportWidth(), drawnScene().map.viewportHeight(), [&](int dx, int dy) {
 					globalContainer->gfx->drawCircle(px+16+dx, py+16+dy, 16, 0, 0, 190);
 				});
 		}
@@ -483,12 +483,12 @@ void GameGUI::drawOverlayInfos(void)
 		for (int i = 0; i < lines; ++i)
 			globalContainer->gfx->drawString(44, 44+i*20, globalContainer->standardFont, connectionLines[i].c_str());
 	}
-	else if (!connectionOverlay && hud.anyPlayerWaited && hud.maskAwayPlayer && anyPlayerWaitedTimeFor>WAIT_NOTICE_DEBOUNCE_STEPS)
+	else if (!connectionOverlay && hud.state().anyPlayerWaited && hud.state().maskAwayPlayer && anyPlayerWaitedTimeFor>WAIT_NOTICE_DEBOUNCE_STEPS)
 	{
 		int nbap=0; // Number of away players
 		Uint32 pm=1;
-		Uint32 apm=hud.maskAwayPlayer;
-		for(int pi=0; pi<int(hud.players.size()); pi++)
+		Uint32 apm=hud.state().maskAwayPlayer;
+		for(int pi=0; pi<int(hud.state().players.size()); pi++)
 		{
 			if (pm&apm)
 				nbap++;
@@ -499,11 +499,11 @@ void GameGUI::drawOverlayInfos(void)
 		globalContainer->gfx->drawRect(32, 32, globalContainer->gfx->getW()-RIGHT_MENU_WIDTH-64, 22+nbap*20, 255, 255, 255);
 		pm=1;
 		int pnb=0;
-		for(int pi2=0; pi2<int(hud.players.size()); pi2++)
+		for(int pi2=0; pi2<int(hud.state().players.size()); pi2++)
 		{
 			if (pm&apm)
 			{
-				globalContainer->gfx->drawString(44, 44+pnb*20, globalContainer->standardFont, FormattableString(Toolkit::getStringTable()->getString("[waiting for %0]")).arg(hud.players[pi2].name).c_str());
+				globalContainer->gfx->drawString(44, 44+pnb*20, globalContainer->standardFont, FormattableString(Toolkit::getStringTable()->getString("[waiting for %0]")).arg(hud.state().players[pi2].name).c_str());
 				pnb++;
 			}
 			pm=pm<<1;
@@ -524,10 +524,10 @@ void GameGUI::drawOverlayInfos(void)
 
 		// TODO: die with SGSL
 		// show script text
-		if (hud.legacyScriptTextShown && !touch->usesHUD())
+		if (hud.state().legacyScriptTextShown && !touch->usesHUD())
 		{
 			std::vector<std::string> lines;
-			setMultiLine(hud.legacyScriptText, &lines);
+			setMultiLine(hud.state().legacyScriptText, &lines);
 			globalContainer->gfx->drawFilledRect(24, ymesg-8, globalContainer->gfx->getW()-RIGHT_MENU_WIDTH-64+16, lines.size()*20+16, 0,0,0,128);
 			for (unsigned i=0; i<lines.size(); i++)
 			{
@@ -558,9 +558,9 @@ void GameGUI::drawOverlayInfos(void)
 		}
 
 		// show script counter
-		if (hud.legacyScriptTimer)
+		if (hud.state().legacyScriptTimer)
 		{
-			globalContainer->gfx->drawString(globalContainer->gfx->getW()-165, ymesg, globalContainer->standardFont, FormattableString("%0").arg(hud.legacyScriptTimer).c_str());
+			globalContainer->gfx->drawString(globalContainer->gfx->getW()-165, ymesg, globalContainer->standardFont, FormattableString("%0").arg(hud.state().legacyScriptTimer).c_str());
 			yinc = std::max(yinc, 32);
 		}
 
@@ -572,7 +572,7 @@ void GameGUI::drawOverlayInfos(void)
 
 	// display map mark
 	globalContainer->gfx->setClipRect();
-	markManager.drawAll(localTeamNo, globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+20, 10, 128, viewportX, viewportY, game, &camera);
+	markManager.drawAll(localTeamNo, globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+20, 10, 128, viewportX, viewportY, drawnScene(), &camera);
 
 	// display text if placing a building
 	if(!touch->usesHUD() && selectionMode == TOOL_SELECTION && toolManager.getBuildingName() != "")
@@ -591,10 +591,10 @@ void GameGUI::drawOverlayInfos(void)
 	int xinc = 42;
 	for(int p=0; p<Team::MAX_COUNT; ++p)
 	{
-		if(globalContainer->mix->isPlayerTransmittingVoice(p) && p < int(hud.players.size()))
+		if(globalContainer->mix->isPlayerTransmittingVoice(p) && p < int(hud.state().players.size()))
 		{
-			const SceneHud::Player &player = hud.players[p];
-			const GAGCore::Color playerColor = drawnScene().entities.teams[player.teamNumber].color;
+			const SimulationSnapshot::Session::Player &player = hud.state().players[p];
+			const GAGCore::Color playerColor = presentationColor(drawnScene().entities.teams[player.teamNumber].color);
 			if(xinc==42)
 			{
 				globalContainer->gamegui->setBaseColor(playerColor);
@@ -640,7 +640,7 @@ void GameGUI::drawAll(int team)
 	PERF_SCOPE_TIME(Render);
 	// Apply any simulation notices not consumed yet and resolve the selection
 	// for the renderer (view.selectedBuilding/selectedUnit). With a simulation
-	// thread, that happens in threadedClientStep against the immutable Scene.
+	// thread, that happens in threadedClientStep against the immutable PresentationFrame.
 	if (!simulationThreaded)
 		consumeClientEvents();
 	clientRequests.publishViewport(viewportX, viewportY, int(camera.visibleW() / 32), int(camera.visibleH() / 32));
@@ -649,11 +649,9 @@ void GameGUI::drawAll(int team)
 		: showDefenseMap ? OverlayArea::Defence
 		: showFertilityMap ? OverlayArea::Fertility
 		: OverlayArea::None));
-	// Drawing reads only the scene: the one the simulation thread published, or
-	// one extracted here in serial execution.
-	if (!publishedScene)
-		sceneExtractor.extract(game, sceneRequest(), frameScene);
-	const Scene &scene = drawnScene();
+	// The engine publishes the same immutable frame on serial and threaded hosts.
+	if (!publishedScene && !frameScene.map.getW()) return;
+	const PresentationFrame &scene = drawnScene();
 	view.scene = &scene;
 	view.render.zonesEmphasised = selectionMode==BRUSH_SELECTION;
 	view.render.minimumZoom = camera.minimumZoom();
@@ -664,7 +662,7 @@ void GameGUI::drawAll(int team)
 	// Panels, the top bar and the statistics pages draw the scene's copy of the stats.
 	teamStats = scene.panels.localStats.get();
 	toolManager.setDrawnScene(&scene);
-    view.displayedAreas=simulationThreaded ? &toolManager.displayedAreas() : nullptr;
+    view.displayedAreas=&toolManager.displayedAreas();
     globalContainer->gfx->beginFrame(GraphicContext::FrameMode::FullRedraw);
 	updateCamera();
 	globalContainer->gfx->setClipRect();
@@ -683,11 +681,9 @@ void GameGUI::drawAll(int team)
 								((globalContainer->isViewingGame() && !globalContainer->replayShowFog) ? Game::DRAW_WHOLE_MAP : 0) |
 								Game::DRAW_AREA;
 
-	if (!simulationThreaded)
-		updateHighlightInGame();
 	arrowPositions.clear();
 	const bool drewTorus = torusView.active() &&
-		torusView.draw(game, localTeamNo, drawOptions, viewportX, viewportY,
+		torusView.draw(scene,this,localTeamNo, drawOptions, viewportX, viewportY,
 			globalContainer->gfx->getW()-RIGHT_MENU_WIDTH, globalContainer->gfx->getH(),
 			camera.zoom, camera.fractionX(), camera.fractionY());
 	GAGCore::ApplicationHost::overviewDrawn(drewTorus, drewTorus && torusView.overviewSettled());
@@ -710,7 +706,8 @@ void GameGUI::drawAll(int team)
 		}
 
 		///Draw ghost buildings
-		if (!globalContainer->isViewingGame()) ghostManager.drawAll(viewportX, viewportY, localTeamNo);
+		if (!globalContainer->isViewingGame()) ghostManager.drawAll(drawnScene(), viewportX, viewportY, localTeamNo,
+            std::ceil(camera.visibleW()+camera.fractionX()), std::ceil(camera.visibleH()+camera.fractionY()));
 
 	}
 	// if paused, tint the game area
@@ -734,8 +731,8 @@ void GameGUI::drawAll(int team)
 		{
 			const PauseState state = pauseState ? pauseState() : PauseState();
 			const int holder = state.pausedBy;
-			const std::string name = holder >= 0 && holder < game.gameHeader.getNumberOfPlayers() && game.players[holder]
-										 ? game.players[holder]->name : std::string();
+			const std::string name = holder >= 0 && size_t(holder) < scene.panels.hud.state().players.size()
+										 ? scene.panels.hud.state().players[holder].name : std::string();
 			if (state.limited && holder >= 0 && state.pauserSecondsLeft >= 0)
 			{
 				const Uint32 left = Uint32(state.pauserSecondsLeft);
@@ -926,8 +923,8 @@ void GameGUI::drawStatisticsPage(int y)
 		teamStats->drawText(x, y);
 	else if (chances)
 		drawWinProbabilities(x, y);
-	else
-		TeamStatChart::paintReadings(*globalContainer->gfx, x, y + 16, width, *teamStats, Stats::Group(measurementPage - 1));
+	else if (drawnScene().world.history)
+		TeamStatChart::paintReadings(*globalContainer->gfx, x, y + 16, width, *drawnScene().world.history->teams.at(localTeamNo), Stats::Group(measurementPage - 1));
 }
 
 int GameGUI::statisticsPages() const
@@ -948,7 +945,7 @@ void GameGUI::drawWinProbabilities(int x, int y)
 		Toolkit::getStringTable()->getString("[Win chance]"));
 	const int inc = 14;
 	int row = 0;
-	const Scene &scene = drawnScene();
+	const PresentationFrame &scene = drawnScene();
 	for (const auto &chance : scene.panels.hud.winChances)
 	{
 		const int permille = chance.permille;
@@ -970,6 +967,8 @@ SceneRequest GameGUI::sceneRequest(bool includeTiming)
 {
 	SceneRequest request;
 	request.localTeam = localTeamNo;
+    request.includeTelemetry = inGameMenu == IGM_TELEMETRY;
+    request.includeHistory = (displayMode == STAT_GRAPH_VIEW && measurementPage > 0) || (touch && touch->needsStatisticsHistory());
 	request.spectating = globalContainer->isViewingGame();
 	request.view = clientRequests.latest();
 	if (selectionMode == BUILDING_SELECTION)
@@ -978,7 +977,6 @@ SceneRequest GameGUI::sceneRequest(bool includeTiming)
 	if (selectionMode == UNIT_SELECTION)
 		if (const UnitRef *u = std::get_if<UnitRef>(&selection))
 			request.selectedUnit = *u;
-	if (simulationThreaded)
     {
         Uint32 units=0, buildings=0;
         if(highlights.contains(HighlightWorkers)) units|=1u<<WORKER;
@@ -995,10 +993,9 @@ SceneRequest GameGUI::sceneRequest(bool includeTiming)
 void GameGUI::threadedClientStep(const std::vector<SDL_Event>& events, Uint64 now)
 {
 	toolManager.setDrawnScene(&drawnScene());
-	// Keep the original client event ordering against the displayed Scene.
+	// Keep the original client event ordering against the displayed PresentationFrame.
 	consumeClientEvents();
 	checkSelection();
-	if (!simulationThreaded) updateHighlightInGame();
 	step(events, now);
 }
 

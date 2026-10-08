@@ -2,6 +2,8 @@
 #pragma once
 
 #include <cstddef>
+#include <cstdint>
+#include <variant>
 #include <functional>
 #include <memory>
 #include <vector>
@@ -20,7 +22,7 @@ class MapGeometryCache
 public:
     struct Key
     {
-        const void *map;
+        std::variant<const void*, std::uint64_t> map;
         int layer, x, y, width, height;
         bool operator==(const Key&) const = default;
     };

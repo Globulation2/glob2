@@ -14,7 +14,7 @@ bool MapEdit::experimentEnabled(const std::string& key) const
 	if (key.empty())
 		return true;
 	return (globalContainer && globalContainer->settings.experiments.has(key)) ||
-		game.gameHeader.getExperiments().has(key);
+		(view.scene && view.scene->world.rules->configuration->getExperiments().has(key));
 }
 
 ExperimentGate MapEdit::experimentGate() const
@@ -39,6 +39,7 @@ bool MapEdit::enableExperimentForMap(const std::string& key)
 		return false;
 	}
 	mapHasBeenModified();
+    if (view.scene) preparePresentation();
 	++brushCatalogRevision;
 	return true;
 }
@@ -46,12 +47,12 @@ bool MapEdit::enableExperimentForMap(const std::string& key)
 BrushCatalogInputs MapEdit::brushCatalogInputs() const
 {
 	BrushCatalogInputs inputs;
-	inputs.terrain = &game.map.terrainRegistry();
-	inputs.resources = &game.map.resourceRegistry();
+	inputs.terrain = &view.scene->map.terrainRegistry();
+	inputs.resources = &view.scene->map.resourceRegistry();
 	inputs.defaultResources = ResourceRegistry::availableDefaults().get();
 	inputs.experimentEnabled = experimentGate();
 	inputs.supportsResource = [this](TerrainType terrain, ResourceId resource)
-	{ return game.map.terrainSupportsResourceType(terrain, resource); };
+	{ return MapState::terrainSupportsResourceType(view.scene->world.view(), terrain, resource); };
 	inputs.lookup = [](const std::string& key) -> std::optional<std::string>
 	{
 		const auto* strings = GAGCore::Toolkit::getStringTable();
@@ -59,9 +60,9 @@ BrushCatalogInputs MapEdit::brushCatalogInputs() const
 			return std::nullopt;
 		return std::string(strings->getString(key));
 	};
-	for (std::size_t id = 0; id < game.buildingsTypes.size(); ++id)
+	for (std::size_t id = 0; id < view.scene->buildingTypes->size(); ++id)
 	{
-		const auto* type = game.buildingsTypes.get(id);
+		const auto* type = &(*view.scene->buildingTypes)[id];
 		if (!type->runtimeAvailable || !type->semantics.placeable)
 			continue;
 		inputs.buildings.push_back({type->key, buildingDisplayName(*type), !type->semantics.occupiesGround});
@@ -71,14 +72,14 @@ BrushCatalogInputs MapEdit::brushCatalogInputs() const
 
 std::string MapEdit::brushCatalogSignature() const
 {
-	std::string signature = game.map.terrainRegistry().digest();
-	signature += '|' + game.map.resourceRegistry().digest();
+	std::string signature = view.scene->map.terrainRegistry().digest();
+	signature += '|' + view.scene->map.resourceRegistry().digest();
 	signature += '|' + (globalContainer ? globalContainer->settings.experiments.toText() : std::string());
-	signature += '|' + game.gameHeader.getExperiments().toText();
+	signature += '|' + view.scene->world.rules->configuration->getExperiments().toText();
 	signature += '|';
-	for (std::size_t id = 0; id < game.buildingsTypes.size(); ++id)
+	for (std::size_t id = 0; id < view.scene->buildingTypes->size(); ++id)
 	{
-		const auto* type = game.buildingsTypes.get(id);
+		const auto* type = &(*view.scene->buildingTypes)[id];
 		if (type->runtimeAvailable && type->semantics.placeable)
 			signature += type->key + ',';
 	}
@@ -87,6 +88,7 @@ std::string MapEdit::brushCatalogSignature() const
 
 const std::vector<BrushGroup>& MapEdit::brushCatalog()
 {
+    if (!view.scene) return brushCatalogCache;
 	auto signature = brushCatalogSignature();
 	if (signature != brushCatalogKey || brushCatalogCache.empty())
 	{
@@ -112,7 +114,7 @@ BrushSwatches& MapEdit::brushSwatches()
 {
 	if (!swatches)
 		swatches = std::make_unique<BrushSwatches>();
-	swatches->bind(game.map.frozenTerrainRegistry(), game.map.frozenResourceRegistry());
+	if (view.scene) swatches->bind(view.scene->world.terrain->registry, view.scene->world.catalogs->resources);
 	return *swatches;
 }
 
@@ -120,10 +122,10 @@ TerrainSelector::TerrainType MapEdit::canonicalSelector(TerrainSelector::Terrain
 {
 	if (TerrainSelector::isBaseTerrain(type))
 		return TerrainSelector::selectorFor(TerrainSelector::baseTerrain(type));
-	if (TerrainSelector::isResource(type))
+	if (view.scene && TerrainSelector::isResource(type))
 	{
-		const auto resource = TerrainSelector::resourceType(type, game.map.resourceRegistry());
-		if (game.map.resourceRegistry().valid(resource))
+		const auto resource = TerrainSelector::resourceType(type, view.scene->map.resourceRegistry());
+		if (view.scene->map.resourceRegistry().valid(resource))
 			return TerrainSelector::selectorForResource(resource);
 	}
 	return type;
@@ -131,6 +133,7 @@ TerrainSelector::TerrainType MapEdit::canonicalSelector(TerrainSelector::Terrain
 
 std::string MapEdit::currentBrushId() const
 {
+    if (!view.scene) return {};
 	switch (selectionMode)
 	{
 	case PlaceTerrain:
@@ -139,20 +142,20 @@ std::string MapEdit::currentBrushId() const
 		if (TerrainSelector::isBaseTerrain(type))
 		{
 			const auto terrain = TerrainSelector::baseTerrain(type);
-			return game.map.validTerrainType(terrain) ? "terrain/" + game.map.terrainRegistry().key(terrain) : "";
+			return view.scene->map.terrainRegistry().valid(terrain) ? "terrain/" + view.scene->map.terrainRegistry().key(terrain) : "";
 		}
 		if (TerrainSelector::isResource(type))
 		{
-			const auto resource = TerrainSelector::resourceType(type, game.map.resourceRegistry());
-			return game.map.resourceRegistry().valid(resource) ? "resource/" + game.map.resourceRegistry().key(resource) : "";
+			const auto resource = TerrainSelector::resourceType(type, view.scene->map.resourceRegistry());
+			return view.scene->map.resourceRegistry().valid(resource) ? "resource/" + view.scene->map.resourceRegistry().key(resource) : "";
 		}
 		return "";
 	}
 	case PlaceBuilding:
 	{
-		for (std::size_t id = 0; id < game.buildingsTypes.size(); ++id)
+		for (std::size_t id = 0; id < view.scene->buildingTypes->size(); ++id)
 		{
-			const auto* type = game.buildingsTypes.get(id);
+			const auto* type = &(*view.scene->buildingTypes)[id];
 			if (type->key == selectionName)
 				return (type->semantics.occupiesGround ? "building/" : "flag/") + selectionName;
 		}

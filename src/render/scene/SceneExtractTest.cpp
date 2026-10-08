@@ -2,11 +2,12 @@
 #include "ClientAreaPreview.h"
 #include "sim/ClientEvents.h"
 // SPDX-License-Identifier: GPL-3.0-or-later
-// Scene extraction: entities by gid, the selection's map-view contribution, and
+// PresentationFrame extraction: entities by gid, the selection's map-view contribution, and
 // the overlay map's refresh cadence.
 #include "EngineFixtures.h"
 #include "OverlayAreas.h"
 #include "SceneExtract.h"
+#include "SceneBuffer.h"
 #include "render/UnitMotion.h"
 #include "UnitTiming.h"
 #include "building/hud/BuildingPresentation.h"
@@ -22,8 +23,41 @@
 #include <thread>
 #include "sim/snapshot/SnapshotStore.h"
 
+namespace {
+template<class Source> concept AcceptsLivePresentationSource=requires(SceneExtractor& preparer,const Source& source,const SceneRequest& request,PresentationFrame& frame) {
+    preparer.prepare(source,request,frame);
+};
+static_assert(AcceptsLivePresentationSource<SimulationSnapshot::Handle>);
+static_assert(!AcceptsLivePresentationSource<Game>);
+static_assert(!AcceptsLivePresentationSource<Map>);
+static_assert(!AcceptsLivePresentationSource<Unit>);
+static_assert(!AcceptsLivePresentationSource<Building>);
+}
+
 TEST_SUITE("SceneExtract")
 {
+    TEST_CASE("superseded and retired frames promptly release all world leases")
+    {
+        SceneBuffer<PresentationFrame> buffer;
+        const auto fill=[&] {
+            auto& frame=buffer.back();
+            frame.world.entities=std::make_shared<SimulationSnapshot::Entities>();
+            frame.entities.world=frame.world;
+            frame.panels.world=frame.world;
+            return std::weak_ptr(frame.world.entities);
+        };
+        auto first=fill();buffer.publish();
+        CHECK_FALSE(first.expired());
+        auto second=fill();buffer.publish();
+        CHECK(first.expired());
+        REQUIRE(buffer.acquire());
+        auto third=fill();buffer.publish();
+        CHECK_FALSE(second.expired());
+        REQUIRE(buffer.acquire());
+        CHECK(second.expired());
+        CHECK_FALSE(third.expired());
+    }
+
     TEST_CASE("map service indicators follow arbitrary and free recipes")
     {
         BuildingType type;
@@ -51,18 +85,72 @@ TEST_SUITE("SceneExtract")
 		glob2test::HeadlessGlobals globals;
 		glob2test::HeadlessGame world;
 		world.game.map.setPoint(8, 3, 4);
-		Scene scene; SceneRequest request;
-		extractScene(world.game, request, scene);
+        world.game.map.setAreaName(8, "Original area");
+		PresentationFrame scene; SceneRequest request;
+		SceneExtractor().prepare((world.game).captureReadBoundary({},true,SceneExtractor::requirements(request)), request, scene);
 		CHECK_FALSE(scene.map.isPointSet(8,3,4));
 		request.includeScriptAreas=true;
-		extractScene(world.game, request, scene);
+		SceneExtractor().prepare((world.game).captureReadBoundary({},true,SceneExtractor::requirements(request)), request, scene);
 		world.game.map.unsetPoint(8,3,4);
+        world.game.map.setAreaName(8, "Renamed area");
+        CHECK(scene.map.getAreaName(8) == "Original area");
+        PresentationFrame renamed;
+        SceneExtractor().prepare(world.game.captureReadBoundary({},true,SceneExtractor::requirements(request)), request, renamed);
+        CHECK(renamed.map.getAreaName(8) == "Renamed area");
 		CHECK(scene.map.isPointSet(8,3,4));
 		CHECK_FALSE(scene.map.isPointSet(7,3,4));
 		request.includeScriptAreas=false;
-		extractScene(world.game, request, scene);
+		SceneExtractor().prepare((world.game).captureReadBoundary({},true,SceneExtractor::requirements(request)), request, scene);
 		CHECK_FALSE(scene.map.isPointSet(8,3,4));
 	}
+
+    TEST_CASE("retired map storage reuses masks without retaining a world or clearing its values")
+    {
+        glob2test::HeadlessGlobals globals;
+        glob2test::HeadlessGame world;
+        const auto index=world.game.map.coordToIndex(3,4);
+        world.game.map.setAreaMask(index,&Tile::forbidden,1);
+        SceneRequest request;request.localTeam=0;
+        SceneExtractor preparer;
+        PresentationFrame frame;
+        const auto captured=world.game.captureReadBoundary({},true,SceneExtractor::requirements(request));
+        preparer.prepare(captured,request,frame);
+        REQUIRE(frame.map.isForbiddenInDisplayedView(3,4));
+        frame.releaseWorld();
+        CHECK_FALSE(frame.world.entities);
+        request.view.viewportX=8;
+        preparer.prepare(captured,request,frame);
+        CHECK(frame.map.isForbiddenInDisplayedView(3,4));
+        world.game.map.setAreaMask(index,&Tile::forbidden,0);
+        preparer.prepare(world.game.captureReadBoundary({},true,SceneExtractor::requirements(request)),request,frame);
+        CHECK_FALSE(frame.map.isForbiddenInDisplayedView(3,4));
+    }
+
+    TEST_CASE("same-tick map edits refresh overlays while retained frames remain immutable")
+    {
+        glob2test::HeadlessGlobals globals;
+        glob2test::HeadlessGame world;
+        SceneExtractor preparer;
+        SceneRequest request; request.view.overlay=OverlayArea::Fertility;
+        PresentationFrame frame;
+        const auto required=SceneExtractor::requirements(request);
+        preparer.prepare(world.game.captureReadBoundary({},true,required),request,frame);
+        const auto old=frame.overlay;
+        const auto value=old->getValue(3,4);
+        const Uint16 fertility=value==123 ? 124 : 123;
+        world.game.map.setFertility(3,4,fertility);
+        preparer.prepare(world.game.captureReadBoundary({},true,required),request,frame);
+        REQUIRE(frame.overlay);
+        CHECK(frame.overlay!=old);
+        CHECK(frame.overlay->getValue(3,4)==fertility);
+        CHECK(old->getValue(3,4)==value);
+        const auto current=frame.overlay;
+        const auto captures=world.game.snapshots().metrics.captures;
+        request.view.viewportX=12;
+        preparer.prepare(frame.world,request,frame);
+        CHECK(frame.overlay==current);
+        CHECK(world.game.snapshots().metrics.captures==captures);
+    }
 
 	TEST_CASE("units and buildings resolve by gid with their drawn fields and the selection")
 	{
@@ -76,19 +164,19 @@ TEST_SUITE("SceneExtract")
 		SceneRequest request;
 		request.selectedBuilding = Game::refOf(inn);
 		request.selectedUnit = Game::refOf(worker);
-		Scene scene;
-		SceneExtractor().extract(world.game, request, scene);
+		PresentationFrame scene;
+		SceneExtractor().prepare((world.game).captureReadBoundary({},true,SceneExtractor::requirements(request)), request, scene);
 
-		const SceneUnit *u = scene.entities.unit(worker->gid);
+		const SnapshotUnit *u = scene.entities.unit(worker->gid);
 		REQUIRE(u);
 		CHECK((u->posX == 10 && u->posY == 10 && u->hp == 3 && u->team == 0 && u->typeNum == WORKER));
-		CHECK(scene.entities.owner(*scene.entities.unit(other->gid)).teamNumber == 1);
+		CHECK(scene.entities.owner(*scene.entities.unit(other->gid)).number == 1);
 		CHECK(scene.entities.isSelected(*u));
 		CHECK_FALSE(scene.entities.isSelected(*scene.entities.unit(other->gid)));
 
-		const SceneBuilding *b = scene.entities.building(inn->gid);
+		const SnapshotBuilding *b = scene.entities.building(inn->gid);
 		REQUIRE(b);
-		CHECK((b->posX == 4 && b->posY == 4 && b->type == inn->type && b->effectiveMaxHp == inn->getEffectiveMaxHp()));
+		CHECK((b->posX == 4 && b->posY == 4 && scene.entities.type(*b)->key == inn->type->key && b->maxHp == inn->getEffectiveMaxHp()));
 		CHECK(scene.entities.isSelected(*b));
 		CHECK(scene.entities.selectedBuilding.ref == request.selectedBuilding);
 		CHECK(scene.map.getGroundUnit(10, 10) == worker->gid);
@@ -106,12 +194,12 @@ TEST_SUITE("SceneExtract")
 		SceneExtractor extractor;
 		SceneRequest request;
 		request.view.overlay = OverlayArea::Damage;
-		Scene scene;
+		PresentationFrame scene;
 		world.game.stepCounter = 26; // window 1 starts at tick 26
-		extractor.extract(world.game, request, scene);
+		extractor.prepare((world.game).captureReadBoundary({},true,SceneExtractor::requirements(request)), request, scene);
 		REQUIRE(scene.overlay);
 		OverlayArea direct;
-		direct.compute(world.game, OverlayArea::Damage, 0);
+		direct.compute(scene.world, OverlayArea::Damage, 0, scene.world.session->fertilityMaximum);
 		CHECK(scene.overlay->getMaximum() == direct.getMaximum());
 		CHECK(scene.overlay->getValue(10, 10) == direct.getValue(10, 10));
 		CHECK(scene.overlay->getValue(10, 10) > 0);
@@ -120,22 +208,22 @@ TEST_SUITE("SceneExtract")
 		const auto first = scene.overlay;
 		wounded->medical = Unit::MED_FREE;
 		world.game.stepCounter = 50;
-		extractor.extract(world.game, request, scene);
+		extractor.prepare((world.game).captureReadBoundary({},true,SceneExtractor::requirements(request)), request, scene);
 		CHECK(scene.overlay == first);
 
 		// Next window (ticks 51..75): recomputed.
 		world.game.stepCounter = 51;
-		extractor.extract(world.game, request, scene);
+		extractor.prepare((world.game).captureReadBoundary({},true,SceneExtractor::requirements(request)), request, scene);
 		CHECK(scene.overlay != first);
 		CHECK(scene.overlay->getValue(10, 10) == 0);
 
 		// A type change recomputes at once; None drops the overlay.
 		const auto damage = scene.overlay;
 		request.view.overlay = OverlayArea::Defence;
-		extractor.extract(world.game, request, scene);
+		extractor.prepare((world.game).captureReadBoundary({},true,SceneExtractor::requirements(request)), request, scene);
 		CHECK((scene.overlay != damage && scene.overlay->getOverlayType() == OverlayArea::Defence));
 		request.view.overlay = OverlayArea::None;
-		extractor.extract(world.game, request, scene);
+		extractor.prepare((world.game).captureReadBoundary({},true,SceneExtractor::requirements(request)), request, scene);
 		CHECK(!scene.overlay);
 	}
     TEST_CASE("published scene retains old entity fields while subsequent scenes reflect changes")
@@ -143,15 +231,16 @@ TEST_SUITE("SceneExtract")
         glob2test::HeadlessGlobals globals;
         glob2test::HeadlessGame world({.clearImmobile=true,.loadDefaultRace=true});
         auto* unit=world.addUnit(WORKER,10,10);
-        SceneExtractor extractor; SceneRequest request; Scene before,after;
+        SceneExtractor extractor; SceneRequest request; PresentationFrame before,after;
         const auto gid=unit->gid; const auto hp=unit->hp;
-        extractor.extract(world.game,request,before);
+        extractor.prepare((world.game).captureReadBoundary({},true,SceneExtractor::requirements(request)), request, before);
         unit->hp=1;
-        extractor.extract(world.game,request,after);
+        world.game.snapshots().invalidateBoundary(); // Explicit same-tick owner edit.
+        extractor.prepare((world.game).captureReadBoundary({},true,SceneExtractor::requirements(request)), request, after);
         REQUIRE(before.entities.unit(gid)); REQUIRE(after.entities.unit(gid));
         CHECK(before.entities.unit(gid)->hp==hp); CHECK(after.entities.unit(gid)->hp==1);
         REQUIRE(world.game.removeUnitAndBuildingAndFlags(10,10,Game::DEL_UNIT));
-        extractor.extract(world.game,request,after);
+        extractor.prepare((world.game).captureReadBoundary({},true,SceneExtractor::requirements(request)), request, after);
         CHECK(after.entities.unit(gid)==nullptr);
         CHECK(before.entities.unit(gid)->hp==hp);
     }
@@ -161,14 +250,14 @@ TEST_SUITE("SceneExtract")
         glob2test::HeadlessGlobals globals;
         glob2test::HeadlessGame world({.clearImmobile=true,.loadDefaultRace=true});
         auto* unit=world.addUnit(WORKER,10,10);
-        SceneExtractor extractor; SceneRequest request; Scene scene;
+        SceneExtractor extractor; SceneRequest request; PresentationFrame scene;
         request.selectedUnit=Game::refOf(unit); const auto gid=unit->gid;
-        extractor.extract(world.game,request,scene);
+        extractor.prepare((world.game).captureReadBoundary({},true,SceneExtractor::requirements(request)), request, scene);
         REQUIRE(scene.entities.unit(gid)); CHECK(scene.entities.isSelected(*scene.entities.unit(gid)));
         REQUIRE(world.game.removeUnitAndBuildingAndFlags(10,10,Game::DEL_UNIT));
         auto* replacement=world.addUnit(WORKER,10,10);
         REQUIRE(replacement->gid==gid);
-        extractor.extract(world.game,request,scene);
+        extractor.prepare((world.game).captureReadBoundary({},true,SceneExtractor::requirements(request)), request, scene);
         REQUIRE(scene.entities.unit(gid)); CHECK_FALSE(scene.entities.isSelected(*scene.entities.unit(gid)));
     }
 
@@ -186,23 +275,23 @@ TEST_SUITE("SceneExtract")
 		SceneRequest request;
 		request.tickTime = 1000;
 		request.tickInterval = 40;
-		Scene scene;
-		SceneExtractor().extract(world.game, request, scene);
+		PresentationFrame scene;
+		SceneExtractor().prepare((world.game).captureReadBoundary({},true,SceneExtractor::requirements(request)), request, scene);
 		CHECK((scene.tickTime == 1000 && scene.tickInterval == 40));
-		const SceneUnit *u = scene.entities.unit(walker->gid);
+		const SnapshotUnit *u = scene.entities.unit(walker->gid);
 		REQUIRE(u);
-		CHECK(u->stepSpeed == unitActionStepSpeed(walker->speed, WALK, 1, 1));
-		REQUIRE(u->stepSpeed > 0);
+		CHECK(unitActionStepSpeed(u->speed,u->action,u->dx,u->dy) == unitActionStepSpeed(walker->speed, WALK, 1, 1));
+		REQUIRE(unitActionStepSpeed(u->speed,u->action,u->dx,u->dy) > 0);
 
 		// Off (motion 0) draws exactly the simulated delta.
 		CHECK(drawnUnitDelta(*u, 0.f) == 100);
 		CHECK(unitMotionFraction(scene, 1000) == 0.f);
 		CHECK(unitMotionFraction(scene, 1020) == doctest::Approx(0.5f));
 		CHECK(unitMotionFraction(scene, 5000) == 1.f);
-		CHECK(drawnUnitDelta(*u, 0.5f) == 100 + int(0.5f * float(u->stepSpeed)));
+		CHECK(drawnUnitDelta(*u, 0.5f) == 100 + int(0.5f * float(unitActionStepSpeed(u->speed,u->action,u->dx,u->dy))));
 		// A full interval reaches what the next tick computes, without crossing the action.
-		CHECK(drawnUnitDelta(*u, 1.f) == std::min(UNIT_DELTA_MAX, 100 + u->stepSpeed));
-		SceneUnit ending = *u;
+		CHECK(drawnUnitDelta(*u, 1.f) == std::min(UNIT_DELTA_MAX, 100 + unitActionStepSpeed(u->speed,u->action,u->dx,u->dy)));
+		SnapshotUnit ending = *u;
 		ending.delta = UNIT_DELTA_MAX - 1;
 		CHECK(drawnUnitDelta(ending, 1.f) == UNIT_DELTA_MAX);
 
@@ -213,8 +302,8 @@ TEST_SUITE("SceneExtract")
     TEST_CASE("connected overlays use configured groups and scene retains its catalog")
     {
         glob2test::HeadlessGlobals globals;
-        Scene scene;
-        const SceneBuilding* extracted=nullptr;
+        PresentationFrame scene;
+        const SnapshotBuilding* extracted=nullptr;
         std::string key;
         {
         glob2test::HeadlessGame world({.teams=2,.loadDefaultRace=true});
@@ -232,15 +321,15 @@ TEST_SUITE("SceneExtract")
         world.addBuilding("explorationflag",4+first->type->width,4);
         world.addBuilding("explorationflag",4,4+first->type->height,0,1);
         SceneRequest request;
-        extractScene(world.game,request,scene);
+        SceneExtractor().prepare((world.game).captureReadBoundary({},true,SceneExtractor::requirements(request)), request, scene);
         extracted=scene.entities.building(first->gid);
         REQUIRE(extracted);
-        CHECK(extracted->connectionMask==1);
+        CHECK(scene.entities.connections(*extracted)==1);
         CHECK(scene.map.getBuilding(4,4)==NOGBID);
-        key=extracted->type->key;
+        key=scene.entities.type(*extracted)->key;
         }
-        CHECK(extracted->type->key==key);
-        CHECK(extracted->type->presentation.connectionGroup=="joined-canopies");
+        CHECK(scene.entities.type(*extracted)->key==key);
+        CHECK(scene.entities.type(*extracted)->presentation.connectionGroup=="joined-canopies");
     }
 
     TEST_CASE("building events preserve concrete catalog IDs and key-only display names")
@@ -357,29 +446,29 @@ TEST_SUITE("SceneExtract")
             auto* teamBoundary=add("visual.refuge",27,5);add("visual.infirmary",28,5,1);
             auto* groupBoundary=add("visual.refuge",27,11);add("visual.other-group",28,11);
             auto* damage=add("visual.damage",13,28);
-            Scene scene;SceneRequest request;extractScene(world.game,request,scene);
-            CHECK(scene.entities.building(teamBoundary->gid)->connectionMask==0);
-            CHECK(scene.entities.building(groupBoundary->gid)->connectionMask==0);
+            PresentationFrame scene;SceneRequest request;SceneExtractor().prepare((world.game).captureReadBoundary({},true,SceneExtractor::requirements(request)), request, scene);
+            CHECK(scene.entities.connections(*scene.entities.building(teamBoundary->gid))==0);
+            CHECK(scene.entities.connections(*scene.entities.building(groupBoundary->gid))==0);
             for(const auto& [gid,mask]:centers)
             {
-                REQUIRE(scene.entities.building(gid));CHECK(scene.entities.building(gid)->connectionMask==mask);
+                REQUIRE(scene.entities.building(gid));CHECK(scene.entities.connections(*scene.entities.building(gid))==mask);
                 const auto* b=scene.entities.building(gid);
                 CHECK((world.game.map.getBuilding(b->posX,b->posY)==NOGBID)==overlay);
             }
             const auto checksum=world.checksum();
-            const auto render=[&](const Scene& frame,const std::string& suffix) {
+            const auto render=[&](const PresentationFrame& frame,const std::string& suffix) {
                 // Verify the actual selected frame exists in each loaded sprite atlas.
                 for(const auto& b:frame.entities.buildings)
                 {
-                    const int index=buildingSpriteFrame(*b.type,b.hp,b.effectiveMaxHp,b.connectionMask);
-                    REQUIRE(index>=0);REQUIRE(index<b.type->gameSpritePtr->getFrameCount());
+                    const int index=buildingSpriteFrame(*frame.entities.type(b),b.hp,b.maxHp,frame.entities.connections(b));
+                    REQUIRE(index>=0);REQUIRE(index<frame.entities.type(b)->gameSpritePtr->getFrameCount());
                 }
                 Game::ViewState view;view.scene=&frame;
                 auto* gfx=globals->gfx;
                 gfx->beginFrame(GAGCore::GraphicContext::FrameMode::FullRedraw);gfx->setClipRect();
                 gfx->drawFilledRect(0,0,1024,1024,GAGCore::Color(20,30,20));
                 gfx->beginMapTransform(1,1,1,0,0,1024,1024);
-                world.game.drawMap(0,0,1024,1024,0,0,0,0,0,view,Game::DRAW_WHOLE_MAP|Game::DRAW_NO_CLOUD_LAYER,nullptr,nullptr,true);
+                glob2test::drawMap(world.game,0,0,1024,1024,0,0,0,0,0,view,Game::DRAW_WHOLE_MAP|Game::DRAW_NO_CLOUD_LAYER,nullptr,nullptr,true);
                 gfx->endMapTransform();gfx->nextFrame();
                 auto* image=gfx->completedFrame();REQUIRE(image);
                 REQUIRE(SDL_SaveBMP(image,(evidence/(lane+"-"+suffix+".bmp")).string().c_str()));
@@ -392,19 +481,23 @@ TEST_SUITE("SceneExtract")
             };
             const auto actual=render(scene,"connected");
             SceneExtractor workerExtractor;
-            auto inputs = workerExtractor.capture(world.game, request);
-            Scene prepared;
+            auto inputs = SceneExtractor::inputs((world.game).captureReadBoundary({},true,SceneExtractor::requirements(request)), request);
+            PresentationFrame prepared;
             workerExtractor.prepare(*inputs, prepared);
             CHECK_MESSAGE(actual == render(prepared, "snapshot"), "snapshot preparation must preserve every rendered pixel");
             CHECK_MESSAGE(actual==render(scene,"repeat"),"identical frozen scenes must render identically before the mask control");
             // Counterfactual RENDER-ONLY control: same scene and entities, masks forced to zero.
             // Both the ground and overlay renderer must use these extracted masks.
-            Scene disconnected=scene;
-            for(auto& building:disconnected.entities.buildings)building.connectionMask=0;
+            PresentationFrame disconnected=scene;
+            std::fill(disconnected.entities.connectionMasks.begin(),disconnected.entities.connectionMasks.end(),0);
             const auto control=render(disconnected,"zero-mask-control");
             CHECK_MESSAGE(actual!=control,lane<<" full-map renderer must use its nonzero connection masks");
-            Scene wounded=scene;
-            for(auto& b:wounded.entities.buildings)if(b.gid==damage->gid)b.hp=1;
+            auto woundedWorld=scene.world;
+            auto woundedEntities=std::make_shared<SimulationSnapshot::Entities>(*woundedWorld.entities);
+            for(auto& b:woundedEntities->buildings)if(b.gid==damage->gid)b.hp=1;
+            woundedWorld.entities=std::move(woundedEntities);
+            PresentationFrame wounded;
+            workerExtractor.prepare(woundedWorld,request,wounded);
             CHECK_MESSAGE(actual!=render(wounded,"wounded"),lane<<" full-map renderer must use the configured damage frame");
         }
     }
@@ -428,21 +521,21 @@ TEST_CASE("snapshot preparation retains definitions after the source game is des
         SceneRequest request;
         request.selectedUnit = Game::refOf(unit);
         request.selectedBuilding = Game::refOf(building);
-        input = extractor.capture(world.game, request);
+        input = SceneExtractor::inputs((world.game).captureReadBoundary({},true,SceneExtractor::requirements(request)), request);
     }
-    Scene scene;
+    PresentationFrame scene;
     extractor.prepare(*input, scene);
     input.reset();
     REQUIRE(scene.entities.unit(unitId));
     REQUIRE(scene.entities.building(buildingId));
-    CHECK(scene.entities.unit(unitId)->race == scene.race.get());
-    CHECK(scene.entities.building(buildingId)->type->key == "inn.0.finished");
-    CHECK(scene.panels.unit.race == scene.race.get());
+    CHECK(scene.entities.units.data()==scene.world.entities->units.data());
+    CHECK(scene.entities.type(*scene.entities.building(buildingId))->key == "inn.0.finished");
+    CHECK(scene.panels.unit.unitTypes.data()==scene.world.catalogs->unitTypes[scene.panels.unit.state().typeNum].data());
     CHECK(scene.map.getW() == 32);
     CHECK(scene.map.getBuilding(4, 4) == buildingId);
 }
 
-TEST_CASE("snapshot preparation matches legacy queries and survives later live mutations")
+TEST_CASE("snapshot preparation matches retained queries and survives later live mutations")
 {
     glob2test::HeadlessGlobals globals;
     glob2test::HeadlessGame world{glob2test::GameOptions{.wDec=5, .hDec=5, .teams=1, .discovered=true, .clearImmobile=true, .loadDefaultRace=true}};
@@ -462,9 +555,9 @@ TEST_CASE("snapshot preparation matches legacy queries and survives later live m
         CAPTURE(overlay);
         request.view.overlay = overlay;
         SceneExtractor legacyExtractor, snapshotExtractor;
-        Scene legacy, actual;
-        legacyExtractor.extract(world.game, request, legacy);
-        auto input = snapshotExtractor.capture(world.game, request);
+        PresentationFrame legacy, actual;
+        legacyExtractor.prepare((world.game).captureReadBoundary({},true,SceneExtractor::requirements(request)), request, legacy);
+        auto input = SceneExtractor::inputs((world.game).captureReadBoundary({},true,SceneExtractor::requirements(request)), request);
         // No later read may reach the live unit or any map layer.
         const auto hp = unit->hp;
         unit->hp = 123;
@@ -478,10 +571,10 @@ TEST_CASE("snapshot preparation matches legacy queries and survives later live m
         REQUIRE(actual.entities.unit(unit->gid));
         const auto& u = *actual.entities.unit(unit->gid);
         CHECK(u.hp == hp); CHECK(u.levelUpAnimation == 7); CHECK(u.magicActionAnimation == 3);
-        CHECK(u.stepSpeed == legacy.entities.unit(unit->gid)->stepSpeed);
+        CHECK(drawnUnitDelta(u,0.5f)==drawnUnitDelta(*legacy.entities.unit(unit->gid),0.5f));
         CHECK(actual.entities.building(building->gid)->lastShootStep == 19);
         CHECK(actual.entities.building(building->gid)->lastShootSpeedX == 2);
-        CHECK(actual.panels.unit.hp == legacy.panels.unit.hp);
+        CHECK(actual.panels.unit.state().hp == legacy.panels.unit.state().hp);
         CHECK(actual.panels.building.hardSpaceForUpgrade == legacy.panels.building.hardSpaceForUpgrade);
         CHECK(actual.map.materialPresence() == legacy.map.materialPresence());
         for (int y=0; y<32; ++y) for (int x=0; x<32; ++x)
@@ -512,51 +605,6 @@ TEST_CASE("snapshot preparation matches legacy queries and survives later live m
 }
 }
 
-// Opt-in diagnostic: matched state and extraction inputs, no timing assertions.
-// Keep capture and preparation separate: only capture delays the simulation owner.
-TEST_CASE("Scene extraction performance" * doctest::test_suite("ScenePerformance") * doctest::skip(std::getenv("GLOB2_SCENE_BENCH") == nullptr))
-{
-    glob2test::HeadlessGlobals globals;
-    using Clock=std::chrono::steady_clock;
-    auto micros=[](auto from,auto to) { return std::chrono::duration<double,std::micro>(to-from).count(); };
-    std::puts("scene_bench,size,units,mode,phase,median_us,p95_us,pool_capacity_bytes,pool_leased_bytes,bytes_copied");
-    for (int exponent : {7,9,10})
-    {
-        glob2test::HeadlessGame world({.wDec=exponent,.hDec=exponent,.discovered=true,.loadDefaultRace=true,.header=true,.seed=1});
-        auto& game=world.game;
-        const int width=1<<exponent;
-        for (int i=0;i<512;++i) world.addUnit(WORKER,2+(i%(width-4)),2+(i/(width-4)));
-        SceneRequest request;
-        SceneExtractor direct,capture,prepare;
-        Scene oldScene,newScene;
-        std::array<Scene,3> retained;
-        for (bool changed : {false,true})
-        {
-            std::vector<double> legacy,captures,prepares;
-            for (int i=0;i<45;++i)
-            {
-                if (changed) { ++game.stepCounter; game.map.setVertexTerrain(i%width,0,static_cast<TerrainType>(i%2)); }
-                auto a=Clock::now(); direct.extract(game,request,oldScene); auto b=Clock::now();
-                auto inputs=capture.capture(game,request); auto c=Clock::now();
-                prepare.prepare(*inputs,newScene); auto d=Clock::now();
-                retained[i%3]=newScene;
-                if (i>=5) { legacy.push_back(micros(a,b)); captures.push_back(micros(b,c)); prepares.push_back(micros(c,d)); }
-                REQUIRE(oldScene.tick==newScene.tick);
-                REQUIRE(oldScene.entities.units.size()==newScene.entities.units.size());
-            }
-            const auto memory=game.snapshots().memoryMetrics();
-            auto print=[&](const char* phase,std::vector<double>& samples) {
-                std::sort(samples.begin(),samples.end());
-                std::printf("scene_bench,%d,512,%s,%s,%.3f,%.3f,%llu,%llu,%llu\n",width,changed?"changed":"unchanged",phase,
-                    samples[samples.size()/2],samples[samples.size()*95/100],
-                    (unsigned long long)memory.capacityBytes,(unsigned long long)memory.leasedBytes,
-                    (unsigned long long)game.snapshots().metrics.bytesCopied);
-            };
-            print("legacy",legacy);print("capture",captures);print("prepare",prepares);
-        }
-    }
-}
-
 TEST_CASE("Serial hosts publish immutable Scenes through workers or explicit fallback" * doctest::test_suite("SceneExtract"))
 {
     glob2test::HeadlessGlobals globals;
@@ -571,9 +619,9 @@ TEST_CASE("Serial hosts publish immutable Scenes through workers or explicit fal
         REQUIRE(presentation.readyToCapture());
         const auto gid=unit->gid;
         const auto hp=unit->hp;
-        presentation.submit(extractor.capture(world.game,{}));
+        presentation.submit(SceneExtractor::inputs((world.game).captureReadBoundary({},true,SceneExtractor::requirements({})), {}));
         unit->hp=hp-1;
-        const Scene* scene=nullptr;
+        const PresentationFrame* scene=nullptr;
         const auto deadline=std::chrono::steady_clock::now()+std::chrono::seconds(5);
         do { scene=presentation.acquire(); if (!scene) std::this_thread::yield(); }
         while (!scene && std::chrono::steady_clock::now()<deadline);
@@ -583,7 +631,7 @@ TEST_CASE("Serial hosts publish immutable Scenes through workers or explicit fal
         // Publishing can precede the task's final return; allow that narrow tail.
         while (!presentation.readyToCapture() && std::chrono::steady_clock::now()<deadline) std::this_thread::yield();
         REQUIRE(presentation.readyToCapture());
-        presentation.submit(extractor.capture(world.game,{}));
+        presentation.submit(SceneExtractor::inputs((world.game).captureReadBoundary({},true,SceneExtractor::requirements({})), {}));
         // Destruction cancels without waiting; an active chunk owns its storage.
     }
 }
@@ -595,8 +643,8 @@ TEST_CASE("client paint survives old Scenes and retires only with its execution 
     glob2test::HeadlessGlobals globals;
     glob2test::HeadlessGame world;
     SceneExtractor extractor;
-    Scene oldScene;
-    extractor.prepare(*extractor.capture(world.game,{}),oldScene);
+    PresentationFrame oldScene;
+    extractor.prepare(*SceneExtractor::inputs((world.game).captureReadBoundary({},true,SceneExtractor::requirements({})), {}),oldScene);
     ClientAreaPreview preview;
     preview.refresh(oldScene,0);
     const auto index=oldScene.map.coordToIndex(3,4);
@@ -610,9 +658,10 @@ TEST_CASE("client paint survives old Scenes and retires only with its execution 
     CHECK_FALSE(oldScene.map.displayedArea(0).get(index));
     auto remove=std::make_shared<OrderAlterForbidden>(0,BrushTool::MODE_DEL,3,4,1,1,mask);
     preview.track(remove);
-    Scene next;
-    world.game.map.displayedForbiddenView.set(index,true);
-    extractor.prepare(*extractor.capture(world.game,{}),next);
+    PresentationFrame next;
+    auto tile=world.game.map.getTile(3,4); tile.forbidden|=1;
+    world.game.map.replaceTile(3,4,tile);
+    extractor.prepare(*SceneExtractor::inputs((world.game).captureReadBoundary({},true,SceneExtractor::requirements({})), {}),next);
     next.executedOrderRevision=1;
     preview.refresh(next,0);
     CHECK_FALSE(preview.shown[0].get(index));
@@ -631,10 +680,10 @@ TEST_CASE("order execution revisions are captured even without advancing the tic
     ClientEvents events;
     world.game.clientEvents=&events;
     SceneExtractor extractor;
-    Scene before,after;
-    extractor.prepare(*extractor.capture(world.game,{}),before);
-    events.push(ClientEvent::OrderExecuted{std::make_shared<NullOrder>()});
-    extractor.prepare(*extractor.capture(world.game,{}),after);
+    PresentationFrame before,after;
+    extractor.prepare(*SceneExtractor::inputs((world.game).captureReadBoundary({},true,SceneExtractor::requirements({})), {}),before);
+    world.game.publishClientEvent(ClientEvent::OrderExecuted{std::make_shared<NullOrder>()});
+    extractor.prepare(*SceneExtractor::inputs((world.game).captureReadBoundary({},true,SceneExtractor::requirements({})), {}),after);
     CHECK(before.tick==after.tick);
     CHECK(after.executedOrderRevision==before.executedOrderRevision+1);
     events.drain([&](auto event) {
@@ -653,8 +702,8 @@ TEST_CASE("farm input eligibility is frozen with presentation inputs" * doctest:
     options.experiments.set(ExperimentId::FarmAreas);
     glob2test::HeadlessGame world(options);
     SceneExtractor extractor;
-    auto input=extractor.capture(world.game,{});
-    Scene scene;
+    auto input=SceneExtractor::inputs((world.game).captureReadBoundary({},true,SceneExtractor::requirements({})), {});
+    PresentationFrame scene;
     extractor.prepare(*input,scene);
     for(int y=0;y<world.game.map.getH();++y)
         for(int x=0;x<world.game.map.getW();++x)
@@ -662,4 +711,156 @@ TEST_CASE("farm input eligibility is frozen with presentation inputs" * doctest:
     const bool before=scene.map.canPaintFarmArea(4,4);
     world.game.map.setVertexTerrain(4,4,WATER);
     CHECK(scene.map.canPaintFarmArea(4,4)==before);
+}
+
+TEST_CASE("published catalog definitions remain immutable across owner reconfiguration" * doctest::test_suite("SceneExtract"))
+{
+    glob2test::HeadlessGlobals globals;
+    glob2test::HeadlessGame fixture;
+    auto& game=fixture.game;
+    SceneRequest request;
+    const auto required=SceneExtractor::requirements(request);
+    const auto before=game.captureReadBoundary({},true,required);
+    const int type=game.buildingsTypes.getFinishedTypeNum("inn");
+    REQUIRE(type>=0);
+    const int hp=before.catalogs->typeDefinitions->at(type).hpMax;
+    game.buildingsTypes.get(type)->hpMax=hp+17;
+    game.configureBuildingCatalog();
+    const auto after=game.captureReadBoundary({},true,required);
+    CHECK(before.catalogs->typeDefinitions->at(type).hpMax==hp);
+    CHECK(after.catalogs->typeDefinitions->at(type).hpMax==hp+17);
+    CHECK(before.catalogs!=after.catalogs);
+    CHECK(before.observationRevision!=after.observationRevision);
+    SceneRequest moved=request; moved.view.viewportX=8;
+    PresentationFrame retained;
+    SceneExtractor().prepare(before,moved,retained);
+    CHECK(retained.buildingTypes->at(type).hpMax==hp);
+}
+
+TEST_CASE("statistics history is optional immutable and reused until a new sample" * doctest::test_suite("SceneExtract"))
+{
+    glob2test::HeadlessGlobals globals;
+    glob2test::HeadlessGame fixture;
+    auto& game = fixture.game;
+    SceneRequest normal, chart;
+    chart.includeHistory = true;
+    const auto ordinary = game.captureReadBoundary({}, true, SceneExtractor::requirements(normal));
+    CHECK_FALSE(ordinary.history);
+    CHECK_FALSE(ordinary.telemetry);
+    const auto before = game.captureReadBoundary({}, true, SceneExtractor::requirements(chart));
+    REQUIRE(before.history);
+    REQUIRE_FALSE(before.history->teams.empty());
+    const auto retained = before.history->teams[0];
+    const auto samples = retained->measurementHistory.size();
+    game.objectives.setGameObjectiveText(0, "original objective");
+    game.gameHints.setHintVisible(0);
+    game.snapshots().invalidateBoundary();
+    const auto unchanged = game.captureReadBoundary({}, true, SceneExtractor::requirements(chart));
+    CHECK(unchanged.history->teams[0] == retained);
+    game.teams[0]->stats.initializeMeasurements(game.stepCounter);
+    game.snapshots().invalidateBoundary();
+    const auto changed = game.captureReadBoundary({}, true, SceneExtractor::requirements(chart));
+    CHECK(changed.history->teams[0] != retained);
+    CHECK(retained->measurementHistory.size() == samples);
+    CHECK_FALSE(changed.project(SceneExtractor::requirements(normal)).history);
+}
+
+TEST_CASE("ordinary captures reuse unchanged HUD samples" * doctest::test_suite("SceneExtract"))
+{
+    glob2test::HeadlessGlobals globals;
+    glob2test::HeadlessGame fixture;
+    auto& game = fixture.game;
+    const auto required = SceneExtractor::requirements({});
+    const auto before = game.captureReadBoundary({}, true, required);
+    game.snapshots().invalidateBoundary();
+    const auto after = game.captureReadBoundary({}, true, required);
+    REQUIRE(before.statistics);
+    REQUIRE(after.statistics);
+    REQUIRE_FALSE(before.statistics->teams.empty());
+    CHECK(before.statistics->teams[0] == after.statistics->teams[0]);
+}
+
+TEST_CASE("large defence overlay preparation yields and finishes its kernel" * doctest::test_suite("SceneExtract"))
+{
+    glob2test::HeadlessGlobals globals;
+    glob2test::HeadlessGame fixture({.wDec=7, .hDec=7});
+    auto* tower = fixture.addBuilding("defencetower", 4, 4);
+    REQUIRE(tower);
+    fixture.game.buildingsTypes.get(tower->typeNum)->shootingRange = 64;
+    fixture.game.configureBuildingCatalog();
+    SceneRequest request;
+    request.view.overlay = OverlayArea::Defence;
+    const auto world = fixture.game.captureReadBoundary({}, true, SceneExtractor::requirements(request));
+    const auto input = SceneExtractor::inputs(world, request);
+    SceneExtractor extractor;
+    PresentationFrame frame;
+    SceneRequest previousRequest = request;
+    previousRequest.view.overlay = OverlayArea::Fertility;
+    extractor.prepare(world, previousRequest, frame);
+    const auto previousOverlay = frame.overlay;
+    const auto chunks = SceneExtractor::preparationChunks(*input);
+    // Interrupt the first defence kernel, then restart with the same request.
+    // Its partially updated cache key must not reuse the completed fertility map.
+    size_t interrupted = 0;
+    while (interrupted < chunks && extractor.prepareChunk(*input, frame, interrupted)) ++interrupted;
+    REQUIRE(interrupted < chunks);
+    size_t chunk = 0, claims = 0;
+    while (chunk < chunks && claims++ < chunks * 32)
+        if (extractor.prepareChunk(*input, frame, chunk)) ++chunk;
+    REQUIRE(chunk == chunks);
+    CHECK(claims > chunks);
+    REQUIRE(frame.overlay);
+    CHECK(frame.overlay->getOverlayType() == OverlayArea::Defence);
+    CHECK(frame.overlay != previousOverlay);
+    CHECK(previousOverlay->getOverlayType() == OverlayArea::Fertility);
+}
+
+TEST_CASE("empty worlds and a view whose team disappeared prepare without live fallback" * doctest::test_suite("SceneExtract"))
+{
+    glob2test::HeadlessGlobals globals;
+    glob2test::HeadlessGame fixture({.teams=0});
+    SceneRequest request;
+    const auto world=fixture.game.captureReadBoundary({},true,SceneExtractor::requirements(request));
+    SceneExtractor extractor;
+    PresentationFrame frame;
+    extractor.prepare(world,request,frame);
+    CHECK(frame.entities.teamCount==0);
+    CHECK_FALSE(frame.panels.local.record);
+    CHECK(frame.world.entities==world.entities);
+    request.localTeam=31;
+    extractor.prepare(world,request,frame);
+    CHECK_FALSE(frame.panels.local.record);
+}
+
+TEST_CASE("session narrative payloads are immutable and reused until mutation" * doctest::test_suite("SceneExtract"))
+{
+    glob2test::HeadlessGlobals globals;
+    glob2test::HeadlessGame fixture;
+    auto& game = fixture.game;
+    game.missionBriefing = "original briefing";
+    game.objectives.setGameObjectiveText(0, "original objective");
+    game.gameHints.addNewHint("original hint", false, 1);
+    const auto required = SceneExtractor::requirements({});
+    const auto first = game.captureReadBoundary({}, true, required);
+    game.objectives.setGameObjectiveText(0, "original objective");
+    game.gameHints.setHintVisible(0);
+    game.snapshots().invalidateBoundary();
+    const auto unchanged = game.captureReadBoundary({}, true, required);
+    CHECK(first.session->objectives == unchanged.session->objectives);
+    CHECK(first.session->hints == unchanged.session->hints);
+    CHECK(first.session->missionBriefing == unchanged.session->missionBriefing);
+    game.objectives.setGameObjectiveText(0, "edited objective");
+    game.objectives.setObjectiveComplete(0);
+    game.gameHints.setHintHidden(0);
+    game.missionBriefing = "edited briefing";
+    game.snapshots().invalidateBoundary();
+    const auto changed = game.captureReadBoundary({}, true, required);
+    CHECK(first.session->objectives->getGameObjectiveText(0) == "original objective");
+    CHECK_FALSE(first.session->objectives->isObjectiveComplete(0));
+    CHECK(first.session->hints->isHintVisible(0));
+    CHECK(*first.session->missionBriefing == "original briefing");
+    CHECK(changed.session->objectives->getGameObjectiveText(0) == "edited objective");
+    CHECK(changed.session->objectives->isObjectiveComplete(0));
+    CHECK_FALSE(changed.session->hints->isHintVisible(0));
+    CHECK(*changed.session->missionBriefing == "edited briefing");
 }

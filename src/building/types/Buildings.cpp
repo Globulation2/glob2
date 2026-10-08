@@ -194,7 +194,7 @@ void BuildingsTypes::loadSprites()
 void BuildingsTypes::loadSpritesForTypes(std::vector<BuildingType>& types)
 {
 	// Simulation-only catalogs do not require graphics. Callers that publish a
-	// rendered Scene bind installed artwork here before exposing descriptors.
+	// rendered PresentationFrame bind installed artwork here before exposing descriptors.
 	const std::size_t count = types.size();
 	for (std::size_t i = 0; i < count; ++i)
 	{

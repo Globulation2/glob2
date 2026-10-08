@@ -180,9 +180,6 @@ public:
 	Building *ownExchangeBuilding;
 	void receiveCarriedMaterial(int resource, MaterialPacket packet);
 	
-	// gui
-	int levelUpAnimation;
-	int magicActionAnimation;
 	
 	// (x, y) of the clearing-area cell this unit has claimed on the map. nullopt =
 	// no current claim. The pre-tick reset in handleMovement() releases the claim

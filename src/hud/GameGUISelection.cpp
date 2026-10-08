@@ -6,6 +6,7 @@
 
 #include "Game.h"
 #include "GameGUI.h"
+#include "render/scene/BuildingCatalogView.h"
 #include "GameGUIInternal.h"
 #include "GlobalContainer.h"
 #include "Unit.h"
@@ -31,33 +32,21 @@ void GameGUI::setSelection(SelectionMode newSelMode, unsigned newSelection)
 		selectionMode=newSelMode;
 	}
 
-    if (simulationThreaded && selectionMode == BUILDING_SELECTION)
+    if (selectionMode == BUILDING_SELECTION)
     {
         const auto* b = drawnScene().entities.building(newSelection);
-        selection = b ? BuildingRef{b->gid, b->generation} : BuildingRef{};
+        selection = b ? BuildingRef{b->gid, b->scriptIdentity} : BuildingRef{};
         syncSelectionView();
         return;
     }
-    if (simulationThreaded && selectionMode == UNIT_SELECTION)
+    if (selectionMode == UNIT_SELECTION)
     {
         const auto* u = drawnScene().entities.unit(newSelection);
-        selection = u ? UnitRef{u->gid, u->generation} : UnitRef{};
+        selection = u ? UnitRef{u->gid, u->scriptIdentity} : UnitRef{};
         syncSelectionView();
         return;
     }
-	if (selectionMode==BUILDING_SELECTION)
-	{
-		int id=Building::GIDtoID(newSelection);
-		int team=Building::GIDtoTeam(newSelection);
-		selection=Game::refOf(game.teams[team]->myBuildings[id]);
-	}
-	else if (selectionMode==UNIT_SELECTION)
-	{
-		int id=Unit::GIDtoID(newSelection);
-		int team=Unit::GIDtoTeam(newSelection);
-		selection=Game::refOf(game.teams[team]->myUnits[id]);
-	}
-	else if (selectionMode==RESOURCE_SELECTION)
+	if (selectionMode==RESOURCE_SELECTION)
 	{
 		selection=static_cast<int>(newSelection);
 	}
@@ -103,8 +92,8 @@ Unit* GameGUI::selectedUnitOrNull() const
 
 void GameGUI::syncSelectionView(void)
 {
-	view.selectedBuilding=simulationThreaded ? nullptr : selectedBuildingOrNull();
-	view.selectedUnit=simulationThreaded ? nullptr : selectedUnitOrNull();
+	view.selectedBuilding=nullptr;
+	view.selectedUnit=nullptr;
 	const BuildingRef *observed = std::get_if<BuildingRef>(&selection);
 	clientRequests.publishObservedBuilding(
 		(selectionMode==BUILDING_SELECTION && observed) ? *observed : BuildingRef());
@@ -116,66 +105,37 @@ void GameGUI::syncSelectionView(void)
 // validation here rather than in draw functions — draws should be pure.
 void GameGUI::checkSelection(void)
 {
-    if (simulationThreaded)
-    {
+
         bool valid = true;
         const auto& scene = drawnScene();
         if (const auto* ref = std::get_if<BuildingRef>(&selection))
         {
             const auto* b = scene.entities.building(ref->gid);
-            valid = b && b->generation == ref->generation;
+            valid = b && b->scriptIdentity == ref->generation;
         }
         else if (const auto* ref = std::get_if<UnitRef>(&selection))
         {
             const auto* u = scene.entities.unit(ref->gid);
-            valid = u && u->generation == ref->generation;
+            valid = u && u->scriptIdentity == ref->generation;
         }
         else if (selectionMode == RESOURCE_SELECTION)
             valid = scene.map.getW() && scene.map.getResource(selectionResource()).type != NO_RES_TYPE;
         if (!valid) clearSelection(); else syncSelectionView();
-        return;
-    }
-	if ((selectionMode==BUILDING_SELECTION) && (selectionBuilding()==NULL))
-	{
-		clearSelection();
-	}
-	else if ((selectionMode==UNIT_SELECTION) && (selectionUnit()==NULL))
-	{
-		clearSelection();
-	}
-	else if ((selectionMode==RESOURCE_SELECTION)
-		&& (game.map.getResource(selectionResource()).type==NO_RES_TYPE))
-	{
-		clearSelection();
-	}
-	else
-	{
-		syncSelectionView();
-	}
 }
 
-
-// Cycle the local team's selection forward to the next building or unit of
-// the same type, wrapping at MAX_COUNT. No-op when the selected entity is
-// gone (e.g. the selected building was destroyed in the previous sim tick
-// and the keyboard shortcut fires before the next draw),
-// when no peer of the same type exists, or when the selected entity is not
-// owned by the local team. Invoked from the local keyboard handler only —
-// never produces a network order, never reads RNG, never mutates sim state.
 void GameGUI::iterateSelection(void)
 {
 	// The selected entity may have died since the last draw; clear the
 	// selection first so neither branch below sees a null referent.
 	checkSelection();
-    if (simulationThreaded)
-    {
+
         const auto& entities = drawnScene().entities;
         if (selectionMode == BUILDING_SELECTION || selectionMode == TOOL_SELECTION)
         {
             const auto* ref = std::get_if<BuildingRef>(&selection);
             const auto* selected = ref ? entities.building(ref->gid) : nullptr;
             if (selectionMode == BUILDING_SELECTION && (!selected || selected->team != localTeamNo)) return;
-            const int type = selected ? selected->typeNum : game.buildingsTypes.getFinishedTypeNum(toolManager.getBuildingName());
+            const int type = selected ? selected->typeNum : BuildingCatalogView(*drawnScene().buildingTypes).getFinishedTypeNum(toolManager.getBuildingName());
             const int start = selected ? Building::GIDtoID(selected->gid) : -1;
             for (int n = 1; n <= Building::MAX_COUNT; ++n)
             {
@@ -195,130 +155,24 @@ void GameGUI::iterateSelection(void)
                 if (u && u->typeNum == selected->typeNum) { setSelection(UNIT_SELECTION, unsigned(u->gid)); centerViewportOnSelection(); break; }
             }
         }
-        return;
-    }
-
-	if (selectionMode==BUILDING_SELECTION)
-	{
-		Building* selBuild=selectionBuilding();
-		if (!selBuild) return;
-		Uint16 selectionGBID=selBuild->gid;
-		int pos=Building::GIDtoID(selectionGBID);
-		int team=Building::GIDtoTeam(selectionGBID);
-		int i=pos;
-		if (team==localTeamNo)
-		{
-			while (i<pos+Building::MAX_COUNT)
-			{
-				i++;
-				Building *b=game.teams[team]->myBuildings[i % Building::MAX_COUNT];
-				if (b && b->typeNum==selBuild->typeNum)
-				{
-					setSelection(BUILDING_SELECTION, b);
-					centerViewportOnSelection();
-					break;
-				}
-			}
-		}
-	}
-	else if (selectionMode==TOOL_SELECTION)
-	{
-		Sint32 typeNum=game.buildingsTypes.getFinishedTypeNum(toolManager.getBuildingName());
-		for (int i=0; i<Building::MAX_COUNT; i++)
-		{
-			Building *b=game.teams[localTeamNo]->myBuildings[i];
-			if (b && b->typeNum==typeNum)
-			{
-				setSelection(BUILDING_SELECTION, b);
-				centerViewportOnSelection();
-				break;
-			}
-		}
-	}
-	else if (selectionMode == UNIT_SELECTION)
-	{
-		Unit * selUnit = selectionUnit();
-		assert(selUnit);
-		Uint16 gid = selUnit->gid;
-		/* to be safe should check if gid is valid here? */
-		/* if looking at one of our pieces, continue with the next
-			one of our pieces of same type, otherwise start at the
-			beginning of our pieces of that type. */
-		Sint32 id = ((Unit::GIDtoTeam(gid) == localTeamNo) ? Unit::GIDtoID(gid) : 0);
-		id %= Unit::MAX_COUNT; /* just in case! */
-		Sint32 i = id;
-		while (1)
-		{
-			i = ((i + 1) % Unit::MAX_COUNT);
-			if (i == id) break;
-			Unit * u = game.teams[localTeamNo]->myUnits[i];
-			if (u && (u->typeNum == selUnit->typeNum))
-			{
-				setSelection(UNIT_SELECTION, u);
-				centerViewportOnSelection();
-				break;
-			}
-		}
-	}
 }
 
 void GameGUI::centerViewportOnSelection(void)
 {
-    if (simulationThreaded)
-    {
+
         const auto& entities = drawnScene().entities;
         if (const auto* ref = std::get_if<BuildingRef>(&selection))
         {
             const auto* b = entities.building(ref->gid);
-            if (b && b->generation == ref->generation)
-                centerViewportOn(b->posX+b->type->width/2, b->posY+b->type->height/2);
+            if (b && b->scriptIdentity == ref->generation)
+                centerViewportOn(b->posX+entities.type(*b)->width/2, b->posY+entities.type(*b)->height/2);
         }
         else if (const auto* ref = std::get_if<UnitRef>(&selection))
         {
             const auto* u = entities.unit(ref->gid);
-            if (u && u->generation == ref->generation) centerViewportOn(u->posX,u->posY);
+            if (u && u->scriptIdentity == ref->generation) centerViewportOn(u->posX,u->posY);
         }
-        return;
-    }
-	if ((selectionMode==BUILDING_SELECTION) || (selectionMode==UNIT_SELECTION))
-	{
-		// Default-init so a future selectionMode that slips past the outer
-		// guard can't read uninitialized stack in release builds (where
-		// the asserts below are stripped).
-		Sint32 posX = 0, posY = 0;
-		if (selectionMode==BUILDING_SELECTION)
-		{
-			Building* b=selectionBuilding();
-			assert(b);
-			posX = b->getMidX();
-			posY = b->getMidY();
-		}
-		else if (selectionMode==UNIT_SELECTION)
-		{
-			Unit * u = selectionUnit();
-			assert (u);
-			posX = u->posX;
-			posY = u->posY;
-		}
-
-		/* It violates good abstraction principles that we know here
-			that the size of the right panel is RIGHT_MENU_WIDTH pixels, and that each
-			map cell is 32 pixels.  This information should be
-			abstracted. */
-
-		int oldViewportX = viewportX;
-		int oldViewportY = viewportY;
-
-		stopViewportMotion();
-		viewportX = posX - int(camera.visibleW()/64);
-		viewportY = posY - int(camera.visibleH()/64);
-		viewportX = viewportX & game.map.getMaskW();
-		viewportY = viewportY & game.map.getMaskH();
-
-		viewportChanged(oldViewportX, viewportX, oldViewportY, viewportY);
-	}
 }
-
 
 void GameGUI::consumeClientEvents()
 {
@@ -338,25 +192,13 @@ const SceneBuildingPanel* GameGUI::inputBuildingPanel()
 {
     const auto* ref = std::get_if<BuildingRef>(&selection);
     if (selectionMode != BUILDING_SELECTION || !ref) return nullptr;
-    if (!simulationThreaded)
-        SceneExtractor::extractInputPanels(game, sceneRequest(), serialInputPanels);
-    const auto& panel = simulationThreaded ? drawnScene().panels.building : serialInputPanels.building;
-    return panel.valid && panel.gid == ref->gid && panel.generation == ref->generation ? &panel : nullptr;
+    const auto& panel=drawnScene().panels.building;
+    return panel.valid && panel.state().identity==*ref ? &panel : nullptr;
 }
 
-std::optional<SceneBuilding> GameGUI::inputBuilding(BuildingRef ref) const
+const SnapshotBuilding* GameGUI::inputBuilding(BuildingRef ref) const
 {
-    if (simulationThreaded)
-    {
-        const auto* b = drawnScene().entities.building(ref.gid);
-        if (b && b->generation == ref.generation) return *b;
-        return {};
-    }
-    const auto* b = game.resolveBuilding(ref);
-    if (!b) return {};
-    SceneBuilding result;
-    result.gid=b->gid; result.generation=b->scriptIdentity; result.team=b->owner->teamNumber;
-    result.type=b->type; result.typeNum=b->typeNum; result.posX=b->posX; result.posY=b->posY;
-    result.buildingState=b->buildingState;
-    return result;
+    const auto* b=drawnScene().entities.building(ref.gid);
+    if (b && b->scriptIdentity==ref.generation) return b;
+    return nullptr;
 }

@@ -766,6 +766,8 @@ DragResult dragAndHold(const Turn::TurnSessionConfig& config, const fs::path& ve
 		}
 	REQUIRE(haveFlag);
 	REQUIRE(haveHall);
+	// This headless network fixture explicitly publishes the world its client sees.
+	c.engine->gui.prepareLocalPresentation();
 
 	std::map<std::pair<int, int>, std::uint64_t> queuedAt;
 	std::set<std::pair<int, int>> executed;
@@ -804,7 +806,7 @@ DragResult dragAndHold(const Turn::TurnSessionConfig& config, const fs::path& ve
 		const int x = (team->startPosX + (i % 30) - 15) & game.map.getMaskW();
 		const int y = (team->startPosY + (i / 30) - 20) & game.map.getMaskH();
 		queuedAt.emplace(std::make_pair(x, y), m.net.now);
-		c.engine->gui.queueFlagMove(*flag, x, y, drop);
+		c.engine->gui.queueFlagMove(flagGid, x, y, drop);
 		if (drop)
 		{
 			dropAt = {x, y};

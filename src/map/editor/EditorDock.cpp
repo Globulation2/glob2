@@ -203,13 +203,13 @@ std::string EditorDock::modelSignature() const
 {
 	std::ostringstream s;
 	s << editor.currentBrushId() << '|' << int(editor.panelMode) << '|' << int(editor.selectionMode) << '|'
-	  << editor.team << '|' << editor.game.mapHeader.getNumberOfTeams() << '|' << editor.buildingLevel << '|'
+	  << editor.team << '|' << (editor.view.scene ? editor.view.scene->entities.teamCount : 0) << '|' << editor.buildingLevel << '|'
 	  << editor.buildingLevelCount << '|' << editor.placingUnitLevel << '|' << editor.brush.getFigure() << '|'
 	  << editor.brush.getType() << '|' << editor.brush.addRemoveIsEnabled() << '|' << editor.isFertilityOn << editor.fertilityOverlayStale() << '|'
 	  << editor.selectedUnitGID << '|' << editor.selectedBuildingGID << '|' << editor.areaNumber->getIndex() << '|'
-	  << editor.game.map.getAreaName(editor.areaNumber->getIndex()) << '|' << editor.dockCollapsed.size();
+	  << (editor.view.scene ? editor.view.scene->map.getAreaName(editor.areaNumber->getIndex()) : std::string{}) << '|' << editor.dockCollapsed.size();
 	for (int i = 0; i < Team::MAX_COUNT; ++i)
-		s << (editor.game.teams[i] ? '1' : '0');
+		s << (editor.view.scene && i < editor.view.scene->entities.teamCount ? '1' : '0');
 	return s.str();
 }
 
@@ -288,7 +288,7 @@ Element EditorDock::header(const Presentation &p)
 	menuOptions.icon = fe::uiIcon(fe::UIIcon::More);
 	auto menu = fe::button("dock/menu", fe::tr("[Menu]"), [this] { editor.performAction("open menu screen"); }, menuOptions);
 	std::ostringstream size;
-	size << editor.game.map.getW() << " x " << editor.game.map.getH();
+	size << (editor.view.scene ? editor.view.scene->map.getW() : 0) << " x " << (editor.view.scene ? editor.view.scene->map.getH() : 0);
 	auto side_column = fe::column({menu, fe::caption(size.str())}, {p.pt(6)});
 	auto top = fe::row({fe::sized({side, side}, minimap), fe::expanded(side_column)}, {gap, fe::CrossAlign::Start});
 

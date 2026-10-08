@@ -741,22 +741,22 @@ TEST_CASE("JavaScript telemetry scene permissions and replay diagnostic roundtri
 	game.teams[0]->allies = 1;
 	SceneRequest request;
 	request.localTeam = 0;
-	Scene scene;
+	PresentationFrame scene;
 	SceneExtractor extractor;
-	extractor.extract(game, request, scene);
+	extractor.prepare((game).captureReadBoundary({},true,SceneExtractor::requirements(request)), request, scene);
 	REQUIRE(scene.panels.aiTelemetry.size() == 1);
 	CHECK(scene.panels.aiTelemetry[0].player == 0);
 	game.teams[0]->allies = 3;
-	extractor.extract(game, request, scene);
+	extractor.prepare((game).captureReadBoundary({},true,SceneExtractor::requirements(request)), request, scene);
 	CHECK(scene.panels.aiTelemetry.size() == 1);
 	game.teams[1]->allies = 3;
-	extractor.extract(game, request, scene);
+	extractor.prepare((game).captureReadBoundary({},true,SceneExtractor::requirements(request)), request, scene);
 	CHECK(scene.panels.aiTelemetry.size() == 2);
 	game.teams[0]->allies = 1;
-	extractor.extract(game, request, scene);
+	extractor.prepare((game).captureReadBoundary({},true,SceneExtractor::requirements(request)), request, scene);
 	CHECK(scene.panels.aiTelemetry.size() == 1);
 	request.spectating = true;
-	extractor.extract(game, request, scene);
+	extractor.prepare((game).captureReadBoundary({},true,SceneExtractor::requirements(request)), request, scene);
 	CHECK(scene.panels.aiTelemetry.size() == 2);
 	ReplayTelemetry::Stream recording;
 	recording.capture(game, 0);
@@ -929,7 +929,7 @@ TEST_CASE("JavaScript custom library and telemetry dialogs render [display:1280x
 						 {"colony.population", "32", "units", "Own colony population", 128},
 						 {"runtime.pendingActions", "2", "orders", "Waiting for dispatch", 128}};
 		world.game.teams[0]->stats.aiTelemetry = {series};
-		world.gui.drawAll(0);
+		glob2test::drawGUI(world.gui,0);
 		const auto before = world.checksum();
 		InGameAITelemetryScreen dialog(&world.gui);
 		dialog.attach(*globals->gfx);

@@ -27,14 +27,20 @@
 #include <filesystem>
 #include "CreditScreen.h"
 #include <iostream>
+#include "sim/snapshot/SnapshotStore.h"
 
-// GameGUI::drawAll extracts the frame's Scene before drawing overlays; do the
-// same when drawing them directly.
+// The host publishes a frame before drawing; do the same in this direct fixture.
 static void drawOverlays(GameGUI &gui)
 {
-	Scene scene;
-	gui.extractScene(scene);
+	PresentationFrame scene;
+    gui.game.snapshots().invalidateBoundary();
+	gui.prepareLocalPresentation(scene);
 	gui.setPublishedScene(&scene);
+	// A real client publishes the resized camera request before its next
+	// presentation. Rebuild from the same lease after initializing that camera.
+	gui.updateCamera();
+	const auto world=scene.world;
+	SceneExtractor().prepare(world,gui.sceneRequest(),scene);
 	gui.drawOverlayInfos();
 	gui.setPublishedScene(nullptr);
 }
@@ -108,7 +114,7 @@ void buildingCrossFade(Uint32 flags)
 		auto *building = fixture.addBuilding(type, buildingX, 7);
 		buildingX += 7;
 		REQUIRE(building);
-		const Scene &scene = glob2test::sceneOf(fixture.game, view);
+		const PresentationFrame &scene = glob2test::sceneOf(fixture.game, view);
 		std::uint64_t fullBrightness = 0, previous = 0;
 		// Keep the raster geometry fixed so only opacity changes. These are real
 		// zoom-detail values across the transition, including just before removal.
@@ -164,6 +170,7 @@ void run(bool gpu)
 	glob2test::HeadlessGlobals globals(glob2test::GlobalsOptions{.display = true, .loadStrings = true, .width = 1800, .height = 1100,
 	                                                             .screenFlags = Uint32(GraphicContext::RESIZABLE) | (gpu ? Uint32(GraphicContext::USEGPU) : 0)});
 	GameGUI gui;
+    gui.init();
 	Game &game=gui.game;
 	game.map.setSize(4,4,GRASS);
 	game.map.setGame(&game);
@@ -216,11 +223,13 @@ void run(bool gpu)
 		// is covered by the high-resolution integration harness.
 		gui.camera.width=gui.camera.height=0;
 		gui.camera.originX=gui.camera.originY=0;
+        gui.clientRequests.publishDisplaySize(width-160,1100);
 	};
 	const auto clear = [&] { gfx->setClipRect(); gfx->drawFilledRect(0,0,gfx->getW(),gfx->getH(),0,0,0); };
 	// Six displayed copies: three across and two down. Compare exact pixel counts,
 	// not just nonblack output somewhere in the viewport.
 	const auto copies = [&](int x, int y, int w, int h) {
+        INFO("copy region " << x << "," << y << " " << w << "x" << h);
 		capturePixels(gfx);
 		int expected=colored(gfx->getSDLSurface(),x,y,w,h);
 		REQUIRE(expected > 0);
@@ -272,12 +281,12 @@ void run(bool gpu)
 	unit->validTarget=true;
 	unit->targetX=5; unit->targetY=3;
 	clear();
-	{ const Scene &pathScene = glob2test::sceneOf(game); game.drawUnitPathLine(0,0,52,34,1600,1100,0,0,0,0, *pathScene.entities.unit(unit->gid), pathScene); }
+	{ const PresentationFrame &pathScene = glob2test::sceneOf(game); game.drawUnitPathLine(0,0,52,34,1600,1100,0,0,0,0, *pathScene.entities.unit(unit->gid), pathScene); }
 	copies(110,110,70,5);
 	// A line crossing the map seam follows the short route in every copy.
 	unit->posX=15; unit->targetX=1;
 	clear();
-	{ const Scene &pathScene = glob2test::sceneOf(game); game.drawUnitPathLine(0,0,52,34,1600,1100,0,0,0,0, *pathScene.entities.unit(unit->gid), pathScene); }
+	{ const PresentationFrame &pathScene = glob2test::sceneOf(game); game.drawUnitPathLine(0,0,52,34,1600,1100,0,0,0,0, *pathScene.entities.unit(unit->gid), pathScene); }
 	capturePixels(gfx);
 	REQUIRE(colored(gfx->getSDLSurface(),0,110,48,5)>0);
 	REQUIRE(colored(gfx->getSDLSurface(),100,110,350,5)==0);
@@ -312,11 +321,13 @@ void run(bool gpu)
 		game.map.setMapDiscovered();
 		const auto setFog = [&](bool fogRight)
 		{
+			// Direct fixture writes must participate in snapshot change tracking.
+			game.map.visibilityChanges.markAll();
 			for(int y=0;y<game.map.getH();++y) for(int x=0;x<game.map.getW();++x)
 				game.map.fogOfWar[game.map.coordToIndex(x,y)] = (fogRight && x>=8) ? 0 : me;
 		};
 		MapRenderState render;
-		Scene fogScene;
+		PresentationFrame fogScene;
 		const auto drawFog = [&]() -> std::vector<Uint8>
 		{
 			gfx->setClipRect();
@@ -369,6 +380,7 @@ void run(bool gpu)
 		// and none once it is fully fogged.
 		const auto fogAll = [&](bool fogged)
 		{
+			game.map.visibilityChanges.markAll();
 			for(int y=0;y<game.map.getH();++y) for(int x=0;x<game.map.getW();++x)
 				game.map.fogOfWar[game.map.coordToIndex(x,y)] = fogged ? 0 : me;
 		};
@@ -401,20 +413,22 @@ void run(bool gpu)
 		fadeView.render.overlays.markers.clear();
 		globals->settings.adaptiveZoomDetail=adaptiveZoomDetail;
 
+		game.map.visibilityChanges.markAll();
 		game.map.mapDiscovered=discovered;
 		std::copy(fog.begin(), fog.end(), game.map.fogOfWar);
 	}
 	std::cout << "PASS fog of war shade fades between in sight and fogged\n";
 
 	clear();
+	gui.prepareLocalPresentation();
 	gui.ghostManager.addBuilding(building->typeNum,7,7);
-	gui.ghostManager.drawAll(0,0,0);
+	gui.ghostManager.drawAll(gui.drawnScene(),0,0,0,gfx->getW()-160,gfx->getH());
 	copies(224,224,96,96);
 	gui.ghostManager.removeBuilding(7,7);
 	clear();
 	Mark marker(3,3,Color(255,255,255),60);
 	marker.showTicks=45;
-	marker.drawInMainView(0,0,game);
+	marker.drawInMainView(0,0,gui.drawnScene());
 	copies(20,20,160,160);
 	int clipX,clipY,clipW,clipH;
 	gfx->getClipRect(&clipX,&clipY,&clipW,&clipH);
@@ -477,7 +491,7 @@ void run(bool gpu)
 	unit->validTarget=false;
 	globals->settings.setGraphicsDetail(false);
 	clear();
-	game.drawMap(0,0,1800,1100,160,0,0,0,0,view,Game::DRAW_WHOLE_MAP);
+	glob2test::drawMap(game,0,0,1800,1100,160,0,0,0,0,view,Game::DRAW_WHOLE_MAP);
 	capturePixels(gfx);
 	SDL_Surface *baseline=SDL_ConvertSurface(gfx->getSDLSurface(),gfx->getSDLSurface()->format);
 	REQUIRE(baseline);
@@ -490,7 +504,7 @@ void run(bool gpu)
 			globals->settings.clouds = clouds;
 			globals->settings.cloudShadows = shadows;
 			clear();
-			game.drawMap(0,0,1800,1100,160,0,0,0,0,view,Game::DRAW_WHOLE_MAP, nullptr, nullptr, true);
+			glob2test::drawMap(game,0,0,1800,1100,160,0,0,0,0,view,Game::DRAW_WHOLE_MAP, nullptr, nullptr, true);
 			capturePixels(gfx);
 			auto *pixels = gfx->getSDLSurface();
 			const auto *begin = static_cast<const Uint8*>(pixels->pixels);
@@ -505,7 +519,7 @@ void run(bool gpu)
 	auto *flag=game.addBuilding(3,3,globals->buildingsTypes.getTypeNum("warflag",0,false),0);
 	REQUIRE(flag); flag->unitStayRange=1; view.selectedBuilding=flag;
 	clear();
-	game.drawMap(0,0,1800,1100,160,0,0,0,0,view,Game::DRAW_WHOLE_MAP);
+	glob2test::drawMap(game,0,0,1800,1100,160,0,0,0,0,view,Game::DRAW_WHOLE_MAP);
 	capturePixels(gfx);
 	for(int row=0;row<2;++row) for(int col=0;col<3;++col)
 	{
@@ -566,6 +580,7 @@ void run(bool gpu)
 	for (const auto dimensions : {std::pair<int,int>{4,5}, {5,4}})
 	{
 		GameGUI rectangular;
+		rectangular.init();
 		auto &world=rectangular.game;
 		world.map.setSize(dimensions.first,dimensions.second,GRASS);
 		world.map.setGame(&world);
@@ -585,7 +600,7 @@ void run(bool gpu)
 			walker->targetY=reverse ? mapH-1 : 1;
 			clear();
 			gfx->setClipRect(0,0,width-GAME_GUI_RIGHT_MENU_WIDTH,1100);
-			{ const Scene &pathScene = glob2test::sceneOf(world); world.drawUnitPathLine(0,0,width/32,34,width-GAME_GUI_RIGHT_MENU_WIDTH,1100,0,0,0,0, *pathScene.entities.unit(walker->gid), pathScene); }
+			{ const PresentationFrame &pathScene = glob2test::sceneOf(world); world.drawUnitPathLine(0,0,width/32,34,width-GAME_GUI_RIGHT_MENU_WIDTH,1100,0,0,0,0, *pathScene.entities.unit(walker->gid), pathScene); }
 			capturePixels(gfx);
 			REQUIRE(colored(gfx->getSDLSurface(),0,0,50,50)>0);
 			REQUIRE(colored(gfx->getSDLSurface(),100,100,250,250)==0);

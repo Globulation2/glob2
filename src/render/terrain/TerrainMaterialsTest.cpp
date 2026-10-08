@@ -40,7 +40,7 @@ TEST_SUITE("TerrainMaterials")
 			for (int x = 32; x < 48; ++x)
 				fixture.game.map.paintCell(x, y, ICE);
 		SceneMap scene;
-		scene.extract(fixture.game.map);
+		glob2test::observeMap(fixture.game.map,scene);
 		SoftwareTerrainCache cache;
 		const auto prepare = [&](int x, int time)
 		{

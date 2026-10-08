@@ -16,6 +16,7 @@
 #include "IntBuildingType.h"
 #include "SpriteCentering.h"
 #include "BuildingPresentation.h"
+#include "render/scene/BuildingCatalogView.h"
 #include "Ressource.h"
 
 namespace {
@@ -93,7 +94,7 @@ void GameGUI::drawChoiceSprites(int panelTopY, const std::vector<std::string>& t
 			continue;
 
 		const std::string& type = types[i];
-		BuildingType *bt = game.buildingsTypes.getByType(type.c_str(), 0, false);
+		const BuildingType *bt = BuildingCatalogView(*drawnScene().buildingTypes).getByType(type.c_str(), 0, false);
 		assert(bt);
 		int imgid = bt->miniSpriteImage;
 
@@ -114,7 +115,7 @@ void GameGUI::drawChoiceSprites(int panelTopY, const std::vector<std::string>& t
 
 		const SpriteCenterOffset off = centerSprite(width, CHOICE_ROW_HEIGHT_PX, buildingSprite, imgid);
 
-		buildingSprite->setBaseColor(drawnScene().panels.local.color);
+		buildingSprite->setBaseColor(presentationColor(drawnScene().panels.local.state().color));
 		globalContainer->gfx->drawSprite(x + off.dx, y + off.dy, buildingSprite, imgid);
 		globalContainer->gfx->finishDrawingSprite(buildingSprite, 255);
 
@@ -167,16 +168,16 @@ std::optional<size_t> GameGUI::pickChoiceUnderMouse(int panelTopY, size_t count,
 void GameGUI::drawChoiceInfoPanel(const std::string& type)
 {
 	const int panelLeftX = globalContainer->gfx->getW() - RIGHT_MENU_WIDTH;
-    BuildingType *bt = game.buildingsTypes.getByType(type, 0, true);
+    const BuildingType *bt = BuildingCatalogView(*drawnScene().buildingTypes).getByType(type, 0, true);
     int extraRows=0;
     if (bt) for (unsigned material=8;material<MaterialCount;++material)
         if (bt->semantics.constructionCost[material] && drawnScene().materialVisible(material))
             extraRows=std::max(extraRows,int(material/2)-3);
 	const int buildingInfoStart = globalContainer->gfx->getH() - CHOICE_INFO_BOTTOM_OFFSET_PX-extraRows*11;
 
-	const int selected=game.buildingsTypes.getPlaceableTypeNum(type);
+	const int selected=BuildingCatalogView(*drawnScene().buildingTypes).getPlaceableTypeNum(type);
 	if (selected<0) return;
-	const auto* definition=game.buildingsTypes.get(selected);
+	const auto* definition=BuildingCatalogView(*drawnScene().buildingTypes).get(selected);
 	std::string key;
 	const auto name=buildingDisplayName(*definition);
 	globalContainer->gfx->drawString(panelLeftX+(RIGHT_MENU_WIDTH-globalContainer->littleFont->getStringWidth(name))/2,buildingInfoStart-32,globalContainer->littleFont,name);

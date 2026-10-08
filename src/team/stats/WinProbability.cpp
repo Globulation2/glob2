@@ -1,3 +1,4 @@
+#include <utility>
 /*
   Copyright (C) 2026 Globulation2 contributors
 
@@ -200,7 +201,7 @@ namespace WinProbability
 			// alliance alive on its own; a surviving ally still can.
 			if (!team->isAlive || (team->hasLost && !(ignoreLostTeams & (1u << t))))
 				continue;
-			const TeamStat *stat = team->stats.getLatestStat();
+			const TeamStat *stat = std::as_const(team->stats).getLatestStat();
 			slot.alive = true;
 			slot.units += stat->totalUnit;
 			slot.prestige += team->prestige;

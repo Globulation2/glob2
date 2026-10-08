@@ -42,7 +42,7 @@ void UnitSelector::draw()
 {
 	// draw units
 	Sprite *unitSprite=globalContainer->units;
-	unitSprite->setBaseColor(me.game.teams[me.team]->color);
+	unitSprite->setBaseColor(presentationColor(me.view.scene->entities.teams[me.team].color));
 	bool drawSelection=false;
 	if(unitType==WORKER)
 	{
@@ -83,7 +83,7 @@ void TerrainSelector::draw()
     {
         const auto type = TerrainSelector::baseTerrain(terrainType);
 		const auto [sprite, frame] = globalContainer->terrainCompositor().editorIcon(
-			me.game.map.terrainRegistry().appearance(type));
+			me.view.scene->map.terrainRegistry().appearance(type));
 		globalContainer->gfx->drawSprite(area.x,area.y,sprite,frame);
     }
 	if(terrainType==Wheat)
@@ -107,7 +107,7 @@ void TerrainSelector::draw()
         const auto type = TerrainSelector::baseTerrain(terrainType);
 		globalContainer->gfx->finishDrawingSprite(
 			globalContainer->terrainCompositor()
-				.editorIcon(me.game.map.terrainRegistry().appearance(type))
+				.editorIcon(me.view.scene->map.terrainRegistry().appearance(type))
 				.first,
 			255);
 	}
@@ -140,7 +140,7 @@ void TerrainGroupSelector::draw()
 		}
 	}
 	const auto [sprite, frame] = globalContainer->terrainCompositor().editorIcon(
-		me.game.map.terrainRegistry().appearance(shown));
+		me.view.scene->map.terrainRegistry().appearance(shown));
 	globalContainer->gfx->drawSprite(area.x, area.y, sprite, frame);
 	globalContainer->gfx->finishDrawingSprite(sprite, 255);
 	if (active)
