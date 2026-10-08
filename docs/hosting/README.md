@@ -637,6 +637,23 @@ advertises the `validate_set` command. Install the matching WebAssembly client,
 including `/play/set-preview.html`, to enable workspace previews. Browser previews
 are temporary local checks; publication requires server validation.
 
+Install the engine's scoped AppArmor profile before recreating its container:
+
+```sh
+sudo install -m 644 deploy/security/glob2-engine.apparmor /etc/apparmor.d/glob2-engine
+sudo apparmor_parser -r /etc/apparmor.d/glob2-engine
+```
+
+Compose uses the shared `deploy/security/ai-music-seccomp.json` namespace policy
+and `glob2-engine` AppArmor profile. These permit Bubblewrap's private mounts and
+namespace creation while retaining container confinement, dropped outer
+capabilities, a read-only root and no new privileges. System-path masks are
+removed so Bubblewrap can mount its private proc filesystem; AppArmor still
+denies sensitive proc/sys access. Custom profile paths and names use
+`GLOB2_ENGINE_SECCOMP_PROFILE` and `GLOB2_ENGINE_APPARMOR_PROFILE`. On hosts without
+AppArmor, explicitly set `GLOB2_ENGINE_APPARMOR_PROFILE=unconfined`; seccomp and
+the same isolated startup probe remain required.
+
 Set `ENGINE_SET_VALIDATION=1` in `.env`, then recreate the engine agent:
 
 ```sh
