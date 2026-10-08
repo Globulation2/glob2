@@ -398,8 +398,13 @@ struct GrassMap : Map {
         wDec = 3; hDec = 3; w = 8; h = 8;  // 8x8 map
         wMask = 7; hMask = 7;
         size = 64;
-        cases.assign(64, Case{});           // default sprite=0 (grass), no bldg/unit
-        importLegacyTerrain();            // initialize canonical terrain IDs
+        resourceCells.assign(size, {});    // no resource, no building, no unit
+        occupancyCells.assign(size, {});
+        areaCells.assign(size, {});
+        scriptAreaCells.assign(size, 0);
+        vertexTerrain.assign(size, GRASS); // one terrain per vertex
+        bindBootstrappedArrays();
+        rebuildTerrainCounts();            // compile the cell rules
         // No Sector or auxiliary arrays are allocated.
     }
     ~GrassMap() {
@@ -410,7 +415,7 @@ struct GrassMap : Map {
 };
 ```
 
-`cases`, `w` / `h` / `wMask` / `hMask` / `wDec` / `hDec` are all public on `Map`. `arraysBuilt` is also public. Default-constructed `Case` is "grass tile, no occupant, terrain=0, ressource.type=NO_RES_TYPE".
+`w` / `h` / `wMask` / `hMask` / `wDec` / `hDec` and `arraysBuilt` are public on `Map`; the cell arrays are private, so `MapQueryTest.cpp` (the complete fixture, which also loads a resource registry) builds with test-only private access.
 
 ### Stubs for `Sector`
 
@@ -422,12 +427,13 @@ Add the translation unit to `UNIT_TESTS` in `test/tests.py`. The production sour
 
 ### Terrain encoding for tests
 
-Use `Map::setCellTerrain(x, y, TerrainType)` for semantic terrain edits. Batch larger
-edits with `auto batch = map.editTerrain()` to invalidate derived fields once.
-`Case::terrain` is a sprite frame, not a terrain ID. Legacy-import fixtures that
-write frames directly must call `importLegacyTerrain()` afterwards; this adapter
-accepts only classic frames (grass 0–15, sand 128–143, water 256–271 and their
-intervening shore frames). Tests should not use frame ranges as gameplay predicates.
+Terrain is stored per vertex: vertex (x,y) is the top-left corner of cell (x,y), and a
+cell is wholly one terrain only when all four of its corners are. Use
+`Map::setVertexTerrain(x, y, type)` for one vertex, `paintVertices(vertices, type, false)`
+for a set without beaches, and `assignVertexTerrain` or `fillTerrain` for a whole map.
+A lone vertex makes the four cells around it mixed. Batch larger edits with
+`auto batch = map.editTerrain()` to invalidate derived fields once. Test gameplay with
+`terrainPropertiesAt`, not with terrain IDs.
 
 ### When to use this pattern
 

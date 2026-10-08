@@ -350,10 +350,9 @@ model, which only tones neighbours; it would need an engine-side self-lip.
 
 ## Boundaries and masks
 
-The presentation resolver uses a 16-pixel lattice. Whole-cell terrains fill their
-four quadrants; legacy sprites decode into their original TL/TR/BL/BR material
-configuration, including the reversed diagonal groups in the sand/water atlas.
-A test verifies both profiles against the engine's frozen lookup. The resolver
+The presentation resolver uses a 16-pixel lattice. Terrain is stored per map
+vertex, so a tile's four corner vertices give its TL/TR/BL/BR materials directly; a
+tile whose corners agree fills all four quadrants with one material. The resolver
 reads the scene snapshot, never the live simulation. `PreparedCoverage` resolves
 the nine patches needed by a tile once, including shared contour choices and
 side-connected corner groups, then samples them at native or HD pixel centers.
@@ -524,16 +523,16 @@ source surface revisions invalidate cached pixels; catalog file edits do not
 trigger a live catalog reload.
 
 Review the gallery at normal play scale and enlarged detail: isolated cells,
-one-cell roads, bends, holes, mixed junctions, legacy shore orientation, torus
+one-cell roads, bends, holes, mixed junctions, grass/sand/water corner mixes, torus
 edges, translucent water borders and fractional zoom. The current gallery case
 also writes a 256-tick simulation checksum trace and cold/warm cache timings.
 Compare that trace with the same fixture built against the base revision.
 
 ## Caches and compatibility
 
-`TerrainCompatibility.h` freezes old frame ranges, corner semantics and the frame
-hash used by map authoring. Legacy lookup keeps its synchronized random calls.
-Changing visual variants in the catalog cannot change those contracts.
+Saved maps hold terrain IDs per vertex, not sprite frames, so changing visual
+variants in the catalog cannot change saved state, checksums or simulation RNG use.
+`TerrainCompatibility.h` keeps the frame ranges files older than format 144 recorded.
 
 `TerrainVisual::Compositor` owns prepared material sources. Source lifetime and
 content revisions, animation phase and native/HD selection invalidate prepared

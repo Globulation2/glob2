@@ -17,7 +17,8 @@ bytes, with no dependency on local authoring JSON. The existing map-content hash
 binds distributed matches to the definitions.
 Building format 137 adds configurable services and capability-driven AI; replays
 recorded before version 137 became incompatible and network protocol 57 separated
-clients using those rules. The current replay floor is 143 for engine snapshots and scheduled AI decisions.
+clients using those rules. Format 144 stores terrain per map vertex and derives each
+cell's rules from its corners; the current replay floor is 144.
 Supported saved games still load and adopt the current simulation;
 the save floor remains 58.
 

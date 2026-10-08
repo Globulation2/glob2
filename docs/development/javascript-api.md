@@ -272,7 +272,7 @@ callback budget. For example, a 256×256 request exceeds the work budget.
 | Tile field | Presence and meaning |
 | --- | --- |
 | `x`, `y`, `visible`, `explored` | Always present; `visible` means current permission to see the tile |
-| `observedTick`, `terrain`, `terrainType`, `resource` | Present only when explored; current data if visible, last observation otherwise |
+| `observedTick`, `corners`, `resource` | Present only when explored; current data if visible, last observation otherwise |
 | `resource.type`, `.variety`, `.amount` | Map-local resource ID, visual variety and total stock; no resource is `{type: 65535, variety: 0, amount: 0}` |
 | `materialStocks` | Twelve quantities indexed by fixed material ID; current stocks if visible, remembered stocks otherwise |
 | `groundUnit`, `airUnit`, `building` | Present only when currently visible; permitted occupant ID or `65535` for empty/hidden occupant |
@@ -287,11 +287,15 @@ not a request to reveal the engine's hidden current map. The history survives
 save/load and is updated during simulation independently of which tiles the
 script asks for.
 
-**`terrain` is the raw terrain graphic index, retained for compatibility.** Use
-`terrainType` to index the immutable definitions returned by
-`ctx.game.terrainTypes()`. Both tile fields follow the same visibility and
-remembered-observation rules. Unexplored tiles do not expose either field.
-The registry is static public metadata and does not reveal map contents.
+**`corners` holds the tile's four corner terrain IDs**: top-left, top-right,
+bottom-left, bottom-right. Terrain is stored per map vertex, and vertex (x,y) is the
+top-left corner of tile (x,y). Index the immutable definitions returned by
+`ctx.game.terrainTypes()` with these IDs. When all four agree, the tile has that
+terrain's rules exactly; mixed corners are walkable when any corner is, never
+swimmable or buildable, and otherwise as permissive as the weakest corner. There is
+no single per-tile terrain field. `corners` follows the same visibility and
+remembered-observation rules as `resource`. The registry is static public metadata
+and does not reveal map contents.
 
 `resourceTypes()` and `materialTypes()` also return immutable public metadata in
 both profiles, including commander AIs. Resource descriptors expose `id`, `key`,
@@ -310,8 +314,9 @@ inventory positions mean materials, not resource IDs.
 ```js
 const definitions = ctx.game.terrainTypes();
 const tile = ctx.game.map.tile(x, y);
-if (tile.explored) {
-  const terrain = definitions[tile.terrainType];
+if (tile.explored && tile.corners.every(c => c === tile.corners[0])) {
+  // A tile with four equal corners has its terrain's exact rules.
+  const terrain = definitions[tile.corners[0]];
   const groundSpeedMultiplier = terrain.groundSpeedQ8 / 256;
   // Buildability is a terrain capability; occupancy and space still matter.
   if (terrain.buildable) { /* consider a placement query */ }
