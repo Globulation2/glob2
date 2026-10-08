@@ -27,6 +27,7 @@
     "AiValidationReport": "schemas/AiValidationReport.schema.json",
     "AiVersion": "schemas/AiVersion.schema.json",
     "AuthTokens": "schemas/AuthTokens.schema.json",
+    "BuildingPackage": "schemas/BuildingPackage.schema.json",
     "ClientNetworkSummary": "schemas/ClientNetworkSummary.schema.json",
     "ColonySkinClaims": "schemas/ColonySkinClaims.schema.json",
     "ColonySkinVersion": "schemas/ColonySkinVersion.schema.json",
@@ -101,6 +102,7 @@
     "PlayerProfile": "schemas/PlayerProfile.schema.json",
     "PublicAccount": "schemas/PublicAccount.schema.json",
     "PublishAiRequest": "schemas/PublishAiRequest.schema.json",
+    "PublishBuildingRequest": "schemas/PublishBuildingRequest.schema.json",
     "PublishSkinRequest": "schemas/PublishSkinRequest.schema.json",
     "RealtimeAuthHandoffBeginParams": "schemas/RealtimeAuthHandoffBeginParams.schema.json",
     "RealtimeAuthHandoffBeginResult": "schemas/RealtimeAuthHandoffBeginResult.schema.json",
@@ -179,6 +181,7 @@
     "RoomList": "schemas/RoomList.schema.json",
     "RoomMapSelection": "schemas/RoomMapSelection.schema.json",
     "RoomState": "schemas/RoomState.schema.json",
+    "SaveBuildingDraftRequest": "schemas/SaveBuildingDraftRequest.schema.json",
     "SaveSkinDraftRequest": "schemas/SaveSkinDraftRequest.schema.json",
     "SelfAccount": "schemas/SelfAccount.schema.json",
     "SignInResponse": "schemas/SignInResponse.schema.json",
@@ -200,6 +203,7 @@
     "StudioTurn": "schemas/StudioTurn.schema.json",
     "UpdateAccountRequest": "schemas/UpdateAccountRequest.schema.json",
     "UpdateAiRequest": "schemas/UpdateAiRequest.schema.json",
+    "UpdateBuildingFamilyRequest": "schemas/UpdateBuildingFamilyRequest.schema.json",
     "UpdateMapRequest": "schemas/UpdateMapRequest.schema.json",
     "ValidateAiPayload": "schemas/ValidateAiPayload.schema.json",
     "ValidateMapPayload": "schemas/ValidateMapPayload.schema.json",
@@ -1294,6 +1298,79 @@
       "valid": false,
       "stage": "schema",
       "note": "Unknown statuses cannot masquerade as validation."
+    },
+    {
+      "file": "valid/UpdateBuildingFamilyRequest/withdraw-from-public-listing.json",
+      "schema": "UpdateBuildingFamilyRequest",
+      "valid": true,
+      "note": "Visibility can change independently of release validation."
+    },
+    {
+      "file": "invalid/UpdateBuildingFamilyRequest/empty-update.json",
+      "schema": "UpdateBuildingFamilyRequest",
+      "valid": false,
+      "stage": "schema",
+      "note": "A metadata update changes at least one field."
+    },
+    {
+      "file": "invalid/UpdateBuildingFamilyRequest/cannot-clear-moderation.json",
+      "schema": "UpdateBuildingFamilyRequest",
+      "valid": false,
+      "stage": "schema",
+      "note": "Authors cannot change moderation state."
+    },
+    {
+      "file": "valid/PublishBuildingRequest/saved-family.json",
+      "schema": "PublishBuildingRequest",
+      "valid": true,
+      "note": "Publish the saved immutable package."
+    },
+    {
+      "file": "invalid/PublishBuildingRequest/bad-visibility.json",
+      "schema": "PublishBuildingRequest",
+      "valid": false,
+      "stage": "schema",
+      "note": "Only catalog visibility choices are accepted."
+    },
+    {
+      "file": "valid/BuildingPackage/field-kitchen.json",
+      "schema": "BuildingPackage",
+      "valid": true,
+      "note": "An additive building family using installed artwork."
+    },
+    {
+      "file": "invalid/BuildingPackage/stock-override.json",
+      "schema": "BuildingPackage",
+      "valid": false,
+      "stage": "semantic",
+      "note": "Packages cannot override stock keys."
+    },
+    {
+      "file": "invalid/BuildingPackage/runtime-id.json",
+      "schema": "BuildingPackage",
+      "valid": false,
+      "stage": "schema",
+      "note": "Runtime IDs belong to resolved catalogs, not authored packages."
+    },
+    {
+      "file": "valid/SaveBuildingDraftRequest/family-draft.json",
+      "schema": "SaveBuildingDraftRequest",
+      "valid": true,
+      "note": "A revision-bound family draft save."
+    },
+    {
+      "file": "invalid/SaveBuildingDraftRequest/missing-revision.json",
+      "schema": "SaveBuildingDraftRequest",
+      "valid": false,
+      "stage": "schema",
+      "note": "Draft saves must bind a revision."
+    },
+    {
+      "file": "invalid/SaveBuildingDraftRequest/stock-override.json",
+      "schema": "SaveBuildingDraftRequest",
+      "valid": false,
+      "stage": "semantic",
+      "note": "Draft manifests cannot override stock building keys."
     }
   ],
   "tickets": {

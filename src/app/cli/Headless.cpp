@@ -10,6 +10,8 @@
 #include "Engine.h"
 #include "GameDiagnostics.h"
 #include "GlobalContainer.h"
+#include "BuildingArtwork.h"
+#include "Sha256.h"
 #include "AINames.h"
 #include "AIJavaScript.h"
 #include "AIThreading.h"
@@ -603,13 +605,88 @@ int runHeadlessCommand(int argc,char **argv)
 	if(argc<2) return -1;
 	const std::string command=argv[1];
 	if(command!="--headless-catalog" && command!="--run-game" && command!="--generate-map"
-		&& command!="--verify-match" && command!="--sim-version" && command!="--turn-client") return -1;
+		&& command!="--verify-match" && command!="--sim-version" && command!="--turn-client" && command!="--compose-buildings") return -1;
 	fs::path output;
 	try
 	{
 		isolateEnvironment();
 		if(command=="--verify-match") return runVerifyMatch(argc,argv);
 		if(command=="--turn-client") return runTurnClient(argc,argv);
+        if(command=="--compose-buildings")
+        {
+            std::string base, artwork;
+            bool hasArtwork=false;
+            std::vector<std::string> packages;
+            std::size_t packageBytes=0;
+            for(int i=2; i<argc; ++i)
+            {
+                const std::string option=argv[i];
+                if(++i>=argc) throw std::invalid_argument("missing value for " + option);
+                if(option=="--base")
+                {
+                    if(!base.empty()) throw std::invalid_argument("duplicate --base");
+                    base=argv[i];
+                }
+                else if(option=="--artwork-bundle")
+                {
+                    if(hasArtwork) throw std::invalid_argument("duplicate --artwork-bundle");
+                    hasArtwork=true;
+                    std::ifstream input(argv[i],std::ios::binary);
+                    if(!input) throw std::invalid_argument("cannot read building artwork bundle");
+                    char chunk[8192];
+                    while(input) {
+                        input.read(chunk,sizeof(chunk));artwork.append(chunk,input.gcount());
+                        if(artwork.size()>BuildingArtwork::MaxBytes) throw std::invalid_argument("artwork bundle exceeds 72 MiB");
+                    }
+                    if(input.bad()) throw std::invalid_argument("artwork bundle read failed");
+                }
+                else if(option=="--package")
+                {
+                    std::ifstream input(argv[i], std::ios::binary);
+                    if(!input) throw std::invalid_argument("cannot read building package");
+                    std::string text;
+                    char chunk[8192];
+                    while(input)
+                    {
+                        input.read(chunk, sizeof(chunk));
+                        text.append(chunk, input.gcount());
+                        if(text.size()>8u*1024u*1024u) throw std::invalid_argument("building package exceeds 8 MiB");
+                    }
+                    if(input.bad()) throw std::invalid_argument("building package read failed");
+                    packageBytes+=text.size();
+                    if(packageBytes>8u*1024u*1024u || packages.size()>=4096)
+                        throw std::invalid_argument("combined building packages exceed their limits");
+                    packages.push_back(std::move(text));
+                }
+                else throw std::invalid_argument("unknown composition option: " + option);
+            }
+            GlobalContainer globals("glob2-building-composition", base);
+            globalContainer=&globals; globals.runNoX=true;
+            const auto baseHash=globals.buildingsTypes.fingerprint();
+            const auto baseSize=globals.buildingsTypes.size();
+            globals.buildingsTypes.composePackages(packages);
+            for(std::size_t id=baseSize;id<globals.buildingsTypes.size();++id) {
+                const auto& type=*globals.buildingsTypes.get(id);
+                const auto installedFrames=[&](const std::string& path,int first,int count) {
+                    if(!path.starts_with("data/gfx/"))return;
+                    for(int frame=first;frame<first+count;++frame) {
+                        std::unique_ptr<GAGCore::StreamBackend> input(GAGCore::Toolkit::getFileManager()->openInputStreamBackend(path+std::to_string(frame)+".webp"));
+                        if(!input || !input->isValid())throw std::invalid_argument("Installed building frame is missing: "+path+std::to_string(frame));
+                    }
+                };
+                installedFrames(type.gameSprite,type.gameSpriteImage,type.crossConnectMultiImage?16:type.gameSpriteCount);
+                if(type.miniSpriteImage>=0)installedFrames(type.miniSprite,type.miniSpriteImage,1);
+            }
+            nlohmann::json result={{"schemaVersion",1},{"baseHash",baseHash},
+                {"catalog",{{"snapshot",globals.buildingsTypes.snapshotJson()},{"hash",globals.buildingsTypes.fingerprint()}}}};
+            if(hasArtwork) {
+                const auto hash=Online::Sha256::hex(artwork);
+                BuildingArtwork::decode(std::move(artwork),globals.buildingsTypes);
+                result["artworkHash"]=hash;
+            }
+            std::cout << result.dump() << std::endl;
+            return 0;
+        }
 		if(command=="--sim-version")
 		{
 			if(argc!=2) throw std::invalid_argument("--sim-version takes no arguments");
@@ -624,7 +701,7 @@ int runHeadlessCommand(int argc,char **argv)
 			GlobalContainer globals("glob2-tournament-catalog");
 			globalContainer=&globals;globals.runNoX=true;
 			std::cout << "{\"schema_version\":1,\"save_version\":" << VERSION_MINOR << ",\"protocol_version\":" << NET_PROTOCOL_VERSION
-				<< ",\"building_catalog_hash\":" << quote(globals.buildingsTypes.fingerprint()) << ",\"map_report_version\":2,\"generation_telemetry_version\":1,\"gameplay_telemetry_version\":2,\"ai_telemetry_version\":1,\"performance_telemetry_version\":1,\"commands\":[\"game\",\"generate_map\",\"verify_match\",\"sim_version\"],\"sim_version\":" << Online::currentSimVersion().toJson().dump() << ",\"verify_match_version\":1,\"telemetry\":[\"checksums\",\"team-timeline\",\"maxima\"],\"ais\":[";
+				<< ",\"building_catalog_hash\":" << quote(globals.buildingsTypes.fingerprint()) << ",\"map_report_version\":2,\"generation_telemetry_version\":1,\"gameplay_telemetry_version\":2,\"ai_telemetry_version\":1,\"performance_telemetry_version\":1,\"commands\":[\"game\",\"generate_map\",\"verify_match\",\"sim_version\",\"compose_buildings\"],\"sim_version\":" << Online::currentSimVersion().toJson().dump() << ",\"verify_match_version\":1,\"telemetry\":[\"checksums\",\"team-timeline\",\"maxima\"],\"ais\":[";
 			bool comma=false;
 			for(int ai:AINames::selectionOrder())
 			{
@@ -640,7 +717,7 @@ int runHeadlessCommand(int argc,char **argv)
 			char a[]="study",b[]="--catalog";char *args[]={a,b};runMapStudy(2,args);
 			std::cout << "}" << std::endl;return 0;
 		}
-		const std::set<std::string> common={"--output-dir","--profile","--building-catalog"};
+		const std::set<std::string> common={"--output-dir","--profile","--building-catalog","--building-artwork"};
 		const std::set<std::string> gameKeys={"--diagnostic-fields","--diagnostic-interval","--diagnostic-png","--benchmark-warmup","--ai-script","--map-script","--map-file","--load-game","--game-seed","--player","--ai-param","--alliance","--win-condition","--win-probability","--experiment","--rule","--ticks","--compute-threads","--compute-experiments","--gradient-workers","--gradient-delay","--ai-order-delay","--save","--telemetry","--replay","--generator","--map-seed","--param","--candidates"};
 		const std::set<std::string> mapKeys={"--generator","--map-seed","--param","--candidates","--rotations","--write-map","--report","--perturb"};
 		Options options;
@@ -651,6 +728,8 @@ int runHeadlessCommand(int argc,char **argv)
 			if(++i>=argc)throw std::invalid_argument("missing value for " + key);
 			options[key].push_back(argv[i]);
 		}
+		if(command=="--run-game" && options.count("--building-artwork") && !options.count("--generator"))
+			throw std::invalid_argument("--building-artwork requires --generator; loaded maps carry their own artwork");
 		if(one(options,"--output-dir").empty())throw std::invalid_argument("--output-dir is required");
 		output=fs::absolute(one(options,"--output-dir"));
 		fs::create_directories(output);
@@ -665,10 +744,10 @@ int runHeadlessCommand(int argc,char **argv)
 			{
 				if(options.count("--map-file") || options.count("--load-game")) throw std::invalid_argument("generator conflicts with file input");
 				std::vector<std::string> generation={"glob2","--generate-map","--output-dir",(output/"generated").string(),"--write-map","true"};
-				for(const auto &key : {"--generator","--map-seed","--param","--candidates","--building-catalog"})
+				for(const auto &key : {"--generator","--map-seed","--param","--candidates","--building-catalog","--building-artwork"})
 				{
 					for(const auto &value : many(options,key)){generation.push_back(key);generation.push_back(value);}
-					if (std::string(key) != "--building-catalog") options.erase(key);
+					if (std::string(key) != "--building-catalog" && std::string(key) != "--building-artwork") options.erase(key);
 				}
 				std::vector<char*> raw;for(auto &value:generation)raw.push_back(&value[0]);
 				const int generated=runHeadlessCommand(raw.size(),raw.data());
@@ -692,6 +771,7 @@ int runHeadlessCommand(int argc,char **argv)
 			integer(one(options,"--map-seed"),0,UINT32_MAX);
 			std::vector<std::string> args={"study",std::to_string(method),one(options,"--map-seed"),one(options,"--profile","glob2-tournament"),"tuning","quality","result="+(output/"result.json").string()};
 			if (options.count("--building-catalog")) args.push_back("building-catalog="+one(options,"--building-catalog"));
+            if (options.count("--building-artwork")) args.push_back("building-artwork="+one(options,"--building-artwork"));
 			std::set<std::string> seen;
 			for(const auto &param:many(options,"--param"))
 			{

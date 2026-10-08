@@ -298,6 +298,27 @@ build/darwin/client/release/src/OnlinePlayHarness guest https://app.glob2online.
 build/darwin/client/release/src/OnlinePlayHarness quick https://app.glob2online.com artifacts/e2e-quick
 ```
 
+## Building-family installation
+
+**Building families** on local new-game and editor new-map screens opens
+`src/online/screens/BuildingLibraryScreen.cpp`. It browses the selected instance's
+public library, installs compatible validated releases and lets the player choose
+which families to add to stock buildings. Online browsing needs that instance;
+already installed families remain available offline. Selection is stored in the
+local profile and applies to subsequent new maps in both flows.
+
+`src/building/BuildingLibrary.cpp` writes pinned releases and the selection index
+under `online/buildings/` through `OnlineStorage`. Installation verifies the exact
+package, artwork, stock catalog, simulation version and resolved catalog hashes
+before publishing the new index. Updates preserve the previous release on failure;
+damaged cache entries are reported rather than silently substituted.
+
+Loaded maps, saves and replays use their embedded catalog and frames. Local
+selection does not alter those files or server-side room generation. To use a
+family online, generate and share a map through the map library, then choose that
+map in the room. See [building catalogs](../features/building-catalogs.md#online-library-and-installed-families)
+for the website editor, package format and limits.
+
 ## Map cache
 
 `MapCache` stores platform maps by the SHA-256 of their decompressed bytes as

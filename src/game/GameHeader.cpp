@@ -5,6 +5,7 @@
 
 #include "FileFormatVersions.h"
 #include "BuildingType.h"
+#include "BuildingArtwork.h"
 
 #include <algorithm>
 #include <ctime>
@@ -13,12 +14,15 @@ namespace
 {
 constexpr std::size_t CatalogChunkBytes = 256 * 1024;
 constexpr Uint32 MaxCatalogChunks = 32;
+// Artwork uses the same bounded byte transport as catalog JSON. Chunking also
+// keeps binary and text streams below their individual string-length limits.
+constexpr Uint32 MaxArtworkChunks = BuildingArtwork::MaxBytes / CatalogChunkBytes;
 
-std::string readCatalog(GAGCore::InputStream* stream)
+std::string readCatalog(GAGCore::InputStream* stream, const char* section="buildingCatalog", Uint32 maxChunks=MaxCatalogChunks)
 {
-	stream->readEnterSection("buildingCatalog");
+	stream->readEnterSection(section);
 	const auto count = stream->readUint32("chunks");
-	if (count > MaxCatalogChunks) throw std::runtime_error("Building catalog is too large");
+	if (count > maxChunks) throw std::runtime_error("Building catalog is too large");
 	std::string snapshot;
 	for (Uint32 i=0; i<count; ++i)
 	{
@@ -35,11 +39,11 @@ std::string readCatalog(GAGCore::InputStream* stream)
 	return snapshot;
 }
 
-void writeCatalog(GAGCore::OutputStream* stream, const std::string& snapshot)
+void writeCatalog(GAGCore::OutputStream* stream, const std::string& snapshot, const char* section="buildingCatalog", Uint32 maxChunks=MaxCatalogChunks)
 {
 	const auto count = (snapshot.size() + CatalogChunkBytes - 1) / CatalogChunkBytes;
-	if (count > MaxCatalogChunks) throw std::runtime_error("Building catalog is too large");
-	stream->writeEnterSection("buildingCatalog");
+	if (count > maxChunks) throw std::runtime_error("Building catalog is too large");
+	stream->writeEnterSection(section);
 	stream->writeUint32(static_cast<Uint32>(count), "chunks");
 	for (Uint32 i=0; i<count; ++i)
 	{
@@ -63,6 +67,7 @@ void GameHeader::reset()
 {
 	++observationRevisionValue; aiOrderDelay = 8;
 	buildingCatalogSnapshot.clear();
+	buildingArtwork.reset();
 	buildingCatalogExperimentKeys.clear();
 	resourceCatalogExperiments.clear();
 	//These are the default game options
@@ -103,6 +108,7 @@ void GameHeader::setBuildingCatalogSnapshot(const std::string& snapshot)
 	if (snapshot.empty())
 	{
 		buildingCatalogSnapshot.clear();
+		buildingArtwork.reset();
 		buildingCatalogExperimentKeys.clear();
 		return;
 	}
@@ -111,8 +117,22 @@ void GameHeader::setBuildingCatalogSnapshot(const std::string& snapshot)
 	catalog.loadSnapshotJson(snapshot);
 	std::vector<std::string> keys;
 	for (const auto& experiment : catalog.experiments()) keys.push_back(experiment.key);
+	buildingArtwork.reset();
 	buildingCatalogSnapshot = catalog.snapshotJson();
 	buildingCatalogExperimentKeys = std::move(keys);
+}
+
+void GameHeader::setBuildingArtwork(const std::string& bytes)
+{
+    if(bytes.empty() && buildingCatalogSnapshot.empty()) { buildingArtwork.reset(); return; }
+    if(buildingCatalogSnapshot.empty()) throw std::runtime_error("Artwork requires a building catalog");
+    if(buildingArtwork && buildingArtwork->bytes()==bytes)return;
+    BuildingsTypes catalog;
+    catalog.loadSnapshotJson(buildingCatalogSnapshot);
+    auto decoded=BuildingArtwork::decode(bytes,catalog);
+    if(!decoded && !buildingArtwork)return;
+    buildingArtwork=std::move(decoded);
+    ++observationRevisionValue;
 }
 
 void GameHeader::setResourceExperiments(const std::vector<CatalogExperimentDefinition>& definitions)
@@ -247,6 +267,9 @@ bool GameHeader::load(GAGCore::InputStream *stream, Sint32 versionMinor)
 		setBuildingCatalogSnapshot(readCatalog(stream));
 	else
 		setBuildingCatalogSnapshot({});
+	if (versionMinor >= FILE_FORMAT_VERSION_BUILDING_ARTWORK)
+        setBuildingArtwork(readCatalog(stream,"buildingArtwork",MaxArtworkChunks));
+    else setBuildingArtwork({});
 	if (versionMinor >= FILE_FORMAT_VERSION_RUNTIME_RESOURCES)
         setResourceExperiments(loadCatalogExperimentDefinitions(stream));
     else resourceCatalogExperiments.clear();
@@ -259,6 +282,8 @@ bool GameHeader::load(GAGCore::InputStream *stream, Sint32 versionMinor)
 
 void GameHeader::save(GAGCore::OutputStream *stream) const
 {
+    if(!buildingArtwork && !buildingCatalogSnapshot.empty()) {BuildingsTypes catalog;catalog.loadSnapshotJson(buildingCatalogSnapshot);BuildingArtwork::decode({},catalog);}
+
 	stream->writeEnterSection("GameHeader");
 	stream->writeSint32(gameLatency, "gameLatency");
 	stream->writeUint8(orderRate, "orderRate");
@@ -311,6 +336,7 @@ void GameHeader::save(GAGCore::OutputStream *stream) const
 	stream->writeUint8(peacefulMode, "peacefulMode");
 	stream->writeUint8(buildingHpLevel, "buildingHpLevel");
 	writeCatalog(stream, buildingCatalogSnapshot);
+	writeCatalog(stream, buildingArtwork ? buildingArtwork->bytes() : std::string{}, "buildingArtwork",MaxArtworkChunks);
 	saveCatalogExperimentDefinitions(stream, resourceCatalogExperiments);
 	experiments.save(stream);
 	stream->writeLeaveSection();
@@ -378,6 +404,9 @@ bool GameHeader::loadWithoutPlayerInfo(GAGCore::InputStream *stream, Sint32 vers
 		setBuildingCatalogSnapshot(readCatalog(stream));
 	else
 		setBuildingCatalogSnapshot({});
+	if (versionMinor >= FILE_FORMAT_VERSION_BUILDING_ARTWORK)
+        setBuildingArtwork(readCatalog(stream,"buildingArtwork",MaxArtworkChunks));
+    else setBuildingArtwork({});
 	if (versionMinor >= FILE_FORMAT_VERSION_RUNTIME_RESOURCES)
         setResourceExperiments(loadCatalogExperimentDefinitions(stream));
     else resourceCatalogExperiments.clear();
@@ -390,6 +419,8 @@ bool GameHeader::loadWithoutPlayerInfo(GAGCore::InputStream *stream, Sint32 vers
 
 void GameHeader::saveWithoutPlayerInfo(GAGCore::OutputStream *stream) const
 {
+    if(!buildingArtwork && !buildingCatalogSnapshot.empty()) {BuildingsTypes catalog;catalog.loadSnapshotJson(buildingCatalogSnapshot);BuildingArtwork::decode({},catalog);}
+
 	stream->writeEnterSection("GameHeader");
 	stream->writeSint32(gameLatency, "gameLatency");
 	stream->writeUint8(orderRate, "orderRate");
@@ -430,6 +461,7 @@ void GameHeader::saveWithoutPlayerInfo(GAGCore::OutputStream *stream) const
 	stream->writeUint8(peacefulMode, "peacefulMode");
 	stream->writeUint8(buildingHpLevel, "buildingHpLevel");
 	writeCatalog(stream, buildingCatalogSnapshot);
+	writeCatalog(stream, buildingArtwork ? buildingArtwork->bytes() : std::string{}, "buildingArtwork",MaxArtworkChunks);
 	saveCatalogExperimentDefinitions(stream, resourceCatalogExperiments);
 	experiments.save(stream);
 	stream->writeLeaveSection();

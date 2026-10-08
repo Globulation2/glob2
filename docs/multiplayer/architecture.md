@@ -27,7 +27,7 @@ ratings and history start fresh.
    ▼                                                  │
  platform-worker (TypeScript): result intake, scheduler, matchmaker, ratings
  engine-agent (TypeScript + glob2 headless, one image per sim version):
-   generate-map · validate-map · render-preview · verify-match · validate-ai
+   generate-map · validate-map · render-preview · verify-match · validate-ai · validate-buildings
  Caddy: TLS, static web client and web app, /api, /realtime, /relay
 ```
 
@@ -190,6 +190,35 @@ reason (mapped to the `access_denied` error code). The only implementation is
 grants; match tickets carry an `entitlements` claim that relays ignore. Product
 rules that are not about access, such as keeping guests out of rated queues,
 belong to the feature that owns them, not to the policy.
+
+## Building-family authoring and releases
+
+`platform/apps/api/src/buildings/` owns private drafts, normalized still WebP
+frames, publication and public library access. `BuildingPackage` in the protocol
+package describes namespaced, additive definitions; the native engine remains
+the authority for catalog semantics. Draft edits use revision UUIDs for
+compare-and-swap updates. Account locks serialize storage quota checks, and shared
+database rate limits apply across API replicas.
+
+A release references a content-addressed ZIP in `blobs` and a `validate-buildings`
+job for one stock hash, simulation version and validation suite. Validation
+constructs a bounded artwork bundle and invokes native catalog composition.
+Release status comes from the job's bound result; public library queries expose
+metadata and hashes, while the internal job retains the full resolved snapshot.
+Only validated releases can supply runtime installation resources. Every resource
+request rechecks visibility and moderation. First publication reserves namespace
+ownership, and forks allocate a new namespace with internal references rewritten.
+Owner metadata and visibility updates do not revalidate immutable releases;
+withdrawal deletes the family, and administrative changes enter the audit log.
+Maintenance retains validation jobs referenced by releases so published verdicts
+survive the normal completed-job retention period.
+
+Blob garbage collection retains every published archive. Account export includes
+private draft archives, releases and social activity; account deletion removes the
+account's authored families and drafts. Maps already containing those definitions
+and artwork remain self-contained. See [building catalogs](../features/building-catalogs.md)
+for the author workflow and format contract, and [rollout](../hosting/README.md#building-family-library-rollout)
+for deployment order.
 
 ## Colony skin ownership
 
@@ -547,6 +576,7 @@ blob the agent stores is also registered in `blobs`.
 | `validate-map` | `--preview-map <file> --json report.json` (the game's own loader, no simulation) | `valid: true` with the decompressed hash, dimensions, team count and the file's format version, or `valid: false` with a reason |
 | `render-preview` | `--preview-map <file> --output preview.png --preview-size <px>` | PNG blob hash and pixel size |
 | `verify-match` | `--verify-match <record> --map <file> --out <dir>` | `verified`/`diverged` with the outcome, team statistics and timelines, or `unverifiable` |
+| `validate-buildings` | `--compose-buildings --package <manifest> --artwork-bundle <bundle>` | Archive and stock hashes, suite version, resolved catalog hash and snapshot, and optional artwork hash; deterministic rejection returns `valid: false` and a reason |
 
 Before running the generator, the agent checks the descriptor against the
 catalog. An unknown or editor-only generator, a revision this binary does not

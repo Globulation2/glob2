@@ -243,6 +243,16 @@ export const AccountExport = Open(
         artifacts: Type.Optional(ExportRows),
       }),
     ),
+    buildings: Type.Optional(
+      Open({
+        drafts: ExportRows,
+        families: Type.Optional(ExportRows),
+        releases: Type.Optional(ExportRows),
+        likes: Type.Optional(ExportRows),
+        favourites: Type.Optional(ExportRows),
+        reports: Type.Optional(ExportRows),
+      }),
+    ),
     ais: Type.Optional(
       Open({
         published: ExportRows,

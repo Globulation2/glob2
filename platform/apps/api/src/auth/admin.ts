@@ -313,6 +313,11 @@ export class AdminService {
           tx.selectFrom('colony_skins').select('id').where('owner_account_id', '=', id),
         )
         .execute();
+      await tx.deleteFrom('building_families').where('owner_account_id', '=', id).execute();
+      await tx.deleteFrom('building_likes').where('account_id', '=', id).execute();
+      await tx.deleteFrom('building_favourites').where('account_id', '=', id).execute();
+      await tx.deleteFrom('building_reports').where('reporter_account_id', '=', id).execute();
+      await tx.deleteFrom('building_drafts').where('owner_account_id', '=', id).execute();
       await tx.deleteFrom('colony_skin_drafts').where('account_id', '=', id).execute();
       await tx.deleteFrom('colony_skin_equipment').where('account_id', '=', id).execute();
       // Keep immutable version ids for match history, but stop serving the paint.

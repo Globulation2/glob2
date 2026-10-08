@@ -1,3 +1,10 @@
+import {
+  BuildingPackage,
+  PublishBuildingRequest,
+  UpdateBuildingFamilyRequest,
+  SaveBuildingDraftRequest,
+  checkBuildingPackage,
+} from './buildings.ts';
 import { musicStudioSchemas } from './musicStudio.ts';
 import { aiStudioSchemas } from './aiStudio.ts';
 import { aiSchemas } from './ais.ts';
@@ -167,6 +174,30 @@ realtimeEntries[realtimeSchemaName('match.start', 'Event')] = {
 };
 
 export const schemaRegistry: Record<string, RegisteredSchema> = {
+  PublishBuildingRequest: { schema: PublishBuildingRequest },
+  UpdateBuildingFamilyRequest: { schema: UpdateBuildingFamilyRequest },
+  SaveBuildingDraftRequest: {
+    schema: SaveBuildingDraftRequest,
+    semantic(value) {
+      try {
+        checkBuildingPackage((value as SaveBuildingDraftRequest).package);
+        return [];
+      } catch (error) {
+        return [{ path: '/package', message: String(error) }];
+      }
+    },
+  },
+  BuildingPackage: {
+    schema: BuildingPackage,
+    semantic(value) {
+      try {
+        checkBuildingPackage(value);
+        return [];
+      } catch (error) {
+        return [{ path: '/', message: String(error) }];
+      }
+    },
+  },
   ...Object.fromEntries(Object.entries(musicSchemas).map(([name, schema]) => [name, { schema }])),
   SkinReportInfo: { schema: SkinReportInfo },
   SkinReportList: { schema: SkinReportList },

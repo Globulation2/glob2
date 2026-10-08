@@ -15,6 +15,7 @@ import { createServer, request as httpRequest, type ServerResponse } from 'node:
 import { extname, join, normalize, resolve } from 'node:path';
 import { SEEDED_QUEUES, seedHistory } from '../../api/test/historySeed.ts';
 import { createHarness } from '../../api/test/support.ts';
+import { seedBuildingLibrary } from './buildingShowcase.ts';
 import { previewFixture, seedShowcase } from './showcase.ts';
 
 const here = import.meta.dirname;
@@ -195,6 +196,7 @@ await harness.database.db
   .where('id', '=', seed.featuredMatch)
   .execute();
 await seedShowcase(harness.database.db, harness.blobs, seed);
+await seedBuildingLibrary(harness.database.db, harness.blobs, seed);
 if (process.env['SEED_OUT']) writeFileSync(process.env['SEED_OUT'], JSON.stringify(seed, null, 2));
 const apiUrl = new URL(api.url);
 

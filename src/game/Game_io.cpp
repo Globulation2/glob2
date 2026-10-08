@@ -24,6 +24,9 @@
 #include <ChunkedStreamBackend.h>
 
 #include "BuildingType.h"
+#include "BuildingArtwork.h"
+#include <Toolkit.h>
+#include <AssetLoader.h>
 #include "DatasetWriter.h"
 #include "FileFormatVersions.h"
 #include "Game.h"
@@ -188,7 +191,10 @@ GAGCore::CooperativeTask Game::loadTask(GAGCore::InputStream *stream)
 	// never inherit edited repository definitions.
 	if (gameHeader.getBuildingCatalogSnapshot().empty()) buildingsTypes.initLegacy();
 	else buildingsTypes.loadSnapshotJson(gameHeader.getBuildingCatalogSnapshot());
-	if (!globalContainer->runNoX) buildingsTypes.loadSprites();
+	if (!globalContainer->runNoX) {
+        Toolkit::assets().setCommunityFiles(gameHeader.getBuildingArtwork() ? gameHeader.getBuildingArtwork()->files() : GAGCore::AssetLoader::CommunityFiles{});
+        buildingsTypes.loadSprites();
+    }
 	gameHeader.setBuildingCatalogSnapshot(buildingsTypes.snapshotJson());
 	configureBuildingCatalog();
 

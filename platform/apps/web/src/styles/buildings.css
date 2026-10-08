@@ -1,0 +1,110 @@
+.building-studio {
+  max-width: 76rem;
+  margin: auto;
+  padding: 1.5rem;
+}
+.building-studio fieldset {
+  border: 0;
+  padding: 0;
+  min-width: 0;
+}
+.building-studio label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  margin: 0.7rem 0;
+}
+.building-actions {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  flex-wrap: wrap;
+  margin: 1rem 0;
+}
+.building-fields {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 20rem), 1fr));
+  gap: 1rem;
+}
+.building-field {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+.building-field label {
+  flex: 1;
+  min-width: 0;
+}
+.building-studio textarea {
+  width: 100%;
+  font-family: monospace;
+  resize: vertical;
+}
+.building-json {
+  min-height: 30rem;
+}
+.building-studio details {
+  margin: 1rem 0;
+}
+.building-studio summary {
+  cursor: pointer;
+  font-weight: 600;
+}
+.building-frames {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+.building-frames figure {
+  margin: 0;
+  padding: 0.75rem;
+  border: 1px solid currentColor;
+}
+.building-frames img {
+  image-rendering: pixelated;
+  object-fit: contain;
+  background: repeating-conic-gradient(#ddd 0% 25%, #fff 0% 50%) 50% / 16px 16px;
+}
+.building-studio input:not([type='checkbox']),
+.building-studio select,
+.building-studio textarea {
+  box-sizing: border-box;
+  min-width: 0;
+  max-width: 100%;
+  width: 100%;
+}
+.building-actions > label {
+  min-width: 0;
+  max-width: 100%;
+}
+
+.building-thumbnail {
+  image-rendering: pixelated;
+  object-fit: contain;
+  max-width: 100%;
+  background: repeating-conic-gradient(#ddd 0% 25%, #fff 0% 50%) 50% / 16px 16px;
+}
+.building-studio code {
+  overflow-wrap: anywhere;
+}
+
+.building-help {
+  padding: 0.75rem 1rem;
+  border: 1px solid currentColor;
+  border-radius: 0.75rem;
+}
+.building-family-list {
+  list-style: none;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 20rem), 1fr));
+  gap: 1rem;
+}
+.building-family-list > li {
+  padding: 1rem;
+  border: 1px solid currentColor;
+  border-radius: 0.75rem;
+}
+.building-family-list h2 {
+  margin-top: 0;
+}

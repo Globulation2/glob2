@@ -213,6 +213,8 @@ void testBinaryHeaderFormsAndLegacy()
         // not a shorter tail; player-info-only records never contain it.
         memory->seekFromEnd(0);
         std::string historical(memory->getBuffer(),memory->getPosition());
+        // Format 144 adds an empty artwork chunk count before resource declarations.
+        if(form!=1) historical.erase(historical.size()-experimentBytes-resourceExperimentBytes-4,4);
         if(form!=1) historical.erase(5,1);
 		const size_t legacySize=historical.size()-extension;
 		auto *oldBytes=new MemoryStreamBackend(historical.data(),legacySize);

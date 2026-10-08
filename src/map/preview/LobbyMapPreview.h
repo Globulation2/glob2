@@ -4,6 +4,7 @@
 #include <vector>
 #include <filesystem>
 #include "MapHeader.h"
+class BuildingArtwork;
 
 class LobbyMapPreview : public MapPreview
 {
@@ -16,6 +17,7 @@ class LobbyMapPreview : public MapPreview
 		uintmax_t bytes;
 		MapHeader header;
 		std::string buildingCatalogSnapshot;
+        std::shared_ptr<const BuildingArtwork> buildingArtwork;
 		MapThumbnail terrain;
 		std::vector<Start> starts;
 	};

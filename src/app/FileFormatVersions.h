@@ -220,3 +220,6 @@ static constexpr int FILE_FORMAT_VERSION_HAZARD_ROUTING = 142;
 
 //! Shared AI scheduling and pending command execution state.
 static constexpr int FILE_FORMAT_VERSION_AI_PIPELINE = 143;
+
+//! Portable, content-addressed building sprite frames in maps, saves and replays.
+static constexpr int FILE_FORMAT_VERSION_BUILDING_ARTWORK = 144;

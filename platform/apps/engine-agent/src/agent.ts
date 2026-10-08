@@ -45,7 +45,7 @@ export interface EngineRunner {
 }
 
 export const unsupportedRunner: EngineRunner = {
-  kinds: ENGINE_JOB_KINDS.filter((kind) => kind !== 'validate-ai'),
+  kinds: ENGINE_JOB_KINDS.filter((kind) => kind !== 'validate-ai' && kind !== 'validate-buildings'),
   run: async (job) => {
     throw new EngineJobError(
       'unsupported',

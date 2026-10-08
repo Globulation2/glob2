@@ -662,3 +662,51 @@ function parseVerdictKind(doc: Record<string, unknown>): VerifierVerdict {
 
 // The header reader lives in @glob2/core (shared with the API's upload checks).
 export { readMapHeader, type MapHeader } from '@glob2/core';
+
+export interface BuildingCompositionResult {
+  schemaVersion: 1;
+  baseHash: string;
+  catalog: BuildingCatalog;
+  artworkHash?: string;
+}
+
+/** The engine owns defaults, dense IDs and semantic validation. */
+export function parseBuildingComposition(
+  text: string,
+  expectedBaseHash: string,
+  expectedArtworkHash?: string,
+): BuildingCompositionResult {
+  const doc = object(parseJson(text, 'building composition'), 'building composition');
+  if (doc['schemaVersion'] !== 1 || doc['baseHash'] !== expectedBaseHash)
+    throw new EngineOutputError('building composition used an unexpected base catalog');
+  const catalog = object(doc['catalog'], 'composed building catalog');
+  if (
+    typeof catalog['snapshot'] !== 'string' ||
+    !catalog['snapshot'] ||
+    Buffer.byteLength(catalog['snapshot']) > 8 * 1024 * 1024 ||
+    typeof catalog['hash'] !== 'string' ||
+    !/^[0-9a-f]{64}$/.test(catalog['hash'])
+  )
+    throw new EngineOutputError('invalid composed building catalog');
+  const result: BuildingCatalog = { snapshot: catalog['snapshot'], hash: catalog['hash'] };
+  try {
+    checkBuildingCatalogHash(result);
+    buildingCatalogExperimentKeys(result);
+  } catch (error) {
+    throw new EngineOutputError(`invalid building composition: ${String(error)}`);
+  }
+  const artworkHash = doc['artworkHash'];
+  if (
+    artworkHash !== undefined &&
+    (typeof artworkHash !== 'string' || !/^[0-9a-f]{64}$/.test(artworkHash))
+  )
+    throw new EngineOutputError('invalid checked artwork hash');
+  if (expectedArtworkHash !== undefined && artworkHash !== expectedArtworkHash)
+    throw new EngineOutputError('building composition did not check the expected artwork');
+  return {
+    schemaVersion: 1,
+    baseHash: expectedBaseHash,
+    catalog: result,
+    ...(typeof artworkHash === 'string' ? { artworkHash } : {}),
+  };
+}

@@ -1,3 +1,8 @@
+import {
+  readBuildingArchive,
+  writeBuildingArtworkBundle,
+  buildingAssetHash,
+} from '@glob2/protocol/node';
 import type { AiValidator } from './aiValidation.ts';
 // The real EngineRunner: each job kind as glob2 headless commands plus blob
 // store I/O. Inputs arrive already checked against the job schema (the agent
@@ -82,6 +87,8 @@ export class HeadlessEngineRunner implements EngineRunner {
 
   constructor(options: HeadlessRunnerOptions) {
     this.options = options;
+    if (options.catalog.commands.includes('compose_buildings'))
+      this.kinds.push('validate-buildings');
     if (options.aiValidator) this.kinds.push('validate-ai');
     this.limits = { ...DEFAULT_RUNNER_LIMITS, ...options.limits };
   }
@@ -92,6 +99,52 @@ export class HeadlessEngineRunner implements EngineRunner {
     let result: unknown;
     try {
       switch (job.kind) {
+        case 'validate-buildings': {
+          const bytes = await blobs.read(job.payload.blobHash, 32 * 1024 * 1024);
+          if (buildingAssetHash(bytes) !== job.payload.blobHash)
+            throw new EngineInputError('Archive hash mismatch');
+          let archive: ReturnType<typeof readBuildingArchive>;
+          let artwork: Buffer;
+          try {
+            archive = readBuildingArchive(Buffer.from(bytes));
+            artwork = writeBuildingArtworkBundle([archive.package], archive.assets);
+          } catch (error) {
+            result = {
+              valid: false,
+              reason: message(error instanceof Error ? error.message : 'Invalid building family'),
+            };
+            break;
+          }
+          try {
+            const composed = await this.options.engine.composeBuildings(
+              [archive.package],
+              signal,
+              artwork.length ? artwork : undefined,
+            );
+            if (composed.baseHash !== job.payload.baseHash)
+              throw new EngineOutputError(
+                'Stock catalog changed; validate with the matching engine',
+              );
+            result = {
+              valid: true,
+              archiveHash: job.payload.blobHash,
+              baseHash: composed.baseHash,
+              catalog: composed.catalog,
+              suite: 1,
+              ...(composed.artworkHash ? { artworkHash: composed.artworkHash } : {}),
+            };
+          } catch (error) {
+            // Only deterministic package errors are terminal rejections. A
+            // broken engine response, filesystem failure or cancellation must
+            // remain a failed/retryable job rather than poisoning the release.
+            if (signal.aborted || !(error instanceof EngineInputError)) throw error;
+            result = {
+              valid: false,
+              reason: message(error instanceof Error ? error.message : 'Invalid building family'),
+            };
+          }
+          break;
+        }
         case 'validate-ai':
           if (!this.options.aiValidator)
             throw new EngineJobError('unavailable', 'Isolated AI validation is unavailable');
