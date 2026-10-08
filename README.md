@@ -21,6 +21,6 @@ The archive preserves paths relative to the project root. Extract into a separat
 
 - Performance acceptance, paced/GPU comparisons and worker tuning are still in progress; no performance conclusion is asserted here.
 - Threaded Firefox WebGL torus screenshots omit the canvas in the failing check, while sampled trace screencasts contain it. Serial Firefox WebGL and context recovery pass. A clean-master browser control is being built; the threaded visual failure is not yet attributed.
-- Current-master integration with the later experimental skin-material update is being checked in an isolated merge checkout.
+- Integration with master `a0a59e4a6` passed in isolated merge `68903e3af4262c3593230ed9815d51a5ee26d479`: 42 headless groups and 13 display checks, including updated skin materials and colony previews. `integration-912.tar.gz` retains the commands, source/merge identity, executable hashes, reports and visual artifacts. Benchmark inputs remain pinned to the earlier candidate; this independent rendering change was not mixed into the performance runs.
 - Windows and Android native execution were not performed for this candidate. Chromium, Firefox and WebKit replay/match traces match Linux native; runtime suites cover serial and threaded browser execution (WebKit uses software rendering).
 - A maintainer gameplay review is still required for animation, pacing, input and visual feel. Automated checks do not replace that review.
