@@ -2764,12 +2764,12 @@
     {
       "runtime": "manifest.json",
       "source": "pack-metadata/manifest.json",
-      "sha256": "58cca8f1453027294d056f75cc8170d4d64c3544f14a0efcaa31a5694be893b9"
+      "sha256": "72b5a43b6b83d6c8446e8515ec121d6970fd6c3bce9c9bfdf5dfc4852d544116"
     },
     {
       "runtime": "frames.txt",
       "source": "pack-metadata/frames.txt",
-      "sha256": "89692bb5800bce4a8362376ffce8aa76eed95109a77f9e7cb6293c5429f2b3b6"
+      "sha256": "5e588668c59cdf781df70b0707d3adf1fea3e53836fed5804719de0ad63975d7"
     },
     {
       "runtime": "README.md",
@@ -20155,6 +20155,26 @@
       "runtime": "terrain-decor59.png",
       "source": "procedural-materials/terrain-decor59.png",
       "sha256": "f021cc1d574f733743662579ff3a9ad3a34e7e3c21ed584bbcbd05bf44e7af7a"
+    },
+    {
+      "runtime": "resource-gold-ore0.png",
+      "source": "procedural-materials/resource-gold-ore0.png",
+      "sha256": "763a864ce4cc846b11e9c769a11a53ec5326b0a361c75d9d879932cc37822f5b"
+    },
+    {
+      "runtime": "resource-iron-ore0.png",
+      "source": "procedural-materials/resource-iron-ore0.png",
+      "sha256": "1a2ddb6a250261c94bf59abbb9f2f68003b98dcac5baf8635afc1f2ca9e15601"
+    },
+    {
+      "runtime": "resource-silica0.png",
+      "source": "procedural-materials/resource-silica0.png",
+      "sha256": "1cea41a0e1267335b161c506773fb464b7acc6060505592960014a0bcdf17482"
+    },
+    {
+      "runtime": "resource-cotton0.png",
+      "source": "procedural-materials/resource-cotton0.png",
+      "sha256": "39215c84af822cfc7a021e3314809fb3dd8357db3c1bf8e0c65707fa66b26a42"
     }
   ]
 }

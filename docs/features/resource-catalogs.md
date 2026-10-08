@@ -160,8 +160,8 @@ the normal asset system. Themed set sheets use map-owned artwork bundles instead
 so transferring those maps includes their custom sprite files.
 Missing installed artwork referenced by manually imported legacy definitions uses
 the visible magenta fallback. A missing spritesheet belonging to a credited set
-bundle is rejected during import or load. The generated foundation
-artwork and provenance are recorded in `datasrc/gfx/resources/manifest.json`.
+bundle is rejected during import or load. The material icons are generated
+artwork recorded in `datasrc/gfx/resources/manifest.json`.
 
 Save format 140 embeds resolved resource definitions, material stocks and required
 experiment metadata. Startup permits an unavailable or malformed default resource catalog so embedded
@@ -177,6 +177,28 @@ artwork remain separate. Single-yield cells retain inline stock. Multi-yield map
 use additional storage only for deposits that need it. Tests exercise canonical
 round trips, malformed inputs, more than 255 identities, mixed material yields,
 experiment transport and deterministic presentation choices.
+
+### Foundation deposit artwork
+
+The gold ore, iron ore, silica and cotton deposit sprites
+(`data/gfx/resource-<name>0.png`) and their 4x HD frames are painted
+procedurally by `tools/artwork/paint_resources.py`. Deposit art should fill its
+32px cell the way the stock rocks do, with an identifying silhouette as well as
+colour: boulders with gold veins and nuggets, darker boulders with rust bands
+and metallic chunks, upright quartz crystals (so silica stays visible on sand),
+and a leafy bush whose white bolls sit in brown husks. To change one, edit its
+layout and palette in the tool, preview it on real terrain, then write the
+frames and check the HD pack:
+
+```sh
+python3 tools/artwork/paint_resources.py --sheet artifacts/resources.png [--ground terrain-dirt0]
+python3 tools/artwork/paint_resources.py
+python3 tools/artwork/package_runtime.py --check
+```
+
+The tool needs NumPy, SciPy and Pillow, and it is deterministic, so an
+unchanged rerun reproduces the committed pixels. Only artwork changes; the
+registry, saves and simulation are unaffected.
 
 ## Regression testing
 
