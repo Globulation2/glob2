@@ -935,8 +935,13 @@ TEST_CASE("JavaScript custom library and telemetry dialogs render [display:1280x
 						 {"colony.population", "32", "units", "Own colony population", 128},
 						 {"runtime.pendingActions", "2", "orders", "Waiting for dispatch", 128}};
 		world.game.teams[0]->stats.aiTelemetry = {series};
-		// Match the production dialog state so extraction includes telemetry.
-		world.gui.inGameMenu = GameGUI::IGM_TELEMETRY;
+		// The standalone dialog needs the telemetry snapshot requested by the production menu.
+		auto request = world.gui.sceneRequest();
+		request.includeTelemetry = true;
+		PresentationFrame presentation;
+		world.game.snapshots().invalidateBoundary();
+		SceneExtractor().prepare(world.game.captureReadBoundary({}, true, SceneExtractor::requirements(request)), request, presentation);
+		world.gui.setPublishedScene(&presentation);
 		glob2test::drawGUI(world.gui,0);
 		const auto before = world.checksum();
 		InGameAITelemetryScreen dialog(&world.gui);
