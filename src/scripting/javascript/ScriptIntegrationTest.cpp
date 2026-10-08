@@ -743,20 +743,25 @@ TEST_CASE("JavaScript telemetry scene permissions and replay diagnostic roundtri
 	request.localTeam = 0;
 	PresentationFrame scene;
 	SceneExtractor extractor;
-	extractor.prepare((game).captureReadBoundary({},true,SceneExtractor::requirements(request)), request, scene);
+	auto observe = [&] {
+		// Fixture writes bypass the simulation tick/order boundary.
+		game.snapshots().invalidateBoundary();
+		extractor.prepare(game.captureReadBoundary({}, true, SceneExtractor::requirements(request)), request, scene);
+	};
+	observe();
 	REQUIRE(scene.panels.aiTelemetry.size() == 1);
 	CHECK(scene.panels.aiTelemetry[0].player == 0);
 	game.teams[0]->allies = 3;
-	extractor.prepare((game).captureReadBoundary({},true,SceneExtractor::requirements(request)), request, scene);
+	observe();
 	CHECK(scene.panels.aiTelemetry.size() == 1);
 	game.teams[1]->allies = 3;
-	extractor.prepare((game).captureReadBoundary({},true,SceneExtractor::requirements(request)), request, scene);
+	observe();
 	CHECK(scene.panels.aiTelemetry.size() == 2);
 	game.teams[0]->allies = 1;
-	extractor.prepare((game).captureReadBoundary({},true,SceneExtractor::requirements(request)), request, scene);
+	observe();
 	CHECK(scene.panels.aiTelemetry.size() == 1);
 	request.spectating = true;
-	extractor.prepare((game).captureReadBoundary({},true,SceneExtractor::requirements(request)), request, scene);
+	observe();
 	CHECK(scene.panels.aiTelemetry.size() == 2);
 	ReplayTelemetry::Stream recording;
 	recording.capture(game, 0);

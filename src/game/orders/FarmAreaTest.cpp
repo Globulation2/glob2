@@ -540,6 +540,7 @@ TEST_SUITE("FarmAreas")
 		Map& map = world.game.map;
 		addWater(map, 8);
 		CHECK_FALSE(map.farmAreasEnabled());
+		world.gui.prepareLocalPresentation();
 		CHECK_FALSE(world.gui.toolManager.farmAreasAvailable());
 		CHECK(world.gui.toolManager.zoneTypeCount() == 3);
 
@@ -564,6 +565,7 @@ TEST_SUITE("FarmAreas")
 
 		glob2test::HeadlessGame withExperiment(options(true));
 		CHECK(OrderValidation::validate(withExperiment.game, 0, order).verdict == OrderValidation::Verdict::Accepted);
+		withExperiment.gui.prepareLocalPresentation();
 		CHECK(withExperiment.gui.toolManager.zoneTypeCount() == 4);
 	}
 
