@@ -12,9 +12,8 @@
     "apps/music-worker",
     "apps/skin-render-worker",
     "apps/ai-music-worker",
-    "apps/ai-terrain-worker"
+    "apps/ai-terrain-worker",
+    "apps/ai-building-worker"
   ],
-  "exclude": [
-    "**/node_modules"
-  ]
+  "exclude": ["**/node_modules"]
 }

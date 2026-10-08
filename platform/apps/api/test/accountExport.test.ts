@@ -11,6 +11,9 @@ import { EXPORTED_ACCOUNT_COLUMNS, UNEXPORTED_ACCOUNT_COLUMNS } from '../src/aut
 import { registeredPlayer, type Player } from './playSupport.ts';
 import { SIM, createHarness, type Harness, type Instance } from './support.ts';
 import { skinImages } from './skinImages.ts';
+import { BuildingAiStudio, newBuildingPackage } from '@glob2/building-studio';
+import { AgentBlobs } from '@glob2/engine/blobs';
+import { readBuildingArchive, writeBuildingArchive } from '@glob2/protocol/node';
 
 let harness: Harness;
 let api: Instance;
@@ -632,6 +635,68 @@ describe('downloading my data', () => {
       for (const lease of leases) expect(text).not.toContain(lease);
       expect(JSON.stringify(data.mapStudio)).not.toMatch(/lease/);
     }
+    owner.client.close();
+    other.client.close();
+  });
+
+  it('exports a self-contained private building revision with its exact archive bytes', async () => {
+    const owner = await registeredPlayer(api, 'BuildingExporter');
+    const other = await registeredPlayer(api, 'OtherBuildingExporter');
+    const studio = new BuildingAiStudio(harness.database.db);
+    const pack = newBuildingPackage(randomUUID());
+    const archive = writeBuildingArchive(pack, new Map());
+    const hash = await new AgentBlobs(harness.blobs, harness.database.db).write(
+      archive,
+      'application/zip',
+    );
+    await studio.credits.adjust(owner.accountId, randomUUID(), 2, 'grant');
+    const thread = (
+      await studio.create(owner.accountId, 'Exported building', randomUUID(), archive)
+    ).id;
+    const own = await studio.own(owner.accountId, thread);
+    const draft = await harness.database.db
+      .selectFrom('building_drafts')
+      .select('revision')
+      .where('id', '=', own.draftId)
+      .executeTakeFirstOrThrow();
+    await studio.submit(
+      owner.accountId,
+      thread,
+      {
+        id: randomUUID(),
+        text: 'Create this building',
+        expectedRevision: draft.revision,
+        references: [],
+      },
+      { enabled: true, salesEnabled: false, pipelineVersion: 'building-v1' },
+      hash,
+    );
+    const row = (await studio.claim())!;
+    await studio.reserveBuild(row);
+    await studio.finish(row, {
+      package: pack,
+      archive,
+      hash,
+      title: 'Exported building',
+      report: {
+        valid: true,
+        archiveHash: hash,
+        baseHash: 'b'.repeat(64),
+        catalog: { hash: 'c'.repeat(64), snapshot: '{}' },
+        suite: 1,
+      },
+      simVersion: 'test',
+      text: 'Created',
+    });
+    const data = (await (await exportOf(owner)).json()) as AccountExport;
+    expect(schemaIssues(AccountExport, data)).toEqual([]);
+    const revisions = data.buildingStudio!.revisions!;
+    expect(revisions).toHaveLength(1);
+    const bytes = Buffer.from(revisions[0]!['archiveBase64'] as string, 'base64');
+    expect(bytes).toEqual(archive);
+    expect(readBuildingArchive(bytes).package).toEqual(pack);
+    const otherData = (await (await exportOf(other)).json()) as AccountExport;
+    expect(otherData.buildingStudio!.revisions).toEqual([]);
     owner.client.close();
     other.client.close();
   });

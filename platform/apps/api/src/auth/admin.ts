@@ -275,6 +275,36 @@ export class AdminService {
           .execute();
       }
       await tx.deleteFrom('terrain_studio_threads').where('account_id', '=', id).execute();
+      const buildingStudioRequests = await tx
+        .selectFrom('building_studio_requests')
+        .select(['id', 'kind', 'status'])
+        .where('account_id', '=', id)
+        .orderBy('id')
+        .forUpdate()
+        .execute();
+      const reservedBuildings = buildingStudioRequests.filter(
+        (r) => r.kind === 'generate' && !['ready', 'failed'].includes(r.status),
+      );
+      if (reservedBuildings.length) {
+        await tx
+          .updateTable('building_wallets')
+          .set({ reserved: sql`reserved - ${reservedBuildings.length}` })
+          .where('account_id', '=', id)
+          .execute();
+        await tx
+          .insertInto('building_ledger')
+          .values(
+            reservedBuildings.map((r) => ({
+              id: `generation:${r.id}`,
+              account_id: id,
+              amount: 0,
+              kind: 'usage' as const,
+              details: { requestId: r.id, delivered: false, returned: true, accountDeleted: true },
+            })),
+          )
+          .execute();
+      }
+      await tx.deleteFrom('building_studio_threads').where('account_id', '=', id).execute();
       const musicStudioRequests = await tx
         .selectFrom('music_studio_requests')
         .select(['id', 'kind', 'status'])

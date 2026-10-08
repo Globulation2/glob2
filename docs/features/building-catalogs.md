@@ -414,6 +414,49 @@ Device recovery copies supplement account drafts; authors explicitly restore a
 copy instead of silently replacing a newer account revision. These are authoring
 interfaces. Publishing a saved revision submits an immutable release for native
 validation; later edits do not rewrite that release.
+### AI Building Studio
+
+`/ai-building-studio` is a separate conversational workspace for creating and
+revising building families. Start a project or choose **Edit with AI** from an
+owned manual draft. Fork a library release into a draft to revise it with AI.
+Questions and brainstorming are free. A clear creation or edit request starts
+one generation automatically; each validated delivery costs one building credit,
+including property-only revisions. Confirmed failures return the reservation;
+unknown provider outcomes retain it for operator reconciliation without automatic
+redispatch. The cost is displayed beside the conversation composer.
+
+The studio composes existing engine capabilities and follows the author's desired
+properties without judging balance or power. Unsupported mechanics require a
+conversation about alternatives. New buildings default to one completed stage
+and a construction variant; upgrade stages are added when requested. Default art
+matches the stock sprites' elevated, approximately 45-degree downward camera,
+with visible roof surfaces and foreshortened walls; all stages share that camera.
+Stock camera references remain present alongside player uploads. Completed
+artwork is generated first and supplied as an identity reference for its
+construction stage, keeping each family visually coherent.
+Appearance edits preserve gameplay fields, and property-only edits reuse existing
+artwork.
+Ordinary generated sprites are still images; connected-segment artwork and
+animation need manual authoring in this release. Generated artwork supports
+footprints up to 12 tiles per side; existing larger buildings can still receive
+property-only edits.
+
+Projects are limited to 100 per account, with at most 100 saved AI revisions
+and 64 MiB of candidate archives across projects. Export and delete project
+history to reclaim this allowance; its ordinary manual draft remains available.
+Reference uploads have a separate 64 MiB account allowance and a limit of 64
+images per project; up to four may be selected for one request.
+
+The preview shows packaged frames at game scale or enlarged scale over grass,
+sand or water swatches, with readable properties and revision comparisons.
+These are authoring previews, not simulated behavior trials. Native composition
+validates the exact self-contained archive before delivery. A candidate applies
+only if its starting draft revision UUID still matches; otherwise it remains
+available for review and explicit restoration. Restoring an earlier revision is
+free and also checks the current draft UUID. Export any candidate as a ZIP, or
+open the current draft in Building Studio to edit and publish through the
+existing library workflow. AI generation never publishes automatically.
+
 ### Online library and installed families
 
 `/buildings` browses the public library; each family page lists pinned releases,

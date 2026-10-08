@@ -50,6 +50,11 @@ export function price(rate: RateCard, usage: Usage): number {
   return integer(Number((numerator + 999999n) / 1000000n));
 }
 export const CREDIT_PRODUCTS = {
+  buildings: {
+    prefix: 'building',
+    path: 'ai-building-studio',
+    insufficient: 'Your building studio needs more credits.',
+  },
   hive: {
     prefix: 'hive',
     path: 'commander',

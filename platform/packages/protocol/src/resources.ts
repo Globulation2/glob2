@@ -230,6 +230,7 @@ export const AccountExport = Open(
         artifacts: Type.Optional(ExportRows),
       }),
     ),
+    buildingStudio: Type.Optional(Type.Record(Type.String(), ExportRows)),
     terrainStudio: Type.Optional(Type.Record(Type.String(), ExportRows)),
     musicStudio: Type.Optional(
       Open({

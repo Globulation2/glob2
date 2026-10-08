@@ -1605,3 +1605,58 @@ Serve `/api/v1/terrain-studio/threads/<id>/events` as an unbuffered authenticate
 SSE stream, as for Map Studio. Keep the matching browser game runtime deployed:
 the scene preview uses the optional `--validate-set --gallery 1` renderer path.
 Existing packages, save formats, and simulation rules are unchanged by this studio.
+
+### AI Building Studio deployment
+
+AI building authoring is optional and independent of the manual building library.
+Migrate the database before enabling its API or worker. Use the `ai-building`
+Compose profile and `ai-building-worker` Docker target; its engine and stock
+building definitions must come from the same build. The worker requires
+`ENGINE_BINARY`, `GLOB2_SOURCE_DIR` (including building-catalog documentation and
+stock definitions) and `BUILDING_OPENAI_API_KEY`.
+Artwork generation also needs stock camera sprites: the Docker target supplies
+them under `studio/building-references/`, while source checkouts use `data/gfx/`.
+A properties-only edit does not require these image references.
+Configure the instance:
+
+```yaml
+buildingStudio:
+  enabled: true
+  salesEnabled: false
+  textModel: <configured text model>
+  imageModel: <configured image model with transparent PNG support>
+  pipelineVersion: building-v1
+  providerCallsPerDay: 100
+  chatPerHour: 60
+  maxOutputTokens: 16000
+  timeoutSeconds: 1800
+```
+
+Model names and service budgets are operator choices. Generation uses a separate
+building wallet: one credit per validated delivery; discussion and restoration
+are free. Enable sales with the existing credit-pack structure and
+`BUILDING_STRIPE_SECRET_KEY` / `BUILDING_STRIPE_WEBHOOK_SECRET`; the signed webhook
+is `/api/v1/ai-building-studio/stripe`. Disabling generation retains access to saved
+projects and candidates. An administrator can reconcile an unrecoverable uncertain
+request through `POST /api/v1/admin/ai-building-studio/requests/:id/fail`, returning
+its reservation and recording an audit entry. Inspect provider records before
+reconciliation; never redispatch an ambiguous paid call automatically.
+
+Validate a configured provider before enabling sales. The opt-in worker test
+requires a disposable PostgreSQL test database, `BUILDING_OPENAI_API_KEY`,
+`BUILDING_LIVE_TEXT_MODEL`, `BUILDING_LIVE_IMAGE_MODEL` and
+`BUILDING_NATIVE_BINARY` pointing to this revision's built engine. From `platform/`,
+run:
+
+```sh
+npx vitest run apps/ai-building-worker/test/pipeline.test.ts -t 'live paid provider'
+```
+
+This makes paid model calls through the real worker pipeline. It retains the
+building archive, native validation report and composited stage previews in
+`artifacts/building-studio/live/`. Inspect the finished and construction images at
+game scale, the requested capabilities and the construction links. A passing
+mock-provider test alone does not establish provider compatibility or art quality.
+The native-decoder test can also consume previously generated PNGs with
+`BUILDING_VALIDATION_IMAGE` and `BUILDING_VALIDATION_SITE_IMAGE`; this checks sprite
+conversion and team-color layers without making provider calls.

@@ -27,6 +27,10 @@
     "AiValidationReport": "schemas/AiValidationReport.schema.json",
     "AiVersion": "schemas/AiVersion.schema.json",
     "AuthTokens": "schemas/AuthTokens.schema.json",
+    "BuildingAiStudioAdopt": "schemas/BuildingAiStudioAdopt.schema.json",
+    "BuildingAiStudioConfig": "schemas/BuildingAiStudioConfig.schema.json",
+    "BuildingAiStudioCreate": "schemas/BuildingAiStudioCreate.schema.json",
+    "BuildingAiStudioTurn": "schemas/BuildingAiStudioTurn.schema.json",
     "BuildingPackage": "schemas/BuildingPackage.schema.json",
     "ClientNetworkSummary": "schemas/ClientNetworkSummary.schema.json",
     "ColonySkinClaims": "schemas/ColonySkinClaims.schema.json",
@@ -1337,6 +1341,37 @@
     {
       "file": "valid/TerrainStudioConfig/disabled.json",
       "schema": "TerrainStudioConfig",
+      "valid": true,
+      "note": "Terrain generation is opt-in."
+    },
+    {
+      "file": "valid/BuildingAiStudioCreate/new-project.json",
+      "schema": "BuildingAiStudioCreate",
+      "valid": true,
+      "note": "Create an idempotent building project."
+    },
+    {
+      "file": "valid/BuildingAiStudioTurn/focused-revision.json",
+      "schema": "BuildingAiStudioTurn",
+      "valid": true,
+      "note": "A turn freezes the base revision and selected references."
+    },
+    {
+      "file": "invalid/BuildingAiStudioTurn/no-client-build-decision.json",
+      "schema": "BuildingAiStudioTurn",
+      "valid": false,
+      "stage": "schema",
+      "note": "The server selects discussion or one build."
+    },
+    {
+      "file": "valid/BuildingAiStudioAdopt/current-revision.json",
+      "schema": "BuildingAiStudioAdopt",
+      "valid": true,
+      "note": "Adoption explicitly replaces current draft content."
+    },
+    {
+      "file": "valid/BuildingAiStudioConfig/disabled.json",
+      "schema": "BuildingAiStudioConfig",
       "valid": true,
       "note": "Terrain generation is opt-in."
     },
