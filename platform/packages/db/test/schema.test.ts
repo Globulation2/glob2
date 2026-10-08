@@ -15,6 +15,7 @@ type ColumnLists = { [T in keyof Database]: readonly (keyof Database[T] & string
 const typedColumns: ColumnLists = {
   admin_library_publications: ['library', 'version_id', 'day'],
   account_activity_days: ['account_id', 'day', 'kind'],
+  admin_metric_sources: ['product', 'source_id', 'created_at', 'status', 'duration_seconds'],
   admin_daily_metrics: ['day', 'metric', 'dimension', 'value'],
   admin_metric_coverage: ['metric', 'since', 'historical_incomplete'],
   admin_analytics_settings: ['id', 'collection', 'started_at'],
@@ -1409,6 +1410,7 @@ describe('migrations', () => {
         '0053_studio_draft_history',
         '0054_admin_analytics',
         '0055_admin_finances',
+        '0056_admin_rollup_state',
       ]);
       expect(
         (
@@ -1478,7 +1480,7 @@ describe('migrations', () => {
         existing.db,
       );
       const upgraded = await migrateToLatest(existing.db);
-      expect(upgraded).toHaveLength(34);
+      expect(upgraded).toHaveLength(35);
       expect(upgraded.every((migration) => migration.status === 'Success')).toBe(true);
       expect(
         await existing.db
@@ -1628,6 +1630,7 @@ describe('migrations', () => {
         ['0053_studio_draft_history', 'Success'],
         ['0054_admin_analytics', 'Success'],
         ['0055_admin_finances', 'Success'],
+        ['0056_admin_rollup_state', 'Success'],
       ]);
       for (const table of [
         'colony_skin_versions',
@@ -1774,6 +1777,7 @@ describe('migrations', () => {
         ['0053_studio_draft_history', 'Success'],
         ['0054_admin_analytics', 'Success'],
         ['0055_admin_finances', 'Success'],
+        ['0056_admin_rollup_state', 'Success'],
       ]);
       expect(
         await db

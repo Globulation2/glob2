@@ -1231,6 +1231,13 @@ export interface Database {
   };
   admin_library_publications: { library: string; version_id: string; day: string };
   account_activity_days: { account_id: string; day: string; kind: 'guest' | 'registered' };
+  admin_metric_sources: {
+    product: string;
+    source_id: string;
+    created_at: Timestamp;
+    status: string;
+    duration_seconds: number | null;
+  };
   admin_daily_metrics: { day: string; metric: string; dimension: string; value: number };
   admin_metric_coverage: { metric: string; since: string; historical_incomplete: boolean };
   admin_analytics_settings: { id: boolean; collection: boolean; started_at: Timestamp };
