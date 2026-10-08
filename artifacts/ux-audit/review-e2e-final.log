@@ -1,0 +1,25 @@
+[WebServer] (node:99804) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 14 tests using 1 worker
+
+(node:99830) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   1 [desktop] › e2e/ai-building-studio.spec.ts:9:1 › building workspace supports revision-bound chat, previews, restoration and mobile panes (1.5s)
+  ✓   2 [desktop] › e2e/aiStudio.spec.ts:8:1 › studio edits, restores, explicitly checks, watches a pinned revision and publishes (4.3s)
+  ✓   3 [desktop] › e2e/buildingStudio.spec.ts:6:1 › authors a private family with revision-safe saving and portable export (1.4s)
+  ✓   4 [desktop] › e2e/buildingStudio.spec.ts:91:1 › protects pending JSON on Back and restores it after Forward (425ms)
+  ✓   5 [desktop] › e2e/music-studio.spec.ts:7:1 › music workspace exposes revision checks and keeps publication explicit (1.2s)
+  ✓   6 [desktop] › e2e/studio.spec.ts:8:1 › conversation and canvas fit desktop and phone (2.1s)
+  ✓   7 [desktop] › e2e/terrain-studio.spec.ts:8:1 › terrain creation workspace fits desktop and phone and submits one revision-bound turn (10.3s)
+(node:99864) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   8 [phone] › e2e/ai-building-studio.spec.ts:9:1 › building workspace supports revision-bound chat, previews, restoration and mobile panes (1.5s)
+  ✓   9 [phone] › e2e/aiStudio.spec.ts:8:1 › studio edits, restores, explicitly checks, watches a pinned revision and publishes (3.5s)
+  ✓  10 [phone] › e2e/buildingStudio.spec.ts:6:1 › authors a private family with revision-safe saving and portable export (1.4s)
+  ✓  11 [phone] › e2e/buildingStudio.spec.ts:91:1 › protects pending JSON on Back and restores it after Forward (431ms)
+  ✓  12 [phone] › e2e/music-studio.spec.ts:7:1 › music workspace exposes revision checks and keeps publication explicit (1.4s)
+  ✓  13 [phone] › e2e/studio.spec.ts:8:1 › conversation and canvas fit desktop and phone (1.8s)
+  ✓  14 [phone] › e2e/terrain-studio.spec.ts:8:1 › terrain creation workspace fits desktop and phone and submits one revision-bound turn (10.4s)
+
+  14 passed (44.7s)
