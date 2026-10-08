@@ -1,0 +1,16 @@
+[
+  "/home/bradley/.codex/worktrees/114f19f3-7248-4ab6-a516-3ff0849d0a96/glob2/build/linux/client/release/src/glob2",
+  "--run-game",
+  "--load-game",
+  "/home/bradley/.codex/worktrees/114f19f3-7248-4ab6-a516-3ff0849d0a96/glob2/artifacts/resource-growth/final-integration/maxima-before/run/checkpoint-30256.game.gz",
+  "--ticks",
+  "30512",
+  "--compute-threads",
+  "1",
+  "--compute-experiments",
+  "ai",
+  "--telemetry",
+  "checksums",
+  "--output-dir",
+  "/home/bradley/.codex/worktrees/114f19f3-7248-4ab6-a516-3ff0849d0a96/glob2/artifacts/resource-growth/final-integration/maxima-before/resumed"
+]

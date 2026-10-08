@@ -1,0 +1,30 @@
+[
+  {
+    "name": "engine",
+    "exit_code": 0
+  },
+  {
+    "name": "golden",
+    "exit_code": 0
+  },
+  {
+    "name": "unit",
+    "exit_code": 1
+  },
+  {
+    "name": "maxima-zero",
+    "exit_code": 0
+  },
+  {
+    "name": "maxima-workers",
+    "exit_code": 0
+  },
+  {
+    "name": "sim-version",
+    "exit_code": 0
+  },
+  {
+    "name": "diff-check",
+    "exit_code": 0
+  }
+]

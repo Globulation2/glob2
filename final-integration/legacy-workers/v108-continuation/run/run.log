@@ -1,0 +1,5 @@
+nox::game started
+nox::gui.game.checkSum() = 912bcb0b
+automaticEndingGame ended: 1280 ticks, 0 minutes, 51 seconds
+GLOB2_GAME_END ticks=1280 winner_team=-1 seed=2 map="Holiday Island 2" orders=0 players=team0:local,team1:Econo,team2:Castor,team3:Warrush,team0:Nicowar
+Settings::load("preferences.txt") : error, can't open file.

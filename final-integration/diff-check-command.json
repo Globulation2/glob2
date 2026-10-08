@@ -1,0 +1,12 @@
+{
+  "cwd": "/home/bradley/.codex/worktrees/114f19f3-7248-4ab6-a516-3ff0849d0a96/glob2",
+  "command": [
+    "git",
+    "diff",
+    "--check",
+    "origin/master...HEAD"
+  ],
+  "environment": {
+    "LD_LIBRARY_PATH": "/tmp/glob2-sdl3/prefix/lib"
+  }
+}

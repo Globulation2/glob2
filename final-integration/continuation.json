@@ -1,0 +1,210 @@
+[
+  {
+    "scenario": "dense",
+    "compute_threads": 1,
+    "reference": "same final source, compute size 1",
+    "matches": {
+      "world.checksums": true,
+      "game.replay.checksums": true
+    },
+    "matches_preintegration": {
+      "world.checksums": true,
+      "game.replay.checksums": true
+    }
+  },
+  {
+    "scenario": "dense",
+    "compute_threads": 4,
+    "reference": "same final source, compute size 1",
+    "matches": {
+      "world.checksums": true,
+      "game.replay.checksums": true
+    },
+    "matches_preintegration": {
+      "world.checksums": true,
+      "game.replay.checksums": true
+    }
+  },
+  {
+    "scenario": "multi",
+    "compute_threads": 1,
+    "reference": "same final source, compute size 1",
+    "matches": {
+      "world.checksums": true,
+      "game.replay.checksums": true
+    },
+    "matches_preintegration": {
+      "world.checksums": true,
+      "game.replay.checksums": true
+    }
+  },
+  {
+    "scenario": "multi",
+    "compute_threads": 4,
+    "reference": "same final source, compute size 1",
+    "matches": {
+      "world.checksums": true,
+      "game.replay.checksums": true
+    },
+    "matches_preintegration": {
+      "world.checksums": true,
+      "game.replay.checksums": true
+    }
+  },
+  {
+    "scenario": "ai512",
+    "compute_threads": 1,
+    "reference": "same final source, compute size 1",
+    "matches": {
+      "world.checksums": true,
+      "game.replay.checksums": true
+    },
+    "matches_preintegration": {
+      "world.checksums": true,
+      "game.replay.checksums": true
+    }
+  },
+  {
+    "scenario": "ai512",
+    "compute_threads": 4,
+    "reference": "same final source, compute size 1",
+    "matches": {
+      "world.checksums": true,
+      "game.replay.checksums": true
+    },
+    "matches_preintegration": {
+      "world.checksums": true,
+      "game.replay.checksums": true
+    }
+  },
+  {
+    "scenario": "disabled512",
+    "compute_threads": 1,
+    "reference": "same final source, compute size 1",
+    "matches": {
+      "world.checksums": true,
+      "game.replay.checksums": true
+    },
+    "matches_preintegration": {
+      "world.checksums": true,
+      "game.replay.checksums": true
+    }
+  },
+  {
+    "scenario": "disabled512",
+    "compute_threads": 4,
+    "reference": "same final source, compute size 1",
+    "matches": {
+      "world.checksums": true,
+      "game.replay.checksums": true
+    },
+    "matches_preintegration": {
+      "world.checksums": true,
+      "game.replay.checksums": true
+    }
+  },
+  {
+    "scenario": "sparse",
+    "compute_threads": 1,
+    "reference": "same final source, compute size 1",
+    "matches": {
+      "world.checksums": true,
+      "game.replay.checksums": true
+    },
+    "matches_preintegration": {
+      "world.checksums": true,
+      "game.replay.checksums": true
+    }
+  },
+  {
+    "scenario": "sparse",
+    "compute_threads": 4,
+    "reference": "same final source, compute size 1",
+    "matches": {
+      "world.checksums": true,
+      "game.replay.checksums": true
+    },
+    "matches_preintegration": {
+      "world.checksums": true,
+      "game.replay.checksums": true
+    }
+  },
+  {
+    "scenario": "saturated",
+    "compute_threads": 1,
+    "reference": "same final source, compute size 1",
+    "matches": {
+      "world.checksums": true,
+      "game.replay.checksums": true
+    },
+    "matches_preintegration": {
+      "world.checksums": true,
+      "game.replay.checksums": true
+    }
+  },
+  {
+    "scenario": "saturated",
+    "compute_threads": 4,
+    "reference": "same final source, compute size 1",
+    "matches": {
+      "world.checksums": true,
+      "game.replay.checksums": true
+    },
+    "matches_preintegration": {
+      "world.checksums": true,
+      "game.replay.checksums": true
+    }
+  },
+  {
+    "scenario": "harvested",
+    "compute_threads": 1,
+    "reference": "same final source, compute size 1",
+    "matches": {
+      "world.checksums": true,
+      "game.replay.checksums": true
+    },
+    "matches_preintegration": {
+      "world.checksums": true,
+      "game.replay.checksums": true
+    }
+  },
+  {
+    "scenario": "harvested",
+    "compute_threads": 4,
+    "reference": "same final source, compute size 1",
+    "matches": {
+      "world.checksums": true,
+      "game.replay.checksums": true
+    },
+    "matches_preintegration": {
+      "world.checksums": true,
+      "game.replay.checksums": true
+    }
+  },
+  {
+    "scenario": "fragmented",
+    "compute_threads": 1,
+    "reference": "same final source, compute size 1",
+    "matches": {
+      "world.checksums": true,
+      "game.replay.checksums": true
+    },
+    "matches_preintegration": {
+      "world.checksums": true,
+      "game.replay.checksums": true
+    }
+  },
+  {
+    "scenario": "fragmented",
+    "compute_threads": 4,
+    "reference": "same final source, compute size 1",
+    "matches": {
+      "world.checksums": true,
+      "game.replay.checksums": true
+    },
+    "matches_preintegration": {
+      "world.checksums": true,
+      "game.replay.checksums": true
+    }
+  }
+]

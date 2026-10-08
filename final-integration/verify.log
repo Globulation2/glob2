@@ -1,0 +1,25 @@
+engine 0
+golden 0
+unit 1
+maxima-zero 0
+maxima-workers 0
+legacy-zero 0
+legacy-workers 0
+sim-version 0
+diff-check 0
+dense 1 worker comparison {'world.checksums': True, 'game.replay.checksums': True} preintegration {'world.checksums': True, 'game.replay.checksums': True}
+dense 4 worker comparison {'world.checksums': True, 'game.replay.checksums': True} preintegration {'world.checksums': True, 'game.replay.checksums': True}
+multi 1 worker comparison {'world.checksums': True, 'game.replay.checksums': True} preintegration {'world.checksums': True, 'game.replay.checksums': True}
+multi 4 worker comparison {'world.checksums': True, 'game.replay.checksums': True} preintegration {'world.checksums': True, 'game.replay.checksums': True}
+ai512 1 worker comparison {'world.checksums': True, 'game.replay.checksums': True} preintegration {'world.checksums': True, 'game.replay.checksums': True}
+ai512 4 worker comparison {'world.checksums': True, 'game.replay.checksums': True} preintegration {'world.checksums': True, 'game.replay.checksums': True}
+disabled512 1 worker comparison {'world.checksums': True, 'game.replay.checksums': True} preintegration {'world.checksums': True, 'game.replay.checksums': True}
+disabled512 4 worker comparison {'world.checksums': True, 'game.replay.checksums': True} preintegration {'world.checksums': True, 'game.replay.checksums': True}
+sparse 1 worker comparison {'world.checksums': True, 'game.replay.checksums': True} preintegration {'world.checksums': True, 'game.replay.checksums': True}
+sparse 4 worker comparison {'world.checksums': True, 'game.replay.checksums': True} preintegration {'world.checksums': True, 'game.replay.checksums': True}
+saturated 1 worker comparison {'world.checksums': True, 'game.replay.checksums': True} preintegration {'world.checksums': True, 'game.replay.checksums': True}
+saturated 4 worker comparison {'world.checksums': True, 'game.replay.checksums': True} preintegration {'world.checksums': True, 'game.replay.checksums': True}
+harvested 1 worker comparison {'world.checksums': True, 'game.replay.checksums': True} preintegration {'world.checksums': True, 'game.replay.checksums': True}
+harvested 4 worker comparison {'world.checksums': True, 'game.replay.checksums': True} preintegration {'world.checksums': True, 'game.replay.checksums': True}
+fragmented 1 worker comparison {'world.checksums': True, 'game.replay.checksums': True} preintegration {'world.checksums': True, 'game.replay.checksums': True}
+fragmented 4 worker comparison {'world.checksums': True, 'game.replay.checksums': True} preintegration {'world.checksums': True, 'game.replay.checksums': True}

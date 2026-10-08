@@ -1,0 +1,2 @@
+PASS: v115 checkpoint matches all 512 complete resource state hashes
+PASS: save/reload at tick 30256 preserves all 256 complete continuation records
